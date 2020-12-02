@@ -2,657 +2,813 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9549A2CC005
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E30DB2CBFFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730304AbgLBOqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:46:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35786 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730273AbgLBOqB (ORCPT
+        id S1730264AbgLBOpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:45:39 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:50149 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726121AbgLBOpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:46:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606920272;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cim7xvgqF5UTQn1bxpHi0nuJHksE6wUzL5FkZQCG3gU=;
-        b=eSx6ilSIxUb+Z/yDaYtLDBq/oX/QxTsYZIlwXFwRQfOszYTNQRuu1ofaG1bU2Eovtux7j3
-        j88En4Z9AiLIWoEBOY7eQHlZhIU7yMoXtc/QMVL9eTH/cdeJa6iMI//mUpEA625AvKfqER
-        Xt2oW/LBdKfd9lt1NYebrJt2CPk3svA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-10-uzmKYSsaO4uvZq2TVc3vQg-1; Wed, 02 Dec 2020 09:44:24 -0500
-X-MC-Unique: uzmKYSsaO4uvZq2TVc3vQg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 99F4E107464B;
-        Wed,  2 Dec 2020 14:44:21 +0000 (UTC)
-Received: from [10.36.112.89] (ovpn-112-89.ams2.redhat.com [10.36.112.89])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AF98760636;
-        Wed,  2 Dec 2020 14:44:15 +0000 (UTC)
-Subject: Re: [RFC v2 1/1] vfio/platform: add support for msi
-To:     Vikas Gupta <vikas.gupta@broadcom.com>, alex.williamson@redhat.com,
-        cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     vikram.prakash@broadcom.com, srinath.mannam@broadcom.com,
-        ashwin.kamath@broadcom.com, zachary.schroff@broadcom.com,
-        manish.kurup@broadcom.com
-References: <20201112175852.21572-1-vikas.gupta@broadcom.com>
- <20201124161646.41191-1-vikas.gupta@broadcom.com>
- <20201124161646.41191-2-vikas.gupta@broadcom.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <73830e85-035f-88ac-7aec-a818e83c2d5a@redhat.com>
-Date:   Wed, 2 Dec 2020 15:44:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 2 Dec 2020 09:45:38 -0500
+X-Greylist: delayed 1537 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Dec 2020 09:45:35 EST
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 8B8891BF217;
+        Wed,  2 Dec 2020 14:44:47 +0000 (UTC)
+Date:   Wed, 2 Dec 2020 15:44:47 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com
+Subject: Re: [PATCH v2 13/19] media: sunxi: Add support for the A31 MIPI
+ CSI-2 controller
+Message-ID: <X8eoX+M650sMXqpx@aptenodytes>
+References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
+ <20201128142839.517949-14-paul.kocialkowski@bootlin.com>
+ <20201201122038.bxk3vu2w3mg43ayq@gilmour>
 MIME-Version: 1.0
-In-Reply-To: <20201124161646.41191-2-vikas.gupta@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="TaE5UDuue3o8CB8f"
+Content-Disposition: inline
+In-Reply-To: <20201201122038.bxk3vu2w3mg43ayq@gilmour>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vikas,
 
-On 11/24/20 5:16 PM, Vikas Gupta wrote:
-> MSI support for platform devices.
-> 
-> Signed-off-by: Vikas Gupta <vikas.gupta@broadcom.com>
-> ---
->  drivers/vfio/platform/vfio_platform_common.c  |  99 ++++++-
->  drivers/vfio/platform/vfio_platform_irq.c     | 260 +++++++++++++++++-
->  drivers/vfio/platform/vfio_platform_private.h |  16 ++
->  include/uapi/linux/vfio.h                     |  43 +++
->  4 files changed, 401 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/vfio/platform/vfio_platform_common.c b/drivers/vfio/platform/vfio_platform_common.c
-> index c0771a9567fb..b0bfc0f4ee1f 100644
-> --- a/drivers/vfio/platform/vfio_platform_common.c
-> +++ b/drivers/vfio/platform/vfio_platform_common.c
-> @@ -16,6 +16,7 @@
->  #include <linux/types.h>
->  #include <linux/uaccess.h>
->  #include <linux/vfio.h>
-> +#include <linux/nospec.h>
->  
->  #include "vfio_platform_private.h"
->  
-> @@ -344,9 +345,16 @@ static long vfio_platform_ioctl(void *device_data,
->  
->  	} else if (cmd == VFIO_DEVICE_GET_IRQ_INFO) {
->  		struct vfio_irq_info info;
-> +		struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
-> +		struct vfio_irq_info_cap_msi *msi_info = NULL;
-> +		unsigned long capsz;
-> +		int ext_irq_index = vdev->num_irqs - vdev->num_ext_irqs;
->  
->  		minsz = offsetofend(struct vfio_irq_info, count);
->  
-> +		/* For backward compatibility, cannot require this */
-> +		capsz = offsetofend(struct vfio_irq_info, cap_offset);
-> +
->  		if (copy_from_user(&info, (void __user *)arg, minsz))
->  			return -EFAULT;
->  
-> @@ -356,9 +364,89 @@ static long vfio_platform_ioctl(void *device_data,
->  		if (info.index >= vdev->num_irqs)
->  			return -EINVAL;
->  
-> +		if (info.argsz >= capsz)
-> +			minsz = capsz;
-> +
-> +		if (info.index == ext_irq_index) {
-nit: n case we add new ext indices afterwards, I would check info.index
--  ext_irq_index against an VFIO_EXT_IRQ_MSI define.
-> +			struct vfio_irq_info_cap_type cap_type = {
-> +				.header.id = VFIO_IRQ_INFO_CAP_TYPE,
-> +				.header.version = 1 };
-> +			int i;
-> +			int ret;
-> +			int num_msgs;
-> +			size_t msi_info_size;
-> +			struct vfio_platform_irq *irq;
-nit: I think generally the opposite order (length) is chosen. This also
-would better match the existing style in this file
-> +
-> +			info.index = array_index_nospec(info.index,
-> +							vdev->num_irqs);
-> +
-> +			irq = &vdev->irqs[info.index];
-> +
-> +			info.flags = irq->flags;
-I think this can be removed given [*]
-> +			cap_type.type = irq->type;
-> +			cap_type.subtype = irq->subtype;
-> +
-> +			ret = vfio_info_add_capability(&caps,
-> +						       &cap_type.header,
-> +						       sizeof(cap_type));
-> +			if (ret)
-> +				return ret;
-> +
-> +			num_msgs = irq->num_ctx;
-do would want to return the cap even if !num_ctx?
-> +
-> +			msi_info_size = struct_size(msi_info, msgs, num_msgs);
-> +
-> +			msi_info = kzalloc(msi_info_size, GFP_KERNEL);
-> +			if (!msi_info) {
-> +				kfree(caps.buf);
-> +				return -ENOMEM;
-> +			}
-> +
-> +			msi_info->header.id = VFIO_IRQ_INFO_CAP_MSI_DESCS;
-> +			msi_info->header.version = 1;
-> +			msi_info->nr_msgs = num_msgs;
-> +
-> +			for (i = 0; i < num_msgs; i++) {
-> +				struct vfio_irq_ctx *ctx = &irq->ctx[i];
-> +
-> +				msi_info->msgs[i].addr_lo = ctx->msg.address_lo;
-> +				msi_info->msgs[i].addr_hi = ctx->msg.address_hi;
-> +				msi_info->msgs[i].data = ctx->msg.data;
-> +			}
-> +
-> +			ret = vfio_info_add_capability(&caps, &msi_info->header,
-> +						       msi_info_size);
-> +			if (ret) {
-> +				kfree(msi_info);
-> +				kfree(caps.buf);
-> +				return ret;
-> +			}
-> +		}
-> +
->  		info.flags = vdev->irqs[info.index].flags;
-[*]
->  		info.count = vdev->irqs[info.index].count;
->  
-> +		if (caps.size) {
-> +			info.flags |= VFIO_IRQ_INFO_FLAG_CAPS;
-> +			if (info.argsz < sizeof(info) + caps.size) {
-> +				info.argsz = sizeof(info) + caps.size;
-> +				info.cap_offset = 0;
-> +			} else {
-> +				vfio_info_cap_shift(&caps, sizeof(info));
-> +				if (copy_to_user((void __user *)arg +
-> +						  sizeof(info), caps.buf,
-> +						  caps.size)) {
-> +					kfree(msi_info);
-> +					kfree(caps.buf);
-> +					return -EFAULT;
-> +				}
-> +				info.cap_offset = sizeof(info);
-> +			}
-> +
-> +			kfree(msi_info);
-> +			kfree(caps.buf);
-> +		}
-> +
->  		return copy_to_user((void __user *)arg, &info, minsz) ?
->  			-EFAULT : 0;
->  
-> @@ -366,6 +454,7 @@ static long vfio_platform_ioctl(void *device_data,
->  		struct vfio_irq_set hdr;
->  		u8 *data = NULL;
->  		int ret = 0;
-> +		int max;
->  		size_t data_size = 0;
->  
->  		minsz = offsetofend(struct vfio_irq_set, count);
-> @@ -373,8 +462,14 @@ static long vfio_platform_ioctl(void *device_data,
->  		if (copy_from_user(&hdr, (void __user *)arg, minsz))
->  			return -EFAULT;
->  
-> -		ret = vfio_set_irqs_validate_and_prepare(&hdr, vdev->num_irqs,
-> -						 vdev->num_irqs, &data_size);
-> +		if (hdr.index >= vdev->num_irqs)
-> +			return -EINVAL;
-> +
-> +		max = vdev->irqs[hdr.index].count;
-> +
-> +		ret = vfio_set_irqs_validate_and_prepare(&hdr, max,
-> +							 vdev->num_irqs,
-> +							 &data_size);
->  		if (ret)
->  			return ret;
->  
-> diff --git a/drivers/vfio/platform/vfio_platform_irq.c b/drivers/vfio/platform/vfio_platform_irq.c
-> index c5b09ec0a3c9..4066223e5b2e 100644
-> --- a/drivers/vfio/platform/vfio_platform_irq.c
-> +++ b/drivers/vfio/platform/vfio_platform_irq.c
-> @@ -8,10 +8,12 @@
->  
->  #include <linux/eventfd.h>
->  #include <linux/interrupt.h>
-> +#include <linux/eventfd.h>
->  #include <linux/slab.h>
->  #include <linux/types.h>
->  #include <linux/vfio.h>
->  #include <linux/irq.h>
-> +#include <linux/msi.h>
->  
->  #include "vfio_platform_private.h"
->  
-> @@ -253,6 +255,195 @@ static int vfio_platform_set_irq_trigger(struct vfio_platform_device *vdev,
->  	return 0;
->  }
->  
-> +/* MSI/MSIX */
-> +static irqreturn_t vfio_msihandler(int irq, void *arg)
-> +{
-> +	struct eventfd_ctx *trigger = arg;
-> +
-> +	eventfd_signal(trigger, 1);
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static void msi_write(struct msi_desc *desc, struct msi_msg *msg)
-> +{
-> +	int i;
-> +	struct vfio_platform_irq *irq;
-> +	u16 index = desc->platform.msi_index;
-> +	struct device *dev = msi_desc_to_dev(desc);
-> +	struct vfio_device *device = dev_get_drvdata(dev);
-> +	struct vfio_platform_device *vdev = (struct vfio_platform_device *)
-> +						vfio_device_data(device);
-> +
-> +	for (i = 0; i < vdev->num_irqs; i++)
-> +		if (vdev->irqs[i].type == VFIO_IRQ_TYPE_MSI)
-> +			irq = &vdev->irqs[i];
-> +
-> +	irq->ctx[index].msg.address_lo = msg->address_lo;
-> +	irq->ctx[index].msg.address_hi = msg->address_hi;
-> +	irq->ctx[index].msg.data = msg->data;
-> +}
-> +
-> +static int vfio_msi_enable(struct vfio_platform_device *vdev,
-> +			   struct vfio_platform_irq *irq, int nvec)
-> +{
-> +	int ret;
-> +	int msi_idx = 0;
-> +	struct msi_desc *desc;
-> +	struct device *dev = vdev->device;
-> +
-> +	irq->ctx = kcalloc(nvec, sizeof(struct vfio_irq_ctx), GFP_KERNEL);
-> +	if (!irq->ctx)
-> +		return -ENOMEM;
-> +
-> +	/* Allocate platform MSIs */
-> +	ret = platform_msi_domain_alloc_irqs(dev, nvec, msi_write);
-> +	if (ret < 0) {
-> +		kfree(irq->ctx);
-> +		return ret;
-> +	}
-> +
-> +	for_each_msi_entry(desc, dev) {
-> +		irq->ctx[msi_idx].hwirq = desc->irq;
-> +		msi_idx++;
-> +	}
-> +
-> +	irq->num_ctx = nvec;
-> +	irq->config_msi = 1;
-> +
-> +	return 0;
-> +}
-> +
-> +static int vfio_msi_set_vector_signal(struct vfio_platform_irq *irq,
-> +				      int vector, int fd)
-> +{
-> +	struct eventfd_ctx *trigger;
-> +	int irq_num, ret;
-> +
-> +	if (vector < 0 || vector >= irq->num_ctx)
-> +		return -EINVAL;
-> +
-> +	irq_num = irq->ctx[vector].hwirq;
-> +
-> +	if (irq->ctx[vector].trigger) {
-> +		free_irq(irq_num, irq->ctx[vector].trigger);
-> +		kfree(irq->ctx[vector].name);
-> +		eventfd_ctx_put(irq->ctx[vector].trigger);
-> +		irq->ctx[vector].trigger = NULL;
-> +	}
-> +
-> +	if (fd < 0)
-> +		return 0;
-> +
-> +	irq->ctx[vector].name = kasprintf(GFP_KERNEL,
-> +					  "vfio-msi[%d]", vector);
-> +	if (!irq->ctx[vector].name)
-> +		return -ENOMEM;
-> +
-> +	trigger = eventfd_ctx_fdget(fd);
-> +	if (IS_ERR(trigger)) {
-> +		kfree(irq->ctx[vector].name);
-> +		return PTR_ERR(trigger);
-> +	}
-> +
-> +	ret = request_irq(irq_num, vfio_msihandler, 0,
-> +			  irq->ctx[vector].name, trigger);
-> +	if (ret) {
-> +		kfree(irq->ctx[vector].name);
-> +		eventfd_ctx_put(trigger);
-> +		return ret;
-> +	}
-> +
-> +	irq->ctx[vector].trigger = trigger;
-> +
-> +	return 0;
-> +}
-> +
-> +static int vfio_msi_set_block(struct vfio_platform_irq *irq, unsigned int start,
-> +			      unsigned int count, int32_t *fds)
-> +{
-> +	int i, j, ret = 0;
-> +
-> +	if (start >= irq->num_ctx || start + count > irq->num_ctx)
-> +		return -EINVAL;
-> +
-> +	for (i = 0, j = start; i < count && !ret; i++, j++) {
-> +		int fd = fds ? fds[i] : -1;
-> +
-> +		ret = vfio_msi_set_vector_signal(irq, j, fd);
-> +	}
-> +
-> +	if (ret) {
-> +		for (--j; j >= (int)start; j--)
-> +			vfio_msi_set_vector_signal(irq, j, -1);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static void vfio_msi_disable(struct vfio_platform_device *vdev,
-> +			     struct vfio_platform_irq *irq)
-> +{
-> +	struct device *dev = vdev->device;
-> +
-> +	vfio_msi_set_block(irq, 0, irq->num_ctx, NULL);
-> +
-> +	platform_msi_domain_free_irqs(dev);
-> +
-> +	irq->config_msi = 0;
-> +	irq->num_ctx = 0;
-> +
-> +	kfree(irq->ctx);
-> +}
-> +
-> +static int vfio_set_msi_trigger(struct vfio_platform_device *vdev,
-> +				unsigned int index, unsigned int start,
-> +				unsigned int count, uint32_t flags, void *data)
-> +{
-> +	int i;
-> +	struct vfio_platform_irq *irq = &vdev->irqs[index];
-> +
-> +	if (start + count > irq->count)
-> +		return -EINVAL;
-> +
-> +	if (!count && (flags & VFIO_IRQ_SET_DATA_NONE)) {
-> +		vfio_msi_disable(vdev, irq);
-> +		return 0;
-> +	}
-> +
-> +	if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
-> +		s32 *fds = data;
-> +		int ret;
-> +
-> +		if (irq->config_msi)
-> +			return vfio_msi_set_block(irq, start, count,
-> +						  fds);
-> +		ret = vfio_msi_enable(vdev, irq, start + count);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = vfio_msi_set_block(irq, start, count, fds);
-> +		if (ret)
-> +			vfio_msi_disable(vdev, irq);
-> +
-> +		return ret;
-> +	}
-> +
-> +	for (i = start; i < start + count; i++) {
-> +		if (!irq->ctx[i].trigger)
-> +			continue;
-> +		if (flags & VFIO_IRQ_SET_DATA_NONE) {
-> +			eventfd_signal(irq->ctx[i].trigger, 1);
-> +		} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
-> +			u8 *bools = data;
-> +
-> +			if (bools[i - start])
-> +				eventfd_signal(irq->ctx[i].trigger, 1);
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  int vfio_platform_set_irqs_ioctl(struct vfio_platform_device *vdev,
->  				 uint32_t flags, unsigned index, unsigned start,
->  				 unsigned count, void *data)
-> @@ -261,16 +452,29 @@ int vfio_platform_set_irqs_ioctl(struct vfio_platform_device *vdev,
->  		    unsigned start, unsigned count, uint32_t flags,
->  		    void *data) = NULL;
->  
-> -	switch (flags & VFIO_IRQ_SET_ACTION_TYPE_MASK) {
-> -	case VFIO_IRQ_SET_ACTION_MASK:
-> -		func = vfio_platform_set_irq_mask;
-> -		break;
-> -	case VFIO_IRQ_SET_ACTION_UNMASK:
-> -		func = vfio_platform_set_irq_unmask;
-> -		break;
-> -	case VFIO_IRQ_SET_ACTION_TRIGGER:
-> -		func = vfio_platform_set_irq_trigger;
-> -		break;
-> +	struct vfio_platform_irq *irq = &vdev->irqs[index];
-> +
-> +	if (irq->type == VFIO_IRQ_TYPE_MSI) {
-> +		switch (flags & VFIO_IRQ_SET_ACTION_TYPE_MASK) {
-> +		case VFIO_IRQ_SET_ACTION_MASK:
-> +		case VFIO_IRQ_SET_ACTION_UNMASK:
-> +			break;
-> +		case VFIO_IRQ_SET_ACTION_TRIGGER:
-> +			func = vfio_set_msi_trigger;
-> +			break;
-> +		}
-> +	} else {
-> +		switch (flags & VFIO_IRQ_SET_ACTION_TYPE_MASK) {
-> +		case VFIO_IRQ_SET_ACTION_MASK:
-> +			func = vfio_platform_set_irq_mask;
-> +			break;
-> +		case VFIO_IRQ_SET_ACTION_UNMASK:
-> +			func = vfio_platform_set_irq_unmask;
-> +			break;
-> +		case VFIO_IRQ_SET_ACTION_TRIGGER:
-> +			func = vfio_platform_set_irq_trigger;
-> +			break;
-> +		}
->  	}
->  
->  	if (!func)
-> @@ -281,12 +485,21 @@ int vfio_platform_set_irqs_ioctl(struct vfio_platform_device *vdev,
->  
->  int vfio_platform_irq_init(struct vfio_platform_device *vdev)
->  {
-> -	int cnt = 0, i;
-> +	int i;
-> +	int cnt = 0;
-> +	int num_irqs;
-> +	struct device *dev = vdev->device;
->  
->  	while (vdev->get_irq(vdev, cnt) >= 0)
->  		cnt++;
->  
-> -	vdev->irqs = kcalloc(cnt, sizeof(struct vfio_platform_irq), GFP_KERNEL);
-> +	num_irqs = cnt;
-> +
-> +	if (dev->msi_domain)
-> +		num_irqs++;
-> +
-> +	vdev->irqs = kcalloc(num_irqs, sizeof(struct vfio_platform_irq),
-> +			     GFP_KERNEL);
->  	if (!vdev->irqs)
->  		return -ENOMEM;
->  
-> @@ -309,7 +522,19 @@ int vfio_platform_irq_init(struct vfio_platform_device *vdev)
->  		vdev->irqs[i].masked = false;
->  	}
->  
-> -	vdev->num_irqs = cnt;
-> +	/*
-> +	 * MSI block is added at last index and its an ext irq
-it is
-> +	 */
-> +	if (dev->msi_domain) {
-> +		vdev->irqs[i].flags = VFIO_IRQ_INFO_EVENTFD;
-> +		vdev->irqs[i].count = NR_IRQS;
-why NR_IRQS?
-> +		vdev->irqs[i].hwirq = 0;
-> +		vdev->irqs[i].masked = false;
-> +		vdev->irqs[i].type = VFIO_IRQ_TYPE_MSI;
-> +		vdev->num_ext_irqs = 1;
-> +	}
-> +
-> +	vdev->num_irqs = num_irqs;
->  
->  	return 0;
->  err:
-> @@ -321,8 +546,13 @@ void vfio_platform_irq_cleanup(struct vfio_platform_device *vdev)
->  {
->  	int i;
->  
-> -	for (i = 0; i < vdev->num_irqs; i++)
-> -		vfio_set_trigger(vdev, i, -1, NULL);
-> +	for (i = 0; i < vdev->num_irqs; i++) {
-> +		if (vdev->irqs[i].type == VFIO_IRQ_TYPE_MSI)
-> +			vfio_set_msi_trigger(vdev, i, 0, 0,
-> +					     VFIO_IRQ_SET_DATA_NONE, NULL);
-> +		else
-> +			vfio_set_trigger(vdev, i, -1, NULL);
-> +	}
->  
->  	vdev->num_irqs = 0;
->  	kfree(vdev->irqs);
-> diff --git a/drivers/vfio/platform/vfio_platform_private.h b/drivers/vfio/platform/vfio_platform_private.h
-> index 289089910643..7bbb05988705 100644
-> --- a/drivers/vfio/platform/vfio_platform_private.h
-> +++ b/drivers/vfio/platform/vfio_platform_private.h
-> @@ -9,6 +9,7 @@
->  
->  #include <linux/types.h>
->  #include <linux/interrupt.h>
-> +#include <linux/msi.h>
->  
->  #define VFIO_PLATFORM_OFFSET_SHIFT   40
->  #define VFIO_PLATFORM_OFFSET_MASK (((u64)(1) << VFIO_PLATFORM_OFFSET_SHIFT) - 1)
-> @@ -19,9 +20,18 @@
->  #define VFIO_PLATFORM_INDEX_TO_OFFSET(index)	\
->  	((u64)(index) << VFIO_PLATFORM_OFFSET_SHIFT)
->  
-> +struct vfio_irq_ctx {
-> +	int			hwirq;
-> +	char			*name;
-> +	struct msi_msg		msg;
-> +	struct eventfd_ctx	*trigger;
-> +};
-> +
->  struct vfio_platform_irq {
->  	u32			flags;
->  	u32			count;
-> +	int			num_ctx;
-> +	struct vfio_irq_ctx	*ctx;
->  	int			hwirq;
->  	char			*name;
->  	struct eventfd_ctx	*trigger;
-> @@ -29,6 +39,11 @@ struct vfio_platform_irq {
->  	spinlock_t		lock;
->  	struct virqfd		*unmask;
->  	struct virqfd		*mask;
-> +
-> +	/* for extended irqs */
-> +	u32			type;
-> +	u32			subtype;
-> +	int			config_msi;
->  };
->  
->  struct vfio_platform_region {
-> @@ -46,6 +61,7 @@ struct vfio_platform_device {
->  	u32				num_regions;
->  	struct vfio_platform_irq	*irqs;
->  	u32				num_irqs;
-> +	int				num_ext_irqs;
->  	int				refcnt;
->  	struct mutex			igate;
->  	struct module			*parent_module;
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 2f313a238a8f..598d1c944283 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -697,11 +697,54 @@ struct vfio_irq_info {
->  #define VFIO_IRQ_INFO_MASKABLE		(1 << 1)
->  #define VFIO_IRQ_INFO_AUTOMASKED	(1 << 2)
->  #define VFIO_IRQ_INFO_NORESIZE		(1 << 3)
-> +#define VFIO_IRQ_INFO_FLAG_CAPS		(1 << 4) /* Info supports caps */
->  	__u32	index;		/* IRQ index */
->  	__u32	count;		/* Number of IRQs within this index */
-> +	__u32	cap_offset;	/* Offset within info struct of first cap */
->  };
->  #define VFIO_DEVICE_GET_IRQ_INFO	_IO(VFIO_TYPE, VFIO_BASE + 9)
->  
-> +/*
-> + * The irq type capability allows IRQs unique to a specific device or
-> + * class of devices to be exposed.
-> + *
-> + * The structures below define version 1 of this capability.
-> + */
-> +#define VFIO_IRQ_INFO_CAP_TYPE		3
-> +
-> +struct vfio_irq_info_cap_type {
-> +	struct vfio_info_cap_header header;
-> +	__u32 type;     /* global per bus driver */
-> +	__u32 subtype;  /* type specific */
-> +};
-> +
-> +/*
-> + * List of IRQ types, global per bus driver.
-> + * If you introduce a new type, please add it here.
-> + */
-> +
-> +/* Non PCI devices having MSI(s) support */
-> +#define VFIO_IRQ_TYPE_MSI		(1)
-> +
-> +/*
-> + * The msi capability allows the user to use the msi msg to
-> + * configure the iova for the msi configuration.
-> + * The structures below define version 1 of this capability.
-> + */
-> +#define VFIO_IRQ_INFO_CAP_MSI_DESCS	4
-> +
-> +struct vfio_irq_msi_msg {
-> +	__u32	addr_lo;
-> +	__u32	addr_hi;
-> +	__u32	data;
-> +};
-> +
-> +struct vfio_irq_info_cap_msi {
-> +	struct vfio_info_cap_header header;
-> +	__u32 nr_msgs;
-I think you should align a __u32   reserved field to have a 64b alignment
-> +	struct vfio_irq_msi_msg msgs[];
-Please can you clarify why this cap is needed versus your prior approach.
-> +};
-> +
->  /**
->   * VFIO_DEVICE_SET_IRQS - _IOW(VFIO_TYPE, VFIO_BASE + 10, struct vfio_irq_set)
->   *
-> 
-Thanks
+--TaE5UDuue3o8CB8f
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Eric
+Hi,
 
+On Tue 01 Dec 20, 13:20, Maxime Ripard wrote:
+> Hi,
+>=20
+> On Sat, Nov 28, 2020 at 03:28:33PM +0100, Paul Kocialkowski wrote:
+> > The A31 MIPI CSI-2 controller is a dedicated MIPI CSI-2 bridge
+> > found on Allwinner SoCs such as the A31 and V3/V3s.
+> >=20
+> > It is a standalone block, connected to the CSI controller on one side
+> > and to the MIPI D-PHY block on the other. It has a dedicated address
+> > space, interrupt line and clock.
+> >=20
+> > It is represented as a V4L2 subdev to the CSI controller and takes a
+> > MIPI CSI-2 sensor as its own subdev, all using the fwnode graph and
+> > media controller API.
+> >=20
+> > Only 8-bit and 10-bit Bayer formats are currently supported.
+> > While up to 4 internal channels to the CSI controller exist, only one
+> > is currently supported by this implementation.
+> >=20
+> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > ---
+> >  drivers/media/platform/sunxi/Kconfig          |   1 +
+> >  drivers/media/platform/sunxi/Makefile         |   1 +
+> >  .../platform/sunxi/sun6i-mipi-csi2/Kconfig    |  12 +
+> >  .../platform/sunxi/sun6i-mipi-csi2/Makefile   |   4 +
+> >  .../sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.c   | 591 ++++++++++++++++++
+> >  .../sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.h   | 117 ++++
+> >  6 files changed, 726 insertions(+)
+> >  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/Kconfig
+> >  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/Makefi=
+le
+> >  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6i_=
+mipi_csi2.c
+> >  create mode 100644 drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6i_=
+mipi_csi2.h
+> >=20
+> > diff --git a/drivers/media/platform/sunxi/Kconfig b/drivers/media/platf=
+orm/sunxi/Kconfig
+> > index 7151cc249afa..9684e07454ad 100644
+> > --- a/drivers/media/platform/sunxi/Kconfig
+> > +++ b/drivers/media/platform/sunxi/Kconfig
+> > @@ -2,3 +2,4 @@
+> > =20
+> >  source "drivers/media/platform/sunxi/sun4i-csi/Kconfig"
+> >  source "drivers/media/platform/sunxi/sun6i-csi/Kconfig"
+> > +source "drivers/media/platform/sunxi/sun6i-mipi-csi2/Kconfig"
+> > diff --git a/drivers/media/platform/sunxi/Makefile b/drivers/media/plat=
+form/sunxi/Makefile
+> > index fc537c9f5ca9..887a7cae8fca 100644
+> > --- a/drivers/media/platform/sunxi/Makefile
+> > +++ b/drivers/media/platform/sunxi/Makefile
+> > @@ -2,5 +2,6 @@
+> > =20
+> >  obj-y		+=3D sun4i-csi/
+> >  obj-y		+=3D sun6i-csi/
+> > +obj-y		+=3D sun6i-mipi-csi2/
+>=20
+> I'm not sure we need a new folder here, it's only ever tied to sun6i-csi
+> so it would make more sense to have it in the same folder.
+
+My thinking was that it's a different driver and a different hardware block,
+so it's less confusing to have it in a different directory. I think many wo=
+uld
+expect the driver to share code with sun6i-csi (in a component driver kind =
+of
+way) if it was in the same directory, which is not the case here.
+
+> >  obj-y		+=3D sun8i-di/
+> >  obj-y		+=3D sun8i-rotate/
+> > diff --git a/drivers/media/platform/sunxi/sun6i-mipi-csi2/Kconfig b/dri=
+vers/media/platform/sunxi/sun6i-mipi-csi2/Kconfig
+> > new file mode 100644
+> > index 000000000000..3260591ed5c0
+> > --- /dev/null
+> > +++ b/drivers/media/platform/sunxi/sun6i-mipi-csi2/Kconfig
+> > @@ -0,0 +1,12 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only
+> > +config VIDEO_SUN6I_MIPI_CSI2
+> > +	tristate "Allwinner A31 MIPI CSI-2 Controller Driver"
+> > +	depends on VIDEO_V4L2 && COMMON_CLK
+> > +	depends on ARCH_SUNXI || COMPILE_TEST
+> > +	select PHY_SUN6I_MIPI_DPHY
+> > +	select MEDIA_CONTROLLER
+> > +	select VIDEO_V4L2_SUBDEV_API
+> > +	select REGMAP_MMIO
+> > +	select V4L2_FWNODE
+> > +	help
+> > +	   Support for the Allwinner A31 MIPI CSI-2 Controller.
+> > diff --git a/drivers/media/platform/sunxi/sun6i-mipi-csi2/Makefile b/dr=
+ivers/media/platform/sunxi/sun6i-mipi-csi2/Makefile
+> > new file mode 100644
+> > index 000000000000..14e4e03818b5
+> > --- /dev/null
+> > +++ b/drivers/media/platform/sunxi/sun6i-mipi-csi2/Makefile
+> > @@ -0,0 +1,4 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only
+> > +sun6i-mipi-csi2-y +=3D sun6i_mipi_csi2.o
+> > +
+> > +obj-$(CONFIG_VIDEO_SUN6I_MIPI_CSI2) +=3D sun6i-mipi-csi2.o
+> > diff --git a/drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6i_mipi_cs=
+i2.c b/drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.c
+> > new file mode 100644
+> > index 000000000000..a6567ef82fb4
+> > --- /dev/null
+> > +++ b/drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.c
+> > @@ -0,0 +1,591 @@
+> > +// SPDX-License-Identifier: GPL-2.0+
+> > +/*
+> > + * Copyright 2020 Bootlin
+> > + * Author: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > + */
+> > +
+> > +#include <linux/clk.h>
+> > +#include <linux/interrupt.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/phy/phy.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/pm_runtime.h>
+> > +#include <linux/regmap.h>
+> > +#include <linux/reset.h>
+> > +#include <media/v4l2-ctrls.h>
+> > +#include <media/v4l2-device.h>
+> > +#include <media/v4l2-fwnode.h>
+> > +
+> > +#include "sun6i_mipi_csi2.h"
+> > +
+> > +#define MODULE_NAME	"sun6i-mipi-csi2"
+> > +
+> > +static const u32 sun6i_mipi_csi2_mbus_codes[] =3D {
+> > +	MEDIA_BUS_FMT_SBGGR8_1X8,
+> > +	MEDIA_BUS_FMT_SGBRG8_1X8,
+> > +	MEDIA_BUS_FMT_SGRBG8_1X8,
+> > +	MEDIA_BUS_FMT_SRGGB8_1X8,
+> > +	MEDIA_BUS_FMT_SBGGR10_1X10,
+> > +	MEDIA_BUS_FMT_SGBRG10_1X10,
+> > +	MEDIA_BUS_FMT_SGRBG10_1X10,
+> > +	MEDIA_BUS_FMT_SRGGB10_1X10,
+> > +};
+> > +
+> > +/* Video */
+> > +
+> > +static int sun6i_mipi_csi2_s_stream(struct v4l2_subdev *subdev, int on)
+> > +{
+> > +	struct sun6i_mipi_csi2_video *video =3D
+> > +		sun6i_mipi_csi2_subdev_video(subdev);
+> > +	struct sun6i_mipi_csi2_dev *cdev =3D sun6i_mipi_csi2_video_dev(video);
+> > +	struct v4l2_subdev *remote_subdev =3D video->remote_subdev;
+> > +	struct v4l2_fwnode_bus_mipi_csi2 *bus_mipi_csi2 =3D
+> > +		&video->endpoint.bus.mipi_csi2;
+> > +	union phy_configure_opts dphy_opts =3D { 0 };
+> > +	struct phy_configure_opts_mipi_dphy *dphy_cfg =3D &dphy_opts.mipi_dph=
+y;
+> > +	struct regmap *regmap =3D cdev->regmap;
+> > +	struct v4l2_ctrl *ctrl;
+> > +	unsigned int lanes_count;
+> > +	unsigned int bpp;
+> > +	unsigned long pixel_rate;
+> > +	u8 data_type =3D 0;
+> > +	u32 version =3D 0;
+> > +	/* Initialize to 0 to use both in disable label (ret !=3D 0) and off.=
+ */
+> > +	int ret =3D 0;
+> > +
+> > +	if (!remote_subdev)
+> > +		return -ENODEV;
+> > +
+> > +	if (!on) {
+> > +		v4l2_subdev_call(remote_subdev, video, s_stream, 0);
+> > +		goto disable;
+> > +	}
+> > +
+> > +	switch (video->mbus_format.code) {
+> > +	case MEDIA_BUS_FMT_SBGGR8_1X8:
+> > +	case MEDIA_BUS_FMT_SGBRG8_1X8:
+> > +	case MEDIA_BUS_FMT_SGRBG8_1X8:
+> > +	case MEDIA_BUS_FMT_SRGGB8_1X8:
+> > +		data_type =3D MIPI_CSI2_DATA_TYPE_RAW8;
+> > +		bpp =3D 8;
+> > +		break;
+> > +	case MEDIA_BUS_FMT_SBGGR10_1X10:
+> > +	case MEDIA_BUS_FMT_SGBRG10_1X10:
+> > +	case MEDIA_BUS_FMT_SGRBG10_1X10:
+> > +	case MEDIA_BUS_FMT_SRGGB10_1X10:
+> > +		data_type =3D MIPI_CSI2_DATA_TYPE_RAW10;
+> > +		bpp =3D 10;
+> > +		break;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	/* Sensor pixel rate */
+> > +
+> > +	ctrl =3D v4l2_ctrl_find(remote_subdev->ctrl_handler, V4L2_CID_PIXEL_R=
+ATE);
+> > +	if (!ctrl) {
+> > +		dev_err(cdev->dev,
+> > +			"%s: no MIPI CSI-2 pixel rate from the sensor\n",
+> > +			__func__);
+> > +		return -ENODEV;
+> > +	}
+> > +
+> > +	pixel_rate =3D (unsigned long)v4l2_ctrl_g_ctrl_int64(ctrl);
+> > +	if (!pixel_rate) {
+> > +		dev_err(cdev->dev,
+> > +			"%s: zero MIPI CSI-2 pixel rate from the sensor\n",
+> > +			__func__);
+> > +		return -ENODEV;
+> > +	}
+> > +
+> > +	/* Power management */
+> > +
+> > +	ret =3D pm_runtime_get_sync(cdev->dev);
+> > +	if (ret < 0) {
+> > +		pm_runtime_put_noidle(cdev->dev);
+> > +		return ret;
+> > +	}
+> > +
+> > +	/* D-PHY configuration */
+> > +
+> > +	lanes_count =3D bus_mipi_csi2->num_data_lanes;
+> > +	phy_mipi_dphy_get_default_config(pixel_rate, bpp, lanes_count,
+> > +					 dphy_cfg);
+> > +
+> > +	/*
+> > +	 * Note that our hardware is using DDR, which is not taken in account=
+ by
+> > +	 * phy_mipi_dphy_get_default_config when calculating hs_clk_rate from
+> > +	 * the pixel rate, lanes count and bpp.
+> > +	 *
+> > +	 * The resulting clock rate is basically the symbol rate over the who=
+le
+> > +	 * link. The actual clock rate is calculated with division by two sin=
+ce
+> > +	 * DDR samples both on rising and falling edges.
+> > +	 */
+> > +
+> > +	dev_dbg(cdev->dev, "A31 MIPI CSI-2 config:\n");
+> > +	dev_dbg(cdev->dev, "%ld pixels/s, %u bits/pixel, %lu Hz clock\n",
+> > +		pixel_rate, bpp, dphy_cfg->hs_clk_rate / 2);
+> > +
+> > +	ret =3D phy_reset(cdev->dphy);
+> > +	if (ret) {
+> > +		dev_err(cdev->dev, "failed to reset MIPI D-PHY\n");
+> > +		goto error_pm;
+> > +	}
+> > +
+> > +	ret =3D phy_set_mode_ext(cdev->dphy, PHY_MODE_MIPI_DPHY,
+> > +			       PHY_MIPI_DPHY_SUBMODE_RX);
+> > +	if (ret) {
+> > +		dev_err(cdev->dev, "failed to set MIPI D-PHY mode\n");
+> > +		goto error_pm;
+> > +	}
+> > +
+> > +	ret =3D phy_configure(cdev->dphy, &dphy_opts);
+> > +	if (ret) {
+> > +		dev_err(cdev->dev, "failed to configure MIPI D-PHY\n");
+> > +		goto error_pm;
+> > +	}
+> > +
+> > +	ret =3D phy_power_on(cdev->dphy);
+> > +	if (ret) {
+> > +		dev_err(cdev->dev, "failed to power on MIPI D-PHY\n");
+> > +		goto error_pm;
+> > +	}
+> > +
+> > +	/* MIPI CSI-2 controller setup */
+> > +
+> > +	/*
+> > +	 * The enable flow in the Allwinner BSP is a bit different: the enable
+> > +	 * and reset bits are set together before starting the CSI controller.
+> > +	 *
+> > +	 * In mainline we enable the CSI controller first (due to subdev logi=
+c).
+> > +	 * One reliable way to make this work is to deassert reset, configure
+> > +	 * registers and enable the controller when everything's ready.
+> > +	 *
+> > +	 * However, setting the version enable bit and removing it afterwards
+> > +	 * appears necessary for capture to work reliably, while replacing it
+> > +	 * with a delay doesn't do the trick.
+> > +	 */
+> > +	regmap_write(regmap, SUN6I_MIPI_CSI2_CTL_REG,
+> > +		     SUN6I_MIPI_CSI2_CTL_RESET_N |
+> > +		     SUN6I_MIPI_CSI2_CTL_VERSION_EN |
+> > +		     SUN6I_MIPI_CSI2_CTL_UNPK_EN);
+> > +
+> > +	regmap_read(regmap, SUN6I_MIPI_CSI2_VERSION_REG, &version);
+> > +
+> > +	regmap_update_bits(regmap, SUN6I_MIPI_CSI2_CTL_REG,
+> > +				   SUN6I_MIPI_CSI2_CTL_VERSION_EN, 0);
+> > +
+> > +	dev_dbg(cdev->dev, "A31 MIPI CSI-2 version: %04x\n", version);
+> > +
+> > +	regmap_write(regmap, SUN6I_MIPI_CSI2_CFG_REG,
+> > +		     SUN6I_MIPI_CSI2_CFG_CHANNEL_MODE(1) |
+> > +		     SUN6I_MIPI_CSI2_CFG_LANE_COUNT(lanes_count));
+> > +
+> > +	/*
+> > +	 * Our MIPI CSI-2 controller has internal channels that can be
+> > +	 * configured to match a specific MIPI CSI-2 virtual channel and/or
+> > +	 * a specific data type. Each internal channel can be piped to an
+> > +	 * internal channel of the CSI controller.
+> > +	 *
+> > +	 * We set virtual channel numbers to all channels to make sure that
+> > +	 * virtual channel 0 goes to CSI channel 0 only.
+> > +	 */
+> > +	regmap_write(regmap, SUN6I_MIPI_CSI2_VCDT_RX_REG,
+> > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_VC(3, 3) |
+> > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_VC(2, 2) |
+> > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_VC(1, 1) |
+> > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_VC(0, 0) |
+> > +		     SUN6I_MIPI_CSI2_VCDT_RX_CH_DT(0, data_type));
+> > +
+> > +	regmap_update_bits(regmap, SUN6I_MIPI_CSI2_CTL_REG,
+> > +			   SUN6I_MIPI_CSI2_CTL_EN, SUN6I_MIPI_CSI2_CTL_EN);
+> > +
+> > +	ret =3D v4l2_subdev_call(remote_subdev, video, s_stream, 1);
+> > +	if (ret)
+> > +		goto disable;
+> > +
+> > +	return 0;
+> > +
+> > +disable:
+> > +	regmap_update_bits(regmap, SUN6I_MIPI_CSI2_CTL_REG,
+> > +			   SUN6I_MIPI_CSI2_CTL_EN, 0);
+> > +
+> > +	phy_power_off(cdev->dphy);
+> > +
+> > +error_pm:
+> > +	pm_runtime_put(cdev->dev);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static const struct v4l2_subdev_video_ops sun6i_mipi_csi2_subdev_video=
+_ops =3D {
+> > +	.s_stream	=3D sun6i_mipi_csi2_s_stream,
+> > +};
+> > +
+> > +/* Pad */
+> > +
+> > +static int
+> > +sun6i_mipi_csi2_enum_mbus_code(struct v4l2_subdev *subdev,
+> > +			       struct v4l2_subdev_pad_config *config,
+> > +			       struct v4l2_subdev_mbus_code_enum *code_enum)
+> > +{
+> > +	if (code_enum->index >=3D ARRAY_SIZE(sun6i_mipi_csi2_mbus_codes))
+> > +		return -EINVAL;
+> > +
+> > +	code_enum->code =3D sun6i_mipi_csi2_mbus_codes[code_enum->index];
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int sun6i_mipi_csi2_get_fmt(struct v4l2_subdev *subdev,
+> > +				   struct v4l2_subdev_pad_config *config,
+> > +				   struct v4l2_subdev_format *format)
+> > +{
+> > +	struct sun6i_mipi_csi2_video *video =3D
+> > +		sun6i_mipi_csi2_subdev_video(subdev);
+> > +	struct v4l2_mbus_framefmt *mbus_format =3D &format->format;
+> > +
+> > +	if (format->which =3D=3D V4L2_SUBDEV_FORMAT_TRY)
+> > +		*mbus_format =3D *v4l2_subdev_get_try_format(subdev, config,
+> > +							   format->pad);
+> > +	else
+> > +		*mbus_format =3D video->mbus_format;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int sun6i_mipi_csi2_set_fmt(struct v4l2_subdev *subdev,
+> > +				   struct v4l2_subdev_pad_config *config,
+> > +				   struct v4l2_subdev_format *format)
+> > +{
+> > +	struct sun6i_mipi_csi2_video *video =3D
+> > +		sun6i_mipi_csi2_subdev_video(subdev);
+> > +	struct v4l2_mbus_framefmt *mbus_format =3D &format->format;
+> > +
+> > +	if (format->which =3D=3D V4L2_SUBDEV_FORMAT_TRY)
+> > +		*v4l2_subdev_get_try_format(subdev, config, format->pad) =3D
+> > +			*mbus_format;
+> > +	else
+> > +		video->mbus_format =3D *mbus_format;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct v4l2_subdev_pad_ops sun6i_mipi_csi2_subdev_pad_ops=
+ =3D {
+> > +	.enum_mbus_code	=3D sun6i_mipi_csi2_enum_mbus_code,
+> > +	.get_fmt	=3D sun6i_mipi_csi2_get_fmt,
+> > +	.set_fmt	=3D sun6i_mipi_csi2_set_fmt,
+> > +};
+> > +
+> > +/* Subdev */
+> > +
+> > +static const struct v4l2_subdev_ops sun6i_mipi_csi2_subdev_ops =3D {
+> > +	.video		=3D &sun6i_mipi_csi2_subdev_video_ops,
+> > +	.pad		=3D &sun6i_mipi_csi2_subdev_pad_ops,
+> > +};
+> > +
+> > +/* Notifier */
+> > +
+> > +static int
+> > +sun6i_mipi_csi2_notifier_bound(struct v4l2_async_notifier *notifier,
+> > +			       struct v4l2_subdev *remote_subdev,
+> > +			       struct v4l2_async_subdev *remote_subdev_async)
+> > +{
+> > +	struct v4l2_subdev *subdev =3D notifier->sd;
+> > +	struct sun6i_mipi_csi2_video *video =3D
+> > +		sun6i_mipi_csi2_subdev_video(subdev);
+> > +	struct sun6i_mipi_csi2_dev *cdev =3D sun6i_mipi_csi2_video_dev(video);
+> > +	int source_pad;
+> > +	int ret;
+> > +
+> > +	source_pad =3D media_entity_get_fwnode_pad(&remote_subdev->entity,
+> > +						 remote_subdev->fwnode,
+> > +						 MEDIA_PAD_FL_SOURCE);
+> > +	if (source_pad < 0)
+> > +		return source_pad;
+> > +
+> > +	ret =3D media_create_pad_link(&remote_subdev->entity, source_pad,
+> > +				    &subdev->entity, 0,
+> > +				    MEDIA_LNK_FL_ENABLED |
+> > +				    MEDIA_LNK_FL_IMMUTABLE);
+> > +	if (ret) {
+> > +		dev_err(cdev->dev, "failed to create %s:%u -> %s:%u link\n",
+> > +			remote_subdev->entity.name, source_pad,
+> > +			subdev->entity.name, 0);
+> > +		return ret;
+> > +	}
+> > +
+> > +	video->remote_subdev =3D remote_subdev;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const
+> > +struct v4l2_async_notifier_operations sun6i_mipi_csi2_notifier_ops =3D=
+ {
+> > +	.bound		=3D sun6i_mipi_csi2_notifier_bound,
+> > +};
+> > +
+> > +/* Media Entity */
+> > +
+> > +static const struct media_entity_operations sun6i_mipi_csi2_entity_ops=
+ =3D {
+> > +	.link_validate	=3D v4l2_subdev_link_validate,
+> > +};
+> > +
+> > +/* Base Driver */
+> > +
+> > +static int __maybe_unused sun6i_mipi_csi2_suspend(struct device *dev)
+> > +{
+> > +	struct sun6i_mipi_csi2_dev *cdev =3D dev_get_drvdata(dev);
+> > +
+> > +	clk_disable_unprepare(cdev->clk_mod);
+> > +	clk_disable_unprepare(cdev->clk_bus);
+> > +	reset_control_assert(cdev->reset);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int __maybe_unused sun6i_mipi_csi2_resume(struct device *dev)
+> > +{
+> > +	struct sun6i_mipi_csi2_dev *cdev =3D dev_get_drvdata(dev);
+> > +	int ret;
+> > +
+> > +	ret =3D reset_control_deassert(cdev->reset);
+> > +	if (ret) {
+> > +		dev_err(cdev->dev, "failed to deassert reset\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret =3D clk_prepare_enable(cdev->clk_bus);
+> > +	if (ret) {
+> > +		dev_err(cdev->dev, "failed to enable bus clock\n");
+> > +		goto error_reset;
+> > +	}
+> > +
+> > +	ret =3D clk_prepare_enable(cdev->clk_mod);
+> > +	if (ret) {
+> > +		dev_err(cdev->dev, "failed to enable module clock\n");
+> > +		goto error_clk_bus;
+> > +	}
+> > +
+> > +	return 0;
+> > +
+> > +error_clk_bus:
+> > +	clk_disable_unprepare(cdev->clk_bus);
+> > +
+> > +error_reset:
+> > +	reset_control_assert(cdev->reset);
+> > +
+> > +	return ret;
+> > +}
+>=20
+> I'm guessing you set the __maybe_unused attribute because you're using
+> SET_RUNTIME_PM_OPS, but what would happen if runtime_pm isn't selected?
+> It looks like you don't handle that case.
+
+Indeed, __maybe_unused is because of the conditional definition of
+SET_RUNTIME_PM_OPS. If CONFIG_PM is not selected, then I guess the controll=
+er
+wouldn't be powered and wouldn't work. So I should definitely add a Kconfig
+dependency on PM then, right?
+
+Thanks for catching this!
+
+> > +static int sun6i_mipi_csi2_v4l2_setup(struct sun6i_mipi_csi2_dev *cdev)
+> > +{
+> > +	struct sun6i_mipi_csi2_video *video =3D &cdev->video;
+> > +	struct v4l2_subdev *subdev =3D &video->subdev;
+> > +	struct v4l2_async_notifier *notifier =3D &video->notifier;
+> > +	struct fwnode_handle *handle;
+> > +	struct v4l2_fwnode_endpoint *endpoint;
+> > +	struct v4l2_async_subdev *subdev_async;
+> > +	int ret;
+> > +
+> > +	/* Subdev */
+> > +
+> > +	v4l2_subdev_init(subdev, &sun6i_mipi_csi2_subdev_ops);
+> > +	subdev->dev =3D cdev->dev;
+> > +	subdev->flags |=3D V4L2_SUBDEV_FL_HAS_DEVNODE;
+> > +	strscpy(subdev->name, MODULE_NAME, sizeof(subdev->name));
+> > +	v4l2_set_subdevdata(subdev, cdev);
+> > +
+> > +	/* Entity */
+> > +
+> > +	subdev->entity.function =3D MEDIA_ENT_F_VID_IF_BRIDGE;
+> > +	subdev->entity.ops =3D &sun6i_mipi_csi2_entity_ops;
+> > +
+> > +	/* Pads */
+> > +
+> > +	video->pads[0].flags =3D MEDIA_PAD_FL_SINK;
+> > +	video->pads[1].flags =3D MEDIA_PAD_FL_SOURCE;
+> > +
+> > +	ret =3D media_entity_pads_init(&subdev->entity, 2, video->pads);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Endpoint */
+> > +
+> > +	handle =3D fwnode_graph_get_endpoint_by_id(dev_fwnode(cdev->dev), 0, =
+0,
+> > +						 FWNODE_GRAPH_ENDPOINT_NEXT);
+> > +	if (!handle) {
+> > +		ret =3D -ENODEV;
+> > +		goto error_media_entity;
+> > +	}
+> > +
+> > +	endpoint =3D &video->endpoint;
+> > +	endpoint->bus_type =3D V4L2_MBUS_CSI2_DPHY;
+> > +
+> > +	ret =3D v4l2_fwnode_endpoint_parse(handle, endpoint);
+> > +	fwnode_handle_put(handle);
+> > +	if (ret)
+> > +		goto error_media_entity;
+> > +
+> > +	/* Notifier */
+> > +
+> > +	v4l2_async_notifier_init(notifier);
+> > +
+> > +	subdev_async =3D &video->subdev_async;
+> > +	ret =3D v4l2_async_notifier_add_fwnode_remote_subdev(notifier, handle,
+> > +							   subdev_async);
+> > +	if (ret)
+> > +		goto error_media_entity;
+> > +
+> > +	video->notifier.ops =3D &sun6i_mipi_csi2_notifier_ops;
+> > +
+> > +	ret =3D v4l2_async_subdev_notifier_register(subdev, notifier);
+> > +	if (ret < 0)
+> > +		goto error_notifier;
+> > +
+> > +	/* Subdev */
+> > +
+> > +	ret =3D v4l2_async_register_subdev(subdev);
+> > +	if (ret < 0)
+> > +		goto error_notifier_registered;
+> > +
+> > +	/* Runtime PM */
+> > +
+> > +	pm_runtime_enable(cdev->dev);
+> > +	pm_runtime_set_suspended(cdev->dev);
+> > +
+> > +	return 0;
+> > +
+> > +error_notifier_registered:
+> > +	v4l2_async_notifier_unregister(notifier);
+> > +error_notifier:
+> > +	v4l2_async_notifier_cleanup(notifier);
+> > +error_media_entity:
+> > +	media_entity_cleanup(&subdev->entity);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int sun6i_mipi_csi2_v4l2_teardown(struct sun6i_mipi_csi2_dev *c=
+dev)
+> > +{
+> > +	struct sun6i_mipi_csi2_video *video =3D &cdev->video;
+> > +	struct v4l2_subdev *subdev =3D &video->subdev;
+> > +	struct v4l2_async_notifier *notifier =3D &video->notifier;
+> > +
+> > +	v4l2_async_unregister_subdev(subdev);
+> > +	v4l2_async_notifier_unregister(notifier);
+> > +	v4l2_async_notifier_cleanup(notifier);
+> > +	media_entity_cleanup(&subdev->entity);
+> > +	v4l2_device_unregister_subdev(subdev);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct regmap_config sun6i_mipi_csi2_regmap_config =3D {
+> > +	.reg_bits       =3D 32,
+> > +	.reg_stride     =3D 4,
+> > +	.val_bits       =3D 32,
+> > +	.max_register	=3D 0x400,
+> > +};
+> > +
+> > +static int sun6i_mipi_csi2_probe(struct platform_device *pdev)
+> > +{
+> > +	struct sun6i_mipi_csi2_dev *cdev;
+> > +	struct resource *res;
+> > +	void __iomem *io_base;
+> > +	int ret;
+> > +
+> > +	cdev =3D devm_kzalloc(&pdev->dev, sizeof(*cdev), GFP_KERNEL);
+> > +	if (!cdev)
+> > +		return -ENOMEM;
+> > +
+> > +	cdev->dev =3D &pdev->dev;
+> > +
+> > +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +	io_base =3D devm_ioremap_resource(&pdev->dev, res);
+> > +	if (IS_ERR(io_base))
+> > +		return PTR_ERR(io_base);
+> > +
+> > +	cdev->regmap =3D devm_regmap_init_mmio(&pdev->dev, io_base,
+> > +					     &sun6i_mipi_csi2_regmap_config);
+> > +	if (IS_ERR(cdev->regmap)) {
+> > +		dev_err(&pdev->dev, "failed to init register map\n");
+> > +		return PTR_ERR(cdev->regmap);
+> > +	}
+> > +
+> > +	cdev->clk_bus =3D devm_clk_get(&pdev->dev, "bus");
+> > +	if (IS_ERR(cdev->clk_bus)) {
+> > +		dev_err(&pdev->dev, "failed to acquire bus clock\n");
+> > +		return PTR_ERR(cdev->clk_bus);
+> > +	}
+> > +
+> > +	cdev->clk_mod =3D devm_clk_get(&pdev->dev, "mod");
+> > +	if (IS_ERR(cdev->clk_mod)) {
+> > +		dev_err(&pdev->dev, "failed to acquire mod clock\n");
+> > +		return PTR_ERR(cdev->clk_mod);
+> > +	}
+> > +
+> > +	cdev->reset =3D devm_reset_control_get_shared(&pdev->dev, NULL);
+> > +	if (IS_ERR(cdev->reset)) {
+> > +		dev_err(&pdev->dev, "failed to get reset controller\n");
+> > +		return PTR_ERR(cdev->reset);
+> > +	}
+> > +
+> > +	cdev->dphy =3D devm_phy_get(&pdev->dev, "dphy");
+> > +	if (IS_ERR(cdev->dphy)) {
+> > +		dev_err(&pdev->dev, "failed to get the MIPI D-PHY\n");
+> > +		return PTR_ERR(cdev->dphy);
+> > +	}
+> > +
+> > +	ret =3D phy_init(cdev->dphy);
+> > +	if (ret) {
+> > +		dev_err(&pdev->dev, "failed to initialize the MIPI D-PHY\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	platform_set_drvdata(pdev, cdev);
+> > +
+> > +	ret =3D sun6i_mipi_csi2_v4l2_setup(cdev);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int sun6i_mipi_csi2_remove(struct platform_device *pdev)
+> > +{
+> > +	struct sun6i_mipi_csi2_dev *cdev =3D platform_get_drvdata(pdev);
+> > +
+> > +	phy_exit(cdev->dphy);
+> > +
+> > +	return sun6i_mipi_csi2_v4l2_teardown(cdev);
+>=20
+> This seem to be the only user and its content is pretty straightforward,
+> so we shouldn't have a separate function here
+
+This is for symmetry with sun6i_mipi_csi2_v4l2_setup and the intent is to s=
+plit
+v4l2 setup/teardown from driver resources, which makes things clearer and n=
+icer
+to read overall.
+
+What are the downsides and why is it a problem that it has a single caller?
+
+> > +}
+> > +
+> > +static const struct dev_pm_ops sun6i_mipi_csi2_pm_ops =3D {
+> > +	SET_RUNTIME_PM_OPS(sun6i_mipi_csi2_suspend, sun6i_mipi_csi2_resume,
+> > +			   NULL)
+> > +};
+> > +
+> > +static const struct of_device_id sun6i_mipi_csi2_of_match[] =3D {
+> > +	{ .compatible =3D "allwinner,sun6i-a31-mipi-csi2" },
+> > +	{ .compatible =3D "allwinner,sun8i-v3s-mipi-csi2", },
+>=20
+> There's no need for the v3s compatible here, it will fallback to the a31
+> one anyway.
+
+Understood.
+
+Thanks for the review!
+
+Cheers,
+
+Paul
+
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--TaE5UDuue3o8CB8f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/HqF4ACgkQ3cLmz3+f
+v9GxNQgAlXMK9bhO1HL5TWPg2N58oF1dhvi7Y6xK4JPkggdx6PHO6FhEwrbjFCVT
+sgWPZVcynX/rtaEJ73lMuSapxoYw/HyDsJYtf6vxJTywnddOwNxdY14zgXnwUbVu
+9/j1PwP75J3KIIlZxgRt3CTa4M9iMBwytauNe3KbvbEKbEXgQrgCJeYSh1/4mSbl
+ktc0Z8CLlsNkRmZ5LRjGPmlBIsDWcUHg18pFS/eaROu28Yio3pD55mYKhmOCs2zT
+/jBavDgLIQQuHh8XQkZ8LFYn95o3gBz2FK5pf1TGWRBVe+//4Bb+D9EF3KpjtsIF
+fiMT65MDYtVuQSlT2nsbhmv7QjCBng==
+=6284
+-----END PGP SIGNATURE-----
+
+--TaE5UDuue3o8CB8f--
