@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95002CC695
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 804B82CC68E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389773AbgLBTYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:24:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26224 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730977AbgLBTYm (ORCPT
+        id S1731108AbgLBTXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:23:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729123AbgLBTXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:24:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606936995;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 2 Dec 2020 14:23:53 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DF2C0613CF;
+        Wed,  2 Dec 2020 11:23:13 -0800 (PST)
+Date:   Wed, 02 Dec 2020 19:23:10 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606936992;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lr+GzTGv/tYwwixUOA9RKf5AXaWL7MAsFRfhEe+PT2M=;
-        b=W8cV//8o9LAtf4GcpEIPbVTaOr7OXSc/aeov1TbgDwCsihvVMlQr86HTofqti4kvBUACsy
-        IJe/laEn171ICqD1JCzjHLO8cABFbPH0AgTwl8Tuo3IT+JjYvUQRfYtVObhHgBZUdiYo3N
-        FSqHBZgxebk3ML9lvgYFOeTgm4pcThc=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-123-OCehH7DjMZGhIc0Vf_EX5g-1; Wed, 02 Dec 2020 14:23:12 -0500
-X-MC-Unique: OCehH7DjMZGhIc0Vf_EX5g-1
-Received: by mail-oo1-f70.google.com with SMTP id r10so1303548ooc.20
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:23:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lr+GzTGv/tYwwixUOA9RKf5AXaWL7MAsFRfhEe+PT2M=;
-        b=U3YxXEliqY1goBpUHrmd8d6WAYN5zum9+Tji38wltQ96DjpNv0sqEYUUHcYA+1elMK
-         eJv/P4ZbUQ4EDAs0xHEiKyJIjy98St/W7uglSemnN0rJN5pzoQ+zemgdKPCY4hTCDb5e
-         LylW6XoY+cKJERWHjJRWoDdfewG1+qN/nECYp0Ns8HY2TxNe/OHhdBi7DEB1hn5gtcjv
-         nfbVxhNKX7aZ3jZbm2eaO9/JF12OTDRQyL5TjpLMRjo4Yf2OlPc5Zbng4CTbkB8CrkDm
-         aLqi4orFxifkedTWjXKTzoUiS4N+upqWJIgh0x3LWxopZPQP/Us+4OxJalXlNF6dCcEm
-         hSOQ==
-X-Gm-Message-State: AOAM533EyXaVrzunoQ2tjoQp1711nVZJmE6AhwU6prPUxc0ot3Q0N6TJ
-        tf/AwPZbFOYTrXMuGpXg1Y0DSWeQAVvgZU0q2m/UKZ1hNjqAYYrFx6yMZUAAt+T+LolzfbqlCdU
-        mKEiHPsMCi8h/nqSRZedm6pDrpuzqZUhkfRMMRUUA
-X-Received: by 2002:a05:6830:1308:: with SMTP id p8mr2903150otq.330.1606936991547;
-        Wed, 02 Dec 2020 11:23:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxX2YnxD6Ozd+sX5JV1YOnJISXeMr1Gv1Ja+oYM3RceGc4WJzg+JFojVnQMVUZ7dlP40OhfK+p+2PnTD3KJUOk=
-X-Received: by 2002:a05:6830:1308:: with SMTP id p8mr2903138otq.330.1606936991353;
- Wed, 02 Dec 2020 11:23:11 -0800 (PST)
+        bh=lxT47pVqs6r9HdJqHgJ+gdb048ASC+VWA1xXaJl/mXk=;
+        b=vFfhFeu1AgLagcUMBxJNCBZi4M1N3RnMiSeXSzSXRbk9pCGOGcPwBM0OpSmkdAf/vTux6k
+        GRkkQXGQJBYxrlNxPEX7LLfoJD3qTn/j9pd2MRpD7KULYn2milCh1NzRtrAeYX49nislEI
+        0bEFhnVSakKP3Dmx7JJuNKehE3JDtpEbjJ5LH59eLNjI61w832AcHWPLe1YT9ToOIDnZDK
+        lv9PngjkF5VwkvRbaksmSjQtnq0IjL/N1fjDdnio7roGHlav1mFzgvukkQc/Wm7y2DM85/
+        oxcg0zXalNoIP+JqcPacnrWXayidKKEdLJiV0CIiWVTS8MXX8gCncf7elajQKA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606936992;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lxT47pVqs6r9HdJqHgJ+gdb048ASC+VWA1xXaJl/mXk=;
+        b=o7Zs03Q0BeAvOQdCoHVvH69FRV6LtKgfAxufw6SrLUK1+ZCONg/Oznf/Ehg9XgTyKXcUgE
+        tWEb2jLKqzE+tsBQ==
+From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] irq: Call tick_irq_enter() inside HARDIRQ_OFFSET
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20201202115732.27827-6-frederic@kernel.org>
+References: <20201202115732.27827-6-frederic@kernel.org>
 MIME-Version: 1.0
-References: <20201123031716.6179-1-jarod@redhat.com> <20201202173053.13800-1-jarod@redhat.com>
- <14711.1606931728@famine>
-In-Reply-To: <14711.1606931728@famine>
-From:   Jarod Wilson <jarod@redhat.com>
-Date:   Wed, 2 Dec 2020 14:23:00 -0500
-Message-ID: <CAKfmpSez1UYLG5nGYbMsRALGpEyXnwJcoFJV_7vALgpG3Xotcw@mail.gmail.com>
-Subject: Re: [PATCH net v2] bonding: fix feature flag setting at init time
-To:     Jay Vosburgh <jay.vosburgh@canonical.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ivan Vecera <ivecera@redhat.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160693699084.3364.1887616358916715412.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 12:55 PM Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
->
-> Jarod Wilson <jarod@redhat.com> wrote:
->
-> >Don't try to adjust XFRM support flags if the bond device isn't yet
-> >registered. Bad things can currently happen when netdev_change_features()
-> >is called without having wanted_features fully filled in yet. Basically,
-> >this code was racing against register_netdevice() filling in
-> >wanted_features, and when it got there first, the empty wanted_features
-> >led to features also getting emptied out, which was definitely not the
-> >intended behavior, so prevent that from happening.
->
->         Is this an actual race?  Reading Ivan's prior message, it sounds
-> like it's an ordering problem (in that bond_newlink calls
-> register_netdevice after bond_changelink).
+The following commit has been merged into the irq/core branch of tip:
 
-Sorry, yeah, this is not actually a race condition, just an ordering
-issue, bond_check_params() gets called at init time, which leads to
-bond_option_mode_set() being called, and does so prior to
-bond_create() running, which is where we actually call
-register_netdevice().
+Commit-ID:     d14ce74f1fb376ccbbc0b05ded477ada51253729
+Gitweb:        https://git.kernel.org/tip/d14ce74f1fb376ccbbc0b05ded477ada51253729
+Author:        Frederic Weisbecker <frederic@kernel.org>
+AuthorDate:    Wed, 02 Dec 2020 12:57:32 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 02 Dec 2020 20:20:05 +01:00
 
->         The change to bond_option_mode_set tests against reg_state, so
-> presumably it wants to skip the first(?) time through, before the
-> register_netdevice call; is that right?
+irq: Call tick_irq_enter() inside HARDIRQ_OFFSET
 
-Correct. Later on, when the bonding driver is already loaded, and
-parameter changes are made, bond_option_mode_set() gets called and if
-the mode changes to or from active-backup, we do need/want this code
-to run to update wanted and features flags properly.
+Now that account_hardirq_enter() is called after HARDIRQ_OFFSET has
+been incremented, there is nothing left that prevents us from also
+moving tick_irq_enter() after HARDIRQ_OFFSET is incremented.
 
+The desired outcome is to remove the nasty hack that prevents softirqs
+from being raised through ksoftirqd instead of the hardirq bottom half.
+Also tick_irq_enter() then becomes appropriately covered by lockdep.
 
--- 
-Jarod Wilson
-jarod@redhat.com
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20201202115732.27827-6-frederic@kernel.org
 
+---
+ kernel/softirq.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index b8f42b3..d5bfd5e 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -377,16 +377,12 @@ restart:
+  */
+ void irq_enter_rcu(void)
+ {
+-	if (is_idle_task(current) && !in_interrupt()) {
+-		/*
+-		 * Prevent raise_softirq from needlessly waking up ksoftirqd
+-		 * here, as softirq will be serviced on return from interrupt.
+-		 */
+-		local_bh_disable();
++	__irq_enter_raw();
++
++	if (is_idle_task(current) && (irq_count() == HARDIRQ_OFFSET))
+ 		tick_irq_enter();
+-		_local_bh_enable();
+-	}
+-	__irq_enter();
++
++	account_hardirq_enter(current);
+ }
+ 
+ /**
