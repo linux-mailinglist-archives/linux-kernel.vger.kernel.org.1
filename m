@@ -2,70 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6612D2CBCBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3007C2CBCBE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729839AbgLBMPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:15:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727066AbgLBMPo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:15:44 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86ED7C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 04:15:04 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id bo9so3789844ejb.13
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 04:15:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/6gXxZUIKeeLUrixJ+HeGzB8S1bikNPjMnxhIjyt9GA=;
-        b=PzZqIP9jURIO+D0aE4nicJusK+I7ZnM8l5+qnBYLB0eG/m/7gKndrT70AiSh0TvCzr
-         TpN4R2UNrHRQ1fyWxOXN80UxebyH08KospQUHycRnBerGB/RRglkxZuTH6xRIpaNbmxj
-         GiyndXJsGcIk6suqnre6TR95z7Va/4SsuhEH9gChYJxzO997/nJKOJy9/cJN42izP092
-         TmZL3eIuWatmVC9VbJ/znyrI8qTkrUoOdHA8hObJSMgCJmXAOSN3IxFg5KS+J0ChK+Vh
-         8ZAloyQ14eymB0lC2ny+Um1ilkbY+/N7I/WwXyxTPIsBqbB5Vsnv4bxkNxdM+6kYcpxU
-         1dDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/6gXxZUIKeeLUrixJ+HeGzB8S1bikNPjMnxhIjyt9GA=;
-        b=irN/EYaYCpbqSP0BqKTGAHrath9OgGNLN/xMrhs0KvWbaFlkiQMXeKcoBx0Xxj5539
-         DhuP42vyAp+U82XxbxKgGAa1xe54HRKDcndyDuPU9/BRRgQBoFlKwO3nNktv2aFhX0CM
-         xD2FK8qCxo6JjQaraXWARWWYF5zWZn6iqjrRx4lLavO/6G4bDajdNE+PO+bH3JVdVzbD
-         WShUJrMCDHrLQripXEmbYKbYtJmKoAuP3ewtMBvqSF41HelAdIziDs0EydS618qr4sd/
-         bYMxLiwsYK7qbQPn8QMREBIbS7Iw8lmu4s4/DjNIT0buKPufn2QTAYPGxmEqrdlT7saZ
-         3h9g==
-X-Gm-Message-State: AOAM5326xHpePCAMi8DIE84KVhl4vXL6aQPk0AWf3mb/qMTt7OCLLelQ
-        pzdInbQ9/oMZa/s2RdIa5hLChg==
-X-Google-Smtp-Source: ABdhPJzDocutnc+9XTJOaGJ4tFU73g29sVkcV5i3PrV6P6AAEqkfPSo+2XMChnWuyDgGwsNrDNmojQ==
-X-Received: by 2002:a17:906:3153:: with SMTP id e19mr2079701eje.17.1606911303218;
-        Wed, 02 Dec 2020 04:15:03 -0800 (PST)
-Received: from [192.168.0.3] (hst-221-93.medicom.bg. [84.238.221.93])
-        by smtp.googlemail.com with ESMTPSA id b21sm1135840ejz.102.2020.12.02.04.15.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 04:15:02 -0800 (PST)
-Subject: Re: [PATCH 1/4] media: v4l2-ctrls: Add random intra-refresh control
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Maheshwar Ajja <majja@codeaurora.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-References: <20201130090859.25272-1-stanimir.varbanov@linaro.org>
- <20201130090859.25272-2-stanimir.varbanov@linaro.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <159cc27a-20a8-383c-025f-e3e32742c3f5@linaro.org>
-Date:   Wed, 2 Dec 2020 14:15:01 +0200
+        id S1729857AbgLBMQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:16:44 -0500
+Received: from foss.arm.com ([217.140.110.172]:37766 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729843AbgLBMQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 07:16:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34FC7101E;
+        Wed,  2 Dec 2020 04:15:58 -0800 (PST)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E52D3F718;
+        Wed,  2 Dec 2020 04:15:56 -0800 (PST)
+Subject: Re: [RFC V2 1/3] mm/hotplug: Prevalidate the address range being
+ added with platform
+To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
+ <1606706992-26656-2-git-send-email-anshuman.khandual@arm.com>
+ <864c701a-4391-f768-1b95-1992e21835a2@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <349f7b33-cd5b-4240-e7c0-d8ad39c8ba71@arm.com>
+Date:   Wed, 2 Dec 2020 17:45:39 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201130090859.25272-2-stanimir.varbanov@linaro.org>
+In-Reply-To: <864c701a-4391-f768-1b95-1992e21835a2@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -73,36 +40,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 11/30/20 11:08 AM, Stanimir Varbanov wrote:
-> Add a control to configure number of macroblocks for random
-> intra-refresh mode.
+On 12/2/20 2:50 PM, David Hildenbrand wrote:
+> On 30.11.20 04:29, Anshuman Khandual wrote:
+>> This introduces memhp_range_allowed() which can be called in various memory
+>> hotplug paths to prevalidate the address range which is being added, with
+>> the platform. Then memhp_range_allowed() calls memhp_get_pluggable_range()
+>> which provides applicable address range depending on whether linear mapping
+>> is required or not. For ranges that require linear mapping, it calls a new
+>> arch callback arch_get_mappable_range() which the platform can override. So
+>> the new callback, in turn provides the platform an opportunity to configure
+>> acceptable memory hotplug address ranges in case there are constraints.
+>>
+>> This mechanism will help prevent platform specific errors deep down during
+>> hotplug calls. This drops now redundant check_hotplug_memory_addressable()
+>> check in __add_pages().
+>>
 > 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 6 ++++++
->  drivers/media/v4l2-core/v4l2-ctrls.c                      | 1 +
->  include/uapi/linux/v4l2-controls.h                        | 1 +
->  3 files changed, 8 insertions(+)
 > 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index ce728c757eaf..59c5d3da4d95 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -1104,6 +1104,12 @@ enum v4l2_mpeg_video_h264_entropy_mode -
->      macroblocks is refreshed until the cycle completes and starts from
->      the top of the frame. Applicable to H264, H263 and MPEG4 encoder.
->  
-> +``V4L2_CID_MPEG_VIDEO_RANDOM_INTRA_REFRESH_MB (integer)``
-> +    Random intra macroblock refresh. This is the number of random
-> +    macroblocks refreshed on every frame. Here the positions of
-> +    macroblocks to be refreshed on every frame is random. Applicable
-> +    to H264 and HEVC encoder.
+> [...]
+> 
+>>  /*
+>>   * Reasonably generic function for adding memory.  It is
+>>   * expected that archs that support memory hotplug will
+>> @@ -317,10 +304,6 @@ int __ref __add_pages(int nid, unsigned long pfn, unsigned long nr_pages,
+>>  	if (WARN_ON_ONCE(!params->pgprot.pgprot))
+>>  		return -EINVAL;
+>>  
+>> -	err = check_hotplug_memory_addressable(pfn, nr_pages);
+>> -	if (err)
+>> -		return err;
+>> -
+> 
+> I was wondering if we should add a VM_BUG_ON(!memhp_range_allowed())
+> here to make it clearer that callers are expected to check that first.
+> Maybe an other places as well (e.g., arch code where we remove the
+> original checks)
 
-Please ignore this control.
-I'm going to change the semantics in next version of this series.
+Makes sense, will add them.
 
--- 
-regards,
-Stan
+> 
+> [...]
+> 
+> 
+>>  #endif /* CONFIG_MEMORY_HOTREMOVE */
+>> diff --git a/mm/memremap.c b/mm/memremap.c
+>> index 16b2fb482da1..26c1825756cc 100644
+>> --- a/mm/memremap.c
+>> +++ b/mm/memremap.c
+>> @@ -185,6 +185,7 @@ static void dev_pagemap_percpu_release(struct percpu_ref *ref)
+>>  static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
+>>  		int range_id, int nid)
+>>  {
+>> +	const bool is_private = pgmap->type == MEMORY_DEVICE_PRIVATE;
+>>  	struct range *range = &pgmap->ranges[range_id];
+>>  	struct dev_pagemap *conflict_pgmap;
+>>  	int error, is_ram;
+>> @@ -230,6 +231,9 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
+>>  	if (error)
+>>  		goto err_pfn_remap;
+>>  
+>> +	if (!memhp_range_allowed(range->start, range_len(range), !is_private))
+>> +		goto err_pfn_remap;
+>> +
+>>  	mem_hotplug_begin();
+>>  
+>>  	/*
+>> @@ -243,7 +247,7 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
+>>  	 * the CPU, we do want the linear mapping and thus use
+>>  	 * arch_add_memory().
+>>  	 */
+>> -	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
+>> +	if (is_private) {
+>>  		error = add_pages(nid, PHYS_PFN(range->start),
+>>  				PHYS_PFN(range_len(range)), params);
+>>  	} else {
+>>
+> 
+> In general, LGTM.
+> 
+
+Okay
