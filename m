@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 103D32CBDA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7DA2CBD9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730026AbgLBNAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 08:00:54 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8495 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727531AbgLBNAx (ORCPT
+        id S1730005AbgLBNAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 08:00:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727713AbgLBNAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 08:00:53 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CmJw55c63zhlpC;
-        Wed,  2 Dec 2020 20:59:49 +0800 (CST)
-Received: from [10.174.185.226] (10.174.185.226) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 2 Dec 2020 21:00:01 +0800
-To:     Auger Eric <eric.auger@redhat.com>
-CC:     <alex.williamson@redhat.com>, <eric.auger.pro@gmail.com>,
-        <iommu@lists.linux-foundation.org>, <jean-philippe@linaro.org>,
-        <joro@8bytes.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
-        <maz@kernel.org>, <robin.murphy@arm.com>, <vivek.gautam@arm.com>,
-        <will@kernel.org>, <zhangfei.gao@linaro.org>,
-        <xieyingtai@huawei.com>
-References: <20201118112151.25412-8-eric.auger@redhat.com>
- <1606829590-25924-1-git-send-email-wangxingang5@huawei.com>
- <2e69adf5-8207-64f7-fa8e-9f2bd3a3c4e3@redhat.com>
-From:   Wang Xingang <wangxingang5@huawei.com>
-Subject: Re: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
- unmanaged ASIDs
-Message-ID: <8cf8fa21-41e3-f3f9-81e4-90f0bfc26fc0@huawei.com>
-Date:   Wed, 2 Dec 2020 20:59:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Wed, 2 Dec 2020 08:00:41 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2064DC0613CF;
+        Wed,  2 Dec 2020 05:00:01 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id jx16so4070136ejb.10;
+        Wed, 02 Dec 2020 05:00:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QZTchEjCOZdcPKcqinGlzZCfx24eOr/wps07PHz4GN0=;
+        b=i6PXxQBvF8Np1s+1Iwtf73kM+xpl/Y8Udcr5fEbzm2HIpGifB9BIncJv2bR3fs4eVX
+         ITzDl35MibEjCEwLEzejmNF+ddS9BJ/Ym0QpmE0N0DOGJ1xDEh7OkvArGnWqBs0hOSlW
+         jzbd6fLOKAWZK0AYBHQdr23IFtl5Ysdg76bBCuYalMvElWzd8TiR6ube2UIoSrmNCpxl
+         LQw5FhxWLLtIOKVSiciFKmyyKolRc71nsB62aq6FM6oDm/ORmnHQC2lx6h5mCjkYWIWA
+         5zgZ/1PzosbxBwSKv7f4LQYNkVe2SmTUi3LMfj7xE+CYnpZIIcuc69IH3zV8kMGf4PZb
+         JHQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QZTchEjCOZdcPKcqinGlzZCfx24eOr/wps07PHz4GN0=;
+        b=QTUWFjCT1i9pSADOe3RmEkrF+/AARjPPu3SPK2XD6cV5KMEyIdeETQEYmV4PWHBOaH
+         9RByzFA0+A5611GueaprUegQiA7De4rcV9RiTlCNuysU2oGtRIo+86LiaDer5QUCvn2d
+         v2piztdJBbByYLu+t3HBeeDyevQYheAlL1I126H2HGpwnvKgsBjJoc5I5ny1EjnRfCHw
+         J2C/oDlWEL65Sm3p32zooOF0+purdZpuB3r9z4euR0gtx8lPb6Lxg6DyfMCeoJYhRScm
+         wEee7OON5yINLUWO+srJHuxU41bLC1drmR9JvEiSjFl6pXTMuirlleA3gS9YvwqhaGM/
+         o8wA==
+X-Gm-Message-State: AOAM533rOKp4Ly1rinDrehCgW7P759CYgPMsh0IEqAm/kfBGkAEeiiA5
+        PfQBOBKSK3Ms+A53Y5+0/NM=
+X-Google-Smtp-Source: ABdhPJx9DNaccyM2Zfm+YU4qzmWnlatBgrng5Y+FiZiVgfO3QjB5SoFMxh6bM3x0v65hV/+Fm/k7/A==
+X-Received: by 2002:a17:906:2932:: with SMTP id v18mr2159927ejd.144.1606913999841;
+        Wed, 02 Dec 2020 04:59:59 -0800 (PST)
+Received: from skbuf ([188.25.2.120])
+        by smtp.gmail.com with ESMTPSA id w3sm1156303edt.84.2020.12.02.04.59.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 04:59:59 -0800 (PST)
+Date:   Wed, 2 Dec 2020 14:59:58 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] net: dsa: add optional stats64 support
+Message-ID: <20201202125958.ntgidhgsk4pdw5y3@skbuf>
+References: <20201202120712.6212-1-o.rempel@pengutronix.de>
+ <20201202120712.6212-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <2e69adf5-8207-64f7-fa8e-9f2bd3a3c4e3@redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.185.226]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202120712.6212-2-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your reply. We are testing vSVA, and will let you know if
-other problems are found.
+On Wed, Dec 02, 2020 at 01:07:11PM +0100, Oleksij Rempel wrote:
+> Allow DSA drivers to export stats64
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
 
-On 2020/12/1 21:58, Auger Eric wrote:
-> Hi Xingang,
-> 
-> On 12/1/20 2:33 PM, Xingang Wang wrote:
->> Hi Eric
->>
->> On  Wed, 18 Nov 2020 12:21:43, Eric Auger wrote:
->>> @@ -1710,7 +1710,11 @@ static void arm_smmu_tlb_inv_context(void *cookie)
->>> 	 * insertion to guarantee those are observed before the TLBI. Do be
->>> 	 * careful, 007.
->>> 	 */
->>> -	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
->>> +	if (ext_asid >= 0) { /* guest stage 1 invalidation */
->>> +		cmd.opcode	= CMDQ_OP_TLBI_NH_ASID;
->>> +		cmd.tlbi.asid	= ext_asid;
->>> +		cmd.tlbi.vmid	= smmu_domain->s2_cfg.vmid;
->>> +	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
->>
->> Found a problem here, the cmd for guest stage 1 invalidation is built,
->> but it is not delivered to smmu.
->>
-> 
-> Thank you for the report. I will fix that soon. With that fixed, have
-> you been able to run vSVA on top of the series. Do you need other stuff
-> to be fixed at SMMU level? As I am going to respin soon, please let me
-> know what is the best branch to rebase to alleviate your integration.
-> 
-> Best Regards
-> 
-> Eric
-> 
-> .
-> 
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
