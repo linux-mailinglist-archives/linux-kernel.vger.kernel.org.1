@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EC12CC551
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595912CC552
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729186AbgLBSha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:37:30 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:35564 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729130AbgLBSha (ORCPT
+        id S1730816AbgLBSiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:38:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730501AbgLBSiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:37:30 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606934208;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1foj5CsrViA5SnitgSB9afdnS+nk8RYKri/uQf762Sw=;
-        b=gwasJt4poOMW5wOYjISAkGD39Hg11wWf7RWMwG0ZUzlWUPsB/RtTTOt4qsQx306KjFJi5j
-        6O17bg2fqul9rX9Hh7jbSJhSyV/gkUEEMRYOpYLGZuuF/zTq4yT6k/n4mF+cg+n78rqByy
-        4rxxM2Z94IRy1d++35EpyUzWn+adeXAmTdkWZmIKfBZ+8bZFalHYWVkrwtBvxG28/6/kM2
-        pfNcjf//jQQdKnQcwHodOh9nLEvjQCggxmMEa+Alsu33nNM2p+7pR1JaVPg5sOBFY39XnO
-        tLEK1u+xUzrJYtTj06JUMRMjZFxfjnVZQ69Pi5V8pvGG7m8KoUnAcHn5cTD8mw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606934208;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1foj5CsrViA5SnitgSB9afdnS+nk8RYKri/uQf762Sw=;
-        b=RSWTZTk0SHOmL86mzhZi8XFkcjohexnCZi2/sqDGub0NrcrnQm00BCnZQ101U/cSU26Rsy
-        gH8cU2scPQ1K4TAA==
-To:     Miroslav Lichvar <mlichvar@redhat.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
-        John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-In-Reply-To: <20201202153656.GC2231584@localhost>
-References: <20201201143835.2054508-1-mlichvar@redhat.com> <20201201161224.GF5487@ziepe.ca> <20201201171420.GN1900232@localhost> <20201201173540.GH5487@ziepe.ca> <87mtywe2zu.fsf@nanos.tec.linutronix.de> <20201202150725.GA2231584@localhost> <20201202153656.GC2231584@localhost>
-Date:   Wed, 02 Dec 2020 19:36:47 +0100
-Message-ID: <87eek8dphc.fsf@nanos.tec.linutronix.de>
+        Wed, 2 Dec 2020 13:38:14 -0500
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A4FC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:37:34 -0800 (PST)
+Received: by mail-qv1-xf43.google.com with SMTP id ek7so1183718qvb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:37:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jCAyA0jCI6f+1wOWuEY4R7HOx3MXmMVjxHY13v0w5DM=;
+        b=cMxqrxGFgOQmnSCaGG7z1BQfaULQzrkMeykxLSnjQugPEWAScf1OgO0ifduABVlr8F
+         4skrLojzBNF/FQl/4CTpC1F7lGDYF09zuMQsj0BOWrAKniXNVOVcTk+7GIsFbXS47ftg
+         UDze6J/lH+cjOiEDbx30XjfzeHCkXNaG8HKzTppUOOwzKLbYultZPtGZpU9ZM1HHhfcw
+         JBafZOfKMlzz5dXGyQ0wdXn6ZWvjDS4nEL5JcgPUyCPM3aFm0dpmo7nte+x6zpWEW5xU
+         Hy/vP+sPYpxwi38SG5VhMcc+trnnzVBGMlujDd5J0ILWGK4XgKkhjRBrHNNBXuzqSWyX
+         PR/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=jCAyA0jCI6f+1wOWuEY4R7HOx3MXmMVjxHY13v0w5DM=;
+        b=cdCPUCcWxD0uoHhPgOhi+ajY1B5Fquvfr4ADGNnDHpNBX2wqDbQYFY2AH5DOakuqVT
+         xIxSpe4JRiZnlaF5OeK0v5JwfzcNcvL0txMzXpb+rRaKtDBMy8fX4e5mZy/LRdBf+q+F
+         2XZj1BVWYP/aDEWmef9sKeaq332Vy0Ir4D6Hg5qEJRGZiVRtpKJE5FIX5tkJc/a7EsoC
+         9Isy9VtZnqs554VASb3upmACL7DIcIs5QKWJbhy74luJ85TQ3hojXO1qxPGNUXRf0LlL
+         uxU8+RPFbcbI41T4o2mA17t3unJ17vCv324g7l5zhIEf31e7iAVrYSEw6SCH2ZaSwHTF
+         D0+A==
+X-Gm-Message-State: AOAM530+aJ7IUleS1m/hC8J+GAmF98Tf1yKgINkV44FeCHhX0hgsk1Wd
+        qe+E8vKtM4e4L+ICnxIkw+Q=
+X-Google-Smtp-Source: ABdhPJydMMzDeiYQkc6sbPiXWtNCfX19PTyKXvkVC6Yv8iyVk/TJxaqbAxNE2BbW/skjH0qYP0+Bdg==
+X-Received: by 2002:a0c:9121:: with SMTP id q30mr3909008qvq.17.1606934253629;
+        Wed, 02 Dec 2020 10:37:33 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:8dbd])
+        by smtp.gmail.com with ESMTPSA id y44sm2888335qtb.50.2020.12.02.10.37.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 10:37:32 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 2 Dec 2020 13:37:05 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Fox Chen <foxhlchen@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] kernfs: replace the mutex in kernfs_iop_permission
+ with a rwlock
+Message-ID: <X8fe0cmu+aq1gi7O@mtj.duckdns.org>
+References: <20201202145837.48040-1-foxhlchen@gmail.com>
+ <20201202145837.48040-2-foxhlchen@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202145837.48040-2-foxhlchen@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02 2020 at 16:36, Miroslav Lichvar wrote:
-> On Wed, Dec 02, 2020 at 04:07:28PM +0100, Miroslav Lichvar wrote:
->> On Wed, Dec 02, 2020 at 02:44:53PM +0100, Thomas Gleixner wrote:
->> > Something like the completely untested below should make this reliable
->> > and only needs to retry when the work is running late (busy machine),
->> > but the wakeup will be on time or at max 1 jiffie off when high
->> > resolution timers are not available or disabled.
->> 
->> It seems to work nicely. In my test most of the updates succeeded on
->> the first attempt hitting the right tick, the rest succeeding on the
->> second attempt. Only when the clock was set to run 10% faster, it
->> needed few more attempts to converge to the target time.
->
-> I noticed an observable change wrt adjtimex() calls though. It seems
-> it now reschedules the RTC update, i.e. there can be more than one
-> update per 11 minutes. Was this intended?
+On Wed, Dec 02, 2020 at 10:58:36PM +0800, Fox Chen wrote:
+> diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
+> index 89f6a4214a70..545cdb39b34b 100644
+> --- a/include/linux/kernfs.h
+> +++ b/include/linux/kernfs.h
+> @@ -156,6 +156,7 @@ struct kernfs_node {
+>  	unsigned short		flags;
+>  	umode_t			mode;
+>  	struct kernfs_iattrs	*iattr;
+> +	rwlock_t		iattr_rwlock;
+>  };
 
-No. Let me fix that.
+Also, while this might not look like much, kernfs_node is very size
+sensitive. There are systems with huge number of these nodes, so I don't
+think putting a per-node lock like this is a good idea. Either we can use a
+shared iattr protecting lock or play some cmpxchg games when allocating and
+setting ->iattr and put the lock there.
 
-Thanks,
+Thanks.
 
-        tglx
+-- 
+tejun
