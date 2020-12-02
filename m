@@ -2,88 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051E72CB7AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3682CB7AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729209AbgLBIr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:47:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726669AbgLBIr1 (ORCPT
+        id S2387935AbgLBIrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:47:49 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:8903 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729213AbgLBIro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:47:27 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCB7C0613CF;
-        Wed,  2 Dec 2020 00:46:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EgWbwhZanvcG3KDeapbwhWc86PAn7HkZxY3ELBxHx7c=; b=jFFK4+AenZ8fG43jB6uYB1OVZc
-        U2ORttouuxGAcrpVnQ/4DgFb7rK/0XjR9MXteR2VE5qgh5UOuTWpmiF+Dt3Ie93nc64B1/PzU5U6m
-        rxry57k0/IZnU8nQmFKzgLH4GfXQEXYWEXXMWqEjf0RZz3MX0cdkV1F+EI3Plew988r7LOYtU/hb3
-        67fEvzDLswKqZ4dMNM6vQICEpWo7AqyiDFrzxq61UPOyZjx9A+HC5IY9XNJk3HVus//9sPZW+nCFi
-        8BzyDcO4IchhjQ6h5DQTd3a3NtY48VtlxXAa/Oyq+zpXcFp07vAQK4e+S8sfjGaBNEN4SBgFh6YBm
-        5JU3U6sw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkNmc-0007Mi-JA; Wed, 02 Dec 2020 08:46:42 +0000
-Date:   Wed, 2 Dec 2020 08:46:42 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux MM <linux-mm@kvack.org>, Will Deacon <will@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Jonathan Corbet <corbet@lwn.net>, Meelis Roos <mroos@linux.ee>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Matt Turner <mattst88@gmail.com>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH v2 00/13] arch, mm: deprecate DISCONTIGMEM
-Message-ID: <20201202084642.GA28110@infradead.org>
-References: <a7d01146-77f9-d363-af99-af3aee3789b4@physik.fu-berlin.de>
- <20201201102901.GF557259@kernel.org>
- <e3d5d791-8e4f-afcc-944c-24f66f329bd7@physik.fu-berlin.de>
- <20201201121033.GG557259@kernel.org>
- <49a2022c-f106-55ec-9390-41307a056517@physik.fu-berlin.de>
- <20201201135623.GA751215@kernel.org>
- <59351dbb-96cc-93b2-f2ec-b8968e935845@kernel.dk>
- <CAMuHMdWRc8W7U0LKyH9u1hdMuN515PCZiTEJ12FrDaCx-eTdaQ@mail.gmail.com>
- <20201202084326.GA26573@infradead.org>
- <efc13ee8-ec6c-a807-d866-99f72a94e3f5@physik.fu-berlin.de>
+        Wed, 2 Dec 2020 03:47:44 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CmCHv4LZ0z76g2;
+        Wed,  2 Dec 2020 16:46:35 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 2 Dec 2020 16:46:58 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
+        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
+        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
+        <xinliang.liu@linaro.org>, <maarten.lankhorst@linux.intel.com>,
+        <mripard@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH drm/hisilicon 0/3] Add the new api to install irq
+Date:   Wed, 2 Dec 2020 16:47:12 +0800
+Message-ID: <1606898835-40775-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <efc13ee8-ec6c-a807-d866-99f72a94e3f5@physik.fu-berlin.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 09:45:24AM +0100, John Paul Adrian Glaubitz wrote:
-> > I've never got results.  Which is annoying, as debian doesn't ship an
-> > ia64 cross toolchain either, and I can't find any pre-built one that
-> > works for me.
-> 
-> The ia64 toolchain available from kernel.org works for me for cross-building
-> a kernel that boots on my RX2600.
-> 
-> It's just not a fully-fledged toolchain due to the limitations with libunwind.
+patch #1 is code refactorings to use devm_drm_dev_alloc.
+patch #2 add the new api to install irq, patch #3 is hibmc driver uses
+the newly added api to register interrupts.
 
-Actually, you are right, I did manage to finally get that working a
-while ago.  I think openrisc is the one where I failed to get anything
-to work at all now that I think of it.
+Tian Tao (3):
+  drm/hisilicon: Code refactoring for hibmc_drm_drv
+  drm/irq: Add the new api to install irq
+  drm/hisilicon: Use the new api devm_drm_irq_install
+
+ drivers/gpu/drm/drm_irq.c                        | 35 ++++++++++++++++
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   |  2 +-
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  | 51 ++++++++++--------------
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  4 +-
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  2 +-
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c      |  8 ++--
+ include/drm/drm_irq.h                            |  2 +-
+ 7 files changed, 67 insertions(+), 37 deletions(-)
+
+-- 
+2.7.4
+
