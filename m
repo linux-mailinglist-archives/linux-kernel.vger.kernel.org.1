@@ -2,203 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142392CBDD3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 374DF2CBDC9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730110AbgLBNHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 08:07:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
+        id S1730066AbgLBNGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 08:06:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730099AbgLBNHA (ORCPT
+        with ESMTP id S1727102AbgLBNGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 08:07:00 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8121C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 05:06:13 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id a6so6998669wmc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 05:06:13 -0800 (PST)
+        Wed, 2 Dec 2020 08:06:12 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD30DC0617A7;
+        Wed,  2 Dec 2020 05:05:31 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id 131so1200036pfb.9;
+        Wed, 02 Dec 2020 05:05:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=7bzhGlEDs3RVzaSNxmlfokQcY9/nLGPy3zIRO283eDU=;
-        b=hoUlgFcojtGx5MWR+uH0MtOMHiRv4HBtzmnVHFXTJOTubmJGqCwD+erZkS0kUu9Ww+
-         HPzUPepiFQ4rB6N8rM4XqGYA/zGW/SHTvumDI6Cl9fZl6JP6NmFZTPhL4ioeOKpcQzhd
-         ymo8qOrFVkO1qG1joUwaT3f+D4Xzz7PjqfshDvctduRl4zUeDFSG2UCB8zDwksUMnbkP
-         g5Z73nZjsc1qRqzFS5YvP92HlUpx2kC51PYaLy3dcMtdgAb47sm84n3LXCzgZaUP+J82
-         wX86L/38M1NIwYOllJXJddHMFgn6uQXDxixe4J8weDtJNzegT4PRQgQVnHB7j88TGjsW
-         nN+w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C8DiyGUtrm8IiO8i/wnMX1oZhze2ZA4MlHShu8D56M8=;
+        b=OIMHhzY6J7XYAQCHoRe1B4veVAPwsx2IJ9EXWJMyJX6vYEVmrRjSlgDL+3lzFlwExP
+         19T9oB4xIheEYhWjyj3kb3b++mSrQz5Fiu6xhN8NP+6x25jdOOwKJnG/CbAQK0ZX/2gY
+         qRVnhNpq9bRrmaDwu4eH9L8syucEVlDu3/0/7Bncs57vYQTIKAZxQEo6VqPGeoy0U9+J
+         yvlUub1dekxSXbpoqE4MnP7eOx8rvb5+l0Wphh3Ik8vQnfy/k2YD6O9xasPXdW9IATIg
+         RZAY0KmBVtqweaGAsv+lzxt6f2ychwJdoTiv/DpHqo/C8BVdB86qC8qBqsBKJNL0DE/a
+         JeTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7bzhGlEDs3RVzaSNxmlfokQcY9/nLGPy3zIRO283eDU=;
-        b=bJi284NgOqzsoyyCCHFEda5qRMjQd06j4OUVZXb8cBv0Z+4pRFypQrMsn0dXcZp6D1
-         yvxnh/nf3SAaDXBuzg/nMIgTT7TCCdWd5Oql0eCRsEBmN8YtiXXyUNfqp1kjpB570l8X
-         WU5J3dQLts+QKHuTeonF1cUVabw+wio9toVqNjFQ17JnjLdOiUEc74DcSSKaczGBXcVV
-         LxAxUQWR3KQufYLtQWTHnr0CWPdqbQ7hMBDfyR49vFibtsLoXOKNR1HEHJalibIDl/WX
-         pLoB5TGC8sbNotGdkFWq3Etr7cdVSQOeF8eDEPsRuX01ErbUWCVcMu7cbio6Wx1zWYDz
-         S7SQ==
-X-Gm-Message-State: AOAM533H3ZC77+t3HzdT1nk4miu20xw4+kQx1oIECCKj47374F7XJBuu
-        VomyznuC5HLv7QBoJEIQRQoM2Q==
-X-Google-Smtp-Source: ABdhPJxGawSFJDcD4PpSw5SstbEcGDeQR9jU6qHm7uM9dlQbOvte5ZrJEXWIXJfUg22zIA3A0lGfmw==
-X-Received: by 2002:a05:600c:208:: with SMTP id 8mr3096055wmi.146.1606914372431;
-        Wed, 02 Dec 2020 05:06:12 -0800 (PST)
-Received: from dell ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id 35sm1986863wro.71.2020.12.02.05.06.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 05:06:11 -0800 (PST)
-Date:   Wed, 2 Dec 2020 13:06:09 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v4 3/7] mfd: Add base driver for Netronix embedded
- controller
-Message-ID: <20201202130609.GM4801@dell>
-References: <20201122222739.1455132-1-j.neuschaefer@gmx.net>
- <20201122222739.1455132-4-j.neuschaefer@gmx.net>
- <20201202130520.GL4801@dell>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C8DiyGUtrm8IiO8i/wnMX1oZhze2ZA4MlHShu8D56M8=;
+        b=uH9kWZvx8mVzX280wEVxufhpcbANAChTIPSU7S5XKQPYQSNz3Cwuz6/rNdcyD4gub1
+         dZy6HIwCwKoIZi/WpbCFgTeXpRMi/mFZ4lCiw9eP6mME/GJ67br0ynaXnWy9IFdeLREw
+         K+bZ0tRe+gcLNhDnpXItK4wpd0itwH47OtC+6tYQBBQgitbDAamamMSPdIAUt6AqgALY
+         54GzZo8i/ky9+O1KWzJxdh3f6u76XAVqMd/s7ymHU3rJeIGumLU7YUCtPSEW2o3hc8Sz
+         4CiCScbS/+Ov+nAsAEiQS878R+mdt61TyrRXLnESn3IRRH1ns7kWCOrathXzgzwT3Qnd
+         BsHA==
+X-Gm-Message-State: AOAM531IYYLg3WmKD0RUVZJUiLBEnufyfOwVR3PFzV+QJfpl7btODFK4
+        aebK3JDnPpMCSxO8Oht437KXGvVKC2Tj0iL3qzI=
+X-Google-Smtp-Source: ABdhPJzZSFMwBIgOysDlZl/GZjOuH+v/CSpZZ8HXN7p0bmcoIhmC0i4abkowUIHk/+hYcopG8rL5tj/ohkx/2qoUp2o=
+X-Received: by 2002:a62:445:0:b029:19c:162b:bbef with SMTP id
+ 66-20020a6204450000b029019c162bbbefmr2559237pfe.40.1606914331174; Wed, 02 Dec
+ 2020 05:05:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201202130520.GL4801@dell>
+References: <20201202113838.21621-1-festevam@gmail.com>
+In-Reply-To: <20201202113838.21621-1-festevam@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 2 Dec 2020 15:06:19 +0200
+Message-ID: <CAHp75VczRkD0C4+BGBzgNcFsO-b7QAV3gsW3e_kx=3Bzss+FKA@mail.gmail.com>
+Subject: Re: [PATCH v3] media: coda: Convert the driver to DT-only
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Dec 2020, Lee Jones wrote:
+On Wed, Dec 2, 2020 at 1:44 PM Fabio Estevam <festevam@gmail.com> wrote:
+>
+> Since 5.10-rc1 i.MX is a devicetree-only platform, so simplify the code
+> by removing the unused non-DT support.
 
-> On Sun, 22 Nov 2020, Jonathan Neuschäfer wrote:
-> 
-> > The Netronix embedded controller is a microcontroller found in some
-> > e-book readers designed by the original design manufacturer Netronix,
-> > Inc. It contains RTC, battery monitoring, system power management, and
-> > PWM functionality.
-> > 
-> > This driver implements register access and version detection.
-> > 
-> > Third-party hardware documentation is available at:
-> > 
-> >   https://github.com/neuschaefer/linux/wiki/Netronix-MSP430-embedded-controller
-> > 
-> > The EC supports interrupts, but the driver doesn't make use of them so
-> > far.
-> > 
-> > Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> > ---
-> > 
-> > v4:
-> > - include asm/unaligned.h after linux/*
-> > - Use put_unaligned_be16 instead of open-coded big-endian packing
-> > - Clarify that 0x90=0xff00 causes an error in downstream kernel too
-> > - Add commas after non-sentinel positions
-> > - ntxec.h: declare structs device and regmap
-> > - Replace WARN_ON usage and add comments to explain errors
-> > - Replace dev_alert with dev_warn when the result isn't handled
-> > - Change subdevice registration error message to dev_err
-> > - Declare ntxec_reg8 as returning __be16
-> > - Restructure version detection code
-> > - Spell out ODM
-> > 
-> > v3:
-> > - https://lore.kernel.org/lkml/20200924192455.2484005-4-j.neuschaefer@gmx.net/
-> > - Add (EC) to CONFIG_MFD_NTXEC prompt
-> > - Relicense as GPLv2 or later
-> > - Add email address to copyright line
-> > - remove empty lines in ntxec_poweroff and ntxec_restart functions
-> > - Split long lines
-> > - Remove 'Install ... handler' comments
-> > - Make naming of struct i2c_client parameter consistent
-> > - Remove struct ntxec_info
-> > - Rework 'depends on' lines in Kconfig, hard-depend on I2C, select REGMAP_I2C and
-> >   MFD_CORE
-> > - Register subdevices via mfd_cells
-> > - Move 8-bit register conversion to ntxec.h
-> > 
-> > v2:
-> > - https://lore.kernel.org/lkml/20200905133230.1014581-4-j.neuschaefer@gmx.net/
-> > - Add a description of the device to the patch text
-> > - Unify spelling as 'Netronix embedded controller'.
-> >   'Netronix' is the proper name of the manufacturer, but 'embedded controller'
-> >   is just a label that I have assigned to the device.
-> > - Switch to regmap, avoid regmap use in poweroff and reboot handlers.
-> >   Inspired by cf84dc0bb40f4 ("mfd: rn5t618: Make restart handler atomic safe")
-> > - Use a list of known-working firmware versions instead of checking for a
-> >   known-incompatible version
-> > - Prefix registers with NTXEC_REG_
-> > - Define register values as constants
-> > - Various style cleanups as suggested by Lee Jones
-> > - Don't align = signs in struct initializers [Uwe Kleine-König]
-> > - Don't use dev_dbg for an error message
-> > - Explain sleep in poweroff handler
-> > - Remove (struct ntxec).client
-> > - Switch to .probe_new in i2c driver
-> > - Add .remove callback
-> > - Make CONFIG_MFD_NTXEC a tristate option
-> > ---
-> >  drivers/mfd/Kconfig       |  11 ++
-> >  drivers/mfd/Makefile      |   1 +
-> >  drivers/mfd/ntxec.c       | 216 ++++++++++++++++++++++++++++++++++++++
-> >  include/linux/mfd/ntxec.h |  34 ++++++
-> >  4 files changed, 262 insertions(+)
-> >  create mode 100644 drivers/mfd/ntxec.c
-> >  create mode 100644 include/linux/mfd/ntxec.h
+Shouldn't you add something like
 
-[...]
+  depends on OF || COMPILE_TEST
 
-> > +	/* Bail out if we encounter an unknown firmware version */
-> > +	switch (version) {
-> > +	case 0xd726: /* found in Kobo Aura */
-> 
-> No magic numbers.
-> 
-> Please submit a subsequent patch to define this.
-> 
-> > +		break;
-> > +	default:
-> > +		dev_err(ec->dev,
-> > +			"Netronix embedded controller version %04x is not supported.\n",
-> > +			version);
-> > +		return -ENODEV;
-> > +	}
-> 
-> Applied, thanks.
-
-Sorry, that should have been:
-
-For my own reference (apply this as-is to your sign-off block):
-
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+to show explicitly that driver requires OF to function?
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+With Best Regards,
+Andy Shevchenko
