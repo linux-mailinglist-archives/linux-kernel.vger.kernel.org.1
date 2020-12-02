@@ -2,149 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D6A2CC8C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:20:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C28842CC8CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:21:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729349AbgLBVTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 16:19:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727084AbgLBVTS (ORCPT
+        id S1729425AbgLBVUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 16:20:14 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:44113 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726671AbgLBVUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 16:19:18 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D07C0617A6;
-        Wed,  2 Dec 2020 13:18:31 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id 142so40790ljj.10;
-        Wed, 02 Dec 2020 13:18:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EI4CSuTv2wEsS6T91oCvuRtV6x23dQrXCg0M4nsr/m8=;
-        b=aUt3HHwV9QQLK8YlaGPTy0WNFeECBgUFVc11N+nROxAz+1pH/WLdNdZR4fLOPzjKM5
-         1YbKfkldPD31Cc603AWw3TjTcPydsbu2utFNrsOuAFCdht4fDhq6bs5vKO+iIVINgh7D
-         bW552fXzWNMdgpo/mpkluyx/07MDqMXIWogDEn2srImCBWXV1bRHOIqF06EdjrqcedhZ
-         aydQuIMlt03Y93gUvBZYY+GpQ2xzlKhlW2QLsWYRAaJqdtHC0/xiMOMxdk/SdxLkEBxY
-         9NNslmYeHzu4zwWCQcNIqzhaHdPV1rL9l0CEDmFGFQKqEqol38Cg4BDh++68ykEBWH++
-         wAPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EI4CSuTv2wEsS6T91oCvuRtV6x23dQrXCg0M4nsr/m8=;
-        b=YRA7BC27VE19afuSQTxrt1X/YPM/52Eafmx3/2+T7ffYgIn2C7oCaF03+0R0SJSvpx
-         hSeIFLx7aYP543l7dx2lahhTnAPVTnxR50Du9qV+lub+HdcCnk6U4xeJgQ5MMIYFZNr6
-         luhkiCRJ0YVPH+A3SNVxU4tzvQFtC/u7ek+Ja8HIV50sxOgj4Zz0xMKbKsEkNSqtcpTq
-         geJmrI68GoNhvXOJvIYyo5lu9pIyWc2CKwcREUeBv5SEyabQVR96wzQw+NEv5Z4IEIo9
-         kAtIWW0KDORlDVXD5nuPXKH4ygejVBZ+kg0F+sLqTKCoo/ypdTMtjYHJe8AcivTQONaz
-         5GJA==
-X-Gm-Message-State: AOAM5312ULlWZkq0imnlFyvQn0QPp8Kh8sbDju73z0z0LdzG6BbDioTs
-        CJGFxlRhNLaoS3P5CQLTypj8cYrdb3ahbN7PrcU=
-X-Google-Smtp-Source: ABdhPJzTu+DvMa8Xrm2mHNlrtdcuTgE3Dhds3rjdEz9CgoY82wKoC6ekQg4WiSknNyAWp6dqX335FRSb25pFibWeFXQ=
-X-Received: by 2002:a2e:6c14:: with SMTP id h20mr1997445ljc.450.1606943910156;
- Wed, 02 Dec 2020 13:18:30 -0800 (PST)
+        Wed, 2 Dec 2020 16:20:13 -0500
+Received: (qmail 1069741 invoked by uid 1000); 2 Dec 2020 16:19:32 -0500
+Date:   Wed, 2 Dec 2020 16:19:32 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+dbec6695a6565a9c6bc0@syzkaller.appspotmail.com>,
+        Thierry Escande <thierry.escande@collabora.com>
+Cc:     eli.billauer@gmail.com, gregkh@linuxfoundation.org,
+        gustavoars@kernel.org, ingrassia@epigenesys.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tiwai@suse.de
+Subject: Re: WARNING in port100_send_frame_async/usb_submit_urb
+Message-ID: <20201202211932.GD1062758@rowland.harvard.edu>
+References: <000000000000bab70f05b563a6cc@google.com>
 MIME-Version: 1.0
-References: <20201126165748.1748417-1-revest@google.com> <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
- <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
- <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com> <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
- <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
-In-Reply-To: <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 2 Dec 2020 13:18:18 -0800
-Message-ID: <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-To:     Florent Revest <revest@chromium.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@chromium.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000bab70f05b563a6cc@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 12:32 PM Florent Revest <revest@chromium.org> wrote:
->
-> On Tue, 2020-12-01 at 16:55 -0800, Andrii Nakryiko wrote:
-> > On Fri, Nov 27, 2020 at 8:09 AM Yonghong Song <yhs@fb.com> wrote:
-> > >
-> > >
-> > > On 11/27/20 3:20 AM, KP Singh wrote:
-> > > > On Fri, Nov 27, 2020 at 8:35 AM Yonghong Song <yhs@fb.com> wrote:
-> > > > >
-> > > > > In this case, module name may be truncated and user did not get
-> > > > > any indication from return value. In the helper description, it
-> > > > > is mentioned that module name currently is most 64 bytes. But
-> > > > > from UAPI perspective, it may be still good to return something
-> > > > > to let user know the name is truncated.
-> > > > >
-> > > > > I do not know what is the best way to do this. One suggestion
-> > > > > is to break it into two helpers, one for symbol name and
-> > > > > another
-> > > >
-> > > > I think it would be slightly preferable to have one helper
-> > > > though. maybe something like bpf_get_symbol_info (better names
-> > > > anyone? :)) with flags to get the module name or the symbol name
-> > > > depending
-> > > > on the flag?
-> > >
-> > > This works even better. Previously I am thinking if we have two
-> > > helpers,
-> > > we can add flags for each of them for future extension. But we
-> > > can certainly have just one helper with flags to indicate
-> > > whether this is for module name or for symbol name or something
-> > > else.
-> > >
-> > > The buffer can be something like
-> > >     union bpf_ksymbol_info {
-> > >        char   module_name[];
-> > >        char   symbol_name[];
-> > >        ...
-> > >     }
-> > > and flags will indicate what information user wants.
-> >
-> > one more thing that might be useful to resolve to the symbol's "base
-> > address". E.g., if we have IP inside the function, this would resolve
-> > to the start of the function, sort of "canonical" symbol address.
-> > Type of ksym is another "characteristic" which could be returned (as
-> > a single char?)
-> >
-> > I wouldn't define bpf_ksymbol_info, though. Just depending on the
-> > flag, specify what kind of memory layou (e.g., for strings -
-> > zero-terminated string, for address - 8 byte numbers, etc). That way
-> > we can also allow fetching multiple things together, they would just
-> > be laid out one after another in memory.
-> >
-> > E.g.:
-> >
-> > char buf[256];
-> > int err = bpf_ksym_resolve(<addr>, BPF_KSYM_NAME | BPF_KSYM_MODNAME |
-> > BPF_KSYM_BASE_ADDR, buf, sizeof(buf));
-> >
-> > if (err == -E2BIG)
-> >   /* need bigger buffer, but all the data up to truncation point is
-> > filled in */
-> > else
-> >   /* err has exact number of bytes used, including zero terminator(s)
-> > */
-> >   /* data is laid out as
-> > "cpufreq_gov_powersave_init\0cpufreq_powersave\0\x12\x23\x45\x56\x12\
-> > x23\x45\x56"
-> > */
->
-> Great idea! I like that, thanks for the suggestion :)
+On Tue, Dec 01, 2020 at 01:21:27AM -0800, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    c84e1efa Merge tag 'asm-generic-fixes-5.10-2' of git://git..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14a98565500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7be70951fca93701
+> dashboard link: https://syzkaller.appspot.com/bug?extid=dbec6695a6565a9c6bc0
+> compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c607f1500000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+dbec6695a6565a9c6bc0@syzkaller.appspotmail.com
+> 
+> usb 1-1: string descriptor 0 read error: -32
+> ------------[ cut here ]------------
+> URB 000000005c26bc1e submitted while active
+> WARNING: CPU: 0 PID: 5 at drivers/usb/core/urb.c:378 usb_submit_urb+0xf57/0x1510 drivers/usb/core/urb.c:378
+> Modules linked in:
+> CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.10.0-rc5-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: usb_hub_wq hub_event
+> RIP: 0010:usb_submit_urb+0xf57/0x1510 drivers/usb/core/urb.c:378
+> Code: 5c 41 5d 41 5e 41 5f 5d e9 76 5b ff ff e8 f1 e8 04 fc c6 05 25 0e 8b 07 01 48 c7 c7 a0 b7 5b 8a 4c 89 e6 31 c0 e8 89 07 d5 fb <0f> 0b e9 20 f1 ff ff e8 cd e8 04 fc eb 05 e8 c6 e8 04 fc bb a6 ff
+> RSP: 0018:ffffc90000ca6ec8 EFLAGS: 00010246
+> RAX: cf72e284cb303700 RBX: ffff888021723708 RCX: ffff888011108000
+> RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+> RBP: 0000000000000cc0 R08: ffffffff815d29f2 R09: ffffed1017383ffc
+> R10: ffffed1017383ffc R11: 0000000000000000 R12: ffff888021723700
+> R13: dffffc0000000000 R14: ffff888012cfa458 R15: 1ffff1100259f489
+> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000056157313d160 CR3: 000000001e22c000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  port100_send_frame_async+0x1ea/0x390 drivers/nfc/port100.c:780
+>  port100_send_cmd_async+0x6c7/0x950 drivers/nfc/port100.c:876
+>  port100_send_cmd_sync drivers/nfc/port100.c:916 [inline]
+>  port100_set_command_type drivers/nfc/port100.c:987 [inline]
+>  port100_probe+0xd4f/0x1600 drivers/nfc/port100.c:1567
 
-I still think that adopting printk/vsnprintf for this instead of
-reinventing the wheel
-is more flexible and easier to maintain long term.
-Almost the same layout can be done with vsnprintf
-with exception of \0 char.
-More meaningful names, etc.
-See Documentation/core-api/printk-formats.rst
-If we force fmt to come from readonly map then bpf_trace_printk()-like
-run-time check of fmt string can be moved into load time check
-and performance won't suffer.
+I don't understand this driver very well.  It looks like the problem 
+stems from the fact that port100_send_frame_async() submits two URBs, 
+but port100_send_cmd_sync() only waits for one of them to complete.  The 
+other URB may then still be active when the driver tries to reuse it.
+
+Maybe someone who's more familiar with the port100 driver can fix the 
+problem.
+
+Alan Stern
