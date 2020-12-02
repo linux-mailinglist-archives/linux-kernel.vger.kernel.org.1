@@ -2,130 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179D62CC1A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:07:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EF42CC1A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:07:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728559AbgLBQGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:06:49 -0500
-Received: from relay5.mymailcheap.com ([159.100.248.207]:54602 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728321AbgLBQGt (ORCPT
+        id S2387534AbgLBQF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:05:56 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:51385 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727132AbgLBQF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:06:49 -0500
-Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [149.56.97.132])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 33418260EB;
-        Wed,  2 Dec 2020 16:05:54 +0000 (UTC)
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay1.mymailcheap.com (Postfix) with ESMTPS id 87E6E3F202;
-        Wed,  2 Dec 2020 16:04:22 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id 6E0A02A365;
-        Wed,  2 Dec 2020 11:04:22 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1606925062;
-        bh=SmWLC3CffLqyglomL3jBTcNDLM/MDrGHrdp1/YTM6mk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=AlSz0ZWQkDr3Z7BK929Nfzs4vHoaUbOh0Amb0Q/Y5YhkPClf4y8aKzSe9xv08k23E
-         PFhJ7oD++N0RgKF1H3E62aiPVTvlOPJMr4SqY2Vz4El/cOjZat+KkJgnIvd/bbi/ju
-         /iMhs8QBzCbzd+RSNDkSxKiyvwY/nO7B6pYvgfwo=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id VEPaGEksneRv; Wed,  2 Dec 2020 11:04:20 -0500 (EST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Wed,  2 Dec 2020 11:04:20 -0500 (EST)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 07BD341F65;
-        Wed,  2 Dec 2020 16:04:19 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="Vsoe9HTw";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.162.181])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 2CB8B40026;
-        Wed,  2 Dec 2020 16:03:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1606924999; bh=SmWLC3CffLqyglomL3jBTcNDLM/MDrGHrdp1/YTM6mk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Vsoe9HTw3TNkosYZT4A4o/xcFRn00Hu8A00MrzDfwex33O9r3T2dHF/54zRPNDq+b
-         RiRZwHiDC43Xc27O3JFRHsCWlaMnAtt5Dfqk+mMpXIwRLy9vMXk+rdsh1Dne8nbybp
-         hFDsyjjv+9qN7UwI4M+rYiWMAzJoJHCVNXib/27k=
-Message-ID: <3e5e78cbfc9149cdc630511970af0e52e8ebdfb2.camel@aosc.io>
-Subject: Re: [PATCH 7/8] arm64: dts: allwinner: Add Allwinner H616 .dtsi file
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Andre Przywara <andre.przywara@arm.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     Icenowy Zheng <icenowy@aosc.xyz>,
+        Wed, 2 Dec 2020 11:05:56 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 986F45802D9;
+        Wed,  2 Dec 2020 11:05:08 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 02 Dec 2020 11:05:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=yAIkQ8fKMzM5uO6+aNXKilzzafK
+        eIlum6E1669v5tzc=; b=tFLI2VJmTAbpA+JuXPMAdy055/6kgXpt09nS/iUMcAU
+        bmKXBFcP/qO+qBpJNPpCBBmwIm/I4jMe3rrr+QNEZL6lkj5mzcWU3zVk5DJFEZzA
+        j2yQr7/H4iFN4GnlxbuB1TKArLnNxU/tf9FldFnx18jgRpLcSfoSdKYcsTr/rYCz
+        I07XRJ+l3DtIetQym+QYKRPDmeaC+47blAaEwgvV6qCC8sLtqDFCrOdGHS2MyLN3
+        YcKCkx1jKHXfVttoDhF4SDpEqovcmgbQd9J6ARtabbyUM/8g9Eoj/8cuOqOSSJDK
+        FaBGf7WnX1WMIFEmw8d3jl9T2T59MBJcmacSCrL4ZYQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=yAIkQ8
+        fKMzM5uO6+aNXKilzzafKeIlum6E1669v5tzc=; b=gAr/wrLCZaqMWxH6Dg1XW8
+        rdxDoUuAr4b/7TC6IBhW0fAHX55QcUcn+93uCC7sM5/2874GE90lygQUM7gvlpEB
+        Gv48iPqHiwsbufp3BIxs5x2Bw98leYy7KnHNg2cEq6d5uPbIHtlUQh7r/eoh0ze5
+        qlfu33gRpqGM3Ck+I6A7aCE8eiCjVQoo7Da2Be78+uXxcCwVRuF/OuS1Dcdc4R/A
+        QOu1rorCE7k+7QGyLf5KH/bQl7X3X2EOdiGrkJ79DFf1HxxiLpmQme2o5uNdgg2D
+        kn+EF2J44W3yw9p7BQ9eXvDok+Ajxcvrq1nl3WoF4JlR85W/lJNwLlnbnPbbE38g
+        ==
+X-ME-Sender: <xms:MrvHX1uKsxQ3t13WG3dAbeKbZQoOkeao-Kh_YeRfF4h_g3znVugtLA>
+    <xme:MrvHXz_KQt9VOeTYf3cQSlpRI4doK4QNSGxgQsh-hpwinOsrsjIyKHYj7BYacrdPb
+    QnLi32Sfc9q9Wg1nIM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeigedgkeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:MrvHXxFOU4cT2cveqGMphAH9K8wq15V3lXEuqyy_LEvHzvnXhNTayQ>
+    <xmx:MrvHX6RC_se6aTies_obPe0PFTe6oV5n0l8bX_dAv-zCR4MpixzT3g>
+    <xmx:MrvHX3tuSEJkDaSlwA2_EmMNXu7f25KJOja_q00vEqzMK_GBEpeUIQ>
+    <xmx:NLvHX0aLBAHxQyHz_jH9CJH0vm9i_DXpscEsTLLtjfIXu6Vg-_ZVOQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3F1691080063;
+        Wed,  2 Dec 2020 11:05:06 -0500 (EST)
+Date:   Wed, 2 Dec 2020 17:05:04 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.xyz>,
         linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
         Linus Walleij <linus.walleij@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Yangtao Li <frank@allwinnertech.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Date:   Thu, 03 Dec 2020 00:03:06 +0800
-In-Reply-To: <20201202135409.13683-8-andre.przywara@arm.com>
+Subject: Re: [PATCH 7/8] arm64: dts: allwinner: Add Allwinner H616 .dtsi file
+Message-ID: <20201202160504.klxbpqgagra4uxeh@gilmour>
 References: <20201202135409.13683-1-andre.przywara@arm.com>
-         <20201202135409.13683-8-andre.przywara@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 
+ <20201202135409.13683-8-andre.przywara@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 07BD341F65
-X-Spamd-Result: default: False [1.40 / 20.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TAGGED_RCPT(0.00)[dt];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         TO_MATCH_ENVRCPT_SOME(0.00)[];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3mfoptda66u5dqyw"
+Content-Disposition: inline
+In-Reply-To: <20201202135409.13683-8-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2020-12-02星期三的 13:54 +0000，Andre Przywara写道：
-> This (relatively) new SoC is similar to the H6, but drops the
-> (broken)
+
+--3mfoptda66u5dqyw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Dec 02, 2020 at 01:54:08PM +0000, Andre Przywara wrote:
+> This (relatively) new SoC is similar to the H6, but drops the (broken)
 > PCIe support and the USB 3.0 controller. It also gets the management
 > controller removed, which in turn removes *some*, but not all of the
 > devices formerly dedicated to the ARISC (CPUS).
-> There does not seem to be an external interrupt controller anymore,
-> so
-> no external interrupts through an NMI pin. The AXP driver needs to
-> learn
+> There does not seem to be an external interrupt controller anymore, so
+> no external interrupts through an NMI pin. The AXP driver needs to learn
 > living with that.
-> 
+>=20
 > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 > ---
->  .../arm64/boot/dts/allwinner/sun50i-h616.dtsi | 704
-> ++++++++++++++++++
+>  .../arm64/boot/dts/allwinner/sun50i-h616.dtsi | 704 ++++++++++++++++++
 >  1 file changed, 704 insertions(+)
 >  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-> b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+>=20
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi b/arch/arm64/=
+boot/dts/allwinner/sun50i-h616.dtsi
 > new file mode 100644
 > index 000000000000..dcffbfdcd26b
 > --- /dev/null
@@ -143,724 +119,565 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 > +#include <dt-bindings/reset/sun50i-h6-r-ccu.h>
 > +
 > +/ {
-> +	interrupt-parent = <&gic>;
-> +	#address-cells = <2>;
-> +	#size-cells = <2>;
+> +	interrupt-parent =3D <&gic>;
+> +	#address-cells =3D <2>;
+> +	#size-cells =3D <2>;
 > +
 > +	cpus {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <0>;
 > +
 > +		cpu0: cpu@0 {
-> +			compatible = "arm,cortex-a53";
-> +			device_type = "cpu";
-> +			reg = <0>;
-> +			enable-method = "psci";
-> +			clocks = <&ccu CLK_CPUX>;
+> +			compatible =3D "arm,cortex-a53";
+> +			device_type =3D "cpu";
+> +			reg =3D <0>;
+> +			enable-method =3D "psci";
+> +			clocks =3D <&ccu CLK_CPUX>;
 > +		};
 > +
 > +		cpu1: cpu@1 {
-> +			compatible = "arm,cortex-a53";
-> +			device_type = "cpu";
-> +			reg = <1>;
-> +			enable-method = "psci";
-> +			clocks = <&ccu CLK_CPUX>;
+> +			compatible =3D "arm,cortex-a53";
+> +			device_type =3D "cpu";
+> +			reg =3D <1>;
+> +			enable-method =3D "psci";
+> +			clocks =3D <&ccu CLK_CPUX>;
 > +		};
 > +
 > +		cpu2: cpu@2 {
-> +			compatible = "arm,cortex-a53";
-> +			device_type = "cpu";
-> +			reg = <2>;
-> +			enable-method = "psci";
-> +			clocks = <&ccu CLK_CPUX>;
+> +			compatible =3D "arm,cortex-a53";
+> +			device_type =3D "cpu";
+> +			reg =3D <2>;
+> +			enable-method =3D "psci";
+> +			clocks =3D <&ccu CLK_CPUX>;
 > +		};
 > +
 > +		cpu3: cpu@3 {
-> +			compatible = "arm,cortex-a53";
-> +			device_type = "cpu";
-> +			reg = <3>;
-> +			enable-method = "psci";
-> +			clocks = <&ccu CLK_CPUX>;
+> +			compatible =3D "arm,cortex-a53";
+> +			device_type =3D "cpu";
+> +			reg =3D <3>;
+> +			enable-method =3D "psci";
+> +			clocks =3D <&ccu CLK_CPUX>;
 > +		};
 > +	};
 > +
 > +	reserved-memory {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
+> +		#address-cells =3D <2>;
+> +		#size-cells =3D <2>;
 > +		ranges;
 > +
 > +		/* 512KiB reserved for ARM Trusted Firmware (BL31) */
 > +		secmon_reserved: secmon@40000000 {
-> +			reg = <0x0 0x40000000 0x0 0x80000>;
+> +			reg =3D <0x0 0x40000000 0x0 0x80000>;
 > +			no-map;
 > +		};
-
-Should this node be dynamically added by the firmware? This is only
-some effort taken by our community, not from Allwinner. (Although
-Allwinner reserves much more memory in their BSP.)
-
-(In my opinion, it should be applied by ATF to U-Boot DT, and then U-
-Boot add it to Linux DT.)
-
 > +	};
-> +
+
+I'm not sure why that node is there, the previous SoCs didn't have it?
+Shouldn't ATF patch it itself?
+
 > +	osc24M: osc24M_clk {
-> +		#clock-cells = <0>;
-> +		compatible = "fixed-clock";
-> +		clock-frequency = <24000000>;
-> +		clock-output-names = "osc24M";
+> +		#clock-cells =3D <0>;
+> +		compatible =3D "fixed-clock";
+> +		clock-frequency =3D <24000000>;
+> +		clock-output-names =3D "osc24M";
 > +	};
 > +
 > +	pmu {
-> +		compatible = "arm,cortex-a53-pmu";
-> +		interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>,
+> +		compatible =3D "arm,cortex-a53-pmu";
+> +		interrupts =3D <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>,
 > +			     <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
 > +			     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>,
 > +			     <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>;
-> +		interrupt-affinity = <&cpu0>, <&cpu1>, <&cpu2>,
-> <&cpu3>;
+> +		interrupt-affinity =3D <&cpu0>, <&cpu1>, <&cpu2>, <&cpu3>;
 > +	};
 > +
 > +	psci {
-> +		compatible = "arm,psci-0.2";
-> +		method = "smc";
+> +		compatible =3D "arm,psci-0.2";
+> +		method =3D "smc";
 > +	};
 > +
 > +	timer {
-> +		compatible = "arm,armv8-timer";
+> +		compatible =3D "arm,armv8-timer";
 > +		arm,no-tick-in-suspend;
-> +		interrupts = <GIC_PPI 13
-> +			(GIC_CPU_MASK_SIMPLE(4) |
-> IRQ_TYPE_LEVEL_HIGH)>,
+
+This was tested with crust I assume?
+
+> +		interrupts =3D <GIC_PPI 13
+> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
 > +			     <GIC_PPI 14
-> +			(GIC_CPU_MASK_SIMPLE(4) |
-> IRQ_TYPE_LEVEL_HIGH)>,
+> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
 > +			     <GIC_PPI 11
-> +			(GIC_CPU_MASK_SIMPLE(4) |
-> IRQ_TYPE_LEVEL_HIGH)>,
+> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
 > +			     <GIC_PPI 10
-> +			(GIC_CPU_MASK_SIMPLE(4) |
-> IRQ_TYPE_LEVEL_HIGH)>;
+> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
 > +	};
 > +
 > +	soc {
-> +		compatible = "simple-bus";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x0 0x0 0x0 0x40000000>;
+> +		compatible =3D "simple-bus";
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <1>;
+> +		ranges =3D <0x0 0x0 0x0 0x40000000>;
 > +
 > +		syscon: syscon@3000000 {
-> +			compatible = "allwinner,sun50i-h616-system-
-> control",
-> +				     "allwinner,sun50i-a64-system-
-> control";
-> +			reg = <0x03000000 0x1000>;
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
+> +			compatible =3D "allwinner,sun50i-h616-system-control",
+
+That compatible isn't documented
+
+> +				     "allwinner,sun50i-a64-system-control";
+> +			reg =3D <0x03000000 0x1000>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <1>;
 > +			ranges;
 > +
 > +			sram_c: sram@28000 {
-> +				compatible = "mmio-sram";
-> +				reg = <0x00028000 0x30000>;
-> +				#address-cells = <1>;
-> +				#size-cells = <1>;
-> +				ranges = <0 0x00028000 0x30000>;
+> +				compatible =3D "mmio-sram";
+> +				reg =3D <0x00028000 0x30000>;
+> +				#address-cells =3D <1>;
+> +				#size-cells =3D <1>;
+> +				ranges =3D <0 0x00028000 0x30000>;
 > +			};
 > +
 > +			sram_c1: sram@1a00000 {
-> +				compatible = "mmio-sram";
-> +				reg = <0x01a00000 0x200000>;
-> +				#address-cells = <1>;
-> +				#size-cells = <1>;
-> +				ranges = <0 0x01a00000 0x200000>;
+> +				compatible =3D "mmio-sram";
+> +				reg =3D <0x01a00000 0x200000>;
+> +				#address-cells =3D <1>;
+> +				#size-cells =3D <1>;
+> +				ranges =3D <0 0x01a00000 0x200000>;
 > +
 > +				ve_sram: sram-section@0 {
-> +					compatible = "allwinner,sun50i-
-> h616-sram-c1",
-> +						     "allwinner,sun4i-
-> a10-sram-c1";
-> +					reg = <0x000000 0x200000>;
+> +					compatible =3D "allwinner,sun50i-h616-sram-c1",
+
+Ditto
+
+> +						     "allwinner,sun4i-a10-sram-c1";
+> +					reg =3D <0x000000 0x200000>;
 > +				};
 > +			};
 > +		};
 > +
 > +		ccu: clock@3001000 {
-> +			compatible = "allwinner,sun50i-h616-ccu";
-> +			reg = <0x03001000 0x1000>;
-> +			clocks = <&osc24M>, <&rtc 0>, <&rtc 2>;
-> +			clock-names = "hosc", "losc", "iosc";
-> +			#clock-cells = <1>;
-> +			#reset-cells = <1>;
+> +			compatible =3D "allwinner,sun50i-h616-ccu";
+
+Ditto
+
+> +			reg =3D <0x03001000 0x1000>;
+> +			clocks =3D <&osc24M>, <&rtc 0>, <&rtc 2>;
+> +			clock-names =3D "hosc", "losc", "iosc";
+> +			#clock-cells =3D <1>;
+> +			#reset-cells =3D <1>;
 > +		};
 > +
 > +		watchdog: watchdog@30090a0 {
-> +			compatible = "allwinner,sun50i-h616-wdt",
+> +			compatible =3D "allwinner,sun50i-h616-wdt",
+
+Ditto. I guess you can just run checkpatch there, it will let you know
+all the ones that aren't documented :)
+
 > +				     "allwinner,sun6i-a31-wdt";
-> +			reg = <0x030090a0 0x20>;
-> +			interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&osc24M>;
-> +			status = "disabled";
+> +			reg =3D <0x030090a0 0x20>;
+> +			interrupts =3D <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&osc24M>;
+> +			status =3D "disabled";
 > +		};
 > +
 > +		pio: pinctrl@300b000 {
-> +			compatible = "allwinner,sun50i-h616-pinctrl";
-> +			reg = <0x0300b000 0x400>;
-> +			interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>,
+> +			compatible =3D "allwinner,sun50i-h616-pinctrl";
+> +			reg =3D <0x0300b000 0x400>;
+> +			interrupts =3D <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>,
 > +				     <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>,
 > +				     <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>,
 > +				     <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>,
 > +				     <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_APB1>, <&osc24M>, <&rtc 0>;
-> +			clock-names = "apb", "hosc", "losc";
+> +			clocks =3D <&ccu CLK_APB1>, <&osc24M>, <&rtc 0>;
+> +			clock-names =3D "apb", "hosc", "losc";
 > +			gpio-controller;
-> +			#gpio-cells = <3>;
+> +			#gpio-cells =3D <3>;
 > +			interrupt-controller;
-> +			#interrupt-cells = <3>;
+> +			#interrupt-cells =3D <3>;
 > +
 > +			ext_rgmii_pins: rgmii-pins {
-> +				pins = "PI0", "PI1", "PI2", "PI3",
-> "PI4",
-> +				       "PI5", "PI7", "PI8", "PI9",
-> "PI10",
-> +				       "PI11", "PI12", "PI13", "PI14",
-> "PI15",
+> +				pins =3D "PI0", "PI1", "PI2", "PI3", "PI4",
+> +				       "PI5", "PI7", "PI8", "PI9", "PI10",
+> +				       "PI11", "PI12", "PI13", "PI14", "PI15",
 > +				       "PI16";
-> +				function = "emac0";
-> +				drive-strength = <40>;
+> +				function =3D "emac0";
+> +				drive-strength =3D <40>;
 > +			};
 > +
 > +			i2c0_pins: i2c0-pins {
-> +				pins = "PI6", "PI7";
-> +				function = "i2c0";
+> +				pins =3D "PI6", "PI7";
+> +				function =3D "i2c0";
 > +			};
 > +
 > +			i2c3_pins_a: i2c1-pins-a {
-> +				pins = "PH4", "PH5";
-> +				function = "i2c3";
+
+I guess you meant i2c3 in the node name?
+
+The pin groups with multiple options also are supposed to have the pin
+bank instead of the _a or _b suffix, so i2c3_ph_pins=20
+
+> +				pins =3D "PH4", "PH5";
+> +				function =3D "i2c3";
 > +			};
 > +
 > +			ir_rx_pin: ir_rx_pin {
-> +				pins = "PH10";
-> +				function = "ir_rx";
+> +				pins =3D "PH10";
+> +				function =3D "ir_rx";
 > +			};
 > +
 > +			mmc0_pins: mmc0-pins {
-> +				pins = "PF0", "PF1", "PF2", "PF3",
+> +				pins =3D "PF0", "PF1", "PF2", "PF3",
 > +				       "PF4", "PF5";
-> +				function = "mmc0";
-> +				drive-strength = <30>;
+> +				function =3D "mmc0";
+> +				drive-strength =3D <30>;
 > +				bias-pull-up;
 > +			};
 > +
 > +			mmc1_pins: mmc1-pins {
-> +				pins = "PG0", "PG1", "PG2", "PG3",
+> +				pins =3D "PG0", "PG1", "PG2", "PG3",
 > +				       "PG4", "PG5";
-> +				function = "mmc1";
-> +				drive-strength = <30>;
+> +				function =3D "mmc1";
+> +				drive-strength =3D <30>;
 > +				bias-pull-up;
 > +			};
 > +
 > +			mmc2_pins: mmc2-pins {
-> +				pins = "PC0", "PC1", "PC5", "PC6",
+> +				pins =3D "PC0", "PC1", "PC5", "PC6",
 > +				       "PC8", "PC9", "PC10", "PC11",
 > +				       "PC13", "PC14", "PC15", "PC16";
-> +				function = "mmc2";
-> +				drive-strength = <30>;
+> +				function =3D "mmc2";
+> +				drive-strength =3D <30>;
 > +				bias-pull-up;
 > +			};
 > +
 > +			spi0_pins: spi0-pins {
-> +				pins = "PC0", "PC2", "PC3", "PC4";
-> +				function = "spi0";
+> +				pins =3D "PC0", "PC2", "PC3", "PC4";
+> +				function =3D "spi0";
 > +			};
 > +
 > +			spi1_pins: spi1-pins {
-> +				pins = "PH6", "PH7", "PH8";
-> +				function = "spi1";
+> +				pins =3D "PH6", "PH7", "PH8";
+> +				function =3D "spi1";
 > +			};
 > +
 > +			spi1_cs_pin: spi1-cs-pin {
-> +				pins = "PH5";
-> +				function = "spi1";
+> +				pins =3D "PH5";
+> +				function =3D "spi1";
 > +			};
 > +
 > +			uart0_ph_pins: uart0-ph-pins {
-> +				pins = "PH0", "PH1";
-> +				function = "uart0";
+> +				pins =3D "PH0", "PH1";
+> +				function =3D "uart0";
 > +			};
 > +
 > +			uart1_pins: uart1-pins {
-> +				pins = "PG6", "PG7";
-> +				function = "uart1";
+> +				pins =3D "PG6", "PG7";
+> +				function =3D "uart1";
 > +			};
 > +
 > +			uart1_rts_cts_pins: uart1-rts-cts-pins {
-> +				pins = "PG8", "PG9";
-> +				function = "uart1";
+> +				pins =3D "PG8", "PG9";
+> +				function =3D "uart1";
 > +			};
 > +		};
 > +
 > +		gic: interrupt-controller@3021000 {
-> +			compatible = "arm,gic-400";
-> +			reg = <0x03021000 0x1000>,
+> +			compatible =3D "arm,gic-400";
+> +			reg =3D <0x03021000 0x1000>,
 > +			      <0x03022000 0x2000>,
 > +			      <0x03024000 0x2000>,
 > +			      <0x03026000 0x2000>;
-> +			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4)
-> | IRQ_TYPE_LEVEL_HIGH)>;
+> +			interrupts =3D <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HI=
+GH)>;
 > +			interrupt-controller;
-> +			#interrupt-cells = <3>;
+> +			#interrupt-cells =3D <3>;
 > +		};
 > +
 > +		mmc0: mmc@4020000 {
-> +			compatible = "allwinner,sun50i-h616-mmc",
+> +			compatible =3D "allwinner,sun50i-h616-mmc",
 > +				     "allwinner,sun50i-a100-mmc";
-> +			reg = <0x04020000 0x1000>;
-> +			clocks = <&ccu CLK_BUS_MMC0>, <&ccu CLK_MMC0>;
-> +			clock-names = "ahb", "mmc";
-> +			resets = <&ccu RST_BUS_MMC0>;
-> +			reset-names = "ahb";
-> +			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
-> +			pinctrl-names = "default";
-> +			pinctrl-0 = <&mmc0_pins>;
-> +			status = "disabled";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
+> +			reg =3D <0x04020000 0x1000>;
+> +			clocks =3D <&ccu CLK_BUS_MMC0>, <&ccu CLK_MMC0>;
+> +			clock-names =3D "ahb", "mmc";
+> +			resets =3D <&ccu RST_BUS_MMC0>;
+> +			reset-names =3D "ahb";
+> +			interrupts =3D <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
+> +			pinctrl-names =3D "default";
+> +			pinctrl-0 =3D <&mmc0_pins>;
+> +			status =3D "disabled";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
 > +		};
 > +
 > +		mmc1: mmc@4021000 {
-> +			compatible = "allwinner,sun50i-h616-mmc",
+> +			compatible =3D "allwinner,sun50i-h616-mmc",
 > +				     "allwinner,sun50i-a100-mmc";
-> +			reg = <0x04021000 0x1000>;
-> +			clocks = <&ccu CLK_BUS_MMC1>, <&ccu CLK_MMC1>;
-> +			clock-names = "ahb", "mmc";
-> +			resets = <&ccu RST_BUS_MMC1>;
-> +			reset-names = "ahb";
-> +			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
-> +			pinctrl-names = "default";
-> +			pinctrl-0 = <&mmc1_pins>;
-> +			status = "disabled";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
+> +			reg =3D <0x04021000 0x1000>;
+> +			clocks =3D <&ccu CLK_BUS_MMC1>, <&ccu CLK_MMC1>;
+> +			clock-names =3D "ahb", "mmc";
+> +			resets =3D <&ccu RST_BUS_MMC1>;
+> +			reset-names =3D "ahb";
+> +			interrupts =3D <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+> +			pinctrl-names =3D "default";
+> +			pinctrl-0 =3D <&mmc1_pins>;
+> +			status =3D "disabled";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
 > +		};
 > +
 > +		mmc2: mmc@4022000 {
-> +			compatible = "allwinner,sun50i-h616-emmc",
+> +			compatible =3D "allwinner,sun50i-h616-emmc",
 > +				     "allwinner,sun50i-a64-emmc";
-> +			reg = <0x04022000 0x1000>;
-> +			clocks = <&ccu CLK_BUS_MMC2>, <&ccu CLK_MMC2>;
-> +			clock-names = "ahb", "mmc";
-> +			resets = <&ccu RST_BUS_MMC2>;
-> +			reset-names = "ahb";
-> +			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
-> +			pinctrl-names = "default";
-> +			pinctrl-0 = <&mmc2_pins>;
-> +			status = "disabled";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
+> +			reg =3D <0x04022000 0x1000>;
+> +			clocks =3D <&ccu CLK_BUS_MMC2>, <&ccu CLK_MMC2>;
+> +			clock-names =3D "ahb", "mmc";
+> +			resets =3D <&ccu RST_BUS_MMC2>;
+> +			reset-names =3D "ahb";
+> +			interrupts =3D <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+> +			pinctrl-names =3D "default";
+> +			pinctrl-0 =3D <&mmc2_pins>;
+> +			status =3D "disabled";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
 > +		};
 > +
 > +		uart0: serial@5000000 {
-> +			compatible = "snps,dw-apb-uart";
-> +			reg = <0x05000000 0x400>;
-> +			interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
-> +			reg-shift = <2>;
-> +			reg-io-width = <4>;
-> +			clocks = <&ccu CLK_BUS_UART0>;
-> +			resets = <&ccu RST_BUS_UART0>;
-> +			status = "disabled";
+> +			compatible =3D "snps,dw-apb-uart";
+> +			reg =3D <0x05000000 0x400>;
+> +			interrupts =3D <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
+> +			reg-shift =3D <2>;
+> +			reg-io-width =3D <4>;
+> +			clocks =3D <&ccu CLK_BUS_UART0>;
+> +			resets =3D <&ccu RST_BUS_UART0>;
+> +			status =3D "disabled";
 > +		};
 > +
 > +		uart1: serial@5000400 {
-> +			compatible = "snps,dw-apb-uart";
-> +			reg = <0x05000400 0x400>;
-> +			interrupts = <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
-> +			reg-shift = <2>;
-> +			reg-io-width = <4>;
-> +			clocks = <&ccu CLK_BUS_UART1>;
-> +			resets = <&ccu RST_BUS_UART1>;
-> +			status = "disabled";
+> +			compatible =3D "snps,dw-apb-uart";
+> +			reg =3D <0x05000400 0x400>;
+> +			interrupts =3D <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
+> +			reg-shift =3D <2>;
+> +			reg-io-width =3D <4>;
+> +			clocks =3D <&ccu CLK_BUS_UART1>;
+> +			resets =3D <&ccu RST_BUS_UART1>;
+> +			status =3D "disabled";
 > +		};
 > +
 > +		uart2: serial@5000800 {
-> +			compatible = "snps,dw-apb-uart";
-> +			reg = <0x05000800 0x400>;
-> +			interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
-> +			reg-shift = <2>;
-> +			reg-io-width = <4>;
-> +			clocks = <&ccu CLK_BUS_UART2>;
-> +			resets = <&ccu RST_BUS_UART2>;
-> +			status = "disabled";
+> +			compatible =3D "snps,dw-apb-uart";
+> +			reg =3D <0x05000800 0x400>;
+> +			interrupts =3D <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
+> +			reg-shift =3D <2>;
+> +			reg-io-width =3D <4>;
+> +			clocks =3D <&ccu CLK_BUS_UART2>;
+> +			resets =3D <&ccu RST_BUS_UART2>;
+> +			status =3D "disabled";
 > +		};
 > +
 > +		uart3: serial@5000c00 {
-> +			compatible = "snps,dw-apb-uart";
-> +			reg = <0x05000c00 0x400>;
-> +			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
-> +			reg-shift = <2>;
-> +			reg-io-width = <4>;
-> +			clocks = <&ccu CLK_BUS_UART3>;
-> +			resets = <&ccu RST_BUS_UART3>;
-> +			status = "disabled";
+> +			compatible =3D "snps,dw-apb-uart";
+> +			reg =3D <0x05000c00 0x400>;
+> +			interrupts =3D <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
+> +			reg-shift =3D <2>;
+> +			reg-io-width =3D <4>;
+> +			clocks =3D <&ccu CLK_BUS_UART3>;
+> +			resets =3D <&ccu RST_BUS_UART3>;
+> +			status =3D "disabled";
 > +		};
 > +
 > +		uart4: serial@5001000 {
-> +			compatible = "snps,dw-apb-uart";
-> +			reg = <0x05001000 0x400>;
-> +			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
-> +			reg-shift = <2>;
-> +			reg-io-width = <4>;
-> +			clocks = <&ccu CLK_BUS_UART4>;
-> +			resets = <&ccu RST_BUS_UART4>;
-> +			status = "disabled";
+> +			compatible =3D "snps,dw-apb-uart";
+> +			reg =3D <0x05001000 0x400>;
+> +			interrupts =3D <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
+> +			reg-shift =3D <2>;
+> +			reg-io-width =3D <4>;
+> +			clocks =3D <&ccu CLK_BUS_UART4>;
+> +			resets =3D <&ccu RST_BUS_UART4>;
+> +			status =3D "disabled";
 > +		};
 > +
 > +		uart5: serial@5001400 {
-> +			compatible = "snps,dw-apb-uart";
-> +			reg = <0x05001400 0x400>;
-> +			interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
-> +			reg-shift = <2>;
-> +			reg-io-width = <4>;
-> +			clocks = <&ccu CLK_BUS_UART5>;
-> +			resets = <&ccu RST_BUS_UART5>;
-> +			status = "disabled";
+> +			compatible =3D "snps,dw-apb-uart";
+> +			reg =3D <0x05001400 0x400>;
+> +			interrupts =3D <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
+> +			reg-shift =3D <2>;
+> +			reg-io-width =3D <4>;
+> +			clocks =3D <&ccu CLK_BUS_UART5>;
+> +			resets =3D <&ccu RST_BUS_UART5>;
+> +			status =3D "disabled";
 > +		};
 > +
 > +		i2c0: i2c@5002000 {
-> +			compatible = "allwinner,sun50i-h616-i2c",
+> +			compatible =3D "allwinner,sun50i-h616-i2c",
 > +				     "allwinner,sun6i-a31-i2c";
-> +			reg = <0x05002000 0x400>;
-> +			interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_I2C0>;
-> +			resets = <&ccu RST_BUS_I2C0>;
-> +			pinctrl-names = "default";
-> +			pinctrl-0 = <&i2c0_pins>;
-> +			status = "disabled";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
+> +			reg =3D <0x05002000 0x400>;
+> +			interrupts =3D <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&ccu CLK_BUS_I2C0>;
+> +			resets =3D <&ccu RST_BUS_I2C0>;
+> +			pinctrl-names =3D "default";
+> +			pinctrl-0 =3D <&i2c0_pins>;
+> +			status =3D "disabled";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
 > +		};
 > +
 > +		i2c1: i2c@5002400 {
-> +			compatible = "allwinner,sun50i-h616-i2c",
+> +			compatible =3D "allwinner,sun50i-h616-i2c",
 > +				     "allwinner,sun6i-a31-i2c";
-> +			reg = <0x05002400 0x400>;
-> +			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_I2C1>;
-> +			resets = <&ccu RST_BUS_I2C1>;
-> +			status = "disabled";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
+> +			reg =3D <0x05002400 0x400>;
+> +			interrupts =3D <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&ccu CLK_BUS_I2C1>;
+> +			resets =3D <&ccu RST_BUS_I2C1>;
+> +			status =3D "disabled";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
 > +		};
 > +
 > +		i2c2: i2c@5002800 {
-> +			compatible = "allwinner,sun50i-h616-i2c",
+> +			compatible =3D "allwinner,sun50i-h616-i2c",
 > +				     "allwinner,sun6i-a31-i2c";
-> +			reg = <0x05002800 0x400>;
-> +			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_I2C2>;
-> +			resets = <&ccu RST_BUS_I2C2>;
-> +			status = "disabled";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
+> +			reg =3D <0x05002800 0x400>;
+> +			interrupts =3D <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&ccu CLK_BUS_I2C2>;
+> +			resets =3D <&ccu RST_BUS_I2C2>;
+> +			status =3D "disabled";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
 > +		};
 > +
 > +		i2c3: i2c@5002c00 {
-> +			compatible = "allwinner,sun50i-h616-i2c",
+> +			compatible =3D "allwinner,sun50i-h616-i2c",
 > +				     "allwinner,sun6i-a31-i2c";
-> +			reg = <0x05002c00 0x400>;
-> +			interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_I2C3>;
-> +			resets = <&ccu RST_BUS_I2C3>;
-> +			status = "disabled";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
+> +			reg =3D <0x05002c00 0x400>;
+> +			interrupts =3D <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&ccu CLK_BUS_I2C3>;
+> +			resets =3D <&ccu RST_BUS_I2C3>;
+> +			status =3D "disabled";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
 > +		};
 > +
 > +		i2c4: i2c@5003000 {
-> +			compatible = "allwinner,sun50i-h616-i2c",
+> +			compatible =3D "allwinner,sun50i-h616-i2c",
 > +				     "allwinner,sun6i-a31-i2c";
-> +			reg = <0x05003000 0x400>;
-> +			interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_I2C4>;
-> +			resets = <&ccu RST_BUS_I2C4>;
-> +			status = "disabled";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
+> +			reg =3D <0x05003000 0x400>;
+> +			interrupts =3D <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&ccu CLK_BUS_I2C4>;
+> +			resets =3D <&ccu RST_BUS_I2C4>;
+> +			status =3D "disabled";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
 > +		};
 > +
 > +		spi0: spi@5010000 {
-> +			compatible = "allwinner,sun50i-h616-spi",
+> +			compatible =3D "allwinner,sun50i-h616-spi",
 > +				     "allwinner,sun8i-h3-spi";
-> +			reg = <0x05010000 0x1000>;
-> +			interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_SPI0>, <&ccu CLK_SPI0>;
-> +			clock-names = "ahb", "mod";
-> +			resets = <&ccu RST_BUS_SPI0>;
-> +			pinctrl-names = "default";
-> +			pinctrl-0 = <&spi0_pins>;
-> +			status = "disabled";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
+> +			reg =3D <0x05010000 0x1000>;
+> +			interrupts =3D <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&ccu CLK_BUS_SPI0>, <&ccu CLK_SPI0>;
+> +			clock-names =3D "ahb", "mod";
+> +			resets =3D <&ccu RST_BUS_SPI0>;
+> +			pinctrl-names =3D "default";
+> +			pinctrl-0 =3D <&spi0_pins>;
+> +			status =3D "disabled";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
 > +		};
 > +
 > +		spi1: spi@5011000 {
-> +			compatible = "allwinner,sun50i-h616-spi",
+> +			compatible =3D "allwinner,sun50i-h616-spi",
 > +				     "allwinner,sun8i-h3-spi";
-> +			reg = <0x05011000 0x1000>;
-> +			interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_SPI1>, <&ccu CLK_SPI1>;
-> +			clock-names = "ahb", "mod";
-> +			resets = <&ccu RST_BUS_SPI1>;
-> +			pinctrl-names = "default";
-> +			pinctrl-0 = <&spi1_pins>;
-> +			status = "disabled";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
+> +			reg =3D <0x05011000 0x1000>;
+> +			interrupts =3D <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&ccu CLK_BUS_SPI1>, <&ccu CLK_SPI1>;
+> +			clock-names =3D "ahb", "mod";
+> +			resets =3D <&ccu RST_BUS_SPI1>;
+> +			pinctrl-names =3D "default";
+> +			pinctrl-0 =3D <&spi1_pins>;
+> +			status =3D "disabled";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
 > +		};
 > +
 > +		emac0: ethernet@5020000 {
-> +			compatible = "allwinner,sun50i-h616-emac",
+> +			compatible =3D "allwinner,sun50i-h616-emac",
 > +				     "allwinner,sun50i-a64-emac";
-> +			syscon = <&syscon>;
-> +			reg = <0x05020000 0x10000>;
-> +			interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names = "macirq";
-> +			resets = <&ccu RST_BUS_EMAC0>;
-> +			reset-names = "stmmaceth";
-> +			clocks = <&ccu CLK_BUS_EMAC0>;
-> +			clock-names = "stmmaceth";
-> +			status = "disabled";
+> +			syscon =3D <&syscon>;
+> +			reg =3D <0x05020000 0x10000>;
+> +			interrupts =3D <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names =3D "macirq";
+> +			resets =3D <&ccu RST_BUS_EMAC0>;
+> +			reset-names =3D "stmmaceth";
+> +			clocks =3D <&ccu CLK_BUS_EMAC0>;
+> +			clock-names =3D "stmmaceth";
+> +			status =3D "disabled";
 > +
 > +			mdio: mdio {
-> +				compatible = "snps,dwmac-mdio";
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
+> +				compatible =3D "snps,dwmac-mdio";
+> +				#address-cells =3D <1>;
+> +				#size-cells =3D <0>;
 > +			};
 > +		};
 > +
 > +		usbotg: usb@5100000 {
-> +			compatible = "allwinner,sun50i-h616-musb",
+> +			compatible =3D "allwinner,sun50i-h616-musb",
 > +				     "allwinner,sun8i-a33-musb";
-> +			reg = <0x05100000 0x0400>;
-> +			clocks = <&ccu CLK_BUS_OTG>;
-> +			resets = <&ccu RST_BUS_OTG>;
-> +			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names = "mc";
-> +			phys = <&usbphy 0>;
-> +			phy-names = "usb";
-> +			extcon = <&usbphy 0>;
-> +			status = "disabled";
+> +			reg =3D <0x05100000 0x0400>;
+> +			clocks =3D <&ccu CLK_BUS_OTG>;
+> +			resets =3D <&ccu RST_BUS_OTG>;
+> +			interrupts =3D <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names =3D "mc";
+> +			phys =3D <&usbphy 0>;
+> +			phy-names =3D "usb";
+> +			extcon =3D <&usbphy 0>;
+> +			status =3D "disabled";
 > +		};
 > +
 > +		usbphy: phy@5100400 {
-> +			compatible = "allwinner,sun50i-h616-usb-phy";
-
-Sorry, but did I missed a patch for this compatible?
-
-> +			reg = <0x05100400 0x24>,
+> +			compatible =3D "allwinner,sun50i-h616-usb-phy";
+> +			reg =3D <0x05100400 0x24>,
 > +			      <0x05101800 0x4>,
 > +			      <0x05200800 0x4>,
 > +			      <0x05310800 0x4>,
 > +			      <0x05311800 0x4>;
-> +			reg-names = "phy_ctrl",
+> +			reg-names =3D "phy_ctrl",
 > +				    "pmu0",
 > +				    "pmu1",
 > +				    "pmu2",
 > +				    "pmu3";
-> +			clocks = <&ccu CLK_USB_PHY0>,
+> +			clocks =3D <&ccu CLK_USB_PHY0>,
 > +				 <&ccu CLK_USB_PHY1>,
 > +				 <&ccu CLK_USB_PHY2>,
 > +				 <&ccu CLK_USB_PHY3>;
-> +			clock-names = "usb0_phy",
+> +			clock-names =3D "usb0_phy",
 > +				      "usb1_phy",
 > +				      "usb2_phy",
 > +				      "usb3_phy";
-> +			resets = <&ccu RST_USB_PHY0>,
+> +			resets =3D <&ccu RST_USB_PHY0>,
 > +				 <&ccu RST_USB_PHY1>,
 > +				 <&ccu RST_USB_PHY2>,
 > +				 <&ccu RST_USB_PHY3>;
-> +			reset-names = "usb0_reset",
+> +			reset-names =3D "usb0_reset",
 > +				      "usb1_reset",
 > +				      "usb2_reset",
 > +				      "usb3_reset";
-> +			status = "disabled";
-> +			#phy-cells = <1>;
+> +			status =3D "disabled";
+> +			#phy-cells =3D <1>;
 > +		};
-> +
-> +		ehci0: usb@5101000 {
-> +			compatible = "allwinner,sun50i-h616-ehci",
-> +				     "generic-ehci";
-> +			reg = <0x05101000 0x100>;
-> +			interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_OHCI0>,
-> +				 <&ccu CLK_BUS_EHCI0>,
-> +				 <&ccu CLK_USB_OHCI0>;
-> +			resets = <&ccu RST_BUS_OHCI0>,
-> +				 <&ccu RST_BUS_EHCI0>;
-> +			status = "disabled";
-> +		};
-> +
-> +		ohci0: usb@5101400 {
-> +			compatible = "allwinner,sun50i-h616-ohci",
-> +				     "generic-ohci";
-> +			reg = <0x05101400 0x100>;
-> +			interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_OHCI0>,
-> +				 <&ccu CLK_USB_OHCI0>;
-> +			resets = <&ccu RST_BUS_OHCI0>;
-> +			status = "disabled";
-> +		};
-> +
-> +		ehci1: usb@5200000 {
-> +			compatible = "allwinner,sun50i-h616-ehci",
-> +				     "generic-ehci";
-> +			reg = <0x05200000 0x100>;
-> +			interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_OHCI1>,
-> +				 <&ccu CLK_BUS_EHCI1>,
-> +				 <&ccu CLK_USB_OHCI1>;
-> +			resets = <&ccu RST_BUS_OHCI1>,
-> +				 <&ccu RST_BUS_EHCI1>;
-> +			phys = <&usbphy 1>;
-> +			phy-names = "usb";
-> +			status = "disabled";
-> +		};
-> +
-> +		ohci1: usb@5200400 {
-> +			compatible = "allwinner,sun50i-h616-ohci",
-> +				     "generic-ohci";
-> +			reg = <0x05200400 0x100>;
-> +			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_OHCI1>,
-> +				 <&ccu CLK_USB_OHCI1>;
-> +			resets = <&ccu RST_BUS_OHCI1>;
-> +			phys = <&usbphy 1>;
-> +			phy-names = "usb";
-> +			status = "disabled";
-> +		};
-> +
-> +		ehci2: usb@5310000 {
-> +			compatible = "allwinner,sun50i-h616-ehci",
-> +				     "generic-ehci";
-> +			reg = <0x05310000 0x100>;
-> +			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_OHCI2>,
-> +				 <&ccu CLK_BUS_EHCI2>,
-> +				 <&ccu CLK_USB_OHCI2>;
-> +			resets = <&ccu RST_BUS_OHCI2>,
-> +				 <&ccu RST_BUS_EHCI2>;
-> +			phys = <&usbphy 2>;
-> +			phy-names = "usb";
-> +			status = "disabled";
-> +		};
-> +
-> +		ohci2: usb@5310400 {
-> +			compatible = "allwinner,sun50i-h616-ohci",
-> +				     "generic-ohci";
-> +			reg = <0x05310400 0x100>;
-> +			interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_OHCI2>,
-> +				 <&ccu CLK_USB_OHCI2>;
-> +			resets = <&ccu RST_BUS_OHCI2>;
-> +			phys = <&usbphy 2>;
-> +			phy-names = "usb";
-> +			status = "disabled";
-> +		};
-> +
-> +		ehci3: usb@5311000 {
-> +			compatible = "allwinner,sun50i-h616-ehci",
-> +				     "generic-ehci";
-> +			reg = <0x05311000 0x100>;
-> +			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_OHCI3>,
-> +				 <&ccu CLK_BUS_EHCI3>,
-> +				 <&ccu CLK_USB_OHCI3>;
-> +			resets = <&ccu RST_BUS_OHCI3>,
-> +				 <&ccu RST_BUS_EHCI3>;
-> +			phys = <&usbphy 3>;
-> +			phy-names = "usb";
-> +			status = "disabled";
-> +		};
-> +
-> +		ohci3: usb@5311400 {
-> +			compatible = "allwinner,sun50i-h616-ohci",
-> +				     "generic-ohci";
-> +			reg = <0x05311400 0x100>;
-> +			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_OHCI3>,
-> +				 <&ccu CLK_USB_OHCI3>;
-> +			resets = <&ccu RST_BUS_OHCI3>;
-> +			phys = <&usbphy 3>;
-> +			phy-names = "usb";
-> +			status = "disabled";
-> +		};
-> +
-> +		rtc: rtc@7000000 {
-> +			compatible = "allwinner,sun50i-h616-rtc",
-> +				     "allwinner,sun50i-h6-rtc";
-> +			reg = <0x07000000 0x400>;
-> +			interrupts = <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
-> +			clock-output-names = "osc32k", "osc32k-out",
-> "iosc";
-> +			#clock-cells = <1>;
-> +		};
-> +
-> +		r_ccu: clock@7010000 {
-> +			compatible = "allwinner,sun50i-h616-r-ccu";
-> +			reg = <0x07010000 0x400>;
-> +			clocks = <&osc24M>, <&rtc 0>, <&rtc 2>,
-> +				 <&ccu CLK_PLL_PERIPH0>;
-> +			clock-names = "hosc", "losc", "iosc", "pll-
-> periph";
-> +			#clock-cells = <1>;
-> +			#reset-cells = <1>;
-> +		};
-> +
-> +		r_pio: pinctrl@7022000 {
-> +			compatible = "allwinner,sun50i-h616-r-pinctrl";
-> +			reg = <0x07022000 0x400>;
-> +			interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&r_ccu CLK_R_APB1>, <&osc24M>, <&rtc
-> 0>;
-> +			clock-names = "apb", "hosc", "losc";
-> +			gpio-controller;
-> +			#gpio-cells = <3>;
-> +			interrupt-controller;
-> +			#interrupt-cells = <3>;
-> +
-> +			r_i2c_pins: r-i2c-pins {
-> +				pins = "PL0", "PL1";
-> +				function = "s_i2c";
-> +			};
-> +		};
-> +
-> +		ir: ir@7040000 {
-> +				compatible = "allwinner,sun50i-h616-
-> ir",
-> +					     "allwinner,sun6i-a31-ir";
-> +				reg = <0x07040000 0x400>;
-> +				interrupts = <GIC_SPI 106
-> IRQ_TYPE_LEVEL_HIGH>;
-> +				clocks = <&ccu CLK_R_APB1_IR>,
-> +					 <&ccu CLK_IR>;
-> +				clock-names = "apb", "ir";
-> +				resets = <&ccu RST_R_APB1_IR>;
-> +				pinctrl-names = "default";
-> +				pinctrl-0 = <&ir_rx_pin>;
-> +				status = "disabled";
-> +		};
-> +
-> +		r_i2c: i2c@7081400 {
-> +			compatible = "allwinner,sun50i-h616-i2c",
-> +				     "allwinner,sun6i-a31-i2c";
-> +			reg = <0x07081400 0x400>;
-> +			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&r_ccu CLK_R_APB2_I2C>;
-> +			resets = <&r_ccu RST_R_APB2_I2C>;
-> +			status = "disabled";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +		};
-> +	};
-> +};
+
+Did you send a patch to support that PHY?
+
+Maxime
+
+--3mfoptda66u5dqyw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8e7MAAKCRDj7w1vZxhR
+xbA0APwKuWyX5IzL0i/DExNoyYXOgPB6lgUDp8vd9HpgmMtrRAEA+xk9fjHV1jf6
+DP8rG8c3F3vF/flKB2mU+i0LIel7zQ8=
+=9zCo
+-----END PGP SIGNATURE-----
+
+--3mfoptda66u5dqyw--
