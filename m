@@ -2,168 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74E82CC148
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 622AE2CC13C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388936AbgLBPtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:49:40 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1140 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728608AbgLBPtj (ORCPT
+        id S1729128AbgLBPsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:48:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728544AbgLBPsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:49:39 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2Fl2B5096554;
-        Wed, 2 Dec 2020 10:48:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=fBPxYPgsvkf+CoxdCEVMZ5J+rf844SeLR5d894vr+Sg=;
- b=Si+pIbKuCX8jk9NuW50eMeIB/D8bRlBHt+BdnHD9AwH3dFBqWYFew17XpCiqG3YWX/zd
- WjNsgUex326033rrEkN9+CAZm9ELj4YP2jSmocIgfDZUFPHKVtcYSkErNQxVtt0KZcRU
- tMhevjY23AVduUF39zKTyreIWZIRTnuuQwXBHGWmr30UfrKRMsQjynyRMtgOimGEas4O
- f824XllSrLpr+qlUqc+PqcJSyyxFcvt4oB9/XSwsjVWk5IjWZHEKaC1n9hWfjjMZ2vTj
- cHJtn6wzXjh4pgZIA6/N574lramrKoA1JP8PgTdoiDRLBXdnm2T5zw4Yuxo9W2Mz1E7Z LQ== 
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 355y6d8skp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 10:48:16 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2FYud1021218;
-        Wed, 2 Dec 2020 15:48:16 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma01wdc.us.ibm.com with ESMTP id 355vrfqwyx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 15:48:16 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2Fl0345505756
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Dec 2020 15:47:00 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 607E9AE064;
-        Wed,  2 Dec 2020 15:47:00 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 857B4AE05F;
-        Wed,  2 Dec 2020 15:46:59 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.211.78.151])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Dec 2020 15:46:59 +0000 (GMT)
-Subject: Re: [PATCH v2 06/17] ibmvfc: add handlers to drain and complete
- Sub-CRQ responses
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201202005329.4538-1-tyreld@linux.ibm.com>
- <20201202005329.4538-7-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <32b08be7-4c1e-a572-c70c-1f182f1d0259@linux.vnet.ibm.com>
-Date:   Wed, 2 Dec 2020 09:46:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 2 Dec 2020 10:48:24 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897A3C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:47:43 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id p8so4512306wrx.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:47:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hZCo1m8g7QPYnEX3m7SsmQm546vtQp+mN348j0Xkt6I=;
+        b=WozaPSMeOVI9euTVFOarywGpxKAPZvKOXOEWQtvyps7gdpv6liS1NZR50dH857phu2
+         Y1bMq0kgHUwjXNWnESQfr3PxIZEMqAohaQBnW3/nd5DWWL0S8YiX4k2whD+N+KHoeFop
+         17/44eB5Xm0ZftGesDSIUrNQbgxc63hr9WR9P18dHP2Yda+6R4cQEaB0jjNIxAR/g1W8
+         CXSxIStqcYpyTXP8aiLtE9H/hTG0YMbcil0gG63TyDzHxLfKpu8LoaL2NjmbWB8Bx3hS
+         YTce5kYBVLCHvO2X2wSEbN2x3JqL4Li+z851OEp0eKF9dELEArBV1erCImBwUK+G++v5
+         dmcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hZCo1m8g7QPYnEX3m7SsmQm546vtQp+mN348j0Xkt6I=;
+        b=iyM3qFOE1A9zDvjc06s6zVc7QhaVZbtYkEMVQVHCDXg2+8yVWRZJ0n3/HOLFhm9/8E
+         OE+J/w/8rPrJ+usAhD7FVcI1CoN4JAE7DRF9WyrOaGYKtlzHxYnBYjwspviqqWB/6esu
+         xduWfezmXBkQ9YaLhXPTqX2c/tZ2KQ4ldpU4KCrSWPREPV3mPgHauNl3mSKrnxEwEJeF
+         NDIaW3owH78JALvgTZ409YI3sqHWldgVDDWoWIirhBurEGwm/b7dfRbCahnO8IUX+fo9
+         SgaMvlwL6S9FOQUii00w2mrw6WmvEQEgronFidBFvfYOI9SyZZNs/Q3C1XsYjgyv3+tM
+         3Z+w==
+X-Gm-Message-State: AOAM533f6pnbs/TzOIYPlVk+ReOn0qC8Du2UX+vfwtvLC5lrVjIKQ2CS
+        jHuEwW+13aSTIDxv6Kv9wwUMdpq57Q3AkKLe
+X-Google-Smtp-Source: ABdhPJzPDRn6F8yI8MQnEqRIUcKoTyE96fFWrfcQlIjRGQGvsOzW1c+R+URB/NtEvglv2Rk0vXYh+w==
+X-Received: by 2002:adf:f102:: with SMTP id r2mr4198893wro.315.1606924061942;
+        Wed, 02 Dec 2020 07:47:41 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id r13sm2444950wrs.6.2020.12.02.07.47.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Dec 2020 07:47:41 -0800 (PST)
+Subject: Re: [PATCH 1/6] arm64: dts: qcom: sm8250: add apr and its services
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201201153706.13450-1-srinivas.kandagatla@linaro.org>
+ <20201201153706.13450-2-srinivas.kandagatla@linaro.org>
+ <X8aYkxFMf+dzNRNt@builder.lan>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <6cbf6754-56bc-c35a-038e-08903c2e09d2@linaro.org>
+Date:   Wed, 2 Dec 2020 15:47:40 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20201202005329.4538-7-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <X8aYkxFMf+dzNRNt@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-02_08:2020-11-30,2020-12-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- mlxscore=0 suspectscore=2 priorityscore=1501 clxscore=1015 adultscore=0
- lowpriorityscore=0 malwarescore=0 impostorscore=0 spamscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012020095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
-> The logic for iterating over the Sub-CRQ responses is similiar to that
-> of the primary CRQ. Add the necessary handlers for processing those
-> responses.
+Many thanks Bjorn for review,
+
+On 01/12/2020 19:25, Bjorn Andersson wrote:
+> On Tue 01 Dec 09:37 CST 2020, Srinivas Kandagatla wrote:
 > 
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-> ---
->  drivers/scsi/ibmvscsi/ibmvfc.c | 77 ++++++++++++++++++++++++++++++++++
->  1 file changed, 77 insertions(+)
+>> Add apr node and its associated services required for audio on RB5.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sm8250.dtsi | 56 ++++++++++++++++++++++++++++
+>>   1 file changed, 56 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+>> index 65acd1f381eb..3b4e98b13d36 100644
+>> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+>> @@ -11,6 +11,8 @@
+>>   #include <dt-bindings/mailbox/qcom-ipcc.h>
+>>   #include <dt-bindings/power/qcom-aoss-qmp.h>
+>>   #include <dt-bindings/power/qcom-rpmpd.h>
+>> +#include <dt-bindings/soc/qcom,apr.h>
+>> +#include <dt-bindings/sound/qcom,q6afe.h>
 > 
-> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-> index 97f00fefa809..e9da3f60c793 100644
-> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
-> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-> @@ -3381,6 +3381,83 @@ static int ibmvfc_toggle_scrq_irq(struct ibmvfc_sub_queue *scrq, int enable)
->  	return rc;
->  }
->  
-> +static void ibmvfc_handle_scrq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost)
-> +{
-> +	struct ibmvfc_event *evt = (struct ibmvfc_event *)be64_to_cpu(crq->ioba);
-> +	unsigned long flags;
-> +
-> +	switch (crq->valid) {
-> +	case IBMVFC_CRQ_CMD_RSP:
-> +		break;
-> +	case IBMVFC_CRQ_XPORT_EVENT:
-> +		return;
-> +	default:
-> +		dev_err(vhost->dev, "Got and invalid message type 0x%02x\n", crq->valid);
-> +		return;
-> +	}
-> +
-> +	/* The only kind of payload CRQs we should get are responses to
-> +	 * things we send. Make sure this response is to something we
-> +	 * actually sent
-> +	 */
-> +	if (unlikely(!ibmvfc_valid_event(&vhost->pool, evt))) {
-> +		dev_err(vhost->dev, "Returned correlation_token 0x%08llx is invalid!\n",
-> +			crq->ioba);
-> +		return;
-> +	}
-> +
-> +	if (unlikely(atomic_read(&evt->free))) {
-> +		dev_err(vhost->dev, "Received duplicate correlation_token 0x%08llx!\n",
-> +			crq->ioba);
-> +		return;
-> +	}
-> +
-> +	spin_lock_irqsave(vhost->host->host_lock, flags);
-> +	del_timer(&evt->timer);
-> +	list_del(&evt->queue);
-> +	ibmvfc_trc_end(evt);
-> +	spin_unlock_irqrestore(vhost->host->host_lock, flags);
-> +	evt->done(evt);
-> +}
-> +
-> +static struct ibmvfc_crq *ibmvfc_next_scrq(struct ibmvfc_sub_queue *scrq)
-> +{
-> +	struct ibmvfc_crq *crq;
-> +
-> +	crq = &scrq->msgs[scrq->cur].crq;
-> +	if (crq->valid & 0x80) {
-> +		if (++scrq->cur == scrq->size)
+> Please move this line one step down to maintain the alphabetical sort
+> order.
 
-You are incrementing the cur pointer without any locks held. Although
-unlikely, could you also be in ibmvfc_reset_crq in another thread?
-If so, you'd have a subtle race condition here where the cur pointer could
-be read, then ibmvfc_reset_crq writes it to zero, then this thread
-writes it to a non zero value, which would then cause you to be out of
-sync with the VIOS as to where the cur pointer is.
+I agree with all the comments on this patch as well as other patches, 
+will send v2 with those fixed!
 
-> +			scrq->cur = 0;
-> +		rmb();
-> +	} else
-> +		crq = NULL;
-> +
-> +	return crq;
-> +}
-> +
-
-
-
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
-
+Thanks,
+srini
+> 
+> Thanks,
+> Bjorn
+> 
+>>   #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>>   #include <dt-bindings/thermal/thermal.h>
+>>   
+>> @@ -2620,6 +2622,60 @@
+>>   				label = "lpass";
+>>   				qcom,remote-pid = <2>;
+>>   
+>> +				apr {
+>> +					compatible = "qcom,apr-v2";
+>> +					qcom,glink-channels = "apr_audio_svc";
+>> +					qcom,apr-domain = <APR_DOMAIN_ADSP>;
+>> +					#address-cells = <1>;
+>> +					#size-cells = <0>;
+>> +
+>> +					apr-service@3 {
+>> +						reg = <APR_SVC_ADSP_CORE>;
+>> +						compatible = "qcom,q6core";
+>> +						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
+>> +					};
+>> +
+>> +					q6afe: apr-service@4 {
+>> +						compatible = "qcom,q6afe";
+>> +						reg = <APR_SVC_AFE>;
+>> +						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
+>> +						q6afedai: dais {
+>> +							compatible = "qcom,q6afe-dais";
+>> +							#address-cells = <1>;
+>> +							#size-cells = <0>;
+>> +							#sound-dai-cells = <1>;
+>> +						};
+>> +
+>> +						q6afecc: cc {
+>> +							compatible = "qcom,q6afe-clocks";
+>> +							#clock-cells = <2>;
+>> +						};
+>> +					};
+>> +
+>> +					q6asm: apr-service@7 {
+>> +						compatible = "qcom,q6asm";
+>> +						reg = <APR_SVC_ASM>;
+>> +						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
+>> +						q6asmdai: dais {
+>> +							compatible = "qcom,q6asm-dais";
+>> +							#address-cells = <1>;
+>> +							#size-cells = <0>;
+>> +							#sound-dai-cells = <1>;
+>> +							iommus = <&apps_smmu 0x1801 0x0>;
+>> +						};
+>> +					};
+>> +
+>> +					q6adm: apr-service@8 {
+>> +						compatible = "qcom,q6adm";
+>> +						reg = <APR_SVC_ADM>;
+>> +						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
+>> +						q6routing: routing {
+>> +							compatible = "qcom,q6adm-routing";
+>> +							#sound-dai-cells = <0>;
+>> +						};
+>> +					};
+>> +				};
+>> +
+>>   				fastrpc {
+>>   					compatible = "qcom,fastrpc";
+>>   					qcom,glink-channels = "fastrpcglink-apps-dsp";
+>> -- 
+>> 2.21.0
+>>
