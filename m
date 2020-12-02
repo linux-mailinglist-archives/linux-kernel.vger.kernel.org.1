@@ -2,384 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317FC2CBF16
+	by mail.lfdr.de (Postfix) with ESMTP id A118D2CBF17
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729998AbgLBOIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2388970AbgLBOIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:08:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:40906 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729043AbgLBOIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Dec 2020 09:08:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388940AbgLBOIA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:08:00 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19CFC08E861
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 06:06:40 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id d17so4452212ejy.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 06:06:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ds9qLi+pz1g1OhGvJze7udHxEk/HtgVmujD01NJgnrU=;
-        b=aLfhH9W2jYts06BShnEEn+N7F6fofgIzZjBKfVwxTc4PYP2zRIr4ZnVfsaUbnNj63r
-         k/UPk2MkPGQ0JlMMUu8th/JAm49uonwS/Eu4MU4iT8XHGqKCn35X1N7kMSsxCGGPH9Q6
-         2GSLyh6H0UkhNvkfg0YvwrbhCi4ZWvhKR0dB5aQwq39dLWJl8xDuDX3hL1O+4WpOAebU
-         0eFoNAE8IvWMAP1ts4mE4XoOZ6dRSehroS0saWox/CHBqPjiQ+rgPMrEtSigcYBsPBFF
-         VFaFZ0Eg4bMFIAM0XLddB0MPLHOjkryNAn8Nnv8PkNueYuolv3GZBE+HIVRTM0JDIwRk
-         zsGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=Ds9qLi+pz1g1OhGvJze7udHxEk/HtgVmujD01NJgnrU=;
-        b=dcMJIIKcnA6TtsrziTnlLiTZj1TDojhiccCANSxZeTgw/w9+YQiAeGd8RQcWtDutJS
-         0f4paF7qPghrnKrdNrITYvCOErwjrC2eXOFdPeg+BdtW444DYYn4mpvarEZD6VymtU0S
-         c/+DuLrgo+ZHOf5e9FqsZep5R/y2+cf0PJxMC2l8+I80OvZQ5gnTHB/+vHSUd86lP6pd
-         tGQAaVuZ3mSCYnnl/vlPjy1pUa7LhtxWvwoNyhcgSbcxl+EdJwG9+9WlxDYCc/Xfpxy8
-         NI/FBJPzfye6gnOjat2zR2jyYeA2Wk8QaE3Bl0LMUu85f32/B3E+3F0MihMj5RxxGBoa
-         7oPA==
-X-Gm-Message-State: AOAM531dXXEafx8rnKlOPe8XKVgYUuj7hwOOEMoNeZdl36lRNckacS3x
-        4PCWRI61Z/T8ncPg7vSz9LG7YfcHJnDCyPkU
-X-Google-Smtp-Source: ABdhPJxBU/ZdslDgPwAEg/jquaCrf5GGzSjUQCC95mijGM8ohQ87PLq2XzazpKCv/gZ/2O1tnm61sQ==
-X-Received: by 2002:a17:907:d8b:: with SMTP id go11mr2440282ejc.247.1606917999037;
-        Wed, 02 Dec 2020 06:06:39 -0800 (PST)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id d14sm22091edn.31.2020.12.02.06.06.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Dec 2020 06:06:38 -0800 (PST)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 12/12] arm64: dts: zynqmp: Add description for zcu104 revC
-Date:   Wed,  2 Dec 2020 15:06:11 +0100
-Message-Id: <5b670099adb67b06ec0a7d1b04ed9f4076e520c1.1606917949.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1606917949.git.michal.simek@xilinx.com>
-References: <cover.1606917949.git.michal.simek@xilinx.com>
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DDDFE1063;
+        Wed,  2 Dec 2020 06:07:24 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A600A3F718;
+        Wed,  2 Dec 2020 06:07:22 -0800 (PST)
+Date:   Wed, 2 Dec 2020 14:07:20 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 08/14] arm64: exec: Adjust affinity for compat tasks
+ with mismatched 32-bit EL0
+Message-ID: <20201202140720.vlnpvge3bgtvn43s@e107158-lin.cambridge.arm.com>
+References: <20201124155039.13804-1-will@kernel.org>
+ <20201124155039.13804-9-will@kernel.org>
+ <20201127132306.ee4frq6ujz3fqxic@e107158-lin.cambridge.arm.com>
+ <20201201165556.GA27783@willie-the-truck>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201201165556.GA27783@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xilinx ZynqMP zcu104 revC and newer board revisions have different i2c
-structure compare to revA. The rest of the board is the same from software
-perspective.
-Also enable DMAs and QSPI.
+On 12/01/20 16:55, Will Deacon wrote:
+> > > +static void adjust_compat_task_affinity(struct task_struct *p)
+> > > +{
+> > > +	cpumask_var_t cpuset_mask;
+> > > +	const struct cpumask *possible_mask = system_32bit_el0_cpumask();
+> > > +	const struct cpumask *newmask = possible_mask;
+> > > +
+> > > +	/*
+> > > +	 * Restrict the CPU affinity mask for a 32-bit task so that it contains
+> > > +	 * only the 32-bit-capable subset of its original CPU mask. If this is
+> > > +	 * empty, then try again with the cpuset allowed mask. If that fails,
+> > > +	 * forcefully override it with the set of all 32-bit-capable CPUs that
+> > > +	 * we know about.
+> > > +	 *
+> > > +	 * From the perspective of the task, this looks similar to what would
+> > > +	 * happen if the 64-bit-only CPUs were hot-unplugged at the point of
+> > > +	 * execve().
+> > > +	 */
+> > > +	if (!restrict_cpus_allowed_ptr(p, possible_mask))
+> > > +		goto out;
+> > > +
+> > > +	if (alloc_cpumask_var(&cpuset_mask, GFP_KERNEL)) {
+> > > +		cpuset_cpus_allowed(p, cpuset_mask);
+> > > +		if (cpumask_and(cpuset_mask, cpuset_mask, possible_mask)) {
+> > > +			newmask = cpuset_mask;
+> > > +			goto out_set_mask;
+> > > +		}
+> > > +	}
+> > 
+> > Wouldn't it be better to move this logic to restrict_cpus_allowed_ptr()?
+> > I think it should always take cpusets into account and it's not special to
+> > this particular handling here, no?
+> 
+> I did actually try this but didn't pursue it further because I was worried
+> that I was putting too much of the "can't run a 32-bit task on a 64-bit-only
+> CPU" logic into what would otherwise be a potentially useful library function
+> if/when other architectures want something similar. But I'll have another
+> look because there were a couple of ideas I didn't try out.
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+If we improve the cpuset handling issues to take into account
+arch_task_cpu_possible_mask() as discussed in the other thread, I think we can
+drop the cpuset handling here.
 
- arch/arm64/boot/dts/xilinx/Makefile           |   1 +
- .../boot/dts/xilinx/zynqmp-zcu104-revC.dts    | 282 ++++++++++++++++++
- 2 files changed, 283 insertions(+)
- create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
+> 
+> > > +	if (printk_ratelimit()) {
+> > > +		printk_deferred("Overriding affinity for 32-bit process %d (%s) to CPUs %*pbl\n",
+> > > +				task_pid_nr(p), p->comm, cpumask_pr_args(newmask));
+> > > +	}
+> > 
+> > We have 2 cases where the affinity could have been overridden but we won't
+> > print anything:
+> > 
+> > 	1. restrict_cpus_allowed_ptr()
+> > 	2. intersection of cpuset_mask and possible mask drops some cpus.
+> > 
+> > Shouldn't we print something in these cases too?
+> 
+> I don't think so: in these cases we've found a subset of CPUs that we can
+> run on, and so there's no need to warn. Nothing says we _have_ to use all
+> the CPUs available to us. The case where we override the affinity mask
+> altogether, however, does warrant a warning. This is very similar to the
+> hotplug behaviour in select_fallback_rq().
 
-diff --git a/arch/arm64/boot/dts/xilinx/Makefile b/arch/arm64/boot/dts/xilinx/Makefile
-index 60f5443f3ef4..11fb4fd3ebd4 100644
---- a/arch/arm64/boot/dts/xilinx/Makefile
-+++ b/arch/arm64/boot/dts/xilinx/Makefile
-@@ -13,5 +13,6 @@ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu102-revA.dtb
- dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu102-revB.dtb
- dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu102-rev1.0.dtb
- dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revA.dtb
-+dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revC.dtb
- dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu106-revA.dtb
- dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu111-revA.dtb
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
-new file mode 100644
-index 000000000000..414f98f1831e
---- /dev/null
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
-@@ -0,0 +1,282 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dts file for Xilinx ZynqMP ZCU104
-+ *
-+ * (C) Copyright 2017 - 2020, Xilinx, Inc.
-+ *
-+ * Michal Simek <michal.simek@xilinx.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include "zynqmp.dtsi"
-+#include "zynqmp-clk-ccf.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/phy/phy.h>
-+
-+/ {
-+	model = "ZynqMP ZCU104 RevC";
-+	compatible = "xlnx,zynqmp-zcu104-revC", "xlnx,zynqmp-zcu104", "xlnx,zynqmp";
-+
-+	aliases {
-+		ethernet0 = &gem3;
-+		i2c0 = &i2c1;
-+		mmc0 = &sdhci1;
-+		rtc0 = &rtc;
-+		serial0 = &uart0;
-+		serial1 = &uart1;
-+		serial2 = &dcc;
-+	};
-+
-+	chosen {
-+		bootargs = "earlycon";
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x0 0x80000000>;
-+	};
-+
-+	ina226 {
-+		compatible = "iio-hwmon";
-+		io-channels = <&u183 0>, <&u183 1>, <&u183 2>, <&u183 3>;
-+	};
-+
-+	clock_8t49n287_5: clk125 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <125000000>;
-+	};
-+
-+	clock_8t49n287_2: clk26 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <26000000>;
-+	};
-+
-+	clock_8t49n287_3: clk27 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <27000000>;
-+	};
-+};
-+
-+&can1 {
-+	status = "okay";
-+};
-+
-+&dcc {
-+	status = "okay";
-+};
-+
-+&fpd_dma_chan1 {
-+	status = "okay";
-+};
-+
-+&fpd_dma_chan2 {
-+	status = "okay";
-+};
-+
-+&fpd_dma_chan3 {
-+	status = "okay";
-+};
-+
-+&fpd_dma_chan4 {
-+	status = "okay";
-+};
-+
-+&fpd_dma_chan5 {
-+	status = "okay";
-+};
-+
-+&fpd_dma_chan6 {
-+	status = "okay";
-+};
-+
-+&fpd_dma_chan7 {
-+	status = "okay";
-+};
-+
-+&fpd_dma_chan8 {
-+	status = "okay";
-+};
-+
-+&gem3 {
-+	status = "okay";
-+	phy-handle = <&phy0>;
-+	phy-mode = "rgmii-id";
-+	phy0: ethernet-phy@c {
-+		reg = <0xc>;
-+		ti,rx-internal-delay = <0x8>;
-+		ti,tx-internal-delay = <0xa>;
-+		ti,fifo-depth = <0x1>;
-+		ti,dp83867-rxctrl-strap-quirk;
-+	};
-+};
-+
-+&gpio {
-+	status = "okay";
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+
-+	tca6416_u97: gpio@20 {
-+		compatible = "ti,tca6416";
-+		reg = <0x20>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		/*
-+		 * IRQ not connected
-+		 * Lines:
-+		 * 0 - IRPS5401_ALERT_B
-+		 * 1 - HDMI_8T49N241_INT_ALM
-+		 * 2 - MAX6643_OT_B
-+		 * 3 - MAX6643_FANFAIL_B
-+		 * 5 - IIC_MUX_RESET_B
-+		 * 6 - GEM3_EXP_RESET_B
-+		 * 7 - FMC_LPC_PRSNT_M2C_B
-+		 * 4, 10 - 17 - not connected
-+		 */
-+	};
-+
-+	/* Another connection to this bus via PL i2c via PCA9306 - u45 */
-+	i2c-mux@74 { /* u34 */
-+		compatible = "nxp,pca9548";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <0x74>;
-+		i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+			/*
-+			 * IIC_EEPROM 1kB memory which uses 256B blocks
-+			 * where every block has different address.
-+			 *    0 - 256B address 0x54
-+			 * 256B - 512B address 0x55
-+			 * 512B - 768B address 0x56
-+			 * 768B - 1024B address 0x57
-+			 */
-+			eeprom: eeprom@54 { /* u23 */
-+				compatible = "atmel,24c08";
-+				reg = <0x54>;
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+			};
-+		};
-+
-+		i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+			clock_8t49n287: clock-generator@6c { /* 8T49N287 - u182 */
-+				reg = <0x6c>;
-+			};
-+		};
-+
-+		i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+			irps5401_43: irps5401@43 { /* IRPS5401 - u175 */
-+				compatible = "infineon,irps5401";
-+				reg = <0x43>; /* pmbus / i2c 0x13 */
-+			};
-+			irps5401_44: irps5401@44 { /* IRPS5401 - u180 */
-+				compatible = "infineon,irps5401";
-+				reg = <0x44>; /* pmbus / i2c 0x14 */
-+			};
-+		};
-+
-+		i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+			u183: ina226@40 { /* u183 */
-+				compatible = "ti,ina226";
-+				#io-channel-cells = <1>;
-+				reg = <0x40>;
-+				shunt-resistor = <5000>;
-+			};
-+		};
-+
-+		i2c@5 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <5>;
-+		};
-+
-+		i2c@7 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <7>;
-+		};
-+
-+		/* 4, 6 not connected */
-+	};
-+};
-+
-+&qspi {
-+	status = "okay";
-+	flash@0 {
-+		compatible = "m25p80", "jedec,spi-nor"; /* n25q512a 128MiB */
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		reg = <0x0>;
-+	};
-+};
-+
-+&rtc {
-+	status = "okay";
-+};
-+
-+&psgtr {
-+	status = "okay";
-+	/* nc, sata, usb3, dp */
-+	clocks = <&clock_8t49n287_5>, <&clock_8t49n287_2>, <&clock_8t49n287_3>;
-+	clock-names = "ref1", "ref2", "ref3";
-+};
-+
-+&sata {
-+	status = "okay";
-+	/* SATA OOB timing settings */
-+	ceva,p0-cominit-params = /bits/ 8 <0x18 0x40 0x18 0x28>;
-+	ceva,p0-comwake-params = /bits/ 8 <0x06 0x14 0x08 0x0E>;
-+	ceva,p0-burst-params = /bits/ 8 <0x13 0x08 0x4A 0x06>;
-+	ceva,p0-retry-params = /bits/ 16 <0x96A4 0x3FFC>;
-+	ceva,p1-cominit-params = /bits/ 8 <0x18 0x40 0x18 0x28>;
-+	ceva,p1-comwake-params = /bits/ 8 <0x06 0x14 0x08 0x0E>;
-+	ceva,p1-burst-params = /bits/ 8 <0x13 0x08 0x4A 0x06>;
-+	ceva,p1-retry-params = /bits/ 16 <0x96A4 0x3FFC>;
-+	phy-names = "sata-phy";
-+	phys = <&psgtr 3 PHY_TYPE_SATA 1 1>;
-+};
-+
-+/* SD1 with level shifter */
-+&sdhci1 {
-+	status = "okay";
-+	no-1-8-v;
-+	xlnx,mio-bank = <1>;
-+	disable-wp;
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	status = "okay";
-+};
-+
-+/* ULPI SMSC USB3320 */
-+&usb0 {
-+	status = "okay";
-+	dr_mode = "host";
-+};
-+
-+&watchdog0 {
-+	status = "okay";
-+};
--- 
-2.29.2
+Okay. It is just to warn when we actually break the affinity because we ended
+up with empty mask; not just because we changed the affinity to an intersecting
+one.
 
+I think this makes sense, yes. We might be able to drop this too if we improve
+cpuset handling. The devil is in the details I guess.
+
+Thanks
+
+--
+Qais Yousef
