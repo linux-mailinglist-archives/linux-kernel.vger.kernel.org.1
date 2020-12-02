@@ -2,128 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A532CB3D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 05:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4BC2CB3D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 05:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387522AbgLBEMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 23:12:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60394 "EHLO
+        id S1728295AbgLBEQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 23:16:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726810AbgLBEMV (ORCPT
+        with ESMTP id S1727590AbgLBEQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 23:12:21 -0500
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2DCC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 20:11:35 -0800 (PST)
-Received: by mail-vk1-xa44.google.com with SMTP id m6so112974vkl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 20:11:35 -0800 (PST)
+        Tue, 1 Dec 2020 23:16:49 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F751C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 20:16:09 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id t18so414088plo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 20:16:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xtglqhkWZ3g8rxnwzWMhjFDL6xCz7jFKKZM6f0KYfMU=;
-        b=SP7/Pecj6b4qSD5XU+UwkE4RYOmIoU99mt2VGbOQYRN1lcQFEyQ7rhHV22LtcvuOOc
-         IuBR70yhqHsM9kBzqNfo7xXE2/Q2X5WdTq2oV2oMyv5tUZxUfYZcjgyHGyMQFP6KQmxZ
-         oEQX+FZhHqb5+zbFi0sePQeP/3fuKm6pcgyaaDJ8jApZXX17sK+Rx/xZ+Pm4jcgC1FWD
-         m2CEUVBh1cSbBhvVEhRLjzjye+jsj9A5t5OqGBaJdmKdZihuMP99++abtBf/EPAEpRxf
-         +Rt0NUo1aJW8ElCuYPYTyP4QunmjYTaAykBcmzKgEZk6c/vRVjXozZ+EPVcSKRRUzYN6
-         XXVQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MmseSE+cXdLssv3A7XwhA62+JeVI67fYqg37Pw8CX+s=;
+        b=CZMlOVhcE+DaJbhEL6v7DShX5B47FyRHV+0mvl4UoFyxQtO4y4pD9uSJPZ/wJWYTR7
+         ECgglgWPnMOeMbJ8t6x56Ei2QFzkmvV4z5Lia+lXzPsbAU4/12JmHF0EcfmATHVXyRGs
+         yz5q9v6c6fe5T0cRtzlexuG/9VEuwu/sXf4K7+TZw5IxMw4D7RG0hGMpLgmoi6On18DD
+         QLNCkRp6rfONlg7muH2hZHiAXeRs6lP67yMjJVcmDvkAoiEKEIVrXqr8RowOHxCTjLbL
+         kfw2uQGSaiB0oXbRvwYcgQBgCMQnLsATmZZX0aclggv9rASTYk4eDr4vgwKouQTkq4Nx
+         VdEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xtglqhkWZ3g8rxnwzWMhjFDL6xCz7jFKKZM6f0KYfMU=;
-        b=AKjPJ/z7QYdxHqpoz4YTjIuQtHszgh0FtI8qlEfsZIotJVA5/jhmPv75bKcNyJ0SEd
-         QaQ4DhecXSSKa209NF7ITIaiwh3ZxLBEinWhyucsLEhMI3nUImkbjb51MGXiPhwqx7QK
-         2oguP5qTTOGfKx7SHKDF9ZHpHgWPxZgD1hD6Q0DiqmgdXN8ZUPCnZkIeXFt7+x0gRoO3
-         KuS5Wr3Pn1mE6PoC579uuqGFyH2epb45xiYF6d8Jq0RXAzNQk1JxFYNG9jlEoZUwmAQQ
-         fQWrEnCPmKRmgKo+BjByeYuBGdhsT3JXkW+yCKX+AWeJXnlBa4mRgbWuEP8tLP8xq9la
-         wKxw==
-X-Gm-Message-State: AOAM531mB9j+5dL2TcjBdHF/Oo36tx2GbMEO5+TYsLzW44Fq9w45piLM
-        QS0l8MRBTxI4xxstQcDpc/ri4dhWN6VPRdmuFWtT3w==
-X-Google-Smtp-Source: ABdhPJzeBw3+LaJMe58JHfH3h3ptXnlcnFsmbafVFQjwUANg6KI1yYV546O9vzzfoCCq9w8EO5M7PeJU8z1bAsHncT8=
-X-Received: by 2002:a1f:1bc3:: with SMTP id b186mr475328vkb.18.1606882294515;
- Tue, 01 Dec 2020 20:11:34 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MmseSE+cXdLssv3A7XwhA62+JeVI67fYqg37Pw8CX+s=;
+        b=Nsrva0epkQEcGPvaSOkg70ZbLaoZGwYHQ2g9tXpqkJ7OoWA2RwgAoatMq3UEKUrLNn
+         UcsvorVhb9TxUp3oEX9X+IIXpnZ+4OK0iyBRbpGa1y/Jo1K5y60Kdrgv/Ru34xi4CJTp
+         3HfrbEiW6rK5lF4+TXvXWjcWMpmwJ1Iwjb6T/noqfLK3pY1/N1bQcCVkZgB+riBgWPgl
+         i4A7w5tNDmg+VlhLknGWGL8vpkO7vAS4XnTyRwGEEUOynaWi2mPry3fuoFB+zB2PWTIB
+         g8AShESVuQIHJdt9F1pNicPUulJep2Y9kmqVOx3Frov6rrNNWiCMYXk6f+GN956vBBU9
+         ZoIw==
+X-Gm-Message-State: AOAM533mat3GMPL5d3xboBGNysP2qxchZconU/eDLw/5bOSTdffF2xBu
+        SbUz1pQ2w3zL/dWSeTaRVRQg
+X-Google-Smtp-Source: ABdhPJzRp1eWixG8zA2l2WufQZUMpGtcx2V9TvFvmBE2KJiPdOEDg7cZMVe/o9qpibJZ0jXvsI8WsA==
+X-Received: by 2002:a17:90a:788e:: with SMTP id x14mr553911pjk.139.1606882568360;
+        Tue, 01 Dec 2020 20:16:08 -0800 (PST)
+Received: from thinkpad ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id q13sm296402pjq.15.2020.12.01.20.16.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 20:16:07 -0800 (PST)
+Date:   Wed, 2 Dec 2020 09:45:59 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Jeffrey Hugo <jhugo@codeaurora.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v13 0/4] userspace MHI client interface driver
+Message-ID: <20201202041559.GA3241@thinkpad>
+References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
+ <20201201112901.7f13e26c@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <c6359962-a378-ed03-0fab-c2f6c8a1b8eb@codeaurora.org>
+ <20201201120302.474d4c9b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
 MIME-Version: 1.0
-References: <20201201013246.32034-1-badhri@google.com> <20201201013246.32034-3-badhri@google.com>
- <20201201131646.GC232197@roeck-us.net>
-In-Reply-To: <20201201131646.GC232197@roeck-us.net>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Tue, 1 Dec 2020 20:10:58 -0800
-Message-ID: <CAPTae5+kfGryAT02rMMKbdokWfVFBp50h=zwaBHY9GyPz4e5kA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] usb: typec: tcpci_maxim: Enable VSAFE0V signalling
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201120302.474d4c9b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 5:16 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Mon, Nov 30, 2020 at 05:32:46PM -0800, Badhri Jagan Sridharan wrote:
-> > Unmask EXTENDED_STATUS_MASK.vSafe0V, ALERT.Extended_Status
-> > and set vbus_vsafe0v to enable VSAFE0V signalling.
-> >
-> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > ---
-> >  drivers/usb/typec/tcpm/tcpci_maxim.c | 16 +++++++++++++++-
-> >  1 file changed, 15 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> > index c1797239bf08..1aabe6abd819 100644
-> > --- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-> > +++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> > @@ -112,11 +112,18 @@ static void max_tcpci_init_regs(struct max_tcpci_chip *chip)
-> >               return;
-> >       }
-> >
-> > +     /* Enable VSAFE0V detection */
-> > +     ret = max_tcpci_write8(chip, TCPC_EXTENDED_STATUS_MASK, TCPC_EXTENDED_STATUS_VSAFE0V);
-> > +     if (ret < 0) {
-> > +             dev_err(chip->dev, "Unable to unmask TCPC_EXTENDED_STATUS_VSAFE0V ret:%d\n", ret);
-> > +             return;
-> > +     }
-> > +
-> >       alert_mask = TCPC_ALERT_TX_SUCCESS | TCPC_ALERT_TX_DISCARDED | TCPC_ALERT_TX_FAILED |
-> >               TCPC_ALERT_RX_HARD_RST | TCPC_ALERT_RX_STATUS | TCPC_ALERT_CC_STATUS |
-> >               TCPC_ALERT_VBUS_DISCNCT | TCPC_ALERT_RX_BUF_OVF | TCPC_ALERT_POWER_STATUS |
-> >               /* Enable Extended alert for detecting Fast Role Swap Signal */
-> > -             TCPC_ALERT_EXTND;
-> > +             TCPC_ALERT_EXTND | TCPC_ALERT_EXTENDED_STATUS;
-> >
-> >       ret = max_tcpci_write16(chip, TCPC_ALERT_MASK, alert_mask);
-> >       if (ret < 0) {
-> > @@ -315,6 +322,12 @@ static irqreturn_t _max_tcpci_irq(struct max_tcpci_chip *chip, u16 status)
-> >               }
-> >       }
-> >
-> > +     if (status & TCPC_ALERT_EXTENDED_STATUS) {
-> > +             ret = max_tcpci_read8(chip, TCPC_EXTENDED_STATUS, (u8 *)&reg_status);
-> > +             if (ret >= 0 && (reg_status & TCPC_EXTENDED_STATUS_VSAFE0V))
-> > +                     tcpm_vbus_change(chip->port);
-> > +     }
-> > +
-> >       if (status & TCPC_ALERT_RX_STATUS)
-> >               process_rx(chip, status);
-> >
-> > @@ -442,6 +455,7 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
-> >       chip->data.init = tcpci_init;
-> >       chip->data.frs_sourcing_vbus = max_tcpci_frs_sourcing_vbus;
-> >       chip->data.auto_discharge_disconnect = true;
-> > +     chip->data.vbus_vsafe0v = 1;
->
-> Why not use true/false ?
 
-Sure. Fixing in v2.
 
->
-> >
-> >       max_tcpci_init_regs(chip);
-> >       chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
-> > --
-> > 2.29.2.454.gaff20da3a2-goog
-> >
+On Tue, Dec 01, 2020 at 12:03:02PM -0800, Jakub Kicinski wrote:
+> On Tue, 1 Dec 2020 12:40:50 -0700 Jeffrey Hugo wrote:
+> > On 12/1/2020 12:29 PM, Jakub Kicinski wrote:
+> > > On Fri, 27 Nov 2020 19:26:02 -0800 Hemant Kumar wrote:  
+> > >> This patch series adds support for UCI driver. UCI driver enables userspace
+> > >> clients to communicate to external MHI devices like modem and WLAN. UCI driver
+> > >> probe creates standard character device file nodes for userspace clients to
+> > >> perform open, read, write, poll and release file operations. These file
+> > >> operations call MHI core layer APIs to perform data transfer using MHI bus
+> > >> to communicate with MHI device. Patch is tested using arm64 based platform.  
+> > > 
+> > > Wait, I thought this was for modems.
+> > > 
+> > > Why do WLAN devices need to communicate with user space?
+> > >   
+> > 
+> > Why does it matter what type of device it is?  Are modems somehow unique 
+> > in that they are the only type of device that userspace is allowed to 
+> > interact with?
+> 
+> Yes modems are traditionally highly weird and require some serial
+> device dance I don't even know about.
+> 
+> We have proper interfaces in Linux for configuring WiFi which work
+> across vendors. Having char device access to WiFi would be a step 
+> back.
+> 
+
+This is not for configuring the WiFi. This driver is mostly used for modems and
+the AI accelerator Jeff is working on. But there might be a usecase for WLAN
+devices as well to collect crash dumps and download fw (typical vendor ways) but
+having those features are add-ons IMO.
+
+So I think we should not be blocked by those usecases.
+
+Thanks,
+Mani
