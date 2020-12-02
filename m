@@ -2,67 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC9C2CB74E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:36:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 127252CB759
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729171AbgLBIeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:34:50 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:60785 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729067AbgLBIeu (ORCPT
+        id S1729178AbgLBIhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:37:41 -0500
+Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:49734 "EHLO
+        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1728040AbgLBIhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:34:50 -0500
-X-UUID: 12f49e1fa9a746b29e6a90923cc49f54-20201202
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=qUlvQ+KjFai94KCMGfmyVlWMEPs2AsrkcVXJP+aAqZw=;
-        b=n/2a+wxelOueXEPR0ivZXPXEr/67/pwEHPm2dutr03vyg283UjYoLxhs6+UAv+bTTdmapcITHUAOH9h1H6wL6rvj8Frczk2Vpm2kq8gnUhuhOgc69NV33hqkP1zrzuPgef7tB9O8fJZlBcajUgKs8/7FLrl/LFGQzSPdLzDRjnE=;
-X-UUID: 12f49e1fa9a746b29e6a90923cc49f54-20201202
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2054206314; Wed, 02 Dec 2020 16:34:04 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 2 Dec 2020 16:34:02 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 2 Dec 2020 16:34:01 +0800
-Message-ID: <1606898042.23925.34.camel@mtkswgap22>
-Subject: Re: [PATCH V5 1/3] scsi: ufs: Serialize eh_work with system PM
- events and async scan
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
-        <hongwus@codeaurora.org>, <rnayak@codeaurora.org>,
-        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
-        <saravanak@google.com>, <salyzyn@google.com>,
-        "Alim Akhtar" <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "Bart Van Assche" <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Wed, 2 Dec 2020 16:34:02 +0800
-In-Reply-To: <1606897475-16907-2-git-send-email-cang@codeaurora.org>
-References: <1606897475-16907-1-git-send-email-cang@codeaurora.org>
-         <1606897475-16907-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 2 Dec 2020 03:37:41 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id ABFF72015B9C;
+        Wed,  2 Dec 2020 16:36:54 +0800 (HKT)
+X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
+Received: from mail.gtsys.com.hk ([127.0.0.1])
+        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fnejSr34lf9O; Wed,  2 Dec 2020 16:36:54 +0800 (HKT)
+Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 881B42015B84;
+        Wed,  2 Dec 2020 16:36:54 +0800 (HKT)
+Received: from [10.128.2.32] (unknown [124.217.188.227])
+        by s01.gtsys.com.hk (Postfix) with ESMTPSA id 6EC46C019F3;
+        Wed,  2 Dec 2020 16:36:53 +0800 (HKT)
+Subject: Re: [PATCH] phy: rockchip-emmc: emmc_phy_init() always return 0
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+References: <20201201031015.23314-1-chris.ruehl@gtsys.com.hk>
+ <CAD=FV=Wyk9BYR3cnfm=9tBh=XBxEP=udMTeaEYPzAqa5m8x=yg@mail.gmail.com>
+From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Message-ID: <f8a21465-91d0-9967-e559-d8f91f795028@gtsys.com.hk>
+Date:   Wed, 2 Dec 2020 16:36:51 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 736FAF53FD02A48F2F79A713A9A138580E286DE3E8982D91C6BFE8DE8F62C93D2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <CAD=FV=Wyk9BYR3cnfm=9tBh=XBxEP=udMTeaEYPzAqa5m8x=yg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTEyLTAyIGF0IDAwOjI0IC0wODAwLCBDYW4gR3VvIHdyb3RlOg0KPiBTZXJp
-YWxpemUgZWhfd29yayB3aXRoIHN5c3RlbSBQTSBldmVudHMgYW5kIGFzeW5jIHNjYW4gdG8gbWFr
-ZSBzdXJlIGVoX3dvcmsNCj4gZG9lcyBub3QgcnVuIGluIHBhcmFsbGVsIHdpdGggdGhlbS4NCj4g
-DQo+IFJldmlld2VkLWJ5OiBBc3V0b3NoIERhcyA8YXN1dG9zaGRAY29kZWF1cm9yYS5vcmc+DQo+
-IFJldmlld2VkLWJ5OiBIb25nd3UgU3U8aG9uZ3d1c0Bjb2RlYXVyb3JhLm9yZz4NCj4gU2lnbmVk
-LW9mZi1ieTogQ2FuIEd1byA8Y2FuZ0Bjb2RlYXVyb3JhLm9yZz4NCg0KUmV2aWV3ZWQtYnk6IFN0
-YW5sZXkgQ2h1IDxzdGFubGV5LmNodUBtZWRpYXRlay5jb20+DQo=
+
+On 2/12/2020 12:05 am, Doug Anderson wrote:
+> Hi,
+> 
+> On Mon, Nov 30, 2020 at 7:10 PM Chris Ruehl <chris.ruehl@gtsys.com.hk> wrote:
+>>
+>> rockchip_emmc_phy_init() return variable is not set with the error value
+>> if clk_get() failed. The debug message print 0 on error and the function
+>> always return 0.
+>> Fix it using PTR_ERR().
+>>
+>> Fixes: 52c0624a10cce phy: rockchip-emmc: Set phyctrl_frqsel based on card clock
+>>
+>> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+>> ---
+>>   drivers/phy/rockchip/phy-rockchip-emmc.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/phy/rockchip/phy-rockchip-emmc.c b/drivers/phy/rockchip/phy-rockchip-emmc.c
+>> index 48e2d75b1004..75faee5c0d27 100644
+>> --- a/drivers/phy/rockchip/phy-rockchip-emmc.c
+>> +++ b/drivers/phy/rockchip/phy-rockchip-emmc.c
+>> @@ -253,6 +253,7 @@ static int rockchip_emmc_phy_init(struct phy *phy)
+>>           */
+>>          rk_phy->emmcclk = clk_get(&phy->dev, "emmcclk");
+>>          if (IS_ERR(rk_phy->emmcclk)) {
+>> +               ret = PTR_ERR(rk_phy->emmcclk);
+> 
+> I'm pretty sure your patch isn't correct and it would break use cases.
+> Is it fixing some bug that you're aware of, or you found it via code
+> inspection?
+> 
+> Specifically:
+> 
+> * The big comment block in this function says that the clock is
+> optional and that we're ignoring errors.
+> 
+> * The printout in this function is "dbg" level, which is an extra
+> indication that we aren't concerned with these errors.
+> 
+> Arguably the code could be made better.  If you want to improve it,
+> you could check for just the error we expect if the clock isn't
+> specified (probably -ENODEV, but you should check) and treat all other
+> failures as real errors.
+> 
+> 
+> -Doug
+>
+
+Hi Doug,
+  I reviewed the code while hunting behind an other bug, with hs400
+and yes I saw the comment that they don't care about the problem
+if the clk_get() return an error, and set the rk_phy->emmcclk = NULL
+regardless, not using the ret variable but define it isn't useful.
+
+If return a error code break something on the other hand, better it
+hit it rather then suppress it in IMHO.
+
+Let me follow the caller of the function and see how they treat the
+err != 0.
+
+If something is in danger, I will be effected with my rk3399 rollout :)
+
+Chris
 
