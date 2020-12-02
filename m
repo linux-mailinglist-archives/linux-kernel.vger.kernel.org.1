@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3892CBF12
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317FC2CBF16
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388954AbgLBOID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:08:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
+        id S1729998AbgLBOIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:08:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388939AbgLBOIA (ORCPT
+        with ESMTP id S2388940AbgLBOIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Dec 2020 09:08:00 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15120C08E85F
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 06:06:39 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id x16so4473910ejj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 06:06:39 -0800 (PST)
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19CFC08E861
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 06:06:40 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id d17so4452212ejy.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 06:06:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=j2JtlLp4w1Z1giGmdmjx5S9UgA6z7cseKVrEi8bWQG4=;
-        b=OImXmOsA4pg0SUS/a/BG+be5IQ+DHkJQdC404Vt81CIJ9nxaGxv7B6PxS5goj81sjG
-         F1WuhU/Gib+bajvJoA5cavcNou9wHv4HKAgWSEaLdCjniEcyT2WhrQPlAYFXxOBuH0ax
-         OLoQiX7QRCm1l1QQqevgRFePsjBfD29qC7NjzM8p8YuH5sDSaHFA6PbHRvVLrYjOWQkM
-         0z1Y9zxntwwUlaD7Umc+uv6AtOJY6RLDxPx4IYROLCmxWTtQcYHekg5PFBGUmJeVg2FI
-         rFL91zcWi9rm/ryskzaK4oleo7lhWurD+2F6zAaDVmDlvkis8x8TxDvTe3Db3lQ5pkjN
-         4DXQ==
+        bh=Ds9qLi+pz1g1OhGvJze7udHxEk/HtgVmujD01NJgnrU=;
+        b=aLfhH9W2jYts06BShnEEn+N7F6fofgIzZjBKfVwxTc4PYP2zRIr4ZnVfsaUbnNj63r
+         k/UPk2MkPGQ0JlMMUu8th/JAm49uonwS/Eu4MU4iT8XHGqKCn35X1N7kMSsxCGGPH9Q6
+         2GSLyh6H0UkhNvkfg0YvwrbhCi4ZWvhKR0dB5aQwq39dLWJl8xDuDX3hL1O+4WpOAebU
+         0eFoNAE8IvWMAP1ts4mE4XoOZ6dRSehroS0saWox/CHBqPjiQ+rgPMrEtSigcYBsPBFF
+         VFaFZ0Eg4bMFIAM0XLddB0MPLHOjkryNAn8Nnv8PkNueYuolv3GZBE+HIVRTM0JDIwRk
+         zsGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=j2JtlLp4w1Z1giGmdmjx5S9UgA6z7cseKVrEi8bWQG4=;
-        b=kYePuMC2zUwHhfWh2TuKH6AvWCq7Lf+0Laoiyjzm1BlZtLwOHOAe6kcRUjcCODOmPa
-         SVC6mK1kcD6ycBTFQqH9Dxzy/+YgZ+JOpnzTHp7mx3guT7aL2d+IrNyXa+wpwIeOmt0V
-         lcqLGfAJs76FTZVPqd+cB1xUdH8eJ3b9BQstb163iRlLq23UqIw+XqAcvYnFOSFC+e7J
-         4FxTlG/4lTy8+bqQv6iU19I3iQ+OZYsZdS7G9SY52Xp6K6VDtdbe+IF5RnPAo6kVTC4R
-         HuhQLeFfTLD3LRPhugkXsKEukbNjEFOeHPp9HrVu1E/Sey9GAKlFbrk6s4ENikJJWWt1
-         Dc/Q==
-X-Gm-Message-State: AOAM530QSFox7mlkMnST60ie5hal5wRQiuW2Njjze12o8/kRHlk3HAFG
-        rH4QzTEZ9lSpO4XvvA7KlLL5y6+8Q1dp7cl0
-X-Google-Smtp-Source: ABdhPJwdnxMGJt6ac+bc3IyHxOVRZJe6Ppipm16wStzecL3j8bl+7oMKGpohjUM1sV8aaWWWUyTmWw==
-X-Received: by 2002:a17:906:1151:: with SMTP id i17mr1791190eja.250.1606917997323;
-        Wed, 02 Dec 2020 06:06:37 -0800 (PST)
+        bh=Ds9qLi+pz1g1OhGvJze7udHxEk/HtgVmujD01NJgnrU=;
+        b=dcMJIIKcnA6TtsrziTnlLiTZj1TDojhiccCANSxZeTgw/w9+YQiAeGd8RQcWtDutJS
+         0f4paF7qPghrnKrdNrITYvCOErwjrC2eXOFdPeg+BdtW444DYYn4mpvarEZD6VymtU0S
+         c/+DuLrgo+ZHOf5e9FqsZep5R/y2+cf0PJxMC2l8+I80OvZQ5gnTHB/+vHSUd86lP6pd
+         tGQAaVuZ3mSCYnnl/vlPjy1pUa7LhtxWvwoNyhcgSbcxl+EdJwG9+9WlxDYCc/Xfpxy8
+         NI/FBJPzfye6gnOjat2zR2jyYeA2Wk8QaE3Bl0LMUu85f32/B3E+3F0MihMj5RxxGBoa
+         7oPA==
+X-Gm-Message-State: AOAM531dXXEafx8rnKlOPe8XKVgYUuj7hwOOEMoNeZdl36lRNckacS3x
+        4PCWRI61Z/T8ncPg7vSz9LG7YfcHJnDCyPkU
+X-Google-Smtp-Source: ABdhPJxBU/ZdslDgPwAEg/jquaCrf5GGzSjUQCC95mijGM8ohQ87PLq2XzazpKCv/gZ/2O1tnm61sQ==
+X-Received: by 2002:a17:907:d8b:: with SMTP id go11mr2440282ejc.247.1606917999037;
+        Wed, 02 Dec 2020 06:06:39 -0800 (PST)
 Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id y24sm27171edt.15.2020.12.02.06.06.36
+        by smtp.gmail.com with ESMTPSA id d14sm22091edn.31.2020.12.02.06.06.38
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Dec 2020 06:06:36 -0800 (PST)
+        Wed, 02 Dec 2020 06:06:38 -0800 (PST)
 Sender: Michal Simek <monstr@monstr.eu>
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
         michal.simek@xilinx.com, git@xilinx.com
-Cc:     Kalyani Akula <kalyani.akula@xilinx.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Manish Narani <manish.narani@xilinx.com>,
+Cc:     Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
         Rajan Vaja <rajan.vaja@xilinx.com>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 11/12] arm64: dts: zynqmp: Add missing iommu IDs
-Date:   Wed,  2 Dec 2020 15:06:10 +0100
-Message-Id: <bcd8f9223b568d1f027bc94cb6a9809640cb8949.1606917949.git.michal.simek@xilinx.com>
+Subject: [PATCH 12/12] arm64: dts: zynqmp: Add description for zcu104 revC
+Date:   Wed,  2 Dec 2020 15:06:11 +0100
+Message-Id: <5b670099adb67b06ec0a7d1b04ed9f4076e520c1.1606917949.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1606917949.git.michal.simek@xilinx.com>
 References: <cover.1606917949.git.michal.simek@xilinx.com>
@@ -71,252 +68,318 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing iommu IDs to all IPs which have IDs assigned.
+Xilinx ZynqMP zcu104 revC and newer board revisions have different i2c
+structure compare to revA. The rest of the board is the same from software
+perspective.
+Also enable DMAs and QSPI.
 
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
 
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 52 ++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
+ arch/arm64/boot/dts/xilinx/Makefile           |   1 +
+ .../boot/dts/xilinx/zynqmp-zcu104-revC.dts    | 282 ++++++++++++++++++
+ 2 files changed, 283 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index 704696811116..14a2e69cf98b 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -270,6 +270,8 @@ fpd_dma_chan1: dma@fd500000 {
- 			interrupts = <0 124 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <128>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x14e8>;
- 			power-domains = <&zynqmp_firmware PD_GDMA>;
- 		};
- 
-@@ -281,6 +283,8 @@ fpd_dma_chan2: dma@fd510000 {
- 			interrupts = <0 125 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <128>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x14e9>;
- 			power-domains = <&zynqmp_firmware PD_GDMA>;
- 		};
- 
-@@ -292,6 +296,8 @@ fpd_dma_chan3: dma@fd520000 {
- 			interrupts = <0 126 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <128>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x14ea>;
- 			power-domains = <&zynqmp_firmware PD_GDMA>;
- 		};
- 
-@@ -303,6 +309,8 @@ fpd_dma_chan4: dma@fd530000 {
- 			interrupts = <0 127 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <128>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x14eb>;
- 			power-domains = <&zynqmp_firmware PD_GDMA>;
- 		};
- 
-@@ -314,6 +322,8 @@ fpd_dma_chan5: dma@fd540000 {
- 			interrupts = <0 128 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <128>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x14ec>;
- 			power-domains = <&zynqmp_firmware PD_GDMA>;
- 		};
- 
-@@ -325,6 +335,8 @@ fpd_dma_chan6: dma@fd550000 {
- 			interrupts = <0 129 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <128>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x14ed>;
- 			power-domains = <&zynqmp_firmware PD_GDMA>;
- 		};
- 
-@@ -336,6 +348,8 @@ fpd_dma_chan7: dma@fd560000 {
- 			interrupts = <0 130 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <128>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x14ee>;
- 			power-domains = <&zynqmp_firmware PD_GDMA>;
- 		};
- 
-@@ -347,6 +361,8 @@ fpd_dma_chan8: dma@fd570000 {
- 			interrupts = <0 131 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <128>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x14ef>;
- 			power-domains = <&zynqmp_firmware PD_GDMA>;
- 		};
- 
-@@ -374,6 +390,8 @@ lpd_dma_chan1: dma@ffa80000 {
- 			interrupts = <0 77 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <64>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x868>;
- 			power-domains = <&zynqmp_firmware PD_ADMA>;
- 		};
- 
-@@ -385,6 +403,8 @@ lpd_dma_chan2: dma@ffa90000 {
- 			interrupts = <0 78 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <64>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x869>;
- 			power-domains = <&zynqmp_firmware PD_ADMA>;
- 		};
- 
-@@ -396,6 +416,8 @@ lpd_dma_chan3: dma@ffaa0000 {
- 			interrupts = <0 79 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <64>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x86a>;
- 			power-domains = <&zynqmp_firmware PD_ADMA>;
- 		};
- 
-@@ -407,6 +429,8 @@ lpd_dma_chan4: dma@ffab0000 {
- 			interrupts = <0 80 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <64>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x86b>;
- 			power-domains = <&zynqmp_firmware PD_ADMA>;
- 		};
- 
-@@ -418,6 +442,8 @@ lpd_dma_chan5: dma@ffac0000 {
- 			interrupts = <0 81 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <64>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x86c>;
- 			power-domains = <&zynqmp_firmware PD_ADMA>;
- 		};
- 
-@@ -429,6 +455,8 @@ lpd_dma_chan6: dma@ffad0000 {
- 			interrupts = <0 82 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <64>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x86d>;
- 			power-domains = <&zynqmp_firmware PD_ADMA>;
- 		};
- 
-@@ -440,6 +468,8 @@ lpd_dma_chan7: dma@ffae0000 {
- 			interrupts = <0 83 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <64>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x86e>;
- 			power-domains = <&zynqmp_firmware PD_ADMA>;
- 		};
- 
-@@ -451,6 +481,8 @@ lpd_dma_chan8: dma@ffaf0000 {
- 			interrupts = <0 84 4>;
- 			clock-names = "clk_main", "clk_apb";
- 			xlnx,bus-width = <64>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x86f>;
- 			power-domains = <&zynqmp_firmware PD_ADMA>;
- 		};
- 
-@@ -470,6 +502,8 @@ nand0: nand-controller@ff100000 {
- 			interrupts = <0 14 4>;
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x872>;
- 			power-domains = <&zynqmp_firmware PD_NAND>;
- 		};
- 
-@@ -482,6 +516,8 @@ gem0: ethernet@ff0b0000 {
- 			clock-names = "pclk", "hclk", "tx_clk";
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x874>;
- 			power-domains = <&zynqmp_firmware PD_ETH_0>;
- 			resets = <&zynqmp_reset ZYNQMP_RESET_GEM0>;
- 			reset-names = "gem0_rst";
-@@ -496,6 +532,8 @@ gem1: ethernet@ff0c0000 {
- 			clock-names = "pclk", "hclk", "tx_clk";
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x875>;
- 			power-domains = <&zynqmp_firmware PD_ETH_1>;
- 			resets = <&zynqmp_reset ZYNQMP_RESET_GEM1>;
- 			reset-names = "gem1_rst";
-@@ -510,6 +548,8 @@ gem2: ethernet@ff0d0000 {
- 			clock-names = "pclk", "hclk", "tx_clk";
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x876>;
- 			power-domains = <&zynqmp_firmware PD_ETH_2>;
- 			resets = <&zynqmp_reset ZYNQMP_RESET_GEM2>;
- 			reset-names = "gem2_rst";
-@@ -524,6 +564,8 @@ gem3: ethernet@ff0e0000 {
- 			clock-names = "pclk", "hclk", "tx_clk";
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x877>;
- 			power-domains = <&zynqmp_firmware PD_ETH_3>;
- 			resets = <&zynqmp_reset ZYNQMP_RESET_GEM3>;
- 			reset-names = "gem3_rst";
-@@ -618,6 +660,8 @@ qspi: spi@ff0f0000 {
- 			      <0x0 0xc0000000 0x0 0x8000000>;
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x873>;
- 			power-domains = <&zynqmp_firmware PD_QSPI>;
- 		};
- 
-@@ -647,6 +691,9 @@ sata: ahci@fd0c0000 {
- 			interrupt-parent = <&gic>;
- 			interrupts = <0 133 4>;
- 			power-domains = <&zynqmp_firmware PD_SATA>;
-+			#stream-id-cells = <4>;
-+			iommus = <&smmu 0x4c0>, <&smmu 0x4c1>,
-+				 <&smmu 0x4c2>, <&smmu 0x4c3>;
- 			resets = <&zynqmp_reset ZYNQMP_RESET_SATA>;
- 			reset-names = "sata_rst";
- 		};
-@@ -658,6 +705,8 @@ sdhci0: mmc@ff160000 {
- 			interrupts = <0 48 4>;
- 			reg = <0x0 0xff160000 0x0 0x1000>;
- 			clock-names = "clk_xin", "clk_ahb";
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x870>;
- 			#clock-cells = <1>;
- 			clock-output-names = "clk_out_sd0", "clk_in_sd0";
- 			power-domains = <&zynqmp_firmware PD_SD_0>;
-@@ -670,6 +719,8 @@ sdhci1: mmc@ff170000 {
- 			interrupts = <0 49 4>;
- 			reg = <0x0 0xff170000 0x0 0x1000>;
- 			clock-names = "clk_xin", "clk_ahb";
-+			#stream-id-cells = <1>;
-+			iommus = <&smmu 0x871>;
- 			#clock-cells = <1>;
- 			clock-output-names = "clk_out_sd1", "clk_in_sd1";
- 			power-domains = <&zynqmp_firmware PD_SD_1>;
-@@ -678,6 +729,7 @@ sdhci1: mmc@ff170000 {
- 		smmu: iommu@fd800000 {
- 			compatible = "arm,mmu-500";
- 			reg = <0x0 0xfd800000 0x0 0x20000>;
-+			#iommu-cells = <1>;
- 			status = "disabled";
- 			#global-interrupts = <1>;
- 			interrupt-parent = <&gic>;
+diff --git a/arch/arm64/boot/dts/xilinx/Makefile b/arch/arm64/boot/dts/xilinx/Makefile
+index 60f5443f3ef4..11fb4fd3ebd4 100644
+--- a/arch/arm64/boot/dts/xilinx/Makefile
++++ b/arch/arm64/boot/dts/xilinx/Makefile
+@@ -13,5 +13,6 @@ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu102-revA.dtb
+ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu102-revB.dtb
+ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu102-rev1.0.dtb
+ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revA.dtb
++dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revC.dtb
+ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu106-revA.dtb
+ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu111-revA.dtb
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
+new file mode 100644
+index 000000000000..414f98f1831e
+--- /dev/null
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
+@@ -0,0 +1,282 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * dts file for Xilinx ZynqMP ZCU104
++ *
++ * (C) Copyright 2017 - 2020, Xilinx, Inc.
++ *
++ * Michal Simek <michal.simek@xilinx.com>
++ */
++
++/dts-v1/;
++
++#include "zynqmp.dtsi"
++#include "zynqmp-clk-ccf.dtsi"
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/phy/phy.h>
++
++/ {
++	model = "ZynqMP ZCU104 RevC";
++	compatible = "xlnx,zynqmp-zcu104-revC", "xlnx,zynqmp-zcu104", "xlnx,zynqmp";
++
++	aliases {
++		ethernet0 = &gem3;
++		i2c0 = &i2c1;
++		mmc0 = &sdhci1;
++		rtc0 = &rtc;
++		serial0 = &uart0;
++		serial1 = &uart1;
++		serial2 = &dcc;
++	};
++
++	chosen {
++		bootargs = "earlycon";
++		stdout-path = "serial0:115200n8";
++	};
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x0 0x0 0x80000000>;
++	};
++
++	ina226 {
++		compatible = "iio-hwmon";
++		io-channels = <&u183 0>, <&u183 1>, <&u183 2>, <&u183 3>;
++	};
++
++	clock_8t49n287_5: clk125 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <125000000>;
++	};
++
++	clock_8t49n287_2: clk26 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <26000000>;
++	};
++
++	clock_8t49n287_3: clk27 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <27000000>;
++	};
++};
++
++&can1 {
++	status = "okay";
++};
++
++&dcc {
++	status = "okay";
++};
++
++&fpd_dma_chan1 {
++	status = "okay";
++};
++
++&fpd_dma_chan2 {
++	status = "okay";
++};
++
++&fpd_dma_chan3 {
++	status = "okay";
++};
++
++&fpd_dma_chan4 {
++	status = "okay";
++};
++
++&fpd_dma_chan5 {
++	status = "okay";
++};
++
++&fpd_dma_chan6 {
++	status = "okay";
++};
++
++&fpd_dma_chan7 {
++	status = "okay";
++};
++
++&fpd_dma_chan8 {
++	status = "okay";
++};
++
++&gem3 {
++	status = "okay";
++	phy-handle = <&phy0>;
++	phy-mode = "rgmii-id";
++	phy0: ethernet-phy@c {
++		reg = <0xc>;
++		ti,rx-internal-delay = <0x8>;
++		ti,tx-internal-delay = <0xa>;
++		ti,fifo-depth = <0x1>;
++		ti,dp83867-rxctrl-strap-quirk;
++	};
++};
++
++&gpio {
++	status = "okay";
++};
++
++&i2c1 {
++	status = "okay";
++	clock-frequency = <400000>;
++
++	tca6416_u97: gpio@20 {
++		compatible = "ti,tca6416";
++		reg = <0x20>;
++		gpio-controller;
++		#gpio-cells = <2>;
++		/*
++		 * IRQ not connected
++		 * Lines:
++		 * 0 - IRPS5401_ALERT_B
++		 * 1 - HDMI_8T49N241_INT_ALM
++		 * 2 - MAX6643_OT_B
++		 * 3 - MAX6643_FANFAIL_B
++		 * 5 - IIC_MUX_RESET_B
++		 * 6 - GEM3_EXP_RESET_B
++		 * 7 - FMC_LPC_PRSNT_M2C_B
++		 * 4, 10 - 17 - not connected
++		 */
++	};
++
++	/* Another connection to this bus via PL i2c via PCA9306 - u45 */
++	i2c-mux@74 { /* u34 */
++		compatible = "nxp,pca9548";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x74>;
++		i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++			/*
++			 * IIC_EEPROM 1kB memory which uses 256B blocks
++			 * where every block has different address.
++			 *    0 - 256B address 0x54
++			 * 256B - 512B address 0x55
++			 * 512B - 768B address 0x56
++			 * 768B - 1024B address 0x57
++			 */
++			eeprom: eeprom@54 { /* u23 */
++				compatible = "atmel,24c08";
++				reg = <0x54>;
++				#address-cells = <1>;
++				#size-cells = <1>;
++			};
++		};
++
++		i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++			clock_8t49n287: clock-generator@6c { /* 8T49N287 - u182 */
++				reg = <0x6c>;
++			};
++		};
++
++		i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++			irps5401_43: irps5401@43 { /* IRPS5401 - u175 */
++				compatible = "infineon,irps5401";
++				reg = <0x43>; /* pmbus / i2c 0x13 */
++			};
++			irps5401_44: irps5401@44 { /* IRPS5401 - u180 */
++				compatible = "infineon,irps5401";
++				reg = <0x44>; /* pmbus / i2c 0x14 */
++			};
++		};
++
++		i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++			u183: ina226@40 { /* u183 */
++				compatible = "ti,ina226";
++				#io-channel-cells = <1>;
++				reg = <0x40>;
++				shunt-resistor = <5000>;
++			};
++		};
++
++		i2c@5 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <5>;
++		};
++
++		i2c@7 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <7>;
++		};
++
++		/* 4, 6 not connected */
++	};
++};
++
++&qspi {
++	status = "okay";
++	flash@0 {
++		compatible = "m25p80", "jedec,spi-nor"; /* n25q512a 128MiB */
++		#address-cells = <1>;
++		#size-cells = <1>;
++		reg = <0x0>;
++	};
++};
++
++&rtc {
++	status = "okay";
++};
++
++&psgtr {
++	status = "okay";
++	/* nc, sata, usb3, dp */
++	clocks = <&clock_8t49n287_5>, <&clock_8t49n287_2>, <&clock_8t49n287_3>;
++	clock-names = "ref1", "ref2", "ref3";
++};
++
++&sata {
++	status = "okay";
++	/* SATA OOB timing settings */
++	ceva,p0-cominit-params = /bits/ 8 <0x18 0x40 0x18 0x28>;
++	ceva,p0-comwake-params = /bits/ 8 <0x06 0x14 0x08 0x0E>;
++	ceva,p0-burst-params = /bits/ 8 <0x13 0x08 0x4A 0x06>;
++	ceva,p0-retry-params = /bits/ 16 <0x96A4 0x3FFC>;
++	ceva,p1-cominit-params = /bits/ 8 <0x18 0x40 0x18 0x28>;
++	ceva,p1-comwake-params = /bits/ 8 <0x06 0x14 0x08 0x0E>;
++	ceva,p1-burst-params = /bits/ 8 <0x13 0x08 0x4A 0x06>;
++	ceva,p1-retry-params = /bits/ 16 <0x96A4 0x3FFC>;
++	phy-names = "sata-phy";
++	phys = <&psgtr 3 PHY_TYPE_SATA 1 1>;
++};
++
++/* SD1 with level shifter */
++&sdhci1 {
++	status = "okay";
++	no-1-8-v;
++	xlnx,mio-bank = <1>;
++	disable-wp;
++};
++
++&uart0 {
++	status = "okay";
++};
++
++&uart1 {
++	status = "okay";
++};
++
++/* ULPI SMSC USB3320 */
++&usb0 {
++	status = "okay";
++	dr_mode = "host";
++};
++
++&watchdog0 {
++	status = "okay";
++};
 -- 
 2.29.2
 
