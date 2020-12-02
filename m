@@ -2,241 +2,709 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C6E2CC00E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4186E2CC01A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730314AbgLBOtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:49:09 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57596 "EHLO mx2.suse.de"
+        id S1728099AbgLBOvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:51:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728138AbgLBOtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:49:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606920502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3lIaTsxjFMYIQNxaeePaL9KbT8jUcnLCx8Gz61GRcM0=;
-        b=XOAmE0X3npWKI/lGX5ZljwuqsxujpMp1fMK3dbXVafCTHYiZ2VJ/DLYR1nM+U9EG/I6l49
-        ehM7jGwsJ87A3LNKHTX7omn9BagHn4Y7FxixMA7iZCSEuvmw6LVRG/sQVlE0asBQxR8OD9
-        DXnRFMWgZMKiNwxugfX0pYJWvdhzSbU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6B1CCACC3;
-        Wed,  2 Dec 2020 14:48:22 +0000 (UTC)
-Subject: Re: [PATCH v2 04/12] x86/xen: drop USERGS_SYSRET64 paravirt call
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, peterz@infradead.org,
-        luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-5-jgross@suse.com> <20201202123235.GD2951@zn.tnic>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <6be0d1a5-0079-5d90-0c38-85fe4471f1b8@suse.com>
-Date:   Wed, 2 Dec 2020 15:48:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726430AbgLBOvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 09:51:32 -0500
+From:   Chao Yu <chao@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH v5] f2fs: compress: add compress_inode to cache compressed blocks
+Date:   Wed,  2 Dec 2020 22:50:18 +0800
+Message-Id: <20201202145018.6505-1-chao@kernel.org>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-In-Reply-To: <20201202123235.GD2951@zn.tnic>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="jJ9PpTcxy9lmYsonXHC7Yx0WUyHQN3ZlP"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---jJ9PpTcxy9lmYsonXHC7Yx0WUyHQN3ZlP
-Content-Type: multipart/mixed; boundary="cx6HqDKbye5TwFIy5c3ypsnchRBmnlgeh";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: xen-devel@lists.xenproject.org, x86@kernel.org,
- linux-kernel@vger.kernel.org, virtualization@lists.linux-foundation.org,
- peterz@infradead.org, luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Deep Shah <sdeep@vmware.com>, "VMware, Inc." <pv-drivers@vmware.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>
-Message-ID: <6be0d1a5-0079-5d90-0c38-85fe4471f1b8@suse.com>
-Subject: Re: [PATCH v2 04/12] x86/xen: drop USERGS_SYSRET64 paravirt call
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-5-jgross@suse.com> <20201202123235.GD2951@zn.tnic>
-In-Reply-To: <20201202123235.GD2951@zn.tnic>
+From: Chao Yu <yuchao0@huawei.com>
 
---cx6HqDKbye5TwFIy5c3ypsnchRBmnlgeh
-Content-Type: multipart/mixed;
- boundary="------------50989C0C7D65F3525DF0B3D1"
-Content-Language: en-US
+Support to use address space of inner inode to cache compressed block,
+in order to improve cache hit ratio of random read.
 
-This is a multi-part message in MIME format.
---------------50989C0C7D65F3525DF0B3D1
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+v5:
+- rebase to last dev branch.
+ Documentation/filesystems/f2fs.rst |   3 +
+ fs/f2fs/compress.c                 | 198 +++++++++++++++++++++++++++--
+ fs/f2fs/data.c                     |  29 ++++-
+ fs/f2fs/debug.c                    |  13 ++
+ fs/f2fs/f2fs.h                     |  34 ++++-
+ fs/f2fs/gc.c                       |   1 +
+ fs/f2fs/inode.c                    |  21 ++-
+ fs/f2fs/segment.c                  |   6 +-
+ fs/f2fs/super.c                    |  19 ++-
+ include/linux/f2fs_fs.h            |   1 +
+ 10 files changed, 305 insertions(+), 20 deletions(-)
 
-On 02.12.20 13:32, Borislav Petkov wrote:
-> On Fri, Nov 20, 2020 at 12:46:22PM +0100, Juergen Gross wrote:
->> @@ -123,12 +115,15 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, =
-SYM_L_GLOBAL)
->>   	 * Try to use SYSRET instead of IRET if we're returning to
->>   	 * a completely clean 64-bit userspace context.  If we're not,
->>   	 * go to the slow exit path.
->> +	 * In the Xen PV case we must use iret anyway.
->>   	 */
->> -	movq	RCX(%rsp), %rcx
->> -	movq	RIP(%rsp), %r11
->>  =20
->> -	cmpq	%rcx, %r11	/* SYSRET requires RCX =3D=3D RIP */
->> -	jne	swapgs_restore_regs_and_return_to_usermode
->> +	ALTERNATIVE __stringify( \
->> +		movq	RCX(%rsp), %rcx; \
->> +		movq	RIP(%rsp), %r11; \
->> +		cmpq	%rcx, %r11;	/* SYSRET requires RCX =3D=3D RIP */ \
->> +		jne	swapgs_restore_regs_and_return_to_usermode), \
->> +	"jmp	swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
->=20
-> Why such a big ALTERNATIVE when you can simply do:
->=20
->          /*
->           * Try to use SYSRET instead of IRET if we're returning to
->           * a completely clean 64-bit userspace context.  If we're not,=
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index dae15c96e659..fd413d319e93 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -268,6 +268,9 @@ compress_mode=%s	 Control file compression mode. This supports "fs" and "user"
+ 			 choosing the target file and the timing. The user can do manual
+ 			 compression/decompression on the compression enabled files using
+ 			 ioctls.
++compress_cache		 Support to use address space of inner inode to cache
++			 compressed block, in order to improve cache hit ratio of
++			 random read.
+ inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
+ 			 files using the blk-crypto framework rather than
+ 			 filesystem-layer encryption. This allows the use of
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 08987923513d..db82da311fe4 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -12,9 +12,11 @@
+ #include <linux/lzo.h>
+ #include <linux/lz4.h>
+ #include <linux/zstd.h>
++#include <linux/pagevec.h>
+ 
+ #include "f2fs.h"
+ #include "node.h"
++#include "segment.h"
+ #include <trace/events/f2fs.h>
+ 
+ static struct kmem_cache *cic_entry_slab;
+@@ -726,25 +728,14 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+ 	return ret;
+ }
+ 
+-void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
++void f2fs_do_decompress_pages(struct decompress_io_ctx *dic, bool verity)
+ {
+-	struct decompress_io_ctx *dic =
+-			(struct decompress_io_ctx *)page_private(page);
+-	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
+ 	struct f2fs_inode_info *fi= F2FS_I(dic->inode);
+ 	const struct f2fs_compress_ops *cops =
+ 			f2fs_cops[fi->i_compress_algorithm];
+ 	int ret;
+ 	int i;
+ 
+-	dec_page_count(sbi, F2FS_RD_DATA);
+-
+-	if (bio->bi_status || PageError(page))
+-		dic->failed = true;
+-
+-	if (atomic_dec_return(&dic->pending_pages))
+-		return;
+-
+ 	trace_f2fs_decompress_pages_start(dic->inode, dic->cluster_idx,
+ 				dic->cluster_size, fi->i_compress_algorithm);
+ 
+@@ -802,6 +793,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+ 	ret = cops->decompress_pages(dic);
+ 
+ 	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
++		struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
+ 		u32 provided = le32_to_cpu(dic->cbuf->chksum);
+ 		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
+ 
+@@ -838,6 +830,30 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+ 		f2fs_free_dic(dic);
+ }
+ 
++void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
++						nid_t ino, block_t blkaddr);
++void f2fs_decompress_pages(struct bio *bio, struct page *page,
++						bool verity, unsigned int ofs)
++{
++	struct decompress_io_ctx *dic =
++			(struct decompress_io_ctx *)page_private(page);
++	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
++	block_t blkaddr;
++
++	dec_page_count(sbi, F2FS_RD_DATA);
++
++	if (bio->bi_status || PageError(page))
++		dic->failed = true;
++
++	blkaddr = SECTOR_TO_BLOCK(bio->bi_iter.bi_sector) + ofs;
++	f2fs_cache_compressed_page(sbi, page, dic->inode->i_ino, blkaddr);
++
++	if (atomic_dec_return(&dic->pending_pages))
++		return;
++
++	f2fs_do_decompress_pages(dic, verity);
++}
++
+ static bool is_page_in_cluster(struct compress_ctx *cc, pgoff_t index)
+ {
+ 	if (cc->cluster_idx == NULL_CLUSTER)
+@@ -1608,6 +1624,164 @@ void f2fs_decompress_end_io(struct page **rpages,
+ 	}
+ }
+ 
++const struct address_space_operations f2fs_compress_aops = {
++	.releasepage = f2fs_release_page,
++	.invalidatepage = f2fs_invalidate_page,
++};
++
++struct address_space *COMPRESS_MAPPING(struct f2fs_sb_info *sbi)
++{
++	return sbi->compress_inode->i_mapping;
++}
++
++void invalidate_compress_page(struct f2fs_sb_info *sbi, block_t blkaddr)
++{
++	if (!sbi->compress_inode)
++		return;
++	invalidate_mapping_pages(COMPRESS_MAPPING(sbi), blkaddr, blkaddr);
++}
++
++void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
++						nid_t ino, block_t blkaddr)
++{
++	struct page *cpage;
++	int ret;
++	struct sysinfo si;
++	unsigned long free_ram, avail_ram;
++
++	if (!test_opt(sbi, COMPRESS_CACHE))
++		return;
++
++	si_meminfo(&si);
++	free_ram = si.freeram;
++	avail_ram = si.totalram - si.totalhigh;
++
++	/* free memory is lower than watermark, deny caching compress page */
++	if (free_ram <= sbi->compress_watermark / 100 * avail_ram)
++		return;
++
++	/* cached page count exceed threshold, deny caching compress page */
++	if (COMPRESS_MAPPING(sbi)->nrpages >=
++			free_ram / 100 * sbi->compress_percent)
++		return;
++
++	cpage = find_get_page(COMPRESS_MAPPING(sbi), blkaddr);
++	if (cpage) {
++		f2fs_put_page(cpage, 0);
++		return;
++	}
++
++	cpage = alloc_page(__GFP_IO);
++	if (!cpage)
++		return;
++
++	ret = add_to_page_cache_lru(cpage, COMPRESS_MAPPING(sbi),
++						blkaddr, GFP_NOFS);
++	if (ret) {
++		f2fs_put_page(cpage, 0);
++		return;
++	}
++
++	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
++	SetPageUptodate(cpage);
++
++	f2fs_set_page_private(cpage, ino);
++
++	f2fs_put_page(cpage, 1);
++}
++
++void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
++								block_t blkaddr)
++{
++	struct page *cpage;
++
++	if (!test_opt(sbi, COMPRESS_CACHE))
++		return;
++
++	cpage = f2fs_pagecache_get_page(COMPRESS_MAPPING(sbi),
++				blkaddr, FGP_LOCK | FGP_NOWAIT, GFP_NOFS);
++	if (cpage) {
++		if (PageUptodate(cpage)) {
++			atomic_inc(&sbi->compress_page_hit);
++			memcpy(page_address(page),
++				page_address(cpage), PAGE_SIZE);
++			SetPageUptodate(page);
++		}
++		f2fs_put_page(cpage, 1);
++	}
++}
++
++void invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino)
++{
++	struct address_space *mapping = sbi->compress_inode->i_mapping;
++	struct pagevec pvec;
++	pgoff_t index = 0;
++	pgoff_t end = MAX_BLKADDR(sbi);
++
++	pagevec_init(&pvec);
++
++	do {
++		unsigned int nr_pages;
++		int i;
++
++		nr_pages = pagevec_lookup_range(&pvec, mapping,
++						&index, end - 1);
++		if (!nr_pages)
++			break;
++
++		for (i = 0; i < nr_pages; i++) {
++			struct page *page = pvec.pages[i];
++
++			if (page->index > end)
++				break;
++
++			lock_page(page);
++			if (page->mapping != mapping) {
++				unlock_page(page);
++				continue;
++			}
++
++			if (ino != page_private(page)) {
++				unlock_page(page);
++				continue;
++			}
++
++			generic_error_remove_page(mapping, page);
++			unlock_page(page);
++		}
++		pagevec_release(&pvec);
++		cond_resched();
++	} while (index < end);
++}
++
++int f2fs_init_compress_inode(struct f2fs_sb_info *sbi)
++{
++	struct inode *inode;
++
++	if (!test_opt(sbi, COMPRESS_CACHE))
++		return 0;
++
++	inode = f2fs_iget(sbi->sb, F2FS_COMPRESS_INO(sbi));
++	if (IS_ERR(inode))
++		return PTR_ERR(inode);
++	sbi->compress_inode = inode;
++
++	sbi->compress_percent = COMPRESS_PERCENT;
++	sbi->compress_watermark = COMPRESS_WATERMARK;
++
++	atomic_set(&sbi->compress_page_hit, 0);
++
++	return 0;
++}
++
++void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi)
++{
++	if (!sbi->compress_inode)
++		return;
++	iput(sbi->compress_inode);
++	sbi->compress_inode = NULL;
++}
++
+ int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi)
+ {
+ 	dev_t dev = sbi->sb->s_bdev->bd_dev;
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index e85fd8f77f3f..06684d60491c 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -133,17 +133,21 @@ static void __read_end_io(struct bio *bio, bool compr, bool verity)
+ 	struct page *page;
+ 	struct bio_vec *bv;
+ 	struct bvec_iter_all iter_all;
++	unsigned int ofs = 0;
+ 
+ 	bio_for_each_segment_all(bv, bio, iter_all) {
+ 		page = bv->bv_page;
+ 
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 		if (compr && f2fs_is_compressed_page(page)) {
+-			f2fs_decompress_pages(bio, page, verity);
++			f2fs_decompress_pages(bio, page, verity, ofs);
++			ofs++;
+ 			continue;
+ 		}
+-		if (verity)
++		if (verity) {
++			ofs++;
+ 			continue;
++		}
+ #endif
+ 
+ 		/* PG_error was set if any post_read step failed */
+@@ -156,6 +160,7 @@ static void __read_end_io(struct bio *bio, bool compr, bool verity)
+ 		}
+ 		dec_page_count(F2FS_P_SB(page), __read_io_type(page));
+ 		unlock_page(page);
++		ofs++;
+ 	}
+ }
+ 
+@@ -1417,9 +1422,11 @@ static int __allocate_data_block(struct dnode_of_data *dn, int seg_type)
+ 	old_blkaddr = dn->data_blkaddr;
+ 	f2fs_allocate_data_block(sbi, NULL, old_blkaddr, &dn->data_blkaddr,
+ 				&sum, seg_type, NULL);
+-	if (GET_SEGNO(sbi, old_blkaddr) != NULL_SEGNO)
++	if (GET_SEGNO(sbi, old_blkaddr) != NULL_SEGNO) {
+ 		invalidate_mapping_pages(META_MAPPING(sbi),
+ 					old_blkaddr, old_blkaddr);
++		invalidate_compress_page(sbi, old_blkaddr);
++	}
+ 	f2fs_update_data_blkaddr(dn, dn->data_blkaddr);
+ 
+ 	/*
+@@ -2236,6 +2243,22 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+ 		blkaddr = data_blkaddr(dn.inode, dn.node_page,
+ 						dn.ofs_in_node + i + 1);
+ 
++		f2fs_load_compressed_page(sbi, page, blkaddr);
++		if (PageUptodate(page)) {
++			if (!atomic_dec_return(&dic->pending_pages)) {
++				bool verity =
++					f2fs_need_verity(inode, start_idx);
++
++				f2fs_do_decompress_pages(dic, verity);
++				if (verity) {
++					f2fs_verify_pages(dic->rpages,
++							dic->cluster_size);
++					f2fs_free_dic(dic);
++				}
++			}
++			continue;
++		}
++
+ 		if (bio && (!page_is_mergeable(sbi, bio,
+ 					*last_block_in_bio, blkaddr) ||
+ 		    !f2fs_crypt_mergeable_bio(bio, inode, page->index, NULL))) {
+diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
+index a8357fd4f5fa..7d76eb5839b4 100644
+--- a/fs/f2fs/debug.c
++++ b/fs/f2fs/debug.c
+@@ -145,6 +145,12 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+ 		si->node_pages = NODE_MAPPING(sbi)->nrpages;
+ 	if (sbi->meta_inode)
+ 		si->meta_pages = META_MAPPING(sbi)->nrpages;
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	if (sbi->compress_inode) {
++		si->compress_pages = COMPRESS_MAPPING(sbi)->nrpages;
++		si->compress_page_hit = atomic_read(&sbi->compress_page_hit);
++	}
++#endif
+ 	si->nats = NM_I(sbi)->nat_cnt;
+ 	si->dirty_nats = NM_I(sbi)->dirty_nat_cnt;
+ 	si->sits = MAIN_SEGS(sbi);
+@@ -298,6 +304,12 @@ static void update_mem_info(struct f2fs_sb_info *sbi)
+ 		unsigned npages = META_MAPPING(sbi)->nrpages;
+ 		si->page_mem += (unsigned long long)npages << PAGE_SHIFT;
+ 	}
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	if (sbi->compress_inode) {
++		unsigned npages = COMPRESS_MAPPING(sbi)->nrpages;
++		si->page_mem += (unsigned long long)npages << PAGE_SHIFT;
++	}
++#endif
+ }
+ 
+ static int stat_show(struct seq_file *s, void *v)
+@@ -460,6 +472,7 @@ static int stat_show(struct seq_file *s, void *v)
+ 			"volatile IO: %4d (Max. %4d)\n",
+ 			   si->inmem_pages, si->aw_cnt, si->max_aw_cnt,
+ 			   si->vw_cnt, si->max_vw_cnt);
++		seq_printf(s, "  - compress: %4d, hit:%8d\n", si->compress_pages, si->compress_page_hit);
+ 		seq_printf(s, "  - nodes: %4d in %4d\n",
+ 			   si->ndirty_node, si->node_pages);
+ 		seq_printf(s, "  - dents: %4d in dirs:%4d (%4d)\n",
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 1cd4374f77de..377a2e2bf466 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -97,6 +97,7 @@ extern const char *f2fs_fault_name[FAULT_MAX];
+ #define F2FS_MOUNT_DISABLE_CHECKPOINT	0x02000000
+ #define F2FS_MOUNT_NORECOVERY		0x04000000
+ #define F2FS_MOUNT_ATGC			0x08000000
++#define F2FS_MOUNT_COMPRESS_CACHE	0x10000000
+ 
+ #define F2FS_OPTION(sbi)	((sbi)->mount_opt)
+ #define clear_opt(sbi, option)	(F2FS_OPTION(sbi).opt &= ~F2FS_MOUNT_##option)
+@@ -1292,6 +1293,9 @@ enum compress_flag {
+ 	COMPRESS_MAX_FLAG,
+ };
+ 
++#define	COMPRESS_WATERMARK			20
++#define	COMPRESS_PERCENT			20
++
+ #define COMPRESS_DATA_RESERVED_SIZE		4
+ struct compress_data {
+ 	__le32 clen;			/* compressed data size */
+@@ -1563,6 +1567,11 @@ struct f2fs_sb_info {
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 	struct kmem_cache *page_array_slab;	/* page array entry */
+ 	unsigned int page_array_slab_size;	/* default page array slab size */
++
++	struct inode *compress_inode;		/* cache compressed blocks */
++	unsigned int compress_percent;		/* cache page percentage */
++	unsigned int compress_watermark;	/* cache page watermark */
++	atomic_t compress_page_hit;		/* cache hit count */
+ #endif
+ };
+ 
+@@ -3528,7 +3537,8 @@ struct f2fs_stat_info {
+ 	unsigned int bimodal, avg_vblocks;
+ 	int util_free, util_valid, util_invalid;
+ 	int rsvd_segs, overp_segs;
+-	int dirty_count, node_pages, meta_pages;
++	int dirty_count, node_pages, meta_pages, compress_pages;
++	int compress_page_hit;
+ 	int prefree_count, call_count, cp_count, bg_cp_count;
+ 	int tot_segs, node_segs, data_segs, free_segs, free_secs;
+ 	int bg_node_segs, bg_data_segs;
+@@ -3867,7 +3877,8 @@ bool f2fs_is_compress_backend_ready(struct inode *inode);
+ bool f2fs_is_compress_algorithm_valid(unsigned char algorithm);
+ int f2fs_init_compress_mempool(void);
+ void f2fs_destroy_compress_mempool(void);
+-void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity);
++void f2fs_do_decompress_pages(struct decompress_io_ctx *dic, bool verity);
++void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity, unsigned int ofs);
+ bool f2fs_cluster_is_empty(struct compress_ctx *cc);
+ bool f2fs_cluster_can_merge_page(struct compress_ctx *cc, pgoff_t index);
+ void f2fs_compress_ctx_add_page(struct compress_ctx *cc, struct page *page);
+@@ -3886,10 +3897,19 @@ void f2fs_decompress_end_io(struct page **rpages,
+ int f2fs_init_compress_ctx(struct compress_ctx *cc);
+ void f2fs_destroy_compress_ctx(struct compress_ctx *cc);
+ void f2fs_init_compress_info(struct f2fs_sb_info *sbi);
++int f2fs_init_compress_inode(struct f2fs_sb_info *sbi);
++void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi);
+ int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi);
+ void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi);
+ int __init f2fs_init_compress_cache(void);
+ void f2fs_destroy_compress_cache(void);
++struct address_space *COMPRESS_MAPPING(struct f2fs_sb_info *sbi);
++void invalidate_compress_page(struct f2fs_sb_info *sbi, block_t blkaddr);
++void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
++						nid_t ino, block_t blkaddr);
++void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
++								block_t blkaddr);
++void invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino);
+ #else
+ static inline bool f2fs_is_compressed_page(struct page *page) { return false; }
+ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
+@@ -3910,10 +3930,20 @@ static inline struct page *f2fs_compress_control_page(struct page *page)
+ }
+ static inline int f2fs_init_compress_mempool(void) { return 0; }
+ static inline void f2fs_destroy_compress_mempool(void) { }
++static inline int f2fs_init_compress_inode(struct f2fs_sb_info *sbi) { return 0; }
++static inline void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi) { }
+ static inline int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi) { return 0; }
+ static inline void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi) { }
+ static inline int __init f2fs_init_compress_cache(void) { return 0; }
+ static inline void f2fs_destroy_compress_cache(void) { }
++static inline void invalidate_compress_page(struct f2fs_sb_info *sbi,
++				block_t blkaddr) { }
++static inline void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi,
++				struct page *page, nid_t ino, block_t blkaddr) { }
++static inline void f2fs_load_compressed_page(struct f2fs_sb_info *sbi,
++				struct page *page, block_t blkaddr) { }
++static inline void invalidate_compress_pages(struct f2fs_sb_info *sbi,
++							nid_t ino) { }
+ #endif
+ 
+ static inline void set_compress_context(struct inode *inode)
+diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+index 3ef84e6ded41..419b9acc9e2a 100644
+--- a/fs/f2fs/gc.c
++++ b/fs/f2fs/gc.c
+@@ -1225,6 +1225,7 @@ static int move_data_block(struct inode *inode, block_t bidx,
+ 	f2fs_put_page(mpage, 1);
+ 	invalidate_mapping_pages(META_MAPPING(fio.sbi),
+ 				fio.old_blkaddr, fio.old_blkaddr);
++	invalidate_compress_page(fio.sbi, fio.old_blkaddr);
+ 
+ 	set_page_dirty(fio.encrypted_page);
+ 	if (clear_page_dirty_for_io(fio.encrypted_page))
+diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+index 349d9cb933ee..77d6fab82206 100644
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -18,6 +18,10 @@
+ 
+ #include <trace/events/f2fs.h>
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++extern const struct address_space_operations f2fs_compress_aops;
++#endif
++
+ void f2fs_mark_inode_dirty_sync(struct inode *inode, bool sync)
+ {
+ 	if (is_inode_flag_set(inode, FI_NEW_INODE))
+@@ -494,6 +498,11 @@ struct inode *f2fs_iget(struct super_block *sb, unsigned long ino)
+ 	if (ino == F2FS_NODE_INO(sbi) || ino == F2FS_META_INO(sbi))
+ 		goto make_now;
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	if (ino == F2FS_COMPRESS_INO(sbi))
++		goto make_now;
++#endif
++
+ 	ret = do_read_inode(inode);
+ 	if (ret)
+ 		goto bad_inode;
+@@ -504,6 +513,12 @@ struct inode *f2fs_iget(struct super_block *sb, unsigned long ino)
+ 	} else if (ino == F2FS_META_INO(sbi)) {
+ 		inode->i_mapping->a_ops = &f2fs_meta_aops;
+ 		mapping_set_gfp_mask(inode->i_mapping, GFP_NOFS);
++	} else if (ino == F2FS_COMPRESS_INO(sbi)) {
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++		inode->i_mapping->a_ops = &f2fs_compress_aops;
++#endif
++		mapping_set_gfp_mask(inode->i_mapping,
++			GFP_NOFS | __GFP_HIGHMEM | __GFP_MOVABLE);
+ 	} else if (S_ISREG(inode->i_mode)) {
+ 		inode->i_op = &f2fs_file_inode_operations;
+ 		inode->i_fop = &f2fs_file_operations;
+@@ -722,8 +737,12 @@ void f2fs_evict_inode(struct inode *inode)
+ 	trace_f2fs_evict_inode(inode);
+ 	truncate_inode_pages_final(&inode->i_data);
+ 
++	if (test_opt(sbi, COMPRESS_CACHE) && f2fs_compressed_file(inode))
++		invalidate_compress_pages(sbi, inode->i_ino);
++
+ 	if (inode->i_ino == F2FS_NODE_INO(sbi) ||
+-			inode->i_ino == F2FS_META_INO(sbi))
++			inode->i_ino == F2FS_META_INO(sbi) ||
++			inode->i_ino == F2FS_COMPRESS_INO(sbi))
+ 		goto out_clear;
+ 
+ 	f2fs_bug_on(sbi, get_dirty_pages(inode));
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index deca74cb17df..e001b8053727 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -2305,6 +2305,7 @@ void f2fs_invalidate_blocks(struct f2fs_sb_info *sbi, block_t addr)
+ 		return;
+ 
+ 	invalidate_mapping_pages(META_MAPPING(sbi), addr, addr);
++	invalidate_compress_page(sbi, addr);
+ 
+ 	/* add it into sit main buffer */
+ 	down_write(&sit_i->sentry_lock);
+@@ -3432,9 +3433,11 @@ static void do_write_page(struct f2fs_summary *sum, struct f2fs_io_info *fio)
+ reallocate:
+ 	f2fs_allocate_data_block(fio->sbi, fio->page, fio->old_blkaddr,
+ 			&fio->new_blkaddr, sum, type, fio);
+-	if (GET_SEGNO(fio->sbi, fio->old_blkaddr) != NULL_SEGNO)
++	if (GET_SEGNO(fio->sbi, fio->old_blkaddr) != NULL_SEGNO) {
+ 		invalidate_mapping_pages(META_MAPPING(fio->sbi),
+ 					fio->old_blkaddr, fio->old_blkaddr);
++		invalidate_compress_page(fio->sbi, fio->old_blkaddr);
++	}
+ 
+ 	/* writeout dirty page into bdev */
+ 	f2fs_submit_page_write(fio);
+@@ -3607,6 +3610,7 @@ void f2fs_do_replace_block(struct f2fs_sb_info *sbi, struct f2fs_summary *sum,
+ 	if (GET_SEGNO(sbi, old_blkaddr) != NULL_SEGNO) {
+ 		invalidate_mapping_pages(META_MAPPING(sbi),
+ 					old_blkaddr, old_blkaddr);
++		invalidate_compress_page(sbi, old_blkaddr);
+ 		if (!from_gc)
+ 			update_segment_mtime(sbi, old_blkaddr, 0);
+ 		update_sit_entry(sbi, old_blkaddr, -1);
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 47858e0c5e95..8442333ca0e2 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -148,6 +148,7 @@ enum {
+ 	Opt_compress_extension,
+ 	Opt_compress_mode,
+ 	Opt_compress_chksum,
++	Opt_compress_cache,
+ 	Opt_atgc,
+ 	Opt_err,
+ };
+@@ -218,6 +219,7 @@ static match_table_t f2fs_tokens = {
+ 	{Opt_compress_extension, "compress_extension=%s"},
+ 	{Opt_compress_chksum, "compress_chksum"},
+ 	{Opt_compress_mode, "compress_mode=%s"},
++	{Opt_compress_cache, "compress_cache"},
+ 	{Opt_atgc, "atgc"},
+ 	{Opt_err, NULL},
+ };
+@@ -955,12 +957,16 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 			}
+ 			kfree(name);
+ 			break;
++		case Opt_compress_cache:
++			set_opt(sbi, COMPRESS_CACHE);
++			break;
+ #else
+ 		case Opt_compress_algorithm:
+ 		case Opt_compress_log_size:
+ 		case Opt_compress_extension:
+ 		case Opt_compress_chksum:
+ 		case Opt_compress_mode:
++		case Opt_compress_cache:
+ 			f2fs_info(sbi, "compression options not supported");
+ 			break;
+ #endif
+@@ -1285,6 +1291,8 @@ static void f2fs_put_super(struct super_block *sb)
+ 
+ 	f2fs_bug_on(sbi, sbi->fsync_node_num);
+ 
++	f2fs_destroy_compress_inode(sbi);
++
+ 	iput(sbi->node_inode);
+ 	sbi->node_inode = NULL;
+ 
+@@ -1554,6 +1562,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
+ 		seq_printf(seq, ",compress_mode=%s", "fs");
+ 	else if (F2FS_OPTION(sbi).compress_mode == COMPR_MODE_USER)
+ 		seq_printf(seq, ",compress_mode=%s", "user");
++
++	if (test_opt(sbi, COMPRESS_CACHE))
++		seq_puts(seq, ",compress_cache");
+ }
+ 
+ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+@@ -3766,10 +3777,14 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 		goto free_node_inode;
+ 	}
+ 
+-	err = f2fs_register_sysfs(sbi);
++	err = f2fs_init_compress_inode(sbi);
+ 	if (err)
+ 		goto free_root_inode;
+ 
++	err = f2fs_register_sysfs(sbi);
++	if (err)
++		goto free_compress_inode;
++
+ #ifdef CONFIG_QUOTA
+ 	/* Enable quota usage during mount */
+ 	if (f2fs_sb_has_quota_ino(sbi) && !f2fs_readonly(sb)) {
+@@ -3903,6 +3918,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 	/* evict some inodes being cached by GC */
+ 	evict_inodes(sb);
+ 	f2fs_unregister_sysfs(sbi);
++free_compress_inode:
++	f2fs_destroy_compress_inode(sbi);
+ free_root_inode:
+ 	dput(sb->s_root);
+ 	sb->s_root = NULL;
+diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+index 7dc2a06cf19a..55be7afeee90 100644
+--- a/include/linux/f2fs_fs.h
++++ b/include/linux/f2fs_fs.h
+@@ -34,6 +34,7 @@
+ #define F2FS_ROOT_INO(sbi)	((sbi)->root_ino_num)
+ #define F2FS_NODE_INO(sbi)	((sbi)->node_ino_num)
+ #define F2FS_META_INO(sbi)	((sbi)->meta_ino_num)
++#define F2FS_COMPRESS_INO(sbi)	(NM_I(sbi)->max_nid)
+ 
+ #define F2FS_MAX_QUOTAS		3
+ 
+-- 
+2.22.0
 
->           * go to the slow exit path.
->           * In the Xen PV case we must use iret anyway.
->           */
->          ALTERNATIVE "", "jmp swapgs_restore_regs_and_return_to_usermod=
-e", X86_FEATURE_XENPV
->=20
->          movq    RCX(%rsp), %rcx;
->          movq    RIP(%rsp), %r11;
->          cmpq    %rcx, %r11;     /* SYSRET requires RCX =3D=3D RIP */ \=
-
->          jne     swapgs_restore_regs_and_return_to_usermode
->=20
-> ?
->=20
-
-I wanted to avoid the additional NOPs for the bare metal case.
-
-If you don't mind them I can do as you are suggesting.
-
-
-Juergen
-
---------------50989C0C7D65F3525DF0B3D1
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------50989C0C7D65F3525DF0B3D1--
-
---cx6HqDKbye5TwFIy5c3ypsnchRBmnlgeh--
-
---jJ9PpTcxy9lmYsonXHC7Yx0WUyHQN3ZlP
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/HqTUFAwAAAAAACgkQsN6d1ii/Ey+4
-gQf9EFMoWpLKjzw2BVbyD0hiQapRVGseNvB3GqQFjKeRF2cYKO3pdXTP/8/gguKxLu2hewzYnjiK
-7bUt7DNePDKIodhyA2PpUNexvDcOkPWFU2gvJLPAeIfFIknZnDCwQRsSlPX0qysGcH+ukEwwNthY
-u98BK1NtYIgkdzADu7TB94cXYCIRKhFYZZ81I3TY11Lj7KpTgv1RYb8+JEW8M7m02x9k2FGi9QcU
-1ZLJFfVF9djamKm+jymofOLtyE83uoAJcQqjxpMrLH/GhavwLB4x0hiVCDDB3+xoGK6GRPLeVayL
-2CjIsvIXdDbHXTAHQ/Cy80yJzLbeK95XQp91LaS4Yw==
-=Lxwk
------END PGP SIGNATURE-----
-
---jJ9PpTcxy9lmYsonXHC7Yx0WUyHQN3ZlP--
