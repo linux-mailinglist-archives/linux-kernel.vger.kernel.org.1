@@ -2,131 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35682CC043
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F332CC049
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730382AbgLBPC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:02:59 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:33349 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727753AbgLBPC6 (ORCPT
+        id S1730399AbgLBPD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:03:56 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:58737 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726620AbgLBPDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:02:58 -0500
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id CEC1E6000C;
-        Wed,  2 Dec 2020 15:02:09 +0000 (UTC)
-Date:   Wed, 2 Dec 2020 16:02:09 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        kevin.lhopital@hotmail.com
-Subject: Re: [PATCH v2 09/19] ARM: dts: sunxi: h3/h5: Add CSI controller port
- for parallel input
-Message-ID: <X8escb4SZXEpiR0n@aptenodytes>
-References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
- <20201128142839.517949-10-paul.kocialkowski@bootlin.com>
- <20201201121405.at4pwxon56ecwrx6@gilmour>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rGPkz4GDdv/zCi05"
-Content-Disposition: inline
-In-Reply-To: <20201201121405.at4pwxon56ecwrx6@gilmour>
+        Wed, 2 Dec 2020 10:03:55 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4DF59580132;
+        Wed,  2 Dec 2020 10:03:09 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Wed, 02 Dec 2020 10:03:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=zKHBXpuw+WPRxYjKCr+NVoOy6HmLEmi
+        pUWxQdocXY44=; b=inplWYyfQJqds7vglOwm5zUoQr2WvvTwZ81yB/6SWEAfzt4
+        yyfNOxpkuC8Gho2V8At4KOUsKV3LESaha0MQQa5dEm/UcT8ailj9ZNY1kPCaOqaj
+        Fh37aCFHPOB2pQLhVcqXD1X4d2oXJ7CXjuGzkIQ0Gwdta0ytwJhsWIh/HTxom0Bt
+        gCC1QVNvKEpMU/OTL2tA5qQCoqZvePhEG3pcEiaJ3vNXM2Sa6tyQmH9sPDfSFHmp
+        V68iVy14EvlkSFiaLVadcaCdfX1C7uyEpvqTCx9Qy6iu4WpY330rdErGufQInr6t
+        +S58OJd4UF3qpt6GZ0d11EIikMwcf6BQjEDQTGg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=zKHBXp
+        uw+WPRxYjKCr+NVoOy6HmLEmipUWxQdocXY44=; b=Fq+VbBkybpikgWgp2qOWLZ
+        gYejKwOvXLsdF7H0+DdyZb2/oH2bgEK+1ZzGR7Tb+GQgL0jsCi7+t7pjRP2pJlPe
+        ooCgBttACOiSMU/fU7NiM5Ou55eQWXS2rDK+4ygx7JWnsCEWdaL2EQzSA5l72hms
+        tbfyX6Mmu+WiZhlQz+ERKFiK9vqoMEt1sMXlx3aS3OzLyG2B3BDfP5v/AKLystW6
+        Ppr1jmNbSzq3Qpra9VEfIT/xRZ0vGIvnAzc5WCbc6v0OnTzRLJRdN+a195mWDCD9
+        sGt0hwaRdNhj2jdUDF9RzRsknSrL4fTk0QgJfk0LbH/qaAIYHiVunifURA/zVhRQ
+        ==
+X-ME-Sender: <xms:qqzHX1lcbG5TkCi8uQk1gkT7pXtoVu_8oYLi2EPrMRkYEia26nfdnw>
+    <xme:qqzHXw1kHffEpb5fby9_o_FjulyaLKPOknZcqXqJL0b2Af3JHsCZp3JfH-71skvDQ
+    RNjs7DGbUHSCSJiZw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeigedgjeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
+    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:qqzHX7qfwxhOYMJQNx5SUJDRbo2oMhBVBlkU63XiUu39paomza-F9A>
+    <xmx:qqzHX1mKJx3F9u2t9pFvDHWt4oW19eJkxuQEOKTMtZXSKUavxcfovA>
+    <xmx:qqzHXz2iceQ461WQJ4IKjsMPsrXx9Ku41EdyJRDEXIR_wsGyChPV_g>
+    <xmx:razHX60C_AWcQXD-jkuSWLjePszNYKpAS5RXWOb-XFIy1tz3DcViaQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7CD5CE00D4; Wed,  2 Dec 2020 10:03:04 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-622-g4a97c0b-fm-20201115.001-g4a97c0b3
+Mime-Version: 1.0
+Message-Id: <b6dd3a91-abe7-4e9d-b801-6e54e4c88827@www.fastmail.com>
+In-Reply-To: <PS1PR06MB26008E4BCB805553EDEC45038AF30@PS1PR06MB2600.apcprd06.prod.outlook.com>
+References: <20201202063612.21241-1-troy_lee@aspeedtech.com>
+ <20201202063612.21241-3-troy_lee@aspeedtech.com>
+ <CACPK8XcBTm8-cAPmtswHbYAf2B+PdBiZ2s1XK1UqKA_NQX_-mw@mail.gmail.com>
+ <PS1PR06MB26008E4BCB805553EDEC45038AF30@PS1PR06MB2600.apcprd06.prod.outlook.com>
+Date:   Thu, 03 Dec 2020 01:32:44 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Troy Lee" <troy_lee@aspeedtech.com>,
+        "Joel Stanley" <joel@jms.id.au>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, "Tony Luck" <tony.luck@intel.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "James Morse" <james.morse@arm.com>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "Robert Richter" <rrichter@marvell.com>,
+        "leetroy@gmail.com" <leetroy@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "Stefan M Schaeckeler" <sschaeck@cisco.com>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] edac: Supporting AST2400 and AST2600 edac driver
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---rGPkz4GDdv/zCi05
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, 2 Dec 2020, at 19:11, Troy Lee wrote:
+> Hi Joel,
+> 
+> Thanks for the suggestion, I'll fix the review and create an new patch 
+> against 
+> latest Linux branch. Those exported function will be referenced in 
+> other driver yet 
+> to be upstream, so should I move those exported functions out of this 
+> patch?
+> 
 
-On Tue 01 Dec 20, 13:14, Maxime Ripard wrote:
-> On Sat, Nov 28, 2020 at 03:28:29PM +0100, Paul Kocialkowski wrote:
-> > Since the CSI controller binding is getting a bit more complex due
-> > to the addition of MIPI CSI-2 bridge support, make the ports node
-> > explicit with the parallel port.
-> >=20
-> > This way, it's clear that the controller only supports parallel
-> > interface input and there's no confusion about the port number.
-> >=20
-> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > ---
-> >  arch/arm/boot/dts/sunxi-h3-h5.dtsi | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >=20
-> > diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sun=
-xi-h3-h5.dtsi
-> > index 9be13378d4df..02b698cace6a 100644
-> > --- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-> > +++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-> > @@ -803,6 +803,15 @@ csi: camera@1cb0000 {
-> >  			pinctrl-names =3D "default";
-> >  			pinctrl-0 =3D <&csi_pins>;
-> >  			status =3D "disabled";
-> > +
-> > +			ports {
-> > +				#address-cells =3D <1>;
-> > +				#size-cells =3D <0>;
-> > +
-> > +				csi_in_parallel: port@0 {
-> > +					reg =3D <0>;
-> > +				};
-> > +			};
-> >  		};
->=20
-> This will create a DTC warning, since port@0 is the only node, and is
-> equivalent to port
+Yes, let's leave the exports out of this patch, and add them in when you send 
+the patch that depends on them.
 
-I'm not seeing the warning when running dtbs_check.
-More generally, why is it a problem that there's only one node defined?
-
-One issue that I did see is that the port node doesn't have an endpoint
-here, so I will remove the requirement to have an endpoint in the bindings
-documentation to allow this kind of definition.
-
-Cheers,
-
-Paul
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---rGPkz4GDdv/zCi05
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/HrHEACgkQ3cLmz3+f
-v9ErpAgAl7uJWiiZLPZchWKL6k5dL9UqFnjiKHTANDFz4zNTRp/o32qFhs/5b/dS
-YmQq0RsO+cyvnDxYlcRd1a49EhTeI08dsZtMrAzeLGqrOmxwBNEoJiNASEDRodFP
-MogKS9JER+A8zl3msQDPCDlBRTVwQrQaDbpHBKoF6qQTbWWuG+2/AY/LCr6DFY2X
-GoR7hXqjiJkIzc+49SC2C3mnycLETpJAf7mY3mQkTHdbuKqJCyjglrCPtvLvzxLU
-U5bzjNMc/Lm7X1NP1aOMCHhSJ0yE6/vewMKkceTfm4AUvS48fz2/s78AU2n4rD/U
-ETFlPrmf9vkxA732GCZiTvH9OQWHTA==
-=PFfC
------END PGP SIGNATURE-----
-
---rGPkz4GDdv/zCi05--
+Andrew
