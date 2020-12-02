@@ -2,98 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE522CC495
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5662CC4A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388039AbgLBSJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:09:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:46930 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727108AbgLBSJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:09:18 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6BB1E1042;
-        Wed,  2 Dec 2020 10:08:32 -0800 (PST)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39D093F575;
-        Wed,  2 Dec 2020 10:08:30 -0800 (PST)
-Date:   Wed, 2 Dec 2020 18:08:27 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 12/14] arm64: Prevent offlining first CPU with 32-bit
- EL0 on mismatched system
-Message-ID: <20201202180827.7thdjnpnvfxh3s3r@e107158-lin.cambridge.arm.com>
-References: <20201124155039.13804-1-will@kernel.org>
- <20201124155039.13804-13-will@kernel.org>
- <20201127134122.oughqeizhl2j4iky@e107158-lin.cambridge.arm.com>
- <20201201221335.GA28496@willie-the-truck>
- <20201202125952.z2q6oucoqbwt6aq2@e107158-lin.cambridge.arm.com>
- <20201202174230.GA29939@willie-the-truck>
+        id S2389339AbgLBSKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:10:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387580AbgLBSKt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 13:10:49 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A218C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:10:09 -0800 (PST)
+Received: from zn.tnic (p200300ec2f161b00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:1b00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E10E81EC04DB;
+        Wed,  2 Dec 2020 19:10:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606932608;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=MtASgyvlr76Dpn4OvnF8VBFRlFtBFT2ievvOIOzSaZg=;
+        b=emO6ydC7ipcgMAmsz42cdKbUyVth+vDSpm3f/UCra7Z272bHAwYlM87mVfV9PWNaSV3khs
+        KtuubNtGKcpuAmk/CXtHeylps5+zuHHwockj021IPKBUGWPo13sLWTTWqbaEN0y/N4piku
+        GEPO5wsXps7e266AcT55RHzJLOQ3Krc=
+Date:   Wed, 2 Dec 2020 19:10:08 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
+        Kim Phillips <kim.phillips@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>, Pu Wen <puwen@hygon.cn>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/cpu/amd: Remove dead code for TSEG region remapping
+Message-ID: <20201202181008.GI2951@zn.tnic>
+References: <20201127171324.1846019-1-nivedita@alum.mit.edu>
+ <20201127172747.GE13163@zn.tnic>
+ <b726e0d7-7dfb-d902-652f-8aab4bf43e89@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201202174230.GA29939@willie-the-truck>
+In-Reply-To: <b726e0d7-7dfb-d902-652f-8aab4bf43e89@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/02/20 17:42, Will Deacon wrote:
-> On Wed, Dec 02, 2020 at 12:59:52PM +0000, Qais Yousef wrote:
-> > On 12/01/20 22:13, Will Deacon wrote:
-> > > On Fri, Nov 27, 2020 at 01:41:22PM +0000, Qais Yousef wrote:
-> > > > On 11/24/20 15:50, Will Deacon wrote:
-> > > > > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> > > > > index 29017cbb6c8e..fe470683b43e 100644
-> > > > > --- a/arch/arm64/kernel/cpufeature.c
-> > > > > +++ b/arch/arm64/kernel/cpufeature.c
-> > > > > @@ -1237,6 +1237,8 @@ has_cpuid_feature(const struct arm64_cpu_capabilities *entry, int scope)
-> > > > >  
-> > > > >  static int enable_mismatched_32bit_el0(unsigned int cpu)
-> > > > >  {
-> > > > > +	static int lucky_winner = -1;
-> > > > > +
-> > > > >  	struct cpuinfo_arm64 *info = &per_cpu(cpu_data, cpu);
-> > > > >  	bool cpu_32bit = id_aa64pfr0_32bit_el0(info->reg_id_aa64pfr0);
-> > > > >  
-> > > > > @@ -1245,6 +1247,22 @@ static int enable_mismatched_32bit_el0(unsigned int cpu)
-> > > > >  		static_branch_enable_cpuslocked(&arm64_mismatched_32bit_el0);
-> > > > >  	}
-> > > > >  
-> > > > > +	if (cpumask_test_cpu(0, cpu_32bit_el0_mask) == cpu_32bit)
-> > > > > +		return 0;
-> > > > 
-> > > > Hmm I'm struggling to get what you're doing here. You're treating CPU0 (the
-> > > > boot CPU) specially here, but I don't get why?
-> > > 
-> > > If our ability to execute 32-bit code is the same as the boot CPU then we
-> > > don't have to do anything. That way, we can postpone nominating the lucky
-> > > winner until we really need to.
-> > 
-> > Okay I see what you're doing now. The '== cpu_32bit' part of the check gave me
-> > trouble. If the first N cpus are 64bit only, we'll skip them here. Worth
-> > a comment?
-> > 
-> > Wouldn't it be better to replace this with a check if cpu_32bit_el0_mask is
-> > empty instead? That would be a lot easier to read.
-> 
-> Sorry, but I don't follow. What if all the CPUs are 32-bit capable?
+On Wed, Dec 02, 2020 at 11:58:15AM -0600, Tom Lendacky wrote:
+> I believe this is geared towards performance. If the TSEG base address is
+> not 2MB aligned, then hardware has to break down a 2MB TLB entry if the OS
+> references the memory within the 2MB page that is before the TSEG base
+> address. This can occur whenever the 2MB TLB entry is re-installed because
+> of TLB flushes, etc.
 
-You're right I missed this case.
+And if this gets reinstated properly, then that explanation belongs over
+it because nothing else explains what that thing did. So thanks for
+digging it out.
 
---
-Qais Yousef
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
