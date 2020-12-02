@@ -2,81 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D0B2CC7DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FE62CC7EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729663AbgLBUdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:33:17 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:44701 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1729176AbgLBUdP (ORCPT
+        id S1727535AbgLBUgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:36:50 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:35474 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726932AbgLBUgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:33:15 -0500
-Received: (qmail 1067955 invoked by uid 1000); 2 Dec 2020 15:32:34 -0500
-Date:   Wed, 2 Dec 2020 15:32:34 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     syzbot <syzbot+641bd6ff9b25e6d3aad1@syzkaller.appspotmail.com>
-Cc:     andriy.shevchenko@linux.intel.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        mathias.nyman@linux.intel.com, syzkaller-bugs@googlegroups.com
-Subject: Re: memory leak in usb_set_configuration
-Message-ID: <20201202203234.GC1062758@rowland.harvard.edu>
-References: <000000000000cd6be705b3d525d5@google.com>
+        Wed, 2 Dec 2020 15:36:49 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B2KZA1o004516;
+        Wed, 2 Dec 2020 20:35:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=NoO5ZnzUZTiGXgB6FbPwx93nxD9U/2l3gbD+Xy+Gcqs=;
+ b=HWMEOjQDpoIfWipEOdbYLD+WpaUc7r5sg09FV3aRcf2bN8FAzgQAJ4KvhnMFKkCxLZNC
+ O5rvkyAJxVLeo3xX+IVbDJCFU8mZ/i4oZCusbUA1P+vdizThroWj2vPUxp7YaGPHK8X2
+ iC9CluRvHPDEdKoYbOJtmyOhuSZeNdtgsaCH5obYsyXxRFsCWTS61w+XCAIboedAIIuy
+ OS2bwsNlE/OSqubgY73nuQmKYQ9myaPYm/DBMTU/zctTMXNTuUXdHX7acfYSX9LblY8r
+ dsO5wwjFd4OvDiatnHJQVmcy4A6QUTjB+aoeVLh1tdUHxMcTIj6nO7tOsEhp48PAQoqv OA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 353egktjuy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 02 Dec 2020 20:35:47 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B2KUMAn125704;
+        Wed, 2 Dec 2020 20:33:46 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 3540auuvsm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Dec 2020 20:33:46 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B2KXjkF015423;
+        Wed, 2 Dec 2020 20:33:45 GMT
+Received: from [10.159.240.123] (/10.159.240.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 02 Dec 2020 12:33:45 -0800
+Subject: Re: [PATCH RFC 03/39] KVM: x86/xen: register shared_info page
+To:     Joao Martins <joao.m.martins@oracle.com>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20190220201609.28290-1-joao.m.martins@oracle.com>
+ <20190220201609.28290-4-joao.m.martins@oracle.com>
+ <b647bed6c75f8743b8afea251a88f00a5feaee29.camel@infradead.org>
+ <2d4df59d-f945-32dc-6999-a6f711e972ea@oracle.com>
+ <896dc984-fa71-8f2f-d12b-458294f5f706@oracle.com>
+From:   Ankur Arora <ankur.a.arora@oracle.com>
+Message-ID: <d3775e15-9d5e-3746-84a0-a3049d20c3eb@oracle.com>
+Date:   Wed, 2 Dec 2020 12:33:43 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000cd6be705b3d525d5@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <896dc984-fa71-8f2f-d12b-458294f5f706@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020122
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012020123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 05:55:27AM -0800, syzbot wrote:
-> Hello,
+On 2020-12-02 2:44 a.m., Joao Martins wrote:
+> [late response - was on holiday yesterday]
 > 
-> syzbot found the following issue on:
+> On 12/2/20 12:40 AM, Ankur Arora wrote:
+>> On 2020-12-01 5:07 a.m., David Woodhouse wrote:
+>>> On Wed, 2019-02-20 at 20:15 +0000, Joao Martins wrote:
+>>>> +static int kvm_xen_shared_info_init(struct kvm *kvm, gfn_t gfn)
+>>>> +{
+>>>> +       struct shared_info *shared_info;
+>>>> +       struct page *page;
+>>>> +
+>>>> +       page = gfn_to_page(kvm, gfn);
+>>>> +       if (is_error_page(page))
+>>>> +               return -EINVAL;
+>>>> +
+>>>> +       kvm->arch.xen.shinfo_addr = gfn;
+>>>> +
+>>>> +       shared_info = page_to_virt(page);
+>>>> +       memset(shared_info, 0, sizeof(struct shared_info));
+>>>> +       kvm->arch.xen.shinfo = shared_info;
+>>>> +       return 0;
+>>>> +}
+>>>> +
+>>>
+>>> Hm.
+>>>
+>>> How come we get to pin the page and directly dereference it every time,
+>>> while kvm_setup_pvclock_page() has to use kvm_write_guest_cached()
+>>> instead?
+>>
+>> So looking at my WIP trees from the time, this is something that
+>> we went back and forth on as well with using just a pinned page or a
+>> persistent kvm_vcpu_map().
+>>
+>> I remember distinguishing shared_info/vcpu_info from kvm_setup_pvclock_page()
+>> as shared_info is created early and is not expected to change during the
+>> lifetime of the guest which didn't seem true for MSR_KVM_SYSTEM_TIME (or
+>> MSR_KVM_STEAL_TIME) so that would either need to do a kvm_vcpu_map()
+>> kvm_vcpu_unmap() dance or do some kind of synchronization.
+>>
+>> That said, I don't think this code explicitly disallows any updates
+>> to shared_info.
+>>
+>>>
+>>> If that was allowed, wouldn't it have been a much simpler fix for
+>>> CVE-2019-3016? What am I missing?
+>>
+>> Agreed.
+>>
+>> Perhaps, Paolo can chime in with why KVM never uses pinned page
+>> and always prefers to do cached mappings instead?
+>>
+> Part of the CVE fix to not use cached versions.
 > 
-> HEAD commit:    407ab579 Merge tag 'for-linus' of git://git.kernel.org/pub..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16d84062500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f13716fa0212fd
-> dashboard link: https://syzkaller.appspot.com/bug?extid=641bd6ff9b25e6d3aad1
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102c2094500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a8dfa8500000
+> It's not a longterm pin of the page unlike we try to do here (partly due to the nature
+> of the pages we are mapping) but we still we map the gpa, RMW the steal time struct, and
+> then unmap the page.
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+641bd6ff9b25e6d3aad1@syzkaller.appspotmail.com
+> See record_steal_time() -- but more specifically commit b043138246 ("x86/KVM: Make sure
+> KVM_VCPU_FLUSH_TLB flag is not missed").
 > 
-> BUG: memory leak
-> unreferenced object 0xffff88810ed7cc00 (size 1024):
->   comm "kworker/0:3", pid 4907, jiffies 4294954595 (age 14.630s)
->   hex dump (first 32 bytes):
->     48 92 b6 11 81 88 ff ff 48 92 b6 11 81 88 ff ff  H.......H.......
->     01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<00000000acb2212d>] kmalloc include/linux/slab.h:552 [inline]
->     [<00000000acb2212d>] kzalloc include/linux/slab.h:664 [inline]
->     [<00000000acb2212d>] usb_set_configuration+0x18c/0xb90 drivers/usb/core/message.c:1987
->     [<00000000398ef244>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
->     [<00000000c8516fd1>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
->     [<00000000eb555eca>] really_probe+0x159/0x480 drivers/base/dd.c:554
->     [<0000000082b68944>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
->     [<000000000485fb4d>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
->     [<00000000a0e84ad1>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
->     [<0000000017598cdd>] __device_attach+0x122/0x250 drivers/base/dd.c:912
->     [<00000000201e5839>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
->     [<00000000ec5f56bf>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
->     [<0000000049b5ad41>] usb_new_device.cold+0x166/0x578 drivers/usb/core/hub.c:2554
->     [<0000000030bc00f0>] hub_port_connect drivers/usb/core/hub.c:5222 [inline]
->     [<0000000030bc00f0>] hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
->     [<0000000030bc00f0>] port_event drivers/usb/core/hub.c:5508 [inline]
->     [<0000000030bc00f0>] hub_event+0x144a/0x20d0 drivers/usb/core/hub.c:5590
->     [<00000000e89e69ae>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
->     [<0000000063d76c23>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
->     [<00000000a311ec69>] kthread+0x178/0x1b0 kernel/kthread.c:292
->     [<00000000690c42fe>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> But I am not sure it's a good idea to follow the same as record_steal_time() given that
+> this is a fairly sensitive code path for event channels.
+> 
+>>>
+>>> Should I rework these to use kvm_write_guest_cached()?
+>>
+>> kvm_vcpu_map() would be better. The event channel logic does RMW operations
+>> on shared_info->vcpu_info.
+>>
+> Indeed, yes.
+> 
+> Ankur IIRC, we saw missed event channels notifications when we were using the
+> {write,read}_cached() version of the patch.
+> 
+> But I can't remember the reason it was due to, either the evtchn_pending or the mask
+> word -- which would make it not inject an upcall.
 
-#syz dup: memory leak in hub_event
+If memory serves, it was the mask. Though I don't think that we had
+kvm_{write,read}_cached in use at that point -- given that they were
+definitely not RMW safe.
 
-Alan Stern
+
+Ankur
+
+> 
+> 	Joao
+> 
