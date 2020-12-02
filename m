@@ -2,70 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7DE2CBD6E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD33D2CBD54
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388499AbgLBMxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:53:23 -0500
-Received: from mout.kundenserver.de ([212.227.126.135]:56325 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727809AbgLBMxP (ORCPT
+        id S1729848AbgLBMu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:50:57 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2389 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727639AbgLBMu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:53:15 -0500
-Received: from orion.localdomain ([77.7.48.174]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1Mqrs9-1kO5Cx3RI1-00ms94; Wed, 02 Dec 2020 13:50:15 +0100
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, mareklindner@neomailbox.ch,
-        sw@simonwunderlich.de, a@unstable.cc, sven@narfation.org,
-        marcel@holtmann.org, johan.hedberg@gmail.com, roopa@nvidia.com,
-        nikolay@nvidia.com, edumazet@google.com, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, jmaloy@redhat.com, ying.xue@windriver.com,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 7/7] net: tipc: remove unneeded MODULE_VERSION() usage
-Date:   Wed,  2 Dec 2020 13:49:59 +0100
-Message-Id: <20201202124959.29209-7-info@metux.net>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201202124959.29209-1-info@metux.net>
-References: <20201202124959.29209-1-info@metux.net>
-X-Provags-ID: V03:K1:cwkhICXDufJUAlJsovXQtZ2OyBFVeHR/za/rs5521Cqz6Wh9Ch/
- n2r+/y4jIDyugCIgF5g7uue0fRRFBkrAyTDehF8v0E6LX4lDErP3ysYD0NDeGmQjUjxxaaA
- nFTGgM784D7I7zKZoupqMvSxa0FalL9ALhRllLbOKOVQ+UZi3nlYdpHU6DqBP8RfgTXzRTu
- LRvkO/nAPYZIyscGn/SZA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jcGj6/3kF1g=:AqzM1phRwhfM1zwVGqFIvn
- uWCSSaCTm78/J3ALkHRgiZb5ARZR4qLcVPuAglVED3ww3ubpMwiyWf7eoeMePxvN9YwHwmBwQ
- 7dgsTsUCBuzou/TciuwkTjiYBhyX1sqRrcs1mIKDHg1nlHN9uXk5Fer9dpimwnjB2Lf8WP+tT
- C4c85VVOmCHLVSZRCBUE72FDp6NhNUDKz6udiqAx97K9wUdDmXN7yv47xDTpjSLv6FB8tyxAg
- pWsukYJ/9Bvp+ZsPNH5nwCwoYH4Kj/NDGc36TJYRfJyZlBkLJu9Ndus7+Md+m8ic19+Hvbplz
- JOUWD0AqYJikwpiy4hDyeKd+Pf2Wb0CXhj326D0FAfCWcu5Yg9xOKLthZQHnolafWMe6HFAuo
- 8cmGOi+jtiHZ5TFd9MGcS4kJ2UK96Q5ve873ySl8iqdwo32C6bso0YridYlmL
+        Wed, 2 Dec 2020 07:50:57 -0500
+Received: from dggeme706-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4CmJhP5YQxz50gv;
+        Wed,  2 Dec 2020 20:49:41 +0800 (CST)
+Received: from [10.174.186.123] (10.174.186.123) by
+ dggeme706-chm.china.huawei.com (10.1.199.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 2 Dec 2020 20:50:14 +0800
+Subject: Re: [PATCH v2 0/3] Fix several bugs in KVM stage 2 translation
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Will Deacon <will@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
+        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
+        <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
+        <lushenming@huawei.com>
+References: <20201201201034.116760-1-wangyanan55@huawei.com>
+ <20201201205948.GA28178@willie-the-truck>
+ <74540986-6197-34bc-cd53-850472091ee3@huawei.com>
+ <616980dcddd5c7e832c1068f6fa91449@kernel.org>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <b9cf36df-dc1f-5d40-0341-cfa573c9ecd9@huawei.com>
+Date:   Wed, 2 Dec 2020 20:50:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <616980dcddd5c7e832c1068f6fa91449@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.186.123]
+X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
+ dggeme706-chm.china.huawei.com (10.1.199.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove MODULE_VERSION(), as it isn't needed at all: the only version
-making sense is the kernel version.
 
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
----
- net/tipc/core.c | 1 -
- 1 file changed, 1 deletion(-)
+On 2020/12/2 20:23, Marc Zyngier wrote:
+> Hi Yanan,
+>
+> [...]
+>
+>> BTW: there are two more things below that I want to talk about.
+>>
+>> 1.  Recently, I have been focusing on the ARMv8.4-TTRem feature which
+>> is aimed at changing block size in stage 2 mapping.
+>>
+>> I have a plan to implement this feature for stage 2 translation when
+>> splitting a block into tables or merging tables into a block.
+>>
+>> This feature supports changing block size without performing
+>> *break-before-make*, which might have some improvement on performance.
+>>
+>> What do you think about this?
+>
+> It would be interesting if you can demonstrate some significant
+> performance improvements compared to the same workload with BBM.
+>
+> I'm not completely convinced this would change much, given that
+> it is only when moving from a table to a block mapping that you
+> can elide BBM when the support level is 1 or 2. As far as I can
+> tell, this only happens in the "stop logging" case.
+>
+> Is that something that happens often enough to justify the added
+> complexity? Having to handle TLB Conflict Abort is annoying, for
+> example.
 
-diff --git a/net/tipc/core.c b/net/tipc/core.c
-index c2ff42900b53..8c0c45347c53 100644
---- a/net/tipc/core.c
-+++ b/net/tipc/core.c
-@@ -227,4 +227,3 @@ module_exit(tipc_exit);
- 
- MODULE_DESCRIPTION("TIPC: Transparent Inter Process Communication");
- MODULE_LICENSE("Dual BSD/GPL");
--MODULE_VERSION(TIPC_MOD_VER);
--- 
-2.11.0
+I will take more consideration about the necessity  and maybe some tests
 
+on the performance will be made later.
+
+
+Thanks,
+
+
+Yanan
+
+>
+>> 2. Given that the issues we discussed before were found in practice
+>> when guest state changes from dirty logging to dirty logging canceled.
+>>
+>> I could add a test file testing on this case to selftests/ or kvm unit
+>> tests/, if it's necessary.
+>
+> That would be awesome, and I'd be very grateful if you did. It is the
+> second time we break this exact case, and having a reliable way to
+> verify it would definitely help.
+>
+> Thanks,
+>
+>         M.
