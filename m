@@ -2,112 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7E92CB2F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 03:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA082CB2FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 03:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728099AbgLBCzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 21:55:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57702 "EHLO mail.kernel.org"
+        id S1728162AbgLBC5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 21:57:33 -0500
+Received: from mga02.intel.com ([134.134.136.20]:12394 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727857AbgLBCzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 21:55:50 -0500
-Date:   Tue, 1 Dec 2020 18:55:06 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606877708;
-        bh=gnuyHfZmSA0ZkxwooTnVJl7oRNOkSdP6K7yegmAuHPo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SV0b+Pzsf1R8xu8jF3GmXQmvZF36bjU5ixvj/gQBAwr7+cc63JWEKFczqX6A5aBmF
-         dVy45yewNIDq3qfv0zPZChRRW19qNR0gv36jxEpcPJWrQhGKZpLbVwq3qh/wGQo618
-         pJSQzdVHlYKacnhaAzRF2lPEQitxP6nfJhgS5nzA=
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     Hemant Kumar <hemantk@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bbhatt@codeaurora.org, loic.poulain@linaro.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v13 0/4] userspace MHI client interface driver
-Message-ID: <20201201185506.77c4b3df@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <817a4346-efb7-cfe5-0678-d1b60d06627d@codeaurora.org>
-References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
-        <20201201112901.7f13e26c@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-        <c6359962-a378-ed03-0fab-c2f6c8a1b8eb@codeaurora.org>
-        <20201201120302.474d4c9b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-        <817a4346-efb7-cfe5-0678-d1b60d06627d@codeaurora.org>
+        id S1728104AbgLBC5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 21:57:30 -0500
+IronPort-SDR: 4N+NfzN7WkskkwkRjeaZjdSUskESKXdYwSlNT4oTSuiBxBkbo0ph8BM76dGZMKTNUwJzaho2Dv
+ oFNXt9BC99mg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="160000496"
+X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
+   d="scan'208";a="160000496"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 18:56:44 -0800
+IronPort-SDR: 94g5QFThqnEFSco4sALFM6FqXl0B84GjYYwSBMaTqQRvrD6mzXOxeVEA/vFgKPz/NIJJPiE/EA
+ IqNtDm3wGtcQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
+   d="scan'208";a="481361568"
+Received: from lkp-server01.sh.intel.com (HELO 4302fe08fc2a) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 01 Dec 2020 18:56:42 -0800
+Received: from kbuild by 4302fe08fc2a with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kkIJt-00000t-DK; Wed, 02 Dec 2020 02:56:41 +0000
+Date:   Wed, 02 Dec 2020 10:56:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/platform] BUILD SUCCESS
+ 6043082c96844fa3a047896212e2da0adc1dde81
+Message-ID: <5fc7025f.nxBxD1+MLNnA/Cwk%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Dec 2020 13:48:36 -0700 Jeffrey Hugo wrote:
-> On 12/1/2020 1:03 PM, Jakub Kicinski wrote:
-> > On Tue, 1 Dec 2020 12:40:50 -0700 Jeffrey Hugo wrote:  
-> >> On 12/1/2020 12:29 PM, Jakub Kicinski wrote:  
-> >>> On Fri, 27 Nov 2020 19:26:02 -0800 Hemant Kumar wrote:  
-> >>>> This patch series adds support for UCI driver. UCI driver enables userspace
-> >>>> clients to communicate to external MHI devices like modem and WLAN. UCI driver
-> >>>> probe creates standard character device file nodes for userspace clients to
-> >>>> perform open, read, write, poll and release file operations. These file
-> >>>> operations call MHI core layer APIs to perform data transfer using MHI bus
-> >>>> to communicate with MHI device. Patch is tested using arm64 based platform.  
-> >>>
-> >>> Wait, I thought this was for modems.
-> >>>
-> >>> Why do WLAN devices need to communicate with user space?
-> >>>      
-> >>
-> >> Why does it matter what type of device it is?  Are modems somehow unique
-> >> in that they are the only type of device that userspace is allowed to
-> >> interact with?  
-> > 
-> > Yes modems are traditionally highly weird and require some serial
-> > device dance I don't even know about.
-> > 
-> > We have proper interfaces in Linux for configuring WiFi which work
-> > across vendors. Having char device access to WiFi would be a step
-> > back.  
-> 
-> So a WLAN device is only ever allowed to do Wi-Fi?  It can't also have 
-> GPS functionality for example?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/platform
+branch HEAD: 6043082c96844fa3a047896212e2da0adc1dde81  x86/platform/uv: Update MAINTAINERS for uv_sysfs driver
 
-No, but it's also not true that the only way to implement GPS is by
-opening a full on command/packet interface between fat proprietary
-firmware and custom user space (which may or may not be proprietary 
-as well).
+elapsed time: 723m
 
-> >> However, I'll bite.  Once such usecase would be QMI.  QMI is a generic
-> >> messaging protocol, and is not strictly limited to the unique operations
-> >> of a modem.
-> >>
-> >> Another usecase would be Sahara - a custom file transfer protocol used
-> >> for uploading firmware images, and downloading crashdumps.  
-> > 
-> > Thanks, I was asking for use cases, not which proprietary vendor
-> > protocol you can implement over it.
-> > 
-> > None of the use cases you mention here should require a direct FW -
-> > user space backdoor for WLAN.  
-> 
-> Uploading runtime firmware, with variations based on the runtime mode. 
-> Flashing the onboard flash based on cryptographic keys.  Accessing 
-> configuration data.  Accessing device logs.  Configuring device logs. 
-> Synchronizing the device time reference to Linux local or remote time 
-> sources.  Enabling debugging/performance hardware.  Getting software 
-> diagnostic events.  Configuring redundancy hardware per workload. 
-> Uploading new cryptographic keys.  Invalidating cryptographic keys. 
-> Uploading factory test data and running factory tests.
-> 
-> Need more?
+configs tested: 132
+configs skipped: 2
 
-This conversation is going nowhere. Are you trying to say that creating
-a common Linux API for those features is impossible and each vendor
-should be allowed to add their own proprietary way?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-This has been proven incorrect again and again, and Wi-Fi is a good
-example.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                        clps711x_defconfig
+sh                        edosk7760_defconfig
+powerpc                        cell_defconfig
+sh                            hp6xx_defconfig
+mips                          ath79_defconfig
+openrisc                         alldefconfig
+sh                               j2_defconfig
+mips                       capcella_defconfig
+arm                           viper_defconfig
+c6x                        evmc6474_defconfig
+sh                           se7705_defconfig
+m68k                         apollo_defconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                        realview_defconfig
+microblaze                          defconfig
+s390                       zfcpdump_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                    klondike_defconfig
+mips                     loongson1c_defconfig
+arc                        nsimosci_defconfig
+ia64                                defconfig
+mips                           gcw0_defconfig
+xtensa                         virt_defconfig
+c6x                        evmc6678_defconfig
+sh                             shx3_defconfig
+sh                         ap325rxa_defconfig
+m68k                       m5475evb_defconfig
+c6x                                 defconfig
+powerpc                     ep8248e_defconfig
+arm                          pcm027_defconfig
+mips                           ip22_defconfig
+powerpc                        fsp2_defconfig
+powerpc                      ppc40x_defconfig
+h8300                               defconfig
+powerpc                      ppc44x_defconfig
+arm                              alldefconfig
+powerpc                     mpc5200_defconfig
+riscv                    nommu_k210_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                       ebony_defconfig
+powerpc                 mpc8313_rdb_defconfig
+sh                           se7343_defconfig
+parisc                           alldefconfig
+arm                           h3600_defconfig
+mips                           jazz_defconfig
+ia64                        generic_defconfig
+arm                     davinci_all_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                    mvme5100_defconfig
+sh                        apsh4ad0a_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                          imote2_defconfig
+m68k                        m5407c3_defconfig
+arm                       cns3420vb_defconfig
+mips                 decstation_r4k_defconfig
+arm                            zeus_defconfig
+arm                            xcep_defconfig
+arm                         palmz72_defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                          ixp4xx_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201201
+i386                 randconfig-a005-20201201
+i386                 randconfig-a001-20201201
+i386                 randconfig-a002-20201201
+i386                 randconfig-a006-20201201
+i386                 randconfig-a003-20201201
+x86_64               randconfig-a016-20201201
+x86_64               randconfig-a012-20201201
+x86_64               randconfig-a014-20201201
+x86_64               randconfig-a013-20201201
+x86_64               randconfig-a015-20201201
+x86_64               randconfig-a011-20201201
+i386                 randconfig-a014-20201201
+i386                 randconfig-a013-20201201
+i386                 randconfig-a011-20201201
+i386                 randconfig-a015-20201201
+i386                 randconfig-a012-20201201
+i386                 randconfig-a016-20201201
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-You can do whatever you want for GPS etc. but don't come nowhere near
-networking with this attitude please.
+clang tested configs:
+x86_64               randconfig-a004-20201201
+x86_64               randconfig-a006-20201201
+x86_64               randconfig-a001-20201201
+x86_64               randconfig-a002-20201201
+x86_64               randconfig-a005-20201201
+x86_64               randconfig-a003-20201201
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
