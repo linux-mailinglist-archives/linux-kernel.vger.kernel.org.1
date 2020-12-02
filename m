@@ -2,93 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06ED82CBC3E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA322CBC4A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729236AbgLBMCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:02:20 -0500
-Received: from mga14.intel.com ([192.55.52.115]:63533 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726442AbgLBMCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:02:20 -0500
-IronPort-SDR: ohqOjj+e91ZBB8GosCstX2wBkULxNj3ux7RYKomnRdAL53NtRAUOQoEySi7s355N/FwbAdj7/F
- IkvU1aGK8LPg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="172219749"
-X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="172219749"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 04:00:39 -0800
-IronPort-SDR: 1RU+IPtoJ2BDPfekl0ododlyt4YMxcDIILxwElc+mA3UJ+22QjtuQtgfpYtiqiDkL/pDKQ4RfW
- mtpZBBcMWVxQ==
-X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="361418876"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 04:00:31 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kkQpA-00BV8u-K2; Wed, 02 Dec 2020 14:01:32 +0200
-Date:   Wed, 2 Dec 2020 14:01:32 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Dan Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 13/18] ipu3-cio2: Add functionality allowing
- software_node connections to sensors on platforms designed for Windows
-Message-ID: <20201202120132.GA4077@smile.fi.intel.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-14-djrscally@gmail.com>
- <20201130170955.GN14465@pendragon.ideasonboard.com>
- <b5cc6bbd-f679-7023-fde0-de2acb65a3c2@gmail.com>
- <20201201223053.GB4569@pendragon.ideasonboard.com>
- <20201202103851.GC852@paasikivi.fi.intel.com>
+        id S1729441AbgLBMCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:02:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726993AbgLBMCs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 07:02:48 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF67C0613D6;
+        Wed,  2 Dec 2020 04:02:07 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CmHdP2YK3z9s1l;
+        Wed,  2 Dec 2020 23:02:01 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606910521;
+        bh=DhMubd6l3BkR2suMZ4zYCgw+AuiQFHha81BSdGb7ifY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GCc/dmFwLk6BpkAQlNKd28cSx62jh+3FZ1A5cDQn1A73lAZkTLKx6ncdSS4sK+xAe
+         f9IikvOgf9AMXCHrCgUrZQ5bWRGFAOXPtCSw1WrDYw5acXaHIo810qwMVbuME+ZRzf
+         /IGVCjsnAtwVl3ZLq2eVa1dv3hzOMNABKiK/IfOPR8rAysV6H15sUUJDjy+TF0PdTq
+         6xRu463h32rZeeLDF/UUTZxX+zfzGnpnKAUfHKRNf4n34o0QDe4OD2P6RpVDGDX58Z
+         byVZotFA8SUwibbR4i/vebkyfJHVTZaSDan9cgJoXlo0zOFxR78AtNmzjRib8DUVRK
+         0JgcY8t4lam+g==
+Date:   Wed, 2 Dec 2020 23:01:59 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Jack Qiu <jack.qiu@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the f2fs tree
+Message-ID: <20201202230159.17045522@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202103851.GC852@paasikivi.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: multipart/signed; boundary="Sig_/9U.raGBIXvFkUXXK1m5=vhS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 12:38:51PM +0200, Sakari Ailus wrote:
-> On Wed, Dec 02, 2020 at 12:30:53AM +0200, Laurent Pinchart wrote:
-> > On Tue, Dec 01, 2020 at 10:08:25PM +0000, Dan Scally wrote:
-> > > On 30/11/2020 17:09, Laurent Pinchart wrote:
-> > > > On Mon, Nov 30, 2020 at 01:31:24PM +0000, Daniel Scally wrote:
+--Sig_/9U.raGBIXvFkUXXK1m5=vhS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-...
+Hi all,
 
-> > > >> +#define CIO2_NUM_PORTS			  4
-> > > > 
-> > > > There are a few rogue spaces before '4'.
-> > > 
-> > > Argh, thanks, this is the curse of using VS code on multiple machines...
-> > 
-> > I recommend vim ;-)
-> 
-> What is VS code? Very Serious Code?
+In commit
 
-Visual Studio Code. Something good from MS (no sarcasm, btw).
+  32c202c563c7 ("f2fs: init dirty_secmap incorrectly")
 
-> I can recommend Emacs; that could help, too.
+Fixes tag
 
--- 
-With Best Regards,
-Andy Shevchenko
+  Fixes: da52f8ade40b ("f2fs: get the right gc victim section when section
 
+has these problem(s):
 
+  - Subject has leading but no trailing parentheses
+  - Subject has leading but no trailing quotes
+
+Please do not split Fixes tags over more than one line.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/9U.raGBIXvFkUXXK1m5=vhS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/HgjcACgkQAVBC80lX
+0GzhTAf+IlL6C/uXm5WNqB43zQypzoyh9/YiaCoA0J+8PestVBkaq36o9jNREq/T
+M1Otjpi24RVemwxsdd+rmg/e1txujRKAaIzQ8I5pjR5vcUsaVueRiJotiBbI9lE6
+64RpE39MrsO5WzhilxzgywYX4k2B18dwWIsL27/JfWniE2Qjy/YKqLNN2okc2LMl
+zJ+OilqBa+C4ObUU1zEnrtXyeD9kq6k+w4laHoYZtcBQ7D4D0kd7IEdkpiMYPFqY
+SKOXXdZRNoiIyGJ+uNPbb6bVa+ffdoc89iOnWl6GWrrS5q0HrceTFLTVdesuJEjA
+ko1RH5jHuKGVlIR8HoTY+IoS8wedng==
+=7Puj
+-----END PGP SIGNATURE-----
+
+--Sig_/9U.raGBIXvFkUXXK1m5=vhS--
