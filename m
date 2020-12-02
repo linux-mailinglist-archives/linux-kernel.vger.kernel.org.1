@@ -2,143 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB662CC7E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D0B2CC7DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:35:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730052AbgLBUdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:33:32 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21050 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729712AbgLBUdb (ORCPT
+        id S1729663AbgLBUdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:33:17 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:44701 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1729176AbgLBUdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:33:31 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2KVwBA130825;
-        Wed, 2 Dec 2020 15:32:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=7k64mIQiHaWy//PZEHcOuqC7YfTe5Wp86SAsalsGFaI=;
- b=rN+M6x+LlMC8bCMdbdoM2WvFtpCPRZzBTx7BP4asjjkokc01+1K/lRQSMP7ZPFCjo4yN
- N/2RYqkAcC9qCD+CwpB73aOJwncBnIiGWh5ZCosszqrjqmKEpRNsm2k5cvgGfildYYmc
- rTMB/cv0lejPpqu5zLu8XpQ/Tm7bf092666Gs5Yd7iMwiWfmlVS6G+33m3SD/OiVeLm+
- 8tsWd+ZVDisIDZJl0wMckruFUGsnhh5qXz3PYbVD7Qece8PxZn5KbGGZrd8oPn+iPDlM
- 0BczSZ2LKl6btAnj8sc6xg6uhTf0EhlN4ZriCpjkRVqtfXMST2LVATmXg1BuPQcoKwjm JA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3563qcaxbp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 15:32:41 -0500
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B2KWfsF133876;
-        Wed, 2 Dec 2020 15:32:41 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3563qcaxas-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 15:32:41 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2KSDbJ001956;
-        Wed, 2 Dec 2020 20:32:38 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 35693xgefb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 20:32:38 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2KWaHp22413764
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Dec 2020 20:32:36 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4B711A4059;
-        Wed,  2 Dec 2020 20:32:36 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 26841A404D;
-        Wed,  2 Dec 2020 20:32:35 +0000 (GMT)
-Received: from osiris (unknown [9.171.12.240])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  2 Dec 2020 20:32:35 +0000 (GMT)
-Date:   Wed, 2 Dec 2020 21:32:33 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [RFC V2 3/3] s390/mm: Define arch_get_mappable_range()
-Message-ID: <20201202203233.GB11274@osiris>
-References: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
- <1606706992-26656-4-git-send-email-anshuman.khandual@arm.com>
+        Wed, 2 Dec 2020 15:33:15 -0500
+Received: (qmail 1067955 invoked by uid 1000); 2 Dec 2020 15:32:34 -0500
+Date:   Wed, 2 Dec 2020 15:32:34 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+641bd6ff9b25e6d3aad1@syzkaller.appspotmail.com>
+Cc:     andriy.shevchenko@linux.intel.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        mathias.nyman@linux.intel.com, syzkaller-bugs@googlegroups.com
+Subject: Re: memory leak in usb_set_configuration
+Message-ID: <20201202203234.GC1062758@rowland.harvard.edu>
+References: <000000000000cd6be705b3d525d5@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1606706992-26656-4-git-send-email-anshuman.khandual@arm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-02_12:2020-11-30,2020-12-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=5
- priorityscore=1501 adultscore=0 clxscore=1011 impostorscore=0
- malwarescore=0 lowpriorityscore=0 mlxlogscore=880 spamscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020119
+In-Reply-To: <000000000000cd6be705b3d525d5@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 08:59:52AM +0530, Anshuman Khandual wrote:
-> This overrides arch_get_mappabble_range() on s390 platform and drops now
-> redundant similar check in vmem_add_mapping(). This compensates by adding
-> a new check __segment_load() to preserve the existing functionality.
+On Wed, Nov 11, 2020 at 05:55:27AM -0800, syzbot wrote:
+> Hello,
 > 
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: linux-s390@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/s390/mm/extmem.c |  5 +++++
->  arch/s390/mm/vmem.c   | 13 +++++++++----
->  2 files changed, 14 insertions(+), 4 deletions(-)
+> syzbot found the following issue on:
 > 
-> diff --git a/arch/s390/mm/extmem.c b/arch/s390/mm/extmem.c
-> index 5060956b8e7d..cc055a78f7b6 100644
-> --- a/arch/s390/mm/extmem.c
-> +++ b/arch/s390/mm/extmem.c
-> @@ -337,6 +337,11 @@ __segment_load (char *name, int do_nonshared, unsigned long *addr, unsigned long
->  		goto out_free_resource;
->  	}
->  
-> +	if (seg->end + 1 > VMEM_MAX_PHYS || seg->end + 1 < seg->start_addr) {
-> +		rc = -ERANGE;
-> +		goto out_resource;
-> +	}
-> +
->  	rc = vmem_add_mapping(seg->start_addr, seg->end - seg->start_addr + 1);
->  	if (rc)
->  		goto out_resource;
-> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-> index b239f2ba93b0..06dddcc0ce06 100644
-> --- a/arch/s390/mm/vmem.c
-> +++ b/arch/s390/mm/vmem.c
-> @@ -532,14 +532,19 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
->  	mutex_unlock(&vmem_mutex);
->  }
->  
-> +struct range arch_get_mappable_range(void)
-> +{
-> +	struct range memhp_range;
-> +
-> +	memhp_range.start = 0;
-> +	memhp_range.end =  VMEM_MAX_PHYS;
-> +	return memhp_range;
-> +}
-> +
->  int vmem_add_mapping(unsigned long start, unsigned long size)
->  {
->  	int ret;
->  
-> -	if (start + size > VMEM_MAX_PHYS ||
-> -	    start + size < start)
-> -		return -ERANGE;
-> -
+> HEAD commit:    407ab579 Merge tag 'for-linus' of git://git.kernel.org/pub..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16d84062500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f13716fa0212fd
+> dashboard link: https://syzkaller.appspot.com/bug?extid=641bd6ff9b25e6d3aad1
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102c2094500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a8dfa8500000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+641bd6ff9b25e6d3aad1@syzkaller.appspotmail.com
+> 
+> BUG: memory leak
+> unreferenced object 0xffff88810ed7cc00 (size 1024):
+>   comm "kworker/0:3", pid 4907, jiffies 4294954595 (age 14.630s)
+>   hex dump (first 32 bytes):
+>     48 92 b6 11 81 88 ff ff 48 92 b6 11 81 88 ff ff  H.......H.......
+>     01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<00000000acb2212d>] kmalloc include/linux/slab.h:552 [inline]
+>     [<00000000acb2212d>] kzalloc include/linux/slab.h:664 [inline]
+>     [<00000000acb2212d>] usb_set_configuration+0x18c/0xb90 drivers/usb/core/message.c:1987
+>     [<00000000398ef244>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+>     [<00000000c8516fd1>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+>     [<00000000eb555eca>] really_probe+0x159/0x480 drivers/base/dd.c:554
+>     [<0000000082b68944>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
+>     [<000000000485fb4d>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
+>     [<00000000a0e84ad1>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+>     [<0000000017598cdd>] __device_attach+0x122/0x250 drivers/base/dd.c:912
+>     [<00000000201e5839>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+>     [<00000000ec5f56bf>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
+>     [<0000000049b5ad41>] usb_new_device.cold+0x166/0x578 drivers/usb/core/hub.c:2554
+>     [<0000000030bc00f0>] hub_port_connect drivers/usb/core/hub.c:5222 [inline]
+>     [<0000000030bc00f0>] hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
+>     [<0000000030bc00f0>] port_event drivers/usb/core/hub.c:5508 [inline]
+>     [<0000000030bc00f0>] hub_event+0x144a/0x20d0 drivers/usb/core/hub.c:5590
+>     [<00000000e89e69ae>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+>     [<0000000063d76c23>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+>     [<00000000a311ec69>] kthread+0x178/0x1b0 kernel/kthread.c:292
+>     [<00000000690c42fe>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-I really fail to see how this could be considered an improvement for
-s390. Especially I do not like that the (central) range check is now
-moved to the caller (__segment_load). Which would mean potential
-additional future callers would have to duplicate that code as well.
+#syz dup: memory leak in hub_event
+
+Alan Stern
