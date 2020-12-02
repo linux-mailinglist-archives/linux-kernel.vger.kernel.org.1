@@ -2,105 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E3A2CB1AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3EC2CB1AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgLBAq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 19:46:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44333 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726166AbgLBAq1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 19:46:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606869900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YDYVxD6tkiBev38C3oTUWFTeIWr7XSep6vYBO4i0itk=;
-        b=jUAd+w9YzDvEHEBr6h4M90iH4kq8VOk8xEqAD0l9g3YVqrSDPbE+9nxqDZU1KOx7LtcYRi
-        MBVJKjQiP8b3bOnPDx5pNRfH7xbMA8/JeUlzoAeoSnNeBJoZ8kWwtiNpX515fr1NAaC0Rg
-        8hbRVrJFvnNswZczvz1gwFawr4dQZRM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-eL0NjWgkPnip5CVDTHa03g-1; Tue, 01 Dec 2020 19:44:57 -0500
-X-MC-Unique: eL0NjWgkPnip5CVDTHa03g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A12EC805BE1;
-        Wed,  2 Dec 2020 00:44:55 +0000 (UTC)
-Received: from mail (ovpn-112-118.rdu2.redhat.com [10.10.112.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D045C10013BD;
-        Wed,  2 Dec 2020 00:44:51 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 19:44:51 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
-        linux-kernel@vger.kernel.org, Baoquan He <bhe@redhat.com>
-Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
- pageblock_skip on reserved pages
-Message-ID: <X8bjgw5LPAZrSrwp@redhat.com>
-References: <X73s8fxDKPRD6wET@redhat.com>
- <35F8AADA-6CAA-4BD6-A4CF-6F29B3F402A4@redhat.com>
- <X76iatgBErQH5El4@redhat.com>
- <a4cc62ba-8066-3e9c-cead-98cd74d313dd@redhat.com>
- <20201125210414.GO123287@linux.ibm.com>
- <X77OyM8utmWcq1Di@redhat.com>
- <20201126093602.GQ123287@linux.ibm.com>
- <3bb709a7-6100-aa5c-4125-7ed80c6d9643@redhat.com>
- <20201126174601.GT123287@linux.ibm.com>
- <20201129123257.GY123287@linux.ibm.com>
+        id S1727461AbgLBAqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 19:46:35 -0500
+Received: from mail-dm6nam11on2122.outbound.protection.outlook.com ([40.107.223.122]:20512
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726166AbgLBAqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 19:46:34 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cpMieP8siIZ7t3Wr4ZK4bdgHS+vQ74/gIddsEOERS2VEywYAjQ9rRmy2AN6BQheC1mPzHYUQpIGxjm8W15+ZAXlmua6AwNinGlDo7FGmbv3WtVfwBC9wlU4OB62BYvXVvIxhtYQXJbzYqUC0iicPWDMnWtikdePDN0npusXd5oIbqrIlG/idpXAVa/SMxwWdZ+yIFyTlEZAn1qv3J0TloL3BSc4B943YtZieJfoEWRsrDsGxqQF1c799koqwwR6LrqB9OpZ7W7xB+L7sbi6IiUGa40I1OG7JQOTWWM6w3/trNvp8GO/cRqIdAWc0nygdPxwI9IFCjwlutQq3UcRlkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G1lUvbVFd4EDgnL303NeS42m1FG9ugZoed0DgZiGWhY=;
+ b=ZuI1WikAC6coHQDTGqENuqiS0YkLLbiZT87QKcQy8ZTwnZ8AEffCfP2r6Ttk2k/yqp27sHGF3OWW99cp2ZXurHEydHR+kwRbe4h7W4xhjpUeS8V/AqqaNp7TgpLKvRNqnLa5QhPR9RoI2kCiynwESikpdpkRqhY+r7MUuQJGc/+D6FPqUjNKa64kiDM2uanGqCQW56URng47814tAOEnpApP0il/9XMnrgjge35+gBf0G2C1IpO/w4G3qwi9oUir68odB4kJ15jrDdHcwK+GLvYQ+ogkcPRHaxhsd8sa6pWs00AKE5RQ26PhwGt9nMG33v3C2PXgjcV0IeNlrV9E1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G1lUvbVFd4EDgnL303NeS42m1FG9ugZoed0DgZiGWhY=;
+ b=HSXYOkQNbSVzBvOSt2/lqS3X1v1e/fY4lCnHTGrAk+zbpwdHkAb1/BXmEUGt2D8RGwNF+Oz7T+Etz3QS4PKZeajJVaQ424AhcaExHS0plZb9kljvPlTXjmHAIJwxaYrRGgzfbixA0GtEmSVGQcA1ACcD3g0TsNDOtFPNq3SSpSU=
+Authentication-Results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none
+ header.from=microsoft.com;
+Received: from (2603:10b6:404:94::8) by
+ BN7PR21MB1650.namprd21.prod.outlook.com (2603:10b6:406:aa::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3654.2; Wed, 2 Dec 2020 00:45:45 +0000
+Received: from BN6PR21MB0162.namprd21.prod.outlook.com
+ ([fe80::1557:a785:28fe:ea8e]) by BN6PR21MB0162.namprd21.prod.outlook.com
+ ([fe80::1557:a785:28fe:ea8e%10]) with mapi id 15.20.3654.003; Wed, 2 Dec 2020
+ 00:45:45 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     tglx@linutronix.de, dwmw@amazon.co.uk, x86@kernel.org,
+        decui@microsoft.com, mikelley@microsoft.com,
+        linux-hyperv@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Tianyu.Lan@microsoft.com,
+        vkuznets@redhat.com, kys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, wei.liu@kernel.org
+Subject: [PATCH] iommu/hyper-v: Fix panic on a host without the 15-bit APIC ID support
+Date:   Tue,  1 Dec 2020 16:45:10 -0800
+Message-Id: <20201202004510.1818-1-decui@microsoft.com>
+X-Mailer: git-send-email 2.17.1
+Reply-To: decui@microsoft.com
+Content-Type: text/plain
+X-Originating-IP: [2001:4898:80e8:f:4c3e:c9f9:faf8:28fb]
+X-ClientProxiedBy: MWHPR18CA0029.namprd18.prod.outlook.com
+ (2603:10b6:320:31::15) To BN6PR21MB0162.namprd21.prod.outlook.com
+ (2603:10b6:404:94::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201129123257.GY123287@linux.ibm.com>
-User-Agent: Mutt/2.0.2 (2020-11-20)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from decui-u1804.corp.microsoft.com (2001:4898:80e8:f:4c3e:c9f9:faf8:28fb) by MWHPR18CA0029.namprd18.prod.outlook.com (2603:10b6:320:31::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Wed, 2 Dec 2020 00:45:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 848db6bf-d3fb-4c60-fec7-08d8965b9aab
+X-MS-TrafficTypeDiagnostic: BN7PR21MB1650:
+X-MS-Exchange-Transport-Forked: True
+X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+X-Microsoft-Antispam-PRVS: <BN7PR21MB1650A927DD24C4E70C1E6739BFF31@BN7PR21MB1650.namprd21.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1360;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9eLIu1pSXQs2GSZeac696oib8qezu6mcvn0+J+PTQqysotJmaFGMQyQy/8VN3IYF3lfUtAQLdfObbisjIYrNTFTYz8zSU4/2xGb4l1FSZwm9Qt/AjHgjJvG5rpMB5eiPPREybVGXdZw8ZhgFwvdrISR6A3UdTIwKMCYgKZEijflX1MUYE1Y5Nan/lsz96ZDmVqI4HHTSnjE3Pu44KyoqUyBQ3ONkXE1ZTYpdTHH6L/EifxY/EWxhH3IL/KzEx4gdl6xwWnCDTrs2T+Inqgxde4DH4bjLU2wymKXP5grpCqCeevia4eMmAtBXMF9XX1ScFL0g9eUiQSvJ9/jiWYQtDg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR21MB0162.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(366004)(39860400002)(396003)(478600001)(10290500003)(6486002)(2616005)(316002)(8936002)(2906002)(8676002)(4326008)(1076003)(36756003)(7696005)(5660300002)(3450700001)(52116002)(83380400001)(6666004)(82960400001)(16526019)(66556008)(66476007)(82950400001)(186003)(66946007)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?urFaNB3VRrkl1pcnaMWFjpZQfRQhp7nA243LrnDEckf+Ss49mEz9hV/GGsao?=
+ =?us-ascii?Q?ePIaGvIZthiGSJlCwUCiS5399k1HuLduOGPwXiy8f0ZLykHwBuLYKuHoA4pc?=
+ =?us-ascii?Q?wthUol4XAI7GPqv3PpJO7nr1Gt3E1B5xiVE6YCpRYh8yTaxApO4zubgTw5Yq?=
+ =?us-ascii?Q?pMOptlGufXZZY84D0LBKBWsjeiOR/P/K9PZE9t9tCzZVwmKZaevexfm/B/UD?=
+ =?us-ascii?Q?XcSG4pegAjYwalGitNtZq2J6o6BjRBDrlRPQydXv2NWCWttqdRsIFtgXzTkh?=
+ =?us-ascii?Q?zNvnfshrPo+ZD8Tt3lSaf1z6tfeBgPszwskWJ0vT7xg1Wdox6gbdlxBvXcqE?=
+ =?us-ascii?Q?zs2obIr5bdZpJQhk1trHqUmxF7SimnhJ4LWct397F9bKQQtviVH7eI8CXzht?=
+ =?us-ascii?Q?Qm5aJ0VCmOEgtqXcv9ho/3xqoZdmWDRSIXng+zMGAYFf3GJE6irMgMqWE4x+?=
+ =?us-ascii?Q?dXYmSmKT5xDDVnkMSIzpH8ZWSMCjgz11CqEZv2rMOi09bWBIsLmSiSHqTSUt?=
+ =?us-ascii?Q?IzGMF8vm2kb1ApQtQI7Wgz+UxfAyDH0dMKG33UL9RQC+82TKVD4wuv746Ku6?=
+ =?us-ascii?Q?mgsyP4sxKfwhXEEkKEHclxf6sSxVejtf0s958V/urnon7Tz7l6EWBu1bmwMf?=
+ =?us-ascii?Q?NHwFSYVaLKQYFxa+tlNCL+yxfA5/Jt1fswfmXWjWBkrQyFbK8WvQ69Bywf2i?=
+ =?us-ascii?Q?vovm+mWT5RQxUakTTGSvqyEwb9FDE7qWFgnPcRSv87IW/6GycbcqiaMJWlt+?=
+ =?us-ascii?Q?EvttCkAXfcjujkbYD9uSoDjykH721S8jnF154zalk7wCTI2QDhbpSUw/dd0z?=
+ =?us-ascii?Q?EO/N07/frLzrlgOOFlSfvNaWpujPdnpb2GsKWZpbRJs6OWw+L/sUPjRkP9Fw?=
+ =?us-ascii?Q?xImCbSf6gqHQoINYehQwoWIWt54vImv8KLokAoNBzN72NVjiyc+KzCwnPElO?=
+ =?us-ascii?Q?jLRp47z2xYFz+cF8DJsm9Lm9Gzgcb1tUfiyDPqp673YIyYgly7ZKzFWXTlNy?=
+ =?us-ascii?Q?BW1SSFRokCPV1MReYOTXCKKKMi4vmrUVFeXAPZBh39kryD+LRhvKXBOygis1?=
+ =?us-ascii?Q?/fOESoGh?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthSource: BN6PR21MB0162.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2020 00:45:45.1159
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-Network-Message-Id: 848db6bf-d3fb-4c60-fec7-08d8965b9aab
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5cIYQOxWh9SK88IpRFemX6japHUq1hDVFiJAAR0mijBO0WNh2O9+dYjFyoa7UM7tM/VYkHeH2uWmoN8iv9315Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR21MB1650
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mike,
+The commit f36a74b9345a itself is good, but it causes a panic in a
+Linux VM that runs on a Hyper-V host that doesn't have the 15-bit
+Extended APIC ID support:
+    kernel BUG at arch/x86/kernel/apic/io_apic.c:2408!
 
-On Sun, Nov 29, 2020 at 02:32:57PM +0200, Mike Rapoport wrote:
-> Hello Andrea,
-> 
-> On Thu, Nov 26, 2020 at 07:46:05PM +0200, Mike Rapoport wrote:
-> > On Thu, Nov 26, 2020 at 11:05:14AM +0100, David Hildenbrand wrote:
-> > 
-> > Let's try to merge init_unavailable_memory() into memmap_init().
-> > Than it'll be able to set zone/nid for those nasty pfns that BIOS
-> > decided to keep to itself, like in Andrea's case and will also take care
-> > of struct pages that do not really have a frame in DRAM, but are there
-> > because of arbitrary section size.
-> 
-> Did you have a chance to check if this solves your issue?
-> If yes, I'll resend this as a formal patch.
+This happens because the Hyper-V ioapic_ir_domain (which is defined in
+drivers/iommu/hyperv-iommu.c) can not be found. Fix the panic by
+properly claiming the only I/O APIC emulated by Hyper-V.
 
-I tested the patch you sent, but it doesn't seem to boot. Reverting it
-booted.
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Fixes: f36a74b9345a ("x86/ioapic: Use I/O-APIC ID for finding irqdomain, not index")
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+---
+ drivers/iommu/hyperv-iommu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Also I noticed leaving pages uninitialized already happened before and
-was fixed in 124049decbb121ec32742c94fb5d9d6bed8f24d8 where literally
-all holes were registered in memblock_reserve() by hand to workaround
-this very same defect in memblock callee we're fixing again.
 
-Then it was lifted in 9fd61bc95130d4971568b89c9548b5e0a4e18e0e since
-the memblock was supposed to be able to initialize all pages.
+This patch is for the tip.git tree's x86/apic branch.
 
-Since this seems the second time this happens, I'd suggest to change
-the graceful pfn, 0,0 initialization to memset(page, 0xff,
-sizeof(struct page)) too like we mentioned earlier and then have at
-least a DEBUG_SOMETHING=y to search for struct pages with all 1 in
-page->flags to ensure the boot stage worked right so perhaps there's a
-graceful notification at boot before a VM_BUG_ON triggers later. The
-page struct validation could be done based on DEBUG_VM=y too since it
-won't cause any runtime cost post boot.
+diff --git a/drivers/iommu/hyperv-iommu.c b/drivers/iommu/hyperv-iommu.c
+index 9438daa24fdb..1d21a0b5f724 100644
+--- a/drivers/iommu/hyperv-iommu.c
++++ b/drivers/iommu/hyperv-iommu.c
+@@ -105,8 +105,8 @@ static int hyperv_irq_remapping_select(struct irq_domain *d,
+ 				       struct irq_fwspec *fwspec,
+ 				       enum irq_domain_bus_token bus_token)
+ {
+-	/* Claim only the first (and only) I/OAPIC */
+-	return x86_fwspec_is_ioapic(fwspec) && fwspec->param[0] == 0;
++	/* Claim the only I/O APIC emulated by Hyper-V */
++	return x86_fwspec_is_ioapic(fwspec);
+ }
+ 
+ static const struct irq_domain_ops hyperv_ir_domain_ops = {
 
-Thanks,
-Andrea
+base-commit: d1adcfbb520c43c10fc22fcdccdd4204e014fb53
+-- 
+2.27.0
 
