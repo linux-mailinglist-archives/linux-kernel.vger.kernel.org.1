@@ -2,139 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47722CB1A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B592CB1A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:43:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727482AbgLBAnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 19:43:31 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:41056 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726166AbgLBAna (ORCPT
+        id S1727106AbgLBAnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 19:43:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726166AbgLBAnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 19:43:30 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B20e0bj031883;
-        Wed, 2 Dec 2020 00:42:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=+QnGX543wIkXyLX+8yfaBqOqLwRBEAofgYjBOnar1Sw=;
- b=RoxUDqoPGYBjQqoW73RstcFbtrD6mhwgA8QUKF+7kSIG+146ln7VyZE1I5Tj2weHzWOc
- JRvnDpQDpsnAkItn5NBE1214FSE4FYNkvJkBmlRJxy6lhH4ecau0heGUGqhmIeYy135G
- xqiLHWBOU0L2tFqrYyn3gAnRr6KCumOPmrKUSVzebH/8wbMiws0aOKmuPJ+vqdwh/iKz
- M8tP5RglcBIEftfeL9FA7drsqtjuO24aI3Qau7Ouc4Wcv7S0GrTdpWqp2UL+e7HzMfx5
- 7GuH4arrLMWZyBrMXU8oF1pBrgPviEzBE0/QOhv8P6/UENYFBJOYBRwvulGY/SXq3OfL gg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 353dyqnhyd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 02 Dec 2020 00:42:12 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B20adfw193756;
-        Wed, 2 Dec 2020 00:40:12 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 35404njyv3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Dec 2020 00:40:11 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B20e9QE001999;
-        Wed, 2 Dec 2020 00:40:09 GMT
-Received: from [10.159.145.103] (/10.159.145.103)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Dec 2020 16:40:09 -0800
-Subject: Re: [PATCH RFC 03/39] KVM: x86/xen: register shared_info page
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-References: <20190220201609.28290-1-joao.m.martins@oracle.com>
- <20190220201609.28290-4-joao.m.martins@oracle.com>
- <b647bed6c75f8743b8afea251a88f00a5feaee29.camel@infradead.org>
-From:   Ankur Arora <ankur.a.arora@oracle.com>
-Message-ID: <2d4df59d-f945-32dc-6999-a6f711e972ea@oracle.com>
-Date:   Tue, 1 Dec 2020 16:40:07 -0800
+        Tue, 1 Dec 2020 19:43:14 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38348C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 16:42:34 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id 131so84661pfb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 16:42:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=2wXnaxiYqR7lAfrQAiUq2VhHHnYqkDsoGnwWIosu+PE=;
+        b=Bp1RyiiDGZCyrOj6wHFhBwchmEaGmY0O3/jFjOH6QuG3htrCHG+BKhe9fvSqkZMh+s
+         p7fpNsdl8zfr3E8f6XMpRPJtFh7KnsD/+3JyOk41Un1JhM/qEkS+jx3aIkioGV2+XMRE
+         IQkUmchn/TAjMidYCCeRvE76I9gawhmUi0tlY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=2wXnaxiYqR7lAfrQAiUq2VhHHnYqkDsoGnwWIosu+PE=;
+        b=Z7XGgcNS+zoBmdgNmRmNn3ckXr9JhWXYDw6h9FjBCqC0OsGx3YfZVbB32PUjGLu2qC
+         cz37LD4g+un45SuE0yDOVpFTMLdcnSpNnSOUVfXRgOPo8kc9PoUJL1L/2CxWZyaR7aQV
+         oLQJ64H1CuNtsWRg4n9xVwVnNv6auiSSfFTO7pDYTJSjY7jmIPHHrpecPvyLcmRDJWUw
+         EI1KACNCgfs7r8mh4tsfAeAgtzH09Y29qQsg1gP13a3JpCMZsjNQ7MYSh1JcNwL+Vxd9
+         jgSUFyikFeJgl0VqQYELzvOrLaj6tXPec3Cy9vAdIqRZ1Z2cFQ1O6BBULye6l+N9EZeb
+         sHMA==
+X-Gm-Message-State: AOAM532A9Uj6GTY6ZmZ6qP4LCfnDPOHNBHInADgmeJvqbzBlj+aN1p+Q
+        evjUkkdOrsJ6rWVzhkTDO7tzvaWJ4C2flSi0
+X-Google-Smtp-Source: ABdhPJwGk0kTX/+M1DEpYCf2yzuO2n8Fs1rf6SIXbJPl/NPALCYL7BBC9ow5svpGxDxICrzGAZqtOw==
+X-Received: by 2002:a63:7103:: with SMTP id m3mr190562pgc.369.1606869753577;
+        Tue, 01 Dec 2020 16:42:33 -0800 (PST)
+Received: from [10.136.13.65] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id 22sm82949pjb.40.2020.12.01.16.42.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Dec 2020 16:42:32 -0800 (PST)
+Subject: Re: [PATCH] menuconfig,mconf-cfg: Allow specification of ncurses
+ location
+To:     Bruce Ashfield <bruce.ashfield@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Broadcom Kernel Feedback List 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        OE-core <openembedded-core@lists.openembedded.org>,
+        openembeded-devel <openembedded-devel@lists.openembedded.org>,
+        Michal Marek <mmarek@suse.cz>
+References: <20201128004505.27619-1-scott.branden@broadcom.com>
+ <CAK7LNATD0J3C_mFrXAju8-WmdCmrPmRFn7Um0yebnfL-_zcu8w@mail.gmail.com>
+ <a5ea40a5-17ef-f037-16b3-177f01db6447@broadcom.com>
+ <CADkTA4NTPJrvoFqumNjkU-o-ZTt8iVUzQec+=Qvm4J_59FFQqg@mail.gmail.com>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <be7e141b-4c20-c31b-9b74-6a1369569565@broadcom.com>
+Date:   Tue, 1 Dec 2020 16:42:30 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <b647bed6c75f8743b8afea251a88f00a5feaee29.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020001
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
- clxscore=1011 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020001
+In-Reply-To: <CADkTA4NTPJrvoFqumNjkU-o-ZTt8iVUzQec+=Qvm4J_59FFQqg@mail.gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000e353a705b57084f5"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-01 5:07 a.m., David Woodhouse wrote:
-> On Wed, 2019-02-20 at 20:15 +0000, Joao Martins wrote:
->> +static int kvm_xen_shared_info_init(struct kvm *kvm, gfn_t gfn)
->> +{
->> +       struct shared_info *shared_info;
->> +       struct page *page;
->> +
->> +       page = gfn_to_page(kvm, gfn);
->> +       if (is_error_page(page))
->> +               return -EINVAL;
->> +
->> +       kvm->arch.xen.shinfo_addr = gfn;
->> +
->> +       shared_info = page_to_virt(page);
->> +       memset(shared_info, 0, sizeof(struct shared_info));
->> +       kvm->arch.xen.shinfo = shared_info;
->> +       return 0;
->> +}
->> +
-> 
-> Hm.
-> 
-> How come we get to pin the page and directly dereference it every time,
-> while kvm_setup_pvclock_page() has to use kvm_write_guest_cached()
-> instead?
+--000000000000e353a705b57084f5
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-CA
 
-So looking at my WIP trees from the time, this is something that
-we went back and forth on as well with using just a pinned page or a
-persistent kvm_vcpu_map().
+Hi Bruce,
 
-I remember distinguishing shared_info/vcpu_info from kvm_setup_pvclock_page()
-as shared_info is created early and is not expected to change during the
-lifetime of the guest which didn't seem true for MSR_KVM_SYSTEM_TIME (or
-MSR_KVM_STEAL_TIME) so that would either need to do a kvm_vcpu_map()
-kvm_vcpu_unmap() dance or do some kind of synchronization.
+On 2020-12-01 11:01 a.m., Bruce Ashfield wrote:
+> On Tue, Dec 1, 2020 at 12:19 PM Scott Branden
+> <scott.branden@broadcom.com> wrote:
+>> Hi Masahiro,
+>>
+>> On 2020-12-01 4:25 a.m., Masahiro Yamada wrote:
+>>> On Sat, Nov 28, 2020 at 9:45 AM Scott Branden
+>>> <scott.branden@broadcom.com> wrote:
+>>>> From: Bruce Ashfield <bruce.ashfield@windriver.com>
+>>>>
+>>>> In some cross build environments such as the Yocto Project build
+>>>> environment it provides an ncurses library that is compiled
+>>>> differently than the host's version.  This causes display corruption
+>>>> problems when the host's curses includes are used instead of the
+>>>> includes from the provided compiler are overridden.  There is a second
+>>>> case where there is no curses libraries at all on the host system and
+>>>> menuconfig will just fail entirely.
+>>>>
+>>>> The solution is simply to allow an override variable in
+>>>> check-lxdialog.sh for environments such as the Yocto Project.  Adding
+>>>> a CROSS_CURSES_LIB and CROSS_CURSES_INC solves the issue and allowing
+>>>> compiling and linking against the right headers and libraries.
+>>>>
+>>>> Signed-off-by: Jason Wessel <jason.wessel@windriver.com>
+>>>> cc: Michal Marek <mmarek@suse.cz>
+>>>> cc: linux-kbuild@vger.kernel.org
+>>>> Signed-off-by: Bruce Ashfield <bruce.ashfield@windriver.com>
+>>>> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+>>>> ---
+>>> Some people solve the cross-compiling in Yocto
+>>> by using pkg-config.
+>>>
+>>>
+>>> For example,
+>>>
+>>> commit 067c650c456e758f933aaf87a202f841d34be269
+>>> Author: Pavel Modilaynen <pavel.modilaynen@axis.com>
+>>> Date:   Fri Jul 12 13:52:19 2019 +0200
+>>>
+>>>     dtc: Use pkg-config to locate libyaml
+>>>
+>>>     Using Makefile's wildcard with absolute path to detect
+>>>     the presence of libyaml results in false-positive
+>>>     detection when cross-compiling e.g. in yocto environment.
+>>>
+>>>
+>>>
+>>> mconf-cfg.sh already allows the path flexibility with pkg-config.
+>>> Why do you want yet another hook?
+>> I hope the yocto community can provide more details on this patch.
+>> The yocto environment isolates the build environment from the host tools.
+>> Running menuconfig with the upstream kernel does not work on the latest yocto without this patch.
+> Sorry for not commenting on the origin patch, gmail buried it within
+> some other threads, but luckily this one popped up.
+>
+> It is true that we've been carrying this for several years to deal with
+> the fact that the native sysroot is not searched by the pkg-config
+> called by mconf-cfg.sh (since it is separate from host and target
+> pkg-config).
+>
+> As it turns out, in the past few weeks, we have come up with a way
+> to inject those native sysroot components into pkg-config without
+> the need for any changes to the scripts.
+>
+> Scott: if you try again the the latest oe-core, and are still seeing
+> the problem with the mainline kernel, ping me, and we can see if
+> the pkg-config fix isn't holding for you, at that point, yes, we may
+> still need a hook like this to solve the problem.
+Try reverting this kernel patch from linux-yocto and menuconfig will fail.
 
-That said, I don't think this code explicitly disallows any updates
-to shared_info.
+menuconfig actually did work with the upstream kernel until the yocto change below was introduced:
+"cml1.bbclass: Handle ncurses-native being available via pkg-config"
+https://git.yoctoproject.org/cgit/cgit.cgi/poky/commit/?h=master-next&id=ce447d70df386ca55ce1672478b245851556374e
 
-> 
-> If that was allowed, wouldn't it have been a much simpler fix for
-> CVE-2019-3016? What am I missing?
+> Cheers,
+>
+> Bruce
+>
+>
+>
+>>>>  scripts/kconfig/mconf-cfg.sh | 8 ++++++++
+>>>>  1 file changed, 8 insertions(+)
+>>>>  mode change 100755 => 100644 scripts/kconfig/mconf-cfg.sh
+>>>>
+>>>> diff --git a/scripts/kconfig/mconf-cfg.sh b/scripts/kconfig/mconf-cfg.sh
+>>>> old mode 100755
+>>>> new mode 100644
+>>>> index aa68ec95620d..32448bc198a5
+>>>> --- a/scripts/kconfig/mconf-cfg.sh
+>>>> +++ b/scripts/kconfig/mconf-cfg.sh
+>>>> @@ -4,6 +4,14 @@
+>>>>  PKG="ncursesw"
+>>>>  PKG2="ncurses"
+>>>>
+>>>> +if [ "$CROSS_CURSES_LIB" != "" ]; then
+>>>> +    echo libs=\'$CROSS_CURSES_LIB\'
+>>>> +    if [ x"$CROSS_CURSES_INC" != x ]; then
+>>>> +       echo cflags=\'$CROSS_CURSES_INC\'
+>>>> +    fi
+>>>> +    exit 0
+>>>> +fi
+>>>> +
+>>>>  if [ -n "$(command -v pkg-config)" ]; then
+>>>>         if pkg-config --exists $PKG; then
+>>>>                 echo cflags=\"$(pkg-config --cflags $PKG)\"
+>>>> --
+>>>> 2.17.1
+>>>>
+>
 
-Agreed.
 
-Perhaps, Paolo can chime in with why KVM never uses pinned page
-and always prefers to do cached mappings instead?
+--000000000000e353a705b57084f5
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-> 
-> Should I rework these to use kvm_write_guest_cached()?
-
-kvm_vcpu_map() would be better. The event channel logic does RMW operations
-on shared_info->vcpu_info.
-
-
-Ankur
-
-> 
-> 
+MIIQRQYJKoZIhvcNAQcCoIIQNjCCEDICAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg2aMIIE6DCCA9CgAwIBAgIOSBtqCRO9gCTKXSLwFPMwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UE
+CxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMT
+Ckdsb2JhbFNpZ24wHhcNMTYwNjE1MDAwMDAwWhcNMjQwNjE1MDAwMDAwWjBdMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25h
+bFNpZ24gMiBDQSAtIFNIQTI1NiAtIEczMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+tpZok2X9LAHsYqMNVL+Ly6RDkaKar7GD8rVtb9nw6tzPFnvXGeOEA4X5xh9wjx9sScVpGR5wkTg1
+fgJIXTlrGESmaqXIdPRd9YQ+Yx9xRIIIPu3Jp/bpbiZBKYDJSbr/2Xago7sb9nnfSyjTSnucUcIP
+ZVChn6hKneVGBI2DT9yyyD3PmCEJmEzA8Y96qT83JmVH2GaPSSbCw0C+Zj1s/zqtKUbwE5zh8uuZ
+p4vC019QbaIOb8cGlzgvTqGORwK0gwDYpOO6QQdg5d03WvIHwTunnJdoLrfvqUg2vOlpqJmqR+nH
+9lHS+bEstsVJtZieU1Pa+3LzfA/4cT7XA/pnwwIDAQABo4IBtTCCAbEwDgYDVR0PAQH/BAQDAgEG
+MGoGA1UdJQRjMGEGCCsGAQUFBwMCBggrBgEFBQcDBAYIKwYBBQUHAwkGCisGAQQBgjcUAgIGCisG
+AQQBgjcKAwQGCSsGAQQBgjcVBgYKKwYBBAGCNwoDDAYIKwYBBQUHAwcGCCsGAQUFBwMRMBIGA1Ud
+EwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFGlygmIxZ5VEhXeRgMQENkmdewthMB8GA1UdIwQYMBaA
+FI/wS3+oLkUkrk1Q+mOai97i3Ru8MD4GCCsGAQUFBwEBBDIwMDAuBggrBgEFBQcwAYYiaHR0cDov
+L29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3RyMzA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3Js
+Lmdsb2JhbHNpZ24uY29tL3Jvb3QtcjMuY3JsMGcGA1UdIARgMF4wCwYJKwYBBAGgMgEoMAwGCisG
+AQQBoDIBKAowQQYJKwYBBAGgMgFfMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNp
+Z24uY29tL3JlcG9zaXRvcnkvMA0GCSqGSIb3DQEBCwUAA4IBAQConc0yzHxn4gtQ16VccKNm4iXv
+6rS2UzBuhxI3XDPiwihW45O9RZXzWNgVcUzz5IKJFL7+pcxHvesGVII+5r++9eqI9XnEKCILjHr2
+DgvjKq5Jmg6bwifybLYbVUoBthnhaFB0WLwSRRhPrt5eGxMw51UmNICi/hSKBKsHhGFSEaJQALZy
+4HL0EWduE6ILYAjX6BSXRDtHFeUPddb46f5Hf5rzITGLsn9BIpoOVrgS878O4JnfUWQi29yBfn75
+HajifFvPC+uqn+rcVnvrpLgsLOYG/64kWX/FRH8+mhVe+mcSX3xsUpcxK9q9vLTVtroU/yJUmEC4
+OcH5dQsbHBqjMIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4G
+A1UECxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNV
+BAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQL
+ExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMK
+R2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aE
+yiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5
+uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bL
+yCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg
+6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkW
+qQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8w
+HQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+
+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5
+RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBov
+Hd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX42
+68NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o
+2HLO02JQZR7rkpeDMdmztcpHWD9fMIIFRzCCBC+gAwIBAgIMW0PXrlFB5QLwO+gIMA0GCSqGSIb3
+DQEBCwUAMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQD
+EypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMwHhcNMjAwOTIxMTQz
+MTE0WhcNMjIwOTIyMTQzMTE0WjCBkDELMAkGA1UEBhMCSU4xEjAQBgNVBAgTCUthcm5hdGFrYTES
+MBAGA1UEBxMJQmFuZ2Fsb3JlMRYwFAYDVQQKEw1Ccm9hZGNvbSBJbmMuMRYwFAYDVQQDEw1TY290
+dCBCcmFuZGVuMSkwJwYJKoZIhvcNAQkBFhpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTCCASIw
+DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALCwcSIu11LCx3EwXsMF/0Te79hG0UI3NZAsVxAh
+exVD4CJDTVDgpCWOXj2j4V0eOvFYcGgMNVUKtywL4OzQgNquS8/OlHQZ3/9PCq8Ox9PNkCQ5eIv1
+k2UaaN0tMDke1fX++Dn0UXst0OI08PYKYJpy1mkw5Hcw28LxU5Q2HwoW/+gyOIkdSo2ovq7a9+G3
+LGyQOUxLhMvko/+qqg/KTfYQJ45p6TJPcvzwA0W453P3gPRZpm54KsEIfyZiMaUBMtXsQ7dHBAla
+I/3RRboOeC9M13VNr5feU91O0iDoMreAgPQJ0Lo7YrodKYug0Tt/fFDjkW3v3VIbEr2liUN69U0C
+AwEAAaOCAdEwggHNMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUH
+MAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNo
+YTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nw
+ZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIB
+FiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1Ud
+HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hh
+MmczLmNybDAlBgNVHREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUWOK7
+qiyDSt/IDm/SRcNi/sTEiyswDQYJKoZIhvcNAQELBQADggEBAEe2edd4F9tpp0GPmrFrQ+xp9kY7
+uxBzPdCw588bgVrPemjLwiwV37XTT4iWJtNhPfEpaguM6jeLm58LCvHq5/IBjcyHyf4URQVwAg7B
+pqkH8/M+IBstu4/D+znPHB59X+c+au3Q8D+xoNFd7I30kaE+oJuBuFsGXRBc0Ci+FM86x9k7SF8U
+aui1E7Y9wDfsRSCL2TSwU773f09WkrvVdlKxNqQZj2z7bQUUn+yfXdFfBz0LqlYNfn7xJOpQE3HI
+H4jq6U9+b0Qf+J0n0wyysjXPSeQ7EKXVkT8dM2KSpIN86v5dd9LkAz3C1dmjuPRGEC8ZhI1IjMBt
+0itrn6C23NsxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0g
+RzMCDFtD165RQeUC8DvoCDANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgZQuCjUm0
+4c9uAcJpKY9lj9AXEyaPssyF5QTN/qHRj4YwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkq
+hkiG9w0BCQUxDxcNMjAxMjAyMDA0MjM0WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjAL
+BglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG
+9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAJZWGKzqkmZ7h+iRHSkFUncIolCs
+BdZaKyO+yb65P59ww8/u7qvIDChUKgp6B8trtcUIm23eseFbN6OYeDyTMG67nIfrk+VfKsjT/K23
+h2EQclG7fhGjzAkm+p8ziwRJ3kK5P39sYARMNyWS/7Kh/Z7c+wYWXtVJZFyJCLIyfvPb95kpCK6e
+cHf7bCc7e3ZbnPv91bk7aI6gJtJhFNgCxm2DmL1s2r6dZTDnYhxPZhXo8jGwT3C87KQINW7ogJB2
+2uMnnlNUkB78rH5asq8tjOPJZqwdRbUtfFuBLKK7HLfVkq6yBcTaNrqosMVJ5byTN0riOZMB4nX8
+L0sc/FD0CnQ=
+--000000000000e353a705b57084f5--
