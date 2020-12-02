@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74442CC0E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE79B2CC15A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730490AbgLBPcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:32:35 -0500
-Received: from m15112.mail.126.com ([220.181.15.112]:41677 "EHLO
-        m15112.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726088AbgLBPce (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:32:34 -0500
-X-Greylist: delayed 8887 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Dec 2020 10:32:24 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=DCJIk
-        vAsWl32sBJESY7hqaqP/My0N7n20xQa12jevA0=; b=U6Ucp+MtqE/fClO37yUoT
-        IYaLuRoEhlOHjK6cbxEpUSbwehzTlW/plNURAXGwABUFGm80PKOBL9aFbfpn/ypW
-        +0rXZay84LcYz9SUC7ptQJecAMXrLbhL5SWxkFnuRybk8FhcPClvqzr2tlUZZJtI
-        GLSBGrKhaa3/Mjn0kn0udk=
-Received: from localhost (unknown [117.136.120.114])
-        by smtp2 (Coremail) with SMTP id DMmowABX1SGTQcdf_GBDJg--.61443S2;
-        Wed, 02 Dec 2020 15:26:12 +0800 (CST)
-From:   "xiao.ma" <max701@126.com>
-To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, xiao.mx.ma@deltaww.com,
-        jiajia.feng@deltaww.com
-Cc:     Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] dt-bindings:<devicetree/bindings/trivial-devices.yaml>:Add compatible strings
-Date:   Tue,  1 Dec 2020 21:26:10 -1000
-Message-Id: <20201202072610.1666-1-max701@126.com>
-X-Mailer: git-send-email 2.20.1
+        id S2388907AbgLBPxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:53:21 -0500
+Received: from mga09.intel.com ([134.134.136.24]:47180 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727725AbgLBPxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:53:21 -0500
+IronPort-SDR: VtiqZLQpjctfMv0QN5tUmpeOKHBVxPKRFwWa9jnts1DB9DSuXha3brjGZ6JqNpip2fQIza9GPV
+ eOSnuzbEa/wQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="173194809"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="173194809"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 07:51:40 -0800
+IronPort-SDR: 1saECTZ06J0Pd5CoYIuPgi5eATW5aWi8+qDgwlYZOHd3VIFz1dSC0xiV7ioAnAQHfGrLS1G/NE
+ /4ISzNp5WTyA==
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="539740422"
+Received: from ajrodr4-mobl1.amr.corp.intel.com (HELO [10.213.167.252]) ([10.213.167.252])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 07:51:38 -0800
+Subject: Re: [PATCH] ASoC: intel: sof_rt5682: Add support for
+ tgl_rt1011_rt5682
+To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Dharageswari R <dharageswari.r@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Ben Zhang <benzh@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Naveen Manohar <naveen.m@intel.com>,
+        Libin Yang <libin.yang@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Yong Zhi <yong.zhi@intel.com>
+References: <20201202015826.7678-1-brent.lu@intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9d3d76fd-869c-ec20-0fa0-a0da88e32502@linux.intel.com>
+Date:   Wed, 2 Dec 2020 09:18:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMmowABX1SGTQcdf_GBDJg--.61443S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7GFWxJFyDWF15ZFyfAr4xJFb_yoWfXrb_X3
-        WxCF1qyrykJFyFkw4qkF1ktr1UA3W29F4ku348J3Wku34a9rW5WFyvqw1avryxWrW7ury5
-        urn3KrZFqrn8GjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8jNt7UUUUU==
-X-Originating-IP: [117.136.120.114]
-X-CM-SenderInfo: ppd0liar6rjloofrz/1tbi5RXuOFpD6KzEOAAAsH
+In-Reply-To: <20201202015826.7678-1-brent.lu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "xiao.ma" <xiao.mx.ma@deltaww.com>
 
-Add delta,q54sj108a2 to trivial-devices.yaml.
+> +struct {
+> +	unsigned int tx;
+> +	unsigned int rx;
+> +} rt1011_tdm_mask[] = {
+> +	{.tx = 0x4, .rx = 0x1},
+> +	{.tx = 0x8, .rx = 0x2},
+> +};
 
-Signed-off-by: xiao.ma <xiao.mx.ma@deltaww.com>
----
- Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-index ab623ba930d5..2aad4c86fb29 100644
---- a/Documentation/devicetree/bindings/trivial-devices.yaml
-+++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-@@ -60,6 +60,8 @@ properties:
-           - dallas,ds4510
-             # Digital Thermometer and Thermostat
-           - dallas,ds75
-+            # 1/4 Brick DC/DC Regulated Power Module
-+          - delta,q54sj108a2
-             # Devantech SRF02 ultrasonic ranger in I2C mode
-           - devantech,srf02
-             # Devantech SRF08 ultrasonic ranger
--- 
-2.25.1
+as noted in the GitHub review this should be static and possibly const.
 
