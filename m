@@ -2,446 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7FA2CCA24
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8052CCA2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729029AbgLBW6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 17:58:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37254 "EHLO
+        id S2387865AbgLBW7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 17:59:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728452AbgLBW63 (ORCPT
+        with ESMTP id S2387806AbgLBW7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 17:58:29 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBBAC0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 14:57:43 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id q10so10775pfn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 14:57:43 -0800 (PST)
+        Wed, 2 Dec 2020 17:59:23 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704DDC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 14:58:43 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id j23so75333iog.6
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 14:58:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=03lS8/08O5qiVV+EqkA7gUAQiAmtt/Wfs1wnMODaFZw=;
-        b=jqhG/EcDjjJCJ40jqiKC0VUlHsSd4NOJO0pMry3r2FSb+AefCmUuC1tL69KD8Sj4pe
-         CgJP7Mv3pLJzPwVOMOB3BD+WozEYl5U5mIuBbFMBqoS4sEv+KUyoMLxUX22/mr8fcJqY
-         1va4I6M5TDsaCMmzzOOoQGts3bL5v5SzQVEeLAV81lkTChWyF15bpKdLHqMoqKDM3Y4I
-         wCJrJf9bRBbXv8KixmPt3uKjQ3QxJRGztvkG1lOr4kvk9D+O8n44NkJG2tVwGH5LO4La
-         44HD7eDCjDw4ZHvxroLBaPxA5S+icBBFvgM3k+j8/H+q8ZhSOOFPdXCPAozDxHSQ7ehI
-         iNaQ==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5cB+/vzqNyGLlY6gjXLdgcPyiXRJ9zfEjY/dw9Idssc=;
+        b=X8557/AaDSnc9UMi9+sP+NzMIycm4dY1OUc43TJwqCyubHtdOXlntePdg7MSqERib7
+         2MHzSJXG1VwTGZwJ7AAfpgYiHYKhdFqqbt54Q++1yolC8XAg97L4/l6bPtqFRKYwZHMc
+         Aw1BX3BTAcOw807GmPNnGGsHLfghlU/C8d3+s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=03lS8/08O5qiVV+EqkA7gUAQiAmtt/Wfs1wnMODaFZw=;
-        b=S2ixPIM9Oz+wHXEWAaE5HWhiqoTyAfP6PoGQN2TmVoFEJRZjXivdCSXRepONjTADzm
-         s7m+err3s/dFVJJkLcL/DjsEDfxDqOaLdLJ8q7WuKALwU1yPCeENrnllhPzbkLVYLHSy
-         R77dPjDCcFwYeGmfPBicwGwOyltwVpWypgoZgaZXRzkzYYIj1J3aVTgpc8klwvMEYyre
-         0zpKoXSRMo3NulufVuEFn4Kzu8SaQkEmHS22iJRiBHi9xL2UQovFdwXGyBDa7NfnkCq9
-         NScAeG3/+nAWxRxDcR8cm7fyJfwL3gJ/c2X/a0WLldxAFL6SHVZekSBgnXnYqGcjgXR6
-         ++/g==
-X-Gm-Message-State: AOAM530TLOTlGp3c0HASf9yAvjYTywXNVCB4QEY/2HoSkV+3bu9hlqEv
-        YjeDDlZGUsL/iNuQ7YaADqTx2w==
-X-Google-Smtp-Source: ABdhPJzR8oCq0QTTdiwYD94q1MTbzPatfXYaHcPzK3dAn6lOvXXM66unvxqnycNNFOL5YnKgQ3C0ww==
-X-Received: by 2002:a63:2026:: with SMTP id g38mr481525pgg.30.1606949862625;
-        Wed, 02 Dec 2020 14:57:42 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 25sm136571pfp.45.2020.12.02.14.57.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 14:57:42 -0800 (PST)
-Date:   Wed, 2 Dec 2020 15:57:39 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, s-anna@ti.com,
-        linux-remoteproc@vger.kernel.org, robh+dt@kernel.org,
-        lee.jones@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, praneeth@ti.com,
-        rogerq@ti.com
-Subject: Re: [PATCH v2 3/6] remoteproc/pru: Add support for PRU specific
- interrupt configuration
-Message-ID: <20201202225739.GF1282360@xps15>
-References: <20201119140850.12268-1-grzegorz.jaszczyk@linaro.org>
- <20201119140850.12268-4-grzegorz.jaszczyk@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5cB+/vzqNyGLlY6gjXLdgcPyiXRJ9zfEjY/dw9Idssc=;
+        b=uXiVvRhOHWL/zDh+5ZE61FuruCo8zq6bnhPXTQiPpoU8jGDcqPNU8WPlcwy0eyhs4K
+         1nWb3o7ZhWCr4XfyW6TRv+cfuZGvHZkZVEgCgZmkEVdXg4RxjbHg5EZ6YhVthLgMC8M4
+         MO8aSrgsl7BsERKffxI7uNex654y0g3Wn58m1jpEVoLNAMXwrRAVjR2zT2q5RpOWOoY2
+         dho3oU+Sbcl4XfTE4y2okveaZzK7C9LtbEUzoaDlbZjKVXNAra+llmQglXOwBFJJprFt
+         wq9QllJL6cqlc4tAYqq7RKwalD1o82nhQ/Lnr8bimgnWIOwZtGa+fsn5ME9nZcGLLLpv
+         nwcw==
+X-Gm-Message-State: AOAM531woBtVUpJ50YuARYeDoUDTg6MO4b5AtWfi5HG0OCfJeNsi26fX
+        Rwyp6rY3XvbL+dp484virLQZBQ==
+X-Google-Smtp-Source: ABdhPJzw3Rv1enCYSm9+2gzSPLTdHJBQW7KQ7rpvW60Gn0Ix2oysMP10GIdQH+AH3ho7nq+g1z7Y2Q==
+X-Received: by 2002:a6b:600a:: with SMTP id r10mr533063iog.143.1606949922814;
+        Wed, 02 Dec 2020 14:58:42 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id a3sm118730ilp.5.2020.12.02.14.58.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Dec 2020 14:58:42 -0800 (PST)
+Subject: Re: [PATCH v9 1/2] kunit: Support for Parameterized Testing
+To:     Marco Elver <elver@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Bird, Tim" <Tim.Bird@sony.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20201116054035.211498-1-98.arpi@gmail.com>
+ <CABVgOSkoQahYqMJ3dD1_X2+rF3OgwT658+8HRM2EZ5e0-94jmw@mail.gmail.com>
+ <CANpmjNOhb13YthVHmXxMjpD2JZUO4H2Z1KZSKqHeFUv-RbM5+Q@mail.gmail.com>
+ <CABVgOSnGnkCnAyAqVoLhMGb6XV_irtYB7pyOTon5Scab8GxKtg@mail.gmail.com>
+ <CAFd5g4768o7UtOmM3X0X5upD0uF3j-=g3txi0_Ue3z8oM_Ghow@mail.gmail.com>
+ <505b8cd0-a61e-5ec3-7e0b-239d0ff55d56@linuxfoundation.org>
+ <CANpmjNMOMD+2OhBWNh5XuFufbm1bhXTUm4Y3_YiNNdfC=G2xdQ@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <baa3bec1-224e-43c6-1e63-982e5eeb217f@linuxfoundation.org>
+Date:   Wed, 2 Dec 2020 15:58:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119140850.12268-4-grzegorz.jaszczyk@linaro.org>
+In-Reply-To: <CANpmjNMOMD+2OhBWNh5XuFufbm1bhXTUm4Y3_YiNNdfC=G2xdQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 03:08:47PM +0100, Grzegorz Jaszczyk wrote:
-> The firmware blob can contain optional ELF sections: .resource_table
-> section and .pru_irq_map one. The second one contains the PRUSS
-> interrupt mapping description, which needs to be setup before powering
-> on the PRU core. To avoid RAM wastage this ELF section is not mapped to
-> any ELF segment (by the firmware linker) and therefore is not loaded to
-> PRU memory.
+On 12/1/20 4:31 PM, Marco Elver wrote:
+> On Tue, 1 Dec 2020 at 23:28, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> On 11/30/20 3:22 PM, Brendan Higgins wrote:
+>>> On Mon, Nov 23, 2020 at 11:25 PM David Gow <davidgow@google.com> wrote:
+>>>>
+>>>> On Mon, Nov 23, 2020 at 9:08 PM Marco Elver <elver@google.com> wrote:
+>>>>>
+>>>>> On Tue, 17 Nov 2020 at 08:21, David Gow <davidgow@google.com> wrote:
+>>>>>> On Mon, Nov 16, 2020 at 1:41 PM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>>>>>>>
+>>>>>>> Implementation of support for parameterized testing in KUnit. This
+>>>>>>> approach requires the creation of a test case using the
+>>>>>>> KUNIT_CASE_PARAM() macro that accepts a generator function as input.
+>>>>>>>
+>>>>>>> This generator function should return the next parameter given the
+>>>>>>> previous parameter in parameterized tests. It also provides a macro to
+>>>>>>> generate common-case generators based on arrays. Generators may also
+>>>>>>> optionally provide a human-readable description of parameters, which is
+>>>>>>> displayed where available.
+>>>>>>>
+>>>>>>> Note, currently the result of each parameter run is displayed in
+>>>>>>> diagnostic lines, and only the overall test case output summarizes
+>>>>>>> TAP-compliant success or failure of all parameter runs. In future, when
+>>>>>>> supported by kunit-tool, these can be turned into subsubtest outputs.
+>>>>>>>
+>>>>>>> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+>>>>>>> Co-developed-by: Marco Elver <elver@google.com>
+>>>>>>> Signed-off-by: Marco Elver <elver@google.com>
+>>>>>>> ---
+>>>>>> [Resending this because my email client re-defaulted to HTML! Aarrgh!]
+>>>>>>
+>>>>>> This looks good to me! I tested it in UML and x86-64 w/ KASAN, and
+>>>>>> both worked fine.
+>>>>>>
+>>>>>> Reviewed-by: David Gow <davidgow@google.com>
+>>>>>> Tested-by: David Gow <davidgow@google.com>
+>>>>>
+>>>>> Thank you!
+>>>>>
+>>>>>> Thanks for sticking with this!
+>>>>>
+>>>>> Will these patches be landing in 5.11 or 5.12?
+>>>>>
+>>>>
+>>>> I can't think of any reason not to have these in 5.11. We haven't
+>>>> started staging things in the kselftest/kunit branch for 5.11 yet,
+>>>> though.
+>>>>
+>>>> Patch 2 will probably need to be acked by Ted for ext4 first.
+>>>>
+>>>> Brendan, Shuah: can you make sure this doesn't get lost in patchwork?
+>>>
+>>> Looks good to me. I would definitely like to pick this up. But yeah,
+>>> in order to pick up 2/2 we will need an ack from either Ted or Iurii.
+>>>
+>>> Ted seems to be busy right now, so I think I will just ask Shuah to go
+>>> ahead and pick this patch up by itself and we or Ted can pick up patch
+>>> 2/2 later.
+>>>
+>>> Cheers
+>>>
+>>
+>> I am seeing
+>>
+>> ERROR: need consistent spacing around '*' (ctx:WxV)
+>> #272: FILE: include/kunit/test.h:1786:
+>> +               typeof((array)[0]) *__next = prev ? ((typeof(__next)) prev) + 1 :
+>> (array);        \
+>>                                     ^
+>>
+>> Can you look into this and send v10?
 > 
-> The PRU interrupt configuration is handled within the PRUSS INTC irqchip
-> driver and leverages the system events to interrupt channels and host
-> interrupts mapping configuration. Relevant irq routing information is
-> passed through a special .pru_irq_map ELF section (for interrupts routed
-> to and used by PRU cores) or via the PRU application's device tree node
-> (for interrupts routed to and used by the main CPU). The mappings are
-> currently programmed during the booting/shutdown of the PRU.
+> This is a false positive. I pointed this out here before:
+> https://lkml.kernel.org/r/CANpmjNNhpe6TYt0KmBCCR-Wfz1Bxd8qnhiwegwnDQsxRAWmUMg@mail.gmail.com
 > 
-> The interrupt configuration passed through .pru_irq_map ELF section is
-> optional. It varies on specific firmware functionality and therefore
-> have to be unwinded during PRU stop and performed again during
-> PRU start.
+> checkpatch.pl thinks this is a multiplication, but this is a pointer,
+> so the spacing here is correct.
 > 
-> Co-developed-by: Suman Anna <s-anna@ti.com>
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> ---
-> v1->v2:
-> Address Suman comments:
-> - Rework pru_rproc_find_interrupt_map() style: get rid of generic ELF
->   helpers macros usage and stick with elf32_* related structs instead
->   (in order to be consistent with pru_rproc_load_elf_segments() style).
-> - Improve comments and dev_err msgs in pru_rproc_find_interrupt_map().
-> - Use u8 instead of ssize_t for evt_count.
-> ---
->  drivers/remoteproc/pru_rproc.c | 180 +++++++++++++++++++++++++++++++++
->  drivers/remoteproc/pru_rproc.h |  46 +++++++++
->  2 files changed, 226 insertions(+)
->  create mode 100644 drivers/remoteproc/pru_rproc.h
-> 
-> diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-> index b686f19f9b1a..c68c3d6bfddd 100644
-> --- a/drivers/remoteproc/pru_rproc.c
-> +++ b/drivers/remoteproc/pru_rproc.c
-> @@ -11,13 +11,16 @@
->   */
->  
->  #include <linux/bitops.h>
-> +#include <linux/irqdomain.h>
->  #include <linux/module.h>
->  #include <linux/of_device.h>
-> +#include <linux/of_irq.h>
->  #include <linux/pruss_driver.h>
->  #include <linux/remoteproc.h>
->  
->  #include "remoteproc_internal.h"
->  #include "remoteproc_elf_helpers.h"
-> +#include "pru_rproc.h"
->  
->  /* PRU_ICSS_PRU_CTRL registers */
->  #define PRU_CTRL_CTRL		0x0000
-> @@ -42,6 +45,8 @@
->  #define PRU_SDRAM_DA	0x2000	/* Secondary Data RAM */
->  #define PRU_SHRDRAM_DA	0x10000 /* Shared Data RAM */
->  
-> +#define MAX_PRU_SYS_EVENTS 160
-> +
->  /**
->   * enum pru_iomem - PRU core memory/register range identifiers
->   *
-> @@ -65,6 +70,10 @@ enum pru_iomem {
->   * @rproc: remoteproc pointer for this PRU core
->   * @mem_regions: data for each of the PRU memory regions
->   * @fw_name: name of firmware image used during loading
-> + * @mapped_irq: virtual interrupt numbers of created fw specific mapping
-> + * @pru_interrupt_map: pointer to interrupt mapping description (firmware)
-> + * @pru_interrupt_map_sz: pru_interrupt_map size
-> + * @evt_count: number of mapped events
->   */
->  struct pru_rproc {
->  	int id;
-> @@ -73,6 +82,10 @@ struct pru_rproc {
->  	struct rproc *rproc;
->  	struct pruss_mem_region mem_regions[PRU_IOMEM_MAX];
->  	const char *fw_name;
-> +	int *mapped_irq;
-> +	struct pru_irq_rsc *pru_interrupt_map;
-> +	size_t pru_interrupt_map_sz;
-> +	u8 evt_count;
->  };
->  
->  static inline u32 pru_control_read_reg(struct pru_rproc *pru, unsigned int reg)
-> @@ -86,15 +99,107 @@ void pru_control_write_reg(struct pru_rproc *pru, unsigned int reg, u32 val)
->  	writel_relaxed(val, pru->mem_regions[PRU_IOMEM_CTRL].va + reg);
->  }
->  
 
-> +static void pru_dispose_irq_mapping(struct pru_rproc *pru)
-> +{
-> +	while (pru->evt_count--) {
-> +		if (pru->mapped_irq[pru->evt_count] > 0)
-> +			irq_dispose_mapping(pru->mapped_irq[pru->evt_count]);
-> +	}
-> +
-> +	kfree(pru->mapped_irq);
-> +}
-> +
-> +/*
-> + * Parse the custom PRU interrupt map resource and configure the INTC
-> + * appropriately.
-> + */
-> +static int pru_handle_intrmap(struct rproc *rproc)
-> +{
-> +	struct device *dev = rproc->dev.parent;
-> +	struct pru_rproc *pru = rproc->priv;
-> +	struct pru_irq_rsc *rsc = pru->pru_interrupt_map;
-> +	struct irq_fwspec fwspec;
-> +	struct device_node *irq_parent;
-> +	int i, ret = 0;
-> +
-> +	/* not having pru_interrupt_map is not an error */
-> +	if (!rsc)
-> +		return 0;
-> +
-> +	/* currently supporting only type 0 */
-> +	if (rsc->type != 0) {
-> +		dev_err(dev, "unsupported rsc type: %d\n", rsc->type);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (rsc->num_evts < 0 || rsc->num_evts > MAX_PRU_SYS_EVENTS)
-> +		return -EINVAL;
-> +
+Thank you for confirming. I will apply this.
 
-pru_irq_rsc::num_evts is a 'u8' and can't be negative.
-
-> +	if (sizeof(*rsc) + rsc->num_evts * sizeof(struct pruss_int_map) !=
-> +	    pru->pru_interrupt_map_sz)
-> +		return -EINVAL;
-> +
-> +	pru->evt_count = rsc->num_evts;
-> +	pru->mapped_irq = kcalloc(pru->evt_count, sizeof(int), GFP_KERNEL);
-> +	if (!pru->mapped_irq)
-> +		return -ENOMEM;
-> +
-> +	/*
-> +	 * parse and fill in system event to interrupt channel and
-> +	 * channel-to-host mapping
-> +	 */
-> +	irq_parent = of_irq_find_parent(pru->dev->of_node);
-> +	if (!irq_parent) {
-> +		kfree(pru->mapped_irq);
-> +		return -ENODEV;
-> +	}
-> +
-> +	fwspec.fwnode = of_node_to_fwnode(irq_parent);
-> +	fwspec.param_count = 3;
-> +	for (i = 0; i < pru->evt_count; i++) {
-> +		fwspec.param[0] = rsc->pru_intc_map[i].event;
-> +		fwspec.param[1] = rsc->pru_intc_map[i].chnl;
-> +		fwspec.param[2] = rsc->pru_intc_map[i].host;
-> +
-> +		dev_dbg(dev, "mapping%d: event %d, chnl %d, host %d\n",
-> +		       i, fwspec.param[0], fwspec.param[1], fwspec.param[2]);
-> +
-> +		pru->mapped_irq[i] = irq_create_fwspec_mapping(&fwspec);
-> +		if (pru->mapped_irq[i] < 0) {
-
-Function irq_create_fwspec_mapping() returns an unsigned int - theoretically the
-above check could return a false positive.  I suggest to make
-pru_proc::mapped_irq a '*unsigned int" and revise the error condition.
-
-> +			dev_err(dev, "failed to get virq\n");
-> +			ret = pru->mapped_irq[i];
-> +			goto map_fail;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +
-> +map_fail:
-> +	pru_dispose_irq_mapping(pru);
-> +
-> +	return ret;
-> +}
-> +
->  static int pru_rproc_start(struct rproc *rproc)
->  {
->  	struct device *dev = &rproc->dev;
->  	struct pru_rproc *pru = rproc->priv;
->  	u32 val;
-> +	int ret;
->  
->  	dev_dbg(dev, "starting PRU%d: entry-point = 0x%llx\n",
->  		pru->id, (rproc->bootaddr >> 2));
->  
-> +	ret = pru_handle_intrmap(rproc);
-> +	/*
-> +	 * reset references to pru interrupt map - they will stop being valid
-> +	 * after rproc_start returns
-> +	 */
-
-Why is that?  As far as I understand the interrupt map points inside the
-firmware image, which won't go away until @rproc is disposed of or users change
-it via sysfs.  And the latter can't happen when the remote processor is active.
-Can't this go to pru_dispose_irq_mapping()?
-
-More comments to come tomorrow.
-
-Thanks,
-Mathieu
-
-> +	pru->pru_interrupt_map = NULL;
-> +	pru->pru_interrupt_map_sz = 0;
-> +	if (ret)
-> +		return ret;
-> +
->  	val = CTRL_CTRL_EN | ((rproc->bootaddr >> 2) << 16);
->  	pru_control_write_reg(pru, PRU_CTRL_CTRL, val);
->  
-> @@ -113,6 +218,10 @@ static int pru_rproc_stop(struct rproc *rproc)
->  	val &= ~CTRL_CTRL_EN;
->  	pru_control_write_reg(pru, PRU_CTRL_CTRL, val);
->  
-> +	/* dispose irq mapping - new firmware can provide new mapping */
-> +	if (pru->mapped_irq)
-> +		pru_dispose_irq_mapping(pru);
-> +
->  	return 0;
->  }
->  
-> @@ -275,12 +384,70 @@ pru_rproc_load_elf_segments(struct rproc *rproc, const struct firmware *fw)
->  	return ret;
->  }
->  
-> +static const void *
-> +pru_rproc_find_interrupt_map(struct device *dev, const struct firmware *fw)
-> +{
-> +	struct elf32_shdr *shdr, *name_table_shdr;
-> +	const char *name_table;
-> +	const u8 *elf_data = fw->data;
-> +	struct elf32_hdr *ehdr = (struct elf32_hdr *)elf_data;
-> +	u16 shnum = ehdr->e_shnum;
-> +	u16 shstrndx = ehdr->e_shstrndx;
-> +	int i;
-> +
-> +	/* first, get the section header */
-> +	shdr = (struct elf32_shdr *)(elf_data + ehdr->e_shoff);
-> +	/* compute name table section header entry in shdr array */
-> +	name_table_shdr = shdr + shstrndx;
-> +	/* finally, compute the name table section address in elf */
-> +	name_table = elf_data + name_table_shdr->sh_offset;
-> +
-> +	for (i = 0; i < shnum; i++, shdr++) {
-> +		u32 size = shdr->sh_size;
-> +		u32 offset = shdr->sh_offset;
-> +		u32 name = shdr->sh_name;
-> +
-> +		if (strcmp(name_table + name, ".pru_irq_map"))
-> +			continue;
-> +
-> +		/* make sure we have the entire irq map */
-> +		if (offset + size > fw->size || offset + size < size) {
-> +			dev_err(dev, ".pru_irq_map section truncated\n");
-> +			return ERR_PTR(-EINVAL);
-> +		}
-> +
-> +		/* make sure irq map has at least the header */
-> +		if (sizeof(struct pru_irq_rsc) > size) {
-> +			dev_err(dev, "header-less .pru_irq_map section\n");
-> +			return ERR_PTR(-EINVAL);
-> +		}
-> +
-> +		return shdr;
-> +	}
-> +
-> +	dev_dbg(dev, "no .pru_irq_map section found for this fw\n");
-> +
-> +	return NULL;
-> +}
-> +
->  /*
->   * Use a custom parse_fw callback function for dealing with PRU firmware
->   * specific sections.
-> + *
-> + * The firmware blob can contain optional ELF sections: .resource_table section
-> + * and .pru_irq_map one. The second one contains the PRUSS interrupt mapping
-> + * description, which needs to be setup before powering on the PRU core. To
-> + * avoid RAM wastage this ELF section is not mapped to any ELF segment (by the
-> + * firmware linker) and therefore is not loaded to PRU memory.
->   */
->  static int pru_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
->  {
-> +	struct device *dev = &rproc->dev;
-> +	struct pru_rproc *pru = rproc->priv;
-> +	const u8 *elf_data = fw->data;
-> +	const void *shdr;
-> +	u8 class = fw_elf_get_class(fw);
-> +	u64 sh_offset;
->  	int ret;
->  
->  	/* load optional rsc table */
-> @@ -290,6 +457,19 @@ static int pru_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
->  	else if (ret)
->  		return ret;
->  
-> +	/* find .pru_interrupt_map section, not having it is not an error */
-> +	shdr = pru_rproc_find_interrupt_map(dev, fw);
-> +	if (IS_ERR(shdr))
-> +		return PTR_ERR(shdr);
-> +
-> +	if (!shdr)
-> +		return 0;
-> +
-> +	/* preserve pointer to PRU interrupt map together with it size */
-> +	sh_offset = elf_shdr_get_sh_offset(class, shdr);
-> +	pru->pru_interrupt_map = (struct pru_irq_rsc *)(elf_data + sh_offset);
-> +	pru->pru_interrupt_map_sz = elf_shdr_get_sh_size(class, shdr);
-> +
->  	return 0;
->  }
->  
-> diff --git a/drivers/remoteproc/pru_rproc.h b/drivers/remoteproc/pru_rproc.h
-> new file mode 100644
-> index 000000000000..8ee9c3171610
-> --- /dev/null
-> +++ b/drivers/remoteproc/pru_rproc.h
-> @@ -0,0 +1,46 @@
-> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
-> +/*
-> + * PRUSS Remote Processor specific types
-> + *
-> + * Copyright (C) 2014-2020 Texas Instruments Incorporated - https://www.ti.com/
-> + *	Suman Anna <s-anna@ti.com>
-> + */
-> +
-> +#ifndef _PRU_RPROC_H_
-> +#define _PRU_RPROC_H_
-> +
-> +/**
-> + * struct pruss_int_map - PRU system events _to_ channel and host mapping
-> + * @event: number of the system event
-> + * @chnl: channel number assigned to a given @event
-> + * @host: host number assigned to a given @chnl
-> + *
-> + * PRU system events are mapped to channels, and these channels are mapped
-> + * to host interrupts. Events can be mapped to channels in a one-to-one or
-> + * many-to-one ratio (multiple events per channel), and channels can be
-> + * mapped to host interrupts in a one-to-one or many-to-one ratio (multiple
-> + * channels per interrupt).
-> + */
-> +struct pruss_int_map {
-> +	u8 event;
-> +	u8 chnl;
-> +	u8 host;
-> +};
-> +
-> +/**
-> + * struct pru_irq_rsc - PRU firmware section header for IRQ data
-> + * @type: resource type
-> + * @num_evts: number of described events
-> + * @pru_intc_map: PRU interrupt routing description
-> + *
-> + * The PRU firmware blob can contain optional .pru_irq_map ELF section, which
-> + * provides the PRUSS interrupt mapping description. The pru_irq_rsc struct
-> + * describes resource entry format.
-> + */
-> +struct pru_irq_rsc {
-> +	u8 type;
-> +	u8 num_evts;
-> +	struct pruss_int_map pru_intc_map[];
-> +} __packed;
-> +
-> +#endif	/* _PRU_RPROC_H_ */
-> -- 
-> 2.29.0
-> 
+thanks,
+-- Shuah
