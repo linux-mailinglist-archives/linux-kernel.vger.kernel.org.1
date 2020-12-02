@@ -2,452 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313CE2CC813
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D78722CC7F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:41:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388196AbgLBUmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:42:22 -0500
-Received: from foss.arm.com ([217.140.110.172]:50436 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388069AbgLBUmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:42:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1AB081570;
-        Wed,  2 Dec 2020 12:41:08 -0800 (PST)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 601F63F575;
-        Wed,  2 Dec 2020 12:41:06 -0800 (PST)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        thara.gopinath@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com,
-        Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH v3 21/37] firmware: arm_scmi: port Reset protocol to new protocols interface
-Date:   Wed,  2 Dec 2020 20:39:53 +0000
-Message-Id: <20201202204009.32073-22-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201202204009.32073-1-cristian.marussi@arm.com>
-References: <20201202204009.32073-1-cristian.marussi@arm.com>
+        id S1729242AbgLBUko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:40:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726798AbgLBUkn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 15:40:43 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A8CC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 12:39:57 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id v1so1698465pjr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:39:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=72m1KMe+AJCSmimUFUDpNwMkVlKd/noy7/CxGMLAfU8=;
+        b=wRmvCng7eaScdkobRQXOhNLwhalOoVmjpyk7RBBDGo7mYDFyeWfQZr5LMb/eCueYxQ
+         w6hyM31vnB0n+q8A5rCNMQlHLJ7WzJQ1GX2Uwbe7TX54ETPkuQ3yzE32QiBWl3qVIt0t
+         geT6t4wl13+UmxP9xC8Krmcl6MO9YxgkbDhMg1O9/fdZPQUnFasmHpn+IYtWtJ17JPaz
+         n1CQ9x7c8m6nhW9So4Y4ab8CAIKlhb7lXi7iYkffpdHjy3pDrDiwezIkE1UO/nqpHqqN
+         kJX2UtI1CC5f4SZWICp5lL33sQQz9zhhVPblAYqSI5Zt0A3O+fQEob3cAbXf7Mgd+B3p
+         yg5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=72m1KMe+AJCSmimUFUDpNwMkVlKd/noy7/CxGMLAfU8=;
+        b=GriTfCIWIw+vN1VVvorhqkp6R4oTAMGMThi8I9kyP6xe4fTuUzVn97IV3nM8laFzvS
+         WvsyTUO8MQrIRu/KDSahfPrAU5js86oJm+okQylTYvSJ9GFQ0fIC87jSruiMF+LZagc6
+         CiLOTuTGJXd2gw2sm5wIgwO+mYWMLGr5fUz8c2HYBKG6q5hUscUYJrNh2CXSzQmRP/Se
+         ZjURFoKvcRIltoxNnk+mkNdRpbHb9/Ml3WcBgVkHt5eprru37Bg5HVHqKMMxcXovQqOl
+         VXB+iGjji3+QkQ36+Vo01r4krQyNbNC6GrvcYGS/nTID0Mi4IIJVQGKyuGC05plSHoqH
+         niVQ==
+X-Gm-Message-State: AOAM533W5pFGR2QJOrNATLnfrBgKeBOhHAmhzadsmu7rLD32CgearRl8
+        WO2vrefYJFXvc5l4A9m+zYtLhQ==
+X-Google-Smtp-Source: ABdhPJw1cf0Z0S+7c/CMu2PeYxZmjqPUIZ3StipYqhj626oWKNPBJamixRQCT6VwF3HhZLku5/KtlQ==
+X-Received: by 2002:a17:902:9689:b029:d8:e310:2fa2 with SMTP id n9-20020a1709029689b02900d8e3102fa2mr4130256plp.42.1606941597224;
+        Wed, 02 Dec 2020 12:39:57 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id z22sm624604pfn.153.2020.12.02.12.39.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 12:39:56 -0800 (PST)
+Date:   Wed, 2 Dec 2020 13:39:54 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 0/8] rpmsg: Make RPMSG name service modular
+Message-ID: <20201202203954.GC1282360@xps15>
+References: <20201120214245.172963-1-mathieu.poirier@linaro.org>
+ <20201123160610.GA19108@ubuntu>
+ <20201202110555.GA65230@ubuntu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202110555.GA65230@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert internals of protocol implementation to use protocol handles and
-expose a new protocol operations interface for SCMI driver using the new
-get/put common operations, while keeping the old handle->reset_ops still
-around to ease transition.
+Good day,
 
-Remove handle->reset_priv now unused.
+On Wed, Dec 02, 2020 at 12:05:55PM +0100, Guennadi Liakhovetski wrote:
+> Hi Mathieu,
+> 
+> I'd like to resume reviewing and begin upstreaming of the next steps of 
+> my Audio DSP Virtualisation work, based on this your patch set. How 
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- drivers/firmware/arm_scmi/reset.c | 172 +++++++++++++++++++++---------
- include/linux/scmi_protocol.h     |  14 ++-
- 2 files changed, 129 insertions(+), 57 deletions(-)
+I'm all for it too.
 
-diff --git a/drivers/firmware/arm_scmi/reset.c b/drivers/firmware/arm_scmi/reset.c
-index 7047e5baecc2..9c808f5add7e 100644
---- a/drivers/firmware/arm_scmi/reset.c
-+++ b/drivers/firmware/arm_scmi/reset.c
-@@ -64,46 +64,45 @@ struct scmi_reset_info {
- 	struct reset_dom_info *dom_info;
- };
- 
--static int scmi_reset_attributes_get(const struct scmi_handle *handle,
-+static int scmi_reset_attributes_get(const struct scmi_protocol_handle *ph,
- 				     struct scmi_reset_info *pi)
- {
- 	int ret;
- 	struct scmi_xfer *t;
- 	u32 attr;
- 
--	ret = scmi_xfer_get_init(handle, PROTOCOL_ATTRIBUTES,
--				 SCMI_PROTOCOL_RESET, 0, sizeof(attr), &t);
-+	ret = ph->xops->xfer_get_init(ph, PROTOCOL_ATTRIBUTES,
-+				      0, sizeof(attr), &t);
- 	if (ret)
- 		return ret;
- 
--	ret = scmi_do_xfer(handle, t);
-+	ret = ph->xops->do_xfer(ph, t);
- 	if (!ret) {
- 		attr = get_unaligned_le32(t->rx.buf);
- 		pi->num_domains = attr & NUM_RESET_DOMAIN_MASK;
- 	}
- 
--	scmi_xfer_put(handle, t);
-+	ph->xops->xfer_put(ph, t);
- 	return ret;
- }
- 
- static int
--scmi_reset_domain_attributes_get(const struct scmi_handle *handle, u32 domain,
--				 struct reset_dom_info *dom_info)
-+scmi_reset_domain_attributes_get(const struct scmi_protocol_handle *ph,
-+				 u32 domain, struct reset_dom_info *dom_info)
- {
- 	int ret;
- 	struct scmi_xfer *t;
- 	struct scmi_msg_resp_reset_domain_attributes *attr;
- 
--	ret = scmi_xfer_get_init(handle, RESET_DOMAIN_ATTRIBUTES,
--				 SCMI_PROTOCOL_RESET, sizeof(domain),
--				 sizeof(*attr), &t);
-+	ret = ph->xops->xfer_get_init(ph, RESET_DOMAIN_ATTRIBUTES,
-+				      sizeof(domain), sizeof(*attr), &t);
- 	if (ret)
- 		return ret;
- 
- 	put_unaligned_le32(domain, t->tx.buf);
- 	attr = t->rx.buf;
- 
--	ret = scmi_do_xfer(handle, t);
-+	ret = ph->xops->do_xfer(ph, t);
- 	if (!ret) {
- 		u32 attributes = le32_to_cpu(attr->attributes);
- 
-@@ -115,47 +114,75 @@ scmi_reset_domain_attributes_get(const struct scmi_handle *handle, u32 domain,
- 		strlcpy(dom_info->name, attr->name, SCMI_MAX_STR_SIZE);
- 	}
- 
--	scmi_xfer_put(handle, t);
-+	ph->xops->xfer_put(ph, t);
- 	return ret;
- }
- 
--static int scmi_reset_num_domains_get(const struct scmi_handle *handle)
-+static int scmi_reset_num_domains_get(const struct scmi_protocol_handle *ph)
- {
--	struct scmi_reset_info *pi = handle->reset_priv;
-+	struct scmi_reset_info *pi = ph->get_priv(ph);
- 
- 	return pi->num_domains;
- }
- 
--static char *scmi_reset_name_get(const struct scmi_handle *handle, u32 domain)
-+static int __scmi_reset_num_domains_get(const struct scmi_handle *handle)
- {
--	struct scmi_reset_info *pi = handle->reset_priv;
-+	const struct scmi_protocol_handle *ph =
-+		scmi_map_protocol_handle(handle, SCMI_PROTOCOL_RESET);
-+
-+	return scmi_reset_num_domains_get(ph);
-+}
-+
-+static char *scmi_reset_name_get(const struct scmi_protocol_handle *ph,
-+				 u32 domain)
-+{
-+	struct scmi_reset_info *pi = ph->get_priv(ph);
-+
- 	struct reset_dom_info *dom = pi->dom_info + domain;
- 
- 	return dom->name;
- }
- 
--static int scmi_reset_latency_get(const struct scmi_handle *handle, u32 domain)
-+static char *__scmi_reset_name_get(const struct scmi_handle *handle,
-+				   u32 domain)
- {
--	struct scmi_reset_info *pi = handle->reset_priv;
-+	const struct scmi_protocol_handle *ph =
-+		scmi_map_protocol_handle(handle, SCMI_PROTOCOL_RESET);
-+
-+	return scmi_reset_name_get(ph, domain);
-+}
-+
-+static int scmi_reset_latency_get(const struct scmi_protocol_handle *ph,
-+				  u32 domain)
-+{
-+	struct scmi_reset_info *pi = ph->get_priv(ph);
- 	struct reset_dom_info *dom = pi->dom_info + domain;
- 
- 	return dom->latency_us;
- }
- 
--static int scmi_domain_reset(const struct scmi_handle *handle, u32 domain,
-+static int __scmi_reset_latency_get(const struct scmi_handle *handle,
-+				    u32 domain)
-+{
-+	const struct scmi_protocol_handle *ph =
-+		scmi_map_protocol_handle(handle, SCMI_PROTOCOL_RESET);
-+
-+	return scmi_reset_latency_get(ph, domain);
-+}
-+
-+static int scmi_domain_reset(const struct scmi_protocol_handle *ph, u32 domain,
- 			     u32 flags, u32 state)
- {
- 	int ret;
- 	struct scmi_xfer *t;
- 	struct scmi_msg_reset_domain_reset *dom;
--	struct scmi_reset_info *pi = handle->reset_priv;
-+	struct scmi_reset_info *pi = ph->get_priv(ph);
- 	struct reset_dom_info *rdom = pi->dom_info + domain;
- 
- 	if (rdom->async_reset)
- 		flags |= ASYNCHRONOUS_RESET;
- 
--	ret = scmi_xfer_get_init(handle, RESET, SCMI_PROTOCOL_RESET,
--				 sizeof(*dom), 0, &t);
-+	ret = ph->xops->xfer_get_init(ph, RESET, sizeof(*dom), 0, &t);
- 	if (ret)
- 		return ret;
- 
-@@ -165,34 +192,71 @@ static int scmi_domain_reset(const struct scmi_handle *handle, u32 domain,
- 	dom->reset_state = cpu_to_le32(state);
- 
- 	if (rdom->async_reset)
--		ret = scmi_do_xfer_with_response(handle, t);
-+		ret = ph->xops->do_xfer_with_response(ph, t);
- 	else
--		ret = scmi_do_xfer(handle, t);
-+		ret = ph->xops->do_xfer(ph, t);
- 
--	scmi_xfer_put(handle, t);
-+	ph->xops->xfer_put(ph, t);
- 	return ret;
- }
- 
--static int scmi_reset_domain_reset(const struct scmi_handle *handle, u32 domain)
-+static int scmi_reset_domain_reset(const struct scmi_protocol_handle *ph,
-+				   u32 domain)
- {
--	return scmi_domain_reset(handle, domain, AUTONOMOUS_RESET,
-+	return scmi_domain_reset(ph, domain, AUTONOMOUS_RESET,
- 				 ARCH_COLD_RESET);
- }
- 
-+static int __scmi_reset_domain_reset(const struct scmi_handle *handle,
-+				     u32 domain)
-+{
-+	const struct scmi_protocol_handle *ph =
-+		scmi_map_protocol_handle(handle, SCMI_PROTOCOL_RESET);
-+
-+	return scmi_reset_domain_reset(ph, domain);
-+}
-+
- static int
--scmi_reset_domain_assert(const struct scmi_handle *handle, u32 domain)
-+scmi_reset_domain_assert(const struct scmi_protocol_handle *ph, u32 domain)
- {
--	return scmi_domain_reset(handle, domain, EXPLICIT_RESET_ASSERT,
-+	return scmi_domain_reset(ph, domain, EXPLICIT_RESET_ASSERT,
- 				 ARCH_COLD_RESET);
- }
- 
- static int
--scmi_reset_domain_deassert(const struct scmi_handle *handle, u32 domain)
-+__scmi_reset_domain_assert(const struct scmi_handle *handle, u32 domain)
-+{
-+	const struct scmi_protocol_handle *ph =
-+		scmi_map_protocol_handle(handle, SCMI_PROTOCOL_RESET);
-+
-+	return scmi_reset_domain_assert(ph, domain);
-+}
-+
-+static int
-+scmi_reset_domain_deassert(const struct scmi_protocol_handle *ph, u32 domain)
- {
--	return scmi_domain_reset(handle, domain, 0, ARCH_COLD_RESET);
-+	return scmi_domain_reset(ph, domain, 0, ARCH_COLD_RESET);
-+}
-+
-+static int
-+__scmi_reset_domain_deassert(const struct scmi_handle *handle, u32 domain)
-+{
-+	const struct scmi_protocol_handle *ph =
-+		scmi_map_protocol_handle(handle, SCMI_PROTOCOL_RESET);
-+
-+	return scmi_reset_domain_deassert(ph, domain);
- }
- 
- static const struct scmi_reset_ops reset_ops = {
-+	.num_domains_get = __scmi_reset_num_domains_get,
-+	.name_get = __scmi_reset_name_get,
-+	.latency_get = __scmi_reset_latency_get,
-+	.reset = __scmi_reset_domain_reset,
-+	.assert = __scmi_reset_domain_assert,
-+	.deassert = __scmi_reset_domain_deassert,
-+};
-+
-+static const struct scmi_reset_proto_ops reset_proto_ops = {
- 	.num_domains_get = scmi_reset_num_domains_get,
- 	.name_get = scmi_reset_name_get,
- 	.latency_get = scmi_reset_latency_get,
-@@ -201,16 +265,15 @@ static const struct scmi_reset_ops reset_ops = {
- 	.deassert = scmi_reset_domain_deassert,
- };
- 
--static int scmi_reset_notify(const struct scmi_handle *handle, u32 domain_id,
--			     bool enable)
-+static int scmi_reset_notify(const struct scmi_protocol_handle *ph,
-+			     u32 domain_id, bool enable)
- {
- 	int ret;
- 	u32 evt_cntl = enable ? RESET_TP_NOTIFY_ALL : 0;
- 	struct scmi_xfer *t;
- 	struct scmi_msg_reset_notify *cfg;
- 
--	ret = scmi_xfer_get_init(handle, RESET_NOTIFY,
--				 SCMI_PROTOCOL_RESET, sizeof(*cfg), 0, &t);
-+	ret = ph->xops->xfer_get_init(ph, RESET_NOTIFY, sizeof(*cfg), 0, &t);
- 	if (ret)
- 		return ret;
- 
-@@ -218,18 +281,18 @@ static int scmi_reset_notify(const struct scmi_handle *handle, u32 domain_id,
- 	cfg->id = cpu_to_le32(domain_id);
- 	cfg->event_control = cpu_to_le32(evt_cntl);
- 
--	ret = scmi_do_xfer(handle, t);
-+	ret = ph->xops->do_xfer(ph, t);
- 
--	scmi_xfer_put(handle, t);
-+	ph->xops->xfer_put(ph, t);
- 	return ret;
- }
- 
--static int scmi_reset_set_notify_enabled(const void *handle,
-+static int scmi_reset_set_notify_enabled(const void *ph,
- 					 u8 evt_id, u32 src_id, bool enable)
- {
- 	int ret;
- 
--	ret = scmi_reset_notify(handle, src_id, enable);
-+	ret = scmi_reset_notify(ph, src_id, enable);
- 	if (ret)
- 		pr_debug("FAIL_ENABLED - evt[%X] dom[%d] - ret:%d\n",
- 			 evt_id, src_id, ret);
-@@ -237,7 +300,7 @@ static int scmi_reset_set_notify_enabled(const void *handle,
- 	return ret;
- }
- 
--static void *scmi_reset_fill_custom_report(const void *handle,
-+static void *scmi_reset_fill_custom_report(const void *ph,
- 					   u8 evt_id, ktime_t timestamp,
- 					   const void *payld, size_t payld_sz,
- 					   void *report, u32 *src_id)
-@@ -257,10 +320,10 @@ static void *scmi_reset_fill_custom_report(const void *handle,
- 	return r;
- }
- 
--static int scmi_reset_get_num_sources(const void *handle)
-+static int scmi_reset_get_num_sources(const void *ph)
- {
- 	struct scmi_reset_info *pinfo =
--		((const struct scmi_handle *)(handle))->reset_priv;
-+		((const struct scmi_protocol_handle *)ph)->get_priv(ph);
- 
- 	if (!pinfo)
- 		return -EINVAL;
-@@ -289,24 +352,25 @@ static const struct scmi_protocol_events reset_protocol_events = {
- 	.num_events = ARRAY_SIZE(reset_events),
- };
- 
--static int scmi_reset_protocol_init(struct scmi_handle *handle)
-+static int scmi_reset_protocol_init(const struct scmi_protocol_handle *ph)
- {
- 	int domain;
- 	u32 version;
- 	struct scmi_reset_info *pinfo;
-+	struct scmi_handle *handle;
- 
--	scmi_version_get(handle, SCMI_PROTOCOL_RESET, &version);
-+	ph->xops->version_get(ph, &version);
- 
--	dev_dbg(handle->dev, "Reset Version %d.%d\n",
-+	dev_dbg(ph->dev, "Reset Version %d.%d\n",
- 		PROTOCOL_REV_MAJOR(version), PROTOCOL_REV_MINOR(version));
- 
--	pinfo = devm_kzalloc(handle->dev, sizeof(*pinfo), GFP_KERNEL);
-+	pinfo = devm_kzalloc(ph->dev, sizeof(*pinfo), GFP_KERNEL);
- 	if (!pinfo)
- 		return -ENOMEM;
- 
--	scmi_reset_attributes_get(handle, pinfo);
-+	scmi_reset_attributes_get(ph, pinfo);
- 
--	pinfo->dom_info = devm_kcalloc(handle->dev, pinfo->num_domains,
-+	pinfo->dom_info = devm_kcalloc(ph->dev, pinfo->num_domains,
- 				       sizeof(*pinfo->dom_info), GFP_KERNEL);
- 	if (!pinfo->dom_info)
- 		return -ENOMEM;
-@@ -314,20 +378,22 @@ static int scmi_reset_protocol_init(struct scmi_handle *handle)
- 	for (domain = 0; domain < pinfo->num_domains; domain++) {
- 		struct reset_dom_info *dom = pinfo->dom_info + domain;
- 
--		scmi_reset_domain_attributes_get(handle, domain, dom);
-+		scmi_reset_domain_attributes_get(ph, domain, dom);
- 	}
- 
- 	pinfo->version = version;
-+
-+	/* Transient code for legacy ops interface */
-+	handle = scmi_map_scmi_handle(ph);
- 	handle->reset_ops = &reset_ops;
--	handle->reset_priv = pinfo;
- 
--	return 0;
-+	return ph->set_priv(ph, pinfo);
- }
- 
- static const struct scmi_protocol scmi_reset = {
- 	.id = SCMI_PROTOCOL_RESET,
--	.init = &scmi_reset_protocol_init,
--	.ops = &reset_ops,
-+	.init_instance = &scmi_reset_protocol_init,
-+	.ops = &reset_proto_ops,
- 	.events = &reset_protocol_events,
- };
- 
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index d562a0df3462..bef5a1aee431 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -463,7 +463,7 @@ struct scmi_sensor_ops {
- };
- 
- /**
-- * struct scmi_reset_ops - represents the various operations provided
-+ * struct scmi_reset_proto_ops - represents the various operations provided
-  *	by SCMI Reset Protocol
-  *
-  * @num_domains_get: get the count of reset domains provided by SCMI
-@@ -473,6 +473,15 @@ struct scmi_sensor_ops {
-  * @assert: explicitly assert reset signal of the specified reset domain
-  * @deassert: explicitly deassert reset signal of the specified reset domain
-  */
-+struct scmi_reset_proto_ops {
-+	int (*num_domains_get)(const struct scmi_protocol_handle *ph);
-+	char *(*name_get)(const struct scmi_protocol_handle *ph, u32 domain);
-+	int (*latency_get)(const struct scmi_protocol_handle *ph, u32 domain);
-+	int (*reset)(const struct scmi_protocol_handle *ph, u32 domain);
-+	int (*assert)(const struct scmi_protocol_handle *ph, u32 domain);
-+	int (*deassert)(const struct scmi_protocol_handle *ph, u32 domain);
-+};
-+
- struct scmi_reset_ops {
- 	int (*num_domains_get)(const struct scmi_handle *handle);
- 	char *(*name_get)(const struct scmi_handle *handle, u32 domain);
-@@ -613,8 +622,6 @@ struct scmi_notify_ops {
-  * @notify_ops: pointer to set of notifications related operations
-  * @sensor_priv: pointer to private data structure specific to sensors
-  *	protocol(for internal use only)
-- * @reset_priv: pointer to private data structure specific to reset
-- *	protocol(for internal use only)
-  * @voltage_priv: pointer to private data structure specific to voltage
-  *	protocol(for internal use only)
-  * @notify_priv: pointer to private data structure specific to notifications
-@@ -640,7 +647,6 @@ struct scmi_handle {
- 	const struct scmi_notify_ops *notify_ops;
- 	/* for protocol internal use */
- 	void *sensor_priv;
--	void *reset_priv;
- 	void *voltage_priv;
- 	void *notify_priv;
- 	void *system_priv;
--- 
-2.17.1
+> confident are we that it's going to be upstreamed in its present form? 
+> What's the plan to push it to "next?"
+> 
 
+I thought we were pretty unanimous that something like what Kishon did was the
+way to go.  
+
+> Thanks
+> Guennadi
+> 
+> On Mon, Nov 23, 2020 at 05:06:10PM +0100, Guennadi Liakhovetski wrote:
+> > Hi Mathieu,
+> > 
+> > Thanks for bringing all the stuff together and for polishing it!
+> > 
+> > For the entire series:
+> > 
+> > Tested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> > Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> > 
+> > Thanks
+> > Guennadi
+> > 
+> > On Fri, Nov 20, 2020 at 02:42:37PM -0700, Mathieu Poirier wrote:
+> > > This revision addresses comments received from the previous revision,
+> > > i.e V6.  Please see details below.
+> > > 
+> > > It starts by making the RPMSG protocol transport agnostic by
+> > > moving the headers it uses to generic types and using those in the
+> > > current implementation.  From there it re-uses the work that Arnaud
+> > > published[1] to make the name service modular.
+> > > 
+> > > Tested on stm32mp157 with the RPMSG client sample application.  Applies
+> > > cleanly on rpmsg-next.
+> > > 
+> > > Thanks,
+> > > Mathieu
+> > > 
+> > > [1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=338335
+> > > 
+> > > -------
+> > > New for V7:
+> > > - Fixed error path in rpmsg_probe() as reported by Guennadi
+> > > 
+> > > Arnaud Pouliquen (4):
+> > >   rpmsg: virtio: Rename rpmsg_create_channel
+> > >   rpmsg: core: Add channel creation internal API
+> > >   rpmsg: virtio: Add rpmsg channel device ops
+> > >   rpmsg: Turn name service into a stand alone driver
+> > > 
+> > > Mathieu Poirier (4):
+> > >   rpmsg: Introduce __rpmsg{16|32|64} types
+> > >   rpmsg: virtio: Move from virtio to rpmsg byte conversion
+> > >   rpmsg: Move structure rpmsg_ns_msg to header file
+> > >   rpmsg: Make rpmsg_{register|unregister}_device() public
+> > > 
+> > >  drivers/rpmsg/Kconfig            |   9 ++
+> > >  drivers/rpmsg/Makefile           |   1 +
+> > >  drivers/rpmsg/rpmsg_core.c       |  44 ++++++++
+> > >  drivers/rpmsg/rpmsg_internal.h   |  14 ++-
+> > >  drivers/rpmsg/rpmsg_ns.c         | 126 +++++++++++++++++++++
+> > >  drivers/rpmsg/virtio_rpmsg_bus.c | 186 +++++++++++--------------------
+> > >  include/linux/rpmsg.h            |  63 ++++++++++-
+> > >  include/linux/rpmsg/byteorder.h  |  67 +++++++++++
+> > >  include/linux/rpmsg/ns.h         |  45 ++++++++
+> > >  include/uapi/linux/rpmsg_types.h |  11 ++
+> > >  10 files changed, 439 insertions(+), 127 deletions(-)
+> > >  create mode 100644 drivers/rpmsg/rpmsg_ns.c
+> > >  create mode 100644 include/linux/rpmsg/byteorder.h
+> > >  create mode 100644 include/linux/rpmsg/ns.h
+> > >  create mode 100644 include/uapi/linux/rpmsg_types.h
+> > > 
+> > > -- 
+> > > 2.25.1
+> > > 
