@@ -2,66 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5662CC4A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 468A72CC4CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389339AbgLBSKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:10:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387580AbgLBSKt (ORCPT
+        id S2389361AbgLBSOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:14:20 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:6922 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389271AbgLBSOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:10:49 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A218C0617A7
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:10:09 -0800 (PST)
-Received: from zn.tnic (p200300ec2f161b00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:1b00:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E10E81EC04DB;
-        Wed,  2 Dec 2020 19:10:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606932608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=MtASgyvlr76Dpn4OvnF8VBFRlFtBFT2ievvOIOzSaZg=;
-        b=emO6ydC7ipcgMAmsz42cdKbUyVth+vDSpm3f/UCra7Z272bHAwYlM87mVfV9PWNaSV3khs
-        KtuubNtGKcpuAmk/CXtHeylps5+zuHHwockj021IPKBUGWPo13sLWTTWqbaEN0y/N4piku
-        GEPO5wsXps7e266AcT55RHzJLOQ3Krc=
-Date:   Wed, 2 Dec 2020 19:10:08 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
-        Kim Phillips <kim.phillips@amd.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>, Pu Wen <puwen@hygon.cn>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/cpu/amd: Remove dead code for TSEG region remapping
-Message-ID: <20201202181008.GI2951@zn.tnic>
-References: <20201127171324.1846019-1-nivedita@alum.mit.edu>
- <20201127172747.GE13163@zn.tnic>
- <b726e0d7-7dfb-d902-652f-8aab4bf43e89@amd.com>
+        Wed, 2 Dec 2020 13:14:19 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B2I6tYO028933;
+        Wed, 2 Dec 2020 19:13:33 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=A5jf0Pxg1tcGN9l5WHbXjJkLKz897+02QJ8mF0l9cbA=;
+ b=WsT0M/fKzgDqZfNjQD2S22KAjBjdmpc9YcX63kacaaHMn2RAXPamVBWZmQUQCh+F+0/5
+ sYUATa7WG5L6vOwd2tLkCzKLtBAAd5Sp6/zurKsUlvA6MYFK+wCrlpAOWn/BqdEz1vTC
+ 6vwQNWcBuGvL4s2bgT+Qyy6nPb/oT8TDl2A5LdBodBWbeVALONZWhqSCuoLT7H5pOdPU
+ WLVpcgD08UU3RzNzac2WntGaLnzltN/vATls8VCfx9O48dE905600dp7YJPEckVBwKe+
+ kJk9H7jeDN86bpLOSEngbEc1dQYnTIQ3ckp7oxS2J7xnI/yPfyllO9GU/SVXogbL86Pv ig== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 355w3cd33f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 19:13:33 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DBAC810002A;
+        Wed,  2 Dec 2020 19:13:32 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BD4A023FCD5;
+        Wed,  2 Dec 2020 19:13:32 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.49) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 2 Dec
+ 2020 19:13:32 +0100
+Subject: Re: [PATCH v3 07/15] remoteproc: Add new detach() remoteproc
+ operation
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201126210642.897302-1-mathieu.poirier@linaro.org>
+ <20201126210642.897302-8-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <b67a7501-c54c-34c9-1047-e599d5ef9b2f@st.com>
+Date:   Wed, 2 Dec 2020 19:13:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b726e0d7-7dfb-d902-652f-8aab4bf43e89@amd.com>
+In-Reply-To: <20201126210642.897302-8-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_10:2020-11-30,2020-12-02 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 11:58:15AM -0600, Tom Lendacky wrote:
-> I believe this is geared towards performance. If the TSEG base address is
-> not 2MB aligned, then hardware has to break down a 2MB TLB entry if the OS
-> references the memory within the 2MB page that is before the TSEG base
-> address. This can occur whenever the 2MB TLB entry is re-installed because
-> of TLB flushes, etc.
+Hi Mathieu
 
-And if this gets reinstated properly, then that explanation belongs over
-it because nothing else explains what that thing did. So thanks for
-digging it out.
+On 11/26/20 10:06 PM, Mathieu Poirier wrote:
+> Add an new detach() operation in order to support scenarios where
+> the remoteproc core is going away but the remote processor is
+> kept operating.  This could be the case when the system is
+> rebooted or when the platform driver is removed.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Reviewed-by: Peng Fan <peng.fan@nxp.com>
 
--- 
-Regards/Gruss,
-    Boris.
+Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Arnaud
+> ---
+>  include/linux/remoteproc.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index 9be112b5c09d..da15b77583d3 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -361,6 +361,7 @@ enum rsc_handling_status {
+>   * @start:	power on the device and boot it
+>   * @stop:	power off the device
+>   * @attach:	attach to a device that his already powered up
+> + * @detach:	detach from a device, leaving it powered up
+>   * @kick:	kick a virtqueue (virtqueue id given as a parameter)
+>   * @da_to_va:	optional platform hook to perform address translations
+>   * @parse_fw:	parse firmware to extract information (e.g. resource table)
+> @@ -382,6 +383,7 @@ struct rproc_ops {
+>  	int (*start)(struct rproc *rproc);
+>  	int (*stop)(struct rproc *rproc);
+>  	int (*attach)(struct rproc *rproc);
+> +	int (*detach)(struct rproc *rproc);
+>  	void (*kick)(struct rproc *rproc, int vqid);
+>  	void * (*da_to_va)(struct rproc *rproc, u64 da, size_t len);
+>  	int (*parse_fw)(struct rproc *rproc, const struct firmware *fw);
+> 
