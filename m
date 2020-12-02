@@ -2,103 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AF72CB52B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 07:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE3A2CB528
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 07:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728703AbgLBGlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 01:41:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728674AbgLBGlL (ORCPT
+        id S1728669AbgLBGkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 01:40:49 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8489 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbgLBGks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 01:41:11 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78630C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 22:40:25 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id f14so16938pju.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 22:40:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zY92Rci4J9j+9ksUhoFOdGaklu6PbRH/V2SAmN+2l0c=;
-        b=B2Z50xEZzwXaJoltyohaEnIlsLrSkCR28AjK1pu5MUumAIN3C4GnaDd3byQiOlgsNV
-         /J3aCS1X4HYAXTmYvpEO8HPTB6LY17aRx+d1rJGbff/+ssyrenOQ4gUVfAeBDiHXG0ax
-         zD8ei0o/BoFL+PO0rChRqyN6UvzNTAzIKdlpEGS8GpjprTVJuVIkcIGshlmH1aNsnd1c
-         WkdaBE/u+jkWYbvPfUZnWS7BD1gMrLMVCVTgTjv+zvxFh0fJLsLNd7Lwns+d5EpXKzuE
-         JDn/w7cQovRQKiqyObS7nS7ZKB8ik/40QQw1USYebPhUsjShqS2oFKDJ+CfEIrLlMigL
-         c47g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zY92Rci4J9j+9ksUhoFOdGaklu6PbRH/V2SAmN+2l0c=;
-        b=YtEs3zwGcGklh1rIv+xXpBht2xhPwUG2PbU+1966cykspBpMajKAq8nx5/Tu6nagjy
-         BZ0aXg2kcOVkKjgTEapOHmKRBIFGtJzyRhlHGxI0rFwjcGs34uXNFpd7Ia0yW1/te+WF
-         fHT3ejUeYywfHmC0BakA7aBgxKsjEsi1Aqg9uB+1kv7iTCnktXaH5A+H8WvFwhgmiMzw
-         rZidCkfY+I93Dygy1vI08wf2uhKD1YjQHmv8i50g2dPLv8mglxkdR0TGNqmRaCKl6tkI
-         h/BiunnTr1ss8iM0adwOUCpHFC9EHTDTP6Q7yPbl5wsrQSxetzzKA4iyA2oqxU4C3jk1
-         KGsg==
-X-Gm-Message-State: AOAM5335sMlhidhK6kars1W/mmHWq7Lj7M40m82xthU8m9gPkHjEiEgF
-        zG5/dWUX7JV9qJwQtaI6+54q7w==
-X-Google-Smtp-Source: ABdhPJz48qwqgTyyUzdmiHLiBwQSkpTx8KBNvQ4018NE0PSGhPRm0jty+8EQwNgP6SkR00wvBL7S5g==
-X-Received: by 2002:a17:90a:202:: with SMTP id c2mr1030309pjc.164.1606891224925;
-        Tue, 01 Dec 2020 22:40:24 -0800 (PST)
-Received: from localhost.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
-        by smtp.googlemail.com with ESMTPSA id b80sm973181pfb.40.2020.12.01.22.40.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 22:40:24 -0800 (PST)
-From:   Chris Chiu <chiu@endlessos.org>
-To:     rjw@rjwysocki.net, lenb@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, "Jasper St. Pierre" <jstpierre@mecheye.net>,
-        Chris Chiu <chiu@endlessos.org>
-Subject: [PATCH] ACPI: Add DMI quirk for GIGABYTE GB-BXBT-2807
-Date:   Wed,  2 Dec 2020 14:39:42 +0800
-Message-Id: <20201202063942.6644-1-chiu@endlessos.org>
-X-Mailer: git-send-email 2.20.1
+        Wed, 2 Dec 2020 01:40:48 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cm8TY6L6jzhglk;
+        Wed,  2 Dec 2020 14:39:45 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 2 Dec 2020
+ 14:40:04 +0800
+Subject: Re: [f2fs-dev] [PATCH v2 2/2] f2fs: add F2FS_IOC_DECOMPRESS_FILE and
+ F2FS_IOC_COMPRESS_FILE
+To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
+CC:     Daeho Jeong <daehojeong@google.com>
+References: <20201201040803.3590442-1-daeho43@gmail.com>
+ <20201201040803.3590442-2-daeho43@gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <b60eeb13-225a-55dd-42bd-2ca197b0d416@huawei.com>
+Date:   Wed, 2 Dec 2020 14:40:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201201040803.3590442-2-daeho43@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Jasper St. Pierre" <jstpierre@mecheye.net>
+On 2020/12/1 12:08, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> Added two ioctl to decompress/compress explicitly the compression
+> enabled file in "compress_mode=user" mount option.
+> 
+> Using these two ioctls, the users can make a control of compression
+> and decompression of their files.
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> ---
+> v2: reformed codes based on comments and put gradual flush routine
+> ---
+>   fs/f2fs/file.c            | 185 ++++++++++++++++++++++++++++++++++++++
+>   include/uapi/linux/f2fs.h |   2 +
+>   2 files changed, 187 insertions(+)
+> 
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index be8db06aca27..300355fe25f0 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -4026,6 +4026,185 @@ static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+>   	return ret;
+>   }
+>   
+> +static int redirty_blocks(struct inode *inode, pgoff_t page_idx, int len)
+> +{
+> +	DEFINE_READAHEAD(ractl, NULL, inode->i_mapping, page_idx);
+> +	struct address_space *mapping = inode->i_mapping;
+> +	struct page *page;
+> +	pgoff_t redirty_idx = page_idx;
+> +	int i, page_len = 0, ret = 0;
+> +
+> +	page_cache_ra_unbounded(&ractl, len, 0);
+> +
+> +	for (i = 0; i < len; i++, page_idx++) {
+> +		page = read_cache_page(mapping, page_idx, NULL, NULL);
+> +		if (IS_ERR(page)) {
+> +			ret = PTR_ERR(page);
+> +			break;
+> +		}
+> +		page_len++;
+> +	}
+> +
+> +	for (i = 0; i < page_len; i++, redirty_idx++) {
+> +		page = find_lock_page(mapping, redirty_idx);
+> +		if (!page)
+> +			ret = -ENOENT;
+> +		set_page_dirty(page);
+> +		f2fs_put_page(page, 1);
+> +		f2fs_put_page(page, 0);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int f2fs_ioc_decompress_file(struct file *filp, unsigned long arg)
+> +{
+> +	struct inode *inode = file_inode(filp);
+> +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+> +	struct f2fs_inode_info *fi = F2FS_I(inode);
+> +	pgoff_t page_idx = 0, last_idx;
+> +	unsigned int blk_per_seg = sbi->blocks_per_seg, dirtied = 0;
+> +	int cluster_size = F2FS_I(inode)->i_cluster_size;
+> +	int count, ret;
+> +
+> +	if (!f2fs_sb_has_compression(sbi) ||
+> +			F2FS_OPTION(sbi).compress_mode != COMPR_MODE_USER)
+> +		return -EOPNOTSUPP;
+> +
+> +	if (!(filp->f_mode & FMODE_WRITE))
+> +		return -EBADF;
+> +
+> +	if (!f2fs_compressed_file(inode))
+> +		return -EINVAL;
+> +
+> +	if (!f2fs_is_compress_backend_ready(inode))
+> +		return -ENOPKG;
 
-The GIGABYTE GB-BXBT-2807 is a mini-PC which uses off the shelf
-components, like an Intel GPU which is meant for mobile systems.
-As such, it, by default, has a backlight controller exposed.
+Oh, it looks there will be a race case with f2fs_ioc_set_compress_option(),
+it needs to relocate this condition under inode lock.
 
-Unfortunately, the backlight controller only confuses userspace, which
-sees the existence of a backlight device node and has the unrealistic
-belief that there is actually a backlight there!
+In all other places, it will return -EOPNOTSUPP, how about keeping in line with
+them?
 
-Add a DMI quirk to force the backlight off on this system.
+> +
+> +	f2fs_balance_fs(F2FS_I_SB(inode), true);
+> +
+> +	file_start_write(filp);
+> +	inode_lock(inode);
+> +
+> +	if (f2fs_is_mmap_file(inode)) {
+> +		ret = -EBUSY;
+> +		goto out;
+> +	}
+> +
+> +	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
+> +	if (ret)
+> +		goto out;
+> +
+> +	if (!atomic_read(&fi->i_compr_blocks))
+> +		goto out;
+> +
+> +	last_idx = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+> +
+> +	count = last_idx - page_idx;
+> +	while (count) {
+> +		int len = min(cluster_size, count);
+> +
+> +		ret = redirty_blocks(inode, page_idx, len);
+> +		if (ret < 0)
+> +			break;
+> +
+> +		count -= len;
+> +		page_idx += len;
+> +		dirtied += len;
 
-Signed-off-by: Jasper St. Pierre <jstpierre@mecheye.net>
-Reviewed-by: Chris Chiu <chiu@endlessos.org>
----
- drivers/acpi/video_detect.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+use get_dirty_pages(inode) will be a little bit more accurate? as kworker is
+running to writeback dirty pages in background.
 
-diff --git a/drivers/acpi/video_detect.c b/drivers/acpi/video_detect.c
-index 2499d7e3c710..ac2e194acdbf 100644
---- a/drivers/acpi/video_detect.c
-+++ b/drivers/acpi/video_detect.c
-@@ -143,6 +143,13 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
- 	},
- 	{
- 	.callback = video_detect_force_vendor,
-+	.ident = "GIGABYTE GB-BXBT-2807",
-+	.matches = {
-+		DMI_MATCH(DMI_SYS_VENDOR, "GIGABYTE"),
-+		DMI_MATCH(DMI_PRODUCT_NAME, "GB-BXBT-2807"),
-+		},
-+	},
-+	{
- 	.ident = "Sony VPCEH3U1E",
- 	.matches = {
- 		DMI_MATCH(DMI_SYS_VENDOR, "Sony Corporation"),
--- 
-2.20.1
+> +		if (dirtied >= blk_per_seg) {
+> +			filemap_fdatawrite(inode->i_mapping);
+> +			dirtied = 0;
+> +		}
+> +	}
+> +
+> +	if (!ret)
+> +		ret = filemap_write_and_wait_range(inode->i_mapping, 0,
+> +							LLONG_MAX);
+> +
+> +	if (ret)
+> +		f2fs_warn(sbi, "%s: The file might be partially decompressed "
+> +				"(errno=%d). Please delete the file.\n",
+> +				__func__, ret);
+> +out:
+> +	inode_unlock(inode);
+> +	file_end_write(filp);
+> +
+> +	return ret;
+> +}
+> +
+> +static int f2fs_ioc_compress_file(struct file *filp, unsigned long arg)
+> +{
+> +	struct inode *inode = file_inode(filp);
+> +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+> +	pgoff_t page_idx = 0, last_idx;
+> +	unsigned int blk_per_seg = sbi->blocks_per_seg, dirtied = 0;
+> +	int cluster_size = F2FS_I(inode)->i_cluster_size;
+> +	int count, ret;
+> +
+> +	if (!f2fs_sb_has_compression(sbi) ||
+> +			F2FS_OPTION(sbi).compress_mode != COMPR_MODE_USER)
+> +		return -EOPNOTSUPP;
+> +
+> +	if (!(filp->f_mode & FMODE_WRITE))
+> +		return -EBADF;
+> +
+> +	if (!f2fs_compressed_file(inode))
+> +		return -EINVAL;
+> +
+> +	if (!f2fs_is_compress_backend_ready(inode))
+> +		return -ENOPKG;
 
+Ditto,
+
+> +
+> +	f2fs_balance_fs(F2FS_I_SB(inode), true);
+> +
+> +	file_start_write(filp);
+> +	inode_lock(inode);
+> +
+> +	if (f2fs_is_mmap_file(inode)) {
+> +		ret = -EBUSY;
+> +		goto out;
+> +	}
+> +
+> +	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
+> +	if (ret)
+> +		goto out;
+> +
+> +	set_inode_flag(inode, FI_ENABLE_COMPRESS);
+> +
+> +	last_idx = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+> +
+> +	count = last_idx - page_idx;
+> +	while (count) {
+> +		int len = min(cluster_size, count);
+> +
+> +		ret = redirty_blocks(inode, page_idx, len);
+> +		if (ret < 0)
+> +			break;
+> +
+> +		count -= len;
+> +		page_idx += len;
+> +		dirtied += len;
+
+Ditto,
+
+> +		if (dirtied >= blk_per_seg) {
+> +			filemap_fdatawrite(inode->i_mapping);
+> +			dirtied = 0;
+> +		}
+> +	}
+> +
+> +	if (!ret)
+> +		ret = filemap_write_and_wait_range(inode->i_mapping, 0,
+> +							LLONG_MAX);
+> +
+> +	clear_inode_flag(inode, FI_ENABLE_COMPRESS);
+> +
+> +	if (ret)
+> +		f2fs_warn(sbi, "%s: The file might be partially compressed "
+> +				"(errno=%d). Please delete the file.\n",
+> +				__func__, ret);
+> +out:
+> +	inode_unlock(inode);
+> +	file_end_write(filp);
+> +
+> +	return ret;
+> +}
+> +
+>   static long __f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>   {
+>   	switch (cmd) {
+> @@ -4113,6 +4292,10 @@ static long __f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>   		return f2fs_ioc_get_compress_option(filp, arg);
+>   	case F2FS_IOC_SET_COMPRESS_OPTION:
+>   		return f2fs_ioc_set_compress_option(filp, arg);
+> +	case F2FS_IOC_DECOMPRESS_FILE:
+> +		return f2fs_ioc_decompress_file(filp, arg);
+> +	case F2FS_IOC_COMPRESS_FILE:
+> +		return f2fs_ioc_compress_file(filp, arg);
+>   	default:
+>   		return -ENOTTY;
+>   	}
+> @@ -4352,6 +4535,8 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>   	case F2FS_IOC_SEC_TRIM_FILE:
+>   	case F2FS_IOC_GET_COMPRESS_OPTION:
+>   	case F2FS_IOC_SET_COMPRESS_OPTION:
+> +	case F2FS_IOC_DECOMPRESS_FILE:
+> +	case F2FS_IOC_COMPRESS_FILE:
+>   		break;
+>   	default:
+>   		return -ENOIOCTLCMD;
+> diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
+> index f00199a2e38b..352a822d4370 100644
+> --- a/include/uapi/linux/f2fs.h
+> +++ b/include/uapi/linux/f2fs.h
+> @@ -40,6 +40,8 @@
+>   						struct f2fs_comp_option)
+>   #define F2FS_IOC_SET_COMPRESS_OPTION	_IOW(F2FS_IOCTL_MAGIC, 22,	\
+>   						struct f2fs_comp_option)
+> +#define F2FS_IOC_DECOMPRESS_FILE	_IO(F2FS_IOCTL_MAGIC, 23)
+> +#define F2FS_IOC_COMPRESS_FILE		_IO(F2FS_IOCTL_MAGIC, 24)
+>   
+>   /*
+>    * should be same as XFS_IOC_GOINGDOWN.
+> 
