@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642F62CC943
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD582CC94B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727743AbgLBV7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 16:59:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726056AbgLBV7v (ORCPT
+        id S1726462AbgLBWBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 17:01:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45822 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725933AbgLBWBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 16:59:51 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDB6C0617A6;
-        Wed,  2 Dec 2020 13:59:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=6ePFlyNqgVUo+qmHPHjN7o9GPIjt1fzjnVUtW7yGRt4=; b=zW8E237WE9t9laQ5Dh8iqYCxyF
-        XodExrzAdTZcdTgxOJ9583RH7qW6nEvMKlH38mlRrNbBL/AqYbxFez9tkFWj6nKGr3cOI79B89/S5
-        I9B0Mt/baLpmiAwdnn61uG6zeZ5QlyeqbTzczsatuV+unfBW6k8PVFc1mGqmWxpbjT/mDj1miuATO
-        n+RGlimuDnkDGQjY0soxJyPSnpDNib+wLnYaWST30whGHaPVn+pt1VgR68kTWPRNvdx39hLUqSaSc
-        fuG7n1riavmuATf7OKheQ2cbc4ixEZAooiavbCcBzrVRYPvE8Rp3tWjqD5SJRscANV/b+bpa8q+hd
-        7to5ezxg==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kka9V-0002mf-9R; Wed, 02 Dec 2020 21:59:09 +0000
-Subject: Re: [PATCH v2 1/2] x86: make VMware support optional
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dmitry.torokhov@gmail.com, derek.kiernan@xilinx.com,
-        dragan.cvetic@xilinx.com, richardcochran@gmail.com,
-        linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20201202211949.17730-1-info@metux.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <caa568a2-cd96-d74b-b2f8-40c8e2981982@infradead.org>
-Date:   Wed, 2 Dec 2020 13:59:02 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201202211949.17730-1-info@metux.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        Wed, 2 Dec 2020 17:01:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606946416;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xUGe+rDHdo1Ey22JIXtc3/BYf9lsKUsUkDP2aASmHF4=;
+        b=gxMj7MB0MCOOQjRy+MH2lL97GpQlAyn+tdpeMOY8LvFsz2Qz2hLWgUM6FpMJosBPiUwpjn
+        267DfB3HoNFk/vFN4ckA/NSvinf5gR7OMWFq39ipPMB4LiQPFA2EgbypJtXi6W5XVGT9LC
+        u6ZEXyAyLPtJXb4JMzFwimtlH+/FJY0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-223-dhN_EC5PM8C2n4Yjfs1Cnw-1; Wed, 02 Dec 2020 17:00:14 -0500
+X-MC-Unique: dhN_EC5PM8C2n4Yjfs1Cnw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BBB71100F341;
+        Wed,  2 Dec 2020 22:00:11 +0000 (UTC)
+Received: from ovpn-66-132.rdu2.redhat.com (unknown [10.10.67.132])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3899A60BFA;
+        Wed,  2 Dec 2020 21:59:56 +0000 (UTC)
+Message-ID: <f82cfe32b6f7c43c83da1552776de8aed6947840.camel@redhat.com>
+Subject: Re: [PATCH v4 11/19] sched/core: Make migrate disable and CPU
+ hotplug cooperative
+From:   Qian Cai <qcai@redhat.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, linux-kernel@vger.kernel.org,
+        qais.yousef@arm.com, swood@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org,
+        ouwen210@hotmail.com
+Date:   Wed, 02 Dec 2020 16:59:56 -0500
+In-Reply-To: <20201123181313.ug4fwjcqnmbvo3f2@linutronix.de>
+References: <20201023101158.088940906@infradead.org>
+         <20201023102347.067278757@infradead.org>
+         <ff62e3ee994efb3620177bf7b19fab16f4866845.camel@redhat.com>
+         <jhjpn4bwznx.mognet@arm.com>
+         <dda3b8f67a23dd60d36e5325dbb0c406be18e1db.camel@redhat.com>
+         <20201123181313.ug4fwjcqnmbvo3f2@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/20 1:19 PM, Enrico Weigelt, metux IT consult wrote:
-> Make it possible to opt-out from VMware support, for minimized kernels
-> that never will be run under Vmware (eg. high-density virtualization
-> or embedded systems).
+On Mon, 2020-11-23 at 19:13 +0100, Sebastian Andrzej Siewior wrote:
+> On 2020-11-18 09:44:34 [-0500], Qian Cai wrote:
+> > On Tue, 2020-11-17 at 19:28 +0000, Valentin Schneider wrote:
+> > > We did have some breakage in that area, but all the holes I was aware of
+> > > have been plugged. What would help here is to see which tasks are still
+> > > queued on that outgoing CPU, and their recent activity.
+> > > 
+> > > Something like
+> > > - ftrace_dump_on_oops on your kernel cmdline
+> > > - trace-cmd start -e 'sched:*'
+> > >  <start the test here>
+> > > 
+> > > ought to do it. Then you can paste the (tail of the) ftrace dump.
+> > > 
+> > > I also had this laying around, which may or may not be of some help:
+> > 
+> > Once I have found a reliable reproducer, I'll report back.
 > 
-> Average distro kernel will leave it on, therefore default to y.
-> 
-> Signed-off-by: Enrico Weigelt <info@metux.net>
-> ---
->  arch/x86/Kconfig                 | 11 +++++++++++
->  arch/x86/kernel/cpu/Makefile     |  4 +++-
->  arch/x86/kernel/cpu/hypervisor.c |  2 ++
->  drivers/input/mouse/Kconfig      |  2 +-
->  drivers/misc/Kconfig             |  2 +-
->  drivers/ptp/Kconfig              |  2 +-
->  6 files changed, 19 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index f6946b81f74a..eff12460cb3c 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -801,6 +801,17 @@ config X86_HV_CALLBACK_VECTOR
->  
->  source "arch/x86/xen/Kconfig"
->  
-> +config VMWARE_GUEST
-> +	bool "VMware Guest support"
-> +	default y
-> +	help
-> +	  This option enables several optimizations for running under the
-> +	  VMware hypervisor.
-> +
-> +	  Disabling it saves a few kb, for stripped down kernels eg. in high
+> any update?
 
-	                           kB or KiB or even KB, but not kb
-	                                                         e.g.
-
-> +	  density virtualization or embedded systems running (para)virtualized
-> +	  workloads.
-> +
->  config KVM_GUEST
->  	bool "KVM Guest support (including kvmclock)"
->  	depends on PARAVIRT
-
-
--- 
-~Randy
+Just back from a vacation. I have been running the same workload on today's
+linux-next for a few hours and it has been good so far. I'll surely report back
+if it happens again in our daily runs.
 
