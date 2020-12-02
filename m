@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C18E2CC129
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6188F2CC131
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:48:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbgLBPpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:45:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727415AbgLBPpU (ORCPT
+        id S1728505AbgLBPqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:46:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25938 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726307AbgLBPqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:45:20 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC182C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:44:39 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id c198so8506525wmd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:44:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/UHxwpIgzVzreRL98GaE+Nf+yyIwRliZkCO7QwUCEgs=;
-        b=gp6qawBNxj20UMCB0qKbqw35Nh7dgu1epXjabfxPkvif2E6O8pV9qsix7Swhk16rgA
-         7U8GXJzUXnwfKVqYUjOLrtRQrSChgE7vZnpjBYWcRpilLM2szXRG69gSh5qpxe+GDMQ9
-         KDwdufKg3mdvIsTbFSBlskjEK0inIAModCfOxYOJpbqCX4Nt9eX7sJN2jICQ5ByfPXTx
-         629pV2SxxiGkQCnmoA6E0i5XXYqDAJ3dQVWYMse12jjHf8G5E/9mMCEcUCiMne2eCFIS
-         97aq1mVCe4qraq5zC1HtXSTmf47MvJ2/dkbIQdZ2PEPjc9OFMWBuVoSbVniM6Z9RX8/T
-         sOCg==
+        Wed, 2 Dec 2020 10:46:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606923916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rYeojU2BV32koHjOp1T69U+yIm9pG6hdZwR2k7JADHk=;
+        b=ZevwB4CH244ZL5zLGCLK+zRgLfaEBCxm11S9i1Dqp3kC1JXLC0qt8gyvI9xvGp5FgO2QrM
+        k9L6bE2dV6Mkgc8pWBoIP7NLfIYO+5kLxR6UkhNO5sbum2Xy8jAWd6tZ5T9ECtt3eWmU5d
+        5Lz2HQFbA5ReSBMDd2e37B84LBIGu/4=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-5qLib_7XO8WbdKpY8Yr0xA-1; Wed, 02 Dec 2020 10:45:15 -0500
+X-MC-Unique: 5qLib_7XO8WbdKpY8Yr0xA-1
+Received: by mail-qv1-f71.google.com with SMTP id o16so1503069qvq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:45:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=/UHxwpIgzVzreRL98GaE+Nf+yyIwRliZkCO7QwUCEgs=;
-        b=dhfqBwqyul7iRpo7vlL+AYVqEQfpTxGy4Xb6pkvthIYKyUMMycKNgC+bWeZyeAX0Nx
-         sbDSHQ24CT/oR8h/JBWLxQh9P1K0tC5ioVWfiFE0u7FcAN6Eg0wp0eC9yX2zoljmlJBr
-         PIMWEZ330xIEhGxaOW8YjCecJuyi7d3qsY9BzB6LWo5fWi/iyTPL4pxMGOjoXgHOrH3K
-         8hNaQv2qTEBc6CtOroXs6FF1cSBATBJuu1qDVcMLZaLgbLACF0srSi8Xt7vcoG+URzCL
-         wunP3If/eGqCnMXaa3/eWscAhdJP3i6GRd2zftf0qBEQW8NaXBlSHCN3ni6G7XsHAeMl
-         ad6g==
-X-Gm-Message-State: AOAM531YGSN4S0AVOxo3MDoB3UePvvEToZPGlKXiYg2M+kGkUwlP9De6
-        jn7MrJFdTZnYPAzMgBpCd6K37A==
-X-Google-Smtp-Source: ABdhPJzjZbg91HBzD7xhdNYxZfeVt0A22RkKuj4c+xnN4xgU/POWZiYJcdkezzLJU++VssNAnOmuew==
-X-Received: by 2002:a1c:ddd5:: with SMTP id u204mr3724239wmg.174.1606923878152;
-        Wed, 02 Dec 2020 07:44:38 -0800 (PST)
-Received: from google.com ([2a01:4b00:8523:2d03:5ddd:b7c5:e3c9:e87a])
-        by smtp.gmail.com with ESMTPSA id y7sm2620731wrp.3.2020.12.02.07.44.36
+        bh=rYeojU2BV32koHjOp1T69U+yIm9pG6hdZwR2k7JADHk=;
+        b=cQkVIUhvHJUZ6hhdGfmnNsltwVVlVLQiJ/oDpVjcOj7kpnEGsVLKH8RDxJLVx7tv71
+         5UEEcIck/zYrI7TEzwvd3NL741TJSVfb24nvWK0kJjBuksnh5cFk4UNo0QGWO55YX4LY
+         2uhm1qR5ISoLi8LTBVHhMfrwCnGOohLjWEsbjeCkLR3Hfd7Y3LhKAS8PRFaERJICd9f9
+         QMAdV1ARDFcCME9HRBIjFdNg223XjLX2DKIeus++yUY2kJLV2yMd5ELjyXD4d+/I/dGw
+         FG7i4mYTaon8qyiRwZHTbVIRL7UWVJxc/sd/bbKjsaMAEL7zVSG4dtwGdMENpf2gVd+f
+         RSVQ==
+X-Gm-Message-State: AOAM533kCqcVxHvzXzoBlfdb2Cx9SZfo9R7yv11hD7KmhAa2Acz+kHjC
+        tkzloW9smBDZeeQTYV4UuUT9DB+LXKJHmgIRauwdZ1ovODyIMUp55da6Yy+TANKEv0JJ2U9ACuR
+        Uu8phJO8WippmVfwrL9rO9ZGr
+X-Received: by 2002:a0c:fa4f:: with SMTP id k15mr2997620qvo.62.1606923914282;
+        Wed, 02 Dec 2020 07:45:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx/s7lau9uMMae+1kW9tIhIk49vmBEdT4Fe1z9pgzRuFvs/dTHZvXh5HM5I+aw5aSRZnLJ/ow==
+X-Received: by 2002:a0c:fa4f:: with SMTP id k15mr2997597qvo.62.1606923914031;
+        Wed, 02 Dec 2020 07:45:14 -0800 (PST)
+Received: from xz-x1 ([142.126.94.187])
+        by smtp.gmail.com with ESMTPSA id j17sm1975151qtn.2.2020.12.02.07.45.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 07:44:37 -0800 (PST)
-Date:   Wed, 2 Dec 2020 15:44:35 +0000
-From:   David Brazdil <dbrazdil@google.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     kvmarm@lists.cs.columbia.edu, Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 03/23] arm64: Make cpu_logical_map() take unsigned int
-Message-ID: <20201202154435.qpr7ow53xra3xjkd@google.com>
-References: <20201126155421.14901-1-dbrazdil@google.com>
- <20201126155421.14901-4-dbrazdil@google.com>
- <20201126172838.GD38486@C02TD0UTHF1T.local>
+        Wed, 02 Dec 2020 07:45:13 -0800 (PST)
+Date:   Wed, 2 Dec 2020 10:45:11 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     Justin He <Justin.He@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] vfio iommu type1: Bypass the vma permission check in
+ vfio_pin_pages_remote()
+Message-ID: <20201202154511.GI3277@xz-x1>
+References: <20201119142737.17574-1-justin.he@arm.com>
+ <20201124181228.GA276043@xz-x1>
+ <AM6PR08MB32245E7F990955395B44CE6BF7FA0@AM6PR08MB3224.eurprd08.prod.outlook.com>
+ <20201125155711.GA6489@xz-x1>
+ <20201202143356.GK655829@stefanha-x1.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201126172838.GD38486@C02TD0UTHF1T.local>
+In-Reply-To: <20201202143356.GK655829@stefanha-x1.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 05:28:38PM +0000, Mark Rutland wrote:
-> On Thu, Nov 26, 2020 at 03:54:01PM +0000, David Brazdil wrote:
-> > CPU index should never be negative. Change the signature of
-> > (set_)cpu_logical_map to take an unsigned int.
+Hi, Stefan,
+
+On Wed, Dec 02, 2020 at 02:33:56PM +0000, Stefan Hajnoczi wrote:
+> On Wed, Nov 25, 2020 at 10:57:11AM -0500, Peter Xu wrote:
+> > On Wed, Nov 25, 2020 at 01:05:25AM +0000, Justin He wrote:
+> > > > I'd appreciate if you could explain why vfio needs to dma map some
+> > > > PROT_NONE
+> > > 
+> > > Virtiofs will map a PROT_NONE cache window region firstly, then remap the sub
+> > > region of that cache window with read or write permission. I guess this might
+> > > be an security concern. Just CC virtiofs expert Stefan to answer it more accurately.
 > > 
-> > Signed-off-by: David Brazdil <dbrazdil@google.com>
+> > Yep.  Since my previous sentence was cut off, I'll rephrase: I was thinking
+> > whether qemu can do vfio maps only until it remaps the PROT_NONE regions into
+> > PROT_READ|PROT_WRITE ones, rather than trying to map dma pages upon PROT_NONE.
 > 
-> Is there a function problem here, or is this just cleanup from
-> inspection?
+> Userspace processes sometimes use PROT_NONE to reserve virtual address
+> space. That way future mmap(NULL, ...) calls will not accidentally
+> allocate an address from the reserved range.
 > 
-> Core code including the cpuhp_*() callbacks uses an int, so if there's a
-> strong justification to change this, it suggests there's some treewide
-> cleanup that should be done.
-> 
-> I don't have strong feelings on the matter, but I'd like to understand
-> the rationale.
+> virtio-fs needs to do this because the DAX window mappings change at
+> runtime. Initially the entire DAX window is just reserved using
+> PROT_NONE. When it's time to mmap a portion of a file into the DAX
+> window an mmap(fixed_addr, ...) call will be made.
 
-Yeah, it's a mess. Marc and I felt that using a uint was less error-prone wrt
-bounds checks. If this gets an int, it still works and only checking the upper
-bound is required. Does that make sense?
+Yes I can understand the rational on why the region is reserved.  However IMHO
+the real question is why such reservation behavior should affect qemu memory
+layout, and even further to VFIO mappings.
 
-David
+Note that PROT_NONE should likely mean that there's no backing page at all in
+this case.  Since vfio will pin all the pages before mapping the DMAs, it also
+means that it's at least inefficient, because when we try to map all the
+PROT_NONE pages we'll try to fault in every single page of it, even if they may
+not ever be used.
+
+So I still think this patch is not doing the right thing.  Instead we should
+somehow teach qemu that the virtiofs memory region should only be the size of
+enabled regions (with PROT_READ|PROT_WRITE), rather than the whole reserved
+PROT_NONE region.
+
+Thanks,
+
+-- 
+Peter Xu
 
