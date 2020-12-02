@@ -2,110 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5352CB5D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2952CB5DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387628AbgLBHjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:39:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35688 "EHLO
+        id S2387639AbgLBHkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:40:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387533AbgLBHjo (ORCPT
+        with ESMTP id S1727717AbgLBHkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:39:44 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1662AC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 23:39:04 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id ga15so1997088ejb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 23:39:04 -0800 (PST)
+        Wed, 2 Dec 2020 02:40:37 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BBAC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 23:39:57 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id q25so565575qkm.17
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 23:39:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zn1WORb+fwgcTwpy2Ku70Wdb1cJFmwbuu6lag/0wEvU=;
-        b=JYTj2gN4gm2x2fsPv/LfZBb9oN5E8pVZWQSlDFbnWPn+dagamy2pYUTN//S1KhtQNW
-         ApUn9kg8UIv2tnWStyiSDraStlAMZQ5IkWZVULaAmbGhOmrjj9MzWaeGf6JkbEbwarsB
-         uXXghk47c2Xhb+fWZyfxHok7B+ZsW6Zzh59EqocMxSTupzbmyr3rkb8tqj4Uk6wnqxMv
-         BAzRlRQA7AoSYYE2f5gT5kVv/EiAfOJwgGJimTJv3fIfpK9LJlVvvjhNZZeA7M/ZtlNC
-         NODP/JQPs8Zj9MEkF5Ddsu1pzTLs/7FuCb5xn7ETDPGZN4pF1+djMb9pBLI0M1SZE+U5
-         ioNw==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=HWTEGD0gHRE0W2fArZHPNDk0P/N5GTWt9YJ9YHd0/+c=;
+        b=hDgtR2UjpuWad5Cd9ANDnrX2f110zFAMMdIjGZFKo4CMPRUBvhkzFUp3wbSzP+sgPn
+         bNWd/NkNNtv7274z/lLmkuQQehvkdem5BfK5XDMECi+oRceb9YzNgp8KCXqFCYKKeLgs
+         vg+hQ8IRGo5H/is47cQ0vmNjDbie2Q64JmUCtMaqEhPh9OmTaaKncA3vifLZa/sgRQkt
+         +9CMcCSb3cchIKLj0NOMKCc46Kl1fmyw9H1rzTwOoyDRYWVVVNLG7JppZH5WPEQFGlr9
+         rifUg/6ajA1M6t+PQ1widORUD2DSWqTzGTIxhmTnS8eGHXuic6R7qZf9oZ/bEwZo9rgx
+         CS7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=zn1WORb+fwgcTwpy2Ku70Wdb1cJFmwbuu6lag/0wEvU=;
-        b=IlviuQDjLeNWzlKEL38W7OJQgC+AQu51LowwpakD+C9P/SCN2PEBsMbNvwlUlmjGMs
-         72VwOtq82/lvjoFZ/dU5r+IvMXq3ZPD9p3VqJ1VOsNrN0XOTr1xU4UxSWwEuFJN/sdWY
-         uXMRJ2PCC/OL3pdkaYX6SxS8GylVi8dltl93HT2hIo5IStCSunj9oEN++qiZulGhaacx
-         Jrxg15BqdWaIfXGTlkDpUqLtin//pPYN2xWV8k8KUhmxE6kLcLCEkmJhOWAoipmifDtW
-         x6nEmbKN0bP6CS3q63GcL66P5i5QRh2sitHnxFjlZeHO1f2GZCwJ8le7s+j2JFMzBayf
-         XnIQ==
-X-Gm-Message-State: AOAM531S83nL0gH+UngMA9sR31UC1wxtUHMvwDaZQKaZArwOJ7UP9CBO
-        ETOJdEVkG3Ea4JJ+V167+w3gPiHnsP++5L9U
-X-Google-Smtp-Source: ABdhPJxrWTRmiF3m/XYc+4HpOYp0GasuSwCTTsb1YoszLSEXsDPS/x/oEMYW69btRoX/JbiHefS6Tg==
-X-Received: by 2002:a17:906:edc4:: with SMTP id sb4mr1074061ejb.21.1606894742567;
-        Tue, 01 Dec 2020 23:39:02 -0800 (PST)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id pk19sm527580ejb.32.2020.12.01.23.39.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Dec 2020 23:39:02 -0800 (PST)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jolly Shah <jolly.shah@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Tejas Patel <tejas.patel@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 3/3] firmware: xilinx: Properly align function parameter
-Date:   Wed,  2 Dec 2020 08:38:50 +0100
-Message-Id: <00ed9fcb94a6c22eff1fe8afdea46b2764a8687d.1606894725.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1606894725.git.michal.simek@xilinx.com>
-References: <cover.1606894725.git.michal.simek@xilinx.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=HWTEGD0gHRE0W2fArZHPNDk0P/N5GTWt9YJ9YHd0/+c=;
+        b=EKVQIscKwRb0rKx3A0rLql5nxMXU7FXEq3TZj541hdmtFumSGF5Cht2YPD5HrQpNJZ
+         iaOuxGsJtBqKvoTY6sqQYypUN6R/4mrPoD42ySLy169l/tuCl79Qx8UdPgdx0crNB+BS
+         TIQrqQJr/6DA3IMOzUDuZP00/g6p5wQfVRLLsa95a+VHNy6bJo5fgwxrMnHAuLcmTXs0
+         0HcDmKCLU+2T2Flh8FXKtounzOiPlJbwa6fXi8O7maSNrZFHAFFNZt2Qwf9iML4b4enj
+         1IHW97oT7RxNIBVh3mHPYC+u5iQucuRLjMMqDiloYmuKFrMQHf2vQws7bUA4UhW3kepz
+         pTbA==
+X-Gm-Message-State: AOAM532hsXu0smajCH/tQZ/rOXIAB8gQV7HfglSZShY+VmzFB5Rnp52N
+        JkaFWmvXp+dH67EiFW0W7R3mRrT1yjKm
+X-Google-Smtp-Source: ABdhPJwb+EpApH8Cd4sC+NlnC/rQ0AC0mOghuJl43UwrKDrFjOgdMwyRgYCCuPZajOxFRNyHSfDYM8890uXH
+Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
+ (user=irogers job=sendgmr) by 2002:ad4:5483:: with SMTP id
+ q3mr1176744qvy.24.1606894796326; Tue, 01 Dec 2020 23:39:56 -0800 (PST)
+Date:   Tue,  1 Dec 2020 23:39:48 -0800
+Message-Id: <20201202073953.3811709-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [PATCH v5 0/5] Don't compute events that won't be used in a metric.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>
+Cc:     Stephane Eranian <eranian@google.com>,
+        Sandeep Dasgupta <sdasgup@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix parameters alignment reported by checkpatch --strict.
+    
+For a metric like:
+  EVENT1 if #smt_on else EVENT2
+    
+currently EVENT1 and EVENT2 will be measured and then when the metric
+is reported EVENT1 or EVENT2 will be printed depending on the value
+from smt_on() during the expr parsing. Computing both events is
+unnecessary and can lead to multiplexing as discussed in this thread:
+https://lore.kernel.org/lkml/20201110100346.2527031-1-irogers@google.com/
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+This change modifies expression parsing so that constants are
+considered when building the set of ids (events) and only events not
+contributing to a constant value are measured.
 
-Changes in v2:
-- keep variable name and type on the same line - reported by Joe Perches
+v5. uses macros to reduce boiler plate in patch 5/5 as suggested by
+Andi Kleen <ak@linux.intel.com>.
 
- include/linux/firmware/xlnx-zynqmp.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+v4. reduces references to BOTTOM/NAN in patch 5/5 by using utility
+functions. It improves comments and fixes an unnecessary union in a
+peephole optimization.
 
-diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-index 0e7e72650ed3..edc2977b26d9 100644
---- a/include/linux/firmware/xlnx-zynqmp.h
-+++ b/include/linux/firmware/xlnx-zynqmp.h
-@@ -456,7 +456,7 @@ static inline int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type)
- }
- 
- static inline int zynqmp_pm_reset_assert(const enum zynqmp_pm_reset reset,
--			   const enum zynqmp_pm_reset_action assert_flag)
-+					 const enum zynqmp_pm_reset_action assert_flag)
- {
- 	return -ENODEV;
- }
-@@ -490,9 +490,9 @@ static inline int zynqmp_pm_release_node(const u32 node)
- }
- 
- static inline int zynqmp_pm_set_requirement(const u32 node,
--					const u32 capabilities,
--					const u32 qos,
--					const enum zynqmp_pm_request_ack ack)
-+					    const u32 capabilities,
-+					    const u32 qos,
-+					    const enum zynqmp_pm_request_ack ack)
- {
- 	return -ENODEV;
- }
+v3. fixes an assignment in patch 2/5. In patch 5/5 additional comments
+are added and useless frees are replaced by asserts. A new peephole
+optimization is added for the case CONST IF expr ELSE CONST, where the
+the constants are identical, as we don't need to evaluate the IF
+condition.
+
+v2. is a rebase.
+
+Ian Rogers (5):
+  perf metric: Restructure struct expr_parse_ctx.
+  perf metric: Use NAN for missing event IDs.
+  perf metric: Rename expr__find_other.
+  perf metric: Add utilities to work on ids map.
+  perf metric: Don't compute unused events.
+
+ tools/perf/tests/expr.c       | 159 +++++++++++-----
+ tools/perf/tests/pmu-events.c |  42 +++--
+ tools/perf/util/expr.c        | 136 ++++++++++++--
+ tools/perf/util/expr.h        |  17 +-
+ tools/perf/util/expr.l        |   9 -
+ tools/perf/util/expr.y        | 343 ++++++++++++++++++++++++++--------
+ tools/perf/util/metricgroup.c |  44 +++--
+ tools/perf/util/stat-shadow.c |  54 ++++--
+ 8 files changed, 586 insertions(+), 218 deletions(-)
+
 -- 
-2.29.2
+2.29.2.454.gaff20da3a2-goog
 
