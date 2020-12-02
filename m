@@ -2,179 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6992CB7B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 760FE2CB7BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387883AbgLBItp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:49:45 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58774 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726814AbgLBIto (ORCPT
+        id S2387946AbgLBIty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:49:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387914AbgLBIty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:49:44 -0500
-X-UUID: 2e873bc0e0ed48fca6459f821cdb2a8d-20201202
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=J+p7100q/+E3KI6T29sI3GeFvL+A9jcdok4BLN/F3Q0=;
-        b=ECU/RGR5DnHJrXJFtS2jk/43vrkt9J1YF/h6rxw+mgVWUbCiLpnwRBk4M1rImfVyHiQspcE8EFrOc8GJKcg7MlRX4y0hXaJEHibcbCs3ZtpoaLJobam2LOS68nWBHE8r474RmaIDiz+oZ9jfDadhXlaVUxiAugGQosaba9OLZJE=;
-X-UUID: 2e873bc0e0ed48fca6459f821cdb2a8d-20201202
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1648069929; Wed, 02 Dec 2020 16:48:56 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 2 Dec 2020 16:48:54 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 2 Dec 2020 16:48:55 +0800
-Message-ID: <1606898935.23925.40.camel@mtkswgap22>
-Subject: Re: [PATCH V5 2/3] scsi: ufs: Fix a race condition between
- ufshcd_abort and eh_work
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
-        <hongwus@codeaurora.org>, <rnayak@codeaurora.org>,
-        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
-        <saravanak@google.com>, <salyzyn@google.com>,
-        "Alim Akhtar" <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "Bart Van Assche" <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Wed, 2 Dec 2020 16:48:55 +0800
-In-Reply-To: <1606897475-16907-3-git-send-email-cang@codeaurora.org>
-References: <1606897475-16907-1-git-send-email-cang@codeaurora.org>
-         <1606897475-16907-3-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 2 Dec 2020 03:49:54 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE1EC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 00:49:13 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id e25so5464678wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 00:49:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=j19GKyry5tuRdKFRzYIexOe7SbGmMibu4GAAw/XxItM=;
+        b=a0ZVGGxMZqbRLcIgLri87RcR/pZvLWtvFcJnaCvnJvn4d19HI7fgDub1UDn9FJUPyD
+         dQj2V4PAMLsUHyJHQ3xX8zZYCzi6sBz6g2ROup1SUGrBkj8Bd78Ux8RN8RFZSuXlaYPk
+         NWQRXjTHRHseUcBgbWsgOta0Xmg9upYVrsEnelJrIelEIKg31ktfNWZwnNUzQF2djsNh
+         BQiq94h0h32XeXSmLc/vpYoeTZaVgqp3hC3/16YH+sIF48aj4XKA/2SgCn1oaCXfcmTv
+         pbA6ffy0Zl1W/xXSwkCA2WwXgdSMPhK+04kQyXXbS8NxpKwiXpplpgMI512OH1V5ZKcU
+         s1xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=j19GKyry5tuRdKFRzYIexOe7SbGmMibu4GAAw/XxItM=;
+        b=TvHrn8nA4Gh1/+RAtOeLQ3P0qTyEYmkpM09wfbOILuNfr7B8PSRO1DO9BYwMmqJWV6
+         4KSoBLpVkvQ/ke9wl8ySKFVz1sDesheuNJZg2bPXcFsgZhX4ge+eXEj16PAqp+0u7mU/
+         BlsRJ/3IDV0ypl2iBmMlKyMXTLhjM23zH2iCtPgb78QNvufFbpwiSbWHD3QadF9DkMRY
+         ezNoVAAEWaBlsqiMhpE/jdvDT6PI8QnW9oZgoB6JoNYC1poe6lDCT0AgUTmwWBbd+Ouj
+         TyCPKsPEjyYlERIvTbatXqBt+sPqBkv5xqd2aRrflJFbZECI+iTI6rGQWRAp6EdMiT/A
+         zWZA==
+X-Gm-Message-State: AOAM5338C8dTSkn0so/0nETl6J1cvfoazYMqJE+HJcPgXp9XrJT+ZL9E
+        v7N6/n8Nc/6neJWkakLvsl2yVEShBDSyl30Q
+X-Google-Smtp-Source: ABdhPJw6v+SMgDlNtdz/dKvA09A5uJTYLhfUFoDXtNTOstIitHBjaxH2tdopoJgg80NCeRT3jpEtTA==
+X-Received: by 2002:a1c:e10b:: with SMTP id y11mr1954151wmg.65.1606898952395;
+        Wed, 02 Dec 2020 00:49:12 -0800 (PST)
+Received: from dell ([91.110.221.235])
+        by smtp.gmail.com with ESMTPSA id b14sm1194792wrx.35.2020.12.02.00.49.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 00:49:11 -0800 (PST)
+Date:   Wed, 2 Dec 2020 08:49:09 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     ChiYuan Huang <u0084500@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, cy_huang <cy_huang@richtek.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v1 1/2] mfd: rt4831: Adds support for Richtek RT4831 MFD
+ core
+Message-ID: <20201202084909.GI4801@dell>
+References: <1604286803-20698-1-git-send-email-u0084500@gmail.com>
+ <20201125164207.GD4716@dell>
+ <CADiBU3_bgx-K_zxzKCSL8w=meZu3cA3uWoC-3QVsBAuNJW1uiw@mail.gmail.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADiBU3_bgx-K_zxzKCSL8w=meZu3cA3uWoC-3QVsBAuNJW1uiw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2FuLA0KDQpPbiBXZWQsIDIwMjAtMTItMDIgYXQgMDA6MjQgLTA4MDAsIENhbiBHdW8gd3Jv
-dGU6DQo+IEluIGN1cnJlbnQgdGFzayBhYm9ydCByb3V0aW5lLCBpZiB0YXNrIGFib3J0IGhhcHBl
-bnMgdG8gdGhlIGRldmljZSBXLUxVLA0KPiB0aGUgY29kZSBkaXJlY3RseSBqdW1wcyB0byB1ZnNo
-Y2RfZWhfaG9zdF9yZXNldF9oYW5kbGVyKCkgdG8gcGVyZm9ybSBhDQo+IGZ1bGwgcmVzZXQgYW5k
-IHJlc3RvcmUgdGhlbiByZXR1cm5zIEZBSUwgb3IgU1VDQ0VTUy4gQ29tbWFuZHMgc2VudCB0byB0
-aGUNCj4gZGV2aWNlIFctTFUgYXJlIG1vc3QgbGlrZWx5IHRoZSBTU1UgY21kcyBzZW50IGR1cmlu
-ZyBVRlMgUE0gb3BlcmF0aW9ucy4gSWYNCj4gc3VjaCBTU1UgY21kIGVudGVycyB0YXNrIGFib3J0
-IHJvdXRpbmUsIHdoZW4gdWZzaGNkX2VoX2hvc3RfcmVzZXRfaGFuZGxlcigpDQo+IGZsdXNoZXMg
-ZWhfd29yaywgaXQgd2lsbCBnZXQgc3R1Y2sgdGhlcmUgc2luY2UgZXJyX2hhbmRsZXIgaXMgc2Vy
-aWFsaXplZA0KPiB3aXRoIFBNIG9wZXJhdGlvbnMuDQo+IA0KPiBJbiBvcmRlciB0byB1bmJsb2Nr
-IGFib3ZlIGNhbGwgcGF0aCwgd2UgbWVyZWx5IGNsZWFuIHVwIHRoZSBscmIgdGFrZW4gYnkNCj4g
-dGhpcyBjbWQsIHF1ZXVlIHRoZSBlaF93b3JrIGFuZCByZXR1cm4gU1VDQ0VTUy4gT25jZSB0aGUg
-Y21kIGlzIGFib3J0ZWQsDQo+IHRoZSBQTSBvcGVyYXRpb24gd2hpY2ggc2VuZHMgb3V0IHRoZSBj
-bWQganVzdCBlcnJvcnMgb3V0LCB0aGVuIGVycl9oYW5kbGVyDQo+IHNoYWxsIGJlIGFibGUgdG8g
-cHJvY2VlZCB3aXRoIHRoZSBmdWxsIHJlc2V0IGFuZCByZXN0b3JlLg0KPiANCj4gSW4gdGhpcyBz
-Y2VuYXJpbywgdGhlIGNtZCBpcyBhYm9ydGVkIGV2ZW4gYmVmb3JlIGl0IGlzIGFjdHVhbGx5IGNs
-ZWFyZWQgYnkNCj4gSFcsIHNldCB0aGUgbHJiLT5pbl91c2UgZmxhZyB0byBwcmV2ZW50IHN1YnNl
-cXVlbnQgY21kcywgaW5jbHVkaW5nIFNDU0kNCj4gY21kcyBhbmQgZGV2IGNtZHMsIGZyb20gdGFr
-aW5nIHRoZSBscmIgcmVsZWFzZWQgZnJvbSBhYm9ydC4gVGhlIGZsYWcgc2hhbGwNCj4gZXZldHVh
-bGx5IGJlIGNsZWFyZWQgaW4gX191ZnNoY2RfdHJhbnNmZXJfcmVxX2NvbXBsKCkgaW52b2tlZCBi
-eSB0aGUgZnVsbA0KPiByZXNldCBhbmQgcmVzdG9yZSBmcm9tIGVycl9oYW5kbGVyLg0KPiANCj4g
-UmV2aWV3ZWQtYnk6IEFzdXRvc2ggRGFzIDxhc3V0b3NoZEBjb2RlYXVyb3JhLm9yZz4NCj4gU2ln
-bmVkLW9mZi1ieTogQ2FuIEd1byA8Y2FuZ0Bjb2RlYXVyb3JhLm9yZz4NCj4gLS0tDQo+ICBkcml2
-ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIHwgNTUgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrLS0tLS0tLS0tLS0NCj4gIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmggfCAgMiArKw0K
-PiAgMiBmaWxlcyBjaGFuZ2VkLCA0NSBpbnNlcnRpb25zKCspLCAxMiBkZWxldGlvbnMoLSkNCj4g
-DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIGIvZHJpdmVycy9zY3Np
-L3Vmcy91ZnNoY2QuYw0KPiBpbmRleCBmMGJiM2ZjLi5mYTkwZTE1IDEwMDY0NA0KPiAtLS0gYS9k
-cml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+ICsrKyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNk
-LmMNCj4gQEAgLTI1MzksNiArMjUzOSwxNCBAQCBzdGF0aWMgaW50IHVmc2hjZF9xdWV1ZWNvbW1h
-bmQoc3RydWN0IFNjc2lfSG9zdCAqaG9zdCwgc3RydWN0IHNjc2lfY21uZCAqY21kKQ0KPiAgCQko
-aGJhLT5jbGtfZ2F0aW5nLnN0YXRlICE9IENMS1NfT04pKTsNCj4gIA0KPiAgCWxyYnAgPSAmaGJh
-LT5scmJbdGFnXTsNCj4gKwlpZiAodW5saWtlbHkobHJicC0+aW5fdXNlKSkgew0KPiArCQlpZiAo
-aGJhLT5wbV9vcF9pbl9wcm9ncmVzcykNCj4gKwkJCXNldF9ob3N0X2J5dGUoY21kLCBESURfQkFE
-X1RBUkdFVCk7DQo+ICsJCWVsc2UNCj4gKwkJCWVyciA9IFNDU0lfTUxRVUVVRV9IT1NUX0JVU1k7
-DQo+ICsJCXVmc2hjZF9yZWxlYXNlKGhiYSk7DQo+ICsJCWdvdG8gb3V0Ow0KPiArCX0NCj4gIA0K
-PiAgCVdBUk5fT04obHJicC0+Y21kKTsNCj4gIAlscmJwLT5jbWQgPSBjbWQ7DQo+IEBAIC0yNzgx
-LDYgKzI3ODksMTEgQEAgc3RhdGljIGludCB1ZnNoY2RfZXhlY19kZXZfY21kKHN0cnVjdCB1ZnNf
-aGJhICpoYmEsDQo+ICANCj4gIAlpbml0X2NvbXBsZXRpb24oJndhaXQpOw0KPiAgCWxyYnAgPSAm
-aGJhLT5scmJbdGFnXTsNCj4gKwlpZiAodW5saWtlbHkobHJicC0+aW5fdXNlKSkgew0KPiArCQll
-cnIgPSAtRUJVU1k7DQo+ICsJCWdvdG8gb3V0Ow0KPiArCX0NCj4gKw0KPiAgCVdBUk5fT04obHJi
-cC0+Y21kKTsNCj4gIAllcnIgPSB1ZnNoY2RfY29tcG9zZV9kZXZfY21kKGhiYSwgbHJicCwgY21k
-X3R5cGUsIHRhZyk7DQo+ICAJaWYgKHVubGlrZWx5KGVycikpDQo+IEBAIC0yNzk3LDYgKzI4MTAs
-NyBAQCBzdGF0aWMgaW50IHVmc2hjZF9leGVjX2Rldl9jbWQoc3RydWN0IHVmc19oYmEgKmhiYSwN
-Cj4gIA0KPiAgCWVyciA9IHVmc2hjZF93YWl0X2Zvcl9kZXZfY21kKGhiYSwgbHJicCwgdGltZW91
-dCk7DQo+ICANCj4gK291dDoNCj4gIAl1ZnNoY2RfYWRkX3F1ZXJ5X3VwaXVfdHJhY2UoaGJhLCB0
-YWcsDQo+ICAJCQllcnIgPyAicXVlcnlfY29tcGxldGVfZXJyIiA6ICJxdWVyeV9jb21wbGV0ZSIp
-Ow0KPiAgDQo+IEBAIC00OTMyLDYgKzQ5NDYsNyBAQCBzdGF0aWMgdm9pZCBfX3Vmc2hjZF90cmFu
-c2Zlcl9yZXFfY29tcGwoc3RydWN0IHVmc19oYmEgKmhiYSwNCj4gIA0KPiAgCWZvcl9lYWNoX3Nl
-dF9iaXQoaW5kZXgsICZjb21wbGV0ZWRfcmVxcywgaGJhLT5udXRycykgew0KPiAgCQlscmJwID0g
-JmhiYS0+bHJiW2luZGV4XTsNCj4gKwkJbHJicC0+aW5fdXNlID0gZmFsc2U7DQo+ICAJCWxyYnAt
-PmNvbXBsX3RpbWVfc3RhbXAgPSBrdGltZV9nZXQoKTsNCj4gIAkJY21kID0gbHJicC0+Y21kOw0K
-PiAgCQlpZiAoY21kKSB7DQo+IEBAIC02Mzc0LDggKzYzODksMTIgQEAgc3RhdGljIGludCB1ZnNo
-Y2RfaXNzdWVfZGV2bWFuX3VwaXVfY21kKHN0cnVjdCB1ZnNfaGJhICpoYmEsDQo+ICANCj4gIAlp
-bml0X2NvbXBsZXRpb24oJndhaXQpOw0KPiAgCWxyYnAgPSAmaGJhLT5scmJbdGFnXTsNCj4gLQlX
-QVJOX09OKGxyYnAtPmNtZCk7DQo+ICsJaWYgKHVubGlrZWx5KGxyYnAtPmluX3VzZSkpIHsNCj4g
-KwkJZXJyID0gLUVCVVNZOw0KPiArCQlnb3RvIG91dDsNCj4gKwl9DQo+ICANCj4gKwlXQVJOX09O
-KGxyYnAtPmNtZCk7DQo+ICAJbHJicC0+Y21kID0gTlVMTDsNCj4gIAlscmJwLT5zZW5zZV9idWZm
-bGVuID0gMDsNCj4gIAlscmJwLT5zZW5zZV9idWZmZXIgPSBOVUxMOw0KPiBAQCAtNjQ0Nyw2ICs2
-NDY2LDcgQEAgc3RhdGljIGludCB1ZnNoY2RfaXNzdWVfZGV2bWFuX3VwaXVfY21kKHN0cnVjdCB1
-ZnNfaGJhICpoYmEsDQo+ICAJCX0NCj4gIAl9DQo+ICANCj4gK291dDoNCj4gIAlibGtfcHV0X3Jl
-cXVlc3QocmVxKTsNCj4gIG91dF91bmxvY2s6DQo+ICAJdXBfcmVhZCgmaGJhLT5jbGtfc2NhbGlu
-Z19sb2NrKTsNCj4gQEAgLTY2OTYsMTYgKzY3MTYsNiBAQCBzdGF0aWMgaW50IHVmc2hjZF9hYm9y
-dChzdHJ1Y3Qgc2NzaV9jbW5kICpjbWQpDQo+ICAJCUJVRygpOw0KPiAgCX0NCj4gIA0KPiAtCS8q
-DQo+IC0JICogVGFzayBhYm9ydCB0byB0aGUgZGV2aWNlIFctTFVOIGlzIGlsbGVnYWwuIFdoZW4g
-dGhpcyBjb21tYW5kDQo+IC0JICogd2lsbCBmYWlsLCBkdWUgdG8gc3BlYyB2aW9sYXRpb24sIHNj
-c2kgZXJyIGhhbmRsaW5nIG5leHQgc3RlcA0KPiAtCSAqIHdpbGwgYmUgdG8gc2VuZCBMVSByZXNl
-dCB3aGljaCwgYWdhaW4sIGlzIGEgc3BlYyB2aW9sYXRpb24uDQo+IC0JICogVG8gYXZvaWQgdGhl
-c2UgdW5uZWNlc3NhcnkvaWxsZWdhbCBzdGVwIHdlIHNraXAgdG8gdGhlIGxhc3QgZXJyb3INCj4g
-LQkgKiBoYW5kbGluZyBzdGFnZTogcmVzZXQgYW5kIHJlc3RvcmUuDQo+IC0JICovDQo+IC0JaWYg
-KGxyYnAtPmx1biA9PSBVRlNfVVBJVV9VRlNfREVWSUNFX1dMVU4pDQo+IC0JCXJldHVybiB1ZnNo
-Y2RfZWhfaG9zdF9yZXNldF9oYW5kbGVyKGNtZCk7DQo+IC0NCj4gIAl1ZnNoY2RfaG9sZChoYmEs
-IGZhbHNlKTsNCj4gIAlyZWcgPSB1ZnNoY2RfcmVhZGwoaGJhLCBSRUdfVVRQX1RSQU5TRkVSX1JF
-UV9ET09SX0JFTEwpOw0KPiAgCS8qIElmIGNvbW1hbmQgaXMgYWxyZWFkeSBhYm9ydGVkL2NvbXBs
-ZXRlZCwgcmV0dXJuIFNVQ0NFU1MgKi8NCj4gQEAgLTY3MjYsNyArNjczNiw3IEBAIHN0YXRpYyBp
-bnQgdWZzaGNkX2Fib3J0KHN0cnVjdCBzY3NpX2NtbmQgKmNtZCkNCj4gIAkgKiB0byByZWR1Y2Ug
-cmVwZWF0ZWQgcHJpbnRvdXRzLiBGb3Igb3RoZXIgYWJvcnRlZCByZXF1ZXN0cyBvbmx5IHByaW50
-DQo+ICAJICogYmFzaWMgZGV0YWlscy4NCj4gIAkgKi8NCj4gLQlzY3NpX3ByaW50X2NvbW1hbmQo
-aGJhLT5scmJbdGFnXS5jbWQpOw0KPiArCXNjc2lfcHJpbnRfY29tbWFuZChjbWQpOw0KPiAgCWlm
-ICghaGJhLT5yZXFfYWJvcnRfY291bnQpIHsNCj4gIAkJdWZzaGNkX3VwZGF0ZV9yZWdfaGlzdCgm
-aGJhLT51ZnNfc3RhdHMudGFza19hYm9ydCwgMCk7DQo+ICAJCXVmc2hjZF9wcmludF9ob3N0X3Jl
-Z3MoaGJhKTsNCj4gQEAgLTY3NDUsNiArNjc1NSwyNyBAQCBzdGF0aWMgaW50IHVmc2hjZF9hYm9y
-dChzdHJ1Y3Qgc2NzaV9jbW5kICpjbWQpDQo+ICAJCWdvdG8gY2xlYW51cDsNCj4gIAl9DQo+ICAN
-Cj4gKwkvKg0KPiArCSAqIFRhc2sgYWJvcnQgdG8gdGhlIGRldmljZSBXLUxVTiBpcyBpbGxlZ2Fs
-LiBXaGVuIHRoaXMgY29tbWFuZA0KPiArCSAqIHdpbGwgZmFpbCwgZHVlIHRvIHNwZWMgdmlvbGF0
-aW9uLCBzY3NpIGVyciBoYW5kbGluZyBuZXh0IHN0ZXANCj4gKwkgKiB3aWxsIGJlIHRvIHNlbmQg
-TFUgcmVzZXQgd2hpY2gsIGFnYWluLCBpcyBhIHNwZWMgdmlvbGF0aW9uLg0KPiArCSAqIFRvIGF2
-b2lkIHRoZXNlIHVubmVjZXNzYXJ5L2lsbGVnYWwgc3RlcHMsIGZpcnN0IHdlIGNsZWFuIHVwDQo+
-ICsJICogdGhlIGxyYiB0YWtlbiBieSB0aGlzIGNtZCBhbmQgbWFyayB0aGUgbHJiIGFzIGluX3Vz
-ZSwgdGhlbg0KPiArCSAqIHF1ZXVlIHRoZSBlaF93b3JrIGFuZCBiYWlsLg0KPiArCSAqLw0KPiAr
-CWlmIChscmJwLT5sdW4gPT0gVUZTX1VQSVVfVUZTX0RFVklDRV9XTFVOKSB7DQo+ICsJCXNwaW5f
-bG9ja19pcnFzYXZlKGhvc3QtPmhvc3RfbG9jaywgZmxhZ3MpOw0KPiArCQlpZiAobHJicC0+Y21k
-KSB7DQo+ICsJCQlfX3Vmc2hjZF90cmFuc2Zlcl9yZXFfY29tcGwoaGJhLCAoMVVMIDw8IHRhZykp
-Ow0KDQpUaGUgdGltZWQgb3V0ICJ0YWciIGlzIGNsZWFyZWQgb25jZSBoZXJlLg0KDQo+ICsJCQlf
-X3NldF9iaXQodGFnLCAmaGJhLT5vdXRzdGFuZGluZ19yZXFzKTsNCj4gKwkJCWxyYnAtPmluX3Vz
-ZSA9IHRydWU7DQo+ICsJCQloYmEtPmZvcmNlX3Jlc2V0ID0gdHJ1ZTsNCj4gKwkJCXVmc2hjZF9z
-Y2hlZHVsZV9laF93b3JrKGhiYSk7DQoNClRoZSBzYW1lICJ0YWciIHdvdWxkIGJlIGNsZWFyZWQg
-YWdhaW4gaW4gZXJyb3IgaGFuZGxlciB3aXRoDQpfX3Vmc2hjZF90cmFuc2Zlcl9yZXFfY29tcGwo
-KS4NCg0KSW4gX191ZnNoY2RfdHJhbnNmZXJfcmVxX2NvbXBsLCBoYmEtPmNsa19zY2FsaW5nLmFj
-dGl2ZV9yZXFzIHdpbGwgYmUNCmRlY3JlYXNlZCBpZiBjbGstc2NhbGluZyBpcyBzdXBwb3J0ZWQg
-YXMgYmVsb3csDQoNCglpZiAodWZzaGNkX2lzX2Nsa3NjYWxpbmdfc3VwcG9ydGVkKGhiYSkpDQoJ
-CWhiYS0+Y2xrX3NjYWxpbmcuYWN0aXZlX3JlcXMtLTsNCg0KV2lsbCBiZSB0aGUgaGJhLT5jbGtf
-c2NhbGluZy5hY3RpdmVfcmVxcyB2YWx1ZSBiZWNvbWUgYWJub3JtYWwgYnkgdGhpcw0KZmxvdz8N
-Cg0KVGhhbmtzLA0KU3RhbmxleSBDaHUNCg0KPiArCQl9DQo+ICsJCXNwaW5fdW5sb2NrX2lycXJl
-c3RvcmUoaG9zdC0+aG9zdF9sb2NrLCBmbGFncyk7DQo+ICsJCWdvdG8gb3V0Ow0KPiArCX0NCj4g
-Kw0KPiAgCS8qIFNraXAgdGFzayBhYm9ydCBpbiBjYXNlIHByZXZpb3VzIGFib3J0cyBmYWlsZWQg
-YW5kIHJlcG9ydCBmYWlsdXJlICovDQo+ICAJaWYgKGxyYnAtPnJlcV9hYm9ydF9za2lwKQ0KPiAg
-CQllcnIgPSAtRUlPOw0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuaCBi
-L2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmgNCj4gaW5kZXggMWU2ODBiZi4uNjZlNTMzOCAxMDA2
-NDQNCj4gLS0tIGEvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuaA0KPiArKysgYi9kcml2ZXJzL3Nj
-c2kvdWZzL3Vmc2hjZC5oDQo+IEBAIC0xNjMsNiArMTYzLDcgQEAgc3RydWN0IHVmc19wbV9sdmxf
-c3RhdGVzIHsNCj4gICAqIEBjcnlwdG9fa2V5X3Nsb3Q6IHRoZSBrZXkgc2xvdCB0byB1c2UgZm9y
-IGlubGluZSBjcnlwdG8gKC0xIGlmIG5vbmUpDQo+ICAgKiBAZGF0YV91bml0X251bTogdGhlIGRh
-dGEgdW5pdCBudW1iZXIgZm9yIHRoZSBmaXJzdCBibG9jayBmb3IgaW5saW5lIGNyeXB0bw0KPiAg
-ICogQHJlcV9hYm9ydF9za2lwOiBza2lwIHJlcXVlc3QgYWJvcnQgdGFzayBmbGFnDQo+ICsgKiBA
-aW5fdXNlOiBpbmRpY2F0ZXMgdGhhdCB0aGlzIGxyYiBpcyBzdGlsbCBpbiB1c2UNCj4gICAqLw0K
-PiAgc3RydWN0IHVmc2hjZF9scmIgew0KPiAgCXN0cnVjdCB1dHBfdHJhbnNmZXJfcmVxX2Rlc2Mg
-KnV0cl9kZXNjcmlwdG9yX3B0cjsNCj4gQEAgLTE5Miw2ICsxOTMsNyBAQCBzdHJ1Y3QgdWZzaGNk
-X2xyYiB7DQo+ICAjZW5kaWYNCj4gIA0KPiAgCWJvb2wgcmVxX2Fib3J0X3NraXA7DQo+ICsJYm9v
-bCBpbl91c2U7DQo+ICB9Ow0KPiAgDQo+ICAvKioNCg0K
+On Wed, 02 Dec 2020, ChiYuan Huang wrote:
 
+> Lee Jones <lee.jones@linaro.org> 於 2020年11月26日 週四 上午12:42寫道：
+> >
+> > On Mon, 02 Nov 2020, cy_huang wrote:
+> >
+> > > From: ChiYuan Huang <cy_huang@richtek.com>
+> > >
+> > > Adds support Richtek RT4831 MFD core.
+> > > RT4831 includes backlight and DSV part that can provode display panel
+> > > for postive and negative voltage and WLED driving.
+> > >
+> > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> > > ---
+> > >  drivers/mfd/Kconfig       |  11 +++++
+> > >  drivers/mfd/Makefile      |   1 +
+> > >  drivers/mfd/rt4831-core.c | 119 ++++++++++++++++++++++++++++++++++++++++++++++
+> > >  3 files changed, 131 insertions(+)
+> > >  create mode 100644 drivers/mfd/rt4831-core.c
+> > >
+> > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > > index 8b99a13..a22f002 100644
+> > > --- a/drivers/mfd/Kconfig
+> > > +++ b/drivers/mfd/Kconfig
+> > > @@ -1088,6 +1088,17 @@ config MFD_RDC321X
+> > >         southbridge which provides access to GPIOs and Watchdog using the
+> > >         southbridge PCI device configuration space.
+> > >
+> > > +config MFD_RT4831
+> > > +     tristate "Richtek RT4831 WLED and DSV IC"
+> >
+> > Please expand on WLED and DSV.
+> >
+> > This is documentation and should leave nothing to the imagination.
+> >
+> Rewrite to "Richtek RT4831 four channel WLED and display bias
+> voltage", is it okay?
+
+I had to look-up WLED, but I guess it's okay.
+
+"Display Bias Voltage"
+
+> > > +     depends on I2C
+> > > +     select MFD_CORE
+> > > +     select REGMAP_I2C
+> > > +     help
+> > > +       This enables support for the Richtek RT4831.
+> > > +       RT4831 includes WLED driver and DisplayBias voltage(+/-) regulator.
+> > > +       It's common used to provide the display power and to drive the
+> > > +       display backlight WLED.
+> >
+> > Please don't line-wrap unnecessarily.
+> >
+> > Please re-work the last sentence, as it doesn't quite make sense.
+> >
+> Rewrite the whole sentence like as below
+> "This enables support for the Richtek RT4831. It includes 4 channel
+> WLED driving and Display Bias voltage output. It's commonly used to
+> provide the LCD power and to drive LCD backlight."
+
+"Display Bias Voltage"
+
+"provide power to the LCD display"
+
+[...]
+
+> > > +static int rt4831_probe(struct i2c_client *client)
+> > > +{
+> > > +     struct gpio_desc *enable;
+> > > +     struct regmap *regmap;
+> > > +     unsigned int val;
+> > > +     int ret;
+> > > +
+> > > +     enable = devm_gpiod_get_optional(&client->dev, "enable", GPIOD_OUT_HIGH);
+> > > +     if (IS_ERR(enable)) {
+> > > +             dev_err(&client->dev, "Failed to get chip enable gpio\n");
+> >
+> > "Failed to get 'enable' GPIO chip"
+> >
+> May I remove "chip" word? It seems redundant.
+> "Failed to get 'enable' GPIO" is better.
+> Because 'enable' is a physical input pin for RT4831.
+
+Sounds good.
+
+[...]
+
+> > > +static int rt4831_remove(struct i2c_client *client)
+> > > +{
+> > > +     struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
+> > > +
+> > > +     /* Make sure all off before module removal */
+> >
+> > "Disable all <thing your disabling> are disabled before ..."
+
+This should have said:
+
+  "Ensure all <thing your disabling> are disabled before ..."
+
+> May I rewrite it to "Configure WLED driving and DSV output all to be
+> disabled before MFD module removal"?
+
+You don't need to mention MFD or modules here since we know how the
+Device Driver model works and what .remove() does.
+
+What about:
+
+  "Disable WLED and DSV outputs"
+
+> > > +     return regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RESET_MASK, RT4831_RESET_MASK);
+> > > +}
+> > > +
+> > > +static void rt4831_shutdown(struct i2c_client *client)
+> > > +{
+> > > +     struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
+> > > +
+> > > +     /* Make sure all off before machine shutdown */
+> >
+> > As above.
+> >
+> like as above ".... before 'machine shutdown'
+
+  "Disable WLED and DSV outputs"
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
