@@ -2,75 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4822CB7C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8282CB7D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729011AbgLBIwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:52:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726814AbgLBIwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:52:13 -0500
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] x86/insn-eval: Fix not using prefixes.nbytes for loop over prefixes.bytes
-Date:   Wed,  2 Dec 2020 17:51:27 +0900
-Message-Id: <160689908760.3084105.7172296122478512558.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <160689905099.3084105.7880450206184269465.stgit@devnote2>
-References: <160689905099.3084105.7880450206184269465.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1729207AbgLBIzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:55:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48458 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728764AbgLBIzS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 03:55:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606899231;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9w4m/sge0TuQGCR2gfcG6iYSJrjNihD2+bXvVGYUQ5s=;
+        b=ZW+uz9buEWmDtOKaFl6A8lVh4fLxPgkjGuzzH/wqI76YJiZPD70BTa3PDiznbRxpYNk8va
+        VFTFbjtUgYqyvmdPLHnxHLvIVlH90CJ0c2eGZjvwb6lXfAmMO1I+MnJKDkTDSYAAXYRrAz
+        UtxymLoCaqGh5sDYcD4cU6NdmO0q5Hk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-38-XMfl9a1ZOdm52BVzQGbgSg-1; Wed, 02 Dec 2020 03:53:50 -0500
+X-MC-Unique: XMfl9a1ZOdm52BVzQGbgSg-1
+Received: by mail-wm1-f71.google.com with SMTP id u123so2188088wmu.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 00:53:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=9w4m/sge0TuQGCR2gfcG6iYSJrjNihD2+bXvVGYUQ5s=;
+        b=Gb/D+rGsOwhe6Zg85IcqPsHc5XDdnr07fmUngkffm3jT0lCb16GShXHX/fdKT+IgjA
+         BONb/gOxTbQk/3KDESc4dfoktKzFRLQ7T6T7/j77K/oqPqTaTI/Voh/Jvn8hgRWlFqa/
+         2w/DKEafdG4l3s8ZC9N202p/OOh0TjZor1dqpstLfXhmD3f9LAUdf9auWY51H2NCtH1I
+         IhEWLbZERG/ebfBw2X5IEIvuv7Gr+h0Nt+V9sy6eU74lOJNkVRJ67VdbkSJyfcMYLLdm
+         O5KRzi1sDTf+pePtFD/YUOsV8JgbWFlIKZID0c6pvmA4JbgCgwPSOt8kLzBMTazCQZe2
+         jnzQ==
+X-Gm-Message-State: AOAM532442s0YvK2D7fm7eqozSgsEoEi4f7Xd+IyRRAQrzLcx37YQete
+        jc0eOLkM421tL8g/zAZcY2uM3tTK65qxJfOlt6zJGHrrdaLuqCTU7qXltdxi0u42YT3hflI+kF4
+        Kls1saD7RG6yfg7A8K5dSfSpV
+X-Received: by 2002:adf:e787:: with SMTP id n7mr2051719wrm.153.1606899229154;
+        Wed, 02 Dec 2020 00:53:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw2048Xx8/ayUKGwyTTcOiylk11X8e3WTcE5a5N28YO0bg7w+guMxBK8554ryoCCjBYE11PtA==
+X-Received: by 2002:adf:e787:: with SMTP id n7mr2051697wrm.153.1606899228929;
+        Wed, 02 Dec 2020 00:53:48 -0800 (PST)
+Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
+        by smtp.gmail.com with ESMTPSA id j13sm1202268wrp.70.2020.12.02.00.53.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 00:53:48 -0800 (PST)
+Date:   Wed, 2 Dec 2020 09:53:45 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH net-next v1 2/3] virtio_transport_common: Set sibling VMs
+ flag on the receive path
+Message-ID: <20201202085345.jfzxuxbeoics6f2a@steredhat>
+References: <20201201152505.19445-1-andraprs@amazon.com>
+ <20201201152505.19445-3-andraprs@amazon.com>
+ <20201201162213.adcshbtspleosyod@steredhat>
+ <447c0557-68f7-54ae-88ac-ebe50c6f2f9b@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <447c0557-68f7-54ae-88ac-ebe50c6f2f9b@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the insn.prefixes.nbytes can be bigger than the size of
-insn.prefixes.bytes[] when a same prefix is repeated, we have to
-check whether the insn.prefixes.bytes[i] != 0 and i < 4 instead
-of insn.prefixes.nbytes.
+On Tue, Dec 01, 2020 at 09:01:05PM +0200, Paraschiv, Andra-Irina wrote:
+>
+>
+>On 01/12/2020 18:22, Stefano Garzarella wrote:
+>>
+>>On Tue, Dec 01, 2020 at 05:25:04PM +0200, Andra Paraschiv wrote:
+>>>The vsock flag can be set during the connect() setup logic, when
+>>>initializing the vsock address data structure variable. Then the vsock
+>>>transport is assigned, also considering this flag.
+>>>
+>>>The vsock transport is also assigned on the (listen) receive path. The
+>>>flag needs to be set considering the use case.
+>>>
+>>>Set the vsock flag of the remote address to the one targeted for sibling
+>>>VMs communication if the following conditions are met:
+>>>
+>>>* The source CID of the packet is higher than VMADDR_CID_HOST.
+>>>* The destination CID of the packet is higher than VMADDR_CID_HOST.
+>>>
+>>>Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+>>>---
+>>>net/vmw_vsock/virtio_transport_common.c | 8 ++++++++
+>>>1 file changed, 8 insertions(+)
+>>>
+>>>diff --git a/net/vmw_vsock/virtio_transport_common.c 
+>>>b/net/vmw_vsock/virtio_transport_common.c
+>>>index 5956939eebb78..871c84e0916b1 100644
+>>>--- a/net/vmw_vsock/virtio_transport_common.c
+>>>+++ b/net/vmw_vsock/virtio_transport_common.c
+>>>@@ -1062,6 +1062,14 @@ virtio_transport_recv_listen(struct sock 
+>>>*sk, struct virtio_vsock_pkt *pkt,
+>>>      vsock_addr_init(&vchild->remote_addr, 
+>>>le64_to_cpu(pkt->hdr.src_cid),
+>>>                      le32_to_cpu(pkt->hdr.src_port));
+>>>
+>>
+>>Maybe is better to create an helper function that other transports can
+>>use for the same purpose or we can put this code in the
+>>vsock_assign_transport() and set this flag only when the 'psk' argument
+>>is not NULL (this is the case when it's called by the transports when we
+>>receive a new connection request and 'psk' is the listener socket).
+>>
+>>The second way should allow us to support all the transports without
+>>touching them.
+>
+>Ack, I was wondering about the other transports such as vmci or hyperv.
+>
+>I can move the logic below in the codebase that assigns the transport, 
+>after checking 'psk'.
+>
+>>
+>>>+      /* If the packet is coming with the source and destination 
+>>>CIDs higher
+>>>+       * than VMADDR_CID_HOST, then a vsock channel should be 
+>>>established for
+>>>+       * sibling VMs communication.
+>>>+       */
+>>>+      if (vchild->local_addr.svm_cid > VMADDR_CID_HOST &&
+>>>+          vchild->remote_addr.svm_cid > VMADDR_CID_HOST)
+>>>+              vchild->remote_addr.svm_flag = 
+>>>VMADDR_FLAG_SIBLING_VMS_COMMUNICATION;
+>>
+>>svm_flag is always initialized to 0 in vsock_addr_init(), so this
+>>assignment is the first one and it's okay, but to avoid future issues
+>>I'd use |= here to set the flag.
+>
+>Fair point. I was thinking more towards exclusive flags values 
+>(purposes), but that's fine with the bitwise operator if we would get 
+>a set of flag values together. I will also update the field name to 
+>'svm_flags', let me know if we should keep the previous one or there 
+>is a better option.
 
-Fixes: 32d0b95300db ("x86/insn-eval: Add utility functions to get segment selector")
-Cc: stable@vger.kernel.org
-Reported-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- arch/x86/lib/insn-eval.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Yeah, maybe in the future we will add some new flags and we'll only need 
+to add them without touching this code.
 
-diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
-index 58f7fb95c7f4..c52c91461f52 100644
---- a/arch/x86/lib/insn-eval.c
-+++ b/arch/x86/lib/insn-eval.c
-@@ -67,7 +67,7 @@ bool insn_has_rep_prefix(struct insn *insn)
- 
- 	insn_get_prefixes(insn);
- 
--	for (i = 0; i < insn->prefixes.nbytes; i++) {
-+	for (i = 0; insn->prefixes.bytes[i] && i < 4; i++) {
- 		insn_byte_t p = insn->prefixes.bytes[i];
- 
- 		if (p == 0xf2 || p == 0xf3)
-@@ -99,7 +99,7 @@ static int get_seg_reg_override_idx(struct insn *insn)
- 	insn_get_prefixes(insn);
- 
- 	/* Look for any segment override prefixes. */
--	for (i = 0; i < insn->prefixes.nbytes; i++) {
-+	for (i = 0; insn->prefixes.bytes[i] && i < 4; i++) {
- 		insn_attr_t attr;
- 
- 		attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
+Agree with the new 'svm_flags' field name.
+
+Thanks,
+Stefano
 
