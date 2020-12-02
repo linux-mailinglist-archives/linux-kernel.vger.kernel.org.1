@@ -2,178 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE48F2CC7DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:35:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 127DC2CC7E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729140AbgLBUdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:33:14 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:57786 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728781AbgLBUdM (ORCPT
+        id S1729953AbgLBUda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:33:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729176AbgLBUd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:33:12 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B2KTSdw165964;
-        Wed, 2 Dec 2020 20:32:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=4ZTHgzowENKV9HQmSlHClfuqrgbKyEkgKGQT/XWcDAo=;
- b=etWZK15yLUu3zVLWcHgK7XfHWk1m1EXPAGyRtVYbLwmXjmRbR9u64h6BSNeKX7QK+GF+
- 2HNZLb5KN5lm9/dugZXDRCTk06kSBXzPRtbOJkwuFIYTDeosa1VN7IffjnQfSTtjBOTv
- 5jDJtCjNIpqlTWGJs70ngcqRYwf7xplX7fKPpqRzdfFpVX6XWrL++nYBRPeW9GhWIwcv
- lXg7Q7dmOUMlZQQkqTOdtEgRxZYcLR8OdSEiWuxnRqrXT3/hA+oLnSoi188wGb9d+pcI
- hYKYFd3rHAP063/LbFY9xY4WuBNk9VfaXM/mwKWS3PPiCYW3jeMn1LwWWakTaHOdQPbv 1Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 353dyqtm6h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 02 Dec 2020 20:32:17 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B2KULKu125625;
-        Wed, 2 Dec 2020 20:32:17 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 3540auure8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Dec 2020 20:32:16 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B2KWFLe014269;
-        Wed, 2 Dec 2020 20:32:15 GMT
-Received: from [10.159.240.123] (/10.159.240.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 02 Dec 2020 12:32:15 -0800
-Subject: Re: [PATCH RFC 03/39] KVM: x86/xen: register shared_info page
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Joao Martins <joao.m.martins@oracle.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20190220201609.28290-1-joao.m.martins@oracle.com>
- <20190220201609.28290-4-joao.m.martins@oracle.com>
- <b647bed6c75f8743b8afea251a88f00a5feaee29.camel@infradead.org>
- <2d4df59d-f945-32dc-6999-a6f711e972ea@oracle.com>
- <896dc984-fa71-8f2f-d12b-458294f5f706@oracle.com>
- <58db65203b9464f6f225f4ef97c45af3c72cf068.camel@infradead.org>
-From:   Ankur Arora <ankur.a.arora@oracle.com>
-Message-ID: <6ea92fe2-4067-d0e0-b716-16d39a7a6065@oracle.com>
-Date:   Wed, 2 Dec 2020 12:32:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 2 Dec 2020 15:33:28 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7245FC0617A7;
+        Wed,  2 Dec 2020 12:32:42 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id k3so1377105qvz.4;
+        Wed, 02 Dec 2020 12:32:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bi4yjCY3FALmEA0HGC/jzq/xV0+n6rZC92KaCyBy7YM=;
+        b=R9hr6FKWwwTYwc20K91Z1UWrBTBrsMw0yhziMzEDLFh0MDE++f1Zxe7twY7/Ywqh2W
+         54jGKU1/mXkXPShm/fltc4fFO0gVC93iGuiRPTWbWyLcjV2DLyIWwcwF1iWXfjJ65UY5
+         1gKVaVBB4f5PycgJvJUvoxJ2/mHpL0dYwhopf5QV72CwaBgqWFwrhHvVym/Vnp+RHda9
+         trdwWObES7APrwV42cIoHrS0wl4uLoKGfCi4ykpSByrqINfBXQjJ4DnGql1ChuzlvgZz
+         oYg33QQFC4Tu0+rpnznQl7wUBPcvwvR3hxNcKGZhZiwZq6gjJtgjuD7CGSBONc4+SGHK
+         4Vxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=bi4yjCY3FALmEA0HGC/jzq/xV0+n6rZC92KaCyBy7YM=;
+        b=d/qEgLmHGwUu2Z3MKCLt7i3EkMDKByhSILs1UwlXqiaVZTH6luHkIeUATKY7lEAuMj
+         p43Qw3M79E7JW1Vx/NJyxJ2udm0GSDNy69xAPllx543XJkXm9ZF5yopGyPojrVu2iuCB
+         XeEpgV2VL+jbWU2nbHi1Tz3GwfHn/+7vsVDlYLI11lnlRYoAWZWUUfGX1mIuLzePdBjE
+         LI6CL0SWZmdf2dwilQ6M4cKpaKQmT7qHyuj0MSuGNPxJ6zUAmr33HzKcE1atlSHuUygM
+         DLQGTe5co59u7lLVyz3HivxmHXC1dlw706QHVAXsOufrnUiC+iImOeHGXML7uUL0UEvs
+         MRcQ==
+X-Gm-Message-State: AOAM530rzCY7ul+UcNwrw1YyqDitRye+qMHyssRMyO5F8w9R/lP/l4vB
+        S/79e7UAE/UHq6Y4JGeN+IAchbFktboYlw==
+X-Google-Smtp-Source: ABdhPJxOKYIsdGtRADGmB5ndMCWZLHbqy637TkYN0i1VVXW8GFv7NEfdvJQ4DtiXKCsS6MEMmgMhnw==
+X-Received: by 2002:ad4:4673:: with SMTP id z19mr4532382qvv.60.1606941161611;
+        Wed, 02 Dec 2020 12:32:41 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:8dbd])
+        by smtp.gmail.com with ESMTPSA id p62sm3063465qkf.50.2020.12.02.12.32.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 12:32:40 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 2 Dec 2020 15:32:13 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     axboe@kernel.dk, baolin.wang7@gmail.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] blk-iocost: Optimize the ioc_refreash_vrate()
+ function
+Message-ID: <X8f5zQi+AzaY+ieY@mtj.duckdns.org>
+References: <071dbbbdfecaebf9e850e622c52dd591969e21ab.1606617087.git.baolin.wang@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <58db65203b9464f6f225f4ef97c45af3c72cf068.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020122
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
- clxscore=1015 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020122
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <071dbbbdfecaebf9e850e622c52dd591969e21ab.1606617087.git.baolin.wang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020-12-02 4:20 a.m., David Woodhouse wrote:
-> On Wed, 2020-12-02 at 10:44 +0000, Joao Martins wrote:
->> [late response - was on holiday yesterday]
->>
->> On 12/2/20 12:40 AM, Ankur Arora wrote:
->>> On 2020-12-01 5:07 a.m., David Woodhouse wrote:
->>>> On Wed, 2019-02-20 at 20:15 +0000, Joao Martins wrote:
->>>>> +static int kvm_xen_shared_info_init(struct kvm *kvm, gfn_t gfn)
->>>>> +{
->>>>> +       struct shared_info *shared_info;
->>>>> +       struct page *page;
->>>>> +
->>>>> +       page = gfn_to_page(kvm, gfn);
->>>>> +       if (is_error_page(page))
->>>>> +               return -EINVAL;
->>>>> +
->>>>> +       kvm->arch.xen.shinfo_addr = gfn;
->>>>> +
->>>>> +       shared_info = page_to_virt(page);
->>>>> +       memset(shared_info, 0, sizeof(struct shared_info));
->>>>> +       kvm->arch.xen.shinfo = shared_info;
->>>>> +       return 0;
->>>>> +}
->>>>> +
->>>>
->>>> Hm.
->>>>
->>>> How come we get to pin the page and directly dereference it every time,
->>>> while kvm_setup_pvclock_page() has to use kvm_write_guest_cached()
->>>> instead?
->>>
->>> So looking at my WIP trees from the time, this is something that
->>> we went back and forth on as well with using just a pinned page or a
->>> persistent kvm_vcpu_map().
->>>
->>> I remember distinguishing shared_info/vcpu_info from kvm_setup_pvclock_page()
->>> as shared_info is created early and is not expected to change during the
->>> lifetime of the guest which didn't seem true for MSR_KVM_SYSTEM_TIME (or
->>> MSR_KVM_STEAL_TIME) so that would either need to do a kvm_vcpu_map()
->>> kvm_vcpu_unmap() dance or do some kind of synchronization.
->>>
->>> That said, I don't think this code explicitly disallows any updates
->>> to shared_info.
->>>
->>>>
->>>> If that was allowed, wouldn't it have been a much simpler fix for
->>>> CVE-2019-3016? What am I missing?
->>>
->>> Agreed.
->>>
->>> Perhaps, Paolo can chime in with why KVM never uses pinned page
->>> and always prefers to do cached mappings instead?
->>>
->>
->> Part of the CVE fix to not use cached versions.
->>
->> It's not a longterm pin of the page unlike we try to do here (partly due to the nature
->> of the pages we are mapping) but we still we map the gpa, RMW the steal time struct, and
->> then unmap the page.
->>
->> See record_steal_time() -- but more specifically commit b043138246 ("x86/KVM: Make sure
->> KVM_VCPU_FLUSH_TLB flag is not missed").
->>
->> But I am not sure it's a good idea to follow the same as record_steal_time() given that
->> this is a fairly sensitive code path for event channels.
+On Sun, Nov 29, 2020 at 10:37:18AM +0800, Baolin Wang wrote:
+> The ioc_refreash_vrate() will only be called in ioc_timer_fn() after
+> starting a new period or stopping the period.
 > 
-> Right. We definitely need to use atomic RMW operations (like the CVE
-> fix did) so the page needs to be *mapped*.
+> So when starting a new period, the variable 'pleft' in ioc_refreash_vrate()
+> is always the period's time, which means if the abs(ioc->vtime_err)
+> is less than the period's time, the vcomp is 0, and we do not need
+> compensate the vtime_rate in this case, just set it as the base vrate
+> and return.
 > 
-> My question was about a permanent pinned mapping vs the map/unmap as we
-> need it that record_steal_time() does.
-> 
-> On IRC, Paolo told me that permanent pinning causes problems for memory
-> hotplug, and pointed me at the trick we do with an MMU notifier and
-> kvm_vcpu_reload_apic_access_page().
+> When stopping the period, the ioc->vtime_err will be cleared to 0,
+> and we also do not need to compensate the vtime_rate, just set it as
+> the base vrate and return.
 
-Okay that answers my question. Thanks for clearing that up.
+Before, the function did something which is conceptually discrete and
+describable. After, its operation is intertwined with when it's called. I
+don't think this sort of micro optimizations are beneficial in cold paths.
 
-Not sure of a good place to document this but it would be good to
-have this written down somewhere. Maybe kvm_map_gfn()?
+Thanks.
 
-> 
-> I'm going to stick with the pinning we have for the moment, and just
-> fix up the fact that it leaks the pinned pages if the guest sets the
-> shared_info address more than once.
-> 
-> At some point the apic page MMU notifier thing can be made generic, and
-> we can use that for this and for KVM steal time too.
-> 
-
-Yeah, that's something that'll definitely be good to have.
-
-Ankur
+-- 
+tejun
