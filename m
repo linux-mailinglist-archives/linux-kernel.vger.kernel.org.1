@@ -2,356 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CCF2CC95D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EAE2CC95B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbgLBWKg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Dec 2020 17:10:36 -0500
-Received: from aposti.net ([89.234.176.197]:36194 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbgLBWKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 17:10:35 -0500
-Date:   Wed, 02 Dec 2020 22:09:39 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 4/4] clk: Ingenic: Fill unused bits in parents and
- reformat code.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     sboyd@kernel.org, robh+dt@kernel.org, mturquette@baylibre.com,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Message-Id: <38GQKQ.Q3V9QMBZFBRU3@crapouillou.net>
-In-Reply-To: <20201125172618.112707-5-zhouyanjie@wanyeetech.com>
-References: <20201125172618.112707-1-zhouyanjie@wanyeetech.com>
-        <20201125172618.112707-5-zhouyanjie@wanyeetech.com>
+        id S1727185AbgLBWKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 17:10:34 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27854 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726032AbgLBWKe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 17:10:34 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2M2nsS158328;
+        Wed, 2 Dec 2020 17:09:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=xOYcIgHRxpLn8jOA98hLWOaGUzeQ/EDE9H3coqngL2E=;
+ b=S5rUwgl5WvVo0v6flhO4nvx5J6HMurIfIkARfcNCGcYkY9q3z1Q9CNq5MzBrb4iMrcpB
+ CwY4FtIFGZ78HKwNrrHQKlpdvEJKTph3aoceWkLJYsuG+m0B+r3FlHoFWjkngwJ0ttV6
+ HdDrAtV5L2fDJjLgJtm+VBq8x1VJYfPHP+nl5UnDAt9+16Dx6TapND06jkbn555mXGou
+ cUoz4twhEpo0dxsg7Ss4gSzf/jdQnC6f2zDdPPZAvLqKHZuR0z3o6qIMHbR67Y5IILue
+ elGurBCukrpfEf/Yongtn0M7NL4ESLkJBssmz0C8VgXeW7wQ9+TM/Qg3U8Uz2/BcQtch jg== 
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 356a0vjxqc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 17:09:46 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2M7Ul4029871;
+        Wed, 2 Dec 2020 22:09:45 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma04wdc.us.ibm.com with ESMTP id 354ysumrku-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 22:09:45 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2M9i5j9306800
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 22:09:44 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8A6FB1120B8;
+        Wed,  2 Dec 2020 22:09:44 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 320581120B5;
+        Wed,  2 Dec 2020 22:09:43 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Dec 2020 22:09:43 +0000 (GMT)
+Subject: Re: [PATCH v2 15/17] ibmvfc: send Cancel MAD down each hw scsi
+ channel
+To:     Brian King <brking@linux.vnet.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201202005329.4538-1-tyreld@linux.ibm.com>
+ <20201202005329.4538-16-tyreld@linux.ibm.com>
+ <21a7c970-2184-0524-5b42-1920eaa422a2@linux.vnet.ibm.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <0e1760c8-ced0-cd50-391f-29a5a9ea340a@linux.ibm.com>
+Date:   Wed, 2 Dec 2020 14:09:42 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <21a7c970-2184-0524-5b42-1920eaa422a2@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_13:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 adultscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+On 12/2/20 10:27 AM, Brian King wrote:
+> On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
+>> In general the client needs to send Cancel MADs and task management
+>> commands down the same channel as the command(s) intended to cancel or
+>> abort. The client assigns cancel keys per LUN and thus must send a
+>> Cancel down each channel commands were submitted for that LUN. Further,
+>> the client then must wait for those cancel completions prior to
+>> submitting a LUN RESET or ABORT TASK SET.
+>>
+>> Allocate event pointers for each possible scsi channel and assign an
+>> event for each channel that requires a cancel. Wait for completion each
+>> submitted cancel.
+>>
+>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+>> ---
+>>  drivers/scsi/ibmvscsi/ibmvfc.c | 106 +++++++++++++++++++++------------
+>>  1 file changed, 68 insertions(+), 38 deletions(-)
+>>
+>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+>> index 0b6284020f06..97e8eed04b01 100644
+>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+>> @@ -2339,32 +2339,52 @@ static int ibmvfc_cancel_all(struct scsi_device *sdev, int type)
+>>  {
+>>  	struct ibmvfc_host *vhost = shost_priv(sdev->host);
+>>  	struct ibmvfc_event *evt, *found_evt;
+>> -	union ibmvfc_iu rsp;
+>> -	int rsp_rc = -EBUSY;
+>> +	struct ibmvfc_event **evt_list;
+>> +	union ibmvfc_iu *rsp;
+>> +	int rsp_rc = 0;
+>>  	unsigned long flags;
+>>  	u16 status;
+>> +	int num_hwq = 1;
+>> +	int i;
+>> +	int ret = 0;
+>>  
+>>  	ENTER;
+>>  	spin_lock_irqsave(vhost->host->host_lock, flags);
+>> -	found_evt = NULL;
+>> -	list_for_each_entry(evt, &vhost->sent, queue) {
+>> -		if (evt->cmnd && evt->cmnd->device == sdev) {
+>> -			found_evt = evt;
+>> -			break;
+>> +	if (vhost->using_channels && vhost->scsi_scrqs.active_queues)
+>> +		num_hwq = vhost->scsi_scrqs.active_queues;
+>> +
+>> +	evt_list = kcalloc(num_hwq, sizeof(*evt_list), GFP_KERNE> +	rsp = kcalloc(num_hwq, sizeof(*rsp), GFP_KERNEL);
+> 
+> Can't this just go on the stack? We don't want to be allocating memory
+> during error recovery. Or, alternatively, you could put this in the
+> vhost structure and protect it with a mutex. We only have enough events
+> to single thread these anyway.
+Yes, this could just go on the stack.
 
-Le jeu. 26 nov. 2020 à 1:26, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> 1.Fill unused bits in parents in jz4780-cgu.c, x1000-cgu.c,
->   and x1830-cgu.c, these bits should be filled with -1.
-> 2.Reformat code, add missing blank lines, remove unnecessary
->   tabs, and align code.
 > 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> ---
->  drivers/clk/ingenic/jz4780-cgu.c | 12 +++---
->  drivers/clk/ingenic/x1000-cgu.c  | 20 +++++-----
->  drivers/clk/ingenic/x1830-cgu.c  | 83 
-> ++++++++++++++++++++--------------------
->  3 files changed, 60 insertions(+), 55 deletions(-)
+>> +
+>> +	for (i = 0; i < num_hwq; i++) {
+>> +		sdev_printk(KERN_INFO, sdev, "Cancelling outstanding commands on queue %d.\n", i);
 > 
-> diff --git a/drivers/clk/ingenic/jz4780-cgu.c 
-> b/drivers/clk/ingenic/jz4780-cgu.c
-> index dcca74e..1b61eaa 100644
-> --- a/drivers/clk/ingenic/jz4780-cgu.c
-> +++ b/drivers/clk/ingenic/jz4780-cgu.c
-> @@ -178,6 +178,7 @@ static int jz4780_otg_phy_set_rate(struct clk_hw 
-> *hw, unsigned long req_rate,
->  	writel(usbpcr1, cgu->base + CGU_REG_USBPCR1);
-> 
->  	spin_unlock_irqrestore(&cgu->lock, flags);
-> +
->  	return 0;
->  }
-> 
-> @@ -188,6 +189,7 @@ static int jz4780_otg_phy_enable(struct clk_hw 
-> *hw)
-> 
->  	writel(readl(reg_opcr) | OPCR_SPENDN0, reg_opcr);
->  	writel(readl(reg_usbpcr) & ~USBPCR_OTG_DISABLE & ~USBPCR_SIDDQ, 
-> reg_usbpcr);
-> +
->  	return 0;
->  }
-> 
-> @@ -215,9 +217,9 @@ static const struct clk_ops jz4780_otg_phy_ops = {
->  	.round_rate = jz4780_otg_phy_round_rate,
->  	.set_rate = jz4780_otg_phy_set_rate,
-> 
-> -	.enable		= jz4780_otg_phy_enable,
-> -	.disable	= jz4780_otg_phy_disable,
-> -	.is_enabled	= jz4780_otg_phy_is_enabled,
-> +	.enable = jz4780_otg_phy_enable,
-> +	.disable = jz4780_otg_phy_disable,
-> +	.is_enabled = jz4780_otg_phy_is_enabled,
->  };
-> 
->  static int jz4780_core1_enable(struct clk_hw *hw)
-> @@ -544,13 +546,13 @@ static const struct ingenic_cgu_clk_info 
-> jz4780_cgu_clocks[] = {
-> 
->  	[JZ4780_CLK_EXCLK_DIV512] = {
->  		"exclk_div512", CGU_CLK_FIXDIV,
-> -		.parents = { JZ4780_CLK_EXCLK },
-> +		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
+> Prior to this patch, if there was nothing outstanding to the device and cancel_all was called,
+> no messages would get printed. This is changing that behavior. Is that intentional? Additionally,
+> it looks like this will get a lot more vebose, logging a message for each hw queue, regardless
+> of whether there was anything outstanding. Perhaps you want to move this down to after the check
+> for !found_evt?
 
-These -1 are not really needed since the clock doesn't have CGU_CLK_MUX.
+It would actually print "no commands found to cancel". I think its fair to make
+it less verbose or at least make them dbg output for each queue.
 
->  		.fixdiv = { 512 },
->  	},
-> 
->  	[JZ4780_CLK_RTC] = {
->  		"rtc_ercs", CGU_CLK_MUX | CGU_CLK_GATE,
-> -		.parents = { JZ4780_CLK_EXCLK_DIV512, JZ4780_CLK_RTCLK },
-> +		.parents = { JZ4780_CLK_EXCLK_DIV512, JZ4780_CLK_RTCLK, -1, -1 },
->  		.mux = { CGU_REG_OPCR, 2, 1},
+-Tyrel
 
-This clock has CGU_CLK_MUX, but only one bit to change the setting, so 
-only two parents possible; so again these -1 are not really needed.
-
-Cheers,
--Paul
-
->  	},
 > 
-> diff --git a/drivers/clk/ingenic/x1000-cgu.c 
-> b/drivers/clk/ingenic/x1000-cgu.c
-> index d340bcd..fe2e274 100644
-> --- a/drivers/clk/ingenic/x1000-cgu.c
-> +++ b/drivers/clk/ingenic/x1000-cgu.c
-> @@ -126,6 +126,7 @@ static int x1000_otg_phy_set_rate(struct clk_hw 
-> *hw, unsigned long req_rate,
->  	writel(usbpcr1, cgu->base + CGU_REG_USBPCR1);
+>> +
+>> +		found_evt = NULL;
+>> +		list_for_each_entry(evt, &vhost->sent, queue) {
+>> +			if (evt->cmnd && evt->cmnd->device == sdev && evt->hwq == i) {
+>> +				found_evt = evt;
+>> +				break;
+>> +			}
+>>  		}
+>> -	}
+>>  
 > 
->  	spin_unlock_irqrestore(&cgu->lock, flags);
-> +
->  	return 0;
->  }
 > 
-> @@ -136,6 +137,7 @@ static int x1000_usb_phy_enable(struct clk_hw *hw)
 > 
->  	writel(readl(reg_opcr) | OPCR_SPENDN0, reg_opcr);
->  	writel(readl(reg_usbpcr) & ~USBPCR_OTG_DISABLE & ~USBPCR_SIDDQ, 
-> reg_usbpcr);
-> +
->  	return 0;
->  }
-> 
-> @@ -163,9 +165,9 @@ static const struct clk_ops x1000_otg_phy_ops = {
->  	.round_rate = x1000_otg_phy_round_rate,
->  	.set_rate = x1000_otg_phy_set_rate,
-> 
-> -	.enable		= x1000_usb_phy_enable,
-> -	.disable	= x1000_usb_phy_disable,
-> -	.is_enabled	= x1000_usb_phy_is_enabled,
-> +	.enable = x1000_usb_phy_enable,
-> +	.disable = x1000_usb_phy_disable,
-> +	.is_enabled = x1000_usb_phy_is_enabled,
->  };
-> 
->  static const s8 pll_od_encoding[8] = {
-> @@ -298,7 +300,7 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
-> 
->  	[X1000_CLK_MAC] = {
->  		"mac", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
-> -		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
-> +		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
->  		.mux = { CGU_REG_MACCDR, 31, 1 },
->  		.div = { CGU_REG_MACCDR, 0, 1, 8, 29, 28, 27 },
->  		.gate = { CGU_REG_CLKGR, 25 },
-> @@ -306,7 +308,7 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
-> 
->  	[X1000_CLK_LCD] = {
->  		"lcd", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
-> -		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
-> +		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
->  		.mux = { CGU_REG_LPCDR, 31, 1 },
->  		.div = { CGU_REG_LPCDR, 0, 1, 8, 28, 27, 26 },
->  		.gate = { CGU_REG_CLKGR, 23 },
-> @@ -314,7 +316,7 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
-> 
->  	[X1000_CLK_MSCMUX] = {
->  		"msc_mux", CGU_CLK_MUX,
-> -		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL},
-> +		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
->  		.mux = { CGU_REG_MSC0CDR, 31, 1 },
->  	},
-> 
-> @@ -350,7 +352,7 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
-> 
->  	[X1000_CLK_SSIPLL_DIV2] = {
->  		"ssi_pll_div2", CGU_CLK_FIXDIV,
-> -		.parents = { X1000_CLK_SSIPLL },
-> +		.parents = { X1000_CLK_SSIPLL, -1, -1, -1 },
->  		.fixdiv = { 2 },
->  	},
-> 
-> @@ -369,13 +371,13 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
-> 
->  	[X1000_CLK_EXCLK_DIV512] = {
->  		"exclk_div512", CGU_CLK_FIXDIV,
-> -		.parents = { X1000_CLK_EXCLK },
-> +		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
->  		.fixdiv = { 512 },
->  	},
-> 
->  	[X1000_CLK_RTC] = {
->  		"rtc_ercs", CGU_CLK_MUX | CGU_CLK_GATE,
-> -		.parents = { X1000_CLK_EXCLK_DIV512, X1000_CLK_RTCLK },
-> +		.parents = { X1000_CLK_EXCLK_DIV512, X1000_CLK_RTCLK, -1, -1 },
->  		.mux = { CGU_REG_OPCR, 2, 1},
->  		.gate = { CGU_REG_CLKGR, 27 },
->  	},
-> diff --git a/drivers/clk/ingenic/x1830-cgu.c 
-> b/drivers/clk/ingenic/x1830-cgu.c
-> index e76e82c..4d6cca5 100644
-> --- a/drivers/clk/ingenic/x1830-cgu.c
-> +++ b/drivers/clk/ingenic/x1830-cgu.c
-> @@ -15,51 +15,51 @@
->  #include "pm.h"
-> 
->  /* CGU register offsets */
-> -#define CGU_REG_CPCCR		0x00
-> -#define CGU_REG_CPPCR		0x0c
-> -#define CGU_REG_APLL		0x10
-> -#define CGU_REG_MPLL		0x14
-> -#define CGU_REG_CLKGR0		0x20
-> -#define CGU_REG_OPCR		0x24
-> -#define CGU_REG_CLKGR1		0x28
-> -#define CGU_REG_DDRCDR		0x2c
-> -#define CGU_REG_USBPCR		0x3c
-> -#define CGU_REG_USBRDT		0x40
-> -#define CGU_REG_USBVBFIL	0x44
-> -#define CGU_REG_USBPCR1		0x48
-> -#define CGU_REG_MACCDR		0x54
-> -#define CGU_REG_EPLL		0x58
-> -#define CGU_REG_I2SCDR		0x60
-> -#define CGU_REG_LPCDR		0x64
-> -#define CGU_REG_MSC0CDR		0x68
-> -#define CGU_REG_I2SCDR1		0x70
-> -#define CGU_REG_SSICDR		0x74
-> -#define CGU_REG_CIMCDR		0x7c
-> -#define CGU_REG_MSC1CDR		0xa4
-> -#define CGU_REG_CMP_INTR	0xb0
-> -#define CGU_REG_CMP_INTRE	0xb4
-> -#define CGU_REG_DRCG		0xd0
-> -#define CGU_REG_CPCSR		0xd4
-> -#define CGU_REG_VPLL		0xe0
-> -#define CGU_REG_MACPHYC		0xe8
-> +#define CGU_REG_CPCCR			0x00
-> +#define CGU_REG_CPPCR			0x0c
-> +#define CGU_REG_APLL			0x10
-> +#define CGU_REG_MPLL			0x14
-> +#define CGU_REG_CLKGR0			0x20
-> +#define CGU_REG_OPCR			0x24
-> +#define CGU_REG_CLKGR1			0x28
-> +#define CGU_REG_DDRCDR			0x2c
-> +#define CGU_REG_USBPCR			0x3c
-> +#define CGU_REG_USBRDT			0x40
-> +#define CGU_REG_USBVBFIL		0x44
-> +#define CGU_REG_USBPCR1			0x48
-> +#define CGU_REG_MACCDR			0x54
-> +#define CGU_REG_EPLL			0x58
-> +#define CGU_REG_I2SCDR			0x60
-> +#define CGU_REG_LPCDR			0x64
-> +#define CGU_REG_MSC0CDR			0x68
-> +#define CGU_REG_I2SCDR1			0x70
-> +#define CGU_REG_SSICDR			0x74
-> +#define CGU_REG_CIMCDR			0x7c
-> +#define CGU_REG_MSC1CDR			0xa4
-> +#define CGU_REG_CMP_INTR		0xb0
-> +#define CGU_REG_CMP_INTRE		0xb4
-> +#define CGU_REG_DRCG			0xd0
-> +#define CGU_REG_CPCSR			0xd4
-> +#define CGU_REG_VPLL			0xe0
-> +#define CGU_REG_MACPHYC			0xe8
-> 
->  /* bits within the OPCR register */
-> -#define OPCR_GATE_USBPHYCLK	BIT(23)
-> -#define OPCR_SPENDN0		BIT(7)
-> -#define OPCR_SPENDN1		BIT(6)
-> +#define OPCR_GATE_USBPHYCLK		BIT(23)
-> +#define OPCR_SPENDN0			BIT(7)
-> +#define OPCR_SPENDN1			BIT(6)
-> 
->  /* bits within the USBPCR register */
-> -#define USBPCR_SIDDQ		BIT(21)
-> -#define USBPCR_OTG_DISABLE	BIT(20)
-> +#define USBPCR_SIDDQ			BIT(21)
-> +#define USBPCR_OTG_DISABLE		BIT(20)
-> 
->  /* bits within the I2SCDR register */
-> -#define I2SCDR_I2PCS_SHIFT	30
-> -#define I2SCDR_I2PCS_MASK	(0x3 << I2SCDR_I2PCS_SHIFT)
-> +#define I2SCDR_I2PCS_SHIFT		30
-> +#define I2SCDR_I2PCS_MASK		(0x3 << I2SCDR_I2PCS_SHIFT)
->  #define I2SCDR_I2SDIV_M_SHIFT	20
->  #define I2SCDR_I2SDIV_M_MASK	(0x1ff << I2SCDR_I2SDIV_M_SHIFT)
->  #define I2SCDR_I2SDIV_N_SHIFT	0
->  #define I2SCDR_I2SDIV_N_MASK	(0xfffff << I2SCDR_I2SDIV_N_SHIFT)
-> -#define I2SCDR_CE_I2S		BIT(29)
-> +#define I2SCDR_CE_I2S			BIT(29)
-> 
->  static struct ingenic_cgu *cgu;
-> 
-> @@ -70,6 +70,7 @@ static int x1830_usb_phy_enable(struct clk_hw *hw)
-> 
->  	writel((readl(reg_opcr) | OPCR_SPENDN0) & ~OPCR_GATE_USBPHYCLK, 
-> reg_opcr);
->  	writel(readl(reg_usbpcr) & ~USBPCR_OTG_DISABLE & ~USBPCR_SIDDQ, 
-> reg_usbpcr);
-> +
->  	return 0;
->  }
-> 
-> @@ -93,9 +94,9 @@ static int x1830_usb_phy_is_enabled(struct clk_hw 
-> *hw)
->  }
-> 
->  static const struct clk_ops x1830_otg_phy_ops = {
-> -	.enable		= x1830_usb_phy_enable,
-> -	.disable	= x1830_usb_phy_disable,
-> -	.is_enabled	= x1830_usb_phy_is_enabled,
-> +	.enable = x1830_usb_phy_enable,
-> +	.disable = x1830_usb_phy_disable,
-> +	.is_enabled = x1830_usb_phy_is_enabled,
->  };
-> 
->  static u8 x1830_i2s_get_parent(struct clk_hw *hw)
-> @@ -486,7 +487,7 @@ static const struct ingenic_cgu_clk_info 
-> x1830_cgu_clocks[] = {
-> 
->  	[X1830_CLK_SSIPLL_DIV2] = {
->  		"ssi_pll_div2", CGU_CLK_FIXDIV,
-> -		.parents = { X1830_CLK_SSIPLL },
-> +		.parents = { X1830_CLK_SSIPLL, -1, -1, -1 },
->  		.fixdiv = { 2 },
->  	},
-> 
-> @@ -506,13 +507,13 @@ static const struct ingenic_cgu_clk_info 
-> x1830_cgu_clocks[] = {
-> 
->  	[X1830_CLK_EXCLK_DIV512] = {
->  		"exclk_div512", CGU_CLK_FIXDIV,
-> -		.parents = { X1830_CLK_EXCLK },
-> +		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
->  		.fixdiv = { 512 },
->  	},
-> 
->  	[X1830_CLK_RTC] = {
->  		"rtc_ercs", CGU_CLK_MUX | CGU_CLK_GATE,
-> -		.parents = { X1830_CLK_EXCLK_DIV512, X1830_CLK_RTCLK },
-> +		.parents = { X1830_CLK_EXCLK_DIV512, X1830_CLK_RTCLK, -1, -1 },
->  		.mux = { CGU_REG_OPCR, 2, 1},
->  		.gate = { CGU_REG_CLKGR0, 29 },
->  	},
-> --
-> 2.7.4
-> 
-
 
