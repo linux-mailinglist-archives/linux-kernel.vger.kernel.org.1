@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9442CBC67
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 440912CBC69
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729744AbgLBMGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:06:39 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:49467 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726928AbgLBMGi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:06:38 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5A4E25C01C4;
-        Wed,  2 Dec 2020 07:05:52 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 02 Dec 2020 07:05:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=WzTVfJ9jLhPrO8LHxfJd3YQ4sSQ
-        zAeu+DPkJtA4PFYE=; b=Uqj8zSC9K/zZ0a63bX/HbWgh3bVB9YSjU/q5oFy5LI9
-        3rAVwRoLzZ21VCQyexGDfPBZHvsTIP6PPKhEolXFp2piTOt6h8qwrWFDwHacFoN7
-        gwweifUT8z6fucd5q19+hrfytQOz+iJKM6ditGztC8TPldGpQMWSxIHrjOlAQsJY
-        E6ZPgoUurEd79fYnu/13FO3Zr1bKsNlQ7h/LP3BASNuBdKXI8LDsqmkwuOS4mFlP
-        0ZvVIAhGvr3mim5HpJ5ASaOwObVlyM6WOPFAcaCD3oRoLQ1RxhmoI+P+XbISNxQq
-        DARgXTd7Zph3+4aR43/5MkbuDrXfjvWQO0GklMZX83A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=WzTVfJ
-        9jLhPrO8LHxfJd3YQ4sSQzAeu+DPkJtA4PFYE=; b=HvykbETLQuHf/8NEbKRel4
-        HFCEFdstJ6Dfjn7VnCm10cxIrG1krxdmi4PBFTfMYs3dIdcWkdMsAyAiqsAhfXXs
-        uBF4oaAi3BxTQyMKAH9HrqkDW8s0DISPaRwE3ENJMI8Z3fmM0QbEd2Zmua0a0T+O
-        4lsHoXbYsxMzhgBKvJC/b4nxacvDZpEPH5q01D2q/IjX7/Nq2RWmfO7Z18ZqxLtX
-        7NgKYmWE1ie6IH6A8KT0cgGYDQu76CIQdC6XlrTkO70+PV/lRb5dLlT9hiJR+v2z
-        dsQXgQ+g5UvZNs4PAPg57DPzx+o0fnyylbwspMVsxNoaAjj0gAzLrRZ9RD0xKHpQ
-        ==
-X-ME-Sender: <xms:HoPHX-8-w1MxNKg4BGMZPoNh8nD3WJaXDYhTSjF_A6FW9J84IUl-9A>
-    <xme:HoPHX-uh9qJm4pIS38gN7yElpeMAT8hU3_QWuoQMJK82VAJIyBa2ovZn8Hf2FM9UC
-    xXNIxip-oVc10YVIq8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeigedgfeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:HoPHX0BrgP5-DRwoj1uuEjDsBalHy8Hy3YtlrTWx4d9FNFjiFXE9jg>
-    <xmx:HoPHX2eW7GAx42Z_poLB4U5lkIVo4LdDZ0QWC2g0M62G_CYc4I8E8g>
-    <xmx:HoPHXzNYFAnzgXD_Va0tvOr2wymBqMvquLWfiyh3CUl_d1sHd6pqgQ>
-    <xmx:IIPHX_A9yppSgB874cECXdUQRgGRLYp5g98RMUU8lnegF7L-Q_82zw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0010124005C;
-        Wed,  2 Dec 2020 07:05:49 -0500 (EST)
-Date:   Wed, 2 Dec 2020 13:05:48 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: bcm: dvp: Add MODULE_DEVICE_TABLE()
-Message-ID: <20201202120548.3oiv7awjcauf72gd@gilmour>
-References: <20201202103518.21889-1-nsaenzjulienne@suse.de>
+        id S1729770AbgLBMHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:07:04 -0500
+Received: from mga17.intel.com ([192.55.52.151]:19652 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726589AbgLBMHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 07:07:04 -0500
+IronPort-SDR: uWgMTO5h/21hAoOB60nguGidrYrbPOS/li1EVOD7NwSHZ1wTPPEGZEOC3B1FH/oncwxCHaYMSV
+ YcQmID/5wmhA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="152831686"
+X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
+   d="scan'208";a="152831686"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 04:05:22 -0800
+IronPort-SDR: WI4jymxyNBTSTdCRD76CykCDJfzjFUg7by17rSz/SQFWb8oZWgQ3s4XoOqhvJPMSYi5SmHsrFW
+ 1Ol6P4e4fVKQ==
+X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
+   d="scan'208";a="345844066"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 04:05:19 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kkQto-00BVBc-5E; Wed, 02 Dec 2020 14:06:20 +0200
+Date:   Wed, 2 Dec 2020 14:06:20 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yun Levi <ppbuk5246@gmail.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>, dushistov@mail.ru,
+        arnd@arndb.de, akpm@linux-foundation.org, gustavo@embeddedor.com,
+        vilhelm.gray@gmail.com, richard.weiyang@linux.alibaba.com,
+        joseph.qi@linux.alibaba.com, skalluru@marvell.com,
+        yury.norov@gmail.com, jpoimboe@redhat.com,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH] lib/find_bit: Add find_prev_*_bit functions.
+Message-ID: <20201202120620.GC4077@smile.fi.intel.com>
+References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
+ <20201202094717.GX4077@smile.fi.intel.com>
+ <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
+ <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2emeoleqdm4ve6ni"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201202103518.21889-1-nsaenzjulienne@suse.de>
+In-Reply-To: <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 02, 2020 at 08:50:24PM +0900, Yun Levi wrote:
+> Thanks for kind advice. But I'm so afraid to have questions below:
+> 
+>  > - it proposes functionality w/o user (dead code)
+>      Actually, I add these series functions to rewrite some of the
+> resource clean-up routine.
+>      A typical case is ethtool_set_per_queue_coalesce 's rollback label.
+>      Could this usage be an actual use case?
 
---2emeoleqdm4ve6ni
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Then create it as a patch in the series and in cover letter (0 message when you
+supply --cover-letter to your `git format-patch ...` command line) mention
+this.
 
-On Wed, Dec 02, 2020 at 11:35:18AM +0100, Nicolas Saenz Julienne wrote:
-> Add MODULE_DEVICE_TABLE() so as to be able to use the driver as a
-> module. More precisely, for the driver to be loaded automatically at
-> boot.
->=20
-> Fixes: 1bc95972715a ("clk: bcm: Add BCM2711 DVP driver")
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+>  >- it lacks extension of the bitmap test module to cover the new
+>  > functions (that also wants to be a separate patch).
+>      I see, then Could I add some of testcase on lib/test_bitops.c for testing?
 
-Reviewed-by: Maxime Ripard <mripard@kernel.org>
+Sounds good to me. Most important is to have test cases, then we will see which
+test suite is the best fit, but as I said sounds like a good shot.
 
-Maxime
+And please do not top post in replies!
 
---2emeoleqdm4ve6ni
-Content-Type: application/pgp-signature; name="signature.asc"
+> On Wed, Dec 2, 2020 at 7:04 PM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+> >
+> > On 02/12/2020 10.47, Andy Shevchenko wrote:
+> > > On Wed, Dec 02, 2020 at 10:10:09AM +0900, Yun Levi wrote:
+> > >> Inspired find_next_*bit function series, add find_prev_*_bit series.
+> > >> I'm not sure whether it'll be used right now But, I add these functions
+> > >> for future usage.
+> > >
+> > > This patch has few issues:
+> > > - it has more things than described (should be several patches instead)
+> > > - new functionality can be split logically to couple or more pieces as well
+> > > - it proposes functionality w/o user (dead code)
+> >
+> > Yeah, the last point means it can't be applied - please submit it again
+> > if and when you have an actual use case. And I'll add
+> >
+> > - it lacks extension of the bitmap test module to cover the new
+> > functions (that also wants to be a separate patch).
 
------BEGIN PGP SIGNATURE-----
+-- 
+With Best Regards,
+Andy Shevchenko
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8eDDAAKCRDj7w1vZxhR
-xbsOAPwP57y3xtZm5xmf5i2I+FtQ6WGUqy8zIcK1n8Avi9sA4gEAh3G8O5ETLAF8
-gcnyJN8vxqHXXlIMbcOZ3L/u7L97Swg=
-=PBlM
------END PGP SIGNATURE-----
 
---2emeoleqdm4ve6ni--
