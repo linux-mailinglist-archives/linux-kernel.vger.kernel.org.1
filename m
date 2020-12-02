@@ -2,247 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D9D2CBB28
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D6A2CBB29
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388603AbgLBK5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:57:34 -0500
-Received: from mail-eopbgr30128.outbound.protection.outlook.com ([40.107.3.128]:39589
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726498AbgLBK5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:57:33 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eNrvUPn1Fdp8jx1Sol8Ve+WMYjEWLMMEtIwbKrOKhoCJKEohBg5Lan7KsKwbjUD7nqq9HV59kN2p9VJmPrTjeCOTXf9QZ7B2i5Tq82IM1g++Oaeo4FaEQGs+Ex+RqWw+9voCY/HvJimUQpx+W7PbK6PO+YQqO22kgSHDPtZuwY5yJE0So8CMhCMsR4MhnvxwoLhAi7OL5Djx4IoJvLuRx4+jf7vG8BEPq/LqRjf0ucr2vuCzZCiVRpkvrc6IvE/ekGykhWwZPCBsMsvNap9//3r15R2vFubkr3Zg3V4TrP5yXnYfDKvRsMYIp816ssK1UYjQyw/q6Pcskf7rM1t3YA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AOVKtiodQTHkDQ31hjhbQfP9pepnIcmC+KJZEijoHQ4=;
- b=bYKQYDEzDfymyOeZJeL3Kx7iY8CrVZQIIAzc1OGdtLwtiUZrWb+0ChQgNqSS+tPPS2kOf5tpwYFcZ3EVVLIwCRh+Owqvi7Vjg7A4jR01n4QlreBmAY7E2CCUQsSwAM5DGjqfx+E9ubPEkJzGDdn1TtudWbnUU7DBdmuRk4RlJRGH6p5+QX/bekjSTOHa0KmBQX0jMQGD/+QndWTl50kMxlqhi2jPLbTlcyB1sZ5EfYFLsUHSZnoY4/u4wdoy0ddSpqJLaIadttegwaIan3nwo86bM8BlCWwQOr/y7wHhAtR5VbPUah36kcCO7/Oi16YeY10AwlP/Crx1FEwOAvIkVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=leica-geosystems.com; dmarc=pass action=none
- header.from=leica-geosystems.com; dkim=pass header.d=leica-geosystems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AOVKtiodQTHkDQ31hjhbQfP9pepnIcmC+KJZEijoHQ4=;
- b=D3+G66pSz0bOxhE811HI/vCYkPUIOUZw0Fz6eaFz48fOL6lIsH1hk2TLqkCKHnkKHscGAWTM51MBJ9KwDIAFRd6Lmm4EV7mCAMlUOfcsPSHSNsdQErrpy3fCVUethlXkHkoatJvngQ0zU0XtddircsegyYmLIJjXSRWiWjKGkf0=
-Received: from AM6PR06MB4691.eurprd06.prod.outlook.com (2603:10a6:20b:37::25)
- by AM6PR06MB6293.eurprd06.prod.outlook.com (2603:10a6:20b:fa::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Wed, 2 Dec
- 2020 10:56:43 +0000
-Received: from AM6PR06MB4691.eurprd06.prod.outlook.com
- ([fe80::b073:9747:410c:12c6]) by AM6PR06MB4691.eurprd06.prod.outlook.com
- ([fe80::b073:9747:410c:12c6%6]) with mapi id 15.20.3632.017; Wed, 2 Dec 2020
- 10:56:43 +0000
-From:   ZHIZHIKIN Andrey <andrey.zhizhikin@leica-geosystems.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-CC:     "op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>,
+        id S2388692AbgLBK5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:57:50 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24796 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726498AbgLBK5t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 05:57:49 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2Acr5d026968;
+        Wed, 2 Dec 2020 05:56:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=3y+VXPOcnH223ELInLCnkNXgTjVMdpgwE+j1/lgr8eE=;
+ b=VNXC52bmh8+VJdusQd8QFJqU14rI3x/4rd1Lbch2aJsunoE+uexhzgeRapxkCGcWSj9F
+ /3NRNa4EAonhRaC9C27bv25mfDDv9VR4nPXkKNMAFc0tHulu1X74KDQiyO+eSDGDLqkZ
+ AJIHejw6/Zp30dDbbkqo+LDQBNymkA6nrBlqz22nLClUAWaKc/el+q4smDUUF1uBbhh5
+ P78iLjCZoJfL5m+t1lRzZGWkeP5w+STYr75FQqg2gHXHnU3yeqzZ9PUI+Kxu7r0UaewF
+ vUArlUzwmXetjnBhAOHgxtnN50ICC2reZQ8Ph0ZXoSvE09puBQUnpt9dve6pFhQWDAEd RQ== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355y6cybfr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 05:56:56 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2AqTeJ011911;
+        Wed, 2 Dec 2020 10:56:54 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 353e68a59y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 10:56:54 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2AupC045941178
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 10:56:51 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3159CA4051;
+        Wed,  2 Dec 2020 10:56:51 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C660EA4055;
+        Wed,  2 Dec 2020 10:56:50 +0000 (GMT)
+Received: from osiris (unknown [9.171.20.32])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  2 Dec 2020 10:56:50 +0000 (GMT)
+Date:   Wed, 2 Dec 2020 11:56:49 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] optee: extend normal memory check to also write-through
-Thread-Topic: [PATCH] optee: extend normal memory check to also write-through
-Thread-Index: AQHWyIIaOP0stwp640Sm7x6DToya26njeFpQgAAmqQCAAAFgoA==
-Date:   Wed, 2 Dec 2020 10:56:43 +0000
-Message-ID: <AM6PR06MB4691D4988AC57DD24424D40CA6F30@AM6PR06MB4691.eurprd06.prod.outlook.com>
-References: <20201202071057.4877-1-andrey.zhizhikin@leica-geosystems.com>
- <CAHUa44HuNPmWufnxzqGLrwJqLxTkjCivYGaHvukEkk6nOd1r3g@mail.gmail.com>
- <AM6PR06MB4691764C8ABBF608837557D7A6F30@AM6PR06MB4691.eurprd06.prod.outlook.com>
- <CAHUa44GLP0JZPnX9Z1b6rNkzMttBWRvOo7QLuySmAmqCQFvpdg@mail.gmail.com>
-In-Reply-To: <CAHUa44GLP0JZPnX9Z1b6rNkzMttBWRvOo7QLuySmAmqCQFvpdg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none
- header.from=leica-geosystems.com;
-x-originating-ip: [193.8.40.112]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 16b8117c-2727-4504-93cc-08d896b0f4a3
-x-ms-traffictypediagnostic: AM6PR06MB6293:
-x-microsoft-antispam-prvs: <AM6PR06MB6293DE2A322C90919CC029D5A6F30@AM6PR06MB6293.eurprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: K/7RpUXj24DkJiVFQaQF0xZXZGgCiMlWIN9ehGMiU9S4q1DEfKTpdVHxQK/+oLTSDbVoCoFhy5lGdGxozR96eT+krwkr3/lYKqO7OaBtAMSzevy1QhH3MyOA2emTygbWi3VMKEWdIY3j/qsGdotCBKLj//5tLexLeaCojjAqf/haJ/cGgZiSL6G21HxwmZsaqReYFXOuyxIUGaivSEE8vZRFBBtjhbZS/qXvL3T/RoEdOTZGspW1nE4xplcJCFXfAnoXh+oA1017YK3xlJzjcH7t+uAGNSHCdqqRDybMbftWl0Picc6/Cz44nJefh0vPD17OKh53YCCBRaEtL0fGrCt+bgowpm1gPfFLXSj3ycu2O8aVSnWeFdEDjOEeEznf1mPpuOFevW1oA4hhrFvcow==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR06MB4691.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(396003)(39860400002)(8936002)(45080400002)(8676002)(478600001)(55016002)(6506007)(26005)(186003)(83380400001)(7696005)(33656002)(86362001)(54906003)(316002)(71200400001)(52536014)(5660300002)(966005)(53546011)(4326008)(9686003)(64756008)(66556008)(66446008)(76116006)(66946007)(2906002)(6916009)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?aC96VGNUKzU1TVlIMVJlSWpDbWJFTUV2UCs3OWtUOUJ1V3hlMngrWDhKWDJF?=
- =?utf-8?B?V0VCOVNrK1ZtdUNtWUJvakdFY2dEV2RLUlY2bVNvdFY4bHhEdzJMeDBxTGd6?=
- =?utf-8?B?MkJodkIrVVpxbCthVHF0VDdCMHBmb3JWcitQbGUrd0pTWGhJd3JoVk5NQlRD?=
- =?utf-8?B?d1RHckoyd29MZVA2QmordDZPWnF4VlpuYkhTaEZRWFBGUSs0eForL2puYXF3?=
- =?utf-8?B?ZFRRSTBCSlVaOWxLcHQvbm1mQURhZSs2Yitzd3ZCd2FHY2txaStRbEM0TXdI?=
- =?utf-8?B?d0hKZDZQOWhORjJjOXhOUkNXam5COFFiZVZkbzVSWTNIQmM2TXJOTVY3K29j?=
- =?utf-8?B?clpVbG51ZE1pc0lhR3F2OUJHeGVSb1lmbG5vcWFXSFA1Wk1ZSnZ2TFBHa3Bv?=
- =?utf-8?B?Qk5NK3dVUDVndnk4QVdxUEFNU0dabHNXa1E2Z01TK2ptblpIWWVZVGo1d3I0?=
- =?utf-8?B?bmtiZG9xSDdZRVg0RWUvbTh6clV2SzQzcGRJSHRGZmJKQlA1RHE3M1RYQ3hh?=
- =?utf-8?B?K2J2UHZDU3RQd3ZFdGdHWUNIUi9SeHFqOEJCOHMrSmptNFIvS0pUajJWWFhn?=
- =?utf-8?B?WGNxNEJ6bDM0dDlwTStRTndtTWJsSnNkUXhTY0lQc2pxQ2JpanNoNDlHdjJQ?=
- =?utf-8?B?ZzBPc0ZrT1RUUSt2ZUpxYjNFZ0ZzRThUcmNWZmpMeHJVR0l4MHhTUUJvOGFi?=
- =?utf-8?B?REQwaEpNdG9wdzBLUlNSMGRnazdiL1lQaXhjNVFsakVHb1F5SXM5MHN3VzNQ?=
- =?utf-8?B?elpYWm15NVNWdXFtUlF2L2JBdjBRSS92MHRaTS9qVGYyNXc4UkgvY3pOMzQw?=
- =?utf-8?B?SGJHQVhsaURBNW12SXUzQUk3OTRYU2ZEZmZoU1UycVIyd1dlTXZHT1RzWFhM?=
- =?utf-8?B?RlREUTAxUmQvTDk0UVVRTWZKemFjSG5RdmhWNVA3UEVvYmMyOVJGS3lkUGFn?=
- =?utf-8?B?cEVnZUx0dmNjeW5BT0VCQUJacXFYemVpUFhvZG00TC81VVRCNkx2eVdTa3VM?=
- =?utf-8?B?OTdGNG02VjNnay92ZmlVM3FpdkxrYU1KVGlBSDRDRFpGZ2N2Sm9OcGNsUFVO?=
- =?utf-8?B?QmNMV2Y4VFFNUlRKZ3FTSG5TbGNSZXZiUGh5YjVpbnlYaUFTRmNTRXpDa3NR?=
- =?utf-8?B?WWZBWkJhbEc0UHV5eE9JVUdwZ2VyOTJwaXZWVUpLWFU1SiszNURpek5RNm9w?=
- =?utf-8?B?T2oyMWd4OFoya2Z6b0gxbGVudlJIR0Zxc0FwVU5Mc1dYTE10eHR6M2JuUnBH?=
- =?utf-8?B?aUc1RkV6bWg0bXBaYWtSeFE4UlRrYnpjYWVpT0dGLzlWeFdHRUhuRGtLWmtR?=
- =?utf-8?Q?6IidJcBU3fDko=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
+Message-ID: <20201202105649.GB6202@osiris>
+References: <dcdb13e3-36a0-031d-6ec3-3ab5ee4a69cb@de.ibm.com>
+ <20201201080734.GQ2414@hirez.programming.kicks-ass.net>
+ <20201201110724.GL3092@hirez.programming.kicks-ass.net>
+ <20201201144644.GF1437@paulmck-ThinkPad-P72>
+ <20201201145519.GY2414@hirez.programming.kicks-ass.net>
+ <20201201181506.GM3092@hirez.programming.kicks-ass.net>
+ <20201201185737.GA93208@C02TD0UTHF1T.local>
+ <20201201191441.GW3040@hirez.programming.kicks-ass.net>
+ <20201201191856.GD8316@osiris>
+ <20201202092116.GA3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-OriginatorOrg: leica-geosystems.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR06MB4691.eurprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16b8117c-2727-4504-93cc-08d896b0f4a3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Dec 2020 10:56:43.4117
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sQZpU1Kzhs1baDLo+fJHu4HIj3Ry5b+R10gbSNy2X2+YuNSFZbLLkOpAlgxnkLXx9fYeLEAYPgP061SbEzi8QgbcxktDpMIeNeW07YbpXugj9rMV4sBp9V3fk9RMmpvv
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR06MB6293
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202092116.GA3040@hirez.programming.kicks-ass.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_04:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=691
+ mlxscore=0 suspectscore=1 priorityscore=1501 clxscore=1015 adultscore=0
+ lowpriorityscore=0 malwarescore=0 impostorscore=0 spamscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012020062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gSmVucywNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKZW5z
-IFdpa2xhbmRlciA8amVucy53aWtsYW5kZXJAbGluYXJvLm9yZz4NCj4gU2VudDogV2VkbmVzZGF5
-LCBEZWNlbWJlciAyLCAyMDIwIDExOjQ0IEFNDQo+IFRvOiBaSElaSElLSU4gQW5kcmV5IDxhbmRy
-ZXkuemhpemhpa2luQGxlaWNhLWdlb3N5c3RlbXMuY29tPg0KPiBDYzogb3AtdGVlQGxpc3RzLnRy
-dXN0ZWRmaXJtd2FyZS5vcmc7IExpbnV4IEtlcm5lbCBNYWlsaW5nIExpc3QgPGxpbnV4LQ0KPiBr
-ZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgc3RhYmxlQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0
-OiBSZTogW1BBVENIXSBvcHRlZTogZXh0ZW5kIG5vcm1hbCBtZW1vcnkgY2hlY2sgdG8gYWxzbyB3
-cml0ZS10aHJvdWdoDQo+IA0KPiANCj4gT24gV2VkLCBEZWMgMiwgMjAyMCBhdCAxMDo0MSBBTSBa
-SElaSElLSU4gQW5kcmV5IDxhbmRyZXkuemhpemhpa2luQGxlaWNhLQ0KPiBnZW9zeXN0ZW1zLmNv
-bT4gd3JvdGU6DQo+ID4NCj4gPiBIZWxsbyBKZW5zLA0KPiA+DQo+ID4gPiAtLS0tLU9yaWdpbmFs
-IE1lc3NhZ2UtLS0tLQ0KPiA+ID4gRnJvbTogSmVucyBXaWtsYW5kZXIgPGplbnMud2lrbGFuZGVy
-QGxpbmFyby5vcmc+DQo+ID4gPiBTZW50OiBXZWRuZXNkYXksIERlY2VtYmVyIDIsIDIwMjAgOTow
-NyBBTQ0KPiA+ID4gVG86IFpISVpISUtJTiBBbmRyZXkgPGFuZHJleS56aGl6aGlraW5AbGVpY2Et
-Z2Vvc3lzdGVtcy5jb20+DQo+ID4gPiBDYzogb3AtdGVlQGxpc3RzLnRydXN0ZWRmaXJtd2FyZS5v
-cmc7IExpbnV4IEtlcm5lbCBNYWlsaW5nIExpc3QNCj4gPiA+IDxsaW51eC0ga2VybmVsQHZnZXIu
-a2VybmVsLm9yZz47IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCj4gPiA+IFN1YmplY3Q6IFJlOiBb
-UEFUQ0hdIG9wdGVlOiBleHRlbmQgbm9ybWFsIG1lbW9yeSBjaGVjayB0byBhbHNvDQo+ID4gPiB3
-cml0ZS10aHJvdWdoDQo+ID4gPg0KPiA+ID4gVGhpcyBlbWFpbCBpcyBub3QgZnJvbSBIZXhhZ29u
-4oCZcyBPZmZpY2UgMzY1IGluc3RhbmNlLiBQbGVhc2UgYmUNCj4gPiA+IGNhcmVmdWwgd2hpbGUg
-Y2xpY2tpbmcgbGlua3MsIG9wZW5pbmcgYXR0YWNobWVudHMsIG9yIHJlcGx5aW5nIHRvIHRoaXMg
-ZW1haWwuDQo+ID4gPg0KPiA+ID4NCj4gPiA+IEhpIEFuZHJleSwNCj4gPiA+DQo+ID4gPiBPbiBX
-ZWQsIERlYyAyLCAyMDIwIGF0IDg6MTEgQU0gQW5kcmV5IFpoaXpoaWtpbg0KPiA+ID4gPGFuZHJl
-eS56aGl6aGlraW5AbGVpY2EtIGdlb3N5c3RlbXMuY29tPiB3cm90ZToNCj4gPiA+ID4NCj4gPiA+
-ID4gQVJNdjcgQXJjaGl0ZWN0dXJlIFJlZmVyZW5jZSBNYW51YWwgWzFdIHNlY3Rpb24gQTMuNS41
-IGRldGFpbHMNCj4gPiA+ID4gTm9ybWFsIG1lbW9yeSB0eXBlLCB0b2dldGhlciB3aXRoIGNhY2hl
-YWJpbGl0eSBhdHRyaWJ1dGVzIHRoYXQNCj4gPiA+ID4gY291bGQgYmUgYXBwbGllZCB0byBtZW1v
-cnkgcmVnaW9ucyBkZWZpbmVkIGFzICJOb3JtYWwgbWVtb3J5Ii4NCj4gPiA+ID4NCj4gPiA+ID4g
-U2VjdGlvbiBCMi4xLjIgb2YgdGhlIEFyY2hpdGVjdHVyZSBSZWZlcmVuY2UgTWFudWFsIFsxXSBh
-bHNvDQo+ID4gPiA+IHByb3ZpZGVzIGRldGFpbHMgcmVnYXJkaW5nIHRoZSBNZW1vcnkgYXR0cmli
-dXRlcyB0aGF0IGNvdWxkIGJlDQo+ID4gPiA+IGFzc2lnbmVkIHRvIHBhcnRpY3VsYXIgbWVtb3J5
-IHJlZ2lvbnMsIHdoaWNoIGluY2x1ZGVzIHRoZQ0KPiA+ID4gPiBkZXNjcnB0aW9uIG9mIGNhY2hl
-YWJpbGl0eSBhdHRyaWJ1dGVzIGFuZCBjYWNoZSBhbGxvY2F0aW9uIGhpbnRzLg0KPiA+ID4gPg0K
-PiA+ID4gPiBNZW1vcnkgdHlwZSBhbmQgY2FjaGVhYmlsaXR5IGF0dHJpYnV0ZXMgZm9ybXMgMiBz
-ZXBhcmF0ZQ0KPiA+ID4gPiBkZWZpbml0aW9ucywgd2hlcmUgY2FjaGVhYmlsaXR5IGF0dHJpYnV0
-ZXMgZGVmaW5lcyBhIG1lY2hhbmlzbSBvZg0KPiA+ID4gPiBjb2hlcmVuY3kgY29udHJvbCByYXRo
-ZXIgdGhhbiB0aGUgdHlwZSBvZiBtZW1vcnkgaXRzZWxmLg0KPiA+ID4gPg0KPiA+ID4gPiBJbiBv
-dGhlciB3b3JkczogTm9ybWFsIG1lbW9yeSB0eXBlIGNhbiBiZSBjb25maWd1cmVkIHdpdGggc2V2
-ZXJhbA0KPiA+ID4gPiBjb21iaW5hdGlvbiBvZiBjYWNoZWFiaWxpdHkgYXR0cmlidXRlcywgbmFt
-ZWx5Og0KPiA+ID4gPiAtIFdyaXRlLVRocm91Z2ggKFdUKQ0KPiA+ID4gPiAtIFdyaXRlLUJhY2sg
-KFdCKSBmb2xsb3dlZCBieSBjYWNoZSBhbGxvY2F0aW9uIGhpbnQ6DQo+ID4gPiA+ICAgLSBXcml0
-ZS1BbGxvY2F0ZQ0KPiA+ID4gPiAgIC0gTm8gV3JpdGUtQWxsb2NhdGUgKGFsc28ga25vd24gYXMg
-UmVhZC1BbGxvY2F0ZSkNCj4gPiA+ID4NCj4gPiA+ID4gVGhvc2UgdHlwZXMgYXJlIG1hcHBlZCBp
-biB0aGUga2VybmVsIHRvIGNvcnJlc3BvbmRpbmcgbWFjcm9zOg0KPiA+ID4gPiAtIFdyaXRlLVRo
-cm91Z2g6IExfUFRFX01UX1dSSVRFVEhST1VHSA0KPiA+ID4gPiAtIFdyaXRlLUJhY2sgV3JpdGUt
-QWxsb2NhdGU6IExfUFRFX01UX1dSSVRFQUxMT0MNCj4gPiA+ID4gLSBXcml0ZS1CYWNrIFJlYWQt
-QWxsb2NhdGU6IExfUFRFX01UX1dSSVRFQkFDSw0KPiA+ID4gPg0KPiA+ID4gPiBDdXJyZW50IGlt
-cGxlbWVudGF0aW9uIG9mIHRoZSBvcC10ZWUgZHJpdmVyIHRha2VzIGluIGFjY291bnQgb25seQ0K
-PiA+ID4gPiAyIGxhc3QgbWVtb3J5IHJlZ2lvbiB0eXBlcywgd2hpbGUgcGVyZm9ybWluZyBhIGNo
-ZWNrIGlmIHRoZSBtZW1vcnkNCj4gPiA+ID4gYmxvY2sgaXMgYWxsb2NhdGVkIGFzICJOb3JtYWwg
-bWVtb3J5IiwgbGVhdmluZyBXcml0ZS1UaHJvdWdoDQo+ID4gPiA+IGFsbG9jYXRpb25zIHRvIGJl
-IG5vdCBjb25zaWRlcmVkLg0KPiA+ID4gPg0KPiA+ID4gPiBFeHRlbmQgdmVyaWZpY2F0aW9uIG1l
-Y2hhbmlzbSB0byBpbmNsdWRlIGFsc28gTm9ybWFsIG1lbW9yeQ0KPiA+ID4gPiByZWdpb3MsIHdo
-aWNoIGFyZSBkZXNpZ25hdGVkIHdpdGggV3JpdGUtVGhyb3VnaCBjYWNoZWFiaWxpdHkgYXR0cmli
-dXRlcy4NCj4gPiA+DQo+ID4gPiBBcmUgeW91IHRyeWluZyB0byBmaXggYSByZWFsIGVycm9yIHdp
-dGggdGhpcyBvciBhcmUgeW91IGp1c3QgdHJ5aW5nDQo+ID4gPiB0byBjb3ZlciBhbGwgY2FzZXM/
-IEkgc3VzcGVjdCB0aGUgbGF0dGVyIHNpbmNlIHlvdSdkIGxpa2VseSBoYXZlDQo+ID4gPiBjb2hl
-cmVuY3kgcHJvYmxlbXMgd2l0aCBPUC1URUUgaW4gU2VjdXJlIHdvcmxkIGlmIHlvdSB1c2VkIFdy
-aXRlLVRocm91Z2gNCj4gaW5zdGVhZC4NCj4gPg0KPiA+IFllcywgdGhpcyBhaW1zIHRvIHByb3Zp
-ZGUgY29uc2lzdGVuY3kgaW4gZGV0ZWN0aW9uIHdoaWNoIG1lbW9yeSBibG9ja3MNCj4gPiBjYW4g
-YmUgaWRlbnRpZmllZCBhcyBOb3JtYWwgbWVtb3J5IGluIEFSTXY3IGFyY2hpdGVjdHVyZS4NCj4g
-DQo+IEkgdGhpbmsgeW91J3JlIG1pc3NpbmcgdGhlIHB1cnBvc2Ugb2YgdGhpcyBpbnRlcm5hbCBm
-dW5jdGlvbi4gSXQncyB0aGVyZSB0byBjaGVjayB0aGF0DQo+IHRoZSBtZW1vcnkgaXMgbWFwcGVk
-IGluIGEgd2F5IGNvbXBhdGlibGUgd2l0aCB3aGF0IE9QLVRFRSBpcyB1c2luZyBpbiBTZWN1cmUN
-Cj4gd29ybGQuDQoNCk9LLCBub3cgaXQncyBjbGVhciEgVGhlbiBpdCBpcyBtb3JlIGEgbWF0dGVy
-IG9mIGlzX25vcm1hbF9tZW1vcnkoKSBmdW5jdGlvbiBuYW1lLCB3aGljaA0KaXMgbWlzLWxlYWRp
-bmcuIEkgd2FzIHVuZGVyIGltcHJlc3Npb24gdGhhdCB0aGlzIGZ1bmN0aW9uIChhdCBsZWFzdCBm
-cm9tIGl0cyBuYW1lKSBpcw0KdmVyaWZ5aW5nIHRoYXQgdGhlIG1lbW9yeSBibG9jayBpcyBjb25z
-aWRlcmVkIGFzIE5vcm1hbCBtZW1vcnkgaW4gdGVybXMgb2YgQVJNdjcNCmFyY2hpdGVjdHVyZSwg
-YnV0IGl0IGlzIHJhdGhlciBhIGNoZWNrIGlmIHRoZSBtZW1vcnkgYmxvY2sgaXMgKnVzYWJsZSog
-Zm9yIHRoZSBPUC1URUUNCnB1cnBvc2VzLg0KDQpJZiB0aGF0IGlzIHRoZSBjYXNlIC0geW91IGNh
-biBkcm9wIHRoaXMgcGF0Y2ggYWx0b2dldGhlciwgYnV0IEkgYmVsaWV2ZSB0aGF0IHRoZSBmdW5j
-dGlvbg0KbmFtZSBzaG91bGQgYmUgY2hhbmdlZCB0byByZWZsZWN0IHRoZSBhY3R1YWwgcHVycG9z
-ZSB0byBhdm9pZCBmdXR1cmUgY29uZnVzaW9ucy4NCg0KRG9lcyB0aGF0IHNvdW5kIHJlYXNvbmFi
-bGU/DQoNCj4gDQo+ID4NCj4gPiBXVCBjb2hlcmVuY3kgY29udHJvbCBhbmQgKGVzcGVjaWFsbHkp
-IG9ic2VydmFiaWxpdHkgYmVoYXZpb3IgaXMNCj4gPiBkZXNjcmliZWQgaW4gc2VjdGlvbiBBMy41
-LjUgb2YgdGhlDQo+ID4gQVJNdjcgUmVmTWFuLCB3aGVyZSBpdCBpcyBzdGF0ZWQgdGhhdCB3cml0
-ZSBvcGVyYXRpb25zIHBlcmZvcm1lZCBvbiBXVA0KPiA+IG1lbW9yeSBsb2NhdGlvbnMgYXJlIGd1
-YXJhbnRlZWQgdG8gYmUgdmlzaWJsZSB0byBhbGwgb2JzZXJ2ZXJzIGluc2lkZSBhbmQNCj4gb3V0
-c2lkZSBvZiBjYWNoZSBsZXZlbC4NCj4gPg0KPiA+IEFzIHRoZSBXcml0ZS1UaHJvdWdoIChXVCkg
-cHJvdmlkZXMgYSBiZXR0ZXIgY29oZXJlbmN5IGNvbnRyb2wsIGl0IGRvZXMNCj4gPiBtYWtlIHNl
-bnNlIHRvIGluY2x1ZGUgaXQgaW50byB0aGUgdmVyaWZpY2F0aW9uIHBlcmZvcm1lZCBieQ0KPiA+
-IGlzX25vcm1hbF9tZW1vcnkoKSBpbiBvcmRlciB0byBwcm92aWRlIGEgcG9zc2liaWxpdHkgZm9y
-IGZ1dHVyZQ0KPiA+IGltcGxlbWVudGF0aW9ucyB0byBtaXRpZ2F0ZSBpc3N1ZXMgYW5kIHNlbGVj
-dCBhcHByb3ByaWF0ZSBjYWNoZSBhbGxvY2F0aW9uDQo+IGF0dHJpYnV0ZXMgZm9yIG1lbW9yeSBi
-bG9ja3MgdXNlZC4NCj4gPg0KPiA+ID4gQ29ycmVjdCBtZSBpZiBJJ20gd3JvbmcsIGJ1dCAiV3Jp
-dGUtQmFjayBXcml0ZS1BbGxvY2F0ZSIgYW5kICJXcml0ZS1CYWNrDQo+IFJlYWQtQWxsb2NhdGUi
-DQo+ID4gPiBhcmUgYm90aCBjb21wYXRpYmxlIHdpdGggZWFjaCBvdGhlciBhcyB0aGUgIkFsbG9j
-YXRlIiBwYXJ0IGlzIGp1c3QgYSBoaW50Lg0KPiA+DQo+ID4gQ29ycmVjdCwgIkFsbG9jYXRlIiBq
-dXN0IGRlc2lnbmF0ZXMgdGhlIGNhY2hlIGFsbG9jYXRpb24gaGludC4NCj4gPiAiV3JpdGUtQmFj
-ayBSZWFkLUFsbG9jYXRlIiBzaG91bGQgYWN0dWFsbHkgYmUgcmVhZCBhcyAiV3JpdGUtQmFjayBu
-bw0KPiA+IFdyaXRlLUFsbG9jYXRlIiwgd2l0aCAiIFdyaXRlLUFsbG9jYXRlIiBiZWluZyBhIGhp
-bnQuIEJ1dCBzaW5jZSB0aGlzDQo+ID4gaXMgY29udHJvbGxlZCBieSBhIFRFWFswXSAtIHRoaXMg
-aGludCBpcyBoYW5kbGVkIHNlcGFyYXRlbHkgYnkNCj4gTF9QVEVfTVRfV1JJVEVCQUNLIGFuZCBM
-X1BURV9NVF9XUklURUFMTE9DIG1hY3Jvcy4NCj4gDQo+IEIzLjExLjMgaW4gdGhlIHNwZWMgcmVx
-dWlyZXMgY2FjaGUgbWFpbnRlbmFuY2Ugd2hlbiBjaGFuZ2luZyBmcm9tIFdyaXRlLUJhY2sNCj4g
-dG8gV3JpdGUtVGhyb3VnaCBhbmQgdmljZSB2ZXJzYSwgYW5kIHdlIGNhbid0IGRvIHRoYXQgaW4g
-dGhpcyBkZXNpZ24uDQoNCkNvcnJlY3QuIE15IGV4cGVjdGF0aW9uIGhlcmUgd291bGQgYmUgdGhh
-dCB0aGUgY2FjaGUgYWxsb2NhdGlvbiBwb2xpY3kgY2hhbmdlIHNob3VsZA0KYmUgYWNjb21wYW5p
-ZXMgYnkgZXhwbGljaXQgY2FjaGUgbWFpbnRlbmFuY2Ugb3BlcmF0aW9uICpiZWZvcmUqIGl0IGlz
-IHN1Ym1pdHRlZCB0bw0KdGhlIGRyaXZlciwgYnV0IHRoYXQgbWlnaHQgbm90IGJlIGhvdyBpdCBp
-cyBkZXNpZ25lZC4NCg0KPiANCj4gQ2hlZXJzLA0KPiBKZW5zDQo+IA0KPiA+DQo+ID4gPg0KPiA+
-ID4gQ2hlZXJzLA0KPiA+ID4gSmVucw0KPiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4gTGluazogWzFd
-Og0KPiA+ID4gPiBodHRwczovL2V1cjAyLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29t
-Lz91cmw9aHR0cHMlM0ElMkYlMkYNCj4gPiA+ID4gZGV2ZQ0KPiA+ID4gPg0KPiA+ID4NCj4gbG9w
-ZXIuYXJtLmNvbSUyRmRvY3VtZW50YXRpb24lMkZkZGkwNDA2JTJGY2QmYW1wO2RhdGE9MDQlN0Mw
-MSU3QyU3DQo+ID4gPiBDYTQwDQo+ID4gPiA+DQo+ID4gPg0KPiBmZmQzNTkxMmY0ZmUzZDk3MzA4
-ZDg5Njk5M2I4NyU3QzFiMTZhYjNlYjhmNjRmZTM5ZjNlMmRiN2ZlNTQ5ZjZhJTdDMA0KPiA+ID4g
-JQ0KPiA+ID4gNw0KPiA+ID4gPg0KPiA+ID4NCj4gQzElN0M2Mzc0MjQ5MzIxNjkwNzQ2NTQlN0NV
-bmtub3duJTdDVFdGcGJHWnNiM2Q4ZXlKV0lqb2lNQzR3TGpBdw0KPiA+ID4gTURBaUxDDQo+ID4g
-PiA+DQo+ID4gPg0KPiBKUUlqb2lWMmx1TXpJaUxDSkJUaUk2SWsxaGFXd2lMQ0pYVkNJNk1uMCUz
-RCU3QzMwMDAmYW1wO3NkYXRhPWMwaksyZw0KPiA+ID4gVA0KPiA+ID4gbQ0KPiA+ID4gPiBxckF5
-bzAlMkZmcjA3dCUyRmc1TmJQZG00ZGg3Umw3YWxOV2xhUWMlM0QmYW1wO3Jlc2VydmVkPTANCj4g
-PiA+ID4gRml4ZXM6IDg1MzczNWU0MDQyNCAoIm9wdGVlOiBhZGQgd3JpdGViYWNrIHRvIHZhbGlk
-IG1lbW9yeSB0eXBlIikNCj4gPiA+ID4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCj4gPiA+
-ID4gU2lnbmVkLW9mZi1ieTogQW5kcmV5IFpoaXpoaWtpbg0KPiA+ID4gPiA8YW5kcmV5LnpoaXpo
-aWtpbkBsZWljYS1nZW9zeXN0ZW1zLmNvbT4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+ICBkcml2ZXJz
-L3RlZS9vcHRlZS9jYWxsLmMgfCAzICsrLQ0KPiA+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5z
-ZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+ID4gPg0KPiA+ID4gPiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy90ZWUvb3B0ZWUvY2FsbC5jIGIvZHJpdmVycy90ZWUvb3B0ZWUvY2FsbC5jDQo+ID4g
-PiA+IGluZGV4DQo+ID4gPiA+IGM5ODE3NTdiYTBkNC4uOGRhMjdkMDJhMmQ2IDEwMDY0NA0KPiA+
-ID4gPiAtLS0gYS9kcml2ZXJzL3RlZS9vcHRlZS9jYWxsLmMNCj4gPiA+ID4gKysrIGIvZHJpdmVy
-cy90ZWUvb3B0ZWUvY2FsbC5jDQo+ID4gPiA+IEBAIC01MzUsNyArNTM1LDggQEAgc3RhdGljIGJv
-b2wgaXNfbm9ybWFsX21lbW9yeShwZ3Byb3RfdCBwKSAgew0KPiA+ID4gPiAjaWYNCj4gPiA+ID4g
-ZGVmaW5lZChDT05GSUdfQVJNKQ0KPiA+ID4gPiAgICAgICAgIHJldHVybiAoKChwZ3Byb3RfdmFs
-KHApICYgTF9QVEVfTVRfTUFTSykgPT0NCj4gPiA+ID4gTF9QVEVfTVRfV1JJVEVBTExPQykNCj4g
-PiA+IHx8DQo+ID4gPiA+IC0gICAgICAgICAgICAgICAoKHBncHJvdF92YWwocCkgJiBMX1BURV9N
-VF9NQVNLKSA9PSBMX1BURV9NVF9XUklURUJBQ0spKTsNCj4gPiA+ID4gKyAgICAgICAgICAgICAg
-ICgocGdwcm90X3ZhbChwKSAmIExfUFRFX01UX01BU0spID09IExfUFRFX01UX1dSSVRFQkFDSykN
-Cj4gfHwNCj4gPiA+ID4gKyAgICAgICAgICAgICAgICgocGdwcm90X3ZhbChwKSAmIExfUFRFX01U
-X01BU0spID09DQo+ID4gPiA+ICsgTF9QVEVfTVRfV1JJVEVUSFJPVUdIKSk7DQo+ID4gPiA+ICAj
-ZWxpZiBkZWZpbmVkKENPTkZJR19BUk02NCkNCj4gPiA+ID4gICAgICAgICByZXR1cm4gKHBncHJv
-dF92YWwocCkgJiBQVEVfQVRUUklORFhfTUFTSykgPT0NCj4gPiA+ID4gUFRFX0FUVFJJTkRYKE1U
-X05PUk1BTCk7ICAjZWxzZQ0KPiA+ID4gPiAtLQ0KPiA+ID4gPiAyLjE3LjENCj4gPiA+ID4NCj4g
-Pg0KPiA+IFJlZ2FyZHMsDQo+ID4gQW5kcmV5DQoNClJlZ2FyZHMsDQpBbmRyZXkNCg==
+On Wed, Dec 02, 2020 at 10:21:16AM +0100, Peter Zijlstra wrote:
+> On Tue, Dec 01, 2020 at 08:18:56PM +0100, Heiko Carstens wrote:
+> OK, so with a little help from s390/PoO and Sven, the code removed skips
+> the TRACE_IRQS_OFF when IRQs were enabled in the old PSW (the previous
+> context).
+> 
+> That sounds entirely the right thing. Irrespective of what the previous
+> IRQ state was, the current state is off.
+> 
+> > diff --git a/arch/s390/kernel/idle.c b/arch/s390/kernel/idle.c
+> > index 2b85096964f8..5bd8c1044d09 100644
+> > --- a/arch/s390/kernel/idle.c
+> > +++ b/arch/s390/kernel/idle.c
+> > @@ -123,7 +123,6 @@ void arch_cpu_idle_enter(void)
+> >  void arch_cpu_idle(void)
+> >  {
+> >  	enabled_wait();
+> > -	raw_local_irq_enable();
+> >  }
+> 
+> Currently arch_cpu_idle() is defined as to return with IRQs enabled,
+> however, the very first thing we do when we return is
+> raw_local_irq_disable(), so this change is harmless.
+> 
+> It is also the direction I've been arguing for elsewhere in this thread.
+> So I'm certainly not complaining.
+
+So I left that raw_local_irq_enable() in to be consistent with other
+architectures. enabled_wait() now returns with irqs disabled, but with
+a lockdep state that tells irqs are on...  See patch below.
+Works and hopefully makes sense ;)
+
+In addition (but not for rc7) I want to get rid of our complex udelay
+implementation. I think we don't need that anymore.. so there would be
+only the idle code left where we have to play tricks.
+
+From 7bd86fb3eb039a4163281472ca79b9158e726526 Mon Sep 17 00:00:00 2001
+From: Heiko Carstens <hca@linux.ibm.com>
+Date: Wed, 2 Dec 2020 11:46:01 +0100
+Subject: [PATCH] s390: fix irq state tracing
+
+With commit 58c644ba512c ("sched/idle: Fix arch_cpu_idle() vs
+tracing") common code calls arch_cpu_idle() with a lockdep state that
+tells irqs are on.
+
+This doesn't work very well for s390: psw_idle() will enable interrupts
+to wait for an interrupt. As soon as an interrupt occurs the interrupt
+handler will verify if the old context was psw_idle(). If that is the
+case the interrupt enablement bits in the old program status word will
+be cleared.
+
+A subsequent test in both the external as well as the io interrupt
+handler checks if in the old context interrupts were enabled. Due to
+the above patching of the old program status word it is assumed the
+old context had interrupts disabled, and therefore a call to
+TRACE_IRQS_OFF (aka trace_hardirqs_off_caller) is skipped. Which in
+turn makes lockdep incorrectly "think" that interrupts are enabled
+within the interrupt handler.
+
+Fix this by unconditionally calling TRACE_IRQS_OFF when entering
+interrupt handlers. Also call unconditionally TRACE_IRQS_ON when
+leaving interrupts handlers.
+
+This leaves the special psw_idle() case, which now returns with
+interrupts disabled, but has an "irqs on" lockdep state. So callers of
+psw_idle() must adjust the state on their own, if required. This is
+currently only __udelay_disabled().
+
+Fixes: 58c644ba512c ("sched/idle: Fix arch_cpu_idle() vs tracing")
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+---
+ arch/s390/kernel/entry.S | 15 ---------------
+ arch/s390/lib/delay.c    |  5 ++---
+ 2 files changed, 2 insertions(+), 18 deletions(-)
+
+diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
+index 26bb0603c5a1..92beb1444644 100644
+--- a/arch/s390/kernel/entry.S
++++ b/arch/s390/kernel/entry.S
+@@ -763,12 +763,7 @@ ENTRY(io_int_handler)
+ 	xc	__PT_FLAGS(8,%r11),__PT_FLAGS(%r11)
+ 	TSTMSK	__LC_CPU_FLAGS,_CIF_IGNORE_IRQ
+ 	jo	.Lio_restore
+-#if IS_ENABLED(CONFIG_TRACE_IRQFLAGS)
+-	tmhh	%r8,0x300
+-	jz	1f
+ 	TRACE_IRQS_OFF
+-1:
+-#endif
+ 	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
+ .Lio_loop:
+ 	lgr	%r2,%r11		# pass pointer to pt_regs
+@@ -791,12 +786,7 @@ ENTRY(io_int_handler)
+ 	TSTMSK	__LC_CPU_FLAGS,_CIF_WORK
+ 	jnz	.Lio_work
+ .Lio_restore:
+-#if IS_ENABLED(CONFIG_TRACE_IRQFLAGS)
+-	tm	__PT_PSW(%r11),3
+-	jno	0f
+ 	TRACE_IRQS_ON
+-0:
+-#endif
+ 	mvc	__LC_RETURN_PSW(16),__PT_PSW(%r11)
+ 	tm	__PT_PSW+1(%r11),0x01	# returning to user ?
+ 	jno	.Lio_exit_kernel
+@@ -976,12 +966,7 @@ ENTRY(ext_int_handler)
+ 	xc	__PT_FLAGS(8,%r11),__PT_FLAGS(%r11)
+ 	TSTMSK	__LC_CPU_FLAGS,_CIF_IGNORE_IRQ
+ 	jo	.Lio_restore
+-#if IS_ENABLED(CONFIG_TRACE_IRQFLAGS)
+-	tmhh	%r8,0x300
+-	jz	1f
+ 	TRACE_IRQS_OFF
+-1:
+-#endif
+ 	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
+ 	lgr	%r2,%r11		# pass pointer to pt_regs
+ 	lghi	%r3,EXT_INTERRUPT
+diff --git a/arch/s390/lib/delay.c b/arch/s390/lib/delay.c
+index daca7bad66de..8c0c68e7770e 100644
+--- a/arch/s390/lib/delay.c
++++ b/arch/s390/lib/delay.c
+@@ -33,7 +33,7 @@ EXPORT_SYMBOL(__delay);
+ 
+ static void __udelay_disabled(unsigned long long usecs)
+ {
+-	unsigned long cr0, cr0_new, psw_mask, flags;
++	unsigned long cr0, cr0_new, psw_mask;
+ 	struct s390_idle_data idle;
+ 	u64 end;
+ 
+@@ -45,9 +45,8 @@ static void __udelay_disabled(unsigned long long usecs)
+ 	psw_mask = __extract_psw() | PSW_MASK_EXT | PSW_MASK_WAIT;
+ 	set_clock_comparator(end);
+ 	set_cpu_flag(CIF_IGNORE_IRQ);
+-	local_irq_save(flags);
+ 	psw_idle(&idle, psw_mask);
+-	local_irq_restore(flags);
++	trace_hardirqs_off();
+ 	clear_cpu_flag(CIF_IGNORE_IRQ);
+ 	set_clock_comparator(S390_lowcore.clock_comparator);
+ 	__ctl_load(cr0, 0, 0);
+-- 
+2.17.1
+
