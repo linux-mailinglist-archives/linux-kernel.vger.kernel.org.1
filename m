@@ -2,204 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C042CBB61
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB142CBB69
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727451AbgLBLRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:17:47 -0500
-Received: from foss.arm.com ([217.140.110.172]:36564 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725918AbgLBLRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 06:17:46 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F55B1042;
-        Wed,  2 Dec 2020 03:17:01 -0800 (PST)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD5973F66B;
-        Wed,  2 Dec 2020 03:16:59 -0800 (PST)
-Subject: Re: [PATCH V2 1/2] mm/debug_vm_pgtable/basic: Add validation for
- dirtiness after write protect
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        christophe.leroy@csgroup.eu, gerald.schaefer@linux.ibm.com,
-        vgupta@synopsys.com, paul.walmsley@sifive.com
-References: <1606825169-5229-1-git-send-email-anshuman.khandual@arm.com>
- <1606825169-5229-2-git-send-email-anshuman.khandual@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <5d07e798-aa91-ec00-36af-108ff0b19709@arm.com>
-Date:   Wed, 2 Dec 2020 11:16:54 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388420AbgLBLSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 06:18:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727795AbgLBLSd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 06:18:33 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A552C0613D4;
+        Wed,  2 Dec 2020 03:17:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JnxZYlUDd45saPWzuKsj9paXqL0ypfXcFakdRrNHTMA=; b=L1ZsnJpGUyFzioBDrnvjxyY0rD
+        US3LMqZFSiz3H6vx3oCTX9A7E2+KD/o2ke2pZPKDiKxRj66cg49/pGK6eY8dky91+RaCKUyLcnNB5
+        VVZafMjXaCVt7Hwd3xjEOWtaviyB5S/AB/T35HMESzbLuJWCxhPK985tTL4jsFjl/H9Ebz59SGZ7Q
+        jDSOUF2Uonh87nqUP0JEmo7lu46eSh09J1dO+btFIKBJVREPbpRdZ3vHz9aI/poUh4BjWTSNQxwT5
+        DqdWaHMFHhMisR+HyBchLJwWqvUQJtyoeUBoWPtYft8ahV0+EY0Sk0p/TgDpmd26SzZiWK1uCkp48
+        FpMzXTww==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkQ8c-0000Qs-Fs; Wed, 02 Dec 2020 11:17:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4F2FB3035D4;
+        Wed,  2 Dec 2020 12:17:31 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2DD122227D8EC; Wed,  2 Dec 2020 12:17:31 +0100 (CET)
+Date:   Wed, 2 Dec 2020 12:17:31 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+        Anton Blanchard <anton@ozlabs.org>
+Subject: Re: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb
+ option
+Message-ID: <20201202111731.GA2414@hirez.programming.kicks-ass.net>
+References: <20201128160141.1003903-1-npiggin@gmail.com>
+ <20201128160141.1003903-7-npiggin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1606825169-5229-2-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201128160141.1003903-7-npiggin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12/2020 12:19, Anshuman Khandual wrote:
-> This adds validation tests for dirtiness after write protect conversion for
-> each page table level. There are two new separate test types involved here.
-> 
-> The first test ensures that a given page table entry does not become dirty
-> after pxx_wrprotect(). This is important for platforms like arm64 which
-> transfers and drops the hardware dirty bit (!PTE_RDONLY) to the software
-> dirty bit while making it an write protected one. This test ensures that
-> no fresh page table entry could be created with hardware dirty bit set.
-> The second test ensures that a given page table entry always preserve the
-> dirty information across pxx_wrprotect().
-> 
-> This adds two previously missing PUD level basic tests and while here fixes
-> pxx_wrprotect() related typos in the documentation file.
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->   Documentation/vm/arch_pgtable_helpers.rst |  8 ++---
->   mm/debug_vm_pgtable.c                     | 42 +++++++++++++++++++++++
->   2 files changed, 46 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/vm/arch_pgtable_helpers.rst b/Documentation/vm/arch_pgtable_helpers.rst
-> index f3591ee3aaa8..552567d863b8 100644
-> --- a/Documentation/vm/arch_pgtable_helpers.rst
-> +++ b/Documentation/vm/arch_pgtable_helpers.rst
-> @@ -50,7 +50,7 @@ PTE Page Table Helpers
->   +---------------------------+--------------------------------------------------+
->   | pte_mkwrite               | Creates a writable PTE                           |
->   +---------------------------+--------------------------------------------------+
-> -| pte_mkwrprotect           | Creates a write protected PTE                    |
-> +| pte_wrprotect             | Creates a write protected PTE                    |
->   +---------------------------+--------------------------------------------------+
->   | pte_mkspecial             | Creates a special PTE                            |
->   +---------------------------+--------------------------------------------------+
-> @@ -120,7 +120,7 @@ PMD Page Table Helpers
->   +---------------------------+--------------------------------------------------+
->   | pmd_mkwrite               | Creates a writable PMD                           |
->   +---------------------------+--------------------------------------------------+
-> -| pmd_mkwrprotect           | Creates a write protected PMD                    |
-> +| pmd_wrprotect             | Creates a write protected PMD                    |
->   +---------------------------+--------------------------------------------------+
->   | pmd_mkspecial             | Creates a special PMD                            |
->   +---------------------------+--------------------------------------------------+
-> @@ -186,7 +186,7 @@ PUD Page Table Helpers
->   +---------------------------+--------------------------------------------------+
->   | pud_mkwrite               | Creates a writable PUD                           |
->   +---------------------------+--------------------------------------------------+
-> -| pud_mkwrprotect           | Creates a write protected PUD                    |
-> +| pud_wrprotect             | Creates a write protected PUD                    |
->   +---------------------------+--------------------------------------------------+
->   | pud_mkdevmap              | Creates a ZONE_DEVICE mapped PUD                 |
->   +---------------------------+--------------------------------------------------+
-> @@ -224,7 +224,7 @@ HugeTLB Page Table Helpers
->   +---------------------------+--------------------------------------------------+
->   | huge_pte_mkwrite          | Creates a writable HugeTLB                       |
->   +---------------------------+--------------------------------------------------+
-> -| huge_pte_mkwrprotect      | Creates a write protected HugeTLB                |
-> +| huge_pte_wrprotect        | Creates a write protected HugeTLB                |
->   +---------------------------+--------------------------------------------------+
->   | huge_ptep_get_and_clear   | Clears a HugeTLB                                 |
->   +---------------------------+--------------------------------------------------+
-> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> index c05d9dcf7891..c6fffea54522 100644
-> --- a/mm/debug_vm_pgtable.c
-> +++ b/mm/debug_vm_pgtable.c
-> @@ -63,6 +63,17 @@ static void __init pte_basic_tests(unsigned long pfn, pgprot_t prot)
->   	pte_t pte = pfn_pte(pfn, prot);
->   
->   	pr_debug("Validating PTE basic\n");
-> +
-> +	/*
-> +	 * This test needs to execute right after the given page
-> +	 * table entry is created with pfn_pte() to make sure that
-> +	 * protection_map[idx] does not have the dirty bit enabled
-> +	 * from the beginning. This is particularly important for
-> +	 * platforms like arm64 where (!PTE_RDONLY) indicate dirty
-> +	 * bit being set.
-> +	 */
+On Sun, Nov 29, 2020 at 02:01:39AM +1000, Nicholas Piggin wrote:
+> +static void shoot_lazy_tlbs(struct mm_struct *mm)
+> +{
+> +	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB_SHOOTDOWN)) {
+> +		/*
+> +		 * IPI overheads have not found to be expensive, but they could
+> +		 * be reduced in a number of possible ways, for example (in
+> +		 * roughly increasing order of complexity):
+> +		 * - A batch of mms requiring IPIs could be gathered and freed
+> +		 *   at once.
+> +		 * - CPUs could store their active mm somewhere that can be
+> +		 *   remotely checked without a lock, to filter out
+> +		 *   false-positives in the cpumask.
+> +		 * - After mm_users or mm_count reaches zero, switching away
+> +		 *   from the mm could clear mm_cpumask to reduce some IPIs
+> +		 *   (some batching or delaying would help).
+> +		 * - A delayed freeing and RCU-like quiescing sequence based on
+> +		 *   mm switching to avoid IPIs completely.
+> +		 */
+> +		on_each_cpu_mask(mm_cpumask(mm), do_shoot_lazy_tlb, (void *)mm, 1);
+> +		if (IS_ENABLED(CONFIG_DEBUG_VM))
+> +			on_each_cpu(do_check_lazy_tlb, (void *)mm, 1);
 
-Unless I'm seriously mistaken this comment is misleading - the likes of 
-pte_wrprotect() take the PTE *by value* and return the modified version. 
-So none of these tests actually modify the variable 'pte'. So there 
-shouldn't actually be any restrictions on the ordering.
+So the obvious 'improvement' here would be something like:
 
-Or am I missing something?
+	for_each_online_cpu(cpu) {
+		p = rcu_dereference(cpu_rq(cpu)->curr;
+		if (p->active_mm != mm)
+			continue;
+		__cpumask_set_cpu(cpu, tmpmask);
+	}
+	on_each_cpu_mask(tmpmask, ...);
 
-Steve
+The remote CPU will never switch _to_ @mm, on account of it being quite
+dead, but it is quite prone to false negatives.
 
-> +	WARN_ON(pte_dirty(pte_wrprotect(pte)));
-> +
->   	WARN_ON(!pte_same(pte, pte));
->   	WARN_ON(!pte_young(pte_mkyoung(pte_mkold(pte))));
->   	WARN_ON(!pte_dirty(pte_mkdirty(pte_mkclean(pte))));
-> @@ -70,6 +81,8 @@ static void __init pte_basic_tests(unsigned long pfn, pgprot_t prot)
->   	WARN_ON(pte_young(pte_mkold(pte_mkyoung(pte))));
->   	WARN_ON(pte_dirty(pte_mkclean(pte_mkdirty(pte))));
->   	WARN_ON(pte_write(pte_wrprotect(pte_mkwrite(pte))));
-> +	WARN_ON(pte_dirty(pte_wrprotect(pte_mkclean(pte))));
-> +	WARN_ON(!pte_dirty(pte_wrprotect(pte_mkdirty(pte))));
->   }
->   
->   static void __init pte_advanced_tests(struct mm_struct *mm,
-> @@ -137,6 +150,18 @@ static void __init pmd_basic_tests(unsigned long pfn, pgprot_t prot)
->   		return;
->   
->   	pr_debug("Validating PMD basic\n");
-> +
-> +	/*
-> +	 * This test needs to execute right after the given page
-> +	 * table entry is created with pfn_pmd() to make sure that
-> +	 * protection_map[idx] does not have the dirty bit enabled
-> +	 * from the beginning. This is particularly important for
-> +	 * platforms like arm64 where (!PTE_RDONLY) indicate dirty
-> +	 * bit being set.
-> +	 */
-> +	WARN_ON(pmd_dirty(pmd_wrprotect(pmd)));
-> +
-> +
->   	WARN_ON(!pmd_same(pmd, pmd));
->   	WARN_ON(!pmd_young(pmd_mkyoung(pmd_mkold(pmd))));
->   	WARN_ON(!pmd_dirty(pmd_mkdirty(pmd_mkclean(pmd))));
-> @@ -144,6 +169,8 @@ static void __init pmd_basic_tests(unsigned long pfn, pgprot_t prot)
->   	WARN_ON(pmd_young(pmd_mkold(pmd_mkyoung(pmd))));
->   	WARN_ON(pmd_dirty(pmd_mkclean(pmd_mkdirty(pmd))));
->   	WARN_ON(pmd_write(pmd_wrprotect(pmd_mkwrite(pmd))));
-> +	WARN_ON(pmd_dirty(pmd_wrprotect(pmd_mkclean(pmd))));
-> +	WARN_ON(!pmd_dirty(pmd_wrprotect(pmd_mkdirty(pmd))));
->   	/*
->   	 * A huge page does not point to next level page table
->   	 * entry. Hence this must qualify as pmd_bad().
-> @@ -257,11 +284,26 @@ static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot)
->   		return;
->   
->   	pr_debug("Validating PUD basic\n");
-> +
-> +	/*
-> +	 * This test needs to execute right after the given page
-> +	 * table entry is created with pfn_pud() to make sure that
-> +	 * protection_map[idx] does not have the dirty bit enabled
-> +	 * from the beginning. This is particularly important for
-> +	 * platforms like arm64 where (!PTE_RDONLY) indicate dirty
-> +	 * bit being set.
-> +	 */
-> +	WARN_ON(pud_dirty(pud_wrprotect(pud)));
-> +
->   	WARN_ON(!pud_same(pud, pud));
->   	WARN_ON(!pud_young(pud_mkyoung(pud_mkold(pud))));
-> +	WARN_ON(!pud_dirty(pud_mkdirty(pud_mkclean(pud))));
-> +	WARN_ON(pud_dirty(pud_mkclean(pud_mkdirty(pud))));
->   	WARN_ON(!pud_write(pud_mkwrite(pud_wrprotect(pud))));
->   	WARN_ON(pud_write(pud_wrprotect(pud_mkwrite(pud))));
->   	WARN_ON(pud_young(pud_mkold(pud_mkyoung(pud))));
-> +	WARN_ON(pud_dirty(pud_wrprotect(pud_mkclean(pud))));
-> +	WARN_ON(!pud_dirty(pud_wrprotect(pud_mkdirty(pud))));
->   
->   	if (mm_pmd_folded(mm))
->   		return;
-> 
+Consider that __schedule() sets rq->curr *before* context_switch(), this
+means we'll see next->active_mm, even though prev->active_mm might still
+be our @mm.
 
+Now, because we'll be removing the atomic ops from context_switch()'s
+active_mm swizzling, I think we can change this to something like the
+below. The hope being that the cost of the new barrier can be offset by
+the loss of the atomics.
+
+Hmm ?
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 41404afb7f4c..2597c5c0ccb0 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4509,7 +4509,6 @@ context_switch(struct rq *rq, struct task_struct *prev,
+ 	if (!next->mm) {                                // to kernel
+ 		enter_lazy_tlb(prev->active_mm, next);
+ 
+-		next->active_mm = prev->active_mm;
+ 		if (prev->mm)                           // from user
+ 			mmgrab(prev->active_mm);
+ 		else
+@@ -4524,6 +4523,7 @@ context_switch(struct rq *rq, struct task_struct *prev,
+ 		 * case 'prev->active_mm == next->mm' through
+ 		 * finish_task_switch()'s mmdrop().
+ 		 */
++		next->active_mm = next->mm;
+ 		switch_mm_irqs_off(prev->active_mm, next->mm, next);
+ 
+ 		if (!prev->mm) {                        // from kernel
+@@ -5713,11 +5713,9 @@ static void __sched notrace __schedule(bool preempt)
+ 
+ 	if (likely(prev != next)) {
+ 		rq->nr_switches++;
+-		/*
+-		 * RCU users of rcu_dereference(rq->curr) may not see
+-		 * changes to task_struct made by pick_next_task().
+-		 */
+-		RCU_INIT_POINTER(rq->curr, next);
++
++		next->active_mm = prev->active_mm;
++		rcu_assign_pointer(rq->curr, next);
+ 		/*
+ 		 * The membarrier system call requires each architecture
+ 		 * to have a full memory barrier after updating
