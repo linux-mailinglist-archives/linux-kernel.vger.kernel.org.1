@@ -2,234 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0EE02CC184
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E835D2CC17A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730590AbgLBQAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:00:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730580AbgLBQAv (ORCPT
+        id S1730550AbgLBP67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:58:59 -0500
+Received: from relay1.mymailcheap.com ([144.217.248.102]:46056 "EHLO
+        relay1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728321AbgLBP66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:00:51 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E47C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:00:11 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id z3so1346286qtw.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:00:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gdlHGZ1m/gBnsOqQicvFwR+hM/IvDfRRWs65PBxCfGA=;
-        b=AKluyGF1uUnvLLuUgx0BqrWk9S60s575MRf+7eiOomEOpoTXd+WNtmVSRNIHRy89Oi
-         wyK+wJO9oXlm6EuYz/wMDTJJGBj0utAhxcHOFY4AH+lkrxgEf1Xh/PbSkoMgx0egHPN2
-         FuiP0zgA/EqFxQ/dYHPDY4qALk+MXohJ811jI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gdlHGZ1m/gBnsOqQicvFwR+hM/IvDfRRWs65PBxCfGA=;
-        b=Y9FNYDXVbOSpMehVIIrD4SmCQfgEfvHsx+CUY7BpV3CxbYylInAPbjpi59wf3AEEur
-         876FA4txKTDZRrjJ5uBP9Iq7ebAhEvnFXbSjkzi5/0cpwMCogxWbwYjLPDsTUD0yEYDl
-         EgNH1jh7kgsvi11oE4L8gaHQHTDaAGPeSDfTWyL0xByROIr9cLbQdtzEvxsqGivR5cdL
-         Sknrf2JKaNtMR36LIhA3MPYyQgOfQhIt/N5Nt7miLWSticJXpCfO+udgHMVsZJugP98S
-         Qm+kTbVfetHfetGkV76mGgU9T/+GmkutwaWzO78UeSYV4CtYxGOE4BzfjFCKCUHi3ywE
-         pfow==
-X-Gm-Message-State: AOAM530zs2hx7ZsusKQy+3TMMlDUx44gKYvktZeWazSLY4+sX9NHYf7/
-        apq9Sy/RNfCrS5URhWkEBBHuaxO2FzjGBQ==
-X-Google-Smtp-Source: ABdhPJzMglpkDyWimSv3EE/jSqxcP6xYLmNDZmBoy3ZhunyanMZpyvFvzf/2JJunN171q8+p1GwNSw==
-X-Received: by 2002:a05:622a:213:: with SMTP id b19mr3367488qtx.199.1606924809774;
-        Wed, 02 Dec 2020 08:00:09 -0800 (PST)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id g63sm2144317qkf.80.2020.12.02.08.00.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 08:00:09 -0800 (PST)
-Received: by mail-yb1-f175.google.com with SMTP id o144so2057730ybg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:00:09 -0800 (PST)
-X-Received: by 2002:ab0:35fa:: with SMTP id w26mr1655817uau.90.1606924491739;
- Wed, 02 Dec 2020 07:54:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20201112004130.17290-1-dianders@chromium.org> <CAD=FV=W122aWPbg7Fo=zg+QmK7DHBcYTQ6CjPawLhucd4Rtw9A@mail.gmail.com>
- <CAO-hwJ+amboty_wKzP3n11mHLfssGz8Npzdfu9QrcipEvu3VHA@mail.gmail.com>
-In-Reply-To: <CAO-hwJ+amboty_wKzP3n11mHLfssGz8Npzdfu9QrcipEvu3VHA@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 2 Dec 2020 07:54:40 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VkyF8B9stozXv_Xt7a-Od4-1f2h6QS5DDekiZCQhXjgw@mail.gmail.com>
-Message-ID: <CAD=FV=VkyF8B9stozXv_Xt7a-Od4-1f2h6QS5DDekiZCQhXjgw@mail.gmail.com>
-Subject: Re: [PATCH v6 0/4] HID: i2c-hid: Reorganize to allow supporting goodix,gt7375p
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Andrea Borgia <andrea@borgia.bo.it>,
+        Wed, 2 Dec 2020 10:58:58 -0500
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id BBBAE3F202;
+        Wed,  2 Dec 2020 15:57:24 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id 99E812A365;
+        Wed,  2 Dec 2020 10:57:24 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1606924644;
+        bh=hwwPTfPgASBh+GzvSdqdfyG4H6+5mcf5VD1FvR13etU=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=UwIibVfxx5l4G9JUmsVJNJpdbqhFF+AvXIlVCqX7mafLa35l+qweHl9GIVRyP7/id
+         3fcTTsFQ6Ho/kpiRdfefTBvWakcUFMRTCLuWsm+3GkXSa+cnnJkRLnwDS8d7JIZAaB
+         CjlOABNj/+Oalpa7dp+sKPDtwS85IMUsuekBXk4M=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id xOha9nIWUuj1; Wed,  2 Dec 2020 10:57:22 -0500 (EST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Wed,  2 Dec 2020 10:57:22 -0500 (EST)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 16CC340026;
+        Wed,  2 Dec 2020 15:57:21 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="aDH0tLLz";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.162.181])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 38E9040026;
+        Wed,  2 Dec 2020 15:57:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1606924631; bh=hwwPTfPgASBh+GzvSdqdfyG4H6+5mcf5VD1FvR13etU=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=aDH0tLLzbqdhMFNKFgzqZ0GUbB6cT2A4DHaZ5ba/GsxDM/ZTnFONojKwBBfVSAfuy
+         aA5/bhKLKSx3X4U40OoHuNefBW9X7sLLS4mUkKioXY6jzOLAgivq4GhrHmdOqj2QcC
+         Mv51rSBR/L0MMIf9PDwaa04A101eq3/HGVKSsIuo=
+Message-ID: <138e642d404dde57996c679e504ffe3ce2f0cb7a.camel@aosc.io>
+Subject: Re: [PATCH 8/8] arm64: dts: allwinner: Add OrangePi Zero 2 .dts
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Andre Przywara <andre.przywara@arm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     Icenowy Zheng <icenowy@aosc.xyz>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        Linus Walleij <linus.walleij@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Aaron Ma <aaron.ma@canonical.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jiri Kosina <jikos@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Olof Johansson <olof@lixom.net>, Pavel Balan <admin@kryma.net>,
-        Shawn Guo <shawnguo@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        You-Sheng Yang <vicamo.yang@canonical.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Yangtao Li <frank@allwinnertech.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Date:   Wed, 02 Dec 2020 23:57:02 +0800
+In-Reply-To: <20201202135409.13683-9-andre.przywara@arm.com>
+References: <20201202135409.13683-1-andre.przywara@arm.com>
+         <20201202135409.13683-9-andre.przywara@arm.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 16CC340026
+X-Spamd-Result: default: False [1.40 / 20.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.162.181:received];
+         TO_MATCH_ENVRCPT_SOME(0.00)[];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_TWELVE(0.00)[12];
+         DBL_PROHIBIT(0.00)[0.0.0.36:email,0.0.0.1:email];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+在 2020-12-02星期三的 13:54 +0000，Andre Przywara写道：
+> The OrangePi Zero 2 is a development board with the new H616 SoC.
+> 
+> It features the usual connectors used on those small boards, and
+> comes
+> with the AXP305, which seems to be compatible with the AXP805.
+> 
+> For more details see: http://linux-sunxi.org/Xunlong_Orange_Pi_Zero2
+> 
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> ---
+>  arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+>  .../allwinner/sun50i-h616-orangepi-zero2.dts  | 228
+> ++++++++++++++++++
+>  2 files changed, 229 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-
+> orangepi-zero2.dts
+> 
+> diff --git a/arch/arm64/boot/dts/allwinner/Makefile
+> b/arch/arm64/boot/dts/allwinner/Makefile
+> index 211d1e9d4701..0cf8299b1ce7 100644
+> --- a/arch/arm64/boot/dts/allwinner/Makefile
+> +++ b/arch/arm64/boot/dts/allwinner/Makefile
+> @@ -35,3 +35,4 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-orangepi-one-
+> plus.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
+> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-
+> zero2.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-
+> zero2.dts
+> new file mode 100644
+> index 000000000000..814f5b4fec7c
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts
+> @@ -0,0 +1,228 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+> +/*
+> + * Copyright (C) 2020 Arm Ltd.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "sun50i-h616.dtsi"
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +/ {
+> +	model = "OrangePi Zero2";
+> +	compatible = "xunlong,orangepi-zero2", "allwinner,sun50i-h616";
+> +
+> +	aliases {
+> +		ethernet0 = &emac0;
+> +		serial0 = &uart0;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
+> +
+> +		power {
+> +			label = "orangepi:red:power";
+> +			gpios = <&pio 2 13 GPIO_ACTIVE_HIGH>; /* PC13
+> */
+> +			default-state = "on";
+> +		};
+> +
+> +		status {
+> +			label = "orangepi:green:status";
+> +			gpios = <&pio 2 12 GPIO_ACTIVE_HIGH>; /* PC12
+> */
+> +		};
+> +	};
+> +
+> +	reg_vcc5v: vcc5v {
+> +		/* board wide 5V supply directly from the USB-C socket
+> */
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc-5v";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		regulator-always-on;
+> +	};
+> +
+> +	reg_usb1_vbus: usb1-vbus {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "usb1-vbus";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		enable-active-high;
+> +		gpio = <&pio 2 16 GPIO_ACTIVE_HIGH>; /* PC16 */
+> +		status = "okay";
+> +	};
+> +};
+> +
+> +&ehci0 {
+> +	status = "okay";
+> +};
+> +
+> +&ehci1 {
+> +	status = "okay";
+> +};
+> +
+> +/* USB 2 & 3 are on headers only. */
+> +
+> +&emac0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&ext_rgmii_pins>;
+> +	phy-mode = "rgmii";
+> +	phy-handle = <&ext_rgmii_phy>;
+> +	phy-supply = <&reg_dcdce>;
+> +	allwinner,rx-delay-ps = <3100>;
+> +	allwinner,tx-delay-ps = <700>;
+> +	status = "okay";
+> +};
+> +
+> +&mdio {
+> +	ext_rgmii_phy: ethernet-phy@1 {
+> +		compatible = "ethernet-phy-ieee802.3-c22";
+> +		reg = <1>;
+> +	};
+> +};
+> +
+> +&mmc0 {
+> +	vmmc-supply = <&reg_dcdce>;
+> +	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>;	/* PF6 */
+> +	bus-width = <4>;
+> +	status = "okay";
+> +};
+> +
+> +&ohci0 {
+> +	status = "okay";
+> +};
+> +
+> +&ohci1 {
+> +	status = "okay";
+> +};
+> +
+> +&r_i2c {
+> +	status = "okay";
+> +
+> +	axp305: pmic@36 {
+> +		compatible = "x-powers,axp305", "x-powers,axp805",
+> +			     "x-powers,axp806";
+> +		reg = <0x36>;
+> +
+> +		/* dummy interrupt to appease the driver for now */
+> +		interrupts = <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>;
+> +		interrupt-controller;
+> +		#interrupt-cells = <1>;
 
-On Wed, Dec 2, 2020 at 7:20 AM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> Hi Doug,
->
-> On Tue, Dec 1, 2020 at 10:12 PM Doug Anderson <dianders@chromium.org> wrote:
-> >
-> > Hi,
-> >
-> > On Wed, Nov 11, 2020 at 4:41 PM Douglas Anderson <dianders@chromium.org> wrote:
-> > >
-> > > The goal of this series is to support the Goodix GT7375P touchscreen.
-> > > This touchscreen is special because it has power sequencing
-> > > requirements that necessitate driving a reset GPIO.
-> > >
-> > > To do this, we totally rejigger the way i2c-hid is organized so that
-> > > it's easier to jam the Goodix support in there.
-> > >
-> > > This series was:
-> > > - Tested on a device that uses normal i2c-hid.
-> > > - Tested on a device that has a Goodix i2c-hid device.
-> > > - Tested on an ACPI device, but an earlier version of the series.
-> > >
-> > > Changes in v6:
-> > > - ACPI probe function should have been "static"
-> > > - Don't export suspend/resume, just export dev_pm_ops from core.
-> > > - Fixed crash in ACPI module (missing init of "client")
-> > > - No need for regulator include in the core.
-> > > - Removed i2c_device_id table from ACPI module.
-> > > - Suspend/resume are no longer exported from the core.
-> > >
-> > > Changes in v5:
-> > > - Add shutdown_tail op and use it in ACPI.
-> > > - Added mention of i2c-hid in the yaml itself as per Rob.
-> > > - Adjusted subject as per Rob.
-> > > - i2chid_subclass_data => i2chid_ops.
-> > > - power_up_device => power_up (same with power_down).
-> > > - subclass => ops.
-> > >
-> > > Changes in v4:
-> > > - ("arm64: defconfig: Update config names for i2c-hid rejigger") new for v4.
-> > > - Fully rejigger so ACPI and OF are full subclasses.
-> > > - Totally redid based on the new subclass system.
-> > >
-> > > Changes in v3:
-> > > - Fixed compatible in example.
-> > > - Removed Benjamin as a maintainer.
-> > > - Rework to use subclassing.
-> > > - Updated description.
-> > >
-> > > Changes in v2:
-> > > - ("dt-bindings: HID: i2c-hid: Introduce bindings for the Goodix GT7375P") new in v2.
-> > > - Get timings based on the compatible string.
-> > > - Use a separate compatible string for this new touchscreen.
-> > >
-> > > Douglas Anderson (4):
-> > >   HID: i2c-hid: Reorganize so ACPI and OF are separate modules
-> > >   arm64: defconfig: Update config names for i2c-hid rejigger
-> > >   dt-bindings: input: HID: i2c-hid: Introduce bindings for the Goodix
-> > >     GT7375P
-> > >   HID: i2c-hid: Introduce goodix-i2c-hid using i2c-hid core
-> > >
-> > >  .../bindings/input/goodix,gt7375p.yaml        |  65 +++++
-> > >  arch/arm64/configs/defconfig                  |   3 +-
-> > >  drivers/hid/Makefile                          |   2 +-
-> > >  drivers/hid/i2c-hid/Kconfig                   |  47 +++-
-> > >  drivers/hid/i2c-hid/Makefile                  |   6 +-
-> > >  drivers/hid/i2c-hid/i2c-hid-acpi.c            | 159 +++++++++++
-> > >  drivers/hid/i2c-hid/i2c-hid-core.c            | 254 +++---------------
-> > >  drivers/hid/i2c-hid/i2c-hid-of-goodix.c       | 116 ++++++++
-> > >  drivers/hid/i2c-hid/i2c-hid-of.c              | 143 ++++++++++
-> > >  drivers/hid/i2c-hid/i2c-hid.h                 |  22 ++
-> > >  include/linux/platform_data/i2c-hid.h         |  41 ---
-> > >  11 files changed, 596 insertions(+), 262 deletions(-)
-> > >  create mode 100644 Documentation/devicetree/bindings/input/goodix,gt7375p.yaml
-> > >  create mode 100644 drivers/hid/i2c-hid/i2c-hid-acpi.c
-> > >  create mode 100644 drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-> > >  create mode 100644 drivers/hid/i2c-hid/i2c-hid-of.c
-> > >  delete mode 100644 include/linux/platform_data/i2c-hid.h
-> >
-> > Are there any additional changes that folks would like with this
-> > series?  It's not crazy urgent to get it in, but it touches enough
-> > lines of code that it'd be nice to get it in before other patches land
-> > and it gets merge conflicts.
->
-> Sorry for the delay. I was having an internal deadline last week. I
-> just re-read the code, and I am quite happy with it. I also just
-> tested it on the i2c-hid w/ acpi machine I have here, and it seems OK.
->
-> So other than that, do we need to have approvals for patch 2/4
-> (arch/arm64/configs/defconfig)? I can easily take that in the HID
-> tree, but I prefer having the approval from the maintainers first.
-> Catalin, Will?
+Is dummy interrupt future-proof?
 
-From my past knowledge of the arm64 defconfig, I think it's a bit of a
-free-for-all, sort of like updates to the "MAINTAINERS" file.  Doing a
-"git log" on it I see commits happen from every corner and very few of
-them have Acks.  I think many (but not all) of the commits to this
-file go through trees that feed into the SoC tree (Arnd and Olof)
-because those maintainers care about enabling drivers for boards that
-they're supporting, but changes come from elsewhere too.
+> +
+> +		x-powers,self-working-mode;
+> +		vina-supply = <&reg_vcc5v>;
+> +		vinb-supply = <&reg_vcc5v>;
+> +		vinc-supply = <&reg_vcc5v>;
+> +		vind-supply = <&reg_vcc5v>;
+> +		vine-supply = <&reg_vcc5v>;
+> +		aldoin-supply = <&reg_vcc5v>;
+> +		bldoin-supply = <&reg_vcc5v>;
+> +		cldoin-supply = <&reg_vcc5v>;
+> +
+> +		regulators {
+> +			reg_aldo1: aldo1 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <3300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-name = "vcc-sys";
+> +			};
+> +
+> +			reg_aldo2: aldo2 {
+> +				regulator-min-microvolt = <3300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-name = "vcc3v3-ext";
+> +			};
+> +
+> +			reg_aldo3: aldo3 {
+> +				regulator-min-microvolt = <3300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-name = "vcc3v3-ext2";
+> +			};
+> +
+> +			reg_bldo1: bldo1 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-name = "vcc1v8";
+> +			};
+> +
+> +			bldo2 {
+> +				/* unused */
+> +			};
+> +
+> +			bldo3 {
+> +				/* unused */
+> +			};
+> +
+> +			bldo4 {
+> +				/* unused */
+> +			};
+> +
+> +			cldo1 {
+> +				/* reserved */
+> +			};
+> +
+> +			cldo2 {
+> +				/* unused */
+> +			};
+> +
+> +			cldo3 {
+> +				/* unused */
+> +			};
+> +
+> +			reg_dcdca: dcdca {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <810000>;
+> +				regulator-max-microvolt = <1080000>;
+> +				regulator-name = "vdd-cpu";
+> +			};
+> +
+> +			reg_dcdcc: dcdcc {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <810000>;
+> +				regulator-max-microvolt = <1080000>;
+> +				regulator-name = "vdd-gpu-sys";
+> +			};
+> +
+> +			reg_dcdcd: dcdcd {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <1500000>;
+> +				regulator-max-microvolt = <1500000>;
+> +				regulator-name = "vdd-dram";
+> +			};
+> +
+> +			reg_dcdce: dcdce {
+> +				regulator-boot-on;
+> +				regulator-min-microvolt = <3300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-name = "vcc-eth-mmc";
+> +			};
+> +
+> +			sw {
+> +				/* unused */
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&uart0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&uart0_ph_pins>;
+> +	status = "okay";
+> +};
+> +
+> +&usbotg {
+> +	dr_mode = "otg";
 
-Obviously an Ack wouldn't hurt, though.  Since get_maintainer points
-at Will and Catalin I wouldn't say no if one of them wanted to Ack
-patch #2 in the series.  ;-)
+The board is locked to a UFP due to fixed resistor on CC. OTG is not
+possible.
 
-
-> > Hrm, I just checked and there actually is already one merge conflict
-> > with commit afdd34c5fa40 ("HID: i2c-hid: show the error when failing
-> > to fetch the HID descriptor") but that commit (and thus the
-> > resolution) is trivial.  If there are no other comments I can re-post
-> > atop that patch.  ...or I'm also happy if a maintainer is OK w/
-> > resolving when landing my series.  Just let me know!
->
-> If I can quickly get the approval from the arm64/config maintainers, I
-> can try to apply it. Though, I wouldn't be against you sending a clean
-> and conflict-free series :)
-
-I'll hold tight at the moment to avoid fragmenting the discussion
-while we figure out if we need an Ack on the defconfig.  If that gets
-resolved and you're ready to land, do it.  Otherwise I'll spin out a
-clean version once I think the Ack question is resolved.
-
-
-> > ...or, if you want me to just shut up for a while and wait until your
-> > tryptophan hangover wears off, that's fine too--just let me know.
-> >
->
-> Heh. Sorry, I have a tendency to have my inbox flooded, and some time
-> gets distracted to do other important work I am paid for (too). I
-> don't mind a gentle nudge from time to time, that helps figuring out
-> the priorities :)
-
-I get ya and I'm the same way, but everyone has a different workflow
-and I try to make allowances if I can...
-
-
--Doug
+> +	status = "okay";
+> +};
+> +
+> +&usbphy {
+> +	usb0_vbus-supply = <&reg_vcc5v>;
+> +	usb1_vbus-supply = <&reg_usb1_vbus>;
+> +	status = "okay";
+> +};
