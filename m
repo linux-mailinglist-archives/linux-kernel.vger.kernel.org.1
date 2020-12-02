@@ -2,110 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E3A2CC67B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 413B92CC67D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731061AbgLBTVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:21:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60050 "EHLO
+        id S1731070AbgLBTWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:22:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgLBTVm (ORCPT
+        with ESMTP id S1726028AbgLBTWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:21:42 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58211C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:21:02 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606936860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DS1dQUKu65T10k3uyvkh4mHjOIbiEK2Ml6h4HqtEr34=;
-        b=c238xcBYaofdO6f/LclJtS1MUWKiLa6XUSTYKOz8AKlu7eGbDOyjt3RaHpOp1IR227wKm2
-        rNR4d7bTPgBEAktB8jXPBjnEgJkaMgZ7f7AW0+SxRjNjVJj73fCLqQbMi7KySYf57lnNIX
-        PSJIQTa9GhuqEB7jb7t9H/HT/DSJTzCYvWLN76HH90h0KHeupd6L7HZPGY9/doe3qBEx/3
-        MHwMUt8s/nbFmy/r/j2Rud15XTpDT0xcFShN2vbQgYaYma2qJwcWh8aPQWZ5CYHHE26/fM
-        WOZrqsBQgFdgLKGYV3nZEdf5al8UYWJhSCjOd3QVOWtnvmBslUDFaUT5I+Ffjw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606936860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DS1dQUKu65T10k3uyvkh4mHjOIbiEK2Ml6h4HqtEr34=;
-        b=m3uGKrDf7oAwrell0WyqCGJfGuKjK23M9lPE5ch10epJbPh60K2+MnDtZX5pnk9c38Cko3
-        hJisUKvetI/KzDBA==
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-In-Reply-To: <20201202162723.GJ5487@ziepe.ca>
-References: <20201201143835.2054508-1-mlichvar@redhat.com> <20201201161224.GF5487@ziepe.ca> <20201201171420.GN1900232@localhost> <20201201173540.GH5487@ziepe.ca> <87mtywe2zu.fsf@nanos.tec.linutronix.de> <20201202162723.GJ5487@ziepe.ca>
-Date:   Wed, 02 Dec 2020 20:21:00 +0100
-Message-ID: <87a6uwdnfn.fsf@nanos.tec.linutronix.de>
+        Wed, 2 Dec 2020 14:22:44 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB62EC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:21:57 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id f23so6155895ejk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:21:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cIr/TqJfU4iObJfpNCSE069urbnIjjxEb9dHjImS2os=;
+        b=LKC2ji6lsQhUlmhtdoNmHDnB9A21BmZDoU67iZkOF3kbK5mZpsWtBpPA5KR5Cs8hfl
+         CvIoKMwemrlT0XBY4mNBI+JJmbA2yyrJ7UB3Ookyp6++fYeOvOvskESIQP6YdvM+22O0
+         ZmXZPjrDZm1xy/Xk3KfGIUjcQltWeobbZ+H2w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cIr/TqJfU4iObJfpNCSE069urbnIjjxEb9dHjImS2os=;
+        b=ag04EiljasJMqiFY+fP3BureQzGEsi2DUuWBkcPztSN3/btXkrwP++a+aGJ808P7iU
+         OiUrp6Nb/l5QtYyXt9/N85e8ECWgGmPHldQfAqq0YaR6dXBsZ/f+LXoSWOsJhJGdV0DT
+         PHUzVi8kzUF0IB0nzU60pL0tytPkBh3bnIusDoqoZ37vSaniq8f3nl6pC7kQ2qM3F85X
+         5lPovgIRCkGQrUNxu23KM9Z1xNoVAybJ2gTXO4KJzpPPclYdTNgHIqdx56IZLPTFAqLL
+         segN73Ss/OmtFo4sMW6JBrYyrqQIXiY+B8RryU8ea4h18BV4Z5WP+1ul3SDq26DzREp8
+         YH8w==
+X-Gm-Message-State: AOAM533VikpnmwDY/GlbyKzKzTI+ry169X+AubStOeGwQFnRUNe8TNZa
+        PXGu7EICQkSdsk6db3223+8yldNLHcKLtx2QTLtd6g==
+X-Google-Smtp-Source: ABdhPJxN//SsN9vLgNQdENQdn0eBiur3RcH266OmmaISZe06mAc204ZNbyCYwHurY2W81B+kPJo/1zhX/+9WWCMg8Ic=
+X-Received: by 2002:a17:906:7d91:: with SMTP id v17mr1274556ejo.522.1606936916614;
+ Wed, 02 Dec 2020 11:21:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201202121241.109952-1-jagan@amarulasolutions.com>
+ <20201202121241.109952-2-jagan@amarulasolutions.com> <20201202172200.GA3490@kozik-lap>
+In-Reply-To: <20201202172200.GA3490@kozik-lap>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Thu, 3 Dec 2020 00:51:45 +0530
+Message-ID: <CAMty3ZC_G32xe7-VrTqXY+YW=SELMxnn8+g0Ec6p4D-dh2=tdA@mail.gmail.com>
+Subject: Re: [PATCH 01/10] arm64: defconfig: Enable REGULATOR_PF8X00
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02 2020 at 12:27, Jason Gunthorpe wrote:
-> On Wed, Dec 02, 2020 at 02:44:53PM +0100, Thomas Gleixner wrote:
->>  	if (IS_ENABLED(CONFIG_GENERIC_CMOS_UPDATE) ||
->>  	    IS_ENABLED(CONFIG_RTC_SYSTOHC))
->> -		queue_delayed_work(system_power_efficient_wq, &sync_work, 0);
->> +		queue_work(system_power_efficient_wq, &sync_work);
+On Wed, Dec 2, 2020 at 10:52 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 >
-> As Miroslav noted, probably the right thing to do here is to reset the
-> hrtimer and remove the sync_work? I think this code was to expedite an
-> RTC sync when NTP fixes the clock on boot.
-
-This has two purposes:
-
-     1) Initiating the update on boot once ntp is synced.
-
-     2) Reinitiating the sync after ntp lost sync and the work did not
-        reschedule itself because it observed !ntp_synced().
-
-In both cases it's highly unlikely that the write actually happens when
-the work is queued because do_adjtimex() would have to be exactly around
-the valid update window. So it will not write immediately. It will run
-through at least one retry.
-
-I don't think the timer should be canceled if the ntp_synced() state did
-not change. Otherwise every do_adtimex() call will cancel/restart
-it, which does not make sense. Lemme stare at it some more.
-
-> IIRC this was made somewhat messy due to the dual path with rtclib and
-> old cmos.
-
-:)
-
-> It would be very nice to kill the cmos path, things are better
-> now.. But PPC still has a long way to go:
+> On Wed, Dec 02, 2020 at 05:42:32PM +0530, Jagan Teki wrote:
+> > Enable PF8X00 regulator driver by default as it used in
+> > some of i.MX8MM hardware platforms.
 >
-> arch/powerpc/platforms/52xx/efika.c:    .set_rtc_time           = rtas_set_rtc_time,
-> arch/powerpc/platforms/8xx/mpc86xads_setup.c:   .set_rtc_time           = mpc8xx_set_rtc_time,
-> arch/powerpc/platforms/8xx/tqm8xx_setup.c:      .set_rtc_time           = mpc8xx_set_rtc_time,
-> arch/powerpc/platforms/cell/setup.c:    .set_rtc_time           = rtas_set_rtc_time,
-> arch/powerpc/platforms/chrp/setup.c:            ppc_md.set_rtc_time     = rtas_set_rtc_time;
-> arch/powerpc/platforms/chrp/setup.c:    .set_rtc_time           = chrp_set_rtc_time,
-> arch/powerpc/platforms/maple/setup.c:   .set_rtc_time           = maple_set_rtc_time,
-> arch/powerpc/platforms/powermac/setup.c:        .set_rtc_time           = pmac_set_rtc_time,
-> arch/powerpc/platforms/pseries/setup.c: .set_rtc_time           = rtas_set_rtc_time,
->
-> Also x86 needs a touch, it already has RTC lib, no idea why it also
-> provides this old path too
+> Could you mention names (one is enough) of platforms this could be found
+> on? This would be more detailed reason why the option should be enabled.
 
-Because nobody had the stomach and/or cycles to touch it :)
+Sure, I will update it on the next version commit message.
 
-> I wonder if the cmos path could be killed off under the dead HW
-> principle?
-
-Unfortunately that code path is not that dead on x86. You need to fix
-all the (ab)users first. :)
-
-Thanks,
-
-        tglx
+Jagan.
