@@ -2,216 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2382CC925
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D00BC2CC929
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728380AbgLBVuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 16:50:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30839 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726237AbgLBVuI (ORCPT
+        id S1728924AbgLBVuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 16:50:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726640AbgLBVuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 16:50:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606945722;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2kbJG5kdUlI0zyzgPHZ91f4kQH5+WuZ+GqKCLpBYMbE=;
-        b=A8sjJ3CDtBSzMpOOtwvMiUjWYfRl6DnBnpTkd6lbelQcTqUBaDdMkVaZ+twWy2p6Zptjo8
-        oiMyUAlFL54xM3mj385jsvZS/Dr51q46Xu3uwaaBAURNRvIJk/m8w8mqYE2s8ZB4dsAd1p
-        jF5JH2ElEkUrFL/bY0s7VpJtLYCCcDI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-496-dpP-CtcYP4GPWUH234jrRQ-1; Wed, 02 Dec 2020 16:48:38 -0500
-X-MC-Unique: dpP-CtcYP4GPWUH234jrRQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1110D185E489;
-        Wed,  2 Dec 2020 21:48:36 +0000 (UTC)
-Received: from w520.home (ovpn-112-10.phx2.redhat.com [10.3.112.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 051BF60BFA;
-        Wed,  2 Dec 2020 21:48:34 +0000 (UTC)
-Date:   Wed, 2 Dec 2020 14:48:34 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] vfio/type1: Add vfio_group_domain()
-Message-ID: <20201202144834.1dd0983e@w520.home>
-In-Reply-To: <20201201012328.2465735-1-baolu.lu@linux.intel.com>
-References: <20201201012328.2465735-1-baolu.lu@linux.intel.com>
+        Wed, 2 Dec 2020 16:50:17 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEC6C061A49
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 13:49:37 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id j13so1707326pjz.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 13:49:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ka6Z/ZcsAkJmAuTwn/KM+k744pqQbZeoUCVLzEch46Q=;
+        b=LUrztAYpFrGpLXuuYeTwq4AHlrAqLvdqXN5M+I/DSiGZQdEvyqyBcGGJvTdYKGs7Bw
+         6pKhk2/PgqdLHDyY3pCumHAGJtohG8vaFV4zvd70F1Kulw3D4ZSzWEu5Hpj9zYG+GkKJ
+         HxHILlU+2mBzOkFgzbmtwwhL90bQbzt85nSPc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ka6Z/ZcsAkJmAuTwn/KM+k744pqQbZeoUCVLzEch46Q=;
+        b=PknW4lwqsRYvv2/VBIQEJpX/1a5ojhR+UYGvDVm6o2GMaJDXkpF16drEFT42hZ1lXp
+         olHmcOFrNtpot2JTWt9w3e94/xHXZ3qwxTavjLbWsHPIak4MdMq03LOXnfRzlEUkeeKk
+         MS5/vuujrvr3SDzcKq3Gjg7XVK141BrsmaD+rAKH31BWwKgmjK47z5XPKSGGnSber6h2
+         aouoK5lBKtwOAFJvnhYQhJmn8IapRLAphobyWapJGK+CSIQcj40B6CujdOdSD3dIgLlx
+         QcvDWAOnszwPj6BLbdSXRSoAU2illOxs1452a04354s6XejY71DDdpb1ludb35nt8oIc
+         owMA==
+X-Gm-Message-State: AOAM531QxSpTLQXZtObqr696Y3+bhFzzpl7EQNOLqZVBqSIyK+BSZ60K
+        KKziXZP+Fch3R7j1HqateRHApw==
+X-Google-Smtp-Source: ABdhPJw7S7EAt3ICR9MGBNyO9g8s8Th1B2Y7e+RpQELxDFNRwEefTjFRoNfHUTulqwODlvC+nntrOA==
+X-Received: by 2002:a17:902:a503:b029:d8:e685:3e58 with SMTP id s3-20020a170902a503b02900d8e6853e58mr91635plq.68.1606945777199;
+        Wed, 02 Dec 2020 13:49:37 -0800 (PST)
+Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id a5sm55371pfg.140.2020.12.02.13.49.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 13:49:36 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-spi@vger.kernel.org, Akash Asthana <akashast@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Alexandru M Stan <amstan@chromium.org>
+Subject: [PATCH] spi: spi-geni-qcom: Use the new method of gpio CS control
+Date:   Wed,  2 Dec 2020 13:49:35 -0800
+Message-Id: <20201202214935.1114381-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  1 Dec 2020 09:23:28 +0800
-Lu Baolu <baolu.lu@linux.intel.com> wrote:
+Let's set the 'use_gpio_descriptors' field so that we use the new way of
+requesting the CS GPIOs in the core. This allows us to avoid having to
+configure the CS pins in "output" mode with an 'output-enable' pinctrl
+setting.
 
-> Add the API for getting the domain from a vfio group. This could be used
-> by the physical device drivers which rely on the vfio/mdev framework for
-> mediated device user level access. The typical use case like below:
-> 
-> 	unsigned int pasid;
-> 	struct vfio_group *vfio_group;
-> 	struct iommu_domain *iommu_domain;
-> 	struct device *dev = mdev_dev(mdev);
-> 	struct device *iommu_device = mdev_get_iommu_device(dev);
-> 
-> 	if (!iommu_device ||
-> 	    !iommu_dev_feature_enabled(iommu_device, IOMMU_DEV_FEAT_AUX))
-> 		return -EINVAL;
-> 
-> 	vfio_group = vfio_group_get_external_user_from_dev(dev);
-> 	if (IS_ERR_OR_NULL(vfio_group))
-> 		return -EFAULT;
-> 
-> 	iommu_domain = vfio_group_domain(vfio_group);
-> 	if (IS_ERR_OR_NULL(iommu_domain)) {
-> 		vfio_group_put_external_user(vfio_group);
-> 		return -EFAULT;
-> 	}
-> 
-> 	pasid = iommu_aux_get_pasid(iommu_domain, iommu_device);
-> 	if (pasid < 0) {
-> 		vfio_group_put_external_user(vfio_group);
-> 		return -EFAULT;
-> 	}
-> 
-> 	/* Program device context with pasid value. */
-> 	...
-> 
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/vfio/vfio.c             | 18 ++++++++++++++++++
->  drivers/vfio/vfio_iommu_type1.c | 23 +++++++++++++++++++++++
->  include/linux/vfio.h            |  3 +++
->  3 files changed, 44 insertions(+)
-> 
-> Change log:
->  - v2: https://lore.kernel.org/linux-iommu/20201126012726.1185171-1-baolu.lu@linux.intel.com/
->  - Changed according to comments @ https://lore.kernel.org/linux-iommu/20201130135725.70fdf17f@w520.home/
->  - Fix a typo https://lore.kernel.org/linux-iommu/DM5PR11MB143560E51C84BAF83AE54AC0C3F90@DM5PR11MB1435.namprd11.prod.outlook.com/
-> 
-> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-> index 2151bc7f87ab..588e8026d94b 100644
-> --- a/drivers/vfio/vfio.c
-> +++ b/drivers/vfio/vfio.c
-> @@ -2331,6 +2331,24 @@ int vfio_unregister_notifier(struct device *dev, enum vfio_notify_type type,
->  }
->  EXPORT_SYMBOL(vfio_unregister_notifier);
->  
-> +struct iommu_domain *vfio_group_domain(struct vfio_group *group)
+Cc: Akash Asthana <akashast@codeaurora.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Acked-by: Alexandru M Stan <amstan@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/spi/spi-geni-qcom.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Could we make this vfio_group_iommu_domain()?  We're making a callback
-specific to a vfio IOMMU backend participating in the IOMMU API, so we
-might as well make this callback explicitly tied to it.
+diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+index 25810a7eef10..c4c88984abc9 100644
+--- a/drivers/spi/spi-geni-qcom.c
++++ b/drivers/spi/spi-geni-qcom.c
+@@ -636,6 +636,7 @@ static int spi_geni_probe(struct platform_device *pdev)
+ 	spi->auto_runtime_pm = true;
+ 	spi->handle_err = handle_fifo_timeout;
+ 	spi->set_cs = spi_geni_set_cs;
++	spi->use_gpio_descriptors = true;
+ 
+ 	init_completion(&mas->cs_done);
+ 	init_completion(&mas->cancel_done);
 
-> +{
-> +	struct vfio_container *container;
-> +	struct vfio_iommu_driver *driver;
-> +
-> +	if (!group)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	container = group->container;
-> +	driver = container->iommu_driver;
-> +	if (likely(driver && driver->ops->group_domain))
-> +		return driver->ops->group_domain(container->iommu_data,
-> +						 group->iommu_group);
-
-Likewise group_iommu_domain()?
-
-
-> +	else
-> +		return ERR_PTR(-ENOTTY);
-
-Nit, we don't need 'else' here, the first branch always returns.
-
-Otherwise I think it looks good.  Thanks,
-
-Alex
-
-> +}
-> +EXPORT_SYMBOL_GPL(vfio_group_domain);
-> +
->  /**
->   * Module/class support
->   */
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 67e827638995..d7b5acb3056a 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -2980,6 +2980,28 @@ static int vfio_iommu_type1_dma_rw(void *iommu_data, dma_addr_t user_iova,
->  	return ret;
->  }
->  
-> +static struct iommu_domain *
-> +vfio_iommu_type1_group_domain(void *iommu_data, struct iommu_group *iommu_group)
-> +{
-> +	struct iommu_domain *domain = ERR_PTR(-ENODEV);
-> +	struct vfio_iommu *iommu = iommu_data;
-> +	struct vfio_domain *d;
-> +
-> +	if (!iommu || !iommu_group)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	mutex_lock(&iommu->lock);
-> +	list_for_each_entry(d, &iommu->domain_list, next) {
-> +		if (find_iommu_group(d, iommu_group)) {
-> +			domain = d->domain;
-> +			break;
-> +		}
-> +	}
-> +	mutex_unlock(&iommu->lock);
-> +
-> +	return domain;
-> +}
-> +
->  static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
->  	.name			= "vfio-iommu-type1",
->  	.owner			= THIS_MODULE,
-> @@ -2993,6 +3015,7 @@ static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
->  	.register_notifier	= vfio_iommu_type1_register_notifier,
->  	.unregister_notifier	= vfio_iommu_type1_unregister_notifier,
->  	.dma_rw			= vfio_iommu_type1_dma_rw,
-> +	.group_domain		= vfio_iommu_type1_group_domain,
->  };
->  
->  static int __init vfio_iommu_type1_init(void)
-> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-> index 38d3c6a8dc7e..6cd0de2764cb 100644
-> --- a/include/linux/vfio.h
-> +++ b/include/linux/vfio.h
-> @@ -90,6 +90,7 @@ struct vfio_iommu_driver_ops {
->  					       struct notifier_block *nb);
->  	int		(*dma_rw)(void *iommu_data, dma_addr_t user_iova,
->  				  void *data, size_t count, bool write);
-> +	struct iommu_domain *(*group_domain)(void *iommu_data, struct iommu_group *group);
->  };
->  
->  extern int vfio_register_iommu_driver(const struct vfio_iommu_driver_ops *ops);
-> @@ -126,6 +127,8 @@ extern int vfio_group_unpin_pages(struct vfio_group *group,
->  extern int vfio_dma_rw(struct vfio_group *group, dma_addr_t user_iova,
->  		       void *data, size_t len, bool write);
->  
-> +extern struct iommu_domain *vfio_group_domain(struct vfio_group *group);
-> +
->  /* each type has independent events */
->  enum vfio_notify_type {
->  	VFIO_IOMMU_NOTIFY = 0,
+base-commit: b65054597872ce3aefbc6a666385eabdf9e288da
+-- 
+https://chromeos.dev
 
