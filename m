@@ -2,203 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C5C2CBEEE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 671E82CBEF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:04:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727694AbgLBOBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:01:11 -0500
-Received: from foss.arm.com ([217.140.110.172]:40644 "EHLO foss.arm.com"
+        id S1727843AbgLBOCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:02:48 -0500
+Received: from mout.gmx.net ([212.227.15.19]:55089 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726071AbgLBOBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:01:10 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 397B530E;
-        Wed,  2 Dec 2020 06:00:09 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.23.201])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C523E3F718;
-        Wed,  2 Dec 2020 06:00:04 -0800 (PST)
-Date:   Wed, 2 Dec 2020 13:59:57 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Alex Belits <abelits@marvell.com>
-Cc:     "nitesh@redhat.com" <nitesh@redhat.com>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        Prasun Kapoor <pkapoor@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "leon@sidebranch.com" <leon@sidebranch.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pauld@redhat.com" <pauld@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v5 6/9] task_isolation: arch/arm64: enable task isolation
- functionality
-Message-ID: <20201202135957.GA66958@C02TD0UTHF1T.local>
-References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com>
- <91496c0cf8d24717a2641fc4d02063f3f10dc733.camel@marvell.com>
+        id S1726828AbgLBOCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 09:02:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606917621;
+        bh=mkPrbK+yJuzfAhf/sO1iUgkIQXheUrt7++KNxongoyM=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=O32K6VLkxNtdhWIzbLII3haODtWzmGPALzgvgG9EWa47XBK49a5QvVytI9xRaWmAw
+         O7vlr7xahai/2MAWQXpevfuRpbbsAq0arW4vxkpVpjP/+FVnXOQqQbqicQ9ABvN93T
+         wVY2GxYwgZArm4K7ZgCHP5Q2KyjmkJSYRRri2yWE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MEV3I-1kzJyZ0cuI-00Fyd1; Wed, 02
+ Dec 2020 15:00:21 +0100
+Date:   Wed, 2 Dec 2020 15:00:14 +0100
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v4 3/7] mfd: Add base driver for Netronix embedded
+ controller
+Message-ID: <X8ed7stMOGhnZ18T@latitude>
+References: <20201122222739.1455132-1-j.neuschaefer@gmx.net>
+ <20201122222739.1455132-4-j.neuschaefer@gmx.net>
+ <20201202130520.GL4801@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="d33nqVJ+uUfH4DYP"
 Content-Disposition: inline
-In-Reply-To: <91496c0cf8d24717a2641fc4d02063f3f10dc733.camel@marvell.com>
+In-Reply-To: <20201202130520.GL4801@dell>
+X-Provags-ID: V03:K1:UpPvUQU7gK2MH8B05AwoyfhmqHQRzgHJFYfvGagPawWdg2hpRjX
+ PBQ/nFild+nxLnXQVu78bet9XlT8AGxzvTRfGsdjMI28jB4b3opLJn/q4LE/Adpu1XHsdjH
+ K89YJzYN96uuKFAsePp4LHacMPYzW1orC1lAyrHw2gIYT+65e+h4hmYWB2F7HVi5j864TBF
+ 2KN8K/ECir9vCid9Y7C3Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NKoJD/ARNdY=:ZfjNf85eZFRrYVNC4Ne9nV
+ TaG+UkHF466XjOkyqjjIkUNs6fquI9tE0VVnNJodWoasIvubrA6r4FtIzOk5AM+ZAcPJIkx6e
+ gAnCCN6EtKRVTDcVQeSEpQ1t7ccNyrvIDykgoPPx1Os9mr0wanSHHePTUS2JtLtqKV9UG5aoy
+ ZpC7vWI/yXumM/yFWsX3nntEeImwVK1b/NnzIVBi/vXdHAEgsDf0hpZWJWgCwvXyEeyfKCimA
+ khssUUaTdHFK8ZtwaeF1NdLlcP2J8Jqygmrxbs3vqGNqGZur//u1prwMD6no5HPJYYSkf97sl
+ +zwfApdwV7GSen9v0S3LuO3bdX8IaStCC9R2q34+gM1kp2BDRbGI1l3WzF6N3Pa5Hfk/nK+UG
+ xz2Yx4PgfxfdnS0UrXs5iW0K/s8QHNarummmNHZWuIn1po/vYe5/24e6mg+wg8mAEiY5yrM0L
+ yt2YWaomwXlwv0iBHQd+ihmkTD9gDEg9cEXD7up2bqAEmDbjyjMbb5grBRkf/GxP3IbZplj1/
+ dW4Gw23nH9vAVVSAPkxmLhFTiUYO/C8tPVJR9lLQ/D2xEeH2rpOqgnlx4ZV4hz1tP3ITPyFEY
+ Llt9FvTcaFkgZbWQ2R39Pu0xJynibpyxxY6PLuCsyd/5W6mUg2wI9yP0E53FLiAv9aSMdtLKm
+ 7VKMeEgUPSbvCEOrdohIaoqXhf3js3MpMfKSIlglvR7w78akaDZBhUrm+RZLkPKe9WGVz4Quz
+ /ww8au5AwXi6N/QGICRBLxcX0+iizjnTli2hBVk94GCgkp5lYdGU2CjO+paHSFHxZ0ky6RNFp
+ KTVt9tGow8ddJl1zW9h+nRP2jrvhH57r9o3K3GG++mnS3z/fcZ6+K5tfdM8NM6e+0if+LDUAH
+ JyDmB7xlhHdV+wVscI+Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
 
-On Mon, Nov 23, 2020 at 05:58:06PM +0000, Alex Belits wrote:
-> In do_notify_resume(), call task_isolation_before_pending_work_check()
-> first, to report isolation breaking, then after handling all pending
-> work, call task_isolation_start() for TIF_TASK_ISOLATION tasks.
-> 
-> Add _TIF_TASK_ISOLATION to _TIF_WORK_MASK, and _TIF_SYSCALL_WORK,
-> define local NOTIFY_RESUME_LOOP_FLAGS to check in the loop, since we
-> don't clear _TIF_TASK_ISOLATION in the loop.
-> 
-> Early kernel entry code calls task_isolation_kernel_enter(). In
-> particular:
-> 
-> Vectors:
-> el1_sync -> el1_sync_handler() -> task_isolation_kernel_enter()
-> el1_irq -> asm_nmi_enter(), handle_arch_irq()
-> el1_error -> do_serror()
-> el0_sync -> el0_sync_handler()
-> el0_irq -> handle_arch_irq()
-> el0_error -> do_serror()
-> el0_sync_compat -> el0_sync_compat_handler()
-> el0_irq_compat -> handle_arch_irq()
-> el0_error_compat -> do_serror()
-> 
-> SDEI entry:
-> __sdei_asm_handler -> __sdei_handler() -> nmi_enter()
+--d33nqVJ+uUfH4DYP
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As a heads-up, the arm64 entry code is changing, as we found that our
-lockdep, RCU, and context-tracking management wasn't quite right. I have
-a series of patches:
-
-  https://lore.kernel.org/r/20201130115950.22492-1-mark.rutland@arm.com
-
-... which are queued in the arm64 for-next/fixes branch. I intend to
-have some further rework ready for the next cycle. I'd appreciate if you
-could Cc me on any patches altering the arm64 entry code, as I have a
-vested interest.
-
-That was quite obviously broken if PROVE_LOCKING and NO_HZ_FULL were
-chosen and context tracking was in use (e.g. with
-CONTEXT_TRACKING_FORCE), so I'm assuming that this series has not been
-tested in that configuration. What sort of testing has this seen?
-
-It would be very helpful for the next posting if you could provide any
-instructions on how to test this series (e.g. with pointers to any test
-suite that you have), since it's very easy to introduce subtle breakage
-in this area without realising it.
-
-> 
-> Functions called from there:
-> asm_nmi_enter() -> nmi_enter() -> task_isolation_kernel_enter()
-> asm_nmi_exit() -> nmi_exit() -> task_isolation_kernel_return()
-> 
-> Handlers:
-> do_serror() -> nmi_enter() -> task_isolation_kernel_enter()
->   or task_isolation_kernel_enter()
-> el1_sync_handler() -> task_isolation_kernel_enter()
-> el0_sync_handler() -> task_isolation_kernel_enter()
-> el0_sync_compat_handler() -> task_isolation_kernel_enter()
-> 
-> handle_arch_irq() is irqchip-specific, most call handle_domain_irq()
-> There is a separate patch for irqchips that do not follow this rule.
-> 
-> handle_domain_irq() -> task_isolation_kernel_enter()
-> do_handle_IPI() -> task_isolation_kernel_enter() (may be redundant)
-> nmi_enter() -> task_isolation_kernel_enter()
-
-The IRQ cases look very odd to me. With the rework I've just done for
-arm64, we'll do the regular context tracking accounting before we ever
-get into handle_domain_irq() or similar, so I suspect that's not
-necessary at all?
-
-> 
-> Signed-off-by: Chris Metcalf <cmetcalf@mellanox.com>
-> [abelits@marvell.com: simplified to match kernel 5.10]
-> Signed-off-by: Alex Belits <abelits@marvell.com>
-> ---
->  arch/arm64/Kconfig                   |  1 +
->  arch/arm64/include/asm/barrier.h     |  1 +
->  arch/arm64/include/asm/thread_info.h |  7 +++++--
->  arch/arm64/kernel/entry-common.c     |  7 +++++++
->  arch/arm64/kernel/ptrace.c           | 10 ++++++++++
->  arch/arm64/kernel/signal.c           | 13 ++++++++++++-
->  arch/arm64/kernel/smp.c              |  3 +++
->  7 files changed, 39 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 1515f6f153a0..fc958d8d8945 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -141,6 +141,7 @@ config ARM64
->  	select HAVE_ARCH_PREL32_RELOCATIONS
->  	select HAVE_ARCH_SECCOMP_FILTER
->  	select HAVE_ARCH_STACKLEAK
-> +	select HAVE_ARCH_TASK_ISOLATION
->  	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
->  	select HAVE_ARCH_TRACEHOOK
->  	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
-> diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
-> index c3009b0e5239..ad5a6dd380cf 100644
-> --- a/arch/arm64/include/asm/barrier.h
-> +++ b/arch/arm64/include/asm/barrier.h
-> @@ -49,6 +49,7 @@
->  #define dma_rmb()	dmb(oshld)
->  #define dma_wmb()	dmb(oshst)
->  
-> +#define instr_sync()	isb()
-
-I think I've asked on prior versions of the patchset, but what is this
-for? Where is it going to be used, and what is the expected semantics?
-I'm wary of exposing this outside of arch code because there aren't
-strong cross-architectural semantics, and at the least this requires
-some documentation.
-
-If it's unused, please delete it.
-
+On Wed, Dec 02, 2020 at 01:05:20PM +0000, Lee Jones wrote:
+> On Sun, 22 Nov 2020, Jonathan Neusch=C3=A4fer wrote:
 [...]
+> > +	/* Bail out if we encounter an unknown firmware version */
+> > +	switch (version) {
+> > +	case 0xd726: /* found in Kobo Aura */
+>=20
+> No magic numbers.
+>=20
+> Please submit a subsequent patch to define this.
 
-> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-> index 43d4c329775f..8152760de683 100644
-> --- a/arch/arm64/kernel/entry-common.c
-> +++ b/arch/arm64/kernel/entry-common.c
-> @@ -8,6 +8,7 @@
->  #include <linux/context_tracking.h>
->  #include <linux/ptrace.h>
->  #include <linux/thread_info.h>
-> +#include <linux/isolation.h>
->  
->  #include <asm/cpufeature.h>
->  #include <asm/daifflags.h>
-> @@ -77,6 +78,8 @@ asmlinkage void notrace el1_sync_handler(struct pt_regs *regs)
->  {
->  	unsigned long esr = read_sysreg(esr_el1);
->  
-> +	task_isolation_kernel_enter();
+Will do.
 
-For regular context tracking we only acount the user<->kernel
-transitions.
+But I don't think I'll be able to give it a more meaningful name than
+NTXEC_VERSION_D726. I don't have a good overview of which versions
+appear in which devices. "0xd726 found in Kobo Aura" only means that;
+I don't know if it's the only version used in the Kobo Aura, and I don't
+know if the Kobo Aura is the only device where it is used.
 
-This is a kernel->kernel transition, so surely this is not necessary?
-
-If nothing else, it doesn't feel well-balanced.
-
-I havwe not looked at the rest of this patch (or series) in detail.
 
 Thanks,
-Mark.
+Jonathan Neusch=C3=A4fer
+
+--d33nqVJ+uUfH4DYP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl/HneQACgkQCDBEmo7z
+X9tuSBAAqQPKxupxCAWq0KfRYS2QxQ7YnxsgIaSBtW7vVeY+rxYN4B2GFSoME5kb
+SzwLz53agojMGPA71ArROS+dkWmS2fT9TIxMjEtgSrRcEDQ0hN6psPIbWGBaij92
+HMi80iG/yDlNqVa7zklcuRkxLXtEroWwb0Lzr7jVyRcoJhETcuARefmQo4hsQ7gz
+Kxnto0Ol4FRzJxgrKg1n2BJKAwEz5ntiaRCKfcferj44BNBch7smeUCtittku9eS
+6Ij/6Ao7pZcU1Tupabj1yRhcP5KNcixvDCo79DlE5+9aDFkjOiXvJm8AKrSjES02
+thOgBfGugqWu7/c/0flCEfQEKlH+BlHfzsZO7k+Zk2ehvDgy+clXO0jVGTT7joC8
+uMaGhm1v0O78kDXnL1Dl4lbPljCIBOcKAWti2dXmvSsrXYY6Cfyd1ZnYIRK8iOwr
+pE/G0pcwVD9XXLSwgN5Cqvr3wN5g5O/YO4fUqTPz6zRXzEUOYQrD+p0womDZzdaD
+IWbGGwZbVQjr7trWsX3p8VR9YPXQnT+3U69O+1AetWnID8e/hhQ1rVe/4o+cqhen
+rQLHB4VLFYU0hAO2FtnXc1/ew6xA7ejv58Nasq3swhgQKnRs4zqSZnYCQJaA7lU/
+74vnuH3haXYM1K6QBYr78NOHXANOCnJBrS6GggnG5gS57SF/gsE=
+=o2/u
+-----END PGP SIGNATURE-----
+
+--d33nqVJ+uUfH4DYP--
