@@ -2,306 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939C22CC648
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 742142CC64E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389744AbgLBTK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:10:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58306 "EHLO
+        id S2389749AbgLBTLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:11:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387967AbgLBTK2 (ORCPT
+        with ESMTP id S2387739AbgLBTLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:10:28 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C649BC061A47
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:09:07 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id 12so1920131qvk.23
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:09:07 -0800 (PST)
+        Wed, 2 Dec 2020 14:11:50 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50EDC0613CF;
+        Wed,  2 Dec 2020 11:11:10 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id z188so2318816qke.9;
+        Wed, 02 Dec 2020 11:11:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc:content-transfer-encoding;
-        bh=XfUwdLBf1qrMT7Mo76z45utfEuCPvJ6tn0QOg+7yY44=;
-        b=D4JV3G6WUyCqsuacWw8GzqoiJcY1MVj6QVkWwFtVrCC3HTiB5KarrybY9sxKABGm85
-         LEvkzwkiGJUWx9ca0iAdCdwb4Yomi1qt8kfZMT9whlM1saWv/9oAhhyzP6vga5BX0Ii6
-         qpmS3S0kJopMMZ9EoOxgOlfVwDhbZ/C0twzx2M/W3dqIduArX9ClzR/dTtU3GgtYXuQv
-         DedoEPSAc0XrOlH8hGDjmUvGI7srBcn1okWbVn7AlRGdnpjnX8QMykUB3AgWRsnvdePZ
-         0GPaMZ//LBGvgatvCF8Zrzn4sZ49yhJBSObtAGDeFymhqj6+oUMC4AxX1kgeKhnRfgRa
-         wJYQ==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=v5D6PtLHVVQdV/ubjkOzdJ2GbL8TD6flP6rlB6RAW04=;
+        b=cuyop+6GEYsJfkfCvrlT56PR6leruYXY5xPg4Fdmi14/OZPEhEcIUgeCsS0pTNj7Eh
+         jzkIP1A/NrdAr19D53DRdBUsnOAOhlNewUybMARKFcP77devwmFS1CqYYaN7HC4m0lgi
+         DFbVKFSeopvdwV5JccZt++HutFbOhhiVtFp3yMOsECMbScMuv1/v1XE6VDoPwzjAowuL
+         75XHn4iGJsiobXi24yrPTzCNOk/Mzrp+2cWJ1wW0OBGhuX7sTcpU6W/a++z4rZypJnV5
+         xWMyeP1DfqXvkJB4MZcZsY3WyzipNR0PEe7As0InJw/dJbEJ4S8+5F1Az9sEW9b7Vrnl
+         Cwcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=XfUwdLBf1qrMT7Mo76z45utfEuCPvJ6tn0QOg+7yY44=;
-        b=VdGEY1jz4FXf7O9zm7Vn5sr5VbilSiLhWr6Dw3lRaxL/B4uDx+Z+7biC23uHRfYTFt
-         6/tonoInvF9z/YKl0MpBnhT5PsA6fqeWJI2SYeINLl4w8F5lRnQ855oV8ZGcaIF56Y8q
-         08Hs1hOr1MGdmUFX99Qr9zaMHfTpLKxwlKXEFvvcxgtS13YDaFfA8XkMwUT30danMP0e
-         R/1kYxhnSVIJ8H9qgRUQfg+Gq4+l2jKZJos0E8YIE+PBItXYI+2A0kA76qz+UKsuPL8D
-         TDvcOBHRZK3/GoNxwsK/Z+/rj/BAnaNmVb24CFvwYvTcgUo2YafV0vgyGmnAJ2zWuf2i
-         grCw==
-X-Gm-Message-State: AOAM531li6Gw6pd+A2pc+TeOasqGcAmLgdKEjSZDKUNis2Zt0oWI33Gp
-        38JqWsnAiQqbBKVZwZOAuwd0RMZkoR9Veg==
-X-Google-Smtp-Source: ABdhPJxVEvgUcIFLR1PPQYBty2WAMvkxuvAvnow8NaiOjNi9FQ5ebQQ9Z/aJCsAgbs1yB1kFOS9kyv155dlBlw==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
- (user=dlatypov job=sendgmr) by 2002:a05:6214:18d0:: with SMTP id
- cy16mr3954245qvb.3.1606936146978; Wed, 02 Dec 2020 11:09:06 -0800 (PST)
-Date:   Wed,  2 Dec 2020 11:08:24 -0800
-In-Reply-To: <20201202190824.1309398-1-dlatypov@google.com>
-Message-Id: <20201202190824.1309398-4-dlatypov@google.com>
-Mime-Version: 1.0
-References: <20201202190824.1309398-1-dlatypov@google.com>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH v2 4/4] minor: kunit: tool: fix unit test so it can run from
- non-root dir
-From:   Daniel Latypov <dlatypov@google.com>
-To:     davidgow@google.com
-Cc:     brendanhiggins@google.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=v5D6PtLHVVQdV/ubjkOzdJ2GbL8TD6flP6rlB6RAW04=;
+        b=SWKH8gIAhDKovQ1+rWQaagnHk19acKM0NS1KfMjdhsqWczFJuv7bFIbeaR8GQu6okS
+         qP2JseA0HKZLnaepv/qbxF0Rth24RyJTaatznHQHP1Qg8bi+KHDQg9l9G0MnIpxPlt0p
+         ifC+f0j4OhgO1dOTlVl/UCuRacWKdneaS0bM9IARbvVuK4+38o/V8LWQPU7dHSEOaho6
+         8bMGwM5tnKPPP/0kgpqRRzo+mVH47AuAd0wd3NUxsgMibQa9ohHqYg3KEMRncdfl59+z
+         kO7CBn2LPqG3s6CDq1qfaFAoxeaNR7mXwdBqdnp9SI0U2bD2o2ht9hwhjGNS6QZcZRSB
+         +53Q==
+X-Gm-Message-State: AOAM530q9igWMPpqf3YpPPYMvqrdcqNl0qUvdv9u/abjjQ4Os8+TjJDN
+        qPtXzgDC6yamOpaPOK8p03A=
+X-Google-Smtp-Source: ABdhPJx6BRmRG4jxLpniauDUiQDUhRNB10J7uytRnFSA19h8R3Y8QAwNfA1bUo95Ef1gyghUhGvgKQ==
+X-Received: by 2002:a37:9c82:: with SMTP id f124mr4221666qke.314.1606936269763;
+        Wed, 02 Dec 2020 11:11:09 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:8dbd])
+        by smtp.gmail.com with ESMTPSA id b4sm1765150qtb.33.2020.12.02.11.11.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 11:11:09 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 2 Dec 2020 14:10:41 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, zhangxiaoxu5@huawei.com
+Subject: Re: [PATCH] blk-throttle: don't check whether or not lower limit is
+ valid if CONFIG_BLK_DEV_THROTTLING_LOW is off
+Message-ID: <X8fmsbgvajlCvvLD@mtj.duckdns.org>
+References: <20201126031834.40807-1-yukuai3@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126031834.40807-1-yukuai3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also take this time to rename get_absolute_path() to test_data_path().
+On Thu, Nov 26, 2020 at 11:18:34AM +0800, Yu Kuai wrote:
+> blk_throtl_update_limit_valid() will search for descendants to see if
+> 'LIMIT_LOW' of bps/iops and READ/WRITE is nonzero. However, they're always
+> zero if CONFIG_BLK_DEV_THROTTLING_LOW is not set, furthermore, a lot of
+> time will be wasted to iterate descendants.
+> 
+> Thus do nothing in blk_throtl_update_limit_valid() in such situation.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-1. the name is currently a lie. It gives relative paths, e.g. if I run
-from the same dir as the test file, it gives './test_data/<file>'
+Acked-by: Tejun Heo <tj@kernel.org>
 
-See https://docs.python.org/3/reference/import.html#__file__, which
-doesn't stipulate that implementations provide absolute paths.
+Thanks.
 
-2. it's only used for generating paths to tools/testing/kunit/test_data/
-So we can tersen things by making it less general.
-
-Cache the absolute path to the test data files per suggestion from  [1].
-Using relative paths, the tests break because of this code in kunit.py
-  if get_kernel_root_path():
-  =C2=A0 =C2=A0 =C2=A0 =C2=A0 os.chdir(get_kernel_root_path())
-
-[1] https://lore.kernel.org/linux-kselftest/CABVgOSnH0gz7z5JhRCGyG1wg0zDDBT=
-LoSUCoB-gWMeXLgVTo2w@mail.gmail.com/
-
-Fixes: 5578d008d9e0 ("kunit: tool: fix running kunit_tool from outside kern=
-el tree")
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- tools/testing/kunit/kunit_tool_test.py | 60 +++++++++++---------------
- 1 file changed, 24 insertions(+), 36 deletions(-)
-
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/k=
-unit_tool_test.py
-index cf160914bc55..1cd127b225a9 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -21,16 +21,18 @@ import kunit_json
- import kunit
-=20
- test_tmpdir =3D ''
-+abs_test_data_dir =3D ''
-=20
- def setUpModule():
--	global test_tmpdir
-+	global test_tmpdir, abs_test_data_dir
- 	test_tmpdir =3D tempfile.mkdtemp()
-+	abs_test_data_dir =3D os.path.abspath(os.path.join(os.path.dirname(__file=
-__), 'test_data'))
-=20
- def tearDownModule():
- 	shutil.rmtree(test_tmpdir)
-=20
--def get_absolute_path(path):
--	return os.path.join(os.path.dirname(__file__), path)
-+def test_data_path(path):
-+	return os.path.join(abs_test_data_dir, path)
-=20
- class KconfigTest(unittest.TestCase):
-=20
-@@ -46,8 +48,7 @@ class KconfigTest(unittest.TestCase):
-=20
- 	def test_read_from_file(self):
- 		kconfig =3D kunit_config.Kconfig()
--		kconfig_path =3D get_absolute_path(
--			'test_data/test_read_from_file.kconfig')
-+		kconfig_path =3D test_data_path('test_read_from_file.kconfig')
-=20
- 		kconfig.read_from_file(kconfig_path)
-=20
-@@ -98,8 +99,7 @@ class KUnitParserTest(unittest.TestCase):
- 			str(needle) + '" not found in "' + str(haystack) + '"!')
-=20
- 	def test_output_isolated_correctly(self):
--		log_path =3D get_absolute_path(
--			'test_data/test_output_isolated_correctly.log')
-+		log_path =3D test_data_path('test_output_isolated_correctly.log')
- 		with open(log_path) as file:
- 			result =3D kunit_parser.isolate_kunit_output(file.readlines())
- 		self.assertContains('TAP version 14', result)
-@@ -110,8 +110,7 @@ class KUnitParserTest(unittest.TestCase):
- 		self.assertContains('ok 1 - example', result)
-=20
- 	def test_output_with_prefix_isolated_correctly(self):
--		log_path =3D get_absolute_path(
--			'test_data/test_pound_sign.log')
-+		log_path =3D test_data_path('test_pound_sign.log')
- 		with open(log_path) as file:
- 			result =3D kunit_parser.isolate_kunit_output(file.readlines())
- 		self.assertContains('TAP version 14', result)
-@@ -140,8 +139,7 @@ class KUnitParserTest(unittest.TestCase):
- 		self.assertContains('ok 3 - string-stream-test', result)
-=20
- 	def test_parse_successful_test_log(self):
--		all_passed_log =3D get_absolute_path(
--			'test_data/test_is_test_passed-all_passed.log')
-+		all_passed_log =3D test_data_path('test_is_test_passed-all_passed.log')
- 		with open(all_passed_log) as file:
- 			result =3D kunit_parser.parse_run_tests(file.readlines())
- 		self.assertEqual(
-@@ -149,8 +147,7 @@ class KUnitParserTest(unittest.TestCase):
- 			result.status)
-=20
- 	def test_parse_failed_test_log(self):
--		failed_log =3D get_absolute_path(
--			'test_data/test_is_test_passed-failure.log')
-+		failed_log =3D test_data_path('test_is_test_passed-failure.log')
- 		with open(failed_log) as file:
- 			result =3D kunit_parser.parse_run_tests(file.readlines())
- 		self.assertEqual(
-@@ -158,8 +155,7 @@ class KUnitParserTest(unittest.TestCase):
- 			result.status)
-=20
- 	def test_no_tests(self):
--		empty_log =3D get_absolute_path(
--			'test_data/test_is_test_passed-no_tests_run.log')
-+		empty_log =3D test_data_path('test_is_test_passed-no_tests_run.log')
- 		with open(empty_log) as file:
- 			result =3D kunit_parser.parse_run_tests(
- 				kunit_parser.isolate_kunit_output(file.readlines()))
-@@ -169,8 +165,7 @@ class KUnitParserTest(unittest.TestCase):
- 			result.status)
-=20
- 	def test_no_kunit_output(self):
--		crash_log =3D get_absolute_path(
--			'test_data/test_insufficient_memory.log')
-+		crash_log =3D test_data_path('test_insufficient_memory.log')
- 		print_mock =3D mock.patch('builtins.print').start()
- 		with open(crash_log) as file:
- 			result =3D kunit_parser.parse_run_tests(
-@@ -180,8 +175,7 @@ class KUnitParserTest(unittest.TestCase):
- 		file.close()
-=20
- 	def test_crashed_test(self):
--		crashed_log =3D get_absolute_path(
--			'test_data/test_is_test_passed-crash.log')
-+		crashed_log =3D test_data_path('test_is_test_passed-crash.log')
- 		with open(crashed_log) as file:
- 			result =3D kunit_parser.parse_run_tests(file.readlines())
- 		self.assertEqual(
-@@ -189,8 +183,7 @@ class KUnitParserTest(unittest.TestCase):
- 			result.status)
-=20
- 	def test_ignores_prefix_printk_time(self):
--		prefix_log =3D get_absolute_path(
--			'test_data/test_config_printk_time.log')
-+		prefix_log =3D test_data_path('test_config_printk_time.log')
- 		with open(prefix_log) as file:
- 			result =3D kunit_parser.parse_run_tests(file.readlines())
- 			self.assertEqual(
-@@ -199,8 +192,7 @@ class KUnitParserTest(unittest.TestCase):
- 			self.assertEqual('kunit-resource-test', result.suites[0].name)
-=20
- 	def test_ignores_multiple_prefixes(self):
--		prefix_log =3D get_absolute_path(
--			'test_data/test_multiple_prefixes.log')
-+		prefix_log =3D test_data_path('test_multiple_prefixes.log')
- 		with open(prefix_log) as file:
- 			result =3D kunit_parser.parse_run_tests(file.readlines())
- 			self.assertEqual(
-@@ -209,8 +201,7 @@ class KUnitParserTest(unittest.TestCase):
- 			self.assertEqual('kunit-resource-test', result.suites[0].name)
-=20
- 	def test_prefix_mixed_kernel_output(self):
--		mixed_prefix_log =3D get_absolute_path(
--			'test_data/test_interrupted_tap_output.log')
-+		mixed_prefix_log =3D test_data_path('test_interrupted_tap_output.log')
- 		with open(mixed_prefix_log) as file:
- 			result =3D kunit_parser.parse_run_tests(file.readlines())
- 			self.assertEqual(
-@@ -219,7 +210,7 @@ class KUnitParserTest(unittest.TestCase):
- 			self.assertEqual('kunit-resource-test', result.suites[0].name)
-=20
- 	def test_prefix_poundsign(self):
--		pound_log =3D get_absolute_path('test_data/test_pound_sign.log')
-+		pound_log =3D test_data_path('test_pound_sign.log')
- 		with open(pound_log) as file:
- 			result =3D kunit_parser.parse_run_tests(file.readlines())
- 			self.assertEqual(
-@@ -228,7 +219,7 @@ class KUnitParserTest(unittest.TestCase):
- 			self.assertEqual('kunit-resource-test', result.suites[0].name)
-=20
- 	def test_kernel_panic_end(self):
--		panic_log =3D get_absolute_path('test_data/test_kernel_panic_interrupt.l=
-og')
-+		panic_log =3D test_data_path('test_kernel_panic_interrupt.log')
- 		with open(panic_log) as file:
- 			result =3D kunit_parser.parse_run_tests(file.readlines())
- 			self.assertEqual(
-@@ -237,7 +228,7 @@ class KUnitParserTest(unittest.TestCase):
- 			self.assertEqual('kunit-resource-test', result.suites[0].name)
-=20
- 	def test_pound_no_prefix(self):
--		pound_log =3D get_absolute_path('test_data/test_pound_no_prefix.log')
-+		pound_log =3D test_data_path('test_pound_no_prefix.log')
- 		with open(pound_log) as file:
- 			result =3D kunit_parser.parse_run_tests(file.readlines())
- 			self.assertEqual(
-@@ -248,7 +239,7 @@ class KUnitParserTest(unittest.TestCase):
- class KUnitJsonTest(unittest.TestCase):
-=20
- 	def _json_for(self, log_file):
--		with(open(get_absolute_path(log_file))) as file:
-+		with open(test_data_path(log_file)) as file:
- 			test_result =3D kunit_parser.parse_run_tests(file)
- 			json_obj =3D kunit_json.get_json_result(
- 				test_result=3Dtest_result,
-@@ -258,22 +249,19 @@ class KUnitJsonTest(unittest.TestCase):
- 		return json.loads(json_obj)
-=20
- 	def test_failed_test_json(self):
--		result =3D self._json_for(
--			'test_data/test_is_test_passed-failure.log')
-+		result =3D self._json_for('test_is_test_passed-failure.log')
- 		self.assertEqual(
- 			{'name': 'example_simple_test', 'status': 'FAIL'},
- 			result["sub_groups"][1]["test_cases"][0])
-=20
- 	def test_crashed_test_json(self):
--		result =3D self._json_for(
--			'test_data/test_is_test_passed-crash.log')
-+		result =3D self._json_for('test_is_test_passed-crash.log')
- 		self.assertEqual(
- 			{'name': 'example_simple_test', 'status': 'ERROR'},
- 			result["sub_groups"][1]["test_cases"][0])
-=20
- 	def test_no_tests_json(self):
--		result =3D self._json_for(
--			'test_data/test_is_test_passed-no_tests_run.log')
-+		result =3D self._json_for('test_is_test_passed-no_tests_run.log')
- 		self.assertEqual(0, len(result['sub_groups']))
-=20
- class StrContains(str):
-@@ -282,7 +270,7 @@ class StrContains(str):
-=20
- class KUnitMainTest(unittest.TestCase):
- 	def setUp(self):
--		path =3D get_absolute_path('test_data/test_is_test_passed-all_passed.log=
-')
-+		path =3D test_data_path('test_is_test_passed-all_passed.log')
- 		with open(path) as file:
- 			all_passed_log =3D file.readlines()
-=20
---=20
-2.29.2.576.ga3fc446d84-goog
-
+-- 
+tejun
