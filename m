@@ -2,151 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521932CC4F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA94A2CC4FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730895AbgLBSXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:23:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
+        id S1730915AbgLBSYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:24:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729012AbgLBSXl (ORCPT
+        with ESMTP id S1727454AbgLBSYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:23:41 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3A2C0613D4;
-        Wed,  2 Dec 2020 10:22:54 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id h21so10991206wmb.2;
-        Wed, 02 Dec 2020 10:22:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7Q0DeOHNN0molUdBXmfUTbrUNjvgkKKs8RuBf1nEwac=;
-        b=akiQqHrDY+J7iANyemLJb7ZkkQMgqWdfXV3uiwhBv9k7KSqDRfKO0l7CBFZdRlippZ
-         chDFgor/uouSlFGUVD9cDjb22i4K5y0/6UFnjjnMcFKZKhV75AzIpSyONdW9stF3Xwfa
-         pB1Wc3qg1LYGMIC6jcq09UJuzHBi64V01inzGT+m1V0xYLOd2IkFglKD6/z3JHUSBr2l
-         tECycgy6GidKn7BjhdnMuRGxOFk8XI/jUuf3s4Fblh/NQbpHXWmhMQ5q/YkC1vfvF+ro
-         emTOdIeFxC0dPjQgPOqSV1cboJ+5MANgLInMi6NonxR/xmhqlKeWNhuQBXWKJzNJO4pX
-         TAHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7Q0DeOHNN0molUdBXmfUTbrUNjvgkKKs8RuBf1nEwac=;
-        b=ETYhvbOfzC6rMBZaxkopGikDoGpdq5SwcRIcUMZL2A8/utdhs0VYEk2w72BXAFrfS0
-         W+jyEp5zJ7bidyLgrsq46uCBR3SPLfIZUxGn9vAUaLk2CIupJ2X8+4uPh4GUkPTarzSw
-         Sc0cs66zH2GDEmdgt2koMZuX1Of49fu6fuj1zC6AIVPO02qfXLkZHpwEZzb2ATJoZcgZ
-         OlgFQxyj0BvZxQD5o17Z+DqohAwwKjGv+nOsr/y+vDGFz5wN17I0oseiLcrc6r9v0S7t
-         fJ4nl1Odn8LBUeTYmdN0VNGuhSSQqpp6q8FdiNr/eTGU/TW7x+6UOXSQEExsn+7FDdhX
-         sXvQ==
-X-Gm-Message-State: AOAM530VEL+BeFvklIdiakYGAcjOl6JvdJ6EdTGI3dmO3Mudj4Qv6EJ6
-        FzQqDvC46gahKmif9smxRx3fWkbJEVGB9ElZ3OM=
-X-Google-Smtp-Source: ABdhPJzqwvz25DNmqAysi1yeqEILO3da91lUGtp0ysPUKW1zNQuscdLxoh72mY2vBaQyw+G0nNmYjxN7O1K87zTLmCg=
-X-Received: by 2002:a7b:c385:: with SMTP id s5mr4414705wmj.170.1606933373565;
- Wed, 02 Dec 2020 10:22:53 -0800 (PST)
+        Wed, 2 Dec 2020 13:24:35 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0853CC0613CF;
+        Wed,  2 Dec 2020 10:23:55 -0800 (PST)
+Received: from zn.tnic (p200300ec2f161b00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:1b00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7193B1EC04DB;
+        Wed,  2 Dec 2020 19:23:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606933433;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=4K5oryCh4lYprceHfJITgYNxkJkNbvO0oAmzKtsMskk=;
+        b=eyF7oJ8jzZXnSjEQtaZrUqi4mwuWKRWOIW9O8LaGm8MqDGJY2ivCpGoIYOt1Z6+twhPWwg
+        BD27rstCZtNJappHLb/XnRJL/bLtkDIm1ccUAtRxsnvNQZrxM7nK48jtE06jmDLK5BhWQv
+        ogqK7rU9rqVC++YIVNJfV+c9klFxF94=
+Date:   Wed, 2 Dec 2020 19:23:49 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     Troy Lee <troy_lee@aspeedtech.com>, Joel Stanley <joel@jms.id.au>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        James Morse <james.morse@arm.com>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Robert Richter <rrichter@marvell.com>,
+        "leetroy@gmail.com" <leetroy@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stefan M Schaeckeler <sschaeck@cisco.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] edac: Supporting AST2400 and AST2600 edac driver
+Message-ID: <20201202182349.GJ2951@zn.tnic>
+References: <20201202063612.21241-1-troy_lee@aspeedtech.com>
+ <20201202063612.21241-3-troy_lee@aspeedtech.com>
+ <CACPK8XcBTm8-cAPmtswHbYAf2B+PdBiZ2s1XK1UqKA_NQX_-mw@mail.gmail.com>
+ <PS1PR06MB26008E4BCB805553EDEC45038AF30@PS1PR06MB2600.apcprd06.prod.outlook.com>
+ <b6dd3a91-abe7-4e9d-b801-6e54e4c88827@www.fastmail.com>
 MIME-Version: 1.0
-References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
- <20201202094717.GX4077@smile.fi.intel.com> <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
- <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com> <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
-In-Reply-To: <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
-From:   Yun Levi <ppbuk5246@gmail.com>
-Date:   Thu, 3 Dec 2020 03:22:42 +0900
-Message-ID: <CAM7-yPRBPP6SFzdmwWF5Y99g+aWcp=OY9Uvp-5h1MSDPmsORNw@mail.gmail.com>
-Subject: 
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>, dushistov@mail.ru,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
-        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b6dd3a91-abe7-4e9d-b801-6e54e4c88827@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 2:26 AM Yury Norov <yury.norov@gmail.com> wrote:
+On Thu, Dec 03, 2020 at 01:32:44AM +1030, Andrew Jeffery wrote:
+> On Wed, 2 Dec 2020, at 19:11, Troy Lee wrote:
+> > Hi Joel,
+> > 
+> > Thanks for the suggestion, I'll fix the review and create an new patch 
+> > against 
+> > latest Linux branch. Those exported function will be referenced in 
+> > other driver yet 
+> > to be upstream, so should I move those exported functions out of this 
+> > patch?
+> > 
+> 
+> Yes, let's leave the exports out of this patch, and add them in when you send 
+> the patch that depends on them.
 
-> Also look at lib/find_bit_benchmark.c
-Thanks. I'll see.
+And when you do, almost all new exports are EXPORT_SYMBOL_GPL - not
+EXPORT_SYMBOL.
 
-> We need find_next_*_bit() because find_first_*_bit() can start searching only at word-aligned
-> bits. In the case of find_last_*_bit(), we can start at any bit. So, if my understanding is correct,
-> for the purpose of reverse traversing we can go with already existing find_last_bit(),
+Also, I'd like to see how those exports are going to be used. An EDAC
+driver function exported to another driver sounds strange. We have only
+one other case like this in the EDAC tree:
 
-Thank you. I haven't thought that way.
-But I think if we implement reverse traversing using find_last_bit(),
-we have a problem.
-Suppose the last bit 0, 1, 2, is set.
-If we start
-    find_last_bit(bitmap, 3) ==> return 2;
-    find_last_bit(bitmap, 2) ==> return 1;
-    find_last_bit(bitmap, 1) ==> return 0;
-    find_last_bit(bitmap, 0) ===> return 0? // here we couldn't
-distinguish size 0 input or 0 is set
+drivers/edac/amd64_edac.c:554:EXPORT_SYMBOL_GPL(amd64_get_dram_hole_info);
 
-and the for_each traverse routine prevent above case by returning size
-(nbits) using find_next_bit.
-So, for compatibility and the same expected return value like next traversing,
-I think we need to find_prev_*_bit routine. if my understanding is correct.
+and even that is not really needed...
 
+Thx.
 
->  I think this patch has some good catches. We definitely need to implement
-> find_last_zero_bit(), as it is used by fs/ufs, and their local implementation is not optimal.
->
-> We also should consider adding reverse traversing macros based on find_last_*_bit(),
-> if there are proposed users.
+-- 
+Regards/Gruss,
+    Boris.
 
-Not only this, I think 'steal_from_bitmap_to_front' can be improved
-using ffind_prev_zero_bit
-like
-
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index af0013d3df63..9debb9707390 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -2372,7 +2372,6 @@ static bool steal_from_bitmap_to_front(struct
-btrfs_free_space_ctl *ctl,
-  u64 bitmap_offset;
-  unsigned long i;
-  unsigned long j;
-- unsigned long prev_j;
-  u64 bytes;
-
-  bitmap_offset = offset_to_bitmap(ctl, info->offset);
-@@ -2388,20 +2387,15 @@ static bool steal_from_bitmap_to_front(struct
-btrfs_free_space_ctl *ctl,
-  return false;
-
-  i = offset_to_bit(bitmap->offset, ctl->unit, info->offset) - 1;
-- j = 0;
-- prev_j = (unsigned long)-1;
-- for_each_clear_bit_from(j, bitmap->bitmap, BITS_PER_BITMAP) {
-- if (j > i)
-- break;
-- prev_j = j;
-- }
-- if (prev_j == i)
-+ j = find_prev_zero_bit(bitmap->bitmap, BITS_PER_BITMAP, i);
-+
-+ if (j == i)
-  return false;
-
-- if (prev_j == (unsigned long)-1)
-+ if (j == BITS_PER_BITMAP)
-  bytes = (i + 1) * ctl->unit;
-  else
-- bytes = (i - prev_j) * ctl->unit;
-+ bytes = (i - j) * ctl->unit;
-
-  info->offset -= bytes;
-  info->bytes += bytes;
-
-Thanks.
-
-HTH
-Levi.
+https://people.kernel.org/tglx/notes-about-netiquette
