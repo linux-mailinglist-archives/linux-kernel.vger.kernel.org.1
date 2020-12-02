@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB0E2CC111
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B80B2CC10D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730480AbgLBPke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:40:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34760 "EHLO mail.kernel.org"
+        id S1730530AbgLBPin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:38:43 -0500
+Received: from mga03.intel.com ([134.134.136.65]:39502 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728356AbgLBPkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:40:33 -0500
-Date:   Wed, 2 Dec 2020 16:39:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606923592;
-        bh=tw5DkCya9IdrreTTGxGQ2i9vcONt8rYBYXAc/zTW7aw=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tx4WE/AwKWpQEuQm5deyIjTPuMNiGnmk3N1+J2p1EqvzEPJ3Vg09GVFLubmX7ehnW
-         b5KiDymIB7gnqdJ+PCKCvlr45a4FklEDHuUiQo74oc12w4d8ZfOvhe2V2fezErG95V
-         m6CEf/xgdh7bkOyyppPc82koic0bCDM0ArJNHXDY=
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Caleb Connolly <caleb@connolly.tech>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Mukesh Savaliya <msavaliy@codeaurora.org>,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] i2c: geni: sdm845: dont perform DMA for OnePlus 6
- devices
-Message-ID: <20201202153949.GI874@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Caleb Connolly <caleb@connolly.tech>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Mukesh Savaliya <msavaliy@codeaurora.org>,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201112161920.2671430-1-caleb@connolly.tech>
- <20201112161920.2671430-6-caleb@connolly.tech>
- <20201122034709.GA95182@builder.lan>
- <72a37c8c-12e4-eb51-2644-3436d19cf314@connolly.tech>
+        id S1727699AbgLBPim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:38:42 -0500
+IronPort-SDR: awMpY4ry1V1+L8ZkH09QbH3MXispx3mbQlfMLQtb3yoSOZrliD7gj4ho99Cc7T/Dlgi0ih8JsH
+ sdeCMwFOu1Ig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="173132249"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="173132249"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 07:38:00 -0800
+IronPort-SDR: ug/EuDJ5RuAzG+MVKRDo3eqBUamL0BzqxYq9Qqm+l+QXBJOeXqOgDlDaGzOi+kNFnWnZKrFvpA
+ Tx6DOD6g1mcQ==
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="550104523"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 07:37:57 -0800
+Date:   Wed, 2 Dec 2020 23:40:46 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        "Neftin, Sasha" <sasha.neftin@intel.com>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Brandt, Todd E" <todd.e.brandt@intel.com>
+Subject: Re: [PATCH 1/2][v3] e1000e: Leverage direct_complete to speed up
+ s2ram
+Message-ID: <20201202154046.GA17693@chenyu-office.sh.intel.com>
+References: <cover.1606757180.git.yu.c.chen@intel.com>
+ <b8896b7748e516e9c440ab22e582e30f1389776c.1606757180.git.yu.c.chen@intel.com>
+ <DF79FD96-31E6-4D9A-BF0D-40B7FC563C0B@canonical.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="17/8oYur5Y32USnW"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <72a37c8c-12e4-eb51-2644-3436d19cf314@connolly.tech>
+In-Reply-To: <DF79FD96-31E6-4D9A-BF0D-40B7FC563C0B@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kai-Heng,
+On Wed, Dec 02, 2020 at 09:06:19PM +0800, Kai-Heng Feng wrote:
+> > ---
+> > v2: Added test data and some commit log revise(Paul Menzel)
+> >    Only skip the suspend/resume if the NIC is not a wake up device specified
+> >    by the user(Kai-Heng Feng)
+> > v3: Leverage direct complete mechanism to skip all hooks(Kai-Heng Feng)
+> > ---
+> > 
+> > -	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
+> > +	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_SMART_PREPARE);
+> 
+> This isn't required for pci_pm_prepare() to use driver's .prepare callback.
+>
+pci_pm_prepare() is likely to return 1 even if driver's prepare() return 0,
+when DPM_FLAG_SMART_PREPARE is not set, which might cause prblems:
+if (!error && dev_pm_test_driver_flags(dev, DPM_FLAG_SMART_PREPARE))
+	return 0;
+> > 
+> > 	if (pci_dev_run_wake(pdev) && hw->mac.type < e1000_pch_cnp)
+> > 		pm_runtime_put_noidle(&pdev->dev);
+> > @@ -7890,6 +7897,7 @@ MODULE_DEVICE_TABLE(pci, e1000_pci_tbl);
+> > 
+> > static const struct dev_pm_ops e1000_pm_ops = {
+> > #ifdef CONFIG_PM_SLEEP
+> > +	.prepare	= e1000e_pm_prepare,
+> 
+> How do we make sure a link change happened in S3 can be detect after resume, without a .complete callback which ask device to runtime resume?
+> 
+The pm core's device_complete() has already done that pm_runtime_put() in the end.
 
---17/8oYur5Y32USnW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Just talked to Rafael and he might also give some feedbacks later.
 
-
-> >> -	if (!of_machine_is_compatible("lenovo,yoga-c630"))
-> >> +	if (!of_machine_is_compatible("lenovo,yoga-c630") &&
-> >> +	    !of_machine_is_compatible("oneplus,oneplus6"))
-> > This hack seems to have been working around two separate issues. First
-> > with iommu active the GENI wrappers needs to have their stream mapping
-> > configured. Secondly there was a bug in the transaction setup that was
-> > recently fixed by Doug Anderson.
-> >
-> > So can you please give the following patch a go? I've yet to test it on
-> > the Lenovo machine, but I think it allows us to remove the quirk.
-> >
-> > https://lore.kernel.org/lkml/20201122034149.626045-1-bjorn.andersson@linaro.org/T/#u
-
-Please don't top-post. I fixed it this time.
-
-> It looks like I still have the same issue even with this patch applied.
-
-So we still need your patch, am I reading correctly?
-
-
---17/8oYur5Y32USnW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/HtUUACgkQFA3kzBSg
-KbbcvBAAm1IMmcYBVNhAR105L1xiq05+MOhaygfiuncBdAUdaik+2eHW5Xo769H/
-2D92cO1VZnhSVfksy6KQ8HAc5XCDMRwAySZr0RwOuWNrHACT6ILO2ScF3FI2dK3j
-As+ffGZ5I9x0kni1PKzyNMBPc80VTa59hp8fGE4EblfTHzpLYt0pUPSSpPK4fyC8
-hNybhwshofUSijxw0PS+65cpC+Jsd4b+oxc7uGLcAyAMeEBBWYuXJTT5t9CjHr4a
-2b2pfEi0J9mH6arWWOoTs9kST1bxaW9DcDTQ30B4V5NGS0/NsQOwxFXqYojYPNNO
-Z52ldgeHdwZ4SNnHAKdVJKWQWMvsL+paHgHtxmwg5pIrhf6FziG2lCS1/v0JxEJi
-Kg3y4gatIC4yzWTaf9keiq8cLeVuHCJq2cWUn+LpYUZIQwVXayaO747wivmgNo8r
-f0JtjdJTHgpA8rFqqZJMMlpTajNWlqNnCIDsSx0W5T44uwGcFm/875OqDOIFSOv/
-8c6VzWCkD7SyZrJ/fkm3ferqraOPL/pTOM7ZxVE+t6L5XTVup3iMDSFEcb4Yyzi3
-xDFeMKVEtveK4aaCpb/t/u4f8MZy6vs6hN8I18BD3TgHNoS0cmioSdZ0DwrtVADP
-vDkTX0vBF3/lGPJoN30Fa/C3RBZaGf4kzusSLuJXMU3MqHPaLpE=
-=oGeI
------END PGP SIGNATURE-----
-
---17/8oYur5Y32USnW--
+thanks,
+Chenyu
+> Kai-Heng
+> 
+> 
