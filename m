@@ -2,103 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0EE2CBA5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7798D2CBA61
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729429AbgLBKP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:15:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727623AbgLBKP6 (ORCPT
+        id S1729446AbgLBKRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:17:20 -0500
+Received: from a2.mail.mailgun.net ([198.61.254.61]:37780 "EHLO
+        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729356AbgLBKRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:15:58 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D04AC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 02:15:18 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id f14so314942pju.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 02:15:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WWjb6zrEMy2J76Z4aT/3tobNbUFtkhliXqvzagYlv+E=;
-        b=gxRccWuGGU41q3Km4iGrDQa3cvPUG5oPMlBZaKbiEeL6JhT9eqx8Ug47sHEh5QK77y
-         XYn248vJZKhh/cxygPf5uxHUsYhvXDypHKjiwGeVyonRbHOlUgR10hnpT+UH9KBLbZGd
-         PcX9vYxynhY0WDh3BANRcIm0br5+sTenJX2/DwSKWDD00Oi1fnaBJ7ZmBN+mQcDOzbw8
-         b7d43HxvK4rPax8sLgHphgRA14Msw2uf7kGa6CkMm136YgqhjsjuXXyvvnsBmGs0VwjO
-         UIFydasllGD0xAi70Hv13Y4nwuCSPxJrykNomFZJfAp99aJU0UfL9ND53oYasHO0ARp7
-         OsoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WWjb6zrEMy2J76Z4aT/3tobNbUFtkhliXqvzagYlv+E=;
-        b=Wq/NBc+limu7PXELXhqG9xIUpOxe04sjZSZ14I9sLV0/8UG6fLed/CzUENfrm23MTM
-         TfQ05gEVbbJC4ZdTUotGFl276vWI9Wcd+qpJCGmGB7CN+ORXFNNyNFfxBwVnGtI55vgd
-         as3+fSJVgJWzI0BRC+maCtrcQmdmI/u8uifyveq6OVLcEynGra1da/HpJPkdr7lDBKLo
-         l7icNUkrFIhUNfV1N+pkmkZNdwVDoEgu8AqL0W0jSDJaK0CvsRL0KS7F9cGS4rDjUAKm
-         O6DT+puVRH8kmg4UaE+WTDnykjgsjGZhlRb9NEuUPAx4rRXasbpLel25m5ypCjtlPWkt
-         EmBg==
-X-Gm-Message-State: AOAM532p1xH3eaLeG7sHOS33MglMSnrYRgb2h5zyTLKvDkPo1g5L9dTQ
-        DkmCbKFpak9odW/c+GY88zx9yI28/Jo9qYDC
-X-Google-Smtp-Source: ABdhPJyo+01CcdRYzhUvf15PRmTg1LbB5GaQeqEeQlewZHlpQ1Lj4hwkKG+6BwWDHvlhhA2raO8kxA==
-X-Received: by 2002:a17:902:9b87:b029:d8:d123:2283 with SMTP id y7-20020a1709029b87b02900d8d1232283mr2064184plp.60.1606904117364;
-        Wed, 02 Dec 2020 02:15:17 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:9004:6a1b:d60e:9bc5:1ecd:a6f8])
-        by smtp.gmail.com with ESMTPSA id o11sm953936pjs.36.2020.12.02.02.15.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 02:15:16 -0800 (PST)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com, Peilin Ye <yepeilin.cs@gmail.com>
-Subject: [PATCH] checkpatch: add warning for lines starting with a '#' in commit log
-Date:   Wed,  2 Dec 2020 15:44:48 +0530
-Message-Id: <20201202101448.8494-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 2 Dec 2020 05:17:19 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606904221; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=PtTR3K77Jj6EGHE+NEYqNB3DHE430N+l6KIpgZc7+Vg=;
+ b=CucOyy0pt+Ct18IGTVFpLm5we2IQC8DoPANnPG+GBN5lZgRDaQwGZYONOnNXJMNYFJ5fxZ8A
+ e4VwzjWCJt13YlAlac53pZYr60+uPN6AKAazPOAw4GulPhfm9Avi6zVeVGxjZBhhKBwvLWwL
+ +Siv9FO2+9ingpXuX9fTgcqNB3k=
+X-Mailgun-Sending-Ip: 198.61.254.61
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5fc76981f2eedd9084073f1e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 10:16:33
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4C1F8C43464; Wed,  2 Dec 2020 10:16:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C7586C433C6;
+        Wed,  2 Dec 2020 10:16:30 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 02 Dec 2020 18:16:30 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
+        beanhuo@micron.com, asutoshd@codeaurora.org,
+        matthias.bgg@gmail.com, bvanassche@acm.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
+        jiajie.hao@mediatek.com, alice.chao@mediatek.com
+Subject: Re: [PATCH v3] scsi: ufs: Remove pre-defined initial voltage values
+ of device powers
+In-Reply-To: <20201202091819.22363-1-stanley.chu@mediatek.com>
+References: <20201202091819.22363-1-stanley.chu@mediatek.com>
+Message-ID: <3d3e5d90774423243b071b20191e9ce4@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit log lines starting with a '#' can be dropped by git if
-the corresponding commit message is reworded by a maintainer.
-This minor error can be easily avoided if checkpatch warns
-for the same.
+On 2020-12-02 17:18, Stanley Chu wrote:
+> UFS specficication allows different VCC configurations for UFS devices,
+> for example,
+> 	(1). 2.70V - 3.60V (Activated by default in UFS core driver)
+> 	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
+>                           device tree)
+> 	(3). 2.40V - 2.70V (Supported since UFS 3.x)
+> 
+> With the introduction of UFS 3.x products, an issue is happening that
+> UFS driver will use wrong "min_uV-max_uV" values to configure the
+> voltage of VCC regulator on UFU 3.x products with the configuration (3)
+> used.
+> 
+> To solve this issue, we simply remove pre-defined initial VCC voltage
+> values in UFS core driver with below reasons,
+> 
+> 1. UFS specifications do not define how to detect the VCC configuration
+>    supported by attached device.
+> 
+> 2. Device tree already supports standard regulator properties.
+> 
+> Therefore VCC voltage shall be defined correctly in device tree, and
+> shall not changed by UFS driver. What UFS driver needs to do is simply
+> enable or disable the VCC regulator only.
+> 
+> Similar change is applied to VCCQ and VCCQ2 as well.
+> 
+> Note that we keep struct ufs_vreg unchanged. This allows vendors to
+> configure proper min_uV and max_uV of any regulators to make
+> regulator_set_voltage() works during regulator toggling flow in the
+> future. Without specific vendor configurations, min_uV and max_uV will
+> be NULL by default and UFS core driver will enable or disable the
+> regulator only without adjusting its voltage.
+> 
+> Acked-by: Avri Altman <avri.altman@wdc.com>
+> Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Add a new check which emits a warning on finding lines starting
-with a '#'. Also add a quick fix by adding a tab in front of
-such lines.
+Reviewed-by: Can Guo <cang@codeaurora.org>
 
-Suggested-by: Peilin Ye <yepeilin.cs@gmail.com>
-Tested-by: Peilin Ye <yepeilin.cs@gmail.com>
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
----
- scripts/checkpatch.pl | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index e8c1ed0b1fad..a12edcf4f63a 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2966,6 +2966,15 @@ sub process {
- 			$commit_log_possible_stack_dump = 0;
- 		}
- 
-+# Check for lines starting with a #
-+		if ($in_commit_log && $line =~ /^#/) {
-+			if (WARN("POSSIBLE_IGNORED_LINE",
-+				 "Commit log lines starting with a '#' might be dropped by git.\n" . $herecurr)
-+			    && $fix) {
-+				$fixed[$fixlinenr] =~ s/^#/\t#/;
-+			}
-+		}
-+
- # Check for git id commit length and improperly formed commit descriptions
- 		if ($in_commit_log && !$commit_log_possible_stack_dump &&
- 		    $line !~ /^\s*(?:Link|Patchwork|http|https|BugLink|base-commit):/i &&
--- 
-2.27.0
-
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> ---
+>  drivers/scsi/ufs/ufshcd-pltfrm.c | 19 -------------------
+>  1 file changed, 19 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c 
+> b/drivers/scsi/ufs/ufshcd-pltfrm.c
+> index 0619cfbfbdbb..1a69949a4ea1 100644
+> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
+> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+> @@ -134,25 +134,6 @@ static int ufshcd_populate_vreg(struct device
+> *dev, const char *name,
+>  		dev_info(dev, "%s: unable to find %s\n", __func__, prop_name);
+>  		vreg->max_uA = 0;
+>  	}
+> -
+> -	if (!strcmp(name, "vcc")) {
+> -		if (of_property_read_bool(np, "vcc-supply-1p8")) {
+> -			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
+> -			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
+> -		} else {
+> -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
+> -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
+> -		}
+> -	} else if (!strcmp(name, "vccq")) {
+> -		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
+> -		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
+> -	} else if (!strcmp(name, "vccq2")) {
+> -		vreg->min_uV = UFS_VREG_VCCQ2_MIN_UV;
+> -		vreg->max_uV = UFS_VREG_VCCQ2_MAX_UV;
+> -	}
+> -
+> -	goto out;
+> -
+>  out:
+>  	if (!ret)
+>  		*out_vreg = vreg;
