@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AEFE2CC3D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 907F82CC452
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389345AbgLBR3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:29:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389239AbgLBR3p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:29:45 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FD2C0613CF;
-        Wed,  2 Dec 2020 09:29:05 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id t3so1478989pgi.11;
-        Wed, 02 Dec 2020 09:29:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1zd2A4b3H4W7rof/if1DjaC7z+bwx7utHHR11ZaV7KI=;
-        b=Ku59e9QB5fODwHs76IPpDyNYKuTfFB8V4ma4EP+h2FNKCMx+aY1GJbS4umSCeJiZoM
-         6PCJlcBKIyeCLOWyIUks/EeZVuzqX6s8FRd2+WLLjshOdoPQ8tnH/jFCswwTT6yeM1Ej
-         WUs4PtqITpZ2Fr6n3Vn080sqF0cI4FqRxkyC7wHcDnIhnskpD2bYd4WzMX716kN0Lagr
-         RXmrGe4DRciWT/nbOClXOOG4uQMzGvdNReNyRWZ7LShggNlWNrQru6+JeHR7EIDIrIzQ
-         9NZLyeESgpMDucD/YP6xHG/JF9yU0dyovi9sk1ao2gJGS6apyg7PLlgDZKIMt8Q2hDXx
-         CdSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1zd2A4b3H4W7rof/if1DjaC7z+bwx7utHHR11ZaV7KI=;
-        b=rY1GbpLBL9MSujmid0JlcoMY59MYpy8sVuhxAfQKLQPc1kIgzv3+zhQKVJqmFWhB5R
-         hLiP/Ceb810Ooe+s+VYbj5zu6G5mE/ysVF6ne2P25BqgH8zShSA9/WadVUJQ+K5dZdXj
-         jmx7hcoD7mY17rKYreSotY5hVB9L8dbcoAeoXLFySG0rzQ3xGJtfZPd1shopr1dGREM+
-         b1B9aFsnaZcduKp8SK7a+kHjieW6O4knYNhYIRifQc3RR+Cr6b+kPZd9CdAqdAYjrSVY
-         9x9MPujUt4kAWfbH3rOsVubwW2s9dMaHvjZ6C3RYmG8c59g0fGn8GtMh4y61gydR/KGz
-         APug==
-X-Gm-Message-State: AOAM532jbMjgwfcUCs/ppFIBfLTyE+ElpzUp4DUAMYjxTSGcXfTVNWcf
-        uMu2zFYz/gsQDyDj98ua8yQ=
-X-Google-Smtp-Source: ABdhPJxQDcY1DQubBXpw7TsyWKzjziBWPqyqoTcEmilGbyfzvlDrvmyHnr8hcmY8gv1fKTZ+vo6KBg==
-X-Received: by 2002:a63:1514:: with SMTP id v20mr797640pgl.203.1606930144918;
-        Wed, 02 Dec 2020 09:29:04 -0800 (PST)
-Received: from [10.230.28.242] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 188sm366246pfd.188.2020.12.02.09.29.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 09:29:03 -0800 (PST)
-Subject: Re: [PATCH v5 04/11] gpio: raspberrypi-exp: Release firmware handle
- on unbind
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     f.fainelli@gmail.com, linux-pwm@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        wahrenst@gmx.net, linux-input@vger.kernel.org,
-        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
-        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
-        linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org,
-        sboyd@kernel.org, linux-rpi-kernel@lists.infradead.org,
-        andy.shevchenko@gmail.com
-References: <20201123183833.18750-1-nsaenzjulienne@suse.de>
- <20201123183833.18750-5-nsaenzjulienne@suse.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <a2485ad7-85a2-4f10-5e40-27461a10c797@gmail.com>
-Date:   Wed, 2 Dec 2020 09:29:00 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.0
+        id S1730937AbgLBRyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:54:20 -0500
+Received: from mail.joister.net ([103.2.236.245]:53237 "EHLO joister.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728444AbgLBRyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 12:54:19 -0500
+X-Greylist: delayed 9026 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Dec 2020 12:54:16 EST
+Received: from [::1] (port=46053 helo=cp1.joister.com)
+        by cp1.joister.com with esmtpa (Exim 4.93)
+        (envelope-from <ajayb@joister.net>)
+        id 1kkThn-0003u8-I5; Wed, 02 Dec 2020 20:36:10 +0530
 MIME-Version: 1.0
-In-Reply-To: <20201123183833.18750-5-nsaenzjulienne@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Date:   Wed, 02 Dec 2020 20:36:01 +0530
+From:   Per Lessen <ajayb@joister.net>
+To:     undisclosed-recipients:;
+Subject: Business Funding Proposal
+Reply-To: perlessen2@gmail.com
+Mail-Reply-To: perlessen2@gmail.com
+Message-ID: <ddef5d930b28b58e28a8d4fa5b94df04@joister.net>
+X-Sender: ajayb@joister.net
+User-Agent: Roundcube Webmail/1.3.15
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+X-OutGoing-Spam-Status: No, score=8.1
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cp1.joister.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - joister.net
+X-Get-Message-Sender-Via: cp1.joister.com: authenticated_id: shital.padayar@joister.net
+X-Authenticated-Sender: cp1.joister.com: shital.padayar@joister.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--
+Good Day,
 
+I am contacting you concerning funding of your business project. I am 
+Dr. Per Lessen
+and I work as a financial consultant and adviser to Global Asset 
+Management company LLC
+and some High Net worth individuals from the MENA region and European 
+Union.
 
-On 11/23/2020 10:38 AM, Nicolas Saenz Julienne wrote:
-> Use devm_rpi_firmware_get() so as to make sure we release RPi's firmware
-> interface when unbinding the device.
-> 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Basically, my principals are most interested in partnership with 
+business ventures such
+as Medical and Health care projects, Real estate projects, mining 
+projects,
+agricultural projects renewable energy projects, start-up projects and
+business expansions / Loan with lower rate.
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+I MUST consider you a privileged entity who shall be privy to many
+sourceable CLEAN fund meant for foreign investment and you are able to
+access up to One Billion Euro or more if your project is viable.
+
+I will wish that you send a copy of your highlighted projects with
+elucidated BUSINESS PLANS or EXECUTIVE SUMMARY which I shall propagate 
+for
+its immediate approval for a minimal ROI return on investment which you
+shall have sole mandate after review and consideration.
+
+There will be the need for a face to face meeting with the investor or 
+His representatives
+and have the paperwork perfected and signed.
+
+Kindly reply as soon as possible if you have any viable project that you
+will want us to be involved as indicated above.
+
+Thanks
+Dr. Per Lessen
