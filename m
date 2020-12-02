@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30BB2CC54E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3838F2CC51B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729032AbgLBShE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:37:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728153AbgLBShE (ORCPT
+        id S2389455AbgLBS2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:28:48 -0500
+Received: from a2.mail.mailgun.net ([198.61.254.61]:53868 "EHLO
+        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389447AbgLBS2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:37:04 -0500
-X-Greylist: delayed 475 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 02 Dec 2020 10:36:24 PST
-Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B64CC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:36:24 -0800 (PST)
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Wed, 2 Dec 2020 13:28:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606933702; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=0Yojjsqx1Zc13osDLIGhsE8pvvq8XrNhxySyf/S6H98=;
+ b=HSBz13gApNEmOc2xID7MRzMOz96p83DnDdngFyyexRch3lmTq4a7ASthNAwMSTNu4J0Ic3HQ
+ DThgUz/TzIcXckCwbrnlssKm8G6eszFexVH3itcKSPBmMH5pQ/eUSf+5ayRHyUjq+sk6vrJF
+ sth4ERguZ3jJbmMoIAEvol2HacQ=
+X-Mailgun-Sending-Ip: 198.61.254.61
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5fc7dcc62ef3e1355ff9e666 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 18:28:22
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 37D46C43464; Wed,  2 Dec 2020 18:28:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4CmSBT4jHSz8tCX;
-        Wed,  2 Dec 2020 19:27:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2013;
-        t=1606933665; bh=FduM7RXkc4VPK3lBUYzuzk6VCBKBhnLizNuQoArlROs=;
-        h=Cc:From:Subject:To:Date:From:To:CC:Subject;
-        b=kH2PmIrn9nDeZ07ylXoFPmAGaM+NFQLxpGRWlaJxzdOkqmTu/+NwxRdt+VTDvfSP+
-         mEYXh9MIQVXK77p0m+fMRwAyHR4C0LI2dw+87dDUd48cj/maRqt5brmB0eeh8BekB8
-         bBZqkg2q98gzLFQ/Usng530REJYcJHmXKFgQmC7eyrw534IMUkLibmyvljpAONX9oP
-         NvTqvpbG8m01hUyq6dsEczvcp39eIlxlnz/cDRqxP2S6xZ6wNmE8ZtHqCQ+J8HIvoL
-         49GbbsQdkJdYk8s8+nGLyvSv+OEhuWPz3sTuQ2KGBMXd5YH5I/1pKWyoxnh0/QMPjQ
-         4oSU6eueaM5hg==
-X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 172.17.10.69
-Received: from [10.21.2.135] (rat69.ratnet.stw.uni-erlangen.de [172.17.10.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: U2FsdGVkX1+OglfbQ7BMP/Z4bgV6k88XsnCe5DcEHbc=)
-        by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4CmSBR2Sbbz8sXS;
-        Wed,  2 Dec 2020 19:27:43 +0100 (CET)
-Cc:     apw@canonical.com, joe@perches.com, johannes.czekay@fau.de,
-        linux-kernel@i4.cs.fau.de
-From:   Nicolai Fischer <nicolai.fischer@fau.de>
-Subject: [RFC PATCH] checkpatch: correctly detect lines of help text
-To:     linux-kernel@vger.kernel.org
-Message-ID: <133ac827-c0d2-c5c7-39d8-7d2c17de7c76@fau.de>
-Date:   Wed, 2 Dec 2020 19:27:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D0205C43460;
+        Wed,  2 Dec 2020 18:28:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D0205C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v3] ath10k: Fix the parsing error in service available
+ event
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1605501291-23040-1-git-send-email-pillair@codeaurora.org>
+References: <1605501291-23040-1-git-send-email-pillair@codeaurora.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kuabhs@chromium.org,
+        dianders@chromium.org, briannorris@chromium.org,
+        Rakesh Pillai <pillair@codeaurora.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201202182822.37D46C43464@smtp.codeaurora.org>
+Date:   Wed,  2 Dec 2020 18:28:22 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, checkpatch uses keywords to determine the end
-of a Kconfig help message which leads to false positives:
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-1) if a line of the help text starts with any of the keywords, e.g. if:
+> The wmi service available event has been
+> extended to contain extra 128 bit for new services
+> to be indicated by firmware.
+> 
+> Currently the presence of any optional TLVs in
+> the wmi service available event leads to a parsing
+> error with the below error message:
+> ath10k_snoc 18800000.wifi: failed to parse svc_avail tlv: -71
+> 
+> The wmi service available event parsing should
+> not return error for the newly added optional TLV.
+> Fix this parsing for service available event message.
+> 
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00720-QCAHLSWMTPL-1
+> 
+> Fixes: cea19a6ce8bf ("ath10k: add WMI_SERVICE_AVAILABLE_EVENT support")
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-+config FOO
-+	help
-+	  help text
-+	  if condition
-+	  previous line causes warning
-+	  last line.
+Patch applied to ath-next branch of ath.git, thanks.
 
-2) if the help attribute is not specified last, checkpatch counts
-other attributes like depends on towards the line count:
+c7cee9c0f499 ath10k: Fix the parsing error in service available event
 
-+config FOO
-+	help
-+	bool "no help message, but passes checkpatch"
-+	default n
-+	depends on SYSFS
-+	depends on MULTIUSER
-
-This patch fixes this behavior by using the indentation to determine
-the end of the help message.
-
-Signed-off-by: Nicolai Fischer <nicolai.fischer@fau.de>
-Co-developed-by: Johannes Czekay <johannes.czekay@fau.de>
-Signed-off-by: Johannes Czekay <johannes.czekay@fau.de>
----
-
-
-The code responsible for counting the lines of the help message
-seems overly complicated and we could rewrite it entirely
-in order to be more clear and compact if requested.
-
-
-Additionally this if block is only meant to run
-when adding a new config option, because, as the comment indicates,
-otherwise the diff context might not include the whole help message.
-However if one renames an option, the regex matches as well and
-might trigger another false positive.
-This could potentially be addressed in the warning message,
-though we are happy for any input on this.
-
-
- scripts/checkpatch.pl | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 7dc094445d83..671b369a39d4 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3234,6 +3234,7 @@ sub process {
- 			my $f;
- 			my $is_start = 0;
- 			my $is_end = 0;
-+			my $help_indent;
- 			for (; $cnt > 0 && defined $lines[$ln - 1]; $ln++) {
- 				$f = $lines[$ln - 1];
- 				$cnt-- if ($lines[$ln - 1] !~ /^-/);
-@@ -3245,7 +3246,12 @@ sub process {
- 				if ($lines[$ln - 1] =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
- 					$is_start = 1;
- 				} elsif ($lines[$ln - 1] =~ /^\+\s*(?:---)?help(?:---)?$/) {
--					$length = -1;
-+					$length = 0;
-+					if (defined $lines[$ln]) {
-+						$lines[$ln] =~ /^\+(\s*)\S+/;
-+						$help_indent = $1;
-+					}
-+					next;
- 				}
- 
- 				$f =~ s/^.//;
-@@ -3253,14 +3259,13 @@ sub process {
- 				$f =~ s/^\s+//;
- 				next if ($f =~ /^$/);
- 
--				# This only checks context lines in the patch
--				# and so hopefully shouldn't trigger false
--				# positives, even though some of these are
--				# common words in help texts
--				if ($f =~ /^\s*(?:config|menuconfig|choice|endchoice|
--						  if|endif|menu|endmenu|source)\b/x) {
--					$is_end = 1;
--					last;
-+				# Help text ends if a line has a smaller indentation
-+				# than the first line of the message
-+				if (defined $help_indent) {
-+					if ($lines[$ln - 1] !~ /^\+$help_indent\S+/) {
-+						$is_end = 1;
-+						last;
-+					}
- 				}
- 				$length++;
- 			}
 -- 
-2.28.0
+https://patchwork.kernel.org/project/linux-wireless/patch/1605501291-23040-1-git-send-email-pillair@codeaurora.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
