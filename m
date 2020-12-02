@@ -2,106 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4032CBCFF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 356462CBD00
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729280AbgLBM2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:28:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726883AbgLBM2X (ORCPT
+        id S1729871AbgLBM2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:28:34 -0500
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:43657 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729543AbgLBM2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:28:23 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499E4C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 04:27:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7WH0kv+LfkLHJaqQQ0H5sk5+tTeHFM9URpx9/ubjxw0=; b=VYThr8uZf2g1Oa5NTsmPaFI/Xn
-        uVr8TBCXbAJVe2ecnyv2ABHQvHAYLOFYKzG2/f5IfDhQWzWxatJMtD0MkLX8qgKikKZE5xVELqKQt
-        AlIiyrhJDDAHImqWyq/Md3mLT8RdGKZlD/Q0eOMtYGYsFft0BjtDEmjP0QHldp0v1kHBQ9LqgbiuX
-        KMI3VIg1xCwW5NO7683KkfP2gMeKddlt2XXLHgqemrpqkkYRji5/wulQbdw9/kch/PJVKOXEZ0Z5i
-        LBakgEMfgRZtacQdP7dswNGLpV8cagVbW0vIRB/kI1IIjL7+sgDan37Pv9VvbQudYnIAZQjDLYZ8Y
-        zPp/Gf4g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkREO-00052S-H9; Wed, 02 Dec 2020 12:27:36 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A07A0305815;
-        Wed,  2 Dec 2020 13:27:34 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 893EE2143477A; Wed,  2 Dec 2020 13:27:34 +0100 (CET)
-Date:   Wed, 2 Dec 2020 13:27:34 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
-Message-ID: <20201202122734.GH3021@hirez.programming.kicks-ass.net>
-References: <20201201080734.GQ2414@hirez.programming.kicks-ass.net>
- <20201201110724.GL3092@hirez.programming.kicks-ass.net>
- <20201201144644.GF1437@paulmck-ThinkPad-P72>
- <20201201145519.GY2414@hirez.programming.kicks-ass.net>
- <20201201181506.GM3092@hirez.programming.kicks-ass.net>
- <20201201185737.GA93208@C02TD0UTHF1T.local>
- <20201201191441.GW3040@hirez.programming.kicks-ass.net>
- <20201201191856.GD8316@osiris>
- <20201202092116.GA3040@hirez.programming.kicks-ass.net>
- <20201202105649.GB6202@osiris>
+        Wed, 2 Dec 2020 07:28:33 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id kREWkDrInN7XgkREZksxw7; Wed, 02 Dec 2020 13:27:50 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1606912070; bh=T7EXqnLofAd0RTyfu5YzT2ZBWCR/I7cpQumq03DSVa0=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=u5zGy/k1luDMIMr9mbTsg0Ez/X0pRQ8X9TqRw6gmOZO0TjdpP6j0zdUc8Qb6AG3CY
+         YEMD1AVvVbnHhKV+mA2m0EHPD123fuTBFwNXd//JDp3Tyr9Lc5/jJDUUTKD7GBh04/
+         drCLYg0+8jCMUwMacuO0gjEbaw9Gp985S/CKmEbrJ+rkf3j3/Fjs54PtbCfPi6LJvr
+         8gajzGnZcwkUl3v/F4y9VKLlitA7dErooq3d0jsFeXDlx/rPU1KFALJqMSFS/k+Pv9
+         l21eetjikqxWKDOW6OYkvzv4lj8bD7NyFvMFo7lhyDHcnqNw4nARM2hnwosWjenyVE
+         gV0KgIwMbvOng==
+Subject: Re: [PATCH v3 0/4] media: meson: Add support for the Amlogic GE2D
+ Accelerator Unit
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201117084440.578540-1-narmstrong@baylibre.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <f0ab5ae9-db4d-4c9d-811d-26a6ce4c50f7@xs4all.nl>
+Date:   Wed, 2 Dec 2020 13:27:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202105649.GB6202@osiris>
+In-Reply-To: <20201117084440.578540-1-narmstrong@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfK15bOUrRB+c5q+WftggBLX5/wwzIv8ESjjweeLTV0+2f4IkRKQTMJKtQym/4mcdnj7lPV2sLY33le+W8YNhqzaY6Oo30BwvgDuaS+BOMTTlEHeai7gB
+ v9qnua8McUODk10xPIVFx9niUxuLZaX9L8Ko6w4YPEwmevsz2+SGz7gTFewRqTL3tO0Cjxo26Eu6poc5LlSx5FNjl6BanPej/ywfMK/9QmAiyGh6V6IVEe1U
+ 1+xavyknW6pMrEUteKWMU/1xYvKyA9mxffLnVz01nz2DFM+uU68/aGHEF5IeNcRopjr9eqy+nvCD2QEwp1uy8tkKAcovLU6dEZcIb2PdqMJnLH2xF/847rGF
+ jQSNWSFFXhC940bq1l4XnjB4W3P6ng==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 11:56:49AM +0100, Heiko Carstens wrote:
-> From 7bd86fb3eb039a4163281472ca79b9158e726526 Mon Sep 17 00:00:00 2001
-> From: Heiko Carstens <hca@linux.ibm.com>
-> Date: Wed, 2 Dec 2020 11:46:01 +0100
-> Subject: [PATCH] s390: fix irq state tracing
+On 17/11/2020 09:44, Neil Armstrong wrote:
+> The GE2D is a 2D accelerator with various features like configurable blitter
+> with alpha blending, frame rotation, scaling, format conversion and colorspace
+> conversion.
 > 
-> With commit 58c644ba512c ("sched/idle: Fix arch_cpu_idle() vs
-> tracing") common code calls arch_cpu_idle() with a lockdep state that
-> tells irqs are on.
+> The driver implements a Memory2Memory VB2 V4L2 streaming device permitting:
+> - 0, 90, 180, 270deg rotation
+> - horizontal/vertical flipping
+> - source cropping
+> - destination compositing
+> - 32bit/24bit/16bit format conversion
 > 
-> This doesn't work very well for s390: psw_idle() will enable interrupts
-> to wait for an interrupt. As soon as an interrupt occurs the interrupt
-> handler will verify if the old context was psw_idle(). If that is the
-> case the interrupt enablement bits in the old program status word will
-> be cleared.
+> This adds the support for the GE2D version found in the AXG SoCs Family.
 > 
-> A subsequent test in both the external as well as the io interrupt
-> handler checks if in the old context interrupts were enabled. Due to
-> the above patching of the old program status word it is assumed the
-> old context had interrupts disabled, and therefore a call to
-> TRACE_IRQS_OFF (aka trace_hardirqs_off_caller) is skipped. Which in
-> turn makes lockdep incorrectly "think" that interrupts are enabled
-> within the interrupt handler.
+> The missing features are:
+> - Source scaling
+> - Colorspace conversion
+> - Advanced alpha blending & blitting options
 > 
-> Fix this by unconditionally calling TRACE_IRQS_OFF when entering
-> interrupt handlers. Also call unconditionally TRACE_IRQS_ON when
-> leaving interrupts handlers.
+> Dependencies:
+> - Patches 1-3: None
+> - Patch 4: https://lkml.kernel.org/r/20200915124553.8056-1-narmstrong@baylibre.com (applied for 5.11)
 > 
-> This leaves the special psw_idle() case, which now returns with
-> interrupts disabled, but has an "irqs on" lockdep state. So callers of
-> psw_idle() must adjust the state on their own, if required. This is
-> currently only __udelay_disabled().
+> Changes since v2:
+> - removed error check in and after get_frame()
+> - moved the v4l2_file_operations lower in the code to avoid adding vidioc_setup_cap_fmt on top
+> - removed all memcpy of pix_fmt
+> - simplified & fixed ge2d_start_streaming
+> - added local buffer type check in vidioc_g_selection instead of using get_frame error
+> - removed impossible <0 rectangle check, fixed error string
+> - added comment on condition after V4L2_CID_ROTATE
 > 
-> Fixes: 58c644ba512c ("sched/idle: Fix arch_cpu_idle() vs tracing")
-> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+> Changes since v1:
+> - Rebased on v5.10-rc1
+> 
+> / # v4l2-compliance -s
+> v4l2-compliance SHA: ea16a7ef13a902793a5c2626b0cefc4d956147f3, 64 bits, 64-bit time_t
 
-Thanks for sorting this Heiko!
+That's too old: additional checks for CSC handling have been added since
+that time. It probably won't affect this driver, but still I prefer it if you
+can update to the latest version and verify that it still passes all the tests.
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Regards,
+
+	Hans
+
+> 
+> Compliance test for meson-ge2d device /dev/video0:
+> 
+> Driver Info:
+> 	Driver name      : meson-ge2d
+> 	Card type        : meson-ge2d
+> 	Bus info         : platform:meson-ge2d
+> 	Driver version   : 5.9.0
+> 	Capabilities     : 0x84208000
+> 		Video Memory-to-Memory
+> 		Streaming
+> 		Extended Pix Format
+> 		Device Capabilities
+> 	Device Caps      : 0x04208000
+> 		Video Memory-to-Memory
+> 		Streaming
+> 		Extended Pix Format
+> 
+> Required ioctls:
+> 	test VIDIOC_QUERYCAP: OK
+> 
+> Allow for multiple opens:
+> 	test second /dev/video0 open: OK
+> 	test VIDIOC_QUERYCAP: OK
+> 	test VIDIOC_G/S_PRIORITY: OK
+> 	test for unlimited opens: OK
+> 
+> 	test invalid ioctls: OK
+> Debug ioctls:
+> 	test VIDIOC_DBG_G/S_REGISTER: OK
+> 	test VIDIOC_LOG_STATUS: OK (Not Supported)
+> 
+> Input ioctls:
+> 	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+> 	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+> 	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+> 	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+> 	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+> 	Inputs: 0 Audio Inputs: 0 Tuners: 0
+> 
+> Output ioctls:
+> 	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+> 	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+> 	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+> 	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+> 	Outputs: 0 Audio Outputs: 0 Modulators: 0
+> 
+> Input/Output configuration ioctls:
+> 	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+> 	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+> 	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+> 	test VIDIOC_G/S_EDID: OK (Not Supported)
+> 
+> Control ioctls:
+> 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
+> 	test VIDIOC_QUERYCTRL: OK
+> 	test VIDIOC_G/S_CTRL: OK
+> 	test VIDIOC_G/S/TRY_EXT_CTRLS: OK
+> 	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
+> 	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+> 	Standard Controls: 4 Private Controls: 0
+> 
+> Format ioctls:
+> 	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+> 	test VIDIOC_G/S_PARM: OK (Not Supported)
+> 	test VIDIOC_G_FBUF: OK (Not Supported)
+> 	test VIDIOC_G_FMT: OK
+> 	test VIDIOC_TRY_FMT: OK
+> 	test VIDIOC_S_FMT: OK
+> 	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+> 	test Cropping: OK
+> 	test Composing: OK
+> 	test Scaling: OK (Not Supported)
+> 
+> Codec ioctls:
+> 	test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+> 	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+> 	test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+> 
+> Buffer ioctls:
+> 	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+> 	test VIDIOC_EXPBUF: OK
+> 	test Requests: OK (Not Supported)
+> 
+> Test input 0:
+> 
+> Streaming ioctls:
+> 	test read/write: OK (Not Supported)
+> 	test blocking wait: OK
+> 	Video Capture: Captured 58 buffers                
+> 	test MMAP (no poll): OK
+> 	Video Capture: Captured 58 buffers                
+> 	test MMAP (select): OK
+> 	Video Capture: Captured 58 buffers                
+> 	test MMAP (epoll): OK
+> 	test USERPTR (no poll): OK (Not Supported)
+> 	test USERPTR (select): OK (Not Supported)
+> 	test DMABUF: Cannot test, specify --expbuf-device
+> 
+> Total for meson-ge2d device /dev/video0: 52, Succeeded: 52, Failed: 0, Warnings: 0
+> 
+> Neil Armstrong (4):
+>   dt-bindings: media: Add bindings for the Amlogic GE2D Accelerator Unit
+>   media: meson: Add M2M driver for the Amlogic GE2D Accelerator Unit
+>   MAINTAINERS: Add myself as maintainer of the Amlogic GE2D driver
+>   arm64: dts: meson-axg: add GE2D node
+> 
+>  .../bindings/media/amlogic,axg-ge2d.yaml      |   47 +
+>  MAINTAINERS                                   |    9 +
+>  arch/arm64/boot/dts/amlogic/meson-axg.dtsi    |    9 +
+>  drivers/media/platform/Kconfig                |   13 +
+>  drivers/media/platform/Makefile               |    2 +
+>  drivers/media/platform/meson/ge2d/Makefile    |    3 +
+>  drivers/media/platform/meson/ge2d/ge2d-regs.h |  360 ++++++
+>  drivers/media/platform/meson/ge2d/ge2d.c      | 1091 +++++++++++++++++
+>  8 files changed, 1534 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/amlogic,axg-ge2d.yaml
+>  create mode 100644 drivers/media/platform/meson/ge2d/Makefile
+>  create mode 100644 drivers/media/platform/meson/ge2d/ge2d-regs.h
+>  create mode 100644 drivers/media/platform/meson/ge2d/ge2d.c
+> 
+
