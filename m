@@ -2,103 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBC72CC50E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 519662CC510
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:31:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730973AbgLBS21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:28:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726684AbgLBS20 (ORCPT
+        id S2389324AbgLBS23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:28:29 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59280 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726684AbgLBS23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:28:26 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BD0C0617A6;
-        Wed,  2 Dec 2020 10:27:46 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id z12so69650pjn.1;
-        Wed, 02 Dec 2020 10:27:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3zNax7Y+1Ikzzmhg7iyW9MLSCw7jdgQnq4TmPmAJA28=;
-        b=lqgtJVieKYGe00RIy86iIPDzKFYzexsfSaJr1YoR0txN85LXyOfkwRqTWB4Yi4HbdH
-         nW1fn6UWKm75o2mYOsdPMdaVFWvTVzYmb3IHzsTFljeNu2jYbGsayg5p/0JjFIKUy7fi
-         EcVJnKMcNIxe8nbRgx7UFLKUrp5JpvY6Ut1jHyBgbJv0ywwGLMkwB3LRH1YWUgazYloO
-         FyEMdudReYKkvu8AvWCzlu/nf0Y6nkMhXK3doSrKwApihvi4aJpDpKf9Y8GzIlX70gTU
-         HrWUPyuhdv2b7Xk0Cq6TUZ/dng83s4OMzmHCh3za7c3rpSqI13eT9uaq9BIQzuKJTWHf
-         Bs7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3zNax7Y+1Ikzzmhg7iyW9MLSCw7jdgQnq4TmPmAJA28=;
-        b=XppbEzX3EFYdTjpJmp27wo4u9p6fQNW7Rie+X2vU3T0DgTJb+aQw2ugIpOn2TcFs9s
-         udxHD2udfCt2EeTZ3eCAh1ctf8KXakBOMYsMiRiFGqx3eksyc1sJkq3DwmVPiUxqVtzy
-         D78sS2Blu9p3HGguI6sdyd1VFOsyjUWJx7Yli7Gv+61bUW9cVRH6mzBGWNRpE++SOwWd
-         qf1oxoKLmz077Mz6n/7kk4HBjmBbldrCvca9aMANhFYUgX9xO+LrslQ3Q+0Af6nmMjqk
-         CD/C36AVKdTv9jr6yRlWPz7T+VZveLNeY4p9z4nLyc4HExAcrVkCsmF6EOhkjp5cBq7I
-         3RZg==
-X-Gm-Message-State: AOAM532D9PY3/215zjVRkLXvSL+vowWuFc3b5A9aXDdlvVHh76Gjzkv8
-        dJMQlelpQn1vgy95LL4hsqI=
-X-Google-Smtp-Source: ABdhPJz1U890O+WgeLnLZND4JEg1gfgDFo2nW9DjhiZUqUmGdG+/Pm+qglOPbdvkQ2Toj/Szkz158w==
-X-Received: by 2002:a17:902:b691:b029:d8:ebc8:385e with SMTP id c17-20020a170902b691b02900d8ebc8385emr3855010pls.48.1606933665893;
-        Wed, 02 Dec 2020 10:27:45 -0800 (PST)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id c6sm396906pgl.38.2020.12.02.10.27.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 10:27:44 -0800 (PST)
-From:   Yang Shi <shy828301@gmail.com>
-To:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
-        david@fromorbit.com, hannes@cmpxchg.org, mhocko@suse.com,
-        akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/9] mm: vmscan: simplify nr_deferred update code
-Date:   Wed,  2 Dec 2020 10:27:17 -0800
-Message-Id: <20201202182725.265020-2-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201202182725.265020-1-shy828301@gmail.com>
-References: <20201202182725.265020-1-shy828301@gmail.com>
+        Wed, 2 Dec 2020 13:28:29 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2I9hmh099761;
+        Wed, 2 Dec 2020 13:27:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=5LaODwLC6YPp/x+bscelk6pXJv+ND+Uc0TuABB3Q0y0=;
+ b=cUapUli4OjiIIc6L9xUU7EJRWm6eb2uU/adSMJ5XHHsnDA81Za7GHJ09RZcgn74VnVKe
+ WwGuq04nH609M3GuTpgFOTofBYPoEDu/K5guJ+h+ui9gJOXbzavtAUR4rr3Kbw60ImZn
+ H6QDs8l//IGeXp5wCbJrzZDfHcebIdn5CPm1pS+AxLsL/a092hg8dCzHipKas13owcQE
+ iw9afu2CC8r2XSvYyIIOTYpwH6mtnb2k2ZpZln6M7FaplPOqbgE26QbbJSfWOkivRvQT
+ iBwdgUg4isnxrQ/AVHscGukV3dmqDbCjhZtM6O0SbScqD83XSb5TjTcnP7Le4iaDswHS cA== 
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 356741k3m4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 13:27:39 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2IRWme031494;
+        Wed, 2 Dec 2020 18:27:38 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma04wdc.us.ibm.com with ESMTP id 354ysukhc8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 18:27:38 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2IRcl81835644
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 18:27:38 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A6C2124052;
+        Wed,  2 Dec 2020 18:27:38 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5F9AD124053;
+        Wed,  2 Dec 2020 18:27:37 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.211.78.151])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Dec 2020 18:27:37 +0000 (GMT)
+Subject: Re: [PATCH v2 15/17] ibmvfc: send Cancel MAD down each hw scsi
+ channel
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201202005329.4538-1-tyreld@linux.ibm.com>
+ <20201202005329.4538-16-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <21a7c970-2184-0524-5b42-1920eaa422a2@linux.vnet.ibm.com>
+Date:   Wed, 2 Dec 2020 12:27:36 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201202005329.4538-16-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_10:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ mlxlogscore=999 spamscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
+ clxscore=1015 adultscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012020103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently if (next_deferred - scanned) = 0, the code would just read the current
-nr_deferred otherwise add the delta back.  Both needs atomic operation anyway, it
-seems there is not too much gain by distinguishing the two cases, so just add the
-delta back even though the delta is 0.  This would simply the code for the following
-patches too.
+On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
+> In general the client needs to send Cancel MADs and task management
+> commands down the same channel as the command(s) intended to cancel or
+> abort. The client assigns cancel keys per LUN and thus must send a
+> Cancel down each channel commands were submitted for that LUN. Further,
+> the client then must wait for those cancel completions prior to
+> submitting a LUN RESET or ABORT TASK SET.
+> 
+> Allocate event pointers for each possible scsi channel and assign an
+> event for each channel that requires a cancel. Wait for completion each
+> submitted cancel.
+> 
+> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+> ---
+>  drivers/scsi/ibmvscsi/ibmvfc.c | 106 +++++++++++++++++++++------------
+>  1 file changed, 68 insertions(+), 38 deletions(-)
+> 
+> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+> index 0b6284020f06..97e8eed04b01 100644
+> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+> @@ -2339,32 +2339,52 @@ static int ibmvfc_cancel_all(struct scsi_device *sdev, int type)
+>  {
+>  	struct ibmvfc_host *vhost = shost_priv(sdev->host);
+>  	struct ibmvfc_event *evt, *found_evt;
+> -	union ibmvfc_iu rsp;
+> -	int rsp_rc = -EBUSY;
+> +	struct ibmvfc_event **evt_list;
+> +	union ibmvfc_iu *rsp;
+> +	int rsp_rc = 0;
+>  	unsigned long flags;
+>  	u16 status;
+> +	int num_hwq = 1;
+> +	int i;
+> +	int ret = 0;
+>  
+>  	ENTER;
+>  	spin_lock_irqsave(vhost->host->host_lock, flags);
+> -	found_evt = NULL;
+> -	list_for_each_entry(evt, &vhost->sent, queue) {
+> -		if (evt->cmnd && evt->cmnd->device == sdev) {
+> -			found_evt = evt;
+> -			break;
+> +	if (vhost->using_channels && vhost->scsi_scrqs.active_queues)
+> +		num_hwq = vhost->scsi_scrqs.active_queues;
+> +
+> +	evt_list = kcalloc(num_hwq, sizeof(*evt_list), GFP_KERNE> +	rsp = kcalloc(num_hwq, sizeof(*rsp), GFP_KERNEL);
 
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
- mm/vmscan.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+Can't this just go on the stack? We don't want to be allocating memory
+during error recovery. Or, alternatively, you could put this in the
+vhost structure and protect it with a mutex. We only have enough events
+to single thread these anyway.
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 7b4e31eac2cf..7d6186a07daf 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -528,14 +528,10 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
- 		next_deferred = 0;
- 	/*
- 	 * move the unused scan count back into the shrinker in a
--	 * manner that handles concurrent updates. If we exhausted the
--	 * scan, there is no need to do an update.
-+	 * manner that handles concurrent updates.
- 	 */
--	if (next_deferred > 0)
--		new_nr = atomic_long_add_return(next_deferred,
--						&shrinker->nr_deferred[nid]);
--	else
--		new_nr = atomic_long_read(&shrinker->nr_deferred[nid]);
-+	new_nr = atomic_long_add_return(next_deferred,
-+					&shrinker->nr_deferred[nid]);
- 
- 	trace_mm_shrink_slab_end(shrinker, nid, freed, nr, new_nr, total_scan);
- 	return freed;
+> +
+> +	for (i = 0; i < num_hwq; i++) {
+> +		sdev_printk(KERN_INFO, sdev, "Cancelling outstanding commands on queue %d.\n", i);
+
+Prior to this patch, if there was nothing outstanding to the device and cancel_all was called,
+no messages would get printed. This is changing that behavior. Is that intentional? Additionally,
+it looks like this will get a lot more vebose, logging a message for each hw queue, regardless
+of whether there was anything outstanding. Perhaps you want to move this down to after the check
+for !found_evt?
+
+> +
+> +		found_evt = NULL;
+> +		list_for_each_entry(evt, &vhost->sent, queue) {
+> +			if (evt->cmnd && evt->cmnd->device == sdev && evt->hwq == i) {
+> +				found_evt = evt;
+> +				break;
+> +			}
+>  		}
+> -	}
+>  
+
+
+
 -- 
-2.26.2
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
 
