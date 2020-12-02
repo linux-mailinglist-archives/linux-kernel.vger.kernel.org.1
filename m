@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C15A2CC537
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6FF2CC535
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389358AbgLBScP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:32:15 -0500
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:36258 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729032AbgLBScO (ORCPT
+        id S2389017AbgLBScL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:32:11 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8168 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728656AbgLBScK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:32:14 -0500
-Received: by mail-ot1-f51.google.com with SMTP id y24so2565115otk.3;
-        Wed, 02 Dec 2020 10:31:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B4i9VFRUD3xARLzYQEJLNB6JhqamFut8iCJ5lNpUlk4=;
-        b=iYEerzja10ZQZBFr4aeAtdJwMq8T6CEiRCZQmgbpdOKYkmL7c9QT5ydgasOnWyRSUD
-         TLm4xZ5pqJx6g3DAWBmBCGJaukgCYMRExm4gR93XN8T8xp3epZpwg2elGWJJBRpzGnHE
-         7o7h47DLAhuh+USumGlFdOVYmio3mX8kgdJn6CC3Eyo3eibNsKZu2s5ghSj5u0RSHCEH
-         CEAGHM72ELT6TejXuJLVEWK+R37n7YqaxEImurO0ORy3dOtLe8ZuobFKBjym+UcewL4S
-         HJVRCtxC1VADpEoRdy4lMXKfCztdAq7QQ6sxW7aZyXvIAcL4WcFeGRkBRAwsYL+doo0Q
-         xUjA==
-X-Gm-Message-State: AOAM5304FLkz2YyJmxl0tBvrjOOxUYaWL/5WrWnsPBThMnNsJZgk2z4C
-        hATrUPso/+mGPKGWftnLMQh7q3b+34s8IMJk4PE=
-X-Google-Smtp-Source: ABdhPJxpvRp8VsnzKDL27mVBm4pcDuSz96iERvdj7q3h3vU8KuTGbZbDzV61PT2USI8W+btbuSQjQw8l/wqoA9qDaTM=
-X-Received: by 2002:a9d:745a:: with SMTP id p26mr2455710otk.206.1606933893884;
- Wed, 02 Dec 2020 10:31:33 -0800 (PST)
+        Wed, 2 Dec 2020 13:32:10 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2I3k2M104015;
+        Wed, 2 Dec 2020 13:31:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ix5xI4eV4ktS+Si1szwX06PnD5N08iIL8loUbC9USd4=;
+ b=QGAjXAHJWbofZ/bYcLIVNhhIcmq+fiHfdkS5rdOlJd6Bi0e1HGfuRqg3vkrPjduFAByw
+ Vzvt+MRWo3b1WQMzSTXn0Bvs8GyHF6LpL+hXrZUWtFZomnIDQWwLNExZRpYtlakuV0dA
+ 4yTIWCW9hcZ3DuqnaJrmfrkawKQpaQXs2fTyezwkIAoON6ogIY1cgtDs5BxlKnPADQic
+ +h6Xo/t/MCVwnZhP7IkaXjNLyDcz94Ry6qjjqHVWKhByqi7UVn6Kp+IDnrNQTppNImd4
+ h4+mPUHmdXyo6cuN4egWtPOiyEKuibF5sYkPkH54FfDTxfN/e1lIspnIEKc93S2EpjCu tw== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 356a0vdn6x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 13:31:24 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2IRXVC021400;
+        Wed, 2 Dec 2020 18:31:23 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma01dal.us.ibm.com with ESMTP id 355rf7kkyx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 18:31:23 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2IVMda45416788
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 18:31:22 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A895E12405B;
+        Wed,  2 Dec 2020 18:31:22 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DBB93124058;
+        Wed,  2 Dec 2020 18:31:21 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.211.78.151])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Dec 2020 18:31:21 +0000 (GMT)
+Subject: Re: [PATCH v2 16/17] ibmvfc: enable MQ and set reasonable defaults
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201202005329.4538-1-tyreld@linux.ibm.com>
+ <20201202005329.4538-17-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <13d757ae-f19d-17f8-d7e4-c217ba24990d@linux.vnet.ibm.com>
+Date:   Wed, 2 Dec 2020 12:31:21 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <87blkbx1gt.fsf@gmx.net> <87imdp5r80.fsf@rub.de>
- <20200811132955.wbt55ns7bu5mxouq@linutronix.de> <CAJZ5v0h+n9VCz5=VixVbe_b=ZbTU3D=46stGhE9z7Y7yaUMJzw@mail.gmail.com>
- <20200811152551.dmfw46urecbmeklr@linutronix.de> <87ft8tayic.fsf@gmx.net>
- <20200811184902.2fm4eyprmpkfon2j@linutronix.de> <20201006214927.4nsqtfji4fdv3oed@linutronix.de>
- <3fc9074b-c153-8446-0289-1e4dfab395eb@intel.com> <20201026172057.h5toqoobiyhc4g3g@linutronix.de>
- <20201202180350.kwmgfzkom7v7bzjg@linutronix.de>
-In-Reply-To: <20201202180350.kwmgfzkom7v7bzjg@linutronix.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 2 Dec 2020 19:31:21 +0100
-Message-ID: <CAJZ5v0j86pX_a4bSLP=sobLoYhfQYV9dWL8HHf2941kXgND79g@mail.gmail.com>
-Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stephen Berman <stephen.berman@gmx.net>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201202005329.4538-17-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_10:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 adultscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 malwarescore=0 mlxlogscore=881 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 7:03 PM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> On 2020-10-26 18:20:59 [+0100], To Rafael J. Wysocki wrote:
-> > > > > > Done as Bug 208877.
-> > > > Rafael, do you have any suggestions?
-> > >
-> > > I've lost track of this sorry.
-> > >
-> > > I have ideas, let me get back to this next week.
-> >
-> > :)
->
-> Rafael, any update? If you outline an idea or so then I may be able to
-> form a patch out of it. Otherwise I have no idea how to fix this - other
-> than telling the driver to not poll in smaller intervals than
-> 30secs.
+Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
 
-The idea, roughly speaking, is to limit the number of outstanding work
-items in the queue (basically, if there's a notification occurring
-before the previous one can be handled, there is no need to queue up
-another work item for it).
+
+-- 
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
+
