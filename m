@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9171B2CC84B
+	by mail.lfdr.de (Postfix) with ESMTP id 25CBC2CC84A
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731322AbgLBUta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:49:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38654 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387492AbgLBUt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2387645AbgLBUt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 2 Dec 2020 15:49:27 -0500
-Subject: Re: [GIT PULL] sound fixes for 5.10-rc7
+Received: from mail.kernel.org ([198.145.29.99]:38642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731319AbgLBUt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 15:49:27 -0500
+Subject: Re: [GIT PULL] bootconfig: Always use little endian for size and
+ checksum
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1606942126;
-        bh=4f5mQ9R3JPP9K49Vwwn2hOw/J+2NbTSt3J1u4qCIYeM=;
+        bh=r0KNsIPoDA4dDmEX5fflHR09y7DpBnnmOVBMvvh/ARY=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=rgMcYyC/vH6kRzkSlCV0EbwzHynuYd2A1qujk8xG+OwjhaGGUft9U8t9HLgqVieYb
-         58Hoca3O0l4jAofolKBv2vq8BUOUX7Ppnh2QQSEWkxae9WQDIhcRgLxOmMM2UH28/g
-         mDmZddgrEKba3qHG+j3EAdBbm5cP+ZcWSpQBC2FK9ls6sHClPHUeVUzZyIMGdEiYjM
-         HJ6e1qKl8yCQlMs713IJ24U2BfI9glxYzWSLuLPqEXw77T3+6+f1AeiMD8GLCZ6NPj
-         bQTbomIBbugRxP9BzBQnjq5zsO8IIyhUFeST9vfS+KP34SaszmIUQnIAoD7aZbHIlx
-         da1a+j0pg/XMQ==
+        b=JYt2hb0wt6P70S/9rVNtsyhzuLh7Ox7bsKQ7n7Cz5hsfpHDhHzrm4lDDawHayUBa1
+         uRR7iPffdHKWDnSYDo24VtbcYctQbieAljY+AcCztqhQHw/qhUiMsVJkMVYhahkzpo
+         xJifx2xfPi9qjjP353lx5Bu05YlKVmmob7rGWVi/vTiF1k9WFpXWhDJ+8tRL3L2wcV
+         MQjeg+G3Z6KrCEiflZQWRwdSNxHgrc+uHLpt7fz2iDrtp4DR/crMLbRDYXuM40wq0d
+         bhYUvD8ZGDt4nr/omaGTZTTyw+rWA9E6GUYJ6R3LKOjfD5LnnwnmS7ymRgqgnUCR1l
+         sOwOhsSOSbg+A==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <s5him9ka859.wl-tiwai@suse.de>
-References: <s5him9ka859.wl-tiwai@suse.de>
+In-Reply-To: <20201201202239.5618b84c@oasis.local.home>
+References: <20201201202239.5618b84c@oasis.local.home>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <s5him9ka859.wl-tiwai@suse.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.10-rc7
-X-PR-Tracked-Commit-Id: aeedad2504997be262c98f6e3228173225a8d868
+X-PR-Tracked-Message-Id: <20201201202239.5618b84c@oasis.local.home>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.10-rc6-bootconfig
+X-PR-Tracked-Commit-Id: 05227490c5f0f1bbd3693a7a70b3fb5b09d2a996
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bb95d60783f1ac85883c7ae33cafa85236b6179e
-Message-Id: <160694212672.5087.8140282547876308415.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 8a02ec8f35779335b81577903832c2b3c495e979
+Message-Id: <160694212648.5087.892158938767968766.pr-tracker-bot@kernel.org>
 Date:   Wed, 02 Dec 2020 20:48:46 +0000
-To:     Takashi Iwai <tiwai@suse.de>
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 02 Dec 2020 10:07:14 +0100:
+The pull request you sent on Tue, 1 Dec 2020 20:22:39 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.10-rc7
+> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.10-rc6-bootconfig
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bb95d60783f1ac85883c7ae33cafa85236b6179e
+https://git.kernel.org/torvalds/c/8a02ec8f35779335b81577903832c2b3c495e979
 
 Thank you!
 
