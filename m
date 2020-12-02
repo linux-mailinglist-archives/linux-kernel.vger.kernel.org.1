@@ -2,103 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6AA2CC514
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30BB2CC54E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389415AbgLBS2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:28:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
+        id S1729032AbgLBShE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:37:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389384AbgLBS2c (ORCPT
+        with ESMTP id S1728153AbgLBShE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:28:32 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1BDC0613D6;
-        Wed,  2 Dec 2020 10:27:45 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id i2so5118046wrs.4;
-        Wed, 02 Dec 2020 10:27:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ydQfEfGfc0N0qiJ5oWHcbHhyRsLLnIu0b8pXAHWYB1A=;
-        b=MuYyPO4TnlK08+JUUwVy2q06Ru0NqVQXpM6eH1SAvjkUBTngufNo4mZlcodeyRFkhg
-         WGhLsS35bhW63ROAEKx3ptsolAqnVC8dHbSL2C212z7VvTV0Lg6sdYchGOtYuvli5jBg
-         zjMLVy9EHRfMA0CrnCwoBFlXGRZO6whNd4YWfL6nrJlcmxhbSagPHFKpdBErLqsgkoBh
-         4M+JjxWEeu7Ipd3ZCR+gghmyaUV6GRqlBOk/GJt9ZDyrt5rsDX0gPfiF2I1uwJDbDS3p
-         GHDJ2uNL2/4RdnFBilVAN4PTCtHMitG+dLct30C4wktD2gSQwZVPGXVYK+v1tsUBW21h
-         dsjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ydQfEfGfc0N0qiJ5oWHcbHhyRsLLnIu0b8pXAHWYB1A=;
-        b=A+W4vrts6YZ8zTtPh4KgNO5P21MblawhZeA4Cxb0FZMA7s4rwuf7oPQm1wyhOCd/H6
-         jmCejzXxL04PnPzGoQi/l5zl+cZ2Yu4Nn7sN8ZrEObjaskzAjUb00RdFLz7F3VwKcG4y
-         VKZ0gFlP3uQBh7lxFb8xTLCzlUdlS27wriZXW/qzz2Kmqn5hOAUhni2CAtyLQq4W1agU
-         OXILPKd3PbqSDkdza7vIAcqSfLxdDt8zgUkOP0eNjl9yuIfAyciESUEDID+iiWbSuzEs
-         Mk1SuzEKfNJh+wWlcOam/2CVY+ClyRyw6OgmebRMDJ1Zr7XqFi1iZ+OlUxWhUJ8uoDKp
-         bonw==
-X-Gm-Message-State: AOAM530fvjGXXXkC3BHdb7C4bDKdocOXeP2igHC/s2kMy2Zzgx/L8co7
-        sAK+gLzoyykZHpwL1gV9Xsf+Kphka+OBiG2zbHE=
-X-Google-Smtp-Source: ABdhPJyEJYfjsTAHdPlpaUi/h+47rkpYAXzfUBNhxLP6y7DGmQSQBa58WhiOW08d4ox/Ce7pgVf6tVpHh5eZEJcHsCk=
-X-Received: by 2002:adf:f602:: with SMTP id t2mr5212372wrp.40.1606933664584;
- Wed, 02 Dec 2020 10:27:44 -0800 (PST)
+        Wed, 2 Dec 2020 13:37:04 -0500
+X-Greylist: delayed 475 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 02 Dec 2020 10:36:24 PST
+Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B64CC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:36:24 -0800 (PST)
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4CmSBT4jHSz8tCX;
+        Wed,  2 Dec 2020 19:27:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2013;
+        t=1606933665; bh=FduM7RXkc4VPK3lBUYzuzk6VCBKBhnLizNuQoArlROs=;
+        h=Cc:From:Subject:To:Date:From:To:CC:Subject;
+        b=kH2PmIrn9nDeZ07ylXoFPmAGaM+NFQLxpGRWlaJxzdOkqmTu/+NwxRdt+VTDvfSP+
+         mEYXh9MIQVXK77p0m+fMRwAyHR4C0LI2dw+87dDUd48cj/maRqt5brmB0eeh8BekB8
+         bBZqkg2q98gzLFQ/Usng530REJYcJHmXKFgQmC7eyrw534IMUkLibmyvljpAONX9oP
+         NvTqvpbG8m01hUyq6dsEczvcp39eIlxlnz/cDRqxP2S6xZ6wNmE8ZtHqCQ+J8HIvoL
+         49GbbsQdkJdYk8s8+nGLyvSv+OEhuWPz3sTuQ2KGBMXd5YH5I/1pKWyoxnh0/QMPjQ
+         4oSU6eueaM5hg==
+X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 172.17.10.69
+Received: from [10.21.2.135] (rat69.ratnet.stw.uni-erlangen.de [172.17.10.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: U2FsdGVkX1+OglfbQ7BMP/Z4bgV6k88XsnCe5DcEHbc=)
+        by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4CmSBR2Sbbz8sXS;
+        Wed,  2 Dec 2020 19:27:43 +0100 (CET)
+Cc:     apw@canonical.com, joe@perches.com, johannes.czekay@fau.de,
+        linux-kernel@i4.cs.fau.de
+From:   Nicolai Fischer <nicolai.fischer@fau.de>
+Subject: [RFC PATCH] checkpatch: correctly detect lines of help text
+To:     linux-kernel@vger.kernel.org
+Message-ID: <133ac827-c0d2-c5c7-39d8-7d2c17de7c76@fau.de>
+Date:   Wed, 2 Dec 2020 19:27:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
- <20201202094717.GX4077@smile.fi.intel.com> <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
- <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
- <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com> <20201202173701.GM4077@smile.fi.intel.com>
-In-Reply-To: <20201202173701.GM4077@smile.fi.intel.com>
-From:   Yun Levi <ppbuk5246@gmail.com>
-Date:   Thu, 3 Dec 2020 03:27:33 +0900
-Message-ID: <CAM7-yPSWvsySweXSmbvW2hucce8T7BOSkz-eF5t7PJE6zv5tjg@mail.gmail.com>
-Subject: 
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>, dushistov@mail.ru,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
-        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 2:36 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Dec 02, 2020 at 09:26:05AM -0800, Yury Norov wrote:
-> > On Wed, Dec 2, 2020 at 3:50 AM Yun Levi <ppbuk5246@gmail.com> wrote:
->
-> ...
->
-> >  I think this patch has some good catches. We definitely need to implement
-> > find_last_zero_bit(), as it is used by fs/ufs, and their local
-> > implementation is not optimal.
->
-> Side note: speaking of performance, any plans to fix for_each_*_bit*() for
-> cases when the nbits is known to be <= BITS_PER_LONG?
->
-> Now it makes an awful code generation (something like few hundred bytes of
-> code).
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Currently, checkpatch uses keywords to determine the end
+of a Kconfig help message which leads to false positives:
 
-> Side note: speaking of performance, any plans to fix for_each_*_bit*() for
-> cases when the nbits is known to be <= BITS_PER_LONG?
+1) if a line of the help text starts with any of the keywords, e.g. if:
 
-Frankly Speaking, I don't have an idea in now.....
-Could you share your idea or wisdom?
++config FOO
++	help
++	  help text
++	  if condition
++	  previous line causes warning
++	  last line.
 
-Thanks.
-Levi.
+2) if the help attribute is not specified last, checkpatch counts
+other attributes like depends on towards the line count:
+
++config FOO
++	help
++	bool "no help message, but passes checkpatch"
++	default n
++	depends on SYSFS
++	depends on MULTIUSER
+
+This patch fixes this behavior by using the indentation to determine
+the end of the help message.
+
+Signed-off-by: Nicolai Fischer <nicolai.fischer@fau.de>
+Co-developed-by: Johannes Czekay <johannes.czekay@fau.de>
+Signed-off-by: Johannes Czekay <johannes.czekay@fau.de>
+---
+
+
+The code responsible for counting the lines of the help message
+seems overly complicated and we could rewrite it entirely
+in order to be more clear and compact if requested.
+
+
+Additionally this if block is only meant to run
+when adding a new config option, because, as the comment indicates,
+otherwise the diff context might not include the whole help message.
+However if one renames an option, the regex matches as well and
+might trigger another false positive.
+This could potentially be addressed in the warning message,
+though we are happy for any input on this.
+
+
+ scripts/checkpatch.pl | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7dc094445d83..671b369a39d4 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3234,6 +3234,7 @@ sub process {
+ 			my $f;
+ 			my $is_start = 0;
+ 			my $is_end = 0;
++			my $help_indent;
+ 			for (; $cnt > 0 && defined $lines[$ln - 1]; $ln++) {
+ 				$f = $lines[$ln - 1];
+ 				$cnt-- if ($lines[$ln - 1] !~ /^-/);
+@@ -3245,7 +3246,12 @@ sub process {
+ 				if ($lines[$ln - 1] =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
+ 					$is_start = 1;
+ 				} elsif ($lines[$ln - 1] =~ /^\+\s*(?:---)?help(?:---)?$/) {
+-					$length = -1;
++					$length = 0;
++					if (defined $lines[$ln]) {
++						$lines[$ln] =~ /^\+(\s*)\S+/;
++						$help_indent = $1;
++					}
++					next;
+ 				}
+ 
+ 				$f =~ s/^.//;
+@@ -3253,14 +3259,13 @@ sub process {
+ 				$f =~ s/^\s+//;
+ 				next if ($f =~ /^$/);
+ 
+-				# This only checks context lines in the patch
+-				# and so hopefully shouldn't trigger false
+-				# positives, even though some of these are
+-				# common words in help texts
+-				if ($f =~ /^\s*(?:config|menuconfig|choice|endchoice|
+-						  if|endif|menu|endmenu|source)\b/x) {
+-					$is_end = 1;
+-					last;
++				# Help text ends if a line has a smaller indentation
++				# than the first line of the message
++				if (defined $help_indent) {
++					if ($lines[$ln - 1] !~ /^\+$help_indent\S+/) {
++						$is_end = 1;
++						last;
++					}
+ 				}
+ 				$length++;
+ 			}
+-- 
+2.28.0
