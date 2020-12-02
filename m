@@ -2,267 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BE32CB1DF
+	by mail.lfdr.de (Postfix) with ESMTP id 70BDA2CB1E0
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727938AbgLBA4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 19:56:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
+        id S1727943AbgLBA4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 19:56:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727922AbgLBA4G (ORCPT
+        with ESMTP id S1726023AbgLBA4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 19:56:06 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DBAC0613CF;
-        Tue,  1 Dec 2020 16:55:26 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id x2so55322ybt.11;
-        Tue, 01 Dec 2020 16:55:26 -0800 (PST)
+        Tue, 1 Dec 2020 19:56:30 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579EBC0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 16:55:50 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id e23so2309088pgk.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 16:55:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BtOPT5jltF4CVLDPPnaNo7rmidfqmNUIx0/PN3QHp2M=;
-        b=WX2myt5gM6vWrdPHfVZHnVP4VShRjz+ZY0kRNBqShcXt/1eQKKmOuPujmMidioy82B
-         4hfV0WwyLVVUP0Yseh2c8kNFn2qrlnuk1uhWr9zLBis2L0De+Bmx8hfxwEVObnRni1aS
-         r2hNM3ceWCmPk5tH8rhWgbBhRwZMkxnThAha/ZS1gYyA9nKFavZUMhE6WWHZoxIb9+B9
-         Crq4+PdCqp+4mbhMaKy24NHz/6bVgED4je7m7KaRmXepzhT17hRxWZa26UBq6hUynj8G
-         W+VVXKRYUdz/1le4cN52vuGrB6USdgSgycSDr7O2WE/iYaSdX8ND2B6YhbF/cp7BH725
-         9/HA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UzsHy5/emXeVWru8+uPi1WYeTWfpYGo0ObdkjXASAEg=;
+        b=VB4F3Sf0vy55RucLl+hsq9yR6VwaVxld23LtTP91FownMD+jmpaoHKAJhvLf4PzotJ
+         mNcjwLqMNp0AzVyDm7Ma4QrjZbzgGbNV0xdChEdw7dFobD4RqrTsard/ILEuKbYiar6+
+         TtZvYLTPTUWTd0oguKsvUpq5xHVvuHNNbuhwA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BtOPT5jltF4CVLDPPnaNo7rmidfqmNUIx0/PN3QHp2M=;
-        b=hfTheSJDOPragEXHOb9lP42djH5/sX4ISc96nz69DPDgUtriGVBJIMxybTlqsEQzpV
-         0HPvzOSsEne0HwBshO2TrkHA8WpQ2ol74SbZ7nHPfUpUFODTwnjMURh0zxngT7JoE/8+
-         GzYz7m4E9h5kWpVdOfbc7VtHsI04yTlmXz9uHVsmhCuHGES2B3vaoRXQA/ZfTZ9yy57V
-         8WrOD+TosPY4pVTJ1/yZvy/0Jcc+1IXqZkAZeT2wfOrztYKKi2Xe0YmXmTGGOstA3Prr
-         58bxCmUFS90gf8S4jgw6+oSnZxz7DrDND3QPYMya9zBGlaCQstmdT+Jxm1/kE9UgvjRr
-         6DqQ==
-X-Gm-Message-State: AOAM532l1v1B4YAywDC4xQPHrj6FgcP6oDnsCwAR9tMjBdTSwluK6hNC
-        qEk2cxP2HZ89+bn2uh1M+Bh/Ew2db2v1krRjgW8=
-X-Google-Smtp-Source: ABdhPJy3gBFqXQtWj/HvRoosWfu+pAZZ88j+2BESAL0eQjvgm9bkfHfcwH4ZasTnZnuy3OBgcSh8UuRhF7VUaxFgU/8=
-X-Received: by 2002:a25:df82:: with SMTP id w124mr87572ybg.347.1606870525716;
- Tue, 01 Dec 2020 16:55:25 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UzsHy5/emXeVWru8+uPi1WYeTWfpYGo0ObdkjXASAEg=;
+        b=Rbs4Ya9jBQHl8pz9HBTf5xw4IiEByS2oLEKpMQp8SwP/NrjT5iI97q2tqA2/gKeo/e
+         73BT0dsgVlDDTf87xRQvvNpESvj3Mu6D+aecPx/0mQpxTmodXcIGa0UtMzq8ISKMgCSf
+         b8uK/jeAvDQRFfIvRdE8SYtfubx0SV4/yEe++MgyT9XHCpfTrKJH3hkNYKw1AgN5H5as
+         5cIio0ghsKBi162XGzmJPaecUA7eQKFQuw0X8XC2xT2evlhPupZcsKjC99DDcr0ZgUAm
+         cmd5qj5A8Xi5zLnG+5wwM1KjZRZ0s1ekwGD0X1efoIYog6zG64UE99hzjM9hGEg/ycHm
+         XODg==
+X-Gm-Message-State: AOAM533Vl79CZ7pzwaom18rR7TlDnXfCeSB53rovMq0XYODbmHfDCYQt
+        pV+xOqWmRlPXZl/CTMebKXa0hQ==
+X-Google-Smtp-Source: ABdhPJws+QKJO6n7SVqw5640UqBCNIBdJwEC/DsjKgv0EDsRIBPaxAE1l1D/IAkF+11qMiRd3gMWBQ==
+X-Received: by 2002:aa7:92c7:0:b029:197:e36f:fc5c with SMTP id k7-20020aa792c70000b0290197e36ffc5cmr45108pfa.62.1606870549891;
+        Tue, 01 Dec 2020 16:55:49 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f15sm91816pju.49.2020.12.01.16.55.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 16:55:48 -0800 (PST)
+Date:   Tue, 1 Dec 2020 16:55:47 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Emese Revfy <re.emese@gmail.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL 2/2] Kconfig updates for v5.10-rc1
+Message-ID: <202012011652.27ADF5FDB6@keescook>
+References: <CAK7LNASn4Si3=YhAPtc06wEqajpU0uBh46-4T10f=cHy=LY2iA@mail.gmail.com>
+ <CAHk-=wihYvkKOcXWPjY7wN13DXbh3k2YX_6JxK_1cQ=krbi9kg@mail.gmail.com>
+ <CAHk-=wi86Eu8Whu66CVu+GVTxbuJG+QNvDuk-hXnWu+5q90Zeg@mail.gmail.com>
+ <CAHk-=winw=9xh6SmFJPZgi8ngVR-ECTA-kDAAU3DEPLMoUrzVA@mail.gmail.com>
+ <CAHk-=wjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ@mail.gmail.com>
+ <CAK7LNAQtABssBH2LGThgv-F3_aSrz9Hd-ra9Yyu4-FFzY1nsUw@mail.gmail.com>
+ <CAHk-=whK0aQxs6Q5ijJmYF1n2ch8cVFSUzU5yUM_HOjig=+vnw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201126165748.1748417-1-revest@google.com> <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
- <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com> <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com>
-In-Reply-To: <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Dec 2020 16:55:14 -0800
-Message-ID: <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-To:     Yonghong Song <yhs@fb.com>
-Cc:     KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whK0aQxs6Q5ijJmYF1n2ch8cVFSUzU5yUM_HOjig=+vnw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 8:09 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 11/27/20 3:20 AM, KP Singh wrote:
-> > On Fri, Nov 27, 2020 at 8:35 AM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 11/26/20 8:57 AM, Florent Revest wrote:
-> >>> This helper exposes the kallsyms_lookup function to eBPF tracing
-> >>> programs. This can be used to retrieve the name of the symbol at an
-> >>> address. For example, when hooking into nf_register_net_hook, one can
-> >>> audit the name of the registered netfilter hook and potentially also
-> >>> the name of the module in which the symbol is located.
-> >>>
-> >>> Signed-off-by: Florent Revest <revest@google.com>
-> >>> ---
-> >>>    include/uapi/linux/bpf.h       | 16 +++++++++++++
-> >>>    kernel/trace/bpf_trace.c       | 41 ++++++++++++++++++++++++++++++++++
-> >>>    tools/include/uapi/linux/bpf.h | 16 +++++++++++++
-> >>>    3 files changed, 73 insertions(+)
-> >>>
-> >>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> >>> index c3458ec1f30a..670998635eac 100644
-> >>> --- a/include/uapi/linux/bpf.h
-> >>> +++ b/include/uapi/linux/bpf.h
-> >>> @@ -3817,6 +3817,21 @@ union bpf_attr {
-> >>>     *          The **hash_algo** is returned on success,
-> >>>     *          **-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
-> >>>     *          invalid arguments are passed.
-> >>> + *
-> >>> + * long bpf_kallsyms_lookup(u64 address, char *symbol, u32 symbol_size, char *module, u32 module_size)
-> >>> + *   Description
-> >>> + *           Uses kallsyms to write the name of the symbol at *address*
-> >>> + *           into *symbol* of size *symbol_sz*. This is guaranteed to be
-> >>> + *           zero terminated.
-> >>> + *           If the symbol is in a module, up to *module_size* bytes of
-> >>> + *           the module name is written in *module*. This is also
-> >>> + *           guaranteed to be zero-terminated. Note: a module name
-> >>> + *           is always shorter than 64 bytes.
-> >>> + *   Return
-> >>> + *           On success, the strictly positive length of the full symbol
-> >>> + *           name, If this is greater than *symbol_size*, the written
-> >>> + *           symbol is truncated.
-> >>> + *           On error, a negative value.
-> >>>     */
-> >>>    #define __BPF_FUNC_MAPPER(FN)               \
-> >>>        FN(unspec),                     \
-> >>> @@ -3981,6 +3996,7 @@ union bpf_attr {
-> >>>        FN(bprm_opts_set),              \
-> >>>        FN(ktime_get_coarse_ns),        \
-> >>>        FN(ima_inode_hash),             \
-> >>> +     FN(kallsyms_lookup),    \
-> >>>        /* */
-> >>>
-> >>>    /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> >>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> >>> index d255bc9b2bfa..9d86e20c2b13 100644
-> >>> --- a/kernel/trace/bpf_trace.c
-> >>> +++ b/kernel/trace/bpf_trace.c
-> >>> @@ -17,6 +17,7 @@
-> >>>    #include <linux/error-injection.h>
-> >>>    #include <linux/btf_ids.h>
-> >>>    #include <linux/bpf_lsm.h>
-> >>> +#include <linux/kallsyms.h>
-> >>>
-> >>>    #include <net/bpf_sk_storage.h>
-> >>>
-> >>> @@ -1260,6 +1261,44 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
-> >>>        .arg5_type      = ARG_ANYTHING,
-> >>>    };
-> >>>
-> >>> +BPF_CALL_5(bpf_kallsyms_lookup, u64, address, char *, symbol, u32, symbol_size,
-> >>> +        char *, module, u32, module_size)
-> >>> +{
-> >>> +     char buffer[KSYM_SYMBOL_LEN];
-> >>> +     unsigned long offset, size;
-> >>> +     const char *name;
-> >>> +     char *modname;
-> >>> +     long ret;
-> >>> +
-> >>> +     name = kallsyms_lookup(address, &size, &offset, &modname, buffer);
-> >>> +     if (!name)
-> >>> +             return -EINVAL;
-> >>> +
-> >>> +     ret = strlen(name) + 1;
-> >>> +     if (symbol_size) {
-> >>> +             strncpy(symbol, name, symbol_size);
-> >>> +             symbol[symbol_size - 1] = '\0';
-> >>> +     }
-> >>> +
-> >>> +     if (modname && module_size) {
-> >>> +             strncpy(module, modname, module_size);
-> >>> +             module[module_size - 1] = '\0';
-> >>
-> >> In this case, module name may be truncated and user did not get any
-> >> indication from return value. In the helper description, it is mentioned
-> >> that module name currently is most 64 bytes. But from UAPI perspective,
-> >> it may be still good to return something to let user know the name
-> >> is truncated.
-> >>
-> >> I do not know what is the best way to do this. One suggestion is
-> >> to break it into two helpers, one for symbol name and another
+On Sat, Nov 28, 2020 at 10:28:31AM -0800, Linus Torvalds wrote:
+> On Fri, Nov 27, 2020 at 11:05 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 > >
-> > I think it would be slightly preferable to have one helper though.
-> > maybe something like bpf_get_symbol_info (better names anyone? :))
-> > with flags to get the module name or the symbol name depending
-> > on the flag?
->
-> This works even better. Previously I am thinking if we have two helpers,
-> we can add flags for each of them for future extension. But we
-> can certainly have just one helper with flags to indicate
-> whether this is for module name or for symbol name or something else.
->
-> The buffer can be something like
->     union bpf_ksymbol_info {
->        char   module_name[];
->        char   symbol_name[];
->        ...
->     }
-> and flags will indicate what information user wants.
-
-one more thing that might be useful to resolve to the symbol's "base
-address". E.g., if we have IP inside the function, this would resolve
-to the start of the function, sort of "canonical" symbol address. Type
-of ksym is another "characteristic" which could be returned (as a
-single char?)
-
-I wouldn't define bpf_ksymbol_info, though. Just depending on the
-flag, specify what kind of memory layou (e.g., for strings -
-zero-terminated string, for address - 8 byte numbers, etc). That way
-we can also allow fetching multiple things together, they would just
-be laid out one after another in memory.
-
-E.g.:
-
-char buf[256];
-int err = bpf_ksym_resolve(<addr>, BPF_KSYM_NAME | BPF_KSYM_MODNAME |
-BPF_KSYM_BASE_ADDR, buf, sizeof(buf));
-
-if (err == -E2BIG)
-  /* need bigger buffer, but all the data up to truncation point is filled in */
-else
-  /* err has exact number of bytes used, including zero terminator(s) */
-  /* data is laid out as
-"cpufreq_gov_powersave_init\0cpufreq_powersave\0\x12\x23\x45\x56\x12\x23\x45\x56"
-*/
-
-
->
+> > As for the cc1plus cost, I got a similar result.
 > >
-> >> for module name. What is the use cases people want to get both
-> >> symbol name and module name and is it common?
+> > Running scripts/gcc-plugin.sh directly
+> > took me 0.5 sec, which is a fourth
+> > of the allmodconfig run-time.
 > >
-> > The use case would be to disambiguate symbols in the
-> > kernel from the ones from a kernel module. Similar to what
-> > /proc/kallsyms does:
-> >
-> > T cpufreq_gov_powersave_init [cpufreq_powersave]
-> >
-> >>
-> >>> +     }
-> >>> +
-> >>> +     return ret;
-> >>> +}
-> >>> +
-> >>> +const struct bpf_func_proto bpf_kallsyms_lookup_proto = {
-> >>> +     .func           = bpf_kallsyms_lookup,
-> >>> +     .gpl_only       = false,
-> >>> +     .ret_type       = RET_INTEGER,
-> >>> +     .arg1_type      = ARG_ANYTHING,
-> >>> +     .arg2_type      = ARG_PTR_TO_MEM,
-> >> ARG_PTR_TO_UNINIT_MEM?
-> >>
-> >>> +     .arg3_type      = ARG_CONST_SIZE,
-> >> ARG_CONST_SIZE_OR_ZERO? This is especially true for current format
-> >> which tries to return both symbol name and module name and
-> >> user may just want to do one of them.
-> >>
-> >>> +     .arg4_type      = ARG_PTR_TO_MEM,
-> >> ARG_PTR_TO_UNINIT_MEM?
-> >>
-> >>> +     .arg5_type      = ARG_CONST_SIZE,
-> >> ARG_CONST_SIZE_OR_ZERO?
-> >>
-> >>> +};
-> >>> +
-> >>>    const struct bpf_func_proto *
-> >>>    bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> >>>    {
-> >>> @@ -1356,6 +1395,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> >>>                return &bpf_per_cpu_ptr_proto;
-> >>>        case BPF_FUNC_bpf_this_cpu_ptr:
-> >>>                return &bpf_this_cpu_ptr_proto;
-> >>> +     case BPF_FUNC_kallsyms_lookup:
-> >>> +             return &bpf_kallsyms_lookup_proto;
-> >>>        default:
-> >>>                return NULL;
-> >>>        }
-> >> [...]
+> > Actually, I did not know this shell script
+> > was so expensive to run...
+> 
+> So it turns out that one reason it's so expensive to run is that it
+> does a *lot* more than it claims to do.
+> 
+> It says "we need a c++ compiler that supports the designated
+> initializer GNU extension", but then it actually includes a header
+> file from hell, rather than just test designated initializers.
+> 
+> This patch makes the cc1plus overhead go down a lot. That said, I'm
+> doubtful we really want gcc plugins at all, considering that the only
+> real users have all apparently migrated to clang builtin functionality
+> instead.
+> 
+>         Linus
+
+>  scripts/gcc-plugin.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/scripts/gcc-plugin.sh b/scripts/gcc-plugin.sh
+> index b79fd0bea838..59db87bff456 100755
+> --- a/scripts/gcc-plugin.sh
+> +++ b/scripts/gcc-plugin.sh
+> @@ -8,8 +8,8 @@ srctree=$(dirname "$0")
+>  gccplugins_dir=$($* -print-file-name=plugin)
+>  
+>  # we need a c++ compiler that supports the designated initializer GNU extension
+> +test -e "$gccplugins_dir/include/plugin-version.h" &&
+>  $HOSTCC -c -x c++ -std=gnu++98 - -fsyntax-only -I $srctree/gcc-plugins -I $gccplugins_dir/include 2>/dev/null <<EOF
+> -#include "gcc-common.h"
+>  class test {
+>  public:
+>  	int test;
+
+I'm fine dropping this -- I think the need for that portion of the
+script's test has evaporated as we've brought the minimum GCC version
+up into the neighborhood of "modern".
+
+As for dropping GCC plugins entirely, I'd prefer not -- the big hold-out
+for the very paranoid system builders is the randstruct plugin (though
+they tend to also use the entropy one too). Clang's version of randstruct
+has not gotten unstuck yet.
+
+-- 
+Kees Cook
