@@ -2,148 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18FED2CC75D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2049A2CC74E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389882AbgLBUBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:01:38 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:19098 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389621AbgLBUBh (ORCPT
+        id S1731171AbgLBUAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:00:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728727AbgLBUAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:01:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606939124;
-        s=strato-dkim-0002; d=fossekall.de;
-        h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
-        Subject:Sender;
-        bh=MiOFrh5z1GYfS5zmDo4vnLbWqldZvc9i8hAPAYbemNM=;
-        b=SfAQsNsKFcIWY1gTPLupt2pMWQlKHVtHdgBk2k1wDyzqrImdlmkF8fcLsbOSebefle
-        s+Mho5v8aQqtymo3TYsytexf8yQ0P8WopNdyEE9yUISwhjIEqQrbfjLLQ2/NcxNJt3u8
-        23DH/xwJVil2UI+ZDdlGNtGCQDJYaEXMJ0vvSfhP7zRENxN3A8TLerI4CBbLwbK1FWLv
-        gErmGOlxNkN+0qvj50pFcCG+DBHvHh7vF1lnXKk/xYu0rZ6DUW6wEP209jaOWOU6X/J7
-        IXhXEBDm1zI0DHO6ogY4HX8dGrgvuup8d0wJIMPCEin5ts0nP1OoegjjeVI7cM+yMWUo
-        ISRQ==
-X-RZG-AUTH: ":O2kGeEG7b/pS1EzgE2y7nF0STYsSLflpbjNKxx7cGrBOdI6BL9pkS3QW19mO7I+/JwRspuzJFZuRzQ=="
-X-RZG-CLASS-ID: mo00
-Received: from aerfugl
-        by smtp.strato.de (RZmta 47.3.4 AUTH)
-        with ESMTPSA id g02087wB2Jwh2CU
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Wed, 2 Dec 2020 20:58:43 +0100 (CET)
-Received: from koltrast.a98shuttle.de ([192.168.1.27] helo=a98shuttle.de)
-        by aerfugl with smtp (Exim 4.89)
-        (envelope-from <michael@a98shuttle.de>)
-        id 1kkYGt-0007iD-QL; Wed, 02 Dec 2020 20:58:39 +0100
-Received: (nullmailer pid 2105638 invoked by uid 502);
-        Wed, 02 Dec 2020 19:58:39 -0000
-From:   Michael Klein <michael@fossekall.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     Michael Klein <michael@fossekall.de>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: sun6i-a31s-sinovoip-bpi-m2: add gpio-line-names
-Date:   Wed,  2 Dec 2020 20:51:47 +0100
-Message-Id: <20201202195144.2105036-1-michael@fossekall.de>
-X-Mailer: git-send-email 2.29.2
+        Wed, 2 Dec 2020 15:00:06 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DADBC0613CF;
+        Wed,  2 Dec 2020 11:59:20 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id x25so2508297qkj.3;
+        Wed, 02 Dec 2020 11:59:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a+5iwKU/1c/swCFdTpX9vzDsm481ZGbz4NuaZisDpdA=;
+        b=GviI6R2nSpKxd4DNlv81VRu8peR3srnGzmIkCTEm2ejBAIjZtdy0uusLp2GoHk8ryb
+         D36eE7yZFMPhsLKHg4pw6gvd2VDT3GvTpGaHnKfOkhdQCVY4HiKEbMe/Y9XKpkzZy/r4
+         qOaWYJ5TqQLQgDv4biHVMHaE+Mv2pW+w2RJu7mVEDk72e+ux8/Ia9kGtabajKOIIQcVi
+         dStHUKcWLmKMPWTta/A5R07Z1DM/GYOjmLC3vNecvjdiRaOTHihTcn42xN95IVW3OJUh
+         x18WRzjYyoD/dsvTvSdJrKquG7xR6qtxNlRkpx3LKQnrGP9WsV1ZsHG2KOD2O6mOe3cS
+         bwbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=a+5iwKU/1c/swCFdTpX9vzDsm481ZGbz4NuaZisDpdA=;
+        b=RZby9TsgK/Ej0owmoppTiY+0Se7rFhXn0E7wu0/EpvFd5yY1R6Czj77ZopyAIp1I7o
+         2TWo/1kF5UtVvU81XwInNHCD+Lx+OXq8Q1QeHej/eBVAU0mVHtvVhWEzPbK5gsN92r4q
+         r/f531JJuSKtpaWwX5pNTvs0I5awAyTndoZbSLtgC4WwKCHyh6PkerzrSuh60BhQbTyV
+         tcrOXn0HHjwZKx+aHD5VTgoAOtU4OrTv1k8XqVZ1ni4mP/pbaulK3xz7QDyrdgGE5J9y
+         x52EWnpBZ8Bw1O1NsLtIK+qk+pqw3ZlcFRDtg22+20cHsXAW1uBrWKdSASR1l18PcIJD
+         sFrA==
+X-Gm-Message-State: AOAM531/N7DxKZZbj7nEjsssUiV/jg2Z7ohw5AFZ2LTIVaobzq8bHpVL
+        X7CVV44zjJhuzn3uBJLYfRE=
+X-Google-Smtp-Source: ABdhPJwohC7X2e+s3xNZatip7FGxQ3JfqcHQvdS5HTnfk4uZ4C89NFAJ4szkc8nMjxTreQKa3NXyRw==
+X-Received: by 2002:a37:2cc4:: with SMTP id s187mr4283176qkh.385.1606939159503;
+        Wed, 02 Dec 2020 11:59:19 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:8dbd])
+        by smtp.gmail.com with ESMTPSA id y23sm2837067qkb.26.2020.12.02.11.59.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 11:59:18 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 2 Dec 2020 14:58:50 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     axboe@kernel.dk, baolin.wang7@gmail.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] blk-iocost: Factor out the active iocgs' state
+ check into a separate function
+Message-ID: <X8fx+oAz3jnrOMTF@mtj.duckdns.org>
+References: <cover.1606378475.git.baolin.wang@linux.alibaba.com>
+ <6d2097e2aeb24281359e91b18c89ac8be7ca3ab3.1606378475.git.baolin.wang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6d2097e2aeb24281359e91b18c89ac8be7ca3ab3.1606378475.git.baolin.wang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add gpio-line-names as documented on gitbooks [1] and in the
-schematics [2].
+On Thu, Nov 26, 2020 at 04:16:14PM +0800, Baolin Wang wrote:
+> Factor out the iocgs' state check into a separate function to
+> simplify the ioc_timer_fn().
+> 
+> No functional change.
+> 
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-[1]: https://bananapi.gitbook.io/bpi-m2/en/bpi-m2_gpio_pin_define
-[2]: https://drive.google.com/file/d/0B4PAo2nW2KfnRERWNnJGSGxJbmM/view
+Acked-by: Tejun Heo <tj@kernel.org>
 
-Signed-off-by: Michael Klein <michael@fossekall.de>
----
- .../boot/dts/sun6i-a31s-sinovoip-bpi-m2.dts   | 71 +++++++++++++++++++
- 1 file changed, 71 insertions(+)
+Thanks.
 
-diff --git a/arch/arm/boot/dts/sun6i-a31s-sinovoip-bpi-m2.dts b/arch/arm/boot/dts/sun6i-a31s-sinovoip-bpi-m2.dts
-index 708caee52425..367006fb280d 100644
---- a/arch/arm/boot/dts/sun6i-a31s-sinovoip-bpi-m2.dts
-+++ b/arch/arm/boot/dts/sun6i-a31s-sinovoip-bpi-m2.dts
-@@ -261,3 +261,74 @@ &uart0 {
- &usbphy {
- 	status = "okay";
- };
-+
-+&pio {
-+	gpio-line-names =
-+		/* PA */
-+		"ETXD0", "ETXD1", "ETXD2", "ETXD3", "SDC0-DET", "", "",
-+		"", "ETXCLK", "ETXEN", "EGTXCLK", "ERXD0", "ERXD1",
-+		"ERXD2", "ERXD3", "", "", "", "", "ERXDV", "ERXCK",
-+		"ETXERR", "ERXERR", "ECOL", "ECRS", "ECLKIN", "EMDC",
-+		"EMDIO", "", "", "", "",
-+
-+		/* PB */
-+		"CN7-P29", "CN7-P31", "CN7-P33", "CN7-P35", "CN7-P37",
-+		"CN7-P28", "CN7-P27", "CN7-P32", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "", "", "", "", "", "", "",
-+		"", "", "", "",
-+
-+		/* PC */
-+		"", "", "", "", "", "", "WL-SDIO-CMD", "WL-SDIO-CLK",
-+		"WL-SDIO-D0", "WL-SDIO-D2", "WL-SDIO-D2", "WL-SDIO-D3",
-+		"", "", "", "", "", "", "", "", "", "", "", "", "", "",
-+		"", "USB-DRV", "", "", "", "",
-+
-+		/* PD */
-+		"CN9-P09", "CN9-P11", "CN9-P13", "CN9-P15", "CN9-P17",
-+		"CN9-P19", "CN9-P21", "CN9-P23", "CN9-P25", "CN9-P27",
-+		"CN9-P29", "CN9-P31", "CN9-P33", "CN9-P35", "CN9-P37",
-+		"CN9-P39", "CN9-P40", "CN9-P38", "CN9-P36", "CN9-P34",
-+		"CN9-P32", "CN9-P30", "CN9-P28", "CN9-P26", "CN9-P22",
-+		"CN9-P14", "CN9-P18", "CN9-P16", "", "", "", "",
-+
-+		/* PE */
-+		"CN6-P20", "CN6-P24", "CN6-P30", "CN6-P28", "CN7-P08",
-+		"CN7-P10", "CN7-P36", "CN7-P38", "CN6-P17", "CN6-P19",
-+		"CN6-P21", "CN6-P23", "CN6-P25", "CN6-P27", "CN6-P29",
-+		"CN6-P31", "", "", "", "", "", "", "", "", "", "", "",
-+		"", "", "", "", "",
-+
-+		/* PF */
-+		"SDC0-D1", "SDC0-D0", "SDC0-CLK", "SDC0-CMD", "SDC0-D3",
-+		"SDC0-D2", "", "", "", "", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "", "", "", "", "", "", "",
-+		"",
-+
-+		/* PG */
-+		"CN9-P06", "CN9-P08", "CN9-P20", "CN9-P12", "CN9-P07",
-+		"LED-PWR", "CN7-P13", "CN7-P11", "CN7-P22", "CN7-P15",
-+		"LED-G", "LED-B", "CN7-P26", "CN7-P24", "CN7-P23",
-+		"CN7-P19", "CN7-P21", "HCEC", "CN6-P22", "", "", "", "",
-+		"", "", "", "", "", "", "", "", "",
-+
-+		/* PH */
-+		"", "", "", "", "", "", "", "", "", "CN7-P07",
-+		"CN7-P12", "CN7-P16", "CN7-P18", "CN9-P10", "CN6-P16",
-+		"CN6-P14", "CN9-P04", "CN9-P02", "CN7-P05", "CN7-P03",
-+		"CN8-P03", "CN8-P02", "", "", "CN6-P34", "CN6-P32",
-+		"CN6-P26", "CN6-P18", "", "", "", "";
-+};
-+
-+&r_pio {
-+	gpio-line-names =
-+		/* PL */
-+		"PMU-SCK", "PMU-SDA", "VBAT-EN", "", "IR-RX",
-+		"WL-WAKE-HOST", "BT-WAKE_HOST", "BT-ENABLE",
-+		"WL-PMU-EN", "", "", "", "", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "", "", "", "", "",
-+
-+		/* PM */
-+		"CN6-P12", "CN6-P35", "CN7-P40", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "", "";
-+};
 -- 
-2.29.2
-
+tejun
