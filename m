@@ -2,150 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04372CB94E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A39C2CB956
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388056AbgLBJnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:43:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54782 "EHLO
+        id S2388180AbgLBJnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:43:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729258AbgLBJnF (ORCPT
+        with ESMTP id S1729295AbgLBJnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:43:05 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF790C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 01:42:24 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id t18so839332plo.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 01:42:24 -0800 (PST)
+        Wed, 2 Dec 2020 04:43:09 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA589C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 01:42:28 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id w6so904477pfu.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 01:42:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=roXoJh4JMg0Rq6G/VrtXGfkTYMo58Mv8/81ld8N44p8=;
-        b=xtQjrYDgOBB4kq11qRodiLmJDd0Qi/kKKsbcC1rTsvT1V05BD5XCzF/+7NuRaWd3z9
-         3QWbf8srShDNJZ4I6mLOW3DOwo5Ugx4XsWzNdQwR6OqkdwoTm+lvm3HqTV3T0z69/ZQx
-         1u5EqAWSSoPNbfa6PNQSfhPXAyHUzzTbbI9c+vwIS2zuiPZphf1gcoMHwpN+xOxs1BAc
-         xENgHlzT9XAgI3+DdONeavDHqPdUNPG07iBz6H4kt4bVTyl3zUIim7AV7q3zDOW7cJi6
-         p5oFBfuv7Hl7juAxmbmrwDneUJyOGkm/juhyLWhFawjdi09vB5LlkTrPhvjDdgBHZfU7
-         Rokg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=60LQKWLOhut2/A3y4ySNOdu+taK30sHX8o3GbcmO8rM=;
+        b=d9R1vRwkudlYLEpv5gmZMu5opJHSxkSPC39ThAH5KCM4klo1r3DRhxPOQEODs1A900
+         sAMqEeTrzknWexSqltRRYgGHOMEQaBKQ2FLr7cucYFO7XFlk7/8S3/3bbVkEGQoDuDPN
+         OYHsvwQK0TvGJcs1hwf6Ya98LSj/srHTddHhz6GbAgM2geB5bhUn1giACjlJfJwP2kA5
+         MWQCqecreDFmKVfNRSqOHfmG/NghbIQNSOdg+fm0sGu3Pye2XyE8eydnVjNaCrFQv2zZ
+         xAJ7YUSQrdWI+n+oVRa+ppxHj5DRt3Yd9+Vej5JcWCWCb+k1hjdUUsP7YjByibVR9F5p
+         wTYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=roXoJh4JMg0Rq6G/VrtXGfkTYMo58Mv8/81ld8N44p8=;
-        b=dt+5K+R3evxQyOa9b9hRLBKKeZHyshFOTsonHbj49YB6vRGa18Ki+Lm7Mndl2mshQo
-         c0yeRWmKoWU70A+hQBHpwzUZ81KLzAWpM/jUng7FogA6dAEdfLi46mG4xWizNf2/qXja
-         WzASqDN/VsFjkq5uGvNBD0lZ0VFyWOK7d4r/1xAfiVYZ7ot/gbVB9ETuDmTjmUCQjqlf
-         Y95CtEW2t1Qb+zZY+9OHKdQTQssj8BW7IH2v7J4F1OarxJO+LJaL+SEmdw9B8M8m6TvZ
-         7Zx6iN3bJEWcY+MV7RpG97b0OAqy547g2HPLyPZK4rchECTVCqHz4zayjIHzJm/bxx9j
-         Marg==
-X-Gm-Message-State: AOAM533Ob3m1+VfcDoRQ5QBgukHvODe4OzvtuprHMeaHfCNK4+yiuwKr
-        zjYkXNdv2M3q6RvHr6I7RJsCWrHK1N/D
-X-Google-Smtp-Source: ABdhPJxLukJAMewy81MmakPw2U/0HEDA1fWdGZQU9O1Ykax9RlWWa9kMhCHJmCXKomZXl6nKl/C4KQ==
-X-Received: by 2002:a17:90a:9e5:: with SMTP id 92mr1638972pjo.176.1606902144334;
-        Wed, 02 Dec 2020 01:42:24 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=60LQKWLOhut2/A3y4ySNOdu+taK30sHX8o3GbcmO8rM=;
+        b=Ict4HOS/qUQKXrAtxXe70p2XV0yKzANR9GTmWm4y+Ss3909XAj7rWHDATHox8lB8D+
+         kLq6s4iEdVhHERzZjNwIqn0gZo3Ca3AriZx6UxaFUAJCsbdDAlqKEMUhEKl4XtLR74Ro
+         Z8fytIDdmezorGK8QAiwTY+Sn1Jtu//qwvqWLe/XSWPPMdjqiv7eJO3nSP2ZMKrqI7Nw
+         kVSkFSb0cNqNtdkRhAODxk68EQoLvUGjLqymVbrlqK8FjTHSqyYTgIDqSnqL3/2lj+iJ
+         IndsTVafKaWKB8j3WlptfOCWF/5iWh35x6EMr7tk5cvDPFP91ZH0Ur4NpQp4TEqWKpOw
+         Ikzw==
+X-Gm-Message-State: AOAM53175YDIa6/UELoBlou1IIb+5VoSQvdoMfrTqyhWDuTi32IdB2CT
+        OAO64Vvr7cFwk4il1M9Vgz9d
+X-Google-Smtp-Source: ABdhPJxrqG/iAuUlYLG5OSrhshjZ7fy9us3Yoxz9Y1LOFyZ5EfEFgf4xlToEWAFiSrtofs92aIp48w==
+X-Received: by 2002:a63:d357:: with SMTP id u23mr1885676pgi.106.1606902148405;
+        Wed, 02 Dec 2020 01:42:28 -0800 (PST)
 Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id bg8sm1393990pjb.52.2020.12.02.01.42.20
+        by smtp.gmail.com with ESMTPSA id bg8sm1393990pjb.52.2020.12.02.01.42.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 01:42:23 -0800 (PST)
+        Wed, 02 Dec 2020 01:42:27 -0800 (PST)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
         linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
         linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        Kalle Valo <kvalo@codeaurora.org>,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 00/29] MHI changes for v5.11
-Date:   Wed,  2 Dec 2020 15:11:30 +0530
-Message-Id: <20201202094159.107075-1-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 01/29] bus: mhi: Remove auto-start option
+Date:   Wed,  2 Dec 2020 15:11:31 +0530
+Message-Id: <20201202094159.107075-2-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201202094159.107075-1-manivannan.sadhasivam@linaro.org>
+References: <20201202094159.107075-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+From: Loic Poulain <loic.poulain@linaro.org>
 
-Here is the MHI patch series for v5.11. It was a busy cycle for us and so far we
-have accumulated almost 29 patches. Most of the patches are cleanups and fixes
-but there are some noticeable changes too:
+There is really no point having an auto-start for channels.
+This is confusing for the device drivers, some have to enable the
+channels, others don't have... and waste resources (e.g. pre allocated
+buffers) that may never be used.
 
-1. Loic finally removed the auto-start option from the channel parameters of the
-MHI controller. It is the duty of the client drivers like qrtr to start/stop the
-channels when required, so we decided to remove this option. As a side effect,
-we changed the qrtr driver to start the channels during its probe and removed
-the auto-start option from ath11k controller.
+This is really up to the MHI device(channel) driver to manage the state
+of its channels.
 
-**NOTE** Since these changes spawns both MHI and networking trees, the patches
-are maintained in an immutable branch [1] and pulled into both mhi-next and
-ath11k-next branches. The networking patches got acks from ath11k and networking
-maintainers as well.
+While at it, let's also remove the auto-start option from ath11k mhi
+controller.
 
-2. Loic added a generic MHI pci controller driver. This driver will be used by
-the PCI based Qualcomm modems like SDX55 and exposes channels such as QMI,
-IP_HW0, IPCR etc...
+Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+[mani: clubbed ath11k change]
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ drivers/bus/mhi/core/init.c           | 9 ---------
+ drivers/bus/mhi/core/internal.h       | 1 -
+ drivers/net/wireless/ath/ath11k/mhi.c | 4 ----
+ include/linux/mhi.h                   | 2 --
+ 4 files changed, 16 deletions(-)
 
-3. Loic fixed the MHI device hierarchy by maintaining the correct parent child
-relationships. Earlier all MHI devices lived in the same level under the parent
-device like PCIe. But now, the MHI devices belonging to channels will become the
-children of controller MHI device.
-
-4. Finally Loic also improved the MHI device naming by using indexed names such
-as mhi0, mhi1, etc... This will break the userspace applications depending on
-the old naming convention but since the only one user so far is Jeff Hugo's AI
-accelerator apps, we decided to make this change now itself with his agreement.
-
-5. Bhaumik fixed the qrtr driver by stopping the channels during remove. This
-patch also got ack from networking maintainer and we decided to take it through
-MHI tree (via immutable branch) since we already had a qrtr change.
-
-Please consider applying!
-
-Thanks,
-Mani
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git/log/?h=mhi-ath11k-immutable
-
-Bhaumik Bhatt (19):
-  bus: mhi: core: Remove unnecessary counter from mhi_firmware_copy()
-  bus: mhi: core: Add missing EXPORT_SYMBOL for mhi_get_mhi_state()
-  bus: mhi: core: Expose mhi_get_exec_env() API for controllers
-  bus: mhi: core: Remove unused mhi_fw_load_worker() declaration
-  bus: mhi: core: Rename RDDM download function to use proper words
-  bus: mhi: core: Skip RDDM download for unknown execution environment
-  bus: mhi: core: Use appropriate names for firmware load functions
-  bus: mhi: core: Move to using high priority workqueue
-  bus: mhi: core: Skip device wake in error or shutdown states
-  bus: mhi: core: Move to SYS_ERROR regardless of RDDM capability
-  bus: mhi: core: Prevent sending multiple RDDM entry callbacks
-  bus: mhi: core: Move to an error state on any firmware load failure
-  bus: mhi: core: Use appropriate label in firmware load handler API
-  bus: mhi: core: Move to an error state on mission mode failure
-  bus: mhi: core: Check for IRQ availability during registration
-  bus: mhi: core: Separate system error and power down handling
-  bus: mhi: core: Mark and maintain device states early on after power
-    down
-  bus: mhi: core: Remove MHI event ring IRQ handlers when powering down
-  net: qrtr: Unprepare MHI channels during remove
-
-Carl Yin (1):
-  bus: mhi: core: Fix null pointer access when parsing MHI configuration
-
-Dan Carpenter (1):
-  bus: mhi: core: Fix error handling in mhi_register_controller()
-
-Jeffrey Hugo (1):
-  bus: mhi: core: fix potential operator-precedence with BHI macros
-
-Loic Poulain (7):
-  bus: mhi: Remove auto-start option
-  net: qrtr: Start MHI channels during init
-  bus: mhi: Add MHI PCI support for WWAN modems
-  bus: mhi: Fix channel close issue on driver remove
-  bus: mhi: core: Indexed MHI controller name
-  bus: mhi: core: Fix device hierarchy
-  mhi: pci_generic: Fix implicit conversion warning
-
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index 0ffdebde8265..381fdea2eb9f 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -758,7 +758,6 @@ static int parse_ch_cfg(struct mhi_controller *mhi_cntrl,
+ 		mhi_chan->offload_ch = ch_cfg->offload_channel;
+ 		mhi_chan->db_cfg.reset_req = ch_cfg->doorbell_mode_switch;
+ 		mhi_chan->pre_alloc = ch_cfg->auto_queue;
+-		mhi_chan->auto_start = ch_cfg->auto_start;
+ 
+ 		/*
+ 		 * If MHI host allocates buffers, then the channel direction
+@@ -1160,11 +1159,6 @@ static int mhi_driver_probe(struct device *dev)
+ 			goto exit_probe;
+ 
+ 		ul_chan->xfer_cb = mhi_drv->ul_xfer_cb;
+-		if (ul_chan->auto_start) {
+-			ret = mhi_prepare_channel(mhi_cntrl, ul_chan);
+-			if (ret)
+-				goto exit_probe;
+-		}
+ 	}
+ 
+ 	ret = -EINVAL;
+@@ -1198,9 +1192,6 @@ static int mhi_driver_probe(struct device *dev)
+ 	if (ret)
+ 		goto exit_probe;
+ 
+-	if (dl_chan && dl_chan->auto_start)
+-		mhi_prepare_channel(mhi_cntrl, dl_chan);
+-
+ 	mhi_device_put(mhi_dev);
+ 
+ 	return ret;
+diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+index 7989269ddd96..33c23203c531 100644
+--- a/drivers/bus/mhi/core/internal.h
++++ b/drivers/bus/mhi/core/internal.h
+@@ -563,7 +563,6 @@ struct mhi_chan {
+ 	bool configured;
+ 	bool offload_ch;
+ 	bool pre_alloc;
+-	bool auto_start;
+ 	bool wake_capable;
+ };
+ 
+diff --git a/drivers/net/wireless/ath/ath11k/mhi.c b/drivers/net/wireless/ath/ath11k/mhi.c
+index aded9a719d51..47a1ce1bee4f 100644
+--- a/drivers/net/wireless/ath/ath11k/mhi.c
++++ b/drivers/net/wireless/ath/ath11k/mhi.c
+@@ -24,7 +24,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
+ 		.offload_channel = false,
+ 		.doorbell_mode_switch = false,
+ 		.auto_queue = false,
+-		.auto_start = false,
+ 	},
+ 	{
+ 		.num = 1,
+@@ -39,7 +38,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
+ 		.offload_channel = false,
+ 		.doorbell_mode_switch = false,
+ 		.auto_queue = false,
+-		.auto_start = false,
+ 	},
+ 	{
+ 		.num = 20,
+@@ -54,7 +52,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
+ 		.offload_channel = false,
+ 		.doorbell_mode_switch = false,
+ 		.auto_queue = false,
+-		.auto_start = true,
+ 	},
+ 	{
+ 		.num = 21,
+@@ -69,7 +66,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
+ 		.offload_channel = false,
+ 		.doorbell_mode_switch = false,
+ 		.auto_queue = true,
+-		.auto_start = true,
+ 	},
+ };
+ 
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index d4841e5a5f45..6522a4adc794 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -214,7 +214,6 @@ enum mhi_db_brst_mode {
+  * @offload_channel: The client manages the channel completely
+  * @doorbell_mode_switch: Channel switches to doorbell mode on M0 transition
+  * @auto_queue: Framework will automatically queue buffers for DL traffic
+- * @auto_start: Automatically start (open) this channel
+  * @wake-capable: Channel capable of waking up the system
+  */
+ struct mhi_channel_config {
+@@ -232,7 +231,6 @@ struct mhi_channel_config {
+ 	bool offload_channel;
+ 	bool doorbell_mode_switch;
+ 	bool auto_queue;
+-	bool auto_start;
+ 	bool wake_capable;
+ };
+ 
 -- 
 2.25.1
 
