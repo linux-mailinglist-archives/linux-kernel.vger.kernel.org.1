@@ -2,165 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3887E2CC46F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7E92CC474
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728969AbgLBR7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:59:05 -0500
-Received: from mail-eopbgr760042.outbound.protection.outlook.com ([40.107.76.42]:29506
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727108AbgLBR7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:59:05 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RCiYbWJZRgXt+RqgPiXDFU4sQYlif1UdXVs+FQAtqcarZuR2zZDs36zjDUtJduCMbh9V5HP/pcAJoJHy8uahx0nO57yvfbrSzRQcrIYd2NfsizWC1kTrzlGsrq0GFBr2xSOfhboeopFosubVD/YRxEDyPtJXnkV37QeJ+iY6smETppg46tJOJ4LUBeMJ5Vydu1h7oPVVzEIy58LKjoLozc5FqvkKQ5Dq8fKv40zpV7a1mPdeCMgG03zn3uGJM1jbFmdl0dI5wStOtP1+dQMgoSOSzIp0cLejeiCrEmC1vMLVglAuGwrT8u3v9MPRxpzjqNrUpLZQI6qhvfMlL4vMyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SlTFTUXCyAcQLHMu4JjugleWE1IpSSpHKAVWqfiEmtU=;
- b=GL592UhnGZBQpGSrsfVmwcDVySkbxluwHhU4FPJpfwDXI8mhMxVLn6tx69xcvmm4y+I5l3xSiac4aLD/ut3ZJL7dIAw/VuYbZ2+rHcGDh9V6uEhbosSZ6gGe8DuiTp/kwy+ImsjZOB7vMrCotTeUNvSm69WeqkUgA5yhroeDmsGPgj0kPhqv1KI2nl0hYkPGNQrHf7ePsTOtUpDAaU8s+RdwDkElJ4y+oqF+vlzLS0c1poPNWWLH2OOrfspeEkjtwGEmZ1btaFNDgLh2VXDcKwqhqaALfv5ziC7ahxnJ9vYwbOO6LH4SkpU0ybVC//Vs4Dmkv8kZUUP3g6T0o/jMGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SlTFTUXCyAcQLHMu4JjugleWE1IpSSpHKAVWqfiEmtU=;
- b=o6USuAhVfbzKXZhuFWeIowQOWtIoFFfXSBJ1GYDfM8xMZAP8iQe1q8R8D6nuHohjryvSX5VOZuQoS2aEXZLjKkmAEx4WmQDxV3pdYLtyv6AAfqVwTGG14hIoshDm3rFhuryQ1EAAfJkGUDbKM3ihVec78KFRePxWrlVPDbU2yOM=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR12MB1836.namprd12.prod.outlook.com (2603:10b6:3:114::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3632.17; Wed, 2 Dec 2020 17:58:17 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::d95e:b9d:1d6a:e845]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::d95e:b9d:1d6a:e845%12]) with mapi id 15.20.3632.019; Wed, 2 Dec 2020
- 17:58:17 +0000
-Subject: Re: [PATCH] x86/cpu/amd: Remove dead code for TSEG region remapping
-To:     Borislav Petkov <bp@alien8.de>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     x86@kernel.org, Kim Phillips <kim.phillips@amd.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>, Pu Wen <puwen@hygon.cn>,
-        linux-kernel@vger.kernel.org
-References: <20201127171324.1846019-1-nivedita@alum.mit.edu>
- <20201127172747.GE13163@zn.tnic>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <b726e0d7-7dfb-d902-652f-8aab4bf43e89@amd.com>
-Date:   Wed, 2 Dec 2020 11:58:15 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20201127172747.GE13163@zn.tnic>
+        id S1730924AbgLBR7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:59:25 -0500
+Received: from m42-5.mailgun.net ([69.72.42.5]:43259 "EHLO m42-5.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728656AbgLBR7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 12:59:22 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606931942; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=d20BTJhJuOfIeJ6dTfjs7Aw/4YtAMOVaiif/uqb3Chc=; b=H/anSwagZgxwhb+H4g6tZXZ4E77UIAwpg27t7KMaUdxdttAhrBmHPZkywdQ6wSTbkP8reCxR
+ Us3ECOSZIbIEJ5x/xwMRyuroZVOM+wek3wsZD01EzfwNRlOC1MEF0Eej+9PGwUpvmVUmyiZb
+ w3ops7RKgAeeVXqa4vLad1w6C/A=
+X-Mailgun-Sending-Ip: 69.72.42.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5fc7d5c97edc97d061e452c4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 17:58:33
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AA702C43469; Wed,  2 Dec 2020 17:58:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 121FBC43461;
+        Wed,  2 Dec 2020 17:58:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 121FBC43461
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH 1/3] scsi: ufs: Add "wb_on" sysfs node to control WB
+ on/off
+To:     Bean Huo <huobean@gmail.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201130181143.5739-1-huobean@gmail.com>
+ <20201130181143.5739-2-huobean@gmail.com>
+ <2a380908-3eb4-2cdc-4156-03e8946ffd88@codeaurora.org>
+ <30767ee7973670b86bff61d1d7b2044f17640b75.camel@gmail.com>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <64458f93-55ed-ae62-e7c2-d4c54721b2b1@codeaurora.org>
+Date:   Wed, 2 Dec 2020 09:58:29 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
+MIME-Version: 1.0
+In-Reply-To: <30767ee7973670b86bff61d1d7b2044f17640b75.camel@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [67.79.209.213]
-X-ClientProxiedBy: SA9PR13CA0012.namprd13.prod.outlook.com
- (2603:10b6:806:21::17) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-linux.texastahm.com (67.79.209.213) by SA9PR13CA0012.namprd13.prod.outlook.com (2603:10b6:806:21::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.9 via Frontend Transport; Wed, 2 Dec 2020 17:58:16 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 5b935996-b95f-4645-dcdc-08d896ebd8b5
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1836:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB18362C889F9530B007358115ECF30@DM5PR12MB1836.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9ADEC9sB/EXjHqvel9GSpdgM9v0/ic5/sAcJpcOEBJcdmJYwy5dz2/xylk1V/4Um8q+Xf1kekP+YbmV42VW/AWbqdQ6ih7JJzEjY4OZhuN4Wmr91fnQAxlbQOGdffLMNCfia9vKveJKJQa6ehs8xE6TrARoGpbKLGViYWdLzxxnIQkb/kuZRYfP0Yi+YQqHWy3CwVdFk4NHYqhGR4D0slyqJAU3AhxwwzzOIQsOPQ8hx8FMhdWm++COI9mxIAfpS53Wfk/oDr2qcLY/FvQnu76KaSFkECtRgUHxxnD+OH7hn4XwQ35zhscPQGqHmIZaROI52rPiYBGiaSkOtnGSIlwjOVsaD6t6a48nGZwoqUB21GelhxXjMdpAVAmLSJ+VD4TGyXHqXCql+sGnobGEYfTf6ChaadppFtvl7GYFMa1w=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(366004)(136003)(376002)(346002)(26005)(8676002)(956004)(2616005)(36756003)(31696002)(110136005)(316002)(54906003)(478600001)(31686004)(5660300002)(66476007)(66946007)(66556008)(83380400001)(186003)(2906002)(6512007)(86362001)(6506007)(4326008)(53546011)(16526019)(52116002)(6486002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QUJySEdsSGNRd09mMit0M29sUDVZV25LZEpGT3pGYTNEZ0g3TUpGUmd1Mk5n?=
- =?utf-8?B?aFloZWQ0RVBFM3ZxRGx4aS94YjU4TGY3VkZsYVN2cjFid2FraDdJdXdlNFQz?=
- =?utf-8?B?Q0xKaytlUzdFNVdEMEtGNVA0ejlJNlA5R0pndzRNY2ViUUhibENSUTBuYVhY?=
- =?utf-8?B?cklRYThQY0RNZlVRaWhyVnpUZGhsWTNuZ013eTdlZmVybEZnN1AveEdqa0NB?=
- =?utf-8?B?WjFkdUMvOW1jZGhJSFl4Z2lSWXZyRXZCc2xLbXU0b2h4cVRhZ0xiS3NSUTFs?=
- =?utf-8?B?eUR1ZTRHdG10NzZ1QlFYdm8vWXVvandxbWg5V1lXTC9aaVlQUUhRR2wwV3I3?=
- =?utf-8?B?b1B1U2xxOTVyRE9kTVdiTWI2VkFjK1h2Q0k3UVFNWFJPSm9PamZnU2hRbytJ?=
- =?utf-8?B?VG9vRFBibWFpTGUrbUFpekVLU3lSK2NucG9PK2llUDh5YW9ndmNyYW0xV2M2?=
- =?utf-8?B?TlVyU3MycVVFbWVkY3hheTB4d0dzSXBIT0dTRmkxSlh0WlZNdVRuZzRVd0pL?=
- =?utf-8?B?SmR2VWF1bXRFV2xCZVBucVAzQ3VXbFh4U1IwU0FzVll2Qm1VN0RnOFp1amUw?=
- =?utf-8?B?azhFOU5PZGludVVoOXZoMWZxVmVMbndseHkreVplWlowRGQzYVVaSEVVMXFa?=
- =?utf-8?B?TkRKVWdSWDh2RVF4UWNMa1VWbnppQzNzZzgzcDNLM3ZyS1JvRjk5dFU4ZFpi?=
- =?utf-8?B?WUgrS3c2UW1pNkNqc3YzcUx1Ny91Q0RDaHdWWmdNZ2JOYldvNlFzOWpkSlQx?=
- =?utf-8?B?djBuVjJMWHAyalFkUk5iYzRodHlHZFFTMXJLVkxiWU5qYmdCWS9Tek9OdUxP?=
- =?utf-8?B?VmJhbmVFTjFiSjB1UHRXVXFMNWZuUElISDgzQ2ljUXVzZm1FQjJlRzgvNXpK?=
- =?utf-8?B?Z3BEbU9DRHVmdm5HVGZURWM1NU5GTGRXaHpiZ3NXOXlFTWNPczIwR1RNemk3?=
- =?utf-8?B?SzBRbEY2cll6V2JKd3ZjTUVXckJWQXZwUm91anVTQ25FRkdkelpUZG9teDJD?=
- =?utf-8?B?bTAvSGRpbTFsaStrS2cxTVVvcGJEOG82T053Mk1jc3p1OWdCeXB2YW42MXYz?=
- =?utf-8?B?bUE3OWJKQWZXNHdlVVpwUTZNaHcxL0lqZjJQS1JlQ0VIMkxzWnNVak8yQXBH?=
- =?utf-8?B?RjFoWFZZYlA3SVU1ZkhiYU52ZFZDcWl3YnNpWGpxa2xJcmRRbSt2b3VqR3Qw?=
- =?utf-8?B?L3N5a1duVjNTSHpnanBha2hyenkrK1FWRDAvYXV2SzVudnBIOGxZbHN4TnVx?=
- =?utf-8?B?aVk0T3o3RjJKNFpCYkg3MFoveUpETmUyb3dQVHAwd2xON09uV0ppdlhSb3h6?=
- =?utf-8?Q?xPC1xhvvvwWMV3JoRLbuYyWRuiQtuKsbvL?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b935996-b95f-4645-dcdc-08d896ebd8b5
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2020 17:58:17.2112
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m7uRy+9xmEcDi1cUSYBMaaOnMJ8S1Ii0NeX87CysfsU2HP2b3xzOH7c9MB/ThxZgv6C+4uyrp5jOnuP8NCYsQw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1836
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/20 11:27 AM, Borislav Petkov wrote:
-> On Fri, Nov 27, 2020 at 12:13:24PM -0500, Arvind Sankar wrote:
->> Commit
->>    26bfa5f89486 ("x86, amd: Cleanup init_amd")
->> moved the code that remaps the TSEG region using 4k pages from
->> init_amd() to bsp_init_amd().
+On 12/2/2020 8:20 AM, Bean Huo wrote:
+> On Mon, 2020-11-30 at 15:19 -0800, Asutosh Das (asd) wrote:
+>>> +             return -EINVAL;
+>>> +
+>>> +     pm_runtime_get_sync(hba->dev);
+>>> +     res = ufshcd_wb_ctrl(hba, wb_enable);
 >>
->> However, bsp_init_amd() is executed well before the direct mapping is
->> actually created:
->>
->>    setup_arch()
->>      -> early_cpu_init()
->>        -> early_identify_cpu()
->>          -> this_cpu->c_bsp_init()
->> 	  -> bsp_init_amd()
->>      ...
->>      -> init_mem_mapping()
->>
->> So the change effectively disabled the 4k remapping, because
->> pfn_range_is_mapped() is always false at this point.
->>
->> It has been over six years since the commit, and no-one seems to have
->> noticed this, so just remove the code. The original code was also
->> incomplete, since it doesn't check how large the TSEG address range
->> actually is, so it might remap only part of it in any case.
+>> Say, a platform supports clock-scaling and this bit is toggled.
+>> The control goes into ufshcd_wb_ctrl for both this sysfs and
+>> clock-scaling contexts. The clock-scaling context passes all checks
+>> and
+>> blocks on waiting for this wb control to be disabled and then tries
+>> to
+>> enable wb when it's already disabled. Perhaps that's a race there?
 > 
-> Yah, and the patch which added this:
+> Hi Asutosh
+> Appreciate your review.
+> There is only inconsistent problem between clock-scaling and sysfs,
+> since hba->dev_cmd.lock can garantee there is only one can change
+> fWriteBoosterEn. But this is only happening on user willfully wants to
+> control WB through sysfs even they know the platform supports clock-
+> scaling.
 > 
-> 6c62aa4a3c12 ("x86: make amd.c have 64bit support code")
-> 
-> does not say what for (I'm not surprised, frankly).
-> 
-> So if AMD folks on Cc don't have any need for actually fixing this
-> properly, yap, we can zap it.
+> Since this is for the platform which doesn't support clock-scaling, I
+> think based on your comments, it should be acceptable for you like
+> this:
 
-I believe this is geared towards performance. If the TSEG base address is 
-not 2MB aligned, then hardware has to break down a 2MB TLB entry if the OS 
-references the memory within the 2MB page that is before the TSEG base 
-address. This can occur whenever the 2MB TLB entry is re-installed because 
-of TLB flushes, etc.
-
-I would hope that newer BIOSes are 2MB aligning the TSEG base address, but 
-if not, then this can help.
-
-So moving it back wouldn't be a bad thing. It should probably only do the 
-set_memory_4k() if the TSEG base address is not 2MB aligned, which I think 
-is covered by the pfn_range_is_mapped() call?
-
-Thanks,
-Tom
+Or a synchronization primitive b/w the 2 contexts would work just as 
+well. However, I don't have an issue if the user is denied toggling of 
+wb anyway. LGTM.
 
 > 
-> Thx.
 > 
+> +static ssize_t wb_on_store(struct device *dev, struct device_attribute
+> *attr,
+> +                          const char *buf, size_t count)
+> +{
+> +       struct ufs_hba *hba = dev_get_drvdata(dev);
+> +       unsigned int wb_enable;
+> +       ssize_t res;
+> +
+> +       if (ufshcd_is_clkscaling_supported(hba)) {
+> +          dev_err(dev, "supports dynamic clk scaling, control WB
+> +                       through sysfs is not allowed!");
+> +          return -EOPNOTSUPP;
+> +       }
+> +       if (!ufshcd_is_wb_allowed(hba))
+> +               return -EOPNOTSUPP;
+> +
+> +       if (kstrtouint(buf, 0, &wb_enable))
+> +               return -EINVAL;
+> +
+> +       if (wb_enable != 0 && wb_enable != 1)
+> +               return -EINVAL;
+> +
+> +       pm_runtime_get_sync(hba->dev);
+> +       res = ufshcd_wb_ctrl(hba, wb_enable);
+> +       pm_runtime_put_sync(hba->dev);
+> +
+> +       return res < 0 ? res : count;
+> +}
+> 
+> thanks,
+> Bean
+> 
+> 
+
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
