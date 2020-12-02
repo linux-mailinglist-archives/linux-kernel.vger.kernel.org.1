@@ -2,204 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153902CC0AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD082CC0AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727699AbgLBPVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:21:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31117 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725962AbgLBPVW (ORCPT
+        id S1727995AbgLBPV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:21:26 -0500
+Received: from out02.mta.xmission.com ([166.70.13.232]:50228 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727611AbgLBPVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:21:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606922395;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fFR2t3IjQI80xXgeJr/lLM6Ot3yuaPlWOezeBx0tbPI=;
-        b=EHgBezg4BI+AW+nlYWzogXpTdqbxkir4TNi5eUZKSNYi+NGZ71P0cUz44hlun4AxOhdh6N
-        Qdogz+9ERYqvXU33Ae3bUrslK/mXNgjCilqcgG1nEyoEYmFkbXfVTSwCDXytOd63qm9e9n
-        8ZTYaKi0+dBGnbKjnqpiHbZ9+lnC9f4=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-L11-MSxyPzeQcezPu2Upqg-1; Wed, 02 Dec 2020 10:19:54 -0500
-X-MC-Unique: L11-MSxyPzeQcezPu2Upqg-1
-Received: by mail-pj1-f71.google.com with SMTP id c1so1207376pjo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:19:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fFR2t3IjQI80xXgeJr/lLM6Ot3yuaPlWOezeBx0tbPI=;
-        b=XtII5N7xUMBtzT3crDh2/3/Zj2YXfyjQmWUmsHjuyUTca1cS8mMgaV0+5SZlOeRdyK
-         HDXIcZOs7TsQl6rraxpskmfUb+6e8ARXyC2hidvIzl1+VL5U0tPWfnWCsf0WgkWkKbvj
-         HVfjf9JqtZA0WE6QF4uTXQjXg2lXBQOhgfu+O3qICD4FnFiCVKEFy0SYEvJq5wcQesJj
-         ePUkvwP8L5BmjIpwWxxkdOnl3nSglh18DY9+tjlf7t3di6nnSY02YzKQR55bEdTbcMYr
-         OjNfix6TLzimDgU7urPEgEXMVvqCHbj7ScXgnU/2KvNvo5m3CY7uApFK3QZU2P31u6HC
-         o+3Q==
-X-Gm-Message-State: AOAM533UfMKZDy7LhxbF+EJZH22qHEK2uWq8F8GTfKDnJwaBMX+JXJZy
-        2lnXlWD4wafqReb9vHJAHcH0j3SOHcshLgxvQYxPZPInr/lph0yTbV3hPXxCSlc3zKO838csrgv
-        QtozLRKIkgZEZHQb3kBCCiYVjEP396bPtc8hQ3jqH
-X-Received: by 2002:a63:1414:: with SMTP id u20mr312483pgl.147.1606922392850;
-        Wed, 02 Dec 2020 07:19:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzx1g9/LllhhTY2kqAX7DReYattvLk+1Zn+n8SVM7MqR/ECZ0g58ckaZi/4ZDUMErdOi5rr0+tT9celGmI9Nto=
-X-Received: by 2002:a63:1414:: with SMTP id u20mr312476pgl.147.1606922392587;
- Wed, 02 Dec 2020 07:19:52 -0800 (PST)
+        Wed, 2 Dec 2020 10:21:23 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kkTvs-005EKS-NX; Wed, 02 Dec 2020 08:20:40 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kkTvr-007fWp-J7; Wed, 02 Dec 2020 08:20:40 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Geoff Levand <geoff@infradead.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <87r1on1v62.fsf@x220.int.ebiederm.org>
+        <20201120231441.29911-2-ebiederm@xmission.com>
+        <20201123175052.GA20279@redhat.com>
+        <CAHk-=wj2OnjWr696z4yzDO9_mF44ND60qBHPvi1i9DBrjdLvUw@mail.gmail.com>
+        <87im9vx08i.fsf@x220.int.ebiederm.org>
+        <87pn42r0n7.fsf@x220.int.ebiederm.org>
+        <CAHk-=wi-h8y5MK83DA6Vz2TDSQf4eEadddhWLTT_94bP996=Ug@mail.gmail.com>
+        <CAK8P3a3z1tZSSSyK=tZOkUTqXvewJgd6ntHMysY0gGQ7hPWwfw@mail.gmail.com>
+        <ed83033f-80af-5be0-ecbe-f2bf5c2075e9@infradead.org>
+        <87h7pdnlzv.fsf_-_@x220.int.ebiederm.org>
+Date:   Wed, 02 Dec 2020 09:20:08 -0600
+In-Reply-To: <87h7pdnlzv.fsf_-_@x220.int.ebiederm.org> (Eric W. Biederman's
+        message of "Wed, 25 Nov 2020 15:51:32 -0600")
+Message-ID: <87sg8ock0n.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20201112004130.17290-1-dianders@chromium.org> <CAD=FV=W122aWPbg7Fo=zg+QmK7DHBcYTQ6CjPawLhucd4Rtw9A@mail.gmail.com>
-In-Reply-To: <CAD=FV=W122aWPbg7Fo=zg+QmK7DHBcYTQ6CjPawLhucd4Rtw9A@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Wed, 2 Dec 2020 16:19:41 +0100
-Message-ID: <CAO-hwJ+amboty_wKzP3n11mHLfssGz8Npzdfu9QrcipEvu3VHA@mail.gmail.com>
-Subject: Re: [PATCH v6 0/4] HID: i2c-hid: Reorganize to allow supporting goodix,gt7375p
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Andrea Borgia <andrea@borgia.bo.it>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Aaron Ma <aaron.ma@canonical.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jiri Kosina <jikos@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Olof Johansson <olof@lixom.net>, Pavel Balan <admin@kryma.net>,
-        Shawn Guo <shawnguo@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        You-Sheng Yang <vicamo.yang@canonical.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1kkTvr-007fWp-J7;;;mid=<87sg8ock0n.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18exXwqMrqZDqUxJs2IpoxEwxHuDiF20pM=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: ***
+X-Spam-Status: No, score=3.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,
+        T_XMDrugObfuBody_08,XMSubLong,XM_B_SpammyWords autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.5 TR_Symld_Words too many words that have symbols inside
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ***;Geoff Levand <geoff@infradead.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 504 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 4.1 (0.8%), b_tie_ro: 2.7 (0.5%), parse: 0.72
+        (0.1%), extract_message_metadata: 11 (2.2%), get_uri_detail_list: 1.84
+        (0.4%), tests_pri_-1000: 12 (2.3%), tests_pri_-950: 1.04 (0.2%),
+        tests_pri_-900: 0.81 (0.2%), tests_pri_-90: 169 (33.5%), check_bayes:
+        162 (32.1%), b_tokenize: 7 (1.4%), b_tok_get_all: 9 (1.7%),
+        b_comp_prob: 1.97 (0.4%), b_tok_touch_all: 141 (28.1%), b_finish: 0.69
+        (0.1%), tests_pri_0: 296 (58.6%), check_dkim_signature: 0.40 (0.1%),
+        check_dkim_adsp: 2.3 (0.5%), poll_dns_idle: 0.94 (0.2%), tests_pri_10:
+        1.75 (0.3%), tests_pri_500: 6 (1.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [RFC][PATCH] coredump: Document coredump code exclusively used by cell spufs
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+ebiederm@xmission.com (Eric W. Biederman) writes:
 
-On Tue, Dec 1, 2020 at 10:12 PM Doug Anderson <dianders@chromium.org> wrote:
+> Oleg Nesterov recently asked[1] why is there an unshare_files in
+> do_coredump.  After digging through all of the callers of lookup_fd it
+> turns out that it is
+> arch/powerpc/platforms/cell/spufs/coredump.c:coredump_next_context
+> that needs the unshare_files in do_coredump.
 >
-> Hi,
+> Looking at the history[2] this code was also the only piece of coredump code
+> that required the unshare_files when the unshare_files was added.
 >
-> On Wed, Nov 11, 2020 at 4:41 PM Douglas Anderson <dianders@chromium.org> wrote:
-> >
-> > The goal of this series is to support the Goodix GT7375P touchscreen.
-> > This touchscreen is special because it has power sequencing
-> > requirements that necessitate driving a reset GPIO.
-> >
-> > To do this, we totally rejigger the way i2c-hid is organized so that
-> > it's easier to jam the Goodix support in there.
-> >
-> > This series was:
-> > - Tested on a device that uses normal i2c-hid.
-> > - Tested on a device that has a Goodix i2c-hid device.
-> > - Tested on an ACPI device, but an earlier version of the series.
-> >
-> > Changes in v6:
-> > - ACPI probe function should have been "static"
-> > - Don't export suspend/resume, just export dev_pm_ops from core.
-> > - Fixed crash in ACPI module (missing init of "client")
-> > - No need for regulator include in the core.
-> > - Removed i2c_device_id table from ACPI module.
-> > - Suspend/resume are no longer exported from the core.
-> >
-> > Changes in v5:
-> > - Add shutdown_tail op and use it in ACPI.
-> > - Added mention of i2c-hid in the yaml itself as per Rob.
-> > - Adjusted subject as per Rob.
-> > - i2chid_subclass_data => i2chid_ops.
-> > - power_up_device => power_up (same with power_down).
-> > - subclass => ops.
-> >
-> > Changes in v4:
-> > - ("arm64: defconfig: Update config names for i2c-hid rejigger") new for v4.
-> > - Fully rejigger so ACPI and OF are full subclasses.
-> > - Totally redid based on the new subclass system.
-> >
-> > Changes in v3:
-> > - Fixed compatible in example.
-> > - Removed Benjamin as a maintainer.
-> > - Rework to use subclassing.
-> > - Updated description.
-> >
-> > Changes in v2:
-> > - ("dt-bindings: HID: i2c-hid: Introduce bindings for the Goodix GT7375P") new in v2.
-> > - Get timings based on the compatible string.
-> > - Use a separate compatible string for this new touchscreen.
-> >
-> > Douglas Anderson (4):
-> >   HID: i2c-hid: Reorganize so ACPI and OF are separate modules
-> >   arm64: defconfig: Update config names for i2c-hid rejigger
-> >   dt-bindings: input: HID: i2c-hid: Introduce bindings for the Goodix
-> >     GT7375P
-> >   HID: i2c-hid: Introduce goodix-i2c-hid using i2c-hid core
-> >
-> >  .../bindings/input/goodix,gt7375p.yaml        |  65 +++++
-> >  arch/arm64/configs/defconfig                  |   3 +-
-> >  drivers/hid/Makefile                          |   2 +-
-> >  drivers/hid/i2c-hid/Kconfig                   |  47 +++-
-> >  drivers/hid/i2c-hid/Makefile                  |   6 +-
-> >  drivers/hid/i2c-hid/i2c-hid-acpi.c            | 159 +++++++++++
-> >  drivers/hid/i2c-hid/i2c-hid-core.c            | 254 +++---------------
-> >  drivers/hid/i2c-hid/i2c-hid-of-goodix.c       | 116 ++++++++
-> >  drivers/hid/i2c-hid/i2c-hid-of.c              | 143 ++++++++++
-> >  drivers/hid/i2c-hid/i2c-hid.h                 |  22 ++
-> >  include/linux/platform_data/i2c-hid.h         |  41 ---
-> >  11 files changed, 596 insertions(+), 262 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/input/goodix,gt7375p.yaml
-> >  create mode 100644 drivers/hid/i2c-hid/i2c-hid-acpi.c
-> >  create mode 100644 drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-> >  create mode 100644 drivers/hid/i2c-hid/i2c-hid-of.c
-> >  delete mode 100644 include/linux/platform_data/i2c-hid.h
+> Looking at that code it turns out that cell is also the only
+> architecture that implements elf_coredump_extra_notes_size and
+> elf_coredump_extra_notes_write.
 >
-> Are there any additional changes that folks would like with this
-> series?  It's not crazy urgent to get it in, but it touches enough
-> lines of code that it'd be nice to get it in before other patches land
-> and it gets merge conflicts.
+> I looked at the gdb repo[3] support for cell has been removed[4] in binutils
+> 2.34.  Geoff Levand reports he is still getting questions on how to
+> run modern kernels on the PS3, from people using 3rd party firmware so
+> this code is not dead.  According to Wikipedia the last PS3 shipped in
+> Japan sometime in 2017.  So it will probably be a little while before
+> everyone's hardware dies.
+>
+> Add some comments briefly documenting the coredump code that exists
+> only to support cell spufs to make it easier to understand the
+> coredump code.  Eventually the hardware will be dead, or their won't
+> be userspace tools, or the coredump code will be refactored and it
+> will be too difficult to update a dead architecture and these comments
+> make it easy to tell where to pull to remove cell spufs support.
+>
+> [1] https://lkml.kernel.org/r/20201123175052.GA20279@redhat.com
+> [2] 179e037fc137 ("do_coredump(): make sure that descriptor table isn't shared")
+> [3] git://sourceware.org/git/binutils-gdb.git
+> [4] abf516c6931a ("Remove Cell Broadband Engine debugging support").
+> Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+> ---
+>
+> Does this change look good to people?  I think it captures this state of
+> things and makes things clearer without breaking anything or removing
+> functionality for anyone.
 
-Sorry for the delay. I was having an internal deadline last week. I
-just re-read the code, and I am quite happy with it. I also just
-tested it on the i2c-hid w/ acpi machine I have here, and it seems OK.
+I haven't heard anything except a general ack to the concept of
+comments.  So I am applying this.
 
-So other than that, do we need to have approvals for patch 2/4
-(arch/arm64/configs/defconfig)? I can easily take that in the HID
-tree, but I prefer having the approval from the maintainers first.
-Catalin, Will?
+Eric
 
 >
-> Hrm, I just checked and there actually is already one merge conflict
-> with commit afdd34c5fa40 ("HID: i2c-hid: show the error when failing
-> to fetch the HID descriptor") but that commit (and thus the
-> resolution) is trivial.  If there are no other comments I can re-post
-> atop that patch.  ...or I'm also happy if a maintainer is OK w/
-> resolving when landing my series.  Just let me know!
-
-If I can quickly get the approval from the arm64/config maintainers, I
-can try to apply it. Though, I wouldn't be against you sending a clean
-and conflict-free series :)
-
+>  fs/binfmt_elf.c | 2 ++
+>  fs/coredump.c   | 1 +
+>  2 files changed, 3 insertions(+)
 >
-> ...or, if you want me to just shut up for a while and wait until your
-> tryptophan hangover wears off, that's fine too--just let me know.
->
-
-Heh. Sorry, I have a tendency to have my inbox flooded, and some time
-gets distracted to do other important work I am paid for (too). I
-don't mind a gentle nudge from time to time, that helps figuring out
-the priorities :)
-
-Cheers,
-Benjamin
-
+> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> index b6b3d052ca86..c1996f0aeaed 100644
+> --- a/fs/binfmt_elf.c
+> +++ b/fs/binfmt_elf.c
+> @@ -2198,6 +2198,7 @@ static int elf_core_dump(struct coredump_params *cprm)
+>  	{
+>  		size_t sz = get_note_info_size(&info);
+>  
+> +		/* For cell spufs */
+>  		sz += elf_coredump_extra_notes_size();
+>  
+>  		phdr4note = kmalloc(sizeof(*phdr4note), GFP_KERNEL);
+> @@ -2261,6 +2262,7 @@ static int elf_core_dump(struct coredump_params *cprm)
+>  	if (!write_note_info(&info, cprm))
+>  		goto end_coredump;
+>  
+> +	/* For cell spufs */
+>  	if (elf_coredump_extra_notes_write(cprm))
+>  		goto end_coredump;
+>  
+> diff --git a/fs/coredump.c b/fs/coredump.c
+> index abf807235262..3ff17eea812e 100644
+> --- a/fs/coredump.c
+> +++ b/fs/coredump.c
+> @@ -790,6 +790,7 @@ void do_coredump(const kernel_siginfo_t *siginfo)
+>  	}
+>  
+>  	/* get us an unshared descriptor table; almost always a no-op */
+> +	/* The cell spufs coredump code reads the file descriptor tables */
+>  	retval = unshare_files();
+>  	if (retval)
+>  		goto close_fail;
