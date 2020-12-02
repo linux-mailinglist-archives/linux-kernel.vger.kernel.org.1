@@ -2,111 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0492CC26E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 591542CC278
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:36:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730780AbgLBQeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:34:10 -0500
-Received: from mga11.intel.com ([192.55.52.93]:33932 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727826AbgLBQeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:34:09 -0500
-IronPort-SDR: KeEHZnNoh/yb6/tkTFY3Zs4+5DmH3TfVwhx/5X22TOn0HYm7+HYdb7WwS0FXojRDTPTiOUsggy
- gBWl4raUlR4g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="169540552"
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="169540552"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 08:33:13 -0800
-IronPort-SDR: IsQaCy7/TP2wDXxgVxMAm1dLhX9b8aILkII+0MesCurV60o/kVoLolc4Nq6zglBhMjM/Gw6MDv
- AE9HOwgYQzXg==
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="481617321"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 08:33:12 -0800
-Date:   Wed, 2 Dec 2020 08:33:12 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        david@redhat.com, osalvador@suse.de, dan.j.williams@intel.com,
-        sashal@kernel.org, tyhicks@linux.microsoft.com,
-        iamjoonsoo.kim@lge.com, mike.kravetz@oracle.com,
-        rostedt@goodmis.org, mingo@redhat.com, jgg@ziepe.ca,
-        peterz@infradead.org, mgorman@suse.de, willy@infradead.org,
-        rientjes@google.com, jhubbard@nvidia.com
-Subject: Re: [PATCH 3/6] mm/gup: make __gup_longterm_locked common
-Message-ID: <20201202163312.GU1161629@iweiny-DESK2.sc.intel.com>
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201202052330.474592-4-pasha.tatashin@soleen.com>
- <20201202163145.GT1161629@iweiny-DESK2.sc.intel.com>
+        id S1730695AbgLBQfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:35:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727942AbgLBQfp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 11:35:45 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B59C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:35:04 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id k14so4716932wrn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:35:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YxQYQF1LD7VCcsXVOlfezCcp9MbvQ1IvqiGH/jVfncA=;
+        b=AB7jwyDcIJ8WIoS9hG0XuOZSAJlwzKFGEGaHT7shjySdMSSlXXcg3EiM78CcGK/a7b
+         skCQQkUQUHxW05+5hR3TtT2QahmRmE9XrwLAqCnRSm7hUJ5fHUhD6H04epaMkb3Kic0/
+         589tMeIRGUZ2bw5yBOl5cnTxRubWR7IWwotD4FkULg60eNNncaiN6pZcSEL4/bdrbuGB
+         8B6XqOTluSYei6beJn1gfnp01kREIPfrA3dZ5ZQ05KbTtgIjsXpiGEQw/SJuqvrqHHyV
+         RO0YYAJcOF1uEIvmysCLW8d5ojbe/c2ClViOj7Wq6j3JpANGBcmY3hIor84BnM1uhU1J
+         j4fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YxQYQF1LD7VCcsXVOlfezCcp9MbvQ1IvqiGH/jVfncA=;
+        b=b5SiaHxkFYwbPiR3FdFODRS6nwcF32Z6HKnow5QgZloUqAzSsp4udi6wp+i4TNGOeC
+         4Inu0yr3SrLtB9CZdXJEp4eJogErbz1PQ6saw47xm/oVvFdwQVSx5ymm8hebK7tLuLWR
+         mzPowCdsc7KRK7By9xqQ7aZyI/xXA0qgLUQqFQJZlETdviqEgs1FBqh6AodhG83q5t0T
+         PV0oMy3lqKKBBrYnAptSOFx6tQ0CU4NX3w+/F0EYxJBeXttV8WHh/bXHSdrJYMvapkQf
+         dPHdqvBrb6ABBakl2N3lr4O8vqy9SplVIve2pKG3XUN6nNl2Hig9dn47VgeF0ua7Y7Nk
+         sLpA==
+X-Gm-Message-State: AOAM533uCCFobDS2JN4yt+vYJl0erv1K1pxa7Hjh4YX9OBPgbgp63Ka3
+        Tqiv/P4GOHh0OyY8Dy72FsO/hw==
+X-Google-Smtp-Source: ABdhPJwpdk3b38oDk8xBk5tqbfTHdTdnAQk8e139jw0HXO9hDe5sXz3SQ/nKogQzYb81HO4winiL1g==
+X-Received: by 2002:a5d:4f0e:: with SMTP id c14mr4378035wru.422.1606926903076;
+        Wed, 02 Dec 2020 08:35:03 -0800 (PST)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id a21sm2443104wmb.38.2020.12.02.08.35.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 08:35:02 -0800 (PST)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     linus.walleij@linaro.org, bjorn.andersson@linaro.org
+Cc:     robh+dt@kernel.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srinivas.kandagatla@linaro.org
+Subject: [RESEND PATCH v6 0/2] pinctrl: qcom: Add sm8250 lpass lpi pinctrl support
+Date:   Wed,  2 Dec 2020 16:34:41 +0000
+Message-Id: <20201202163443.26499-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202163145.GT1161629@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 08:31:45AM -0800, 'Ira Weiny' wrote:
-> On Wed, Dec 02, 2020 at 12:23:27AM -0500, Pavel Tatashin wrote:
-> > __gup_longterm_locked() has CMA || FS_DAX version and a common stub
-> > version. In the preparation of prohibiting longterm pinning of pages from
-> > movable zone make the CMA || FS_DAX version common, and delete the stub
-> > version.
-> > 
-> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> > ---
-> >  mm/gup.c | 13 -------------
-> >  1 file changed, 13 deletions(-)
-> > 
-> > diff --git a/mm/gup.c b/mm/gup.c
-> > index 3a76c005a3e2..0e2de888a8b0 100644
-> > --- a/mm/gup.c
-> > +++ b/mm/gup.c
-> > @@ -1567,7 +1567,6 @@ struct page *get_dump_page(unsigned long addr)
-> >  }
-> >  #endif /* CONFIG_ELF_CORE */
-> >  
-> > -#if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
-> >  #ifdef CONFIG_FS_DAX
-> >  static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
-> >  {
-> > @@ -1757,18 +1756,6 @@ static long __gup_longterm_locked(struct mm_struct *mm,
-> >  		kfree(vmas_tmp);
-> >  	return rc;
-> >  }
-> 
-> Isn't this going to potentially allocate vmas_tmp only to not need it when
-> !FS_DAX and !CMA?
+Sorry for the Noise, Resending this as previous one did not include Linus W email id!!
 
-To clarify, when FOLL_LONGTERM is set...
+This patch adds support for LPASS (Low Power Audio SubSystem)
+LPI (Low Power Island) pinctrl on SM8250.
 
-IRa
+This patch has been tested on support to Qualcomm Robotics RB5 Development
+Kit based on QRB5165 Robotics SoC. This board has 2 WSA881X smart speakers
+with onboard DMIC connected to internal LPASS codec via WSA  and VA macros
+respectively.
 
-> 
-> Ira
-> 
-> > -#else /* !CONFIG_FS_DAX && !CONFIG_CMA */
-> > -static __always_inline long __gup_longterm_locked(struct mm_struct *mm,
-> > -						  unsigned long start,
-> > -						  unsigned long nr_pages,
-> > -						  struct page **pages,
-> > -						  struct vm_area_struct **vmas,
-> > -						  unsigned int flags)
-> > -{
-> > -	return __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
-> > -				       NULL, flags);
-> > -}
-> > -#endif /* CONFIG_FS_DAX || CONFIG_CMA */
-> >  
-> >  static bool is_valid_gup_flags(unsigned int gup_flags)
-> >  {
-> > -- 
-> > 2.25.1
-> > 
-> > 
-> 
+Most of the work is derived from downstream Qualcomm kernels.
+Credits to various Qualcomm authors from Patrick Lai's team who have
+contributed to this code.
+
+Am guessing existing qcom folder should cover maintining this driver too!
+If not I can send additional patch to consolidate this along with other
+Audio related drivers in Maintainer file!
+
+Changes since v5:
+	- moved to use FIELD_* or u32_replace/encode apis where possible
+	- remove all the SHIFT constants
+	- updated function groups as suggested by Bjorn
+	- updated setting slew rate as suggested by Bjorn
+
+Srinivas Kandagatla (2):
+  dt-bindings: pinctrl: qcom: Add sm8250 lpass lpi pinctrl bindings
+  pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver
+
+ .../pinctrl/qcom,lpass-lpi-pinctrl.yaml       | 130 ++++
+ drivers/pinctrl/qcom/Kconfig                  |   8 +
+ drivers/pinctrl/qcom/Makefile                 |   1 +
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.c      | 695 ++++++++++++++++++
+ 4 files changed, 834 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+
+-- 
+2.21.0
+
