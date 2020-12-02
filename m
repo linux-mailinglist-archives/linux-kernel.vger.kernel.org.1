@@ -2,101 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5055F2CBCEA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B4C2CBCDB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729925AbgLBMX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:23:57 -0500
-Received: from mout.kundenserver.de ([217.72.192.75]:37389 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729905AbgLBMX4 (ORCPT
+        id S1729843AbgLBMWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:22:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726780AbgLBMWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:23:56 -0500
-Received: from orion.localdomain ([77.7.48.174]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1Moex5-1kQHoj0zRx-00p8QN; Wed, 02 Dec 2020 13:21:24 +0100
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-acpi@vger.kernel.org
-Subject: [PATCH v2] drivers: acpi: add opt-out of apple-specific property parsing
-Date:   Wed,  2 Dec 2020 13:21:23 +0100
-Message-Id: <20201202122123.10229-1-info@metux.net>
-X-Mailer: git-send-email 2.11.0
-X-Provags-ID: V03:K1:W3Iutmi7LBFpSyCo5rZCCS/c5K8FL0WvJChVOC6nWMFtMYtXI2K
- i/q0G/CTMcYTu5+Ooq0wvNDXf5Ibd1TFeHlMgWk8Lz9/eYxAPB3M23s2kRNdP8PudJQmuC9
- +vHwOHD47KyIZrpypB3LO36+ZtTSWVZgsWXQ0LgNdb2TXl1KwIbWUKblr7/XyAmuztGh+xW
- yAwBKl09y5ZinWBgsXtoQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tV5PEq4x9YY=:mM6j4bsRX9vrs1qwd0PqHF
- 9Keo9sC3RXo/wxvM8eU7PKOUJ3KKJDDH2+Nd5XDslZZbZ+lOrgsNsTiOBEcbSp0hDKxiq311R
- QEXJkq/ms6Cr6/zr2mMS1gTbXl7JxktuC37spVw6herTbTep7K6Ax9l5Ytl3LYxWjHwdvvNbm
- qMFbc7Vb/6lxi1YfVtuW9285AYUngh0pTHlSM6OY8SFGjxWYLxUGlx1aZBkxVvIOnJSKDPckr
- yHkSnx3/mkXPzgvKwcJ8VEUDJMdR3HDz7DfHTRPdngbDhJAr4qJ1EFsioUposnHTTe8mJ7T8M
- g/BILce4mWo/aXx6vPVfbx63rLV+GXt0hryDQjEOFgoTjdvGnH2VduiGHkFW0EqBQPhZ90ecM
- yOlNPiKv7RuAl5YXyANGHdL4XBG9bJi4KTXaSzkWfq/7AtGdbsSX07g1mzxzK
+        Wed, 2 Dec 2020 07:22:11 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEFEC0613CF;
+        Wed,  2 Dec 2020 04:21:31 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id t37so977260pga.7;
+        Wed, 02 Dec 2020 04:21:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X7vg7wOATI8swNnN5Fz23jvJnq806ch7HKM6VeRWjEw=;
+        b=temuNJKlIFyJaTFYFbBj/gyia+9N5OdIzyR3R3MhZm47Znr9IfA3qX2+53lt+dKJER
+         V5DlWd1jr55pgbAPMvXF/us1TD9JKqVQCL1Ukfxw6WZbu/2413wBvsMpZauh+1LEt6Fu
+         JOza4FJXxaOelTHKZQG5hBGDeWTJ/2h0gPtSYrOOUJNHqz/EOfVKuJsFg0zm5EVAqHsU
+         fDmISQAxiBTHgD/AW9OesOn17y7+KqWE0UvKxojxGKohNIWY3hPeWbZ/j6P5oUjA5VIT
+         1lpSFnHw+oc5nIjn65Uig3ZmN/HgxytIwHcktzAdZQJ0/DLh+RAi023jG439GFCkPFWt
+         mmPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X7vg7wOATI8swNnN5Fz23jvJnq806ch7HKM6VeRWjEw=;
+        b=PZEWzn+qJTEXzqKMKsOfc/bMNk243eQLh00ys17f7ZzXB1TJYfyXzqGu1sjpIDpub8
+         fj3KvEzVr3vTp5yvhQ/wZJqVnBHyid20UceAgcwhu0NhOh1H+0AJUBmUbkcPJ3I9C63S
+         71yJTiZbkLyQTDY+9AKWUSc5kJ0iX7g2ezeFFIqj7Hu1afQnl0cRP35IxXhCzoelNeyL
+         zvvUEFl/PJavqxGHMKdyn+zbIeBCZKzu0j2Z6XUkswffSsW24qYQkdP2bQ/aWG7CMKyU
+         X2Siow3rj9LBLvHi16ROlANE31/BnAuTrK8j5SB917py3Xex/Hu9njE2+6Vt6+UNTviu
+         cN3A==
+X-Gm-Message-State: AOAM533D1X8DaaaxAOPBNpsH1F1ztvSMvo4W2HAy55gPvf8LscZXKcwD
+        vsMASmTwelzQlu1ysq+wCTVDCdziQUvmnou6LH4=
+X-Google-Smtp-Source: ABdhPJwt9Hk6qTjPy/YhgdDqb83v2pS6RnL7J+5lmDMvVQHbXRi0IYRuv+vjBrDa52Kb3aqQ+BC3wvuhSb4CjLkc2OM=
+X-Received: by 2002:a62:ae0e:0:b029:198:11b4:6b6b with SMTP id
+ q14-20020a62ae0e0000b029019811b46b6bmr2332412pff.73.1606911691119; Wed, 02
+ Dec 2020 04:21:31 -0800 (PST)
+MIME-Version: 1.0
+References: <20201201071632.68471-1-98.arpi@gmail.com> <CAHp75VfV60sRAKkzvbEKW7UEZSiDmNVfd_kB-OOKZRk5MNMeDQ@mail.gmail.com>
+ <e10ef8d3-f22b-db10-3784-c94ee425af46@gmail.com> <20201202094408.GW4077@smile.fi.intel.com>
+ <CABVgOS=hrfma2Yq=h2vqOoH1Mz4xSyfDbgkM9EHvMFk=HJkcnQ@mail.gmail.com>
+In-Reply-To: <CABVgOS=hrfma2Yq=h2vqOoH1Mz4xSyfDbgkM9EHvMFk=HJkcnQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 2 Dec 2020 14:22:19 +0200
+Message-ID: <CAHp75VcSGJ-qVQf9SRj2rTME-_MZ2vM-HB_+LiRVgnkwn1TO=g@mail.gmail.com>
+Subject: Re: [PATCH v3] lib: Convert test_hexdump.c to KUnit
+To:     David Gow <davidgow@google.com>
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most x86 machines aren't Apple machines, especially VMs.
-Therefore allow opt-out, making the kernel a few KBs smaller,
-eg. for embedded or high-density VMs.
+On Wed, Dec 2, 2020 at 1:57 PM David Gow <davidgow@google.com> wrote:
+> On Wed, Dec 2, 2020 at 6:06 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Wed, Dec 02, 2020 at 09:51:19AM +0530, Arpitha Raghunandan wrote:
 
-v2: fixed spelling
+...
 
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
----
- drivers/acpi/Kconfig    | 9 +++++++++
- drivers/acpi/Makefile   | 2 +-
- drivers/acpi/internal.h | 2 +-
- 3 files changed, 11 insertions(+), 2 deletions(-)
+> > What I;m talking about is the output. How it will be implemented (using the
+> > same variable or differently) is up to you. So the point is I want to see the
+> > statistics of success/total at the end.
+> >
+> > I think this should be done in KUNIT rather than in the individual test cases.
+>
+> I tend to agree here that this really is something for KUnit. At the
+> moment, the tools/testing/kunit/kunit.py script will parse the kernel
+> log and generate these sorts of statistics. I know that needing to run
+> it through a script might seem like a step backwards, but there's no
+> formal place for statistics in the KTAP specification[1] being worked
+> on to standardise kselftest/kunit output formats.
 
-diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-index edf1558c1105..fc37a9a5c2a8 100644
---- a/drivers/acpi/Kconfig
-+++ b/drivers/acpi/Kconfig
-@@ -79,6 +79,15 @@ config ACPI_DEBUGGER_USER
- 
- endif
- 
-+config ACPI_APPLE
-+	bool "Apple ACPI properties support"
-+	default y if X86
-+	help
-+	  Extraction of apple specific ACPI properties.
-+
-+	  Say N if you're sure the kernel won't be used on an Apple machine
-+	  and wanna save a few kb of memory. (embedded or high-density VMs)
-+
- config ACPI_SPCR_TABLE
- 	bool "ACPI Serial Port Console Redirection Support"
- 	default y if X86
-diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-index 44e412506317..ed1f4405c90a 100644
---- a/drivers/acpi/Makefile
-+++ b/drivers/acpi/Makefile
-@@ -52,7 +52,7 @@ acpi-y				+= evged.o
- acpi-y				+= sysfs.o
- acpi-y				+= property.o
- acpi-$(CONFIG_X86)		+= acpi_cmos_rtc.o
--acpi-$(CONFIG_X86)		+= x86/apple.o
-+acpi-$(CONFIG_ACPI_APPLE)	+= x86/apple.o
- acpi-$(CONFIG_X86)		+= x86/utils.o
- acpi-$(CONFIG_DEBUG_FS)		+= debugfs.o
- acpi-y				+= acpi_lpat.o
-diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-index e3638bafb941..fa1b6ef7829a 100644
---- a/drivers/acpi/internal.h
-+++ b/drivers/acpi/internal.h
-@@ -239,7 +239,7 @@ static inline void suspend_nvs_restore(void) {}
- void acpi_init_properties(struct acpi_device *adev);
- void acpi_free_properties(struct acpi_device *adev);
- 
--#ifdef CONFIG_X86
-+#ifdef CONFIG_ACPI_APPLE
- void acpi_extract_apple_properties(struct acpi_device *adev);
- #else
- static inline void acpi_extract_apple_properties(struct acpi_device *adev) {}
+Then it sucks. Fix specification (in a long term) and does it have a
+comment style of messages that we can have this statistics printed
+(but maybe not parsed)?
+
+> Note that there are
+> other parsers for TAP-like formats which are being used with KUnit
+> results, so systems like LAVA could also sum up these statistics. It's
+> also possible, as Arpitha alluded to, to have the test dump them out
+> as a comment.
+
+Fine to me.
+
+> This won't actually work for this test as-is, though, as the KUnit
+> version is running as a single giant test case (so KUnit believes that
+> 1/1 tests have passed, rather than having any more-detailed
+> statistics). It looks like there are a few ways to split it up a bit
+> which would make it neater (a test each for the for() loops in
+> test_hexdump_init() seems sensible to me), but at the moment, there's
+> not really a way of programmatically generating test cases which KUnit
+> then counts
+
+Fix it, please. We rely on this statistics pretty much.
+
+> The "Parameterised Tests"[2] work Arpitha has been working on ought to
+> go some way to helping here, though it won't solve this completely in
+> this initial version. The problem there is that parameterised tests
+> are not reported individually in a way the kunit.py parser can report
+> cleanly, yet, so it'll still only be counted as one test until that's
+> changed (though, at least, that shouldn't require any test-specific
+> work).
+>
+> My suggestion for the ultimate state of the test would be:
+> - Split up the test into separate KUnit tests for the different
+> "categories" of tests: (e.g., test_hexdump_set,
+> test_hexdump_overflow_set_ascii, etc)
+> - Replace the for loops in test_hexdump_init() with parameters, so
+> that KUnit is aware of the original runs.
+> - Once KUnit and the tooling supports it, these will be reported as
+> subtests. (In the meantime, the results will be listed individually,
+> commented out)
+
+I'm fine as long as we have this information printed to the user.
+
+> Of course, it'll take a while before all of those KUnit pieces are in
+> place. I personally think that a good compromise would be to just do
+> the first of these for now, which would make kunit_tool give at least
+> a 4/4 rather than 1/1 result. Then, once the parameterised testing
+> work is merged (and perhaps the tooling fixes are finished), the tests
+> could be updated to take advantage of that.
+
+How can we guarantee it will be not forgotten?
+
+> [1]: https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/T/
+> [2]: https://lore.kernel.org/linux-kselftest/20201116054035.211498-1-98.arpi@gmail.com/
+
 -- 
-2.11.0
-
+With Best Regards,
+Andy Shevchenko
