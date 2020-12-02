@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294702CBBB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD1A2CBBB7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729690AbgLBLkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:40:40 -0500
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:36387 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgLBLkj (ORCPT
+        id S1729710AbgLBLkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 06:40:49 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:33337 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgLBLkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 06:40:39 -0500
-Received: by mail-lf1-f44.google.com with SMTP id v14so4165031lfo.3;
+        Wed, 2 Dec 2020 06:40:33 -0500
+Received: by mail-lf1-f67.google.com with SMTP id l11so4202208lfg.0;
         Wed, 02 Dec 2020 03:40:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Wpl3GUF0Lna+9aQ+M4y15hfBavFW+GP9gpBC+7GpH5Y=;
-        b=D0t+JDpDGdYf2jOcYQV738Dd1nEa7yQK/hjNkEj1X5/NsBNPh53C9FAOwB1/JSwVAJ
-         srCHFBnriqPxnpdZjsmnhUvTC1U+ealhXUQNxStn1Pp7FFy+OenFpoqgq8mt6NwdxuKX
-         nMrvqsW8A49alLdn/XYVWGCwn4OFL4PwC+QJKVMc8OhqTNbpYo/mk5+V2P9ui/zUdDeh
-         QDX1JMz5hOVOXtNnwXjGYZm3ZfBwwuhcpzFuuzcM4aKkzDri6AVb5MCG0x5/5P6pDmrH
-         5HcS3IhmYvclU4HCeaewN/ICk6NC85Vsvy6oW421mCtfzLlvMih3+7V29S7zRFNVyzLm
-         zRIA==
-X-Gm-Message-State: AOAM530hMWDvbTW/4xB3jZAGKhNizzr0UtDebi1V8aWidI3oUkluUYmO
-        jgSqMy6P/pZpwtdY6OWHkm0=
-X-Google-Smtp-Source: ABdhPJwyUJNCE0J39vsIAzAyLSqtGSgb7f96Lf3Wll5DzpTzhWzBGG7xh1QqFM8hjsN1W7HbJXOZmg==
-X-Received: by 2002:a05:6512:2151:: with SMTP id s17mr1074253lfr.287.1606909190549;
-        Wed, 02 Dec 2020 03:39:50 -0800 (PST)
+        bh=tP2HvplWRaMXdOrLEwAbMpgsLuB/LtE2K3OBH4UE6QM=;
+        b=nBu7trBqYxRQlQbVfl9XsOSIEbGXmMrOXpSe718JzeiaJrprDBQDqo37xRRZl1CfPT
+         V+0iltwTcp/2arRJQyw7K+/sLWajsm4gUUuYKOXqUllDR0NcvIQd/OIa9BO+YwyI1sWu
+         ABtvH2PhT3fJ+ZEgZJH1Kjy0+dPZh/jdH3pIEgIa/Qohsgg3BmSUHAFy7ica2Jb/iqpA
+         e5h04/5yoCPCqudWbhRLQkR+XYfc0VmFK7RiLA+4WNyY3xOiLIrEyL2vAtSwKb7FmtZ3
+         owQdGkIbTa0JUjCmJaYsQeiMpMdVbpL084nQeMx1rhr4qd1eip7Vvu6yInG+2t4isS9c
+         62pg==
+X-Gm-Message-State: AOAM5314Y+K4C64lm/goOvkRFZR22R2n4F8PLBoo3Ugep2wqLfOH3/8R
+        pwJusy3bRKctKXf2b7uszJs=
+X-Google-Smtp-Source: ABdhPJwF4T7Ii6Rs+7XME3BIDjgfwitUBpk4MgYq1TJ2v9pWqbFWzDGtOvHDm3kXv6watTkD+U55tA==
+X-Received: by 2002:ac2:5a47:: with SMTP id r7mr974435lfn.525.1606909191191;
+        Wed, 02 Dec 2020 03:39:51 -0800 (PST)
 Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id 136sm384688lfn.193.2020.12.02.03.39.47
+        by smtp.gmail.com with ESMTPSA id t20sm385034lff.153.2020.12.02.03.39.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 03:39:48 -0800 (PST)
+        Wed, 02 Dec 2020 03:39:49 -0800 (PST)
 Received: from johan by xi.terra with local (Exim 4.93.0.4)
         (envelope-from <johan@xi.terra>)
-        id 1kkQUc-000733-VU; Wed, 02 Dec 2020 12:40:19 +0100
+        id 1kkQUd-000738-27; Wed, 02 Dec 2020 12:40:19 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>,
         "Mychaela N . Falconia" <falcon@freecalypso.org>,
         linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 4/7] serial: core: add sysfs attribute to suppress ready signalling on open
-Date:   Wed,  2 Dec 2020 12:39:39 +0100
-Message-Id: <20201202113942.27024-5-johan@kernel.org>
+Subject: [PATCH v2 5/7] USB: serial: add sysfs attribute to suppress ready signalling on open
+Date:   Wed,  2 Dec 2020 12:39:40 +0100
+Message-Id: <20201202113942.27024-6-johan@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201202113942.27024-1-johan@kernel.org>
 References: <20201202113942.27024-1-johan@kernel.org>
@@ -64,45 +64,29 @@ purposes such as generating power-on and reset pulses.
 
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- Documentation/ABI/testing/sysfs-tty |  7 +++++++
- drivers/tty/serial/serial_core.c    | 26 ++++++++++++++++++++++++++
- 2 files changed, 33 insertions(+)
+ drivers/usb/serial/bus.c | 35 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 33 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-tty b/Documentation/ABI/testing/sysfs-tty
-index e157130a6792..2634b4bf9c7f 100644
---- a/Documentation/ABI/testing/sysfs-tty
-+++ b/Documentation/ABI/testing/sysfs-tty
-@@ -161,3 +161,10 @@ Contact:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
- Description:
- 		 Allows user to detach or attach back the given device as
- 		 kernel console. It shows and accepts a boolean variable.
-+
-+What:		/sys/class/tty/ttyS0/nordy
-+Date:		November 2020
-+Contact:	Johan Hovold <johan@kernel.org>
-+Description:
-+		 Show and store the port NORDY flag which suppresses raising
-+		 the modem-control lines on open to signal DTE readiness.
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-index f41cba10b86b..7db1814b9d99 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -2805,6 +2805,30 @@ static ssize_t console_store(struct device *dev,
- 	return ret < 0 ? ret : count;
+diff --git a/drivers/usb/serial/bus.c b/drivers/usb/serial/bus.c
+index eb0195cf37dd..db75cc5c3dfb 100644
+--- a/drivers/usb/serial/bus.c
++++ b/drivers/usb/serial/bus.c
+@@ -35,6 +35,37 @@ static int usb_serial_device_match(struct device *dev,
+ 	return 0;
  }
  
 +static ssize_t nordy_show(struct device *dev, struct device_attribute *attr,
 +				char *buf)
 +{
-+	struct tty_port *port = dev_get_drvdata(dev);
++	struct usb_serial_port *port = dev_get_drvdata(dev);
 +
-+	return sprintf(buf, "%d\n", tty_port_nordy(port));
++	return sprintf(buf, "%d\n", tty_port_nordy(&port->port));
 +}
 +
 +static ssize_t nordy_store(struct device *dev, struct device_attribute *attr,
 +				const char *buf, size_t count)
 +{
-+	struct tty_port *port = dev_get_drvdata(dev);
++	struct usb_serial_port *port = dev_get_drvdata(dev);
 +	bool val;
 +	int ret;
 +
@@ -110,30 +94,32 @@ index f41cba10b86b..7db1814b9d99 100644
 +	if (ret)
 +		return ret;
 +
-+	tty_port_set_nordy(port, val);
++	tty_port_set_nordy(&port->port, val);
 +
 +	return count;
 +}
-+
- static DEVICE_ATTR_RO(uartclk);
- static DEVICE_ATTR_RO(type);
- static DEVICE_ATTR_RO(line);
-@@ -2819,6 +2843,7 @@ static DEVICE_ATTR_RO(io_type);
- static DEVICE_ATTR_RO(iomem_base);
- static DEVICE_ATTR_RO(iomem_reg_shift);
- static DEVICE_ATTR_RW(console);
 +static DEVICE_ATTR_RW(nordy);
- 
- static struct attribute *tty_dev_attrs[] = {
- 	&dev_attr_uartclk.attr,
-@@ -2835,6 +2860,7 @@ static struct attribute *tty_dev_attrs[] = {
- 	&dev_attr_iomem_base.attr,
- 	&dev_attr_iomem_reg_shift.attr,
- 	&dev_attr_console.attr,
++
++static struct attribute *tty_attrs[] = {
 +	&dev_attr_nordy.attr,
- 	NULL
- };
++	NULL
++};
++ATTRIBUTE_GROUPS(tty);
++
+ static int usb_serial_device_probe(struct device *dev)
+ {
+ 	struct usb_serial_driver *driver;
+@@ -60,8 +91,8 @@ static int usb_serial_device_probe(struct device *dev)
+ 	}
  
+ 	minor = port->minor;
+-	tty_dev = tty_port_register_device(&port->port, usb_serial_tty_driver,
+-					   minor, dev);
++	tty_dev = tty_port_register_device_attr(&port->port,
++			usb_serial_tty_driver, minor, dev, port, tty_groups);
+ 	if (IS_ERR(tty_dev)) {
+ 		retval = PTR_ERR(tty_dev);
+ 		goto err_port_remove;
 -- 
 2.26.2
 
