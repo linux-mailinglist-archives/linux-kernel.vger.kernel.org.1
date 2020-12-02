@@ -2,159 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127722CB1ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:59:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0932CB1F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727712AbgLBA6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 19:58:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58964 "EHLO
+        id S1727821AbgLBA7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 19:59:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbgLBA6d (ORCPT
+        with ESMTP id S1727605AbgLBA7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 19:58:33 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39213C0613CF;
-        Tue,  1 Dec 2020 16:57:47 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id ms7so157517pjb.4;
-        Tue, 01 Dec 2020 16:57:47 -0800 (PST)
+        Tue, 1 Dec 2020 19:59:19 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AD8C061A04;
+        Tue,  1 Dec 2020 16:58:10 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id 10so68899ybx.9;
+        Tue, 01 Dec 2020 16:58:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=u8Im7pUwrYZIu0XDUm9McsW1+o37J6dtqvcGYr5EvvM=;
-        b=BnMvomIwBI3N+KOtQT5gvAZ/YPOL8nQXrf/ciAdUfG5qC1YcnabTxSnt9cO6TqDkXe
-         IRnzisbugfBMeNR0WQI7AwXJQcZ7jyCWZYxm08Pk9oJhdf3ohxx2I+QY//Cb4VOjGN8J
-         GRSaLptkBC5pFQq+vU0fL07Y3N0F+XJ/+RvwAdNFo8IZj8Dfy9YO3keqmv8USbRf0DOp
-         vDbubF3pCJlM/dC5ieG40aFeYOgv5M8BJbY4MAsBNGo0dJ0S0vjoKe9MDoCHuaKxRE2H
-         N7SeLTWHPOwKsylRr4MRmmL1KqAtMLDWcfluBLALNHXtKGhT90oXL15G73UGqOSbbZUU
-         e3FA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EkXu9Ed2ybTkQIgVvwvasBTjLGza95sliHnsICJRQMI=;
+        b=H3MZYH5k6FkItSFWwohnA37oe/t/5Wsaj4sdmB77XBqgQeDarK7aw1Po4m3Cd4VGHr
+         vUs0deTQbBTsEQiPxBSpMIV1U2r2S7AqodqaHWdPJN054Aw9ZwyCj+ufHOHUsGmu+Vlv
+         I3C4vE0jekW6ZkwRBeC5nLqU78mQhN2wYzTLXYQksxLfj+JoVq+GWWxnj65vji2yOKq1
+         4FercnoPjt9cNdcLZIGA0ByWR3Y82Pzz9mp6ssLze/BJJ3/rNQgEa6aajGZeQudjBeZz
+         85cYDYsrQx0UX+TmeY8oyX6FBldeKbv5vlTLcR7anaX+qlyXUoFKFZpBcL4CIzBlZJIC
+         fmfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=u8Im7pUwrYZIu0XDUm9McsW1+o37J6dtqvcGYr5EvvM=;
-        b=BE0BaZuM0DPqf66UTTDaVqTimvZtD8Qux7PcLNIuOvi//0I4/Oeo4rM42ScNFWsO3G
-         OWBGY0nk/88j4CVh/bfRN1/zeGz5r4JIeP1SP6t5lroZN7bcqpmG+kkkhq1xdwGyYZD2
-         LSGxP3biLS5K0pLvjUo9fRoSJEjwps7eYKXM90qX/40qkH5izpx0SKGXOk9+WAZKDmmR
-         vHsp+JhCax/ayv8VrnIWB+btD78NzRo+yF03XVpClO14knJUo5eg/IB5NeJaHTdUHO1x
-         8NJWWk1qMyePIaBEIfJf8W2D4DEj007i1PlnPgYBXAWg+vhX+xFe6Uo5VzFzelEOEQWR
-         25nA==
-X-Gm-Message-State: AOAM532yI+3Qbejq3zCDxfjw8ePXMdmcuYG45Kz3dGUH3yCxeuNfA2Le
-        UeoyX46z4+nQZnDItobJjgo=
-X-Google-Smtp-Source: ABdhPJxOwt1LLWu0zBZo4zhSX/vym8XXbM9DzbOWO25SHPiEUpnWcuYQuilFfwq2/N2y63yU4bdXqA==
-X-Received: by 2002:a17:90a:ee8c:: with SMTP id i12mr406366pjz.33.1606870666635;
-        Tue, 01 Dec 2020 16:57:46 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id y25sm119905pfn.44.2020.12.01.16.57.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 16:57:45 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 1 Dec 2020 16:57:42 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Hyesoo Yu <hyesoo.yu@samsung.com>,
-        Matthew Wilcox <willy@infradead.org>, david@redhat.com,
-        iamjoonsoo.kim@lge.com, vbabka@suse.cz,
-        Suren Baghdasaryan <surenb@google.com>,
-        KyongHo Cho <pullip.cho@samsung.com>,
-        John Dias <joaodias@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH v2 4/4] dma-buf: heaps: add chunk heap to dmabuf heaps
-Message-ID: <20201202005742.GC3968963@google.com>
-References: <20201201175144.3996569-1-minchan@kernel.org>
- <20201201175144.3996569-5-minchan@kernel.org>
- <CALAqxLXFeUStaJ8Mtm5v3kSxmeqnjzLTsyathkrKF0ke3fYGiQ@mail.gmail.com>
- <20201201225554.GA3968963@google.com>
- <CALAqxLW-n4-VSd9dj=KXS4WRDrPmKOShAwP9tCfCZnk+4kxW-w@mail.gmail.com>
- <20201202001302.GB3968963@google.com>
- <CALAqxLVBRPOCwLU1iY44Nh1-SpDpsfMz+2c1XRX2WofkpjrhcQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EkXu9Ed2ybTkQIgVvwvasBTjLGza95sliHnsICJRQMI=;
+        b=g3cEZBg7RMlJAnxKv28yfXzOspvJCIEGmowWkgML0u58gDtnRdITP/8dy7yTz9AAXF
+         EFQRfyB67xjIRBm3Oyh8tWGvK5NHbe1b98rliPxwKKj36AUb2khu1Jq0kpNcuYAIaTUv
+         imDISyMi4nK02jC2s6qbD0YTcDOG4camkxSRSwO96APGNUZPDVWp+H/cDJkkj3ye6PDn
+         gwhrBtHBypd0URIhJqHaGhR+AoCyuQmrbzXDI37F0uOM5vucX8/iDV/x7mUfOD/0N2Ca
+         n7XLl4dkZ5XMuOq5ud4Z27OQ4bxydrOrWfdd/WlK+llaRuEnqos6wW08veVZ2cIcKAiE
+         oAnw==
+X-Gm-Message-State: AOAM530Q8aTeEASwzuD3INyFvsFST1gKHzBBR6QbEVVFoQEiTdnOgLnB
+        njKGNWtT0wfDCL9ZREffFd24oypsOsbWxeIbbOWbi/85esw=
+X-Google-Smtp-Source: ABdhPJwY+6CigAXZX+nJC0LAa7eq3iVaNZOpXH+UfMu4jd1PQoFZEPb4Mv305HMDsPvjUB2RBiZwRedhRFCmJFTeSgo=
+X-Received: by 2002:a25:3d7:: with SMTP id 206mr102999ybd.27.1606870690253;
+ Tue, 01 Dec 2020 16:58:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALAqxLVBRPOCwLU1iY44Nh1-SpDpsfMz+2c1XRX2WofkpjrhcQ@mail.gmail.com>
+References: <20201126165748.1748417-1-revest@google.com> <20201126165748.1748417-2-revest@google.com>
+In-Reply-To: <20201126165748.1748417-2-revest@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 1 Dec 2020 16:57:59 -0800
+Message-ID: <CAEf4Bzauq=fRxPWRQq6wk9f_LGR6iayr96Fg-hzVB2gL6Pm8=Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add bpf_kallsyms_lookup test
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 04:33:14PM -0800, John Stultz wrote:
-> On Tue, Dec 1, 2020 at 4:13 PM Minchan Kim <minchan@kernel.org> wrote:
-> >
-> > On Tue, Dec 01, 2020 at 03:38:14PM -0800, John Stultz wrote:
-> > > On Tue, Dec 1, 2020 at 2:55 PM Minchan Kim <minchan@kernel.org> wrote:
-> > > > On Tue, Dec 01, 2020 at 11:48:15AM -0800, John Stultz wrote:
-> > > > > On Tue, Dec 1, 2020 at 9:51 AM Minchan Kim <minchan@kernel.org> wrote:
-> > > > >
-> > > > > Thanks for reworking and resending this!
-> > > > >
-> > > > > ...
-> > > > > > +static int __init chunk_heap_init(void)
-> > > > > > +{
-> > > > > > +       struct cma *default_cma = dev_get_cma_area(NULL);
-> > > > > > +       struct dma_heap_export_info exp_info;
-> > > > > > +       struct chunk_heap *chunk_heap;
-> > > > > > +
-> > > > > > +       if (!default_cma)
-> > > > > > +               return 0;
-> > > > > > +
-> > > > > > +       chunk_heap = kzalloc(sizeof(*chunk_heap), GFP_KERNEL);
-> > > > > > +       if (!chunk_heap)
-> > > > > > +               return -ENOMEM;
-> > > > > > +
-> > > > > > +       chunk_heap->order = CHUNK_HEAP_ORDER;
-> > > > > > +       chunk_heap->cma = default_cma;
-> > > > > > +
-> > > > > > +       exp_info.name = cma_get_name(default_cma);
-> > > > >
-> > > > > So, this would create a chunk heap name with the default CMA name,
-> > > > > which would be indistinguishable from the heap name used for the plain
-> > > > > CMA heap.
-> > > > >
-> > > > > Probably a good idea to prefix it with "chunk-" so the heap device
-> > > > > names are unique?
-> > > >
-> > > > That will give an impression to user that they are using different CMA
-> > > > area but that's not true. IMHO, let's be honest at this moment.
-> > >
-> > > I disagree.  The dmabuf heaps provide an abstraction for allocating a
-> > > type of memory, and while your heap is pulling from CMA, you aren't
-> > > "just" allocating CMA as the existing CMA heap would suffice for that.
-> > >
-> > > Since you need a slightly different method to allocate high order
-> > > pages in bulk, we really should have a unique way to name the
-> > > allocator interface. That's why I'd suggest the "chunk-" prefix to the
-> > > heap name.
-> >
-> > Got it. How about this?
-> >
-> > diff --git a/drivers/dma-buf/heaps/chunk_heap.c b/drivers/dma-buf/heaps/chunk_heap.c
-> > index 0277707a93a9..36e189d0b73d 100644
-> > --- a/drivers/dma-buf/heaps/chunk_heap.c
-> > +++ b/drivers/dma-buf/heaps/chunk_heap.c
-> > @@ -410,7 +410,7 @@ static int __init chunk_heap_init(void)
-> >         chunk_heap->order = CHUNK_HEAP_ORDER;
-> >         chunk_heap->cma = default_cma;
-> >
-> > -       exp_info.name = cma_get_name(default_cma);
-> > +       exp_info.name = "cma-chunk-heap";
-> 
-> That's still a bit general for the default cma (which can be named
-> differently). I think including cma name is important, just adding the
-> chunk prefix might be best.
-> 
-> So something like
->   sprintf(buf, "chunk-%s", cma_get_name(default_cma));
->   exp_info.name = buf;
+On Thu, Nov 26, 2020 at 8:59 AM Florent Revest <revest@chromium.org> wrote:
+>
+> This piggybacks on the existing "ksyms" test because this test also
+> relies on a __ksym symbol and requires CONFIG_KALLSYMS.
+>
+> Signed-off-by: Florent Revest <revest@google.com>
+> ---
+>  tools/testing/selftests/bpf/config            |  1 +
+>  .../testing/selftests/bpf/prog_tests/ksyms.c  | 46 ++++++++++++++++++-
+>  .../bpf/progs/test_kallsyms_lookup.c          | 38 +++++++++++++++
+>  3 files changed, 84 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c
+>
+> diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+> index 365bf9771b07..791a46e5d013 100644
+> --- a/tools/testing/selftests/bpf/config
+> +++ b/tools/testing/selftests/bpf/config
+> @@ -43,3 +43,4 @@ CONFIG_IMA=y
+>  CONFIG_SECURITYFS=y
+>  CONFIG_IMA_WRITE_POLICY=y
+>  CONFIG_IMA_READ_POLICY=y
+> +CONFIG_KALLSYMS=y
 
-No problem. Will do that in respoin.
-Other than that, can you give any Acked-by or Reviewed-by to save
-iteration?
+it's already a requirement, but good to codify it ;)
+
+> diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms.c b/tools/testing/selftests/bpf/prog_tests/ksyms.c
+> index b295969b263b..0478b67a92ae 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/ksyms.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/ksyms.c
+> @@ -3,11 +3,12 @@
+>
+>  #include <test_progs.h>
+>  #include "test_ksyms.skel.h"
+> +#include "test_kallsyms_lookup.skel.h"
+>  #include <sys/stat.h>
+>
+>  static int duration;
+>
+> -void test_ksyms(void)
+> +void test_ksyms_variables(void)
+
+now it should be static
+
+>  {
+>         const char *btf_path = "/sys/kernel/btf/vmlinux";
+>         struct test_ksyms *skel;
+> @@ -59,3 +60,46 @@ void test_ksyms(void)
+>  cleanup:
+>         test_ksyms__destroy(skel);
+>  }
+> +
+> +void test_kallsyms_lookup(void)
+
+static
+
+> +{
+> +       struct test_kallsyms_lookup *skel;
+> +       int err;
+> +
+> +       skel = test_kallsyms_lookup__open_and_load();
+> +       if (CHECK(!skel, "skel_open", "failed to open and load skeleton\n"))
+> +               return;
+> +
+> +       err = test_kallsyms_lookup__attach(skel);
+> +       if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
+> +               goto cleanup;
+> +
+> +       /* trigger tracepoint */
+> +       usleep(1);
+> +
+> +       CHECK(strcmp(skel->bss->name, "schedule"), "name",
+> +             "got \"%s\", exp \"schedule\"\n", skel->bss->name);
+
+there is ASSERT_STREQ() that does this nicely and succinctly
+
+
+> +       CHECK(strcmp(skel->bss->name_truncated, "sched"), "name_truncated",
+> +             "got \"%s\", exp \"sched\"\n", skel->bss->name_truncated);
+> +       CHECK(strcmp(skel->bss->name_invalid, ""), "name_invalid",
+> +             "got \"%s\", exp \"\"\n", skel->bss->name_invalid);
+> +       CHECK(strcmp(skel->bss->module_name, ""), "module_name",
+> +             "got \"%s\", exp \"\"\n", skel->bss->module_name);
+> +       CHECK(skel->bss->schedule_ret != 9, "schedule_ret",
+> +             "got %d, exp 0\n", skel->bss->schedule_ret);
+> +       CHECK(skel->bss->sched_ret != 9, "sched_ret",
+> +             "got %d, exp 0\n", skel->bss->sched_ret);
+> +       CHECK(skel->bss->invalid_ret != -EINVAL, "invalid_ret",
+> +             "got %d, exp %d\n", skel->bss->invalid_ret, -EINVAL);
+> +
+> +cleanup:
+> +       test_kallsyms_lookup__destroy(skel);
+> +}
+> +
+> +void test_ksyms(void)
+> +{
+> +       if (test__start_subtest("ksyms_variables"))
+> +               test_ksyms_variables();
+> +       if (test__start_subtest("kallsyms_lookup"))
+> +               test_kallsyms_lookup();
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c b/tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c
+> new file mode 100644
+> index 000000000000..4f15f1527ab4
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c
+> @@ -0,0 +1,38 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2020 Google LLC. */
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +extern const void schedule __ksym;
+> +
+> +#define SYMBOL_NAME_LEN                        10
+> +char name[SYMBOL_NAME_LEN];
+> +char name_invalid[SYMBOL_NAME_LEN];
+> +
+> +#define SYMBOL_TRUNCATED_NAME_LEN      6
+> +char name_truncated[SYMBOL_TRUNCATED_NAME_LEN];
+> +
+> +#define MODULE_NAME_LEN                        64
+> +char module_name[MODULE_NAME_LEN];
+> +
+> +long schedule_ret;
+> +long sched_ret;
+> +long invalid_ret;
+
+= 0 or = {} for all the variables
+
+> +
+> +SEC("raw_tp/sys_enter")
+> +int handler(const void *ctx)
+> +{
+> +       schedule_ret = bpf_kallsyms_lookup((__u64)&schedule,
+> +                                          name, SYMBOL_NAME_LEN,
+> +                                          module_name, MODULE_NAME_LEN);
+> +       invalid_ret = bpf_kallsyms_lookup(0,
+> +                                         name_invalid, SYMBOL_NAME_LEN,
+> +                                         module_name, MODULE_NAME_LEN);
+> +       sched_ret = bpf_kallsyms_lookup((__u64)&schedule, name_truncated,
+> +                                       SYMBOL_TRUNCATED_NAME_LEN,
+> +                                       module_name, MODULE_NAME_LEN);
+> +       return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> --
+> 2.29.2.454.gaff20da3a2-goog
+>
