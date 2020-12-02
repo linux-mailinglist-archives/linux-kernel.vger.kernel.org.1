@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C738C2CC9AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E93512CC9B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728637AbgLBWfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 17:35:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33658 "EHLO
+        id S2387547AbgLBWhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 17:37:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbgLBWfd (ORCPT
+        with ESMTP id S1726120AbgLBWhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 17:35:33 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252B7C0617A7
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 14:34:53 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id i38so163181pgb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 14:34:53 -0800 (PST)
+        Wed, 2 Dec 2020 17:37:03 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D8FCC0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 14:36:23 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id l7so4337qtp.8
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 14:36:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Yj9uJKclERcz+3dgssLnxEsO561b5XP4e0V1kaqzzHU=;
-        b=DeLWj512JCeqOATOifyLs3tV6W2ShtE1ozKCsCMSU6b/dQCrePNDDDeloHg6HKDTOn
-         1tXXfhZpOM/qfpu/4uKGDZMdpt5+G1ACRIweOcs/IRUi1XkMbPofQLszlPUQOXU20LIa
-         Mx+8bJ0ThXdxQoCDmjayo7oGrdsQBjuo4jxBM5pE5LAc9xLqX+4aelFrlcETUey4cPYf
-         hmyloKX82XTEqwlYl+6VSFyn/0LCFwvTILiXeQeA3DO6PpzpRTalSglVTGDaojWaoh6w
-         +nrj9HgM0DemgHvCXLIJZAWbPpx3SFiT199P0bSAaXdge0N4Jj5mWI0x97sLV553ptbE
-         h3zw==
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rEgjTrC4/7Dg+sZl+wutgQTsmbE4uA5QTf2cc78ka1U=;
+        b=foF+Q3QP29t9e2jf+X6vXvk1f2cC0DDaW5JZAEO7iWSDzpqUMI5rJ0SqZyroucEba5
+         38R96K/QNhl5f4LKJg3339q6ipIrod01A5aZekPnTmOPOuM1wTqZIKk3QmaZAQv4aTzj
+         6HyMhTIWdySLvJXysx9CEDPGlfU+qUHMPstSY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yj9uJKclERcz+3dgssLnxEsO561b5XP4e0V1kaqzzHU=;
-        b=ManvQl2w9uxk9Z2kwL58bMBPtSp3U1RDRktTdK+P78z6c8KHvfpVU3MyeNcsYzlV5f
-         lrdArYvjzntsebQijrLMEgA+eCD5GcUENY1pWqlkYNUoZOZG+zZye6O0sn3wIRykujCx
-         wdbVe3rvlaFo9ACTtWBfhOJZbZMli2xUHsWuOEVsAGc5MlxqOIj/rDkn5C/w+qzYOIpQ
-         bkzN2l/ILhJ5YgrgTjmPCdovJm7UVtAOjhMnTa9i3s51nu6FI+o4+MS5F+rxqv7E/KIo
-         gg/e4hKVtD4/Fjrd0/vyR4pb9qIwbCc7m5HgmZUnXGPU1qmkrbqYUt/q7/6On8+nk5H5
-         w4Jw==
-X-Gm-Message-State: AOAM531PnpasLOqMCTjopXa5BCrVLQjj0g+nPmLRiw/p4XNvp2qN+ny7
-        AgPuJvaidD5LW7i7BRUyIw+J1w7C/uDO5flV4740PA==
-X-Google-Smtp-Source: ABdhPJwk9EgW3Fj29T0FZY+jliaMst7k9i/OfQ+jUCLl2350gsCT+2SSH1KV/nTldfxvpeHL5TQcjXv3gozBbabP5u4=
-X-Received: by 2002:a63:3247:: with SMTP id y68mr437000pgy.10.1606948492350;
- Wed, 02 Dec 2020 14:34:52 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rEgjTrC4/7Dg+sZl+wutgQTsmbE4uA5QTf2cc78ka1U=;
+        b=ukwQ2e+DmTN6MrG+ebvuuFHmXkToKG9LY6aMWYSu6SMJND0A0BB670BA6VIoqvZTUg
+         FN6OpUZxRMc8yITPW4oASxa0Yg88u/yeQwc2t4AJSuzkDY+nK/FXLduWOd7Yo6C/tBq7
+         XDCMBDTGmBM09+w8wes7+y7s3e32ZtwToq1ZTxroCN24Rvalh5EkyvfIwCqPBn+Wn89Q
+         /MSwmMUReVgxgpIH8qmchthVLK8cCLlIEw0xdhgo2c80musIPwC33uHUUsUGNFI2B+Jt
+         YGpNcRthwvsmVDwHKU0trrf5r04/bfHn96r0dgsPZmhoTxTOtuXUyCojkJqpqcVVl9wE
+         d1Vw==
+X-Gm-Message-State: AOAM5327dj+IjPJ3du3mRTAySK2Ak7qOt95OgkMuOlHoQgCypWlD0KPd
+        U5WHxqm3eoBRQx6iYtzEe1arZQ==
+X-Google-Smtp-Source: ABdhPJyI4yPZNzsR5isJ019HapY5IROtZAK3TkB8eEunM1WZQecxkj1YlA7KzS0gMydSojFJIpJFaQ==
+X-Received: by 2002:ac8:4554:: with SMTP id z20mr416668qtn.330.1606948582608;
+        Wed, 02 Dec 2020 14:36:22 -0800 (PST)
+Received: from chatter.i7.local ([89.36.78.230])
+        by smtp.gmail.com with ESMTPSA id x21sm42077qkx.31.2020.12.02.14.36.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 14:36:22 -0800 (PST)
+Date:   Wed, 2 Dec 2020 17:36:20 -0500
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pstore: Move kmsg_bytes default into Kconfig
+Message-ID: <20201202223620.hlsvm2gnjm2zs5ox@chatter.i7.local>
+References: <20201201201234.137572-1-keescook@chromium.org>
+ <20201202214257.36wf5a4ui2axr3es@chatter.i7.local>
+ <202012021427.3E12CABB@keescook>
 MIME-Version: 1.0
-References: <20201107075550.2244055-1-ndesaulniers@google.com>
- <4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com>
- <CAKwvOdn50VP4h7tidMnnFeMA1M-FevykP+Y0ozieisS7Nn4yoQ@mail.gmail.com> <26052c5a0a098aa7d9c0c8a1d39cc4a8f7915dd2.camel@perches.com>
-In-Reply-To: <26052c5a0a098aa7d9c0c8a1d39cc4a8f7915dd2.camel@perches.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 2 Dec 2020 14:34:40 -0800
-Message-ID: <CAKwvOdkv6W_dTLVowEBu0uV6oSxwW8F+U__qAsmk7vop6U8tpw@mail.gmail.com>
-Subject: Re: [PATCH] netfilter: conntrack: fix -Wformat
-To:     Joe Perches <joe@perches.com>, Tom Rix <trix@redhat.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202012021427.3E12CABB@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 2:04 PM Joe Perches <joe@perches.com> wrote:
->
-> On Tue, 2020-11-10 at 14:00 -0800, Nick Desaulniers wrote:
->
-> > Yeah, we could go through and remove %h and %hh to solve this, too, right?
->
-> Yup.
->
-> I think one of the checkpatch improvement mentees is adding
-> some suggestion and I hope an automated fix mechanism for that.
->
-> https://lore.kernel.org/lkml/5e3265c241602bb54286fbaae9222070daa4768e.camel@perches.com/
+On Wed, Dec 02, 2020 at 02:30:08PM -0800, Kees Cook wrote:
+> > Did you use the sendemail-validate hook for this?
+> 
+> In my scripts right now, I'm doing this before "git send-email":
+> 
+> # Construct header-based attestations
+> b4 attest outgoing/*
+> 
+> I haven't yet converted to using the git hook.
 
-+ Tom, who's been looking at leveraging clang-tidy to automate such
-treewide mechanical changes.
-ex. https://reviews.llvm.org/D91789
+You don't have to if you're already using wrapper scripts. It's more 
+useful for folks who call git-send-email directly and don't want to 
+remember to call "b4 attest" first.
 
-See also commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging
-use of unnecessary %h[xudi] and %hh[xudi]") for a concise summary of
-related context.
--- 
-Thanks,
-~Nick Desaulniers
+Best regards,
+-K
