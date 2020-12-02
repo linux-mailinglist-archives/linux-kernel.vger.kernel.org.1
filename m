@@ -2,167 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EAE2CC95B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B07682CC973
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727185AbgLBWKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 17:10:34 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27854 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726032AbgLBWKe (ORCPT
+        id S1727157AbgLBWST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 17:18:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgLBWST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 17:10:34 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2M2nsS158328;
-        Wed, 2 Dec 2020 17:09:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=xOYcIgHRxpLn8jOA98hLWOaGUzeQ/EDE9H3coqngL2E=;
- b=S5rUwgl5WvVo0v6flhO4nvx5J6HMurIfIkARfcNCGcYkY9q3z1Q9CNq5MzBrb4iMrcpB
- CwY4FtIFGZ78HKwNrrHQKlpdvEJKTph3aoceWkLJYsuG+m0B+r3FlHoFWjkngwJ0ttV6
- HdDrAtV5L2fDJjLgJtm+VBq8x1VJYfPHP+nl5UnDAt9+16Dx6TapND06jkbn555mXGou
- cUoz4twhEpo0dxsg7Ss4gSzf/jdQnC6f2zDdPPZAvLqKHZuR0z3o6qIMHbR67Y5IILue
- elGurBCukrpfEf/Yongtn0M7NL4ESLkJBssmz0C8VgXeW7wQ9+TM/Qg3U8Uz2/BcQtch jg== 
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 356a0vjxqc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 17:09:46 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2M7Ul4029871;
-        Wed, 2 Dec 2020 22:09:45 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma04wdc.us.ibm.com with ESMTP id 354ysumrku-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 22:09:45 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2M9i5j9306800
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Dec 2020 22:09:44 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8A6FB1120B8;
-        Wed,  2 Dec 2020 22:09:44 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 320581120B5;
-        Wed,  2 Dec 2020 22:09:43 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Dec 2020 22:09:43 +0000 (GMT)
-Subject: Re: [PATCH v2 15/17] ibmvfc: send Cancel MAD down each hw scsi
- channel
-To:     Brian King <brking@linux.vnet.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201202005329.4538-1-tyreld@linux.ibm.com>
- <20201202005329.4538-16-tyreld@linux.ibm.com>
- <21a7c970-2184-0524-5b42-1920eaa422a2@linux.vnet.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <0e1760c8-ced0-cd50-391f-29a5a9ea340a@linux.ibm.com>
-Date:   Wed, 2 Dec 2020 14:09:42 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 2 Dec 2020 17:18:19 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C119C0613D6;
+        Wed,  2 Dec 2020 14:17:17 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id d20so7164469lfe.11;
+        Wed, 02 Dec 2020 14:17:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+8RFjtKUiIjNnb5VO+rcGuBrmv97T7eSoiGm8pbdxuA=;
+        b=kPH0A5Lwx1OV8ztUGsOh6sE0boMbEMNwgz+Z54Ddw27NRYo7je4wvbFtPgDXgMMuW9
+         eoUpmYf6rCiWkn/RfpGWeroVmoTagqbxoYw9Od0ombcCsthN41c9Q1F6Ap8LG0m9fpZg
+         00gmtsAua5pz9UVZvbomNnW8zOJVCh11vH3/lMWz7Vbl8SQEIu2gvTMovNL/OnJB5zWo
+         LBHS4fHI3tTug8HuTMglpIaQb4VFC3mxUuGhVht+B8QU+WqiJ5Hqz98HhWN45qOCz9Nk
+         mX8FHgBvH/ny9ulomdvwDKQEAmpQcrrwWVq0jmuEFbuC9g4vLwB4uPx7eFUwztDy127n
+         rU4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+8RFjtKUiIjNnb5VO+rcGuBrmv97T7eSoiGm8pbdxuA=;
+        b=OGz9BiAXKr9+cVYrW2Rvg+OnL5IuJE0M4nOqE7tmqwsO8wYsYl0ZSyXMLarbYCVFLM
+         2nAoynLpYlVm/PVUerDaZ4Ki2y+lbn2M0mEvdgbMC8H4gOFpBFWpqldxPVPsqCB1uhLe
+         zpzpxA4ddG4Lpk29lWuO32yl7Fo9EC5dNycEoycMF9mUt0y6sMWKyw2Vtf46Tzn5xDyZ
+         sRa9diC2lyg0v+GsYHzwwl6GLY1zUFv9H+5ubIVOZsXKX5RuRL0FJDV+Zun/y7x2PAQo
+         e1i/RzFUvOl+VK20pCymsfQ9bhIP4pafXF48BQDlydWUUuotwghwMib+owJePy20dW2G
+         mtDg==
+X-Gm-Message-State: AOAM532BBD+pDlmFzxUxp5C+VK6W/jlBvdicte0ANXkl9AZ4jy0gVm3z
+        y0k6vpnAdsj/31SS7UIVe7DnQwqdofRfnZP2jM+FNsautls=
+X-Google-Smtp-Source: ABdhPJzXPlem96N8CGl+5TGHZdaobIpGTmbeYXJ8t4Vz46E3a44IVnJ1GfUmsaQtj0yryhT0CNzM53/t86XIaLdhfqk=
+X-Received: by 2002:ac2:5e91:: with SMTP id b17mr82021lfq.442.1606947410190;
+ Wed, 02 Dec 2020 14:16:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <21a7c970-2184-0524-5b42-1920eaa422a2@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-02_13:2020-11-30,2020-12-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 adultscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0
- phishscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020134
+References: <1606909661-3814-1-git-send-email-bongsu.jeon@samsung.com>
+ <1606909661-3814-2-git-send-email-bongsu.jeon@samsung.com> <20201202171638.GA2778@kozik-lap>
+In-Reply-To: <20201202171638.GA2778@kozik-lap>
+From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
+Date:   Thu, 3 Dec 2020 07:16:38 +0900
+Message-ID: <CACwDmQD8dFCd2u=BnL8VrzQ=NuPYA9z44uBJsKSaUN5yR4R8Mw@mail.gmail.com>
+Subject: Re: [PATCH v5 net-next 1/4] dt-bindings: net: nfc: s3fwrn5: Support a
+ UART interface
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bongsu Jeon <bongsu.jeon@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/20 10:27 AM, Brian King wrote:
-> On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
->> In general the client needs to send Cancel MADs and task management
->> commands down the same channel as the command(s) intended to cancel or
->> abort. The client assigns cancel keys per LUN and thus must send a
->> Cancel down each channel commands were submitted for that LUN. Further,
->> the client then must wait for those cancel completions prior to
->> submitting a LUN RESET or ABORT TASK SET.
->>
->> Allocate event pointers for each possible scsi channel and assign an
->> event for each channel that requires a cancel. Wait for completion each
->> submitted cancel.
->>
->> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->> ---
->>  drivers/scsi/ibmvscsi/ibmvfc.c | 106 +++++++++++++++++++++------------
->>  1 file changed, 68 insertions(+), 38 deletions(-)
->>
->> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
->> index 0b6284020f06..97e8eed04b01 100644
->> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
->> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
->> @@ -2339,32 +2339,52 @@ static int ibmvfc_cancel_all(struct scsi_device *sdev, int type)
->>  {
->>  	struct ibmvfc_host *vhost = shost_priv(sdev->host);
->>  	struct ibmvfc_event *evt, *found_evt;
->> -	union ibmvfc_iu rsp;
->> -	int rsp_rc = -EBUSY;
->> +	struct ibmvfc_event **evt_list;
->> +	union ibmvfc_iu *rsp;
->> +	int rsp_rc = 0;
->>  	unsigned long flags;
->>  	u16 status;
->> +	int num_hwq = 1;
->> +	int i;
->> +	int ret = 0;
->>  
->>  	ENTER;
->>  	spin_lock_irqsave(vhost->host->host_lock, flags);
->> -	found_evt = NULL;
->> -	list_for_each_entry(evt, &vhost->sent, queue) {
->> -		if (evt->cmnd && evt->cmnd->device == sdev) {
->> -			found_evt = evt;
->> -			break;
->> +	if (vhost->using_channels && vhost->scsi_scrqs.active_queues)
->> +		num_hwq = vhost->scsi_scrqs.active_queues;
->> +
->> +	evt_list = kcalloc(num_hwq, sizeof(*evt_list), GFP_KERNE> +	rsp = kcalloc(num_hwq, sizeof(*rsp), GFP_KERNEL);
-> 
-> Can't this just go on the stack? We don't want to be allocating memory
-> during error recovery. Or, alternatively, you could put this in the
-> vhost structure and protect it with a mutex. We only have enough events
-> to single thread these anyway.
-Yes, this could just go on the stack.
+On Thu, Dec 3, 2020 at 2:16 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Wed, Dec 02, 2020 at 08:47:38PM +0900, Bongsu Jeon wrote:
+> > From: Bongsu Jeon <bongsu.jeon@samsung.com>
+> >
+> > Since S3FWRN82 NFC Chip, The UART interface can be used.
+> > S3FWRN82 supports I2C and UART interface.
+> >
+> > Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+> > ---
+> >  .../bindings/net/nfc/samsung,s3fwrn5.yaml          | 31 +++++++++++++++++++---
+> >  1 file changed, 28 insertions(+), 3 deletions(-)
+> >
+>
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+>
+> Best regards,
+> Krzysztof
 
-> 
->> +
->> +	for (i = 0; i < num_hwq; i++) {
->> +		sdev_printk(KERN_INFO, sdev, "Cancelling outstanding commands on queue %d.\n", i);
-> 
-> Prior to this patch, if there was nothing outstanding to the device and cancel_all was called,
-> no messages would get printed. This is changing that behavior. Is that intentional? Additionally,
-> it looks like this will get a lot more vebose, logging a message for each hw queue, regardless
-> of whether there was anything outstanding. Perhaps you want to move this down to after the check
-> for !found_evt?
-
-It would actually print "no commands found to cancel". I think its fair to make
-it less verbose or at least make them dbg output for each queue.
-
--Tyrel
-
-> 
->> +
->> +		found_evt = NULL;
->> +		list_for_each_entry(evt, &vhost->sent, queue) {
->> +			if (evt->cmnd && evt->cmnd->device == sdev && evt->hwq == i) {
->> +				found_evt = evt;
->> +				break;
->> +			}
->>  		}
->> -	}
->>  
-> 
-> 
-> 
-
+Thanks a lot for advising and reviewing my patches.
