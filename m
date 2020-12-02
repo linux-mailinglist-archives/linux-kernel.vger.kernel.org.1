@@ -2,100 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456F42CBC8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C5D2CBC9C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729466AbgLBMMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:12:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49636 "EHLO
+        id S2387691AbgLBMNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:13:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728341AbgLBMMh (ORCPT
+        with ESMTP id S1729782AbgLBMNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:12:37 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812A0C0613CF;
-        Wed,  2 Dec 2020 04:11:57 -0800 (PST)
-Date:   Wed, 02 Dec 2020 12:11:53 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606911114;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KG8wQsly4u9F6yV+AsFpIO8VtDCWXKG4ZqoLK+MgegY=;
-        b=MiCZQM4gvgm/xEx+6v9BylIHZtzIqUTR2TwZhFJmDZDnUYDu0gmLNXd0kGeqVlFiunnT4y
-        vqqT5BczqqUxeC62ZfjvRBjAKQgBjVIQ2cwQRSq1d+AWKGCU8+kgp7XAM/7BIgEBv9NYRs
-        iIFpTKGfnhaZMn0bif4SvnU8OYWHMgVWepIWH2VooORm0RAz+dMa2yByvUkxIStkvdTzv8
-        r5tvoNmlzOgZ0ZCMLe1YLl5xcHvxSX6LlmQpTTh5U/AFRG6FWbL4Tgy7yp2kWg46foydWf
-        wh1TsfEgTsQROSP7yh34UAZcA6P4Vz2UJM/DT2qSdZ/D3zEiQvYXjhvVaMcvkw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606911114;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KG8wQsly4u9F6yV+AsFpIO8VtDCWXKG4ZqoLK+MgegY=;
-        b=oJ6aiVfFWousKKB3U4Ab5hBZJp1A8qT/lxyHUk7eQXWGpqJKORGONbhQymuyaF7TG7bJRc
-        Fs2Rwp5Ge0ul6EBA==
-From:   "tip-bot2 for Mauro Carvalho Chehab" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] x86/sgx: Fix a typo in kernel-doc markup
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3Cca11a4540d981cbd5f026b6cbc8931aa55654e00=2E16068?=
- =?utf-8?q?97462=2Egit=2Emchehab+huawei=40kernel=2Eorg=3E?=
-References: =?utf-8?q?=3Cca11a4540d981cbd5f026b6cbc8931aa55654e00=2E160689?=
- =?utf-8?q?7462=2Egit=2Emchehab+huawei=40kernel=2Eorg=3E?=
+        Wed, 2 Dec 2020 07:13:46 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C18CC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 04:13:06 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id w4so947454pgg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 04:13:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gp7OBeckObEgqLXot5tReJPINojYUVXrHZXsw2+DdVs=;
+        b=S+x+hrvSq8+FsG0N0ZpBBOp/+ZOEcsOAd4JxmnltPmidpae39le5gXRSI6ii1msQx+
+         irfnV8HBTNsjin69TVgL4F3t+HkCJoSpbjh858itEbjZl4b+7G1HwvqoJ9Ml4+gQI/44
+         JIHwNAcXKSB19C1XVqn6VD54RFJYuCsZNlGcc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gp7OBeckObEgqLXot5tReJPINojYUVXrHZXsw2+DdVs=;
+        b=Q8wlKkT2hZO3nZr3Qe5koT2ATXMvDI/OtBzz59Hy6pC8RF8urj2jFgbxkPRm9lhFrO
+         pkD1/YmxYlFyT+mvIbOXptH+JlYZnLtRcq89rGq2hPLLYI3eMgSeGfAz5dbVdtIOwDI1
+         4/3XMUOvmNiKlTIMfnwwMl11dKOnEl6cKpiawWojWswvnTNclmwux0u5Bwv1nNuKjrI9
+         6VbcJ5/MmasC9t2+pt21R4FXkz1Tev4MhljM3NDql52lXny94QTPDUvy2rayOHVWrxZg
+         qagzcIWx1vgHYP4Pi392M5oUu/H+lemBmdSUS7QmuhdTo05lvcZ/66MX6QpziRllNLri
+         YTVw==
+X-Gm-Message-State: AOAM532xK4ngbgdJYr0zIi9Le6Hc7+LwWDQd5jjjrkBLpKIlDGcD3UG3
+        WzR5BTWJBl83RwU4YzwUn3D+Gg==
+X-Google-Smtp-Source: ABdhPJynZGzpV+BlMkL+sP9mtfxTqMKDKQbHTbkuZpxMBVz5mW+Z+7W6LHvV5fbvSa03YyF6aTCRKA==
+X-Received: by 2002:a63:5417:: with SMTP id i23mr2344870pgb.433.1606911185632;
+        Wed, 02 Dec 2020 04:13:05 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:c00a:a884:fd53:e9ba:b313:1b1d])
+        by smtp.gmail.com with ESMTPSA id b37sm1951315pgl.31.2020.12.02.04.13.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 04:13:04 -0800 (PST)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>
+Cc:     Matteo Lisi <matteo.lisi@engicam.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-amarula@amarulasolutions.com,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH 00/10] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini
+Date:   Wed,  2 Dec 2020 17:42:31 +0530
+Message-Id: <20201202121241.109952-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <160691111323.3364.16384786016052912723.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sgx branch of tip:
+This is the initial series to support Engicam i.Core MX8M Mini SOM
+and it's associated carrier board dts(i) support.
 
-Commit-ID:     bab8c183d1d452f5fdc059aef2f0788bd2986231
-Gitweb:        https://git.kernel.org/tip/bab8c183d1d452f5fdc059aef2f0788bd2986231
-Author:        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-AuthorDate:    Wed, 02 Dec 2020 09:27:14 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 02 Dec 2020 12:54:47 +01:00
+Add minimal changes to access and boot SD, eMMC, and the rest of 
+the changes added in the coming days.
 
-x86/sgx: Fix a typo in kernel-doc markup
+i.Core MX8M Mini is an EDIMM SOM based on NXP i.MX8MM from Engicam.
 
-Fix the following kernel-doc warning:
+i.Core MX8M Mini needs to mount on top of Engicam baseboards for
+creating complete platform boards.
 
-  arch/x86/include/uapi/asm/sgx.h:19: warning: expecting prototype \
-    for enum sgx_epage_flags. Prototype was for enum sgx_page_flags instead
+Possible baseboards are,
+- EDIMM2.2
+- C.TOUCH 2.0
+- C.TOUCH 2.0 10.1" Open Frame
 
- [ bp: Launder the commit message. ]
+Engicam i.Core MX8MM has PF8X00 PMIC and which is merged in linux-next,
+https://lore.kernel.org/linux-devicetree/20201130112329.104614-2-jagan@amarulasolutions.com
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/ca11a4540d981cbd5f026b6cbc8931aa55654e00.1606897462.git.mchehab+huawei@kernel.org
----
- arch/x86/include/uapi/asm/sgx.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Any inputs?
+Jagan.
 
-diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
-index 791e453..9034f30 100644
---- a/arch/x86/include/uapi/asm/sgx.h
-+++ b/arch/x86/include/uapi/asm/sgx.h
-@@ -9,7 +9,7 @@
- #include <linux/ioctl.h>
- 
- /**
-- * enum sgx_epage_flags - page control flags
-+ * enum sgx_page_flags - page control flags
-  * %SGX_PAGE_MEASURE:	Measure the page contents with a sequence of
-  *			ENCLS[EEXTEND] operations.
-  */
+Jagan Teki (10):
+  arm64: defconfig: Enable REGULATOR_PF8X00
+  dt-bindings: arm: fsl: Add Engicam i.Core MX8M Mini EDIMM2.2 Starter Kit
+  arm64: dts: imx: Add Engicam EDIMM2.2 Starter Kit
+  arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini SOM
+  arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini EDIMM2.2 Starter Kit
+  arm64: dts: imx: Add Engicam C.TOUCH 2.0
+  dt-bindings: arm: fsl: Add Engicam i.Core MX8M Mini C.TOUCH 2.0
+  arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini C.TOUCH 2.0
+  dt-bindings: arm: fsl: Add Engicam i.Core MX8M Mini C.TOUCH 2.0 10.1" OF
+  arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini C.TOUCH 2.0 10.1" OF
+
+ .../devicetree/bindings/arm/fsl.yaml          |   4 +
+ arch/arm64/boot/dts/freescale/Makefile        |   3 +
+ .../dts/freescale/imx8mm-engicam-common.dtsi  |  24 ++
+ .../dts/freescale/imx8mm-engicam-ctouch2.dtsi |   7 +
+ .../freescale/imx8mm-engicam-edimm2.2.dtsi    |   7 +
+ ...mx8mm-engicam-icore-mx8mm-ctouch2-of10.dts |  21 ++
+ .../imx8mm-engicam-icore-mx8mm-ctouch2.dts    |  21 ++
+ .../imx8mm-engicam-icore-mx8mm-edimm2.2.dts   |  21 ++
+ .../freescale/imx8mm-engicam-icore-mx8mm.dtsi | 209 ++++++++++++++++++
+ arch/arm64/configs/defconfig                  |   1 +
+ 10 files changed, 318 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-common.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-ctouch2.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2-of10.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-edimm2.2.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm.dtsi
+
+-- 
+2.25.1
+
