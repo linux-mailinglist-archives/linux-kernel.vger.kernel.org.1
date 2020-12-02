@@ -2,125 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456B32CB602
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C262CB5FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728849AbgLBH4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:56:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgLBH4i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:56:38 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815EAC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 23:55:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=H2WKhUPCiAxV/zU7tZhzPn1+a6z3ubuLC4c5dn/7IRU=; b=vs1BP9UTQMUUZlKTDWcpx5f2bM
-        pduXMgG84yVwYMuR441VDta3T/GqywmDq0DamKT1KzE4+9L/BBjk6L2XyxcpOhPoqnGiiiMM6OoHJ
-        7sYo3gjx4QfrojS1v5bnqjmtmoNc52HMkm3utbb/UPP//WKeZlfdq0Wm5liHJyEJvkWac2MYnOZoE
-        bAvFH0dwW6lq1viGg1fR76SjZ/1vh8xgo+cy9PjlM4A60eyULasexKz18F/DPX4btWHKW5fYHitsN
-        Fbt3bqq2g9YuXL+gzs2XtxzY03V6sTTSowkdhFNM6w/cBmBoumbwyOoHF7q8/Uojz45JCfNyr0J2y
-        7Dti8I3A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkMyX-0001eI-2S; Wed, 02 Dec 2020 07:54:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BED23305C10;
-        Wed,  2 Dec 2020 08:54:47 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 956A02C83017B; Wed,  2 Dec 2020 08:54:47 +0100 (CET)
-Date:   Wed, 2 Dec 2020 08:54:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Don <joshdon@google.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>, chris.hyser@oracle.com,
-        Ben Segall <bsegall@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Oleg Rombakh <olegrom@google.com>
-Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
- cookie on fork
-Message-ID: <20201202075447.GC3021@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-23-joel@joelfernandes.org>
- <20201125111014.GS2414@hirez.programming.kicks-ass.net>
- <20201201192028.GA222419@google.com>
- <20201201193451.GY3040@hirez.programming.kicks-ass.net>
- <CABk29NvoymPokXpoLkFZPDXDM0DoCVOJNTy9qVVQsaTgcBcJNg@mail.gmail.com>
+        id S1728889AbgLBHys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:54:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726148AbgLBHyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 02:54:47 -0500
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.247
+Date:   Wed,  2 Dec 2020 08:55:15 +0100
+Message-Id: <16068957157446@kroah.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABk29NvoymPokXpoLkFZPDXDM0DoCVOJNTy9qVVQsaTgcBcJNg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 10:36:18PM -0800, Josh Don wrote:
-> On Tue, Dec 1, 2020 at 11:35 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > So I don't think that later patch is right... That is, it works, but
-> > afaict it's massive overkill.
-> >
-> >         COOKIE_CMP_RETURN(task_cookie);
-> >         COOKIE_CMP_RETURN(group_cookie);
-> >         COOKIE_CMP_RETURN(color);
-> >
-> > So if task_cookie matches, we consider group_cookie, if that matches we
-> > consider color.
-> >
-> > Now, afaict that's semantically exactly the same as just using the
-> > narrowest cookie. That is, use the task cookie if there is, and then,
-> > walking the cgroup hierarchy (up) pick the first cgroup cookie.
-> >
-> > (I don't understand the color thing, but lets have that discussion in
-> > that subthread)
-> >
-> > Which means you only need a single active cookie field.
-> >
-> > IOW, you're just making things complicated and expensive.
-> >
-> 
-> For the per-task interface, I believe we still want to prevent two
-> tasks that share a task cookie from sharing an overall cookie if they
-> are in two separately tagged groups (Joel please correct me if I'm
-> mistaken there). That's why in Joel's older patch, the overall cookie
-> was a combination of the task and group cookies.  My concern about
-> that was the potential cookie collision.
+I'm announcing the release of the 4.4.247 kernel.
 
-Then disallow sharing a task cookie when the tasks are in different
-cgroups or disallow cgroup movement when they share a cookie.
+All users of the 4.4 kernel series must upgrade.
+
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                                  |    2 -
+ arch/x86/kernel/cpu/bugs.c                |    4 +-
+ arch/x86/xen/spinlock.c                   |   12 +++++++-
+ drivers/dma/pl330.c                       |    2 -
+ drivers/hid/hid-cypress.c                 |   44 ++++++++++++++++++++++++++----
+ drivers/hid/hid-ids.h                     |    2 +
+ drivers/hid/hid-sensor-hub.c              |    3 +-
+ drivers/infiniband/hw/mthca/mthca_cq.c    |   10 ++++--
+ drivers/input/serio/i8042.c               |   12 +++++++-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |    3 +-
+ drivers/nfc/s3fwrn5/i2c.c                 |    4 +-
+ drivers/scsi/libiscsi.c                   |   23 ++++++++++-----
+ drivers/scsi/ufs/ufshcd.c                 |    6 ----
+ drivers/target/iscsi/iscsi_target.c       |   17 ++++++++---
+ drivers/usb/core/config.c                 |   11 +++++++
+ drivers/usb/core/devio.c                  |    4 +-
+ drivers/usb/core/quirks.c                 |   38 +++++++++++++++++++++++++
+ drivers/usb/core/usb.h                    |    3 ++
+ drivers/video/fbdev/hyperv_fb.c           |    7 ++++
+ fs/btrfs/inode.c                          |   41 ++++++++++++++++++++++-----
+ fs/btrfs/qgroup.c                         |    2 -
+ fs/btrfs/tests/inode-tests.c              |    1 
+ fs/btrfs/volumes.c                        |    7 ++++
+ fs/efivarfs/inode.c                       |    2 +
+ fs/efivarfs/super.c                       |    1 
+ fs/proc/self.c                            |    7 ++++
+ include/linux/usb/quirks.h                |    3 ++
+ include/scsi/libiscsi.h                   |    3 ++
+ tools/perf/util/dwarf-aux.c               |    8 +++++
+ 29 files changed, 233 insertions(+), 49 deletions(-)
+
+Alan Stern (2):
+      USB: core: Change %pK for __user pointers to %px
+      USB: core: Fix regression in Hercules audio card
+
+Anand K Mistry (1):
+      x86/speculation: Fix prctl() when spectre_v2_user={seccomp,prctl},ibpb
+
+Ard Biesheuvel (1):
+      efivarfs: revert "fix memory leak in efivarfs_create()"
+
+Brian Masney (1):
+      x86/xen: don't unbind uninitialized lock_kicker_irq
+
+Dexuan Cui (1):
+      video: hyperv_fb: Fix the cache type when mapping the VRAM
+
+Filipe Manana (1):
+      btrfs: fix lockdep splat when reading qgroup config on mount
+
+Frank Yang (1):
+      HID: cypress: Support Varmilo Keyboards' media hotkeys
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.247
+
+Hans de Goede (1):
+      Input: i8042 - allow insmod to succeed on devices without an i8042 controller
+
+Jens Axboe (1):
+      proc: don't allow async path resolution of /proc/self components
+
+Johan Hovold (1):
+      USB: core: add endpoint-blacklist quirk
+
+Krzysztof Kozlowski (1):
+      nfc: s3fwrn5: use signed integer for parsing GPIO numbers
+
+Lee Duncan (1):
+      scsi: libiscsi: Fix NOP race condition
+
+Masami Hiramatsu (1):
+      perf probe: Fix to die_entrypc() returns error correctly
+
+Michael Chan (1):
+      bnxt_en: Release PCI regions when DMA mask setup fails during probe.
+
+Mike Christie (1):
+      scsi: target: iscsi: Fix cmd abort fabric stop race
+
+Pablo Ceballos (1):
+      HID: hid-sensor-hub: Fix issue with devices with no report ID
+
+Qu Wenruo (2):
+      btrfs: tree-checker: Enhance chunk checker to validate chunk profile
+      btrfs: inode: Verify inode mode to avoid NULL pointer dereference
+
+Stanley Chu (1):
+      scsi: ufs: Fix race between shutdown and runtime resume flow
+
+Sugar Zhang (1):
+      dmaengine: pl330: _prep_dma_memcpy: Fix wrong burst size
+
+Xiongfeng Wang (1):
+      IB/mthca: fix return value of error branch in mthca_init_cq()
+
+Zhang Changzhong (1):
+      bnxt_en: fix error return code in bnxt_init_board()
+
