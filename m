@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7C82CBA95
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F156F2CBA90
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388591AbgLBK24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:28:56 -0500
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:10129 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388076AbgLBK24 (ORCPT
+        id S1729472AbgLBK2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:28:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728555AbgLBK2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:28:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606904935; x=1638440935;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=ksleKb1avugjW4oKaHVFOB5HE573CXp6zC8n/FP+po4=;
-  b=m4bxf1zvG/1QxGEKKCzE8lYcXjzjfCumvpe60DGW2LW2ZpSCkXHIVtbw
-   tI++LuVtGibXqMuPrTC5itZ/T1zlVCak24sXMv4Hw+2vrLjr/L7BFMnPc
-   oRz0rp5xKp0eqhaa37IKJAZK5j5lhjZXNqVHYWnyw61ct3c89lC3kI06h
-   cQjHUu2zL4RftUqS0haVuLOuJP+/80WEkAa6GbYS+vQ2DF9YZ7Z8zpJqZ
-   NWlvVQCXgXbml2FmsjSkBfocHmEfkQnxZ5M2ogb5V5WTKxHFVYula2vzk
-   Zno+E1L/d8eWKw6eCMHeJ0/IwEx6xmmNGjRRb04NrPlmRFQOD7+fMIs35
-   w==;
-IronPort-SDR: l53MgwORql/xWR6jYqLcu8d/dtPfsPaCpd0bcIWfhP5FaL3KCsLWQczW7Z9BfVpyydrvhrR3FG
- 2PyQLzcN/vikE4k+FU4wpe3s6+H5kq3ratEVnI22IPSl4ak9Pr0Q3SPxhsg6Rzk+aAa4MQTlND
- +lw5pYxZzviPcFMVYqgbFGBOC9AwEe3AvUrw+bHUYIsNDdxU0j9Az9MVrGcoZp0lSaR9jNZfZZ
- LksqNJxiTns3YDgGi8GtIYJJXC+N6EvKgc4Ldb9v0TOvS1sZZzSi/Z9miYmZSI8qm3pRzROG+v
- VXg=
-X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="101103057"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Dec 2020 03:27:50 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 2 Dec 2020 03:27:50 -0700
-Received: from [10.171.246.74] (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 2 Dec 2020 03:27:47 -0700
-Subject: Re: [PATCH 2/2] ARM: dts: at91: sama5d2: map securam as device
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        <robh+dt@kernel.org>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>
-CC:     <sandeepsheriker.mallikarjun@microchip.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1606903025-14197-1-git-send-email-claudiu.beznea@microchip.com>
- <1606903025-14197-3-git-send-email-claudiu.beznea@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <c27ce6d6-ee64-af8b-7cd7-2f263653b5f9@microchip.com>
-Date:   Wed, 2 Dec 2020 11:27:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 2 Dec 2020 05:28:44 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31FDC0613CF;
+        Wed,  2 Dec 2020 02:28:04 -0800 (PST)
+Date:   Wed, 02 Dec 2020 10:28:02 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606904883;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GZJQsQNhrH/5pVvSDLr2TDadb/o0VDkOMz7MrTikpUk=;
+        b=ooSXoMBIdZ74nMhGmcD4v8LUXzpfOGfN/9hzTuR4Blxt5ei/vj4ArNtWXfvWrSBF2tKxIM
+        LKzptS0YgbD1/BmGNmgcfYbnrX6gJbDu/3j87vNnJLhsRl84FTCG30fpYJOsb0BfaWof8C
+        oOGaLEV27drkTFyzQfJL0LFsmOWDX9TvOYcRX6GbKKG5t4RDTKl8MvITB5Epyf+01CHlOM
+        4sWO15PSdxJ5poxL01VIzAMazVzQF9MD8/qXk7wRjK+vlm5N28D61LOvklrSHSQB90iapw
+        1dp+RmSAEQbNu/kvbF1PX9iV5kEovGyrF07CgbHbp4WbATT75QbramMTXUWtVw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606904883;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GZJQsQNhrH/5pVvSDLr2TDadb/o0VDkOMz7MrTikpUk=;
+        b=05wjwML6N0cpmCT1EYSSrscFhRxmaqzeWXSamXt4ZP4h+VsJ1TvEHZSZ+izlW7JwODgiel
+        UYe9+HrQMoIIuiDg==
+From:   "tip-bot2 for Dexuan Cui" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/apic] iommu/hyper-v: Remove I/O-APIC ID check from
+ hyperv_irq_remapping_select()
+Cc:     Dexuan Cui <decui@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        David Woodhouse <dwmw@amazon.co.uk>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201202004510.1818-1-decui@microsoft.com>
+References: <20201202004510.1818-1-decui@microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <1606903025-14197-3-git-send-email-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
+Message-ID: <160690488231.3364.5753445245767279779.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/12/2020 at 10:57, Claudiu Beznea wrote:
-> Due to strobe signal not being propagated from CPU to securam
-> the securam needs to be mapped as device or strongly ordered memory
-> to work properly. Otherwise, updating to one offset may affect
-> the adjacent locations in securam.
-> 
-> Fixes: d4ce5f44d4409 ("ARM: dts: at91: sama5d2: Add securam node")
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+The following commit has been merged into the x86/apic branch of tip:
 
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Commit-ID:     26ab12bb9d96133b7880141d68b5e01a8783de9d
+Gitweb:        https://git.kernel.org/tip/26ab12bb9d96133b7880141d68b5e01a8783de9d
+Author:        Dexuan Cui <decui@microsoft.com>
+AuthorDate:    Tue, 01 Dec 2020 16:45:10 -08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 02 Dec 2020 11:22:55 +01:00
 
-> ---
->   arch/arm/boot/dts/sama5d2.dtsi | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-> index 2ddc85dff8ce..6d399ac0385d 100644
-> --- a/arch/arm/boot/dts/sama5d2.dtsi
-> +++ b/arch/arm/boot/dts/sama5d2.dtsi
-> @@ -656,6 +656,7 @@
->   				clocks = <&pmc PMC_TYPE_PERIPHERAL 51>;
->   				#address-cells = <1>;
->   				#size-cells = <1>;
-> +				no-memory-wc;
->   				ranges = <0 0xf8044000 0x1420>;
->   			};
->   
-> 
+iommu/hyper-v: Remove I/O-APIC ID check from hyperv_irq_remapping_select()
 
+commit a491bb19f728 ("iommu/hyper-v: Implement select() method on remapping
+irqdomain") restricted the irq_domain_ops::select() callback to match on
+I/O-APIC index 0, which was correct until the parameter was changed to
+carry the I/O APIC ID in commit f36a74b9345a.
 
--- 
-Nicolas Ferre
+If the ID is not 0 then the match fails. Therefore I/O-APIC init fails to
+retrieve the parent irqdomain for the I/O-APIC resulting in a boot panic:
+
+    kernel BUG at arch/x86/kernel/apic/io_apic.c:2408!
+
+Fix it by matching the I/O-APIC independent of the ID as there is only one
+I/O APIC emulated by Hyper-V.
+
+[ tglx: Amended changelog ]
+
+Fixes: f36a74b9345a ("x86/ioapic: Use I/O-APIC ID for finding irqdomain, not index")
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
+Link: https://lore.kernel.org/r/20201202004510.1818-1-decui@microsoft.com
+---
+ drivers/iommu/hyperv-iommu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iommu/hyperv-iommu.c b/drivers/iommu/hyperv-iommu.c
+index 9438daa..1d21a0b 100644
+--- a/drivers/iommu/hyperv-iommu.c
++++ b/drivers/iommu/hyperv-iommu.c
+@@ -105,8 +105,8 @@ static int hyperv_irq_remapping_select(struct irq_domain *d,
+ 				       struct irq_fwspec *fwspec,
+ 				       enum irq_domain_bus_token bus_token)
+ {
+-	/* Claim only the first (and only) I/OAPIC */
+-	return x86_fwspec_is_ioapic(fwspec) && fwspec->param[0] == 0;
++	/* Claim the only I/O APIC emulated by Hyper-V */
++	return x86_fwspec_is_ioapic(fwspec);
+ }
+ 
+ static const struct irq_domain_ops hyperv_ir_domain_ops = {
