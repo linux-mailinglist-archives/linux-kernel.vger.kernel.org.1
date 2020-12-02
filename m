@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBCA2CC40A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7852CC417
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:44:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730889AbgLBRmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:42:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728522AbgLBRmo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:42:44 -0500
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA2EC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 09:42:04 -0800 (PST)
-Received: by mail-vk1-xa43.google.com with SMTP id v5so580889vkn.12
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 09:42:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1x85fibtNgk8eCqEQNDAdM4H9CAeQh2Tw033sLE9au0=;
-        b=k17fYGcwuvMZ1Z8sW8ED5NcNXVNtT2pFk45+2PoxoQU8LXfOr6AYnwMnP48duoDTOX
-         KkETXo8kz86TN9x3hgA72/j3TAPJcyMySF/dKg3fqDLhxHHqn0b6mMjJvCX9YFgXcZSE
-         meXC9GzKinsBSDUgRWYmV1DBRcJbE7gisVkLs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1x85fibtNgk8eCqEQNDAdM4H9CAeQh2Tw033sLE9au0=;
-        b=PjBY7JP9pWJm0Ax69pBBKTtP+4K8bYvAs8XaALMuVByjhKvA1U1VmIfOD1hwIu/eMx
-         7o5RUSJxlNxLotfxIgX7iGGSbGycGQs9gUcTu6Ys8mmEEpv0v6WYEqDLveTSXlysiD+v
-         riKprPe+99yMwUXvC0hAq+WSrjE9ykh1C84zoZsjxvwiVDIQYEvLUs7uJUJ96NtSDMCm
-         JsP3Kln9BB4XcZJZXjKUhUmTs+L/Pnd9QNTA0HlP2tQIV1FzomSvlZrnWwrpjw2rzD5l
-         T6fK91syjMz1Qgpn1HTzN1XKeBo/ehs8SRTT52R46QnVhmSg4H74lOgAMrFNy4YuffQi
-         ILhA==
-X-Gm-Message-State: AOAM533Qi5e5ZNnSuJXrWbw+VSo1DC/33BFtY0xfJeqJxhn83wybOvZM
-        eKLM3nlt8WaM0baSoETxkREdSXsaev+k0bRPEYG+fA==
-X-Google-Smtp-Source: ABdhPJwTheLKPeYlIrrssTfR1rpgEOPwTCjeb+0/mDlt+DYvNW/fgwgzHLBBS7di/GI9wgwe9tiBOAwzgf9hYJ07zfU=
-X-Received: by 2002:a1f:b245:: with SMTP id b66mr2625951vkf.3.1606930923918;
- Wed, 02 Dec 2020 09:42:03 -0800 (PST)
+        id S1730847AbgLBRnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:43:41 -0500
+Received: from mga09.intel.com ([134.134.136.24]:59251 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726061AbgLBRnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 12:43:41 -0500
+IronPort-SDR: k+2OEwZJgHnn38hSL16KY9ZFlXMgClN3MlvyAdojMQXFAYNvdz2kSQUUv4WM6JXkocGHViJTBE
+ 70kHJB0TWlYA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="173218360"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="173218360"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 09:42:00 -0800
+IronPort-SDR: GN99K6ZbejK075craB6Rp39UmY7jDfEzgyElvmpjXBUw21k3H2hrm7cArnjc+O9Z9tyrdNEyvA
+ 7OGAlRuilHZg==
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="550151821"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 09:42:00 -0800
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 59D246363;
+        Wed,  2 Dec 2020 09:42:00 -0800 (PST)
+Date:   Wed, 2 Dec 2020 09:42:00 -0800
+From:   mark gross <mgross@linux.intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        corbet@lwn.net, leonard.crestez@nxp.com, palmerdabbelt@google.com,
+        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
+        shawnguo@kernel.org, linux-kernel@vger.kernel.org,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+Subject: Re: [PATCH 03/22] keembay-ipc: Add Keem Bay IPC module
+Message-ID: <20201202174200.GG63356@mtg-dev.jf.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20201201223511.65542-1-mgross@linux.intel.com>
+ <20201201223511.65542-4-mgross@linux.intel.com>
+ <X8cxNA3GTi/LrTt/@kroah.com>
 MIME-Version: 1.0
-References: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
- <20201202160049.GD1447340@iweiny-DESK2.sc.intel.com> <CAJfpegt6w4h28VLctpaH46r2pkbcUNJ4pUhwUqZ-zbrOrXPEEQ@mail.gmail.com>
- <641397.1606926232@warthog.procyon.org.uk>
-In-Reply-To: <641397.1606926232@warthog.procyon.org.uk>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 2 Dec 2020 18:41:43 +0100
-Message-ID: <CAJfpegsQxi+_ttNshHu5MP+uLn3px9+nZRoTLTxh9-xwU8s1yg@mail.gmail.com>
-Subject: Re: [PATCH V2] uapi: fix statx attribute value overlap for DAX & MOUNT_ROOT
-To:     David Howells <dhowells@redhat.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Eric Sandeen <sandeen@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8cxNA3GTi/LrTt/@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 5:24 PM David Howells <dhowells@redhat.com> wrote:
->
-> Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> > Stable cc also?
-> >
-> > Cc: <stable@vger.kernel.org> # 5.8
->
-> That seems to be unnecessary, provided there's a Fixes: tag.
+On Wed, Dec 02, 2020 at 07:16:20AM +0100, Greg KH wrote:
+> On Tue, Dec 01, 2020 at 02:34:52PM -0800, mgross@linux.intel.com wrote:
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -8955,6 +8955,14 @@ M:	Deepak Saxena <dsaxena@plexity.net>
+> >  S:	Maintained
+> >  F:	drivers/char/hw_random/ixp4xx-rng.c
+> >  
+> > +INTEL KEEM BAY IPC DRIVER
+> > +M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> > +M:	Mark Gross <mgross@linux.intel.com>
+> > +S:	Maintained
+> > +F:	Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+> > +F:	drivers/soc/intel/keembay-ipc.c
+> > +F:	include/linux/soc/intel/keembay-ipc.h
+> 
+> Sad that Intel is not going to actually pay you all to do this
+> maintenance work for a brand new subsystem you are wanting to add to the
+> tree :(
+I thought adding my name to these maintainer items would help with continuity
+as the individual engineers tend to move on to other things over time.
 
-Is it?
+While I'm paid for a number of things at intel this is one of them.  My role is
+as stable as I choose it to be at the point I'm at in my Intel career and the
+business unit I'm now part of.  We can leave my name off if that would be
+better.
 
-Fixes: means it fixes a patch, Cc: stable means it needs to be
-included in stable kernels.  The two are not necessarily the same.
+Even if I'm not a VPU IP domain expert like Daniele is I can still chase down
+the experts as needed after Daniele grows into other things over time.
 
-Greg?
+> 
+> Does this mean you all will have to do it on your own time and not as
+> part of your work at Intel?  If so, why not just use your personal email
+> addresses instead to make it a bit more obvious?
+nah, as I've been getting older I've been getting more stingy with my me time
+with my non-tech hobbies.  When I do retire (or whatever) from Intel we'll need
+to remove my name for the stuff I'll not be getting paid for any more.
 
-Thanks,
-Miklos
+--mark
