@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A89C2CBBED
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:51:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E512CBBF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:54:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729744AbgLBLvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:51:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726508AbgLBLvR (ORCPT
+        id S2388554AbgLBLxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 06:53:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49707 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729736AbgLBLxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 06:51:17 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE40DC0613D6;
-        Wed,  2 Dec 2020 03:50:36 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id d3so6398221wmb.4;
-        Wed, 02 Dec 2020 03:50:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y6oALCZiLGYDvc9Go/LDdvbufLPYANCU6ChnU4YZkuI=;
-        b=YnhtXaGf3WEJPdExvpOXRBuHi7JPMSuw9YS0u8nAO2DvpfoGEMo1qy/GQm2Bfm00w5
-         cuWcaEXg5WlVCSmY5936/SWKZXo2OuUVAnQFb3UVgbxiLyxqxApXdL3ZXieH15yW+6X9
-         S/nF7vSPBzay4ZJYEvuqXrTpJK5Io3lo8vhEzlaArSZ/iNF+kUiK1R713WkqCo58dvNG
-         /fTaEOMOEuqlz1FD9TkJHx6dThZ4mQtjjsa6Cx2OqRs9d1lysX+yNP2AxUd2BKn5TU6O
-         qI5qTi3nvEe24f8RmGjgOXReTegjIQn9+i91MDCA20DCAnflowrukgjyV/ibijrs69NW
-         InDQ==
+        Wed, 2 Dec 2020 06:53:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606909914;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=eZnLI0Wik0eaxTfaNNAVKLQ21xyT2CoTcJpXnx1wngM=;
+        b=OIa98lUe8TKjCR8mdTz0Fd/3UHc3YAyATCGuSW4Cwcic29lZZeoJEVVW4uUQUfvA2kIu22
+        VVkNxij9JHYiaDqeFevBRfnzzEgSvUR2ZzDv+RfOEEsyTlIc8By4TCmrtNn4XK3MwQkO5+
+        yjdjLHQPPj3+e6FrxRu0orL3Q5wsbzk=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-m-9STX6hOZuGjsupLRrM1Q-1; Wed, 02 Dec 2020 06:51:52 -0500
+X-MC-Unique: m-9STX6hOZuGjsupLRrM1Q-1
+Received: by mail-wm1-f70.google.com with SMTP id v5so3267911wmj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 03:51:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y6oALCZiLGYDvc9Go/LDdvbufLPYANCU6ChnU4YZkuI=;
-        b=e+YxZ60v65kFhYFdFhyB54xuLHlZydwqgiIcHKbGSmoMvifLlK5bCXgMY9o6vhdLYb
-         DV3uQzjShb4f2W1EoL31RAiQBrECC3TFA6D1wRmfzTqxg5y0Kljr7y2bnuYhlG3pK4sO
-         0PLZ4L+V8GJ2drrf7zlemBTtSobgH+vfiYbrhrMNcJmIqs92tOG00IK47HrxLRwfaWGn
-         4fH5EI/SYaQLNTVA5gTitpDLMJzJEz6Ho49Cr0SSDv5ro59+lpejhFmc0OKv/aM7tKFv
-         +dDvQIJAaPysNXvGIM/YJtEbMqGis/m0wBnvS+8aiOOiXAOP3DHUmR2nEopEGVEQkMU+
-         PstA==
-X-Gm-Message-State: AOAM532wvRrfJQAkTB/0EF5ajMw57GhamFRzcZvkGqZmk1zYAzUFqZys
-        p7aUZuONXaug4Qxv6GBok6qRq4/iWPpygfcPQwk=
-X-Google-Smtp-Source: ABdhPJy8+tbwg1apCmnRHY8nQ8MoPlFqA0ZJMGi0Iv5/fpvHeox9MM3U+7OnFWIK/ASP2i1Z2JmsyJPmKxX5bBEkX6Y=
-X-Received: by 2002:a1c:b742:: with SMTP id h63mr2739418wmf.122.1606909835392;
- Wed, 02 Dec 2020 03:50:35 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=eZnLI0Wik0eaxTfaNNAVKLQ21xyT2CoTcJpXnx1wngM=;
+        b=LudDzoqJOfX3VJA3rrmqrsFSGM1Ln9O5blc7EDK8r2YtbuqQhyVrK5He8vtdba8UuE
+         +MKlrvylGVCETylb8f0k7b691LxCrqZ2X1us4w8w1EnTMEhqhwJfKuKMBGIvMVWFND0n
+         1eQicFLiE0gNbukaovepKRst/JiFhIMUilAMSM3rICbLKWqCLyOh46syWCPxIXk3XLpc
+         5q02QAJRLAoO48MNQGDXNslYfr7aGS0ruyDsk+ADrpY0XJEeepNtB5z20+MGw2nfgK0y
+         8680qwIbAV68hNcJbtRadHWbfg/uj+OPnL2RPKb/WPV250gEzegT8agYVgTuNq9l9cYW
+         TrGg==
+X-Gm-Message-State: AOAM533Oxn5Knkv6vdvqxxSL96ymQoDKIJH7IZm+Mo0y13RuGh+oWKw8
+        TfKuKs2mhopVjqt3pER+Gh++1ri74j/MfdxYCUn45XIuJk0Iqpz4/jtWFobnr9ZWxVcLfOi77UH
+        iUyzyEphEHb5MoYTLf7QwwmWr
+X-Received: by 2002:a05:600c:2106:: with SMTP id u6mr1002270wml.4.1606909911245;
+        Wed, 02 Dec 2020 03:51:51 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyDk/79fb5VUyBoaUX2SQVUTrvAjsll90UI65W+kVpuHWCvrrBFwGplb9GAKNlrMm4UMxEqKg==
+X-Received: by 2002:a05:600c:2106:: with SMTP id u6mr1002258wml.4.1606909911075;
+        Wed, 02 Dec 2020 03:51:51 -0800 (PST)
+Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
+        by smtp.gmail.com with ESMTPSA id f7sm1766312wmc.1.2020.12.02.03.51.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 03:51:50 -0800 (PST)
+Date:   Wed, 2 Dec 2020 06:51:47 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com, eli@mellanox.com, jasowang@redhat.com,
+        leonro@nvidia.com, lkp@intel.com, mst@redhat.com,
+        parav@mellanox.com, rdunlap@infradead.org, saeedm@nvidia.com
+Subject: [GIT PULL] vdpa: last minute bugfixes
+Message-ID: <20201202065147-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
- <20201202094717.GX4077@smile.fi.intel.com> <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
-In-Reply-To: <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
-From:   Yun Levi <ppbuk5246@gmail.com>
-Date:   Wed, 2 Dec 2020 20:50:24 +0900
-Message-ID: <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
-Subject: Re: [PATCH] lib/find_bit: Add find_prev_*_bit functions.
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        dushistov@mail.ru, arnd@arndb.de, akpm@linux-foundation.org,
-        gustavo@embeddedor.com, vilhelm.gray@gmail.com,
-        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
-        skalluru@marvell.com, yury.norov@gmail.com, jpoimboe@redhat.com,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mutt-Fcc: =sent
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for kind advice. But I'm so afraid to have questions below:
+A couple of patches of the obviously correct variety.
 
- > - it proposes functionality w/o user (dead code)
-     Actually, I add these series functions to rewrite some of the
-resource clean-up routine.
-     A typical case is ethtool_set_per_queue_coalesce 's rollback label.
-     Could this usage be an actual use case?
+The following changes since commit ad89653f79f1882d55d9df76c9b2b94f008c4e27:
 
- >- it lacks extension of the bitmap test module to cover the new
- > functions (that also wants to be a separate patch).
-     I see, then Could I add some of testcase on lib/test_bitops.c for testing?
+  vhost-vdpa: fix page pinning leakage in error path (rework) (2020-11-25 04:29:07 -0500)
 
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
 
+for you to fetch changes up to 2c602741b51daa12f8457f222ce9ce9c4825d067:
 
+  vhost_vdpa: return -EFAULT if copy_to_user() fails (2020-12-02 04:36:40 -0500)
 
+----------------------------------------------------------------
+vdpa: last minute bugfixes
 
-On Wed, Dec 2, 2020 at 7:04 PM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> On 02/12/2020 10.47, Andy Shevchenko wrote:
-> > On Wed, Dec 02, 2020 at 10:10:09AM +0900, Yun Levi wrote:
-> >> Inspired find_next_*bit function series, add find_prev_*_bit series.
-> >> I'm not sure whether it'll be used right now But, I add these functions
-> >> for future usage.
-> >
-> > This patch has few issues:
-> > - it has more things than described (should be several patches instead)
-> > - new functionality can be split logically to couple or more pieces as well
-> > - it proposes functionality w/o user (dead code)
->
-> Yeah, the last point means it can't be applied - please submit it again
-> if and when you have an actual use case. And I'll add
->
-> - it lacks extension of the bitmap test module to cover the new
-> functions (that also wants to be a separate patch).
->
-> Rasmus
+A couple of fixes that surfaced at the last minute.
+
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+
+----------------------------------------------------------------
+Dan Carpenter (1):
+      vhost_vdpa: return -EFAULT if copy_to_user() fails
+
+Randy Dunlap (1):
+      vdpa: mlx5: fix vdpa/vhost dependencies
+
+ drivers/Makefile     | 1 +
+ drivers/vdpa/Kconfig | 1 +
+ drivers/vhost/vdpa.c | 4 +++-
+ 3 files changed, 5 insertions(+), 1 deletion(-)
+
