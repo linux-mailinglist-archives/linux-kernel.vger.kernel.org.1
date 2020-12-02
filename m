@@ -2,88 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3FD2CC20E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D70FD2CC213
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730724AbgLBQTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:19:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
+        id S1730711AbgLBQUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:20:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730711AbgLBQTf (ORCPT
+        with ESMTP id S1730628AbgLBQU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:19:35 -0500
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC892C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:18:55 -0800 (PST)
-Received: by mail-vk1-xa43.google.com with SMTP id s135so521157vkh.6
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:18:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K37eg33TEYHBPIc9hdERySXaT7ddLk31VnYDOJlDBsg=;
-        b=Qh43GnRo7YfF7QXgCietAKT8+vkZPBqYJF1+My0HDqIs9rZIo8YSN5dPnKbhJt35/O
-         Bk92brV0mfpexLTOm4P1D2e/jzzHq0aEycI6SbiBHQ4W9TdRZzRMWRILKTnT50xTSA2i
-         iPs17ztWvUY6GyDcrTIIhpbuNNzPUr9ojKwfs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K37eg33TEYHBPIc9hdERySXaT7ddLk31VnYDOJlDBsg=;
-        b=AUAH3Drcz+z0oGJZViNl4wZdSF6fJmS5vvSkrYPE4QshDGjtwN2XNFgbAtbftaFBbK
-         6b25se3CVW2U1iSpJz9LgL2s99/jvYgWu9sPP+HLMPQhlq3D2RaDFFJn6OmjEwE3BhnE
-         9Cg9AToyaD3V/nAyKRDLZE53Asq0SGk/Pbm/AT3zWR2UXjR/2z9USgiODTaPxC6g47VC
-         KXrRMx1Txh7io5nBSVLoRVDAgpEeiZy5k3oyjIQ3vodvDiflhtmKRwdCCv/lzWOYzqbs
-         6AUendDdNwIdwOAz2bxWHE+u4EgpE/j2it45IZH79e+wYeQJg+ppVRADXDcSWmB5exJ0
-         t42g==
-X-Gm-Message-State: AOAM5305DRQ8Mxutmq19fIYV40GF9pSCRmTBslUs7Ux2YEkA+PM+e0sO
-        XkOctIz8ugvElBsBs4wa1VXBZ1h2UW5qP/Kyns3ykA==
-X-Google-Smtp-Source: ABdhPJyTxGZ9z1k1i/Ix1wYvY05DOpOo2yBinjoa08BbT+ejSo+v8144fC3Nldom8dhjeZdLqBssK9ANee91fT78mH4=
-X-Received: by 2002:a1f:e7c2:: with SMTP id e185mr2204229vkh.23.1606925934724;
- Wed, 02 Dec 2020 08:18:54 -0800 (PST)
+        Wed, 2 Dec 2020 11:20:29 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E247C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:19:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2Ifuu5gVJfH2ZI53Y855JriQ73b9BW76FbTWvo/IPvg=; b=jxP9/wVZOIaJAktuIxLdq6HO1r
+        GgtrsgCYAwmR913CAQGf51f06CstHwRemx6oIFmw6fz9jdmholfnNuJG9NWc8ZCadR/cCyLBuW5My
+        CELnvp+CPXcalj6/4+64hmYpFpuRAAZkX3Yx2g6jIlElatqTMQwqZS+oVS5GFT2KL8EvFUipbEhCg
+        VBa8rKSgELFPWx/JevNldC0y1D0OTL+fGJunc82cxeTDQUa1imS6bT7wFtrDsYWH8huBwrS8IhwSQ
+        pCxWfJlS9K3U3Y0FA2XgsAeJ5q7RO/HKw0vdbd0PqANWNXQuFxDykjRahLEneftCINB8tFsp4A9Wv
+        oxem3JNQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkUqu-0002tA-8q; Wed, 02 Dec 2020 16:19:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 222623069B1;
+        Wed,  2 Dec 2020 17:19:34 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E309721434778; Wed,  2 Dec 2020 17:19:34 +0100 (CET)
+Date:   Wed, 2 Dec 2020 17:19:34 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [RFC 1/2] perf core: Add PERF_COUNT_SW_CGROUP_SWITCHES event
+Message-ID: <20201202161934.GL3021@hirez.programming.kicks-ass.net>
+References: <20201202150205.35750-1-namhyung@kernel.org>
 MIME-Version: 1.0
-References: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com> <20201202160049.GD1447340@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20201202160049.GD1447340@iweiny-DESK2.sc.intel.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 2 Dec 2020 17:18:43 +0100
-Message-ID: <CAJfpegt6w4h28VLctpaH46r2pkbcUNJ4pUhwUqZ-zbrOrXPEEQ@mail.gmail.com>
-Subject: Re: [PATCH V2] uapi: fix statx attribute value overlap for DAX & MOUNT_ROOT
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Eric Sandeen <sandeen@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202150205.35750-1-namhyung@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 5:03 PM Ira Weiny <ira.weiny@intel.com> wrote:
->
-> On Tue, Dec 01, 2020 at 05:21:40PM -0600, Eric Sandeen wrote:
-> > [*] Note: This needs to be merged as soon as possible as it's introducing an incompatible UAPI change...
-> >
-> > STATX_ATTR_MOUNT_ROOT and STATX_ATTR_DAX got merged with the same value,
-> > so one of them needs fixing. Move STATX_ATTR_DAX.
-> >
-> > While we're in here, clarify the value-matching scheme for some of the
-> > attributes, and explain why the value for DAX does not match.
-> >
-> > Fixes: 80340fe3605c ("statx: add mount_root")
-> > Fixes: 712b2698e4c0 ("fs/stat: Define DAX statx attribute")
-> > Reported-by: David Howells <dhowells@redhat.com>
-> > Signed-off-by: Eric Sandeen <sandeen@redhat.com>
-> > Reviewed-by: David Howells <dhowells@redhat.com>
->
-> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+On Thu, Dec 03, 2020 at 12:02:04AM +0900, Namhyung Kim wrote:
 
-Stable cc also?
+> +#ifdef CONFIG_CGROUP_PERF
+> +static inline void
+> +perf_sw_event_cgroup_switch(struct task_struct *prev, struct task_struct *next)
+> +{
+> +	struct cgroup *prev_cgrp, *next_cgrp;
+> +
+> +	rcu_read_lock();
+> +
+> +	prev_cgrp = task_css_check(prev, perf_event_cgrp_id, 1)->cgroup;
+> +	next_cgrp = task_css_check(next, perf_event_cgrp_id, 1)->cgroup;
+> +
+> +	if (prev_cgrp != next_cgrp)
+> +		perf_sw_event_sched(PERF_COUNT_SW_CGROUP_SWITCHES, 1, 0);
+> +
+> +	rcu_read_unlock();
+> +}
+> +#else
+> +static inline void perf_sw_event_cgroup_switch(struct task_struct *prev,
+> +					       struct task_struct *next) {}
+> +#endif  /* CONFIG_CGROUP_PERF */
+> +
+>  extern struct static_key_false perf_sched_events;
+>  
+>  static __always_inline bool
+> @@ -1220,6 +1241,7 @@ static inline void perf_event_task_sched_out(struct task_struct *prev,
+>  					     struct task_struct *next)
+>  {
+>  	perf_sw_event_sched(PERF_COUNT_SW_CONTEXT_SWITCHES, 1, 0);
+> +	perf_sw_event_cgroup_switch(prev, next);
+>  
+>  	if (static_branch_unlikely(&perf_sched_events))
+>  		__perf_event_task_sched_out(prev, next);
 
-Cc: <stable@vger.kernel.org> # 5.8
+Urgh.. that's horrible, try something like this.
 
-Thanks,
-Miklos
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 9a38f579bc76..5eb284819ee5 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -1174,25 +1174,19 @@ DECLARE_PER_CPU(struct pt_regs, __perf_regs[4]);
+  * which is guaranteed by us not actually scheduling inside other swevents
+  * because those disable preemption.
+  */
+-static __always_inline void
+-perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)
++static __always_inline void __perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)
+ {
+-	if (static_key_false(&perf_swevent_enabled[event_id])) {
+-		struct pt_regs *regs = this_cpu_ptr(&__perf_regs[0]);
++	struct pt_regs *regs = this_cpu_ptr(&__perf_regs[0]);
+ 
+-		perf_fetch_caller_regs(regs);
+-		___perf_sw_event(event_id, nr, regs, addr);
+-	}
++	perf_fetch_caller_regs(regs);
++	___perf_sw_event(event_id, nr, regs, addr);
+ }
+ 
+ extern struct static_key_false perf_sched_events;
+ 
+-static __always_inline bool
+-perf_sw_migrate_enabled(void)
++static __always_inline bool __perf_sw_enabled(int swevt)
+ {
+-	if (static_key_false(&perf_swevent_enabled[PERF_COUNT_SW_CPU_MIGRATIONS]))
+-		return true;
+-	return false;
++	return static_key_false(&perf_swevent_enabled[swevt]);
+ }
+ 
+ static inline void perf_event_task_migrate(struct task_struct *task)
+@@ -1207,11 +1201,9 @@ static inline void perf_event_task_sched_in(struct task_struct *prev,
+ 	if (static_branch_unlikely(&perf_sched_events))
+ 		__perf_event_task_sched_in(prev, task);
+ 
+-	if (perf_sw_migrate_enabled() && task->sched_migrated) {
+-		struct pt_regs *regs = this_cpu_ptr(&__perf_regs[0]);
+-
+-		perf_fetch_caller_regs(regs);
+-		___perf_sw_event(PERF_COUNT_SW_CPU_MIGRATIONS, 1, regs, 0);
++	if (__perf_sw_enabled(PERF_COUNT_SW_CPU_MIGRATIONS) &&
++	    task->sched_migrated) {
++		__perf_sw_event_sched(PERF_COUNT_SW_CPU_MIGRATIONS, 1, 0);
+ 		task->sched_migrated = 0;
+ 	}
+ }
+@@ -1219,7 +1211,13 @@ static inline void perf_event_task_sched_in(struct task_struct *prev,
+ static inline void perf_event_task_sched_out(struct task_struct *prev,
+ 					     struct task_struct *next)
+ {
+-	perf_sw_event_sched(PERF_COUNT_SW_CONTEXT_SWITCHES, 1, 0);
++	if (__perf_sw_enabled(PERF_COUNT_SW_CONTEXT_SWITCHES))
++		__perf_sw_event_sched(PERF_COUNT_SW_CONTEXT_SWITCHES, 1, 0);
++
++	if (__perf_sw_enabled(PERF_COUNT_SW_CGROUP_SWITCHES) &&
++	    (task_css_check(prev, perf_event_cgrp_id, 1)->cgroup !=
++	     task_css_check(next, perf_event_cgrp_id, 1)->cgroup))
++		__perf_sw_event_sched(PERF_COUNT_SW_CGROUP_SWITCHES, 1, 0);
+ 
+ 	if (static_branch_unlikely(&perf_sched_events))
+ 		__perf_event_task_sched_out(prev, next);
+@@ -1475,8 +1473,6 @@ static inline int perf_event_refresh(struct perf_event *event, int refresh)
+ static inline void
+ perf_sw_event(u32 event_id, u64 nr, struct pt_regs *regs, u64 addr)	{ }
+ static inline void
+-perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)			{ }
+-static inline void
+ perf_bp_event(struct perf_event *event, void *data)			{ }
+ 
+ static inline int perf_register_guest_info_callbacks
