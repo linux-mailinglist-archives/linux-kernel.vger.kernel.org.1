@@ -2,125 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5575F2CC95A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CCF2CC95D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728168AbgLBWJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 17:09:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbgLBWJV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 17:09:21 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B56C0617A7
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 14:08:40 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606946919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9vsGnXZHSsqnozJcVzbytQfXTloykF6F8eHtLCSwhB4=;
-        b=N2nrecLWoE/4c1n3QkQUY+uzlVEomufm+LavWwaNKkbpaOOVAEg+QIcxQ8E1y9gNzJ3B/G
-        DX1n/LLpbu91reYT9cRbCRb8A+FtvSyHRDv1DDfbxJ/72fCruVNAch7RBxY7ytCD6nOgzx
-        6YPcMdNEwz5R2omhBmbmGMIXIl2FqHtz/FP4TvfoS70ay1bccztu3zXepPa509PTBoica6
-        dFH9jVkwRQTvOB/yfYb3apK9h2rPJiUCYTSbgN3JreEBdL9jTDGYxrWDIw/VUSJr5SttqR
-        sbVbayBIdnDstBZnHUITmKAQerLUHqkshdH8FJn/QmyDOf6MnBrucKwhAfY4qA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606946919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9vsGnXZHSsqnozJcVzbytQfXTloykF6F8eHtLCSwhB4=;
-        b=VNza5/Vh42evsqqLunpxL9319CgLvqs8XzgHg9do7RPvOkBZoosd/aHgLh3xcYPgtGMoN2
-        SGvQa7W/RDoP3rDw==
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-In-Reply-To: <20201202205418.GN5487@ziepe.ca>
-References: <20201201143835.2054508-1-mlichvar@redhat.com> <20201201161224.GF5487@ziepe.ca> <20201201171420.GN1900232@localhost> <20201201173540.GH5487@ziepe.ca> <87mtywe2zu.fsf@nanos.tec.linutronix.de> <20201202162723.GJ5487@ziepe.ca> <87a6uwdnfn.fsf@nanos.tec.linutronix.de> <20201202205418.GN5487@ziepe.ca>
-Date:   Wed, 02 Dec 2020 23:08:38 +0100
-Message-ID: <874kl3eu8p.fsf@nanos.tec.linutronix.de>
+        id S1727953AbgLBWKg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Dec 2020 17:10:36 -0500
+Received: from aposti.net ([89.234.176.197]:36194 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726011AbgLBWKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 17:10:35 -0500
+Date:   Wed, 02 Dec 2020 22:09:39 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 4/4] clk: Ingenic: Fill unused bits in parents and
+ reformat code.
+To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+Cc:     sboyd@kernel.org, robh+dt@kernel.org, mturquette@baylibre.com,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com
+Message-Id: <38GQKQ.Q3V9QMBZFBRU3@crapouillou.net>
+In-Reply-To: <20201125172618.112707-5-zhouyanjie@wanyeetech.com>
+References: <20201125172618.112707-1-zhouyanjie@wanyeetech.com>
+        <20201125172618.112707-5-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02 2020 at 16:54, Jason Gunthorpe wrote:
-> On Wed, Dec 02, 2020 at 08:21:00PM +0100, Thomas Gleixner wrote:
->> So it will not write immediately. It will run through at least one
->> retry.
->
-> Right, bascially this is scheduling a WQ to do sched_sync_hw_clock()
-> which will only call hrtimer_start() - seems like jsut calling
-> hrtimer_start instead of queue_work above would be equivilant
+Hi Zhou,
 
-Something like that.
+Le jeu. 26 nov. 2020 à 1:26, 周琰杰 (Zhou Yanjie) 
+<zhouyanjie@wanyeetech.com> a écrit :
+> 1.Fill unused bits in parents in jz4780-cgu.c, x1000-cgu.c,
+>   and x1830-cgu.c, these bits should be filled with -1.
+> 2.Reformat code, add missing blank lines, remove unnecessary
+>   tabs, and align code.
+> 
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+>  drivers/clk/ingenic/jz4780-cgu.c | 12 +++---
+>  drivers/clk/ingenic/x1000-cgu.c  | 20 +++++-----
+>  drivers/clk/ingenic/x1830-cgu.c  | 83 
+> ++++++++++++++++++++--------------------
+>  3 files changed, 60 insertions(+), 55 deletions(-)
+> 
+> diff --git a/drivers/clk/ingenic/jz4780-cgu.c 
+> b/drivers/clk/ingenic/jz4780-cgu.c
+> index dcca74e..1b61eaa 100644
+> --- a/drivers/clk/ingenic/jz4780-cgu.c
+> +++ b/drivers/clk/ingenic/jz4780-cgu.c
+> @@ -178,6 +178,7 @@ static int jz4780_otg_phy_set_rate(struct clk_hw 
+> *hw, unsigned long req_rate,
+>  	writel(usbpcr1, cgu->base + CGU_REG_USBPCR1);
+> 
+>  	spin_unlock_irqrestore(&cgu->lock, flags);
+> +
+>  	return 0;
+>  }
+> 
+> @@ -188,6 +189,7 @@ static int jz4780_otg_phy_enable(struct clk_hw 
+> *hw)
+> 
+>  	writel(readl(reg_opcr) | OPCR_SPENDN0, reg_opcr);
+>  	writel(readl(reg_usbpcr) & ~USBPCR_OTG_DISABLE & ~USBPCR_SIDDQ, 
+> reg_usbpcr);
+> +
+>  	return 0;
+>  }
+> 
+> @@ -215,9 +217,9 @@ static const struct clk_ops jz4780_otg_phy_ops = {
+>  	.round_rate = jz4780_otg_phy_round_rate,
+>  	.set_rate = jz4780_otg_phy_set_rate,
+> 
+> -	.enable		= jz4780_otg_phy_enable,
+> -	.disable	= jz4780_otg_phy_disable,
+> -	.is_enabled	= jz4780_otg_phy_is_enabled,
+> +	.enable = jz4780_otg_phy_enable,
+> +	.disable = jz4780_otg_phy_disable,
+> +	.is_enabled = jz4780_otg_phy_is_enabled,
+>  };
+> 
+>  static int jz4780_core1_enable(struct clk_hw *hw)
+> @@ -544,13 +546,13 @@ static const struct ingenic_cgu_clk_info 
+> jz4780_cgu_clocks[] = {
+> 
+>  	[JZ4780_CLK_EXCLK_DIV512] = {
+>  		"exclk_div512", CGU_CLK_FIXDIV,
+> -		.parents = { JZ4780_CLK_EXCLK },
+> +		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
 
->> I don't think the timer should be canceled if the ntp_synced() state did
->> not change. Otherwise every do_adtimex() call will cancel/restart
->> it, which does not make sense. Lemme stare at it some more.
->
-> That makes sense, being conditional on the STA_UNSYNC prior to doing
-> any hrtimer_start seems OK?
+These -1 are not really needed since the clock doesn't have CGU_CLK_MUX.
 
-Yeah.
-  
->> > Also x86 needs a touch, it already has RTC lib, no idea why it also
->> > provides this old path too
->> 
->> Because nobody had the stomach and/or cycles to touch it :)
->
-> Hahaha yes.. I vaugely remember looking at this once..
->
-> Lets see:
->
-> arch/x86/kernel/kvmclock.c:     x86_platform.set_wallclock = kvm_set_wallclock;
-> arch/x86/kernel/x86_init.c:             x86_platform.set_wallclock = set_rtc_noop;
-> arch/x86/xen/time.c:            x86_platform.set_wallclock = xen_set_wallclock;
-> arch/x86/xen/time.c:    x86_platform.set_wallclock = xen_set_wallclock;
->   All returns -ENODEV/EINVAL
+>  		.fixdiv = { 512 },
+>  	},
+> 
+>  	[JZ4780_CLK_RTC] = {
+>  		"rtc_ercs", CGU_CLK_MUX | CGU_CLK_GATE,
+> -		.parents = { JZ4780_CLK_EXCLK_DIV512, JZ4780_CLK_RTCLK },
+> +		.parents = { JZ4780_CLK_EXCLK_DIV512, JZ4780_CLK_RTCLK, -1, -1 },
+>  		.mux = { CGU_REG_OPCR, 2, 1},
 
-You forgot to stare at the .get_wallclock() functions. That's the more
-interesting part, i.e. what's behind read_persistent_clock64().
+This clock has CGU_CLK_MUX, but only one bit to change the setting, so 
+only two parents possible; so again these -1 are not really needed.
 
-> arch/x86/kernel/x86_init.c:     .set_wallclock                  = mach_set_rtc_mmss,
->   This is already rtclib under drivers/rtc/rtc-mc146818-lib.c
+Cheers,
+-Paul
 
-That's the shared library function for setting the darn thing.
-  
->   I suppose the issue here is the rtclib driver only binds via PNP and
->   very old x86 systems won't have the PNP tables? It seems doable to
->   check for a PNP device after late init and manually create a
->   platform_device for the RTC
+>  	},
+> 
+> diff --git a/drivers/clk/ingenic/x1000-cgu.c 
+> b/drivers/clk/ingenic/x1000-cgu.c
+> index d340bcd..fe2e274 100644
+> --- a/drivers/clk/ingenic/x1000-cgu.c
+> +++ b/drivers/clk/ingenic/x1000-cgu.c
+> @@ -126,6 +126,7 @@ static int x1000_otg_phy_set_rate(struct clk_hw 
+> *hw, unsigned long req_rate,
+>  	writel(usbpcr1, cgu->base + CGU_REG_USBPCR1);
+> 
+>  	spin_unlock_irqrestore(&cgu->lock, flags);
+> +
+>  	return 0;
+>  }
+> 
+> @@ -136,6 +137,7 @@ static int x1000_usb_phy_enable(struct clk_hw *hw)
+> 
+>  	writel(readl(reg_opcr) | OPCR_SPENDN0, reg_opcr);
+>  	writel(readl(reg_usbpcr) & ~USBPCR_OTG_DISABLE & ~USBPCR_SIDDQ, 
+> reg_usbpcr);
+> +
+>  	return 0;
+>  }
+> 
+> @@ -163,9 +165,9 @@ static const struct clk_ops x1000_otg_phy_ops = {
+>  	.round_rate = x1000_otg_phy_round_rate,
+>  	.set_rate = x1000_otg_phy_set_rate,
+> 
+> -	.enable		= x1000_usb_phy_enable,
+> -	.disable	= x1000_usb_phy_disable,
+> -	.is_enabled	= x1000_usb_phy_is_enabled,
+> +	.enable = x1000_usb_phy_enable,
+> +	.disable = x1000_usb_phy_disable,
+> +	.is_enabled = x1000_usb_phy_is_enabled,
+>  };
+> 
+>  static const s8 pll_od_encoding[8] = {
+> @@ -298,7 +300,7 @@ static const struct ingenic_cgu_clk_info 
+> x1000_cgu_clocks[] = {
+> 
+>  	[X1000_CLK_MAC] = {
+>  		"mac", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
+> -		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
+> +		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
+>  		.mux = { CGU_REG_MACCDR, 31, 1 },
+>  		.div = { CGU_REG_MACCDR, 0, 1, 8, 29, 28, 27 },
+>  		.gate = { CGU_REG_CLKGR, 25 },
+> @@ -306,7 +308,7 @@ static const struct ingenic_cgu_clk_info 
+> x1000_cgu_clocks[] = {
+> 
+>  	[X1000_CLK_LCD] = {
+>  		"lcd", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
+> -		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
+> +		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
+>  		.mux = { CGU_REG_LPCDR, 31, 1 },
+>  		.div = { CGU_REG_LPCDR, 0, 1, 8, 28, 27, 26 },
+>  		.gate = { CGU_REG_CLKGR, 23 },
+> @@ -314,7 +316,7 @@ static const struct ingenic_cgu_clk_info 
+> x1000_cgu_clocks[] = {
+> 
+>  	[X1000_CLK_MSCMUX] = {
+>  		"msc_mux", CGU_CLK_MUX,
+> -		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL},
+> +		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
+>  		.mux = { CGU_REG_MSC0CDR, 31, 1 },
+>  	},
+> 
+> @@ -350,7 +352,7 @@ static const struct ingenic_cgu_clk_info 
+> x1000_cgu_clocks[] = {
+> 
+>  	[X1000_CLK_SSIPLL_DIV2] = {
+>  		"ssi_pll_div2", CGU_CLK_FIXDIV,
+> -		.parents = { X1000_CLK_SSIPLL },
+> +		.parents = { X1000_CLK_SSIPLL, -1, -1, -1 },
+>  		.fixdiv = { 2 },
+>  	},
+> 
+> @@ -369,13 +371,13 @@ static const struct ingenic_cgu_clk_info 
+> x1000_cgu_clocks[] = {
+> 
+>  	[X1000_CLK_EXCLK_DIV512] = {
+>  		"exclk_div512", CGU_CLK_FIXDIV,
+> -		.parents = { X1000_CLK_EXCLK },
+> +		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
+>  		.fixdiv = { 512 },
+>  	},
+> 
+>  	[X1000_CLK_RTC] = {
+>  		"rtc_ercs", CGU_CLK_MUX | CGU_CLK_GATE,
+> -		.parents = { X1000_CLK_EXCLK_DIV512, X1000_CLK_RTCLK },
+> +		.parents = { X1000_CLK_EXCLK_DIV512, X1000_CLK_RTCLK, -1, -1 },
+>  		.mux = { CGU_REG_OPCR, 2, 1},
+>  		.gate = { CGU_REG_CLKGR, 27 },
+>  	},
+> diff --git a/drivers/clk/ingenic/x1830-cgu.c 
+> b/drivers/clk/ingenic/x1830-cgu.c
+> index e76e82c..4d6cca5 100644
+> --- a/drivers/clk/ingenic/x1830-cgu.c
+> +++ b/drivers/clk/ingenic/x1830-cgu.c
+> @@ -15,51 +15,51 @@
+>  #include "pm.h"
+> 
+>  /* CGU register offsets */
+> -#define CGU_REG_CPCCR		0x00
+> -#define CGU_REG_CPPCR		0x0c
+> -#define CGU_REG_APLL		0x10
+> -#define CGU_REG_MPLL		0x14
+> -#define CGU_REG_CLKGR0		0x20
+> -#define CGU_REG_OPCR		0x24
+> -#define CGU_REG_CLKGR1		0x28
+> -#define CGU_REG_DDRCDR		0x2c
+> -#define CGU_REG_USBPCR		0x3c
+> -#define CGU_REG_USBRDT		0x40
+> -#define CGU_REG_USBVBFIL	0x44
+> -#define CGU_REG_USBPCR1		0x48
+> -#define CGU_REG_MACCDR		0x54
+> -#define CGU_REG_EPLL		0x58
+> -#define CGU_REG_I2SCDR		0x60
+> -#define CGU_REG_LPCDR		0x64
+> -#define CGU_REG_MSC0CDR		0x68
+> -#define CGU_REG_I2SCDR1		0x70
+> -#define CGU_REG_SSICDR		0x74
+> -#define CGU_REG_CIMCDR		0x7c
+> -#define CGU_REG_MSC1CDR		0xa4
+> -#define CGU_REG_CMP_INTR	0xb0
+> -#define CGU_REG_CMP_INTRE	0xb4
+> -#define CGU_REG_DRCG		0xd0
+> -#define CGU_REG_CPCSR		0xd4
+> -#define CGU_REG_VPLL		0xe0
+> -#define CGU_REG_MACPHYC		0xe8
+> +#define CGU_REG_CPCCR			0x00
+> +#define CGU_REG_CPPCR			0x0c
+> +#define CGU_REG_APLL			0x10
+> +#define CGU_REG_MPLL			0x14
+> +#define CGU_REG_CLKGR0			0x20
+> +#define CGU_REG_OPCR			0x24
+> +#define CGU_REG_CLKGR1			0x28
+> +#define CGU_REG_DDRCDR			0x2c
+> +#define CGU_REG_USBPCR			0x3c
+> +#define CGU_REG_USBRDT			0x40
+> +#define CGU_REG_USBVBFIL		0x44
+> +#define CGU_REG_USBPCR1			0x48
+> +#define CGU_REG_MACCDR			0x54
+> +#define CGU_REG_EPLL			0x58
+> +#define CGU_REG_I2SCDR			0x60
+> +#define CGU_REG_LPCDR			0x64
+> +#define CGU_REG_MSC0CDR			0x68
+> +#define CGU_REG_I2SCDR1			0x70
+> +#define CGU_REG_SSICDR			0x74
+> +#define CGU_REG_CIMCDR			0x7c
+> +#define CGU_REG_MSC1CDR			0xa4
+> +#define CGU_REG_CMP_INTR		0xb0
+> +#define CGU_REG_CMP_INTRE		0xb4
+> +#define CGU_REG_DRCG			0xd0
+> +#define CGU_REG_CPCSR			0xd4
+> +#define CGU_REG_VPLL			0xe0
+> +#define CGU_REG_MACPHYC			0xe8
+> 
+>  /* bits within the OPCR register */
+> -#define OPCR_GATE_USBPHYCLK	BIT(23)
+> -#define OPCR_SPENDN0		BIT(7)
+> -#define OPCR_SPENDN1		BIT(6)
+> +#define OPCR_GATE_USBPHYCLK		BIT(23)
+> +#define OPCR_SPENDN0			BIT(7)
+> +#define OPCR_SPENDN1			BIT(6)
+> 
+>  /* bits within the USBPCR register */
+> -#define USBPCR_SIDDQ		BIT(21)
+> -#define USBPCR_OTG_DISABLE	BIT(20)
+> +#define USBPCR_SIDDQ			BIT(21)
+> +#define USBPCR_OTG_DISABLE		BIT(20)
+> 
+>  /* bits within the I2SCDR register */
+> -#define I2SCDR_I2PCS_SHIFT	30
+> -#define I2SCDR_I2PCS_MASK	(0x3 << I2SCDR_I2PCS_SHIFT)
+> +#define I2SCDR_I2PCS_SHIFT		30
+> +#define I2SCDR_I2PCS_MASK		(0x3 << I2SCDR_I2PCS_SHIFT)
+>  #define I2SCDR_I2SDIV_M_SHIFT	20
+>  #define I2SCDR_I2SDIV_M_MASK	(0x1ff << I2SCDR_I2SDIV_M_SHIFT)
+>  #define I2SCDR_I2SDIV_N_SHIFT	0
+>  #define I2SCDR_I2SDIV_N_MASK	(0xfffff << I2SCDR_I2SDIV_N_SHIFT)
+> -#define I2SCDR_CE_I2S		BIT(29)
+> +#define I2SCDR_CE_I2S			BIT(29)
+> 
+>  static struct ingenic_cgu *cgu;
+> 
+> @@ -70,6 +70,7 @@ static int x1830_usb_phy_enable(struct clk_hw *hw)
+> 
+>  	writel((readl(reg_opcr) | OPCR_SPENDN0) & ~OPCR_GATE_USBPHYCLK, 
+> reg_opcr);
+>  	writel(readl(reg_usbpcr) & ~USBPCR_OTG_DISABLE & ~USBPCR_SIDDQ, 
+> reg_usbpcr);
+> +
+>  	return 0;
+>  }
+> 
+> @@ -93,9 +94,9 @@ static int x1830_usb_phy_is_enabled(struct clk_hw 
+> *hw)
+>  }
+> 
+>  static const struct clk_ops x1830_otg_phy_ops = {
+> -	.enable		= x1830_usb_phy_enable,
+> -	.disable	= x1830_usb_phy_disable,
+> -	.is_enabled	= x1830_usb_phy_is_enabled,
+> +	.enable = x1830_usb_phy_enable,
+> +	.disable = x1830_usb_phy_disable,
+> +	.is_enabled = x1830_usb_phy_is_enabled,
+>  };
+> 
+>  static u8 x1830_i2s_get_parent(struct clk_hw *hw)
+> @@ -486,7 +487,7 @@ static const struct ingenic_cgu_clk_info 
+> x1830_cgu_clocks[] = {
+> 
+>  	[X1830_CLK_SSIPLL_DIV2] = {
+>  		"ssi_pll_div2", CGU_CLK_FIXDIV,
+> -		.parents = { X1830_CLK_SSIPLL },
+> +		.parents = { X1830_CLK_SSIPLL, -1, -1, -1 },
+>  		.fixdiv = { 2 },
+>  	},
+> 
+> @@ -506,13 +507,13 @@ static const struct ingenic_cgu_clk_info 
+> x1830_cgu_clocks[] = {
+> 
+>  	[X1830_CLK_EXCLK_DIV512] = {
+>  		"exclk_div512", CGU_CLK_FIXDIV,
+> -		.parents = { X1830_CLK_EXCLK },
+> +		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
+>  		.fixdiv = { 512 },
+>  	},
+> 
+>  	[X1830_CLK_RTC] = {
+>  		"rtc_ercs", CGU_CLK_MUX | CGU_CLK_GATE,
+> -		.parents = { X1830_CLK_EXCLK_DIV512, X1830_CLK_RTCLK },
+> +		.parents = { X1830_CLK_EXCLK_DIV512, X1830_CLK_RTCLK, -1, -1 },
+>  		.mux = { CGU_REG_OPCR, 2, 1},
+>  		.gate = { CGU_REG_CLKGR0, 29 },
+>  	},
+> --
+> 2.7.4
+> 
 
-old crap, broken BIOSes and virt. Welcome to my wonderful world :)
 
-> arch/x86/platform/intel-mid/intel_mid_vrtc.c:   x86_platform.set_wallclock = vrtc_set_mmss;
->   This is also already in rtclib under rtc-mrst.c, and this is already
->   wired to create the rtc platform device during init
->
-> So it is very close now to be able to delete all this for x86. Do you
-> know of something I've missed?
-
-Just the above :)
-
->> > I wonder if the cmos path could be killed off under the dead HW
->> > principle?
->> 
->> Unfortunately that code path is not that dead on x86. You need to fix
->> all the (ab)users first. :)
->
-> Assuming x86 can be resolved as above, that leaves two 20 year old MIPS
-> platforms and the PPC list from before. ARM is gone compared to last
-> time I looked! Progress :)
-
-Yeah. We're zooming in ....
-
-Thanks,
-
-        tglx
