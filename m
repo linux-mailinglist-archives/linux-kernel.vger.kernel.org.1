@@ -2,107 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DCF2CBC1F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:56:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB7C2CBC2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388392AbgLBLzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:55:49 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:44132 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726442AbgLBLzs (ORCPT
+        id S2388202AbgLBL5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 06:57:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729405AbgLBL5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 06:55:48 -0500
-Received: by mail-wr1-f67.google.com with SMTP id 64so3523687wra.11;
-        Wed, 02 Dec 2020 03:55:32 -0800 (PST)
+        Wed, 2 Dec 2020 06:57:44 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AEF9C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 03:57:04 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id d8so1561396ioc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 03:57:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cCeY5T30/ZjfSVbte8zrwF6m9bsYxmhw2op2/i/S+hk=;
+        b=Vww9jv/7xYol0/yx+O5GXuPAjYE2ZK/2iu17yCICQIn377EmVBPj8bX5D9plVX/P83
+         rgNm91r0jdTwNPhnp8hedFn8xMrxOiSg/wqN0k7NPUUQzwNfgG6nn7KqGB6v4cs4GEhV
+         xJRqXiPl3uvHdHab7AoVGaLmctWo3hLJ5UXNkmvYvC9QN9JC9qKKM8zZn8pr/8Kwrav3
+         1PkWHopunycNfFqxbgpViqHN4L2ik82TvdZiKsPFSmkbmR9in2KJmVt+GmJLrj+078QJ
+         KYZP84XuQ/Uiold75a7RaZN9i47OWwNjXyzyKwYpjMwR+VgDXTiwu/GpCNdf1mHfq/yU
+         A2GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gFwDdijdfZXw9pgLlpOsSk7GU0YwZboaXWl7s3vdJ1g=;
-        b=CGy3UA1Koo63bCpqBoS3Ujh4k2+Ya1Tpx6ftSSWdShCwax3j2fSAjpy0BLPGU5mG6z
-         HglqHRxuywTWmAmqpczrMXa5YbDEZdje2NfZitbfsyCBBuLPXtiPv86qahilqLa+cbIa
-         2L8ghLwYbDN8yZjL9fv/hkErR5Hxy6nWYnm3PEVt7yxuHasdx6ntd+4G+MTiPcLffFZM
-         Ef6Quorz0KeS0ow1LQtlsZVmjkGZuZtF/4kI9CvqzmSAtBDPHS9XzqLDhvXLi1I9SCJM
-         HqSOpbVBA+0th+t861/9Ckcd66nNMNLi9kFbwOAGJt+XbQVsqveSQqj/MmLVTPjYzGfX
-         DfQw==
-X-Gm-Message-State: AOAM53031mTomJuMdrjEJJOa8mmqiRWpNWrm4E+k7O9NzIl2iJ1cB544
-        B+v+TBbzPWD91mI7P58IOVvNczXTk+A=
-X-Google-Smtp-Source: ABdhPJz6L3WR4Agb08ZXO2ntujV+zGhkzAm9gZxK87sm4Tfcu32A9coFHnrp9jWwPUFWrktDdTitBQ==
-X-Received: by 2002:a5d:4c4d:: with SMTP id n13mr3022501wrt.356.1606910106876;
-        Wed, 02 Dec 2020 03:55:06 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id l8sm1768437wro.46.2020.12.02.03.55.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 03:55:06 -0800 (PST)
-Date:   Wed, 2 Dec 2020 11:55:04 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     Michael Kelley <mikelley@microsoft.com>,
-        Matheus Castello <matheus@castello.eng.br>, wei.liu@kernel.org,
-        joe@perches.com, KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>, sashal@kernel.org,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/6] drivers: hv: vmbus: Fix checkpatch SPLIT_STRING
-Message-ID: <20201202115504.w52yeixpg7nbzw2v@liuwe-devbox-debian-v2>
-References: <20201125032926.17002-1-matheus@castello.eng.br>
- <MW2PR2101MB105245D2BF9C9B5995D0188ED7F61@MW2PR2101MB1052.namprd21.prod.outlook.com>
- <20201129214328.254372dd@hermes.local>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cCeY5T30/ZjfSVbte8zrwF6m9bsYxmhw2op2/i/S+hk=;
+        b=s1MWdcbaIjMXjlqt8dV5+4z4jABItcftFXOdwzmUf/2hoH4vxsy2Q+fiqzOicTRB5k
+         IvKyxspbXlup8tKgmWcnfRAVlA0r95oicw8vzLRpuGRHP5flAvDN3sPxxSOJQn5fLkW9
+         SRHuwFgWyEsnw3pw1lcGj6zl5vxqlnO7CQ4Q/Blt2D0qk1yyh9L7guYXpDr1ARVklW3e
+         wviCjKNLIo5XqY1hOC9XqigqH/HcKcXfhE0Z6mT+WYKpHWf9egcsQO6l6PzzZa655+a5
+         7ziSBQOBuYIHv2XyXQWs5trA0OHFPiJFHAu1DJS5znk+LyvJ1mbx4yjmm1pfJNi1Pgs8
+         gihQ==
+X-Gm-Message-State: AOAM532tYv8wsz1woeuhw2/oQB+nr+FKw4xjYbdKRixJawG81x20P74e
+        dNMVq3qZFHog2rgsfgz79+nyU8kDINegdGCJbAvesg==
+X-Google-Smtp-Source: ABdhPJxwGXgWYmXQR1g64OoUroc8Iz4Bfn87HawyehbTd3kJCuBl+zB57hM5RAFqyDTtU6bYsCzS5wufzk2x4I8L0UY=
+X-Received: by 2002:a02:354a:: with SMTP id y10mr1818092jae.126.1606910223366;
+ Wed, 02 Dec 2020 03:57:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201129214328.254372dd@hermes.local>
-User-Agent: NeoMutt/20180716
+References: <20201201071632.68471-1-98.arpi@gmail.com> <CAHp75VfV60sRAKkzvbEKW7UEZSiDmNVfd_kB-OOKZRk5MNMeDQ@mail.gmail.com>
+ <e10ef8d3-f22b-db10-3784-c94ee425af46@gmail.com> <20201202094408.GW4077@smile.fi.intel.com>
+In-Reply-To: <20201202094408.GW4077@smile.fi.intel.com>
+From:   David Gow <davidgow@google.com>
+Date:   Wed, 2 Dec 2020 19:56:51 +0800
+Message-ID: <CABVgOS=hrfma2Yq=h2vqOoH1Mz4xSyfDbgkM9EHvMFk=HJkcnQ@mail.gmail.com>
+Subject: Re: [PATCH v3] lib: Convert test_hexdump.c to KUnit
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 29, 2020 at 09:43:28PM -0800, Stephen Hemminger wrote:
-> On Sun, 29 Nov 2020 08:51:47 -0800
-> "Michael Kelley" <mikelley@microsoft.com> wrote:
-> 
-> > From: Matheus Castello <matheus@castello.eng.br> Sent: Tuesday, November
-> > 24, 2020 7:29 PM
-> > > 
-> > > Checkpatch emits WARNING: quoted string split across lines.
-> > > To keep the code clean and with the 80 column length indentation the
-> > > check and registration code for kmsg_dump_register has been transferred
-> > > to a new function hv_kmsg_dump_register.
-> > > 
-> > > Signed-off-by: Matheus Castello <matheus@castello.eng.br>
-> > > ---
-> > > This is the V3 of patch 4 of the series "Add improvements suggested by
-> > > checkpatch for vmbus_drv" with the changes suggested by Michael Kelley  
-> > and
-> > > Joe Perches. Thanks!
-> > > ---
-> > >  drivers/hv/vmbus_drv.c | 35 ++++++++++++++++++++---------------
-> > >  1 file changed, 20 insertions(+), 15 deletions(-)
-> > > 
-> > > diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-> > > index 61d28c743263..edcc419ba328 100644
-> > > --- a/drivers/hv/vmbus_drv.c
-> > > +++ b/drivers/hv/vmbus_drv.c
-> > > @@ -1387,6 +1387,24 @@ static struct kmsg_dumper hv_kmsg_dumper = {
-> > >  	.dump = hv_kmsg_dump,
-> > >  };
-> > > 
-> > > +static void hv_kmsg_dump_register(void)
-> > > +{
-> > > +	int ret;
-> > > +
-> > > +	hv_panic_page = (void *)hv_alloc_hyperv_zeroed_page();
-> 
-> I know you just copy/pasted the original code, but one other thing.
-> 
-> Doesn't it already return void *?
-> arch/x86/include/asm/mshyperv.h:void *hv_alloc_hyperv_zeroed_page(void);
+On Wed, Dec 2, 2020 at 6:06 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Wed, Dec 02, 2020 at 09:51:19AM +0530, Arpitha Raghunandan wrote:
+> > On 01/12/20 4:36 pm, Andy Shevchenko wrote:
+> > > On Tue, Dec 1, 2020 at 9:21 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>
+> ...
+>
+> > >> I ran both the original and converted tests as is to produce the
+> > >> output for success of the test in the two cases. I also ran these
+> > >> tests with a small modification to show the difference in the output
+> > >> for failure of the test in both cases. The modification I made is:
+> > >>  static const char * const test_data_4_le[] __initconst = {
+> > >> -       "7bdb32be", "b293180a", "24c4ba70", "9b34837d",
+> > >> +       "7bdb32be", "b293180a", "24c4ba70", "9b3483d",
+> > >>
+> > >> The difference in outputs can be seen here:
+> > >> https://gist.github.com/arpi-r/38f53a3c65692bf684a6bf3453884b6e
+> > >
+> > > Looks pretty much good, what I'm sad to see is the absence of the test
+> > > statistics. Any ideas if we can get it back?
+> > >
+> >
+> > I could again include variable total_tests as was in the original test.
+> > Would that be fine?
+>
+> What I;m talking about is the output. How it will be implemented (using the
+> same variable or differently) is up to you. So the point is I want to see the
+> statistics of success/total at the end.
+>
+> I think this should be done in KUNIT rather than in the individual test cases.
 
-Good catch.
+I tend to agree here that this really is something for KUnit. At the
+moment, the tools/testing/kunit/kunit.py script will parse the kernel
+log and generate these sorts of statistics. I know that needing to run
+it through a script might seem like a step backwards, but there's no
+formal place for statistics in the KTAP specification[1] being worked
+on to standardise kselftest/kunit output formats. Note that there are
+other parsers for TAP-like formats which are being used with KUnit
+results, so systems like LAVA could also sum up these statistics. It's
+also possible, as Arpitha alluded to, to have the test dump them out
+as a comment.
 
-I have amended this patch and applied it to hyperv-next.
+This won't actually work for this test as-is, though, as the KUnit
+version is running as a single giant test case (so KUnit believes that
+1/1 tests have passed, rather than having any more-detailed
+statistics). It looks like there are a few ways to split it up a bit
+which would make it neater (a test each for the for() loops in
+test_hexdump_init() seems sensible to me), but at the moment, there's
+not really a way of programmatically generating test cases which KUnit
+then counts
 
-Wei.
+The "Parameterised Tests"[2] work Arpitha has been working on ought to
+go some way to helping here, though it won't solve this completely in
+this initial version. The problem there is that parameterised tests
+are not reported individually in a way the kunit.py parser can report
+cleanly, yet, so it'll still only be counted as one test until that's
+changed (though, at least, that shouldn't require any test-specific
+work).
+
+My suggestion for the ultimate state of the test would be:
+- Split up the test into separate KUnit tests for the different
+"categories" of tests: (e.g., test_hexdump_set,
+test_hexdump_overflow_set_ascii, etc)
+- Replace the for loops in test_hexdump_init() with parameters, so
+that KUnit is aware of the original runs.
+- Once KUnit and the tooling supports it, these will be reported as
+subtests. (In the meantime, the results will be listed individually,
+commented out)
+
+Of course, it'll take a while before all of those KUnit pieces are in
+place. I personally think that a good compromise would be to just do
+the first of these for now, which would make kunit_tool give at least
+a 4/4 rather than 1/1 result. Then, once the parameterised testing
+work is merged (and perhaps the tooling fixes are finished), the tests
+could be updated to take advantage of that.
+
+Cheres,
+-- David
+
+[1]: https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/T/
+[2]: https://lore.kernel.org/linux-kselftest/20201116054035.211498-1-98.arpi@gmail.com/
