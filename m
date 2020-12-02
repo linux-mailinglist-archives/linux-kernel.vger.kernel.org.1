@@ -2,95 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236B22CC708
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0E02CC744
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:59:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388071AbgLBTw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:52:27 -0500
-Received: from m42-5.mailgun.net ([69.72.42.5]:25417 "EHLO m42-5.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387809AbgLBTw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:52:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606938721; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=LgX5i1QHZI3wQmIzxB7xFGVYPc8Nw0EBGfijpsbTvHQ=;
- b=hbUsEJWQB82FR5pRuas2FWcC0/IJCWACLfUeo85UrgYg4GEd2xZsK9aOQidRM/lNX4sCjR7M
- SC5zDxjyqYEaF66ITAgKBG9gEckhfo3TBdr4Vm7hm096fCLpdqsaP5WYXskje54twd+7ahhx
- 8G8uvfY9OwNGvh8CKvvGQItBFIE=
-X-Mailgun-Sending-Ip: 69.72.42.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5fc7f047f4482b01c4cb0e4b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 19:51:35
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9B99CC43463; Wed,  2 Dec 2020 19:51:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 41F5CC433C6;
-        Wed,  2 Dec 2020 19:51:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 41F5CC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1731156AbgLBTyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:54:31 -0500
+Received: from mout.kundenserver.de ([212.227.126.134]:35391 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726463AbgLBTya (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 14:54:30 -0500
+Received: from [192.168.1.155] ([77.7.48.174]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MWRmF-1khPtM2VP1-00XquI; Wed, 02 Dec 2020 20:51:43 +0100
+Subject: Re: [PATCH v3 00/17] Introducing Linux root partition support for
+ Microsoft Hypervisor
+To:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        sameo@linux.intel.com, robert.bradford@intel.com,
+        sebastien.boeuf@intel.com
+References: <20201124170744.112180-1-wei.liu@kernel.org>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <227127cf-bfea-4a06-fcbc-f6c46102e9e6@metux.net>
+Date:   Wed, 2 Dec 2020 20:51:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 09/17] ath: regd: Provide description for
- ath_reg_apply_ir_flags's 'reg' param
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201126133152.3211309-10-lee.jones@linaro.org>
-References: <20201126133152.3211309-10-lee.jones@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201202195133.9B99CC43463@smtp.codeaurora.org>
-Date:   Wed,  2 Dec 2020 19:51:33 +0000 (UTC)
+In-Reply-To: <20201124170744.112180-1-wei.liu@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:FDj+XlqsEiQwf6kKcNyGz6HylFiO49Ux9hA8YaPOZ1DCUh68xtn
+ fvX2e/AjS8Dg+rDhaz4qtH61rxR6oY+fxjM9Bm+4mGuAdWdGLMcfqk9n898Ls0PIBIy84Ob
+ DmUdaFVDl1Pd99tGagx21wa4AxgnElbTzF9H4IHFAAzpzsc/motLBbvakvx/XracfNf+EFq
+ lFK5aQKq7xBuyBGi+SrGg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fca7Z5IC6so=:9d2pDF6trxzpKm7G2jxhz8
+ ODnPoOHC5brmQrZH8mhMhEH7VoI55ihmTV+ucLMG5SEaxeTds1ALoevp2A7cMHpOK5OvSNCLa
+ Wdcrv/V6h3rU25ikcsvV2vg1wscc6sLBwG26ej/1/gzCEhmcUK97YxC+2R8tPr+rK3ckrCUdm
+ d5HnRN35MLxgZHyPKyhMiu/YbF7y5LXEk7LxC9JXNdogExhpGAgyejkG8DleClIL8PfkSG0QJ
+ 7WSH3xSp6mOTtQJxMfPsIPac+86JckBWpdQEaEWuBc9NV2Dmnqvac9zttZltChm5HTpC2CwgM
+ AL0XpoPZX3AccJ70BfcOwE/ueieV2rMUzK8Xhsv9/+Gk7eH5sEV5jRgmIdhttxW2EEQSyiYha
+ j58pkXm/zvPlwnSq0swOJhgkPewa76k/jFB4cqs0TcbFmsHumfHL2kmX9E5ut
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> wrote:
+On 24.11.20 18:07, Wei Liu wrote:
 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/net/wireless/ath/regd.c:378: warning: Function parameter or member 'reg' not described in 'ath_reg_apply_ir_flags'
-> 
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Hi,
 
-Failed to apply:
+> There will be a subsequent patch series to provide a
+> device node (/dev/mshv) such that userspace programs can create and run virtual
+> machines. 
 
-error: patch failed: drivers/net/wireless/ath/regd.c:360
-error: drivers/net/wireless/ath/regd.c: patch does not apply
-stg import: Diff does not apply cleanly
+Any chance of using the already existing /dev/kvm interface ?
 
-3 patches set to Changes Requested.
-
-11933863 [09/17] ath: regd: Provide description for ath_reg_apply_ir_flags's 'reg' param
-11933871 [11/17] ath: dfs_pattern_detector: Fix some function kernel-doc headers
-11933859 [12/17] ath: dfs_pri_detector: Demote zero/half completed kernel-doc headers
+--mtx
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201126133152.3211309-10-lee.jones@linaro.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
