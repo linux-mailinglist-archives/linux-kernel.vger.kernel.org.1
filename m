@@ -2,140 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7E92CC474
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5CA2CC479
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730924AbgLBR7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:59:25 -0500
-Received: from m42-5.mailgun.net ([69.72.42.5]:43259 "EHLO m42-5.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728656AbgLBR7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:59:22 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606931942; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=d20BTJhJuOfIeJ6dTfjs7Aw/4YtAMOVaiif/uqb3Chc=; b=H/anSwagZgxwhb+H4g6tZXZ4E77UIAwpg27t7KMaUdxdttAhrBmHPZkywdQ6wSTbkP8reCxR
- Us3ECOSZIbIEJ5x/xwMRyuroZVOM+wek3wsZD01EzfwNRlOC1MEF0Eej+9PGwUpvmVUmyiZb
- w3ops7RKgAeeVXqa4vLad1w6C/A=
-X-Mailgun-Sending-Ip: 69.72.42.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5fc7d5c97edc97d061e452c4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 17:58:33
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AA702C43469; Wed,  2 Dec 2020 17:58:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 121FBC43461;
-        Wed,  2 Dec 2020 17:58:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 121FBC43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH 1/3] scsi: ufs: Add "wb_on" sysfs node to control WB
- on/off
-To:     Bean Huo <huobean@gmail.com>, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201130181143.5739-1-huobean@gmail.com>
- <20201130181143.5739-2-huobean@gmail.com>
- <2a380908-3eb4-2cdc-4156-03e8946ffd88@codeaurora.org>
- <30767ee7973670b86bff61d1d7b2044f17640b75.camel@gmail.com>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <64458f93-55ed-ae62-e7c2-d4c54721b2b1@codeaurora.org>
-Date:   Wed, 2 Dec 2020 09:58:29 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S2387578AbgLBSCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:02:02 -0500
+Received: from ale.deltatee.com ([204.191.154.188]:53828 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727454AbgLBSCB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 13:02:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=PNgBCQ8XfFmn9D3DM+iYXdqG+oFaCFQKqsKGuaozXnM=; b=I/z1+NEbS5rhAEcJyNoJdYZjKX
+        GF2BGYAtWOziMnVigqzE1eUHMglwIZi+OmM1AakjZs+Hsd+bzWcf+PlXB/NIrTjj2GlCUoWYRDZcR
+        zPrHxLOH3/uzMbPUwi8F4aVw+xFx1S2W8X9T3V8IPnUoy56PN4haxXE8+yqphc/TCQmKcb8g8ZBDB
+        dFrTJvFFcAG2SkWwRdgs6sezejN5wBuhZoRuXG/ncxXX65UP6Ef8E3zQkSlkTF4IEVKC8dcAdHVlK
+        +xQADBoG7nV0lmFg7pnNxU24eHo65/Fy8AJIsfGoESJY8P6Q+68xlKurQ45l25yeVq2/CtZ28awXH
+        iDej8pIw==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1kkWRD-0003mr-EY; Wed, 02 Dec 2020 11:01:12 -0700
+To:     Christoph Hellwig <hch@lst.de>,
+        Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org
+References: <20201106005147.20113-1-rcampbell@nvidia.com>
+ <20201106005147.20113-4-rcampbell@nvidia.com> <20201106080322.GE31341@lst.de>
+ <a7b8b90c-09b7-2009-0784-908b61f61ef2@nvidia.com>
+ <20201109091415.GC28918@lst.de>
+ <bbf1f0df-85f3-5887-050e-beb2aad750f2@nvidia.com>
+ <20201202101426.GC7597@lst.de>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <7229bb21-7bf7-4989-e7cf-210834190693@deltatee.com>
+Date:   Wed, 2 Dec 2020 11:01:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <30767ee7973670b86bff61d1d7b2044f17640b75.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201202101426.GC7597@lst.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org, dan.j.williams@intel.com, akpm@linux-foundation.org, shuah@kernel.org, bskeggs@redhat.com, yang.shi@linux.alibaba.com, kirill.shutemov@linux.intel.com, ziy@nvidia.com, bharata@linux.ibm.com, jgg@nvidia.com, apopple@nvidia.com, jhubbard@nvidia.com, jglisse@redhat.com, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, nouveau@lists.freedesktop.org, linux-mm@kvack.org, rcampbell@nvidia.com, hch@lst.de
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        MYRULES_FREE,NICE_REPLY_A autolearn=no autolearn_force=no version=3.4.2
+Subject: Re: [PATCH v3 3/6] mm: support THP migration to device private memory
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/2020 8:20 AM, Bean Huo wrote:
-> On Mon, 2020-11-30 at 15:19 -0800, Asutosh Das (asd) wrote:
->>> +             return -EINVAL;
->>> +
->>> +     pm_runtime_get_sync(hba->dev);
->>> +     res = ufshcd_wb_ctrl(hba, wb_enable);
+
+
+On 2020-12-02 3:14 a.m., Christoph Hellwig wrote:>>
+MEMORY_DEVICE_PCI_P2PDMA:
+>> Struct pages are created in pci_p2pdma_add_resource() and represent device
+>> memory accessible by PCIe bar address space. Memory is allocated with
+>> pci_alloc_p2pmem() based on a byte length but the gen_pool_alloc_owner()
+>> call will allocate memory in a minimum of PAGE_SIZE units.
+>> Reference counting is +1 per *allocation* on the pgmap->ref reference count.
+>> Note that this is not +1 per page which is what put_page() expects. So
+>> currently, a get_page()/put_page() works OK because the page reference count
+>> only goes 1->2 and 2->1. If it went to zero, the pgmap->ref reference count
+>> would be incorrect if the allocation size was greater than one page.
 >>
->> Say, a platform supports clock-scaling and this bit is toggled.
->> The control goes into ufshcd_wb_ctrl for both this sysfs and
->> clock-scaling contexts. The clock-scaling context passes all checks
->> and
->> blocks on waiting for this wb control to be disabled and then tries
->> to
->> enable wb when it's already disabled. Perhaps that's a race there?
+>> I see pci_alloc_p2pmem() is called by nvme_alloc_sq_cmds() and
+>> pci_p2pmem_alloc_sgl() to create a command queue and a struct scatterlist *.
+>> Looks like sg_page(sg) returns the ZONE_DEVICE struct page of the scatterlist.
+>> There are a huge number of places sg_page() is called so it is hard to tell
+>> whether or not get_page()/put_page() is ever called on MEMORY_DEVICE_PCI_P2PDMA
+>> pages.
 > 
-> Hi Asutosh
-> Appreciate your review.
-> There is only inconsistent problem between clock-scaling and sysfs,
-> since hba->dev_cmd.lock can garantee there is only one can change
-> fWriteBoosterEn. But this is only happening on user willfully wants to
-> control WB through sysfs even they know the platform supports clock-
-> scaling.
-> 
-> Since this is for the platform which doesn't support clock-scaling, I
-> think based on your comments, it should be acceptable for you like
-> this:
+> Nothing should call get_page/put_page on them, as they are not treated
+> as refcountable memory.  More importantly nothing is allowed to keep
+> a reference longer than the time of the I/O.
 
-Or a synchronization primitive b/w the 2 contexts would work just as 
-well. However, I don't have an issue if the user is denied toggling of 
-wb anyway. LGTM.
+Yes, right now this is safe, as Christoph notes there are no places
+where these should be got/put.
 
-> 
-> 
-> +static ssize_t wb_on_store(struct device *dev, struct device_attribute
-> *attr,
-> +                          const char *buf, size_t count)
-> +{
-> +       struct ufs_hba *hba = dev_get_drvdata(dev);
-> +       unsigned int wb_enable;
-> +       ssize_t res;
-> +
-> +       if (ufshcd_is_clkscaling_supported(hba)) {
-> +          dev_err(dev, "supports dynamic clk scaling, control WB
-> +                       through sysfs is not allowed!");
-> +          return -EOPNOTSUPP;
-> +       }
-> +       if (!ufshcd_is_wb_allowed(hba))
-> +               return -EOPNOTSUPP;
-> +
-> +       if (kstrtouint(buf, 0, &wb_enable))
-> +               return -EINVAL;
-> +
-> +       if (wb_enable != 0 && wb_enable != 1)
-> +               return -EINVAL;
-> +
-> +       pm_runtime_get_sync(hba->dev);
-> +       res = ufshcd_wb_ctrl(hba, wb_enable);
-> +       pm_runtime_put_sync(hba->dev);
-> +
-> +       return res < 0 ? res : count;
-> +}
-> 
-> thanks,
-> Bean
-> 
-> 
+But eventually we'll need to change how pci_alloc_p2pmem() works to take
+references on the actual pages and allow freeing individual pages,
+similar to what you suggest. This is one of the issues Jason pointed out
+in my last RFC to try to pass these pages through GUP.
 
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+Logan
