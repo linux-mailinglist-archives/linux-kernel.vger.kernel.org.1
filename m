@@ -2,90 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADF72CB4A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3801A2CB4AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728607AbgLBFnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 00:43:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53654 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726125AbgLBFnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 00:43:04 -0500
-Date:   Wed, 2 Dec 2020 06:42:19 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606887743;
-        bh=HbG+x30kbOrygkg5sexkj7WcPpceKosMRoLa5l3XhcQ=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EJUgzw9FI0iexqKCQsPbw4glZsF6l3lV/YCm3d1CT7llv7nkpgNwUBaIRbNc3dJAV
-         WCdV9FePi5rzLxU6fICuI4j1eoL3Jq5meiQKbx9YW4ptZdrnoA6AjFvO04JwBTPTO/
-         7s4lPXYb6XFkK9anes8HzwPy0NNNbpbDJE0t4Y0w=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ertza Warraich <ertza.afzal@gmail.com>
-Cc:     balbi@kernel.org, sorganov@gmail.com, mirq-linux@rere.qmqm.pl,
-        fabrice.gasnier@st.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kt0755@gmail.com,
-        dave.jing.tian@gmail.com
-Subject: Re: memory leak in gs_start_io
-Message-ID: <X8cpO9caQCX6XGU9@kroah.com>
-References: <CAD+hOzs6To=P7z=fYNLDHW-9ZksnykJW2cAWCCVhUGne5C21iA@mail.gmail.com>
+        id S1728480AbgLBFr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 00:47:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726125AbgLBFr1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 00:47:27 -0500
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23417C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 21:46:47 -0800 (PST)
+Received: by mail-vk1-xa42.google.com with SMTP id m6so147844vkl.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 21:46:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zIYg3wn3IiOAwIUjN3HHnL/xxZ7BzmV6ArGGQCieAHY=;
+        b=bON2yGnfCiyS2deASK7lq7vUUxyZx+TcNqxyx0Y2lzXGXaJk2/GGL6wVTlpf746M17
+         ewSfrj7S9dsZKHz9EXsFml/ZRzW3ibKt2hylTzUrhiQailV3BSYLijuRVIlNThE7Ss7H
+         KnWN0tGzIrPrfvFAOAvf+8FI8ABAECA3BAv1o2Nf8hdcpJnE2U+4ENVHLDfsMJ2syTzS
+         iaGmOfE/X9XwWP/ylcYRN5sQKiXL7/ZHlVEs4e0tCksSkzjQe+RVz9j9FQbs4OUZPc8T
+         CR1MgHpyNAn/FzhGrLr7gcE7qYAYqX3l4Q2HISPXD2rjqVZX7wjj378ggI/rHdDvjDb8
+         F84w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zIYg3wn3IiOAwIUjN3HHnL/xxZ7BzmV6ArGGQCieAHY=;
+        b=EIcAIbW/pDTsFRr329eyuicoczT+QVRK9a8lJocyEznzdK1EDY6/gBhhwPFcGG5QP5
+         QBaJukTE5lJcW1UilRpDWf9Sb/N9a4YtMOz8DXLw0K/GzO2MFGyISwOJux9Wqj+0Zkj7
+         Pwf3doshusbZcaGs5XJ9tNt2X4fQKCnCYqESQjJWzVZ9is0UVUna38ufQdLp8xZ+rs5l
+         8Xv5Jy3UUzTQSxXasS0PEOxAYJt8TbG/zWS/qJwRg/k4UVhjESrpQYk7cMX9Pm3M/f9G
+         G3GcaCqCA794BZnKBbFnwDxd/gDj0IEXDl8llZeHoXcvTbPk0K2YN2VhKZSiyL+RboJK
+         mdBQ==
+X-Gm-Message-State: AOAM531FSmaLhTAEfUg9GjmhI6MxH8s7gvsmUI91QMloLsqpyIXRSBSE
+        9IzN6xkGPFZXrEz5BylPp4ihJATpVtshnnlhYLXqww==
+X-Google-Smtp-Source: ABdhPJyfTarblbQWXQ2D0gqGJIM068ljJFblRKN2s+iu0HTYtaH2RdablEmO5KmOvdnbvJUKStvPOuGuLcyF9JZVZE8=
+X-Received: by 2002:a1f:36d4:: with SMTP id d203mr580407vka.22.1606888005927;
+ Tue, 01 Dec 2020 21:46:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD+hOzs6To=P7z=fYNLDHW-9ZksnykJW2cAWCCVhUGne5C21iA@mail.gmail.com>
+References: <20201118220731.925424-1-samitolvanen@google.com>
+ <20201130120130.GF24563@willie-the-truck> <202012010929.3788AF5@keescook> <CAK7LNASQPOGohtUyzBM6n54pzpLN35kDXC7VbvWzX8QWUmqq9g@mail.gmail.com>
+In-Reply-To: <CAK7LNASQPOGohtUyzBM6n54pzpLN35kDXC7VbvWzX8QWUmqq9g@mail.gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Tue, 1 Dec 2020 21:46:33 -0800
+Message-ID: <CABCJKuf6=nqsUFYc5m91x_H44ojBjoE+BqZr81D8T6xRhWTiEg@mail.gmail.com>
+Subject: Re: [PATCH v7 00/17] Add support for Clang LTO
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 11:45:20PM -0500, Ertza Warraich wrote:
-> We report a memory leak bug (in linux-5.8.13) found by FuzzUSB (a modified
-> version of syzkaller).
-> 
-> The bug report is as follows:
-> ==================================================================
-> BUG: memory leak
-> unreferenced object 0xffff888069c12000 (size 128):
->  comm "c4_fuzz", pid 2628, jiffies 4294945547 (age 774.450s)
->  hex dump (first 32 bytes):
->   b8 80 48 65 80 88 ff ff 00 7c f9 5b 80 88 ff ff ..He.....|.[....
->   00 7c af 64 80 88 ff ff 00 02 00 00 00 00 00 00 .|.d............
->  backtrace:
->   [<000000008f105b01>] kmemleak_alloc_recursive include/linux/kmemleak.h:43
-> [inline]
->   [<000000008f105b01>] slab_post_alloc_hook mm/slab.h:588 [inline]
->   [<000000008f105b01>] slab_alloc_node mm/slub.c:2824 [inline]
->   [<000000008f105b01>] slab_alloc mm/slub.c:2832 [inline]
->   [<000000008f105b01>] kmem_cache_alloc_trace+0xfe/0x330 mm/slub.c:2849
->   [<0000000081072efc>] kmalloc include/linux/slab.h:555 [inline]
->   [<0000000081072efc>] kzalloc include/linux/slab.h:669 [inline]
->   [<0000000081072efc>] dummy_alloc_request+0xa0/0x190
-> drivers/usb/gadget/udc/dummy_hcd.c:663
->   [<00000000b14438ed>] usb_ep_alloc_request+0x65/0x2c0
-> drivers/usb/gadget/udc/core.c:178
->   [<000000006b6ab221>] gs_alloc_req+0x28/0xd0
-> drivers/usb/gadget/function/u_serial.c:166
->   [<00000000999f9b54>] gs_alloc_requests+0x207/0x2f0
-> drivers/usb/gadget/function/u_serial.c:517
->   [<00000000eae934b0>] gs_start_io+0x134/0x2a0
-> drivers/usb/gadget/function/u_serial.c:555
->   [<00000000eec10774>] gs_open+0x323/0x440
-> drivers/usb/gadget/function/u_serial.c:640
->   [<00000000c27493c6>] tty_open+0x23c/0x870 drivers/tty/tty_io.c:2048
->   [<0000000001954030>] chrdev_open+0x1e9/0x5b0 fs/char_dev.c:414
->   [<000000002321ec1f>] do_dentry_open+0x434/0xf40 fs/open.c:828
->   [<000000000de9bc50>] vfs_open+0x9a/0xc0 fs/open.c:942
->   [<00000000b1e25f2d>] do_open fs/namei.c:3243 [inline]
->   [<00000000b1e25f2d>] path_openat+0x1658/0x2570 fs/namei.c:3360
->   [<00000000b7cea3b5>] do_filp_open+0x15e/0x210 fs/namei.c:3387
->   [<00000000793cea2f>] do_sys_openat2+0x2e0/0x570 fs/open.c:1179
->   [<0000000067f289f1>] do_sys_open+0x88/0xc0 fs/open.c:1195
->   [<00000000937c31df>] ksys_open include/linux/syscalls.h:1388 [inline]
->   [<00000000937c31df>] __do_sys_open fs/open.c:1201 [inline]
->   [<00000000937c31df>] __se_sys_open fs/open.c:1199 [inline]
->   [<00000000937c31df>] __x64_sys_open+0x79/0xb0 fs/open.c:1199
-> ==================================================================
+On Tue, Dec 1, 2020 at 6:43 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Wed, Dec 2, 2020 at 2:31 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Mon, Nov 30, 2020 at 12:01:31PM +0000, Will Deacon wrote:
+> > > Hi Sami,
+> > >
+> > > On Wed, Nov 18, 2020 at 02:07:14PM -0800, Sami Tolvanen wrote:
+> > > > This patch series adds support for building the kernel with Clang's
+> > > > Link Time Optimization (LTO). In addition to performance, the primary
+> > > > motivation for LTO is to allow Clang's Control-Flow Integrity (CFI) to
+> > > > be used in the kernel. Google has shipped millions of Pixel devices
+> > > > running three major kernel versions with LTO+CFI since 2018.
+> > > >
+> > > > Most of the patches are build system changes for handling LLVM bitcode,
+> > > > which Clang produces with LTO instead of ELF object files, postponing
+> > > > ELF processing until a later stage, and ensuring initcall ordering.
+> > > >
+> > > > Note that v7 brings back arm64 support as Will has now staged the
+> > > > prerequisite memory ordering patches [1], and drops x86_64 while we work
+> > > > on fixing the remaining objtool warnings [2].
+> > >
+> > > Sounds like you're going to post a v8, but that's the plan for merging
+> > > that? The arm64 parts look pretty good to me now.
+> >
+> > I haven't seen Masahiro comment on this in a while, so given the review
+> > history and its use (for years now) in Android, I will carry v8 (assuming
+> > all is fine with it) it in -next unless there are objections.
+>
+>
+> What I dislike about this implementation is
+> it cannot drop any unreachable function/data.
+> (and it is completely different from GCC LTO)
+>
+> This is not real LTO.
 
-Nice, care to make up a fix for this now that you have a reproducer?
+I'm not sure I understand your concern. LTO cannot drop functions or
+data from vmlinux.o that may be referenced externally. However, with
+CONFIG_LD_DEAD_CODE_DATA_ELIMINATION, the linker certainly can drop
+unused functions and data when linking vmlinux, and there's no reason
+this option can't be used together with LTO. In fact, Pixel 3 does
+enable this option, but in our experience, there isn't much unused
+code or data to remove, so later devices no longer use it.
 
-thanks,
+There's technically no reason why we couldn't postpone LTO until we
+link vmlinux instead, and thus allow the linker to possibly remove
+more unused code without the help of --gc-sections, but at least with
+the current build process, that would involve performing the slow LTO
+link step multiple times, which isn't worth it when we can get the
+performance benefits (and CFI) already when linking vmlinux.o with
+LTO.
 
-greg k-h
+Sami
