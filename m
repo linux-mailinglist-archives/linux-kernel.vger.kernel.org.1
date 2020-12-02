@@ -2,203 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD7D2CB19C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E47722CB1A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727398AbgLBAhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 19:37:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726484AbgLBAhb (ORCPT
+        id S1727482AbgLBAnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 19:43:31 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:41056 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726166AbgLBAna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 19:37:31 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8860EC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 16:36:45 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id y10so6506868ljc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 16:36:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UJhztdZynXb7tPEI36+ujzKI7+HaogLqrwHqJZ6xSGk=;
-        b=owdHCrcJ8DWGtNg1gUGzdJYOz+JfjJI+BVPQw3DjEShWJfSVB7EeMno/mLpIndvihC
-         wLz2gyFIwd/QB724Gn0PJRsp8yc4M/gCpND3Zp5PoQt6ZqjzDpUy9RWDQ3XyhUXEpq3r
-         ml5D/mIrSRCo1XJLt9Ui/0VMcoy4Qy6EmvcuKWiWSX0Htw5R6q0mfZPxLqJ05cit2gJJ
-         gZN+JbTsS9nkkH83MaULxOwHZOHOatoe6th68DZ6zeuKI5YkgMH5SzgoyXdWGg+f3B02
-         v/d6+4+6DG6Cl3s2eUgLbChJbwGvI2b3tf6sO9N3843lcOxOCa4LUnFRra3hZ5lS4D+h
-         vFxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UJhztdZynXb7tPEI36+ujzKI7+HaogLqrwHqJZ6xSGk=;
-        b=qKX8GwId87oswj0JK4E8iur1VIh651T2+GcWYzel/sQC/fKntoj5CXny0VKIuo4G73
-         Bpt3ZUFCWB7HtysW4EdKJ2GQir7UGm0Beor9T5yYxlE9aNEJIhIAgUVQ/ziMwOrt7HbB
-         4K8itnj4wl275C00udykXHqjmhl9ry1CqcSRn7jzgaEP0xYA4x3lPC9AQu+i71EpaglD
-         YdWraZf++Jxxj6j9xNk+cPXrYRQjfyPr71t69PAlSSSzbbNEbVvDcY6s2o3Hs2ZCqScn
-         a1uHCCYt/wxyJKrNPM33k4T+X+nVDlVsposhlGNeS0bEMAGTq/wShxygfFauuojg/Euz
-         ldvg==
-X-Gm-Message-State: AOAM532BIX0BqFjd14kO+59z3awTkCI3GNP5R+xuhBgUEhJ3XLMXyRFI
-        jurqcFpV0ifU0xjVFAptbZxFGbmVFQ0V+CUuWbh70A==
-X-Google-Smtp-Source: ABdhPJx56U3HGwLozDT7g65P6Eu9H5HaAcE6TATV6De2j5p0V6cIQEMtJGbtS5WtuhBSe+AUqOxlM/Jk0EBkmwozYvk=
-X-Received: by 2002:a2e:9746:: with SMTP id f6mr11918ljj.270.1606869403687;
- Tue, 01 Dec 2020 16:36:43 -0800 (PST)
+        Tue, 1 Dec 2020 19:43:30 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B20e0bj031883;
+        Wed, 2 Dec 2020 00:42:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=+QnGX543wIkXyLX+8yfaBqOqLwRBEAofgYjBOnar1Sw=;
+ b=RoxUDqoPGYBjQqoW73RstcFbtrD6mhwgA8QUKF+7kSIG+146ln7VyZE1I5Tj2weHzWOc
+ JRvnDpQDpsnAkItn5NBE1214FSE4FYNkvJkBmlRJxy6lhH4ecau0heGUGqhmIeYy135G
+ xqiLHWBOU0L2tFqrYyn3gAnRr6KCumOPmrKUSVzebH/8wbMiws0aOKmuPJ+vqdwh/iKz
+ M8tP5RglcBIEftfeL9FA7drsqtjuO24aI3Qau7Ouc4Wcv7S0GrTdpWqp2UL+e7HzMfx5
+ 7GuH4arrLMWZyBrMXU8oF1pBrgPviEzBE0/QOhv8P6/UENYFBJOYBRwvulGY/SXq3OfL gg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 353dyqnhyd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 02 Dec 2020 00:42:12 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B20adfw193756;
+        Wed, 2 Dec 2020 00:40:12 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 35404njyv3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Dec 2020 00:40:11 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B20e9QE001999;
+        Wed, 2 Dec 2020 00:40:09 GMT
+Received: from [10.159.145.103] (/10.159.145.103)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 01 Dec 2020 16:40:09 -0800
+Subject: Re: [PATCH RFC 03/39] KVM: x86/xen: register shared_info page
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+References: <20190220201609.28290-1-joao.m.martins@oracle.com>
+ <20190220201609.28290-4-joao.m.martins@oracle.com>
+ <b647bed6c75f8743b8afea251a88f00a5feaee29.camel@infradead.org>
+From:   Ankur Arora <ankur.a.arora@oracle.com>
+Message-ID: <2d4df59d-f945-32dc-6999-a6f711e972ea@oracle.com>
+Date:   Tue, 1 Dec 2020 16:40:07 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20201130233504.3725241-1-axelrasmussen@google.com>
- <CALvZod42+o7naLOkpo9Jngmhru-aR4K6RCuTk7TukCikAYrDbQ@mail.gmail.com>
- <CAJHvVcgtoyJ_C0L=KByb8UbZm6x_RtCTnznYA1HwmdzX4Y=mHw@mail.gmail.com>
- <xr93lfehl8al.fsf@gthelen.svl.corp.google.com> <CALvZod4j9fFpGRfkios1ef0D5qhyw3XA_VSVm0k__RuMG1Qhwg@mail.gmail.com>
- <CAJHvVchcm_HLd1RaibCZDZi27_2CVCwUWDX515dvnPPyTpHBHw@mail.gmail.com>
- <CALvZod5CpPhvzB99VZTc33Sb5YCbJNHFe3k33k+HwNfJvJbpJQ@mail.gmail.com> <CAJHvVcjBErccEwNjuDqzsrbuzSmJva7uknZKhtBwWfs9_t4zTg@mail.gmail.com>
-In-Reply-To: <CAJHvVcjBErccEwNjuDqzsrbuzSmJva7uknZKhtBwWfs9_t4zTg@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 1 Dec 2020 16:36:32 -0800
-Message-ID: <CALvZod6qpbEX+kp_gh5O4U1-kc+DfoG4DnGoWMvVnuXUOTLBBg@mail.gmail.com>
-Subject: Re: [PATCH] mm: mmap_lock: fix use-after-free race and css ref leak
- in tracepoints
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Rientjes <rientjes@google.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michel Lespinasse <walken@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>, dsahern@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>, liuhangbin@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b647bed6c75f8743b8afea251a88f00a5feaee29.camel@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020001
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ clxscore=1011 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
+ suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020001
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 4:16 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
->
-> On Tue, Dec 1, 2020 at 12:53 PM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > +Tejun Heo
-> >
-> > On Tue, Dec 1, 2020 at 11:14 AM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> > >
-> > > On Tue, Dec 1, 2020 at 10:42 AM Shakeel Butt <shakeelb@google.com> wrote:
-> > > >
-> > > > On Tue, Dec 1, 2020 at 9:56 AM Greg Thelen <gthelen@google.com> wrote:
-> > > > >
-> > > > > Axel Rasmussen <axelrasmussen@google.com> wrote:
-> > > > >
-> > > > > > On Mon, Nov 30, 2020 at 5:34 PM Shakeel Butt <shakeelb@google.com> wrote:
-> > > > > >>
-> > > > > >> On Mon, Nov 30, 2020 at 3:43 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> > > > > >> >
-> > > > > >> > syzbot reported[1] a use-after-free introduced in 0f818c4bc1f3. The bug
-> > > > > >> > is that an ongoing trace event might race with the tracepoint being
-> > > > > >> > disabled (and therefore the _unreg() callback being called). Consider
-> > > > > >> > this ordering:
-> > > > > >> >
-> > > > > >> > T1: trace event fires, get_mm_memcg_path() is called
-> > > > > >> > T1: get_memcg_path_buf() returns a buffer pointer
-> > > > > >> > T2: trace_mmap_lock_unreg() is called, buffers are freed
-> > > > > >> > T1: cgroup_path() is called with the now-freed buffer
-> > > > > >>
-> > > > > >> Any reason to use the cgroup_path instead of the cgroup_ino? There are
-> > > > > >> other examples of trace points using cgroup_ino and no need to
-> > > > > >> allocate buffers. Also cgroup namespace might complicate the path
-> > > > > >> usage.
-> > > > > >
-> > > > > > Hmm, so in general I would love to use a numeric identifier instead of a string.
-> > > > > >
-> > > > > > I did some reading, and it looks like the cgroup_ino() mainly has to
-> > > > > > do with writeback, instead of being just a general identifier?
-> > > > > > https://www.kernel.org/doc/Documentation/cgroup-v2.txt
-> > > >
-> > > > I think you are confusing cgroup inodes with real filesystem inodes in that doc.
-> > > >
-> > > > > >
-> > > > > > There is cgroup_id() which I think is almost what I'd want, but there
-> > > > > > are a couple problems with it:
-> > > > > >
-> > > > > > - I don't know of a way for userspace to translate IDs -> paths, to
-> > > > > > make them human readable?
-> > > > >
-> > > > > The id => name map can be built from user space with a tree walk.
-> > > > > Example:
-> > > > >
-> > > > > $ find /sys/fs/cgroup/memory -type d -printf '%i %P\n'                                                                          # ~ [main]
-> > > > > 20387 init.scope
-> > > > > 31 system.slice
-> > > > >
-> > > > > > - Also I think the ID implementation we use for this is "dense",
-> > > > > > meaning if a cgroup is removed, its ID is likely to be quickly reused.
-> > > > > >
-> > > >
-> > > > The ID for cgroup nodes (underlying it is kernfs) are allocated from
-> > > > idr_alloc_cyclic() which gives new ID after the last allocated ID and
-> > > > wrap after around INT_MAX IDs. So, likeliness of repetition is very
-> > > > low. Also the file_handle returned by name_to_handle_at() for cgroupfs
-> > > > returns the inode ID which gives confidence to the claim of low chance
-> > > > of ID reusing.
-> > >
-> > > Ah, for some reason I remembered it using idr_alloc(), but you're
-> > > right, it does use cyclical IDs. Even so, tracepoints which expose
-> > > these IDs would still be difficult to use I think.
-> >
-> > The writeback tracepoint in include/trace/events/writeback.h is
-> > already using the cgroup IDs. Actually it used to use cgroup_path but
-> > converted to cgroup_ino.
-> >
-> > Tejun, how do you use these tracepoints?
-> >
-> > > Say we're trying to
-> > > collect a histogram of lock latencies over the course of some test
-> > > we're running. At the end, we want to produce some kind of
-> > > human-readable report.
-> > >
-> >
-> > I am assuming the test infra and the tracing infra are decoupled
-> > entities and test infra is orchestrating the cgroups as well.
-> >
-> > > cgroups may come and go throughout the test. Even if we never re-use
-> > > IDs, in order to be able to map all of them to human-readable paths,
-> > > it seems like we'd need some background process to poll the
-> > > /sys/fs/cgroup/memory directory tree as Greg described, keeping track
-> > > of the ID<->path mapping. This seems expensive, and even if we poll
-> > > relatively frequently we might still miss short-lived cgroups.
-> > >
-> > > Trying to aggregate such statistics across physical machines, or
-> > > reboots of the same machine, is further complicated. The machine(s)
-> > > may be running the same application, which runs in a container with
-> > > the same path, but it'll end up with different IDs. So we'd have to
-> > > collect the ID<->path mapping from each, and then try to match up the
-> > > names for aggregation.
-> >
-> > How about adding another tracepoint in cgroup_create which will output
-> > the ID along with the name or path? With a little post processing you
-> > can get the same information. Also note that if the test is
-> > deleting/creating the cgroup with the same name, you will miss that
-> > information if filtering with just path.
-> >
-> > IMHO cgroup IDs will make the kernel code much simpler with the
-> > tradeoff of a bit more work in user space.
->
-> I like this idea! I think userspace can use the synthetic trace event
-> API to construct an event which includes the strings, like the one
-> I've added, if we had this separate ID<->path mapping tracepoint. If
-> so, it would be just as easy for userspace to use, but it would let us
-> deal with integer IDs everywhere else in the kernel, and keep the
-> complexity related to dealing with buffers limited to just one place.
->
-> That said, I'd prefer to pursue this as a follow-up thing, rather than
-> as part of fixing this bug. Seem reasonable?
+On 2020-12-01 5:07 a.m., David Woodhouse wrote:
+> On Wed, 2019-02-20 at 20:15 +0000, Joao Martins wrote:
+>> +static int kvm_xen_shared_info_init(struct kvm *kvm, gfn_t gfn)
+>> +{
+>> +       struct shared_info *shared_info;
+>> +       struct page *page;
+>> +
+>> +       page = gfn_to_page(kvm, gfn);
+>> +       if (is_error_page(page))
+>> +               return -EINVAL;
+>> +
+>> +       kvm->arch.xen.shinfo_addr = gfn;
+>> +
+>> +       shared_info = page_to_virt(page);
+>> +       memset(shared_info, 0, sizeof(struct shared_info));
+>> +       kvm->arch.xen.shinfo = shared_info;
+>> +       return 0;
+>> +}
+>> +
+> 
+> Hm.
+> 
+> How come we get to pin the page and directly dereference it every time,
+> while kvm_setup_pvclock_page() has to use kvm_write_guest_cached()
+> instead?
 
-SGTM but note that usually Andrew squash all the patches into one
-before sending to Linus. If you plan to replace the path buffer with
-integer IDs then no need to spend time fixing buffer related bug.
+So looking at my WIP trees from the time, this is something that
+we went back and forth on as well with using just a pinned page or a
+persistent kvm_vcpu_map().
+
+I remember distinguishing shared_info/vcpu_info from kvm_setup_pvclock_page()
+as shared_info is created early and is not expected to change during the
+lifetime of the guest which didn't seem true for MSR_KVM_SYSTEM_TIME (or
+MSR_KVM_STEAL_TIME) so that would either need to do a kvm_vcpu_map()
+kvm_vcpu_unmap() dance or do some kind of synchronization.
+
+That said, I don't think this code explicitly disallows any updates
+to shared_info.
+
+> 
+> If that was allowed, wouldn't it have been a much simpler fix for
+> CVE-2019-3016? What am I missing?
+
+Agreed.
+
+Perhaps, Paolo can chime in with why KVM never uses pinned page
+and always prefers to do cached mappings instead?
+
+> 
+> Should I rework these to use kvm_write_guest_cached()?
+
+kvm_vcpu_map() would be better. The event channel logic does RMW operations
+on shared_info->vcpu_info.
+
+
+Ankur
+
+> 
+> 
