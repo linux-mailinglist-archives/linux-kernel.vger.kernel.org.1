@@ -2,93 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6D82CB735
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B33002CB738
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387763AbgLBIaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:30:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43532 "EHLO
+        id S2387883AbgLBIav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:30:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387665AbgLBIai (ORCPT
+        with ESMTP id S2387526AbgLBIau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:30:38 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F14C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 00:29:52 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id x17so861559ybr.8
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 00:29:52 -0800 (PST)
+        Wed, 2 Dec 2020 03:30:50 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACFBC0613D4;
+        Wed,  2 Dec 2020 00:30:10 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id 7so2399040ejm.0;
+        Wed, 02 Dec 2020 00:30:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=S+qYG3f+zkwp5W/+x0WfTqqNUJfNcCEhpNZcMzYMnsY=;
-        b=1v+K7cxNdsM5r6lIlQtQF4rJhEM6uT11PQgaGVGaGCfOagZM6VPXQMwB+CZMPNbWoV
-         cScaOl7YBf7RIJPnEzr5octgEyLpyydS05Ney6eWczb9b1tpJK7yrrhrC+2C3DBDw57t
-         jDL2WGJW9H9XqtGmjcMfVIpTX/BEpylKN765Ght5RfXOw2wsPpQb2WLCzVrjKJxSoHqx
-         dVO6kbvy24FFfaF+MfgmoNx/G0JKwVKo0q+mfDwYHNtIMdpqy6aGNI4P8Y4XlGwM3irG
-         veGHBYLlFHCR0rLVgG5sg8Hx9Ph6ARVf3eE5AsM2gRv4mH37Eta8BpAGdUfqOeJqagFI
-         kpuQ==
+         :cc;
+        bh=MOr64WR7JFh8O6zNoSvDJ/dxwL5S48zFZviyd6WC91U=;
+        b=IdFVuOEzP1UAX1qbacan+RDDK2HPWdWW+uKPz5xMiXD8BrBdZyaBWurby6ulSX3FSM
+         Sd2D2MZ+RJyzLsf59s1tTiJ7GgHpZsIJT2aqiZzENw5+NzLIKsvTvEu63yi60hSdL7iH
+         jJRuoQ1tzzsAHfEq9jfcT/p9H0Qj1Ps69GZpNCOzWqO9bmxivYwkjZEZDPeXZhiPCW1X
+         sG5F1TQF+MZuiw7kxeGNrD5ctg8U7N91rLjY/LXOn5Yyl9jADe/JZAsi5HFcA7rFIDSb
+         gykybnUCwp2zkHSpuBd8tmgHGMSXQ1VWblo65+PwYk0eWMIg8vOhnGtVVU4onE1jFMBe
+         GfEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=S+qYG3f+zkwp5W/+x0WfTqqNUJfNcCEhpNZcMzYMnsY=;
-        b=BhlijWDi7WMOZvpB03BVBaXRnJAQNck2eo6Y3OeMs0Y1p8whNqtcdqXsAFdVJk+60L
-         ETdTqOL5HIoyFf7pRbAfzelNAqHQv2lS16lz8eRDxI5v7yiFnu6yNRYi87P3erc6DnRp
-         RZbhPGs9a2areK1WT3vVbdbN5Y7lmS77xEtnEL2wnlf/Ic4ENzWKLI+n97xQ1K7aSbQt
-         isvyHNn03ZfqIVqtaS55PxEbqoHGedwl1Fv2tWrFYxHg+DGCXW8WvHv2EcK/xmZFmtka
-         l0vfMMoQmPXNRhOUQcRHCnIYMDCmiMXHZkABHe349P1KnJehyjcYT80Z+VaZwOLm5MTp
-         Ej4Q==
-X-Gm-Message-State: AOAM531fkIRxBUJTu3FI/hn17c5wBnGK0IhfMql45TUAgtintu+0AAbx
-        EMaP9M3H3VZ5s5w6KaLkbYvtwHr6EhSz1jrpUyC28Q==
-X-Google-Smtp-Source: ABdhPJwV3FBwA2qFAdWGwaboQeEdSyY6bd0OBIdiWDaYOWd2f5VfmP8Cw4XzNOSvkR+6seDUsZ9PNk8W4ihWppS45Gs=
-X-Received: by 2002:a25:45:: with SMTP id 66mr2335941yba.81.1606897791936;
- Wed, 02 Dec 2020 00:29:51 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=MOr64WR7JFh8O6zNoSvDJ/dxwL5S48zFZviyd6WC91U=;
+        b=lkqqHAzMeKh//yZSqm1AcghkpL2gusaVaf73gmIn9Y31zb/8tqUzwZHAG9239Hb1it
+         5Q/DuQWeJTpxN1TnsWYTBCh7xw/gYnZnXgCRmtPVZbSmybwRFALmD0WLdUibR2jgSkNO
+         ntJedunzsfJF7cvpKflztHshidrKF3qeG+43mn2eKaS8VMaopaT41nMw5frxLU4KW31O
+         v4DNR9GbMC8CBfycJo0jVaPZqEzExF15d8YMIQpzj0bC6jjVzaivffvgFuZpQ+OjrL7F
+         OCQ+jxeYKeiO4aTqDNi6ycdcxbB6javX6mPeCRcFyvAuD2UUrgxv0pZyfWETQAMQzNrJ
+         czEA==
+X-Gm-Message-State: AOAM532qJr7RG/6WCuw2rflNwECsbMmEPeaiP42NzN0d02NLXouzjMe8
+        1/aZSrUEaQMUehUbnr1eltuIsW2Nz5PnUc1cWAE=
+X-Google-Smtp-Source: ABdhPJyRsn8F0ekuoReb0bu4eiYLt4n3UgNR7w1ghBcz65//gOpSDr+Z68bjAUScjfVTmjnqIQRXB44LXSR8nb15Zf4=
+X-Received: by 2002:a17:906:6693:: with SMTP id z19mr1249325ejo.376.1606897808576;
+ Wed, 02 Dec 2020 00:30:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20201029100546.28686-1-gilad@benyossef.com>
-In-Reply-To: <20201029100546.28686-1-gilad@benyossef.com>
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-Date:   Wed, 2 Dec 2020 10:29:40 +0200
-Message-ID: <CAOtvUMcGMTp78XnZ+zK=s3_-MtvDVrUV0PJeG9MWUOJSpAw5=g@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] crypto: switch to crypto API for EBOIV generation
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>
-Cc:     Ofir Drang <ofir.drang@arm.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Milan Broz <gmazyland@gmail.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+References: <20201201053949.143175-1-selvakuma.s1@samsung.com>
+ <CGME20201201054106epcas5p486fa3f85f6ba5568f6df85c2660b2e3e@epcas5p4.samsung.com>
+ <20201201053949.143175-3-selvakuma.s1@samsung.com> <20201201151628.GA27728@redsun51.ssa.fujisawa.hgst.com>
+In-Reply-To: <20201201151628.GA27728@redsun51.ssa.fujisawa.hgst.com>
+From:   Selva Jove <selvajove@gmail.com>
+Date:   Wed, 2 Dec 2020 13:59:57 +0530
+Message-ID: <CAHqX9vYLtpjWKu1otDWnSTM=MF+oMpFxSqLZvTZRcmp68LgCcQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/2] nvme: add simple copy support
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     SelvaKumar S <selvakuma.s1@samsung.com>,
+        linux-nvme@lists.infradead.org, axboe@kernel.dk,
+        Damien Le Moal <damien.lemoal@wdc.com>, hch@lst.de,
+        sagi@grimberg.me, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nj.shetty@samsung.com,
+        joshi.k@samsung.com, javier.gonz@samsung.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Oct 29, 2020 at 12:05 PM Gilad Ben-Yossef <gilad@benyossef.com> wro=
-te:
+On Tue, Dec 1, 2020 at 8:46 PM Keith Busch <kbusch@kernel.org> wrote:
 >
+> On Tue, Dec 01, 2020 at 11:09:49AM +0530, SelvaKumar S wrote:
+> > +static void nvme_config_copy(struct gendisk *disk, struct nvme_ns *ns,
+> > +                                    struct nvme_id_ns *id)
+> > +{
+> > +     struct nvme_ctrl *ctrl = ns->ctrl;
+> > +     struct request_queue *queue = disk->queue;
+> > +
+> > +     if (!(ctrl->oncs & NVME_CTRL_ONCS_COPY)) {
+> > +             queue->limits.max_copy_sectors = 0;
+> > +             blk_queue_flag_clear(QUEUE_FLAG_COPY, queue);
+> > +             return;
+> > +     }
+> > +
+> > +     /* setting copy limits */
+> > +     ns->mcl = le64_to_cpu(id->mcl);
+> > +     ns->mssrl = le32_to_cpu(id->mssrl);
+> > +     ns->msrc = id->msrc;
 >
-> This series creates an EBOIV template that produces a skcipher
-> transform which passes through all operations to the skcipher, while
-> using the same skcipher and key to encrypt the input IV, which is
-> assumed to be a sector offset, although this is not enforced.
+> These are not used anywhere outside this function, so there's no need to
+> add members to the struct.
 
-I hope I didn't miss anything, but it seems I didn't get an ACK, NACK
-or request of changes to the latest iteration.
+Sure. Will remove these entries from nvme_ns.
 
-Any feedback is very much welcome.
+>
+> > +     if (blk_queue_flag_test_and_set(QUEUE_FLAG_COPY, queue))
+> > +             return;
+>
+> The queue limits are not necessarily the same each time we're called to
+> update the disk info, so this return shouldn't be here.
+>
 
-Thanks,
-Gilad
+Makes sense.
 
-
---=20
-Gilad Ben-Yossef
-Chief Coffee Drinker
-
-values of =CE=B2 will give rise to dom!
+> > +
+> > +     queue->limits.max_copy_sectors = ns->mcl * (1 << (ns->lba_shift - 9));
+> > +     queue->limits.max_copy_range_sectors = ns->mssrl *
+> > +             (1 << (ns->lba_shift - 9));
+> > +     queue->limits.max_copy_nr_ranges = ns->msrc + 1;
+> > +}
+>
+> <>
+>
+> > @@ -2045,6 +2133,7 @@ static void nvme_update_disk_info(struct gendisk *disk,
+> >       set_capacity_and_notify(disk, capacity);
+> >
+> >       nvme_config_discard(disk, ns);
+> > +     nvme_config_copy(disk, ns, id);
+> >       nvme_config_write_zeroes(disk, ns);
+> >
+> >       if (id->nsattr & NVME_NS_ATTR_RO)
+> > @@ -3014,6 +3103,7 @@ int nvme_init_identify(struct nvme_ctrl *ctrl)
+> >       ctrl->oaes = le32_to_cpu(id->oaes);
+> >       ctrl->wctemp = le16_to_cpu(id->wctemp);
+> >       ctrl->cctemp = le16_to_cpu(id->cctemp);
+> > +     ctrl->ocfs = le32_to_cpu(id->ocfs);
+>
+> ocfs is not used anywhere.
