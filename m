@@ -2,60 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B6B2CB9B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E581C2CB9E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:57:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729324AbgLBJxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:53:10 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:8919 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgLBJxJ (ORCPT
+        id S2388478AbgLBJ5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:57:06 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:33016 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388462AbgLBJ5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:53:09 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CmDlP2Y7jz76Vy;
-        Wed,  2 Dec 2020 17:52:01 +0800 (CST)
-Received: from compute.localdomain (10.175.112.70) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Wed, 2 Dec 2020 17:52:24 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     <rajur@chelsio.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <divy@chelsio.com>, <jgarzik@redhat.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net] cxgb3: fix error return code in t3_sge_alloc_qset()
-Date:   Wed, 2 Dec 2020 17:56:05 +0800
-Message-ID: <1606902965-1646-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 2 Dec 2020 04:57:06 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606902984;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ITThREJyYKgdVDP8BrxeZZquiJpUQMhRfu4ZTflB4TU=;
+        b=X3QAAs3ckISUUWG4JJlFph2NnRIwNeaLE3wK3ajpyTpKBnjYav53rMdiurQ4jGCRO/ygKG
+        6jWHI2XX4+cQh/csusD6wphm4zlZXxFsgI8aGpjw/0KVbgWRxwkVBFMfNzZB3Du79Hhefk
+        2xns0YmYm0KsJkHpJZDjYU4tPACPgBry7LF143jLh3WI6EjUcHRHXorOR6pLHPuE/TYWYQ
+        OV8mh49Qw1BydybEM8hH/8Zd60WQVPnleuUX4LUVjq2jwGKQlPH+mTe3u7bo4YaZGVvWoP
+        tWO1NQSdvtEl4b+wGxxJzc7oMfQSuhvy4hHxWC54vr8ISzzicscbvbnoYupQVg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606902984;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ITThREJyYKgdVDP8BrxeZZquiJpUQMhRfu4ZTflB4TU=;
+        b=b9neEEERJjd556NoK2GzpE5+E8u4vImeIIA5ZyL6Bc2eNU2YeQvdgCzUZa2tWdMJsRKvgt
+        3EJixrTbLSI2NJCg==
+To:     Dexuan Cui <decui@microsoft.com>, dwmw@amazon.co.uk,
+        x86@kernel.org, decui@microsoft.com, mikelley@microsoft.com,
+        linux-hyperv@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Tianyu.Lan@microsoft.com,
+        vkuznets@redhat.com, kys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, wei.liu@kernel.org
+Subject: Re: [PATCH] iommu/hyper-v: Fix panic on a host without the 15-bit APIC ID support
+In-Reply-To: <20201202004510.1818-1-decui@microsoft.com>
+References: <20201202004510.1818-1-decui@microsoft.com>
+Date:   Wed, 02 Dec 2020 10:56:23 +0100
+Message-ID: <87wny0edko.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+On Tue, Dec 01 2020 at 16:45, Dexuan Cui wrote:
+> The commit f36a74b9345a itself is good, but it causes a panic in a
+> Linux VM that runs on a Hyper-V host that doesn't have the 15-bit
+> Extended APIC ID support:
+>     kernel BUG at arch/x86/kernel/apic/io_apic.c:2408!
 
-Fixes: b1fb1f280d09 ("cxgb3 - Fix dma mapping error path")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- drivers/net/ethernet/chelsio/cxgb3/sge.c | 1 +
- 1 file changed, 1 insertion(+)
+This has nothing to do with the 15bit APIC ID support, really.
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb3/sge.c b/drivers/net/ethernet/chelsio/cxgb3/sge.c
-index e18e9ce..1cc3c51 100644
---- a/drivers/net/ethernet/chelsio/cxgb3/sge.c
-+++ b/drivers/net/ethernet/chelsio/cxgb3/sge.c
-@@ -3175,6 +3175,7 @@ int t3_sge_alloc_qset(struct adapter *adapter, unsigned int id, int nports,
- 			  GFP_KERNEL | __GFP_COMP);
- 	if (!avail) {
- 		CH_ALERT(adapter, "free list queue 0 initialization failed\n");
-+		ret = -ENOMEM;
- 		goto err;
- 	}
- 	if (avail < q->fl[0].size)
--- 
-2.9.5
+The point is that the select() function only matches when I/O APIC ID is
+0, which is not guaranteed. That's independent of the 15bit extended
+APIC ID feature. But the I/O-APIC ID is irrelevant on hyperv because
+there is only one.
 
+> This happens because the Hyper-V ioapic_ir_domain (which is defined in
+> drivers/iommu/hyperv-iommu.c) can not be found. Fix the panic by
+> properly claiming the only I/O APIC emulated by Hyper-V.
+
+We don't fix a panic. We fix a bug in the code :)
+
+I'll amend the changelog.
+
+Thanks,
+
+        tglx
