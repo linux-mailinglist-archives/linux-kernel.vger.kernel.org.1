@@ -2,180 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1A22CB42B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C074A2CB433
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:11:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgLBFAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 00:00:50 -0500
-Received: from a2.mail.mailgun.net ([198.61.254.61]:53507 "EHLO
-        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726080AbgLBFAu (ORCPT
+        id S1726627AbgLBFGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 00:06:12 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4550 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726104AbgLBFGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 00:00:50 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606885225; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=cOrj0U2V5xokVHCW6VO47cLLL1EXLUmFRN39hfQ29NE=; b=jXgMfZT7pC/MfOYBkZ2XLw8HO1Y5X1m8AKihr6Z9i0f1Y6b+la1DV0OPLxmxijURgo4x9Nyi
- qUbmCiQ4V1Maus/ftzWeybv2MVSGLiJITt761Hc+LS3OmZI8M9yQ8PD4rMM59F6mLlBjuudf
- S0YHpo+q0+z1vc+by+jhBv3WaZ8=
-X-Mailgun-Sending-Ip: 198.61.254.61
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
- 5fc71f4cf653ea0cd852c9db (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 04:59:56
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 30D53C43463; Wed,  2 Dec 2020 04:59:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46029C433C6;
-        Wed,  2 Dec 2020 04:59:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 46029C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v13 0/4] userspace MHI client interface driver
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Hemant Kumar <hemantk@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bbhatt@codeaurora.org, loic.poulain@linaro.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        Kalle Valo <kvalo@codeaurora.org>
-References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
- <20201201112901.7f13e26c@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <c6359962-a378-ed03-0fab-c2f6c8a1b8eb@codeaurora.org>
- <20201201120302.474d4c9b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <817a4346-efb7-cfe5-0678-d1b60d06627d@codeaurora.org>
- <20201201185506.77c4b3df@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <f22eaead-fd25-8b20-7ca1-ae3f535347d4@codeaurora.org>
-Date:   Tue, 1 Dec 2020 21:59:53 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        Wed, 2 Dec 2020 00:06:11 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B252jOR015396;
+        Wed, 2 Dec 2020 00:05:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=DjO5Dnb0HGXeor5d72WSM9dsPFGumb/JQJ+bDIBfs0k=;
+ b=Wuh9DfojPWpEwEvY+DRlD13L1CD2B1EyU5qEtz0PIQyomDfyFH7s99BLAECPTl10BdZi
+ 9AXjNO9z8BuK1OuoDMWxu9QVeoGoiySDsP+/AckKBf+tTIKltSMhn51+KBANiTc0+xub
+ JfEV3Imubsrosby5/oFWmsh2oE0lZzhTiX9KvGVJt9mas5uWokZIxMLM1ckXIunDzjnv
+ 5w8D7yUm3TsThofn0IsnaJBpf1WtdlzTf641tJNkwZGMZvo2FgpU2OynrYUcksvncs0h
+ 1NVQhmOeq+xRoupxZC0n72CID5DDw07CqJ8xlAo4flyU4nvZGHOYdsVIti9YQkUMMbF5 Qg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355jjhd7wh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 00:05:07 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B252roD015704;
+        Wed, 2 Dec 2020 00:05:06 -0500
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355jjhd7vq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 00:05:06 -0500
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2547vN015612;
+        Wed, 2 Dec 2020 05:05:03 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06fra.de.ibm.com with ESMTP id 353dtha045-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 05:05:03 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2551M260359024
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 05:05:01 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3D2194C040;
+        Wed,  2 Dec 2020 05:05:01 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C94D04C058;
+        Wed,  2 Dec 2020 05:04:58 +0000 (GMT)
+Received: from saptagiri.in.ibm.com (unknown [9.85.125.1])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Dec 2020 05:04:58 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Waiman Long <longman@redhat.com>, Phil Auld <pauld@redhat.com>
+Subject: [PATCH v2 0/4] Powerpc: Better preemption for shared processor
+Date:   Wed,  2 Dec 2020 10:34:52 +0530
+Message-Id: <20201202050456.164005-1-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201201185506.77c4b3df@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-01_12:2020-11-30,2020-12-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=854
+ priorityscore=1501 spamscore=0 phishscore=0 clxscore=1011 impostorscore=0
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020031
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/2020 7:55 PM, Jakub Kicinski wrote:
-> On Tue, 1 Dec 2020 13:48:36 -0700 Jeffrey Hugo wrote:
->> On 12/1/2020 1:03 PM, Jakub Kicinski wrote:
->>> On Tue, 1 Dec 2020 12:40:50 -0700 Jeffrey Hugo wrote:
->>>> On 12/1/2020 12:29 PM, Jakub Kicinski wrote:
->>>>> On Fri, 27 Nov 2020 19:26:02 -0800 Hemant Kumar wrote:
->>>>>> This patch series adds support for UCI driver. UCI driver enables userspace
->>>>>> clients to communicate to external MHI devices like modem and WLAN. UCI driver
->>>>>> probe creates standard character device file nodes for userspace clients to
->>>>>> perform open, read, write, poll and release file operations. These file
->>>>>> operations call MHI core layer APIs to perform data transfer using MHI bus
->>>>>> to communicate with MHI device. Patch is tested using arm64 based platform.
->>>>>
->>>>> Wait, I thought this was for modems.
->>>>>
->>>>> Why do WLAN devices need to communicate with user space?
->>>>>       
->>>>
->>>> Why does it matter what type of device it is?  Are modems somehow unique
->>>> in that they are the only type of device that userspace is allowed to
->>>> interact with?
->>>
->>> Yes modems are traditionally highly weird and require some serial
->>> device dance I don't even know about.
->>>
->>> We have proper interfaces in Linux for configuring WiFi which work
->>> across vendors. Having char device access to WiFi would be a step
->>> back.
->>
->> So a WLAN device is only ever allowed to do Wi-Fi?  It can't also have
->> GPS functionality for example?
-> 
-> No, but it's also not true that the only way to implement GPS is by
-> opening a full on command/packet interface between fat proprietary
-> firmware and custom user space (which may or may not be proprietary
-> as well).
+Currently, vcpu_is_preempted will return the yield_count for
+shared_processor. On a PowerVM LPAR, Phyp schedules at SMT8 core boundary
+i.e all CPUs belonging to a core are either group scheduled in or group
+scheduled out. This can be used to better predict non-preempted CPUs on
+PowerVM shared LPARs.
 
-Funny, that exactly what the GPS "API" in the kernel is, although a bit 
-limited to the specifics on the standardized GPS "sentences" and not 
-covering implementation specific configuration.
+perf stat -r 5 -a perf bench sched pipe -l 10000000 (lesser time is better)
 
-> 
->>>> However, I'll bite.  Once such usecase would be QMI.  QMI is a generic
->>>> messaging protocol, and is not strictly limited to the unique operations
->>>> of a modem.
->>>>
->>>> Another usecase would be Sahara - a custom file transfer protocol used
->>>> for uploading firmware images, and downloading crashdumps.
->>>
->>> Thanks, I was asking for use cases, not which proprietary vendor
->>> protocol you can implement over it.
->>>
->>> None of the use cases you mention here should require a direct FW -
->>> user space backdoor for WLAN.
->>
->> Uploading runtime firmware, with variations based on the runtime mode.
->> Flashing the onboard flash based on cryptographic keys.  Accessing
->> configuration data.  Accessing device logs.  Configuring device logs.
->> Synchronizing the device time reference to Linux local or remote time
->> sources.  Enabling debugging/performance hardware.  Getting software
->> diagnostic events.  Configuring redundancy hardware per workload.
->> Uploading new cryptographic keys.  Invalidating cryptographic keys.
->> Uploading factory test data and running factory tests.
->>
->> Need more?
-> 
-> This conversation is going nowhere. Are you trying to say that creating
-> a common Linux API for those features is impossible and each vendor
-> should be allowed to add their own proprietary way?
-> 
-> This has been proven incorrect again and again, and Wi-Fi is a good
-> example.
-> 
-> You can do whatever you want for GPS etc. but don't come nowhere near
-> networking with this attitude please.
-> 
+powerpc/next
+     35,107,951.20 msec cpu-clock                 #  255.898 CPUs utilized            ( +-  0.31% )
+        23,655,348      context-switches          #    0.674 K/sec                    ( +-  3.72% )
+            14,465      cpu-migrations            #    0.000 K/sec                    ( +-  5.37% )
+            82,463      page-faults               #    0.002 K/sec                    ( +-  8.40% )
+ 1,127,182,328,206      cycles                    #    0.032 GHz                      ( +-  1.60% )  (66.67%)
+    78,587,300,622      stalled-cycles-frontend   #    6.97% frontend cycles idle     ( +-  0.08% )  (50.01%)
+   654,124,218,432      stalled-cycles-backend    #   58.03% backend cycles idle      ( +-  1.74% )  (50.01%)
+   834,013,059,242      instructions              #    0.74  insn per cycle
+                                                  #    0.78  stalled cycles per insn  ( +-  0.73% )  (66.67%)
+   132,911,454,387      branches                  #    3.786 M/sec                    ( +-  0.59% )  (50.00%)
+     2,890,882,143      branch-misses             #    2.18% of all branches          ( +-  0.46% )  (50.00%)
 
-No I'm saying (and Bjorn/Mani by the looks of things), that there is 
-commonality in the core features - IP traffic, Wi-Fi, etc but then there 
-are vendor specific things which are either things you don't actually 
-want in the kernel, don't want the kernel doing, or have little 
-commonality between vendors such that attempting to unify them gains you 
-little to nothing.
+           137.195 +- 0.419 seconds time elapsed  ( +-  0.31% )
 
-Over in the networking space, I can see where standardization is plenty 
-useful.
+powerpc/next + patchset
+     29,981,702.64 msec cpu-clock                 #  255.881 CPUs utilized            ( +-  1.30% )
+        40,162,456      context-switches          #    0.001 M/sec                    ( +-  0.01% )
+             1,110      cpu-migrations            #    0.000 K/sec                    ( +-  5.20% )
+            62,616      page-faults               #    0.002 K/sec                    ( +-  3.93% )
+ 1,430,030,626,037      cycles                    #    0.048 GHz                      ( +-  1.41% )  (66.67%)
+    83,202,707,288      stalled-cycles-frontend   #    5.82% frontend cycles idle     ( +-  0.75% )  (50.01%)
+   744,556,088,520      stalled-cycles-backend    #   52.07% backend cycles idle      ( +-  1.39% )  (50.01%)
+   940,138,418,674      instructions              #    0.66  insn per cycle
+                                                  #    0.79  stalled cycles per insn  ( +-  0.51% )  (66.67%)
+   146,452,852,283      branches                  #    4.885 M/sec                    ( +-  0.80% )  (50.00%)
+     3,237,743,996      branch-misses             #    2.21% of all branches          ( +-  1.18% )  (50.01%)
 
-I can't speak for other vendors, but a "modem" or a "wlan" device from 
-Qualcomm is not something that just provides one service.  They tend to 
-provide dozens of different functionalities, some of those are 
-"standardized" like wi-fi where common wi-fi interfaces are used. 
-Others are unique to Qualcomm.
+            117.17 +- 1.52 seconds time elapsed  ( +-  1.30% )
 
-The point is "wlan device" is a superset of "wi-fi".  You seem to be 
-equating them to be the same in a "shoot first, ask questions later" manner.
+This is around 14.6% improvement in performance.
 
-This series provides a way for userspace to talk to remote MHI "widgets" 
-for usecases not covered elsewhere.  Those "widgets" just happen to 
-commonly provide modem/wlan services, but ones that don't are not excluded.
+Changelog:
+v1->v2:
+v1: https://lore.kernel.org/linuxppc-dev/20201028123512.871051-1-srikar@linux.vnet.ibm.com/t/#u
+ - Rebased to 27th Nov linuxppc/merge tree.
+ - Moved a hunk to fix a no previous prototype warning reported by: lkp@intel.com
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/C6PTRPHWMC7VV4OTYN3ISYKDHTDQS6YI/
 
-Regarding not coming near networking, I'd like to remind you it was you 
-that decided to come over here to the non-networking area and try to 
-make this about networking.
+Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Nathan Lynch <nathanl@linux.ibm.com>
+Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Phil Auld <pauld@redhat.com>
+
+Srikar Dronamraju (4):
+  powerpc: Refactor is_kvm_guest declaration to new header
+  powerpc: Rename is_kvm_guest to check_kvm_guest
+  powerpc: Reintroduce is_kvm_guest
+  powerpc/paravirt: Use is_kvm_guest in vcpu_is_preempted
+
+ arch/powerpc/include/asm/firmware.h  |  6 ------
+ arch/powerpc/include/asm/kvm_guest.h | 25 +++++++++++++++++++++++++
+ arch/powerpc/include/asm/kvm_para.h  |  2 +-
+ arch/powerpc/include/asm/paravirt.h  | 18 ++++++++++++++++++
+ arch/powerpc/kernel/firmware.c       |  5 ++++-
+ arch/powerpc/platforms/pseries/smp.c |  3 ++-
+ 6 files changed, 50 insertions(+), 9 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/kvm_guest.h
 
 -- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.18.4
+
