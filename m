@@ -2,95 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2F72CC408
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4A22CC40F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730882AbgLBRlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:41:23 -0500
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:44436 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728414AbgLBRlX (ORCPT
+        id S1730903AbgLBRmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:42:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23750 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728887AbgLBRmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:41:23 -0500
-Received: by mail-ed1-f67.google.com with SMTP id l5so4839634edq.11;
-        Wed, 02 Dec 2020 09:41:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KfQDuc8JDGaeOFT/J+juY74FnBzeM7oQNchYmasmgIE=;
-        b=CbrLrsdQjmkBhaSc7eb8IHHZbKZPHwkDDm2MIvB+ooNjcqPDjvmQo4kx/TZooV/HuZ
-         Xg8TFCys0XuWHRFk8llQUqXAG8l3G+iSjB6S49LLP4jLf7SE7y7fe3wShrRvbnvUcYnh
-         Jjjz4V1pwNOX4yn5S5ieZ03J2lm4eOMfJpvYP3hOzoDO5ei/6YUHRySEVsaP/ajSEBQR
-         Dj4q5PE8MJ7ajd7BVgew0k+yLUmgAnaroOkhr/YaihMmORVIKxGSf95eNPMWu1XQAd4R
-         OtTpZ411/D2YlqNBQrnZTzLOI+YclSamRcc6XcvRHXz88RGQETBdHbJ4k2pbdrZMAYs+
-         NcJw==
-X-Gm-Message-State: AOAM532myMoxrYdzwnW9mRiGm/3u48rGPClCkuB/6uQtB1BkcYODuRq6
-        DWxqNaAA5ICTrqsuUdbq0Ew=
-X-Google-Smtp-Source: ABdhPJyc3MIxUudzkpaxEzu2a0RIqr8H32057Ls1p2FLivkBO22bDn6oASQbAfcIMcGPSKkGontmUA==
-X-Received: by 2002:a50:9ea3:: with SMTP id a32mr1122544edf.40.1606930841062;
-        Wed, 02 Dec 2020 09:40:41 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id b14sm428500edx.0.2020.12.02.09.40.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 09:40:39 -0800 (PST)
-Date:   Wed, 2 Dec 2020 19:40:38 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula@amarulasolutions.com
-Subject: Re: [PATCH 09/10] dt-bindings: arm: fsl: Add Engicam i.Core MX8M
- Mini C.TOUCH 2.0 10.1" OF
-Message-ID: <20201202174038.GG3490@kozik-lap>
-References: <20201202121241.109952-1-jagan@amarulasolutions.com>
- <20201202121241.109952-10-jagan@amarulasolutions.com>
+        Wed, 2 Dec 2020 12:42:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606930887;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=G7B1+xUQA10jAaTU9sWL9sXhMiWq13XLMmFdb9OfvHA=;
+        b=DgNVcja9KxxGlUys39pFXwP7Exk5OpQ748yiHGCUZ8QpeeHxOOE9q4jzGLboZVH7AriZjY
+        csMDiq47/dZOEFSarHM1jdvnCHCIRkp9kObni/F3B1o0K4LhXfiak4Pwx/OmWuYeh5rKNh
+        riFiCQPzm34ZZvVvcRdGiXkuByQJ0wU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-238-u6CG5yrwOfaxtzIUbYSbag-1; Wed, 02 Dec 2020 12:41:26 -0500
+X-MC-Unique: u6CG5yrwOfaxtzIUbYSbag-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 65AA6185E486;
+        Wed,  2 Dec 2020 17:41:24 +0000 (UTC)
+Received: from ceranb (unknown [10.40.192.241])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 623FF19C48;
+        Wed,  2 Dec 2020 17:41:19 +0000 (UTC)
+Date:   Wed, 2 Dec 2020 18:41:18 +0100
+From:   Ivan Vecera <ivecera@redhat.com>
+To:     Jarod Wilson <jarod@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net v2] bonding: fix feature flag setting at init time
+Message-ID: <20201202184118.20920a33@ceranb>
+In-Reply-To: <20201202173053.13800-1-jarod@redhat.com>
+References: <20201123031716.6179-1-jarod@redhat.com>
+        <20201202173053.13800-1-jarod@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201202121241.109952-10-jagan@amarulasolutions.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 05:42:40PM +0530, Jagan Teki wrote:
-> i.Core MX8M Mini is an EDIMM SOM based on NXP i.MX8MM from Engicam.
-> 
-> C.TOUCH 2.0 is a general purpose carrier board with capacitive
-> touch interface support.
-> 
-> 10.1" OF is a capacitive touch 10.1" Open Frame panel solutions.
-> 
-> i.Core MX8M Mini needs to mount on top of C.TOUCH 2.0 carrier with
-> pluged 10.1" OF for creating complete i.Core MX8M Mini C.TOUCH 2.0
-> 10.1" Open Frame solution board.
-> 
-> Add bindings for it.
-> 
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+On Wed,  2 Dec 2020 12:30:53 -0500
+Jarod Wilson <jarod@redhat.com> wrote:
 
-Please run the checkpatch - it should complain about order of patches.
-
+> Don't try to adjust XFRM support flags if the bond device isn't yet
+> registered. Bad things can currently happen when netdev_change_features()
+> is called without having wanted_features fully filled in yet. Basically,
+> this code was racing against register_netdevice() filling in
+> wanted_features, and when it got there first, the empty wanted_features
+> led to features also getting emptied out, which was definitely not the
+> intended behavior, so prevent that from happening.
+> 
+> Originally, I'd hoped to stop adjusting wanted_features at all in the
+> bonding driver, as it's documented as being something only the network
+> core should touch, but we actually do need to do this to properly update
+> both the features and wanted_features fields when changing the bond type,
+> or we get to a situation where ethtool sees:
+> 
+>     esp-hw-offload: off [requested on]
+> 
+> I do think we should be using netdev_update_features instead of
+> netdev_change_features here though, so we only send notifiers when the
+> features actually changed.
+> 
+> v2: rework based on further testing and suggestions from ivecera
+> 
+> Fixes: a3b658cfb664 ("bonding: allow xfrm offload setup post-module-load")
+> Reported-by: Ivan Vecera <ivecera@redhat.com>
+> Suggested-by: Ivan Vecera <ivecera@redhat.com>
+> Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+> Cc: Veaceslav Falico <vfalico@gmail.com>
+> Cc: Andy Gospodarek <andy@greyhouse.net>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Thomas Davis <tadavis@lbl.gov>
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Jarod Wilson <jarod@redhat.com>
 > ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/net/bonding/bond_main.c    | 10 ++++------
+>  drivers/net/bonding/bond_options.c |  6 +++++-
+>  2 files changed, 9 insertions(+), 7 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index 8c8f7728788d..9e275921112d 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -669,6 +669,7 @@ properties:
->                - beacon,imx8mm-beacon-kit  # i.MX8MM Beacon Development Kit
->                - engicam,icore-mx8mm               # i.MX8MM Engicam i.Core MX8M Mini SOM
->                - engicam,icore-mx8mm-ctouch2       # i.MX8MM Engicam i.Core MX8M Mini C.TOUCH 2.0
-> +              - engicam,icore-mx8mm-ctouch2-of10  # i.MX8MM Engicam i.Core MX8M Mini C.TOUCH 2.0 10.1" Open Frame
+> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+> index e0880a3840d7..5fe5232cc3f3 100644
+> --- a/drivers/net/bonding/bond_main.c
+> +++ b/drivers/net/bonding/bond_main.c
+> @@ -4746,15 +4746,13 @@ void bond_setup(struct net_device *bond_dev)
+>  				NETIF_F_HW_VLAN_CTAG_FILTER;
+>  
+>  	bond_dev->hw_features |= NETIF_F_GSO_ENCAP_ALL;
+> -#ifdef CONFIG_XFRM_OFFLOAD
+> -	bond_dev->hw_features |= BOND_XFRM_FEATURES;
+> -#endif /* CONFIG_XFRM_OFFLOAD */
+>  	bond_dev->features |= bond_dev->hw_features;
+>  	bond_dev->features |= NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_STAG_TX;
+>  #ifdef CONFIG_XFRM_OFFLOAD
+> -	/* Disable XFRM features if this isn't an active-backup config */
+> -	if (BOND_MODE(bond) != BOND_MODE_ACTIVEBACKUP)
+> -		bond_dev->features &= ~BOND_XFRM_FEATURES;
+> +	bond_dev->hw_features |= BOND_XFRM_FEATURES;
+> +	/* Only enable XFRM features if this is an active-backup config */
+> +	if (BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP)
+> +		bond_dev->features |= BOND_XFRM_FEATURES;
+>  #endif /* CONFIG_XFRM_OFFLOAD */
+>  }
+>  
+> diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
+> index 9abfaae1c6f7..19205cfac751 100644
+> --- a/drivers/net/bonding/bond_options.c
+> +++ b/drivers/net/bonding/bond_options.c
+> @@ -768,11 +768,15 @@ static int bond_option_mode_set(struct bonding *bond,
+>  		bond->params.tlb_dynamic_lb = 1;
+>  
+>  #ifdef CONFIG_XFRM_OFFLOAD
+> +	if (bond->dev->reg_state != NETREG_REGISTERED)
+> +		goto noreg;
+> +
+>  	if (newval->value == BOND_MODE_ACTIVEBACKUP)
+>  		bond->dev->wanted_features |= BOND_XFRM_FEATURES;
+>  	else
+>  		bond->dev->wanted_features &= ~BOND_XFRM_FEATURES;
+> -	netdev_change_features(bond->dev);
+> +	netdev_update_features(bond->dev);
+> +noreg:
+>  #endif /* CONFIG_XFRM_OFFLOAD */
+>  
+>  	/* don't cache arp_validate between modes */
 
-Run dtbs_check before posting.
+Tested-by: Ivan Vecera <ivecera@redhat.com>
 
-Best regards,
-Krzysztof
