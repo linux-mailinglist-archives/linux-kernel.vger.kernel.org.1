@@ -2,184 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDC92CB2EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 03:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F35BF2CB2F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 03:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgLBCus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 21:50:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727590AbgLBCur (ORCPT
+        id S1728007AbgLBCzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 21:55:10 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8551 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727590AbgLBCzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 21:50:47 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6986C0613D6;
-        Tue,  1 Dec 2020 18:50:06 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id x24so286461pfn.6;
-        Tue, 01 Dec 2020 18:50:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=rrxTVjl50w/hvvFu6753KKn1qpO44MFkmA/m2ENQPW0=;
-        b=U3Sz0euxPXDrCmFLKwiYimm6yyBF1CGZXzT+k7baShme0K69SttxGDVElTYP7xD81J
-         2NwdKEYT3Zs9274B6kIHynUHQPZ00KgUdGXc5ha6W25qHfVhMjyjdck0nx62b5X0C5To
-         1P9o/31CYlfFtSMNCjiOGhQYR+PUawAmO+HbR9rqzp7uxjtqn81AbD7uKh21gQTcRclr
-         sKwpc0TgjomEW3W/Rh8pgDEiycq5f03ojFi19mo+lIT5VM/sT2AJ3raUjTw0OeqLxxxI
-         DeTkpxfBTV9HwMT81IfJ5wjehPhqTvkZsBC5tEDMDQr4JcEUe4akPkazAtZiJqIKHcrf
-         R1uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=rrxTVjl50w/hvvFu6753KKn1qpO44MFkmA/m2ENQPW0=;
-        b=GUZTJ0i9FRNulnA84s9vNrjFHDyWrjezX0ybZouULAdZaO1sAXoPcH8dfeQNwDgtp6
-         XBQsgEuWXyNUODdiF3tkgzQzZsYE+IydK53uv+dvgIuT6utUVqis4HL/JyZ3FNdDP2hf
-         1dX0fy81HUnh5Vksnz5IUg4tX9zVzqADNtHom2ynGbGIaTzB9kZqTxnmK+Mn6/EV0h7a
-         wCgjA57rRhjPLJ7vRakTemgbbBYKP1wpjlNlxSHi2X1N21In7GucYmDEMMC9rfCYlEIz
-         bq9GgkHsXiN2B6RjUvL5cthqtP+Aj0ThST6GeFPtLXNYBs8mHnCavuOVc2VG4aqzyXR2
-         GpIQ==
-X-Gm-Message-State: AOAM532IIplIkwTv5gj/ykR1B/a0bHbrWTFqnBcvSq05CsufPtVLkD4s
-        boG9YBksk94MuJdhtkl2y4BuH8b4wmAicA==
-X-Google-Smtp-Source: ABdhPJx49rJhgYL4DLrmhR3Y7knh5z14lnmGYVTfXlFaVAba7Ker02/OzbTVZiRE1EQln20cmYd6WQ==
-X-Received: by 2002:a62:188a:0:b029:19a:cdab:9841 with SMTP id 132-20020a62188a0000b029019acdab9841mr496648pfy.12.1606877406324;
-        Tue, 01 Dec 2020 18:50:06 -0800 (PST)
-Received: from localhost ([1.132.177.56])
-        by smtp.gmail.com with ESMTPSA id z17sm100444pjn.46.2020.12.01.18.50.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 18:50:05 -0800 (PST)
-Date:   Wed, 02 Dec 2020 12:49:58 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 1/8] lazy tlb: introduce exit_lazy_tlb
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
-References: <20201128160141.1003903-1-npiggin@gmail.com>
-        <20201128160141.1003903-2-npiggin@gmail.com>
-        <CALCETrVbFm7gZ7G_5DWa6UGYtCzZTQvC_CPRVDZ0Lb-tiMnjSg@mail.gmail.com>
-In-Reply-To: <CALCETrVbFm7gZ7G_5DWa6UGYtCzZTQvC_CPRVDZ0Lb-tiMnjSg@mail.gmail.com>
+        Tue, 1 Dec 2020 21:55:10 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cm3T06p6wzhlRZ;
+        Wed,  2 Dec 2020 10:53:56 +0800 (CST)
+Received: from [127.0.0.1] (10.57.60.129) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Wed, 2 Dec 2020
+ 10:54:15 +0800
+Subject: Re: [PATCH drm/hisilicon v2 1/4] drm/hisilicon: Assgin local variable
+ to drm_device
+From:   "tiantao (H)" <tiantao6@huawei.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Tian Tao <tiantao6@hisilicon.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <kraxel@redhat.com>,
+        <alexander.deucher@amd.com>, <tglx@linutronix.de>,
+        <dri-devel@lists.freedesktop.org>, <xinliang.liu@linaro.org>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>
+References: <1606823754-52451-1-git-send-email-tiantao6@hisilicon.com>
+ <1606823754-52451-2-git-send-email-tiantao6@hisilicon.com>
+ <fc644426-67db-7128-5f73-8630373ab0e8@suse.de>
+ <3f235e08-bb58-be41-8e92-ccd2dfd68b33@huawei.com>
+ <389548c9-772c-d86b-700e-032f7d7bde1f@suse.de>
+ <51e7e774-6795-8eeb-6701-b1cccc4c6199@huawei.com>
+ <5093b12f-11e8-0cf0-d9e7-7ec9b52e364d@suse.de>
+ <9cd5daa7-c934-c834-f2f6-f9b7f7e6b590@huawei.com>
+Message-ID: <8360f2e5-252c-2323-fb36-ad7083f8bda9@huawei.com>
+Date:   Wed, 2 Dec 2020 10:54:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Message-Id: <1606876111.f9oqzur49r.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <9cd5daa7-c934-c834-f2f6-f9b7f7e6b590@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.57.60.129]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Andy Lutomirski's message of November 29, 2020 10:38 am:
-> On Sat, Nov 28, 2020 at 8:01 AM Nicholas Piggin <npiggin@gmail.com> wrote=
-:
->>
->> This is called at points where a lazy mm is switched away or made not
->> lazy (by its owner switching back).
->>
->> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
->> ---
->>  arch/arm/mach-rpc/ecard.c            |  1 +
->>  arch/powerpc/mm/book3s64/radix_tlb.c |  1 +
->>  fs/exec.c                            |  6 ++++--
->>  include/asm-generic/mmu_context.h    | 21 +++++++++++++++++++++
->>  kernel/kthread.c                     |  1 +
->>  kernel/sched/core.c                  |  2 ++
->>  6 files changed, 30 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm/mach-rpc/ecard.c b/arch/arm/mach-rpc/ecard.c
->> index 827b50f1c73e..43eb1bfba466 100644
->> --- a/arch/arm/mach-rpc/ecard.c
->> +++ b/arch/arm/mach-rpc/ecard.c
->> @@ -253,6 +253,7 @@ static int ecard_init_mm(void)
->>         current->mm =3D mm;
->>         current->active_mm =3D mm;
->>         activate_mm(active_mm, mm);
->> +       exit_lazy_tlb(active_mm, current);
->>         mmdrop(active_mm);
->>         ecard_init_pgtables(mm);
->>         return 0;
->> diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book=
-3s64/radix_tlb.c
->> index b487b489d4b6..ac3fec03926a 100644
->> --- a/arch/powerpc/mm/book3s64/radix_tlb.c
->> +++ b/arch/powerpc/mm/book3s64/radix_tlb.c
->> @@ -661,6 +661,7 @@ static void do_exit_flush_lazy_tlb(void *arg)
->>                 mmgrab(&init_mm);
->>                 current->active_mm =3D &init_mm;
->>                 switch_mm_irqs_off(mm, &init_mm, current);
->> +               exit_lazy_tlb(mm, current);
->>                 mmdrop(mm);
->>         }
->>
->> diff --git a/fs/exec.c b/fs/exec.c
->> index 547a2390baf5..4b4dea1bb7ba 100644
->> --- a/fs/exec.c
->> +++ b/fs/exec.c
->> @@ -1017,6 +1017,8 @@ static int exec_mmap(struct mm_struct *mm)
->>         if (!IS_ENABLED(CONFIG_ARCH_WANT_IRQS_OFF_ACTIVATE_MM))
->>                 local_irq_enable();
->>         activate_mm(active_mm, mm);
->> +       if (!old_mm)
->> +               exit_lazy_tlb(active_mm, tsk);
->>         if (IS_ENABLED(CONFIG_ARCH_WANT_IRQS_OFF_ACTIVATE_MM))
->>                 local_irq_enable();
->>         tsk->mm->vmacache_seqnum =3D 0;
->> @@ -1028,9 +1030,9 @@ static int exec_mmap(struct mm_struct *mm)
->>                 setmax_mm_hiwater_rss(&tsk->signal->maxrss, old_mm);
->>                 mm_update_next_owner(old_mm);
->>                 mmput(old_mm);
->> -               return 0;
->> +       } else {
->> +               mmdrop(active_mm);
->>         }
->> -       mmdrop(active_mm);
->=20
-> This looks like an unrelated change.
 
-I thought the old style was pointless and made me look twice to make=20
-sure we weren't mmdrop()ing the lazy.
 
->=20
->>         return 0;
->>  }
+在 2020/12/2 10:06, tiantao (H) 写道:
+> 
+> 
+> 在 2020/12/1 21:44, Thomas Zimmermann 写道:
+>> Hi
 >>
->> diff --git a/include/asm-generic/mmu_context.h b/include/asm-generic/mmu=
-_context.h
->> index 91727065bacb..4626d0020e65 100644
->> --- a/include/asm-generic/mmu_context.h
->> +++ b/include/asm-generic/mmu_context.h
->> @@ -24,6 +24,27 @@ static inline void enter_lazy_tlb(struct mm_struct *m=
-m,
->>  }
->>  #endif
+>> Am 01.12.20 um 14:05 schrieb tiantao (H):
+>>>
+>>>
+>>> 在 2020/12/1 20:36, Thomas Zimmermann 写道:
+>>>> Hi
+>>>>
+>>>> Am 01.12.20 um 13:26 schrieb tiantao (H):
+>>>>>
+>>>>>
+>>>>> 在 2020/12/1 20:17, Thomas Zimmermann 写道:
+>>>>>> Hi
+>>>>>>
+>>>>>> Am 01.12.20 um 12:55 schrieb Tian Tao:
+>>>>>>> Assign local variable to struct drm_device *dev because they are
+>>>>>>> used multiple times within a function.
+>>>>>>>
+>>>>>>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+>>>>>>> ---
+>>>>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   |  2 +-
+>>>>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  | 30 
+>>>>>>> ++++++++++++------------
+>>>>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  2 +-
+>>>>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  2 +-
+>>>>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c      |  8 ++++---
+>>>>>>>   5 files changed, 23 insertions(+), 21 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c 
+>>>>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+>>>>>>> index ea962ac..096eea9 100644
+>>>>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+>>>>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+>>>>>>> @@ -499,7 +499,7 @@ static const struct drm_crtc_helper_funcs 
+>>>>>>> hibmc_crtc_helper_funcs = {
+>>>>>>>   int hibmc_de_init(struct hibmc_drm_private *priv)
+>>>>>>>   {
+>>>>>>> -    struct drm_device *dev = priv->dev;
+>>>>>>> +    struct drm_device *dev = &priv->dev;
+>>>>>>>       struct drm_crtc *crtc = &priv->crtc;
+>>>>>>>       struct drm_plane *plane = &priv->primary_plane;
+>>>>>>>       int ret;
+>>>>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c 
+>>>>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>>>>>>> index d845657..dd9fadc 100644
+>>>>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>>>>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>>>>>>> @@ -79,31 +79,32 @@ static const struct dev_pm_ops hibmc_pm_ops = {
+>>>>>>>   static int hibmc_kms_init(struct hibmc_drm_private *priv)
+>>>>>>>   {
+>>>>>>> +    struct drm_device *dev = &priv->dev;
+>>>>>>>       int ret;
+>>>>>>> -    drm_mode_config_init(priv->dev);
+>>>>>>> +    drm_mode_config_init(dev);
+>>>>>>>       priv->mode_config_initialized = true;
+>>>>>>> -    priv->dev->mode_config.min_width = 0;
+>>>>>>> -    priv->dev->mode_config.min_height = 0;
+>>>>>>> -    priv->dev->mode_config.max_width = 1920;
+>>>>>>> -    priv->dev->mode_config.max_height = 1200;
+>>>>>>> +    dev->mode_config.min_width = 0;
+>>>>>>> +    dev->mode_config.min_height = 0;
+>>>>>>> +    dev->mode_config.max_width = 1920;
+>>>>>>> +    dev->mode_config.max_height = 1200;
+>>>>>>> -    priv->dev->mode_config.fb_base = priv->fb_base;
+>>>>>>> -    priv->dev->mode_config.preferred_depth = 32;
+>>>>>>> -    priv->dev->mode_config.prefer_shadow = 1;
+>>>>>>> +    dev->mode_config.fb_base = priv->fb_base;
+>>>>>>> +    dev->mode_config.preferred_depth = 32;
+>>>>>>> +    dev->mode_config.prefer_shadow = 1;
+>>>>>>> -    priv->dev->mode_config.funcs = (void *)&hibmc_mode_funcs;
+>>>>>>> +    dev->mode_config.funcs = (void *)&hibmc_mode_funcs;
+>>>>>>>       ret = hibmc_de_init(priv);
+>>>>>>>       if (ret) {
+>>>>>>> -        drm_err(priv->dev, "failed to init de: %d\n", ret);
+>>>>>>> +        drm_err(dev, "failed to init de: %d\n", ret);
+>>>>>>>           return ret;
+>>>>>>>       }
+>>>>>>>       ret = hibmc_vdac_init(priv);
+>>>>>>>       if (ret) {
+>>>>>>> -        drm_err(priv->dev, "failed to init vdac: %d\n", ret);
+>>>>>>> +        drm_err(dev, "failed to init vdac: %d\n", ret);
+>>>>>>>           return ret;
+>>>>>>>       }
+>>>>>>> @@ -113,7 +114,7 @@ static int hibmc_kms_init(struct 
+>>>>>>> hibmc_drm_private *priv)
+>>>>>>>   static void hibmc_kms_fini(struct hibmc_drm_private *priv)
+>>>>>>>   {
+>>>>>>>       if (priv->mode_config_initialized) {
+>>>>>>> -        drm_mode_config_cleanup(priv->dev);
+>>>>>>> +        drm_mode_config_cleanup(&priv->dev);
+>>>>>>>           priv->mode_config_initialized = false;
+>>>>>>>       }
+>>>>>>>   }
+>>>>>>> @@ -202,7 +203,7 @@ static void hibmc_hw_config(struct 
+>>>>>>> hibmc_drm_private *priv)
+>>>>>>>   static int hibmc_hw_map(struct hibmc_drm_private *priv)
+>>>>>>>   {
+>>>>>>> -    struct drm_device *dev = priv->dev;
+>>>>>>> +    struct drm_device *dev = &priv->dev;
+>>>>>>>       struct pci_dev *pdev = dev->pdev;
+>>>>>>>       resource_size_t addr, size, ioaddr, iosize;
+>>>>>>> @@ -258,7 +259,7 @@ static int hibmc_unload(struct drm_device *dev)
+>>>>>>>   static int hibmc_load(struct drm_device *dev)
+>>>>>>>   {
+>>>>>>> -    struct hibmc_drm_private *priv;
+>>>>>>> +    struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+>>>>>>>       int ret;
+>>>>>>>       priv = drmm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+>>>>>>> @@ -267,7 +268,6 @@ static int hibmc_load(struct drm_device *dev)
+>>>>>>>           return -ENOMEM;
+>>>>>>>       }
+>>>>>>>       dev->dev_private = priv;
+>>>>>>> -    priv->dev = dev;
+>>>>>>
+>>>>>> I'm sure this either does not build or does not work. There's a 
+>>>>>> call to drm_dev_alloc(), which initialized the DRM device. You 
+>>>>>> need to assign the returned device here. The embedding of dev only 
+>>>>>> work after you switched to devm_drm_dev_alloc() in the next patch.
+>>>>>>
+>>>>>> For the patch at hand, just keep struct hibmc_drm_private.dev as a 
+>>>>>> pointer and you should be fine.
+>>>>>>
+>>>>> Changing drm_device *dev to drm_device dev and using 
+>>>>> devm_drm_dev_alloc does not easily split into two patches.
+>>>>> The patch does not compile well on its own, but it will compile 
+>>>>> fine with patch #2.
+>>>>> Can patch #1 and patch #2 be combined into a single patch,just like 
+>>>>> V1.
+>>>>
+>>>> Most of the code in this patch does
+>>>>
+>>>>    struct drm_device *dev = &priv->dev;
+>>>>
+>>>> to get dev as a local variable. Why don't you do
+>>>>
+>>>>    struct drm_device *dev = priv->dev;
+>>>>
+>>>> ?
+>>>>
+>>>> That's all that's really needed.
+>>>
+>>> +    priv = devm_drm_dev_alloc(&pdev->dev, &hibmc_driver,
+>>> +                  struct hibmc_drm_private, dev);
+>>> devm_drm_dev_alloc function requires parameter 4, dev must be a 
+>>> non-pointer for it to work. so had to change dev in the 
+>>> hibmc_drm_private  to non-pointer.
+>>> This is also the reason to change drm_device *dev to drm_device dev.
 >>
->> +/*
->> + * exit_lazy_tlb - Called after switching away from a lazy TLB mode mm.
->> + *
->> + * mm:  the lazy mm context that was switched
->> + * tsk: the task that was switched to (with a non-lazy mm)
->> + *
->> + * mm may equal tsk->mm.
->> + * mm and tsk->mm will not be NULL.
->> + *
->> + * Note this is not symmetrical to enter_lazy_tlb, this is not
->> + * called when tasks switch into the lazy mm, it's called after the
->> + * lazy mm becomes non-lazy (either switched to a different mm or the
->> + * owner of the mm returns).
->> + */
->> +#ifndef exit_lazy_tlb
->> +static inline void exit_lazy_tlb(struct mm_struct *mm,
->=20
-> Maybe name this parameter prev_lazy_mm?
->=20
+>> Yes, but that's what patch 2 is about. Patch 1 is about simplifying 
+>> these pointer dereferences into local variables. For this, all you 
+>> need is
+>>
+>>      struct drm_device *dev = priv->dev;
+> I'm sorry, I still don't understand what you mean.The latest code on the 
+> drm branch looks like this "struct drm_device *dev = priv->dev;"
+> If I change the dev of hibmc_drm_private to local variables, I won't be 
+> able to assign it like this "struct drm_device *dev = priv->dev;", right?
+>>
+>> In patch 2, these lines are then changed to
+>>
+>>      struct drm_device *dev = &priv->dev;
+>>
+>> That makes 2 self-contained patches.
+patch #1
+first changed drm_device *dev to drm_device dev
+then
+  drm = &priv->dev;
+  err = drm_dev_init(drm, &hibmc_drm_private , &pdev->dev);
+patch #2
 
-mm is better because it's the mm that we're "exiting lazy" from, the=20
-function name gives the context.
+using devm_drm_dev_alloc()
 
-prev might suggest it was the previous but it's the current one, or
-that we're switching to another mm but we may not be at all.
+Is this right ?
 
-Thanks,
-Nick
+>>
+>> Best regards
+>> Thomas
+>>
+>>>>
+>>>> Best regards
+>>>> Thomas
+>>>>
+>>>>>> Best regards
+>>>>>> Thomas
+>>>>>>
+>>>>>>>       ret = hibmc_hw_init(priv);
+>>>>>>>       if (ret)
+>>>>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h 
+>>>>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+>>>>>>> index f310a83..e35353a 100644
+>>>>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+>>>>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+>>>>>>> @@ -37,7 +37,7 @@ struct hibmc_drm_private {
+>>>>>>>       resource_size_t  fb_size;
+>>>>>>>       /* drm */
+>>>>>>> -    struct drm_device  *dev;
+>>>>>>> +    struct drm_device dev;
+>>>>>>>       struct drm_plane primary_plane;
+>>>>>>>       struct drm_crtc crtc;
+>>>>>>>       struct drm_encoder encoder;
+>>>>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c 
+>>>>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+>>>>>>> index 74e26c2..d35548d 100644
+>>>>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+>>>>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+>>>>>>> @@ -96,7 +96,7 @@ static const struct drm_encoder_funcs 
+>>>>>>> hibmc_encoder_funcs = {
+>>>>>>>   int hibmc_vdac_init(struct hibmc_drm_private *priv)
+>>>>>>>   {
+>>>>>>> -    struct drm_device *dev = priv->dev;
+>>>>>>> +    struct drm_device *dev = &priv->dev;
+>>>>>>>       struct hibmc_connector *hibmc_connector = &priv->connector;
+>>>>>>>       struct drm_encoder *encoder = &priv->encoder;
+>>>>>>>       struct drm_connector *connector = &hibmc_connector->base;
+>>>>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c 
+>>>>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+>>>>>>> index 602ece1..e84fb81 100644
+>>>>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+>>>>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+>>>>>>> @@ -25,7 +25,7 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+>>>>>>>   {
+>>>>>>>       struct drm_vram_mm *vmm;
+>>>>>>>       int ret;
+>>>>>>> -    struct drm_device *dev = hibmc->dev;
+>>>>>>> +    struct drm_device *dev = &hibmc->dev;
+>>>>>>>       vmm = drm_vram_helper_alloc_mm(dev,
+>>>>>>>                          pci_resource_start(dev->pdev, 0),
+>>>>>>> @@ -41,10 +41,12 @@ int hibmc_mm_init(struct hibmc_drm_private 
+>>>>>>> *hibmc)
+>>>>>>>   void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
+>>>>>>>   {
+>>>>>>> -    if (!hibmc->dev->vram_mm)
+>>>>>>> +    struct drm_device *dev = &hibmc->dev;
+>>>>>>> +
+>>>>>>> +    if (!dev->vram_mm)
+>>>>>>>           return;
+>>>>>>> -    drm_vram_helper_release_mm(hibmc->dev);
+>>>>>>> +    drm_vram_helper_release_mm(dev);
+>>>>>>>   }
+>>>>>>>   int hibmc_dumb_create(struct drm_file *file, struct drm_device 
+>>>>>>> *dev,
+>>>>>>>
+>>>>>>
+>>>>>
+>>>>
+>>>
+>>
+> 
+> 
+> .
+> 
+
