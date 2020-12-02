@@ -2,122 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF0A2CC432
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:48:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1CA2CC436
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389298AbgLBRqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:46:23 -0500
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:41693 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389271AbgLBRqW (ORCPT
+        id S1730845AbgLBRrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:47:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36287 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730762AbgLBRrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:46:22 -0500
-Received: by mail-ed1-f66.google.com with SMTP id ck29so4883755edb.8;
-        Wed, 02 Dec 2020 09:46:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KQujH+DgczKfL4cTVLHPoonrrbdR99NcEgX+XcWOKS8=;
-        b=oEfAKc4sEd4XoC0wT1yGTmRrfDBDArXHl/DHml4RS550EFLpZHQgNFZxRI44aIQGwY
-         Ut/07ReyOi9Z1G22r3Q+8hBhWRoYsIi5PpL/Dat3Cp68b25PKKwD9AJ6JMwHxWGA+7fa
-         HvyfUf6+u07qzmQ+cAaclcpwvm0ucagbWivRuzrch6G/zyPOhMXlXih2KSpLaEe5i6Iu
-         VD2aMd5DrH7puiRmEmMgaTK41RCbM1SsL6GVR1IQyic8Jyw20V0OKw6M3yUmYDN9ydV5
-         WqSngjT+fD++wKT/sPm1e5pRSUEAiXeOGcjAv96YLmEoWHk1UWnUCbg0BdrOCr/rgdYQ
-         r4bg==
-X-Gm-Message-State: AOAM533tacxtMqPYKnPnOGAbu1BNqI88EfWsiOwor+L1VVXW7rMgBFnF
-        FrqOkTw3fFj68bdrJvLac44=
-X-Google-Smtp-Source: ABdhPJxuPLbF0cdq0buzQ0cI4ciwXJndnNuVlUAc6BZuWmYu2a3yp+6MfdvNvA0vBVsRz1qFHp7YRQ==
-X-Received: by 2002:a50:e18c:: with SMTP id k12mr1090339edl.58.1606931140639;
-        Wed, 02 Dec 2020 09:45:40 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id be6sm471571edb.29.2020.12.02.09.45.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 09:45:39 -0800 (PST)
-Date:   Wed, 2 Dec 2020 19:45:38 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula@amarulasolutions.com
-Subject: Re: [PATCH 08/10] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini
- C.TOUCH 2.0
-Message-ID: <20201202174538.GH3490@kozik-lap>
-References: <20201202121241.109952-1-jagan@amarulasolutions.com>
- <20201202121241.109952-9-jagan@amarulasolutions.com>
+        Wed, 2 Dec 2020 12:47:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606931184;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mhFSM2tIswFdAGszH7TPwuijk9hB6w2fBqgBiK2bRsc=;
+        b=UlOn6qO/WwEy4OxFaHg2Dd/NdvAyXJ/ZjZxpUSxZKJmgYmJpzP1yAbBUmyI9smlv27FTsZ
+        rTyD1lWPXGxiENJp6AXyp53w29eMiEZm9o7LtLvQmBPB7HqxGhhjSfJdybGdKrzrdvuC8B
+        niG3jMapFX7VzuFJEPnVgALsH458J7M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-aXVO5x3zP_uSu-lAbCy7gQ-1; Wed, 02 Dec 2020 12:46:20 -0500
+X-MC-Unique: aXVO5x3zP_uSu-lAbCy7gQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D65E680B736;
+        Wed,  2 Dec 2020 17:46:18 +0000 (UTC)
+Received: from w520.home (ovpn-112-10.phx2.redhat.com [10.3.112.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DE5BB5D6AC;
+        Wed,  2 Dec 2020 17:46:17 +0000 (UTC)
+Date:   Wed, 2 Dec 2020 10:46:17 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Chiqijun <chiqijun@huawei.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Yinshi (Stone)" <yin.yinshi@huawei.com>,
+        "Wangxiaoyun (Cloud)" <cloud.wangxiaoyun@huawei.com>,
+        zengweiliang zengweiliang <zengweiliang.zengweiliang@huawei.com>,
+        "Chenlizhong (IT Chip)" <chenlizhong@huawei.com>
+Subject: Re: [PATCH] PCI: Add pci reset quirk for Huawei Intelligent NIC
+ virtual function
+Message-ID: <20201202104617.0e388100@w520.home>
+In-Reply-To: <9232bf61-8906-0848-8078-a2c6b6a78864@huawei.com>
+References: <20201128061825.2629-1-chiqijun@huawei.com>
+        <20201128232919.GA929748@bjorn-Precision-5520>
+        <20201130084622.0b71d526@w520.home>
+        <9232bf61-8906-0848-8078-a2c6b6a78864@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201202121241.109952-9-jagan@amarulasolutions.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 05:42:39PM +0530, Jagan Teki wrote:
-> i.Core MX8M Mini is an EDIMM SOM based on NXP i.MX8MM from Engicam.
-> 
-> C.TOUCH 2.0 is a general purpose carrier board with capacitive
-> touch interface support.
-> 
-> i.Core MX8M Mini needs to mount on top of this Carrier board for
-> creating complete i.Core MX8M Mini C.TOUCH 2.0 board.
-> 
-> Add support for it.
-> 
-> Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
->  arch/arm64/boot/dts/freescale/Makefile        |  1 +
->  .../imx8mm-engicam-icore-mx8mm-ctouch2.dts    | 21 +++++++++++++++++++
->  2 files changed, 22 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2.dts
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> index 4369d783dade..8191db4c64fa 100644
-> --- a/arch/arm64/boot/dts/freescale/Makefile
-> +++ b/arch/arm64/boot/dts/freescale/Makefile
-> @@ -30,6 +30,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-rdb.dtb
->  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-qds.dtb
->  
->  dtb-$(CONFIG_ARCH_MXC) += imx8mm-beacon-kit.dtb
-> +dtb-$(CONFIG_ARCH_MXC) += imx8mm-engicam-icore-mx8mm-ctouch2.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8mm-engicam-icore-mx8mm-edimm2.2.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8mm-ddr4-evk.dtb
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2.dts b/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2.dts
-> new file mode 100644
-> index 000000000000..aa3c03ad3109
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2.dts
-> @@ -0,0 +1,21 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (c) 2019 NXP
-> + * Copyright (c) 2019 Engicam srl
-> + * Copyright (c) 2020 Amarula Solutions(India)
-> + */
-> +
-> +/dts-v1/;
-> +#include "imx8mm.dtsi"
+On Wed, 2 Dec 2020 17:18:12 +0800
+Chiqijun <chiqijun@huawei.com> wrote:
 
-You have multiple DTSI files to only include one DTSI. I was trying to
-follow the logic here but I failed...
+> On 2020/11/30 23:46, Alex Williamson wrote:
+> > On Sat, 28 Nov 2020 17:29:19 -0600
+> > Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >   
+> >> [+cc Alex]
+> >>
+> >> On Sat, Nov 28, 2020 at 02:18:25PM +0800, Chiqijun wrote:  
+> >>> When multiple VFs do FLR at the same time, the firmware is
+> >>> processed serially, resulting in some VF FLRs being delayed more
+> >>> than 100ms, when the virtual machine restarts and the device
+> >>> driver is loaded, the firmware is doing the corresponding VF
+> >>> FLR, causing the driver to fail to load.
+> >>>
+> >>> To solve this problem, add host and firmware status synchronization
+> >>> during FLR.  
+> >>
+> >> Is this because the Huawei Intelligent NIC isn't following the spec,
+> >> or is it because Linux isn't correctly waiting for the FLR to
+> >> complete?  
+> > 
+> > Seems like a spec compliance issue, I don't recall anything in the spec
+> > about coordinating FLR between VFs.  
+> 
+> The spec stipulates that the FLR time of a single VF does not exceed 
+> 100ms, but when multiple VMs are reset concurrently in Linux, there will 
+> be multiple VF parallel FLRs, VF of Huawei Intelligent NIC
+>   FLR will exceed 100ms in this case.
+> 
+> >     
+> >> If this is a Huawei Intelligent NIC defect, is there documentation
+> >> somewhere (errata) that you can reference?  Will it be fixed in future
+> >> designs, so we don't have to add future Device IDs to the quirk?
+> >>  
+> >>> Signed-off-by: Chiqijun <chiqijun@huawei.com>
+> >>> ---
+> >>>   drivers/pci/quirks.c | 67 ++++++++++++++++++++++++++++++++++++++++++++
+> >>>   1 file changed, 67 insertions(+)
+> >>>
+> >>> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> >>> index f70692ac79c5..bd6236ea9064 100644
+> >>> --- a/drivers/pci/quirks.c
+> >>> +++ b/drivers/pci/quirks.c
+> >>> @@ -3912,6 +3912,71 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
+> >>>   	return 0;
+> >>>   }
+> >>>   
+> >>> +#define PCI_DEVICE_ID_HINIC_VF  0x375E
+> >>> +#define HINIC_VF_FLR_TYPE       0x1000
+> >>> +#define HINIC_VF_OP             0xE80
+> >>> +#define HINIC_OPERATION_TIMEOUT 15000
+> >>> +
+> >>> +/* Device-specific reset method for Huawei Intelligent NIC virtual functions */
+> >>> +static int reset_hinic_vf_dev(struct pci_dev *pdev, int probe)
+> >>> +{
+> >>> +	unsigned long timeout;
+> >>> +	void __iomem *bar;
+> >>> +	u16 old_command;
+> >>> +	u32 val;
+> >>> +
+> >>> +	if (probe)
+> >>> +		return 0;
+> >>> +
+> >>> +	bar = pci_iomap(pdev, 0, 0);
+> >>> +	if (!bar)
+> >>> +		return -ENOTTY;
+> >>> +
+> >>> +	pci_read_config_word(pdev, PCI_COMMAND, &old_command);
+> >>> +
+> >>> +	/*
+> >>> +	 * FLR cap bit bit30, FLR ACK bit: bit18, to avoid big-endian conversion
+> >>> +	 * the big-endian bit6, bit10 is directly operated here
+> >>> +	 */
+> >>> +	val = readl(bar + HINIC_VF_FLR_TYPE);
+> >>> +	if (!(val & (1UL << 6))) {
+> >>> +		pci_iounmap(pdev, bar);
+> >>> +		return -ENOTTY;
+> >>> +	}  
+> > 
+> > 
+> > I don't know exactly what this is testing, but it seems like a
+> > feature/capability test that can fail, why is it not done as part of
+> > the probe?  Can we define bit 6 with a macro?  Same for bit 10 in the
+> > VF op register below.  
+> 
+> The firmware of Huawei Intelligent NIC does not support this feature in 
+> the old version. here is the reading ability to determine whether the 
+> firmware supports it.
+> In the next patch, I will add a comment here and replace bit 6 and bit 
+> 10 with macro definitions.
 
-This is ctouch, so it should include SoM, which you call icore. But it
-also includes ctouch2 which *only* includes common DTSI. It's then
-exactly the same as starter kit which includes edimm (which includes
-common) and icore.
 
-Best regards,
-Krzysztof
+The question remains why this is not done as part of the probe.  If the
+device firmware doesn't support it, isn't it better to try a regular
+FLR and have it return error if the time is exceeded rather than claim
+we have a functional device specific reset quirk that will always fail
+without ever attempting to FLR the VF?  Thanks,
 
+Alex
 
-> +#include "imx8mm-engicam-ctouch2.dtsi"
-> +#include "imx8mm-engicam-icore-mx8mm.dtsi"
-> +
-> +/ {
+ 
+> >>> +
+> >>> +	val = readl(bar + HINIC_VF_OP);
+> >>> +	val = val | (1UL << 10);
+> >>> +	writel(val, bar + HINIC_VF_OP);
+> >>> +
+> >>> +	/* Perform the actual device function reset */
+> >>> +	pcie_flr(pdev);
+> >>> +
+> >>> +	pci_write_config_word(pdev, PCI_COMMAND,
+> >>> +			      old_command | PCI_COMMAND_MEMORY);
+> >>> +
+> >>> +	/* Waiting for device reset complete */
+> >>> +	timeout = jiffies + msecs_to_jiffies(HINIC_OPERATION_TIMEOUT);  
+> > 
+> > Yikes, 15s timeout!  
+> 
+> Huawei Intelligent NIC supports a maximum of 496 VFs, so the total 
+> timeout period is set to 15s, which will not reach the timeout time 
+> under normal circumstances.
+> 
+> >   
+> >>> +	do {
+> >>> +		val = readl(bar + HINIC_VF_OP);
+> >>> +		if (!(val & (1UL << 10)))
+> >>> +			goto reset_complete;
+> >>> +		msleep(20);
+> >>> +	} while (time_before(jiffies, timeout));
+> >>> +
+> >>> +	val = readl(bar + HINIC_VF_OP);
+> >>> +	if (!(val & (1UL << 10)))
+> >>> +		goto reset_complete;
+> >>> +
+> >>> +	pci_warn(pdev, "Reset dev timeout, flr ack reg: %x\n",
+> >>> +		 be32_to_cpu(val));
+> >>> +
+> >>> +reset_complete:
+> >>> +	pci_write_config_word(pdev, PCI_COMMAND, old_command);
+> >>> +	pci_iounmap(pdev, bar);
+> >>> +
+> >>> +	return 0;
+> >>> +}
+> >>> +
+> >>>   static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+> >>>   	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82599_SFP_VF,
+> >>>   		 reset_intel_82599_sfp_virtfn },
+> >>> @@ -3923,6 +3988,8 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+> >>>   	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
+> >>>   	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
+> >>>   		reset_chelsio_generic_dev },
+> >>> +	{ PCI_VENDOR_ID_HUAWEI, PCI_DEVICE_ID_HINIC_VF,
+> >>> +		reset_hinic_vf_dev },
+> >>>   	{ 0 }
+> >>>   };
+> >>>   
+> >>> -- 
+> >>> 2.17.1
+> >>>      
+> >>  
+> > 
+> > .
+> >   
+> 
+
