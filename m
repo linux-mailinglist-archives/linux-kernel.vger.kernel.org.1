@@ -2,69 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C8C2CB318
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 04:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B4A2CB324
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 04:05:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728248AbgLBDBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 22:01:22 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:42984 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726483AbgLBDBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 22:01:22 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx79M1A8df4_cYAA--.49809S2;
-        Wed, 02 Dec 2020 11:00:05 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: KASLR: Fix sync_icache() trapped in loop when synci_step is zero
-Date:   Wed,  2 Dec 2020 11:00:05 +0800
-Message-Id: <1606878005-11427-1-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx79M1A8df4_cYAA--.49809S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruFW3Ww4DXFy5KFWUAry8uFg_yoWfJwb_GF
-        1UKw48Gw1rGr4jvr1Y9ayfXryUtw15WF1fC34qqrW3tay3Zry8A395JFs8Wrs8XrsYyF13
-        Xr98GFZrAF4fujkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb28YjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8GwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07bw2-5UUUUU=
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S1727857AbgLBDFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 22:05:48 -0500
+Received: from mga03.intel.com ([134.134.136.65]:37973 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726441AbgLBDFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 22:05:47 -0500
+IronPort-SDR: KpvNgF/FhCjUUVsWF7bHwJH9cEsWGgKKeEPfiPs0vXnfZ4oonIep0YuWDzfe0uAB8+xId8lwMN
+ 8+zSYgf8A1yA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="173041944"
+X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
+   d="scan'208";a="173041944"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 19:04:57 -0800
+IronPort-SDR: GBCM2P7tgqOK8o7TvMfXOZ+BefCxHQCn7xcH9OAKNbNSwNraesLQiiwx2iBK7mq5DGaa2Aq8Lp
+ uCgOvMAd1pfA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
+   d="scan'208";a="539490975"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga005.fm.intel.com with ESMTP; 01 Dec 2020 19:04:55 -0800
+Date:   Wed, 2 Dec 2020 11:00:26 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Sonal Santan <sonal.santan@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
+        maxz@xilinx.com, lizhih@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH Xilinx Alveo 7/8] fpga: xrt: Alveo management physical
+ function driver
+Message-ID: <20201202030026.GD22103@yilunxu-OptiPlex-7050>
+References: <20201129000040.24777-1-sonals@xilinx.com>
+ <20201129000040.24777-8-sonals@xilinx.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201129000040.24777-8-sonals@xilinx.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reading synci_step by using rdhwr instruction may return zero if no cache
-need be synchronized. On the one hand, to make sure all load operation and
-store operation finished we do __sync() for every platform. On the other
-hand, some platform need operate synci one time although step is zero.
+> +static int xmgmt_main_event_cb(struct platform_device *pdev,
+> +	enum xrt_events evt, void *arg)
+> +{
+> +	struct xmgmt_main *xmm = platform_get_drvdata(pdev);
+> +	struct xrt_event_arg_subdev *esd = (struct xrt_event_arg_subdev *)arg;
+> +	enum xrt_subdev_id id;
+> +	int instance;
+> +	size_t fwlen;
+> +
+> +	switch (evt) {
+> +	case XRT_EVENT_POST_CREATION: {
+> +		id = esd->xevt_subdev_id;
+> +		instance = esd->xevt_subdev_instance;
+> +		xrt_info(pdev, "processing event %d for (%d, %d)",
+> +			evt, id, instance);
+> +
+> +		if (id == XRT_SUBDEV_GPIO)
+> +			xmm->gpio_ready = true;
+> +		else if (id == XRT_SUBDEV_QSPI)
+> +			xmm->flash_ready = true;
+> +		else
+> +			BUG_ON(1);
+> +
+> +		if (xmm->gpio_ready && xmm->flash_ready) {
+> +			int rc;
+> +
+> +			rc = load_firmware_from_disk(pdev, &xmm->firmware_blp,
+> +				&fwlen);
+> +			if (rc != 0) {
+> +				rc = load_firmware_from_flash(pdev,
+> +					&xmm->firmware_blp, &fwlen);
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
----
- arch/mips/kernel/relocate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm curious that before the shell metadata is loaded, how the QSPI
+subdev is enumerated and get to work? The QSPI DT info itself is
+stored in metadata, is it?
 
-diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
-index 57bdd276..47aeb33 100644
---- a/arch/mips/kernel/relocate.c
-+++ b/arch/mips/kernel/relocate.c
-@@ -64,7 +64,7 @@ static void __init sync_icache(void *kbase, unsigned long kernel_length)
- 			: "r" (kbase));
- 
- 		kbase += step;
--	} while (kbase < kend);
-+	} while (step && kbase < kend);
- 
- 	/* Completion barrier */
- 	__sync();
--- 
-2.1.0
+I didn't find the creation of leaf platform devices, maybe I can find
+the answer in the missing Patch #5?
 
+Thanks,
+Yilun
+
+> +			}
+> +			if (rc == 0 && is_valid_firmware(pdev,
+> +			    xmm->firmware_blp, fwlen))
+> +				(void) xmgmt_create_blp(xmm);
+> +			else
+> +				xrt_err(pdev,
+> +					"failed to find firmware, giving up");
+> +			xmm->evt_hdl = NULL;
+> +		}
+> +		break;
+> +	}
