@@ -2,103 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D871B2CC050
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13EB22CC05D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730429AbgLBPEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:04:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730417AbgLBPEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:04:54 -0500
-Date:   Wed, 2 Dec 2020 16:04:09 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606921453;
-        bh=Me6ioMBcD1xjBiZBNjZz4qGyOW40j2fz16WXis1EvgA=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A6Nm1e/8VCsSoL4Dyvo29gkEpT2FWZoPsH58dKsfXJrjdUNQmIcjd7XyoFTRG0gWL
-         aSLNSzWCcGOJZr1Io9S/1MpjoVPEL3GUvjkaIyJcimpTf3/5mtusSg7ryOAWzbLYNA
-         yfDVzEAKJBPRXJL4KDPjRc5gAuAI30/5hsxmDTXE=
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        David Laight <David.Laight@aculab.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v6 1/3] i2c: imx: Fix reset of I2SR_IAL flag
-Message-ID: <20201202150409.GB874@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Christian Eggers <ceggers@arri.de>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        David Laight <David.Laight@aculab.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>, stable@vger.kernel.org
-References: <20201009110320.20832-1-ceggers@arri.de>
- <20201009110320.20832-2-ceggers@arri.de>
- <20201010110920.GB4669@ninjato>
- <18285740.IRuNKOj0Az@n95hx1g2>
+        id S1728312AbgLBPJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:09:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44277 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727724AbgLBPJB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:09:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606921655;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=q5xJvg4nvjjgZQmxkhKVMRdu9M0gEjHhA3AT4X447g0=;
+        b=VlC36XSJDtxp0jocD8K842LI4G9nV+T073oMBm25Kjs98iAuGGm7UIbAF2LN5GZKPbpy5X
+        ljBFTrxxS+ZwqmjEqm3ImPZ+koqGpTAIQP8is4+6hy8LULSch3Wc1qWQ5yqkaid1BpEF9+
+        RJ+6iJfvvpSy4K+QTvGPmf/6GU/Gk34=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-Bmuk68WSPjizgwxYJ3FhNg-1; Wed, 02 Dec 2020 10:07:29 -0500
+X-MC-Unique: Bmuk68WSPjizgwxYJ3FhNg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 565048558E7;
+        Wed,  2 Dec 2020 15:07:28 +0000 (UTC)
+Received: from localhost (holly.tpb.lab.eng.brq.redhat.com [10.43.134.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2AFCC5D705;
+        Wed,  2 Dec 2020 15:07:27 +0000 (UTC)
+Date:   Wed, 2 Dec 2020 16:07:25 +0100
+From:   Miroslav Lichvar <mlichvar@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>
+Subject: Re: [PATCH] rtc: adapt allowed RTC update error
+Message-ID: <20201202150725.GA2231584@localhost>
+References: <20201201143835.2054508-1-mlichvar@redhat.com>
+ <20201201161224.GF5487@ziepe.ca>
+ <20201201171420.GN1900232@localhost>
+ <20201201173540.GH5487@ziepe.ca>
+ <87mtywe2zu.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <18285740.IRuNKOj0Az@n95hx1g2>
+In-Reply-To: <87mtywe2zu.fsf@nanos.tec.linutronix.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 02, 2020 at 02:44:53PM +0100, Thomas Gleixner wrote:
+> Something like the completely untested below should make this reliable
+> and only needs to retry when the work is running late (busy machine),
+> but the wakeup will be on time or at max 1 jiffie off when high
+> resolution timers are not available or disabled.
 
---UugvWAfsgieZRqgk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It seems to work nicely. In my test most of the updates succeeded on
+the first attempt hitting the right tick, the rest succeeding on the
+second attempt. Only when the clock was set to run 10% faster, it
+needed few more attempts to converge to the target time.
 
+Thanks,
 
-> > Applied to for-next, thanks!
-> >
-> I cannot find my patches in kernel/git/wsa/linux.git, branch "for-next".
-> Did they get lost?
+-- 
+Miroslav Lichvar
 
-It seems like it :( I seem to have forgotten to push out and then
-continued to to work on another computer with an older state. It is
-highly embarassing but I can't find out what exactly happened. I hope I
-didn't lose more patches. I am really sorry!
-
-Pushed to for-next again.
-
-
---UugvWAfsgieZRqgk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/HrN8ACgkQFA3kzBSg
-KbabCg/7BbTFqzvSLDsd8ooftIfdeb+JkCdWlguMzBwqdSFFs9jXv8SJMWVVfmVB
-tKgLTqD1HCe/PpbuPPuZrIdNvy5WQ0qq0mknlXreAh++tn7xUjaQ6uUP9aZeSmKP
-jIAwdg0Q9LF70ojW8oQfAvgZ70+LBOFH+VKcW4eag0/eR9axmhUf08kcML5PsKaG
-ctJczn6Ni0Xba7JI+0yzU6ZkM14RDZzMMLXUf1BVj+f0oi0h8sCUH+8oL+Aq5NtF
-X46xk35SPD27LewXqWXMHgDBGvlk+xgs9t1yVOuE61zfhDuH3YCUIQtd67HB3iGb
-cb86kuWzOjtBj+Rxrv5RaHrcjunusVwCRCEKsQIuHJESoqhtqI1vtwjWlkfA5pJ+
-lOH54Gnah42aJ4aHbLQtkBDmIIctX1GlU7bAP3O7falAH/ezR89zLxYiFiYJtsnI
-3/YNzIIaRH8w4yVZntj7zEC58nb0+VeSuOOUxdVTKIFoV4/gJUG06yCzpRAlEvJ7
-14o9oWSwC1TzVRAURC0CvHS5Tbx7R18Uq9e+KQEmagBt7X6Mb7UvGqh5z3B89+yI
-IpvqFOFUuSRUo3ckj1XLZlbRAk1GP1GIG91faiWtoEe8/STjJph7I0z1hoJUOEpy
-Ptc+G5i33CDsXkh1H05Qp0Qoj8tDlC0TqypdWHhIFww9GUGHv+A=
-=LYvd
------END PGP SIGNATURE-----
-
---UugvWAfsgieZRqgk--
