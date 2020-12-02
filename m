@@ -2,140 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBF12CC5F8
+	by mail.lfdr.de (Postfix) with ESMTP id F42122CC5FA
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389576AbgLBSyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:54:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55774 "EHLO
+        id S2389648AbgLBSyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:54:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387760AbgLBSyK (ORCPT
+        with ESMTP id S2387903AbgLBSyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:54:10 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCEFC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:53:30 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id u21so1809696qtw.11
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:53:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iFnMmWJa+gzL59L1V90z2bFntM7x08yfzyITaNDP1dQ=;
-        b=DoeoPlUtbTS8Yl226741iKKBAt/wvHDna506b0JhW2rsrMMdV8v9xj/58N47CKj5dO
-         x7s2FXj3zzrvvVylgOOV0bv3MBTk881c415ljZ4gIW/JdhXOnmkF/B7lhBzSimP812TL
-         jnCqyyEEsWeS8sF7drIB2HTySF/cOrA3ucfzvT4oVQ+KP6zgDp1/4DdgaoifN9cYXpmj
-         IGpm3k4WZ2op/Gh9rpRyl1EcIdfGM+yRpML+6lF93P/zYYo7muXnoCDH5t2C1WvQGKw0
-         RQlg+PrFPWd3rmrK9IFM4SwodtSilHFoGe+rf1d8aHogPR9qG5il7NW7dkCDqcHjQYja
-         ZGDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=iFnMmWJa+gzL59L1V90z2bFntM7x08yfzyITaNDP1dQ=;
-        b=M+OMtS1TT0FZd27/2AlE4Oh/GfpYShu14drOK2SxGcRkEFuJLm7tyA502jaggbjZS1
-         shLSkwAX3Z+ACcfjhAEggPKTWRbUbtu0IJQqNDT4PogdPwvIA+0UbYJ+Pe0R0yEhJvET
-         cPuuZSpWXXV0qnNJ9mRkqkNEE/AeiW3tR5TvlHUhxIz2CwfbuYguvh855hAxj4Ly8FNf
-         /NIhPSkI90r6SWDNWD+KAsnYO+zbIiHWxRuEUU8eTZRx0lYZ19gpn2cXoWxVln8L1vhe
-         goIK0smg1jJv3ud8mKsBYR+0LGUz01nVJaK9qlQFcvN2sH3W+0xOuOycHX036GJi98FW
-         m1xQ==
-X-Gm-Message-State: AOAM533ZR1VpBUWTPhR4ksq36Kj8LZf8OxmTiyXjogvHZaR1+8RfpT6k
-        rYtPtK2atfCZpkpdfNzhLdM=
-X-Google-Smtp-Source: ABdhPJzondQHOrxCr1ftrVSVmpYTN6pFwPkl+G2K8hb1UbVLkClhx3ZB40Fka8K2O6d+tLl1OSHPsg==
-X-Received: by 2002:ac8:580c:: with SMTP id g12mr4160635qtg.340.1606935209140;
-        Wed, 02 Dec 2020 10:53:29 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:8dbd])
-        by smtp.gmail.com with ESMTPSA id 72sm2658201qkn.44.2020.12.02.10.53.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 10:53:28 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 2 Dec 2020 13:53:00 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Don <joshdon@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        Wed, 2 Dec 2020 13:54:17 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A54C0613D4;
+        Wed,  2 Dec 2020 10:53:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=x7k2lFyLJB5bfb9fPEzXzFBJq+3Mj4qBHsnAWTloKu4=; b=Dju+loNs6iUz8v0bfjzjUmbQ4a
+        UL6t4b3LCv0bXx3LCcybXbyCs+QdLkl+Vsa+/HnihsiPhPpIW5Wczaukyozfn9pZIcgi08BwDDLwb
+        gwS9p5K1ElOb22EzeWxLMWUGrzkwqkP8/k4XQSe/ZJkld40dVsuz5Cidy1dEHk3JvWQwV502ra8iw
+        6s5uep//lxA8cphkUuDZK3HfjX135eCF96j1aLBNupUEiJXv0q6LViNsoBcvf0f7Ghe0wVo2XSAkS
+        RCWi2QGeu+8qB+WIY02RsAQe+EL487YBClM6XRRMEVRPckmQHGFoOt9EzxZILGo6yxPsft7VKRJLw
+        41k6blcQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkXFu-0004eS-PH; Wed, 02 Dec 2020 18:53:34 +0000
+Date:   Wed, 2 Dec 2020 18:53:34 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Topi Miettinen <toiwoton@gmail.com>
+Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Jann Horn <jannh@google.com>,
         Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>, chris.hyser@oracle.com,
-        Ben Segall <bsegall@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Oleg Rombakh <olegrom@google.com>
-Subject: Re: [PATCH -tip 26/32] sched: Add a second-level tag for nested
- CGroup usecase
-Message-ID: <X8fijKlASP4yo8kp@mtj.duckdns.org>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-27-joel@joelfernandes.org>
- <20201125134237.GZ2414@hirez.programming.kicks-ass.net>
- <CABk29Nv7+nD1oU9iBhAFAuFoiPM5i7eCOtuG7vuQVcE8+Va=nw@mail.gmail.com>
- <20201202080211.GD3021@hirez.programming.kicks-ass.net>
+        Linux API <linux-api@vger.kernel.org>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH] mm/vmalloc: randomize vmalloc() allocations
+Message-ID: <20201202185334.GG11935@casper.infradead.org>
+References: <20201201214547.9721-1-toiwoton@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201202080211.GD3021@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201201214547.9721-1-toiwoton@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Dec 01, 2020 at 11:45:47PM +0200, Topi Miettinen wrote:
+> +	/* Randomize allocation */
+> +	if (randomize_vmalloc) {
+> +		voffset = get_random_long() & (roundup_pow_of_two(vend - vstart) - 1);
+> +		voffset = PAGE_ALIGN(voffset);
+> +		if (voffset + size > vend - vstart)
+> +			voffset = vend - vstart - size;
+> +	} else
+> +		voffset = 0;
+> +
+>  	/*
+>  	 * If an allocation fails, the "vend" address is
+>  	 * returned. Therefore trigger the overflow path.
+>  	 */
+> -	addr = __alloc_vmap_area(size, align, vstart, vend);
+> +	addr = __alloc_vmap_area(size, align, vstart + voffset, vend);
+>  	spin_unlock(&free_vmap_area_lock);
 
-On Wed, Dec 02, 2020 at 09:02:11AM +0100, Peter Zijlstra wrote:
-> > the user might only want subsets of {B, C, D, E} to share.  For
-> > instance, the user might only want {B,C} and {D, E} to share.  One way
-> > to solve this would be to allow the user to write the group cookie
-> > directly.  However, this interface would need to be restricted to
-> > privileged users, since otherwise the cookie could be configured to
-> > share with any arbitrary cgroup.  The purpose of the 'color' field is
-> > to expose a portion of the cookie that can be modified by a
-> > non-privileged user in order to achieve this sharing goal.
-> > 
-> > If this doesn't seem like a useful case, I'm happy to drop this patch
-> > from the series to unblock it.
-> 
-> Well, the traditional cgroup way of doing that would be to:
-> 
->          A
-> 	/ \
->        T1 T2
->       / \
->      B   C
-> 
-> And tag T1 if you want B,C to share.
-> 
-> So me the color thing reads like an end-run around the cgroup hierarchy.
+What if there isn't any free address space between vstart+voffset and
+vend, but there is free address space between vstart and voffset?
+Seems like we should add:
 
-+1
-
-and please cc me on cgroup related changes.
-
-Thanks.
-
--- 
-tejun
+	addr = __alloc_vmap_area(size, align, vstart + voffset, vend);
++	if (!addr)
++		addr = __alloc_vmap_area(size, align, vstart, vend);
+	spin_unlock(&free_vmap_area_lock);
