@@ -2,98 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AC82CCA78
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D39EB2CCA7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727996AbgLBXXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 18:23:19 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:33570 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgLBXXS (ORCPT
+        id S1729015AbgLBXYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 18:24:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728862AbgLBXYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 18:23:18 -0500
-Received: by mail-wr1-f65.google.com with SMTP id u12so6899wrt.0;
-        Wed, 02 Dec 2020 15:23:02 -0800 (PST)
+        Wed, 2 Dec 2020 18:24:51 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06549C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 15:24:11 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id r24so7403563lfm.8
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 15:24:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=krM5ZtArJDh4CBdMqAGvzuDAxuZaaWPVN3dbTakwoQA=;
+        b=rW70B6hJvfsQzem9DjSh5wXLcOFYSU1woEDzJDe+sxe/DK7kyOs4BekSpMmQdoqloC
+         jII3L3g/91M0Il5/MoHlo5S1zYd1n0wjyH20YW2AQgoZERWxzDAIUjM2zu0cUwwT+a1w
+         viw4Aq0NPxeNj4A/P0AQ6mKnU59maVXiyq/Tg8WiOnxWpJ6h2GxjUkv53DcRPMqy40au
+         KVuTreXa3FHXocfjD9aI2HkDh7bkptBrrD/MQaKzGjktMHr3/gdoRjhw8eVZdfKB5lR0
+         6R8Hy2YixzwGYH9GIRFDetJa8BTgN0xLRWFJWkdRp7tUhR7hxOYqcDCmSAm3MlvYmM/P
+         nPbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=vhazsnwkBN4W5bW7O942iWaDDf+hT2e4BRRd7kmtCxk=;
-        b=cn5d/9u0iBmN3qrU1cIgrFmALe0gWqS8hrs2Tx2XU5STLG5N0ZEdF46eHIk/ERImkh
-         9CnKUIBN1Ojd042sT5AVO1NumdDCMwbV/s3xhTEt85L8tz3muMB6zCH1lz8RHSdDnf/f
-         +F7lrJE4oF5CfNfGAyooP3PiTMNTM624nMQ6fCxX9Ze7oJXswICqSBRfOK+cbPo7AzdU
-         1m/ib3Hdqw7RQNT36CKe16l8Zy84veThPkYyuKPyIoefR7sVcveB5l4y/p3TzGHIQPbg
-         O03oXCibkGzlRUHfk6zkgTkYsgpfDpCJpOBb/qP1SX9/dFF5IxEIUnungAYEwjMypJ2a
-         Rlkw==
-X-Gm-Message-State: AOAM5334PZb0JYCi7MdnMYvH/+coMd7auVaTod9mfqXcTa7x0kYamR+5
-        vadJbpZf2BYI3ocTV5GF/bY=
-X-Google-Smtp-Source: ABdhPJwfx0KMkyXddeSfYgQzOOwxcl+ncL7oFhNmZQjEMNEOFs7rbcaWlo6BLSvWqXcN6wzzmZ4Abw==
-X-Received: by 2002:adf:a495:: with SMTP id g21mr422743wrb.213.1606951356855;
-        Wed, 02 Dec 2020 15:22:36 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id 90sm207272wrl.60.2020.12.02.15.22.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 15:22:36 -0800 (PST)
-Date:   Wed, 2 Dec 2020 23:22:34 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        sameo@linux.intel.com, robert.bradford@intel.com,
-        sebastien.boeuf@intel.com
-Subject: Re: [PATCH v3 00/17] Introducing Linux root partition support for
- Microsoft Hypervisor
-Message-ID: <20201202232234.5buzu5wysiaro3hc@liuwe-devbox-debian-v2>
-References: <20201124170744.112180-1-wei.liu@kernel.org>
- <227127cf-bfea-4a06-fcbc-f6c46102e9e6@metux.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=krM5ZtArJDh4CBdMqAGvzuDAxuZaaWPVN3dbTakwoQA=;
+        b=oCqGADGO6i0s04j1kWgPPzXH+cTrUc3o+JBc9nEUfMQs9xongoazLo0iklLEAzo7mM
+         R/1l7qxzS4Vdw83R6u9IMtmuWteMDhn7RzyDZ48/xSS0+uaPfC+uRqjrid2lHBvfo4Pb
+         qWBXxlcSHYnn23X/76KKXHatCI2VvReMHm8reNZYP3VDURXBZW/B8pSOPebGf9+V+d81
+         QFVNatSZsBgMk353RjE7CeJV/Wu4J+KQxnu6pn/KX2IEV7GD3A2pV8668C7skW0HiIeW
+         6wjYqUP3R9MM2UhLha7O2qPRyEzb656ya1fZUZOI6/W3Z+tderRJVksUDPmTxiPQNdrG
+         mjaA==
+X-Gm-Message-State: AOAM533+ZEwmymDs7a7m6+qE0v+9Xq6ZEm3wp1QEmmAlePavJv/ujpMH
+        SE3YkuwoPrzJ/BKX6MKG1nA/20Rgqv/87P1dp1FNrw==
+X-Google-Smtp-Source: ABdhPJxEYAINYZmZJ8fCk9T3f9H7hIO21axcvhlNaEHyk4FC9gVxHTTZh/IgVa5ILT91KDY0+vhFH1bSsRswiwCQl3I=
+X-Received: by 2002:a19:be4a:: with SMTP id o71mr167981lff.494.1606951449214;
+ Wed, 02 Dec 2020 15:24:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <227127cf-bfea-4a06-fcbc-f6c46102e9e6@metux.net>
-User-Agent: NeoMutt/20180716
+References: <20201130233504.3725241-1-axelrasmussen@google.com>
+ <CALvZod42+o7naLOkpo9Jngmhru-aR4K6RCuTk7TukCikAYrDbQ@mail.gmail.com>
+ <CAJHvVcgtoyJ_C0L=KByb8UbZm6x_RtCTnznYA1HwmdzX4Y=mHw@mail.gmail.com>
+ <xr93lfehl8al.fsf@gthelen.svl.corp.google.com> <CALvZod4j9fFpGRfkios1ef0D5qhyw3XA_VSVm0k__RuMG1Qhwg@mail.gmail.com>
+ <CAJHvVchcm_HLd1RaibCZDZi27_2CVCwUWDX515dvnPPyTpHBHw@mail.gmail.com>
+ <CALvZod5CpPhvzB99VZTc33Sb5YCbJNHFe3k33k+HwNfJvJbpJQ@mail.gmail.com> <X8fkVcfztQtX2dRT@mtj.duckdns.org>
+In-Reply-To: <X8fkVcfztQtX2dRT@mtj.duckdns.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 2 Dec 2020 15:23:57 -0800
+Message-ID: <CALvZod4ZroEOwbiZ5aKTd28d1tva0YLWfLZTF-N-xXd_40rUsA@mail.gmail.com>
+Subject: Re: [PATCH] mm: mmap_lock: fix use-after-free race and css ref leak
+ in tracepoints
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Rientjes <rientjes@google.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Michel Lespinasse <walken@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>, dsahern@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>, liuhangbin@gmail.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 08:51:38PM +0100, Enrico Weigelt, metux IT consult wrote:
-> On 24.11.20 18:07, Wei Liu wrote:
-> 
-> Hi,
-> 
-> > There will be a subsequent patch series to provide a
-> > device node (/dev/mshv) such that userspace programs can create and run virtual
-> > machines. 
-> 
-> Any chance of using the already existing /dev/kvm interface ?
-> 
+On Wed, Dec 2, 2020 at 11:01 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Tue, Dec 01, 2020 at 12:53:46PM -0800, Shakeel Butt wrote:
+> > The writeback tracepoint in include/trace/events/writeback.h is
+> > already using the cgroup IDs. Actually it used to use cgroup_path but
+> > converted to cgroup_ino.
+> >
+> > Tejun, how do you use these tracepoints?
+>
 
-I don't follow. Do you mean reusing /dev/kvm but with a different set of
-APIs underneath? I don't think that will work.
+Thanks Tejun, I really appreciate the example you provided. I do have one query.
 
-In any case, the first version of /dev/mshv was posted a few days ago
-[0].  While we've chosen to follow closely KVM's model, Microsoft
-Hypervisor has its own APIs.
+> There've been some changes to cgroup ids recently and now cgroup id, ino and
+> its file_handle are all compatible. On 64bit ino machines, they're all the
+> same and won't be reused. On 32bit ino machines, the lower 32bit of full id
+> is used as ino. ino may be reused but not the full 64bit id.
 
-Wei.
-
-0: https://lore.kernel.org/linux-hyperv/1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com/
-
-> --mtx
-> 
-> -- 
-> ---
-> Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-> werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-> GPG/PGP-Schlüssel zu.
-> ---
-> Enrico Weigelt, metux IT consult
-> Free software and Linux embedded engineering
-> info@metux.net -- +49-151-27565287
+__kernfs_new_node() is using idr_alloc_cyclic() which will return
+32bit ID. If I am understanding this correctly the full ID is
+generated similarly for 32bit and 64bit machines but for 64bit
+machines the whole ID is inode number while on 32bit machines the
+lower 32bits contains the inode number. Is that correct?
