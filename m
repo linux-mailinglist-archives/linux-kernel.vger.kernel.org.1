@@ -2,84 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742142CC64E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE142CC653
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389749AbgLBTLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:11:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
+        id S2389755AbgLBTMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:12:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387739AbgLBTLu (ORCPT
+        with ESMTP id S2389614AbgLBTMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:11:50 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50EDC0613CF;
-        Wed,  2 Dec 2020 11:11:10 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id z188so2318816qke.9;
-        Wed, 02 Dec 2020 11:11:10 -0800 (PST)
+        Wed, 2 Dec 2020 14:12:38 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6854C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:11:57 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id z14so2555271ilm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:11:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v5D6PtLHVVQdV/ubjkOzdJ2GbL8TD6flP6rlB6RAW04=;
-        b=cuyop+6GEYsJfkfCvrlT56PR6leruYXY5xPg4Fdmi14/OZPEhEcIUgeCsS0pTNj7Eh
-         jzkIP1A/NrdAr19D53DRdBUsnOAOhlNewUybMARKFcP77devwmFS1CqYYaN7HC4m0lgi
-         DFbVKFSeopvdwV5JccZt++HutFbOhhiVtFp3yMOsECMbScMuv1/v1XE6VDoPwzjAowuL
-         75XHn4iGJsiobXi24yrPTzCNOk/Mzrp+2cWJ1wW0OBGhuX7sTcpU6W/a++z4rZypJnV5
-         xWMyeP1DfqXvkJB4MZcZsY3WyzipNR0PEe7As0InJw/dJbEJ4S8+5F1Az9sEW9b7Vrnl
-         Cwcw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JWwMP9Qu59E97WnFSo7tWaVZ8Q8jnvlr9E6yczqoWS4=;
+        b=CRHBGwB9OYdmxCSy62fpr/oNz2KCocWFi0UY60gE6eh0hhx3IZtqjAc/ORzPKzx+Xd
+         ZKHBCVGTvTSWdns/xOPCTMhmNowm7e4w7l5IPCpnMDc3f3k7bTguG0BegRersVqnxIHs
+         DkvnsWkMrced75uqvWrstgsgYmM99kYyOY/zlFMbyDW726cSdiixFbe/x4efDUaYlCW3
+         LXhwaOPqcfltQDEEoDx7U6PXpkUCY/Qc292hNmGy7XPu7BRqcUygd7RRzwPzMh8y1fVL
+         GQ342FwvYbipSLN5e7syUjT+L39G+oD/LD4Zya0T7a7iW341uhqi4qKM8fUlSNO9I2i8
+         9IdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=v5D6PtLHVVQdV/ubjkOzdJ2GbL8TD6flP6rlB6RAW04=;
-        b=SWKH8gIAhDKovQ1+rWQaagnHk19acKM0NS1KfMjdhsqWczFJuv7bFIbeaR8GQu6okS
-         qP2JseA0HKZLnaepv/qbxF0Rth24RyJTaatznHQHP1Qg8bi+KHDQg9l9G0MnIpxPlt0p
-         ifC+f0j4OhgO1dOTlVl/UCuRacWKdneaS0bM9IARbvVuK4+38o/V8LWQPU7dHSEOaho6
-         8bMGwM5tnKPPP/0kgpqRRzo+mVH47AuAd0wd3NUxsgMibQa9ohHqYg3KEMRncdfl59+z
-         kO7CBn2LPqG3s6CDq1qfaFAoxeaNR7mXwdBqdnp9SI0U2bD2o2ht9hwhjGNS6QZcZRSB
-         +53Q==
-X-Gm-Message-State: AOAM530q9igWMPpqf3YpPPYMvqrdcqNl0qUvdv9u/abjjQ4Os8+TjJDN
-        qPtXzgDC6yamOpaPOK8p03A=
-X-Google-Smtp-Source: ABdhPJx6BRmRG4jxLpniauDUiQDUhRNB10J7uytRnFSA19h8R3Y8QAwNfA1bUo95Ef1gyghUhGvgKQ==
-X-Received: by 2002:a37:9c82:: with SMTP id f124mr4221666qke.314.1606936269763;
-        Wed, 02 Dec 2020 11:11:09 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:8dbd])
-        by smtp.gmail.com with ESMTPSA id b4sm1765150qtb.33.2020.12.02.11.11.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 11:11:09 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 2 Dec 2020 14:10:41 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, zhangxiaoxu5@huawei.com
-Subject: Re: [PATCH] blk-throttle: don't check whether or not lower limit is
- valid if CONFIG_BLK_DEV_THROTTLING_LOW is off
-Message-ID: <X8fmsbgvajlCvvLD@mtj.duckdns.org>
-References: <20201126031834.40807-1-yukuai3@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JWwMP9Qu59E97WnFSo7tWaVZ8Q8jnvlr9E6yczqoWS4=;
+        b=kw2kAIcY2ctsQus1Hkc5EVLeJuKPFxFA9R9MYVx8g10R1tbnDWgBM2eHOm96G8h4Vx
+         V90kUGbkCL/5BhloTBatD5Vf/U4glD3owl6i23gfQuDABeu8nKLlh0ovj1DSv3OFhhxD
+         OHyWbkm0bAEK5p+4gWs416kSGDkNTCFeilU6O/f3IJOQrIQ1qq+xNpdMRJiO3EyalDCP
+         qEKWUASZSBSOGegyvVoa9gArCzkOFSJeCLJ0Kcq0aTwZx6RQroYganmQPdgW51gdKXkt
+         doB2s73EdLbKIb7FE3Un3wK6bGmHbzk2/pEGZXJboL0H946Dg3jXYw8PKNafOCHjXItk
+         QMTg==
+X-Gm-Message-State: AOAM533BjdG7akVtxFQPhRziNE3wlxKf9UGBGO5qSFYrpvZJqrM4ggyZ
+        aeQsFORiGf4vQrz4PGCkz0wQjF4G8+EGVIoYSUuKpA==
+X-Google-Smtp-Source: ABdhPJwkSHS24J9Fb8k3A3FTIW/JlQja+VFvbGxlYzEynz0UwTD4IDoOW+2vKVQVDx26isb8rcbEnmPyXCwhh3YKiVI=
+X-Received: by 2002:a92:bf09:: with SMTP id z9mr3612407ilh.194.1606936317006;
+ Wed, 02 Dec 2020 11:11:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201126031834.40807-1-yukuai3@huawei.com>
+References: <20201130233242.78413-1-dlatypov@google.com> <20201130233242.78413-2-dlatypov@google.com>
+ <CABVgOSmX3foOr6XJhQ_goYabFEg8qNYoQ+5O7JPRW=gLmh=OQA@mail.gmail.com>
+ <CAGS_qxpW=Q=x8WAR3WWhtYnJc+K43kpDw680x+6go1cAjW6oUQ@mail.gmail.com> <CABVgOSnH0gz7z5JhRCGyG1wg0zDDBTLoSUCoB-gWMeXLgVTo2w@mail.gmail.com>
+In-Reply-To: <CABVgOSnH0gz7z5JhRCGyG1wg0zDDBTLoSUCoB-gWMeXLgVTo2w@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Wed, 2 Dec 2020 11:11:45 -0800
+Message-ID: <CAGS_qxr8GD-VO5eYHV5BpgQrat4bdZwAO_xDRnkZrEizxgZ1oA@mail.gmail.com>
+Subject: Re: [PATCH 2/5] kunit: tool: fix unit test so it can run from
+ non-root dir
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 11:18:34AM +0800, Yu Kuai wrote:
-> blk_throtl_update_limit_valid() will search for descendants to see if
-> 'LIMIT_LOW' of bps/iops and READ/WRITE is nonzero. However, they're always
-> zero if CONFIG_BLK_DEV_THROTTLING_LOW is not set, furthermore, a lot of
-> time will be wasted to iterate descendants.
-> 
-> Thus do nothing in blk_throtl_update_limit_valid() in such situation.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+On Tue, Dec 1, 2020 at 8:41 PM David Gow <davidgow@google.com> wrote:
+>
+> On Wed, Dec 2, 2020 at 3:00 AM Daniel Latypov <dlatypov@google.com> wrote:
+> >
+> > On Mon, Nov 30, 2020 at 11:33 PM David Gow <davidgow@google.com> wrote:
+> > >
+> > > On Tue, Dec 1, 2020 at 7:33 AM Daniel Latypov <dlatypov@google.com> wrote:
+> > > >
+> > > > get_absolute_path() makes an attempt to allow for this.
+> > > > But that doesn't work as soon as os.chdir() gets called.
+> > >
+> > > Can we explain why this doesn't work? It's because the test_data/
+> > > files are accessed with relative paths, so chdir breaks access to
+> > > them, right?
+> >
+> > Correct.
+> > Because it actually returns a relative path.
+> >
+> > (I forgot that I called out that get_absolute_path() gives relative
+> > paths in the last patch, and not this one. I can update the commit
+> > desc if we want a v2 of this)
+> >
+> > >
+> > > >
+> > > > So make it so that os.chdir() does nothing to avoid this.
+> > > >
+> > > > Note: mock.patch.object() doesn't seem to work in setUpModule(), hence
+> > > > the introduction of a new base class instead.
+> > > >
+> > > > Fixes: 5578d008d9e0 ("kunit: tool: fix running kunit_tool from outside kernel tree")
+> > > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > > > ---
+> > >
+> > > I don't like this: disabling a real system call seems like overkill to
+> > > work around a path issue like this.
+> > >
+> > > Wouldn't it be better to either:
+> > > (a) stop kunit_tool from needing to chdir entirely; or
+> >
+> > a) is doable, but would require plumbing cwd=get_kernel_root_path() to
+> > all the subprocess calls to make, etc.
+> > I'm not sure fixing a internal test-only issue necessarily justifies
+> > taking that path instead of the easier "just add a chdir" we opted for
+> > in 5578d008d9e0 ("kunit: tool: fix running kunit_tool from outside
+> > kernel tree").
+> >
+> > > (b) have get_absolute_path() / test_data_path() produce an absolute path.
+> > >
+> > > The latter really seems like the most sensible approach: have the
+> > > script read its own path and read files relative to that.
+> >
+> > b) is not that simple, sadly.
+> >
+> > Say I invoke
+> > $ python3 kunit_tool_test.py
+> > then __file__ = kunit_tool_test.py.
+> >
+> > So __file__ is a relative path, but the code assumed it was an
+> > absolute one and any change of directory breaks things.
+> > Working around that would require something like caching the result of
+> > os.path.abspath(__file__) somewhere.
+>
+> So, to clarify, __file__ is a relative path based on the cwd when the
+> script is initially run, right?
 
-Acked-by: Tejun Heo <tj@kernel.org>
+Yes, on my box at least.
+https://docs.python.org/3/reference/import.html#__file__ doesn't not
+seem to stipulate an absolute path, either.
 
-Thanks.
+>
+> In any case, caching the result of os.path.abspath(__file__) seems
+> like the most sensible solution to me. There's global state anyway
+> (the current directory), we might as well have it in an explicit
+> variable, IMHO.
 
--- 
-tejun
+Ok, sent out a v2 and squash this change with the test_data_path() patch.
+
+Not really a fan of the adding the global state, but I see your point
+about there maybe being need for more chdir calls and I don't see a
+better way of keeping track of the absolute path.
+
+> >
+> > I can see the point about not mocking out something like os.chdir().
+> > But on the other hand, do we have any other legitimate reason to call
+> > it besides that one place in kunit.py?
+> > If we do have something that relies on doing an os.chdir(), it should
+> > ideally notice that it didn't work and manifest in a unit test failure
+> > somehow.
+>
+> Certainly there doesn't seem to be any other need to chdir() in
+> kunit_tool at the moment, but I could see us doing so when adding
+> other features. More to the point, if both kunit.py and
+> kunit_tool_test.py rely on or manipulate the current directory as part
+> of their state, that seems like it's asking for some trouble down the
+> line.
+>
+> If we use an absolute path for the test data, that's something that
+> seems unlikely to ever need further changes or cause issues.
+> >
+> > Alternatively, we could make get_kernel_root_path() return ""/None to
+> > avoid the chdir call.
+> > kunit.py:       if get_kernel_root_path():
+> > kunit.py:               os.chdir(get_kernel_root_path())
+> >
+> > There'd be no adverse affects atm for stubbing that out, and I don't forsee any.
+> > But if we want to be even safer, then perhaps we have
+> >
+> > def chdir_to_kernel_root():
+> >    ...
+> >
+> > and mock out just that func in the unit test?
+>
+> I'd be okay with this, even if I'd prefer us to use an absolute path
+> for the test_data as well. Having something like this might even give
+> us the opportunity to verify that we're actually trying to change to
+> the kernel directory in cases where we need to, but that seems like
+> it's out-of-scope for a simple fix.
+>
+> -- David
