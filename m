@@ -2,507 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D232CB769
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:43:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1292CB76D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgLBIlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:41:51 -0500
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:1812 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbgLBIlv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:41:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606898510; x=1638434510;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=61f/2EOprTFYml5DRGBGpDv6xiNOxAVUgIs3JUwJy2s=;
-  b=GVU8NNgKwnZi6IcLWAYE3TdNE76OAfXtUTdDuW+s/TuTXAvh5HiV5TZO
-   Nm82HtBvcAWMvA0oKAJm6SqmR6YSujh5Mv0kI/IDpuBZ3cJ/uVruNXnPu
-   NkCg2jHGgIVE6l77wha5hGmYIybSfVdZVyKjmBjU/+uouPNjx02lrL5Ih
-   xgVi1c2sNpIiJlatqtzR8V/p05XzNeudCF+wTpFj59Y5T73UDNMX8mv4p
-   eUk116J8kaWAl97Yyq0UXR+jrWZAZ3GREJHWMj5egrnzC0Fgfmd7o+bbs
-   dWq61EYPUDuDyWYqfYHUegH4LexViU/afqhZH8fX4uiDf0tk3tIJZN6hL
-   g==;
-IronPort-SDR: a/lawaU8V0ESeBihCLqYWtwdfNRK39dgI0UDcHo7RtolqsKZKE+leJd3UnPTjRg9R++4kjs09r
- YFBA+3cSMnDNGDHf7wbXuXf3RTgH8yd57zrBrdtzae9ucBHroITZca7VAf9BmWLQRPnfUiTx5b
- jgqvCtAVv3oV8caiKr+R9H0LwgB1F/DLSW4zyOktFnfyWy7MqFc/l3vighq5AMWHmTuHOx+Ndu
- ju7lUgVTcq+wlyw9JeCea4FzJngA1sGfd2hQrjZYsk6Aq210jpBXLMhXjed7HS2XtOANaRKDgB
- gpk=
+        id S1729120AbgLBImw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:42:52 -0500
+Received: from mga12.intel.com ([192.55.52.136]:24950 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728474AbgLBImv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 03:42:51 -0500
+IronPort-SDR: nQ29Ae9KaNMJ6Zsj/9pb9uIFi24Vx+2RPteGipaST96qXPfDNV0322imunAuPTTZRclH0xKtsg
+ 6hnUhJI7SSTw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="152235502"
 X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="35759659"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Dec 2020 01:40:44 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 2 Dec 2020 01:40:44 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 2 Dec 2020 01:40:43 -0700
-Date:   Wed, 2 Dec 2020 09:40:43 +0100
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Device Tree List <devicetree@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microsemi List <microsemi@lists.bootlin.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/4] dt-bindings: phy: Add sparx5-serdes bindings
-Message-ID: <20201202084043.t3byqmmyefh3flk7@mchp-dev-shegelun>
-References: <20201123114234.2292766-1-steen.hegelund@microchip.com>
- <20201123114234.2292766-2-steen.hegelund@microchip.com>
- <20201130225130.GA3151932@robh.at.kernel.org>
+   d="scan'208";a="152235502"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 00:41:53 -0800
+IronPort-SDR: GecoSEBtkE/lu8trEm8b+sLbP5vilzQwXClFICO3Tu1ib3tUSzCz55PWen/zl4/ZMd36HtbXlC
+ PsdkRK9tkUgg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
+   d="scan'208";a="367919101"
+Received: from lkp-server01.sh.intel.com (HELO 54133fc185c3) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 02 Dec 2020 00:41:52 -0800
+Received: from kbuild by 54133fc185c3 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kkNhv-000028-UM; Wed, 02 Dec 2020 08:41:51 +0000
+Date:   Wed, 02 Dec 2020 16:41:24 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:ras/core] BUILD SUCCESS
+ e1c06d2366e743475b91045ef0c2ce1bbd028cb6
+Message-ID: <5fc75334.qQym8WOIstZEIHnM%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201130225130.GA3151932@robh.at.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.11.2020 15:51, Rob Herring wrote:
->EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->
->On Mon, Nov 23, 2020 at 12:42:31PM +0100, Steen Hegelund wrote:
->> Document the Sparx5 ethernet serdes phy driver bindings.
->>
->> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
->> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
->> ---
->>  .../bindings/phy/microchip,sparx5-serdes.yaml | 387 ++++++++++++++++++
->>  1 file changed, 387 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml b/Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
->> new file mode 100644
->> index 000000000000..1e7ffb859407
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
->> @@ -0,0 +1,387 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/phy/microchip,sparx5-serdes.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Microchip Sparx5 Serdes controller
->> +
->> +maintainers:
->> +  - Steen Hegelund <steen.hegelund@microchip.com>
->> +
->> +description: |
->> +  The Sparx5 SERDES interfaces share the same basic functionality, but
->> +  support different operating modes and line rates.
->> +
->> +  The following list lists the SERDES features:
->> +
->> +  * RX Adaptive Decision Feedback Equalizer (DFE)
->> +  * Programmable continuous time linear equalizer (CTLE)
->> +  * Rx variable gain control
->> +  * Rx built-in fault detector (loss-of-lock/loss-of-signal)
->> +  * Adjustable tx de-emphasis (FFE)
->> +  * Tx output amplitude control
->> +  * Supports rx eye monitor
->> +  * Multiple loopback modes
->> +  * Prbs generator and checker
->> +  * Polarity inversion control
->> +
->> +  SERDES6G:
->> +
->> +  The SERDES6G is a high-speed SERDES interface, which can operate at
->> +  the following data rates:
->> +
->> +  * 100 Mbps (100BASE-FX)
->> +  * 1.25 Gbps (SGMII/1000BASE-X/1000BASE-KX)
->> +  * 3.125 Gbps (2.5GBASE-X/2.5GBASE-KX)
->> +  * 5.15625 Gbps (5GBASE-KR/5G-USXGMII)
->> +
->> +  SERDES10G
->> +
->> +  The SERDES10G is a high-speed SERDES interface, which can operate at
->> +  the following data rates:
->> +
->> +  * 100 Mbps (100BASE-FX)
->> +  * 1.25 Gbps (SGMII/1000BASE-X/1000BASE-KX)
->> +  * 3.125 Gbps (2.5GBASE-X/2.5GBASE-KX)
->> +  * 5 Gbps (QSGMII/USGMII)
->> +  * 5.15625 Gbps (5GBASE-KR/5G-USXGMII)
->> +  * 10 Gbps (10G-USGMII)
->> +  * 10.3125 Gbps (10GBASE-R/10GBASE-KR/USXGMII)
->> +
->> +  SERDES25G
->> +
->> +  The SERDES25G is a high-speed SERDES interface, which can operate at
->> +  the following data rates:
->> +
->> +  * 1.25 Gbps (SGMII/1000BASE-X/1000BASE-KX)
->> +  * 3.125 Gbps (2.5GBASE-X/2.5GBASE-KX)
->> +  * 5 Gbps (QSGMII/USGMII)
->> +  * 5.15625 Gbps (5GBASE-KR/5G-USXGMII)
->> +  * 10 Gbps (10G-USGMII)
->> +  * 10.3125 Gbps (10GBASE-R/10GBASE-KR/USXGMII)
->> +  * 25.78125 Gbps (25GBASE-KR/25GBASE-CR/25GBASE-SR/25GBASE-LR/25GBASE-ER)
->> +
->> +properties:
->> +  $nodename:
->> +    pattern: "^serdes@[0-9a-f]+$"
->
->phy@...
->
->With that,
->
->Reviewed-by: Rob Herring <robh@kernel.org>
->
->> +  compatible:
->> +    const: microchip,sparx5-serdes
->> +
->> +  reg:
->> +    minItems: 94
->
->Whoa! I take it that while your example seems to be consecutive
->addresses, that's not guaranteed?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  ras/core
+branch HEAD: e1c06d2366e743475b91045ef0c2ce1bbd028cb6  x86/mce: Rename kill_it to kill_current_task
 
+elapsed time: 723m
 
-Hi Rob,
+configs tested: 157
+configs skipped: 2
 
-Yes they are in "random" order.
-And I got a comment about that on the client driver too, which have even
-more targets, see:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-https://lore.kernel.org/r/20201127133307.2969817-1-steen.hegelund@microchip.com/
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                         ps3_defconfig
+mips                malta_qemu_32r6_defconfig
+x86_64                           alldefconfig
+mips                          ath25_defconfig
+sh                          rsk7201_defconfig
+arm                        clps711x_defconfig
+sh                        edosk7760_defconfig
+powerpc                        cell_defconfig
+sh                            hp6xx_defconfig
+mips                          ath79_defconfig
+openrisc                         alldefconfig
+sh                               j2_defconfig
+mips                       capcella_defconfig
+arm                           viper_defconfig
+c6x                        evmc6474_defconfig
+riscv                    nommu_k210_defconfig
+arm                          pxa3xx_defconfig
+c6x                        evmc6457_defconfig
+m68k                            q40_defconfig
+arc                        nsim_700_defconfig
+sh                           se7705_defconfig
+m68k                         apollo_defconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                        realview_defconfig
+microblaze                          defconfig
+s390                       zfcpdump_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                    klondike_defconfig
+mips                     loongson1c_defconfig
+arc                        nsimosci_defconfig
+mips                           gcw0_defconfig
+xtensa                         virt_defconfig
+c6x                        evmc6678_defconfig
+sh                             shx3_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                     tqm5200_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                         ap325rxa_defconfig
+m68k                       m5475evb_defconfig
+c6x                                 defconfig
+powerpc                     ep8248e_defconfig
+arm                          pcm027_defconfig
+mips                           ip22_defconfig
+ia64                        generic_defconfig
+sh                        dreamcast_defconfig
+arm                            mps2_defconfig
+sparc                               defconfig
+powerpc                        fsp2_defconfig
+powerpc                      ppc40x_defconfig
+h8300                               defconfig
+powerpc                      ppc44x_defconfig
+arm                              alldefconfig
+powerpc                 mpc834x_itx_defconfig
+mips                          malta_defconfig
+ia64                         bigsur_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                       ebony_defconfig
+powerpc                 mpc8313_rdb_defconfig
+sh                           se7343_defconfig
+arm                          moxart_defconfig
+powerpc                    amigaone_defconfig
+mips                        maltaup_defconfig
+arc                              alldefconfig
+microblaze                      mmu_defconfig
+arm                     davinci_all_defconfig
+powerpc                    mvme5100_defconfig
+sh                        apsh4ad0a_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                          imote2_defconfig
+mips                      fuloong2e_defconfig
+sparc                            allyesconfig
+sparc                       sparc64_defconfig
+arm                        vexpress_defconfig
+powerpc                       eiger_defconfig
+powerpc                      pasemi_defconfig
+powerpc                  storcenter_defconfig
+parisc                generic-32bit_defconfig
+mips                    maltaup_xpa_defconfig
+mips                            e55_defconfig
+mips                           xway_defconfig
+xtensa                  audio_kc705_defconfig
+arm                            dove_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                     skiroot_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201201
+i386                 randconfig-a005-20201201
+i386                 randconfig-a001-20201201
+i386                 randconfig-a002-20201201
+i386                 randconfig-a006-20201201
+i386                 randconfig-a003-20201201
+x86_64               randconfig-a016-20201201
+x86_64               randconfig-a012-20201201
+x86_64               randconfig-a014-20201201
+x86_64               randconfig-a013-20201201
+x86_64               randconfig-a015-20201201
+x86_64               randconfig-a011-20201201
+i386                 randconfig-a014-20201201
+i386                 randconfig-a013-20201201
+i386                 randconfig-a011-20201201
+i386                 randconfig-a015-20201201
+i386                 randconfig-a012-20201201
+i386                 randconfig-a016-20201201
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-so I will take this opportunity to change it, as it will be more adaptible to future
-chips using this SerDes driver.  Instead of listing all these target, I
-will do the mapping in the driver and avoid having to specify e.g. the
-amount of targets to be supplied.
->
->> +
->> +  reg-names:
->> +    minItems: 94
->> +    items:
->> +      - const: sd_cmu_0
->> +      - const: sd_cmu_1
->> +      - const: sd_cmu_2
->> +      - const: sd_cmu_3
->> +      - const: sd_cmu_4
->> +      - const: sd_cmu_5
->> +      - const: sd_cmu_6
->> +      - const: sd_cmu_7
->> +      - const: sd_cmu_8
->> +      - const: sd_cmu_cfg_0
->> +      - const: sd_cmu_cfg_1
->> +      - const: sd_cmu_cfg_2
->> +      - const: sd_cmu_cfg_3
->> +      - const: sd_cmu_cfg_4
->> +      - const: sd_cmu_cfg_5
->> +      - const: sd_cmu_cfg_6
->> +      - const: sd_cmu_cfg_7
->> +      - const: sd_cmu_cfg_8
->> +      - const: sd6g_lane_0
->> +      - const: sd6g_lane_1
->> +      - const: sd6g_lane_2
->> +      - const: sd6g_lane_3
->> +      - const: sd6g_lane_4
->> +      - const: sd6g_lane_5
->> +      - const: sd6g_lane_6
->> +      - const: sd6g_lane_7
->> +      - const: sd6g_lane_8
->> +      - const: sd6g_lane_9
->> +      - const: sd6g_lane_10
->> +      - const: sd6g_lane_11
->> +      - const: sd6g_lane_12
->> +      - const: sd10g_lane_0
->> +      - const: sd10g_lane_1
->> +      - const: sd10g_lane_2
->> +      - const: sd10g_lane_3
->> +      - const: sd_lane_0
->> +      - const: sd_lane_1
->> +      - const: sd_lane_2
->> +      - const: sd_lane_3
->> +      - const: sd_lane_4
->> +      - const: sd_lane_5
->> +      - const: sd_lane_6
->> +      - const: sd_lane_7
->> +      - const: sd_lane_8
->> +      - const: sd_lane_9
->> +      - const: sd_lane_10
->> +      - const: sd_lane_11
->> +      - const: sd_lane_12
->> +      - const: sd_lane_13
->> +      - const: sd_lane_14
->> +      - const: sd_lane_15
->> +      - const: sd_lane_16
->> +      - const: sd_cmu_9
->> +      - const: sd_cmu_10
->> +      - const: sd_cmu_11
->> +      - const: sd_cmu_12
->> +      - const: sd_cmu_13
->> +      - const: sd_cmu_cfg_9
->> +      - const: sd_cmu_cfg_10
->> +      - const: sd_cmu_cfg_11
->> +      - const: sd_cmu_cfg_12
->> +      - const: sd_cmu_cfg_13
->> +      - const: sd10g_lane_4
->> +      - const: sd10g_lane_5
->> +      - const: sd10g_lane_6
->> +      - const: sd10g_lane_7
->> +      - const: sd10g_lane_8
->> +      - const: sd10g_lane_9
->> +      - const: sd10g_lane_10
->> +      - const: sd10g_lane_11
->> +      - const: sd25g_lane_0
->> +      - const: sd25g_lane_1
->> +      - const: sd25g_lane_2
->> +      - const: sd25g_lane_3
->> +      - const: sd25g_lane_4
->> +      - const: sd25g_lane_5
->> +      - const: sd25g_lane_6
->> +      - const: sd25g_lane_7
->> +      - const: sd_lane_17
->> +      - const: sd_lane_18
->> +      - const: sd_lane_19
->> +      - const: sd_lane_20
->> +      - const: sd_lane_21
->> +      - const: sd_lane_22
->> +      - const: sd_lane_23
->> +      - const: sd_lane_24
->> +      - const: sd_lane_25g_25
->> +      - const: sd_lane_25g_26
->> +      - const: sd_lane_25g_27
->> +      - const: sd_lane_25g_28
->> +      - const: sd_lane_25g_29
->> +      - const: sd_lane_25g_30
->> +      - const: sd_lane_25g_31
->> +      - const: sd_lane_25g_32
->> +
->> +  '#phy-cells':
->> +    const: 1
->> +    description: |
->> +      - The main serdes input port
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - reg-names
->> +  - '#phy-cells'
->> +  - clocks
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    serdes: serdes@10808000 {
->> +      compatible = "microchip,sparx5-serdes";
->> +      #phy-cells = <1>;
->> +      clocks = <&sys_clk>;
->> +      reg = <0x10808000 0x8000>, /* sd_cmu_0 */
->> +        <0x10810000 0x8000>, /* sd_cmu_1 */
->> +        <0x10818000 0x8000>, /* sd_cmu_2 */
->> +        <0x10820000 0x8000>, /* sd_cmu_3 */
->> +        <0x10828000 0x8000>, /* sd_cmu_4 */
->> +        <0x10830000 0x8000>, /* sd_cmu_5 */
->> +        <0x10838000 0x8000>, /* sd_cmu_6 */
->> +        <0x10840000 0x8000>, /* sd_cmu_7 */
->> +        <0x10848000 0x8000>, /* sd_cmu_8 */
->> +        <0x10850000 0x8000>, /* sd_cmu_cfg_0 */
->> +        <0x10858000 0x8000>, /* sd_cmu_cfg_1 */
->> +        <0x10860000 0x8000>, /* sd_cmu_cfg_2 */
->> +        <0x10868000 0x8000>, /* sd_cmu_cfg_3 */
->> +        <0x10870000 0x8000>, /* sd_cmu_cfg_4 */
->> +        <0x10878000 0x8000>, /* sd_cmu_cfg_5 */
->> +        <0x10880000 0x8000>, /* sd_cmu_cfg_6 */
->> +        <0x10888000 0x8000>, /* sd_cmu_cfg_7 */
->> +        <0x10890000 0x8000>, /* sd_cmu_cfg_8 */
->> +        <0x10898000 0x8000>, /* sd6g_lane_0 */
->> +        <0x108a0000 0x8000>, /* sd6g_lane_1 */
->> +        <0x108a8000 0x8000>, /* sd6g_lane_2 */
->> +        <0x108b0000 0x8000>, /* sd6g_lane_3 */
->> +        <0x108b8000 0x8000>, /* sd6g_lane_4 */
->> +        <0x108c0000 0x8000>, /* sd6g_lane_5 */
->> +        <0x108c8000 0x8000>, /* sd6g_lane_6 */
->> +        <0x108d0000 0x8000>, /* sd6g_lane_7 */
->> +        <0x108d8000 0x8000>, /* sd6g_lane_8 */
->> +        <0x108e0000 0x8000>, /* sd6g_lane_9 */
->> +        <0x108e8000 0x8000>, /* sd6g_lane_10 */
->> +        <0x108f0000 0x8000>, /* sd6g_lane_11 */
->> +        <0x108f8000 0x8000>, /* sd6g_lane_12 */
->> +        <0x10900000 0x8000>, /* sd10g_lane_0 */
->> +        <0x10908000 0x8000>, /* sd10g_lane_1 */
->> +        <0x10910000 0x8000>, /* sd10g_lane_2 */
->> +        <0x10918000 0x8000>, /* sd10g_lane_3 */
->> +        <0x109a8000 0x8000>, /* sd_lane_0 */
->> +        <0x109b0000 0x8000>, /* sd_lane_1 */
->> +        <0x109b8000 0x8000>, /* sd_lane_2 */
->> +        <0x109c0000 0x8000>, /* sd_lane_3 */
->> +        <0x109c8000 0x8000>, /* sd_lane_4 */
->> +        <0x109d0000 0x8000>, /* sd_lane_5 */
->> +        <0x109d8000 0x8000>, /* sd_lane_6 */
->> +        <0x109e0000 0x8000>, /* sd_lane_7 */
->> +        <0x109e8000 0x8000>, /* sd_lane_8 */
->> +        <0x109f0000 0x8000>, /* sd_lane_9 */
->> +        <0x109f8000 0x8000>, /* sd_lane_10 */
->> +        <0x10a00000 0x8000>, /* sd_lane_11 */
->> +        <0x10a08000 0x8000>, /* sd_lane_12 */
->> +        <0x10a10000 0x8000>, /* sd_lane_13 */
->> +        <0x10a18000 0x8000>, /* sd_lane_14 */
->> +        <0x10a20000 0x8000>, /* sd_lane_15 */
->> +        <0x10a28000 0x8000>, /* sd_lane_16 */
->> +        <0x10c08000 0x8000>, /* sd_cmu_9 */
->> +        <0x10c10000 0x8000>, /* sd_cmu_10 */
->> +        <0x10c18000 0x8000>, /* sd_cmu_11 */
->> +        <0x10c20000 0x8000>, /* sd_cmu_12 */
->> +        <0x10c28000 0x8000>, /* sd_cmu_13 */
->> +        <0x10c30000 0x8000>, /* sd_cmu_cfg_9 */
->> +        <0x10c38000 0x8000>, /* sd_cmu_cfg_10 */
->> +        <0x10c40000 0x8000>, /* sd_cmu_cfg_11 */
->> +        <0x10c48000 0x8000>, /* sd_cmu_cfg_12 */
->> +        <0x10c50000 0x8000>, /* sd_cmu_cfg_13 */
->> +        <0x10c58000 0x8000>, /* sd10g_lane_4 */
->> +        <0x10c60000 0x8000>, /* sd10g_lane_5 */
->> +        <0x10c68000 0x8000>, /* sd10g_lane_6 */
->> +        <0x10c70000 0x8000>, /* sd10g_lane_7 */
->> +        <0x10c78000 0x8000>, /* sd10g_lane_8 */
->> +        <0x10c80000 0x8000>, /* sd10g_lane_9 */
->> +        <0x10c88000 0x8000>, /* sd10g_lane_10 */
->> +        <0x10c90000 0x8000>, /* sd10g_lane_11 */
->> +        <0x10c98000 0x8000>, /* sd25g_lane_0 */
->> +        <0x10ca0000 0x8000>, /* sd25g_lane_1 */
->> +        <0x10ca8000 0x8000>, /* sd25g_lane_2 */
->> +        <0x10cb0000 0x8000>, /* sd25g_lane_3 */
->> +        <0x10cb8000 0x8000>, /* sd25g_lane_4 */
->> +        <0x10cc0000 0x8000>, /* sd25g_lane_5 */
->> +        <0x10cc8000 0x8000>, /* sd25g_lane_6 */
->> +        <0x10cd0000 0x8000>, /* sd25g_lane_7 */
->> +        <0x10d58000 0x8000>, /* sd_lane_17 */
->> +        <0x10d60000 0x8000>, /* sd_lane_18 */
->> +        <0x10d68000 0x8000>, /* sd_lane_19 */
->> +        <0x10d70000 0x8000>, /* sd_lane_20 */
->> +        <0x10d78000 0x8000>, /* sd_lane_21 */
->> +        <0x10d80000 0x8000>, /* sd_lane_22 */
->> +        <0x10d88000 0x8000>, /* sd_lane_23 */
->> +        <0x10d90000 0x8000>, /* sd_lane_24 */
->> +        <0x10d98000 0x8000>, /* sd_lane_25g_25 */
->> +        <0x10da0000 0x8000>, /* sd_lane_25g_26 */
->> +        <0x10da8000 0x8000>, /* sd_lane_25g_27 */
->> +        <0x10db0000 0x8000>, /* sd_lane_25g_28 */
->> +        <0x10db8000 0x8000>, /* sd_lane_25g_29 */
->> +        <0x10dc0000 0x8000>, /* sd_lane_25g_30 */
->> +        <0x10dc8000 0x8000>, /* sd_lane_25g_31 */
->> +        <0x10dd0000 0x8000>; /* sd_lane_25g_32 */
->> +      reg-names =
->> +        "sd_cmu_0",
->> +        "sd_cmu_1",
->> +        "sd_cmu_2",
->> +        "sd_cmu_3",
->> +        "sd_cmu_4",
->> +        "sd_cmu_5",
->> +        "sd_cmu_6",
->> +        "sd_cmu_7",
->> +        "sd_cmu_8",
->> +        "sd_cmu_cfg_0",
->> +        "sd_cmu_cfg_1",
->> +        "sd_cmu_cfg_2",
->> +        "sd_cmu_cfg_3",
->> +        "sd_cmu_cfg_4",
->> +        "sd_cmu_cfg_5",
->> +        "sd_cmu_cfg_6",
->> +        "sd_cmu_cfg_7",
->> +        "sd_cmu_cfg_8",
->> +        "sd6g_lane_0",
->> +        "sd6g_lane_1",
->> +        "sd6g_lane_2",
->> +        "sd6g_lane_3",
->> +        "sd6g_lane_4",
->> +        "sd6g_lane_5",
->> +        "sd6g_lane_6",
->> +        "sd6g_lane_7",
->> +        "sd6g_lane_8",
->> +        "sd6g_lane_9",
->> +        "sd6g_lane_10",
->> +        "sd6g_lane_11",
->> +        "sd6g_lane_12",
->> +        "sd10g_lane_0",
->> +        "sd10g_lane_1",
->> +        "sd10g_lane_2",
->> +        "sd10g_lane_3",
->> +        "sd_lane_0",
->> +        "sd_lane_1",
->> +        "sd_lane_2",
->> +        "sd_lane_3",
->> +        "sd_lane_4",
->> +        "sd_lane_5",
->> +        "sd_lane_6",
->> +        "sd_lane_7",
->> +        "sd_lane_8",
->> +        "sd_lane_9",
->> +        "sd_lane_10",
->> +        "sd_lane_11",
->> +        "sd_lane_12",
->> +        "sd_lane_13",
->> +        "sd_lane_14",
->> +        "sd_lane_15",
->> +        "sd_lane_16",
->> +        "sd_cmu_9",
->> +        "sd_cmu_10",
->> +        "sd_cmu_11",
->> +        "sd_cmu_12",
->> +        "sd_cmu_13",
->> +        "sd_cmu_cfg_9",
->> +        "sd_cmu_cfg_10",
->> +        "sd_cmu_cfg_11",
->> +        "sd_cmu_cfg_12",
->> +        "sd_cmu_cfg_13",
->> +        "sd10g_lane_4",
->> +        "sd10g_lane_5",
->> +        "sd10g_lane_6",
->> +        "sd10g_lane_7",
->> +        "sd10g_lane_8",
->> +        "sd10g_lane_9",
->> +        "sd10g_lane_10",
->> +        "sd10g_lane_11",
->> +        "sd25g_lane_0",
->> +        "sd25g_lane_1",
->> +        "sd25g_lane_2",
->> +        "sd25g_lane_3",
->> +        "sd25g_lane_4",
->> +        "sd25g_lane_5",
->> +        "sd25g_lane_6",
->> +        "sd25g_lane_7",
->> +        "sd_lane_17",
->> +        "sd_lane_18",
->> +        "sd_lane_19",
->> +        "sd_lane_20",
->> +        "sd_lane_21",
->> +        "sd_lane_22",
->> +        "sd_lane_23",
->> +        "sd_lane_24",
->> +        "sd_lane_25g_25",
->> +        "sd_lane_25g_26",
->> +        "sd_lane_25g_27",
->> +        "sd_lane_25g_28",
->> +        "sd_lane_25g_29",
->> +        "sd_lane_25g_30",
->> +        "sd_lane_25g_31",
->> +        "sd_lane_25g_32";
->> +    };
->> +
->> +...
->> --
->> 2.29.2
->>
+clang tested configs:
+x86_64               randconfig-a004-20201201
+x86_64               randconfig-a006-20201201
+x86_64               randconfig-a001-20201201
+x86_64               randconfig-a002-20201201
+x86_64               randconfig-a005-20201201
+x86_64               randconfig-a003-20201201
 
-BR
-Steen
-
----------------------------------------
-Steen Hegelund
-steen.hegelund@microchip.com
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
