@@ -2,421 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AAC2CB565
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 07:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8702CB56C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387534AbgLBG6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 01:58:01 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:34158 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgLBG6A (ORCPT
+        id S1728665AbgLBHAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:00:24 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:37158 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726716AbgLBHAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 01:58:00 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B26tdrQ006064;
-        Wed, 2 Dec 2020 06:57:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=KeHtkQGgRNHBQlZK8iThu8q4d7cC58/O0xG9eohw8pc=;
- b=FtYeUVUIubl8Yo9R/2zKvPXJhSl9rP1tIVijpeez3Ta1+sBIZdYDPyi5lyIX0qrw/XV9
- i+hQZjmwh0K9+wK6ck82ScycfsvA4mJ+Ic1GvnlHywKMszCd717bPEdKjEITV3ovukay
- rtyfwYOg4Glly3AGeHUuRjjzNJsYslpivMSRyr74AdvBEBxcubtDNnSsDXPuU1oKBtj7
- kRNkByVYzwDJKyBzesqmUq9QCNLpT1AR7OVbZSBiqnujdNqSvJ4O7ukEPxqWAQzphWad
- iEIQZg/6W7FB+PmSnYHJJcoV1Vwf6yEnRJBOQI9733f/VZhicsHrUhPHo2ayHKEfb9G/ sQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 353dyqpj56-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 02 Dec 2020 06:57:12 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B26u80D038848;
-        Wed, 2 Dec 2020 06:57:12 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 3540f0053s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Dec 2020 06:57:11 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B26v9Gn026211;
-        Wed, 2 Dec 2020 06:57:10 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Dec 2020 22:57:08 -0800
-Date:   Wed, 2 Dec 2020 09:57:02 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Sunil Goutham <sgoutham@marvell.com>
-Cc:     Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH net-next] octeontx2-af: debugfs: delete dead code
-Message-ID: <X8c6vpapJDYI2eWI@mwanda>
+        Wed, 2 Dec 2020 02:00:23 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0B26x2DW1031983, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb01.realtek.com.tw[172.21.6.94])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0B26x2DW1031983
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 2 Dec 2020 14:59:02 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.36) by
+ RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Wed, 2 Dec 2020 14:59:02 +0800
+Received: from localhost (172.22.88.222) by RTEXMBS01.realtek.com.tw
+ (172.21.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 2 Dec 2020
+ 14:59:02 +0800
+From:   <ricky_wu@realtek.com>
+To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+        <bhelgaas@google.com>, <ricky_wu@realtek.com>,
+        <vaibhavgupta40@gmail.com>, <kdlnx@doth.eu>,
+        <ulf.hansson@linaro.org>, <linus.walleij@linaro.org>,
+        <lee.jones@linaro.org>, <dianders@chromium.org>,
+        <linux-mmc@vger.kernel.org>, <wsa+renesas@sang-engineering.com>,
+        <keitasuzuki.park@sslab.ics.keio.ac.jp>, <rafael@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 4/4] misc: rtsx: rts5249 support runtime PM
+Date:   Wed, 2 Dec 2020 14:58:57 +0800
+Message-ID: <20201202065857.19412-1-ricky_wu@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
- suspectscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012020041
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
- clxscore=1011 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020041
+Content-Type: text/plain
+X-Originating-IP: [172.22.88.222]
+X-ClientProxiedBy: RTEXH365.realtek.com.tw (172.21.6.37) To
+ RTEXMBS01.realtek.com.tw (172.21.6.36)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These debugfs never return NULL so all this code will never be run.
+From: Ricky Wu <ricky_wu@realtek.com>
 
-In the normal case, (and in this case particularly), the debugfs
-functions are not supposed to be checked for errors so all this error
-checking code can be safely deleted.
+rtsx_pcr:
+add callback functions to support runtime PM
+add delay_work to put device to D3 after idle
+over 10 sec
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+rts5249:
+add extra init flow for rtd3 and set rtd3_en from
+config setting
+
+rtsx_pci_sdmmc:
+child device support autosuspend
+
+Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
 ---
- .../marvell/octeontx2/af/rvu_debugfs.c        | 255 ++++--------------
- 1 file changed, 52 insertions(+), 203 deletions(-)
+ drivers/misc/cardreader/rts5249.c  |  26 +++++--
+ drivers/misc/cardreader/rtsx_pcr.c | 106 ++++++++++++++++++++++++++++-
+ drivers/misc/cardreader/rtsx_pcr.h |   1 +
+ drivers/mmc/host/rtsx_pci_sdmmc.c  |  16 +++++
+ include/linux/rtsx_pci.h           |   2 +
+ 5 files changed, 145 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index c383efc6b90c..d27543c1a166 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -1368,119 +1368,52 @@ RVU_DEBUG_SEQ_FOPS(nix_qsize, nix_qsize_display, nix_qsize_write);
+diff --git a/drivers/misc/cardreader/rts5249.c b/drivers/misc/cardreader/rts5249.c
+index b85279f1fc5e..b2676e7f5027 100644
+--- a/drivers/misc/cardreader/rts5249.c
++++ b/drivers/misc/cardreader/rts5249.c
+@@ -73,6 +73,9 @@ static void rtsx_base_fetch_vendor_settings(struct rtsx_pcr *pcr)
  
- static void rvu_dbg_nix_init(struct rvu *rvu, int blkaddr)
- {
--	const struct device *dev = &rvu->pdev->dev;
- 	struct nix_hw *nix_hw;
--	struct dentry *pfile;
+ 	pci_read_config_dword(pdev, PCR_SETTING_REG2, &reg);
+ 	pcr_dbg(pcr, "Cfg 0x%x: 0x%x\n", PCR_SETTING_REG2, reg);
++
++	pcr->rtd3_en = rtsx_reg_to_rtd3_uhsii(reg);
++
+ 	if (rtsx_check_mmc_support(reg))
+ 		pcr->extra_caps |= EXTRA_CAPS_NO_MMC;
+ 	pcr->sd30_drive_sel_3v3 = rtsx_reg_to_sd30_drive_sel_3v3(reg);
+@@ -278,15 +281,28 @@ static int rts5249_extra_init_hw(struct rtsx_pcr *pcr)
  
- 	if (!is_block_implemented(rvu->hw, blkaddr))
- 		return;
+ 	rtsx_pci_send_cmd(pcr, CMD_TIMEOUT_DEF);
  
- 	if (blkaddr == BLKADDR_NIX0) {
- 		rvu->rvu_dbg.nix = debugfs_create_dir("nix", rvu->rvu_dbg.root);
--		if (!rvu->rvu_dbg.nix) {
--			dev_err(rvu->dev, "create debugfs dir failed for nix\n");
--			return;
--		}
- 		nix_hw = &rvu->hw->nix[0];
+-	if (CHK_PCI_PID(pcr, PID_524A) || CHK_PCI_PID(pcr, PID_525A)) {
++	if (CHK_PCI_PID(pcr, PID_524A) || CHK_PCI_PID(pcr, PID_525A))
+ 		rtsx_pci_write_register(pcr, REG_VREF, PWD_SUSPND_EN, PWD_SUSPND_EN);
+-		rtsx_pci_write_register(pcr, RTS524A_PM_CTRL3, 0x01, 0x00);
+-		rtsx_pci_write_register(pcr, RTS524A_PME_FORCE_CTL, 0x30, 0x20);
++
++	if (pcr->rtd3_en) {
++		if (CHK_PCI_PID(pcr, PID_524A) || CHK_PCI_PID(pcr, PID_525A)) {
++			rtsx_pci_write_register(pcr, RTS524A_PM_CTRL3, 0x01, 0x01);
++			rtsx_pci_write_register(pcr, RTS524A_PME_FORCE_CTL, 0x30, 0x30);
++		} else {
++			rtsx_pci_write_register(pcr, PM_CTRL3, 0x01, 0x01);
++			rtsx_pci_write_register(pcr, PME_FORCE_CTL, 0xFF, 0x33);
++		}
  	} else {
- 		rvu->rvu_dbg.nix = debugfs_create_dir("nix1",
- 						      rvu->rvu_dbg.root);
--		if (!rvu->rvu_dbg.nix) {
--			dev_err(rvu->dev,
--				"create debugfs dir failed for nix1\n");
--			return;
--		}
- 		nix_hw = &rvu->hw->nix[1];
+-		rtsx_pci_write_register(pcr, PME_FORCE_CTL, 0xFF, 0x30);
+-		rtsx_pci_write_register(pcr, PM_CTRL3, 0x01, 0x00);
++		if (CHK_PCI_PID(pcr, PID_524A) || CHK_PCI_PID(pcr, PID_525A)) {
++			rtsx_pci_write_register(pcr, RTS524A_PM_CTRL3, 0x01, 0x00);
++			rtsx_pci_write_register(pcr, RTS524A_PME_FORCE_CTL, 0x30, 0x20);
++		} else {
++			rtsx_pci_write_register(pcr, PME_FORCE_CTL, 0xFF, 0x30);
++			rtsx_pci_write_register(pcr, PM_CTRL3, 0x01, 0x00);
++		}
  	}
  
--	pfile = debugfs_create_file("sq_ctx", 0600, rvu->rvu_dbg.nix, nix_hw,
--				    &rvu_dbg_nix_sq_ctx_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("rq_ctx", 0600, rvu->rvu_dbg.nix, nix_hw,
--				    &rvu_dbg_nix_rq_ctx_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("cq_ctx", 0600, rvu->rvu_dbg.nix, nix_hw,
--				    &rvu_dbg_nix_cq_ctx_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("ndc_tx_cache", 0600, rvu->rvu_dbg.nix,
--				    nix_hw, &rvu_dbg_nix_ndc_tx_cache_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("ndc_rx_cache", 0600, rvu->rvu_dbg.nix,
--				    nix_hw, &rvu_dbg_nix_ndc_rx_cache_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("ndc_tx_hits_miss", 0600, rvu->rvu_dbg.nix,
--				    nix_hw,
--				    &rvu_dbg_nix_ndc_tx_hits_miss_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("ndc_rx_hits_miss", 0600, rvu->rvu_dbg.nix,
--				    nix_hw,
--				    &rvu_dbg_nix_ndc_rx_hits_miss_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("qsize", 0600, rvu->rvu_dbg.nix, rvu,
--				    &rvu_dbg_nix_qsize_fops);
--	if (!pfile)
--		goto create_failed;
--
--	return;
--create_failed:
--	dev_err(dev,
--		"Failed to create debugfs dir/file for NIX blk\n");
--	debugfs_remove_recursive(rvu->rvu_dbg.nix);
-+	debugfs_create_file("sq_ctx", 0600, rvu->rvu_dbg.nix, nix_hw,
-+			    &rvu_dbg_nix_sq_ctx_fops);
-+	debugfs_create_file("rq_ctx", 0600, rvu->rvu_dbg.nix, nix_hw,
-+			    &rvu_dbg_nix_rq_ctx_fops);
-+	debugfs_create_file("cq_ctx", 0600, rvu->rvu_dbg.nix, nix_hw,
-+			    &rvu_dbg_nix_cq_ctx_fops);
-+	debugfs_create_file("ndc_tx_cache", 0600, rvu->rvu_dbg.nix, nix_hw,
-+			    &rvu_dbg_nix_ndc_tx_cache_fops);
-+	debugfs_create_file("ndc_rx_cache", 0600, rvu->rvu_dbg.nix, nix_hw,
-+			    &rvu_dbg_nix_ndc_rx_cache_fops);
-+	debugfs_create_file("ndc_tx_hits_miss", 0600, rvu->rvu_dbg.nix, nix_hw,
-+			    &rvu_dbg_nix_ndc_tx_hits_miss_fops);
-+	debugfs_create_file("ndc_rx_hits_miss", 0600, rvu->rvu_dbg.nix, nix_hw,
-+			    &rvu_dbg_nix_ndc_rx_hits_miss_fops);
-+	debugfs_create_file("qsize", 0600, rvu->rvu_dbg.nix, rvu,
-+			    &rvu_dbg_nix_qsize_fops);
- }
++
+ 	/*
+ 	 * If u_force_clkreq_0 is enabled, CLKREQ# PIN will be forced
+ 	 * to drive low, and we forcibly request clock.
+diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
+index 3612063cab09..2700d1997750 100644
+--- a/drivers/misc/cardreader/rtsx_pcr.c
++++ b/drivers/misc/cardreader/rtsx_pcr.c
+@@ -20,6 +20,8 @@
+ #include <linux/rtsx_pci.h>
+ #include <linux/mmc/card.h>
+ #include <asm/unaligned.h>
++#include <linux/pm.h>
++#include <linux/pm_runtime.h>
  
- static void rvu_dbg_npa_init(struct rvu *rvu)
- {
--	const struct device *dev = &rvu->pdev->dev;
--	struct dentry *pfile;
--
- 	rvu->rvu_dbg.npa = debugfs_create_dir("npa", rvu->rvu_dbg.root);
--	if (!rvu->rvu_dbg.npa)
--		return;
--
--	pfile = debugfs_create_file("qsize", 0600, rvu->rvu_dbg.npa, rvu,
--				    &rvu_dbg_npa_qsize_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("aura_ctx", 0600, rvu->rvu_dbg.npa, rvu,
--				    &rvu_dbg_npa_aura_ctx_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("pool_ctx", 0600, rvu->rvu_dbg.npa, rvu,
--				    &rvu_dbg_npa_pool_ctx_fops);
--	if (!pfile)
--		goto create_failed;
- 
--	pfile = debugfs_create_file("ndc_cache", 0600, rvu->rvu_dbg.npa, rvu,
--				    &rvu_dbg_npa_ndc_cache_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("ndc_hits_miss", 0600, rvu->rvu_dbg.npa,
--				    rvu, &rvu_dbg_npa_ndc_hits_miss_fops);
--	if (!pfile)
--		goto create_failed;
--
--	return;
--
--create_failed:
--	dev_err(dev, "Failed to create debugfs dir/file for NPA\n");
--	debugfs_remove_recursive(rvu->rvu_dbg.npa);
-+	debugfs_create_file("qsize", 0600, rvu->rvu_dbg.npa, rvu,
-+			    &rvu_dbg_npa_qsize_fops);
-+	debugfs_create_file("aura_ctx", 0600, rvu->rvu_dbg.npa, rvu,
-+			    &rvu_dbg_npa_aura_ctx_fops);
-+	debugfs_create_file("pool_ctx", 0600, rvu->rvu_dbg.npa, rvu,
-+			    &rvu_dbg_npa_pool_ctx_fops);
-+	debugfs_create_file("ndc_cache", 0600, rvu->rvu_dbg.npa, rvu,
-+			    &rvu_dbg_npa_ndc_cache_fops);
-+	debugfs_create_file("ndc_hits_miss", 0600, rvu->rvu_dbg.npa, rvu,
-+			    &rvu_dbg_npa_ndc_hits_miss_fops);
- }
- 
- #define PRINT_CGX_CUML_NIXRX_STATUS(idx, name)				\
-@@ -1614,8 +1547,6 @@ RVU_DEBUG_SEQ_FOPS(cgx_stat, cgx_stat_display, NULL);
- 
- static void rvu_dbg_cgx_init(struct rvu *rvu)
- {
--	const struct device *dev = &rvu->pdev->dev;
--	struct dentry *pfile;
- 	int i, lmac_id;
- 	char dname[20];
- 	void *cgx;
-@@ -1636,18 +1567,10 @@ static void rvu_dbg_cgx_init(struct rvu *rvu)
- 			rvu->rvu_dbg.lmac =
- 				debugfs_create_dir(dname, rvu->rvu_dbg.cgx);
- 
--			pfile =	debugfs_create_file("stats", 0600,
--						    rvu->rvu_dbg.lmac, cgx,
--						    &rvu_dbg_cgx_stat_fops);
--			if (!pfile)
--				goto create_failed;
-+			debugfs_create_file("stats", 0600, rvu->rvu_dbg.lmac,
-+					    cgx, &rvu_dbg_cgx_stat_fops);
- 		}
- 	}
--	return;
--
--create_failed:
--	dev_err(dev, "Failed to create debugfs dir/file for CGX\n");
--	debugfs_remove_recursive(rvu->rvu_dbg.cgx_root);
- }
- 
- /* NPC debugfs APIs */
-@@ -1970,33 +1893,14 @@ RVU_DEBUG_SEQ_FOPS(npc_mcam_rules, npc_mcam_show_rules, NULL);
- 
- static void rvu_dbg_npc_init(struct rvu *rvu)
- {
--	const struct device *dev = &rvu->pdev->dev;
--	struct dentry *pfile;
--
- 	rvu->rvu_dbg.npc = debugfs_create_dir("npc", rvu->rvu_dbg.root);
--	if (!rvu->rvu_dbg.npc)
--		return;
- 
--	pfile = debugfs_create_file("mcam_info", 0444, rvu->rvu_dbg.npc,
--				    rvu, &rvu_dbg_npc_mcam_info_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("mcam_rules", 0444, rvu->rvu_dbg.npc,
--				    rvu, &rvu_dbg_npc_mcam_rules_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("rx_miss_act_stats", 0444, rvu->rvu_dbg.npc,
--				    rvu, &rvu_dbg_npc_rx_miss_act_fops);
--	if (!pfile)
--		goto create_failed;
--
--	return;
--
--create_failed:
--	dev_err(dev, "Failed to create debugfs dir/file for NPC\n");
--	debugfs_remove_recursive(rvu->rvu_dbg.npc);
-+	debugfs_create_file("mcam_info", 0444, rvu->rvu_dbg.npc, rvu,
-+			    &rvu_dbg_npc_mcam_info_fops);
-+	debugfs_create_file("mcam_rules", 0444, rvu->rvu_dbg.npc, rvu,
-+			    &rvu_dbg_npc_mcam_rules_fops);
-+	debugfs_create_file("rx_miss_act_stats", 0444, rvu->rvu_dbg.npc, rvu,
-+			    &rvu_dbg_npc_rx_miss_act_fops);
- }
- 
- /* CPT debugfs APIs */
-@@ -2205,84 +2109,35 @@ RVU_DEBUG_SEQ_FOPS(cpt_pc, cpt_pc_display, NULL);
- 
- static void rvu_dbg_cpt_init(struct rvu *rvu)
- {
--	const struct device *dev = &rvu->pdev->dev;
--	struct dentry *pfile;
--
- 	if (!is_block_implemented(rvu->hw, BLKADDR_CPT0))
+ #include "rtsx_pcr.h"
+ #include "rts5261.h"
+@@ -150,6 +152,12 @@ void rtsx_pci_start_run(struct rtsx_pcr *pcr)
+ 	if (pcr->remove_pci)
  		return;
  
- 	rvu->rvu_dbg.cpt = debugfs_create_dir("cpt", rvu->rvu_dbg.root);
--	if (!rvu->rvu_dbg.cpt)
--		return;
- 
--	pfile = debugfs_create_file("cpt_pc", 0600,
--				    rvu->rvu_dbg.cpt, rvu,
--				    &rvu_dbg_cpt_pc_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("cpt_ae_sts", 0600,
--				    rvu->rvu_dbg.cpt, rvu,
--				    &rvu_dbg_cpt_ae_sts_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("cpt_se_sts", 0600,
--				    rvu->rvu_dbg.cpt, rvu,
--				    &rvu_dbg_cpt_se_sts_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("cpt_ie_sts", 0600,
--				    rvu->rvu_dbg.cpt, rvu,
--				    &rvu_dbg_cpt_ie_sts_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("cpt_engines_info", 0600,
--				    rvu->rvu_dbg.cpt, rvu,
--				    &rvu_dbg_cpt_engines_info_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("cpt_lfs_info", 0600,
--				    rvu->rvu_dbg.cpt, rvu,
--				    &rvu_dbg_cpt_lfs_info_fops);
--	if (!pfile)
--		goto create_failed;
--
--	pfile = debugfs_create_file("cpt_err_info", 0600,
--				    rvu->rvu_dbg.cpt, rvu,
--				    &rvu_dbg_cpt_err_info_fops);
--	if (!pfile)
--		goto create_failed;
--
--	return;
--
--create_failed:
--	dev_err(dev, "Failed to create debugfs dir/file for CPT\n");
--	debugfs_remove_recursive(rvu->rvu_dbg.cpt);
-+	debugfs_create_file("cpt_pc", 0600, rvu->rvu_dbg.cpt, rvu,
-+			    &rvu_dbg_cpt_pc_fops);
-+	debugfs_create_file("cpt_ae_sts", 0600, rvu->rvu_dbg.cpt, rvu,
-+			    &rvu_dbg_cpt_ae_sts_fops);
-+	debugfs_create_file("cpt_se_sts", 0600, rvu->rvu_dbg.cpt, rvu,
-+			    &rvu_dbg_cpt_se_sts_fops);
-+	debugfs_create_file("cpt_ie_sts", 0600, rvu->rvu_dbg.cpt, rvu,
-+			    &rvu_dbg_cpt_ie_sts_fops);
-+	debugfs_create_file("cpt_engines_info", 0600, rvu->rvu_dbg.cpt, rvu,
-+			    &rvu_dbg_cpt_engines_info_fops);
-+	debugfs_create_file("cpt_lfs_info", 0600, rvu->rvu_dbg.cpt, rvu,
-+			    &rvu_dbg_cpt_lfs_info_fops);
-+	debugfs_create_file("cpt_err_info", 0600, rvu->rvu_dbg.cpt, rvu,
-+			    &rvu_dbg_cpt_err_info_fops);
++	if (pcr->rtd3_en)
++		if (pcr->is_runtime_suspended) {
++			pm_runtime_get(&(pcr->pci->dev));
++			pcr->is_runtime_suspended = false;
++		}
++
+ 	if (pcr->state != PDEV_STAT_RUN) {
+ 		pcr->state = PDEV_STAT_RUN;
+ 		if (pcr->ops->enable_auto_blink)
+@@ -1081,6 +1089,16 @@ static void rtsx_pm_power_saving(struct rtsx_pcr *pcr)
+ 	rtsx_comm_pm_power_saving(pcr);
  }
  
- void rvu_dbg_init(struct rvu *rvu)
++static void rtsx_pci_rtd3_work(struct work_struct *work)
++{
++	struct delayed_work *dwork = to_delayed_work(work);
++	struct rtsx_pcr *pcr = container_of(dwork, struct rtsx_pcr, rtd3_work);
++
++	pcr_dbg(pcr, "--> %s\n", __func__);
++	if (!pcr->is_runtime_suspended)
++		pm_runtime_put(&(pcr->pci->dev));
++}
++
+ static void rtsx_pci_idle_work(struct work_struct *work)
  {
--	struct device *dev = &rvu->pdev->dev;
--	struct dentry *pfile;
--
- 	rvu->rvu_dbg.root = debugfs_create_dir(DEBUGFS_DIR_NAME, NULL);
--	if (!rvu->rvu_dbg.root) {
--		dev_err(rvu->dev, "%s failed\n", __func__);
--		return;
--	}
--	pfile = debugfs_create_file("rsrc_alloc", 0444, rvu->rvu_dbg.root, rvu,
--				    &rvu_dbg_rsrc_status_fops);
--	if (!pfile)
--		goto create_failed;
+ 	struct delayed_work *dwork = to_delayed_work(work);
+@@ -1100,6 +1118,9 @@ static void rtsx_pci_idle_work(struct work_struct *work)
+ 	rtsx_pm_power_saving(pcr);
  
--	pfile = debugfs_create_file("rvu_pf_cgx_map", 0444, rvu->rvu_dbg.root,
--				    rvu, &rvu_dbg_rvu_pf_cgx_map_fops);
--	if (!pfile)
--		goto create_failed;
-+	debugfs_create_file("rsrc_alloc", 0444, rvu->rvu_dbg.root, rvu,
-+			    &rvu_dbg_rsrc_status_fops);
-+	debugfs_create_file("rvu_pf_cgx_map", 0444, rvu->rvu_dbg.root, rvu,
-+			    &rvu_dbg_rvu_pf_cgx_map_fops);
- 
- 	rvu_dbg_npa_init(rvu);
- 	rvu_dbg_nix_init(rvu, BLKADDR_NIX0);
-@@ -2291,12 +2146,6 @@ void rvu_dbg_init(struct rvu *rvu)
- 	rvu_dbg_cgx_init(rvu);
- 	rvu_dbg_npc_init(rvu);
- 	rvu_dbg_cpt_init(rvu);
--
--	return;
--
--create_failed:
--	dev_err(dev, "Failed to create debugfs dir\n");
--	debugfs_remove_recursive(rvu->rvu_dbg.root);
+ 	mutex_unlock(&pcr->pcr_mutex);
++
++	if (pcr->rtd3_en)
++		mod_delayed_work(system_wq, &pcr->rtd3_work, msecs_to_jiffies(10000));
  }
  
- void rvu_dbg_exit(struct rvu *rvu)
+ static void rtsx_base_force_power_down(struct rtsx_pcr *pcr, u8 pm_state)
+@@ -1579,6 +1600,15 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
+ 		rtsx_pcr_cells[i].platform_data = handle;
+ 		rtsx_pcr_cells[i].pdata_size = sizeof(*handle);
+ 	}
++
++	if (pcr->rtd3_en) {
++		INIT_DELAYED_WORK(&pcr->rtd3_work, rtsx_pci_rtd3_work);
++		pm_runtime_allow(&pcidev->dev);
++		pm_runtime_enable(&pcidev->dev);
++		pcr->is_runtime_suspended = false;
++	}
++
++
+ 	ret = mfd_add_devices(&pcidev->dev, pcr->id, rtsx_pcr_cells,
+ 			ARRAY_SIZE(rtsx_pcr_cells), NULL, 0, NULL);
+ 	if (ret < 0)
+@@ -1616,6 +1646,9 @@ static void rtsx_pci_remove(struct pci_dev *pcidev)
+ 	struct pcr_handle *handle = pci_get_drvdata(pcidev);
+ 	struct rtsx_pcr *pcr = handle->pcr;
+ 
++	if (pcr->rtd3_en)
++		pm_runtime_get_noresume(&pcr->pci->dev);
++
+ 	pcr->remove_pci = true;
+ 
+ 	/* Disable interrupts at the pcr level */
+@@ -1626,6 +1659,8 @@ static void rtsx_pci_remove(struct pci_dev *pcidev)
+ 
+ 	cancel_delayed_work_sync(&pcr->carddet_work);
+ 	cancel_delayed_work_sync(&pcr->idle_work);
++	if (pcr->rtd3_en)
++		cancel_delayed_work_sync(&pcr->rtd3_work);
+ 
+ 	mfd_remove_devices(&pcidev->dev);
+ 
+@@ -1643,6 +1678,11 @@ static void rtsx_pci_remove(struct pci_dev *pcidev)
+ 	idr_remove(&rtsx_pci_idr, pcr->id);
+ 	spin_unlock(&rtsx_pci_lock);
+ 
++	if (pcr->rtd3_en) {
++		pm_runtime_disable(&pcr->pci->dev);
++		pm_runtime_put_noidle(&pcr->pci->dev);
++	}
++
+ 	kfree(pcr->slots);
+ 	kfree(pcr);
+ 	kfree(handle);
+@@ -1724,13 +1764,77 @@ static void rtsx_pci_shutdown(struct pci_dev *pcidev)
+ 		pci_disable_msi(pcr->pci);
+ }
+ 
++static int rtsx_pci_runtime_suspend(struct device *device)
++{
++	struct pci_dev *pcidev = to_pci_dev(device);
++	struct pcr_handle *handle;
++	struct rtsx_pcr *pcr;
++
++	handle = pci_get_drvdata(pcidev);
++	pcr = handle->pcr;
++	dev_dbg(&(pcidev->dev), "--> %s\n", __func__);
++
++	cancel_delayed_work(&pcr->carddet_work);
++	cancel_delayed_work(&pcr->rtd3_work);
++	cancel_delayed_work(&pcr->idle_work);
++
++	mutex_lock(&pcr->pcr_mutex);
++	rtsx_pci_power_off(pcr, HOST_ENTER_S3);
++
++	free_irq(pcr->irq, (void *)pcr);
++
++	mutex_unlock(&pcr->pcr_mutex);
++
++	pcr->is_runtime_suspended = true;
++
++	return 0;
++}
++
++static int rtsx_pci_runtime_resume(struct device *device)
++{
++	struct pci_dev *pcidev = to_pci_dev(device);
++	struct pcr_handle *handle;
++	struct rtsx_pcr *pcr;
++	int ret = 0;
++
++	handle = pci_get_drvdata(pcidev);
++	pcr = handle->pcr;
++	dev_dbg(&(pcidev->dev), "--> %s\n", __func__);
++
++	mutex_lock(&pcr->pcr_mutex);
++
++	rtsx_pci_write_register(pcr, HOST_SLEEP_STATE, 0x03, 0x00);
++	rtsx_pci_acquire_irq(pcr);
++	synchronize_irq(pcr->irq);
++
++	if (pcr->ops->fetch_vendor_settings)
++		pcr->ops->fetch_vendor_settings(pcr);
++
++	rtsx_pci_init_hw(pcr);
++
++	if (pcr->slots[RTSX_SD_CARD].p_dev != NULL) {
++		pcr->slots[RTSX_SD_CARD].card_event(
++				pcr->slots[RTSX_SD_CARD].p_dev);
++	}
++
++	schedule_delayed_work(&pcr->idle_work, msecs_to_jiffies(200));
++
++	mutex_unlock(&pcr->pcr_mutex);
++	return ret;
++}
++
+ #else /* CONFIG_PM */
+ 
+ #define rtsx_pci_shutdown NULL
++#define rtsx_pci_runtime_suspend NULL
++#define rtsx_pic_runtime_resume NULL
+ 
+ #endif /* CONFIG_PM */
+ 
+-static SIMPLE_DEV_PM_OPS(rtsx_pci_pm_ops, rtsx_pci_suspend, rtsx_pci_resume);
++static const struct dev_pm_ops rtsx_pci_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(rtsx_pci_suspend, rtsx_pci_resume)
++	SET_RUNTIME_PM_OPS(rtsx_pci_runtime_suspend, rtsx_pci_runtime_resume, NULL)
++};
+ 
+ static struct pci_driver rtsx_pci_driver = {
+ 	.name = DRV_NAME_RTSX_PCI,
+diff --git a/drivers/misc/cardreader/rtsx_pcr.h b/drivers/misc/cardreader/rtsx_pcr.h
+index fe5f4ca0f937..daf057c4eea6 100644
+--- a/drivers/misc/cardreader/rtsx_pcr.h
++++ b/drivers/misc/cardreader/rtsx_pcr.h
+@@ -90,6 +90,7 @@ static inline u8 map_sd_drive(int idx)
+ 
+ #define rtsx_check_mmc_support(reg)		((reg) & 0x10)
+ #define rtsx_reg_to_rtd3(reg)				((reg) & 0x02)
++#define rtsx_reg_to_rtd3_uhsii(reg)				((reg) & 0x04)
+ #define rtsx_reg_to_aspm(reg)			(((reg) >> 28) & 0x03)
+ #define rtsx_reg_to_sd30_drive_sel_1v8(reg)	(((reg) >> 26) & 0x03)
+ #define rtsx_reg_to_sd30_drive_sel_3v3(reg)	(((reg) >> 5) & 0x03)
+diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
+index 93be9fa97098..94cdd3b322b5 100644
+--- a/drivers/mmc/host/rtsx_pci_sdmmc.c
++++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
+@@ -20,6 +20,7 @@
+ #include <linux/mmc/card.h>
+ #include <linux/rtsx_pci.h>
+ #include <asm/unaligned.h>
++#include <linux/pm_runtime.h>
+ 
+ struct realtek_pci_sdmmc {
+ 	struct platform_device	*pdev;
+@@ -1343,6 +1344,7 @@ static void init_extra_caps(struct realtek_pci_sdmmc *host)
+ static void realtek_init_host(struct realtek_pci_sdmmc *host)
+ {
+ 	struct mmc_host *mmc = host->mmc;
++	struct rtsx_pcr *pcr = host->pcr;
+ 
+ 	mmc->f_min = 250000;
+ 	mmc->f_max = 208000000;
+@@ -1350,6 +1352,8 @@ static void realtek_init_host(struct realtek_pci_sdmmc *host)
+ 	mmc->caps = MMC_CAP_4_BIT_DATA | MMC_CAP_SD_HIGHSPEED |
+ 		MMC_CAP_MMC_HIGHSPEED | MMC_CAP_BUS_WIDTH_TEST |
+ 		MMC_CAP_UHS_SDR12 | MMC_CAP_UHS_SDR25;
++	if (pcr->rtd3_en)
++		mmc->caps = mmc->caps | MMC_CAP_AGGRESSIVE_PM;
+ 	mmc->caps2 = MMC_CAP2_NO_PRESCAN_POWERUP | MMC_CAP2_FULL_PWR_CYCLE;
+ 	mmc->max_current_330 = 400;
+ 	mmc->max_current_180 = 800;
+@@ -1407,6 +1411,13 @@ static int rtsx_pci_sdmmc_drv_probe(struct platform_device *pdev)
+ 
+ 	realtek_init_host(host);
+ 
++	if (pcr->rtd3_en) {
++		pm_runtime_set_autosuspend_delay(&pdev->dev, 5000);
++		pm_runtime_use_autosuspend(&pdev->dev);
++		pm_runtime_enable(&pdev->dev);
++	}
++
++
+ 	mmc_add_host(mmc);
+ 
+ 	return 0;
+@@ -1426,6 +1437,11 @@ static int rtsx_pci_sdmmc_drv_remove(struct platform_device *pdev)
+ 	pcr->slots[RTSX_SD_CARD].card_event = NULL;
+ 	mmc = host->mmc;
+ 
++	if (pcr->rtd3_en) {
++		pm_runtime_dont_use_autosuspend(&pdev->dev);
++		pm_runtime_disable(&pdev->dev);
++	}
++
+ 	cancel_work_sync(&host->work);
+ 
+ 	mutex_lock(&host->host_mutex);
+diff --git a/include/linux/rtsx_pci.h b/include/linux/rtsx_pci.h
+index 745f5e73f99a..f895ccabbe29 100644
+--- a/include/linux/rtsx_pci.h
++++ b/include/linux/rtsx_pci.h
+@@ -1174,6 +1174,7 @@ struct rtsx_pcr {
+ 
+ 	struct delayed_work		carddet_work;
+ 	struct delayed_work		idle_work;
++	struct delayed_work		rtd3_work;
+ 
+ 	spinlock_t			lock;
+ 	struct mutex			pcr_mutex;
+@@ -1183,6 +1184,7 @@ struct rtsx_pcr {
+ 	unsigned int			cur_clock;
+ 	bool				remove_pci;
+ 	bool				msi_en;
++	bool				is_runtime_suspended;
+ 
+ #define EXTRA_CAPS_SD_SDR50		(1 << 0)
+ #define EXTRA_CAPS_SD_SDR104		(1 << 1)
 -- 
-2.29.2
+2.17.1
 
