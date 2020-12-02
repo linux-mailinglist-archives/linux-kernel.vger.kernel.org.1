@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD1A2CBBB7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B13BC2CBBB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729710AbgLBLkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:40:49 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:33337 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgLBLkd (ORCPT
+        id S1729676AbgLBLkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 06:40:39 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:40703 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727650AbgLBLke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 06:40:33 -0500
-Received: by mail-lf1-f67.google.com with SMTP id l11so4202208lfg.0;
-        Wed, 02 Dec 2020 03:40:16 -0800 (PST)
+        Wed, 2 Dec 2020 06:40:34 -0500
+Received: by mail-lj1-f195.google.com with SMTP id y10so3201837ljc.7;
+        Wed, 02 Dec 2020 03:40:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tP2HvplWRaMXdOrLEwAbMpgsLuB/LtE2K3OBH4UE6QM=;
-        b=nBu7trBqYxRQlQbVfl9XsOSIEbGXmMrOXpSe718JzeiaJrprDBQDqo37xRRZl1CfPT
-         V+0iltwTcp/2arRJQyw7K+/sLWajsm4gUUuYKOXqUllDR0NcvIQd/OIa9BO+YwyI1sWu
-         ABtvH2PhT3fJ+ZEgZJH1Kjy0+dPZh/jdH3pIEgIa/Qohsgg3BmSUHAFy7ica2Jb/iqpA
-         e5h04/5yoCPCqudWbhRLQkR+XYfc0VmFK7RiLA+4WNyY3xOiLIrEyL2vAtSwKb7FmtZ3
-         owQdGkIbTa0JUjCmJaYsQeiMpMdVbpL084nQeMx1rhr4qd1eip7Vvu6yInG+2t4isS9c
-         62pg==
-X-Gm-Message-State: AOAM5314Y+K4C64lm/goOvkRFZR22R2n4F8PLBoo3Ugep2wqLfOH3/8R
-        pwJusy3bRKctKXf2b7uszJs=
-X-Google-Smtp-Source: ABdhPJwF4T7Ii6Rs+7XME3BIDjgfwitUBpk4MgYq1TJ2v9pWqbFWzDGtOvHDm3kXv6watTkD+U55tA==
-X-Received: by 2002:ac2:5a47:: with SMTP id r7mr974435lfn.525.1606909191191;
+        bh=eioTLuh9qMD02dGo7kd70kPRax33tNEMYOnayXuoEQw=;
+        b=JEsJTJ7HgMwoalHv+9t1mJQEvFR4miRs3ZN18+Nw6D6dtop7N9eADkj7H4yBmAUVKM
+         x0beFwZF+eWhmPkM6F1SV46Xy6Yw0pRx743I2VdztlMYeyj5icGuDsnNUSSciwjvV+CU
+         6dxT1schanz48ryV1YZ+8hksR13hJcwLOp33tuAcLdgnuP7vfXeHOtgs1blVjKxpQmKT
+         fL6NBKO15XO/TgcCLFuiZR7NS4MkCWkR6xYCwJ6aUotcogaZjMTN9smBMbpyBDqRHNUM
+         4sgDV/hPL6A9/C9OVaMyZFx53EeFz3sS+1AMjkeKuieKulck/aAVN2ucMwQBiyUgqDzn
+         WdXA==
+X-Gm-Message-State: AOAM533bZtshmcVRQCqC9IEn4Li+og7BO2AMJgdaIV3zBcvxQ8FLZCjF
+        DegyYPB8sXL4TxvCO/uOaW9FRbju0ApjAg==
+X-Google-Smtp-Source: ABdhPJz5D+PQ6DzPdL9r9JsL4vg/TaoTkfaha5it7UuZ/g1kY3PSanEghj7QtwQsdePnLdQX45iFlw==
+X-Received: by 2002:a05:651c:3cf:: with SMTP id f15mr980595ljp.118.1606909191641;
         Wed, 02 Dec 2020 03:39:51 -0800 (PST)
 Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id t20sm385034lff.153.2020.12.02.03.39.47
+        by smtp.gmail.com with ESMTPSA id a11sm403184ljp.21.2020.12.02.03.39.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 02 Dec 2020 03:39:49 -0800 (PST)
 Received: from johan by xi.terra with local (Exim 4.93.0.4)
         (envelope-from <johan@xi.terra>)
-        id 1kkQUd-000738-27; Wed, 02 Dec 2020 12:40:19 +0100
+        id 1kkQUd-00073D-52; Wed, 02 Dec 2020 12:40:19 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>,
         "Mychaela N . Falconia" <falcon@freecalypso.org>,
         linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 5/7] USB: serial: add sysfs attribute to suppress ready signalling on open
-Date:   Wed,  2 Dec 2020 12:39:40 +0100
-Message-Id: <20201202113942.27024-6-johan@kernel.org>
+Subject: [PATCH v2 6/7] USB: serial: ftdi_sio: pass port to quirk port_probe functions
+Date:   Wed,  2 Dec 2020 12:39:41 +0100
+Message-Id: <20201202113942.27024-7-johan@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201202113942.27024-1-johan@kernel.org>
 References: <20201202113942.27024-1-johan@kernel.org>
@@ -55,71 +55,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a nordy sysfs attribute to suppress raising the modem-control lines
-on open to signal DTE readiness.
+From: "Mychaela N. Falconia" <falcon@freecalypso.org>
 
-This can be used to prevent undesirable side-effects on open for
-applications where the DTR and RTS lines are used for non-standard
-purposes such as generating power-on and reset pulses.
+The original code passed only the pointer to the ftdi_private struct
+to quirk port_probe functions.  However, some quirks may need to be
+applied conditionally only to some channels of a multichannel FT2232x
+or FT4232H device, and if a given quirk's port_probe function needs
+to figure out which channel of a multichannel device is currently
+being considered, it needs access to the port pointer passed to the
+ftdi_sio_port_probe() function, so it can traverse USB data structures
+from there.
 
+Signed-off-by: Mychaela N. Falconia <falcon@freecalypso.org>
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/usb/serial/bus.c | 35 +++++++++++++++++++++++++++++++++--
- 1 file changed, 33 insertions(+), 2 deletions(-)
+ drivers/usb/serial/ftdi_sio.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/usb/serial/bus.c b/drivers/usb/serial/bus.c
-index eb0195cf37dd..db75cc5c3dfb 100644
---- a/drivers/usb/serial/bus.c
-+++ b/drivers/usb/serial/bus.c
-@@ -35,6 +35,37 @@ static int usb_serial_device_match(struct device *dev,
- 	return 0;
- }
+diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
+index e0f4c3d9649c..b69032c9ec2b 100644
+--- a/drivers/usb/serial/ftdi_sio.c
++++ b/drivers/usb/serial/ftdi_sio.c
+@@ -88,15 +88,15 @@ struct ftdi_private {
+ struct ftdi_sio_quirk {
+ 	int (*probe)(struct usb_serial *);
+ 	/* Special settings for probed ports. */
+-	void (*port_probe)(struct ftdi_private *);
++	void (*port_probe)(struct usb_serial_port *);
+ };
  
-+static ssize_t nordy_show(struct device *dev, struct device_attribute *attr,
-+				char *buf)
-+{
-+	struct usb_serial_port *port = dev_get_drvdata(dev);
+ static int   ftdi_jtag_probe(struct usb_serial *serial);
+ static int   ftdi_NDI_device_setup(struct usb_serial *serial);
+ static int   ftdi_stmclite_probe(struct usb_serial *serial);
+ static int   ftdi_8u2232c_probe(struct usb_serial *serial);
+-static void  ftdi_USB_UIRT_setup(struct ftdi_private *priv);
+-static void  ftdi_HE_TIRA1_setup(struct ftdi_private *priv);
++static void  ftdi_USB_UIRT_setup(struct usb_serial_port *port);
++static void  ftdi_HE_TIRA1_setup(struct usb_serial_port *port);
+ 
+ static const struct ftdi_sio_quirk ftdi_jtag_quirk = {
+ 	.probe	= ftdi_jtag_probe,
+@@ -2252,11 +2252,11 @@ static int ftdi_sio_port_probe(struct usb_serial_port *port)
+ 
+ 	mutex_init(&priv->cfg_lock);
+ 
+-	if (quirk && quirk->port_probe)
+-		quirk->port_probe(priv);
+-
+ 	usb_set_serial_port_data(port, priv);
+ 
++	if (quirk && quirk->port_probe)
++		quirk->port_probe(port);
 +
-+	return sprintf(buf, "%d\n", tty_port_nordy(&port->port));
-+}
-+
-+static ssize_t nordy_store(struct device *dev, struct device_attribute *attr,
-+				const char *buf, size_t count)
-+{
-+	struct usb_serial_port *port = dev_get_drvdata(dev);
-+	bool val;
-+	int ret;
-+
-+	ret = kstrtobool(buf, &val);
-+	if (ret)
-+		return ret;
-+
-+	tty_port_set_nordy(&port->port, val);
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(nordy);
-+
-+static struct attribute *tty_attrs[] = {
-+	&dev_attr_nordy.attr,
-+	NULL
-+};
-+ATTRIBUTE_GROUPS(tty);
-+
- static int usb_serial_device_probe(struct device *dev)
+ 	ftdi_determine_type(port);
+ 	ftdi_set_max_packet_size(port);
+ 	if (read_latency_timer(port) < 0)
+@@ -2277,8 +2277,10 @@ static int ftdi_sio_port_probe(struct usb_serial_port *port)
+ /* Setup for the USB-UIRT device, which requires hardwired
+  * baudrate (38400 gets mapped to 312500) */
+ /* Called from usbserial:serial_probe */
+-static void ftdi_USB_UIRT_setup(struct ftdi_private *priv)
++static void ftdi_USB_UIRT_setup(struct usb_serial_port *port)
  {
- 	struct usb_serial_driver *driver;
-@@ -60,8 +91,8 @@ static int usb_serial_device_probe(struct device *dev)
- 	}
++	struct ftdi_private *priv = usb_get_serial_port_data(port);
++
+ 	priv->flags |= ASYNC_SPD_CUST;
+ 	priv->custom_divisor = 77;
+ 	priv->force_baud = 38400;
+@@ -2287,8 +2289,10 @@ static void ftdi_USB_UIRT_setup(struct ftdi_private *priv)
+ /* Setup for the HE-TIRA1 device, which requires hardwired
+  * baudrate (38400 gets mapped to 100000) and RTS-CTS enabled.  */
  
- 	minor = port->minor;
--	tty_dev = tty_port_register_device(&port->port, usb_serial_tty_driver,
--					   minor, dev);
-+	tty_dev = tty_port_register_device_attr(&port->port,
-+			usb_serial_tty_driver, minor, dev, port, tty_groups);
- 	if (IS_ERR(tty_dev)) {
- 		retval = PTR_ERR(tty_dev);
- 		goto err_port_remove;
+-static void ftdi_HE_TIRA1_setup(struct ftdi_private *priv)
++static void ftdi_HE_TIRA1_setup(struct usb_serial_port *port)
+ {
++	struct ftdi_private *priv = usb_get_serial_port_data(port);
++
+ 	priv->flags |= ASYNC_SPD_CUST;
+ 	priv->custom_divisor = 240;
+ 	priv->force_baud = 38400;
 -- 
 2.26.2
 
