@@ -2,100 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6322CBE68
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E17092CBE67
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729901AbgLBNe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 08:34:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38861 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725965AbgLBNe4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 08:34:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606916010;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gSBZVtHBrrEzEt57aw8UlqExfUejtXmcX5D0rAUeWo8=;
-        b=h6r47FoupNLG3b98qs216wD5PcypOn+2a/ecXMRQJQ3GDfFN/oasn5YqG27CSi6znQYkV9
-        sw8cUPGakGqwR9xV/XnSz5ZzKYK0Ckbse8M3RIleVRdkyW+fXBuFYEBchO5pL+dEZWdRSn
-        dlqckOt+7OB7OsmZKQtAQRyq+Hujtr8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-402-DL4pFo6gMe2-cWFTzMw1cw-1; Wed, 02 Dec 2020 08:33:27 -0500
-X-MC-Unique: DL4pFo6gMe2-cWFTzMw1cw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97E3F18C89E3;
-        Wed,  2 Dec 2020 13:33:26 +0000 (UTC)
-Received: from [10.72.12.105] (ovpn-12-105.pek2.redhat.com [10.72.12.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 85B4E5D9C6;
-        Wed,  2 Dec 2020 13:33:21 +0000 (UTC)
-Subject: Re: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Eli Cohen <elic@nvidia.com>, Cindy Lu <lulu@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20201130043050-mutt-send-email-mst@kernel.org>
- <CACLfguXB+SzocLppNtrTZwKPFsshS8TLVe8_iFJxgjT-cFpSzA@mail.gmail.com>
- <20201130103142-mutt-send-email-mst@kernel.org>
- <CACLfguWDFgJUJTJik1obvv-vzacRwgkfsN=-Uouu+K9dAKFE+A@mail.gmail.com>
- <e52b94b6-42a8-1270-1e10-d1905ccae598@redhat.com>
- <20201202055714.GA224423@mtl-vdi-166.wap.labs.mlnx>
- <20201202041518-mutt-send-email-mst@kernel.org>
- <20201202121241.GA228811@mtl-vdi-166.wap.labs.mlnx>
- <20201202071414-mutt-send-email-mst@kernel.org>
- <13d33e2c-ea99-6625-83fd-6cb223dd103b@redhat.com>
- <20201202080533-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <eaaa5fb6-fd6a-200f-8457-d27f758f1c64@redhat.com>
-Date:   Wed, 2 Dec 2020 21:33:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729648AbgLBNeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 08:34:44 -0500
+Received: from foss.arm.com ([217.140.110.172]:39776 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727398AbgLBNen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 08:34:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E083E30E;
+        Wed,  2 Dec 2020 05:33:56 -0800 (PST)
+Received: from [10.57.0.85] (unknown [10.57.0.85])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4DCB93F718;
+        Wed,  2 Dec 2020 05:33:54 -0800 (PST)
+Subject: Re: [PATCH v4 2/4] Documentation/powercap/dtpm: Add documentation for
+ dtpm
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rjw@rjwysocki.net, ulf.hansson@linaro.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Ram Chandrasekar <rkumbako@codeaurora.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
+References: <20201201192801.27607-1-daniel.lezcano@linaro.org>
+ <20201201192801.27607-3-daniel.lezcano@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <c91e66b0-c880-93a3-3587-cae6bd6bd2c5@arm.com>
+Date:   Wed, 2 Dec 2020 13:33:52 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20201202080533-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20201201192801.27607-3-daniel.lezcano@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Daniel,
 
-On 2020/12/2 下午9:07, Michael S. Tsirkin wrote:
->>>> Two questions here:
->>>> 1. Now we don't have support for control virtqueue. Yet, we must filter
->>>> packets based on MAC, what do you suggest to do here?
->>> How about an ioctl to pass the mac to the device?
->>> Maybe mirroring the control vq struct format ...
->> I think we'd better avoid such ad-hoc ioctls to make vhost-vDPA type
->> independent.
-> Fundamentally this is about handling some VQs in QEMU, right?
-> Maybe a generic ioctl along the lines of "CTRL_VQ" passing
-> vq number and a command buffer from guest?
-> Seems generic enough for you?
->
+Only small issues found. The output build looks OK. The content LGTM.
 
-It looks to me you want to invent a synchronized API (or vDPA config 
-ops) for submitting virtio descriptors.
+On 12/1/20 7:27 PM, Daniel Lezcano wrote:
+> The dynamic thermal and power management is a technique to dynamically
+> adjust the power consumption of different devices in order to ensure a
+> global thermal constraint.
+> 
+> An userspace daemon is usually monitoring the temperature and the
+> power to take immediate action on the device.
+> 
+> The DTPM framework provides an unified API to userspace to act on the
+> power.
+> 
+> Document this framework.
+> 
+> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> Cc: Lina Iyer <ilina@codeaurora.org>
+> Cc: Ram Chandrasekar <rkumbako@codeaurora.org>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+>   Documentation/power/index.rst         |   1 +
+>   Documentation/power/powercap/dtpm.rst | 210 ++++++++++++++++++++++++++
+>   2 files changed, 211 insertions(+)
+>   create mode 100644 Documentation/power/powercap/dtpm.rst
+> 
+> diff --git a/Documentation/power/index.rst b/Documentation/power/index.rst
+> index ced8a8007434..a0f5244fb427 100644
+> --- a/Documentation/power/index.rst
+> +++ b/Documentation/power/index.rst
+> @@ -30,6 +30,7 @@ Power Management
+>       userland-swsusp
+>   
+>       powercap/powercap
+> +    powercap/dtpm
+>   
+>       regulator/consumer
+>       regulator/design
+> diff --git a/Documentation/power/powercap/dtpm.rst b/Documentation/power/powercap/dtpm.rst
+> new file mode 100644
+> index 000000000000..ca095ef4b887
+> --- /dev/null
+> +++ b/Documentation/power/powercap/dtpm.rst
+> @@ -0,0 +1,210 @@
 
-Several issues I can think for this:
+Probably missing SPDX?
 
-1) control vq allows the request to be handled asynchronously
-2) we still need a way to isolate the DMA if there's a hardware 
-virtqueue for the device that use DMA
-3) new vDPA config operations need to be invented, new uAPI for 
-vhost-vDPA, new virtio config ops for virtio-vDPA
+.. SPDX-License-Identifier: GPL-2.0-only
 
-It looks to me we can overcome 1) and 2) if we just stick to a virtqueue 
-interface in vhost-vDPA as I proposed in [1]. For issue 3) it also 
-requires much less work.
+> +==========================================
+> +Dynamic Thermal Power Management framework
+> +==========================================
+> +
+> +On the embedded world, the complexity of the SoC leads to an
+> +increasing number of hotspots which need to be monitored and mitigated
+> +as a whole in order to prevent the temperature to go above the
+> +normative and legally stated 'skin temperature'.
+> +
+> +Another aspect is to sustain the performance for a given power budget,
+> +for example virtual reality where the user can feel dizziness if the
+> +performance is capped while a big CPU is processing something else. Or
+> +reduce the battery charging because the dissipated power is too high
+> +compared with the power consumed by other devices.
+> +
+> +The userspace is the most adequate place to dynamically act on the
 
-Thanks
+I have compared with PowerCap description and they use 'user space'.
+I am not an expert in grammar, but maybe DTPM should also use it.
 
-[1] https://lkml.org/lkml/2020/9/23/1243
+> +different devices by limiting their power given an application
+> +profile: it has the knowledge of the platform.
+> +
+> +The Dynamic Thermal Power Management (DTPM) is a technique acting on
+> +the device power by limiting and/or balancing a power budget among
+> +different devices.
+> +
+> +The DTPM framework provides an unified interface to act on the
+> +device power.
+> +
+> +Overview
+> +========
+> +
+> +The DTPM framework relies on the powercap framework to create the
+> +powercap entries in the sysfs directory and implement the backend
+> +driver to do the connection with the power manageable device.
+> +
+> +The DTPM is a tree representation describing the power constraints
+> +shared between devices, not their physical positions.
+> +
+> +The nodes of the tree are a virtual description aggregating the power
+> +characteristics of the children nodes and their power limitations.
+> +
+> +The leaves of the tree are the real power manageable devices.
+> +
+> +For instance::
+> +
+> +  SoC
+> +   |
+> +   `-- pkg
+> +	|
+> +	|-- pd0 (cpu0-3)
+> +	|
+> +	`-- pd1 (cpu4-5)
+> +
+> +The pkg power will be the sum of pd0 and pd1 power numbers::
+> +
+> +  SoC (400mW - 3100mW)
+> +   |
+> +   `-- pkg (400mW - 3100mW)
+> +	|
+> +	|-- pd0 (100mW - 700mW)
+> +	|
+> +	`-- pd1 (300mW - 2400mW)
+> +
+> +When the nodes are inserted in the tree, their power characteristics are propagated to the parents::
+> +
+> +  SoC (600mW - 5900mW)
+> +   |
+> +   |-- pkg (400mW - 3100mW)
+> +   |    |
+> +   |    |-- pd0 (100mW - 700mW)
+> +   |    |
+> +   |    `-- pd1 (300mW - 2400mW)
+> +   |
+> +   `-- pd2 (200mW - 2800mW)
+> +
+> +Each node have a weight on a 2^10 basis reflecting the percentage of power consumption along the siblings::
+> +
+> +  SoC (w=1024)
+> +   |
+> +   |-- pkg (w=538)
+> +   |    |
+> +   |    |-- pd0 (w=231)
+> +   |    |
+> +   |    `-- pd1 (w=794)
+> +   |
+> +   `-- pd2 (w=486)
+> +
+> +   Note the sum of weights at the same level are equal to 1024.
 
+This sentence landed inside the rectangle with the tree above. Just
+pointing out, because I don't know if it was by design or not.
+
+> +
+> +When a power limitation is applied to a node, then it is distributed along the children given their weights. For example, if we set a power limitation of 3200mW at the 'SoC' root node, the resulting tree will be::
+> +
+> +  SoC (w=1024) <--- power_limit = 3200mW
+> +   |
+> +   |-- pkg (w=538) --> power_limit = 1681mW
+> +   |    |
+> +   |    |-- pd0 (w=231) --> power_limit = 378mW
+> +   |    |
+> +   |    `-- pd1 (w=794) --> power_limit = 1303mW
+> +   |
+> +   `-- pd2 (w=486) --> power_limit = 1519mW
+> +
+> +
+> +Flat description
+> +----------------
+> +
+> +A root node is created and it is the parent of all the nodes. This
+> +description is the simplest one and it is supposed to give to
+> +userspace a flat representation of all the devices supporting the
+> +power limitation without any power limitation distribution.
+> +
+> +Hierarchical description
+> +------------------------
+> +
+> +The different devices supporting the power limitation are represented
+> +hierarchically. There is one root node, all intermediate nodes are
+> +grouping the child nodes which can be intermediate nodes also or real
+> +devices.
+> +
+> +The intermediate nodes aggregate the power information and allows to
+> +set the power limit given the weight of the nodes.
+> +
+> +Userspace API
+> +=============
+> +
+> +As stated in the overview, the DTPM framework is built on top of the
+> +powercap framework. Thus the sysfs interface is the same, please refer
+> +to the powercap documentation for further details.
+> +
+> + * power_uw: Instantaneous power consumption. If the node is an
+> +   intermediate node, then the power consumption will be the sum of all
+> +   children power consumption.
+> +
+> + * max_power_range_uw: The power range resulting of the maximum power
+> +   minus the minimum power.
+> +
+> + * name: The name of the node. This is implementation dependant. Even
+
+s/dependant/dependent/
+
+> +   if it is not recommended for the userspace, several nodes can have
+> +   the same name.
+> +
+> + * constraint_X_name: The name of the constraint.
+> +
+> + * constraint_X_max_power_uw: The maximum power limit to be applicable
+> +   to the node.
+> +
+> + * constraint_X_power_limit_uw: The power limit to be applied to the
+> +   node. If the value contained in constraint_X_max_power_uw is set,
+> +   the constraint will be removed.
+> +
+> + * constraint_X_time_window_us: The meaning of this file will depend
+> +   on the constraint number.
+> +
+> +Constraints
+> +-----------
+> +
+> + * Constraint 0: The power limitation is immediately applied, without
+> +   limitation in time.
+> +
+> +Kernel API
+> +==========
+> +
+> +Overview
+> +--------
+> +
+> +The DTPM framework has no power limiting backend support. It is
+> +generic and provides a set of API to let the different drivers to
+> +implement the backend part for the power limitation and create a the
+
+s/a the/the/
+
+> +power constraints tree.
+> +
+> +It is up to the platform to provide the initialization function to
+> +allocate and link the different nodes of the tree.
+> +
+> +A special macro has the role of declaring a node and the corresponding
+> +initialization function via a description structure. This one contains
+> +an optional parent field allowing to hook different devices to an
+> +already existing tree at boot time.
+> +
+> +For instance::
+> +
+> +	struct dtpm_descr my_descr = {
+> +		.name = "my_name",
+> +		.init = my_init_func,
+> +	};
+> +
+> +	DTPM_DECLARE(my_descr);
+> +
+> +The nodes of the DTPM tree are described with dtpm structure. The
+> +steps to add a new power limitable device is done in three steps:
+> +
+> + * Allocate the dtpm node
+> + * Set the power number of the dtpm node
+> + * Register the dtpm node
+> +
+> +The registration of the dtpm node is done with the powercap
+> +ops. Basically, it must implements the callbacks to get and set the
+> +power and the limit.
+> +
+> +Alternatively, if the node to be inserted is an intermediate one, then
+> +a simple function to insert it as a future parent is available.
+> +
+> +If a device has its power characteristics changing, then the tree must
+> +be updated with the new power numbers and weights.
+> +
+> +Nomenclature
+> +------------
+> +
+> + * dtpm_alloc() : Allocate and initialize a dtpm structure
+> +
+> + * dtpm_register() : Add the dtpm node to the tree
+> +
+> + * dtpm_unregister() : Remove the dtpm node from the tree
+> +
+> + * dtpm_update_power() : Update the power characteristics of the dtpm node
+> 
+
+When you fix these small issues, feel free to add:
+
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+
+Regards,
+Lukasz
