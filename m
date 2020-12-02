@@ -2,90 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8E92CC9A0
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC422CC9A1
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728035AbgLBWav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 17:30:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726603AbgLBWav (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 17:30:51 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121DAC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 14:30:11 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id f14so1410426pju.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 14:30:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4qDI8fXrRiY//c2cY8v2SRnoRi5MIHxovIte32lpQ5E=;
-        b=VzWaofaf+mk+DYFfKusq/ibaf9go2lyaVVt94rb+0N+pcSYPmkQXU5LN3YUPA0dhkT
-         vLS4ohrwLnUgd6PGhxuDUv8K7LmdPmCQ/3j6/vmr5Vm8mhQvOERjIUL3pl3whbE8p3Sl
-         tnotD/QQ6KxhCY/lY2udqJKcX6Uz1/XqZbl7s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=4qDI8fXrRiY//c2cY8v2SRnoRi5MIHxovIte32lpQ5E=;
-        b=pOiT3xHSqXXjC2C607gcytlI988KCfGUN4/JtMbaLdM+/HbOB8MXoU4h/pUx+dNkGp
-         JuyHqUI1UHGs1hxwkqzDnUNZl8wXKqFS7CNLe0ZJj0IUfw4xafL+bjWBZ8BbBsWwuSRJ
-         yGh57U0R9GCimRg9Yh6+BsyILMJzOzarPecH3/cSAJ6/ygQ6dFh6XL2W4DbAYk0B1Mg8
-         OnImIrj1f2y8modblvoofcW7WOFv/pSPLdWSAHB7fESkCOqvEvISQy1sbhWYtzNJALWa
-         vxlFC+U09K3IuQloQ0Fher5adDSn3oykbis4sIy2PMHL/JQGdIopWPvvevg4Rukh8kPg
-         5czA==
-X-Gm-Message-State: AOAM530sUOGv59TAUVC0crAmOLOgKubRJm4MSFYR54Sb2fwMLvlobk7s
-        EpmdF/hXrhHYkfuPn7+DQNE6kg==
-X-Google-Smtp-Source: ABdhPJwN2GnEz55TS/DFhaOAmUvJPdOuloCAkMJ2fIMK2IYoZeDKCiUd2RrufKX3Pi8RYdURxVqaEA==
-X-Received: by 2002:a17:902:860c:b029:da:1ba0:3979 with SMTP id f12-20020a170902860cb02900da1ba03979mr243150plo.8.1606948210576;
-        Wed, 02 Dec 2020 14:30:10 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v18sm104369pfn.35.2020.12.02.14.30.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 14:30:09 -0800 (PST)
-Date:   Wed, 2 Dec 2020 14:30:08 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+        id S1726462AbgLBWbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 17:31:51 -0500
+Received: from mga14.intel.com ([192.55.52.115]:60418 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726011AbgLBWbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 17:31:51 -0500
+IronPort-SDR: kcK2lppwxtTZ+XQpnNpcNAnqBmiGNwXX3nB8dob33d8BNNjkVjU3CuUne2o/Mcs0Sg5Z5hBnPf
+ AKOiYBW721FA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="172317796"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="172317796"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 14:31:10 -0800
+IronPort-SDR: Pt/h9M1ujttWPD/OYAP1QBo8m7qT8eure8EPO8fO1v9NT1OYrMj63n9uhCkpQnI/uFu89a9bf4
+ D+Sde18kcgFQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="373322431"
+Received: from lkp-server01.sh.intel.com (HELO 54133fc185c3) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 02 Dec 2020 14:31:09 -0800
+Received: from kbuild by 54133fc185c3 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kkaeS-0000NI-IS; Wed, 02 Dec 2020 22:31:08 +0000
+Date:   Thu, 03 Dec 2020 06:30:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pstore: Move kmsg_bytes default into Kconfig
-Message-ID: <202012021427.3E12CABB@keescook>
-References: <20201201201234.137572-1-keescook@chromium.org>
- <20201202214257.36wf5a4ui2axr3es@chatter.i7.local>
+Subject: [tip:x86/apic] BUILD SUCCESS
+ 26ab12bb9d96133b7880141d68b5e01a8783de9d
+Message-ID: <5fc81571.jDhXEbQSMEAft89s%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201202214257.36wf5a4ui2axr3es@chatter.i7.local>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 04:42:57PM -0500, Konstantin Ryabitsev wrote:
-> On Tue, Dec 01, 2020 at 12:12:34PM -0800, Kees Cook wrote:
-> > ---
-> > This was sent off-list, so I'm resending it to lkml (with the commit log
-> > cleaned up sligthly) before I push it into for-next/pstore.
-> 
-> Also, nice:
-> 
-> Writing /tmp/20201201_keescook_pstore_move_kmsg_bytes_default_into_kconfig.mbx
->   ✔ [PATCH] pstore: Move kmsg_bytes default into Kconfig
->   ---
->   ✔ Attestation-by: Kees Cook <keescook@chromium.org> (pgp: 8972F4DFDC6DC026)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/apic
+branch HEAD: 26ab12bb9d96133b7880141d68b5e01a8783de9d  iommu/hyper-v: Remove I/O-APIC ID check from hyperv_irq_remapping_select()
 
-Yay! :)
+elapsed time: 722m
 
-> Did you use the sendemail-validate hook for this?
+configs tested: 178
+configs skipped: 2
 
-In my scripts right now, I'm doing this before "git send-email":
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-# Construct header-based attestations
-b4 attest outgoing/*
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                            allyesconfig
+arm64                               defconfig
+sh                           se7206_defconfig
+sh                          sdk7786_defconfig
+sparc64                          alldefconfig
+arm                          exynos_defconfig
+mips                           ip32_defconfig
+mips                      loongson3_defconfig
+powerpc                  mpc885_ads_defconfig
+arm                           stm32_defconfig
+powerpc                      pmac32_defconfig
+powerpc                 mpc837x_rdb_defconfig
+mips                      fuloong2e_defconfig
+arm                        spear6xx_defconfig
+m68k                        m5407c3_defconfig
+powerpc                      ppc64e_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                  colibri_pxa300_defconfig
+powerpc                      chrp32_defconfig
+sh                          urquell_defconfig
+arm                            mmp2_defconfig
+mips                            gpr_defconfig
+m68k                       m5249evb_defconfig
+arm                             rpc_defconfig
+arm                           sunxi_defconfig
+arm                              alldefconfig
+arm                        clps711x_defconfig
+arm                        shmobile_defconfig
+powerpc64                        alldefconfig
+mips                 decstation_r4k_defconfig
+s390                       zfcpdump_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                    klondike_defconfig
+mips                     loongson1c_defconfig
+arc                        nsimosci_defconfig
+arm                           u8500_defconfig
+m68k                            mac_defconfig
+x86_64                              defconfig
+sh                          rsk7264_defconfig
+powerpc                        fsp2_defconfig
+sh                             shx3_defconfig
+sh                        sh7785lcr_defconfig
+mips                           gcw0_defconfig
+xtensa                         virt_defconfig
+c6x                        evmc6678_defconfig
+arm                        realview_defconfig
+arm                         s3c6400_defconfig
+sparc                               defconfig
+powerpc                     sequoia_defconfig
+powerpc                 canyonlands_defconfig
+arm                         nhk8815_defconfig
+parisc                           alldefconfig
+arm                      tct_hammer_defconfig
+arm                        spear3xx_defconfig
+m68k                          atari_defconfig
+mips                        maltaup_defconfig
+xtensa                       common_defconfig
+sh                            migor_defconfig
+mips                         tb0287_defconfig
+m68k                          hp300_defconfig
+mips                     cu1830-neo_defconfig
+sh                           se7343_defconfig
+arm                            u300_defconfig
+mips                         rt305x_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                       cns3420vb_defconfig
+m68k                       m5275evb_defconfig
+microblaze                    nommu_defconfig
+arm                       mainstone_defconfig
+m68k                            q40_defconfig
+powerpc               mpc834x_itxgp_defconfig
+sh                ecovec24-romimage_defconfig
+mips                        nlm_xlr_defconfig
+arc                     nsimosci_hs_defconfig
+arc                        vdk_hs38_defconfig
+arc                        nsim_700_defconfig
+arm                        neponset_defconfig
+arm                         lpc18xx_defconfig
+nios2                         10m50_defconfig
+mips                       lemote2f_defconfig
+arm                        mvebu_v5_defconfig
+sparc                            alldefconfig
+xtensa                  audio_kc705_defconfig
+sh                           sh2007_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                 xes_mpc85xx_defconfig
+mips                           jazz_defconfig
+arc                         haps_hs_defconfig
+m68k                       bvme6000_defconfig
+sh                        dreamcast_defconfig
+powerpc                 mpc8272_ads_defconfig
+mips                         bigsur_defconfig
+arm                          prima2_defconfig
+arc                           tb10x_defconfig
+m68k                                defconfig
+powerpc                     akebono_defconfig
+arm                     eseries_pxa_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20201202
+x86_64               randconfig-a006-20201202
+x86_64               randconfig-a001-20201202
+x86_64               randconfig-a002-20201202
+x86_64               randconfig-a005-20201202
+x86_64               randconfig-a003-20201202
+i386                 randconfig-a004-20201202
+i386                 randconfig-a005-20201202
+i386                 randconfig-a001-20201202
+i386                 randconfig-a002-20201202
+i386                 randconfig-a006-20201202
+i386                 randconfig-a003-20201202
+i386                 randconfig-a004-20201201
+i386                 randconfig-a005-20201201
+i386                 randconfig-a001-20201201
+i386                 randconfig-a002-20201201
+i386                 randconfig-a006-20201201
+i386                 randconfig-a003-20201201
+i386                 randconfig-a014-20201202
+i386                 randconfig-a013-20201202
+i386                 randconfig-a011-20201202
+i386                 randconfig-a015-20201202
+i386                 randconfig-a012-20201202
+i386                 randconfig-a016-20201202
+i386                 randconfig-a014-20201201
+i386                 randconfig-a013-20201201
+i386                 randconfig-a011-20201201
+i386                 randconfig-a015-20201201
+i386                 randconfig-a012-20201201
+i386                 randconfig-a016-20201201
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-I haven't yet converted to using the git hook.
+clang tested configs:
+x86_64               randconfig-a016-20201202
+x86_64               randconfig-a012-20201202
+x86_64               randconfig-a014-20201202
+x86_64               randconfig-a013-20201202
+x86_64               randconfig-a015-20201202
+x86_64               randconfig-a011-20201202
 
--- 
-Kees Cook
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
