@@ -2,205 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D46F2CB946
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E04372CB94E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729057AbgLBJlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:41:49 -0500
-Received: from mail-vi1eur05on2135.outbound.protection.outlook.com ([40.107.21.135]:24673
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727219AbgLBJls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:41:48 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xbv4dVV67tF2lr/TXxmFTDMYlvr28h2BohO9qG/dYhqVSFP4CCZwcaebMFXLpwgUQlUkcviYHBKf+XuXkzQw/SqseqNxor7oTsJeT5pZ92u361A0sk6cI6f0pB1SCc5deGi4tt6MavPQeUUonh1KHPWp8nGlFLpacRkXcCHqHhrthI6Wh8Lc2hX3eNbD4rymwINTY8DYOiwJhLVXE4g00HMCOgaYUcZmyu5JMf0bm6C63s9m3RoAD2scXhmvcHSi3VBXGmIcOxU0K1CQlMfiGh4/onlHSvol/SKWF/WlPzIAtdjHgVk2UyxVEeFDF5xo0ckKf9ajAZyE9MJNhca59w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iRImIrzYC8EIWLNAah4+k2G0jE1qpzcdBDUhc+7iCyE=;
- b=JQ2TquoyK65ttz29nUdOcFMzmeY1ZcGtJYLtEnhtZdccqMacJxxhyiyxApZXE2Z/EF6XKi+/1b6H35hZMI/N8UzbXUJ/upQpfPMRQP1r+sTVxF68uDoK5RCfN6zAEsCXXKFgT3B+Nfejc8sJDDDX7PzDSaAHSEKgqNHj8NYx00r9eT1zNq7SVUoA651B0j7JaI5n2XMVC/WzOsS4UowJWU/1IZhi8tc7w4h1oIzYrVT5izkZxwtAVP6knIwZFno7Eky+pmZM5VkQvWr5KbExyPkiSxjfVjPDky4nv8nc1Wj4YOinZwHid9e+pATGR5t1J+gmDfh5/ilhlz141ooTqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=leica-geosystems.com; dmarc=pass action=none
- header.from=leica-geosystems.com; dkim=pass header.d=leica-geosystems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iRImIrzYC8EIWLNAah4+k2G0jE1qpzcdBDUhc+7iCyE=;
- b=e9Sj3+tJEkLmNvd2NNSvHNbgm97iXDaNUVuTb2eA/5DAsirS/QKdhFn+Q2qt/p+nHRHl0GzyeDsskEVIVnJto9DN4NirM6SAj5PkjRNlxZFOsb3cK61TpTbW8XXyT630X/jRnmxx2b/Rb1GRRvHCtEHN6/b+er/+g74rLfQS9VU=
-Received: from AM6PR06MB4691.eurprd06.prod.outlook.com (2603:10a6:20b:37::25)
- by AM6PR0602MB3542.eurprd06.prod.outlook.com (2603:10a6:209:5::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Wed, 2 Dec
- 2020 09:40:59 +0000
-Received: from AM6PR06MB4691.eurprd06.prod.outlook.com
- ([fe80::b073:9747:410c:12c6]) by AM6PR06MB4691.eurprd06.prod.outlook.com
- ([fe80::b073:9747:410c:12c6%6]) with mapi id 15.20.3632.017; Wed, 2 Dec 2020
- 09:40:59 +0000
-From:   ZHIZHIKIN Andrey <andrey.zhizhikin@leica-geosystems.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-CC:     "op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] optee: extend normal memory check to also write-through
-Thread-Topic: [PATCH] optee: extend normal memory check to also write-through
-Thread-Index: AQHWyIIaOP0stwp640Sm7x6DToya26njeFpQ
-Date:   Wed, 2 Dec 2020 09:40:59 +0000
-Message-ID: <AM6PR06MB4691764C8ABBF608837557D7A6F30@AM6PR06MB4691.eurprd06.prod.outlook.com>
-References: <20201202071057.4877-1-andrey.zhizhikin@leica-geosystems.com>
- <CAHUa44HuNPmWufnxzqGLrwJqLxTkjCivYGaHvukEkk6nOd1r3g@mail.gmail.com>
-In-Reply-To: <CAHUa44HuNPmWufnxzqGLrwJqLxTkjCivYGaHvukEkk6nOd1r3g@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none
- header.from=leica-geosystems.com;
-x-originating-ip: [193.8.40.112]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 0927829a-db76-43d1-a3a0-08d896a66027
-x-ms-traffictypediagnostic: AM6PR0602MB3542:
-x-microsoft-antispam-prvs: <AM6PR0602MB3542B3B3224769291AC822CEA6F30@AM6PR0602MB3542.eurprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: BH0oxtACBsjrpk3Yzf33YZ11Oyg4O2JDwxMyjllolJKt0/tfuRBt6/4/xHAyQaBrTZtVd+mUI/3MleKMOLpIajl+7LQi4wzoTScxHQGy0YUN5x0wtk5MvD4VkpD5YAmmoyaZXNEP72SdW6KiUAJUEwBy/je8+YJWb6Z5vNWLqjGx1vjV2te79uBhgKJk+d/KaV7QJn7I8bf5UDhkh0VukNQTUdJPhCnivd8j7dVsP/WZQEdcw9yIcm/OEEvvHi60sODBIbMu2ghEJnZZYh8KNgp88QJdfhvxxve/ER8NTbEzRoMm1+hEL0IvponhoNhoCZexet8DIymzjeTziHT3O/YPY1gnbwza9cJUjjH2WNkX4C9Dc2xt+wzcfyKp1LQgzykaaCB6WG8SaVNZHV76fw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR06MB4691.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(366004)(136003)(376002)(346002)(54906003)(316002)(6506007)(55016002)(8676002)(26005)(83380400001)(186003)(53546011)(9686003)(45080400002)(6916009)(86362001)(66556008)(52536014)(4326008)(66476007)(966005)(7696005)(66946007)(76116006)(66446008)(64756008)(2906002)(8936002)(478600001)(33656002)(71200400001)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?U3hLVWV2OXNKSE9QMkM0ODJMQWpJMUU2RmNoZ05HYWo0SkZ2azdEcmlHNjcw?=
- =?utf-8?B?YXp1Y2RKYjVDT0N4cVRpR2ROZ1ZwUEdLc2NkQU9XaTBvM3FpV3BrWGY3TFJo?=
- =?utf-8?B?Z2p0THZUMnBKNStkTHpBaWJTQ1JOeTZtRzVwWEhOcUM3MWRWQVQxeEVmOURu?=
- =?utf-8?B?RGdHWUJtZVh2WEdLRWVmaGczL1d2WnE3b3BrbU9uKytDdVhRbDRPbHpYNThD?=
- =?utf-8?B?YzdlR1kzZmZYR3NOckNPMzlTeUZteXFKeGNZdlhPcnYzQmFxVzZDZlR3TzVO?=
- =?utf-8?B?Zmltbmp1VUp3Y21lY0FBS3lXZ1JKYml3cysxY2VSb1NsU2lybmd2Zk16ZmFh?=
- =?utf-8?B?RU9SVW01bnQvaFNpd2pETW1GcEJpTnkxdWg2Vk41MWVlY0wxVGJqTEtWS25G?=
- =?utf-8?B?ZWNnekVTeUJQeG9oaUxLaXBIVXplQzJ4bjN2VVh5YTBublJCcW1aWi82SGti?=
- =?utf-8?B?SFNXbkFHd2pucTJCQ1FZMU5ObWx0TkpwaGVZeFpnZFJmUktrKzVIWW1mNTlH?=
- =?utf-8?B?OVcydlVvOER4SEozL0xPdmkwNWFKYTFNTERRczEvd0tBTW9peDBNeWduNVg2?=
- =?utf-8?B?cVRLVGQ5OHVGOXRJVlI4Unc4RGtmclNuWHVLdDNBaXlrQWlrMkxVNENWZ3o0?=
- =?utf-8?B?RlhqZW5RNm50RXVnTW11cXVPWGtYY0pvc0h4R1JoN200U29YcWlDdnRyK3lC?=
- =?utf-8?B?Z2lmQkszNEdLend6RGN5ZnNrclltVWphRVdYMjJwN3B4K1F5YlZGNnR0NW1S?=
- =?utf-8?B?RkxzM0xHbWlkQ0FBVFdyOTZqb3JlQzAwRlJEOW5FdnBwTC9HeVJCU3pvOGd3?=
- =?utf-8?B?S3cwL3ZtR2hlbDRBWE1JcXQ5eVdTZlYyeWRsMG1SKzg3NEMvaVEreld2b0d6?=
- =?utf-8?B?NkpoZ3UyS3ZIeHE0dnZTc2I1T1FWVmIyYzVLanM4V29PNm9DZkNXcmJweVh3?=
- =?utf-8?B?cmVNcFJYMFRuOE1rVlAwSU1lTldwRnRjYWZQWGlUcVhlZ3ZVZFBtOUFmMnNp?=
- =?utf-8?B?ZXRJdzZ0UnRVUGV5T05jQmZ6eGk5OGhWZkpvV2gxTlJMWmdrYk54MVdyWWxu?=
- =?utf-8?B?enlmRXBINUVPY0lzU1hCdmwrSTZJOHpGME5MSnMzTWpyS25OTXhibEt1ME9o?=
- =?utf-8?B?TWg0NisvYjVaUVRFUUsvNVFqYWc5aVYvcXF1YWtRWTcxbU9GZHdWcmlld2pt?=
- =?utf-8?B?b3FMYjhwVDlaTEJxQUZySTZIL3p5cFlRZTVFYVJpRTM2MXlmVDNLbmF3UEtu?=
- =?utf-8?B?cmZVZHFtcDdIbzZkRWVQRlVEclR3WU9uaE1yM2FNUFRzQ0RDYkZjemdmZHBr?=
- =?utf-8?Q?oxFzK88R9ocCo=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S2388056AbgLBJnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:43:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729258AbgLBJnF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 04:43:05 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF790C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 01:42:24 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id t18so839332plo.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 01:42:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=roXoJh4JMg0Rq6G/VrtXGfkTYMo58Mv8/81ld8N44p8=;
+        b=xtQjrYDgOBB4kq11qRodiLmJDd0Qi/kKKsbcC1rTsvT1V05BD5XCzF/+7NuRaWd3z9
+         3QWbf8srShDNJZ4I6mLOW3DOwo5Ugx4XsWzNdQwR6OqkdwoTm+lvm3HqTV3T0z69/ZQx
+         1u5EqAWSSoPNbfa6PNQSfhPXAyHUzzTbbI9c+vwIS2zuiPZphf1gcoMHwpN+xOxs1BAc
+         xENgHlzT9XAgI3+DdONeavDHqPdUNPG07iBz6H4kt4bVTyl3zUIim7AV7q3zDOW7cJi6
+         p5oFBfuv7Hl7juAxmbmrwDneUJyOGkm/juhyLWhFawjdi09vB5LlkTrPhvjDdgBHZfU7
+         Rokg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=roXoJh4JMg0Rq6G/VrtXGfkTYMo58Mv8/81ld8N44p8=;
+        b=dt+5K+R3evxQyOa9b9hRLBKKeZHyshFOTsonHbj49YB6vRGa18Ki+Lm7Mndl2mshQo
+         c0yeRWmKoWU70A+hQBHpwzUZ81KLzAWpM/jUng7FogA6dAEdfLi46mG4xWizNf2/qXja
+         WzASqDN/VsFjkq5uGvNBD0lZ0VFyWOK7d4r/1xAfiVYZ7ot/gbVB9ETuDmTjmUCQjqlf
+         Y95CtEW2t1Qb+zZY+9OHKdQTQssj8BW7IH2v7J4F1OarxJO+LJaL+SEmdw9B8M8m6TvZ
+         7Zx6iN3bJEWcY+MV7RpG97b0OAqy547g2HPLyPZK4rchECTVCqHz4zayjIHzJm/bxx9j
+         Marg==
+X-Gm-Message-State: AOAM533Ob3m1+VfcDoRQ5QBgukHvODe4OzvtuprHMeaHfCNK4+yiuwKr
+        zjYkXNdv2M3q6RvHr6I7RJsCWrHK1N/D
+X-Google-Smtp-Source: ABdhPJxLukJAMewy81MmakPw2U/0HEDA1fWdGZQU9O1Ykax9RlWWa9kMhCHJmCXKomZXl6nKl/C4KQ==
+X-Received: by 2002:a17:90a:9e5:: with SMTP id 92mr1638972pjo.176.1606902144334;
+        Wed, 02 Dec 2020 01:42:24 -0800 (PST)
+Received: from localhost.localdomain ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id bg8sm1393990pjb.52.2020.12.02.01.42.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 01:42:23 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 00/29] MHI changes for v5.11
+Date:   Wed,  2 Dec 2020 15:11:30 +0530
+Message-Id: <20201202094159.107075-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: leica-geosystems.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR06MB4691.eurprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0927829a-db76-43d1-a3a0-08d896a66027
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Dec 2020 09:40:59.3104
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aw30SIxXS/9Mc6qePFyQ6xSSDw/NYm7Mx2y8zQ8T9q4R/KOwsC5Kfvuy3JevLUVe8FIzHDuOOHA41DBbPPGH8i+Ik4lhpJx6iSdI5vgkUgDfsA7pFzlAm4gvy48RqqQm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0602MB3542
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gSmVucywNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKZW5z
-IFdpa2xhbmRlciA8amVucy53aWtsYW5kZXJAbGluYXJvLm9yZz4NCj4gU2VudDogV2VkbmVzZGF5
-LCBEZWNlbWJlciAyLCAyMDIwIDk6MDcgQU0NCj4gVG86IFpISVpISUtJTiBBbmRyZXkgPGFuZHJl
-eS56aGl6aGlraW5AbGVpY2EtZ2Vvc3lzdGVtcy5jb20+DQo+IENjOiBvcC10ZWVAbGlzdHMudHJ1
-c3RlZGZpcm13YXJlLm9yZzsgTGludXggS2VybmVsIE1haWxpbmcgTGlzdCA8bGludXgtDQo+IGtl
-cm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBzdGFibGVAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6
-IFJlOiBbUEFUQ0hdIG9wdGVlOiBleHRlbmQgbm9ybWFsIG1lbW9yeSBjaGVjayB0byBhbHNvIHdy
-aXRlLXRocm91Z2gNCj4gDQo+IFRoaXMgZW1haWwgaXMgbm90IGZyb20gSGV4YWdvbuKAmXMgT2Zm
-aWNlIDM2NSBpbnN0YW5jZS4gUGxlYXNlIGJlIGNhcmVmdWwgd2hpbGUNCj4gY2xpY2tpbmcgbGlu
-a3MsIG9wZW5pbmcgYXR0YWNobWVudHMsIG9yIHJlcGx5aW5nIHRvIHRoaXMgZW1haWwuDQo+IA0K
-PiANCj4gSGkgQW5kcmV5LA0KPiANCj4gT24gV2VkLCBEZWMgMiwgMjAyMCBhdCA4OjExIEFNIEFu
-ZHJleSBaaGl6aGlraW4gPGFuZHJleS56aGl6aGlraW5AbGVpY2EtDQo+IGdlb3N5c3RlbXMuY29t
-PiB3cm90ZToNCj4gPg0KPiA+IEFSTXY3IEFyY2hpdGVjdHVyZSBSZWZlcmVuY2UgTWFudWFsIFsx
-XSBzZWN0aW9uIEEzLjUuNSBkZXRhaWxzIE5vcm1hbA0KPiA+IG1lbW9yeSB0eXBlLCB0b2dldGhl
-ciB3aXRoIGNhY2hlYWJpbGl0eSBhdHRyaWJ1dGVzIHRoYXQgY291bGQgYmUNCj4gPiBhcHBsaWVk
-IHRvIG1lbW9yeSByZWdpb25zIGRlZmluZWQgYXMgIk5vcm1hbCBtZW1vcnkiLg0KPiA+DQo+ID4g
-U2VjdGlvbiBCMi4xLjIgb2YgdGhlIEFyY2hpdGVjdHVyZSBSZWZlcmVuY2UgTWFudWFsIFsxXSBh
-bHNvIHByb3ZpZGVzDQo+ID4gZGV0YWlscyByZWdhcmRpbmcgdGhlIE1lbW9yeSBhdHRyaWJ1dGVz
-IHRoYXQgY291bGQgYmUgYXNzaWduZWQgdG8NCj4gPiBwYXJ0aWN1bGFyIG1lbW9yeSByZWdpb25z
-LCB3aGljaCBpbmNsdWRlcyB0aGUgZGVzY3JwdGlvbiBvZg0KPiA+IGNhY2hlYWJpbGl0eSBhdHRy
-aWJ1dGVzIGFuZCBjYWNoZSBhbGxvY2F0aW9uIGhpbnRzLg0KPiA+DQo+ID4gTWVtb3J5IHR5cGUg
-YW5kIGNhY2hlYWJpbGl0eSBhdHRyaWJ1dGVzIGZvcm1zIDIgc2VwYXJhdGUgZGVmaW5pdGlvbnMs
-DQo+ID4gd2hlcmUgY2FjaGVhYmlsaXR5IGF0dHJpYnV0ZXMgZGVmaW5lcyBhIG1lY2hhbmlzbSBv
-ZiBjb2hlcmVuY3kgY29udHJvbA0KPiA+IHJhdGhlciB0aGFuIHRoZSB0eXBlIG9mIG1lbW9yeSBp
-dHNlbGYuDQo+ID4NCj4gPiBJbiBvdGhlciB3b3JkczogTm9ybWFsIG1lbW9yeSB0eXBlIGNhbiBi
-ZSBjb25maWd1cmVkIHdpdGggc2V2ZXJhbA0KPiA+IGNvbWJpbmF0aW9uIG9mIGNhY2hlYWJpbGl0
-eSBhdHRyaWJ1dGVzLCBuYW1lbHk6DQo+ID4gLSBXcml0ZS1UaHJvdWdoIChXVCkNCj4gPiAtIFdy
-aXRlLUJhY2sgKFdCKSBmb2xsb3dlZCBieSBjYWNoZSBhbGxvY2F0aW9uIGhpbnQ6DQo+ID4gICAt
-IFdyaXRlLUFsbG9jYXRlDQo+ID4gICAtIE5vIFdyaXRlLUFsbG9jYXRlIChhbHNvIGtub3duIGFz
-IFJlYWQtQWxsb2NhdGUpDQo+ID4NCj4gPiBUaG9zZSB0eXBlcyBhcmUgbWFwcGVkIGluIHRoZSBr
-ZXJuZWwgdG8gY29ycmVzcG9uZGluZyBtYWNyb3M6DQo+ID4gLSBXcml0ZS1UaHJvdWdoOiBMX1BU
-RV9NVF9XUklURVRIUk9VR0gNCj4gPiAtIFdyaXRlLUJhY2sgV3JpdGUtQWxsb2NhdGU6IExfUFRF
-X01UX1dSSVRFQUxMT0MNCj4gPiAtIFdyaXRlLUJhY2sgUmVhZC1BbGxvY2F0ZTogTF9QVEVfTVRf
-V1JJVEVCQUNLDQo+ID4NCj4gPiBDdXJyZW50IGltcGxlbWVudGF0aW9uIG9mIHRoZSBvcC10ZWUg
-ZHJpdmVyIHRha2VzIGluIGFjY291bnQgb25seSAyDQo+ID4gbGFzdCBtZW1vcnkgcmVnaW9uIHR5
-cGVzLCB3aGlsZSBwZXJmb3JtaW5nIGEgY2hlY2sgaWYgdGhlIG1lbW9yeSBibG9jaw0KPiA+IGlz
-IGFsbG9jYXRlZCBhcyAiTm9ybWFsIG1lbW9yeSIsIGxlYXZpbmcgV3JpdGUtVGhyb3VnaCBhbGxv
-Y2F0aW9ucyB0bw0KPiA+IGJlIG5vdCBjb25zaWRlcmVkLg0KPiA+DQo+ID4gRXh0ZW5kIHZlcmlm
-aWNhdGlvbiBtZWNoYW5pc20gdG8gaW5jbHVkZSBhbHNvIE5vcm1hbCBtZW1vcnkgcmVnaW9zLA0K
-PiA+IHdoaWNoIGFyZSBkZXNpZ25hdGVkIHdpdGggV3JpdGUtVGhyb3VnaCBjYWNoZWFiaWxpdHkg
-YXR0cmlidXRlcy4NCj4gDQo+IEFyZSB5b3UgdHJ5aW5nIHRvIGZpeCBhIHJlYWwgZXJyb3Igd2l0
-aCB0aGlzIG9yIGFyZSB5b3UganVzdCB0cnlpbmcgdG8gY292ZXIgYWxsIGNhc2VzPyBJDQo+IHN1
-c3BlY3QgdGhlIGxhdHRlciBzaW5jZSB5b3UnZCBsaWtlbHkgaGF2ZSBjb2hlcmVuY3kgcHJvYmxl
-bXMgd2l0aCBPUC1URUUgaW4NCj4gU2VjdXJlIHdvcmxkIGlmIHlvdSB1c2VkIFdyaXRlLVRocm91
-Z2ggaW5zdGVhZC4NCg0KWWVzLCB0aGlzIGFpbXMgdG8gcHJvdmlkZSBjb25zaXN0ZW5jeSBpbiBk
-ZXRlY3Rpb24gd2hpY2ggbWVtb3J5IGJsb2NrcyBjYW4gYmUgaWRlbnRpZmllZA0KYXMgTm9ybWFs
-IG1lbW9yeSBpbiBBUk12NyBhcmNoaXRlY3R1cmUuDQoNCldUIGNvaGVyZW5jeSBjb250cm9sIGFu
-ZCAoZXNwZWNpYWxseSkgb2JzZXJ2YWJpbGl0eSBiZWhhdmlvciBpcyBkZXNjcmliZWQgaW4gc2Vj
-dGlvbiBBMy41LjUgb2YgdGhlDQpBUk12NyBSZWZNYW4sIHdoZXJlIGl0IGlzIHN0YXRlZCB0aGF0
-IHdyaXRlIG9wZXJhdGlvbnMgcGVyZm9ybWVkIG9uIFdUIG1lbW9yeSBsb2NhdGlvbnMNCmFyZSBn
-dWFyYW50ZWVkIHRvIGJlIHZpc2libGUgdG8gYWxsIG9ic2VydmVycyBpbnNpZGUgYW5kIG91dHNp
-ZGUgb2YgY2FjaGUgbGV2ZWwuDQoNCkFzIHRoZSBXcml0ZS1UaHJvdWdoIChXVCkgcHJvdmlkZXMg
-YSBiZXR0ZXIgY29oZXJlbmN5IGNvbnRyb2wsIGl0IGRvZXMgbWFrZSBzZW5zZSB0byBpbmNsdWRl
-IGl0DQppbnRvIHRoZSB2ZXJpZmljYXRpb24gcGVyZm9ybWVkIGJ5IGlzX25vcm1hbF9tZW1vcnko
-KSBpbiBvcmRlciB0byBwcm92aWRlIGEgcG9zc2liaWxpdHkgZm9yDQpmdXR1cmUgaW1wbGVtZW50
-YXRpb25zIHRvIG1pdGlnYXRlIGlzc3VlcyBhbmQgc2VsZWN0IGFwcHJvcHJpYXRlIGNhY2hlIGFs
-bG9jYXRpb24gYXR0cmlidXRlcw0KZm9yIG1lbW9yeSBibG9ja3MgdXNlZC4NCg0KPiBDb3JyZWN0
-IG1lIGlmIEknbSB3cm9uZywgYnV0ICJXcml0ZS1CYWNrIFdyaXRlLUFsbG9jYXRlIiBhbmQgIldy
-aXRlLUJhY2sgUmVhZC1BbGxvY2F0ZSINCj4gYXJlIGJvdGggY29tcGF0aWJsZSB3aXRoIGVhY2gg
-b3RoZXIgYXMgdGhlICJBbGxvY2F0ZSIgcGFydCBpcyBqdXN0IGEgaGludC4NCg0KQ29ycmVjdCwg
-IkFsbG9jYXRlIiBqdXN0IGRlc2lnbmF0ZXMgdGhlIGNhY2hlIGFsbG9jYXRpb24gaGludC4gIldy
-aXRlLUJhY2sgUmVhZC1BbGxvY2F0ZSIgc2hvdWxkDQphY3R1YWxseSBiZSByZWFkIGFzICJXcml0
-ZS1CYWNrIG5vIFdyaXRlLUFsbG9jYXRlIiwgd2l0aCAiIFdyaXRlLUFsbG9jYXRlIiBiZWluZyBh
-IGhpbnQuIEJ1dCBzaW5jZQ0KdGhpcyBpcyBjb250cm9sbGVkIGJ5IGEgVEVYWzBdIC0gdGhpcyBo
-aW50IGlzIGhhbmRsZWQgc2VwYXJhdGVseSBieSBMX1BURV9NVF9XUklURUJBQ0sgYW5kIA0KTF9Q
-VEVfTVRfV1JJVEVBTExPQyBtYWNyb3MuDQoNCj4gDQo+IENoZWVycywNCj4gSmVucw0KPiANCj4g
-Pg0KPiA+IExpbms6IFsxXToNCj4gPiBodHRwczovL2V1cjAyLnNhZmVsaW5rcy5wcm90ZWN0aW9u
-Lm91dGxvb2suY29tLz91cmw9aHR0cHMlM0ElMkYlMkZkZXZlDQo+ID4NCj4gbG9wZXIuYXJtLmNv
-bSUyRmRvY3VtZW50YXRpb24lMkZkZGkwNDA2JTJGY2QmYW1wO2RhdGE9MDQlN0MwMSU3QyU3DQo+
-IENhNDANCj4gPg0KPiBmZmQzNTkxMmY0ZmUzZDk3MzA4ZDg5Njk5M2I4NyU3QzFiMTZhYjNlYjhm
-NjRmZTM5ZjNlMmRiN2ZlNTQ5ZjZhJTdDMCUNCj4gNw0KPiA+DQo+IEMxJTdDNjM3NDI0OTMyMTY5
-MDc0NjU0JTdDVW5rbm93biU3Q1RXRnBiR1pzYjNkOGV5SldJam9pTUM0d0xqQXcNCj4gTURBaUxD
-DQo+ID4NCj4gSlFJam9pVjJsdU16SWlMQ0pCVGlJNklrMWhhV3dpTENKWFZDSTZNbjAlM0QlN0Mz
-MDAwJmFtcDtzZGF0YT1jMGpLMmdUDQo+IG0NCj4gPiBxckF5bzAlMkZmcjA3dCUyRmc1TmJQZG00
-ZGg3Umw3YWxOV2xhUWMlM0QmYW1wO3Jlc2VydmVkPTANCj4gPiBGaXhlczogODUzNzM1ZTQwNDI0
-ICgib3B0ZWU6IGFkZCB3cml0ZWJhY2sgdG8gdmFsaWQgbWVtb3J5IHR5cGUiKQ0KPiA+IENjOiBz
-dGFibGVAdmdlci5rZXJuZWwub3JnDQo+ID4gU2lnbmVkLW9mZi1ieTogQW5kcmV5IFpoaXpoaWtp
-bg0KPiA+IDxhbmRyZXkuemhpemhpa2luQGxlaWNhLWdlb3N5c3RlbXMuY29tPg0KPiA+IC0tLQ0K
-PiA+ICBkcml2ZXJzL3RlZS9vcHRlZS9jYWxsLmMgfCAzICsrLQ0KPiA+ICAxIGZpbGUgY2hhbmdl
-ZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy90ZWUvb3B0ZWUvY2FsbC5jIGIvZHJpdmVycy90ZWUvb3B0ZWUvY2FsbC5jIGluZGV4
-DQo+ID4gYzk4MTc1N2JhMGQ0Li44ZGEyN2QwMmEyZDYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVy
-cy90ZWUvb3B0ZWUvY2FsbC5jDQo+ID4gKysrIGIvZHJpdmVycy90ZWUvb3B0ZWUvY2FsbC5jDQo+
-ID4gQEAgLTUzNSw3ICs1MzUsOCBAQCBzdGF0aWMgYm9vbCBpc19ub3JtYWxfbWVtb3J5KHBncHJv
-dF90IHApICB7ICAjaWYNCj4gPiBkZWZpbmVkKENPTkZJR19BUk0pDQo+ID4gICAgICAgICByZXR1
-cm4gKCgocGdwcm90X3ZhbChwKSAmIExfUFRFX01UX01BU0spID09IExfUFRFX01UX1dSSVRFQUxM
-T0MpDQo+IHx8DQo+ID4gLSAgICAgICAgICAgICAgICgocGdwcm90X3ZhbChwKSAmIExfUFRFX01U
-X01BU0spID09IExfUFRFX01UX1dSSVRFQkFDSykpOw0KPiA+ICsgICAgICAgICAgICAgICAoKHBn
-cHJvdF92YWwocCkgJiBMX1BURV9NVF9NQVNLKSA9PSBMX1BURV9NVF9XUklURUJBQ0spIHx8DQo+
-ID4gKyAgICAgICAgICAgICAgICgocGdwcm90X3ZhbChwKSAmIExfUFRFX01UX01BU0spID09DQo+
-ID4gKyBMX1BURV9NVF9XUklURVRIUk9VR0gpKTsNCj4gPiAgI2VsaWYgZGVmaW5lZChDT05GSUdf
-QVJNNjQpDQo+ID4gICAgICAgICByZXR1cm4gKHBncHJvdF92YWwocCkgJiBQVEVfQVRUUklORFhf
-TUFTSykgPT0NCj4gPiBQVEVfQVRUUklORFgoTVRfTk9STUFMKTsgICNlbHNlDQo+ID4gLS0NCj4g
-PiAyLjE3LjENCj4gPg0KDQpSZWdhcmRzLA0KQW5kcmV5DQo=
+Hi Greg,
+
+Here is the MHI patch series for v5.11. It was a busy cycle for us and so far we
+have accumulated almost 29 patches. Most of the patches are cleanups and fixes
+but there are some noticeable changes too:
+
+1. Loic finally removed the auto-start option from the channel parameters of the
+MHI controller. It is the duty of the client drivers like qrtr to start/stop the
+channels when required, so we decided to remove this option. As a side effect,
+we changed the qrtr driver to start the channels during its probe and removed
+the auto-start option from ath11k controller.
+
+**NOTE** Since these changes spawns both MHI and networking trees, the patches
+are maintained in an immutable branch [1] and pulled into both mhi-next and
+ath11k-next branches. The networking patches got acks from ath11k and networking
+maintainers as well.
+
+2. Loic added a generic MHI pci controller driver. This driver will be used by
+the PCI based Qualcomm modems like SDX55 and exposes channels such as QMI,
+IP_HW0, IPCR etc...
+
+3. Loic fixed the MHI device hierarchy by maintaining the correct parent child
+relationships. Earlier all MHI devices lived in the same level under the parent
+device like PCIe. But now, the MHI devices belonging to channels will become the
+children of controller MHI device.
+
+4. Finally Loic also improved the MHI device naming by using indexed names such
+as mhi0, mhi1, etc... This will break the userspace applications depending on
+the old naming convention but since the only one user so far is Jeff Hugo's AI
+accelerator apps, we decided to make this change now itself with his agreement.
+
+5. Bhaumik fixed the qrtr driver by stopping the channels during remove. This
+patch also got ack from networking maintainer and we decided to take it through
+MHI tree (via immutable branch) since we already had a qrtr change.
+
+Please consider applying!
+
+Thanks,
+Mani
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git/log/?h=mhi-ath11k-immutable
+
+Bhaumik Bhatt (19):
+  bus: mhi: core: Remove unnecessary counter from mhi_firmware_copy()
+  bus: mhi: core: Add missing EXPORT_SYMBOL for mhi_get_mhi_state()
+  bus: mhi: core: Expose mhi_get_exec_env() API for controllers
+  bus: mhi: core: Remove unused mhi_fw_load_worker() declaration
+  bus: mhi: core: Rename RDDM download function to use proper words
+  bus: mhi: core: Skip RDDM download for unknown execution environment
+  bus: mhi: core: Use appropriate names for firmware load functions
+  bus: mhi: core: Move to using high priority workqueue
+  bus: mhi: core: Skip device wake in error or shutdown states
+  bus: mhi: core: Move to SYS_ERROR regardless of RDDM capability
+  bus: mhi: core: Prevent sending multiple RDDM entry callbacks
+  bus: mhi: core: Move to an error state on any firmware load failure
+  bus: mhi: core: Use appropriate label in firmware load handler API
+  bus: mhi: core: Move to an error state on mission mode failure
+  bus: mhi: core: Check for IRQ availability during registration
+  bus: mhi: core: Separate system error and power down handling
+  bus: mhi: core: Mark and maintain device states early on after power
+    down
+  bus: mhi: core: Remove MHI event ring IRQ handlers when powering down
+  net: qrtr: Unprepare MHI channels during remove
+
+Carl Yin (1):
+  bus: mhi: core: Fix null pointer access when parsing MHI configuration
+
+Dan Carpenter (1):
+  bus: mhi: core: Fix error handling in mhi_register_controller()
+
+Jeffrey Hugo (1):
+  bus: mhi: core: fix potential operator-precedence with BHI macros
+
+Loic Poulain (7):
+  bus: mhi: Remove auto-start option
+  net: qrtr: Start MHI channels during init
+  bus: mhi: Add MHI PCI support for WWAN modems
+  bus: mhi: Fix channel close issue on driver remove
+  bus: mhi: core: Indexed MHI controller name
+  bus: mhi: core: Fix device hierarchy
+  mhi: pci_generic: Fix implicit conversion warning
+
+-- 
+2.25.1
+
