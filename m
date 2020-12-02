@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC8D2CB480
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 303C92CB482
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:29:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728582AbgLBFYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 00:24:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43222 "EHLO
+        id S1728602AbgLBFYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 00:24:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728564AbgLBFY3 (ORCPT
+        with ESMTP id S1726430AbgLBFYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 00:24:29 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F3CC061A04
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 21:23:43 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id r9so660622ioo.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 21:23:43 -0800 (PST)
+        Wed, 2 Dec 2020 00:24:38 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDB0C061A47
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 21:23:45 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id v3so449260ilo.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 21:23:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=g7jlxchzUs1d/FAinzhFIBtXsEXm4/sR0Ksg9506XeU=;
-        b=meUVIcZ7VIwMwi/cSom/+PXH6JMZqXpsyjjZQDUQ/m2V8lTEGR/Xnc9mVxGajJjhrf
-         jgQhs6/zs4jSQ1U5xiP9cW03Sw+roeWUp0y+nkybRZWDIYj7WV5OcREAO8t/heQxUry+
-         T0PqrWC9kOiss9r+kGTzNB2z5IJFAt/PldzCsqwSvxYzivAxrnwNtpxZNaeaj0+82dmv
-         uGBAO+JvNdn6SI/xfB5Zd9QY3FyAXBOdZIx2R2M47RNH/OaL4/bBOa7eaaPfiYCjjpWq
-         Hob4bVHEvTwZCP3+PkoobH8NM5uJEJvD4eDzobDO4QspUslLUtbdKa4Brr+Z0MMFmE4h
-         fB2w==
+        bh=pyAQwS4Co7I2R95ag+5lXrPe/9p6neLUf3n9lgyrkG0=;
+        b=kRknJsSQGtDUohS7hN3L95LW6SIb5DalNHHH0d5LSFjWcttO34k/TSUtL0SfKRRaIL
+         +adzzZ0P//8mfJ5hh7Lo8vss3XDPG9mh0MbXEluUFMMezkGfg00sb5ZqM4B+BzBbTKfT
+         LHeGZLAlYWA+YO9yBEIdiIEeaYa9QIp9AjT+NSTBaM8V+GpFhuQMghQ2k7mmVhTS4JxH
+         wKiDJYMXgzDASGPKAOmxSq/zDsxk6rhnu5b9wFZn9ACVOqWTj0agFa72tzERrDhIl/Qc
+         7LwsnYuOmJ5miF6Z48UyA9E55Ftc4dn73D1FotjYKNc2gLS0jdNS0EUHX91BN9CbKE8p
+         Gcig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=g7jlxchzUs1d/FAinzhFIBtXsEXm4/sR0Ksg9506XeU=;
-        b=k+VvZxHCqnuYtciZXdGuHuXm1RrkdSjXbm+mTycwx5uJr0BK5fcbFk7jw/uGp63Fr8
-         7QJYu9mZHtmvdlTx8+I9zbacqYr+bfLDPu7754U91Y74d2B03gHPMmX8gx+1XNJBsKWE
-         6SnBJfkRv1LvWhv5tm7gUfh6SNY/MJK5euombT6MHyeb3t6BGUQiKyd4zRG77e9vFmsz
-         7zp1B31YifW7co3/oiKhieXzNMZzM8cheJcyxFzrT32iv/0b+YcC06kfjvUz4bv4ChiO
-         ADWv6UNDHTAUPTHl2qWPm0DiCakUW1IsVOYdEw11SOGw7gpelQKeo9vQsAQnyp9qvUts
-         zSTg==
-X-Gm-Message-State: AOAM533UdHx6GNkeplPE4F7sEbQQ+riAFOToDS4rbFFke0dOceO3OES0
-        BXTybZDjHPAE4NRZ+Y0Bak/AxA==
-X-Google-Smtp-Source: ABdhPJw9L/9TB6Ptmk4hotjOfiKYRmPmEApH/Fplhyapd+mf1leuXaR7xRyhfGACderI/wunhOfXZg==
-X-Received: by 2002:a05:6638:50c:: with SMTP id i12mr742702jar.74.1606886622709;
-        Tue, 01 Dec 2020 21:23:42 -0800 (PST)
+        bh=pyAQwS4Co7I2R95ag+5lXrPe/9p6neLUf3n9lgyrkG0=;
+        b=lEX8onI5oX/3EH2wEKDsdG1PZCjKB/2DwgQBM4loKksAkzLiAVD1Qy/hprapJWfv61
+         E7GmB3YkU/i/RU1R9V+ssTm4UsYqo5Yj/XpGU1HHSmn3aqGPML1o2A+wF3bwBYL5n7S1
+         BhzXfjcBi2Ss1UlwB4MIZ39QICgFbg8cSJz6S320kwMPtp3Rs4kCDnid7dfxmpzY1aj9
+         04MwNG0SJYfqaMCyLI9casheg/bEtmkzMHFV2DJtUMLMOME0r7y7Lz6eESWnZwbIf9qS
+         Lrsv/7Qjo1kJYzjvmuS7t0KkVAxGL3NEr8/1MPBJhYV8h/jwDX4PSHywO6Auf/Q7sAlq
+         Fi+w==
+X-Gm-Message-State: AOAM532INJ3ozRrb0XeM2TJtqd39kFTklxeqy47Kil1TYsqSfepQ4/vW
+        htip7D7i6ByW5c5N3LlYiwLfzA==
+X-Google-Smtp-Source: ABdhPJz0k5IzB0S69VOwNzsfUHyaCVWqenfV/i20fxRSf01ht5jDP/pDg/VPs9BmYrKW9bm90bbjOQ==
+X-Received: by 2002:a92:850f:: with SMTP id f15mr991400ilh.286.1606886624807;
+        Tue, 01 Dec 2020 21:23:44 -0800 (PST)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id m19sm295938ila.81.2020.12.01.21.23.40
+        by smtp.gmail.com with ESMTPSA id m19sm295938ila.81.2020.12.01.21.23.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 21:23:42 -0800 (PST)
+        Tue, 01 Dec 2020 21:23:44 -0800 (PST)
 From:   Pavel Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
@@ -57,9 +57,9 @@ To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         mike.kravetz@oracle.com, rostedt@goodmis.org, mingo@redhat.com,
         jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
         willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com
-Subject: [PATCH 4/6] mm cma: rename PF_MEMALLOC_NOCMA to PF_MEMALLOC_NOMOVABLE
-Date:   Wed,  2 Dec 2020 00:23:28 -0500
-Message-Id: <20201202052330.474592-5-pasha.tatashin@soleen.com>
+Subject: [PATCH 5/6] mm: honor PF_MEMALLOC_NOMOVABLE for all allocations
+Date:   Wed,  2 Dec 2020 00:23:29 -0500
+Message-Id: <20201202052330.474592-6-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201202052330.474592-1-pasha.tatashin@soleen.com>
 References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
@@ -69,133 +69,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PF_MEMALLOC_NOCMA is used for longterm pinning and has an effect of
-clearing _GFP_MOVABLE or prohibiting allocations from ZONE_MOVABLE.
-
-We will prohibit allocating any pages that are getting
-longterm pinned from ZONE_MOVABLE, and we would want to unify and re-use
-this flag. So, rename it to generic PF_MEMALLOC_NOMOVABLE.
-Also re-name:
-memalloc_nocma_save()/memalloc_nocma_restore
-to
-memalloc_nomovable_save()/memalloc_nomovable_restore()
-and make the new functions common.
+PF_MEMALLOC_NOMOVABLE is only honored for CMA allocations, extend
+this flag to work for any allocations by removing __GFP_MOVABLE from
+gfp_mask when this flag is passed in the current context, thus
+prohibiting allocations from ZONE_MOVABLE.
 
 Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
 ---
- include/linux/sched.h    |  2 +-
- include/linux/sched/mm.h | 21 +++++----------------
- mm/gup.c                 |  4 ++--
- mm/hugetlb.c             |  4 ++--
- mm/page_alloc.c          |  4 ++--
- 5 files changed, 12 insertions(+), 23 deletions(-)
+ mm/hugetlb.c    |  2 +-
+ mm/page_alloc.c | 26 ++++++++++++++++----------
+ 2 files changed, 17 insertions(+), 11 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 76cd21fa5501..f1bf05f5f5fa 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1548,7 +1548,7 @@ extern struct pid *cad_pid;
- #define PF_SWAPWRITE		0x00800000	/* Allowed to write to swap */
- #define PF_NO_SETAFFINITY	0x04000000	/* Userland is not allowed to meddle with cpus_mask */
- #define PF_MCE_EARLY		0x08000000      /* Early kill for mce process policy */
--#define PF_MEMALLOC_NOCMA	0x10000000	/* All allocation request will have _GFP_MOVABLE cleared */
-+#define PF_MEMALLOC_NOMOVABLE	0x10000000	/* All allocation request will have _GFP_MOVABLE cleared */
- #define PF_FREEZER_SKIP		0x40000000	/* Freezer should not count it as freezable */
- #define PF_SUSPEND_TASK		0x80000000      /* This thread called freeze_processes() and should not be frozen */
- 
-diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-index d5ece7a9a403..5bb9a6b69479 100644
---- a/include/linux/sched/mm.h
-+++ b/include/linux/sched/mm.h
-@@ -254,29 +254,18 @@ static inline void memalloc_noreclaim_restore(unsigned int flags)
- 	current->flags = (current->flags & ~PF_MEMALLOC) | flags;
- }
- 
--#ifdef CONFIG_CMA
--static inline unsigned int memalloc_nocma_save(void)
-+static inline unsigned int memalloc_nomovable_save(void)
- {
--	unsigned int flags = current->flags & PF_MEMALLOC_NOCMA;
-+	unsigned int flags = current->flags & PF_MEMALLOC_NOMOVABLE;
- 
--	current->flags |= PF_MEMALLOC_NOCMA;
-+	current->flags |= PF_MEMALLOC_NOMOVABLE;
- 	return flags;
- }
- 
--static inline void memalloc_nocma_restore(unsigned int flags)
-+static inline void memalloc_nomovable_restore(unsigned int flags)
- {
--	current->flags = (current->flags & ~PF_MEMALLOC_NOCMA) | flags;
-+	current->flags = (current->flags & ~PF_MEMALLOC_NOMOVABLE) | flags;
- }
--#else
--static inline unsigned int memalloc_nocma_save(void)
--{
--	return 0;
--}
--
--static inline void memalloc_nocma_restore(unsigned int flags)
--{
--}
--#endif
- 
- #ifdef CONFIG_MEMCG
- DECLARE_PER_CPU(struct mem_cgroup *, int_active_memcg);
-diff --git a/mm/gup.c b/mm/gup.c
-index 0e2de888a8b0..724d8a65e1df 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1726,7 +1726,7 @@ static long __gup_longterm_locked(struct mm_struct *mm,
- 			if (!vmas_tmp)
- 				return -ENOMEM;
- 		}
--		flags = memalloc_nocma_save();
-+		flags = memalloc_nomovable_save();
- 	}
- 
- 	rc = __get_user_pages_locked(mm, start, nr_pages, pages,
-@@ -1749,7 +1749,7 @@ static long __gup_longterm_locked(struct mm_struct *mm,
- 		rc = check_and_migrate_cma_pages(mm, start, rc, pages,
- 						 vmas_tmp, gup_flags);
- out:
--		memalloc_nocma_restore(flags);
-+		memalloc_nomovable_restore(flags);
- 	}
- 
- 	if (vmas_tmp != vmas)
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 37f15c3c24dc..02213c74ed6b 100644
+index 02213c74ed6b..00e786201d8b 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -1033,10 +1033,10 @@ static void enqueue_huge_page(struct hstate *h, struct page *page)
- static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
- {
- 	struct page *page;
--	bool nocma = !!(current->flags & PF_MEMALLOC_NOCMA);
-+	bool nomovable = !!(current->flags & PF_MEMALLOC_NOMOVABLE);
+@@ -1036,7 +1036,7 @@ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
+ 	bool nomovable = !!(current->flags & PF_MEMALLOC_NOMOVABLE);
  
  	list_for_each_entry(page, &h->hugepage_freelists[nid], lru) {
--		if (nocma && is_migrate_cma_page(page))
-+		if (nomovable && is_migrate_cma_page(page))
+-		if (nomovable && is_migrate_cma_page(page))
++		if (nomovable && is_migrate_movable(get_pageblock_migratetype(page)))
  			continue;
  
  		if (PageHWPoison(page))
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index eaa227a479e4..611799c72da5 100644
+index 611799c72da5..7a6d86d0bc5f 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -3772,8 +3772,8 @@ static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
+@@ -3766,20 +3766,25 @@ alloc_flags_nofragment(struct zone *zone, gfp_t gfp_mask)
+ 	return alloc_flags;
+ }
+ 
+-static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
+-					unsigned int alloc_flags)
++static inline unsigned int cma_alloc_flags(gfp_t gfp_mask,
++					   unsigned int alloc_flags)
+ {
  #ifdef CONFIG_CMA
- 	unsigned int pflags = current->flags;
- 
--	if (!(pflags & PF_MEMALLOC_NOCMA) &&
--			gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
-+	if (!(pflags & PF_MEMALLOC_NOMOVABLE) &&
-+	    gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
+-	unsigned int pflags = current->flags;
+-
+-	if (!(pflags & PF_MEMALLOC_NOMOVABLE) &&
+-	    gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
++	if (gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
  		alloc_flags |= ALLOC_CMA;
- 
+-
  #endif
+ 	return alloc_flags;
+ }
+ 
++static inline gfp_t current_gfp_checkmovable(gfp_t gfp_mask)
++{
++	unsigned int pflags = current->flags;
++
++	if ((pflags & PF_MEMALLOC_NOMOVABLE))
++		return gfp_mask & ~__GFP_MOVABLE;
++	return gfp_mask;
++}
++
+ /*
+  * get_page_from_freelist goes through the zonelist trying to allocate
+  * a page.
+@@ -4423,7 +4428,7 @@ gfp_to_alloc_flags(gfp_t gfp_mask)
+ 	} else if (unlikely(rt_task(current)) && !in_interrupt())
+ 		alloc_flags |= ALLOC_HARDER;
+ 
+-	alloc_flags = current_alloc_flags(gfp_mask, alloc_flags);
++	alloc_flags = cma_alloc_flags(gfp_mask, alloc_flags);
+ 
+ 	return alloc_flags;
+ }
+@@ -4725,7 +4730,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+ 
+ 	reserve_flags = __gfp_pfmemalloc_flags(gfp_mask);
+ 	if (reserve_flags)
+-		alloc_flags = current_alloc_flags(gfp_mask, reserve_flags);
++		alloc_flags = cma_alloc_flags(gfp_mask, reserve_flags);
+ 
+ 	/*
+ 	 * Reset the nodemask and zonelist iterators if memory policies can be
+@@ -4894,7 +4899,7 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+ 	if (should_fail_alloc_page(gfp_mask, order))
+ 		return false;
+ 
+-	*alloc_flags = current_alloc_flags(gfp_mask, *alloc_flags);
++	*alloc_flags = cma_alloc_flags(gfp_mask, *alloc_flags);
+ 
+ 	/* Dirty zone balancing only done in the fast path */
+ 	ac->spread_dirty_pages = (gfp_mask & __GFP_WRITE);
+@@ -4932,6 +4937,7 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order, int preferred_nid,
+ 	}
+ 
+ 	gfp_mask &= gfp_allowed_mask;
++	gfp_mask = current_gfp_checkmovable(gfp_mask);
+ 	alloc_mask = gfp_mask;
+ 	if (!prepare_alloc_pages(gfp_mask, order, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
+ 		return NULL;
 -- 
 2.25.1
 
