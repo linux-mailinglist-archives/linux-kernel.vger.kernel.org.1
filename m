@@ -2,106 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946052CC86C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 725B82CC883
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388270AbgLBU4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:56:45 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:40232 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727737AbgLBU4p (ORCPT
+        id S2388636AbgLBU6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:58:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728577AbgLBU6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:56:45 -0500
-Date:   Wed, 02 Dec 2020 20:55:57 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1606942562;
-        bh=FLkifQjXxyu0aeM6OMx13zZXQzHi1EHZwqH+p8C5HPI=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=EQg8p9JMosMZx1q/xB8DGHRXAXIwzIecR+1PSI7WhZgo7cQjGCL6cXX+LndQHjIf1
-         ZwZlULhpXhC42Qw3RRUfAl8pRs7uO5ZGYJqE6lXwcKYgq51Fm4fl6rgtNq6OQbJkpW
-         D1FBCN5dtQT5wIX1OLTVJEf364tL/w9wcpdyofNU=
-To:     linux-kernel@vger.kernel.org
-From:   Lars Everbrand <lars.everbrand@protonmail.com>
-Cc:     Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Reply-To: Lars Everbrand <lars.everbrand@protonmail.com>
-Subject: [PATCH net-next] bonding: correct rr balancing during link failure
-Message-ID: <X8f/WKR6/j9k+vMz@black-debian>
+        Wed, 2 Dec 2020 15:58:47 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699C7C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 12:58:07 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id o9so2009010pfd.10
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:58:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kZoiJysIE6nklYevoiw7YQHmFZ3mb7vgfEQBLxTf4ro=;
+        b=LJXmnV5XM5jpdHywKUDKsGnhPXfxmIfvNsdjJvmQmhH8fjI24kw0L9S76iBLvPlJ8q
+         OIUdkKyokkp0ZkuurpO1Q9iRM3TBjAjxbxQ/CZaNBFlInQjxoBfwN3LZn2JJIXqLG4/9
+         miFhaby0srQHvhoFarNyVMkZSB8DlXMlRF+pc5i4KXMuTOCAqMzJuXT9TiO28JJYHnoa
+         r1FaOaNZnfBK3F5kH7UrJoR1H3I9MdJCS1XvtCvTjlrqJjhw/BcX7BCaM4GJj7webxOp
+         qIcfDyT/abVa/zuMkq/V+AiHIdfB/597L+VXblE+2ryiPg97iUrj6iGgn089EQyU1l46
+         Samw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kZoiJysIE6nklYevoiw7YQHmFZ3mb7vgfEQBLxTf4ro=;
+        b=sR5Mrfj2wsub7y+9FI6Ednd8dUoalfXC+gWdzJaWNVqSRVNXsiABDbrkiolOzD6a6E
+         YDKDv19j/zoj5Sjcm2m1FPbwhjQurlATp0LCKx1RE8K7mba7TI/gVNPo9A7iYjM7F7mi
+         QbDWN1c422O1PYE4YOb/0a0siZZ7riApPTaP1iPKygU1MjTOt0mpR8YwbF57IJGqvEVK
+         J58r6zplTbVer48ggiWa+laWURK5zW0SqyMdJ8VSOU/O9+qG/aZKfMn6UW4ImGVpVGbU
+         K7OCyI87UTCfAqmjM48QftHBE7Mup8VH4n3ZJfwVaxmbpag6hPcL206JWl8vD2i7+0i4
+         gmMQ==
+X-Gm-Message-State: AOAM531X3b2CHKIa9M7qPMDm8UN2IQNfx97BGoD/oHtjjAXkovnkDL39
+        dv79WUsWNyteh6pXh6zAaFnorR37yiPE26Rl
+X-Google-Smtp-Source: ABdhPJw0CHfYgivBLWvIxs8tSyC5V2/y4Gh3eDFW+qKjHQWEPfbgBUxn3Mqtm+JaTbSpM2WTj3O7Kg==
+X-Received: by 2002:a62:d11b:0:b029:18b:b3e:95aa with SMTP id z27-20020a62d11b0000b029018b0b3e95aamr3217pfg.3.1606942686814;
+        Wed, 02 Dec 2020 12:58:06 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:9004:6a1b:d60e:9bc5:1ecd:a6f8])
+        by smtp.gmail.com with ESMTPSA id b13sm17614pfo.15.2020.12.02.12.58.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 12:58:05 -0800 (PST)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com, Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH v3] checkpatch: add warning for lines starting with a '#' in commit log
+Date:   Thu,  3 Dec 2020 02:27:40 +0530
+Message-Id: <20201202205740.127986-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch updates the sending algorithm for roundrobin to avoid
-over-subscribing interface(s) when one or more interfaces in the bond is
-not able to send packets. This happened when order was not random and
-more than 2 interfaces were used.
+Commit log lines starting with '#' are dropped by git as comments.
+Add a check to emit a warning for these lines.
 
-Previously the algorithm would find the next available interface
-when an interface failed to send by, this means that most often it is
-current_interface + 1. The problem is that when the next packet is to be
-sent and the "normal" algorithm then continues with interface++ which
-then hits that same interface again.
+Also add a --fix option to insert a space before the leading '#' in
+such lines.
 
-This patch updates the resending algorithm to update the global counter
-of the next interface to use.
-
-Example (prior to patch):
-
-Consider 6 x 100 Mbit/s interfaces in a rr bond. The normal order of links
-being used to send would look like:
-1 2 3 4 5 6  1 2 3 4 5 6  1 2 3 4 5 6 ...
-
-If, for instance, interface 2 where unable to send the order would have bee=
-n:
-1 3 3 4 5 6  1 3 3 4 5 6  1 3 3 4 5 6 ...
-
-The resulting speed (for TCP) would then become:
-50 + 0 + 100 + 50 + 50 + 50 =3D 300 Mbit/s
-instead of the expected 500 Mbit/s.
-
-If interface 3 also would fail the resulting speed would be half of the
-expected 400 Mbit/s (33 + 0 + 0 + 100 + 33 + 33).
-
-Signed-off-by: Lars Everbrand <lars.everbrand@protonmail.com>
+Suggested-by: Joe Perches <joe@perches.com>
+Suggested-by: Peilin Ye <yepeilin.cs@gmail.com>
+Tested-by: Peilin Ye <yepeilin.cs@gmail.com>
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 ---
- drivers/net/bonding/bond_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+Changes in v3:
+- Modify commit message for more clarity
+- Modify warning message
+- Modify --fix option to substitute single space instead of tab
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_mai=
-n.c
-index e0880a3840d7..e02d9c6d40ee 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -4107,6 +4107,7 @@ static struct slave *bond_get_slave_by_id(struct bond=
-ing *bond,
- =09=09if (--i < 0) {
- =09=09=09if (bond_slave_can_tx(slave))
- =09=09=09=09return slave;
-+=09=09=09bond->rr_tx_counter++;
- =09=09}
- =09}
-=20
-@@ -4117,6 +4118,7 @@ static struct slave *bond_get_slave_by_id(struct bond=
-ing *bond,
- =09=09=09break;
- =09=09if (bond_slave_can_tx(slave))
- =09=09=09return slave;
-+=09=09bond->rr_tx_counter++;
- =09}
- =09/* no slave that can tx has been found */
- =09return NULL;
---=20
-2.29.2
+Changes in v2:
+- Modify warning message and type
+- Style fixes
 
+ scripts/checkpatch.pl | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index e8c1ed0b1fad..7940889877ba 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2966,6 +2966,15 @@ sub process {
+ 			$commit_log_possible_stack_dump = 0;
+ 		}
+ 
++# Check for lines starting with a #
++		if ($in_commit_log && $line =~ /^#/) {
++			if (WARN("COMMIT_COMMENT_SYMBOL",
++				 "Commit log lines starting with '#' are dropped by git as comments\n" . $herecurr) &&
++			    $fix) {
++				$fixed[$fixlinenr] =~ s/^/ /;
++			}
++		}
++
+ # Check for git id commit length and improperly formed commit descriptions
+ 		if ($in_commit_log && !$commit_log_possible_stack_dump &&
+ 		    $line !~ /^\s*(?:Link|Patchwork|http|https|BugLink|base-commit):/i &&
+-- 
+2.27.0
 
