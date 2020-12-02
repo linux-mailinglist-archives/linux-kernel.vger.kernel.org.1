@@ -2,100 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EDE2CBADB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 603EF2CBADE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729474AbgLBKod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:44:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
+        id S2388733AbgLBKoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:44:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLBKob (ORCPT
+        with ESMTP id S1729500AbgLBKoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:44:31 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BECDC0613CF;
-        Wed,  2 Dec 2020 02:43:51 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id r127so1158279yba.10;
-        Wed, 02 Dec 2020 02:43:51 -0800 (PST)
+        Wed, 2 Dec 2020 05:44:46 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07CFC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 02:43:59 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id j21so1190369otp.8
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 02:43:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9DFjZAdrwyZk2YQ7OkLyRHwrSQpCncG9hZ9zBWhHgDs=;
-        b=QIAwqiQ3gUySWZAon+96z2Ae9kQK44KBS3BjTABbfgEKg/sDjKNpA6BZKS6Ps1WjA9
-         KQsZJ4nFJo7+1yhSL2zBmjWLVE/QF87ObQCKkj6XXKLuXn37YeKfgyL0nIJ66nsmEqlm
-         HgFqjYKCDA/RWTgjnvckXczJGJVmPWSBLtItAsaOyw7mUyKOHD4DbuKzzr7kL1xyOyYx
-         maaB430hfG+3FClPEQ/xI6UGw9YzRdcFL3HQrrItcmP/PSlv++yKqIQ5ZaCPJnR9HjVs
-         UUuSywkxsAZ0OoA+sf13P9ie45F45Z6Q8vrMD+dAxfGmOiV8nDkM485Gy4PwPtryW1zb
-         rmbw==
+         :cc:content-transfer-encoding;
+        bh=9QLz5An3VwdrOS0On7n3zMhkM8iyrpXF4RrWtNNC2nQ=;
+        b=YeNFvvcrLu+QyOFwERkqOiZyxAu2OSzJFeqVq2zqgsVJI47I/YyPZ3MGa48MADUGMw
+         pU+0JUmXzMov/8DZCYY74Fuiu2JslaSSghEEYDihOK9IibYSVPbOPheHtRbMZawrlINy
+         xaAB1LF3O3VGiRg5K09+3+E5OpeWlZ7kuTME7gcteIJ3SWPxb9RFui2xA3sg1+IZLmLw
+         kta68kLjb+GNiJYBufU6WR7RVCXeveim0cNGaX5RZ5c4az4p8HDsxyDU9c0nejvRXKa2
+         7hCq+/qA/63czc+7JxkICCvE3DRiNroliAh+GCR+I1A0qL48PNMs4AOy3rgzqiRBah1A
+         yf1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9DFjZAdrwyZk2YQ7OkLyRHwrSQpCncG9hZ9zBWhHgDs=;
-        b=PbWNldiYMk6OHQ1QxNI8sibRgzHyGgH08vfs9OVpDdPTi6YKhTilfI8g9xb8+iCDQu
-         gXUTC1ZCFikuyxkt52l4r+MiWvPkTMogGctc8GWenL0qiKtxICeYsAUYABlAbwflWpKd
-         CXWimPZcToeSvelyxKM8JKN8piWFC+1L7BYS5yV3xY2FujSmBRG4lbK6vZ3NrIn2jNNO
-         oElpfjRAv24OsZBNMm5dwAq/pLIZljcyvv7T+WluBqr0xkzdIS7YB3824gxYnvrNgBaq
-         Poqs547rWwbjtcq6YaerBdA5Ho5VHDyeNA5x2pVXM7xHIZWkJBqXZBSqc59DDAHQixXF
-         oAiA==
-X-Gm-Message-State: AOAM532jy6XRxlRyKHwSj3dB2VeHEl4Jd94WKyqkiL32SW/DM7g4btER
-        jclY75r42pOXiGUQ5cAfRD+70ANJOI1QlrXyL0J8JGg7FzUIMD5PByU=
-X-Google-Smtp-Source: ABdhPJz8v6Ej1xn7oEpvOSGtJ0kNYG3CoGEc8UoAwv1aFk2K7PXt92btzvd9mqyFZfcZkr9mx0yrlLEw6aVO3eOXjpk=
-X-Received: by 2002:a5b:149:: with SMTP id c9mr2369419ybp.3.1606905830376;
- Wed, 02 Dec 2020 02:43:50 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9QLz5An3VwdrOS0On7n3zMhkM8iyrpXF4RrWtNNC2nQ=;
+        b=n+abe6L2K5gQyErOYAW+VVk31gi8Ks7tRnD3RXwHZ9dWi8Zp1/urzHWZp+zNPUbJxM
+         ybUrsRU17nAXAvWf7GS8QYMwpww5NmjZHQ6efnuRVSUc+r7Nr4I7PuhtIjck+IyNZICO
+         B+YBFMZNeNtCt9CPFY3LBTUR+MLQVKrXM4MqkSyPCqCF+iIANSItKc9StmnIKVVc6nsa
+         p9nh/U2CAZxersuZDD/vaI1UDUAWZMUK6LjuFfZu+Z+d2eeZQjKjqVVDj2i5sFxbhjDn
+         oR0SGY/BaLBeVD7K/4S+q6FlX2X2id1wjdtL/wIsxm1F2Zy/FZxcMzfGYMfXz8cJz+Kt
+         nOxQ==
+X-Gm-Message-State: AOAM532sJBuj0xJznLCqTZswaIH/JeTlLNMyU3wnZZAWFyakAipLpyJA
+        Js/PLu97mDslYw61aul5IW4sSDe/+KWZg+JRQ7bL8pGqwPFsY5IZ
+X-Google-Smtp-Source: ABdhPJwxL1OzJVnVfNZmSBpClLDif2edIi+wqSZRxCHBo0D5BEuuofkUgl4ThazR8DxEm7tRDU1T581F4Yni8XBqOHc=
+X-Received: by 2002:a9d:6f0a:: with SMTP id n10mr1376770otq.268.1606905839217;
+ Wed, 02 Dec 2020 02:43:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20201027204226.26906-1-pboris@amazon.com> <CAHhKpQ7v_nPwBx2czk7rVXK3ZrmsZrAkcxDFOgq0ABTOVc7iSA@mail.gmail.com>
-In-Reply-To: <CAHhKpQ7v_nPwBx2czk7rVXK3ZrmsZrAkcxDFOgq0ABTOVc7iSA@mail.gmail.com>
-From:   Shyam Prasad N <nspmangalore@gmail.com>
-Date:   Wed, 2 Dec 2020 16:13:39 +0530
-Message-ID: <CANT5p=q2YvkEOEa4bS=-nbPOc9Xwa=4gnc09csCcszMmMjYSPg@mail.gmail.com>
-Subject: Re: [PATCH] Add support for getting and setting SACLs
-To:     Boris Protopopov <boris.v.protopopov@gmail.com>
-Cc:     Boris Protopopov <pboris@amazon.com>,
-        Steve French <sfrench@samba.org>,
-        linux-cifs <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20201202071057.4877-1-andrey.zhizhikin@leica-geosystems.com>
+ <CAHUa44HuNPmWufnxzqGLrwJqLxTkjCivYGaHvukEkk6nOd1r3g@mail.gmail.com> <AM6PR06MB4691764C8ABBF608837557D7A6F30@AM6PR06MB4691.eurprd06.prod.outlook.com>
+In-Reply-To: <AM6PR06MB4691764C8ABBF608837557D7A6F30@AM6PR06MB4691.eurprd06.prod.outlook.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Wed, 2 Dec 2020 11:43:48 +0100
+Message-ID: <CAHUa44GLP0JZPnX9Z1b6rNkzMttBWRvOo7QLuySmAmqCQFvpdg@mail.gmail.com>
+Subject: Re: [PATCH] optee: extend normal memory check to also write-through
+To:     ZHIZHIKIN Andrey <andrey.zhizhikin@leica-geosystems.com>
+Cc:     "op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boris,
-
-At a high level, the changes look good to me. Will go through the
-changes in more detail tomorrow morning.
-
-On a related note, we may need more test coverage in this area.
-Can you please share your testing output against your changes?
-Or even better, if you can contribute some xfstests for this use case:
-https://wiki.samba.org/index.php/Xfstesting-cifs
-
-Regards,
-Shyam
-
-On Wed, Dec 2, 2020 at 12:24 AM Boris Protopopov
-<boris.v.protopopov@gmail.com> wrote:
+On Wed, Dec 2, 2020 at 10:41 AM ZHIZHIKIN Andrey
+<andrey.zhizhikin@leica-geosystems.com> wrote:
 >
-> Hello,
-> I am checking in to see if anyone had a chance to take a look at this
-> patch. I would appreciate any feedback.
-> Thanks!
+> Hello Jens,
 >
-> On Tue, Oct 27, 2020 at 5:01 PM Boris Protopopov via samba-technical
-> <samba-technical@lists.samba.org> wrote:
+> > -----Original Message-----
+> > From: Jens Wiklander <jens.wiklander@linaro.org>
+> > Sent: Wednesday, December 2, 2020 9:07 AM
+> > To: ZHIZHIKIN Andrey <andrey.zhizhikin@leica-geosystems.com>
+> > Cc: op-tee@lists.trustedfirmware.org; Linux Kernel Mailing List <linux-
+> > kernel@vger.kernel.org>; stable@vger.kernel.org
+> > Subject: Re: [PATCH] optee: extend normal memory check to also write-th=
+rough
 > >
-> > Add SYSTEM_SECURITY access flag and use with smb2 when opening
-> > files for getting/setting SACLs. Add "system.cifs_ntsd_full"
-> > extended attribute to allow user-space access to the functionality.
-> > Avoid multiple server calls when setting owner, DACL, and SACL.
+> > This email is not from Hexagon=E2=80=99s Office 365 instance. Please be=
+ careful while
+> > clicking links, opening attachments, or replying to this email.
 > >
-> > Signed-off-by: Boris Protopopov <pboris@amazon.com>
-> > ---
-> ...
+> >
+> > Hi Andrey,
+> >
+> > On Wed, Dec 2, 2020 at 8:11 AM Andrey Zhizhikin <andrey.zhizhikin@leica=
+-
+> > geosystems.com> wrote:
+> > >
+> > > ARMv7 Architecture Reference Manual [1] section A3.5.5 details Normal
+> > > memory type, together with cacheability attributes that could be
+> > > applied to memory regions defined as "Normal memory".
+> > >
+> > > Section B2.1.2 of the Architecture Reference Manual [1] also provides
+> > > details regarding the Memory attributes that could be assigned to
+> > > particular memory regions, which includes the descrption of
+> > > cacheability attributes and cache allocation hints.
+> > >
+> > > Memory type and cacheability attributes forms 2 separate definitions,
+> > > where cacheability attributes defines a mechanism of coherency contro=
+l
+> > > rather than the type of memory itself.
+> > >
+> > > In other words: Normal memory type can be configured with several
+> > > combination of cacheability attributes, namely:
+> > > - Write-Through (WT)
+> > > - Write-Back (WB) followed by cache allocation hint:
+> > >   - Write-Allocate
+> > >   - No Write-Allocate (also known as Read-Allocate)
+> > >
+> > > Those types are mapped in the kernel to corresponding macros:
+> > > - Write-Through: L_PTE_MT_WRITETHROUGH
+> > > - Write-Back Write-Allocate: L_PTE_MT_WRITEALLOC
+> > > - Write-Back Read-Allocate: L_PTE_MT_WRITEBACK
+> > >
+> > > Current implementation of the op-tee driver takes in account only 2
+> > > last memory region types, while performing a check if the memory bloc=
+k
+> > > is allocated as "Normal memory", leaving Write-Through allocations to
+> > > be not considered.
+> > >
+> > > Extend verification mechanism to include also Normal memory regios,
+> > > which are designated with Write-Through cacheability attributes.
+> >
+> > Are you trying to fix a real error with this or are you just trying to =
+cover all cases? I
+> > suspect the latter since you'd likely have coherency problems with OP-T=
+EE in
+> > Secure world if you used Write-Through instead.
+>
+> Yes, this aims to provide consistency in detection which memory blocks ca=
+n be identified
+> as Normal memory in ARMv7 architecture.
 
+I think you're missing the purpose of this internal function. It's
+there to check that the memory is mapped in a way compatible with what
+OP-TEE is using in Secure world.
 
+>
+> WT coherency control and (especially) observability behavior is described=
+ in section A3.5.5 of the
+> ARMv7 RefMan, where it is stated that write operations performed on WT me=
+mory locations
+> are guaranteed to be visible to all observers inside and outside of cache=
+ level.
+>
+> As the Write-Through (WT) provides a better coherency control, it does ma=
+ke sense to include it
+> into the verification performed by is_normal_memory() in order to provide=
+ a possibility for
+> future implementations to mitigate issues and select appropriate cache al=
+location attributes
+> for memory blocks used.
+>
+> > Correct me if I'm wrong, but "Write-Back Write-Allocate" and "Write-Bac=
+k Read-Allocate"
+> > are both compatible with each other as the "Allocate" part is just a hi=
+nt.
+>
+> Correct, "Allocate" just designates the cache allocation hint. "Write-Bac=
+k Read-Allocate" should
+> actually be read as "Write-Back no Write-Allocate", with " Write-Allocate=
+" being a hint. But since
+> this is controlled by a TEX[0] - this hint is handled separately by L_PTE=
+_MT_WRITEBACK and
+> L_PTE_MT_WRITEALLOC macros.
 
--- 
--Shyam
+B3.11.3 in the spec requires cache maintenance when changing from
+Write-Back to Write-Through and vice versa, and we can't do that in
+this design.
+
+Cheers,
+Jens
+
+>
+> >
+> > Cheers,
+> > Jens
+> >
+> > >
+> > > Link: [1]:
+> > > https://eur02.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fd=
+eve
+> > >
+> > loper.arm.com%2Fdocumentation%2Fddi0406%2Fcd&amp;data=3D04%7C01%7C%7
+> > Ca40
+> > >
+> > ffd35912f4fe3d97308d896993b87%7C1b16ab3eb8f64fe39f3e2db7fe549f6a%7C0%
+> > 7
+> > >
+> > C1%7C637424932169074654%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAw
+> > MDAiLC
+> > >
+> > JQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=3Dc0jK2gT
+> > m
+> > > qrAyo0%2Ffr07t%2Fg5NbPdm4dh7Rl7alNWlaQc%3D&amp;reserved=3D0
+> > > Fixes: 853735e40424 ("optee: add writeback to valid memory type")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Andrey Zhizhikin
+> > > <andrey.zhizhikin@leica-geosystems.com>
+> > > ---
+> > >  drivers/tee/optee/call.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c inde=
+x
+> > > c981757ba0d4..8da27d02a2d6 100644
+> > > --- a/drivers/tee/optee/call.c
+> > > +++ b/drivers/tee/optee/call.c
+> > > @@ -535,7 +535,8 @@ static bool is_normal_memory(pgprot_t p)  {  #if
+> > > defined(CONFIG_ARM)
+> > >         return (((pgprot_val(p) & L_PTE_MT_MASK) =3D=3D L_PTE_MT_WRIT=
+EALLOC)
+> > ||
+> > > -               ((pgprot_val(p) & L_PTE_MT_MASK) =3D=3D L_PTE_MT_WRIT=
+EBACK));
+> > > +               ((pgprot_val(p) & L_PTE_MT_MASK) =3D=3D L_PTE_MT_WRIT=
+EBACK) ||
+> > > +               ((pgprot_val(p) & L_PTE_MT_MASK) =3D=3D
+> > > + L_PTE_MT_WRITETHROUGH));
+> > >  #elif defined(CONFIG_ARM64)
+> > >         return (pgprot_val(p) & PTE_ATTRINDX_MASK) =3D=3D
+> > > PTE_ATTRINDX(MT_NORMAL);  #else
+> > > --
+> > > 2.17.1
+> > >
+>
+> Regards,
+> Andrey
