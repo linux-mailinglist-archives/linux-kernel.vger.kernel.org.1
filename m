@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA982CB513
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 07:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5779C2CB522
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 07:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728696AbgLBGdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 01:33:32 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:33715 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727529AbgLBGdc (ORCPT
+        id S2387540AbgLBGjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 01:39:14 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:31424 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387462AbgLBGjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 01:33:32 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0B26WZ4s8026289, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0B26WZ4s8026289
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 2 Dec 2020 14:32:35 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.36) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Wed, 2 Dec 2020 14:32:35 +0800
-Received: from localhost (172.22.88.222) by RTEXMBS01.realtek.com.tw
- (172.21.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 2 Dec 2020
- 14:32:34 +0800
-From:   <ricky_wu@realtek.com>
-To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
-        <bhelgaas@google.com>, <ricky_wu@realtek.com>,
-        <vaibhavgupta40@gmail.com>, <kdlnx@doth.eu>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/4] misc: rtsx: modify and fix init_hw function
-Date:   Wed, 2 Dec 2020 14:32:28 +0800
-Message-ID: <20201202063228.18319-1-ricky_wu@realtek.com>
+        Wed, 2 Dec 2020 01:39:13 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 0B26XlZL062294;
+        Wed, 2 Dec 2020 14:33:47 +0800 (GMT-8)
+        (envelope-from troy_lee@aspeedtech.com)
+Received: from TroyLee-PC.localdomain (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 2 Dec
+ 2020 14:36:15 +0800
+From:   Troy Lee <troy_lee@aspeedtech.com>
+To:     Stefan Schaeckeler <sschaeck@cisco.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "Borislav Petkov" <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rrichter@marvell.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>
+CC:     <leetroy@gmail.com>, <troy_lee@aspeedtech.com>,
+        <ryan_chen@aspeedtech.com>
+Subject: [PATCH v2 1/3] dt-bindings: edac: aspeed-sdram-edac: Add ast2400/ast2600 support
+Date:   Wed, 2 Dec 2020 14:36:09 +0800
+Message-ID: <20201202063612.21241-1-troy_lee@aspeedtech.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [172.22.88.222]
-X-ClientProxiedBy: RTEXH365.realtek.com.tw (172.21.6.37) To
- RTEXMBS01.realtek.com.tw (172.21.6.36)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 0B26XlZL062294
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricky Wu <ricky_wu@realtek.com>
+Adding Aspeed AST2400 and AST2600 binding for edac driver.
 
-changed rtsx_pci_disable_aspm() to rtsx_disable_aspm()
-do not access ASPM configuration directly
-
-changed pcie_capability_write_word() to _clear_and_set_word()
-make sure only change PCI_EXP_LNKCTL bit8
-
-make sure ASPM disable after extra_init_hw()
-
-Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
 ---
- drivers/misc/cardreader/rtsx_pcr.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ .../devicetree/bindings/edac/aspeed-sdram-edac.txt       | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
-index c87f791bdcb5..3612063cab09 100644
---- a/drivers/misc/cardreader/rtsx_pcr.c
-+++ b/drivers/misc/cardreader/rtsx_pcr.c
-@@ -1289,7 +1289,7 @@ static int rtsx_pci_init_hw(struct rtsx_pcr *pcr)
- 	/* Wait SSC power stable */
- 	udelay(200);
+diff --git a/Documentation/devicetree/bindings/edac/aspeed-sdram-edac.txt b/Documentation/devicetree/bindings/edac/aspeed-sdram-edac.txt
+index 6a0f3d90d682..8ca9e0a049d8 100644
+--- a/Documentation/devicetree/bindings/edac/aspeed-sdram-edac.txt
++++ b/Documentation/devicetree/bindings/edac/aspeed-sdram-edac.txt
+@@ -1,6 +1,6 @@
+-Aspeed AST2500 SoC EDAC node
++Aspeed BMC SoC EDAC node
  
--	rtsx_pci_disable_aspm(pcr);
-+	rtsx_disable_aspm(pcr);
- 	if (pcr->ops->optimize_phy) {
- 		err = pcr->ops->optimize_phy(pcr);
- 		if (err < 0)
-@@ -1363,8 +1363,8 @@ static int rtsx_pci_init_hw(struct rtsx_pcr *pcr)
- 	rtsx_pci_init_ocp(pcr);
+-The Aspeed AST2500 SoC supports DDR3 and DDR4 memory with and without ECC (error
++The Aspeed BMC SoC supports DDR3 and DDR4 memory with and without ECC (error
+ correction check).
  
- 	/* Enable clk_request_n to enable clock power management */
--	pcie_capability_write_word(pdev, PCI_EXP_LNKCTL,
--				   PCI_EXP_LNKCTL_CLKREQ_EN);
-+	pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL,
-+					0, PCI_EXP_LNKCTL_CLKREQ_EN);
- 	/* Enter L1 when host tx idle */
- 	pci_write_config_byte(pdev, 0x70F, 0x5B);
+ The memory controller supports SECDED (single bit error correction, double bit
+@@ -11,7 +11,10 @@ Note, the bootloader must configure ECC mode in the memory controller.
  
-@@ -1374,6 +1374,8 @@ static int rtsx_pci_init_hw(struct rtsx_pcr *pcr)
- 			return err;
- 	}
  
-+	rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, 0x30, 0x30);
-+
- 	/* No CD interrupt if probing driver with card inserted.
- 	 * So we need to initialize pcr->card_exist here.
- 	 */
+ Required properties:
+-- compatible: should be "aspeed,ast2500-sdram-edac"
++- compatible: should be one of
++	- "aspeed,ast2400-sdram-edac"
++	- "aspeed,ast2500-sdram-edac"
++	- "aspeed,ast2600-sdram-edac"
+ - reg:        sdram controller register set should be <0x1e6e0000 0x174>
+ - interrupts: should be AVIC interrupt #0
+ 
 -- 
 2.17.1
 
