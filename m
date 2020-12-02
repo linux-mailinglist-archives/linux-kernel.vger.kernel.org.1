@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04C02CC51A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 970022CC533
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389445AbgLBS2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:28:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389417AbgLBS2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:28:43 -0500
-Date:   Wed, 2 Dec 2020 19:29:12 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606933683;
-        bh=djKBr+k0zdd49EoaBtuwC9mnSXlOnntgTk2YtxofPnA=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sfKJqIepmWOa5OQrWeeLXZP5O/ZoS1Cz6wChtaIuU/2imkxtJFCks85r7itCdid/F
-         1oXizAEPQzV+Zgv/jsECUJ24Ap6feEWxTgH5PbbY/J4yb7chedwGik8YP3cog/q7wi
-         rB1QQgHRlKrvQyShKYwHsXj2atmS3TZLbe273BfY=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Fox Chen <foxhlchen@gmail.com>
-Cc:     tj@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] kernfs: speed up concurrency performance
-Message-ID: <X8fc+LYtRkPa6ZGg@kroah.com>
-References: <20201202145837.48040-1-foxhlchen@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202145837.48040-1-foxhlchen@gmail.com>
+        id S2387835AbgLBSbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:31:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgLBSbn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 13:31:43 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8423FC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:30:57 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id x24so1782607pfn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:30:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=dhu0y36YrMVMaqCIBmDd4/g2nz0PBTxsfK5aIIP2g1A=;
+        b=VtPTQMR4jtXGflrx3/rVw/rmlMSkFDj4rjwbT6YMTGzrW7pCU2q4OI7w/xrwqe+RQx
+         DKjcdYwi6VHJwWPtd9imSRe3lBgkrIMcUcQ2QADBVJ31NrOkpiZCZITF/0aFOsJwo7CJ
+         uGHSNbB6ReRY4qsqcfBgXknpaJe+IA/K767VioWXHBUESkEUHqiB/zzRQcq70eFk5+Cc
+         Xop2y5Fq4geLedJWZ/lmiMdHS7fcW0fYhAoDdv4S0XKmyYhcQP8WBLUpiVSfbF5VFcg+
+         1AwuVXdz/AGNDQW55vOQkaNRQzc5lBo1tWx6VPRfznux6FpNwmHF56aIixADB5Rfx6zP
+         kGsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=dhu0y36YrMVMaqCIBmDd4/g2nz0PBTxsfK5aIIP2g1A=;
+        b=XcpDxwtoElE/PIf/XWYRCrzT2kQsUAbUBmuZYm3+94g176Drlecp4JMPZfcQElRRTT
+         WPPnUOP5zLOl8G3WX0Qq2fUE3s3Lm6KvQ5Wc2+vsoN//LRK8jBzingpJ/WjC1SrAlAhD
+         8EGmyxtV2ujwg697w50veL8gWXM8OxuNyeSfmkH/Ry+9WrugI9ElR6Qd2IItJLu/+vxg
+         FzvMneJarYG2WfmzKUe3yjB9KCr4psqp6A9RZ7gBpP3fLT3r+yT+GLbS9M4VF61OXLZv
+         ZkqV4FX9B6U30Xy/MzQXwgAIN0Sy+MvHBpF5BxDEAO7K44LhoS0ieuUrG6OsCsJmTYvn
+         GgVA==
+X-Gm-Message-State: AOAM533fbGizqHww4KoyzDqPBX8fq9fRR85gcRPSu3M7Oq+A4+w5ohbY
+        w1PuGASRiu3WC1PHqehEDqI=
+X-Google-Smtp-Source: ABdhPJxyuChm6ZlTgOgmUuuyWGzkTc4HRQKmNPb6bwVEDKEX6dVavLARWsOHOWBkyAUZQyAZLb0m0A==
+X-Received: by 2002:a63:f60e:: with SMTP id m14mr1076364pgh.148.1606933856979;
+        Wed, 02 Dec 2020 10:30:56 -0800 (PST)
+Received: from localhost.localdomain ([2409:4063:4e14:4867:9984:8aed:2f75:bf22])
+        by smtp.googlemail.com with ESMTPSA id s17sm429716pge.37.2020.12.02.10.30.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 10:30:56 -0800 (PST)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     joe@perches.com
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH -mmots] checkpatch: add fix for non-standard signature - co-authored-by
+Date:   Thu,  3 Dec 2020 00:00:45 +0530
+Message-Id: <20201202183045.9309-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <280235acc0e91365f3fd3b5be5a5244eced1ff61.camel@perches.com>
+References: <280235acc0e91365f3fd3b5be5a5244eced1ff61.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 10:58:35PM +0800, Fox Chen wrote:
-> Hello,
-> 
-> kernfs is an important facillity to support pseudo file systems and cgroup. 
-> Currently, with a global mutex, reading files concurrently from kernfs (e.g. /sys) 
-> is very slow.
-> 
-> This problem is reported by Brice Goglin on thread:
-> Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
-> https://lore.kernel.org/lkml/X60dvJoT4fURcnsF@kroah.com/
-> 
-> I independently comfirmed this on a 96-core AWS c5.metal server.
-> Do open+read+write on /sys/devices/system/cpu/cpu15/topology/core_id 1000 times.
-> With a single thread it takes ~2.5 us for each open+read+close.
-> With one thread per core, 96 threads running simultaneously takes 540 us 
-> for each of the same operation (without much variation) -- 200x slower than the 
-> single thread one. 
-> 
-> The problem can only be observed in large machines (>=16 cores).
-> The more cores you have the slower it can be.
-> 
-> Perf shows that CPUs spend most of the time (>80%) waiting on mutex locks in 
-> kernfs_iop_permission and kernfs_dop_revalidate.
-> 
-> This patchset contains the following 2 patches:
-> 0001-kernfs-replace-the-mutex-in-kernfs_iop_permission-wi.patch
-> 0002-kernfs-remove-mutex-in-kernfs_dop_revalidate.patch
-> 
-> 0001 replace the mutex lock in kernfs_iop_permission with a new rwlock and 
-> 0002 removes the mutex lock in kernfs_dop_revalidate.
-> 
-> After applying this patchset, the multi-thread performance becomes linear with 
-> the fastest one at ~30 us to the worst at ~150 us, very similar as I tested it
-> on a normal ext4 file system with fastest one at ~20 us to slowest at ~100 us. 
-> And I believe that is largely due to spin_locks in filesystems which are normal.
-> 
-> Although it's still slower than single thread, users can benefit from this 
-> patchset, especially ones working on HPC realm with lots of cpu cores and want to
-> fetch system information from sysfs.
+Currently, checkpatch.pl warns us for BAD_SIGN_OFF on the usage of
+non-standard signatures.
 
-Does this mean that the changes slow down the single-threaded case?  Or
-that it's just not as good as the speed of a single-threaded access?
+An evaluation on v4.13..v5.8 showed that out of 539 warnings due to
+non-standard signatures, 43 are due to the use of 'Co-authored-by'
+tag, which may seem correct, but is not standard.
 
-But anyway, thanks so much for looking into this, it should help the
-crazy systems out today, which means the normal systems in 5 years will
-really appreciate this :)
+The standard signature equivalent for 'Co-authored-by' is
+'Co-developed-by'.
 
-Some minor comments on the individual patches follow...
+Provide a fix by suggesting users with this signature alternative and
+replacing.
 
-thanks,
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+ scripts/checkpatch.pl | 3 +++
+ 1 file changed, 3 insertions(+)
 
-greg k-h
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 4a026926139f..fc036d545d2d 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2832,6 +2832,9 @@ sub process {
+ 
+ 			if ($sign_off !~ /$signature_tags/) {
+ 				my $suggested_signature = find_standard_signature($sign_off);
++				if ($sign_off =~ /co-authored-by:/i) {
++					$suggested_signature = "Co-developed-by:";
++				}
+ 				if ($suggested_signature eq "") {
+ 					WARN("BAD_SIGN_OFF",
+ 					     "Non-standard signature: $sign_off\n" . $herecurr);
+-- 
+2.17.1
+
