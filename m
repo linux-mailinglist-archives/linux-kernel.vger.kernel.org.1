@@ -2,112 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769062CC2C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6A62CC2C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730749AbgLBQvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:51:05 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38374 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726332AbgLBQvE (ORCPT
+        id S1730752AbgLBQva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:51:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727227AbgLBQv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:51:04 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2GcWwK151236;
-        Wed, 2 Dec 2020 11:50:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Ph0Nno5q9gyWL84r6/HiHu41Ox5RJpXG079ODYE8+7A=;
- b=hq2J4j8qaIAfDbw6mfLR7sG+yNKHbRzxLaEpsrEfxZ7IJlx1U/VKmhmyU36/vhmsm5Dx
- fs8gYeVCzuJFjSYkR0FTJGim62TPgh3c6I8Z6koAuFdR97q05SEzlgkAP73XABMrc4Do
- sxi0KbKeKXev9R6EBlAll0eKjIKPkhGy4v1Ityf1lLuVHAY9cjW2nHpzfUEYlKwWaPiQ
- fI7M+mabQeCc++pfBJnVHVb+o+Iie6ISYGLH3u+UUOlSzAULKyLBifF6Izey/mcWKYKH
- QeyzIknT7qwOpRJSSof4vhoWVSZ2v4QDbGacVCK3jpXqrgSgDOeW244wFpjzMtJA3q66 KA== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 356741gdqb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 11:50:18 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2GlcTW019458;
-        Wed, 2 Dec 2020 16:50:15 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06fra.de.ibm.com with ESMTP id 353dtha9rk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 16:50:15 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2GoDBv8454798
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Dec 2020 16:50:13 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 39F6942045;
-        Wed,  2 Dec 2020 16:50:13 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ADE624203F;
-        Wed,  2 Dec 2020 16:50:12 +0000 (GMT)
-Received: from [9.145.10.111] (unknown [9.145.10.111])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Dec 2020 16:50:12 +0000 (GMT)
-Subject: Re: [PATCH] net: 8021q: use netdev_info() instead of pr_info()
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org
-References: <20201202124515.24110-1-info@metux.net>
-From:   Julian Wiedmann <jwi@linux.ibm.com>
-Message-ID: <8e0a5d86-6293-d4f1-0669-a9077f863da9@linux.ibm.com>
-Date:   Wed, 2 Dec 2020 18:50:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Wed, 2 Dec 2020 11:51:29 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA54C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:50:49 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id q3so1433870pgr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:50:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=feImpssPWUbfU8stpcwf/DzW88O+SodsSpT27Ehwdio=;
+        b=qH5x5r1r40YrVG+ZBNQX1Rben9WTXlo9pDKQiloMce/rpeBLVkVcMYnmX5ZXJkgFuH
+         wrmyTXWuvbYiL87t3ER8fFlkgABtCBP6GgLUCFJKZSGR/2u0mPNMJ8TRb8VE7DKWu3yS
+         83ADppMlQOoJ5wimnz9XlLsRPPDzIL27Aaasp2wSOs18dFynGogSsjFZhTGE/iOU7YgI
+         /njB9XX31Xy/PL3D/GDdQaMQcp8xiQ35/7Y3fQYs1rmHJhqxlA5UPsNdLiASMwfyYG8n
+         7FdzON25IgKQkFX1wTr2t2pbA9yGDsI9BrXfRT29sW9HSS7fRzrw0k3K1naLIf+Q7hI2
+         nw1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=feImpssPWUbfU8stpcwf/DzW88O+SodsSpT27Ehwdio=;
+        b=YY/wTAeCzUKQQltPucQSjQIVgbLXpbELEjibKC7mXUfWr3FvjLeQYOEZmCSDkkvHJs
+         NcQ0SVTvISaLyw/MDAoAg1mbTe+fnqeX3F2hq8BkG3FdM8ny2gjPcJV/YI0Vb+DLCf9e
+         gb+pYlw7r32GLvkThtG9pLeEKl64oLXLBtM5G6vZcU5aV9s3skM6G6W83h9HJgn+KQYz
+         roNSew1drU26+BTM+4iUE9J7a2q/qeRMy6v7PhWlsfLliJMk2qhcoFEFKY3kQdA4gaDk
+         cYMkd7qmlcMRL2TeRa/1XCAcriyuM8WlwbPLoRgmaKXBg4KAO6NiC8fN6nCg7zbHJ6Ov
+         nFHQ==
+X-Gm-Message-State: AOAM5336wFAMLTTS1dp1456V+1b35+CyYRc342kjHkcU9yztxQBtmwNt
+        BmEqRCLMH2jFmDa8ECrcggvi
+X-Google-Smtp-Source: ABdhPJx/KDmjglpN+tKSiKunsMr0GeDS0d4s1yyJ9InNXBjN9oYGX8Q8Ku5skEWzm9GWmgj14/SHZA==
+X-Received: by 2002:a65:684d:: with SMTP id q13mr656279pgt.372.1606927848642;
+        Wed, 02 Dec 2020 08:50:48 -0800 (PST)
+Received: from thinkpad ([2409:4072:100:69b9:b5fe:d7f9:67a:4196])
+        by smtp.gmail.com with ESMTPSA id k4sm331423pfg.174.2020.12.02.08.50.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 08:50:47 -0800 (PST)
+Date:   Wed, 2 Dec 2020 22:20:40 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [GIT PULL] MHI changes for v5.11
+Message-ID: <20201202165040.GC3033@thinkpad>
 MIME-Version: 1.0
-In-Reply-To: <20201202124515.24110-1-info@metux.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-02_08:2020-11-30,2020-12-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- mlxlogscore=999 spamscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- clxscore=1011 adultscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012020096
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.12.20 14:45, Enrico Weigelt, metux IT consult wrote:
-> Use netdev_info() instead of pr_info() for more consistent log output.
-> 
-> Signed-off-by: Enrico Weigelt <info@metux.net>
-> ---
->  net/8021q/vlan.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
-> index f292e0267bb9..d3a6f4ffdaef 100644
-> --- a/net/8021q/vlan.c
-> +++ b/net/8021q/vlan.c
-> @@ -132,7 +132,7 @@ int vlan_check_real_dev(struct net_device *real_dev,
->  	const char *name = real_dev->name;
->  
->  	if (real_dev->features & NETIF_F_VLAN_CHALLENGED) {
-> -		pr_info("VLANs not supported on %s\n", name);
-> +		netdev_info(real_dev, "VLANs not supported on %s\n", name);
+Hi Greg,
 
-Could you please also remove the real_dev->name string here?
-netdev_info() should insert it automatically. Same below.
+Here is the MHI pull request for v5.11 cycle. The reason for doing pull request
+this time is because of the immutable branch which gets merged for handling
+networking and MHI changes.
 
->  		NL_SET_ERR_MSG_MOD(extack, "VLANs not supported on device");
->  		return -EOPNOTSUPP;
->  	}
-> @@ -385,7 +385,7 @@ static int vlan_device_event(struct notifier_block *unused, unsigned long event,
->  
->  	if ((event == NETDEV_UP) &&
->  	    (dev->features & NETIF_F_HW_VLAN_CTAG_FILTER)) {
-> -		pr_info("adding VLAN 0 to HW filter on device %s\n",
-> +		netdev_info(dev, "adding VLAN 0 to HW filter on device %s\n",
->  			dev->name);
->  		vlan_vid_add(dev, htons(ETH_P_8021Q), 0);
->  	}
-> 
+Details are in the signed tag, please consider merging!
 
+Thanks,
+Mani
+
+---
+
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git tags/mhi-for-v5.11
+
+for you to fetch changes up to 4ea6fa2cb921cb17812501a27c3761037d64a217:
+
+  mhi: pci_generic: Fix implicit conversion warning (2020-12-02 14:29:17 +0530)
+
+----------------------------------------------------------------
+MHI patches for v5.11
+
+Here is the MHI patch set for v5.11. Most of the patches are cleanups and fixes
+but there are some noticeable changes too:
+
+1. Loic finally removed the auto-start option from the channel parameters of the
+MHI controller. It is the duty of the client drivers like qrtr to start/stop the
+channels when required, so we decided to remove this option. As a side effect,
+we changed the qrtr driver to start the channels during its probe and removed
+the auto-start option from ath11k controller.
+
+**NOTE** Since these changes spawns both MHI and networking trees, the patches
+are maintained in an immutable branch [1] and pulled into both mhi-next and
+ath11k-next branches. The networking patches got acks from ath11k and networking
+maintainers as well.
+
+2. Loic added a generic MHI pci controller driver. This driver will be used by
+the PCI based Qualcomm modems like SDX55 and exposes channels such as QMI,
+IP_HW0, IPCR etc...
+
+3. Loic fixed the MHI device hierarchy by maintaining the correct parent child
+relationships. Earlier all MHI devices lived in the same level under the parent
+device like PCIe. But now, the MHI devices belonging to channels will become the
+children of controller MHI device.
+
+4. Finally Loic also improved the MHI device naming by using indexed names such
+as mhi0, mhi1, etc... This will break the userspace applications depending on
+the old naming convention but since the only one user so far is Jeff Hugo's AI
+accelerator apps, we decided to make this change now itself with his agreement.
+
+5. Bhaumik fixed the qrtr driver by stopping the channels during remove. This
+patch also got ack from networking maintainer and we decided to take it through
+MHI tree (via immutable branch) since we already had a qrtr change.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git/log/?h=mhi-ath11k-immutable
+
+----------------------------------------------------------------
+Bhaumik Bhatt (20):
+      bus: mhi: core: Remove double locking from mhi_driver_remove()
+      bus: mhi: core: Remove unnecessary counter from mhi_firmware_copy()
+      bus: mhi: core: Add missing EXPORT_SYMBOL for mhi_get_mhi_state()
+      bus: mhi: core: Expose mhi_get_exec_env() API for controllers
+      bus: mhi: core: Remove unused mhi_fw_load_worker() declaration
+      bus: mhi: core: Rename RDDM download function to use proper words
+      bus: mhi: core: Skip RDDM download for unknown execution environment
+      bus: mhi: core: Use appropriate names for firmware load functions
+      bus: mhi: core: Move to using high priority workqueue
+      bus: mhi: core: Skip device wake in error or shutdown states
+      bus: mhi: core: Move to SYS_ERROR regardless of RDDM capability
+      bus: mhi: core: Prevent sending multiple RDDM entry callbacks
+      bus: mhi: core: Move to an error state on any firmware load failure
+      bus: mhi: core: Use appropriate label in firmware load handler API
+      bus: mhi: core: Move to an error state on mission mode failure
+      bus: mhi: core: Check for IRQ availability during registration
+      bus: mhi: core: Separate system error and power down handling
+      bus: mhi: core: Mark and maintain device states early on after power down
+      bus: mhi: core: Remove MHI event ring IRQ handlers when powering down
+      net: qrtr: Unprepare MHI channels during remove
+
+Carl Yin (1):
+      bus: mhi: core: Fix null pointer access when parsing MHI configuration
+
+Dan Carpenter (1):
+      bus: mhi: core: Fix error handling in mhi_register_controller()
+
+Jeffrey Hugo (1):
+      bus: mhi: core: fix potential operator-precedence with BHI macros
+
+Loic Poulain (7):
+      bus: mhi: Remove auto-start option
+      net: qrtr: Start MHI channels during init
+      bus: mhi: Add MHI PCI support for WWAN modems
+      bus: mhi: Fix channel close issue on driver remove
+      bus: mhi: core: Indexed MHI controller name
+      bus: mhi: core: Fix device hierarchy
+      mhi: pci_generic: Fix implicit conversion warning
+
+Manivannan Sadhasivam (1):
+      Merge branch 'mhi-ath11k-immutable' into mhi-next
+
+ drivers/bus/mhi/Kconfig               |   9 ++
+ drivers/bus/mhi/Makefile              |   4 +
+ drivers/bus/mhi/core/boot.c           |  75 ++++++++-------
+ drivers/bus/mhi/core/debugfs.c        |   4 +-
+ drivers/bus/mhi/core/init.c           |  73 +++++++++------
+ drivers/bus/mhi/core/internal.h       |   7 +-
+ drivers/bus/mhi/core/main.c           |  16 ++--
+ drivers/bus/mhi/core/pm.c             | 238 ++++++++++++++++++++++++++++++++++-------------
+ drivers/bus/mhi/pci_generic.c         | 345 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath11k/mhi.c |   4 -
+ include/linux/mhi.h                   |  18 +++-
+ net/qrtr/mhi.c                        |   6 ++
+ 12 files changed, 653 insertions(+), 146 deletions(-)
+ create mode 100644 drivers/bus/mhi/pci_generic.c
