@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789FC2CBD21
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:38:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A90592CBD1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:38:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727274AbgLBMhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:37:34 -0500
-Received: from mout.kundenserver.de ([212.227.126.187]:51371 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726001AbgLBMhd (ORCPT
+        id S1729236AbgLBMgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:36:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726427AbgLBMgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:37:33 -0500
-Received: from orion.localdomain ([77.7.48.174]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1N5VTm-1k8T4d24fC-016ugz; Wed, 02 Dec 2020 13:34:49 +0100
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, matthias.bgg@gmail.com,
-        linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [PATCH v3] drivers: clk: make gpio-gated clock support optional
-Date:   Wed,  2 Dec 2020 13:34:46 +0100
-Message-Id: <20201202123446.21902-1-info@metux.net>
-X-Mailer: git-send-email 2.11.0
-X-Provags-ID: V03:K1:WbLU9N2ykb1bYLaEdCmR6BikyMatnPo3jN3uCRNNZTmRVZT6YSO
- ArUF2XqM8GfeFIm/UHqsHgJ42Bk+dCKEwI2RSbd7XXs5rvHAPYuPq3w8X+ZnEM2VOXMLfTR
- 2Lwgt6M4fVeJhI+5vr4B6J7cb3iLuJJjbJ1OaGgCpJpJbDB14qUU/zXCK5XMRD36Nyx5MIA
- jBnFgo78BpzGQj2lBo/7g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zY3qHVWMGdc=:p6t0Vho9tx8xhvpEim4SZ4
- cyh0lNXAnLhP4zrruMA3DnvEBg0XuMS59pa50R/WUIogP/BKm+uCCcSHa4l4iyRVAsQaIFr0q
- 1nYmk8HO8EiCkmjfb7gXRmFWKHU0Gc515k+kmphY99YlrgSg7gMVAjOdNwXKbK6YFTqZuna9Z
- 7x5f3FOdZK9OudpF3+6G+d3yCG2J0Umoh4ktWNTfeRycqHyb/ob5Dk89voDtfar+NhSBY+UFF
- 1bSZAbZi6Eg0hjLuIf8clqmup+noDjFd+zc2h/YAGEnXmDzxduoHthNTctgMF0blgz/GSuDeT
- kmwGATo9voiizH4sV4Wn4A51GbRVxgHDQmeQTl7w4O5NZzL/poZOvSgihMikeq3xCpv2YREPg
- KR6zze1YkhB7KbiTfmJ8j1aUUb0GKthYUV67HziDmaa2JAyH7+Wz84JoeEJbY
+        Wed, 2 Dec 2020 07:36:33 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCCFC0613D4;
+        Wed,  2 Dec 2020 04:35:52 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4018231D;
+        Wed,  2 Dec 2020 13:35:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1606912548;
+        bh=vFRCyeRysRNaucrz5XO0nhTQ4MhbmNXAN8hJkzu4iWg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PUTewk2IxAV3eurGOu8Nlfk23gH1DsdGZ8BL6Wi4qfAO3tSXwHax2CPm6orRBxCBe
+         zusNqgT1zuSBrGdkXG2rbtQlbG/F1voO6RhqhUtmNEA5IRar+cmx6oVGpLFMuk3D7x
+         +GuDrRyEOBKhfRuNBnkg9I9v2Izqa94okdyz3EWI=
+Date:   Wed, 2 Dec 2020 14:35:40 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Dan Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
+        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
+Message-ID: <20201202123540.GE4486@pendragon.ideasonboard.com>
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-19-djrscally@gmail.com>
+ <20201130200719.GB4077@smile.fi.intel.com>
+ <20201130233232.GD25713@pendragon.ideasonboard.com>
+ <20201201184925.GJ4077@smile.fi.intel.com>
+ <4181e6a6-a60f-0a2b-1b46-13a2359d8753@gmail.com>
+ <20201202093952.GU4077@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201202093952.GU4077@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The gpio-gate-clock / gpio-mux-clock driver isn't used much,
-just by a few ARM SoCs, so there's no need to always include
-it unconditionally.
+On Wed, Dec 02, 2020 at 11:39:52AM +0200, Andy Shevchenko wrote:
+> On Tue, Dec 01, 2020 at 08:59:53PM +0000, Dan Scally wrote:
+> > On 01/12/2020 18:49, Andy Shevchenko wrote:
+> 
+> ...
+> 
+> > > Seems we can do this, by locating intel_int3472.c under PDx86 hood and dropping
+> > > ACPI ID table from TPS68470 MFD driver. The PMIC can be instantiated via
+> > > i2c_acpi_new_device() (IIRC the API name).
+> > >
+> > > And actually it makes more sense since it's not and MFD and should not be there.
+> > >
+> > > (Dan, patch wise the one creates intel_int3472.c followed by another one that
+> > >  moves ACPI ID from PMIC and introduces its instantiation via I²C board info
+> > >  structure)
+> > 
+> > I'm mostly following this, but why would we need an i2c_board_info or
+> > i2c_acpi_new_device()? The INT3472 entries that refer to actual tps68470
+> > devices do have an I2cSerialBusV2 enumerated in _CRS so in their case
+> > there's an i2c device registered with the kernel already.
+> 
+> Because as we discussed already we can't have two drivers for the same ID
+> without a big disruption in the driver(s).
+> 
+> If you have a single point of enumeration, it will make things much easier
+> (refer to the same intel_cht_int33fe driver you mentioned earlier).
+> 
+> I just realize that the name of int3472 should follow the same pattern, i.e.
+> intel_skl_int3472.c
 
-Thus make it optional, but keep it enabled by default.
+We're mostly focussing on Kaby Lake here though. From what I understand
+the ACPI infrastructure for camera support is mostly the same on Sky
+Lake, but not identical. I think a single driver should be able to cover
+both though.
 
-changes v3: default to y when gpiolib enabled
-            fix depends on gpiolib to uppercase
+> > I think we need those things when we get round to handling the
+> > VCM/EEPROM that's hidden within the sensor's ACPI entry, but I've not
+> > done any work on that yet at all.
+> 
+> Let's consider this later — one step at a time.
 
-changes v2: added missing dependency on gpiolib
-
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
----
- drivers/clk/Kconfig  | 8 ++++++++
- drivers/clk/Makefile | 2 +-
- 2 files changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index c715d4681a0b..e4fe406c4e7d 100644
---- a/drivers/clk/Kconfig
-+++ b/drivers/clk/Kconfig
-@@ -38,6 +38,14 @@ menuconfig COMMON_CLK
- 
- if COMMON_CLK
- 
-+config COMMON_CLK_GPIO
-+	tristate "GPIO gated clock support"
-+	default y if GPIOLIB
-+	depends on GPIOLIB
-+	help
-+	  Supports gpio gated clocks, which can be enabled/disabled via
-+	  gpio output.
-+
- config COMMON_CLK_WM831X
- 	tristate "Clock driver for WM831x/2x PMICs"
- 	depends on MFD_WM831X
-diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-index da8fcf147eb1..0692ab5abc6d 100644
---- a/drivers/clk/Makefile
-+++ b/drivers/clk/Makefile
-@@ -11,7 +11,7 @@ obj-$(CONFIG_COMMON_CLK)	+= clk-multiplier.o
- obj-$(CONFIG_COMMON_CLK)	+= clk-mux.o
- obj-$(CONFIG_COMMON_CLK)	+= clk-composite.o
- obj-$(CONFIG_COMMON_CLK)	+= clk-fractional-divider.o
--obj-$(CONFIG_COMMON_CLK)	+= clk-gpio.o
-+obj-$(CONFIG_COMMON_CLK_GPIO)	+= clk-gpio.o
- ifeq ($(CONFIG_OF), y)
- obj-$(CONFIG_COMMON_CLK)	+= clk-conf.o
- endif
 -- 
-2.11.0
+Regards,
 
+Laurent Pinchart
