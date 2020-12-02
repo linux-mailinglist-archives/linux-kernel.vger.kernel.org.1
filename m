@@ -2,110 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E452CC198
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 103212CC19C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730647AbgLBQCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:02:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730555AbgLBQCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:02:30 -0500
-Date:   Wed, 2 Dec 2020 17:01:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606924910;
-        bh=9y0LlxmEF1cHONU8uCHjPKLxbT3A337K5gUaFRHe1aY=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ltPsscUqZGVDy54nfKVts0kaQ/+TvCapB9Ql+ZhbZZlng9igkua0WFGVdvuRpHpQP
-         Wf/vQyfyFTcI0bw0yPitJ4g5DVB2IzITtU5K7vWsExa52N0fnvncpDfXUvBJ+rukqM
-         pM2bkFzMhoh9hlJPCJS1hZZL5v8vLcsW6fR4N8kM=
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Youling Tang <tangyouling@loongson.cn>
-Cc:     Seth Heasley <seth.heasley@intel.com>,
-        Neil Horman <nhorman@tuxdriver.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: busses: Use dma_set_mask_and_coherent
-Message-ID: <20201202160147.GG13425@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Youling Tang <tangyouling@loongson.cn>,
-        Seth Heasley <seth.heasley@intel.com>,
-        Neil Horman <nhorman@tuxdriver.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1606223315-13390-1-git-send-email-tangyouling@loongson.cn>
+        id S1730573AbgLBQDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:03:14 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52534 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726935AbgLBQDN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 11:03:13 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0B2G2FHk014005
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 2 Dec 2020 11:02:16 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 0AE36420136; Wed,  2 Dec 2020 11:02:15 -0500 (EST)
+Date:   Wed, 2 Dec 2020 11:02:14 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     David Gow <davidgow@google.com>, Marco Elver <elver@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Bird, Tim" <Tim.Bird@sony.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v9 1/2] kunit: Support for Parameterized Testing
+Message-ID: <20201202160214.GA390058@mit.edu>
+References: <20201116054035.211498-1-98.arpi@gmail.com>
+ <CABVgOSkoQahYqMJ3dD1_X2+rF3OgwT658+8HRM2EZ5e0-94jmw@mail.gmail.com>
+ <CANpmjNOhb13YthVHmXxMjpD2JZUO4H2Z1KZSKqHeFUv-RbM5+Q@mail.gmail.com>
+ <CABVgOSnGnkCnAyAqVoLhMGb6XV_irtYB7pyOTon5Scab8GxKtg@mail.gmail.com>
+ <CAFd5g4768o7UtOmM3X0X5upD0uF3j-=g3txi0_Ue3z8oM_Ghow@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4eRLI4hEmsdu6Npr"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1606223315-13390-1-git-send-email-tangyouling@loongson.cn>
+In-Reply-To: <CAFd5g4768o7UtOmM3X0X5upD0uF3j-=g3txi0_Ue3z8oM_Ghow@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 30, 2020 at 02:22:22PM -0800, 'Brendan Higgins' via KUnit Development wrote:
+> 
+> Looks good to me. I would definitely like to pick this up. But yeah,
+> in order to pick up 2/2 we will need an ack from either Ted or Iurii.
+> 
+> Ted seems to be busy right now, so I think I will just ask Shuah to go
+> ahead and pick this patch up by itself and we or Ted can pick up patch
+> 2/2 later.
 
---4eRLI4hEmsdu6Npr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I have been paying attention to this patch series, but I had presumed
+that this was much more of a kunit change than an ext4 change, and the
+critical bits was a review of the kunit infrastructure.  I certainly
+have no objection to changing the ext4 test to use the new
+parameterized testing, and if you'd like me to give a quick review,
+I'll take a quick look.  I assume, Brendan, that you've already tried
+doing a compile and run test of the patch series, so I'm not going to
+do that?
 
-On Tue, Nov 24, 2020 at 09:08:35PM +0800, Youling Tang wrote:
-> 'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
-> an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
->=20
-> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
-
-Please use "i2c: ismt:", so driver maintainers know that the patch is
-relevant to them.
-
-> ---
->  drivers/i2c/busses/i2c-ismt.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/i2c/busses/i2c-ismt.c b/drivers/i2c/busses/i2c-ismt.c
-> index a35a27c..5f49830 100644
-> --- a/drivers/i2c/busses/i2c-ismt.c
-> +++ b/drivers/i2c/busses/i2c-ismt.c
-> @@ -903,16 +903,12 @@ ismt_probe(struct pci_dev *pdev, const struct pci_d=
-evice_id *id)
->  		return -ENODEV;
->  	}
-> =20
-> -	if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) !=3D 0) ||
-> -	    (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64)) !=3D 0)) {
-> -		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) !=3D 0) ||
-> -		    (pci_set_consistent_dma_mask(pdev,
-> -						 DMA_BIT_MASK(32)) !=3D 0)) {
-> +	if (dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(64)) !=3D 0)
-> +		if (dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(32)) !=3D 0) {
->  			dev_err(&pdev->dev, "pci_set_dma_mask fail %p\n",
->  				pdev);
->  			return -ENODEV;
->  		}
-> -	}
-> =20
->  	err =3D ismt_dev_init(priv);
->  	if (err)
-> --=20
-> 2.1.0
->=20
-
---4eRLI4hEmsdu6Npr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/HumsACgkQFA3kzBSg
-KbYDxQ//eZHrOlo9+24Xoy/VSVKvsQWLUtaRtOUxqsorG83Qe9tUSm9z9hmm76Wi
-FVirv8rj1CwIXDhWIxth/eibIcReBt+6ndMkaqvGKpRS5+SuJMrDRkOFCS0IGrw6
-qqtWk+9+DuV4vStR2HaZ2oY0oCBMF7SATvcyk8CdB5bKHvkv+GZLywWyjPnnWwoT
-c3j1DTPF2ieaknl6tAkRpgAlpENhiqNnNschkVY7uEBOh2DajaGkqT4QseR8hx7t
-/hCp69RgX/kLaZAI97Ri6J0B4OTMu7K0s0CyrD3kyfmxKsCf7GTnUY+Q7AWh+VdR
-N/+wcnFjH6teifVg2S2pQksjBQ9tQ1GVZjcm+TTW8eSv6YT/uKD2h45F8E+2FxKv
-ZVyEUUWssplT7x70ueZ6ZEtK0r3bh3hVvb1pAb4m+kMcZuse2WSVxRhCVUB8xG6i
-SnxErerPask2DT3BZqv0f1kyTPJMqBmFABuqFHf+6OeJlwJEeMJ0b2MYYcF1pxeQ
-/c5Ltf4XvBdChesVYpPgnqQ/K9KFQLP5H40CFMDbZqoq35cWtVcJ0k41bE69z4I8
-yvZZGBWU+m+gLTmxj7OJGBdu7md4Bx8nWTRP2YpeoB7YtxwBepfe2NXqbvnJU4lb
-EEwZJjROEHaX8L6wK3zW09Vy+8GTz6KXPDaQEc3cYAWwX400Fpc=
-=9Dws
------END PGP SIGNATURE-----
-
---4eRLI4hEmsdu6Npr--
+						- Ted
