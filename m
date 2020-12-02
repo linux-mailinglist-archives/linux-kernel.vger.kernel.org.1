@@ -2,280 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C39D2CC3EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 731A52CC3F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728868AbgLBRe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:34:58 -0500
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:34825 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726524AbgLBRe5 (ORCPT
+        id S1728848AbgLBRgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:36:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726070AbgLBRgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:34:57 -0500
-Received: by mail-ed1-f68.google.com with SMTP id u19so4885696edx.2;
-        Wed, 02 Dec 2020 09:34:34 -0800 (PST)
+        Wed, 2 Dec 2020 12:36:41 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C13C0613CF;
+        Wed,  2 Dec 2020 09:36:00 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id y74so2391894oia.11;
+        Wed, 02 Dec 2020 09:36:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pLAAu7+sji8IJoCg+8UXEel91VK0p8PGWM0v3i7M3IE=;
+        b=FF5+khDygMun8kdp3GfHydtG9WE1iWBNpgElfJAP6GPilfEqENd8MzWLR5qhXhhIel
+         8mzLZ8yYy2NKZ8PkWWtL8pSu4xcmB2KjyRfLJHYJ+Vbq1hnxYrCqemJ72RY7MGxYEtl5
+         j+NPbGQi5W1Qqm78GpuCUZaYio+/RMaWPOypPIHMlvwa1wSbiWvrOYmdJi0BaCnkEoUX
+         9G07SOnsbDFJQHmTiR7LKiLVqNJlgbeoo05pNRdbA4Befbqf6AjgSPAE2dS/kz3zJMUu
+         epNSrcQTsbVi73sGFtY3QBDObXVpVaRnGxNMY8D3q5VlCW+FwLM6+NNGqaQafDej2mq9
+         ybCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wJ6pUuszJDg/47iz5wDAOfG7BM1jFUEnOUHSofHoz8M=;
-        b=a/hJ2x6j+o4u3aZwp3jOl80aSnfiUS3IpExNZG1OTsg7uHLucQ7E9HvuJ1IYBvEeQr
-         G0jjtjfAX4uUxH0j6k/VyG+fAkhLneiRJQk5Vu2C+rSSZ5/1/3AgvYqTNHNLpJNk2Dbu
-         NGbjyIZCw57AR9AYWPYMMq9kmvHZPm2xL61hJz0qX86bEwJznojfn/KwIsk0dfvEaXSM
-         mEkV1CL3E1CQhYy2qudtB44/g4d3iNFvS/SowWzgSivL+y8976gUPpTi/DTZUq8ffHZR
-         SB/sSSz54zhOZTSE2JryVekoxvFKd3X0aNtxtUM8A9/BTvyHpN9niiMAw+UlMtAVhKgs
-         5TnQ==
-X-Gm-Message-State: AOAM532KE2xI/3B0WjKqDvY6b173OXCOaaPiKkC2ZEPAR2paV4YYOnsQ
-        UGcLnllkTcnJ2Ju8qE8f9tY=
-X-Google-Smtp-Source: ABdhPJyj/UsZcMRfLFtkUtRT+m8m5Qx2cYcD57OETZKHIiL/OArK75vx3xcijSo8QnmHb4ZyH8FozA==
-X-Received: by 2002:aa7:d459:: with SMTP id q25mr988138edr.279.1606930448646;
-        Wed, 02 Dec 2020 09:34:08 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id k17sm378283ejj.1.2020.12.02.09.34.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 09:34:07 -0800 (PST)
-Date:   Wed, 2 Dec 2020 19:34:05 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula@amarulasolutions.com
-Subject: Re: [PATCH 04/10] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini
- SOM
-Message-ID: <20201202173405.GD3490@kozik-lap>
-References: <20201202121241.109952-1-jagan@amarulasolutions.com>
- <20201202121241.109952-5-jagan@amarulasolutions.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pLAAu7+sji8IJoCg+8UXEel91VK0p8PGWM0v3i7M3IE=;
+        b=hRChTGqDT3M5tGheotIxlDrr1pWAzvNVx/yKEtoPlG9WJhTWbjc2NiRPW0MDCKMTMX
+         3esDud4g/zypvkiGPSSyZaXTQPEu/qHGZ+4URWlUg8KTc5Fq1KyihPYC2JOyfcpdBFz4
+         D6zPN7L7aiLxQQJ5zMg1LbF0joOUa8raflqN8+apj6bJK572QV6GSk6Lt+Tf8j5ly7W7
+         0nS5RG31AIsD7uAyJUTegSLINMfk5RSaRA878USxf4JRVZeTkcBkAYebe1wusxU9aSnz
+         Ps0gyIWRIuHvGadb3We49JvUizKRNK7yATgpBANGls6PNcKaPV7cG2Lxm4yFshbpxZXY
+         7w7Q==
+X-Gm-Message-State: AOAM531yHEhXAQWrhdR87hYfsEUCfHG2arcRpGvHZZN9g5iPTK6mQHBy
+        92q10ZRmX8VC0RwWNAQrmBXL5Lff/4qzoDbqbrNjEbep
+X-Google-Smtp-Source: ABdhPJzflpE5g+va0hQ1zauT1Uz1LkNKIltAwQzrnETknXlx5hyAE14jVC2GOBOmUJGoLNV4WTmBvSKKWFccWuABT5E=
+X-Received: by 2002:a05:6808:562:: with SMTP id j2mr2375423oig.1.1606930560156;
+ Wed, 02 Dec 2020 09:36:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201202121241.109952-5-jagan@amarulasolutions.com>
+References: <20201127175738.1085417-1-jackmanb@google.com> <20201127175738.1085417-2-jackmanb@google.com>
+ <20201129011552.jbepegeeo2lqv6ke@ast-mbp> <20201201121437.GB2114905@google.com>
+ <CAADnVQJci_Fqq7d6GbUtivcmSgnPLbkwuH9MN30BhFomff=5rg@mail.gmail.com> <20201202105248.GA9710@google.com>
+In-Reply-To: <20201202105248.GA9710@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 2 Dec 2020 09:35:49 -0800
+Message-ID: <CAADnVQJNEcWgjH_HOwg=RSfLsbtD7NPtabVms=GoXwfNueb_+g@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 01/13] bpf: x86: Factor out emission of ModR/M
+ for *(reg + off)
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 05:42:35PM +0530, Jagan Teki wrote:
-> i.Core MX8M Mini is an EDIMM SOM based on NXP i.MX8MM from Engicam.
+On Wed, Dec 2, 2020 at 2:52 AM Brendan Jackman <jackmanb@google.com> wrote:
+>
+> Tue, Dec 01, 2020 at 09:50:00PM -0800, Alexei Starovoitov wrote:
+> > On Tue, Dec 1, 2020 at 4:14 AM Brendan Jackman <jackmanb@google.com> wrote:
+> > >
+> > > On Sat, Nov 28, 2020 at 05:15:52PM -0800, Alexei Starovoitov wrote:
+> > > > On Fri, Nov 27, 2020 at 05:57:26PM +0000, Brendan Jackman wrote:
+> > > > > +/* Emit the ModR/M byte for addressing *(r1 + off) and r2 */
+> > > > > +static void emit_modrm_dstoff(u8 **pprog, u32 r1, u32 r2, int off)
+> > > >
+> > > > same concern as in the another patch. If you could avoid intel's puzzling names
+> > > > like above it will make reviewing the patch easier.
+> > >
+> > > In this case there is actually a call like
+> > >
+> > >   emit_modrm_dstoff(&prog, src_reg, dst_reg)
+> >
+> > emit_insn_prefix() ?
+>
+> Ah sorry, I thought you were talking about the _arg_ names.
 
-s/SOM/SoM/
-
-> 
-> General features:
-> - NXP i.MX8MM
-
-i.MX 8M Mini
-as named by NXP:
-https://www.nxp.com/products/processors-and-microcontrollers/arm-processors/i-mx-applications-processors/i-mx-8-processors/i-mx-8m-mini-arm-cortex-a53-cortex-m4-audio-voice-video:i.MX8MMINI
-
-> - Up to 2GB LDDR4
-> - 8/16GB eMMC
-> - Gigabit Ethernet
-> - USB 2.0 Host/OTG
-> - PCIe Gen2 interface
-> - I2S
-> - MIPI DSI to LVDS
-> - rest of i.MX8MM features
-
-Ditto
-
-> 
-> i.Core MX8M Mini needs to mount on top of Engicam baseboards for
-> creating complete platform boards.
-> 
-> Possible baseboards are,
-> - EDIMM2.2
-> - C.TOUCH 2.0
-
-Don't describe baseboards. You add here only SoM.
-
-> 
-> Add support for it.
-> 
-> Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
->  .../freescale/imx8mm-engicam-icore-mx8mm.dtsi | 209 ++++++++++++++++++
->  1 file changed, 209 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm.dtsi
-> new file mode 100644
-> index 000000000000..b87917c40587
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm.dtsi
-> @@ -0,0 +1,209 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (c) 2018 NXP
-> + * Copyright (c) 2019 Engicam srl
-> + * Copyright (c) 2020 Amarula Solutons(India)
-> + */
-> +
-> +/ {
-
-Missing "model".
-
-> +	compatible = "engicam,icore-mx8mm", "fsl,imx8mm";
-> +};
-> +
-
-No memory node? Isn't the memory a property of SoM?
-
-> +&A53_0 {
-> +	cpu-supply = <&reg_buck4>;
-> +};
-
-Supplies for the other cores.
-
-> +
-> +&i2c1 {
-> +	clock-frequency = <400000>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2c1>;
-> +	status = "okay";
-> +
-> +	pf8100@8 {
-
-Node name should describe generic class of a device, so probably you
-wanted here "pmic".
-
-> +		compatible = "nxp,pf8x00";
-> +		reg = <0x08>;
-> +
-> +		regulators {
-> +			reg_ldo1: ldo1 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-
-First min/max constraints. Then always-on and boot-on properties.
-
-> +				regulator-max-microvolt = <5000000>;
-> +				regulator-min-microvolt = <1500000>;
-> +			};
-> +
-> +			reg_ldo2: ldo2 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-max-microvolt = <5000000>;
-> +				regulator-min-microvolt = <1500000>;
-> +			};
-> +
-> +			reg_ldo3: ldo3 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-max-microvolt = <5000000>;
-> +				regulator-min-microvolt = <1500000>;
-> +			};
-> +
-> +			reg_ldo4: ldo4 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-max-microvolt = <5000000>;
-> +				regulator-min-microvolt = <1500000>;
-> +			};
-> +
-> +			reg_buck1: buck1 {
-> +				fsl,ilim-ma = <4500>;
-
-Where is this property documented?
-
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-min-microvolt =  <400000>;
-> +			};
-> +
-> +			reg_buck2: buck2 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-min-microvolt =  <400000>;
-> +			};
-> +
-> +			reg_buck3: buck3 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-min-microvolt =  <400000>;
-> +			};
-> +
-> +			reg_buck4: buck4 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-min-microvolt =  <400000>;
-> +				fast-slew = <1>;
-
-Where is this property documented?
-
-> +			};
-> +
-> +			reg_buck5: buck5 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-min-microvolt =  <400000>;
-> +			};
-> +
-> +			reg_buck6: buck6 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-min-microvolt =  <400000>;
-> +			};
-> +
-> +			reg_buck7: buck7 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-min-microvolt = <3300000>;
-> +			};
-> +
-> +			reg_vsnvs: vsnvs {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-min-microvolt = <1800000>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&iomuxc {
-> +	pinctrl_i2c1: i2c1grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL		0x400001c3
-> +			MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA		0x400001c3
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart2: uart2grp {
-
-Not used.
-
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX	0x140
-> +			MX8MM_IOMUXC_UART2_TXD_UART2_DCE_TX	0x140
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc1_gpio: usdhc1grpgpio {
-
-This should complain on bindings check. Please run dtbs_check. The "grp"
-should be a suffix in node name, so "usdhc1gpiogrp".
-
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_GPIO1_IO06_GPIO1_IO6	0x41
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc1: usdhc1grp {
-
-Not used.
-
-Best regards,
-Krzysztof
+I meant both. Arg names and helper name. Sorry for the confusion.
