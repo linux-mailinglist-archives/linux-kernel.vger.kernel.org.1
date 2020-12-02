@@ -2,103 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781692CC0BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:24:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1832CC0BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730399AbgLBPXb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Dec 2020 10:23:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729081AbgLBPXb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:23:31 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0640BC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:22:51 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kkTxq-0008L2-BK; Wed, 02 Dec 2020 16:22:42 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kkTxp-0007sg-Kb; Wed, 02 Dec 2020 16:22:41 +0100
-Message-ID: <880ad9cc8fd0cc1750535ab9481d277de9acf9e1.camel@pengutronix.de>
-Subject: Re: [PATCH v5 09/10] media: Avoid parsing quantization and huffman
- tables
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl, shawnguo@kernel.org,
-        robh+dt@kernel.org
-Cc:     paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
-        daniel.baluta@nxp.com, robert.chiras@nxp.com,
-        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
-        devicetree@vger.kernel.org, ezequiel@collabora.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se,
-        dafna.hirschfeld@collabora.com,
-        Mirela Rabulea <mirela.rabulea@nxp.com>
-Date:   Wed, 02 Dec 2020 16:22:41 +0100
-In-Reply-To: <20201112030557.8540-10-mirela.rabulea@oss.nxp.com>
-References: <20201112030557.8540-1-mirela.rabulea@oss.nxp.com>
-         <20201112030557.8540-10-mirela.rabulea@oss.nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S1730443AbgLBPXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:23:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728326AbgLBPXf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:23:35 -0500
+Date:   Wed, 2 Dec 2020 16:22:51 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606922574;
+        bh=5grNeSKTu2eXs7fsdiyHN6USwgd6uSEQjV3Fff/CI2E=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qwesW3Nah9lApwjZLcj7BwFjr58RPIAX6R6b7Fb6NFORv3XZVf6jf9bm2lXjCtxLC
+         4bdZu4gqdg4IALJn+rLL5ft+Ofbl7Dc7+1BH7dsCQfF7RRYeodAI4VDi2FZgWkblHB
+         zvN/xpWW6H4JxFcijL77LhtqQK6MWm6m+sK/L2TU=
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Cc:     gregory.clement@bootlin.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] i2c: mv64xxx: Add bus error recovery
+Message-ID: <20201202152251.GD874@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
+        gregory.clement@bootlin.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200826223516.29737-1-mark.tomlinson@alliedtelesis.co.nz>
+ <20201008122534.GB897@ninjato>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hOcCNbCCxyk/YU74"
+Content-Disposition: inline
+In-Reply-To: <20201008122534.GB897@ninjato>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mirela,
 
-On Thu, 2020-11-12 at 05:05 +0200, Mirela Rabulea (OSS) wrote:
-> From: Mirela Rabulea <mirela.rabulea@nxp.com>
-> 
-> These are optional in struct v4l2_jpeg_header, so do not parse if
-> not requested, save some time.
-> 
-> Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
-> ---
->  drivers/media/v4l2-core/v4l2-jpeg.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-jpeg.c b/drivers/media/v4l2-core/v4l2-jpeg.c
-> index d77e04083d57..7576cd0ce6b9 100644
-> --- a/drivers/media/v4l2-core/v4l2-jpeg.c
-> +++ b/drivers/media/v4l2-core/v4l2-jpeg.c
-> @@ -307,6 +307,9 @@ static int jpeg_parse_quantization_tables(struct jpeg_stream *stream,
->  {
->  	int len = jpeg_get_word_be(stream);
->  
-> +	if (!tables)
-> +		return 0;
-> +
->  	if (len < 0)
->  		return len;
->  	/* Lq = 2 + n * 65 (for baseline DCT), n >= 1 */
-> @@ -361,6 +364,9 @@ static int jpeg_parse_huffman_tables(struct jpeg_stream *stream,
->  	int mt;
->  	int len = jpeg_get_word_be(stream);
->  
-> +	if (!tables)
-> +		return 0;
-> +
->  	if (len < 0)
->  		return len;
->  	/* Table B.5 - Huffman table specification parameter sizes and values */
+--hOcCNbCCxyk/YU74
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I don't understand this. jpeg_parse_quantization_tables() is only called
-if v4l2_jpeg_parse_header() finds a DQT marker. The entire quantization
-table-specification parameter block is optional, but when a DQT marker
-is present, IIUC the block must contain at least one table (see B.2.4.1,
-specifically figure B.6).
 
-regards
-Philipp
+> So, applied to for-next, thanks!
+
+I am very sorry. Due to my mistake, this patch got lost. I reapplied it
+now. Sorry again!
+
+
+
+--hOcCNbCCxyk/YU74
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/HsUsACgkQFA3kzBSg
+KbaBqBAAtUfN7tr8Uf2yoru/2j2bpc6ZzQXG4A7senOxKp3yMt3MQ8zPOIYoYlXV
+3o3HCLvqRZA3kwz1h6n8vEqEVhYOqfbq5heQ7/rpc29gnq03GRzwoMq2vw0RPlEs
+HN8Ne3oR0NncEOqIp5B5YBKlQWvKjUwI+Aw5p4ZPy5jX45KBPBRu58jNfgCbRMhF
+VQiFDiAqLqTGcKn1zi15Pmp56xIck6H+7zHmRbKJ851TP0DJCLfdCbYKq/6KGnqb
+lCUJ7wZ374iH7rrBmghGTtname8eZbWYz4as5upeRVhHTnJMhUuohBzm9kLn8N/O
+03HYpo4dcjTeQ8sjQTOZcWWtdDa55YR2dDgQ+OVDqiSdw35Qhw+FwR4utiae+7V6
+g0cMaXO1Lr6mRnI7EOGyAgsm7xIwquTHoOT/kmh+gDVqlkxU8Oud/G0ecssYSm/W
+YEgWBviiCcE3/wvfrbnmFXaArl3FQxKuM/lYvUZaXULCJA0zrnSPP2LhtvZC2wvW
+hLrDiSVRQrBpHVDbzO9uP+j+Pm2g956wUhxab/i+tixacuKZaH8zB2a7eRbCcwzz
+sRBaMHGJB1K/PtfHqioPWlu4AwP9eNYF0JG26UYJrJHldmSEFkWY9y0HeL5LG9W/
+P+OYEvI6mTeiDitwnx7oD1cVefvwZhvEcq8tvvZZra5FSXtcHB8=
+=T4SG
+-----END PGP SIGNATURE-----
+
+--hOcCNbCCxyk/YU74--
