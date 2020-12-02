@@ -2,153 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7A82CB427
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1A22CB42B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387522AbgLBE7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 23:59:22 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:27355 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728426AbgLBE7W (ORCPT
+        id S1726061AbgLBFAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 00:00:50 -0500
+Received: from a2.mail.mailgun.net ([198.61.254.61]:53507 "EHLO
+        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726080AbgLBFAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 23:59:22 -0500
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201202045838epoutp023b107fb3c60c53a4443b46c81d1175e0~MzYBfqJg90828308283epoutp028
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 04:58:38 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201202045838epoutp023b107fb3c60c53a4443b46c81d1175e0~MzYBfqJg90828308283epoutp028
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1606885118;
-        bh=OFa7pYNsfTU8WW6Yo79jxkGXP6RWMrOeNC/0D673u8E=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=fSw+wuFbVnCMUTQktfpyQ0ESvWKjk/b1zgFFBe0261NTjPK7GBZMnGA0TvMUBpuej
-         Y3Mxyw6mKBa5k8DgXTqyKbiLiWnDvOqKJHUHLgX2MxKu05xeoVCA5l6ELAJbckpkZg
-         vS5LC72EaF/DXpu2u1C9BD+vHFiLmN+XdHm5bKgQ=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20201202045837epcas1p393672f0ec5cf1722ae48d4aff71ddaa6~MzYBFWLL82934329343epcas1p3d;
-        Wed,  2 Dec 2020 04:58:37 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.162]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4Cm6Dr5smtzMqYkj; Wed,  2 Dec
-        2020 04:58:36 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        10.99.02418.CFE17CF5; Wed,  2 Dec 2020 13:58:36 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201202045836epcas1p1fc945fed4a7be7244a12f235c508061a~MzX-ooRSt0860908609epcas1p1h;
-        Wed,  2 Dec 2020 04:58:36 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201202045836epsmtrp2f0b52555b45c379dcbf376882303bb3e~MzX-n1vfd2222622226epsmtrp2k;
-        Wed,  2 Dec 2020 04:58:36 +0000 (GMT)
-X-AuditID: b6c32a35-c23ff70000010972-88-5fc71efcd26b
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        39.F5.13470.CFE17CF5; Wed,  2 Dec 2020 13:58:36 +0900 (KST)
-Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201202045836epsmtip2f75f1796c3062fc595b538e52fd7cd08~MzX-fAQSr2582325823epsmtip23;
-        Wed,  2 Dec 2020 04:58:36 +0000 (GMT)
-From:   "Sungjong Seo" <sj1557.seo@samsung.com>
-To:     "'Artem Labazov'" <123321artyom@gmail.com>
-Cc:     <stable@vger.kernel.org>,
-        "'Namjae Jeon'" <namjae.jeon@samsung.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201124194749.4041176-1-123321artyom@gmail.com>
-Subject: RE: [PATCH] exfat: Avoid allocating upcase table using kcalloc()
-Date:   Wed, 2 Dec 2020 13:58:35 +0900
-Message-ID: <001101d6c867$ca8c5730$5fa50590$@samsung.com>
+        Wed, 2 Dec 2020 00:00:50 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606885225; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=cOrj0U2V5xokVHCW6VO47cLLL1EXLUmFRN39hfQ29NE=; b=jXgMfZT7pC/MfOYBkZ2XLw8HO1Y5X1m8AKihr6Z9i0f1Y6b+la1DV0OPLxmxijURgo4x9Nyi
+ qUbmCiQ4V1Maus/ftzWeybv2MVSGLiJITt761Hc+LS3OmZI8M9yQ8PD4rMM59F6mLlBjuudf
+ S0YHpo+q0+z1vc+by+jhBv3WaZ8=
+X-Mailgun-Sending-Ip: 198.61.254.61
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5fc71f4cf653ea0cd852c9db (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 04:59:56
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 30D53C43463; Wed,  2 Dec 2020 04:59:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46029C433C6;
+        Wed,  2 Dec 2020 04:59:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 46029C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v13 0/4] userspace MHI client interface driver
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Hemant Kumar <hemantk@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bbhatt@codeaurora.org, loic.poulain@linaro.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        Kalle Valo <kvalo@codeaurora.org>
+References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
+ <20201201112901.7f13e26c@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <c6359962-a378-ed03-0fab-c2f6c8a1b8eb@codeaurora.org>
+ <20201201120302.474d4c9b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <817a4346-efb7-cfe5-0678-d1b60d06627d@codeaurora.org>
+ <20201201185506.77c4b3df@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <f22eaead-fd25-8b20-7ca1-ae3f535347d4@codeaurora.org>
+Date:   Tue, 1 Dec 2020 21:59:53 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
+In-Reply-To: <20201201185506.77c4b3df@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQGAh9ZISCX29VPYFR7X7vXspJxNNgFOHEJzqoVNqkA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmk+LIzCtJLcpLzFFi42LZdljTQPeP3PF4g3ln9Cw23fzGarFn70kW
-        i8u75rBZ/Jheb7Fg4yNGB1aPnbPusnv0bVnF6PF5k1wAc1SOTUZqYkpqkUJqXnJ+SmZeuq2S
-        d3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QRiWFssScUqBQQGJxsZK+nU1RfmlJqkJG
-        fnGJrVJqQUpOgaFBgV5xYm5xaV66XnJ+rpWhgYGRKVBlQk7Gt3fLWQpec1csmT2HrYHxIWcX
-        IyeHhICJxOGzn1m7GLk4hAR2MEosOvSXHcL5xCjxq7ObGcL5xijxetc8NpiWx+3/mSASexkl
-        OqdeZ4NwXjJKnF43kxGkik1AV+LJjZ/MILaIgJ7EiZ07wEYxC3QxSjze9ZsFJMEpYCfx+MMm
-        oG4ODmEBT4mdCzVBwiwCKhJt1+eCzeEVsJR4/eEdlC0ocXLmE7BWZgF5ie1v5zBDXKQgsfvT
-        UVaIXVYSNzr+sEHUiEjM7mwD2ysh8Jdd4vXmqawguyQEXCQm97FC9ApLvDq+hR3ClpL4/G4v
-        1Jf1Ev/nr2WH6G1hlHj4aRsTRK+9xPtLFiAms4CmxPpd+hDlihI7f0OczCzAJ/Huaw/UJl6J
-        jjYhiBIVie8fdrLAbLry4yrTBEalWUgem4XksVlIHpiFsGwBI8sqRrHUguLc9NRiwwJD5Mje
-        xAhOjVqmOxgnvv2gd4iRiYPxEKMEB7OSCC/LvyPxQrwpiZVVqUX58UWlOanFhxhNgUE9kVlK
-        NDkfmJzzSuINTY2MjY0tTMzMzUyNlcR5/2h3xAsJpCeWpGanphakFsH0MXFwSjUwud2OVrVK
-        udLwf/mqwgyt1ZvZy0zPLJSW0U/zuLv3yfkVTbufNXtYn+q9vCdSbe269zYKAUyP5WInBou6
-        zJKMbBZ2WugXVtjcw/GkU6MvweHByerVM3yVPTqjyufN/m57e33EawfZSaubPyXIyM4yr+nL
-        NKq66JXDMPEBi2qScZ5L0363KSzLX3JkR8+oWqr49tzl38atX3ZY8WTc85nj6leufSOy9f6l
-        ju4VaXYTzP0P8Zu5HGc03CBlzHso+MLPmwVNBxY1rPOcUlE/M+jgg5ql+mXuN9MvafbW8Yv8
-        XtvRpLmoaPaN2wWhVXel7zGtjIp+oh6jrVF05aL84aiyE+c6jFNUzy89If6uWl2JpTgj0VCL
-        uag4EQAkreZXFgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFLMWRmVeSWpSXmKPExsWy7bCSvO4fuePxBre/8llsuvmN1WLP3pMs
-        Fpd3zWGz+DG93mLBxkeMDqweO2fdZffo27KK0ePzJrkA5igum5TUnMyy1CJ9uwSujG/vlrMU
-        vOauWDJ7DlsD40POLkZODgkBE4nH7f+Zuhi5OIQEdjNK3J12n7GLkQMoISVxcJ8mhCkscfhw
-        MUTJc0aJxZ3XWUB62QR0JZ7c+MkMYosI6Emc2LmDGaSIWaCPUeJrRx87SEJIoJ9R4umPEBCb
-        U8BO4vGHTWwgQ4UFPCV2LtQECbMIqEi0XZ/LCGLzClhKvP7wDsoWlDg58wkLSDkz0Py2jWBh
-        ZgF5ie1v5zBDnK8gsfvTUVaIE6wkbnT8YYOoEZGY3dnGPIFReBaSSbMQJs1CMmkWko4FjCyr
-        GCVTC4pz03OLDQsM81LL9YoTc4tL89L1kvNzNzGCo0NLcwfj9lUf9A4xMnEwHmKU4GBWEuFl
-        +XckXog3JbGyKrUoP76oNCe1+BCjNAeLkjjvjcKFcUIC6YklqdmpqQWpRTBZJg5OqQamvDUX
-        fY4s630ysWnaGlbbSDavlnnv/y+WebHmq5m2zuV37oriR84eNHnU6/RAdEb7t/s8Hxf8vnP9
-        H1OUyCLBmfLai17Ns/RKbnsTcsve7o+Zo8bOVnP3mt/aWY1dRV8CXBPScvxfHDRc8fRrS8MD
-        4cvxDyfKsc5WvOiT8izB5r+q88fKNpH3b9nefju8vuSwXIf4jrWH126vfVtYweN1YOXad5vv
-        sVyr8fhy4PXWOvd7ygk/l2yf0vq9x2abC882oRDzOxUHbyxasqbZ62aXWWcG20nFox65c7JO
-        ml1O5FPYL3FmXttJpQpuu7lyHgGdmh5SP4I3HXjAKFU1xSNhnojBzK8LVGrOvd7c+MojTIml
-        OCPRUIu5qDgRAHUrGJP9AgAA
-X-CMS-MailID: 20201202045836epcas1p1fc945fed4a7be7244a12f235c508061a
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201124194858epcas1p49cacda6a9b4877ff125f25f4dc5fcadf
-References: <CGME20201124194858epcas1p49cacda6a9b4877ff125f25f4dc5fcadf@epcas1p4.samsung.com>
-        <20201124194749.4041176-1-123321artyom@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The table for Unicode upcase conversion requires an order-5 allocation,
-> which may fail on a highly-fragmented system:
+On 12/1/2020 7:55 PM, Jakub Kicinski wrote:
+> On Tue, 1 Dec 2020 13:48:36 -0700 Jeffrey Hugo wrote:
+>> On 12/1/2020 1:03 PM, Jakub Kicinski wrote:
+>>> On Tue, 1 Dec 2020 12:40:50 -0700 Jeffrey Hugo wrote:
+>>>> On 12/1/2020 12:29 PM, Jakub Kicinski wrote:
+>>>>> On Fri, 27 Nov 2020 19:26:02 -0800 Hemant Kumar wrote:
+>>>>>> This patch series adds support for UCI driver. UCI driver enables userspace
+>>>>>> clients to communicate to external MHI devices like modem and WLAN. UCI driver
+>>>>>> probe creates standard character device file nodes for userspace clients to
+>>>>>> perform open, read, write, poll and release file operations. These file
+>>>>>> operations call MHI core layer APIs to perform data transfer using MHI bus
+>>>>>> to communicate with MHI device. Patch is tested using arm64 based platform.
+>>>>>
+>>>>> Wait, I thought this was for modems.
+>>>>>
+>>>>> Why do WLAN devices need to communicate with user space?
+>>>>>       
+>>>>
+>>>> Why does it matter what type of device it is?  Are modems somehow unique
+>>>> in that they are the only type of device that userspace is allowed to
+>>>> interact with?
+>>>
+>>> Yes modems are traditionally highly weird and require some serial
+>>> device dance I don't even know about.
+>>>
+>>> We have proper interfaces in Linux for configuring WiFi which work
+>>> across vendors. Having char device access to WiFi would be a step
+>>> back.
+>>
+>> So a WLAN device is only ever allowed to do Wi-Fi?  It can't also have
+>> GPS functionality for example?
 > 
->  pool-udisksd: page allocation failure: order:5,
-> mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO),
-> nodemask=(null),cpuset=/,mems_allowed=0
->  CPU: 4 PID: 3756880 Comm: pool-udisksd Tainted: G     U
-5.8.10-
-> 200.fc32.x86_64 #1
->  Hardware name: Dell Inc. XPS 13 9360/0PVG6D, BIOS 2.13.0 11/14/2019  Call
-> Trace:
->   dump_stack+0x6b/0x88
->   warn_alloc.cold+0x75/0xd9
->   ? _cond_resched+0x16/0x40
->   ? __alloc_pages_direct_compact+0x144/0x150
->   __alloc_pages_slowpath.constprop.0+0xcfa/0xd30
->   ? __schedule+0x28a/0x840
->   ? __wait_on_bit_lock+0x92/0xa0
->   __alloc_pages_nodemask+0x2df/0x320
->   kmalloc_order+0x1b/0x80
->   kmalloc_order_trace+0x1d/0xa0
->   exfat_create_upcase_table+0x115/0x390 [exfat]
->   exfat_fill_super+0x3ef/0x7f0 [exfat]
->   ? sget_fc+0x1d0/0x240
->   ? exfat_init_fs_context+0x120/0x120 [exfat]
->   get_tree_bdev+0x15c/0x250
->   vfs_get_tree+0x25/0xb0
->   do_mount+0x7c3/0xaf0
->   ? copy_mount_options+0xab/0x180
->   __x64_sys_mount+0x8e/0xd0
->   do_syscall_64+0x4d/0x90
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> No, but it's also not true that the only way to implement GPS is by
+> opening a full on command/packet interface between fat proprietary
+> firmware and custom user space (which may or may not be proprietary
+> as well).
+
+Funny, that exactly what the GPS "API" in the kernel is, although a bit 
+limited to the specifics on the standardized GPS "sentences" and not 
+covering implementation specific configuration.
+
 > 
-> Make the driver use vmalloc() to eliminate the issue.
+>>>> However, I'll bite.  Once such usecase would be QMI.  QMI is a generic
+>>>> messaging protocol, and is not strictly limited to the unique operations
+>>>> of a modem.
+>>>>
+>>>> Another usecase would be Sahara - a custom file transfer protocol used
+>>>> for uploading firmware images, and downloading crashdumps.
+>>>
+>>> Thanks, I was asking for use cases, not which proprietary vendor
+>>> protocol you can implement over it.
+>>>
+>>> None of the use cases you mention here should require a direct FW -
+>>> user space backdoor for WLAN.
+>>
+>> Uploading runtime firmware, with variations based on the runtime mode.
+>> Flashing the onboard flash based on cryptographic keys.  Accessing
+>> configuration data.  Accessing device logs.  Configuring device logs.
+>> Synchronizing the device time reference to Linux local or remote time
+>> sources.  Enabling debugging/performance hardware.  Getting software
+>> diagnostic events.  Configuring redundancy hardware per workload.
+>> Uploading new cryptographic keys.  Invalidating cryptographic keys.
+>> Uploading factory test data and running factory tests.
+>>
+>> Need more?
+> 
+> This conversation is going nowhere. Are you trying to say that creating
+> a common Linux API for those features is impossible and each vendor
+> should be allowed to add their own proprietary way?
+> 
+> This has been proven incorrect again and again, and Wi-Fi is a good
+> example.
+> 
+> You can do whatever you want for GPS etc. but don't come nowhere near
+> networking with this attitude please.
+> 
 
-I have not yet received a report of the same issue.
-But I agree that this problem is likely to occur even if it is low
-probability.
+No I'm saying (and Bjorn/Mani by the looks of things), that there is 
+commonality in the core features - IP traffic, Wi-Fi, etc but then there 
+are vendor specific things which are either things you don't actually 
+want in the kernel, don't want the kernel doing, or have little 
+commonality between vendors such that attempting to unify them gains you 
+little to nothing.
 
-I think it would be more appropriate to use kvcalloc and kvfree instead.
-Could you send me v2 patch?
+Over in the networking space, I can see where standardization is plenty 
+useful.
 
+I can't speak for other vendors, but a "modem" or a "wlan" device from 
+Qualcomm is not something that just provides one service.  They tend to 
+provide dozens of different functionalities, some of those are 
+"standardized" like wi-fi where common wi-fi interfaces are used. 
+Others are unique to Qualcomm.
 
+The point is "wlan device" is a superset of "wi-fi".  You seem to be 
+equating them to be the same in a "shoot first, ask questions later" manner.
+
+This series provides a way for userspace to talk to remote MHI "widgets" 
+for usecases not covered elsewhere.  Those "widgets" just happen to 
+commonly provide modem/wlan services, but ones that don't are not excluded.
+
+Regarding not coming near networking, I'd like to remind you it was you 
+that decided to come over here to the non-networking area and try to 
+make this about networking.
+
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
