@@ -2,378 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F8F2CB57F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE392CB5C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387629AbgLBHDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:03:38 -0500
-Received: from mga11.intel.com ([192.55.52.93]:44051 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387511AbgLBHDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:03:37 -0500
-IronPort-SDR: X733h72U+IqZcPLoyaegdGqp70tA6uX0YZogNq8usbLMGbec6KTkCV4LV5EN1hFpNhoy3ccJs4
- QWP0m0owPdOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="169461826"
-X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="169461826"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 23:02:46 -0800
-IronPort-SDR: 4SC9ziNrhq4S2fUKDLefuSmXn4qw9CUKx/v09rUf5B2bGyYu9xh0sPPlAEei2evNax/8ugNX/h
- RzEgkmFjkERQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="481430058"
-Received: from zulkifl3-ilbpg0.png.intel.com ([10.88.229.114])
-  by orsmga004.jf.intel.com with ESMTP; 01 Dec 2020 23:02:43 -0800
-From:   muhammad.husaini.zulkifli@intel.com
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        michal.simek@xilinx.com, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     andriy.shevchenko@intel.com,
-        lakshmi.bai.raja.subramanian@intel.com,
-        wan.ahmad.zainie.wan.mohamad@intel.com,
-        muhammad.husaini.zulkifli@intel.com, mgross@linux.intel.com
-Subject: [PATCH v6 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
-Date:   Wed,  2 Dec 2020 23:02:04 +0800
-Message-Id: <20201202150205.20150-5-muhammad.husaini.zulkifli@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
-References: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
+        id S1728649AbgLBHcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:32:10 -0500
+Received: from mail-dm6nam11on2076.outbound.protection.outlook.com ([40.107.223.76]:11105
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725912AbgLBHcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 02:32:10 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cpP3Z3r+ov8racrnZSqFufcPJlEZn5GEejetnn4BgzX+jsSg7dmh2vlYDYxurHdpLzdzszz4Ryzg/IFxnPm01OagcpacX+1ByfipWRe9kfl9U6xzXDPDq3sX/Qq8di4Ipivk6MbXFQdHfmoWhrvxA/KWxU/hbkvAYx1NIe0ZlKdF38fi8oJLQ1gGOdbYt6vFfU9pWrmziQbU41endhmiAf7TYuGLWdyB2jPjio2GemGaCxErQe+G2cEAQ4M4tH3yUDSFz4XgVL39aOIOvdhL/GgaO8V+1SjA9s/1XQn334f6gy/FIDAd5jW25AZ8TIXuNG7rN3mK1ty3Gnz02Hzsvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vqj/4ZDm+yPr83taQYA59DMtTHaXi4x+s56agp7EzcI=;
+ b=Mh2TNW0IAtBvOylAkasZGyzv2ZZxxmwtmnZeNRs8tCvru3QMf1V2kcFylv6pnq/RmSVg2ZdU+tfQV40PWx85wwnaE59XdhXMVBkU7CwyPsS43z2JPla7uaQQKzSRd6mXQWwlqBvA1Ka4WLp4bd+jvesPrVVUHPs0tJyYjog5xhjg0Hojb3BL3P4MDjpXDPGxxZUFcDM/NLPvREfYUxuOSV56HWbbf3W3DyUiZWbnAcD6XRTrg8gU1CMtNEGjlU4BIojm+ry0Sb5TWSoAjfra6FT6biV4wKcWTRNesA6+FESSJ1FRlX7nLMFj6o6G4GhvIeo/5UR+LZWC2NFkD6g4xA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vqj/4ZDm+yPr83taQYA59DMtTHaXi4x+s56agp7EzcI=;
+ b=cXVcetya11nwvF8TFW/o9ghgTG3J6WnICsTble2CLdJTCe6eKA0cZFxwkDFMCt5yWJ9JTb2fNfAzCn/ACC7TpCZbGsAqJHbSj8i3X/eN/aBFGR976d66vx8XN/d675HvvQvBz7qy9rVrCZCxgXqYFnuS6o3AkYmPaDnSebtLTaI=
+Received: from BL1PR13CA0472.namprd13.prod.outlook.com (2603:10b6:208:2c4::27)
+ by CH2PR02MB6070.namprd02.prod.outlook.com (2603:10b6:610:6::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.24; Wed, 2 Dec
+ 2020 07:31:18 +0000
+Received: from BL2NAM02FT020.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:2c4:cafe::62) by BL1PR13CA0472.outlook.office365.com
+ (2603:10b6:208:2c4::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.8 via Frontend
+ Transport; Wed, 2 Dec 2020 07:31:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ BL2NAM02FT020.mail.protection.outlook.com (10.152.77.162) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3611.27 via Frontend Transport; Wed, 2 Dec 2020 07:31:17 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 1 Dec 2020 23:31:17 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Tue, 1 Dec 2020 23:31:17 -0800
+Envelope-to: manish.narani@xilinx.com,
+ tejas.patel@xilinx.com,
+ rajan.vaja@xilinx.com,
+ michal.simek@xilinx.com,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ zou_wei@huawei.com,
+ gregkh@linuxfoundation.org
+Received: from [172.30.17.109] (port=54052)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kkMbc-0006EX-UX; Tue, 01 Dec 2020 23:31:17 -0800
+Subject: Re: [PATCH -next v2] firmware: xilinx: Mark pm_api_features_map with
+ static keyword
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Michal Simek <michal.simek@xilinx.com>
+CC:     Zou Wei <zou_wei@huawei.com>, <rajan.vaja@xilinx.com>,
+        <jolly.shah@xilinx.com>, <tejas.patel@xilinx.com>,
+        <manish.narani@xilinx.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1606823513-121578-1-git-send-email-zou_wei@huawei.com>
+ <65ea30eb-2595-4af8-09c2-6d352b9be509@xilinx.com>
+ <X8a067jdynVt3Lvg@kroah.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <9dbf2dd5-40db-3cbf-4d53-b027435ccbfe@xilinx.com>
+Date:   Wed, 2 Dec 2020 08:31:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <X8a067jdynVt3Lvg@kroah.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4489ad4a-a06b-4f14-2562-08d896944210
+X-MS-TrafficTypeDiagnostic: CH2PR02MB6070:
+X-Microsoft-Antispam-PRVS: <CH2PR02MB6070294EA562D18A25160853C6F30@CH2PR02MB6070.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:486;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oTQk2LVYJl893Xe5Y41YISOEEQjR+KDKUadE4bOSTLfQUL48HYfTgaA8QrooAUG4naUXS4slbyN+CQFpdxZ3T4U5f5tCVp7vlDcAktREkN7FrOtl2lG69BQNIr5Ernb0RpzyhKOWvAMPTtmbw3gocTcds36scBfYpFzXSnVoYk8+uunfMCVTm4O7yJW4IihUFyEQ8ETf3ZgX8T2TKIf1Zs8gD2cUpdZfpeHDUsZwu6vsJTw/kw/c2eykNQsBs+WQDOZ5haNSvJC3T/QFdkKiY+0bw0WBRXCF/LUoVWqu2dpew/iaZQWQ6Vm5wa7pEXYPSkbTLB1nN2f0kdU1AeYb7DyyCkLuhguY5Bg3pao/m9B9A5KNW/aBbvi3St/+NiRH/xlB6mVvdcC2ziL0+Bk5ypSu15E6HuumPOsmOulzqUBTjq376H3EsPkCmTw1t3lVlHZD0BB3bC9g8ytVyFVTIw==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(396003)(136003)(46966005)(336012)(31686004)(70586007)(47076004)(5660300002)(9786002)(2616005)(4326008)(478600001)(82310400003)(426003)(2906002)(356005)(31696002)(110136005)(44832011)(8676002)(54906003)(7636003)(26005)(186003)(316002)(8936002)(36906005)(83380400001)(6666004)(70206006)(82740400003)(36756003)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2020 07:31:17.9186
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4489ad4a-a06b-4f14-2562-08d896944210
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT020.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 
-Keem Bay SOC can support dual voltage operations for GPIO SD Pins to
-either 1.8V or 3.3V for bus IO line power. In order to operate the GPIOs
-line for Clk,Cmd and Data on Keem Bay Hardware, it is important to
-configure the supplied voltage applied to their I/O Rail and the output
-of the i2c expander pin. Final Voltage applied on the GPIOs Line are
-dependent by both supplied voltage rail and expander pin output as it is
-been set after passing through the voltage sense resistor.
 
-The Keem Bay HW is somewhat unique in the way of how IO bus line voltage
-are been controlled. Output of the Expander pins is been configured using
-regulator. Voltage rail output is being configured using
-keembay_io_rail_supplied_voltage() API in the sdhci driver directly.
-Pin control based implementation becomes problematic to control the
-voltage rail due to the base address of Always On Register is
-different from the base address of GPIO(Pinctrl). Thus, there is
-no way to control the I/O Rail using GPIO Pad configuration.
-On the other hand, using ARM SMC (Secure Monitor Call) directly from
-pin control driver for the sake of implement it as pin control model
-is not a good approach.
+On 01. 12. 20 22:26, Greg KH wrote:
+> On Tue, Dec 01, 2020 at 01:03:59PM +0100, Michal Simek wrote:
+>>
+>>
+>> On 01. 12. 20 12:51, Zou Wei wrote:
+>>> Fix the following sparse warning:
+>>>
+>>> drivers/firmware/xilinx/zynqmp.c:32:1: warning: symbol 'pm_api_features_map' was not declared. Should it be static?
+>>>
+>>> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+>>> ---
+>>>  drivers/firmware/xilinx/zynqmp.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
+>>> index d08ac82..fd95ede 100644
+>>> --- a/drivers/firmware/xilinx/zynqmp.c
+>>> +++ b/drivers/firmware/xilinx/zynqmp.c
+>>> @@ -29,7 +29,7 @@
+>>>  #define PM_API_FEATURE_CHECK_MAX_ORDER  7
+>>>  
+>>>  static bool feature_check_enabled;
+>>> -DEFINE_HASHTABLE(pm_api_features_map, PM_API_FEATURE_CHECK_MAX_ORDER);
+>>> +static DEFINE_HASHTABLE(pm_api_features_map, PM_API_FEATURE_CHECK_MAX_ORDER);
+>>>  
+>>>  /**
+>>>   * struct pm_api_feature_data - PM API Feature data
+>>>
+>>
+>> The patch is good but I am missing fixed tag to get it to LTS.
+> 
+> Why is this needed for any stable kernel release?  It's a sparse
+> warning, no one trips across those in stable kernels...
 
-This patch was tested with Keem Bay EVM.
+Ok thanks for explanation.
 
-Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
-Acked-by: Michal Simek <michal.simek@xilinx.com>
----
- drivers/mmc/host/sdhci-of-arasan.c | 244 +++++++++++++++++++++++++++++
- 1 file changed, 244 insertions(+)
+Applied to zynqmp/soc branch.
 
-diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-index 196e3d65277e..00ecdf54128c 100644
---- a/drivers/mmc/host/sdhci-of-arasan.c
-+++ b/drivers/mmc/host/sdhci-of-arasan.c
-@@ -23,6 +23,7 @@
- #include <linux/regmap.h>
- #include <linux/of.h>
- #include <linux/firmware/xlnx-zynqmp.h>
-+#include <linux/firmware/intel/keembay.h>
- 
- #include "cqhci.h"
- #include "sdhci-pltfm.h"
-@@ -79,6 +80,8 @@ struct sdhci_arasan_soc_ctl_field {
-  * @baseclkfreq:	Where to find corecfg_baseclkfreq
-  * @clockmultiplier:	Where to find corecfg_clockmultiplier
-  * @support64b:		Where to find SUPPORT64B bit
-+ * @otap_delay:		Where to find otap_delay
-+ * @sel_clk_buffer:	Where to find clock buffer delay
-  * @hiword_update:	If true, use HIWORD_UPDATE to access the syscon
-  *
-  * It's up to the licensee of the Arsan IP block to make these available
-@@ -89,6 +92,8 @@ struct sdhci_arasan_soc_ctl_map {
- 	struct sdhci_arasan_soc_ctl_field	baseclkfreq;
- 	struct sdhci_arasan_soc_ctl_field	clockmultiplier;
- 	struct sdhci_arasan_soc_ctl_field	support64b;
-+	struct sdhci_arasan_soc_ctl_field	otap_delay;
-+	struct sdhci_arasan_soc_ctl_field	sel_clk_buffer;
- 	bool					hiword_update;
- };
- 
-@@ -189,6 +194,8 @@ static const struct sdhci_arasan_soc_ctl_map intel_keembay_soc_ctl_map = {
- 	.baseclkfreq = { .reg = 0x0, .width = 8, .shift = 14 },
- 	.clockmultiplier = { .reg = 0x4, .width = 8, .shift = 14 },
- 	.support64b = { .reg = 0x4, .width = 1, .shift = 24 },
-+	.otap_delay = { .reg = 0x24, .width = 5, .shift = 23 },
-+	.sel_clk_buffer = { .reg = 0x2c, .width = 3, .shift = 25 },
- 	.hiword_update = false,
- };
- 
-@@ -364,6 +371,144 @@ static int sdhci_arasan_voltage_switch(struct mmc_host *mmc,
- 	return -EINVAL;
- }
- 
-+/**
-+ * sdhci_arasan_keembay_io_line_supply_operation - Supply for the bus IO line power
-+ *
-+ * @mmc:	Pointer to sdhci_host
-+ * @ios:	Pointer to IO bus setting
-+ *
-+ * For Keem Bay HW, in order to operate the GPIOs line for Clk,Cmd and Data,
-+ * it is important to configure the supplied voltage applied to their I/O Rail
-+ * and the output of the i2c expander Pin.
-+ *
-+ * Note that to configure the voltage rail setting, specific bits in AON_CFG
-+ * register must be set. While to configure the i2c expander pin output,
-+ * gpio regulator modelling is been used to control the pin state.
-+ *
-+ * Always on Domain register having different base address from GPIO base address
-+ * and it is a secure register. There is no way to control the I/O Voltage Rail
-+ * from the GPIO Pad. SMC CALL is been used to set the bits in AON_CFG1 register.
-+ *
-+ * Final Voltage applied on the GPIOs Line are dependent by both supplied voltage
-+ * I/O Rail and expander pin output as it is been set after passing through the
-+ * voltage sense resistor.
-+ *
-+ * Return: 0 on success and error value on error
-+ */
-+static int sdhci_arasan_keembay_io_line_supply_operation(struct mmc_host *mmc,
-+						  struct mmc_ios *ios)
-+{
-+	int ret, min_uV, max_uV, volt_rail;
-+
-+	if (ios->signal_voltage == MMC_SIGNAL_VOLTAGE_180) {
-+		min_uV = IOV_1V8;
-+		max_uV = IOV_1V8;
-+		volt_rail = KEEMBAY_SET_1V8_IO_RAIL;
-+	} else {
-+		min_uV = IOV_3V3;
-+		max_uV = IOV_3V3;
-+		volt_rail = KEEMBAY_SET_3V3_IO_RAIL;
-+	}
-+
-+	/* If no vqmmc supply then we can't change the voltage */
-+	if (IS_ERR(mmc->supply.vqmmc))
-+		return -EINVAL;
-+
-+	ret = regulator_set_voltage(mmc->supply.vqmmc, min_uV, max_uV);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * This is like a final gatekeeper. Need to ensure changed voltage
-+	 * is settled before and after turn on this bit.
-+	 */
-+	usleep_range(1000, 1100);
-+
-+	ret = keembay_io_rail_supplied_voltage(volt_rail);
-+	if (ret)
-+		return ret;
-+
-+	usleep_range(1000, 1100);
-+
-+	return 0;
-+}
-+
-+static int sdhci_arasan_keembay_voltage_switch(struct mmc_host *mmc,
-+				       struct mmc_ios *ios)
-+{
-+	struct sdhci_host *host = mmc_priv(mmc);
-+	u16 ctrl_2, clk;
-+	int ret;
-+
-+	switch (ios->signal_voltage) {
-+	case MMC_SIGNAL_VOLTAGE_180:
-+		clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-+		clk &= ~SDHCI_CLOCK_CARD_EN;
-+		sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
-+
-+		clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-+		if (clk & SDHCI_CLOCK_CARD_EN)
-+			return -EAGAIN;
-+
-+		sdhci_writeb(host, SDHCI_POWER_ON | SDHCI_POWER_180,
-+				   SDHCI_POWER_CONTROL);
-+
-+		ret = sdhci_arasan_keembay_io_line_supply_operation(mmc, ios);
-+		if (ret)
-+			return ret;
-+
-+		ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
-+		ctrl_2 |= SDHCI_CTRL_VDD_180;
-+		sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
-+
-+		/* Sleep for 5ms to stabilize 1.8V regulator */
-+		usleep_range(5000, 5500);
-+
-+		/* 1.8V regulator output should be stable within 5 ms */
-+		ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
-+		if (!(ctrl_2 & SDHCI_CTRL_VDD_180))
-+			return -EAGAIN;
-+
-+		clk  = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-+		clk |= SDHCI_CLOCK_CARD_EN;
-+		sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
-+		break;
-+	case MMC_SIGNAL_VOLTAGE_330:
-+		ret = sdhci_arasan_keembay_io_line_supply_operation(mmc, ios);
-+		if (ret)
-+			return ret;
-+
-+		/* Set 1.8V Signal Enable in the Host Control2 register to 0 */
-+		ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
-+		ctrl_2 &= ~SDHCI_CTRL_VDD_180;
-+		sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
-+
-+		/* Sleep for 5ms to stabilize 3.3V regulator */
-+		usleep_range(5000, 5500);
-+
-+		/* 3.3V regulator output should be stable within 5 ms */
-+		ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
-+		if (ctrl_2 & SDHCI_CTRL_VDD_180)
-+			return -EAGAIN;
-+
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sdhci_arasan_keembay_select_drive_strength(struct mmc_card *card,
-+					unsigned int max_dtr, int host_drv,
-+					int card_drv, int *drv_type)
-+{
-+	if (card->host->ios.signal_voltage == MMC_SIGNAL_VOLTAGE_180)
-+		*drv_type = MMC_SET_DRIVER_TYPE_C;
-+
-+	return 0;
-+}
-+
- static const struct sdhci_ops sdhci_arasan_ops = {
- 	.set_clock = sdhci_arasan_set_clock,
- 	.get_max_clock = sdhci_pltfm_clk_get_max_clock,
-@@ -964,6 +1109,77 @@ static void sdhci_arasan_update_baseclkfreq(struct sdhci_host *host)
- 	sdhci_arasan_syscon_write(host, &soc_ctl_map->baseclkfreq, mhz);
- }
- 
-+/**
-+ * sdhci_arasan_update_otap_delay - Set otap delay
-+ *
-+ * This is used to manualy control the txclk Tap Delay,
-+ * for flopping the final stage flops.
-+ *
-+ * NOTES:
-+ * - Many existing devices don't seem to do this and work fine.  To keep
-+ *   compatibility for old hardware where the device tree doesn't provide a
-+ *   register map, this function is a noop if a soc_ctl_map hasn't been provided
-+ *   for this platform.
-+ *
-+ * @host:		The sdhci_host
-+ */
-+static void sdhci_arasan_update_otap_delay(struct sdhci_host *host,
-+						u32 value)
-+{
-+	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-+	struct sdhci_arasan_data *sdhci_arasan = sdhci_pltfm_priv(pltfm_host);
-+	const struct sdhci_arasan_soc_ctl_map *soc_ctl_map =
-+		sdhci_arasan->soc_ctl_map;
-+
-+	/* Having a map is optional */
-+	if (!soc_ctl_map)
-+		return;
-+
-+	/* If we have a map, we expect to have a syscon */
-+	if (!sdhci_arasan->soc_ctl_base) {
-+		pr_warn("%s: Have regmap, but no soc-ctl-syscon\n",
-+			mmc_hostname(host->mmc));
-+		return;
-+	}
-+
-+	sdhci_arasan_syscon_write(host, &soc_ctl_map->otap_delay, value);
-+}
-+
-+/**
-+ * sdhci_arasan_update_clk_sel_buff - Clock buffer select
-+ *
-+ * This is used to delay the clock buffer
-+ *
-+ * NOTES:
-+ * - Many existing devices don't seem to do this and work fine.  To keep
-+ *   compatibility for old hardware where the device tree doesn't provide a
-+ *   register map, this function is a noop if a soc_ctl_map hasn't been provided
-+ *   for this platform.
-+ *
-+ * @host:		The sdhci_host
-+ */
-+static void sdhci_arasan_update_sel_clkbuf(struct sdhci_host *host,
-+						u32 value)
-+{
-+	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-+	struct sdhci_arasan_data *sdhci_arasan = sdhci_pltfm_priv(pltfm_host);
-+	const struct sdhci_arasan_soc_ctl_map *soc_ctl_map =
-+		sdhci_arasan->soc_ctl_map;
-+
-+	/* Having a map is optional */
-+	if (!soc_ctl_map)
-+		return;
-+
-+	/* If we have a map, we expect to have a syscon */
-+	if (!sdhci_arasan->soc_ctl_base) {
-+		pr_warn("%s: Have regmap, but no soc-ctl-syscon\n",
-+			mmc_hostname(host->mmc));
-+		return;
-+	}
-+
-+	sdhci_arasan_syscon_write(host, &soc_ctl_map->sel_clk_buffer, value);
-+}
-+
- static void sdhci_arasan_set_clk_delays(struct sdhci_host *host)
- {
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-@@ -1587,6 +1803,34 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
- 		host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
- 	}
- 
-+	if (of_device_is_compatible(np, "intel,keembay-sdhci-5.1-sd")) {
-+		struct device_node *phys;
-+		u32 otap_delay, sel_clk_buffer;
-+
-+		phys = of_parse_phandle(dev->of_node, "phys", 0);
-+		if (!phys) {
-+			dev_err(dev, "Can't get phys for sd0\n");
-+			ret = -ENODEV;
-+			goto err_pltfm_free;
-+		}
-+
-+		of_property_read_u32(phys,
-+			"intel,keembay-emmc-phy-otap-dly", &otap_delay);
-+		of_property_read_u32(phys,
-+			"intel,keembay-emmc-phy-sel-clkbuf", &sel_clk_buffer);
-+
-+		of_node_put(phys);
-+
-+		sdhci_arasan_update_otap_delay(host, otap_delay);
-+		sdhci_arasan_update_sel_clkbuf(host, sel_clk_buffer);
-+
-+		host->mmc_host_ops.start_signal_voltage_switch =
-+			sdhci_arasan_keembay_voltage_switch;
-+
-+		host->mmc_host_ops.select_drive_strength =
-+			sdhci_arasan_keembay_select_drive_strength;
-+	}
-+
- 	sdhci_arasan_update_baseclkfreq(host);
- 
- 	ret = sdhci_arasan_register_sdclk(sdhci_arasan, clk_xin, dev);
--- 
-2.17.1
-
+Thanks,
+Michal
