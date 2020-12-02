@@ -2,161 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EED2CC632
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C68A42CC637
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731094AbgLBTHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:07:03 -0500
-Received: from mga05.intel.com ([192.55.52.43]:33486 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731083AbgLBTHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:07:02 -0500
-IronPort-SDR: ZWlBNZ+QgWOvlSTE4aznrqgtX90nsdngl+u7GlJunvadPuXjU9mRlkPmU1zHMSuUKj6QBm6cde
- 2KRG4Q06VNog==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="257781885"
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="257781885"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 11:05:22 -0800
-IronPort-SDR: X8I+Gymkt1GuI1zfBEuedFDmrHZIOEby8/Za/1MiqBLcaMrQOmFpoECBHjfK3nEuS6ff0wwYSq
- WdZ0WxjtVZ8w==
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="481669396"
-Received: from rhweight-wrk1.ra.intel.com ([137.102.106.140])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 11:05:21 -0800
-Date:   Wed, 2 Dec 2020 11:06:30 -0800 (PST)
-From:   matthew.gerlach@linux.intel.com
-X-X-Sender: mgerlach@rhweight-WRK1
-To:     "Wu, Hao" <hao.wu@intel.com>
-cc:     Moritz Fischer <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>
-Subject: RE: [PATCH v3 2/2] fpga: dfl: look for vendor specific capability
-In-Reply-To: <DM6PR11MB38191CF23533B7C1B44B56EA85F30@DM6PR11MB3819.namprd11.prod.outlook.com>
-Message-ID: <alpine.DEB.2.22.394.2012021105500.1157625@rhweight-WRK1>
-References: <20201124155658.700976-1-matthew.gerlach@linux.intel.com> <20201124155658.700976-3-matthew.gerlach@linux.intel.com> <DM6PR11MB38191D8C5E27E6E04B8DAA1A85F70@DM6PR11MB3819.namprd11.prod.outlook.com> <alpine.DEB.2.22.394.2011301614040.1050045@rhweight-WRK1>
- <X8aR36hGoV9SsPDw@archbook> <DM6PR11MB38191CF23533B7C1B44B56EA85F30@DM6PR11MB3819.namprd11.prod.outlook.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S2387805AbgLBTIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:08:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbgLBTIJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 14:08:09 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01729C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:07:29 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id t18so1667543plo.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:07:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CI9tZHSqVnZWg7RvQpMS4nqMXXIbLQ8Im7hlt6GJUiI=;
+        b=E3P3K2PuL0LspLuFI2FjNETxSRdGUE4F1gu4RqXq8nl+CaW6y7wJ6D9rxKjHbDt6Sc
+         d7fUnySi06CMlffhWQbR4QYybkRtQzVp/93HEURZexGt8CHlzLDuYhUHmv7TIKtwytUj
+         lBatJbTznHe4/8k2Hz1YYRVTB6QqMHTxjX2jM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CI9tZHSqVnZWg7RvQpMS4nqMXXIbLQ8Im7hlt6GJUiI=;
+        b=bJT/uVG62xuosSxetDJANKAwFq7vgAjqBakXvV3TzXX0tOmqKeiVl9pbfj30RmfGeB
+         CwGrJkqmkNvZmPElDDK3JwBaOU05PrdB4H9M7A1lfG1ZBVcOt/5rKTwgTwkjHR38KI+I
+         0XVCVzcuGFYD5PSrH8WbmhJjYjxObloB2nt72FU2q7NW6QNADiqdSsA9vJjUAVFxY0uU
+         L0s6/lEX7ex8c05++axypQ2+bAZpsQ0+ulMp/ejtFc2oJnCYCv9dHdVa/hSbBckfRr2G
+         wQYry2wCpBkzMzKBa5DqCsp4AG9iR5MKVLvGc5H5I8eXlgu1IzyRobEWgSFlgJRWGyfp
+         JFrg==
+X-Gm-Message-State: AOAM530IB9MABlNhWkciEwnWOb9OevKkFGe2wf9zbqr85m8fs7asfx7W
+        83N8lweSucv7BWvKpYbSteVrmQ==
+X-Google-Smtp-Source: ABdhPJxRnidXbunIBUKjdgdVYvKvQLfbolT7fVvdUnvhBqIseLwtyxa0Lw7RIiEURkPqHmoR1U/2Pw==
+X-Received: by 2002:a17:902:8ec7:b029:d8:e603:304c with SMTP id x7-20020a1709028ec7b02900d8e603304cmr3892158plo.85.1606936048527;
+        Wed, 02 Dec 2020 11:07:28 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v24sm432906pgi.61.2020.12.02.11.07.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 11:07:27 -0800 (PST)
+Date:   Wed, 2 Dec 2020 11:07:26 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] x86/sev-es: Fix not using prefixes.nbytes for loop
+ over prefixes.bytes
+Message-ID: <202012021104.0C38FB7FD@keescook>
+References: <160689905099.3084105.7880450206184269465.stgit@devnote2>
+ <160689906460.3084105.3134729514028168934.stgit@devnote2>
+ <54417a56-241b-14f9-2540-11b23e40e2b2@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54417a56-241b-14f9-2540-11b23e40e2b2@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 02, 2020 at 09:31:57AM -0600, Tom Lendacky wrote:
+> On 12/2/20 2:51 AM, Masami Hiramatsu wrote:
+> > Since the insn.prefixes.nbytes can be bigger than the size of
+> > insn.prefixes.bytes[] when a same prefix is repeated, we have to
+> > check whether the insn.prefixes.bytes[i] != 0 and i < 4 instead
+> > of insn.prefixes.nbytes.
+> > 
+> > Fixes: 25189d08e516 ("x86/sev-es: Add support for handling IOIO exceptions")
+> > Reported-by: Kees Cook <keescook@chromium.org>
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > ---
+> >   arch/x86/boot/compressed/sev-es.c |    2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/boot/compressed/sev-es.c b/arch/x86/boot/compressed/sev-es.c
+> > index 954cb2702e23..6a7a3027c9ac 100644
+> > --- a/arch/x86/boot/compressed/sev-es.c
+> > +++ b/arch/x86/boot/compressed/sev-es.c
+> > @@ -36,7 +36,7 @@ static bool insn_has_rep_prefix(struct insn *insn)
+> >   	insn_get_prefixes(insn);
+> > -	for (i = 0; i < insn->prefixes.nbytes; i++) {
+> > +	for (i = 0; insn->prefixes.bytes[i] && i < 4; i++) {
 
+You must test "i" before bytes[i] or you still do the out-of-bounds-read.
 
-On Wed, 2 Dec 2020, Wu, Hao wrote:
+> 
+> Wouldn't it be better to create a #define for the size rather than hard
+> coding 4 in the various files? That would protect everything should the
+> bytes array size ever change in the future.
 
->> Subject: Re: [PATCH v3 2/2] fpga: dfl: look for vendor specific capability
->>
->> Hi Matthew,
->>
->> On Mon, Nov 30, 2020 at 04:45:20PM -0800,
->> matthew.gerlach@linux.intel.com wrote:
->>>
->>>
->>> On Sat, 28 Nov 2020, Wu, Hao wrote:
->>>
->>>>> Subject: [PATCH v3 2/2] fpga: dfl: look for vendor specific capability
->>>>
->>>> Maybe we can change the title a little bit, what about
->>>> fpga: dfl-pci: locate DFLs by PCIe vendor specific capability
->>>>
->>>>>
->>>>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>>>>
->>>>> A DFL may not begin at offset 0 of BAR 0.  A PCIe vendor
->>>>> specific capability can be used to specify the start of a
->>>>> number of DFLs.
->>>>
->>>> A PCIe vendor specific extended capability is introduced by Intel to
->>>> specify the start of a number of DFLs.
->>>
->>> Your suggestion is more precise.
->>>>
->>>>
->>>>>
->>>>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>>>> ---
->>>>> v3: Add text and ascii art to documentation.
->>>>>     Ensure not to exceed PCIe config space in loop.
->>>>>
->>>>> v2: Update documentation for clarity.
->>>>>     Clean up  macro names.
->>>>>     Use GENMASK.
->>>>>     Removed spurious blank lines.
->>>>>     Changed some calls from dev_info to dev_dbg.
->>>>>     Specifically check for VSEC not found, -ENODEV.
->>>>>     Ensure correct pci vendor id.
->>>>>     Remove check for page alignment.
->>>>>     Rename find_dfl_in_cfg to find_dfls_by_vsec.
->>>>>     Initialize target memory of pci_read_config_dword to invalid values
->> before
->>>>> use.
->>>>> ---
->>>>>  Documentation/fpga/dfl.rst | 25 +++++++++++
->>>>>  drivers/fpga/dfl-pci.c     | 91
->> +++++++++++++++++++++++++++++++++++++-
->>>>>  2 files changed, 115 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
->>>>> index 0404fe6ffc74..fa0da884a818 100644
->>>>> --- a/Documentation/fpga/dfl.rst
->>>>> +++ b/Documentation/fpga/dfl.rst
->>>>> @@ -501,6 +501,31 @@ Developer only needs to provide a sub feature
->>>>> driver with matched feature id.
->>>>>  FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-
->> fme-
->>>>> pr.c)
->>>>>  could be a reference.
->>>>>
->>>>> +Location of DFLs on a PCI Device
->>>>> +===========================
->>>>> +There are two ways of locating DFLs on a PCI Device.  The original
->>>>
->>>> I found this new VSEC is only for PCIe device, correct? If so, let's make
->>>> sure descriptions are accurate. E.g. default method for all devices
->>>> and a new method for PCIe device.
->>>
->>> Yes, the default method can be used with PCI and PCIe device, and the
->> VSEC
->>> approach is PCIe, only.  Documentation can be made more precise.
->>>
->>>>
->>>>> +method assumed the start of the first DFL to offset 0 of bar 0.
->>>>> +If the first node of the DFL is an FME, then further DFLs
->>>>> +in the port(s) are specified in FME header registers.
->>>>> +Alternatively, a vendor specific capability structure can be used to
->> Maybe: a vendor specific extended capability (VSEC) ...
->>>>> +specify the location of all the DFLs on the device, providing flexibility
->>>>> +for the type of starting node in the DFL.  Intel has reserved the
->>>>> +VSEC ID of 0x43 for this purpose.  The vendor specific
->>>>> +data begins with a 4 byte vendor specific register for the number of
->> DFLs
->>>>> followed 4 byte
->>>>> +Offset/BIR vendor specific registers for each DFL. Bits 2:0 of Offset/BIR
->>>>> register
->>>>
->>>> Do we have a defined register name here? or it's named as Offset/BIR
->> register?
->>>> Sounds a little wired, and I see you defined it as DFLS_RES?
->>>
->>> The Offset/BIR terminology is also used in the MSI-X capability structure.
->>
->> Yeah, this intuitively made sense to me having worked with PCIe :)
->
-> I just feel that it's better to use the same register name defined in the code
-> below. So people can find matched information in both code and doc easily. : )
+Agreed, and perhaps instead of repeating the idiom in the for loop, add
+a helper like:
 
-I think this makes sense.  I can change the name of the variable to bir to 
-match the documentation.
+#define insn_prefix_valid(prefixes, i) (i >=0 && i < 4 && prefixes->bytes[i])
 
->
-> Thanks
-> Hao
->
+to be used like:
+
+	for (i = 0; insn_prefix_valid(&insn->prefixes, i); i++) {
+
+> 
+> Thanks,
+> Tom
+> 
+> >   		insn_byte_t p = insn->prefixes.bytes[i];
+> >   		if (p == 0xf2 || p == 0xf3)
+> > 
+
+-- 
+Kees Cook
