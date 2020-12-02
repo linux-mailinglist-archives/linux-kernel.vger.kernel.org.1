@@ -2,91 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CF72CC460
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 840912CC463
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729406AbgLBR4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:56:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726485AbgLBR4D (ORCPT
+        id S1730973AbgLBR4U convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Dec 2020 12:56:20 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:50703 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgLBR4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:56:03 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AC9C0613CF;
-        Wed,  2 Dec 2020 09:55:23 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id o9so1705238pfd.10;
-        Wed, 02 Dec 2020 09:55:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ryyYawzS2MjebmkZYtVtHUp0Y0QlBniiFC9GtFM7sjg=;
-        b=JrsjG0IzQ0TgPk4TC/V99EGsekn3FhEaEM4vkQy2ZkEdIf0DtUX+LwjaFp4XV1VvqP
-         s/sNvoVcWMzNggQacUTfqCbGGuaZOsIJU8y4uRrdHWXpCg8BCP5PgMQB6RqAQd5F+SGX
-         AGdrkNQlhr1T1fqcdxAOVz4sBkV0hGM4j3k9Qr9SOmHXvb1mAqbxHNqQkT1M1kfBY3tr
-         CvMZb4i8rbJPLgka7aiMcbL3xkzi+tM+Of4E/94umUvUAJIlzFmg92Tl4izJOQfQCFgE
-         gpFti5D7qDz8BQC0PBjIjUhdiv0VpUBjin5pfTSVNhmFo7FQCvIiCCHvO4tNO7jgNWwm
-         sEKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ryyYawzS2MjebmkZYtVtHUp0Y0QlBniiFC9GtFM7sjg=;
-        b=muf/J0nrPN2jwrUNR4hvACI/ozNH/xmNuongeq8EERm4eJz7I/rNqDlwbIooka4ahT
-         87VgOsRF8LdMxihfHVO9aehqbsyqtInOzexGhqL2kCeMjV46xoYrH+3f5fd8HqSrrh2Y
-         0clFC5re+J+ieEFs1M0/U2GGV8A60wN+ApKafKtQItiINEF80VEPZaoWdGC2yWR2x2hb
-         MWLvsjsX8T20OrdIfZYKMyMP90NpPelNB68wp4PWjNqbcH2PftWj58Enfk7NhtJsvbO0
-         yZOGoTkN6vBsotxF6cHBQxUMPLtfLuv6cIiILvr+/j/rQ0fLN8q4UVw0w/sTmNNaN5vc
-         NHvA==
-X-Gm-Message-State: AOAM530cyKQyY05U22XhQ3p7atO431rnFLYcM21Nu89iGGfhq4BhNGwG
-        GFVBQl2rc0kQkR4fTiJUweW0s5LRuhM=
-X-Google-Smtp-Source: ABdhPJzZJfnJTKZDgnB349gIV43CHB4pRQpSz6yZhKExglNfal84cKW05LLkbAViYODkjL4H+6trjg==
-X-Received: by 2002:a62:1c96:0:b029:198:1cb6:26bd with SMTP id c144-20020a621c960000b02901981cb626bdmr3599343pfc.33.1606931722779;
-        Wed, 02 Dec 2020 09:55:22 -0800 (PST)
-Received: from [10.230.28.242] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id a3sm409853pfh.106.2020.12.02.09.55.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 09:55:21 -0800 (PST)
-Subject: Re: [PATCH v5 06/11] soc: bcm: raspberrypi-power: Release firmware
- handle on unbind
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org
-Cc:     f.fainelli@gmail.com, linux-pwm@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        wahrenst@gmx.net, linux-input@vger.kernel.org,
-        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
-        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
-        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
-        linux-clk@vger.kernel.org, sboyd@kernel.org,
-        linux-rpi-kernel@lists.infradead.org, bgolaszewski@baylibre.com,
-        andy.shevchenko@gmail.com
-References: <20201123183833.18750-1-nsaenzjulienne@suse.de>
- <20201123183833.18750-7-nsaenzjulienne@suse.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f3fb5ec0-78e9-9245-8a08-247313e45a57@gmail.com>
-Date:   Wed, 2 Dec 2020 09:55:19 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.0
+        Wed, 2 Dec 2020 12:56:20 -0500
+Received: from 1.general.jvosburgh.uk.vpn ([10.172.196.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1kkWLi-0000FH-5l; Wed, 02 Dec 2020 17:55:30 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id 9B6D05FEE8; Wed,  2 Dec 2020 09:55:28 -0800 (PST)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id 960CB9FAB0;
+        Wed,  2 Dec 2020 09:55:28 -0800 (PST)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Jarod Wilson <jarod@redhat.com>
+cc:     linux-kernel@vger.kernel.org, Ivan Vecera <ivecera@redhat.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net v2] bonding: fix feature flag setting at init time
+In-reply-to: <20201202173053.13800-1-jarod@redhat.com>
+References: <20201123031716.6179-1-jarod@redhat.com> <20201202173053.13800-1-jarod@redhat.com>
+Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
+   message dated "Wed, 02 Dec 2020 12:30:53 -0500."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-In-Reply-To: <20201123183833.18750-7-nsaenzjulienne@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <14710.1606931728.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Wed, 02 Dec 2020 09:55:28 -0800
+Message-ID: <14711.1606931728@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jarod Wilson <jarod@redhat.com> wrote:
 
+>Don't try to adjust XFRM support flags if the bond device isn't yet
+>registered. Bad things can currently happen when netdev_change_features()
+>is called without having wanted_features fully filled in yet. Basically,
+>this code was racing against register_netdevice() filling in
+>wanted_features, and when it got there first, the empty wanted_features
+>led to features also getting emptied out, which was definitely not the
+>intended behavior, so prevent that from happening.
 
-On 11/23/2020 10:38 AM, Nicolas Saenz Julienne wrote:
-> Use devm_rpi_firmware_get() so as to make sure we release RPi's firmware
-> interface when unbinding the device.
+	Is this an actual race?  Reading Ivan's prior message, it sounds
+like it's an ordering problem (in that bond_newlink calls
+register_netdevice after bond_changelink).
+
+	The change to bond_option_mode_set tests against reg_state, so
+presumably it wants to skip the first(?) time through, before the
+register_netdevice call; is that right?
+
+	-J
+
+>Originally, I'd hoped to stop adjusting wanted_features at all in the
+>bonding driver, as it's documented as being something only the network
+>core should touch, but we actually do need to do this to properly update
+>both the features and wanted_features fields when changing the bond type,
+>or we get to a situation where ethtool sees:
+>
+>    esp-hw-offload: off [requested on]
+>
+>I do think we should be using netdev_update_features instead of
+>netdev_change_features here though, so we only send notifiers when the
+>features actually changed.
+>
+>v2: rework based on further testing and suggestions from ivecera
+>
+>Fixes: a3b658cfb664 ("bonding: allow xfrm offload setup post-module-load")
+>Reported-by: Ivan Vecera <ivecera@redhat.com>
+>Suggested-by: Ivan Vecera <ivecera@redhat.com>
+>Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+>Cc: Veaceslav Falico <vfalico@gmail.com>
+>Cc: Andy Gospodarek <andy@greyhouse.net>
+>Cc: "David S. Miller" <davem@davemloft.net>
+>Cc: Jakub Kicinski <kuba@kernel.org>
+>Cc: Thomas Davis <tadavis@lbl.gov>
+>Cc: netdev@vger.kernel.org
+>Signed-off-by: Jarod Wilson <jarod@redhat.com>
+>---
+> drivers/net/bonding/bond_main.c    | 10 ++++------
+> drivers/net/bonding/bond_options.c |  6 +++++-
+> 2 files changed, 9 insertions(+), 7 deletions(-)
+>
+>diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+>index e0880a3840d7..5fe5232cc3f3 100644
+>--- a/drivers/net/bonding/bond_main.c
+>+++ b/drivers/net/bonding/bond_main.c
+>@@ -4746,15 +4746,13 @@ void bond_setup(struct net_device *bond_dev)
+> 				NETIF_F_HW_VLAN_CTAG_FILTER;
 > 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> 	bond_dev->hw_features |= NETIF_F_GSO_ENCAP_ALL;
+>-#ifdef CONFIG_XFRM_OFFLOAD
+>-	bond_dev->hw_features |= BOND_XFRM_FEATURES;
+>-#endif /* CONFIG_XFRM_OFFLOAD */
+> 	bond_dev->features |= bond_dev->hw_features;
+> 	bond_dev->features |= NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_STAG_TX;
+> #ifdef CONFIG_XFRM_OFFLOAD
+>-	/* Disable XFRM features if this isn't an active-backup config */
+>-	if (BOND_MODE(bond) != BOND_MODE_ACTIVEBACKUP)
+>-		bond_dev->features &= ~BOND_XFRM_FEATURES;
+>+	bond_dev->hw_features |= BOND_XFRM_FEATURES;
+>+	/* Only enable XFRM features if this is an active-backup config */
+>+	if (BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP)
+>+		bond_dev->features |= BOND_XFRM_FEATURES;
+> #endif /* CONFIG_XFRM_OFFLOAD */
+> }
+> 
+>diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
+>index 9abfaae1c6f7..19205cfac751 100644
+>--- a/drivers/net/bonding/bond_options.c
+>+++ b/drivers/net/bonding/bond_options.c
+>@@ -768,11 +768,15 @@ static int bond_option_mode_set(struct bonding *bond,
+> 		bond->params.tlb_dynamic_lb = 1;
+> 
+> #ifdef CONFIG_XFRM_OFFLOAD
+>+	if (bond->dev->reg_state != NETREG_REGISTERED)
+>+		goto noreg;
+>+
+> 	if (newval->value == BOND_MODE_ACTIVEBACKUP)
+> 		bond->dev->wanted_features |= BOND_XFRM_FEATURES;
+> 	else
+> 		bond->dev->wanted_features &= ~BOND_XFRM_FEATURES;
+>-	netdev_change_features(bond->dev);
+>+	netdev_update_features(bond->dev);
+>+noreg:
+>
+> #endif /* CONFIG_XFRM_OFFLOAD */
+> 
+> 	/* don't cache arp_validate between modes */
+>-- 
+>2.28.0
+>
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
