@@ -2,85 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6124C2CC61A
+	by mail.lfdr.de (Postfix) with ESMTP id D762A2CC61B
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:03:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389494AbgLBTCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:02:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726082AbgLBTCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:02:02 -0500
-Date:   Wed, 2 Dec 2020 20:01:18 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606935682;
-        bh=IjMI8CJE7unsaBbrJ0CoZSVehDUAHUWSL6E99lkW2po=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P3L9lRg+20QNXHFBuMiDzDacZYK0dIgITJmdqeRgdL9xG+GkWn1+Jd9owrF4MMXT+
-         YZjIwiDTUDnNm5QI6fVuQ61aSM2lyafmhtbmFQh2moP0RqgDPe0IbRfiquzRM4EITs
-         fRoW6Y/tP9QTZS9f2EHgkloof96tsZz0vxEF0UE0=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     mark gross <mgross@linux.intel.com>
-Cc:     markgross@kernel.org, arnd@arndb.de, bp@suse.de,
-        damien.lemoal@wdc.com, dragan.cvetic@xilinx.com, corbet@lwn.net,
-        leonard.crestez@nxp.com, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
-        shawnguo@kernel.org, linux-kernel@vger.kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Subject: Re: [PATCH 03/22] keembay-ipc: Add Keem Bay IPC module
-Message-ID: <X8fkflUXwSTGAoyQ@kroah.com>
-References: <20201201223511.65542-1-mgross@linux.intel.com>
- <20201201223511.65542-4-mgross@linux.intel.com>
- <X8cxNA3GTi/LrTt/@kroah.com>
- <20201202174200.GG63356@mtg-dev.jf.intel.com>
+        id S1729533AbgLBTCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:02:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726082AbgLBTCQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 14:02:16 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DFD6C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:01:36 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id n10so1495366pgv.8
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:01:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xm4VGai40mVfU1KDiOQQ0ruatOar3xR8M6PEtESptL8=;
+        b=BOTDt7cxNAex0LeSeJ0Bd0epvVBMchFl+S3d5BAw4jBe6cs8DEJyHSf+DkFhiosw7s
+         lkaLbQ7Yt+dfQBgaizkChhWc0pKV3yes/+T/4oY/CzbjnpcXPIQF6n9TgnAor+JYXJXi
+         oN2RQYGGl9SmfzExNN0ok3gT3iXCUoUzwQ4Uc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xm4VGai40mVfU1KDiOQQ0ruatOar3xR8M6PEtESptL8=;
+        b=iMdEL7rFjN7cauQc6fO33W/s02Y8EbRRbxZoT7HS3kxdn3FFdlqtm3c39C670rnu7c
+         VQ5vT+WTMwxdmtmARRu3ccf7nu18g7aznLFYuRJOHwsjBp7dH4EUdxZLWamIzqlwthW4
+         GpK6fKAgCDy2ijAOhEJfDQLxvDfvjgn8ZJopo0KQApPCqgM4E9OlkVGhdacsQko2OtLO
+         7aSTlfXt0v4xMcqBPs0olWr3E1Y5xliFuSNk1xQy2/dgpnDIKRfdx9eRH16flaCouneZ
+         rKPpa/7o5S33x8aJzjXz3SdRHnDsBJ/x9AFfJAvK5cWSlCL6EJH0jxK3hCDJ9q1T3mZG
+         eFdA==
+X-Gm-Message-State: AOAM530TgQOWhCYJyCatufpRq8ggtOKQsVfB6mMv8fkD4Zu+KAqvtMmj
+        ZjMO2oc7MvAK9yAMVnDcTCGYZg==
+X-Google-Smtp-Source: ABdhPJx3VqSsGJkmnkbKOrKvM3mPguRPfGXpejwNXC3FxfcOsVcXUkpKD/QpYIAX3BR4LaEu03malw==
+X-Received: by 2002:a63:171b:: with SMTP id x27mr1199959pgl.70.1606935696197;
+        Wed, 02 Dec 2020 11:01:36 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j16sm448198pgl.50.2020.12.02.11.01.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 11:01:35 -0800 (PST)
+Date:   Wed, 2 Dec 2020 11:01:34 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Emese Revfy <re.emese@gmail.com>, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] gcc-plugins: remove code for GCC versions older than 4.9
+Message-ID: <202012021101.E0BAFC3B@keescook>
+References: <20201202134929.99883-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201202174200.GG63356@mtg-dev.jf.intel.com>
+In-Reply-To: <20201202134929.99883-1-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 09:42:00AM -0800, mark gross wrote:
-> On Wed, Dec 02, 2020 at 07:16:20AM +0100, Greg KH wrote:
-> > On Tue, Dec 01, 2020 at 02:34:52PM -0800, mgross@linux.intel.com wrote:
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -8955,6 +8955,14 @@ M:	Deepak Saxena <dsaxena@plexity.net>
-> > >  S:	Maintained
-> > >  F:	drivers/char/hw_random/ixp4xx-rng.c
-> > >  
-> > > +INTEL KEEM BAY IPC DRIVER
-> > > +M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> > > +M:	Mark Gross <mgross@linux.intel.com>
-> > > +S:	Maintained
-> > > +F:	Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
-> > > +F:	drivers/soc/intel/keembay-ipc.c
-> > > +F:	include/linux/soc/intel/keembay-ipc.h
-> > 
-> > Sad that Intel is not going to actually pay you all to do this
-> > maintenance work for a brand new subsystem you are wanting to add to the
-> > tree :(
-> I thought adding my name to these maintainer items would help with continuity
-> as the individual engineers tend to move on to other things over time.
+On Wed, Dec 02, 2020 at 10:49:29PM +0900, Masahiro Yamada wrote:
+> Documentation/process/changes.rst says the minimal GCC version is 4.9.
+> Hence, BUILDING_GCC_VERSION is greater than or equal to 4009.
 > 
-> While I'm paid for a number of things at intel this is one of them.  My role is
-> as stable as I choose it to be at the point I'm at in my Intel career and the
-> business unit I'm now part of.  We can leave my name off if that would be
-> better.
-> 
-> Even if I'm not a VPU IP domain expert like Daniele is I can still chase down
-> the experts as needed after Daniele grows into other things over time.
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-I'm not objecting to your, or anyone else's name on this at all.  I'm
-just asking about Intel's support for this new codebase being added.
-Having a new subsystem from a major company and not have someone paid to
-actually maintain it seems really odd to me.
+Acked-by: Kees Cook <keescook@chromium.org>
 
-That's all.  If that's Intel's stance, that's fine, just wanted to
-clarify it is correct as I know some people at Intel have been confused
-recently about just what the S: field means.
+Do you want to carry this in the kbuild tree, or would you like me to
+pick it up?
 
-thanks,
+Thanks!
 
-greg k-h
+-- 
+Kees Cook
