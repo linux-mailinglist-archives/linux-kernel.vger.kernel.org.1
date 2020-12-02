@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D349D2CD16D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7032CD16F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729943AbgLCIlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:41:04 -0500
-Received: from mga17.intel.com ([192.55.52.151]:64109 "EHLO mga17.intel.com"
+        id S1729955AbgLCIlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:41:07 -0500
+Received: from mga17.intel.com ([192.55.52.151]:64113 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728465AbgLCIlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:41:03 -0500
-IronPort-SDR: 9ZksTUf3/n+yIkJItB7h5npeR0eHS0Vb2vRNcT2OPn+iNGrIaRV1LVAg+owJUJNJeR05UZzZ2i
- gaVI0bbpG3jw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="152984842"
+        id S1728465AbgLCIlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 03:41:05 -0500
+IronPort-SDR: wxDnxGIVncDgCfnq0qmFpPZAISzFTnee4gm2+L9bn/3Hhf1A94gEXbDkMSk9yIcVsfdDRxBHFC
+ POIwPkUiRU5A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="152984851"
 X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
-   d="scan'208";a="152984842"
+   d="scan'208";a="152984851"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 00:39:20 -0800
-IronPort-SDR: +51y8nWueu6pDLuheSP9Lv/+qr3S/cB8itOImLTt0FB9IqZDOTHa8qHM4a9lm0LYGFeboaR1Vz
- OtM9AV2ofk5w==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 00:39:24 -0800
+IronPort-SDR: 86lN0bY1U2vtxpSjvHkVfOaYdnF6z7Kh3DBrebjn4/YGcUBTgIPNAfpNJeOqcWmpKDqDwSMfUV
+ oQrGCUWSE3Iw==
 X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
-   d="scan'208";a="481880898"
+   d="scan'208";a="481880935"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 00:39:16 -0800
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 00:39:20 -0800
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
@@ -34,9 +34,9 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
         ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         bard.liao@intel.com
-Subject: [PATCH 1/7] soundwire: bus: use sdw_update_no_pm when initializing a device
-Date:   Thu,  3 Dec 2020 04:46:39 +0800
-Message-Id: <20201202204645.23891-2-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 2/7] soundwire: bus: use sdw_write_no_pm when setting the bus scale registers
+Date:   Thu,  3 Dec 2020 04:46:40 +0800
+Message-Id: <20201202204645.23891-3-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201202204645.23891-1-yung-chuan.liao@linux.intel.com>
 References: <20201202204645.23891-1-yung-chuan.liao@linux.intel.com>
@@ -51,55 +51,46 @@ enumeration. During that process, we absolutely don't want to call
 regular read/write routines which will wait for the resume to
 complete, otherwise a deadlock occurs.
 
-Fixes: 60ee9be25571 ('soundwire: bus: add PM/no-PM versions of read/write functions')
+This patch fixes the same problem as the previous one, but is split to
+make the life of linux-stable maintainers less painful.
+
+Fixes: 29d158f90690 ('soundwire: bus: initialize bus clock base and scale registers')
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/bus.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/soundwire/bus.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index d1e8c3a54976..60c42508c6c6 100644
+index 60c42508c6c6..b1830032b052 100644
 --- a/drivers/soundwire/bus.c
 +++ b/drivers/soundwire/bus.c
-@@ -489,6 +489,18 @@ sdw_read_no_pm(struct sdw_slave *slave, u32 addr)
- 		return buf;
- }
+@@ -1222,7 +1222,7 @@ static int sdw_slave_set_frequency(struct sdw_slave *slave)
+ 	}
+ 	scale_index++;
  
-+static int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
-+{
-+	int tmp;
-+
-+	tmp = sdw_read_no_pm(slave, addr);
-+	if (tmp < 0)
-+		return tmp;
-+
-+	tmp = (tmp & ~mask) | val;
-+	return sdw_write_no_pm(slave, addr, tmp);
-+}
-+
- /**
-  * sdw_nread() - Read "n" contiguous SDW Slave registers
-  * @slave: SDW Slave
-@@ -1256,7 +1268,7 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
- 	val = slave->prop.scp_int1_mask;
- 
- 	/* Enable SCP interrupts */
--	ret = sdw_update(slave, SDW_SCP_INTMASK1, val, val);
-+	ret = sdw_update_no_pm(slave, SDW_SCP_INTMASK1, val, val);
+-	ret = sdw_write(slave, SDW_SCP_BUS_CLOCK_BASE, base);
++	ret = sdw_write_no_pm(slave, SDW_SCP_BUS_CLOCK_BASE, base);
  	if (ret < 0) {
- 		dev_err(slave->bus->dev,
- 			"SDW_SCP_INTMASK1 write failed:%d\n", ret);
-@@ -1271,7 +1283,7 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
- 	val = prop->dp0_prop->imp_def_interrupts;
- 	val |= SDW_DP0_INT_PORT_READY | SDW_DP0_INT_BRA_FAILURE;
+ 		dev_err(&slave->dev,
+ 			"SDW_SCP_BUS_CLOCK_BASE write failed:%d\n", ret);
+@@ -1230,13 +1230,13 @@ static int sdw_slave_set_frequency(struct sdw_slave *slave)
+ 	}
  
--	ret = sdw_update(slave, SDW_DP0_INTMASK, val, val);
-+	ret = sdw_update_no_pm(slave, SDW_DP0_INTMASK, val, val);
+ 	/* initialize scale for both banks */
+-	ret = sdw_write(slave, SDW_SCP_BUSCLOCK_SCALE_B0, scale_index);
++	ret = sdw_write_no_pm(slave, SDW_SCP_BUSCLOCK_SCALE_B0, scale_index);
+ 	if (ret < 0) {
+ 		dev_err(&slave->dev,
+ 			"SDW_SCP_BUSCLOCK_SCALE_B0 write failed:%d\n", ret);
+ 		return ret;
+ 	}
+-	ret = sdw_write(slave, SDW_SCP_BUSCLOCK_SCALE_B1, scale_index);
++	ret = sdw_write_no_pm(slave, SDW_SCP_BUSCLOCK_SCALE_B1, scale_index);
  	if (ret < 0)
- 		dev_err(slave->bus->dev,
- 			"SDW_DP0_INTMASK read failed:%d\n", ret);
+ 		dev_err(&slave->dev,
+ 			"SDW_SCP_BUSCLOCK_SCALE_B1 write failed:%d\n", ret);
 -- 
 2.17.1
 
