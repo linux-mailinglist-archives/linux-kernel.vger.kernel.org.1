@@ -2,167 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837F02CC17B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 744A22CC17D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730561AbgLBP7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:59:13 -0500
-Received: from cmta20.telus.net ([209.171.16.93]:41371 "EHLO cmta20.telus.net"
+        id S1730576AbgLBP7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:59:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728321AbgLBP7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:59:13 -0500
-Received: from dougxps ([173.180.45.4])
-        by cmsmtp with SMTP
-        id kUWSk8U17wL1vkUWTkhgyv; Wed, 02 Dec 2020 08:58:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=telus.net; s=neo;
-        t=1606924711; bh=jJP91jaRt61fPYC5PwXm5tEumMc5oKgC4U365JX8rv0=;
-        h=From:To:Cc:References:In-Reply-To:Subject:Date;
-        b=MlX7QYwXeTF3CIH9E93wUXaOkfyVsMHQZ/K844pr/voYAd5mPqBF1cPbKhBSDAfbp
-         E7+mWOhhTWZa5tMuVlpXf5W4b8ruKsV39CH+ozpWJdIWYe5A7H0vq9o8iuxPh9RTYC
-         N7nY3ycx4Ok4QwoSgSHzajHYer4zGdOzU+oF9X+GltTYH4e0snMkkA3G3ATjdjUCPu
-         c7OD92IYJGouq5n99+Rt/MlSGZYMuYsHmGMu3cHej0eZRoo3+YguWYXSfLTkzHoU2/
-         C7dd7p6wV7fVj878PHdSWJiIupe2424zIUiviJiFsH+LKEv9TuPY2apAN27uQmBJmn
-         hUQC7JcSwua3g==
-X-Telus-Authed: none
-X-Authority-Analysis: v=2.4 cv=cOElDnSN c=1 sm=1 tr=0 ts=5fc7b9a7
- a=zJWegnE7BH9C0Gl4FFgQyA==:117 a=zJWegnE7BH9C0Gl4FFgQyA==:17
- a=Pyq9K9CWowscuQLKlpiwfMBGOR0=:19 a=kj9zAlcOel0A:10 a=gu6fZOg2AAAA:8
- a=VtkuwAwbKsm-GJcCPiMA:9 a=CjuIK1q_8ugA:10 a=-FEs8UIgK8oA:10
- a=NWVoK91CQyQA:10 a=2RSlZUUhi9gRBrsHwhhZ:22
-From:   "Doug Smythies" <dsmythies@telus.net>
-To:     "'Rafael J. Wysocki'" <rjw@rjwysocki.net>
-Cc:     "'LKML'" <linux-kernel@vger.kernel.org>,
-        "'Viresh Kumar'" <viresh.kumar@linaro.org>,
-        "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>,
-        "'Peter Zijlstra'" <peterz@infradead.org>,
-        "'Giovanni Gherdovich'" <ggherdovich@suse.com>,
-        "'Linux PM'" <linux-pm@vger.kernel.org>
-References: <1817571.2o5Kk4Ohv2@kreacher> <2174134.tL5yAn4CWt@kreacher>
-In-Reply-To: <2174134.tL5yAn4CWt@kreacher>
-Subject: RE: [RFC][PATCH 1/2] cpufreq: Add special-purpose fast-switching callback for drivers
-Date:   Wed, 2 Dec 2020 07:58:26 -0800
-Message-ID: <000901d6c8c3$fa8386f0$ef8a94d0$@net>
+        id S1728108AbgLBP7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:59:31 -0500
+X-Gm-Message-State: AOAM532MYRvP8ekkEeilPMeSUP382FZXaliUjcLV43iIlo5MczoALi85
+        L5FChdEb+WrUR6pG1i0nGcrz8fnWY1qH23l6XOc=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606924730;
+        bh=dTmVA5wGcd9geaQOgSpp+EqPMQTwTGZe/YFR11Pm1Ns=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Lmh9C2jNxM52u/fGCSSuET5qhSWU+FRDaSUnMl8441bzAdl8l4YQX4a+Uh7S5TZgL
+         RPnHU2usM4VqySn5Vj8uhFx6qGyOizfaTCR8ozg/h/+An21NzQOSeoaqxvuwfVAkJG
+         9KK7fgfPgMfOKMRj37n83GzVVhC+K/zCRUKc+JAM=
+X-Google-Smtp-Source: ABdhPJxzr5uQOFjJjH+Lp+wY35+rlkH4YPN0OL5cJR20wfEmXALCBpoYFuL9MnuEo66bECQbMPnTTDbE80XPRS4QdM8=
+X-Received: by 2002:a9d:be1:: with SMTP id 88mr2384567oth.210.1606924729348;
+ Wed, 02 Dec 2020 07:58:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Office Outlook 12.0
-Content-Language: en-ca
-Thread-Index: AdbHSBgaza+E6qqTQN6h7OdbOaGzrwBdRQvg
-X-CMAE-Envelope: MS4xfNwEOsWZO7NHxqLrAlPmhSEZkmUQxpEBa642tj5Y85mih8Pw6jdZMQkKEVMLuTbrOpZwr3g6NXtekolyff0m/FLoI/ZJbpArexuuXeJ4MN/BcIl5niGh
- vMvVnrn3+LWBORLuxkLM8W/w6OwXFvvPZHmsannqBHc6mvjc1OkcdJBT1Uf8Xj32+/hPfMpRWbPm0HhHEOuuIBdeYxcsxRfPFVKN5s8b5xsnOB0uraGInz+1
- fQ3m9TrxSSK55mFsbzMuuL2NjQBzLls+NC8ytjTknJxN8XB/NvWbiqAieflpPDyXdQWPJNzdsm4LW4Wpid6bB1zgFY0cu8Itrt+t27+vR8JZcWi7EKPVFsRW
- BMuysk9p7NQggqtebW7iD8klyOZkY+WZqlumXt2Sm7wWvnuD0Go=
+References: <87r1on1v62.fsf@x220.int.ebiederm.org> <20201120231441.29911-2-ebiederm@xmission.com>
+ <20201123175052.GA20279@redhat.com> <CAHk-=wj2OnjWr696z4yzDO9_mF44ND60qBHPvi1i9DBrjdLvUw@mail.gmail.com>
+ <87im9vx08i.fsf@x220.int.ebiederm.org> <87pn42r0n7.fsf@x220.int.ebiederm.org>
+ <CAHk-=wi-h8y5MK83DA6Vz2TDSQf4eEadddhWLTT_94bP996=Ug@mail.gmail.com>
+ <CAK8P3a3z1tZSSSyK=tZOkUTqXvewJgd6ntHMysY0gGQ7hPWwfw@mail.gmail.com>
+ <ed83033f-80af-5be0-ecbe-f2bf5c2075e9@infradead.org> <87h7pdnlzv.fsf_-_@x220.int.ebiederm.org>
+ <87sg8ock0n.fsf@x220.int.ebiederm.org>
+In-Reply-To: <87sg8ock0n.fsf@x220.int.ebiederm.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 2 Dec 2020 16:58:33 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0iMjZOHm3pAR+V3Ctdfd6Xa0WiWHcVP3nX7dEuFFXd1Q@mail.gmail.com>
+Message-ID: <CAK8P3a0iMjZOHm3pAR+V3Ctdfd6Xa0WiWHcVP3nX7dEuFFXd1Q@mail.gmail.com>
+Subject: Re: [RFC][PATCH] coredump: Document coredump code exclusively used by
+ cell spufs
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Geoff Levand <geoff@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
-
-On 2020.11.30 10:37 Rafael J. Wysocki wrote:
-
-> First off, some cpufreq drivers (eg. intel_pstate) can pass hints
-> beyond the current target frequency to the hardware and there are no
-> provisions for doing that in the cpufreq framework.  In particular,
-> today the driver has to assume that it should allow the frequency to
-
-Forgot the important "not":
-
-today the driver has to assume that it should allow not the frequency to
-
-> fall below the one requested by the governor (or the required capacity
-> may not be provided) which may not be the case and which may lead to
-> excessive energy usage in some scenarios.
-> 
-> Second, the hints passed by these drivers to the hardware neeed not
-
-s/neeed/need
-
-...
-
-O.K. this is good.
-
-The problem with my basic CPU frequency verses load test with the
-schedutil governor is that it is always so oscillatory it is pretty
-much not possible to conclude anything. So I re-worked the test
-to look at Processor Package Power load instead.
-
-In a previous e-mail [1] I had reported the power differences
-for one periodic load at one frequency, as a (apparently cherry picked)
-example. Quoted:
-
-> schedutil governor:
-> acpi-cpufreq: good
-> intel_cpufreq hwp: bad    <<<<< Now good, with this patch set.
-> intel_cpufreq no hwp: good
-> ...
-> periodic workflow at 347 hertz.
-> ~36% load at 4.60 GHz (where hwp operates)
-> ~55% load at 3.2 GHz (where no hwp operates)
+On Wed, Dec 2, 2020 at 4:20 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
 >
-> intel_cpufreq hwp: 9.6 processor package watts. 45.8 watts on the mains to the computer.
-> intel_cpufreq no hwp: ~6 processor package watts. ~41 watts on the mains to the computer. (noisy)
+> ebiederm@xmission.com (Eric W. Biederman) writes:
+>
+> > Oleg Nesterov recently asked[1] why is there an unshare_files in
+> > do_coredump.  After digging through all of the callers of lookup_fd it
+> > turns out that it is
+> > arch/powerpc/platforms/cell/spufs/coredump.c:coredump_next_context
+> > that needs the unshare_files in do_coredump.
+> >
+> > Looking at the history[2] this code was also the only piece of coredump code
+> > that required the unshare_files when the unshare_files was added.
+> >
+> > Looking at that code it turns out that cell is also the only
+> > architecture that implements elf_coredump_extra_notes_size and
+> > elf_coredump_extra_notes_write.
+> >
+> > I looked at the gdb repo[3] support for cell has been removed[4] in binutils
+> > 2.34.  Geoff Levand reports he is still getting questions on how to
+> > run modern kernels on the PS3, from people using 3rd party firmware so
+> > this code is not dead.  According to Wikipedia the last PS3 shipped in
+> > Japan sometime in 2017.  So it will probably be a little while before
+> > everyone's hardware dies.
+> >
+> > Add some comments briefly documenting the coredump code that exists
+> > only to support cell spufs to make it easier to understand the
+> > coredump code.  Eventually the hardware will be dead, or their won't
+> > be userspace tools, or the coredump code will be refactored and it
+> > will be too difficult to update a dead architecture and these comments
+> > make it easy to tell where to pull to remove cell spufs support.
+> >
+> > [1] https://lkml.kernel.org/r/20201123175052.GA20279@redhat.com
+> > [2] 179e037fc137 ("do_coredump(): make sure that descriptor table isn't shared")
+> > [3] git://sourceware.org/git/binutils-gdb.git
+> > [4] abf516c6931a ("Remove Cell Broadband Engine debugging support").
+> > Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+> > ---
+> >
+> > Does this change look good to people?  I think it captures this state of
+> > things and makes things clearer without breaking anything or removing
+> > functionality for anyone.
+>
+> I haven't heard anything except a general ack to the concept of
+> comments.  So I am applying this.
+>
 
-So this time, I only have power/energy data, and a relatively easy way to compress all 12,000
-samples into some concise summary is to simply find the average power for the entire experiment:
+Sorry I missed it when you originally sent it. Looks good ot me,
 
-Legend:
-hwp: Kernel 5.10-rc6, HWP enabled; intel_cpufreq; schedutil (always)
-rjw: Kernel 5.10-rc6 + this patch set, HWP enabled; intel_cpu-freq; schedutil
-no-hwp: Kernel 5.10-rc6, HWP disabled; intel_cpu-freq; schedutil
-acpi-cpufreq: Kernel 5.10-rc6, HWP disabled; acpi-cpufreq; schedutil
-
-load work/sleep frequency: 73 Hertz:
-hwp: Average: 12.00822 watts
-rjw: Average: 10.18089 watts
-no-hwp: Average: 10.21947 watts
-acpi-cpufreq: Average:  9.06585 watts
-
-load work/sleep frequency: 113 Hertz:
-
-hwp: Average: 12.01056
-rjw: Average: 10.12303
-no-hwp: Average: 10.08228
-acpi-cpufreq: Average:  9.02215
-
-load work/sleep frequency: 211 Hertz:
-
-hwp: Average: 12.16067
-rjw: Average: 10.24413
-no-hwp: Average: 10.12463
-acpi-cpufreq: Average:  9.19175
-
-load work/sleep frequency: 347 Hertz:
-
-hwp: Average: 12.34169
-rjw: Average: 10.79980
-no-hwp: Average: 10.57296
-acpi-cpufreq: Average:  9.84709
-
-load work/sleep frequency: 401 Hertz:
-
-hwp: Average: 12.42562
-rjw: Average: 11.12465
-no-hwp: Average: 11.24203
-acpi-cpufreq: Average: 10.78670
-
-[1] https://marc.info/?l=linux-pm&m=159769839401767&w=2
-
-My tests results graphs:
-Note: I have to code the web site, or I get hammered by bots.
-Note: it is .com only because it was less expensive than .org
-73 Hertz:
-Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su73/ 
-113 Hertz:
-Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su113/
-211 Hertz:
-Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su211/
-347 Hertz:
-Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su347/
-401 Hertz:
-Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su401/
-
-... Doug
-
-
-
+Acked-by: Arnd Bergmann <arnd@arndb.de>
