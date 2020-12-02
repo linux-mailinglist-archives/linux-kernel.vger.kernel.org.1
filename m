@@ -2,143 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97072CC3A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C612CC3AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389276AbgLBR1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:27:00 -0500
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:36238 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726514AbgLBR1A (ORCPT
+        id S2389283AbgLBR1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:27:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389280AbgLBR1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:27:00 -0500
-Received: by mail-ed1-f66.google.com with SMTP id j14so4847620edy.3;
-        Wed, 02 Dec 2020 09:26:38 -0800 (PST)
+        Wed, 2 Dec 2020 12:27:01 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B84C0613D4;
+        Wed,  2 Dec 2020 09:26:20 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id q3so1499429pgr.3;
+        Wed, 02 Dec 2020 09:26:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+ImcfZLvvBHYTsDO30kABBGCYuRzWZL4tNLUXZUAuvg=;
+        b=MAQoRwiVDhTQ6Ub6BSmEB45rRexBqKhTBoqOebc0RP+LnrSgRXwxM68WZwNwl1UHNW
+         UJYMjaX3bXAjVzGfXz7DG+Zzm+9Jx8XWvy/L1MUbQIhv625BAbzflWfXSUUS48fVHNFD
+         eApJoZ+qchvmIPi21of4/K11CrOmV/yZpk12TmoiV2UaUlnszyUYLORhWLSeBrzam7HI
+         NhlYDfAumfunnJX6BCpzPmkzRCWqS55BC8Kfx0Y3UmVv1hOjFn3A9e400Fpe3ArJb2HY
+         FyebhMDtYqtyojkj0gyOMdZ6A7qy93Co51f77Zppx7pInGPb0ZpoJjXY4Tzsm1r1Hwjx
+         vahg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NZKppA2o4fStxdLjfjRZ7S2o2vOkpaIWjvkic2iBJ2o=;
-        b=AwcE/gYjH38mF2/KXK02FQph+wbp26OW2IHamNKYTevRQ+HvvmSHIV+/wjgx4oamTW
-         DrCH/XyQnUUCgOXbyHqUlIL1FqDTlKJ8eLh9EmRCQ5HWErhMtF5IIszLtLRrJNHY1m9H
-         buhyFTDTw6lL5jwL2NO3Q5G4o6enNeiJuA+MDYTHoP4L1665fL8N77nSalWIdzayAmdf
-         lpVl9FlHUcpqDw/jU/oV9nrczDG7TJOXLJs83Si418BNSNYjWzXpAt8Uc6JE9ZiqzcBI
-         JyaY7oeAiYdpAMRSKXXDz9i0lxahSY0Pa0SLUm36bbE/XCZmstt8avCS7CSJyJg960aX
-         OzGQ==
-X-Gm-Message-State: AOAM530HYyDV278soBsf3/ajh6Izwl7WlHuagnFIWv4iAJhVc7TpdnTH
-        BH+WOhv6qdkuC76y1E66iq0=
-X-Google-Smtp-Source: ABdhPJxdaORGvlxmB1auKltfPkpySKQVxtcRpIMsn7/rGJ5juA54CQrEQkeOpggkaJPTCfdgu/9sUg==
-X-Received: by 2002:a50:998d:: with SMTP id m13mr982165edb.143.1606929972528;
-        Wed, 02 Dec 2020 09:26:12 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id g9sm405995edw.67.2020.12.02.09.26.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 09:26:11 -0800 (PST)
-Date:   Wed, 2 Dec 2020 19:26:10 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula@amarulasolutions.com
-Subject: Re: [PATCH 03/10] arm64: dts: imx: Add Engicam EDIMM2.2 Starter Kit
-Message-ID: <20201202172610.GC3490@kozik-lap>
-References: <20201202121241.109952-1-jagan@amarulasolutions.com>
- <20201202121241.109952-4-jagan@amarulasolutions.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+ImcfZLvvBHYTsDO30kABBGCYuRzWZL4tNLUXZUAuvg=;
+        b=Cva+rXvOL4MoUu/spp3cKuKh059KfPmugxtXWvP/SRFrmOwv0/MaEUACZTkHMgI9Tu
+         mE17ekLreMsPWXlmloA4tqjMhkg+ANQ/NCP/I7jKFPBMg+mKNEgh+sjKw6Mfh0ZLwt8m
+         W8DM8pQWBhIobPli5Dx7UJW+JZDz/A4Y7fzzRUCEev0//8TQjzcs0VXIItyZoG9ur7dG
+         uHoVF3xMXGydWOY+YtTJ+j0LfNaDj0TWjwFIOQgPr8gTEuz+D2u1FlNNXQ/IoiuCheqr
+         9HUhddM+CCmwJ95jVyn7Yze3FBk4bgrCad4evFti9RofPe1qA6RSM1L2QYyNcbtWEe8b
+         1WDA==
+X-Gm-Message-State: AOAM532NA7sOl1xojScsjSha35cO1T3Unx0jPtSesiK55A8pD0coabgz
+        MRaA60e8RF/XfLfsCqXkTII=
+X-Google-Smtp-Source: ABdhPJyxF+Y0NQAkwkYnU2mgmQOhTo1yEH5GDBb1+SLp7aPVK2X1GOo8Gie7sldyvHPUZqw2992YFg==
+X-Received: by 2002:a63:5a22:: with SMTP id o34mr776276pgb.187.1606929980486;
+        Wed, 02 Dec 2020 09:26:20 -0800 (PST)
+Received: from [10.230.28.242] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id y21sm424018pfr.90.2020.12.02.09.26.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Dec 2020 09:26:19 -0800 (PST)
+Subject: Re: [PATCH v5 01/11] firmware: raspberrypi: Keep count of all
+ consumers
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     linux-pwm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, wahrenst@gmx.net,
+        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
+        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        p.zabel@pengutronix.de, linux-gpio@vger.kernel.org,
+        linus.walleij@linaro.org, linux-clk@vger.kernel.org,
+        sboyd@kernel.org, linux-rpi-kernel@lists.infradead.org,
+        bgolaszewski@baylibre.com, andy.shevchenko@gmail.com
+References: <20201123183833.18750-1-nsaenzjulienne@suse.de>
+ <20201123183833.18750-2-nsaenzjulienne@suse.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <e78cde23-5a5e-5e46-fde4-a299629ec6d6@gmail.com>
+Date:   Wed, 2 Dec 2020 09:26:15 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <20201123183833.18750-2-nsaenzjulienne@suse.de>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201202121241.109952-4-jagan@amarulasolutions.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 05:42:34PM +0530, Jagan Teki wrote:
-> Engicam EDIMM2.2 Starter Kit is an EDIMM 2.2 Form Factor Capacitive
-> Evaluation Board.
-> 
-> Genaral features:
-> - LCD 7" C.Touch
-> - microSD slot
-> - Ethernet 1Gb
-> - Wifi/BT
-> - 2x LVDS Full HD interfaces
-> - 3x USB 2.0
-> - 1x USB 3.0
-> - HDMI Out
-> - Mini PCIe
-> - MIPI CSI
-> - 2x CAN
-> - Audio Out
-> 
-> SOM's like i.Core MX8M Mini needs to mount on top of this Evaluation
-> board for creating complete i.Core MX8M Mini EDIMM2.2 Starter Kit.
-> 
-> Add support for it.
-> 
-> Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
->  .../dts/freescale/imx8mm-engicam-common.dtsi  | 24 +++++++++++++++++++
->  .../freescale/imx8mm-engicam-edimm2.2.dtsi    |  7 ++++++
->  2 files changed, 31 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-common.dtsi
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-engicam-common.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-engicam-common.dtsi
-> new file mode 100644
-> index 000000000000..67c1a3fe26bc
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-engicam-common.dtsi
-> @@ -0,0 +1,24 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (c) 2020 Engicam srl
-> + * Copyright (c) 2020 Amarula Solutions(India)
-> + */
-> +
-> +&uart2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart2>;
-> +	status = "okay";
-> +};
-> +
-> +/* SD */
-> +&usdhc1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usdhc1>, <&pinctrl_usdhc1_gpio>;
-> +	cd-gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
-> +	max-frequency = <50000000>;
-> +	bus-width = <4>;
-> +	no-1-8-v;
-> +	pm-ignore-notify;
-> +	keep-power-in-suspend;
-> +	status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi
-> new file mode 100644
-> index 000000000000..294df07289a2
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi
-> @@ -0,0 +1,7 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (c) 2020 Engicam srl
-> + * Copyright (c) 2020 Amarula Solutions(India)
-> + */
-> +
-> +#include "imx8mm-engicam-common.dtsi"
 
-A DTSI file only with UART and SD. You mentioned several features in the
-commit msg but none of them are implemented here. There aren't even
-CPUs... Maybe this is only a problem of your patch ordering but as of
-now - this looks like bogus/empty DTSI which should not be in its own
-commit.
 
-Best regards,
-Krzysztof
+On 11/23/2020 10:38 AM, Nicolas Saenz Julienne wrote:
+> When unbinding the firmware device we need to make sure it has no
+> consumers left. Otherwise we'd leave them with a firmware handle
+> pointing at freed memory.
+> 
+> Keep a reference count of all consumers and introduce rpi_firmware_put()
+> which will permit automatically decrease the reference count upon
+> unbinding consumer drivers.
+> 
+> Suggested-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
+This looks fine to me, just one nit below:
+
+[snip]
+
+>  /**
+> - * rpi_firmware_get - Get pointer to rpi_firmware structure.
+
+Is not removing this line going to create a kernel doc warning?
+
+With that fixed:
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
