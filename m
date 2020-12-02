@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011812CBB8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 905482CBB97
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727695AbgLBL2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:28:55 -0500
-Received: from comms.puri.sm ([159.203.221.185]:54722 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727527AbgLBL2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 06:28:55 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 96F63E1180;
-        Wed,  2 Dec 2020 03:27:44 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8omf0pHFn30F; Wed,  2 Dec 2020 03:27:43 -0800 (PST)
-Subject: Re: [PATCH v2 7/7] arm64: defconfig: Enable interconnect for imx8mq
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Georgi Djakov <georgi.djakov@linaro.org>, robh@kernel.org,
-        shawnguo@kernel.org, festevam@gmail.com, catalin.marinas@arm.com,
-        will@kernel.org, cdleonard@gmail.com, kernel@pengutronix.de,
-        linux-imx@nxp.com, kernel@puri.sm, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-pm@vger.kernel.org
-References: <20201201123932.12312-1-martin.kepplinger@puri.sm>
- <20201201123932.12312-8-martin.kepplinger@puri.sm>
- <cb498c2c-e052-390a-c64a-2be44d1d2b42@linaro.org>
- <a2c0fae4-13c5-9114-876f-bc324138e6cc@puri.sm>
- <20201202080321.GB6087@kozik-lap>
- <CAJKOXPcAbmugB9k-1Ldo=Q1J0CbOcxMtgC005w=DmWukThVcWA@mail.gmail.com>
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-Message-ID: <226e76a8-011e-ece5-d8fa-b52dbc81787b@puri.sm>
-Date:   Wed, 2 Dec 2020 12:27:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-In-Reply-To: <CAJKOXPcAbmugB9k-1Ldo=Q1J0CbOcxMtgC005w=DmWukThVcWA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726746AbgLBLdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 06:33:37 -0500
+Received: from mail-eopbgr60074.outbound.protection.outlook.com ([40.107.6.74]:2242
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725885AbgLBLdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 06:33:37 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P4vrD6AT8ULwp2LumINJcTsch7Rki9EewJPO+JvGLvbnaXW0WiE2PI9IWZeMFk8s3eZagUyhRNi8+pdoKJ/XYOVBRgLETMuuiVOTV5mU2gE6+1nnVKZ01b9BJ5cvA0SrV+6HHehqcC+RZM5GJfZuvick9tEkFlkgkv6Uci3Kh1N7ww+kb8AxKsUSHEd6wMKeJ0x3msuuVLap40o+PflWSoqdMfGMSzVaebD+PfFkXqDx5Su293n0ljILGUok3+Dk0zmOOM4NFgi7HxxKDfDBxxUkgIMwXELAJFQaX/cXSSE0xWjcQFIDX+mXNadIOQ1xb74WX6OCp0gmXuraFmQ6/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xuGdlOSE95LJUwj235OkEvd+L/aQpUBhMCUebhoaz5E=;
+ b=SxtccFzlQS3XZBY5m5dsG1GhWDPhGHwm7CCkGGxB7MlGPgZoaex+9oUrpd5lzfXtkoIzTCbVInv7B6ErqAlJjDZWAdkVbhuMkRRbTue6Q11LWmij3AUapCsus+w+fVWIpvtEf5DCgPBMwXa3tSRiHx05di8z4cAzsAo+6AVFPCCLrSKCdfMReYctfK6v+Sukw8XIaN8XYcEYTB6723Ag5Om9eTPV41QCCmOCC8IKKTXTxD6tDNa0YG/ws79wwZ5t7xmN6E+KMBClYVcTw0R6fCq4Ps/YDbTAT55YJeetn084Pb4s65oLYZS8fMdz2TaDfS3e46KG15PQBG0Z2SbAfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 193.240.239.45) smtp.rcpttodomain=kernel.org smtp.mailfrom=diasemi.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=diasemi.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xuGdlOSE95LJUwj235OkEvd+L/aQpUBhMCUebhoaz5E=;
+ b=KAxySqsIZK09jYmYCGRSeiM9m6O++Peh+4ah1sRByfvQhZpPrgfEdoeznNfwnFEJIAoi5jZwblnIXOpEMQoC34Y6Y3U5Br3dOgGxomew5DlwMdV6dGkAsCdEmOdgMFaZolKV/sNlVqE2JxVmEEpwSMWBqUb1tNiMUIUxBOslGYc=
+Received: from AM6PR10CA0069.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:209:80::46)
+ by AM6PR10MB1877.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:209:38::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Wed, 2 Dec
+ 2020 11:32:48 +0000
+Received: from VE1EUR02FT008.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:209:80:cafe::fe) by AM6PR10CA0069.outlook.office365.com
+ (2603:10a6:209:80::46) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend
+ Transport; Wed, 2 Dec 2020 11:32:48 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 193.240.239.45) smtp.mailfrom=diasemi.com; kernel.org; dkim=none (message not
+ signed) header.d=none;kernel.org; dmarc=fail action=none
+ header.from=diasemi.com;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ diasemi.com discourages use of 193.240.239.45 as permitted sender)
+Received: from mailrelay1.diasemi.com (193.240.239.45) by
+ VE1EUR02FT008.mail.protection.outlook.com (10.152.12.72) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3632.17 via Frontend Transport; Wed, 2 Dec 2020 11:32:47 +0000
+Received: from swsrvapps-01.diasemi.com (10.20.28.141) by
+ NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
+ 14.3.468.0; Wed, 2 Dec 2020 12:32:46 +0100
+Received: by swsrvapps-01.diasemi.com (Postfix, from userid 23378)      id
+ D24173FB18; Wed,  2 Dec 2020 11:32:46 +0000 (GMT)
+Message-ID: <cover.1606908582.git.Adam.Ward.opensource@diasemi.com>
+From:   Adam Ward <Adam.Ward.opensource@diasemi.com>
+Date:   Wed, 2 Dec 2020 11:32:46 +0000
+Subject: [PATCH V2 0/1] regulator: da9121: add IRQ free to release function
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Support Opensource <support.opensource@diasemi.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ae842c19-8687-4094-161d-08d896b5fec5
+X-MS-TrafficTypeDiagnostic: AM6PR10MB1877:
+X-Microsoft-Antispam-PRVS: <AM6PR10MB187798D54B2EBC3DECC0433ACBF30@AM6PR10MB1877.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TqNlTYHnb23Ytxzb9IMQi4zpoPjlXEupjUbh3mQrS1vxRLHliYGMKpea+WCQvw4CH4G0Cy7ycsPVdtUn0WmUAn+0k7vvesgVs0lH6gmC9VbmZVnV3ZdjPoMhcXzyZPZsm3etZ59UmODts8QQNCmTlEqgBQkaY5/iyKIli5jDzYCKaLTnhrqSnUdq7GEBpxX7wLoHTA2zdo5tHdaHaDQ+GHxtY+z6N4L0hKHrIjY9zAIW7z0IQzjbg89Cglh+qZbjwFLQE7ZKsAKnkb8BMIyfAiMMacSZPqJCyDc4rWaOeLELydEZATez1bQ1VtIluWT20pavYybmUrtodOoKThzG52F5vswk4GARxD01TUB4WcssEeO+mGpxEX3aJm5RbViCBjIhKf6UE8SUYO8g8DGWug==
+X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(346002)(396003)(46966005)(6266002)(54906003)(4744005)(26005)(2906002)(8676002)(82310400003)(83380400001)(4326008)(107886003)(478600001)(8936002)(36756003)(86362001)(186003)(110136005)(42186006)(81166007)(47076004)(70206006)(336012)(316002)(70586007)(5660300002)(82740400003)(2616005)(426003)(356005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2020 11:32:47.7032
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae842c19-8687-4094-161d-08d896b5fec5
+X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
+X-MS-Exchange-CrossTenant-AuthSource: VE1EUR02FT008.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR10MB1877
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.12.20 09:05, Krzysztof Kozlowski wrote:
-> On Wed, 2 Dec 2020 at 10:03, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->>
->> On Tue, Dec 01, 2020 at 02:15:04PM +0100, Martin Kepplinger wrote:
->>> On 01.12.20 14:10, Georgi Djakov wrote:
->>>> On 1.12.20 14:39, Martin Kepplinger wrote:
->>>>> Enable INTERCONNECT_IMX8MQ in order to make interconnect more widely
->>>>> available for testing.
->>>>
->>>> I hope that it's not just for testing, but using it.
->>>
->>> sure, I just think that most people will use their own config for production
->>> but that's a different story. I can rephrase.
->>>
->>>>
->>>>> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
->>>>> ---
->>>>>    arch/arm64/configs/defconfig | 3 ++-
->>>>>    1 file changed, 2 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
->>>>> index 1fed16950a7c..830c26a95b3d 100644
->>>>> --- a/arch/arm64/configs/defconfig
->>>>> +++ b/arch/arm64/configs/defconfig
->>>>> @@ -1023,7 +1023,8 @@ CONFIG_OPTEE=y
->>>>>    CONFIG_MUX_MMIO=y
->>>>>    CONFIG_SLIM_QCOM_CTRL=m
->>>>>    CONFIG_SLIM_QCOM_NGD_CTRL=m
->>>>> -CONFIG_INTERCONNECT=y
->>>>
->>>> Why are you removing this line?
->>>
->>> savedefconfig removes it. INTERCONNECT_IMX below depends on it.
->>
->> It's save to remove it as other Interconnect options are directly
->> dependant.
-> 
-> Ugh, my bad, it is not allowed to remove it. My review was too fast.
-> INTERCONNECT_IMX depends on it, so the INTERCONNECT must stay,
-> 
-> It is selected by TEGRA_MC which is independent here, so you should keep it.
-> 
+This patch fixes the DA9121 driver to disable the IRQ before cancelling
+the work, to be sure the IRQ doesn't restart it before all IRQs are
+masked
 
-thanks for reviewing! Just to be clear: We're talking about defconfig, 
-so if I keep INTERCONNECT that means that I do `make savedefconfig` 
-which removes it (it's of course still enabled, just redundant in 
-defconfig output), and then *manually* add INTERCONNECT. That would 
-indicate that there's a Kconfig bug.
+V2:
 
-thanks,
-                               martin
+ - Fix to release IRQ if regmap error fails probe
+
+Adam Ward (1):
+  regulator: da9121: Request IRQ directly and free in release function
+    to avoid masking race
+
+ drivers/regulator/da9121-regulator.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+-- 
+1.9.1
+
