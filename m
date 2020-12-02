@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 731A52CC3F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63AFE2CC3F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728848AbgLBRgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:36:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbgLBRgl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:36:41 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C13C0613CF;
-        Wed,  2 Dec 2020 09:36:00 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id y74so2391894oia.11;
-        Wed, 02 Dec 2020 09:36:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pLAAu7+sji8IJoCg+8UXEel91VK0p8PGWM0v3i7M3IE=;
-        b=FF5+khDygMun8kdp3GfHydtG9WE1iWBNpgElfJAP6GPilfEqENd8MzWLR5qhXhhIel
-         8mzLZ8yYy2NKZ8PkWWtL8pSu4xcmB2KjyRfLJHYJ+Vbq1hnxYrCqemJ72RY7MGxYEtl5
-         j+NPbGQi5W1Qqm78GpuCUZaYio+/RMaWPOypPIHMlvwa1wSbiWvrOYmdJi0BaCnkEoUX
-         9G07SOnsbDFJQHmTiR7LKiLVqNJlgbeoo05pNRdbA4Befbqf6AjgSPAE2dS/kz3zJMUu
-         epNSrcQTsbVi73sGFtY3QBDObXVpVaRnGxNMY8D3q5VlCW+FwLM6+NNGqaQafDej2mq9
-         ybCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pLAAu7+sji8IJoCg+8UXEel91VK0p8PGWM0v3i7M3IE=;
-        b=hRChTGqDT3M5tGheotIxlDrr1pWAzvNVx/yKEtoPlG9WJhTWbjc2NiRPW0MDCKMTMX
-         3esDud4g/zypvkiGPSSyZaXTQPEu/qHGZ+4URWlUg8KTc5Fq1KyihPYC2JOyfcpdBFz4
-         D6zPN7L7aiLxQQJ5zMg1LbF0joOUa8raflqN8+apj6bJK572QV6GSk6Lt+Tf8j5ly7W7
-         0nS5RG31AIsD7uAyJUTegSLINMfk5RSaRA878USxf4JRVZeTkcBkAYebe1wusxU9aSnz
-         Ps0gyIWRIuHvGadb3We49JvUizKRNK7yATgpBANGls6PNcKaPV7cG2Lxm4yFshbpxZXY
-         7w7Q==
-X-Gm-Message-State: AOAM531yHEhXAQWrhdR87hYfsEUCfHG2arcRpGvHZZN9g5iPTK6mQHBy
-        92q10ZRmX8VC0RwWNAQrmBXL5Lff/4qzoDbqbrNjEbep
-X-Google-Smtp-Source: ABdhPJzflpE5g+va0hQ1zauT1Uz1LkNKIltAwQzrnETknXlx5hyAE14jVC2GOBOmUJGoLNV4WTmBvSKKWFccWuABT5E=
-X-Received: by 2002:a05:6808:562:: with SMTP id j2mr2375423oig.1.1606930560156;
- Wed, 02 Dec 2020 09:36:00 -0800 (PST)
+        id S1730731AbgLBRhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:37:45 -0500
+Received: from mga03.intel.com ([134.134.136.65]:52848 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726366AbgLBRho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 12:37:44 -0500
+IronPort-SDR: onY5/D1yDAxHeAzwiZtBblQtWwXYZ8FfSUIhJWI/dEZukVi8Anrz6TSQbx7oDbqv1O2VX2BGlO
+ QVWrX0OQppMA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="173154737"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="173154737"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 09:36:03 -0800
+IronPort-SDR: Wy/5zw3hcDuhEIv3twhlv54mbz6H22Fm4pfiMIORG3YakEV8vu8Gc5wCQ8XWV6L0PHGMfGCcPk
+ JpPb+V81XGrQ==
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="373578549"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 09:36:00 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kkW3p-00BZAb-IA; Wed, 02 Dec 2020 19:37:01 +0200
+Date:   Wed, 2 Dec 2020 19:37:01 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Yun Levi <ppbuk5246@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>, dushistov@mail.ru,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
+        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH] lib/find_bit: Add find_prev_*_bit functions.
+Message-ID: <20201202173701.GM4077@smile.fi.intel.com>
+References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
+ <20201202094717.GX4077@smile.fi.intel.com>
+ <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
+ <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
+ <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201127175738.1085417-1-jackmanb@google.com> <20201127175738.1085417-2-jackmanb@google.com>
- <20201129011552.jbepegeeo2lqv6ke@ast-mbp> <20201201121437.GB2114905@google.com>
- <CAADnVQJci_Fqq7d6GbUtivcmSgnPLbkwuH9MN30BhFomff=5rg@mail.gmail.com> <20201202105248.GA9710@google.com>
-In-Reply-To: <20201202105248.GA9710@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 2 Dec 2020 09:35:49 -0800
-Message-ID: <CAADnVQJNEcWgjH_HOwg=RSfLsbtD7NPtabVms=GoXwfNueb_+g@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 01/13] bpf: x86: Factor out emission of ModR/M
- for *(reg + off)
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 2:52 AM Brendan Jackman <jackmanb@google.com> wrote:
->
-> Tue, Dec 01, 2020 at 09:50:00PM -0800, Alexei Starovoitov wrote:
-> > On Tue, Dec 1, 2020 at 4:14 AM Brendan Jackman <jackmanb@google.com> wrote:
-> > >
-> > > On Sat, Nov 28, 2020 at 05:15:52PM -0800, Alexei Starovoitov wrote:
-> > > > On Fri, Nov 27, 2020 at 05:57:26PM +0000, Brendan Jackman wrote:
-> > > > > +/* Emit the ModR/M byte for addressing *(r1 + off) and r2 */
-> > > > > +static void emit_modrm_dstoff(u8 **pprog, u32 r1, u32 r2, int off)
-> > > >
-> > > > same concern as in the another patch. If you could avoid intel's puzzling names
-> > > > like above it will make reviewing the patch easier.
-> > >
-> > > In this case there is actually a call like
-> > >
-> > >   emit_modrm_dstoff(&prog, src_reg, dst_reg)
-> >
-> > emit_insn_prefix() ?
->
-> Ah sorry, I thought you were talking about the _arg_ names.
+On Wed, Dec 02, 2020 at 09:26:05AM -0800, Yury Norov wrote:
+> On Wed, Dec 2, 2020 at 3:50 AM Yun Levi <ppbuk5246@gmail.com> wrote:
 
-I meant both. Arg names and helper name. Sorry for the confusion.
+...
+
+>  I think this patch has some good catches. We definitely need to implement
+> find_last_zero_bit(), as it is used by fs/ufs, and their local
+> implementation is not optimal.
+
+Side note: speaking of performance, any plans to fix for_each_*_bit*() for
+cases when the nbits is known to be <= BITS_PER_LONG?
+
+Now it makes an awful code generation (something like few hundred bytes of
+code).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
