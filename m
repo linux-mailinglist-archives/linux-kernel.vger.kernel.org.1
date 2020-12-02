@@ -2,77 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B782CC377
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 622C02CC392
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:27:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388871AbgLBRWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:22:45 -0500
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:46281 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387580AbgLBRWp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:22:45 -0500
-Received: by mail-ej1-f66.google.com with SMTP id bo9so5471242ejb.13;
-        Wed, 02 Dec 2020 09:22:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Vxdi5t3aRqbauZYdW0k+eTugsOvVm5z/0z7wI7PLSG8=;
-        b=b+AFVRETr4cIJSoc7CbexbljVJaDCk0lly95KLcJhsN4O83sYKUI18+DBgnlNf0cXc
-         OLJ7WCF+2O19FA3WHEMa2yK/pBFrgq8kLSKziu0rX10UL4UZrVYMQDSOXANLsGvS2tvO
-         JwdBRSiDvSrNkDhDn8lpnstd7GMAf3n3SqWz1Dpi02OcYTW6eVMebMpbHZJG5MQpKszm
-         HmJbVGvsUwOiuYOOTduM5Rxhccj+8N3/EeN/2lz1sgBzGLRpvDGgrAwbMSUestV9m3Pi
-         bEBWwyQQU9055XJeCTe9N0Br4XK1oD009mI5Ud444FY5l+H/L8UAGJZv00VHxVrmjlYY
-         ddpw==
-X-Gm-Message-State: AOAM531eBvy0W3gJfW5d+QqWjzYfHODGzxiYtAbPhW9DfCLl+Vneuevq
-        9YOa3YHAwXF+BJrWad7jK0H3vdM4ryw=
-X-Google-Smtp-Source: ABdhPJwMnHiab0zi4zzhNdZiqlRAy8dx1lDMxaZ38uua7ZXbCox6L1iG6ArIb7XciLNpMekHF+Aq5A==
-X-Received: by 2002:a17:906:6606:: with SMTP id b6mr762218ejp.151.1606929722914;
-        Wed, 02 Dec 2020 09:22:02 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id t11sm299077ejx.68.2020.12.02.09.22.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 09:22:01 -0800 (PST)
-Date:   Wed, 2 Dec 2020 19:22:00 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula@amarulasolutions.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 01/10] arm64: defconfig: Enable REGULATOR_PF8X00
-Message-ID: <20201202172200.GA3490@kozik-lap>
-References: <20201202121241.109952-1-jagan@amarulasolutions.com>
- <20201202121241.109952-2-jagan@amarulasolutions.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201202121241.109952-2-jagan@amarulasolutions.com>
+        id S2389230AbgLBRXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:23:41 -0500
+Received: from m42-5.mailgun.net ([69.72.42.5]:26278 "EHLO m42-5.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389088AbgLBRXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 12:23:40 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606929799; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=du06zc/jHcGsUafhmo+6BZJPLrel+MajZ6mJGJKue0w=; b=un6rlhC/j8rovh7D4/C6L5JJCOSo34AlaubuewCqoccE8CWJJj9jJ6bWDgthSdFoIWivFGBq
+ WCSE531aYHJ/eZJhGluT0DES/ynWb3vi9AWeelw4bg34Y9zq/pesb5MakcJO/brzeRhPXgtI
+ XZSuukj3mKMXHXYRCTYIfqNbcoA=
+X-Mailgun-Sending-Ip: 69.72.42.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fc7cd6691ec4b75c2a89763 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 17:22:46
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EF272C43466; Wed,  2 Dec 2020 17:22:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C30DDC43460;
+        Wed,  2 Dec 2020 17:22:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C30DDC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v5 0/2] Platform driver update to support playback recover after resume
+Date:   Wed,  2 Dec 2020 22:52:26 +0530
+Message-Id: <1606929748-16828-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 05:42:32PM +0530, Jagan Teki wrote:
-> Enable PF8X00 regulator driver by default as it used in
-> some of i.MX8MM hardware platforms.
+This patch set is to add support for playback recover after hard suspend and resume.
+It includes:
+1. Reverting part of previous commit, which is for handling registers invalid state
+after hard suspend.
+2. Adding pm ops in component driver and do regcache sync.
+Changes Since v1 and v2:
+  -- Subject lines changed
+Changes Since v3:
+  -- Patch is splitted into 2 patches
+Changes Since v4:
+  -- Subject lines changed
 
-Could you mention names (one is enough) of platforms this could be found
-on? This would be more detailed reason why the option should be enabled.
+Srinivasa Rao Mandadapu (2):
+  ASoC: qcom: Fix incorrect volatile registers
+  ASoC: qcom: Add support for playback recover after resume
 
-Best regards,
-Krzysztof
+ sound/soc/qcom/lpass-cpu.c      | 20 ++----------------
+ sound/soc/qcom/lpass-platform.c | 46 +++++++++++++++++++++++++++++++----------
+ 2 files changed, 37 insertions(+), 29 deletions(-)
 
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
->  arch/arm64/configs/defconfig | 1 +
->  1 file changed, 1 insertion(+)
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
