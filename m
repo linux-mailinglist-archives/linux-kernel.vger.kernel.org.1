@@ -2,155 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22C72CC196
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4442CC193
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387524AbgLBQCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:02:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50868 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726640AbgLBQCT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:02:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606924852;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9epFRfRlyqDO4VIS+nw8KbJEIlpQNa+kkCSbPKuCRGk=;
-        b=FlTKHRbmY2PrcAOpMr8zKEBehq3Wb+Ads56Akp8lS56zfyRnzmy3lebAAB3NtetxyWgqJT
-        wftL1S+HMS6m3jCmxvqqXKwT7vhpzBhqHrOFj4VRXWmTzin1ee2yJXarzppnuwlNeRFRch
-        7xZMG+zii8oiOTkVk4BWALLk7g+PO8c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-295-kOJKmdxQPV6-toI8ButT6w-1; Wed, 02 Dec 2020 11:00:47 -0500
-X-MC-Unique: kOJKmdxQPV6-toI8ButT6w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C33378144F7;
-        Wed,  2 Dec 2020 16:00:42 +0000 (UTC)
-Received: from [10.36.114.61] (ovpn-114-61.ams2.redhat.com [10.36.114.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 35EEB60C6B;
-        Wed,  2 Dec 2020 16:00:37 +0000 (UTC)
-Subject: Re: [PATCH v2 2/4] mm: introduce cma_alloc_bulk API
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, hyesoo.yu@samsung.com,
-        willy@infradead.org, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
-        surenb@google.com, pullip.cho@samsung.com, joaodias@google.com,
-        hridya@google.com, sumit.semwal@linaro.org, john.stultz@linaro.org,
-        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org,
-        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org
-References: <20201201175144.3996569-1-minchan@kernel.org>
- <20201201175144.3996569-3-minchan@kernel.org>
- <8f006a4a-c21d-9db3-5493-fb1cc651b0cf@redhat.com>
- <20201202154915.GU17338@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <4c2f67a2-e5b4-ed7e-3d1b-45626e2f254b@redhat.com>
-Date:   Wed, 2 Dec 2020 17:00:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1730633AbgLBQBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:01:35 -0500
+Received: from mga17.intel.com ([192.55.52.151]:42669 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726178AbgLBQBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 11:01:34 -0500
+IronPort-SDR: vTQ49dhM8QBd0+4nYadcCOvoTfZw705rWHm0qw0rm50FiH9wI14DM2hvQCAkSRTZDARA2k3ter
+ hLH5oIOwMlSQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="152864217"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="152864217"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 08:00:50 -0800
+IronPort-SDR: z1IqvhDZPFYY4z4SR+s5gX3XaQ3NMgT9GM0Mla2pqeN/yCqk8tUFbBLI/da0PDe15bIDT0ioBg
+ KB4Vk+2ypybA==
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="539744114"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 08:00:50 -0800
+Date:   Wed, 2 Dec 2020 08:00:49 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Eric Sandeen <sandeen@redhat.com>
+Cc:     torvalds@linux-foundation.org,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>
+Subject: Re: [PATCH V2] uapi: fix statx attribute value overlap for DAX &
+ MOUNT_ROOT
+Message-ID: <20201202160049.GD1447340@iweiny-DESK2.sc.intel.com>
+References: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201202154915.GU17338@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.12.20 16:49, Michal Hocko wrote:
-> On Wed 02-12-20 10:14:41, David Hildenbrand wrote:
->> On 01.12.20 18:51, Minchan Kim wrote:
->>> There is a need for special HW to require bulk allocation of
->>> high-order pages. For example, 4800 * order-4 pages, which
->>> would be minimum, sometimes, it requires more.
->>>
->>> To meet the requirement, a option reserves 300M CMA area and
->>> requests the whole 300M contiguous memory. However, it doesn't
->>> work if even one of those pages in the range is long-term pinned
->>> directly or indirectly. The other option is to ask higher-order
->>
->> My latest knowledge is that pages in the CMA area are never long term
->> pinned.
->>
->> https://lore.kernel.org/lkml/20201123090129.GD27488@dhcp22.suse.cz/
->>
->> "gup already tries to deal with long term pins on CMA regions and migrate
->> to a non CMA region. Have a look at __gup_longterm_locked."
->>
->> We should rather identify ways how that is still possible and get rid of
->> them.
->>
->>
->> Now, short-term pinnings and PCP are other issues where
->> alloc_contig_range() could be improved (e.g., in contrast to a FAST
->> mode, a HARD mode which temporarily disables the PCP, ...).
+On Tue, Dec 01, 2020 at 05:21:40PM -0600, Eric Sandeen wrote:
+> [*] Note: This needs to be merged as soon as possible as it's introducing an incompatible UAPI change...
 > 
-> Agreed!
+> STATX_ATTR_MOUNT_ROOT and STATX_ATTR_DAX got merged with the same value,
+> so one of them needs fixing. Move STATX_ATTR_DAX.
 > 
->>> size (e.g., 2M) than requested order(64K) repeatedly until driver
->>> could gather necessary amount of memory. Basically, this approach
->>> makes the allocation very slow due to cma_alloc's function
->>> slowness and it could be stuck on one of the pageblocks if it
->>> encounters unmigratable page.
->>>
->>> To solve the issue, this patch introduces cma_alloc_bulk.
->>>
->>> 	int cma_alloc_bulk(struct cma *cma, unsigned int align,
->>> 		bool fast, unsigned int order, size_t nr_requests,
->>> 		struct page **page_array, size_t *nr_allocated);
->>>
->>> Most parameters are same with cma_alloc but it additionally passes
->>> vector array to store allocated memory. What's different with cma_alloc
->>> is it will skip pageblocks without waiting/stopping if it has unmovable
->>> page so that API continues to scan other pageblocks to find requested
->>> order page.
->>>
->>> cma_alloc_bulk is best effort approach in that it skips some pageblocks
->>> if they have unmovable pages unlike cma_alloc. It doesn't need to be
->>> perfect from the beginning at the cost of performance. Thus, the API
->>> takes "bool fast parameter" which is propagated into alloc_contig_range to
->>> avoid significat overhead functions to inrecase CMA allocation success
->>> ratio(e.g., migration retrial, PCP, LRU draining per pageblock)
->>> at the cost of less allocation success ratio. If the caller couldn't
->>> allocate enough, they could call it with "false" to increase success ratio
->>> if they are okay to expense the overhead for the success ratio.
->>
->> Just so I understand what the idea is:
->>
->> alloc_contig_range() sometimes fails on CMA regions when trying to
->> allocate big chunks (e.g., 300M). Instead of tackling that issue, you
->> rather allocate plenty of small chunks, and make these small allocations
->> fail faster/ make the allocations less reliable. Correct?
->>
->> I don't really have a strong opinion on that. Giving up fast rather than
->> trying for longer sounds like a useful thing to have - but I wonder if
->> it's strictly necessary for the use case you describe.
->>
->> I'd like to hear Michals opinion on that.
+> While we're in here, clarify the value-matching scheme for some of the
+> attributes, and explain why the value for DAX does not match.
 > 
-> Well, what I can see is that this new interface is an antipatern to our
-> allocation routines. We tend to control allocations by gfp mask yet you
-> are introducing a bool parameter to make something faster... What that
-> really means is rather arbitrary. Would it make more sense to teach
-> cma_alloc resp. alloc_contig_range to recognize GFP_NOWAIT, GFP_NORETRY resp.
-> GFP_RETRY_MAYFAIL instead?
+> Fixes: 80340fe3605c ("statx: add mount_root")
+> Fixes: 712b2698e4c0 ("fs/stat: Define DAX statx attribute")
+> Reported-by: David Howells <dhowells@redhat.com>
+> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+> Reviewed-by: David Howells <dhowells@redhat.com>
 
-Minchan did that before, but I disliked gluing things like "don't drain
-lru, don't drain pcp" to GFP_NORETRY and shifting responsibility to the
-user.
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
-
--- 
-Thanks,
-
-David / dhildenb
-
+> ---
+> V2: Change flag value per Darrick Wong
+>     Tweak comment per Darrick Wong
+>     Add Fixes: tags & reported-by & RVB per dhowells
+> 
+>  include/uapi/linux/stat.h | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+> index 82cc58fe9368..1500a0f58041 100644
+> --- a/include/uapi/linux/stat.h
+> +++ b/include/uapi/linux/stat.h
+> @@ -171,9 +171,12 @@ struct statx {
+>   * be of use to ordinary userspace programs such as GUIs or ls rather than
+>   * specialised tools.
+>   *
+> - * Note that the flags marked [I] correspond to generic FS_IOC_FLAGS
+> + * Note that the flags marked [I] correspond to the FS_IOC_SETFLAGS flags
+>   * semantically.  Where possible, the numerical value is picked to correspond
+> - * also.
+> + * also.  Note that the DAX attribute indicates that the file is in the CPU
+> + * direct access state.  It does not correspond to the per-inode flag that
+> + * some filesystems support.
+> + *
+>   */
+>  #define STATX_ATTR_COMPRESSED		0x00000004 /* [I] File is compressed by the fs */
+>  #define STATX_ATTR_IMMUTABLE		0x00000010 /* [I] File is marked immutable */
+> @@ -183,7 +186,7 @@ struct statx {
+>  #define STATX_ATTR_AUTOMOUNT		0x00001000 /* Dir: Automount trigger */
+>  #define STATX_ATTR_MOUNT_ROOT		0x00002000 /* Root of a mount */
+>  #define STATX_ATTR_VERITY		0x00100000 /* [I] Verity protected file */
+> -#define STATX_ATTR_DAX			0x00002000 /* [I] File is DAX */
+> +#define STATX_ATTR_DAX			0x00200000 /* File is currently in DAX state */
+>  
+>  
+>  #endif /* _UAPI_LINUX_STAT_H */
+> -- 
+> 2.17.0
+> 
