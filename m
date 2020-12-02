@@ -2,104 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CEB2CC605
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 195932CC606
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:58:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389568AbgLBS5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:57:32 -0500
-Received: from mga18.intel.com ([134.134.136.126]:41673 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387784AbgLBS5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:57:32 -0500
-IronPort-SDR: VgJFp9Z0cGFMgr3cYOymhhPSp1gVz2C9mODCwDvT91XJvJ22RpUP6lGVab/5NpIk85qeoY7GOM
- G2T0iSwYaaxg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="160838543"
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="160838543"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 10:55:33 -0800
-IronPort-SDR: 9pF10d0HmH3irEVZYigo5mCPyQXJtKfIC8I0GY0wWLkdTy7Qr+1ynmH+qfBtC9yiXwiEEUJq+3
- T1kdNiddENHw==
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="330562629"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 10:55:30 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kkXIl-00Ba88-PW; Wed, 02 Dec 2020 20:56:31 +0200
-Date:   Wed, 2 Dec 2020 20:56:31 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yun Levi <ppbuk5246@gmail.com>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>, dushistov@mail.ru,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
-        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org
-Subject: Re: your mail
-Message-ID: <20201202185631.GQ4077@smile.fi.intel.com>
-References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
- <20201202094717.GX4077@smile.fi.intel.com>
- <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
- <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
- <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
- <20201202173701.GM4077@smile.fi.intel.com>
- <CAM7-yPSWvsySweXSmbvW2hucce8T7BOSkz-eF5t7PJE6zv5tjg@mail.gmail.com>
- <20201202185127.GO4077@smile.fi.intel.com>
+        id S2389647AbgLBS5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:57:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387911AbgLBS5d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 13:57:33 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1E4C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:56:47 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id q22so1808207pfk.12
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:56:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2df0cgPfG2SAK1g7NT0O8N+0jOgAdMPH5rFcEcsmtzM=;
+        b=Cu7Xt7Qn/3aPgdAkS2syTqxV41qdValgrBZYQqryrysoVtGdgBLW1Umm+ymeWh5B7+
+         kZqrtKf1iwCkHCjz0PqySSBrzAlqEGJUcEnELClsLXBywkDw+tIHAGkRJUpSf4r5si2X
+         U71QWOp65achEjowERhc1Pgww2DGhtmolmAck=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2df0cgPfG2SAK1g7NT0O8N+0jOgAdMPH5rFcEcsmtzM=;
+        b=kak5gOHeY9v2tNVdYNcT45wkfmukoty0MLHUEYUx+r3vIR+xRHK7OEBfNkYbS/Gt8O
+         RPerYv3l/D+kVWjSCtbl0MAM2j46Pj8nrob1p/gcF0olEN/1AFsjEfhuH5zbO3kpSdNR
+         KB1XSeC+RsSKf5uBRIeFgpDFnYR1XdgtAZbZJj9MJKWWqYrOXlB7EJC8/Cup6nm2ntXS
+         zhJBld1bs+ppcVFWuEC+sCl+P4j4Wx1aoh5YPk7MmGlqk6PhEs1N222GtvP1NtbK5ZIZ
+         CNoZu3iDGVeGJ+917Vzf7U1aTtqpIbHyfmUnE1nos1z/H0pzZwH11OaY7d4art+/fauD
+         6P6Q==
+X-Gm-Message-State: AOAM531RW+mlJlvpjU6i+W3i2tEkHm0h/kW140qYdko6IzI35OV3Jz1R
+        9zcqWgzyXS7gItMXDNLzVTVpAA==
+X-Google-Smtp-Source: ABdhPJwDihIdf9Kj1zww9pUzlRPKReVIPkPu886DIRfJAubQGRXMJaWo5MU1jtqDrgcMhi9+DatHIQ==
+X-Received: by 2002:a63:f308:: with SMTP id l8mr1179038pgh.68.1606935406993;
+        Wed, 02 Dec 2020 10:56:46 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u3sm512394pfu.47.2020.12.02.10.56.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 10:56:45 -0800 (PST)
+Date:   Wed, 2 Dec 2020 10:56:44 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "kernelci . org bot" <bot@kernelci.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 2/2] kbuild: Disable CONFIG_LD_ORPHAN_WARN for ld.lld
+ 10.0.1
+Message-ID: <202012021056.3EA0BBFDD@keescook>
+References: <20201113195553.1487659-1-natechancellor@gmail.com>
+ <20201119204656.3261686-2-natechancellor@gmail.com>
+ <CAKwvOdkPgwL8H4EGF6=-VuxTdmxA8JHhGbLHVYcLJj9MmAvW=g@mail.gmail.com>
+ <202011241421.A2F3062A70@keescook>
+ <CAK7LNAR=_+1K7EtpvGzgyM+ans-iNOT0PBXdLRApnsyAzakQ3w@mail.gmail.com>
+ <202012011255.9D677ED3@keescook>
+ <CAK7LNAQGqcCBBFbKwe_eTuBqtNwDn_q8c0nPBJVsEoHP6F+aKA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201202185127.GO4077@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAK7LNAQGqcCBBFbKwe_eTuBqtNwDn_q8c0nPBJVsEoHP6F+aKA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 08:51:27PM +0200, Andy Shevchenko wrote:
-> On Thu, Dec 03, 2020 at 03:27:33AM +0900, Yun Levi wrote:
-> > On Thu, Dec 3, 2020 at 2:36 AM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Wed, Dec 02, 2020 at 09:26:05AM -0800, Yury Norov wrote:
-
-...
-
-> > > Side note: speaking of performance, any plans to fix for_each_*_bit*() for
-> > > cases when the nbits is known to be <= BITS_PER_LONG?
+On Wed, Dec 02, 2020 at 11:37:38AM +0900, Masahiro Yamada wrote:
+> On Wed, Dec 2, 2020 at 5:56 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Tue, Dec 01, 2020 at 10:31:37PM +0900, Masahiro Yamada wrote:
+> > > On Wed, Nov 25, 2020 at 7:22 AM Kees Cook <keescook@chromium.org> wrote:
+> > > >
+> > > > On Thu, Nov 19, 2020 at 01:13:27PM -0800, Nick Desaulniers wrote:
+> > > > > On Thu, Nov 19, 2020 at 12:57 PM Nathan Chancellor
+> > > > > <natechancellor@gmail.com> wrote:
+> > > > > >
+> > > > > > ld.lld 10.0.1 spews a bunch of various warnings about .rela sections,
+> > > > > > along with a few others. Newer versions of ld.lld do not have these
+> > > > > > warnings. As a result, do not add '--orphan-handling=warn' to
+> > > > > > LDFLAGS_vmlinux if ld.lld's version is not new enough.
+> > > > > >
+> > > > > > Link: https://github.com/ClangBuiltLinux/linux/issues/1187
+> > > > > > Link: https://github.com/ClangBuiltLinux/linux/issues/1193
+> > > > > > Reported-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > > > > > Reported-by: kernelci.org bot <bot@kernelci.org>
+> > > > > > Reported-by: Mark Brown <broonie@kernel.org>
+> > > > > > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > > > > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> > > > >
+> > > > > Thanks for the additions in v2.
+> > > > > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> > > >
+> > > > I'm going to carry this for a few days in -next, and if no one screams,
+> > > > ask Linus to pull it for v5.10-rc6.
+> > > >
+> > > > Thanks!
+> > > >
+> > > > --
+> > > > Kees Cook
 > > >
-> > > Now it makes an awful code generation (something like few hundred bytes of
-> > > code).
+> > >
+> > > Sorry for the delay.
+> > > Applied to linux-kbuild.
+> >
+> > Great, thanks!
+> >
+> > > But, I already see this in linux-next.
+> > > Please let me know if I should drop it from my tree.
+> >
+> > My intention was to get this to Linus this week. Do you want to do that
+> > yourself, or Ack the patches in my tree and I'll send it?
 > 
-> > Frankly Speaking, I don't have an idea in now.....
-> > Could you share your idea or wisdom?
-> 
-> Something like (I may be mistaken by names, etc, I'm not a compiler expert,
-> and this is in pseudo language, I don't remember all API names by hart,
-> just to express the idea) as a rough first step
-> 
-> __builtin_constant(nbits, find_next_set_bit_long, find_next_set_bit)
-> 
-> find_next_set_bit_long()
-> {
-> 	unsigned long v = BIT_LAST_WORD(i);
-> 	return ffs_long(v);
-> }
-> 
-> Same for find_first_set_bit() -> map it to ffs_long().
-> 
-> And I believe it can be optimized more.
+> I will send a kbuild pull request myself this week.
 
-Btw it will also require to reconsider test cases where such constant small
-nbits values are passed (forcing compiler to avoid optimization somehow, one
-way is to try random nbits for some test cases).
+Okay, thanks! I've removed it from my -next tree now.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Kees Cook
