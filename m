@@ -2,131 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D3D2CB149
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F017D2CB14A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgLBAEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 19:04:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55877 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726011AbgLBAEE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 19:04:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606867357;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rOKslSMFXp+gHqdCS6zP2bPZnZtHEzSQ+a3tu6KrYZg=;
-        b=hsdQQLTqR5aRl/8Jt1p6eoBAAsVjg99vw74/Wu3K2SqQFCEHzu6+ub0aKDs1z4epGtkX0O
-        1ixfXogUSAYFGLphcfiQVhH1x0SjSdqb32SPmCtWAw+SEjdlkKmAggoBxYHg5J5+T90LxN
-        9vAmBV92sXGgTBQNVN4QhmkY8n3YtZ8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-6KZOHBeNMX-OA0eR6iGzTQ-1; Tue, 01 Dec 2020 19:02:35 -0500
-X-MC-Unique: 6KZOHBeNMX-OA0eR6iGzTQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3BB231005E44;
-        Wed,  2 Dec 2020 00:02:34 +0000 (UTC)
-Received: from mail (ovpn-112-118.rdu2.redhat.com [10.10.112.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 355FA60BFA;
-        Wed,  2 Dec 2020 00:02:28 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 19:02:27 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v2] mm: Don't fault around userfaultfd-registered regions
- on reads
-Message-ID: <X8bZk3jTGU8QyJWc@redhat.com>
-References: <20201130230603.46187-1-peterx@redhat.com>
- <20201201125927.GB11935@casper.infradead.org>
- <20201201223033.GG3277@xz-x1>
+        id S1727168AbgLBAFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 19:05:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727026AbgLBAFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 19:05:20 -0500
+X-Gm-Message-State: AOAM530prpCw4N5ttGP4K/rFDrPRngHVWpxXFFwLV7uk9wHBwNR78/b9
+        ihWDjzEuWkrcLZiU8IcWgfFTopCw21STk2gsZ6qWNQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606867479;
+        bh=MqZW0Kfi+WCzwtfCOe3WGgKsYtrojnTX6iECyZ6P9Xk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=l7EZ3AnQeBR/r8NKChuI6/sqfxX0hbTSvhlgC0ZSLauwWe03sElSna+Z6JBWNaYLC
+         qv7ko/LDWbmUXrC4OpiibjmJFiC8R/ER5S74YymnJ8L+Rsm51QqBriDO7KlL8yJqeF
+         oL3OZBf5uX4vMl5myJwTKSK1ngI8BpjDKAJA3XDI=
+X-Google-Smtp-Source: ABdhPJzikCVJryvvhw4L+oXSN5ZndFaYLqG6xj4S6SpaZ4WSCAExQ4chC3KAH3f7HzB/kzju/bPFLeC6EuZ+rnWlEvw=
+X-Received: by 2002:a1c:7e87:: with SMTP id z129mr99779wmc.176.1606867477970;
+ Tue, 01 Dec 2020 16:04:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201223033.GG3277@xz-x1>
-User-Agent: Mutt/2.0.2 (2020-11-20)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20201127193238.821364-1-krisman@collabora.com> <20201127193238.821364-5-krisman@collabora.com>
+In-Reply-To: <20201127193238.821364-5-krisman@collabora.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 1 Dec 2020 16:04:24 -0800
+X-Gmail-Original-Message-ID: <CALCETrV2SCLg1tUUbC1SeQhyn9097ktncEKvd=jh2woSZ3g8ow@mail.gmail.com>
+Message-ID: <CALCETrV2SCLg1tUUbC1SeQhyn9097ktncEKvd=jh2woSZ3g8ow@mail.gmail.com>
+Subject: Re: [PATCH v8 4/7] entry: Support Syscall User Dispatch on common
+ syscall entry
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Andrew Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Gofman <gofmanp@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 05:30:33PM -0500, Peter Xu wrote:
-> On Tue, Dec 01, 2020 at 12:59:27PM +0000, Matthew Wilcox wrote:
-> > On Mon, Nov 30, 2020 at 06:06:03PM -0500, Peter Xu wrote:
-> > > Faulting around for reads are in most cases helpful for the performance so that
-> > > continuous memory accesses may avoid another trip of page fault.  However it
-> > > may not always work as expected.
-> > > 
-> > > For example, userfaultfd registered regions may not be the best candidate for
-> > > pre-faults around the reads.
-> > > 
-> > > For missing mode uffds, fault around does not help because if the page cache
-> > > existed, then the page should be there already.  If the page cache is not
-> > > there, nothing else we can do, either.  If the fault-around code is destined to
-> > > be helpless for userfault-missing vmas, then ideally we can skip it.
-> > 
-> > This sounds like you're thinking of a file which has exactly one user.
-> > If there are multiple processes mapping the same file, then no, there's
-> > no reason to expect a page to be already present in the page table,
-> > just because it's present in the page cache.
-> > 
-> > > For wr-protected mode uffds, errornously fault in those pages around could lead
-> > > to threads accessing the pages without uffd server's awareness.  For example,
-> > > when punching holes on uffd-wp registered shmem regions, we'll first try to
-> > > unmap all the pages before evicting the page cache but without locking the
-> > > page (please refer to shmem_fallocate(), where unmap_mapping_range() is called
-> > > before shmem_truncate_range()).  When fault-around happens near a hole being
-> > > punched, we might errornously fault in the "holes" right before it will be
-> > > punched.  Then there's a small window before the page cache was finally
-> > > dropped, and after the page will be writable again (NOTE: the uffd-wp protect
-> > > information is totally lost due to the pre-unmap in shmem_fallocate(), so the
-> > > page can be writable within the small window).  That's severe data loss.
-> > 
-> > This still doesn't make sense.  If the page is Uptodate in the page
-> > cache, then userspace gets to access it.  If you don't want the page to
-> > be accessible, ClearPageUptodate().  read() can also access it if it's
-> > marked Uptodate.  A write fault on a page will call the filesystem's
-> > page_mkwrite() and you can block it there.
-> 
-> I still don't think the page_mkwrite() could help here... Though Andrea pointed
-
-I tend to agree page_mkwrite won't help, there's no I/O, nor dirty
-memory pressure, not even VM_FAULT_MISSING can work on real
-filesystems yet. The uffd context is associated to certain virtual
-addresses in the "mm", read/write syscalls shouldn't notice any
-difference, as all other mm shouldn't notice anything either.
-
-It should be enough to check the bit in shmem_fault invoked in ->fault
-for this purpose, the problem is we need the bit to survive the invalidate.
-
-> out an more important issue against swap cache (in the v1 thread [1]).  Indeed
-> if we have those figured out maybe we'll also rethink this patch then it could
-> become optional; while that seems to be required to allow shmem swap in/out
-> with uffd-wp which I haven't yet tested.  As Hugh pointed out, purely reuse the
-> _PAGE_SWP_UFFD_WP in swap cache may not work trivially since uffd-wp is per-pte
-> rather than per-page, so I probably need to think a bit more on how to do
-> that...
-> 
-> I don't know whether a patch like this could still be good in the future.  For
-> now, let's drop this patch until we solve all the rest of the puzzle.
+On Fri, Nov 27, 2020 at 11:33 AM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
 >
-> My thanks to all the reviewers, and sorry for the noise!
+> Syscall User Dispatch (SUD) must take precedence over seccomp and
+> ptrace, since the use case is emulation (it can be invoked with a
+> different ABI) such that seccomp filtering by syscall number doesn't
+> make sense in the first place.  In addition, either the syscall is
+> dispatched back to userspace, in which case there is no resource for to
+> trace, or the syscall will be executed, and seccomp/ptrace will execute
+> next.
+>
+> Since SUD runs before tracepoints, it needs to be a SYSCALL_WORK_EXIT as
+> well, just to prevent a trace exit event when dispatch was triggered.
+> For that, the on_syscall_dispatch() examines context to skip the
+> tracepoint, audit and other work.
+>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+> Changes since v6:
+>   - Update do_syscall_intercept signature (Christian Brauner)
+>   - Move it to before tracepoints
+>   - Use SYSCALL_WORK flags
+> ---
+>  include/linux/entry-common.h |  2 ++
+>  kernel/entry/common.c        | 17 +++++++++++++++++
+>  2 files changed, 19 insertions(+)
+>
+> diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+> index 49b26b216e4e..a6e98b4ba8e9 100644
+> --- a/include/linux/entry-common.h
+> +++ b/include/linux/entry-common.h
+> @@ -44,10 +44,12 @@
+>                                  SYSCALL_WORK_SYSCALL_TRACE |           \
+>                                  SYSCALL_WORK_SYSCALL_EMU |             \
+>                                  SYSCALL_WORK_SYSCALL_AUDIT |           \
+> +                                SYSCALL_WORK_SYSCALL_USER_DISPATCH |   \
+>                                  ARCH_SYSCALL_WORK_ENTER)
+>  #define SYSCALL_WORK_EXIT      (SYSCALL_WORK_SYSCALL_TRACEPOINT |      \
+>                                  SYSCALL_WORK_SYSCALL_TRACE |           \
+>                                  SYSCALL_WORK_SYSCALL_AUDIT |           \
+> +                                SYSCALL_WORK_SYSCALL_USER_DISPATCH |   \
+>                                  ARCH_SYSCALL_WORK_EXIT)
+>
+>  /*
+> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> index f1b12dc32ff4..ec20aba3b890 100644
+> --- a/kernel/entry/common.c
+> +++ b/kernel/entry/common.c
+> @@ -6,6 +6,8 @@
+>  #include <linux/livepatch.h>
+>  #include <linux/audit.h>
+>
+> +#include "common.h"
+> +
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/syscalls.h>
+>
+> @@ -47,6 +49,16 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
+>  {
+>         long ret = 0;
+>
+> +       /*
+> +        * Handle Syscall User Dispatch.  This must comes first, since
+> +        * the ABI here can be something that doesn't make sense for
+> +        * other syscall_work features.
+> +        */
+> +       if (work & SYSCALL_WORK_SYSCALL_USER_DISPATCH) {
+> +               if (do_syscall_user_dispatch(regs))
+> +                       return -1L;
+> +       }
+> +
+>         /* Handle ptrace */
+>         if (work & (SYSCALL_WORK_SYSCALL_TRACE | SYSCALL_WORK_SYSCALL_EMU)) {
+>                 ret = arch_syscall_enter_tracehook(regs);
+> @@ -232,6 +244,11 @@ static void syscall_exit_work(struct pt_regs *regs, unsigned long work)
+>  {
+>         bool step;
+>
+> +       if (work & SYSCALL_WORK_SYSCALL_USER_DISPATCH) {
+> +               if (on_syscall_dispatch())
+> +                       return;
+> +       }
 
-Thanks to you Peter! No noise here, it's great progress to have found
-the next piece of the puzzle.
+I think this would be less confusing if you just open-coded the body
+of on_syscall_dispatch here and got rid of the helper.
 
-Any suggestions on how to have the per-vaddr per-mm _PAGE_UFFD_WP bit
-survive the pte invalidates in a way that remains associated to a
-certain vaddr in a single mm (so it can shoot itself in the foot if it
-wants, but it can't interfere with all other mm sharing the shmem
-file) would be welcome...
-
-Andrea
-
+--Andy
