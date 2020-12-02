@@ -2,208 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF7A2CC09B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4C52CC0A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730408AbgLBPTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:19:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
+        id S1730445AbgLBPTW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Dec 2020 10:19:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727889AbgLBPTH (ORCPT
+        with ESMTP id S1727889AbgLBPTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:19:07 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD6BC061A48
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:18:09 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id s8so4356821wrw.10
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:18:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hmExoOhIx4bEtgrDeuYJTxe4yY7UWDs1vFrYenV/aDs=;
-        b=XMGL8QYY6V5TYXWWxdbpZRZaDJg7CxNNYBLvG8czAAHiAsBLGNTXjOMdj5kG4DydUv
-         EDCCFeyzPHpgssrtTIYSCk8XJVbtO4j+no05tpKfTlF6CodXbmGX3K/A5qcbeuGWmwAd
-         ltMKAoVvD8lnWGXsERQcxWBQ5bYsEMrI6l8m7XLaoa2zHgQaV1UKIcs1YJmvGeF33pi9
-         IBPBz6PNVfs46f+FgLH2a0ioehrtVLenehcvxkOgxWNsa1AFIP4tV6zURbbDhznbYF0w
-         tAoHJksc8bEaqDc5eK3C+rg7jpDbjrIWdwOXJMlylqj+AZWWCXDYdywZdgudyMpjt+iw
-         T1/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hmExoOhIx4bEtgrDeuYJTxe4yY7UWDs1vFrYenV/aDs=;
-        b=taLVD8OUC06PX1rRFgvWMbMnxFpLXB5POlHqAX5CsbLaeezs2xVSANEHypTV/VmYcg
-         H+bIXzwWMuuV2G54D82MWyeHPyHmGosygLE8LHyC10RldDxtdjfD2mf62Xz5eooSW1b6
-         aQRyk/7RdDbqAarQi9WUTh3F5xSC48/89uFA67Bg47oqdKacGautei595O1wgLk0Tauv
-         rS6jKA+Laz3OqJ1ohK9wgwjeQP+sUhNw5wdy7G2c+p4AMLidkh/9q5br0o8WzJEO5UAz
-         tYfdgeWVqfhC0+8mQR3UrQ3NGN0D/AA0XggzzRl3fDkV5FQ6YTxz09xaBrpXz3UQmgVV
-         eVkg==
-X-Gm-Message-State: AOAM5300SVyg4BTqruIZ4ng8IZtGAScW1VejYZu94qbxJ65zNjuB4J5n
-        ffQIvBIuSj55YqPc5IlkBKIrtENnliPl7iwt
-X-Google-Smtp-Source: ABdhPJyOVUqkX2KGHH88sWZgXQIpOv0Vjosg4mk2KLPXXt7uLVmCw+jKM97HfDmOqUP9g5N5f4+Ndg==
-X-Received: by 2002:a5d:634d:: with SMTP id b13mr4143279wrw.310.1606922288151;
-        Wed, 02 Dec 2020 07:18:08 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id b18sm2657700wrt.54.2020.12.02.07.18.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Dec 2020 07:18:07 -0800 (PST)
-Subject: Re: [PATCH v4 2/2] pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201116143432.15809-1-srinivas.kandagatla@linaro.org>
- <20201116143432.15809-3-srinivas.kandagatla@linaro.org>
- <X8WSucFKyROFJ7gF@builder.lan>
- <ec14afaa-8660-03ac-fbf9-79ff37889de3@linaro.org>
- <X8Z9N2Yu8xiyPRmj@builder.lan>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <41c2158a-92a2-69cd-bf14-7375bdc0497c@linaro.org>
-Date:   Wed, 2 Dec 2020 15:18:06 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 2 Dec 2020 10:19:22 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C34AC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:18:42 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kkTto-0007hc-Sq; Wed, 02 Dec 2020 16:18:32 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kkTtn-0007QQ-9N; Wed, 02 Dec 2020 16:18:31 +0100
+Message-ID: <6acf2724130aa2e927cd116ecd216bec3e0321a5.camel@pengutronix.de>
+Subject: Re: [PATCH v5 07/10] media: Add parsing for APP14 data segment in
+ jpeg helpers
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl, shawnguo@kernel.org,
+        robh+dt@kernel.org
+Cc:     paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
+        daniel.baluta@nxp.com, robert.chiras@nxp.com,
+        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, ezequiel@collabora.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se,
+        dafna.hirschfeld@collabora.com,
+        Mirela Rabulea <mirela.rabulea@nxp.com>
+Date:   Wed, 02 Dec 2020 16:18:31 +0100
+In-Reply-To: <20201112030557.8540-8-mirela.rabulea@oss.nxp.com>
+References: <20201112030557.8540-1-mirela.rabulea@oss.nxp.com>
+         <20201112030557.8540-8-mirela.rabulea@oss.nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-In-Reply-To: <X8Z9N2Yu8xiyPRmj@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mirela,
 
+On Thu, 2020-11-12 at 05:05 +0200, Mirela Rabulea (OSS) wrote:
+> From: Mirela Rabulea <mirela.rabulea@nxp.com>
+> 
+> According to Rec. ITU-T T.872 (06/2012) 6.5.3
+> APP14 segment is for color encoding, it contains a transform flag, which
+> may have values of 0, 1 and 2 and are interpreted as follows:
+> 0 - CMYK for images that are encoded with four components
+>   - RGB for images that are encoded with three components
+> 1 - An image encoded with three components using YCbCr colour encoding.
+> 2 - An image encoded with four components using YCCK colour encoding.
+> 
+> This is used in imx-jpeg decoder, to distinguish between
+> YUV444 and RGB24.
+> 
+> Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
+> ---
+> Changes in v5:
+> This was patch 8 in previous version
+> Replaced a struct for app14 data with just an int, since the 
+> transform flag is the only meaningfull information from this segment
 
-On 01/12/2020 17:28, Bjorn Andersson wrote:
-> On Tue 01 Dec 04:01 CST 2020, Srinivas Kandagatla wrote:
-> 
->> Many thanks for review Bjorn,
->>
->>
->> On 01/12/2020 00:47, Bjorn Andersson wrote:
->>> On Mon 16 Nov 08:34 CST 2020, Srinivas Kandagatla wrote:
->>>
->>>> Add initial pinctrl driver to support pin configuration for
->>>> LPASS (Low Power Audio SubSystem) LPI (Low Power Island) pinctrl
->>>> on SM8250.
->>>>
->>>> This IP is an additional pin control block for Audio Pins on top the
->>>> existing SoC Top level pin-controller.
->>>> Hardware setup looks like:
->>>>
->>>> TLMM GPIO[146 - 159] --> LPASS LPI GPIO [0 - 13]
->>>>
->>>
->>> Iiuc the LPI TLMM block is just "another pinmux/pinconf block" found in
->>> these SoCs, with the additional magic that the 14 pads are muxed with
->>> some of the TLMM pins - to allow the system integrator to choose how
->>> many pins the LPI should have access to.
->>>
->>> I also believe this is what the "egpio" bit in the TLMM registers are
->>> used for (i.e. egpio = route to LPI, egpio = 1 route to TLMM), so we
->>> should need to add support for toggling this bit in the TLMM as well
->>> (which I think we should do as a pinconf in the pinctrl-msm).
->>
->> Yes, we should add egpio function to these pins in main TLMM pinctrl!
->>
-> 
-> I was thinking about abusing the pinconf system, but reading you
-> sentence makes me feel that expressing it as a "function" and adding a
-> special case handling in msm_pinmux_set_mux() would actually make things
-> much cleaner to the outside.
-> 
-> i.e. we would then end up with something in DT like:
-> 
-> 	pin-is-normal-tlmm-pin {
-> 		pins = "gpio146";
-> 		function = "gpio";
-> 	};
-> 
-> and
-> 
-> 	pin-routed-to-lpi-pin {
-> 		pins = "gpio146";
-> 		function = "egpio";
-> 	};
+Could we turn this into an enum for the transform flag, and include the
+above spec reference in its kerneldoc comment? I think this would be
+better than checking for (app14_tf == <magic_number>) in the drivers.
 
-That is what I was thinking of.
+>  drivers/media/v4l2-core/v4l2-jpeg.c | 39 +++++++++++++++++++++++++++--
+>  include/media/v4l2-jpeg.h           |  6 +++--
+>  2 files changed, 41 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-jpeg.c b/drivers/media/v4l2-core/v4l2-jpeg.c
+> index 8947fd95c6f1..3181ce544f79 100644
+> --- a/drivers/media/v4l2-core/v4l2-jpeg.c
+> +++ b/drivers/media/v4l2-core/v4l2-jpeg.c
+> @@ -45,6 +45,7 @@ MODULE_LICENSE("GPL");
+>  #define DHP	0xffde	/* hierarchical progression */
+>  #define EXP	0xffdf	/* expand reference */
+>  #define APP0	0xffe0	/* application data */
+> +#define APP14	0xffee	/* application data for colour encoding */
+>  #define APP15	0xffef
+>  #define JPG0	0xfff0	/* extensions */
+>  #define JPG13	0xfffd
+> @@ -444,8 +445,37 @@ static int jpeg_skip_segment(struct jpeg_stream *stream)
+>  	return jpeg_skip(stream, len - 2);
+>  }
+>  
+> +/* Rec. ITU-T T.872 (06/2012) 6.5.3 */
+> +static int jpeg_parse_app14_data(struct jpeg_stream *stream)
+> +{
+> +	int ret;
+> +	int Lp;
 
-> 
-> Only "drawback" I can see is that we're inverting the chip's meaning of
-> "egpio" (i.e. active means route-to-tlmm in the hardware).
-> 
-At somepoint we need to start defining what egpio really means w.r.t 
-pinctrl setup!
+Let's keep variables lower case.
 
->>>
->>>> This pin controller has some similarities compared to Top level
->>>> msm SoC Pin controller like 'each pin belongs to a single group'
->>>> and so on. However this one is intended to control only audio
->>>> pins in particular, which can not be configured/touched by the
->>>> Top level SoC pin controller except setting them as gpios.
-> [..]
->>>> diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-> [..]
->>>> +	LPI_MUX_qua_mi2s_sclk,
->>>> +	LPI_MUX_swr_tx_data1,
->>>
->>> As there's no single pin that can be both data1 and data2 I think you
->>> should have a single group for swr_tx_data and use this function for
->>> both swr_tx_data pins. Or perhaps even just have one for swr or swr_tx.
->>>
->>> (This is nice when you're writing DT later on)
->>
->> I did think about this, but we have a rx_data2 pin in different function
->> compared to other rx data pins.
->>
->> The reason to keep it as it is :
->> 1> as this will bring in an additional complexity to the code
-> 
-> For each pin lpi_gpio_set_mux() will be invoked and you'd be searching
-> for the index (i) among that pins .funcs. So it doesn't matter that
-> looking up a particular function results in different register values
-> for different pins, it's already dealt with.
-> 
->> 2> we have these represented exactly as what hw data sheet mentions it!
->>
-> 
-> That is true, but the result is that you have to write 2 states in the
-> DT to get your 2 pins to switch to the particular function. By grouping
-> them you could do:
-> 
-> 	data-pins {
-> 		pins = "gpio1", "gpio2";
-> 		function = "swr_tx_data";
-> 	};
-> 
-> 
-> We do this quite extensively for the TLMM (pinctrl-msm) because it
-> results in cleaner DT.
+> +	int skip;
+> +	int tf;
+> +
+> +	Lp = jpeg_get_word_be(stream);
+> +	if (Lp < 0)
+> +		return Lp;
 
-These are now changed as requested!
+Should we check that Ap1 to 6 are actually "Adobe\0"?
 
-> 
->>>
->>>> +	LPI_MUX_qua_mi2s_ws,
-> [..]
->>>> +static struct lpi_pinctrl_variant_data sm8250_lpi_data = {
->>>> +	.tlmm_reg_offset = 0x1000,
->>>
->>> Do we have any platform in sight where this is not 0x1000? Could we just
->>> make a define out of it?
->> Am not 100% sure ATM, But I wanted to keep this flexible as these offsets in
->> downstream were part of device tree for some reason, so having offset here
->> for particular compatible made more sense for me!
->>
-> 
-> Downtream does indeed favor "flexible" code. I tend to prefer a #define
-> until we actually need the flexibility...
+> +	/* get to Ap12 */
+> +	ret = jpeg_skip(stream, 11);
+> +	if (ret < 0)
+> +		return -EINVAL;
+> +
+> +	tf = jpeg_get_byte(stream);
+> +	if (tf < 0)
+> +		return tf;
+> +
+> +	skip = Lp - 2 - 11;
+> +	ret = jpeg_skip(stream, skip);
+> +	if (ret < 0)
+> +		return -EINVAL;
+> +	else
+> +		return tf;
+> +}
+> +
+>  /**
+> - * jpeg_parse_header - locate marker segments and optionally parse headers
+> + * v4l2_jpeg_parse_header - locate marker segments and optionally parse headers
+>   * @buf: address of the JPEG buffer, should start with a SOI marker
+>   * @len: length of the JPEG buffer
+>   * @out: returns marker segment positions and optionally parsed headers
+> @@ -476,6 +506,9 @@ int v4l2_jpeg_parse_header(void *buf, size_t len, struct v4l2_jpeg_header *out)
+>  	if (marker != SOI)
+>  		return -EINVAL;
+>  
+> +	/* init value to signal if this marker is not present */
+> +	out->app14_tf = -EINVAL;
+> +
+>  	/* loop through marker segments */
+>  	while ((marker = jpeg_next_marker(&stream)) >= 0) {
+>  		switch (marker) {
+> @@ -519,7 +552,9 @@ int v4l2_jpeg_parse_header(void *buf, size_t len, struct v4l2_jpeg_header *out)
+>  			ret = jpeg_parse_restart_interval(&stream,
+>  							&out->restart_interval);
+>  			break;
+> -
+> +		case APP14:
+> +			out->app14_tf = jpeg_parse_app14_data(&stream);
+> +			break;
+>  		case SOS:
+>  			ret = jpeg_reference_segment(&stream, &out->sos);
+>  			if (ret < 0)
+> diff --git a/include/media/v4l2-jpeg.h b/include/media/v4l2-jpeg.h
+> index ddba2a56c321..008e0476d928 100644
+> --- a/include/media/v4l2-jpeg.h
+> +++ b/include/media/v4l2-jpeg.h
+> @@ -100,10 +100,11 @@ struct v4l2_jpeg_scan_header {
+>   *                  order, optional
+>   * @restart_interval: number of MCU per restart interval, Ri
+>   * @ecs_offset: buffer offset in bytes to the entropy coded segment
+> + * @app14_tf: transform flag from app14 data
+>   *
+>   * When this structure is passed to v4l2_jpeg_parse_header, the optional scan,
+> - * quantization_tables, and huffman_tables pointers must be initialized to NULL
+> - * or point at valid memory.
+> + * quantization_tables and huffman_tables pointers must be initialized
+> + * to NULL or point at valid memory.
 
-Done!
+Unnecessary, unrelated change? I'd drop this.
 
---srini
-> 
-> Regards,
-> Bjorn
-> 
+>   */
+>  struct v4l2_jpeg_header {
+>  	struct v4l2_jpeg_reference sof;
+> @@ -119,6 +120,7 @@ struct v4l2_jpeg_header {
+>  	struct v4l2_jpeg_reference *huffman_tables;
+>  	u16 restart_interval;
+>  	size_t ecs_offset;
+> +	int app14_tf;
+>  };
+>  
+>  int v4l2_jpeg_parse_header(void *buf, size_t len, struct v4l2_jpeg_header *out);
+
+regards
+Philipp
