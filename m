@@ -2,141 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C732CC221
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F67C2CC224
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389051AbgLBQXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:23:00 -0500
-Received: from mga03.intel.com ([134.134.136.65]:44494 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389016AbgLBQW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:22:59 -0500
-IronPort-SDR: 5mh4z9xwl+b2zFZQ7rkp3agojTTeqadwR0zUV9xSrTn0Snc7EUxuVayjgcw5Du7ucMRpq6Zvqw
- GZwGOtodSG/g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="173140268"
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="173140268"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 08:22:16 -0800
-IronPort-SDR: Era7pDZzgxbiaJpQIAK5imL4NHLKAQ/4FwHkMmx1lAR9MtAJkXNHgqqo1XehrVMUKUtykaI1w6
- juZiarijiT2g==
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="335612597"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 08:22:15 -0800
-Date:   Wed, 2 Dec 2020 08:22:15 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        david@redhat.com, osalvador@suse.de, dan.j.williams@intel.com,
-        sashal@kernel.org, tyhicks@linux.microsoft.com,
-        iamjoonsoo.kim@lge.com, mike.kravetz@oracle.com,
-        rostedt@goodmis.org, mingo@redhat.com, jgg@ziepe.ca,
-        peterz@infradead.org, mgorman@suse.de, willy@infradead.org,
-        rientjes@google.com, jhubbard@nvidia.com
-Subject: Re: [PATCH 1/6] mm/gup: perform check_dax_vmas only when FS_DAX is
- enabled
-Message-ID: <20201202162215.GS1161629@iweiny-DESK2.sc.intel.com>
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201202052330.474592-2-pasha.tatashin@soleen.com>
+        id S2389084AbgLBQXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:23:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388999AbgLBQXx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 11:23:53 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FA0C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:23:12 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id d8so5723854lfa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:23:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zkzWh1n8apsb00YEXyZll9FC6kSVnRaWL8x+YUkOQho=;
+        b=KZLPsRnOwomBLzlBoH7n1dnG+b0g/3ya9uDJsTghBWnNcTc54eODzPHInC0a9fMP3x
+         hxxf3Lal0n0O0WTvUY5coWMubP9nC7hhs+JmiO2Xe/T6eurKm6CYlcn4bXldUPrKcqyz
+         rpL/AlwSXaRadcySApnPZPAJtf1km/Smoml0kiiNE8SevdK8Uco4dMDq0PebTQoLDllY
+         AoQ/pw/svxuApE0wJft3EMaWcv/AlKpk1BWON9m/ZJX3JXPoo7ftAjqG749EzsbAc9sa
+         BQkS5QUfjDF1HTF7ZNFrv0kTfIFcWEMmGHnJsSY/dBcPVNSTin/T9NysuSMuDuvYRTye
+         +gNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zkzWh1n8apsb00YEXyZll9FC6kSVnRaWL8x+YUkOQho=;
+        b=t+FY+Ax4zcQpAKAXU3WNkeXfP+/3XFPbTcASNqve7mQkm0RjcKELa8zVz6HI/P3ja1
+         a8hEAJW/uUq8GSPIgHNE9CA2rkfAyanKGpF603rASvepI660uwe1jD2SqgFqS6Tvwwyi
+         044x9NpS4JfFDSna/vzWxq6VpwP/29cK+IpxfeVZBE7YX/Q8fzS/Sxebnu/yTmUWbX5t
+         Pf+NcAsZG9urLFvRQomzfYrfbbj3KyHzbdEOgqrw5e1Mr1m9B8KSoMa9cTYuco2C6vp3
+         80Hu2sVVDpjL6i7aVjZR33KatnEEbxmJFdDxLZix9i5NmZtnf42ZgrstD7VnIyX92dat
+         Xvew==
+X-Gm-Message-State: AOAM532y2SMTf8/9YsCt0jUbKGi/mqkBGSw4j4blhG70eE4baIgEShJt
+        wCDGAVUydYiWF3iPLaQOoTJy+uvLl6lTY7Qjw79uXg==
+X-Google-Smtp-Source: ABdhPJy1wBO7dMTMSToBdakmqd/AJ3DKQw5y4MinYynDNQJQSV3VhmUF5TYxs39dXwiKO0mNDD53TkoKGL3s48ztXZw=
+X-Received: by 2002:a19:8347:: with SMTP id f68mr1679092lfd.83.1606926191127;
+ Wed, 02 Dec 2020 08:23:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202052330.474592-2-pasha.tatashin@soleen.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20201125090923.GA3723@shao2-debian> <6fef3fc7-be18-92e5-c622-add6decb88c4@linux.intel.com>
+ <20201126121351.GJ3371@techsingularity.net> <b45171de-cb74-bf35-91bf-967dbd5567d1@linux.intel.com>
+In-Reply-To: <b45171de-cb74-bf35-91bf-967dbd5567d1@linux.intel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 2 Dec 2020 17:22:59 +0100
+Message-ID: <CAKfTPtCydzVv45qbsDTG2XDS=4EF4KuuYg5mjnDDF_81B5p2kA@mail.gmail.com>
+Subject: Re: [sched/fair] 8d86968ac3: netperf.Throughput_tps -29.5% regression
+To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        kernel test robot <rong.a.chen@intel.com>,
+        0day robot <lkp@intel.com>, Mel Gorman <mgorman@suse.de>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Jiang Biao <benbjiang@gmail.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "Tang, Feng" <feng.tang@intel.com>, zhengjun.xing@intel.com,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Aubrey Li <aubrey.li@intel.com>, Chen Yu <yu.c.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 12:23:25AM -0500, Pavel Tatashin wrote:
-> There is no need to check_dax_vmas() and run through the npage loop of
-> pinned pages if FS_DAX is not enabled.
-> 
-> Add a stub check_dax_vmas() function for no-FS_DAX case.
+On Wed, 2 Dec 2020 at 15:30, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
+>
+> Hi Mel,
+>
+> On 2020/11/26 20:13, Mel Gorman wrote:
+> > On Thu, Nov 26, 2020 at 02:57:07PM +0800, Li, Aubrey wrote:
+> >> Hi Robot,
+> >>
+> >> On 2020/11/25 17:09, kernel test robot wrote:
+> >>> Greeting,
+> >>>
+> >>> FYI, we noticed a -29.5% regression of netperf.Throughput_tps due to commit:
+> >>>
+> >>>
+> >>> commit: 8d86968ac36ea5bff487f70b5ffc252a87d44c51 ("[RFC PATCH v4] sched/fair: select idle cpu from idle cpumask for task wakeup")
+> >>> url: https://github.com/0day-ci/linux/commits/Aubrey-Li/sched-fair-select-idle-cpu-from-idle-cpumask-for-task-wakeup/20201118-115145
+> >>> base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 09162bc32c880a791c6c0668ce0745cf7958f576
+> >>
+> >> I tried to replicate this on my side on a 192 threads(with SMT) machine as well and didn't see the regression.
+> >>
+> >> nr_threads           v5.9.8          +patch
+> >> 96(50%)                      1 (+/- 2.499%)  1.007672(+/- 3.0872%)
+> >>
+> >> I also tested another 100% case and see similar improvement as what I saw on uperf benchmark
+> >>
+> >> nr_threads           v5.9.8          +patch
+> >> 192(100%)            1 (+/- 45.32%)  1.864917(+/- 23.29%)
+> >>
+> >> My base is v5.9.8 BTW.
+> >>
+> >>>     ip: ipv4
+> >>>     runtime: 300s
+> >>>     nr_threads: 50%
+> >>>     cluster: cs-localhost
+> >>>     test: UDP_RR
+> >>>     cpufreq_governor: performance
+> >>>     ucode: 0x5003003
+> >>>
+> >
+> > Note that I suspect that regressions with this will be tricky to reproduce
+> > because it'll depend on the timing of when the idle mask gets updated. With
+> > this configuration there are 50% "threads" which likely gets translates
+> > into 1 client/server per thread or 100% of CPUs active but as it's a
+> > ping-pong workload, the pairs are rapidly idling for very short periods.
+>
+> I tried to replicate this regression but no solid fruit found. I tried 30 times
+> 300s 50%.netperf running, all the data are better than the default data. The only
+> interesting thing I found is an option CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_32B=y,
+> but it performs different on different machines. In case anything I missed,
+> do you have any suggestions to replicate this regression?
+>
+> >
+> > If the idle mask is not getting cleared then select_idle_cpu() is
+> > probably returning immediately. select_idle_core() is almost certainly
+> > failing so that just leaves select_idle_smt() to find a potentially idle
+> > CPU. That's a limited search space so tasks may be getting stacked and
+> > missing CPUs that are idling for short periods.
+>
+> Vincent suggested we decouple idle cpumask from short idle(stop tick) and
+> set it every time the CPU enters idle, I'll make this change in V6.
 
-This looks like a good idea.
+This v6 behavior is much more conservative regarding the idle  cpumask
+and should restore the regression that appeared with V4
 
-> 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> ---
->  mm/gup.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 98eb8e6d2609..cdb8b9eeb016 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1568,6 +1568,7 @@ struct page *get_dump_page(unsigned long addr)
->  #endif /* CONFIG_ELF_CORE */
->  
->  #if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
-
-In addition, I think it would make a lot of sense to clean up this config as
-well like this:
-
-08:20:10 > git di
-diff --git a/mm/gup.c b/mm/gup.c
-index 102877ed77a4..92cfda220aeb 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1567,7 +1567,7 @@ struct page *get_dump_page(unsigned long addr)
- }
- #endif /* CONFIG_ELF_CORE */
- 
--#if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
-+#ifdef CONFIG_FS_DAX
- static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
- {
-        long i;
-@@ -1586,6 +1586,12 @@ static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
-        }
-        return false;
- }
-+#else
-+static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
-+{
-+       return false;
-+}
-+#endif /* CONFIG_FS_DAX */
- 
- #ifdef CONFIG_CMA
- static long check_and_migrate_cma_pages(struct mm_struct *mm,
-@@ -1691,6 +1697,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
- }
- #endif /* CONFIG_CMA */
- 
-+#if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
- /*
-  * __gup_longterm_locked() is a wrapper for __get_user_pages_locked which
-  * allows us to process the FOLL_LONGTERM flag.
-
-
-That makes it more clear what is going on with __gup_longterm_locked() and
-places both CMA and FS_DAX code within their own blocks.
-
-Ira
-
-> +#ifdef CONFIG_FS_DAX
->  static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
->  {
->  	long i;
-> @@ -1586,6 +1587,12 @@ static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
->  	}
->  	return false;
->  }
-> +#else
-> +static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
-> +{
-> +	return false;
-> +}
-> +#endif
->  
->  #ifdef CONFIG_CMA
->  static long check_and_migrate_cma_pages(struct mm_struct *mm,
-> -- 
-> 2.25.1
-> 
-> 
+>
+> >
+> > On the flip side, I expect cases like hackbench to benefit because it
+> > can saturate a machine to such a degree that select_idle_cpu() is a waste
+> > of time.
+>
+> Yes, I believe that's also why I saw uperf/netperf improvement at high
+> load levels.
+>
+> >
+> > That said, I haven't followed the different versions closely. I know v5
+> > got a lot of feedback so will take a closer look at v6. Fundamentally
+> > though I expect that using the idle mask will be a mixed bag. At low
+> > utilisation or over-saturation, it'll be a benefit. At the point where
+> > the machine is almost fully busy, some workloads will benefit (lightly
+> > communicating workloads that occasionally migrate) and others will not
+> > (ping-pong workloads looking for CPUs that are idle for very brief
+> > periods).
+>
+> Do you have any interested workload [matrix] I can do the measurement?
+>
+> >
+> > It's tricky enough that it might benefit from a sched_feat() check that
+> > is default true so it gets tested. For regressions that show up, it'll
+> > be easy enough to ask for the feature to be disabled to see if it fixes
+> > it. Over time, that might give an idea of exactly what sort of workloads
+> > benefit and what suffers.
+>
+> Okay, I'll add a sched_feat() for this feature.
+>
+> >
+> > Note that the cost of select_idle_cpu() can also be reduced by enabling
+> > SIS_AVG_CPU so it would be interesting to know if the idle mask is superior
+> > or inferior to SIS_AVG_CPU for workloads that show regressions.
+> >
+>
+> Thanks,
+> -Aubrey
