@@ -2,148 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867EB2CBFA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C622CBFCB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgLBO3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:29:02 -0500
-Received: from mail-eopbgr20086.outbound.protection.outlook.com ([40.107.2.86]:42574
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727843AbgLBO3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:29:01 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F1j1Jt7AtHHdMyqCBwYbmyEWJ2tOvIqzoBADzJa3wKVJBQ2rrDncG/513Gfg+lM9poYDf3HVWTp5/bAHFH9eGjlmnCu9fA+pQlQ0/saWCSY5wA5Cc8YUZNAzVQyOx+ynsfHmjSCAgYM0TRdPjQ+05/rBzUVBNLaEXSMheFRsJvU70Zgk8lnyTZZ/w8ickBb20Ntuk8DjAQas/kgSNxMtgH1tHji1ILf68LjX6VHUUGo3EIyYcDqsYvmdRwHJTjWDXYt/4UDafK/XWYJzlfImcdsRGqIPybNzYkWQU+farV3jLCDs4PNe+YgjiWSqnDjerrZ/+yG/bxAFVG+0mfWdlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GiYszWI0OZj+fFrWq4yBYpZ09hxAM+wBwovAnnm58eg=;
- b=OrW85xywwEsNr8VgPq1lV/uibzWjYN0TOLMhGm/ewleaxnZ/b5vvL7WKNiDlhDH0R6gqlNQDEGs+KOoUuD85jgGRT7qHH4OL5O+ZNblOfehCUQjGDVI84yhHjtSO0njOrzeAYFONgfE4ykzIYybno9Ne+sdl8A1mqoLE/NpWpMEPcPAmEtFweeDvnTZdbZGKq1suUWiRnGlNSWov5rgGizp9lFBnJCsm+19/HIr219ZgODwy1sFp36wP4HFbZYv1PWZV3VbrVaDRxbwAQTF5Z8CBXKhPVlHUjy+OSMvbooon7q2HMv17O9BYBEirqZjeiS0TNsLfDNxqtoQAFvYQDg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GiYszWI0OZj+fFrWq4yBYpZ09hxAM+wBwovAnnm58eg=;
- b=MSSM8KXBUHvaP6S2Z27A67Ukvng1vYmVdipMyqkbWXFV2Nm/GXvOtMh4Ce18DNR9EpfyADoA1HovWqNEZB5FbvkFUpb3s3/Si7eikZIS7eaXUMNuYgIgMdqzR3U57yAgKqobtS8Ag0KOMiuLOR1HEL568l3ebcO3IKQjy3QkucE=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
- by VI1PR04MB3136.eurprd04.prod.outlook.com (2603:10a6:802:10::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22; Wed, 2 Dec
- 2020 14:28:11 +0000
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::3cd1:fe15:f8d4:ac32]) by VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::3cd1:fe15:f8d4:ac32%5]) with mapi id 15.20.3632.019; Wed, 2 Dec 2020
- 14:28:11 +0000
-Subject: Re: [PATCH] random: Don't freeze in add_hwgenerator_randomness() if
- stopping kthread
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Stephen Boyd <swboyd@chromium.org>, Theodore Ts'o <tytso@mit.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Keerthy <j-keerthy@ti.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20191110135543.3476097-1-mail@maciej.szmigiero.name>
- <5dcee409.1c69fb81.f5027.48ad@mx.google.com>
- <415922ac-3c87-081c-6fdf-73fc97d0f397@maciej.szmigiero.name>
- <20191117005641.qgremf2lrj46qy4p@gondor.apana.org.au>
-From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
-Message-ID: <2f581f84-378f-05cf-1902-f0494aafe706@nxp.com>
-Date:   Wed, 2 Dec 2020 16:28:07 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-In-Reply-To: <20191117005641.qgremf2lrj46qy4p@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8
+        id S1727941AbgLBOcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:32:13 -0500
+Received: from mga03.intel.com ([134.134.136.65]:32669 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726515AbgLBOcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 09:32:12 -0500
+IronPort-SDR: vkgq9b3AyGQLFVUFeENJ3vV8o6JJnP5+fGlOU+2axtV0LGRx6uGb0nhI1Yk3ddA7KKahTGEl3N
+ baAZe83Hb3gA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="173120250"
+X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
+   d="scan'208";a="173120250"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 06:30:08 -0800
+IronPort-SDR: T5wWgpB6WpXmWrwJRVL0w/sI1U1rgD/Pjqzx2vxCcxgKtgZYk2sTHM9Tu8J87AINCCmNV6cGsi
+ i3WPCOWcwgsA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
+   d="scan'208";a="373518407"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Dec 2020 06:30:00 -0800
+Subject: Re: [sched/fair] 8d86968ac3: netperf.Throughput_tps -29.5% regression
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        0day robot <lkp@intel.com>, Mel Gorman <mgorman@suse.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Jiang Biao <benbjiang@gmail.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        Aubrey Li <aubrey.li@intel.com>, yu.c.chen@intel.com
+References: <20201125090923.GA3723@shao2-debian>
+ <6fef3fc7-be18-92e5-c622-add6decb88c4@linux.intel.com>
+ <20201126121351.GJ3371@techsingularity.net>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <b45171de-cb74-bf35-91bf-967dbd5567d1@linux.intel.com>
+Date:   Wed, 2 Dec 2020 22:29:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20201126121351.GJ3371@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [78.97.206.147]
-X-ClientProxiedBy: AM0PR05CA0078.eurprd05.prod.outlook.com
- (2603:10a6:208:136::18) To VI1PR04MB4046.eurprd04.prod.outlook.com
- (2603:10a6:803:4d::29)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.129] (78.97.206.147) by AM0PR05CA0078.eurprd05.prod.outlook.com (2603:10a6:208:136::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Wed, 2 Dec 2020 14:28:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 1df14d43-78b5-4187-5871-08d896ce7eb6
-X-MS-TrafficTypeDiagnostic: VI1PR04MB3136:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB31365091668427A047B9962398F30@VI1PR04MB3136.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1728;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jYURbm0kjxdnC+VAuloRonY20lh9/+uEE7cDrt6Zm6KGDQcYkG7nSJXof1LYpFC20VjBdV0lVTBY93NmUJMVK6GXsCaeLhAae3JqRf9LgGiqLeAHnVtA8yJYdrENUP6yjdptIEzBNBNBAkdam4mDr3zzgFbs1UvLa4C1jdJhyGrMe1tQu8QcOcCOfbURS4EBYu+e1zQcQfjZMlRr8DX1eZc80XpniOvjHPm9JZuOMBrwbIeHUaslXoicJo9XowirePE51+0IN6ndQ8vyKLxr7cN/M6itiyWR1NCZ0j5uroN6aQFlyYuCZ2ImINfHSB7NzjZVtGjAk2aCuy7WFlS/ACfvEP25tCe4aw3UqSIBdLA2Ye01JPQTRgcUlG2vhpf0lamhVv7xG5Csa1KOTzy22uPSVWSwS7iJuRJ6BTT5nxk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39850400004)(396003)(376002)(346002)(5660300002)(66556008)(956004)(83380400001)(316002)(16576012)(2616005)(110136005)(54906003)(6486002)(31696002)(36756003)(478600001)(7416002)(8936002)(66476007)(52116002)(2906002)(186003)(66946007)(4326008)(26005)(86362001)(31686004)(8676002)(53546011)(16526019)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MlV4Wmd1OVpDc3NrWnZzenM4cHBTY2ZJR3ppd3U2YXJHczF5TzhnbkNnZGdJ?=
- =?utf-8?B?dkNsYyttYUJvZERUQXljZktHN2FTWjYzeis0eFVaY1VHZFRZMDM0azFBWExW?=
- =?utf-8?B?bHBJMnJqaVF2VU9sZXRlcDhleVNtems4YlErRUNTbktOQVh0VzIxQzVtQWhS?=
- =?utf-8?B?S01vVnc4YWkzemEwcElQci9UbXhJKytUS1dCS1F4SUx1NGpFTXlCTWtQTHVn?=
- =?utf-8?B?akxMVDJmQURHRW9LS3pPMTZXNlAwWUk4WVZKVEFlNk1IZ29wcDBxaFBwSWRM?=
- =?utf-8?B?eTI5TkhjNTRpWlIrZ0pXK0xDcWoyWlZtb21DRGdwaDd1MU1OalQzajNCWDBI?=
- =?utf-8?B?VytOaEhTMlYzYk1EVW1FVTJHdWhnS1hsNE16SzhNL05qMFM5U3dLbzFtcXdT?=
- =?utf-8?B?NnJkMnpnWHdTcUsvTTdXbDBUeDVkRmc5RXNVT2h3SFJEVldENWcxdkNUN20r?=
- =?utf-8?B?bXFoK24rcTVjTDJoeEN5QVYrWnI4UktYejJQRHo2SlNBN2xrVFdZcmJJczRw?=
- =?utf-8?B?akFNZzlLNTkrSGtadXcwVXhUeU9IQVErc25sT0xGVUR1R0hBMXZ2QkloQ0ZS?=
- =?utf-8?B?MWlzTE9aaGZYWHV0YUZaUU9jOUlydVp4N0liL0tjenp2eEZXaURmSTFmQzJm?=
- =?utf-8?B?WlZILzNyc0dnSlBFTE1kTkpwMlU4NEJ3N21JNkpnQ0Qva2ROa2hKNXhhY1hp?=
- =?utf-8?B?MmJhbGo1cTBoczhRSWZjVlpFZHFiZnltWVJmU1R0eURTM0VHdlBDQU90bzhT?=
- =?utf-8?B?MGJIajlPMUlWQzNWcWxoa2ovMTRSUGF4K2FvWlpDSE9LYW9NN1p6MFBTbzF4?=
- =?utf-8?B?MjUzSStOM3NUemEzOVUzUFMrRXE5dWJBU2NPM2I2WW1BR24yYVBKM1luMHQ3?=
- =?utf-8?B?OFFJWmJoS3cxd3ZyTzJqMjF1SFJhcGovZ1RUM0taSmRxSCtvaEZCNVBIZTZ2?=
- =?utf-8?B?a25sblZVSzJoMm1RSk5wY0RoOHJXeFlMalVtckVXbk5ZY0FvQWc3eEZ4a1N1?=
- =?utf-8?B?bFNPZncrNjV1cDZjcEVjRjdHdHRpaHprdXY1TDV3cDZzZDFlb0MyVzJFaHkx?=
- =?utf-8?B?bzdYeFFhSCtlVVRiZkI0QnJSQ3lCdEhnOTY4L3lPK0FMQ1RKc2krRVNFeXJj?=
- =?utf-8?B?WFFmaU9ZK2REY05zZXc0TW1XRkthYVlrRXlsZGV0cU9nYjNKb2lLVnJlUi9l?=
- =?utf-8?B?M1BwOE5rYnNabE0vNHdQQlhHdEFsL2xxd0ZlSU94ZkdPQUVNeGE0QXF1RGww?=
- =?utf-8?B?YzJic2tHa0hXWnAzTncycjRNOVR2Z1NXUlJQQS9uN01Mb3EzaExmQzJUWFYy?=
- =?utf-8?Q?u15RLLc4ehlMdEjqhDGXt+UqLYQPDGtRKV?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1df14d43-78b5-4187-5871-08d896ce7eb6
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2020 14:28:11.1840
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jzmis0f3OWo02CfdxErtwD1Pc6HqtGjXdFnXNmpU7ogJlVAR7BRj2AZ3Mbgu9DK7fk2g6Qbrdtmc0ECbAo5kvw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3136
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/2019 2:57 AM, Herbert Xu wrote:
-> On Sun, Nov 17, 2019 at 12:01:20AM +0100, Maciej S. Szmigiero wrote:
+Hi Mel,
+
+On 2020/11/26 20:13, Mel Gorman wrote:
+> On Thu, Nov 26, 2020 at 02:57:07PM +0800, Li, Aubrey wrote:
+>> Hi Robot,
 >>
->> If a reader (user space) task is frozen then it is no longer waiting
->> on this waitqueue - at least if I understand correctly how the freezer
->> works for user space tasks, that is by interrupting waits via a fake
->> signal.
+>> On 2020/11/25 17:09, kernel test robot wrote:
+>>> Greeting,
+>>>
+>>> FYI, we noticed a -29.5% regression of netperf.Throughput_tps due to commit:
+>>>
+>>>
+>>> commit: 8d86968ac36ea5bff487f70b5ffc252a87d44c51 ("[RFC PATCH v4] sched/fair: select idle cpu from idle cpumask for task wakeup")
+>>> url: https://github.com/0day-ci/linux/commits/Aubrey-Li/sched-fair-select-idle-cpu-from-idle-cpumask-for-task-wakeup/20201118-115145
+>>> base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 09162bc32c880a791c6c0668ce0745cf7958f576
+>>
+>> I tried to replicate this on my side on a 192 threads(with SMT) machine as well and didn't see the regression.
+>>
+>> nr_threads		v5.9.8		+patch
+>> 96(50%)			1 (+/- 2.499%)	1.007672(+/- 3.0872%)
+>>
+>> I also tested another 100% case and see similar improvement as what I saw on uperf benchmark
+>>
+>> nr_threads		v5.9.8		+patch
+>> 192(100%)		1 (+/- 45.32%)	1.864917(+/- 23.29%)
+>>
+>> My base is v5.9.8 BTW.
+>>
+>>> 	ip: ipv4
+>>> 	runtime: 300s
+>>> 	nr_threads: 50%
+>>> 	cluster: cs-localhost
+>>> 	test: UDP_RR
+>>> 	cpufreq_governor: performance
+>>> 	ucode: 0x5003003
+>>>
 > 
-> At this point I'm just going to revert the whole thing and we can
-> sort it out in the next development cycle.
+> Note that I suspect that regressions with this will be tricky to reproduce
+> because it'll depend on the timing of when the idle mask gets updated. With
+> this configuration there are 50% "threads" which likely gets translates
+> into 1 client/server per thread or 100% of CPUs active but as it's a
+> ping-pong workload, the pairs are rapidly idling for very short periods.
+
+I tried to replicate this regression but no solid fruit found. I tried 30 times
+300s 50%.netperf running, all the data are better than the default data. The only
+interesting thing I found is an option CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_32B=y,
+but it performs different on different machines. In case anything I missed,
+do you have any suggestions to replicate this regression?
+
 > 
-Working at adding power management support for caam crypto driver,
-I've stumbled upon the issue of caam rng suspending while hwrng kthread
-is still active.
+> If the idle mask is not getting cleared then select_idle_cpu() is
+> probably returning immediately. select_idle_core() is almost certainly
+> failing so that just leaves select_idle_smt() to find a potentially idle
+> CPU. That's a limited search space so tasks may be getting stacked and
+> missing CPUs that are idling for short periods.
 
-For now I've fixed the issue by unregistering / re-registering caam rng
-from hwrng at device suspend / resume time.
+Vincent suggested we decouple idle cpumask from short idle(stop tick) and
+set it every time the CPU enters idle, I'll make this change in V6.
 
-OTOH I see a few commits:
-03a3bb7ae631 ("hwrng: core - Freeze khwrng thread during suspend")
-ff296293b353 ("random: Support freezable kthreads in add_hwgenerator_randomness()")
-59b569480dc8 ("random: Use wait_event_freezable() in add_hwgenerator_randomness()")
+> 
+> On the flip side, I expect cases like hackbench to benefit because it
+> can saturate a machine to such a degree that select_idle_cpu() is a waste
+> of time.
 
-however they were reverted a bit later in commit
-08e97aec700a ("Revert "hwrng: core - Freeze khwrng thread during suspend"")
+Yes, I believe that's also why I saw uperf/netperf improvement at high
+load levels.
 
-I wasn't able to find a follow-up on this topic.
-Could you advise on what's the proper thing to do going forward?
+> 
+> That said, I haven't followed the different versions closely. I know v5
+> got a lot of feedback so will take a closer look at v6. Fundamentally
+> though I expect that using the idle mask will be a mixed bag. At low
+> utilisation or over-saturation, it'll be a benefit. At the point where
+> the machine is almost fully busy, some workloads will benefit (lightly
+> communicating workloads that occasionally migrate) and others will not
+> (ping-pong workloads looking for CPUs that are idle for very brief
+> periods).
+
+Do you have any interested workload [matrix] I can do the measurement?
+
+> 
+> It's tricky enough that it might benefit from a sched_feat() check that
+> is default true so it gets tested. For regressions that show up, it'll
+> be easy enough to ask for the feature to be disabled to see if it fixes
+> it. Over time, that might give an idea of exactly what sort of workloads
+> benefit and what suffers.
+
+Okay, I'll add a sched_feat() for this feature.
+
+> 
+> Note that the cost of select_idle_cpu() can also be reduced by enabling
+> SIS_AVG_CPU so it would be interesting to know if the idle mask is superior
+> or inferior to SIS_AVG_CPU for workloads that show regressions.
+> 
 
 Thanks,
-Horia
+-Aubrey
