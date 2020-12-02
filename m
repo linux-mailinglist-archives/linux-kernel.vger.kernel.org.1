@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183882CC419
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5212CC41F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730941AbgLBRo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:44:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
+        id S1730945AbgLBRoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:44:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730931AbgLBRoZ (ORCPT
+        with ESMTP id S1730873AbgLBRoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:44:25 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271C8C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 09:43:45 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id r2so1535671pls.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 09:43:45 -0800 (PST)
+        Wed, 2 Dec 2020 12:44:54 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ECCFC0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 09:44:14 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id c79so1415645pfc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 09:44:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=iAf9bcWd7xmsTJepiNxesuticr7+ogCP7zDgAIfwsik=;
-        b=ADX2L6rxKOeuhsuCg9AaITlZP/1mMUrpaNeNIDCv5owZqeo02QQlDcqnAGh9tp928B
-         LbJiZG8T8YaJeGoul7ZQj4Y+fLhxlEAtfyN7dGcftKcwaJDDuKxpRB/F5WnSnD9NCmJt
-         RdvVg7Nu5h2Yfu8/rz+MzfHsEkQ7sNi5PGx2U=
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to;
+        bh=R2OVdtHK+Aqj+dGAHH6NbRQnsqrQvGZpReex1ufP9fg=;
+        b=FO7Jfjz4H4jvnne+Ms+coPpLZMpRD5QOhIG/JjeGntUj4WyE7SammZMpBOaNHfSweA
+         yxJU84R7JuqBQzjix3cQB3RHDD6JTmLZ6TFaPxEqBmNiSku26+bzE+zQpybjwMFhUjQf
+         4vYuf+kDIGuzDw/acA+9aK6F1I8PUncER+48Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to;
-        bh=iAf9bcWd7xmsTJepiNxesuticr7+ogCP7zDgAIfwsik=;
-        b=V2dTvokvf+1hla1GhBXqzRmYZZzfLNK06HKweu85ed4L1pShYklh0WgxeSo4RG3YOi
-         7BLV8U0zpEecjZwHMRB+Bx63R/GDa32mfNWpu58pc2DLyeteyTI5YO7S2BOp1oKbrwJw
-         3jFDkfqxu3aBWc0T8Kmjt87wuVLPiz+WFpTHlCYxfP6R+ArcD0V3hpQvANb/JqySv/hs
-         2nrdDP0ZvAi5+qGTaDmRGkoz0olpHA6zHHMYDnRiKzoC9koBGZ9VNN5c5inwRca0ZVwN
-         Np20CjNPaYWmFUl0ZmwDA3MzXecFPQSmKRpO3INwq40GwgnnyZzN2zqZXGOugChZ5/Xd
-         HwOA==
-X-Gm-Message-State: AOAM5301MGqQEUVMhyFtXRC7aDvnWzs+uIUXfJp0KK72eVV9xsjZzez1
-        P5bxVP9RZo0YMueI/LG4cZLr1Q==
-X-Google-Smtp-Source: ABdhPJzusdH6WxP/MFttvRFYAInUUFjGzkoDMKo6zHdMbVWiL5znkRYKxHzm8XPp7mPHSfbf5K7dWw==
-X-Received: by 2002:a17:90a:d801:: with SMTP id a1mr951358pjv.90.1606931024333;
-        Wed, 02 Dec 2020 09:43:44 -0800 (PST)
+        bh=R2OVdtHK+Aqj+dGAHH6NbRQnsqrQvGZpReex1ufP9fg=;
+        b=TeyzUDxsGIQrIg34yf7hZ8eHBZtVERNdhCJUv9wpUhEjShoOnOwXfKPmCMI7hR2zmr
+         ddFTr3OvmZEeV9UbxNa+Kwavf2dfJGI31B4+ZjyZceJGcjcMVklUQhEOOQ6uG7upd4li
+         N4W+PZGRY/SxTscbE9yjmH2PgT5CKhtnVB6NZn3HPDqVULlj40nSP5a2oSxrtJs6oK9z
+         tygQwgkVjnNoOdUsPdvRId5I7/s6FVfar4pj7yEPKjeUBl9tnqTLAQSakQPIM9ykjV/6
+         RR8JxNaIw51DavwY0Luz2h9VxZJ+ylmFn0nhdPbQXuf3ltQycT7HzYutggigkQ2WjHRf
+         AYaw==
+X-Gm-Message-State: AOAM533jD7kqvbQwCAfRyquL52U0CsK2fZtR7pBEFDWylTkyLmE6rVTJ
+        G8xg/jYynqNMH5MFL+2MDQxvG3Drdf+yqh9lAxk=
+X-Google-Smtp-Source: ABdhPJyo/PxFkw47Pkam0DUeWydFSnWM1uM95+rZGC/vwfRvkzR7Ef6AmGAykKByLn2VCPEMtBptZw==
+X-Received: by 2002:a65:6896:: with SMTP id e22mr862711pgt.318.1606931053723;
+        Wed, 02 Dec 2020 09:44:13 -0800 (PST)
 Received: from [10.230.2.165] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id f92sm279705pjk.54.2020.12.02.09.43.41
+        by smtp.gmail.com with ESMTPSA id k189sm463322pfd.99.2020.12.02.09.44.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 09:43:42 -0800 (PST)
+        Wed, 02 Dec 2020 09:44:12 -0800 (PST)
 Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
-To:     Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
-        Dhananjay Phadke <dphadke@linux.microsoft.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+To:     Wolfram Sang <wsa@kernel.org>,
+        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
+        Dhananjay Phadke <dphadke@linux.microsoft.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
         Brendan Higgins <brendanhiggins@google.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
@@ -57,164 +58,53 @@ Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Lori Hikichi <lori.hikichi@broadcom.com>,
         Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Wolfram Sang <wsa@kernel.org>
+        Scott Branden <sbranden@broadcom.com>
 References: <38a23afc-57da-a01f-286c-15f8b3d61705@broadcom.com>
  <1605316659-3422-1-git-send-email-dphadke@linux.microsoft.com>
  <CAHO=5PFzd9KTR93ntUvAX5dqzxqJQpVXEirs5uoXdvcnZ7hL4g@mail.gmail.com>
+ <20201202143505.GA874@kunai>
 From:   Ray Jui <ray.jui@broadcom.com>
-Message-ID: <23732970-d454-2655-48cd-ccaed3f8484b@broadcom.com>
-Date:   Wed, 2 Dec 2020 09:43:38 -0800
+Message-ID: <23a2f2e8-06ad-c728-98eb-91b164572ba4@broadcom.com>
+Date:   Wed, 2 Dec 2020 09:44:10 -0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <CAHO=5PFzd9KTR93ntUvAX5dqzxqJQpVXEirs5uoXdvcnZ7hL4g@mail.gmail.com>
+In-Reply-To: <20201202143505.GA874@kunai>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000eba64b05b57ec8a1"
+        boundary="000000000000a90c4405b57ecad2"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000eba64b05b57ec8a1
+--000000000000a90c4405b57ecad2
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
 
 
-On 11/19/2020 9:59 PM, Rayagonda Kokatanur wrote:
-> Hi Ray and Dhananjay,
+On 12/2/2020 6:35 AM, Wolfram Sang wrote:
 > 
-> All review comments are scattered now, please let me know what has to be
-> done further,
-> Are we going to change the tasklet to irq thread ?
-
-It really depends on the time it takes to read data out of the FIFO.
-Dhananjay pointed out that your comment indicates reading 10 bytes of
-data takes 20 us, i.e., 2 us per byte read. Do you know why it took so
-long? The APB bus should be a lot faster than that (in the hundreds of
-ns range). I am making the assumption that by the time when you try to
-read data out of the FIFO, the data is of course already in the FIFO, so
-it's not like you are waiting for data from the I2C bus and I cannot
-understand why it took this long.
-
-
-> Are we going to remove batching 64 packets if transaction > 64B and use
-> rx fifo threshold ?
+>> All review comments are scattered now, please let me know what has to be
+>> done further,
+>> Are we going to change the tasklet to irq thread ?
+>> Are we going to remove batching 64 packets if transaction > 64B and use rx
+>> fifo threshold ?
+>>
+>> I don't see any issue with current code but if it has to change we need a
+>> valid reason for the same.
+>> If nothing to be done, please acknowledge the patch.
+> 
+> Valid request. Has there been any news?
 > 
 
-I don't see any issue with batching. It's more efficient and less
-context switch overhead.
+Sorry for the delay. I just replied.
 
-> I don't see any issue with current code but if it has to change we need
-> a valid reason for the same.
+Thanks,
 
-I think we need to confirm the exact time it takes to fetch data from
-FIFO. Once that's done, we can make a decision between keeping the
-tasklet based approach vs irq thread.
+Ray
 
-Thanks.
-
-
-> If nothing to be done, please acknowledge the patch.
->  
-> Best regards,
-> Raygonda
-> 
-> 
-> On Sat, Nov 14, 2020 at 6:47 AM Dhananjay Phadke
-> <dphadke@linux.microsoft.com <mailto:dphadke@linux.microsoft.com>> wrote:
-> 
->     On Tue, 10 Nov 2020 11:24:36 -0800, Ray Jui wrote:
-> 
->     >>>> Yes it's true that for master write-read events both
->     >>>> IS_S_RD_EVENT_SHIFT and IS_S_RX_EVENT_SHIFT  are coming together.
->     >>>> So before the slave starts transmitting data to the master, it
->     should
->     >>>> first read all data from rx-fifo i.e. complete master write and
->     then
->     >>>> process master read.
->     >>>>
->     >>>> To minimise interrupt overhead, we are batching 64bytes.
->     >>>> To keep isr running for less time, we are using a tasklet.
->     >>>> Again to keep the tasklet not running for more than 20u, we
->     have set
->     >>>> max of 10 bytes data read from rx-fifo per tasklet run.
->     >>>>
->     >>>> If we start processing everything in isr and using rx threshold
->     >>>> interrupt, then isr will run for a longer time and this may hog the
->     >>>> system.
->     >>>> For example, to process 10 bytes it takes 20us, to process 30
->     bytes it
->     >>>> takes 60us and so on.
->     >>>> So is it okay to run isr for so long ?
->     >>>>
->     >>>> Keeping all this in mind we thought a tasklet would be a good
->     option
->     >>>> and kept max of 10 bytes read per tasklet.
->     >>>>
->     >>>> Please let me know if you still feel we should not use a
->     tasklet and
->     >>>> don't batch 64 bytes.
->     >>>
->     >>> Deferring to tasklet is OK, could use a kernel thread (i.e.
->     threaded_irq)
->     >>> as i2c rate is quite low.
->     >>>
->     >
->     >kernel thread was proposed in the internal review. I don't see much
->     >benefit of using tasklet. If a thread is blocked from running for more
->     >than several tenth of ms, that's really a system-level issue than an
->     >issue with this driver.
->     >
->     >IMO, it's an overkill to use tasklet here but we can probably leave it
->     >as it is since it does not have a adverse effect and the code ran in
->     >tasklet is short.
->     >
->     >How much time is expected to read 64 bytes from an RX FIFO? Even with
->     >APB bus each register read is expected to be in the tenth or
->     hundreds of
->     >nanosecond range. Reading the entire FIFO of 64 bytes should take less
->     >than 10 us. The interrupt context switch overhead is probably longer
->     >than that. It's much more effective to read all of them in a single
->     >batch than breaking them into multiple batches.
-> 
->     OK, there's a general discussions towards removing tasklets, if this
->     fix works with threaded isr, strongly recommend that route.
-> 
->     This comment in the code suggested that register reads take long time to
->     drain 64 bytes.
-> 
->     >+/*
->     >+ * It takes ~18us to reading 10bytes of data, hence to keep tasklet
->     >+ * running for less time, max slave read per tasklet is set to 10
->     >bytes.
-> 
->     @Rayagonda, please take care of hand-off mentioned below, once the
->     tasklet
->     is scheduled, isr should just return and clear status at the end of
->     tasklet.
-> 
->     >>
->     >> Few other comments -
->     >>
->     >>> +              /* schedule tasklet to read data later */
->     >>> +              tasklet_schedule(&iproc_i2c->slave_rx_tasklet);
->     >>> +
->     >>> +              /* clear only IS_S_RX_EVENT_SHIFT interrupt */
->     >>> +              iproc_i2c_wr_reg(iproc_i2c, IS_OFFSET,
->     >>> +                               BIT(IS_S_RX_EVENT_SHIFT));
->     >>> +      }
->     >>
->     >> Why clearing one rx interrupt bit here after scheduling tasklet?
->     Should all that
->     >> be done by tasklet? Also should just return after scheduling tasklet?
-> 
->     Regards,
->     Dhananjay
-> 
-
---000000000000eba64b05b57ec8a1
+--000000000000a90c4405b57ecad2
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -284,13 +174,13 @@ yX1HjSkrlIsRwi6DN0/ieL04O9aD1UNPlCC6akGnv4tgwlESh51M564qhonlfSW6La+L/aTIuQc0
 88lq8s/VMBBGdc7176/v5TbNwEC/c5QYbp2n76rAmKKjhjwWmBk64yLT7CoIxk0xggJvMIICawIB
 ATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypH
 bG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCUMagLNLily51ao1jAN
-BglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgU5FLHNhrR8qX/RQ1yHpeDxjNR51L6OOE
-V0o1ZLNkU0swGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMjAy
-MTc0MzQ0WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZI
+BglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgM1Zbv4Ay7LiyJVMbTD7yr7uINqyHBOS0
+kP2TukNyOk8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMjAy
+MTc0NDE0WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZI
 AWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIB
-MA0GCSqGSIb3DQEBAQUABIIBAIqvSSuBDkOBTV9ZP5UjRwybktgMB1XfYtM5HwhtqlU9eeRrc9Oa
-WJb2C4wUFdIQSu5w/YG4OMi9g9nQrYjPF1aw+OeGaXX7+JswuZs5RV08gGfpb6otgrWwqFERkw1n
-QZfUHeE0AmvzHrWgFSaEKglJX2o25Z10SwT9gn3ZuapS8TeXvBnIUnNHMI63ED3NpWCKKc3rptZW
-kQ/XQ/bdhHvfT1V4YQo1zVQ5Hw77bjFoU1KV3PVhh5KwpbyCVLFdPjWwljr1AOObplVEINYhzBUD
-/h/x1juDWKFUHi7u0trgywrmZiR5kDscqF1A1aJW/GvHoUXZLhTOqbV+9lBoc3g=
---000000000000eba64b05b57ec8a1--
+MA0GCSqGSIb3DQEBAQUABIIBAGlRtzi1HUo801kWQjC6bXTDQlzJg+ZLzawgBJArLGCb8aL4BvL4
+E+byAoYeVz4rxheLPYYG+Fn2YURglxGYuR0D6m12Vtk6F5/0uJ5V1Dljf31L1HgVu+NDXX6v6mr4
+NJGO47jOGyKSNkNaH+CbWDPN+tuwZN/xOofuI/2qGP9YuB/S5UMLEaWCZlngIqsQoyl+y7UbdlYF
+c1uO5ByZehaA/TCe2WUXUanJzPq45pgRkWFf1DySU1fs62aQRafAeafiGEXvvuiXillA8pkHSq8P
+a698f3cZxk0O5tARK9M3t/uZ0O2QXVGfGy1NUHaFnWi6ReHLuzelPoSWGdJ57dQ=
+--000000000000a90c4405b57ecad2--
