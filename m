@@ -2,81 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377392CB155
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7402CB15D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727415AbgLBAMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 19:12:07 -0500
-Received: from sandeen.net ([63.231.237.45]:35898 "EHLO sandeen.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbgLBAMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 19:12:06 -0500
-Received: from liberator.sandeen.net (liberator.sandeen.net [10.0.0.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by sandeen.net (Postfix) with ESMTPSA id 2799D146284;
-        Tue,  1 Dec 2020 18:11:09 -0600 (CST)
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>
-Cc:     Eric Sandeen <sandeen@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Xiaoli Feng <xifeng@redhat.com>
-References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
- <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
- <CAHk-=wgOu9vgUfOSsjO3hHHxGDn4BKhitC_8XCfgmGKiiSm_ag@mail.gmail.com>
- <300456.1606856642@warthog.procyon.org.uk>
- <CAHk-=wgB_e1anR0b4B5p3qxR9nq1-xrRponA6Q6WbGTOSFNmPw@mail.gmail.com>
-From:   Eric Sandeen <sandeen@sandeen.net>
-Subject: Re: [PATCH 2/2] statx: move STATX_ATTR_DAX attribute handling to
- filesystems
-Message-ID: <421cb25d-ca52-0a08-e535-5f650dda8d93@sandeen.net>
-Date:   Tue, 1 Dec 2020 18:11:24 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        id S1727461AbgLBANr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 19:13:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726989AbgLBANq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 19:13:46 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E398C0613CF;
+        Tue,  1 Dec 2020 16:13:06 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id hk16so104207pjb.4;
+        Tue, 01 Dec 2020 16:13:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ONvzCRbnsYs7DyFpSE5/MjQxVHqRBL0P/7tzKwkfWHM=;
+        b=bo2pDKf5fAU+67OKk3ptI2/7T18FpKe+bqiT3x+aEsNOSK35XOQ8l8ZNFIT3q9ugQn
+         i8DUY+iBC1QjT0fKPmVftvzXslalhRudFBFL6eTUuclmHxSoFsCYi1AXbdKkpcScOrv8
+         n2Lki4nTQE4ShK0AJqAXOqCZFmW+4VC/7YGrZZ8evl1+ZU+Qu4CKniCufl+GlmvnKTWw
+         07bYGA90bc3N7/mJPEfs3ZNUm0k18JZr25x3uIwOtUC5rLTkvlBwDX9GoXq54iIKU7sK
+         WP6w966gorwTs1SdPoylJH3sJmqQnVRd8f5KLqpW0zpjEb102VGbFpMU+BOQ5fmWBu6z
+         ieTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ONvzCRbnsYs7DyFpSE5/MjQxVHqRBL0P/7tzKwkfWHM=;
+        b=W0tQj1ol+cdPTFQrdl/ApqDkcdAwaf2ZO3iQF/F/YWkdKVmcN6S61k4iNExwIKY/Jn
+         z4RZgtWmjH6JxUh7RrZMuarMaV2N04+3cjDdoufXhCdNLAzE6ejFFySshc3OJHzNsTD3
+         fZfy5BTAmZRomqZdDuciNb4tGCjYI2W590dyLInLX4HBetjFliVS3Y8bba+H1a+n7+ud
+         8uAkSCrxqVBAIXOlA3M4Gs3NKXbdM51G9G9skOw4atrZ8bS422gEcugDfCUmGfhzXBJw
+         eF/n8M2J33PM0TIJiAOVJCBW5oVT+UI0oDfmH3r6TNj4XfVTUCk4AWI0iUMkM9LNgEU3
+         UOrw==
+X-Gm-Message-State: AOAM5312ZKlE1rxF2Ljt5cRW+we2d6HuZdpDNaCL5TqO//7o+Btnc+7j
+        zeO8DrtXUSi67IqpsiDfRUY=
+X-Google-Smtp-Source: ABdhPJzfhvKOHUX0TmDshT7Dzgz6t3wuG9IeBh/Zj3+Xrv32k6DiXQkpXW7YoGi9chl88ciqE1pvdw==
+X-Received: by 2002:a17:902:14b:b029:da:b499:25c7 with SMTP id 69-20020a170902014bb02900dab49925c7mr55515plb.80.1606867985675;
+        Tue, 01 Dec 2020 16:13:05 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id a14sm59066pgv.42.2020.12.01.16.13.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 16:13:04 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 1 Dec 2020 16:13:02 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Hyesoo Yu <hyesoo.yu@samsung.com>,
+        Matthew Wilcox <willy@infradead.org>, david@redhat.com,
+        iamjoonsoo.kim@lge.com, vbabka@suse.cz,
+        Suren Baghdasaryan <surenb@google.com>,
+        KyongHo Cho <pullip.cho@samsung.com>,
+        John Dias <joaodias@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Subject: Re: [PATCH v2 4/4] dma-buf: heaps: add chunk heap to dmabuf heaps
+Message-ID: <20201202001302.GB3968963@google.com>
+References: <20201201175144.3996569-1-minchan@kernel.org>
+ <20201201175144.3996569-5-minchan@kernel.org>
+ <CALAqxLXFeUStaJ8Mtm5v3kSxmeqnjzLTsyathkrKF0ke3fYGiQ@mail.gmail.com>
+ <20201201225554.GA3968963@google.com>
+ <CALAqxLW-n4-VSd9dj=KXS4WRDrPmKOShAwP9tCfCZnk+4kxW-w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgB_e1anR0b4B5p3qxR9nq1-xrRponA6Q6WbGTOSFNmPw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALAqxLW-n4-VSd9dj=KXS4WRDrPmKOShAwP9tCfCZnk+4kxW-w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 4:09 PM, Linus Torvalds wrote:
-> So basically, the thing that argues against this patch is that it
-> seems to just duplicate things inside filesystems, when the VFS layter
-> already has the information.
+On Tue, Dec 01, 2020 at 03:38:14PM -0800, John Stultz wrote:
+> On Tue, Dec 1, 2020 at 2:55 PM Minchan Kim <minchan@kernel.org> wrote:
+> > On Tue, Dec 01, 2020 at 11:48:15AM -0800, John Stultz wrote:
+> > > On Tue, Dec 1, 2020 at 9:51 AM Minchan Kim <minchan@kernel.org> wrote:
+> > >
+> > > Thanks for reworking and resending this!
+> > >
+> > > ...
+> > > > +static int __init chunk_heap_init(void)
+> > > > +{
+> > > > +       struct cma *default_cma = dev_get_cma_area(NULL);
+> > > > +       struct dma_heap_export_info exp_info;
+> > > > +       struct chunk_heap *chunk_heap;
+> > > > +
+> > > > +       if (!default_cma)
+> > > > +               return 0;
+> > > > +
+> > > > +       chunk_heap = kzalloc(sizeof(*chunk_heap), GFP_KERNEL);
+> > > > +       if (!chunk_heap)
+> > > > +               return -ENOMEM;
+> > > > +
+> > > > +       chunk_heap->order = CHUNK_HEAP_ORDER;
+> > > > +       chunk_heap->cma = default_cma;
+> > > > +
+> > > > +       exp_info.name = cma_get_name(default_cma);
+> > >
+> > > So, this would create a chunk heap name with the default CMA name,
+> > > which would be indistinguishable from the heap name used for the plain
+> > > CMA heap.
+> > >
+> > > Probably a good idea to prefix it with "chunk-" so the heap device
+> > > names are unique?
+> >
+> > That will give an impression to user that they are using different CMA
+> > area but that's not true. IMHO, let's be honest at this moment.
 > 
-> Now, if the VFS information was possibly stale or wrong, that woudl be
-> one thing. But then we'd have other and bigger  problems elsewhere as
-> far as I can tell.
+> I disagree.  The dmabuf heaps provide an abstraction for allocating a
+> type of memory, and while your heap is pulling from CMA, you aren't
+> "just" allocating CMA as the existing CMA heap would suffice for that.
 > 
-> IOW - make generic what can be made generic, and try to avoid having
-> filesystems do their own thing.
-> 
-> [ Replace "filesystems" by "architectures" or whatever else, this is
-> obviously not a filesystem-specific rule in general. ]
-> 
-> And don't get me wrong - I don't _hate_ the patch, and I don't care
-> _that_ deeply, but it just doesn't seem to make any sense to me. My
-> initial query was really about "what am I missing - can you please
-> flesh out the commit message because I don't understand what's wrong".
+> Since you need a slightly different method to allocate high order
+> pages in bulk, we really should have a unique way to name the
+> allocator interface. That's why I'd suggest the "chunk-" prefix to the
+> heap name.
 
-Backing way up, my motivation was: Only the filesystem can appropriately
-set the statx->attributes_mask, so it has to be done there. Since that
-has to be done in the filesystem, set the actual attribute flag adjacent
-to it, as is done for ~every other flag.
+Got it. How about this? 
 
-*shrug*
+diff --git a/drivers/dma-buf/heaps/chunk_heap.c b/drivers/dma-buf/heaps/chunk_heap.c
+index 0277707a93a9..36e189d0b73d 100644
+--- a/drivers/dma-buf/heaps/chunk_heap.c
++++ b/drivers/dma-buf/heaps/chunk_heap.c
+@@ -410,7 +410,7 @@ static int __init chunk_heap_init(void)
+        chunk_heap->order = CHUNK_HEAP_ORDER;
+        chunk_heap->cma = default_cma;
 
-In any case I resent the flag value clash fix on a separate thread as
-V2, hopefully that one is straightforward enough to go in.
-
-Thanks,
--Eric
+-       exp_info.name = cma_get_name(default_cma);
++       exp_info.name = "cma-chunk-heap";
+        exp_info.ops = &chunk_heap_ops;
+        exp_info.priv = chunk_heap;
