@@ -2,97 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA94A2CC4FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 941B72CC50A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730915AbgLBSYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:24:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727454AbgLBSYf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:24:35 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0853CC0613CF;
-        Wed,  2 Dec 2020 10:23:55 -0800 (PST)
-Received: from zn.tnic (p200300ec2f161b00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:1b00:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7193B1EC04DB;
-        Wed,  2 Dec 2020 19:23:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606933433;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=4K5oryCh4lYprceHfJITgYNxkJkNbvO0oAmzKtsMskk=;
-        b=eyF7oJ8jzZXnSjEQtaZrUqi4mwuWKRWOIW9O8LaGm8MqDGJY2ivCpGoIYOt1Z6+twhPWwg
-        BD27rstCZtNJappHLb/XnRJL/bLtkDIm1ccUAtRxsnvNQZrxM7nK48jtE06jmDLK5BhWQv
-        ogqK7rU9rqVC++YIVNJfV+c9klFxF94=
-Date:   Wed, 2 Dec 2020 19:23:49 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     Troy Lee <troy_lee@aspeedtech.com>, Joel Stanley <joel@jms.id.au>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        James Morse <james.morse@arm.com>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Robert Richter <rrichter@marvell.com>,
-        "leetroy@gmail.com" <leetroy@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stefan M Schaeckeler <sschaeck@cisco.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] edac: Supporting AST2400 and AST2600 edac driver
-Message-ID: <20201202182349.GJ2951@zn.tnic>
-References: <20201202063612.21241-1-troy_lee@aspeedtech.com>
- <20201202063612.21241-3-troy_lee@aspeedtech.com>
- <CACPK8XcBTm8-cAPmtswHbYAf2B+PdBiZ2s1XK1UqKA_NQX_-mw@mail.gmail.com>
- <PS1PR06MB26008E4BCB805553EDEC45038AF30@PS1PR06MB2600.apcprd06.prod.outlook.com>
- <b6dd3a91-abe7-4e9d-b801-6e54e4c88827@www.fastmail.com>
+        id S1730931AbgLBS1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:27:24 -0500
+Received: from mga11.intel.com ([192.55.52.93]:45810 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726485AbgLBS1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 13:27:24 -0500
+IronPort-SDR: JX7u39NKEcs12+ejUFusW6GwZzzFJdSyJqQwyzmMix9T/iullhgWC1q/Ud5JBe6TMC0YMiKUxd
+ ur61NpUIqUSA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="169560915"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="169560915"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 10:26:43 -0800
+IronPort-SDR: u5R4cp7nU8I623pSrbBJnZbvBENwow+iMQaqinm0hJlBqg07mTkqHWo0zR3hPa00aG9KALSo+3
+ +3oFKv+5Y9Kg==
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="481658655"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.4]) ([10.209.125.182])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 10:26:42 -0800
+Subject: Re: [PATCH v1 1/1] mfd: intel-m10-bmc: expose mac address and count
+To:     Tom Rix <trix@redhat.com>, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20201201203646.200907-1-russell.h.weight@intel.com>
+ <20201201203646.200907-2-russell.h.weight@intel.com>
+ <fcab13fb-127d-6f6e-2be8-e14cf0f2b2a4@redhat.com>
+From:   Russ Weight <russell.h.weight@intel.com>
+Message-ID: <6783078e-2dc4-e261-61d6-148cb4f0e848@intel.com>
+Date:   Wed, 2 Dec 2020 10:26:40 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <fcab13fb-127d-6f6e-2be8-e14cf0f2b2a4@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b6dd3a91-abe7-4e9d-b801-6e54e4c88827@www.fastmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 01:32:44AM +1030, Andrew Jeffery wrote:
-> On Wed, 2 Dec 2020, at 19:11, Troy Lee wrote:
-> > Hi Joel,
-> > 
-> > Thanks for the suggestion, I'll fix the review and create an new patch 
-> > against 
-> > latest Linux branch. Those exported function will be referenced in 
-> > other driver yet 
-> > to be upstream, so should I move those exported functions out of this 
-> > patch?
-> > 
-> 
-> Yes, let's leave the exports out of this patch, and add them in when you send 
-> the patch that depends on them.
 
-And when you do, almost all new exports are EXPORT_SYMBOL_GPL - not
-EXPORT_SYMBOL.
 
-Also, I'd like to see how those exports are going to be used. An EDAC
-driver function exported to another driver sounds strange. We have only
-one other case like this in the EDAC tree:
+On 12/2/20 5:44 AM, Tom Rix wrote:
+> On 12/1/20 12:36 PM, Russ Weight wrote:
+>> Create two sysfs entries for exposing the MAC address
+>> and count from the MAX10 BMC register space.
+>>
+>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+>> ---
+>>  .../ABI/testing/sysfs-driver-intel-m10-bmc    | 20 +++++++++
+>>  drivers/mfd/intel-m10-bmc.c                   | 43 +++++++++++++++++++
+>>  include/linux/mfd/intel-m10-bmc.h             |  9 ++++
+>>  3 files changed, 72 insertions(+)
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
+>> index 979a2d62513f..c4febaefe0a7 100644
+>> --- a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
+>> +++ b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
+>> @@ -13,3 +13,23 @@ Contact:	Xu Yilun <yilun.xu@intel.com>
+>>  Description:	Read only. Returns the firmware version of Intel MAX10
+>>  		BMC chip.
+>>  		Format: "0x%x".
+>> +
+>> +What:		/sys/bus/spi/devices/.../mac_address
+>> +Date:		December 2020
+>> +KernelVersion:  5.11
+>> +Contact:	Russ Weight <russell.h.weight@intel.com>
+>> +Description:	Read only. Returns the base mac address assigned to
+>> +		the board managed by the Intel MAX10 BMC. It is
+>> +		stored in flash and is mirrored in the MAX10 BMC
+>> +		register space.
+>> +		Format: "%02x:%02x:%02x:%02x:%02x:%02x".
+>> +
+>> +What:		/sys/bus/spi/devices/.../mac_count
+>> +Date:		December 2020
+>> +KernelVersion:  5.11
+>> +Contact:	Russ Weight <russell.h.weight@intel.com>
+>> +Description:	Read only. Returns the number of mac addresses
+>> +		assigned to the board managed by the Intel MAX10
+>> +		BMC. This value is stored in flash and is mirrored
+>> +		in the MAX10 BMC register space.
+>> +		Format: "%u".
+>> diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
+>> index b84579b7b4f0..90720e84900e 100644
+>> --- a/drivers/mfd/intel-m10-bmc.c
+>> +++ b/drivers/mfd/intel-m10-bmc.c
+>> @@ -60,9 +60,52 @@ static ssize_t bmcfw_version_show(struct device *dev,
+>>  }
+>>  static DEVICE_ATTR_RO(bmcfw_version);
+>>  
+>> +static ssize_t mac_address_show(struct device *dev,
+>> +				struct device_attribute *attr, char *buf)
+>> +{
+>> +	struct intel_m10bmc *max10 = dev_get_drvdata(dev);
+>> +	unsigned int macaddr1, macaddr2;
+>> +	int ret;
+>> +
+>> +	ret = m10bmc_sys_read(max10, M10BMC_MACADDR1, &macaddr1);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret = m10bmc_sys_read(max10, M10BMC_MACADDR2, &macaddr2);
+>> +	if (ret)
+>> +		return ret;
+>> +
+> The mac_count implies there are more than 1 mac address.
+>
+> This logic looks like could only do one.
+>
+> How are the 2nd, 3rd  etc. mac addresses found ?
+The MAC addresses assigned to the card are sequential. The base MAC
+address is exposed through the mac_address sysfs entry. Add 1 to
+that MAC address for the second MAC address, etc.
+>
+>> +	return sprintf(buf, "%02x:%02x:%02x:%02x:%02x:%02x\n",
+>> +		       (u8)FIELD_GET(M10BMC_MAC_BYTE1, macaddr1),
+>> +		       (u8)FIELD_GET(M10BMC_MAC_BYTE2, macaddr1),
+>> +		       (u8)FIELD_GET(M10BMC_MAC_BYTE3, macaddr1),
+>> +		       (u8)FIELD_GET(M10BMC_MAC_BYTE4, macaddr1),
+>> +		       (u8)FIELD_GET(M10BMC_MAC_BYTE5, macaddr2),
+>> +		       (u8)FIELD_GET(M10BMC_MAC_BYTE6, macaddr2));
+> consider using sysfs_emit over sprintf
+Yes. I'll change to sysfs_emit and resubmit.
 
-drivers/edac/amd64_edac.c:554:EXPORT_SYMBOL_GPL(amd64_get_dram_hole_info);
+Thanks,
+- Russ
+>
+> Tom
+>
+>> +}
+>> +static DEVICE_ATTR_RO(mac_address);
+>> +
+>> +static ssize_t mac_count_show(struct device *dev,
+>> +			      struct device_attribute *attr, char *buf)
+>> +{
+>> +	struct intel_m10bmc *max10 = dev_get_drvdata(dev);
+>> +	unsigned int macaddr2;
+>> +	int ret;
+>> +
+>> +	ret = m10bmc_sys_read(max10, M10BMC_MACADDR2, &macaddr2);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	return sprintf(buf, "%u\n",
+>> +		       (u8)FIELD_GET(M10BMC_MAC_COUNT, macaddr2));
+>> +}
+>> +static DEVICE_ATTR_RO(mac_count);
+>> +
+>>  static struct attribute *m10bmc_attrs[] = {
+>>  	&dev_attr_bmc_version.attr,
+>>  	&dev_attr_bmcfw_version.attr,
+>> +	&dev_attr_mac_address.attr,
+>> +	&dev_attr_mac_count.attr,
+>>  	NULL,
+>>  };
+>>  ATTRIBUTE_GROUPS(m10bmc);
+>> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
+>> index c8ef2f1654a4..2279e34f0814 100644
+>> --- a/include/linux/mfd/intel-m10-bmc.h
+>> +++ b/include/linux/mfd/intel-m10-bmc.h
+>> @@ -15,6 +15,15 @@
+>>  
+>>  /* Register offset of system registers */
+>>  #define NIOS2_FW_VERSION		0x0
+>> +#define M10BMC_MACADDR1			0x10
+>> +#define M10BMC_MAC_BYTE4		GENMASK(7, 0)
+>> +#define M10BMC_MAC_BYTE3		GENMASK(15, 8)
+>> +#define M10BMC_MAC_BYTE2		GENMASK(23, 16)
+>> +#define M10BMC_MAC_BYTE1		GENMASK(31, 24)
+>> +#define M10BMC_MACADDR2			0x14
+>> +#define M10BMC_MAC_BYTE6		GENMASK(7, 0)
+>> +#define M10BMC_MAC_BYTE5		GENMASK(15, 8)
+>> +#define M10BMC_MAC_COUNT		GENMASK(23, 16)
+>>  #define M10BMC_TEST_REG			0x3c
+>>  #define M10BMC_BUILD_VER		0x68
+>>  #define M10BMC_VER_MAJOR_MSK		GENMASK(23, 16)
 
-and even that is not really needed...
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
