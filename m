@@ -2,325 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533982CB33E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 04:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5902CB387
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 04:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgLBDXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 22:23:15 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8178 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgLBDXP (ORCPT
+        id S1728162AbgLBDdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 22:33:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57663 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726085AbgLBDdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 22:23:15 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cm45T1LPBz15WVV;
-        Wed,  2 Dec 2020 11:22:05 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 2 Dec 2020 11:22:23 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v3] f2fs: compress: support compress level
-Date:   Wed, 2 Dec 2020 11:22:21 +0800
-Message-ID: <20201202032221.7736-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 1 Dec 2020 22:33:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606879911;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yKLXCDYMlCe0T1Csz6DQegVq//DPh0P/XNAgLwBm+qQ=;
+        b=QyQVOUiQ5R+y1uxrKuvOA9b1DsVA3CpYbXdNCFexDPtb/GQP6pqkWqq6iuvq7/2cDVzs6q
+        ZTLYqEqcpdf3V9i9jptaoWCGOP5gRYLrsXNHcrTUlWFpL7WvfPu52Du0Fgg4Wn4Yx1tyXh
+        gytSyFryNAWLo+pDUNHQ2SWtYxlKUDU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-92-p5Jh3mhvPgeXWnFaXEIYzA-1; Tue, 01 Dec 2020 22:31:49 -0500
+X-MC-Unique: p5Jh3mhvPgeXWnFaXEIYzA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0255F185E483;
+        Wed,  2 Dec 2020 03:31:48 +0000 (UTC)
+Received: from T590 (ovpn-13-72.pek2.redhat.com [10.72.13.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 72E4A19C47;
+        Wed,  2 Dec 2020 03:31:39 +0000 (UTC)
+Date:   Wed, 2 Dec 2020 11:31:34 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hch@lst.de, hare@suse.de,
+        ppvk@codeaurora.org, bvanassche@acm.org, kashyap.desai@broadcom.com
+Subject: Re: [RFC PATCH] blk-mq: Clean up references when freeing rqs
+Message-ID: <20201202033134.GD494805@T590>
+References: <1606827738-238646-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606827738-238646-1-git-send-email-john.garry@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Expand 'compress_algorithm' mount option to accept parameter as format of
-<algorithm>:<level>, by this way, it gives a way to allow user to do more
-specified config on lz4 and zstd compression level, then f2fs compression
-can provide higher compress ratio.
+On Tue, Dec 01, 2020 at 09:02:18PM +0800, John Garry wrote:
+> It has been reported many times that a use-after-free can be intermittently
+> found when iterating busy requests:
+> 
+> - https://lore.kernel.org/linux-block/8376443a-ec1b-0cef-8244-ed584b96fa96@huawei.com/
+> - https://lore.kernel.org/linux-block/5c3ac5af-ed81-11e4-fee3-f92175f14daf@acm.org/T/#m6c1ac11540522716f645d004e2a5a13c9f218908
+> - https://lore.kernel.org/linux-block/04e2f9e8-79fa-f1cb-ab23-4a15bf3f64cc@kernel.dk/
+> 
+> The issue is that when we switch scheduler or change queue nr_requests,
+> the driver tagset may keep references to the stale requests.
+> 
+> As a solution, clean up any references to those requests in the driver
+> tagset when freeing. This is done with a cmpxchg to make safe any race
+> with setting the driver tagset request from another queue.
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> --
+> Set as RFC as I need to test more. And not sure on solution method, as
+> Bart had another idea.
+> 
+> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+> index d1eafe2c045c..9b042c7036b3 100644
+> --- a/block/blk-mq-sched.c
+> +++ b/block/blk-mq-sched.c
+> @@ -621,7 +621,7 @@ void blk_mq_sched_free_requests(struct request_queue *q)
+>  
+>  	queue_for_each_hw_ctx(q, hctx, i) {
+>  		if (hctx->sched_tags)
+> -			blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i);
+> +			blk_mq_free_rqs_ext(q->tag_set, hctx->sched_tags, i, hctx->tags);
+>  	}
+>  }
+>  
+> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+> index 9c92053e704d..562db72e7d79 100644
+> --- a/block/blk-mq-tag.c
+> +++ b/block/blk-mq-tag.c
+> @@ -576,7 +576,7 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
+>  			return -ENOMEM;
+>  		}
+>  
+> -		blk_mq_free_rqs(set, *tagsptr, hctx->queue_num);
+> +		blk_mq_free_rqs_ext(set, *tagsptr, hctx->queue_num, hctx->tags);
+>  		blk_mq_free_rq_map(*tagsptr, flags);
+>  		*tagsptr = new;
+>  	} else {
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index 55bcee5dc032..f3aad695cd25 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -2271,8 +2271,8 @@ blk_qc_t blk_mq_submit_bio(struct bio *bio)
+>  	return BLK_QC_T_NONE;
+>  }
+>  
+> -void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+> -		     unsigned int hctx_idx)
+> +void blk_mq_free_rqs_ext(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+> +		     unsigned int hctx_idx, struct blk_mq_tags *references)
+>  {
+>  	struct page *page;
+>  
+> @@ -2281,10 +2281,13 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+>  
+>  		for (i = 0; i < tags->nr_tags; i++) {
+>  			struct request *rq = tags->static_rqs[i];
+> +			int j;
+>  
+>  			if (!rq)
+>  				continue;
+>  			set->ops->exit_request(set, rq, hctx_idx);
+> +			for (j = 0; references && j < references->nr_tags; j++)
+> +				cmpxchg(&references->rqs[j], rq, 0);
 
-In order to set compress level for lz4 algorithm, it needs to set
-CONFIG_LZ4HC_COMPRESS and CONFIG_F2FS_FS_LZ4HC config to enable lz4hc
-compress algorithm.
+Seems you didn't address the comment in the following link:
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v3:
-- use zero as invalid compress level
-- fix wrong assign in set_compress_inode
-- fix compile warning
- Documentation/filesystems/f2fs.rst |  5 +++
- fs/f2fs/Kconfig                    |  9 ++++
- fs/f2fs/compress.c                 | 40 ++++++++++++++++--
- fs/f2fs/f2fs.h                     |  9 ++++
- fs/f2fs/super.c                    | 67 +++++++++++++++++++++++++++++-
- include/linux/f2fs_fs.h            |  3 ++
- 6 files changed, 128 insertions(+), 5 deletions(-)
+	https://lore.kernel.org/linux-block/10331543-9e45-ae63-8cdb-17e5a2a3b7ef@huawei.com/
 
-diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-index 8830a11a11be..ec7498d8f8cd 100644
---- a/Documentation/filesystems/f2fs.rst
-+++ b/Documentation/filesystems/f2fs.rst
-@@ -249,6 +249,11 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
- 			 This space is reclaimed once checkpoint=enable.
- compress_algorithm=%s	 Control compress algorithm, currently f2fs supports "lzo",
- 			 "lz4", "zstd" and "lzo-rle" algorithm.
-+compress_algorithm=%s:%d Control compress algorithm and its compress level, now, only
-+			 "lz4" and "zstd" support compress level config.
-+			 		level range
-+			 lz4		3 - 16
-+			 zstd		1 - 22
- compress_log_size=%u	 Support configuring compress cluster size, the size will
- 			 be 4KB * (1 << %u), 16KB is minimum size, also it's
- 			 default size.
-diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
-index d13c5c6a9787..8134b145ae4f 100644
---- a/fs/f2fs/Kconfig
-+++ b/fs/f2fs/Kconfig
-@@ -119,6 +119,15 @@ config F2FS_FS_LZ4
- 	help
- 	  Support LZ4 compress algorithm, if unsure, say Y.
- 
-+config F2FS_FS_LZ4HC
-+	bool "LZ4HC compression support"
-+	depends on F2FS_FS_COMPRESSION
-+	depends on F2FS_FS_LZ4
-+	select LZ4HC_COMPRESS
-+	default y
-+	help
-+	  Support LZ4HC compress algorithm, if unsure, say Y.
-+
- config F2FS_FS_ZSTD
- 	bool "ZSTD compression support"
- 	depends on F2FS_FS_COMPRESSION
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 7a7b29f3679a..32a5d7a13bd9 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -254,8 +254,13 @@ static const struct f2fs_compress_ops f2fs_lzo_ops = {
- #ifdef CONFIG_F2FS_FS_LZ4
- static int lz4_init_compress_ctx(struct compress_ctx *cc)
- {
--	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
--				LZ4_MEM_COMPRESS, GFP_NOFS);
-+	unsigned int size;
-+	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
-+						COMPRESS_LEVEL_OFFSET;
-+
-+	size = level ? LZ4HC_MEM_COMPRESS : LZ4_MEM_COMPRESS;
-+
-+	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode), size, GFP_NOFS);
- 	if (!cc->private)
- 		return -ENOMEM;
- 
-@@ -274,10 +279,34 @@ static void lz4_destroy_compress_ctx(struct compress_ctx *cc)
- 	cc->private = NULL;
- }
- 
-+#ifdef CONFIG_F2FS_FS_LZ4HC
-+static int lz4hc_compress_pages(struct compress_ctx *cc)
-+{
-+	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
-+						COMPRESS_LEVEL_OFFSET;
-+	int len;
-+
-+	if (level)
-+		len = LZ4_compress_HC(cc->rbuf, cc->cbuf->cdata, cc->rlen,
-+					cc->clen, level, cc->private);
-+	else
-+		len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
-+						cc->clen, cc->private);
-+	if (!len)
-+		return -EAGAIN;
-+
-+	cc->clen = len;
-+	return 0;
-+}
-+#endif
-+
- static int lz4_compress_pages(struct compress_ctx *cc)
- {
- 	int len;
- 
-+#ifdef CONFIG_F2FS_FS_LZ4HC
-+	return lz4hc_compress_pages(cc);
-+#endif
- 	len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
- 						cc->clen, cc->private);
- 	if (!len)
-@@ -327,8 +356,13 @@ static int zstd_init_compress_ctx(struct compress_ctx *cc)
- 	ZSTD_CStream *stream;
- 	void *workspace;
- 	unsigned int workspace_size;
-+	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
-+						COMPRESS_LEVEL_OFFSET;
-+
-+	if (!level)
-+		level = F2FS_ZSTD_DEFAULT_CLEVEL;
- 
--	params = ZSTD_getParams(F2FS_ZSTD_DEFAULT_CLEVEL, cc->rlen, 0);
-+	params = ZSTD_getParams(level, cc->rlen, 0);
- 	workspace_size = ZSTD_CStreamWorkspaceBound(params.cParams);
- 
- 	workspace = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 299176c8fde0..e3372a325c89 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -149,6 +149,7 @@ struct f2fs_mount_info {
- 	/* For compression */
- 	unsigned char compress_algorithm;	/* algorithm type */
- 	unsigned char compress_log_size;	/* cluster log size */
-+	unsigned char compress_level;		/* compress level */
- 	bool compress_chksum;			/* compressed data chksum */
- 	unsigned char compress_ext_cnt;		/* extension count */
- 	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
-@@ -734,6 +735,7 @@ struct f2fs_inode_info {
- 	atomic_t i_compr_blocks;		/* # of compressed blocks */
- 	unsigned char i_compress_algorithm;	/* algorithm type */
- 	unsigned char i_log_cluster_size;	/* log of cluster size */
-+	unsigned char i_compress_level;		/* compress level (lz4hc,zstd) */
- 	unsigned short i_compress_flag;		/* compress flag */
- 	unsigned int i_cluster_size;		/* cluster size */
- };
-@@ -1294,6 +1296,8 @@ struct compress_data {
- 
- #define F2FS_COMPRESSED_PAGE_MAGIC	0xF5F2C000
- 
-+#define	COMPRESS_LEVEL_OFFSET	8
-+
- /* compress context */
- struct compress_ctx {
- 	struct inode *inode;		/* inode the context belong to */
-@@ -3935,6 +3939,11 @@ static inline void set_compress_context(struct inode *inode)
- 				1 << COMPRESS_CHKSUM : 0;
- 	F2FS_I(inode)->i_cluster_size =
- 			1 << F2FS_I(inode)->i_log_cluster_size;
-+	if (F2FS_I(inode)->i_compress_algorithm == COMPRESS_LZ4 &&
-+			F2FS_OPTION(sbi).compress_level)
-+		F2FS_I(inode)->i_compress_flag |=
-+				F2FS_OPTION(sbi).compress_level <<
-+				COMPRESS_LEVEL_OFFSET;
- 	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
- 	set_inode_flag(inode, FI_COMPRESSED_FILE);
- 	stat_inc_compr_inode(inode);
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index b0c6ef2df7b8..dc5a6c805241 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -25,6 +25,8 @@
- #include <linux/quota.h>
- #include <linux/unicode.h>
- #include <linux/part_stat.h>
-+#include <linux/zstd.h>
-+#include <linux/lz4.h>
- 
- #include "f2fs.h"
- #include "node.h"
-@@ -464,6 +466,52 @@ static int f2fs_set_test_dummy_encryption(struct super_block *sb,
- 	return 0;
- }
- 
-+#ifdef CONFIG_F2FS_FS_COMPRESSION
-+static int f2fs_compress_set_level(struct f2fs_sb_info *sbi, const char *str,
-+						int type)
-+{
-+	unsigned int level;
-+	int len;
-+
-+	if (type == COMPRESS_LZ4)
-+		len = 3;
-+	else if (type == COMPRESS_ZSTD)
-+		len = 4;
-+	else
-+		return 0;
-+
-+	if (strlen(str) == len)
-+		return 0;
-+
-+	str += len;
-+
-+	if (str[0] != ':') {
-+		f2fs_info(sbi, "wrong format, e.g. <alg_name>:<compr_level>");
-+		return -EINVAL;
-+	}
-+	if (kstrtouint(str + 1, 10, &level))
-+		return -EINVAL;
-+	if (type == COMPRESS_LZ4) {
-+#ifdef CONFIG_F2FS_FS_LZ4HC
-+		if (level < LZ4HC_MIN_CLEVEL || level > LZ4HC_MAX_CLEVEL) {
-+			f2fs_info(sbi, "invalid lz4hc compress level: %d", level);
-+			return -EINVAL;
-+		}
-+#else
-+		f2fs_info(sbi, "doesn't support lz4hc compression");
-+		return 0;
-+#endif
-+	} else if (type == COMPRESS_ZSTD) {
-+		if (!level || level > ZSTD_maxCLevel()) {
-+			f2fs_info(sbi, "invalid zstd compress level: %d", level);
-+			return -EINVAL;
-+		}
-+	}
-+	F2FS_OPTION(sbi).compress_level = level;
-+	return 0;
-+}
-+#endif
-+
- static int parse_options(struct super_block *sb, char *options, bool is_remount)
- {
- 	struct f2fs_sb_info *sbi = F2FS_SB(sb);
-@@ -884,10 +932,22 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 			if (!strcmp(name, "lzo")) {
- 				F2FS_OPTION(sbi).compress_algorithm =
- 								COMPRESS_LZO;
--			} else if (!strcmp(name, "lz4")) {
-+			} else if (!strncmp(name, "lz4", 3)) {
-+				ret = f2fs_compress_set_level(sbi, name,
-+								COMPRESS_LZ4);
-+				if (ret) {
-+					kfree(name);
-+					return -EINVAL;
-+				}
- 				F2FS_OPTION(sbi).compress_algorithm =
- 								COMPRESS_LZ4;
--			} else if (!strcmp(name, "zstd")) {
-+			} else if (!strncmp(name, "zstd", 4)) {
-+				ret = f2fs_compress_set_level(sbi, name,
-+								COMPRESS_ZSTD);
-+				if (ret) {
-+					kfree(name);
-+					return -EINVAL;
-+				}
- 				F2FS_OPTION(sbi).compress_algorithm =
- 								COMPRESS_ZSTD;
- 			} else if (!strcmp(name, "lzo-rle")) {
-@@ -1530,6 +1590,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
- 	}
- 	seq_printf(seq, ",compress_algorithm=%s", algtype);
- 
-+	if (!F2FS_OPTION(sbi).compress_level)
-+		seq_printf(seq, ":%d", F2FS_OPTION(sbi).compress_level);
-+
- 	seq_printf(seq, ",compress_log_size=%u",
- 			F2FS_OPTION(sbi).compress_log_size);
- 
-diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-index 55be7afeee90..2dcc63fe8494 100644
---- a/include/linux/f2fs_fs.h
-+++ b/include/linux/f2fs_fs.h
-@@ -275,6 +275,9 @@ struct f2fs_inode {
- 			__u8 i_compress_algorithm;	/* compress algorithm */
- 			__u8 i_log_cluster_size;	/* log of cluster size */
- 			__le16 i_compress_flag;		/* compress flag */
-+						/* 0 bit: chksum flag
-+						 * [10,15] bits: compress level
-+						 */
- 			__le32 i_extra_end[0];	/* for attribute size calculation */
- 		} __packed;
- 		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
--- 
-2.26.2
+The request to be freed may still be refered in another path, such as blk_mq_queue_tag_busy_iter
+or blk_mq_tagset_busy_iter(), and cmpxchg() doesn't drain/wait for other refers.
+
+Thanks,
+Ming
 
