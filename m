@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C322CC6DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B68222CC6E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731216AbgLBTl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:41:26 -0500
-Received: from mail.efficios.com ([167.114.26.124]:34380 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729325AbgLBTlY (ORCPT
+        id S2387943AbgLBTmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:42:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387813AbgLBTmn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:41:24 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id D6F7929590D;
-        Wed,  2 Dec 2020 14:40:43 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id vWrVUVd2iSpP; Wed,  2 Dec 2020 14:40:43 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id A75C02956D3;
-        Wed,  2 Dec 2020 14:40:43 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com A75C02956D3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1606938043;
-        bh=ZbWych+DujWRPNQmIVevb1qb7nYwsQhMJTPEt1G9wvI=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=mq4kKfdpP86aZ67hjHKoJzldX1l+cuT2FrRyPSlSjks7sEHxdtbiww4eL2WXBuYyX
-         YPAY1ksUKugID8bvrmu1seFIBNvcTpJ3dfuwNsFPH4r3Ul/6+timWoVGGgwmAU1dFW
-         UmH8O2dnBxy44wGYcpASSfWtIUpBg0GfKavY5pQnE00fRAQ9CQrgd8FdBw/nrDlFCA
-         iV9Y5drtefc2F2tVSU5HGwDQ3lxoUqVvbUWpCare4LwaKRdsP6MXj2IK34+T4LrrpG
-         gxAL1y1zypn5d54G9n/+kDkIk2iaEGqzKfBwfPvPh+KR1qiBiY+gzxPXEU6SvLNA9D
-         2sv0P1ckCgjfg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id t2orNj_2KpMg; Wed,  2 Dec 2020 14:40:43 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 9BB37295883;
-        Wed,  2 Dec 2020 14:40:43 -0500 (EST)
-Date:   Wed, 2 Dec 2020 14:40:43 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86 <x86@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anton Blanchard <anton@ozlabs.org>,
-        stable <stable@vger.kernel.org>
-Message-ID: <203775582.21.1606938043613.JavaMail.zimbra@efficios.com>
-In-Reply-To: <510cb07946be056d2da7dda721bbf444c288751b.1606923183.git.luto@kernel.org>
-References: <cover.1606923183.git.luto@kernel.org> <510cb07946be056d2da7dda721bbf444c288751b.1606923183.git.luto@kernel.org>
-Subject: Re: [PATCH v2 2/4] membarrier: Add an actual barrier before
- rseq_preempt()
+        Wed, 2 Dec 2020 14:42:43 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC84EC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:42:03 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id x15so1712300pll.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:42:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SvAOwNmdYOyvWyeZNvhCHF3LfAeECMn+7Hjxf8t9J1s=;
+        b=gy5HC6qBf/rWcUZ+Sfh2GojdKYh6AT8Qn8XNz6FddLTBmperuqZBINYxPGGm5YMZ+j
+         ZHDi08zxvW46Iz8DM0/m+BYiNaI66+LvjzI/psYk9xrcQ18GispzE8jnBfUaHKivggpm
+         oAKu0xwGvWjVUYB1Xcqc+We5XNs0O6l7tXTNY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SvAOwNmdYOyvWyeZNvhCHF3LfAeECMn+7Hjxf8t9J1s=;
+        b=iUZMtHaZlawWgswK66KcTdtrL+NVfyGOG77o3eIE8qTIxxIRjbcIGTn+sgdiBbhQbO
+         vFKnX/fOk+9/JWmuq4LyvsflGVNsttRs0CURT/0uLyuIvbBVS/7BJz0cjwAnqhANQBj/
+         E2GaHeRBZGEZ4hJnRjrjcR6EhkYRVpJR9Yh/WoxqpSpU489VmR4bqb+bud+vGlxNBtiP
+         6X8DybHCPS+rhFk/jN5+Vr3wZIY0M+HfH9w7FSVB/WEfJ1CbhxIOeGntSNFYYI7KA4Tt
+         fsnsLIfg/3geEZfsRuagOEnUgY/dAPosSlMI+y+gfwumD/6oW4VOYaD+GThPJrtgO2sF
+         OjOQ==
+X-Gm-Message-State: AOAM532WeXCtUvA1/56JafuUZuQQiM4SjnskH2UkxYzPUi8UmBq3YCBA
+        ehVzIptGIpE/jeo6+xg6AHZfmU1X8/SQ+GbU
+X-Google-Smtp-Source: ABdhPJz/ypCRmZpZn10dvtf0gS7cDmUuFl+cXXnBdfkjX46iVD+PSRCN3jFiPvr7mwh4dijXo12CYg==
+X-Received: by 2002:a17:90a:bf88:: with SMTP id d8mr1399908pjs.102.1606938123289;
+        Wed, 02 Dec 2020 11:42:03 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:c00a:a884:29ad:2220:8aff:e226])
+        by smtp.gmail.com with ESMTPSA id o29sm576496pfp.66.2020.12.02.11.42.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 11:42:02 -0800 (PST)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH v2] arm64: defconfig: Enable REGULATOR_PF8X00
+Date:   Thu,  3 Dec 2020 01:11:49 +0530
+Message-Id: <20201202194149.180058-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3980 (ZimbraWebClient - FF83 (Linux)/8.8.15_GA_3975)
-Thread-Topic: membarrier: Add an actual barrier before rseq_preempt()
-Thread-Index: DUdPRLnf4KSSPgoZCd6tDT7cln3AyA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Dec 2, 2020, at 10:35 AM, Andy Lutomirski luto@kernel.org wrote:
+Enable PF8X00 regulator driver by default as it used in some of 
+i.MX8MM hardware platforms like Engicam i.Core MX8M Mini SoM.
 
-> It seems to me that most RSEQ membarrier users will expect any
-> stores done before the membarrier() syscall to be visible to the
-> target task(s).  While this is extremely likely to be true in
-> practice, nothing actually guarantees it by a strict reading of the
-> x86 manuals.  Rather than providing this guarantee by accident and
-> potentially causing a problem down the road, just add an explicit
-> barrier.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+---
+Changes for v2:
+- update the commit message.
 
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-> ---
-> kernel/sched/membarrier.c | 8 ++++++++
-> 1 file changed, 8 insertions(+)
-> 
-> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
-> index 5a40b3828ff2..6251d3d12abe 100644
-> --- a/kernel/sched/membarrier.c
-> +++ b/kernel/sched/membarrier.c
-> @@ -168,6 +168,14 @@ static void ipi_mb(void *info)
-> 
-> static void ipi_rseq(void *info)
-> {
-> +	/*
-> +	 * Ensure that all stores done by the calling thread are visible
-> +	 * to the current task before the current task resumes.  We could
-> +	 * probably optimize this away on most architectures, but by the
-> +	 * time we've already sent an IPI, the cost of the extra smp_mb()
-> +	 * is negligible.
-> +	 */
-> +	smp_mb();
-> 	rseq_preempt(current);
-> }
-> 
-> --
-> 2.28.0
-
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 867cc4a5f00f..b070ecf61fdf 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -594,6 +594,7 @@ CONFIG_REGULATOR_HI655X=y
+ CONFIG_REGULATOR_MAX77620=y
+ CONFIG_REGULATOR_MAX8973=y
+ CONFIG_REGULATOR_PCA9450=y
++CONFIG_REGULATOR_PF8X00=y
+ CONFIG_REGULATOR_PFUZE100=y
+ CONFIG_REGULATOR_PWM=y
+ CONFIG_REGULATOR_QCOM_RPMH=y
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.25.1
+
