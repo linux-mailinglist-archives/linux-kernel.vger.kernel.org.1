@@ -2,107 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90592CBD1D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F03182CBD22
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729236AbgLBMgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:36:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
+        id S1729715AbgLBMhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:37:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726427AbgLBMgd (ORCPT
+        with ESMTP id S1729578AbgLBMhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:36:33 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCCFC0613D4;
-        Wed,  2 Dec 2020 04:35:52 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4018231D;
-        Wed,  2 Dec 2020 13:35:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1606912548;
-        bh=vFRCyeRysRNaucrz5XO0nhTQ4MhbmNXAN8hJkzu4iWg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PUTewk2IxAV3eurGOu8Nlfk23gH1DsdGZ8BL6Wi4qfAO3tSXwHax2CPm6orRBxCBe
-         zusNqgT1zuSBrGdkXG2rbtQlbG/F1voO6RhqhUtmNEA5IRar+cmx6oVGpLFMuk3D7x
-         +GuDrRyEOBKhfRuNBnkg9I9v2Izqa94okdyz3EWI=
-Date:   Wed, 2 Dec 2020 14:35:40 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Dan Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
-Message-ID: <20201202123540.GE4486@pendragon.ideasonboard.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-19-djrscally@gmail.com>
- <20201130200719.GB4077@smile.fi.intel.com>
- <20201130233232.GD25713@pendragon.ideasonboard.com>
- <20201201184925.GJ4077@smile.fi.intel.com>
- <4181e6a6-a60f-0a2b-1b46-13a2359d8753@gmail.com>
- <20201202093952.GU4077@smile.fi.intel.com>
+        Wed, 2 Dec 2020 07:37:46 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CC6C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 04:37:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aMsFarl+jDNhDGrkVJU4Z7rtyi8DqLbGMaMEmcevA9A=; b=BmqNP1/kSGbpNbtcb3h9aeOohN
+        1KW/nJsBXNQZCmjsDzkHLK1LW2Cl+AObAAsH7v8KdksmfyAkVRzrFza57n36kfQlQQlftPnoCphm5
+        y/EAYGCZRNFPPpRerig+SaEnxhd//+in+MsPGpxaB/DrF/jntN6Ird6TEe3Yb46m64PPxeiXTNycz
+        lkMCKpezTVb5z/lj0nLN5aFV+cZLtvYcaqsbsqu/n8gomV0zfh3c09Ed7uotn8/Gys6TxLWI8TCqy
+        pyCntiSjRGuSA5nivgnLtcKMt9b8zFwkX+uA1i+eybdaTiFmcHcNIVT3TBJAp1I5OKMoCX0nTV06H
+        NxLuH3eg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkRNL-0005Zh-R6; Wed, 02 Dec 2020 12:36:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 132D63059DD;
+        Wed,  2 Dec 2020 13:36:49 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EE6EB2143477A; Wed,  2 Dec 2020 13:36:48 +0100 (CET)
+Date:   Wed, 2 Dec 2020 13:36:48 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: Re: [PATCH 4/5] irqtime: Move irqtime entry accounting after irq
+ offset incrementation
+Message-ID: <20201202123648.GI3021@hirez.programming.kicks-ass.net>
+References: <20201202115732.27827-1-frederic@kernel.org>
+ <20201202115732.27827-5-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201202093952.GU4077@smile.fi.intel.com>
+In-Reply-To: <20201202115732.27827-5-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 11:39:52AM +0200, Andy Shevchenko wrote:
-> On Tue, Dec 01, 2020 at 08:59:53PM +0000, Dan Scally wrote:
-> > On 01/12/2020 18:49, Andy Shevchenko wrote:
+On Wed, Dec 02, 2020 at 12:57:31PM +0100, Frederic Weisbecker wrote:
+> IRQ time entry is currently accounted before HARDIRQ_OFFSET or
+> SOFTIRQ_OFFSET are incremented. This is convenient to decide to which
+> index the cputime to account is dispatched.
 > 
-> ...
+> Unfortunately it prevents tick_irq_enter() from being called under
+> HARDIRQ_OFFSET because tick_irq_enter() has to be called before the IRQ
+> entry accounting due to the necessary clock catch up. As a result we
+> don't benefit from appropriate lockdep coverage on tick_irq_enter().
 > 
-> > > Seems we can do this, by locating intel_int3472.c under PDx86 hood and dropping
-> > > ACPI ID table from TPS68470 MFD driver. The PMIC can be instantiated via
-> > > i2c_acpi_new_device() (IIRC the API name).
-> > >
-> > > And actually it makes more sense since it's not and MFD and should not be there.
-> > >
-> > > (Dan, patch wise the one creates intel_int3472.c followed by another one that
-> > >  moves ACPI ID from PMIC and introduces its instantiation via I²C board info
-> > >  structure)
-> > 
-> > I'm mostly following this, but why would we need an i2c_board_info or
-> > i2c_acpi_new_device()? The INT3472 entries that refer to actual tps68470
-> > devices do have an I2cSerialBusV2 enumerated in _CRS so in their case
-> > there's an i2c device registered with the kernel already.
+> To prepare for fixing this, move the IRQ entry cputime accounting after
+> the preempt offset is incremented. This requires the cputime dispatch
+> code to handle the extra offset.
 > 
-> Because as we discussed already we can't have two drivers for the same ID
-> without a big disruption in the driver(s).
-> 
-> If you have a single point of enumeration, it will make things much easier
-> (refer to the same intel_cht_int33fe driver you mentioned earlier).
-> 
-> I just realize that the name of int3472 should follow the same pattern, i.e.
-> intel_skl_int3472.c
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-We're mostly focussing on Kaby Lake here though. From what I understand
-the ACPI infrastructure for camera support is mostly the same on Sky
-Lake, but not identical. I think a single driver should be able to cover
-both though.
-
-> > I think we need those things when we get round to handling the
-> > VCM/EEPROM that's hidden within the sensor's ACPI entry, but I've not
-> > done any work on that yet at all.
-> 
-> Let's consider this later — one step at a time.
-
--- 
-Regards,
-
-Laurent Pinchart
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
