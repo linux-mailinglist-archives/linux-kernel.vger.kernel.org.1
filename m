@@ -2,133 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62BC2CB8D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8E22CB8CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729324AbgLBJ2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:28:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41802 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729019AbgLBJ2O (ORCPT
+        id S1729310AbgLBJ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:27:32 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9091 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728360AbgLBJ1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:28:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606901208;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HdQhf3f0XYYFLx0KyrpykAdlztXBpPhnQ/LWm5/Hvoo=;
-        b=HG1+V40wdpYwoWgJ2F0lmxqfoDaXXoB0X9eVxkxPZjj2shoOiF1d+YfGY9Rnv6clVKgT6m
-        JI1Pl/RNjQhm1sl95NTyKI4eGZJlDBFMAGACxGhMH1D3PNGXCt5iDIM9nAnSq6Eb11WOSR
-        SRN3nFxpp9LrWg0oHMeii5r9ISTp7QU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-159-f_OQLGxUMuezZwIbbWr03Q-1; Wed, 02 Dec 2020 04:26:46 -0500
-X-MC-Unique: f_OQLGxUMuezZwIbbWr03Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 077AB1926DB5;
-        Wed,  2 Dec 2020 09:26:41 +0000 (UTC)
-Received: from [10.36.113.108] (ovpn-113-108.ams2.redhat.com [10.36.113.108])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1C57460BFA;
-        Wed,  2 Dec 2020 09:26:38 +0000 (UTC)
-Subject: Re: [RFC V2 2/3] arm64/mm: Define arch_get_mappable_range()
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
- <1606706992-26656-3-git-send-email-anshuman.khandual@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <1861413c-fd23-f3e2-14f3-00feec6ff2fb@redhat.com>
-Date:   Wed, 2 Dec 2020 10:26:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 2 Dec 2020 04:27:31 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CmD9R4kk2zLyXN;
+        Wed,  2 Dec 2020 17:26:03 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 2 Dec 2020 17:26:34 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
+        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
+        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
+        <xinliang.liu@linaro.org>, <maarten.lankhorst@linux.intel.com>,
+        <mripard@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH drm/hisilicon v2 0/3] Add the new api to install irq
+Date:   Wed, 2 Dec 2020 17:26:49 +0800
+Message-ID: <1606901212-8214-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <1606706992-26656-3-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.11.20 04:29, Anshuman Khandual wrote:
-> This overrides arch_get_mappable_range() on arm64 platform which will be
-> used with recently added generic framework. It drops inside_linear_region()
-> and subsequent check in arch_add_memory() which are no longer required.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/arm64/mm/mmu.c | 14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index ca692a815731..49ec8f2838f2 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -1444,16 +1444,19 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
->  	free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
->  }
->  
-> -static bool inside_linear_region(u64 start, u64 size)
-> +struct range arch_get_mappable_range(void)
->  {
-> +	struct range memhp_range;
-> +
->  	/*
->  	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
->  	 * accommodating both its ends but excluding PAGE_END. Max physical
->  	 * range which can be mapped inside this linear mapping range, must
->  	 * also be derived from its end points.
->  	 */
-> -	return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
-> -	       (start + size - 1) <= __pa(PAGE_END - 1);
-> +	memhp_range.start = __pa(_PAGE_OFFSET(vabits_actual));
-> +	memhp_range.end =  __pa(PAGE_END - 1);
-> +	return memhp_range;
->  }
->  
->  int arch_add_memory(int nid, u64 start, u64 size,
-> @@ -1461,11 +1464,6 @@ int arch_add_memory(int nid, u64 start, u64 size,
->  {
->  	int ret, flags = 0;
->  
-> -	if (!inside_linear_region(start, size)) {
-> -		pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
-> -		return -EINVAL;
-> -	}
+patch #1 is code refactorings to use devm_drm_dev_alloc.
+patch #2 add the new api to install irq, patch #3 is hibmc driver uses
+the newly added api to register interrupts.
 
-As discussed, I think something like a VM_BUG_ON() here might makes
-sense, indicating that we require the caller to validate upfront. Same
-applies to the s390x variant.
+Changes since v1:
+The devm_drm_irq_install function returns devm_add_action_or_reset directly
+without checking that devm_add_action_or_reset returns the correct value.
 
-Thanks!
+Tian Tao (3):
+  drm/hisilicon: Code refactoring for hibmc_drm_drv
+  drm/irq: Add the new api to install irq
+  drm/hisilicon: Use the new api devm_drm_irq_install
 
-> -
->  	if (rodata_full || debug_pagealloc_enabled())
->  		flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
->  
-> 
-
+ drivers/gpu/drm/drm_irq.c                        | 32 +++++++++++++++
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   |  2 +-
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  | 51 ++++++++++--------------
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  4 +-
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  2 +-
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c      |  8 ++--
+ include/drm/drm_irq.h                            |  2 +-
+ 7 files changed, 64 insertions(+), 37 deletions(-)
 
 -- 
-Thanks,
-
-David / dhildenb
+2.7.4
 
