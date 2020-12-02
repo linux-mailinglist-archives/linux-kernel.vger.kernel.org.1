@@ -2,68 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1232CB7FC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:03:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7024E2CB80A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:03:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388041AbgLBJBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:01:43 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:55907 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388022AbgLBJBm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:01:42 -0500
-X-UUID: c421f04d21644768a715251f77686355-20201202
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=LZJM1T74ENqOGbl8a7Q37TekEOWVNgcTRY1aFVfY5X8=;
-        b=ZPiingF6fDYqTPNZqHpX0HntU5DXUuAw081XrryzDI9QVlYS/TUtYCY2nbKRjDN9g9xfcxLIyVfixLXdgYOawHAdSmLLS4bKmig0bDv+j4ItjYn0cko6/t3A/U23241e4A4EjiLGypZ2ujXCMqL7ne/czN4bBTrQkiG1k93GBIg=;
-X-UUID: c421f04d21644768a715251f77686355-20201202
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1437356229; Wed, 02 Dec 2020 17:00:57 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 2 Dec 2020 17:00:55 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 2 Dec 2020 17:00:54 +0800
-Message-ID: <1606899655.23925.42.camel@mtkswgap22>
-Subject: Re: [PATCH V5 3/3] scsi: ufs: Print host regs in IRQ handler when
- AH8 error happens
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
-        <hongwus@codeaurora.org>, <rnayak@codeaurora.org>,
-        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
-        <saravanak@google.com>, <salyzyn@google.com>,
-        "Alim Akhtar" <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "Bart Van Assche" <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Wed, 2 Dec 2020 17:00:55 +0800
-In-Reply-To: <1606897475-16907-4-git-send-email-cang@codeaurora.org>
-References: <1606897475-16907-1-git-send-email-cang@codeaurora.org>
-         <1606897475-16907-4-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S2387972AbgLBJDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:03:25 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40762 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728480AbgLBJDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 04:03:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 65228AD6B;
+        Wed,  2 Dec 2020 09:02:41 +0000 (UTC)
+Subject: Re: [PATCH drm/hisilicon 1/3] drm/hisilicon: Code refactoring for
+ hibmc_drm_drv
+To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
+        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
+        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
+        xinliang.liu@linaro.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <1606898835-40775-1-git-send-email-tiantao6@hisilicon.com>
+ <1606898835-40775-2-git-send-email-tiantao6@hisilicon.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <f6c14465-53a5-1cd3-df8a-d1895ca20656@suse.de>
+Date:   Wed, 2 Dec 2020 10:02:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <1606898835-40775-2-git-send-email-tiantao6@hisilicon.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="AbhEZOftm6WrJ77dVLizq5s8n885JMqqg"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTEyLTAyIGF0IDAwOjI0IC0wODAwLCBDYW4gR3VvIHdyb3RlOg0KPiBXaGVu
-IEFIOCBlcnJvciBoYXBwZW5zLCBhbGwgdGhlIHJlZ3MgYW5kIHN0YXRlcyBhcmUgZHVtcGVkIGlu
-IGVyciBoYW5kbGVyLg0KPiBTb21ldGltZSB3ZSBuZWVkIHRvIGxvb2sgaW50byBob3N0IHJlZ3Mg
-cmlnaHQgYWZ0ZXIgQUg4IGVycm9yIGhhcHBlbnMsDQo+IHdoaWNoIGlzIGJlZm9yZSBsZWF2aW5n
-IHRoZSBJUlEgaGFuZGxlci4NCj4gDQo+IFJldmlld2VkLWJ5OiBCYW8gRC4gTmd1eWVuIDxuZ3V5
-ZW5iQGNvZGVhdXJvcmEub3JnPg0KPiBSZXZpZXdlZC1ieTogQXN1dG9zaCBEYXMgPGFzdXRvc2hk
-QGNvZGVhdXJvcmEub3JnPg0KPiBSZXZpZXdlZC1ieTogSG9uZ3d1IFN1PGhvbmd3dXNAY29kZWF1
-cm9yYS5vcmc+DQo+IFNpZ25lZC1vZmYtYnk6IENhbiBHdW8gPGNhbmdAY29kZWF1cm9yYS5vcmc+
-DQoNClJldmlld2VkLWJ5OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0K
-DQoNCg0K
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--AbhEZOftm6WrJ77dVLizq5s8n885JMqqg
+Content-Type: multipart/mixed; boundary="zt6zkTPzu4MAG0Ir5xMeJLvbCCn3g5BBB";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
+ kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
+ dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org
+Cc: linux-kernel@vger.kernel.org
+Message-ID: <f6c14465-53a5-1cd3-df8a-d1895ca20656@suse.de>
+Subject: Re: [PATCH drm/hisilicon 1/3] drm/hisilicon: Code refactoring for
+ hibmc_drm_drv
+References: <1606898835-40775-1-git-send-email-tiantao6@hisilicon.com>
+ <1606898835-40775-2-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1606898835-40775-2-git-send-email-tiantao6@hisilicon.com>
 
+--zt6zkTPzu4MAG0Ir5xMeJLvbCCn3g5BBB
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+Am 02.12.20 um 09:47 schrieb Tian Tao:
+> Use the devm_drm_dev_alloc provided by the drm framework to alloc
+> a structure hibmc_drm_private.
+>=20
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+
+This looks good now. Thanks for sticking to it.
+
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+> ---
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   |  2 +-
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  | 46 +++++++++++----=
+---------
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  4 +--
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  2 +-
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c      |  8 +++--
+>   5 files changed, 30 insertions(+), 32 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/g=
+pu/drm/hisilicon/hibmc/hibmc_drm_de.c
+> index ea962ac..096eea9 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+> @@ -499,7 +499,7 @@ static const struct drm_crtc_helper_funcs hibmc_crt=
+c_helper_funcs =3D {
+>  =20
+>   int hibmc_de_init(struct hibmc_drm_private *priv)
+>   {
+> -	struct drm_device *dev =3D priv->dev;
+> +	struct drm_device *dev =3D &priv->dev;
+>   	struct drm_crtc *crtc =3D &priv->crtc;
+>   	struct drm_plane *plane =3D &priv->primary_plane;
+>   	int ret;
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> index d845657..13e8a28 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> @@ -79,31 +79,32 @@ static const struct dev_pm_ops hibmc_pm_ops =3D {
+>  =20
+>   static int hibmc_kms_init(struct hibmc_drm_private *priv)
+>   {
+> +	struct drm_device *dev =3D &priv->dev;
+>   	int ret;
+>  =20
+> -	drm_mode_config_init(priv->dev);
+> +	drm_mode_config_init(dev);
+>   	priv->mode_config_initialized =3D true;
+>  =20
+> -	priv->dev->mode_config.min_width =3D 0;
+> -	priv->dev->mode_config.min_height =3D 0;
+> -	priv->dev->mode_config.max_width =3D 1920;
+> -	priv->dev->mode_config.max_height =3D 1200;
+> +	dev->mode_config.min_width =3D 0;
+> +	dev->mode_config.min_height =3D 0;
+> +	dev->mode_config.max_width =3D 1920;
+> +	dev->mode_config.max_height =3D 1200;
+>  =20
+> -	priv->dev->mode_config.fb_base =3D priv->fb_base;
+> -	priv->dev->mode_config.preferred_depth =3D 32;
+> -	priv->dev->mode_config.prefer_shadow =3D 1;
+> +	dev->mode_config.fb_base =3D priv->fb_base;
+> +	dev->mode_config.preferred_depth =3D 32;
+> +	dev->mode_config.prefer_shadow =3D 1;
+>  =20
+> -	priv->dev->mode_config.funcs =3D (void *)&hibmc_mode_funcs;
+> +	dev->mode_config.funcs =3D (void *)&hibmc_mode_funcs;
+>  =20
+>   	ret =3D hibmc_de_init(priv);
+>   	if (ret) {
+> -		drm_err(priv->dev, "failed to init de: %d\n", ret);
+> +		drm_err(dev, "failed to init de: %d\n", ret);
+>   		return ret;
+>   	}
+>  =20
+>   	ret =3D hibmc_vdac_init(priv);
+>   	if (ret) {
+> -		drm_err(priv->dev, "failed to init vdac: %d\n", ret);
+> +		drm_err(dev, "failed to init vdac: %d\n", ret);
+>   		return ret;
+>   	}
+>  =20
+> @@ -113,7 +114,7 @@ static int hibmc_kms_init(struct hibmc_drm_private =
+*priv)
+>   static void hibmc_kms_fini(struct hibmc_drm_private *priv)
+>   {
+>   	if (priv->mode_config_initialized) {
+> -		drm_mode_config_cleanup(priv->dev);
+> +		drm_mode_config_cleanup(&priv->dev);
+>   		priv->mode_config_initialized =3D false;
+>   	}
+>   }
+> @@ -202,7 +203,7 @@ static void hibmc_hw_config(struct hibmc_drm_privat=
+e *priv)
+>  =20
+>   static int hibmc_hw_map(struct hibmc_drm_private *priv)
+>   {
+> -	struct drm_device *dev =3D priv->dev;
+> +	struct drm_device *dev =3D &priv->dev;
+>   	struct pci_dev *pdev =3D dev->pdev;
+>   	resource_size_t addr, size, ioaddr, iosize;
+>  =20
+> @@ -258,17 +259,9 @@ static int hibmc_unload(struct drm_device *dev)
+>  =20
+>   static int hibmc_load(struct drm_device *dev)
+>   {
+> -	struct hibmc_drm_private *priv;
+> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
+>   	int ret;
+>  =20
+> -	priv =3D drmm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> -	if (!priv) {
+> -		drm_err(dev, "no memory to allocate for hibmc_drm_private\n");
+> -		return -ENOMEM;
+> -	}
+> -	dev->dev_private =3D priv;
+> -	priv->dev =3D dev;
+> -
+>   	ret =3D hibmc_hw_init(priv);
+>   	if (ret)
+>   		goto err;
+> @@ -310,6 +303,7 @@ static int hibmc_load(struct drm_device *dev)
+>   static int hibmc_pci_probe(struct pci_dev *pdev,
+>   			   const struct pci_device_id *ent)
+>   {
+> +	struct hibmc_drm_private *priv;
+>   	struct drm_device *dev;
+>   	int ret;
+>  =20
+> @@ -318,12 +312,14 @@ static int hibmc_pci_probe(struct pci_dev *pdev,
+>   	if (ret)
+>   		return ret;
+>  =20
+> -	dev =3D drm_dev_alloc(&hibmc_driver, &pdev->dev);
+> -	if (IS_ERR(dev)) {
+> +	priv =3D devm_drm_dev_alloc(&pdev->dev, &hibmc_driver,
+> +				  struct hibmc_drm_private, dev);
+> +	if (IS_ERR(priv)) {
+>   		DRM_ERROR("failed to allocate drm_device\n");
+> -		return PTR_ERR(dev);
+> +		return PTR_ERR(priv);
+>   	}
+>  =20
+> +	dev =3D &priv->dev;
+>   	dev->pdev =3D pdev;
+>   	pci_set_drvdata(pdev, dev);
+>  =20
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> index f310a83..7e0c756 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> @@ -37,7 +37,7 @@ struct hibmc_drm_private {
+>   	resource_size_t  fb_size;
+>  =20
+>   	/* drm */
+> -	struct drm_device  *dev;
+> +	struct drm_device dev;
+>   	struct drm_plane primary_plane;
+>   	struct drm_crtc crtc;
+>   	struct drm_encoder encoder;
+> @@ -52,7 +52,7 @@ static inline struct hibmc_connector *to_hibmc_connec=
+tor(struct drm_connector *c
+>  =20
+>   static inline struct hibmc_drm_private *to_hibmc_drm_private(struct d=
+rm_device *dev)
+>   {
+> -	return dev->dev_private;
+> +	return container_of(dev, struct hibmc_drm_private, dev);
+>   }
+>  =20
+>   void hibmc_set_power_mode(struct hibmc_drm_private *priv,
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers=
+/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> index 74e26c2..d35548d 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> @@ -96,7 +96,7 @@ static const struct drm_encoder_funcs hibmc_encoder_f=
+uncs =3D {
+>  =20
+>   int hibmc_vdac_init(struct hibmc_drm_private *priv)
+>   {
+> -	struct drm_device *dev =3D priv->dev;
+> +	struct drm_device *dev =3D &priv->dev;
+>   	struct hibmc_connector *hibmc_connector =3D &priv->connector;
+>   	struct drm_encoder *encoder =3D &priv->encoder;
+>   	struct drm_connector *connector =3D &hibmc_connector->base;
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/=
+drm/hisilicon/hibmc/hibmc_ttm.c
+> index 602ece1..e84fb81 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+> @@ -25,7 +25,7 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+>   {
+>   	struct drm_vram_mm *vmm;
+>   	int ret;
+> -	struct drm_device *dev =3D hibmc->dev;
+> +	struct drm_device *dev =3D &hibmc->dev;
+>  =20
+>   	vmm =3D drm_vram_helper_alloc_mm(dev,
+>   				       pci_resource_start(dev->pdev, 0),
+> @@ -41,10 +41,12 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+>  =20
+>   void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
+>   {
+> -	if (!hibmc->dev->vram_mm)
+> +	struct drm_device *dev =3D &hibmc->dev;
+> +
+> +	if (!dev->vram_mm)
+>   		return;
+>  =20
+> -	drm_vram_helper_release_mm(hibmc->dev);
+> +	drm_vram_helper_release_mm(dev);
+>   }
+>  =20
+>   int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--zt6zkTPzu4MAG0Ir5xMeJLvbCCn3g5BBB--
+
+--AbhEZOftm6WrJ77dVLizq5s8n885JMqqg
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/HWC8FAwAAAAAACgkQlh/E3EQov+D1
+nRAAvVR06sxKEasI0jqbOUzm13e9yc3ej9DChGJJ8xsI8jcxGKW668EFlGdCatl9FW/wshDFr2rv
+8NooUd3pXjUw/lp/ufMmK6I2zVNP5a8cvQp0Uq4IA9jpzdC3aRK+8UssJP8553YB/o985Hiirl0F
+AsElrQCmK6d5A+hhUVfMm/MR7FX17FfH0pm0wykvhG/7TDgDiIZaI33lNUH3YMjbwt+B7m/8lbTa
++5McanOTU4HsUtNYD07i8CxG3LW4nl2sSz4S9JBVn8t77fSBLTZ4G3eAIXjO0Yhlus5yt+Jdu+jg
+9U6v4X4oz+t1wzxTWHtxMLf4fM/0eJHHizkafBIkYx6hHl4tyMgPi5ku+kDNulc9QOFSgaq4CFYI
+z4j9ZU24ulHqArUz90cRcEUwTE6aQxKS3h1PwU2mEZmlOsdBFZxeHr87qVBg6UttUHeSv6Cjh+A9
+xK3U4n8lF/iGLtpn2nI9cGsxwrUI9Chefuq1yQuVcPOM1Jl2wUgxWQFoOh9ayloGkHUpb6mOFcxr
+wxn5v0qWDV3cyFgpoKh/iI5uh3zyC0rt4SHZl5rx0fzkP3zLbnxzSgXy1Wlw4IOmeNy/Q1bGyngb
+EjVLwCsU0HU5cnnlAgKA7hVPczOa6RJBJQZijNecFFoFgL8fY9lV8j/3KVpgiDISMwzn8y7hA0yi
+YVM=
+=n4Zv
+-----END PGP SIGNATURE-----
+
+--AbhEZOftm6WrJ77dVLizq5s8n885JMqqg--
