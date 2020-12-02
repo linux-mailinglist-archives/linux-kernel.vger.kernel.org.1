@@ -2,169 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7554C2CBE99
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7D02CBE9B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730104AbgLBNlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 08:41:45 -0500
-Received: from mail-eopbgr80127.outbound.protection.outlook.com ([40.107.8.127]:5383
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727096AbgLBNlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 08:41:44 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eUifoG6xFyea5yVvJwEOVq0IcS9UFT2YZ5Ivkawa2LXQyRr0dut3g1zxuN8sQQYwaBzrbUY1BDU0cvcwF8WblzizXtYsxeMHDQjS1GHry7NJVlozdLXTs+G81ECJd2+xkNV613CSsS219P5gVmYgUSF+g3AxDsY6WtqwYIGtVIL14NL4XKMhQL8wvsgmJ4o4nURUw500zio39xATIN/G0yy67NJR+2Nlwgp2BgiONQBdd6ECwmfBy/JRVWtOeCWsFqERy0VEUdhnHGpx4GT9HEC+n5s8/iy7LpZMvGHubRhZvh/VaLGnqMWRQOCGr6uOwzyZY498K5PXvB/fZehrZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y/Ke+lSNgrjd6vSkVpxsE8UbAjPAX/6CF8sST34iigU=;
- b=AUFbLzWsaK0iZ/poAJ1j2KmWHpsKIOqZRkkhaos9031LcDW5QyaN8usEr9afyc+qjVK8JgqWMJHLUzsUCRdV7JrbUOFAleI6WmQjrr7R1kuC2P5ujUwbsqcj3K8GmypdbgiJGhjAVCiqBst+2dX3Y5L5a3Yh6tJ0Ke35Gtkp1KerWsbqkORIb5MvrQmFQts2cNeNSX5mFXWbRiktf7NTMdo7vUo7RraoqisQEcGIiDCg10Rbxnu4HWitkac4kbyf4TFoYjjB34SBufUR6AucFbHl+la7Wq5mALnLk+2p2b1xLAQiGyvHw/AV0a1zd98uJGQbKXWcLWdW4SgsdyCf4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silicom.dk; dmarc=pass action=none header.from=silicom.dk;
- dkim=pass header.d=silicom.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=SILICOMLTD.onmicrosoft.com; s=selector2-SILICOMLTD-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y/Ke+lSNgrjd6vSkVpxsE8UbAjPAX/6CF8sST34iigU=;
- b=GBjtTWGhMUc3QWSSO0/tP4xSEgRzL3Bx4ye8j6iBBemyHr17XRkdbq61/+QI6PJbJ4Wxkl4fq1M3x9zaScVI+H9qGHDYTP1OKz2Hc+24l/6lgFVPXsKVXftobDHXxAJeTdNJ5/HlEY24dg5Dp1bpA6RrZkacqDqWWO1/iSQdqUU=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=silicom.dk;
-Received: from AM0PR0402MB3426.eurprd04.prod.outlook.com
- (2603:10a6:208:22::15) by AM4PR0401MB2340.eurprd04.prod.outlook.com
- (2603:10a6:200:53::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18; Wed, 2 Dec
- 2020 13:40:55 +0000
-Received: from AM0PR0402MB3426.eurprd04.prod.outlook.com
- ([fe80::bdca:6651:1054:423b]) by AM0PR0402MB3426.eurprd04.prod.outlook.com
- ([fe80::bdca:6651:1054:423b%5]) with mapi id 15.20.3611.025; Wed, 2 Dec 2020
- 13:40:54 +0000
-Subject: Re: [PATCH v6 2/7] fpga: sec-mgr: enable secure updates
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com
-References: <20201106010905.11935-1-russell.h.weight@intel.com>
- <20201106010905.11935-3-russell.h.weight@intel.com>
- <9dd75daf-eb73-4008-ca65-6f7ea3923e35@silicom.dk>
- <c6dc2edb-9639-9c4f-c065-18cade768fb6@intel.com>
- <5b49ef38-2c03-02bc-6a1e-5b663180acf3@silicom.dk>
- <25ee1ab1-3d81-d9b9-240d-143a9936d0f8@intel.com>
-From:   =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>
-Message-ID: <d9be1ac7-3a44-dca0-c989-49c672e21b85@silicom.dk>
-Date:   Wed, 2 Dec 2020 14:40:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
-In-Reply-To: <25ee1ab1-3d81-d9b9-240d-143a9936d0f8@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US-large
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [85.184.138.169]
-X-ClientProxiedBy: AM7PR02CA0027.eurprd02.prod.outlook.com
- (2603:10a6:20b:100::37) To AM0PR0402MB3426.eurprd04.prod.outlook.com
- (2603:10a6:208:22::15)
+        id S1726385AbgLBNmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 08:42:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55009 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725955AbgLBNmu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 08:42:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606916483;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Vbxc9/ME5/SrQ1YXboDUD9984AjRX/c8zr65mwO3JWw=;
+        b=EeWkGGphp3OoIS2BQwH75tNCxGlv9hGL1NtPbntT4uRre0tXN0gVSmF8LW3XOvaW3cAUGs
+        AaGMMgpRNkiSJv0CGKW5y+KndxK6zj2mIieYS2Xcnw9BCzFMwzKvmvX1kCwwGloVo8ja0M
+        oY38WOrZOmIKwiHFFJSeITPJOZxzrHY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-64-v0V9xy5ZPbCj-sdI41EOEQ-1; Wed, 02 Dec 2020 08:41:19 -0500
+X-MC-Unique: v0V9xy5ZPbCj-sdI41EOEQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7322C106B6A3;
+        Wed,  2 Dec 2020 13:41:17 +0000 (UTC)
+Received: from [10.72.12.105] (ovpn-12-105.pek2.redhat.com [10.72.12.105])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5C8395C22B;
+        Wed,  2 Dec 2020 13:41:10 +0000 (UTC)
+Subject: Re: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Cindy Lu <lulu@redhat.com>, Eli Cohen <elic@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20201130062746.GA99449@mtl-vdi-166.wap.labs.mlnx>
+ <20201130035147-mutt-send-email-mst@kernel.org>
+ <20201130092759.GB99449@mtl-vdi-166.wap.labs.mlnx>
+ <20201130043050-mutt-send-email-mst@kernel.org>
+ <CACLfguXB+SzocLppNtrTZwKPFsshS8TLVe8_iFJxgjT-cFpSzA@mail.gmail.com>
+ <20201130103142-mutt-send-email-mst@kernel.org>
+ <CACLfguWDFgJUJTJik1obvv-vzacRwgkfsN=-Uouu+K9dAKFE+A@mail.gmail.com>
+ <e52b94b6-42a8-1270-1e10-d1905ccae598@redhat.com>
+ <20201202042328-mutt-send-email-mst@kernel.org>
+ <128487fe-8736-6d9e-3d07-b55dcb92c9b0@redhat.com>
+ <20201202080149-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <692cfc1f-fb2d-1473-cc29-0231996de38d@redhat.com>
+Date:   Wed, 2 Dec 2020 21:41:08 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.8.20] (85.184.138.169) by AM7PR02CA0027.eurprd02.prod.outlook.com (2603:10a6:20b:100::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Wed, 2 Dec 2020 13:40:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3bfeecf7-3f40-4751-120e-08d896c7e433
-X-MS-TrafficTypeDiagnostic: AM4PR0401MB2340:
-X-Microsoft-Antispam-PRVS: <AM4PR0401MB23409AEEB8E4542B08FC60EFD5F30@AM4PR0401MB2340.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AoSL+UkIX6fytObqZq2SCQ1Wl81zzD4JHPMA9jaD4jwPrJSRyaY9sa7NtJb0sOVVkdtwSyXyRzvzf9u2J1n9474ZnK/6qA6AzlEe4J3mhrxtuioeFNmTDclMXnuh+4vgAnSrou8dWC8bcYXaqoqg0hxt64Hb0t5H3H8JAUssOiDEDv6O8g/JXIwlyJjhAho+YSBCO9tetdlDaXdzfr/mqQd8h2u2DdB2c8tkOjirm4D2sML5jrb6vsalkD1fYBsR1Ki6/cKZRJh+q3lYYs2BLcvn2VpDf7I8YDYw0N89RzrgrayiL85mIYv50XaRO0YgaeWlsvxNaETinXVaBsaElRHQrQFl8l6xBAs+kMv2FOv7qA7O4M1k1HKbcEMIQEURuBPPsDdTBerDbO1GUNKGbDzFfSlpRYMBrSixNsthIhI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR0402MB3426.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(396003)(346002)(39850400004)(66556008)(31696002)(5660300002)(66946007)(66476007)(31686004)(956004)(16576012)(316002)(86362001)(36756003)(186003)(66574015)(53546011)(4326008)(2616005)(2906002)(83380400001)(26005)(8936002)(15650500001)(8976002)(8676002)(478600001)(52116002)(16526019)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?a25jUTV1c1MxNGdIdDdzV255Tmg0a2JCMnozbVM0UWNIcDFLZ29HK1dpa2F1?=
- =?utf-8?B?Z20vQ3dwQ3V2dVQ4ckJMOVQ3aWJISVo2WG9ZM2gxR3NxUG9UYXYydWx5dzNs?=
- =?utf-8?B?NXRsREdiUU5JbldlaUR0VFNCeTRPbTlFUCtWNHIvcnpSOXhlT0ZicjVqb3ZI?=
- =?utf-8?B?b1FUUHpRK0EwbmowUE4wWVYrUTkwRlFlTTFFUUhieGlkOU5TZi9wcGtsaFJB?=
- =?utf-8?B?TkFJV0F4RThVVTNudDIrQkRRZVhvYkQ2cmZzSUVBajg2Z0srVXN2Z2xPRDZE?=
- =?utf-8?B?eEFzQTdZRDJ1dkFHZVZCUkhPS1NxMFVtcWkxKzlndkxZWW5nK3ZyLzNURTJ0?=
- =?utf-8?B?eWtOQnV4b2NyMUZxMnRVYTR4cWZkaVVhNWYxTmJnR01qbEZYZGtSQ1R0emZp?=
- =?utf-8?B?NE9aVHQyeWNROGdyY0NuZE9BQU1tSFQwcUcxcjFDNXpDUUd4Zy9SdjNNOGdO?=
- =?utf-8?B?YVloVS82bElnVVIvQmxVc1hRYVpnUHBONS9DWWxQalJyRW5KR1FETko5RHFT?=
- =?utf-8?B?MEs3b2svN2IyUFFCQlNEdnFsNnRGeUkwYUxtNUY5SlIxM0cxSndBL2xBR1hK?=
- =?utf-8?B?MmpHQ1pqVnJ6MTJVczFEakxyVnRyY082OFBLcDF0c2k3TVNRV0VvMFZBdFpz?=
- =?utf-8?B?WWtjT1hiSlljakdpY05uMnJvOWtTT1VMQTBwM1I1Y2JkYTVtT1ZtL2tEOUhj?=
- =?utf-8?B?bW0vd3Zad0pWMVNTekcvczY2UHFFRWFQdmRZOXlqek0xUXhudmNCUlFYbUJP?=
- =?utf-8?B?YkhoWnFhQTBpWHJFWVJVcW53QmRqMnIvUjEybTljVU5IdnM0V1huWlc1Kyt0?=
- =?utf-8?B?UkhWNDUvNk9zTEkzWU9IcjlYU1kxZDZPbW1sM3JHZFhRSVpCNUNjQUtJVXJE?=
- =?utf-8?B?TEl0cnZtU05aY09BMGZEMTljeWNhWmFHNVdWRW5RVFF1WkxscEpHUmYxQWVF?=
- =?utf-8?B?OVMvc3MrY1ZPRW1tYldpa2JkUVl4dzVHdDR4dGo2czNlSEk3TDczSnpHQzc4?=
- =?utf-8?B?NFM1UEh0MXAvejZWekRzV3FHU082b25aNWx1MUl2NHM4czdaQnlGcDN1eENr?=
- =?utf-8?B?MzdzbUk2U04zNjRJbFh3b1hUSytMMHpIK3hENzhvSENEbGdLZy9UU0NveFB6?=
- =?utf-8?B?cGt1Sk1KaFVmenlRd29BbGkwY3F1em40WVNVVGdkYUlzTkZZdzdHdzBqeXh2?=
- =?utf-8?B?QUNZaXcvUzRFK1JOUHBQZXY2R3BPcWROa2c2OWNkR2p2V3FJRVFUdTRJM0FM?=
- =?utf-8?B?bis5SkorSjhVYmVodFM1Nk1YN01OSzJLdnZ0MWc0K2twZ29ybGRyZitLZUZa?=
- =?utf-8?Q?BdiF3Fm5Qi/8lIiEB1Ly4CdG2zuptI1smj?=
-X-OriginatorOrg: silicom.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bfeecf7-3f40-4751-120e-08d896c7e433
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR0402MB3426.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2020 13:40:54.7283
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: c9e326d8-ce47-4930-8612-cc99d3c87ad1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iG9VzZl2V3+ucnNdZt9R7tr+G4XWr/d5QG6yWAZQXkVLFeAevtr3PEWaYIy+V0Rz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR0401MB2340
+In-Reply-To: <20201202080149-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russ,
 
-On 02/12/2020 00.30, Russ Weight wrote:
-> 
-> On 12/1/20 12:47 AM, Martin Hundebøll wrote:
->> Hi Russ,
+On 2020/12/2 下午9:04, Michael S. Tsirkin wrote:
+> On Wed, Dec 02, 2020 at 08:56:37PM +0800, Jason Wang wrote:
+>> On 2020/12/2 下午5:30, Michael S. Tsirkin wrote:
+>>> On Wed, Dec 02, 2020 at 12:18:36PM +0800, Jason Wang wrote:
+>>>> On 2020/12/1 下午5:23, Cindy Lu wrote:
+>>>>> On Mon, Nov 30, 2020 at 11:33 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>>>>>> On Mon, Nov 30, 2020 at 06:41:45PM +0800, Cindy Lu wrote:
+>>>>>>> On Mon, Nov 30, 2020 at 5:33 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>>>>>>>> On Mon, Nov 30, 2020 at 11:27:59AM +0200, Eli Cohen wrote:
+>>>>>>>>> On Mon, Nov 30, 2020 at 04:00:51AM -0500, Michael S. Tsirkin wrote:
+>>>>>>>>>> On Mon, Nov 30, 2020 at 08:27:46AM +0200, Eli Cohen wrote:
+>>>>>>>>>>> On Sun, Nov 29, 2020 at 03:08:22PM -0500, Michael S. Tsirkin wrote:
+>>>>>>>>>>>> On Sun, Nov 29, 2020 at 08:43:51AM +0200, Eli Cohen wrote:
+>>>>>>>>>>>>> We should not try to use the VF MAC address as that is used by the
+>>>>>>>>>>>>> regular (e.g. mlx5_core) NIC implementation. Instead, use a random
+>>>>>>>>>>>>> generated MAC address.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> Suggested by: Cindy Lu <lulu@redhat.com>
+>>>>>>>>>>>>> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+>>>>>>>>>>>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
+>>>>>>>>>>>> I didn't realise it's possible to use VF in two ways
+>>>>>>>>>>>> with and without vdpa.
+>>>>>>>>>>> Using a VF you can create quite a few resources, e.g. send queues
+>>>>>>>>>>> recieve queues, virtio_net queues etc. So you can possibly create
+>>>>>>>>>>> several instances of vdpa net devices and nic net devices.
+>>>>>>>>>>>
+>>>>>>>>>>>> Could you include a bit more description on the failure
+>>>>>>>>>>>> mode?
+>>>>>>>>>>> Well, using the MAC address of the nic vport is wrong since that is the
+>>>>>>>>>>> MAC of the regular NIC implementation of mlx5_core.
+>>>>>>>>>> Right but ATM it doesn't coexist with vdpa so what's the problem?
+>>>>>>>>>>
+>>>>>>>>> This call is wrong:  mlx5_query_nic_vport_mac_address()
+>>>>>>>>>
+>>>>>>>>>>>> Is switching to a random mac for such an unusual
+>>>>>>>>>>>> configuration really justified?
+>>>>>>>>>>> Since I can't use the NIC's MAC address, I have two options:
+>>>>>>>>>>> 1. To get the MAC address as was chosen by the user administering the
+>>>>>>>>>>>       NIC. This should invoke the set_config callback. Unfortunately this
+>>>>>>>>>>>       is not implemented yet.
+>>>>>>>>>>>
+>>>>>>>>>>> 2. Use a random MAC address. This is OK since if (1) is implemented it
+>>>>>>>>>>>       can always override this random configuration.
+>>>>>>>>>>>
+>>>>>>>>>>>> It looks like changing a MAC could break some guests,
+>>>>>>>>>>>> can it not?
+>>>>>>>>>>>>
+>>>>>>>>>>> No, it will not. The current version of mlx5 VDPA does not allow regular
+>>>>>>>>>>> NIC driver and VDPA to co-exist. I have patches ready that enable that
+>>>>>>>>>>> from steering point of view. I will post them here once other patches on
+>>>>>>>>>>> which they depend will be merged.
+>>>>>>>>>>>
+>>>>>>>>>>> https://patchwork.ozlabs.org/project/netdev/patch/20201120230339.651609-12-saeedm@nvidia.com/
+>>>>>>>>>> Could you be more explicit on the following points:
+>>>>>>>>>> - which configuration is broken ATM (as in, two device have identical
+>>>>>>>>>>      macs? any other issues)?
+>>>>>>>>> The only wrong thing is the call to  mlx5_query_nic_vport_mac_address().
+>>>>>>>>> It's not breaking anything yet is wrong. The random MAC address setting
+>>>>>>>>> is required for the steering patches.
+>>>>>>>> Okay so I'm not sure the Fixes tag at least is appropriate if it's a
+>>>>>>>> dependency of a new feature.
+>>>>>>>>
+>>>>>>>>>> - why won't device MAC change from guest point of view?
+>>>>>>>>>>
+>>>>>>>>> It's lack of implementation in qemu as far as I know.
+>>>>>>>> Sorry not sure I understand. What's not implemented in QEMU?
+>>>>>>>>
+>>>>>>> HI Michael, there are some bug in qemu to set_config, this will fix in future,
+>>>>>>> But this patch is still needed, because without this patch the mlx
+>>>>>>> driver will give an 0 mac address to qemu
+>>>>>>> and qemu will overwrite the default mac address.  This will cause traffic down.
+>>>>>> Hmm the patch description says VF mac address, not 0 address. Confused.
+>>>>>> If there's no mac we can clear VIRTIO_NET_F_MAC and have guest
+>>>>>> use a random value ...
+>>>> I'm not sure this can work for all types of vDPA (e.g it could not be a
+>>>> learning bridge in the swtich).
+>>>>
+>>>>
+>>>>> hi Michael，
+>>>>> I have tried as your suggestion, seems even remove the
+>>>>> VIRTIO_NET_F_MAC the qemu will still call get_cinfig and overwrite the
+>>>>> default address in  VM,
+>>>> This looks a bug in qemu, in guest driver we had:
+>>>>
+>>>>       /* Configuration may specify what MAC to use.  Otherwise random. */
+>>>>       if (virtio_has_feature(vdev, VIRTIO_NET_F_MAC))
+>>>>           virtio_cread_bytes(vdev,
+>>>>                      offsetof(struct virtio_net_config, mac),
+>>>>                      dev->dev_addr, dev->addr_len);
+>>>>       else
+>>>>           eth_hw_addr_random(dev);
+>>>>
+>>>>
+>>>>> this process is like
+>>>>> vdpa _init -->qemu call get_config ->mlx driver will give  an mac
+>>>>> address with all 0-->
+>>>>> qemu will not check this mac address and use it --> overwrite the mac
+>>>>> address in qemu
+>>>>>
+>>>>> So for my understanding there are several method to fix this problem
+>>>>>
+>>>>> 1, qemu check the mac address, if the mac address is all 0, qemu will
+>>>>> ignore it and set the random mac address to mlx driver.
+>>>> So my understanding is that, if mac address is all 0, vDPA parent should not
+>>>> advertise VIRTIO_NET_F_MAC. And qemu should emulate this feature as you did:
+>>>>
+>>>> 1) get a random mac
+>>> To me this looks like a spec violation.
+>>>
+>>> If the driver negotiates the VIRTIO_NET_F_MAC feature, the driver MUST set
+>>> the physical address of the NIC to \field{mac}.  Otherwise, it SHOULD
+>>> use a locally-administered MAC address (see \hyperref[intro:IEEE 802]{IEEE 802},
+>>> ``9.2 48-bit universal LAN MAC addresses'').
 >>
->> On 01/12/2020 00.54, Russ Weight wrote:
->>> Thanks Martin. I'll work on a fix for this.
->> Attached is my in-house fix.
+>> One question here, what did "set" mean here consider the mac is given by the
+>> device itself?
 >>
->> // Martin
+>
+> That is my understanding, and this seems to be what linux guests do.
+>
+>>> While not said explicitly, the assumption I think is that the local
+>>> MAC is not a local one.
+>>>
+>>>
+>>>> 2) advertise VIRTIO_NET_F_MAC
+>>>> 3) set the random mac to vDPA through set_config
+>>> that part looks wrong to me. Setting mac through set_config was
+>>> a pre-virtio-1.0 way to send mac to device. In 1.0 we have
+>>> VIRTIO_NET_CTRL_MAC_ADDR_SET for that:
+>>>
+>>>
+>>> 	When using the legacy interface, \field{mac} is driver-writable
+>>> 	which provided a way for drivers to update the MAC without
+>>> 	negotiating VIRTIO_NET_F_CTRL_MAC_ADDR.
 >>
->>> On 11/26/20 6:02 AM, Martin Hundebøll wrote:
->>>> Hi Russ,
->>>>
->>>> I found another thing while testing this...
->>>>
->>>> On 06/11/2020 02.09, Russ Weight wrote:
->>>>
->>>> <snip>
->>>>
->>>>> +static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
->>>>> +                  const char *buf, size_t count)
->>>>> +{
->>>>> +    struct fpga_sec_mgr *smgr = to_sec_mgr(dev);
->>>>> +    int ret = count;
->>>>> +
->>>>> +    if (count == 0 || count >= PATH_MAX)
->>>>> +        return -EINVAL;
->>>>> +
->>>>> +    mutex_lock(&smgr->lock);
->>>>> +    if (smgr->driver_unload || smgr->progress != FPGA_SEC_PROG_IDLE) {
->>>>> +        ret = -EBUSY;
->>>>> +        goto unlock_exit;
->>>>> +    }
->>>>> +
->>>>> +    smgr->filename = kstrndup(buf, count - 1, GFP_KERNEL);
->>>> The `count - 1` is meant to remove a trailing newline, but opae-sdk writes the filename without newline, so better do it conditionally...
-> After looking at how kstrndup() is used elsewhere, and after
-> doing some experimentation, I think the best fix may be to just
-> remove the "- 1":
-> 
->      smgr->filename = kstrndup(buf, count, GFP_KERNEL);
-> 
-> The code shouldn't have assumed a "\n", and I don't think the
-> kernel should be required to do white-space cleanup.
-> 
-> Does this fix seem OK to you?
+>> Looks like it doesn't prevent us from doing so.
+>  From writing into mac?
+> Yes it does:
+> 	Device configuration fields are listed below, they are read-only for a driver. The \field{mac} address field
+> 	always exists (though is only valid if VIRTIO_NET_F_MAC is set), and
+> 	\field{status} only exists if VIRTIO_NET_F_STATUS is set.
 
-Since we always use opae-sdk to write the filename, we wouldn't even notice.
 
-While your'e at it, kerneldoc in mm/util.c suggests to use kmemdup_nul() 
-when the size is known.
+Okay, so this is a hint that the vDPA parent needs to check and ignore 
+the write if version 1 is negotiated.
 
-// Martin
+
+>
+>
+>> Otherwise this brings an
+>> implicit dependency for control virtqueue if we want to support 1.0?
+>>
+>> Thanks
+> With 1.0 you either need VIRTIO_NET_F_CTRL_MAC_ADDR or VIRTIO_NET_F_MAC.
+>
+>
+
+Ok, so it looks to me VIRTIO_NET_F_MAC is the only choice for mlx5 
+consider control vq is not supported.
+
+Thanks
+
+
+>>>
+>>>
+>>>> 4) advertise the random mac to emulated config to guest
+>>>>
+>>>>
+>>>>> 2. mlx driver checks the mac address and if this mac is 0, return fail
+>>>>> to qemu, but this need to change the UAPI.
+>>>> uAPI is probably fine since ioctl can fail.  We can change the to allow the
+>>>> set_config to fail but virito spec doesn't have a way to advertise the error
+>>>> in this case. Anyway, the driver only risk itself for setting a wrong value,
+>>>> so we're probably fine.
+>>>>
+>>>> Thanks
+>>>>
+>>>>
+>>>>> 3. mlx driver it shelf should get an correct mac address while it init.
+>>>>> 4. add check in qemu get_config function  , if there is not F_MAC Then
+>>>>> ignore the mac address from mlx driver
+>>>>>
+>>>>> not sure which method is more suitable ?
+>>>>>
+>>>>> Thanks
+>>>>> Cindy
+>>>>>
+>>>>>
+>>>>>
+>>>>>>>>>>>>> ---
+>>>>>>>>>>>>>     drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +----
+>>>>>>>>>>>>>     1 file changed, 1 insertion(+), 4 deletions(-)
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>>>>>>>>> index 1fa6fcac8299..80d06d958b8b 100644
+>>>>>>>>>>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>>>>>>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>>>>>>>>> @@ -1955,10 +1955,7 @@ void *mlx5_vdpa_add_dev(struct mlx5_core_dev *mdev)
+>>>>>>>>>>>>>          if (err)
+>>>>>>>>>>>>>                  goto err_mtu;
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> -     err = mlx5_query_nic_vport_mac_address(mdev, 0, 0, config->mac);
+>>>>>>>>>>>>> -     if (err)
+>>>>>>>>>>>>> -             goto err_mtu;
+>>>>>>>>>>>>> -
+>>>>>>>>>>>>> +     eth_random_addr(config->mac);
+>>>>>>>>>>>>>          mvdev->vdev.dma_dev = mdev->device;
+>>>>>>>>>>>>>          err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
+>>>>>>>>>>>>>          if (err)
+>>>>>>>>>>>>> --
+>>>>>>>>>>>>> 2.26.2
+
