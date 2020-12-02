@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216612CBD57
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7C42CBD7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:55:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387561AbgLBMvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:51:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55666 "EHLO
+        id S2388829AbgLBMx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:53:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727832AbgLBMvW (ORCPT
+        with ESMTP id S2388780AbgLBMxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:51:22 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A33C0613CF;
-        Wed,  2 Dec 2020 04:50:41 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id o71so1506403ybc.2;
-        Wed, 02 Dec 2020 04:50:41 -0800 (PST)
+        Wed, 2 Dec 2020 07:53:25 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24624C0613CF;
+        Wed,  2 Dec 2020 04:52:45 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id w187so1189173pfd.5;
+        Wed, 02 Dec 2020 04:52:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wZOsnLsRD15EE78n8bQEf+aUkvjzCWrGeOD2j6m7n7M=;
-        b=Pz5K1LSqrNHi9j26JaHRbiUG9fIgZ88xbsQOpQuqNaY6to0gMZKA3gZJQkUb0wH5DZ
-         m49l97B/Sqo285TY12ocrdpvuF1+g3C5wyRcsbz5oUmKsqn2e3S3KkpISid+6Jy9TPZJ
-         Yhi5380lJNF1O7HhBn1xvlehBO23pu1N+bhGYtju8XUuq3mjQtYO7rQGT3bt/wyhJYu2
-         nmqwt7PmuQulhc96znbjOdtX+q3UrUnUYeqP4ZRdx3XdbsSwYDKeQGZVsWKY8+j3ePUW
-         6FnR5bBGkAJxjBXXLZqpT5MNdDiJQM0xvHspl+LDp7RWfzuVkEt8IC16/vlbOKXzJ2tq
-         tkiA==
+        h=from:to:cc:subject:date:message-id;
+        bh=6oyGlRAiLZTFqH07C7Gme2MIKkmp+8Uf0D4I/ntEuUI=;
+        b=h6UcLnYrFrrRltzmp1KRvQGmW4KOoqQ4MGbYFqokAfV2FrguqMQnPXnCFReyI5ZAdh
+         Apx+qmlUrIl8VlSu+xCsByf98w+wcAyhJFoCdRJOHUk3t1+lZgkKzJ5EO9+h8DDuVzn8
+         ENVnAPdQirD8JIJPMTfGYz68VDEXaxiv5DNQNvBxNkswf6klPoJR6cRlIR/Mn1cfVypp
+         EUAG9QnFydJWnVjMuvjNFRMyJCfddSM6t3ygDbRWuydCFHV4h+JeV9NdBjljpQPPw0eG
+         ulYeGat08CyXL5aHlSDSJwVVAaXya2EVyhAtbyirz/cxwwQzOl2TEeoYWaQHNWdyX1gW
+         E3cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wZOsnLsRD15EE78n8bQEf+aUkvjzCWrGeOD2j6m7n7M=;
-        b=CmnNCMK67ydFsLA9BbYpFkJWXZoCHcqteHJmXxia+CbPGuDS2zvdFQEn/hX9wCxOCH
-         bumwxa6Hh/jHeRw00dtgKM390Sq3yu4JhdJobYNit8kdoLZmVY2ck7oRpf5iuLF33Hnz
-         ZXUt97vkWxGzwvEmmqugNOBAeSQ+cBkzE2/gTT01f4hTqclQoQZIHxXtGusYWMeo9qUO
-         dS14rc6cU8FfkO6ytou2QlmCeYTKsprHENm0MtulM4LjADqcEls2Mh398WnHr9PMg+ud
-         d4+1J+6MQz643X3mu37CbBPRgSat9jGGTQMAtd640FRs9ueWx7KGAWXg2gvZj+hL6ucp
-         FH5g==
-X-Gm-Message-State: AOAM5303PgBxLJNP0G4Mgv/DpeBv/GmpWmkwiHFcLWzzqrtFbuXcQmb9
-        fxWr94Lfl+vrDcQUZXxLgSvLNMY+OPbFEl/yMZM=
-X-Google-Smtp-Source: ABdhPJz8aVFXdWixZUHiWQB00VKrKgXW70L2NcuTpGtmUg1BcqQkFiV8/vapf4IM/PFZ+z2SfEViZMUjxnQAlGcdtd8=
-X-Received: by 2002:a25:df55:: with SMTP id w82mr3065596ybg.135.1606913441319;
- Wed, 02 Dec 2020 04:50:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20201128193335.219395-1-masahiroy@kernel.org>
-In-Reply-To: <20201128193335.219395-1-masahiroy@kernel.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 2 Dec 2020 13:50:30 +0100
-Message-ID: <CANiq72=WanQ0sqL14D3Keu0hT3L5GXBSV-znU5C9hhC1gjs=wA@mail.gmail.com>
-Subject: Re: [PATCH v3] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6oyGlRAiLZTFqH07C7Gme2MIKkmp+8Uf0D4I/ntEuUI=;
+        b=VWnlydVyq5B2KSH1IHG6bM7q7efwTrQ1XmhkR0tSBrL53DWgSivNwBntBucUaE1a3K
+         JM9S2hud2UMu1nwY1o2sKb5byyvAWeiA+/uKsGD4Uw84oHzPPvHbjdXj4DffOS8H+UFo
+         KCBqAN7GFzsKT/CHT4SP4XwMPwpQCaiGmDAA3Rr4jm6Ok3sZfsoqAnfV370za6dvcnbo
+         Oum9iHQSyz5wBVFWHAHv9ZjOv6vKs3P37B5aVDkIrJG6WggzW9AJkS+h6YvY3T9LfnAM
+         uoispc5TmZBFxf5j47i7lZxy3V3mWBlXsOnJHCo9Xm7+ovaqw+YFuDvogXylCCaZXSy6
+         sNQA==
+X-Gm-Message-State: AOAM532WfwIl2iY4vxusM3mlz4yS/ck5k/d7xHWTTeJhmgkXf8Ksw8E1
+        Gza/TUaPASBkkIdc3bn/4HcEYu158n30ZQ==
+X-Google-Smtp-Source: ABdhPJzJi+gXNUd2AVpF3L6pDjLE0H3yB6BrBc+1rqJgUVjQK0tRNdxxq4dlEdsuI9QO3UkP40ymCA==
+X-Received: by 2002:a63:1959:: with SMTP id 25mr2504933pgz.201.1606913564566;
+        Wed, 02 Dec 2020 04:52:44 -0800 (PST)
+Received: from localhost.localdomain ([211.108.35.36])
+        by smtp.gmail.com with ESMTPSA id w2sm1840256pjb.22.2020.12.02.04.52.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 04:52:44 -0800 (PST)
+From:   Minwoo Im <minwoo.im.dev@gmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Minwoo Im <minwoo.im.dev@gmail.com>
+Subject: [PATCH] vfs: remove comment for deleted argument 'cred'
+Date:   Wed,  2 Dec 2020 21:52:32 +0900
+Message-Id: <20201202125232.19278-1-minwoo.im.dev@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 8:34 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Revert commit cebc04ba9aeb ("add CONFIG_ENABLE_MUST_CHECK").
->
-> A lot of warn_unused_result warnings existed in 2006, but until now
-> they have been fixed thanks to people doing allmodconfig tests.
->
-> Our goal is to always enable __must_check where appropriate, so this
-> CONFIG option is no longer needed.
->
-> I see a lot of defconfig (arch/*/configs/*_defconfig) files having:
->
->     # CONFIG_ENABLE_MUST_CHECK is not set
->
-> I did not touch them for now since it would be a big churn. If arch
-> maintainers want to clean them up, please go ahead.
->
-> While I was here, I also moved __must_check to compiler_attributes.h
-> from compiler_types.h
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Removed credential argument comment with no functional changes.
 
-Picked this new version with the Acks etc., plus I moved it within
-compiler_attributes.h to keep it sorted (it's sorted by the second
-column, rather than the first).
+Signed-off-by: Minwoo Im <minwoo.im.dev@gmail.com>
+---
+ fs/open.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks a lot!
+diff --git a/fs/open.c b/fs/open.c
+index 9af548fb841b..85a532af0946 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -923,7 +923,6 @@ EXPORT_SYMBOL(file_path);
+  * vfs_open - open the file at the given path
+  * @path: path to open
+  * @file: newly allocated file with f_flag initialized
+- * @cred: credentials to use
+  */
+ int vfs_open(const struct path *path, struct file *file)
+ {
+-- 
+2.17.1
 
-Cheers,
-Miguel
