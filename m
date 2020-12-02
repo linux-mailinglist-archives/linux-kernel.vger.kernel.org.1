@@ -2,193 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252A92CC350
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4075D2CC34E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728834AbgLBRSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:18:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgLBRSj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:18:39 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493F6C0613CF;
-        Wed,  2 Dec 2020 09:17:53 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id n10so1306236pgv.8;
-        Wed, 02 Dec 2020 09:17:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j95XgfQyD6IQevO7Sfx6Snpqb0qU+IHRMy1OGEHjQN0=;
-        b=qPtUq62KAwgpe+xUnOaenURzwNPWmOmyNaI1oPkvd3gGD4Q3WpKszXuK9G4l+uAmMy
-         Efkk0tUgtIhPfRYrZi/iFxiRkJGJFcgMwKZr831DLYyzGd17wX3yDjpuIl6ynoNOWG4F
-         k0O/9Tc048UCjrh1/sHDQWXOb3LkGV+Fc35YXaeiYRvK6Ljbr7BYQXMxLTa5Ned+u/+U
-         YXh5taabnZqzpSV3gGQNxXtfrHKnLUV0hkl5XpJVBozdvsAcyIGQmQqSqzwxYwGonlfs
-         j3VdvgD7TO1qQWA8SZ9BylmAPvAAhiqTnx5w+Q0i+Rb5n9BYXzRIOfyogSxif0nPoksV
-         3opQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j95XgfQyD6IQevO7Sfx6Snpqb0qU+IHRMy1OGEHjQN0=;
-        b=ihy4dyzyMvzJ+XchVFpuc7sx5Q0QEyVlDzoWnkWdTQWCwJoM43A62HyUzpe6Ys2U4G
-         pmwz4yrZOShGv/G/p2l+lQIijhZYfgrvccu5gWzwtTfzJQ+Yq6bQ6PUDzaivZJdmPETm
-         9m5TU9ZbhPDM+Pe7T3425n2iyC8eXW6z6Vl++ZxnqaSohq2M/BXTRj5QyTvZpjuspvhs
-         xl/7a9fYZkzoXxjYSx6Y6fmkQhbjAiLxfCwIz+TE7tprZUnXivoV8WYyTzpo6hn8Pr/w
-         59dc2K2srHP1hXsF5U7jdxlN5qfbv9fIjEqagLXSxcH4aaXy/01mQP+1vIC7POJfXBzR
-         JTTQ==
-X-Gm-Message-State: AOAM532rmkkGRvVoDlUxNyuyeQC6Nde59tZndVMa/xgYV6/RVmUZ58Qo
-        agQZghB4KlgqGAqbiQD2bWY=
-X-Google-Smtp-Source: ABdhPJy4s49K0W2g2rcdA8qvIkrcUY5cCSwuuVjlQGkUvI14t6dFCmASfNvG19Ytc1CUKH9/wc5mRA==
-X-Received: by 2002:a63:ff5d:: with SMTP id s29mr791475pgk.290.1606929472793;
-        Wed, 02 Dec 2020 09:17:52 -0800 (PST)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id w63sm502454pfc.20.2020.12.02.09.17.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 09:17:51 -0800 (PST)
-From:   Yang Shi <shy828301@gmail.com>
-To:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [v4 PATCH] mm: list_lru: set shrinker map bit when child nr_items is not zero
-Date:   Wed,  2 Dec 2020 09:17:49 -0800
-Message-Id: <20201202171749.264354-1-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S2388504AbgLBRSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:18:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726003AbgLBRSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 12:18:37 -0500
+Date:   Wed, 2 Dec 2020 17:17:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606929476;
+        bh=j+prTbBP5N18p2oaYarI9+lmn4VBukxoQRMVo540nMo=;
+        h=From:To:Cc:Subject:From;
+        b=u8QuLvkH4SB/FsRMXY6Zg2JT0IiiUpW+FCfaiWeuQxKmpUDAEMsjFFBeLwf+iL/Un
+         WMULI7KGT4nPu3QKpwrEh3qVR0ciPLZGbGeJypEyGADMdb24V7y9m2U/zr16VEa7hl
+         lyiNkNhnY2duR2f2LmfhgMr2MOF/upBo4ZIAF/Zg=
+From:   Will Deacon <will@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        peterz@infradead.org, mark.rutland@arm.com
+Subject: [GIT PULL] arm64 fixes for -rc7
+Message-ID: <20201202171750.GA29813@willie-the-truck>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When investigating a slab cache bloat problem, significant amount of
-negative dentry cache was seen, but confusingly they neither got shrunk
-by reclaimer (the host has very tight memory) nor be shrunk by dropping
-cache.  The vmcore shows there are over 14M negative dentry objects on lru,
-but tracing result shows they were even not scanned at all.  The further
-investigation shows the memcg's vfs shrinker_map bit is not set.  So the
-reclaimer or dropping cache just skip calling vfs shrinker.  So we have
-to reboot the hosts to get the memory back.
+Hi Linus,
 
-I didn't manage to come up with a reproducer in test environment, and the
-problem can't be reproduced after rebooting.  But it seems there is race
-between shrinker map bit clear and reparenting by code inspection.  The
-hypothesis is elaborated as below.
+I'm sad to say that we've got an unusually large arm64 fixes pull for
+-rc7 which addresses numerous significant instrumentation issues with
+our entry code. Without these patches, lockdep is hopelessly unreliable
+in some configurations [1,2] and syzkaller is therefore not a lot of use
+because it's so noisy. Although much of this has always been broken, it
+appears to have been exposed more readily by other changes such as
+044d0d6de9f5 ("lockdep: Only trace IRQ edges") and general lockdep
+improvements around IRQ tracing and NMIs.
 
-The memcg hierarchy on our production environment looks like:
-                root
-               /    \
-          system   user
+Fixing this properly required moving much of the instrumentation hooks
+from our entry assembly into C, which Mark has been working on for the
+last few weeks. We're not quite ready to move to the recently added
+generic functions yet, but the code here has been deliberately written
+to mimic that closely so we can look at cleaning things up once we have
+a bit more breathing room.
 
-The main workloads are running under user slice's children, and it creates
-and removes memcg frequently.  So reparenting happens very often under user
-slice, but no task is under user slice directly.
+Having said all that, the second version of these patches was posted
+last week and I pushed it into our CI (kernelci and cki) along with a
+commit which forced on PROVE_LOCKING, NOHZ_FULL and
+CONTEXT_TRACKING_FORCE. The result? We found a real bug in the md/raid10
+code [3].
 
-So with the frequent reparenting and tight memory pressure, the below
-hypothetical race condition may happen:
+Oh, and there's also a really silly typo patch that's unrelated.
 
-       CPU A                            CPU B
-reparent
-    dst->nr_items == 0
-                                 shrinker:
-                                     total_objects == 0
-    add src->nr_items to dst
-    set_bit
-                                     return SHRINK_EMPTY
-                                     clear_bit
-child memcg offline
-    replace child's kmemcg_id with
-    parent's (in memcg_offline_kmem())
-                                  list_lru_del() between shrinker runs
-                                     see parent's kmemcg_id
-                                     dec dst->nr_items
-reparent again
-    dst->nr_items may go negative
-    due to concurrent list_lru_del()
+In other words, none of this warrants an -rc8 if you end up considering
+it.
 
-                                 The second run of shrinker:
-                                     read nr_items without any
-                                     synchronization, so it may
-                                     see intermediate negative
-                                     nr_items then total_objects
-                                     may return 0 coincidently
+Please pull. Cheers,
 
-                                     keep the bit cleared
-    dst->nr_items != 0
-    skip set_bit
-    add scr->nr_item to dst
+Will
 
-After this point dst->nr_item may never go zero, so reparenting will not
-set shrinker_map bit anymore.  And since there is no task under user
-slice directly, so no new object will be added to its lru to set the
-shrinker map bit either.  That bit is kept cleared forever.
+[1] https://lore.kernel.org/r/CACT4Y+aAzoJ48Mh1wNYD17pJqyEcDnrxGfApir=-j171TnQXhw@mail.gmail.com
+[2] https://lore.kernel.org/r/20201119193819.GA2601289@elver.google.com
+[3] https://lore.kernel.org/r/94c76d5e-466a-bc5f-e6c2-a11b65c39f83@redhat.com
 
-How does list_lru_del() race with reparenting?  It is because
-reparenting replaces children's kmemcg_id to parent's without protecting
-from nlru->lock, so list_lru_del() may see parent's kmemcg_id but
-actually deleting items from child's lru, but dec'ing parent's nr_items,
-so the parent's nr_items may go negative as commit
-2788cf0c401c268b4819c5407493a8769b7007aa ("memcg: reparent list_lrus and
-free kmemcg_id on css offline") says.
+--->8
 
-Since it is impossible that dst->nr_items goes negative and
-src->nr_items goes zero at the same time, so it seems we could set the
-shrinker map bit iff src->nr_items != 0.  We could synchronize
-list_lru_count_one() and reparenting with nlru->lock, but it seems
-checking src->nr_items in reparenting is the simplest and avoids lock
-contention.
+The following changes since commit ff1712f953e27f0b0718762ec17d0adb15c9fd0b:
 
-Fixes: fae91d6d8be5 ("mm/list_lru.c: set bit in memcg shrinker bitmap on first list_lru item appearance")
-Suggested-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Roman Gushchin <guro@fb.com>
-Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: <stable@vger.kernel.org> v4.19+
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
-v4: * Fixed the spelling errors found by Shakeel
-    * Added ack/review tag from Kirill and Shakeel
-v3: * Revised commit log per Roman's suggestion
-    * Added Roman's reviewed-by tag
-v2: * Incorporated Roman's suggestion
-    * Incorporated Kirill's suggestion
-    * Changed the subject of patch to get align with the new fix
-    * Added fixes tag
- mm/list_lru.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+  arm64: pgtable: Ensure dirty bit is preserved across pte_wrprotect() (2020-11-23 16:13:18 +0000)
 
-diff --git a/mm/list_lru.c b/mm/list_lru.c
-index 5aa6e44bc2ae..fe230081690b 100644
---- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -534,7 +534,6 @@ static void memcg_drain_list_lru_node(struct list_lru *lru, int nid,
- 	struct list_lru_node *nlru = &lru->node[nid];
- 	int dst_idx = dst_memcg->kmemcg_id;
- 	struct list_lru_one *src, *dst;
--	bool set;
- 
- 	/*
- 	 * Since list_lru_{add,del} may be called under an IRQ-safe lock,
-@@ -546,11 +545,12 @@ static void memcg_drain_list_lru_node(struct list_lru *lru, int nid,
- 	dst = list_lru_from_memcg_idx(nlru, dst_idx);
- 
- 	list_splice_init(&src->list, &dst->list);
--	set = (!dst->nr_items && src->nr_items);
--	dst->nr_items += src->nr_items;
--	if (set)
-+
-+	if (src->nr_items) {
-+		dst->nr_items += src->nr_items;
- 		memcg_set_shrinker_bit(dst_memcg, nid, lru_shrinker_id(lru));
--	src->nr_items = 0;
-+		src->nr_items = 0;
-+	}
- 
- 	spin_unlock_irq(&nlru->lock);
- }
--- 
-2.26.2
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
+
+for you to fetch changes up to 9e5344e0ffc33f4fee899f98b6939a0682b1d9c3:
+
+  arm64: mte: Fix typo in macro definition (2020-11-30 17:36:52 +0000)
+
+----------------------------------------------------------------
+arm64 fixes for -rc7
+
+- Fix numerous issues with instrumentation and exception entry
+
+- Fix hideous typo in unused register field definition
+
+----------------------------------------------------------------
+Mark Rutland (11):
+      arm64: syscall: exit userspace before unmasking exceptions
+      arm64: mark idle code as noinstr
+      arm64: entry: mark entry code as noinstr
+      arm64: entry: move enter_from_user_mode to entry-common.c
+      arm64: entry: prepare ret_to_user for function call
+      arm64: entry: move el1 irq/nmi logic to C
+      arm64: entry: fix non-NMI user<->kernel transitions
+      arm64: ptrace: prepare for EL1 irq/rcu tracking
+      arm64: entry: fix non-NMI kernel<->kernel transitions
+      arm64: entry: fix NMI {user, kernel}->kernel transitions
+      arm64: entry: fix EL1 debug transitions
+
+Vincenzo Frascino (1):
+      arm64: mte: Fix typo in macro definition
+
+ arch/arm64/include/asm/daifflags.h |   3 +
+ arch/arm64/include/asm/exception.h |   5 +
+ arch/arm64/include/asm/ptrace.h    |   4 +
+ arch/arm64/include/asm/sysreg.h    |   2 +-
+ arch/arm64/kernel/entry-common.c   | 254 +++++++++++++++++++++++++++----------
+ arch/arm64/kernel/entry.S          |  78 ++++--------
+ arch/arm64/kernel/irq.c            |  15 ---
+ arch/arm64/kernel/process.c        |   8 +-
+ arch/arm64/kernel/sdei.c           |   7 +-
+ arch/arm64/kernel/syscall.c        |   1 -
+ arch/arm64/kernel/traps.c          |  22 ++--
+ arch/arm64/mm/fault.c              |  25 ----
+ 12 files changed, 243 insertions(+), 181 deletions(-)
