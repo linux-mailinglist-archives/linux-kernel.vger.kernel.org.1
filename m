@@ -2,135 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD0D2CC6AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A362CC6B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731140AbgLBT3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:29:48 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29782 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726148AbgLBT3s (ORCPT
+        id S1729268AbgLBTb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:31:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728969AbgLBTb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:29:48 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2J44ZU020769;
-        Wed, 2 Dec 2020 14:28:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=bL6D+P0QeIA3e72nYQ71AKZB/PJjWXB5JNPMBLA76W8=;
- b=tr+9HPfk29r18kauu63njzGnWc3gqsgwD1mBKilCYNIdHYG8yfPF9jxYTdcS8P8Mv7+/
- dbhaMdqzJiM1DApNhdAJWKC0qFOqhiP0y6Y484Rlhdal6jscXr8+/LnduXPuKrvC1ocZ
- +z0cZjKPbbAF3A4mbVTOu19Rg+rQ0Ircbe4DpETGaKKpwaf1G/RBg4SF7mSCNkJxG260
- DcvDfUl9u/vJVMblgrEqanmMU+MJfjmTuw39LKHOKguFYbGdfHrIGuFQgyBcE6T0olpk
- kVRAaybTpQeH080udn9Y6V/dA3St6tYsPrIFExsacKgSWCsGBhCuvHLiIt3DddCiVk2h 8w== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 356a0vf1kj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 14:28:36 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2JMf5V015419;
-        Wed, 2 Dec 2020 19:28:34 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 353e68ch69-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 19:28:34 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2JSVOd24248580
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Dec 2020 19:28:31 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0B99252057;
-        Wed,  2 Dec 2020 19:28:31 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.9.70])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 0DA7152050;
-        Wed,  2 Dec 2020 19:28:29 +0000 (GMT)
-Subject: Re: [PATCH 1/5] sched/cputime: Remove symbol exports from IRQ time
- accounting
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-References: <20201202115732.27827-1-frederic@kernel.org>
- <20201202115732.27827-2-frederic@kernel.org>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <6c42e7f1-ace6-a433-4472-9463b1022128@de.ibm.com>
-Date:   Wed, 2 Dec 2020 20:28:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 2 Dec 2020 14:31:58 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DEC6C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:31:12 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id d18so5233028edt.7
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:31:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o50I7kB8txM++CPAFkrMrw9DtpsgpbpqDkc+hsx3aSc=;
+        b=PEvwhSi6tdyemmMuiZL5rWy6fpDGFuvZYBYHH/aOuNFJLfJkWNCVl74sDGAUaPUAsQ
+         Yeywclhgsq8IWBNFSd5JYD8EC3E8mT34+fV/DKGga8nsno4H/9IZ+h7AOguYX+C/ehI4
+         stV6kZZWqpTZTw+wmAQ31hCzdkRFCbtxRBATk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o50I7kB8txM++CPAFkrMrw9DtpsgpbpqDkc+hsx3aSc=;
+        b=ouyON8hMXRgqX0g3tivekcq6jD6r13Yt7BAKRYTOBeabPxvzZ7E4PKOenPpQfxzuWO
+         PNATUk2mU2ThggHGMTazggOemn5+yzCUORSXyHiVUQhO7zWMputZI2O46ST1Xg6ELhDQ
+         V7Z7MLwasS47sLIUJQcm+cm3hfHPf6UIIv0nGfeMJ5oDbpOvx+ZwNkvFEOptbQDXmoOn
+         56Aur0XLeOI4GwKOZ/xmTIgFgNrPxR7iZKuEh5UvOoj/kElJRYiS4RhvcoGVikNa0Kk9
+         +Xy+nh/94f3hKmyzpl49bOTqgEpQhe/Oif2+3a2Uh/ac9cskbxOmcUs9z5Nrni0xE3ZU
+         JHsQ==
+X-Gm-Message-State: AOAM5307uFeGODMVQYfiVeNH1ryesVKc8rjpBHe/nzdyiNv6Dp9KzptJ
+        FSb/3cS2KTYTfWVhfONWFCOyXePT/i196QHTwOwXfQ==
+X-Google-Smtp-Source: ABdhPJzfG5pA13b5rVSSde3qg5OJO1Q0ejYC2F9EMeUwh0tW3vpcJ743p6xlhbbuhV/65RRytMGosvaCzknOQofDDF0=
+X-Received: by 2002:a05:6402:3d9:: with SMTP id t25mr1471265edw.338.1606937470811;
+ Wed, 02 Dec 2020 11:31:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201202115732.27827-2-frederic@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-02_10:2020-11-30,2020-12-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 adultscore=0 clxscore=1011 suspectscore=0 lowpriorityscore=0
- phishscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020111
+References: <20201202121241.109952-1-jagan@amarulasolutions.com>
+ <20201202121241.109952-5-jagan@amarulasolutions.com> <20201202173405.GD3490@kozik-lap>
+In-Reply-To: <20201202173405.GD3490@kozik-lap>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Thu, 3 Dec 2020 01:00:59 +0530
+Message-ID: <CAMty3ZDg-7J9zk14Y-L1LBJsVnoK7KvposzBNnDP7gRdR3NHEQ@mail.gmail.com>
+Subject: Re: [PATCH 04/10] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini SOM
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-amarula <linux-amarula@amarulasolutions.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Krzysztof,
 
+On Wed, Dec 2, 2020 at 11:04 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Wed, Dec 02, 2020 at 05:42:35PM +0530, Jagan Teki wrote:
+> > i.Core MX8M Mini is an EDIMM SOM based on NXP i.MX8MM from Engicam.
+>
+> s/SOM/SoM/
+>
+> >
+> > General features:
+> > - NXP i.MX8MM
+>
+> i.MX 8M Mini
+> as named by NXP:
+> https://www.nxp.com/products/processors-and-microcontrollers/arm-processors/i-mx-applications-processors/i-mx-8-processors/i-mx-8m-mini-arm-cortex-a53-cortex-m4-audio-voice-video:i.MX8MMINI
+>
+> > - Up to 2GB LDDR4
+> > - 8/16GB eMMC
+> > - Gigabit Ethernet
+> > - USB 2.0 Host/OTG
+> > - PCIe Gen2 interface
+> > - I2S
+> > - MIPI DSI to LVDS
+> > - rest of i.MX8MM features
+>
+> Ditto
+>
+> >
+> > i.Core MX8M Mini needs to mount on top of Engicam baseboards for
+> > creating complete platform boards.
+> >
+> > Possible baseboards are,
+> > - EDIMM2.2
+> > - C.TOUCH 2.0
+>
+> Don't describe baseboards. You add here only SoM.
 
-On 02.12.20 12:57, Frederic Weisbecker wrote:
-> account_irq_enter_time() and account_irq_exit_time() are not called
-> from modules. EXPORT_SYMBOL_GPL() can be safely removed from the IRQ
-> cputime accounting functions called from there.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Fenghua Yu <fenghua.yu@intel.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> ---
->  arch/s390/kernel/vtime.c | 10 +++++-----
->  kernel/sched/cputime.c   |  2 --
->  2 files changed, 5 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/s390/kernel/vtime.c b/arch/s390/kernel/vtime.c
-> index 8df10d3c8f6c..f9f2a11958a5 100644
-> --- a/arch/s390/kernel/vtime.c
-> +++ b/arch/s390/kernel/vtime.c
-> @@ -226,7 +226,7 @@ void vtime_flush(struct task_struct *tsk)
->   * Update process times based on virtual cpu times stored by entry.S
->   * to the lowcore fields user_timer, system_timer & steal_clock.
->   */
-> -void vtime_account_irq_enter(struct task_struct *tsk)
-> +void vtime_account_kernel(struct task_struct *tsk)
->  {
->  	u64 timer;
->  
-> @@ -245,12 +245,12 @@ void vtime_account_irq_enter(struct task_struct *tsk)
->  
->  	virt_timer_forward(timer);
->  }
-> -EXPORT_SYMBOL_GPL(vtime_account_irq_enter);
-> -
-> -void vtime_account_kernel(struct task_struct *tsk)
-> -__attribute__((alias("vtime_account_irq_enter")));
->  EXPORT_SYMBOL_GPL(vtime_account_kernel);
->  
-> +void vtime_account_irq_enter(struct task_struct *tsk)
-> +__attribute__((alias("vtime_account_kernel")));
-> +
-> +
+It's just information on how this SoM is being used. Let me know any
+issues while explaining the combinations being used here.
 
-One new line is enough I think. Apart from that this looks sane from an s390 perspective.
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+>
+> >
+> > Add support for it.
+> >
+> > Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
+> > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > ---
+> >  .../freescale/imx8mm-engicam-icore-mx8mm.dtsi | 209 ++++++++++++++++++
+> >  1 file changed, 209 insertions(+)
+> >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm.dtsi
+> >
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm.dtsi
+> > new file mode 100644
+> > index 000000000000..b87917c40587
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm.dtsi
+> > @@ -0,0 +1,209 @@
+> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > +/*
+> > + * Copyright (c) 2018 NXP
+> > + * Copyright (c) 2019 Engicam srl
+> > + * Copyright (c) 2020 Amarula Solutons(India)
+> > + */
+> > +
+> > +/ {
+>
+> Missing "model".
+
+SoM dtsi won't comprise the model it has its own binding and while
+combination board has a model that will include this binding. Please
+check to exist binding file.
+arch/arm64/boot/dts/rockchip/px30-engicam-px30-core.dtsi
+
+>
+> > +     compatible = "engicam,icore-mx8mm", "fsl,imx8mm";
+> > +};
+> > +
+>
+> No memory node? Isn't the memory a property of SoM?
+>
+> > +&A53_0 {
+> > +     cpu-supply = <&reg_buck4>;
+> > +};
+>
+> Supplies for the other cores.
+>
+> > +
+> > +&i2c1 {
+> > +     clock-frequency = <400000>;
+> > +     pinctrl-names = "default";
+> > +     pinctrl-0 = <&pinctrl_i2c1>;
+> > +     status = "okay";
+> > +
+> > +     pf8100@8 {
+>
+> Node name should describe generic class of a device, so probably you
+> wanted here "pmic".
+
+True, will update.
+
+>
+> > +             compatible = "nxp,pf8x00";
+> > +             reg = <0x08>;
+> > +
+> > +             regulators {
+> > +                     reg_ldo1: ldo1 {
+> > +                             regulator-always-on;
+> > +                             regulator-boot-on;
+>
+> First min/max constraints. Then always-on and boot-on properties.
+>
+> > +                             regulator-max-microvolt = <5000000>;
+> > +                             regulator-min-microvolt = <1500000>;
+> > +                     };
+> > +
+> > +                     reg_ldo2: ldo2 {
+> > +                             regulator-always-on;
+> > +                             regulator-boot-on;
+> > +                             regulator-max-microvolt = <5000000>;
+> > +                             regulator-min-microvolt = <1500000>;
+> > +                     };
+> > +
+> > +                     reg_ldo3: ldo3 {
+> > +                             regulator-always-on;
+> > +                             regulator-boot-on;
+> > +                             regulator-max-microvolt = <5000000>;
+> > +                             regulator-min-microvolt = <1500000>;
+> > +                     };
+> > +
+> > +                     reg_ldo4: ldo4 {
+> > +                             regulator-always-on;
+> > +                             regulator-boot-on;
+> > +                             regulator-max-microvolt = <5000000>;
+> > +                             regulator-min-microvolt = <1500000>;
+> > +                     };
+> > +
+> > +                     reg_buck1: buck1 {
+> > +                             fsl,ilim-ma = <4500>;
+>
+> Where is this property documented?
+
+Sorry it would be nxp,ilim-ma I will update in next version.
+
+>
+> > +                             regulator-always-on;
+> > +                             regulator-boot-on;
+> > +                             regulator-max-microvolt = <1800000>;
+> > +                             regulator-min-microvolt =  <400000>;
+> > +                     };
+> > +
+> > +                     reg_buck2: buck2 {
+> > +                             regulator-always-on;
+> > +                             regulator-boot-on;
+> > +                             regulator-max-microvolt = <1800000>;
+> > +                             regulator-min-microvolt =  <400000>;
+> > +                     };
+> > +
+> > +                     reg_buck3: buck3 {
+> > +                             regulator-always-on;
+> > +                             regulator-boot-on;
+> > +                             regulator-max-microvolt = <1800000>;
+> > +                             regulator-min-microvolt =  <400000>;
+> > +                     };
+> > +
+> > +                     reg_buck4: buck4 {
+> > +                             regulator-always-on;
+> > +                             regulator-boot-on;
+> > +                             regulator-max-microvolt = <1800000>;
+> > +                             regulator-min-microvolt =  <400000>;
+> > +                             fast-slew = <1>;
+>
+> Where is this property documented?
+>
+> > +                     };
+> > +
+> > +                     reg_buck5: buck5 {
+> > +                             regulator-always-on;
+> > +                             regulator-boot-on;
+> > +                             regulator-max-microvolt = <1800000>;
+> > +                             regulator-min-microvolt =  <400000>;
+> > +                     };
+> > +
+> > +                     reg_buck6: buck6 {
+> > +                             regulator-always-on;
+> > +                             regulator-boot-on;
+> > +                             regulator-max-microvolt = <1800000>;
+> > +                             regulator-min-microvolt =  <400000>;
+> > +                     };
+> > +
+> > +                     reg_buck7: buck7 {
+> > +                             regulator-always-on;
+> > +                             regulator-boot-on;
+> > +                             regulator-max-microvolt = <3300000>;
+> > +                             regulator-min-microvolt = <3300000>;
+> > +                     };
+> > +
+> > +                     reg_vsnvs: vsnvs {
+> > +                             regulator-always-on;
+> > +                             regulator-boot-on;
+> > +                             regulator-max-microvolt = <3300000>;
+> > +                             regulator-min-microvolt = <1800000>;
+> > +                     };
+> > +             };
+> > +     };
+> > +};
+> > +
+> > +&iomuxc {
+> > +     pinctrl_i2c1: i2c1grp {
+> > +             fsl,pins = <
+> > +                     MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL          0x400001c3
+> > +                     MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA          0x400001c3
+> > +             >;
+> > +     };
+> > +
+> > +     pinctrl_uart2: uart2grp {
+>
+> Not used.
+>
+> > +             fsl,pins = <
+> > +                     MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX     0x140
+> > +                     MX8MM_IOMUXC_UART2_TXD_UART2_DCE_TX     0x140
+> > +             >;
+> > +     };
+> > +
+> > +     pinctrl_usdhc1_gpio: usdhc1grpgpio {
+>
+> This should complain on bindings check. Please run dtbs_check. The "grp"
+> should be a suffix in node name, so "usdhc1gpiogrp".
+
+Yes, will update it on the next version.
+
+Jagan.
