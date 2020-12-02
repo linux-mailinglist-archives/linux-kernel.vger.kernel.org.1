@@ -2,572 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8BD2CBDEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCEF22CBDC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730190AbgLBNIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 08:08:55 -0500
-Received: from smtp.uniroma2.it ([160.80.6.22]:39948 "EHLO smtp.uniroma2.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727657AbgLBNIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 08:08:43 -0500
-Received: from localhost.localdomain ([160.80.103.126])
-        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 0B2D6Xma015624
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 2 Dec 2020 14:06:36 +0100
-From:   Andrea Mayer <andrea.mayer@uniroma2.it>
-To:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Shrijeet Mukherjee <shrijeet@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
-        Andrea Mayer <andrea.mayer@uniroma2.it>
-Subject: [net-next v4 8/8] selftests: add selftest for the SRv6 End.DT6 (VRF) behavior
-Date:   Wed,  2 Dec 2020 14:05:17 +0100
-Message-Id: <20201202130517.4967-9-andrea.mayer@uniroma2.it>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201202130517.4967-1-andrea.mayer@uniroma2.it>
-References: <20201202130517.4967-1-andrea.mayer@uniroma2.it>
+        id S1730054AbgLBNGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 08:06:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727102AbgLBNGK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 08:06:10 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CA1C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 05:05:24 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id u12so3899914wrt.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 05:05:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=YF+WlyCt3rq165R9rPhsAR5qsYk6r1RiPW2tzO/YPhE=;
+        b=kxX9wrHZNwlLIJdTxtKvUwuk/et7M4x5wlpSjhdkxmEz1piNL/IeIIXigGIUl9ipjY
+         dIdTNlI4IAELmPStajXBBI+Klk6ii/r0HMOro78xmzlzKgcDUptC4TlsCbnICCG1LW4D
+         sqnfqrSHnT+1OGJzPA6btCamhetgcJo3iPQvqVq8LVzmPPTMGQLF6VuqcOKjcvYGEL1L
+         KiWHTEX6h8AjrKEAv3Z5D3VNdut9VG0waZ9k1XZTtQSZ14qSl0NGIeiTCBj5Mie7kFY3
+         8IeGal8nhCIgKtpl50HyJ7RBz+qgk/FWV1+tbFCqgiUa8sVSlrevuMAnmbIkxOKg3Bp5
+         b0dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=YF+WlyCt3rq165R9rPhsAR5qsYk6r1RiPW2tzO/YPhE=;
+        b=eV0a0708TG723hQ+pFAvL9fIMH60IT5Q1El43Lu0OdHNBFFW1V1DWE83Ej02aP3eQw
+         gldo4wyUztRuFMjcpIR0Pj/HRJFqqI/rnwyZIAWWB4alkTXbYXd4syd/0Un0PFQVyBFn
+         359ycjBf+UveBnfrMd8/vTAMbCdDm9DEgOCK2JbrJKbWx8J6lGuBs+hQZSkOBInUA8fZ
+         McbX7eZXu6Thnwn1QOrDa71jFRxDswizahld/CEJRNkPRQDFprCx6jtiIPTmGfp9H2Bu
+         Xc3SB/Gsw7lOEe9Ta4AVRHEIP0gDf2iCW47Vtzs5HcQS2Wka6WCNvsNHXD5UF/TL1BO5
+         aroQ==
+X-Gm-Message-State: AOAM5315EgCbzqnm9XujYjqIfdUj2thCCbO6utDl14B4xXzuH5QVdd3a
+        UcEV+ykCqB6FLSgLygTJDb8l2A==
+X-Google-Smtp-Source: ABdhPJyU7nBUV7L/MOKEYhXF3YQLoNB4SBM8Oj1m3Ptw0bfruV++dLrYVysScV65WUtECftiWqkPEg==
+X-Received: by 2002:a5d:548b:: with SMTP id h11mr3417874wrv.306.1606914323134;
+        Wed, 02 Dec 2020 05:05:23 -0800 (PST)
+Received: from dell ([91.110.221.235])
+        by smtp.gmail.com with ESMTPSA id v64sm2059455wme.25.2020.12.02.05.05.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 05:05:22 -0800 (PST)
+Date:   Wed, 2 Dec 2020 13:05:20 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v4 3/7] mfd: Add base driver for Netronix embedded
+ controller
+Message-ID: <20201202130520.GL4801@dell>
+References: <20201122222739.1455132-1-j.neuschaefer@gmx.net>
+ <20201122222739.1455132-4-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
-X-Virus-Status: Clean
+In-Reply-To: <20201122222739.1455132-4-j.neuschaefer@gmx.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-this selftest is designed for evaluating the new SRv6 End.DT6 (VRF) behavior
-used, in this example, for implementing IPv6 L3 VPN use cases.
+On Sun, 22 Nov 2020, Jonathan Neuschäfer wrote:
 
-Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
-Signed-off-by: Paolo Lungaroni <paolo.lungaroni@cnit.it>
----
- .../selftests/net/srv6_end_dt6_l3vpn_test.sh  | 502 ++++++++++++++++++
- 1 file changed, 502 insertions(+)
- create mode 100755 tools/testing/selftests/net/srv6_end_dt6_l3vpn_test.sh
+> The Netronix embedded controller is a microcontroller found in some
+> e-book readers designed by the original design manufacturer Netronix,
+> Inc. It contains RTC, battery monitoring, system power management, and
+> PWM functionality.
+> 
+> This driver implements register access and version detection.
+> 
+> Third-party hardware documentation is available at:
+> 
+>   https://github.com/neuschaefer/linux/wiki/Netronix-MSP430-embedded-controller
+> 
+> The EC supports interrupts, but the driver doesn't make use of them so
+> far.
+> 
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> ---
+> 
+> v4:
+> - include asm/unaligned.h after linux/*
+> - Use put_unaligned_be16 instead of open-coded big-endian packing
+> - Clarify that 0x90=0xff00 causes an error in downstream kernel too
+> - Add commas after non-sentinel positions
+> - ntxec.h: declare structs device and regmap
+> - Replace WARN_ON usage and add comments to explain errors
+> - Replace dev_alert with dev_warn when the result isn't handled
+> - Change subdevice registration error message to dev_err
+> - Declare ntxec_reg8 as returning __be16
+> - Restructure version detection code
+> - Spell out ODM
+> 
+> v3:
+> - https://lore.kernel.org/lkml/20200924192455.2484005-4-j.neuschaefer@gmx.net/
+> - Add (EC) to CONFIG_MFD_NTXEC prompt
+> - Relicense as GPLv2 or later
+> - Add email address to copyright line
+> - remove empty lines in ntxec_poweroff and ntxec_restart functions
+> - Split long lines
+> - Remove 'Install ... handler' comments
+> - Make naming of struct i2c_client parameter consistent
+> - Remove struct ntxec_info
+> - Rework 'depends on' lines in Kconfig, hard-depend on I2C, select REGMAP_I2C and
+>   MFD_CORE
+> - Register subdevices via mfd_cells
+> - Move 8-bit register conversion to ntxec.h
+> 
+> v2:
+> - https://lore.kernel.org/lkml/20200905133230.1014581-4-j.neuschaefer@gmx.net/
+> - Add a description of the device to the patch text
+> - Unify spelling as 'Netronix embedded controller'.
+>   'Netronix' is the proper name of the manufacturer, but 'embedded controller'
+>   is just a label that I have assigned to the device.
+> - Switch to regmap, avoid regmap use in poweroff and reboot handlers.
+>   Inspired by cf84dc0bb40f4 ("mfd: rn5t618: Make restart handler atomic safe")
+> - Use a list of known-working firmware versions instead of checking for a
+>   known-incompatible version
+> - Prefix registers with NTXEC_REG_
+> - Define register values as constants
+> - Various style cleanups as suggested by Lee Jones
+> - Don't align = signs in struct initializers [Uwe Kleine-König]
+> - Don't use dev_dbg for an error message
+> - Explain sleep in poweroff handler
+> - Remove (struct ntxec).client
+> - Switch to .probe_new in i2c driver
+> - Add .remove callback
+> - Make CONFIG_MFD_NTXEC a tristate option
+> ---
+>  drivers/mfd/Kconfig       |  11 ++
+>  drivers/mfd/Makefile      |   1 +
+>  drivers/mfd/ntxec.c       | 216 ++++++++++++++++++++++++++++++++++++++
+>  include/linux/mfd/ntxec.h |  34 ++++++
+>  4 files changed, 262 insertions(+)
+>  create mode 100644 drivers/mfd/ntxec.c
+>  create mode 100644 include/linux/mfd/ntxec.h
+> 
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index 8b99a13669bfc..d96751f884dc6 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -990,6 +990,17 @@ config MFD_VIPERBOARD
+>  	  You need to select the mfd cell drivers separately.
+>  	  The drivers do not support all features the board exposes.
+> 
+> +config MFD_NTXEC
+> +	tristate "Netronix embedded controller (EC)"
+> +	depends on OF || COMPILE_TEST
+> +	depends on I2C
+> +	select REGMAP_I2C
+> +	select MFD_CORE
+> +	help
+> +	  Say yes here if you want to support the embedded controller found in
+> +	  certain e-book readers designed by the original design manufacturer
+> +	  Netronix.
+> +
+>  config MFD_RETU
+>  	tristate "Nokia Retu and Tahvo multi-function device"
+>  	select MFD_CORE
+> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> index 1780019d24748..815c99b84019e 100644
+> --- a/drivers/mfd/Makefile
+> +++ b/drivers/mfd/Makefile
+> @@ -218,6 +218,7 @@ obj-$(CONFIG_MFD_INTEL_MSIC)	+= intel_msic.o
+>  obj-$(CONFIG_MFD_INTEL_PMC_BXT)	+= intel_pmc_bxt.o
+>  obj-$(CONFIG_MFD_PALMAS)	+= palmas.o
+>  obj-$(CONFIG_MFD_VIPERBOARD)    += viperboard.o
+> +obj-$(CONFIG_MFD_NTXEC)		+= ntxec.o
+>  obj-$(CONFIG_MFD_RC5T583)	+= rc5t583.o rc5t583-irq.o
+>  obj-$(CONFIG_MFD_RK808)		+= rk808.o
+>  obj-$(CONFIG_MFD_RN5T618)	+= rn5t618.o
+> diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
+> new file mode 100644
+> index 0000000000000..c1510711d7363
+> --- /dev/null
+> +++ b/drivers/mfd/ntxec.c
+> @@ -0,0 +1,216 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * The Netronix embedded controller is a microcontroller found in some
+> + * e-book readers designed by the original design manufacturer Netronix, Inc.
+> + * It contains RTC, battery monitoring, system power management, and PWM
+> + * functionality.
+> + *
+> + * This driver implements register access, version detection, and system
+> + * power-off/reset.
+> + *
+> + * Copyright 2020 Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/errno.h>
+> +#include <linux/i2c.h>
+> +#include <linux/mfd/core.h>
+> +#include <linux/mfd/ntxec.h>
+> +#include <linux/module.h>
+> +#include <linux/pm.h>
+> +#include <linux/reboot.h>
+> +#include <linux/regmap.h>
+> +#include <linux/types.h>
+> +#include <asm/unaligned.h>
+> +
+> +#define NTXEC_REG_VERSION	0x00
+> +#define NTXEC_REG_POWEROFF	0x50
+> +#define NTXEC_REG_POWERKEEP	0x70
+> +#define NTXEC_REG_RESET		0x90
+> +
+> +#define NTXEC_POWEROFF_VALUE	0x0100
+> +#define NTXEC_POWERKEEP_VALUE	0x0800
+> +#define NTXEC_RESET_VALUE	0xff00
+> +
+> +static struct i2c_client *poweroff_restart_client;
+> +
+> +static void ntxec_poweroff(void)
+> +{
+> +	int res;
+> +	u8 buf[3] = { NTXEC_REG_POWEROFF };
+> +	struct i2c_msg msgs[] = {
+> +		{
+> +			.addr = poweroff_restart_client->addr,
+> +			.flags = 0,
+> +			.len = sizeof(buf),
+> +			.buf = buf,
+> +		},
+> +	};
+> +
+> +	put_unaligned_be16(NTXEC_POWEROFF_VALUE, buf + 1);
+> +
+> +	res = i2c_transfer(poweroff_restart_client->adapter, msgs, ARRAY_SIZE(msgs));
+> +	if (res < 0)
+> +		dev_warn(&poweroff_restart_client->dev,
+> +			 "Failed to power off (err = %d)\n", res);
+> +
+> +	/*
+> +	 * The time from the register write until the host CPU is powered off
+> +	 * has been observed to be about 2.5 to 3 seconds. Sleep long enough to
+> +	 * safely avoid returning from the poweroff handler.
+> +	 */
+> +	msleep(5000);
+> +}
+> +
+> +static int ntxec_restart(struct notifier_block *nb,
+> +			 unsigned long action, void *data)
+> +{
+> +	int res;
+> +	u8 buf[3] = { NTXEC_REG_RESET };
+> +	/*
+> +	 * NOTE: The lower half of the reset value is not sent, because sending
+> +	 * it causes an I2C error. (The reset handler in the downstream driver
+> +	 * does send the full two-byte value, but doesn't check the result).
+> +	 */
+> +	struct i2c_msg msgs[] = {
+> +		{
+> +			.addr = poweroff_restart_client->addr,
+> +			.flags = 0,
+> +			.len = sizeof(buf) - 1,
+> +			.buf = buf,
+> +		},
+> +	};
+> +
+> +	put_unaligned_be16(NTXEC_RESET_VALUE, buf + 1);
+> +
+> +	res = i2c_transfer(poweroff_restart_client->adapter, msgs, ARRAY_SIZE(msgs));
+> +	if (res < 0)
+> +		dev_warn(&poweroff_restart_client->dev,
+> +			 "Failed to restart (err = %d)\n", res);
+> +
+> +	return NOTIFY_DONE;
+> +}
+> +
+> +static struct notifier_block ntxec_restart_handler = {
+> +	.notifier_call = ntxec_restart,
+> +	.priority = 128,
+> +};
+> +
+> +static const struct regmap_config regmap_config = {
+> +	.name = "ntxec",
+> +	.reg_bits = 8,
+> +	.val_bits = 16,
+> +	.cache_type = REGCACHE_NONE,
+> +	.val_format_endian = REGMAP_ENDIAN_BIG,
+> +};
+> +
+> +static const struct mfd_cell ntxec_subdevices[] = {
+> +	{ .name = "ntxec-rtc" },
+> +	{ .name = "ntxec-pwm" },
+> +};
+> +
+> +static int ntxec_probe(struct i2c_client *client)
+> +{
+> +	struct ntxec *ec;
+> +	unsigned int version;
+> +	int res;
+> +
+> +	ec = devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
+> +	if (!ec)
+> +		return -ENOMEM;
+> +
+> +	ec->dev = &client->dev;
+> +
+> +	ec->regmap = devm_regmap_init_i2c(client, &regmap_config);
+> +	if (IS_ERR(ec->regmap)) {
+> +		dev_err(ec->dev, "Failed to set up regmap for device\n");
+> +		return res;
+> +	}
+> +
+> +	/* Determine the firmware version */
+> +	res = regmap_read(ec->regmap, NTXEC_REG_VERSION, &version);
+> +	if (res < 0) {
+> +		dev_err(ec->dev, "Failed to read firmware version number\n");
+> +		return res;
+> +	}
+> +
+> +	/* Bail out if we encounter an unknown firmware version */
+> +	switch (version) {
+> +	case 0xd726: /* found in Kobo Aura */
 
-diff --git a/tools/testing/selftests/net/srv6_end_dt6_l3vpn_test.sh b/tools/testing/selftests/net/srv6_end_dt6_l3vpn_test.sh
-new file mode 100755
-index 000000000000..68708f5e26a0
---- /dev/null
-+++ b/tools/testing/selftests/net/srv6_end_dt6_l3vpn_test.sh
-@@ -0,0 +1,502 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# author: Andrea Mayer <andrea.mayer@uniroma2.it>
-+# author: Paolo Lungaroni <paolo.lungaroni@cnit.it>
-+
-+# This test is designed for evaluating the new SRv6 End.DT6 behavior used for
-+# implementing IPv6 L3 VPN use cases.
-+#
-+# Hereafter a network diagram is shown, where two different tenants (named 100
-+# and 200) offer IPv6 L3 VPN services allowing hosts to communicate with each
-+# other across an IPv6 network.
-+#
-+# Only hosts belonging to the same tenant (and to the same VPN) can communicate
-+# with each other. Instead, the communication among hosts of different tenants
-+# is forbidden.
-+# In other words, hosts hs-t100-1 and hs-t100-2 are connected through the IPv6
-+# L3 VPN of tenant 100 while hs-t200-3 and hs-t200-4 are connected using the
-+# IPv6 L3 VPN of tenant 200. Cross connection between tenant 100 and tenant 200
-+# is forbidden and thus, for example, hs-t100-1 cannot reach hs-t200-3 and vice
-+# versa.
-+#
-+# Routers rt-1 and rt-2 implement IPv6 L3 VPN services leveraging the SRv6
-+# architecture. The key components for such VPNs are: a) SRv6 Encap behavior,
-+# b) SRv6 End.DT6 behavior and c) VRF.
-+#
-+# To explain how an IPv6 L3 VPN based on SRv6 works, let us briefly consider an
-+# example where, within the same domain of tenant 100, the host hs-t100-1 pings
-+# the host hs-t100-2.
-+#
-+# First of all, L2 reachability of the host hs-t100-2 is taken into account by
-+# the router rt-1 which acts as a ndp proxy.
-+#
-+# When the host hs-t100-1 sends an IPv6 packet destined to hs-t100-2, the
-+# router rt-1 receives the packet on the internal veth-t100 interface. Such
-+# interface is enslaved to the VRF vrf-100 whose associated table contains the
-+# SRv6 Encap route for encapsulating any IPv6 packet in a IPv6 plus the Segment
-+# Routing Header (SRH) packet. This packet is sent through the (IPv6) core
-+# network up to the router rt-2 that receives it on veth0 interface.
-+#
-+# The rt-2 router uses the 'localsid' routing table to process incoming
-+# IPv6+SRH packets which belong to the VPN of the tenant 100. For each of these
-+# packets, the SRv6 End.DT6 behavior removes the outer IPv6+SRH headers and
-+# performs the lookup on the vrf-100 table using the destination address of
-+# the decapsulated IPv6 packet. Afterwards, the packet is sent to the host
-+# hs-t100-2 through the veth-t100 interface.
-+#
-+# The ping response follows the same processing but this time the role of rt-1
-+# and rt-2 are swapped.
-+#
-+# Of course, the IPv6 L3 VPN for tenant 200 works exactly as the IPv6 L3 VPN
-+# for tenant 100. In this case, only hosts hs-t200-3 and hs-t200-4 are able to
-+# connect with each other.
-+#
-+#
-+# +-------------------+                                   +-------------------+
-+# |                   |                                   |                   |
-+# |  hs-t100-1 netns  |                                   |  hs-t100-2 netns  |
-+# |                   |                                   |                   |
-+# |  +-------------+  |                                   |  +-------------+  |
-+# |  |    veth0    |  |                                   |  |    veth0    |  |
-+# |  |  cafe::1/64 |  |                                   |  |  cafe::2/64 |  |
-+# |  +-------------+  |                                   |  +-------------+  |
-+# |        .          |                                   |         .         |
-+# +-------------------+                                   +-------------------+
-+#          .                                                        .
-+#          .                                                        .
-+#          .                                                        .
-+# +-----------------------------------+   +-----------------------------------+
-+# |        .                          |   |                         .         |
-+# | +---------------+                 |   |                 +---------------- |
-+# | |   veth-t100   |                 |   |                 |   veth-t100   | |
-+# | |  cafe::254/64 |    +----------+ |   | +----------+    |  cafe::254/64 | |
-+# | +-------+-------+    | localsid | |   | | localsid |    +-------+-------- |
-+# |         |            |   table  | |   | |   table  |            |         |
-+# |    +----+----+       +----------+ |   | +----------+       +----+----+    |
-+# |    | vrf-100 |                    |   |                    | vrf-100 |    |
-+# |    +---------+     +------------+ |   | +------------+     +---------+    |
-+# |                    |   veth0    | |   | |   veth0    |                    |
-+# |                    | fd00::1/64 |.|...|.| fd00::2/64 |                    |
-+# |    +---------+     +------------+ |   | +------------+     +---------+    |
-+# |    | vrf-200 |                    |   |                    | vrf-200 |    |
-+# |    +----+----+                    |   |                    +----+----+    |
-+# |         |                         |   |                         |         |
-+# | +-------+-------+                 |   |                 +-------+-------- |
-+# | |   veth-t200   |                 |   |                 |   veth-t200   | |
-+# | |  cafe::254/64 |                 |   |                 |  cafe::254/64 | |
-+# | +---------------+      rt-1 netns |   | rt-2 netns      +---------------- |
-+# |        .                          |   |                          .        |
-+# +-----------------------------------+   +-----------------------------------+
-+#          .                                                         .
-+#          .                                                         .
-+#          .                                                         .
-+#          .                                                         .
-+# +-------------------+                                   +-------------------+
-+# |        .          |                                   |          .        |
-+# |  +-------------+  |                                   |  +-------------+  |
-+# |  |    veth0    |  |                                   |  |    veth0    |  |
-+# |  |  cafe::3/64 |  |                                   |  |  cafe::4/64 |  |
-+# |  +-------------+  |                                   |  +-------------+  |
-+# |                   |                                   |                   |
-+# |  hs-t200-3 netns  |                                   |  hs-t200-4 netns  |
-+# |                   |                                   |                   |
-+# +-------------------+                                   +-------------------+
-+#
-+#
-+# ~~~~~~~~~~~~~~~~~~~~~~~~~
-+# | Network configuration |
-+# ~~~~~~~~~~~~~~~~~~~~~~~~~
-+#
-+# rt-1: localsid table (table 90)
-+# +-------------------------------------------------+
-+# |SID              |Action                         |
-+# +-------------------------------------------------+
-+# |fc00:21:100::6006|apply SRv6 End.DT6 vrftable 100|
-+# +-------------------------------------------------+
-+# |fc00:21:200::6006|apply SRv6 End.DT6 vrftable 200|
-+# +-------------------------------------------------+
-+#
-+# rt-1: VRF tenant 100 (table 100)
-+# +---------------------------------------------------+
-+# |host       |Action                                 |
-+# +---------------------------------------------------+
-+# |cafe::2    |apply seg6 encap segs fc00:12:100::6006|
-+# +---------------------------------------------------+
-+# |cafe::/64  |forward to dev veth_t100               |
-+# +---------------------------------------------------+
-+#
-+# rt-1: VRF tenant 200 (table 200)
-+# +---------------------------------------------------+
-+# |host       |Action                                 |
-+# +---------------------------------------------------+
-+# |cafe::4    |apply seg6 encap segs fc00:12:200::6006|
-+# +---------------------------------------------------+
-+# |cafe::/64  |forward to dev veth_t200               |
-+# +---------------------------------------------------+
-+#
-+#
-+# rt-2: localsid table (table 90)
-+# +-------------------------------------------------+
-+# |SID              |Action                         |
-+# +-------------------------------------------------+
-+# |fc00:12:100::6006|apply SRv6 End.DT6 vrftable 100|
-+# +-------------------------------------------------+
-+# |fc00:12:200::6006|apply SRv6 End.DT6 vrftable 200|
-+# +-------------------------------------------------+
-+#
-+# rt-2: VRF tenant 100 (table 100)
-+# +---------------------------------------------------+
-+# |host       |Action                                 |
-+# +---------------------------------------------------+
-+# |cafe::1    |apply seg6 encap segs fc00:21:100::6006|
-+# +---------------------------------------------------+
-+# |cafe::/64  |forward to dev veth_t100               |
-+# +---------------------------------------------------+
-+#
-+# rt-2: VRF tenant 200 (table 200)
-+# +---------------------------------------------------+
-+# |host       |Action                                 |
-+# +---------------------------------------------------+
-+# |cafe::3    |apply seg6 encap segs fc00:21:200::6006|
-+# +---------------------------------------------------+
-+# |cafe::/64  |forward to dev veth_t200               |
-+# +---------------------------------------------------+
-+#
-+
-+readonly LOCALSID_TABLE_ID=90
-+readonly IPv6_RT_NETWORK=fd00
-+readonly IPv6_HS_NETWORK=cafe
-+readonly VPN_LOCATOR_SERVICE=fc00
-+PING_TIMEOUT_SEC=4
-+
-+ret=0
-+
-+PAUSE_ON_FAIL=${PAUSE_ON_FAIL:=no}
-+
-+log_test()
-+{
-+	local rc=$1
-+	local expected=$2
-+	local msg="$3"
-+
-+	if [ ${rc} -eq ${expected} ]; then
-+		nsuccess=$((nsuccess+1))
-+		printf "\n    TEST: %-60s  [ OK ]\n" "${msg}"
-+	else
-+		ret=1
-+		nfail=$((nfail+1))
-+		printf "\n    TEST: %-60s  [FAIL]\n" "${msg}"
-+		if [ "${PAUSE_ON_FAIL}" = "yes" ]; then
-+			echo
-+			echo "hit enter to continue, 'q' to quit"
-+			read a
-+			[ "$a" = "q" ] && exit 1
-+		fi
-+	fi
-+}
-+
-+print_log_test_results()
-+{
-+	if [ "$TESTS" != "none" ]; then
-+		printf "\nTests passed: %3d\n" ${nsuccess}
-+		printf "Tests failed: %3d\n"   ${nfail}
-+	fi
-+}
-+
-+log_section()
-+{
-+	echo
-+	echo "################################################################################"
-+	echo "TEST SECTION: $*"
-+	echo "################################################################################"
-+}
-+
-+cleanup()
-+{
-+	ip link del veth-rt-1 2>/dev/null || true
-+	ip link del veth-rt-2 2>/dev/null || true
-+
-+	# destroy routers rt-* and hosts hs-*
-+	for ns in $(ip netns show | grep -E 'rt-*|hs-*'); do
-+		ip netns del ${ns} || true
-+	done
-+}
-+
-+# Setup the basic networking for the routers
-+setup_rt_networking()
-+{
-+	local rt=$1
-+	local nsname=rt-${rt}
-+
-+	ip netns add ${nsname}
-+	ip link set veth-rt-${rt} netns ${nsname}
-+	ip -netns ${nsname} link set veth-rt-${rt} name veth0
-+
-+	ip netns exec ${nsname} sysctl -wq net.ipv6.conf.all.accept_dad=0
-+	ip netns exec ${nsname} sysctl -wq net.ipv6.conf.default.accept_dad=0
-+
-+	ip -netns ${nsname} addr add ${IPv6_RT_NETWORK}::${rt}/64 dev veth0 nodad
-+	ip -netns ${nsname} link set veth0 up
-+	ip -netns ${nsname} link set lo up
-+
-+	ip netns exec ${nsname} sysctl -wq net.ipv6.conf.all.forwarding=1
-+}
-+
-+setup_hs()
-+{
-+	local hs=$1
-+	local rt=$2
-+	local tid=$3
-+	local hsname=hs-t${tid}-${hs}
-+	local rtname=rt-${rt}
-+	local rtveth=veth-t${tid}
-+
-+	# set the networking for the host
-+	ip netns add ${hsname}
-+
-+	ip netns exec ${hsname} sysctl -wq net.ipv6.conf.all.accept_dad=0
-+	ip netns exec ${hsname} sysctl -wq net.ipv6.conf.default.accept_dad=0
-+
-+	ip -netns ${hsname} link add veth0 type veth peer name ${rtveth}
-+	ip -netns ${hsname} link set ${rtveth} netns ${rtname}
-+	ip -netns ${hsname} addr add ${IPv6_HS_NETWORK}::${hs}/64 dev veth0 nodad
-+	ip -netns ${hsname} link set veth0 up
-+	ip -netns ${hsname} link set lo up
-+
-+	# configure the VRF for the tenant X on the router which is directly
-+	# connected to the source host.
-+	ip -netns ${rtname} link add vrf-${tid} type vrf table ${tid}
-+	ip -netns ${rtname} link set vrf-${tid} up
-+
-+	ip netns exec ${rtname} sysctl -wq net.ipv6.conf.all.accept_dad=0
-+	ip netns exec ${rtname} sysctl -wq net.ipv6.conf.default.accept_dad=0
-+
-+	# enslave the veth-tX interface to the vrf-X in the access router
-+	ip -netns ${rtname} link set ${rtveth} master vrf-${tid}
-+	ip -netns ${rtname} addr add ${IPv6_HS_NETWORK}::254/64 dev ${rtveth} nodad
-+	ip -netns ${rtname} link set ${rtveth} up
-+
-+	ip netns exec ${rtname} sysctl -wq net.ipv6.conf.${rtveth}.proxy_ndp=1
-+
-+	ip netns exec ${rtname} sh -c "echo 1 > /proc/sys/net/vrf/strict_mode"
-+}
-+
-+setup_vpn_config()
-+{
-+	local hssrc=$1
-+	local rtsrc=$2
-+	local hsdst=$3
-+	local rtdst=$4
-+	local tid=$5
-+
-+	local hssrc_name=hs-t${tid}-${hssrc}
-+	local hsdst_name=hs-t${tid}-${hsdst}
-+	local rtsrc_name=rt-${rtsrc}
-+	local rtdst_name=rt-${rtdst}
-+	local rtveth=veth-t${tid}
-+	local vpn_sid=${VPN_LOCATOR_SERVICE}:${hssrc}${hsdst}:${tid}::6006
-+
-+	ip -netns ${rtsrc_name} -6 neigh add proxy ${IPv6_HS_NETWORK}::${hsdst} dev ${rtveth}
-+
-+	# set the encap route for encapsulating packets which arrive from the
-+	# host hssrc and destined to the access router rtsrc.
-+	ip -netns ${rtsrc_name} -6 route add ${IPv6_HS_NETWORK}::${hsdst}/128 vrf vrf-${tid} \
-+		encap seg6 mode encap segs ${vpn_sid} dev veth0
-+	ip -netns ${rtsrc_name} -6 route add ${vpn_sid}/128 vrf vrf-${tid} \
-+		via fd00::${rtdst} dev veth0
-+
-+	# set the decap route for decapsulating packets which arrive from
-+	# the rtdst router and destined to the hsdst host.
-+	ip -netns ${rtdst_name} -6 route add ${vpn_sid}/128 table ${LOCALSID_TABLE_ID} \
-+		encap seg6local action End.DT6 vrftable ${tid} dev vrf-${tid}
-+
-+	# all sids for VPNs start with a common locator which is fc00::/16.
-+	# Routes for handling the SRv6 End.DT6 behavior instances are grouped
-+	# together in the 'localsid' table.
-+	#
-+	# NOTE: added only once
-+	if [ -z "$(ip -netns ${rtdst_name} -6 rule show | \
-+	    grep "to ${VPN_LOCATOR_SERVICE}::/16 lookup ${LOCALSID_TABLE_ID}")" ]; then
-+		ip -netns ${rtdst_name} -6 rule add \
-+			to ${VPN_LOCATOR_SERVICE}::/16 \
-+			lookup ${LOCALSID_TABLE_ID} prio 999
-+	fi
-+}
-+
-+setup()
-+{
-+	ip link add veth-rt-1 type veth peer name veth-rt-2
-+	# setup the networking for router rt-1 and router rt-2
-+	setup_rt_networking 1
-+	setup_rt_networking 2
-+
-+	# setup two hosts for the tenant 100.
-+	#  - host hs-1 is directly connected to the router rt-1;
-+	#  - host hs-2 is directly connected to the router rt-2.
-+	setup_hs 1 1 100  #args: host router tenant
-+	setup_hs 2 2 100
-+
-+	# setup two hosts for the tenant 200
-+	#  - host hs-3 is directly connected to the router rt-1;
-+	#  - host hs-4 is directly connected to the router rt-2.
-+	setup_hs 3 1 200
-+	setup_hs 4 2 200
-+
-+	# setup the IPv6 L3 VPN which connects the host hs-t100-1 and host
-+	# hs-t100-2 within the same tenant 100.
-+	setup_vpn_config 1 1 2 2 100  #args: src_host src_router dst_host dst_router tenant
-+	setup_vpn_config 2 2 1 1 100
-+
-+	# setup the IPv6 L3 VPN which connects the host hs-t200-3 and host
-+	# hs-t200-4 within the same tenant 200.
-+	setup_vpn_config 3 1 4 2 200
-+	setup_vpn_config 4 2 3 1 200
-+}
-+
-+check_rt_connectivity()
-+{
-+	local rtsrc=$1
-+	local rtdst=$2
-+
-+	ip netns exec rt-${rtsrc} ping -c 1 -W 1 ${IPv6_RT_NETWORK}::${rtdst} \
-+		>/dev/null 2>&1
-+}
-+
-+check_and_log_rt_connectivity()
-+{
-+	local rtsrc=$1
-+	local rtdst=$2
-+
-+	check_rt_connectivity ${rtsrc} ${rtdst}
-+	log_test $? 0 "Routers connectivity: rt-${rtsrc} -> rt-${rtdst}"
-+}
-+
-+check_hs_connectivity()
-+{
-+	local hssrc=$1
-+	local hsdst=$2
-+	local tid=$3
-+
-+	ip netns exec hs-t${tid}-${hssrc} ping -c 1 -W ${PING_TIMEOUT_SEC} \
-+		${IPv6_HS_NETWORK}::${hsdst} >/dev/null 2>&1
-+}
-+
-+check_and_log_hs_connectivity()
-+{
-+	local hssrc=$1
-+	local hsdst=$2
-+	local tid=$3
-+
-+	check_hs_connectivity ${hssrc} ${hsdst} ${tid}
-+	log_test $? 0 "Hosts connectivity: hs-t${tid}-${hssrc} -> hs-t${tid}-${hsdst} (tenant ${tid})"
-+}
-+
-+check_and_log_hs_isolation()
-+{
-+	local hssrc=$1
-+	local tidsrc=$2
-+	local hsdst=$3
-+	local tiddst=$4
-+
-+	check_hs_connectivity ${hssrc} ${hsdst} ${tidsrc}
-+	# NOTE: ping should fail
-+	log_test $? 1 "Hosts isolation: hs-t${tidsrc}-${hssrc} -X-> hs-t${tiddst}-${hsdst}"
-+}
-+
-+
-+check_and_log_hs2gw_connectivity()
-+{
-+	local hssrc=$1
-+	local tid=$2
-+
-+	check_hs_connectivity ${hssrc} 254 ${tid}
-+	log_test $? 0 "Hosts connectivity: hs-t${tid}-${hssrc} -> gw (tenant ${tid})"
-+}
-+
-+router_tests()
-+{
-+	log_section "IPv6 routers connectivity test"
-+
-+	check_and_log_rt_connectivity 1 2
-+	check_and_log_rt_connectivity 2 1
-+}
-+
-+host2gateway_tests()
-+{
-+	log_section "IPv6 connectivity test among hosts and gateway"
-+
-+	check_and_log_hs2gw_connectivity 1 100
-+	check_and_log_hs2gw_connectivity 2 100
-+
-+	check_and_log_hs2gw_connectivity 3 200
-+	check_and_log_hs2gw_connectivity 4 200
-+}
-+
-+host_vpn_tests()
-+{
-+	log_section "SRv6 VPN connectivity test among hosts in the same tenant"
-+
-+	check_and_log_hs_connectivity 1 2 100
-+	check_and_log_hs_connectivity 2 1 100
-+
-+	check_and_log_hs_connectivity 3 4 200
-+	check_and_log_hs_connectivity 4 3 200
-+}
-+
-+host_vpn_isolation_tests()
-+{
-+	local i
-+	local j
-+	local k
-+	local tmp
-+	local l1="1 2"
-+	local l2="3 4"
-+	local t1=100
-+	local t2=200
-+
-+	log_section "SRv6 VPN isolation test among hosts in different tentants"
-+
-+	for k in 0 1; do
-+		for i in ${l1}; do
-+			for j in ${l2}; do
-+				check_and_log_hs_isolation ${i} ${t1} ${j} ${t2}
-+			done
-+		done
-+
-+		# let us test the reverse path
-+		tmp="${l1}"; l1="${l2}"; l2="${tmp}"
-+		tmp=${t1}; t1=${t2}; t2=${tmp}
-+	done
-+}
-+
-+if [ "$(id -u)" -ne 0 ];then
-+	echo "SKIP: Need root privileges"
-+	exit 0
-+fi
-+
-+if [ ! -x "$(command -v ip)" ]; then
-+	echo "SKIP: Could not run test without ip tool"
-+	exit 0
-+fi
-+
-+modprobe vrf &>/dev/null
-+if [ ! -e /proc/sys/net/vrf/strict_mode ]; then
-+        echo "SKIP: vrf sysctl does not exist"
-+        exit 0
-+fi
-+
-+cleanup &>/dev/null
-+
-+setup
-+
-+router_tests
-+host2gateway_tests
-+host_vpn_tests
-+host_vpn_isolation_tests
-+
-+print_log_test_results
-+
-+cleanup &>/dev/null
-+
-+exit ${ret}
+No magic numbers.
+
+Please submit a subsequent patch to define this.
+
+> +		break;
+> +	default:
+> +		dev_err(ec->dev,
+> +			"Netronix embedded controller version %04x is not supported.\n",
+> +			version);
+> +		return -ENODEV;
+> +	}
+
+
+Applied, thanks.
+
 -- 
-2.20.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
