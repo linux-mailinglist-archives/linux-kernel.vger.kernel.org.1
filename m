@@ -2,90 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE5A2CB650
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF6F2CB65D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387835AbgLBIGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:06:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387654AbgLBIGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:06:07 -0500
-X-Gm-Message-State: AOAM5328qEdy8rw/D8krFQNNJu8mho6Rf7n2zPd0YfeLv8hLuYgcXyC4
-        2EHixjmvkH2fbODpz9sns8XHIWxa2fEktA8DvXs=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606896326;
-        bh=rL+esQjjNTyRSm1rUJ1txFv4qdbKTkN3iNIvyjkG1Bo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NwG9Ia6Uu7N1CQgvHKRexWMP4D5JUuBcoc8PZ/iRv9870Oh7ZBG90ezhyJlgj0p58
-         yYcU7gBWKjlgcs2RXVODIOvQqMEK5qGFFsxl59ZQ067LTTP41TnZCTOThPjWqRYCjW
-         Rugc+tuXq8SHCX4l+bGv5x4E2nVJ6PfLwfVwJ4Aw=
-X-Google-Smtp-Source: ABdhPJxCxV0SUvy4WDeZm4iKsOl8mSYXVdeIBNdUccv/uVoeYyKaMEoCLhCihtlAx9O3QhiKVIn6yyzkpUGFGlt8mQ0=
-X-Received: by 2002:a05:6402:31b6:: with SMTP id dj22mr1431309edb.348.1606896324697;
- Wed, 02 Dec 2020 00:05:24 -0800 (PST)
+        id S2387879AbgLBIGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:06:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387654AbgLBIGs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 03:06:48 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C2DC0613D4;
+        Wed,  2 Dec 2020 00:06:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=z9KqhaAsXAc9JurpkJ+8oS6ooAn/GC5FmBHauam3UMs=; b=ZSw0Avvkh7WUOglt9xE0h4fhwy
+        ByX6PKX0a6yiwAoUtW+SIz61a7zESvPeJJgIrAiiTH9mOe1Wu80EGtMm1R5AuDG0Nxesrph/yNI7p
+        d0YtYWvOVHPazt44kGi8cw6rbKjfzrTvBu5r4TgPoaoOi1gSsw8g7IEVAkZZPp8cszjzBpjJz9ZKw
+        hea+uo4zl0y2O3nkgDDjYp5aeF34yNI0jTe4U5a9xfjLbQnj0VrTykUpSz6oLPVwwGWH8ek5BDAeo
+        igLpxtI5vP/SGTWqoB8z6J6pQ2ZI50Zwn/8/ynAOsaqkmQ4iaspus6QchMckGuMKngqD8dcDlEg9Z
+        xTwlHGEA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkN9H-0004W1-9I; Wed, 02 Dec 2020 08:06:03 +0000
+Date:   Wed, 2 Dec 2020 08:06:03 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Eric Sandeen <sandeen@redhat.com>
+Cc:     torvalds@linux-foundation.org,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>
+Subject: Re: [PATCH V2] uapi: fix statx attribute value overlap for DAX &
+ MOUNT_ROOT
+Message-ID: <20201202080603.GC15726@infradead.org>
+References: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
 MIME-Version: 1.0
-References: <20201201123932.12312-1-martin.kepplinger@puri.sm>
- <20201201123932.12312-8-martin.kepplinger@puri.sm> <cb498c2c-e052-390a-c64a-2be44d1d2b42@linaro.org>
- <a2c0fae4-13c5-9114-876f-bc324138e6cc@puri.sm> <20201202080321.GB6087@kozik-lap>
-In-Reply-To: <20201202080321.GB6087@kozik-lap>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 2 Dec 2020 10:05:12 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPcAbmugB9k-1Ldo=Q1J0CbOcxMtgC005w=DmWukThVcWA@mail.gmail.com>
-Message-ID: <CAJKOXPcAbmugB9k-1Ldo=Q1J0CbOcxMtgC005w=DmWukThVcWA@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] arm64: defconfig: Enable interconnect for imx8mq
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     Georgi Djakov <georgi.djakov@linaro.org>, robh@kernel.org,
-        shawnguo@kernel.org, festevam@gmail.com, catalin.marinas@arm.com,
-        will@kernel.org, cdleonard@gmail.com, kernel@pengutronix.de,
-        linux-imx@nxp.com, kernel@puri.sm, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Dec 2020 at 10:03, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On Tue, Dec 01, 2020 at 02:15:04PM +0100, Martin Kepplinger wrote:
-> > On 01.12.20 14:10, Georgi Djakov wrote:
-> > > On 1.12.20 14:39, Martin Kepplinger wrote:
-> > > > Enable INTERCONNECT_IMX8MQ in order to make interconnect more widely
-> > > > available for testing.
-> > >
-> > > I hope that it's not just for testing, but using it.
-> >
-> > sure, I just think that most people will use their own config for production
-> > but that's a different story. I can rephrase.
-> >
-> > >
-> > > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > > > ---
-> > > >   arch/arm64/configs/defconfig | 3 ++-
-> > > >   1 file changed, 2 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> > > > index 1fed16950a7c..830c26a95b3d 100644
-> > > > --- a/arch/arm64/configs/defconfig
-> > > > +++ b/arch/arm64/configs/defconfig
-> > > > @@ -1023,7 +1023,8 @@ CONFIG_OPTEE=y
-> > > >   CONFIG_MUX_MMIO=y
-> > > >   CONFIG_SLIM_QCOM_CTRL=m
-> > > >   CONFIG_SLIM_QCOM_NGD_CTRL=m
-> > > > -CONFIG_INTERCONNECT=y
-> > >
-> > > Why are you removing this line?
-> >
-> > savedefconfig removes it. INTERCONNECT_IMX below depends on it.
->
-> It's save to remove it as other Interconnect options are directly
-> dependant.
+Looks good for the urgent fix:
 
-Ugh, my bad, it is not allowed to remove it. My review was too fast.
-INTERCONNECT_IMX depends on it, so the INTERCONNECT must stay,
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-It is selected by TEGRA_MC which is independent here, so you should keep it.
-
-Best regards,
-Krzysztof
+We can keep debatting about stx_attributes_mask for a while once this
+is sorted out :)
