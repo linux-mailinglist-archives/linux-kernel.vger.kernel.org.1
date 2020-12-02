@@ -2,79 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B562CCAB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4590B2CCAC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:55:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgLBXtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 18:49:47 -0500
-Received: from m42-5.mailgun.net ([69.72.42.5]:31518 "EHLO m42-5.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726099AbgLBXtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 18:49:47 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606952967; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=MTEGmavrxLv6lYK+Wjv4r9ndrg5kUxABUfket/e/CE0=; b=apYz5zzj9P3cKsiZ7m8qjfbH0PCPy84p/QLgQsMHanfSZJcyhKbaziEcAjkb+9wh7/Zvzy7B
- wzjyrczUBSB+ehtolFcUQXeanLvACrCQYqnRWRyEo4DKB4OBh2q0SFP/D/AyxEMbs8tYhTtl
- AEhxPGn3sQJ+wPf9WcoA3fJ3PiM=
-X-Mailgun-Sending-Ip: 69.72.42.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5fc827ec8ceda75d6e304cab (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 23:49:00
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EED54C43461; Wed,  2 Dec 2020 23:48:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3AF31C433C6;
-        Wed,  2 Dec 2020 23:48:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3AF31C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v3 6/7] bus: mhi: core: Remove __ prefix for MHI channel
- unprepare function
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, loic.poulain@linaro.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-References: <1606952438-15321-1-git-send-email-bbhatt@codeaurora.org>
- <1606952438-15321-7-git-send-email-bbhatt@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <41f6067a-6779-3185-8a6a-04bf49f20768@codeaurora.org>
-Date:   Wed, 2 Dec 2020 15:48:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729015AbgLBXyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 18:54:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728637AbgLBXyO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 18:54:14 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1BFC0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 15:53:33 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id c79so83363pfc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 15:53:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nsQ5jLdSfQKhTpSL0ymLOmOqE37WINwXD7J/ZGWWptg=;
+        b=qs68akwBxUNYen/TbMDZh6jcl2NwcHrIH2xzkxhdqFsg/hJ4YSnG8iLbR3lsnb6swr
+         QctlrFJ6XpxeAkQuAZp88C7B33wUO1H1SEP2tWZWba/pkwL7i6oN6dxeLl/9KnSc741a
+         ADMn5sF/tyRB1Rek4KBMXy8dPxWwfs5OqEU/A5IAq6OyikqbUvqcbgWbxfY1t2FOwRTZ
+         L+bp4woIl+sWGir2meFERd5fv51DxzHOqs2jGnSW4tHsd/+yxxZWWqFY43AnQPLn8ffL
+         LKYVDps4fbqyRpRSq+d7FCMszn7srSnzpa1M8vueYHsxR99nSdArZCbF/k1uLhAOlTrl
+         a03g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nsQ5jLdSfQKhTpSL0ymLOmOqE37WINwXD7J/ZGWWptg=;
+        b=R/exiHQjg9cFysXmelQQ2aHkCQlj/B3FRi3hTa89Gkbw0SDw4GbybJVP+Cgkfx7e65
+         hhUkZMhbCPpsYZGwlwSC0t0ecSnY1BlgeSsisAVzDk3umCk+H+HsN3MV6aEcmAFTLHja
+         bC14ml3OGk1Lp0p7azPtuPcByn+ccZIntcDcFfU0mRpbbVxAVmf5HJaWJGB/2KQcSjKY
+         j0JaCSMC8sZS9EorIIY1MZlcX3V26y8V/u7cwagJ2Zh6PRf2JiWe88oF35tySIdMyafk
+         +3eK/3CLo1+4LQgZSx2mHcKZ2b5uSfNYmSkKsMqocvXHIMbwdga30WUlo7wijsHCSjXS
+         1PAA==
+X-Gm-Message-State: AOAM533CtqzOVLc3suFTOneRVDJUDo4tDysN0V+uW0etMLkTs34vQHf2
+        +H1r/GqrzcmKJBgHqP+DKyYgCfiUvgABEoyQCViDgQ==
+X-Google-Smtp-Source: ABdhPJw7Os4qn4J/J3GWLqnMymO8cHSVlhlFWWZdeLtouYkYU5JylntLXKfphckaST8Rr6PSSKOUCNp2HQeSyLZEF54=
+X-Received: by 2002:a65:63d5:: with SMTP id n21mr637055pgv.346.1606953213234;
+ Wed, 02 Dec 2020 15:53:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1606952438-15321-7-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201202211542.1121189-1-axelrasmussen@google.com> <20201202230954.GB108496@xz-x1>
+In-Reply-To: <20201202230954.GB108496@xz-x1>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Wed, 2 Dec 2020 15:52:56 -0800
+Message-ID: <CAJHvVch2LJa57-Si2prKa-S3VUPpu3jYxW+3-+tcLMgSXkB69w@mail.gmail.com>
+Subject: Re: [PATCH] userfaultfd: selftests: make __{s,u}64 format specifiers portable
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Alan Gilbert <dgilbert@redhat.com>,
+        Greg Thelen <gthelen@google.com>,
+        linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 2, 2020 at 3:10 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> Hi, Axel,
+>
+> Looks mostly good to me, but a few nitpickings below.
+>
+> On Wed, Dec 02, 2020 at 01:15:42PM -0800, Axel Rasmussen wrote:
+>
+> [...]
+>
+> > +static void uffd_error(const char *message, __s64 code)
+> > +{
+> > +     fprintf(stderr, "%s: %" PRId64 "\n", message, (int64_t)code);
+> > +     exit(1);
+> > +}
+>
+> IMHO a macro that can take arbitrary parameters would be nicer, but if it
+> satisfy our need, definitely ok too.
+>
+> [...]
+>
+> > @@ -340,7 +348,8 @@ static void wp_range(int ufd, __u64 start, __u64 len, bool wp)
+> >       prms.mode = wp ? UFFDIO_WRITEPROTECT_MODE_WP : 0;
+> >
+> >       if (ioctl(ufd, UFFDIO_WRITEPROTECT, &prms)) {
+> > -             fprintf(stderr, "clear WP failed for address 0x%Lx\n", start);
+> > +             fprintf(stderr, "clear WP failed for address 0x%" PRIx64 "\n",
+> > +                     (uint64_t)start);
+> >               exit(1);
+>
+> Is it intended to not use uffd_error() here?
 
+Yes, this is intentional. This particular case prints the value in
+hexadecimal, rather than decimal.
 
-On 12/2/20 3:40 PM, Bhaumik Bhatt wrote:
-> The __mhi_unprepare_channel() API does not require the __ prefix.
-> Get rid of it and make the internal function consistent with the
-> other function names.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+(Agree that uffd_error() could be made more general to cover cases
+like this. I opted for the simplest thing which covers all but two
+cases - this one, and one where we "return 1;" instead of "exit(1);" -
+but I don't feel strongly.)
 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+>
+> >       }
+> >  }
+>
+> [...]
+>
+> > @@ -979,26 +981,20 @@ static int __uffdio_zeropage(int ufd, unsigned long offset, bool retry)
+> >       if (ret) {
+> >               /* real retval in ufdio_zeropage.zeropage */
+> >               if (has_zeropage) {
+> > -                     if (uffdio_zeropage.zeropage == -EEXIST) {
+> > -                             fprintf(stderr, "UFFDIO_ZEROPAGE -EEXIST\n");
+> > -                             exit(1);
+> > -                     } else {
+> > -                             fprintf(stderr, "UFFDIO_ZEROPAGE error %Ld\n",
+> > -                                     uffdio_zeropage.zeropage);
+> > -                             exit(1);
+> > -                     }
+> > +                     uffd_error(uffdio_zeropage.zeropage == -EEXIST ?
+> > +                                              "UFFDIO_ZEROPAGE -EEXIST" :
+> > +                                              "UFFDIO_ZEROPAGE error",
+>
+> Nit: The indents here are a bit odd..
+
+This is what clang-format yields. Are you thinking it would be better
+to line everything up with the ( in uffd_error( ?
+
+Or, perhaps this case is a good reason to make uffd_error() a variadic
+macro so we can insert "-EEXIST" || "error" with a "%s".
+
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
