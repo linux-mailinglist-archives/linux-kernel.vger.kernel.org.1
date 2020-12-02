@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCED62CBA4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:15:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0EE2CBA5B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729397AbgLBKPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:15:12 -0500
-Received: from verein.lst.de ([213.95.11.211]:53496 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727623AbgLBKPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:15:11 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 2A56B67373; Wed,  2 Dec 2020 11:14:27 +0100 (CET)
-Date:   Wed, 2 Dec 2020 11:14:26 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        nouveau@lists.freedesktop.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] mm: support THP migration to device private
- memory
-Message-ID: <20201202101426.GC7597@lst.de>
-References: <20201106005147.20113-1-rcampbell@nvidia.com> <20201106005147.20113-4-rcampbell@nvidia.com> <20201106080322.GE31341@lst.de> <a7b8b90c-09b7-2009-0784-908b61f61ef2@nvidia.com> <20201109091415.GC28918@lst.de> <bbf1f0df-85f3-5887-050e-beb2aad750f2@nvidia.com>
+        id S1729429AbgLBKP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:15:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727623AbgLBKP6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 05:15:58 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D04AC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 02:15:18 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id f14so314942pju.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 02:15:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WWjb6zrEMy2J76Z4aT/3tobNbUFtkhliXqvzagYlv+E=;
+        b=gxRccWuGGU41q3Km4iGrDQa3cvPUG5oPMlBZaKbiEeL6JhT9eqx8Ug47sHEh5QK77y
+         XYn248vJZKhh/cxygPf5uxHUsYhvXDypHKjiwGeVyonRbHOlUgR10hnpT+UH9KBLbZGd
+         PcX9vYxynhY0WDh3BANRcIm0br5+sTenJX2/DwSKWDD00Oi1fnaBJ7ZmBN+mQcDOzbw8
+         b7d43HxvK4rPax8sLgHphgRA14Msw2uf7kGa6CkMm136YgqhjsjuXXyvvnsBmGs0VwjO
+         UIFydasllGD0xAi70Hv13Y4nwuCSPxJrykNomFZJfAp99aJU0UfL9ND53oYasHO0ARp7
+         OsoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WWjb6zrEMy2J76Z4aT/3tobNbUFtkhliXqvzagYlv+E=;
+        b=Wq/NBc+limu7PXELXhqG9xIUpOxe04sjZSZ14I9sLV0/8UG6fLed/CzUENfrm23MTM
+         TfQ05gEVbbJC4ZdTUotGFl276vWI9Wcd+qpJCGmGB7CN+ORXFNNyNFfxBwVnGtI55vgd
+         as3+fSJVgJWzI0BRC+maCtrcQmdmI/u8uifyveq6OVLcEynGra1da/HpJPkdr7lDBKLo
+         l7icNUkrFIhUNfV1N+pkmkZNdwVDoEgu8AqL0W0jSDJaK0CvsRL0KS7F9cGS4rDjUAKm
+         O6DT+puVRH8kmg4UaE+WTDnykjgsjGZhlRb9NEuUPAx4rRXasbpLel25m5ypCjtlPWkt
+         EmBg==
+X-Gm-Message-State: AOAM532p1xH3eaLeG7sHOS33MglMSnrYRgb2h5zyTLKvDkPo1g5L9dTQ
+        DkmCbKFpak9odW/c+GY88zx9yI28/Jo9qYDC
+X-Google-Smtp-Source: ABdhPJyo+01CcdRYzhUvf15PRmTg1LbB5GaQeqEeQlewZHlpQ1Lj4hwkKG+6BwWDHvlhhA2raO8kxA==
+X-Received: by 2002:a17:902:9b87:b029:d8:d123:2283 with SMTP id y7-20020a1709029b87b02900d8d1232283mr2064184plp.60.1606904117364;
+        Wed, 02 Dec 2020 02:15:17 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:9004:6a1b:d60e:9bc5:1ecd:a6f8])
+        by smtp.gmail.com with ESMTPSA id o11sm953936pjs.36.2020.12.02.02.15.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 02:15:16 -0800 (PST)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com, Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH] checkpatch: add warning for lines starting with a '#' in commit log
+Date:   Wed,  2 Dec 2020 15:44:48 +0530
+Message-Id: <20201202101448.8494-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bbf1f0df-85f3-5887-050e-beb2aad750f2@nvidia.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[adding a few of the usual suspects]
+Commit log lines starting with a '#' can be dropped by git if
+the corresponding commit message is reworded by a maintainer.
+This minor error can be easily avoided if checkpatch warns
+for the same.
 
-On Wed, Nov 11, 2020 at 03:38:42PM -0800, Ralph Campbell wrote:
-> There are 4 types of ZONE_DEVICE struct pages:
-> MEMORY_DEVICE_PRIVATE, MEMORY_DEVICE_FS_DAX, MEMORY_DEVICE_GENERIC, and
-> MEMORY_DEVICE_PCI_P2PDMA.
->
-> Currently, memremap_pages() allocates struct pages for a physical address range
-> with a page_ref_count(page) of one and increments the pgmap->ref per CPU
-> reference count by the number of pages created since each ZONE_DEVICE struct
-> page has a pointer to the pgmap.
->
-> The struct pages are not freed until memunmap_pages() is called which
-> calls put_page() which calls put_dev_pagemap() which releases a reference to
-> pgmap->ref. memunmap_pages() blocks waiting for pgmap->ref reference count
-> to be zero. As far as I can tell, the put_page() in memunmap_pages() has to
-> be the *last* put_page() (see MEMORY_DEVICE_PCI_P2PDMA).
-> My RFC [1] breaks this put_page() -> put_dev_pagemap() connection so that
-> the struct page reference count can go to zero and back to non-zero without
-> changing the pgmap->ref reference count.
->
-> Q1: Is that safe? Is there some code that depends on put_page() dropping
-> the pgmap->ref reference count as part of memunmap_pages()?
-> My testing of [1] seems OK but I'm sure there are lots of cases I didn't test.
+Add a new check which emits a warning on finding lines starting
+with a '#'. Also add a quick fix by adding a tab in front of
+such lines.
 
-It should be safe, but the audit you've done is important to make sure
-we do not miss anything important.
+Suggested-by: Peilin Ye <yepeilin.cs@gmail.com>
+Tested-by: Peilin Ye <yepeilin.cs@gmail.com>
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+ scripts/checkpatch.pl | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> MEMORY_DEVICE_PCI_P2PDMA:
-> Struct pages are created in pci_p2pdma_add_resource() and represent device
-> memory accessible by PCIe bar address space. Memory is allocated with
-> pci_alloc_p2pmem() based on a byte length but the gen_pool_alloc_owner()
-> call will allocate memory in a minimum of PAGE_SIZE units.
-> Reference counting is +1 per *allocation* on the pgmap->ref reference count.
-> Note that this is not +1 per page which is what put_page() expects. So
-> currently, a get_page()/put_page() works OK because the page reference count
-> only goes 1->2 and 2->1. If it went to zero, the pgmap->ref reference count
-> would be incorrect if the allocation size was greater than one page.
->
-> I see pci_alloc_p2pmem() is called by nvme_alloc_sq_cmds() and
-> pci_p2pmem_alloc_sgl() to create a command queue and a struct scatterlist *.
-> Looks like sg_page(sg) returns the ZONE_DEVICE struct page of the scatterlist.
-> There are a huge number of places sg_page() is called so it is hard to tell
-> whether or not get_page()/put_page() is ever called on MEMORY_DEVICE_PCI_P2PDMA
-> pages.
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index e8c1ed0b1fad..a12edcf4f63a 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2966,6 +2966,15 @@ sub process {
+ 			$commit_log_possible_stack_dump = 0;
+ 		}
+ 
++# Check for lines starting with a #
++		if ($in_commit_log && $line =~ /^#/) {
++			if (WARN("POSSIBLE_IGNORED_LINE",
++				 "Commit log lines starting with a '#' might be dropped by git.\n" . $herecurr)
++			    && $fix) {
++				$fixed[$fixlinenr] =~ s/^#/\t#/;
++			}
++		}
++
+ # Check for git id commit length and improperly formed commit descriptions
+ 		if ($in_commit_log && !$commit_log_possible_stack_dump &&
+ 		    $line !~ /^\s*(?:Link|Patchwork|http|https|BugLink|base-commit):/i &&
+-- 
+2.27.0
 
-Nothing should call get_page/put_page on them, as they are not treated
-as refcountable memory.  More importantly nothing is allowed to keep
-a reference longer than the time of the I/O.
-
-> pci_p2pmem_virt_to_bus() will return the physical address and I guess
-> pfn_to_page(physaddr >> PAGE_SHIFT) could return the struct page.
->
-> Since there is a clear allocation/free, pci_alloc_p2pmem() can probably be
-> modified to increment/decrement the MEMORY_DEVICE_PCI_P2PDMA struct page
-> reference count. Or maybe just leave it at one like it is now.
-
-And yes, doing that is probably a sensible safe guard.
-
-> MEMORY_DEVICE_FS_DAX:
-> Struct pages are created in pmem_attach_disk() and virtio_fs_setup_dax() with
-> an initial reference count of one.
-> The problem I see is that there are 3 states that are important:
-> a) memory is free and not allocated to any file (page_ref_count() == 0).
-> b) memory is allocated to a file and in the page cache (page_ref_count() == 1).
-> c) some gup() or I/O has a reference even after calling unmap_mapping_pages()
->    (page_ref_count() > 1). ext4_break_layouts() basically waits until the
->    page_ref_count() == 1 with put_page() calling wake_up_var(&page->_refcount)
->    to wake up ext4_break_layouts().
-> The current code doesn't seem to distinguish (a) and (b). If we want to use
-> the 0->1 reference count to signal (c), then the page cache would have hold
-> entries with a page_ref_count() == 0 which doesn't match the general page cache
-
-I think the sensible model here is to grab a reference when it is
-added to the page cache.  That is exactly how normal system memory pages
-work.
