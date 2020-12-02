@@ -2,293 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56812CBD39
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7DB2CBD3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbgLBMnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:43:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
+        id S1729648AbgLBMoF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Dec 2020 07:44:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgLBMnT (ORCPT
+        with ESMTP id S1726881AbgLBMoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:43:19 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5182EC0613CF;
-        Wed,  2 Dec 2020 04:42:39 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 62C3C31D;
-        Wed,  2 Dec 2020 13:42:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1606912957;
-        bh=uCg6TyIii1s5v0WeSqtkpiOld1cs/X5JMk4hle7skKQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fTVcbBIbDyWsui2B5V2e+rpZRbl/9mRZ9R1GR5OFzmc4ZMjrD8k90A0gVZCi2h/mf
-         O3kNKGKoTP+rA29iJPIaWAsDh6bNEDzfvGeYpb9sZdK2W2SKqSJwMusLX/4R2ew3lM
-         GH6MMKtLdRGDMoLe0FgEoVKabrPxEhPHTCJSNj0I=
-Date:   Wed, 2 Dec 2020 14:42:28 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
-Message-ID: <20201202124228.GF4486@pendragon.ideasonboard.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-19-djrscally@gmail.com>
- <20201130200719.GB4077@smile.fi.intel.com>
- <20201130233232.GD25713@pendragon.ideasonboard.com>
- <20201201155513.GB852@paasikivi.fi.intel.com>
- <20201201183758.GE3085@pendragon.ideasonboard.com>
- <20201202110956.GD852@paasikivi.fi.intel.com>
+        Wed, 2 Dec 2020 07:44:05 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532C7C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 04:43:25 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kkRTa-0002hW-Cy; Wed, 02 Dec 2020 13:43:18 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kkRTZ-0003Rz-EO; Wed, 02 Dec 2020 13:43:17 +0100
+Date:   Wed, 2 Dec 2020 13:43:17 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] net: dsa: qca: ar9331: export stats64
+Message-ID: <20201202124317.vehujtj2fdur2ed2@pengutronix.de>
+References: <20201202120712.6212-1-o.rempel@pengutronix.de>
+ <20201202120712.6212-3-o.rempel@pengutronix.de>
+ <d3f790c6-d84c-f1bd-df6e-912ab64cce8c@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201202110956.GD852@paasikivi.fi.intel.com>
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <d3f790c6-d84c-f1bd-df6e-912ab64cce8c@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 13:17:58 up  2:24, 17 users,  load average: 0.03, 0.06, 0.08
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 01:09:56PM +0200, Sakari Ailus wrote:
-> Hi Laurent,
-> 
-> On Tue, Dec 01, 2020 at 08:37:58PM +0200, Laurent Pinchart wrote:
-> > Hi Sakari,
+On Wed, Dec 02, 2020 at 01:15:58PM +0100, Marc Kleine-Budde wrote:
+> On 12/2/20 1:07 PM, Oleksij Rempel wrote:
+> > Add stats support for the ar9331 switch.
 > > 
-> > On Tue, Dec 01, 2020 at 05:55:13PM +0200, Sakari Ailus wrote:
-> > > On Tue, Dec 01, 2020 at 01:32:32AM +0200, Laurent Pinchart wrote:
-> > > > On Mon, Nov 30, 2020 at 10:07:19PM +0200, Andy Shevchenko wrote:
-> > > > > On Mon, Nov 30, 2020 at 01:31:29PM +0000, Daniel Scally wrote:
-> > > > > > On platforms where ACPI is designed for use with Windows, resources
-> > > > > > that are intended to be consumed by sensor devices are sometimes in
-> > > > > > the _CRS of a dummy INT3472 device upon which the sensor depends. This
-> > > > > > driver binds to the dummy acpi device (which does not represent a
-> > > > > 
-> > > > > acpi device -> acpi_device
-> > > > > 
-> > > > > > physical PMIC) and maps them into GPIO lines and regulators for use by
-> > > > > > the sensor device instead.
-> > > > > 
-> > > > > ...
-> > > > > 
-> > > > > > This patch contains the bits of this process that we're least sure about.
-> > > > > > The sensors in scope for this work are called out as dependent (in their
-> > > > > > DSDT entry's _DEP) on a device with _HID INT3472. These come in at least
-> > > > > > 2 kinds; those with an I2cSerialBusV2 entry (which we presume therefore
-> > > > > > are legitimate tps68470 PMICs that need handling by those drivers - work
-> > > > > > on that in the future). And those without an I2C device. For those without
-> > > > > > an I2C device they instead have an array of GPIO pins defined in _CRS. So
-> > > > > > for example, my Lenovo Miix 510's OVTI2680 sensor is dependent on one of
-> > > > > > the _latter_ kind of INT3472 devices, with this _CRS:
-> > > > > > 
-> > > > > > Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-> > > > > > {
-> > > > > >     Name (SBUF, ResourceTemplate ()
-> > > > > >     {
-> > > > > >         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
-> > > > > > 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
-> > > > > > 	    0x00, ResourceConsumer, ,
-> > > > > >             )
-> > > > > >             {   // Pin list
-> > > > > >                 0x0079
-> > > > > >             }
-> > > > > >         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
-> > > > > > 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
-> > > > > > 	    0x00, ResourceConsumer, ,
-> > > > > >             )
-> > > > > >             {   // Pin list
-> > > > > >                 0x007A
-> > > > > >             }
-> > > > > >         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
-> > > > > > 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
-> > > > > > 	    0x00, ResourceConsumer, ,
-> > > > > >             )
-> > > > > >             {   // Pin list
-> > > > > >                 0x008F
-> > > > > >             }
-> > > > > >     })
-> > > > > >     Return (SBUF) /* \_SB_.PCI0.PMI1._CRS.SBUF */
-> > > > > > }
-> > > > > > 
-> > > > > > and the same device has a _DSM Method, which returns 32-bit ints where
-> > > > > > the second lowest byte we noticed to match the pin numbers of the GPIO
-> > > > > > lines:
-> > > > > > 
-> > > > > > Method (_DSM, 4, NotSerialized)  // _DSM: Device-Specific Method
-> > > > > > {
-> > > > > >     If ((Arg0 == ToUUID ("79234640-9e10-4fea-a5c1-b5aa8b19756f")))
-> > > > > >     {
-> > > > > >         If ((Arg2 == One))
-> > > > > >         {
-> > > > > >             Return (0x03)
-> > > > > >         }
-> > > > > > 
-> > > > > >         If ((Arg2 == 0x02))
-> > > > > >         {
-> > > > > >             Return (0x01007900)
-> > > > > >         }
-> > > > > > 
-> > > > > >         If ((Arg2 == 0x03))
-> > > > > >         {
-> > > > > >             Return (0x01007A0C)
-> > > > > >         }
-> > > > > > 
-> > > > > >         If ((Arg2 == 0x04))
-> > > > > >         {
-> > > > > >             Return (0x01008F01)
-> > > > > >         }
-> > > > > >     }
-> > > > > > 
-> > > > > >     Return (Zero)
-> > > > > > }
-> > > > > > 
-> > > > > > We know that at least some of those pins have to be toggled active for the
-> > > > > > sensor devices to be available in i2c, so the conclusion we came to was
-> > > > > > that those GPIO entries assigned to the INT3472 device actually represent
-> > > > > > GPIOs and regulators to be consumed by the sensors themselves. Tsuchiya
-> > > > > > noticed that the lowest byte in the return values of the _DSM method
-> > > > > > seemed to represent the type or function of the GPIO line, and we
-> > > > > > confirmed that by testing on each surface device that GPIO lines where the
-> > > > > > low byte in the _DSM entry for that pin was 0x0d controlled the privacy
-> > > > > > LED of the cameras.
-> > > > > > 
-> > > > > > We're guessing as to the exact meaning of the function byte, but I
-> > > > > > conclude they're something like this:
-> > > > > > 
-> > > > > > 0x00 - probably a reset GPIO
-> > > > > > 0x01 - regulator for the sensor
-> > > > > > 0x0c - regulator for the sensor
-> > > > > > 0x0b - regulator again, but for a VCM or EEPROM
-> > > > > > 0x0d - privacy led (only one we're totally confident of since we can see
-> > > > > >        it happen!)
-> > > > > 
-> > > > > It's solely Windows driver design...
-> > > > > Luckily I found some information and can clarify above table:
-> > > > > 
-> > > > > 0x00 Reset
-> > > > > 0x01 Power down
-> > > > > 0x0b Power enable
-> > > > > 0x0c Clock enable
-> > > > > 0x0d LED (active high)
-> > > > 
-> > > > That's very useful information ! Thank you.
-> > > > 
-> > > > > The above text perhaps should go somewhere under Documentation.
-> > > > 
-> > > > Or in the driver source code, but definitely somewhere else than in the
-> > > > commit message.
-> > > > 
-> > > > > > After much internal debate I decided to write this as a standalone
-> > > > > > acpi_driver. Alternative options we considered:
-> > > > > > 
-> > > > > > 1. Squash all this into the cio2-bridge code, which I did originally write
-> > > > > > but decided I didn't like.
-> > > > > > 2. Extend the existing tps68470 mfd driver...they share an ACPI ID so this
-> > > > > > kinda makes sense, but ultimately given there is no actual physical
-> > > > > > tps68470 in the scenario this patch handles I decided I didn't like this
-> > > > > > either.
-> > > > > 
-> > > > > Looking to this I think the best is to create a module that can be consumed by tps68470 and separately.
-> > > > > So, something near to it rather than under ipu3 hood.
-> > > > > 
-> > > > > You may use same ID's in both drivers (in PMIC less case it can be simple
-> > > > > platform and thus they won't conflict), but both of them should provide GPIO
-> > > > > resources for consumption.
-> > > > > 
-> > > > > So, something like
-> > > > > 
-> > > > >  tps68470.h with API to consume
-> > > > >  split tps68470 to -core, -i2c parts
-> > > > >  add int3472, which will serve for above and be standalone platform driver
-> > > > >  update cio2-bridge accordingly
-> > > > > 
-> > > > > Would it be feasible?
-> > > > 
-> > > > Given that INT3472 means Intel camera power management device (that's
-> > > > more or less the wording in Windows, I can double-check), would the
-> > > > following make sense ?
-> > > > 
-> > > > A top-level module named intel-camera-pmic (or int3472, or ...) would
-> > > > register two drivers, a platform driver and an I2C driver, to
-> > > > accommodate for both cases ("discrete PMIC" that doesn't have an
-> > > > I2cSerialBusV2, and TPS64870 or uP6641Q that are I2C devices). The probe
-> > > > function would perform the following:
-> > > > 
-> > > > - If there's no CLDB, then the device uses the Chrome OS "ACPI
-> > > >   bindings", and refers to a TPS64870. The code that exists in the
-> > > >   kernel today (registering GPIOs, and registering an OpRegion to
-> > > >   communicate with the power management code in the DSDT) would be
-> > > >   activated.
-> > > > 
-> > > > - If there's a CLDB, then the device type would be retrieved from it:
-> > > > 
-> > > >   - If the device is a "discrete PMIC", the driver would register clocks
-> > > >     and regulators controlled by GPIOs, and create clock, regulator and
-> > > >     GPIO lookup entries for the sensor device that references the PMIC.
-> > > > 
-> > > >   - If the device is a TPS64870, the code that exists in the kernel
-> > > >     today to register GPIOs would be activated, and new code would need
-> > > >     to be written to register regulators and clocks.
-> > > > 
-> > > >   - If the device is a uP6641Q, a new driver will need to be written (I
-> > > >     don't know on which devices this PMIC is used, so this can probably
-> > > >     be deferred).
-> > > > 
-> > > > We can split this in multiple files and/or modules.
-> > > 
-> > > That's what I thought of, too, as one option, but with some more detail.
-> > > This would be indeed the cleanest option.
-> > > 
-> > > I think it'd be nice if the CLDB stuff (apart from checking whether it's
-> > > there) would be in a different module to avoid cluttering up the real
-> > > tps68470 driver.
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > ---
+> >  drivers/net/dsa/qca/ar9331.c | 242 ++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 241 insertions(+), 1 deletion(-)
 > > 
-> > Given the amount of code, and the fact that the driver should be
-> > compiled as a module, I don't think it will make a huge difference in
-> > the memory footprint.
+> > diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
+> > index e24a99031b80..1a8027bc9561 100644
+> > --- a/drivers/net/dsa/qca/ar9331.c
+> > +++ b/drivers/net/dsa/qca/ar9331.c
+> > @@ -101,6 +101,57 @@
+> >  	 AR9331_SW_PORT_STATUS_RX_FLOW_EN | AR9331_SW_PORT_STATUS_TX_FLOW_EN | \
+> >  	 AR9331_SW_PORT_STATUS_SPEED_M)
+> >  
+> > +/* MIB registers */
+> > +#define AR9331_MIB_COUNTER(x)			(0x20000 + ((x) * 0x100))
+> > +
+> > +#define AR9331_PORT_MIB_rxbroad(_port)		(AR9331_MIB_COUNTER(_port) + 0x00)
+> > +#define AR9331_PORT_MIB_rxpause(_port)		(AR9331_MIB_COUNTER(_port) + 0x04)
+> > +#define AR9331_PORT_MIB_rxmulti(_port)		(AR9331_MIB_COUNTER(_port) + 0x08)
+> > +#define AR9331_PORT_MIB_rxfcserr(_port)		(AR9331_MIB_COUNTER(_port) + 0x0c)
+> > +#define AR9331_PORT_MIB_rxalignerr(_port)	(AR9331_MIB_COUNTER(_port) + 0x10)
+> > +#define AR9331_PORT_MIB_rxrunt(_port)		(AR9331_MIB_COUNTER(_port) + 0x14)
+> > +#define AR9331_PORT_MIB_rxfragment(_port)	(AR9331_MIB_COUNTER(_port) + 0x18)
+> > +#define AR9331_PORT_MIB_rx64byte(_port)		(AR9331_MIB_COUNTER(_port) + 0x1c)
+> > +#define AR9331_PORT_MIB_rx128byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x20)
+> > +#define AR9331_PORT_MIB_rx256byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x24)
+> > +#define AR9331_PORT_MIB_rx512byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x28)
+> > +#define AR9331_PORT_MIB_rx1024byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x2c)
+> > +#define AR9331_PORT_MIB_rx1518byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x30)
+> > +#define AR9331_PORT_MIB_rxmaxbyte(_port)	(AR9331_MIB_COUNTER(_port) + 0x34)
+> > +#define AR9331_PORT_MIB_rxtoolong(_port)	(AR9331_MIB_COUNTER(_port) + 0x38)
+> > +
+> > +/* 64 bit counter */
+> > +#define AR9331_PORT_MIB_rxgoodbyte(_port)	(AR9331_MIB_COUNTER(_port) + 0x3c)
+> > +
+> > +/* 64 bit counter */
+> > +#define AR9331_PORT_MIB_rxbadbyte(_port)	(AR9331_MIB_COUNTER(_port) + 0x44)
+> > +
+> > +#define AR9331_PORT_MIB_rxoverflow(_port)	(AR9331_MIB_COUNTER(_port) + 0x4c)
+> > +#define AR9331_PORT_MIB_filtered(_port)		(AR9331_MIB_COUNTER(_port) + 0x50)
+> > +#define AR9331_PORT_MIB_txbroad(_port)		(AR9331_MIB_COUNTER(_port) + 0x54)
+> > +#define AR9331_PORT_MIB_txpause(_port)		(AR9331_MIB_COUNTER(_port) + 0x58)
+> > +#define AR9331_PORT_MIB_txmulti(_port)		(AR9331_MIB_COUNTER(_port) + 0x5c)
+> > +#define AR9331_PORT_MIB_txunderrun(_port)	(AR9331_MIB_COUNTER(_port) + 0x60)
+> > +#define AR9331_PORT_MIB_tx64byte(_port)		(AR9331_MIB_COUNTER(_port) + 0x64)
+> > +#define AR9331_PORT_MIB_tx128byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x68)
+> > +#define AR9331_PORT_MIB_tx256byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x6c)
+> > +#define AR9331_PORT_MIB_tx512byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x70)
+> > +#define AR9331_PORT_MIB_tx1024byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x74)
+> > +#define AR9331_PORT_MIB_tx1518byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x78)
+> > +#define AR9331_PORT_MIB_txmaxbyte(_port)	(AR9331_MIB_COUNTER(_port) + 0x7c)
+> > +#define AR9331_PORT_MIB_txoversize(_port)	(AR9331_MIB_COUNTER(_port) + 0x80)
+> > +
+> > +/* 64 bit counter */
+> > +#define AR9331_PORT_MIB_txbyte(_port)		(AR9331_MIB_COUNTER(_port) + 0x84)
+> > +
+> > +#define AR9331_PORT_MIB_txcollision(_port)	(AR9331_MIB_COUNTER(_port) + 0x8c)
+> > +#define AR9331_PORT_MIB_txabortcol(_port)	(AR9331_MIB_COUNTER(_port) + 0x90)
+> > +#define AR9331_PORT_MIB_txmulticol(_port)	(AR9331_MIB_COUNTER(_port) + 0x94)
+> > +#define AR9331_PORT_MIB_txsinglecol(_port)	(AR9331_MIB_COUNTER(_port) + 0x98)
+> > +#define AR9331_PORT_MIB_txexcdefer(_port)	(AR9331_MIB_COUNTER(_port) + 0x9c)
+> > +#define AR9331_PORT_MIB_txdefer(_port)		(AR9331_MIB_COUNTER(_port) + 0xa0)
+> > +#define AR9331_PORT_MIB_txlatecol(_port)	(AR9331_MIB_COUNTER(_port) + 0xa4)
+> > +
+> >  /* Phy bypass mode
+> >   * ------------------------------------------------------------------------
+> >   * Bit:   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |13 |14 |15 |
+> > @@ -154,6 +205,59 @@
+> >  #define AR9331_SW_MDIO_POLL_SLEEP_US		1
+> >  #define AR9331_SW_MDIO_POLL_TIMEOUT_US		20
+> >  
+> > +#define STATS_INTERVAL_JIFFIES			(100 * HZ)
+> > +
+> > +struct ar9331_sw_stats {
+> > +	u64 rxbroad;
+> > +	u64 rxpause;
+> > +	u64 rxmulti;
+> > +	u64 rxfcserr;
+> > +	u64 rxalignerr;
+> > +	u64 rxrunt;
+> > +	u64 rxfragment;
+> > +	u64 rx64byte;
+> > +	u64 rx128byte;
+> > +	u64 rx256byte;
+> > +	u64 rx512byte;
+> > +	u64 rx1024byte;
+> > +	u64 rx1518byte;
+> > +	u64 rxmaxbyte;
+> > +	u64 rxtoolong;
+> > +	u64 rxgoodbyte;
+> > +	u64 rxbadbyte;
+> > +	u64 rxoverflow;
+> > +	u64 filtered;
+> > +	u64 txbroad;
+> > +	u64 txpause;
+> > +	u64 txmulti;
+> > +	u64 txunderrun;
+> > +	u64 tx64byte;
+> > +	u64 tx128byte;
+> > +	u64 tx256byte;
+> > +	u64 tx512byte;
+> > +	u64 tx1024byte;
+> > +	u64 tx1518byte;
+> > +	u64 txmaxbyte;
+> > +	u64 txoversize;
+> > +	u64 txbyte;
+> > +	u64 txcollision;
+> > +	u64 txabortcol;
+> > +	u64 txmulticol;
+> > +	u64 txsinglecol;
+> > +	u64 txexcdefer;
+> > +	u64 txdefer;
+> > +	u64 txlatecol;
+> > +};
+> > +
+> > +struct ar9331_sw_priv;
+> > +struct ar9331_sw_port {
+> > +	int idx;
+> > +	struct ar9331_sw_priv *priv;
+> > +	struct delayed_work mib_read;
+> > +	struct ar9331_sw_stats stats;
+> > +	struct mutex lock;		/* stats access */
 > 
-> I'd still prefer to keep the ACPI hack support and the real driver well
-> separated. That way it'd be also easy to put them to their respective
-> modules. That's actually how the tps68470 MFD driver is currently arranged;
-> the GPIO and OP region drivers are separate from each other.
+> What does the lock protect? It's only used a single time.
 
-I think we should consider ACPI to be a hack in the first place :-)
+The ar9331_read_stats() function is called from two different contests:
+from worker over ar9331_do_stats_poll() and from user space over
+ar9331_get_stats64().
 
-> Could this be just one more platform device for each of the three cases (or
-> one for the two latter; I'm not quite sure yet)?
+The mutex lock should prevent a race in the read modify write operations
+for in the stats->*
 
-Using MFD for this seems a bit overkill to me. I won't care much as I
-won't maintain those drivers, but the current situation is complex
-enough, it was hard for me to understand how things worked. Adding yet
-another layer with another platform device won't make it any simpler.
-
-If we want to split this in two, I'd rather have a tps68470 driver on
-one side, without ACPI op region support, but registering regulators,
-GPIOs and clocks (without using separate drivers and devices for these
-three features), and an INT3472 driver on the other side, with all the
-ACPI glue and hacks. The tps68470 code could possibly even be structured
-in such a way that it would be used as a library by the INT3472 driver
-instead of requiring a separate platform device.
-
-> The GPIO regulator case is relatively safe, but the real PMICs require
-> regulator voltage control as well as enabling and disabling the regulators.
-> That probably requires either schematics or checking the register values at
-> runtime on Windows (i.e. finding out which system you're dealing with, at
-> runtime).
-
--- 
 Regards,
-
-Laurent Pinchart
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
