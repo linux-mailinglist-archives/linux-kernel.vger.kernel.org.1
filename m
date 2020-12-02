@@ -2,226 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7412CC8AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:11:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA732CC8AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729326AbgLBVIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 16:08:54 -0500
-Received: from mail-02.mail-europe.com ([51.89.119.103]:59852 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728577AbgLBVIx (ORCPT
+        id S2387691AbgLBVKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 16:10:51 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58194 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726634AbgLBVKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 16:08:53 -0500
-Date:   Wed, 02 Dec 2020 21:07:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1606943247;
-        bh=I5SKn72zxNLuAPxHXL8MBix5xnhTqEl1NdpeqJ8Fo7U=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=w52idPCvgPLyvLjhVxtahNHBhCZDZvpUNdmQWXjjzZQD5W5EUcKk/fFeiqshv2t/B
-         NortxYpGn9NudNr86gAWiknF21gsKZKr6Iobu6f8f0PQmbl89OkLJX0EtEQC2P/OgR
-         a83ZMQgYE7f5/h5JO1goAtYk8CBsSPtit0+KVdho=
-To:     Sebastian Reichel <sre@kernel.org>
-From:   Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Timon Baetz <timon.baetz@protonmail.com>
-Reply-To: Timon Baetz <timon.baetz@protonmail.com>
-Subject: [PATCH 2/3] power: supply: max8997_charger: Set CHARGER current limit
-Message-ID: <20201202203516.43053-2-timon.baetz@protonmail.com>
-In-Reply-To: <20201202203516.43053-1-timon.baetz@protonmail.com>
-References: <20201202203516.43053-1-timon.baetz@protonmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+        Wed, 2 Dec 2020 16:10:50 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2L3jgq052776;
+        Wed, 2 Dec 2020 16:10:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=LGkIrjtqa4joGxWb7uI/qvkO4B4va5rfsqLIzouACJ0=;
+ b=Tqcx84/+3LacU4+UY8colQcRxLLIUvRYwlaRCZOy5d/ZgWZ7DUiUkiF+X/vSTUxVmjzr
+ NdGGnWU1Zkj3v7ma7aCyMEuZNpvCum5Ku0S15p1gf3FSM+t3ev0lesJPRxd8rJfZVyLV
+ 5w+WqOsyAfGLIIJZPHJvkEZpuWxPAQXRhoK8V6bnrS6n5sxhTWgxrDkv5eD41UuRbKsI
+ cXoSjVph+XLBK+Rhn5q8ctNAKkwK3W3NpLieqS1h2zfgImhWFj+uYQvYVvStqLfV6s2q
+ tgnbHeVzDl7tKxwfHqDGwoYgJ+mnKqJks6EikLr94Xkiuh7C/b5FawP1X/Nf4cpDJJQB Ew== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 356jekga8p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 16:10:04 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B2L4grh064376;
+        Wed, 2 Dec 2020 16:10:03 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 356jekga7u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 16:10:03 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2L7TJj017114;
+        Wed, 2 Dec 2020 21:10:02 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03fra.de.ibm.com with ESMTP id 353e686s1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 21:10:02 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2L7UE85309106
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 21:07:30 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1674D4C046;
+        Wed,  2 Dec 2020 21:07:30 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3B80B4C04E;
+        Wed,  2 Dec 2020 21:07:28 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.92.233])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Dec 2020 21:07:27 +0000 (GMT)
+Message-ID: <a84520e3c7de9c767cbbc17e8ad894525043e211.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 03/11] evm: Refuse EVM_ALLOW_METADATA_WRITES only if
+ an HMAC key is loaded
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@google.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        silviu.vlasceanu@huawei.com, stable@vger.kernel.org
+Date:   Wed, 02 Dec 2020 16:07:27 -0500
+In-Reply-To: <20201111092302.1589-4-roberto.sassu@huawei.com>
+References: <20201111092302.1589-1-roberto.sassu@huawei.com>
+         <20201111092302.1589-4-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_12:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 lowpriorityscore=0
+ bulkscore=0 mlxscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
+ clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register for extcon notification and set charging current depending on
-the detected cable type. Current values are taken from i9100 kernel
-fork.
+On Wed, 2020-11-11 at 10:22 +0100, Roberto Sassu wrote:
+> EVM_ALLOW_METADATA_WRITES is an EVM initialization flag that can be set to
+> temporarily disable metadata verification until all xattrs/attrs necessary
+> to verify an EVM portable signature are copied to the file. This flag is
+> cleared when EVM is initialized with an HMAC key, to avoid that the HMAC is
+> calculated on unverified xattrs/attrs.
+> 
+> Currently EVM unnecessarily denies setting this flag if EVM is initialized
+> with a public key, which is not a concern as it cannot be used to trust
+> xattrs/attrs updates. This patch removes this limitation.
+> 
+> Cc: stable@vger.kernel.org # 4.16.x
+> Fixes: ae1ba1676b88e ("EVM: Allow userland to permit modification of EVM-protected metadata")
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  Documentation/ABI/testing/evm      | 5 +++--
+>  security/integrity/evm/evm_secfs.c | 2 +-
+>  2 files changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/evm b/Documentation/ABI/testing/evm
+> index 3c477ba48a31..eb6d70fd6fa2 100644
+> --- a/Documentation/ABI/testing/evm
+> +++ b/Documentation/ABI/testing/evm
+> @@ -49,8 +49,9 @@ Description:
+>  		modification of EVM-protected metadata and
+>  		disable all further modification of policy
+>  
+> -		Note that once a key has been loaded, it will no longer be
+> -		possible to enable metadata modification.
+> +		Note that once an HMAC key has been loaded, it will no longer
+> +		be possible to enable metadata modification and, if it is
+> +		already enabled, it will be disabled.
+>  
+>  		Until key loading has been signaled EVM can not create
+>  		or validate the 'security.evm' xattr, but returns
+> diff --git a/security/integrity/evm/evm_secfs.c b/security/integrity/evm/evm_secfs.c
+> index cfc3075769bb..92fe26ace797 100644
+> --- a/security/integrity/evm/evm_secfs.c
+> +++ b/security/integrity/evm/evm_secfs.c
+> @@ -84,7 +84,7 @@ static ssize_t evm_write_key(struct file *file, const char __user *buf,
+>  	 * keys are loaded.
+>  	 */
+>  	if ((i & EVM_ALLOW_METADATA_WRITES) &&
+> -	    ((evm_initialized & EVM_KEY_MASK) != 0) &&
+> +	    ((evm_initialized & EVM_INIT_HMAC) != 0) &&
+>  	    !(evm_initialized & EVM_ALLOW_METADATA_WRITES))
+>  		return -EPERM;
+>  
 
-Enable and disable the CHARGER regulator based on extcon events and
-remove regulator-always-on from the device tree.
+If an HMAC key is loaded EVM_ALLOW_METADATA_WRITES should already be
+disabled.  Testing EVM_ALLOW_METADATA_WRITES shouldn't be needed. 
+Please update the comment: "Don't allow a request to freshly enable
+metadata writes if keys are loaded."
 
-Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
----
- arch/arm/boot/dts/exynos4210-i9100.dts |  1 -
- drivers/power/supply/max8997_charger.c | 92 ++++++++++++++++++++++++++
- 2 files changed, 92 insertions(+), 1 deletion(-)
+thanks,
 
-diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts/exy=
-nos4210-i9100.dts
-index 6d0c04d77a39..9f8d927e0d21 100644
---- a/arch/arm/boot/dts/exynos4210-i9100.dts
-+++ b/arch/arm/boot/dts/exynos4210-i9100.dts
-@@ -560,7 +560,6 @@ charger_reg: CHARGER {
- =09=09=09=09regulator-name =3D "CHARGER";
- =09=09=09=09regulator-min-microamp =3D <60000>;
- =09=09=09=09regulator-max-microamp =3D <2580000>;
--=09=09=09=09regulator-always-on;
- =09=09=09};
-=20
- =09=09=09chargercv_reg: CHARGER_CV {
-diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/supply/=
-max8997_charger.c
-index 1947af25879a..26cd271576ec 100644
---- a/drivers/power/supply/max8997_charger.c
-+++ b/drivers/power/supply/max8997_charger.c
-@@ -6,6 +6,7 @@
- //  MyungJoo Ham <myungjoo.ham@samsung.com>
-=20
- #include <linux/err.h>
-+#include <linux/extcon.h>
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/platform_device.h>
-@@ -31,6 +32,12 @@ struct charger_data {
- =09struct device *dev;
- =09struct max8997_dev *iodev;
- =09struct power_supply *battery;
-+=09struct regulator *reg;
-+=09struct {
-+=09=09struct extcon_dev *edev;
-+=09=09struct notifier_block nb;
-+=09=09struct work_struct work;
-+=09} extcon;
- };
-=20
- static enum power_supply_property max8997_battery_props[] =3D {
-@@ -88,6 +95,63 @@ static int max8997_battery_get_property(struct power_sup=
-ply *psy,
- =09return 0;
- }
-=20
-+static void max8997_battery_extcon_evt_stop_work(void *data)
-+{
-+=09struct charger_data *charger =3D data;
-+
-+=09cancel_work_sync(&charger->extcon.work);
-+}
-+
-+static void max8997_battery_extcon_evt_worker(struct work_struct *work)
-+{
-+=09struct charger_data *charger =3D
-+=09    container_of(work, struct charger_data, extcon.work);
-+=09int ret, current_limit;
-+=09struct extcon_dev *edev =3D charger->extcon.edev;
-+
-+=09if (extcon_get_state(edev, EXTCON_CHG_USB_SDP) > 0) {
-+=09=09dev_dbg(charger->dev, "USB SDP charger is connected\n");
-+=09=09current_limit =3D 450000;
-+=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_DCP) > 0) {
-+=09=09dev_dbg(charger->dev, "USB DCP charger is connected\n");
-+=09=09current_limit =3D 650000;
-+=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_FAST) > 0) {
-+=09=09dev_dbg(charger->dev, "USB FAST charger is connected\n");
-+=09=09current_limit =3D 650000;
-+=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_SLOW) > 0) {
-+=09=09dev_dbg(charger->dev, "USB SLOW charger is connected\n");
-+=09=09current_limit =3D 650000;
-+=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_CDP) > 0) {
-+=09=09dev_dbg(charger->dev, "USB CDP charger is connected\n");
-+=09=09current_limit =3D 650000;
-+=09} else {
-+=09=09dev_dbg(charger->dev, "USB charger is diconnected\n");
-+=09=09current_limit =3D -1;
-+=09}
-+
-+=09if (current_limit > 0) {
-+=09=09ret =3D regulator_set_current_limit(charger->reg, current_limit, cur=
-rent_limit);
-+=09=09if (ret)
-+=09=09=09dev_err(charger->dev, "failed to set current limit: %d\n", ret);
-+=09=09ret =3D regulator_enable(charger->reg);
-+=09=09if (ret)
-+=09=09=09dev_err(charger->dev, "failed to enable regulator: %d\n", ret);
-+=09} else {
-+=09=09ret =3D regulator_disable(charger->reg);
-+=09=09if (ret)
-+=09=09=09dev_err(charger->dev, "failed to disable regulator: %d\n", ret);
-+=09}
-+}
-+
-+static int max8997_battery_extcon_evt(struct notifier_block *nb,
-+=09=09=09=09unsigned long event, void *param)
-+{
-+=09struct charger_data *charger =3D
-+=09=09container_of(nb, struct charger_data, extcon.nb);
-+=09schedule_work(&charger->extcon.work);
-+=09return NOTIFY_OK;
-+}
-+
- static const struct power_supply_desc max8997_battery_desc =3D {
- =09.name=09=09=3D "max8997_pmic",
- =09.type=09=09=3D POWER_SUPPLY_TYPE_BATTERY,
-@@ -104,6 +168,7 @@ static int max8997_battery_probe(struct platform_device=
- *pdev)
- =09struct i2c_client *i2c =3D iodev->i2c;
- =09struct max8997_platform_data *pdata =3D iodev->pdata;
- =09struct power_supply_config psy_cfg =3D {};
-+=09struct extcon_dev *edev;
-=20
- =09if (!pdata) {
- =09=09dev_err(&pdev->dev, "No platform data supplied.\n");
-@@ -151,6 +216,12 @@ static int max8997_battery_probe(struct platform_devic=
-e *pdev)
- =09=09return ret;
- =09}
-=20
-+=09edev =3D extcon_get_extcon_dev("max8997-muic");
-+=09if (edev =3D=3D NULL) {
-+=09=09dev_info(&pdev->dev, "extcon is not ready, probe deferred\n");
-+=09=09return -EPROBE_DEFER;
-+=09}
-+
- =09charger =3D devm_kzalloc(&pdev->dev, sizeof(*charger), GFP_KERNEL);
- =09if (!charger)
- =09=09return -ENOMEM;
-@@ -170,6 +241,27 @@ static int max8997_battery_probe(struct platform_devic=
-e *pdev)
- =09=09return PTR_ERR(charger->battery);
- =09}
-=20
-+=09charger->reg =3D regulator_get(&pdev->dev, "CHARGER");
-+=09if (IS_ERR(charger->reg)) {
-+=09=09dev_err(&pdev->dev, "couldn't get CHARGER regulator\n");
-+=09=09return PTR_ERR(charger->reg);
-+=09}
-+
-+=09INIT_WORK(&charger->extcon.work, max8997_battery_extcon_evt_worker);
-+=09ret =3D devm_add_action(&pdev->dev, max8997_battery_extcon_evt_stop_wor=
-k, charger);
-+=09if (ret) {
-+=09=09dev_err(&pdev->dev, "failed to add extcon evt stop action: %d\n", re=
-t);
-+=09=09return ret;
-+=09}
-+=09charger->extcon.edev =3D edev;
-+=09charger->extcon.nb.notifier_call =3D max8997_battery_extcon_evt;
-+=09ret =3D devm_extcon_register_notifier_all(&pdev->dev, charger->extcon.e=
-dev,
-+=09=09=09&charger->extcon.nb);
-+=09if (ret) {
-+=09=09dev_err(&pdev->dev, "failed to register extcon notifier\n");
-+=09=09return ret;
-+=09};
-+
- =09return 0;
- }
-=20
---=20
-2.25.1
-
+Mimi
 
