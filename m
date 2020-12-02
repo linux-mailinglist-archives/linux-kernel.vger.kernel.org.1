@@ -2,89 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CF12CC482
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8242CC486
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728814AbgLBSFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:05:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727454AbgLBSFm (ORCPT
+        id S2387612AbgLBSHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:07:21 -0500
+Received: from pb-smtp1.pobox.com ([64.147.108.70]:51972 "EHLO
+        pb-smtp1.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387531AbgLBSHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:05:42 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8507FC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:05:02 -0800 (PST)
-Received: from zn.tnic (p200300ec2f161b00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:1b00:329c:23ff:fea6:a903])
+        Wed, 2 Dec 2020 13:07:20 -0500
+Received: from pb-smtp1.pobox.com (unknown [127.0.0.1])
+        by pb-smtp1.pobox.com (Postfix) with ESMTP id 7C4CC88AD7;
+        Wed,  2 Dec 2020 13:06:38 -0500 (EST)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=xchxvcgdOOFFZWHClwls/YGIHlk=; b=hPL3yG
+        mT5VZAEnudO6JZyKt3t+xZ2aqPt11dJ3uDa9wnwGk6Eyoc5LTYULCOtFcBBnsfIk
+        MIhX4dvuH1R7omufW39Hj8nQx0gnKMsUxRJXHm/Jj6Z6QUU6EEHiHrm2t+g1gyXm
+        SCODG9S82KZdiKcYSW6t14feJofPvlBoYR2zk=
+Received: from pb-smtp1.nyi.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp1.pobox.com (Postfix) with ESMTP id 73B5088AD6;
+        Wed,  2 Dec 2020 13:06:38 -0500 (EST)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=qJIqO5Uf6GpAQisSeceYMe5ahfpyrEbeOGVBOz1OEAo=; b=MBmjzAvEvtodaoDHpn6T30wgG1MCoc2aFqqKBQPQMlqrbML0FMcmcC/rJTHhQxXShLGPiCAD67N7XzQab2pu7Mhu+6AO+u4eqs/L+udIzfcPRwyzxhGyr+gxprZZF/LGBRvkt9NJKdl9hosq0BEw+E/pXRLoGK4DhbI5HzjST9A=
+Received: from yoda.home (unknown [24.203.50.76])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E9EF21EC04D6;
-        Wed,  2 Dec 2020 19:05:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606932301;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=TE/OHmqT8H79QFUkFqfZpqHgm6sL6Er/QHxIG08YOvs=;
-        b=Lt95ZAietdiaN+EX4738+KleeNMsD1BTxd979xsP3J6hW1i7w3xjnAy/cYxdgA2WsbqbaI
-        rKF88mEp2+JHkQbWr2CEyhAzUL8m3DZE1RbF/pSpILclcy5CkyGgMGVoOUjee57OuWgFcK
-        6h3i/W1wSRS/SPW6lifjufD9dY60veg=
-Date:   Wed, 2 Dec 2020 19:04:56 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Andy Lutomirski <luto@amacapital.net>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v0 00/19] x86/insn: Add an insn_decode() API
-Message-ID: <20201202180456.GH2951@zn.tnic>
-References: <20201124101952.7909-1-bp@alien8.de>
- <20201124174647.GI4009@zn.tnic>
- <CALCETrXXuUmM6LPj36h2KLw5zuKUPnmrACcOq2-8XfXzWXQt7Q@mail.gmail.com>
- <20201129175005.7e07a9f799e888ffd5f4ed67@kernel.org>
- <20201130134442.GB6019@zn.tnic>
- <20201201022145.48201fe165a28cb0e1f042ae@kernel.org>
+        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id E66E788AD5;
+        Wed,  2 Dec 2020 13:06:37 -0500 (EST)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id DFBC82DA0208;
+        Wed,  2 Dec 2020 13:06:36 -0500 (EST)
+Date:   Wed, 2 Dec 2020 13:06:36 -0500 (EST)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Vitaly Wool <vitaly.wool@konsulko.com>
+cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Bin Meng <bin.meng@windriver.com>,
+        Anup Patel <anup@brainfault.org>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH] arch/riscv: enable XIP
+In-Reply-To: <20201202150130.16936-1-vitaly.wool@konsulko.com>
+Message-ID: <5916q277-o720-n6q-9o2-oo9nsqr6q63q@syhkavp.arg>
+References: <20201202150130.16936-1-vitaly.wool@konsulko.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201201022145.48201fe165a28cb0e1f042ae@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: 1F178C70-34C9-11EB-9060-D152C8D8090B-78420484!pb-smtp1.pobox.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 02:21:45AM +0900, Masami Hiramatsu wrote:
-> Because it overruns the buffer. Maybe -E2BIG/ENODATA or any other
-> error (except for -EINVAL) is OK :)
+On Wed, 2 Dec 2020, Vitaly Wool wrote:
 
-ENODATA it is. :)
+> Introduce XIP (eXecute In Place) support for RISC-V platforms.
+> It allows code to be executed directly from non-volatile storage
+> directly addressable by the CPU, such as QSPI NOR flash which can
+> be found on many RISC-V platforms. This makes way for significant
+> optimization of RAM footprint. The XIP kernel is not compressed
+> since it has to run directly from flash, so it will occupy more
+> space on the non-volatile storage to The physical flash address
+> used to link the kernel object files and for storing it has to
+> be known at compile time and is represented by a Kconfig option.
+> 
+> XIP on RISC-V will currently only work on MMU-enabled kernels.
+> 
+> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
 
-And propagating that error value is easy because the err_out: labels are
-all coming from the validate_next() error path so we basically know that
-the buffer has ended.
+That's nice!
 
-./insn_sanity: Success: decoded and checked 10000 random instructions with 0 errors (seed:0x7bdfa56e)
-insn buffer:
-0x48 0xcf 0x48 0x83 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 
-supplied buf size: 15, ret 0
-supplied buf size: 2, ret 0
-supplied buf size: 3, ret 0
-supplied buf size: 4, ret 0
-insn_decode: entry
-insn_decode: will get_length
-insn_get_immediate: getting immediate
-insn_get_displacement: getting displacement
-insn_get_sib: getting sib
-insn_get_modrm: entry
-insn_get_opcode: entry
-insn_get_prefixes: entry, prefixes->got: 0
-insn_get_prefixes: 1
-insn_get_prefixes: REX
-insn_get_prefixes: VEX
-insn_get_prefixes: validate_next: 0
-insn_get_prefixes: insn->next_byte: 0x7ffc211eb661, insn->end_kaddr: 0x7ffc211eb661
-insn_get_prefixes: errored out
-supplied buf size: 1, ret -61
+Suggestion for a future enhancement:
+To save on ROM storage, and given that the .data segment has to be 
+copied to RAM anyway, you could store .data compressed and decompress it 
+to RAM instead. See commit ca8b5d97d6bf for inspiration. In fact, many 
+parts there could be shared.
 
--- 
-Regards/Gruss,
-    Boris.
+More comments below.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> +#define __XIP_FIXUP(addr) \
+> +	(((long)(addr) >= CONFIG_XIP_PHYS_ADDR && \
+> +	  (long)(addr) <= CONFIG_XIP_PHYS_ADDR + SZ_16M) ? \
+> +	(long)(addr) - CONFIG_XIP_PHYS_ADDR + CONFIG_XIP_PHYS_RAM_BASE - XIP_OFFSET : \
+> +	(long)(addr))
+
+Here you should cast to unsigned long instead.
+
+> +#ifdef CONFIG_XIP_KERNEL
+> +	la a0, _trampoline_pg_dir
+> +	lw t0, _xip_fixup
+> +	add a0, a0, t0
+[...]
+> +_xip_fixup:
+> +	.dword CONFIG_XIP_PHYS_RAM_BASE - CONFIG_XIP_PHYS_ADDR - XIP_OFFSET
+> +#endif
+
+Here _xip_fixup is a dword but you're loading it as a word.
+This won't work for both rv32 and rv64.
+
+> +SECTIONS
+> +{
+> +	/* Beginning of code and text segment */
+> +	. = XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR);
+> +	_xiprom = .;
+> +	_start = .;
+> +	HEAD_TEXT_SECTION
+> +	INIT_TEXT_SECTION(PAGE_SIZE)
+> +	/* we have to discard exit text and such at runtime, not link time */
+> +	.exit.text :
+> +	{
+> +		EXIT_TEXT
+> +	}
+> +
+> +	.text : {
+> +		_text = .;
+> +		_stext = .;
+> +		TEXT_TEXT
+> +		SCHED_TEXT
+> +		CPUIDLE_TEXT
+> +		LOCK_TEXT
+> +		KPROBES_TEXT
+> +		ENTRY_TEXT
+> +		IRQENTRY_TEXT
+> +		SOFTIRQENTRY_TEXT
+> +		*(.fixup)
+> +		_etext = .;
+> +	}
+> +	RO_DATA(L1_CACHE_BYTES)
+> +	.srodata : {
+> +		*(.srodata*)
+> +	}
+> +	.init.rodata : {
+> +		INIT_SETUP(16)
+> +		INIT_CALLS
+> +		CON_INITCALL
+> +		INIT_RAM_FS
+> +	}
+> +	_exiprom = ALIGN(PAGE_SIZE);		/* End of XIP ROM area */
+
+Why do you align this to a page size?
+
+> +
+> +
+> +/*
+> + * From this point, stuff is considered writable and will be copied to RAM
+> + */
+> +	__data_loc = ALIGN(PAGE_SIZE);	/* location in file */
+
+Same question here?
+
+> +	. = PAGE_OFFSET;		/* location in memory */
+> +
+> +	_sdata = .;			/* Start of data section */
+> +	_data = .;
+> +	RW_DATA(L1_CACHE_BYTES, PAGE_SIZE, THREAD_SIZE)
+> +	_edata = .;
+> +	__start_ro_after_init = .;
+> +	.data.ro_after_init : AT(ADDR(.data.ro_after_init) - LOAD_OFFSET) {
+> +		*(.data..ro_after_init)
+> +	}
+> +	__end_ro_after_init = .;
+> +
+> +	. = ALIGN(PAGE_SIZE);
+
+And again here?
+
+> +#ifdef CONFIG_XIP_KERNEL
+> +/* called from head.S with MMU off */
+> +asmlinkage void __init __copy_data(void)
+> +{
+> +	void *from = (void *)(&_sdata);
+> +	void *end = (void *)(&_end);
+> +	void *to = (void *)CONFIG_XIP_PHYS_RAM_BASE;
+> +	size_t sz = (size_t)(end - from);
+> +
+> +	memcpy(to, from, sz);
+> +}
+> +#endif
+
+Where is the stack located when this executes? The stack for the init 
+task is typically found within the .data area. At least on ARM it is. 
+You don't want to overwrite your stack here.
+
+
+Nicolas
