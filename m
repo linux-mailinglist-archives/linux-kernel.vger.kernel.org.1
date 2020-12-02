@@ -2,144 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BAE2CC4EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B592CC4EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730903AbgLBSUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:20:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726485AbgLBSUs (ORCPT
+        id S2387621AbgLBSVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:21:18 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:59568 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726283AbgLBSVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:20:48 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28647C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:20:08 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id 7so5877417ejm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:20:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vUYpkx4ZxrDZ2OB79kEFZcfOtkBumPZVnlZSjd2FA04=;
-        b=moUFtLlwZPLByitqRiOIeYwNXMoPlJuxBLz1gnCVGT/YxONaXaQd+HHpDx/usjhUoY
-         5HHpRaw/e2q5/kO6PgCS5dRAqptGZ5U1I2bu+XXnqLq32y+RNyUTx++i2S2Lntc2qpXN
-         JN7JaprMy+/t7I8bbL2UUkPTfai13m7shfpIidkm6sH5EAH3e/Z1d17i87iLwD6DYTx7
-         1g8EM/QoGi5NGaWu9NeezrI81Oi3K5o+9xAotLH2TLk7ZodZ0pzmzf2/OAiuY87cUNbL
-         XFeq1wEVUPkRHGFnd95IFbsMUzFuv44vtuMraPj3fgnGHW0EvkmN9wKWM7V5SpbjiEGx
-         tumg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vUYpkx4ZxrDZ2OB79kEFZcfOtkBumPZVnlZSjd2FA04=;
-        b=RUb91JdIp8F80LG8xdMEYKSEVm1RvD+ZHTJwxN5C5Yy89PUra/sRCG9TsNTQfkSBkj
-         zXt9AouDI4ZEaXUNVsb/aEve29b4xujX0Vzlf52pctG3Gd8vUpSgN8brtNNmy00efiFp
-         DIO2VnFpN2QXy2W4rk96hbeReQAdVjtjWOSPcLHL6u6p3sDAejEzJ97e7I7995cNf/m7
-         xQo/gH+xs3+m3bq80t0KcXWh0Ah8a+vfFQm+oDWSpq8QxVIatVywoI1iPJtI/gUrX/1p
-         cZkq49YP1Pe8EoYsTcuWaz0RwmLjxbLJBeXPvzRquWSStOALHu1x+6z2Ix1V/T64wipi
-         U/NA==
-X-Gm-Message-State: AOAM531roq+8aPei7S95zaCnRvqBdr/6fy+l8kyAeSWMUQhdJQgaaXP6
-        LQGHFxbuSKbWfJvziM/zNktXaU/CczuPWkQUMLVWeg==
-X-Google-Smtp-Source: ABdhPJxhoDVGNsxW1twKjz90nP5sCB7siGQ9GxUNs9GysumSl0PZYi8K74h2MRBTmcUieCx3KA1tGAu15948W9zqEMI=
-X-Received: by 2002:a17:906:c04d:: with SMTP id bm13mr956901ejb.519.1606933206862;
- Wed, 02 Dec 2020 10:20:06 -0800 (PST)
+        Wed, 2 Dec 2020 13:21:17 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B2IAGEP060754;
+        Wed, 2 Dec 2020 18:20:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=NvXmPPCGdV/IwlwX5m8biP5G7/GLn4XsbadAGDcm+UM=;
+ b=aiAw6KzZJljLGyousX8MtLMVHd63vVGtR1foBlXW8W0fuHHk2AKDixJYmbwQ5Pil7kwy
+ 0qpdDkeRikZjMEH/vNv5XFOb57gzQDhAdKzpRZMepwCqVsi/VbRAGofkImCr9wXZWqbm
+ NcOdTJmJ7LSNhsQjefYc3uF5eTau2wq83ViDfGa5q9WK1n+R0DywICH3yLVGkZEQ7r5o
+ BweQnoSYe20iiXboQ20a1lUE3gKisul58g2Vxng52y10/Fo7GPMASeRU/FlJ71HNZqe2
+ U13Y9NdtAqxTjdxltH0OtxcdxcUdduNko70s6cxDEhztIy4B92iqSbcKswOyhThmXhfj TQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 353dyqt01w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 02 Dec 2020 18:20:24 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B2IABEx151364;
+        Wed, 2 Dec 2020 18:20:24 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 3540f0rnrh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Dec 2020 18:20:23 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B2IKLKE003344;
+        Wed, 2 Dec 2020 18:20:21 GMT
+Received: from [192.168.0.108] (/70.36.60.91)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 02 Dec 2020 10:20:20 -0800
+Subject: Re: [PATCH RFC 02/39] KVM: x86/xen: intercept xen hypercalls if
+ enabled
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+References: <20190220201609.28290-1-joao.m.martins@oracle.com>
+ <20190220201609.28290-3-joao.m.martins@oracle.com>
+ <b56f763e6bf29a65a11b7a36c4d7bfa79b2ec1b2.camel@infradead.org>
+ <240b82b3-9621-8b08-6d37-75da6a61b3ce@oracle.com>
+ <684bd330949528ecd352d4a381165c2681c0bae9.camel@infradead.org>
+From:   Ankur Arora <ankur.a.arora@oracle.com>
+Message-ID: <9971be28-8a0f-a108-6d5e-6a891e395b5f@oracle.com>
+Date:   Wed, 2 Dec 2020 10:20:17 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201202052330.474592-4-pasha.tatashin@soleen.com> <20201202163145.GT1161629@iweiny-DESK2.sc.intel.com>
- <20201202163312.GU1161629@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20201202163312.GU1161629@iweiny-DESK2.sc.intel.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Wed, 2 Dec 2020 13:19:31 -0500
-Message-ID: <CA+CK2bBhW2hBystEfJyJ77xGNY9LHWLOLNN44E8hSuwO2yNs0Q@mail.gmail.com>
-Subject: Re: [PATCH 3/6] mm/gup: make __gup_longterm_locked common
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <684bd330949528ecd352d4a381165c2681c0bae9.camel@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
+ suspectscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012020108
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ clxscore=1015 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
+ suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 11:33 AM Ira Weiny <ira.weiny@intel.com> wrote:
->
-> On Wed, Dec 02, 2020 at 08:31:45AM -0800, 'Ira Weiny' wrote:
-> > On Wed, Dec 02, 2020 at 12:23:27AM -0500, Pavel Tatashin wrote:
-> > > __gup_longterm_locked() has CMA || FS_DAX version and a common stub
-> > > version. In the preparation of prohibiting longterm pinning of pages from
-> > > movable zone make the CMA || FS_DAX version common, and delete the stub
-> > > version.
-> > >
-> > > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> > > ---
-> > >  mm/gup.c | 13 -------------
-> > >  1 file changed, 13 deletions(-)
-> > >
-> > > diff --git a/mm/gup.c b/mm/gup.c
-> > > index 3a76c005a3e2..0e2de888a8b0 100644
-> > > --- a/mm/gup.c
-> > > +++ b/mm/gup.c
-> > > @@ -1567,7 +1567,6 @@ struct page *get_dump_page(unsigned long addr)
-> > >  }
-> > >  #endif /* CONFIG_ELF_CORE */
-> > >
-> > > -#if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
-> > >  #ifdef CONFIG_FS_DAX
-> > >  static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
-> > >  {
-> > > @@ -1757,18 +1756,6 @@ static long __gup_longterm_locked(struct mm_struct *mm,
-> > >             kfree(vmas_tmp);
-> > >     return rc;
-> > >  }
-> >
-> > Isn't this going to potentially allocate vmas_tmp only to not need it when
-> > !FS_DAX and !CMA?
->
-> To clarify, when FOLL_LONGTERM is set...
+On 2020-12-02 12:03 a.m., David Woodhouse wrote:
+> On Tue, 2020-12-01 at 21:19 -0800, Ankur Arora wrote:
+>>> +             for (i = 0; i < PAGE_SIZE / sizeof(instructions); i++) {
+>>> +                     *(u32 *)&instructions[1] = i;
+>>> +                     if (kvm_vcpu_write_guest(vcpu,
+>>> +                                              page_addr + (i * sizeof(instructions)),
+>>> +                                              instructions, sizeof(instructions)))
+>>> +                             return 1;
+>>> +             }
+>>
+>> HYPERVISOR_iret isn't supported on 64bit so should be ud2 instead.
+> 
+> Yeah, I got part way through typing that part but concluded it probably
+> wasn't a fast path that absolutely needed to be emulated in the kernel.
+> 
+> The VMM can inject the UD# when it receives the hypercall.
 
-Yes, this is the case. We need that because once migration is checked
-for all allocations, not only CMA, we need vmas_tmp for all cases.
+That would work as well but if it's a straight ud2 on the hypercall
+page, wouldn't the guest just execute it when/if it does a
+HYPERVISOR_iret?
 
-Pasha
+Ankur
 
->
-> IRa
->
-> >
-> > Ira
-> >
-> > > -#else /* !CONFIG_FS_DAX && !CONFIG_CMA */
-> > > -static __always_inline long __gup_longterm_locked(struct mm_struct *mm,
-> > > -                                             unsigned long start,
-> > > -                                             unsigned long nr_pages,
-> > > -                                             struct page **pages,
-> > > -                                             struct vm_area_struct **vmas,
-> > > -                                             unsigned int flags)
-> > > -{
-> > > -   return __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
-> > > -                                  NULL, flags);
-> > > -}
-> > > -#endif /* CONFIG_FS_DAX || CONFIG_CMA */
-> > >
-> > >  static bool is_valid_gup_flags(unsigned int gup_flags)
-> > >  {
-> > > --
-> > > 2.25.1
-> > >
-> > >
-> >
+
+> 
+> I appreciate it *is* a guest-visible difference, if we're being really
+> pedantic, but I don't think we were even going to be able to 100% hide
+> the fact that it's not actually Xen.
+> 
