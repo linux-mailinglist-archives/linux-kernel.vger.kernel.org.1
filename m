@@ -2,184 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127042CC4DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:15:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521932CC4F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:24:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389400AbgLBSP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:15:29 -0500
-Received: from mailoutvs32.siol.net ([185.57.226.223]:43810 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2389384AbgLBSP2 (ORCPT
+        id S1730895AbgLBSXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:23:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729012AbgLBSXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:15:28 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 62C09522074;
-        Wed,  2 Dec 2020 19:14:45 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 1CDIGtcVqr1T; Wed,  2 Dec 2020 19:14:44 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id CD5CB522073;
-        Wed,  2 Dec 2020 19:14:44 +0100 (CET)
-Received: from kista.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id 3B6E0521DDC;
-        Wed,  2 Dec 2020 19:14:44 +0100 (CET)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Andre Przywara <andre.przywara@arm.com>
-Cc:     Icenowy Zheng <icenowy@aosc.xyz>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yangtao Li <frank@allwinnertech.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-clk@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>
-Subject: Re: [PATCH 4/8] clk: sunxi-ng: Add support for the Allwinner H616 R-CCU
-Date:   Wed, 02 Dec 2020 19:20:56 +0100
-Message-ID: <3151878.LmPXbFMbMm@kista>
-In-Reply-To: <20201202135409.13683-5-andre.przywara@arm.com>
-References: <20201202135409.13683-1-andre.przywara@arm.com> <20201202135409.13683-5-andre.przywara@arm.com>
+        Wed, 2 Dec 2020 13:23:41 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3A2C0613D4;
+        Wed,  2 Dec 2020 10:22:54 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id h21so10991206wmb.2;
+        Wed, 02 Dec 2020 10:22:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7Q0DeOHNN0molUdBXmfUTbrUNjvgkKKs8RuBf1nEwac=;
+        b=akiQqHrDY+J7iANyemLJb7ZkkQMgqWdfXV3uiwhBv9k7KSqDRfKO0l7CBFZdRlippZ
+         chDFgor/uouSlFGUVD9cDjb22i4K5y0/6UFnjjnMcFKZKhV75AzIpSyONdW9stF3Xwfa
+         pB1Wc3qg1LYGMIC6jcq09UJuzHBi64V01inzGT+m1V0xYLOd2IkFglKD6/z3JHUSBr2l
+         tECycgy6GidKn7BjhdnMuRGxOFk8XI/jUuf3s4Fblh/NQbpHXWmhMQ5q/YkC1vfvF+ro
+         emTOdIeFxC0dPjQgPOqSV1cboJ+5MANgLInMi6NonxR/xmhqlKeWNhuQBXWKJzNJO4pX
+         TAHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7Q0DeOHNN0molUdBXmfUTbrUNjvgkKKs8RuBf1nEwac=;
+        b=ETYhvbOfzC6rMBZaxkopGikDoGpdq5SwcRIcUMZL2A8/utdhs0VYEk2w72BXAFrfS0
+         W+jyEp5zJ7bidyLgrsq46uCBR3SPLfIZUxGn9vAUaLk2CIupJ2X8+4uPh4GUkPTarzSw
+         Sc0cs66zH2GDEmdgt2koMZuX1Of49fu6fuj1zC6AIVPO02qfXLkZHpwEZzb2ATJoZcgZ
+         OlgFQxyj0BvZxQD5o17Z+DqohAwwKjGv+nOsr/y+vDGFz5wN17I0oseiLcrc6r9v0S7t
+         fJ4nl1Odn8LBUeTYmdN0VNGuhSSQqpp6q8FdiNr/eTGU/TW7x+6UOXSQEExsn+7FDdhX
+         sXvQ==
+X-Gm-Message-State: AOAM530VEL+BeFvklIdiakYGAcjOl6JvdJ6EdTGI3dmO3Mudj4Qv6EJ6
+        FzQqDvC46gahKmif9smxRx3fWkbJEVGB9ElZ3OM=
+X-Google-Smtp-Source: ABdhPJzqwvz25DNmqAysi1yeqEILO3da91lUGtp0ysPUKW1zNQuscdLxoh72mY2vBaQyw+G0nNmYjxN7O1K87zTLmCg=
+X-Received: by 2002:a7b:c385:: with SMTP id s5mr4414705wmj.170.1606933373565;
+ Wed, 02 Dec 2020 10:22:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
+ <20201202094717.GX4077@smile.fi.intel.com> <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
+ <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com> <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
+In-Reply-To: <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
+From:   Yun Levi <ppbuk5246@gmail.com>
+Date:   Thu, 3 Dec 2020 03:22:42 +0900
+Message-ID: <CAM7-yPRBPP6SFzdmwWF5Y99g+aWcp=OY9Uvp-5h1MSDPmsORNw@mail.gmail.com>
+Subject: 
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>, dushistov@mail.ru,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
+        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sreda, 02. december 2020 ob 14:54:05 CET je Andre Przywara napisal(a):
-> The clocks itself are identical to the H6 R-CCU, it's just that the H616
-> has not all of them implemented (or connected).
-> 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> ---
->  drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c | 47 +++++++++++++++++++++++++-
->  drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h |  3 +-
->  2 files changed, 48 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c b/drivers/clk/sunxi-ng/
-ccu-sun50i-h6-r.c
-> index 50f8d1bc7046..119d1797f501 100644
-> --- a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c
-> +++ b/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c
-> @@ -136,6 +136,15 @@ static struct ccu_common *sun50i_h6_r_ccu_clks[] = {
->  	&w1_clk.common,
->  };
->  
-> +static struct ccu_common *sun50i_h616_r_ccu_clks[] = {
-> +	&r_apb1_clk.common,
-> +	&r_apb2_clk.common,
-> +	&r_apb1_twd_clk.common,
-> +	&r_apb2_i2c_clk.common,
-> +	&r_apb1_ir_clk.common,
-> +	&ir_clk.common,
-> +};
-> +
->  static struct clk_hw_onecell_data sun50i_h6_r_hw_clks = {
->  	.hws	= {
->  		[CLK_AR100]		= &ar100_clk.common.hw,
-> @@ -152,7 +161,20 @@ static struct clk_hw_onecell_data sun50i_h6_r_hw_clks = 
-{
->  		[CLK_IR]		= &ir_clk.common.hw,
->  		[CLK_W1]		= &w1_clk.common.hw,
->  	},
-> -	.num	= CLK_NUMBER,
-> +	.num	= CLK_NUMBER_H616,
+On Thu, Dec 3, 2020 at 2:26 AM Yury Norov <yury.norov@gmail.com> wrote:
 
-Above macro should be CLK_NUMBER_H6.
+> Also look at lib/find_bit_benchmark.c
+Thanks. I'll see.
 
-> +};
-> +
-> +static struct clk_hw_onecell_data sun50i_h616_r_hw_clks = {
-> +	.hws	= {
-> +		[CLK_R_AHB]		= &r_ahb_clk.hw,
-> +		[CLK_R_APB1]		= 
-&r_apb1_clk.common.hw,
-> +		[CLK_R_APB2]		= 
-&r_apb2_clk.common.hw,
-> +		[CLK_R_APB1_TWD]	= &r_apb1_twd_clk.common.hw,
+> We need find_next_*_bit() because find_first_*_bit() can start searching only at word-aligned
+> bits. In the case of find_last_*_bit(), we can start at any bit. So, if my understanding is correct,
+> for the purpose of reverse traversing we can go with already existing find_last_bit(),
 
-Do we know if TWD exists? I tested I2C and IR. What is your source for these 
-clocks?
+Thank you. I haven't thought that way.
+But I think if we implement reverse traversing using find_last_bit(),
+we have a problem.
+Suppose the last bit 0, 1, 2, is set.
+If we start
+    find_last_bit(bitmap, 3) ==> return 2;
+    find_last_bit(bitmap, 2) ==> return 1;
+    find_last_bit(bitmap, 1) ==> return 0;
+    find_last_bit(bitmap, 0) ===> return 0? // here we couldn't
+distinguish size 0 input or 0 is set
 
-Best regards,
-Jernej
-
-> +		[CLK_R_APB2_I2C]	= &r_apb2_i2c_clk.common.hw,
-> +		[CLK_R_APB1_IR]		= 
-&r_apb1_ir_clk.common.hw,
-> +		[CLK_IR]		= &ir_clk.common.hw,
-> +	},
-> +	.num	= CLK_NUMBER_H616,
->  };
->  
->  static struct ccu_reset_map sun50i_h6_r_ccu_resets[] = {
-> @@ -165,6 +187,12 @@ static struct ccu_reset_map sun50i_h6_r_ccu_resets[] = 
-{
->  	[RST_R_APB1_W1]		=  { 0x1ec, BIT(16) },
->  };
->  
-> +static struct ccu_reset_map sun50i_h616_r_ccu_resets[] = {
-> +	[RST_R_APB1_TWD]	=  { 0x12c, BIT(16) },
-> +	[RST_R_APB2_I2C]	=  { 0x19c, BIT(16) },
-> +	[RST_R_APB1_IR]		=  { 0x1cc, BIT(16) },
-> +};
-> +
->  static const struct sunxi_ccu_desc sun50i_h6_r_ccu_desc = {
->  	.ccu_clks	= sun50i_h6_r_ccu_clks,
->  	.num_ccu_clks	= ARRAY_SIZE(sun50i_h6_r_ccu_clks),
-> @@ -175,6 +203,16 @@ static const struct sunxi_ccu_desc sun50i_h6_r_ccu_desc 
-= {
->  	.num_resets	= ARRAY_SIZE(sun50i_h6_r_ccu_resets),
->  };
->  
-> +static const struct sunxi_ccu_desc sun50i_h616_r_ccu_desc = {
-> +	.ccu_clks	= sun50i_h616_r_ccu_clks,
-> +	.num_ccu_clks	= ARRAY_SIZE(sun50i_h616_r_ccu_clks),
-> +
-> +	.hw_clks	= &sun50i_h616_r_hw_clks,
-> +
-> +	.resets		= sun50i_h616_r_ccu_resets,
-> +	.num_resets	= ARRAY_SIZE(sun50i_h616_r_ccu_resets),
-> +};
-> +
->  static void __init sunxi_r_ccu_init(struct device_node *node,
->  				    const struct sunxi_ccu_desc 
-*desc)
->  {
-> @@ -195,3 +233,10 @@ static void __init sun50i_h6_r_ccu_setup(struct 
-device_node *node)
->  }
->  CLK_OF_DECLARE(sun50i_h6_r_ccu, "allwinner,sun50i-h6-r-ccu",
->  	       sun50i_h6_r_ccu_setup);
-> +
-> +static void __init sun50i_h616_r_ccu_setup(struct device_node *node)
-> +{
-> +	sunxi_r_ccu_init(node, &sun50i_h616_r_ccu_desc);
-> +}
-> +CLK_OF_DECLARE(sun50i_h616_r_ccu, "allwinner,sun50i-h616-r-ccu",
-> +	       sun50i_h616_r_ccu_setup);
-> diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h b/drivers/clk/sunxi-ng/
-ccu-sun50i-h6-r.h
-> index 782117dc0b28..128302696ca1 100644
-> --- a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h
-> +++ b/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h
-> @@ -14,6 +14,7 @@
->  
->  #define CLK_R_APB2	3
->  
-> -#define CLK_NUMBER	(CLK_W1 + 1)
-> +#define CLK_NUMBER_H6	(CLK_W1 + 1)
-> +#define CLK_NUMBER_H616	(CLK_IR + 1)
->  
->  #endif /* _CCU_SUN50I_H6_R_H */
-> -- 
-> 2.17.5
-> 
-> 
+and the for_each traverse routine prevent above case by returning size
+(nbits) using find_next_bit.
+So, for compatibility and the same expected return value like next traversing,
+I think we need to find_prev_*_bit routine. if my understanding is correct.
 
 
+>  I think this patch has some good catches. We definitely need to implement
+> find_last_zero_bit(), as it is used by fs/ufs, and their local implementation is not optimal.
+>
+> We also should consider adding reverse traversing macros based on find_last_*_bit(),
+> if there are proposed users.
+
+Not only this, I think 'steal_from_bitmap_to_front' can be improved
+using ffind_prev_zero_bit
+like
+
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index af0013d3df63..9debb9707390 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -2372,7 +2372,6 @@ static bool steal_from_bitmap_to_front(struct
+btrfs_free_space_ctl *ctl,
+  u64 bitmap_offset;
+  unsigned long i;
+  unsigned long j;
+- unsigned long prev_j;
+  u64 bytes;
+
+  bitmap_offset = offset_to_bitmap(ctl, info->offset);
+@@ -2388,20 +2387,15 @@ static bool steal_from_bitmap_to_front(struct
+btrfs_free_space_ctl *ctl,
+  return false;
+
+  i = offset_to_bit(bitmap->offset, ctl->unit, info->offset) - 1;
+- j = 0;
+- prev_j = (unsigned long)-1;
+- for_each_clear_bit_from(j, bitmap->bitmap, BITS_PER_BITMAP) {
+- if (j > i)
+- break;
+- prev_j = j;
+- }
+- if (prev_j == i)
++ j = find_prev_zero_bit(bitmap->bitmap, BITS_PER_BITMAP, i);
++
++ if (j == i)
+  return false;
+
+- if (prev_j == (unsigned long)-1)
++ if (j == BITS_PER_BITMAP)
+  bytes = (i + 1) * ctl->unit;
+  else
+- bytes = (i - prev_j) * ctl->unit;
++ bytes = (i - j) * ctl->unit;
+
+  info->offset -= bytes;
+  info->bytes += bytes;
+
+Thanks.
+
+HTH
+Levi.
