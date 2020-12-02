@@ -2,55 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521E02CB919
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7070E2CB938
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388286AbgLBJjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:39:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
+        id S2388453AbgLBJkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:40:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388251AbgLBJjJ (ORCPT
+        with ESMTP id S1728186AbgLBJjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:39:09 -0500
+        Wed, 2 Dec 2020 04:39:51 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623D6C0613D4;
-        Wed,  2 Dec 2020 01:38:29 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BC7C061A48;
+        Wed,  2 Dec 2020 01:38:31 -0800 (PST)
 Date:   Wed, 02 Dec 2020 09:38:27 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606901907;
+        s=2020; t=1606901908;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TAuxjYBKISItdRCewIBg69/sL7aoxkOickZXDOHQkSY=;
-        b=YncyvtwUvdZ3K2WWp+R0Frp69LqPFhiysemU+mj9DiTpcAI2Ted6JoKoBqPlz5CxIny809
-        UyLYmNwNykAcnzOJitwuwMYzR4Gqh+j+lgoJw1T0JPpw+H3ZLAIQQgjid7WeSpleXAlIHP
-        +tdMWugMzfpo3WIDBNvynIZy6DhsY6t5Ihy7QUFf8KwIf0IutkRSGTC0a/OewB31qv0hVo
-        mM3G/T5qXoOMhRAWnGPjYX5QPtyUH0LTHBJFwiMblyxI4SlHfZxUgYsRtrHk+Vu5lDtPhH
-        Dx7ok9LtW0kdKOMLPHq7trI86oVwSaYsqXa9mfqYLKZyW0WM3tEe3+Tz7iR9ew==
+        bh=bsQud75acz2sIkEQYVG+Hdi0B02U84I8Zot75FVsthY=;
+        b=sMEYPF9IZLO7fX7rlfp+qKEpcWMSiDMvSHNVPM9cm749YTtH48dJJZA5IPDApIkwQgPNGm
+        I+TRgzLhkmR9gjaI5roPUZMerJWXFkDGsr38O69LAzByX3hHhN83QnWF4A9/Zy97fxl58B
+        bc8UeBfiV6tvZsLKoKSSB/mi2y7Cqgw6IsPjpLyaMEx4n4tzQT0kPuJwJ9sfqY9luYMFII
+        /VEoGDYWbt+FfNx3GI1E5BJQHujkUCqofsatm5rW+8mFqAD/tPCpkaBUd+/QJ4uNEa2Hoq
+        1qSW7MZumneRk21MVhLUd2r5wwxOUUL1PBEWNoko8VImxt3VxLCAFjVDpQIsCg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606901907;
+        s=2020e; t=1606901908;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TAuxjYBKISItdRCewIBg69/sL7aoxkOickZXDOHQkSY=;
-        b=rFfjQtlLf3xO0fWzX2pbvXNzReC3V4CiQek+RoFqINcgWpGbr/EEW/BRf9AB2DgpFAGGbL
-        vKxUs11mCksKdSBQ==
-From:   "tip-bot2 for Sven Schnelle" <tip-bot2@linutronix.de>
+        bh=bsQud75acz2sIkEQYVG+Hdi0B02U84I8Zot75FVsthY=;
+        b=VjzVumNRHcYnDWtBsMQlgZSeLR3l6RSLL+hS28LOLXPKqhZwVoYisqbOpIdlpkClbOQBjx
+        NebYVNF82025SSBw==
+From:   "tip-bot2 for Gabriel Krisman Bertazi" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/entry] entry: Rename enter_from_user_mode()
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+Subject: [tip: core/entry] signal: Expose SYS_USER_DISPATCH si_code type
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201201142755.31931-2-svens@linux.ibm.com>
-References: <20201201142755.31931-2-svens@linux.ibm.com>
+In-Reply-To: <20201127193238.821364-3-krisman@collabora.com>
+References: <20201127193238.821364-3-krisman@collabora.com>
 MIME-Version: 1.0
-Message-ID: <160690190718.3364.5857834705678386429.tip-bot2@tip-bot2>
+Message-ID: <160690190781.3364.9203452575091866466.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,73 +65,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/entry branch of tip:
 
-Commit-ID:     e2391bd55155ca98293b1bbaa44aa2815d3d054f
-Gitweb:        https://git.kernel.org/tip/e2391bd55155ca98293b1bbaa44aa2815d3d054f
-Author:        Sven Schnelle <svens@linux.ibm.com>
-AuthorDate:    Tue, 01 Dec 2020 15:27:51 +01:00
+Commit-ID:     1d7637d89cfce54a4f4a41c2325288c2f47470e8
+Gitweb:        https://git.kernel.org/tip/1d7637d89cfce54a4f4a41c2325288c2f47470e8
+Author:        Gabriel Krisman Bertazi <krisman@collabora.com>
+AuthorDate:    Fri, 27 Nov 2020 14:32:33 -05:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 02 Dec 2020 10:32:17 +01:00
+CommitterDate: Wed, 02 Dec 2020 10:32:16 +01:00
 
-entry: Rename enter_from_user_mode()
+signal: Expose SYS_USER_DISPATCH si_code type
 
-In order to make this function publicly available rename it so it can still
-be inlined. An additional enter_from_user_mode() function will be added with
-a later commit.
+SYS_USER_DISPATCH will be triggered when a syscall is sent to userspace
+by the Syscall User Dispatch mechanism.  This adjusts eventual
+BUILD_BUG_ON around the tree.
 
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201201142755.31931-2-svens@linux.ibm.com
+Reviewed-by: Andy Lutomirski <luto@kernel.org>
+Acked-by: Kees Cook <keescook@chromium.org>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20201127193238.821364-3-krisman@collabora.com
 
 ---
- kernel/entry/common.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/kernel/signal_compat.c    | 2 +-
+ include/uapi/asm-generic/siginfo.h | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index e661e70..8e294a7 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -11,7 +11,7 @@
- #include <trace/events/syscalls.h>
+diff --git a/arch/x86/kernel/signal_compat.c b/arch/x86/kernel/signal_compat.c
+index a7f3e12..d7b5187 100644
+--- a/arch/x86/kernel/signal_compat.c
++++ b/arch/x86/kernel/signal_compat.c
+@@ -31,7 +31,7 @@ static inline void signal_compat_build_tests(void)
+ 	BUILD_BUG_ON(NSIGBUS  != 5);
+ 	BUILD_BUG_ON(NSIGTRAP != 5);
+ 	BUILD_BUG_ON(NSIGCHLD != 6);
+-	BUILD_BUG_ON(NSIGSYS  != 1);
++	BUILD_BUG_ON(NSIGSYS  != 2);
  
- /**
-- * enter_from_user_mode - Establish state when coming from user mode
-+ * __enter_from_user_mode - Establish state when coming from user mode
-  *
-  * Syscall/interrupt entry disables interrupts, but user mode is traced as
-  * interrupts enabled. Also with NO_HZ_FULL RCU might be idle.
-@@ -20,7 +20,7 @@
-  * 2) Invoke context tracking if enabled to reactivate RCU
-  * 3) Trace interrupts off state
+ 	/* This is part of the ABI and can never change in size: */
+ 	BUILD_BUG_ON(sizeof(compat_siginfo_t) != 128);
+diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+index 7aacf93..d259700 100644
+--- a/include/uapi/asm-generic/siginfo.h
++++ b/include/uapi/asm-generic/siginfo.h
+@@ -286,7 +286,8 @@ typedef struct siginfo {
+  * SIGSYS si_codes
   */
--static __always_inline void enter_from_user_mode(struct pt_regs *regs)
-+static __always_inline void __enter_from_user_mode(struct pt_regs *regs)
- {
- 	arch_check_user_regs(regs);
- 	lockdep_hardirqs_off(CALLER_ADDR0);
-@@ -103,7 +103,7 @@ noinstr long syscall_enter_from_user_mode(struct pt_regs *regs, long syscall)
- {
- 	long ret;
+ #define SYS_SECCOMP	1	/* seccomp triggered */
+-#define NSIGSYS		1
++#define SYS_USER_DISPATCH 2	/* syscall user dispatch triggered */
++#define NSIGSYS		2
  
--	enter_from_user_mode(regs);
-+	__enter_from_user_mode(regs);
- 
- 	instrumentation_begin();
- 	local_irq_enable();
-@@ -115,7 +115,7 @@ noinstr long syscall_enter_from_user_mode(struct pt_regs *regs, long syscall)
- 
- noinstr void syscall_enter_from_user_mode_prepare(struct pt_regs *regs)
- {
--	enter_from_user_mode(regs);
-+	__enter_from_user_mode(regs);
- 	instrumentation_begin();
- 	local_irq_enable();
- 	instrumentation_end();
-@@ -304,7 +304,7 @@ __visible noinstr void syscall_exit_to_user_mode(struct pt_regs *regs)
- 
- noinstr void irqentry_enter_from_user_mode(struct pt_regs *regs)
- {
--	enter_from_user_mode(regs);
-+	__enter_from_user_mode(regs);
- }
- 
- noinstr void irqentry_exit_to_user_mode(struct pt_regs *regs)
+ /*
+  * SIGEMT si_codes
