@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0C72CC7EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF39C2CC7ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:39:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgLBUg4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Dec 2020 15:36:56 -0500
-Received: from mga04.intel.com ([192.55.52.120]:1712 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726885AbgLBUg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:36:56 -0500
-IronPort-SDR: Lmd6mXmjS40ZS/OXtCXxGdOEzzIBFPe5ZRDkmkEk5e2zvQYCWmW/V9EHs2y1oJeONOQN/As7t0
- dbiLSYCb9z/g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="170517888"
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="170517888"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 12:36:13 -0800
-IronPort-SDR: KVsXxdEIGH0WO4Y8DHnZZYFabT9nbW/WWcaHwhjqob/VY78THRaYMoNv4+w+tK2uc6xHgwfILX
- 9DcJ9CapMQ2g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="373296501"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga007.jf.intel.com with ESMTP; 02 Dec 2020 12:36:12 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 2 Dec 2020 12:36:12 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 2 Dec 2020 12:36:11 -0800
-Received: from orsmsx611.amr.corp.intel.com ([10.22.229.24]) by
- ORSMSX611.amr.corp.intel.com ([10.22.229.24]) with mapi id 15.01.1713.004;
- Wed, 2 Dec 2020 12:36:12 -0800
-From:   "Yu, Fenghua" <fenghua.yu@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Li, Xiaoyao" <xiaoyao.li@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
-Subject: RE: [PATCH v4 0/4] x86/bus_lock: Enable bus lock detection
-Thread-Topic: [PATCH v4 0/4] x86/bus_lock: Enable bus lock detection
-Thread-Index: AQHWwqPI8KLTpoG8aUep9FiVmYQyOankT8Zg
-Date:   Wed, 2 Dec 2020 20:36:11 +0000
-Message-ID: <34d86c3a1cd044f28f70202292e1d13a@intel.com>
-References: <20201124205245.4164633-1-fenghua.yu@intel.com>
-In-Reply-To: <20201124205245.4164633-1-fenghua.yu@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727489AbgLBUhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:37:40 -0500
+Received: from smtprelay0102.hostedemail.com ([216.40.44.102]:42372 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726162AbgLBUhk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 15:37:40 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 92772180A9F37;
+        Wed,  2 Dec 2020 20:36:59 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:4321:5007:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12679:12740:12760:12895:13069:13095:13255:13311:13357:13439:14659:21080:21433:21451:21627:21660:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: net61_25040e9273b6
+X-Filterd-Recvd-Size: 1890
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  2 Dec 2020 20:36:58 +0000 (UTC)
+Message-ID: <0ae44ac0611db460faebda5380661f3b8cb80630.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: add warning for lines starting with a
+ '#' in commit log
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        Peilin Ye <yepeilin.cs@gmail.com>
+Date:   Wed, 02 Dec 2020 12:36:57 -0800
+In-Reply-To: <20201202202229.120898-1-dwaipayanray1@gmail.com>
+References: <20201202202229.120898-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Dear maintainers,
+On Thu, 2020-12-03 at 01:52 +0530, Dwaipayan Ray wrote:
+> Commit log lines starting with a '#' can be dropped by git if
+> the corresponding commit message is reworded by a maintainer.
+> This minor error can be easily avoided if checkpatch warns
+> for the same.
 
-> A bus lock [1] is acquired through either split locked access to writeback (WB)
-> memory or any locked access to non-WB memory. This is typically >1000
-> cycles slower than an atomic operation within a cache line. It also disrupts
-> performance on other cores.
+This makes no sense to me.
 
-...
+How about:
 
-> Change Log:
-> v4:
-> - Fix a ratelimit wording issue in the doc (Randy).
-> - Patch 4 is acked by Randy (Randy).
+Commit log lines starting with # are dropped by git as comments so
+emit a warning for these comment lines.
 
-Friendly reminder about this series...
+Add a --fix option to insert a space before leading # comments
 
-Thank you very much in advance for your time!
+> +# Check for lines starting with a #
+> +		if ($in_commit_log && $line =~ /^#/) {
+> +			if (WARN("COMMIT_COMMENT_SYMBOL",
+> +				 "Commit log lines starting with a '#' will be dropped by git as a comment\n" . $herecurr) &&
 
--Fenghua
+Perhaps:
+
+				 "Commit log lines starting with '#' are dropped by git as comments\n" . $herecurr) &&
+
+> +			    $fix) {
+> +				$fixed[$fixlinenr] =~ s/^#/\t#/;
+
+I suggest using a space char and not a tab to avoid excess indentation.
+
+				$fixed[$fixlinenr] =~ s/^/ /;
+
+
