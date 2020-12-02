@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6472CC4E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BAE2CC4EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729063AbgLBSTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:19:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        id S1730903AbgLBSUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:20:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727647AbgLBSTE (ORCPT
+        with ESMTP id S1726485AbgLBSUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:19:04 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CE6C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:18:23 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id d17so5779640ejy.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:18:23 -0800 (PST)
+        Wed, 2 Dec 2020 13:20:48 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28647C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:20:08 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id 7so5877417ejm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:20:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YQeaA1Dq0iwRVoOoOLiIPsXTl4jei7rYdf1cRqUtg1k=;
-        b=Z9Mc5pQwDfDSLftb7VgHE3kifMC0VqSFW2ybnui5COkbMbGbI+iTxBcAxY6eLjzMko
-         QoLz1zVv+Ez25Z4oae6/ppwnGGxyZegi3ojhTmzEMvNn2PzMdbl7BSv4kQfQ3b1/7Cx+
-         Z6R0jZYiUBsl5UI7WIr4e5Ggidt3Kcjl5kMnoVFzSk0VXJEopVko6K0SeuqHFmNTSKPP
-         1fM091l0ic5k4RttR3MEwPl1qmMqU1EW/IJAlrtuWoz2ua7as8qCAvl3/BFqknaGvmt9
-         mkX5t8Lm5jqq+t02fjkNUuYgDhKlavJ2/ECrm7h0Z3iFJ7F4uT++qyJSCO9cbeucCOJc
-         m/Iw==
+        bh=vUYpkx4ZxrDZ2OB79kEFZcfOtkBumPZVnlZSjd2FA04=;
+        b=moUFtLlwZPLByitqRiOIeYwNXMoPlJuxBLz1gnCVGT/YxONaXaQd+HHpDx/usjhUoY
+         5HHpRaw/e2q5/kO6PgCS5dRAqptGZ5U1I2bu+XXnqLq32y+RNyUTx++i2S2Lntc2qpXN
+         JN7JaprMy+/t7I8bbL2UUkPTfai13m7shfpIidkm6sH5EAH3e/Z1d17i87iLwD6DYTx7
+         1g8EM/QoGi5NGaWu9NeezrI81Oi3K5o+9xAotLH2TLk7ZodZ0pzmzf2/OAiuY87cUNbL
+         XFeq1wEVUPkRHGFnd95IFbsMUzFuv44vtuMraPj3fgnGHW0EvkmN9wKWM7V5SpbjiEGx
+         tumg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YQeaA1Dq0iwRVoOoOLiIPsXTl4jei7rYdf1cRqUtg1k=;
-        b=tlUt7BVsXx8Q9D9nykz17y98fnbOzYPzlrHjbWhPP9t0AhpJnJbsc0e1GTn2qeaA3q
-         NjWoIxtsZ/00PTfUMbHyagS1CD5a0uFLLQ4Ih7d3xX4/MMzKwlaxFhwUKDpcfzljWo+l
-         97LWV9NWqya6lrROskXB6SSINDnZ9dZu/hARPxbZcZvu4sQN86kMKJBgmJeH5hiQjCio
-         AHnp/co/ujEPs6woSIGFPaUNdqqxu26FM5SUMyMAwNhm/CtbihI024xSsKq0fqialpYo
-         iqrrLULbG/p63F1ZYztR5LK/Fq74aPpRGmwvIatxKNzgGv+jnJJZ18yn2LPOJPizbAPb
-         kTRA==
-X-Gm-Message-State: AOAM531SyxzA4q5F3oV2nLRqdO5ZBZo8oZUM6NM9+e9MFQnvLntYEMLV
-        On6haSqH0zz4BJr39dbv5599+K7rTXlj39njHeqx+EGlbqABAA==
-X-Google-Smtp-Source: ABdhPJxGdklfBMtFTsl2nxnm3FfGKnRqwgHC/+GISnJy7tiqSoWFhVB4HpbuKFuM4aH5VgzUQfvoZGi5Cj2cw78OALU=
-X-Received: by 2002:a17:906:ce51:: with SMTP id se17mr1029058ejb.314.1606933102474;
- Wed, 02 Dec 2020 10:18:22 -0800 (PST)
+        bh=vUYpkx4ZxrDZ2OB79kEFZcfOtkBumPZVnlZSjd2FA04=;
+        b=RUb91JdIp8F80LG8xdMEYKSEVm1RvD+ZHTJwxN5C5Yy89PUra/sRCG9TsNTQfkSBkj
+         zXt9AouDI4ZEaXUNVsb/aEve29b4xujX0Vzlf52pctG3Gd8vUpSgN8brtNNmy00efiFp
+         DIO2VnFpN2QXy2W4rk96hbeReQAdVjtjWOSPcLHL6u6p3sDAejEzJ97e7I7995cNf/m7
+         xQo/gH+xs3+m3bq80t0KcXWh0Ah8a+vfFQm+oDWSpq8QxVIatVywoI1iPJtI/gUrX/1p
+         cZkq49YP1Pe8EoYsTcuWaz0RwmLjxbLJBeXPvzRquWSStOALHu1x+6z2Ix1V/T64wipi
+         U/NA==
+X-Gm-Message-State: AOAM531roq+8aPei7S95zaCnRvqBdr/6fy+l8kyAeSWMUQhdJQgaaXP6
+        LQGHFxbuSKbWfJvziM/zNktXaU/CczuPWkQUMLVWeg==
+X-Google-Smtp-Source: ABdhPJxhoDVGNsxW1twKjz90nP5sCB7siGQ9GxUNs9GysumSl0PZYi8K74h2MRBTmcUieCx3KA1tGAu15948W9zqEMI=
+X-Received: by 2002:a17:906:c04d:: with SMTP id bm13mr956901ejb.519.1606933206862;
+ Wed, 02 Dec 2020 10:20:06 -0800 (PST)
 MIME-Version: 1.0
 References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201202052330.474592-3-pasha.tatashin@soleen.com> <27224254-7e8d-cf4f-aebc-1ffe32ca65be@redhat.com>
-In-Reply-To: <27224254-7e8d-cf4f-aebc-1ffe32ca65be@redhat.com>
+ <20201202052330.474592-4-pasha.tatashin@soleen.com> <20201202163145.GT1161629@iweiny-DESK2.sc.intel.com>
+ <20201202163312.GU1161629@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20201202163312.GU1161629@iweiny-DESK2.sc.intel.com>
 From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Wed, 2 Dec 2020 13:17:46 -0500
-Message-ID: <CA+CK2bC2ac==fv13h7vF7AmkE8SXmoA1mT1QHvD_T575vSM5xA@mail.gmail.com>
-Subject: Re: [PATCH 2/6] mm/gup: don't pin migrated cma pages in movable zone
-To:     David Hildenbrand <david@redhat.com>
+Date:   Wed, 2 Dec 2020 13:19:31 -0500
+Message-ID: <CA+CK2bBhW2hBystEfJyJ77xGNY9LHWLOLNN44E8hSuwO2yNs0Q@mail.gmail.com>
+Subject: Re: [PATCH 3/6] mm/gup: make __gup_longterm_locked common
+To:     Ira Weiny <ira.weiny@intel.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Vlastimil Babka <vbabka@suse.cz>,
         Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
         Oscar Salvador <osalvador@suse.de>,
         Dan Williams <dan.j.williams@intel.com>,
         Sasha Levin <sashal@kernel.org>,
@@ -74,16 +76,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Looks like the right thing to me, thanks!
+On Wed, Dec 2, 2020 at 11:33 AM Ira Weiny <ira.weiny@intel.com> wrote:
 >
-> Reviewed-by: David Hildenbrand <david@redhat.com>
+> On Wed, Dec 02, 2020 at 08:31:45AM -0800, 'Ira Weiny' wrote:
+> > On Wed, Dec 02, 2020 at 12:23:27AM -0500, Pavel Tatashin wrote:
+> > > __gup_longterm_locked() has CMA || FS_DAX version and a common stub
+> > > version. In the preparation of prohibiting longterm pinning of pages from
+> > > movable zone make the CMA || FS_DAX version common, and delete the stub
+> > > version.
+> > >
+> > > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> > > ---
+> > >  mm/gup.c | 13 -------------
+> > >  1 file changed, 13 deletions(-)
+> > >
+> > > diff --git a/mm/gup.c b/mm/gup.c
+> > > index 3a76c005a3e2..0e2de888a8b0 100644
+> > > --- a/mm/gup.c
+> > > +++ b/mm/gup.c
+> > > @@ -1567,7 +1567,6 @@ struct page *get_dump_page(unsigned long addr)
+> > >  }
+> > >  #endif /* CONFIG_ELF_CORE */
+> > >
+> > > -#if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
+> > >  #ifdef CONFIG_FS_DAX
+> > >  static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
+> > >  {
+> > > @@ -1757,18 +1756,6 @@ static long __gup_longterm_locked(struct mm_struct *mm,
+> > >             kfree(vmas_tmp);
+> > >     return rc;
+> > >  }
+> >
+> > Isn't this going to potentially allocate vmas_tmp only to not need it when
+> > !FS_DAX and !CMA?
+>
+> To clarify, when FOLL_LONGTERM is set...
 
-Thank you,
+Yes, this is the case. We need that because once migration is checked
+for all allocations, not only CMA, we need vmas_tmp for all cases.
+
 Pasha
 
 >
-> --
-> Thanks,
+> IRa
 >
-> David / dhildenb
->
+> >
+> > Ira
+> >
+> > > -#else /* !CONFIG_FS_DAX && !CONFIG_CMA */
+> > > -static __always_inline long __gup_longterm_locked(struct mm_struct *mm,
+> > > -                                             unsigned long start,
+> > > -                                             unsigned long nr_pages,
+> > > -                                             struct page **pages,
+> > > -                                             struct vm_area_struct **vmas,
+> > > -                                             unsigned int flags)
+> > > -{
+> > > -   return __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
+> > > -                                  NULL, flags);
+> > > -}
+> > > -#endif /* CONFIG_FS_DAX || CONFIG_CMA */
+> > >
+> > >  static bool is_valid_gup_flags(unsigned int gup_flags)
+> > >  {
+> > > --
+> > > 2.25.1
+> > >
+> > >
+> >
