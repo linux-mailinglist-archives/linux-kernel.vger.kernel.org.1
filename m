@@ -2,162 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169162CBD4F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0D12CBD60
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729901AbgLBMtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:49:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727743AbgLBMti (ORCPT
+        id S1727785AbgLBMxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:53:13 -0500
+Received: from mout.kundenserver.de ([212.227.126.134]:54633 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgLBMxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:49:38 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A2EC0613CF;
-        Wed,  2 Dec 2020 04:48:57 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1335031D;
-        Wed,  2 Dec 2020 13:48:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1606913336;
-        bh=hEXBL65wsKMpoxqhRlC0JgpfzMG124QF1pk1LDmzaE8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L0T/EkypqD2YvTs10qu7uWmmrC2uttPectWXso0DbWpalELGRri0X7fyU2R5o3Iqf
-         Fy+G42bQQPJnQ9jH0T9hXkCoMvOBf5NTijP8Gk9qPgy7mW0Uddr/0pC65AH2IFqWSv
-         eCviVQi/vHvBuWgjaYi2LemP4BMjYim+q3/iIqrY=
-Date:   Wed, 2 Dec 2020 14:48:47 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
-Message-ID: <20201202124847.GG4486@pendragon.ideasonboard.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-19-djrscally@gmail.com>
- <20201130200719.GB4077@smile.fi.intel.com>
- <8a1b0f5b-1289-256b-b25d-cf8af43bdc84@gmail.com>
- <20201201185417.GL4077@smile.fi.intel.com>
- <20201201185548.GV4569@pendragon.ideasonboard.com>
- <20201201190523.GO4077@smile.fi.intel.com>
- <20201201190638.GZ4569@pendragon.ideasonboard.com>
- <20201201192137.GR4077@smile.fi.intel.com>
- <4831d44a-5bcc-8cf3-964c-c7dca6827458@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4831d44a-5bcc-8cf3-964c-c7dca6827458@redhat.com>
+        Wed, 2 Dec 2020 07:53:12 -0500
+Received: from orion.localdomain ([77.7.48.174]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1N6srH-1k75n72UEp-018Nq0; Wed, 02 Dec 2020 13:50:06 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, mareklindner@neomailbox.ch,
+        sw@simonwunderlich.de, a@unstable.cc, sven@narfation.org,
+        marcel@holtmann.org, johan.hedberg@gmail.com, roopa@nvidia.com,
+        nikolay@nvidia.com, edumazet@google.com, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, jmaloy@redhat.com, ying.xue@windriver.com,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH 1/7] net: 8021q: remove unneeded MODULE_VERSION() usage
+Date:   Wed,  2 Dec 2020 13:49:53 +0100
+Message-Id: <20201202124959.29209-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:14LCbfn7CIm5dANaBLGKWLgN3xQE4jDUCMo9evmbx9Co8uVlQ6w
+ AJFD6ZJ02fqB/4hkD8UvpR4MIY+/p78jpG5aWRjgTooqf+IEH1eqCBcShQ2vV0dQpZD0PsW
+ 05u5MlL8i5N7ZlPrZ7WXbFUNvvFZsQXgZIGpcP3ZrL1oewC6MVHvqtu//f0C4Yd8k+NfXYW
+ VmowlQvXdv7smIRHA6edw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UEMJ2Q5iJaA=:yleuAQn1i2Rjq/ui4VdE+g
+ jyh2pVLY6s01oGU46RcJlPLxSSX8L2w/MBwEmg20CK/7Y310Z8JlnqRGDpqOM2nJS5End/sP4
+ /9Y1onXdJEthEHAa9BhU58Pusym8OBWDtyGF2XsodDUOCLKO8Al2CEIPKNwkS7PYWLzUetR1u
+ 6d1JaWAKKnYd0bQb4e/+Rn24Bv8Hwjp283Oc/mJZgpdGd1YNZapCGRlUHnDPGMvLvbAQ4suoX
+ K+qAXCsVWaWIdCkwo5qNVHF2IP7XbGZ74/fYL0MRsOi+/PZ9Ibn6yD2QQuUvJzs0/dmQvKbzv
+ sAqugRZrYpsuSsj3PnTQPdjGB8zs3Qs8ObLlivdv6bthFn3+TxlFxmTZJ66mNuyYS4u/hwzBI
+ cHIUHiSeDY4ksdHCmLz6WWwusj+S5xSj2/yUf7nw695XokUprP0W5b5CKP7Zw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+Remove MODULE_VERSION(), as it isn't needed at all: the only version
+making sense is the kernel version.
 
-On Tue, Dec 01, 2020 at 09:34:58PM +0100, Hans de Goede wrote:
-> On 12/1/20 8:21 PM, Andy Shevchenko wrote:
-> > On Tue, Dec 01, 2020 at 09:06:38PM +0200, Laurent Pinchart wrote:
-> >> On Tue, Dec 01, 2020 at 09:05:23PM +0200, Andy Shevchenko wrote:
-> >>> On Tue, Dec 01, 2020 at 08:55:48PM +0200, Laurent Pinchart wrote:
-> >>>> On Tue, Dec 01, 2020 at 08:54:17PM +0200, Andy Shevchenko wrote:
-> >>>>> On Tue, Dec 01, 2020 at 08:30:03AM +0000, Dan Scally wrote:
-> >>>>>> On 30/11/2020 20:07, Andy Shevchenko wrote:
-> >>>
-> >>> ...
-> >>>
-> >>>>>>>> +static struct int3472_sensor_regulator_map int3472_sensor_regulator_maps[] = {
-> >>>>>>>> +	{ "GNDF140809R", 2, miix_510_ov2680 },
-> >>>>>>>> +	{ "YHCU", 2, surface_go2_ov5693 },
-> >>>>>>>> +	{ "MSHW0070", 2, surface_book_ov5693 },
-> >>>>>>>> +};
-> >>>>>>>
-> >>>>>>> Hmm... Usual way is to use DMI for that. I'm not sure above will not give us
-> >>>>>>> false positive matches.
-> >>>>>>
-> >>>>>> I considered DMI too, no problem to switch to that if it's a better choice.
-> >>>>>
-> >>>>> I prefer DMI as it's a standard way to describe platform quirks in x86 world.
-> >>>>
-> >>>> Do you think the Windows driver would use DMI ?
-> >>>
-> >>> Linux is using DMI for quirks.
-> >>>
-> >>>> That seems quite
-> >>>> unlikely to me, given how they would have to release a new driver binary
-> >>>> for every machine. I'm pretty sure that a different mechanism is used to
-> >>>> identify camera integration, and I think it would make sense to follow
-> >>>> the same approach. That would allow us to avoid large tables of DMI
-> >>>> identifiers that would need to be constently updated, potentially making
-> >>>> user experience better.
-> >>>
-> >>> All Surface family can be matched in a way as Apple machines [1].
-> >>>
-> >>> [1]: https://lkml.org/lkml/2020/4/15/1198
-> >>
-> >> But not all Surface machines necessarily have the same camera
-> >> architecture. My point is that there seems to be identifiers reported in
-> >> ACPI for the exact purpose of identifying the camera architecture. If we
-> >> used DMI instead, we would have to handle each machine individually.
-> > 
-> > With help of DMI we may narrow down the search.
-> > 
-> > But again, we are talking about uncertainity. It may be your way (a lot of
-> > platforms that have different settings), or mine (only a few with more or less
-> > standard sets of settings).
-> > 
-> > DMI is simply standard in Linux (people usually easier can grep for quirks for
-> > a specific platform).
-> > 
-> > I would rather ask Hans' opinion since he has quite an expertise with DMI for
-> > good and bad.
-> 
-> So generally there are 2 ways how things like this can go:
-> 
-> 1) There is sufficient information in the ACPI table and we use data from the
-> ACPI tables
-> 
-> 2) There is unsufficient info in the ACPI tables (or we don't know how to
-> get / interpret the data) and we use DMI quirks
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+---
+ net/8021q/vlan.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-And this specific case I believe there is sufficient data in the ACPI
-tables, as I don't believe the Windows driver uses DMI quirks, or comes
-in the form of machine-specific binaries. We however don't know how to
-interpret all the data, but that should hopefully get better over time
-(especially as we'll get more data points, with ACPI dumps from machines
-whose schematics have leaked).
-
-> Although we do often also use a combination, getting what we can from ACPI,
-> combined with a set of defaults for what we cannot get from ACPI
-> based on what reference designs use (IOW what most devices seem to have
-> copy and pasted). Combined with DMI quirks for when the defaults do not
-> work (which is quite often).
-> 
-> Depending on if "not working because of wrong defaults" has bad side effects,
-> another option is also to only allow the driver to load on devices which
-> have the necessary info provided through a DMI match.
-
-Right now there shouldn't be bad side effects, but in the future we'll
-need to setup a PMIC whose output voltages can be controlled, and
-getting it wrong would be very bad. For that I'll definitely vote for
-DMI match to start with, but I don't think that precludes using data
-from ACPI. We could just prevent the driver from loading if the machine
-isn't whitelisted in DMI matches, and still use ACPI data.
-
-> I hope this helps.
-
+diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
+index f292e0267bb9..683e9e825b9e 100644
+--- a/net/8021q/vlan.c
++++ b/net/8021q/vlan.c
+@@ -36,15 +36,10 @@
+ #include "vlan.h"
+ #include "vlanproc.h"
+ 
+-#define DRV_VERSION "1.8"
+-
+ /* Global VLAN variables */
+ 
+ unsigned int vlan_net_id __read_mostly;
+ 
+-const char vlan_fullname[] = "802.1Q VLAN Support";
+-const char vlan_version[] = DRV_VERSION;
+-
+ /* End of global variables definitions. */
+ 
+ static int vlan_group_prealloc_vid(struct vlan_group *vg,
+@@ -687,7 +682,7 @@ static int __init vlan_proto_init(void)
+ {
+ 	int err;
+ 
+-	pr_info("%s v%s\n", vlan_fullname, vlan_version);
++	pr_info("802.1Q VLAN Support\n");
+ 
+ 	err = register_pernet_subsys(&vlan_net_ops);
+ 	if (err < 0)
+@@ -743,4 +738,3 @@ module_init(vlan_proto_init);
+ module_exit(vlan_cleanup_module);
+ 
+ MODULE_LICENSE("GPL");
+-MODULE_VERSION(DRV_VERSION);
 -- 
-Regards,
+2.11.0
 
-Laurent Pinchart
