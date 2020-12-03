@@ -2,199 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3C22CDBF9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBAE12CDBCA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:07:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731492AbgLCRKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:10:09 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17322 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726091AbgLCRKI (ORCPT
+        id S1731390AbgLCRGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:06:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38055 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726744AbgLCRGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:10:08 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B3H3JMt112523;
-        Thu, 3 Dec 2020 12:08:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=RpZiGUqqBd425B17pR2oKWRKVMv9NGPUj5cBEDRMzvo=;
- b=rA8HFWgJjvhpqS7KBBkqCi21TjJA9A5+bf5f2tXlIJn3HvC0ajhtopEVcoxIviNagG1t
- +b3xJyxksVkn85TgfYXHt7Z/m/G8aea5RUZu8thT0/ksyglfPptZNLOZCPX7atzXGz1O
- TeIpUgfy7HqpyhukBDeKMfAjWXdypzzo3Llejc9jP6o0rqcIeNo/nuKTPFILsQV5FOj2
- hmOvk0zCDp6bDjy7iS01U4hDSXzG/FxAb8/o6K+P67WanNCO5NRp3bK0bsqqQ5G2KOHg
- ZF2mhhiBRQRNmRybHkxk9xf305GN0s0KHV0mFny8N0nk/e+YBiC6p6IGfHSMITayU8E7 TA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35722vwpsp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 12:08:49 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B3H4ALq117573;
-        Thu, 3 Dec 2020 12:08:44 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35722vwpp9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 12:08:44 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B3GqLrK005060;
-        Thu, 3 Dec 2020 17:03:41 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 354fpdc7fv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 17:03:41 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B3H3coR23331098
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 3 Dec 2020 17:03:38 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3B2D111C058;
-        Thu,  3 Dec 2020 17:03:38 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4AA1C11C04C;
-        Thu,  3 Dec 2020 17:03:37 +0000 (GMT)
-Received: from oc3871087118.ibm.com (unknown [9.145.157.245])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu,  3 Dec 2020 17:03:37 +0000 (GMT)
-Date:   Thu, 3 Dec 2020 18:03:35 +0100
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
-Subject: Re: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb
- option
-Message-ID: <20201203170332.GA27195@oc3871087118.ibm.com>
-References: <20201128160141.1003903-1-npiggin@gmail.com>
- <20201128160141.1003903-7-npiggin@gmail.com>
- <CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com>
- <CALCETrWBtCfD+jZ3S+O8FK-HFPODuhbDEbbfWvS=-iPATNFAOA@mail.gmail.com>
- <CALCETrXAR_9EGaOF8ymVkZycxgZkYk0dR+NjEpTfVzdcS3sOVw@mail.gmail.com>
+        Thu, 3 Dec 2020 12:06:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607015121;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=v1KF529Mba23/W7kJBq6xiW7t1MnwSejIHh9OVbZeTI=;
+        b=Y9Ke9pE93efyo38WW2Ki78fnb4L2qjbexplqM4nvOqSZ56we6fEsLyURF9/o3FDqg9iqSi
+        V6LcqwZp6ABtkCxpjOv17c1Ewsv0+Q6/sglzPq5zvBjlBD78tYrmkuWAPFlbq0lI7HTlQg
+        cGKbyPnHJiZB90U3FHhQgutYpUwgaSo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-492-g15nm-3fP5uf8RSQQoMMbQ-1; Thu, 03 Dec 2020 12:05:17 -0500
+X-MC-Unique: g15nm-3fP5uf8RSQQoMMbQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0224210054FF;
+        Thu,  3 Dec 2020 17:05:15 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-113-142.ams2.redhat.com [10.36.113.142])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8269C5D6AC;
+        Thu,  3 Dec 2020 17:05:12 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     virtualization@lists.linux-foundation.org
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, Oren Duer <oren@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Shahaf Shuler <shahafs@nvidia.com>, Eli Cohen <elic@nvidia.com>
+Subject: [PATCH v3 00/19] vdpa: generalize vdpa simulator
+Date:   Thu,  3 Dec 2020 18:04:52 +0100
+Message-Id: <20201203170511.216407-1-sgarzare@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrXAR_9EGaOF8ymVkZycxgZkYk0dR+NjEpTfVzdcS3sOVw@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-03_09:2020-12-03,2020-12-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- mlxscore=0 impostorscore=0 suspectscore=0 malwarescore=0 adultscore=0
- phishscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=999
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030100
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 10:31:51AM -0800, Andy Lutomirski wrote:
-> other arch folk: there's some background here:
-> 
-> https://lkml.kernel.org/r/CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com
-> 
-> On Sun, Nov 29, 2020 at 12:16 PM Andy Lutomirski <luto@kernel.org> wrote:
-> >
-> > On Sat, Nov 28, 2020 at 7:54 PM Andy Lutomirski <luto@kernel.org> wrote:
-> > >
-> > > On Sat, Nov 28, 2020 at 8:02 AM Nicholas Piggin <npiggin@gmail.com> wrote:
-> > > >
-> > > > On big systems, the mm refcount can become highly contented when doing
-> > > > a lot of context switching with threaded applications (particularly
-> > > > switching between the idle thread and an application thread).
-> > > >
-> > > > Abandoning lazy tlb slows switching down quite a bit in the important
-> > > > user->idle->user cases, so so instead implement a non-refcounted scheme
-> > > > that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot down
-> > > > any remaining lazy ones.
-> > > >
-> > > > Shootdown IPIs are some concern, but they have not been observed to be
-> > > > a big problem with this scheme (the powerpc implementation generated
-> > > > 314 additional interrupts on a 144 CPU system during a kernel compile).
-> > > > There are a number of strategies that could be employed to reduce IPIs
-> > > > if they turn out to be a problem for some workload.
-> > >
-> > > I'm still wondering whether we can do even better.
-> > >
-> >
-> > Hold on a sec.. __mmput() unmaps VMAs, frees pagetables, and flushes
-> > the TLB.  On x86, this will shoot down all lazies as long as even a
-> > single pagetable was freed.  (Or at least it will if we don't have a
-> > serious bug, but the code seems okay.  We'll hit pmd_free_tlb, which
-> > sets tlb->freed_tables, which will trigger the IPI.)  So, on
-> > architectures like x86, the shootdown approach should be free.  The
-> > only way it ought to have any excess IPIs is if we have CPUs in
-> > mm_cpumask() that don't need IPI to free pagetables, which could
-> > happen on paravirt.
-> 
-> Indeed, on x86, we do this:
-> 
-> [   11.558844]  flush_tlb_mm_range.cold+0x18/0x1d
-> [   11.559905]  tlb_finish_mmu+0x10e/0x1a0
-> [   11.561068]  exit_mmap+0xc8/0x1a0
-> [   11.561932]  mmput+0x29/0xd0
-> [   11.562688]  do_exit+0x316/0xa90
-> [   11.563588]  do_group_exit+0x34/0xb0
-> [   11.564476]  __x64_sys_exit_group+0xf/0x10
-> [   11.565512]  do_syscall_64+0x34/0x50
-> 
-> and we have info->freed_tables set.
-> 
-> What are the architectures that have large systems like?
-> 
-> x86: we already zap lazies, so it should cost basically nothing to do
-> a little loop at the end of __mmput() to make sure that no lazies are
-> left.  If we care about paravirt performance, we could implement one
-> of the optimizations I mentioned above to fix up the refcounts instead
-> of sending an IPI to any remaining lazies.
-> 
-> arm64: AFAICT arm64's flush uses magic arm64 hardware support for
-> remote flushes, so any lazy mm references will still exist after
-> exit_mmap().  (arm64 uses lazy TLB, right?)  So this is kind of like
-> the x86 paravirt case.  Are there large enough arm64 systems that any
-> of this matters?
-> 
-> s390x: The code has too many acronyms for me to understand it fully,
-> but I think it's more or less the same situation as arm64.  How big do
-> s390x systems come?
-> 
-> power: Ridiculously complicated, seems to vary by system and kernel config.
-> 
-> So, Nick, your unconditional IPI scheme is apparently a big
-> improvement for power, and it should be an improvement and have low
-> cost for x86.  On arm64 and s390x it will add more IPIs on process
-> exit but reduce contention on context switching depending on how lazy
+This series moves the network device simulator in a new module
+(vdpa_sim_net) and leaves the generic functions in the vdpa_sim core
+module, allowing the possibility to add new vDPA device simulators.
 
-s390 does not invalidate TLBs per-CPU explicitly - we have special
-instructions for that. Those in turn initiate signalling to other
-CPUs, completely transparent to OS.
+For now I removed the vdpa-blk simulator patches, since I'm still working
+on them and debugging the iotlb issues.
 
-Apart from mm_count, I am struggling to realize how the suggested
-scheme could change the the contention on s390 in connection with
-TLB. Could you clarify a bit here, please?
+Thanks to Max that started this work! I took his patches and extended a bit.
 
-> TLB works.  I suppose we could try it for all architectures without
-> any further optimizations.  Or we could try one of the perhaps
-> excessively clever improvements I linked above.  arm64, s390x people,
-> what do you think?
+v1: https://lists.linuxfoundation.org/pipermail/virtualization/2020-November/050677.html
+v2: https://lists.linuxfoundation.org/pipermail/virtualization/2020-November/051036.html
 
-I do not immediately see anything in the series that would harm
-performance on s390.
+v3:
+ - avoided to remove some headers with structures and functions directly
+   used [Jason]
+ - defined VHOST_IOTLB_UNLIMITED macro in vhost_iotlb.h [Jason]
+ - added set_config callback in vdpasim_dev_attr [Jason]
+ - cleared notify during reset [Jason]
 
-We however use mm_cpumask to distinguish between local and global TLB
-flushes. With this series it looks like mm_cpumask is *required* to
-be consistent with lazy users. And that is something quite diffucult
-for us to adhere (at least in the foreseeable future).
+Max Gurtovoy (2):
+  vdpa_sim: remove hard-coded virtq count
+  vdpa: split vdpasim to core and net modules
 
-But actually keeping track of lazy users in a cpumask is something
-the generic code would rather do AFAICT.
+Stefano Garzarella (17):
+  vdpa: remove unnecessary 'default n' in Kconfig entries
+  vdpa_sim: remove unnecessary headers inclusion
+  vhost/iotlb: add VHOST_IOTLB_UNLIMITED macro
+  vdpa_sim: remove the limit of IOTLB entries
+  vdpa_sim: rename vdpasim_config_ops variables
+  vdpa_sim: add struct vdpasim_dev_attr for device attributes
+  vdpa_sim: add device id field in vdpasim_dev_attr
+  vdpa_sim: add supported_features field in vdpasim_dev_attr
+  vdpa_sim: add work_fn in vdpasim_dev_attr
+  vdpa_sim: store parsed MAC address in a buffer
+  vdpa_sim: make 'config' generic and usable for any device type
+  vdpa_sim: add get_config callback in vdpasim_dev_attr
+  vdpa_sim: add set_config callback in vdpasim_dev_attr
+  vdpa_sim: set vringh notify callback
+  vdpa_sim: use kvmalloc to allocate vdpasim->buffer
+  vdpa_sim: make vdpasim->buffer size configurable
+  vdpa_sim: split vdpasim_virtqueue's iov field in out_iov and in_iov
 
-Thanks!
+ drivers/vdpa/vdpa_sim/vdpa_sim.h     | 105 ++++++++++
+ include/linux/vhost_iotlb.h          |   2 +
+ drivers/vdpa/vdpa_sim/vdpa_sim.c     | 301 +++++++--------------------
+ drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 171 +++++++++++++++
+ drivers/vhost/iotlb.c                |   3 +-
+ drivers/vdpa/Kconfig                 |  16 +-
+ drivers/vdpa/vdpa_sim/Makefile       |   1 +
+ 7 files changed, 368 insertions(+), 231 deletions(-)
+ create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim.h
+ create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_net.c
+
+-- 
+2.26.2
+
