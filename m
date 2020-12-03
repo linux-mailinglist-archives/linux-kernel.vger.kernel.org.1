@@ -2,190 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EFCB2CE2C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BFC2CE2C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbgLCXgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:36:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgLCXgj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:36:39 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDD4C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 15:35:53 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id q22so2389594pfj.20
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 15:35:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=fY4H9271JhSIewrQYXd2G+AEVByTR1z+AsQ06Z9WUFM=;
-        b=BsnDVnWtVJcAVmsyJ1XoXJ/wV0uPBh6CSjq0KcKNORuvBouhVc+FDK5rsl9+AhOE9y
-         8b0ugvjKBQa2zgLRIQ6ZKckjTkse6jruNG26HA+qI/MVrrdyukQ6hyCdl1FhLbAIQ8Im
-         ZizFVYHK0JisT0aLGPARq4bnamVvXcl0o0D9vypq3WMc1gKOdc9lz71g0QRvULTu0Zoq
-         cjSQ91SQaPnxIKmASHWeiWen9VPniKaLygBRidIBpolRmKjf32MHDet392Dj3XsNtIva
-         QJeQKD1UsnQH8B721jRIlYKB9OB3bPcf5Obg8of/mPvrjYoRQaHxEXQ/gwDOBCjmaH8N
-         XPpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=fY4H9271JhSIewrQYXd2G+AEVByTR1z+AsQ06Z9WUFM=;
-        b=Jp298+D1yYJmsy+jqwYMP1GuXDpI3xWVghvXrG1NOS735YzMJxM+YcOJFYzitL3d1n
-         rs6y0oWLVmn/R3aizA2E/5SbsuomT+PLV4902ncnD9XpsXT4SDkEh9e4/eVaf/EdNJQ6
-         I3e2e1iqipBr1mVyxUrJ6eWfeo/vVjjuUPLgXjzvbNBsf4MTWsIdeTom2bA3R5ddXx1P
-         A0k3Qq/IjZ6d9BdEu2wTkuGQXeJDEmQm6ccLBwFnPqI+Rko2SEFSeMQpl7hs1KhfhgpG
-         T6Oekp3lZQ7/FRetoz3c3s6w6vPBV5Q6+NlA+36q0+7fKrMb9Vsb/Qf3UsFrFQvm04E5
-         FrCw==
-X-Gm-Message-State: AOAM53015CjgLK0Mha1S+gYTUz1KZeTmR8gehdw+OI5r+mr0FKmWyyoM
-        klKJGFs1YYU+okrUmSM4cjMXyQ/6lyGrkg==
-X-Google-Smtp-Source: ABdhPJxK7cKTDAgHXoATiU5DTZZenqOXAwUblVyB3xJOEFdw1cmR7xNx6FPFHDgwlzqVBxceZa9Mu0MzNzukIw==
-Sender: "tstrudel via sendgmr" <tstrudel@legoland2.mtv.corp.google.com>
-X-Received: from legoland2.mtv.corp.google.com ([2620:15c:211:1:7220:84ff:fe09:fd20])
- (user=tstrudel job=sendgmr) by 2002:a17:90a:17a4:: with SMTP id
- q33mr120313pja.0.1607038552128; Thu, 03 Dec 2020 15:35:52 -0800 (PST)
-Date:   Thu,  3 Dec 2020 15:35:46 -0800
-Message-Id: <20201203233546.3482813-1-tstrudel@google.com>
+        id S1731166AbgLCXgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:36:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43522 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726179AbgLCXgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 18:36:54 -0500
+Date:   Thu, 3 Dec 2020 15:36:10 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1607038573;
+        bh=Pa4oRfRRHtvNG6DkXhfCABnpMt5dHNY/S5ZIo3xu0I8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kuOijURD2S/LKZN7m2xU1Yqs8aTgSaE+8PAXCjOUF+k6SmWXgnBX1a127MGk9xsxD
+         Zehgx/bS+bttrniAwVRGaqKRk/HeHmkpC5g5mw+66gde6sKC1WxOhrIrOWZsRz9QI2
+         m7IWOOo+Ox/qds8Kx515xXzlhgz0bQmTT4jC/P9M=
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v14 04/10] set_memory: allow querying whether
+ set_direct_map_*() is actually enabled
+Message-Id: <20201203153610.724f40f26ca1620247bc6b09@linux-foundation.org>
+In-Reply-To: <20201203062949.5484-5-rppt@kernel.org>
+References: <20201203062949.5484-1-rppt@kernel.org>
+        <20201203062949.5484-5-rppt@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH] PM: domains: create debugfs nodes when adding power domains
-From:   Thierry Strudel <tstrudel@google.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thierry Strudel <tstrudel@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-debugfs nodes were created in genpd_debug_init alled in late_initcall
-preventing power domains registered though loadable modules to have
-a debugfs entry.
+On Thu,  3 Dec 2020 08:29:43 +0200 Mike Rapoport <rppt@kernel.org> wrote:
 
-Create/remove debugfs nodes when the power domain is added/removed
-to/from the internal gpd_list.
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> On arm64, set_direct_map_*() functions may return 0 without actually
+> changing the linear map. This behaviour can be controlled using kernel
+> parameters, so we need a way to determine at runtime whether calls to
+> set_direct_map_invalid_noflush() and set_direct_map_default_noflush() have
+> any effect.
+> 
+> Extend set_memory API with can_set_direct_map() function that allows
+> checking if calling set_direct_map_*() will actually change the page table,
+> replace several occurrences of open coded checks in arm64 with the new
+> function and provide a generic stub for architectures that always modify
+> page tables upon calls to set_direct_map APIs.
+> 
+> ...
+>
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/io.h>
+>  #include <linux/mm.h>
+>  #include <linux/vmalloc.h>
+> +#include <linux/set_memory.h>
+>  
+>  #include <asm/barrier.h>
+>  #include <asm/cputype.h>
+> @@ -477,7 +478,7 @@ static void __init map_mem(pgd_t *pgdp)
+>  	int flags = 0;
+>  	u64 i;
+>  
+> -	if (rodata_full || debug_pagealloc_enabled())
+> +	if (can_set_direct_map())
+>  		flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
 
-Signed-off-by: Thierry Strudel <tstrudel@google.com>
----
- drivers/base/power/domain.c | 61 ++++++++++++++++++++++++-------------
- 1 file changed, 39 insertions(+), 22 deletions(-)
+Changes in -next turned this into
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index 743268996336..3f168ec93762 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -1880,6 +1880,8 @@ static void genpd_lock_init(struct generic_pm_domain *genpd)
- 	}
- }
- 
-+static void genpd_debug_add(struct generic_pm_domain *genpd);
-+
- /**
-  * pm_genpd_init - Initialize a generic I/O PM domain object.
-  * @genpd: PM domain object to initialize.
-@@ -1954,12 +1956,15 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
- 
- 	mutex_lock(&gpd_list_lock);
- 	list_add(&genpd->gpd_list_node, &gpd_list);
-+	genpd_debug_add(genpd);
- 	mutex_unlock(&gpd_list_lock);
- 
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(pm_genpd_init);
- 
-+static void genpd_debug_remove(struct generic_pm_domain *genpd);
-+
- static int genpd_remove(struct generic_pm_domain *genpd)
- {
- 	struct gpd_link *l, *link;
-@@ -1987,6 +1992,7 @@ static int genpd_remove(struct generic_pm_domain *genpd)
- 		kfree(link);
- 	}
- 
-+	genpd_debug_remove(genpd);
- 	list_del(&genpd->gpd_list_node);
- 	genpd_unlock(genpd);
- 	cancel_work_sync(&genpd->power_off_work);
-@@ -3177,36 +3183,44 @@ DEFINE_SHOW_ATTRIBUTE(total_idle_time);
- DEFINE_SHOW_ATTRIBUTE(devices);
- DEFINE_SHOW_ATTRIBUTE(perf_state);
- 
--static int __init genpd_debug_init(void)
-+static void genpd_debug_add(struct generic_pm_domain *genpd)
- {
- 	struct dentry *d;
--	struct generic_pm_domain *genpd;
- 
-+	d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
-+
-+	debugfs_create_file("current_state", 0444,
-+			    d, genpd, &status_fops);
-+	debugfs_create_file("sub_domains", 0444,
-+			    d, genpd, &sub_domains_fops);
-+	debugfs_create_file("idle_states", 0444,
-+			    d, genpd, &idle_states_fops);
-+	debugfs_create_file("active_time", 0444,
-+			    d, genpd, &active_time_fops);
-+	debugfs_create_file("total_idle_time", 0444,
-+			    d, genpd, &total_idle_time_fops);
-+	debugfs_create_file("devices", 0444,
-+			    d, genpd, &devices_fops);
-+	if (genpd->set_performance_state)
-+		debugfs_create_file("perf_state", 0444,
-+				    d, genpd, &perf_state_fops);
-+}
-+
-+static void genpd_debug_remove(struct generic_pm_domain *genpd)
-+{
-+	struct dentry *d;
-+
-+	d = debugfs_lookup(genpd->name, genpd_debugfs_dir);
-+	debugfs_remove(d);
-+}
-+
-+static int __init genpd_debug_init(void)
-+{
- 	genpd_debugfs_dir = debugfs_create_dir("pm_genpd", NULL);
- 
- 	debugfs_create_file("pm_genpd_summary", S_IRUGO, genpd_debugfs_dir,
- 			    NULL, &summary_fops);
- 
--	list_for_each_entry(genpd, &gpd_list, gpd_list_node) {
--		d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
--
--		debugfs_create_file("current_state", 0444,
--				d, genpd, &status_fops);
--		debugfs_create_file("sub_domains", 0444,
--				d, genpd, &sub_domains_fops);
--		debugfs_create_file("idle_states", 0444,
--				d, genpd, &idle_states_fops);
--		debugfs_create_file("active_time", 0444,
--				d, genpd, &active_time_fops);
--		debugfs_create_file("total_idle_time", 0444,
--				d, genpd, &total_idle_time_fops);
--		debugfs_create_file("devices", 0444,
--				d, genpd, &devices_fops);
--		if (genpd->set_performance_state)
--			debugfs_create_file("perf_state", 0444,
--					    d, genpd, &perf_state_fops);
--	}
--
- 	return 0;
- }
- late_initcall(genpd_debug_init);
-@@ -3216,4 +3230,7 @@ static void __exit genpd_debug_exit(void)
- 	debugfs_remove_recursive(genpd_debugfs_dir);
- }
- __exitcall(genpd_debug_exit);
-+#else
-+static void genpd_debug_add(struct generic_pm_domain *genpd) {}
-+static void genpd_debug_remove(struct generic_pm_domain *genpd) {}
- #endif /* CONFIG_DEBUG_FS */
--- 
-2.29.2.576.ga3fc446d84-goog
+	if (can_set_direct_map() || crash_mem_map)
+
 
