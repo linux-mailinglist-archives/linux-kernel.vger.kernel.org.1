@@ -2,171 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06072CD4EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA42F2CD4EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730313AbgLCLvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:51:41 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14262 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726874AbgLCLvi (ORCPT
+        id S1729012AbgLCLwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:52:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727012AbgLCLwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:51:38 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B3Bf0Ou131813;
-        Thu, 3 Dec 2020 06:50:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=NB0+Qh1bkZLQI3ZOcH++d50o1IticgktyjhpCKbjgb8=;
- b=pDTeRuiSKbNvdWW3Ea85Cm/g9lAzHFcvyYYaoS9SDP4egMOzxe+kM3qsvepftgInRhQC
- qot6qYoObIWkTM9wkADryOh4b5UURZ93y9osGop4ZK6q3IOMjjF4fyEl5l3XedSItOSa
- 0r51Q16baTsO6Cn+81y8UhIkbQ2FFSOb4mhLm8unYliak3l3afwez6/CDkAobaH8oHtv
- dZYE9ApPjqJxudXHr6XbpntSZkvL+Qr2WnmcPWSXRHDCgG12mQbXiLr/Qmigt4ntHwzW
- IxsG+6FFr/PFz8ujCCBri3Qh4MGiozyTYCcDB3iS/mZ+4/z7PhswifRAbCBOFsGGsCE2 /w== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 356wbemn0f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 06:50:51 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B3BhJTL030799;
-        Thu, 3 Dec 2020 11:50:48 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03fra.de.ibm.com with ESMTP id 353e687nvh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 11:50:48 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B3BmG6V7799342
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 3 Dec 2020 11:48:16 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 74CACAE05F;
-        Thu,  3 Dec 2020 11:48:16 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 245ADAE057;
-        Thu,  3 Dec 2020 11:48:16 +0000 (GMT)
-Received: from [9.145.44.252] (unknown [9.145.44.252])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  3 Dec 2020 11:48:16 +0000 (GMT)
-Subject: Re: arch/s390/pci/pci_event.c:101 __zpci_event_availability() error:
- we previously assumed 'zdev->zbus' could be null (see line 83)
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Heiko Carstens <heiko.carstens@de.ibm.com>
-References: <20201203102759.GQ2767@kadam>
- <52b96642-f78c-478e-913d-b294c385c5ab@linux.ibm.com>
- <20201203111954.GK2789@kadam>
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-Message-ID: <92d88da8-b5ab-4c50-25c8-d8bf045551e4@linux.ibm.com>
-Date:   Thu, 3 Dec 2020 12:48:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Thu, 3 Dec 2020 06:52:54 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C07C061A4D;
+        Thu,  3 Dec 2020 03:52:13 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id e25so3636954wme.0;
+        Thu, 03 Dec 2020 03:52:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NrJuxO+zxsdVklZnzVW7lpTFYuTXn6Q5RMj3hLGz6oI=;
+        b=dwy3mPksTqlL4bUx9JTLM42GlVv5S7/pqqk1/uINo0Az1n6VxV2DffSIg1+Yy1w8f1
+         zeKsfoMHJqXK3/wbu4GJAilmCmOIJh9jiOjpIIMjqzO9ZYjHuiR6olCBeN8cGIMDK+sU
+         7GAbisZmcWuVCQ+LN0Jn2669LogPgav0hHqbPM3Oj3F2dK2WLe6Zbskj0sPtVggdG/9F
+         syxKVnN3alq/Gwg5Jsrx5AgK78TSJ0x0XqwxWmc9FFVOMpYEYnXuybsdCa3BGqjqldJp
+         6b88gPgBmru/uHRO5wvxgpFQPxE8EuBArevqnP3m3z3v90YgbjKVDJ4vXTW68KLJPRO3
+         JMTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=NrJuxO+zxsdVklZnzVW7lpTFYuTXn6Q5RMj3hLGz6oI=;
+        b=ZhJEJZM1ELzVRsEz42FQHciGFA83xN5G4qQmobnFJj2v6ff6ZMRpUMWh5sXQMK9tGW
+         w93AGW1QI5znRRrsuVYiHOou7/8d+BVn+60Lo9x0eQu9uqS2GY3Dx+7WVrvxWozQ9qAn
+         Nt6Nkz+SmSTwEWZU5L+j1v296qvtsqnEATa7ZxDRu/w+hc273qIFiyQoDW2EOL0ZYhNk
+         EuixSHGzkKBpf8RANKghRDhiGqGQ4KH02JJsaQSuBw91hLpJ+gh8wgKgmN7NL86cCF2m
+         2G4R2EyomIAvGCOu1QolT0CLxbNeg5uKoFWv8+cVeCo/fuhXsHZ8qHuZeZFXy000rSo7
+         q5Cw==
+X-Gm-Message-State: AOAM530XWK6qPT1GHmJndMdUhUh0TF3ECSSmZ9zIXI5dlGMHMoql01OO
+        O0f/BBE9whPuo3V6zz78U+N/R2SMGzUsZg==
+X-Google-Smtp-Source: ABdhPJzVEenasrMphn/6JLHsgAIuJXY/+dCpRE8fcfvCSV7Oew9dr3rI5+ds/sh8HHEaUm8dVRT9pQ==
+X-Received: by 2002:a1c:1d08:: with SMTP id d8mr2929702wmd.159.1606996332112;
+        Thu, 03 Dec 2020 03:52:12 -0800 (PST)
+Received: from [192.168.1.59] (host109-152-100-189.range109-152.btcentralplus.com. [109.152.100.189])
+        by smtp.gmail.com with ESMTPSA id p19sm1644425wrg.18.2020.12.03.03.52.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 03:52:11 -0800 (PST)
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <21b78c2f256e513b9eb3f22c7c1f55fc88992600.1606957658.git.asml.silence@gmail.com>
+ <20201203091406.GA6189@infradead.org>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ mQINBFmKBOQBEAC76ZFxLAKpDw0bKQ8CEiYJRGn8MHTUhURL02/7n1t0HkKQx2K1fCXClbps
+ bdwSHrhOWdW61pmfMbDYbTj6ZvGRvhoLWfGkzujB2wjNcbNTXIoOzJEGISHaPf6E2IQx1ik9
+ 6uqVkK1OMb7qRvKH0i7HYP4WJzYbEWVyLiAxUj611mC9tgd73oqZ2pLYzGTqF2j6a/obaqha
+ +hXuWTvpDQXqcOZJXIW43atprH03G1tQs7VwR21Q1eq6Yvy2ESLdc38EqCszBfQRMmKy+cfp
+ W3U9Mb1w0L680pXrONcnlDBCN7/sghGeMHjGKfNANjPc+0hzz3rApPxpoE7HC1uRiwC4et83
+ CKnncH1l7zgeBT9Oa3qEiBlaa1ZCBqrA4dY+z5fWJYjMpwI1SNp37RtF8fKXbKQg+JuUjAa9
+ Y6oXeyEvDHMyJYMcinl6xCqCBAXPHnHmawkMMgjr3BBRzODmMr+CPVvnYe7BFYfoajzqzq+h
+ EyXSl3aBf0IDPTqSUrhbmjj5OEOYgRW5p+mdYtY1cXeK8copmd+fd/eTkghok5li58AojCba
+ jRjp7zVOLOjDlpxxiKhuFmpV4yWNh5JJaTbwCRSd04sCcDNlJj+TehTr+o1QiORzc2t+N5iJ
+ NbILft19Izdn8U39T5oWiynqa1qCLgbuFtnYx1HlUq/HvAm+kwARAQABtDFQYXZlbCBCZWd1
+ bmtvdiAoc2lsZW5jZSkgPGFzbWwuc2lsZW5jZUBnbWFpbC5jb20+iQJOBBMBCAA4FiEE+6Ju
+ PTjTbx479o3OWt5b1Glr+6UFAlmKBOQCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQ
+ Wt5b1Glr+6WxZA//QueaKHzgdnOikJ7NA/Vq8FmhRlwgtP0+E+w93kL+ZGLzS/cUCIjn2f4Q
+ Mcutj2Neg0CcYPX3b2nJiKr5Vn0rjJ/suiaOa1h1KzyNTOmxnsqE5fmxOf6C6x+NKE18I5Jy
+ xzLQoktbdDVA7JfB1itt6iWSNoOTVcvFyvfe5ggy6FSCcP+m1RlR58XxVLH+qlAvxxOeEr/e
+ aQfUzrs7gqdSd9zQGEZo0jtuBiB7k98t9y0oC9Jz0PJdvaj1NZUgtXG9pEtww3LdeXP/TkFl
+ HBSxVflzeoFaj4UAuy8+uve7ya/ECNCc8kk0VYaEjoVrzJcYdKP583iRhOLlZA6HEmn/+Gh9
+ 4orG67HNiJlbFiW3whxGizWsrtFNLsSP1YrEReYk9j1SoUHHzsu+ZtNfKuHIhK0sU07G1OPN
+ 2rDLlzUWR9Jc22INAkhVHOogOcc5ajMGhgWcBJMLCoi219HlX69LIDu3Y34uIg9QPZIC2jwr
+ 24W0kxmK6avJr7+n4o8m6sOJvhlumSp5TSNhRiKvAHB1I2JB8Q1yZCIPzx+w1ALxuoWiCdwV
+ M/azguU42R17IuBzK0S3hPjXpEi2sK/k4pEPnHVUv9Cu09HCNnd6BRfFGjo8M9kZvw360gC1
+ reeMdqGjwQ68o9x0R7NBRrtUOh48TDLXCANAg97wjPoy37dQE7e5Ag0EWYoE5AEQAMWS+aBV
+ IJtCjwtfCOV98NamFpDEjBMrCAfLm7wZlmXy5I6o7nzzCxEw06P2rhzp1hIqkaab1kHySU7g
+ dkpjmQ7Jjlrf6KdMP87mC/Hx4+zgVCkTQCKkIxNE76Ff3O9uTvkWCspSh9J0qPYyCaVta2D1
+ Sq5HZ8WFcap71iVO1f2/FEHKJNz/YTSOS/W7dxJdXl2eoj3gYX2UZNfoaVv8OXKaWslZlgqN
+ jSg9wsTv1K73AnQKt4fFhscN9YFxhtgD/SQuOldE5Ws4UlJoaFX/yCoJL3ky2kC0WFngzwRF
+ Yo6u/KON/o28yyP+alYRMBrN0Dm60FuVSIFafSqXoJTIjSZ6olbEoT0u17Rag8BxnxryMrgR
+ dkccq272MaSS0eOC9K2rtvxzddohRFPcy/8bkX+t2iukTDz75KSTKO+chce62Xxdg62dpkZX
+ xK+HeDCZ7gRNZvAbDETr6XI63hPKi891GeZqvqQVYR8e+V2725w+H1iv3THiB1tx4L2bXZDI
+ DtMKQ5D2RvCHNdPNcZeldEoJwKoA60yg6tuUquvsLvfCwtrmVI2rL2djYxRfGNmFMrUDN1Xq
+ F3xozA91q3iZd9OYi9G+M/OA01husBdcIzj1hu0aL+MGg4Gqk6XwjoSxVd4YT41kTU7Kk+/I
+ 5/Nf+i88ULt6HanBYcY/+Daeo/XFABEBAAGJAjYEGAEIACAWIQT7om49ONNvHjv2jc5a3lvU
+ aWv7pQUCWYoE5AIbDAAKCRBa3lvUaWv7pfmcEACKTRQ28b1y5ztKuLdLr79+T+LwZKHjX++P
+ 4wKjEOECCcB6KCv3hP+J2GCXDOPZvdg/ZYZafqP68Yy8AZqkfa4qPYHmIdpODtRzZSL48kM8
+ LRzV8Rl7J3ItvzdBRxf4T/Zseu5U6ELiQdCUkPGsJcPIJkgPjO2ROG/ZtYa9DvnShNWPlp+R
+ uPwPccEQPWO/NP4fJl2zwC6byjljZhW5kxYswGMLBwb5cDUZAisIukyAa8Xshdan6C2RZcNs
+ rB3L7vsg/R8UCehxOH0C+NypG2GqjVejNZsc7bgV49EOVltS+GmGyY+moIzxsuLmT93rqyII
+ 5rSbbcTLe6KBYcs24XEoo49Zm9oDA3jYvNpeYD8rDcnNbuZh9kTgBwFN41JHOPv0W2FEEWqe
+ JsCwQdcOQ56rtezdCJUYmRAt3BsfjN3Jn3N6rpodi4Dkdli8HylM5iq4ooeb5VkQ7UZxbCWt
+ UVMKkOCdFhutRmYp0mbv2e87IK4erwNHQRkHUkzbsuym8RVpAZbLzLPIYK/J3RTErL6Z99N2
+ m3J6pjwSJY/zNwuFPs9zGEnRO4g0BUbwGdbuvDzaq6/3OJLKohr5eLXNU3JkT+3HezydWm3W
+ OPhauth7W0db74Qd49HXK0xe/aPrK+Cp+kU1HRactyNtF8jZQbhMCC8vMGukZtWaAwpjWiiH bA==
+Subject: Re: [PATCH] iov_iter: optimise bvec iov_iter_advance()
+Message-ID: <eb02fa7f-956e-ce7e-6a56-82318b2c6d2e@gmail.com>
+Date:   Thu, 3 Dec 2020 11:48:56 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20201203111954.GK2789@kadam>
+In-Reply-To: <20201203091406.GA6189@infradead.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-03_06:2020-12-03,2020-12-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- spamscore=0 priorityscore=1501 phishscore=0 clxscore=1015 impostorscore=0
- malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012030071
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/3/20 12:19 PM, Dan Carpenter wrote:
-> On Thu, Dec 03, 2020 at 11:52:48AM +0100, Niklas Schnelle wrote:
->>
->>
->> On 12/3/20 11:27 AM, Dan Carpenter wrote:
->>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
->>> head:   3bb61aa61828499a7d0f5e560051625fd02ae7e4
->>> commit: 3047766bc6ec9c6bc9ece85b45a41ff401e8d988 s390/pci: fix enabling a reserved PCI function
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->>>
->>> smatch warnings:
->>> arch/s390/pci/pci_event.c:101 __zpci_event_availability() error: we previously assumed 'zdev->zbus' could be null (see line 83)
->>>
->>> vim +101 arch/s390/pci/pci_event.c
->>>
->>> aa3b7c296732b43 Sebastian Ott   2013-12-12   76  static void __zpci_event_availability(struct zpci_ccdf_avail *ccdf)
->>> cbc0dd1f856b52b Jan Glauber     2012-11-29   77  {
->>> cbc0dd1f856b52b Jan Glauber     2012-11-29   78  	struct zpci_dev *zdev = get_zdev_by_fid(ccdf->fid);
->>> 9a99649f2a89fdf Sebastian Ott   2016-01-29   79  	struct pci_dev *pdev = NULL;
->>> 623bd44d3f277b7 Sebastian Ott   2017-05-09   80  	enum zpci_state state;
->>> d795ddad36cbc82 Sebastian Ott   2013-11-15   81  	int ret;
->>> cbc0dd1f856b52b Jan Glauber     2012-11-29   82  
->>> 05bc1be6db4b268 Pierre Morel    2020-03-23  @83  	if (zdev && zdev->zbus && zdev->zbus->bus)
->>>                                                                      ^^^^^^^^^
->>> Check for NULL
->>>
->>> 44510d6fa0c00aa Pierre Morel    2020-04-22   84  		pdev = pci_get_slot(zdev->zbus->bus, zdev->devfn);
->>> 9a99649f2a89fdf Sebastian Ott   2016-01-29   85  
->>> 1f1dcbd4f23bd1f Sebastian Ott   2013-10-22   86  	zpci_err("avail CCDF:\n");
->>> 1f1dcbd4f23bd1f Sebastian Ott   2013-10-22   87  	zpci_err_hex(ccdf, sizeof(*ccdf));
->>> cbc0dd1f856b52b Jan Glauber     2012-11-29   88  
->>> cbc0dd1f856b52b Jan Glauber     2012-11-29   89  	switch (ccdf->pec) {
->>> 7fc611ff3ff1a0b Sebastian Ott   2015-06-16   90  	case 0x0301: /* Reserved|Standby -> Configured */
->>> 7fc611ff3ff1a0b Sebastian Ott   2015-06-16   91  		if (!zdev) {
->>> f606b3ef47c9f87 Pierre Morel    2020-03-25   92  			ret = clp_add_pci_device(ccdf->fid, ccdf->fh, 1);
->>> 7fc611ff3ff1a0b Sebastian Ott   2015-06-16   93  			break;
->>> 7fc611ff3ff1a0b Sebastian Ott   2015-06-16   94  		}
->>> fcf2f402937a669 Sebastian Ott   2013-12-18   95  		zdev->fh = ccdf->fh;
->>> f606b3ef47c9f87 Pierre Morel    2020-03-25   96  		zdev->state = ZPCI_FN_STATE_CONFIGURED;
->>> 3047766bc6ec9c6 Niklas Schnelle 2020-06-18   97  		ret = zpci_enable_device(zdev);
->>> 3047766bc6ec9c6 Niklas Schnelle 2020-06-18   98  		if (ret)
->>> 3047766bc6ec9c6 Niklas Schnelle 2020-06-18   99  			break;
->>> 3047766bc6ec9c6 Niklas Schnelle 2020-06-18  100  
->>> 3047766bc6ec9c6 Niklas Schnelle 2020-06-18 @101  		pdev = pci_scan_single_device(zdev->zbus->bus, zdev->devfn);
->>>                                                                                               ^^^^^^^^^^^^^^^^
->>> Unchecked dereference
->>
->> First, thanks for reporting this is definitely appreciated!
->> We have also seen the same smatch report internally 
->> and I determined that this is a false positive.
->>
->> This is because the existing zdev->zbus NULL check could already never
->> trigger.
+On 03/12/2020 09:14, Christoph Hellwig wrote:
+>> @@ -1077,6 +1077,20 @@ void iov_iter_advance(struct iov_iter *i, size_t size)
+>>  		i->count -= size;
+>>  		return;
+>>  	}
+>> +	if (iov_iter_is_bvec(i)) {
+>> +		struct bvec_iter bi;
+>> +
+>> +		bi.bi_size = i->count;
+>> +		bi.bi_bvec_done = i->iov_offset;
+>> +		bi.bi_idx = 0;
+>> +		bvec_iter_advance(i->bvec, &bi, size);
+>> +
+>> +		i->bvec += bi.bi_idx;
+>> +		i->nr_segs -= bi.bi_idx;
+>> +		i->count = bi.bi_size;
+>> +		i->iov_offset = bi.bi_bvec_done;
+>> +		return;
+>> +	}
+>>  	iterate_and_advance(i, size, v, 0, 0, 0)
 > 
-> I don't consider it a "false positive" exactly because the NULL checking
-> is inconsisent.  I would instead say that it is "correct but harmless".
+> I like the idea, but whu not avoid the on-stack bvec_iter and just
+> open code this entirely using a new helper?  E.g.
 
-Good point, I think your wording captures the situation better and I agree
-the checks as is definitely inconsistent.
+It's inlined and the on-stack iter is completely optimised out. Frankly,
+I'd rather not open-code bvec_iter_advance(), at least for this chunk to
+be findable from bvec.h, e.g. grep bvec_iter and bvec_for_each. Though,
+I don't like myself that preamble/postamble.
 
 > 
-> That said, if Smatch can determined that "zdev->zbus" is not NULL then
-> it doesn't print a warning in these situations.  As it stands now Smatch
-> doesn't understand lists very well, but I plan to fix this in upcoming
-> months.  Once that gets fixed, Smatch will still assume that
-> zpci_create_device() is racy...  :/  And then finally it will only
-> silence the warning when the cross function database has been built and
-> I don't think the the zero bot builds the DB for s390.
-
-Sounds like some exciting developments are ahead that will
-make smatch even more powerful. That said, it's already pretty amazing
-to me what it does.
-
+> static void bio_iov_iter_advance(struct iov_iter *i, size_t bytes)
+> {
+> 	unsigned int cnt;
 > 
-> Anyway, these don't affect runtime so it's not time sensitive.  Thanks
-> for taking the time to look at these!
-
-Thank you for working on smatch. The report it gave for this definitely
-made it easy to understand why it was complaining and when I saw it on our
-internal smatch I too wasn't immediately sure it was harmless so the report was
-definitely useful.
-
+> 	i->count -= bytes;
 > 
-> regards,
-> dan carpenter
+> 	bytes += i->iov_offset;
+> 	for (cnt = 0; bytes && bytes >= i->bvec[cnt].bv_len; cnt++)
+> 		bytes -= i->bvec[cnt].bv_len;
+> 	i->iov_offset = bytes;
 > 
+> 	i->bvec += cnt;
+> 	i->nr_segs -= cnt;
+> }
+> 
+
+-- 
+Pavel Begunkov
