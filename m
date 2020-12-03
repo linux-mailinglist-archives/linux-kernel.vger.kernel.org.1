@@ -2,159 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0042CDAA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3052CDAA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389258AbgLCQDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:03:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24640 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389110AbgLCQDq (ORCPT
+        id S1731080AbgLCQDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:03:02 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:33351 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726267AbgLCQDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:03:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607011339;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gwFT/at38qnWnV6ALWueYTdB/e9xeSjOOzsCIelui5c=;
-        b=J077cbwkt0N+gbVQ/zN3V4NwntwIwk0njyxbsah2feICeNHidYidvM9RfjktwwbEvUb31Y
-        wM8tHQDYKvmpE+pYfzIyX3Cy+h6q5YXcV+jkF1be21OkHgvCCR726NXxiO6J5mzOTD+elX
-        l6rme2VgZXvxXMqMJNiV+zfdnUxc8/g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-uSXkKsj0OB6QOXi442mkng-1; Thu, 03 Dec 2020 11:02:17 -0500
-X-MC-Unique: uSXkKsj0OB6QOXi442mkng-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 3 Dec 2020 11:03:01 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607011359; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: Cc: References: To:
+ Subject: Sender; bh=7ANFtGnf0oNJK5+hIiLtqzococFZCRezjE3zTlu+MFA=; b=Uml1ziibUiQk0qssrxU+7WS30FVn+KMMzRB/C6ws0YYeRBuCd2STZcJ0IghCBcqKfv/7HmpV
+ CJd2ln8kxkOOqd4M/SV5CSRtv8CkeTFdUUYBdUpiCHhoda+lo6S8t4HpL/szbLmbZ4ckioSx
+ hcceOQIqCzcnL2+YOM0+9n5usiY=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5fc90c057e5eb22240a4dcd4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Dec 2020 16:02:13
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C180DC43461; Thu,  3 Dec 2020 16:02:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.10] (unknown [61.3.236.97])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 51A461086607;
-        Thu,  3 Dec 2020 16:01:35 +0000 (UTC)
-Received: from [10.36.113.250] (ovpn-113-250.ams2.redhat.com [10.36.113.250])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 972265D6BA;
-        Thu,  3 Dec 2020 16:01:33 +0000 (UTC)
-Subject: Re: [PATCH] vfio iommu type1: Bypass the vma permission check in
- vfio_pin_pages_remote()
-To:     Peter Xu <peterx@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     Justin He <Justin.He@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201119142737.17574-1-justin.he@arm.com>
- <20201124181228.GA276043@xz-x1>
- <AM6PR08MB32245E7F990955395B44CE6BF7FA0@AM6PR08MB3224.eurprd08.prod.outlook.com>
- <20201125155711.GA6489@xz-x1>
- <20201202143356.GK655829@stefanha-x1.localdomain>
- <20201202154511.GI3277@xz-x1>
- <20201203112002.GE689053@stefanha-x1.localdomain>
- <20201203154322.GH108496@xz-x1>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <6a33e908-17ff-7a26-7341-4bcf7bbefe28@redhat.com>
-Date:   Thu, 3 Dec 2020 17:01:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0BB72C433C6;
+        Thu,  3 Dec 2020 16:02:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0BB72C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH v2 1/3] drm/msm: adreno: Make speed-bin support generic
+To:     Jordan Crouse <jcrouse@codeaurora.org>
+References: <1606481386-22867-1-git-send-email-akhilpo@codeaurora.org>
+ <20201130170231.GF16856@jcrouse1-lnx.qualcomm.com>
+ <39ae4584-e935-363e-62af-17558781e913@codeaurora.org>
+ <20201202163032.GG16856@jcrouse1-lnx.qualcomm.com>
+Cc:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        robh@kernel.org, dri-devel@freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <244772bd-bde1-ebb7-e3f7-e4af870d968c@codeaurora.org>
+Date:   Thu, 3 Dec 2020 21:32:05 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201203154322.GH108496@xz-x1>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201202163032.GG16856@jcrouse1-lnx.qualcomm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.12.20 16:43, Peter Xu wrote:
-> On Thu, Dec 03, 2020 at 11:20:02AM +0000, Stefan Hajnoczi wrote:
->> On Wed, Dec 02, 2020 at 10:45:11AM -0500, Peter Xu wrote:
->>> On Wed, Dec 02, 2020 at 02:33:56PM +0000, Stefan Hajnoczi wrote:
->>>> On Wed, Nov 25, 2020 at 10:57:11AM -0500, Peter Xu wrote:
->>>>> On Wed, Nov 25, 2020 at 01:05:25AM +0000, Justin He wrote:
->>>>>>> I'd appreciate if you could explain why vfio needs to dma map some
->>>>>>> PROT_NONE
->>>>>>
->>>>>> Virtiofs will map a PROT_NONE cache window region firstly, then remap the sub
->>>>>> region of that cache window with read or write permission. I guess this might
->>>>>> be an security concern. Just CC virtiofs expert Stefan to answer it more accurately.
->>>>>
->>>>> Yep.  Since my previous sentence was cut off, I'll rephrase: I was thinking
->>>>> whether qemu can do vfio maps only until it remaps the PROT_NONE regions into
->>>>> PROT_READ|PROT_WRITE ones, rather than trying to map dma pages upon PROT_NONE.
+On 12/2/2020 10:00 PM, Jordan Crouse wrote:
+> On Wed, Dec 02, 2020 at 08:53:51PM +0530, Akhil P Oommen wrote:
+>> On 11/30/2020 10:32 PM, Jordan Crouse wrote:
+>>> On Fri, Nov 27, 2020 at 06:19:44PM +0530, Akhil P Oommen wrote:
+>>>> So far a530v2 gpu has support for detecting its supported opps
+>>>> based on a fuse value called speed-bin. This patch makes this
+>>>> support generic across gpu families. This is in preparation to
+>>>> extend speed-bin support to a6x family.
 >>>>
->>>> Userspace processes sometimes use PROT_NONE to reserve virtual address
->>>> space. That way future mmap(NULL, ...) calls will not accidentally
->>>> allocate an address from the reserved range.
+>>>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+>>>> ---
+>>>> Changes from v1:
+>>>> 	1. Added the changes to support a618 sku to the series.
+>>>> 	2. Avoid failing probe in case of an unsupported sku. (Rob)
 >>>>
->>>> virtio-fs needs to do this because the DAX window mappings change at
->>>> runtime. Initially the entire DAX window is just reserved using
->>>> PROT_NONE. When it's time to mmap a portion of a file into the DAX
->>>> window an mmap(fixed_addr, ...) call will be made.
+>>>>   drivers/gpu/drm/msm/adreno/a5xx_gpu.c      | 34 --------------
+>>>>   drivers/gpu/drm/msm/adreno/adreno_device.c |  4 ++
+>>>>   drivers/gpu/drm/msm/adreno/adreno_gpu.c    | 71 ++++++++++++++++++++++++++++++
+>>>>   drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  5 +++
+>>>>   4 files changed, 80 insertions(+), 34 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+>>>> index 8fa5c91..7d42321 100644
+>>>> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+>>>> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+>>>> @@ -1531,38 +1531,6 @@ static const struct adreno_gpu_funcs funcs = {
+>>>>   	.get_timestamp = a5xx_get_timestamp,
+>>>>   };
+>>>> -static void check_speed_bin(struct device *dev)
+>>>> -{
+>>>> -	struct nvmem_cell *cell;
+>>>> -	u32 val;
+>>>> -
+>>>> -	/*
+>>>> -	 * If the OPP table specifies a opp-supported-hw property then we have
+>>>> -	 * to set something with dev_pm_opp_set_supported_hw() or the table
+>>>> -	 * doesn't get populated so pick an arbitrary value that should
+>>>> -	 * ensure the default frequencies are selected but not conflict with any
+>>>> -	 * actual bins
+>>>> -	 */
+>>>> -	val = 0x80;
+>>>> -
+>>>> -	cell = nvmem_cell_get(dev, "speed_bin");
+>>>> -
+>>>> -	if (!IS_ERR(cell)) {
+>>>> -		void *buf = nvmem_cell_read(cell, NULL);
+>>>> -
+>>>> -		if (!IS_ERR(buf)) {
+>>>> -			u8 bin = *((u8 *) buf);
+>>>> -
+>>>> -			val = (1 << bin);
+>>>> -			kfree(buf);
+>>>> -		}
+>>>> -
+>>>> -		nvmem_cell_put(cell);
+>>>> -	}
+>>>> -
+>>>> -	dev_pm_opp_set_supported_hw(dev, &val, 1);
+>>>> -}
+>>>> -
+>>>>   struct msm_gpu *a5xx_gpu_init(struct drm_device *dev)
+>>>>   {
+>>>>   	struct msm_drm_private *priv = dev->dev_private;
+>>>> @@ -1588,8 +1556,6 @@ struct msm_gpu *a5xx_gpu_init(struct drm_device *dev)
+>>>>   	a5xx_gpu->lm_leakage = 0x4E001A;
+>>>> -	check_speed_bin(&pdev->dev);
+>>>> -
+>>>>   	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 4);
+>>>>   	if (ret) {
+>>>>   		a5xx_destroy(&(a5xx_gpu->base.base));
+>>>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>>>> index 87c8b03..e0ff16c 100644
+>>>> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
+>>>> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>>>> @@ -18,6 +18,8 @@ bool snapshot_debugbus = false;
+>>>>   MODULE_PARM_DESC(snapshot_debugbus, "Include debugbus sections in GPU devcoredump (if not fused off)");
+>>>>   module_param_named(snapshot_debugbus, snapshot_debugbus, bool, 0600);
+>>>> +const u32 a530v2_speedbins[] = {0, 1, 2, 3, 4, 5, 6, 7};
+>>>> +
+>>>>   static const struct adreno_info gpulist[] = {
+>>>>   	{
+>>>>   		.rev   = ADRENO_REV(2, 0, 0, 0),
+>>>> @@ -163,6 +165,8 @@ static const struct adreno_info gpulist[] = {
+>>>>   			ADRENO_QUIRK_FAULT_DETECT_MASK,
+>>>>   		.init = a5xx_gpu_init,
+>>>>   		.zapfw = "a530_zap.mdt",
+>>>> +		.speedbins = a530v2_speedbins,
+>>>> +		.speedbins_count = ARRAY_SIZE(a530v2_speedbins),
+>>>>   	}, {
+>>>>   		.rev = ADRENO_REV(5, 4, 0, 2),
+>>>>   		.revn = 540,
+>>>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+>>>> index f21561d..b342fa4 100644
+>>>> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+>>>> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+>>>> @@ -14,6 +14,7 @@
+>>>>   #include <linux/pm_opp.h>
+>>>>   #include <linux/slab.h>
+>>>>   #include <linux/soc/qcom/mdt_loader.h>
+>>>> +#include <linux/nvmem-consumer.h>
+>>>>   #include <soc/qcom/ocmem.h>
+>>>>   #include "adreno_gpu.h"
+>>>>   #include "msm_gem.h"
+>>>> @@ -891,6 +892,69 @@ void adreno_gpu_ocmem_cleanup(struct adreno_ocmem *adreno_ocmem)
+>>>>   			   adreno_ocmem->hdl);
+>>>>   }
+>>>> +static int adreno_set_supported_hw(struct device *dev,
+>>>> +		struct adreno_gpu *adreno_gpu)
+>>>> +{
+>>>> +	u8 speedbins_count = adreno_gpu->info->speedbins_count;
+>>>> +	const u32 *speedbins = adreno_gpu->info->speedbins;
+>>>> +	struct nvmem_cell *cell;
+>>>> +	u32 bin, i;
+>>>> +	u32 val = 0;
+>>>> +	void *buf, *opp_table;
+>>>> +
+>>>> +	cell = nvmem_cell_get(dev, "speed_bin");
+>>>> +	/*
+>>>> +	 * -ENOENT means that the platform doesn't support speedbin which is
+>>>> +	 * fine
+>>>> +	 */
+>>>> +	if (PTR_ERR(cell) == -ENOENT)
+>>>> +		return 0;
+>>>> +	else if (IS_ERR(cell))
+>>>> +		return PTR_ERR(cell);
+>>>> +
+>>>> +	if (!speedbins)
+>>>> +		goto done;
+>>>> +
+>>>> +	buf = nvmem_cell_read(cell, NULL);
+>>>> +	if (IS_ERR(buf)) {
+>>>> +		nvmem_cell_put(cell);
+>>>> +		return PTR_ERR(buf);
+>>>> +	}
+>>>> +
+>>>> +	bin = *((u32 *) buf);
+>>>> +
+>>>> +	for (i = 0; i < speedbins_count; i++) {
+>>>> +		if (bin == speedbins[i]) {
+>>>> +			val = (1 << i);
+>>>> +			break;
+>>>> +		}
+>>>> +	}
+>>>> +
+>>>> +	kfree(buf);
+>>>> +done:
+>>>> +	nvmem_cell_put(cell);
+>>>> +
+>>>> +	if (!val) {
+>>>> +		DRM_DEV_ERROR(dev,
+>>>> +				"missing support for speed-bin: %u. Some OPPs may not be supported by hardware",
+>>>> +				bin);
+>>>> +		val = ~0U;
+>>>> +	}
+>>>> +
+>>>> +	opp_table = dev_pm_opp_set_supported_hw(dev, &val, 1);
+>>>> +	if (IS_ERR(opp_table))
+>>>> +		return PTR_ERR(opp_table);
+>>>> +
+>>>> +	adreno_gpu->opp_table = opp_table;
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>> +static void adreno_put_supported_hw(struct opp_table *opp_table)
+>>>> +{
+>>>> +	if (opp_table)
+>>>> +		dev_pm_opp_put_supported_hw(opp_table);
+>>>> +}
+>>>> +
+>>>>   int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>>>>   		struct adreno_gpu *adreno_gpu,
+>>>>   		const struct adreno_gpu_funcs *funcs, int nr_rings)
+>>>> @@ -899,6 +963,7 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>>>>   	struct adreno_platform_config *config = dev->platform_data;
+>>>>   	struct msm_gpu_config adreno_gpu_config  = { 0 };
+>>>>   	struct msm_gpu *gpu = &adreno_gpu->base;
+>>>> +	int ret;
+>>>>   	adreno_gpu->funcs = funcs;
+>>>>   	adreno_gpu->info = adreno_info(config->rev);
+>>>> @@ -910,6 +975,10 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>>>>   	adreno_gpu_config.nr_rings = nr_rings;
+>>>> +	ret = adreno_set_supported_hw(dev, adreno_gpu);
+>>>> +	if (ret)
+>>>> +		return ret;
+>>>> +
 >>>
->>> Yes I can understand the rational on why the region is reserved.  However IMHO
->>> the real question is why such reservation behavior should affect qemu memory
->>> layout, and even further to VFIO mappings.
+>>> I still don't understand why we are doing this here instead of a5xx_gpu.c and
+>>> a6xx_gpu.c.
 >>>
->>> Note that PROT_NONE should likely mean that there's no backing page at all in
->>> this case.  Since vfio will pin all the pages before mapping the DMAs, it also
->>> means that it's at least inefficient, because when we try to map all the
->>> PROT_NONE pages we'll try to fault in every single page of it, even if they may
->>> not ever be used.
->>>
->>> So I still think this patch is not doing the right thing.  Instead we should
->>> somehow teach qemu that the virtiofs memory region should only be the size of
->>> enabled regions (with PROT_READ|PROT_WRITE), rather than the whole reserved
->>> PROT_NONE region.
+>>> Jordan
 >>
->> virtio-fs was not implemented with IOMMUs in mind. The idea is just to
->> install a kvm.ko memory region that exposes the DAX window.
->>
->> Perhaps we need to treat the DAX window like an IOMMU? That way the
->> virtio-fs code can send map/unmap notifications and hw/vfio/ can
->> propagate them to the host kernel.
+>> Could you please clarify why you prefer so?
 > 
-> Sounds right.  One more thing to mention is that we may need to avoid tearing
-> down the whole old DMA region when resizing the PROT_READ|PROT_WRITE region
-> into e.g. a bigger one to cover some of the previusly PROT_NONE part, as long
-> as if the before-resizing region is still possible to be accessed from any
-> hardware.  It smells like something David is working with virtio-mem, not sure
-> whether there's any common infrastructure that could be shared.
+> Putting this support in the target specific code avoids declaring more global
+> variables and skips a bit of extra code for the vast majority of targets that do
+> not have speed bins. I don't mind sharing the common helper function but a5xx
+> has shown that this can be safely done in the target specific code and I don't
+> see any reason to deviate from that.
+> 
+> Jordan
+Alright. Then it seems better to move everything to target specific 
+code. Will post another patch shortly.
 
-"somehow teach qemu that the virtiofs memory region should only be the
-size of enabled regions" - for virtio-mem, I'm working on resizeable RAM
-blocks/RAM memory regions. Fairly complicated, that's why I deferred
-upstreaming it and still need to implement plenty of special cases for
-atomic resizes (e.g., vhost-user).
-
-But it's only one part of the puzzle for virtio-fs. AFAIU, it's not only
-about resizing the region for virtio-fs - we can have PROT_NONE holes
-anywhere inside there.
-
-In vfio, you cannot shrink mappings atomically. Growing works, but
-requires additional mappings (-> bad). So assume you mapped a file with
-size X and want to resize it. You first have to unmap + remap with the
-new size. This is not atomic, thus problematic.
-
-For virtio-mem, we have a fix block size and can map/unmap in that
-granularity whenever we populate/discard memory within the
-device-managed region. I don't think that applies for files in case of
-virtio-fs.
-
-
-The real question is: do we even *need* DMA from vfio devices to
-virtio-fs regions? If not (do guests rely on it? what does the spec
-state?), just don't care about vfio at all and don't map anything.
-
-But maybe I am missing something important
-
-Q1: Is the virtio-fs region mapped into system address space, so we have
-to map everything without a vIOMMU?
-
-Q2: Is DMA from vfio devices to virtio-fs regions a valid use case?
-
--- 
-Thanks,
-
-David / dhildenb
+-Akhil.
+>>
+>> -Akhil
+>>>
+>>>>   	adreno_get_pwrlevels(dev, gpu);
+>>>>   	pm_runtime_set_autosuspend_delay(dev,
+>>>> @@ -936,4 +1005,6 @@ void adreno_gpu_cleanup(struct adreno_gpu *adreno_gpu)
+>>>>   	icc_put(gpu->icc_path);
+>>>>   	icc_put(gpu->ocmem_icc_path);
+>>>> +
+>>>> +	adreno_put_supported_hw(adreno_gpu->opp_table);
+>>>>   }
+>>>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+>>>> index c3775f7..a756ad7 100644
+>>>> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+>>>> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+>>>> @@ -55,6 +55,7 @@ struct adreno_reglist {
+>>>>   };
+>>>>   extern const struct adreno_reglist a630_hwcg[], a640_hwcg[], a650_hwcg[];
+>>>> +extern const u32 a618_speedbins[];
+>>>>   struct adreno_info {
+>>>>   	struct adreno_rev rev;
+>>>> @@ -67,6 +68,8 @@ struct adreno_info {
+>>>>   	const char *zapfw;
+>>>>   	u32 inactive_period;
+>>>>   	const struct adreno_reglist *hwcg;
+>>>> +	const u32 *speedbins;
+>>>> +	const u8 speedbins_count;
+>>>>   };
+>>>>   const struct adreno_info *adreno_info(struct adreno_rev rev);
+>>>> @@ -112,6 +115,8 @@ struct adreno_gpu {
+>>>>   	 * code (a3xx_gpu.c) and stored in this common location.
+>>>>   	 */
+>>>>   	const unsigned int *reg_offsets;
+>>>> +
+>>>> +	struct opp_table *opp_table;
+>>>>   };
+>>>>   #define to_adreno_gpu(x) container_of(x, struct adreno_gpu, base)
+>>>> -- 
+>>>> 2.7.4
+>>>>
+>>>
+>>
+>> _______________________________________________
+>> dri-devel mailing list
+>> dri-devel@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
 
