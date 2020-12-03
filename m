@@ -2,125 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 462232CD4D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 074962CD4E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730269AbgLCLna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:43:30 -0500
-Received: from foss.arm.com ([217.140.110.172]:37972 "EHLO foss.arm.com"
+        id S1730192AbgLCLsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:48:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51776 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726710AbgLCLna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:43:30 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D325113E;
-        Thu,  3 Dec 2020 03:42:44 -0800 (PST)
-Received: from [10.37.8.53] (unknown [10.37.8.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4CC8E3F66B;
-        Thu,  3 Dec 2020 03:42:40 -0800 (PST)
-Subject: Re: [PATCH v2] proc: use untagged_addr() for pagemap_read addresses
-To:     Miles Chen <miles.chen@mediatek.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Song Bao Hua <song.bao.hua@hisilicon.com>,
-        stable@vger.kernel.org
-References: <20201127050738.14440-1-miles.chen@mediatek.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <d836c2d2-321f-3931-568b-430d73c60c2c@arm.com>
-Date:   Thu, 3 Dec 2020 11:45:56 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726710AbgLCLsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 06:48:36 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606996070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WdKmdYnwmnj2SC50EKwyFiX7FW/+oQeHbUAT/XBMu74=;
+        b=Z3WBmDj49gC8U1gp2kb3oi8QpP7B85jdgQlpkvQcvulESDp0PXpILM5nZz/hp5jw9+/afT
+        8hPFNYJ5G4JqUUSMaYgIeXW6dYQHvyjSu2UDffeIr/zW/ADnaQ5faqZE9Uq4gJGgqTCaSQ
+        kils5BbwPWFohjg0fKAXoMG9UqDj1mg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D83D9AC75;
+        Thu,  3 Dec 2020 11:47:49 +0000 (UTC)
+Date:   Thu, 3 Dec 2020 12:47:48 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, hyesoo.yu@samsung.com,
+        willy@infradead.org, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
+        surenb@google.com, pullip.cho@samsung.com, joaodias@google.com,
+        hridya@google.com, sumit.semwal@linaro.org, john.stultz@linaro.org,
+        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, robh@kernel.org,
+        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v2 2/4] mm: introduce cma_alloc_bulk API
+Message-ID: <20201203114748.GB17338@dhcp22.suse.cz>
+References: <8f006a4a-c21d-9db3-5493-fb1cc651b0cf@redhat.com>
+ <20201202154915.GU17338@dhcp22.suse.cz>
+ <X8e9tSwcsrEsAv1O@google.com>
+ <20201202164834.GV17338@dhcp22.suse.cz>
+ <X8fU1ddmsSfuV6sD@google.com>
+ <20201202185107.GW17338@dhcp22.suse.cz>
+ <X8fqU82GXmu57f7V@google.com>
+ <f0e980cb-cc74-82e8-6ccf-09030a96103a@redhat.com>
+ <20201203082810.GX17338@dhcp22.suse.cz>
+ <c5209dce-dc30-6d8d-e8f8-c5412b072310@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201127050738.14440-1-miles.chen@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c5209dce-dc30-6d8d-e8f8-c5412b072310@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miles,
-
-On 11/27/20 5:07 AM, Miles Chen wrote:
-> When we try to visit the pagemap of a tagged userspace pointer, we find
-> that the start_vaddr is not correct because of the tag.
-> To fix it, we should untag the usespace pointers in pagemap_read().
-> 
-
-Nit: s/usespace/userspace/ (please search and replace all occurrences :) )
-
-> I tested with 5.10-rc4 and the issue remains.
-> 
-> Explaination from Catalin in [1]:
->
-
-Nit: s/Explaination/Explanation/ (please search and replace all occurrences :) )
-
-> "
-> Arguably, that's a user-space bug since tagged file offsets were never
-> supported. In this case it's not even a tag at bit 56 as per the arm64
-> tagged address ABI but rather down to bit 47. You could say that the
-> problem is caused by the C library (malloc()) or whoever created the
-> tagged vaddr and passed it to this function. It's not a kernel
-> regression as we've never supported it.
-> 
-> Now, pagemap is a special case where the offset is usually not generated
-> as a classic file offset but rather derived by shifting a user virtual
-> address. I guess we can make a concession for pagemap (only) and allow
-> such offset with the tag at bit (56 - PAGE_SHIFT + 3).
-> "
-> 
-> My test code is baed on [2]:
-
-Nit: s/baed/based/ (please search and replace all occurrences :) )
-
+On Thu 03-12-20 10:47:02, David Hildenbrand wrote:
+> On 03.12.20 09:28, Michal Hocko wrote:
 [...]
-
-> ---
->  fs/proc/task_mmu.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+> > I think we should aim at easy and very highlevel behavior:
+> > - GFP_NOWAIT - unsupported currently IIRC but something that something
+> >   that should be possible to implement. Isolation is non blocking,
+> >   migration could be skipped
+> > - GFP_KERNEL - default behavior whatever that means
+> > - GFP_NORETRY - opportunistic allocation as lightweight as we can get.
+> >   Failures to be expected also for transient reasons.
+> > - GFP_RETRY_MAYFAIL - try hard but not as hard as to trigger disruption
+> >   (e.g. via oom killer).
 > 
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index 217aa2705d5d..92b277388f05 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -1599,11 +1599,15 @@ static ssize_t pagemap_read(struct file *file, char __user *buf,
->  
->  	src = *ppos;
->  	svpfn = src / PM_ENTRY_BYTES;
-> -	start_vaddr = svpfn << PAGE_SHIFT;
->  	end_vaddr = mm->task_size;
->  
->  	/* watch out for wraparound */
-> -	if (svpfn > mm->task_size >> PAGE_SHIFT)
-> +	start_vaddr = end_vaddr;
-> +	if (svpfn < (ULONG_MAX >> PAGE_SHIFT))
-
-It seems that 'svpfn' should be less-then-equal (<=) '(ULONG_MAX >>
-PAGE_SHIFT)'. Is there any specific reason why this is not the case?
-
-> +		start_vaddr = untagged_addr(svpfn << PAGE_SHIFT);
-> +
-> +	/* Ensure the address is inside the task */
-> +	if (start_vaddr > mm->task_size)
->  		start_vaddr = end_vaddr;
->  
->  	/*
+> I think we currently see demand for 3 modes for alloc_contig_range()
 > 
+> a) normal
+> 
+> As is. Try, but don't try too hard. E.g., drain LRU, drain PCP, retry a
+> couple of times. Failures in some cases (short-term pinning, PCP races)
+> are still possible and acceptable.
+> 
+> GFP_RETRY_MAYFAIL ?
 
-Otherwise:
+normal shouldn't really require anybody to think about gfp flags hard.
+That to most people really means GFP_KERNEL.
 
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> E.g., "Allocations with this flag may fail, but only when there is
+> genuinely little unused memory." - current description does not match at
+> all. When allocating ranges things behave completely different.
+> 
+> 
+> b) fast
+> 
+> Try, but fail fast. Leave optimizations that can improve the result to
+> the caller. E.g., don't drain LRU, don't drain PCP, don't retry.
+> Frequent failures are expected and acceptable.
+> 
+> __GFP_NORETRY ?
+> 
+> E.g., "The VM implementation will try only very lightweight memory
+> direct reclaim to get some memory under memory pressure" - again, I
+> think current description does not really match.
+
+Agreed. As mentioned above this would be an opportunistic allocation
+mode.
+
+ 
+> c) hard
+> 
+> Try hard, E.g., temporarily disabling the PCP. Certainly not
+> __GFP_NOFAIL, that would be highly dangerous. So no flags / GFP_KERNEL?
+
+NOFAIL semantic is out of question. Should we have a mode to try harder
+than the default? I dunno. Do we have users? I think RETRY_MAYFAIL is a
+middle ground between the default and NORETRY which is just too easy to
+fail. This is the case for the allocator as well. And from what I have
+seen people are already using MAYFAIL in order to prevent oom killer so
+this is a generally recognized pattern.
+
+> > - __GFP_THIS_NODE - stick to a node without fallback
+> > - we can support zone modifiers although there is no existing user.
+> > - __GFP_NOWARN - obvious
+> > 
+> > And that is it. Or maybe I am seeing that oversimplified.
+> > 
+> 
+> Again, I think most flags make sense for the migration target allocation
+>  path and mainly deal with OOM situations and reclaim. For the migration
+> path - which is specific to the alloc_contig_range() allocater - they
+> don't really apply and create more confusion than they actually help - IMHO.
+
+Migration is really an implementation detail of this interface. You
+shouldn't be even thinking that there is a migration underneath not even
+mention to actually trying to control it. But well, we might end up
+disagreeing here. What actually matters is existing users of the
+interface.
 
 -- 
-Regards,
-Vincenzo
+Michal Hocko
+SUSE Labs
