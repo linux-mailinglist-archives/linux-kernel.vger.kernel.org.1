@@ -2,207 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D12B2CDA36
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A4F2CDA3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731016AbgLCPiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 10:38:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:43494 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728951AbgLCPix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:38:53 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8A311063;
-        Thu,  3 Dec 2020 07:38:07 -0800 (PST)
-Received: from [10.57.31.242] (unknown [10.57.31.242])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 304173F718;
-        Thu,  3 Dec 2020 07:38:05 -0800 (PST)
-Subject: Re: [PATCH v2 2/5] thermal: devfreq_cooling: get a copy of device
- status
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, orjan.eide@arm.com, robh@kernel.org,
-        alyssa.rosenzweig@collabora.com, steven.price@arm.com,
-        airlied@linux.ie, daniel@ffwll.ch, ionela.voinescu@arm.com
-References: <20201118120358.17150-1-lukasz.luba@arm.com>
- <20201118120358.17150-3-lukasz.luba@arm.com>
- <5d4743b9-5b2f-8494-8d10-6a5fd2c0fdfd@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <d9906ed8-e3bf-5e42-2e43-09071848ae48@arm.com>
-Date:   Thu, 3 Dec 2020 15:38:03 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2387730AbgLCPkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 10:40:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731020AbgLCPkE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 10:40:04 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67F4C061A4F;
+        Thu,  3 Dec 2020 07:39:23 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607009962;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c5QSSZGITp++UuTR9FIHIX+EOzfhcH/jIQLDdYnHfBg=;
+        b=MuY11QZgsLCvz7j8OY9G7UruMtjvConPAluUCkFEhWJ1tXmRkSsaJlJVf2NjJgs9wNllNK
+        rNlJyK3GhWj7GHDRpjNbhq7AOFdeoQ/KHXVUibxOuWK2zvKFK6LtnSFbON9C0FBvbPSF8B
+        akctYp73QKBLoeCuWnuFkx0+CnMbRhrkGUWMkL+vaVyhvzvSB4nnIbbC10iMNTqumA8tkR
+        /Bx6uhkb1mfrprEt86SBmjZjNRJceDmUrxhk94xGwW4+AjByrVPRveR7HoTviPlx2NiNGp
+        Ksb7eUB/9F05G2wuZhxRObVmeDCBuK7kcrPqpl1g1zhVSi4IIRr1nV0TxE7vBQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607009962;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c5QSSZGITp++UuTR9FIHIX+EOzfhcH/jIQLDdYnHfBg=;
+        b=TZrB6FfRnzwbfT9iir/ZEkMYAkXhMQhXdw0tnWcuvawQQdec3PZFfe6qZDvIG1sMJcE1Qn
+        nnrATUOVCiJqMQDw==
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] rtc: adapt allowed RTC update error
+In-Reply-To: <20201203021047.GG3544@piout.net>
+References: <20201201143835.2054508-1-mlichvar@redhat.com> <20201201161224.GF5487@ziepe.ca> <20201201171420.GN1900232@localhost> <20201201173540.GH5487@ziepe.ca> <87mtywe2zu.fsf@nanos.tec.linutronix.de> <20201202162723.GJ5487@ziepe.ca> <87a6uwdnfn.fsf@nanos.tec.linutronix.de> <20201202205418.GN5487@ziepe.ca> <874kl3eu8p.fsf@nanos.tec.linutronix.de> <87zh2vd72z.fsf@nanos.tec.linutronix.de> <20201203021047.GG3544@piout.net>
+Date:   Thu, 03 Dec 2020 16:39:21 +0100
+Message-ID: <87pn3qdhli.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <5d4743b9-5b2f-8494-8d10-6a5fd2c0fdfd@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Alexandre,
 
+On Thu, Dec 03 2020 at 03:10, Alexandre Belloni wrote:
+> On 03/12/2020 02:14:12+0100, Thomas Gleixner wrote:
+>> That said, can somebody answer the one million dollar question which
+>> problem is solved by all of this magic nonsense?
+>> 
+> The goal was to remove the 500ms offset for all the RTCs but the
+> MC146818 because there are RTC that will reset properly their counter
+> when setting the time, meaning they can be set very precisely.
 
-On 12/3/20 1:09 PM, Daniel Lezcano wrote:
-> On 18/11/2020 13:03, Lukasz Luba wrote:
->> Devfreq cooling needs to now the correct status of the device in order
->> to operate. Do not rely on Devfreq last_status which might be a stale data
->> and get more up-to-date values of the load.
->>
->> Devfreq framework can change the device status in the background. To
->> mitigate this situation make a copy of the status structure and use it
->> for internal calculations.
->>
->> In addition this patch adds normalization function, which also makes sure
->> that whatever data comes from the device, it is in a sane range.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/thermal/devfreq_cooling.c | 52 +++++++++++++++++++++++++------
->>   1 file changed, 43 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
->> index 659c0143c9f0..925523694462 100644
->> --- a/drivers/thermal/devfreq_cooling.c
->> +++ b/drivers/thermal/devfreq_cooling.c
->> @@ -227,20 +227,46 @@ static inline unsigned long get_total_power(struct devfreq_cooling_device *dfc,
->>   							       voltage);
->>   }
->>   
->> +static void _normalize_load(struct devfreq_dev_status *status)
->> +{
->> +	/* Make some space if needed */
->> +	if (status->busy_time > 0xffff) {
->> +		status->busy_time >>= 10;
->> +		status->total_time >>= 10;
->> +	}
->> +
->> +	if (status->busy_time > status->total_time)
->> +		status->busy_time = status->total_time;
-> 
-> How the condition above is possible?
+The MC setting is halfways precise. The write resets the divider chain
+and when the reset is removed then the next UIP will happen after the
+magic 0.5 seconds. So yes, writing it 500ms _before_ the next second is
+halfways correct assumed that there is no interference between
+ktime_get_real() and the actual write which is a silly assumption as the
+code is fully preemptible.
 
-They should, be checked by the driver, but I cannot trust
-and have to check for all corner cases: (div by 0, overflow
-one of them, etc). The busy_time and total_time are unsigned long,
-which means 4B on 32bit machines.
-If these values are coming from device counters, which count every
-busy cycle and total cycles of a clock of a device running at e.g.
-1GHz they would overflow every ~4s.
+> IIRC, used in conjunction with rtc_hctosys which also adds
+> inconditionnaly 500ms this can ends up with the system time
+> being one second away from the wall clock time which NTP will take quite
+> some time to remove.
 
-Normally IPA polling are 1s and 100ms, it's platform specific. But there
-are also 'empty' periods when IPA sees temperature very low and does not
-even call the .get_requested_power() callbacks for the cooling devices,
-just grants max freq to all. This is problematic. I am investigating it
-and will propose a solution for IPA soon.
+The rtc_cmos() driver has a fun comment in cmos_set_time()....
 
-I would avoid all of this if devfreq core would have default for all
-devices a reliable polling timer... Let me check some possibilities also
-for this case.
+The logic in sync_cmos_clock() and rtc_set_ntp_time() is different as I
+pointed out: sync_cmos_clock() hands -500ms to rtc_tv_nsec_ok() and
+rtc_set_ntp_time() uses +500ms, IOW exactly ONE second difference in
+behaviour.
 
-> 
->> +	status->busy_time *= 100;
->> +	status->busy_time /= status->total_time ? : 1;
->> +
->> +	/* Avoid division by 0 */
->> +	status->busy_time = status->busy_time ? : 1;
->> +	status->total_time = 100;
-> 
-> Why not base the normalization on 1024? and use an intermediate u64.
+> Coincidentally, I was going to revert those patches for v5.11.
 
-You are the 2nd reviewer who is asking this. I tried to keep 'load' as
-in range [0, 100] since we also have 'load' in cpufreq cooling in this
-range. Maybe I should switch to 1024 (Ionela was also asking for this).
+Which will break the rtc_cmos() driver in a different way. We should
+really fix that proper and just have the 500ms offset for rtc_cmos,
+aka. MC146818. When other drivers want a different offset, then they
+still can do so.
 
-> 
-> For example:
-> 
-> static u32 _normalize_load(struct devfreq_dev_status *status)
-> {
-> 	u64 load = 0;
-> 
-> 	/* Prevent divison by zero */
-> 	if (!status->busy_time)
-> 		return 0;
-> 
-> 	/*
-> 	 * Assuming status->total_time is always greater or equal
-> 	 * to status->busy_time, it can not be equal to zero because
-> 	 * of the test above
-> 	 */
-> 	load = status->busy_time * 1024;
-> 	load /= status->total_time;
+The direct /dev/rtc settime ioctl is not using that logic anyway. Thats
+the business of the user space application to get that straight which is
+scheduling lottery as well.
 
-I wanted to avoid any divisions which involve 64bit var on 32bit
-machine.
+Thanks,
 
-> 
-> 	/*
-> 	 * load is always [1..1024[, so it can not be truncated by a
-> 	 * u64 -> u32 coercive cast
-> 	 */
-> 	return (u32)load;
-> }
-> 
-> 
->> +}
->>   
->>   static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cdev,
->>   					       u32 *power)
->>   {
->>   	struct devfreq_cooling_device *dfc = cdev->devdata;
->>   	struct devfreq *df = dfc->devfreq;
->> -	struct devfreq_dev_status *status = &df->last_status;
->> +	struct devfreq_dev_status status;
->>   	unsigned long state;
->> -	unsigned long freq = status->current_frequency;
->> +	unsigned long freq;
->>   	unsigned long voltage;
->>   	u32 dyn_power = 0;
->>   	u32 static_power = 0;
->>   	int res;
->>   
->> +	mutex_lock(&df->lock);
->> +	res = df->profile->get_dev_status(df->dev.parent, &status);
->> +	mutex_unlock(&df->lock);
->> +	if (res)
->> +		return res;
->> +
->> +	freq = status.current_frequency;
->> +
->>   	state = freq_get_state(dfc, freq);
->>   	if (state == THERMAL_CSTATE_INVALID) {
->>   		res = -EAGAIN;
->> @@ -268,16 +294,18 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
->>   	} else {
->>   		dyn_power = dfc->power_table[state];
->>   
->> +		_normalize_load(&status);
-> 
-> 		load = _normalize_load(&status);
-> 
->> +
->>   		/* Scale dynamic power for utilization */
->> -		dyn_power *= status->busy_time;
->> -		dyn_power /= status->total_time;
->> +		dyn_power *= status.busy_time;
->> +		dyn_power /= status.total_time;
-> 
-> 		/*
-> 		 * May be change dyn_power to a u64 to prevent overflow
-> 		 * when multiplied by 'load'
-> 		 */
-> 		dyn_power = (dyn_power * load) / 1024;
-
-dyn_power value from EM should fit in 16bit [1], so we should be safe.
-
-I will experiment with the 1024 code and check some corner cases.
-
-Thank you Daniel for the review!
-
-Regards,
-Lukasz
-
-[1] 
-https://elixir.bootlin.com/linux/v5.10-rc5/source/kernel/power/energy_model.c#L135
+        tglx
