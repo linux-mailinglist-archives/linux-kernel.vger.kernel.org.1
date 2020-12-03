@@ -2,136 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34142CCED3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:50:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B492CCEDE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728625AbgLCFtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 00:49:35 -0500
-Received: from a2.mail.mailgun.net ([198.61.254.61]:18001 "EHLO
-        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728316AbgLCFtf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:49:35 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606974556; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=NJ4IfsZbGPDKNl9KMbMJltvvUnRSFPpja3eddaNzntw=;
- b=A14WjFj9wxyvAeAurDvQqjOLuLmo5/+0UdDdvRzUeVQ+F4aSxzD/CiXzKIFzfIzkECLDUbyL
- tz+iXjVz21/uFL+ezAAhSaWNmbNAS216uyT7V47Os6Sfb0KgT0BHhiNS/rgtDuQ0AtAECjr8
- w8G07u6d/bxGGwu+NVXIYoYebPo=
-X-Mailgun-Sending-Ip: 198.61.254.61
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5fc87c53a1906b87a6a0d69f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Dec 2020 05:49:07
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5A309C43463; Thu,  3 Dec 2020 05:49:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5AFD3C433C6;
-        Thu,  3 Dec 2020 05:49:05 +0000 (UTC)
+        id S1728023AbgLCF6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 00:58:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34420 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726707AbgLCF6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 00:58:30 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B6804ABCE;
+        Thu,  3 Dec 2020 05:57:48 +0000 (UTC)
+Subject: Re: [PATCH] drm/hisilicon: Use managed VRAM-helper initialization
+To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
+        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
+        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
+        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
+References: <1606964953-24309-1-git-send-email-tiantao6@hisilicon.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <7baf0a61-bef8-e847-afd2-3a1d05875cdf@suse.de>
+Date:   Thu, 3 Dec 2020 06:57:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 03 Dec 2020 13:49:05 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
-        beanhuo@micron.com, asutoshd@codeaurora.org,
-        matthias.bgg@gmail.com, bvanassche@acm.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
-        jiajie.hao@mediatek.com, alice.chao@mediatek.com,
-        huadian.liu@mediatek.com
-Subject: Re: [PATCH v1 3/3] scsi: ufs: Introduce notify_event variant function
-In-Reply-To: <20201126053839.25889-4-stanley.chu@mediatek.com>
-References: <20201126053839.25889-1-stanley.chu@mediatek.com>
- <20201126053839.25889-4-stanley.chu@mediatek.com>
-Message-ID: <b8d2d4e45e1738865925de17d53dcaa7@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <1606964953-24309-1-git-send-email-tiantao6@hisilicon.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="u1SpjsDYRN3Hc6zNiGVIKjVTnIrTErLNb"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-26 13:38, Stanley Chu wrote:
-> Introduce notify_event variant function to allow
-> vendor to get notified of important events and connect
-> to any proprietary debugging facilities.
-> 
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c |  2 ++
->  drivers/scsi/ufs/ufshcd.h | 11 +++++++++++
->  2 files changed, 13 insertions(+)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 7194bed1f10b..63fe37e1c908 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -4484,6 +4484,8 @@ void ufshcd_update_evt_hist(struct ufs_hba *hba,
-> u32 id, u32 val)
->  	e->val[e->pos] = val;
->  	e->tstamp[e->pos] = ktime_get();
->  	e->pos = (e->pos + 1) % UFS_EVENT_HIST_LENGTH;
-> +
-> +	ufshcd_vops_notify_event(hba, id, &val);
->  }
->  EXPORT_SYMBOL_GPL(ufshcd_update_evt_hist);
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 82c2fc5597bb..a81ca36c1715 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -317,6 +317,7 @@ struct ufs_pwr_mode_info {
->   * @phy_initialization: used to initialize phys
->   * @device_reset: called to issue a reset pulse on the UFS device
->   * @program_key: program or evict an inline encryption key
-> + * @notify_event: called to notify important events
->   */
->  struct ufs_hba_variant_ops {
->  	const char *name;
-> @@ -352,6 +353,8 @@ struct ufs_hba_variant_ops {
->  					void *data);
->  	int	(*program_key)(struct ufs_hba *hba,
->  			       const union ufs_crypto_cfg_entry *cfg, int slot);
-> +	void	(*notify_event)(struct ufs_hba *hba,
-> +				enum ufs_event_type evt, void *data);
->  };
-> 
->  /* clock gating state  */
-> @@ -1097,6 +1100,14 @@ static inline int
-> ufshcd_vops_clk_scale_notify(struct ufs_hba *hba,
->  	return 0;
->  }
-> 
-> +static inline void ufshcd_vops_notify_event(struct ufs_hba *hba,
-> +					    enum ufs_event_type evt,
-> +					    void *data)
-> +{
-> +	if (hba->vops && hba->vops->notify_event)
-> +		hba->vops->notify_event(hba, evt, data);
-> +}
-> +
->  static inline int ufshcd_vops_setup_clocks(struct ufs_hba *hba, bool 
-> on,
->  					enum ufs_notify_change_status status)
->  {
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--u1SpjsDYRN3Hc6zNiGVIKjVTnIrTErLNb
+Content-Type: multipart/mixed; boundary="GOyPcIWYUn6LwumklnAr7qdZcUdyNCe3H";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
+ kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
+ dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <7baf0a61-bef8-e847-afd2-3a1d05875cdf@suse.de>
+Subject: Re: [PATCH] drm/hisilicon: Use managed VRAM-helper initialization
+References: <1606964953-24309-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1606964953-24309-1-git-send-email-tiantao6@hisilicon.com>
 
-Reviewed-by: Can Guo <cang@codeaurora.org>
+--GOyPcIWYUn6LwumklnAr7qdZcUdyNCe3H
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+Am 03.12.20 um 04:09 schrieb Tian Tao:
+> updated to use drmm_vram_helper_init()
+>=20
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+As a good follow-up patch, I would suggest to get rig of the entire file =
+
+hibmc_ttm.c. drmm_vram_helper_init() can be called directly from=20
+hibmc_load(). hibmc_dumb_create() and hibmc_mode_funcs can go to=20
+hibmc_drm_drv.c.
+
+Best regards
+Thomas
+
+> ---
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c |  1 -
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h |  1 -
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c     | 19 +++-------------=
+---
+>   3 files changed, 3 insertions(+), 18 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> index 8020604..5aea2e9 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> @@ -249,7 +249,6 @@ static int hibmc_unload(struct drm_device *dev)
+>  =20
+>   	pci_disable_msi(dev->pdev);
+>   	hibmc_kms_fini(priv);
+> -	hibmc_mm_fini(priv);
+>   	dev->dev_private =3D NULL;
+>   	return 0;
+>   }
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> index 7e0c756..2786de5 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> @@ -64,7 +64,6 @@ int hibmc_de_init(struct hibmc_drm_private *priv);
+>   int hibmc_vdac_init(struct hibmc_drm_private *priv);
+>  =20
+>   int hibmc_mm_init(struct hibmc_drm_private *hibmc);
+> -void hibmc_mm_fini(struct hibmc_drm_private *hibmc);
+>   int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
+>   		      struct drm_mode_create_dumb *args);
+>   int hibmc_ddc_create(struct drm_device *drm_dev, struct hibmc_connect=
+or *connector);
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/=
+drm/hisilicon/hibmc/hibmc_ttm.c
+> index e84fb81..892d566 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+> @@ -23,15 +23,12 @@
+>  =20
+>   int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+>   {
+> -	struct drm_vram_mm *vmm;
+>   	int ret;
+>   	struct drm_device *dev =3D &hibmc->dev;
+>  =20
+> -	vmm =3D drm_vram_helper_alloc_mm(dev,
+> -				       pci_resource_start(dev->pdev, 0),
+> -				       hibmc->fb_size);
+> -	if (IS_ERR(vmm)) {
+> -		ret =3D PTR_ERR(vmm);
+> +	ret =3D drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
+> +				    hibmc->fb_size);
+> +	if (ret) {
+>   		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
+>   		return ret;
+>   	}
+> @@ -39,16 +36,6 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+>   	return 0;
+>   }
+>  =20
+> -void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
+> -{
+> -	struct drm_device *dev =3D &hibmc->dev;
+> -
+> -	if (!dev->vram_mm)
+> -		return;
+> -
+> -	drm_vram_helper_release_mm(dev);
+> -}
+> -
+>   int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
+>   		      struct drm_mode_create_dumb *args)
+>   {
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--GOyPcIWYUn6LwumklnAr7qdZcUdyNCe3H--
+
+--u1SpjsDYRN3Hc6zNiGVIKjVTnIrTErLNb
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/IflsFAwAAAAAACgkQlh/E3EQov+CP
+PQ//cjecoEHrzdZ8LnQJiFRKZf7AbsBkUZ/97lsnbGFBPPHPfls3fG9vW9m4maAn0o1n6esiRMgC
+9eB1aA3aZKaw7unXcBCh/8NzfiLDFbihpveV30f584zlU3+cm5MBcfgjb8HTS5ThC3/xPBJ6E1/j
+L9ClTB2R7YA08JsPn9T+Ge7dujYSg7IJyidWZY4w2vfpl0zFV7qy5W8CyQR9orNxsNCWekGYH02f
+OnhHnh7u+Iw1ByVFkPxA5vgLiRisl8A/Zfk9MZ41rqz4bQ+qb0Xi5EdhQpufrY2zhnjxj4mmkA2f
+2xJmhMRMm5D1OK5R++Rtyu87pvFfcb/omst9WF9SER9axDh8wrD5Ib8u6u2BmvYhwFqoBkdfuQDR
+IfpoN3aK9do0yGpaV/cl1UO3r7ugWOy/krMiEwT0d5FKgsv+vI7YQX+gWGHFMvLyKUKUJS4l1BEl
++hEzKBTh3nmBn2XxzoOFTiJZnBbmiRZkbMCw/+bUY6WXdj0VvLuJrNunbQvyldrg3qLz0flIsj+/
+iIxqTo9bAJohL7IHSMCpcoDL7mhXUNrRrqKljVugjtsWcO7YtJtzBsPqoLetUrSU2ljYrEWFGWQJ
+MqAFYioz7FnsH87aF3Qge5xE3RmUZ4iUoOQ5KDULhwUpTlgtjF6/6bN9XNncepVfrUjESFs7LTkL
+7Tg=
+=BnE5
+-----END PGP SIGNATURE-----
+
+--u1SpjsDYRN3Hc6zNiGVIKjVTnIrTErLNb--
