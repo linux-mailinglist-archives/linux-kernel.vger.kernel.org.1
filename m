@@ -2,99 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13EF42CDF93
+	by mail.lfdr.de (Postfix) with ESMTP id 8062F2CDF94
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 21:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731846AbgLCUQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 15:16:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727352AbgLCUQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 15:16:13 -0500
-Date:   Thu, 3 Dec 2020 21:15:23 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607026532;
-        bh=sTLisENEUL1Kv4Gz8uUtUdHhZyPXG36W6EFw4wIEQvg=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZSDST5lJb21dROcR57sKm7LwP0X3KrZicV4vjl4MnY8wyN/ah9rq2kHPfQb+7WGy/
-         373wjhiEnu4m+vYcKQYuHQsu1NoFon76VbN9Q4RUvwpTGVeffdni9evz0J92DUxqna
-         cU48ClV+lvqfmlPKcj3ZgaDxIoPeUZUqbUfCGolZlbnLaMG6HulC/UpYKpwVwW3os8
-         QoLUXffxYDxpOVED+mN/erN5qz5B0a307VbLVQUsY9ksJERlmuQSHTq9TY3NzZysD4
-         xs81xIrAFNVHnSMvYn08BD3hm8c7jpytk+QBXZGnJQVOhXc3R/bfu0+UZswvy/evtn
-         MDUw1MTOmB8aQ==
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Mukesh Savaliya <msavaliy@codeaurora.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH] Revert "i2c: qcom-geni: Disable DMA processing on the
- Lenovo Yoga C630"
-Message-ID: <20201203201523.GA3585@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Mukesh Savaliya <msavaliy@codeaurora.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        Shawn Guo <shawn.guo@linaro.org>, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-References: <20201124185743.401946-1-bjorn.andersson@linaro.org>
+        id S1731849AbgLCUQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 15:16:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731848AbgLCUQ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 15:16:28 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0546BC061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 12:15:48 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id w18so1967105vsk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 12:15:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dljsbllX4zS14a9ABWPEKmTQRtRoht1NPRssUTiAyy4=;
+        b=L5a8wPh1tL1h2GioK1Al+21eqCetCvtglnrAvuW3ad4BLTy3NKGlIK3lYDyfaGpB7N
+         Xx/g/4uxu0MTmoeRu3LtpuViypl4z27vp8bmMvA+OD+dCHKQjJCEdGUWhVk85Trt0Fif
+         /bmMv83xlnxPMWKmq0602S6xBBd1XXXqY146QB4AufTsnrmHvRjwiehOJvXr3d21IenO
+         QGeRszMr7QBrZLGzuU1pkPg2fjSMTk3Rmi4+Q6JCB2br51STYVq8hiVfV6AWnHotDavK
+         hcMk/wogLh6O1nvqyMCMVmdQWBoVey/uo86DS5d8xM2i8CDWibHHuDzcC+38OlnMRJJd
+         H/Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dljsbllX4zS14a9ABWPEKmTQRtRoht1NPRssUTiAyy4=;
+        b=kCvrwQkL7ksXs5r/ihsI5KeFSixhMnTSby9VMmPi3qTgFJ6DIY/3hqSTI+d/wJFmBD
+         aKW9fVsUhvOFG1d7DGGuGHWYxGdOLCXUESP6yiivOhoUIXt6CpFSxoxv8nO8mfI8RUvI
+         jMDAuq/jw8S7+G0POT18uUT7mb0kijlBexQLRVmgW7OxTqYwAEQ/dzDviKKJS80SjE/l
+         GqOIJw1vo/4OQpdJeH1Nt+p7crFL/p5oO2dhw2P569IdI4SNFkSXmDcRF/DFAX7m99zx
+         cJRpryYNYDKOtFOCwd4/Q+i9muAc+fuIh9rq3/WQrt2adQJceLp0q4pNXLUPbdEDsC9M
+         8+4Q==
+X-Gm-Message-State: AOAM531PBXNRUxmKnBuHXfex5CKiqBJDJDuIB++55uRm1g4UgHvTKFMU
+        cWeXzU8Slpk1bMcb2OrgyeZATAyGuEurmCrQcltAOg==
+X-Google-Smtp-Source: ABdhPJypT+JWP198y7byw9Fki6jKweG2BidS8xaLr/CG93yNMUjY0FwJJJlmRwOCWkDm6U5SmBZ0yhd6xJKIgEbblGI=
+X-Received: by 2002:a05:6102:126c:: with SMTP id q12mr1100738vsg.9.1607026547053;
+ Thu, 03 Dec 2020 12:15:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="u3/rZRmxL6MmkK24"
-Content-Disposition: inline
-In-Reply-To: <20201124185743.401946-1-bjorn.andersson@linaro.org>
+References: <20201130225744.3793244-1-danielwinkler@google.com> <7F86588C-4CB8-43C7-A6D0-25C9BF722C56@holtmann.org>
+In-Reply-To: <7F86588C-4CB8-43C7-A6D0-25C9BF722C56@holtmann.org>
+From:   Daniel Winkler <danielwinkler@google.com>
+Date:   Thu, 3 Dec 2020 12:15:35 -0800
+Message-ID: <CAP2xMbuQSbDSeRCQ9YmC_pg7oSvz9tZeuJw5O_FxwHU7OPa1OQ@mail.gmail.com>
+Subject: Re: [PATCH v6 0/5] Bluetooth: Add new MGMT interface for advertising add
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     BlueZ development <linux-bluetooth@vger.kernel.org>,
+        ChromeOS Bluetooth Upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Marcel,
 
---u3/rZRmxL6MmkK24
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I have just rebased onto bluetooth-next/master (commit
+e2e03d27190561976f2631c36337299645f7c1a2 from Dec 3) - oddly, I didn't
+have any conflicts in my rebase. Please let me know if the issue
+continues.
 
-On Tue, Nov 24, 2020 at 12:57:43PM -0600, Bjorn Andersson wrote:
-> A combination of recent bug fixes by Doug Anderson and the proper
-> definition of iommu streams means that this hack is no longer needed.
-> Let's clean up the code by reverting '127068abe85b ("i2c: qcom-geni:
-> Disable DMA processing on the Lenovo Yoga C630")'.
->=20
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
+Thanks!
+Daniel
 
-Added another ack from Caleb and applied to for-next, thanks!
-
-
---u3/rZRmxL6MmkK24
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/JR1cACgkQFA3kzBSg
-Kbb+gg//Uss4phLY7CH1vEfZhKbhoLdilPpKsolr8PnK/C8XLY2X7Os1NS88WNJp
-Y47uFbVlPeH03Y415omWj35uB9Rx95Oe1y5dwKcD/M8lBC6PZD0R9zXUswkuspZY
-u3TzNmlTZfh9N/i2A0S3zJibePIdpfXe1H1LlMND/oFik/Kfi66aM+nPAVOAER46
-y+I8peLv0fDKZ4moscpaZJQAGivsB75bNoB6II77Sit6Ip+Y8YR/RB7aOQ3rd572
-FbyTYcvxyjsGfsEIGzH/uxR+39tJv62jmnSK7n2CxBhEYKvjVv8Qm4tmhumjgYdm
-SXOZ+TeHhU/ecp6crtIT53KiGC//uMqry3hXnloZ0IOkMlPB92Mp6F5E32SwWvtY
-sEZjLDchVsDFcKoj6Ya7JuuT33736fW426BwKQEbUXpC3QMnLC1gDjwYotmRBEG1
-CxzSjsVzaRFsDY5fzmmggx74gHQ2Cat6HbrvpgensnHX46o3SsPt4vB0eKHvtDJ4
-oDCtKh2xURGJzq3CneR9qFSDtTvUmMrF/MxIpTw5GaWfp3O+GXgIAMkZsFQYR4YN
-rTJlLRmhyoJfxHDwJarGeI6A1RK+1RWJ8UpKItZ6C8aAZALpBKVDnaAEWnUxfiMh
-6CxWnINqceXPu9fo6mi5ZTwpuVMXautJ5Y2vr4bWkecXgOdJHMg=
-=Uqhs
------END PGP SIGNATURE-----
-
---u3/rZRmxL6MmkK24--
+On Thu, Dec 3, 2020 at 4:47 AM Marcel Holtmann <marcel@holtmann.org> wrote:
+>
+> Hi Daniel,
+>
+> > This patch series defines the new two-call MGMT interface for adding
+> > new advertising instances. Similarly to the hci advertising commands, a
+> > mgmt call to set parameters is expected to be first, followed by a mgmt
+> > call to set advertising data/scan response. The members of the
+> > parameters request are optional; the caller defines a "params" bitfield
+> > in the structure that indicates which parameters were intentionally set,
+> > and others are set to defaults.
+> >
+> > The main feature here is the introduction of min/max parameters and tx
+> > power that can be requested by the client. Min/max parameters will be
+> > used both with and without extended advertising support, and tx power
+> > will be used with extended advertising support. After a call to set
+> > advertising parameters, the selected transmission power will be
+> > propagated in the reponse to alert userspace to the actual power used.
+> >
+> > Additionally, to inform userspace of the controller LE Tx power
+> > capabilities for the client's benefit, this series also changes the
+> > security info MGMT command to more flexibly contain other capabilities,
+> > such as LE min and max tx power.
+> >
+> > All changes have been tested on hatch (extended advertising) and kukui
+> > (no extended advertising) chromebooks with manual testing verifying
+> > correctness of parameters/data in btmon traces, and our automated test
+> > suite of 25 single- and multi-advertising usage scenarios.
+> >
+> > A separate patch series will add support in bluetoothd. Thanks in
+> > advance for your feedback!
+> >
+> > Daniel Winkler
+> >
+> >
+> > Changes in v6:
+> > - Only populate LE tx power range if controller reports it
+> >
+> > Changes in v5:
+> > - Ensure data/scan rsp length is returned for non-ext adv
+> >
+> > Changes in v4:
+> > - Add remaining data and scan response length to MGMT params response
+> > - Moving optional params into 'flags' field of MGMT command
+> > - Combine LE tx range into a single EIR field for MGMT capabilities cmd
+> >
+> > Changes in v3:
+> > - Adding selected tx power to adv params mgmt response, removing event
+> > - Re-using security info MGMT command to carry controller capabilities
+> >
+> > Changes in v2:
+> > - Fixed sparse error in Capabilities MGMT command
+> >
+> > Daniel Winkler (5):
+> >  Bluetooth: Add helper to set adv data
+> >  Bluetooth: Break add adv into two mgmt commands
+> >  Bluetooth: Use intervals and tx power from mgmt cmds
+> >  Bluetooth: Query LE tx power on startup
+> >  Bluetooth: Change MGMT security info CMD to be more generic
+> >
+> > include/net/bluetooth/hci.h      |   7 +
+> > include/net/bluetooth/hci_core.h |  12 +-
+> > include/net/bluetooth/mgmt.h     |  49 +++-
+> > net/bluetooth/hci_core.c         |  47 +++-
+> > net/bluetooth/hci_event.c        |  19 ++
+> > net/bluetooth/hci_request.c      |  29 ++-
+> > net/bluetooth/mgmt.c             | 430 +++++++++++++++++++++++++++++--
+> > 7 files changed, 548 insertions(+), 45 deletions(-)
+>
+> I am having problem with patch 3/5 which does not apply cleanly against bluetooth-next. Can you please fix it and re-send. Thanks.
+>
+> Regards
+>
+> Marcel
+>
