@@ -2,98 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 163912CE31F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B6E2CE328
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729762AbgLCXvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:51:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36843 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726924AbgLCXvR (ORCPT
+        id S1729996AbgLCXy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:54:26 -0500
+Received: from mail-02.mail-europe.com ([51.89.119.103]:42586 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729631AbgLCXyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:51:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607039391;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YYMeh+MuWwsdI9rSYUGVMvNUpGwpQQJeqKMCOCtMEZk=;
-        b=VQcspdcQC/w4bfdQpvHZokBj9Z9f18VejMpL5UGFJdZ4JKCcgjypobBxcHbh6lkfLPKqJb
-        SOlPQLskTdtt+raODj5SmjRlW6GIlEJISEvdpm9XSocIiGPKU9dViVzy8g0/jP+JVH1Qmi
-        0B9d1GrcAxs8hpPvqXjyk3tx5xocG70=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-548-2FvD_kYzPku0JPEUnj37ow-1; Thu, 03 Dec 2020 18:49:48 -0500
-X-MC-Unique: 2FvD_kYzPku0JPEUnj37ow-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D7EA10054FF;
-        Thu,  3 Dec 2020 23:49:47 +0000 (UTC)
-Received: from w520.home (ovpn-112-10.phx2.redhat.com [10.3.112.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D1A565C1CF;
-        Thu,  3 Dec 2020 23:49:43 +0000 (UTC)
-Date:   Thu, 3 Dec 2020 16:49:43 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Eric Auger <eric.auger@redhat.com>
-Cc:     eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, cohuck@redhat.com,
-        xyjxie@linux.vnet.ibm.com
-Subject: Re: [PATCH] vfio/pci: Move dummy_resources_list init in
- vfio_pci_probe()
-Message-ID: <20201203164943.3b78c35d@w520.home>
-In-Reply-To: <20201113175202.4500-1-eric.auger@redhat.com>
-References: <20201113175202.4500-1-eric.auger@redhat.com>
+        Thu, 3 Dec 2020 18:54:25 -0500
+Date:   Thu, 03 Dec 2020 23:52:58 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1607039582;
+        bh=76cnCDcbV+bVOdYRaXnr4zF98Zu9UULsK0fglJwpWlQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=WzERO6BYSIsKO3lezFEOihwh3Ru+D1+tvnT3ptqi28Uqn0Mb4wE+XvLLF+3x8FrNZ
+         7sYKKCP9jcyKH1cVoLkQhSqAbJDifVD7IRHLS/ywMWXKwqk1K4NHfLDm7FYv9C1wHe
+         oPYMeLCCfVL+og6+mRxG29hWmJkHTzPwojmiS3mI=
+To:     Elia Devito <eliadevito@gmail.com>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     Alex Hung <alex.hung@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH v2 2/2] intel-hid: add alternative method to enable switches
+Message-ID: <dZOYAwID-kLArecWZIijmPEsGIBufXoFhTl6ueCv-rXqxZow2klBtVhCB6b9OQhjTsb5zRSSBE7tlB25Za1A_VUBlzlk-vlMQb6SzBeVkzY=@protonmail.com>
+In-Reply-To: <u_tIRoW7nG4DQc7H_wcr9yn8oIc5rO9SsWKfOoJz4c9KKDJtUsYore_4tyNYxn3r0OpEOI5rsyrE__1Y2hbIc8lnS5cJKeeFmqyPdRjDVyU=@protonmail.com>
+References: <69f340f6-4301-6546-f14a-47d90208d44b@redhat.com> <20201203212148.36039-1-eliadevito@gmail.com> <u_tIRoW7nG4DQc7H_wcr9yn8oIc5rO9SsWKfOoJz4c9KKDJtUsYore_4tyNYxn3r0OpEOI5rsyrE__1Y2hbIc8lnS5cJKeeFmqyPdRjDVyU=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 18:52:02 +0100
-Eric Auger <eric.auger@redhat.com> wrote:
+2020. december 4., p=C3=A9ntek 0:45 keltez=C3=A9ssel, Barnab=C3=A1s P=C5=
+=91cze =C3=ADrta:
 
-> In case an error occurs in vfio_pci_enable() before the call to
-> vfio_pci_probe_mmaps(), vfio_pci_disable() will  try to iterate
-> on an uninitialized list and cause a kernel panic.
-> 
-> Lets move to the initialization to vfio_pci_probe() to fix the
-> issue.
-> 
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
-> Fixes: 05f0c03fbac1 ("vfio-pci: Allow to mmap sub-page MMIO BARs if the mmio page is exclusive")
-> CC: Stable <stable@vger.kernel.org> # v4.7+
-> ---
->  drivers/vfio/pci/vfio_pci.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> Hi
+>
+> [...]
 
-Thanks, Eric.  Applied to vfio next branch for v5.11.
 
-Alex
-
-> 
-> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> index e6190173482c..47ebc5c49ca4 100644
-> --- a/drivers/vfio/pci/vfio_pci.c
-> +++ b/drivers/vfio/pci/vfio_pci.c
-> @@ -161,8 +161,6 @@ static void vfio_pci_probe_mmaps(struct vfio_pci_device *vdev)
->  	int i;
->  	struct vfio_pci_dummy_resource *dummy_res;
->  
-> -	INIT_LIST_HEAD(&vdev->dummy_resources_list);
-> -
->  	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
->  		int bar = i + PCI_STD_RESOURCES;
->  
-> @@ -1966,6 +1964,7 @@ static int vfio_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	mutex_init(&vdev->igate);
->  	spin_lock_init(&vdev->irqlock);
->  	mutex_init(&vdev->ioeventfds_lock);
-> +	INIT_LIST_HEAD(&vdev->dummy_resources_list);
->  	INIT_LIST_HEAD(&vdev->ioeventfds_list);
->  	mutex_init(&vdev->vma_lock);
->  	INIT_LIST_HEAD(&vdev->vma_list);
-
+Oh well, I replied to the wrong email, apologies. :-(
