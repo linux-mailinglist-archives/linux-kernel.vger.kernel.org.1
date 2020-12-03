@@ -2,145 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A812CDD97
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DFA42CDD64
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502119AbgLCSZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:25:49 -0500
-Received: from mga06.intel.com ([134.134.136.31]:48382 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502109AbgLCSZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:25:48 -0500
-IronPort-SDR: Wz80Pepfadsapr9z5+7kR8TorwCrcXys6lSG3FzxCWjm5kXDPWu6h89TYySb7rPgLNurQt+R1I
- xd9Ci4o53h6g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="234854261"
-X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
-   d="scan'208";a="234854261"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 10:25:06 -0800
-IronPort-SDR: 1yZ6ymN8T1Ru5eWK//GwNd0draYxhFs3e3pHjha5XL21vzCJ0JYjmIZPD/XgmhI3I+/Mc4Ybv7
- bQ4yqVHtbb5Q==
-X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
-   d="scan'208";a="482069934"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 10:25:05 -0800
-Date:   Thu, 3 Dec 2020 10:25:05 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Howells <dhowells@redhat.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Steve French <sfrench@samba.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Brian King <brking@us.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 01/17] mm/highmem: Lift memcpy_[to|from]_page and
- memset_page to core
-Message-ID: <20201203182505.GD1563847@iweiny-DESK2.sc.intel.com>
-References: <20201124060755.1405602-1-ira.weiny@intel.com>
- <20201124060755.1405602-2-ira.weiny@intel.com>
- <160648238432.10416.12405581766428273347@jlahtine-mobl.ger.corp.intel.com>
- <20201127132006.GY4327@casper.infradead.org>
- <160672815223.3453.2374529656870007787@jlahtine-mobl.ger.corp.intel.com>
+        id S2501950AbgLCSYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:24:45 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:42691 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2436500AbgLCSYo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:24:44 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D7B78580497;
+        Thu,  3 Dec 2020 13:23:57 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 03 Dec 2020 13:23:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=QP4GaR0zm1Ub7XkhQv7Jc4kTE+P
+        vBmdV/xXIkDwGDfw=; b=wT+g8Ll/pQ8FMT4zqCiKH/h9As0f4dO1bzOL/RDUgvA
+        Ch3nfQYuo+pYX95KoSt7eArBrElM4qqm/YXeTHajiDT+KbbXrMJnE8UunuXZceQ6
+        m0m4CTwYxoWjl0LD77aPvNrJ1vcCsNrt2hEDvVwTooJmVFZF8pRF+YdMoB7x06NI
+        0XYpLkWofT3DI3dASB+GB0R/rgzjePtV7C+x2yi5HTlI19ix90bqen2VgBSunZ6i
+        tyKGWQMvQyfd1gbsk7j29LU6dayu3uakkPYXENh7qqO6d2GgKxr2c7b/LZMl3qm5
+        wFrHY9Re9lH3fIsKcW7HirJHDplR/rqROjhCP5mi8Ng==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=QP4GaR
+        0zm1Ub7XkhQv7Jc4kTE+PvBmdV/xXIkDwGDfw=; b=bBI4c2++tMa0ofW+kUNIBf
+        Hd5X/T6hZW7N1ds+yFn2PUI3PqO+xVNSS4IFC17Z+hNr0GyloQ6+NTbKZLVpiY+J
+        rgCQ0jb7patAKWnmO4MsfKM4YeR44xhMRzqSKH2H96Ji0nkjxlC8JfxVcc6O2Vt3
+        txaDnKp9g7gwp739T5xWzEJO/EKdnLf2UdpOJvT1Zam5PZYmdr8LG4vRK0rVTT87
+        3m6gFANslVNlfuRqhseKGEAPM1l5/IK02qWV7qZDN2PT+q6rO+IuH6R6wwQHNU3o
+        2t7OSviN+RxwIfbqwVZQF8nuRnaxGz0ado41B28g5BKOhBHsw6z/s267zK/Z/nYA
+        ==
+X-ME-Sender: <xms:PS3JX9x2kFt4KUjjW5kZ4QVwljZ5dH6nLy4lPMc_r_fMpWL_bmFW5w>
+    <xme:PS3JX9RfEmrzENRtDcRu8BpUh4mv5-rdCTu5M9DIDZTx4nA8jbrHnEpXOGoGsL8jx
+    zbqsk2hy-C5yg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeiiedguddufecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
+    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeek
+    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:PS3JX3Wdu9LuHIiIUh3vBTKSZoe74V9PK-H5GuTPZk05SepySzrcGw>
+    <xmx:PS3JX_iUGCy_AlDyAPRnLe-Xi7QZs6DLslBc6R-P2ituSA2FSd_HgA>
+    <xmx:PS3JX_ABMn1naBiHJRY0N44GoQOisk4Vpd1B6PyfPrnH9rBNM19_Pg>
+    <xmx:PS3JXz7w3J7NK4BTgOTnOSDEDXj5MLshEAyONZR0npGHxXndIRKdug>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 693E0108005B;
+        Thu,  3 Dec 2020 13:23:56 -0500 (EST)
+Date:   Thu, 3 Dec 2020 19:25:05 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
+        Thomas Lamprecht <t.lamprecht@proxmox.com>,
+        James.Bottomley@suse.de,
+        jayamohank@hdredirect-lb5-1afb6e2973825a56.elb.us-east-1.amazonaws.com,
+        jejb@linux.ibm.com, jitendra.bhivare@broadcom.com,
+        kernel-janitors@vger.kernel.org, ketan.mukadam@broadcom.com,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, stable@vger.kernel.org
+Subject: Re: [PATCH] scsi: be2iscsi: revert "Fix a theoretical leak in
+ beiscsi_create_eqs()"
+Message-ID: <X8ktgeCVhGPw4wnW@kroah.com>
+References: <54f36c62-10bf-8736-39ce-27ece097d9de@proxmox.com>
+ <X8jXkt6eThjyVP1v@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <160672815223.3453.2374529656870007787@jlahtine-mobl.ger.corp.intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <X8jXkt6eThjyVP1v@mwanda>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 11:22:32AM +0200, Joonas Lahtinen wrote:
-> Quoting Matthew Wilcox (2020-11-27 15:20:06)
-> > On Fri, Nov 27, 2020 at 03:06:24PM +0200, Joonas Lahtinen wrote:
-> > > Quoting ira.weiny@intel.com (2020-11-24 08:07:39)
-> > > > From: Ira Weiny <ira.weiny@intel.com>
-> > > > 
-> > > > Working through a conversion to a call such as kmap_thread() revealed
-> > > > many places where the pattern kmap/memcpy/kunmap occurred.
-> > > > 
-> > > > Eric Biggers, Matthew Wilcox, Christoph Hellwig, Dan Williams, and Al
-> > > > Viro all suggested putting this code into helper functions.  Al Viro
-> > > > further pointed out that these functions already existed in the iov_iter
-> > > > code.[1]
-> > > > 
-> > > > Placing these functions in 'highmem.h' is suboptimal especially with the
-> > > > changes being proposed in the functionality of kmap.  From a caller
-> > > > perspective including/using 'highmem.h' implies that the functions
-> > > > defined in that header are only required when highmem is in use which is
-> > > > increasingly not the case with modern processors.  Some headers like
-> > > > mm.h or string.h seem ok but don't really portray the functionality
-> > > > well.  'pagemap.h', on the other hand, makes sense and is already
-> > > > included in many of the places we want to convert.
-> > > > 
-> > > > Another alternative would be to create a new header for the promoted
-> > > > memcpy functions, but it masks the fact that these are designed to copy
-> > > > to/from pages using the kernel direct mappings and complicates matters
-> > > > with a new header.
-> > > > 
-> > > > Lift memcpy_to_page(), memcpy_from_page(), and memzero_page() to
-> > > > pagemap.h.
-> > > > 
-> > > > Also, add a memcpy_page(), memmove_page, and memset_page() to cover more
-> > > > kmap/mem*/kunmap. patterns.
-> > > > 
-> > > > [1] https://lore.kernel.org/lkml/20201013200149.GI3576660@ZenIV.linux.org.uk/
-> > > >     https://lore.kernel.org/lkml/20201013112544.GA5249@infradead.org/
-> > > > 
-> > > > Cc: Dave Hansen <dave.hansen@intel.com>
-> > > > Suggested-by: Matthew Wilcox <willy@infradead.org>
-> > > > Suggested-by: Christoph Hellwig <hch@infradead.org>
-> > > > Suggested-by: Dan Williams <dan.j.williams@intel.com>
-> > > > Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> > > > Suggested-by: Eric Biggers <ebiggers@kernel.org>
-> > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > 
-> > > <SNIP>
-> > > 
-> > > > +static inline void memset_page(struct page *page, int val, size_t offset, size_t len)
-> > > > +{
-> > > > +       char *addr = kmap_atomic(page);
-> > > > +       memset(addr + offset, val, len);
-> > > > +       kunmap_atomic(addr);
-> > > > +}
-> > > 
-> > > Other functions have (page, offset) pair. Insertion of 'val' in the middle here required
-> > > to take a double look during review.
-> > 
-> > Let's be explicit here.  Your suggested order is:
-> > 
-> >         (page, offset, val, len)
-> > 
-> > right?  I think I would prefer that to (page, val, offset, len).
+On Thu, Dec 03, 2020 at 03:18:26PM +0300, Dan Carpenter wrote:
+> My patch caused kernel Oopses and delays in boot.  Revert it.
 > 
-> Yeah, I think that would be most consistent order.
+> The problem was that I moved the "mem->dma = paddr;" before the call to
+> be_fill_queue().  But the first thing that the be_fill_queue() function
+> does is memset the whole struct to zero which overwrites the assignment.
+> 
+> Fixes: 38b2db564d9a ("scsi: be2iscsi: Fix a theoretical leak in beiscsi_create_eqs()")
+> Reported-by: Thomas Lamprecht <t.lamprecht@proxmox.com>
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Yes as I have been reworking these I have found it odd as well.  I'm going to
-swap it around.  Been learning Coccinelle which has helped find other
-instances...  So V2 is taking a bit of time.
+Can someone please add:
+	Cc: stable <stable@vger.kernel.org>
+to this so we know to pick it up quickly there?
 
-Thanks,
-Ira
+thanks,
 
+greg k-h
