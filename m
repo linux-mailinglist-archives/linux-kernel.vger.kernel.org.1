@@ -2,96 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9332CD9F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B04472CD9FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727496AbgLCPQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 10:16:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgLCPQD (ORCPT
+        id S1729200AbgLCPQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 10:16:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44074 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728022AbgLCPQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:16:03 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C140CC061A4E;
-        Thu,  3 Dec 2020 07:15:17 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id o1so2226600wrx.7;
-        Thu, 03 Dec 2020 07:15:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fFaCriGSYx/jNXnz0XbvUiNq6DB0Sw/tCXGOND8c0og=;
-        b=SST5AJWfppZNIQZ1c71S4pRZRCgOpDQjBFI7O004IV1EmRNpg7MNTNTChLeSluy6b8
-         fr8gFfYFH1zQA+FY3C2DufLFhZWzCtsl+5fnNjqBd17+afqCq19pyYzSFO41g5c0Tvzh
-         679xIVJ88m/lyucAI/F6Pbmc5zqI3vTbP/ci1l459V1GnhILstgOizY3A4qySqeRJk9O
-         DiRlr89YzB49dNS9hbUqt5w3iUnJBsZRI4sFMBdm/iltObUWqy70gcmjjSnrBk1BiFa0
-         yTzGGehtkmFCOSm3Rwk06NYVuOo6oLdgpgAblJ3xOsMIKF9BKya7x9Ykhqv7OV/V0F3U
-         H29Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fFaCriGSYx/jNXnz0XbvUiNq6DB0Sw/tCXGOND8c0og=;
-        b=uJiJ7la5WWGDB/7VRitZ4FFEpoFlWifh2foelckr4sLqDpTQVuJ9fbceMoRiN5U1e/
-         ZEfuU3hjsKX19mwNHu3bjuH1y/PO4BakTX0fBWWXVaXTJzU9AiB46eVUcOg/pKHITb0T
-         Ry2LJfTNad0xyQhc3EtsQHHfjPB0odJ8ovEs4stD+KnM6YpgnzwfCSF6Yj/wDUGuPrJF
-         ez44W9TvWsnvEa/86wJNtiM6NnUiuTiad/a6W9vzRfmNVtBCVcM+fQZ+sgXGS5FVtTKr
-         wi5RjpLzS8klXLK6YdmXN0j64VQAemHlPZV4nBfngpAJItOVmj45t/snA2Tqh34pso5R
-         BiSQ==
-X-Gm-Message-State: AOAM530Dtad5NKZQ9VdzK9YTQ1DI9zDTXYlqeDr7NuCerPPQReVYdAC5
-        wOFERiu+/nEbv7XHTZsUIVs1w1eedIrjoyQcnO0=
-X-Google-Smtp-Source: ABdhPJxFa6CoW2qkpeaUpLguTFOPv/6+OfkPZg79klK1iRQ7vQVjZnha+cFTtwHNmnpoGelHzHOcchdhsRgIiCveiJo=
-X-Received: by 2002:adf:ed04:: with SMTP id a4mr4273079wro.172.1607008515458;
- Thu, 03 Dec 2020 07:15:15 -0800 (PST)
+        Thu, 3 Dec 2020 10:16:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607008520;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DyM6M0CaXHuUyJ1W1c9GKjJJgZPBG5nzEO24r4+1bEU=;
+        b=i7KFhesaXxLnBsgiysKBEpCLWC4f4HWO0YCyKF3LoYO4SZOiCNVBRdnHtyZhainRd32tMz
+        eW9BtqFvC79j53mGCVfuT1siolP9YpMzozAUa3UFhNtcCxbr0TOKjCsuJ0IWxMmCX0eHRf
+        xYd4A8wn696etgF9zmPKtIb5QRpfctM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-56-iio3t5tINAOA8sJd5cCiLQ-1; Thu, 03 Dec 2020 10:15:18 -0500
+X-MC-Unique: iio3t5tINAOA8sJd5cCiLQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 77E96800D62;
+        Thu,  3 Dec 2020 15:15:17 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DDB0E1F075;
+        Thu,  3 Dec 2020 15:15:16 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org, "Denis V . Lunev" <den@openvz.org>
+Subject: [PATCH] KVM: x86: reinstate vendor-agnostic check on SPEC_CTRL cpuid bits
+Date:   Thu,  3 Dec 2020 10:15:16 -0500
+Message-Id: <20201203151516.14441-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <20201203114452.1060017-1-colin.king@canonical.com>
-In-Reply-To: <20201203114452.1060017-1-colin.king@canonical.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Thu, 3 Dec 2020 16:15:02 +0100
-Message-ID: <CAJ+HfNiFcyqGYCNigs22k4=g_GQ_hJiZ=eE7f+hguOyN2ScdsA@mail.gmail.com>
-Subject: Re: [PATCH][next] samples/bpf: Fix spelling mistake "recieving" -> "receiving"
-To:     Colin King <colin.king@canonical.com>
-Cc:     Mariusz Dudek <mariuszx.dudek@intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 at 12:46, Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There is a spelling mistake in an error message. Fix it.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Until commit e7c587da1252 ("x86/speculation: Use synthetic bits for IBRS/IBPB/STIBP",
+2018-05-17), KVM was testing both Intel and AMD CPUID bits before allowing the
+guest to write MSR_IA32_SPEC_CTRL and MSR_IA32_PRED_CMD.  Testing only Intel bits
+on VMX processors, or only AMD bits on SVM processors, fails if the guests are
+created with the "opposite" vendor as the host.
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+While at it, also tweak the host CPU check to use the vendor-agnostic feature bit
+X86_FEATURE_IBPB, since we only care about the availability of the MSR on the host
+here and not about specific CPUID bits.
 
-> ---
->  samples/bpf/xdpsock_user.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-> index 0fee7f3aef3c..9553c7c47fc4 100644
-> --- a/samples/bpf/xdpsock_user.c
-> +++ b/samples/bpf/xdpsock_user.c
-> @@ -1570,7 +1570,7 @@ recv_xsks_map_fd(int *xsks_map_fd)
->
->         err =3D recv_xsks_map_fd_from_ctrl_node(sock, xsks_map_fd);
->         if (err) {
-> -               fprintf(stderr, "Error %d recieving fd\n", err);
-> +               fprintf(stderr, "Error %d receiving fd\n", err);
->                 return err;
->         }
->         return 0;
-> --
-> 2.29.2
->
+Fixes: e7c587da1252 ("x86/speculation: Use synthetic bits for IBRS/IBPB/STIBP")
+Cc: stable@vger.kernel.org
+Reported-by: Denis V. Lunev <den@openvz.org>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/svm/svm.c |  3 ++-
+ arch/x86/kvm/vmx/vmx.c | 10 +++++++---
+ 2 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 62390fbc9233..0b4aa60b2754 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2686,12 +2686,13 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
+ 		break;
+ 	case MSR_IA32_PRED_CMD:
+ 		if (!msr->host_initiated &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL) &&
+ 		    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_IBPB))
+ 			return 1;
+ 
+ 		if (data & ~PRED_CMD_IBPB)
+ 			return 1;
+-		if (!boot_cpu_has(X86_FEATURE_AMD_IBPB))
++		if (!boot_cpu_has(X86_FEATURE_IBPB))
+ 			return 1;
+ 		if (!data)
+ 			break;
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index c3441e7e5a87..b74d2105ced7 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -2028,7 +2028,10 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 		break;
+ 	case MSR_IA32_SPEC_CTRL:
+ 		if (!msr_info->host_initiated &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL))
++                    !guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL) &&
++                    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_STIBP) &&
++                    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_IBRS) &&
++                    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_SSBD))
+ 			return 1;
+ 
+ 		if (kvm_spec_ctrl_test_value(data))
+@@ -2063,12 +2066,13 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 		goto find_uret_msr;
+ 	case MSR_IA32_PRED_CMD:
+ 		if (!msr_info->host_initiated &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL))
++		    !guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL) &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_IBPB))
+ 			return 1;
+ 
+ 		if (data & ~PRED_CMD_IBPB)
+ 			return 1;
+-		if (!boot_cpu_has(X86_FEATURE_SPEC_CTRL))
++		if (!boot_cpu_has(X86_FEATURE_IBPB))
+ 			return 1;
+ 		if (!data)
+ 			break;
+-- 
+2.26.2
+
