@@ -2,69 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091C52CCAF7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DFE2CCAFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgLCAUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 19:20:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52074 "EHLO mail.kernel.org"
+        id S1727093AbgLCAax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 19:30:53 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:55864 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726198AbgLCAUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 19:20:47 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606954806;
-        bh=6dnqb8iTAheOYvkqZJVEY46nIVptmBFmM+iR1px2Z7k=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ebIfFMF++Pd2dLuv8G1zHf3+qHCjuK1sskXlyhznrhJnHzlkKDuMA5CvTPY+UtKat
-         DX1ehua888MVzA7kDnq1XUHB7HQF+hS3y+rYd/RHAH7ZJkJ4E5HBGAS+YsqtDhdJfB
-         ldah8/2/XWj8krdpFzmgA8eU12Bh0CPrwmfMQNVHjnyxCP+qA6FFdDBZKR//ooNQ7N
-         hZuehshbDcaBTVm75iP5/1RzkyklXVVdOJU9eEEYQsOeUbnOu8jyDWU4LcMGimJEhj
-         RXTMmIsZGNfB3CqAWZR7iQzzV9N1uV6m4KKTJVvCOMZWhW2GFoftOW+SfivH0cC34V
-         mdaDfZEi6lY5Q==
+        id S1725885AbgLCAaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 19:30:52 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kkcVB-0005vo-LM; Thu, 03 Dec 2020 11:29:42 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 03 Dec 2020 11:29:41 +1100
+Date:   Thu, 3 Dec 2020 11:29:41 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
+Cc:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Theodore Ts'o <tytso@mit.edu>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Keerthy <j-keerthy@ti.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] random: Don't freeze in add_hwgenerator_randomness() if
+ stopping kthread
+Message-ID: <20201203002941.GA18133@gondor.apana.org.au>
+References: <20191110135543.3476097-1-mail@maciej.szmigiero.name>
+ <5dcee409.1c69fb81.f5027.48ad@mx.google.com>
+ <415922ac-3c87-081c-6fdf-73fc97d0f397@maciej.szmigiero.name>
+ <20191117005641.qgremf2lrj46qy4p@gondor.apana.org.au>
+ <2f581f84-378f-05cf-1902-f0494aafe706@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf V3 0/2] xsk: fix for xsk_poll writeable
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160695480669.11736.7328129700877198830.git-patchwork-notify@kernel.org>
-Date:   Thu, 03 Dec 2020 00:20:06 +0000
-References: <cover.1606555939.git.xuanzhuo@linux.alibaba.com>
-In-Reply-To: <cover.1606555939.git.xuanzhuo@linux.alibaba.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     magnus.karlsson@intel.com, daniel@iogearbox.net,
-        bjorn.topel@intel.com, jonathan.lemon@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@chromium.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+In-Reply-To: <2f581f84-378f-05cf-1902-f0494aafe706@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, Dec 02, 2020 at 04:28:07PM +0200, Horia Geantă wrote:
+>
+> I wasn't able to find a follow-up on this topic.
+> Could you advise on what's the proper thing to do going forward?
 
-This series was applied to bpf/bpf.git (refs/heads/master):
+I think someone needs to come up with a patch that does not
+cause regressions.
 
-On Tue,  1 Dec 2020 21:56:56 +0800 you wrote:
-> V2:
->    #2 patch made some changes following magnus' opinions.
-> 
-> V3:
->    Regarding the function xskq_cons_present_entries, I think daniel are right,
->    I have modified it.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf,V3,1/2] xsk: replace datagram_poll by sock_poll_wait
-    https://git.kernel.org/bpf/bpf/c/f5da54187e33
-  - [bpf,V3,2/2] xsk: change the tx writeable condition
-    https://git.kernel.org/bpf/bpf/c/3413f04141aa
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
