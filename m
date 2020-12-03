@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0C02CE2ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB232CE30B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731857AbgLCXsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:48:39 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:43514 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731279AbgLCXsf (ORCPT
+        id S1731959AbgLCXtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:49:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728144AbgLCXtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:48:35 -0500
-Date:   Thu, 03 Dec 2020 23:47:52 -0000
+        Thu, 3 Dec 2020 18:49:13 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FEDC08C5F2;
+        Thu,  3 Dec 2020 15:47:55 -0800 (PST)
+Date:   Thu, 03 Dec 2020 23:47:53 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607039272;
+        s=2020; t=1607039273;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sFlwVZkPMKvN+SROeoLVZpAR+CyfutfRaDH4Ik0MEGQ=;
-        b=DxxSelB1iOeLwuuY5mgacOFQedtMee+ap4yCzjdVUuQg30DQ692g7uuxKjeioOSGoJgcTK
-        3wsJwvAl2HaCFHCAejwFXK2XPCazJVrnpzX2nzbGGVDBIrefycy2Y37T1mDG/hDRinqDhF
-        FUCwGgRchAmGIVW84I8yUy80lx62E6PNYQyO2zSw8DdqVOxOFF2Oboq2yX1x/RF6UOaxxC
-        FmahERm6DVbTqBF0Lfo+AZbag6UU6sv5HEe2EsyEHpACqz/OvQBXALUhCpTrZzm/O6TEwZ
-        n1KZG2KAHw3+JvFSFL+PHZCIkIthq6qwxM7RSaC8CyZvaHyV9O71lUNV4+k5bA==
+        bh=GUW4s6AU1fmorc7mAxrO5GBYxOUjlxaeAPnq/HEuD58=;
+        b=4grlbUVUHtDYUZMeChaR1clT1KM32pLvZN8lJBHaLsASmdJKoKOehAeGxQyU1ZndR+rs+0
+        AkWiDRiKDfL0o3F7rKi2N62+B83YOIF339ErhSHC9uJRq62eYZXPO5ZFZ58KQ2i5qEebIZ
+        WzS7gIM/MD5r4v1AYM+/26x/CL/U+XovG+3Ol0JKJP9HIUho6zvHdUcm/kl4rJhrYwWZg9
+        cpVzleYCJSJEuxWMwG5L1XYmbkH0lks+X+9sT5hWAMmopvFPA0gIHrqWqRbHGZSUJmvRss
+        ZiHJrlol8RlPqVYTnmxkYyhVAeSQzELFHQJ6okNz9Oqr/rdisyT9xt5PSEHPQg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607039272;
+        s=2020e; t=1607039273;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sFlwVZkPMKvN+SROeoLVZpAR+CyfutfRaDH4Ik0MEGQ=;
-        b=5q0t31Lp60GHak1w9QFTKsQA5vHNHP2HloQmc9QpcgYBX+a/dNPe/BXTFd22B2Tz/jXAF4
-        pAkVPxB+9ITGhIDg==
+        bh=GUW4s6AU1fmorc7mAxrO5GBYxOUjlxaeAPnq/HEuD58=;
+        b=Fx7gGUy24xsNd8fx1u8tBs76CUTi3S+2TY3Rp7kaF4lq5rSX3/KPIs42WWZ5HUQfD2WZ+C
+        uGW+l6FciRTY/zCQ==
 From:   "tip-bot2 for Kefeng Wang" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/sp804: Use pr_fmt
+Subject: [tip: timers/core] clocksource/drivers/sp804: Use clk_prepare_enable
+ and clk_disable_unprepare
 Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
         Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201029123317.90286-5-wangkefeng.wang@huawei.com>
-References: <20201029123317.90286-5-wangkefeng.wang@huawei.com>
+In-Reply-To: <20201029123317.90286-3-wangkefeng.wang@huawei.com>
+References: <20201029123317.90286-3-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-Message-ID: <160703927219.3364.11705684905823578800.tip-bot2@tip-bot2>
+Message-ID: <160703927312.3364.14275095458127731757.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,69 +62,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     19f7ce8e36c09f4a2491b065dabd9162018309b6
-Gitweb:        https://git.kernel.org/tip/19f7ce8e36c09f4a2491b065dabd9162018309b6
+Commit-ID:     9d4965eb438f0c9f93e91ce6bfec72bbb8def988
+Gitweb:        https://git.kernel.org/tip/9d4965eb438f0c9f93e91ce6bfec72bbb8def988
 Author:        Kefeng Wang <wangkefeng.wang@huawei.com>
-AuthorDate:    Thu, 29 Oct 2020 20:33:17 +08:00
+AuthorDate:    Thu, 29 Oct 2020 20:33:15 +08:00
 Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Thu, 03 Dec 2020 19:16:18 +01:00
+CommitterDate: Thu, 03 Dec 2020 19:16:17 +01:00
 
-clocksource/drivers/sp804: Use pr_fmt
+clocksource/drivers/sp804: Use clk_prepare_enable and clk_disable_unprepare
 
-Add pr_fmt to prefix pr_<level> output.
+Directly use clk_prepare_enable and clk_disable_unprepare.
 
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20201029123317.90286-5-wangkefeng.wang@huawei.com
+Link: https://lore.kernel.org/r/20201029123317.90286-3-wangkefeng.wang@huawei.com
 ---
- drivers/clocksource/timer-sp804.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/clocksource/timer-sp804.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/clocksource/timer-sp804.c b/drivers/clocksource/timer-sp804.c
-index fcce839..401d592 100644
+index 22a68cb..d74788b 100644
 --- a/drivers/clocksource/timer-sp804.c
 +++ b/drivers/clocksource/timer-sp804.c
-@@ -5,6 +5,9 @@
-  *  Copyright (C) 1999 - 2003 ARM Limited
-  *  Copyright (C) 2000 Deep Blue Solutions Ltd
-  */
-+
-+#define pr_fmt(fmt)    KBUILD_MODNAME ": " fmt
-+
- #include <linux/clk.h>
- #include <linux/clocksource.h>
- #include <linux/clockchips.h>
-@@ -63,13 +66,13 @@ static long __init sp804_get_clock_rate(struct clk *clk, const char *name)
- 	if (!clk)
- 		clk = clk_get_sys("sp804", name);
- 	if (IS_ERR(clk)) {
--		pr_err("sp804: %s clock not found: %ld\n", name, PTR_ERR(clk));
-+		pr_err("%s clock not found: %ld\n", name, PTR_ERR(clk));
+@@ -68,17 +68,9 @@ static long __init sp804_get_clock_rate(struct clk *clk, const char *name)
  		return PTR_ERR(clk);
  	}
  
- 	err = clk_prepare_enable(clk);
+-	err = clk_prepare(clk);
+-	if (err) {
+-		pr_err("sp804: clock failed to prepare: %d\n", err);
+-		clk_put(clk);
+-		return err;
+-	}
+-
+-	err = clk_enable(clk);
++	err = clk_prepare_enable(clk);
  	if (err) {
--		pr_err("sp804: clock failed to enable: %d\n", err);
-+		pr_err("clock failed to enable: %d\n", err);
+ 		pr_err("sp804: clock failed to enable: %d\n", err);
+-		clk_unprepare(clk);
  		clk_put(clk);
  		return err;
  	}
-@@ -218,7 +221,7 @@ static int __init sp804_clockevents_init(void __iomem *base, unsigned int irq,
+@@ -86,8 +78,7 @@ static long __init sp804_get_clock_rate(struct clk *clk, const char *name)
+ 	rate = clk_get_rate(clk);
+ 	if (rate < 0) {
+ 		pr_err("sp804: clock failed to get rate: %ld\n", rate);
+-		clk_disable(clk);
+-		clk_unprepare(clk);
++		clk_disable_unprepare(clk);
+ 		clk_put(clk);
+ 	}
  
- 	if (request_irq(irq, sp804_timer_interrupt, IRQF_TIMER | IRQF_IRQPOLL,
- 			"timer", &sp804_clockevent))
--		pr_err("%s: request_irq() failed\n", "timer");
-+		pr_err("request_irq() failed\n");
- 	clockevents_config_and_register(evt, rate, 0xf, 0xffffffff);
- 
- 	return 0;
-@@ -280,7 +283,7 @@ static int __init sp804_of_init(struct device_node *np, struct sp804_timer *time
- 	if (of_clk_get_parent_count(np) == 3) {
- 		clk2 = of_clk_get(np, 1);
- 		if (IS_ERR(clk2)) {
--			pr_err("sp804: %pOFn clock not found: %d\n", np,
-+			pr_err("%pOFn clock not found: %d\n", np,
- 				(int)PTR_ERR(clk2));
- 			clk2 = NULL;
- 		}
