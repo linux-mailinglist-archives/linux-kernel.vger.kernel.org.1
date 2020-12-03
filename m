@@ -2,335 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDC22CCDB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 05:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FB82CCDB8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 05:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729733AbgLCECd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 23:02:33 -0500
-Received: from a2.mail.mailgun.net ([198.61.254.61]:29735 "EHLO
-        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728195AbgLCECd (ORCPT
+        id S1729761AbgLCED7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 23:03:59 -0500
+Received: from relay2.mymailcheap.com ([217.182.66.162]:41775 "EHLO
+        relay2.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727838AbgLCED7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 23:02:33 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606968131; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=slsV6htDP6I/gt7ZBclBx2MzfHjtzRjWsf5apxYv4bE=;
- b=OXbQi+oH9zyYXqzeVYrJ0SdKXr8I1stSJ9FcvZ4m3Re3/JWRnMqSQz1OIJm4By5/+oBvxuFc
- 0fACQrBy1CaxrGNCkpoKvv3NJt83XiegE4nZmgXbzGzW/2V0iBxeQ1/f0EAv4xCcZKmZcZLT
- 8bod9vEaqQC379F+2Q1nqqGrMaw=
-X-Mailgun-Sending-Ip: 198.61.254.61
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5fc863244f56090fbc9b8fe8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Dec 2020 04:01:39
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 448AEC43461; Thu,  3 Dec 2020 04:01:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        Wed, 2 Dec 2020 23:03:59 -0500
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay2.mymailcheap.com (Postfix) with ESMTPS id 58F1D3EDFC;
+        Thu,  3 Dec 2020 05:02:26 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id 33C642A6DF;
+        Thu,  3 Dec 2020 05:02:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1606968146;
+        bh=5AOVofh/cYL9M8vfr9lXhPIqC4MxGZjG0Y11Wb5YJuc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=EscHpXnFXgUlz2C6gFKb2jG8x1nLdIV9tPcWx9ta4prkzM7Wn8tlcj1u3PfmnUEqc
+         xEA42sj3G8uTx3+maw1k3U03xdQ9mj0ueFKNX5+Ym1KI1uARpb3hPTKospmDIe8d5B
+         wHw/bjQ6r+zI4ldS4ONUR1wadAeAJwjhj05PUuXc=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id pwv3MgamBQBZ; Thu,  3 Dec 2020 05:02:25 +0100 (CET)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 28961C433ED;
-        Thu,  3 Dec 2020 04:01:36 +0000 (UTC)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Thu,  3 Dec 2020 05:02:25 +0100 (CET)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id CE84A41AAC;
+        Thu,  3 Dec 2020 04:02:24 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="FvwmWehy";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [0.0.0.0] (li1861-199.members.linode.com [172.105.207.199])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 33720400D5;
+        Thu,  3 Dec 2020 04:02:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1606968136;
+        bh=5AOVofh/cYL9M8vfr9lXhPIqC4MxGZjG0Y11Wb5YJuc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=FvwmWehyRPkPtsk1b/BSNgvJQ+WecA82UiCSoHG/rFrdowx1m3d28vY9zYha+/kvz
+         3E8oJ5MxEf4vKeS+FfViKHR6zwDSRsu94MAkwQOWZDYiKhAdlPZ+T/gh/25zY5hEZB
+         MTe5veLJHJo1jVgh/u5oFuGVlH1QWtOxiKGsya1I=
+Subject: Re: [PATCH] MIPS: KASLR: Fix sync_icache() trapped in loop when
+ synci_step is zero
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jinyang He <hejinyang@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1606878005-11427-1-git-send-email-hejinyang@loongson.cn>
+ <20201202103943.GA9065@alpha.franken.de>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <b6e97d2f-6d5a-1dbb-3701-b238709b7345@flygoat.com>
+Date:   Thu, 3 Dec 2020 12:02:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 03 Dec 2020 12:01:36 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V7 2/3] scsi: ufs: Fix a race condition between
- ufshcd_abort and eh_work
-In-Reply-To: <1606962078.23925.47.camel@mtkswgap22>
-References: <1606910644-21185-1-git-send-email-cang@codeaurora.org>
- <1606910644-21185-3-git-send-email-cang@codeaurora.org>
- <1606962078.23925.47.camel@mtkswgap22>
-Message-ID: <dcb7f5c9738ff18a15b3d15615de0d92@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <20201202103943.GA9065@alpha.franken.de>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Rspamd-Queue-Id: CE84A41AAC
+X-Spamd-Result: default: False [2.90 / 10.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[4];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RECEIVED_SPAMHAUS_XBL(3.00)[172.105.207.199:received];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-03 10:21, Stanley Chu wrote:
-> On Wed, 2020-12-02 at 04:04 -0800, Can Guo wrote:
->> In current task abort routine, if task abort happens to the device 
->> W-LU,
->> the code directly jumps to ufshcd_eh_host_reset_handler() to perform a
->> full reset and restore then returns FAIL or SUCCESS. Commands sent to 
->> the
->> device W-LU are most likely the SSU cmds sent during UFS PM 
->> operations. If
->> such SSU cmd enters task abort routine, when 
->> ufshcd_eh_host_reset_handler()
->> flushes eh_work, it will get stuck there since err_handler is 
->> serialized
->> with PM operations.
->> 
->> In order to unblock above call path, we merely clean up the lrb taken 
->> by
->> this cmd, queue the eh_work and return SUCCESS. Once the cmd is 
->> aborted,
->> the PM operation which sends out the cmd just errors out, then 
->> err_handler
->> shall be able to proceed with the full reset and restore.
->> 
->> In this scenario, the cmd is aborted even before it is actually 
->> cleared by
->> HW, set the lrb->in_use flag to prevent subsequent cmds, including 
->> SCSI
->> cmds and dev cmds, from taking the lrb released from abort. The flag 
->> shall
->> evetually be cleared in __ufshcd_transfer_req_compl() invoked by the 
->> full
->> reset and restore from err_handler.
->> 
->> Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> ---
->>  drivers/scsi/ufs/ufshcd.c | 60 
->> +++++++++++++++++++++++++++++++++++++----------
->>  drivers/scsi/ufs/ufshcd.h |  2 ++
->>  2 files changed, 49 insertions(+), 13 deletions(-)
->> 
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index f0bb3fc..26c1fa0 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -2539,6 +2539,14 @@ static int ufshcd_queuecommand(struct Scsi_Host 
->> *host, struct scsi_cmnd *cmd)
->>  		(hba->clk_gating.state != CLKS_ON));
->> 
->>  	lrbp = &hba->lrb[tag];
->> +	if (unlikely(lrbp->in_use)) {
->> +		if (hba->pm_op_in_progress)
->> +			set_host_byte(cmd, DID_BAD_TARGET);
->> +		else
->> +			err = SCSI_MLQUEUE_HOST_BUSY;
->> +		ufshcd_release(hba);
->> +		goto out;
->> +	}
->> 
->>  	WARN_ON(lrbp->cmd);
->>  	lrbp->cmd = cmd;
->> @@ -2781,6 +2789,11 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba 
->> *hba,
->> 
->>  	init_completion(&wait);
->>  	lrbp = &hba->lrb[tag];
->> +	if (unlikely(lrbp->in_use)) {
->> +		err = -EBUSY;
->> +		goto out;
->> +	}
->> +
->>  	WARN_ON(lrbp->cmd);
->>  	err = ufshcd_compose_dev_cmd(hba, lrbp, cmd_type, tag);
->>  	if (unlikely(err))
->> @@ -2797,6 +2810,7 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba 
->> *hba,
->> 
->>  	err = ufshcd_wait_for_dev_cmd(hba, lrbp, timeout);
->> 
->> +out:
->>  	ufshcd_add_query_upiu_trace(hba, tag,
->>  			err ? "query_complete_err" : "query_complete");
->> 
->> @@ -4929,9 +4943,11 @@ static void __ufshcd_transfer_req_compl(struct 
->> ufs_hba *hba,
->>  	struct scsi_cmnd *cmd;
->>  	int result;
->>  	int index;
->> +	bool update_scaling = false;
->> 
->>  	for_each_set_bit(index, &completed_reqs, hba->nutrs) {
->>  		lrbp = &hba->lrb[index];
->> +		lrbp->in_use = false;
->>  		lrbp->compl_time_stamp = ktime_get();
->>  		cmd = lrbp->cmd;
->>  		if (cmd) {
->> @@ -4944,15 +4960,17 @@ static void __ufshcd_transfer_req_compl(struct 
->> ufs_hba *hba,
->>  			/* Do not touch lrbp after scsi done */
->>  			cmd->scsi_done(cmd);
->>  			__ufshcd_release(hba);
->> +			update_scaling = true;
->>  		} else if (lrbp->command_type == UTP_CMD_TYPE_DEV_MANAGE ||
->>  			lrbp->command_type == UTP_CMD_TYPE_UFS_STORAGE) {
->>  			if (hba->dev_cmd.complete) {
->>  				ufshcd_add_command_trace(hba, index,
->>  						"dev_complete");
->>  				complete(hba->dev_cmd.complete);
->> +				update_scaling = true;
->>  			}
->>  		}
->> -		if (ufshcd_is_clkscaling_supported(hba))
->> +		if (ufshcd_is_clkscaling_supported(hba) && update_scaling)
->>  			hba->clk_scaling.active_reqs--;
->>  	}
->> 
->> @@ -6374,8 +6392,12 @@ static int ufshcd_issue_devman_upiu_cmd(struct 
->> ufs_hba *hba,
->> 
->>  	init_completion(&wait);
->>  	lrbp = &hba->lrb[tag];
->> -	WARN_ON(lrbp->cmd);
->> +	if (unlikely(lrbp->in_use)) {
->> +		err = -EBUSY;
->> +		goto out;
->> +	}
->> 
->> +	WARN_ON(lrbp->cmd);
->>  	lrbp->cmd = NULL;
->>  	lrbp->sense_bufflen = 0;
->>  	lrbp->sense_buffer = NULL;
->> @@ -6447,6 +6469,7 @@ static int ufshcd_issue_devman_upiu_cmd(struct 
->> ufs_hba *hba,
->>  		}
->>  	}
->> 
->> +out:
->>  	blk_put_request(req);
->>  out_unlock:
->>  	up_read(&hba->clk_scaling_lock);
->> @@ -6696,16 +6719,6 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->>  		BUG();
->>  	}
->> 
->> -	/*
->> -	 * Task abort to the device W-LUN is illegal. When this command
->> -	 * will fail, due to spec violation, scsi err handling next step
->> -	 * will be to send LU reset which, again, is a spec violation.
->> -	 * To avoid these unnecessary/illegal step we skip to the last error
->> -	 * handling stage: reset and restore.
->> -	 */
->> -	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN)
->> -		return ufshcd_eh_host_reset_handler(cmd);
->> -
->>  	ufshcd_hold(hba, false);
->>  	reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
->>  	/* If command is already aborted/completed, return SUCCESS */
->> @@ -6726,7 +6739,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->>  	 * to reduce repeated printouts. For other aborted requests only 
->> print
->>  	 * basic details.
->>  	 */
->> -	scsi_print_command(hba->lrb[tag].cmd);
->> +	scsi_print_command(cmd);
->>  	if (!hba->req_abort_count) {
->>  		ufshcd_update_reg_hist(&hba->ufs_stats.task_abort, 0);
->>  		ufshcd_print_host_regs(hba);
->> @@ -6745,6 +6758,27 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->>  		goto cleanup;
->>  	}
->> 
->> +	/*
->> +	 * Task abort to the device W-LUN is illegal. When this command
->> +	 * will fail, due to spec violation, scsi err handling next step
->> +	 * will be to send LU reset which, again, is a spec violation.
->> +	 * To avoid these unnecessary/illegal steps, first we clean up
->> +	 * the lrb taken by this cmd and mark the lrb as in_use, then
->> +	 * queue the eh_work and bail.
->> +	 */
->> +	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN) {
->> +		spin_lock_irqsave(host->host_lock, flags);
->> +		if (lrbp->cmd) {
->> +			__ufshcd_transfer_req_compl(hba, (1UL << tag));
->> +			__set_bit(tag, &hba->outstanding_reqs);
->> +			lrbp->in_use = true;
->> +			hba->force_reset = true;
->> +			ufshcd_schedule_eh_work(hba);
-> 
-> ufshcd_schedule_eh_work() will set hba->ufshcd_state as
-> UFSHCD_STATE_EH_SCHEDULED_FATAL. While in this state,
-> ufshcd_queuecommand() will set_host_byte(DID_BAD_TARGET) which is
-> similar as what you would like to do in this patch.
-> 
-> Is this enough for avoiding reusing tag issue? Just wonder if
-> lrpb->in_use flag is really required to be added.
 
-Hi Stanley,
 
-Thanks for the discussion.
+ÔÚ 2020/12/2 ÏÂÎç6:39, Thomas Bogendoerfer Ð´µÀ:
+> On Wed, Dec 02, 2020 at 11:00:05AM +0800, Jinyang He wrote:
+>> Reading synci_step by using rdhwr instruction may return zero if no cache
+>> need be synchronized. On the one hand, to make sure all load operation and
+>> store operation finished we do __sync() for every platform. On the other
+>> hand, some platform need operate synci one time although step is zero.
+> Should this be someting like: Avoid endless loop, if no synci is needed ?
+>
+>> diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
+>> index 57bdd276..47aeb33 100644
+>> --- a/arch/mips/kernel/relocate.c
+>> +++ b/arch/mips/kernel/relocate.c
+>> @@ -64,7 +64,7 @@ static void __init sync_icache(void *kbase, unsigned long kernel_length)
+>>   			: "r" (kbase));
+>>   
+>>   		kbase += step;
+>> -	} while (kbase < kend);
+>> +	} while (step && kbase < kend);
+> why not do a
+>
+> 	if (step == 0)
+> 		return;
+>
+> before entering the loop ? According to MIPS32PRA no synci is needed,
+> if stepi value is zero.
+>
+> Thomas.
+>
+> PS: Does anybody know a reason, why this code doesn't use an old fashioned
+> dache/icache flushing, which might be slower but would work also on
+> legecy cores ?
 
-To be accurate, it is to prevent lrb from being re-used, not the
-tag. Block layer and/or scsi layer can re-use the tag right after
-we abort the cmd, but the lrb is empty since we cleared it from
-abort path and we need to make sure the lrb stays empty before the
-full reset and restore happens. So, in queuecommand path, we have
-below checks to prevernt the lrb being re-used. This is before
-hba->ufshcd_state checks.
+I thought that's because legacy flush requires much more cares.
+You'll have to probe cache ways sets and line size to do so.
+However relocation happens very early, even before cache probe.
 
-+    if (unlikely(lrbp->in_use)) {
-+        if (hba->pm_op_in_progress)
-+            set_host_byte(cmd, DID_BAD_TARGET);
-+        else
-+            err = SCSI_MLQUEUE_HOST_BUSY;
-+        ufshcd_release(hba);
-+        goto out;
-+    }
+Thanks.
 
-In above checks, below exception is for the case that a SSU cmd
-sent from PM ops is trying to re-use the lrb. In this case, we
-should simply let it fail so that PM ops errors out to unblock
-error handling (since error handling is serialized with PM ops).
-
-+        if (hba->pm_op_in_progress)
-+            set_host_byte(cmd, DID_BAD_TARGET);
-
-Thanks,
-
-Can Guo.
-
-> 
->> +		}
->> +		spin_unlock_irqrestore(host->host_lock, flags);
->> +		goto out;
->> +	}
->> +
->>  	/* Skip task abort in case previous aborts failed and report failure 
->> */
->>  	if (lrbp->req_abort_skip)
->>  		err = -EIO;
->> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->> index 1e680bf..66e5338 100644
->> --- a/drivers/scsi/ufs/ufshcd.h
->> +++ b/drivers/scsi/ufs/ufshcd.h
->> @@ -163,6 +163,7 @@ struct ufs_pm_lvl_states {
->>   * @crypto_key_slot: the key slot to use for inline crypto (-1 if 
->> none)
->>   * @data_unit_num: the data unit number for the first block for 
->> inline crypto
->>   * @req_abort_skip: skip request abort task flag
->> + * @in_use: indicates that this lrb is still in use
->>   */
->>  struct ufshcd_lrb {
->>  	struct utp_transfer_req_desc *utr_descriptor_ptr;
->> @@ -192,6 +193,7 @@ struct ufshcd_lrb {
->>  #endif
->> 
->>  	bool req_abort_skip;
->> +	bool in_use;
->>  };
->> 
->>  /**
+- Jiaxun
