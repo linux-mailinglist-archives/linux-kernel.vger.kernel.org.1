@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E018F2CD17B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7ED52CD188
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388366AbgLCIl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:41:58 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:42764 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388270AbgLCIlz (ORCPT
+        id S2388458AbgLCImn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:42:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388442AbgLCImm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:41:55 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B38eq0B114050;
-        Thu, 3 Dec 2020 02:40:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1606984852;
-        bh=pz6uUoqgOBRCAt9fEefTV7fWl8JCGohZTi6KZaMZyxo=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ImxfHlwn86cBcLHD9fwuH+nNsLweSCh+LdiadVYVK9Ix4l9HXlhj1GtDRkuBQcFF1
-         OQmlJRCILUwW2iwctM6MCyJgdNmylSGRyVdLvP6h8agbO/Uwrms0KdD3iwW3dq3wms
-         1ukKtJ1PpBYjA1dcGQvZ6mVQsZG+vhJMRadkS1hA=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B38eqsQ059694
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 3 Dec 2020 02:40:52 -0600
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Dec
- 2020 02:40:52 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 3 Dec 2020 02:40:52 -0600
-Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B38emBI063771;
-        Thu, 3 Dec 2020 02:40:49 -0600
-Subject: Re: [PATCH 1/4] net: ti: am65-cpsw-nuss: Add devlink support
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Jonathan Corbet <corbet@lwn.net>, Jiri Pirko <jiri@nvidia.com>,
-        <netdev@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>
-References: <20201130082046.16292-1-vigneshr@ti.com>
- <20201130082046.16292-2-vigneshr@ti.com> <20201130155044.GE2073444@lunn.ch>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <cc7fe740-1002-f1b9-8136-e1ba60cf2541@ti.com>
-Date:   Thu, 3 Dec 2020 14:10:48 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 3 Dec 2020 03:42:42 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18BDC061A4D
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 00:42:01 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kkkBc-0002CH-CR; Thu, 03 Dec 2020 09:42:00 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kkkBb-0000Cz-MI; Thu, 03 Dec 2020 09:41:59 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, kernel@pengutronix.de,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH RESEND for 5.10] pwm: sl28cpld: fix getting driver data in pwm callbacks
+Date:   Thu,  3 Dec 2020 09:41:42 +0100
+Message-Id: <20201203084142.3810204-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201130155044.GE2073444@lunn.ch>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+Currently .get_state() and .apply() use dev_get_drvdata() on the struct
+device related to the pwm chip. This only works after .probe() called
+platform_set_drvdata() which in this driver happens only after
+pwmchip_add() and so comes possibly too late.
 
-On 11/30/20 9:20 PM, Andrew Lunn wrote:
-> On Mon, Nov 30, 2020 at 01:50:43PM +0530, Vignesh Raghavendra wrote:
->> AM65 NUSS ethernet switch on K3 devices can be configured to work either
->> in independent mac mode where each port acts as independent network
->> interface (multi mac) or switch mode.
->>
->> Add devlink hooks to provide a way to switch b/w these modes.
-> 
-> Hi Vignesh
-> 
-> What is not clear is why you need this? Ports are independent anyway
-> until you add them to a bridge when using switchdev.
-> 
+Instead of setting the driver data earlier use the traditional
+container_of approach as this way the driver data is conceptually and
+computational nearer.
 
-Default use case is to support multiple independent ports with no
-switching. Users can either use software bridge with multi-mac
-configuration or HW bridge for switch functionality. devlink hook
-enables users to select Hw supported switch functionality. We don't want
-to enable HW based switch support unless explicitly asked by user.
-This also matches previous generation of devices (DRA7xx and AM57xx)
-supported under drivers/net/ethernet/ti/cpsw_new.c
+Fixes: 9db33d221efc ("pwm: Add support for sl28cpld PWM controller")
+Tested-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+Hello Linus,
 
-In general, devlink will also be used to configure few more parameters
-(in addition to switch mode) such as host port in ALE_BYPASS mode (to
-allow all packets to be routed to host) etc.
+Thierry (who usually sends PWM patches to you) didn't react to this
+patch sent to the pwm Mailinglist last week
+(https://lore.kernel.org/r/20201124212432.3117322-1-u.kleine-koenig@pengutronix.de)
+yet.
 
-Regards
-Vignesh
+Given v5.10 isn't far away any more and I don't know when Thierry will
+take a look and act, I'm sending this directly to you. The affected
+driver was new in 5.10-rc1 and at least once the unpatched driver
+created an oops:
+
+	https://lavalab.kontron.com/scheduler/job/108#L950
+
+Michael Walle who tested this patch is the original author of the
+driver. IMHO it would be good to have this fixed before 5.10.
+
+If you prefer a pull request, I can setup something (but I don't have
+access to Thierry's tree, so it will be for a repository that's new to
+you).
+
+Best regards
+Uwe
+
+ drivers/pwm/pwm-sl28cpld.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pwm/pwm-sl28cpld.c b/drivers/pwm/pwm-sl28cpld.c
+index 5046b6b7fd35..b4c651fc749c 100644
+--- a/drivers/pwm/pwm-sl28cpld.c
++++ b/drivers/pwm/pwm-sl28cpld.c
+@@ -84,12 +84,14 @@ struct sl28cpld_pwm {
+ 	struct regmap *regmap;
+ 	u32 offset;
+ };
++#define sl28cpld_pwm_from_chip(_chip) \
++	container_of(_chip, struct sl28cpld_pwm, pwm_chip)
+ 
+ static void sl28cpld_pwm_get_state(struct pwm_chip *chip,
+ 				   struct pwm_device *pwm,
+ 				   struct pwm_state *state)
+ {
+-	struct sl28cpld_pwm *priv = dev_get_drvdata(chip->dev);
++	struct sl28cpld_pwm *priv = sl28cpld_pwm_from_chip(chip);
+ 	unsigned int reg;
+ 	int prescaler;
+ 
+@@ -118,7 +120,7 @@ static void sl28cpld_pwm_get_state(struct pwm_chip *chip,
+ static int sl28cpld_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ 			      const struct pwm_state *state)
+ {
+-	struct sl28cpld_pwm *priv = dev_get_drvdata(chip->dev);
++	struct sl28cpld_pwm *priv = sl28cpld_pwm_from_chip(chip);
+ 	unsigned int cycle, prescaler;
+ 	bool write_duty_cycle_first;
+ 	int ret;
+-- 
+2.29.2
+
