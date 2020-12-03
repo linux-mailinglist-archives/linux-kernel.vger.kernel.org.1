@@ -2,123 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8282C2CE091
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C477D2CE096
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730078AbgLCVWo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 16:22:44 -0500
-Received: from piie.net ([80.82.223.85]:57382 "EHLO piie.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728460AbgLCVWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 16:22:44 -0500
-Received: from mail.piie.net (_gateway [172.17.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
-        (Client did not present a certificate)
-        by piie.net (Postfix) with ESMTPSA id 970A22A18F0;
-        Thu,  3 Dec 2020 22:22:02 +0100 (CET)
+        id S2387607AbgLCVXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 16:23:17 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:63267 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgLCVXR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 16:23:17 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607030571; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=PmWmE242zmunsvyjXXu1U6gP0kOZKXBQzfAIj2P874g=; b=hCjfd2d0oX4vexj3KD/Sm4QKBvPOusD3K+5ZledSqf+W4aBQnOVBE/SUBYXRqpprmqc70Cgj
+ QEHtSFEiMWCmKnMs8ZSAMgF3MFSk781GiRSKUEAllHtKYQ4/pyHBJ4l5LDSpr0XDV71P1jhQ
+ PQ/TXdweWtWK2ghgOkuNT+nIrbg=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5fc95711f06acf11abc8b497 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Dec 2020 21:22:25
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C887CC43464; Thu,  3 Dec 2020 21:22:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 59DE0C433ED;
+        Thu,  3 Dec 2020 21:22:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 59DE0C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v14 4/4] bus: mhi: Add userspace client interface driver
+To:     Hemant Kumar <hemantk@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bbhatt@codeaurora.org, loic.poulain@linaro.org,
+        netdev@vger.kernel.org
+References: <1606877991-26368-1-git-send-email-hemantk@codeaurora.org>
+ <1606877991-26368-5-git-send-email-hemantk@codeaurora.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <07e6e443-6df6-bbbb-0992-c6f0e44f7139@codeaurora.org>
+Date:   Thu, 3 Dec 2020 14:22:23 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Date:   Thu, 03 Dec 2020 21:22:02 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Mailer: RainLoop/1.14.0
-From:   "=?utf-8?B?UGV0ZXIgS8Okc3RsZQ==?=" <peter@piie.net>
-Message-ID: <92e330ff28a10b1fb92d91c083fa3cac@piie.net>
-Subject: Re: [PATCH v2 2/2] platform/x86/drivers/acerhdf: Check the
- interval value when it is set
-To:     "Daniel Lezcano" <daniel.lezcano@linaro.org>, hdegoede@redhat.com,
-        mgross@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20201203071738.2363701-2-daniel.lezcano@linaro.org>
-References: <20201203071738.2363701-2-daniel.lezcano@linaro.org>
- <20201203071738.2363701-1-daniel.lezcano@linaro.org>
+In-Reply-To: <1606877991-26368-5-git-send-email-hemantk@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-3. Dezember 2020 08:17, "Daniel Lezcano" <daniel.lezcano@linaro.org> schrieb:
-
-> Currently the code checks the interval value when the temperature is
-> read which is bad for two reasons:
+On 12/1/2020 7:59 PM, Hemant Kumar wrote:
+> This MHI client driver allows userspace clients to transfer
+> raw data between MHI device and host using standard file operations.
+> Driver instantiates UCI device object which is associated to device
+> file node. UCI device object instantiates UCI channel object when device
+> file node is opened. UCI channel object is used to manage MHI channels
+> by calling MHI core APIs for read and write operations. MHI channels
+> are started as part of device open(). MHI channels remain in start
+> state until last release() is called on UCI device file node. Device
+> file node is created with format
 > 
-> - checking and setting the interval in the get_temp callback is
-> inaccurate and awful, that can be done when changing the value.
+> /dev/<mhi_device_name>
 > 
-> - Changing the thermal zone structure internals is an abuse of the
-> exported structure, moreover no lock is taken here.
+> Currently it supports QMI channel.
 > 
-> The goal of this patch is to solve the first item by using the 'set'
-> function called when changing the interval. The check is done there
-> and removed from the get_temp function. If the thermal zone was not
-> initialized yet, the interval is not updated in this case as that will
-> happen in the init function when registering the thermal zone device.
+> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Tested-by: Loic Poulain <loic.poulain@linaro.org>
 
-Thanks for your effort.  This improves the code, good finding.
+Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
 
- 
-> I don't have any hardware to test the changes.
-
-Tests successfully executed on my good old AOA110.
-
-
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-
-Acked-by: Peter Kaestle <peter@piie.net>
-
-
-> ---
-> V2:
-> - Fixed static function annotation
-> ---
-> drivers/platform/x86/acerhdf.c | 22 ++++++++++++++++++----
-> 1 file changed, 18 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/acerhdf.c b/drivers/platform/x86/acerhdf.c
-> index 19fc8ff2225c..b6aa6e5514f4 100644
-> --- a/drivers/platform/x86/acerhdf.c
-> +++ b/drivers/platform/x86/acerhdf.c
-> @@ -334,7 +334,10 @@ static void acerhdf_check_param(struct thermal_zone_device *thermal)
-> }
-> if (verbose)
-> pr_notice("interval changed to: %d\n", interval);
-> - thermal->polling_delay = interval*1000;
-> +
-> + if (thermal)
-> + thermal->polling_delay = interval*1000;
-> +
-> prev_interval = interval;
-> }
-> }
-> @@ -349,8 +352,6 @@ static int acerhdf_get_ec_temp(struct thermal_zone_device *thermal, int *t)
-> {
-> int temp, err = 0;
-> 
-> - acerhdf_check_param(thermal);
-> -
-> err = acerhdf_get_temp(&temp);
-> if (err)
-> return err;
-> @@ -823,8 +824,21 @@ MODULE_ALIAS("dmi:*:*Acer*:pnExtensa*5420*:");
-> module_init(acerhdf_init);
-> module_exit(acerhdf_exit);
-> 
-> +static int interval_set_uint(const char *val, const struct kernel_param *kp)
-> +{
-> + int ret;
-> +
-> + ret = param_set_uint(val, kp);
-> + if (ret)
-> + return ret;
-> +
-> + acerhdf_check_param(thz_dev);
-> +
-> + return 0;
-> +}
-> +
-> static const struct kernel_param_ops interval_ops = {
-> - .set = param_set_uint,
-> + .set = interval_set_uint,
-> .get = param_get_uint,
-> };
-> 
-> -- 
-> 2.25.1
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
