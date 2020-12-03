@@ -2,113 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB172CDCAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A227F2CDCB2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731209AbgLCRsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:48:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729117AbgLCRsF (ORCPT
+        id S1731311AbgLCRuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:50:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48218 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726701AbgLCRuK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:48:05 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACAE7C061A51
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 09:47:24 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id q13so3954503lfr.10
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 09:47:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+/34BW6LzHF6hZqDfON22QZfOwULMcJz5mgoFc2n/kU=;
-        b=MsWsYuKNvKACORS8E1s6T8larMX8mUsiP9GStx4+PH4R/8GKanJ7dmyxFt2sOejpvg
-         lJYFBzL5o8xNmk+X0wFulbuSDXgwNrOaXIagjg37+KIoGO9/xwvWN9Ycq3yYVYbgnQ/Z
-         53K8yeK7Vith5UFq1DQvSKASmjvGeDSn3t91g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+/34BW6LzHF6hZqDfON22QZfOwULMcJz5mgoFc2n/kU=;
-        b=SkDCRf4xIDHHJXJD1VnVfYjZ+RW9Vxm/NMg9tYUQ3pVaUwF+Mh1brVgs69lMWNb4nB
-         NIGLS7fRMaJlz/hCFa813dqeB6wguJdigd+d2fYil6e847VT7v5r5i2wlGXYanEeYTvE
-         od18Dw/XCgDv/7gSPZKvsJzOkHOTTFA6K4x/q354QL+TI2MR/eF01c4WzSMJz7JWks7d
-         NsIAymBvKudx2M4BcuoXzh3FGSPz6S1W+rBEYfVTSc+au1SvDPsGKxN+3ow9O4iWB9Ac
-         Skwz1INnz+HIyz+lxgNQjMIxdvrfcYzbqVFr710nxL42gfrs2LqaFSw10LRx27ABPrwC
-         nx4A==
-X-Gm-Message-State: AOAM53145SW5vfvop9cUrOrUvNH6n1TtDbiv44eAu/uMBwNtJ52+KvL4
-        gC8Xrwm4HQ851EqxO4gz3MC944h7o2B+vg==
-X-Google-Smtp-Source: ABdhPJw+z8Sd3NFiLlwz/xK+YwTJXtE2hwOTuYXA8kdJ0gipbLHigUMTbIGrWS2smIcWDPT5tb5H8w==
-X-Received: by 2002:a19:2489:: with SMTP id k131mr1714115lfk.459.1607017642616;
-        Thu, 03 Dec 2020 09:47:22 -0800 (PST)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id d28sm748020lfm.201.2020.12.03.09.47.20
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 09:47:21 -0800 (PST)
-Received: by mail-lf1-f52.google.com with SMTP id s27so3970119lfp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 09:47:20 -0800 (PST)
-X-Received: by 2002:a19:f243:: with SMTP id d3mr1702463lfk.534.1607017640414;
- Thu, 03 Dec 2020 09:47:20 -0800 (PST)
+        Thu, 3 Dec 2020 12:50:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607017723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ceIul0hAzEoLtWtNgbHGMdAjziJwd7EisqMz46e91Jk=;
+        b=Nbb9owLhBaMvcJtbOv/OJdUo5W8gyEziamG2oUu133CdEMzd8QWiWxUApJI7abbX/SPdzl
+        nnLJFAjTBRUKFXPc336iqksSOP4Xk90C6SqlhJ1l16o9wlivbkXB+pNjG8126Q2OwEyQUR
+        tcIIjlHeDBxP2ffFr8XUDDw1hfh7sCQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-lMO4LyFNPOGAZZ-MajlGIw-1; Thu, 03 Dec 2020 12:48:39 -0500
+X-MC-Unique: lMO4LyFNPOGAZZ-MajlGIw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F5731800D42;
+        Thu,  3 Dec 2020 17:48:38 +0000 (UTC)
+Received: from [10.36.113.250] (ovpn-113-250.ams2.redhat.com [10.36.113.250])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A9051100239A;
+        Thu,  3 Dec 2020 17:48:36 +0000 (UTC)
+Subject: Re: [PATCH] mm/page_isolation: do not isolate the max order page
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Muchun Song <songmuchun@bytedance.com>,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+References: <20201202122114.75316-1-songmuchun@bytedance.com>
+ <1505b548-968b-2053-fd17-0cc4ae240a2f@suse.cz>
+ <29022300-6d8e-0532-7abc-6d11ab1db04a@redhat.com>
+ <92e54bf2-adc5-d51b-3b78-b881567335dc@suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <4acd86de-e5a7-7fbe-5cdc-939e12f7fb3a@redhat.com>
+Date:   Thu, 3 Dec 2020 18:48:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
- <20201203064536.GE27350@xsang-OptiPlex-9020>
-In-Reply-To: <20201203064536.GE27350@xsang-OptiPlex-9020>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 3 Dec 2020 09:47:04 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wif1iGLiqcsx1YdLS4tN01JuH-MV_oem0duHqskhDTY9A@mail.gmail.com>
-Message-ID: <CAHk-=wif1iGLiqcsx1YdLS4tN01JuH-MV_oem0duHqskhDTY9A@mail.gmail.com>
-Subject: Re: [iov_iter] 9bd0e337c6: will-it-scale.per_process_ops -4.8% regression
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     David Howells <dhowells@redhat.com>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <92e54bf2-adc5-d51b-3b78-b881567335dc@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 10:31 PM kernel test robot <oliver.sang@intel.com> w=
-rote:
->
-> FYI, we noticed a -4.8% regression of will-it-scale.per_process_ops due t=
-o commit:
+On 03.12.20 18:15, Vlastimil Babka wrote:
+> On 12/3/20 5:26 PM, David Hildenbrand wrote:
+>> On 03.12.20 01:03, Vlastimil Babka wrote:
+>>> On 12/2/20 1:21 PM, Muchun Song wrote:
+>>>> The max order page has no buddy page and never merge to other order.
+>>>> So isolating and then freeing it is pointless.
+>>>>
+>>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>>>
+>>> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+>>>
+>>>> ---
+>>>>  mm/page_isolation.c | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+>>>> index a254e1f370a3..bddf788f45bf 100644
+>>>> --- a/mm/page_isolation.c
+>>>> +++ b/mm/page_isolation.c
+>>>> @@ -88,7 +88,7 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+>>>>  	 */
+>>>>  	if (PageBuddy(page)) {
+>>>>  		order = buddy_order(page);
+>>>> -		if (order >= pageblock_order) {
+>>>> +		if (order >= pageblock_order && order < MAX_ORDER - 1) {
+>>>>  			pfn = page_to_pfn(page);
+>>>>  			buddy_pfn = __find_buddy_pfn(pfn, order);
+>>>>  			buddy = page + (buddy_pfn - pfn);
+>>>
+>>> Hm I wonder if order == MAX_ORDER - 1, then the buddy can actually be a
+>>> !pfn_valid() in some corner case? pfn_valid_within(buddy_pfn) that follows would
+>>> only catch it on archs with holes in zone. Then is_migrate_isolate_page(buddy)
+>>> might access an invalid buddy. So this might be actually a bug fix and not just
+>>> optimization, just the bug hasn't been observed in practice.
+>>
+>> I think we have no users that isolate/unisolate close to holes.
+>>
+>> CMA regions are properly aligned (to max of page_order /
+>> max_order_nr_pages) and don't contain holes.
+> 
+> The problem as I see it, is that buddy_order(page) might be already MAX_ORDER -
+> 1 (e.g. two pageblocks on x86), and then finding buddy of that one is beyond the
+> guaranteed alignment (if they merged, which they can't, it would be four
 
-Ok, I guess that's bigger than expected, but the profile data does
-show how bad the indirect branches are.
+Oh, I see. I would have assume that __find_buddy_pfn() would not hand
+out invalid buddies. But you're right, it's generic:
 
-There's both a "direct" cost of them:
+pfn = 1024 (4M)
+order = MAX_ORDER - 1 = 10
+buddy_pfn = __find_buddy_pfn(pfn, order)
 
->       0.55 =C4=85 14%      +0.3        0.87 =C4=85 15%  perf-profile.chil=
-dren.cycles-pp.__x86_retpoline_rax
->       0.12 =C4=85 14%      +0.1        0.19 =C4=85 14%  perf-profile.self=
-.cycles-pp.__x86_indirect_thunk_rax
->       0.43 =C4=85 14%      +0.3        0.68 =C4=85 15%  perf-profile.self=
-.cycles-pp.__x86_retpoline_rax
+-> pfn ^ (1 << order) = 0
 
-The actual retpoline profile costs themselves do not add up to 4%, but
-I think that's because the indirect costs are higher, because the
-branch mis-predicts will basically make everything run slower for a
-while as the OoO engine needs to restart.
 
-So the global cost then shows up in CPU and branch miss stats, where
-the IPC goes down (which is the same thing as saying that CPI goes
-up):
+If that page has no struct page (!pfn_valid), we're doomed, I agree. It
+would be problematic if we have alloc_contig_range() users with ranges
+not aligned/multiples of to 8 MB (MAX_ORDER) I guess. virtio-mem and
+gigantic pages should be fine. CMA might be problematic, though? Do we
+have such small CMA ranges or with such alignment? COuld be I guess.
 
->  1.741e+08           +42.3%  2.476e+08        perf-stat.i.branch-misses
->       0.74            -3.9%       0.71        perf-stat.overall.ipc
->       1.35            +4.1%       1.41        perf-stat.overall.cpi
+cma_init_reserved_mem() only checks
 
-which is why it ends up being so costly even if the retpoline overhead
-itself is "only" just under 1%.
+alignment = PAGE_SIZE << max_t(unsigned long, MAX_ORDER - 1,
+pageblock_order);
 
-           Linus
+> pageblocks). Might not be just a hole within zone, but also across zone boundary?
+> While being isolated and used pages migrated away, the freed pages shouldn't
+> merge to MAX_ORDER-1, but if the MAX_ORDER-1 free page was already there before
+> the isolation?
+
+
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
