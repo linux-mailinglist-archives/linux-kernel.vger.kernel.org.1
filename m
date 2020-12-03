@@ -2,175 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018AA2CCB66
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD842CCB6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728947AbgLCBGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 20:06:39 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:36872 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgLCBGi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:06:38 -0500
-Received: by mail-lf1-f65.google.com with SMTP id s30so270580lfc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 17:06:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c91sM3Z5f8KJIA116v/c00f4+lFeX2slAZ6rw/YW0/U=;
-        b=kdKz/lGW14uGm+gkapsti527mRb2lfi4JgYadwE9UxR5jiIGBCoL9QZCWo1qknRMoJ
-         BGKWD/r4fAkyISKWQDmFT7r7toJ63nfcYZMoKvg4MrbdpYPwGi2KFtOmtGFVC6YvX7JX
-         VEerUAdRJstSoW/HEMRDGBi2qEduGqR6cv6JL2x/PBPpJhpJniUQ9rGvi2jF/Jm1NQKc
-         5i3x8QXRR7m4lQh3jw8FmoAsiD8auHokUICr7e4ZPLYSOPsaCHk4FdsgKDXx95SBavDE
-         k37f+Bu1tqmbBHJ44H+T036VZajTSrOp2vOaImB5OLJSV6uTQFBJ/yELW/Bl4tNE3Hfw
-         o5JQ==
-X-Gm-Message-State: AOAM5337LoGBP4urwNMxZCVOr5/4dW5Mdchsu8qWOTr6k7e88Kg6a6xL
-        +iasqkvSnknsYuoVvtVzosIu2AU6UG9ABdV6YaY=
-X-Google-Smtp-Source: ABdhPJyy2Ggdw2zz89U9uGOA/5AYDQiMoKUYdY1YHAPG9pueI8sjH2tUE3/dRn3EqpRHi6+948bgofYe9xPfA5LiPS0=
-X-Received: by 2002:a19:38e:: with SMTP id 136mr289889lfd.593.1606957555162;
- Wed, 02 Dec 2020 17:05:55 -0800 (PST)
+        id S1728548AbgLCBIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 20:08:14 -0500
+Received: from mga11.intel.com ([192.55.52.93]:15522 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726410AbgLCBIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 20:08:13 -0500
+IronPort-SDR: RGAfto8t9ThbIGG2cDar3+LuDiuIzSBYbl2GMeOH8n6R1koH9srt9P4jzttgjji3OxI+Addb34
+ OXhIQo604ISg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="169609202"
+X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
+   d="scan'208";a="169609202"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 17:06:32 -0800
+IronPort-SDR: Ki41DJBOlWwddKCWpTTeByb8x3pQKO4RTdiNwCO1SkF4jU+rjlZiMykFf2EVu7Zb9Mbmz/xqaa
+ kqjdsWSr2IIw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
+   d="scan'208";a="373711818"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Dec 2020 17:06:20 -0800
+Subject: Re: [PATCH -tip 14/32] sched: migration changes for core scheduling
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+To:     Balbir Singh <bsingharora@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-15-joel@joelfernandes.org>
+ <20201122235456.GF110669@balbir-desktop>
+ <0b2514ef-6cc3-c1a3-280b-5d9062c80a31@linux.intel.com>
+ <20201124154237.GZ3021@hirez.programming.kicks-ass.net>
+ <d541b70c-c65f-5bf6-5e71-0b9b35457fae@linux.intel.com>
+ <20201125225731.GB163610@balbir-desktop>
+ <d9f356dd-be58-b52c-504d-ff46d37c1479@linux.intel.com>
+ <20201126083250.GI163610@balbir-desktop>
+ <e885eebe-686c-70f7-95b9-17a065fb2764@linux.intel.com>
+ <20201130093333.GD473773@balbir-desktop>
+ <6cf6c89d-8d33-c11b-1ea9-7d143b89fc2d@linux.intel.com>
+ <fc1c7029-b3a2-0005-0efb-f3f3ab8e5568@linux.intel.com>
+Message-ID: <1bcc55c5-af1a-a7a0-606f-851a7bc80907@linux.intel.com>
+Date:   Thu, 3 Dec 2020 09:06:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20201202150205.35750-1-namhyung@kernel.org> <20201202161934.GL3021@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201202161934.GL3021@hirez.programming.kicks-ass.net>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 3 Dec 2020 10:05:44 +0900
-Message-ID: <CAM9d7cgmgmjmkUOOSDYaV3WG1GPzCzxbPG88qOXYXri1HNYW_g@mail.gmail.com>
-Subject: Re: [RFC 1/2] perf core: Add PERF_COUNT_SW_CGROUP_SWITCHES event
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <fc1c7029-b3a2-0005-0efb-f3f3ab8e5568@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On 2020/12/2 22:09, Li, Aubrey wrote:
+> Hi Balbir,
+> 
+> I still placed the patch embedded in this thread, welcome any comments.
 
-On Thu, Dec 3, 2020 at 1:19 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Dec 03, 2020 at 12:02:04AM +0900, Namhyung Kim wrote:
->
-> > +#ifdef CONFIG_CGROUP_PERF
-> > +static inline void
-> > +perf_sw_event_cgroup_switch(struct task_struct *prev, struct task_struct *next)
-> > +{
-> > +     struct cgroup *prev_cgrp, *next_cgrp;
-> > +
-> > +     rcu_read_lock();
-> > +
-> > +     prev_cgrp = task_css_check(prev, perf_event_cgrp_id, 1)->cgroup;
-> > +     next_cgrp = task_css_check(next, perf_event_cgrp_id, 1)->cgroup;
-> > +
-> > +     if (prev_cgrp != next_cgrp)
-> > +             perf_sw_event_sched(PERF_COUNT_SW_CGROUP_SWITCHES, 1, 0);
-> > +
-> > +     rcu_read_unlock();
-> > +}
-> > +#else
-> > +static inline void perf_sw_event_cgroup_switch(struct task_struct *prev,
-> > +                                            struct task_struct *next) {}
-> > +#endif  /* CONFIG_CGROUP_PERF */
-> > +
-> >  extern struct static_key_false perf_sched_events;
-> >
-> >  static __always_inline bool
-> > @@ -1220,6 +1241,7 @@ static inline void perf_event_task_sched_out(struct task_struct *prev,
-> >                                            struct task_struct *next)
-> >  {
-> >       perf_sw_event_sched(PERF_COUNT_SW_CONTEXT_SWITCHES, 1, 0);
-> > +     perf_sw_event_cgroup_switch(prev, next);
-> >
-> >       if (static_branch_unlikely(&perf_sched_events))
-> >               __perf_event_task_sched_out(prev, next);
->
-> Urgh.. that's horrible, try something like this.
->
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index 9a38f579bc76..5eb284819ee5 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -1174,25 +1174,19 @@ DECLARE_PER_CPU(struct pt_regs, __perf_regs[4]);
->   * which is guaranteed by us not actually scheduling inside other swevents
->   * because those disable preemption.
->   */
-> -static __always_inline void
-> -perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)
-> +static __always_inline void __perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)
->  {
-> -       if (static_key_false(&perf_swevent_enabled[event_id])) {
-> -               struct pt_regs *regs = this_cpu_ptr(&__perf_regs[0]);
-> +       struct pt_regs *regs = this_cpu_ptr(&__perf_regs[0]);
->
-> -               perf_fetch_caller_regs(regs);
-> -               ___perf_sw_event(event_id, nr, regs, addr);
-> -       }
-> +       perf_fetch_caller_regs(regs);
-> +       ___perf_sw_event(event_id, nr, regs, addr);
->  }
->
->  extern struct static_key_false perf_sched_events;
->
-> -static __always_inline bool
-> -perf_sw_migrate_enabled(void)
-> +static __always_inline bool __perf_sw_enabled(int swevt)
->  {
-> -       if (static_key_false(&perf_swevent_enabled[PERF_COUNT_SW_CPU_MIGRATIONS]))
-> -               return true;
-> -       return false;
-> +       return static_key_false(&perf_swevent_enabled[swevt]);
->  }
->
->  static inline void perf_event_task_migrate(struct task_struct *task)
-> @@ -1207,11 +1201,9 @@ static inline void perf_event_task_sched_in(struct task_struct *prev,
->         if (static_branch_unlikely(&perf_sched_events))
->                 __perf_event_task_sched_in(prev, task);
->
-> -       if (perf_sw_migrate_enabled() && task->sched_migrated) {
-> -               struct pt_regs *regs = this_cpu_ptr(&__perf_regs[0]);
-> -
-> -               perf_fetch_caller_regs(regs);
-> -               ___perf_sw_event(PERF_COUNT_SW_CPU_MIGRATIONS, 1, regs, 0);
-> +       if (__perf_sw_enabled(PERF_COUNT_SW_CPU_MIGRATIONS) &&
-> +           task->sched_migrated) {
-> +               __perf_sw_event_sched(PERF_COUNT_SW_CPU_MIGRATIONS, 1, 0);
->                 task->sched_migrated = 0;
->         }
->  }
-> @@ -1219,7 +1211,13 @@ static inline void perf_event_task_sched_in(struct task_struct *prev,
->  static inline void perf_event_task_sched_out(struct task_struct *prev,
->                                              struct task_struct *next)
->  {
-> -       perf_sw_event_sched(PERF_COUNT_SW_CONTEXT_SWITCHES, 1, 0);
-> +       if (__perf_sw_enabled(PERF_COUNT_SW_CONTEXT_SWITCHES))
-> +               __perf_sw_event_sched(PERF_COUNT_SW_CONTEXT_SWITCHES, 1, 0);
-> +
-> +       if (__perf_sw_enabled(PERF_COUNT_SW_CGROUP_SWITCHES) &&
-> +           (task_css_check(prev, perf_event_cgrp_id, 1)->cgroup !=
-> +            task_css_check(next, perf_event_cgrp_id, 1)->cgroup))
-> +               __perf_sw_event_sched(PERF_COUNT_SW_CGROUP_SWITCHES, 1, 0);
-
-Right, it needs to check only when the event is enabled.
+Sorry, this version needs more work, refined as below, and I realized
+I should place a version number to the patch, start from v2 now.
 
 Thanks,
-Namhyung
+-Aubrey
+======================================================================
+From aff2919889635aa9311d15bac3e949af0300ddc1 Mon Sep 17 00:00:00 2001
+From: Aubrey Li <aubrey.li@linux.intel.com>
+Date: Thu, 3 Dec 2020 00:51:18 +0000
+Subject: [PATCH v2] sched: migration changes for core scheduling
 
+ - Don't migrate if there is a cookie mismatch
+     Load balance tries to move task from busiest CPU to the
+     destination CPU. When core scheduling is enabled, if the
+     task's cookie does not match with the destination CPU's
+     core cookie, this task will be skipped by this CPU. This
+     mitigates the forced idle time on the destination CPU.
 
->
->         if (static_branch_unlikely(&perf_sched_events))
->                 __perf_event_task_sched_out(prev, next);
-> @@ -1475,8 +1473,6 @@ static inline int perf_event_refresh(struct perf_event *event, int refresh)
->  static inline void
->  perf_sw_event(u32 event_id, u64 nr, struct pt_regs *regs, u64 addr)    { }
->  static inline void
-> -perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)                    { }
-> -static inline void
->  perf_bp_event(struct perf_event *event, void *data)                    { }
->
->  static inline int perf_register_guest_info_callbacks
+ - Select cookie matched idle CPU
+     In the fast path of task wakeup, select the first cookie matched
+     idle CPU instead of the first idle CPU.
+
+ - Find cookie matched idlest CPU
+     In the slow path of task wakeup, find the idlest CPU whose core
+     cookie matches with task's cookie
+
+ - Don't migrate task if cookie not match
+     For the NUMA load balance, don't migrate task to the CPU whose
+     core cookie does not match with task's cookie
+
+Cc: Balbir Singh <bsingharora@gmail.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
+Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+Signed-off-by: Vineeth Remanan Pillai <viremana@linux.microsoft.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/sched/fair.c  | 33 +++++++++++++++++---
+ kernel/sched/sched.h | 72 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 101 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index de82f88ba98c..afdfea70c58c 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1921,6 +1921,13 @@ static void task_numa_find_cpu(struct task_numa_env *env,
+ 		if (!cpumask_test_cpu(cpu, env->p->cpus_ptr))
+ 			continue;
+ 
++		/*
++		 * Skip this cpu if source task's cookie does not match
++		 * with CPU's core cookie.
++		 */
++		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
++			continue;
++
+ 		env->dst_cpu = cpu;
+ 		if (task_numa_compare(env, taskimp, groupimp, maymove))
+ 			break;
+@@ -5867,11 +5874,15 @@ find_idlest_group_cpu(struct sched_group *group, struct task_struct *p, int this
+ 
+ 	/* Traverse only the allowed CPUs */
+ 	for_each_cpu_and(i, sched_group_span(group), p->cpus_ptr) {
++		struct rq *rq = cpu_rq(i);
++
++		if (!sched_core_cookie_match(rq, p))
++			continue;
++
+ 		if (sched_idle_cpu(i))
+ 			return i;
+ 
+ 		if (available_idle_cpu(i)) {
+-			struct rq *rq = cpu_rq(i);
+ 			struct cpuidle_state *idle = idle_get_state(rq);
+ 			if (idle && idle->exit_latency < min_exit_latency) {
+ 				/*
+@@ -6129,7 +6140,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 	for_each_cpu_wrap(cpu, cpus, target) {
+ 		if (!--nr)
+ 			return -1;
+-		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
++
++		if ((available_idle_cpu(cpu) || sched_idle_cpu(cpu)) &&
++		    sched_cpu_cookie_match(cpu_rq(cpu), p))
+ 			break;
+ 	}
+ 
+@@ -7530,8 +7543,9 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+ 	 * We do not migrate tasks that are:
+ 	 * 1) throttled_lb_pair, or
+ 	 * 2) cannot be migrated to this CPU due to cpus_ptr, or
+-	 * 3) running (obviously), or
+-	 * 4) are cache-hot on their current CPU.
++	 * 3) task's cookie does not match with this CPU's core cookie
++	 * 4) running (obviously), or
++	 * 5) are cache-hot on their current CPU.
+ 	 */
+ 	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
+ 		return 0;
+@@ -7566,6 +7580,13 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+ 		return 0;
+ 	}
+ 
++	/*
++	 * Don't migrate task if the task's cookie does not match
++	 * with the destination CPU's core cookie.
++	 */
++	if (!sched_core_cookie_match(cpu_rq(env->dst_cpu), p))
++		return 0;
++
+ 	/* Record that we found atleast one task that could run on dst_cpu */
+ 	env->flags &= ~LBF_ALL_PINNED;
+ 
+@@ -8792,6 +8813,10 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+ 					p->cpus_ptr))
+ 			continue;
+ 
++		/* Skip over this group if no cookie matched */
++		if (!sched_group_cookie_match(cpu_rq(this_cpu), p, group))
++			continue;
++
+ 		local_group = cpumask_test_cpu(this_cpu,
+ 					       sched_group_span(group));
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index e72942a9ee11..82917ce183b4 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1119,6 +1119,7 @@ static inline bool is_migration_disabled(struct task_struct *p)
+ 
+ #ifdef CONFIG_SCHED_CORE
+ DECLARE_STATIC_KEY_FALSE(__sched_core_enabled);
++static inline struct cpumask *sched_group_span(struct sched_group *sg);
+ 
+ static inline bool sched_core_enabled(struct rq *rq)
+ {
+@@ -1135,6 +1136,61 @@ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
+ 
+ bool cfs_prio_less(struct task_struct *a, struct task_struct *b);
+ 
++/*
++ * Helpers to check if the CPU's core cookie matches with the task's cookie
++ * when core scheduling is enabled.
++ * A special case is that the task's cookie always matches with CPU's core
++ * cookie if the CPU is in an idle core.
++ */
++static inline bool sched_cpu_cookie_match(struct rq *rq, struct task_struct *p)
++{
++	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
++	if (!sched_core_enabled(rq))
++		return true;
++
++	return rq->core->core_cookie == p->core_cookie;
++}
++
++static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
++{
++	bool idle_core = true;
++	int cpu;
++
++	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
++	if (!sched_core_enabled(rq))
++		return true;
++
++	for_each_cpu(cpu, cpu_smt_mask(cpu_of(rq))) {
++		if (!available_idle_cpu(cpu)) {
++			idle_core = false;
++			break;
++		}
++	}
++
++	/*
++	 * A CPU in an idle core is always the best choice for tasks with
++	 * cookies.
++	 */
++	return idle_core || rq->core->core_cookie == p->core_cookie;
++}
++
++static inline bool sched_group_cookie_match(struct rq *rq,
++					    struct task_struct *p,
++					    struct sched_group *group)
++{
++	int cpu;
++
++	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
++	if (!sched_core_enabled(rq))
++		return true;
++
++	for_each_cpu_and(cpu, sched_group_span(group), p->cpus_ptr) {
++		if (sched_core_cookie_match(rq, p))
++			return true;
++	}
++	return false;
++}
++
+ extern void queue_core_balance(struct rq *rq);
+ 
+ #else /* !CONFIG_SCHED_CORE */
+@@ -1153,6 +1209,22 @@ static inline void queue_core_balance(struct rq *rq)
+ {
+ }
+ 
++static inline bool sched_cpu_cookie_match(struct rq *rq, struct task_struct *p)
++{
++	return true;
++}
++
++static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
++{
++	return true;
++}
++
++static inline bool sched_group_cookie_match(struct rq *rq,
++					    struct task_struct *p,
++					    struct sched_group *group)
++{
++	return true;
++}
+ #endif /* CONFIG_SCHED_CORE */
+ 
+ #ifdef CONFIG_SCHED_SMT
+-- 
+2.17.1
+
