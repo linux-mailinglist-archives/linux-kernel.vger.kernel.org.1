@@ -2,101 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBF92CD0B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021F22CD0B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729901AbgLCICS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:02:18 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18413 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728782AbgLCICS (ORCPT
+        id S2387604AbgLCICg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:02:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726539AbgLCICf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:02:18 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc89b610000>; Thu, 03 Dec 2020 00:01:37 -0800
-Received: from [10.2.53.244] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Dec
- 2020 08:01:28 +0000
-Subject: Re: [PATCH 2/6] mm/gup: don't pin migrated cma pages in movable zone
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <akpm@linux-foundation.org>, <vbabka@suse.cz>, <mhocko@suse.com>,
-        <david@redhat.com>, <osalvador@suse.de>,
-        <dan.j.williams@intel.com>, <sashal@kernel.org>,
-        <tyhicks@linux.microsoft.com>, <iamjoonsoo.kim@lge.com>,
-        <mike.kravetz@oracle.com>, <rostedt@goodmis.org>,
-        <mingo@redhat.com>, <jgg@ziepe.ca>, <peterz@infradead.org>,
-        <mgorman@suse.de>, <willy@infradead.org>, <rientjes@google.com>
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201202052330.474592-3-pasha.tatashin@soleen.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <2d383ee6-c5ab-48b6-3ccd-e32d211e01e3@nvidia.com>
-Date:   Thu, 3 Dec 2020 00:01:28 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:83.0) Gecko/20100101
- Thunderbird/83.0
+        Thu, 3 Dec 2020 03:02:35 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967FEC061A4D
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 00:01:49 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id y22so1105849edv.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 00:01:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RuHOe2Akk+J2QlLhyukacf2T9N/gwVrROTnJh+LYhs4=;
+        b=EkMCF9aat7r8j0C4i0IhP/4yixIPCsHiv4aS8xJM37D5skQz6JTOvy00LnNj26hCOH
+         vo0L2AC8XvXwGaaBsknW6dYFSEasyMyaqJywrTUGK144dfeal6MA5GPI5qn4G6KTBc99
+         po5whjHpThY7nFCifXlSMSYB4Mv2JRVvrO2yPvx/e2yRWlbf3aPtDDjKH9PY7LAzvtOg
+         jz9TixThxbFD4y8RBCPlRXrU6rEQZMKOS5ic1vc+VfHlEoRWXRwg//Nzhs5D2ew0UeQF
+         JQreqGwNEj78/0qKi4+vFIk5J6N6BDkH1ozDeBqxDKVKmfBcGjOHFolgMm3Ecs5ptIBK
+         JAqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RuHOe2Akk+J2QlLhyukacf2T9N/gwVrROTnJh+LYhs4=;
+        b=prAN95fSWiNGrpwQ4XGJ1Qpj9RM0xORDFDmMnFr0lew2+r+ZRpZSI3t04zQuHCuVwV
+         gcF3S2YS7DfFjcwCE4o3kbfv/XCpOajzUIPCgZTtJt88PTLcYebTbm7lStd/M8fy3sa0
+         uWySqjLBZBY55A4og6XuG+0UUY8vznQNWuQLAB85E5EN/0M8eGzBHBamlGrpfLT/0QHd
+         eZM0Xha16GeDDwnnii/NABS7PJfs8ekbta+RHQWSARldtrArpIg6Xnkt+spD/W6tTkCj
+         iNRgfHbSg7MJnbNBjkovFesJ8KoGMAUjBOJNfytLBD/W9BBHcuKt20Ys1OX2DvwAxK7+
+         6bGA==
+X-Gm-Message-State: AOAM5322TBjM8Uv8jyAibL4jD2iVQlebQYx0zSJ5Tcu5uAM6qqSiTU8o
+        FLhOumvETtos5a15lqaDpldFHlr9UGnvwfeFeBEqhw==
+X-Google-Smtp-Source: ABdhPJxPRhOJ0mVusBf7DGxwNYxazF+B0dm42xTTpebRsIgCx4qZcDu8yl6pTQtVn0Q3Ma+cXndWRbx6dbfXdcasMYc=
+X-Received: by 2002:aa7:d54b:: with SMTP id u11mr1694134edr.341.1606982508208;
+ Thu, 03 Dec 2020 00:01:48 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201202052330.474592-3-pasha.tatashin@soleen.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606982497; bh=c1Tc1OG4/I/r3ZS+i1ed5+AnAPKp5CQ+Qg1jawue+8c=;
-        h=Subject:To:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=EzVNbehbvE3qNEc0OOEjfoujFjnOu8xH3LcP0/TZ5jun/kyBwOstVRqdjO5aVnKYm
-         XbP0eLqahbs9nBp7PdsnNGtShwKYHIKtdCX2ggxPaoA0p9CJXD5JfSUa76Js0bYw0R
-         tN02uxY+Gaqr0hdzXV/V2QPVmHmHqpxw9JVIYC7yg3rQZAyTyvsss/l8cMZfFgb1Vc
-         H/Mc3v4PkvxxknFORKxcqE3TNF4UX3Lw9nTfaI0RLlIrcPfjYIkjyqBzJ+4clY7Ncv
-         qX8D+FZC2XItbVFfNInfIxEF6Z0pFWNZAaAuo1gNy3T+j/I5TRy/gFlPhZJgtg4SAB
-         7bHefGL0F5vKg==
+References: <20201203073910.20113-1-biwen.li@oss.nxp.com>
+In-Reply-To: <20201203073910.20113-1-biwen.li@oss.nxp.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 3 Dec 2020 09:01:37 +0100
+Message-ID: <CAMpxmJV97uexBKK3zHuOWfBQ77uorgxadUcrieBP2fLPs0dPeA@mail.gmail.com>
+Subject: Re: [PATCH] gpio: mpc8xxx: resolve coverity warnings
+To:     Biwen Li <biwen.li@oss.nxp.com>
+Cc:     Li Yang <leoyang.li@nxp.com>, aisheng.dong@nxp.com,
+        LKML <linux-kernel@vger.kernel.org>, jiafei.pan@nxp.com,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Biwen Li <biwen.li@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 9:23 PM, Pavel Tatashin wrote:
-> In order not to fragment CMA the pinned pages are migrated. However,
-> they are migrated to ZONE_MOVABLE, which also should not have pinned pages.
-> 
-> Remove __GFP_MOVABLE, so pages can be migrated to zones where pinning
-> is allowed.
-> 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+On Thu, Dec 3, 2020 at 8:31 AM Biwen Li <biwen.li@oss.nxp.com> wrote:
+>
+> From: Biwen Li <biwen.li@nxp.com>
+>
+> Resolve coverity warnings as follows,
+>     cond_at_most: Checking gpio >= 28U implies that gpio may be up
+>     to 27 on the false branch.
+>     overrun-call: Overrunning callees array of size 3 by passing
+>     argument gpio (which evaluates to 27)
+>     in call to *mpc8xxx_gc->direction_output
+>
+>     cond_at_least: Checking gpio <= 3U implies that gpio is at least 4 on
+>     the false branch.
+>     overrun-call: Overrunning callee's array of size 3 by passing argument
+>     gpio (which evaluates to 4) in call to *mpc8xxx_gc->direction_output
+>
+> Signed-off-by: Biwen Li <biwen.li@nxp.com>
 > ---
->   mm/gup.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index cdb8b9eeb016..3a76c005a3e2 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1610,7 +1610,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
->   	long ret = nr_pages;
->   	struct migration_target_control mtc = {
->   		.nid = NUMA_NO_NODE,
-> -		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_NOWARN,
-> +		.gfp_mask = GFP_USER | __GFP_NOWARN,
->   	};
->   
->   check_again:
-> 
+>  drivers/gpio/gpio-mpc8xxx.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
+> index a6c2bbdcaa10..12c9a91d87b7 100644
+> --- a/drivers/gpio/gpio-mpc8xxx.c
+> +++ b/drivers/gpio/gpio-mpc8xxx.c
+> @@ -3,6 +3,7 @@
+>   *
+>   * Copyright (C) 2008 Peter Korsgaard <jacmet@sunsite.dk>
+>   * Copyright (C) 2016 Freescale Semiconductor Inc.
+> + * Copyright 2020 NXP
 
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+A copyright notice on a two-line change is a bit too much, don't you think?
 
-...while I was here, I noticed this, which is outside the scope of your patchset, but
-I thought I'd just mention it anyway in case anyone cares:
+>   *
+>   * This file is licensed under the terms of the GNU General Public License
+>   * version 2.  This program is licensed "as is" without any warranty of any
+> @@ -80,7 +81,7 @@ static int mpc5121_gpio_dir_out(struct gpio_chip *gc,
+>  {
+>         struct mpc8xxx_gpio_chip *mpc8xxx_gc = gpiochip_get_data(gc);
+>         /* GPIO 28..31 are input only on MPC5121 */
+> -       if (gpio >= 28)
+> +       if (gpio >= 28U)
+>                 return -EINVAL;
 
-static inline bool is_migrate_movable(int mt)
-{
-	return is_migrate_cma(mt) || mt == MIGRATE_MOVABLE;
-}
+I don't really understand the commit message but looking at the code
+is even more confusing. What are you fixing here actually?
 
-...that really should take an "enum migratetype mt" instead of an int, I think.
+Bartosz
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+>
+>         return mpc8xxx_gc->direction_output(gc, gpio, val);
+> @@ -91,7 +92,7 @@ static int mpc5125_gpio_dir_out(struct gpio_chip *gc,
+>  {
+>         struct mpc8xxx_gpio_chip *mpc8xxx_gc = gpiochip_get_data(gc);
+>         /* GPIO 0..3 are input only on MPC5125 */
+> -       if (gpio <= 3)
+> +       if (gpio <= 3U)
+>                 return -EINVAL;
+>
+>         return mpc8xxx_gc->direction_output(gc, gpio, val);
+> --
+> 2.17.1
+>
