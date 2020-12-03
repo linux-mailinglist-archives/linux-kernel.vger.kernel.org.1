@@ -2,114 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA882CDE9F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:17:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6342CDEA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729402AbgLCTPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:15:40 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52630 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726829AbgLCTPj (ORCPT
+        id S1728287AbgLCTQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:16:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbgLCTQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:15:39 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B3J2AP7144237;
-        Thu, 3 Dec 2020 14:14:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=sxUfLc0WsUlnI3s6mQc/gnCFxbAMIxUa9zBeXAumMvQ=;
- b=ilDKDVbIrCWnweRx2BwT2ZLaNR8ACV2HomgHr2JuB3O76a3wAQNyleedy1z2KLi4PkG3
- F119veb9BWWsOKdc3h302HePuL+oUcRsC956GsFyK7GJUHC22DKUZS8zfolia0hNSE3n
- tGR+RHlTbzTdXpb6HbycRMjAgOOzh01+z8ARYpSazisQLm0rUB3OcEbuXsDXgE+CwaLv
- y/wJKvblq6vsEH2mh2CMfgxuJHp7Nf3gXKDyaPrwEPTw7FbyDSexEfcxGYWAg92W9c3L
- PntRgEJSryAhXPLp/9pkeplUE8Z9md60of+PZKyTqkvRg/eR/h+XobKESV6En2Ev83Oy Xw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3573jf4wtm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 14:14:56 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B3J2HsI145053;
-        Thu, 3 Dec 2020 14:14:55 -0500
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3573jf4wt4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 14:14:55 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B3Ivh0R006586;
-        Thu, 3 Dec 2020 19:14:54 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma03dal.us.ibm.com with ESMTP id 356xqhbtqf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 19:14:54 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B3JEs4a20841264
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 3 Dec 2020 19:14:54 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EBA13112061;
-        Thu,  3 Dec 2020 19:14:53 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6AE3B112063;
-        Thu,  3 Dec 2020 19:14:53 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.195.249])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  3 Dec 2020 19:14:53 +0000 (GMT)
-Subject: Re: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM pointer
- invalidated
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, borntraeger@de.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
-References: <20201202234101.32169-1-akrowiak@linux.ibm.com>
- <20201203111907.72a89884.cohuck@redhat.com>
- <20201203180141.19425931.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <3299bd03-f0b8-39ac-4f0e-04bd198633fa@linux.ibm.com>
-Date:   Thu, 3 Dec 2020 14:14:52 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Thu, 3 Dec 2020 14:16:54 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F47C061A4E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:16:14 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id ce23so1365938ejb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:16:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B2unFigJQegdx4byhopE68eSGwQDdjPNiBkqppQKORw=;
+        b=RQwzlugWq9y6xGCWYGZqV0cDbOSU4sMIIOG0haHdSUCDe8tW9oou5xKHPs4jrQ5Zk6
+         dsM353hzEl0YtP4/cRli48OFFj6cJohs+2c+a97YMQ1MBUPOe1M48RaakX2SvJrwwJdw
+         g2us13bxps7lUhtOZLk3D294XsC4LGLdLQg51tkEkh6tplx3WN0gH1R9HZKzPEh/DEIb
+         xWtdRHy7iORiEg/TuEzucbrR6ONX2/caaotAbHnNi0XVYH9MilgpB1y3L7Ql1PjUlfRF
+         pmeAK7kmIGBV7ktkwYpFvIlxo60/CJUBLTIdNX2dgrALQAl7J2K8sZ93R4NIAU5efFIS
+         nf4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B2unFigJQegdx4byhopE68eSGwQDdjPNiBkqppQKORw=;
+        b=Zras+9SsJNtMP1hhLr62PaJSW/XpIy/QXRol51ARGYVIPy8Ifk3vKwYbtggcgT4P7T
+         17560rm2WXZXJ3NAHs2MFDXMcyHkX591//7NQL8wsEG/WpE/xwCALaNKWTzXLYRYIA9U
+         7Noljsv8wfqgGauKiJBjl0X9x0ICUGvhp3u6l2Ua4fGzMe3UQxxBO5QmUJChu0ZJT5Qp
+         450gSkA4xO0Mq4UT0zB+TfrcJzrtNUw4xXNteKwTmsJI0L1yulgh5Aowbv7MfddTBPKh
+         j3PToSp1K8seXm4fzMhoO+vBr5tsnff4kMMCZIIF/V0qqVQ7y9v7PjZnNT8alk5QWc9L
+         E/KA==
+X-Gm-Message-State: AOAM533rg8dvCc3kPiXFVLHFqCM6LtxFmOtFyY0HDAYbkcORicYDpYXX
+        vpeNH2E8EYk/9h371KG+JGv+L9XmNJrNPX8VPlDcdg4Y7Lg4o5+8
+X-Google-Smtp-Source: ABdhPJwbdJuS1OA7LMC/r9M6sMcR5xENHDlR5Qqdy0Y+bRqCvsxnoEU9EYNBNQ/7hdjMyH2Og+UA/U7bahqYicmLgVc=
+X-Received: by 2002:a17:906:c04d:: with SMTP id bm13mr3822732ejb.519.1607022972744;
+ Thu, 03 Dec 2020 11:16:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201203180141.19425931.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-03_11:2020-12-03,2020-12-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 suspectscore=3 phishscore=0 clxscore=1015 malwarescore=0
- adultscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=859 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030109
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-7-pasha.tatashin@soleen.com> <20201202163507.GL5487@ziepe.ca>
+ <CA+CK2bBT=U+xhbzXTDFwsL5wTvPHgNJ0DRpaeseiUq=w4EOe9w@mail.gmail.com>
+ <20201203010809.GQ5487@ziepe.ca> <CA+CK2bBRgcCc5Nm0RcsEgVFpGBFC-_icA6UDRiqQxeRJE5U-Aw@mail.gmail.com>
+ <20201203141729.GS5487@ziepe.ca> <CA+CK2bA=Ahd4E=ebdJ7uwxPyQ1AEy_hxA+Tx+yAi92JcZsQsfA@mail.gmail.com>
+ <20201203165937.GU5487@ziepe.ca> <CA+CK2bBRqK6_ZOkTbz8qe4Gz6T5pwt-KjJQ0+NzYOC1qO1sPMg@mail.gmail.com>
+In-Reply-To: <CA+CK2bBRqK6_ZOkTbz8qe4Gz6T5pwt-KjJQ0+NzYOC1qO1sPMg@mail.gmail.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 3 Dec 2020 14:15:36 -0500
+Message-ID: <CA+CK2bAErUyg26UNKQJwaZ7wsv4+qv4Ws58Vdmv+QZfLDyrkeQ@mail.gmail.com>
+Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/3/20 12:01 PM, Halil Pasic wrote:
-> On Thu, 3 Dec 2020 11:19:07 +0100
-> Cornelia Huck <cohuck@redhat.com> wrote:
+> > > > Looking at this code some more.. How is it even correct?
+> > > >
+> > > > 1633                            if (!isolate_lru_page(head)) {
+> > > > 1634                                    list_add_tail(&head->lru, &cma_page_list);
+> > > >
+> > > > Here we are only running under the read side of the mmap sem so multiple
+> > > > GUPs can be calling that sequence in parallel. I don't see any
+> > > > obvious exclusion that will prevent corruption of head->lru. The first
+> > > > GUP thread to do isolate_lru_page() will ClearPageLRU() and the second
+> > > > GUP thread will be a NOP for isolate_lru_page().
+> > > >
+> > > > They will both race list_add_tail and other list ops. That is not OK.
+> > >
+> > > Good question. I studied it, and I do not see how this is OK. Worse,
+> > > this race is also exposable as a syscall instead of via driver: two
+> > > move_pages() run simultaneously. Perhaps in other places?
+> > >
+> > > move_pages()
+> > >   kernel_move_pages()
+> > >     mmget()
+> > >     do_pages_move()
+> > >       add_page_for_migratio()
+> > >          mmap_read_lock(mm);
+> > >          list_add_tail(&head->lru, pagelist); <- Not protected
+> >
+> > When this was CMA only it might have been rarer to trigger, but this
+> > move stuff sounds like it makes it much more broadly, eg on typical
+> > servers with RDMA exposed/etc
+> >
+> > Seems like it needs fixing as part of this too :\
 >
->>> @@ -1095,7 +1106,7 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->>>   	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
->>>   
->>>   	if (!data) {
->>> -		matrix_mdev->kvm = NULL;
->>> +		vfio_ap_mdev_put_kvm(matrix_mdev);
->> Hm. I'm wondering whether you need to hold the maxtrix_dev lock here as
->> well?
-> In v12 we eventually did come along and patch "s390/vfio-ap: allow hot
-> plug/unplug of AP resources using mdev device" made this a part of a
-> critical section protected by the matrix_dev->lock.
->
-> IMHO the cleanup should definitely happen with the matrix_dev->lock held.
+> Just to clarify the stack that I showed above is outside of gup, it is
+> the same issue that you pointed out that happens elsewhere. I suspect
+> there might be more. All of them should be addressed together.
 
-Agreed!
+Hi Jason,
 
->
-> Regards,
-> Halil
+I studied some more, and I think this is not a race:
+list_add_tail(&head->lru, &cma_page_list) is called only when
+isolate_lru_page(head) succeeds.
+isolate_lru_page(head) succeeds only when PageLRU(head) is true.
+However, in this function we also clear LRU flag before returning
+success.
+This means, that if we race with another thread, the other thread
+won't get to unprotected list_add_tail(&head->lru, &cma_page_list)
+until head is is back on LRU list.
 
+Please let me know if I am missing anything.
+
+Thank you,
+Pasha
