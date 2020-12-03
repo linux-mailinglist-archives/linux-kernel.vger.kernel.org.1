@@ -2,320 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD842CCB6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 765FA2CCB6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728548AbgLCBIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 20:08:14 -0500
-Received: from mga11.intel.com ([192.55.52.93]:15522 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726410AbgLCBIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:08:13 -0500
-IronPort-SDR: RGAfto8t9ThbIGG2cDar3+LuDiuIzSBYbl2GMeOH8n6R1koH9srt9P4jzttgjji3OxI+Addb34
- OXhIQo604ISg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="169609202"
-X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
-   d="scan'208";a="169609202"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 17:06:32 -0800
-IronPort-SDR: Ki41DJBOlWwddKCWpTTeByb8x3pQKO4RTdiNwCO1SkF4jU+rjlZiMykFf2EVu7Zb9Mbmz/xqaa
- kqjdsWSr2IIw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
-   d="scan'208";a="373711818"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by FMSMGA003.fm.intel.com with ESMTP; 02 Dec 2020 17:06:20 -0800
-Subject: Re: [PATCH -tip 14/32] sched: migration changes for core scheduling
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-To:     Balbir Singh <bsingharora@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-15-joel@joelfernandes.org>
- <20201122235456.GF110669@balbir-desktop>
- <0b2514ef-6cc3-c1a3-280b-5d9062c80a31@linux.intel.com>
- <20201124154237.GZ3021@hirez.programming.kicks-ass.net>
- <d541b70c-c65f-5bf6-5e71-0b9b35457fae@linux.intel.com>
- <20201125225731.GB163610@balbir-desktop>
- <d9f356dd-be58-b52c-504d-ff46d37c1479@linux.intel.com>
- <20201126083250.GI163610@balbir-desktop>
- <e885eebe-686c-70f7-95b9-17a065fb2764@linux.intel.com>
- <20201130093333.GD473773@balbir-desktop>
- <6cf6c89d-8d33-c11b-1ea9-7d143b89fc2d@linux.intel.com>
- <fc1c7029-b3a2-0005-0efb-f3f3ab8e5568@linux.intel.com>
-Message-ID: <1bcc55c5-af1a-a7a0-606f-851a7bc80907@linux.intel.com>
-Date:   Thu, 3 Dec 2020 09:06:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S2387431AbgLCBJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 20:09:23 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:60330 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726024AbgLCBJX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 20:09:23 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B315Db9103601;
+        Thu, 3 Dec 2020 01:08:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=jCgXNIKCNXgWdDkKjB7SKWN45ccDc4ppC62togC7RZc=;
+ b=rhn9ZXoVc4ObHBWODSkv1Kl/A1Faz4WJIH3kqYUaXa3dNveVFxEti+VBN9hH6BAwe0tk
+ wuX3/uEqCZHCrwanTnt1rfMpUzuACixanY634nDyvdRDp2J2sI38AVIn4M9fBMuUOQ0Z
+ y4gcU1+ASzQjqSaV8cMlKHXfEDuUwKGF5jLDlgDxs8wGt0GKqPWiYxRp53P3vSJjxtj3
+ px8oh91Rj3BK1neA4oBPwA+J+G77H4xOYOK3O4CASnkysLIKhrbMx0njecKVLZ1IEkj2
+ pKFbPkUEUsEEu2r7YLrVoUuzOdb3UoXqLY9qE8nNEBIzXQCy9MXUCYkGJtdsDfC//ci5 6Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 353c2b3gx0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 03 Dec 2020 01:08:20 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B314SuD054405;
+        Thu, 3 Dec 2020 01:08:20 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 35404q2mur-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 03 Dec 2020 01:08:20 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B3189JX014579;
+        Thu, 3 Dec 2020 01:08:09 GMT
+Received: from [10.159.240.123] (/10.159.240.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 02 Dec 2020 17:08:09 -0800
+Subject: Re: [PATCH RFC 10/39] KVM: x86/xen: support upcall vector
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Joao Martins <joao.m.martins@oracle.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20190220201609.28290-1-joao.m.martins@oracle.com>
+ <20190220201609.28290-11-joao.m.martins@oracle.com>
+ <71753a370cd6f9dd147427634284073b78679fa6.camel@infradead.org>
+ <53baeaa7-0fed-d22c-7767-09ae885d13a0@oracle.com>
+ <4ad0d157c5c7317a660cd8d65b535d3232f9249d.camel@infradead.org>
+ <c43024b3-6508-3b77-870c-da81e74284a4@oracle.com>
+ <052867ae1c997487d85c21e995feb5647ac6c458.camel@infradead.org>
+From:   Ankur Arora <ankur.a.arora@oracle.com>
+Message-ID: <8875ff08-9b92-3eb7-3b17-f5dc036148e2@oracle.com>
+Date:   Wed, 2 Dec 2020 17:08:06 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <fc1c7029-b3a2-0005-0efb-f3f3ab8e5568@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <052867ae1c997487d85c21e995feb5647ac6c458.camel@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012030002
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012030002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/2 22:09, Li, Aubrey wrote:
-> Hi Balbir,
+On 2020-12-02 11:02 a.m., David Woodhouse wrote:
+> On Wed, 2020-12-02 at 18:34 +0000, Joao Martins wrote:
+>> On 12/2/20 4:47 PM, David Woodhouse wrote:
+>>> On Wed, 2020-12-02 at 13:12 +0000, Joao Martins wrote:
+>>>> On 12/2/20 11:17 AM, David Woodhouse wrote:
+>>>>> I might be more inclined to go for a model where the kernel handles the
+>>>>> evtchn_pending/evtchn_mask for us. What would go into the irq routing
+>>>>> table is { vcpu, port# } which get passed to kvm_xen_evtchn_send().
+>>>>
+>>>> But passing port to the routing and handling the sending of events wouldn't it lead to
+>>>> unnecessary handling of event channels which aren't handled by the kernel, compared to
+>>>> just injecting caring about the upcall?
+>>>
+>>> Well, I'm generally in favour of *not* doing things in the kernel that
+>>> don't need to be there.
+>>>
+>>> But if the kernel is going to short-circuit the IPIs and VIRQs, then
+>>> it's already going to have to handle the evtchn_pending/evtchn_mask
+>>> bitmaps, and actually injecting interrupts.
+>>>
+>>
+>> Right. I was trying to point that out in the discussion we had
+>> in next patch. But true be told, more about touting the idea of kernel
+>> knowing if a given event channel is registered for userspace handling,
+>> rather than fully handling the event channel.
+>>
+>> I suppose we are able to provide both options to the VMM anyway
+>> i.e. 1) letting them handle it enterily in userspace by intercepting
+>> EVTCHNOP_send, or through the irq route if we want kernel to offload it.
 > 
-> I still placed the patch embedded in this thread, welcome any comments.
+> Right. The kernel takes what it knows about and anything else goes up
+> to userspace.
+> 
+> I do like the way you've handled the vcpu binding in userspace, and the
+> kernel just knows that a given port goes to a given target CPU.
+> 
+>>
+>>> For the VMM
+>>> API I think we should follow the Xen model, mixing the domain-wide and
+>>> per-vCPU configuration. It's the best way to faithfully model the
+>>> behaviour a true Xen guest would experience.
+>>>
+>>> So KVM_XEN_ATTR_TYPE_CALLBACK_VIA can be used to set one of
+>>>   • HVMIRQ_callback_vector, taking a vector#
+>>>   • HVMIRQ_callback_gsi for the in-kernel irqchip, taking a GSI#
+>>>
+>>> And *maybe* in a later patch it could also handle
+>>>   • HVMIRQ_callback_gsi for split-irqchip, taking an eventfd
+>>>   • HVMIRQ_callback_pci_intx, taking an eventfd (or a pair, for EOI?)
+>>>
+>>
+>> Most of the Xen versions we were caring had callback_vector and
+>> vcpu callback vector (despite Linux not using the latter). But if you're
+>> dating back to 3.2 and 4.1 well (or certain Windows drivers), I suppose
+>> gsi and pci-intx are must-haves.
+> 
+> Note sure about GSI but PCI-INTX is definitely something I've seen in
+> active use by customers recently. I think SLES10 will use that.
+> 
+>> I feel we could just accommodate it as subtype in KVM_XEN_ATTR_TYPE_CALLBACK_VIA.
+>> Don't see the adavantage in having another xen attr type.
+> 
+> Yeah, fair enough.
+> 
+>> But kinda have mixed feelings in having kernel handling all event channels ABI,
+>> as opposed to only the ones userspace asked to offload. It looks a tad unncessary besides
+>> the added gain to VMMs that don't need to care about how the internals of event channels.
+>> But performance-wise it wouldn't bring anything better. But maybe, the former is reason
+>> enough to consider it.
+> 
+> Yeah, we'll see. Especially when it comes to implementing FIFO event
+> channels, I'd rather just do it in one place — and if the kernel does
+> it anyway then it's hardly difficult to hook into that.
 
-Sorry, this version needs more work, refined as below, and I realized
-I should place a version number to the patch, start from v2 now.
+Sorry I'm late to this conversation. Not a whole lot to add to what Joao
+said. I would only differ with him on how much to offload.
 
-Thanks,
--Aubrey
-======================================================================
-From aff2919889635aa9311d15bac3e949af0300ddc1 Mon Sep 17 00:00:00 2001
-From: Aubrey Li <aubrey.li@linux.intel.com>
-Date: Thu, 3 Dec 2020 00:51:18 +0000
-Subject: [PATCH v2] sched: migration changes for core scheduling
+Given that we need the fast path in the kernel anyway, I think it's simpler
+to do all the event-channel bitmap only in the kernel.
+This would also simplify using the kernel Xen drivers if someone eventually
+decides to use them.
 
- - Don't migrate if there is a cookie mismatch
-     Load balance tries to move task from busiest CPU to the
-     destination CPU. When core scheduling is enabled, if the
-     task's cookie does not match with the destination CPU's
-     core cookie, this task will be skipped by this CPU. This
-     mitigates the forced idle time on the destination CPU.
 
- - Select cookie matched idle CPU
-     In the fast path of task wakeup, select the first cookie matched
-     idle CPU instead of the first idle CPU.
+Ankur
 
- - Find cookie matched idlest CPU
-     In the slow path of task wakeup, find the idlest CPU whose core
-     cookie matches with task's cookie
-
- - Don't migrate task if cookie not match
-     For the NUMA load balance, don't migrate task to the CPU whose
-     core cookie does not match with task's cookie
-
-Cc: Balbir Singh <bsingharora@gmail.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
-Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
-Signed-off-by: Vineeth Remanan Pillai <viremana@linux.microsoft.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/sched/fair.c  | 33 +++++++++++++++++---
- kernel/sched/sched.h | 72 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 101 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index de82f88ba98c..afdfea70c58c 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1921,6 +1921,13 @@ static void task_numa_find_cpu(struct task_numa_env *env,
- 		if (!cpumask_test_cpu(cpu, env->p->cpus_ptr))
- 			continue;
- 
-+		/*
-+		 * Skip this cpu if source task's cookie does not match
-+		 * with CPU's core cookie.
-+		 */
-+		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
-+			continue;
-+
- 		env->dst_cpu = cpu;
- 		if (task_numa_compare(env, taskimp, groupimp, maymove))
- 			break;
-@@ -5867,11 +5874,15 @@ find_idlest_group_cpu(struct sched_group *group, struct task_struct *p, int this
- 
- 	/* Traverse only the allowed CPUs */
- 	for_each_cpu_and(i, sched_group_span(group), p->cpus_ptr) {
-+		struct rq *rq = cpu_rq(i);
-+
-+		if (!sched_core_cookie_match(rq, p))
-+			continue;
-+
- 		if (sched_idle_cpu(i))
- 			return i;
- 
- 		if (available_idle_cpu(i)) {
--			struct rq *rq = cpu_rq(i);
- 			struct cpuidle_state *idle = idle_get_state(rq);
- 			if (idle && idle->exit_latency < min_exit_latency) {
- 				/*
-@@ -6129,7 +6140,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 	for_each_cpu_wrap(cpu, cpus, target) {
- 		if (!--nr)
- 			return -1;
--		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
-+
-+		if ((available_idle_cpu(cpu) || sched_idle_cpu(cpu)) &&
-+		    sched_cpu_cookie_match(cpu_rq(cpu), p))
- 			break;
- 	}
- 
-@@ -7530,8 +7543,9 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
- 	 * We do not migrate tasks that are:
- 	 * 1) throttled_lb_pair, or
- 	 * 2) cannot be migrated to this CPU due to cpus_ptr, or
--	 * 3) running (obviously), or
--	 * 4) are cache-hot on their current CPU.
-+	 * 3) task's cookie does not match with this CPU's core cookie
-+	 * 4) running (obviously), or
-+	 * 5) are cache-hot on their current CPU.
- 	 */
- 	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
- 		return 0;
-@@ -7566,6 +7580,13 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
- 		return 0;
- 	}
- 
-+	/*
-+	 * Don't migrate task if the task's cookie does not match
-+	 * with the destination CPU's core cookie.
-+	 */
-+	if (!sched_core_cookie_match(cpu_rq(env->dst_cpu), p))
-+		return 0;
-+
- 	/* Record that we found atleast one task that could run on dst_cpu */
- 	env->flags &= ~LBF_ALL_PINNED;
- 
-@@ -8792,6 +8813,10 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 					p->cpus_ptr))
- 			continue;
- 
-+		/* Skip over this group if no cookie matched */
-+		if (!sched_group_cookie_match(cpu_rq(this_cpu), p, group))
-+			continue;
-+
- 		local_group = cpumask_test_cpu(this_cpu,
- 					       sched_group_span(group));
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index e72942a9ee11..82917ce183b4 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1119,6 +1119,7 @@ static inline bool is_migration_disabled(struct task_struct *p)
- 
- #ifdef CONFIG_SCHED_CORE
- DECLARE_STATIC_KEY_FALSE(__sched_core_enabled);
-+static inline struct cpumask *sched_group_span(struct sched_group *sg);
- 
- static inline bool sched_core_enabled(struct rq *rq)
- {
-@@ -1135,6 +1136,61 @@ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
- 
- bool cfs_prio_less(struct task_struct *a, struct task_struct *b);
- 
-+/*
-+ * Helpers to check if the CPU's core cookie matches with the task's cookie
-+ * when core scheduling is enabled.
-+ * A special case is that the task's cookie always matches with CPU's core
-+ * cookie if the CPU is in an idle core.
-+ */
-+static inline bool sched_cpu_cookie_match(struct rq *rq, struct task_struct *p)
-+{
-+	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
-+	if (!sched_core_enabled(rq))
-+		return true;
-+
-+	return rq->core->core_cookie == p->core_cookie;
-+}
-+
-+static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
-+{
-+	bool idle_core = true;
-+	int cpu;
-+
-+	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
-+	if (!sched_core_enabled(rq))
-+		return true;
-+
-+	for_each_cpu(cpu, cpu_smt_mask(cpu_of(rq))) {
-+		if (!available_idle_cpu(cpu)) {
-+			idle_core = false;
-+			break;
-+		}
-+	}
-+
-+	/*
-+	 * A CPU in an idle core is always the best choice for tasks with
-+	 * cookies.
-+	 */
-+	return idle_core || rq->core->core_cookie == p->core_cookie;
-+}
-+
-+static inline bool sched_group_cookie_match(struct rq *rq,
-+					    struct task_struct *p,
-+					    struct sched_group *group)
-+{
-+	int cpu;
-+
-+	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
-+	if (!sched_core_enabled(rq))
-+		return true;
-+
-+	for_each_cpu_and(cpu, sched_group_span(group), p->cpus_ptr) {
-+		if (sched_core_cookie_match(rq, p))
-+			return true;
-+	}
-+	return false;
-+}
-+
- extern void queue_core_balance(struct rq *rq);
- 
- #else /* !CONFIG_SCHED_CORE */
-@@ -1153,6 +1209,22 @@ static inline void queue_core_balance(struct rq *rq)
- {
- }
- 
-+static inline bool sched_cpu_cookie_match(struct rq *rq, struct task_struct *p)
-+{
-+	return true;
-+}
-+
-+static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
-+{
-+	return true;
-+}
-+
-+static inline bool sched_group_cookie_match(struct rq *rq,
-+					    struct task_struct *p,
-+					    struct sched_group *group)
-+{
-+	return true;
-+}
- #endif /* CONFIG_SCHED_CORE */
- 
- #ifdef CONFIG_SCHED_SMT
--- 
-2.17.1
-
+> 
+> But I've been about as coherent as I can be in email, and I think we're
+> generally aligned on the direction. I'll do some more experiments and
+> see what I can get working, and what it looks like.
+> 
+> I'm focusing on making the shinfo stuff all use kvm_map_gfn() first.
+> 
