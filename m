@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5941B2CE2AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4E12CE2AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388027AbgLCX3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
+        id S1729186AbgLCX3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:29:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727080AbgLCX3M (ORCPT
+        with ESMTP id S1726721AbgLCX3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:29:12 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EDEC061A55
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 15:28:26 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id t7so2391135pfh.7
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 15:28:26 -0800 (PST)
+        Thu, 3 Dec 2020 18:29:00 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF790C061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 15:28:19 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id f12so3479529oto.10
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 15:28:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VZd5mQQ4Yh6641GciI7/R39T5bgJu4Raw0a7sjqJGxc=;
-        b=Tl6txBU+3C9StAbudDXRNLyIAPS31KsI9v4twNU6Lq+WPY8iNFC55TLj2WdGnJasBe
-         m8Os8PGEga/OHzYnd54fc4sQu8wFbUi73y+mDxRe9oGIm+/uJna1eZkgTLcjWILpVTR0
-         FsFs07nx9N4iB7xQIeReeQ311cqPgZYbuKsWXWACa8Q1/HG85TCg3caSCIY0sQ+h7dJo
-         zmetcLxThqzMpLebJWiyMJBYjMWhPMMEaura+uPwdRrUiU45M9YUT/Hysck9HJhFmpOU
-         V1YtRlRrBovZueUcBi0tjNBAxVi0DCl2XjGILJYVJlWfQXu8Tgfyp1ePvSo93fwGZYii
-         Da8w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=19kM80HD8C/ry8leq9oAcgd7dznTHbfusHUaV72L7yc=;
+        b=R5qQq40V3xSTF0yj4dk7I2AYHeA0bSzM/adQ6OHcPo3lXhJa3g+cIkejDZDIz4OBL8
+         ytNCw2hjPhYy4Z6Y3L15YR4at7iOD45Zj+UragKQArgegWQ9Qcfqr7WtFIScwSkdpjN8
+         j97MRjE2JnQ8mncc6MxcxeMZEcLGy2bfL9EU/xhJ1ijH6OneXeYIkoXNA41rnvm8C/tv
+         RDZHrxjccz2MSVxi48cbfwABgVEy6ckJ1vKtiKXSvSnHguv7jupuZEXGUgIrg9JFgtiZ
+         0mAx8fI3cbPlcqdD7Lgx5N1iZYDnqjwk1toiJphbi7FqbiUNMOHWAZH/kp8utjB9lSOW
+         xx8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VZd5mQQ4Yh6641GciI7/R39T5bgJu4Raw0a7sjqJGxc=;
-        b=Jf7qKT1H1TsvGynSGa5ppmt7D5YCEy703gCBqbrFKlzbXJft/ndD2GKJqFtsuDUgtm
-         fnZfJAjnSH82xQjHcbwk1qPSpSEHVD1/EqK+Mq0+oZ2ZhHkgaZ3jcc6zq/5dQvpXQGVM
-         vNbKVSPp+ihM4o++In9qUZBJF5AfvFATLGYZFKTHe9eS8Bi8lAKgtY952N0Tt+1n6asw
-         hqrDSHYx4z4fSG8Qy4N/nB/jjz4slUbl/F+P++qiSvFJuk+nzz5YO8ndfwSuusuulqTP
-         4Yu8tBSnNrfa3KDc4Wvq0rmP6BjNR2+Gp11b0Y2XB9bDsj6n5wLZ/l+IMjKdoMXjLafy
-         Bxeg==
-X-Gm-Message-State: AOAM531P3QCes6ybFnFw0SsTTO1q4SAbkiBrI4UsjSNBTsnDwP/5WXC4
-        +molHinMwntXHZjDgn6cqEYBu0ytfF4iZHSFPWHFRQ==
-X-Google-Smtp-Source: ABdhPJw5+vhOJybk2PqdIzO8tvVhjakR2H8TlBvhIEtUQpj58a9GObaMbVe9KgN6sVYMw0swRHNxFOSQXEoEgcJnQVU=
-X-Received: by 2002:a63:3247:: with SMTP id y68mr5151471pgy.10.1607038106075;
- Thu, 03 Dec 2020 15:28:26 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=19kM80HD8C/ry8leq9oAcgd7dznTHbfusHUaV72L7yc=;
+        b=B8VULpnwMmylXU4JaHhZ6GMgY9n8qPrBwYPeTuMVe/66rNoPs29NX4CiXNs3quhmJi
+         0MMHDuassl8fKR5utlyNhZsQv3dd09FB/6BQ6rOZcS+gsywwzXan7e0SGLbKTc2ZMeOf
+         sSzo3qGPfTHj+56HzPKaRy3mG9xti7hH/u97jankT+MXamqO02F1YkU1JbrdPeyfuLgO
+         6A5qU18JT1G/rz2n/ap4X6tIjngRX++1KeYYZzwZ3DR0qNH+kMjFgEBr3rdYPDngLtLJ
+         SlYZqTrPwlT7zy8xnhmerKegVcfYHT5pG2RpfL7E4ZvoXKDuVDxiB5Rot+KcUt9hmaEw
+         NRrg==
+X-Gm-Message-State: AOAM530nEC+NBecx0azFqLJ+OHPdkF9fIzDGsYrLIzEqmZhhk3VBLPjO
+        SQS0QlnSp5Zh+9RFNm3shtH1ng==
+X-Google-Smtp-Source: ABdhPJwDp5dMa72NvqwQsNj4Lo4e8SGwIHy1kOCb5htuMwlIoQKq0Ez5JBFAM1EwRDnLJbKivYe4dw==
+X-Received: by 2002:a05:6830:114e:: with SMTP id x14mr1366088otq.253.1607038098944;
+        Thu, 03 Dec 2020 15:28:18 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 94sm220427otw.41.2020.12.03.15.28.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 15:28:18 -0800 (PST)
+Date:   Thu, 3 Dec 2020 17:28:16 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, swboyd@chromium.org,
+        sujitka@chromium.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 1/1] net: ipa: pass the correct size when freeing DMA
+ memory
+Message-ID: <X8l0kGv2uvo4ueOn@builder.lan>
+References: <20201203215106.17450-1-elder@linaro.org>
 MIME-Version: 1.0
-References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
- <20201104005343.4192504-1-ndesaulniers@google.com> <20201104005343.4192504-5-ndesaulniers@google.com>
- <20201124172836.GA346213@rani.riverdale.lan> <CAKwvOdkGvLrPr4pHi4LKCF5t74+wencdy7r38d3k_4pC9pQYwQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdkGvLrPr4pHi4LKCF5t74+wencdy7r38d3k_4pC9pQYwQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 3 Dec 2020 15:28:14 -0800
-Message-ID: <CAKwvOdmEVM67v8PqPWHP-VyGTkQpkWv8FdOTbxQ-7ebvSummMA@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] Kbuild: implement support for DWARF v5
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Alistair Delva <adelva@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203215106.17450-1-elder@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 3:22 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> On Tue, Nov 24, 2020 at 9:28 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> >
-> > On Tue, Nov 03, 2020 at 04:53:43PM -0800, Nick Desaulniers wrote:
-> > > DWARF v5 is the latest standard of the DWARF debug info format.
-> > >
-> > > Feature detection of DWARF5 is onerous, especially given that we've
-> > > removed $(AS), so we must query $(CC) for DWARF5 assembler directive
-> > > support.  GNU `as` only recently gained support for specifying
-> > > -gdwarf-5.
-> >
-> > With gcc, using -gdwarf-5 even without -Wa,--gdwarf-5 results in
-> > considerably smaller debug info. gcc does not seem to generate the .file 0
-> > directive that causes older GNU as to barf.
-> >
-> > Should the assembler support check be restricted to CC_IS_CLANG?
->
-> No, because if LLVM_IAS=1 then the assembler support need not be checked.
+On Thu 03 Dec 15:51 CST 2020, Alex Elder wrote:
 
-Also, if your version of GCC supports DWARF Version 5, but your
-version of GAS does not, then I'm more inclined to not allow
-CONFIG_DEBUG_INFO_DWARF5 to be selectable, rather than mix and match
-or partially support this for one but not the other.  Either all tools
-used support DWARF 5, or you don't get to use DWARF 5.
+> When the coherent memory is freed in gsi_trans_pool_exit_dma(), we
+> are mistakenly passing the size of a single element in the pool
+> rather than the actual allocated size.  Fix this bug.
+> 
+> Fixes: 9dd441e4ed575 ("soc: qcom: ipa: GSI transactions")
+> Reported-by: Stephen Boyd <swboyd@chromium.org>
+> Tested-by: Sujit Kautkar <sujitka@chromium.org>
+> Signed-off-by: Alex Elder <elder@linaro.org>
 
-> > >  config DEBUG_INFO_BTF
-> > > diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
-> > > new file mode 100755
-> > > index 000000000000..156ad5ec4274
-> > > --- /dev/null
-> > > +++ b/scripts/test_dwarf5_support.sh
-> > > @@ -0,0 +1,9 @@
-> > > +#!/bin/sh
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +# Test that assembler accepts -gdwarf-5 and .file 0 directives, which were bugs
-> > > +# in binutils < 2.35.
-> > > +# https://sourceware.org/bugzilla/show_bug.cgi?id=25612
-> > > +# https://sourceware.org/bugzilla/show_bug.cgi?id=25614
-> > > +set -e
-> > > +echo '.file 0 "filename"' | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
-> >
-> > This also actually needs --gdwarf-5 to really check the support for the
-> > option, but older versions should error on the .file 0 in any case.
->
-> Based on Jakub's feedback on the earlier thread
-> https://lore.kernel.org/lkml/20201104121934.GT3788@tucnak/
-> it sounds like the dwarf version also needs to be dumped since GCC 5 <
-> x < 7 accepts --gdwarf-5, but did not produce DWARF Version 5 debug
-> info.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Sigh...llvm-readelf doesn't accept --debug-dump=info for checking the
-DWARF version; llvm-dwarfdump works with no args...at this point I'm
-tempted to just version check GCC.
--- 
-Thanks,
-~Nick Desaulniers
+Regards,
+Bjorn
+
+> ---
+>  drivers/net/ipa/gsi_trans.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ipa/gsi_trans.c b/drivers/net/ipa/gsi_trans.c
+> index e8599bb948c08..6c3ed5b17b80c 100644
+> --- a/drivers/net/ipa/gsi_trans.c
+> +++ b/drivers/net/ipa/gsi_trans.c
+> @@ -156,6 +156,9 @@ int gsi_trans_pool_init_dma(struct device *dev, struct gsi_trans_pool *pool,
+>  	/* The allocator will give us a power-of-2 number of pages.  But we
+>  	 * can't guarantee that, so request it.  That way we won't waste any
+>  	 * memory that would be available beyond the required space.
+> +	 *
+> +	 * Note that gsi_trans_pool_exit_dma() assumes the total allocated
+> +	 * size is exactly (count * size).
+>  	 */
+>  	total_size = get_order(total_size) << PAGE_SHIFT;
+>  
+> @@ -175,7 +178,9 @@ int gsi_trans_pool_init_dma(struct device *dev, struct gsi_trans_pool *pool,
+>  
+>  void gsi_trans_pool_exit_dma(struct device *dev, struct gsi_trans_pool *pool)
+>  {
+> -	dma_free_coherent(dev, pool->size, pool->base, pool->addr);
+> +	size_t total_size = pool->count * pool->size;
+> +
+> +	dma_free_coherent(dev, total_size, pool->base, pool->addr);
+>  	memset(pool, 0, sizeof(*pool));
+>  }
+>  
+> -- 
+> 2.20.1
+> 
