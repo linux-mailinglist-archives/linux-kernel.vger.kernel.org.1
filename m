@@ -2,26 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC0C2CE18F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 839DC2CE192
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387469AbgLCW0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:26:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53232 "EHLO mail.kernel.org"
+        id S2387609AbgLCW11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:27:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728020AbgLCW0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:26:43 -0500
+        id S1726931AbgLCW11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:27:27 -0500
 From:   Arnd Bergmann <arnd@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
+To:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Ondrej Mosnacek <omosnacek@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Eric Biggers <ebiggers@google.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: aegis128 - fix link error without SIMD
-Date:   Thu,  3 Dec 2020 23:25:49 +0100
-Message-Id: <20201203222557.952393-1-arnd@kernel.org>
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        YueHaibing <yuehaibing@huawei.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] ch_ktls: fix build warning for ipv4-only config
+Date:   Thu,  3 Dec 2020 23:26:16 +0100
+Message-Id: <20201203222641.964234-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -31,42 +35,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When the SIMD portion of the driver is disabled, the compiler cannot
-figure out in advance if it will be called:
+When CONFIG_IPV6 is disabled, clang complains that a variable
+is uninitialized for non-IPv4 data:
 
-ERROR: modpost: "crypto_aegis128_update_simd" [crypto/aegis128.ko] undefined!
+drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c:1046:6: error: variable 'cntrl1' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
+        if (tx_info->ip_family == AF_INET) {
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c:1059:2: note: uninitialized use occurs here
+        cntrl1 |= T6_TXPKT_ETHHDR_LEN_V(maclen - ETH_HLEN) |
+        ^~~~~~
 
-Add a conditional to let the compiler use dead code elimination
-as before.
+Replace the preprocessor conditional with the corresponding C version,
+and make the ipv4 case unconditional in this configuration to improve
+readability and avoid the warning.
 
-Fixes: ac50aec41a9f ("crypto: aegis128 - expose SIMD code path as separate driver")
+Fixes: 86716b51d14f ("ch_ktls: Update cheksum information")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- crypto/aegis128-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c  | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/crypto/aegis128-core.c b/crypto/aegis128-core.c
-index 2b05f79475d3..89dc1c559689 100644
---- a/crypto/aegis128-core.c
-+++ b/crypto/aegis128-core.c
-@@ -89,7 +89,7 @@ static void crypto_aegis128_update_a(struct aegis_state *state,
- 				     const union aegis_block *msg,
- 				     bool do_simd)
- {
--	if (do_simd) {
-+	if (IS_ENABLED(CONFIG_CRYPTO_AEGIS128_SIMD) && do_simd) {
- 		crypto_aegis128_update_simd(state, msg);
- 		return;
+diff --git a/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c b/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
+index 7f90b828d159..1b7e8c91b541 100644
+--- a/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
++++ b/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
+@@ -987,9 +987,7 @@ chcr_ktls_write_tcp_options(struct chcr_ktls_info *tx_info, struct sk_buff *skb,
+ 	struct fw_eth_tx_pkt_wr *wr;
+ 	struct cpl_tx_pkt_core *cpl;
+ 	u32 ctrl, iplen, maclen;
+-#if IS_ENABLED(CONFIG_IPV6)
+ 	struct ipv6hdr *ip6;
+-#endif
+ 	unsigned int ndesc;
+ 	struct tcphdr *tcp;
+ 	int len16, pktlen;
+@@ -1043,17 +1041,15 @@ chcr_ktls_write_tcp_options(struct chcr_ktls_info *tx_info, struct sk_buff *skb,
+ 	cpl->len = htons(pktlen);
+ 
+ 	memcpy(buf, skb->data, pktlen);
+-	if (tx_info->ip_family == AF_INET) {
++	if (!IS_ENABLED(CONFIG_IPV6) || tx_info->ip_family == AF_INET) {
+ 		/* we need to correct ip header len */
+ 		ip = (struct iphdr *)(buf + maclen);
+ 		ip->tot_len = htons(pktlen - maclen);
+ 		cntrl1 = TXPKT_CSUM_TYPE_V(TX_CSUM_TCPIP);
+-#if IS_ENABLED(CONFIG_IPV6)
+ 	} else {
+ 		ip6 = (struct ipv6hdr *)(buf + maclen);
+ 		ip6->payload_len = htons(pktlen - maclen - iplen);
+ 		cntrl1 = TXPKT_CSUM_TYPE_V(TX_CSUM_TCPIP6);
+-#endif
  	}
-@@ -101,7 +101,7 @@ static void crypto_aegis128_update_a(struct aegis_state *state,
- static void crypto_aegis128_update_u(struct aegis_state *state, const void *msg,
- 				     bool do_simd)
- {
--	if (do_simd) {
-+	if (IS_ENABLED(CONFIG_CRYPTO_AEGIS128_SIMD) && do_simd) {
- 		crypto_aegis128_update_simd(state, msg);
- 		return;
- 	}
+ 
+ 	cntrl1 |= T6_TXPKT_ETHHDR_LEN_V(maclen - ETH_HLEN) |
 -- 
 2.27.0
 
