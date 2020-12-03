@@ -2,164 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93032CE050
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:06:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2D62CE058
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387521AbgLCVFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 16:05:53 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:42736 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLCVFw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 16:05:52 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607029510;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yQsxw15o82OfCAtv5HkBENTj8U8tPLmKJao23xT/mcU=;
-        b=Hezi1ehf5mSPQnr1BR8UD8LFIslYjUyIaAmi8cE6uw+X0BV8qUTGgzrYIk/5KE1jGCZdAN
-        y2FnD1BteAEz3KdKv4e3EuZNuPxfMyJx6/S3V9G0texC+uqf9m6v7uymyJdk5vKSbbAR5h
-        Rv7sjYtwO4fkt9xnKwkK2yYse38pZdyVZunyk00yfMudBwkxsxHo9gZUWuJPf72e3a1ZWu
-        VpLl9v7Z4FSSZeWwOqb6H7TRNPS6C/P63kzGCha3xazwfVtJSWzWsZg8Fp+7Y5kZqNlqKR
-        +bfrtQ3GLzz/7uMpWEgCGGt1Z0Ymfzi2MW77qdCm6fZlnA89VhFzFS6wMgsSUQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607029510;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yQsxw15o82OfCAtv5HkBENTj8U8tPLmKJao23xT/mcU=;
-        b=trF2RAAsp+vDwretOLfrbmiauwRUb0NaY/V8W4jbJ1p+clsrjiTFjyJiC8M+MzWx7reoTn
-        uI+64xdd8nhotpCA==
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-In-Reply-To: <20201203161622.GA1317829@ziepe.ca>
-References: <20201201171420.GN1900232@localhost> <20201201173540.GH5487@ziepe.ca> <87mtywe2zu.fsf@nanos.tec.linutronix.de> <20201202162723.GJ5487@ziepe.ca> <87a6uwdnfn.fsf@nanos.tec.linutronix.de> <20201202205418.GN5487@ziepe.ca> <874kl3eu8p.fsf@nanos.tec.linutronix.de> <87zh2vd72z.fsf@nanos.tec.linutronix.de> <20201203021047.GG3544@piout.net> <87pn3qdhli.fsf@nanos.tec.linutronix.de> <20201203161622.GA1317829@ziepe.ca>
-Date:   Thu, 03 Dec 2020 22:05:09 +0100
-Message-ID: <87zh2ubny2.fsf@nanos.tec.linutronix.de>
+        id S1727397AbgLCVKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 16:10:42 -0500
+Received: from mga11.intel.com ([192.55.52.93]:57209 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725885AbgLCVKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 16:10:41 -0500
+IronPort-SDR: y0MBv5kZcjbizz7B6YdjRWIWzIOF1mzGsW6s9y7+JnKItYLSk5PGz8JKOBGTOW0OIiaOChiLr0
+ tEGX7h0qrg0A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="169773002"
+X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
+   d="scan'208";a="169773002"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 13:10:00 -0800
+IronPort-SDR: Zvz50hjVHRsCkLQW4TndR7h5mSlEfWg/V3mu1gPgXPxPDxMJ7hKLmDlzwmh2wlKX8CMpFlrRIM
+ Ku36A+6G9rqg==
+X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
+   d="scan'208";a="330971680"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.251.23.110])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 13:10:00 -0800
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v7 0/7] FPGA Security Manager Class Driver
+Date:   Thu,  3 Dec 2020 13:09:51 -0800
+Message-Id: <20201203210958.241329-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03 2020 at 12:16, Jason Gunthorpe wrote:
-> On Thu, Dec 03, 2020 at 04:39:21PM +0100, Thomas Gleixner wrote:
->
->> The logic in sync_cmos_clock() and rtc_set_ntp_time() is different as I
->> pointed out: sync_cmos_clock() hands -500ms to rtc_tv_nsec_ok() and
->> rtc_set_ntp_time() uses +500ms, IOW exactly ONE second difference in
->> behaviour.
->
-> I understood this is because the two APIs work differently, rmk
-> explained this as:
->
->> 1. kernel/time/ntp.c assumes that all RTCs want to be told to set the
->>    time at around 500ms into the second.
->>
->> 2. drivers/rtc/systohc.c assumes that if the time being set is >= 500ms,
->>    then we want to set the _next_ second.
->
-> ie one path is supposed to round down and one path is supposed to
-> round up, so you get to that 1s difference..
->
-> IIRC this is also connected to why the offset is signed..
+The FPGA Security Manager class driver provides a common
+API for user-space tools to manage updates for secure FPGA
+devices. Device drivers that instantiate the FPGA Security
+Manager class driver will interact with a HW secure update
+engine in order to transfer new FPGA and BMC images to FLASH so
+that they will be automatically loaded when the FPGA card reboots.
 
-The problem is that it is device specific and therefore having the
-offset parameter is a good starting point.
+A significant difference between the FPGA Manager and the FPGA 
+Security Manager is that the FPGA Manager does a live update (Partial
+Reconfiguration) to a device whereas the FPGA Security Manager
+updates the FLASH images for the Static Region and the BMC so that
+they will be loaded the next time the FPGA card boots. Security is
+enforced by hardware and firmware. The security manager interacts
+with the firmware to initiate an update, pass in the necessary data,
+and collect status on the update.
 
-Lets look at the two scenarios:
+The n3000bmc-secure driver is the first driver to use the FPGA
+Security Manager. This driver was previously submitted in the same
+patch set, but has been split out into a separate patch set starting
+with V2. Future devices will also make use of this common API for
+secure updates.
 
-1) Direct accessible RTC:
+In addition to managing secure updates of the FPGA and BMC images,
+the FPGA Security Manager update process may also be used to
+program root entry hashes and cancellation keys for the FPGA static
+region, the FPGA partial reconfiguration region, and the BMC.
+The image files are self-describing, and contain a header describing
+the image type.
 
-   tsched t1                   t2
-          write(newsec)        RTC increments seconds
+Secure updates make use of the request_firmware framework, which
+requires that image files are accessible under /lib/firmware. A request
+for a secure update returns immediately, while the update itself
+proceeds in the context of a kernel worker thread. Sysfs files provide
+a means for monitoring the progress of a secure update and for
+retrieving error information in the event of a failure.
 
-   For rtc_cmos/MC1... tinc = t2 - t1 = 500ms
+The API includes a "name" sysfs file to export the name of the parent
+driver. It also includes an "update" sub-directory containing files that
+that can be used to instantiate and monitor a secure update.
 
-   There are RTCs which reset the thing on write so tinc = t2 - t1 = 1000ms
+Changelog v6 -> v7:
+  - Changed dates in documentation file to December 2020
+  - Changed filename_store() to use kmemdup_nul() instead of
+    kstrndup() and changed the count to not assume a line-return.
 
-   No idea what other variants are out there, but the principle is the
-   same for all of them.
+Changelog v5 -> v6:
+  - Removed sysfs support and documentation for the display of the
+    flash count, root entry hashes, and code-signing-key cancelation
+    vectors from the class driver. This information can vary by device
+    and will instead be displayed by the device-specific parent driver.
 
-   Lets assume that the event is accurate for now and ignore the fuzz
-   logic, i.e. tsched == t1
+Changelog v4 -> v5:
+  - Added the devm_fpga_sec_mgr_unregister() function, following recent
+    changes to the fpga_manager() implementation.
+  - Changed most of the *_show() functions to use sysfs_emit()
+    instead of sprintf(
+  - When checking the return values for functions of type enum
+    fpga_sec_err err_code, test for FPGA_SEC_ERR_NONE instead of 0
 
-   tsched must be scheduled to happen tinc before wallclock increments
-   seconds so that the RTC increments seconds at the same time.
+Changelog v3 -> v4:
+  - This driver is generic enough that it could be used for non Intel
+    FPGA devices. Changed from "Intel FPGA Security Manager" to FPGA
+    Security Manager" and removed unnecessary references to "Intel".
+  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+    Note that this also affects some filenames.
 
-   That means newsec = t1.tv_sec.
+Changelog v2 -> v3:
+  - Use dev_err() to report invalid progress in sec_progress()
+  - Use dev_err() to report invalid error code in sec_error()
+  - Modified sysfs handler check in check_sysfs_handler() to make
+    it more readable.
+  - Removed unnecessary "goto done"
+  - Added a comment to explain imgr->driver_unload in
+    ifpga_sec_mgr_unregister()
 
-   So now the fuzz logic for the legacy cmos path does:
+Changelog v1 -> v2:
+  - Separated out the MAX10 BMC Security Engine to be submitted in
+    a separate patch-set.
+  - Bumped documentation dates and versions
+  - Split ifpga_sec_mgr_register() into create() and register() functions
+  - Added devm_ifpga_sec_mgr_create()
+  - Added Documentation/fpga/ifpga-sec-mgr.rst 
+  - Changed progress state "read_file" to "reading"
+  - Added sec_error() function (similar to sec_progress())
+  - Removed references to bmc_flash_count & smbus_flash_count (not supported)
+  - Removed typedefs for imgr ops
+  - Removed explicit value assignments in enums
+  - Other minor code cleanup per review comments 
 
-      newtime = t1 - tinc;
+Russ Weight (7):
+  fpga: sec-mgr: fpga security manager class driver
+  fpga: sec-mgr: enable secure updates
+  fpga: sec-mgr: expose sec-mgr update status
+  fpga: sec-mgr: expose sec-mgr update errors
+  fpga: sec-mgr: expose sec-mgr update size
+  fpga: sec-mgr: enable cancel of secure update
+  fpga: sec-mgr: expose hardware error info
 
-      if (newtime.tv_nsec < FUZZ)
-          newsec = newtime.tv_sec;
-      else if (newtime.tv_nsec > NSEC_PER_SEC - FUZZ)
-          newsec = newtime.tv_sec + 1;
-      else
-          goto fail;
+ .../ABI/testing/sysfs-class-fpga-sec-mgr      |  81 +++
+ Documentation/fpga/fpga-sec-mgr.rst           |  44 ++
+ Documentation/fpga/index.rst                  |   1 +
+ MAINTAINERS                                   |   9 +
+ drivers/fpga/Kconfig                          |   9 +
+ drivers/fpga/Makefile                         |   3 +
+ drivers/fpga/fpga-sec-mgr.c                   | 652 ++++++++++++++++++
+ include/linux/fpga/fpga-sec-mgr.h             | 100 +++
+ 8 files changed, 899 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+ create mode 100644 Documentation/fpga/fpga-sec-mgr.rst
+ create mode 100644 drivers/fpga/fpga-sec-mgr.c
+ create mode 100644 include/linux/fpga/fpga-sec-mgr.h
 
-   The first condition handles the case where t1 >= tsched and the second
-   one where t1 < tsched.
+-- 
+2.25.1
 
-   We need the same logic for rtc_cmos() when the update goes through
-   the RTC path, which is broken today. See below.
-
-2) I2C/SPI ...
-
-   tsched t0                 t1                     t2
-          transfer(newsec)   RTC update (newsec)    RTC increments seconds
-
-   Lets assume that ttransfer = t1 - t0 is known.
-
-   tinc is the same as above = t2 - t1
-
-   Again, lets assume that the event is accurate for now and ignore the fuzz
-   logic, i.e. tsched == t0
-
-   So tsched has to be ttot = t2 - t0 _before_ wallclock reaches t2 and
-   increments seconds.
-
-   In this case newsec = t1.tv_sec = (t0 + ttransfer).tv_sec
-
-   So now the fuzz logic for this is:
-
-      newtime = t0 + ttransfer;
-
-      if (newtime.tv_nsec < FUZZ)
-          newsec = newtime.tv_sec;
-      else if (newtime.tv_nsec > NSEC_PER_SEC - FUZZ)
-          newsec = newtime.tv_sec + 1;
-      else
-          goto fail;
-
-   Again the first condition handles the case where t1 >= tsched and the
-   second one where t1 < tsched.
-
-So now we have two options to fix this:
-
-   1) Use a negative sync_offset for devices which need #1 above
-      (rtc_cmos & similar)
-
-      That requires setting tsched to t2 - abs(sync_offset)
-
-   2) Use always a positive sync_offset and a flag which tells
-      rtc_tv_nsec_ok() whether it needs to add or subtract.
-
-#1 is good enough. All it takes is a comment at the timer start code why
-abs() is required.
-
-Let me hack that up along with the hrtimer muck.
-
-Thanks,
-
-        tglx
