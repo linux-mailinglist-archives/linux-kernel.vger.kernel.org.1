@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7417D2CDA29
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C562CDA2E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728827AbgLCPes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 10:34:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50166 "EHLO
+        id S1730964AbgLCPhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 10:37:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726610AbgLCPes (ORCPT
+        with ESMTP id S1726111AbgLCPhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:34:48 -0500
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151E9C061A51
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 07:34:08 -0800 (PST)
-Received: by mail-vs1-xe43.google.com with SMTP id q5so1478582vsg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 07:34:08 -0800 (PST)
+        Thu, 3 Dec 2020 10:37:25 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC75C061A4E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 07:36:45 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id dm12so1124167qvb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 07:36:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h6bUmmhNs5Vo0iuri/gifDqZRZWxy1kGAo1J9lB1K5k=;
-        b=D0ie8/h3FBLr6GsJocONE1JbQgocKTLMtMzcvLZ4m0y7cnANQLWYb2PicTVkU3CHWU
-         0xhY3CUtX4DW0z+8e0aqlOnA0qQynUINmANChrlAvRpPTKilDW7S8pl1Ya7o5kR9BFVg
-         gJdorF74HsyAZkpPn12nGzaqdkO24ic6ate64=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LBBArEA3xlqMeYxNBtq8/0wDXI6qatH3Q3aO6jvxWvM=;
+        b=uG4D2Ki5mZSGa25UaIvO2cacx8Zs99UUrD/Kl1mOL98VlwyopZo+tZwgX09aLkl6yI
+         624z7Pd996dYFq8J9MMCVAMA3EPPi2HDhjUDobYcccufuGUYCIFEGzl5NLxI+LNWWGq+
+         PtQ5LvLu+tC75HxQtdCivuoic2h5Hw5TQQHGQz28YN1RNMxSqZ6IWan7khBPFhUuHyax
+         afMTpNNSEbuDrfEHrdpOOUHEQSsbYdTREP5kP4vC+iLw0IRO+Z+LGUcMC7lSBb8BEb56
+         MUBbXC7Wwhu4nPWmXTIPwIeIF4JIS7BY4Lb0zrQA/d6O+p7wpsbapvF7AVSrU8wOs9rB
+         pdWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h6bUmmhNs5Vo0iuri/gifDqZRZWxy1kGAo1J9lB1K5k=;
-        b=q3eXSwzJiYx6F2Zw3laHQpLYys7BKCedPPXZgmzYUjaVQLtcbdduETIqTWm/SmmmZt
-         Q68g8TS9fZhxZG4+oCsq9vh7/Fm4DtJYZlYDgQWDNtfsHWjKB+XX/H2PwqEK9wiEZPzp
-         vy16AsrboaMxOH2UoFqwTS0T8uHJyBeSAYafcRdzv0pg4ZBmnx4xh/fTsjFhnFr5yfqp
-         zdGHi3hRw5Hpe0DpknDvGkX56jFjRIpoy8kzkWqfq8g/qNjmy0RiAgAATZCsBEZrfM/H
-         BDVs7XHjjhGKX3hEoDABhs8UiAEAfRZI9rHXo9PRiA7TaAN3w+XvvfTnmmB5yrIU9QL5
-         EuzQ==
-X-Gm-Message-State: AOAM530PaoJdOpa3YTwDf+dz8LSiNBTEufW9j2r6uTbbZ185qJFZwCG5
-        tYEQ+XwmEuJaX9wPiWtKTJB7BbUkRlZMSQ==
-X-Google-Smtp-Source: ABdhPJzgBKsWfIPmCCBFsCdHZ61X/jIIAAGmBQiO85tWkLPNwyUgP6I9SCn9Hk+kdKB4zAQgsa7Gsw==
-X-Received: by 2002:a67:cd16:: with SMTP id u22mr2725795vsl.7.1607009646748;
-        Thu, 03 Dec 2020 07:34:06 -0800 (PST)
-Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com. [209.85.217.46])
-        by smtp.gmail.com with ESMTPSA id z24sm128434uar.5.2020.12.03.07.34.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 07:34:05 -0800 (PST)
-Received: by mail-vs1-f46.google.com with SMTP id b23so1440648vsp.9
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 07:34:05 -0800 (PST)
-X-Received: by 2002:a67:8c41:: with SMTP id o62mr2741810vsd.49.1607009645158;
- Thu, 03 Dec 2020 07:34:05 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=LBBArEA3xlqMeYxNBtq8/0wDXI6qatH3Q3aO6jvxWvM=;
+        b=KL0GdgeyKKDBYwHi2dcGeNAQ72emjO8fzuY5eweKzbavrMOKqZIloEdUPjrCbF2h7W
+         G4LOdzWaN/12+ssf2OuYWv3FSu9DZZpaYfIxcwbWyShY56znGq5MAscdUF0NZvCZdrrM
+         X/srkz+/6AnmqkAnrT+FluMpeYGK9saK6mOFPH7RsMe1MOLEbBYuculVbf+mS2qUYEKy
+         jmx+AdSavxFEHhnegSzt98RXEr1dncv09ykhJ3cCOxGNw3ucjp8erlHEbtLfgwkzZKk8
+         G2e4sMJcV3ZRLrKu9VLBelz+NXWpV/8cnDoI/uaM7KO1qGbI2VjZxriXFQ+I4bwRnYTJ
+         BwUA==
+X-Gm-Message-State: AOAM533PZYADW6TSqI5ZwNd+kd3351ybJZNPKl8QXe+pkgjZNcnWP9pC
+        ZcEzhFqCp/7uXnF1incSevw=
+X-Google-Smtp-Source: ABdhPJzj5p50QKuHUvlezC7Gcn5V9KpOBMPN4ah6UZE9xk8aLTwpPMLrhVU8lDMZVNE2G3RkqJvvnA==
+X-Received: by 2002:a0c:db11:: with SMTP id d17mr3629590qvk.39.1607009804360;
+        Thu, 03 Dec 2020 07:36:44 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id g18sm1458290qtv.79.2020.12.03.07.36.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 07:36:43 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 3 Dec 2020 10:36:14 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     NeilBrown <neilb@suse.de>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] workqueue: cut wq_rr_cpu_last
+Message-ID: <X8kF7h0836Eu717u@mtj.duckdns.org>
+References: <20201203102841.2100-1-hdanton@sina.com>
 MIME-Version: 1.0
-References: <20201112200906.991086-1-kuabhs@chromium.org> <20201112200856.v2.1.Ia526132a366886e3b5cf72433d0d58bb7bb1be0f@changeid>
- <CAD=FV=XKCLgL6Bt+3KfqKByyP5fpwXOh6TNHXAoXkaQJRzjKjQ@mail.gmail.com>
- <002401d6c242$d78f2140$86ad63c0$@codeaurora.org> <CAD=FV=UnecON-M9eZVQePuNpdygN_E9OtLN495Xe1GL_PA94DQ@mail.gmail.com>
- <002d01d6c2dd$4386d880$ca948980$@codeaurora.org> <CAD=FV=WQPMnor3oTefDHd6JP6UmpyBo7UsOJ1Sg4Ly1otxr6hw@mail.gmail.com>
- <004301d6c968$12ef1b10$38cd5130$@codeaurora.org>
-In-Reply-To: <004301d6c968$12ef1b10$38cd5130$@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 3 Dec 2020 07:33:52 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VCbjRUxUsmyk=64FLDGU=W41EXh5tdfQr1Lg83T8jiEA@mail.gmail.com>
-Message-ID: <CAD=FV=VCbjRUxUsmyk=64FLDGU=W41EXh5tdfQr1Lg83T8jiEA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF selection
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     Abhishek Kumar <kuabhs@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ath10k <ath10k@lists.infradead.org>,
-        Brian Norris <briannorris@chromium.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203102841.2100-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-On Thu, Dec 3, 2020 at 3:33 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
->
-> > What I'm trying to say is this.  Imagine that:
-> >
-> > a) the device tree has the "variant" property.
-> >
-> > b) the BRD file has two entries, one for "board-id" (1) and one for
-> > "board-id + chip-id" (2).  It doesn't have one for "board-id + chip-id
-> > + variant" (3).
-> >
-> > With your suggestion we'll see the "variant" property in the device
-> > tree.  That means we'll search for (1) and (3).  (3) isn't there, so
-> > we'll pick (1).  ...but we really should have picked (2), right?
->
-> Do we expect board-2.bin to not be populated with the bdf with variant field (if its necessary ?)
+On Thu, Dec 03, 2020 at 06:28:41PM +0800, Hillf Danton wrote:
+> +	new_cpu = cpumask_any_and_distribute(wq_unbound_cpumask, cpu_online_mask);
+> +	if (new_cpu < nr_cpu_ids)
+> +		return new_cpu;
+> +	else
+> +		return cpu;
+>  }
+>  
+>  static void __queue_work(int cpu, struct workqueue_struct *wq,
+> @@ -1554,7 +1546,7 @@ static int workqueue_select_cpu_near(int
+>  		return cpu;
+>  
+>  	/* Use "random" otherwise know as "first" online CPU of node */
+> -	cpu = cpumask_any_and(cpumask_of_node(node), cpu_online_mask);
+> +	cpu = cpumask_any_and_distribute(cpumask_of_node(node), cpu_online_mask);
 
-The whole fact that there is a fallback to begin with implies that
-there can be a mismatch between the board-2.bin and the device tree
-file.  Once we accept that there can be a mismatch, it seems good to
-try all 3 fallbacks in order.
+This looks generally okay but I think there's a real risk of different
+cpumasks interfering with cpu selection. e.g. imagine a cpu issuing work
+items to two unbound workqueues consecutively, one numa-bound, the other
+not. The above change will basically confine the !numa one to the numa node.
 
+I think the right thing to do here is expanding the
+cpumask_any_and_distribute() so that the user can provide its own cursor
+similar to what we do with ratelimits.
 
-> Seems fine for me, if we have 2 fallback names if that is needed.
+Thanks.
 
-OK, sounds good.  So hopefully Abhishek can post a v3 based on what's
-in <https://crrev.com/c/2556437> and you can confirm you're good with
-it there?
-
--Doug
+-- 
+tejun
