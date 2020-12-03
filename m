@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D55182CDBB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:03:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1D52CDBB1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:03:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731171AbgLCRCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:02:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725918AbgLCRCW (ORCPT
+        id S1731379AbgLCRCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:02:31 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43714 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725918AbgLCRCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:02:22 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07028C061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 09:01:42 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0dc5004496c992b512bfd2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:c500:4496:c992:b512:bfd2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3091B1EC01A2;
-        Thu,  3 Dec 2020 18:01:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607014899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=3c+0u2xiE9vV/8OBVB3MNID0owbw/IseZO13Ua1k4bY=;
-        b=JZ0/0jd8mbL3Vjue6Ea6Q+mgWKJXg0zeL+KQdYAjd1Sl9k5XaiI9NmeNzsB5xdZ216PZtG
-        /A9XuYFwMyf03PRtjLbtojWWR/8DaYb0ZlT6t2LK3XkmreQ9yqKUKYvcQRYARj4n9NiEBW
-        +teZQUPPL6GzaGP3B4OVB91VOU59KbE=
-Date:   Thu, 3 Dec 2020 18:01:40 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] x86/uprobes: Fix not using prefixes.nbytes for
- loop over prefixes.bytes
-Message-ID: <20201203170140.GM3059@zn.tnic>
-References: <160697102582.3146288.10127018634865687932.stgit@devnote2>
- <160697103739.3146288.7437620795200799020.stgit@devnote2>
- <20201203123757.GH3059@zn.tnic>
- <20201203124121.GI3059@zn.tnic>
- <20201203124820.GJ3059@zn.tnic>
- <1c1b265f-34e3-f5cc-0e7b-186dc26c94b7@amd.com>
- <20201203165420.GL3059@zn.tnic>
+        Thu, 3 Dec 2020 12:02:31 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B3Gtbn3193009;
+        Thu, 3 Dec 2020 12:01:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=TySp0bQWuLG9QgCwNcLob5Bj9l+o4YYRu3QmSA7cedk=;
+ b=OszUncRmK3x5kyAdWanmLcP6IXwjw1ISV8h0/DVUDi/hJKZHj9yHgrGdeuZXrkw4x5XT
+ ZHLQd03PNAZUJvEyJwZVe4EZ2bSFQO3KTO5sGKVLWD4uF/46pXy7rMDjt7wF8IUNMy6r
+ 8tW3UR5CvGkj+U6wsyLfYoD2MXug/CsVtjTITKT+6M8UXAgk4Dn9LVG8uRr6PxM16Um0
+ uXY2FHwFq+9GOxM6a2b/kiPdzDzIOnVzVcSPZVetgPc/clZhj1tM/tozssT8dMVo9Ifs
+ JosvWHqshqoaFFVOuE80MXQPQiuEFmIpL2iiYYyusQTxvLR7oMBHYEyDf6/xRWA9xQBg AA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3573yh86y3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 12:01:50 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B3GtqpR194398;
+        Thu, 3 Dec 2020 12:01:49 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3573yh86uk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 12:01:49 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B3Gq3hr018023;
+        Thu, 3 Dec 2020 17:01:47 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04fra.de.ibm.com with ESMTP id 353e68auc7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 17:01:47 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B3H1iPL26477034
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Dec 2020 17:01:44 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 10C624C046;
+        Thu,  3 Dec 2020 17:01:44 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8E0184C040;
+        Thu,  3 Dec 2020 17:01:43 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.64.213])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu,  3 Dec 2020 17:01:43 +0000 (GMT)
+Date:   Thu, 3 Dec 2020 18:01:41 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        borntraeger@de.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, david@redhat.com
+Subject: Re: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM
+ pointer invalidated
+Message-ID: <20201203180141.19425931.pasic@linux.ibm.com>
+In-Reply-To: <20201203111907.72a89884.cohuck@redhat.com>
+References: <20201202234101.32169-1-akrowiak@linux.ibm.com>
+        <20201203111907.72a89884.cohuck@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201203165420.GL3059@zn.tnic>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-03_09:2020-12-03,2020-12-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ adultscore=0 impostorscore=0 clxscore=1015 phishscore=0 spamscore=0
+ bulkscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=859
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012030098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 05:54:20PM +0100, Borislav Petkov wrote:
-> On Thu, Dec 03, 2020 at 10:45:48AM -0600, Tom Lendacky wrote:
-> > Since this is based on the array size, can
-> > 
-> > 	idx < NUM_LEGACY_PREFIXES
-> > 
-> > be replaced with:
-> > 
-> > 	idx < ARRAY_SIZE(insn->prefixes.bytes)
+On Thu, 3 Dec 2020 11:19:07 +0100
+Cornelia Huck <cohuck@redhat.com> wrote:
+
+> > @@ -1095,7 +1106,7 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
+> >  	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
+> >  
+> >  	if (!data) {
+> > -		matrix_mdev->kvm = NULL;
+> > +		vfio_ap_mdev_put_kvm(matrix_mdev);  
 > 
-> Actually, this needs another change:
-> 
-> struct insn_field {
->         union {
->                 insn_value_t value;
->                 insn_byte_t bytes[NUM_LEGACY_PREFIXES];
+> Hm. I'm wondering whether you need to hold the maxtrix_dev lock here as
+> well?
 
-Blergh, spoke too soon. All those struct insn members are struct
-insn_field.
+In v12 we eventually did come along and patch "s390/vfio-ap: allow hot
+plug/unplug of AP resources using mdev device" made this a part of a
+critical section protected by the matrix_dev->lock.
 
-insn.prefixes should probably be a separate array of explicit size
-NUM_LEGACY_PREFIXES, not that insn_byte_t bytes[] gets enlarged in the
-future for whatever reason, while the max legacy prefixes count will
-remain 4.
+IMHO the cleanup should definitely happen with the matrix_dev->lock held.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Regards,
+Halil
