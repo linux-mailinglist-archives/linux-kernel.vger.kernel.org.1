@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD332CDC12
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FEBA2CDC29
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501909AbgLCRNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:13:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
+        id S1729256AbgLCRPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:15:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726257AbgLCRNL (ORCPT
+        with ESMTP id S1726299AbgLCRPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:13:11 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A98C061A4F;
-        Thu,  3 Dec 2020 09:12:31 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id r9so1435186pjl.5;
-        Thu, 03 Dec 2020 09:12:31 -0800 (PST)
+        Thu, 3 Dec 2020 12:15:35 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4CFC061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 09:14:49 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id l5so2869338edq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 09:14:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=3rpkGdvnJ4tE6aT83D7Bz5ZVtxLPAIcugyQgY5ZXjpg=;
-        b=I4JbDRBzK0VXbI7b3GMCZ9uASF7K2g3ZYeioXxgRkFWg1mTN5AyssIIRCk9lc6hHou
-         DUjhfKWGgQj0pXz7xSaZyF+la3ri9wtENrzhSOldb8ap4CILBONRyrRUCnxBrcgEl7Ga
-         kyD9UTMFlIeYqE88Ls738HvWufGmiWzxefVaLKHSztHGmwW+IhQ5/9yRFfOTc6svnexu
-         qt5srIsT8RyD6tznPhFa2MV3VHTadlVrYk0RJwWwv/FKsNyUOl+dPOXFSL8k1vmGqSH+
-         4qnEmIj7MqFjH1a5AFByAGzDxHKZuWkBCKfqCVNkc+XRURDHqfmyUzM+E6fp6vrXcOnM
-         oXXA==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WtIPNoqi/BD0F1oh2hYjLoqJe2WfmOtKOH7qlA9PgjQ=;
+        b=ZntyKQF5o81ERLDj2oodoU3jNqDI+rBFys/NaNCuT3D7hPteHUxxnK26Wa0owvhz2Y
+         Sfwi4ngOMxDByY2nbO/Mu0k3F5KtA5evQqJ8JJJdSYI1i7Nu+Ux1jt3bpBDlStFR0cQ5
+         Cxe8XlOivVMOgWAWYfS/bHKX7WvFk5gpFNLgNyyWf87Cd0w+Yi7mVueSlPMXQr/Oa4C3
+         qVe2xnUbwj/ofJkQDpiy0ClmAMjLFrCqWJrtBpCG+yXix2x6JQQpHGwpyojM1I9MDONl
+         yS9EbP9ZG/uEiFTh76hrB6vdiPGc2dMB5QvgsQXjGzPw8Js4nhZaoxkutj4I8v4l1lqr
+         MpHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=3rpkGdvnJ4tE6aT83D7Bz5ZVtxLPAIcugyQgY5ZXjpg=;
-        b=rCsWBH0xzv4t0+oYEvwWxR74C2SFjAQoD5YwUulVrHVaT2p2w2EXHlF7grSrSs/9NM
-         TgMT6hBg1plelyKMSMJZkfuSJkygACmA7QDV/j21ddNE2tcQHdw8R2Bd8uIDXSxLhP38
-         lbQVdq5OFE9U0peOobJQin5aqvZK1UNDMucw3IIDJJv8CoMefO7xfOGnvnmJQbMBhD6J
-         xfMEmT+Mu/9mEHkgDiboB/RlJ8BZsmwHijLeufbT9EVVrmUA/TV5D1QYRlIvN0l09zyc
-         QO2iAIR7/RG1kkzFGp+aEPGjGSEy3a+jZ+UzzMm8mKsW3mOIuJe/c7xz/CjTOtlJ8rFT
-         NI1w==
-X-Gm-Message-State: AOAM533xGycuECElJ5TPp5YhYzwb6pVyDOSrN1aAGLTTItYKT1XZwjkR
-        URP1scr1JhoyY8c0Ow8hoe0SlBXdQehdGYJ9iIg=
-X-Google-Smtp-Source: ABdhPJwP1zhIo5Uk4+obLh3K1XwnBsU+iNME4g7Q13mocnpdKMjFKFo/6GiAPEi/2Zs3lo3UGf7vCWZJZnyjksZ+IgI=
-X-Received: by 2002:a17:90b:224e:: with SMTP id hk14mr111426pjb.98.1607015550757;
- Thu, 03 Dec 2020 09:12:30 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WtIPNoqi/BD0F1oh2hYjLoqJe2WfmOtKOH7qlA9PgjQ=;
+        b=CBe7bR1YS7WGN04ZUFvqx04MgzX2a7QJImjZgPRoCOon8ev+x6jS6MsVzDcixsVFYV
+         Ruc5ZkCQ4RfLtcHEmilEOGFKzzUOIrph32eYAj8P6USkxzen/eDMCNjINi70oUE60skj
+         bQiCGztHyZoq/uMDTJ41u2mEJZCbcCFQQoDQjSoOqSY1PG18nYI+rEBntSapsL3asJO5
+         aWHXVzn1X3NatkGbMUKl3XhWMNsPJb2Kn3rq69wmWkMxnHQXkN07sUtDUTToD9dCpiZS
+         TAVro/yjEZlLc3et6Nm++RGkKxFxISOwlQmRmSeWz2WKAsBG3YJvXnjcpoOTXrCB9zJH
+         mSUA==
+X-Gm-Message-State: AOAM5304qfyF+9VeJOlUFQGNSI4YgtcUoHE8HrDNhwn2Dxh5R/saKfug
+        RRLmx671xSQdHCXsUTazRtXGi6JOvAsbfwqdGMK2Gw==
+X-Google-Smtp-Source: ABdhPJxU9HZX2AEQweVrxtSIoipOVk3c6tRBdh1cl9UbCMNohli/o5y4McNfSlfnA6FPg74lIFITu6lqfdvdRjJi+rc=
+X-Received: by 2002:aa7:c652:: with SMTP id z18mr3664034edr.60.1607015687752;
+ Thu, 03 Dec 2020 09:14:47 -0800 (PST)
 MIME-Version: 1.0
-From:   =?UTF-8?B?0JzQsNC60YHQuNC8INCa0LjRgdC10LvRkdCy?= 
-        <bigunclemax@gmail.com>
-Date:   Thu, 3 Dec 2020 20:12:19 +0300
-Message-ID: <CALHCpMgQPDqV1tB6v0sA0imwfZGkoG_j84NZCehOT1pf8MTuCA@mail.gmail.com>
-Subject: [PATCH] spi: spi-fsl-dspi: Add GPIO chip select support
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?0JzQsNC60YHQuNC8INCa0LjRgdC10LvRkdCy?= 
-        <bigunclemax@gmail.com>, Maxim Kochetkov <fido_max@inbox.ru>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-7-pasha.tatashin@soleen.com> <20201202163507.GL5487@ziepe.ca>
+ <CA+CK2bBT=U+xhbzXTDFwsL5wTvPHgNJ0DRpaeseiUq=w4EOe9w@mail.gmail.com>
+ <20201203010809.GQ5487@ziepe.ca> <CA+CK2bBRgcCc5Nm0RcsEgVFpGBFC-_icA6UDRiqQxeRJE5U-Aw@mail.gmail.com>
+ <20201203141729.GS5487@ziepe.ca> <CA+CK2bA=Ahd4E=ebdJ7uwxPyQ1AEy_hxA+Tx+yAi92JcZsQsfA@mail.gmail.com>
+ <20201203165937.GU5487@ziepe.ca>
+In-Reply-To: <20201203165937.GU5487@ziepe.ca>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 3 Dec 2020 12:14:11 -0500
+Message-ID: <CA+CK2bBRqK6_ZOkTbz8qe4Gz6T5pwt-KjJQ0+NzYOC1qO1sPMg@mail.gmail.com>
+Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Kiselev <bigunclemax@gmail.com>
-Date: Thu, 3 Dec 2020 18:56:12 +0300
-Subject: [PATCH] spi: spi-fsl-dspi: Add GPIO chip select support
+On Thu, Dec 3, 2020 at 11:59 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Thu, Dec 03, 2020 at 11:40:15AM -0500, Pavel Tatashin wrote:
+> > > Looking at this code some more.. How is it even correct?
+> > >
+> > > 1633                            if (!isolate_lru_page(head)) {
+> > > 1634                                    list_add_tail(&head->lru, &cma_page_list);
+> > >
+> > > Here we are only running under the read side of the mmap sem so multiple
+> > > GUPs can be calling that sequence in parallel. I don't see any
+> > > obvious exclusion that will prevent corruption of head->lru. The first
+> > > GUP thread to do isolate_lru_page() will ClearPageLRU() and the second
+> > > GUP thread will be a NOP for isolate_lru_page().
+> > >
+> > > They will both race list_add_tail and other list ops. That is not OK.
+> >
+> > Good question. I studied it, and I do not see how this is OK. Worse,
+> > this race is also exposable as a syscall instead of via driver: two
+> > move_pages() run simultaneously. Perhaps in other places?
+> >
+> > move_pages()
+> >   kernel_move_pages()
+> >     mmget()
+> >     do_pages_move()
+> >       add_page_for_migratio()
+> >          mmap_read_lock(mm);
+> >          list_add_tail(&head->lru, pagelist); <- Not protected
+>
+> When this was CMA only it might have been rarer to trigger, but this
+> move stuff sounds like it makes it much more broadly, eg on typical
+> servers with RDMA exposed/etc
+>
+> Seems like it needs fixing as part of this too :\
 
-This patch allows use of GPIO for the chip select.
-Because dSPI controller can't send transactions without hardware chip
-selects, so first unused native CS will be set in SPI_PUSHR_CMD_PCS
+Just to clarify the stack that I showed above is outside of gup, it is
+the same issue that you pointed out that happens elsewhere. I suspect
+there might be more. All of them should be addressed together.
 
-Signed-off-by: Maxim Kiselev <bigunclemax@gmail.com>
----
- drivers/spi/spi-fsl-dspi.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Pasha
 
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index 028736687488..d5fba34de740 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -913,9 +913,14 @@ static int dspi_transfer_one_message(struct
-spi_controller *ctlr,
-         dspi->cur_transfer = transfer;
-         dspi->cur_msg = message;
-         dspi->cur_chip = spi_get_ctldata(spi);
-+
-+        if (spi->cs_gpiod)
-+            gpiod_set_value(spi->cs_gpiod, 1);
-+
-         /* Prepare command word for CMD FIFO */
-         dspi->tx_cmd = SPI_PUSHR_CMD_CTAS(0) |
--                   SPI_PUSHR_CMD_PCS(spi->chip_select);
-+                   SPI_PUSHR_CMD_PCS(spi->cs_gpiod ?
-+                         ctlr->unused_native_cs : spi->chip_select);
-         if (list_is_last(&dspi->cur_transfer->transfer_list,
-                  &dspi->cur_msg->transfers)) {
-             /* Leave PCS activated after last transfer when
-@@ -1240,6 +1245,7 @@ static int dspi_probe(struct platform_device *pdev)
-     dspi->pdev = pdev;
-     dspi->ctlr = ctlr;
-
-+    ctlr->use_gpio_descriptors = true;
-     ctlr->setup = dspi_setup;
-     ctlr->transfer_one_message = dspi_transfer_one_message;
-     ctlr->dev.of_node = pdev->dev.of_node;
--- 
-2.27.0
+>
+> Page at a time inside the gup loop could address both concerns, unsure
+> about batching performance here though..
+>
+> Jason
