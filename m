@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B1D2CD46A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E1E2CD48E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388925AbgLCLPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:15:55 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8621 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729194AbgLCLPy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:15:54 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CmtXJ2smHz15WDR;
-        Thu,  3 Dec 2020 19:14:40 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 3 Dec 2020 19:15:00 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <support.opensource@diasemi.com>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] regulator: da9121: Mark some symbols with static keyword
-Date:   Thu, 3 Dec 2020 19:26:35 +0800
-Message-ID: <1606994795-36182-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1729964AbgLCL2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:28:15 -0500
+Received: from ozlabs.org ([203.11.71.1]:48791 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725985AbgLCL2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 06:28:15 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cmtq71dWPz9sW0;
+        Thu,  3 Dec 2020 22:27:29 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1606994852;
+        bh=DhZJx6VS2S3i6rp5eGQb6lMVR2DlQIxOHgVG1xjGFrE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=fZP6igB0dffXJpVPcdAMjoblQ8MgiPxVagbU9j32aVvdtENZ340u7asmb/zevIMam
+         0Zljjs9YIrqkIlnKZNVdDT3NCKBiIziUjE/G02oMM1J4m1sbKNebe4IpqGKedl8RAl
+         wU3n3OS6J1yqIJPH3Bqdx9iUtYQbs6Os7HVLNgJnO3GdxCQq3KYZC6ZG8wehxxixcr
+         JXHk6z0kY89GyKR60cUw2IYC7ReC5nPHHRs4ESewl/BBx98TlPWJvt21tXRj3BqsPy
+         THBPRrHyz/KN9pSs65pYUw6EGble1woG2YzV7nYVM6C9R1AvLrCykcMzvNV+MlRVnU
+         V7fkwXYOLHmfg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Borislav Petkov <bp@alien8.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     Wang ShaoBo <bobo.shaobowang@huawei.com>, mchehab@kernel.org,
+        james.morse@arm.com, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, huawei.libin@huawei.com,
+        cj.chengjian@huawei.com, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] EDAC, mv64x60: Fix error return code in mv64x60_pci_err_probe()
+In-Reply-To: <20201202112515.GC2951@zn.tnic>
+References: <20201124063009.1529-1-bobo.shaobowang@huawei.com> <20201202112515.GC2951@zn.tnic>
+Date:   Thu, 03 Dec 2020 22:27:25 +1100
+Message-ID: <87pn3ruo2q.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warnings:
+Borislav Petkov <bp@alien8.de> writes:
+> On Tue, Nov 24, 2020 at 02:30:09PM +0800, Wang ShaoBo wrote:
+>> Fix to return -ENODEV error code when edac_pci_add_device() failed instaed
+>> of 0 in mv64x60_pci_err_probe(), as done elsewhere in this function.
+>> 
+>> Fixes: 4f4aeeabc061 ("drivers-edac: add marvell mv64x60 driver")
+>> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+>> ---
+>>  drivers/edac/mv64x60_edac.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>> 
+>> diff --git a/drivers/edac/mv64x60_edac.c b/drivers/edac/mv64x60_edac.c
+>> index 3c68bb525d5d..456b9ca1fe8d 100644
+>> --- a/drivers/edac/mv64x60_edac.c
+>> +++ b/drivers/edac/mv64x60_edac.c
+>> @@ -168,6 +168,7 @@ static int mv64x60_pci_err_probe(struct platform_device *pdev)
+>>  
+>>  	if (edac_pci_add_device(pci, pdata->edac_idx) > 0) {
+>>  		edac_dbg(3, "failed edac_pci_add_device()\n");
+>> +		res = -ENODEV;
+>>  		goto err;
+>>  	}
+>
+> That driver depends on MV64X60 and I don't see anything in the tree
+> enabling it and I can't select it AFAICT:
+>
+> config MV64X60
+>         bool
+>         select PPC_INDIRECT_PCI
+>         select CHECK_CACHE_COHERENCY
 
-drivers/regulator/da9121-regulator.c:55:21: warning: symbol 'da9121_10A_2phase_current' was not declared. Should it be static?
-drivers/regulator/da9121-regulator.c:63:21: warning: symbol 'da9121_6A_2phase_current' was not declared. Should it be static?
-drivers/regulator/da9121-regulator.c:71:21: warning: symbol 'da9121_5A_1phase_current' was not declared. Should it be static?
-drivers/regulator/da9121-regulator.c:79:21: warning: symbol 'da9121_3A_1phase_current' was not declared. Should it be static?
-drivers/regulator/da9121-regulator.c:151:32: warning: symbol 'status_event_handling' was not declared. Should it be static?
+It was selected by PPC_C2K, but that was dropped in:
 
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/regulator/da9121-regulator.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+  92c8c16f3457 ("powerpc/embedded6xx: Remove C2K board support")
 
-diff --git a/drivers/regulator/da9121-regulator.c b/drivers/regulator/da9121-regulator.c
-index 3ead6a1..893512c 100644
---- a/drivers/regulator/da9121-regulator.c
-+++ b/drivers/regulator/da9121-regulator.c
-@@ -52,7 +52,7 @@ struct da9121_range {
- 	int reg_max;
- };
- 
--struct da9121_range da9121_10A_2phase_current = {
-+static struct da9121_range da9121_10A_2phase_current = {
- 	.val_min =  7000000,
- 	.val_max = 20000000,
- 	.val_stp =  1000000,
-@@ -60,7 +60,7 @@ struct da9121_range da9121_10A_2phase_current = {
- 	.reg_max = 14,
- };
- 
--struct da9121_range da9121_6A_2phase_current = {
-+static struct da9121_range da9121_6A_2phase_current = {
- 	.val_min =  7000000,
- 	.val_max = 12000000,
- 	.val_stp =  1000000,
-@@ -68,7 +68,7 @@ struct da9121_range da9121_6A_2phase_current = {
- 	.reg_max = 6,
- };
- 
--struct da9121_range da9121_5A_1phase_current = {
-+static struct da9121_range da9121_5A_1phase_current = {
- 	.val_min =  3500000,
- 	.val_max = 10000000,
- 	.val_stp =   500000,
-@@ -76,7 +76,7 @@ struct da9121_range da9121_5A_1phase_current = {
- 	.reg_max = 14,
- };
- 
--struct da9121_range da9121_3A_1phase_current = {
-+static struct da9121_range da9121_3A_1phase_current = {
- 	.val_min = 3500000,
- 	.val_max = 6000000,
- 	.val_stp =  500000,
-@@ -148,7 +148,7 @@ struct status_event_data {
-  *
-  * GPIO0/1/2 are not configured for use by default, so should not be seen.
-  */
--const struct status_event_data status_event_handling[] = {
-+static const struct status_event_data status_event_handling[] = {
- 	DA9xxx_STATUS(0, 0, SG, 0, "Handled E_SG\n"),
- 	DA9121_STATUS(0, 0, TEMP_CRIT, (REGULATOR_EVENT_OVER_TEMP|REGULATOR_EVENT_DISABLE), NULL),
- 	DA9121_STATUS(0, 0, TEMP_WARN, REGULATOR_EVENT_OVER_TEMP, NULL),
--- 
-2.6.2
+> PPC folks, what do we do here?
+>
+> If not used anymore, I'd love to have one less EDAC driver.
 
+It's dead code, so drop it.
+
+I can send a patch if no one else wants to.
+
+cheers
