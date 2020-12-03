@@ -2,96 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FB52CD2DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A0F2CD2DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:51:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730167AbgLCJsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:48:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728900AbgLCJsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:48:50 -0500
-Date:   Thu, 3 Dec 2020 09:47:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606988889;
-        bh=5X99CjF/w6FuCzH9ST9VSYb0yNBNDgAFDj6aEVF7hRE=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aROK9D3oy/hXocbzQlxP1a9VxjKCwjp/rA+Azd9Jw16exRpgg5LyekFUUki7Nwy7o
-         Ajlr9geQHGbW0V0AOHJBExkMQnyr2DGGVEnkCSI+tlsy6z79sAz9QRmgaldF9iRxuN
-         JIn/A3HobTBLeGCpiPRcsPjOwp1Q27FV70dlUtx3BfU02hXJflgjnErfNZDu9pncGZ
-         8SzUeszP5AgPLA0U8QCzJpV+jm6V/IFc1YY8RG59R/qlhJ46dZJqdQiLF8/4E2ODB2
-         cbQ2dYorXPvmgcIsSPPujZZWmRYVtU4tvQAd3eMOhHcDInfnLWs9eDbrggoutcN0/k
-         VAjvo2k1EiD9g==
-From:   Mark Brown <broonie@kernel.org>
-To:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>
-Subject: Re: [PATCH v3 2/3] spi: Add SPI_NO_TX/RX support
-Message-ID: <20201203094739.GB4700@sirena.org.uk>
-References: <20201127130834.136348-1-alexandru.ardelean@analog.com>
- <20201127130834.136348-2-alexandru.ardelean@analog.com>
- <CAHp75Vcd4t=RqC31S-b1PXMtd=8sypSLhTrSgRD9hbpSqOphoQ@mail.gmail.com>
- <CAHp75VctXhpyBVB7Zw+SB5LiGcj6r850x+ehL7u2H0R4=y5rVw@mail.gmail.com>
- <CY4PR03MB29661063937AD783F6B2A010F9F20@CY4PR03MB2966.namprd03.prod.outlook.com>
+        id S1730189AbgLCJt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:49:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54703 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730180AbgLCJt0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 04:49:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606988880;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IMWz2J6ee0z3Goxs//cxHMcur+NB7NXymG3FsD4KqVk=;
+        b=SFn3gr204Ehl5xY6H0alRjOYuRZgSJihU6EkjbhSdxRVaHKTBd165rU1RSlJzoseUpppc7
+        HkRLvS7HOWyPHEgm0RTkZf5zIm+duL1+45sEBof4GUdDK++uODisI8auUmQ28/Gvb1woAT
+        XLHf1UiG4qMDi8rxuPvKUuvZ3OKDcQk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-427-KooIkbC-OxyfPReSet9BCw-1; Thu, 03 Dec 2020 04:47:56 -0500
+X-MC-Unique: KooIkbC-OxyfPReSet9BCw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C7315708A;
+        Thu,  3 Dec 2020 09:47:55 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-112-44.ams2.redhat.com [10.36.112.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 07E505D75F;
+        Thu,  3 Dec 2020 09:47:52 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Topi Miettinen <toiwoton@gmail.com>
+Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH v5] mm: Optional full ASLR for mmap(), mremap(), vdso
+ and stack
+References: <20201129211517.2208-1-toiwoton@gmail.com>
+Date:   Thu, 03 Dec 2020 10:47:51 +0100
+In-Reply-To: <20201129211517.2208-1-toiwoton@gmail.com> (Topi Miettinen's
+        message of "Sun, 29 Nov 2020 23:15:17 +0200")
+Message-ID: <87im9j2pbs.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hHWLQfXTYDoKhP50"
-Content-Disposition: inline
-In-Reply-To: <CY4PR03MB29661063937AD783F6B2A010F9F20@CY4PR03MB2966.namprd03.prod.outlook.com>
-X-Cookie: Sacred cows make great hamburgers.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Topi Miettinen:
 
---hHWLQfXTYDoKhP50
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> +3   Additionally enable full randomization of memory mappings created
+> +    with mmap(NULL, ...). With 2, the base of the VMA used for such
+> +    mappings is random, but the mappings are created in predictable
+> +    places within the VMA and in sequential order. With 3, new VMAs
+> +    are created to fully randomize the mappings.
+> +
+> +    Also mremap(..., MREMAP_MAYMOVE) will move the mappings even if
+> +    not necessary and the location of stack and vdso are also
+> +    randomized.
+> +
+> +    On 32 bit systems this may cause problems due to increased VM
+> +    fragmentation if the address space gets crowded.
 
-On Thu, Dec 03, 2020 at 08:20:57AM +0000, Ardelean, Alexandru wrote:
+Isn't this a bit of an understatement?  I think you'll have to restrict
+this randomization to a subregion of the entire address space, otherwise
+the reduction in maximum mapping size due to fragmentation will be a
+problem on 64-bit architectures as well (which generally do not support
+the full 64 bits for user-space addresses).
 
-> > > > @@ -43,5 +43,7 @@
-> > > >  #define        SPI_TX_OCTAL            0x2000          /* transmit with 8 wires */
-> > > >  #define        SPI_RX_OCTAL            0x4000          /* receive with 8 wires */
-> > > >  #define        SPI_3WIRE_HIZ           0x8000          /* high impedance turnaround
-> > */
-> > > > +#define        SPI_NO_TX               0x10000         /* no transmit wire */
-> > > > +#define        SPI_NO_RX               0x20000         /* no receive wire */
+> +    On all systems, it will reduce performance and increase memory
+> +    usage due to less efficient use of page tables and inability to
+> +    merge adjacent VMAs with compatible attributes. In the worst case,
+> +    additional page table entries of up to 4 pages are created for
+> +    each mapping, so with small mappings there's considerable penalty.
 
-> > > Is it really material for uAPI?
-> > > Perhaps we may have something like
-> > > SPI_MODE_USER_MASK in uAPI and
-> > > in internal headers
+The number 4 is architecture-specific, right?
 
-> Hmm, in a way this could make sense for some SPIDEVs as well, to set these flags and get an error if they try to TX with the NO_TX flag set.
-> Not really sure about this.
-> Initially I mechanically added these here as an inertia to the previous patch which is just unifying the headers.
+Thanks,
+Florian
+-- 
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
 
-> Any other opinions? Thoughts?
-> Mark?
-
-spidev is hacky at the best of times...  It *is* probably better to only
-have the usefully mainpulable modes exposed in uapi and then define the
-rest internally though.
-
---hHWLQfXTYDoKhP50
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/ItDoACgkQJNaLcl1U
-h9Ckwgf/VrYn5fwTeqHxZl9gZCMMNNATL4F7b+ly/CACve6HcvslrstmDsD7tOoV
-+wKtnrhgYWzqwHpNzk1ts5IBZSq37RDXbbvylJ/DfWLQLelRYR5ZLrWyThtXnCHP
-uBqM/YppX3AqWLfIAcwObA+QHzLhoxvVOIeMx2cOJrbYZN/5vg/BwvIucZ5aSAvU
-Tv+0HRVGTKG7Ul4CJKnxthqjjr2R3xu+oscuTymdibWSU0yYslpIicdkn13179ZK
-wDzRNXVmaJUPMn5vBSfgHh/GFe9P7287bhf5FksmN2HMkD8p9ZjCrUNDt4g4oVKg
-GJPCc7X4m35E6fZch0J4YViffIvvAA==
-=SB4J
------END PGP SIGNATURE-----
-
---hHWLQfXTYDoKhP50--
