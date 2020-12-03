@@ -2,72 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42EA32CDBA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9771A2CDBA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436539AbgLCQ4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:56:38 -0500
-Received: from smtprelay0086.hostedemail.com ([216.40.44.86]:33996 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725999AbgLCQ4i (ORCPT
+        id S1727451AbgLCQ6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:58:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726026AbgLCQ6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:56:38 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 35ED118224D60;
-        Thu,  3 Dec 2020 16:55:57 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:979:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:2892:2902:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3874:4321:4383:4388:4395:5007:7875:10004:10400:10848:11232:11658:11914:12295:12297:12740:12760:12895:13069:13255:13311:13357:13439:14096:14097:14659:14777:21080:21433:21450:21451:21627:21819:21939:30022:30054:30056:30070:30075:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: grain99_2c007c7273bd
-X-Filterd-Recvd-Size: 2150
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  3 Dec 2020 16:55:56 +0000 (UTC)
-Message-ID: <3c11134905f06185dda4e9125f2fb7fd30fff979.camel@perches.com>
-Subject: Re: [Ksummit-discuss] crediting bug reports and fixes folded into
- original patch
-From:   Joe Perches <joe@perches.com>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "ksummit-discuss@lists.linuxfoundation.org" 
-        <ksummit-discuss@lists.linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Date:   Thu, 03 Dec 2020 08:55:54 -0800
-In-Reply-To: <694039d6e386d999fd74d038cf2627f5b3b0ca71.camel@HansenPartnership.com>
-References: <ea32eb02-5e44-0469-772b-34b5cb882543@suse.cz>
-         <694039d6e386d999fd74d038cf2627f5b3b0ca71.camel@HansenPartnership.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 3 Dec 2020 11:58:34 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E937C061A4F;
+        Thu,  3 Dec 2020 08:57:48 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id q10so1695007pfn.0;
+        Thu, 03 Dec 2020 08:57:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=4RN4lDKcBCUJRe+wn8srvtMYKGE3DNBe+LKKp0gOoAk=;
+        b=Gz81ipfafeXXxDWwoD7NhXxSdejww5z0emFjuapn3aVcTUxw37OKDZNqULpzdD4dj7
+         q765lFPvNtmR9Omi4KGwZtJaD5KFYD2LrRMpDzdquFg92DhrxOqRcPgy9Dsdu1UrogBL
+         frULSkTqRr2TmDWUV5FRAyRh4gmniAQ1o87y89moD3159GNcbT03JWVSs4cg8TT3B/18
+         UdlOeGA9YKp1JPUe6/WQhZRtKsbK4FS880B9PkRP0xRhfPLo64RqQ2UUyJW95EkuqMJq
+         mb5JQ1L9NhVqVjdo338dcmDxyl11FYRPCj/n5ipSlH6Xvi4M1pPqX3lu8zhpqohJMWGx
+         jQVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=4RN4lDKcBCUJRe+wn8srvtMYKGE3DNBe+LKKp0gOoAk=;
+        b=LfScWR1D/BXik/cN/0Qfq4fqZ74tQTHPlWdU6MNY9so27n634FIZWlcLtmQbMqXARP
+         W386WbbFcFnARF++iAp1JuNpRLUqkR73hQckKCKuinfriiW8Ti2GI/2eNdsR/kfW581D
+         PX/CohJRMnoNb66hrVQorIE/WXIBsOML6D6NBD+Nm63KvKVEWDdQqHsfnTABf++uN/6l
+         gC4R1XcuEnPZNfzE6XjpkX8MG0O236Ys2mRBFdIcGjGwtL19r/qx7tNrsDiZI9BIBB37
+         aIK9xcTIlzHoPBWZ4NowBqVZyA7oOeuwntfHmyz86hmnHV9g0zWPw2PJsGoj/aQIaoIg
+         +Pag==
+X-Gm-Message-State: AOAM5307XlUusNd6px5nkkZCZJnLoCkuW7dI+A0HkofPv09xGf77z6dT
+        yF1mEYAc1LkEAH+tssDK09ki6pnF8s4TPCDaFbk=
+X-Google-Smtp-Source: ABdhPJxYBKiOnIUXc4yQq5LsA65+zeEz4hHqZwFMki3dZm6SenHWuj43KDbJsAkO3zmjp+VLnL2xyEfLZo7ZCAbtFJA=
+X-Received: by 2002:a63:a0b:: with SMTP id 11mr3807266pgk.21.1607014667655;
+ Thu, 03 Dec 2020 08:57:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From:   =?UTF-8?B?0JzQsNC60YHQuNC8INCa0LjRgdC10LvRkdCy?= 
+        <bigunclemax@gmail.com>
+Date:   Thu, 3 Dec 2020 19:57:36 +0300
+Message-ID: <CALHCpMiWdSYxzKK5dXb7AGQ1ncsXmD853g9Aq0zd5YjE5cno8w@mail.gmail.com>
+Subject: 
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?B?0JzQsNC60YHQuNC8INCa0LjRgdC10LvRkdCy?= 
+        <bigunclemax@gmail.com>, Maxim Kochetkov <fido_max@inbox.ru>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-03 at 05:58 -0800, James Bottomley wrote:
-> So there are two embedded questions here: firstly, should we be as
-> wedded to clean history as we are, because showing the evolution would
-> simply solve this?  Secondly, if we are agreed on clean history, how
-> can we make engagement via email as important as engagement via commit
-> for the community managers so the Link tag is enough?  I've got to say
-> I think trying to add tags to recognize patch evolution is a mistake
-> and we instead investigate one of the two proposals above.
+From 772007b92eda50186c2e420b5bd895d4e4006ae8 Mon Sep 17 00:00:00 2001
+From: Maxim Kiselev <bigunclemax@gmail.com>
+Date: Thu, 3 Dec 2020 18:56:12 +0300
+Subject: [PATCH] spi: spi-fsl-dspi: Add GPIO chip select support
 
-I don't care that any trivial style notes I give to anyone
-are tracked for posterity.
+This patch allows use of GPIO for the chip select.
+Because dSPI controller can't send transactions without hardware chip
+selects, so first unused native CS will be set in SPI_PUSHR_CMD_PCS
 
-Who are these 'community managers' that use these?
+Signed-off-by: Maxim Kiselev <bigunclemax@gmail.com>
+---
+ drivers/spi/spi-fsl-dspi.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Signatures are a mechanism for credit tracking isn't great.
+diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
+index 028736687488..d5fba34de740 100644
+--- a/drivers/spi/spi-fsl-dspi.c
++++ b/drivers/spi/spi-fsl-dspi.c
+@@ -913,9 +913,14 @@ static int dspi_transfer_one_message(struct
+spi_controller *ctlr,
+         dspi->cur_transfer = transfer;
+         dspi->cur_msg = message;
+         dspi->cur_chip = spi_get_ctldata(spi);
++
++        if (spi->cs_gpiod)
++            gpiod_set_value(spi->cs_gpiod, 1);
++
+         /* Prepare command word for CMD FIFO */
+         dspi->tx_cmd = SPI_PUSHR_CMD_CTAS(0) |
+-                   SPI_PUSHR_CMD_PCS(spi->chip_select);
++                   SPI_PUSHR_CMD_PCS(spi->cs_gpiod ?
++                         ctlr->unused_native_cs : spi->chip_select);
+         if (list_is_last(&dspi->cur_transfer->transfer_list,
+                  &dspi->cur_msg->transfers)) {
+             /* Leave PCS activated after last transfer when
+@@ -1240,6 +1245,7 @@ static int dspi_probe(struct platform_device *pdev)
+     dspi->pdev = pdev;
+     dspi->ctlr = ctlr;
 
-One style that seems to have been generally accepted is for
-patch revision change logs to be noted below a --- line.
-
-Often that change log will shows various improvements made
-to a patch and the people and reasoning that helped make
-those improvements.
-
-Perhaps automate a mechanism to capture that information as
-git notes for the patches when applied.
-
-
++    ctlr->use_gpio_descriptors = true;
+     ctlr->setup = dspi_setup;
+     ctlr->transfer_one_message = dspi_transfer_one_message;
+     ctlr->dev.of_node = pdev->dev.of_node;
+-- 
+2.27.0
