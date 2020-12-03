@@ -2,100 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8B32CD41F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D98F2CD425
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729194AbgLCLAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:00:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727007AbgLCLAq (ORCPT
+        id S1730192AbgLCLBL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 06:01:11 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:38298 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730023AbgLCLBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:00:46 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1046DC061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 03:00:06 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id p5so1478447iln.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 03:00:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eCBJlUWH+dW7aWaKcrrL+ZaUSjhi3vUF7NMntXueVo8=;
-        b=r8Sr9p4jQrUiKkGT1lccCyvzLSPvC/tFZoa3kvBITuDo0aNqqwYyEBr4ZX57brV2TI
-         8ggs1nRgefvljtaew03Sgh2Edd5GsXUTZL6yebMypz2YncmNkHUvmN7BEXv0kild4ABX
-         Wycb4OF1hTuFuNb5GiD8GAP9dx+NYaUX/1UvgGS7wQqugmc2WHnWflsuTY0rKenU1NNU
-         LZ83vNj0dbj4kWWF3kPxv45BsR0eiiblOrp3MHuldTW2iarz6/oNlXqR/Z++sNK+ckk6
-         yDUySjZc0bx725eOCu+b0TNXkvl7hukrIHn3zE304gfAPa89JlCZuPBp0HIdLJE0mAGp
-         IIgg==
+        Thu, 3 Dec 2020 06:01:06 -0500
+Received: by mail-il1-f197.google.com with SMTP id e10so1290045ils.5
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 03:00:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eCBJlUWH+dW7aWaKcrrL+ZaUSjhi3vUF7NMntXueVo8=;
-        b=uSldumgrQVLWnTPs7lbKgqWOL+PO9pxcxLo29o1XyHFX9twTUW/er9NnoylLkjVIy0
-         zcXusJ4NWe5V4/qvTCL/fNuUjrocnNRT3MFfM1vq19joOrumRHgnyyoOdEddyd8KEoVH
-         C41z9n4H7wVTP+eeWxf2IBmG72YhVqo3dDUtqG1o/M1EhU/nGl8r/ARYd0XUMznzRONd
-         8LHZsDH0ZHn4UJnZkh9/J+j/cHf9WFDYn4av17NryoiRNWKOG1I9a1qyHU5dygXAtRqm
-         /prRqV5eP+NaqUo2tVEPvOyjCoJ7Vh2wp7ATOVE+ZltBunoSVmRKOdFsgjN/T3wuFIt7
-         Iglg==
-X-Gm-Message-State: AOAM530zlP8n2kNdKkIx7yVbW0Hl27fNA2KXG7lwqVhOgAcVyTB/EXiM
-        mnW6FupJ0bbTpmuAR1bPjq+Qw5M7LNhC6Bg7Ygpp/NpluFo=
-X-Google-Smtp-Source: ABdhPJwf0+pHYWwFyNweDxYeQYaI7uM/O1LxJXxJ1BGQmbhiDeF70u0g5K94a7ixSkKBIAzsSQcrRGg8eALz5YE9I+0=
-X-Received: by 2002:a92:8587:: with SMTP id f129mr2473789ilh.251.1606993205259;
- Thu, 03 Dec 2020 03:00:05 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to
+         :content-transfer-encoding;
+        bh=s7wpIQYD7HOHVPoKzCJyXbPlEInW7mVrYwkI7T/QRJQ=;
+        b=C5ASMX0o7OwcsYo6kRvLRzdj4oKsykV+p0pj0OlbkQav3o/TVSfeGWyoE1TMY85mmB
+         AG5Vw/TxlUug8HBV/Uoser9rbrh6LupcJz/MYB7QLb/WDwY7z7sVVHczXHCqACeC/JuN
+         qULqilBxwX5V8rwq3gbce9SLYscf5VxnH6Pjyb+JWeEBbHi0J+1wshhN8FQwAc8uZpOq
+         S14mzwTBIjGLD2hEknV81XQRRo3IzTnWNrcm9Spo8vRKalxS85qyWB1Ylymt3fx47Aue
+         Gf2qxlv/3Kkh+FwEEFvIvoT7Gi4UVXXqBou+0JaOJ/bCdLij9c7eluP3ME9SbuiveNMd
+         kabA==
+X-Gm-Message-State: AOAM5324Hkl2w65UPqLyKz35Whuq4QXYqDc57r/AvMUR7sjlrxpSydDx
+        gf5iGcoXg9GdbK7d0G7lPGikMWdeVd3VJ4ZKjevvUsPC+vhU
+X-Google-Smtp-Source: ABdhPJweJ8AbF1iH6ngtDCAfGuAVk6pJ26+tLMvrhopTnHYj37h30tcZI/Ams8E4TM/ELH/1j3as+gDu73pJP+Bvo/hvV1mBebiW
 MIME-Version: 1.0
-References: <280235acc0e91365f3fd3b5be5a5244eced1ff61.camel@perches.com>
- <20201202183045.9309-1-yashsri421@gmail.com> <5afbcd1423ee8fc2dfad191d94aef6efc17198c8.camel@perches.com>
- <a2c74693-93ae-cd5a-7836-4ffff643fc09@gmail.com>
-In-Reply-To: <a2c74693-93ae-cd5a-7836-4ffff643fc09@gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Thu, 3 Dec 2020 11:59:54 +0100
-Message-ID: <CAKXUXMxPMdGmnOWdYnS0VQXaAH9dTe7uNfUUPp-GLy2xTXuABw@mail.gmail.com>
-Subject: Re: [PATCH -mmots] checkpatch: add fix for non-standard signature - co-authored-by
-To:     Aditya <yashsri421@gmail.com>
-Cc:     Joe Perches <joe@perches.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
+X-Received: by 2002:a5e:d717:: with SMTP id v23mr2665788iom.60.1606993225116;
+ Thu, 03 Dec 2020 03:00:25 -0800 (PST)
+Date:   Thu, 03 Dec 2020 03:00:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000056f29e05b58d448f@google.com>
+Subject: linux-next boot error: kernel BUG at include/linux/page-flags.h:LINE!
+From:   syzbot <syzbot+86800a8349c0f3f9466e@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, rppt@kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 10:59 AM Aditya <yashsri421@gmail.com> wrote:
->
-> On 3/12/20 12:26 am, Joe Perches wrote:
-> > On Thu, 2020-12-03 at 00:00 +0530, Aditya Srivastava wrote:
-> >> Currently, checkpatch.pl warns us for BAD_SIGN_OFF on the usage of
-> >> non-standard signatures.
-> >>
-> >> An evaluation on v4.13..v5.8 showed that out of 539 warnings due to
-> >> non-standard signatures, 43 are due to the use of 'Co-authored-by'
-> >> tag, which may seem correct, but is not standard.
-> >>
-> >> The standard signature equivalent for 'Co-authored-by' is
-> >> 'Co-developed-by'.
-> >
-> > I'm not going to ack this as I don't mind non-standard signatures.
-> >
->
-> What do you suggest?
-> Should I drop this patch and move on?
->
+Hello,
 
-Joe does not ack this, but he also does not nack it.
+syzbot found the following issue on:
 
-You either move on (which is perfectly fine), or
+HEAD commit:    bfd521e1 Add linux-next specific files for 20201203
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14d5d403500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=76090eb4ba939f87
+dashboard link: https://syzkaller.appspot.com/bug?extid=86800a8349c0f3f9466e
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-you either wait that Andrew Morton reviews it and accepts it because
-he thinks it useful, or
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+86800a8349c0f3f9466e@syzkaller.appspotmail.com
 
-you reach out to the git committers that have been using
-Co-authored-by in the past and ask them if this kind of feature would
-have been helpful for them and you get an ack from them that convinces
-Andrew Morton to pick this.
+NODE_DATA(1) allocated [mem 0x23fff8000-0x23fffcfff]
+Zone ranges:
+  DMA      [mem 0x0000000000001000-0x0000000000ffffff]
+  DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
+  Normal   [mem 0x0000000100000000-0x000000023fffffff]
+  Device   empty
+Movable zone start for each node
+Early memory node ranges
+  node   0: [mem 0x0000000000001000-0x000000000009efff]
+  node   0: [mem 0x0000000000100000-0x00000000bfffcfff]
+  node   0: [mem 0x0000000100000000-0x000000013fffffff]
+  node   1: [mem 0x0000000140000000-0x000000023fffffff]
+Initmem setup node 0 [mem 0x0000000000001000-0x000000013fffffff]
+DMA: Zeroed struct page in unavailable ranges: 97
+DMA32: Zeroed struct page in unavailable ranges: 3
+Initmem setup node 1 [mem 0x0000000140000000-0x000000023fffffff]
+kasan: KernelAddressSanitizer initialized
+ACPI: PM-Timer IO Port: 0xb008
+ACPI: LAPIC_NMI (acpi_id[0xff] dfl dfl lint[0x1])
+IOAPIC[0]: apic_id 0, version 17, address 0xfec00000, GSI 0-23
+ACPI: INT_SRC_OVR (bus 0 bus_irq 5 global_irq 5 high level)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 high level)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 10 global_irq 10 high level)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 11 global_irq 11 high level)
+Using ACPI (MADT) for SMP configuration information
+smpboot: Allowing 2 CPUs, 0 hotplug CPUs
+PM: hibernation: Registered nosave memory: [mem 0x00000000-0x00000fff]
+PM: hibernation: Registered nosave memory: [mem 0x0009f000-0x0009ffff]
+PM: hibernation: Registered nosave memory: [mem 0x000a0000-0x000effff]
+PM: hibernation: Registered nosave memory: [mem 0x000f0000-0x000fffff]
+PM: hibernation: Registered nosave memory: [mem 0xbfffd000-0xbfffffff]
+PM: hibernation: Registered nosave memory: [mem 0xc0000000-0xfffbbfff]
+PM: hibernation: Registered nosave memory: [mem 0xfffbc000-0xffffffff]
+[mem 0xc0000000-0xfffbbfff] available for PCI devices
+Booting paravirtualized kernel on KVM
+clocksource: refined-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+setup_percpu: NR_CPUS:8 nr_cpumask_bits:8 nr_cpu_ids:2 nr_node_ids:2
+percpu: Embedded 64 pages/cpu s223304 r8192 d30648 u1048576
+kvm-guest: stealtime: cpu 0, msr b9e1fb80
+kvm-guest: PV spinlocks enabled
+PV qspinlock hash table entries: 256 (order: 0, 4096 bytes, linear)
+Built 2 zonelists, mobility grouping on.  Total pages: 2064262
+Policy zone: Normal
+Kernel command line: earlyprintk=serial oops=panic panic_on_warn=1 nmi_watchdog=panic panic=86400 net.ifnames=0 sysctl.kernel.hung_task_all_cpu_backtrace=1 ima_policy=tcb watchdog_thresh=55 workqueue.watchdog_thresh=140 kvm-intel.nested=1 nf-conntrack-ftp.ports=20000 nf-conntrack-tftp.ports=20000 nf-conntrack-sip.ports=20000 nf-conntrack-irc.ports=20000 nf-conntrack-sane.ports=20000 vivid.n_devs=16 vivid.multiplanar=1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2 netrom.nr_ndevs=16 rose.rose_ndevs=16 spec_store_bypass_disable=prctl numa=fake=2 nopcid dummy_hcd.num=8 binder.debug_mask=0 rcupdate.rcu_expedited=1 root=/dev/sda console=ttyS0 vsyscall=native BOOT_IMAGE=/vmlinuz root=/dev/sda1 console=ttyS0 earlyprintk=serial vsyscall=native oops=panic panic_on_warn=1 nmi_watchdog=panic panic=86400 net.ifnames=0 sysctl.kernel.hung_task_all_cpu_backtrace=1
+mem auto-init: stack:off, heap alloc:on, heap free:off
+page:ffffea0000000000 is uninitialized and poisoned
+raw: ffffffffffffffff ffffea0000000008 ffffea0000000008 ffffffffffffffff
+raw: ffffffffffffffff ffffffffffffffff ffffffffffffffff ffffffffffffffff
+page dumped because: VM_BUG_ON_PAGE(1 && PageCompound(page))
+------------[ cut here ]------------
+kernel BUG at include/linux/page-flags.h:356!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.0-rc6-next-20201203-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__SetPageReserved include/linux/page-flags.h:356 [inline]
+RIP: 0010:reserve_bootmem_region+0xc8/0x128 mm/page_alloc.c:1522
+Code: e8 03 42 80 3c 30 00 74 08 48 89 ef e8 a1 54 c3 f8 48 8b 45 00 0f ba e0 10 73 11 48 c7 c6 00 e9 55 89 48 89 ef e8 08 53 b1 f8 <0f> 0b 4c 89 e8 48 c1 e8 03 42 80 3c 30 00 74 08 4c 89 ef e8 70 54
+RSP: 0000:ffffffff8b007d98 EFLAGS: 00010096
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffffffff8b09b000 RSI: ffffffff88b71174 RDI: 0000000000000003
+RBP: ffffea0000000000 R08: ffffffffffffffff R09: 0000000000000001
+R10: ffffffff88b7111b R11: 0000000000000000 R12: 0000000000000010
+R13: ffffea0000000008 R14: dffffc0000000000 R15: ffffffff8b007e20
+FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff88823ffff000 CR3: 000000000b08e000 CR4: 00000000000406b0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ free_low_memory_core_early mm/memblock.c:2051 [inline]
+ memblock_free_all+0xf0/0x2c7 mm/memblock.c:2100
+ mem_init+0x1d/0x2b5 arch/x86/mm/init_64.c:1292
+ mm_init+0xa4/0xcc init/main.c:831
+ start_kernel+0x184/0x491 init/main.c:907
+ secondary_startup_64_no_verify+0xb0/0xbb
+Modules linked in:
+random: get_random_bytes called from init_oops_id kernel/panic.c:546 [inline] with crng_init=0
+random: get_random_bytes called from init_oops_id kernel/panic.c:543 [inline] with crng_init=0
+random: get_random_bytes called from print_oops_end_marker kernel/panic.c:556 [inline] with crng_init=0
+random: get_random_bytes called from oops_exit+0x58/0x80 kernel/panic.c:567 with crng_init=0
+---[ end trace 9fcd7b4745fb867f ]---
+RIP: 0010:__SetPageReserved include/linux/page-flags.h:356 [inline]
+RIP: 0010:reserve_bootmem_region+0xc8/0x128 mm/page_alloc.c:1522
+Code: e8 03 42 80 3c 30 00 74 08 48 89 ef e8 a1 54 c3 f8 48 8b 45 00 0f ba e0 10 73 11 48 c7 c6 00 e9 55 89 48 89 ef e8 08 53 b1 f8 <0f> 0b 4c 89 e8 48 c1 e8 03 42 80 3c 30 00 74 08 4c 89 ef e8 70 54
+RSP: 0000:ffffffff8b007d98 EFLAGS: 00010096
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffffffff8b09b000 RSI: ffffffff88b71174 RDI: 0000000000000003
+RBP: ffffea0000000000 R08: ffffffffffffffff R09: 0000000000000001
+R10: ffffffff88b7111b R11: 0000000000000000 R12: 0000000000000010
+R13: ffffea0000000008 R14: dffffc0000000000 R15: ffffffff8b007e20
+FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff88823ffff000 CR3: 000000000b08e000 CR4: 00000000000406b0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-I hope this helps. If nobody thinks it is a useful feature, move on to
-work others acknowledge as useful. We have enough stuff to work on.
 
-Lukas
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
