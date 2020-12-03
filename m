@@ -2,107 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CAB2CD2AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF9E2CD2AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729998AbgLCJht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:37:49 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:36497 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726603AbgLCJht (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:37:49 -0500
-Received: by mail-oi1-f193.google.com with SMTP id x16so1549019oic.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 01:37:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jvny1rtUiDgjADL0gl6coThE7hbff0ih3DlnnP8/5jo=;
-        b=Rc4/cxx0I80fW9WaaLqAaBy1WD2I1bUuUVJIzC/rQtoLoGkhU1S07EIf35NP7QFr5r
-         hRHf60FQbXnWV+E2CPVkeWRzIyML6q6CB6TLKBYcXfoOER4/uax5LJf5Y2nj6P9FRyze
-         Knz+JTT0jGBnD8Wh0P4hfFp626TwzS/N00JY8EMgt0EIZMAPe9h6kG5fra7ROC5Onc37
-         YqkyL2fcL0TbfbsoOYMfPaBffNReUA5QcVBZ5BcGuXzeBwOJpmhF0aXR3CmN5SpFohoI
-         4ukpPHDaMQF70ycPokiE8vi5SEjpm5CibZ3MXu7WHu7YmBNYMWNYa1J5Tctbh8b2R+eR
-         iNpw==
-X-Gm-Message-State: AOAM531eAlA0iJ1zwJUTzqhlBl4m2gPWi0XYA0bOkbLPLkunNhzdrzpQ
-        Vq71pDSwScw3sRLkBsygjYR18xnyL9m3gQ6H96+KIKpy
-X-Google-Smtp-Source: ABdhPJw4GKrS5Viye7DaliTruHqlREe1NdLISwc/nLmA8wqlEaJsNx9bI4Esu7LyGFrsK/31Ymq2sbT3Qb2UsLRC6Kc=
-X-Received: by 2002:aca:ec09:: with SMTP id k9mr1271015oih.153.1606988228261;
- Thu, 03 Dec 2020 01:37:08 -0800 (PST)
+        id S1730125AbgLCJiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:38:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45076 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729955AbgLCJiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 04:38:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 84187AC55;
+        Thu,  3 Dec 2020 09:37:42 +0000 (UTC)
+Date:   Thu, 3 Dec 2020 09:37:39 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Rafael Aquini <aquini@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>, linux-api@vger.kernel.org
+Subject: Re: [PATCH -V6 RESEND 2/3] NOT kernel/man-pages:
+ man2/set_mempolicy.2: Add mode flag MPOL_F_NUMA_BALANCING
+Message-ID: <20201203093739.GB3306@suse.de>
+References: <20201202084234.15797-1-ying.huang@intel.com>
+ <20201202084234.15797-3-ying.huang@intel.com>
+ <20201202114357.GW3306@suse.de>
+ <87ft4npskx.fsf@yhuang-dev.intel.com>
 MIME-Version: 1.0
-References: <ea32eb02-5e44-0469-772b-34b5cb882543@suse.cz> <CAPcyv4jDHMt4PpR2Htvw27rn5i5sCkwXtoZH-rFbtG8Hj7x1sg@mail.gmail.com>
- <20201203093458.GA16543@unreal>
-In-Reply-To: <20201203093458.GA16543@unreal>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 3 Dec 2020 10:36:56 +0100
-Message-ID: <CAMuHMdVcPELarE=eJEc-=AdyfmhhZQsYtUggWCaetuEdk=VpMQ@mail.gmail.com>
-Subject: Re: [Ksummit-discuss] crediting bug reports and fixes folded into
- original patch
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "ksummit-discuss@lists.linuxfoundation.org" 
-        <ksummit-discuss@lists.linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <87ft4npskx.fsf@yhuang-dev.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 10:35 AM Leon Romanovsky <leon@kernel.org> wrote:
-> On Wed, Dec 02, 2020 at 08:02:27PM -0800, Dan Williams wrote:
-> > On Wed, Dec 2, 2020 at 3:44 PM Vlastimil Babka <vbabka@suse.cz> wrote:
-> > > there was a bit of debate on Twitter about this, so I thought I would bring it
-> > > here. Imagine a scenario where patch sits as a commit in -next and there's a bug
-> > > report or fix, possibly by a bot or with some static analysis. The maintainer
-> > > decides to fold it into the original patch, which makes sense for e.g.
-> > > bisectability. But there seem to be no clear rules about attribution in this
-> > > case, which looks like there should be, probably in
-> > > Documentation/maintainer/modifying-patches.rst
-> > >
-> > > The original bug fix might include a From: $author, a Reported-by: (e.g.
-> > > syzbot), Fixes: $next-commit, some tag such as Addresses-Coverity: to credit the
-> > > static analysis tool, and an SoB. After folding, all that's left might be a line
-> > > as "include fix from $author" in the SoB area. This is a loss of
-> > > metadata/attribution just due to folding, and might make contributors unhappy.
-> > > Had they sent the fix after the original commit was mainline and immutable, all
-> > > the info above would "survive" in the form of new commit.
-> > >
-> > > So I think we could decide what the proper format would be, and document it
-> > > properly. I personally wouldn't mind just copy/pasting the whole commit message
-> > > of the fix (with just a short issue description, no need to include stacktraces
-> > > etc if the fix is folded), we could just standardize where, and how to delimit
-> > > it from the main commit message. If it's a report (person or bot) of a bug that
-> > > the main author then fixed, preserve the Reported-by in the same way (making
-> > > clear it's not a Reported-By for the "main thing" addressed by the commit).
-> > >
-> > > In the debate one less verbose alternatve proposed was a SoB with comment
-> > > describing it's for a fix and not whole patch, as some see SoB as the main mark
-> > > of contribution, that can be easily found and counted etc. I'm not so sure about
-> > > it myself, as AFAIK SoB is mainly a DCO thing, and for a maintainer it means
-> > > something else ("passed through my tree") than for a patch author. And this
-> > > approach would still lose the other tags.
-> > >
-> > > Thoughts?
+On Thu, Dec 03, 2020 at 09:49:02AM +0800, Huang, Ying wrote:
+> >> diff --git a/man2/set_mempolicy.2 b/man2/set_mempolicy.2
+> >> index 68011eecb..3754b3e12 100644
+> >> --- a/man2/set_mempolicy.2
+> >> +++ b/man2/set_mempolicy.2
+> >> @@ -113,6 +113,12 @@ A nonempty
+> >>  .I nodemask
+> >>  specifies node IDs that are relative to the set of
+> >>  node IDs allowed by the process's current cpuset.
+> >> +.TP
+> >> +.BR MPOL_F_NUMA_BALANCING " (since Linux 5.11)"
+> >> +Enable the Linux kernel NUMA balancing for the task if it is supported
+> >> +by kernel.
+> >> +If the flag isn't supported by Linux kernel, return -1 and errno is
+> >> +set to EINVAL.
+> >>  .PP
+> >>  .I nodemask
+> >>  points to a bit mask of node IDs that contains up to
+> >> @@ -293,6 +299,9 @@ argument specified both
 > >
-> > How about a convention to add a Reported-by: and a Link: to the
-> > incremental fixup discussion? It's just polite to credit helpful
-> > feedback, not sure it needs a more formal process.
->
-> Maybe "Fixup-Reported-by:" and "Fixup-Link:"?
+> > Should this be expanded more to clarify it applies to MPOL_BIND
+> > specifically?
+> >
+> > Maybe the first patch should be expanded more and explictly fail if
+> > MPOL_F_NUMA_BALANCING is used with anything other than MPOL_BIND?
+> 
+> For MPOL_PREFERRED, why could we not use NUMA balancing to migrate pages
+> to the accessing local node if it is same as the preferred node? 
 
-And "Earlier-Review-Comments-Provided-by:"?
+You could but the kernel patch does not do that by making preferred_nid
+stick to the preferred node when hinting faults are trapped on that VMA.
+It would have to be a separate patch coupled with a man page update. If
+you wanted to go in this direction in the future, then the patch should
+explicitly return an error *now* if MPOL_PREFERRED is or'd with
+MPOL_F_NUMA_BALANCING so that an application becomes aware of
+MPOL_F_NUMA_BALANCING then it can detect if support exists in the
+current running kernel.
 
-How far do we want to go?
+> Even for MPOL_INTERLEAVE, if the target node is the same as the
+> accessing local node, can we use NUMA balancing to migrate pages?
+> 
 
-Gr{oetje,eeting}s,
+The intent of MPOL_INTERLEAVE is to average the costs of the memory
+access so the average cost across the VMA is roughly similar across the
+entire range. This may be particularly important if the VMA is shared
+between multiple threads that are spread out on multiple nodes. A change
+in semantics there should be clearly documented.
 
-                        Geert
+Similar, if you want to go in this direction, MPOL_F_NUMA_BALANCING
+should be chcked against MPOL_INTERLEAVE and explicitly fail now so
+suport can be detected at runtime.
+
+> So, I prefer to make MPOL_F_NUMA_BALANCING to be
+> 
+>   Optimizing with NUMA balancing if possible, and we may add more
+>   optimization in the future.
+> 
+
+Maybe, but I think it's best that the actual behaviour of the kernel is
+documented instead of desired behaviour or future planning.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Mel Gorman
+SUSE Labs
