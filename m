@@ -2,115 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136F62CD97A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4647D2CD981
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730975AbgLCOni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 09:43:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42252 "EHLO
+        id S1730959AbgLCOod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 09:44:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730556AbgLCOni (ORCPT
+        with ESMTP id S1727065AbgLCOoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:43:38 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD94FC061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 06:42:57 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id v1so1216195pjr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 06:42:57 -0800 (PST)
+        Thu, 3 Dec 2020 09:44:32 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D963C061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 06:43:51 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id q8so2745798ljc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 06:43:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=p3JIu6lw98cKabBdZ9zOZ/djlPH0Wt6XPKXzLtwvrLs=;
-        b=PSkcaAW7awwXjQ0CMrmvkVTWs7N/4OnJHeT9sYTN9e1WvNx+09qSEMPbeuPmL57o7R
-         UOvK23e+G/b7phpON10QIgqnbYnz587oMB6/dY8JUr7yrwCv9evVJ/QeXdADL1hpQ5gX
-         VUEevggIzgaS5iXtj1we6EwsGJPQLuBtB7xKVLUUcUHEVuuHjRbND0kdv6hNAWYaDbW1
-         Hgq/wRr/B2KPuHWdBiEpvIuWYvrH0TX6LK9lk6xrOqnT1E3Kn6sbq1qluCZ2VKQoLBfh
-         D/gm79cj9tPqG3doLFwsNBLAdczsEVW+RG/oefqHHqQjl/WH0IDiae1Fk/dmZk7r5gL4
-         SFuQ==
+        bh=xKonHAzWScU6PiPc/DK529aH5VgAZfj3Pj1T+1htNxI=;
+        b=Vec/zxkKCF/pLDv4KJLo2qXej9uAOcjIE2oZbVGbIcqS3/98akRIQU1HfFcOjSArc4
+         0VrDfss+2Llv6L/tyj0Pk+GmB0nBRTLVYCAlwUztRiRbgW+zXJdoJbDAqQIKKFug8t/B
+         yG8YvfUr4TNwrP+xu/pbtts2KP3Y7+o/Lz+9fPwqcj+SxglzxX42fg+Hm9quL+b1t3hL
+         n7VQFhpw10dA+5EtsAGrENOPIZc18bJBPzrTq4v06xPY5cQZm4j7kkKog872rtta9LEZ
+         HPoh5JllGy5SBW9e8IsLGyTTvH7u6cvnPxexRUOS2ImDXjlGfFA/ppFaX5bA+8OE3KC6
+         bceA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=p3JIu6lw98cKabBdZ9zOZ/djlPH0Wt6XPKXzLtwvrLs=;
-        b=cjhX33c4ISnF7SiqPmV9OGjsI7tjOOackqCB/DQW4Kww8hj6EW1x81WEzd8OWKOM00
-         14uZSbdsDeOUYQ1NSLBLxIs/yjN3YcMNXBgG0TfDap+PqHUS4P5Csl81KWwoYVtPgu4Y
-         1zLz3O1guZXWgvzDvyKgYyV8g7btluGzCo7i/YN9atTGumeXTMR83lf1DetncOCLQ6KS
-         cD4s5XMD55ZdmmBn7YNwwAvX1X7Xbnteq7vhpKf8X36VozFcMheNyq+pDP6CfiJHxg0e
-         D/bYDVfCChb8stKHtZljfeqXZqzLww3/xPjOQ/GFosP/r/dQCqyUiMm6ujoo1ORTHsRc
-         GwDg==
-X-Gm-Message-State: AOAM5334vZAqtcYXzfn5zZ0kxjjyc7USdSUqI+4dnrF6K0CBqCLUGiNa
-        YCs4KUBscv8BSoxbvCn/OKc=
-X-Google-Smtp-Source: ABdhPJyP9BvP14g/wb4ZgOx3ktIQlO3Mldowi4PHo+Ye/qwyje5QG2/rjuo91G1zuj1dkvX6Gp0tYw==
-X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr3307192pjj.206.1607006577360;
-        Thu, 03 Dec 2020 06:42:57 -0800 (PST)
-Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
-        by smtp.gmail.com with ESMTPSA id k9sm2232081pfp.68.2020.12.03.06.42.52
+        bh=xKonHAzWScU6PiPc/DK529aH5VgAZfj3Pj1T+1htNxI=;
+        b=Tq5q+gj2jaJlj2jZVsr0SF/mrspI7u7Pxm0Seao6DPyeokJgqgeSdeNT5ALF0ffzQV
+         VB1aHQYVMoJqvD2SdBCkSKDBuAQxluoxZEQTMl5I44WOZr2O50fYI2PSvwJI4nhCjxfB
+         Zy7k85vlc0BA3v2CM83p5efihXKeay+KBJt7/qTvVLtdMKcXXkkndgA2dqGzYyjELC/B
+         kCJPFv6LO5TvnlB3KRDcIzJIOZBS21V7nXGmWq6PNlnjGoujJbp1PfFuEPnhXSBPqXX4
+         +zQzzVdbNH4SzEbl+24WIC1jjwPqT1vOxJw4azDVrwE53e72wzFP4gcdK8nW4QH+3V+p
+         cytA==
+X-Gm-Message-State: AOAM530Q0+51rVy4WEbUrcRrE2FctSKaseMXh8o9WP7p4nHfkVXxqskk
+        ScYc6U+bIENMdfxaYbLHjt/5/A==
+X-Google-Smtp-Source: ABdhPJxO1kHlN8+cmD7BIg1253Rb6K2Ri8D79w/6n5WmNnVdf+uRYt3QNl5L+SixjQv0xifkg1um5A==
+X-Received: by 2002:a2e:920a:: with SMTP id k10mr1314492ljg.260.1607006629599;
+        Thu, 03 Dec 2020 06:43:49 -0800 (PST)
+Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
+        by smtp.gmail.com with ESMTPSA id q11sm579011lfo.249.2020.12.03.06.43.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 06:42:56 -0800 (PST)
-From:   Chuhong Yuan <hslester96@gmail.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Peter Rosin <peda@axentia.se>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Chuhong Yuan <hslester96@gmail.com>
-Subject: [PATCH] drm/fb-helper: Add missed unlocks in setcmap_legacy()
-Date:   Thu,  3 Dec 2020 22:42:48 +0800
-Message-Id: <20201203144248.418281-1-hslester96@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 03 Dec 2020 06:43:49 -0800 (PST)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     madalin.bucur@nxp.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH] dpaa_eth: fix build errorr in dpaa_fq_init
+Date:   Thu,  3 Dec 2020 15:43:43 +0100
+Message-Id: <20201203144343.790719-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-setcmap_legacy() does not call drm_modeset_unlock_all() in some exits,
-add the missed unlocks with goto to fix it.
+When building FSL_DPAA_ETH the following build error shows up:
 
-Fixes: 964c60063bff ("drm/fb-helper: separate the fb_setcmap helper into atomic and legacy paths")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+/tmp/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c: In function ‘dpaa_fq_init’:
+/tmp/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c:1135:9: error: too few arguments to function ‘xdp_rxq_info_reg’
+ 1135 |   err = xdp_rxq_info_reg(&dpaa_fq->xdp_rxq, dpaa_fq->net_dev,
+      |         ^~~~~~~~~~~~~~~~
+
+Commit b02e5a0ebb17 ("xsk: Propagate napi_id to XDP socket Rx path")
+added an extra argument to function xdp_rxq_info_reg and commit
+d57e57d0cd04 ("dpaa_eth: add XDP_TX support") didn't know about that
+extra argument.
+
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 ---
- drivers/gpu/drm/drm_fb_helper.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
-index 1543d9d10970..8033467db4be 100644
---- a/drivers/gpu/drm/drm_fb_helper.c
-+++ b/drivers/gpu/drm/drm_fb_helper.c
-@@ -923,11 +923,15 @@ static int setcmap_legacy(struct fb_cmap *cmap, struct fb_info *info)
- 	drm_modeset_lock_all(fb_helper->dev);
- 	drm_client_for_each_modeset(modeset, &fb_helper->client) {
- 		crtc = modeset->crtc;
--		if (!crtc->funcs->gamma_set || !crtc->gamma_size)
--			return -EINVAL;
-+		if (!crtc->funcs->gamma_set || !crtc->gamma_size) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
- 
--		if (cmap->start + cmap->len > crtc->gamma_size)
--			return -EINVAL;
-+		if (cmap->start + cmap->len > crtc->gamma_size) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
- 
- 		r = crtc->gamma_store;
- 		g = r + crtc->gamma_size;
-@@ -940,8 +944,9 @@ static int setcmap_legacy(struct fb_cmap *cmap, struct fb_info *info)
- 		ret = crtc->funcs->gamma_set(crtc, r, g, b,
- 					     crtc->gamma_size, NULL);
- 		if (ret)
--			return ret;
-+			goto out;
- 	}
-+out:
- 	drm_modeset_unlock_all(fb_helper->dev);
- 
- 	return ret;
+I think this issue is seen since both patches went in at the same time
+to bpf-next and net-next.
+
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+index 947b3d2f9c7e..6cc8c4e078de 100644
+--- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
++++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+@@ -1133,7 +1133,7 @@ static int dpaa_fq_init(struct dpaa_fq *dpaa_fq, bool td_enable)
+ 	if (dpaa_fq->fq_type == FQ_TYPE_RX_DEFAULT ||
+ 	    dpaa_fq->fq_type == FQ_TYPE_RX_PCD) {
+ 		err = xdp_rxq_info_reg(&dpaa_fq->xdp_rxq, dpaa_fq->net_dev,
+-				       dpaa_fq->fqid);
++				       dpaa_fq->fqid, 0);
+ 		if (err) {
+ 			dev_err(dev, "xdp_rxq_info_reg() = %d\n", err);
+ 			return err;
 -- 
-2.26.2
+2.29.2
 
