@@ -2,219 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E592CE0CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3ED2CE0C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731151AbgLCVe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 16:34:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728014AbgLCVe0 (ORCPT
+        id S1729628AbgLCVeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 16:34:24 -0500
+Received: from asavdk4.altibox.net ([109.247.116.15]:47560 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728014AbgLCVeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 16:34:26 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C204BC061A54
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 13:33:45 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id u12so3385045wrt.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 13:33:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EnaHuQwLv5J2e530Io2NN9WaHguCzooJl32xWS8vIoQ=;
-        b=mFM7qWW98WrweOYKU/AMSCKc+6ye+7IoMEv8pvEEMqvqwSuzCHb2qV2Iyuoa8Om6TR
-         r0LjEhi/ikG+54Bnxu2QMUxhiJCHst0HTlB1OLJJ9MmVRlCYoBKUAnhEbs1fo7ojWDGs
-         CHWZrkwqjh7e9lPPwBYdeiGLziKI3GTUNWbFw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EnaHuQwLv5J2e530Io2NN9WaHguCzooJl32xWS8vIoQ=;
-        b=MtERnWpuji1dCpHSB4J2ddZcheCug6Fjt2EqAtczbEPKyo/TI6LO+nZgC6EeOzW6zT
-         VSgQj4sXBF20kx06ihbQZu029ULV083/l7NV44Lx26U5C7aLJCZS8VCmkCKWn8hVt8xt
-         y9HCSN3GUw8MFUaoImBRKuDU2JsBr7NHvwBVy6ZxrJWiJkRKeR3md4M21f3kvdTji8NZ
-         iGQQUZHQBGR32DBcPMYw3Zj2A/sj1GET3lb96UWgBDNtoTqHcSgTiUruSWfEya6j9UUy
-         l8nx1yRXpCmuNP7aevr3bMyF7Pm96xzn5JpKB+I7fYFiBd7RVAF5Mdtme3JbxB+pyYat
-         XxIQ==
-X-Gm-Message-State: AOAM533VCkk+cU9dQAkCNhf0FjcxhTKDprcyziY5gw73+SeUg7jlwzFF
-        ylnRVQkNa3BsvEbgVfD/mD4Q+w==
-X-Google-Smtp-Source: ABdhPJzdbq5v+PbGH2lQ/GGqD30fvo+U+LeQ5CGKKbcNzW6BIvvgipoXkGUJ4jN3I+4uQwy0s9q8ZQ==
-X-Received: by 2002:adf:f40a:: with SMTP id g10mr1337572wro.58.1607031224483;
-        Thu, 03 Dec 2020 13:33:44 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
-        by smtp.gmail.com with ESMTPSA id h83sm754013wmf.9.2020.12.03.13.33.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 13:33:43 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-X-Google-Original-From: Florent Revest <revest@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, revest@google.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/3] bpf: Add a selftest for the tracing bpf_get_socket_cookie
-Date:   Thu,  3 Dec 2020 22:33:30 +0100
-Message-Id: <20201203213330.1657666-3-revest@google.com>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-In-Reply-To: <20201203213330.1657666-1-revest@google.com>
-References: <20201203213330.1657666-1-revest@google.com>
+        Thu, 3 Dec 2020 16:34:24 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 22B508050C;
+        Thu,  3 Dec 2020 22:33:36 +0100 (CET)
+Date:   Thu, 3 Dec 2020 22:33:34 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     airlied@linux.ie, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
+        kraxel@redhat.com, tzimmermann@suse.de, alexander.deucher@amd.com,
+        tglx@linutronix.de
+Subject: Re: [PATCH drm/hisilicon 2/3] drm/irq: Add the new api to install irq
+Message-ID: <20201203213334.GB81406@ravnborg.org>
+References: <1606898835-40775-1-git-send-email-tiantao6@hisilicon.com>
+ <1606898835-40775-3-git-send-email-tiantao6@hisilicon.com>
+ <20201203200711.GA74163@ravnborg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203200711.GA74163@ravnborg.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=Itgwjo3g c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=TJU36lUpsagq2rwV8KQA:9 a=CjuIK1q_8ugA:10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This builds up on the existing socket cookie test which checks whether
-the bpf_get_socket_cookie helpers provide the same value in
-cgroup/connect6 and sockops programs for a socket created by the
-userspace part of the test.
+Hi Tian,
 
-Adding a tracing program to the existing objects requires a different
-attachment strategy and different headers.
+> > +	ret = devm_add_action_or_reset(dev->dev, devm_drm_irq_uninstall, dev);
+> > +	if (ret)
+> > +		devm_drm_irq_uninstall(dev);
+> devm_add_action_or_reset() will call devm_drm_irq_uninstall() if ret is
+> != 0. See include/device.h.
+> 
+> I guess that is the "_or_reset" part of the name that can tell us that.
+> So you can drop the if condition as it just will cause the code to call
+> drm_irq_uninstall() twice.
 
-Signed-off-by: Florent Revest <revest@google.com>
----
- .../selftests/bpf/prog_tests/socket_cookie.c  | 24 +++++++----
- .../selftests/bpf/progs/socket_cookie_prog.c  | 41 ++++++++++++++++---
- 2 files changed, 52 insertions(+), 13 deletions(-)
+Noticed this was fixed in v2 - so all is fine here.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-index 53d0c44e7907..e5c5e2ea1deb 100644
---- a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-@@ -15,8 +15,8 @@ struct socket_cookie {
- 
- void test_socket_cookie(void)
- {
-+	struct bpf_link *set_link, *update_sockops_link, *update_tracing_link;
- 	socklen_t addr_len = sizeof(struct sockaddr_in6);
--	struct bpf_link *set_link, *update_link;
- 	int server_fd, client_fd, cgroup_fd;
- 	struct socket_cookie_prog *skel;
- 	__u32 cookie_expected_value;
-@@ -39,15 +39,21 @@ void test_socket_cookie(void)
- 		  PTR_ERR(set_link)))
- 		goto close_cgroup_fd;
- 
--	update_link = bpf_program__attach_cgroup(skel->progs.update_cookie,
--						 cgroup_fd);
--	if (CHECK(IS_ERR(update_link), "update-link-cg-attach", "err %ld\n",
--		  PTR_ERR(update_link)))
-+	update_sockops_link = bpf_program__attach_cgroup(
-+		skel->progs.update_cookie_sockops, cgroup_fd);
-+	if (CHECK(IS_ERR(update_sockops_link), "update-sockops-link-cg-attach",
-+		  "err %ld\n", PTR_ERR(update_sockops_link)))
- 		goto free_set_link;
- 
-+	update_tracing_link = bpf_program__attach(
-+		skel->progs.update_cookie_tracing);
-+	if (CHECK(IS_ERR(update_tracing_link), "update-tracing-link-attach",
-+		  "err %ld\n", PTR_ERR(update_tracing_link)))
-+		goto free_update_sockops_link;
-+
- 	server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
- 	if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
--		goto free_update_link;
-+		goto free_update_tracing_link;
- 
- 	client_fd = connect_to_fd(server_fd, 0);
- 	if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
-@@ -71,8 +77,10 @@ void test_socket_cookie(void)
- 	close(client_fd);
- close_server_fd:
- 	close(server_fd);
--free_update_link:
--	bpf_link__destroy(update_link);
-+free_update_tracing_link:
-+	bpf_link__destroy(update_tracing_link);
-+free_update_sockops_link:
-+	bpf_link__destroy(update_sockops_link);
- free_set_link:
- 	bpf_link__destroy(set_link);
- close_cgroup_fd:
-diff --git a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-index 81e84be6f86d..1f770b732cb1 100644
---- a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-+++ b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-@@ -1,11 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2018 Facebook
- 
--#include <linux/bpf.h>
--#include <sys/socket.h>
-+#include "vmlinux.h"
- 
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define AF_INET6 10
- 
- struct socket_cookie {
- 	__u64 cookie_key;
-@@ -19,6 +21,14 @@ struct {
- 	__type(value, struct socket_cookie);
- } socket_cookies SEC(".maps");
- 
-+/*
-+ * These three programs get executed in a row on connect() syscalls. The
-+ * userspace side of the test creates a client socket, issues a connect() on it
-+ * and then checks that the local storage associated with this socket has:
-+ * cookie_value == local_port << 8 | 0xFF
-+ * The different parts of this cookie_value are appended by those hooks if they
-+ * all agree on the output of bpf_get_socket_cookie().
-+ */
- SEC("cgroup/connect6")
- int set_cookie(struct bpf_sock_addr *ctx)
- {
-@@ -32,14 +42,14 @@ int set_cookie(struct bpf_sock_addr *ctx)
- 	if (!p)
- 		return 1;
- 
--	p->cookie_value = 0xFF;
-+	p->cookie_value = 0xF;
- 	p->cookie_key = bpf_get_socket_cookie(ctx);
- 
- 	return 1;
- }
- 
- SEC("sockops")
--int update_cookie(struct bpf_sock_ops *ctx)
-+int update_cookie_sockops(struct bpf_sock_ops *ctx)
- {
- 	struct bpf_sock *sk;
- 	struct socket_cookie *p;
-@@ -60,9 +70,30 @@ int update_cookie(struct bpf_sock_ops *ctx)
- 	if (p->cookie_key != bpf_get_socket_cookie(ctx))
- 		return 1;
- 
--	p->cookie_value = (ctx->local_port << 8) | p->cookie_value;
-+	p->cookie_value |= (ctx->local_port << 8);
- 
- 	return 1;
- }
- 
-+SEC("fexit/inet_stream_connect")
-+int BPF_PROG(update_cookie_tracing, struct socket *sock,
-+	     struct sockaddr *uaddr, int addr_len, int flags)
-+{
-+	struct socket_cookie *p;
-+
-+	if (uaddr->sa_family != AF_INET6)
-+		return 0;
-+
-+	p = bpf_sk_storage_get(&socket_cookies, sock->sk, 0, 0);
-+	if (!p)
-+		return 0;
-+
-+	if (p->cookie_key != bpf_get_socket_cookie(sock->sk))
-+		return 0;
-+
-+	p->cookie_value |= 0xF0;
-+
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.29.2.576.ga3fc446d84-goog
-
+	Sam
