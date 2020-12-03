@@ -2,239 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02082CD0C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3A42CD0C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388182AbgLCIGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:06:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729897AbgLCIGI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:06:08 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EDCC061A52
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 00:05:27 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id n26so2087200eju.6
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 00:05:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FZ8VxZZvqmh6ehr3KHE/PiRk3db+weOkpDGOlsh3YO8=;
-        b=haDseJv+D02T10aLAxQHXG0BsYACsfkijqaB+ELZmfch2JYU9g6y9ryqDyIqWShXaW
-         yaAZ88xKKVmpIrZKV/qetu3zM2AbVORk0wYWL03XQMh8ss+hr7Dc6CnNOdvjOspJC/vQ
-         R2df0RgSro0FHNGu8o3DpusAvPeMobIgNjOfc7hfwHJ6Nvy0U69h0GmKMctPOdP8JHuK
-         uCRMiqbef850rMYfMmIEUS0TzdqaTlcSg4Jgua9sT1AuBgZSfdy1txMa/Fszl/iCAsRa
-         6RBF8zj3OIpntYgPprvZoROYfpZUKnhmmTVDrR3O2ZTkmVat83g3y0aDOoH39HHPuS4h
-         RbOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FZ8VxZZvqmh6ehr3KHE/PiRk3db+weOkpDGOlsh3YO8=;
-        b=QYoJasX0kPdUjQoF5A/HrZdWxrglIKeWK0h9bGVhfni8atnAu1KbmagACa4t1Ert+G
-         3SC2PkKt99bItUlc5RRxwZYCa8kr9OmW+o6+NNQ/8Uzo0yeWwYsaYJHuptsXb9vG7K+i
-         QXJvQ1a7DSSuGbhhjmtw16MLuwWaZ2KC0k0oddlZj5mk9J0Cup0vf22DdVD10YGRd1Hk
-         hZhL5YaiW78RlAHlMEwc15a624BjI7Z/HWxRh2WpMmqCtk2gAKz766V7UE7ipHRo5J49
-         QdlbV1nf2NvkBNB9UvhpZAFz8ST/wNbWmXdj74oqmdUDvA8jEw3+9MTAGPdSWPdxq45q
-         Bl5A==
-X-Gm-Message-State: AOAM530sjxkFkWcVc4q1peNS3+mWGbHd6pUW8uSRIy9bJwzvLBi7veFh
-        Ob3DlYylEn569GORiOUMgnaaXyvlxa5PaYjrETzJJg==
-X-Google-Smtp-Source: ABdhPJxP2EJznI3pbg+Rqtm4SZQefIKFXf0kkiRRTqzbUDyEG5oMEZvNtOYbyFNg3cm8vTl+G0cfLIdKavT7T0DOD1k=
-X-Received: by 2002:a17:906:7f01:: with SMTP id d1mr1414079ejr.429.1606982726027;
- Thu, 03 Dec 2020 00:05:26 -0800 (PST)
+        id S1729921AbgLCIGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:06:47 -0500
+Received: from ozlabs.org ([203.11.71.1]:34547 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387609AbgLCIGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 03:06:46 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CmpLg21srz9s0b;
+        Thu,  3 Dec 2020 19:06:03 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606982763;
+        bh=xGYzUa8N9aV4gF00C4v79MReDpaoluhaxU2yKgsMMdc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=K4CcJweMlGN9NvMrN8jajo6OuLZPcmlqkgdpj7//BMDN9sSUL49UFISsUVF2JcEHE
+         LdOj3Tl1OprG/k8EqNZEoo9sY8RRZNnIzebZPYlcTBO1E/DxlTGj98LfZ30aunC8t5
+         /PVdeQFGTaTiq0kUWfiuQJc6ha4oMdwaSOM/JklwiHpN6bx44jBpoOQRPhA5i5cugp
+         8wtIAz2VfK+BsT/dR+zd1nQxpMoqXQPkmmRIU0J4lzURfVwqwxDkPv0Pixmea+/e1g
+         XtluPI3q0eLdet8rZKZW4s/MS60jHfeif8AAiWdlMvj0EnFn2CESoNu4sBULSbwXSk
+         4lOdufy0XaAKg==
+Date:   Thu, 3 Dec 2020 19:06:01 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: linux-next: manual merge of the akpm-current tree with the arm64
+ tree
+Message-ID: <20201203190426.5a2cc067@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201123183833.18750-1-nsaenzjulienne@suse.de> <20201123183833.18750-2-nsaenzjulienne@suse.de>
-In-Reply-To: <20201123183833.18750-2-nsaenzjulienne@suse.de>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 3 Dec 2020 09:05:15 +0100
-Message-ID: <CAMpxmJX6zdoYek2THEj2x8ycJYz-bxqE_5RnOz1sYv0vwLSFpA@mail.gmail.com>
-Subject: Re: [PATCH v5 01/11] firmware: raspberrypi: Keep count of all consumers
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        linux-devicetree <devicetree@vger.kernel.org>, wahrenst@gmx.net,
-        Linux Input <linux-input@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/3rzT+mr9BPpMcHeNjiP8dJL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 7:38 PM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> When unbinding the firmware device we need to make sure it has no
-> consumers left. Otherwise we'd leave them with a firmware handle
-> pointing at freed memory.
->
-> Keep a reference count of all consumers and introduce rpi_firmware_put()
-> which will permit automatically decrease the reference count upon
-> unbinding consumer drivers.
->
-> Suggested-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> ---
->
-> Changes since v3:
-> - Use kref instead of waiting on refcount
->
->  drivers/firmware/raspberrypi.c             | 37 +++++++++++++++++++---
->  include/soc/bcm2835/raspberrypi-firmware.h |  2 ++
->  2 files changed, 35 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberryp=
-i.c
-> index 30259dc9b805..ed793aef7851 100644
-> --- a/drivers/firmware/raspberrypi.c
-> +++ b/drivers/firmware/raspberrypi.c
-> @@ -7,6 +7,7 @@
->   */
->
->  #include <linux/dma-mapping.h>
-> +#include <linux/kref.h>
->  #include <linux/mailbox_client.h>
->  #include <linux/module.h>
->  #include <linux/of_platform.h>
-> @@ -27,6 +28,8 @@ struct rpi_firmware {
->         struct mbox_chan *chan; /* The property channel. */
->         struct completion c;
->         u32 enabled;
-> +
-> +       struct kref consumers;
->  };
->
->  static DEFINE_MUTEX(transaction_lock);
-> @@ -225,12 +228,27 @@ static void rpi_register_clk_driver(struct device *=
-dev)
->                                                 -1, NULL, 0);
->  }
->
-> +static void rpi_firmware_delete(struct kref *kref)
-> +{
-> +       struct rpi_firmware *fw =3D container_of(kref, struct rpi_firmwar=
-e,
-> +                                              consumers);
-> +
-> +       mbox_free_channel(fw->chan);
-> +       kfree(fw);
-> +}
-> +
-> +void rpi_firmware_put(struct rpi_firmware *fw)
-> +{
-> +       kref_put(&fw->consumers, rpi_firmware_delete);
-> +}
-> +EXPORT_SYMBOL_GPL(rpi_firmware_put);
-> +
->  static int rpi_firmware_probe(struct platform_device *pdev)
->  {
->         struct device *dev =3D &pdev->dev;
->         struct rpi_firmware *fw;
->
-> -       fw =3D devm_kzalloc(dev, sizeof(*fw), GFP_KERNEL);
+--Sig_/3rzT+mr9BPpMcHeNjiP8dJL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-One nit from my side: maybe add a comment here saying that you really
-want to use non-managed kzalloc() because you're going to get people
-blindly converting it to devm_kzalloc() very soon.
+Hi all,
 
-Bartosz
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-> +       fw =3D kzalloc(sizeof(*fw), GFP_KERNEL);
->         if (!fw)
->                 return -ENOMEM;
->
-> @@ -247,6 +265,7 @@ static int rpi_firmware_probe(struct platform_device =
-*pdev)
->         }
->
->         init_completion(&fw->c);
-> +       kref_init(&fw->consumers);
->
->         platform_set_drvdata(pdev, fw);
->
-> @@ -275,25 +294,35 @@ static int rpi_firmware_remove(struct platform_devi=
-ce *pdev)
->         rpi_hwmon =3D NULL;
->         platform_device_unregister(rpi_clk);
->         rpi_clk =3D NULL;
-> -       mbox_free_channel(fw->chan);
-> +
-> +       rpi_firmware_put(fw);
->
->         return 0;
->  }
->
->  /**
-> - * rpi_firmware_get - Get pointer to rpi_firmware structure.
->   * @firmware_node:    Pointer to the firmware Device Tree node.
->   *
-> + * The reference to rpi_firmware has to be released with rpi_firmware_pu=
-t().
-> + *
->   * Returns NULL is the firmware device is not ready.
->   */
->  struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node)
->  {
->         struct platform_device *pdev =3D of_find_device_by_node(firmware_=
-node);
-> +       struct rpi_firmware *fw;
->
->         if (!pdev)
->                 return NULL;
->
-> -       return platform_get_drvdata(pdev);
-> +       fw =3D platform_get_drvdata(pdev);
-> +       if (!fw)
-> +               return NULL;
-> +
-> +       if (!kref_get_unless_zero(&fw->consumers))
-> +               return NULL;
-> +
-> +       return fw;
->  }
->  EXPORT_SYMBOL_GPL(rpi_firmware_get);
->
-> diff --git a/include/soc/bcm2835/raspberrypi-firmware.h b/include/soc/bcm=
-2835/raspberrypi-firmware.h
-> index cc9cdbc66403..fdfef7fe40df 100644
-> --- a/include/soc/bcm2835/raspberrypi-firmware.h
-> +++ b/include/soc/bcm2835/raspberrypi-firmware.h
-> @@ -140,6 +140,7 @@ int rpi_firmware_property(struct rpi_firmware *fw,
->                           u32 tag, void *data, size_t len);
->  int rpi_firmware_property_list(struct rpi_firmware *fw,
->                                void *data, size_t tag_size);
-> +void rpi_firmware_put(struct rpi_firmware *fw);
->  struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node)=
-;
->  #else
->  static inline int rpi_firmware_property(struct rpi_firmware *fw, u32 tag=
-,
-> @@ -154,6 +155,7 @@ static inline int rpi_firmware_property_list(struct r=
-pi_firmware *fw,
->         return -ENOSYS;
->  }
->
-> +static inline void rpi_firmware_put(struct rpi_firmware *fw) { }
->  static inline struct rpi_firmware *rpi_firmware_get(struct device_node *=
-firmware_node)
->  {
->         return NULL;
-> --
-> 2.29.2
->
+  arch/arm64/include/asm/uaccess.h
+
+between commits:
+
+  923e1e7d8223 ("arm64: uaccess: rename privileged uaccess routines")
+  7cf283c7bd62 ("arm64: uaccess: remove redundant PAN toggling")
+
+from the arm64 tree and commit:
+
+  9bc0016cc21a ("arm64: mte: add in-kernel tag fault handler")
+
+from the akpm-current tree.
+
+I fixed it up (as specified by Catalin (thanks) see below) and can
+carry the fix as necessary. This is now fixed as far as linux-next is
+concerned, but any non trivial conflicts should be mentioned to your
+upstream maintainer when your tree is submitted for merging.  You may
+also want to consider cooperating with the maintainer of the
+conflicting tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm64/include/asm/uaccess.h
+index d841a560fae7,abb31aa1f8ca..000000000000
+--- a/arch/arm64/include/asm/uaccess.h
++++ b/arch/arm64/include/asm/uaccess.h
+@@@ -186,64 -159,20 +159,43 @@@ static inline void __uaccess_enable_hw_
+  			CONFIG_ARM64_PAN));
+  }
+ =20
+- #define __uaccess_disable(alt)						\
+- do {									\
+- 	if (!uaccess_ttbr0_disable())					\
+- 		asm(ALTERNATIVE("nop", SET_PSTATE_PAN(1), alt,		\
+- 				CONFIG_ARM64_PAN));			\
+- } while (0)
+-=20
+- #define __uaccess_enable(alt)						\
+- do {									\
+- 	if (!uaccess_ttbr0_enable())					\
+- 		asm(ALTERNATIVE("nop", SET_PSTATE_PAN(0), alt,		\
+- 				CONFIG_ARM64_PAN));			\
+- } while (0)
+-=20
+ +/*
+ + * The Tag Check Flag (TCF) mode for MTE is per EL, hence TCF0
+ + * affects EL0 and TCF affects EL1 irrespective of which TTBR is
+ + * used.
+ + * The kernel accesses TTBR0 usually with LDTR/STTR instructions
+ + * when UAO is available, so these would act as EL0 accesses using
+ + * TCF0.
+ + * However futex.h code uses exclusives which would be executed as
+ + * EL1, this can potentially cause a tag check fault even if the
+ + * user disables TCF0.
+ + *
+ + * To address the problem we set the PSTATE.TCO bit in uaccess_enable()
+ + * and reset it in uaccess_disable().
+ + *
+ + * The Tag check override (TCO) bit disables temporarily the tag checking
+ + * preventing the issue.
+ + */
+- static inline void uaccess_disable(void)
++ static inline void uaccess_disable_privileged(void)
+  {
+ +	asm volatile(ALTERNATIVE("nop", SET_PSTATE_TCO(0),
+ +				 ARM64_MTE, CONFIG_KASAN_HW_TAGS));
+ +
+- 	__uaccess_disable(ARM64_HAS_PAN);
++ 	if (uaccess_ttbr0_disable())
++ 		return;
++=20
++ 	__uaccess_enable_hw_pan();
+  }
+ =20
+- static inline void uaccess_enable(void)
++ static inline void uaccess_enable_privileged(void)
+  {
+ +	asm volatile(ALTERNATIVE("nop", SET_PSTATE_TCO(1),
+ +				 ARM64_MTE, CONFIG_KASAN_HW_TAGS));
+ +
+- 	__uaccess_enable(ARM64_HAS_PAN);
+- }
+-=20
+- /*
+-  * These functions are no-ops when UAO is present.
+-  */
+- static inline void uaccess_disable_not_uao(void)
+- {
+- 	__uaccess_disable(ARM64_ALT_PAN_NOT_UAO);
+- }
++ 	if (uaccess_ttbr0_enable())
++ 		return;
+ =20
+- static inline void uaccess_enable_not_uao(void)
+- {
+- 	__uaccess_enable(ARM64_ALT_PAN_NOT_UAO);
++ 	__uaccess_disable_hw_pan();
+  }
+ =20
+  /*
+
+--Sig_/3rzT+mr9BPpMcHeNjiP8dJL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/InGkACgkQAVBC80lX
+0Gxzdwf9GANeltJT1osZOEfCQJKiPr1joH9pI5wkbid6kHvhgQEh5+WBwcnOEDkr
+ds+Zm2632L7Vs8hpkbRmfCpmicJLFhUc+PwzA1QT/lfz6lCQ3QyqZbtbgXZyBP+Z
+QsfnKEkhdPknJrzqKlp3HSbEMnVbEJLTopBN5VT+hIOT985MsxQB5V99UJDzPdeF
+yLh4g/zbzqo4/EjJ/Ky3YoQavJGHSdB2h+SzmvchJ0KwRYAEYDkSbduJGMyvRXJZ
+EqEe63fGUk7HgdHYDJYJbhm2g9cdPZkq8O8Q/bHRmF8OjIiZSKR8ePs6mURr6YW5
+8Tluxg2mkO1YJEhAU1qeVwgHy6gVwA==
+=VwDD
+-----END PGP SIGNATURE-----
+
+--Sig_/3rzT+mr9BPpMcHeNjiP8dJL--
