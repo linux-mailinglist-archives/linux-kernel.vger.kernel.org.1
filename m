@@ -2,316 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610772CD337
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6EA2CD348
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388549AbgLCKKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 05:10:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387616AbgLCKKb (ORCPT
+        id S1730116AbgLCKRo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 05:17:44 -0500
+Received: from proxmox-new.maurer-it.com ([212.186.127.180]:36668 "EHLO
+        proxmox-new.maurer-it.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726080AbgLCKRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 05:10:31 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35038C061A4D
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 02:09:51 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id u12so1282927wrt.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 02:09:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gEd36gj1zJ/biX3Vjpp2g0JgzMW7zWlAmNvTpbJ00Xs=;
-        b=XtxPq77sVKvuHMWENPyCpnEsKsXn8eZUT1kD2bN320JYheUE3heE2s2h2Tu++cxAE7
-         SOGyJmlath68lYhM8/Pr3O9L5aDa3VYL2hOdqy/sZTc9t9eOWLtGw4ZAvwNZeuVtNIIv
-         STVReUEff34O2xAqRZrHW+Nq6xSW0F2a5d19zXWN+Bidn1efrnIHY51HptfjWgpMpF/W
-         0WivkncR2dLeE4qgU5hiy5vKvjRa+aBAHgfo7XBbdWOXHT/YLZDDy8jC9EwBDOb9W1T3
-         VxebGDhOG+cj8u5ukNg9/PB5um2jMnnxKPPnprxYauHomxRTwKg7cD+UlIgu6xVzPxCg
-         enYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gEd36gj1zJ/biX3Vjpp2g0JgzMW7zWlAmNvTpbJ00Xs=;
-        b=MGEg2rLvzVJQEZXaj4d6eBvCMSTGUWFkHsJCWPy60cZJ+QxtIRJfwUGqvmmd8W5J59
-         R9hR8/Cf3tz0DVt9gpGltK9We0AQQojQgf50722eQI60GLiDY5kkZtiEbrUBuYuFRN+4
-         hfjsvAskoG00uNU+xMKUtrMKKqV4OTyY3lM2kfZ+nKBi30eN0EhTyIuYi6JNLbTvy8jS
-         0k2NqAJZcqjZI34JXjkut3jwABI/pMEtjEZ1ulmGBqJwOwJZwTHiCiXUUGv9HUBGS9R2
-         vmOVkArIAFUy+dSdA6sVTlXTl13RHdxMnCptneU4GPrsVt2RKuVy15zf+7cqhehTKRlk
-         UadQ==
-X-Gm-Message-State: AOAM533W+ydPAdhbL4w1NpKQcfBdHnb/O1s4/YqEmny11MilMZW1P21j
-        kHIW0iSwc0Wq6hlckz/LZ4XKTw==
-X-Google-Smtp-Source: ABdhPJw1kQtpaZsEKHVzU+cpNCSvMmxj1sNtWWTvIaazTJg4fPO079JuekeaBmpb/EzNEB80RsM8vQ==
-X-Received: by 2002:a5d:504f:: with SMTP id h15mr2763670wrt.402.1606990189773;
-        Thu, 03 Dec 2020 02:09:49 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1c7d:2d7a:9709:b9a2? ([2a01:e34:ed2f:f020:1c7d:2d7a:9709:b9a2])
-        by smtp.googlemail.com with ESMTPSA id c17sm1179871wro.19.2020.12.03.02.09.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 02:09:49 -0800 (PST)
-Subject: Re: [PATCH] clocksource: dw_apb_timer_of: return EPROBE_DEFER if no
- clock available
-To:     Dinh Nguyen <dinguyen@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, p.zabel@pengutronix.de,
-        Jisheng.Zhang@synaptics.com, arnd@arndb.de
-References: <20201119121225.26536-1-dinguyen@kernel.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <0b648a7d-98f7-dc54-99b0-4331379a65ba@linaro.org>
-Date:   Thu, 3 Dec 2020 11:09:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 3 Dec 2020 05:17:44 -0500
+X-Greylist: delayed 411 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Dec 2020 05:17:42 EST
+Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
+        by proxmox-new.maurer-it.com (Proxmox) with ESMTP id AF4C944C5A;
+        Thu,  3 Dec 2020 11:10:10 +0100 (CET)
+To:     dan.carpenter@oracle.com
+Cc:     James.Bottomley@suse.de,
+        jayamohank@HDRedirect-LB5-1afb6e2973825a56.elb.us-east-1.amazonaws.com,
+        jejb@linux.ibm.com, jitendra.bhivare@broadcom.com,
+        kernel-janitors@vger.kernel.org, ketan.mukadam@broadcom.com,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, subbu.seetharaman@broadcom.com,
+        stable@vger.kernel.org
+References: <20200928091300.GD377727@mwanda>
+From:   Thomas Lamprecht <t.lamprecht@proxmox.com>
+Subject: Re: [PATCH] scsi: be2iscsi: Fix a theoretical leak in
+ beiscsi_create_eqs()
+Message-ID: <54f36c62-10bf-8736-39ce-27ece097d9de@proxmox.com>
+Date:   Thu, 3 Dec 2020 11:10:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101
+ Thunderbird/84.0
 MIME-Version: 1.0
-In-Reply-To: <20201119121225.26536-1-dinguyen@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200928091300.GD377727@mwanda>
+Content-Type: text/plain; charset=UTF-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Dinh,
-
-On 19/11/2020 13:12, Dinh Nguyen wrote:
-> commit ("b0fc70ce1f02 arm64: berlin: Select DW_APB_TIMER_OF") added the
-> support for the dw_apb_timer into the arm64 defconfig. However, for some
-> platforms like the Intel Stratix10 and Agilex, the clock manager doesn't
-> get probed until after the timer driver is probed. Thus, the driver hits
-> the panic "No clock nor clock-frequency property for %" because it cannot
-> properly get the clock.
+> The be_fill_queue() function can only fail when "eq_vaddress" is NULL
+> and since it's non-NULL here that means the function call can't fail.
+> But imagine if it could, then in that situation we would want to store
+> the "paddr" so that dma memory can be released.
 > 
-> This patch adds support for EPROBE_DEFER so the kernel can come back to
-> finish probing this timer driver after the clock driver is probed.
-> 
-> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+> Fixes: bfead3b2cb46 ("[SCSI] be2iscsi: Adding msix and mcc_rings V3")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-A few comments below.
+This came in here through the stable 5.4 tree with v5.4.74, and we have some
+users of ours report that it results in kernel oopses and delayed boot on their
+HP DL 380 Gen 9 (and other Gen 9, FWICT) servers:
 
-> ---
->  drivers/clocksource/dw_apb_timer_of.c | 86 ++++++++++++++++-----------
->  1 file changed, 51 insertions(+), 35 deletions(-)
-> 
-> diff --git a/drivers/clocksource/dw_apb_timer_of.c b/drivers/clocksource/dw_apb_timer_of.c
-> index ab3ddebe8344..a8ce980c5146 100644
-> --- a/drivers/clocksource/dw_apb_timer_of.c
-> +++ b/drivers/clocksource/dw_apb_timer_of.c
-> @@ -14,7 +14,7 @@
->  #include <linux/reset.h>
->  #include <linux/sched_clock.h>
->  
-> -static void __init timer_get_base_and_rate(struct device_node *np,
-> +static int __init timer_get_base_and_rate(struct device_node *np,
->  				    void __iomem **base, u32 *rate)
->  {
->  	struct clk *timer_clk;
-> @@ -47,65 +47,77 @@ static void __init timer_get_base_and_rate(struct device_node *np,
->  				np);
->  
->  	timer_clk = of_clk_get_by_name(np, "timer");
-> -	if (IS_ERR(timer_clk))
-> -		goto try_clock_freq;
-> +	if (IS_ERR(timer_clk)) {
-> +		if (PTR_ERR(timer_clk) != -EPROBE_DEFER) {
-> +			pr_err("Failed to get clock for %pOF\n", np);
-> +			goto try_clock_freq;
-> +		}
-> +		return PTR_ERR(timer_clk);
-> +	}
+> systemd-udevd   D    0   501      1 0x80000000
+> Call Trace:
+>  __schedule+0x2e6/0x6f0
+>  schedule+0x33/0xa0
+>  schedule_timeout+0x205/0x330
+>  wait_for_completion+0xb7/0x140
+>  ? wake_up_q+0x80/0x80
+>  __flush_work+0x131/0x1e0
+>  ? worker_detach_from_pool+0xb0/0xb0
+>  work_on_cpu+0x6d/0x90
+>  ? workqueue_congested+0x80/0x80
+>  ? pci_device_shutdown+0x60/0x60
+>  pci_device_probe+0x190/0x1b0
+>  really_probe+0x1c8/0x3e0
+>  driver_probe_device+0xbb/0x100
+>  device_driver_attach+0x58/0x60
+>  __driver_attach+0x8f/0x150
+>  ? device_driver_attach+0x60/0x60
+>  bus_for_each_dev+0x79/0xc0
+>  ? kmem_cache_alloc_trace+0x1a0/0x230
+>  driver_attach+0x1e/0x20
+>  bus_add_driver+0x154/0x1f0
+>  ? 0xffffffffc0453000
+>  driver_register+0x70/0xc0
+>  ? 0xffffffffc0453000
+>  __pci_register_driver+0x57/0x60
+>  beiscsi_module_init+0x62/0x1000 [be2iscsi]
+>  do_one_initcall+0x4a/0x1fa
+>  ? _cond_resched+0x19/0x30
+>  ? kmem_cache_alloc_trace+0x1a0/0x230
+>  do_init_module+0x60/0x230
+>  load_module+0x231b/0x2590
+>  __do_sys_finit_module+0xbd/0x120
+>  ? __do_sys_finit_module+0xbd/0x120
+>  __x64_sys_finit_module+0x1a/0x20
+>  do_syscall_64+0x57/0x190
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x7f00aca06f59
+> Code: Bad RIP value.
+> RSP: 002b:00007ffc14380858 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+> RAX: ffffffffffffffda RBX: 0000558c726262e0 RCX: 00007f00aca06f59
+> RDX: 0000000000000000 RSI: 00007f00ac90bcad RDI: 000000000000000e
+> RBP: 00007f00ac90bcad R08: 0000000000000000 R09: 0000000000000000
+> R10: 000000000000000e R11: 0000000000000246 R12: 0000000000000000
+> R13: 0000558c725f6030 R14: 0000000000020000 R15: 0000558c726262e0
 
-May be massage the changes by moving the of-rate check first
+Blacklisting the be2iscsi module or reverting this commit helps, I did not get
+around to look further into the mechanics at play and figured you would be
+faster at that, or that this info at least helps someone else when searching
+for the same symptoms.
 
- 	if (!of_property_read_u32(np, "clock-freq", rate) &&
-  	    !of_property_read_u32(np, "clock-frequency", rate))
-		return 0;
-
-	timer_clk = of_clk_get_by_name(np, "timer");
-
-	/*
-	 * Whatever the result, we return
-	 */
-	ret = PTR_ERR(timer_clk);
-	if (ret)
-		return ret;
-
-	ret = clk_prepare_enable(timer_clk);
-	if (ret)
-		return ret;
-
-	*rate = clk_get_rate(timer_clk);
-	if (!(*rate))
-		return -EINVAL;
-
-	return 0;
-
->  
->  	if (!clk_prepare_enable(timer_clk)) {
->  		*rate = clk_get_rate(timer_clk);
-> -		return;
-> +		return 0;
->  	}
->  
->  try_clock_freq:
->  	if (of_property_read_u32(np, "clock-freq", rate) &&
->  	    of_property_read_u32(np, "clock-frequency", rate))
->  		panic("No clock nor clock-frequency property for %pOFn", np);
->
-> +	return 0;
->  }
->  
-> -static void __init add_clockevent(struct device_node *event_timer)
-> +static int __init add_clockevent(struct device_node *event_timer)
->  {
->  	void __iomem *iobase;
->  	struct dw_apb_clock_event_device *ced;
->  	u32 irq, rate;
-> +	int ret = 0;
->  
->  	irq = irq_of_parse_and_map(event_timer, 0);
->  	if (irq == 0)
->  		panic("No IRQ for clock event timer");
->  
-> -	timer_get_base_and_rate(event_timer, &iobase, &rate);
-> -
-> -	ced = dw_apb_clockevent_init(-1, event_timer->name, 300, iobase, irq,
-> +	ret = timer_get_base_and_rate(event_timer, &iobase, &rate);
-> +	if (ret == 0) {
-> +		ced = dw_apb_clockevent_init(-1, event_timer->name, 300, iobase, irq,
->  				     rate);
-> -	if (!ced)
-> -		panic("Unable to initialise clockevent device");
-> +		if (!ced)
-> +			panic("Unable to initialise clockevent device");
-
-	ret = timer_get_base_and_rate(event_timer, &iobase, &rate);
-	if (ret)
-		return ret;
-
-	ced = dw_apb_clockevent_init(-1, event_timer->name, 300,
-				iobase, irq, rate);
-	if (!ced)
-		return -EINVAL;
-
-	dw_apb_clockevent_register(ced);
-
-	return 0;
-
-> -	dw_apb_clockevent_register(ced);
-> +		dw_apb_clockevent_register(ced);
-> +	}
-> +	return ret;
->  }
->  
->  static void __iomem *sched_io_base;
->  static u32 sched_rate;
->  
-> -static void __init add_clocksource(struct device_node *source_timer)
-> +static int __init add_clocksource(struct device_node *source_timer)
->  {
->  	void __iomem *iobase;
->  	struct dw_apb_clocksource *cs;
->  	u32 rate;
-> -
-> -	timer_get_base_and_rate(source_timer, &iobase, &rate);
-> -
-> -	cs = dw_apb_clocksource_init(300, source_timer->name, iobase, rate);
-> -	if (!cs)
-> -		panic("Unable to initialise clocksource device");
-> -
-> -	dw_apb_clocksource_start(cs);
-> -	dw_apb_clocksource_register(cs);
-> -
-> -	/*
-> -	 * Fallback to use the clocksource as sched_clock if no separate
-> -	 * timer is found. sched_io_base then points to the current_value
-> -	 * register of the clocksource timer.
-> -	 */
-> -	sched_io_base = iobase + 0x04;
-> -	sched_rate = rate;
-> +	int ret;
-> +
-> +	ret = timer_get_base_and_rate(source_timer, &iobase, &rate);
-> +	if (ret == 0) {
-> +		cs = dw_apb_clocksource_init(300, source_timer->name, iobase, rate);
-> +		if (!cs)
-> +			panic("Unable to initialise clocksource device");
-> +
-> +		dw_apb_clocksource_start(cs);
-> +		dw_apb_clocksource_register(cs);
-> +
-> +		/*
-> +		 * Fallback to use the clocksource as sched_clock if no separate
-> +		 * timer is found. sched_io_base then points to the current_value
-> +		 * register of the clocksource timer.
-> +		 */
-> +		sched_io_base = iobase + 0x04;
-> +		sched_rate = rate;
-> +	}
-> +	return ret;
-
-Same suggestion as above
-
->  }
->  
->  static u64 notrace read_sched_clock(void)
-> @@ -146,25 +158,29 @@ static struct delay_timer dw_apb_delay_timer = {
->  static int num_called;
->  static int __init dw_apb_timer_init(struct device_node *timer)
->  {
-> +	int ret = 0;
-> +
->  	switch (num_called) {
->  	case 1:
->  		pr_debug("%s: found clocksource timer\n", __func__);
-> -		add_clocksource(timer);
-> -		init_sched_clock();
-> +		ret = add_clocksource(timer);
-> +		if (ret == 0) {
-> +			init_sched_clock();
-
-		ret = add_clocksource(timer);
-		if (ret)
-			return ret;
-
-		init_sched_clock();
-		dw_apb_delay_timer.freq = sched_rate;
-		register_current_timer_delay(&dw_apb_delay_timer);
-
->  #ifdef CONFIG_ARM
-> -		dw_apb_delay_timer.freq = sched_rate;
-> -		register_current_timer_delay(&dw_apb_delay_timer);
-> +			dw_apb_delay_timer.freq = sched_rate;
-> +			register_current_timer_delay(&dw_apb_delay_timer);
->  #endif
-> +		}
->  		break;
->  	default:
->  		pr_debug("%s: found clockevent timer\n", __func__);
-> -		add_clockevent(timer);
-> +		ret = add_clockevent(timer);
-
-		ret = add_clockevent(timer);
-		if (ret)
-			return ret;
-
->  		break;
->  	}
->  
->  	num_called++;
->  
-> -	return 0;
-> +	return ret;
-
-	return 0;
-
->  }
->  TIMER_OF_DECLARE(pc3x2_timer, "picochip,pc3x2-timer", dw_apb_timer_init);
->  TIMER_OF_DECLARE(apb_timer_osc, "snps,dw-apb-timer-osc", dw_apb_timer_init);
-> 
+cheers,
+Thomas
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
