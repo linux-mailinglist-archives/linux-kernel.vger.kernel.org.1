@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3112CD964
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2947E2CD94E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:37:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730950AbgLCOio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 09:38:44 -0500
-Received: from mout.kundenserver.de ([217.72.192.75]:49205 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729375AbgLCOio (ORCPT
+        id S2389171AbgLCOgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 09:36:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388322AbgLCOgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:38:44 -0500
-Received: from orion.localdomain ([95.118.71.13]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1N5FQJ-1k3xq12KJB-011BDE; Thu, 03 Dec 2020 15:35:52 +0100
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, matthias.bgg@gmail.com,
-        linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [PATCH v2] drivers: clk: make gpio-gated clock support optional
-Date:   Thu,  3 Dec 2020 15:35:51 +0100
-Message-Id: <20201203143551.5482-1-info@metux.net>
-X-Mailer: git-send-email 2.11.0
-X-Provags-ID: V03:K1:lrjZSZO++TFuXVbnJJDgAvcXp/I+VeQY/3cXAxev1HCLVLq3xz+
- DrogOwTBhvcrHsn6mk7zXZCQQuPAXUMTr5uLVZw68FevVEvZLPLDT+Oe0bRGTEHAqx4nBGb
- mgeWVrvTnk7pY1BbJgKumhZ379SlMpXh0R4ahSixqhE2JqrTp/wyRYpnO8kgZvbiigw6wnX
- 8cD1OSpGr5DwDlFKqUbkA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yGqkFXJK1c4=:cV4c49wuMDcGfa/pPJ5sAO
- trdoyPkWEa7icfF/iMbO0PhgjeM5Ynif5LhwRHZUPFNA7WAPzbsTzGbJq4u0c5lQHkBAaPpyO
- st+uDGRtbTWh49T/R9yLYnDbRceVd9BM8X3duiEzKw2wqjz/dvA1X1yr7mkcclb5o6SFwbYE4
- aO4uQib9fjh0ML3Ohc6nLhtIuQ8EezYeOqRp/OE0tahjoXuytU+8yZ9WjZn2weFhBr1uwdZnf
- NGwLijMJ9PMCAYo0Gm6Q2ikEQjO5DzzkZfRotUstPOJSM2rzmRmJoX480pLcXeSAQyJ5xX6mO
- Hu1dYgZIJ2a5iztaREXCMeQx7l4s1wPiZlfihuS+yl0updnIExMBpBnL9R2wLFZ76EG9wdLQV
- VwU20oZb6If1RZ4l9jcGSupSssP1iHQkLqNuD50Nu08FPL5gc/8rVgfxQ2QHW
+        Thu, 3 Dec 2020 09:36:55 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B06C061A4E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 06:36:09 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id r9so2248260ioo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 06:36:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JyvzNnLMbSa402JBvFFeTEuz0eTIabBQCYJuSpd62Ow=;
+        b=lYan3A+omyGreZAMmL9AsH1jVEB8m7lti+wXlnM0x7YLcs2eUKp4Bsd+JWZQ6VYa6z
+         XkpYhXpFiR91p8bmIuiRBO1w7Po/Y/W6l2mot5/0fDqs7AlkgYofEKiPvvz6PBen6H02
+         +b8J5hj7EgY/X4sRyQYjOudtp34Hc2CAipZLxGEk7pyqbboeWgiSWPlWbCEvH53ynep8
+         rJnnnosqVzrGwwk5aTTYLZU4zBZQ1ZkkgXX2w1heSmR41OxoTuNEAie7sXfnYbCJlyQY
+         uh3/4uepiPop2IUNGv/cEcmzef7pKzbn6QgiyAlEaugpuCFVedQxfRFdXu4Uns5srYxA
+         akvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JyvzNnLMbSa402JBvFFeTEuz0eTIabBQCYJuSpd62Ow=;
+        b=SCJXQ2fQtRH+OrcD2K3js7VI9po/uk0eNtpcH2umKqXTK3frUHUznXi5SZQXHe9X8A
+         XD1Is/SDObzJ9HzqBsfaqGw3twpeN6dUNVEz3nZ//4jfP2jQObH88rUrLtphP30tfy5h
+         UDUNKOWVvhpH4H8BAJg98/kCnrsMTbBJCe7NnQBhiZjW46VJxIUkTVKIYNLOPNp4iORs
+         qN6mbZMkku5uWjSzQAOc+XPmad1/dZ+dq5cEBd5b9owa3wOA2kw5MzqjLAnirX18BQ26
+         RwLEfuwqNSjtR3ljaQOuIAHuNj6g7ziDGkQ5+/OIy8EkneFyG0SOhmHDxci/9zrBGeLK
+         PHkw==
+X-Gm-Message-State: AOAM532zTDvKCCRXWgxfJuUEYUQKpjIU+7wHd3x33Cuy37DH1mNzq91r
+        +hRddwavFNKiFmmcUeXnntKK4A==
+X-Google-Smtp-Source: ABdhPJxDh0Nfxa328ZTcvmeNQ1UDAXH44OKFtpufmW+k1nPA824XDv6p1iBtLl+dtM76mgwYsj3+wg==
+X-Received: by 2002:a05:6638:526:: with SMTP id j6mr3633465jar.1.1607006168254;
+        Thu, 03 Dec 2020 06:36:08 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id 130sm961689ilb.72.2020.12.03.06.36.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 06:36:07 -0800 (PST)
+Subject: Re: linux-next: manual merge of the block tree with the arm64 tree
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20201203142530.4d962ea5@canb.auug.org.au>
+ <20201203110122.GC2224@gaia>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <52116588-c870-27e2-4b8f-873d3393553c@kernel.dk>
+Date:   Thu, 3 Dec 2020 07:36:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201203110122.GC2224@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The gpio-gate-clock / gpio-mux-clock driver isn't used much,
-just by a few ARM SoCs, so there's no need to always include
-it unconditionally.
+On 12/3/20 4:01 AM, Catalin Marinas wrote:
+> On Thu, Dec 03, 2020 at 02:25:30PM +1100, Stephen Rothwell wrote:
+>> diff --cc arch/arm64/include/asm/thread_info.h
+>> index 015beafe58f5,cdcf307764aa..000000000000
+>> --- a/arch/arm64/include/asm/thread_info.h
+>> +++ b/arch/arm64/include/asm/thread_info.h
+>> @@@ -63,7 -66,9 +63,8 @@@ void arch_release_task_struct(struct ta
+>>   #define TIF_NOTIFY_RESUME	2	/* callback before returning to user */
+>>   #define TIF_FOREIGN_FPSTATE	3	/* CPU's FP state is not current's */
+>>   #define TIF_UPROBE		4	/* uprobe breakpoint or singlestep */
+>> - #define TIF_MTE_ASYNC_FAULT	5	/* MTE Asynchronous Tag Check Fault */
+>>  -#define TIF_FSCHECK		5	/* Check FS is USER_DS on return */
+>> ++#define TIF_NOTIFY_SIGNAL	5	/* signal notifications exist */
+>> + #define TIF_MTE_ASYNC_FAULT	6	/* MTE Asynchronous Tag Check Fault */
+>>  -#define TIF_NOTIFY_SIGNAL	7	/* signal notifications exist */
+>>   #define TIF_SYSCALL_TRACE	8	/* syscall trace active */
+>>   #define TIF_SYSCALL_AUDIT	9	/* syscall auditing */
+>>   #define TIF_SYSCALL_TRACEPOINT	10	/* syscall tracepoint for ftrace */
+>> @@@ -96,7 -103,8 +98,8 @@@
+>>   
+>>   #define _TIF_WORK_MASK		(_TIF_NEED_RESCHED | _TIF_SIGPENDING | \
+>>   				 _TIF_NOTIFY_RESUME | _TIF_FOREIGN_FPSTATE | \
+>> - 				 _TIF_UPROBE | _TIF_MTE_ASYNC_FAULT)
+>>  -				 _TIF_UPROBE | _TIF_FSCHECK | _TIF_MTE_ASYNC_FAULT | \
+>> ++				 _TIF_UPROBE | _TIF_MTE_ASYNC_FAULT | \
+>> + 				 _TIF_NOTIFY_SIGNAL)
+> 
+> Thanks Stephen. It looks alright to me.
 
-Thus make it optional, but keep it enabled by default.
+Agree - I'll rebase my tree when -rc7 is out so we won't have this issue once
+the 5.11 merge window opens.
 
-changes v2: fixed meanwhile removed '---help---'
-
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
----
- drivers/clk/Kconfig  | 7 +++++++
- drivers/clk/Makefile | 2 +-
- 2 files changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index c715d4681a0b..ec5b3a75bcf4 100644
---- a/drivers/clk/Kconfig
-+++ b/drivers/clk/Kconfig
-@@ -38,6 +38,13 @@ menuconfig COMMON_CLK
- 
- if COMMON_CLK
- 
-+config COMMON_CLK_GPIO
-+	tristate "GPIO gated clock support"
-+	default y
-+	help
-+	  Supports gpio gated clocks, which can be enabled/disabled via
-+	  gpio output.
-+
- config COMMON_CLK_WM831X
- 	tristate "Clock driver for WM831x/2x PMICs"
- 	depends on MFD_WM831X
-diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-index da8fcf147eb1..0692ab5abc6d 100644
---- a/drivers/clk/Makefile
-+++ b/drivers/clk/Makefile
-@@ -11,7 +11,7 @@ obj-$(CONFIG_COMMON_CLK)	+= clk-multiplier.o
- obj-$(CONFIG_COMMON_CLK)	+= clk-mux.o
- obj-$(CONFIG_COMMON_CLK)	+= clk-composite.o
- obj-$(CONFIG_COMMON_CLK)	+= clk-fractional-divider.o
--obj-$(CONFIG_COMMON_CLK)	+= clk-gpio.o
-+obj-$(CONFIG_COMMON_CLK_GPIO)	+= clk-gpio.o
- ifeq ($(CONFIG_OF), y)
- obj-$(CONFIG_COMMON_CLK)	+= clk-conf.o
- endif
 -- 
-2.11.0
+Jens Axboe
 
