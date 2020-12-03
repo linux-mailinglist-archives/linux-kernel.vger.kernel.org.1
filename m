@@ -2,170 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C661E2CD842
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 075BF2CD84F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389001AbgLCNy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 08:54:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbgLCNy5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 08:54:57 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A45C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 05:54:11 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id f23so3609567ejk.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 05:54:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=essensium.com; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=dZoNrIv6luoppB1moIu/G1luuav3IB0WKtYk1t6susw=;
-        b=LYpEWPHfDqrC9YwMQyshIiEjce5BcSItpSX5YhpOE93vLaQOCbU1pk9guDLImSsk0Z
-         pMpFdEKwJ8vLScBG/V+uihhfM5vqEVlWRSEHTPaXNF51AWdbJhk8DGFnzNU32M1O/XmJ
-         wJnpOCPn8FsutWmSsbNIU3GJuRKkpaHswo4Obca6j3o//RbIZHJH0JYb1FCLOEIJAtqI
-         ePsxmobQGeI39y0hskIzLGrfDvg345cXgv9yJi5B4qZccI5Rs8VlFgFF875PuFrKFZ/3
-         W7vAiGqk7jiZql/C7puS0MFB7PKaDaSP9fiZ0lDwT52XYx0E3jjlPwFO1CY8B1xpiGI9
-         GJvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dZoNrIv6luoppB1moIu/G1luuav3IB0WKtYk1t6susw=;
-        b=TzBp1xPnhXGTzt2T3EA+V5BMvAtsxoiCTdzJBSZ3bJNDe2P4fq4EzwwAATnXznBNxE
-         5RlIuOSc+Qc8CPGzcrJixxscIxLNhX7jy5aIWDalTX87zCjP5HyWWt7oqxoui9Gt58Mv
-         ZIsDRlPISX7AdLYf/eWegkIoK7cbP0L0FTTPq9bU7wplcqYTLZV7ZPkNPhKhO2sc61pS
-         ydGJbykEJLeyIfSvA/I9H8NrQDCRmGOLyZqLaMg6QBWmBbUssWe/ZnjJB92iIE8EXbkJ
-         K3bZKf1IFb0xGxb4VFp1A8yIrVxYqp9Pymwv9JYFx4fp7LqJZE0QfAUu9v0Fk4ETPMfg
-         b5LA==
-X-Gm-Message-State: AOAM533umHNU5FyiTF20jJWrFr/Y1+/nM78OcTjIw1UZgVMjnyo/SYy/
-        fR41Ik8AGrfPJtNcIDj0yBF8dtQuCP88IA==
-X-Google-Smtp-Source: ABdhPJwkVsPCSb91iSsgKGmzw52TfBcLend+JNm0Mk1QVeEMF5+Fsfi3yi3Ceu5PxGSut6zgHwpH5Q==
-X-Received: by 2002:a17:906:b2d1:: with SMTP id cf17mr2656808ejb.281.1607003649968;
-        Thu, 03 Dec 2020 05:54:09 -0800 (PST)
-Received: from [10.8.0.46] (ip-188-118-3-185.reverse.destiny.be. [188.118.3.185])
-        by smtp.gmail.com with ESMTPSA id u19sm912447ejg.16.2020.12.03.05.54.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 05:54:09 -0800 (PST)
-Subject: Re: [PATCH 2/4] net: freescale/fman-port: remove direct use of
- __devm_request_region
-To:     Madalin Bucur <madalin.bucur@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201202161600.23738-1-patrick.havelange@essensium.com>
- <20201202161600.23738-2-patrick.havelange@essensium.com>
- <AM6PR04MB3976E5A576C3E1AA157DA711ECF20@AM6PR04MB3976.eurprd04.prod.outlook.com>
-From:   Patrick Havelange <patrick.havelange@essensium.com>
-Message-ID: <6e64e64d-0bbe-bab6-72a1-db6a304858f6@essensium.com>
-Date:   Thu, 3 Dec 2020 14:54:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730702AbgLCN5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 08:57:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727065AbgLCN5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 08:57:06 -0500
+X-Gm-Message-State: AOAM5302kb/ljAGV1BW2mZVH+J1W7wunoF9+t/LH2IwgmIN8iEXrXzFD
+        WGVYqjZgt/HBt1BFSe9vt6luYnQbHt2Pt5bJ4P4=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607003785;
+        bh=SzLHBJpAHuHrXn0+hQf5Nq+hpLvEsV2HnB2QFidHmT8=;
+        h=From:Date:Subject:To:From;
+        b=JtkIcsXMGat2sYH+Zx4WPMcPh/9vJupqujLi1dnzoQBEpnJcrlLXlCqLD+VnsgdAT
+         3ydkD5+uHVkTg3RUpApfG6gev56wqxlcTNzxgX4BFyN4xLCveJrXdFziF9GRrd7KIA
+         NLivaPtkRo1fgDztQESSyKSPGfXpAAFe0syhxNZKNsvH6SWVKkdPsJ/v200BlJrSQK
+         zgNUdpSthpLXvX669pJZr0bca+tQRVLyqZVfgnjHNwszV+voGshW9tCS7jlt73kpvX
+         r3PcRgYXDYJcqREK4nglhyH4EqVAnP4eyyqUKGfc0nFGQ+/SqjGGcdsLcIpdqktugr
+         7Xcp41wB52ibg==
+X-Google-Smtp-Source: ABdhPJzYjrn+qqLboUkw+x3nO6VYMin9jU5iPUEcPj8ZzwEueQ/dniJvQ/Ax93yEP/0edzTbbkrznBa1TNutWTdpRSE=
+X-Received: by 2002:a9d:be1:: with SMTP id 88mr2155198oth.210.1607003784111;
+ Thu, 03 Dec 2020 05:56:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <AM6PR04MB3976E5A576C3E1AA157DA711ECF20@AM6PR04MB3976.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 3 Dec 2020 14:56:07 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a20LXgEQkYSpbFFrJs1mdg19W72dp3pbebH9Pkpib2g-g@mail.gmail.com>
+Message-ID: <CAK8P3a20LXgEQkYSpbFFrJs1mdg19W72dp3pbebH9Pkpib2g-g@mail.gmail.com>
+Subject: objtool crashes with some clang produced .o files
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: multipart/mixed; boundary="000000000000b4881805b58fb9a2"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-03 09:44, Madalin Bucur wrote:
->> -----Original Message-----
->> From: Patrick Havelange <patrick.havelange@essensium.com>
->> Sent: 02 December 2020 18:16
->> To: Madalin Bucur <madalin.bucur@nxp.com>; David S. Miller
->> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>;
->> netdev@vger.kernel.org; linux-kernel@vger.kernel.org
->> Cc: Patrick Havelange <patrick.havelange@essensium.com>
->> Subject: [PATCH 2/4] net: freescale/fman-port: remove direct use of
->> __devm_request_region
->>
->> This driver was directly calling __devm_request_region with a specific
->> resource on the stack as parameter. This is invalid as
->> __devm_request_region expects the given resource passed as parameter
->> to live longer than the call itself, as the pointer to the resource
->> will be stored inside the internal struct used by the devres
->> management.
->>
->> In addition to this issue, a related bug has been found by kmemleak
->> with this trace :
->> unreferenced object 0xc0000001efc01880 (size 64):
->>    comm "swapper/0", pid 1, jiffies 4294669078 (age 3620.536s)
->>    hex dump (first 32 bytes):
->>      00 00 00 0f fe 4a c0 00 00 00 00 0f fe 4a cf ff  .....J.......J..
->>      c0 00 00 00 00 ee 9d 98 00 00 00 00 80 00 02 00  ................
->>    backtrace:
->>      [<c000000000078874>] .alloc_resource+0xb8/0xe0
->>      [<c000000000079b50>] .__request_region+0x70/0x1c4
->>      [<c00000000007a010>] .__devm_request_region+0x8c/0x138
->>      [<c0000000006e0dc8>] .fman_port_probe+0x170/0x420
->>      [<c0000000005cecb8>] .platform_drv_probe+0x84/0x108
->>      [<c0000000005cc620>] .driver_probe_device+0x2c4/0x394
->>      [<c0000000005cc814>] .__driver_attach+0x124/0x128
->>      [<c0000000005c9ad4>] .bus_for_each_dev+0xb4/0x110
->>      [<c0000000005cca1c>] .driver_attach+0x34/0x4c
->>      [<c0000000005ca9b0>] .bus_add_driver+0x264/0x2a4
->>      [<c0000000005cd9e0>] .driver_register+0x94/0x160
->>      [<c0000000005cfea4>] .__platform_driver_register+0x60/0x7c
->>      [<c000000000f86a00>] .fman_port_load+0x28/0x64
->>      [<c000000000f4106c>] .do_one_initcall+0xd4/0x1a8
->>      [<c000000000f412fc>] .kernel_init_freeable+0x1bc/0x2a4
->>      [<c00000000000180c>] .kernel_init+0x24/0x138
->>
->> Indeed, the new resource (created in __request_region) will be linked
->> to the given resource living on the stack, which will end its lifetime
->> after the function calling __devm_request_region has finished.
->> Meaning the new resource allocated is no longer reachable.
->>
->> Now that the main fman driver is no longer reserving the region
->> used by fman-port, this previous hack is no longer needed
->> and we can use the regular call to devm_request_mem_region instead,
->> solving those bugs at the same time.
->>
->> Signed-off-by: Patrick Havelange <patrick.havelange@essensium.com>
->> ---
->>   drivers/net/ethernet/freescale/fman/fman_port.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/freescale/fman/fman_port.c
->> b/drivers/net/ethernet/freescale/fman/fman_port.c
->> index d9baac0dbc7d..354974939d9d 100644
->> --- a/drivers/net/ethernet/freescale/fman/fman_port.c
->> +++ b/drivers/net/ethernet/freescale/fman/fman_port.c
->> @@ -1878,10 +1878,10 @@ static int fman_port_probe(struct platform_device
->> *of_dev)
->>
->>   	of_node_put(port_node);
->>
->> -	dev_res = __devm_request_region(port->dev, &res, res.start,
->> -					resource_size(&res), "fman-port");
->> +	dev_res = devm_request_mem_region(port->dev, res.start,
->> +					  resource_size(&res), "fman-port");
->>   	if (!dev_res) {
->> -		dev_err(port->dev, "%s: __devm_request_region() failed\n",
->> +		dev_err(port->dev, "%s: devm_request_mem_region() failed\n",
->>   			__func__);
->>   		err = -EINVAL;
->>   		goto free_port;
->> --
->> 2.17.1
-> 
-> Hi Patrick,
-> 
-> please send a fix for the issue, targeting the net tree, separate from the
-> other change you are trying to introduce. We need a better explanation for
-> the latter and it should go through the net-next tree, if accepted.
+--000000000000b4881805b58fb9a2
+Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+I see occasional randconfig builds failing on x86 with clang-11
+and clang-12 when objtool crashes with a segmentation fault.
 
-I've resent the series with a cover letter having a bit more 
-explanations. I think all the patches should be applied on net, as they 
-are linked to the same issue/resolution, and are not independent.
+The simplest test case I managed to create is
 
-BR,
+$ echo "__SCK__tp_func_cdev_update() { __SCT__tp_func_cdev_update(); }" > file.c
+$ clang-12 -c file.c -O2 -fno-asynchronous-unwind-tables
+$ ./tools/objtool/objtool orc generate  file.o
+Segmentation fault (core dumped)
+$ clang-12 -S file.c -O2 -fno-asynchronous-unwind-tables -o-
+.text
+.file "file.c"
+.globl __SCK__tp_func_cdev_update      # -- Begin function
+__SCK__tp_func_cdev_update
+.p2align 4, 0x90
+.type __SCK__tp_func_cdev_update,@function
+__SCK__tp_func_cdev_update:             # @__SCK__tp_func_cdev_update
+# %bb.0:
+xorl %eax, %eax
+jmp __SCT__tp_func_cdev_update      # TAILCALL
+.Lfunc_end0:
+.size __SCK__tp_func_cdev_update, .Lfunc_end0-__SCK__tp_func_cdev_update
+                                        # -- End function
+.ident "Ubuntu clang version
+12.0.0-++20201129052612+ce134da4b18-1~exp1~20201129163253.238"
+.section ".note.GNU-stack","",@progbits
+.addrsig
 
-Patrick H.
+The behavior seems to depend on the specific symbol names, and it only happens
+for the integrated assembler, not the GNU assembler.
+
+Attaching both .o files for reference.
+
+        Arnd
+
+--000000000000b4881805b58fb9a2
+Content-Type: application/x-object; name="integrated-as.o"
+Content-Disposition: attachment; filename="integrated-as.o"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ki8wjdxl0>
+X-Attachment-Id: f_ki8wjdxl0
+
+f0VMRgIBAQAAAAAAAAAAAAEAPgABAAAAAAAAAAAAAAAAAAAAAAAAAJgBAAAAAAAAAAAAAEAAAAAA
+AEAACAABADHA6QAAAAAAVWJ1bnR1IGNsYW5nIHZlcnNpb24gMTIuMC4wLSsrMjAyMDExMjkwNTI2
+MTIrY2UxMzRkYTRiMTgtMX5leHAxfjIwMjAxMTI5MTYzMjUzLjIzOAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAGkAAAAEAPH/AAAAAAAAAAAAAAAAAAAAAE4AAAASAAIAAAAAAAAAAAAHAAAA
+AAAAADMAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAABAAAAAMAAAD8/////////wAucmVs
+YS50ZXh0AC5jb21tZW50AC5ub3RlLkdOVS1zdGFjawAubGx2bV9hZGRyc2lnAF9fU0NUX190cF9m
+dW5jX2NkZXZfdXBkYXRlAF9fU0NLX190cF9mdW5jX2NkZXZfdXBkYXRlAGZpbGUuYwAuc3RydGFi
+AC5zeW10YWIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAHAAAAADAAAAAAAAAAAAAAAAAAAAAAAAABgBAAAAAAAAgAAAAAAAAAAA
+AAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAGAAAAAQAAAAYAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAcA
+AAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAQAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAEA
+AAAAAAAYAAAAAAAAAAcAAAACAAAACAAAAAAAAAAYAAAAAAAAAAwAAAABAAAAMAAAAAAAAAAAAAAA
+AAAAAEcAAAAAAAAAVAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAQAAAAAAAAAVAAAAAQAAAAAAAAAA
+AAAAAAAAAAAAAACbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAJQAAAANM
+/28AAACAAAAAAAAAAAAAAAAAGAEAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+AHgAAAACAAAAAAAAAAAAAAAAAAAAAAAAAKAAAAAAAAAAYAAAAAAAAAABAAAAAgAAAAgAAAAAAAAA
+GAAAAAAAAAA=
+--000000000000b4881805b58fb9a2
+Content-Type: application/x-object; name="gnu-as.o"
+Content-Disposition: attachment; filename="gnu-as.o"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ki8wjdya1>
+X-Attachment-Id: f_ki8wjdya1
+
+f0VMRgIBAQAAAAAAAAAAAAEAPgABAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAAAAAAAAAAEAAAAAA
+AEAACgAJADHA6QAAAAAAVWJ1bnR1IGNsYW5nIHZlcnNpb24gMTIuMC4wLSsrMjAyMDExMjkwNTI2
+MTIrY2UxMzRkYTRiMTgtMX5leHAxfjIwMjAxMTI5MTYzMjUzLjIzOAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAEAAAAEAPH/AAAAAAAAAAAAAAAAAAAAAAAAAAADAAEAAAAAAAAAAAAAAAAA
+AAAAAAAAAAADAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAD
+AAYAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAUAAAAAAAAAAAAAAAAAAAAAAAgAAAASAAEAAAAAAAAA
+AAAHAAAAAAAAACMAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAABmaWxlLmMAX19TQ0tfX3RwX2Z1bmNf
+Y2Rldl91cGRhdGUAX19TQ1RfX3RwX2Z1bmNfY2Rldl91cGRhdGUAAAADAAAAAAAAAAQAAAAIAAAA
+/P////////8ALnN5bXRhYgAuc3RydGFiAC5zaHN0cnRhYgAucmVsYS50ZXh0AC5kYXRhAC5ic3MA
+LmNvbW1lbnQALm5vdGUuR05VLXN0YWNrAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAQAAAAYAAAAAAAAAAAAA
+AAAAAABAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAGwAAAAQAAABAAAAA
+AAAAAAAAAAAAAAAAuAEAAAAAAAAYAAAAAAAAAAcAAAABAAAACAAAAAAAAAAYAAAAAAAAACYAAAAB
+AAAAAwAAAAAAAAAAAAAAAAAAAEcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA
+AAAsAAAACAAAAAMAAAAAAAAAAAAAAAAAAABHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA
+AAAAAAAAAAAAMQAAAAEAAAAwAAAAAAAAAAAAAAAAAAAARwAAAAAAAABUAAAAAAAAAAAAAAAAAAAA
+AQAAAAAAAAABAAAAAAAAADoAAAABAAAAAAAAAAAAAAAAAAAAAAAAAJsAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAgAAAAAAAAAAAAAAAAAAAAAAAACgAAAAAAAAANgA
+AAAAAAAACAAAAAcAAAAIAAAAAAAAABgAAAAAAAAACQAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAeAEA
+AAAAAAA+AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAABEAAAADAAAAAAAAAAAAAAAAAAAA
+AAAAANABAAAAAAAASgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=
+--000000000000b4881805b58fb9a2--
