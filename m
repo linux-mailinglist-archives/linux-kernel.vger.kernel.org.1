@@ -2,109 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6EA2CD348
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAC92CD33B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:13:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730116AbgLCKRo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 05:17:44 -0500
-Received: from proxmox-new.maurer-it.com ([212.186.127.180]:36668 "EHLO
-        proxmox-new.maurer-it.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726080AbgLCKRo (ORCPT
+        id S1729085AbgLCKNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 05:13:41 -0500
+Received: from mo-csw1514.securemx.jp ([210.130.202.153]:55990 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726082AbgLCKNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 05:17:44 -0500
-X-Greylist: delayed 411 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Dec 2020 05:17:42 EST
-Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
-        by proxmox-new.maurer-it.com (Proxmox) with ESMTP id AF4C944C5A;
-        Thu,  3 Dec 2020 11:10:10 +0100 (CET)
-To:     dan.carpenter@oracle.com
-Cc:     James.Bottomley@suse.de,
-        jayamohank@HDRedirect-LB5-1afb6e2973825a56.elb.us-east-1.amazonaws.com,
-        jejb@linux.ibm.com, jitendra.bhivare@broadcom.com,
-        kernel-janitors@vger.kernel.org, ketan.mukadam@broadcom.com,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, subbu.seetharaman@broadcom.com,
-        stable@vger.kernel.org
-References: <20200928091300.GD377727@mwanda>
-From:   Thomas Lamprecht <t.lamprecht@proxmox.com>
-Subject: Re: [PATCH] scsi: be2iscsi: Fix a theoretical leak in
- beiscsi_create_eqs()
-Message-ID: <54f36c62-10bf-8736-39ce-27ece097d9de@proxmox.com>
-Date:   Thu, 3 Dec 2020 11:10:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101
- Thunderbird/84.0
+        Thu, 3 Dec 2020 05:13:40 -0500
+Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 0B3ABGG3016292; Thu, 3 Dec 2020 19:11:16 +0900
+X-Iguazu-Qid: 34tru22SmdemqdXay2
+X-Iguazu-QSIG: v=2; s=0; t=1606990276; q=34tru22SmdemqdXay2; m=f0hXoQvS86BDq/vavYVZYk2qxHssrnbqfH2Zb9fuC/E=
+Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
+        by relay.securemx.jp (mx-mr1512) id 0B3ABFUG008832;
+        Thu, 3 Dec 2020 19:11:15 +0900
+Received: from enc02.toshiba.co.jp ([61.202.160.51])
+        by imx12.toshiba.co.jp  with ESMTP id 0B3ABFHF027783;
+        Thu, 3 Dec 2020 19:11:15 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 0B3ABFMe021632;
+        Thu, 3 Dec 2020 19:11:15 +0900
+From:   Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, yuji2.ishikawa@toshiba.co.jp,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 4/4] arm: dts: visconti: Add DT support for Toshiba Visconti5 GPIO driver
+References: <20201201181406.2371881-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+        <20201201181406.2371881-5-nobuhiro1.iwamatsu@toshiba.co.jp>
+Date:   Thu, 03 Dec 2020 19:11:13 +0900
+In-Reply-To: <20201201181406.2371881-5-nobuhiro1.iwamatsu@toshiba.co.jp>
+        (Nobuhiro Iwamatsu's message of "Wed, 2 Dec 2020 03:14:06 +0900")
+X-TSB-HOP: ON
+Message-ID: <87eek742ta.fsf@kokedama.swc.toshiba.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20200928091300.GD377727@mwanda>
-Content-Type: text/plain; charset=UTF-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The be_fill_queue() function can only fail when "eq_vaddress" is NULL
-> and since it's non-NULL here that means the function call can't fail.
-> But imagine if it could, then in that situation we would want to store
-> the "paddr" so that dma memory can be released.
-> 
-> Fixes: bfead3b2cb46 ("[SCSI] be2iscsi: Adding msix and mcc_rings V3")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp> writes:
 
-This came in here through the stable 5.4 tree with v5.4.74, and we have some
-users of ours report that it results in kernel oopses and delayed boot on their
-HP DL 380 Gen 9 (and other Gen 9, FWICT) servers:
+> Add the GPIO node in Toshiba Visconti5 SoC-specific DT file.
+> And enable the GPIO node in TMPV7708 RM main board's board-specific DT file.
+>
+> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> ---
+>  .../boot/dts/toshiba/tmpv7708-rm-mbrc.dts     |  4 +++
+>  arch/arm64/boot/dts/toshiba/tmpv7708.dtsi     | 27 +++++++++++++++++++
+>  2 files changed, 31 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
+> index ed0bf7f13f54..950010a290f0 100644
+> --- a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
+> +++ b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
+> @@ -41,3 +41,7 @@ &uart1 {
+>  	clocks = <&uart_clk>;
+>  	clock-names = "apb_pclk";
+>  };
+> +
+> +&gpio {
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
+> index 242f25f4e12a..ac9bddb35b0a 100644
+> --- a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
+> +++ b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
+> @@ -157,6 +157,33 @@ pmux: pmux@24190000 {
+>  			reg = <0 0x24190000 0 0x10000>;
+>  		};
+>  
+> +		gpio: gpio@28020000 {
+> +			compatible = "toshiba,gpio-tmpv7708";
+> +			reg = <0 0x28020000 0 0x1000>;
+> +			#gpio-cells = <0x2>;
+> +			gpio-ranges = <&pmux 0 0 32>;
+> +			gpio-controller;
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +			interrupts =
+> +				<GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+>  		uart0: serial@28200000 {
+>  			compatible = "arm,pl011", "arm,primecell";
+>  			reg = <0 0x28200000 0 0x1000>;
 
-> systemd-udevd   D    0   501      1 0x80000000
-> Call Trace:
->  __schedule+0x2e6/0x6f0
->  schedule+0x33/0xa0
->  schedule_timeout+0x205/0x330
->  wait_for_completion+0xb7/0x140
->  ? wake_up_q+0x80/0x80
->  __flush_work+0x131/0x1e0
->  ? worker_detach_from_pool+0xb0/0xb0
->  work_on_cpu+0x6d/0x90
->  ? workqueue_congested+0x80/0x80
->  ? pci_device_shutdown+0x60/0x60
->  pci_device_probe+0x190/0x1b0
->  really_probe+0x1c8/0x3e0
->  driver_probe_device+0xbb/0x100
->  device_driver_attach+0x58/0x60
->  __driver_attach+0x8f/0x150
->  ? device_driver_attach+0x60/0x60
->  bus_for_each_dev+0x79/0xc0
->  ? kmem_cache_alloc_trace+0x1a0/0x230
->  driver_attach+0x1e/0x20
->  bus_add_driver+0x154/0x1f0
->  ? 0xffffffffc0453000
->  driver_register+0x70/0xc0
->  ? 0xffffffffc0453000
->  __pci_register_driver+0x57/0x60
->  beiscsi_module_init+0x62/0x1000 [be2iscsi]
->  do_one_initcall+0x4a/0x1fa
->  ? _cond_resched+0x19/0x30
->  ? kmem_cache_alloc_trace+0x1a0/0x230
->  do_init_module+0x60/0x230
->  load_module+0x231b/0x2590
->  __do_sys_finit_module+0xbd/0x120
->  ? __do_sys_finit_module+0xbd/0x120
->  __x64_sys_finit_module+0x1a/0x20
->  do_syscall_64+0x57/0x190
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x7f00aca06f59
-> Code: Bad RIP value.
-> RSP: 002b:00007ffc14380858 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-> RAX: ffffffffffffffda RBX: 0000558c726262e0 RCX: 00007f00aca06f59
-> RDX: 0000000000000000 RSI: 00007f00ac90bcad RDI: 000000000000000e
-> RBP: 00007f00ac90bcad R08: 0000000000000000 R09: 0000000000000000
-> R10: 000000000000000e R11: 0000000000000246 R12: 0000000000000000
-> R13: 0000558c725f6030 R14: 0000000000020000 R15: 0000558c726262e0
+FWIW,
 
-Blacklisting the be2iscsi module or reverting this commit helps, I did not get
-around to look further into the mechanics at play and figured you would be
-faster at that, or that this info at least helps someone else when searching
-for the same symptoms.
+Reviewed-by: Punit Agrawal <punit1.agrawal@toshiba.co.jp>
 
-cheers,
-Thomas
-
-
+Thanks,
+Punit
