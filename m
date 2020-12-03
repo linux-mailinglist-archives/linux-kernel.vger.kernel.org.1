@@ -2,75 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C33F2CDCD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0132CDCDF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727264AbgLCR4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:56:32 -0500
-Received: from sandeen.net ([63.231.237.45]:44968 "EHLO sandeen.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725987AbgLCR4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:56:32 -0500
-Received: from liberator.sandeen.net (liberator.sandeen.net [10.0.0.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by sandeen.net (Postfix) with ESMTPSA id 306A17906;
-        Thu,  3 Dec 2020 11:55:32 -0600 (CST)
-To:     Christoph Hellwig <hch@lst.de>, ira.weiny@intel.com
-Cc:     fstests@vger.kernel.org, Eric Sandeen <sandeen@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>
-References: <20201202214145.1563433-1-ira.weiny@intel.com>
- <20201203081556.GA15306@lst.de>
-From:   Eric Sandeen <sandeen@sandeen.net>
-Subject: Re: [PATCH] common/rc: Fix _check_s_dax()
-Message-ID: <b757842d-b020-49c9-498c-df5de89f10af@sandeen.net>
-Date:   Thu, 3 Dec 2020 11:55:50 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        id S1729206AbgLCR5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:57:54 -0500
+Received: from conuserg-11.nifty.com ([210.131.2.78]:29796 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726670AbgLCR5y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 12:57:54 -0500
+Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 0B3Hu1Bo005973;
+        Fri, 4 Dec 2020 02:56:01 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 0B3Hu1Bo005973
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1607018162;
+        bh=ZcOLrQALbkb3/RzN2wo8pY/7fxO5cxpSceGF1gZMUyE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=zRWDfBnWe5Sb3hEMTMoPzz34OwUxzIgKG6A9mbjpMnMpSLiS0/dmGzO7rifsoRFZJ
+         zjgK/nFq5PrQGoV1DX/mN/Wyr3fAtlW/MH8TcydHE/dknSLNCuEppl4L1TvB3rQFgw
+         x4qqw42NgkuCCqFS8w5SnFhg46MNknCX9wA03xyOsSxufxI1s/FtYX83ANXBErtzRV
+         sLTP5fAB9s0oiDKGWEF4sTFmYCG8EuHJ5Gwhq3/4WRLQ0Q9ytE+ggA3sitwNwixvGM
+         XbVFc/yv2t97AgrwvVGjWs7TGQVbHXGxYn0u3XrLKDbhh7FGCJMgyLgzAA7UBXWFUn
+         pAlGBCctgWnwQ==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: avoid split lines in .mod files
+Date:   Fri,  4 Dec 2020 02:55:51 +0900
+Message-Id: <20201203175551.573123-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20201203081556.GA15306@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+"xargs echo" is not a safe way to remove line breaks because the input
+may exceed the command line limit and xargs may break it up into
+multiple invocations of echo. This should never happen because
+scripts/gen_autoksyms.sh expects all undefined symbols are placed in
+the second line of .mod files.
 
+One possible way is to replace "xargs echo" with
+"sed ':x;N;$!bx;s/\n/ /g'" or something, but I rewrote the code by
+using awk because it is more readable.
 
-On 12/3/20 2:15 AM, Christoph Hellwig wrote:
-> On Wed, Dec 02, 2020 at 01:41:45PM -0800, ira.weiny@intel.com wrote:
->> From: Ira Weiny <ira.weiny@intel.com>
->>
->> There is a conflict with the user visible statx bits 'mount root' and
->> 'dax'.  The kernel is changing the dax bit to correct this conflict.[1]
->>
->> Adjust _check_s_dax() to use the new bit.  Because DAX tests do not run
->> on root mounts, STATX_ATTR_MOUNT_ROOT should always be 0, therefore we
->> can allow either bit to indicate DAX and cover any kernel which may be
->> running.
->>
->> [1] https://lore.kernel.org/lkml/3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com/
->>
->> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
->> ---
->>
->> I went ahead and used Christoph's suggestion regarding using both bits.
-> 
-> That wasn't my suggestion.  I think we should always error out when
-> the bit value shared with STATX_ATTR_MOUNT_ROOT is seen.  Because that
-> means the kernel is not using or fixed ABI we agreed to use going
-> forward.
+This issue was reported by Sami Tolvanen; in his Clang LTO patch set,
+$(multi-used-m) is no longer an ELF object, but a thin archive that
+contains LLVM bitcode files. llvm-nm prints out symbols for each
+archive member separately, which results a lot of dupications, in some
+places, beyond the system-defined limit.
 
-*nod* and my suggestion was to explicitly test for the old/wrong value and
-offer the test-runner a hint about why it may have been set (missing the
-fix commit), but we should still ultimately fail the test when it is seen.
+This problem must be fixed irrespective of LTO, and we must ensure
+zero possibility of having this issue.
 
--Eric
+Link: https://lkml.org/lkml/2020/12/1/1658
+Reported-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ scripts/Makefile.build | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index ae647379b579..4c058f12dd73 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -252,6 +252,9 @@ objtool_dep = $(objtool_obj)					\
+ ifdef CONFIG_TRIM_UNUSED_KSYMS
+ cmd_gen_ksymdeps = \
+ 	$(CONFIG_SHELL) $(srctree)/scripts/gen_ksymdeps.sh $@ >> $(dot-target).cmd
++
++# List module undefined symbols
++undefined_syms = $(NM) $< | $(AWK) '$$1 == "U" { printf("%s%s", x++ ? " " : "", $$2) }';
+ endif
+ 
+ define rule_cc_o_c
+@@ -271,13 +274,6 @@ define rule_as_o_S
+ 	$(call cmd,modversions_S)
+ endef
+ 
+-# List module undefined symbols (or empty line if not enabled)
+-ifdef CONFIG_TRIM_UNUSED_KSYMS
+-cmd_undef_syms = $(NM) $< | sed -n 's/^  *U //p' | xargs echo
+-else
+-cmd_undef_syms = echo
+-endif
+-
+ # Built-in and composite module parts
+ $(obj)/%.o: $(src)/%.c $(recordmcount_source) $(objtool_dep) FORCE
+ 	$(call if_changed_rule,cc_o_c)
+@@ -285,7 +281,7 @@ $(obj)/%.o: $(src)/%.c $(recordmcount_source) $(objtool_dep) FORCE
+ 
+ cmd_mod = { \
+ 	echo $(if $($*-objs)$($*-y)$($*-m), $(addprefix $(obj)/, $($*-objs) $($*-y) $($*-m)), $(@:.mod=.o)); \
+-	$(cmd_undef_syms); \
++	$(undefined_syms) echo; \
+ 	} > $@
+ 
+ $(obj)/%.mod: $(obj)/%.o FORCE
+-- 
+2.27.0
+
