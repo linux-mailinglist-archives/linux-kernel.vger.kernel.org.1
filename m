@@ -2,179 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D012CCCA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 085752CCCB0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:33:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729585AbgLCCaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 21:30:00 -0500
-Received: from mga01.intel.com ([192.55.52.88]:52363 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727343AbgLCC37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 21:29:59 -0500
-IronPort-SDR: 6db8+Lw0u6had1ELNbJ7SJgtGArES7KzWChyTSyp3BVd/niCfZV5Vdq6lTEGEE8hJmdbrJdNtE
- bxi0lvGmop/Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="191345593"
-X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
-   d="scan'208";a="191345593"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 18:29:19 -0800
-IronPort-SDR: yjiSzqQXpJA4nZYessrQE9wQ/GU1lsNReMeKLs6Ywj9FcDSjCt6QPY7NJmMUKAy14f5WC3TT4S
- D7h8evq2eMVQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
-   d="scan'208";a="365562099"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga004.fm.intel.com with ESMTP; 02 Dec 2020 18:29:17 -0800
-Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 2 Dec 2020 18:29:17 -0800
-Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
- ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 2 Dec 2020 18:29:16 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 2 Dec 2020 18:29:16 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Wed, 2 Dec 2020 18:29:16 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KvxPF+NxX8NvcPQssnJlg1B3kqrCZy4dXFndDI8ccN45bTLQw/EkOi3SOjr3hlNDVXObS1HRRmjFrf5Bq1/1tZf5UUXA34FxfEfzjw3/NYu8KjTxCB0MTQx+qLsnDhhe0D0bfJOlrWnnUOtLvQnmR5AuKlyVRHLsFwnHpnzzACf1jOwA2mabUktgUjq/eXaWlWp7r1DEaFdQHZPTdIpteWuVswZC3AxPkURUoznWtPzLJ6L7YFkulXza0+JymUNVqldHc98r913RcyfvN6sE6or6RoK+M19l95pIwNCQdSjDwz5LYicqPXtSSxFz26FbbsZF6Ded3ox3/WaVACQqPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bD0cVfG2LSpPzGAPxgotaVvJQzRExThjSv7/rUYIJNU=;
- b=efK2vXNHFYqj37OOEIGOTanmgHz+R1EZLzPj8eFHOfE8WxbIoEmuO2bFzcvcolO+wX3qChiqEYTHmdD0/CnHAySx5MqO5bZaFoCIHvR0ddqwpVi6odb50/p1/yRotqGkdPBabx/WD8KmwT6UgfdcOUBXU4b8Vyep4CWgaYF/a02MqPVQdqxyfSE+bIlDDPIDuh9vjc6ZY3/NKOnDZFcN2BQ7meXUQEbUwYvNFTa+RoTXJi43No5MnMGF0AFM4enl4pBDEnHapiW6/CyHYFyKklaJgtE86KdkTsAV5c25nIBN8/btlhh99rsYcZ9bhT9dwhz3IlaVeiU/aE4El/2EPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bD0cVfG2LSpPzGAPxgotaVvJQzRExThjSv7/rUYIJNU=;
- b=j7kvJxJzxnnGhA8bL8w004aGE6NDawoRuGjb5jjsgqQUTUS2BEMOkLf9WpUv9HKe5h/QK8kpYizouK5xDyuW3BsnubDhSiWg8Uslbb92eMEJsh2uYLzjkCq5z5VwoPoJmtb/xDWEoqncrUJ/N98SCqARHhkWAcN7R5IYe50jH9U=
-Received: from DM6PR11MB4074.namprd11.prod.outlook.com (2603:10b6:5:5::11) by
- DM6PR11MB3595.namprd11.prod.outlook.com (2603:10b6:5:142::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3611.25; Thu, 3 Dec 2020 02:29:14 +0000
-Received: from DM6PR11MB4074.namprd11.prod.outlook.com
- ([fe80::8941:7045:2dc8:707e]) by DM6PR11MB4074.namprd11.prod.outlook.com
- ([fe80::8941:7045:2dc8:707e%7]) with mapi id 15.20.3611.032; Thu, 3 Dec 2020
- 02:29:14 +0000
-From:   "Liao, Bard" <bard.liao@intel.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "vinod.koul@linaro.org" <vinod.koul@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jank@cadence.com" <jank@cadence.com>,
-        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
-        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "hui.wang@canonical.com" <hui.wang@canonical.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "Kale, Sanyog R" <sanyog.r.kale@intel.com>
-Subject: RE: [PATCH v2 3/5] ASoC/SoundWire: rt715-sdca: First version of rt715
- sdw sdca codec driver
-Thread-Topic: [PATCH v2 3/5] ASoC/SoundWire: rt715-sdca: First version of
- rt715 sdw sdca codec driver
-Thread-Index: AQHWx4pYRUwoCWEb2EWVJIUffE01Tanj+28AgACsq1A=
-Date:   Thu, 3 Dec 2020 02:29:14 +0000
-Message-ID: <DM6PR11MB40747A2F2AAC0A4D87F3EA87FFF20@DM6PR11MB4074.namprd11.prod.outlook.com>
-References: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
- <20201130144020.19757-4-yung-chuan.liao@linux.intel.com>
- <20201202160740.GG5560@sirena.org.uk>
-In-Reply-To: <20201202160740.GG5560@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-reaction: no-action
-dlp-product: dlpe-windows
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [220.133.4.96]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d717cc83-1614-4e95-175d-08d8973339fd
-x-ms-traffictypediagnostic: DM6PR11MB3595:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB3595AF5579E281D0D82120F5FFF20@DM6PR11MB3595.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:773;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: i/jxY5pnDoSkfvwlaacUQB33jclaEUHPnMXNf9ShAjgEn9k5beAeciL6/ix0epBMU/f16lPm3kyvCB3ZDZm2+6YW6zZWrd5zTfEPXdPZF0VM1iheWVlPQLhAv6tO+L4w4ASoTL5rPsNpQNBdEQ3tQt5ESPJ66IWoHSXQ4pCJhdUJfLnq30Q36ZmmUnHiFqn41rWDmNYfSUg7bac+mMvAbSuvjmgASUqozxrMjkNVUKDQPH0/yX1QxI5rEaB3JO3JgLJkzdwZjQsj4Fvs7AIswMyKoNXRRwiQ8j5gku1AQb5jmLmioHZbZxT1e5xNYcTQjUn+d7QV5SSdGwcGYtDtiw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4074.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(39860400002)(396003)(376002)(71200400001)(83380400001)(55016002)(8676002)(64756008)(86362001)(76116006)(54906003)(66556008)(5660300002)(53546011)(7696005)(316002)(6506007)(66946007)(66476007)(8936002)(66446008)(9686003)(110136005)(7416002)(478600001)(52536014)(2906002)(4744005)(26005)(4326008)(33656002)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?9mBxO6ILD/b1tH1YJ77V3llMApnE4aNIY0e5pZDD3iLpshmAuuSGgxmhtHyQ?=
- =?us-ascii?Q?9sjVw3Kcv759jS9JY7hyGWPjwfSFht1ucivTy0AHtb65n3HgaVGBl1ye9XX/?=
- =?us-ascii?Q?Ta2XrmFXqzU4+7PzDY2RmZ+DxzR9hz3HXKBQrQLR51Yzw1eLRqQXeyHHA5yE?=
- =?us-ascii?Q?g4EJd6GbQWxDvA0d3tT3gWXOvpJeE5AW2OLB94ERbUSd7DR1ZoQLH0I1r7GN?=
- =?us-ascii?Q?tn69dTXJ5+n4dO6SGbXI/Hp2WStkT4kthkdZRE5Lz7pskigrmJtKUHPChQF4?=
- =?us-ascii?Q?DvuxWgraT1vuX5/KRUXyuhsUNkJZwbEM43L4wsw8l0FCWgxuz4MrQnNjetWW?=
- =?us-ascii?Q?Vl2EtWcFVXA/IPqXEO7QulPhMwjsqYwUepo0rQg4FY/hiWc0/cKA4aPyVDiu?=
- =?us-ascii?Q?P1QHtcw1fpNDRVg7YhenVfhIwrDZdWLAWALjjzO/YmyqTRFifz1iysKQZHFe?=
- =?us-ascii?Q?9PMwY/jUMsK1TgSvmfikpKhIVJMbcqHcAnleeZEpfiCxtAcdNgZyhtRz8AJB?=
- =?us-ascii?Q?QMA2hnNuhxqny3P6ZLUaKbeq49omAvdcMH3htY4eqsEvwNYRPTKi6mIDisoz?=
- =?us-ascii?Q?6dMXGQ0N07JtHHnu96n09A6k4JU5/sRAIGr5XEsOaQ0Y5slW/N1VOWoGnQyc?=
- =?us-ascii?Q?0yF3PKOqhTg+E9anNvhUzu01vh57NMuCYpByKBPqWRUIc4a+zWP7xllbrA9q?=
- =?us-ascii?Q?DwhC7htsMoMey735f5I3Ea5Kqzgwj//UwSolBLery4zVkyhXzGVzhPp+4d4/?=
- =?us-ascii?Q?cZSCihcmIgjTyLyZo7VtRUsu7FuF/b9c55HSMiAwWWtRrhzBg8CFgzClZfXY?=
- =?us-ascii?Q?8JwqUnOGi41Bl+7YkU+bSxu1/3/e1fNWZkWouWIYr+ZUWaQvdWNAuCOmc4Xq?=
- =?us-ascii?Q?cNXaJqkPr919lLOt4cXCIVgYj76PO5V9ApbCMfgRw9IPr20n9Z0RkSgBglu4?=
- =?us-ascii?Q?DpzPj+YInq0V9yRybOlM8HnKd+PrIOfmCB/dMCdoLOY=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1729565AbgLCCbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 21:31:43 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:56517 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725859AbgLCCbm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 21:31:42 -0500
+X-UUID: 6f5e8fa78bb74a52827525f34941024e-20201203
+X-UUID: 6f5e8fa78bb74a52827525f34941024e-20201203
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 205625155; Thu, 03 Dec 2020 10:31:00 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 3 Dec 2020 10:30:37 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 3 Dec 2020 10:30:38 +0800
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Marco Elver <elver@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: [PATCH v5 4/4] kasan: update documentation for generic kasan
+Date:   Thu, 3 Dec 2020 10:30:37 +0800
+Message-ID: <20201203023037.30792-1-walter-zh.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4074.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d717cc83-1614-4e95-175d-08d8973339fd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2020 02:29:14.1321
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZQbp9Rbm+w25ImrDgGJZvBZSQackuVEpRwryfwDsEtD2w2+o9jdubQPgQj/f/u4uFys7vgLZLHBu0BTZuwi/jQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3595
-X-OriginatorOrg: intel.com
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Generic KASAN also supports to record the last two workqueue
+stacks and print them in KASAN report. So that need to update
+documentation.
 
+Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+Suggested-by: Marco Elver <elver@google.com>
+Acked-by: Marco Elver <elver@google.com>
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+---
 
-> -----Original Message-----
-> From: Mark Brown <broonie@kernel.org>
-> Sent: Thursday, December 3, 2020 12:08 AM
-> To: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Cc: alsa-devel@alsa-project.org; vkoul@kernel.org; vinod.koul@linaro.org;
-> linux-kernel@vger.kernel.org; tiwai@suse.de; gregkh@linuxfoundation.org;
-> jank@cadence.com; srinivas.kandagatla@linaro.org;
-> rander.wang@linux.intel.com; ranjani.sridharan@linux.intel.com;
-> hui.wang@canonical.com; pierre-louis.bossart@linux.intel.com; Kale, Sanyo=
-g
-> R <sanyog.r.kale@intel.com>; Liao, Bard <bard.liao@intel.com>
-> Subject: Re: [PATCH v2 3/5] ASoC/SoundWire: rt715-sdca: First version of
-> rt715 sdw sdca codec driver
->=20
-> On Mon, Nov 30, 2020 at 10:40:18PM +0800, Bard Liao wrote:
-> > From: Jack Yu <jack.yu@realtek.com>
-> >
-> > First version of rt715 sdw sdca codec driver.
->=20
-> This doesn't apply against the ASoC tree, please check and resend.
+v4:
+- remove timer stack description
 
+v3:
+- Thanks for Marco suggestion
 
-Looks like the previous version is already in ASoC tree. I will resend the
-remaining patches on top of it.
+---
+ Documentation/dev-tools/kasan.rst | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+index c09c9ca2ff1c..3cb556ceb4a5 100644
+--- a/Documentation/dev-tools/kasan.rst
++++ b/Documentation/dev-tools/kasan.rst
+@@ -190,8 +190,9 @@ function calls GCC directly inserts the code to check the shadow memory.
+ This option significantly enlarges kernel but it gives x1.1-x2 performance
+ boost over outline instrumented kernel.
+ 
+-Generic KASAN prints up to 2 call_rcu() call stacks in reports, the last one
+-and the second to last.
++Generic KASAN also reports the last 2 call stacks to creation of work that
++potentially has access to an object. Call stacks for the following are shown:
++call_rcu() and workqueue queuing.
+ 
+ Software tag-based KASAN
+ ~~~~~~~~~~~~~~~~~~~~~~~~
+-- 
+2.18.0
 
