@@ -2,199 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4002CCBB4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:36:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00EB52CCBB6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727402AbgLCBfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 20:35:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725959AbgLCBfu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:35:50 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54F9C061A4D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 17:35:09 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id r5so275579eda.12
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 17:35:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NwHhRJsP3DZwew8JQ92NqQyNUaCSoTst/Bc5po5pW7I=;
-        b=M2fDHg/GuAjypin1DrEff5pK/6of2VtUHfBoE2rdszAyyX1POwuZbZhvqG8f0n6EkV
-         0W8Wu4SCS7CjgwTcjDfHxMoNXAwLv2GDZ6m/1mw7MSkMhkE0FDVevbA6KYGH4EAJYPtL
-         K54yaOv+NIJsz7g4x5fapWRMeVIBTK2+4xu4mYfqwTC05o5n7Tgtcwya5K47lOUtKPDT
-         /VJ60S+YLMCAncwA0QIT88wM/XG7R2IiB5c4fec6JLSGNBINQ6M9iVZlguaqN9r2i5/8
-         ov55uqiFheADaTfERJnyYDLmIl+N81yqTlzAtnCAsiJq8c00DFB93o865uMQpFyYKMOX
-         oFyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NwHhRJsP3DZwew8JQ92NqQyNUaCSoTst/Bc5po5pW7I=;
-        b=D90vjniiq8UA/JuSkPe/Rco4m8c4MGxbBinAaaga5yo+1KqBdz/+rOaLsYUclwCg7+
-         Fd69Vs8eNzPpmKu2pqvQ2MwPeUWFt2wVDRvAqtVB958BdAbKng3q4HTvKQDuQCKBI9xc
-         hwsSF9vCln8KPs3FfQpV/cVcsYknlc/ag7nV0wFuiYHtGV7XWFW+V4ePvBWM6a29qBFz
-         xE645ANkmlnAZHEI3oMZqnnAVMg2aNgY7ZsjiAgxATM/B3ha/0rOT5TIzjOavhdGfiSw
-         NDcPXObvLR0CQYMQPq4CYWRtVkSYaGP/QBbQ7HU7/zm3ZvLC6xEODfqs0i/gOjvcK0VB
-         KXcQ==
-X-Gm-Message-State: AOAM533uAMDWung93otNhIqByZpP/2+7wf4jm9WM1VkF8XbIZUwG4NnJ
-        lVJa5uBhNq6wMVfvodgRB+oGU7ES7MTAoE2m6+C0eA==
-X-Google-Smtp-Source: ABdhPJwK/jopuKSOlSKkXDBQPpswTyQag77kb7gGmBhCTsbhPtwsRix/53oObBaUNeEoL/jBVDryzigMFOdVB9evyTs=
-X-Received: by 2002:a50:f404:: with SMTP id r4mr800225edm.62.1606959308396;
- Wed, 02 Dec 2020 17:35:08 -0800 (PST)
+        id S1729297AbgLCBgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 20:36:38 -0500
+Received: from mail-eopbgr40078.outbound.protection.outlook.com ([40.107.4.78]:53706
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727066AbgLCBgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 20:36:38 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nIQTeL/OTc2rAxPLW+l3hLUIbFMQ+07qpgV5DN+h0wUqCibgmfyBmQdiaaSYB1tRFztbI5K65ez0l0TQsvTNneojSpQILjSb6JNbj0XPLYnhRcnAHlqk326whhYQnQ3VNBheHylrG5N62uvxTTxcHcjvBLUH5qB0bEuruKFAJL3sN0PsrPb43xqVQ6JG2+V2JjADZ5x75qVK32DNh0uqlNwx7c4TA5oYjvP5YNCPIz5RfMEtpxlkmzjcbJcbZDXeoFxI4bDEyQq6NTIzy2es2kyw+JddqRUTls0+s7ey9awpYwQ70Kiwz3Tx+UjBQiyjJdJTEQkezHeBV3JOCJcW1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ua/gHjkPkxXoiHmpW4h7tUwffCzJ5L0REIL3iDJPibM=;
+ b=LXpCrllkb77YJj5tDuXQtdLpiydZ7UQHm6HXIgmZ7/tTLnEJzw4T+XJpQVebHD4is2fU0hBq7mVueNYriycoLJJDw52OwTD5uRoatWFXce46Q4Rc9wtrx80E+V0oK5qh8oIh4pzC6Vc61bMvOaxLuTiTymU9XLdPzCngQM2fWSwb5c7bMPIp5Mz+tzPpS7re0Lplr/VT3HbOJVfcLp2BLE7HkEIn/lGm7BkUHIy1SBQRjQ99+OShhMChZKzWeRvjEz+sE2+AusEQR7+iYoQmmjVrZBd9om06kMb/D92tPZBJg+bUgVnvBAHEx3rqd0p909yhkCyApw61n9DN4ne7AQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ua/gHjkPkxXoiHmpW4h7tUwffCzJ5L0REIL3iDJPibM=;
+ b=SUgyfgVJZqYwMt6qA3383ZTzZi8losxM7pbCIL9qc2lQH6DqGMtSeETB1/MLmW3dT0VlzVL2vmC0dqsGxmbsSZ075d7sjB1Qu3uYVo9r7t2vOeVVYJYOUOOUweD4rNL95NVi464xsziL/PA0II1s8YewGspMC2dMLKSPth42Pks=
+Authentication-Results: gondor.apana.org.au; dkim=none (message not signed)
+ header.d=none;gondor.apana.org.au; dmarc=none action=none
+ header.from=oss.nxp.com;
+Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
+ (2603:10a6:803:1c::25) by VI1PR04MB4430.eurprd04.prod.outlook.com
+ (2603:10a6:803:65::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18; Thu, 3 Dec
+ 2020 01:35:47 +0000
+Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
+ ([fe80::ade4:e169:1f4a:28c]) by VI1PR0402MB3712.eurprd04.prod.outlook.com
+ ([fe80::ade4:e169:1f4a:28c%4]) with mapi id 15.20.3632.018; Thu, 3 Dec 2020
+ 01:35:47 +0000
+From:   "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Horia Geanta <horia.geanta@nxp.com>
+Cc:     Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx <linux-imx@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>
+Subject: [PATCH 0/5] crypto: caam - avoid allocating memory at crypto request runtime
+Date:   Thu,  3 Dec 2020 03:35:19 +0200
+Message-Id: <20201203013524.30495-1-iuliana.prodan@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [83.217.231.2]
+X-ClientProxiedBy: AM0PR03CA0059.eurprd03.prod.outlook.com (2603:10a6:208::36)
+ To VI1PR0402MB3712.eurprd04.prod.outlook.com (2603:10a6:803:1c::25)
 MIME-Version: 1.0
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201202052330.474592-7-pasha.tatashin@soleen.com> <20201202163507.GL5487@ziepe.ca>
- <CA+CK2bBT=U+xhbzXTDFwsL5wTvPHgNJ0DRpaeseiUq=w4EOe9w@mail.gmail.com> <20201203010809.GQ5487@ziepe.ca>
-In-Reply-To: <20201203010809.GQ5487@ziepe.ca>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Wed, 2 Dec 2020 20:34:32 -0500
-Message-ID: <CA+CK2bBRgcCc5Nm0RcsEgVFpGBFC-_icA6UDRiqQxeRJE5U-Aw@mail.gmail.com>
-Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv15040.swis.ro-buh01.nxp.com (83.217.231.2) by AM0PR03CA0059.eurprd03.prod.outlook.com (2603:10a6:208::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18 via Frontend Transport; Thu, 3 Dec 2020 01:35:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: c09c5bbf-cc71-4e93-7e72-08d8972bc269
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4430:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB443082F9F12AC6409D8A69A5CDF20@VI1PR04MB4430.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mz71iZHqHXyNzaEhkFa8+CnMEXTZU8cNgRgpP/VZUfhGPQt9HQxqJQonP0baanzFa7FFImdYGkAjqDKX+TKTSTui1E9EMhZ5YF0cZpu+CpiWQOFgAANOpYbERoXNM8eAs/em8ylih1rzgDjUKWgw4HeOd7413TovKrkQ7AVxVoiTVnU4FwDkpw2UAS1xc/hdlTAUpj9oueIUjjnzRsLydIOnpLwhL/J3oYixKMbhFaAkv49cFGleI46+qUTI/xWIeljtqZxQJBEzAB/NDgEk8657NPSlSHMgtvrUa+WEGFbn/Y1rzqpcq1xJT88SMF5Q4tBDB0E77s5sWQRXVNAOzw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3712.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(376002)(39860400002)(396003)(54906003)(1076003)(110136005)(2906002)(316002)(2616005)(83380400001)(8676002)(52116002)(6506007)(8936002)(5660300002)(66946007)(26005)(66476007)(956004)(16526019)(86362001)(186003)(6512007)(4326008)(478600001)(66556008)(6666004)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?/rMawMeFWsQZtTvu1kwjXqoM+opx9TgpyyHqQroNRpT8QOrCgPz1KNGEYtNt?=
+ =?us-ascii?Q?r4LFKaraZK4dGsx2bR0nn0IstdxfA7tqpDOAZ/Ozptu+xwIO0PBg20q4yKHn?=
+ =?us-ascii?Q?MXnV7rxC1j2dBMqJAkdR8AIDG4XI6iLmFsayXW6uFRtfvy+v8zdURuOEDsvu?=
+ =?us-ascii?Q?5TaBUHG2z0vYzg4HHsVgWBh3b5CMdhVGE9Sl6bLGAi0LdCNTZcVphx7EGDxX?=
+ =?us-ascii?Q?yg2uef3E9YKeRIYORGIgdwvLehyzkiGVZtdhm6kC66NZF52UmkFGwzjlqzDf?=
+ =?us-ascii?Q?dG0nKaPJL+hlmllfOns5zyz2xlrfquAXbl979LmubuH+nQ/otTOaKZ8uGd48?=
+ =?us-ascii?Q?I8Pgam2bJ9fhiYIWpGh60qZS56sb1k/b9gFhNSiK7qzLA4fowwKribAm9ZOj?=
+ =?us-ascii?Q?PTZYIfgkAUsqoBnjwFVZ618b4l4PdD2jlTGbMObGrNJL6PHpVVZprwH+HoTT?=
+ =?us-ascii?Q?fSEK3cVHIXBNmC2t1a55AZSuBcQcW8t4rNghnY5TNR9+yH1iaSWt45VSDL56?=
+ =?us-ascii?Q?97dphUt5g4SUjQF/s366ON79cSS2BXOaZjaSBHn5vsMJBTNcVuO0lHK7aTUh?=
+ =?us-ascii?Q?pU8fajaKPBiE7ScuNi7CA7T6CAHuJJArOlwiL8t7U9mJ97oQrsJnLhe5iF/G?=
+ =?us-ascii?Q?TxlTyrC1jtWp7oUcyzfbbtBWn0yksX8A7dfpDmXG9LT5S/dY9z5cqCFVfGFX?=
+ =?us-ascii?Q?R86lW4ps4K/5OOl6PkDrcu3MEAiDX7wK+XpmbgnfkEt+Vi1G9Zsc4fNVaZvg?=
+ =?us-ascii?Q?1Ygm+ujX47uJJHj9WZGzY2Vjp5ok+SzJmSs2zHDxuzpE9Rqk0Bt6tnwNskq0?=
+ =?us-ascii?Q?zSuobXaU06pC9eqQXvx7t/+mqZ1oO8kDs73Z+8WX8DagKTYMKEx/SWhulUld?=
+ =?us-ascii?Q?5Aqwby7L0CBqOcEiw6CBhkOBWYbXqv07B9gHgKi2jxzocMwJh1KS0ETDevz0?=
+ =?us-ascii?Q?AXSsiSoVXQRLGvGVmYDl04fzrGhkTkomHMEo7HLAQrlOMRZAunv0Y8g6PuKH?=
+ =?us-ascii?Q?tdqs?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c09c5bbf-cc71-4e93-7e72-08d8972bc269
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3712.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2020 01:35:47.6715
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aQ7w0u2nGms2cibS72f0RxqdNWBM6OKE1ue9VfyptNES22tTWsUBGO6aCGYLt425pPQE4x7Cys4IEEsoydHDdQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4430
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 8:08 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Wed, Dec 02, 2020 at 07:19:45PM -0500, Pavel Tatashin wrote:
-> > > It is a good moment to say, I really dislike how this was implemented
-> > > in the first place.
-> > >
-> > > Scanning the output of gup just to do the is_migrate_movable() test is
-> > > kind of nonsense and slow. It would be better/faster to handle this
-> > > directly while gup is scanning the page tables and adding pages to the
-> > > list.
-> >
-> > Hi Jason,
-> >
-> > I assume you mean to migrate pages as soon as they are followed and
-> > skip those that are faulted, as we already know that faulted pages are
-> > allocated from nomovable zone.
-> >
-> > The place would be:
-> >
-> > __get_user_pages()
-> >       while(more pages)
-> >           get_gate_page()
-> >           follow_hugetlb_page()
-> >           follow_page_mask()
-> >
-> >           if (!page)
-> >                faultin_page()
-> >
-> >           if (page && !faulted && (gup_flags & FOLL_LONGTERM) )
-> >                 check_and_migrate this page
->
-> Either here or perhaps even lower down the call chain when the page is
-> captured, similar to how GUP fast would detect it. (how is that done
-> anyhow?)
+From: Iuliana Prodan <iuliana.prodan@nxp.com>
 
-Ah, thank you for pointing this out. I think I need to address it here:
+This series removes CRYPTO_ALG_ALLOCATES_MEMORY flag and
+allocates the memory needed by the driver, to fulfil a
+request, within the crypto request object.
+The extra size needed for base extended descriptor, hw
+descriptor commands and link tables is added to the reqsize
+field that indicates how much memory could be needed per request.
 
-https://soleen.com/source/xref/linux/mm/gup.c?r=96e1fac1#94
+CRYPTO_ALG_ALLOCATES_MEMORY flag is limited only to
+dm-crypt use-cases, which seems to be 4 entries maximum.
+Therefore in reqsize we allocate memory for maximum 4 entries
+for src and 4 for dst, aligned.
+If the driver needs more than the 4 entries maximum, the memory
+is dynamically allocated, at runtime.
 
-static __maybe_unused struct page *try_grab_compound_head()
-              if (unlikely(flags & FOLL_LONGTERM) &&  is_migrate_cma_page(page))
-                   return NULL;
+Iuliana Prodan (5):
+  crypto: caam/jr - avoid allocating memory at crypto request runtime
+    for skcipher
+  crypto: caam/jr - avoid allocating memory at crypto request runtime
+    for aead
+  crypto: caam/jr - avoid allocating memory at crypto request runtime
+    fost hash
+  crypto: caam/qi - avoid allocating memory at crypto request runtime
+  crypto: caam/qi2 - avoid allocating memory at crypto request runtime
 
-I need to change is_migrate_cma_page() to all migratable pages. Will
-study, and send an update with this fix.
+ drivers/crypto/caam/caamalg.c     | 141 +++++++---
+ drivers/crypto/caam/caamalg_qi.c  | 134 ++++++----
+ drivers/crypto/caam/caamalg_qi2.c | 415 ++++++++++++++++++++----------
+ drivers/crypto/caam/caamalg_qi2.h |   6 +
+ drivers/crypto/caam/caamhash.c    |  77 ++++--
+ 5 files changed, 538 insertions(+), 235 deletions(-)
 
->
-> > I looked at that function, and I do not think the code will be cleaner
-> > there, as that function already has a complicated loop.
->
-> That function is complicated for its own reasons.. But complicated is
-> not the point here..
->
-> > The only drawback with the current approach that I see is that
-> > check_and_migrate_movable_pages() has to check once the faulted
-> > pages.
->
-> Yes
->
-> > This is while not optimal is not horrible.
->
-> It is.
->
-> > The FOLL_LONGTERM should not happen too frequently, so having one
-> > extra nr_pages loop should not hurt the performance.
->
-> FOLL_LONGTERM is typically used with very large regions, for instance
-> we are benchmarking around the 300G level. It takes 10s of seconds for
-> get_user_pages to operate. There are many inefficiencies in this
-> path. This extra work of re-scanning the list is part of the cost.
+-- 
+2.17.1
 
-OK, I did not realize that pinning was for such large regions, the
-path must be optimized.
-
->
-> Further, having these special wrappers just for FOLL_LONGTERM has a
-> spill over complexity on the entire rest of the callchain up to here,
-> we now have endless wrappers and varieties of function calls that
-> generally are happening because the longterm path needs to end up in a
-> different place than other paths.
->
-> IMHO this is due to the lack of integration with the primary loop
-> above
->
-> > Also, I checked and most of the users of FOLL_LONGTERM pin only one
-> > page at a time. Which means the extra loop is only to check a single
-> > page.
->
-> Er, I don't know what you checked but those are not the cases I
-> see. Two big users are vfio and rdma. Both are pinning huge ranges of
-> memory in very typical use cases.
-
-What I meant is the users of the interface do it incrementally not in
-large chunks. For example:
-
-vfio_pin_pages_remote
-   vaddr_get_pfn
-        ret = pin_user_pages_remote(mm, vaddr, 1, flags |
-FOLL_LONGTERM, page, NULL, NULL);
-1 -> pin only one pages at a time
-
-RDMA indeed can do it in one chunk though. Regardless, the VFIO should
-probably be optimized to do it in a larger chunk, and the code path
-should be optimized for the reasons you gave above.
-
->
-> > However, those changes can come after this series. The current series
-> > fixes a bug where hot-remove is not working with making minimal amount
-> > of changes, so it is easy to backport it to stable kernels.
->
-> This is a good point, good enough that you should probably continue as
-> is
-
-I will continue looking into this code, and see if I can address your
-concerns in a follow-up fixes.
-
-
-Thanks,
-Pasha
-
->
-> Jason
