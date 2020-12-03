@@ -2,294 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379132CCEFE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1402CCF00
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728451AbgLCGIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:08:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726707AbgLCGIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 01:08:53 -0500
-Date:   Wed, 2 Dec 2020 22:08:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606975692;
-        bh=DzXjniPJPgJTPkPM280Vl1Yp+/VxCymFuwlYzQ5qaq8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JoxrlWbxlwzFZnJefeklAMejeKmdFCSkiO/Her4WEZZ5p3prHx42Gh6J5DjzcKTq7
-         7E8A6sdABOKcapkIS74JEP0XzwFHw4rYkCxfL0tY5u8IVCb07wbFN5UndJ19oTaILf
-         6pEsqtKqAu92V/X9/9uvDOR26zss5CnALfKdfFidmsWAZ4pYyL+PFNNHVowe88OPo7
-         Z46u85ZTQ9iPamRbn6FesPvUMJyrS3DxlGnlYXqRViab0o6s0z2V4n1B2EDscPCIVh
-         BRcTI3DCsTAEMiDfgXuNbEAdGFfygzZbKhqVIqy4fSe+yJTe+A9JEedOtZBkZ1VVxG
-         7yY9Tc0/OxvnQ==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     Daeho Jeong <daehojeong@google.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v7 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION
- ioctl
-Message-ID: <X8iAyiB0RIgm/EgB@google.com>
-References: <20201030041035.394565-1-daeho43@gmail.com>
- <20201030041035.394565-2-daeho43@gmail.com>
- <dcf074e3-821c-6858-eb17-63dcc05e7039@huawei.com>
- <X8h6XK6cYwXqGnV7@google.com>
+        id S1728024AbgLCGNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:13:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44656 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726140AbgLCGNO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 01:13:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606975906;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aQAIwUXcjB6wRQDWsdNxzY57+rR1rUDwSyGL8e4Dwkk=;
+        b=D7ITBoLxDYax+cOxJvHJq1W6KsX2MEVdu7wAj4k10+W4ZE0Knv2ruwyRJmfgNd7DWiZn+J
+        EzmBKE796wlYkmpwwwMDvNKr6AEXYpDa0fOHK5itROPBoDmEqeRpMEx6XRUd12cVWFEXwE
+        YXMhS2eNz1pamtJuGTOxIEUUTC1cvIk=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-8ajcwtX-OE6fF2LHy4xoUA-1; Thu, 03 Dec 2020 01:11:45 -0500
+X-MC-Unique: 8ajcwtX-OE6fF2LHy4xoUA-1
+Received: by mail-io1-f70.google.com with SMTP id k10so639448ios.19
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 22:11:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=aQAIwUXcjB6wRQDWsdNxzY57+rR1rUDwSyGL8e4Dwkk=;
+        b=AiYedjGDWOyOt32PCD59q6J6amoQeEwalygZNSDMEXgmu7XFbLa+JwEtYaNhJM6UgE
+         fFrrHgsq0P4n60t6i+JQUEAuOZhD4dUIH5qPjXedC8rVuR7eHU1Or2MHa41I5ZhU0DT1
+         1WvzTpuqS8EXCj6u7UcHp3t8Vd51W4J02ZxltmIJ6begXFH/CNzJeRGmfhjIXWSoV0bS
+         gm9AlaVP1D8GUD9HsQAzXHjPs0ggY21MtSFbVAgHQopGp1HFdjAt1Ct8ti0snD0DrQpN
+         Itb8aDCwXz/eWleMIFhjyRn0s+E+3qoEWyTpoUYaSYDVA2ND7bMTrc6n1wT4uyGeKYSi
+         MIUg==
+X-Gm-Message-State: AOAM5314TkbCxldw6cSpPLJU96CL6CJHl+xWmRWfzWakf/RKLWurt+VB
+        B9AADOfrICtYYjLxNCNs1RYn6qvJSZNkCeU8R8fvYtJepXeBLX2n29CGnLadjSjvzyEvM252m62
+        8EMaRF0kghdfc5JBhoq/VlOJe
+X-Received: by 2002:a05:6e02:17c6:: with SMTP id z6mr1755061ilu.268.1606975904494;
+        Wed, 02 Dec 2020 22:11:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzfQwzuQLoGkGlqTPjaAXyXzL9mzgDCwzUEDkteFg6B5Iu3hPMsOeU6EeldHeDRRte1HSRI+Q==
+X-Received: by 2002:a05:6e02:17c6:: with SMTP id z6mr1755047ilu.268.1606975904245;
+        Wed, 02 Dec 2020 22:11:44 -0800 (PST)
+Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
+        by smtp.gmail.com with ESMTPSA id e18sm120051ilm.77.2020.12.02.22.11.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 22:11:43 -0800 (PST)
+References: <20201130232338.106892-1-jsnitsel@redhat.com>
+ <20201201025807.162241-1-jsnitsel@redhat.com> <87czzujjg1.fsf@redhat.com>
+ <878sahmh5w.fsf@redhat.com> <20201202164931.GA91318@kernel.org>
+ <87sg8noixh.fsf@redhat.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Peter Huewe" <peterhuewe@gmx.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v2] tpm_tis: Disable interrupts if interrupt storm detected
+In-reply-to: <87sg8noixh.fsf@redhat.com>
+Date:   Wed, 02 Dec 2020 23:11:41 -0700
+Message-ID: <87lfefe7vm.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X8h6XK6cYwXqGnV7@google.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/02, Jaegeuk Kim wrote:
-> On 12/03, Chao Yu wrote:
-> > Jaegeuk, not sure, is it too late to merge this cleanup into original patch?
-> 
-> Let me merge this on top of tree. Thanks. :)
 
-I integrated this into the original patch since I had to revise this commit. :(
-("f2fs: avoid race condition for shinker count")
+Jerry Snitselaar @ 2020-12-02 17:02 MST:
 
-> 
-> > 
-> > From a5c63ec58e0cda6eb5d186b46942eea46422b7a9 Mon Sep 17 00:00:00 2001
-> > From: Chao Yu <yuchao0@huawei.com>
-> > Date: Thu, 3 Dec 2020 10:04:26 +0800
-> > Subject: [PATCH] f2fs: remove f2fs_is_compress_algorithm_valid() for cleanup
-> > 
-> > No logic changes.
-> > 
-> > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > ---
-> >  fs/f2fs/compress.c | 5 -----
-> >  fs/f2fs/f2fs.h     | 5 -----
-> >  fs/f2fs/file.c     | 2 +-
-> >  3 files changed, 1 insertion(+), 11 deletions(-)
-> > 
-> > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> > index dfadbc78946c..869b047a4801 100644
-> > --- a/fs/f2fs/compress.c
-> > +++ b/fs/f2fs/compress.c
-> > @@ -574,11 +574,6 @@ bool f2fs_is_compress_backend_ready(struct inode *inode)
-> >  	return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
-> >  }
-> > 
-> > -bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
-> > -{
-> > -	return f2fs_cops[algorithm] != NULL;
-> > -}
-> > -
-> >  static mempool_t *compress_page_pool;
-> >  static int num_compress_pages = 512;
-> >  module_param(num_compress_pages, uint, 0444);
-> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > index b70c8d553439..17b45c2d2b04 100644
-> > --- a/fs/f2fs/f2fs.h
-> > +++ b/fs/f2fs/f2fs.h
-> > @@ -3882,7 +3882,6 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
-> >  int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool lock);
-> >  void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
-> >  bool f2fs_is_compress_backend_ready(struct inode *inode);
-> > -bool f2fs_is_compress_algorithm_valid(unsigned char algorithm);
-> >  int f2fs_init_compress_mempool(void);
-> >  void f2fs_destroy_compress_mempool(void);
-> >  void f2fs_do_decompress_pages(struct decompress_io_ctx *dic, bool verity);
-> > @@ -3927,10 +3926,6 @@ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
-> >  	/* not support compression */
-> >  	return false;
-> >  }
-> > -static inline bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
-> > -{
-> > -	return false;
-> > -}
-> >  static inline struct page *f2fs_compress_control_page(struct page *page)
-> >  {
-> >  	WARN_ON_ONCE(1);
-> > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > index 300355fe25f0..0453b441228d 100644
-> > --- a/fs/f2fs/file.c
-> > +++ b/fs/f2fs/file.c
-> > @@ -4016,7 +4016,7 @@ static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
-> >  	F2FS_I(inode)->i_cluster_size = 1 << option.log_cluster_size;
-> >  	f2fs_mark_inode_dirty_sync(inode, true);
-> > 
-> > -	if (!f2fs_is_compress_algorithm_valid(option.algorithm))
-> > +	if (!f2fs_is_compress_backend_ready(inode))
-> >  		f2fs_warn(sbi, "compression algorithm is successfully set, "
-> >  			"but current kernel doesn't support this algorithm.");
-> >  out:
-> > -- 
-> > 2.26.2
-> > 
-> > 
-> > 
-> > 
-> > 
-> > On 2020/10/30 12:10, Daeho Jeong wrote:
-> > > From: Daeho Jeong <daehojeong@google.com>
-> > > 
-> > > Added a new F2FS_IOC_SET_COMPRESS_OPTION ioctl to change file
-> > > compression option of a file.
-> > > 
-> > > struct f2fs_comp_option {
-> > >      u8 algorithm;         => compression algorithm
-> > >                            => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
-> > >      u8 log_cluster_size;  => log scale cluster size
-> > >                            => 2 ~ 8
-> > > };
-> > > 
-> > > struct f2fs_comp_option option;
-> > > 
-> > > option.algorithm = 1;
-> > > option.log_cluster_size = 7;
-> > > 
-> > > ioctl(fd, F2FS_IOC_SET_COMPRESS_OPTION, &option);
-> > > 
-> > > Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> > > ---
-> > > 
-> > > v6: changed the function name of checking compression algorithm validity.
-> > > v5: allowed to set algorithm which is not currently enabled by kernel.
-> > > v4: changed commit message.
-> > > v3: changed the error number more specific.
-> > >      folded in fix for build breakage reported by kernel test robot
-> > >      <lkp@intel.com> and Dan Carpenter <dan.carpenter@oracle.com>.
-> > > v2: added ioctl description.
-> > > ---
-> > >   fs/f2fs/compress.c |  5 +++++
-> > >   fs/f2fs/f2fs.h     |  7 ++++++
-> > >   fs/f2fs/file.c     | 54 ++++++++++++++++++++++++++++++++++++++++++++++
-> > >   3 files changed, 66 insertions(+)
-> > > 
-> > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> > > index 7895186cc765..b0144670d320 100644
-> > > --- a/fs/f2fs/compress.c
-> > > +++ b/fs/f2fs/compress.c
-> > > @@ -514,6 +514,11 @@ bool f2fs_is_compress_backend_ready(struct inode *inode)
-> > >   	return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
-> > >   }
-> > > +bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
-> > > +{
-> > > +	return f2fs_cops[algorithm] != NULL;
-> > > +}
-> > > +
-> > >   static mempool_t *compress_page_pool;
-> > >   static int num_compress_pages = 512;
-> > >   module_param(num_compress_pages, uint, 0444);
-> > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > > index a33c90cf979b..70a8a2196888 100644
-> > > --- a/fs/f2fs/f2fs.h
-> > > +++ b/fs/f2fs/f2fs.h
-> > > @@ -435,6 +435,8 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
-> > >   						struct f2fs_sectrim_range)
-> > >   #define F2FS_IOC_GET_COMPRESS_OPTION	_IOR(F2FS_IOCTL_MAGIC, 21,	\
-> > >   						struct f2fs_comp_option)
-> > > +#define F2FS_IOC_SET_COMPRESS_OPTION	_IOW(F2FS_IOCTL_MAGIC, 22,	\
-> > > +						struct f2fs_comp_option)
-> > >   /*
-> > >    * should be same as XFS_IOC_GOINGDOWN.
-> > > @@ -3915,6 +3917,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
-> > >   int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool lock);
-> > >   void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
-> > >   bool f2fs_is_compress_backend_ready(struct inode *inode);
-> > > +bool f2fs_is_compress_algorithm_valid(unsigned char algorithm);
-> > >   int f2fs_init_compress_mempool(void);
-> > >   void f2fs_destroy_compress_mempool(void);
-> > >   void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity);
-> > > @@ -3945,6 +3948,10 @@ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
-> > >   	/* not support compression */
-> > >   	return false;
-> > >   }
-> > > +static inline bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
-> > > +{
-> > > +	return false;
-> > > +}
-> > >   static inline struct page *f2fs_compress_control_page(struct page *page)
-> > >   {
-> > >   	WARN_ON_ONCE(1);
-> > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > > index bd52df84219d..be56702e4939 100644
-> > > --- a/fs/f2fs/file.c
-> > > +++ b/fs/f2fs/file.c
-> > > @@ -3963,6 +3963,57 @@ static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
-> > >   	return 0;
-> > >   }
-> > > +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
-> > > +{
-> > > +	struct inode *inode = file_inode(filp);
-> > > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> > > +	struct f2fs_comp_option option;
-> > > +	int ret = 0;
-> > > +
-> > > +	if (!f2fs_sb_has_compression(sbi))
-> > > +		return -EOPNOTSUPP;
-> > > +
-> > > +	if (!(filp->f_mode & FMODE_WRITE))
-> > > +		return -EBADF;
-> > > +
-> > > +	if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg,
-> > > +				sizeof(option)))
-> > > +		return -EFAULT;
-> > > +
-> > > +	if (!f2fs_compressed_file(inode) ||
-> > > +			option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
-> > > +			option.log_cluster_size > MAX_COMPRESS_LOG_SIZE ||
-> > > +			option.algorithm >= COMPRESS_MAX)
-> > > +		return -EINVAL;
-> > > +
-> > > +	file_start_write(filp);
-> > > +	inode_lock(inode);
-> > > +
-> > > +	if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
-> > > +		ret = -EBUSY;
-> > > +		goto out;
-> > > +	}
-> > > +
-> > > +	if (inode->i_size != 0) {
-> > > +		ret = -EFBIG;
-> > > +		goto out;
-> > > +	}
-> > > +
-> > > +	F2FS_I(inode)->i_compress_algorithm = option.algorithm;
-> > > +	F2FS_I(inode)->i_log_cluster_size = option.log_cluster_size;
-> > > +	F2FS_I(inode)->i_cluster_size = 1 << option.log_cluster_size;
-> > > +	f2fs_mark_inode_dirty_sync(inode, true);
-> > > +
-> > > +	if (!f2fs_is_compress_algorithm_valid(option.algorithm))
-> > > +		f2fs_warn(sbi, "compression algorithm is successfully set, "
-> > > +			"but current kernel doesn't support this algorithm.");
-> > > +out:
-> > > +	inode_unlock(inode);
-> > > +	file_end_write(filp);
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > >   long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-> > >   {
-> > >   	if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
-> > > @@ -4053,6 +4104,8 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-> > >   		return f2fs_sec_trim_file(filp, arg);
-> > >   	case F2FS_IOC_GET_COMPRESS_OPTION:
-> > >   		return f2fs_ioc_get_compress_option(filp, arg);
-> > > +	case F2FS_IOC_SET_COMPRESS_OPTION:
-> > > +		return f2fs_ioc_set_compress_option(filp, arg);
-> > >   	default:
-> > >   		return -ENOTTY;
-> > >   	}
-> > > @@ -4224,6 +4277,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> > >   	case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
-> > >   	case F2FS_IOC_SEC_TRIM_FILE:
-> > >   	case F2FS_IOC_GET_COMPRESS_OPTION:
-> > > +	case F2FS_IOC_SET_COMPRESS_OPTION:
-> > >   		break;
-> > >   	default:
-> > >   		return -ENOIOCTLCMD;
-> > > 
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> Jarkko Sakkinen @ 2020-12-02 09:49 MST:
+>
+>> On Tue, Dec 01, 2020 at 12:59:23PM -0700, Jerry Snitselaar wrote:
+>>> 
+>>> Jerry Snitselaar @ 2020-11-30 20:26 MST:
+>>> 
+>>> > Jerry Snitselaar @ 2020-11-30 19:58 MST:
+>>> >
+>>> >> When enabling the interrupt code for the tpm_tis driver we have
+>>> >> noticed some systems have a bios issue causing an interrupt storm to
+>>> >> occur. The issue isn't limited to a single tpm or system manufacturer
+>>> >> so keeping a denylist of systems with the issue isn't optimal. Instead
+>>> >> try to detect the problem occurring, disable interrupts, and revert to
+>>> >> polling when it happens.
+>>> >>
+>>> >> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+>>> >> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+>>> >> Cc: Peter Huewe <peterhuewe@gmx.de>
+>>> >> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+>>> >> Cc: Matthew Garrett <mjg59@google.com>
+>>> >> Cc: Hans de Goede <hdegoede@redhat.com>
+>>> >> Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
+>>> >> ---
+>>> >> v2: drop tpm_tis specific workqueue and use just system_wq
+>>> >>
+>>> >> drivers/char/tpm/tpm_tis_core.c | 27 +++++++++++++++++++++++++++
+>>> >>  drivers/char/tpm/tpm_tis_core.h |  2 ++
+>>> >>  2 files changed, 29 insertions(+)
+>>> >>
+>>> >> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+>>> >> index 23b60583928b..72cc8a5a152c 100644
+>>> >> --- a/drivers/char/tpm/tpm_tis_core.c
+>>> >> +++ b/drivers/char/tpm/tpm_tis_core.c
+>>> >> @@ -24,6 +24,8 @@
+>>> >>  #include <linux/wait.h>
+>>> >>  #include <linux/acpi.h>
+>>> >>  #include <linux/freezer.h>
+>>> >> +#include <linux/workqueue.h>
+>>> >> +#include <linux/kernel_stat.h>
+>>> >>  #include "tpm.h"
+>>> >>  #include "tpm_tis_core.h"
+>>> >>  
+>>> >> @@ -745,9 +747,23 @@ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
+>>> >>  {
+>>> >>  	struct tpm_chip *chip = dev_id;
+>>> >>  	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+>>> >> +	static bool check_storm = true;
+>>> >> +	static unsigned int check_start;
+>>> >>  	u32 interrupt;
+>>> >>  	int i, rc;
+>>> >>  
+>>> >> +	if (unlikely(check_storm)) {
+>>> >> +		if (!check_start) {
+>>> >> +			check_start = jiffies_to_msecs(jiffies);
+>>> >> +		} else if ((kstat_irqs(priv->irq) > 1000) &&
+>>> >> +			   (jiffies_to_msecs(jiffies) - check_start < 500)) {
+>>> >> +			check_storm = false;
+>>> >> +			schedule_work(&priv->storm_work);
+>>> >> +		} else if (jiffies_to_msecs(jiffies) - check_start >= 500) {
+>>> >> +			check_storm = false;
+>>> >> +		}
+>>> >> +	}
+>>> >> +
+>>> >>  	rc = tpm_tis_read32(priv, TPM_INT_STATUS(priv->locality), &interrupt);
+>>> >>  	if (rc < 0)
+>>> >>  		return IRQ_NONE;
+>>> >> @@ -987,6 +1003,14 @@ static const struct tpm_class_ops tpm_tis = {
+>>> >>  	.clk_enable = tpm_tis_clkrun_enable,
+>>> >>  };
+>>> >>  
+>>> >> +static void tpm_tis_storm_work(struct work_struct *work)
+>>> >> +{
+>>> >> +	struct tpm_tis_data *priv = container_of(work, struct tpm_tis_data, storm_work);
+>>> >> +
+>>> >> +	disable_interrupts(priv->chip);
+>>> >> +	dev_warn(&priv->chip->dev, "Interrupt storm detected, using polling.\n");
+>>> >> +}
+>>> >> +
+>>> >>  int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+>>> >>  		      const struct tpm_tis_phy_ops *phy_ops,
+>>> >>  		      acpi_handle acpi_dev_handle)
+>>> >> @@ -1003,6 +1027,9 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+>>> >>  	if (IS_ERR(chip))
+>>> >>  		return PTR_ERR(chip);
+>>> >>  
+>>> >> +	priv->chip = chip;
+>>> >> +	INIT_WORK(&priv->storm_work, tpm_tis_storm_work);
+>>> >> +
+>>> >>  #ifdef CONFIG_ACPI
+>>> >>  	chip->acpi_dev_handle = acpi_dev_handle;
+>>> >>  #endif
+>>> >> diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis_core.h
+>>> >> index edeb5dc61c95..5630f294dc0c 100644
+>>> >> --- a/drivers/char/tpm/tpm_tis_core.h
+>>> >> +++ b/drivers/char/tpm/tpm_tis_core.h
+>>> >> @@ -95,6 +95,8 @@ struct tpm_tis_data {
+>>> >>  	u16 clkrun_enabled;
+>>> >>  	wait_queue_head_t int_queue;
+>>> >>  	wait_queue_head_t read_queue;
+>>> >> +	struct work_struct storm_work;
+>>> >> +	struct tpm_chip *chip;
+>>> >>  	const struct tpm_tis_phy_ops *phy_ops;
+>>> >>  	unsigned short rng_quality;
+>>> >>  };
+>>> >
+>>> > I've tested this with the Intel platform that has an Infineon chip that
+>>> > I found the other week. It works, but isn't the complete fix. With this
+>>> > on top of James' patchset I sometimes see the message "Lost Interrupt
+>>> > waiting for TPM stat", so I guess there needs to be a check in
+>>> > wait_for_tpm_stat and request_locality to see if interrupts were
+>>> > disabled when the wait_event_interruptible_timeout call times out.
+>>> 
+>>> As kernel test robot pointed out. kstat_irqs isn't visible when tpm_tis
+>>> builds as a module. It looks like it is only called by kstat_irq_usrs,
+>>> and that is only by the fs/proc code. I have a patch to export it, but
+>>> the i915 driver open codes their own version instead of using it. Is
+>>> there any reason not to export it?
+>>
+>> If you add a patch that exports it, then for coherency it'd be better to
+>> also patch i915 driver. Jani?
+>>
+>> /Jarkko
+>
+> It looks like this might not solve all cases. I'm having Lenovo test
+> another build to make sure I gave them the right code, but they reported
+> with the L490 that the system hangs right when it is initializing
+> tpm_tis. I'm working on getting a build on the T490s I have to try there
+> as well. With the Intel system it spits out that it detects the
+> interrupt storm, and continues on its way.
+
+The interrupt storm detection code works on the T490s. I'm not sure what
+is going on with the L490. I will see if I can get access to one.
+
+Jerry
+
