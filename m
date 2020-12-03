@@ -2,120 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E762CDF37
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 358CF2CDF3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729187AbgLCTys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:54:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726964AbgLCTyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:54:47 -0500
-Date:   Thu, 3 Dec 2020 13:54:04 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607025246;
-        bh=m8ZjqwDEcv6sovp8C5+pMQmjlRzo8NG4L7K7lJK+EEg=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=GAyiSr/PlQlKLaoR2pU96UlWn2Zqc0TT/eXL2AZL4t//6GoVr9po4KBSKCzxqSyt3
-         SD8lD+Jasjo+FpzoRUzA0/+J1YSb/GMt5Owu+FuEI1T0go/H07y1NNfO4CYxjXRL9g
-         RzGtU6IQsEOIdqdC4DnnGwBHqEzVrYdKUUe5uCB/x8tH+1XSKB44PnXpaPLh0MxlV0
-         WCBfDbKfnZaTTAjxwT40klPX6qLpeZcV9jYt+nHfjDKujQiHM5JCctV5FCp1TImVlv
-         w4W4gqt2TJFyLUxaU3HWqjELEnFjmQshkPPaDmiEyBhc69bW8NWFoVxtI6M+XSjTbU
-         nAiIbIffJURfw==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     bhelgaas@google.com, lorenzo.pieralisi@arm.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V2] PCI/MSI: Set device flag indicating only 32-bit MSI
- support
-Message-ID: <20201203195404.GA1587879@bjorn-Precision-5520>
+        id S1728355AbgLCT55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:57:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727023AbgLCT55 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 14:57:57 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4225C061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:57:16 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id t22so3953531ljk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:57:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OX2SMwG51HvUvi+B+PocF0hk7d7exgcj6lP8+rKrjjs=;
+        b=FFyRD27Mubz6B1RzFoK/vfuBNBlicnF5AqVaBzfkspFWarDQXm1G48GRCwRJ5WnVFV
+         ceCpLDkx5GiSh/lBWd0aN71pqGdEd7ruda+cx2S/bbW0fAoDoycU7rYrYMDw5Vk5NUA4
+         NoxUJal2d/tWgsWLVeLqj1vvs0QHd2cAQvDmo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OX2SMwG51HvUvi+B+PocF0hk7d7exgcj6lP8+rKrjjs=;
+        b=QhRkjV582ra3O0kWphVX75WsI2VOgZQYqabQSf8q0dBRIhjfvVhm5T3wHlG80T9ioa
+         2keQvRi6udaYFjjottkAzPmdo7Zf2Sh6ZZ/bhbzTJYSUWwxBAWKdKGDBPNLJFFckw+Sd
+         7X9ERdbw0mXpYXOi13tk3ORzV55BQCIBVuD8fVALdfHTnl5TtShmF3imA4h3SVCcy7k5
+         /leoMXOzjpsUVigJ0HFbdOJMrwEJmyvpN6UDKn9phkIzXxE7RqkKHMqQofFuJRVevRc9
+         WQJTDxTzR31wm44N+G0jtbkInMujSr/RA+A+lAf8MkXYkErJBzjMmJEat8PoCsgcrOlT
+         bNxg==
+X-Gm-Message-State: AOAM530OptvWkRaYGkwi07vQ3pcYgS7tFCORQ67+fYG0BKjth1kNaLnF
+        K43y7YFroBDGKI0FTF5JjsXqIWhxIiZI6g==
+X-Google-Smtp-Source: ABdhPJy0mOPY4dnGyXOFpiG2uBI7b6KEN5BJ7cLM8GwZAopdHl0nnbJ13Pb5geKi+34XneO+cxNzmg==
+X-Received: by 2002:a2e:b4a9:: with SMTP id q9mr1958808ljm.140.1607025434680;
+        Thu, 03 Dec 2020 11:57:14 -0800 (PST)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id f2sm747679ljc.118.2020.12.03.11.57.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 11:57:13 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id q8so3881715ljc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:57:13 -0800 (PST)
+X-Received: by 2002:a05:651c:339:: with SMTP id b25mr1977070ljp.285.1607025433176;
+ Thu, 03 Dec 2020 11:57:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <75de8b9d-b4f1-5a68-8510-019017163baa@nvidia.com>
+References: <20201203103315.GA3298@nautica>
+In-Reply-To: <20201203103315.GA3298@nautica>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 3 Dec 2020 11:56:57 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wigRSokT5YLRGH5Jyun1CwgYHR_1RMcoHjUyz7NJ8wG_g@mail.gmail.com>
+Message-ID: <CAHk-=wigRSokT5YLRGH5Jyun1CwgYHR_1RMcoHjUyz7NJ8wG_g@mail.gmail.com>
+Subject: Re: [GIT PULL] 9p update for 5.10-rc7 (restore splice ops)
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 12:33:45AM +0530, Vidya Sagar wrote:
-> On 12/3/2020 11:54 PM, Bjorn Helgaas wrote:
-> > On Tue, Nov 24, 2020 at 04:20:35PM +0530, Vidya Sagar wrote:
-> > > There are devices (Ex:- Marvell SATA controller) that don't support
-> > > 64-bit MSIs and the same is advertised through their MSI capability
-> > > register. Set no_64bit_msi flag explicitly for such devices in the
-> > > MSI setup code so that the msi_verify_entries() API would catch
-> > > if the MSI arch code tries to use 64-bit MSI.
-> > 
-> > This seems good to me.  I'll post a possible revision to set
-> > dev->no_64bit_msi in the device enumeration path instead of in the IRQ
-> > allocation path, since it's really a property of the device, not of
-> > the msi_desc.
-> > 
-> > I like the extra checking this gives us.  Was this prompted by
-> > tripping over something, or is it something you noticed by code
-> > reading?  If the former, a hint about what was wrong and how it's
-> > being fixed would be useful.
-> I observed functionality issue with Marvell SATA controller (1b4b:9171) when
-> the allocated MSI target address was a 64-bit address. I mentioned the
-> Marvell SATA controller as an example in the commit message.
+On Thu, Dec 3, 2020 at 2:33 AM Dominique Martinet
+<asmadeus@codewreck.org> wrote:
+>
+>
+> Hi Linus,
+>
+> Someone just reported splice got disabled in 5.10-rc1, here's a couple
+> of patches to turn it back on using generic helpers.
 
-I know you mentioned the Marvell controller, but apparently that
-device is working perfectly correctly: it does not support 64-bit MSI,
-and it does not advertise support for 64-bit MSI.
+Pulled.
 
-So if there's a functionality issue, that means something is wrong in
-Linux that caused us to assign a 64-bit MSI address to it.  *That*
-issue is what I want to know about.  Your patch only warns about the
-issue; it doesn't fix it.
+> (Thanks for letting me know my mails got flagged as spam last time, I've
+> taken the time to setup dkim/dmarc which brings its share of problems
+> with some mailing lists but hopefully will help here)
 
-I don't think there's any point in specifically mentioning the Marvell
-device if it is working correctly, because the same issue should
-affect *any* device that doesn't support 64-bit MSI.  But if there's
-some arch code that incorrectly assigns a 64-bit address, it would
-definitely be useful to specify the arch.  And hopefully there's a fix
-for that arch code, too.
+It looks good here, but I would suggest you edit your DKIM configuration a bit.
 
-> > > Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> > > ---
-> > > V2:
-> > > * Addressed Bjorn's comment and changed the error message
-> > > 
-> > >   drivers/pci/msi.c | 11 +++++++----
-> > >   1 file changed, 7 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-> > > index d52d118979a6..8de5ba6b4a59 100644
-> > > --- a/drivers/pci/msi.c
-> > > +++ b/drivers/pci/msi.c
-> > > @@ -581,10 +581,12 @@ msi_setup_entry(struct pci_dev *dev, int nvec, struct irq_affinity *affd)
-> > >        entry->msi_attrib.multi_cap     = (control & PCI_MSI_FLAGS_QMASK) >> 1;
-> > >        entry->msi_attrib.multiple      = ilog2(__roundup_pow_of_two(nvec));
-> > > 
-> > > -     if (control & PCI_MSI_FLAGS_64BIT)
-> > > +     if (control & PCI_MSI_FLAGS_64BIT) {
-> > >                entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_64;
-> > > -     else
-> > > +     } else {
-> > >                entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_32;
-> > > +             dev->no_64bit_msi = 1;
-> > > +     }
-> > > 
-> > >        /* Save the initial mask status */
-> > >        if (entry->msi_attrib.maskbit)
-> > > @@ -602,8 +604,9 @@ static int msi_verify_entries(struct pci_dev *dev)
-> > >        for_each_pci_msi_entry(entry, dev) {
-> > >                if (!dev->no_64bit_msi || !entry->msg.address_hi)
-> > >                        continue;
-> > > -             pci_err(dev, "Device has broken 64-bit MSI but arch"
-> > > -                     " tried to assign one above 4G\n");
-> > > +             pci_err(dev, "Device has either broken 64-bit MSI or "
-> > > +                     "only 32-bit MSI support but "
-> > > +                     "arch tried to assign one above 4G\n");
-> > >                return -EIO;
-> > >        }
-> > >        return 0;
-> > > --
-> > > 2.17.1
-> > > 
+In particular, you have "List-ID" in your set of header files that
+DKIM hashes, and that means that any mailing list that then adds that
+header will destroy your DKIM hash.
+
+So you seem to make it almost intentionally hard for your DKIM to be
+valid when you send emails to a list.
+
+I'd suggest you keep the DKIM hash to just the basic fields that your
+MUA will fill in, ie things like
+
+  Date:From:To:Cc:Subject:References:In-Reply-To:Message-ID
+
+because if somebody messes with *those*, then I think they are doing
+something wrong - in ways that adding a "List-ID" as it goes through a
+mailing list is not.
+
+(But I'm not a DKIM expert, just a spam hater).
+
+              Linus
