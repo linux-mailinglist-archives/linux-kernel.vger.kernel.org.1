@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 277052CD4BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1062CD4C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388492AbgLCLlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:41:18 -0500
-Received: from relay.sw.ru ([185.231.240.75]:34248 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726063AbgLCLlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:41:18 -0500
-Received: from [192.168.15.126]
-        by relay3.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1kkmyH-00BZ31-6K; Thu, 03 Dec 2020 14:40:25 +0300
-Subject: Re: [PATCH 6/9] mm: vmscan: use per memcg nr_deferred of shrinker
-To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, shakeelb@google.com,
-        david@fromorbit.com, hannes@cmpxchg.org, mhocko@suse.com,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201202182725.265020-1-shy828301@gmail.com>
- <20201202182725.265020-7-shy828301@gmail.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <49464720-675d-5144-043c-eba6852a9c06@virtuozzo.com>
-Date:   Thu, 3 Dec 2020 14:40:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2388766AbgLCLl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:41:29 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:34472 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388687AbgLCLl2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 06:41:28 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 65C661C0B9E; Thu,  3 Dec 2020 12:40:44 +0100 (CET)
+Date:   Thu, 3 Dec 2020 12:40:44 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: Re: [PATCH v11 3/5] dt-bindings: leds: Add LED_FUNCTION_MOONLIGHT
+ definitions
+Message-ID: <20201203114044.GA9061@duo.ucw.cz>
+References: <1606906011-25633-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1606906011-25633-4-git-send-email-gene.chen.richtek@gmail.com>
+ <20201202122329.GA30929@duo.ucw.cz>
+ <CAE+NS34D8a6Udt7ZZ0=U7oqm5POtihKvD3WjD_sAADamqQ=1AQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201202182725.265020-7-shy828301@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="liOOAslEiF7prFVr"
+Content-Disposition: inline
+In-Reply-To: <CAE+NS34D8a6Udt7ZZ0=U7oqm5POtihKvD3WjD_sAADamqQ=1AQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.12.2020 21:27, Yang Shi wrote:
-> Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
-> will be used in the following cases:
->     1. Non memcg aware shrinkers
->     2. !CONFIG_MEMCG
->     3. memcg is disabled by boot parameter
-> 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> ---
->  mm/vmscan.c | 88 +++++++++++++++++++++++++++++++++++++++++++++++++----
->  1 file changed, 82 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index cba0bc8d4661..d569fdcaba79 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -203,6 +203,12 @@ static DECLARE_RWSEM(shrinker_rwsem);
->  static DEFINE_IDR(shrinker_idr);
->  static int shrinker_nr_max;
->  
-> +static inline bool is_deferred_memcg_aware(struct shrinker *shrinker)
-> +{
-> +	return (shrinker->flags & SHRINKER_MEMCG_AWARE) &&
-> +		!mem_cgroup_disabled();
-> +}
-> +
->  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
->  {
->  	int id, ret = -ENOMEM;
-> @@ -271,7 +277,58 @@ static bool writeback_throttling_sane(struct scan_control *sc)
->  #endif
->  	return false;
->  }
-> +
-> +static inline long count_nr_deferred(struct shrinker *shrinker,
-> +				     struct shrink_control *sc)
-> +{
-> +	bool per_memcg_deferred = is_deferred_memcg_aware(shrinker) && sc->memcg;
-> +	struct memcg_shrinker_deferred *deferred;
-> +	struct mem_cgroup *memcg = sc->memcg;
-> +	int nid = sc->nid;
-> +	int id = shrinker->id;
-> +	long nr;
-> +
-> +	if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
-> +		nid = 0;
-> +
-> +	if (per_memcg_deferred) {
-> +		deferred = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_deferred,
-> +						     true);
 
-My comment is about both 5/9 and 6/9 patches.
+--liOOAslEiF7prFVr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-shrink_slab_memcg() races with mem_cgroup_css_online(). A visibility of CSS_ONLINE flag
-in shrink_slab_memcg()->mem_cgroup_online() does not guarantee that you will see
-memcg->nodeinfo[nid]->shrinker_deferred != NULL in count_nr_deferred(). This may occur
-because of processor reordering on !x86 (there is no a common lock or memory barriers).
+Hi!
 
-Regarding to shrinker_map this is not a problem due to map check in shrink_slab_memcg().
-The map can't be NULL there.
+> > > +++ b/include/dt-bindings/leds/common.h
+> > > @@ -78,6 +78,7 @@
+> > >  #define LED_FUNCTION_INDICATOR "indicator"
+> > >  #define LED_FUNCTION_LAN "lan"
+> > >  #define LED_FUNCTION_MAIL "mail"
+> > > +#define LED_FUNCTION_MOONLIGHT "moonlight"
+> >
+> > There's "torch" function that should be used for this. I guess comment
+> > should be added with explanation what exactly that is and how should
+> > the LED be named.
+> >
+>=20
+> According to mail, 11/25 "Re: [PATCH v7 2/5] dt-bindings: leds: Add
+> LED_COLOR_ID_MOONLIGHT definitions",
+> The Moonlight LED is LED which maximum current more than torch, but
+> less than flash. Such as front camera fill light.
+> I think our channel is moonlight, not torch.
+> I will add this description to comment.
+> We can't exactly define moonlight current level, because every vendor
+> has their own specification.
 
-Regarding to shrinker_deferred you should prove either this is not a problem too,
-or to add proper synchronization (maybe, based on barriers) or to add some similar check
-(maybe, in shrink_slab_memcg() too).
+So... what is the timelimit on moonlight?
 
-Kirill
+But if it is used for camera illumination, I believe it should be
+simply called flash.
+
+Best regards,
+
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--liOOAslEiF7prFVr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX8jOvAAKCRAw5/Bqldv6
+8pj3AJ9cRVAbTOCXxcUiV3mbTJXFFTKK3QCgpfgXoggeGNEUdtl5msUvdmWnkSA=
+=gXOZ
+-----END PGP SIGNATURE-----
+
+--liOOAslEiF7prFVr--
