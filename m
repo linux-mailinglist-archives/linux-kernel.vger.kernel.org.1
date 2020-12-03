@@ -2,76 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8045A2CD4DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 462232CD4D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730322AbgLCLqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:46:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32774 "EHLO mail.kernel.org"
+        id S1730269AbgLCLna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:43:30 -0500
+Received: from foss.arm.com ([217.140.110.172]:37972 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726038AbgLCLqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:46:08 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0198D20758;
-        Thu,  3 Dec 2020 11:45:27 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kkn36-00FeCw-K0; Thu, 03 Dec 2020 11:45:24 +0000
+        id S1726710AbgLCLna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 06:43:30 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D325113E;
+        Thu,  3 Dec 2020 03:42:44 -0800 (PST)
+Received: from [10.37.8.53] (unknown [10.37.8.53])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4CC8E3F66B;
+        Thu,  3 Dec 2020 03:42:40 -0800 (PST)
+Subject: Re: [PATCH v2] proc: use untagged_addr() for pagemap_read addresses
+To:     Miles Chen <miles.chen@mediatek.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Song Bao Hua <song.bao.hua@hisilicon.com>,
+        stable@vger.kernel.org
+References: <20201127050738.14440-1-miles.chen@mediatek.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <d836c2d2-321f-3931-568b-430d73c60c2c@arm.com>
+Date:   Thu, 3 Dec 2020 11:45:56 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 03 Dec 2020 11:45:24 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
-Cc:     catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
-        bjorn.andersson@linaro.org, shawnguo@kernel.org, gshan@redhat.com,
-        geert+renesas@glider.be, Anson.Huang@nxp.com, masahiroy@kernel.org,
-        michael@walle.cc, krzk@kernel.org, linux-kernel@vger.kernel.org,
-        vkoul@kernel.org, olof@lixom.net, vincenzo.frascino@arm.com,
-        ardb@kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/3] arm64:msr: Add MSR driver
-In-Reply-To: <58C4701C-DEAC-4FE9-B54C-3B9ADC8E197D@linux.alibaba.com>
-References: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
- <5e7f7225982b2df63e62ea60ec632376@misterjones.org>
- <855BA92C-5B22-4F14-965A-B1F72A872B8D@linux.alibaba.com>
- <059ed4a8768ff3881005796cb4a10d5e@kernel.org>
- <6FA68A07-F718-46F5-81B4-586A5ED3E479@linux.alibaba.com>
- <7e9ae04f3394a85aa3b8fe8947a44009@kernel.org>
- <4513911D-77BF-4459-B8DF-9889395C16AC@linux.alibaba.com>
- <4f89671e080eb23b084c0e0942f111e6@kernel.org>
- <58C4701C-DEAC-4FE9-B54C-3B9ADC8E197D@linux.alibaba.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <6698aa55cf4ee69a18049c4bf8a21c4f@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: rongwei.wang@linux.alibaba.com, catalin.marinas@arm.com, will@kernel.org, bjorn.andersson@linaro.org, shawnguo@kernel.org, gshan@redhat.com, geert+renesas@glider.be, Anson.Huang@nxp.com, masahiroy@kernel.org, michael@walle.cc, krzk@kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, olof@lixom.net, vincenzo.frascino@arm.com, ardb@kernel.org, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <20201127050738.14440-1-miles.chen@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-03 11:25, Rongwei Wang wrote:
->> 2020年12月3日 下午4:35，Marc Zyngier <maz@kernel.org> 写道：
+Hi Miles,
+
+On 11/27/20 5:07 AM, Miles Chen wrote:
+> When we try to visit the pagemap of a tagged userspace pointer, we find
+> that the start_vaddr is not correct because of the tag.
+> To fix it, we should untag the usespace pointers in pagemap_read().
+> 
+
+Nit: s/usespace/userspace/ (please search and replace all occurrences :) )
+
+> I tested with 5.10-rc4 and the issue remains.
+> 
+> Explaination from Catalin in [1]:
+>
+
+Nit: s/Explaination/Explanation/ (please search and replace all occurrences :) )
+
+> "
+> Arguably, that's a user-space bug since tagged file offsets were never
+> supported. In this case it's not even a tag at bit 56 as per the arm64
+> tagged address ABI but rather down to bit 47. You could say that the
+> problem is caused by the C library (malloc()) or whoever created the
+> tagged vaddr and passed it to this function. It's not a kernel
+> regression as we've never supported it.
+> 
+> Now, pagemap is a special case where the offset is usually not generated
+> as a classic file offset but rather derived by shifting a user virtual
+> address. I guess we can make a concession for pagemap (only) and allow
+> such offset with the tag at bit (56 - PAGE_SHIFT + 3).
+> "
+> 
+> My test code is baed on [2]:
+
+Nit: s/baed/based/ (please search and replace all occurrences :) )
 
 [...]
 
->> But what does it mean to change random system registers while the 
->> kernel
->> itself is using them in parallel? All you are introducing is a bunch 
->> of
->> uncontrolled, unexpected, and possibly fatal side effects.
-> This problem exists when writing to a register, but it does not exist
-> when reading a register.
+> ---
+>  fs/proc/task_mmu.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 217aa2705d5d..92b277388f05 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -1599,11 +1599,15 @@ static ssize_t pagemap_read(struct file *file, char __user *buf,
+>  
+>  	src = *ppos;
+>  	svpfn = src / PM_ENTRY_BYTES;
+> -	start_vaddr = svpfn << PAGE_SHIFT;
+>  	end_vaddr = mm->task_size;
+>  
+>  	/* watch out for wraparound */
+> -	if (svpfn > mm->task_size >> PAGE_SHIFT)
+> +	start_vaddr = end_vaddr;
+> +	if (svpfn < (ULONG_MAX >> PAGE_SHIFT))
 
-If you're not aware that the ARM architecture does have system registers
-with read side-effects, you really shouldn't be writing this code.
+It seems that 'svpfn' should be less-then-equal (<=) '(ULONG_MAX >>
+PAGE_SHIFT)'. Is there any specific reason why this is not the case?
 
-         M.
+> +		start_vaddr = untagged_addr(svpfn << PAGE_SHIFT);
+> +
+> +	/* Ensure the address is inside the task */
+> +	if (start_vaddr > mm->task_size)
+>  		start_vaddr = end_vaddr;
+>  
+>  	/*
+> 
+
+Otherwise:
+
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
 -- 
-Jazz is not dead. It just smells funny...
+Regards,
+Vincenzo
