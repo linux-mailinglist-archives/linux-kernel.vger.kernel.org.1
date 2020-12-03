@@ -2,125 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FEBA2CDC29
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E60DD2CDC28
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729256AbgLCRPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:15:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
+        id S2501977AbgLCRPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:15:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgLCRPf (ORCPT
+        with ESMTP id S1731419AbgLCRPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:15:35 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4CFC061A51
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 09:14:49 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id l5so2869338edq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 09:14:48 -0800 (PST)
+        Thu, 3 Dec 2020 12:15:05 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 142CBC061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 09:14:25 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id p6so1494802plr.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 09:14:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WtIPNoqi/BD0F1oh2hYjLoqJe2WfmOtKOH7qlA9PgjQ=;
-        b=ZntyKQF5o81ERLDj2oodoU3jNqDI+rBFys/NaNCuT3D7hPteHUxxnK26Wa0owvhz2Y
-         Sfwi4ngOMxDByY2nbO/Mu0k3F5KtA5evQqJ8JJJdSYI1i7Nu+Ux1jt3bpBDlStFR0cQ5
-         Cxe8XlOivVMOgWAWYfS/bHKX7WvFk5gpFNLgNyyWf87Cd0w+Yi7mVueSlPMXQr/Oa4C3
-         qVe2xnUbwj/ofJkQDpiy0ClmAMjLFrCqWJrtBpCG+yXix2x6JQQpHGwpyojM1I9MDONl
-         yS9EbP9ZG/uEiFTh76hrB6vdiPGc2dMB5QvgsQXjGzPw8Js4nhZaoxkutj4I8v4l1lqr
-         MpHw==
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=jpxIDRJby02bDSmzqib9oh8ZXDBqI+2pH5k0P2lzdWM=;
+        b=aRJu1HO4xnNzb8jocw95sh/+CjsELYLpn2jhaJctdiBvV0Fo/IKe2d9DUjnFTVLurX
+         Zz5jY6puhccVi4/XYJcF7M1WWjBZ/WYrYvOH0BlxpJnlRQ5Gv20I5Qa54qDavxIpMqu7
+         46YMj6QXtaEh429/CwE53Heyk8rCED0kC2GVSiksY3g51x/NcNUwhV8nC9XoV+cO/mxt
+         4h3T5yaHfoFjomEoJs048LrdfUJhUseSC4iy7RdIuoRUVb60jBp4vPTph+8LXJR4h17K
+         q4oZzEwHYNz5a1MVWTTRm26Dfo5pZpVJIp2icQJRZ7CVgm0Yy3vM/31Kuj9RXfgsUNyL
+         FvEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WtIPNoqi/BD0F1oh2hYjLoqJe2WfmOtKOH7qlA9PgjQ=;
-        b=CBe7bR1YS7WGN04ZUFvqx04MgzX2a7QJImjZgPRoCOon8ev+x6jS6MsVzDcixsVFYV
-         Ruc5ZkCQ4RfLtcHEmilEOGFKzzUOIrph32eYAj8P6USkxzen/eDMCNjINi70oUE60skj
-         bQiCGztHyZoq/uMDTJ41u2mEJZCbcCFQQoDQjSoOqSY1PG18nYI+rEBntSapsL3asJO5
-         aWHXVzn1X3NatkGbMUKl3XhWMNsPJb2Kn3rq69wmWkMxnHQXkN07sUtDUTToD9dCpiZS
-         TAVro/yjEZlLc3et6Nm++RGkKxFxISOwlQmRmSeWz2WKAsBG3YJvXnjcpoOTXrCB9zJH
-         mSUA==
-X-Gm-Message-State: AOAM5304qfyF+9VeJOlUFQGNSI4YgtcUoHE8HrDNhwn2Dxh5R/saKfug
-        RRLmx671xSQdHCXsUTazRtXGi6JOvAsbfwqdGMK2Gw==
-X-Google-Smtp-Source: ABdhPJxU9HZX2AEQweVrxtSIoipOVk3c6tRBdh1cl9UbCMNohli/o5y4McNfSlfnA6FPg74lIFITu6lqfdvdRjJi+rc=
-X-Received: by 2002:aa7:c652:: with SMTP id z18mr3664034edr.60.1607015687752;
- Thu, 03 Dec 2020 09:14:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201202052330.474592-7-pasha.tatashin@soleen.com> <20201202163507.GL5487@ziepe.ca>
- <CA+CK2bBT=U+xhbzXTDFwsL5wTvPHgNJ0DRpaeseiUq=w4EOe9w@mail.gmail.com>
- <20201203010809.GQ5487@ziepe.ca> <CA+CK2bBRgcCc5Nm0RcsEgVFpGBFC-_icA6UDRiqQxeRJE5U-Aw@mail.gmail.com>
- <20201203141729.GS5487@ziepe.ca> <CA+CK2bA=Ahd4E=ebdJ7uwxPyQ1AEy_hxA+Tx+yAi92JcZsQsfA@mail.gmail.com>
- <20201203165937.GU5487@ziepe.ca>
-In-Reply-To: <20201203165937.GU5487@ziepe.ca>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 3 Dec 2020 12:14:11 -0500
-Message-ID: <CA+CK2bBRqK6_ZOkTbz8qe4Gz6T5pwt-KjJQ0+NzYOC1qO1sPMg@mail.gmail.com>
-Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=jpxIDRJby02bDSmzqib9oh8ZXDBqI+2pH5k0P2lzdWM=;
+        b=HbmVb1XjBkQgOi3YbfVZfID/J2rNVdtIYqYOYDb7KyDUx46zFdwKwM/kU0JHrIyAHM
+         UcjNOuTajHqnW6HdvXSWn3RHS9Da1O2a9ALi40NWnbUI8hcJHM8EKHCQLsKv8ZeTe/Hj
+         9keXR99B/ZWfzFWwxk8bWEXG9d/Pd1o9mo5W8xsl3ozNm78RKq9sh+y+fjt05pMMfqm9
+         DfNYTDbAyDJ8nRKev9e4RpM6rV3WYu1MUbj4O/38rS3qN8MVTBm7gCiYiPsdWc1swTLr
+         ML09p1+6E/wmL1q4baVz7Br002m7YGKTjq9geThE9k5NlFA0/KwFo/KVDw2QDXmtRhQa
+         LzVQ==
+X-Gm-Message-State: AOAM532UPMENLLtKCEwI0+HQ9s1A2fXFOtimbnyk+C/U2S2W3T2tJ2fx
+        BmpiNlfeqfbpi4I1LbeV2zXGxw==
+X-Google-Smtp-Source: ABdhPJwE4etOoyGMx9UOKs7yAhw7hgOhsifHtas0tGfE12clfk9l2UH+s+JZSLZnFMT+6hGUVEc2Aw==
+X-Received: by 2002:a17:90a:5988:: with SMTP id l8mr120805pji.82.1607015664612;
+        Thu, 03 Dec 2020 09:14:24 -0800 (PST)
+Received: from ?IPv6:2600:1010:b02c:6432:59d6:b4ed:32aa:4315? ([2600:1010:b02c:6432:59d6:b4ed:32aa:4315])
+        by smtp.gmail.com with ESMTPSA id t9sm30146pjq.46.2020.12.03.09.14.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 09:14:23 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb option
+Date:   Thu, 3 Dec 2020 09:14:22 -0800
+Message-Id: <E6BC2596-6087-49F2-8758-CA5598998BBE@amacapital.net>
+References: <20201203170332.GA27195@oc3871087118.ibm.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-arch <linux-arch@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
+In-Reply-To: <20201203170332.GA27195@oc3871087118.ibm.com>
+To:     Alexander Gordeev <agordeev@linux.ibm.com>
+X-Mailer: iPhone Mail (18B121)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 11:59 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Thu, Dec 03, 2020 at 11:40:15AM -0500, Pavel Tatashin wrote:
-> > > Looking at this code some more.. How is it even correct?
-> > >
-> > > 1633                            if (!isolate_lru_page(head)) {
-> > > 1634                                    list_add_tail(&head->lru, &cma_page_list);
-> > >
-> > > Here we are only running under the read side of the mmap sem so multiple
-> > > GUPs can be calling that sequence in parallel. I don't see any
-> > > obvious exclusion that will prevent corruption of head->lru. The first
-> > > GUP thread to do isolate_lru_page() will ClearPageLRU() and the second
-> > > GUP thread will be a NOP for isolate_lru_page().
-> > >
-> > > They will both race list_add_tail and other list ops. That is not OK.
-> >
-> > Good question. I studied it, and I do not see how this is OK. Worse,
-> > this race is also exposable as a syscall instead of via driver: two
-> > move_pages() run simultaneously. Perhaps in other places?
-> >
-> > move_pages()
-> >   kernel_move_pages()
-> >     mmget()
-> >     do_pages_move()
-> >       add_page_for_migratio()
-> >          mmap_read_lock(mm);
-> >          list_add_tail(&head->lru, pagelist); <- Not protected
->
-> When this was CMA only it might have been rarer to trigger, but this
-> move stuff sounds like it makes it much more broadly, eg on typical
-> servers with RDMA exposed/etc
->
-> Seems like it needs fixing as part of this too :\
 
-Just to clarify the stack that I showed above is outside of gup, it is
-the same issue that you pointed out that happens elsewhere. I suspect
-there might be more. All of them should be addressed together.
 
-Pasha
+> On Dec 3, 2020, at 9:09 AM, Alexander Gordeev <agordeev@linux.ibm.com> wro=
+te:
+>=20
+> =EF=BB=BFOn Mon, Nov 30, 2020 at 10:31:51AM -0800, Andy Lutomirski wrote:
+>> other arch folk: there's some background here:
 
->
-> Page at a time inside the gup loop could address both concerns, unsure
-> about batching performance here though..
->
-> Jason
+>=20
+>>=20
+>> power: Ridiculously complicated, seems to vary by system and kernel confi=
+g.
+>>=20
+>> So, Nick, your unconditional IPI scheme is apparently a big
+>> improvement for power, and it should be an improvement and have low
+>> cost for x86.  On arm64 and s390x it will add more IPIs on process
+>> exit but reduce contention on context switching depending on how lazy
+>=20
+> s390 does not invalidate TLBs per-CPU explicitly - we have special
+> instructions for that. Those in turn initiate signalling to other
+> CPUs, completely transparent to OS.
+
+Just to make sure I understand: this means that you broadcast flushes to all=
+ CPUs, not just a subset?
+
+>=20
+> Apart from mm_count, I am struggling to realize how the suggested
+> scheme could change the the contention on s390 in connection with
+> TLB. Could you clarify a bit here, please?
+
+I=E2=80=99m just talking about mm_count. Maintaining mm_count is quite expen=
+sive on some workloads.
+
+>=20
+>> TLB works.  I suppose we could try it for all architectures without
+>> any further optimizations.  Or we could try one of the perhaps
+>> excessively clever improvements I linked above.  arm64, s390x people,
+>> what do you think?
+>=20
+> I do not immediately see anything in the series that would harm
+> performance on s390.
+>=20
+> We however use mm_cpumask to distinguish between local and global TLB
+> flushes. With this series it looks like mm_cpumask is *required* to
+> be consistent with lazy users. And that is something quite diffucult
+> for us to adhere (at least in the foreseeable future).
+
+You don=E2=80=99t actually need to maintain mm_cpumask =E2=80=94 we could sc=
+an all CPUs instead.
+
+>=20
+> But actually keeping track of lazy users in a cpumask is something
+> the generic code would rather do AFAICT.
+
+The problem is that arches don=E2=80=99t agree on what the contents of mm_cp=
+umask should be.  Tracking a mask of exactly what the arch wants in generic c=
+ode is a nontrivial operation.
