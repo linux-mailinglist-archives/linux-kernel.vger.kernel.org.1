@@ -2,102 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD942CDFC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 21:34:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2C62CDFC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 21:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728042AbgLCUdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 15:33:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726915AbgLCUdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 15:33:36 -0500
-Date:   Thu, 3 Dec 2020 12:32:53 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1607027575;
-        bh=gEGaFy/MPP9aLCzSG99SHu4NetEFmu4fXcNmm4eN/p8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZoueEGZDNKqyvpXYqrfF2MDP39N38sJ4YSqH1EVKBHrW+Doo1/f2OEbTbHvxIaLFw
-         QIn9s/f4JjpZ2vWWZOGSUkQ6t1bI+nEgCSbNh7MXZOybVt4iA3Q6yVIjBQ4eMBQeVo
-         MS9B1+sqaAW1U/J4668eFz8AIjX0YKBE0Kyvazjc=
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vjitta@codeaurora.org, Minchan Kim <minchan@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, ylal@codeaurora.org,
-        vinmenon@codeaurora.org, kasan-dev <kasan-dev@googlegroups.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Qian Cai <qcai@redhat.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH v2] lib: stackdepot: Add support to configure
- STACK_HASH_SIZE
-Message-Id: <20201203123253.c00767545ad35c09dabd44ef@linux-foundation.org>
-In-Reply-To: <55b7ba6e-6282-2cf6-c42c-272bdd23a607@arm.com>
-References: <1606365835-3242-1-git-send-email-vjitta@codeaurora.org>
-        <7733019eb8c506eee8d29e380aae683a8972fd19.camel@redhat.com>
-        <CAAeHK+w_avr_X2OJ5dm6p6nXQZMvcaAiLCQaF+EWna+7nQxVhg@mail.gmail.com>
-        <ff00097b-e547-185d-2a1a-ce0194629659@arm.com>
-        <55b7ba6e-6282-2cf6-c42c-272bdd23a607@arm.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1728460AbgLCUg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 15:36:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgLCUg3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 15:36:29 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED3BC061A51;
+        Thu,  3 Dec 2020 12:35:48 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id h21so5217363wmb.2;
+        Thu, 03 Dec 2020 12:35:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dU03bFDd4EmhKp1sv3SYB6+nzXscAxpruUkgadQmNp0=;
+        b=q8vJDoMOBpn2HIKfVGsDOSyVwC0UYIzdzgnkPMJFDXj+8tP5EZDjLpcWSlXQkXtQmk
+         SzFXo1GGrw0m3ZuYXkv32hT6MoO/YXqFH8/G3i2A40JyYkewF4fAeM7DPBN01v7QM+0c
+         RxkLrNKYyGzx+UVRiX66+yzmLIUns247t1bSM/oZ+1k8smaBnYvFDMMuPb1GJ0fL5Qr6
+         7FqqHjLuy4b0AQS+TAvilptPGoS4ktN+c1+BYBzwxv3RQiAO6WUraz3HScAGCpRxJ0F7
+         r7odGOqddLN5fPNlWCQPRZwwkejZyPe8WeZ2HL47mwQhjEtOMu2hfMEVJ/iVoCj2eS3O
+         MZHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dU03bFDd4EmhKp1sv3SYB6+nzXscAxpruUkgadQmNp0=;
+        b=uSTxu6fdNq3GEs2haeaDPLMuAWRNIldTqCzGVktoYKYWZUoB0cCfJcKw/CoW1mcU5p
+         CSDK1Q824h36i19/jt8Z3QJ5zPn0YwZJqqdKsY+y4YUSpeDjFlS4+/ZeC+KoZYGNt8ht
+         Il7mjwEA8WsNs2fyyxkxiW7PA8LS9XsJyZ9gBk0UHSsuLothy542BE/Vo6BIzptY/NkK
+         rDhpNP072mFAnZ/igAliUN5iLf9WhDK1aIGIxhDlDrV4I1J6dEPyyNDNJ5ZLLcUTOoJc
+         4VjhXjfIYCZjXwHlNIZBMnG8YD1Q7H78QICfG7UtD4q8VK1W2fzOUvggFtHE1/FB75Kt
+         4cIg==
+X-Gm-Message-State: AOAM530GOrp08xbe7pOVlrwjQbk44O2J5uHbQyakKOObJ5eE/yTKNEY4
+        /cQHYeXZXVlTXA5NAddnhms=
+X-Google-Smtp-Source: ABdhPJyd5R/8V40zUYtMb2LVtX/LVzt8JRzhXGnsS/an180Dgt2+kfXQjFtGFVnD+PMVGl6+bAMlZA==
+X-Received: by 2002:a1c:5402:: with SMTP id i2mr675598wmb.12.1607027747396;
+        Thu, 03 Dec 2020 12:35:47 -0800 (PST)
+Received: from ?IPv6:2a01:110f:b59:fd00:2969:dca1:ffae:a9ff? ([2a01:110f:b59:fd00:2969:dca1:ffae:a9ff])
+        by smtp.gmail.com with ESMTPSA id z22sm533874wml.1.2020.12.03.12.35.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 12:35:46 -0800 (PST)
+Subject: Re: [PATCH v11 5/5] leds: mt6360: Add LED driver for MT6360
+To:     Gene Chen <gene.chen.richtek@gmail.com>, pavel@ucw.cz,
+        robh+dt@kernel.org, matthias.bgg@gmail.com
+Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+References: <1606906011-25633-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1606906011-25633-6-git-send-email-gene.chen.richtek@gmail.com>
+From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Message-ID: <058f0770-eae6-6a53-ec9f-dc69fdca86ac@gmail.com>
+Date:   Thu, 3 Dec 2020 21:35:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <1606906011-25633-6-git-send-email-gene.chen.richtek@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 17:26:59 +0000 Vincenzo Frascino <vincenzo.frascino@arm.com> wrote:
+Hi Gene,
 
+On 12/2/20 11:46 AM, Gene Chen wrote:
+> From: Gene Chen <gene_chen@richtek.com>
 > 
+> Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mode,
+> 3-channel RGB LED support Register/Flash/Breath Mode, and 1-channel for
+> moonlight LED.
 > 
-> On 12/3/20 4:34 PM, Vincenzo Frascino wrote:
-> > Hi Andrey,
-> > 
-> > On 12/3/20 4:15 PM, Andrey Konovalov wrote:
-> >> On Thu, Dec 3, 2020 at 5:04 PM Qian Cai <qcai@redhat.com> wrote:
-> >>>
-> >>> On Thu, 2020-11-26 at 10:13 +0530, vjitta@codeaurora.org wrote:
-> >>>> From: Yogesh Lal <ylal@codeaurora.org>
-> >>>>
-> >>>> Add a kernel parameter stack_hash_order to configure STACK_HASH_SIZE.
-> >>>>
-> >>>> Aim is to have configurable value for STACK_HASH_SIZE, so that one
-> >>>> can configure it depending on usecase there by reducing the static
-> >>>> memory overhead.
-> >>>>
-> >>>> One example is of Page Owner, default value of STACK_HASH_SIZE lead
-> >>>> stack depot to consume 8MB of static memory. Making it configurable
-> >>>> and use lower value helps to enable features like CONFIG_PAGE_OWNER
-> >>>> without any significant overhead.
-> >>>>
-> >>>> Suggested-by: Minchan Kim <minchan@kernel.org>
-> >>>> Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
-> >>>> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
-> >>>
-> >>> Reverting this commit on today's linux-next fixed boot crash with KASAN.
-> >>>
-> >>> .config:
-> >>> https://cailca.coding.net/public/linux/mm/git/files/master/x86.config
-> >>> https://cailca.coding.net/public/linux/mm/git/files/master/arm64.config
-> >>
-> >> Vincenzo, Catalin, looks like this is the cause of the crash you
-> >> observed. Reverting this commit from next-20201203 fixes KASAN for me.
-> >>
-> >> Thanks for the report Qian!
-> >>
-> > 
-> > Thank you for this. I will try and let you know as well.
-> > 
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> ---
+>   drivers/leds/Kconfig       |  13 +
+>   drivers/leds/Makefile      |   1 +
+>   drivers/leds/leds-mt6360.c | 827 +++++++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 841 insertions(+)
+>   create mode 100644 drivers/leds/leds-mt6360.c
 > 
-> Reverting the patch above works for me as well, and the problem seems to be the
-> order on which the initcalls are invoked. In fact stackdepot should be
-> initialized before kasan from what I can see.
+> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> index 1c181df..4f533bc 100644
+> --- a/drivers/leds/Kconfig
+> +++ b/drivers/leds/Kconfig
+> @@ -271,6 +271,19 @@ config LEDS_MT6323
+>   	  This option enables support for on-chip LED drivers found on
+>   	  Mediatek MT6323 PMIC.
+>   
+> +config LEDS_MT6360
+> +	tristate "LED Support for Mediatek MT6360 PMIC"
+> +	depends on LEDS_CLASS && OF
+> +	depends on LEDS_CLASS_FLASH || !LEDS_CLASS_FLASH
+> +	depends on LEDS_CLASS_MULTICOLOR || !LEDS_CLASS_MULTICOLOR
+> +	depends on V4L2_FLASH_LED_CLASS || !V4L2_FLASH_LED_CLASS
+> +	depends on MFD_MT6360
+> +	help
+> +	  This option enables support for dual Flash LED drivers found on
+> +	  Mediatek MT6360 PMIC.
+> +	  Independent current sources supply for each flash LED support torch
+> +	  and strobe mode.
+> +
+>   config LEDS_S3C24XX
+>   	tristate "LED Support for Samsung S3C24XX GPIO LEDs"
+>   	depends on LEDS_CLASS
+> diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> index c2c7d7a..5596427 100644
+[...]
+> +static int mt6360_led_probe(struct platform_device *pdev)
+> +{
+> +	struct mt6360_priv *priv;
+> +	struct fwnode_handle *child;
+> +	size_t count;
+> +	int i = 0, ret;
+> +
+> +	count = device_get_child_node_count(&pdev->dev);
+> +	if (!count || count > MT6360_MAX_LEDS) {
+> +		dev_err(&pdev->dev, "No child node or node count over max led number %lu\n", count);
+> +		return -EINVAL;
+> +	}
+> +
+> +	priv = devm_kzalloc(&pdev->dev, struct_size(priv, leds, count), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->leds_count = count;
+> +	priv->dev = &pdev->dev;
+> +	mutex_init(&priv->lock);
+> +
+> +	priv->regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> +	if (!priv->regmap) {
+> +		dev_err(&pdev->dev, "Failed to get parent regmap\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	device_for_each_child_node(&pdev->dev, child) {
+> +		struct mt6360_led *led = priv->leds + i;
+> +		struct led_init_data init_data = { .fwnode = child, };
+> +		u32 reg, led_color;
+> +
+> +		ret = fwnode_property_read_u32(child, "color", &led_color);
+> +		if (ret)
+> +			goto out_flash_release;
+> +
+> +		if (led_color == LED_COLOR_ID_RGB || led_color == LED_COLOR_ID_MULTI)
+> +			reg = MT6360_VIRTUAL_MULTICOLOR;
+> +		else {
+> +			ret = fwnode_property_read_u32(child, "reg", &reg);
+> +			if (ret)
+> +				goto out_flash_release;
+> +
+> +			if (reg >= MT6360_MAX_LEDS) {
+> +				ret = -EINVAL;
+> +				goto out_flash_release;
+> +			}
+> +		}
+> +
+> +		if (priv->leds_active & BIT(reg)) {
+> +			ret = -EINVAL;
+> +			goto out_flash_release;
+> +		}
+> +		priv->leds_active |= BIT(reg);
+> +
+> +		led->led_no = reg;
+> +		led->priv = priv;
+> +
+> +		ret = mt6360_init_common_properties(led, &init_data);
+> +		if (ret)
+> +			goto out_flash_release;
+> +
+> +		if (reg == MT6360_VIRTUAL_MULTICOLOR ||
+> +			(reg >= MT6360_LED_ISNK1 && reg <= MT6360_LED_ISNKML))
+> +			ret = mt6360_init_isnk_properties(led, &init_data);
+> +		else
+> +			ret = mt6360_init_flash_properties(led, &init_data);
+> +
+> +		if (ret)
+> +			goto out_flash_release;
+> +
+> +		ret = mt6360_led_register(&pdev->dev, led, &init_data);
+> +		if (ret)
+> +			goto out_flash_release;
+> +
+> +		i++;
+> +	}
+> +
+> +	platform_set_drvdata(pdev, priv);
+> +	return 0;
+> +
+> +out_flash_release:
+> +	mt6360_v4l2_flash_release(priv);
 
-Thanks, all.  I'll drop
-lib-stackdepot-add-support-to-configure-stack_hash_size.patch.
+The need for releasing v4l2_flash devices here and not other LEDs is not
+obvious at first glance. Of course this is due to the fact that
+LED/flash registration functions have devm support but v4l2_flash
+doesn't. It would be good to cover it at some point.
 
+If you added that support to
+drivers/media/v4l2-core/v4l2-flash-led-class.c then you could
+simplify the code in this driver quite nicely.
+
+But it's up to you.
+
+That being said:
+
+Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+
+-- 
+Best regards,
+Jacek Anaszewski
