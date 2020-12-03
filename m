@@ -2,86 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601A82CD326
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7FF2CD32A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387667AbgLCKFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 05:05:49 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:15526 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730207AbgLCKFr (ORCPT
+        id S2388554AbgLCKF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 05:05:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388501AbgLCKFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 05:05:47 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B3A0J9T029233;
-        Thu, 3 Dec 2020 05:04:54 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 355vjen9mw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 05:04:54 -0500
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0B3A4r0E008789
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 3 Dec 2020 05:04:53 -0500
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 3 Dec 2020 05:04:52 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 3 Dec 2020 05:04:52 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 3 Dec 2020 05:04:52 -0500
-Received: from saturn.ad.analog.com ([10.48.65.108])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0B3A4iAg003898;
-        Thu, 3 Dec 2020 05:04:50 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, <lars@metafoo.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [RFC PATCH 5/5] iio: magnetometer: rm3100: remove explicit modes initialization
-Date:   Thu, 3 Dec 2020 12:04:23 +0200
-Message-ID: <20201203100423.77270-6-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201203100423.77270-1-alexandru.ardelean@analog.com>
-References: <20201203100423.77270-1-alexandru.ardelean@analog.com>
+        Thu, 3 Dec 2020 05:05:54 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A037C061A4F;
+        Thu,  3 Dec 2020 02:05:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=0oCifexuK7HOXM8h8g6CDA6pzYc9XTvaQ9l7Cn1Yimw=; b=jHxb5b+521zqEZ9o4ilTdiC1nv
+        /GYu1rQHRBwdvIEZ/73GeurDGmUm50Jut7MDfzxnsrXROc/QT6UrWTAl12koDGnrs5u4i9bMU5VH7
+        /XHQlgnylRsZ0PjCG/NWjmgCCgMt/9DSTIYC6FCvfo68RfS8gg797EPu0UPXvw1mKtiYthqUoq54n
+        ONgFdJT/bBkpQJfsXePkK15v04duxCcNgKeIsrU+aS+OsvfIpBMf/QzPToQxPG3+w4oCs0c8RqBmp
+        ZPz2rZP1nEBZyWmLivAbyDOvSIYJilx3Z0ES4o5/7bPBhEwNudGELWP9qNcfKOiLjyGDx6zyCPG0G
+        Obqfi6SA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kklU5-000668-QN; Thu, 03 Dec 2020 10:05:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 70625302753;
+        Thu,  3 Dec 2020 11:05:07 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 60C0220D20FFA; Thu,  3 Dec 2020 11:05:07 +0100 (CET)
+Date:   Thu, 3 Dec 2020 11:05:07 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Rui Salvaterra <rsalvaterra@gmail.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [BUG] intel_idle: build failure on Linux 5.10-rc6
+Message-ID: <20201203100507.GI2414@hirez.programming.kicks-ass.net>
+References: <CALjTZvYX5opqV4xDcQefE3U1h22E0nkOR7R9WN4pBqrXBmq0Rg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-03_06:2020-12-03,2020-12-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 clxscore=1015 mlxscore=0 mlxlogscore=696
- malwarescore=0 adultscore=0 impostorscore=0 priorityscore=1501 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030060
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALjTZvYX5opqV4xDcQefE3U1h22E0nkOR7R9WN4pBqrXBmq0Rg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The INDIO_DIRECT_MODE mode bit will be set by iio_device_alloc() and
-iio_triggered_buffer_setup() will set the INDIO_BUFFER_TRIGGERED bit.
+On Thu, Dec 03, 2020 at 09:23:11AM +0000, Rui Salvaterra wrote:
+> Hi, Peter,
+> 
+> I'm sorry to bother you, but commit
+> 6e1d2bc675bd57640f5658a4a657ae488db4c204 ("intel_idle: Fix
+> intel_idle() vs tracing") broke my build, when CONFIG_ACPI_PROCESSOR
+> is disabled (possibly because it selects CONFIG_ACPI_PROCESSOR_IDLE):
+> 
+> drivers/idle/intel_idle.c: In function ‘intel_idle_init_cstates_icpu’:
+> drivers/idle/intel_idle.c:1510:7: error: implicit declaration of
+> function ‘intel_idle_state_needs_timer_stop’
+> [-Werror=implicit-function-declaration]
+>  1510 |   if (intel_idle_state_needs_timer_stop(&drv->states[drv->state_count]))
+>       |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Reverting the aforementioned commit fixes it. Config attached. Please
+> let me know if you need anything else!
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/magnetometer/rm3100-core.c | 1 -
- 1 file changed, 1 deletion(-)
+Yeah sorry about that, just queued the build fix.
 
-diff --git a/drivers/iio/magnetometer/rm3100-core.c b/drivers/iio/magnetometer/rm3100-core.c
-index 7242897a05e9..7757e63bbc02 100644
---- a/drivers/iio/magnetometer/rm3100-core.c
-+++ b/drivers/iio/magnetometer/rm3100-core.c
-@@ -551,7 +551,6 @@ int rm3100_common_probe(struct device *dev, struct regmap *regmap, int irq)
- 	indio_dev->info = &rm3100_info;
- 	indio_dev->channels = rm3100_channels;
- 	indio_dev->num_channels = ARRAY_SIZE(rm3100_channels);
--	indio_dev->modes = INDIO_DIRECT_MODE | INDIO_BUFFER_TRIGGERED;
- 	indio_dev->currentmode = INDIO_DIRECT_MODE;
- 
- 	if (!irq)
--- 
-2.27.0
-
+https://git.kernel.org/tip/4d916140bf28ff027997144ea1bb4299e1536f87
