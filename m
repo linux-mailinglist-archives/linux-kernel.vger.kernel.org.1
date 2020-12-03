@@ -2,120 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1DD2CD515
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2547C2CD525
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387983AbgLCMDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 07:03:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728716AbgLCMDJ (ORCPT
+        id S2388337AbgLCMGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 07:06:38 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:57464 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726884AbgLCMGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 07:03:09 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0DDC061A4E;
-        Thu,  3 Dec 2020 04:02:28 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id f18so2218537ljg.9;
-        Thu, 03 Dec 2020 04:02:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IaH1Ay2WDIAxMFtXzoOalR9PJQnL9IHu/7OpcWmCb60=;
-        b=GqwPxheJDKpMMqbf8GKtCQsRNdkZ9ty6yZMmX6GnvUKlV8uPMeTHJAWdu0SBMriDtz
-         t/lSst+rrTVjLuyRcEtwSE+uQGscgLF5LcBHrqxErP3K/8K0mc5blLZcS/IpnyfADSq/
-         7B5vQViuH30s4qz6gP6RqkB/NGf59Fv42R/uVzopGsPW8tSqVRjstXsgx0XVmWIdyQNU
-         +sehwVV5DSpWBdFXfjmCr+hPaIveMTNvIi+gpim6bOo/njHtZZZusWOxX0nGW0h6BiQr
-         SNB0hrrz25XEhG6Qgw70P0FBtrfsmskcFnm7j0vAzrhS2czUcX1UQEV1aXV9qUMnEY3t
-         zrAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IaH1Ay2WDIAxMFtXzoOalR9PJQnL9IHu/7OpcWmCb60=;
-        b=fNrBg564IGtCwZZPVkS9iPy5sOUnIxx2UIKsnt6Khv5oDjrulkWjFDv0+HPzk8JDnC
-         ZN0rKUTknJdSFxVv8voAku9HNhbb/66fAX1UynAPo8BG1Y6gbPdo5SYOiMvBgOb9+Ylu
-         gvBpOYMeZHXXhvcZ5yuYtBh4RdjfPrWcuJWyVtMBy+4bJ2Foptw/MdYI3sY9xDzRIVhJ
-         8vWI9pz6pDWgkVZoWTo3431ftmFA6gLb3hlOrSqg3V+JIMfNoF1FDl6ia0rNeVNZFxQ7
-         e+tSmFKf47Eau80udpK9aey9uz7W1e/GM/S0EjclpovyJARr1Q2Za4svznrTgS3DuuOr
-         BbhA==
-X-Gm-Message-State: AOAM5305WsqpZe9KboLSdUQ92xHzz2htnrkPVIWp8U+02FNxv7Lub9ti
-        ug4WdEGs4F7IQmTmeL8wdbZDtbeoXW4=
-X-Google-Smtp-Source: ABdhPJyCzognIJDPh7B1KJBBA0Nm3ojFxr32mjSG1N0v0D144se4CngiUAVcQ5T5T5QBJYTOlu8EUA==
-X-Received: by 2002:a2e:9550:: with SMTP id t16mr1098917ljh.117.1606996946693;
-        Thu, 03 Dec 2020 04:02:26 -0800 (PST)
-Received: from [192.168.1.40] (88-114-216-158.elisa-laajakaista.fi. [88.114.216.158])
-        by smtp.gmail.com with ESMTPSA id h23sm443031lfk.148.2020.12.03.04.02.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 04:02:26 -0800 (PST)
-Subject: Re: [PATCH v5] mm: Optional full ASLR for mmap(), mremap(), vdso and
- stack
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-References: <20201129211517.2208-1-toiwoton@gmail.com>
- <87im9j2pbs.fsf@oldenburg2.str.redhat.com>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <e8c458fe-073b-2c4d-4d80-3637041c1485@gmail.com>
-Date:   Thu, 3 Dec 2020 14:02:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 3 Dec 2020 07:06:38 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3Bx1Vt105799;
+        Thu, 3 Dec 2020 12:03:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=mEpRFiNKnG2ABwP47dDamNoZNQLncqQeYcI+mwUMkYg=;
+ b=Um+MccciO4d31mxMT4fatxqTR3rCsXR5iWDBmHq5vO26nlvGouVUOfIkDbeH2vRCJK5i
+ di9X36AWpz7D2Ca6rs4J4svpzcUMUoMV4lPyv2zTcEHc0FMtp/jfPSlTGoSRnuBFtilT
+ v/dS2/v0FIiSMIaRBbwuK2c5+gUhwkgOlTtA4QH9qbKdJ2gSWCmGgQs32ZhUVAJ3FHjA
+ PKngfEhD+ThcmYPHxX+V3fxim7hfk2Yu0grgh0Vesi538joh9ssyAsIK0CO1u/e1qVeT
+ ek9N6rVTQd7JjeUlNe0niDgIv0MtF69hh/cuOf0M79WRTAuaVIXNWgTVos2W/lTFlAxh Mw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 353egkwey2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 03 Dec 2020 12:03:25 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3BuN3E089683;
+        Thu, 3 Dec 2020 12:03:24 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 3540aw0jm1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 03 Dec 2020 12:03:24 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B3C3KcZ018060;
+        Thu, 3 Dec 2020 12:03:20 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 03 Dec 2020 04:03:19 -0800
+Date:   Thu, 3 Dec 2020 15:03:08 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Thomas Lamprecht <t.lamprecht@proxmox.com>
+Cc:     James.Bottomley@suse.de,
+        jayamohank@HDRedirect-LB5-1afb6e2973825a56.elb.us-east-1.amazonaws.com,
+        jejb@linux.ibm.com, jitendra.bhivare@broadcom.com,
+        kernel-janitors@vger.kernel.org, ketan.mukadam@broadcom.com,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, subbu.seetharaman@broadcom.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] scsi: be2iscsi: Fix a theoretical leak in
+ beiscsi_create_eqs()
+Message-ID: <20201203120308.GM2789@kadam>
+References: <20200928091300.GD377727@mwanda>
+ <54f36c62-10bf-8736-39ce-27ece097d9de@proxmox.com>
 MIME-Version: 1.0
-In-Reply-To: <87im9j2pbs.fsf@oldenburg2.str.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54f36c62-10bf-8736-39ce-27ece097d9de@proxmox.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012030074
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012030074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3.12.2020 11.47, Florian Weimer wrote:
-> * Topi Miettinen:
+On Thu, Dec 03, 2020 at 11:10:09AM +0100, Thomas Lamprecht wrote:
+> > The be_fill_queue() function can only fail when "eq_vaddress" is NULL
+> > and since it's non-NULL here that means the function call can't fail.
+> > But imagine if it could, then in that situation we would want to store
+> > the "paddr" so that dma memory can be released.
+> > 
+> > Fixes: bfead3b2cb46 ("[SCSI] be2iscsi: Adding msix and mcc_rings V3")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
->> +3   Additionally enable full randomization of memory mappings created
->> +    with mmap(NULL, ...). With 2, the base of the VMA used for such
->> +    mappings is random, but the mappings are created in predictable
->> +    places within the VMA and in sequential order. With 3, new VMAs
->> +    are created to fully randomize the mappings.
->> +
->> +    Also mremap(..., MREMAP_MAYMOVE) will move the mappings even if
->> +    not necessary and the location of stack and vdso are also
->> +    randomized.
->> +
->> +    On 32 bit systems this may cause problems due to increased VM
->> +    fragmentation if the address space gets crowded.
+> This came in here through the stable 5.4 tree with v5.4.74, and we have some
+> users of ours report that it results in kernel oopses and delayed boot on their
+> HP DL 380 Gen 9 (and other Gen 9, FWICT) servers:
 > 
-> Isn't this a bit of an understatement?  I think you'll have to restrict
-> this randomization to a subregion of the entire address space, otherwise
-> the reduction in maximum mapping size due to fragmentation will be a
-> problem on 64-bit architectures as well (which generally do not support
-> the full 64 bits for user-space addresses).
 
-Restricting randomization would reduce the address space layout 
-randomization and make this less useful. There's 48 or 56 bits, which 
-translate to 128TB and 64PB of VM for user applications. Is it really 
-possible to build today (or in near future) a system, which would 
-contain so much RAM that such fragmentation could realistically happen? 
-Perhaps also in a special case where lots of 1GB huge pages are 
-necessary? Maybe in those cases you shouldn't use randomize_va_space=3. 
-Or perhaps there could be randomize_va_space=3 which does something, and 
-randomize_va_space=4 for those who want maximum randomization.
+Thanks for the report Thomas.  I see the bug in my patch:
 
->> +    On all systems, it will reduce performance and increase memory
->> +    usage due to less efficient use of page tables and inability to
->> +    merge adjacent VMAs with compatible attributes. In the worst case,
->> +    additional page table entries of up to 4 pages are created for
->> +    each mapping, so with small mappings there's considerable penalty.
-> 
-> The number 4 is architecture-specific, right?
+drivers/scsi/be2iscsi/be_main.c
+  3008                  eq_for_mcc = 1;
+  3009          else
+  3010                  eq_for_mcc = 0;
+  3011          for (i = 0; i < (phba->num_cpus + eq_for_mcc); i++) {
+  3012                  eq = &phwi_context->be_eq[i].q;
+  3013                  mem = &eq->dma_mem;
+  3014                  phwi_context->be_eq[i].phba = phba;
+  3015                  eq_vaddress = dma_alloc_coherent(&phba->pcidev->dev,
+  3016                                                     num_eq_pages * PAGE_SIZE,
+  3017                                                     &paddr, GFP_KERNEL);
+  3018                  if (!eq_vaddress) {
+  3019                          ret = -ENOMEM;
+  3020                          goto create_eq_error;
+  3021                  }
+  3022  
+  3023                  mem->dma = paddr;
+                        ^^^^^^^^^^^^^^^^
+I moved this assignment ahead of the call to be_fill_queue().
 
-Yes, I only know x86_64. Actually it could have 5 level page tables. 
-I'll fix this in next version.
+  3024                  mem->va = eq_vaddress;
+  3025                  ret = be_fill_queue(eq, phba->params.num_eq_entries,
+  3026                                      sizeof(struct be_eq_entry), eq_vaddress);
+  3027                  if (ret) {
+  3028                          beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
+  3029                                      "BM_%d : be_fill_queue Failed for EQ\n");
+  3030                          goto create_eq_error;
+  3031                  }
 
--Topi
+
+drivers/scsi/be2iscsi/be_main.c
+  2978  static int be_fill_queue(struct be_queue_info *q,
+  2979                  u16 len, u16 entry_size, void *vaddress)
+  2980  {
+  2981          struct be_dma_mem *mem = &q->dma_mem;
+  2982  
+  2983          memset(q, 0, sizeof(*q));
+                ^^^^^^^^^^^^^^^^^^^^^^^
+But the first thing that it does is it overwrites it with zeros.
+
+  2984          q->len = len;
+  2985          q->entry_size = entry_size;
+  2986          mem->size = len * entry_size;
+  2987          mem->va = vaddress;
+
+It also overwrites the "mem->va = eq_vaddress;" assignment as well, but
+but it sets that back again here...
+
+  2988          if (!mem->va)
+  2989                  return -ENOMEM;
+  2990          memset(mem->va, 0, mem->size);
+  2991          return 0;
+  2992  }
+
+I will just revert my patch.  This code is messy but it works so far as
+I can see.
+
+regards,
+dan carpenter
