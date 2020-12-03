@@ -2,167 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2B12CCE29
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBBA2CCE2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgLCFAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 00:00:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbgLCFAd (ORCPT
+        id S1726327AbgLCFA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 00:00:56 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2585 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726075AbgLCFA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:00:33 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634ACC061A4D;
-        Wed,  2 Dec 2020 20:59:53 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id jx16so1490888ejb.10;
-        Wed, 02 Dec 2020 20:59:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bKGVg3cjoOrKRnpZuJPclcM34b/MdOnvCpoVioB4GiE=;
-        b=aA3dQ5LwD94gHv9tuPNuUTnydYahQYDyWyTmwK7CdUxoIyAgiHV3lFQIu9GU7MkGGm
-         +MEB1P9NgZdsBkS+/oy4qafMnAmQS67ktM2RFqAPox/x+zvdGzJz/uqei3aNltfJkjKh
-         M2j3O7a62J5kp0St7LaBLBaGqn1GQQEwjhL8NxHNq29hSZt9y6ubPgCLoulUvnSDDrKI
-         GInIO9fBexHoAGvIeMBSGPlok8o6C/LxRWEDAZhiXKmxUmYkKzksnKK/VT/YOsku3Voc
-         6inFezZ0jt4dz95SILjpO12BsoExFtRfUI5TenhIQTR00z+mAVEsVh/PUQZkIbXKno4o
-         uwuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bKGVg3cjoOrKRnpZuJPclcM34b/MdOnvCpoVioB4GiE=;
-        b=HrP3PbMD94GG39j0ILtlQypEBd5wK+2LDgins9p0cyWGHh7KflawAv1Cf4T0bwEuVS
-         DXL/dMEOofRUNjbkoGqNVTzeaCIpLnFBCH6ZwrBObdggByVKnOJe4HIXZqpZ6nC1WBjv
-         huvj+k50uFr2bEbDIIXFZz7NTuESH35e47wM/mjLEa4qwDtKDJWBUmByiY+iAcfpQ+zQ
-         AWt1JOmbhMwSP6Wctdd1uHTILVdWbC7zX3vWp4iw83XrcnxNW/OUYAqKFEQswAzddRsB
-         vkCL9vICLZ6Z2pmdDteEhdgfmQUshWjvt6FC/W/EiLyks27AUQFsfXPRY6fnDlfovFk5
-         E6ZQ==
-X-Gm-Message-State: AOAM533eicim+elmsySMOKMwtb9nI5GATpLMAopLHEAVc0UQ4Yyukqca
-        Wbt0f8GQ5ky+WnQMUvZBoyFXPyNVGjT53m52V58=
-X-Google-Smtp-Source: ABdhPJzy0wACDe5vcyUC6PWOelt+YwF9TErWrS5iOQVmq9w+OL/9iO2OP92bKuLVWAfv3guXpwKa7CwZ5v8vxT9DNh8=
-X-Received: by 2002:a17:906:cd06:: with SMTP id oz6mr997936ejb.25.1606971592123;
- Wed, 02 Dec 2020 20:59:52 -0800 (PST)
+        Thu, 3 Dec 2020 00:00:56 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fc870df0000>; Wed, 02 Dec 2020 21:00:15 -0800
+Received: from [10.25.75.116] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Dec
+ 2020 05:00:09 +0000
+Subject: Re: [PATCH V2] PCI/MSI: Set device flag indicating only 32-bit MSI
+ support
+To:     <bhelgaas@google.com>, <lorenzo.pieralisi@arm.com>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <sagar.tv@gmail.com>
+References: <20201117145728.4516-1-vidyas@nvidia.com>
+ <20201124105035.24573-1-vidyas@nvidia.com>
+From:   Vidya Sagar <vidyas@nvidia.com>
+Message-ID: <70d5309b-331e-b2e5-2786-57915382e1d1@nvidia.com>
+Date:   Thu, 3 Dec 2020 10:30:00 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-References: <20201202182725.265020-1-shy828301@gmail.com> <20201202182725.265020-5-shy828301@gmail.com>
- <20201203030104.GF1375014@carbon.DHCP.thefacebook.com>
-In-Reply-To: <20201203030104.GF1375014@carbon.DHCP.thefacebook.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 2 Dec 2020 20:59:40 -0800
-Message-ID: <CAHbLzkoUNuKHT_4w8QaWCQA3xs2vTW4Xii26a5vpVqxrDVSX_Q@mail.gmail.com>
-Subject: Re: [PATCH 4/9] mm: vmscan: use a new flag to indicate shrinker is registered
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201124105035.24573-1-vidyas@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606971615; bh=NaqYMrewzDBSWv4b2kjcoHYtxDnlc/xS2Lkoc7cGcKY=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=eri3OkUCRgxvyNxV2pxlsQ+INwudskvHev8fx77R+IzpurcZloEN1wgk4yYT/JZVp
+         S2ZCQc3i2AVDUsu95xse9CwOjCmrI+6m+toM9CihmRVVuQJ7ACdiX2nXeIk06oOr/0
+         zriyn9uttMnDl/ynksoQZ8IyzriV97E4IsMYnvhlt8bPxr/LEbzxcil3cwxk39TMbt
+         oOqfBy+qh0QN93mAMpB/MevEf4RK7Lo37t/Z2DEp6/+1V/vvwcI979cCUa2/JS7zYO
+         mP6DHS28d+zMgOiig+TZC0/EtQP1ag98GYIxAA7457IUCVpyWyoLcW77EYlNfJvQUV
+         Yf3qILGn+pfig==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 7:01 PM Roman Gushchin <guro@fb.com> wrote:
->
-> On Wed, Dec 02, 2020 at 10:27:20AM -0800, Yang Shi wrote:
-> > Currently registered shrinker is indicated by non-NULL shrinker->nr_deferred.
-> > This approach is fine with nr_deferred atthe shrinker level, but the following
-> > patches will move MEMCG_AWARE shrinkers' nr_deferred to memcg level, so their
-> > shrinker->nr_deferred would always be NULL.  This would prevent the shrinkers
-> > from unregistering correctly.
-> >
-> > Introduce a new "state" field to indicate if shrinker is registered or not.
-> > We could use the highest bit of flags, but it may be a little bit complicated to
-> > extract that bit and the flags is accessed frequently by vmscan (every time shrinker
-> > is called).  So add a new field in "struct shrinker", we may waster a little bit
-> > memory, but it should be very few since there should be not too many registered
-> > shrinkers on a normal system.
-> >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >  include/linux/shrinker.h |  4 ++++
-> >  mm/vmscan.c              | 13 +++++++++----
-> >  2 files changed, 13 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-> > index 0f80123650e2..0bb5be88e41d 100644
-> > --- a/include/linux/shrinker.h
-> > +++ b/include/linux/shrinker.h
-> > @@ -35,6 +35,9 @@ struct shrink_control {
-> >
-> >  #define SHRINK_STOP (~0UL)
-> >  #define SHRINK_EMPTY (~0UL - 1)
-> > +
-> > +#define SHRINKER_REGISTERED  0x1
-> > +
-> >  /*
-> >   * A callback you can register to apply pressure to ageable caches.
-> >   *
-> > @@ -66,6 +69,7 @@ struct shrinker {
-> >       long batch;     /* reclaim batch size, 0 = default */
-> >       int seeks;      /* seeks to recreate an obj */
-> >       unsigned flags;
-> > +     unsigned state;
->
-> Hm, can't it be another flag? It seems like we have a plenty of free bits.
+Hi Bjorn,
+Do you have any further comments for this patch?
 
-I thought about this too. But I was not convinced by myself that
-messing flags with state is a good practice. We may add more flags in
-the future, so we may end up having something like:
+Thanks,
+Vidya Sagar
 
-flag
-flag
-flag
-state
-flag
-flag
-...
-
-Maybe we could use the highest bit for state?
-
->
-> >
-> >       /* These are for internal use */
-> >       struct list_head list;
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 457ce04eebf2..0d628299e55c 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -378,6 +378,7 @@ void register_shrinker_prepared(struct shrinker *shrinker)
-> >       if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-> >               idr_replace(&shrinker_idr, shrinker, shrinker->id);
-> >  #endif
-> > +     shrinker->state |= SHRINKER_REGISTERED;
-> >       up_write(&shrinker_rwsem);
-> >  }
-> >
-> > @@ -397,13 +398,17 @@ EXPORT_SYMBOL(register_shrinker);
-> >   */
-> >  void unregister_shrinker(struct shrinker *shrinker)
-> >  {
-> > -     if (!shrinker->nr_deferred)
-> > -             return;
-> > -     if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-> > -             unregister_memcg_shrinker(shrinker);
-> >       down_write(&shrinker_rwsem);
-> > +     if (!shrinker->state) {
-> > +             up_write(&shrinker_rwsem);
-> > +             return;
-> > +     }
-> >       list_del(&shrinker->list);
-> > +     shrinker->state &= ~SHRINKER_REGISTERED;
-> >       up_write(&shrinker_rwsem);
-> > +
-> > +     if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-> > +             unregister_memcg_shrinker(shrinker);
-> >       kfree(shrinker->nr_deferred);
-> >       shrinker->nr_deferred = NULL;
-> >  }
-> > --
-> > 2.26.2
-> >
+On 11/24/2020 4:20 PM, Vidya Sagar wrote:
+> There are devices (Ex:- Marvell SATA controller) that don't support
+> 64-bit MSIs and the same is advertised through their MSI capability
+> register. Set no_64bit_msi flag explicitly for such devices in the
+> MSI setup code so that the msi_verify_entries() API would catch
+> if the MSI arch code tries to use 64-bit MSI.
+> 
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+> V2:
+> * Addressed Bjorn's comment and changed the error message
+> 
+>   drivers/pci/msi.c | 11 +++++++----
+>   1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> index d52d118979a6..8de5ba6b4a59 100644
+> --- a/drivers/pci/msi.c
+> +++ b/drivers/pci/msi.c
+> @@ -581,10 +581,12 @@ msi_setup_entry(struct pci_dev *dev, int nvec, struct irq_affinity *affd)
+>   	entry->msi_attrib.multi_cap	= (control & PCI_MSI_FLAGS_QMASK) >> 1;
+>   	entry->msi_attrib.multiple	= ilog2(__roundup_pow_of_two(nvec));
+>   
+> -	if (control & PCI_MSI_FLAGS_64BIT)
+> +	if (control & PCI_MSI_FLAGS_64BIT) {
+>   		entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_64;
+> -	else
+> +	} else {
+>   		entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_32;
+> +		dev->no_64bit_msi = 1;
+> +	}
+>   
+>   	/* Save the initial mask status */
+>   	if (entry->msi_attrib.maskbit)
+> @@ -602,8 +604,9 @@ static int msi_verify_entries(struct pci_dev *dev)
+>   	for_each_pci_msi_entry(entry, dev) {
+>   		if (!dev->no_64bit_msi || !entry->msg.address_hi)
+>   			continue;
+> -		pci_err(dev, "Device has broken 64-bit MSI but arch"
+> -			" tried to assign one above 4G\n");
+> +		pci_err(dev, "Device has either broken 64-bit MSI or "
+> +			"only 32-bit MSI support but "
+> +			"arch tried to assign one above 4G\n");
+>   		return -EIO;
+>   	}
+>   	return 0;
+> 
