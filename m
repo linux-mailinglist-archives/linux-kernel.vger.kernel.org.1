@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5B62CD9A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CD52CD9AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728022AbgLCOzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 09:55:44 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2200 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726056AbgLCOzo (ORCPT
+        id S1730953AbgLCOzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 09:55:49 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39640 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725903AbgLCOzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:55:44 -0500
-Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CmzND2Zsqz67LbF;
-        Thu,  3 Dec 2020 22:53:00 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 3 Dec 2020 15:54:57 +0100
-Received: from [10.47.8.200] (10.47.8.200) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 3 Dec 2020
- 14:54:56 +0000
-Subject: Re: [RESEND PATCH v3 0/4] iommu/iova: Solve longterm IOVA issue
-To:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Will Deacon <will@kernel.org>
-CC:     Joerg Roedel <joro@8bytes.org>, <robin.murphy@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        <kernel-team@android.com>, <xiyou.wangcong@gmail.com>,
-        <linuxarm@huawei.com>, <iommu@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
- <160685669713.992935.17438167536143205811.b4-ty@kernel.org>
- <CAJwJo6YmF+tW2_it2BLCP6fLBrUR6kfx7jG0hsNy6uYG203Jfw@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <6e09d847-fb7f-1ec1-02bf-f0c8b315845f@huawei.com>
-Date:   Thu, 3 Dec 2020 14:54:27 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Thu, 3 Dec 2020 09:55:48 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B3Eexhl182531;
+        Thu, 3 Dec 2020 09:54:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=aTanWXDu6GDQOgBiwV6VCa4+Gz8xmuiEnuHmxtcgxPE=;
+ b=JqgdPm8hiRdcgHmP2Asq50K14PiR4++DD5Vd+nt7oiR5rd0dVWxNV+CyaTMf2v55XBpe
+ s+gVM1OtIwF2Xnm6yZRH5aEnHoH29g2Yy8k/Ydrh+57AZhG9ihxP6O/ACCzsKz7KkpOm
+ 9uS4eAhzbs0Rj2Rj4AMToilq6M0k4MDriKFj72s90FNSX+Q9/pCO+3fSr2ZGQr23vN8l
+ GYsZ4WHeDjYTuCodVhHapE4fIyykKImPmGci1Z/T4XpayaYDLVLAdQj2574h9vrX3CRA
+ fq8QCuZA7L9FqVJdEZDAIvcQsl+YOkjb9kuPNJCT0dbuGMlFlnmoHAfQVay2BAazStvv tQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3571nssyg2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 09:54:49 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B3EppGY020571;
+        Thu, 3 Dec 2020 14:54:47 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 35693xh8ty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 14:54:47 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B3EsjwT26083698
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Dec 2020 14:54:45 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DDC8C11C054;
+        Thu,  3 Dec 2020 14:54:44 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F8A611C058;
+        Thu,  3 Dec 2020 14:54:44 +0000 (GMT)
+Received: from osiris (unknown [9.171.50.208])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu,  3 Dec 2020 14:54:43 +0000 (GMT)
+Date:   Thu, 3 Dec 2020 15:54:42 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org
+Subject: Re: [PATCH AUTOSEL 5.9 27/39] sched/idle: Fix arch_cpu_idle() vs
+ tracing
+Message-ID: <20201203145442.GC9994@osiris>
+References: <20201203132834.930999-1-sashal@kernel.org>
+ <20201203132834.930999-27-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAJwJo6YmF+tW2_it2BLCP6fLBrUR6kfx7jG0hsNy6uYG203Jfw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.8.200]
-X-ClientProxiedBy: lhreml734-chm.china.huawei.com (10.201.108.85) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203132834.930999-27-sashal@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-03_07:2020-12-03,2020-12-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ mlxlogscore=999 bulkscore=0 clxscore=1031 priorityscore=1501 adultscore=0
+ suspectscore=0 spamscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012030085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/12/2020 06:04, Dmitry Safonov wrote:
-> On Tue, 1 Dec 2020 at 21:50, Will Deacon<will@kernel.org>  wrote:
->> On Tue, 17 Nov 2020 18:25:30 +0800, John Garry wrote:
->>> This series contains a patch to solve the longterm IOVA issue which
->>> leizhen originally tried to address at [0].
->>>
->>> A sieved kernel log is at the following, showing periodic dumps of IOVA
->>> sizes, per CPU and per depot bin, per IOVA size granule:
->>> https://raw.githubusercontent.com/hisilicon/kernel-dev/topic-iommu-5.10-iova-debug-v3/aging_test
->>>
->>> [...]
->> Applied the final patch to arm64 (for-next/iommu/iova), thanks!
->>
->> [4/4] iommu: avoid taking iova_rbtree_lock twice
->>        https://git.kernel.org/arm64/c/3a651b3a27a1
-> Glad it made in next, 2 years ago I couldn't convince iommu maintainer
-> it's worth it (but with a different justification):
-> https://lore.kernel.org/linux-iommu/20180621180823.805-3-dima@arista.com/
+On Thu, Dec 03, 2020 at 08:28:21AM -0500, Sasha Levin wrote:
+> From: Peter Zijlstra <peterz@infradead.org>
+> 
+> [ Upstream commit 58c644ba512cfbc2e39b758dd979edd1d6d00e27 ]
+> 
+> We call arch_cpu_idle() with RCU disabled, but then use
+> local_irq_{en,dis}able(), which invokes tracing, which relies on RCU.
+> 
+> Switch all arch_cpu_idle() implementations to use
+> raw_local_irq_{en,dis}able() and carefully manage the
+> lockdep,rcu,tracing state like we do in entry.
+> 
+> (XXX: we really should change arch_cpu_idle() to not return with
+> interrupts enabled)
+> 
+> Reported-by: Sven Schnelle <svens@linux.ibm.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+> Tested-by: Mark Rutland <mark.rutland@arm.com>
+> Link: https://lkml.kernel.org/r/20201120114925.594122626@infradead.org
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Hi Dmitry,
-
-I was unaware of your series, and it’s unfortunate that your 
-optimization never made it. However I was having a quick look there, 
-and, in case you did not notice, that the code which you were proposing 
-changing in patch #1 for intel-iommu.c was removed in e70b081c6f37 
-("iommu/vt-d: Remove IOVA handling code from the non-dma_ops path").
-
-BTW, split_and_remove_iova() has no in-tree users anymore, so I can send 
-a patch to delete if nobody else wants to.
-
-BTW2, there's some more patches in my series which could use a review if 
-you're feeling very helpful :)
-
-Cheers,
-John
+This patch broke s390 irq state tracing. A patch to fix this is
+scheduled to be merged upstream today (hopefully).
+Therefore I think this patch should not yet go into 5.9 stable.
