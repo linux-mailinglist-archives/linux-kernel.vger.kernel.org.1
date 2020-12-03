@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA24A2CDF02
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D70982CDF06
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727460AbgLCTdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:33:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725903AbgLCTdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:33:17 -0500
-Date:   Thu, 3 Dec 2020 11:32:34 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607023956;
-        bh=G81b7sAQkDFZGaWOTLOclHTz9c5GLdvtf0TzZVW7prg=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LdJ+jcDzFI72yCDHKCUEwqPWu7KQONp/q26z8c0MOUsVFnfSnaiSnDuRfScnIR8G6
-         V5yZK8sti/fes59TgG+MqANLcXzDFwwqAmtrjgGUmDCw7Qo4AU6xGcBgZhpFN6M5Tv
-         PBxjOxlrga5pI/Q9AnPGqkChZFQAfpoUIVyRwsk5/jl2kLGFehgm4QkYHGZ+We/8pS
-         yhd+lA3U68dwZI86furD8bDekC5Pt3rarIrgGyAfj158PfGNk+0obf4j0wRv+qKrJg
-         F159Ga6F6tRstcpPGtqEt6OuauGSh3BKOVNEbjIZKwf276zl26BSHsnOM0osmiy+u2
-         m3vv0vM2bWRDw==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v6] f2fs: compress: support compress level
-Message-ID: <X8k9UoUKcyThlJNU@gmail.com>
-References: <20201203061715.60447-1-yuchao0@huawei.com>
+        id S1727729AbgLCTeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:34:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbgLCTeE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 14:34:04 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B01C061A4E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:33:24 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id c198so3790924wmd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:33:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=6BjPT+XF2MMgDkTYn3QI7OrUlD484akxJ/zP5GMe5Qs=;
+        b=mp/TyUNXM5f2s31pVneAXWSUSUHgGZWiRy1UOBZQoc+2McNmJzc/2ijgIEmaHoR63W
+         p7cRWbkdHjvN0L3vGxF8iMARfTyAQAoH7R7v7FO3VhAd/meFGZ0CtP+W+a23YDZkfG08
+         RfWV4HcbHFWYjvHkDayi+HnKID5O7sgZXf2ofDPITWpb36VwE4cU8MItSduKjKRkjiO1
+         5aecV3Cpxd33ShLslCXgzQhixRgV8xZNKEIAgK1RFHdPk3XuCN+QLTMEUousD37Tr+BV
+         sUqOdRdGuut5HbBZCpefiKVh9Mygdr9IV/m6YuzxsNxf80VnXlWEJR2qlpoMwAbFs69g
+         cLIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6BjPT+XF2MMgDkTYn3QI7OrUlD484akxJ/zP5GMe5Qs=;
+        b=GDz0W8LUCR5zga8GjTrQ6zmty44QWfIag5nG87RHcVroww08wTxN55lNoSfGddqwKK
+         m+d3c3hZEqT/NRzIqnz9Xzgs5wIA45oK9uCuKERu/+nMdltKMAkHp96pYQYOUs1DFylI
+         8f4i1lBsMFbdD6bM3m0lVMy1xHAgt6ae847WKzetJbsXFQrZ3PevkIcHi35MPXFQdbdK
+         cAVx9NQcUfaZlDTCU0uzG9xRY/+3FcnV6TTH8ABkDYEJEo9wmu8pYhqcTNr8WEg6cHXI
+         h1flxYLL6kcPyfLv4Kh9sF11ys9UOSFYVJgzauHU+T+dsa1Pe4uKK1xUEX/w0qeC2R+0
+         gSew==
+X-Gm-Message-State: AOAM5301KJ54LUIm74+Tlsu3WWQkjaWOcNP4CPJlVuZS9I//hZQqE3/c
+        2JWn+EMOyOMv9GYI2i6pg9L5QBqczQVN4Q==
+X-Google-Smtp-Source: ABdhPJxZr7SpFUzB5c8ztxXjLTxMAifREwL7bKfQU7RqaI6GzKEzD+DuvO29TSs04xof2yVA+msfSg==
+X-Received: by 2002:a1c:98c7:: with SMTP id a190mr395284wme.184.1607024003066;
+        Thu, 03 Dec 2020 11:33:23 -0800 (PST)
+Received: from mai.imgcgcw.net ([2a01:e34:ed2f:f020:9cff:9584:adb2:6288])
+        by smtp.gmail.com with ESMTPSA id o83sm382441wme.21.2020.12.03.11.33.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 11:33:22 -0800 (PST)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 01/13] clocksource/drivers/sp804: Add static for functions such as sp804_clockevents_init()
+Date:   Thu,  3 Dec 2020 20:32:49 +0100
+Message-Id: <20201203193301.2405835-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <028084fa-d29b-a1d5-7eab-17f77ef69863@linaro.org>
+References: <028084fa-d29b-a1d5-7eab-17f77ef69863@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203061715.60447-1-yuchao0@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 02:17:15PM +0800, Chao Yu wrote:
-> +config F2FS_FS_LZ4HC
-> +	bool "LZ4HC compression support"
-> +	depends on F2FS_FS_COMPRESSION
-> +	depends on F2FS_FS_LZ4
-> +	select LZ4HC_COMPRESS
-> +	default y
-> +	help
-> +	  Support LZ4HC compress algorithm, if unsure, say Y.
-> +
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-It would be helpful to mention that LZ4HC is on-disk compatible with LZ4.
+Add static for sp804_clocksource_and_sched_clock_init() and
+sp804_clockevents_init(), they are only used in timer-sp804.c now.
+Otherwise, the following warning will be reported:
 
->  static int lz4_compress_pages(struct compress_ctx *cc)
->  {
->  	int len;
->  
-> +#ifdef CONFIG_F2FS_FS_LZ4HC
-> +	return lz4hc_compress_pages(cc);
-> +#endif
+drivers/clocksource/timer-sp804.c:68:12: warning: no previous prototype \
+for 'sp804_clocksource_and_sched_clock_init' [-Wmissing-prototypes]
+drivers/clocksource/timer-sp804.c:162:12: warning: no previous prototype \
+for 'sp804_clockevents_init' [-Wmissing-prototypes]
 
-This looks wrong; it always calls lz4hc compression even for regular lz4.
+Fixes: 975434f8b24a ("clocksource/drivers/sp804: Delete the leading "__" of some functions")
+Fixes: 65f4d7ddc7b6 ("clocksource/drivers/sp804: Remove unused sp804_timer_disable() and timer-sp804.h")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20201021012259.2067-2-thunder.leizhen@huawei.com
+---
+ drivers/clocksource/timer-sp804.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
->  static int parse_options(struct super_block *sb, char *options, bool is_remount)
->  {
->  	struct f2fs_sb_info *sbi = F2FS_SB(sb);
-> @@ -886,10 +939,22 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->  			if (!strcmp(name, "lzo")) {
->  				F2FS_OPTION(sbi).compress_algorithm =
->  								COMPRESS_LZO;
-> -			} else if (!strcmp(name, "lz4")) {
-> +			} else if (!strncmp(name, "lz4", 3)) {
+diff --git a/drivers/clocksource/timer-sp804.c b/drivers/clocksource/timer-sp804.c
+index 6e8ad4a4ea3c..db5330cc49bc 100644
+--- a/drivers/clocksource/timer-sp804.c
++++ b/drivers/clocksource/timer-sp804.c
+@@ -117,10 +117,10 @@ static u64 notrace sp804_read(void)
+ 	return ~readl_relaxed(sched_clkevt->value);
+ }
+ 
+-int __init sp804_clocksource_and_sched_clock_init(void __iomem *base,
+-						  const char *name,
+-						  struct clk *clk,
+-						  int use_sched_clock)
++static int __init sp804_clocksource_and_sched_clock_init(void __iomem *base,
++							 const char *name,
++							 struct clk *clk,
++							 int use_sched_clock)
+ {
+ 	long rate;
+ 	struct sp804_clkevt *clkevt;
+@@ -216,8 +216,8 @@ static struct clock_event_device sp804_clockevent = {
+ 	.rating			= 300,
+ };
+ 
+-int __init sp804_clockevents_init(void __iomem *base, unsigned int irq,
+-				  struct clk *clk, const char *name)
++static int __init sp804_clockevents_init(void __iomem *base, unsigned int irq,
++					 struct clk *clk, const char *name)
+ {
+ 	struct clock_event_device *evt = &sp804_clockevent;
+ 	long rate;
+-- 
+2.25.1
 
-strcmp() is fine, no need for strncmp().
-
-> @@ -1547,6 +1612,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
->  	}
->  	seq_printf(seq, ",compress_algorithm=%s", algtype);
->  
-> +	if (!F2FS_OPTION(sbi).compress_level)
-> +		seq_printf(seq, ":%d", F2FS_OPTION(sbi).compress_level);
-> +
-
-This looks wrong; it only prints compress_level if it is 0.
-
-> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-> index 55be7afeee90..2dcc63fe8494 100644
-> --- a/include/linux/f2fs_fs.h
-> +++ b/include/linux/f2fs_fs.h
-> @@ -275,6 +275,9 @@ struct f2fs_inode {
->  			__u8 i_compress_algorithm;	/* compress algorithm */
->  			__u8 i_log_cluster_size;	/* log of cluster size */
->  			__le16 i_compress_flag;		/* compress flag */
-> +						/* 0 bit: chksum flag
-> +						 * [10,15] bits: compress level
-> +						 */
-
-What is the use case for storing the compression level on-disk?
-
-Keep in mind that compression levels are an implementation detail; the exact
-compressed data that is produced by a particular algorithm at a particular
-compression level is *not* a stable interface.  It can change when the
-compressor is updated, as long as the output continues to be compatible with the
-decompressor.
-
-So does compression level really belong in the on-disk format?
-
-- Eric
