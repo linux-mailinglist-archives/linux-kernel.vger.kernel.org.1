@@ -2,220 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8222CD27F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5E82CD287
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388536AbgLCJZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:25:24 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39622 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728664AbgLCJZQ (ORCPT
+        id S1729896AbgLCJ1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:27:12 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2197 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387479AbgLCJ1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:25:16 -0500
-Date:   Thu, 03 Dec 2020 09:24:33 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606987473;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ANAiS3fo5jRwE3AvMDaoQ7GuKHyVvs6l1W/mEyjYtSI=;
-        b=AWVJD5NowqfcNHT5GPqmxU3GW5/39IvGx7Gz/x6wpqgDfi9vFqd7gCvmSt31XmvM0wjVpN
-        57AJcIRpMHUhP2ZbtQsUQQl5+FUr1xPCaS7061V+MUjxOh84wMY3drv78Raa6/m/ZrPrf+
-        MDggFmlBFk8Dg/P8HIRRqnnwuoPWHd/wEMeBroElihOXpxcKB6lSGG4UVUpJQHAn153hDi
-        HRJWVYGAcLGN71ee9q9E/mNv2B6/pIG8FKnOQ2UF9X2zoWc+rOCInL80VVMIcuLaAgP+Me
-        PDtywoYZiRfIqOYrVQ/8hR7cqDlCUcX3ImvP2htn5NsvHFBRy7JKKnZfE41CBQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606987473;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ANAiS3fo5jRwE3AvMDaoQ7GuKHyVvs6l1W/mEyjYtSI=;
-        b=ekx8HvUQczpQ6H3NQevWRbslLF4vFIfXKRStYpxXAGNSbDAUn5JtIEfDG2UcYVtAop5VgJ
-        E5LsnNCrjvNowOAg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] mm/gup: Provide gup_get_pte() more generic
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201126121121.036370527@infradead.org>
-References: <20201126121121.036370527@infradead.org>
+        Thu, 3 Dec 2020 04:27:11 -0500
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cmr5D6xLDz67LZT;
+        Thu,  3 Dec 2020 17:24:32 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Thu, 3 Dec 2020 10:26:29 +0100
+Received: from [10.47.8.200] (10.47.8.200) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 3 Dec 2020
+ 09:26:28 +0000
+Subject: Re: [RFC PATCH] blk-mq: Clean up references when freeing rqs
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <hch@lst.de>, <hare@suse.de>,
+        <ppvk@codeaurora.org>, <bvanassche@acm.org>,
+        <kashyap.desai@broadcom.com>
+References: <1606827738-238646-1-git-send-email-john.garry@huawei.com>
+ <20201202033134.GD494805@T590>
+ <aaf77015-3039-6b04-3417-d376e3467444@huawei.com>
+ <20201203005505.GB540033@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <fa222311-2184-0041-61ab-b3d70fb92585@huawei.com>
+Date:   Thu, 3 Dec 2020 09:26:00 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Message-ID: <160698747311.3364.2439398871681898668.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20201203005505.GB540033@T590>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.8.200]
+X-ClientProxiedBy: lhreml734-chm.china.huawei.com (10.201.108.85) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+On 03/12/2020 00:55, Ming Lei wrote:
 
-Commit-ID:     2a4a06da8a4b93dd189171eed7a99fffd38f42f3
-Gitweb:        https://git.kernel.org/tip/2a4a06da8a4b93dd189171eed7a99fffd38f42f3
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 13 Nov 2020 11:41:40 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 03 Dec 2020 10:14:50 +01:00
+Hi Ming,
 
-mm/gup: Provide gup_get_pte() more generic
+>> Yeah, so I said that was another problem which you mentioned there, which
+>> I'm not addressing, but I don't think that I'm making thing worse here.
+> The thing is that this patch does not fix the issue completely.
+> 
+>> So AFAICS, the blk-mq/sched code doesn't wait for any "readers" to be
+>> finished, such as those running blk_mq_queue_tag_busy_iter or
+>> blk_mq_tagset_busy_iter() in another context.
+>>
+>> So how about the idea of introducing some synchronization primitive, such as
+>> semaphore, which those "readers" must grab and release at start and end (of
+>> iter), to ensure the requests are not freed during the iteration?
+> It looks good, however devil is in details, please make into patch for
+> review.
 
-In order to write another lockless page-table walker, we need
-gup_get_pte() exposed. While doing that, rename it to
-ptep_get_lockless() to match the existing ptep_get() naming.
+OK, but another thing to say is that I need to find a somewhat reliable 
+reproducer for the potential problem you mention. So far this patch 
+solves the issue I see (in that kasan stops warning). Let me analyze 
+this a bit further.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201126121121.036370527@infradead.org
----
- include/linux/pgtable.h | 55 ++++++++++++++++++++++++++++++++++++++-
- mm/gup.c                | 58 +----------------------------------------
- 2 files changed, 56 insertions(+), 57 deletions(-)
-
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 71125a4..ed9266c 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -258,6 +258,61 @@ static inline pte_t ptep_get(pte_t *ptep)
- }
- #endif
- 
-+#ifdef CONFIG_GUP_GET_PTE_LOW_HIGH
-+/*
-+ * WARNING: only to be used in the get_user_pages_fast() implementation.
-+ *
-+ * With get_user_pages_fast(), we walk down the pagetables without taking any
-+ * locks.  For this we would like to load the pointers atomically, but sometimes
-+ * that is not possible (e.g. without expensive cmpxchg8b on x86_32 PAE).  What
-+ * we do have is the guarantee that a PTE will only either go from not present
-+ * to present, or present to not present or both -- it will not switch to a
-+ * completely different present page without a TLB flush in between; something
-+ * that we are blocking by holding interrupts off.
-+ *
-+ * Setting ptes from not present to present goes:
-+ *
-+ *   ptep->pte_high = h;
-+ *   smp_wmb();
-+ *   ptep->pte_low = l;
-+ *
-+ * And present to not present goes:
-+ *
-+ *   ptep->pte_low = 0;
-+ *   smp_wmb();
-+ *   ptep->pte_high = 0;
-+ *
-+ * We must ensure here that the load of pte_low sees 'l' IFF pte_high sees 'h'.
-+ * We load pte_high *after* loading pte_low, which ensures we don't see an older
-+ * value of pte_high.  *Then* we recheck pte_low, which ensures that we haven't
-+ * picked up a changed pte high. We might have gotten rubbish values from
-+ * pte_low and pte_high, but we are guaranteed that pte_low will not have the
-+ * present bit set *unless* it is 'l'. Because get_user_pages_fast() only
-+ * operates on present ptes we're safe.
-+ */
-+static inline pte_t ptep_get_lockless(pte_t *ptep)
-+{
-+	pte_t pte;
-+
-+	do {
-+		pte.pte_low = ptep->pte_low;
-+		smp_rmb();
-+		pte.pte_high = ptep->pte_high;
-+		smp_rmb();
-+	} while (unlikely(pte.pte_low != ptep->pte_low));
-+
-+	return pte;
-+}
-+#else /* CONFIG_GUP_GET_PTE_LOW_HIGH */
-+/*
-+ * We require that the PTE can be read atomically.
-+ */
-+static inline pte_t ptep_get_lockless(pte_t *ptep)
-+{
-+	return ptep_get(ptep);
-+}
-+#endif /* CONFIG_GUP_GET_PTE_LOW_HIGH */
-+
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- #ifndef __HAVE_ARCH_PMDP_HUGE_GET_AND_CLEAR
- static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
-diff --git a/mm/gup.c b/mm/gup.c
-index 98eb8e6..44b0c6b 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -2085,62 +2085,6 @@ static void put_compound_head(struct page *page, int refs, unsigned int flags)
- 	put_page(page);
- }
- 
--#ifdef CONFIG_GUP_GET_PTE_LOW_HIGH
--
--/*
-- * WARNING: only to be used in the get_user_pages_fast() implementation.
-- *
-- * With get_user_pages_fast(), we walk down the pagetables without taking any
-- * locks.  For this we would like to load the pointers atomically, but sometimes
-- * that is not possible (e.g. without expensive cmpxchg8b on x86_32 PAE).  What
-- * we do have is the guarantee that a PTE will only either go from not present
-- * to present, or present to not present or both -- it will not switch to a
-- * completely different present page without a TLB flush in between; something
-- * that we are blocking by holding interrupts off.
-- *
-- * Setting ptes from not present to present goes:
-- *
-- *   ptep->pte_high = h;
-- *   smp_wmb();
-- *   ptep->pte_low = l;
-- *
-- * And present to not present goes:
-- *
-- *   ptep->pte_low = 0;
-- *   smp_wmb();
-- *   ptep->pte_high = 0;
-- *
-- * We must ensure here that the load of pte_low sees 'l' IFF pte_high sees 'h'.
-- * We load pte_high *after* loading pte_low, which ensures we don't see an older
-- * value of pte_high.  *Then* we recheck pte_low, which ensures that we haven't
-- * picked up a changed pte high. We might have gotten rubbish values from
-- * pte_low and pte_high, but we are guaranteed that pte_low will not have the
-- * present bit set *unless* it is 'l'. Because get_user_pages_fast() only
-- * operates on present ptes we're safe.
-- */
--static inline pte_t gup_get_pte(pte_t *ptep)
--{
--	pte_t pte;
--
--	do {
--		pte.pte_low = ptep->pte_low;
--		smp_rmb();
--		pte.pte_high = ptep->pte_high;
--		smp_rmb();
--	} while (unlikely(pte.pte_low != ptep->pte_low));
--
--	return pte;
--}
--#else /* CONFIG_GUP_GET_PTE_LOW_HIGH */
--/*
-- * We require that the PTE can be read atomically.
-- */
--static inline pte_t gup_get_pte(pte_t *ptep)
--{
--	return ptep_get(ptep);
--}
--#endif /* CONFIG_GUP_GET_PTE_LOW_HIGH */
--
- static void __maybe_unused undo_dev_pagemap(int *nr, int nr_start,
- 					    unsigned int flags,
- 					    struct page **pages)
-@@ -2166,7 +2110,7 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
- 
- 	ptem = ptep = pte_offset_map(&pmd, addr);
- 	do {
--		pte_t pte = gup_get_pte(ptep);
-+		pte_t pte = ptep_get_lockless(ptep);
- 		struct page *head, *page;
- 
- 		/*
+Thanks,
+John
