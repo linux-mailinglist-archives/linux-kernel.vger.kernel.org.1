@@ -2,19 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912462CD244
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AE72CD23E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388554AbgLCJOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:14:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728522AbgLCJOC (ORCPT
+        id S1730098AbgLCJOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:14:03 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:39464 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726488AbgLCJOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Dec 2020 04:14:02 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86517C061A4D;
-        Thu,  3 Dec 2020 01:13:22 -0800 (PST)
 Date:   Thu, 03 Dec 2020 09:13:20 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1606986800;
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=x0ROyCIqqYbPXixaIjK+PBx0FyRM8sa8WhcGP5yS1Vg=;
-        b=3uI/s73boVpf9TDPkWLLTO27x9mjR8+xRi+eHcxt2+4XCGukoeoCdwyYsQlvzBnKn9bdUE
-        6RmeDFsiYOIz4cSQNLY75M77aS7L9+pjKieqiDOM+Sa8Qc0m4NouqOamhT30RoWOoEOeGP
-        +Ar7dvX8cOw4cUX7j1db1s+Q7lKKG7G8l+kBF5egH0h4EvhoY3vw7aD+5JkXnc6QJ1lGKx
-        YxxPOQAHKn+ZcM2BTggOXzlliUo03HkcJfl9Hsi+4B2N0FnmKXDiRZIGg6xTIh740lMHxw
-        037O7OycN7XwEMvmB0mRVXmR51+p5Rkj8VZbFqg9jZFcLdmNiJoAc+zN0MCgxA==
+        bh=rzWn3uEdMEDvvpHEeHD+v3yXwwyQZIPn9+plbZteZLk=;
+        b=YWimje4KSOOnJNlnpzrqboeC8Y1+pHHgeK3xm87bjvmzSplUd/hoNUQBi1LRFRTY6R5LKM
+        WsQe3qchcl5TlCFexy6jXqLcqLK+qfGGwWMeB6cWO4v3zzLpcj1ZIVgTNGarTb6X5hWQgA
+        aTDIk6gRGw+S+89of6enA07bT7FsEhVGkWzuFnQf9IfDQgr4UwBmBek5cmGhsGpcg0WY7J
+        X3LhbFBSueAxvsuUKK4++XcMDVCACG6jO//3aE1yB2RGdR87dsMoVn1uMgQFoZ08z6heMB
+        S4QTxUXjXRe2xZ9ulrbwKWFvLS1kgWpwkEFhpw61Nnf53XvJN3/CSM67eYqgdw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1606986800;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,22 +33,22 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=x0ROyCIqqYbPXixaIjK+PBx0FyRM8sa8WhcGP5yS1Vg=;
-        b=oXNJVuIXo04bsbxYMEidWSsXRJ7BHwpxlfcC+09IcyGg5NAy8SUjiCYXvi/cXip+R9qEkd
-        RhZ+bS3WY30TEBDA==
-From:   "tip-bot2 for Giovanni Gherdovich" <tip-bot2@linutronix.de>
+        bh=rzWn3uEdMEDvvpHEeHD+v3yXwwyQZIPn9+plbZteZLk=;
+        b=U4Pnmo+n/5ITAsuq72Yq3Ava4loEsvYNfLzkuRJJObH6lYjb7XZE9P3OMdkk2wFpcWsoQA
+        57lkbktOhuZhw1BQ==
+From:   "tip-bot2 for Barry Song" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] x86: Print ratio freq_max/freq_base used in
- frequency invariance calculations
-Cc:     Giovanni Gherdovich <ggherdovich@suse.cz>,
+Subject: [tip: sched/core] sched/fair: Trivial correction of the
+ newidle_balance() comment
+Cc:     Barry Song <song.bao.hua@hisilicon.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201112182614.10700-4-ggherdovich@suse.cz>
-References: <20201112182614.10700-4-ggherdovich@suse.cz>
+In-Reply-To: <20201202220641.22752-1-song.bao.hua@hisilicon.com>
+References: <20201202220641.22752-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-Message-ID: <160698680049.3364.3119999970508477644.tip-bot2@tip-bot2>
+Message-ID: <160698680003.3364.8425205570764425010.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,39 +59,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     24f326686c925a848d603a2c22f1f6ed1b7786e2
-Gitweb:        https://git.kernel.org/tip/24f326686c925a848d603a2c22f1f6ed1b7786e2
-Author:        Giovanni Gherdovich <ggherdovich@suse.cz>
-AuthorDate:    Thu, 12 Nov 2020 19:26:14 +01:00
+Commit-ID:     21bf7cbd1b100758cc82f5340576028d3d83119b
+Gitweb:        https://git.kernel.org/tip/21bf7cbd1b100758cc82f5340576028d3d83119b
+Author:        Barry Song <song.bao.hua@hisilicon.com>
+AuthorDate:    Thu, 03 Dec 2020 11:06:41 +13:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 03 Dec 2020 10:00:35 +01:00
+CommitterDate: Thu, 03 Dec 2020 10:00:36 +01:00
 
-x86: Print ratio freq_max/freq_base used in frequency invariance calculations
+sched/fair: Trivial correction of the newidle_balance() comment
 
-The value freq_max/freq_base is a fundamental component of frequency
-invariance calculations. It may come from a variety of sources such as MSRs
-or ACPI data, tracking it down when troubleshooting a system could be
-non-trivial. It is worth saving it in the kernel logs.
+idle_balance() has been renamed to newidle_balance(). To differentiate
+with nohz_idle_balance, it seems refining the comment will be helpful
+for the readers of the code.
 
- # dmesg | grep 'Estimated ratio of average max'
- [   14.024036] smpboot: Estimated ratio of average max frequency by base frequency (times 1024): 1289
-
-Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201112182614.10700-4-ggherdovich@suse.cz
+Link: https://lkml.kernel.org/r/20201202220641.22752-1-song.bao.hua@hisilicon.com
 ---
- arch/x86/kernel/smpboot.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index c5dd5f6..3577bb7 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -2110,6 +2110,7 @@ static void init_freq_invariance(bool secondary, bool cppc_ready)
- 	if (ret) {
- 		init_counter_refs();
- 		static_branch_enable(&arch_scale_freq_key);
-+		pr_info("Estimated ratio of average max frequency by base frequency (times 1024): %llu\n", arch_max_freq_ratio);
- 	} else {
- 		pr_debug("Couldn't determine max cpu frequency, necessary for scale-invariant accounting.\n");
- 	}
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index efac224..04a3ce2 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10550,7 +10550,7 @@ static inline void nohz_newidle_balance(struct rq *this_rq) { }
+ #endif /* CONFIG_NO_HZ_COMMON */
+ 
+ /*
+- * idle_balance is called by schedule() if this_cpu is about to become
++ * newidle_balance is called by schedule() if this_cpu is about to become
+  * idle. Attempts to pull tasks from other CPUs.
+  *
+  * Returns:
