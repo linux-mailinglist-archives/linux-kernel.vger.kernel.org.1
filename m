@@ -2,367 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37152CDE63
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDA52CDE61
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726222AbgLCTCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:02:52 -0500
-Received: from mout.kundenserver.de ([212.227.17.13]:54639 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725923AbgLCTCv (ORCPT
+        id S1731814AbgLCTBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:01:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727366AbgLCTBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:02:51 -0500
-Received: from [192.168.1.155] ([95.118.71.13]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MEFnP-1kuU4Y44DF-00ACDA; Thu, 03 Dec 2020 20:00:08 +0100
-Subject: Re: [PATCH] drivers: gpio: add virtio-gpio guest driver
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jason Wang <jasowang@redhat.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org
-References: <20201127183003.2849-1-info@metux.net>
- <CAMpxmJXJLTzM20xLCoM4spjibXbA-FfdPmOBp1QcV+9cScNNMw@mail.gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <f14c0197-b346-7af5-9dd0-9b8018baaeaf@metux.net>
-Date:   Thu, 3 Dec 2020 20:00:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 3 Dec 2020 14:01:48 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC1AC061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:01:08 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id v3so2916793ilo.5
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:01:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a4TzLhSlXQL4BX3NXjaBKeKvdDoyftB11mno/cFqqgc=;
+        b=CtEs0+OV59yTqK3NKLK4J4vF//6Tx2WdMA0S3nICi8MiQUsQeGqd2GzSwH6jgVSQQz
+         tP+QRdmQa3z9hoUDeXpKSfjbRy6TzGVuKkNY5LXkWL6sgU4Ixto9X0allkp27J5u2BmM
+         mLbMlh+snF92AmqnQTR5GhxAGq/KX19jS8vnq3H+Ynhe9EnDyAeM9BS+PVR352zXgE7i
+         qY4EKKXIoKrvCTmBnL/OfeMVl1q1StKDOb0SY1eebn69mDX8lq3Ytdrq7rTEuEWdqqV7
+         8fQVUKulAXXOi+JzQ6/dGtq9DBP4dk2tZ2MXsmOwLjXPEBalbkTi1PoLrqYzE4zU+R12
+         0RUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a4TzLhSlXQL4BX3NXjaBKeKvdDoyftB11mno/cFqqgc=;
+        b=pWfkgRHoqFGgpPLWW64MEjeinc2nsn2zYaE0rtkFoPWA3bbYfOdZYJRb92hgO0WibP
+         k/0YmOpbDE3lv46EsbYeMPLDXLSLox8WziRmbAbNbY8hlGhzm+9YMF6EztkDlxroBpK1
+         TNIDyNrNdxyVh1ioa4QtaU4tWFezIEnXCn8vTyHuUjSCRhIn2lvZ4CThXh2apmE1G5PG
+         xNJbxshgB54btUvDmAzmO5n8kBE1RFgnvbFUo9Zh153tGHayjf4U6bv4NW+xitdUIIKh
+         F+DHSInDE2acYwQBD8cgnl3dTjVrHjA2NlgZVzROwQizPuByWg6TJ5DdzjZR6ysL5XAs
+         m3mQ==
+X-Gm-Message-State: AOAM533whbhZEaK77GB3wglltaiz6jRz0eL3wbAWdEL0YJgf+3i99ksw
+        ZD3Uj9qTYhupOpWtAtUdMcpwp3u1jy/J0EGLLUsjJ92psoM=
+X-Google-Smtp-Source: ABdhPJyTIPxh2syZtAqKyljBRNEMpYCL7sobb1pR//WO+gVSqg/SnvI2ZHTbZiXgxHnOVVW+8VeaqKv7+GOU3CWFrDo=
+X-Received: by 2002:a92:512:: with SMTP id q18mr646027ile.147.1607022067522;
+ Thu, 03 Dec 2020 11:01:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAMpxmJXJLTzM20xLCoM4spjibXbA-FfdPmOBp1QcV+9cScNNMw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:p5LN3n+bAttBQwUtEyPqApfX3eqFc3HvKIiC9q0shuFj92psIHG
- uB2xlIOGJ48cWY+oLFweeF4VBn7qrnxXccMsvCheusJ8MG4wyjKDb9knNEJfYmC9d9tntu8
- zsrzPlagFHQZDJ3Wwxgtnz0HjY2Jj9FQG8WeiwU+oTsedrGlgGXo2CWjtsyUA4LdEX6OMVD
- ATFlIlkzgtH6hFOWHxrLA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:pMRUBlN/d0A=:UrFqkV9Rj8Ug6uAghSgKi4
- bW3MF54yliURM09+0k+ZtgoddowzQqwEwX6DmRX42wHDMAIvaAjkkha5jvMmC0J2LLsuf1W/T
- Y/A041uQLRvO0UcKQoHOSxSANx+c9O0PkaG8Fo3M5aWH7aGdGj/ZmWWcQpmHNPgMLLUdbExfu
- oPY8Jn6x4rI7NsIsFQBNMWZBiT5MvVYfBT6i++DkxLrR3je1TkjXHy+gVt0Xr+bDiOS5YR0F0
- 1xSXyBKg/CHVzZAZ4t5J5F383kHSORic/lQEl4adKgb4jbKdOXUwADMKFxjrJmVgc2nB9nLX+
- +6BdKrc9GgvxWNUESLiIJhwYRK99sEDOL2Hv0L1lf0I+Mq3XTq4tDV3YT1pWdYkH6bCXre0t+
- mEoo9Zzvg6yFe36A3aLkMSf8qrM0AR+JGQZr9Y8Ku5pyU18hUXXg/m3Gd2Ocr
+References: <280235acc0e91365f3fd3b5be5a5244eced1ff61.camel@perches.com>
+ <20201202183045.9309-1-yashsri421@gmail.com> <5afbcd1423ee8fc2dfad191d94aef6efc17198c8.camel@perches.com>
+ <a2c74693-93ae-cd5a-7836-4ffff643fc09@gmail.com> <CAKXUXMxPMdGmnOWdYnS0VQXaAH9dTe7uNfUUPp-GLy2xTXuABw@mail.gmail.com>
+ <X8k1CaSlaJpJdmcC@kroah.com>
+In-Reply-To: <X8k1CaSlaJpJdmcC@kroah.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Thu, 3 Dec 2020 20:00:58 +0100
+Message-ID: <CAKXUXMye+ppB1DhGu9xwqRa2BEuLKzsQVL3_RUNySy+zKXHoLg@mail.gmail.com>
+Subject: Re: [Linux-kernel-mentees] [PATCH -mmots] checkpatch: add fix for
+ non-standard signature - co-authored-by
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Aditya <yashsri421@gmail.com>, Joe Perches <joe@perches.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.12.20 15:15, Bartosz Golaszewski wrote:
+On Thu, Dec 3, 2020 at 7:56 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Dec 03, 2020 at 11:59:54AM +0100, Lukas Bulwahn wrote:
+> > On Thu, Dec 3, 2020 at 10:59 AM Aditya <yashsri421@gmail.com> wrote:
+> > >
+> > > On 3/12/20 12:26 am, Joe Perches wrote:
+> > > > On Thu, 2020-12-03 at 00:00 +0530, Aditya Srivastava wrote:
+> > > >> Currently, checkpatch.pl warns us for BAD_SIGN_OFF on the usage of
+> > > >> non-standard signatures.
+> > > >>
+> > > >> An evaluation on v4.13..v5.8 showed that out of 539 warnings due to
+> > > >> non-standard signatures, 43 are due to the use of 'Co-authored-by'
+> > > >> tag, which may seem correct, but is not standard.
+> > > >>
+> > > >> The standard signature equivalent for 'Co-authored-by' is
+> > > >> 'Co-developed-by'.
+> > > >
+> > > > I'm not going to ack this as I don't mind non-standard signatures.
+> > > >
+> > >
+> > > What do you suggest?
+> > > Should I drop this patch and move on?
+> > >
+> >
+> > Joe does not ack this, but he also does not nack it.
+> >
+> > You either move on (which is perfectly fine), or
+> >
+> > you either wait that Andrew Morton reviews it and accepts it because
+> > he thinks it useful, or
+> >
+> > you reach out to the git committers that have been using
+> > Co-authored-by in the past and ask them if this kind of feature would
+> > have been helpful for them and you get an ack from them that convinces
+> > Andrew Morton to pick this.
+>
+> co-developed-by is the correct tag for this.  It is documented exactly
+> for this reason, please do not try to use something that is not already
+> accepted by the kernel developers for this type of thing.
+>
 
-Hi,
+Well, Greg, so do we get your Acked-by on a feature that checkpatch
+warns that Co-authored-by is non-standard and that then fixes up the
+patch automatically to Co-developed-by with checkpatch --fix?
 
-<snip>
+If so, please add your Acked-by on this patch here and let Andrew know
+to pick it...
 
-> With a third entry (after gpio-mockup and gpio-aggregator) I think
-> these deserve a separate submenu for "virtual GPIO drivers" or
-> something like that.
-
-just sent a separate patch.
-
-> 
-> Please keep headers ordered alphabetically.
-
-fixed in v2.
-
-> Don't use tabs here - not only doesn't it improve readability but
-> you're not even consistent.
-
-fixed in v2.
-
-> 
->> +
->> +static void virtio_gpio_prepare_inbuf(struct virtio_gpio_priv *priv)
->> +{
->> +       struct scatterlist rcv_sg;
->> +
->> +       sg_init_one(&rcv_sg, &priv->rcv_buf, sizeof(priv->rcv_buf));
->> +       virtqueue_add_inbuf(priv->vq_rx, &rcv_sg, 1, &priv->rcv_buf,
->> +                           GFP_KERNEL);
->> +       virtqueue_kick(priv->vq_rx);
->> +}
->> +
->> +static int virtio_gpio_xmit(struct virtio_gpio_priv *priv, int type,
->> +                           int pin, int value, struct virtio_gpio_event *ev)
->> +{
->> +       struct scatterlist sg[1];
->> +       int ret;
->> +       unsigned long flags;
->> +
->> +       WARN_ON(!ev);
->> +
->> +       ev->type = type;
->> +       ev->pin = pin;
->> +       ev->value = value;
->> +
->> +       sg_init_table(sg, 1);
->> +       sg_set_buf(&sg[0], ev, sizeof(struct virtio_gpio_event));
->> +
->> +       spin_lock_irqsave(&priv->vq_lock, flags);
->> +       ret = virtqueue_add_outbuf(priv->vq_tx, sg, ARRAY_SIZE(sg),
->> +                                  priv, GFP_KERNEL);
->> +       if (ret < 0) {
->> +               dev_err(&priv->vdev->dev,
->> +                       "virtqueue_add_outbuf() failed: %d\n", ret);
->> +               goto out;
->> +       }
->> +       virtqueue_kick(priv->vq_tx);
->> +
->> +out:
->> +       spin_unlock_irqrestore(&priv->vq_lock, flags);
->> +       return 0;
->> +}
->> +
->> +static inline void wakeup_event(struct virtio_gpio_priv *priv, int id)
->> +{
->> +       set_bit(id, &priv->reply_wait);
->> +}
->> +
->> +static inline int check_event(struct virtio_gpio_priv *priv, int id)
->> +{
->> +       return test_bit(id, &priv->reply_wait);
->> +}
->> +
->> +static inline void clear_event(struct virtio_gpio_priv *priv, int id)
->> +{
->> +       clear_bit(id, &priv->reply_wait);
->> +}
->> +
->> +static int virtio_gpio_req(struct virtio_gpio_priv *priv, int type,
->> +                          int pin, int value)
->> +{
->> +       struct virtio_gpio_event *ev
->> +               = devm_kzalloc(&priv->vdev->dev,
->> +                              sizeof(struct virtio_gpio_event), GFP_KERNEL);
-> 
-> Just move the allocation to a separate line because this is super ugly.
-
-done.
-
-> 
->> +
->> +       if (!ev)
->> +               return -ENOMEM;
->> +
->> +       clear_event(priv, type);
->> +       virtio_gpio_xmit(priv, type, pin, value, ev);
->> +       wait_event_interruptible(priv->waitq, check_event(priv, type));
->> +
->> +       devm_kfree(&priv->vdev->dev, ev);
-> 
-> In fact you don't need the managed variant if you're freeing it in the
-> same function. Managed resources should live as long as a device is
-> attached to a driver.
-
-thx, this was a left from originally global buffer.
-
->> +static void virtio_gpio_data_rx(struct virtqueue *vq)
->> +{
->> +       struct virtio_gpio_priv *priv = vq->vdev->priv;
->> +       void *data;
->> +       unsigned int len;
->> +       struct virtio_gpio_event *ev;
->> +
->> +       data = virtqueue_get_buf(priv->vq_rx, &len);
->> +       if (!data || !len) {
->> +               dev_warn(&vq->vdev->dev, "RX received no data ! %d\n", len);
->> +               return;
->> +       }
->> +
->> +       ev = data;
->> +       WARN_ON(data != &priv->rcv_buf);
-> 
-> Is it fine to proceed if this is the case?
-
-Good question :o
-
-Actually, it should never happen - if it does, we might have a bug in
-either this driver or even virtio subsystem. But still it *should*
-return a valid buffer (unless virtio is broken)
-
->> +
->> +       memcpy(&priv->last, &priv->rcv_buf, sizeof(struct virtio_gpio_event));
->> +
->> +       switch (ev->type) {
->> +       case VIRTIO_GPIO_EV_HOST_LEVEL:
->> +               virtio_gpio_signal(priv, ev->type, ev->pin, ev->value);
->> +       break;
-> 
-> Break should be one tab farther.
-
-fixed in v2
-
->> +       default:
->> +               wakeup_event(priv, ev->type & ~VIRTIO_GPIO_EV_REPLY);
->> +       break;
->> +       }
->> +       virtio_gpio_prepare_inbuf(priv);
->> +       wake_up_all(&priv->waitq);
->> +}
->> +
->> +static int virtio_gpio_alloc_vq(struct virtio_gpio_priv *priv)
->> +{
->> +       struct virtqueue *vqs[2];
->> +       vq_callback_t *cbs[] = {
->> +               NULL,
->> +               virtio_gpio_data_rx,
->> +       };
->> +       static const char * const names[] = { "in", "out", };
->> +       int ret;
->> +
->> +       ret = virtio_find_vqs(priv->vdev, 2, vqs, cbs, names, NULL);
->> +       if (ret) {
->> +               dev_err(&priv->vdev->dev, "failed to alloc vqs: %d\n", ret);
->> +               return ret;
->> +       }
->> +
->> +       priv->vq_rx = vqs[0];
->> +       priv->vq_tx = vqs[1];
->> +
->> +       virtio_gpio_prepare_inbuf(priv);
->> +
->> +       virtio_config_enable(priv->vdev);
->> +       virtqueue_enable_cb(priv->vq_rx);
->> +       virtio_device_ready(priv->vdev);
->> +
->> +       return 0;
->> +}
->> +
->> +static int virtio_gpio_probe(struct virtio_device *vdev)
->> +{
->> +       struct virtio_gpio_priv *priv;
->> +       struct virtio_gpio_config cf = {};
->> +       char *name_buffer;
->> +       const char **gpio_names = NULL;
->> +       struct device *dev = &vdev->dev;
->> +
->> +       priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
->> +       if (!priv)
->> +               return -ENOMEM;
->> +
->> +       priv->name = devm_kzalloc(dev, sizeof(cf.name)+1, GFP_KERNEL);
-> 
-> This can fail.
-
-ups!
-
->> +       spin_lock_init(&priv->vq_lock);
->> +       spin_lock_init(&priv->op_lock);
->> +
->> +       virtio_cread(vdev, struct virtio_gpio_config, version, &cf.version);
->> +       virtio_cread(vdev, struct virtio_gpio_config, num_gpios,
->> +                    &cf.num_gpios);
->> +       virtio_cread(vdev, struct virtio_gpio_config, names_size,
->> +                    &cf.names_size);
->> +       virtio_cread_bytes(vdev, offsetof(struct virtio_gpio_config, name),
->> +                          priv->name, sizeof(cf.name));
->> +
->> +       if (cf.version != 1) {
->> +               dev_err(dev, "unsupported interface version %d\n", cf.version);
->> +               return -EINVAL;
->> +       }
->> +
->> +       priv->num_gpios = cf.num_gpios;
->> +
->> +       if (cf.names_size) {
->> +               char *bufwalk;
->> +               int idx = 0;
->> +
->> +               name_buffer = devm_kzalloc(&vdev->dev, cf.names_size,
->> +                                          GFP_KERNEL)+1;
->> +               virtio_cread_bytes(vdev, sizeof(struct virtio_gpio_config),
->> +                                  name_buffer, cf.names_size);
->> +               name_buffer[cf.names_size] = 0;
->> +
->> +               gpio_names = devm_kzalloc(dev,
->> +                                         sizeof(char *) * priv->num_gpios,
->> +                                         GFP_KERNEL);
-> 
-> Use devm_kcalloc() for arrays.
-
-ok.
-
-> 
->> +               bufwalk = name_buffer;
->> +
->> +               while (idx < priv->num_gpios &&
->> +                      bufwalk < (name_buffer+cf.names_size)) {
->> +                       gpio_names[idx] = (strlen(bufwalk) ? bufwalk : NULL);
->> +                       bufwalk += strlen(bufwalk)+1;
->> +                       idx++;
-> 
-> 
-> Something's wrong with indentation here.
-
-i dont think so: the "bufwalk ..." line belongs to the while expression
-and is right under the "idx", as it should be. I didn't want to break up
-at the "<" operator. shall i do this instead ?
-
->> +               }
->> +       }
->> +
->> +       priv->gc.owner                  = THIS_MODULE;
->> +       priv->gc.parent                 = dev;
->> +       priv->gc.label                  = (priv->name[0] ? priv->name
->> +                                                        : dev_name(dev));
->> +       priv->gc.ngpio                  = priv->num_gpios;
->> +       priv->gc.names                  = gpio_names;
->> +       priv->gc.base                   = -1;
->> +       priv->gc.request                = virtio_gpio_request;
->> +       priv->gc.direction_input        = virtio_gpio_direction_input;
->> +       priv->gc.direction_output       = virtio_gpio_direction_output;
->> +       priv->gc.get_direction          = virtio_gpio_get_direction;
->> +       priv->gc.get                    = virtio_gpio_get;
->> +       priv->gc.set                    = virtio_gpio_set;
->> +
->> +       priv->vdev                      = vdev;
->> +       vdev->priv = priv;
->> +
->> +       priv->irq_base = devm_irq_alloc_descs(dev, -1, 0, priv->num_gpios,
->> +                                             NUMA_NO_NODE);
->> +       if (priv->irq_base < 0) {
->> +               dev_err(&vdev->dev, "failed to alloc irqs\n");
->> +               priv->irq_base = -1;
->> +               return -ENOMEM;
->> +       }
->> +
->> +       init_waitqueue_head(&priv->waitq);
->> +
->> +       priv->reply_wait = 0;
->> +
->> +       virtio_gpio_alloc_vq(priv);
->> +
->> +       return devm_gpiochip_add_data(dev, &priv->gc, priv);
->> +}
-> 
-> I don't know virtio at all - Michael: could you take a look at the
-> code here and see if it looks good to you?
-> 
->> +
->> +static void virtio_gpio_remove(struct virtio_device *vdev)
->> +{
->> +}
-> 
-> Just don't implement it. Or does virtio actually require the remove() callback?
-
-yes, it does, unfortunately -- see: virtio_dev_remove()
-
-I'll propose a patch for virtio for fixing that.
-
-
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Lukas
