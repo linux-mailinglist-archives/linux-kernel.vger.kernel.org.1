@@ -2,130 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A619F2CDE79
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 966F62CDE7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731264AbgLCTGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:06:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
+        id S2387818AbgLCTHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:07:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726133AbgLCTGn (ORCPT
+        with ESMTP id S1725981AbgLCTHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:06:43 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B82C061A52
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:06:03 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id 10so3009795ybx.9
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:06:03 -0800 (PST)
+        Thu, 3 Dec 2020 14:07:06 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C33C061A53
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:06:26 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id d18so3261191edt.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:06:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zY1/UVNK1lpCKgo46pv7M4xtEHqMkdRqZiYe+oaE/HI=;
-        b=kBXK6rf2l4HvR3AS0yI+1werbY73mRV1JLVfNayiYB24G4hZ+mMX9KhAe6rtLui6wT
-         l+lgZE+6rx2soFftZ/7j+GPO2PmOscV4Vbqt0Ff03wqQ5toUTRKCyOAdLNdoDa1pKbjg
-         7j4e4l749WlmL7AXqJPQOVJjPkHPHSs6J2y+ZCElAN/sF033I+N/QZot64Qd+YYYqF+d
-         8RqTgH/KtpaMY9PolKpcFzZMTF/JbjDk/O7PXIUOxQ6Ryo2icN6J5B9PqMJ6eC7uVBTJ
-         DXSm2kocF3znjF9z9rF3V7J2WMpCDm+VePuBTnXeflnecy2J7uOGs4/nlDeDyjlCGIhO
-         fE/g==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=lTfx3Ov0Wmsj8tR0NT/QpcZwiArs4DzszKRjr4Szd/Q=;
+        b=dKMpvSvjin64bvjSls/GmeNtlxNTNhLUS/qnyqcl9tH9z3iW05k8SMeoJXuDUQLjjn
+         JIl8/xthS70rNbOCPFJMU0y5LmPeRbdGUsgy5tVcnWGsp5JUwOnMnx72L/x+3P0U0t28
+         lMEmMEQhyhdZ9bTP+B9FxWra20Z6nQzWwP62KUxQ5ecQ6ZxDTCIwvMXGcB+3dygS7cpo
+         J7HodFdIqnIGiTyxEP0W6Vm9KRqBMPlqSCrEsvEclx2LVKxN1zIyF7fPcciCFCzhxd4N
+         Oua3YkuxcAcgyiE6AHl2eulBGIw7lmf2eoU52ySvvhTEGr+00KdbYB95kGH86LyjjDf8
+         qqyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zY1/UVNK1lpCKgo46pv7M4xtEHqMkdRqZiYe+oaE/HI=;
-        b=WoSX3q1scKSpsyPgqzEfeDKqnIp8D6QIadY2eg9JxiKKyGSCy5WT2PMm3PSoCbMOU/
-         Kqrw8/mdFeracoI1Z/Cunsswq72xljYnQYY5+JbYGUOPP7PpBV11TYvZpS3slQ6rz8Vq
-         cgYBLVRtHI3NE26N9FH1O5a4RmdtC5r6MLyB65vjuCSZpJPKMEzkqvsRsEONqAR5h8Gp
-         eifnOYfZWhNn7cAYoPEIY48FadnG8tI/goJcrlicQ+LUGWfywkIhiLDqCheRtxLP/MOH
-         9SwQvwBg0Jt/lHgH33PwMiXx3xAlYdZ1B6rsxG9Pcj09OTv1amcS6Z5ZA11Z7m/wSFhg
-         iutg==
-X-Gm-Message-State: AOAM53081INl9PbT2xg5TUPCXEUiKdQ4jkfnblEcDdCkWXC0tpZvUhqX
-        DLSb1uGQC4ekKPtUs4Kmm/CtpUp5PWX7pFSEv44vCA==
-X-Google-Smtp-Source: ABdhPJyByVU3U6UwdjEq6N0aHqjYPPhLQgY+wiLEv+vExlD872m6k9m3aMBysR1FSGFum9W802/y/aH7VgFItnp+7lI=
-X-Received: by 2002:a25:8401:: with SMTP id u1mr969238ybk.96.1607022361930;
- Thu, 03 Dec 2020 11:06:01 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=lTfx3Ov0Wmsj8tR0NT/QpcZwiArs4DzszKRjr4Szd/Q=;
+        b=sepkJm2/30ujFoGWAyW3e6AcBBJ5XTRP2L0bdtwflCYZhY3tzqL3E/OUKmyzMTQwxL
+         s65LjHU2Z+VZppWkYU2xKIKj3hEmoEklwbJevjexP/umJlqXhCWhx+pyCIqo68YkU1Mc
+         tiRpiMf1Har7rnk+c6u7fBLCVSlHOtjTgX/3tKSM24b2LvgJLqLMakASyAOSBediawMC
+         ScFu8EFyFiE+f/2IN1bL5ZZiQmxn8dYBl8BcGxlGJegXGCOEcB+LmKs10C19iz4OY+a5
+         IQsKcptcULM191xs8sKKC0yV0ZofgN1bebNhMDxaa5nBCKE66igj3tYHzLXNMKEP6xib
+         iEww==
+X-Gm-Message-State: AOAM533rZqwrliGdf48r3VJFjmwCVOoqKKWuXFgv24ala6WsWr+JX2lQ
+        ann6MzzQUyhr1hyhEuuR2hBZSvXvIHpvNlrRsWs=
+X-Google-Smtp-Source: ABdhPJxEuhUWxXXeS0ExRRySrCYRGG3LeefV2ozex+q0LD0fy1ukhJ3ar8jEoDEEHkXPLqxMpNDOhobk1piPoj7D9qc=
+X-Received: by 2002:aa7:d54b:: with SMTP id u11mr4204887edr.341.1607022385010;
+ Thu, 03 Dec 2020 11:06:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20201121020232.908850-1-saravanak@google.com> <758a1b59-1033-b0ae-2549-84c8eeea4b11@ti.com>
-In-Reply-To: <758a1b59-1033-b0ae-2549-84c8eeea4b11@ti.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 3 Dec 2020 11:05:26 -0800
-Message-ID: <CAGETcx_CzrPDZA_C+8JvCeL-bSPB814jfDLscEEe+TLiHhBxjA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/17] Refactor fw_devlink to significantly improve
- boot time
-To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
+Reply-To: abderazackzebdani22@gmail.com
+Sender: mariaose101@gmail.com
+Received: by 2002:a17:906:131a:0:0:0:0 with HTTP; Thu, 3 Dec 2020 11:06:24
+ -0800 (PST)
+From:   ABDERAZACK ZEBDANI <abderazackzebdani11@gmail.com>
+Date:   Thu, 3 Dec 2020 11:06:24 -0800
+X-Google-Sender-Auth: 61l9mY1D_UH3bN-_FDT-LnR0Qz4
+Message-ID: <CANACK-QoQC7USUrdq1wtU4tBjXuA02+FGn-d4AukOY5hs2dEwg@mail.gmail.com>
+Subject: Greetings My Dear Friend,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 12:29 AM 'Tomi Valkeinen' via kernel-team
-<kernel-team@android.com> wrote:
->
-> Hi,
->
-> On 21/11/2020 04:02, Saravana Kannan wrote:
-> > The current implementation of fw_devlink is very inefficient because it
-> > tries to get away without creating fwnode links in the name of saving
-> > memory usage. Past attempts to optimize runtime at the cost of memory
-> > usage were blocked with request for data showing that the optimization
-> > made significant improvement for real world scenarios.
-> >
-> > We have those scenarios now. There have been several reports of boot
-> > time increase in the order of seconds in this thread [1]. Several OEMs
-> > and SoC manufacturers have also privately reported significant
-> > (350-400ms) increase in boot time due to all the parsing done by
-> > fw_devlink.
-> >
-> > So this patch series refactors fw_devlink to be more efficient. The key
-> > difference now is the addition of support for fwnode links -- just a few
-> > simple APIs. This also allows most of the code to be moved out of
-> > firmware specific (DT mostly) code into driver core.
-> >
-> > This brings the following benefits:
-> > - Instead of parsing the device tree multiple times (complexity was
-> >   close to O(N^3) where N in the number of properties) during bootup,
-> >   fw_devlink parses each fwnode node/property only once and creates
-> >   fwnode links. The rest of the fw_devlink code then just looks at these
-> >   fwnode links to do rest of the work.
-> >
-> > - Makes it much easier to debug probe issue due to fw_devlink in the
-> >   future. fw_devlink=on blocks the probing of devices if they depend on
-> >   a device that hasn't been added yet. With this refactor, it'll be very
-> >   easy to tell what that device is because we now have a reference to
-> >   the fwnode of the device.
-> >
-> > - Much easier to add fw_devlink support to ACPI and other firmware
-> >   types. A refactor to move the common bits from DT specific code to
-> >   driver core was in my TODO list as a prerequisite to adding ACPI
-> >   support to fw_devlink. This series gets that done.
-> >
-> > Laurent and Grygorii tested the v1 series and they saw boot time
-> > improvment of about 12 seconds and 3 seconds, respectively.
->
-> Tested v2 on OMAP4 SDP. With my particular config, boot time to starting init went from 18.5 seconds
-> to 12.5 seconds.
->
->  Tomi
+Greetings My Dear Friend,
 
-Rafael,
+Before I introduce myself, I wish to inform you that this letter is
+not a hoax mail and I urge you to treat it serious.This letter must
+come to you as a big surprise, but I believe it is only a day that
+people meet and become great friends and business partners. Please I
+want you to read this letter very carefully and I must apologize for
+barging this message into your mail box without any formal
+introduction due to the urgency and confidentiality of this business
+and I know that this message will come to you as a surprise. Please
+this is not a joke and I will not like you to joke with it ok,With due
+respect to your person and much sincerity of purpose, I make this
+contact with you as I believe that you can be of great assistance to
+me. My name is Mr.Abderazack zebdani, from Burkina Faso, West Africa.
+I work in Bank Of Africa (BOA) as telex manager, please see this as a
+confidential message and do not reveal it to another person and let me
+know whether you can be of assistance regarding my proposal below
+because it is top secret.
 
-Friendly reminder for a review.
+I am about to retire from active Banking service to start a new life
+but I am skeptical to reveal this particular secret to a stranger. You
+must assure me that everything will be handled confidentially because
+we are not going to suffer again in life. It has been 10 years now
+that most of the greedy African Politicians used our bank to launder
+money overseas through the help of their Political advisers. Most of
+the funds which they transferred out of the shores of Africa were gold
+and oil money that was supposed to have been used to develop the
+continent. Their Political advisers always inflated the amounts before
+transferring to foreign accounts, so I also used the opportunity to
+divert part of the funds hence I am aware that there is no official
+trace of how much was transferred as all the accounts used for such
+transfers were being closed after transfer. I acted as the Bank
+Officer to most of the politicians and when I discovered that they
+were using me to succeed in their greedy act; I also cleaned some of
+their banking records from the Bank files and no one cared to ask me
+because the money was too much for them to control. They laundered
+over $5billion Dollars during the process.
 
--Saravana
+Before I send this message to you, I have already diverted
+($10.5million Dollars) to an escrow account belonging to no one in the
+bank. The bank is anxious now to know who the beneficiary to the funds
+is because they have made a lot of profits with the funds. It is more
+than Eight years now and most of the politicians are no longer using
+our bank to transfer funds overseas. The ($10.5million Dollars) has
+been laying waste in our bank and I don=E2=80=99t want to retire from the b=
+ank
+without transferring the funds to a foreign account to enable me share
+the proceeds with the receiver (a foreigner). The money will be shared
+60% for me and 40% for you. There is no one coming to ask you about
+the funds because I secured everything. I only want you to assist me
+by providing a reliable bank account where the funds can be
+transferred.
+
+You are not to face any difficulties or legal implications as I am
+going to handle the transfer personally. If you are capable of
+receiving the funds, do let me know immediately to enable me give you
+a detailed information on what to do. For me, I have not stolen the
+money from anyone because the other people that took the whole money
+did not face any problems. This is my chance to grab my own life
+opportunity but you must keep the details of the funds secret to avoid
+any leakages as no one in the bank knows about my plans.Please get
+back to me if you are interested and capable to handle this project, I
+shall intimate you on what to do when I hear from your confirmation
+and acceptance.If you are capable of being my trusted associate, do
+declare your consent to me I am looking forward to hear from you
+immediately for further information. Kindly reply this email (
+abderazackzebdani22@gmail.com )
+Thanks with my best regards.
+Mr.Abderazack zebdani.
+Telex Manager
+Bank Of Africa (BOA)
+Burkina Faso.
