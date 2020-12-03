@@ -2,138 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA7D2CE049
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:04:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CE62CE04B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727729AbgLCVDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 16:03:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44894 "EHLO
+        id S1727932AbgLCVFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 16:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726928AbgLCVDb (ORCPT
+        with ESMTP id S1726727AbgLCVFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 16:03:31 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F152DC061A4F;
-        Thu,  3 Dec 2020 13:02:44 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id k65so3344136ybk.5;
-        Thu, 03 Dec 2020 13:02:44 -0800 (PST)
+        Thu, 3 Dec 2020 16:05:16 -0500
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52780C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 13:04:36 -0800 (PST)
+Received: by mail-vk1-xa44.google.com with SMTP id v5so747796vkn.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 13:04:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=D96ntruvKNHwhJI4N9JZfzOeYobqLQ+gufOr4VkC1bk=;
-        b=NCpz16V4A8mC4sxO+He2ZjqFqMJwgbrNEba7nwUjJarpcGXTuxgGds3FHa19cKYz8l
-         Z3KiO9kQRWoZO+wvT3w2txPm1P1P01jIhtcFdphQ5QV5WLwDr0SRYrFdPz5VMBvojRT9
-         xUtmg7UXISeP+wC7FeuRUAA6JoOtzw5kRmMsZVqwxa4PXCGAKQW0kCelfW4pZDfYb2qz
-         jo9abkq3ESsni4Q/2CgTZ7tk5TiJ/EUa7XjW+tvEX/uSgXKQODMqLcyotAEJAIDxKlqM
-         e/mvRGXpRXfFGTp7I1PlKrPvXM3uiMnPnXx75AhwX+kaihn0f95cM/9dmjdxkXJzE89b
-         EPnA==
+        bh=f9FfLi8Nl7FF4traG898yrie9ssHxyCW2fqoUTn0pwI=;
+        b=HD8E+QIOXUbv5qxbihazg3iQqaBW4ARO8iibzqKW/locEieSrh6fFZxam81Rd21TVA
+         6vii6LoQG8DDaDQVasrDD3sg4epdc7bJ12hTQMktaajIlNo/+W/pdDw6CL5FN7nNhXMI
+         NHWHMhVR+ZUrXeeOiAme3OlvBBOWRJbmI0yyA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=D96ntruvKNHwhJI4N9JZfzOeYobqLQ+gufOr4VkC1bk=;
-        b=OjWDCuhpu8M1fpKM8M/VUZPBAROQowxXzPH2IWX2ZHpd+wxtgU1EmLCrTjOKRz32Yc
-         xP2yo35J87P+Ke6AzT7Zi6JcNP07eMN2brRAA7xKRxhJ+6KTGNCmyHgTw6/zgfv+VEV4
-         iP7BdX4cn1piAVqbZ8/NVWgvfHvM9GmJzzP8jJB3JN5/vZjIL/TMx6B6bVCF8gYLjrak
-         +6memyEPqvug0asKIkIr6UT77h8HC0RAyP62Q+h9ahLBa9ElI6xCOi/3EKkb7uCW9HFf
-         A6yAQzdGHqesgJetve2sNRd5Q36y0j3m+tRYMItiiOnaxA8ibS101BziWPCPJAw36RxY
-         iTpw==
-X-Gm-Message-State: AOAM532feGcB8tP9eibPv18EVkzpexmdcAoi3McV/RAyFD2HPc2ekumx
-        3r9Y4lHxGpDRoeiTWKCv6IUOvYXLW73d4adPTzU=
-X-Google-Smtp-Source: ABdhPJxsPvxzAvsTaC+SuNOn/oifB3Nfv491GjWULpmf+sLM5DBK9SyDzSUZgogACqoyPgkGkqnIP1aIq/chrwKZFtg=
-X-Received: by 2002:a25:2845:: with SMTP id o66mr1540517ybo.260.1607029364337;
- Thu, 03 Dec 2020 13:02:44 -0800 (PST)
+        bh=f9FfLi8Nl7FF4traG898yrie9ssHxyCW2fqoUTn0pwI=;
+        b=jsXmAfWBG0f0WJEblwyxtdzuSad+AHMo/khXhxy6Db87Q7VxFsMR3In1Xsl9EZZCCj
+         HBKEO0hsfxleMgpueVSTnUXD4IrtMHXwzgLQGv5w7RCPsomZxzwQ6h1TJO95iAm3NjJr
+         vL3/IOFBhlW4oTw8HseReH4HvpT+6f376GLbOY0XSTgfD2+CWqVT1LCqS4dcsI7P31gd
+         +xWrQ3YR665Ts5J74LnzkpsmtoD5QySPREsHwOY4gHXUzv37CF26yGI1ub4rllFXhV3T
+         b/q8guRqMGlb5qFclpuE0J8j4wCSradw44TtNClh+82qcIkjGobo5CSP+cTysrrkSRyX
+         d9pw==
+X-Gm-Message-State: AOAM530jnQJFbvYHciaxs5mYBDQaAlSU1w1bIn2r8LHTzp15WudQQ2rn
+        iiR6KdLmoivcD+oXmnB8eu0C7X+qSwtCQg==
+X-Google-Smtp-Source: ABdhPJxTLq3+zYrjvHyWl3Cw7sUKLGx62tQQ0MrQbw+FA3ksJYbcz1pwnQRxoewz6PkuMgrEwT+r8w==
+X-Received: by 2002:a1f:aac6:: with SMTP id t189mr1222740vke.4.1607029474760;
+        Thu, 03 Dec 2020 13:04:34 -0800 (PST)
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
+        by smtp.gmail.com with ESMTPSA id k207sm102321vkk.15.2020.12.03.13.04.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 13:04:33 -0800 (PST)
+Received: by mail-ua1-f51.google.com with SMTP id r23so1160423uak.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 13:04:33 -0800 (PST)
+X-Received: by 2002:ab0:6285:: with SMTP id z5mr964298uao.0.1607029473177;
+ Thu, 03 Dec 2020 13:04:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20201203160245.1014867-1-jackmanb@google.com> <20201203160245.1014867-12-jackmanb@google.com>
-In-Reply-To: <20201203160245.1014867-12-jackmanb@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Dec 2020 13:02:33 -0800
-Message-ID: <CAEf4BzbN==quHrXgGswSVKwK_9mqKMmzw=2y21uc-Sfz1_VGuQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 11/14] tools build: Implement feature check
- for BPF atomics in Clang
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Hebb <tommyhebb@gmail.com>
+References: <20201124094636.v2.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
+ <20201124094636.v2.3.I771b6594b2a4d5b7fe7e12a991a6640f46386e8d@changeid>
+ <d6c5dba9-bcc7-fac9-dd41-c989509c822b@codeaurora.org> <CAD=FV=UOSkHQMcSV8Zq5qPfBoUu5xYzfNZqUPmymvD7PXUAN4w@mail.gmail.com>
+ <b84d5bb4-e413-ad20-a19a-c7420abd5d5d@codeaurora.org>
+In-Reply-To: <b84d5bb4-e413-ad20-a19a-c7420abd5d5d@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 3 Dec 2020 13:04:21 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UXo3RPuVSYwOrHJMxF38K-ynoaPv4ZVQ6N2ok_zcoOFw@mail.gmail.com>
+Message-ID: <CAD=FV=UXo3RPuVSYwOrHJMxF38K-ynoaPv4ZVQ6N2ok_zcoOFw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] pinctrl: qcom: Clear possible pending irq when
+ remuxing GPIOs
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 8:08 AM Brendan Jackman <jackmanb@google.com> wrote:
->
-> Change-Id: Ia15bb76f7152fff2974e38242d7430ce2987a71e
->
+Hi,
 
-See recent discussion on KP's patch set. There needs to be a commit
-message, even if it's just a copy/paste of subject line. But see also
-my other reply, I'm not sure it's worth it to do it this way for
-selftests.
+On Thu, Dec 3, 2020 at 3:22 AM Maulik Shah <mkshah@codeaurora.org> wrote:
+>
+> >>> +     /*
+> >>> +      * Clear IRQs if switching to/from GPIO mode since muxing to/from
+> >>> +      * the GPIO path can cause phantom edges.
+> >>> +      */
+> >>> +     old_i = (oldval & mask) >> g->mux_bit;
+> >>> +     if (old_i != i &&
+> >>> +         (i == pctrl->soc->gpio_func || old_i == pctrl->soc->gpio_func))
+> >>> +             msm_pinctrl_clear_pending_irq(pctrl, group, irq);
+> >>> +
+> >> The phantom irq can come when switching to GPIO irq mode. so may be only
+> >> check if (i == pctrl->soc->gpio_func) {
+> > Have you tested this experimentally?
+> Yes
 
-> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Quentin Monnet <quentin@isovalent.com>
-> Cc: "Frank Ch. Eigler" <fche@redhat.com>
-> Cc: Stephane Eranian <eranian@google.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Thomas Hebb <tommyhebb@gmail.com>
-> Change-Id: Ie2c3832eaf050d627764071d1927c7546e7c4b4b
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->  tools/build/feature/Makefile                 | 4 ++++
->  tools/build/feature/test-clang-bpf-atomics.c | 9 +++++++++
->  2 files changed, 13 insertions(+)
->  create mode 100644 tools/build/feature/test-clang-bpf-atomics.c
+Yes means that you tried switching away from GPIO mode and you
+couldn't get a phantom interrupt?  OK, I'll re-test then.
+
+I'll test on the Chrome OS kernel tree since that's easiest for me,
+but I can test on mainline if you think it would make a difference...
+
+1. Pick <https://crrev.com/c/2556012> and put that kernel on the device.
+
+2. In Cr50 console, make the WP line low with:
+  wp enable
+
+3. In AP console do:
+  echo bogus > /sys/module/gpio_keys/parameters/doug_test
+
+4. See bogus interrupt:
+
+localhost ~ # echo bogus > /sys/module/gpio_keys/parameters/doug_test
+[   62.006346] DOUG: selecting state bogus
+[   62.011813] DOUG: ret 0
+[   62.011875] DOUG: in dual edge parent: hwirq=66, type=1
+[   62.020300] DOUG: gpio_keys_gpio_isr
+
+Can you try replicating again?
+
+
+> > I have experimentally tested this and I can actually see an interrupt
+> > generated when I _leave_ GPIO as well as when I enter GPIO mode.  If
+> > you can't see this I can re-setup my test, but this was one of those
+> > things that convinced me that the _transition_ is what was causing the
+> > fake interrupt.
+> >
+> > I think my test CL <https://crrev.com/c/2556012/> can help you with
+> > testing if you wish.
+> >
+> >
+> >> even better if you can clear this unconditionally.
+> > Why?  It should only matter if we're going to/from GPIO mode.
 >
-> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-> index cdde783f3018..81370d7fa193 100644
-> --- a/tools/build/feature/Makefile
-> +++ b/tools/build/feature/Makefile
-> @@ -70,6 +70,7 @@ FILES=                                          \
->           test-libaio.bin                       \
->           test-libzstd.bin                      \
->           test-clang-bpf-co-re.bin              \
-> +         test-clang-bpf-atomics.bin            \
->           test-file-handle.bin                  \
->           test-libpfm4.bin
+> Probably i was not clear, the phantom irq should be cleared when
+> switching gpio to gpio IRQ mode.
 >
-> @@ -331,6 +332,9 @@ $(OUTPUT)test-clang-bpf-co-re.bin:
->         $(CLANG) -S -g -target bpf -o - $(patsubst %.bin,%.c,$(@F)) |   \
->                 grep BTF_KIND_VAR
+> When GPIO was used as Rx line in example QUP/UART use case, it can latch
+> the phantom IRQ
+
+This is where I disagree with you.  I don't think the interrupt is
+latching while it's used as an Rx line.  I think it's the pinmux
+change that introduces an phantom interrupt.
+
+Specifically, with the same test patch above, AKA
+<https://crrev.com/c/2556012>, I can do this:
+
+1. On AP:
+  echo bogus > /sys/module/gpio_keys/parameters/doug_test
+
+2. On Cr50 console:
+  wp disable
+  wp enable
+  wp disable
+  wp enable
+  wp disable
+  wp enable
+
+3. Go back and check the AP and see that no interrupts fired.
+
+Said another way: when we're muxed away the interrupts aren't getting
+latched.  It's the act of changing the mux that causes the phantom
+interrupts.
+
+
+> but as long as its IRQ is in disabled/masked state it
+> doesn't matter.
+
+...but there's no requirement that someone would need to disable/mask
+an interrupt while switching the muxing, is there?  So it does matter.
+
+
+> its only when the GPIO is again set to IRQ mode with set_mux callback,
+> the phantom IRQ needs clear to start as clean.
 >
-> +$(OUTPUT)test-clang-bpf-atomics.bin:
-> +       $(CLANG) -S -g -target bpf -mcpu=v3 -Werror=implicit-function-declaration -o - $(patsubst %.bin,%.c,$(@F)) 2>&1
-> +
->  $(OUTPUT)test-file-handle.bin:
->         $(BUILD)
+> So we should check only for if (i == pctrl->soc->gpio_func) then clear
+> phantom IRQ.
 >
-> diff --git a/tools/build/feature/test-clang-bpf-atomics.c b/tools/build/feature/test-clang-bpf-atomics.c
-> new file mode 100644
-> index 000000000000..8b5fcdd4ba6f
-> --- /dev/null
-> +++ b/tools/build/feature/test-clang-bpf-atomics.c
-> @@ -0,0 +1,9 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2020 Google
-> +
-> +int x = 0;
-> +
-> +int foo(void)
-> +{
-> +       return __sync_val_compare_and_swap(&x, 1, 2);
-> +}
-> --
-> 2.29.2.454.gaff20da3a2-goog
+> The same is case with .direction_output callback, when GPIO is used as
+> output say as clock, need not clear any phantom IRQ,
 >
+> The reason is with every pulse of clock it can latch as pending IRQ in
+> GIC_ISPEND as long as it stay as output mode/clock.
+>
+> its only when switching back GPIO from output direction to input & IRQ
+> function, need to clear the phantom IRQ.
+>
+> so we do not require clear phantom irq in .direction_output callback.
+
+I think all the above explanation is with the model that the interrupt
+detection logic is still happening even when muxed away.  I don't
+believe that's true.  Please run my test patch or code up something
+similar yourself.
+
+
+> >> In step (3) msm_gpio_irq_set_type() touches the RAW_STATUS_EN making the
+> >> phantom irq pending again.
+> >> To resolve this, you will need to invoke msm_pinctrl_clear_pending_irq()
+> >> at the end of the msm_gpio_irq_set_type().
+> >>
+> >> I would like Rajendra's (already in cc) review as well on above part.
+> > Ugh, so we need a clear in yet another place.  Joy.  OK, I will wait
+> > for Rajendra's comment but I can add similar code in
+> > msm_gpio_irq_enable().
+>
+> As the clearing phantom irq code in msm_gpio_irq_enable() is moved to
+> separate function msm_pinctrl_clear_pending_irq(), it needs invoke from
+> at the end of msm_gpio_irq_set_type() too.
+
+Seems reasonable to me.  I'll include this in my next spin.  Still
+waiting for us to agree on some of the points above before spinning,
+though.
+
+-Doug
