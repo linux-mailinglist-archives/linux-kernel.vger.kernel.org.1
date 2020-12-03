@@ -2,127 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCA42CD650
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3412CD658
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730651AbgLCM7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 07:59:11 -0500
-Received: from conuserg-12.nifty.com ([210.131.2.79]:53614 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730341AbgLCM7K (ORCPT
+        id S1730503AbgLCND3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 08:03:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33828 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726302AbgLCND2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 07:59:10 -0500
-Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 0B3CvCTZ012509;
-        Thu, 3 Dec 2020 21:57:12 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 0B3CvCTZ012509
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1607000233;
-        bh=4LEowQvA7xjRCrLhVDoyfxqY/ZOsWCHa7kvgy3K/tZY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=utJkJDnBRTSN6PtYSPJeDEwQcuM+VJnE2ke5PXJLGn+oit67fPC+R+iTazU3+/mY8
-         LVVGIq36ErkcoBzKccRygYST+r76vpn8O++gPQKATc0ad6iUlLTAF9gtEgKGtDNEkI
-         2701SeLnZIvuq/RL9J131MqK574AnldM40QNh1i0MERr7lrDQpNfYXzZSO5HuspLnF
-         C79Au3LXp3R5jaxZRHYgX0T2jV+4o69OIkrKw31LPlWAtk2aHAnkziKaU8BOrWvtjQ
-         9xl8kpOnPtjyENOnrIiBxaDhtwTQcZVZyEDQBhbyb19uzMn++eTI5+1xHEiubKYp7p
-         iyylJTo0/jRYw==
-X-Nifty-SrcIP: [126.90.211.135]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Emese Revfy <re.emese@gmail.com>,
-        linux-hardening@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] gcc-plugins: simplify GCC plugin-dev capability test
-Date:   Thu,  3 Dec 2020 21:57:00 +0900
-Message-Id: <20201203125700.161354-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Thu, 3 Dec 2020 08:03:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607000520;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zx3IzkdTLXifDG8SYt+10b33NncoBl8+h6tsKrPXXKI=;
+        b=PCYeluZkLurdCYqp0ottD5LoIWpwdPiNkNBx4ciIg63qfJMk/R0Eq+2DtzMF7ezYAZyNuU
+        bBe6CNFMcmLPr2STzmJN3xVVxibMLYHOSgZvyHgF1ySvz4d8R8FcYSZnvXcRLuUtl3c0hO
+        l8qhyxWrm6Uo8qI+OIp9XYFrqRNNmSU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-5-55srNphXMgaa_GE-OCNWuA-1; Thu, 03 Dec 2020 08:01:55 -0500
+X-MC-Unique: 55srNphXMgaa_GE-OCNWuA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2AABD107464A;
+        Thu,  3 Dec 2020 13:01:52 +0000 (UTC)
+Received: from [10.36.112.89] (ovpn-112-89.ams2.redhat.com [10.36.112.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8A1EE60C17;
+        Thu,  3 Dec 2020 13:01:43 +0000 (UTC)
+Subject: Re: [PATCH v13 05/15] iommu/smmuv3: Get prepared for nested stage
+ support
+To:     Kunkun Jiang <jiangkunkun@huawei.com>, eric.auger.pro@gmail.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
+        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
+        alex.williamson@redhat.com
+Cc:     jean-philippe@linaro.org, zhangfei.gao@linaro.org,
+        zhangfei.gao@gmail.com, vivek.gautam@arm.com,
+        shameerali.kolothum.thodi@huawei.com,
+        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com, tn@semihalf.com,
+        nicoleotsuka@gmail.com, yuzenghui@huawei.com,
+        wanghaibin.wang@huawei.com, Keqian Zhu <zhukeqian1@huawei.com>
+References: <20201118112151.25412-1-eric.auger@redhat.com>
+ <20201118112151.25412-6-eric.auger@redhat.com>
+ <a40b90bd-6756-c8cc-b455-c093d16d35f5@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <096c2c79-84b2-75d4-094f-bdd8b0a2d125@redhat.com>
+Date:   Thu, 3 Dec 2020 14:01:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <a40b90bd-6756-c8cc-b455-c093d16d35f5@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus pointed out a third of the time in the Kconfig parse stage comes
-from the single invocation of cc1plus in scripts/gcc-plugin.sh [1],
-and directly testing plugin-version.h for existence cuts down the
-overhead a lot. [2]
+Hi Kunkun,
 
-This commit takes one step further to kill the build test entirely.
+On 12/3/20 1:32 PM, Kunkun Jiang wrote:
+> Hi Eric,
+> 
+> On 2020/11/18 19:21, Eric Auger wrote:
+>> When nested stage translation is setup, both s1_cfg and
+>> s2_cfg are set.
+>>
+>> We introduce a new smmu domain abort field that will be set
+>> upon guest stage1 configuration passing.
+>>
+>> arm_smmu_write_strtab_ent() is modified to write both stage
+>> fields in the STE and deal with the abort field.
+>>
+>> In nested mode, only stage 2 is "finalized" as the host does
+>> not own/configure the stage 1 context descriptor; guest does.
+>>
+>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+>>
+>> ---
+>> v10 -> v11:
+>> - Fix an issue reported by Shameer when switching from with vSMMU
+>>   to without vSMMU. Despite the spec does not seem to mention it
+>>   seems to be needed to reset the 2 high 64b when switching from
+>>   S1+S2 cfg to S1 only. Especially dst[3] needs to be reset (S2TTB).
+>>   On some implementations, if the S2TTB is not reset, this causes
+>>   a C_BAD_STE error
+>> ---
+>>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 64 +++++++++++++++++----
+>>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  2 +
+>>  2 files changed, 56 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> index 18ac5af1b284..412ea1bafa50 100644
+>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> @@ -1181,8 +1181,10 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>>  	 * three cases at the moment:
+> Now, it should be *five cases*.
+>>  	 *
+>>  	 * 1. Invalid (all zero) -> bypass/fault (init)
+>> -	 * 2. Bypass/fault -> translation/bypass (attach)
+>> -	 * 3. Translation/bypass -> bypass/fault (detach)
+>> +	 * 2. Bypass/fault -> single stage translation/bypass (attach)
+>> +	 * 3. Single or nested stage Translation/bypass -> bypass/fault (detach)
+>> +	 * 4. S2 -> S1 + S2 (attach_pasid_table)
+> 
+> I was testing this series on one of our hardware board with SMMUv3. And
+> I found while trying to /"//attach_pasid_table//"/,
+> 
+> the sequence of STE (host) config(bit[3:1]) is /"S2->abort->S1 + S2"/.
+> Because the maintenance is  /"Write everything apart///
+> 
+> /from dword 0, sync, write dword 0, sync"/ when we update the STE
+> (guest). Dose the sequence meet your expectation?
 
-The small piece of code was probably intended to test the C++ designated
-initializer, which was not supported until C++20.
+yes it does. I will fix the comments accordingly.
 
-In fact, with -pedantic option given, both GCC and Clang emit a warning.
+Is there anything to correct in the code or was it functional?
 
-$ echo 'class test { public: int test; } test = { .test = 1 };' | g++ -x c++ -pedantic - -fsyntax-only
-<stdin>:1:43: warning: C++ designated initializers only available with '-std=c++2a' or '-std=gnu++2a' [-Wpedantic]
-$ echo 'class test { public: int test; } test = { .test = 1 };' | clang++ -x c++ -pedantic - -fsyntax-only
-<stdin>:1:43: warning: designated initializers are a C++20 extension [-Wc++20-designator]
-class test { public: int test; } test = { .test = 1 };
-                                          ^
-1 warning generated.
+Thanks
 
-Otherwise, modern C++ compilers should be able to build the code, and
-hopefully skipping this test should not make any practical problem.
-
-Checking the existence of plugin-version.h is still needed to ensure
-the plugin-dev package is installed. The test code is now small enough
-to be embedded in scripts/gcc-plugins/Kconfig.
-
-[1] https://lore.kernel.org/lkml/CAHk-=wjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ@mail.gmail.com/
-[2] https://lore.kernel.org/lkml/CAHk-=whK0aQxs6Q5ijJmYF1n2ch8cVFSUzU5yUM_HOjig=+vnw@mail.gmail.com/
-
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- scripts/gcc-plugin.sh       | 19 -------------------
- scripts/gcc-plugins/Kconfig |  2 +-
- 2 files changed, 1 insertion(+), 20 deletions(-)
- delete mode 100755 scripts/gcc-plugin.sh
-
-diff --git a/scripts/gcc-plugin.sh b/scripts/gcc-plugin.sh
-deleted file mode 100755
-index b79fd0bea838..000000000000
---- a/scripts/gcc-plugin.sh
-+++ /dev/null
-@@ -1,19 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--set -e
--
--srctree=$(dirname "$0")
--
--gccplugins_dir=$($* -print-file-name=plugin)
--
--# we need a c++ compiler that supports the designated initializer GNU extension
--$HOSTCC -c -x c++ -std=gnu++98 - -fsyntax-only -I $srctree/gcc-plugins -I $gccplugins_dir/include 2>/dev/null <<EOF
--#include "gcc-common.h"
--class test {
--public:
--	int test;
--} test = {
--	.test = 1
--};
--EOF
-diff --git a/scripts/gcc-plugins/Kconfig b/scripts/gcc-plugins/Kconfig
-index ae19fb0243b9..ab9eb4cbe33a 100644
---- a/scripts/gcc-plugins/Kconfig
-+++ b/scripts/gcc-plugins/Kconfig
-@@ -9,7 +9,7 @@ menuconfig GCC_PLUGINS
- 	bool "GCC plugins"
- 	depends on HAVE_GCC_PLUGINS
- 	depends on CC_IS_GCC
--	depends on $(success,$(srctree)/scripts/gcc-plugin.sh $(CC))
-+	depends on $(success,test -e $(shell,$(CC) -print-file-name=plugin)/include/plugin-version.h)
- 	default y
- 	help
- 	  GCC plugins are loadable modules that provide extra features to the
--- 
-2.27.0
+Eric
+> 
+>> +	 * 5. S1 + S2 -> S2 (detach_pasid_table)
+>>  	 *
+>>  	 * Given that we can't update the STE atomically and the SMMU
+>>  	 * doesn't read the thing in a defined order, that leaves us
+>> @@ -1193,7 +1195,8 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>>  	 * 3. Update Config, sync
+>>  	 */
+>>  	u64 val = le64_to_cpu(dst[0]);
+>> -	bool ste_live = false;
+>> +	bool s1_live = false, s2_live = false, ste_live;
+>> +	bool abort, nested = false, translate = false;
+>>  	struct arm_smmu_device *smmu = NULL;
+>>  	struct arm_smmu_s1_cfg *s1_cfg;
+>>  	struct arm_smmu_s2_cfg *s2_cfg;
+>> @@ -1233,6 +1236,8 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>>  		default:
+>>  			break;
+>>  		}
+>> +		nested = s1_cfg->set && s2_cfg->set;
+>> +		translate = s1_cfg->set || s2_cfg->set;
+>>  	}
+>>  
+>>  	if (val & STRTAB_STE_0_V) {
+>> @@ -1240,23 +1245,36 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>>  		case STRTAB_STE_0_CFG_BYPASS:
+>>  			break;
+>>  		case STRTAB_STE_0_CFG_S1_TRANS:
+>> +			s1_live = true;
+>> +			break;
+>>  		case STRTAB_STE_0_CFG_S2_TRANS:
+>> -			ste_live = true;
+>> +			s2_live = true;
+>> +			break;
+>> +		case STRTAB_STE_0_CFG_NESTED:
+>> +			s1_live = true;
+>> +			s2_live = true;
+>>  			break;
+>>  		case STRTAB_STE_0_CFG_ABORT:
+>> -			BUG_ON(!disable_bypass);
+>>  			break;
+>>  		default:
+>>  			BUG(); /* STE corruption */
+>>  		}
+>>  	}
+>>  
+>> +	ste_live = s1_live || s2_live;
+>> +
+>>  	/* Nuke the existing STE_0 value, as we're going to rewrite it */
+>>  	val = STRTAB_STE_0_V;
+>>  
+>>  	/* Bypass/fault */
+>> -	if (!smmu_domain || !(s1_cfg->set || s2_cfg->set)) {
+>> -		if (!smmu_domain && disable_bypass)
+>> +
+>> +	if (!smmu_domain)
+>> +		abort = disable_bypass;
+>> +	else
+>> +		abort = smmu_domain->abort;
+>> +
+>> +	if (abort || !translate) {
+>> +		if (abort)
+>>  			val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_ABORT);
+>>  		else
+>>  			val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_BYPASS);
+>> @@ -1274,8 +1292,16 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>>  		return;
+>>  	}
+>>  
+>> +	BUG_ON(ste_live && !nested);
+>> +
+>> +	if (ste_live) {
+>> +		/* First invalidate the live STE */
+>> +		dst[0] = cpu_to_le64(STRTAB_STE_0_CFG_ABORT);
+>> +		arm_smmu_sync_ste_for_sid(smmu, sid);
+>> +	}
+>> +
+>>  	if (s1_cfg->set) {
+>> -		BUG_ON(ste_live);
+>> +		BUG_ON(s1_live);
+>>  		dst[1] = cpu_to_le64(
+>>  			 FIELD_PREP(STRTAB_STE_1_S1DSS, STRTAB_STE_1_S1DSS_SSID0) |
+>>  			 FIELD_PREP(STRTAB_STE_1_S1CIR, STRTAB_STE_1_S1C_CACHE_WBRA) |
+>> @@ -1294,7 +1320,14 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>>  	}
+>>  
+>>  	if (s2_cfg->set) {
+>> -		BUG_ON(ste_live);
+>> +		u64 vttbr = s2_cfg->vttbr & STRTAB_STE_3_S2TTB_MASK;
+>> +
+>> +		if (s2_live) {
+>> +			u64 s2ttb = le64_to_cpu(dst[3] & STRTAB_STE_3_S2TTB_MASK);
+>> +
+>> +			BUG_ON(s2ttb != vttbr);
+>> +		}
+>> +
+>>  		dst[2] = cpu_to_le64(
+>>  			 FIELD_PREP(STRTAB_STE_2_S2VMID, s2_cfg->vmid) |
+>>  			 FIELD_PREP(STRTAB_STE_2_VTCR, s2_cfg->vtcr) |
+>> @@ -1304,9 +1337,12 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>>  			 STRTAB_STE_2_S2PTW | STRTAB_STE_2_S2AA64 |
+>>  			 STRTAB_STE_2_S2R);
+>>  
+>> -		dst[3] = cpu_to_le64(s2_cfg->vttbr & STRTAB_STE_3_S2TTB_MASK);
+>> +		dst[3] = cpu_to_le64(vttbr);
+>>  
+>>  		val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_S2_TRANS);
+>> +	} else {
+>> +		dst[2] = 0;
+>> +		dst[3] = 0;
+>>  	}
+>>  
+>>  	if (master->ats_enabled)
+>> @@ -1982,6 +2018,14 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
+>>  		return 0;
+>>  	}
+>>  
+>> +	if (smmu_domain->stage == ARM_SMMU_DOMAIN_NESTED &&
+>> +	    (!(smmu->features & ARM_SMMU_FEAT_TRANS_S1) ||
+>> +	     !(smmu->features & ARM_SMMU_FEAT_TRANS_S2))) {
+>> +		dev_info(smmu_domain->smmu->dev,
+>> +			 "does not implement two stages\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>>  	/* Restrict the stage to what we can actually support */
+>>  	if (!(smmu->features & ARM_SMMU_FEAT_TRANS_S1))
+>>  		smmu_domain->stage = ARM_SMMU_DOMAIN_S2;
+>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>> index 07f59252dd21..269779dee8d1 100644
+>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>> @@ -206,6 +206,7 @@
+>>  #define STRTAB_STE_0_CFG_BYPASS		4
+>>  #define STRTAB_STE_0_CFG_S1_TRANS	5
+>>  #define STRTAB_STE_0_CFG_S2_TRANS	6
+>> +#define STRTAB_STE_0_CFG_NESTED		7
+>>  
+>>  #define STRTAB_STE_0_S1FMT		GENMASK_ULL(5, 4)
+>>  #define STRTAB_STE_0_S1FMT_LINEAR	0
+>> @@ -682,6 +683,7 @@ struct arm_smmu_domain {
+>>  	enum arm_smmu_domain_stage	stage;
+>>  	struct arm_smmu_s1_cfg	s1_cfg;
+>>  	struct arm_smmu_s2_cfg	s2_cfg;
+>> +	bool				abort;
+>>  
+>>  	struct iommu_domain		domain;
+> 
+> Thanks,
+> 
+> Kunkun Jiang
+> 
 
