@@ -2,99 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B6D2CCBD5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E20C2CCBD4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729349AbgLCBuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 20:50:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726597AbgLCBt7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:49:59 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D8AC061A4D;
-        Wed,  2 Dec 2020 17:49:19 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id l1so219052wrb.9;
-        Wed, 02 Dec 2020 17:49:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xOG+3W1/WPBrVFvTxhEtyD+QbD+e1E8wQqqpYfy4mUg=;
-        b=EiDSqHzjFGpIlPpFn3xHJAOJo7xNlSAtFjgI15EvJWzlvIfmm2T0p5GRNrZkBCEpqw
-         Naq5gZ/ZUlGiJt41lKhcCGvfb6d8gBbQti5WhtvEygvYEsGwv09a8iQ0ePqsCs3Tjw26
-         sOkCOaKyS7ITRirZsPFGZBYb61DruXVhTvBZczIKPdEGjriBTKvdaTc4j2G5N2+zjtLG
-         l6uWeQ00vpoNSb3FL8x9bwe36RQgHDkooC/hpCh+6mSQSME1KyTNSXlVs5UIdwhx1UlC
-         svxfHAtX/Ledl0Sibe/KBuOHGQ+wjklH98s9YTU9OM2BUaQaaWPN/XD6M/F57JgG389Q
-         2aQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xOG+3W1/WPBrVFvTxhEtyD+QbD+e1E8wQqqpYfy4mUg=;
-        b=PHp2+Lw/Vb0CKI2N9INj8DFmGH8+wWPst1zUxk7TRsYx3SS0C03NGoMiUebRaGdXmv
-         Ap17L1Z49bCqROiV0Jvtv4FdwCaITilh5s9N5Q/XgK1dkSXI2i/SlEBY2vp6Sd4NmCi4
-         ezn2XserTfQSgbiwWloBJ4+yVNaYv7fJqm3DFhVVIXNCUntlujn8Zm9z7r3WbMWNph2T
-         DNpvNjcdTO+CFEE/4TwBR9icMWPC4ymk+Ol3oIGijwBayWwwSdNub13VXALnQfJQQiQD
-         agXAAmuQm8uPEzGMTU2TY3jE+7b/0jiGIxymKbb0O4WBOYa8YYOhXRuM88JVvAPKw2Xm
-         X+Ew==
-X-Gm-Message-State: AOAM530v8bN8HECNNXWdGRwUQUrArpBtMoNniKv3grvz/VhF4HnyvGI8
-        1Kr6tp3Pr31ouGnefSQOzkdqOutF9zh+4g==
-X-Google-Smtp-Source: ABdhPJz6uId5ZfhwyX5sqWHdqx2kFsKhYip4LqvWbPmerK5pjdt70lX9dXz/hODi1A+5SAGiWNL6Hg==
-X-Received: by 2002:adf:e54f:: with SMTP id z15mr914381wrm.159.1606960157013;
-        Wed, 02 Dec 2020 17:49:17 -0800 (PST)
-Received: from localhost.localdomain (host109-152-100-189.range109-152.btcentralplus.com. [109.152.100.189])
-        by smtp.gmail.com with ESMTPSA id y18sm521496wrr.67.2020.12.02.17.49.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 17:49:16 -0800 (PST)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iov_iter: optimise bvec iov_iter_advance()
-Date:   Thu,  3 Dec 2020 01:45:54 +0000
-Message-Id: <21b78c2f256e513b9eb3f22c7c1f55fc88992600.1606957658.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.24.0
+        id S1729127AbgLCBtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 20:49:49 -0500
+Received: from mga09.intel.com ([134.134.136.24]:38060 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726597AbgLCBtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 20:49:49 -0500
+IronPort-SDR: JHzJMzBSYKitCcum+CpIzw+BLIiRmV3ZzsZ3wRmeC1t8nAB5KK/R5phMYSOS2Ox2n7ytm1jOi+
+ nNlSW3r0aNCg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="173278405"
+X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
+   d="scan'208";a="173278405"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 17:49:08 -0800
+IronPort-SDR: TclsFD5v6L3iYlOeNDxihWRsbzh4AMtDKM+m8UQNrh6DM7MwonI19dtl4qcqXPijZEN62JNTL3
+ RvqAqC+phb+g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
+   d="scan'208";a="550294491"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.50])
+  by orsmga005.jf.intel.com with ESMTP; 02 Dec 2020 17:49:03 -0800
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
+        Rafael Aquini <aquini@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        <linux-api@vger.kernel.org>
+Subject: Re: [PATCH -V6 RESEND 2/3] NOT kernel/man-pages: man2/set_mempolicy.2: Add mode flag MPOL_F_NUMA_BALANCING
+References: <20201202084234.15797-1-ying.huang@intel.com>
+        <20201202084234.15797-3-ying.huang@intel.com>
+        <20201202114357.GW3306@suse.de>
+Date:   Thu, 03 Dec 2020 09:49:02 +0800
+In-Reply-To: <20201202114357.GW3306@suse.de> (Mel Gorman's message of "Wed, 2
+        Dec 2020 11:43:57 +0000")
+Message-ID: <87ft4npskx.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-iov_iter_advance() is heavily used, but implemented through generic
-iteration. As bvecs have a specifically crafted advance() function, i.e.
-bvec_iter_advance(), which is faster and slimmer, use it instead.
+Mel Gorman <mgorman@suse.de> writes:
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- lib/iov_iter.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+> On Wed, Dec 02, 2020 at 04:42:33PM +0800, Huang Ying wrote:
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>> ---
+>>  man2/set_mempolicy.2 | 9 +++++++++
+>>  1 file changed, 9 insertions(+)
+>> 
+>> diff --git a/man2/set_mempolicy.2 b/man2/set_mempolicy.2
+>> index 68011eecb..3754b3e12 100644
+>> --- a/man2/set_mempolicy.2
+>> +++ b/man2/set_mempolicy.2
+>> @@ -113,6 +113,12 @@ A nonempty
+>>  .I nodemask
+>>  specifies node IDs that are relative to the set of
+>>  node IDs allowed by the process's current cpuset.
+>> +.TP
+>> +.BR MPOL_F_NUMA_BALANCING " (since Linux 5.11)"
+>> +Enable the Linux kernel NUMA balancing for the task if it is supported
+>> +by kernel.
+>> +If the flag isn't supported by Linux kernel, return -1 and errno is
+>> +set to EINVAL.
+>>  .PP
+>>  .I nodemask
+>>  points to a bit mask of node IDs that contains up to
+>> @@ -293,6 +299,9 @@ argument specified both
+>
+> Should this be expanded more to clarify it applies to MPOL_BIND
+> specifically?
+>
+> Maybe the first patch should be expanded more and explictly fail if
+> MPOL_F_NUMA_BALANCING is used with anything other than MPOL_BIND?
 
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index 1635111c5bd2..7fbdd9ef3ff0 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -1077,6 +1077,20 @@ void iov_iter_advance(struct iov_iter *i, size_t size)
- 		i->count -= size;
- 		return;
- 	}
-+	if (iov_iter_is_bvec(i)) {
-+		struct bvec_iter bi;
-+
-+		bi.bi_size = i->count;
-+		bi.bi_bvec_done = i->iov_offset;
-+		bi.bi_idx = 0;
-+		bvec_iter_advance(i->bvec, &bi, size);
-+
-+		i->bvec += bi.bi_idx;
-+		i->nr_segs -= bi.bi_idx;
-+		i->count = bi.bi_size;
-+		i->iov_offset = bi.bi_bvec_done;
-+		return;
-+	}
- 	iterate_and_advance(i, size, v, 0, 0, 0)
- }
- EXPORT_SYMBOL(iov_iter_advance);
--- 
-2.24.0
+For MPOL_PREFERRED, why could we not use NUMA balancing to migrate pages
+to the accessing local node if it is same as the preferred node?  We
+have a way to turn off NUMA balancing already, why could we not provide
+a way to enable it if that's intended?
 
+Even for MPOL_INTERLEAVE, if the target node is the same as the
+accessing local node, can we use NUMA balancing to migrate pages?
+
+So, I prefer to make MPOL_F_NUMA_BALANCING to be
+
+  Optimizing with NUMA balancing if possible, and we may add more
+  optimization in the future.
+
+Do you agree?
+
+Best Regards,
+Huang, Ying
+
+>>  .B MPOL_F_STATIC_NODES
+>>  and
+>>  .BR MPOL_F_RELATIVE_NODES .
+>> +Or, the
+>> +.B MPOL_F_NUMA_BALANCING
+>> +isn't supported by the Linux kernel.
+>
+> This will be difficult for an app to distinguish but we can't go back in
+> time and make this ENOSYS :(
+>
+> The linux-api people might have more guidance but it may go to the
+> extent of including a small test program in the manual page for a
+> sequence that tests whether MPOL_F_NUMA_BALANCING works. They might have
+> a better recommendation on how it should be handled.
