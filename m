@@ -2,82 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A314E2CE146
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D99312CE147
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729896AbgLCWBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:01:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47972 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728177AbgLCWBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:01:19 -0500
-Date:   Thu, 3 Dec 2020 23:01:45 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607032838;
-        bh=RLzDfY8Ffi391ghkW+W1ZSP7i+ZLYNZDBPVkz5+1Kx4=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VioPop6Vkd7LJhJxRJOfxVy2GvF/otgGRmpfQMk/zk8bCs53O5tk9geVR2bfOxRSQ
-         GE9UyE6C49MWuusA9Bn1XgosTbbG3WPR0itFmKXG0xeeXMcN5a1Ap+0G9bTfYKPRTb
-         gQOZ3m0TvgA5pHqPvN0odfxS5gy8SCDMT7aCSyh4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     "Winkler, Tomas" <tomas.winkler@intel.com>,
-        "Usyskin, Alexander" <alexander.usyskin@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Wang, Yu1" <yu1.wang@intel.com>,
-        "Liu, Shuo A" <shuo.a.liu@intel.com>,
-        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>
-Subject: Re: [char-misc-next 13/13] mei: virtio: virtualization frontend
- driver
-Message-ID: <X8lgSb9vB6UoJbVB@kroah.com>
-References: <20200818115147.2567012-1-tomas.winkler@intel.com>
- <20200818115147.2567012-14-tomas.winkler@intel.com>
- <20201125160326-mutt-send-email-mst@kernel.org>
- <7f6181d8e80d4efb9464e9ec436800b7@intel.com>
- <20201203164859-mutt-send-email-mst@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203164859-mutt-send-email-mst@kernel.org>
+        id S1729528AbgLCWCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:02:31 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:32875 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726507AbgLCWCb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:02:31 -0500
+Received: from marcel-macbook.holtmann.net (unknown [37.83.193.87])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 81C28CED05;
+        Thu,  3 Dec 2020 23:09:02 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
+Subject: Re: [PATCH v7 0/5] Bluetooth: Add new MGMT interface for advertising
+ add
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20201203201252.807616-1-danielwinkler@google.com>
+Date:   Thu, 3 Dec 2020 23:01:47 +0100
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <772F4D82-B082-416E-BA35-A26E973970CF@holtmann.org>
+References: <20201203201252.807616-1-danielwinkler@google.com>
+To:     Daniel Winkler <danielwinkler@google.com>
+X-Mailer: Apple Mail (2.3654.20.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 04:51:10PM -0500, Michael S. Tsirkin wrote:
-> On Wed, Nov 25, 2020 at 09:18:04PM +0000, Winkler, Tomas wrote:
-> > > 
-> > > On Tue, Aug 18, 2020 at 02:51:47PM +0300, Tomas Winkler wrote:
-> > > > +#ifndef VIRTIO_ID_MEI
-> > > > +#define VIRTIO_ID_MEI 0xFFFE /* virtio mei */ #endif
-> > > 
-> > > Just noticed now that this driver landed upstream.  Can I ask that you guys
-> > > please register IDs with the virtio TC and not just pick a number at random?
-> > > In particular this is way outside allowed range.
-> > > 
-> > > IDs should also be listed in include/uapi/linux/virtio_ids.h
-> > > 
-> > > If people just pick random numbers like this collistions are unavoidable.
-> > > 
-> > > List of IDs is part of virtio spec, chapter "Device Types".
-> > > 
-> > > Please do this change now before this goes out to production!
-> > Okay,  this was assigned by ACRN, my impression was it's already registered.
-> > Will take care of.
-> > Thanks
-> > Tomas
-> 
-> Well nothing happened yet.
-> 
-> I think at this point we really should revert this patch before Linux is
-> released so in the next version the correct ID can be used instead of a reserved one.
-> Otherwise Linux will be stuck supporting this forever and will conflict
-> with hypervisors using this for what this range is for which is
-> experimental use.
-> 
-> Greg, any opinion on that?
+Hi Daniel,
 
-I will be glad to revert it, what's the git commit id?
+> This patch series defines the new two-call MGMT interface for adding
+> new advertising instances. Similarly to the hci advertising commands, a
+> mgmt call to set parameters is expected to be first, followed by a mgmt
+> call to set advertising data/scan response. The members of the
+> parameters request are optional; the caller defines a "params" bitfield
+> in the structure that indicates which parameters were intentionally set,
+> and others are set to defaults.
+> 
+> The main feature here is the introduction of min/max parameters and tx
+> power that can be requested by the client. Min/max parameters will be
+> used both with and without extended advertising support, and tx power
+> will be used with extended advertising support. After a call to set
+> advertising parameters, the selected transmission power will be
+> propagated in the reponse to alert userspace to the actual power used.
+> 
+> Additionally, to inform userspace of the controller LE Tx power
+> capabilities for the client's benefit, this series also changes the
+> security info MGMT command to more flexibly contain other capabilities,
+> such as LE min and max tx power.
+> 
+> All changes have been tested on hatch (extended advertising) and kukui
+> (no extended advertising) chromebooks with manual testing verifying
+> correctness of parameters/data in btmon traces, and our automated test
+> suite of 25 single- and multi-advertising usage scenarios.
+> 
+> A separate patch series will add support in bluetoothd. Thanks in
+> advance for your feedback!
+> 
+> Daniel Winkler
+> 
+> 
+> Changes in v7:
+> - Rebase onto bluetooth-next/master
+> 
+> Changes in v6:
+> - Only populate LE tx power range if controller reports it
+> 
+> Changes in v5:
+> - Ensure data/scan rsp length is returned for non-ext adv
+> 
+> Changes in v4:
+> - Add remaining data and scan response length to MGMT params response
+> - Moving optional params into 'flags' field of MGMT command
+> - Combine LE tx range into a single EIR field for MGMT capabilities cmd
+> 
+> Changes in v3:
+> - Adding selected tx power to adv params mgmt response, removing event
+> - Re-using security info MGMT command to carry controller capabilities
+> 
+> Changes in v2:
+> - Fixed sparse error in Capabilities MGMT command
+> 
+> Daniel Winkler (5):
+>  Bluetooth: Add helper to set adv data
+>  Bluetooth: Break add adv into two mgmt commands
+>  Bluetooth: Use intervals and tx power from mgmt cmds
+>  Bluetooth: Query LE tx power on startup
+>  Bluetooth: Change MGMT security info CMD to be more generic
+> 
+> include/net/bluetooth/hci.h      |   7 +
+> include/net/bluetooth/hci_core.h |  12 +-
+> include/net/bluetooth/mgmt.h     |  49 +++-
+> net/bluetooth/hci_core.c         |  47 +++-
+> net/bluetooth/hci_event.c        |  19 ++
+> net/bluetooth/hci_request.c      |  29 ++-
+> net/bluetooth/mgmt.c             | 430 +++++++++++++++++++++++++++++--
+> 7 files changed, 548 insertions(+), 45 deletions(-)
 
-thanks,
+all 5 patches have been applied to bluetooth-next tree.
 
-greg k-h
+Regards
+
+Marcel
+
