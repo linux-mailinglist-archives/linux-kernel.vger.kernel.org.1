@@ -2,107 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4E62CD5AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:42:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4EC52CD5B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388952AbgLCMmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 07:42:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51706 "EHLO
+        id S1728493AbgLCMp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 07:45:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387998AbgLCMmf (ORCPT
+        with ESMTP id S1726390AbgLCMp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 07:42:35 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 952C5C061A4F;
-        Thu,  3 Dec 2020 04:41:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rcY1pTuzOztjgznyvJvtInjHpKkyW5kZe8ZvS4Mqiwo=; b=swl2bpoKojQhZhwjiyg7JMJngF
-        PncZValpmxIZQ5xpwjLKsGr0/y+u9btEM6ialPYA4ySFjOnc2EFkyShoIbXs+72+STp1uSCPd99Co
-        3hqjrdIjGLjqTfn52CmR/Prx8W9yE3Fi48MNrfs33S5tnBXwRzx3gyUjtwqewh85PEEu1Rd58yYA/
-        rF+6EPe3SjSPlm6/7838UQKrxW9lT89DmrX2U0AwxwtwokPBGfgBaASdCbr6M7DYmsu8K5O10me0s
-        hCMZrmo7Lhavv4GYAhJjzvOin3ChO5vv5TL15oT7cf8dRjwUnjbagMLgk67vtssawBdTpJiQu89in
-        drfBZOZA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kknvb-0004Vz-IS; Thu, 03 Dec 2020 12:41:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 80A23300DAE;
-        Thu,  3 Dec 2020 13:41:41 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6A194223615CE; Thu,  3 Dec 2020 13:41:41 +0100 (CET)
-Date:   Thu, 3 Dec 2020 13:41:41 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Doug Smythies <dsmythies@telus.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>
-Subject: Re: [RFC][PATCH 1/2] cpufreq: Add special-purpose fast-switching
- callback for drivers
-Message-ID: <20201203124141.GP3021@hirez.programming.kicks-ass.net>
-References: <1817571.2o5Kk4Ohv2@kreacher>
- <2174134.tL5yAn4CWt@kreacher>
+        Thu, 3 Dec 2020 07:45:56 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10894C061A4E;
+        Thu,  3 Dec 2020 04:45:16 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a16so3266792ejj.5;
+        Thu, 03 Dec 2020 04:45:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ua2t1e5AwG+8Whsthixj6dJL63Xm4ciJTr6SvcxO+VE=;
+        b=tq2HpIvz2T+iWc6SwIgX+ENFuDhiFtTYbk1yehIivW7DytCmof17H6VHIka+KLA3AI
+         hW6IAv1IoRTRnvgvEuwkrGK93nXkgpjGFG9KDiuVaa1ykchQVY7lXdJN1qXvsWVE754/
+         oGfeB6r4/m1cWR1opvyYhCq2uNKQOFQNiDNAHGcZX0AqTNQ+jz5fH7vFiY3cD68nbfdJ
+         85F31GLzFNMpfX1GndGkLRybPGpzeryLwwvFA1/+NnUL6hqt8yytb3I8tIteyZUIwSFH
+         xyw+/WEccXkRFjtHEHHDArQtsjrcjaKZQ2LX5VggubhCh9KzCd+8e3bLQ97fA1E9Tdmr
+         aa9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ua2t1e5AwG+8Whsthixj6dJL63Xm4ciJTr6SvcxO+VE=;
+        b=Ef4zzI3wE6d75FUGiskrulBTBVVhPdpWZirOOrPRKMnZFbTtsUudVpwxvT7t0TDYZ2
+         GmM4kPTqux/vNBIdQAbaZOJMhC+fSvqHXhejmaGi98JuhiKtT/mTAxVjuM8WBJnAo9AF
+         cpLW/adwX2ZtPgdCQABzFu8oxd34jrHLPS6uCM67jfnuBxFKuBmnDL5dinFTwUW27iy5
+         eclKaO3i9G1VgcJX0K1xp9YS7lYUZc4GjmYF2PTpDhIBjWJGZFbH3/vxwrMGk3t5pzSr
+         jhGiRTYP+vFqSHojssyuBfYvNePxe9qJ5i95Wrq+Zmyx3hP14ujmTGEO++jMKk7MGhTD
+         r4gg==
+X-Gm-Message-State: AOAM532e9fWfaptlLLEedHmHHLxH1Tshh5mgVaqZrgXdsUosh8AtD0Vc
+        HUGe6wCxnNXucJnVFBjHgK0RNlxzEOCTX9iH8Bg=
+X-Google-Smtp-Source: ABdhPJxHFFCie/ax3UXHBk55fHUvmgnSPhYP3vdgsahjV/nwul6L+/1gWEvPCEQS31CLYyzZFiot/wacnqM7w4SbgJs=
+X-Received: by 2002:a17:906:d8a1:: with SMTP id qc1mr2278901ejb.294.1606999514839;
+ Thu, 03 Dec 2020 04:45:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2174134.tL5yAn4CWt@kreacher>
+References: <00000000000056f29e05b58d448f@google.com> <20201203122354.GI751215@kernel.org>
+In-Reply-To: <20201203122354.GI751215@kernel.org>
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+Date:   Thu, 3 Dec 2020 12:45:03 +0000
+Message-ID: <CAA5enKZ23Fy3KsHbR3cOxRm6+=JLfU3Lko+JFn7DKM951B_mMQ@mail.gmail.com>
+Subject: Re: linux-next boot error: kernel BUG at include/linux/page-flags.h:LINE!
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     syzbot <syzbot+86800a8349c0f3f9466e@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 07:37:01PM +0100, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> First off, some cpufreq drivers (eg. intel_pstate) can pass hints
-> beyond the current target frequency to the hardware and there are no
+On Thu, 3 Dec 2020 at 12:24, Mike Rapoport <rppt@kernel.org> wrote:
+> Yeah, the change to initialization of "unavailable" memory missed pfn 0 :(
+> This should fix it:
 
-Everything CPPC, which is quite a bit these days.
-
-
-> +	/*
-> +	 * ->fast_switch() replacement for drivers that use an internal
-> +	 * representation of performance levels and can pass hints other than
-> +	 * the target performance level to the hardware.
-> +	 */
-> +	void		(*adjust_perf)(unsigned int cpu, bool busy,
-> +				       unsigned long min_perf,
-> +				       unsigned long target_perf,
-> +				       unsigned long capacity);
->  
-
-I'm not sure @busy makes sense, that's more a hack because @util had a
-dip and should remain inside schedutil.
-
-
-> @@ -454,6 +455,25 @@ static void sugov_update_single(struct u
->  	util = sugov_get_util(sg_cpu);
->  	max = sg_cpu->max;
->  	util = sugov_iowait_apply(sg_cpu, time, util, max);
-> +
-> +	/*
-> +	 * This code runs under rq->lock for the target CPU, so it won't run
-> +	 * concurrently on two different CPUs for the same target and it is not
-> +	 * necessary to acquire the lock in the fast switch case.
-> +	 */
-> +	if (sg_policy->direct_fast_switch) {
-> +		/*
-> +		 * In this case, any optimizations that can be done are up to
-> +		 * the driver.
-> +		 */
-> +		cpufreq_driver_adjust_perf(sg_cpu->cpu,
-> +					   sugov_cpu_is_busy(sg_cpu),
-> +					   map_util_perf(sg_cpu->bw_dl),
-> +					   map_util_perf(util), max);
-> +		sg_policy->last_freq_update_time = time;
-> +		return;
-> +	}
-
-Instead of adding more branches, would it makes sense to simply set a
-whole different util_hook in this case?
+Tried locally and it fixes the issue for me :)
