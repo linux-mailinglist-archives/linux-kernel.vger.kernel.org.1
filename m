@@ -2,130 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 152F32CD1F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE572CD284
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730064AbgLCI6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:58:36 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33520 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728037AbgLCI6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:58:34 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx73+LqMhf01sZAA--.41290S4;
-        Thu, 03 Dec 2020 16:57:49 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] MIPS: Add fix_range_node after parse "mem=" parameter
-Date:   Thu,  3 Dec 2020 16:57:47 +0800
-Message-Id: <1606985867-9791-3-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1606985867-9791-1-git-send-email-hejinyang@loongson.cn>
-References: <1606985867-9791-1-git-send-email-hejinyang@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx73+LqMhf01sZAA--.41290S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZrW5Zr1rWr1kXr18AryDAwb_yoW5Wry3pa
-        9rAas5Gr4DWFn7Za4ft348urWrAws5KFWfuay7Cr95Z3ZIqr9rJr4SqF15Zr1jqrWrK3WF
-        vF10g3y29a12kaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBYb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF
-        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcV
-        CY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv
-        6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c
-        02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE
-        4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r43MxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
-        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUY8sqtUUUUU==
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S2388612AbgLCJ0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:26:49 -0500
+Received: from smtp.h3c.com ([60.191.123.56]:56828 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387479AbgLCJ0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 04:26:49 -0500
+Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
+        by h3cspam01-ex.h3c.com with ESMTP id 0B3843Bn067998
+        for <linux-kernel@vger.kernel.org>; Thu, 3 Dec 2020 16:04:03 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam01-ex.h3c.com with ESMTP id 0B381uaN052213;
+        Thu, 3 Dec 2020 16:01:56 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 3 Dec 2020 16:01:58 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>
+CC:     <linux-kernel@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] sched/rt: Print curr when RT throttling activated
+Date:   Thu, 3 Dec 2020 15:51:29 +0800
+Message-ID: <20201203075129.17902-1-tian.xianting@h3c.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 0B381uaN052213
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This problem may only occur on NUMA platforms. When machine start
-with the "mem=" parameter on Loongson64, it cannot boot. When parsing the
-"mem=" parameter, first all the RAM was removed, and then the memory was
-not added by memblock_add_node(), which caused the newly added memory to
-be on MAX_NUMNODES. The key to solve this problem is to fix these memory
-nodes through memblock_set_node() before bootmem_init() or earlier. So
-it would be better to fix it before check_kernel_sections_mem().
-The check_kernel_sections_mem() will check whether the current RAM can be
-used by the kernel. If this fix is added after that, it will do a redundant
-memblock_add operation. Adding the fixup_region_node() function can also
-provide a reference for future platforms using NUMA when encountering
-such problems.
+We may meet the issue, that one RT thread occupied the cpu by 950ms/1s,
+The RT thread maybe is a business thread or other unknown thread.
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+Currently, it only outputs the print "sched: RT throttling activated"
+when RT throttling happen. It is hard to know what is the RT thread,
+For further analysis, we need add more prints.
+
+This patch is to print current RT task when RT throttling activated,
+It help us to know what is the RT thread in the first time.
+
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
 ---
- arch/mips/include/asm/bootinfo.h |  1 +
- arch/mips/kernel/setup.c         |  6 +++++-
- arch/mips/loongson64/numa.c      | 11 +++++++++++
- 3 files changed, 17 insertions(+), 1 deletion(-)
+ kernel/sched/rt.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
-index aa03b12..ddc17b1 100644
---- a/arch/mips/include/asm/bootinfo.h
-+++ b/arch/mips/include/asm/bootinfo.h
-@@ -91,6 +91,7 @@ const char *get_system_type(void);
- extern unsigned long mips_machtype;
- 
- extern void detect_memory_region(phys_addr_t start, phys_addr_t sz_min,  phys_addr_t sz_max);
-+extern void fixup_region_node(void);
- 
- extern void prom_init(void);
- extern void prom_free_prom_memory(void);
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index b3a711e..fe93882 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -110,6 +110,8 @@ void __init detect_memory_region(phys_addr_t start, phys_addr_t sz_min, phys_add
- 	memblock_add(start, size);
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index f215eea6a..8913f38cb 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -946,7 +946,7 @@ static inline int rt_se_prio(struct sched_rt_entity *rt_se)
+ 	return rt_task_of(rt_se)->prio;
  }
  
-+void __weak fixup_region_node(void) {}
-+
- /*
-  * Manage initrd
-  */
-@@ -631,8 +633,10 @@ static void __init arch_mem_init(char **cmdline_p)
- 
- 	parse_early_param();
- 
--	if (usermem)
-+	if (usermem) {
- 		pr_info("User-defined physical RAM map overwrite\n");
-+		fixup_region_node();
-+	}
- 
- 	check_kernel_sections_mem();
- 
-diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-index c6f0c48..d8661cc 100644
---- a/arch/mips/loongson64/numa.c
-+++ b/arch/mips/loongson64/numa.c
-@@ -220,6 +220,17 @@ void __init mem_init(void)
- 	mem_init_print_info(NULL);
- }
- 
-+void __init fixup_region_node(void)
-+{
-+	phys_addr_t start, end;
-+	u64 i;
-+
-+	for_each_mem_range(i, &start, &end) {
-+		memblock_set_node(start, end - start,
-+				  &memblock.memory, pa_to_nid(start));
-+	}
-+}
-+
- /* All PCI device belongs to logical Node-0 */
- int pcibus_to_node(struct pci_bus *bus)
+-static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
++static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq, struct task_struct *curr)
  {
+ 	u64 runtime = sched_rt_runtime(rt_rq);
+ 
+@@ -970,7 +970,8 @@ static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
+ 		 */
+ 		if (likely(rt_b->rt_runtime)) {
+ 			rt_rq->rt_throttled = 1;
+-			printk_deferred_once("sched: RT throttling activated\n");
++			printk_deferred_once("sched: RT throttling activated (curr: pid %d, comm %s)\n",
++						curr->pid, curr->comm);
+ 		} else {
+ 			/*
+ 			 * In case we did anyway, make it go away,
+@@ -1026,7 +1027,7 @@ static void update_curr_rt(struct rq *rq)
+ 		if (sched_rt_runtime(rt_rq) != RUNTIME_INF) {
+ 			raw_spin_lock(&rt_rq->rt_runtime_lock);
+ 			rt_rq->rt_time += delta_exec;
+-			if (sched_rt_runtime_exceeded(rt_rq))
++			if (sched_rt_runtime_exceeded(rt_rq, curr))
+ 				resched_curr(rq);
+ 			raw_spin_unlock(&rt_rq->rt_runtime_lock);
+ 		}
 -- 
-2.1.0
+2.17.1
 
