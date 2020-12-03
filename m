@@ -2,194 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB9E2CD2D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B77572CD2D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730154AbgLCJsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:48:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39405 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728903AbgLCJsl (ORCPT
+        id S1730144AbgLCJsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:48:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729998AbgLCJsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:48:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606988834;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nmv2c/m904JsV4MmCRDhQqX5isjeRuAKPuEeYSe68E0=;
-        b=IP4lfzCn/FIkfBTJveoL8aMYxEI6kI4IsXEasM/zJGyjKdA8ziU0crm4jHJqBnVRBNH8wK
-        1qFtNfchbjDM6GTLpf7yihn6TLD6iLK3IEaMPiQ8b6AWwPVRtq1Ol5yU+GVkOFbUHz/Fix
-        B77es6hZmOqAq9/bNaEtty6hux60p0Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-QzVy-pg6OUCfjbpkjQUCRA-1; Thu, 03 Dec 2020 04:47:10 -0500
-X-MC-Unique: QzVy-pg6OUCfjbpkjQUCRA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D1A128042C6;
-        Thu,  3 Dec 2020 09:47:07 +0000 (UTC)
-Received: from [10.36.113.250] (ovpn-113-250.ams2.redhat.com [10.36.113.250])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CF75A189C4;
-        Thu,  3 Dec 2020 09:47:03 +0000 (UTC)
-Subject: Re: [PATCH v2 2/4] mm: introduce cma_alloc_bulk API
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, hyesoo.yu@samsung.com,
-        willy@infradead.org, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
-        surenb@google.com, pullip.cho@samsung.com, joaodias@google.com,
-        hridya@google.com, sumit.semwal@linaro.org, john.stultz@linaro.org,
-        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org,
-        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org
-References: <20201201175144.3996569-1-minchan@kernel.org>
- <20201201175144.3996569-3-minchan@kernel.org>
- <8f006a4a-c21d-9db3-5493-fb1cc651b0cf@redhat.com>
- <20201202154915.GU17338@dhcp22.suse.cz> <X8e9tSwcsrEsAv1O@google.com>
- <20201202164834.GV17338@dhcp22.suse.cz> <X8fU1ddmsSfuV6sD@google.com>
- <20201202185107.GW17338@dhcp22.suse.cz> <X8fqU82GXmu57f7V@google.com>
- <f0e980cb-cc74-82e8-6ccf-09030a96103a@redhat.com>
- <20201203082810.GX17338@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <c5209dce-dc30-6d8d-e8f8-c5412b072310@redhat.com>
-Date:   Thu, 3 Dec 2020 10:47:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 3 Dec 2020 04:48:01 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81E3C061A4D;
+        Thu,  3 Dec 2020 01:47:20 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id u12so1211419wrt.0;
+        Thu, 03 Dec 2020 01:47:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dK0NRUVlAwcsui5gjsw4Jx8irBvWKCUPKqEJTVl5wOo=;
+        b=l1lrmNDPTiMcqF3XHdUmkuFymB7t/+6GhZaptCheNCB/E4tKzI98WHPUd86C9vCKzO
+         0jifMY7QINRUs335PhOcNWgbNcLxVDUYdEHWbOeXm4okWFIAGliMxV+yp1lIVv+s4Wn/
+         lHQWanmUgmORQ5HoQKKzzlaeIN7uZTRWOOMwzKEpxMowjf818GD1syz36VOtU1vLOhcE
+         xUkQ24LiJbqp0Xb4tou4Uc8AezF1LTVGcuKYEla3wc6VaNu41JRVv8aIm45ckulHwEGB
+         jmm0EQQY3UcqNpsgyYUbnaYhAXSjyXufY6WqyEIKwH+J9gGgqlRGcTsd/iGkF7lEQiRs
+         dqfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dK0NRUVlAwcsui5gjsw4Jx8irBvWKCUPKqEJTVl5wOo=;
+        b=HC5YkAGjdbx79uGmiSun+LiZqrTRn0S/D/5LBzSW9ICEWT7GXK08hYx54vnjZd4Tnm
+         DQDZaNu3AW1jIT1u4YOk63i6YqzGO+vRG3oUHvepO4mFQHoWNUr0IQfKOQA/L7xMtkHI
+         rUVNWXig6Ds5XCarMiOgAVBP6bjR2KW4AtoHrZCyYUnPa01gb3a1rN/GUCHDRzyXUXeu
+         wweol1FMndQKBL5ZzIdquoocIq7Yc7tYL/U8c+1JIA/sjoDmqfhE6ytHWDvH6svbsJTJ
+         TvduYz2WTpm4VEaKpvDxASmrD92lmpqi7Zses0iXGWMicjw4KNyeqeJkoZEvLleJIQJd
+         dSbw==
+X-Gm-Message-State: AOAM533zpmvbiEpEWDzhXLt7QlFpsfBsW0iE8YhhTkS9X7zSbX1hOc7B
+        9W99pCizmUl5advZkV1ERUeTst9YNEnNBMHtD8s=
+X-Google-Smtp-Source: ABdhPJxjznigo6gl5tQEWfaCO9AliUqwf5NewBcU5kIKVjbpla8ZRtAOVQ8gb+vd0AekhlHCFDcqfCeBv/7Mdy7/npQ=
+X-Received: by 2002:adf:f602:: with SMTP id t2mr2797924wrp.40.1606988839446;
+ Thu, 03 Dec 2020 01:47:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201203082810.GX17338@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
+ <20201202094717.GX4077@smile.fi.intel.com> <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
+ <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
+ <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
+ <CAM7-yPRBPP6SFzdmwWF5Y99g+aWcp=OY9Uvp-5h1MSDPmsORNw@mail.gmail.com>
+ <CAAH8bW-+XnNsd9p3xZ1utmyY24gaBa0ko4tngBii4T+2cMkcYg@mail.gmail.com>
+ <CAM7-yPQCWj6rOyLEgOqF3HGkFV1WKtqyVhEtDbS3HW=2A-HuBA@mail.gmail.com>
+ <CAM7-yPTtiVnUztE=xpNYgRcZTGd1aX_V9ZHd=2YZYc1uQNBXtw@mail.gmail.com> <a0cc0d2e-9c55-8546-f070-26feed5de37f@rasmusvillemoes.dk>
+In-Reply-To: <a0cc0d2e-9c55-8546-f070-26feed5de37f@rasmusvillemoes.dk>
+From:   Yun Levi <ppbuk5246@gmail.com>
+Date:   Thu, 3 Dec 2020 18:47:06 +0900
+Message-ID: <CAM7-yPQrvYUwX-cbgpzhomCTFEi9sQ9iGuLNcL-Fsj7XZ0knhw@mail.gmail.com>
+Subject: Re:
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Yury Norov <yury.norov@gmail.com>, dushistov@mail.ru,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
+        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.12.20 09:28, Michal Hocko wrote:
-> On Wed 02-12-20 21:22:36, David Hildenbrand wrote:
->> On 02.12.20 20:26, Minchan Kim wrote:
->>> On Wed, Dec 02, 2020 at 07:51:07PM +0100, Michal Hocko wrote:
-> [...]
->>>> I am still not sure a specific flag is a good interface. Really can this
->>>> be gfp_mask instead?
->>>
->>> I am not strong(even, I did it with GFP_NORETRY) but David wanted to
->>> have special mode and I agreed when he mentioned ALLOC_CONTIG_HARD as
->>> one of options in future(it would be hard to indicate that mode with
->>> gfp flags).
->>
->> I can't tell regarding the CMA interface, but for the alloc_contig()
->> interface I think modes make sense. Yes, it's different to other
->> allocaters, but the contig range allocater is different already. E.g.,
->> the CMA allocater mostly hides "which exact PFNs you try to allocate".
-> 
-> Yes, alloc_contig_range is a low level API but it already has a gfp_mask
-> parameter. Adding yet another allocation mode sounds like API
-> convolution to me.
+> If one uses UINT_MAX, a for_each_bit_reverse() macro would just be
+> something like
+>
+> for (i = find_last_bit(bitmap, size); i < size; i =
+> find_last_bit(bitmap, i))
+>
+> if one wants to use the size argument as the sentinel, the caller would
+> have to supply a scratch variable to keep track of the last i value:
+>
+> for (j = size, i = find_last_bit(bitmap, j); i < j; j = i, i =
+> find_last_bit(bitmap, j))
+>
+> which is probably a little less ergonomic.
 
-Well, if another parameter is a concern, we can introduce
+Actually Because I want to avoid the modification of return type of
+find_last_*_bit for new sentinel,
+I add find_prev_*_bit.
+the big difference between find_last_bit and find_prev_bit is
+   find_last_bit doesn't check the size bit and use sentinel with size.
+   but find_prev_bit check the offset bit and use sentinel with size
+which passed by another argument.
+   So if we use find_prev_bit, we could have a clear iteration if
+using find_prev_bit like.
 
-alloc_contig_range_fast()
+  #define for_each_set_bit_reverse(bit, addr, size) \
+      for ((bit) = find_last_bit((addr), (size));    \
+            (bit) < (size);                                     \
+            (bit) = find_prev_bit((addr), (size), (bit - 1)))
 
-instead.
+  #define for_each_set_bit_from_reverse(bit, addr, size) \
+      for ((bit) = find_prev_bit((addr), (size), (bit)); \
+             (bit) < (size);                                           \
+             (bit) = find_prev_bit((addr), (size), (bit - 1)))
 
-> 
->> In the contig range allocater, gfp flags are currently used to express
->> how to allocate pages used as migration targets. I don't think mangling
->> in other gfp flags (or even overloading them) makes things a lot
->> clearer. E.g., GFP_NORETRY: don't retry to allocate migration targets?
->> don't retry to migrate pages? both?
->>
->> As I said, other aspects might be harder to model (e.g., don't drain
->> LRU) and hiding them behind generic gfp flags (e.g., GFP_NORETRY) feels
->> wrong.
->>
->> With the mode, we're expressing details for the necessary page
->> migration. Suggestions on how to model that are welcome.
-> 
-> The question is whether the caller should really have such an intimate
-> knowledge and control of the alloc_contig_range implementation. This all
-> are implementation details. Should really anybody think about how many
-> times migration retries or control LRU draining? Those can change in the
+Though find_prev_*_bit / find_last_*_bit have the same functionality.
+But they also have a small difference.
+I think this small this small difference doesn't make some of
+confusion to user but it help to solve problem
+with a simple way (just like the iteration above).
 
-The question is not "how many times", rather "if at all". I can
-understand the possible performance improvements by letting the caller
-handle things (lru draining, pcp draining) like that when issuing
-gazillions of alloc_contig_range() calls.
+So I think I need, find_prev_*_bit series.
 
-> future and I do not think we really want to go over all users grown over
-> that time and try to deduce what was the intention behind.
+Am I missing anything?
 
-That's why I think we need a clear mechanism to express the expected
-behavior - something we can properly document and users can actually
-understand to optimize for - and we can fix them up when the documented
-behavior changes. Mangling this into somewhat-fitting gfp flags makes
-the interface harder to use and more error-prone IMHO.
+Thanks.
 
-> 
-> I think we should aim at easy and very highlevel behavior:
-> - GFP_NOWAIT - unsupported currently IIRC but something that something
->   that should be possible to implement. Isolation is non blocking,
->   migration could be skipped
-> - GFP_KERNEL - default behavior whatever that means
-> - GFP_NORETRY - opportunistic allocation as lightweight as we can get.
->   Failures to be expected also for transient reasons.
-> - GFP_RETRY_MAYFAIL - try hard but not as hard as to trigger disruption
->   (e.g. via oom killer).
+Levi.
 
-I think we currently see demand for 3 modes for alloc_contig_range()
-
-a) normal
-
-As is. Try, but don't try too hard. E.g., drain LRU, drain PCP, retry a
-couple of times. Failures in some cases (short-term pinning, PCP races)
-are still possible and acceptable.
-
-GFP_RETRY_MAYFAIL ?
-
-E.g., "Allocations with this flag may fail, but only when there is
-genuinely little unused memory." - current description does not match at
-all. When allocating ranges things behave completely different.
-
-
-b) fast
-
-Try, but fail fast. Leave optimizations that can improve the result to
-the caller. E.g., don't drain LRU, don't drain PCP, don't retry.
-Frequent failures are expected and acceptable.
-
-__GFP_NORETRY ?
-
-E.g., "The VM implementation will try only very lightweight memory
-direct reclaim to get some memory under memory pressure" - again, I
-think current description does not really match.
-
-
-c) hard
-
-Try hard, E.g., temporarily disabling the PCP. Certainly not
-__GFP_NOFAIL, that would be highly dangerous. So no flags / GFP_KERNEL?
-
-> 
-> - __GFP_THIS_NODE - stick to a node without fallback
-> - we can support zone modifiers although there is no existing user.
-> - __GFP_NOWARN - obvious
-> 
-> And that is it. Or maybe I am seeing that oversimplified.
-> 
-
-Again, I think most flags make sense for the migration target allocation
- path and mainly deal with OOM situations and reclaim. For the migration
-path - which is specific to the alloc_contig_range() allocater - they
-don't really apply and create more confusion than they actually help - IMHO.
-
--- 
-Thanks,
-
-David / dhildenb
-
+On Thu, Dec 3, 2020 at 5:33 PM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> On 03/12/2020 02.23, Yun Levi wrote:
+> > On Thu, Dec 3, 2020 at 7:51 AM Yun Levi <ppbuk5246@gmail.com> wrote:
+> >>
+> >> On Thu, Dec 3, 2020 at 6:26 AM Yury Norov <yury.norov@gmail.com> wrote:
+> >>>
+> >>> On Wed, Dec 2, 2020 at 10:22 AM Yun Levi <ppbuk5246@gmail.com> wrote:
+> >>>>
+> >>>> On Thu, Dec 3, 2020 at 2:26 AM Yury Norov <yury.norov@gmail.com> wrote:
+> >>>>
+> >>>>> Also look at lib/find_bit_benchmark.c
+> >>>> Thanks. I'll see.
+> >>>>
+> >>>>> We need find_next_*_bit() because find_first_*_bit() can start searching only at word-aligned
+> >>>>> bits. In the case of find_last_*_bit(), we can start at any bit. So, if my understanding is correct,
+> >>>>> for the purpose of reverse traversing we can go with already existing find_last_bit(),
+> >>>>
+> >>>> Thank you. I haven't thought that way.
+> >>>> But I think if we implement reverse traversing using find_last_bit(),
+> >>>> we have a problem.
+> >>>> Suppose the last bit 0, 1, 2, is set.
+> >>>> If we start
+> >>>>     find_last_bit(bitmap, 3) ==> return 2;
+> >>>>     find_last_bit(bitmap, 2) ==> return 1;
+> >>>>     find_last_bit(bitmap, 1) ==> return 0;
+> >>>>     find_last_bit(bitmap, 0) ===> return 0? // here we couldn't
+>
+> Either just make the return type of all find_prev/find_last be signed
+> int and use -1 as the sentinel to indicate "no such position exists", so
+> the loop condition would be foo >= 0. Or, change the condition from
+> "stop if we get the size returned" to "only continue if we get something
+> strictly less than the size we passed in (i.e., something which can
+> possibly be a valid bit index). In the latter case, both (unsigned)-1
+> aka UINT_MAX and the actual size value passed work equally well as a
+> sentinel.
+>
+> If one uses UINT_MAX, a for_each_bit_reverse() macro would just be
+> something like
+>
+> for (i = find_last_bit(bitmap, size); i < size; i =
+> find_last_bit(bitmap, i))
+>
+> if one wants to use the size argument as the sentinel, the caller would
+> have to supply a scratch variable to keep track of the last i value:
+>
+> for (j = size, i = find_last_bit(bitmap, j); i < j; j = i, i =
+> find_last_bit(bitmap, j))
+>
+> which is probably a little less ergonomic.
+>
+> Rasmus
