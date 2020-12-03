@@ -2,29 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE6D2CE274
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006DE2CE27B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387519AbgLCXOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:14:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36126 "EHLO mail.kernel.org"
+        id S1731166AbgLCXOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:14:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgLCXOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:14:00 -0500
+        id S1727848AbgLCXOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 18:14:33 -0500
 From:   Arnd Bergmann <arnd@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Boris Pismenny <borisp@nvidia.com>,
-        Denis Efremov <efremov@linux.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx5e: fix non-IPV6 build
-Date:   Fri,  4 Dec 2020 00:12:59 +0100
-Message-Id: <20201203231314.1483198-1-arnd@kernel.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Tanmay Shah <tanmay@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm: add IOMMU_SUPPORT dependency
+Date:   Fri,  4 Dec 2020 00:13:38 +0100
+Message-Id: <20201203231346.1483460-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -34,43 +37,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When IPv6 is disabled, the flow steering code causes a build failure:
+The iommu pgtable support is only available when IOMMU support
+is built into the kernel:
 
-drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c:55:14: error: no member named 'skc_v6_daddr' in 'struct sock_common'; did you mean 'skc_daddr'?
-               &sk->sk_v6_daddr, 16);
-                    ^
-include/net/sock.h:380:34: note: expanded from macro 'sk_v6_daddr'
- #define sk_v6_daddr             __sk_common.skc_v6_daddr
+WARNING: unmet direct dependencies detected for IOMMU_IO_PGTABLE
+  Depends on [n]: IOMMU_SUPPORT [=n]
+  Selected by [y]:
+  - DRM_MSM [=y] && HAS_IOMEM [=y] && DRM [=y] && (ARCH_QCOM [=y] || SOC_IMX5 || ARM && COMPILE_TEST [=y]) && OF [=y] && COMMON_CLK [=y] && MMU [=y] && (QCOM_OCMEM [=y] || QCOM_OCMEM [=y]=n)
 
-Hide the newly added function in an #ifdef that matches its callers
-and the struct member definition.
+Fix the dependency accordingly. There is no need for depending on
+CONFIG_MMU any more, as that is implied by the iommu support.
 
-Fixes: 5229a96e59ec ("net/mlx5e: Accel, Expose flow steering API for rules add/del")
+Fixes: b145c6e65eb0 ("drm/msm: Add support to create a local pagetable")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/msm/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
-index 97f1594cee11..e51f60b55daa 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
-@@ -44,6 +44,7 @@ static void accel_fs_tcp_set_ipv4_flow(struct mlx5_flow_spec *spec, struct sock
- 			 outer_headers.dst_ipv4_dst_ipv6.ipv4_layout.ipv4);
- }
- 
-+#if IS_ENABLED(CONFIG_IPV6)
- static void accel_fs_tcp_set_ipv6_flow(struct mlx5_flow_spec *spec, struct sock *sk)
- {
- 	MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria, outer_headers.ip_protocol);
-@@ -63,6 +64,7 @@ static void accel_fs_tcp_set_ipv6_flow(struct mlx5_flow_spec *spec, struct sock
- 			    outer_headers.dst_ipv4_dst_ipv6.ipv6_layout.ipv6),
- 	       0xff, 16);
- }
-+#endif
- 
- void mlx5e_accel_fs_del_sk(struct mlx5_flow_handle *rule)
- {
+diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+index e5816b498494..dabb4a1ccdcf 100644
+--- a/drivers/gpu/drm/msm/Kconfig
++++ b/drivers/gpu/drm/msm/Kconfig
+@@ -4,8 +4,8 @@ config DRM_MSM
+ 	tristate "MSM DRM"
+ 	depends on DRM
+ 	depends on ARCH_QCOM || SOC_IMX5 || (ARM && COMPILE_TEST)
++	depends on IOMMU_SUPPORT
+ 	depends on OF && COMMON_CLK
+-	depends on MMU
+ 	depends on QCOM_OCMEM || QCOM_OCMEM=n
+ 	select IOMMU_IO_PGTABLE
+ 	select QCOM_MDT_LOADER if ARCH_QCOM
 -- 
 2.27.0
 
