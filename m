@@ -2,102 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC7C2CCD11
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E7E2CCD22
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729616AbgLCDK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 22:10:59 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:53835 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727392AbgLCDK7 (ORCPT
+        id S1729644AbgLCDOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 22:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726160AbgLCDOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 22:10:59 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 495265802C9;
-        Wed,  2 Dec 2020 22:10:13 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 02 Dec 2020 22:10:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=F
-        SgQvZoglQetGYEJFgiWoedLNRJXBHY71to2V3053SQ=; b=kf+AoImueCgPccNgI
-        qDb4cXuy61xaretU5H7dqYyi6wioypibLjvQX/Smwr97NS2B/EaKJvhAGZsgCoY8
-        OF+QCFZlKT1A/ZUIL++gZVjnACpDzmJ2XIUd5pUz+z7KbRoyxmZuDlkqkiVPnxZd
-        DXlvP5s3bwQZFAw/hCeNp/oq6c98IisPU2CdC2kBfSpUzZnTGcw6jvi8l8b9eyQY
-        JhlmP+aZKSVks1qMsLAPKn6BwOdqTSaJMlrcgNAPpYJWDOUQ/YgK3MmYdJGdpjlV
-        urE+J+VV1IRIcgXmldU/uU6ypvW/P+vjTpKv9mFZhR1RW/JOnR9Hj8TJyGVETK0E
-        A70YA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=FSgQvZoglQetGYEJFgiWoedLNRJXBHY71to2V3053
-        SQ=; b=E2GoCYwyl1Ud6jZr+OdCpnxAPy773Z3xcN7UFL/bkHPkmmjatl4Yg//l0
-        +w49uf2tw4NVD9OTfvgYUmVpz6jFeIXIvrszPV4tPZRjGWFlH9q8GLvDaRJRxFn/
-        vvGnxBqhAraH1yZtrZqBr7amCu/OmV2fOnN0KSsJDEpBYp4TrgnvR+gTsA65zk1G
-        VDuzVLbesZ7Pi1g/lHCHs2k3iV0fDT7T0DNA4U+LYbriNtp0JAADncZlF5So8Bn8
-        vWCcjfY6DTsLARluCO36INm6Lrv/2MXzIZ+PGiisZQPYftFhihy/25PmxJW9Hfct
-        bbVvIVTvhGRjXMI/0S5CacVezIwRA==
-X-ME-Sender: <xms:ElfIX80H5W111qkFImCXUtwgGLlwcNZ0K_uzUETQAeisF30MceuOrQ>
-    <xme:ElfIX65UN87bvj7KnEbGoprCThFeYHjGmugK9xv_KHlBqGc0-PxxOLcuMvRUSO7IS
-    8m3K5bFmYQmmXP8Cw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeihedgheegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
-    uefgtedtgeegnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
-    nhgurdhorhhg
-X-ME-Proxy: <xmx:ElfIX9_BWMq_O6jlD3kJrM06Fy6l5p78kuhHLUGtrtxUvjV-gRoDbA>
-    <xmx:ElfIX5VBZ3WXlcD_ch5wAHV_7Flj4sr-mOJeMKdzm9gUwlm5bHae1A>
-    <xmx:ElfIX4rFp_skJavwk9OxGjaH9Ttt14gY5Tv7CJKAdpJVfO5LSCGsQw>
-    <xmx:FVfIX8-IFRg8R42sUCLJpLJ9fFK3Q6Jztu2loupC139uOjvE_kzz8A>
-Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 33343240066;
-        Wed,  2 Dec 2020 22:10:10 -0500 (EST)
-Subject: Re: [PATCH 7/8] arm64: dts: allwinner: Add Allwinner H616 .dtsi file
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Andre Przywara <andre.przywara@arm.com>
-Cc:     devicetree@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-sunxi@googlegroups.com, linux-kernel@vger.kernel.org,
-        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        Yangtao Li <frank@allwinnertech.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20201202135409.13683-1-andre.przywara@arm.com>
- <20201202135409.13683-8-andre.przywara@arm.com>
- <20201202160504.klxbpqgagra4uxeh@gilmour>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <07e8d86e-0e1b-03d3-f43e-78e5bcbb53cc@sholland.org>
-Date:   Wed, 2 Dec 2020 21:10:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 2 Dec 2020 22:14:37 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC95C061A4D
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 19:13:57 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id p6so353353plo.6
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 19:13:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rwVqmku+KuF7CBDwCXmp7GQf251F6L0Ar739gqzf9cU=;
+        b=tITewJgNthn6PxKyqtA6y7Hsga8qG37N3FDSi29gWHRtvQG+yNxwFH68T9T2/XjU2d
+         McUpVdjLgYPQlC7j8HhQPXZO+rMwHmoB1qk4zk1HY/jZ92ViyXbppXXZsVTD8iN8M8Av
+         TPbPm1yTQzGCsDMl7nhuEzLoA0QSHzG+aqEYuvfqcJ/7hAouPj31QXTnaVm4ZVCEB1hy
+         WGBtEaiDvKXSp9rE0YOCwfzz5B4NsC8gRkvzGjKJZx9QyHNyuspmL6hPsDRI1+P5oYzd
+         kEC1TPjDhslQHfF862x4i6EA/EofAGpWNJlm9oyLEjfSng0F8LXkHEddvJadX359XlfS
+         20Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rwVqmku+KuF7CBDwCXmp7GQf251F6L0Ar739gqzf9cU=;
+        b=VTjlNLROI7j9AXA+yG5/KtkigW3bHgAbDCnxKeBYtGXp14cSe2vqw3KaHtpwPRnHWy
+         KmQveibcinHo8WLLGu5XViqNBVM28OO5SURUliBwPcR5VLfRcmY8tP5jmGsNc2gMGNzy
+         5vxzSLreDNySjCTvRTZi3BT7ZsdLnqEUgBRL4cfNOUuyXlV2QjCGKjCKs3a4KHPlXhq5
+         I/VtIvbONGBuE9K5yMd3mX/0GkC3jLKC5Iz5z413VS1pGb3ovByrwQ8ksYdGHG2D5df/
+         STd0dFoKGZLShtK5q6XtRJ0aYfkU5waM6FnvkBTY+N57tMoqnPPwKX/oK6254A8AdjL4
+         C27g==
+X-Gm-Message-State: AOAM5334Ns5Kt5xQO72mYQEOnrx12nsoY73IzLwq7vhXedj4+CB6/Hy7
+        t7sX7V2HwPXFBy94+b8AlbEhTQ==
+X-Google-Smtp-Source: ABdhPJzl03ea3XSeGXYOVgpi8aLf35MXOyZs4Z9pSvj8lIUn7ZAIrJEQm2Si9i8tcFkT/yKaS0jxEQ==
+X-Received: by 2002:a17:90a:4093:: with SMTP id l19mr1073959pjg.218.1606965236823;
+        Wed, 02 Dec 2020 19:13:56 -0800 (PST)
+Received: from localhost.localdomain ([103.136.220.95])
+        by smtp.gmail.com with ESMTPSA id f17sm418336pfk.70.2020.12.02.19.13.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Dec 2020 19:13:56 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>,
+        Roman Gushchin <guro@fb.com>
+Subject: [PATCH v2] mm/memcontrol: make the slab calculation consistent
+Date:   Thu,  3 Dec 2020 11:11:11 +0800
+Message-Id: <20201203031111.3187-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-In-Reply-To: <20201202160504.klxbpqgagra4uxeh@gilmour>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/20 10:05 AM, Maxime Ripard wrote:
->> +	timer {
->> +		compatible = "arm,armv8-timer";
->> +		arm,no-tick-in-suspend;
-> 
-> This was tested with crust I assume?
+Although the ratio of the slab is one, we also should read the ratio
+from the related memory_stats instead of hard-coding. And the local
+variable of size is already the value of slab_unreclaimable. So we
+do not need to read again. Simplify the code here.
 
-No, there is no AR100 and supposedly no SRAM A2, so there is no place for crust
-to run. I assume it was copied from the H6 .dtsi.
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+---
+Changes in v2:
+ - Add a comment in the memory_stat_format() suggested by Roman.
 
-However, regardless of where the PSCI implementation runs, even if it's on CPUX,
-it will likely disable OSC24M to save power. So the counter will stop, and the
-property is appropriate to add.
+ mm/memcontrol.c | 26 +++++++++++++++++++++-----
+ 1 file changed, 21 insertions(+), 5 deletions(-)
 
-Cheers,
-Samuel
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 9922f1510956..75df129b7a52 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1545,12 +1545,22 @@ static int __init memory_stats_init(void)
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
++		switch (memory_stats[i].idx) {
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-		if (memory_stats[i].idx == NR_ANON_THPS ||
+-		    memory_stats[i].idx == NR_FILE_THPS ||
+-		    memory_stats[i].idx == NR_SHMEM_THPS)
++		case NR_ANON_THPS:
++		case NR_FILE_THPS:
++		case NR_SHMEM_THPS:
+ 			memory_stats[i].ratio = HPAGE_PMD_SIZE;
++			break;
+ #endif
++		case NR_SLAB_UNRECLAIMABLE_B:
++			VM_BUG_ON(i < 1);
++			VM_BUG_ON(memory_stats[i - 1].idx != NR_SLAB_RECLAIMABLE_B);
++			break;
++		default:
++			break;
++		}
++
+ 		VM_BUG_ON(!memory_stats[i].ratio);
+ 		VM_BUG_ON(memory_stats[i].idx >= MEMCG_NR_STAT);
+ 	}
+@@ -1586,9 +1596,15 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+ 		size *= memory_stats[i].ratio;
+ 		seq_buf_printf(&s, "%s %llu\n", memory_stats[i].name, size);
+ 
++		/*
++		 * We are printing reclaimable, unreclaimable of the slab
++		 * and the sum of both.
++		 */
+ 		if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
+-			size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
+-			       memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
++			int idx = i - 1;
++
++			size += memcg_page_state(memcg, memory_stats[idx].idx) *
++				memory_stats[idx].ratio;
+ 			seq_buf_printf(&s, "slab %llu\n", size);
+ 		}
+ 	}
+-- 
+2.11.0
+
