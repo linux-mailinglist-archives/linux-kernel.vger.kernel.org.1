@@ -2,63 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0CE2CE1A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:31:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 196E22CE1AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387799AbgLCWaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:30:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54938 "EHLO mail.kernel.org"
+        id S2388043AbgLCWbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:31:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLCWaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:30:52 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607034611;
-        bh=xgkQfJ8gQ9Skcnghiv+SrJhxLx0T+KKog7UBJw/CiUI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=HJN3t9uvTnjDfb5YNxoly21/Md8gYiJ9PUluS0FvOX++fYafkRmLUwiKnciU3+qqt
-         25T1g5wcBFFGgdJI9dHvaYDhML930P/+C+6QOcjXJz7/YM1AQMuKmg8R44CmcwKu9F
-         8SRQ7klYnpt2x/iFtlQ6QUG+P8Rf7+Isv0oPUv+HeCt0ZPVb/vKSD1F5xg+4k9UKfP
-         Z3RsDr/rIyYII7AJRp2Xo+/4vEs9UoHkO5I07Dbewcy3DB74TinywmYYMWqNqDdXNz
-         KDdSJwlMsDc+K3sMQzvFLDPZLEneDvbnIOqsilLw3CnTfWOKYx9AA5ZmAMMMccXKRM
-         v7iNTYeRWuWxA==
+        id S1729453AbgLCWbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:31:05 -0500
+From:   Arnd Bergmann <arnd@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Chen Yu <yu.c.chen@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] intel_idle: fix intel_idle_state_needs_timer_stop build failure
+Date:   Thu,  3 Dec 2020 23:30:13 +0100
+Message-Id: <20201203223020.1173185-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [GIT PULL] Networking for 5.10-rc7
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160703461137.774.1632248569911721691.git-patchwork-notify@kernel.org>
-Date:   Thu, 03 Dec 2020 22:30:11 +0000
-References: <20201203204459.3963776-1-kuba@kernel.org>
-In-Reply-To: <20201203204459.3963776-1-kuba@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     torvalds@linux-foundation.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+From: Arnd Bergmann <arnd@arndb.de>
 
-This pull request was applied to netdev/net.git (refs/heads/master):
+The newly added function is defined inside of an #ifdef section but
+used outside, leading to a build failure:
 
-On Thu,  3 Dec 2020 12:44:59 -0800 you wrote:
-> The following changes since commit c84e1efae022071a4fcf9f1899bf71777c49943a:
-> 
->   Merge tag 'asm-generic-fixes-5.10-2' of git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic (2020-11-27 15:00:35 -0800)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.10-rc7
-> 
-> [...]
+drivers/idle/intel_idle.c:1510:7: error: implicit declaration of function 'intel_idle_state_needs_timer_stop' [-Werror,-Wimplicit-function-declaration]
+                if (intel_idle_state_needs_timer_stop(&drv->states[drv->state_count]))
+                    ^
 
-Here is the summary with links:
-  - [GIT,PULL] Networking for 5.10-rc7
-    https://git.kernel.org/netdev/net/c/bbe2ba04c5a9
+Move it ahead of the CONFIG_ACPI_PROCESSOR_CSTATE check.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Fixes: 6e1d2bc675bd ("intel_idle: Fix intel_idle() vs tracing")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/idle/intel_idle.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
+diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+index 7ee7ffe22ae3..d79335506ecd 100644
+--- a/drivers/idle/intel_idle.c
++++ b/drivers/idle/intel_idle.c
+@@ -1140,6 +1140,20 @@ static bool __init intel_idle_max_cstate_reached(int cstate)
+ 	return false;
+ }
+ 
++static bool __init intel_idle_state_needs_timer_stop(struct cpuidle_state *state)
++{
++	unsigned long eax = flg2MWAIT(state->flags);
++
++	if (boot_cpu_has(X86_FEATURE_ARAT))
++		return false;
++
++	/*
++	 * Switch over to one-shot tick broadcast if the target C-state
++	 * is deeper than C1.
++	 */
++	return !!((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK);
++}
++
+ #ifdef CONFIG_ACPI_PROCESSOR_CSTATE
+ #include <acpi/processor.h>
+ 
+@@ -1210,20 +1224,6 @@ static bool __init intel_idle_acpi_cst_extract(void)
+ 	return false;
+ }
+ 
+-static bool __init intel_idle_state_needs_timer_stop(struct cpuidle_state *state)
+-{
+-	unsigned long eax = flg2MWAIT(state->flags);
+-
+-	if (boot_cpu_has(X86_FEATURE_ARAT))
+-		return false;
+-
+-	/*
+-	 * Switch over to one-shot tick broadcast if the target C-state
+-	 * is deeper than C1.
+-	 */
+-	return !!((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK);
+-}
+-
+ static void __init intel_idle_init_cstates_acpi(struct cpuidle_driver *drv)
+ {
+ 	int cstate, limit = min_t(int, CPUIDLE_STATE_MAX, acpi_state_table.count);
+-- 
+2.27.0
 
