@@ -2,222 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3BB2CCE30
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C4F2CCE33
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727038AbgLCFCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 00:02:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
+        id S1727302AbgLCFCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 00:02:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726412AbgLCFCF (ORCPT
+        with ESMTP id S1726071AbgLCFCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:02:05 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692A2C061A4E;
-        Wed,  2 Dec 2020 21:01:25 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id n26so1529090eju.6;
-        Wed, 02 Dec 2020 21:01:25 -0800 (PST)
+        Thu, 3 Dec 2020 00:02:31 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EA1C061A4D;
+        Wed,  2 Dec 2020 21:01:51 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id p126so940922oif.7;
+        Wed, 02 Dec 2020 21:01:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qDiLxMMzlVhCPYFL3c1sMpl1OLJgVHvtqSY0eugUJXg=;
-        b=gFVhROOfpycTkoucWqzPkT6Dq5O5dYZoperXvoo3LEYKuTjUaQ0PYyYPJkJ+9iw4Lg
-         BFjvXBI0Nxq7CcBQn8h61Vx8rKpd8W3YI/9/D8FzchbOm+ojq86DvXUsiTLceThqVzMW
-         Kh9DvkVcGaeICIAAEy7DVVvu6xiQIouDMuXZAcfaDURfrj/OuAdXYc7cgSl2qQs7394m
-         qpy4hAToGrP9N1/e6LmzXfL8JN2nA8YJUc9gXCjQWvPRET+hSC0gZS8FIN0FcRphcVh0
-         MEf80EI78yyuTfhHTull9948v+I08ODRgdug5qHcvWtyLv4HPZBl5JWoYUPVO01SQGE4
-         FYWg==
+         :cc:content-transfer-encoding;
+        bh=xhPmXGe2TmQ1T8FUkBkZbWfsA9sbZw6W4geuHUSY+s0=;
+        b=KWftkvGCjHdjjdSp83LlC5tIRRLWTWaNcqW5A5lhWAV2R0qrU5IOkq/a7O0kvfejlA
+         rr7ZJGNNSzBbet6dMF9iNpmDbJEBTEVWKYWIXBQ4L8y+ex7Wg4USV+e43JNhvPivy1zl
+         7hvAh3Uom+yPQPOPucVPPkMPBoemkGF17FytW+m2avdbGUCV3pGAXaPT6+IauOZ9OnsL
+         zsqxYdo58VObj5gnhBctQTpdJyz7TWWMKyM+RDNFbDMwHTWantQkT9EPcH8nVD/xnT+B
+         3gpbuuHCiRglD0DPa848kjp2G0YnRrHwxTBJ5a1zyV/0Jhp1XABiXB98YQwb8kl685rk
+         39bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qDiLxMMzlVhCPYFL3c1sMpl1OLJgVHvtqSY0eugUJXg=;
-        b=TDQcRou+ri31/3dphbIXFac6vKP2h03zgnxKrKPUS8zMSTJjTf0ttO4xaQM1V0Llbh
-         8iOeq4kV33CMULHFRWN752w41irlg/djP5NLEjdfVBgub/okf1U+inBtF9msE+qNBeGP
-         NzOnxY7V0BDfceZxXdnWogZn2KamO8bGiKBur//TNbc2BgvAdJ0qc4eC+CEVwoi1XdRt
-         FiZ+u+YoOqT40mdBuN8KWhHxk7d1eLGvBVU/drH3ziXhv3zRqCZe5vORnVBgpc/GA0N4
-         n6SCINKEPsmnJCBKPSdxp3NAE1gLuSw1ZtVn6MPfLZx4p7Zh1JjO6K37sifiOqQqPgX5
-         eFXw==
-X-Gm-Message-State: AOAM532z8+CTxJCXp8mjypHU7iXSkF+yxNRU35BBTi6ItIj3SOc3EEx4
-        kdnPw2t66d17zLntCtgHmpQ6lpgd7tvO+gAPs2E=
-X-Google-Smtp-Source: ABdhPJxvKUyHaptjmY3o3caBRtGvalJO4cdx2sjUT8zU/E5TuHjwWHAIhFBitBjyWdfH9+J/qBxN7LforJ+8ny2H8lE=
-X-Received: by 2002:a17:906:7cc6:: with SMTP id h6mr969315ejp.161.1606971684136;
- Wed, 02 Dec 2020 21:01:24 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xhPmXGe2TmQ1T8FUkBkZbWfsA9sbZw6W4geuHUSY+s0=;
+        b=ZVbiIjKyZINKVBjGlRYjO4o+WGbGwWCtZBLpzKwv6deWWhx7Wer2RBfi4h5+nXTbkU
+         ZM2d5bfzCkriUsK2ZJ7AH0pXzQEd70t0EqGa+I01v6tFDXNTCDi/T2ThDXmIDkU+wlIQ
+         cLQCgh4AbpTO704K6ylDZFPjLeDvKe5yBL9q+3BrgP3Ri99rSo8kMmj8lDmjcZ1EOlUv
+         HJPTxSuUbjJC/h8YRYTXT3v++LM01c2SR/DPl7TJjjzYQUEM8xWna0Ap2hrE0iHXYiQn
+         YLuEcj5pgxGQBvpIr/g0L/S6rKGp2IBlW/0QeAWWJolAoy32pC6Tnqm7vRC7rsuHgE2c
+         V+hw==
+X-Gm-Message-State: AOAM533tmzUI/MzPN99T8OT2htGZjBQJ41PCvmIv1zz6qqcbMsxmtC/R
+        kT+JEANZYvUDUr4hg5rI9J9Eb/ydahWhwjI/0ss=
+X-Google-Smtp-Source: ABdhPJwdcKf0tkF3epFtOf2LnYfdbX0fkojq661TQO2vTSqo7wKalSEV2Rw1RKszQGPMi/nFn9EhXQr/KunOeaQQLog=
+X-Received: by 2002:a54:4608:: with SMTP id p8mr783202oip.5.1606971711182;
+ Wed, 02 Dec 2020 21:01:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20201202182725.265020-1-shy828301@gmail.com> <20201202182725.265020-7-shy828301@gmail.com>
- <20201203030841.GH1375014@carbon.DHCP.thefacebook.com>
-In-Reply-To: <20201203030841.GH1375014@carbon.DHCP.thefacebook.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 2 Dec 2020 21:01:12 -0800
-Message-ID: <CAHbLzkp4fa02+4p7MiRLSRJyQTrFC0x6auH9zy+ynVh1B=J87g@mail.gmail.com>
-Subject: Re: [PATCH 6/9] mm: vmscan: use per memcg nr_deferred of shrinker
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1606897462.git.mchehab+huawei@kernel.org>
+ <65bae21ebb9de534483b282fb091d4526cff0be8.1606897462.git.mchehab+huawei@kernel.org>
+ <21d4e623-4250-454f-67ff-658da99cf26d@amd.com>
+In-Reply-To: <21d4e623-4250-454f-67ff-658da99cf26d@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 3 Dec 2020 00:01:39 -0500
+Message-ID: <CADnq5_Opbff_Nn=pq7dCd3TWY9Tqrh24GdBj-=pB1R3eYS7q+Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm: amdgpu: fix a kernel-doc markup
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Mihir Bhogilal Patel <Mihir.Patel@amd.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Airlie <airlied@linux.ie>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        xinhui pan <xinhui.pan@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Nirmoy Das <nirmoy.aiemd@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 7:08 PM Roman Gushchin <guro@fb.com> wrote:
+On Wed, Dec 2, 2020 at 3:45 AM Christian K=C3=B6nig <christian.koenig@amd.c=
+om> wrote:
 >
-> On Wed, Dec 02, 2020 at 10:27:22AM -0800, Yang Shi wrote:
-> > Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
-> > will be used in the following cases:
-> >     1. Non memcg aware shrinkers
-> >     2. !CONFIG_MEMCG
-> >     3. memcg is disabled by boot parameter
+> Am 02.12.20 um 09:27 schrieb Mauro Carvalho Chehab:
+> > The function name at kernel-doc markup doesn't match the name
+> > of the function:
 > >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >  mm/vmscan.c | 88 +++++++++++++++++++++++++++++++++++++++++++++++++----
-> >  1 file changed, 82 insertions(+), 6 deletions(-)
+> >       drivers/gpu/drm/amd/amdgpu/amdgpu_object.c:1534: warning: expecti=
+ng prototype for amdgpu_debugfs_print_bo_info(). Prototype was for amdgpu_b=
+o_print_info() instead
 > >
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index cba0bc8d4661..d569fdcaba79 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -203,6 +203,12 @@ static DECLARE_RWSEM(shrinker_rwsem);
-> >  static DEFINE_IDR(shrinker_idr);
-> >  static int shrinker_nr_max;
+> > Fix it.
 > >
-> > +static inline bool is_deferred_memcg_aware(struct shrinker *shrinker)
-> > +{
-> > +     return (shrinker->flags & SHRINKER_MEMCG_AWARE) &&
-> > +             !mem_cgroup_disabled();
-> > +}
-> > +
-> >  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
-> >  {
-> >       int id, ret = -ENOMEM;
-> > @@ -271,7 +277,58 @@ static bool writeback_throttling_sane(struct scan_control *sc)
-> >  #endif
-> >       return false;
-> >  }
-> > +
-> > +static inline long count_nr_deferred(struct shrinker *shrinker,
-> > +                                  struct shrink_control *sc)
-> > +{
-> > +     bool per_memcg_deferred = is_deferred_memcg_aware(shrinker) && sc->memcg;
-> > +     struct memcg_shrinker_deferred *deferred;
-> > +     struct mem_cgroup *memcg = sc->memcg;
-> > +     int nid = sc->nid;
-> > +     int id = shrinker->id;
-> > +     long nr;
-> > +
-> > +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
-> > +             nid = 0;
-> > +
-> > +     if (per_memcg_deferred) {
-> > +             deferred = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_deferred,
-> > +                                                  true);
-> > +             nr = atomic_long_xchg(&deferred->nr_deferred[id], 0);
-> > +     } else
-> > +             nr = atomic_long_xchg(&shrinker->nr_deferred[nid], 0);
-> > +
-> > +     return nr;
-> > +}
-> > +
-> > +static inline long set_nr_deferred(long nr, struct shrinker *shrinker,
-> > +                                struct shrink_control *sc)
-> > +{
-> > +     bool per_memcg_deferred = is_deferred_memcg_aware(shrinker) && sc->memcg;
-> > +     struct memcg_shrinker_deferred *deferred;
-> > +     struct mem_cgroup *memcg = sc->memcg;
-> > +     int nid = sc->nid;
-> > +     int id = shrinker->id;
-> > +     long new_nr;
-> > +
-> > +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
-> > +             nid = 0;
-> > +
-> > +     if (per_memcg_deferred) {
-> > +             deferred = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_deferred,
-> > +                                                  true);
-> > +             new_nr = atomic_long_add_return(nr, &deferred->nr_deferred[id]);
-> > +     } else
-> > +             new_nr = atomic_long_add_return(nr, &shrinker->nr_deferred[nid]);
-> > +
-> > +     return new_nr;
-> > +}
-> >  #else
-> > +static inline bool is_deferred_memcg_aware(struct shrinker *shrinker)
-> > +{
-> > +     return false;
-> > +}
-> > +
-> >  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
-> >  {
-> >       return 0;
-> > @@ -290,6 +347,29 @@ static bool writeback_throttling_sane(struct scan_control *sc)
-> >  {
-> >       return true;
-> >  }
-> > +
-> > +static inline long count_nr_deferred(struct shrinker *shrinker,
-> > +                                  struct shrink_control *sc)
-> > +{
-> > +     int nid = sc->nid;
-> > +
-> > +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
-> > +             nid = 0;
-> > +
-> > +     return atomic_long_xchg(&shrinker->nr_deferred[nid], 0);
-> > +}
-> > +
-> > +static inline long set_nr_deferred(long nr, struct shrinker *shrinker,
-> > +                                struct shrink_control *sc)
-> > +{
-> > +     int nid = sc->nid;
-> > +
-> > +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
-> > +             nid = 0;
-> > +
-> > +     return atomic_long_add_return(nr,
-> > +                                   &shrinker->nr_deferred[nid]);
-> > +}
-> >  #endif
-> >
-> >  /*
-> > @@ -429,13 +509,10 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
-> >       long freeable;
-> >       long nr;
-> >       long new_nr;
-> > -     int nid = shrinkctl->nid;
-> >       long batch_size = shrinker->batch ? shrinker->batch
-> >                                         : SHRINK_BATCH;
-> >       long scanned = 0, next_deferred;
-> >
-> > -     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
-> > -             nid = 0;
-> >
-> >       freeable = shrinker->count_objects(shrinker, shrinkctl);
-> >       if (freeable == 0 || freeable == SHRINK_EMPTY)
-> > @@ -446,7 +523,7 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
-> >        * and zero it so that other concurrent shrinker invocations
-> >        * don't also do this scanning work.
-> >        */
-> > -     nr = atomic_long_xchg(&shrinker->nr_deferred[nid], 0);
-> > +     nr = count_nr_deferred(shrinker, shrinkctl);
-> >
-> >       total_scan = nr;
-> >       if (shrinker->seeks) {
-> > @@ -539,8 +616,7 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
-> >        * move the unused scan count back into the shrinker in a
-> >        * manner that handles concurrent updates.
-> >        */
-> > -     new_nr = atomic_long_add_return(next_deferred,
-> > -                                     &shrinker->nr_deferred[nid]);
-> > +     new_nr = set_nr_deferred(next_deferred, shrinker, shrinkctl);
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 >
-> Ok, I think patch (1) can be just merged into this and then it would make total sense.
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
 
-Sure. Makes sense to me.
+Applied.  Thanks!
+
+Alex
+
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_object.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c b/drivers/gpu/d=
+rm/amd/amdgpu/amdgpu_object.c
+> > index c6c9723d3d8a..fd7a93c32235 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> > @@ -1518,7 +1518,7 @@ uint32_t amdgpu_bo_get_preferred_pin_domain(struc=
+t amdgpu_device *adev,
+> >       } while (0)
+> >
+> >   /**
+> > - * amdgpu_debugfs_print_bo_info - print BO info in debugfs file
+> > + * amdgpu_bo_print_info - print BO info in debugfs file
+> >    *
+> >    * @id: Index or Id of the BO
+> >    * @bo: Requested BO for printing info
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
