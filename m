@@ -2,232 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20912CD3F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:47:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6664F2CD3F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:47:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730297AbgLCKpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 05:45:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39218 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728849AbgLCKpx (ORCPT
+        id S2388697AbgLCKrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 05:47:13 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:56684 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387772AbgLCKrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 05:45:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606992265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v7VeQja9swCsfB3PhqTDwyJ4bV4pwvq3wq0Enpf6L0I=;
-        b=CTi6eUKoMkvCsL3FZO09qy8j3Pk3FgVggisn8DtaKVDVhI9pQnClcGckz2T2msLt9QUR89
-        o7e7fBekxs9q9VFVJiQVVSO4oxBokzUWgToIoddLx9urst1jZMHY6S9eqU7wnKregxT3lM
-        hdqFoiesozs1nGwrikYACsD/08sq7EA=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-NNKM3lpFP0m3WoPpJ6JTpA-1; Thu, 03 Dec 2020 05:44:22 -0500
-X-MC-Unique: NNKM3lpFP0m3WoPpJ6JTpA-1
-Received: by mail-wm1-f71.google.com with SMTP id q17so1298404wmc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 02:44:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=v7VeQja9swCsfB3PhqTDwyJ4bV4pwvq3wq0Enpf6L0I=;
-        b=X7P1AfKLwxMkyOqE/++0kTRjQYg0SaAdRwWRDvdAfPiwn+wOQyvpRSuoHIpj4HWU7+
-         UUp4TtF6gC6jRezsDXL7hqYTSS2c8dD3u+tJN/MtjnJ70D5BWYnjmCAGd7EhZqgym37p
-         d01TGu6rwQSk6EP+xmuK6jwR1OHhlZxQYzscxzptaDZVhqUe+lASBKjfTtPA0UUrkymz
-         Jgs7GCTrbSEkqZD87KFWyQLKeMcYHExHqHEp4zHrTp9LT7T5Qa3pswQ7wbyZAQrTTgyo
-         sRJNMdqLInN9NyyQc1fOtihdNp4Uhx36n7hCmroh3kSfLlSlpVGudUcECeAS+uaDcMUs
-         SjJA==
-X-Gm-Message-State: AOAM5328gujG07+Jk6QA5QSGBJHI/ebcvUnLmPkGPPV4VufRbgm8yw5y
-        bPYnR8kekJbE4FeCqumdweihG7/Icyn07pI5NBM/k8MJU//9lOoxUtLl628idf/uhpceDOzH+2U
-        jJpLqO2XMlw9uFAx0KDMDYSPp
-X-Received: by 2002:a1c:c902:: with SMTP id f2mr2644377wmb.130.1606992260987;
-        Thu, 03 Dec 2020 02:44:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwgiZ+YA0a+3SUdB0hAWy+TIzjqKgOEcekO5gTV3mLa/6sgQvs6/WfonlWBQbEWZrnSzEd8SQ==
-X-Received: by 2002:a1c:c902:: with SMTP id f2mr2644348wmb.130.1606992260670;
-        Thu, 03 Dec 2020 02:44:20 -0800 (PST)
-Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
-        by smtp.gmail.com with ESMTPSA id a144sm985141wmd.47.2020.12.03.02.44.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 02:44:19 -0800 (PST)
-Date:   Thu, 3 Dec 2020 05:44:17 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     Jason Wang <jasowang@redhat.com>, Cindy Lu <lulu@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
-Message-ID: <20201203054330-mutt-send-email-mst@kernel.org>
-References: <20201130043050-mutt-send-email-mst@kernel.org>
- <CACLfguXB+SzocLppNtrTZwKPFsshS8TLVe8_iFJxgjT-cFpSzA@mail.gmail.com>
- <20201130103142-mutt-send-email-mst@kernel.org>
- <CACLfguWDFgJUJTJik1obvv-vzacRwgkfsN=-Uouu+K9dAKFE+A@mail.gmail.com>
- <e52b94b6-42a8-1270-1e10-d1905ccae598@redhat.com>
- <20201202055714.GA224423@mtl-vdi-166.wap.labs.mlnx>
- <20201202041518-mutt-send-email-mst@kernel.org>
- <3e32ef6d-83c9-5866-30e5-f6eeacd5044d@redhat.com>
- <20201202165932-mutt-send-email-mst@kernel.org>
- <20201203064928.GA27404@mtl-vdi-166.wap.labs.mlnx>
+        Thu, 3 Dec 2020 05:47:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1606992431; x=1638528431;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=6ZmaV4epz1RzZwXxMUasO/UgWif+qh0KquY+310K4a8=;
+  b=lmby9gfhpPTItuK+V4+WEV8Sz6QI4lyzUYdc5oN/O1VrX6g4p5sCPiLs
+   VcavgPYkixmIz5DVeYo/vM0vAZzEaVLijY70jQINsl8+zAAr20tM2OCUI
+   +QQOGtndz3uWNR+JitXaXLgUsweBwop1yr/feNhCgvdc6/7v68j/wO7/S
+   Fbfhs0mEM/7Hlt0RZZ8BMKHHRl+CuTxH8peIV/gaGGp0iN7/KGnEAwKFY
+   bWdE9ADN41WHRJiqBYIcoGHp5ARZmIK3+GgzovUdXbuR4Pbtkg0MzwqF7
+   //ej6+wqoHQwQbUPa5/0fjA+3jktYPeiOuETh1Sit9LZHL0iTAHwrKWrK
+   Q==;
+IronPort-SDR: iZM7qflkQqDeJlCTqo0jzlj7zVsuhzmtlU0raGT9rR+KTyMCnjZ2NqYxSvzXHOjiKsRVUYmn45
+ BVIxQ8F2NPZQ06V289OWFQ58isnhevSAhmCq0BkgubzMeJZokaTm8x+q7MJvyVA2UOcHPlYRk6
+ yZqppdOaDQPr0LLCaeV7pXMOFcXW8YQ0uNC77BG0w74tiRXR5m0UlExSleiS8MKbYakKp+X6Qy
+ C+8ZcY0CFN0NBXiW9NxTtJru+EI4hW5EADmE5KXaIJCYa+X4ApWCAqypf2CSz3dF6zo9NhZVwA
+ UKw=
+X-IronPort-AV: E=Sophos;i="5.78,389,1599494400"; 
+   d="scan'208";a="154195537"
+Received: from mail-bn8nam11lp2176.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.176])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Dec 2020 18:46:04 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xo9jqq3cg9M0tNs8zqUoixZHXmja2y9cYcUAmM42MB4TBHDABeZ0Ww/cbUhEkgthZ7bqZcjFqJeu5eg9ze//39TBX7lDVTegrpSRTxWN+XhXCQLcDtuH4P/gI3KVfJ3qS9BGlvl+P2CwIPJmRa6qJVA+mqZYpZmDgjotXAnXBVLdEMqdyG8BnXOFFdBha5kp2fYKF8ojH+ITQ718lXLrp0Gwt7xoLi1V8tHqhvtCHSswr5L9ET48CPzIchnl5Z5Uy5Ps/vytgFdDFn+oj3hiRFLzTNjzU98nfhdI+KJS8q+bw8iuljGt0jB0YoyNrMjZMxWjj+N9FI/Yv/QLiEEJZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6ZmaV4epz1RzZwXxMUasO/UgWif+qh0KquY+310K4a8=;
+ b=P5rqZV1WIf8VBG5d/5vzD9eosgZO7Wc9x80p/qTHIqeABIrhrneTTbQ1OdiHRBMJMFVUCBMxElzHT9KK/XNjdc3N8AUJPdqbZpC6g0kk9Eei6BwhaI0N8pnylNYJmO+9DC3zYwOY/Nrh1/u0AoPzTl/qwdaev5h3/C9IGHCas9WYOclWg3SBxRIoj57y984bKMIsvtglFDozAkosZ+dBCRP7gzAIvoqla1wnUo4JVesdDp8eRAzXRprwIQ0CA9B77ynEak4255py7LONq3eHkrXXYEStrMxW70MCuGMxwhFz5a06rFur3SBynMYrhklbffiUd7H2hKMmJs5JmxWzyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6ZmaV4epz1RzZwXxMUasO/UgWif+qh0KquY+310K4a8=;
+ b=EHI3xFgik9Dm+xxyMfHEvvIQYoXxaKU5z3RH+d7FwElFbuq7jRL04Q88XejagdXtejjJTrgsIiojbWs7eIPkjYSuUNRqxcpRMDqOdq2pWi91qJcDf2psiBcYXlyOAww93KVLM0+DmEsKSimcrm1Escp0RCXAAx8OXSZv5LGVS0E=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM5PR0401MB3653.namprd04.prod.outlook.com (2603:10b6:4:7b::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3589.22; Thu, 3 Dec 2020 10:46:02 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6%8]) with mapi id 15.20.3632.019; Thu, 3 Dec 2020
+ 10:46:02 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Bean Huo <huobean@gmail.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 2/3] scsi: ufs: Keep device power on only
+ fWriteBoosterBufferFlushDuringHibernate == 1
+Thread-Topic: [PATCH 2/3] scsi: ufs: Keep device power on only
+ fWriteBoosterBufferFlushDuringHibernate == 1
+Thread-Index: AQHWx0S43WodiAJh60uyT+kBS7g50qnkYW5wgACaOBCAACZ9AIAADIOg
+Date:   Thu, 3 Dec 2020 10:46:02 +0000
+Message-ID: <DM6PR04MB657551290696C7EBD8339328FCF20@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201130181143.5739-1-huobean@gmail.com>
+         <20201130181143.5739-3-huobean@gmail.com>
+         <BY5PR04MB6599826730BD3FB0E547E60587F30@BY5PR04MB6599.namprd04.prod.outlook.com>
+         <DM6PR04MB6575B7ECCEA7335B2CFC2AC4FCF20@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <2dafb87ff450776c0406311bb7e235e9816f6ecf.camel@gmail.com>
+In-Reply-To: <2dafb87ff450776c0406311bb7e235e9816f6ecf.camel@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 0bd89780-0e6e-4294-de8e-08d89778a0d0
+x-ms-traffictypediagnostic: DM5PR0401MB3653:
+x-microsoft-antispam-prvs: <DM5PR0401MB36536F74AFAE20A00E8B2D03FCF20@DM5PR0401MB3653.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: frWKcICF+XCpYTZu8WfWP6WqK8wZf4ahGi/qRBQStDxVl6zBhSraKzDnJ5IR9+j6Aau5zp4wOH5HquAUPuSM24u1jbyqZ7S6y6GXDYuY+NIMWiRXW7g4QQ1uC5+YzzfOEHHwrUyxY/YspXfOF4B/bzA6X+Vx3gmNPP+L5mOzaMlKVL+21X+mi3sQq5rMFB9I9VDVOvrHs3wWeW9IiEJK98sI9X1D8ExtlHtCYUf82FqEPV9VxT57rcAvFiBMlh7Dazz8Mok168yYRmLdtW9pZDO7YXGCFTEOFeaoEv5VrIi7N08+DzhkKx5cUxn75Tnm0UJapPhq0mXsqriNbGc3tuFe6ImO5P4MzuEsyL1WPTeKsU40ceNAtjRw7RBj52GoxWOTtn9D38RSiRT8c0+Ly5CPYT5WBOEMhlDW/7ONLjM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(366004)(136003)(39860400002)(71200400001)(7696005)(33656002)(8936002)(7416002)(9686003)(55016002)(86362001)(8676002)(2906002)(921005)(52536014)(6506007)(64756008)(66556008)(66476007)(66446008)(66946007)(110136005)(83380400001)(76116006)(316002)(186003)(54906003)(5660300002)(4326008)(478600001)(26005)(145543001)(213903007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?TVE5RHk5ZDZhTFRPTTlEaDlFTWt2ZGdlUit4VThPQm5XMkM3U1FuZEZ1dDdl?=
+ =?utf-8?B?TXlZZUZ1amVlU2s0OW1SUXF6RHVtUmJ6WTVUbWFEd3J4ZmRXdGUvNG1MWTJi?=
+ =?utf-8?B?Wmd0NVhaU1g5OHVRQTdlT29tTWEzNkhzMTJNb1Q0SUVGYVN6a3ByY1BRSTEv?=
+ =?utf-8?B?OUUvQ2NrSGxyWmpWbWgxOHZJNGRWdnd6c0R2UUVtRnVWRGFOQXpzS0Rlc040?=
+ =?utf-8?B?RWdZQ3doVXlLY2lyRUhSMm1NTElSa2o3Z3diUDViRTdGN0xGalJxek5rLzZC?=
+ =?utf-8?B?U2wvWVdnTkhpVUZWZEp0MEpzUVB1c3ptU2FXZkV5WS9UZTNWWXlHQXNsd21M?=
+ =?utf-8?B?bnRpc0VOVVlZZ2FxM1ZUcklPbk5ya1p2Z1VoRVZaY3dvMndDQk9pL0VLcG00?=
+ =?utf-8?B?SUhkNlBwcStWL0JpNXl1VzU3ZG5zL0RWWFJwRlNFUkpLY1BGaVU1clpvOUsy?=
+ =?utf-8?B?K1lnVklCUEE2Y3JPa2xkMEdra2pobDhEQ0dORmduQ2oyNjVZcTlJdXBTUVBU?=
+ =?utf-8?B?NmhEZmc2emRNTVZ5SFljdFZZbE1sd3owRzVOVEJNZldHaFUzM0ZudzlIR013?=
+ =?utf-8?B?c0VvT0pxOEtGMHU1ZndTMkgzY1BVZEkvNzd2WGQ4eENzN3Y4K2MxOTZzeDJ3?=
+ =?utf-8?B?Tmd5SnVEcUhlMkgzNmRTNWIybXBrQkgydUJaZzRxcXVhRVVwWmRkZkh1QnB2?=
+ =?utf-8?B?a1RqTVNrTkVrdkpTZnljSXJ5WlJLUzVjZTJVNUcyTHpvTThUWStWaFJIeERv?=
+ =?utf-8?B?cDJoS3BNWTJyNDRqOVhtM2M4TkFtU01oWHptYVU5U3pFMUZ0ZnBPaUpJMlZO?=
+ =?utf-8?B?emlUcXk5ejB1TDlCR0RaYU5NUU52SWJoWkRhZ0tSOGE1R1hZamo4VXNyWi9x?=
+ =?utf-8?B?aHFzZHNZbXhDS3RXWWlzd1JnL0NlQXRQRFZOZi9EQW9XOFVyZ3JJbXRrM0dr?=
+ =?utf-8?B?cVExR09oa0puaTVhVmJtR2wrVEl1QjNwOCtRTnhoVzBqWTZpdUFxb2VzK1l1?=
+ =?utf-8?B?YWNyU3F1alo0Z3B1R21ZblVENnpTNU9BOCs0dDJsMVcxYjc0OEk3RVZlS2pk?=
+ =?utf-8?B?Z0Q2cE1MS2pvSEN6cEVLYUN5dGxtWWJlbC9iWWI5MFJiQjNRck9pRXJEeURs?=
+ =?utf-8?B?UVYvT0pMdTI0c0w3Y2xLNW5WR2xGR21jVXlvWC9mUko1T0ROMFFvbkN4azd4?=
+ =?utf-8?B?NlViL2NtZUVIQ1RuZURFblVmSzl1WW50V3k5cmpPZHZlbU94clZ6Rmw1aGsr?=
+ =?utf-8?B?akY5Z3lDdy9NUEVaWW91MzZZdzE3ZUFGQlJtcm5Fai83U1ZwSGN1aE9hcTVL?=
+ =?utf-8?Q?xkgXyJrUbLPhk=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201203064928.GA27404@mtl-vdi-166.wap.labs.mlnx>
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0bd89780-0e6e-4294-de8e-08d89778a0d0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2020 10:46:02.1643
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Im99FkGuCaZ37RnO2mbtYe1Bv2AWZnwqZxuiQGyFBYWlPJqtTdp4GE5pLdpGh40squlnKBGjObP+uAH9n26ABw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR0401MB3653
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 08:49:28AM +0200, Eli Cohen wrote:
-> On Wed, Dec 02, 2020 at 05:00:22PM -0500, Michael S. Tsirkin wrote:
-> > On Wed, Dec 02, 2020 at 09:48:25PM +0800, Jason Wang wrote:
-> > > 
-> > > On 2020/12/2 下午5:23, Michael S. Tsirkin wrote:
-> > > > On Wed, Dec 02, 2020 at 07:57:14AM +0200, Eli Cohen wrote:
-> > > > > On Wed, Dec 02, 2020 at 12:18:36PM +0800, Jason Wang wrote:
-> > > > > > On 2020/12/1 下午5:23, Cindy Lu wrote:
-> > > > > > > On Mon, Nov 30, 2020 at 11:33 PM Michael S. Tsirkin<mst@redhat.com>  wrote:
-> > > > > > > > On Mon, Nov 30, 2020 at 06:41:45PM +0800, Cindy Lu wrote:
-> > > > > > > > > On Mon, Nov 30, 2020 at 5:33 PM Michael S. Tsirkin<mst@redhat.com>  wrote:
-> > > > > > > > > > On Mon, Nov 30, 2020 at 11:27:59AM +0200, Eli Cohen wrote:
-> > > > > > > > > > > On Mon, Nov 30, 2020 at 04:00:51AM -0500, Michael S. Tsirkin wrote:
-> > > > > > > > > > > > On Mon, Nov 30, 2020 at 08:27:46AM +0200, Eli Cohen wrote:
-> > > > > > > > > > > > > On Sun, Nov 29, 2020 at 03:08:22PM -0500, Michael S. Tsirkin wrote:
-> > > > > > > > > > > > > > On Sun, Nov 29, 2020 at 08:43:51AM +0200, Eli Cohen wrote:
-> > > > > > > > > > > > > > > We should not try to use the VF MAC address as that is used by the
-> > > > > > > > > > > > > > > regular (e.g. mlx5_core) NIC implementation. Instead, use a random
-> > > > > > > > > > > > > > > generated MAC address.
-> > > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > > Suggested by: Cindy Lu<lulu@redhat.com>
-> > > > > > > > > > > > > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> > > > > > > > > > > > > > > Signed-off-by: Eli Cohen<elic@nvidia.com>
-> > > > > > > > > > > > > > I didn't realise it's possible to use VF in two ways
-> > > > > > > > > > > > > > with and without vdpa.
-> > > > > > > > > > > > > Using a VF you can create quite a few resources, e.g. send queues
-> > > > > > > > > > > > > recieve queues, virtio_net queues etc. So you can possibly create
-> > > > > > > > > > > > > several instances of vdpa net devices and nic net devices.
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > > Could you include a bit more description on the failure
-> > > > > > > > > > > > > > mode?
-> > > > > > > > > > > > > Well, using the MAC address of the nic vport is wrong since that is the
-> > > > > > > > > > > > > MAC of the regular NIC implementation of mlx5_core.
-> > > > > > > > > > > > Right but ATM it doesn't coexist with vdpa so what's the problem?
-> > > > > > > > > > > > 
-> > > > > > > > > > > This call is wrong:  mlx5_query_nic_vport_mac_address()
-> > > > > > > > > > > 
-> > > > > > > > > > > > > > Is switching to a random mac for such an unusual
-> > > > > > > > > > > > > > configuration really justified?
-> > > > > > > > > > > > > Since I can't use the NIC's MAC address, I have two options:
-> > > > > > > > > > > > > 1. To get the MAC address as was chosen by the user administering the
-> > > > > > > > > > > > >      NIC. This should invoke the set_config callback. Unfortunately this
-> > > > > > > > > > > > >      is not implemented yet.
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > 2. Use a random MAC address. This is OK since if (1) is implemented it
-> > > > > > > > > > > > >      can always override this random configuration.
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > > It looks like changing a MAC could break some guests,
-> > > > > > > > > > > > > > can it not?
-> > > > > > > > > > > > > > 
-> > > > > > > > > > > > > No, it will not. The current version of mlx5 VDPA does not allow regular
-> > > > > > > > > > > > > NIC driver and VDPA to co-exist. I have patches ready that enable that
-> > > > > > > > > > > > > from steering point of view. I will post them here once other patches on
-> > > > > > > > > > > > > which they depend will be merged.
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > https://patchwork.ozlabs.org/project/netdev/patch/20201120230339.651609-12-saeedm@nvidia.com/
-> > > > > > > > > > > > Could you be more explicit on the following points:
-> > > > > > > > > > > > - which configuration is broken ATM (as in, two device have identical
-> > > > > > > > > > > >     macs? any other issues)?
-> > > > > > > > > > > The only wrong thing is the call to  mlx5_query_nic_vport_mac_address().
-> > > > > > > > > > > It's not breaking anything yet is wrong. The random MAC address setting
-> > > > > > > > > > > is required for the steering patches.
-> > > > > > > > > > Okay so I'm not sure the Fixes tag at least is appropriate if it's a
-> > > > > > > > > > dependency of a new feature.
-> > > > > > > > > > 
-> > > > > > > > > > > > - why won't device MAC change from guest point of view?
-> > > > > > > > > > > > 
-> > > > > > > > > > > It's lack of implementation in qemu as far as I know.
-> > > > > > > > > > Sorry not sure I understand. What's not implemented in QEMU?
-> > > > > > > > > > 
-> > > > > > > > > HI Michael, there are some bug in qemu to set_config, this will fix in future,
-> > > > > > > > > But this patch is still needed, because without this patch the mlx
-> > > > > > > > > driver will give an 0 mac address to qemu
-> > > > > > > > > and qemu will overwrite the default mac address.  This will cause traffic down.
-> > > > > > > > Hmm the patch description says VF mac address, not 0 address. Confused.
-> > > > > > > > If there's no mac we can clear VIRTIO_NET_F_MAC and have guest
-> > > > > > > > use a random value ...
-> > > > > > I'm not sure this can work for all types of vDPA (e.g it could not be a
-> > > > > > learning bridge in the swtich).
-> > > > > > 
-> > > > > > 
-> > > > > > > hi Michael，
-> > > > > > > I have tried as your suggestion, seems even remove the
-> > > > > > > VIRTIO_NET_F_MAC the qemu will still call get_cinfig and overwrite the
-> > > > > > > default address in  VM,
-> > > > > > This looks a bug in qemu, in guest driver we had:
-> > > > > > 
-> > > > > >      /* Configuration may specify what MAC to use.  Otherwise random. */
-> > > > > >      if (virtio_has_feature(vdev, VIRTIO_NET_F_MAC))
-> > > > > >          virtio_cread_bytes(vdev,
-> > > > > >                     offsetof(struct virtio_net_config, mac),
-> > > > > >                     dev->dev_addr, dev->addr_len);
-> > > > > >      else
-> > > > > >          eth_hw_addr_random(dev);
-> > > > > > 
-> > > > > > 
-> > > > > > > this process is like
-> > > > > > > vdpa _init -->qemu call get_config ->mlx driver will give  an mac
-> > > > > > > address with all 0-->
-> > > > > > > qemu will not check this mac address and use it --> overwrite the mac
-> > > > > > > address in qemu
-> > > > > > > 
-> > > > > > > So for my understanding there are several method to fix this problem
-> > > > > > > 
-> > > > > > > 1, qemu check the mac address, if the mac address is all 0, qemu will
-> > > > > > > ignore it and set the random mac address to mlx driver.
-> > > > > > So my understanding is that, if mac address is all 0, vDPA parent should not
-> > > > > > advertise VIRTIO_NET_F_MAC. And qemu should emulate this feature as you did:
-> > > > > Thinking it over, at least in mlx5, I should always advertise
-> > > > > VIRTIO_NET_F_MAC and set a non zero MAC value. The source of the MAC can
-> > > > > be either randomly generated value by mlx5_vdpa or by a management tool.
-> > > > > This is important becauase we should not let the VM modify the MAC. If
-> > > > > we do it can set a MAC value identical to the mlx5 NIC driver and can
-> > > > > kidnap traffic that was not destined to it.
-> > > > > 
-> > > > > In addition, when VIRTIO_NET_F_MAC is published, attempts to change the
-> > > > > MAC address from the VM should result in error.
-> > > > That is not what the spec says though.
-> > > > VIRTIO_NET_F_MAC only says whether mac is valid in the config space.
-> > > > Whether guest can control that depends on VIRTIO_NET_F_CTRL_MAC_ADDR:
-> > > > 
-> > > > 	The VIRTIO_NET_CTRL_MAC_ADDR_SET command is used to set the default MAC address which rx
-> > > > 	filtering accepts (and if VIRTIO_NET_F_MAC_ADDR has been negotiated, this will be reflected in mac in
-> > > > 	config space).
-> > > > 	The command-specific-data for VIRTIO_NET_CTRL_MAC_ADDR_SET is the 6-byte MAC address.
-> > > 
-> > > 
-> > > Consider VIRTIO_NET_CTRL_MAC_ADDR_SET is not supported now. What Eli
-> > > proposed here should work?
-> > > 
-> > > Thanks
-> > > 
-> > 
-> > We can have management set a MAC address. Randomizing it in kernel
-> > does not seem like a reasonable policy to me ...
-> > 
-> 
-> This manangement should be the VDPA tool that Parav is pushing. We can
-> use it to set a MAC chosen by the user. The mlx5 vdpa driver can then
-> use that MAC instead of randomizing a value. If no admin value is given
-> we can use a random MAC.
-
-IIUC in this model devices are created by this tool, right?
-Why not require the MAC when device is created?
-
-> > 
-> > > > 
-> > > > 
-> > > > 
-> > > > 
-> > 
-
+PiANCj4gT24gVGh1LCAyMDIwLTEyLTAzIGF0IDA3OjI3ICswMDAwLCBBdnJpIEFsdG1hbiB3cm90
+ZToNCj4gPiA+DQo+ID4gPiBGcm9tOiBCZWFuIEh1byA8YmVhbmh1b0BtaWNyb24uY29tPg0KPiA+
+ID4NCj4gPiA+IEtlZXAgZGV2aWNlIHBvd2VyIG1vZGUgYXMgYWN0aXZlIHBvd2VyIG1vZGUgYW5k
+IFZDQyBzdXBwbHkgb25seSBpZg0KPiA+ID4gZldyaXRlQm9vc3RlckJ1ZmZlckZsdXNoRHVyaW5n
+SGliZXJuYXRlIHNldHRpbmcgMSBpcyBzdWNjZXNzZnVsLg0KPiANCj4gSGkgQXZyaQ0KPiBUaGFu
+a3Mgc28gbXVjaCB0YWtpbmcgdGltZSByZWlldy4NCj4gDQo+ID4gV2h5IHdvdWxkIGl0IGZhaWw/
+DQo+IA0KPiBEdXJpbmcgdGhlIHJlbGlhYmlsaXR5IHRlc3RpbmcgaW4gaGFyc2ggZW52aXJvbm1l
+bnRzLCBzdWNoIGFzOg0KPiBFTVMgdGVzdGluZywgaW4gdGhlIGhpZ2gvbG93LXRlbXBlcmF0dXJl
+IGVudmlyb25tZW50LiBUaGUgc3lzdGVtIHdvdWxkDQo+IHJlYm9vdCBpdHNlbGYsIHRoZXJlIHdp
+bGwgYmUgcHJvZ3JhbW1pbmcgZmFpbHVyZSB2ZXJ5IGxpa2VseS4NCj4gSWYgd2UgYXNzdW1lIGZh
+aWx1cmUgd2lsbCBuZXZlciBoaXQsIHdoeSB3ZSBjYXB0dXJlIGl0cyByZXN1bHQNCj4gZm9sbG93
+aW5nIHdpdGggZGV2X2VycigpLiBJZiB5b3Uga2VlcCB1c2luZyB5b3VyIHBob25lIGluIGEgaGFy
+c2gNCj4gZW52aXJvbm1lbnQsIHlvdSB3aWxsIHNlZSB0aGlzIHByaW50IG1lc3NhZ2UuDQo+IA0K
+PiBPZiBjb3Vyc2UsIGluIGEgbm9ybWFsIGVudmlyb25tZW50LCB0aGUgY2hhbmNlIG9mIGZhaWx1
+cmUgbGlrZXMgeW91IHRvDQo+IHdpbiBhIGxvdHRlcnksIGJ1dCB0aGUgcG9zc2liaWxpdHkgc3Rp
+bGwgZXhpc3RzLg0KRXhhY3RseS4NCkhlbmNlIHdlIG5lZWQtbm90IGFueSBleHRyYSBsb2dpYyBw
+cm90ZWN0aW5nIGRldmljZSBtYW5hZ2VtZW50IGNvbW1hbmQgZmFpbHVyZXMuDQoNCmlmIHJlYWRp
+bmcgdGhlIGNvbmZpZ3VyYXRpb24gcGFzcyBjb3JyZWN0bHksIGFuZCBVRlNIQ0RfQ0FQX1dCX0VO
+IGlzIHNldCwNCm9uZSBzaG91bGQgZXhwZWN0IHRoYXQgYW55IG90aGVyIGZ1bmN0aW9uYWxpdHkg
+d291bGQgd29yay4NCg0KT3RoZXJ3aXNlLCBhbnkgbm9uLXN0YW5kYXJkIGJlaGF2aW9yIHNob3Vs
+ZCBiZSBhZGRlZCB3aXRoIGEgcXVpcmsuDQoNClRoYW5rcywNCkF2cmkNCj4gDQo+IA0KPiA+IFNp
+bmNlIFVGU0hDRF9DQVBfV0JfRU4gaXMgdG9nZ2xlZCBvZmYgb24gdWZzaGNkX3diX3Byb2JlIElm
+IHRoZQ0KPiA+IGRldmljZSBkb2Vzbid0IHN1cHBvcnQgd2IsDQo+ID4gVGhlIGNoZWNrIHVmc2hj
+ZF9pc193Yl9hbGxvd2VkIHNob3VsZCBzdWZmaWNlLCBpc24ndCBpdD8NCj4gPg0KPiANCj4gTm8s
+IFVGU0hDRF9DQVBfV0JfRU4gb25seSB0ZWxscyB1cyBpZiB0aGUgcGxhdGZvcm0gc3VwcG9ydHMg
+V0IsDQo+IGRvZXNuJ3QgdGVsbCB1cyBmV3JpdGVCb29zdGVyQnVmZmVyRmx1c2hEdXJpbmdIaWJl
+cm5hdGUgc3RhdHVzLg0KPiANCj4gVGhhbmtzLA0KPiBCZWFuDQo+IA0KDQo=
