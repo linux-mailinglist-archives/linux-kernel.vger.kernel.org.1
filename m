@@ -2,84 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE59F2CE179
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE902CE17E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgLCWPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:15:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56172 "EHLO
+        id S1727927AbgLCWUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:20:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbgLCWPx (ORCPT
+        with ESMTP id S1726707AbgLCWUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:15:53 -0500
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38924C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 14:15:13 -0800 (PST)
-Received: by nautica.notk.org (Postfix, from userid 1001)
-        id 7FBBCC009; Thu,  3 Dec 2020 23:15:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1607033711; bh=9RnW75V2ft6CYV2AWxcLJJxN6B3UJUIpbVBcN0U+JaY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OFVh/CZnaz9Ib5kGBsHdWXhDebaWor4yi8e7e+LvZdveeekJMS+aTgtILS52HamNf
-         iXHcwcyzmG6whJcJoECWtn+8y2EiweJigxrzBT0GRHxU7K4eC4NBaL5bs9m6FYrIhh
-         NWTn1mTOL42mKL0awS7Q0hMDPNZRkpKZgjMorBfoe+caJwHQ456leuec83W0ghRGaw
-         vYLhYkE9JOvNT4tFOiWzbIa2BeAGsbJwPctWOnPpe9VM1tz3uFV5mnRYxpB2gPFe/s
-         W4qnNSSTQilGnvY03q1xCewTFmBvuJW1aDAPPWMbYZAELAKQsWXQem+lWUV7D0I3Kn
-         dxZlFEbLyloxw==
-Date:   Thu, 3 Dec 2020 23:14:56 +0100
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     v9fs-developer@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] 9p update for 5.10-rc7 (restore splice ops)
-Message-ID: <20201203221456.GA20620@nautica>
-References: <20201203103315.GA3298@nautica>
- <CAHk-=wigRSokT5YLRGH5Jyun1CwgYHR_1RMcoHjUyz7NJ8wG_g@mail.gmail.com>
+        Thu, 3 Dec 2020 17:20:12 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346CEC061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 14:19:32 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id t18so3367794otk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 14:19:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=QIvdaXMerZjHKN16VIAknaqTSxjYn/RYpNcQZGlB0eM=;
+        b=lqkpuDgPEmdoc2666gMa9RbwXHp9urjMEjXlMv/r516+5uWHSkWLdJrQOrUi/dLCY3
+         WytTyd9zO8543c5RUqrF+D8FAOdOzmhAQ33L5+OoDxlyUo6yuB5mTN9lanUW3vU6iW80
+         br/N7YjPVtGNfTQNwk2ShkWO92y58G2ZqZhW+0CRLpvLUBTTJ1T5HF9D++K+jB3LqgdV
+         UUxOpE8g5qPxY78om6kXySy4HykQQnj5C92TrhqtBQk1oNm/Ag3KKIkR9o+MiScHAjkj
+         rTMsxB+p9+/T/x+UEfLjSDy9LH0vDXXfxLTsL1XSYMQPf6k/SC9wpTEW4qzrVLiC6poB
+         tkBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=QIvdaXMerZjHKN16VIAknaqTSxjYn/RYpNcQZGlB0eM=;
+        b=G0vYW/rNKk77LLhpKHNt1imj+lHxwwCSFgcBVZmYG+qaOOmdkLj5BZ0j+WfA3796Rg
+         Irkmy5qKWov8Ma7/UJ3K7I5Wgd+r56lcqgwAfazp6QINaS03GLKCucVpxRQkYPKyyMlm
+         JBEX0qUZC2J1Ru4xBJC6waMBdS5Cl/yrjOZVNPdtGEITO9e09TuXJu+BIm5AD8io8KT6
+         cZzapzGWM5cUPlvO/T4CAtYTHRnGKqCrlS+2maQ2Q819mdvkWRaX8fVJO1iGRQVjVQQJ
+         LeSP+E8H9NixsdSfw81MGJBFD9Og8BsMjmwBmTxfWc/g7OUNFLuxhSfc1n2oqIxm3C6y
+         tkCA==
+X-Gm-Message-State: AOAM531Qgk4LocuyI/SYtmRG7PmcvV++gBWefHDCVAAPG7hocBQBQFCo
+        nGVyocTwekvjzk0sCe4i/Fb/wg==
+X-Google-Smtp-Source: ABdhPJz+sexSHIB+05eqb2T1lZzhZyEx7yf1cjHtX9/Ed5S5Uku8jnBQFjK+/kyd4vQhQAGU1GWwig==
+X-Received: by 2002:a9d:6312:: with SMTP id q18mr1194866otk.264.1607033971283;
+        Thu, 03 Dec 2020 14:19:31 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id t21sm172229otr.77.2020.12.03.14.19.29
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 03 Dec 2020 14:19:30 -0800 (PST)
+Date:   Thu, 3 Dec 2020 14:19:19 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Qian Cai <qcai@redhat.com>
+cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hch@lst.de,
+        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
+        dchinner@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
+In-Reply-To: <e4616d748b2137d05376eb517b4c8d675bc11712.camel@redhat.com>
+Message-ID: <alpine.LSU.2.11.2012031415090.13206@eggly.anvils>
+References: <20201112212641.27837-1-willy@infradead.org> <alpine.LSU.2.11.2011160128001.1206@eggly.anvils> <20201117153947.GL29991@casper.infradead.org> <alpine.LSU.2.11.2011170820030.1014@eggly.anvils> <20201117191513.GV29991@casper.infradead.org>
+ <20201117234302.GC29991@casper.infradead.org> <20201125023234.GH4327@casper.infradead.org> <bb95be97-2a50-b345-fc2c-3ff865b60e08@samsung.com> <CGME20201203172725eucas1p2fddec1d269c55095859d490942b78b93@eucas1p2.samsung.com> <0107bae8-baaa-9d39-5349-8174cb8abbbe@samsung.com>
+ <e4616d748b2137d05376eb517b4c8d675bc11712.camel@redhat.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wigRSokT5YLRGH5Jyun1CwgYHR_1RMcoHjUyz7NJ8wG_g@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds wrote on Thu, Dec 03, 2020:
-> Pulled.
-
-Thanks!
-
-> > (Thanks for letting me know my mails got flagged as spam last time, I've
-> > taken the time to setup dkim/dmarc which brings its share of problems
-> > with some mailing lists but hopefully will help here)
+On Thu, 3 Dec 2020, Qian Cai wrote:
+> On Thu, 2020-12-03 at 18:27 +0100, Marek Szyprowski wrote:
+> > On 03.12.2020 16:46, Marek Szyprowski wrote:
+> > > On 25.11.2020 03:32, Matthew Wilcox wrote:
+> > > > On Tue, Nov 17, 2020 at 11:43:02PM +0000, Matthew Wilcox wrote:
+> > > > > On Tue, Nov 17, 2020 at 07:15:13PM +0000, Matthew Wilcox wrote:
+> > > > > > I find both of these functions exceptionally confusing.  Does this
+> > > > > > make it easier to understand?
+> > > > > Never mind, this is buggy.  I'll send something better tomorrow.
+> > > > That took a week, not a day.  *sigh*.  At least this is shorter.
+> > > > 
+> > > > commit 1a02863ce04fd325922d6c3db6d01e18d55f966b
+> > > > Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > > > Date:   Tue Nov 17 10:45:18 2020 -0500
+> > > > 
+> > > >      fix mm-truncateshmem-handle-truncates-that-split-thps.patch
+> > > 
+> > > This patch landed in todays linux-next (20201203) as commit 
+> > > 8678b27f4b8b ("8678b27f4b8bfc130a13eb9e9f27171bcd8c0b3b"). Sadly it 
+> > > breaks booting of ANY of my ARM 32bit test systems, which use initrd. 
+> > > ARM64bit based systems boot fine. Here is example of the crash:
+> > 
+> > One more thing. Reverting those two:
+> > 
+> > 1b1aa968b0b6 mm-truncateshmem-handle-truncates-that-split-thps-fix-fix
+> > 
+> > 8678b27f4b8b mm-truncateshmem-handle-truncates-that-split-thps-fix
+> > 
+> > on top of linux next-20201203 fixes the boot issues.
 > 
-> It looks good here, but I would suggest you edit your DKIM configuration a bit.
+> We have to revert those two patches as well to fix this one process keeps
+> running 100% CPU in find_get_entries() and all other threads are blocking on the
+> i_mutex almost forever.
 > 
-> In particular, you have "List-ID" in your set of header files that
-> DKIM hashes, and that means that any mailing list that then adds that
-> header will destroy your DKIM hash.
+> [  380.735099] INFO: task trinity-c58:2143 can't die for more than 125 seconds.
+> [  380.742923] task:trinity-c58     state:R  running task     stack:26056 pid: 2143 ppid:  1914 flags:0x00004006
+> [  380.753640] Call Trace:
+> [  380.756811]  ? find_get_entries+0x339/0x790
+> find_get_entry at mm/filemap.c:1848
+> (inlined by) find_get_entries at mm/filemap.c:1904
+> [  380.761723]  ? __lock_page_or_retry+0x3f0/0x3f0
+> [  380.767009]  ? shmem_undo_range+0x3bf/0xb60
+> [  380.771944]  ? unmap_mapping_pages+0x96/0x230
+> [  380.777036]  ? find_held_lock+0x33/0x1c0
+> [  380.781688]  ? shmem_write_begin+0x1b0/0x1b0
+> [  380.786703]  ? unmap_mapping_pages+0xc2/0x230
+> [  380.791796]  ? down_write+0xe0/0x150
+> [  380.796114]  ? do_wp_page+0xc60/0xc60
+> [  380.800507]  ? shmem_truncate_range+0x14/0x80
+> [  380.805618]  ? shmem_setattr+0x827/0xc70
+> [  380.810274]  ? notify_change+0x6cf/0xc30
+> [  380.814941]  ? do_truncate+0xe2/0x180
+> [  380.819335]  ? do_truncate+0xe2/0x180
+> [  380.823741]  ? do_sys_openat2+0x5c0/0x5c0
+> [  380.828484]  ? do_sys_ftruncate+0x2e2/0x4e0
+> [  380.833417]  ? trace_hardirqs_on+0x1c/0x150
+> [  380.838335]  ? do_syscall_64+0x33/0x40
+> [  380.842828]  ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Hmm, good catch, but that one was on me just now -- I just resent the
-mail as I got it through the v9fs list to reuse recipients instead of
-the one I had sent before so I did send a bogus list-id, which happened
-to get signed.
-... looking at list archives it looks like majordomo took that to be a
-spam and didn't forward the mail at all, that's a discrete way to sneak
-a direct mail without any Cc!
-I was about to add it to ignored headers for signing but I'll just have
-to be careful about that now. Or figure how to make mutt drop it first.
+Thanks for trinitizing.  If you have time, please would you try
+replacing the shmem_undo_range() in mm/shmem.c by the version I gave in
 
+https://lore.kernel.org/linux-mm/alpine.LSU.2.11.2012031305070.12944@eggly.anvils/T/#mc15d60a2166f80fe284a18d4758eb4c04cc3255d
 
-The problems I had with dkim are all lists that add footers so really
-not much to do about header filtering (normally lists would change the
-from when they do that or change subject, but for some reason the two
-I'm thinking of don't, one of the two even strips dkim headers so even
-the body length flag (l=) isn't helping)
-I haven't had problems with kernel lists which don't mess with key
-headers, good job admins.
+That will not help at all with the 32-bit booting issue,
+but it does have a good chance of placating trinity.
 
-
-Anyway, it's a bit off topic -- good to know new mail didn't go to spam
-at least :)
--- 
-Dominique
+Thanks,
+Hugh
