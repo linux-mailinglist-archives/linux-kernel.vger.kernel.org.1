@@ -2,397 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC232CDA71
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B332CDA43
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731102AbgLCP4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 10:56:00 -0500
-Received: from mga05.intel.com ([192.55.52.43]:20970 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726162AbgLCPz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:55:59 -0500
-IronPort-SDR: EesviB8i1SaHx2C6JO2vwml0Afr0ccMqhXlRWU3dBz0D83BxlN6FzrYLWIThRYuxnKvKCQHgZi
- XyMKeAE/1QHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="257925068"
-X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
-   d="scan'208";a="257925068"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 07:55:18 -0800
-IronPort-SDR: AmxfOvxMXsoKaWBp8dSBmL/RGJbPsnKSBTc2rB8ux2wFXyKyospR8ohpdxLPIbB95ku7wHsaIp
- 5UGzzpduTCDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
-   d="scan'208";a="330869669"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
-  by orsmga003.jf.intel.com with ESMTP; 03 Dec 2020 07:55:14 -0800
-From:   Brent Lu <brent.lu@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Naveen Manohar <naveen.m@intel.com>,
-        Libin Yang <libin.yang@linux.intel.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        Ben Zhang <benzh@chromium.org>, Brent Lu <brent.lu@intel.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Dharageswari R <dharageswari.r@intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: intel: sof_rt5682: Add support for tgl_rt1011_rt5682
-Date:   Thu,  3 Dec 2020 23:40:10 +0800
-Message-Id: <20201203154010.29464-1-brent.lu@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1731046AbgLCPlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 10:41:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbgLCPlj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 10:41:39 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078FAC061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 07:40:58 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id g185so4346446wmf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 07:40:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kCQS8T9IzaK7qsrPFGKkQow9sRMix1gp13CfkJxVIA0=;
+        b=VXideQU4m746yyi4UAyDiWJeEJZT5L3Vw5k/xn06MXy3jlMwGBHa+GGn7QqEtNPCER
+         FDdVWuKd+KJClvrz0z+GKBzLzpx8ZWuHikTch0FrWWRcqlwY7DqoY/6iVFSHbOJPMxqP
+         6OXWx6S0Hb13t0jCiI+Tugt06DUWS8vDj5G6LhXFoMBi3LaIxKfNDpqhOwTIj6au4KWH
+         OP/ndNlq6g46XazbTSibOJlf6GcDeLIkDHGClUaaKQGlHWXDg+0KbY20RPNdp/ZrfUak
+         7qzNy098gY1pCT+PZXnk6/8Mu8jcP+oFn62Pt8LGdy2t3oZBmhPp2RyTaC4NP6EW2fF6
+         2Zwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kCQS8T9IzaK7qsrPFGKkQow9sRMix1gp13CfkJxVIA0=;
+        b=cvelBZ7uZF4hy54jA+m/+lnjwi7YjGI2nvLP+oOp3rUhdGu5/vtYejLzeZrJMgEKZR
+         F+u8Jo5okTpI8OZ+4V0erl7cIu/WqpG4ULAw6DTrmZmiS+BRqcn1NvmLDvPNDO0wos9/
+         vlOjLM8jUoDDKGT5ihoLxhPxpbIaR8MUG0hhWTcSHpmHZtUIFoen3b4wco9cfOFW33Rx
+         tuuncfLA42Mrn4LeFsxKPUPI+N0pYTs+5hxlDAwQmRizmPC/cAIdDYkVAHKclrm6diby
+         F8d+qDaHFv/nV31YJy+1/+sj5bHilRio4NSqt/L23NvawH+Z3e7ue441K0bBXMvCwOdH
+         n67Q==
+X-Gm-Message-State: AOAM533CX9kb8mF3l+7BY63FE5aEO2yB5iJz9EKSv+izB0uhi0kX7ykj
+        NR+iN3KfCHw13Twa1GwBkF/mSg==
+X-Google-Smtp-Source: ABdhPJzLB9zF1QadPDaL6kyXpahnC6RjyhmYQddcNPWEmYzU80qn43ICc2D9JRNcwrSz4Uv2vjnDsA==
+X-Received: by 2002:a1c:5605:: with SMTP id k5mr3976889wmb.99.1607010057394;
+        Thu, 03 Dec 2020 07:40:57 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:1c7d:2d7a:9709:b9a2? ([2a01:e34:ed2f:f020:1c7d:2d7a:9709:b9a2])
+        by smtp.googlemail.com with ESMTPSA id e27sm2710605wrc.9.2020.12.03.07.40.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 07:40:56 -0800 (PST)
+Subject: Re: [PATCH v2 3/5] thermal: devfreq_cooling: add new registration
+ functions with Energy Model
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        orjan.eide@arm.com, robh@kernel.org,
+        alyssa.rosenzweig@collabora.com, steven.price@arm.com,
+        airlied@linux.ie, daniel@ffwll.ch, ionela.voinescu@arm.com
+References: <20201118120358.17150-1-lukasz.luba@arm.com>
+ <20201118120358.17150-4-lukasz.luba@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <2eb16ccf-f635-af2d-616f-9cd0cec88ca0@linaro.org>
+Date:   Thu, 3 Dec 2020 16:40:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201118120358.17150-4-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the driver data for two rt1011 speaker amplifiers on
-SSP1 and rt5682 on SSP0 for TGL platform. DAI format for rt1011 is
-leveraged from cml_rt1011_rt5682 which is 4-slot tdm with 100fs bclk.
+On 18/11/2020 13:03, Lukasz Luba wrote:
+> The Energy Model (EM) framework supports devices such as Devfreq. Create
+> new registration functions which automatically register EM for the thermal
+> devfreq_cooling devices. This patch prepares the code for coming changes
+> which are going to replace old power model with the new EM.
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/thermal/devfreq_cooling.c | 99 ++++++++++++++++++++++++++++++-
+>  include/linux/devfreq_cooling.h   | 22 +++++++
+>  2 files changed, 120 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+> index 925523694462..b354271742c5 100644
+> --- a/drivers/thermal/devfreq_cooling.c
+> +++ b/drivers/thermal/devfreq_cooling.c
+> @@ -50,6 +50,8 @@ static DEFINE_IDA(devfreq_ida);
+>   * @capped_state:	index to cooling state with in dynamic power budget
+>   * @req_max_freq:	PM QoS request for limiting the maximum frequency
+>   *			of the devfreq device.
+> + * @em:		Energy Model for the associated Devfreq device
+> + * @em_registered:	Devfreq cooling registered the EM and should free it.
+>   */
+>  struct devfreq_cooling_device {
+>  	int id;
+> @@ -63,6 +65,8 @@ struct devfreq_cooling_device {
+>  	u32 res_util;
+>  	int capped_state;
+>  	struct dev_pm_qos_request req_max_freq;
+> +	struct em_perf_domain *em;
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
----
- sound/soc/intel/boards/Kconfig                |   1 +
- sound/soc/intel/boards/Makefile               |   2 +-
- sound/soc/intel/boards/sof_realtek_common.c   | 138 ++++++++++++++++++
- sound/soc/intel/boards/sof_realtek_common.h   |  24 +++
- sound/soc/intel/boards/sof_rt5682.c           |  26 +++-
- .../intel/common/soc-acpi-intel-tgl-match.c   |  17 ++-
- 6 files changed, 201 insertions(+), 7 deletions(-)
- create mode 100644 sound/soc/intel/boards/sof_realtek_common.c
- create mode 100644 sound/soc/intel/boards/sof_realtek_common.h
+This pointer is not needed, it is in the struct device.
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index dddb672a6d55..b58b9b60d37e 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -443,6 +443,7 @@ config SND_SOC_INTEL_SOF_RT5682_MACH
- 		    (MFD_INTEL_LPSS || COMPILE_TEST)) ||\
- 		   (SND_SOC_SOF_BAYTRAIL && (X86_INTEL_LPSS || COMPILE_TEST))
- 	select SND_SOC_MAX98373_I2C
-+	select SND_SOC_RT1011
- 	select SND_SOC_RT1015
- 	select SND_SOC_RT5682_I2C
- 	select SND_SOC_DMIC
-diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index a58e4d22e9c8..5f03e484b215 100644
---- a/sound/soc/intel/boards/Makefile
-+++ b/sound/soc/intel/boards/Makefile
-@@ -18,7 +18,7 @@ snd-soc-sst-byt-cht-cx2072x-objs := bytcht_cx2072x.o
- snd-soc-sst-byt-cht-da7213-objs := bytcht_da7213.o
- snd-soc-sst-byt-cht-es8316-objs := bytcht_es8316.o
- snd-soc-sst-byt-cht-nocodec-objs := bytcht_nocodec.o
--snd-soc-sof_rt5682-objs := sof_rt5682.o hda_dsp_common.o sof_maxim_common.o
-+snd-soc-sof_rt5682-objs := sof_rt5682.o hda_dsp_common.o sof_maxim_common.o sof_realtek_common.o
- snd-soc-cml_rt1011_rt5682-objs := cml_rt1011_rt5682.o hda_dsp_common.o
- snd-soc-kbl_da7219_max98357a-objs := kbl_da7219_max98357a.o
- snd-soc-kbl_da7219_max98927-objs := kbl_da7219_max98927.o
-diff --git a/sound/soc/intel/boards/sof_realtek_common.c b/sound/soc/intel/boards/sof_realtek_common.c
-new file mode 100644
-index 000000000000..f3cf73c620ba
---- /dev/null
-+++ b/sound/soc/intel/boards/sof_realtek_common.c
-@@ -0,0 +1,138 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Copyright(c) 2020 Intel Corporation. All rights reserved.
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
-+#include <sound/soc-dapm.h>
-+#include <uapi/sound/asound.h>
-+#include "../../codecs/rt1011.h"
-+#include "sof_realtek_common.h"
-+
-+/*
-+ * Current only 2-amp configuration is supported for rt1011
-+ */
-+static const struct snd_soc_dapm_route rt1011_dapm_routes[] = {
-+	/* speaker */
-+	{ "Left Spk", NULL, "Left SPO" },
-+	{ "Right Spk", NULL, "Right SPO" },
-+};
-+
-+/*
-+ * Make sure device's Unique ID follows this configuration:
-+ *
-+ * Two speakers:
-+ *         0: left, 1: right
-+ * Four speakers:
-+ *         0: Woofer left, 1: Woofer right
-+ *         2: Tweeter left, 3: Tweeter right
-+ */
-+static struct snd_soc_codec_conf rt1011_codec_confs[] = {
-+	{
-+		.dlc = COMP_CODEC_CONF(RT1011_DEV0_NAME),
-+		.name_prefix = "Left",
-+	},
-+	{
-+		.dlc = COMP_CODEC_CONF(RT1011_DEV1_NAME),
-+		.name_prefix = "Right",
-+	},
-+};
-+
-+static struct snd_soc_dai_link_component rt1011_dai_link_components[] = {
-+	{
-+		.name = RT1011_DEV0_NAME,
-+		.dai_name = RT1011_CODEC_DAI,
-+	},
-+	{
-+		.name = RT1011_DEV1_NAME,
-+		.dai_name = RT1011_CODEC_DAI,
-+	},
-+};
-+
-+static const struct {
-+	unsigned int tx;
-+	unsigned int rx;
-+} rt1011_tdm_mask[] = {
-+	{.tx = 0x4, .rx = 0x1},
-+	{.tx = 0x8, .rx = 0x2},
-+};
-+
-+static int rt1011_hw_params(struct snd_pcm_substream *substream,
-+			    struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct snd_soc_dai *codec_dai;
-+	int srate, i, ret = 0;
-+
-+	srate = params_rate(params);
-+
-+	for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+		/* 100 Fs to drive 24 bit data */
-+		ret = snd_soc_dai_set_pll(codec_dai, 0, RT1011_PLL1_S_BCLK,
-+					  100 * srate, 256 * srate);
-+		if (ret < 0) {
-+			dev_err(codec_dai->dev, "fail to set pll, ret %d\n",
-+				ret);
-+			return ret;
-+		}
-+
-+		ret = snd_soc_dai_set_sysclk(codec_dai, RT1011_FS_SYS_PRE_S_PLL1,
-+					     256 * srate, SND_SOC_CLOCK_IN);
-+		if (ret < 0) {
-+			dev_err(codec_dai->dev, "fail to set sysclk, ret %d\n",
-+				ret);
-+			return ret;
-+		}
-+
-+		if (i >= ARRAY_SIZE(rt1011_tdm_mask)) {
-+			dev_err(codec_dai->dev, "invalid codec index %d\n",
-+				i);
-+			return -ENODEV;
-+		}
-+
-+		ret = snd_soc_dai_set_tdm_slot(codec_dai, rt1011_tdm_mask[i].tx,
-+					       rt1011_tdm_mask[i].rx, 4,
-+					       params_width(params));
-+		if (ret < 0) {
-+			dev_err(codec_dai->dev, "fail to set tdm slot, ret %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_ops rt1011_ops = {
-+	.hw_params = rt1011_hw_params,
-+};
-+
-+static int rt1011_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	int ret;
-+
-+	ret = snd_soc_dapm_add_routes(&card->dapm, rt1011_dapm_routes,
-+				      ARRAY_SIZE(rt1011_dapm_routes));
-+	if (ret)
-+		dev_err(rtd->dev, "Speaker map addition failed: %d\n", ret);
-+	return ret;
-+}
-+
-+void sof_rt1011_dai_link(struct snd_soc_dai_link *link)
-+{
-+	link->codecs = rt1011_dai_link_components;
-+	link->num_codecs = ARRAY_SIZE(rt1011_dai_link_components);
-+	link->init = rt1011_init;
-+	link->ops = &rt1011_ops;
-+}
-+
-+void sof_rt1011_codec_conf(struct snd_soc_card *card)
-+{
-+	card->codec_conf = rt1011_codec_confs;
-+	card->num_configs = ARRAY_SIZE(rt1011_codec_confs);
-+}
-diff --git a/sound/soc/intel/boards/sof_realtek_common.h b/sound/soc/intel/boards/sof_realtek_common.h
-new file mode 100644
-index 000000000000..87cb3812b926
---- /dev/null
-+++ b/sound/soc/intel/boards/sof_realtek_common.h
-@@ -0,0 +1,24 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright(c) 2020 Intel Corporation.
-+ */
-+
-+/*
-+ * This file defines data structures used in Machine Driver for Intel
-+ * platforms with Realtek Codecs.
-+ */
-+#ifndef __SOF_REALTEK_COMMON_H
-+#define __SOF_REALTEK_COMMON_H
-+
-+#include <sound/soc.h>
-+
-+#define RT1011_CODEC_DAI	"rt1011-aif"
-+#define RT1011_DEV0_NAME	"i2c-10EC1011:00"
-+#define RT1011_DEV1_NAME	"i2c-10EC1011:01"
-+#define RT1011_DEV2_NAME	"i2c-10EC1011:02"
-+#define RT1011_DEV3_NAME	"i2c-10EC1011:03"
-+
-+void sof_rt1011_dai_link(struct snd_soc_dai_link *link);
-+void sof_rt1011_codec_conf(struct snd_soc_card *card);
-+
-+#endif /* __SOF_REALTEK_COMMON_H */
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 891f908659f5..8b1ca2da9bb9 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -24,6 +24,7 @@
- #include "../common/soc-intel-quirks.h"
- #include "hda_dsp_common.h"
- #include "sof_maxim_common.h"
-+#include "sof_realtek_common.h"
- 
- #define NAME_SIZE 32
- 
-@@ -41,10 +42,11 @@
- #define SOF_RT5682_NUM_HDMIDEV_MASK		(GENMASK(12, 10))
- #define SOF_RT5682_NUM_HDMIDEV(quirk)	\
- 	((quirk << SOF_RT5682_NUM_HDMIDEV_SHIFT) & SOF_RT5682_NUM_HDMIDEV_MASK)
--#define SOF_RT1015_SPEAKER_AMP_PRESENT		BIT(13)
--#define SOF_RT1015_SPEAKER_AMP_100FS		BIT(14)
--#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(15)
--#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(16)
-+#define SOF_RT1011_SPEAKER_AMP_PRESENT		BIT(13)
-+#define SOF_RT1015_SPEAKER_AMP_PRESENT		BIT(14)
-+#define SOF_RT1015_SPEAKER_AMP_100FS		BIT(15)
-+#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(16)
-+#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(17)
- 
- /* Default: MCLK on, MCLK 19.2M, SSP0  */
- static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
-@@ -741,6 +743,9 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 			links[id].codecs = max98360a_component;
- 			links[id].num_codecs = ARRAY_SIZE(max98360a_component);
- 			links[id].init = speaker_codec_init;
-+		} else if (sof_rt5682_quirk &
-+				SOF_RT1011_SPEAKER_AMP_PRESENT) {
-+			sof_rt1011_dai_link(&links[id]);
- 		} else {
- 			links[id].codecs = max98357a_component;
- 			links[id].num_codecs = ARRAY_SIZE(max98357a_component);
-@@ -851,6 +856,8 @@ static int sof_audio_probe(struct platform_device *pdev)
- 
- 	if (sof_rt5682_quirk & SOF_MAX98373_SPEAKER_AMP_PRESENT)
- 		sof_max98373_codec_conf(&sof_audio_card_rt5682);
-+	else if (sof_rt5682_quirk & SOF_RT1011_SPEAKER_AMP_PRESENT)
-+		sof_rt1011_codec_conf(&sof_audio_card_rt5682);
- 
- 	dai_links = sof_card_dai_links_create(&pdev->dev, ssp_codec, ssp_amp,
- 					      dmic_be_num, hdmi_num);
-@@ -931,6 +938,15 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_RT1015_SPEAKER_AMP_100FS |
- 					SOF_RT5682_SSP_AMP(1)),
- 	},
-+	{
-+		.name = "tgl_rt1011_rt5682",
-+		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_SSP_CODEC(0) |
-+					SOF_SPEAKER_AMP_PRESENT |
-+					SOF_RT1011_SPEAKER_AMP_PRESENT |
-+					SOF_RT5682_SSP_AMP(1) |
-+					SOF_RT5682_NUM_HDMIDEV(4)),
-+	},
- 	{ }
- };
- 
-@@ -948,6 +964,7 @@ module_platform_driver(sof_audio)
- MODULE_DESCRIPTION("SOF Audio Machine driver");
- MODULE_AUTHOR("Bard Liao <bard.liao@intel.com>");
- MODULE_AUTHOR("Sathya Prakash M R <sathya.prakash.m.r@intel.com>");
-+MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("platform:sof_rt5682");
- MODULE_ALIAS("platform:tgl_max98357a_rt5682");
-@@ -955,3 +972,4 @@ MODULE_ALIAS("platform:jsl_rt5682_rt1015");
- MODULE_ALIAS("platform:tgl_max98373_rt5682");
- MODULE_ALIAS("platform:jsl_rt5682_max98360a");
- MODULE_ALIAS("platform:cml_rt1015_rt5682");
-+MODULE_ALIAS("platform:tgl_rt1011_rt5682");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-index 9f243e60b95c..98196e9fad62 100644
---- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-@@ -9,7 +9,7 @@
- #include <sound/soc-acpi.h>
- #include <sound/soc-acpi-intel-match.h>
- 
--static struct snd_soc_acpi_codecs tgl_codecs = {
-+static const struct snd_soc_acpi_codecs tgl_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98357A"}
- };
-@@ -305,11 +305,16 @@ static const struct snd_soc_acpi_link_adr tgl_3_in_1_sdca[] = {
- 	{}
- };
- 
--static struct snd_soc_acpi_codecs tgl_max98373_amp = {
-+static const struct snd_soc_acpi_codecs tgl_max98373_amp = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98373"}
- };
- 
-+static const struct snd_soc_acpi_codecs tgl_rt1011_amp = {
-+	.num_codecs = 1,
-+	.codecs = {"10EC1011"}
-+};
-+
- struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
- 	{
- 		.id = "10EC1308",
-@@ -335,6 +340,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
- 		.sof_fw_filename = "sof-tgl.ri",
- 		.sof_tplg_filename = "sof-tgl-max98373-rt5682.tplg",
- 	},
-+	{
-+		.id = "10EC5682",
-+		.drv_name = "tgl_rt1011_rt5682",
-+		.machine_quirk = snd_soc_acpi_codec_list,
-+		.quirk_data = &tgl_rt1011_amp,
-+		.sof_fw_filename = "sof-tgl.ri",
-+		.sof_tplg_filename = "sof-tgl-rt1011-rt5682.tplg",
-+	},
- 	{},
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_tgl_machines);
+> +	bool em_registered;
+
+The boolean em_registered is not needed because of the test in the
+function em_dev_unregister_perf_domain():
+
+if (IS_ERR_OR_NULL(dev) || !dev->em_pd)
+                return;
+
+Logically if the 'em' was not initialized, it must be NULL, the
+corresponding struct device was zero-allocated.
+
+
+>  };
+>  
+>  static int devfreq_cooling_get_max_state(struct thermal_cooling_device *cdev,
+> @@ -583,22 +587,115 @@ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df)
+>  }
+>  EXPORT_SYMBOL_GPL(devfreq_cooling_register);
+>  
+> +/**
+> + * devfreq_cooling_em_register_power() - Register devfreq cooling device with
+> + *		power information and attempt to register Energy Model (EM)
+> + * @df:		Pointer to devfreq device.
+> + * @dfc_power:	Pointer to devfreq_cooling_power.
+> + * @em_cb:	Callback functions providing the data of the EM
+> + *
+> + * Register a devfreq cooling device and attempt to register Energy Model. The
+> + * available OPPs must be registered for the device.
+> + *
+> + * If @dfc_power is provided, the cooling device is registered with the
+> + * power extensions. If @em_cb is provided it will be called for each OPP to
+> + * calculate power value and cost. If @em_cb is not provided then simple Energy
+> + * Model is going to be used, which requires "dynamic-power-coefficient" a
+> + * devicetree property.
+> + */
+> +struct thermal_cooling_device *
+> +devfreq_cooling_em_register_power(struct devfreq *df,
+> +				  struct devfreq_cooling_power *dfc_power,
+> +				  struct em_data_callback *em_cb)
+> +{
+> +	struct thermal_cooling_device *cdev;
+> +	struct devfreq_cooling_device *dfc;
+> +	struct device_node *np = NULL;
+> +	struct device *dev;
+> +	int nr_opp, ret;
+> +
+> +	if (IS_ERR_OR_NULL(df))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	dev = df->dev.parent;
+
+Why the parent ?
+
+> +
+> +	if (em_cb) {
+> +		nr_opp = dev_pm_opp_get_opp_count(dev);
+> +		if (nr_opp <= 0) {
+> +			dev_err(dev, "No valid OPPs found\n");
+> +			return ERR_PTR(-EINVAL);
+> +		}
+> +
+> +		ret = em_dev_register_perf_domain(dev, nr_opp, em_cb, NULL, false);
+> +	} else {
+> +		ret = dev_pm_opp_of_register_em(dev, NULL);
+> +	}
+> +
+> +	if (ret)
+> +		dev_warn(dev, "Unable to register EM for devfreq cooling device (%d)\n",
+> +			 ret);
+> +
+> +	if (dev->of_node)
+> +		np = of_node_get(dev->of_node);
+> +
+> +	cdev = of_devfreq_cooling_register_power(np, df, dfc_power);
+> +
+> +	if (np)
+> +		of_node_put(np);> +
+> +	if (IS_ERR_OR_NULL(cdev)) {
+> +		if (!ret)
+> +			em_dev_unregister_perf_domain(dev);
+> +	} else {
+> +		dfc = cdev->devdata;
+> +		dfc->em_registered = !ret;
+> +	}
+> +
+> +	return cdev;
+> +}
+> +EXPORT_SYMBOL_GPL(devfreq_cooling_em_register_power);
+> +
+> +/**
+> + * devfreq_cooling_em_register() - Register devfreq cooling device together
+> + *				with Energy Model.
+> + * @df:		Pointer to devfreq device.
+> + * @em_cb:	Callback functions providing the data of the Energy Model
+> + *
+> + * This function attempts to register Energy Model for devfreq device and then
+> + * register the devfreq cooling device.
+> + */
+> +struct thermal_cooling_device *
+> +devfreq_cooling_em_register(struct devfreq *df, struct em_data_callback *em_cb)
+> +{
+> +	return devfreq_cooling_em_register_power(df, NULL, em_cb);
+> +}
+> +EXPORT_SYMBOL_GPL(devfreq_cooling_em_register);
+> +
+>  /**
+>   * devfreq_cooling_unregister() - Unregister devfreq cooling device.
+>   * @cdev: Pointer to devfreq cooling device to unregister.
+> + *
+> + * Unregisters devfreq cooling device and related Energy Model if it was
+> + * present.
+>   */
+>  void devfreq_cooling_unregister(struct thermal_cooling_device *cdev)
+>  {
+>  	struct devfreq_cooling_device *dfc;
+> +	struct device *dev;
+>  
+> -	if (!cdev)
+> +	if (IS_ERR_OR_NULL(cdev))
+
+Why this additional IS_ERR check ?
+
+>  		return;
+>  
+>  	dfc = cdev->devdata;
+> +	dev = dfc->devfreq->dev.parent;
+>  
+>  	thermal_cooling_device_unregister(dfc->cdev);
+>  	ida_simple_remove(&devfreq_ida, dfc->id);
+>  	dev_pm_qos_remove_request(&dfc->req_max_freq);
+> +
+> +	if (dfc->em_registered)
+> +		em_dev_unregister_perf_domain(dev);
+> +
+
+As stated before it can be called unconditionally
+
+>  	kfree(dfc->power_table);
+>  	kfree(dfc->freq_table);
+>  
+> diff --git a/include/linux/devfreq_cooling.h b/include/linux/devfreq_cooling.h
+> index 9df2dfca68dd..19868fb922f1 100644
+> --- a/include/linux/devfreq_cooling.h
+> +++ b/include/linux/devfreq_cooling.h
+> @@ -11,6 +11,7 @@
+>  #define __DEVFREQ_COOLING_H__
+>  
+>  #include <linux/devfreq.h>
+> +#include <linux/energy_model.h>
+>  #include <linux/thermal.h>
+>  
+>  
+> @@ -65,6 +66,13 @@ struct thermal_cooling_device *
+>  of_devfreq_cooling_register(struct device_node *np, struct devfreq *df);
+>  struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df);
+>  void devfreq_cooling_unregister(struct thermal_cooling_device *dfc);
+> +struct thermal_cooling_device *
+> +devfreq_cooling_em_register_power(struct devfreq *df,
+> +				  struct devfreq_cooling_power *dfc_power,
+> +				  struct em_data_callback *em_cb);
+> +struct thermal_cooling_device *
+> +devfreq_cooling_em_register(struct devfreq *df,
+> +			    struct em_data_callback *em_cb);
+>  
+>  #else /* !CONFIG_DEVFREQ_THERMAL */
+>  
+> @@ -87,6 +95,20 @@ devfreq_cooling_register(struct devfreq *df)
+>  	return ERR_PTR(-EINVAL);
+>  }
+>  
+> +static inline struct thermal_cooling_device *
+> +devfreq_cooling_em_register_power(struct devfreq *df,
+> +				  struct devfreq_cooling_power *dfc_power,
+> +				  struct em_data_callback *em_cb)
+> +{
+> +	return ERR_PTR(-EINVAL);
+> +}
+> +
+> +static inline struct thermal_cooling_device *
+> +devfreq_cooling_em_register(struct devfreq *df,	struct em_data_callback *em_cb)
+> +{
+> +	return ERR_PTR(-EINVAL);
+> +}
+> +
+>  static inline void
+>  devfreq_cooling_unregister(struct thermal_cooling_device *dfc)
+>  {
+> 
+
+
 -- 
-2.17.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
