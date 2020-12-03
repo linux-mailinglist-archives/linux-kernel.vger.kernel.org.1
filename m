@@ -2,173 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2C02CD126
+	by mail.lfdr.de (Postfix) with ESMTP id 06B092CD125
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388361AbgLCIUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:20:31 -0500
-Received: from mout.gmx.net ([212.227.15.15]:38071 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388247AbgLCIUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:20:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606983503;
-        bh=+mg95bL0eB1QM3vNqeKO61wWaQkqiUstVwa5YpwRRGo=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=VeSxLyfIY0H0JPcKgmQ5ZLpB7STufUn6B66XhSgKJ71wuAurRNXRXg7g9gbAy/b1u
-         IxXmqfPAHswFGwZT73L2Hq8ZRG6Fvt+RyX1Fx5eBHJ6eIt+0PqA/tEZ9Pi8aB8+DAR
-         CL2SE+FFpcLeWnZn/k2N1HHR4mWUydtuGc1Qmllg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.149.242]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MEV3I-1kwIHV1i2M-00Fz1B; Thu, 03
- Dec 2020 09:18:23 +0100
-Message-ID: <64ab382309c41ca5c7a601fc3efbb6d2a6e68602.camel@gmx.de>
-Subject: Re: scheduling while atomic in z3fold
-From:   Mike Galbraith <efault@gmx.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vitaly Wool <vitaly.wool@konsulko.com>
-Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org
-Date:   Thu, 03 Dec 2020 09:18:21 +0100
-In-Reply-To: <abe48cb9ab522659a05d7e41ce07317da2a85163.camel@gmx.de>
-References: <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
-         <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
-         <20201129112922.db53kmtpu76xxukj@spock.localdomain>
-         <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
-         <20201130132014.mlvxeyiub3fpwyw7@linutronix.de>
-         <856b5cc2a3d4eb673743b52956bf1e60dcdf87a1.camel@gmx.de>
-         <20201130145229.mhbkrfuvyctniaxi@linutronix.de>
-         <05121515e73891ceb9e5caf64b6111fc8ff43fab.camel@gmx.de>
-         <20201130160327.ov32m4rapk4h432a@linutronix.de>
-         <fca7ecadf1bddafb7e88cbeb4a57d1464c87b044.camel@gmx.de>
-         <20201202220826.5chy56mbgvrwmg3d@linutronix.de>
-         <abe48cb9ab522659a05d7e41ce07317da2a85163.camel@gmx.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S2388351AbgLCITo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:19:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388341AbgLCITo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 03:19:44 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E233C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 00:18:58 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id v22so1119840edt.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 00:18:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MFI8X7LTPxfxGnHVnTh7HU5fhkIJdGHe319oXUiaOMg=;
+        b=hxDEkT+CnPTTluKPdfjsvD7vZ5oEtmAvD59tEncI4rMof+lmV243KDQUpBZ+usebfw
+         PgU1bzfy6bWjMDkq53fYjWsaFfah2AzdvmaGvmeWbOo1AsAbtjbebZzysqBFPlpxjvr/
+         Q2IyiKX7/OPD1MzchSNkBrRZne+5aXnTOWl22SBUqUGYUEOHhFJ3rPDEQ/bHq/q4YwNX
+         VkbqRrLkaxkoan/8i1lQuJJdFT/uvJPgeW5nYTPe6+NJekju042FHliduluGyxIuFIrR
+         0Op0jpddYUQ6ExmXHzFHQLkhDnVwShiMdIqYR2TrKnFmjMchB/Kqb+PV7/SdYAMS/Urr
+         ouzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MFI8X7LTPxfxGnHVnTh7HU5fhkIJdGHe319oXUiaOMg=;
+        b=fqkqtIy7qaaFAd0TAiTp1xO3nIeDClEE9sWu2G1yW+3UJ46NhCmOUjzlJITxy3fzb3
+         K3I+Ly5LLNd6s0DprKLV4S9T7Q2lWsi1LBaUzgtvaM3sKqR0eajwhdjaqO7G/qF6njE/
+         cEnSy8ZyP36x67sTTTRU7nGVmm9jV6M6dlLAbqvmgNmYi9LUCNuBH78SDNN1I410tYjO
+         9jFSSeW9NbwoFRZvxBZRUUnM3GE1o6+G8dOEisExOs0ZLKIqrGKbJOw4Ty/rXy0H2ks6
+         F0IrpL3KuMoAUt8I3bp0YjfSTnSollySnm/XCYA4jArf3xaNwxdzF5GRMhiVttedqVaa
+         zXsA==
+X-Gm-Message-State: AOAM532nH8RucCldhOZjQE1OfLK/mbrGsADJ9fQVjKULIpV+omdwKjIu
+        aG+VP6antjwrQTnURHJZeCzxN2dKqk5u89fyXmRcTA==
+X-Google-Smtp-Source: ABdhPJzlVZ28tE0cF4tC2Pn9vCk/OZqgnCdO9Uos47a8iakfFul7OT5IcCEOU76VcJI4pRgOkgXNVVPKPg4EXoeAJl8=
+X-Received: by 2002:a05:6402:16c8:: with SMTP id r8mr1744893edx.59.1606983536735;
+ Thu, 03 Dec 2020 00:18:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/IX7vUtk4rT5MqHxVvtHQ0lWlxEyiWzRjfnNmJ7bUptZZTISoAg
- O6a1AVKfK5ZxO7qugA6ryljYEUqAQq5TwUgdcGjSYsLe9nz0CzFt/nMM+9hJLXIDCx+27fJ
- uUP9UTabMGxbTxKfDEgFUU/ChTMkERwBuhM8W2uLQrgXGtRIgdngMXN3sMU1sy51arftOQs
- 5IYNvFyW047nOePJiOT8g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:IF6acc0iF7Y=:zBvLRz5x4Ka+WeQg42f/QG
- Kf6rJ6b+fFD+lUhyL0oBdZSsI74V4natxuaKAmdcqGY5GVl0z5JxbNxvTwxFBAONKSd/6cURq
- 06N8qbjyYBzwClqGdJDKi3SrpSXdnRVzEnpqzDX/DoAlSg0G2Bh5MgTd2LoQ0VlaMz+aoQgs6
- T69PT9wtmmnS26RgXHEbWTLflI/24IbwmX+m4go8sFVoxKoOl4IIfqtuNEx2p4mj+3SCap5y9
- 0twXqU6P53r/3NmTBzqR1e7juv3vqwDshQ79HPiM9hNlkpIdauCMFYI2AFyEyXFRs6LJsXbSG
- 215YZzOHY3JAKJYFARdqGiNzqBQTxwE1PzX6NOGA6Dja4ZN8EVPDdsFeiA4ChxlM2bczC+aVk
- piSIvIYM3fZglAdpY807Pj7ZnBSVvqQQ55Xb6IubitG1BPgLH1wOqhg6cyIrzm9i7vqAYIWZm
- C/FHUO2AgGn8I/Gtxt+O2MmutSu+e+dBT+dqnQekeRClrHiFtSl1TFXBWDMDS9dLuM7mexQLc
- 62WSHQziY/EQe1Og+OY/sUjQzX9TvomcY+cJ1cfWd62by+SzISRBnSXMl2JGOptomhjIR3rBX
- 1Bm/BNyeJcuZRVamU/YddjezINHkRVEXKbUZP3rDnKjh9DYsVMgD5BBcr7MGkT1D90S413bYz
- JnSAQsm0GjaraixUF7eqqy7RV+xis3f7KQrGfylXUfNLwpFoGST7RFzDg1suddjnZTB5TCMsU
- gdX2P82POeBzwZhYATwJDFOsDxYWhskBgTwlo+hy8o81CEED67lWBsOdgHz5LIcxui/dTkUvs
- MdUiG9Mo1H7m01+Q4/vqX01tIDsoX5tRu4MgaB4oTkav6Qmh/R/KrGo1PTcQdJr18rmLRyY2I
- FlSIyVvR/IeIjABH1bIw==
+References: <20201203073910.20113-1-biwen.li@oss.nxp.com> <CAMpxmJV97uexBKK3zHuOWfBQ77uorgxadUcrieBP2fLPs0dPeA@mail.gmail.com>
+ <DB6PR0401MB243884BFCB97E719642385FA8FF20@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+In-Reply-To: <DB6PR0401MB243884BFCB97E719642385FA8FF20@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 3 Dec 2020 09:18:46 +0100
+Message-ID: <CAMpxmJWzHOZrm90TXy-00do0xSaxPfReiWRuCMj-GwAXN5NbPA@mail.gmail.com>
+Subject: Re: [PATCH] gpio: mpc8xxx: resolve coverity warnings
+To:     "Biwen Li (OSS)" <biwen.li@oss.nxp.com>
+Cc:     Leo Li <leoyang.li@nxp.com>, Aisheng Dong <aisheng.dong@nxp.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jiafei Pan <jiafei.pan@nxp.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-03 at 03:16 +0100, Mike Galbraith wrote:
-> On Wed, 2020-12-02 at 23:08 +0100, Sebastian Andrzej Siewior wrote:
-> Looks like...
+On Thu, Dec 3, 2020 at 9:07 AM Biwen Li (OSS) <biwen.li@oss.nxp.com> wrote:
 >
-> d8f117abb380 z3fold: fix use-after-free when freeing handles
->
-> ...wasn't completely effective...
+> > On Thu, Dec 3, 2020 at 8:31 AM Biwen Li <biwen.li@oss.nxp.com> wrote:
+> > >
+> > > From: Biwen Li <biwen.li@nxp.com>
+> > >
+> > > Resolve coverity warnings as follows,
+> > >     cond_at_most: Checking gpio >= 28U implies that gpio may be up
+> > >     to 27 on the false branch.
+> > >     overrun-call: Overrunning callees array of size 3 by passing
+> > >     argument gpio (which evaluates to 27)
+> > >     in call to *mpc8xxx_gc->direction_output
+> > >
+> > >     cond_at_least: Checking gpio <= 3U implies that gpio is at least 4 on
+> > >     the false branch.
+> > >     overrun-call: Overrunning callee's array of size 3 by passing argument
+> > >     gpio (which evaluates to 4) in call to
+> > > *mpc8xxx_gc->direction_output
+> > >
+> > > Signed-off-by: Biwen Li <biwen.li@nxp.com>
+> > > ---
+> > >  drivers/gpio/gpio-mpc8xxx.c | 5 +++--
+> > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
+> > > index a6c2bbdcaa10..12c9a91d87b7 100644
+> > > --- a/drivers/gpio/gpio-mpc8xxx.c
+> > > +++ b/drivers/gpio/gpio-mpc8xxx.c
+> > > @@ -3,6 +3,7 @@
+> > >   *
+> > >   * Copyright (C) 2008 Peter Korsgaard <jacmet@sunsite.dk>
+> > >   * Copyright (C) 2016 Freescale Semiconductor Inc.
+> > > + * Copyright 2020 NXP
+> >
+> > A copyright notice on a two-line change is a bit too much, don't you think?
+> Okay, got it. Will remove it in v2.
+> >
+> > >   *
+> > >   * This file is licensed under the terms of the GNU General Public License
+> > >   * version 2.  This program is licensed "as is" without any warranty
+> > > of any @@ -80,7 +81,7 @@ static int mpc5121_gpio_dir_out(struct
+> > > gpio_chip *gc,  {
+> > >         struct mpc8xxx_gpio_chip *mpc8xxx_gc = gpiochip_get_data(gc);
+> > >         /* GPIO 28..31 are input only on MPC5121 */
+> > > -       if (gpio >= 28)
+> > > +       if (gpio >= 28U)
+> > >                 return -EINVAL;
+> >
+> > I don't really understand the commit message but looking at the code is even
+> > more confusing. What are you fixing here actually?
+> Try to fix code warning that generated by coverity scan tool(static code analysis tool)
 
-The top two hunks seem to have rendered the thing RT tolerant.
+Please explain what benefit there is to using 28U over 28. No tool is
+perfect, that's why you should try to understand what it is it's
+trying to fix. I don't see any reason this code could fail.
 
-diff --git a/mm/z3fold.c b/mm/z3fold.c
-index 18feaa0bc537..851d9f4f1644 100644
-=2D-- a/mm/z3fold.c
-+++ b/mm/z3fold.c
-@@ -537,7 +537,7 @@ static void __release_z3fold_page(struct z3fold_header=
- *zhdr, bool locked)
- 	spin_unlock(&pool->lock);
+Bartosz
 
- 	/* If there are no foreign handles, free the handles array */
--	read_lock(&zhdr->slots->lock);
-+	write_lock(&zhdr->slots->lock);
- 	for (i =3D 0; i <=3D BUDDY_MASK; i++) {
- 		if (zhdr->slots->slot[i]) {
- 			is_free =3D false;
-@@ -546,7 +546,7 @@ static void __release_z3fold_page(struct z3fold_header=
- *zhdr, bool locked)
- 	}
- 	if (!is_free)
- 		set_bit(HANDLES_ORPHANED, &zhdr->slots->pool);
--	read_unlock(&zhdr->slots->lock);
-+	write_unlock(&zhdr->slots->lock);
-
- 	if (is_free)
- 		kmem_cache_free(pool->c_handle, zhdr->slots);
-@@ -642,14 +642,16 @@ static inline void add_to_unbuddied(struct z3fold_po=
-ol *pool,
- {
- 	if (zhdr->first_chunks =3D=3D 0 || zhdr->last_chunks =3D=3D 0 ||
- 			zhdr->middle_chunks =3D=3D 0) {
--		struct list_head *unbuddied =3D get_cpu_ptr(pool->unbuddied);
--
-+		struct list_head *unbuddied;
- 		int freechunks =3D num_free_chunks(zhdr);
-+
-+		migrate_disable();
-+		unbuddied =3D this_cpu_ptr(pool->unbuddied);
- 		spin_lock(&pool->lock);
- 		list_add(&zhdr->buddy, &unbuddied[freechunks]);
- 		spin_unlock(&pool->lock);
- 		zhdr->cpu =3D smp_processor_id();
--		put_cpu_ptr(pool->unbuddied);
-+		migrate_enable();
- 	}
- }
-
-@@ -886,8 +888,9 @@ static inline struct z3fold_header *__z3fold_alloc(str=
-uct z3fold_pool *pool,
- 	int chunks =3D size_to_chunks(size), i;
-
- lookup:
-+	migrate_disable();
- 	/* First, try to find an unbuddied z3fold page. */
--	unbuddied =3D get_cpu_ptr(pool->unbuddied);
-+	unbuddied =3D this_cpu_ptr(pool->unbuddied);
- 	for_each_unbuddied_list(i, chunks) {
- 		struct list_head *l =3D &unbuddied[i];
-
-@@ -905,7 +908,7 @@ static inline struct z3fold_header *__z3fold_alloc(str=
-uct z3fold_pool *pool,
- 		    !z3fold_page_trylock(zhdr)) {
- 			spin_unlock(&pool->lock);
- 			zhdr =3D NULL;
--			put_cpu_ptr(pool->unbuddied);
-+			migrate_enable();
- 			if (can_sleep)
- 				cond_resched();
- 			goto lookup;
-@@ -919,7 +922,7 @@ static inline struct z3fold_header *__z3fold_alloc(str=
-uct z3fold_pool *pool,
- 		    test_bit(PAGE_CLAIMED, &page->private)) {
- 			z3fold_page_unlock(zhdr);
- 			zhdr =3D NULL;
--			put_cpu_ptr(pool->unbuddied);
-+			migrate_enable();
- 			if (can_sleep)
- 				cond_resched();
- 			goto lookup;
-@@ -934,7 +937,7 @@ static inline struct z3fold_header *__z3fold_alloc(str=
-uct z3fold_pool *pool,
- 		kref_get(&zhdr->refcount);
- 		break;
- 	}
--	put_cpu_ptr(pool->unbuddied);
-+	migrate_enable();
-
- 	if (!zhdr) {
- 		int cpu;
-
+> >
+> > Bartosz
+> >
+> > >
+> > >         return mpc8xxx_gc->direction_output(gc, gpio, val); @@ -91,7
+> > > +92,7 @@ static int mpc5125_gpio_dir_out(struct gpio_chip *gc,  {
+> > >         struct mpc8xxx_gpio_chip *mpc8xxx_gc = gpiochip_get_data(gc);
+> > >         /* GPIO 0..3 are input only on MPC5125 */
+> > > -       if (gpio <= 3)
+> > > +       if (gpio <= 3U)
+> > >                 return -EINVAL;
+> > >
+> > >         return mpc8xxx_gc->direction_output(gc, gpio, val);
+> > > --
+> > > 2.17.1
+> > >
