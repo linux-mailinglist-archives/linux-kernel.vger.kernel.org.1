@@ -2,112 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC7F2CD986
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF6B2CD98C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436494AbgLCOo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 09:44:59 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:34797 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389190AbgLCOo6 (ORCPT
+        id S1726719AbgLCOrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 09:47:23 -0500
+Received: from mout.kundenserver.de ([212.227.126.134]:54843 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbgLCOrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:44:58 -0500
-Received: by mail-oi1-f196.google.com with SMTP id s18so2408764oih.1;
-        Thu, 03 Dec 2020 06:44:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UbGjEkaZE0D9a7AyFWG5aWHAuEZDZ69DNAnE5cwlxJ4=;
-        b=MMm9XfqVXbQOewTedN9LEuYBBbfmB6pdZ6nl21i6o+b4g4erQFbr2WpuAGWOnQ+NYH
-         ijL+JlWMEfxPRTx3ceBhcJsGEQg24N+zd2wiGf27qURagM+v6dmt7r6KY04BE+tMAHcU
-         0Pe8U+vjNEa51Oq0JKM8iFHUvIUA7IsJJU99dQebylteiizvCHob1QGRvP5iwPeUfXw5
-         RpKfc/A3tsfMWdcGXx9VDB/0CFdQGF7fD011W0ES2yrc483zD/uiu8epZx0yiFpgWEM6
-         NJHC5c52UWnHb2KI/HXsKGDS3wJwQilrMOLfm3TBormjBz7FANChJqJo+VcQrEZ7S+1k
-         VTfg==
-X-Gm-Message-State: AOAM530u1dLZ6WKIiozKgWXXbUGBZCCDsJi+S8qSKV7Lg0ECNzk34pA8
-        rmP4fK6QIyew4OA1F7vrumgL7ysg8KpP0z4c5GA=
-X-Google-Smtp-Source: ABdhPJxCB1f9GdvXE8F8LsYWDp/UuWVx87acnLfAlUxHfs6nA2EctCvgQWDEs0+k6q/Szn3sqGyXicrvLFdOiWSe4+Y=
-X-Received: by 2002:aca:cf4a:: with SMTP id f71mr2085846oig.157.1607006657415;
- Thu, 03 Dec 2020 06:44:17 -0800 (PST)
+        Thu, 3 Dec 2020 09:47:22 -0500
+Received: from [192.168.1.155] ([95.118.71.13]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1N1Ofr-1k1DLm2wnr-012nGT; Thu, 03 Dec 2020 15:44:41 +0100
+Subject: Re: [PATCH] (v2) drivers: clk: make gpio-gated clock support optional
+To:     Stephen Boyd <sboyd@kernel.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org
+Cc:     mturquette@baylibre.com, matthias.bgg@gmail.com,
+        linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org
+References: <20201117160306.21760-1-info@metux.net>
+ <160566373556.60232.14730664139007414312@swboyd.mtv.corp.google.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <13a5d811-8ebb-9ac8-ac2a-04110f71ea16@metux.net>
+Date:   Thu, 3 Dec 2020 15:44:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <1817571.2o5Kk4Ohv2@kreacher> <2174134.tL5yAn4CWt@kreacher> <20201203124141.GP3021@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201203124141.GP3021@hirez.programming.kicks-ass.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 3 Dec 2020 15:44:04 +0100
-Message-ID: <CAJZ5v0hhsRmije05gg+Hp2maivoF7i1n33LxYWEnSxhsWV1u=A@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/2] cpufreq: Add special-purpose fast-switching
- callback for drivers
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Doug Smythies <dsmythies@telus.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <160566373556.60232.14730664139007414312@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:QSQB3khoAeQ91gi0PGE7IbDjLwBPDKiHqj1H43XTH8ofEMvrxQf
+ feIo4eaNA7AC9f7QisxQlAqwm2p00voMbHur1aqXDevsFWo14yoFI/0NshawteQbFlD6QJl
+ ktle5vxvh1u+RVqfgeioAyvSYMA9DAUu5LjsRUwCAGCGSgE8lBZ7YQP0Ni+h7S1YY5Uubux
+ mlEJfO/QLmNF3PINEnDPQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9aOkMfjlCxI=:DXpPiaQDqGnYs6Y2IG7XND
+ nDasW+/vV2u0t2FexpuOG/QICh3PmOoHQ6eiSo6uqxgXj3jEFJXv9ZpB5+9rrfi6Z+AhEyt4G
+ ZttHG7CeDXXzCaYQoomPYXz73aFWW9Y2X4tSYmNwDV05vu43eU0w7FpXEYzPfO8EpGz7aOB1u
+ lX4utFMYfjPkny/1pgXxLFOprYNM89Gz8zoyHKUkF01RPyq5QtoRzFHEWqh/TKY8ZT/0HKRp7
+ 2zQcj9M13M4E8NibrsvG+f55NFBBBMH7dHfIikHzBg5PQ1dtlAHNJq8pN1JnmTBOrjkP4vRb4
+ 7U+XujxRkyxQIeNNUpAJiv3kMCXxSH73qbN3VRAnNdJ4Y4yCH/LH3NLK1SKcFwD5vj9VVizZc
+ 1A7uDbiE/VJOMNgrVso3NSWOeqFzv4JgEoTnyt7b1unWDnnKCNQd9IdaHIA78
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 1:42 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Nov 30, 2020 at 07:37:01PM +0100, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > First off, some cpufreq drivers (eg. intel_pstate) can pass hints
-> > beyond the current target frequency to the hardware and there are no
->
-> Everything CPPC, which is quite a bit these days.
+On 18.11.20 02:42, Stephen Boyd wrote:
+> Quoting Enrico Weigelt, metux IT consult (2020-11-17 08:03:06)
+>> diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+>> index c715d4681a0b..99e0188a15be 100644
+>> --- a/drivers/clk/Kconfig
+>> +++ b/drivers/clk/Kconfig
+>> @@ -38,6 +38,14 @@ menuconfig COMMON_CLK
+>>  
+>>  if COMMON_CLK
+>>  
+>> +config COMMON_CLK_GPIO
+>> +       tristate "GPIO gated clock support"
+>> +       default y
+> 
+> Maybe 'default GPIOLIB'?
+> 
+>> +       select gpiolib
+> 
+> Does lowercase work here?
+> 
+>> +       help
+>> +         Supports gpio gated clocks, which can be enabled/disabled via
+>> +         gpio output.
+>> +
+>>  config COMMON_CLK_WM831X
+>>         tristate "Clock driver for WM831x/2x PMICs"
+>>         depends on MFD_WM831X
 
-Right, but that is still "some". :-) I can add it to the list of
-examples, though.
 
-> > +     /*
-> > +      * ->fast_switch() replacement for drivers that use an internal
-> > +      * representation of performance levels and can pass hints other than
-> > +      * the target performance level to the hardware.
-> > +      */
-> > +     void            (*adjust_perf)(unsigned int cpu, bool busy,
-> > +                                    unsigned long min_perf,
-> > +                                    unsigned long target_perf,
-> > +                                    unsigned long capacity);
-> >
->
-> I'm not sure @busy makes sense, that's more a hack because @util had a
-> dip and should remain inside schedutil.
+thanks, fixed it in v3.
 
-So I did it this way, because schedutil would need to store the old
-value of target_perf for this and intel_pstate already does that.
 
-But if a new util_hook is used in this case, the existing space in
-sg_policy may be used for that.
+BTW: just accidentially posted an outdated and broken version again
+(some submit helper script was running wild :() - please ignore that.
+the valid one is v3 from yesterday. sorry for the noise.
 
-> > @@ -454,6 +455,25 @@ static void sugov_update_single(struct u
-> >       util = sugov_get_util(sg_cpu);
-> >       max = sg_cpu->max;
-> >       util = sugov_iowait_apply(sg_cpu, time, util, max);
-> > +
-> > +     /*
-> > +      * This code runs under rq->lock for the target CPU, so it won't run
-> > +      * concurrently on two different CPUs for the same target and it is not
-> > +      * necessary to acquire the lock in the fast switch case.
-> > +      */
-> > +     if (sg_policy->direct_fast_switch) {
-> > +             /*
-> > +              * In this case, any optimizations that can be done are up to
-> > +              * the driver.
-> > +              */
-> > +             cpufreq_driver_adjust_perf(sg_cpu->cpu,
-> > +                                        sugov_cpu_is_busy(sg_cpu),
-> > +                                        map_util_perf(sg_cpu->bw_dl),
-> > +                                        map_util_perf(util), max);
-> > +             sg_policy->last_freq_update_time = time;
-> > +             return;
-> > +     }
->
-> Instead of adding more branches, would it makes sense to simply set a
-> whole different util_hook in this case?
 
-Looks doable without too much code duplication.  Lemme try.
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
