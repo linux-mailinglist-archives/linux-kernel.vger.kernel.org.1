@@ -2,84 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87102CDD8F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A812CDD97
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502094AbgLCSZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:25:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502081AbgLCSZ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:25:28 -0500
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B956C061A4F;
-        Thu,  3 Dec 2020 10:25:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=U9iOOGWehdlRUZXMOAGYSmpHDwaEN5yGkIu/JuTNHLc=; b=yI9D3Vsc4WFLhHnJITFcP7XA6m
-        XEEYwWiZHdl/PR6CV76yIbz1IUCSxU3LXCJeECvZpomwq6CXR9nRdbWXxGFykzFZZtawk30VW+rFN
-        K3cC7FX4dvb5esv+Jlbhrtep6QiojsIiOlfFpBchnjhjYm1mhzS/mVOnKOokImwunf49tK59Hb1jz
-        Ph0wWAel3G5QvbHd3j2hnjLBKIjmVknDvrSQc5E1unA+Jlz5WZYRBZUBCWvPKekW+aPXUJqiswa8a
-        eVJruHrrDY3ZVms2atOGqW2ga41fmbs6Shlv4l3GC2mD6gt6t94ClaXd4VVenkwhUzkRbf7gZdGNA
-        tx4WbbPw==;
-Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=kapsi.fi)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <jarkko.sakkinen@iki.fi>)
-        id 1kktHk-0007HB-2X; Thu, 03 Dec 2020 20:24:56 +0200
-Date:   Thu, 3 Dec 2020 20:24:54 +0200
-From:   Jarkko Sakkinen <jarkko.sakkinen@iki.fi>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
-        linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/sgx: Initialize "ret" in sgx_ioc_enclave_add_pages()
-Message-ID: <20201203182454.GA123023@kapsi.fi>
-References: <20201202162200.88941-1-jarkko@kernel.org>
- <20201202173829.GG2951@zn.tnic>
+        id S2502119AbgLCSZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:25:49 -0500
+Received: from mga06.intel.com ([134.134.136.31]:48382 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502109AbgLCSZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:25:48 -0500
+IronPort-SDR: Wz80Pepfadsapr9z5+7kR8TorwCrcXys6lSG3FzxCWjm5kXDPWu6h89TYySb7rPgLNurQt+R1I
+ xd9Ci4o53h6g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="234854261"
+X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
+   d="scan'208";a="234854261"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 10:25:06 -0800
+IronPort-SDR: 1yZ6ymN8T1Ru5eWK//GwNd0draYxhFs3e3pHjha5XL21vzCJ0JYjmIZPD/XgmhI3I+/Mc4Ybv7
+ bQ4yqVHtbb5Q==
+X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
+   d="scan'208";a="482069934"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 10:25:05 -0800
+Date:   Thu, 3 Dec 2020 10:25:05 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Howells <dhowells@redhat.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Steve French <sfrench@samba.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Brian King <brking@us.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 01/17] mm/highmem: Lift memcpy_[to|from]_page and
+ memset_page to core
+Message-ID: <20201203182505.GD1563847@iweiny-DESK2.sc.intel.com>
+References: <20201124060755.1405602-1-ira.weiny@intel.com>
+ <20201124060755.1405602-2-ira.weiny@intel.com>
+ <160648238432.10416.12405581766428273347@jlahtine-mobl.ger.corp.intel.com>
+ <20201127132006.GY4327@casper.infradead.org>
+ <160672815223.3453.2374529656870007787@jlahtine-mobl.ger.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201202173829.GG2951@zn.tnic>
-X-SA-Exim-Connect-IP: 83.245.197.237
-X-SA-Exim-Mail-From: jarkko.sakkinen@iki.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+In-Reply-To: <160672815223.3453.2374529656870007787@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 06:38:29PM +0100, Borislav Petkov wrote:
-> On Wed, Dec 02, 2020 at 06:22:00PM +0200, Jarkko Sakkinen wrote:
-> > Initialize "ret" to zero as otherwise a zero length address range will
-> > leave it uninitialized.
+On Mon, Nov 30, 2020 at 11:22:32AM +0200, Joonas Lahtinen wrote:
+> Quoting Matthew Wilcox (2020-11-27 15:20:06)
+> > On Fri, Nov 27, 2020 at 03:06:24PM +0200, Joonas Lahtinen wrote:
+> > > Quoting ira.weiny@intel.com (2020-11-24 08:07:39)
+> > > > From: Ira Weiny <ira.weiny@intel.com>
+> > > > 
+> > > > Working through a conversion to a call such as kmap_thread() revealed
+> > > > many places where the pattern kmap/memcpy/kunmap occurred.
+> > > > 
+> > > > Eric Biggers, Matthew Wilcox, Christoph Hellwig, Dan Williams, and Al
+> > > > Viro all suggested putting this code into helper functions.  Al Viro
+> > > > further pointed out that these functions already existed in the iov_iter
+> > > > code.[1]
+> > > > 
+> > > > Placing these functions in 'highmem.h' is suboptimal especially with the
+> > > > changes being proposed in the functionality of kmap.  From a caller
+> > > > perspective including/using 'highmem.h' implies that the functions
+> > > > defined in that header are only required when highmem is in use which is
+> > > > increasingly not the case with modern processors.  Some headers like
+> > > > mm.h or string.h seem ok but don't really portray the functionality
+> > > > well.  'pagemap.h', on the other hand, makes sense and is already
+> > > > included in many of the places we want to convert.
+> > > > 
+> > > > Another alternative would be to create a new header for the promoted
+> > > > memcpy functions, but it masks the fact that these are designed to copy
+> > > > to/from pages using the kernel direct mappings and complicates matters
+> > > > with a new header.
+> > > > 
+> > > > Lift memcpy_to_page(), memcpy_from_page(), and memzero_page() to
+> > > > pagemap.h.
+> > > > 
+> > > > Also, add a memcpy_page(), memmove_page, and memset_page() to cover more
+> > > > kmap/mem*/kunmap. patterns.
+> > > > 
+> > > > [1] https://lore.kernel.org/lkml/20201013200149.GI3576660@ZenIV.linux.org.uk/
+> > > >     https://lore.kernel.org/lkml/20201013112544.GA5249@infradead.org/
+> > > > 
+> > > > Cc: Dave Hansen <dave.hansen@intel.com>
+> > > > Suggested-by: Matthew Wilcox <willy@infradead.org>
+> > > > Suggested-by: Christoph Hellwig <hch@infradead.org>
+> > > > Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> > > > Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+> > > > Suggested-by: Eric Biggers <ebiggers@kernel.org>
+> > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > > 
+> > > <SNIP>
+> > > 
+> > > > +static inline void memset_page(struct page *page, int val, size_t offset, size_t len)
+> > > > +{
+> > > > +       char *addr = kmap_atomic(page);
+> > > > +       memset(addr + offset, val, len);
+> > > > +       kunmap_atomic(addr);
+> > > > +}
+> > > 
+> > > Other functions have (page, offset) pair. Insertion of 'val' in the middle here required
+> > > to take a double look during review.
+> > 
+> > Let's be explicit here.  Your suggested order is:
+> > 
+> >         (page, offset, val, len)
+> > 
+> > right?  I think I would prefer that to (page, val, offset, len).
 > 
-> That length is:
-> 
->  * @length:     length of the data (multiple of the page size)
-> 
-> I think we wanna fail this even earlier when it wants to add data of
-> length 0 because that sounds nonsensical to me. Or is there some use
-> case for zero-length data?
-> 
-> Btw, pls CC lkml on patch submissions.
+> Yeah, I think that would be most consistent order.
 
-Yeah, makes sense to fail right after copying the parameter struct
-with -EINVAL.
+Yes as I have been reworking these I have found it odd as well.  I'm going to
+swap it around.  Been learning Coccinelle which has helped find other
+instances...  So V2 is taking a bit of time.
 
-> Thx.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-> 
+Thanks,
+Ira
 
-/Jarkko
