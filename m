@@ -2,137 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074962CD4E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B06072CD4EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730192AbgLCLsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:48:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51776 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726710AbgLCLsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:48:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606996070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WdKmdYnwmnj2SC50EKwyFiX7FW/+oQeHbUAT/XBMu74=;
-        b=Z3WBmDj49gC8U1gp2kb3oi8QpP7B85jdgQlpkvQcvulESDp0PXpILM5nZz/hp5jw9+/afT
-        8hPFNYJ5G4JqUUSMaYgIeXW6dYQHvyjSu2UDffeIr/zW/ADnaQ5faqZE9Uq4gJGgqTCaSQ
-        kils5BbwPWFohjg0fKAXoMG9UqDj1mg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D83D9AC75;
-        Thu,  3 Dec 2020 11:47:49 +0000 (UTC)
-Date:   Thu, 3 Dec 2020 12:47:48 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, hyesoo.yu@samsung.com,
-        willy@infradead.org, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
-        surenb@google.com, pullip.cho@samsung.com, joaodias@google.com,
-        hridya@google.com, sumit.semwal@linaro.org, john.stultz@linaro.org,
-        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org,
-        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v2 2/4] mm: introduce cma_alloc_bulk API
-Message-ID: <20201203114748.GB17338@dhcp22.suse.cz>
-References: <8f006a4a-c21d-9db3-5493-fb1cc651b0cf@redhat.com>
- <20201202154915.GU17338@dhcp22.suse.cz>
- <X8e9tSwcsrEsAv1O@google.com>
- <20201202164834.GV17338@dhcp22.suse.cz>
- <X8fU1ddmsSfuV6sD@google.com>
- <20201202185107.GW17338@dhcp22.suse.cz>
- <X8fqU82GXmu57f7V@google.com>
- <f0e980cb-cc74-82e8-6ccf-09030a96103a@redhat.com>
- <20201203082810.GX17338@dhcp22.suse.cz>
- <c5209dce-dc30-6d8d-e8f8-c5412b072310@redhat.com>
+        id S1730313AbgLCLvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:51:41 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14262 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726874AbgLCLvi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 06:51:38 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B3Bf0Ou131813;
+        Thu, 3 Dec 2020 06:50:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=NB0+Qh1bkZLQI3ZOcH++d50o1IticgktyjhpCKbjgb8=;
+ b=pDTeRuiSKbNvdWW3Ea85Cm/g9lAzHFcvyYYaoS9SDP4egMOzxe+kM3qsvepftgInRhQC
+ qot6qYoObIWkTM9wkADryOh4b5UURZ93y9osGop4ZK6q3IOMjjF4fyEl5l3XedSItOSa
+ 0r51Q16baTsO6Cn+81y8UhIkbQ2FFSOb4mhLm8unYliak3l3afwez6/CDkAobaH8oHtv
+ dZYE9ApPjqJxudXHr6XbpntSZkvL+Qr2WnmcPWSXRHDCgG12mQbXiLr/Qmigt4ntHwzW
+ IxsG+6FFr/PFz8ujCCBri3Qh4MGiozyTYCcDB3iS/mZ+4/z7PhswifRAbCBOFsGGsCE2 /w== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 356wbemn0f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 06:50:51 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B3BhJTL030799;
+        Thu, 3 Dec 2020 11:50:48 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 353e687nvh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 11:50:48 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B3BmG6V7799342
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Dec 2020 11:48:16 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 74CACAE05F;
+        Thu,  3 Dec 2020 11:48:16 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 245ADAE057;
+        Thu,  3 Dec 2020 11:48:16 +0000 (GMT)
+Received: from [9.145.44.252] (unknown [9.145.44.252])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  3 Dec 2020 11:48:16 +0000 (GMT)
+Subject: Re: arch/s390/pci/pci_event.c:101 __zpci_event_availability() error:
+ we previously assumed 'zdev->zbus' could be null (see line 83)
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Heiko Carstens <heiko.carstens@de.ibm.com>
+References: <20201203102759.GQ2767@kadam>
+ <52b96642-f78c-478e-913d-b294c385c5ab@linux.ibm.com>
+ <20201203111954.GK2789@kadam>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Message-ID: <92d88da8-b5ab-4c50-25c8-d8bf045551e4@linux.ibm.com>
+Date:   Thu, 3 Dec 2020 12:48:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c5209dce-dc30-6d8d-e8f8-c5412b072310@redhat.com>
+In-Reply-To: <20201203111954.GK2789@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-03_06:2020-12-03,2020-12-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ spamscore=0 priorityscore=1501 phishscore=0 clxscore=1015 impostorscore=0
+ malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012030071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 03-12-20 10:47:02, David Hildenbrand wrote:
-> On 03.12.20 09:28, Michal Hocko wrote:
-[...]
-> > I think we should aim at easy and very highlevel behavior:
-> > - GFP_NOWAIT - unsupported currently IIRC but something that something
-> >   that should be possible to implement. Isolation is non blocking,
-> >   migration could be skipped
-> > - GFP_KERNEL - default behavior whatever that means
-> > - GFP_NORETRY - opportunistic allocation as lightweight as we can get.
-> >   Failures to be expected also for transient reasons.
-> > - GFP_RETRY_MAYFAIL - try hard but not as hard as to trigger disruption
-> >   (e.g. via oom killer).
-> 
-> I think we currently see demand for 3 modes for alloc_contig_range()
-> 
-> a) normal
-> 
-> As is. Try, but don't try too hard. E.g., drain LRU, drain PCP, retry a
-> couple of times. Failures in some cases (short-term pinning, PCP races)
-> are still possible and acceptable.
-> 
-> GFP_RETRY_MAYFAIL ?
 
-normal shouldn't really require anybody to think about gfp flags hard.
-That to most people really means GFP_KERNEL.
 
-> E.g., "Allocations with this flag may fail, but only when there is
-> genuinely little unused memory." - current description does not match at
-> all. When allocating ranges things behave completely different.
+On 12/3/20 12:19 PM, Dan Carpenter wrote:
+> On Thu, Dec 03, 2020 at 11:52:48AM +0100, Niklas Schnelle wrote:
+>>
+>>
+>> On 12/3/20 11:27 AM, Dan Carpenter wrote:
+>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+>>> head:   3bb61aa61828499a7d0f5e560051625fd02ae7e4
+>>> commit: 3047766bc6ec9c6bc9ece85b45a41ff401e8d988 s390/pci: fix enabling a reserved PCI function
+>>>
+>>> If you fix the issue, kindly add following tag as appropriate
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>>>
+>>> smatch warnings:
+>>> arch/s390/pci/pci_event.c:101 __zpci_event_availability() error: we previously assumed 'zdev->zbus' could be null (see line 83)
+>>>
+>>> vim +101 arch/s390/pci/pci_event.c
+>>>
+>>> aa3b7c296732b43 Sebastian Ott   2013-12-12   76  static void __zpci_event_availability(struct zpci_ccdf_avail *ccdf)
+>>> cbc0dd1f856b52b Jan Glauber     2012-11-29   77  {
+>>> cbc0dd1f856b52b Jan Glauber     2012-11-29   78  	struct zpci_dev *zdev = get_zdev_by_fid(ccdf->fid);
+>>> 9a99649f2a89fdf Sebastian Ott   2016-01-29   79  	struct pci_dev *pdev = NULL;
+>>> 623bd44d3f277b7 Sebastian Ott   2017-05-09   80  	enum zpci_state state;
+>>> d795ddad36cbc82 Sebastian Ott   2013-11-15   81  	int ret;
+>>> cbc0dd1f856b52b Jan Glauber     2012-11-29   82  
+>>> 05bc1be6db4b268 Pierre Morel    2020-03-23  @83  	if (zdev && zdev->zbus && zdev->zbus->bus)
+>>>                                                                      ^^^^^^^^^
+>>> Check for NULL
+>>>
+>>> 44510d6fa0c00aa Pierre Morel    2020-04-22   84  		pdev = pci_get_slot(zdev->zbus->bus, zdev->devfn);
+>>> 9a99649f2a89fdf Sebastian Ott   2016-01-29   85  
+>>> 1f1dcbd4f23bd1f Sebastian Ott   2013-10-22   86  	zpci_err("avail CCDF:\n");
+>>> 1f1dcbd4f23bd1f Sebastian Ott   2013-10-22   87  	zpci_err_hex(ccdf, sizeof(*ccdf));
+>>> cbc0dd1f856b52b Jan Glauber     2012-11-29   88  
+>>> cbc0dd1f856b52b Jan Glauber     2012-11-29   89  	switch (ccdf->pec) {
+>>> 7fc611ff3ff1a0b Sebastian Ott   2015-06-16   90  	case 0x0301: /* Reserved|Standby -> Configured */
+>>> 7fc611ff3ff1a0b Sebastian Ott   2015-06-16   91  		if (!zdev) {
+>>> f606b3ef47c9f87 Pierre Morel    2020-03-25   92  			ret = clp_add_pci_device(ccdf->fid, ccdf->fh, 1);
+>>> 7fc611ff3ff1a0b Sebastian Ott   2015-06-16   93  			break;
+>>> 7fc611ff3ff1a0b Sebastian Ott   2015-06-16   94  		}
+>>> fcf2f402937a669 Sebastian Ott   2013-12-18   95  		zdev->fh = ccdf->fh;
+>>> f606b3ef47c9f87 Pierre Morel    2020-03-25   96  		zdev->state = ZPCI_FN_STATE_CONFIGURED;
+>>> 3047766bc6ec9c6 Niklas Schnelle 2020-06-18   97  		ret = zpci_enable_device(zdev);
+>>> 3047766bc6ec9c6 Niklas Schnelle 2020-06-18   98  		if (ret)
+>>> 3047766bc6ec9c6 Niklas Schnelle 2020-06-18   99  			break;
+>>> 3047766bc6ec9c6 Niklas Schnelle 2020-06-18  100  
+>>> 3047766bc6ec9c6 Niklas Schnelle 2020-06-18 @101  		pdev = pci_scan_single_device(zdev->zbus->bus, zdev->devfn);
+>>>                                                                                               ^^^^^^^^^^^^^^^^
+>>> Unchecked dereference
+>>
+>> First, thanks for reporting this is definitely appreciated!
+>> We have also seen the same smatch report internally 
+>> and I determined that this is a false positive.
+>>
+>> This is because the existing zdev->zbus NULL check could already never
+>> trigger.
 > 
-> 
-> b) fast
-> 
-> Try, but fail fast. Leave optimizations that can improve the result to
-> the caller. E.g., don't drain LRU, don't drain PCP, don't retry.
-> Frequent failures are expected and acceptable.
-> 
-> __GFP_NORETRY ?
-> 
-> E.g., "The VM implementation will try only very lightweight memory
-> direct reclaim to get some memory under memory pressure" - again, I
-> think current description does not really match.
+> I don't consider it a "false positive" exactly because the NULL checking
+> is inconsisent.  I would instead say that it is "correct but harmless".
 
-Agreed. As mentioned above this would be an opportunistic allocation
-mode.
+Good point, I think your wording captures the situation better and I agree
+the checks as is definitely inconsistent.
 
- 
-> c) hard
 > 
-> Try hard, E.g., temporarily disabling the PCP. Certainly not
-> __GFP_NOFAIL, that would be highly dangerous. So no flags / GFP_KERNEL?
+> That said, if Smatch can determined that "zdev->zbus" is not NULL then
+> it doesn't print a warning in these situations.  As it stands now Smatch
+> doesn't understand lists very well, but I plan to fix this in upcoming
+> months.  Once that gets fixed, Smatch will still assume that
+> zpci_create_device() is racy...  :/  And then finally it will only
+> silence the warning when the cross function database has been built and
+> I don't think the the zero bot builds the DB for s390.
 
-NOFAIL semantic is out of question. Should we have a mode to try harder
-than the default? I dunno. Do we have users? I think RETRY_MAYFAIL is a
-middle ground between the default and NORETRY which is just too easy to
-fail. This is the case for the allocator as well. And from what I have
-seen people are already using MAYFAIL in order to prevent oom killer so
-this is a generally recognized pattern.
+Sounds like some exciting developments are ahead that will
+make smatch even more powerful. That said, it's already pretty amazing
+to me what it does.
 
-> > - __GFP_THIS_NODE - stick to a node without fallback
-> > - we can support zone modifiers although there is no existing user.
-> > - __GFP_NOWARN - obvious
-> > 
-> > And that is it. Or maybe I am seeing that oversimplified.
-> > 
 > 
-> Again, I think most flags make sense for the migration target allocation
->  path and mainly deal with OOM situations and reclaim. For the migration
-> path - which is specific to the alloc_contig_range() allocater - they
-> don't really apply and create more confusion than they actually help - IMHO.
+> Anyway, these don't affect runtime so it's not time sensitive.  Thanks
+> for taking the time to look at these!
 
-Migration is really an implementation detail of this interface. You
-shouldn't be even thinking that there is a migration underneath not even
-mention to actually trying to control it. But well, we might end up
-disagreeing here. What actually matters is existing users of the
-interface.
+Thank you for working on smatch. The report it gave for this definitely
+made it easy to understand why it was complaining and when I saw it on our
+internal smatch I too wasn't immediately sure it was harmless so the report was
+definitely useful.
 
--- 
-Michal Hocko
-SUSE Labs
+> 
+> regards,
+> dan carpenter
+> 
