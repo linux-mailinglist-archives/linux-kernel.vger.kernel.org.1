@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCBA2CD99B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5B62CD9A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727686AbgLCOxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 09:53:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57454 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726452AbgLCOxf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:53:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D6E6DAC6A;
-        Thu,  3 Dec 2020 14:52:53 +0000 (UTC)
-Message-ID: <25466e2a562765be1d67abd2d1bdae1a089a8d33.camel@suse.de>
-Subject: Re: [PATCH v5 08/11] input: raspberrypi-ts: Release firmware handle
- when not needed
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
-        f.fainelli@gmail.com, linux-pwm@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        wahrenst@gmx.net, linux-input@vger.kernel.org,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        p.zabel@pengutronix.de, linux-gpio@vger.kernel.org,
-        linus.walleij@linaro.org, linux-clk@vger.kernel.org,
-        sboyd@kernel.org, linux-rpi-kernel@lists.infradead.org,
-        bgolaszewski@baylibre.com, andy.shevchenko@gmail.com
-Date:   Thu, 03 Dec 2020 15:52:52 +0100
-In-Reply-To: <20201202060347.GA2034289@dtor-ws>
-References: <20201123183833.18750-1-nsaenzjulienne@suse.de>
-         <20201123183833.18750-9-nsaenzjulienne@suse.de>
-         <20201202060347.GA2034289@dtor-ws>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-ZvftALHIaTsXsRIracDG"
-User-Agent: Evolution 3.38.2 
+        id S1728022AbgLCOzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 09:55:44 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2200 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726056AbgLCOzo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 09:55:44 -0500
+Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CmzND2Zsqz67LbF;
+        Thu,  3 Dec 2020 22:53:00 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 3 Dec 2020 15:54:57 +0100
+Received: from [10.47.8.200] (10.47.8.200) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 3 Dec 2020
+ 14:54:56 +0000
+Subject: Re: [RESEND PATCH v3 0/4] iommu/iova: Solve longterm IOVA issue
+To:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Will Deacon <will@kernel.org>
+CC:     Joerg Roedel <joro@8bytes.org>, <robin.murphy@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <kernel-team@android.com>, <xiyou.wangcong@gmail.com>,
+        <linuxarm@huawei.com>, <iommu@lists.linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
+ <160685669713.992935.17438167536143205811.b4-ty@kernel.org>
+ <CAJwJo6YmF+tW2_it2BLCP6fLBrUR6kfx7jG0hsNy6uYG203Jfw@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <6e09d847-fb7f-1ec1-02bf-f0c8b315845f@huawei.com>
+Date:   Thu, 3 Dec 2020 14:54:27 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
+In-Reply-To: <CAJwJo6YmF+tW2_it2BLCP6fLBrUR6kfx7jG0hsNy6uYG203Jfw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.8.200]
+X-ClientProxiedBy: lhreml734-chm.china.huawei.com (10.201.108.85) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 03/12/2020 06:04, Dmitry Safonov wrote:
+> On Tue, 1 Dec 2020 at 21:50, Will Deacon<will@kernel.org>  wrote:
+>> On Tue, 17 Nov 2020 18:25:30 +0800, John Garry wrote:
+>>> This series contains a patch to solve the longterm IOVA issue which
+>>> leizhen originally tried to address at [0].
+>>>
+>>> A sieved kernel log is at the following, showing periodic dumps of IOVA
+>>> sizes, per CPU and per depot bin, per IOVA size granule:
+>>> https://raw.githubusercontent.com/hisilicon/kernel-dev/topic-iommu-5.10-iova-debug-v3/aging_test
+>>>
+>>> [...]
+>> Applied the final patch to arm64 (for-next/iommu/iova), thanks!
+>>
+>> [4/4] iommu: avoid taking iova_rbtree_lock twice
+>>        https://git.kernel.org/arm64/c/3a651b3a27a1
+> Glad it made in next, 2 years ago I couldn't convince iommu maintainer
+> it's worth it (but with a different justification):
+> https://lore.kernel.org/linux-iommu/20180621180823.805-3-dima@arista.com/
 
---=-ZvftALHIaTsXsRIracDG
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hi Dmitry,
 
-On Tue, 2020-12-01 at 22:03 -0800, Dmitry Torokhov wrote:
-> Hi Nicolas,
->=20
-> On Mon, Nov 23, 2020 at 07:38:29PM +0100, Nicolas Saenz Julienne wrote:
-> > Use devm_rpi_firmware_get() so as to make sure we release RPi's firmwar=
-e
-> > interface when unbinding the device.
->=20
-> I do not believe this comment is correct any longer. Otherwise:
->=20
-> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+I was unaware of your series, and it’s unfortunate that your 
+optimization never made it. However I was having a quick look there, 
+and, in case you did not notice, that the code which you were proposing 
+changing in patch #1 for intel-iommu.c was removed in e70b081c6f37 
+("iommu/vt-d: Remove IOVA handling code from the non-dma_ops path").
 
-Yes, sorry for that. I'll update it.
+BTW, split_and_remove_iova() has no in-tree users anymore, so I can send 
+a patch to delete if nobody else wants to.
 
-Regards,
-Nicolas
+BTW2, there's some more patches in my series which could use a review if 
+you're feeling very helpful :)
 
-
---=-ZvftALHIaTsXsRIracDG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl/I+8QACgkQlfZmHno8
-x/7NvQf+JfeK0Lnf/15akeGZ/8CgqH3D9RSZKgyFKFIcOAUVnKXWdodRdXxrVu0+
-1VgbGz2N5efgb/8exdYKRQqJine/T/NLCHW1PcrUE/NJPvJZ+JdM8P+JcOndFCv3
-ERWwKGhxK5gboL1Av3jiy9rUGSc/xDfmV5JZVDGnaANaDx7TWE0ZrznAqmwLhxfb
-qWo3bToylX8NAWP5vNs24bzPP7KyQHBwXDNuC3LIg3n9D5aj8s/qq/ZbHK3upjIG
-M/3jrHsvITNvyvy5xVhJhlzywtd2780n2VbwUW4JkfxELPxeCrJRmSyop46k98zX
-qBEeTzyBfM9kHKAcklkuqve2moyBtw==
-=2QiO
------END PGP SIGNATURE-----
-
---=-ZvftALHIaTsXsRIracDG--
-
+Cheers,
+John
