@@ -2,265 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB3842CCFD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:53:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD18C2CCFD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729856AbgLCGul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:50:41 -0500
-Received: from mout.gmx.net ([212.227.15.18]:54571 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727394AbgLCGul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 01:50:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606978144;
-        bh=FbTouvJFoFTi6OZTDP2GToir8Sio2bIbnJdc/EWnyEE=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=G5mCElKTbqWH6HbS/sc3aPl4bs+K41MvEJpvUymB8HZ7HciV9Plfk/Hv7KNH+zo7u
-         W2UVKMZKvRclwuDn/prWwLTEdP8YXh2VJ61kWU+sDi8IVmhOM5DqZl6Z+KV/J8XORM
-         OWgot9ZmDa/aBLFmKKi96zzWVUrHr56rMB+PZN68=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.123.51] ([62.143.246.89]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MyKHm-1jxAAN3MuC-00yhli; Thu, 03
- Dec 2020 07:49:03 +0100
-Subject: Re: [PATCH 1/1] efi/efi_test: read RuntimeServicesSupported
-To:     ivanhu <ivan.hu@canonical.com>, Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Colin King <colin.king@canonical.com>,
-        fwts-devel@lists.ubuntu.com
-References: <20201127192051.1430-1-xypron.glpk@gmx.de>
- <1fbab8b3-3a37-f3f5-39b4-0c8123d27b29@canonical.com>
- <b1d8c534-8b47-5653-cf52-71ad5323ef14@gmx.de>
- <b230c85b-0015-d494-52ef-c6177f923e48@canonical.com>
- <9feb54b4-447a-12f9-d781-e510623c2aef@gmx.de>
- <1315e36e-44f1-d753-935e-b6fbe71756e3@canonical.com>
-From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
-Message-ID: <5c5ed9f7-616d-877c-6bc2-a2deef89b532@gmx.de>
-Date:   Thu, 3 Dec 2020 07:48:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1729693AbgLCGuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:50:14 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:14066 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729114AbgLCGuO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 01:50:14 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fc88a7d0000>; Wed, 02 Dec 2020 22:49:33 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Dec
+ 2020 06:49:32 +0000
+Date:   Thu, 3 Dec 2020 08:49:28 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Jason Wang <jasowang@redhat.com>, Cindy Lu <lulu@redhat.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
+Message-ID: <20201203064928.GA27404@mtl-vdi-166.wap.labs.mlnx>
+References: <20201130092759.GB99449@mtl-vdi-166.wap.labs.mlnx>
+ <20201130043050-mutt-send-email-mst@kernel.org>
+ <CACLfguXB+SzocLppNtrTZwKPFsshS8TLVe8_iFJxgjT-cFpSzA@mail.gmail.com>
+ <20201130103142-mutt-send-email-mst@kernel.org>
+ <CACLfguWDFgJUJTJik1obvv-vzacRwgkfsN=-Uouu+K9dAKFE+A@mail.gmail.com>
+ <e52b94b6-42a8-1270-1e10-d1905ccae598@redhat.com>
+ <20201202055714.GA224423@mtl-vdi-166.wap.labs.mlnx>
+ <20201202041518-mutt-send-email-mst@kernel.org>
+ <3e32ef6d-83c9-5866-30e5-f6eeacd5044d@redhat.com>
+ <20201202165932-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1315e36e-44f1-d753-935e-b6fbe71756e3@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tC1ZmgKamc6o6DLi91oWcFocLyHvVzs3PpIacxpNAM6TscPYTGX
- MlJ3PhV4g4L1P0hLjmARCYZ/5KhiJEvaPS3ZM/yxfeE/JH4kaiVvwPOB8NJjqxf8EUnkWH5
- NSIJGJWstW24QekrPV0yVxdCyUwu6vZ8sbNSjDc/P2EQJfMlVCe8DydI8OgLFEPxrBLw32I
- HTrTG40spCB/VE7Jy5gpg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RAMIgErC4TU=:xB48RqWjarQivmuu4pb2QU
- 2MswZlUxD2AbkxFtbPLdpap2eLC65csV7TqV7/cuLZcMueJExbIpZjRuPQ+iF1boiQnxy41Wz
- NTI1Cv6kYGBPtWeCmUb4YXRI1TWFDUakAEC8Umf3b13j5uY+rjO2zO+n5qWFRmJRvo4ciPndV
- CUadTd9egD81AXHEQ+HsCE8pOKq5VYRnHtbqdoFpIxoDgDogp72Ycw2nR31DLuZ25dZVAOYeo
- zTHBwSdO+8TnwiEFplXulpG9lS+OzFyF4Qg76KH/dLujXnsash7fSATyBApg8pABMTQJpTPMW
- b1CErsE7oscZcnkojodd8+2kgOCDSuZe9yJtfRxUrDUOvfEw73l4koEf4+jWWDrRaQpzfeuM9
- +y+N3qzp5knry88v3QFTbu9iT1Qn+sFoq1H7s+HWYNwamMDfJGJgtvIbtThYWbOf5ka4PWv5i
- Gi1md+ViSWNdRsdaJshrpSh0QE55WTGe0o9dvZh6rQl/fRK8p9KYYZDzU+466AbDkzx5CiYW7
- V/IkqnpQKBdKHousvdTjqZ4N7yhf4Dkf118ymaCOOdBOOeNOdKiGrSyQyJVn9xJwsCHGbUm/d
- ictgbbZGJGvO3rF3e2ix+Zid02zi4SsNhAyTGC289zh4OuO3WeQ2tDCXs2fAiTaHSWqGxyQRU
- J9xuPdR7f2q7Pn1jsCtDWHhjX6/BMG4stAWii4/NvRXIUB4sTW6RrmLCmcsq0d35VBTcRjdRD
- 6GEVlmgX4VB6sHJz6VGZtNyLzYc4zW98wI7JUVRLbaAOaOtHuUs657fsXXgCXBFgASx2EQ74N
- P9omvHwmwaK4Caj4WMgIftCZBn8u1i/FVLxQ4954cL/RGot2oi8Nyn/eZ2bS2EmEDvrTIyu/e
- QgGIvttIzqfvPRcGbtoA==
+In-Reply-To: <20201202165932-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606978173; bh=rmEb5eJvsyJwIGz1fgWqF1+e7peJkGRDGkK7Rlu4wwY=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:Content-Transfer-Encoding:
+         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=WwOfoU9wXI4yXeZ9Pgo0RiiYXmkSf678T9q3G3u9cjHOHyEq9mNps9v1wDR0iEUOW
+         tY7aeKQJvTaJFcBUSTaHE/2w+nCa0eWiVkLFxW1aA72+vW7xFzuJl9XQvs8T5cbcmw
+         WEk5+M+biScOHPvzXuoE0kE8vcjtEeVF2UJ3DC8XZ9Ufpp1U96ZdWcbFjBKWjqJXt1
+         vES4M7HTPlUV3uYG5ZDpEHVV7DTVSc5I3Tz2GWBOcgHL2qM1Ewm+4bC2uLjFBlYQoa
+         WGexA2+V3znoYfmP4OJWrXn819D86uuegeD056Mpas2V8lnll+RJ0E4E2CsXni8dss
+         jnLiE8vrmvafg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/3/20 2:20 AM, ivanhu wrote:
->
->
-> On 12/2/20 7:38 PM, Heinrich Schuchardt wrote:
->> On 11/30/20 11:38 AM, ivanhu wrote:
->>>
->>>
->>> On 11/30/20 5:17 PM, Heinrich Schuchardt wrote:
->>>> On 11/30/20 9:16 AM, ivanhu wrote:
->>>>> Hi Heinrich,
->>>>>
->>>>> Thanks for the patch.
->>>>> It looks good to me, but I noticed that the runtime_supported_mask w=
-as
->>>>> introduced after 5.7-rc1.
->>>>> Maybe we should add the kernel version checking for the old kernels.
->>>>
->>>> This is a kernel patch. Why should we check the kernel version in the
->>>> kernel code?
->>>>
->>>> As patches may be back-ported we should not make any assumptions in f=
-wts
->>>> based on the kernel version. If the ioctl() call fails with errno =3D
->>>> ENOTTY, we know that the kernel does not implement the ioctl call and=
- we
->>>> have to assume that all runtime services are available.
->>>
->>> Sounds good to me,
->>> Acked-by: Ivan Hu <ivan.hu@canonical.com>
->>>
->>> And I will replace the reading RuntimeServicesSupported efi variable b=
-y
->>> using efi_test in fwts RuntimeServicesSupported tests.
->>>
->>> FWTS will still test those Unsupported Runtime services to check if it
->>> returns EFI_UNSUPPORTED correctly.
->>> Is that could solve your problem?
->>> If I remember correctly, the problem from you is not to test those
->>> marked Unsupported Runtime services. But from the Spec. 8.1 Runtime
->>> Services Rules and Restrictions,
->>
->> The problem I reported was that it is impossible to test UEFI runtime
->> services on U-Boot because FWTS tries to read the non-existent
->> RuntimeServicesSupported UEFI variable and mistakenly assumes that if
->> the variable does not exist none of the runtime services is implemented=
-.
->
-> Could you provide the result log for me to check?
-
-https://github.com/U-Boot-EFI/u-boot-fwts-results/blob/master/fwts_20_11_f=
-ails.txt
-
-is the results log from FWTS 20.11.
-
-https://github.com/U-Boot-EFI/u-boot-fwts-results/blob/master/results-2020=
--10-31.txt
-
-is the results log from a FWTS built from this branch:
-https://github.com/xypron/fwts/commits/bugfixes
-
-Best regards
-
-Heinrich
-
->
-> Ivan
->>
->> The correct thing to do in FWTS is:
->>
->> * read RuntimeServicesSupported via the ioctl
->> * if the ioctl fails assume that all runtime services
->>  =C2=A0 are implemented
->> * if the ioctl fails with errno !=3D ENOTTY write an error message
->> * for each runtime service marked as not supported
->>  =C2=A0 check that it returns EFI_UNSUPPORTED
->> * for each service marked as supported
->>  =C2=A0 check that it works correctly
->>
->> Best regards
->>
->> Heinrich
->>
->>> "
->>> Note that this is merely a hint to the OS, which it is free to ignore,
->>> and so the platform is still required to provide callable
->>> implementations of unsupported runtime services that simply return
->>> EFI_UNSUPPORTED.
->>> "
->>>
->>> Cheers,
->>> Ivan
->>>>
->>>> Best regards
->>>>
->>>> Heinrich
->>>>
->>>>>
->>>>> Cheers,
->>>>> Ivan
->>>>>
->>>>> On 11/28/20 3:20 AM, Heinrich Schuchardt wrote:
->>>>>> Since the UEFI 2.8A specification the UEFI enabled firmware provide=
-s a
->>>>>> configuration table EFI_RT_PROPERTIES_TABLE which indicates which
->>>>>> runtime
->>>>>> services are enabled. The EFI stub reads this table and saves the
->>>>>> value of
->>>>>> the field RuntimeServicesSupported internally.
->>>>>>
->>>>>> The Firmware Test Suite requires the value to determine if UEFI
->>>>>> runtime
->>>>>> services are correctly implemented.
->>>>>>
->>>>>> With this patch an IOCTL call is provided to read the value of the
->>>>>> field
->>>>>> RuntimeServicesSupported, e.g.
->>>>>>
->>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #define EFI_RUNTIME_GET_SUPPORTED_M=
-ASK \
->>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 _IOR('p', 0x0C, unsigned int)
->>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int mask;
->>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fd =3D open("/dev/efi_test", O_RDWR=
-);
->>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D ioctl(fd, EFI_RUNTIME_GET_S=
-UPPORTED_MASK, &mask);
->>>>>>
->>>>>> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
->>>>>> ---
->>>>>>  =C2=A0=C2=A0 drivers/firmware/efi/test/efi_test.c | 16 +++++++++++=
-+++++
->>>>>>  =C2=A0=C2=A0 drivers/firmware/efi/test/efi_test.h |=C2=A0 3 +++
->>>>>>  =C2=A0=C2=A0 2 files changed, 19 insertions(+)
->>>>>>
->>>>>> diff --git a/drivers/firmware/efi/test/efi_test.c
->>>>>> b/drivers/firmware/efi/test/efi_test.c
->>>>>> index ddf9eae396fe..47d67bb0a516 100644
->>>>>> --- a/drivers/firmware/efi/test/efi_test.c
->>>>>> +++ b/drivers/firmware/efi/test/efi_test.c
->>>>>> @@ -663,6 +663,19 @@ static long
->>>>>> efi_runtime_query_capsulecaps(unsigned long arg)
->>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return rv;
->>>>>>  =C2=A0=C2=A0 }
->>>>>>
->>>>>> +static long efi_runtime_get_supported_mask(unsigned long arg)
->>>>>> +{
->>>>>> +=C2=A0=C2=A0=C2=A0 unsigned int __user *supported_mask;
->>>>>> +=C2=A0=C2=A0=C2=A0 int rv =3D 0;
->>>>>> +
->>>>>> +=C2=A0=C2=A0=C2=A0 supported_mask =3D (unsigned int *)arg;
->>>>>> +
->>>>>> +=C2=A0=C2=A0=C2=A0 if (put_user(efi.runtime_supported_mask, suppor=
-ted_mask))
->>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rv =3D -EFAULT;
->>>>>> +
->>>>>> +=C2=A0=C2=A0=C2=A0 return rv;
->>>>>> +}
->>>>>> +
->>>>>>  =C2=A0=C2=A0 static long efi_test_ioctl(struct file *file, unsigne=
-d int cmd,
->>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long arg)
->>>>>>  =C2=A0=C2=A0 {
->>>>>> @@ -699,6 +712,9 @@ static long efi_test_ioctl(struct file *file,
->>>>>> unsigned int cmd,
->>>>>>
->>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case EFI_RUNTIME_RESET_SYSTEM=
+On Wed, Dec 02, 2020 at 05:00:22PM -0500, Michael S. Tsirkin wrote:
+> On Wed, Dec 02, 2020 at 09:48:25PM +0800, Jason Wang wrote:
+> >=20
+> > On 2020/12/2 =E4=B8=8B=E5=8D=885:23, Michael S. Tsirkin wrote:
+> > > On Wed, Dec 02, 2020 at 07:57:14AM +0200, Eli Cohen wrote:
+> > > > On Wed, Dec 02, 2020 at 12:18:36PM +0800, Jason Wang wrote:
+> > > > > On 2020/12/1 =E4=B8=8B=E5=8D=885:23, Cindy Lu wrote:
+> > > > > > On Mon, Nov 30, 2020 at 11:33 PM Michael S. Tsirkin<mst@redhat.=
+com>  wrote:
+> > > > > > > On Mon, Nov 30, 2020 at 06:41:45PM +0800, Cindy Lu wrote:
+> > > > > > > > On Mon, Nov 30, 2020 at 5:33 PM Michael S. Tsirkin<mst@redh=
+at.com>  wrote:
+> > > > > > > > > On Mon, Nov 30, 2020 at 11:27:59AM +0200, Eli Cohen wrote=
 :
->>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retur=
-n efi_runtime_reset_system(arg);
->>>>>> +
->>>>>> +=C2=A0=C2=A0=C2=A0 case EFI_RUNTIME_GET_SUPPORTED_MASK:
->>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return efi_runtime_get_=
-supported_mask(arg);
->>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>>>
->>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOTTY;
->>>>>> diff --git a/drivers/firmware/efi/test/efi_test.h
->>>>>> b/drivers/firmware/efi/test/efi_test.h
->>>>>> index f2446aa1c2e3..117349e57993 100644
->>>>>> --- a/drivers/firmware/efi/test/efi_test.h
->>>>>> +++ b/drivers/firmware/efi/test/efi_test.h
->>>>>> @@ -118,4 +118,7 @@ struct efi_resetsystem {
->>>>>>  =C2=A0=C2=A0 #define EFI_RUNTIME_RESET_SYSTEM \
->>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 _IOW('p', 0x0B, struct efi_re=
-setsystem)
->>>>>>
->>>>>> +#define EFI_RUNTIME_GET_SUPPORTED_MASK \
->>>>>> +=C2=A0=C2=A0=C2=A0 _IOR('p', 0x0C, unsigned int)
->>>>>> +
->>>>>>  =C2=A0=C2=A0 #endif /* _DRIVERS_FIRMWARE_EFI_TEST_H_ */
->>>>>> --
->>>>>> 2.29.2
->>>>>>
->>>>
->>
+> > > > > > > > > > On Mon, Nov 30, 2020 at 04:00:51AM -0500, Michael S. Ts=
+irkin wrote:
+> > > > > > > > > > > On Mon, Nov 30, 2020 at 08:27:46AM +0200, Eli Cohen w=
+rote:
+> > > > > > > > > > > > On Sun, Nov 29, 2020 at 03:08:22PM -0500, Michael S=
+. Tsirkin wrote:
+> > > > > > > > > > > > > On Sun, Nov 29, 2020 at 08:43:51AM +0200, Eli Coh=
+en wrote:
+> > > > > > > > > > > > > > We should not try to use the VF MAC address as =
+that is used by the
+> > > > > > > > > > > > > > regular (e.g. mlx5_core) NIC implementation. In=
+stead, use a random
+> > > > > > > > > > > > > > generated MAC address.
+> > > > > > > > > > > > > >=20
+> > > > > > > > > > > > > > Suggested by: Cindy Lu<lulu@redhat.com>
+> > > > > > > > > > > > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA drive=
+r for supported mlx5 devices")
+> > > > > > > > > > > > > > Signed-off-by: Eli Cohen<elic@nvidia.com>
+> > > > > > > > > > > > > I didn't realise it's possible to use VF in two w=
+ays
+> > > > > > > > > > > > > with and without vdpa.
+> > > > > > > > > > > > Using a VF you can create quite a few resources, e.=
+g. send queues
+> > > > > > > > > > > > recieve queues, virtio_net queues etc. So you can p=
+ossibly create
+> > > > > > > > > > > > several instances of vdpa net devices and nic net d=
+evices.
+> > > > > > > > > > > >=20
+> > > > > > > > > > > > > Could you include a bit more description on the f=
+ailure
+> > > > > > > > > > > > > mode?
+> > > > > > > > > > > > Well, using the MAC address of the nic vport is wro=
+ng since that is the
+> > > > > > > > > > > > MAC of the regular NIC implementation of mlx5_core.
+> > > > > > > > > > > Right but ATM it doesn't coexist with vdpa so what's =
+the problem?
+> > > > > > > > > > >=20
+> > > > > > > > > > This call is wrong:  mlx5_query_nic_vport_mac_address()
+> > > > > > > > > >=20
+> > > > > > > > > > > > > Is switching to a random mac for such an unusual
+> > > > > > > > > > > > > configuration really justified?
+> > > > > > > > > > > > Since I can't use the NIC's MAC address, I have two=
+ options:
+> > > > > > > > > > > > 1. To get the MAC address as was chosen by the user=
+ administering the
+> > > > > > > > > > > >      NIC. This should invoke the set_config callbac=
+k. Unfortunately this
+> > > > > > > > > > > >      is not implemented yet.
+> > > > > > > > > > > >=20
+> > > > > > > > > > > > 2. Use a random MAC address. This is OK since if (1=
+) is implemented it
+> > > > > > > > > > > >      can always override this random configuration.
+> > > > > > > > > > > >=20
+> > > > > > > > > > > > > It looks like changing a MAC could break some gue=
+sts,
+> > > > > > > > > > > > > can it not?
+> > > > > > > > > > > > >=20
+> > > > > > > > > > > > No, it will not. The current version of mlx5 VDPA d=
+oes not allow regular
+> > > > > > > > > > > > NIC driver and VDPA to co-exist. I have patches rea=
+dy that enable that
+> > > > > > > > > > > > from steering point of view. I will post them here =
+once other patches on
+> > > > > > > > > > > > which they depend will be merged.
+> > > > > > > > > > > >=20
+> > > > > > > > > > > > https://patchwork.ozlabs.org/project/netdev/patch/2=
+0201120230339.651609-12-saeedm@nvidia.com/
+> > > > > > > > > > > Could you be more explicit on the following points:
+> > > > > > > > > > > - which configuration is broken ATM (as in, two devic=
+e have identical
+> > > > > > > > > > >     macs? any other issues)?
+> > > > > > > > > > The only wrong thing is the call to  mlx5_query_nic_vpo=
+rt_mac_address().
+> > > > > > > > > > It's not breaking anything yet is wrong. The random MAC=
+ address setting
+> > > > > > > > > > is required for the steering patches.
+> > > > > > > > > Okay so I'm not sure the Fixes tag at least is appropriat=
+e if it's a
+> > > > > > > > > dependency of a new feature.
+> > > > > > > > >=20
+> > > > > > > > > > > - why won't device MAC change from guest point of vie=
+w?
+> > > > > > > > > > >=20
+> > > > > > > > > > It's lack of implementation in qemu as far as I know.
+> > > > > > > > > Sorry not sure I understand. What's not implemented in QE=
+MU?
+> > > > > > > > >=20
+> > > > > > > > HI Michael, there are some bug in qemu to set_config, this =
+will fix in future,
+> > > > > > > > But this patch is still needed, because without this patch =
+the mlx
+> > > > > > > > driver will give an 0 mac address to qemu
+> > > > > > > > and qemu will overwrite the default mac address.  This will=
+ cause traffic down.
+> > > > > > > Hmm the patch description says VF mac address, not 0 address.=
+ Confused.
+> > > > > > > If there's no mac we can clear VIRTIO_NET_F_MAC and have gues=
+t
+> > > > > > > use a random value ...
+> > > > > I'm not sure this can work for all types of vDPA (e.g it could no=
+t be a
+> > > > > learning bridge in the swtich).
+> > > > >=20
+> > > > >=20
+> > > > > > hi Michael=EF=BC=8C
+> > > > > > I have tried as your suggestion, seems even remove the
+> > > > > > VIRTIO_NET_F_MAC the qemu will still call get_cinfig and overwr=
+ite the
+> > > > > > default address in  VM,
+> > > > > This looks a bug in qemu, in guest driver we had:
+> > > > >=20
+> > > > >  =C2=A0=C2=A0=C2=A0 /* Configuration may specify what MAC to use.=
+=C2=A0 Otherwise random. */
+> > > > >  =C2=A0=C2=A0=C2=A0 if (virtio_has_feature(vdev, VIRTIO_NET_F_MAC=
+))
+> > > > >  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 virtio_cread_bytes(vdev,
+> > > > >  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=
+=C2=A0=C2=A0 =C2=A0=C2=A0 offsetof(struct virtio_net_config, mac),
+> > > > >  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=
+=C2=A0=C2=A0 =C2=A0=C2=A0 dev->dev_addr, dev->addr_len);
+> > > > >  =C2=A0=C2=A0=C2=A0 else
+> > > > >  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 eth_hw_addr_random(dev);
+> > > > >=20
+> > > > >=20
+> > > > > > this process is like
+> > > > > > vdpa _init -->qemu call get_config ->mlx driver will give  an m=
+ac
+> > > > > > address with all 0-->
+> > > > > > qemu will not check this mac address and use it --> overwrite t=
+he mac
+> > > > > > address in qemu
+> > > > > >=20
+> > > > > > So for my understanding there are several method to fix this pr=
+oblem
+> > > > > >=20
+> > > > > > 1, qemu check the mac address, if the mac address is all 0, qem=
+u will
+> > > > > > ignore it and set the random mac address to mlx driver.
+> > > > > So my understanding is that, if mac address is all 0, vDPA parent=
+ should not
+> > > > > advertise VIRTIO_NET_F_MAC. And qemu should emulate this feature =
+as you did:
+> > > > Thinking it over, at least in mlx5, I should always advertise
+> > > > VIRTIO_NET_F_MAC and set a non zero MAC value. The source of the MA=
+C can
+> > > > be either randomly generated value by mlx5_vdpa or by a management =
+tool.
+> > > > This is important becauase we should not let the VM modify the MAC.=
+ If
+> > > > we do it can set a MAC value identical to the mlx5 NIC driver and c=
+an
+> > > > kidnap traffic that was not destined to it.
+> > > >=20
+> > > > In addition, when VIRTIO_NET_F_MAC is published, attempts to change=
+ the
+> > > > MAC address from the VM should result in error.
+> > > That is not what the spec says though.
+> > > VIRTIO_NET_F_MAC only says whether mac is valid in the config space.
+> > > Whether guest can control that depends on VIRTIO_NET_F_CTRL_MAC_ADDR:
+> > >=20
+> > > 	The VIRTIO_NET_CTRL_MAC_ADDR_SET command is used to set the default =
+MAC address which rx
+> > > 	filtering accepts (and if VIRTIO_NET_F_MAC_ADDR has been negotiated,=
+ this will be reflected in mac in
+> > > 	config space).
+> > > 	The command-specific-data for VIRTIO_NET_CTRL_MAC_ADDR_SET is the 6-=
+byte MAC address.
+> >=20
+> >=20
+> > Consider VIRTIO_NET_CTRL_MAC_ADDR_SET is not supported now. What Eli
+> > proposed here should work?
+> >=20
+> > Thanks
+> >=20
+>=20
+> We can have management set a MAC address. Randomizing it in kernel
+> does not seem like a reasonable policy to me ...
+>=20
 
+This manangement should be the VDPA tool that Parav is pushing. We can
+use it to set a MAC chosen by the user. The mlx5 vdpa driver can then
+use that MAC instead of randomizing a value. If no admin value is given
+we can use a random MAC.
+
+>=20
+> > >=20
+> > >=20
+> > >=20
+> > >=20
+>=20
