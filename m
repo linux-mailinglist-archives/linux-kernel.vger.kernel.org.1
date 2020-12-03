@@ -2,55 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A992CD023
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 08:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7E82CD026
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 08:10:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388115AbgLCHIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 02:08:12 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8995 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388076AbgLCHIJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 02:08:09 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cmn2X2xGxzhlww;
-        Thu,  3 Dec 2020 15:07:00 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 3 Dec 2020
- 15:07:26 +0800
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: add F2FS_IOC_DECOMPRESS_FILE and
- F2FS_IOC_COMPRESS_FILE
-To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-CC:     Daeho Jeong <daehojeong@google.com>
-References: <20201203065615.402494-1-daeho43@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <aeb59721-b63e-240a-2171-2d077a58f4d1@huawei.com>
-Date:   Thu, 3 Dec 2020 15:07:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S2388133AbgLCHKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 02:10:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728574AbgLCHKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 02:10:05 -0500
+From:   Vinod Koul <vkoul@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl bindings
+Date:   Thu,  3 Dec 2020 12:38:59 +0530
+Message-Id: <20201203070900.2651127-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201203065615.402494-1-daeho43@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/3 14:56, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> Added two ioctl to decompress/compress explicitly the compression
-> enabled file in "compress_mode=user" mount option.
-> 
-> Using these two ioctls, the users can make a control of compression
-> and decompression of their files.
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+Add device tree binding Documentation details for Qualcomm SM8350
+pinctrl driver.
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ .../pinctrl/qcom,sdm8350-pinctrl.yaml         | 151 ++++++++++++++++++
+ 1 file changed, 151 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sdm8350-pinctrl.yaml
 
-Thanks,
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sdm8350-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sdm8350-pinctrl.yaml
+new file mode 100644
+index 000000000000..a47d120a3fd0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,sdm8350-pinctrl.yaml
+@@ -0,0 +1,151 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pinctrl/qcom,sdm8350-pinctrl.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies, Inc. SM8350 TLMM block
++
++maintainers:
++  - Vinod Koul <vkoul@kernel.org>
++
++description: |
++  This binding describes the Top Level Mode Multiplexer block found in the
++  SM8350 platform.
++
++properties:
++  compatible:
++    const: qcom,sm8350-pinctrl
++
++  reg:
++    description: Specifies the base address and size of the TLMM register space
++    maxItems: 1
++
++  interrupts:
++    description: Specifies the TLMM summary IRQ
++    maxItems: 1
++
++  interrupt-controller: true
++
++  '#interrupt-cells':
++    description: Specifies the PIN numbers and Flags, as defined in
++      include/dt-bindings/interrupt-controller/irq.h
++    const: 2
++
++  gpio-controller: true
++
++  '#gpio-cells':
++    description: Specifying the pin number and flags, as defined in
++      include/dt-bindings/gpio/gpio.h
++    const: 2
++
++  gpio-ranges:
++    maxItems: 1
++
++  gpio-reserved-ranges:
++    maxItems: 1
++
++#PIN CONFIGURATION NODES
++patternProperties:
++  '-pins$':
++    type: object
++    description:
++      Pinctrl node's client devices use subnodes for desired pin configuration.
++      Client device subnodes use below standard properties.
++    $ref: "/schemas/pinctrl/pincfg-node.yaml"
++
++    properties:
++      pins:
++        description:
++          List of gpio pins affected by the properties specified in this subnode.
++        items:
++          oneOf:
++            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-1][0-6])$"
++            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd, sdc2_data ]
++        minItems: 1
++        maxItems: 36
++
++      function:
++        description:
++          Specify the alternative function to be configured for the specified
++          pins. Functions are only valid for gpio pins.
++        enum: [ atest_char, atest_usb, audio_ref, cam_mclk, cci_async,
++                cci_i2c, cci_timer, cmu_rng, coex_uart1, coex_uart2, cri_trng,
++                cri_trng0, cri_trng1, dbg_out, ddr_bist, ddr_pxi0, ddr_pxi1,
++                ddr_pxi2, ddr_pxi3, dp_hot, dp_lcd, gcc_gp1, gcc_gp2, gcc_gp3,
++                gpio, ibi_i3c, jitter_bist, lpass_slimbus, mdp_vsync, mdp_vsync0,
++                mdp_vsync1, mdp_vsync2, mdp_vsync3, mi2s0_data0, mi2s0_data1,
++                mi2s0_sck, mi2s0_ws, mi2s1_data0, mi2s1_data1, mi2s1_sck,
++                mi2s1_ws, mi2s2_data0, mi2s2_data1, mi2s2_sck, mi2s2_ws,
++                mss_grfc0, mss_grfc1, mss_grfc10, mss_grfc11, mss_grfc12,
++                mss_grfc2, mss_grfc3, mss_grfc4, mss_grfc5, mss_grfc6,
++                mss_grfc7, mss_grfc8, mss_grfc9, nav_gpio, pa_indicator,
++                pcie0_clkreqn, pcie1_clkreqn, phase_flag, pll_bist, pll_clk,
++                pri_mi2s, prng_rosc, qdss_cti, qdss_gpio, qlink0_enable,
++                qlink0_request, qlink0_wmss, qlink1_enable, qlink1_request,
++                qlink1_wmss, qlink2_enable, qlink2_request, qlink2_wmss, qspi0,
++                qspi1, qspi2, qspi3, qspi_clk, qspi_cs, qup0, qup1, qup10,
++                qup11, qup12, qup13, qup14, qup15, qup16, qup17, qup18, qup19,
++                qup2, qup3, qup4, qup5, qup6, qup7, qup8, qup9, qup_l4, qup_l5,
++                qup_l6, sd_write, sdc40, sdc41, sdc42, sdc43, sdc4_clk,
++                sdc4_cmd, sec_mi2s, tb_trig, tgu_ch0, tgu_ch1, tgu_ch2,
++                tgu_ch3, tsense_pwm1, tsense_pwm2, uim0_clk, uim0_data,
++                uim0_present, uim0_reset, uim1_clk, uim1_data, uim1_present,
++                uim1_reset, usb2phy_ac, usb_phy, vfr_0, vfr_1, vsense_trigger ]
++
++
++      drive-strength:
++        enum: [2, 4, 6, 8, 10, 12, 14, 16]
++        default: 2
++        description:
++          Selects the drive strength for the specified pins, in mA.
++
++      bias-pull-down: true
++
++      bias-pull-up: true
++
++      bias-disable: true
++
++      output-high: true
++
++      output-low: true
++
++    required:
++      - pins
++      - function
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-controller
++  - '#interrupt-cells'
++  - gpio-controller
++  - '#gpio-cells'
++  - gpio-ranges
++
++additionalProperties: false
++
++examples:
++  - |
++        #include <dt-bindings/interrupt-controller/arm-gic.h>
++        tlmm: pinctrl@f000000 {
++          compatible = "qcom,sm8350-pinctrl";
++          reg = <0x0f100000 0x300000>;
++          interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
++          gpio-controller;
++          #gpio-cells = <2>;
++          interrupt-controller;
++          #interrupt-cells = <2>;
++          gpio-ranges = <&tlmm 0 0 203>;
++          serial-pins {
++            pins = "gpio18", "gpio19";
++            function = "qup3";
++            drive-strength = <8>;
++            bias-disable;
++            };
++        };
++
++...
+-- 
+2.26.2
+
