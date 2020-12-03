@@ -2,198 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A8B2CD129
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B68492CD134
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388373AbgLCIVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:21:45 -0500
-Received: from mx0b-00128a01.pphosted.com ([148.163.139.77]:25996 "EHLO
-        mx0b-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388328AbgLCIVo (ORCPT
+        id S2388400AbgLCIXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:23:18 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5307 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388299AbgLCIXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:21:44 -0500
-Received: from pps.filterd (m0167091.ppops.net [127.0.0.1])
-        by mx0b-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B38Fe6Y002192;
-        Thu, 3 Dec 2020 03:20:59 -0500
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2104.outbound.protection.outlook.com [104.47.55.104])
-        by mx0b-00128a01.pphosted.com with ESMTP id 355vjpchug-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 03:20:59 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RXGapNLWdLIDZVXkXk3HaNHDWkHGaVDJV8axmAu1RKcSBmqjPD7chSzFLK9pIhW3defa1jfWq0bF8XOXpufD9py7otdyfDcRE3oZ+CwdHTKf4L510hAsDtNHeft++klBd20UQyeF8G768FFKhR7HU5B+1bvDc7b32w3pUoJMJ8mXCqQBars/hn0UPzhd4n6PBFGwzCRNeo1aSJuGMXZw/lu1cEOAZO75hLl4Ix6Fxd0jwf0lt5xN7rvfCkeA1R0Qq5NsQ599NvriioSTnxnEq7fv65NiV+8LsMm4po2QnpUo+JezbKlkKeGCdY131j5OG4hMqCzUFEvrASH7sixN8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KINwOijNshbzKhMk03kOuaa0nobs0W5sk+ho1B17MPk=;
- b=VLEEyWe3IJGIc7/7k104OMQ89smev5HNAz/SWV0A3MzSN3uAacUn1vbCY7U0uTrIYs0NeKvjLWrhHQShvyH4wKRDexm5U5qLwzHRytZPC90jKN3FRfzA1blDBakE4UwDcJ5HiF8wMWtBRlydSS8l//tchh10EC8oR/bSlIJJ6esgdf28H49lgR75MOHl76dDUO+hr8YW1xT7YgQc4nlbEfJMRkk9xbPzt1V+1NGv53aI5Afy9ZuUn7/NfwMnMKVfcJzTDGVfoy8736TyQ8YtLskxegUFy+dJXHgladMocbkwf2IPUaFY3jcBaBNz5Inv0PzmdAZsq30vrw9ieT5mfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
- dkim=pass header.d=analog.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KINwOijNshbzKhMk03kOuaa0nobs0W5sk+ho1B17MPk=;
- b=JuaKecA+lZig2sngKAl4vVML1QbzCHa68mXnPqI4cVgcvj/xZjUL7Lq6M3Jva0V3g8LvmulDk5eMVtQuNDvr3ZcSakqbNDH/nsd3raq5zK1G4gUTGABzmt+Jna3VXEkf6go6rOZ9c06y32prh4yFNBd4CI0Gl886j2QVfjr/4zQ=
-Received: from CY4PR03MB2966.namprd03.prod.outlook.com (2603:10b6:903:13c::14)
- by CY1PR03MB2267.namprd03.prod.outlook.com (2a01:111:e400:c612::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Thu, 3 Dec
- 2020 08:20:57 +0000
-Received: from CY4PR03MB2966.namprd03.prod.outlook.com
- ([fe80::a45b:c565:97bb:f8ea]) by CY4PR03MB2966.namprd03.prod.outlook.com
- ([fe80::a45b:c565:97bb:f8ea%4]) with mapi id 15.20.3611.025; Thu, 3 Dec 2020
- 08:20:57 +0000
-From:   "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     linux-spi <linux-spi@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>
-Subject: RE: [PATCH v3 2/3] spi: Add SPI_NO_TX/RX support
-Thread-Topic: [PATCH v3 2/3] spi: Add SPI_NO_TX/RX support
-Thread-Index: AQHWxL56iPOaB4DKUkqHZzOC3MBax6ncCBaAgAAAOgCACQdSMA==
-Date:   Thu, 3 Dec 2020 08:20:57 +0000
-Message-ID: <CY4PR03MB29661063937AD783F6B2A010F9F20@CY4PR03MB2966.namprd03.prod.outlook.com>
-References: <20201127130834.136348-1-alexandru.ardelean@analog.com>
- <20201127130834.136348-2-alexandru.ardelean@analog.com>
- <CAHp75Vcd4t=RqC31S-b1PXMtd=8sypSLhTrSgRD9hbpSqOphoQ@mail.gmail.com>
- <CAHp75VctXhpyBVB7Zw+SB5LiGcj6r850x+ehL7u2H0R4=y5rVw@mail.gmail.com>
-In-Reply-To: <CAHp75VctXhpyBVB7Zw+SB5LiGcj6r850x+ehL7u2H0R4=y5rVw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
- =?utf-8?B?bk5jWVdGeVpHVnNaV0ZjWVhCd1pHRjBZVnh5YjJGdGFXNW5YREE1WkRnME9X?=
- =?utf-8?B?STJMVE15WkRNdE5HRTBNQzA0TldWbExUWmlPRFJpWVRJNVpUTTFZbHh0YzJk?=
- =?utf-8?B?elhHMXpaeTAzTldSaE5USTROaTB6TlRRd0xURXhaV0l0WVRWa09DMDBNVFUy?=
- =?utf-8?B?TkRVd01EQXdNekJjWVcxbExYUmxjM1JjTnpWa1lUVXlPRGd0TXpVME1DMHhN?=
- =?utf-8?B?V1ZpTFdFMVpEZ3ROREUxTmpRMU1EQXdNRE13WW05a2VTNTBlSFFpSUhONlBT?=
- =?utf-8?B?SXlNRGMwSWlCMFBTSXhNekkxTVRRMU56STFORFkxT1RNd01URWlJR2c5SWpB?=
- =?utf-8?B?eVF6aHRPSEZWYXpKeFlVTmxiMnhvVlhsV2RYbDFNamd4U1QwaUlHbGtQU0lp?=
- =?utf-8?B?SUdKc1BTSXdJaUJpYnowaU1TSWdZMms5SW1OQlFVRkJSVkpJVlRGU1UxSlZS?=
- =?utf-8?B?azVEWjFWQlFVVnZRMEZCUkhvd1JFMDBWR051VjBGalprd3lVRlY0WW1KRFNY?=
- =?utf-8?B?ZzRkbGs1VkVaMGMwbG5SRUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRklRVUZCUVVSaFFWRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGRlFVRlJRVUpCUVVGQlozTldNRFJSUVVGQlFVRkJRVUZCUVVGQlFVRkJT?=
- =?utf-8?B?alJCUVVGQ2FFRkhVVUZoVVVKbVFVaE5RVnBSUW1wQlNGVkJZMmRDYkVGR09F?=
- =?utf-8?B?RmpRVUo1UVVjNFFXRm5RbXhCUjAxQlpFRkNla0ZHT0VGYVowSm9RVWQzUVdO?=
- =?utf-8?B?M1FteEJSamhCV21kQ2RrRklUVUZoVVVJd1FVZHJRV1JuUW14QlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVWQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlowRkJRVUZCUVc1blFVRkJSMFZCV2tGQ2NFRkdPRUZqZDBKc1FVZE5RV1JS?=
- =?utf-8?B?UW5sQlIxVkJXSGRDZDBGSVNVRmlkMEp4UVVkVlFWbDNRakJCU0UxQldIZENN?=
- =?utf-8?B?RUZIYTBGYVVVSjVRVVJGUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRlJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRMEZCUVVGQlFVTmxRVUZCUVZsUlFtdEJSMnRCV0hkQ2Vr?=
- =?utf-8?B?RkhWVUZaZDBJeFFVaEpRVnBSUW1aQlNFRkJZMmRDZGtGSGIwRmFVVUpxUVVo?=
- =?utf-8?B?UlFXTjNRbVpCU0ZGQllWRkNiRUZJU1VGTlowRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZDUVVGQlFVRkJRVUZCUVVsQlFVRkJRVUZCUFQwaUx6NDhMMjFs?=
- =?utf-8?Q?dGE+?=
-x-dg-rorf: true
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=analog.com;
-x-originating-ip: [137.71.226.54]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: ddd14a69-bf3c-4ae0-f8da-08d897645c45
-x-ms-traffictypediagnostic: CY1PR03MB2267:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY1PR03MB226712B89F57DF0DBE1DAB5AF9F20@CY1PR03MB2267.namprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: uwdZA2omKXNmU5kp8dHcUNkt0r5TLVPQ+72a3A9rmjYBkWvXO5WJKCnNXU7b22uYSNoZJPvVhOW1Ous4hzz38scEcIXnKFCA+hod4SVGwP4MLYmHegrXuXRv8WaSb/vWY3voCbP4+Pe1ZxIk/hZlmojkesajYClEDneDA6Q9yJ6QfRImqebV42kBzrab9jDXOI9TL22yYaUoAdVzejJjeq2xGkv77mc5YiGp6oDkEY+zpRvBiS3k4vux+R9uR3NrpbIpaN34JQoAvpE0qN++AEnXXgpMYggPgScVRm9W6IpI60L75H5DIsHf3kLwR4/VqHk88HI8CLPb2iy71O34Qg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR03MB2966.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(396003)(39860400002)(6506007)(66946007)(8676002)(5660300002)(8936002)(83380400001)(4326008)(316002)(54906003)(7696005)(53546011)(186003)(26005)(64756008)(71200400001)(66446008)(66476007)(76116006)(6916009)(66556008)(86362001)(52536014)(2906002)(478600001)(9686003)(107886003)(33656002)(55016002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?QXJXSGgrc1FZZ2UreWFEdVZWdzF0YTBWY1Q1RGxPcHBHdEFtOVBWTmRqYU1h?=
- =?utf-8?B?bmovdHdna2FJVWo3OVpZUVVZcFYvWFMwWDl1WVJJS2lSUXVNcVNxMVRyNHpo?=
- =?utf-8?B?K2xJRmh3cFAxNy9FN1ZhUUFXZmp4ajB0VFA2WVllcUllcVVSOHluOWJWUDEr?=
- =?utf-8?B?Y21CZ0gyMmtJajZPbTFIWWNxYWhpblF2blcwNlFzSllYYlc3WmNXa1NqNDk0?=
- =?utf-8?B?TG92VDlRSG5tTkQ3ME9hNjFaWllqdFRIdzNHK2g2dEszYlBiOGI3YldIVWNp?=
- =?utf-8?B?eitIancvL0lKcFJwb0M3NE44YzF3UkpaU2lXQTZQOW83WGYwS0d2ODVwaDFY?=
- =?utf-8?B?YkNYelFLVVp5VXlGSGw4K3k0cUxLWVZXeHdmV3R1M2ZnUU9qREp1U0sySTRo?=
- =?utf-8?B?aGNNVWtiYVpWaHpLZDN2cWxXSkFqTlQ5Y3VKNktNYldReE0vdVVVaUJITjZH?=
- =?utf-8?B?ZzZ3akZrb29xUGsrUjNWTFUzMjVYekFQVEZ1YitreElOVEJTTEQrb1F1WXdv?=
- =?utf-8?B?UEo5dmdKZ20rekJxWDlhQk5sYkp1Q3pRbDNSZHZNWWNHbmUxeWVMRTI0amU5?=
- =?utf-8?B?UFphVHdKWHJwdjg1OGptSEhXVGNtSzdoR1M2b1FvV3daOXBjQmg0bktkSDl6?=
- =?utf-8?B?RmppR29BVEk5NmFnanBFTXBLNGxmUUhiYktYcWJoSGxzSnc2NWIzSW1UeUxG?=
- =?utf-8?B?d2lBNjZRNERzMHVZR25DNnYwVzAwR1g1WnZsTFNTNENRUjF6UEhEL0xDZHRq?=
- =?utf-8?B?aVZUSEtjek9XQmd0aFRGd1N2aHNESmZhV1hlejJmSU9NRytoVUk0b0pTV0hy?=
- =?utf-8?B?c1ZjWTFiVGtXcDNxQ3VUSFJjN1M2cXlnT09Fc1Z1dzVta3hPUGx6VU1sdDBz?=
- =?utf-8?B?K1I4QVBRNVdsU0xkQ2ppaGV6WnQvZzBtcWxRZUJOU3lXWThGbVpFNkdUTUtv?=
- =?utf-8?B?cUkxK3BmYitxZXdEY3pWTUFEZ0Y4MDJPS3ZIVW9pRmNNN1V6Y0w4Mmx3Z2tR?=
- =?utf-8?B?Q0tNVTBQTXk1ZGNkc2dSREthNUgzanNib3prK1BjcFFZbDg4NEQ5c1h6dkJK?=
- =?utf-8?B?MkNvQ0s4RlMyQ3JJYSt6OFBRVjVCQXpHK3M3Z2trdjJtS1RYRkM1NmpRWVZM?=
- =?utf-8?B?RjZTWDVuL2RnR2wzeXRFajZtMTFOMmQ2N0lIMFozRWlIZ21uNnErZ05MS1Jy?=
- =?utf-8?B?ODl1NVo3aVVhbWY0QWN4RzFibC80Q2VXNVRzTGFobEFCejFFYnVxSWUxenNH?=
- =?utf-8?B?MlN6OUtzTlFLa1crUHZJb3BIWWhtVzJSZ05rRS9Nc05PdWFLTU1RY3J6b1hr?=
- =?utf-8?Q?3oMZjZM0uwXKs=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 3 Dec 2020 03:23:18 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fc8a04d0001>; Thu, 03 Dec 2020 00:22:37 -0800
+Received: from [10.2.53.244] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Dec
+ 2020 08:22:28 +0000
+Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <akpm@linux-foundation.org>, <vbabka@suse.cz>, <mhocko@suse.com>,
+        <david@redhat.com>, <osalvador@suse.de>,
+        <dan.j.williams@intel.com>, <sashal@kernel.org>,
+        <tyhicks@linux.microsoft.com>, <iamjoonsoo.kim@lge.com>,
+        <mike.kravetz@oracle.com>, <rostedt@goodmis.org>,
+        <mingo@redhat.com>, <jgg@ziepe.ca>, <peterz@infradead.org>,
+        <mgorman@suse.de>, <willy@infradead.org>, <rientjes@google.com>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-7-pasha.tatashin@soleen.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <b44584e0-bee8-3f3b-f9e7-c1cbd981296e@nvidia.com>
+Date:   Thu, 3 Dec 2020 00:22:28 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:83.0) Gecko/20100101
+ Thunderbird/83.0
 MIME-Version: 1.0
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR03MB2966.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ddd14a69-bf3c-4ae0-f8da-08d897645c45
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2020 08:20:57.2299
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HIwW0ZDzDJbTyYIHipxYjoZPEznjmhkVo/28es7eGNw7UzuFDjSC3Ds/ACbReGjAhNhOCNAdwJmtE+13KFWI0BeaFkSmwJaJ0ZxRGxBY0Yw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY1PR03MB2267
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-03_03:2020-12-03,2020-12-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=881 clxscore=1015
- adultscore=0 suspectscore=0 impostorscore=0 spamscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030050
+In-Reply-To: <20201202052330.474592-7-pasha.tatashin@soleen.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606983757; bh=h6m0/TACyhVMYRHvzofk9LBZe+WjcX4xP/tCct9mk0I=;
+        h=Subject:To:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=BKbVodsieUTArR1wIi/sxEyh3UryMc7a5YGKj/3dhaS/zHwufv7C37LYUZloA2EmN
+         Z1wXd+pCQMm9JywrbgNJcUw8Ua1s/wXDpHM5I76IMdGJ0irYSksQtTvaZW8ORk3Py3
+         /jPX/D1UZUJuPn1ajN1KeJ8JO2Ra/2rMVIRAcZ/1yIO68QBUHA7xgZk3pKyWDbieyO
+         jsZ3souG/o/72dLQ9GhlZqaG+ZkKvyaM1FVviZBPegKvbJ1wwa9lJtWi0rBjBqIyF2
+         2tJwuyTWL6Q6tkppl/q+H/i5JO5LSNK5D/9FLO0Bomi868jVvRla6aD3KVkm2xxoL1
+         wM8TnV/MteYPw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQW5keSBTaGV2Y2hlbmtv
-IDxhbmR5LnNoZXZjaGVua29AZ21haWwuY29tPg0KPiBTZW50OiBGcmlkYXksIE5vdmVtYmVyIDI3
-LCAyMDIwIDQ6MjQgUE0NCj4gVG86IEFyZGVsZWFuLCBBbGV4YW5kcnUgPGFsZXhhbmRydS5BcmRl
-bGVhbkBhbmFsb2cuY29tPg0KPiBDYzogbGludXgtc3BpIDxsaW51eC1zcGlAdmdlci5rZXJuZWwu
-b3JnPjsgZGV2aWNldHJlZQ0KPiA8ZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc+OyBMaW51eCBL
-ZXJuZWwgTWFpbGluZyBMaXN0IDxsaW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZz47IFJv
-YiBIZXJyaW5nIDxyb2JoK2R0QGtlcm5lbC5vcmc+OyBNYXJrIEJyb3duDQo+IDxicm9vbmllQGtl
-cm5lbC5vcmc+OyBCb2dkYW4sIERyYWdvcyA8RHJhZ29zLkJvZ2RhbkBhbmFsb2cuY29tPg0KPiBT
-dWJqZWN0OiBSZTogW1BBVENIIHYzIDIvM10gc3BpOiBBZGQgU1BJX05PX1RYL1JYIHN1cHBvcnQN
-Cj4gDQo+IE9uIEZyaSwgTm92IDI3LCAyMDIwIGF0IDQ6MjIgUE0gQW5keSBTaGV2Y2hlbmtvDQo+
-IDxhbmR5LnNoZXZjaGVua29AZ21haWwuY29tPiB3cm90ZToNCj4gPiBPbiBGcmksIE5vdiAyNywg
-MjAyMCBhdCAzOjA4IFBNIEFsZXhhbmRydSBBcmRlbGVhbg0KPiA+IDxhbGV4YW5kcnUuYXJkZWxl
-YW5AYW5hbG9nLmNvbT4gd3JvdGU6DQo+IA0KPiAuLi4NCj4gDQo+ID4gPiAtLS0gYS9pbmNsdWRl
-L3VhcGkvbGludXgvc3BpL3NwaS5oDQo+ID4gPiArKysgYi9pbmNsdWRlL3VhcGkvbGludXgvc3Bp
-L3NwaS5oDQo+ID4gPiBAQCAtNDMsNSArNDMsNyBAQA0KPiA+ID4gICNkZWZpbmUgICAgICAgIFNQ
-SV9UWF9PQ1RBTCAgICAgICAgICAgIDB4MjAwMCAgICAgICAgICAvKiB0cmFuc21pdCB3aXRoIDgg
-d2lyZXMgKi8NCj4gPiA+ICAjZGVmaW5lICAgICAgICBTUElfUlhfT0NUQUwgICAgICAgICAgICAw
-eDQwMDAgICAgICAgICAgLyogcmVjZWl2ZSB3aXRoIDggd2lyZXMgKi8NCj4gPiA+ICAjZGVmaW5l
-ICAgICAgICBTUElfM1dJUkVfSElaICAgICAgICAgICAweDgwMDAgICAgICAgICAgLyogaGlnaCBp
-bXBlZGFuY2UgdHVybmFyb3VuZA0KPiAqLw0KPiA+ID4gKyNkZWZpbmUgICAgICAgIFNQSV9OT19U
-WCAgICAgICAgICAgICAgIDB4MTAwMDAgICAgICAgICAvKiBubyB0cmFuc21pdCB3aXJlICovDQo+
-ID4gPiArI2RlZmluZSAgICAgICAgU1BJX05PX1JYICAgICAgICAgICAgICAgMHgyMDAwMCAgICAg
-ICAgIC8qIG5vIHJlY2VpdmUgd2lyZSAqLw0KPiA+DQo+ID4gSXMgaXQgcmVhbGx5IG1hdGVyaWFs
-IGZvciB1QVBJPw0KPiA+IFBlcmhhcHMgd2UgbWF5IGhhdmUgc29tZXRoaW5nIGxpa2UNCj4gPiBT
-UElfTU9ERV9VU0VSX01BU0sgaW4gdUFQSSBhbmQNCj4gPiBpbiBpbnRlcm5hbCBoZWFkZXJzDQoN
-CkhtbSwgaW4gYSB3YXkgdGhpcyBjb3VsZCBtYWtlIHNlbnNlIGZvciBzb21lIFNQSURFVnMgYXMg
-d2VsbCwgdG8gc2V0IHRoZXNlIGZsYWdzIGFuZCBnZXQgYW4gZXJyb3IgaWYgdGhleSB0cnkgdG8g
-VFggd2l0aCB0aGUgTk9fVFggZmxhZyBzZXQuDQpOb3QgcmVhbGx5IHN1cmUgYWJvdXQgdGhpcy4N
-CkluaXRpYWxseSBJIG1lY2hhbmljYWxseSBhZGRlZCB0aGVzZSBoZXJlIGFzIGFuIGluZXJ0aWEg
-dG8gdGhlIHByZXZpb3VzIHBhdGNoIHdoaWNoIGlzIGp1c3QgdW5pZnlpbmcgdGhlIGhlYWRlcnMu
-DQoNCkFueSBvdGhlciBvcGluaW9ucz8gVGhvdWdodHM/DQpNYXJrPw0KDQo+ID4NCj4gPiBTUElf
-TU9ERV9LRVJORUxfTUFTSyB3aXRoDQo+ID4gc3RhdGljX2Fzc2VydChfVVNFUl9NQVNLICYgX0tF
-Uk5FTF9NQVNLKTsgLy8gY2hlY2sgY29uZGl0aW9uYWwNCj4gPg0KPiA+ID8NCj4gDQo+IEFuZCBs
-b2dpY2FsbHkgc3RhcnQgYml0cyBmb3IgdGhlIGtlcm5lbCBmcm9tIHRoZSBlbmQgKDMxLCAzMCwg
-Li4uKS4NCj4gDQo+IC0tDQo+IFdpdGggQmVzdCBSZWdhcmRzLA0KPiBBbmR5IFNoZXZjaGVua28N
-Cg==
+On 12/1/20 9:23 PM, Pavel Tatashin wrote:
+> We do not allocate pin pages in ZONE_MOVABLE, but if pages were already
+> allocated before pinning they need to migrated to a different zone.
+> Currently, we migrate movable CMA pages only. Generalize the function
+> that migrates CMA pages to migrate all movable pages.
+> 
+> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> ---
+>   include/linux/migrate.h        |  1 +
+>   include/trace/events/migrate.h |  3 +-
+>   mm/gup.c                       | 56 +++++++++++++---------------------
+>   3 files changed, 24 insertions(+), 36 deletions(-)
+> 
+
+I like the cleanup so far, even at this point it's a relief to finally
+see the nested ifdefs get removed.
+
+One naming nit/idea below, but this looks fine as is, so:
+
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+
+> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+> index 0f8d1583fa8e..00bab23d1ee5 100644
+> --- a/include/linux/migrate.h
+> +++ b/include/linux/migrate.h
+> @@ -27,6 +27,7 @@ enum migrate_reason {
+>   	MR_MEMPOLICY_MBIND,
+>   	MR_NUMA_MISPLACED,
+>   	MR_CONTIG_RANGE,
+> +	MR_LONGTERM_PIN,
+>   	MR_TYPES
+>   };
+>   
+> diff --git a/include/trace/events/migrate.h b/include/trace/events/migrate.h
+> index 4d434398d64d..363b54ce104c 100644
+> --- a/include/trace/events/migrate.h
+> +++ b/include/trace/events/migrate.h
+> @@ -20,7 +20,8 @@
+>   	EM( MR_SYSCALL,		"syscall_or_cpuset")		\
+>   	EM( MR_MEMPOLICY_MBIND,	"mempolicy_mbind")		\
+>   	EM( MR_NUMA_MISPLACED,	"numa_misplaced")		\
+> -	EMe(MR_CONTIG_RANGE,	"contig_range")
+> +	EM( MR_CONTIG_RANGE,	"contig_range")			\
+> +	EMe(MR_LONGTERM_PIN,	"longterm_pin")
+>   
+>   /*
+>    * First define the enums in the above macros to be exported to userspace
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 724d8a65e1df..1d511f65f8a7 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -1593,19 +1593,18 @@ static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
+>   }
+>   #endif
+>   
+> -#ifdef CONFIG_CMA
+> -static long check_and_migrate_cma_pages(struct mm_struct *mm,
+> -					unsigned long start,
+> -					unsigned long nr_pages,
+> -					struct page **pages,
+> -					struct vm_area_struct **vmas,
+> -					unsigned int gup_flags)
+> +static long check_and_migrate_movable_pages(struct mm_struct *mm,
+> +					    unsigned long start,
+> +					    unsigned long nr_pages,
+> +					    struct page **pages,
+> +					    struct vm_area_struct **vmas,
+> +					    unsigned int gup_flags)
+>   {
+>   	unsigned long i;
+>   	unsigned long step;
+>   	bool drain_allow = true;
+>   	bool migrate_allow = true;
+> -	LIST_HEAD(cma_page_list);
+> +	LIST_HEAD(page_list);
+
+
+Maybe naming it "movable_page_list", would be a nice touch.
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
+>   	long ret = nr_pages;
+>   	struct migration_target_control mtc = {
+>   		.nid = NUMA_NO_NODE,
+> @@ -1623,13 +1622,12 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+>   		 */
+>   		step = compound_nr(head) - (pages[i] - head);
+>   		/*
+> -		 * If we get a page from the CMA zone, since we are going to
+> -		 * be pinning these entries, we might as well move them out
+> -		 * of the CMA zone if possible.
+> +		 * If we get a movable page, since we are going to be pinning
+> +		 * these entries, try to move them out if possible.
+>   		 */
+> -		if (is_migrate_cma_page(head)) {
+> +		if (is_migrate_movable(get_pageblock_migratetype(head))) {
+>   			if (PageHuge(head))
+> -				isolate_huge_page(head, &cma_page_list);
+> +				isolate_huge_page(head, &page_list);
+>   			else {
+>   				if (!PageLRU(head) && drain_allow) {
+>   					lru_add_drain_all();
+> @@ -1637,7 +1635,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+>   				}
+>   
+>   				if (!isolate_lru_page(head)) {
+> -					list_add_tail(&head->lru, &cma_page_list);
+> +					list_add_tail(&head->lru, &page_list);
+>   					mod_node_page_state(page_pgdat(head),
+>   							    NR_ISOLATED_ANON +
+>   							    page_is_file_lru(head),
+> @@ -1649,7 +1647,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+>   		i += step;
+>   	}
+>   
+> -	if (!list_empty(&cma_page_list)) {
+> +	if (!list_empty(&page_list)) {
+>   		/*
+>   		 * drop the above get_user_pages reference.
+>   		 */
+> @@ -1659,7 +1657,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+>   			for (i = 0; i < nr_pages; i++)
+>   				put_page(pages[i]);
+>   
+> -		if (migrate_pages(&cma_page_list, alloc_migration_target, NULL,
+> +		if (migrate_pages(&page_list, alloc_migration_target, NULL,
+>   			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE)) {
+>   			/*
+>   			 * some of the pages failed migration. Do get_user_pages
+> @@ -1667,17 +1665,16 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+>   			 */
+>   			migrate_allow = false;
+>   
+> -			if (!list_empty(&cma_page_list))
+> -				putback_movable_pages(&cma_page_list);
+> +			if (!list_empty(&page_list))
+> +				putback_movable_pages(&page_list);
+>   		}
+>   		/*
+>   		 * We did migrate all the pages, Try to get the page references
+> -		 * again migrating any new CMA pages which we failed to isolate
+> -		 * earlier.
+> +		 * again migrating any pages which we failed to isolate earlier.
+>   		 */
+>   		ret = __get_user_pages_locked(mm, start, nr_pages,
+> -						   pages, vmas, NULL,
+> -						   gup_flags);
+> +					      pages, vmas, NULL,
+> +					      gup_flags);
+>   
+>   		if ((ret > 0) && migrate_allow) {
+>   			nr_pages = ret;
+> @@ -1688,17 +1685,6 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+>   
+>   	return ret;
+>   }
+> -#else
+> -static long check_and_migrate_cma_pages(struct mm_struct *mm,
+> -					unsigned long start,
+> -					unsigned long nr_pages,
+> -					struct page **pages,
+> -					struct vm_area_struct **vmas,
+> -					unsigned int gup_flags)
+> -{
+> -	return nr_pages;
+> -}
+> -#endif /* CONFIG_CMA */
+>   
+>   /*
+>    * __gup_longterm_locked() is a wrapper for __get_user_pages_locked which
+> @@ -1746,8 +1732,8 @@ static long __gup_longterm_locked(struct mm_struct *mm,
+>   			goto out;
+>   		}
+>   
+> -		rc = check_and_migrate_cma_pages(mm, start, rc, pages,
+> -						 vmas_tmp, gup_flags);
+> +		rc = check_and_migrate_movable_pages(mm, start, rc, pages,
+> +						     vmas_tmp, gup_flags);
+>   out:
+>   		memalloc_nomovable_restore(flags);
+>   	}
+> 
+
