@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 272392CCB64
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2B82CCB62
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387404AbgLCBEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 20:04:51 -0500
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:36282 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726851AbgLCBEv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:04:51 -0500
-Received: by mail-lf1-f44.google.com with SMTP id v14so273061lfo.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 17:04:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FqBDFILtKC1/XhSHgxkhsjETw7FLnQmSQ+/jvyeh0Wg=;
-        b=XdkMLUil0v5UTEWEv5xIPl35soqTEjjbATxpaSjLk1uaiZTjdmsE+WVLc6Z+oQ2oWG
-         nxXcrxCaniW4F8YMcg6ZjRvebyMZu/OZY1moNy267+CV/B4lMSUC94eE0zk4xUtetVMA
-         DE8c11gos/59x8gtKU0VZgcbkVFQqUzASHV1tDlxWLMiTGpZDLS8RtCfaT4IFoo3lhtr
-         7K/hq0Oeu8kpXGMieXTo6UHKi7i8J+9qRWNQjxrirPlxWAJnqW4PbOYEGS3OsJIw+V8G
-         Ieim7SaoYaJvU86QdZEH/AoEbL+7P5S8PgXqXCJsfZOCJPfZeeHuvICs9qfxO0cf9SGp
-         nBgA==
-X-Gm-Message-State: AOAM532lVXRJxUjB+035YlN5x45Kyid3hytYHSfHvjiFBfM7hiXY19UW
-        Cl2yOv2jyfiF+nDH2sidiRHotLKUjfVfRPuu5eU=
-X-Google-Smtp-Source: ABdhPJyadI0Hcq7K79+8DyPpK4TsBJgvKFjUWqW1e7aMukHByOk4AU4OmQC5T9n0r4AoJ5tpfUhKZtLALk/0P48nWYc=
-X-Received: by 2002:a19:38e:: with SMTP id 136mr287491lfd.593.1606957443379;
- Wed, 02 Dec 2020 17:04:03 -0800 (PST)
+        id S1728142AbgLCBEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 20:04:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726851AbgLCBEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 20:04:41 -0500
+Date:   Wed, 2 Dec 2020 17:03:59 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606957440;
+        bh=e27nxQB6v2bR4jfkrSYiga7jg2DKJygkFb9Kd8AZ4A8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZBnOAi9moSb5Q48aM5+oabBxGmMJk1G6PX/ufjfMOskIVpIF7i7XT6c6ZVFfc9IM+
+         /DhBdmUOnwVWskBIbnP+UMgOimZ7VchF6mgvTlZ8W0l8CfvdiBkpB/m/3dQhLv82KJ
+         w2GNUw0On5aoTaoP+0KrnwLE0+cyrBmejs6jbnt5QVLqMNGevgfoujRuv7H+O7euBz
+         MTyFGy8PL1RIc5FQMaf3ghHmHDvFT+7BUSEKbvKi6vsY+NA4f7mB2aEdZlArGZfTsl
+         uw4c8mVvmT05e0CYutlnGtZIwsfEsJ+q7RfYrEWrgTKBPlKmdcUnNqa0jBuSCE4Ae2
+         Q5z+lF3Ph5RSg==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Wang Hai <wanghai38@huawei.com>
+Cc:     <roopa@nvidia.com>, <nikolay@nvidia.com>, <davem@davemloft.net>,
+        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net] net: bridge: Fix a warning when del bridge sysfs
+Message-ID: <20201202170359.19330bda@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201201140114.67455-1-wanghai38@huawei.com>
+References: <20201201140114.67455-1-wanghai38@huawei.com>
 MIME-Version: 1.0
-References: <20201202150205.35750-1-namhyung@kernel.org> <20201202192828.GG1363814@tassilo.jf.intel.com>
- <CABPqkBR5nCfn756Wb8xQEb9Xse+UQPAbGy969cP4sxO78-Nq4g@mail.gmail.com>
- <20201202224239.GJ1363814@tassilo.jf.intel.com> <CABPqkBRsS2+gT-792uYq+U84LJepDjY=wwiLku6mtVhgd8mEEA@mail.gmail.com>
-In-Reply-To: <CABPqkBRsS2+gT-792uYq+U84LJepDjY=wwiLku6mtVhgd8mEEA@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 3 Dec 2020 10:03:52 +0900
-Message-ID: <CAM9d7cjrPfn2icWYpi=ZHC90SR8JcV5coTJV-xAAM3r3Yfpd8Q@mail.gmail.com>
-Subject: Re: [RFC 1/2] perf core: Add PERF_COUNT_SW_CGROUP_SWITCHES event
-To:     Stephane Eranian <eranian@google.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephane and Andi,
+On Tue, 1 Dec 2020 22:01:14 +0800 Wang Hai wrote:
+> If adding bridge sysfs fails, br->ifobj will be NULL, there is no
+> need to delete its non-existent sysfs when deleting the bridge device,
+> otherwise, it will cause a warning. So, when br->ifobj == NULL,
+> directly return can fix this bug.
+> 
+> br_sysfs_addbr: can't create group bridge4/bridge
+> ------------[ cut here ]------------
+> sysfs group 'bridge' not found for kobject 'bridge4'
+> WARNING: CPU: 2 PID: 9004 at fs/sysfs/group.c:279 sysfs_remove_group fs/sysfs/group.c:279 [inline]
+> WARNING: CPU: 2 PID: 9004 at fs/sysfs/group.c:279 sysfs_remove_group+0x153/0x1b0 fs/sysfs/group.c:270
+> Modules linked in: iptable_nat
+> ...
+> Call Trace:
+>   br_dev_delete+0x112/0x190 net/bridge/br_if.c:384
+>   br_dev_newlink net/bridge/br_netlink.c:1381 [inline]
+>   br_dev_newlink+0xdb/0x100 net/bridge/br_netlink.c:1362
+>   __rtnl_newlink+0xe11/0x13f0 net/core/rtnetlink.c:3441
+>   rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3500
+>   rtnetlink_rcv_msg+0x385/0x980 net/core/rtnetlink.c:5562
+>   netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2494
+>   netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+>   netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1330
+>   netlink_sendmsg+0x793/0xc80 net/netlink/af_netlink.c:1919
+>   sock_sendmsg_nosec net/socket.c:651 [inline]
+>   sock_sendmsg+0x139/0x170 net/socket.c:671
+>   ____sys_sendmsg+0x658/0x7d0 net/socket.c:2353
+>   ___sys_sendmsg+0xf8/0x170 net/socket.c:2407
+>   __sys_sendmsg+0xd3/0x190 net/socket.c:2440
+>   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
 
-On Thu, Dec 3, 2020 at 8:40 AM Stephane Eranian <eranian@google.com> wrote:
->
-> On Wed, Dec 2, 2020 at 2:42 PM Andi Kleen <ak@linux.intel.com> wrote:
-> >
-> > On Wed, Dec 02, 2020 at 11:47:25AM -0800, Stephane Eranian wrote:
-> > > On Wed, Dec 2, 2020 at 11:28 AM Andi Kleen <ak@linux.intel.com> wrote:
-> > > >
-> > > > > +     prev_cgrp = task_css_check(prev, perf_event_cgrp_id, 1)->cgroup;
-> > > > > +     next_cgrp = task_css_check(next, perf_event_cgrp_id, 1)->cgroup;
-> > > > > +
-> > > > > +     if (prev_cgrp != next_cgrp)
-> > > > > +             perf_sw_event_sched(PERF_COUNT_SW_CGROUP_SWITCHES, 1, 0);
-> > > >
-> > > > Seems to be the perf cgroup only, not all cgroups.
-> > > > That's a big difference and needs to be documented properly.
-> > > >
-> > > We care about the all-cgroup case.
-> >
-> > Then it's not correct I think. You need a different hook point.
-> >
-> I realize that ;-(
+Nik, is this the way you want to handle this?
 
-If we want to count any cgroup changes, I think we can compare
-task->cgroups (css_set) here instead.
+Should the notifier not fail if sysfs files cannot be created?
+Currently br_sysfs_addbr() returns an int but the only caller 
+ignores it.
 
-Thanks,
-Namyung
+> diff --git a/net/bridge/br_sysfs_br.c b/net/bridge/br_sysfs_br.c
+> index 7db06e3f642a..1e9cbf31d904 100644
+> --- a/net/bridge/br_sysfs_br.c
+> +++ b/net/bridge/br_sysfs_br.c
+> @@ -991,6 +991,9 @@ void br_sysfs_delbr(struct net_device *dev)
+>  	struct kobject *kobj = &dev->dev.kobj;
+>  	struct net_bridge *br = netdev_priv(dev);
+>  
+> +	if (!br->ifobj)
+> +		return;
+> +
+>  	kobject_put(br->ifobj);
+>  	sysfs_remove_bin_file(kobj, &bridge_forward);
+>  	sysfs_remove_group(kobj, &bridge_group);
+
