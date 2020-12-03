@@ -2,65 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AEA2CDFA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 21:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B7A82CDFAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 21:24:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729319AbgLCUUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 15:20:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726765AbgLCUUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 15:20:47 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607026806;
-        bh=Tkyv4YxmIkfl86eenFjdn9rHENw/f56Yi/8XLBvDLTg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lcWLH6aTBD1VDKGAgLs+lutOcUSoAXOxXlB0PXQeE+DtzFwQZkZMmLpkzMQXPPm+z
-         4bhTdP3HTw+QgdbCtP60rPtJo9cnKl8an1OgkfZ/IHIEZdJ+qSGT8MIhCedzOJluZI
-         kYEMqWX47RqFGiLrzrhXgSPMXmh9rGF47bMJlsUUPenTpimlXR/HTcyU24OIVrDZtA
-         rPGemBqqGyOoR5Jd4mATGYqZT/k+nxC+vMkzdi0m73FMB9wIzHRTwAXKUhmLkaS3rT
-         xXe8CeBTQMoCm0kQeuDEkayeVl40zSmmI4lhyFt8AEFIw8jGt8lg9IP/wlGPLvnS8g
-         E434uqEqpnI6w==
+        id S1729349AbgLCUYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 15:24:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728950AbgLCUYS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 15:24:18 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A030FC061A4F;
+        Thu,  3 Dec 2020 12:23:37 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cn6jd5NXbz9sSs;
+        Fri,  4 Dec 2020 07:23:33 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607027014;
+        bh=S4Di3epBinyGt3NiNCab6L/0tCFJDA/C5HkNwOc+4dQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=YinlsqJL9TTYpA44cbACj5VSK3y4dFUZgd8pVQN5v/HPkaGjieNu+4MDWundAthR5
+         q/XBmAMRvbMd3AQRUQCfXPTVBkjLfwJuyXAjZri7hDYjHlzTQNcBhhtilw/WS31X5t
+         lTDgCsZfh0Tba8+SKZInuakSv7AneQPRkomHDd/0ZK6pAgPzVvuL+XUja1kX4c/8OD
+         Si4A7wsUo96QgYsDtdThD+q0tfIzfIUNrz884YSiiYsYVLmvCyK9nNCVZ8vwHuelRB
+         w4x8334M77uZZJOQY5jzEAyEP1jpsfhFDsXhgK1MsZC4CXtixX7scBBp3Q1XWO39cd
+         wJtIXA3IZQBwQ==
+Date:   Fri, 4 Dec 2020 07:23:32 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Nicolas Ferre <nicolas.ferre@atmel.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the at91 tree
+Message-ID: <20201204072332.07154d06@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next] samples/bpf: Fix spelling mistake "recieving" ->
- "receiving"
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160702680632.7769.6625196471588556263.git-patchwork-notify@kernel.org>
-Date:   Thu, 03 Dec 2020 20:20:06 +0000
-References: <20201203114452.1060017-1-colin.king@canonical.com>
-In-Reply-To: <20201203114452.1060017-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     mariuszx.dudek@intel.com, andrii@kernel.org,
-        magnus.karlsson@intel.com, bjorn.topel@intel.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; boundary="Sig_/wAE=l5ljwdKnGiqvnWmhm72";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+--Sig_/wAE=l5ljwdKnGiqvnWmhm72
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+Hi all,
 
-On Thu,  3 Dec 2020 11:44:52 +0000 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There is a spelling mistake in an error message. Fix it.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  samples/bpf/xdpsock_user.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+In commit
 
-Here is the summary with links:
-  - [next] samples/bpf: Fix spelling mistake "recieving" -> "receiving"
-    https://git.kernel.org/bpf/bpf-next/c/2faa7328f53b
+  d45879c1307f ("ARM: dts: at91: sam9x60ek: remove bypass property")
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Fixes tag
 
+  Fixes: 720329e86a463 ("ARM: dts: at91: sam9x60: add device tree for soc a=
+nd board")
 
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant:
+
+Fixes: 1e5f532c2737 ("ARM: dts: at91: sam9x60: add device tree for soc and =
+board")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/wAE=l5ljwdKnGiqvnWmhm72
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/JSUQACgkQAVBC80lX
+0Gy37Qf9FNoxz92n/w6E4w5hkc/F7kiwO6WLZz+bi68/mFogiUhLMhLb9ku+Svr2
+S32QZVXO7aNvV/IGvLq+zuCeZ+wDQpUc3DmhHoY99goLV7YiZfwlEo0ko/oqXVdO
+PTjjFI/LseVq4wCpCI4ntKevq8gScp3Mxi9CUvYUm74MwXzHAQdqraRiFK00np4R
+9bVT9aHMXTDPcJkEB4g6aJ4BThWV12ucFo0uB/9I6da3tUA/mZhcHI4jdDHxl9c7
+PLWcqovRNrxLQY1VxYekYum7e5V9I+rf1zzlfMD2P/KiGT6PorrYPPeCBF8OyjU3
+93/54sv6abCo6xfRS49H90PrEX49Kg==
+=z+cx
+-----END PGP SIGNATURE-----
+
+--Sig_/wAE=l5ljwdKnGiqvnWmhm72--
