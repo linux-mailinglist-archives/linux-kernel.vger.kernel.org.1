@@ -2,67 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CD52CF160
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F10A2CF185
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730467AbgLDQAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:00:14 -0500
-Received: from smtprelay0096.hostedemail.com ([216.40.44.96]:39898 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727125AbgLDQAO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:00:14 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 4D897180A8CB5;
-        Fri,  4 Dec 2020 15:59:33 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3872:3873:3874:4321:5007:6117:7514:7903:9010:10004:10400:10848:11026:11232:11473:11658:11914:12109:12297:12740:12760:12895:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21451:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: shape73_2e0539a273c5
-X-Filterd-Recvd-Size: 1695
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  4 Dec 2020 15:59:32 +0000 (UTC)
-Message-ID: <b8d2d60beda905d1215333cd22b09ca672de1b26.camel@perches.com>
-Subject: Re: [PATCH v6] checkpatch: add fix for non-standard signature -
- co-authored-by
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Date:   Fri, 04 Dec 2020 07:59:31 -0800
-In-Reply-To: <20201204144000.21734-1-yashsri421@gmail.com>
-References: <a2c74693-93ae-cd5a-7836-4ffff643fc09@gmail.com>
-         <20201204144000.21734-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1730772AbgLDQFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:05:01 -0500
+Received: from mga09.intel.com ([134.134.136.24]:42515 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725923AbgLDQE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 11:04:58 -0500
+IronPort-SDR: MFNtlOhjbfylw0+q+7R8/6eep6J2ZzygkYS9S3K6tHJgANtmQgHb1BRJ4jDfl+hOUJxp+7Nf9O
+ qH3ESzvo/OoA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="173551471"
+X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
+   d="scan'208";a="173551471"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 08:03:16 -0800
+IronPort-SDR: /SIAt6AXx4ob0LCsOSeQ1gW9ktDI70TDWFTpVGfBprl3q2Ms/Sgazfz/0P13Bthv1hLmI2lt+Q
+ w2KfKBhgMwrA==
+X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
+   d="scan'208";a="373960693"
+Received: from emogena-mobl1.amr.corp.intel.com (HELO [10.212.90.42]) ([10.212.90.42])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 08:03:15 -0800
+Subject: Re: [PATCH] soundwire: intel: fix another unused-function warning
+To:     Arnd Bergmann <arnd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        Rander Wang <rander.wang@intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20201203230502.1480063-1-arnd@kernel.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <070e64b8-88e4-ccf1-b51e-99de513ab55c@linux.intel.com>
+Date:   Thu, 3 Dec 2020 17:48:47 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20201203230502.1480063-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-04 at 20:10 +0530, Aditya Srivastava wrote:
-> Currently, checkpatch.pl warns us for BAD_SIGN_OFF on the usage of
-> non-standard signatures.
-> 
-> An evaluation on v4.13..v5.8 showed that out of 539 warnings due to
-> non-standard signatures, 43 are due to the use of 'Co-authored-by'
-> tag, which may seem correct, but is not standard.
-> 
-> The standard signature equivalent for 'Co-authored-by' is
-> 'Co-developed-by'.
-> 
-> Provide a fix by suggesting users with this signature alternative and
-> replacing.
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-
-lkml is a very active dumping ground and most people do not scan
-through each patch sent to it.
-
-If you want specific people to see this and potentially ack this
-you should add them to the cc list.
 
 
+On 12/3/20 5:04 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Without CONFIG_PM, there is another warning about an unused function:
+> 
+> drivers/soundwire/intel.c:530:12: error: 'intel_link_power_down' defined but not used [-Werror=unused-function]
+> 
+> After a previous fix, the driver already uses both an #ifdef and
+> a __maybe_unused annotation but still gets it wrong. Remove the
+> ifdef and instead use __maybe_unused consistently to avoid the
+> problem for good.
+> 
+> Fixes: f046b2334083 ("soundwire: intel: fix intel_suspend/resume defined but not used warning")
+> Fixes: ebf878eddbb4 ("soundwire: intel: add pm_runtime support")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Thanks for the patch Arnd, indeed that's a miss.
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+> ---
+>   drivers/soundwire/intel.c | 8 ++------
+>   1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+> index 6a1e862b16c3..66adb258a425 100644
+> --- a/drivers/soundwire/intel.c
+> +++ b/drivers/soundwire/intel.c
+> @@ -1585,8 +1585,6 @@ int intel_master_process_wakeen_event(struct platform_device *pdev)
+>    * PM calls
+>    */
+>   
+> -#ifdef CONFIG_PM
+> -
+>   static int __maybe_unused intel_suspend(struct device *dev)
+>   {
+>   	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+> @@ -1641,7 +1639,7 @@ static int __maybe_unused intel_suspend(struct device *dev)
+>   	return 0;
+>   }
+>   
+> -static int intel_suspend_runtime(struct device *dev)
+> +static int __maybe_unused intel_suspend_runtime(struct device *dev)
+>   {
+>   	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+>   	struct sdw_intel *sdw = cdns_to_intel(cdns);
+> @@ -1796,7 +1794,7 @@ static int __maybe_unused intel_resume(struct device *dev)
+>   	return ret;
+>   }
+>   
+> -static int intel_resume_runtime(struct device *dev)
+> +static int __maybe_unused intel_resume_runtime(struct device *dev)
+>   {
+>   	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+>   	struct sdw_intel *sdw = cdns_to_intel(cdns);
+> @@ -1969,8 +1967,6 @@ static int intel_resume_runtime(struct device *dev)
+>   	return ret;
+>   }
+>   
+> -#endif
+> -
+>   static const struct dev_pm_ops intel_pm = {
+>   	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
+>   	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
+> 
