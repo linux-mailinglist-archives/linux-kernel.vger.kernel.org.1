@@ -2,108 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E55E2CCCC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4A42CCCC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727495AbgLCCow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 21:44:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgLCCow (ORCPT
+        id S1728013AbgLCCpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 21:45:21 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:42647 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725893AbgLCCpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 21:44:52 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F678C061A4D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 18:44:06 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id m9so491759pgb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 18:44:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OGuFg1S14gs2YEMw5LNgUgwD+agRMT9+4pAvuMm+HS4=;
-        b=nMCYvkHOSPfFgS87lYzMW+G8A6GCd5cIAeCz0dsLSspJ+UWEmjA+KxFSkMQV5/RLtu
-         2o7HySDS/Z4e1Wc8gHubSDmKciamq43ErDtyreK5kVTH366EhxQCst797aNZAVaXLpSI
-         hGwYeFScwBON2kKmUeOwnQ5Y4lFW70EDhDjfAyB5PC3X66yYdE4VZ8c7wfFONlDY0HCm
-         2mnlWiU1xUm3HxV1NJZrMwRowUW3/PdYfr3TQ1HC9l8INIqGT5Cun2oMJoQdpATvOy6D
-         X+m3m7s0+nBSxRfwh7icX2SAMnmZA6GRAQ57qkhfZycjK6oD7iTdWWQzrRKa/EDcNQ+5
-         V2VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OGuFg1S14gs2YEMw5LNgUgwD+agRMT9+4pAvuMm+HS4=;
-        b=hXGvRV8A7ANOwHQeLl3vfV9xMRaAgYfvBZWa9ZdR6x8mL287dKdW5dcUdtfaN6+mK1
-         GB8V10PehaSxsi0MQav6ImNCfT6pouTl9rhOhdYf7gBsbR8+r6fiOCFi5+4QMl101k3X
-         RrbCMDTPeHfh6Ms/sYpn6rmT5YI48gAalM9L3mf7mQFQmJzIUBAdCeFh/EKAULE2qEAi
-         EStpm/fDPQ9NlogmO7peh6/lVuLW+TZ2BwKVORnldxOiAigwCRtEydjhuwwEmCxHXQI4
-         dueLOro8kYPwnM/kgZcdw0/VidUcOb/0aK9+Aw5LRYinWyCh5sGUOV79d0SKgdK6zkOW
-         3yFw==
-X-Gm-Message-State: AOAM532TS6DK95tMJMx3VhUIViLMqkR5bKGWbcEHquhVT8ksKi7+/pfX
-        TJLOxPVf9Q/HzI0Vhdlt3IBDn1/jo4aVM+zoli0HKrGUwWbj2g==
-X-Google-Smtp-Source: ABdhPJw5va3/PbWm71+wN+KlF2E2zlC4vEOKwJNc+m63LB4gni5Q3iGqI5c8YqP9y4tEfE/Hfq4MXnQn9lsrDklu8mk=
-X-Received: by 2002:aa7:8055:0:b029:19b:694:34b2 with SMTP id
- y21-20020aa780550000b029019b069434b2mr1290531pfm.2.1606963445723; Wed, 02 Dec
- 2020 18:44:05 -0800 (PST)
+        Wed, 2 Dec 2020 21:45:20 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 9246858024A;
+        Wed,  2 Dec 2020 21:44:34 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Wed, 02 Dec 2020 21:44:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=w
+        +W9iSoo52ek703UN86yNavgaMJrE/oRl/AMe/FXqTw=; b=ElTXHPc6LnBBeo9vD
+        vipkY5202XP+551jbgD/kzr/xb9NwHy8uMg1h14c2xFF4tXofYN2Ui5dtei/ccbN
+        NR9tNAW9zl1KKCd6LEbDXLuH1lgGnK8Y1L3p+2xAG8b+74iu/1jK2Fu04ZTCJa8g
+        WSSBL3pn2MpkAoys/LfHTmGCfNNyDfa17GgDLMfJ0J/kmyCeIK01xe0TYXNKVQfe
+        Lnq3+t0aZy0JI2OTfa1BVJEQQdX50UBa3y8lCrPEi31vmsT2W2V02l1R8Jl9ofHw
+        +d3D5FYaiLuzQk9xzNmAzBscEFqUxoMEEn/LNFsnd++qk1DX54kbDXav5/kwWeMg
+        /GUyQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=w+W9iSoo52ek703UN86yNavgaMJrE/oRl/AMe/FXq
+        Tw=; b=j+K/uufc6RI4uR/Lxp+vZNRKTAGGq1AuPjZRk+qKqP2baYclsEVKwsfuq
+        haEZHICM73k6UpjdmSfjCB2U83dgoUK1lIyPw0v7JCuU9+ajyLRFZt9XUiY9/LJ+
+        mTJ+/sR6MeLrLlFvCkYkC1fF0ly0Z7HPMIz4nhlxtDWP47T//PYH98MwFKGnnItn
+        JWnSTJ5g3pkKj5EFdqloWhWxURk4laO6PK/YawszMipc5V3XMuciy09fQRBPHQDw
+        WaMaScE8YQwAXTQ07unynIUFb6uRwK5Xp9M77ce77EzjXPpGOz2szsk/7do6NN+o
+        N8HKQCnto926znql+64A7ZFkft9kw==
+X-ME-Sender: <xms:D1HIX1uBIPPxt_0bK1o_qbF9fws-Wv77GSm9yQqSr2Iq1SZtj4Uw9A>
+    <xme:D1HIX-fx6CrpNf4vbsQkLAEOWHk2Y4sjOsa9ncq-EZbju4SSGwnZJs-M-4HmZDDRx
+    kTpQK_nrGxiH0EDlg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeihedggeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepuddvleffkeejhfduieelheejteehleefieeikefgteeugefhtdev
+    keefvefgheeinecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepjedtrddufe
+    ehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:D1HIX4zh2NgtSlcRYk_RoURBg6aMso978BZFYezK1XwsRWxrlY-VfQ>
+    <xmx:D1HIX8M878gsPmttLro9Uv9yzo4926KV-0nEmrpU-PURO71eVw7VfA>
+    <xmx:D1HIX1_Ve9jjgYLQqiLyXEGqJ9bpN8lHJ2A7pCYMkV-eeP5cfOlmtQ>
+    <xmx:ElHIX4Vu_vAC6yc-71_H2BmRtdaDD8WEMDspfUoW24BZAx5CI5_FUw>
+Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D5EB6240059;
+        Wed,  2 Dec 2020 21:44:30 -0500 (EST)
+Subject: Re: [PATCH 4/8] clk: sunxi-ng: Add support for the Allwinner H616
+ R-CCU
+To:     =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@siol.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Andre Przywara <andre.przywara@arm.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
+        Icenowy Zheng <icenowy@aosc.xyz>,
+        Yangtao Li <frank@allwinnertech.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <20201202135409.13683-1-andre.przywara@arm.com>
+ <20201202135409.13683-5-andre.przywara@arm.com> <3151878.LmPXbFMbMm@kista>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <55df8346-0330-4e7d-03ef-334622851a98@sholland.org>
+Date:   Wed, 2 Dec 2020 20:44:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20201202122114.75316-1-songmuchun@bytedance.com> <1505b548-968b-2053-fd17-0cc4ae240a2f@suse.cz>
-In-Reply-To: <1505b548-968b-2053-fd17-0cc4ae240a2f@suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 3 Dec 2020 10:43:29 +0800
-Message-ID: <CAMZfGtWd2VO7xdnKrHrRAWiuRo=BKO1LMXY8d4xxZDfMeoazyg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm/page_isolation: do not isolate the max
- order page
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3151878.LmPXbFMbMm@kista>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 8:03 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> On 12/2/20 1:21 PM, Muchun Song wrote:
-> > The max order page has no buddy page and never merge to other order.
-> > So isolating and then freeing it is pointless.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
->
-> > ---
-> >  mm/page_isolation.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-> > index a254e1f370a3..bddf788f45bf 100644
-> > --- a/mm/page_isolation.c
-> > +++ b/mm/page_isolation.c
-> > @@ -88,7 +88,7 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
-> >        */
-> >       if (PageBuddy(page)) {
-> >               order = buddy_order(page);
-> > -             if (order >= pageblock_order) {
-> > +             if (order >= pageblock_order && order < MAX_ORDER - 1) {
-> >                       pfn = page_to_pfn(page);
-> >                       buddy_pfn = __find_buddy_pfn(pfn, order);
-> >                       buddy = page + (buddy_pfn - pfn);
->
-> Hm I wonder if order == MAX_ORDER - 1, then the buddy can actually be a
-> !pfn_valid() in some corner case? pfn_valid_within(buddy_pfn) that follows would
-> only catch it on archs with holes in zone. Then is_migrate_isolate_page(buddy)
-> might access an invalid buddy. So this might be actually a bug fix and not just
-> optimization, just the bug hasn't been observed in practice.
+On 12/2/20 12:20 PM, Jernej Škrabec wrote:
+>> +};
+>> +
+>> +static struct clk_hw_onecell_data sun50i_h616_r_hw_clks = {
+>> +	.hws	= {
+>> +		[CLK_R_AHB]		= &r_ahb_clk.hw,
+>> +		[CLK_R_APB1]		= &r_apb1_clk.common.hw,
+>> +		[CLK_R_APB2]		= &r_apb2_clk.common.hw,
+>> +		[CLK_R_APB1_TWD]	= &r_apb1_twd_clk.common.hw,
+> 
+> Do we know if TWD exists? I tested I2C and IR. What is your source for these 
+> clocks?
 
-Agree. Should we add a Fixes tag in the commit log? Thanks.
+Looking at https://github.com/orangepi-xunlong/linux-orangepi and comparing
+drivers/clk/sunxi/clk-sun50iw[69].h, I see:
 
->
-> >
->
+ /* PRCM Register List */
+ #define CPUS_CFG            0x0000
+ #define CPUS_APBS1_CFG      0x000C
+ #define CPUS_APBS2_CFG      0x0010
+-#define CPUS_TIMER_GATE     0x011C
+ #define CPUS_TWDOG_GATE     0x012C
+-#define CPUS_PWM_GATE       0x013C
+-#define CPUS_UART_GATE      0x018C
+ #define CPUS_TWI_GATE       0x019C
+ #define CPUS_RSB_GATE       0x01BC
+ #define CPUS_CIR_CFG        0x01C0
+ #define CPUS_CIR_GATE       0x01CC
+ #define CPUS_OWC_CFG        0x01E0
+ #define CPUS_OWC_GATE       0x01EC
+ #define CPUS_RTC_GATE       0x020C
+ #define CPUS_CLK_MAX_REG    0x020C
 
+which suggests that TWD is still there, along with OWC/W1 and an undocumented
+RSB controller like the one in H6. Jernej, can you check RSB? It should be
+PL0/PL1 function 2 and MMIO base 0x7083000.
 
--- 
-Yours,
-Muchun
+Cheers,
+Samuel
