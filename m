@@ -2,109 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8871D2CD4AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 440112CD4B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729184AbgLCLgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:36:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726868AbgLCLgt (ORCPT
+        id S2387828AbgLCLiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:38:11 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:9671 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbgLCLiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:36:49 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C05C061A4D
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 03:36:08 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id p6so996181plo.6
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 03:36:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=wqd6B3MGg9FU3pSe+TUt1wCgmmcknZUopdwCUSxaGrw=;
-        b=guM1o5Y6XAw7IphxI5qXSTe0jGqIc10MncBmcXcjxH8b1fRlicsuQdbzOwICJHy+Bi
-         aEcJM8QxU0srioGSh9WB8pliTssXUkmNcrvZ45yZaMwas12tKu/0d5hdf7gwH3Rh0KjQ
-         hakt7IjgtSc9hs2vfAvbf88qSQFdUv9eLT23WOysdX+Or9kmNf08ikGr9//0EQcTkAaZ
-         MR3yFv+JroEaox/qJnWcO1yVOIKFoZvLq6SqfFDjBpxTiLdQyqWBkOPAX/0v48rvinEn
-         Fvq2RM+/PXwyZYrWys7rPAEw0nCrR593R9inQsNOrwttWkFbA+jnHPUz05HAzLsStO69
-         a9yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=wqd6B3MGg9FU3pSe+TUt1wCgmmcknZUopdwCUSxaGrw=;
-        b=hnmKbsyzGQGListn0E+v6fa61zyhk0dGYLcmxgny2a23V5WtDi/ssbRaprZG477707
-         X8yMa383Br+/wQd0/g7MoOWPepTIKvcWXEHijl+WuoHGrmEpO0SE6zHnV9R0jUXLzMQd
-         vkHkIHexu0xnCf/nJKgdyXUbX7G35sxZVnnxLp9g99rmaX5E3asLycMOs0CqSrtEffuo
-         m87vnE8baLRmlP+rs9O3GWettyC/smCFP7VhgjMupWgCw0IUo6a1tDNpGRMvrW7PpE0u
-         aft9sQzAJMa3PHKpa9JtLxg2wM68OkKuJQQ2dXtllppPZc+1+gfc2F6woD85NGD9SAzw
-         /TJg==
-X-Gm-Message-State: AOAM53092k64kLKA3fgG2Q/NqLWOIEBiJR4iATvyGGRhdXNJ3vIL+I4R
-        9k3DwIVUY3FmHV7LAwL7DZ4hD5Mku/8=
-X-Google-Smtp-Source: ABdhPJx46Y2bHQRP5Q9sMsDoVEb7XeWcubw21qfiGoH8CWJMxbcrxY9HCu1UGQ0LqNWsBHsLSk2BZQ==
-X-Received: by 2002:a17:902:b28a:b029:da:725c:14db with SMTP id u10-20020a170902b28ab02900da725c14dbmr2683231plr.72.1606995368488;
-        Thu, 03 Dec 2020 03:36:08 -0800 (PST)
-Received: from bj03382pcu.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id y25sm1554665pfn.44.2020.12.03.03.36.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Dec 2020 03:36:07 -0800 (PST)
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-X-Google-Original-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-To:     Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: fix a race on nr_swap_pages
-Date:   Thu,  3 Dec 2020 19:36:02 +0800
-Message-Id: <1606995362-16413-1-git-send-email-zhaoyang.huang@unisoc.com>
-X-Mailer: git-send-email 1.7.9.5
+        Thu, 3 Dec 2020 06:38:10 -0500
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 03 Dec 2020 03:37:29 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 03 Dec 2020 03:37:27 -0800
+X-QCInternal: smtphost
+Received: from c-mansur-linux.qualcomm.com ([10.204.90.208])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 03 Dec 2020 17:07:14 +0530
+Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
+        id 9B4C51FE2D; Thu,  3 Dec 2020 17:07:13 +0530 (IST)
+From:   dikshita@codeaurora.org
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [RESEND v2] venus: core: add support to dump FW region
+Date:   Thu,  3 Dec 2020 17:06:54 +0530
+Message-Id: <1606995414-4565-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The scenario on which "Free swap -4kB" happens in my system, which is caused by
- get_swap_page_of_type or get_swap_pages racing with show_mem. Remove the race
- here.
+From: Dikshita Agarwal <dikshita@codeaurora.org>
 
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Add support to dump video FW region during FW crash
+using devcoredump helpers.
+
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
 ---
- mm/swapfile.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/media/platform/qcom/venus/core.c     | 30 ++++++++++++++++++++++++++++
+ drivers/media/platform/qcom/venus/core.h     |  2 ++
+ drivers/media/platform/qcom/venus/firmware.c |  3 +++
+ 3 files changed, 35 insertions(+)
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index cf63b5f..13201b6 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -974,6 +974,8 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
- 	/* Only single cluster request supported */
- 	WARN_ON_ONCE(n_goal > 1 && size == SWAPFILE_CLUSTER);
+diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+index 5102403..dd8d35a 100644
+--- a/drivers/media/platform/qcom/venus/core.c
++++ b/drivers/media/platform/qcom/venus/core.c
+@@ -7,8 +7,10 @@
+ #include <linux/interconnect.h>
+ #include <linux/ioctl.h>
+ #include <linux/delay.h>
++#include <linux/devcoredump.h>
+ #include <linux/list.h>
+ #include <linux/module.h>
++#include <linux/of_address.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+@@ -22,6 +24,32 @@
+ #include "firmware.h"
+ #include "pm_helpers.h"
  
-+	spin_lock(&swap_avail_lock);
++static void subsystem_dump(struct venus_core *core)
++{
++	struct device *dev;
++	phys_addr_t mem_phys;
++	size_t mem_size;
++	void *mem_va;
++	void *data;
 +
- 	avail_pgs = atomic_long_read(&nr_swap_pages) / size;
- 	if (avail_pgs <= 0)
- 		goto noswap;
-@@ -986,8 +988,6 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
++	dev = core->dev;
++	mem_phys = core->fw.mem_phys;
++	mem_size = core->fw.mem_size;
++
++	mem_va = memremap(mem_phys, mem_size, MEMREMAP_WC);
++	if (!mem_va)
++		return;
++
++	data = vmalloc(mem_size);
++	if (!data)
++		goto err_unmap;
++
++	memcpy(data, mem_va, mem_size);
++	dev_coredumpv(dev, data, mem_size, GFP_KERNEL);
++err_unmap:
++	memunmap(mem_va);
++}
++
+ static void venus_event_notify(struct venus_core *core, u32 event)
+ {
+ 	struct venus_inst *inst;
+@@ -67,6 +95,8 @@ static void venus_sys_error_handler(struct work_struct *work)
  
- 	atomic_long_sub(n_goal * size, &nr_swap_pages);
+ 	venus_shutdown(core);
  
--	spin_lock(&swap_avail_lock);
--
- start_over:
- 	node = numa_node_id();
- 	plist_for_each_entry_safe(si, next, &swap_avail_heads[node], avail_lists[node]) {
-@@ -1061,14 +1061,13 @@ swp_entry_t get_swap_page_of_type(int type)
++	subsystem_dump(core);
++
+ 	pm_runtime_put_sync(core->dev);
  
- 	spin_lock(&si->lock);
- 	if (si->flags & SWP_WRITEOK) {
--		atomic_long_dec(&nr_swap_pages);
- 		/* This is called for allocating swap entry, not cache */
- 		offset = scan_swap_map(si, 1);
- 		if (offset) {
-+			atomic_long_dec(&nr_swap_pages);
- 			spin_unlock(&si->lock);
- 			return swp_entry(type, offset);
- 		}
--		atomic_long_inc(&nr_swap_pages);
+ 	while (core->pmdomains[0] && pm_runtime_active(core->pmdomains[0]))
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index 842a294..8122f23 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -171,6 +171,8 @@ struct venus_core {
+ 		struct device *dev;
+ 		struct iommu_domain *iommu_domain;
+ 		size_t mapped_mem_size;
++		phys_addr_t mem_phys;
++		size_t mem_size;
+ 	} fw;
+ 	struct mutex lock;
+ 	struct list_head instances;
+diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
+index 9a9c097..f3d91d23 100644
+--- a/drivers/media/platform/qcom/venus/firmware.c
++++ b/drivers/media/platform/qcom/venus/firmware.c
+@@ -201,6 +201,9 @@ int venus_boot(struct venus_core *core)
+ 		return -EINVAL;
  	}
- 	spin_unlock(&si->lock);
- fail:
+ 
++	core->fw.mem_size = mem_size;
++	core->fw.mem_phys = mem_phys;
++
+ 	if (core->use_tz)
+ 		ret = qcom_scm_pas_auth_and_reset(VENUS_PAS_ID);
+ 	else
 -- 
-1.9.1
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
