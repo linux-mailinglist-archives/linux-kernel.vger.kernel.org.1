@@ -2,181 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEEE2CCB03
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:36:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B7F2CCB06
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:36:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729165AbgLCAdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 19:33:53 -0500
-Received: from a2.mail.mailgun.net ([198.61.254.61]:42903 "EHLO
-        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728455AbgLCAdw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 19:33:52 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606955608; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=By/aMzhWqnWf+mrF0bGGdQIRcZSJvv5Cq+eXGImVikQ=; b=YKHHNCi/AkufCt6eJqG6c6dNPYL79ruSTwPNyWM82Mxxms5thZ7f6TgPc0JE//OpzNTHXbqq
- CMLZ4EsbFaYgn42wJkN1HyvBs4njZam9JZwVAko3OhT2i8GJCxev2SZyrMkxtTfuQZnhu1cO
- yqItpUC6jHOmYOiRQeUUQQEx2lY=
-X-Mailgun-Sending-Ip: 198.61.254.61
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5fc8323ee8c9bf49aded9fdf (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Dec 2020 00:33:02
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 12BB9C43462; Thu,  3 Dec 2020 00:33:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D5E1AC433C6;
-        Thu,  3 Dec 2020 00:33:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D5E1AC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v3 4/7] bus: mhi: core: Add support to stop or start
- channel data transfers
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, loic.poulain@linaro.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-References: <1606952438-15321-1-git-send-email-bbhatt@codeaurora.org>
- <1606952438-15321-5-git-send-email-bbhatt@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <78cafedf-4d08-e087-a56e-6df88731b2ff@codeaurora.org>
-Date:   Wed, 2 Dec 2020 16:33:00 -0800
+        id S1729236AbgLCAdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 19:33:55 -0500
+Received: from foss.arm.com ([217.140.110.172]:54716 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728455AbgLCAdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 19:33:54 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 767BA113E;
+        Wed,  2 Dec 2020 16:33:08 -0800 (PST)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 29EA03F575;
+        Wed,  2 Dec 2020 16:33:05 -0800 (PST)
+Subject: Re: [RFC V2 3/3] s390/mm: Define arch_get_mappable_range()
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>
+References: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
+ <1606706992-26656-4-git-send-email-anshuman.khandual@arm.com>
+ <20201202203233.GB11274@osiris>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <24905c32-f6c1-97a0-000f-f822b9870ea5@arm.com>
+Date:   Thu, 3 Dec 2020 06:03:00 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1606952438-15321-5-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201202203233.GB11274@osiris>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhaumik,
 
-On 12/2/20 3:40 PM, Bhaumik Bhatt wrote:
-> Some MHI client drivers may want to request a pause or halt of
-> data transfer activity on their channels. Support for this does
-> not exist and must be introduced, wherein the channel context is
-> not reset or cleared but only the STOP channel command is issued.
-> This would need to be paired with an API that allows resuming the
-> data transfer activity on channels by use of the START channel
-> command. This API assumes that the context information is already
 
-is it a better option to make sure channel context is setup as this is 
-an exported API. Hence check for channel context bail out in case 
-channel context is not setup with an err msg ?
-
-> setup. Enable this using two new APIs, mhi_start_transfer() and
-> mhi_stop_transfer().
+On 12/3/20 2:02 AM, Heiko Carstens wrote:
+> On Mon, Nov 30, 2020 at 08:59:52AM +0530, Anshuman Khandual wrote:
+>> This overrides arch_get_mappabble_range() on s390 platform and drops now
+>> redundant similar check in vmem_add_mapping(). This compensates by adding
+>> a new check __segment_load() to preserve the existing functionality.
+>>
+>> Cc: Heiko Carstens <hca@linux.ibm.com>
+>> Cc: Vasily Gorbik <gor@linux.ibm.com>
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: linux-s390@vger.kernel.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>  arch/s390/mm/extmem.c |  5 +++++
+>>  arch/s390/mm/vmem.c   | 13 +++++++++----
+>>  2 files changed, 14 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/s390/mm/extmem.c b/arch/s390/mm/extmem.c
+>> index 5060956b8e7d..cc055a78f7b6 100644
+>> --- a/arch/s390/mm/extmem.c
+>> +++ b/arch/s390/mm/extmem.c
+>> @@ -337,6 +337,11 @@ __segment_load (char *name, int do_nonshared, unsigned long *addr, unsigned long
+>>  		goto out_free_resource;
+>>  	}
+>>  
+>> +	if (seg->end + 1 > VMEM_MAX_PHYS || seg->end + 1 < seg->start_addr) {
+>> +		rc = -ERANGE;
+>> +		goto out_resource;
+>> +	}
+>> +
+>>  	rc = vmem_add_mapping(seg->start_addr, seg->end - seg->start_addr + 1);
+>>  	if (rc)
+>>  		goto out_resource;
+>> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
+>> index b239f2ba93b0..06dddcc0ce06 100644
+>> --- a/arch/s390/mm/vmem.c
+>> +++ b/arch/s390/mm/vmem.c
+>> @@ -532,14 +532,19 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
+>>  	mutex_unlock(&vmem_mutex);
+>>  }
+>>  
+>> +struct range arch_get_mappable_range(void)
+>> +{
+>> +	struct range memhp_range;
+>> +
+>> +	memhp_range.start = 0;
+>> +	memhp_range.end =  VMEM_MAX_PHYS;
+>> +	return memhp_range;
+>> +}
+>> +
+>>  int vmem_add_mapping(unsigned long start, unsigned long size)
+>>  {
+>>  	int ret;
+>>  
+>> -	if (start + size > VMEM_MAX_PHYS ||
+>> -	    start + size < start)
+>> -		return -ERANGE;
+>> -
 > 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->   drivers/bus/mhi/core/main.c | 41 +++++++++++++++++++++++++++++++++++++++++
->   include/linux/mhi.h         | 19 +++++++++++++++++++
->   2 files changed, 60 insertions(+)
-> 
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 4cc5ced..2e4b34a 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -1552,6 +1552,47 @@ void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev)
->   }
->   EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
->   
-> +static int mhi_update_transfer_state(struct mhi_device *mhi_dev,
-> +				     enum mhi_ch_state_type to_state)
-> +{
-> +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-> +	struct mhi_chan *mhi_chan;
-> +	int dir, ret;
-> +
-> +	for (dir = 0; dir < 2; dir++) {
-> +		mhi_chan = dir ? mhi_dev->ul_chan : mhi_dev->dl_chan;
-> +
-> +		if (!mhi_chan)
-> +			continue;
-> +
-> +		/*
-> +		 * Bail out if one of the channels fail as client will reset
-> +		 * both upon failure
-> +		 */
-> +		mutex_lock(&mhi_chan->mutex);
-> +		ret = mhi_update_channel_state(mhi_cntrl, mhi_chan, to_state);
-> +		if (ret) {
-> +			mutex_unlock(&mhi_chan->mutex);
-> +			return ret;
-> +		}
-> +		mutex_unlock(&mhi_chan->mutex);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +int mhi_stop_transfer(struct mhi_device *mhi_dev)
-> +{
-> +	return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_STOP);
-> +}
-> +EXPORT_SYMBOL_GPL(mhi_stop_transfer);
-> +
-> +int mhi_start_transfer(struct mhi_device *mhi_dev)
-> +{
-> +	return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_START);
-> +}
-> +EXPORT_SYMBOL_GPL(mhi_start_transfer);
-> +
->   int mhi_poll(struct mhi_device *mhi_dev, u32 budget)
->   {
->   	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index aa9757e..35779a0 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -704,6 +704,25 @@ int mhi_prepare_for_transfer(struct mhi_device *mhi_dev);
->   void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev);
->   
->   /**
-> + * mhi_stop_transfer - Pauses ongoing channel activity by issuing the STOP
-> + *                     channel command to both UL and DL channels. This command
-> + *                     does not reset the channel context and the client drivers
-> + *                     can issue mhi_start_transfer to resume activity.
-> + * @mhi_dev: Device associated with the channels
-> + */
-> +int mhi_stop_transfer(struct mhi_device *mhi_dev);
-> +
-> +/**
-> + * mhi_start_transfer - Resumes channel activity by issuing the START channel
-> + *                      command to both UL and DL channels. This command assumes
-> + *                      the channel context is already setup and the client
-> + *                      drivers can issue mhi_stop_transfer to pause activity if
-> + *                      required.
-> + * @mhi_dev: Device associated with the channels
-> + */
-> +int mhi_start_transfer(struct mhi_device *mhi_dev);
-> +
-> +/**
->    * mhi_poll - Poll for any available data in DL direction
->    * @mhi_dev: Device associated with the channels
->    * @budget: # of events to process
-> 
-Overall change looks good.
+> I really fail to see how this could be considered an improvement for
+> s390. Especially I do not like that the (central) range check is now
+> moved to the caller (__segment_load). Which would mean potential
+> additional future callers would have to duplicate that code as well.
 
-Thanks,
-Hemant
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+The physical range check is being moved to the generic hotplug code
+via arch_get_mappable_range() instead, making the existing check in
+vmem_add_mapping() redundant. Dropping the check there necessitates
+adding back a similar check in __segment_load(). Otherwise there
+will be a loss of functionality in terms of range check.
+
+May be we could just keep this existing check in vmem_add_mapping()
+as well in order avoid this movement but then it would be redundant
+check in every hotplug path.
+
+So I guess the choice is to either have redundant range checks in
+all hotplug paths or future internal callers of vmem_add_mapping()
+take care of the range check.
