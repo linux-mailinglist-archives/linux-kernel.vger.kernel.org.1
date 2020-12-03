@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA032CE195
+	by mail.lfdr.de (Postfix) with ESMTP id CA36C2CE196
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729565AbgLCW1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:27:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53580 "EHLO mail.kernel.org"
+        id S1729584AbgLCW2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:28:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726405AbgLCW1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:27:52 -0500
+        id S1726405AbgLCW2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:28:46 -0500
 From:   Arnd Bergmann <arnd@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jian Hu <jian.hu@amlogic.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Mark Brown <broonie@kernel.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: meson: g12a: select COMMON_CLK_MESON_VID_PLL_DIV
-Date:   Thu,  3 Dec 2020 23:26:58 +0100
-Message-Id: <20201203222706.992440-1-arnd@kernel.org>
+Subject: [PATCH] arm64: fix HARDLOCKUP_DETECTOR dependency
+Date:   Thu,  3 Dec 2020 23:27:26 +0100
+Message-Id: <20201203222800.1009987-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -35,28 +34,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Without this, a g12a-only config produces a link error:
+When CONFIG_HW_PERF_EVENTS is disabled, the hardware lockup detector
+fails to link:
 
-aarch64-linux-ld: drivers/clk/meson/g12a.o:(.data+0xcb68): undefined reference to `meson_vid_pll_div_ro_ops'
+ld.lld: error: undefined symbol: hw_nmi_get_sample_period
+>>> referenced by watchdog_hld.c
+>>>               watchdog_hld.o:(hardlockup_detector_event_create) in archive kernel/built-in.a
 
-Fixes: 085a4ea93d54 ("clk: meson: g12a: add peripheral clock controller")
+Fix the dependency to refer to the Kconfig symbol that actually controls
+the feature.
+
+Fixes: 367c820ef080 ("arm64: Enable perf events based hard lockup detector")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/clk/meson/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
-index 034da203e8e0..9a8a548d839d 100644
---- a/drivers/clk/meson/Kconfig
-+++ b/drivers/clk/meson/Kconfig
-@@ -110,6 +110,7 @@ config COMMON_CLK_G12A
- 	select COMMON_CLK_MESON_AO_CLKC
- 	select COMMON_CLK_MESON_EE_CLKC
- 	select COMMON_CLK_MESON_CPU_DYNDIV
-+	select COMMON_CLK_MESON_VID_PLL_DIV
- 	select MFD_SYSCON
- 	help
- 	  Support for the clock controller on Amlogic S905D2, S905X2 and S905Y2
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 7599ad86e9a8..ecd900ad7755 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -176,7 +176,7 @@ config ARM64
+ 	select HAVE_PATA_PLATFORM
+ 	select HAVE_PERF_EVENTS
+ 	select HAVE_PERF_EVENTS_NMI if ARM64_PSEUDO_NMI
+-	select HAVE_HARDLOCKUP_DETECTOR_PERF if PERF_EVENTS && HAVE_PERF_EVENTS_NMI
++	select HAVE_HARDLOCKUP_DETECTOR_PERF if HW_PERF_EVENTS && HAVE_PERF_EVENTS_NMI
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
 -- 
 2.27.0
 
