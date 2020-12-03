@@ -2,187 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5D92CDE60
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:04:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37152CDE63
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502050AbgLCTBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:01:35 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19213 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502016AbgLCTBd (ORCPT
+        id S1726222AbgLCTCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:02:52 -0500
+Received: from mout.kundenserver.de ([212.227.17.13]:54639 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725923AbgLCTCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:01:33 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc935c60000>; Thu, 03 Dec 2020 11:00:22 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Dec
- 2020 19:00:18 +0000
-Received: from skomatineni-linux.nvidia.com (172.20.13.39) by mail.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Thu, 3 Dec 2020 19:00:17 +0000
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>
-CC:     <bparrot@ti.com>, <mchehab@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 13/13] media: tegra-video: Add custom V4L2 control V4L2_CID_TEGRA_SYNCPT_TIMEOUT_RETRY
-Date:   Thu, 3 Dec 2020 11:00:02 -0800
-Message-ID: <1607022002-26575-14-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607022002-26575-1-git-send-email-skomatineni@nvidia.com>
-References: <1607022002-26575-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+        Thu, 3 Dec 2020 14:02:51 -0500
+Received: from [192.168.1.155] ([95.118.71.13]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MEFnP-1kuU4Y44DF-00ACDA; Thu, 03 Dec 2020 20:00:08 +0100
+Subject: Re: [PATCH] drivers: gpio: add virtio-gpio guest driver
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv@lists.infradead.org
+References: <20201127183003.2849-1-info@metux.net>
+ <CAMpxmJXJLTzM20xLCoM4spjibXbA-FfdPmOBp1QcV+9cScNNMw@mail.gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <f14c0197-b346-7af5-9dd0-9b8018baaeaf@metux.net>
+Date:   Thu, 3 Dec 2020 20:00:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607022022; bh=OZJ/8SCNM9zia5Uy6aq+c9fc5V1L/LcrVZqaCjqF0cQ=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:X-NVConfidentiality:MIME-Version:Content-Type;
-        b=EkOMKegyV1cnH36jeAfnVHZsOuhtC8seEeDnlD55bTX+pkYBAjSF9i/+aJFMarqx3
-         KVJwLKG9zyu3muZglZ0kUlgF9LiLuojV3n+bJOe8sKEA8tIm1MJ+kdHGwbOcM5q5j5
-         Y+LEzfzSxL6sx9rMXm28HJmwLDV0nnw9sqSH9M37pTqi39Uo9Q+zZSf6Qechc64DwM
-         0CgNWY1OS9RtUfD1yoleBAy0/vqwsueHBjORGPnO/BWiUdx/c/4eZTjhlW1IyGIFNz
-         E9yj7eKofV7enO8EqVdgTJ8T3P68FI5WJyVtt5yC7I7aGU7BBrnSAt4qkRNNCRx5T6
-         XXaI4WP9eP1xg==
+In-Reply-To: <CAMpxmJXJLTzM20xLCoM4spjibXbA-FfdPmOBp1QcV+9cScNNMw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:p5LN3n+bAttBQwUtEyPqApfX3eqFc3HvKIiC9q0shuFj92psIHG
+ uB2xlIOGJ48cWY+oLFweeF4VBn7qrnxXccMsvCheusJ8MG4wyjKDb9knNEJfYmC9d9tntu8
+ zsrzPlagFHQZDJ3Wwxgtnz0HjY2Jj9FQG8WeiwU+oTsedrGlgGXo2CWjtsyUA4LdEX6OMVD
+ ATFlIlkzgtH6hFOWHxrLA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:pMRUBlN/d0A=:UrFqkV9Rj8Ug6uAghSgKi4
+ bW3MF54yliURM09+0k+ZtgoddowzQqwEwX6DmRX42wHDMAIvaAjkkha5jvMmC0J2LLsuf1W/T
+ Y/A041uQLRvO0UcKQoHOSxSANx+c9O0PkaG8Fo3M5aWH7aGdGj/ZmWWcQpmHNPgMLLUdbExfu
+ oPY8Jn6x4rI7NsIsFQBNMWZBiT5MvVYfBT6i++DkxLrR3je1TkjXHy+gVt0Xr+bDiOS5YR0F0
+ 1xSXyBKg/CHVzZAZ4t5J5F383kHSORic/lQEl4adKgb4jbKdOXUwADMKFxjrJmVgc2nB9nLX+
+ +6BdKrc9GgvxWNUESLiIJhwYRK99sEDOL2Hv0L1lf0I+Mq3XTq4tDV3YT1pWdYkH6bCXre0t+
+ mEoo9Zzvg6yFe36A3aLkMSf8qrM0AR+JGQZr9Y8Ku5pyU18hUXXg/m3Gd2Ocr
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds custom V4L2 control for syncpt timeout retry to continue
-capture on error for specified retries count through this control.
+On 02.12.20 15:15, Bartosz Golaszewski wrote:
 
-This is useful for HDMI-to-CSI bridge debug purposes like for hotplug scenarios
-or for ignoring captures till HDMI input is stabilized.
+Hi,
 
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
----
- drivers/staging/media/tegra-video/tegra210.c | 10 +++++++++-
- drivers/staging/media/tegra-video/vi.c       | 26 +++++++++++++++++++++++++-
- drivers/staging/media/tegra-video/vi.h       |  4 ++++
- 3 files changed, 38 insertions(+), 2 deletions(-)
+<snip>
 
-diff --git a/drivers/staging/media/tegra-video/tegra210.c b/drivers/staging/media/tegra-video/tegra210.c
-index 063d0a3..f10a041 100644
---- a/drivers/staging/media/tegra-video/tegra210.c
-+++ b/drivers/staging/media/tegra-video/tegra210.c
-@@ -454,6 +454,7 @@ static int chan_capture_kthread_start(void *data)
- {
- 	struct tegra_vi_channel *chan = data;
- 	struct tegra_channel_buffer *buf;
-+	unsigned int retries = 0;
- 	int err = 0;
- 
- 	while (1) {
-@@ -483,8 +484,15 @@ static int chan_capture_kthread_start(void *data)
- 		spin_unlock(&chan->start_lock);
- 
- 		err = tegra_channel_capture_frame(chan, buf);
--		if (err)
-+		if (!err) {
-+			retries = 0;
-+			continue;
-+		}
-+
-+		if (retries++ > chan->syncpt_timeout_retry)
- 			vb2_queue_error(&chan->queue);
-+		else
-+			err = 0;
- 	}
- 
- 	return 0;
-diff --git a/drivers/staging/media/tegra-video/vi.c b/drivers/staging/media/tegra-video/vi.c
-index 4773281..70e1e18 100644
---- a/drivers/staging/media/tegra-video/vi.c
-+++ b/drivers/staging/media/tegra-video/vi.c
-@@ -956,7 +956,6 @@ static const struct v4l2_file_operations tegra_channel_fops = {
- /*
-  * V4L2 control operations
-  */
--#if IS_ENABLED(CONFIG_VIDEO_TEGRA_TPG)
- static int vi_s_ctrl(struct v4l2_ctrl *ctrl)
- {
- 	struct tegra_vi_channel *chan = container_of(ctrl->handler,
-@@ -968,6 +967,9 @@ static int vi_s_ctrl(struct v4l2_ctrl *ctrl)
- 		/* pattern change takes effect on next stream */
- 		chan->pg_mode = ctrl->val + 1;
- 		break;
-+	case V4L2_CID_TEGRA_SYNCPT_TIMEOUT_RETRY:
-+		chan->syncpt_timeout_retry = ctrl->val;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -979,10 +981,22 @@ static const struct v4l2_ctrl_ops vi_ctrl_ops = {
- 	.s_ctrl	= vi_s_ctrl,
- };
- 
-+#if IS_ENABLED(CONFIG_VIDEO_TEGRA_TPG)
- static const char *const vi_pattern_strings[] = {
- 	"Black/White Direct Mode",
- 	"Color Patch Mode",
- };
-+#else
-+static const struct v4l2_ctrl_config syncpt_timeout_ctrl = {
-+	.ops = &vi_ctrl_ops,
-+	.id = V4L2_CID_TEGRA_SYNCPT_TIMEOUT_RETRY,
-+	.name = "Syncpt timeout retry",
-+	.type = V4L2_CTRL_TYPE_INTEGER,
-+	.min = 1,
-+	.max = 10000,
-+	.step = 1,
-+	.def = 5,
-+};
- #endif
- 
- static int tegra_channel_setup_ctrl_handler(struct tegra_vi_channel *chan)
-@@ -1004,6 +1018,16 @@ static int tegra_channel_setup_ctrl_handler(struct tegra_vi_channel *chan)
- #else
- 	struct v4l2_subdev *subdev;
- 
-+	/* custom control */
-+	v4l2_ctrl_new_custom(&chan->ctrl_handler, &syncpt_timeout_ctrl, NULL);
-+	if (chan->ctrl_handler.error) {
-+		dev_err(chan->vi->dev, "failed to add %s ctrl handler: %d\n",
-+			syncpt_timeout_ctrl.name,
-+			chan->ctrl_handler.error);
-+		v4l2_ctrl_handler_free(&chan->ctrl_handler);
-+		return chan->ctrl_handler.error;
-+	}
-+
- 	subdev = tegra_channel_get_remote_source_subdev(chan);
- 	if (!subdev)
- 		return -ENODEV;
-diff --git a/drivers/staging/media/tegra-video/vi.h b/drivers/staging/media/tegra-video/vi.h
-index 27061a5..a68e2c0 100644
---- a/drivers/staging/media/tegra-video/vi.h
-+++ b/drivers/staging/media/tegra-video/vi.h
-@@ -23,6 +23,8 @@
- 
- #include "csi.h"
- 
-+#define V4L2_CID_TEGRA_SYNCPT_TIMEOUT_RETRY	(V4L2_CTRL_CLASS_CAMERA | 0x1001)
-+
- #define TEGRA_MIN_WIDTH		32U
- #define TEGRA_MAX_WIDTH		32768U
- #define TEGRA_MIN_HEIGHT	32U
-@@ -160,6 +162,7 @@ struct tegra_vi_graph_entity {
-  * @of_node: device node of VI channel
-  *
-  * @ctrl_handler: V4L2 control handler of this video channel
-+ * @syncpt_timeout_retry: syncpt timeout retry count for the capture
-  * @fmts_bitmap: a bitmap for supported formats matching v4l2 subdev formats
-  * @tpg_fmts_bitmap: a bitmap for supported TPG formats
-  * @pg_mode: test pattern generator mode (disabled/direct/patch)
-@@ -201,6 +204,7 @@ struct tegra_vi_channel {
- 	struct device_node *of_node;
- 
- 	struct v4l2_ctrl_handler ctrl_handler;
-+	unsigned int syncpt_timeout_retry;
- 	DECLARE_BITMAP(fmts_bitmap, MAX_FORMAT_NUM);
- 	DECLARE_BITMAP(tpg_fmts_bitmap, MAX_FORMAT_NUM);
- 	enum tegra_vi_pg_mode pg_mode;
+> With a third entry (after gpio-mockup and gpio-aggregator) I think
+> these deserve a separate submenu for "virtual GPIO drivers" or
+> something like that.
+
+just sent a separate patch.
+
+> 
+> Please keep headers ordered alphabetically.
+
+fixed in v2.
+
+> Don't use tabs here - not only doesn't it improve readability but
+> you're not even consistent.
+
+fixed in v2.
+
+> 
+>> +
+>> +static void virtio_gpio_prepare_inbuf(struct virtio_gpio_priv *priv)
+>> +{
+>> +       struct scatterlist rcv_sg;
+>> +
+>> +       sg_init_one(&rcv_sg, &priv->rcv_buf, sizeof(priv->rcv_buf));
+>> +       virtqueue_add_inbuf(priv->vq_rx, &rcv_sg, 1, &priv->rcv_buf,
+>> +                           GFP_KERNEL);
+>> +       virtqueue_kick(priv->vq_rx);
+>> +}
+>> +
+>> +static int virtio_gpio_xmit(struct virtio_gpio_priv *priv, int type,
+>> +                           int pin, int value, struct virtio_gpio_event *ev)
+>> +{
+>> +       struct scatterlist sg[1];
+>> +       int ret;
+>> +       unsigned long flags;
+>> +
+>> +       WARN_ON(!ev);
+>> +
+>> +       ev->type = type;
+>> +       ev->pin = pin;
+>> +       ev->value = value;
+>> +
+>> +       sg_init_table(sg, 1);
+>> +       sg_set_buf(&sg[0], ev, sizeof(struct virtio_gpio_event));
+>> +
+>> +       spin_lock_irqsave(&priv->vq_lock, flags);
+>> +       ret = virtqueue_add_outbuf(priv->vq_tx, sg, ARRAY_SIZE(sg),
+>> +                                  priv, GFP_KERNEL);
+>> +       if (ret < 0) {
+>> +               dev_err(&priv->vdev->dev,
+>> +                       "virtqueue_add_outbuf() failed: %d\n", ret);
+>> +               goto out;
+>> +       }
+>> +       virtqueue_kick(priv->vq_tx);
+>> +
+>> +out:
+>> +       spin_unlock_irqrestore(&priv->vq_lock, flags);
+>> +       return 0;
+>> +}
+>> +
+>> +static inline void wakeup_event(struct virtio_gpio_priv *priv, int id)
+>> +{
+>> +       set_bit(id, &priv->reply_wait);
+>> +}
+>> +
+>> +static inline int check_event(struct virtio_gpio_priv *priv, int id)
+>> +{
+>> +       return test_bit(id, &priv->reply_wait);
+>> +}
+>> +
+>> +static inline void clear_event(struct virtio_gpio_priv *priv, int id)
+>> +{
+>> +       clear_bit(id, &priv->reply_wait);
+>> +}
+>> +
+>> +static int virtio_gpio_req(struct virtio_gpio_priv *priv, int type,
+>> +                          int pin, int value)
+>> +{
+>> +       struct virtio_gpio_event *ev
+>> +               = devm_kzalloc(&priv->vdev->dev,
+>> +                              sizeof(struct virtio_gpio_event), GFP_KERNEL);
+> 
+> Just move the allocation to a separate line because this is super ugly.
+
+done.
+
+> 
+>> +
+>> +       if (!ev)
+>> +               return -ENOMEM;
+>> +
+>> +       clear_event(priv, type);
+>> +       virtio_gpio_xmit(priv, type, pin, value, ev);
+>> +       wait_event_interruptible(priv->waitq, check_event(priv, type));
+>> +
+>> +       devm_kfree(&priv->vdev->dev, ev);
+> 
+> In fact you don't need the managed variant if you're freeing it in the
+> same function. Managed resources should live as long as a device is
+> attached to a driver.
+
+thx, this was a left from originally global buffer.
+
+>> +static void virtio_gpio_data_rx(struct virtqueue *vq)
+>> +{
+>> +       struct virtio_gpio_priv *priv = vq->vdev->priv;
+>> +       void *data;
+>> +       unsigned int len;
+>> +       struct virtio_gpio_event *ev;
+>> +
+>> +       data = virtqueue_get_buf(priv->vq_rx, &len);
+>> +       if (!data || !len) {
+>> +               dev_warn(&vq->vdev->dev, "RX received no data ! %d\n", len);
+>> +               return;
+>> +       }
+>> +
+>> +       ev = data;
+>> +       WARN_ON(data != &priv->rcv_buf);
+> 
+> Is it fine to proceed if this is the case?
+
+Good question :o
+
+Actually, it should never happen - if it does, we might have a bug in
+either this driver or even virtio subsystem. But still it *should*
+return a valid buffer (unless virtio is broken)
+
+>> +
+>> +       memcpy(&priv->last, &priv->rcv_buf, sizeof(struct virtio_gpio_event));
+>> +
+>> +       switch (ev->type) {
+>> +       case VIRTIO_GPIO_EV_HOST_LEVEL:
+>> +               virtio_gpio_signal(priv, ev->type, ev->pin, ev->value);
+>> +       break;
+> 
+> Break should be one tab farther.
+
+fixed in v2
+
+>> +       default:
+>> +               wakeup_event(priv, ev->type & ~VIRTIO_GPIO_EV_REPLY);
+>> +       break;
+>> +       }
+>> +       virtio_gpio_prepare_inbuf(priv);
+>> +       wake_up_all(&priv->waitq);
+>> +}
+>> +
+>> +static int virtio_gpio_alloc_vq(struct virtio_gpio_priv *priv)
+>> +{
+>> +       struct virtqueue *vqs[2];
+>> +       vq_callback_t *cbs[] = {
+>> +               NULL,
+>> +               virtio_gpio_data_rx,
+>> +       };
+>> +       static const char * const names[] = { "in", "out", };
+>> +       int ret;
+>> +
+>> +       ret = virtio_find_vqs(priv->vdev, 2, vqs, cbs, names, NULL);
+>> +       if (ret) {
+>> +               dev_err(&priv->vdev->dev, "failed to alloc vqs: %d\n", ret);
+>> +               return ret;
+>> +       }
+>> +
+>> +       priv->vq_rx = vqs[0];
+>> +       priv->vq_tx = vqs[1];
+>> +
+>> +       virtio_gpio_prepare_inbuf(priv);
+>> +
+>> +       virtio_config_enable(priv->vdev);
+>> +       virtqueue_enable_cb(priv->vq_rx);
+>> +       virtio_device_ready(priv->vdev);
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +static int virtio_gpio_probe(struct virtio_device *vdev)
+>> +{
+>> +       struct virtio_gpio_priv *priv;
+>> +       struct virtio_gpio_config cf = {};
+>> +       char *name_buffer;
+>> +       const char **gpio_names = NULL;
+>> +       struct device *dev = &vdev->dev;
+>> +
+>> +       priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+>> +       if (!priv)
+>> +               return -ENOMEM;
+>> +
+>> +       priv->name = devm_kzalloc(dev, sizeof(cf.name)+1, GFP_KERNEL);
+> 
+> This can fail.
+
+ups!
+
+>> +       spin_lock_init(&priv->vq_lock);
+>> +       spin_lock_init(&priv->op_lock);
+>> +
+>> +       virtio_cread(vdev, struct virtio_gpio_config, version, &cf.version);
+>> +       virtio_cread(vdev, struct virtio_gpio_config, num_gpios,
+>> +                    &cf.num_gpios);
+>> +       virtio_cread(vdev, struct virtio_gpio_config, names_size,
+>> +                    &cf.names_size);
+>> +       virtio_cread_bytes(vdev, offsetof(struct virtio_gpio_config, name),
+>> +                          priv->name, sizeof(cf.name));
+>> +
+>> +       if (cf.version != 1) {
+>> +               dev_err(dev, "unsupported interface version %d\n", cf.version);
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       priv->num_gpios = cf.num_gpios;
+>> +
+>> +       if (cf.names_size) {
+>> +               char *bufwalk;
+>> +               int idx = 0;
+>> +
+>> +               name_buffer = devm_kzalloc(&vdev->dev, cf.names_size,
+>> +                                          GFP_KERNEL)+1;
+>> +               virtio_cread_bytes(vdev, sizeof(struct virtio_gpio_config),
+>> +                                  name_buffer, cf.names_size);
+>> +               name_buffer[cf.names_size] = 0;
+>> +
+>> +               gpio_names = devm_kzalloc(dev,
+>> +                                         sizeof(char *) * priv->num_gpios,
+>> +                                         GFP_KERNEL);
+> 
+> Use devm_kcalloc() for arrays.
+
+ok.
+
+> 
+>> +               bufwalk = name_buffer;
+>> +
+>> +               while (idx < priv->num_gpios &&
+>> +                      bufwalk < (name_buffer+cf.names_size)) {
+>> +                       gpio_names[idx] = (strlen(bufwalk) ? bufwalk : NULL);
+>> +                       bufwalk += strlen(bufwalk)+1;
+>> +                       idx++;
+> 
+> 
+> Something's wrong with indentation here.
+
+i dont think so: the "bufwalk ..." line belongs to the while expression
+and is right under the "idx", as it should be. I didn't want to break up
+at the "<" operator. shall i do this instead ?
+
+>> +               }
+>> +       }
+>> +
+>> +       priv->gc.owner                  = THIS_MODULE;
+>> +       priv->gc.parent                 = dev;
+>> +       priv->gc.label                  = (priv->name[0] ? priv->name
+>> +                                                        : dev_name(dev));
+>> +       priv->gc.ngpio                  = priv->num_gpios;
+>> +       priv->gc.names                  = gpio_names;
+>> +       priv->gc.base                   = -1;
+>> +       priv->gc.request                = virtio_gpio_request;
+>> +       priv->gc.direction_input        = virtio_gpio_direction_input;
+>> +       priv->gc.direction_output       = virtio_gpio_direction_output;
+>> +       priv->gc.get_direction          = virtio_gpio_get_direction;
+>> +       priv->gc.get                    = virtio_gpio_get;
+>> +       priv->gc.set                    = virtio_gpio_set;
+>> +
+>> +       priv->vdev                      = vdev;
+>> +       vdev->priv = priv;
+>> +
+>> +       priv->irq_base = devm_irq_alloc_descs(dev, -1, 0, priv->num_gpios,
+>> +                                             NUMA_NO_NODE);
+>> +       if (priv->irq_base < 0) {
+>> +               dev_err(&vdev->dev, "failed to alloc irqs\n");
+>> +               priv->irq_base = -1;
+>> +               return -ENOMEM;
+>> +       }
+>> +
+>> +       init_waitqueue_head(&priv->waitq);
+>> +
+>> +       priv->reply_wait = 0;
+>> +
+>> +       virtio_gpio_alloc_vq(priv);
+>> +
+>> +       return devm_gpiochip_add_data(dev, &priv->gc, priv);
+>> +}
+> 
+> I don't know virtio at all - Michael: could you take a look at the
+> code here and see if it looks good to you?
+> 
+>> +
+>> +static void virtio_gpio_remove(struct virtio_device *vdev)
+>> +{
+>> +}
+> 
+> Just don't implement it. Or does virtio actually require the remove() callback?
+
+yes, it does, unfortunately -- see: virtio_dev_remove()
+
+I'll propose a patch for virtio for fixing that.
+
+
+--mtx
+
 -- 
-2.7.4
-
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
