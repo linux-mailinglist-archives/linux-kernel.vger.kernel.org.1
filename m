@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C072CD06F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 08:32:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D56342CD078
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 08:40:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388085AbgLCHcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 02:32:01 -0500
-Received: from inva021.nxp.com ([92.121.34.21]:57696 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgLCHcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 02:32:00 -0500
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D69FD2017BA;
-        Thu,  3 Dec 2020 08:31:13 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D00EB2017B6;
-        Thu,  3 Dec 2020 08:31:10 +0100 (CET)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5B0D5402C4;
-        Thu,  3 Dec 2020 08:31:06 +0100 (CET)
-From:   Biwen Li <biwen.li@oss.nxp.com>
-To:     leoyang.li@nxp.com, bgolaszewski@baylibre.com, aisheng.dong@nxp.com
-Cc:     linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
-        linux-gpio@vger.kernel.org, Biwen Li <biwen.li@nxp.com>
-Subject: [PATCH] gpio: mpc8xxx: resolve coverity warnings
-Date:   Thu,  3 Dec 2020 15:39:10 +0800
-Message-Id: <20201203073910.20113-1-biwen.li@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2387470AbgLCHkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 02:40:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgLCHkl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 02:40:41 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA214C061A4D;
+        Wed,  2 Dec 2020 23:40:00 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CmnmZ5dCtz9s0b;
+        Thu,  3 Dec 2020 18:39:58 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606981198;
+        bh=Da7JXZxopAU/xG2r0q3g1RZDLbF31rqFw2P71n/m+vg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=c1JPZGvcvwhWErGlVtyFiYeOV2SfxD1K9oEfgqIHVimqtAcfDed53WwfFuJjH8Sdk
+         p576MGRabDI7oLsPb3eHsZfGRyt4WJtXdMNF4E971Csg+3s0dLT5yVFoTNKeKnxeE/
+         5Sk9hezShSPztLrFLNI+0qaVG07sazKOx21muw6hjMu7V2K/tW+o44VyOkPSdnky+x
+         TS6YlQIoclmy1aYFvk+xfZppSy8Z49R1Wsn/Dw+1qv0i4K6VLHQn6H0/3tQ6jIcWEJ
+         ibk4JpNFAocQnzV2RwHdJG0yWLZoq1TzwbCIv448eYomoG8yziRdK4ioVGxXK2xVF6
+         FUW8GHbTIgZ7g==
+Date:   Thu, 3 Dec 2020 18:39:58 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the block tree
+Message-ID: <20201203183958.3ba2c4f5@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/2t3Gbr0NguvxE=QCp_uLEYR";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Biwen Li <biwen.li@nxp.com>
+--Sig_/2t3Gbr0NguvxE=QCp_uLEYR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Resolve coverity warnings as follows,
-    cond_at_most: Checking gpio >= 28U implies that gpio may be up
-    to 27 on the false branch.
-    overrun-call: Overrunning callees array of size 3 by passing
-    argument gpio (which evaluates to 27)
-    in call to *mpc8xxx_gc->direction_output
+Hi all,
 
-    cond_at_least: Checking gpio <= 3U implies that gpio is at least 4 on
-    the false branch.
-    overrun-call: Overrunning callee's array of size 3 by passing argument
-    gpio (which evaluates to 4) in call to *mpc8xxx_gc->direction_output
+After merging the block tree, today's linux-next build (htmldocs)
+produced this warning:
 
-Signed-off-by: Biwen Li <biwen.li@nxp.com>
----
- drivers/gpio/gpio-mpc8xxx.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+fs/block_dev.c:1838: warning: Function parameter or member 'dev' not descri=
+bed in 'lookup_bdev'
 
-diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
-index a6c2bbdcaa10..12c9a91d87b7 100644
---- a/drivers/gpio/gpio-mpc8xxx.c
-+++ b/drivers/gpio/gpio-mpc8xxx.c
-@@ -3,6 +3,7 @@
-  *
-  * Copyright (C) 2008 Peter Korsgaard <jacmet@sunsite.dk>
-  * Copyright (C) 2016 Freescale Semiconductor Inc.
-+ * Copyright 2020 NXP
-  *
-  * This file is licensed under the terms of the GNU General Public License
-  * version 2.  This program is licensed "as is" without any warranty of any
-@@ -80,7 +81,7 @@ static int mpc5121_gpio_dir_out(struct gpio_chip *gc,
- {
- 	struct mpc8xxx_gpio_chip *mpc8xxx_gc = gpiochip_get_data(gc);
- 	/* GPIO 28..31 are input only on MPC5121 */
--	if (gpio >= 28)
-+	if (gpio >= 28U)
- 		return -EINVAL;
- 
- 	return mpc8xxx_gc->direction_output(gc, gpio, val);
-@@ -91,7 +92,7 @@ static int mpc5125_gpio_dir_out(struct gpio_chip *gc,
- {
- 	struct mpc8xxx_gpio_chip *mpc8xxx_gc = gpiochip_get_data(gc);
- 	/* GPIO 0..3 are input only on MPC5125 */
--	if (gpio <= 3)
-+	if (gpio <= 3U)
- 		return -EINVAL;
- 
- 	return mpc8xxx_gc->direction_output(gc, gpio, val);
--- 
-2.17.1
+Introduced by commit
 
+  4e7b5671c6a8 ("block: remove i_bdev")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/2t3Gbr0NguvxE=QCp_uLEYR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Ilk4ACgkQAVBC80lX
+0Gw66Qf/fqTp8WvVd8Q7i/1pwTP0hBDZ3QFG8S9Do3GXWo2vG6LLuIieRsAHB+Ru
+PXQ5SQcekwtbTsB8w7t4O3Q+xva8wMMdS95VMfypJoBaZZtKJfNw7HbkBTntlQHI
+D26oIjtsFZPqOamL/3E3oqERSDo+V/z0SVcj5vT47BLI4clGkLZsyIeHQO9HLWlH
+3iCvpmAv8I4HqqKvUiGcuqXumh6UuZ5tKTZrqThqnhSwCt6+BgUvMHczp7hJ/tb8
+wpdvvkdRSbor8BGQumMIM7Omh4/cbX9cuKJEizwNpkcnrLnXJH97EmPUfafcb2hR
+xXke0mCXQZ2iCFofx4YW+/CCVseY0w==
+=cufP
+-----END PGP SIGNATURE-----
+
+--Sig_/2t3Gbr0NguvxE=QCp_uLEYR--
