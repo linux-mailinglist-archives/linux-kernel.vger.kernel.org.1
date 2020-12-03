@@ -2,147 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880A32CCEAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25DA2CCEB0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727840AbgLCFd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 00:33:26 -0500
-Received: from mail-vk1-f193.google.com ([209.85.221.193]:44775 "EHLO
-        mail-vk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbgLCFd0 (ORCPT
+        id S1727908AbgLCFej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 00:34:39 -0500
+Received: from a2.mail.mailgun.net ([198.61.254.61]:58544 "EHLO
+        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726301AbgLCFej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:33:26 -0500
-Received: by mail-vk1-f193.google.com with SMTP id a4so139869vko.11
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 21:33:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wA1b9A9EUPLRGe8RJxQwQAdWvMshGblOc4esYqWRa/c=;
-        b=YAUu6PD8fujtUjEBXvaL41P09OPbXKRz/z4XGhZrtVrRnu3bRuayEvEhKQA5eJ1In9
-         SbfIb2XBuOW6EvzxEsjrFVZT2S6lDRwyTcgNpDtyFJetzwq+bUx5KZtTOIcVYvfoO2dM
-         18k9GLHXybM5BA4q0btnPS25bp/boOJ/mhMAweq5fM9+jCrhsxFZCLKNTuGjOJ7zFzjG
-         j7UXVK6GlxidQm0OP03nkbomUcBE0XOz1iFmXbbqKXBIG4ZhBk50hnKk57oFqwubn0j1
-         BYBn/ZLYnjaHS+D35VNvAZdj7EDXiLn6A/CSPJtJD6AUSEBGCMh1WlSpA7FtYRrflQrb
-         h6Iw==
-X-Gm-Message-State: AOAM530pd09A+iZC5e4QLJifkx/Dhk2DpzNuoIX7i5Xb6kz75DbobYB1
-        u0kg2jWceRQ6HiSo7gldNJIhL9RDblO8X/+uhF0=
-X-Google-Smtp-Source: ABdhPJzrgCPbCkQrp1O+EjETCBTW1fcDvmIkvtDkh7hDu4X8dJI0fUOJI+akiL0Vi8enVSxXMj9nX5Pb8FzB75BXODs=
-X-Received: by 2002:ac5:c995:: with SMTP id e21mr743879vkm.5.1606973565149;
- Wed, 02 Dec 2020 21:32:45 -0800 (PST)
+        Thu, 3 Dec 2020 00:34:39 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606973660; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=sqV3wNOA6wV/oHBe9aLAtgMazUTZWFPTZRerFCF5Yc8=;
+ b=vdQC13pXd3yCqOptwfP0vlNJN9PiaDwkGnMJ360ejhXT7DXifGb+7GknC0VrhtyRM0VCZVon
+ Se8eTfYmo1TJV+efMbHhXTytKa/8irULMqqGXcZSPzgki+kID3WOz4iFrYVZvJlxzFCTr9ui
+ hl7GHvff4n3ExgHUBG04fbbeA7Y=
+X-Mailgun-Sending-Ip: 198.61.254.61
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fc878ae89b9bc626853cdf2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Dec 2020 05:33:34
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6672AC43462; Thu,  3 Dec 2020 05:33:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3B3D9C433ED;
+        Thu,  3 Dec 2020 05:33:32 +0000 (UTC)
 MIME-Version: 1.0
-References: <5d3e93cb-1a95-589c-71ed-2413932884d5@telusplanet.net> <CAPM=9tw8jSy-uapN-VY5v_+rm6awGdmMzyy_ArBUoXEPhqk9ZQ@mail.gmail.com>
-In-Reply-To: <CAPM=9tw8jSy-uapN-VY5v_+rm6awGdmMzyy_ArBUoXEPhqk9ZQ@mail.gmail.com>
-From:   Ilia Mirkin <imirkin@alum.mit.edu>
-Date:   Thu, 3 Dec 2020 00:32:34 -0500
-Message-ID: <CAKb7UvhUmMrFchhvp6446TNaPVMt9Xv-kUsiNrCFqx4jNuYfrA@mail.gmail.com>
-Subject: Re: [Nouveau] Nouveau video --- [ cut here ] ----- crash dump 5.10.0-rc6
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     bob <gillb4@telusplanet.net>, Ben Skeggs <skeggsb@gmail.com>,
-        nouveau <Nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 03 Dec 2020 13:33:32 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
+        beanhuo@micron.com, asutoshd@codeaurora.org,
+        matthias.bgg@gmail.com, bvanassche@acm.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
+        jiajie.hao@mediatek.com, alice.chao@mediatek.com,
+        huadian.liu@mediatek.com
+Subject: Re: [PATCH v1 1/3] scsi: ufs: Add error history for abort event in
+ UFS Device W-LUN
+In-Reply-To: <20201126053839.25889-2-stanley.chu@mediatek.com>
+References: <20201126053839.25889-1-stanley.chu@mediatek.com>
+ <20201126053839.25889-2-stanley.chu@mediatek.com>
+Message-ID: <e22b55de9d0b0dd26b26b1425180592c@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unfortunately this isn't a crash, but rather a warning that things are
-timing out. By the time you get this, the display is most likely hung.
+On 2020-11-26 13:38, Stanley Chu wrote:
+> Add error history for abort event in UFS Device W-LUN.
+> Besides, use specified value as parameter of ufshcd_update_reg_hist()
+> to identify the aborted tag or LUNs.
+> 
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 0e5473d4699b..28e4def13f21 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -6742,8 +6742,10 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+>  	 * To avoid these unnecessary/illegal step we skip to the last error
+>  	 * handling stage: reset and restore.
+>  	 */
+> -	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN)
+> +	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN) {
+> +		ufshcd_update_reg_hist(&hba->ufs_stats.task_abort, lrbp->lun);
+>  		return ufshcd_eh_host_reset_handler(cmd);
+> +	}
+> 
+>  	ufshcd_hold(hba, false);
+>  	reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
+> @@ -6767,7 +6769,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+>  	 */
+>  	scsi_print_command(hba->lrb[tag].cmd);
+>  	if (!hba->req_abort_count) {
+> -		ufshcd_update_reg_hist(&hba->ufs_stats.task_abort, 0);
+> +		ufshcd_update_reg_hist(&hba->ufs_stats.task_abort, tag);
+>  		ufshcd_print_host_regs(hba);
+>  		ufshcd_print_host_state(hba);
+>  		ufshcd_print_pwr_info(hba);
 
-Was there anything before this, e.g. an error state dump perhaps?
-
-What GPU are you using, what displays, and how are they connected?
-What kind of userspace is running here? X or a Wayland compositor (or
-something else entirely)?
-
-On Thu, Dec 3, 2020 at 12:13 AM Dave Airlie <airlied@gmail.com> wrote:
->
-> cc'ing Ben + nouveau
->
-> On Thu, 3 Dec 2020 at 14:59, bob <gillb4@telusplanet.net> wrote:
-> >
-> > Hello.  I have a crash dump for:
-> >
-> > $ uname -a
-> > Linux freedom 5.10.0-rc6 #1 SMP Sun Nov 29 17:26:13 MST 2020 x86_64
-> > x86_64 x86_64 GNU/Linux
-> >
-> > Occasionally when this dumps it likes to lock up the computer, but I
-> > caught it this time.
-> >
-> > Also video likes to flicker a lot.   Nouveau has been iffy since kernel
-> > 5.8.0.
-> >
-> > This isn't the only dump, it dumped probably 50 times.  If you are
-> > really desperate for all of it,
-> >
-> > reply to me directly as I'm not on the mailing list.  Here is one of them.
-> >
-> > [39019.426580] ------------[ cut here ]------------
-> > [39019.426589] WARNING: CPU: 6 PID: 14136 at
-> > drivers/gpu/drm/nouveau/dispnv50/disp.c:211 nv50_dmac_wait+0x1e1/0x230
-> > [39019.426590] Modules linked in: mt2131 s5h1409 fuse tda8290 tuner
-> > cx25840 rt2800usb rt2x00usb rt2800lib snd_hda_codec_analog
-> > snd_hda_codec_generic ledtrig_audio rt2x00lib binfmt_misc
-> > intel_powerclamp coretemp cx23885 mac80211 tda18271 altera_stapl
-> > videobuf2_dvb m88ds3103 tveeprom cx2341x dvb_core rc_core i2c_mux
-> > snd_hda_codec_hdmi videobuf2_dma_sg videobuf2_memops videobuf2_v4l2
-> > snd_hda_intel videobuf2_common snd_intel_dspcfg kvm_intel snd_hda_codec
-> > videodev snd_hda_core kvm mc snd_hwdep snd_pcm_oss snd_mixer_oss
-> > irqbypass snd_pcm cfg80211 snd_seq_dummy snd_seq_midi snd_seq_oss
-> > snd_seq_midi_event snd_rawmidi snd_seq intel_cstate snd_seq_device
-> > serio_raw snd_timer input_leds nfsd libarc4 snd asus_atk0110 i7core_edac
-> > soundcore i5500_temp auth_rpcgss nfs_acl lockd grace sch_fq_codel sunrpc
-> > parport_pc ppdev lp parport ip_tables x_tables btrfs blake2b_generic
-> > libcrc32c xor zstd_compress raid6_pq dm_mirror dm_region_hash dm_log
-> > pata_acpi pata_marvell hid_generic usbhid hid psmouse firewire_ohci
-> > [39019.426650]  firewire_core crc_itu_t i2c_i801 ahci sky2 libahci
-> > i2c_smbus lpc_ich
-> > [39019.426658] CPU: 6 PID: 14136 Comm: kworker/u16:0 Tainted: G        W
-> > I       5.10.0-rc6 #1
-> > [39019.426659] Hardware name: System manufacturer System Product
-> > Name/P6T DELUXE, BIOS 2209    09/21/2010
-> > [39019.426662] Workqueue: events_unbound nv50_disp_atomic_commit_work
-> > [39019.426665] RIP: 0010:nv50_dmac_wait+0x1e1/0x230
-> > [39019.426667] Code: 8d 48 04 48 89 4a 68 c7 00 00 00 00 20 49 8b 46 38
-> > 41 c7 86 20 01 00 00 00 00 00 00 49 89 46 68 e8 e4 fc ff ff e9 76 fe ff
-> > ff <0f> 0b b8 92 ff ff ff e9 ed fe ff ff 49 8b be 80 00 00 00 e8 c7 fc
-> > [39019.426668] RSP: 0018:ffffb79d028ebd48 EFLAGS: 00010282
-> > [39019.426670] RAX: ffffffffffffff92 RBX: 000000000000000d RCX:
-> > 0000000000000000
-> > [39019.426671] RDX: ffffffffffffff92 RSI: ffffb79d028ebc88 RDI:
-> > ffffb79d028ebd28
-> > [39019.426671] RBP: ffffb79d028ebd48 R08: 0000000000000000 R09:
-> > ffffb79d028ebc58
-> > [39019.426672] R10: 0000000000000030 R11: 00000000000011c4 R12:
-> > 00000000fffffffb
-> > [39019.426673] R13: ffffa05fc1ebd368 R14: ffffa05fc1ebd3a8 R15:
-> > ffffa05fc2425000
-> > [39019.426675] FS:  0000000000000000(0000) GS:ffffa061f3d80000(0000)
-> > knlGS:0000000000000000
-> > [39019.426676] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [39019.426677] CR2: 00007fb2d58e0000 CR3: 000000026280a000 CR4:
-> > 00000000000006e0
-> > [39019.426678] Call Trace:
-> > [39019.426685]  base827c_image_set+0x2f/0x1d0
-> > [39019.426687]  nv50_wndw_flush_set+0x89/0x1c0
-> > [39019.426688]  nv50_disp_atomic_commit_tail+0x4e7/0x7e0
-> > [39019.426693]  process_one_work+0x1d4/0x370
-> > [39019.426695]  worker_thread+0x4a/0x3b0
-> > [39019.426697]  ? process_one_work+0x370/0x370
-> > [39019.426699]  kthread+0xfe/0x140
-> > [39019.426701]  ? kthread_park+0x90/0x90
-> > [39019.426704]  ret_from_fork+0x22/0x30
-> > [39019.426706] ---[ end trace d512d675211c738c ]---
-> > [39021.426751] ------------[ cut here ]------------
-> >
-> >
-> > Thanks in advance,
-> >
-> > Bob
-> >
-> _______________________________________________
-> Nouveau mailing list
-> Nouveau@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/nouveau
+Reviewed-by: Can Guo <cang@codeaurora.org>
