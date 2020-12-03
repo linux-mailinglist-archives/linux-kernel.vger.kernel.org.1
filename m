@@ -2,169 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 137E42CE15E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE142CE16C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729625AbgLCWKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:10:48 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:43588 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726507AbgLCWKr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:10:47 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3Lrpwa004871;
-        Thu, 3 Dec 2020 22:04:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=23yexcHdOapSPAxxWiXrX5VndJabrs3xPZqc8iWgG4k=;
- b=YfiLPGk3+WXqYcec59yf4oBokHYF+nbt7VP+uvNG+YHBlXAyKM1uZrjTNaw5QtT14P2y
- DLC7bzajN3gR6QcyZjpmUq2/nCP5PNRN4c+V9It1nKQa5phYWGiMOBwziOP8pW5xa4ur
- u0B1sapFoqDVwTc817L+xJw3WGZhf45k6S/Uag1h6k9mgawVuTrOUrGt75kLFLaMcWKv
- 0p8lrxvynTxigZpm78mDw0rqw3gPHRhm+NsVC4S6ItoUOiO58MPOdRwxVbwmKcjQDbb7
- 5+9QosemEnKRZgRIn4Im8pdO9gRW20UUAL7TYhrFXD4osv6a7MBSMEEXhyADQ4MD/JkZ HQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 353dyr0gan-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 03 Dec 2020 22:04:57 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3LuRHV003859;
-        Thu, 3 Dec 2020 22:02:56 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 3540f2furp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Dec 2020 22:02:56 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B3M2s8C021245;
-        Thu, 3 Dec 2020 22:02:54 GMT
-Received: from monkey.oracle.com (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 03 Dec 2020 14:02:54 -0800
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Adrian Moreno <amorenoz@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>, stable@vger.kernel.org
-Subject: [PATCH] hugetlb_cgroup: fix offline of hugetlb cgroup with reservations
-Date:   Thu,  3 Dec 2020 14:02:42 -0800
-Message-Id: <20201203220242.158165-1-mike.kravetz@oracle.com>
-X-Mailer: git-send-email 2.28.0
+        id S1731666AbgLCWMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:12:52 -0500
+Received: from mx4.wp.pl ([212.77.101.12]:8761 "EHLO mx4.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725885AbgLCWMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:12:51 -0500
+X-Greylist: delayed 399 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Dec 2020 17:12:49 EST
+Received: (wp-smtpd smtp.wp.pl 11723 invoked from network); 3 Dec 2020 23:05:17 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1607033117; bh=H0FgeHZC0EWlJhtdawwC6Ly3Ohyf6UIgJbkfOLNibLQ=;
+          h=From:To:Cc:Subject;
+          b=gYQNxvFqXv9/kGk3cfWrUzd5hr6cOZL54zxMSvHyZg811PVFAsmoNGd5GBZAh67EB
+           dmtEiYKQHRms4Hyk8ifzse6J0CNIirFqKhgTiqmQKFzY5I0WuPUokEzvJobZ/5Rjt2
+           nyHe4NyTbqpA23SQsSsqoCGNsAwQHIoUjGlKgBoY=
+Received: from riviera.nat.student.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <hauke@hauke-m.de>; 3 Dec 2020 23:05:17 +0100
+From:   Aleksander Jan Bajkowski <olek2@wp.pl>
+To:     hauke@hauke-m.de, andrew@lunn.ch, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, robh+dt@kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Aleksander Jan Bajkowski <A.Bajkowski@stud.elka.pw.edu.pl>,
+        Aleksander Jan Bajkowski <olek2@wp.pl>
+Subject: [PATCH 1/2] net: dsa: lantiq: allow to use all GPHYs on xRX300 and xRX330
+Date:   Thu,  3 Dec 2020 23:03:46 +0100
+Message-Id: <20201203220347.13691-1-olek2@wp.pl>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9824 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
- suspectscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012030125
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9824 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
- clxscore=1011 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030125
+X-WP-DKIM-Status: good (id: wp.pl)                                      
+X-WP-MailID: ff01465fd06e59ca9a76bab1cd74303d
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000002 [QZFs]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adrian Moreno was ruuning a kubernetes 1.19 + containerd/docker workload
-using hugetlbfs.  In this environment the issue is reproduced by:
-1 - Start a simple pod that uses the recently added HugePages medium
-    feature (pod yaml attached)
-2 - Start a DPDK app. It doesn't need to run successfully (as in transfer
-    packets) nor interact with real hardware. It seems just initializing
-    the EAL layer (which handles hugepage reservation and locking) is
-    enough to trigger the issue
-3 - Delete the Pod (or let it "Complete").
+From: Aleksander Jan Bajkowski <A.Bajkowski@stud.elka.pw.edu.pl>
 
-This would result in a kworker thread going into a tight loop (top output):
- 1425 root      20   0       0      0      0 R  99.7   0.0   5:22.45
-kworker/28:7+cgroup_destroy
+This patch allows you to use all phs on GRX300 and GRX330. The ARX300 has 3
+and the GRX330 has 4 integrated PHYs connected to different ports compared
+to VRX200.
 
-'perf top -g' reports:
--   63.28%     0.01%  [kernel]                    [k] worker_thread
-   - 49.97% worker_thread
-      - 52.64% process_one_work
-         - 62.08% css_killed_work_fn
-            - hugetlb_cgroup_css_offline
-                 41.52% _raw_spin_lock
-               - 2.82% _cond_resched
-                    rcu_all_qs
-                 2.66% PageHuge
-      - 0.57% schedule
-         - 0.57% __schedule
+Port configurations:
 
-We are spinning in the do-while loop in hugetlb_cgroup_css_offline.
-Worse yet, we are holding the master cgroup lock (cgroup_mutex) while
-infinitely spinning.  Little else can be done on the system as the
-cgroup_mutex can not be acquired.
+xRX200:
+GMAC0: RGMII port
+GMAC1: RGMII port
+GMAC2: GPHY0 (GMII)
+GMAC3: GPHY0 (MII)
+GMAC4: GPHY1 (GMII)
+GMAC5: GPHY1 (MII) or RGMII port
 
-Do note that the issue can be reproduced by simply offlining a hugetlb
-cgroup containing pages with reservation counts.
+xRX300:
+GMAC0: RGMII port
+GMAC1: GPHY2 (GMII)
+GMAC2: GPHY0 (GMII)
+GMAC3: GPHY0 (MII)
+GMAC4: GPHY1 (GMII)
+GMAC5: GPHY1 (MII) or RGMII port
 
-The loop in hugetlb_cgroup_css_offline is moving page counts from the
-cgroup being offlined to the parent cgroup.  This is done for each hstate,
-and is repeated until hugetlb_cgroup_have_usage returns false.  The routine
-moving counts (hugetlb_cgroup_move_parent) is only moving 'usage' counts.
-The routine hugetlb_cgroup_have_usage is checking for both 'usage' and
-'reservation' counts.  Discussion about what to do with reservation
-counts when reparenting was discussed here:
+xRX330:
+GMAC0: RGMII port
+GMAC1: GPHY2 (GMII)
+GMAC2: GPHY0 (GMII)
+GMAC3: GPHY3 (GMII)
+GMAC4: GPHY1 (GMII)
+GMAC5: GPHY1 (MII) or RGMII port
 
-https://lore.kernel.org/linux-kselftest/CAHS8izMFAYTgxym-Hzb_JmkTK1N_S9tGN71uS6MFV+R7swYu5A@mail.gmail.com/
+Tested on D-Link DWR966 with OpenWRT.
 
-The decision was made to leave a zombie cgroup for with reservation
-counts.  Unfortunately, the code checking reservation counts was
-incorrectly added to hugetlb_cgroup_have_usage.
-
-To fix the issue, simply remove the check for reservation counts.  While
-fixing this issue, a related bug in hugetlb_cgroup_css_offline was noticed.
-The hstate index is not reinitialized each time through the do-while loop.
-Fix this as well.
-
-Fixes: 1adc4d419aa2 ("hugetlb_cgroup: add interface for charge/uncharge hugetlb reservations")
-Cc: <stable@vger.kernel.org>
-Reported-by: Adrian Moreno <amorenoz@redhat.com>
-Tested-by: Adrian Moreno <amorenoz@redhat.com>
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 ---
- mm/hugetlb_cgroup.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/net/dsa/lantiq_gswip.c | 110 +++++++++++++++++++++++++++++++--
+ 1 file changed, 104 insertions(+), 6 deletions(-)
 
-diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
-index 1f87aec9ab5c..9182848dda3e 100644
---- a/mm/hugetlb_cgroup.c
-+++ b/mm/hugetlb_cgroup.c
-@@ -82,11 +82,8 @@ static inline bool hugetlb_cgroup_have_usage(struct hugetlb_cgroup *h_cg)
+diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
+index 09701c17f3f6..540cf99ad7fe 100644
+--- a/drivers/net/dsa/lantiq_gswip.c
++++ b/drivers/net/dsa/lantiq_gswip.c
+@@ -222,6 +222,7 @@
+ struct gswip_hw_info {
+ 	int max_ports;
+ 	int cpu_port;
++	struct dsa_switch_ops *ops;
+ };
  
- 	for (idx = 0; idx < hugetlb_max_hstate; idx++) {
- 		if (page_counter_read(
--			    hugetlb_cgroup_counter_from_cgroup(h_cg, idx)) ||
--		    page_counter_read(hugetlb_cgroup_counter_from_cgroup_rsvd(
--			    h_cg, idx))) {
-+				hugetlb_cgroup_counter_from_cgroup(h_cg, idx)))
- 			return true;
--		}
- 	}
- 	return false;
+ struct xway_gphy_match_data {
+@@ -1409,9 +1410,9 @@ static int gswip_port_fdb_dump(struct dsa_switch *ds, int port,
+ 	return 0;
  }
-@@ -202,9 +199,10 @@ static void hugetlb_cgroup_css_offline(struct cgroup_subsys_state *css)
- 	struct hugetlb_cgroup *h_cg = hugetlb_cgroup_from_css(css);
- 	struct hstate *h;
- 	struct page *page;
--	int idx = 0;
-+	int idx;
  
- 	do {
-+		idx = 0;
- 		for_each_hstate(h) {
- 			spin_lock(&hugetlb_lock);
- 			list_for_each_entry(page, &h->hugepage_activelist, lru)
+-static void gswip_phylink_validate(struct dsa_switch *ds, int port,
+-				   unsigned long *supported,
+-				   struct phylink_link_state *state)
++static void gswip_xrx200_phylink_validate(struct dsa_switch *ds, int port,
++					  unsigned long *supported,
++					  struct phylink_link_state *state)
+ {
+ 	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
+ 
+@@ -1471,7 +1472,70 @@ static void gswip_phylink_validate(struct dsa_switch *ds, int port,
+ 	bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
+ 	dev_err(ds->dev, "Unsupported interface '%s' for port %d\n",
+ 		phy_modes(state->interface), port);
++}
++
++static void gswip_xrx300_phylink_validate(struct dsa_switch *ds, int port,
++					  unsigned long *supported,
++					  struct phylink_link_state *state)
++{
++	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
++
++	switch (port) {
++	case 0:
++		if (!phy_interface_mode_is_rgmii(state->interface) &&
++		    state->interface != PHY_INTERFACE_MODE_MII &&
++		    state->interface != PHY_INTERFACE_MODE_REVMII &&
++		    state->interface != PHY_INTERFACE_MODE_RMII)
++			goto unsupported;
++		break;
++	case 1:
++	case 2:
++	case 3:
++	case 4:
++		if (state->interface != PHY_INTERFACE_MODE_INTERNAL)
++			goto unsupported;
++		break;
++	case 5:
++		if (!phy_interface_mode_is_rgmii(state->interface) &&
++		    state->interface != PHY_INTERFACE_MODE_INTERNAL)
++			goto unsupported;
++		break;
++	default:
++		bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
++		dev_err(ds->dev, "Unsupported port: %i\n", port);
++		return;
++	}
++
++	/* Allow all the expected bits */
++	phylink_set(mask, Autoneg);
++	phylink_set_port_modes(mask);
++	phylink_set(mask, Pause);
++	phylink_set(mask, Asym_Pause);
++
++	/* With the exclusion of MII and Reverse MII, we support Gigabit,
++	 * including Half duplex
++	 */
++	if (state->interface != PHY_INTERFACE_MODE_MII &&
++	    state->interface != PHY_INTERFACE_MODE_REVMII) {
++		phylink_set(mask, 1000baseT_Full);
++		phylink_set(mask, 1000baseT_Half);
++	}
++
++	phylink_set(mask, 10baseT_Half);
++	phylink_set(mask, 10baseT_Full);
++	phylink_set(mask, 100baseT_Half);
++	phylink_set(mask, 100baseT_Full);
++
++	bitmap_and(supported, supported, mask,
++		   __ETHTOOL_LINK_MODE_MASK_NBITS);
++	bitmap_and(state->advertising, state->advertising, mask,
++		   __ETHTOOL_LINK_MODE_MASK_NBITS);
+ 	return;
++
++unsupported:
++	bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
++	dev_err(ds->dev, "Unsupported interface '%s' for port %d\n",
++		phy_modes(state->interface), port);
+ }
+ 
+ static void gswip_phylink_mac_config(struct dsa_switch *ds, int port,
+@@ -1614,7 +1678,7 @@ static int gswip_get_sset_count(struct dsa_switch *ds, int port, int sset)
+ 	return ARRAY_SIZE(gswip_rmon_cnt);
+ }
+ 
+-static const struct dsa_switch_ops gswip_switch_ops = {
++static const struct dsa_switch_ops gswip_xrx200_switch_ops = {
+ 	.get_tag_protocol	= gswip_get_tag_protocol,
+ 	.setup			= gswip_setup,
+ 	.port_enable		= gswip_port_enable,
+@@ -1630,7 +1694,32 @@ static const struct dsa_switch_ops gswip_switch_ops = {
+ 	.port_fdb_add		= gswip_port_fdb_add,
+ 	.port_fdb_del		= gswip_port_fdb_del,
+ 	.port_fdb_dump		= gswip_port_fdb_dump,
+-	.phylink_validate	= gswip_phylink_validate,
++	.phylink_validate	= gswip_xrx200_phylink_validate,
++	.phylink_mac_config	= gswip_phylink_mac_config,
++	.phylink_mac_link_down	= gswip_phylink_mac_link_down,
++	.phylink_mac_link_up	= gswip_phylink_mac_link_up,
++	.get_strings		= gswip_get_strings,
++	.get_ethtool_stats	= gswip_get_ethtool_stats,
++	.get_sset_count		= gswip_get_sset_count,
++};
++
++static const struct dsa_switch_ops gswip_xrx300_switch_ops = {
++	.get_tag_protocol	= gswip_get_tag_protocol,
++	.setup			= gswip_setup,
++	.port_enable		= gswip_port_enable,
++	.port_disable		= gswip_port_disable,
++	.port_bridge_join	= gswip_port_bridge_join,
++	.port_bridge_leave	= gswip_port_bridge_leave,
++	.port_fast_age		= gswip_port_fast_age,
++	.port_vlan_filtering	= gswip_port_vlan_filtering,
++	.port_vlan_prepare	= gswip_port_vlan_prepare,
++	.port_vlan_add		= gswip_port_vlan_add,
++	.port_vlan_del		= gswip_port_vlan_del,
++	.port_stp_state_set	= gswip_port_stp_state_set,
++	.port_fdb_add		= gswip_port_fdb_add,
++	.port_fdb_del		= gswip_port_fdb_del,
++	.port_fdb_dump		= gswip_port_fdb_dump,
++	.phylink_validate	= gswip_xrx300_phylink_validate,
+ 	.phylink_mac_config	= gswip_phylink_mac_config,
+ 	.phylink_mac_link_down	= gswip_phylink_mac_link_down,
+ 	.phylink_mac_link_up	= gswip_phylink_mac_link_up,
+@@ -1892,7 +1981,7 @@ static int gswip_probe(struct platform_device *pdev)
+ 	priv->ds->dev = dev;
+ 	priv->ds->num_ports = priv->hw_info->max_ports;
+ 	priv->ds->priv = priv;
+-	priv->ds->ops = &gswip_switch_ops;
++	priv->ds->ops = priv->hw_info->ops;
+ 	priv->dev = dev;
+ 	version = gswip_switch_r(priv, GSWIP_VERSION);
+ 
+@@ -1973,10 +2062,19 @@ static int gswip_remove(struct platform_device *pdev)
+ static const struct gswip_hw_info gswip_xrx200 = {
+ 	.max_ports = 7,
+ 	.cpu_port = 6,
++	.ops = &gswip_xrx200_switch_ops,
++};
++
++static const struct gswip_hw_info gswip_xrx300 = {
++	.max_ports = 7,
++	.cpu_port = 6,
++	.ops = &gswip_xrx300_switch_ops,
+ };
+ 
+ static const struct of_device_id gswip_of_match[] = {
+ 	{ .compatible = "lantiq,xrx200-gswip", .data = &gswip_xrx200 },
++	{ .compatible = "lantiq,xrx300-gswip", .data = &gswip_xrx300 },
++	{ .compatible = "lantiq,xrx330-gswip", .data = &gswip_xrx300 },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, gswip_of_match);
 -- 
-2.28.0
+2.20.1
 
