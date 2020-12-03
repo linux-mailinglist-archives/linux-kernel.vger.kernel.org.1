@@ -2,183 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD3A2CD44C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:09:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 826402CD45E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388715AbgLCLId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:08:33 -0500
-Received: from foss.arm.com ([217.140.110.172]:37316 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387757AbgLCLIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:08:32 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BAB52113E;
-        Thu,  3 Dec 2020 03:07:46 -0800 (PST)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 185AA3F66B;
-        Thu,  3 Dec 2020 03:07:29 -0800 (PST)
-Subject: Re: [PATCH 4/8] clk: sunxi-ng: Add support for the Allwinner H616
- R-CCU
-To:     Icenowy Zheng <icenowy@aosc.io>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     Icenowy Zheng <icenowy@aosc.xyz>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yangtao Li <frank@allwinnertech.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-clk@vger.kernel.org
-References: <20201202135409.13683-1-andre.przywara@arm.com>
- <20201202135409.13683-5-andre.przywara@arm.com>
- <422A0729-7E7C-4ABF-BEAB-21772FDD0CE3@aosc.io>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Organization: ARM Ltd.
-Message-ID: <94f2b2db-cffd-06d5-f660-eed07b5cafe6@arm.com>
-Date:   Thu, 3 Dec 2020 11:07:02 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2388492AbgLCLN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:13:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23656 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387757AbgLCLN1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 06:13:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606993920;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Oj9Eb3KtE+2YyHKM1FeeyiYyawdfTwBxc5qATzsgyHM=;
+        b=Mp+26P8jymnLkxpyWSClj4JTaceqhh+stXq+ip/bIwVCe9AOcL1vPHk9iSpjJFXSaQ1EEQ
+        vapBReA8KMU9H8F9QACytSZy240kUUeGllRSXzSXJCZwcZoE5VAXSM3pltgcvQAlbWZz+F
+        pGMyZnaCcWY9o8vfqe6vSnNVV/WDqM8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-464-0Ehb4NofNIuuNpcntl7fgQ-1; Thu, 03 Dec 2020 06:11:59 -0500
+X-MC-Unique: 0Ehb4NofNIuuNpcntl7fgQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 802F780732C;
+        Thu,  3 Dec 2020 11:11:56 +0000 (UTC)
+Received: from starship (unknown [10.35.206.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6787A1A8A0;
+        Thu,  3 Dec 2020 11:11:49 +0000 (UTC)
+Message-ID: <cd1c80e6ed7367f8736a965c4100c333b79bbdcc.camel@redhat.com>
+Subject: Re: [PATCH 1/2] KVM: x86: implement
+ KVM_SET_TSC_PRECISE/KVM_GET_TSC_PRECISE
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Date:   Thu, 03 Dec 2020 13:11:47 +0200
+In-Reply-To: <87h7p5fh1m.fsf@nanos.tec.linutronix.de>
+References: <20201130133559.233242-1-mlevitsk@redhat.com>
+         <20201130133559.233242-2-mlevitsk@redhat.com>
+         <87h7p5fh1m.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <422A0729-7E7C-4ABF-BEAB-21772FDD0CE3@aosc.io>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/12/2020 14:31, Icenowy Zheng wrote:
-
-Hi,
-
-> 于 2020年12月2日 GMT+08:00 下午9:54:05, Andre Przywara <andre.przywara@arm.com> 写到:
->> The clocks itself are identical to the H6 R-CCU, it's just that the
->> H616
->> has not all of them implemented (or connected).
+On Tue, 2020-12-01 at 20:43 +0100, Thomas Gleixner wrote:
+> On Mon, Nov 30 2020 at 15:35, Maxim Levitsky wrote:
+> > +  struct kvm_tsc_info {
+> > +	__u32 flags;
+> > +	__u64 nsec;
+> > +	__u64 tsc;
+> > +	__u64 tsc_adjust;
+> > +  };
+> > +
+> > +flags values for ``struct kvm_tsc_info``:
+> > +
+> > +``KVM_TSC_INFO_TSC_ADJUST_VALID``
+> > +
+> > +  ``tsc_adjust`` contains valid IA32_TSC_ADJUST value
 > 
-> For selective clocks, try to follow the practice of V3(s) driver?
+> Why exposing TSC_ADJUST at all? Just because?
 
-Not sure what you mean, isn't that what I do? Having a separate
-sunxi_ccu_desc for each SoC and referencing separate structs? At least
-that's what I see in ccu-sun8i-v3s.c.
+It's because we want to reduce the number of cases where
+KVM's msr/read write behavior differs between guest and host 
+(e.g qemu) writes.
+ 
+TSC and TSC_ADJUST are tied on architectural level, such as
+chang
+ing one, changes the other.
+ 
+However for the migration to work we must be able 
+to set each one separately.
 
-What am I missing?
+Currently, KVM does this by turning the host write to 
+TSC_ADJUST into a special case that bypasses
+the actual TSC adjustment, and just sets this MSR.
+ 
+The next patch in this series, will allow to disable
+this special behavior, making host TSC_ADJUST write
+work the same way as in guest.
 
-Cheers,
-Andre
+Therefore to still allow to set TSC_ADJUST and TSC independently
+after migration this ioctl will be used instead.
 
->>
->> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
->> ---
->> drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c | 47 +++++++++++++++++++++++++-
->> drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h |  3 +-
->> 2 files changed, 48 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c
->> b/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c
->> index 50f8d1bc7046..119d1797f501 100644
->> --- a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c
->> +++ b/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c
->> @@ -136,6 +136,15 @@ static struct ccu_common *sun50i_h6_r_ccu_clks[] =
->> {
->> 	&w1_clk.common,
->> };
->>
->> +static struct ccu_common *sun50i_h616_r_ccu_clks[] = {
->> +	&r_apb1_clk.common,
->> +	&r_apb2_clk.common,
->> +	&r_apb1_twd_clk.common,
->> +	&r_apb2_i2c_clk.common,
->> +	&r_apb1_ir_clk.common,
->> +	&ir_clk.common,
->> +};
->> +
->> static struct clk_hw_onecell_data sun50i_h6_r_hw_clks = {
->> 	.hws	= {
->> 		[CLK_AR100]		= &ar100_clk.common.hw,
->> @@ -152,7 +161,20 @@ static struct clk_hw_onecell_data
->> sun50i_h6_r_hw_clks = {
->> 		[CLK_IR]		= &ir_clk.common.hw,
->> 		[CLK_W1]		= &w1_clk.common.hw,
->> 	},
->> -	.num	= CLK_NUMBER,
->> +	.num	= CLK_NUMBER_H616,
->> +};
->> +
->> +static struct clk_hw_onecell_data sun50i_h616_r_hw_clks = {
->> +	.hws	= {
->> +		[CLK_R_AHB]		= &r_ahb_clk.hw,
->> +		[CLK_R_APB1]		= &r_apb1_clk.common.hw,
->> +		[CLK_R_APB2]		= &r_apb2_clk.common.hw,
->> +		[CLK_R_APB1_TWD]	= &r_apb1_twd_clk.common.hw,
->> +		[CLK_R_APB2_I2C]	= &r_apb2_i2c_clk.common.hw,
->> +		[CLK_R_APB1_IR]		= &r_apb1_ir_clk.common.hw,
->> +		[CLK_IR]		= &ir_clk.common.hw,
->> +	},
->> +	.num	= CLK_NUMBER_H616,
->> };
->>
->> static struct ccu_reset_map sun50i_h6_r_ccu_resets[] = {
->> @@ -165,6 +187,12 @@ static struct ccu_reset_map
->> sun50i_h6_r_ccu_resets[] = {
->> 	[RST_R_APB1_W1]		=  { 0x1ec, BIT(16) },
->> };
->>
->> +static struct ccu_reset_map sun50i_h616_r_ccu_resets[] = {
->> +	[RST_R_APB1_TWD]	=  { 0x12c, BIT(16) },
->> +	[RST_R_APB2_I2C]	=  { 0x19c, BIT(16) },
->> +	[RST_R_APB1_IR]		=  { 0x1cc, BIT(16) },
->> +};
->> +
->> static const struct sunxi_ccu_desc sun50i_h6_r_ccu_desc = {
->> 	.ccu_clks	= sun50i_h6_r_ccu_clks,
->> 	.num_ccu_clks	= ARRAY_SIZE(sun50i_h6_r_ccu_clks),
->> @@ -175,6 +203,16 @@ static const struct sunxi_ccu_desc
->> sun50i_h6_r_ccu_desc = {
->> 	.num_resets	= ARRAY_SIZE(sun50i_h6_r_ccu_resets),
->> };
->>
->> +static const struct sunxi_ccu_desc sun50i_h616_r_ccu_desc = {
->> +	.ccu_clks	= sun50i_h616_r_ccu_clks,
->> +	.num_ccu_clks	= ARRAY_SIZE(sun50i_h616_r_ccu_clks),
->> +
->> +	.hw_clks	= &sun50i_h616_r_hw_clks,
->> +
->> +	.resets		= sun50i_h616_r_ccu_resets,
->> +	.num_resets	= ARRAY_SIZE(sun50i_h616_r_ccu_resets),
->> +};
->> +
->> static void __init sunxi_r_ccu_init(struct device_node *node,
->> 				    const struct sunxi_ccu_desc *desc)
->> {
->> @@ -195,3 +233,10 @@ static void __init sun50i_h6_r_ccu_setup(struct
->> device_node *node)
->> }
->> CLK_OF_DECLARE(sun50i_h6_r_ccu, "allwinner,sun50i-h6-r-ccu",
->> 	       sun50i_h6_r_ccu_setup);
->> +
->> +static void __init sun50i_h616_r_ccu_setup(struct device_node *node)
->> +{
->> +	sunxi_r_ccu_init(node, &sun50i_h616_r_ccu_desc);
->> +}
->> +CLK_OF_DECLARE(sun50i_h616_r_ccu, "allwinner,sun50i-h616-r-ccu",
->> +	       sun50i_h616_r_ccu_setup);
->> diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h
->> b/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h
->> index 782117dc0b28..128302696ca1 100644
->> --- a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h
->> +++ b/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h
->> @@ -14,6 +14,7 @@
->>
->> #define CLK_R_APB2	3
->>
->> -#define CLK_NUMBER	(CLK_W1 + 1)
->> +#define CLK_NUMBER_H6	(CLK_W1 + 1)
->> +#define CLK_NUMBER_H616	(CLK_IR + 1)
->>
->> #endif /* _CCU_SUN50I_H6_R_H */
+Best regards,
+	Maxim Levitsky
+
+> 
+> Thanks,
+> 
+>         tglx
+> 
+
 
