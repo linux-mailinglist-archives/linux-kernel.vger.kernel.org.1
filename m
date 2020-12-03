@@ -2,176 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765FA2CCB6D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F40992CCB6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:09:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387431AbgLCBJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 20:09:23 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:60330 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbgLCBJX (ORCPT
+        id S1729059AbgLCBIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 20:08:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726024AbgLCBIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:09:23 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B315Db9103601;
-        Thu, 3 Dec 2020 01:08:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=jCgXNIKCNXgWdDkKjB7SKWN45ccDc4ppC62togC7RZc=;
- b=rhn9ZXoVc4ObHBWODSkv1Kl/A1Faz4WJIH3kqYUaXa3dNveVFxEti+VBN9hH6BAwe0tk
- wuX3/uEqCZHCrwanTnt1rfMpUzuACixanY634nDyvdRDp2J2sI38AVIn4M9fBMuUOQ0Z
- y4gcU1+ASzQjqSaV8cMlKHXfEDuUwKGF5jLDlgDxs8wGt0GKqPWiYxRp53P3vSJjxtj3
- px8oh91Rj3BK1neA4oBPwA+J+G77H4xOYOK3O4CASnkysLIKhrbMx0njecKVLZ1IEkj2
- pKFbPkUEUsEEu2r7YLrVoUuzOdb3UoXqLY9qE8nNEBIzXQCy9MXUCYkGJtdsDfC//ci5 6Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 353c2b3gx0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 03 Dec 2020 01:08:20 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B314SuD054405;
-        Thu, 3 Dec 2020 01:08:20 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 35404q2mur-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Dec 2020 01:08:20 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B3189JX014579;
-        Thu, 3 Dec 2020 01:08:09 GMT
-Received: from [10.159.240.123] (/10.159.240.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 02 Dec 2020 17:08:09 -0800
-Subject: Re: [PATCH RFC 10/39] KVM: x86/xen: support upcall vector
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Joao Martins <joao.m.martins@oracle.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20190220201609.28290-1-joao.m.martins@oracle.com>
- <20190220201609.28290-11-joao.m.martins@oracle.com>
- <71753a370cd6f9dd147427634284073b78679fa6.camel@infradead.org>
- <53baeaa7-0fed-d22c-7767-09ae885d13a0@oracle.com>
- <4ad0d157c5c7317a660cd8d65b535d3232f9249d.camel@infradead.org>
- <c43024b3-6508-3b77-870c-da81e74284a4@oracle.com>
- <052867ae1c997487d85c21e995feb5647ac6c458.camel@infradead.org>
-From:   Ankur Arora <ankur.a.arora@oracle.com>
-Message-ID: <8875ff08-9b92-3eb7-3b17-f5dc036148e2@oracle.com>
-Date:   Wed, 2 Dec 2020 17:08:06 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 2 Dec 2020 20:08:51 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ECFC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 17:08:11 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id dm12so214312qvb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 17:08:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2ujXQeS5YHJuwp8X77KQyBVTIqxYGrywvie1/2UIiLw=;
+        b=n47Z/lVS8IkfhPvBmVGqKOFdz4FVCTLn1dvgHz9kp+Gkj3E6aBxNjIPFp20KlR1kZl
+         zMP5CkJ8446G5WpJQJx2ZMSmKE2DS1yuSuyfO0mUdBYgdUT5g9VcrpLMHQkfu754qbQW
+         ntk9CX4/QqPw4fdDGujCG/qgWaVOA64vX3aZXwTGVr5zECFZulRl5zLoT0sADwTr0hFS
+         qQk+L+F+wqxNRKT5D9fX0PKzmrpvPNkuWeMH5MoGky167OsHceYdANRqdtEfVHlsuFll
+         QUgpBz7HDkrnBkiCckun9TrlpD+iGiMeQDKaZ8nv+YLq03KH6wa0M4GSfsqMgUZ01EiW
+         IA6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2ujXQeS5YHJuwp8X77KQyBVTIqxYGrywvie1/2UIiLw=;
+        b=uHD47HUMAGjFtPVwjryDAqAjYVcRcS8uYNnBtpC2Z3gBmrc/V64+SZ9Yd4/FNd3x9R
+         WCstoOzGEAkMIg+XDeJArhZjmkrieJ51bROK0scQHBufKDbBg6GVVffpQOIgDtDXd1nZ
+         la2irmWtswcfQzlUbbjKcHQe6mzVwiy72alip/F460GDNDm3PWHOnkNHzWeJ5lFthmFx
+         YBroYt2dRoGnfO3krl7HEauiFmQkouMritiVPJt+QtOOxIv6x2YSwHJlnrITlsJVjakN
+         de1c3fD2xyNCZvGTTn2phKol6incUdaklZ2c5sMq7w/hOC8bx3ewUusWuufP83MiaWV3
+         RFqA==
+X-Gm-Message-State: AOAM531hSNkQuPB+P+3yBcYULeJRACwzfrOTM+hI1xbs4v9ipAxyZMbP
+        qv+qLCJHuZi6Hb/t4EENjxSFjw==
+X-Google-Smtp-Source: ABdhPJxxdFVazo1Bis5kAqf6NL1JQXtbPnvdZ2iWy7MFyBP7nrhTkf9GMiTj7Sblf63mVZlCBx9eDQ==
+X-Received: by 2002:ad4:4051:: with SMTP id r17mr977961qvp.39.1606957690812;
+        Wed, 02 Dec 2020 17:08:10 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id y189sm523255qka.30.2020.12.02.17.08.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 17:08:10 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kkd6P-005HUP-Ch; Wed, 02 Dec 2020 21:08:09 -0400
+Date:   Wed, 2 Dec 2020 21:08:09 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
+Message-ID: <20201203010809.GQ5487@ziepe.ca>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-7-pasha.tatashin@soleen.com>
+ <20201202163507.GL5487@ziepe.ca>
+ <CA+CK2bBT=U+xhbzXTDFwsL5wTvPHgNJ0DRpaeseiUq=w4EOe9w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <052867ae1c997487d85c21e995feb5647ac6c458.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030002
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012030002
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bBT=U+xhbzXTDFwsL5wTvPHgNJ0DRpaeseiUq=w4EOe9w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-02 11:02 a.m., David Woodhouse wrote:
-> On Wed, 2020-12-02 at 18:34 +0000, Joao Martins wrote:
->> On 12/2/20 4:47 PM, David Woodhouse wrote:
->>> On Wed, 2020-12-02 at 13:12 +0000, Joao Martins wrote:
->>>> On 12/2/20 11:17 AM, David Woodhouse wrote:
->>>>> I might be more inclined to go for a model where the kernel handles the
->>>>> evtchn_pending/evtchn_mask for us. What would go into the irq routing
->>>>> table is { vcpu, port# } which get passed to kvm_xen_evtchn_send().
->>>>
->>>> But passing port to the routing and handling the sending of events wouldn't it lead to
->>>> unnecessary handling of event channels which aren't handled by the kernel, compared to
->>>> just injecting caring about the upcall?
->>>
->>> Well, I'm generally in favour of *not* doing things in the kernel that
->>> don't need to be there.
->>>
->>> But if the kernel is going to short-circuit the IPIs and VIRQs, then
->>> it's already going to have to handle the evtchn_pending/evtchn_mask
->>> bitmaps, and actually injecting interrupts.
->>>
->>
->> Right. I was trying to point that out in the discussion we had
->> in next patch. But true be told, more about touting the idea of kernel
->> knowing if a given event channel is registered for userspace handling,
->> rather than fully handling the event channel.
->>
->> I suppose we are able to provide both options to the VMM anyway
->> i.e. 1) letting them handle it enterily in userspace by intercepting
->> EVTCHNOP_send, or through the irq route if we want kernel to offload it.
+On Wed, Dec 02, 2020 at 07:19:45PM -0500, Pavel Tatashin wrote:
+> > It is a good moment to say, I really dislike how this was implemented
+> > in the first place.
+> >
+> > Scanning the output of gup just to do the is_migrate_movable() test is
+> > kind of nonsense and slow. It would be better/faster to handle this
+> > directly while gup is scanning the page tables and adding pages to the
+> > list.
 > 
-> Right. The kernel takes what it knows about and anything else goes up
-> to userspace.
+> Hi Jason,
 > 
-> I do like the way you've handled the vcpu binding in userspace, and the
-> kernel just knows that a given port goes to a given target CPU.
+> I assume you mean to migrate pages as soon as they are followed and
+> skip those that are faulted, as we already know that faulted pages are
+> allocated from nomovable zone.
 > 
->>
->>> For the VMM
->>> API I think we should follow the Xen model, mixing the domain-wide and
->>> per-vCPU configuration. It's the best way to faithfully model the
->>> behaviour a true Xen guest would experience.
->>>
->>> So KVM_XEN_ATTR_TYPE_CALLBACK_VIA can be used to set one of
->>>   • HVMIRQ_callback_vector, taking a vector#
->>>   • HVMIRQ_callback_gsi for the in-kernel irqchip, taking a GSI#
->>>
->>> And *maybe* in a later patch it could also handle
->>>   • HVMIRQ_callback_gsi for split-irqchip, taking an eventfd
->>>   • HVMIRQ_callback_pci_intx, taking an eventfd (or a pair, for EOI?)
->>>
->>
->> Most of the Xen versions we were caring had callback_vector and
->> vcpu callback vector (despite Linux not using the latter). But if you're
->> dating back to 3.2 and 4.1 well (or certain Windows drivers), I suppose
->> gsi and pci-intx are must-haves.
+> The place would be:
 > 
-> Note sure about GSI but PCI-INTX is definitely something I've seen in
-> active use by customers recently. I think SLES10 will use that.
+> __get_user_pages()
+>       while(more pages)
+>           get_gate_page()
+>           follow_hugetlb_page()
+>           follow_page_mask()
 > 
->> I feel we could just accommodate it as subtype in KVM_XEN_ATTR_TYPE_CALLBACK_VIA.
->> Don't see the adavantage in having another xen attr type.
+>           if (!page)
+>                faultin_page()
 > 
-> Yeah, fair enough.
-> 
->> But kinda have mixed feelings in having kernel handling all event channels ABI,
->> as opposed to only the ones userspace asked to offload. It looks a tad unncessary besides
->> the added gain to VMMs that don't need to care about how the internals of event channels.
->> But performance-wise it wouldn't bring anything better. But maybe, the former is reason
->> enough to consider it.
-> 
-> Yeah, we'll see. Especially when it comes to implementing FIFO event
-> channels, I'd rather just do it in one place — and if the kernel does
-> it anyway then it's hardly difficult to hook into that.
+>           if (page && !faulted && (gup_flags & FOLL_LONGTERM) )
+>                 check_and_migrate this page
 
-Sorry I'm late to this conversation. Not a whole lot to add to what Joao
-said. I would only differ with him on how much to offload.
+Either here or perhaps even lower down the call chain when the page is
+captured, similar to how GUP fast would detect it. (how is that done
+anyhow?)
 
-Given that we need the fast path in the kernel anyway, I think it's simpler
-to do all the event-channel bitmap only in the kernel.
-This would also simplify using the kernel Xen drivers if someone eventually
-decides to use them.
+> I looked at that function, and I do not think the code will be cleaner
+> there, as that function already has a complicated loop.  
 
+That function is complicated for its own reasons.. But complicated is
+not the point here..
 
-Ankur
+> The only drawback with the current approach that I see is that
+> check_and_migrate_movable_pages() has to check once the faulted
+> pages.
 
-> 
-> But I've been about as coherent as I can be in email, and I think we're
-> generally aligned on the direction. I'll do some more experiments and
-> see what I can get working, and what it looks like.
-> 
-> I'm focusing on making the shinfo stuff all use kvm_map_gfn() first.
-> 
+Yes
+
+> This is while not optimal is not horrible. 
+
+It is.
+
+> The FOLL_LONGTERM should not happen too frequently, so having one
+> extra nr_pages loop should not hurt the performance. 
+
+FOLL_LONGTERM is typically used with very large regions, for instance
+we are benchmarking around the 300G level. It takes 10s of seconds for
+get_user_pages to operate. There are many inefficiencies in this
+path. This extra work of re-scanning the list is part of the cost.
+
+Further, having these special wrappers just for FOLL_LONGTERM has a
+spill over complexity on the entire rest of the callchain up to here,
+we now have endless wrappers and varieties of function calls that
+generally are happening because the longterm path needs to end up in a
+different place than other paths.
+
+IMHO this is due to the lack of integration with the primary loop
+above
+
+> Also, I checked and most of the users of FOLL_LONGTERM pin only one
+> page at a time. Which means the extra loop is only to check a single
+> page.
+
+Er, I don't know what you checked but those are not the cases I
+see. Two big users are vfio and rdma. Both are pinning huge ranges of
+memory in very typical use cases.
+
+> However, those changes can come after this series. The current series
+> fixes a bug where hot-remove is not working with making minimal amount
+> of changes, so it is easy to backport it to stable kernels.
+
+This is a good point, good enough that you should probably continue as
+is
+
+Jason
