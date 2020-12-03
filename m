@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85572CE23B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B27CF2CE23F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731834AbgLCWzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:55:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59654 "EHLO mail.kernel.org"
+        id S2388162AbgLCW4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:56:55 -0500
+Received: from mga09.intel.com ([134.134.136.24]:19998 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725986AbgLCWzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:55:44 -0500
-From:   Arnd Bergmann <arnd@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Cheng-Yi Chiang <cychiang@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Tzung-Bi Shih <tzungbi@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Guenter Roeck <groeck@chromium.org>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: cros_ec_codec: fix uninitialized memory read
-Date:   Thu,  3 Dec 2020 23:54:41 +0100
-Message-Id: <20201203225458.1477830-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1725912AbgLCW4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:56:55 -0500
+IronPort-SDR: sqq01kPgv1iP7xrNursPixfHS1txqIFibS0X7aypE0rv1nifyWc9nrp6VTssH+GTLK/3qejBmS
+ uDDMzCUS8I9A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="173449010"
+X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
+   d="scan'208";a="173449010"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 14:55:14 -0800
+IronPort-SDR: BlLXb2daAGH6gO1pWQ05HxS+B4qkaFHe+vTk8wuk0phOB3AhT6jWHSL+HxwhLyTSWKtjiBuru4
+ 1xLtmtAiVUtQ==
+X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
+   d="scan'208";a="374097572"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 14:55:12 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 100FF21E1A; Fri,  4 Dec 2020 00:55:10 +0200 (EET)
+Date:   Fri, 4 Dec 2020 00:55:10 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: smiapp: avoid printing an uninitialized variable
+Message-ID: <20201203225509.GP852@paasikivi.fi.intel.com>
+References: <20201203222828.1029943-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203222828.1029943-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Arnd,
 
-gcc points out a memory area that is copied to a device
-but not initialized:
+Thanks for the patch.
 
-sound/soc/codecs/cros_ec_codec.c: In function 'i2s_rx_event':
-arch/x86/include/asm/string_32.h:83:20: error: '*((void *)&p+4)' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-   83 |   *((int *)to + 1) = *((int *)from + 1);
+On Thu, Dec 03, 2020 at 11:28:16PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> There is no intialization for the 'reg' variable, so printing
+> it produces undefined behavior as well as a compile-time warning:
+> 
+> drivers/media/i2c/ccs/ccs-core.c:314:49: error: variable 'reg' is uninitialized when used here [-Werror,-Wuninitialized]
+>                         "0x%8.8x %s pixels: %d %s (pixelcode %u)\n", reg,
+> 
+> Remove the variable and stop printing it.
+> 
+> Fixes: b24cc2a18c50 ("media: smiapp: Rename as "ccs"")
 
-Initialize all the unused fields to zero.
+The patch introducing this was 
 
-Fixes: 727f1c71c780 ("ASoC: cros_ec_codec: refactor I2S RX")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/codecs/cros_ec_codec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+fd9065812c7b ("media: smiapp: Obtain frame descriptor from CCS limits")
 
-diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-index 58894bf47514..f33a2a9654e7 100644
---- a/sound/soc/codecs/cros_ec_codec.c
-+++ b/sound/soc/codecs/cros_ec_codec.c
-@@ -332,7 +332,7 @@ static int i2s_rx_event(struct snd_soc_dapm_widget *w,
- 		snd_soc_dapm_to_component(w->dapm);
- 	struct cros_ec_codec_priv *priv =
- 		snd_soc_component_get_drvdata(component);
--	struct ec_param_ec_codec_i2s_rx p;
-+	struct ec_param_ec_codec_i2s_rx p = {};
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
+so I'll use it instead. Also s/smiapp/ccs/ in the subject.
+
+Interesting that GCC 8.3 didn't complain.
+
 -- 
-2.27.0
+Kind regards,
 
+Sakari Ailus
