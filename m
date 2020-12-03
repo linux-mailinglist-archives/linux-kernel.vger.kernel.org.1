@@ -2,150 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 767AE2CD9C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0FE2CD9C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:05:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730989AbgLCPDc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 10:03:32 -0500
-Received: from mail-vs1-f49.google.com ([209.85.217.49]:37594 "EHLO
-        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730838AbgLCPDc (ORCPT
+        id S2388402AbgLCPEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 10:04:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50510 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387805AbgLCPEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:03:32 -0500
-Received: by mail-vs1-f49.google.com with SMTP id j140so1401692vsd.4;
-        Thu, 03 Dec 2020 07:03:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2WaJxAlpW9TnndwUkLLX4Wv0ulKsbd7eJDXS4f4tvpU=;
-        b=h5inxeScKSaoQEr9QHSI2f/iVBuDpQERLbSJbzyhKmYiRNEjAAHiPi46L9vK3DKtR9
-         3TMNd+HUntGy8xWab43qoPMoyymsIwqEWF2pfGdXRxuZkTpL2yGy9f+BPLgP1TU9fm0B
-         pxhhBtn/QXFPFG2K66P6WyghRYrD0iyvLYom/oDRAzQ6PxV2is+TI+xkzmAMMoHGv4Tg
-         2Rx957nUPoT2HAXu7C0s9CZ6ySTvYZkapr+s9SKXVtUbxyQ4H6B5Y6vQcaAkvM02YyFp
-         Wfk7kx+dOtgW4qrujJhep8pJ43rGlZcrCYpks2+9uaRG5IOqRy4G3CBxQ+jgBC8yoIVL
-         iveQ==
-X-Gm-Message-State: AOAM530Z6HmVTiURNJKp7EVU3IbW6Uw/v6c0wzhFa0nVif7OhwhQ+0N0
-        L4/xd1LTxwmA2Bp2meVpOPOY4fODcxwPAA==
-X-Google-Smtp-Source: ABdhPJzyPmY00Zd2q14rGNk3LziYu6A+dp1TwuYCA10/8mSquHywzD5IKZGU92wxRYu70p+zUGyPNQ==
-X-Received: by 2002:a67:2901:: with SMTP id p1mr2500006vsp.43.1607007770083;
-        Thu, 03 Dec 2020 07:02:50 -0800 (PST)
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com. [209.85.221.178])
-        by smtp.gmail.com with ESMTPSA id g194sm172054vkf.48.2020.12.03.07.02.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 07:02:46 -0800 (PST)
-Received: by mail-vk1-f178.google.com with SMTP id e5so459064vkd.4;
-        Thu, 03 Dec 2020 07:02:45 -0800 (PST)
-X-Received: by 2002:ac5:c995:: with SMTP id e21mr2117725vkm.5.1607007764960;
- Thu, 03 Dec 2020 07:02:44 -0800 (PST)
+        Thu, 3 Dec 2020 10:04:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607007781;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RMS24ZSS/X4LUxQFLWvQDNdo1y66WXc1l+McJVMCTIU=;
+        b=BvA97Orc9w5wSe6Iiqf3rtaE02lvGWEFNd+WOCLhSucBRTE4y3Crs627nqiXUT0Eoa1g2K
+        JlRCPOGN9tJBWA1pQ2K3tG3CPwvSaFYLxiclcexlgcEl+JVR9YLw86kIigqXc+h/3kvlA7
+        mD/NJgtxcu3eE82Iy5/J1YPrisRADxQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-458-T5NeAKMTN0m2p9iyhtBKNQ-1; Thu, 03 Dec 2020 10:03:00 -0500
+X-MC-Unique: T5NeAKMTN0m2p9iyhtBKNQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6CCC817B92;
+        Thu,  3 Dec 2020 15:02:58 +0000 (UTC)
+Received: from lithium.homenet.telecomitalia.it (ovpn-112-189.ams2.redhat.com [10.36.112.189])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A6896064B;
+        Thu,  3 Dec 2020 15:02:57 +0000 (UTC)
+From:   Giuseppe Scrivano <gscrivan@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ebiederm@xmission.com, christian.brauner@ubuntu.com,
+        serge@hallyn.com
+Subject: [PATCH v2] userns: automatically split user namespace extent
+Date:   Thu,  3 Dec 2020 16:02:52 +0100
+Message-Id: <20201203150252.1229077-1-gscrivan@redhat.com>
 MIME-Version: 1.0
-References: <20201202135409.13683-1-andre.przywara@arm.com>
- <20201202135409.13683-8-andre.przywara@arm.com> <3b4f4bf6-2fba-5d35-bdf5-74b8ced10357@sholland.org>
- <34e5618e-4a3d-9a46-5077-179c82592fce@arm.com>
-In-Reply-To: <34e5618e-4a3d-9a46-5077-179c82592fce@arm.com>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Thu, 3 Dec 2020 23:02:31 +0800
-X-Gmail-Original-Message-ID: <CAGb2v67+Bfhnw9hFv8vOLTOqmb-hoYxRnk4Q7CQZjzJbzkQxqg@mail.gmail.com>
-Message-ID: <CAGb2v67+Bfhnw9hFv8vOLTOqmb-hoYxRnk4Q7CQZjzJbzkQxqg@mail.gmail.com>
-Subject: Re: [linux-sunxi] Re: [PATCH 7/8] arm64: dts: allwinner: Add
- Allwinner H616 .dtsi file
-To:     =?UTF-8?Q?Andr=C3=A9_Przywara?= <andre.przywara@arm.com>
-Cc:     Samuel Holland <samuel@sholland.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        Yangtao Li <frank@allwinnertech.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 6:54 PM André Przywara <andre.przywara@arm.com> wrote:
->
-> On 03/12/2020 03:16, Samuel Holland wrote:
->
-> Hi,
->
-> > On 12/2/20 7:54 AM, Andre Przywara wrote:
-> > ...
-> >> +    soc {
-> >> +            compatible = "simple-bus";
-> >> +            #address-cells = <1>;
-> >> +            #size-cells = <1>;
-> >> +            ranges = <0x0 0x0 0x0 0x40000000>;
-> >> +
-> >> +            syscon: syscon@3000000 {
-> >> +                    compatible = "allwinner,sun50i-h616-system-control",
-> >> +                                 "allwinner,sun50i-a64-system-control";
-> >> +                    reg = <0x03000000 0x1000>;
-> >> +                    #address-cells = <1>;
-> >> +                    #size-cells = <1>;
-> >> +                    ranges;
-> >> +
-> >> +                    sram_c: sram@28000 {
-> >> +                            compatible = "mmio-sram";
-> >> +                            reg = <0x00028000 0x30000>;
-> >> +                            #address-cells = <1>;
-> >> +                            #size-cells = <1>;
-> >> +                            ranges = <0 0x00028000 0x30000>;
-> >> +                    };
-> >> +
-> >> +                    sram_c1: sram@1a00000 {
-> >> +                            compatible = "mmio-sram";
-> >> +                            reg = <0x01a00000 0x200000>;
-> >> +                            #address-cells = <1>;
-> >> +                            #size-cells = <1>;
-> >> +                            ranges = <0 0x01a00000 0x200000>;
-> >> +
-> >> +                            ve_sram: sram-section@0 {
-> >> +                                    compatible = "allwinner,sun50i-h616-sram-c1",
-> >> +                                                 "allwinner,sun4i-a10-sram-c1";
-> >> +                                    reg = <0x000000 0x200000>;
-> >> +                            };
-> >> +                    };
-> >> +            };
-> >
-> > You mentioned that you could not find a SRAM A2. How were these SRAM ranges
-> > verified? If you can load eGON.BT0 larger than 32 KiB, then presumably NBROM
-> > uses SRAM C, and it is in the manual, but I see no mention of SRAM C1.
->
-> The manual says that SRAM C *can* be used by "the system", at boot time,
-> as long as it's configured correctly. I couldn't find any details on how
-> to switch clock sources for SRAM C, and the manual stanza on this is
-> quite gibberish. I presume it's configured either by BROM or by reset
-> default this way. I think the idea is that the later users (VE, DE) take
-> ownership at some point (which means we can't run any firmware in there).
-> The BSP boot0 is 48KB already, so reaching into SRAM C, and the code
-> itself heavily uses SRAM C (found by hacking boot0 to drop to FEL and
-> inspecting the memory afterwards).
->
-> For C1: I copied this name from the H6 .dtsi, the manual calls this
-> "VE-SRAM", in both manuals, and the description looks identical there
-> for both SoCs. I think this will be later used by the video engine, so I
-> kept it in. The large size made me suspicious, and from former
-> experiments it looks like being aliased to (parts of) SRAM C.
+writing to the id map fails when an extent overlaps multiple mappings
+in the parent user namespace, e.g.:
 
-I would just call it sram_ve or ve_sram. SRAM C1 would make more sense if
-it were part of SRAM C, not the other way around.
+$ cat /proc/self/uid_map
+         0       1000          1
+         1     100000      65536
+$ unshare -U sleep 100 &
+[1] 1029703
+$ printf "0 0 100\n" | tee /proc/$!/uid_map
+0 0 100
+tee: /proc/1029703/uid_map: Operation not permitted
 
-Also the sram-section node would make more sense if it were in sram_c, as
-that is the part that gets switched around, not the full region @ 1a00000.
+To prevent it from happening, automatically split an extent so that
+each portion fits in one extent in the parent user namespace.
 
-ChenYu
+$ cat /proc/self/uid_map
+         0       1000          1
+         1     110000      65536
+$ unshare -U sleep 100 &
+[1] 1552
+$ printf "0 0 100\n" | tee /proc/$!/uid_map
+0 0 100
+$ cat /proc/$!/uid_map
+         0          0          1
+         1          1         99
 
-> Maybe some guys with more VE knowledge can shine some light on this?
->
-> Cheers,
-> Andre
->
-> --
-> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
-> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/34e5618e-4a3d-9a46-5077-179c82592fce%40arm.com.
+Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+---
+v2:
+- move the split logic when the extent are mapped to the parent map to
+  reduce lookup complexity.
+
+v1: https://lkml.kernel.org/lkml/20201126100839.381415-1-gscrivan@redhat.com
+
+ kernel/user_namespace.c | 79 +++++++++++++++++++++++++++++++++++------
+ 1 file changed, 68 insertions(+), 11 deletions(-)
+
+diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+index 87804e0371fe..550612c6e794 100644
+--- a/kernel/user_namespace.c
++++ b/kernel/user_namespace.c
+@@ -312,6 +312,55 @@ static u32 map_id_down(struct uid_gid_map *map, u32 id)
+ 	return map_id_range_down(map, id, 1);
+ }
+ 
++/**
++ * find_and_split_extent_down - Find lower_first for the target extent
++ * using the specified map.
++ * If the extent doesn't fit in a single lower extent, split target and
++ * write the remaining IDs (first and count) to the overflow extent.
++ * If no overflow happens, overflow->count is set to 0.
++ */
++static int find_and_split_extent_down(struct uid_gid_map *map,
++				       struct uid_gid_extent *target,
++				       struct uid_gid_extent *overflow)
++{
++	unsigned int extents = map->nr_extents;
++	u32 lower_first = target->lower_first;
++	struct uid_gid_extent *extent;
++	u32 off, available;
++
++	overflow->count = 0;
++
++	/* Find the lower extent that includes the first ID.  */
++	if (extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
++		extent = map_id_range_down_base(extents, map, lower_first, 1);
++	else
++		extent = map_id_range_down_max(extents, map, lower_first, 1);
++
++	/* Could not map the first ID in the extent.  */
++	if (extent == NULL)
++		return -EPERM;
++
++	/* Offset of lower_first in the lower extent.  */
++	off = target->lower_first - extent->first;
++
++	/* How many IDs are available in the lower extent?  */
++	available = extent->count - off;
++
++	/* Requesting more IDs than available in the lower extent.  */
++	if (target->count > available) {
++		/* Move the remaining IDs to the overflow extent.  */
++		overflow->first = target->first + available;
++		overflow->lower_first = target->lower_first + available;
++		overflow->count = target->count - available;
++
++		/* Shrink the initial extent to what is available.  */
++		target->count = available;
++	}
++
++	target->lower_first = extent->lower_first + off;
++	return 0;
++}
++
+ /**
+  * map_id_up_base - Find idmap via binary search in static extent array.
+  * Can only be called if number of mappings is equal or less than
+@@ -749,6 +798,7 @@ static bool mappings_overlap(struct uid_gid_map *new_map,
+  * insert_extent - Safely insert a new idmap extent into struct uid_gid_map.
+  * Takes care to allocate a 4K block of memory if the number of mappings exceeds
+  * UID_GID_MAP_MAX_BASE_EXTENTS.
++ * The extent is appended at the position map->nr_extents.
+  */
+ static int insert_extent(struct uid_gid_map *map, struct uid_gid_extent *extent)
+ {
+@@ -968,30 +1018,37 @@ static ssize_t map_write(struct file *file, const char __user *buf,
+ 	if (!new_idmap_permitted(file, ns, cap_setid, &new_map))
+ 		goto out;
+ 
+-	ret = -EPERM;
+ 	/* Map the lower ids from the parent user namespace to the
+ 	 * kernel global id space.
+ 	 */
+ 	for (idx = 0; idx < new_map.nr_extents; idx++) {
++		struct uid_gid_extent overflow;
+ 		struct uid_gid_extent *e;
+-		u32 lower_first;
+ 
+ 		if (new_map.nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
+ 			e = &new_map.extent[idx];
+ 		else
+ 			e = &new_map.forward[idx];
+ 
+-		lower_first = map_id_range_down(parent_map,
+-						e->lower_first,
+-						e->count);
+-
+-		/* Fail if we can not map the specified extent to
+-		 * the kernel global id space.
+-		 */
+-		if (lower_first == (u32) -1)
++		ret = find_and_split_extent_down(parent_map, e, &overflow);
++		if (ret < 0)
+ 			goto out;
+ 
+-		e->lower_first = lower_first;
++		/* If the extent doesn't fit in a single lower extent,
++		 * move what could not be mapped to a new extent.
++		 * The new extent is appended to the existing ones in
++		 * new_map, it will be checked again and if necessary it
++		 * is split further.
++		 */
++		if (overflow.count > 0) {
++			if (new_map.nr_extents == UID_GID_MAP_MAX_EXTENTS) {
++				ret = -EINVAL;
++				goto out;
++			}
++			ret = insert_extent(&new_map, &overflow);
++			if (ret < 0)
++				goto out;
++		}
+ 	}
+ 
+ 	/*
+-- 
+2.28.0
+
