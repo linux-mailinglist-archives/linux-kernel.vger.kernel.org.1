@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6BF52CD6A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 404DF2CD6A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730718AbgLCNYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 08:24:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730533AbgLCNYp (ORCPT
+        id S1730735AbgLCNY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 08:24:56 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:57107 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730533AbgLCNYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 08:24:45 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D439EC061A52
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 05:24:04 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id z3so1243941qtw.9
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 05:24:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=BYhYUhRJ3iwbx5RvkgDxhY0ZIfAUwuAVrsbzhkyOflE=;
-        b=bCzjyv12n+JQLoKDMOsB5xuPKFm4sO9IiTdgw3h9FI5mFNMRELHRAsdE0oZ8u5LJBb
-         2yw5khVWWmX6pte/xf7LFp9fGX1ocFHOxAAJz1vxtNqo6q6u6VZaIQ2dhI/sJWHRMH8G
-         7d1NFlCBMm+XSqPEKdA0ypZo+zPTSxmUPtHxKNKXGpvOldtirlMgtHPgBpIfKGsz0t4J
-         +TPDfM/AfaweYlhfYWdbGrtWDSXXUylrg80t27jBhDLfAjA7p+TWkbCL5SZt4E4NTNq4
-         xt+W0W3JDpASUjh4HQFJ170kXCAHTVU5jXFuVUGRfMXdjscDXMrwl961uaiTVW/PmV6n
-         wZXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=BYhYUhRJ3iwbx5RvkgDxhY0ZIfAUwuAVrsbzhkyOflE=;
-        b=dU3uy3Wtuhv1sAGySsUFp40uqcOaBJXgWajY/YxLdueHjpa8gpwepQumwQJjR7Fg9V
-         O4iLaYFt5tXT0R32pGSLUWRwqrfOtnIn22D9WQpTI+qJ1c4csdAgfvhLXd4x5oI/BG0B
-         YrInOpfc1nROMb8qoRcTQL1ZqaKITTcVWWyXJfakkiIEmwifze5jt1yZh/csByyREZ5d
-         hmk8sgH0BgCE4LmGkp4XZEBFR9AOHHMrsUqz50Pe0ERxW941D/TrXUa+CuThh5TESqpx
-         4ecAGuxwRYTMo3xkbT5R66ZrBUHZVOcfW1RmTcd+MK8oVPkFB6JmqlhqRk5QSqfuCZaS
-         btPw==
-X-Gm-Message-State: AOAM532GP5G3fJCfzQrAPXFCeJwb5+pGOcXtR1p71UySpdpagNodNMbN
-        VDXhbnxX6mt5h8Hv9gLFoZEIbQoof1BthFpuOFo=
-X-Google-Smtp-Source: ABdhPJwyox5dmEH7ht2m8QavQWd6DMFJEThUB1n/xmN+GYVlZubxzDKRyUsTTSX12OS1yj09i+2VnxAxPqDMxd/DztE=
-X-Received: by 2002:ac8:4803:: with SMTP id g3mr3181268qtq.286.1607001844084;
- Thu, 03 Dec 2020 05:24:04 -0800 (PST)
+        Thu, 3 Dec 2020 08:24:55 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 3A7215803EB;
+        Thu,  3 Dec 2020 08:24:09 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 03 Dec 2020 08:24:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=TIrQvB3UrbufB/GyXub/EtdF/K7
+        1e6rUtngpjAms+UI=; b=ZLIDlDHeAU1tKCcbMe3fBkWwIMdX26uYk8+UPkJ94sd
+        KxxedTHTYUr+G6ogpB2nnSgV6Vbi2j5HemALBtFNWlR/n1NQrOGre4P9rUP62FwW
+        yBZ9j79D7jR1dGk42sYYYY74x0KN3CitVkwn08gqF9Zc09GoY7cYKa/bI5tfgQLR
+        ICEjLxgiY/O0ahT5MV6ogK1Xq1T7EkdSgiPMnggw+lFt7CeBO5A9RphsiZTRl9KS
+        HaIF22EVLDtCI0+mZi14FZme8606SpCsGdRASnepRlkvFXOTmYnaarJYxMAPiwu4
+        bSl1jaBk0Ajn3tCI03AP8lSsurfhloRXeG3ODhhUrGQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TIrQvB
+        3UrbufB/GyXub/EtdF/K71e6rUtngpjAms+UI=; b=kj8Vw1pYu5t4qjQqPe8A8Z
+        iTxnV0PjwrJ+wrKDn5gK6uhFfZmPaJ6Ox6ttwKzH/iOt3OQsZeP3Ji9yn8vZjr2f
+        e/D/dA9fAVhXXSJYe0nFBMP8b6tWM3/Q8wouRJkmrmgba7i/VLo8oTaOTMovxPN9
+        mGdvOglQfuVTvqkEy3/alSXZH1TtU/rWmcwndMb/NrCtKqb6zA9rlBEg7ua32x4z
+        Z/fH8OMpHHMKr+xnhoeLQf2rlmsQuF4pxrWB/F7aelwlLzcghzK5U7cz7afzQUXW
+        NH6EU6CekucaxD6rpZx7CgrU60V4xVpdmAoXheNIgxe1PPMtwBCMOfoJOzyU/ljQ
+        ==
+X-ME-Sender: <xms:9-bIX2JkrJc_idGOXw7CJ0Efs1Xrw2Glr-GZAlv7mOU_1Qsq6VZZyg>
+    <xme:9-bIX7ulMuhkk1uvbX4CL9t_Y3KezJP4t-UP2UozEuT6JsRO43nl1JV7DT-ZWDL3c
+    iJbIb5mpfIVUQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeiiedghedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
+    dttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheq
+    necuggftrfgrthhtvghrnhepveeuheejgfffgfeivddukedvkedtleelleeghfeljeeiue
+    eggeevueduudekvdetnecukfhppeekfedrkeeirdejgedrieegnecuvehluhhsthgvrhfu
+    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtoh
+    hm
+X-ME-Proxy: <xmx:9-bIX9IAit820Ldv33Vx9Ua7TvUDsr2s0yP72w8tNHoQB3wNZRyfgw>
+    <xmx:9-bIX8_Zy08d821_6TB9NYEmrE08EnnPc5yxHln1xQysJJ3H07SDVA>
+    <xmx:9-bIX-wWnb7BJW7CkZUOFN2TWGVPRj6MOef8KPlBhelkLEnARbsBWA>
+    <xmx:-ebIXz61tF8SSagFmVsGikb66R3ACi6YeXeDoVMjFaRN9ddN1wellQ>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2B38124005B;
+        Thu,  3 Dec 2020 08:24:07 -0500 (EST)
+Date:   Thu, 3 Dec 2020 14:25:15 +0100
+From:   Greg KH <greg@kroah.com>
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        toddpoynor@google.com, sbranden@broadcom.com, rjui@broadcom.com,
+        speakup@linux-speakup.org, rcy@google.com, f.fainelli@gmail.com,
+        rspringer@google.com, laurent.pinchart@ideasonboard.com,
+        netdev@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        mchehab@kernel.org, nsaenzjulienne@suse.de,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH 01/11] drivers: staging: speakup: remove unneeded
+ MODULE_VERSION() call
+Message-ID: <X8jnO5cPUQGEK9cr@kroah.com>
+References: <20201203124803.23390-1-info@metux.net>
 MIME-Version: 1.0
-Reply-To: mrsmayaoliver7@gmail.com
-Sender: bestberlin411@gmail.com
-Received: by 2002:aed:2de3:0:0:0:0:0 with HTTP; Thu, 3 Dec 2020 05:24:03 -0800 (PST)
-From:   "Mrs. Maya Oliver" <mrsmayaoliver7@gmail.com>
-Date:   Thu, 3 Dec 2020 05:24:03 -0800
-X-Google-Sender-Auth: df8e43H-qAWpU9DzDcu9JXysbBQ
-Message-ID: <CA+SOPk_8AqD8aQ=xffRw46aFZogBHs2h0APgu0qQZNtG_QMyFA@mail.gmail.com>
-Subject: My Greetings
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203124803.23390-1-info@metux.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dear
+On Thu, Dec 03, 2020 at 01:47:53PM +0100, Enrico Weigelt, metux IT consult wrote:
+> Remove MODULE_VERSION(), as it doesn't seem to serve any practical
+> purpose. For in-tree drivers, the kernel version matters.
+> 
+> The drivers have received lots of changes, without the module version
+> (or the underlying DRV_VERSION macro) ever changed, since the code
+> landed in the kernel tree. So, it doesn't seem to have any practical
+> meaning anymore.
+> 
+> Signed-off-by: Enrico Weigelt <info@metux.net>
+> ---
+>  drivers/accessibility/speakup/main.c           | 1 -
 
-My Name is Mrs. Maya Oliver, from Norway. I know that this message
-will be a surprise to you. Firstly, I am married to Mr. Patrick
-Oliver, A gold merchant who owns a small gold Mine in Burkina Faso; He
-died of Cardiovascular Disease in mid-March 2011. During his life time
-he deposited the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five
-hundred thousand Euros in a bank in Ouagadougou the capital city of
-Burkina Faso. The deposited money was from the sale of the shares,
-death benefits payment and entitlements of my deceased husband by his
-company.
+<snip>
 
-I am sending this message to you praying that it will reach you in
-good health, since I am not in good health condition in which I sleep
-every night without knowing if I may be alive to see the next day. I
-am suffering from long time cancer and presently i am partially
-suffering from a stroke illness which has become almost impossible for
-me to move around. I am married to my late husband for over 4 years
-before he died and is unfortunately that we don't have a child, my
-doctor confided in me that i have less chance to live. Having known my
-health condition, I decided to contact you to claim the fund since I
-don't have any relation I grew up from the orphanage home,
+Yous subject line is odd, these are not "staging" drivers anymore, so
+why do you say they are there?
 
-I have decided to donate what I have to you for the support of helping
-Motherless babies/Less privileged/Widows' because I am dying and
-diagnosed of cancer for about 2 years ago. I have been touched by God
-Almighty to donate from what I have inherited from my late husband to
-you for good work of God Almighty. I have asked Almighty God to
-forgive me and believe he has, because He is a Merciful God I will be
-going in for an operation surgery soon
+thanks,
 
-This is the reason i need your services to stand as my next of kin or
-an executor to claim the funds for charity purposes. If this money
-remains unclaimed after my death, the bank executives or the
-government will take the money as unclaimed fund and maybe use it for
-selfish and worthless ventures, I need a very honest person who can
-claim this money and use it for Charity works, for orphanages, widows
-and also build schools for less privilege that will be named after my
-late husband and my name; I need your urgent answer to know if you
-will be able to execute this project, and I will give you more
-Information on how the fund will be transferred to your bank account.
-
-Thanks
-Mrs. Maya
+greg k-h
