@@ -2,342 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D092CCE6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:23:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1BC2CCEA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgLCFWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 00:22:04 -0500
-Received: from m42-5.mailgun.net ([69.72.42.5]:21888 "EHLO m42-5.mailgun.net"
+        id S1727023AbgLCF0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 00:26:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725872AbgLCFWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:22:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606972898; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=HahUMtWlaBoRTtgNit+apwzv1egG3PuGsmOhLWWfRXM=;
- b=JSoE87Jn1yE+LubKm2t/hEi3C7yEjRHmMIE+ErFZ/8YU0sdNQ3Ol4lYsfrKPYzqbCM4vBejJ
- OLy+NKrC4H4enga2VLwSHXzi5iL4FyaVpJ138Rhn7784espsezb4ILgpJGrRHhe0Zgz3hZcz
- zpF+O5PwGyVm6M7EPe0bDZq9pA4=
-X-Mailgun-Sending-Ip: 69.72.42.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
- 5fc875de2571f1091a9385d1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Dec 2020 05:21:34
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 18A18C43462; Thu,  3 Dec 2020 05:21:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C4CB0C433C6;
-        Thu,  3 Dec 2020 05:21:31 +0000 (UTC)
+        id S1725793AbgLCF0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 00:26:41 -0500
+From:   Andy Lutomirski <luto@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        X86 ML <x86@kernel.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Rik van Riel <riel@surriel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [MOCKUP] x86/mm: Lightweight lazy mm refcounting
+Date:   Wed,  2 Dec 2020 21:25:51 -0800
+Message-Id: <7c4bcc0a464ca60be1e0aeba805a192be0ee81e5.1606972194.git.luto@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 03 Dec 2020 13:21:31 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V7 2/3] scsi: ufs: Fix a race condition between
- ufshcd_abort and eh_work
-In-Reply-To: <1606972749.23925.58.camel@mtkswgap22>
-References: <1606910644-21185-1-git-send-email-cang@codeaurora.org>
- <1606910644-21185-3-git-send-email-cang@codeaurora.org>
- <1606962078.23925.47.camel@mtkswgap22>
- <dcb7f5c9738ff18a15b3d15615de0d92@codeaurora.org>
- <1606971101.23925.56.camel@mtkswgap22>
- <843a2bb60b16929239ac5ee100bac465@codeaurora.org>
- <1606972749.23925.58.camel@mtkswgap22>
-Message-ID: <77285270581ceec46f5204f04173b6ca@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-03 13:19, Stanley Chu wrote:
-> On Thu, 2020-12-03 at 13:11 +0800, Can Guo wrote:
->> On 2020-12-03 12:51, Stanley Chu wrote:
->> > On Thu, 2020-12-03 at 12:01 +0800, Can Guo wrote:
->> >> On 2020-12-03 10:21, Stanley Chu wrote:
->> >> > On Wed, 2020-12-02 at 04:04 -0800, Can Guo wrote:
->> >> >> In current task abort routine, if task abort happens to the device
->> >> >> W-LU,
->> >> >> the code directly jumps to ufshcd_eh_host_reset_handler() to perform a
->> >> >> full reset and restore then returns FAIL or SUCCESS. Commands sent to
->> >> >> the
->> >> >> device W-LU are most likely the SSU cmds sent during UFS PM
->> >> >> operations. If
->> >> >> such SSU cmd enters task abort routine, when
->> >> >> ufshcd_eh_host_reset_handler()
->> >> >> flushes eh_work, it will get stuck there since err_handler is
->> >> >> serialized
->> >> >> with PM operations.
->> >> >>
->> >> >> In order to unblock above call path, we merely clean up the lrb taken
->> >> >> by
->> >> >> this cmd, queue the eh_work and return SUCCESS. Once the cmd is
->> >> >> aborted,
->> >> >> the PM operation which sends out the cmd just errors out, then
->> >> >> err_handler
->> >> >> shall be able to proceed with the full reset and restore.
->> >> >>
->> >> >> In this scenario, the cmd is aborted even before it is actually
->> >> >> cleared by
->> >> >> HW, set the lrb->in_use flag to prevent subsequent cmds, including
->> >> >> SCSI
->> >> >> cmds and dev cmds, from taking the lrb released from abort. The flag
->> >> >> shall
->> >> >> evetually be cleared in __ufshcd_transfer_req_compl() invoked by the
->> >> >> full
->> >> >> reset and restore from err_handler.
->> >> >>
->> >> >> Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
->> >> >> Signed-off-by: Can Guo <cang@codeaurora.org>
->> >> >> ---
->> >> >>  drivers/scsi/ufs/ufshcd.c | 60
->> >> >> +++++++++++++++++++++++++++++++++++++----------
->> >> >>  drivers/scsi/ufs/ufshcd.h |  2 ++
->> >> >>  2 files changed, 49 insertions(+), 13 deletions(-)
->> >> >>
->> >> >> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> >> >> index f0bb3fc..26c1fa0 100644
->> >> >> --- a/drivers/scsi/ufs/ufshcd.c
->> >> >> +++ b/drivers/scsi/ufs/ufshcd.c
->> >> >> @@ -2539,6 +2539,14 @@ static int ufshcd_queuecommand(struct Scsi_Host
->> >> >> *host, struct scsi_cmnd *cmd)
->> >> >>  		(hba->clk_gating.state != CLKS_ON));
->> >> >>
->> >> >>  	lrbp = &hba->lrb[tag];
->> >> >> +	if (unlikely(lrbp->in_use)) {
->> >> >> +		if (hba->pm_op_in_progress)
->> >> >> +			set_host_byte(cmd, DID_BAD_TARGET);
->> >> >> +		else
->> >> >> +			err = SCSI_MLQUEUE_HOST_BUSY;
->> >> >> +		ufshcd_release(hba);
->> >> >> +		goto out;
->> >> >> +	}
->> >> >>
->> >> >>  	WARN_ON(lrbp->cmd);
->> >> >>  	lrbp->cmd = cmd;
->> >> >> @@ -2781,6 +2789,11 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba
->> >> >> *hba,
->> >> >>
->> >> >>  	init_completion(&wait);
->> >> >>  	lrbp = &hba->lrb[tag];
->> >> >> +	if (unlikely(lrbp->in_use)) {
->> >> >> +		err = -EBUSY;
->> >> >> +		goto out;
->> >> >> +	}
->> >> >> +
->> >> >>  	WARN_ON(lrbp->cmd);
->> >> >>  	err = ufshcd_compose_dev_cmd(hba, lrbp, cmd_type, tag);
->> >> >>  	if (unlikely(err))
->> >> >> @@ -2797,6 +2810,7 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba
->> >> >> *hba,
->> >> >>
->> >> >>  	err = ufshcd_wait_for_dev_cmd(hba, lrbp, timeout);
->> >> >>
->> >> >> +out:
->> >> >>  	ufshcd_add_query_upiu_trace(hba, tag,
->> >> >>  			err ? "query_complete_err" : "query_complete");
->> >> >>
->> >> >> @@ -4929,9 +4943,11 @@ static void __ufshcd_transfer_req_compl(struct
->> >> >> ufs_hba *hba,
->> >> >>  	struct scsi_cmnd *cmd;
->> >> >>  	int result;
->> >> >>  	int index;
->> >> >> +	bool update_scaling = false;
->> >> >>
->> >> >>  	for_each_set_bit(index, &completed_reqs, hba->nutrs) {
->> >> >>  		lrbp = &hba->lrb[index];
->> >> >> +		lrbp->in_use = false;
->> >> >>  		lrbp->compl_time_stamp = ktime_get();
->> >> >>  		cmd = lrbp->cmd;
->> >> >>  		if (cmd) {
->> >> >> @@ -4944,15 +4960,17 @@ static void __ufshcd_transfer_req_compl(struct
->> >> >> ufs_hba *hba,
->> >> >>  			/* Do not touch lrbp after scsi done */
->> >> >>  			cmd->scsi_done(cmd);
->> >> >>  			__ufshcd_release(hba);
->> >> >> +			update_scaling = true;
->> >> >>  		} else if (lrbp->command_type == UTP_CMD_TYPE_DEV_MANAGE ||
->> >> >>  			lrbp->command_type == UTP_CMD_TYPE_UFS_STORAGE) {
->> >> >>  			if (hba->dev_cmd.complete) {
->> >> >>  				ufshcd_add_command_trace(hba, index,
->> >> >>  						"dev_complete");
->> >> >>  				complete(hba->dev_cmd.complete);
->> >> >> +				update_scaling = true;
->> >> >>  			}
->> >> >>  		}
->> >> >> -		if (ufshcd_is_clkscaling_supported(hba))
->> >> >> +		if (ufshcd_is_clkscaling_supported(hba) && update_scaling)
->> >> >>  			hba->clk_scaling.active_reqs--;
->> >> >>  	}
->> >> >>
->> >> >> @@ -6374,8 +6392,12 @@ static int ufshcd_issue_devman_upiu_cmd(struct
->> >> >> ufs_hba *hba,
->> >> >>
->> >> >>  	init_completion(&wait);
->> >> >>  	lrbp = &hba->lrb[tag];
->> >> >> -	WARN_ON(lrbp->cmd);
->> >> >> +	if (unlikely(lrbp->in_use)) {
->> >> >> +		err = -EBUSY;
->> >> >> +		goto out;
->> >> >> +	}
->> >> >>
->> >> >> +	WARN_ON(lrbp->cmd);
->> >> >>  	lrbp->cmd = NULL;
->> >> >>  	lrbp->sense_bufflen = 0;
->> >> >>  	lrbp->sense_buffer = NULL;
->> >> >> @@ -6447,6 +6469,7 @@ static int ufshcd_issue_devman_upiu_cmd(struct
->> >> >> ufs_hba *hba,
->> >> >>  		}
->> >> >>  	}
->> >> >>
->> >> >> +out:
->> >> >>  	blk_put_request(req);
->> >> >>  out_unlock:
->> >> >>  	up_read(&hba->clk_scaling_lock);
->> >> >> @@ -6696,16 +6719,6 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->> >> >>  		BUG();
->> >> >>  	}
->> >> >>
->> >> >> -	/*
->> >> >> -	 * Task abort to the device W-LUN is illegal. When this command
->> >> >> -	 * will fail, due to spec violation, scsi err handling next step
->> >> >> -	 * will be to send LU reset which, again, is a spec violation.
->> >> >> -	 * To avoid these unnecessary/illegal step we skip to the last error
->> >> >> -	 * handling stage: reset and restore.
->> >> >> -	 */
->> >> >> -	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN)
->> >> >> -		return ufshcd_eh_host_reset_handler(cmd);
->> >> >> -
->> >> >>  	ufshcd_hold(hba, false);
->> >> >>  	reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
->> >> >>  	/* If command is already aborted/completed, return SUCCESS */
->> >> >> @@ -6726,7 +6739,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->> >> >>  	 * to reduce repeated printouts. For other aborted requests only
->> >> >> print
->> >> >>  	 * basic details.
->> >> >>  	 */
->> >> >> -	scsi_print_command(hba->lrb[tag].cmd);
->> >> >> +	scsi_print_command(cmd);
->> >> >>  	if (!hba->req_abort_count) {
->> >> >>  		ufshcd_update_reg_hist(&hba->ufs_stats.task_abort, 0);
->> >> >>  		ufshcd_print_host_regs(hba);
->> >> >> @@ -6745,6 +6758,27 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->> >> >>  		goto cleanup;
->> >> >>  	}
->> >> >>
->> >> >> +	/*
->> >> >> +	 * Task abort to the device W-LUN is illegal. When this command
->> >> >> +	 * will fail, due to spec violation, scsi err handling next step
->> >> >> +	 * will be to send LU reset which, again, is a spec violation.
->> >> >> +	 * To avoid these unnecessary/illegal steps, first we clean up
->> >> >> +	 * the lrb taken by this cmd and mark the lrb as in_use, then
->> >> >> +	 * queue the eh_work and bail.
->> >> >> +	 */
->> >> >> +	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN) {
->> >> >> +		spin_lock_irqsave(host->host_lock, flags);
->> >> >> +		if (lrbp->cmd) {
->> >> >> +			__ufshcd_transfer_req_compl(hba, (1UL << tag));
->> >> >> +			__set_bit(tag, &hba->outstanding_reqs);
->> >> >> +			lrbp->in_use = true;
->> >> >> +			hba->force_reset = true;
->> >> >> +			ufshcd_schedule_eh_work(hba);
->> >> >
->> >> > ufshcd_schedule_eh_work() will set hba->ufshcd_state as
->> >> > UFSHCD_STATE_EH_SCHEDULED_FATAL. While in this state,
->> >> > ufshcd_queuecommand() will set_host_byte(DID_BAD_TARGET) which is
->> >> > similar as what you would like to do in this patch.
->> >> >
->> >> > Is this enough for avoiding reusing tag issue? Just wonder if
->> >> > lrpb->in_use flag is really required to be added.
->> >>
->> >> Hi Stanley,
->> >>
->> >> Thanks for the discussion.
->> >>
->> >> To be accurate, it is to prevent lrb from being re-used, not the
->> >> tag.
->> >> Block layer and/or scsi layer can re-use the tag right after
->> >> we abort the cmd, but the lrb is empty since we cleared it from
->> >> abort path and we need to make sure the lrb stays empty before the
->> >> full reset and restore happens.
->> >
->> > What is the definition of "empty" here?
->> 
->> Yes, it means lrb->cmd is NULL.
->> 
->> >
->> > If it means lrb->cmd shall be empty (to not invoking scsi_done again),
->> > then the hba->ufshcd_state check in ufshcd_queuecommend() will also
->> > clear the re-used lrb->cmd if ufshcd_state is in
->> > UFSHCD_STATE_EH_SCHEDULED_FATAL case.
->> 
->> Yes, but that would have a race condition - say a cmd re-uses the tag
->> and
->> occupies the lrb in queuecommand, at the same time the real completion
->> IRQ
->> of previous cmd comes (althrough we aborted it due to it timed out, 
->> but
->> the
->> completion IRQ can come at any time before the full reset and restore 
->> is
->> performed), then the new cmd will be wrongly completed by IRQ handler
->> from
->> __ufshcd_transfer_req_compl() which is actually fired by the last cmd,
->> so
->> we need to block it even before the cmd takes the lrb - before
->> 
->> lrbp->cmd = cmd;
-> 
-> I see.
-> Thanks for the explanation.
-> 
->> 
->> >
->> > However ufshcd_state cannot protect other paths now, for example,
->> > ufshcd_exec_dev_cmd(), so lrbp->in_use may be required for this usage,
->> > or ufshcd_state check can be added to help.
->> >
->> > BTW, would you also need to consider ufshcd_issue_devman_upiu_cmd()
->> > that
->> > is another possible path to re-use lrb?
->> 
->> In this change, there are checks of lrb->in_use in
->> ufshcd_queuecommand(),
->> ufshcd_exec_dev_cmd() and ufshcd_issue_devman_upiu_cmd().
-> 
-> Oops I missed it. Sorry for this noise.
-> 
-> Feel free to add
-> Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+For context, this is part of a series here:
 
-Thanks for your review! :)
+https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?h=x86/mm&id=7c4bcc0a464ca60be1e0aeba805a192be0ee81e5
 
-Regards,
+This code compiles, but I haven't even tried to boot it.  The earlier
+part of the series isn't terribly interesting -- it's a handful of
+cleanups that remove all reads of ->active_mm from arch/x86.  I've
+been meaning to do that for a while, and now I did it.  But, with
+that done, I think we can move to a totally different lazy mm refcounting
+model.
 
-Can Guo.
+So this patch is a mockup of what this could look like.  The algorithm
+involves no atomics at all in the context switch path except for a
+single atomic_long_xchg() of a percpu variable when going from lazy
+mode to nonlazy mode.  Even that could be optimized -- I suspect it could
+be replaced with non-atomic code if mm_users > 0.  Instead, on mm exit,
+there's a single loop over all CPUs on which that mm could be lazily
+loaded that atomic_long_cmpxchg_relaxed()'s a remote percpu variable to
+tell the CPU to kindly mmdrop() the mm when it reschedules.  All cpus
+that don't have the mm lazily loaded are ignored because they can't
+have lazy references, and no cpus can gain lazy references after
+mm_users hits zero.  (I need to verify that all the relevant barriers
+are in place.  I suspect that they are on x86 but that I'm short an
+smp_mb() on arches for which _relaxed atomics are genuinely relaxed.)
+
+Here's how I think it fits with various arches:
+
+x86: On bare metal (i.e. paravirt flush unavailable), the loop won't do
+much.  The existing TLB shootdown when user tables are freed will
+empty mm_cpumask of everything but the calling CPU.  So x86 ends up
+pretty close to as good as we can get short of reworking mm_cpumask() itself.
+
+arm64: with s/for_each_cpu/for_each_online_cpu, I think it will give
+good performance.  The mmgrab()/mmdrop() overhead goes away, and,
+on smallish systems, the cost of the loop should be low.
+
+power: same as ARM, except that the loop may be rather larger since
+the systems are bigger.  But I imagine it's still faster than Nick's
+approach -- a cmpxchg to a remote cacheline should still be faster than
+an IPI shootdown.  (Nick, don't benchmark this patch -- at least the
+mm_users optimization mentioned above should be done, but also the
+mmgrab() and mmdrop() aren't actually removed.)
+
+Other arches: I don't know.  Further research is required.
+
+What do you all think?
+
+
+As mentioned, there are several things blatantly wrong with this patch:
+
+The coding stype is not up to kernel standars.  I have prototypes in the
+wrong places and other hacks.
+
+mms are likely to be freed with IRQs off.  I think this is safe, but it's
+suboptimal.
+
+This whole thing is in arch/x86.  The core algorithm ought to move outside
+arch/, but doing so without making a mess might take some thought.  It
+doesn't help that different architectures have very different ideas
+of what mm_cpumask() does.
+
+Finally, this patch has no benefit by itself.  I didn't remove the
+active_mm refounting, so the big benefit of removing mmgrab() and
+mmdrop() calls on transitions to and from lazy mode isn't there.
+There is no point at all in benchmarking this patch as is.  That
+being said, getting rid of the active_mm refcounting shouldn't be
+so hard, since x86 (in this tree) no longer uses active_mm at all.
+
+I should contemplate whether the calling CPU is special in
+arch_fixup_lazy_mm_refs().  On a very very quick think, it's not, but
+it needs more thought.
+
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+
+ arch/x86/include/asm/tlbflush.h | 20 ++++++++
+ arch/x86/mm/tlb.c               | 81 +++++++++++++++++++++++++++++++--
+ kernel/fork.c                   |  5 ++
+ 3 files changed, 101 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
+index 8c87a2e0b660..efcd4f125f2c 100644
+--- a/arch/x86/include/asm/tlbflush.h
++++ b/arch/x86/include/asm/tlbflush.h
+@@ -124,6 +124,26 @@ struct tlb_state {
+ 	 */
+ 	unsigned short user_pcid_flush_mask;
+ 
++	/*
++	 * Lazy mm tracking.
++	 *
++	 *  - If this is NULL, it means that any mm_struct referenced by
++	 *    this CPU is kept alive by a real reference count.
++	 *
++	 *  - If this is nonzero but the low bit is clear, it points to
++	 *    an mm_struct that must not be freed out from under this
++	 *    CPU.
++	 *
++	 *  - If the low bit is set, it still points to an mm_struct,
++	 *    but some other CPU has mmgrab()'d it on our behalf, and we
++	 *    must mmdrop() it when we're done with it.
++	 *
++	 * See lazy_mm_grab() and related functions for the precise
++	 * access rules.
++	 */
++	atomic_long_t		lazy_mm;
++
++
+ 	/*
+ 	 * Access to this CR4 shadow and to H/W CR4 is protected by
+ 	 * disabling interrupts when modifying either one.
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index e27300fc865b..00f5bace534b 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -8,6 +8,7 @@
+ #include <linux/export.h>
+ #include <linux/cpu.h>
+ #include <linux/debugfs.h>
++#include <linux/sched/mm.h>
+ 
+ #include <asm/tlbflush.h>
+ #include <asm/mmu_context.h>
+@@ -420,6 +421,64 @@ void cr4_update_pce(void *ignored)
+ static inline void cr4_update_pce_mm(struct mm_struct *mm) { }
+ #endif
+ 
++static void lazy_mm_grab(struct mm_struct *mm)
++{
++	atomic_long_t *lazy_mm = this_cpu_ptr(&cpu_tlbstate.lazy_mm);
++
++	WARN_ON_ONCE(atomic_long_read(lazy_mm) != 0);
++	atomic_long_set(lazy_mm, (unsigned long)mm);
++}
++
++static void lazy_mm_drop(void)
++{
++	atomic_long_t *lazy_mm = this_cpu_ptr(&cpu_tlbstate.lazy_mm);
++
++	unsigned long prev = atomic_long_xchg(lazy_mm, 0);
++	if (prev & 1)
++		mmdrop((struct mm_struct *)(prev & ~1UL));
++}
++
++void arch_fixup_lazy_mm_refs(struct mm_struct *mm)
++{
++	int cpu;
++
++	/*
++	 * mm_users is zero, so no new lazy refs will be taken.
++	 */
++	WARN_ON_ONCE(atomic_read(&mm->mm_users) != 0);
++
++	for_each_cpu(cpu, mm_cpumask(mm)) {
++		atomic_long_t *lazy_mm = per_cpu_ptr(&cpu_tlbstate.lazy_mm, cpu);
++		unsigned long old;
++
++		// Hmm, is this check actually useful?
++		if (atomic_long_read(lazy_mm) != (unsigned long)mm)
++			continue;
++
++		// XXX: we could optimize this by adding a bunch to
++		// mm_count at the beginning and subtracting the unused refs
++		// back off at the end.
++		mmgrab(mm);
++
++		// XXX: is relaxed okay here?  We need to be sure that the
++		// remote CPU has observed mm_users == 0.  This is just
++		// x86 for now, but we might want to move it into a library
++		// and use it elsewhere.
++		old = atomic_long_cmpxchg_relaxed(lazy_mm, (unsigned long)mm,
++						  (unsigned long)mm | 1);
++		if (old == (unsigned long)mm) {
++			/* The remote CPU now owns the reference we grabbed. */
++		} else {
++			/*
++			 * We raced!  The remote CPU switched mms and no longer
++			 * needs its reference.  We didn't transfer ownership
++			 * of the reference, so drop it.
++			 */
++			mmdrop(mm);
++		}
++	}
++}
++
+ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
+ 			struct task_struct *tsk)
+ {
+@@ -587,16 +646,24 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
+ 		cr4_update_pce_mm(next);
+ 		switch_ldt(real_prev, next);
+ 	}
++
++	// XXX: this can end up in __mmdrop().  Is this okay with IRQs off?
++	// It might be nicer to defer this to a later stage in the scheduler
++	// with IRQs on.
++	if (was_lazy)
++		lazy_mm_drop();
+ }
+ 
+ /*
+- * Please ignore the name of this function.  It should be called
+- * switch_to_kernel_thread().
++ * Please don't think too hard about the name of this function.  It
++ * should be called something like switch_to_kernel_mm().
+  *
+  * enter_lazy_tlb() is a hint from the scheduler that we are entering a
+- * kernel thread or other context without an mm.  Acceptable implementations
+- * include doing nothing whatsoever, switching to init_mm, or various clever
+- * lazy tricks to try to minimize TLB flushes.
++ * kernel thread or other context without an mm.  Acceptable
++ * implementations include switching to init_mm, or various clever lazy
++ * tricks to try to minimize TLB flushes.  We are, however, required to
++ * either stop referencing the previous mm or to take some action to
++ * keep it from being freed out from under us.
+  *
+  * The scheduler reserves the right to call enter_lazy_tlb() several times
+  * in a row.  It will notify us that we're going back to a real mm by
+@@ -607,7 +674,11 @@ void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
+ 	if (this_cpu_read(cpu_tlbstate.loaded_mm) == &init_mm)
+ 		return;
+ 
++	if (this_cpu_read(cpu_tlbstate.is_lazy))
++		return;  /* nothing to do */
++
+ 	this_cpu_write(cpu_tlbstate.is_lazy, true);
++	lazy_mm_grab(mm);
+ }
+ 
+ /*
+diff --git a/kernel/fork.c b/kernel/fork.c
+index da8d360fb032..4d68162c1d02 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1066,6 +1066,9 @@ struct mm_struct *mm_alloc(void)
+ 	return mm_init(mm, current, current_user_ns());
+ }
+ 
++// XXX: move to a header
++extern void arch_fixup_lazy_mm_refs(struct mm_struct *mm);
++
+ static inline void __mmput(struct mm_struct *mm)
+ {
+ 	VM_BUG_ON(atomic_read(&mm->mm_users));
+@@ -1084,6 +1087,8 @@ static inline void __mmput(struct mm_struct *mm)
+ 	}
+ 	if (mm->binfmt)
+ 		module_put(mm->binfmt->module);
++
++	arch_fixup_lazy_mm_refs(mm);
+ 	mmdrop(mm);
+ }
+ 
+-- 
+2.28.0
+
