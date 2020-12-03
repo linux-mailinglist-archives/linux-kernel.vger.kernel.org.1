@@ -2,183 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B492CCEDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 810592CCEE1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbgLCF6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 00:58:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34420 "EHLO mx2.suse.de"
+        id S1728318AbgLCF74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 00:59:56 -0500
+Received: from ozlabs.ru ([107.174.27.60]:55810 "EHLO ozlabs.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726707AbgLCF6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:58:30 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B6804ABCE;
-        Thu,  3 Dec 2020 05:57:48 +0000 (UTC)
-Subject: Re: [PATCH] drm/hisilicon: Use managed VRAM-helper initialization
-To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
-        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
-        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
-        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
-References: <1606964953-24309-1-git-send-email-tiantao6@hisilicon.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <7baf0a61-bef8-e847-afd2-3a1d05875cdf@suse.de>
-Date:   Thu, 3 Dec 2020 06:57:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <1606964953-24309-1-git-send-email-tiantao6@hisilicon.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="u1SpjsDYRN3Hc6zNiGVIKjVTnIrTErLNb"
+        id S1725872AbgLCF7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 00:59:55 -0500
+Received: from fstn1-p1.ozlabs.ibm.com (localhost [IPv6:::1])
+        by ozlabs.ru (Postfix) with ESMTP id 67524AE80053;
+        Thu,  3 Dec 2020 00:58:37 -0500 (EST)
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+To:     linux-serial@vger.kernel.org
+Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH kernel v2] serial_core: Check for port state when tty is in error state
+Date:   Thu,  3 Dec 2020 16:58:34 +1100
+Message-Id: <20201203055834.45838-1-aik@ozlabs.ru>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---u1SpjsDYRN3Hc6zNiGVIKjVTnIrTErLNb
-Content-Type: multipart/mixed; boundary="GOyPcIWYUn6LwumklnAr7qdZcUdyNCe3H";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
- kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
- dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
- linux-kernel@vger.kernel.org
-Message-ID: <7baf0a61-bef8-e847-afd2-3a1d05875cdf@suse.de>
-Subject: Re: [PATCH] drm/hisilicon: Use managed VRAM-helper initialization
-References: <1606964953-24309-1-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1606964953-24309-1-git-send-email-tiantao6@hisilicon.com>
+At the moment opening a serial device node (such as /dev/ttyS3)
+succeeds even if there is no actual serial device behind it.
+Reading/writing/ioctls fail as expected because the uart port is not
+initialized (the type is PORT_UNKNOWN) and the TTY_IO_ERROR error state
+bit is set fot the tty.
 
---GOyPcIWYUn6LwumklnAr7qdZcUdyNCe3H
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+However setting line discipline does not have these checks
+8250_port.c (8250 is the default choice made by univ8250_console_init()).
+As the result of PORT_UNKNOWN, uart_port::iobase is NULL which
+a platform translates onto some address accessing which produces a crash
+like below.
 
-Hi
+This adds tty_port_initialized() to uart_set_ldisc() to prevent the crash.
 
-Am 03.12.20 um 04:09 schrieb Tian Tao:
-> updated to use drmm_vram_helper_init()
->=20
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Found by syzkaller.
 
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-As a good follow-up patch, I would suggest to get rig of the entire file =
-
-hibmc_ttm.c. drmm_vram_helper_init() can be called directly from=20
-hibmc_load(). hibmc_dumb_create() and hibmc_mode_funcs can go to=20
-hibmc_drm_drv.c.
-
-Best regards
-Thomas
-
-> ---
->   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c |  1 -
->   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h |  1 -
->   drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c     | 19 +++-------------=
+Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
 ---
->   3 files changed, 3 insertions(+), 18 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
-gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> index 8020604..5aea2e9 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> @@ -249,7 +249,6 @@ static int hibmc_unload(struct drm_device *dev)
->  =20
->   	pci_disable_msi(dev->pdev);
->   	hibmc_kms_fini(priv);
-> -	hibmc_mm_fini(priv);
->   	dev->dev_private =3D NULL;
->   	return 0;
->   }
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/=
-gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> index 7e0c756..2786de5 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> @@ -64,7 +64,6 @@ int hibmc_de_init(struct hibmc_drm_private *priv);
->   int hibmc_vdac_init(struct hibmc_drm_private *priv);
->  =20
->   int hibmc_mm_init(struct hibmc_drm_private *hibmc);
-> -void hibmc_mm_fini(struct hibmc_drm_private *hibmc);
->   int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
->   		      struct drm_mode_create_dumb *args);
->   int hibmc_ddc_create(struct drm_device *drm_dev, struct hibmc_connect=
-or *connector);
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/=
-drm/hisilicon/hibmc/hibmc_ttm.c
-> index e84fb81..892d566 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-> @@ -23,15 +23,12 @@
->  =20
->   int hibmc_mm_init(struct hibmc_drm_private *hibmc)
->   {
-> -	struct drm_vram_mm *vmm;
->   	int ret;
->   	struct drm_device *dev =3D &hibmc->dev;
->  =20
-> -	vmm =3D drm_vram_helper_alloc_mm(dev,
-> -				       pci_resource_start(dev->pdev, 0),
-> -				       hibmc->fb_size);
-> -	if (IS_ERR(vmm)) {
-> -		ret =3D PTR_ERR(vmm);
-> +	ret =3D drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
-> +				    hibmc->fb_size);
-> +	if (ret) {
->   		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
->   		return ret;
->   	}
-> @@ -39,16 +36,6 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
->   	return 0;
->   }
->  =20
-> -void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
-> -{
-> -	struct drm_device *dev =3D &hibmc->dev;
-> -
-> -	if (!dev->vram_mm)
-> -		return;
-> -
-> -	drm_vram_helper_release_mm(dev);
-> -}
-> -
->   int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
->   		      struct drm_mode_create_dumb *args)
->   {
->=20
+Changes:
+v2:
+* changed to tty_port_initialized() as suggested in
+https://www.spinics.net/lists/linux-serial/msg39942.html (sorry for delay)
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+---
+The example of crash on PPC64/pseries:
 
+BUG: Unable to handle kernel data access on write at 0xc00a000000000001
+Faulting instruction address: 0xc000000000c9c9cc
+cpu 0x0: Vector: 300 (Data Access) at [c00000000c6d7800]
+    pc: c000000000c9c9cc: io_serial_out+0xcc/0xf0
+    lr: c000000000c9c9b4: io_serial_out+0xb4/0xf0
+    sp: c00000000c6d7a90
+   msr: 8000000000009033
+   dar: c00a000000000001
+ dsisr: 42000000
+  current = 0xc00000000cd22500
+  paca    = 0xc0000000035c0000   irqmask: 0x03   irq_happened: 0x01
+    pid   = 1371, comm = syz-executor.0
+Linux version 5.8.0-rc7-le-guest_syzkaller_a+fstn1 (aik@fstn1-p1) (gcc (Ubunt
+untu) 2.30) #660 SMP Tue Jul 28 22:29:22 AEST 2020
+enter ? for help
+[c00000000c6d7a90] c0000000018a8cc0 _raw_spin_lock_irq+0xb0/0xe0 (unreliable)
+[c00000000c6d7ad0] c000000000c9bdc0 serial8250_do_set_ldisc+0x140/0x180
+[c00000000c6d7b10] c000000000c9bea4 serial8250_set_ldisc+0xa4/0xb0
+[c00000000c6d7b50] c000000000c91138 uart_set_ldisc+0xb8/0x160
+[c00000000c6d7b90] c000000000c5a22c tty_set_ldisc+0x23c/0x330
+[c00000000c6d7c20] c000000000c4c220 tty_ioctl+0x990/0x12f0
+[c00000000c6d7d20] c00000000056357c ksys_ioctl+0x14c/0x180
+[c00000000c6d7d70] c0000000005635f0 sys_ioctl+0x40/0x60
+[c00000000c6d7db0] c00000000003b814 system_call_exception+0x1a4/0x330
+[c00000000c6d7e20] c00000000000d368 system_call_common+0xe8/0x214
+---
+ drivers/tty/serial/serial_core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---GOyPcIWYUn6LwumklnAr7qdZcUdyNCe3H--
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index f41cba10b86b..828f9ad1be49 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -1467,6 +1467,10 @@ static void uart_set_ldisc(struct tty_struct *tty)
+ {
+ 	struct uart_state *state = tty->driver_data;
+ 	struct uart_port *uport;
++	struct tty_port *port = &state->port;
++
++	if (!tty_port_initialized(port))
++		return;
+ 
+ 	mutex_lock(&state->port.mutex);
+ 	uport = uart_port_check(state);
+-- 
+2.17.1
 
---u1SpjsDYRN3Hc6zNiGVIKjVTnIrTErLNb
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/IflsFAwAAAAAACgkQlh/E3EQov+CP
-PQ//cjecoEHrzdZ8LnQJiFRKZf7AbsBkUZ/97lsnbGFBPPHPfls3fG9vW9m4maAn0o1n6esiRMgC
-9eB1aA3aZKaw7unXcBCh/8NzfiLDFbihpveV30f584zlU3+cm5MBcfgjb8HTS5ThC3/xPBJ6E1/j
-L9ClTB2R7YA08JsPn9T+Ge7dujYSg7IJyidWZY4w2vfpl0zFV7qy5W8CyQR9orNxsNCWekGYH02f
-OnhHnh7u+Iw1ByVFkPxA5vgLiRisl8A/Zfk9MZ41rqz4bQ+qb0Xi5EdhQpufrY2zhnjxj4mmkA2f
-2xJmhMRMm5D1OK5R++Rtyu87pvFfcb/omst9WF9SER9axDh8wrD5Ib8u6u2BmvYhwFqoBkdfuQDR
-IfpoN3aK9do0yGpaV/cl1UO3r7ugWOy/krMiEwT0d5FKgsv+vI7YQX+gWGHFMvLyKUKUJS4l1BEl
-+hEzKBTh3nmBn2XxzoOFTiJZnBbmiRZkbMCw/+bUY6WXdj0VvLuJrNunbQvyldrg3qLz0flIsj+/
-iIxqTo9bAJohL7IHSMCpcoDL7mhXUNrRrqKljVugjtsWcO7YtJtzBsPqoLetUrSU2ljYrEWFGWQJ
-MqAFYioz7FnsH87aF3Qge5xE3RmUZ4iUoOQ5KDULhwUpTlgtjF6/6bN9XNncepVfrUjESFs7LTkL
-7Tg=
-=BnE5
------END PGP SIGNATURE-----
-
---u1SpjsDYRN3Hc6zNiGVIKjVTnIrTErLNb--
