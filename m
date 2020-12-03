@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3042CCEEC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 805FC2CCEE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729013AbgLCGBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:01:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45890 "EHLO
+        id S1728599AbgLCGBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:01:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgLCGBP (ORCPT
+        with ESMTP id S1726178AbgLCGBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 01:01:15 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EB4C061A4D;
-        Wed,  2 Dec 2020 22:00:29 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id u12so638262wrt.0;
-        Wed, 02 Dec 2020 22:00:29 -0800 (PST)
+        Thu, 3 Dec 2020 01:01:11 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54762C061A4E;
+        Wed,  2 Dec 2020 22:00:31 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id g14so589381wrm.13;
+        Wed, 02 Dec 2020 22:00:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=FgP7aBE8aKGLuFedysVwA7KL29Dq1oiQSpDqT6u+4VI=;
-        b=h4Lb0tD7YcJ2v1bsPqUsKQ9RPQ2a1WMayCpc0Pt95GMhoEPUs5a4G7VOQpBnNkwWJE
-         Eo5ELadpnQjo2ML7qWxuKTuyVUTHLEztQBKT859ug+MGuGxBDSANnVQ3puvlVAMsBHjM
-         GDcqU9OCjAqGRUvw/MTpzzJ5D5NI9lv79yVGB6Ro00wPCKonxCxSGQJz2yqB0CCp4WCl
-         P4GnlZxVqNe4bjhPLZpv0JpySazPmdM6sm/m1iZn2kXy1cggTJAd70ChA2Effh1gQSKt
-         9cre7qLUWL+PChhZSyL6k/PJ7tVIvK+FjVS0OssJNnTn5sGtR6413MU4NDYsTocPAFM6
-         IDOg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=yQx2ZxmNKfhSKBL/RrXY6Av26UDGD56hcg2QvfdLjZ8=;
+        b=Jd9yX4ZOB15VnyBC8HtYGGV+qWz0rzvNEOgyLezF/x//sq2cSjs08/RZlvSTb6vzzc
+         IL7EFIonPtrRIdECE+AmNaYdalTg9LEAJi8HQ/flZO0t+6Onye8s6cJdQ1WzlIrPPau4
+         sg6OXgcT/7n3hBvQUOHL2Dmu8I/WjxRY92c5/D690ttwWsNHRhyXFOcxBuGy4VW4YIJO
+         PjiryC/WXVbcmLbtFDLe6FjDl8/zBM88VPsCMUuLRARRJ7uAeGyAkLvBf/fMJD9EbziK
+         G9hM8TnEGw+s5EduYmP64M55RuFReEV0OBrWFdvuCOod8CyWfTOve3JM8UKt7VNY/Bsa
+         7NJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=FgP7aBE8aKGLuFedysVwA7KL29Dq1oiQSpDqT6u+4VI=;
-        b=ji8GKIQpNT2rdEqOKud8efe0H3eUx/yHpXE4rQLoLWsIsV+nCMBula5+wru686l0A0
-         /E3Gz9Q9z/jZOMpZDNLza5Mqh2YJQNSREcWK3PLE/Hz2E8EgPBtvb8shlTXl37dZXEW6
-         W/WYZ9WoYSQmcxIq+eh5lWSfr7LI4Udl+pTdLJezNMdGSqCREuJyg/0Rmphupag+MPjx
-         esCPXJ56uIwpAKVXFRXU+vWuNTD1KSZoBzhjslYFC4Lq+VgarkiuRX2w6rhYEqO65Gp2
-         dn1YWFVuvQ8BwCZ1n4RBW0i8ytx1P2YgsfE7aT1ksOcfy6Lv/u6KFPb4jx7CIjBZNI6q
-         lqew==
-X-Gm-Message-State: AOAM531KZyRdtwAVzj6l1+wnV7YwNouSzsgJwpJw6H7rvim6mlFlk6mJ
-        TTift9CuzgNQJXHtZiRo1MM=
-X-Google-Smtp-Source: ABdhPJzGCGuP5kscbpV5BX+E0FsFhFfbzFF/ey1HKAGsMH6YD4c+lt9NmwX6UPoMLk2rDqA6RcjbVg==
-X-Received: by 2002:adf:bc13:: with SMTP id s19mr1662859wrg.397.1606975227952;
-        Wed, 02 Dec 2020 22:00:27 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=yQx2ZxmNKfhSKBL/RrXY6Av26UDGD56hcg2QvfdLjZ8=;
+        b=KoZpOhRfw/hlOwF4BMbqrB9UJSv9APl1x7ZlZH5T9EOjmigGxgGKB32mzlgFWFWlbk
+         Xw4LpiRMznIgRuZqdHS39yFCwDLsmc8xnqIg9QqLFc/Zo2gN3XWsvyjAwmNF/i4Vb+z8
+         XL90C9Yrg/DvZ2MuwnR8FKR+RXGBdA5GewACczo97M8mavznn9IjslUHvppixR+UjRzz
+         SxAchM/sY+Qx3QLqOsaVrlUKoJAcaYgaaccR9qionE926nv5HrBzAt2aKaB3k+ACpy/e
+         35TzwoHCov8W0h30WVUxtQjli6vkctsBuxfWPb8JtqcEofHRAO68N01+rlnJKXfKN7Vm
+         EjCQ==
+X-Gm-Message-State: AOAM533LuoWmhyJj3ICWIBJvtO1D25hQZvn63W9aXAbP0M4cVxGl0SIn
+        lz2qLjRDAzUGuxI7MM04xV4=
+X-Google-Smtp-Source: ABdhPJz5touPQ8gRAj5bAX0jBVDBM4EYThkiQpjW8op4pjO742vkaxdCX2O0sKSfLgLIRh3HPv/WRg==
+X-Received: by 2002:a05:6000:45:: with SMTP id k5mr1750499wrx.108.1606975230142;
+        Wed, 02 Dec 2020 22:00:30 -0800 (PST)
 Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id i11sm218439wro.85.2020.12.02.22.00.25
+        by smtp.gmail.com with ESMTPSA id i11sm218439wro.85.2020.12.02.22.00.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 22:00:27 -0800 (PST)
+        Wed, 02 Dec 2020 22:00:29 -0800 (PST)
 From:   Christian Hewitt <christianshewitt@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -53,48 +54,82 @@ To:     Rob Herring <robh+dt@kernel.org>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH v4 0/7] arm64: dts: meson: add more GX soundcards
-Date:   Thu,  3 Dec 2020 06:00:16 +0000
-Message-Id: <20201203060023.9454-1-christianshewitt@gmail.com>
+Subject: [PATCH v4 1/7] arm64: dts: meson: add audio playback to a95x
+Date:   Thu,  3 Dec 2020 06:00:17 +0000
+Message-Id: <20201203060023.9454-2-christianshewitt@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201203060023.9454-1-christianshewitt@gmail.com>
+References: <20201203060023.9454-1-christianshewitt@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds basic support for LPCM audio over HDMI and S/PDIF
-to GXBB/GXL/GXM devices that I own and have tested with. Audio can
-be extended in the future (some devices have DACs and headphone
-hardware to connect) but this gets the basics working.
+Add initial audio support limited to HDMI i2s.
 
-Changes from v3
-- Drop includes tidying in patches 2,3
-- Add Jerome's acks
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+Acked-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ .../dts/amlogic/meson-gxbb-nexbox-a95x.dts    | 40 +++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-Changes from v2
-- Drop p200/p201/p212-s905x/vega-s95 changes
-- Add khadas-vim(1)
-
-Changes from v1
-- Drop nexbox-a1 and rbox-pro 
-
-Christian Hewitt (7):
-  arm64: dts: meson: add audio playback to a95x
-  arm64: dts: meson: add audio playback to khadas-vim
-  arm64: dts: meson: add audio playback to khadas-vim2
-  arm64: dts: meson: add audio playback to nanopi-k2
-  arm64: dts: meson: add audio playback to odroid-c2
-  arm64: dts: meson: add audio playback to wetek-hub
-  arm64: dts: meson: add audio playback to wetek-play2
-
- .../boot/dts/amlogic/meson-gxbb-nanopi-k2.dts | 40 ++++++++++++
- .../dts/amlogic/meson-gxbb-nexbox-a95x.dts    | 40 ++++++++++++
- .../boot/dts/amlogic/meson-gxbb-odroidc2.dts  | 40 ++++++++++++
- .../boot/dts/amlogic/meson-gxbb-wetek-hub.dts | 40 ++++++++++++
- .../dts/amlogic/meson-gxbb-wetek-play2.dts    | 61 +++++++++++++++++++
- .../amlogic/meson-gxl-s905x-khadas-vim.dts    | 43 ++++++++++++-
- .../dts/amlogic/meson-gxm-khadas-vim2.dts     | 44 ++++++++++++-
- 7 files changed, 303 insertions(+), 5 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-nexbox-a95x.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-nexbox-a95x.dts
+index 67d901ed2fa3..b5b11cb9f393 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxbb-nexbox-a95x.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-nexbox-a95x.dts
+@@ -10,6 +10,7 @@
+ #include "meson-gxbb.dtsi"
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
++#include <dt-bindings/sound/meson-aiu.h>
+ 
+ / {
+ 	compatible = "nexbox,a95x", "amlogic,meson-gxbb";
+@@ -139,6 +140,45 @@
+ 			};
+ 		};
+ 	};
++
++	sound {
++		compatible = "amlogic,gx-sound-card";
++		model = "GXBB-NEXBOX-A95X";
++		assigned-clocks = <&clkc CLKID_MPLL0>,
++				  <&clkc CLKID_MPLL1>,
++				  <&clkc CLKID_MPLL2>;
++		assigned-clock-parents = <0>, <0>, <0>;
++		assigned-clock-rates = <294912000>,
++				       <270950400>,
++				       <393216000>;
++		status = "okay";
++
++		dai-link-0 {
++			sound-dai = <&aiu AIU_CPU CPU_I2S_FIFO>;
++		};
++
++		dai-link-1 {
++			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
++			dai-format = "i2s";
++			mclk-fs = <256>;
++
++			codec-0 {
++				sound-dai = <&aiu AIU_HDMI CTRL_I2S>;
++			};
++		};
++
++		dai-link-2 {
++			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
++
++			codec-0 {
++				sound-dai = <&hdmi_tx>;
++			};
++		};
++	};
++};
++
++&aiu {
++	status = "okay";
+ };
+ 
+ &cvbs_vdac_port {
 -- 
 2.17.1
 
