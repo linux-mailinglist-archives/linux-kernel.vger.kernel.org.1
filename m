@@ -2,71 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D36D2CD8F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B222CD8FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389162AbgLCOWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 09:22:48 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:36516 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725967AbgLCOWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:22:46 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kkpUf-00A31F-07; Thu, 03 Dec 2020 15:22:01 +0100
-Date:   Thu, 3 Dec 2020 15:22:00 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v3 net-next 2/2] net: dsa: qca: ar9331: export stats64
-Message-ID: <20201203142200.GF2333853@lunn.ch>
-References: <20201202140904.24748-1-o.rempel@pengutronix.de>
- <20201202140904.24748-3-o.rempel@pengutronix.de>
- <20201202104207.697cfdbb@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <20201203085011.GA3606@pengutronix.de>
+        id S2389246AbgLCOYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 09:24:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389112AbgLCOYP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 09:24:15 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD2FC061A4E;
+        Thu,  3 Dec 2020 06:23:35 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id f17so1492528pge.6;
+        Thu, 03 Dec 2020 06:23:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XNEe52zRl/JFK2lewCdsH9R68fLZgJ1A7bO1RdNpseY=;
+        b=gQDEKd7esEzANUNkI2I0FcRoYd6tKkhBLHkduXZM9+10B//ohJgDBCa9fHbpP4YSiG
+         g6L0MFBq5z6PyT6z7O3dJed2FdwQdtBHf1U+xLQ6l5GsT7IqtB54uSiurPz4bzdgQU18
+         Er4yCxi7CeoRobAzljLf2/D5Lcl32p40J5/vV1/z3/DbDHFYsHKFmnWxG+Hkv8Swz69q
+         lKwXWdcprRuJNYmzw8HzJJV4IrC2duqY+3i54+cX4RTu4OHD4OImFD3gEEDCDZXWFj0U
+         JR0hoMWCgdyVMMgU+lOKGe+RMk7DahDvJ8WTIOHdqKRRdOAwfbhNlOPaHjmLbgNIJCbP
+         JBWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XNEe52zRl/JFK2lewCdsH9R68fLZgJ1A7bO1RdNpseY=;
+        b=WXB6UsFZmmw8HcxwdSle7R2r6c0GjZyfwbHha9z5i5OdrB2ugojJ+k8/H3uYPH/EWh
+         I+fqZqzHGzzAK3DixJNCJuec2czpDKrS5otX6ci6S15SmSb07YR/odi/ClDceQnVkuu/
+         zMYCMs0ts35A6EWP5DPnH2/rjCu1azqC6MPwkmgUyvuCPoOKbdkqpmNhB3gCMj5M2B68
+         J19CXXkPA65BPPms+AhLJXP65OPcJOr66vPaCOAw8uXg2fG3vxaDu9+4NNQ3weFNYIaj
+         NAI15O62TTE+yTuiHkYqCmEbpFtMjDOWg7gBaQdHZBgd53BdEITbvt5Sr9WjrGfbeNwr
+         ZJwg==
+X-Gm-Message-State: AOAM533074TFIZdt6wITf5MoAJilAeCDFnQu7ZIpSOXLYT6jFXMOQ7AP
+        AXTusUQjt5csRkOW2VXZkCu4ff8s3q27jVc83GE9dQC2wr/Kwg==
+X-Google-Smtp-Source: ABdhPJyLnjjPIaTOWYNBhn+PgS+N8YxTVkISwN6knErys4NjbINUjJpXmTNxi49+S87qVwcV/MM4XK8SoD+FZ9CbTaU=
+X-Received: by 2002:a17:902:e98c:b029:da:cb88:f11d with SMTP id
+ f12-20020a170902e98cb02900dacb88f11dmr403909plb.17.1607005413652; Thu, 03 Dec
+ 2020 06:23:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203085011.GA3606@pengutronix.de>
+References: <20201203140531.74470-1-alexandru.ardelean@analog.com> <20201203140531.74470-2-alexandru.ardelean@analog.com>
+In-Reply-To: <20201203140531.74470-2-alexandru.ardelean@analog.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 3 Dec 2020 16:24:22 +0200
+Message-ID: <CAHp75VescC-zQLYORVZzaC7Q16SOHuBOc=TLnOWX0mp7Rx-sSg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] spi: Add SPI_NO_TX/RX support
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> @Andrew
-> 
-> > You could update the stats here, after the interface is down. You then
-> > know the stats are actually up to date and correct!
-> 
-> stats are automatically read on __dev_notify_flags(), for example here:
-> 
-> [   11.049289] [<80069ce0>] show_stack+0x9c/0x140
-> [   11.053651] [<804eea2c>] ar9331_get_stats64+0x38/0x394
-> [   11.058820] [<80526584>] dev_get_stats+0x58/0xfc
-> [   11.063385] [<805428c8>] rtnl_fill_stats+0x6c/0x14c
-> [   11.068293] [<8054703c>] rtnl_fill_ifinfo+0x548/0xcec
-> [   11.073274] [<8054a4d4>] rtmsg_ifinfo_build_skb+0xbc/0x134
-> [   11.078799] [<8054a5d4>] rtmsg_ifinfo_event+0x4c/0x84
-> [   11.083782] [<8054a6c8>] rtmsg_ifinfo+0x2c/0x38
-> [   11.088378] [<80534380>] __dev_notify_flags+0x50/0xd8
-> [   11.093365] [<80534ca0>] dev_change_flags+0x60/0x80
-> [   11.098273] [<80c13fa4>] ic_close_devs+0xcc/0xdc
-> [   11.102810] [<80c15200>] ip_auto_config+0x1144/0x11e4
-> [   11.107847] [<80060f14>] do_one_initcall+0x110/0x2b4
-> [   11.112871] [<80bf31bc>] kernel_init_freeable+0x220/0x258
-> [   11.118248] [<80739a2c>] kernel_init+0x24/0x11c
-> [   11.122707] [<8006306c>] ret_from_kernel_thread+0x14/0x1c
-> 
-> Do we really need an extra read within the ar9331 driver?
+On Thu, Dec 3, 2020 at 4:00 PM Alexandru Ardelean
+<alexandru.ardelean@analog.com> wrote:
 
-Ah, did not know that. Nice, Somebody solved this for all drivers at
-once.
+> +#define SPI_MODE_USER_MASK     \
+> +       (SPI_CPHA | SPI_CPOL | SPI_CS_HIGH | SPI_LSB_FIRST | \
+> +        SPI_3WIRE | SPI_LOOP | SPI_NO_CS | SPI_READY | \
+> +        SPI_TX_DUAL | SPI_TX_QUAD | SPI_RX_DUAL | SPI_RX_QUAD | \
+> +        SPI_CS_WORD | SPI_TX_OCTAL | SPI_RX_OCTAL | SPI_3WIRE_HIZ)
 
-   Andrew
+Forgot to comment on this. Since it's an uAPI we may not fill the
+holes (if any) in the future with the different semantics of values.
+And this huge list of names is rather hard to read.
+
+#define SPI_MODE_USER_MASK    (_BITUL(16) - 1)
+
+would be sufficient.
+
+For the record, I was thinking about providing MAX or LAST or
+something like that instead of MASK and do the rest in kernel headers
+/ modules, but it seems equally good/bad. Let's stick with mask as in
+my initial propose and your current code.
+
+-- 
+With Best Regards,
+Andy Shevchenko
