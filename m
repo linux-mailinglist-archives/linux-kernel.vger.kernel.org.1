@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E017C2CD076
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 08:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C072CD06F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 08:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728743AbgLCHi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 02:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727824AbgLCHi3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 02:38:29 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B5CC061A4D;
-        Wed,  2 Dec 2020 23:37:48 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cmnk14Bmxz9s0b;
-        Thu,  3 Dec 2020 18:37:44 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606981065;
-        bh=+EOcsnQxc+vqRhVMEM7j8+g+/h7CmdqUmSfgMSF1uuw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CIqdkLuH2wxvF7+lVhaabWXMNAV2hDpRqt3AClvmWPxJv78fX0+qwpPXfj0xQLem7
-         UbXThKl4sZ/xcUR2IMKGFT+nlnYK1/i+1RNUTCdorVcpuY4fIbni9pD9CBBeEWbb5C
-         yOeKxTb3y6/qtNlkxfemUnlVv8IA83AjiIOrZHdh1oCj9r/toBUxkfQfewzuFyUqjt
-         AjzIy0W9lctcI7r2Rd3SvaVj9Y41yBmbcwkHztuHJlxHHb7jD/zpki0IxcjYG1zkee
-         GoGNxdnDRVdRX/PLrJOdyXlIYiN/rPVC+NFZdjkLKBlKwVYFPusg+HcIT9yYEzeonm
-         Lr+8nihM/YSTA==
-Date:   Thu, 3 Dec 2020 18:37:40 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the block tree
-Message-ID: <20201203183740.1a1054f4@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dJoK74AiVlVDhREeCdy0NdI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S2388085AbgLCHcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 02:32:01 -0500
+Received: from inva021.nxp.com ([92.121.34.21]:57696 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725912AbgLCHcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 02:32:00 -0500
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D69FD2017BA;
+        Thu,  3 Dec 2020 08:31:13 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D00EB2017B6;
+        Thu,  3 Dec 2020 08:31:10 +0100 (CET)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5B0D5402C4;
+        Thu,  3 Dec 2020 08:31:06 +0100 (CET)
+From:   Biwen Li <biwen.li@oss.nxp.com>
+To:     leoyang.li@nxp.com, bgolaszewski@baylibre.com, aisheng.dong@nxp.com
+Cc:     linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
+        linux-gpio@vger.kernel.org, Biwen Li <biwen.li@nxp.com>
+Subject: [PATCH] gpio: mpc8xxx: resolve coverity warnings
+Date:   Thu,  3 Dec 2020 15:39:10 +0800
+Message-Id: <20201203073910.20113-1-biwen.li@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dJoK74AiVlVDhREeCdy0NdI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Biwen Li <biwen.li@nxp.com>
 
-Hi all,
+Resolve coverity warnings as follows,
+    cond_at_most: Checking gpio >= 28U implies that gpio may be up
+    to 27 on the false branch.
+    overrun-call: Overrunning callees array of size 3 by passing
+    argument gpio (which evaluates to 27)
+    in call to *mpc8xxx_gc->direction_output
 
-After merging the block tree, today's linux-next build (htmldocs)
-produced this warning:
+    cond_at_least: Checking gpio <= 3U implies that gpio is at least 4 on
+    the false branch.
+    overrun-call: Overrunning callee's array of size 3 by passing argument
+    gpio (which evaluates to 4) in call to *mpc8xxx_gc->direction_output
 
-fs/block_dev.c:1067: warning: Excess function parameter 'whole' description=
- in 'bd_abort_claiming'
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
+---
+ drivers/gpio/gpio-mpc8xxx.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Introduced by commit
+diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
+index a6c2bbdcaa10..12c9a91d87b7 100644
+--- a/drivers/gpio/gpio-mpc8xxx.c
++++ b/drivers/gpio/gpio-mpc8xxx.c
+@@ -3,6 +3,7 @@
+  *
+  * Copyright (C) 2008 Peter Korsgaard <jacmet@sunsite.dk>
+  * Copyright (C) 2016 Freescale Semiconductor Inc.
++ * Copyright 2020 NXP
+  *
+  * This file is licensed under the terms of the GNU General Public License
+  * version 2.  This program is licensed "as is" without any warranty of any
+@@ -80,7 +81,7 @@ static int mpc5121_gpio_dir_out(struct gpio_chip *gc,
+ {
+ 	struct mpc8xxx_gpio_chip *mpc8xxx_gc = gpiochip_get_data(gc);
+ 	/* GPIO 28..31 are input only on MPC5121 */
+-	if (gpio >= 28)
++	if (gpio >= 28U)
+ 		return -EINVAL;
+ 
+ 	return mpc8xxx_gc->direction_output(gc, gpio, val);
+@@ -91,7 +92,7 @@ static int mpc5125_gpio_dir_out(struct gpio_chip *gc,
+ {
+ 	struct mpc8xxx_gpio_chip *mpc8xxx_gc = gpiochip_get_data(gc);
+ 	/* GPIO 0..3 are input only on MPC5125 */
+-	if (gpio <= 3)
++	if (gpio <= 3U)
+ 		return -EINVAL;
+ 
+ 	return mpc8xxx_gc->direction_output(gc, gpio, val);
+-- 
+2.17.1
 
-  37c3fc9abb25 ("block: simplify the block device claiming interface")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/dJoK74AiVlVDhREeCdy0NdI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/IlcQACgkQAVBC80lX
-0GzR3wf+P4XKEAr647BIdxtQXz4rBm1mPK0PGnKJseyO3CCDVHtecyw01HO6vjAc
-XqOKQXKzbzVD+r0rJ8CnV0qmpvHdLWM8zewVebEBDJ/LzPwWr0VNKTUP66xXXmV9
-RIpFEoMJX70VJXyd9AbWaqR6vknNEtmNA5k0n7zxDHABIOfolFl0lIfcxtaGeUs9
-iq6nuWbb1WXnLLEe6wUXAUk74+gFKo3xrY6nVDuoAVSuQyoSbOYA7ftjLW92bzjd
-rt66dXdPiprPuk2GXqD6cecps1H7yVi2H+ByWbxoqq1jFywr838/lWNTgC+4gbG6
-8oCXfdm/wIO1Imes0X8AzJAeNSos2g==
-=2gtz
------END PGP SIGNATURE-----
-
---Sig_/dJoK74AiVlVDhREeCdy0NdI--
