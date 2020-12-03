@@ -2,84 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100A22CDC86
+	by mail.lfdr.de (Postfix) with ESMTP id 80A302CDC87
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgLCRhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:37:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56222 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726264AbgLCRhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:37:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5A47CAD2D;
-        Thu,  3 Dec 2020 17:37:01 +0000 (UTC)
-To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20201202121838.75218-1-songmuchun@bytedance.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm/page_alloc: speeding up the iteration of max_order
-Message-ID: <320c8522-4ed5-809f-e6fc-8a185587519c@suse.cz>
-Date:   Thu, 3 Dec 2020 18:37:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727835AbgLCRiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:38:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727030AbgLCRiC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 12:38:02 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A657EC061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 09:37:21 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id q8so3417088ljc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 09:37:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IAYzt5aWmV7k8rYu1oRqo0Iimqerq25dwLnLWK087IQ=;
+        b=g0RuxTC/9WXibSwY5+tIOu4MFx49cSGSc9R6BBeB0r2N/EwzO3l5hiz5zRhoRxTjkr
+         /6iZvATcu++ZOkyFOL9z5bNa8MptTxwO92Sq8SlrhC4i9hnYgcuER2QESiIS5hyddN64
+         7B+S6BMI/TOidGb4AUDbKQSxvIkDJJJ/NGFPY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IAYzt5aWmV7k8rYu1oRqo0Iimqerq25dwLnLWK087IQ=;
+        b=ALWQOdKunBdMa0Qh+HMMR2P0OXMES2CAaogMy86VBh0D5OfBl/BROY/UThk6wdCTer
+         YM6jxdk74TqAfRdf8vxxgScijeqSwUpODUacP8s7CkW31zZybC57SJSUJwFgz6+ctQNz
+         rFz+ZJtawHIfVN0s03Zd/21cB3bqEDC+TOVsqLIQH7d5VN7d4yqTH3kh8za0gJkOy+yU
+         aeIxTHPPPpTM017k+9cRx8xm48VjvuZng+T8vwU/7Et2OYD2bsIuBVPvNre3xcfIxcXD
+         DL5h+W7Dft22B+rozIg1lm/ozJKIaYiMRVkA4TAA6J/NnrrsrHhB69fDBPUtyoQAeHlW
+         tpKw==
+X-Gm-Message-State: AOAM533KdvOL/D0yWK18XqlppqhJ1FnFC3gTZJm4nIOJwAtCCidJLe/D
+        vTXxBBwG1pzEzd80h+pNM9pTxUU+NQ0+hA==
+X-Google-Smtp-Source: ABdhPJzGnt8jC0yIn3AnQAi2/B87EEfKhFnq24TTLs5nN9K9gE8JmLkpd9A7bP/9MVHSRoUiaogiwQ==
+X-Received: by 2002:a05:651c:1051:: with SMTP id x17mr1770335ljm.56.1607017039602;
+        Thu, 03 Dec 2020 09:37:19 -0800 (PST)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id c2sm728225lfh.218.2020.12.03.09.37.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 09:37:18 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id f18so3429143ljg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 09:37:18 -0800 (PST)
+X-Received: by 2002:a2e:a543:: with SMTP id e3mr1691756ljn.421.1607017037787;
+ Thu, 03 Dec 2020 09:37:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201202121838.75218-1-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201203125700.161354-1-masahiroy@kernel.org>
+In-Reply-To: <20201203125700.161354-1-masahiroy@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 3 Dec 2020 09:37:01 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgRV9VHO2RVwn+iMfH_WFjQV1dsZtEQhgrUBQfM9QBPmQ@mail.gmail.com>
+Message-ID: <CAHk-=wgRV9VHO2RVwn+iMfH_WFjQV1dsZtEQhgrUBQfM9QBPmQ@mail.gmail.com>
+Subject: Re: [PATCH] gcc-plugins: simplify GCC plugin-dev capability test
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Emese Revfy <re.emese@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/20 1:18 PM, Muchun Song wrote:
-> When we free a page whose order is very close to MAX_ORDER and greater
-> than pageblock_order, it wastes some CPU cycles to increase max_order
-> to MAX_ORDER one by one and check the pageblock migratetype of that page
+On Thu, Dec 3, 2020 at 5:03 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Checking the existence of plugin-version.h is still needed to ensure
+> the plugin-dev package is installed. The test code is now small enough
+> to be embedded in scripts/gcc-plugins/Kconfig.
 
-But we have to do that. It's not the same page, it's the merged page and the new
-buddy is a different pageblock and we need to check if they have compatible
-migratetypes and can merge, or we have to bail out. So the patch is wrong.
+Ack. I think the "plugin" directory name should be quoted, but that's
+a pre-existing bug.
 
-> repeatedly especially when MAX_ORDER is much larger than pageblock_order.
-
-Do we have such architectures/configurations anyway?
-
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  mm/page_alloc.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 141f12e5142c..959541234e1d 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -1041,7 +1041,7 @@ static inline void __free_one_page(struct page *page,
->  		pfn = combined_pfn;
->  		order++;
->  	}
-> -	if (max_order < MAX_ORDER) {
-> +	if (max_order < MAX_ORDER && order < MAX_ORDER - 1) {
->  		/* If we are here, it means order is >= pageblock_order.
->  		 * We want to prevent merge between freepages on isolate
->  		 * pageblock and normal pageblock. Without this, pageblock
-> @@ -1062,6 +1062,8 @@ static inline void __free_one_page(struct page *page,
->  						is_migrate_isolate(buddy_mt)))
->  				goto done_merging;
->  		}
-> +		if (unlikely(order != max_order - 1))
-> +			max_order = order + 1;
-
-Or maybe I just don't understand what this is doing. When is the new 'if' even
-true? We just bailed out of "while (order < max_order - 1)" after the last
-"order++", which means it should hold that "order == max_order - 1")?
-Your description sounds like you want to increase max_order to MAX_ORDER in one
-step, which as I explained would be wrong. But the implementation looks actually
-like a no-op.
-
->  		max_order++;
->  		goto continue_merging;
->  	}
-> 
-
+          Linus
