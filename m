@@ -2,88 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DD32CDD30
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AED372CDD33
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727550AbgLCSSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:18:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727004AbgLCSR7 (ORCPT
+        id S2387635AbgLCSS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:18:29 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:33047 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726443AbgLCSS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:17:59 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D366C061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 10:17:19 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0dc5004496c992b512bfd2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:c500:4496:c992:b512:bfd2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 98FD31EC0283;
-        Thu,  3 Dec 2020 19:17:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607019437;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=9m4NiydVLFvnOy0kDRZckdmjd5apIRy2SjVNb1/3aEo=;
-        b=L9SK4kv3O3iy+1vcp5dZkf5JxWogEHm2opxaAwUWVuLJ3p6xkNJvEu6jdspHq+jrRv54lf
-        k5v3Hblo9NP/CnKuE1FG9/roLs1X/3FvHq0DWr/EgFkRZL+3fwF9VXO93n/5Yym6ed0fp7
-        n330h3Khj1okcJSQWq9ZnGSB9Od3+tI=
-Date:   Thu, 3 Dec 2020 19:17:12 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] x86/uprobes: Fix not using prefixes.nbytes for
- loop over prefixes.bytes
-Message-ID: <20201203181712.GN3059@zn.tnic>
-References: <160697102582.3146288.10127018634865687932.stgit@devnote2>
- <160697103739.3146288.7437620795200799020.stgit@devnote2>
- <20201203123757.GH3059@zn.tnic>
- <20201203124121.GI3059@zn.tnic>
- <20201203124820.GJ3059@zn.tnic>
- <1c1b265f-34e3-f5cc-0e7b-186dc26c94b7@amd.com>
- <20201203165420.GL3059@zn.tnic>
- <20201203170140.GM3059@zn.tnic>
- <d9b47fc6-6d9d-b966-30df-9ef8c83b46e3@amd.com>
+        Thu, 3 Dec 2020 13:18:28 -0500
+Received: by mail-ot1-f68.google.com with SMTP id b18so2674185ots.0;
+        Thu, 03 Dec 2020 10:18:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aNOzNwHkOuGXa7Fh+2VeICnOxC6RLTqC8+Fsh7pbYpc=;
+        b=B54bQ7wQTclSsqMy240SK/TtJfK0nPoRMY/LwoFzOoc2GE+dxlW35rkRMz+Ha6FPbK
+         oFs5EuYqg+0Wt98ZGw95Xowi3To7JzhlxNdQeD2zs4+C0rsPNfhHm1MkMzRcnZlcNk9P
+         O4cNuG3/+x5GHlFNEAR8fNg8kIc3pbkEeh0JSmo4LfGJzb50auj+J0Z+DzGPM9FIWtHT
+         LMIWYUl/dNhx1z5nBoiECk4i0zsNDDUxAWvb+HYG462ZCbiah3lLFLNsaUm8C3UGIF1f
+         yxV9KF+m21BfJwKCvWxTA8wiPypgCE7bw0u/jgYnH61NGnrDJp/1h6PkvUImbv3NRkiE
+         e59A==
+X-Gm-Message-State: AOAM531CzQZ5Bw+1otAso2BqqqDf/vH9TK/0FynsMrl0ESv3KDR9zA0Y
+        DMtI5+8jYh3YN39I/dnp6vpnOArt2/I8LaznR+U=
+X-Google-Smtp-Source: ABdhPJwqemI0nHjABZ8DB7T9ID8g6r75bCjCbsZsgEY3dEVpaIf5c1RYqBLsK8j8uDjbk+vtzho1oSX9qn3XWGdKszQ=
+X-Received: by 2002:a05:6830:2385:: with SMTP id l5mr342208ots.321.1607019461761;
+ Thu, 03 Dec 2020 10:17:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d9b47fc6-6d9d-b966-30df-9ef8c83b46e3@amd.com>
+References: <20201203175756.1405564-1-thierry.reding@gmail.com>
+In-Reply-To: <20201203175756.1405564-1-thierry.reding@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 3 Dec 2020 19:17:30 +0100
+Message-ID: <CAJZ5v0g_FC6Pikrvk2PK=XMvAwqjaNOcYXHYS6eqv6Zc0JgqNQ@mail.gmail.com>
+Subject: Re: [PATCH] driver core: Reorder devices on successful probe
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Saravana Kannan <saravanak@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 12:10:10PM -0600, Tom Lendacky wrote:
-> Since that struct is used in multiple places, I think basing it on the array
-> size is the best way to go. The main point of the check is just to be sure
-> you don't read outside of the array.
+On Thu, Dec 3, 2020 at 6:58 PM Thierry Reding <thierry.reding@gmail.com> wrote:
+>
+> From: Thierry Reding <treding@nvidia.com>
+>
+> Device drivers usually depend on the fact that the devices that they
+> control are suspended in the same order that they were probed in. In
+> most cases this is already guaranteed via deferred probe.
+>
+> However, there's one case where this can still break: if a device is
+> instantiated before a dependency (for example if it appears before the
+> dependency in device tree) but gets probed only after the dependency is
+> probed. Instantiation order would cause the dependency to get probed
+> later, in which case probe of the original device would be deferred and
+> the suspend/resume queue would get reordered properly. However, if the
+> dependency is provided by a built-in driver and the device depending on
+> that driver is controlled by a loadable module, which may only get
+> loaded after the root filesystem has become available, we can be faced
+> with a situation where the probe order ends up being different from the
+> suspend/resume order.
+>
+> One example where this happens is on Tegra186, where the ACONNECT is
+> listed very early in device tree (sorted by unit-address) and depends on
+> BPMP (listed very late because it has no unit-address) for power domains
+> and clocks/resets. If the ACONNECT driver is built-in, there is no
+> problem because it will be probed before BPMP, causing a probe deferral
+> and that in turn reorders the suspend/resume queue. However, if built as
+> a module, it will end up being probed after BPMP, and therefore not
+> result in a probe deferral, and therefore the suspend/resume queue will
+> stay in the instantiation order. This in turn causes problems because
+> ACONNECT will be resumed before BPMP, which will result in a hang
+> because the ACONNECT's power domain cannot be powered on as long as the
+> BPMP is still suspended.
+>
+> Fix this by always reordering devices on successful probe. This ensures
+> that the suspend/resume queue is always in probe order and hence meets
+> the natural expectations of drivers vs. their dependencies.
+>
+> Reported-by: Jonathan Hunter <jonathanh@nvidia.com>
+> Signed-off-by: Thierry Reding <treding@nvidia.com>
 
-Well, what happens if someone increases the array size of:
+Saravana had submitted a very similar patch (I don't have a pointer to
+that one though) and I was against it at that time due to
+overhead-related concerns.  There still are some, but maybe that
+doesn't matter in practice.
 
-struct insn_field {
-	union {
-		insn_byte_t bytes[4];
-				^^^^
+Also, I kind of expect this to blow up somewhere, but since I have no
+examples ready from the top of my head, I think let's try and see, so:
 
-?
+Acked-by: Rafael. J. Wysocki <rafael@kernel.org>
 
-That's why a separate array only for legacy prefixes would be better
-in the long run. The array size check is good as a short-term fix for
-stable.
-
-I'd say.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> ---
+>  drivers/base/dd.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+> index 148e81969e04..cfc079e738bb 100644
+> --- a/drivers/base/dd.c
+> +++ b/drivers/base/dd.c
+> @@ -370,6 +370,13 @@ static void driver_bound(struct device *dev)
+>
+>         device_pm_check_callbacks(dev);
+>
+> +       /*
+> +        * Reorder successfully probed devices to the end of the device list.
+> +        * This ensures that suspend/resume order matches probe order, which
+> +        * is usually what drivers rely on.
+> +        */
+> +       device_pm_move_to_tail(dev);
+> +
+>         /*
+>          * Make sure the device is no longer in one of the deferred lists and
+>          * kick off retrying all pending devices
+> --
+> 2.29.2
+>
