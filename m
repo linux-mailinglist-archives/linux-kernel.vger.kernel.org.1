@@ -2,129 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EEE2CD828
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C0F2CD826
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:48:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730709AbgLCNrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 08:47:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727682AbgLCNrO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 08:47:14 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E61C061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 05:46:28 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id p6so1171001plo.6
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 05:46:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=JErqEL3Kt1t6tToJTJ1Pn1JRLO1Zs+7MWme3Tdimg78=;
-        b=JV4eYdQZRw+Yb66bxR42sldm6rw8NSQ5vr8syNUCLabgEhVApzhlrdEQHuPqlbOarz
-         Xs+1JnO9txbHKxVo1iD5TPafZopHiXmr+B7g+nhMR22InPBXlLAAhzI/Tx8S+3StXPTV
-         o20yA9bycfAh/7ZRj+GAHD+1sCjfhJN+YiLE6YqpfBXow9zs7ibu3+0a703JteGCCrM/
-         CdufyuuY9ZDxTSNCFe6uS/Fd1OlSgKXQgHZbex6C9X6VvJL+GpwZtUEmLjcwCYYYepd1
-         IR6nluVAOATHmpGZSBFm+r8OEDjVxmc20N/DCMnm5XCfbXvx0n/0JPvR96mjypPHihJx
-         cFFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=JErqEL3Kt1t6tToJTJ1Pn1JRLO1Zs+7MWme3Tdimg78=;
-        b=Gjm69J/OzPkjrm8b/USJ7Y6VbWIo/GiMmt9MMY944OvzEI49nF/65BDDqSsk9YHUSa
-         t7DEU4W5XnD6C+ZIHtALlj6X8G8S6VBkVV4ze29m69O6qflSp5ssVUWI3m7V5td/kTzv
-         oYmqsjjO10/PMqilOU+8oN7yi57llRI3x6Rv4eH8uRqhIBVqEmYtR7hqg9+wXK3XdbUk
-         fISc1CDvZcZmbepeVa/kXh0S0Fs5PWZ6zgr6Q/+R2GVLKKx0QFiOLQ+pyQjBKHC4MmiY
-         /QzxaVYcyZJtgHJKFUuaMiKtOIuE+gaXoigVIXyMAyCyybgy6cDRz9i05px4vZFCAJ/m
-         +MuA==
-X-Gm-Message-State: AOAM533mYM7UPgNIylv9AfwPMErds5dI1Lyk0vnMXtRZaji87WSBKQVb
-        HyqFRip0wADaQ6cBkhyQN6g=
-X-Google-Smtp-Source: ABdhPJy+agSTa9bz623sYXmRq0iNnq9vLOqIQt627/WjWTu+kjBKo9iXanNcWMsfaeqkDShz8NVmlg==
-X-Received: by 2002:a17:90a:bb83:: with SMTP id v3mr3115372pjr.28.1607003188368;
-        Thu, 03 Dec 2020 05:46:28 -0800 (PST)
-Received: from localhost.localdomain.localdomain ([115.238.43.130])
-        by smtp.gmail.com with ESMTPSA id a23sm1562831pju.31.2020.12.03.05.46.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Dec 2020 05:46:27 -0800 (PST)
-From:   Mingzhe Yang <cainiao666999@gmail.com>
-To:     tglx@linutronix.de
-Cc:     mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        nivedita@alum.mit.edu, ardb@kernel.org, keescook@chromium.org,
-        jroedel@suse.de, linux-kernel@vger.kernel.org,
-        Mingzhe Yang <cainiao666999@gmail.com>
-Subject: [PATCH] x86_64: coding style and whitespace fixup
-Date:   Thu,  3 Dec 2020 21:46:02 +0800
-Message-Id: <1607003162-18444-1-git-send-email-cainiao666999@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1729063AbgLCNq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 08:46:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727812AbgLCNq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 08:46:57 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C413A206D8;
+        Thu,  3 Dec 2020 13:46:16 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kkow2-00Ffsk-Il; Thu, 03 Dec 2020 13:46:14 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 03 Dec 2020 13:46:14 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 16/26] kvm: arm64: Bootstrap PSCI SMC handler in nVHE
+ EL2
+In-Reply-To: <20201202184122.26046-17-dbrazdil@google.com>
+References: <20201202184122.26046-1-dbrazdil@google.com>
+ <20201202184122.26046-17-dbrazdil@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <3ac00cc2e2887f85e250288a7b6b5e4f@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, corbet@lwn.net, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, sudeep.holla@arm.com, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes some whitespace issues.
+A couple of cosmetic comments below, none of which require immediate
+addressing.
 
-Signed-off-by: Mingzhe Yang <cainiao666999@gmail.com>
----
- arch/x86/boot/compressed/head_64.S | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+[...]
 
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index 017de6c..57b3cf4 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -151,7 +151,7 @@ SYM_FUNC_START(startup_32)
- 
- 	/* Target address to relocate to for decompression */
- 	addl	BP_init_size(%esi), %ebx
--	subl	$ rva(_end), %ebx
-+	subl	$rva(_end), %ebx
- 
- /*
-  * Prepare for entering 64 bit mode
-@@ -186,7 +186,7 @@ SYM_FUNC_START(startup_32)
- 
- 	/* Build Level 4 */
- 	leal	rva(pgtable + 0)(%ebx), %edi
--	leal	0x1007 (%edi), %eax
-+	leal	0x1007(%edi), %eax
- 	movl	%eax, 0(%edi)
- 	addl	%edx, 4(%edi)
- 
-@@ -282,7 +282,7 @@ SYM_FUNC_START(efi32_stub_entry)
- 
- 	call	1f
- 1:	pop	%ebp
--	subl	$ rva(1b), %ebp
-+	subl	$rva(1b), %ebp
- 
- 	movl	%esi, rva(efi32_boot_args+8)(%ebp)
- SYM_INNER_LABEL(efi32_pe_stub_entry, SYM_L_LOCAL)
-@@ -372,7 +372,7 @@ SYM_CODE_START(startup_64)
- 
- 	/* Target address to relocate to for decompression */
- 	movl	BP_init_size(%rsi), %ebx
--	subl	$ rva(_end), %ebx
-+	subl	$rva(_end), %ebx
- 	addq	%rbp, %rbx
- 
- 	/* Set up the stack */
-@@ -512,7 +512,7 @@ SYM_FUNC_START_ALIAS(efi_stub_entry)
- 	and	$~0xf, %rsp			/* realign the stack */
- 	movq	%rdx, %rbx			/* save boot_params pointer */
- 	call	efi_main
--	movq	%rbx,%rsi
-+	movq	%rbx, %rsi
- 	leaq	rva(startup_64)(%rax), %rax
- 	jmp	*%rax
- SYM_FUNC_END(efi64_stub_entry)
-@@ -727,7 +727,7 @@ SYM_FUNC_START(efi32_pe_entry)
- 
- 	call	1f
- 1:	pop	%ebx
--	subl	$ rva(1b), %ebx
-+	subl	$rva(1b), %ebx
- 
- 	/* Get the loaded image protocol pointer from the image handle */
- 	leal	-4(%ebp), %eax
+> diff --git a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> new file mode 100644
+> index 000000000000..61375d4571c2
+> --- /dev/null
+> +++ b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> @@ -0,0 +1,100 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2020 - Google LLC
+> + * Author: David Brazdil <dbrazdil@google.com>
+> + */
+> +
+> +#include <asm/kvm_asm.h>
+> +#include <asm/kvm_hyp.h>
+> +#include <asm/kvm_mmu.h>
+> +#include <kvm/arm_hypercalls.h>
+> +#include <linux/arm-smccc.h>
+> +#include <linux/psci.h>
+> +#include <kvm/arm_psci.h>
+
+nit: is there an ordering issue that requires this to be out
+of order?
+
+> +#include <uapi/linux/psci.h>
+> +
+> +#include <nvhe/trap_handler.h>
+> +
+> +/* Config options set by the host. */
+> +__ro_after_init u32 kvm_host_psci_version;
+> +__ro_after_init struct psci_0_1_function_ids 
+> kvm_host_psci_0_1_function_ids;
+
+nit: we usually place attributes after the type.
+
+Thanks,
+
+         M.
 -- 
-1.8.3.1
-
+Jazz is not dead. It just smells funny...
