@@ -2,111 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4C32CD877
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6AA2CD881
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730826AbgLCOEQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 09:04:16 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:55853 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730572AbgLCOEP (ORCPT
+        id S1730855AbgLCOFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 09:05:00 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55565 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727930AbgLCOE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:04:15 -0500
-Received: from marcel-macbook.holtmann.net (unknown [37.83.193.87])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 90B33CECFD;
-        Thu,  3 Dec 2020 15:10:46 +0100 (CET)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: Re: [PATCH v1 1/5] Bluetooth: advmon offload MSFT add rssi support
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20201203182903.v1.1.I92d2e2a87419730d60136680cbe27636baf94b15@changeid>
-Date:   Thu, 3 Dec 2020 15:03:31 +0100
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Yun-Hao Chung <howardchung@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <20B6F2AD-1A60-4E3C-84C2-E3CB7294FABC@holtmann.org>
-References: <20201203102936.4049556-1-apusaka@google.com>
- <20201203182903.v1.1.I92d2e2a87419730d60136680cbe27636baf94b15@changeid>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
+        Thu, 3 Dec 2020 09:04:59 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0B3E45tu021699
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 3 Dec 2020 09:04:05 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 37597420136; Thu,  3 Dec 2020 09:04:05 -0500 (EST)
+Date:   Thu, 3 Dec 2020 09:04:05 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Cc:     Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] Updated locking documentation for transaction_t
+Message-ID: <20201203140405.GC441757@mit.edu>
+References: <20190408083500.66759-1-alexander.lochmann@tu-dortmund.de>
+ <10cfbef1-994c-c604-f8a6-b1042fcc622f@tu-dortmund.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10cfbef1-994c-c604-f8a6-b1042fcc622f@tu-dortmund.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
-
-> MSFT needs rssi parameter for monitoring advertisement packet,
-> therefore we should supply them from mgmt.
+On Thu, Oct 15, 2020 at 03:26:28PM +0200, Alexander Lochmann wrote:
+> Hi folks,
 > 
-> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> Reviewed-by: Yun-Hao Chung <howardchung@google.com>
+> I've updated the lock documentation according to our finding for
+> transaction_t.
+> Does this patch look good to you?
 
-I don’t need any Reviewed-by if they are not catching an obvious user API breakage.
+I updated the annotations to match with the local usage, e.g:
 
-> ---
-> 
-> include/net/bluetooth/hci_core.h | 9 +++++++++
-> include/net/bluetooth/mgmt.h     | 9 +++++++++
-> net/bluetooth/mgmt.c             | 8 ++++++++
-> 3 files changed, 26 insertions(+)
-> 
-> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-> index 9873e1c8cd16..42d446417817 100644
-> --- a/include/net/bluetooth/hci_core.h
-> +++ b/include/net/bluetooth/hci_core.h
-> @@ -246,8 +246,17 @@ struct adv_pattern {
-> 	__u8 value[HCI_MAX_AD_LENGTH];
-> };
-> 
-> +struct adv_rssi_thresholds {
-> +	__s8 low_threshold;
-> +	__s8 high_threshold;
-> +	__u16 low_threshold_timeout;
-> +	__u16 high_threshold_timeout;
-> +	__u8 sampling_period;
-> +};
-> +
-> struct adv_monitor {
-> 	struct list_head patterns;
-> +	struct adv_rssi_thresholds rssi;
-> 	bool		active;
-> 	__u16		handle;
-> };
-> diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
-> index d8367850e8cd..dc534837be0e 100644
-> --- a/include/net/bluetooth/mgmt.h
-> +++ b/include/net/bluetooth/mgmt.h
-> @@ -763,9 +763,18 @@ struct mgmt_adv_pattern {
-> 	__u8 value[31];
-> } __packed;
-> 
-> +struct mgmt_adv_rssi_thresholds {
-> +	__s8 high_threshold;
-> +	__le16 high_threshold_timeout;
-> +	__s8 low_threshold;
-> +	__le16 low_threshold_timeout;
-> +	__u8 sampling_period;
-> +} __packed;
-> +
-> #define MGMT_OP_ADD_ADV_PATTERNS_MONITOR	0x0052
-> struct mgmt_cp_add_adv_patterns_monitor {
-> 	__u8 pattern_count;
-> +	struct mgmt_adv_rssi_thresholds rssi;
-> 	struct mgmt_adv_pattern patterns[];
-> } __packed;
+	 * When commit was requested [journal_t.j_state_lock]
 
-This is something we can not do. It breaks an userspace facing API. Is the mgmt opcode 0x0052 in an already released kernel?
+became:
 
-Regards
+	 * When commit was requested [j_state_lock]
 
-Marcel
+Otherwise, looks good.  Thanks for the patch!
 
+	   	 	       	       - Ted
