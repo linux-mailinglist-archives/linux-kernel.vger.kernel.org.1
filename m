@@ -2,79 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67092CD586
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D6C2CD588
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387658AbgLCMcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 07:32:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
+        id S2387913AbgLCMcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 07:32:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726213AbgLCMcT (ORCPT
+        with ESMTP id S1726213AbgLCMcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 07:32:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F893C061A4F;
-        Thu,  3 Dec 2020 04:31:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2bjAG/22Xb88hJcxvz1EpCKJuf3oMonmSEWRI/Pfre8=; b=kN0UfyVg5AFOJTIput+Nt86Ekc
-        Q3LG5weU1QXDniBRaUvnMsL7gDgKEdCY5djySEvEofodaN1oOJzQyhc1Kf2/yO4W0VNfTEksLApbT
-        A7Zi3WkZDAXP4ejREwrP3JYM18d0SnEFU/HmbURuGmvuY6Oezfkiz1aIsxY0nHJGzo5KPTCSHarUI
-        u3Yj4gaRjHW1Br4I8C/SIXsIstOJ5pyAIpUodg1RBA7oTCEEJdBXkfai7rjojy37PucTs0pEh6BEr
-        Z4KFyjpIxNUiC+YtkWgZ9KwSFPTGRMAm4wn2reffMSzX/xrfLSVu656ADBhfEBiUC3U7LtZHRMja2
-        3DiMaunw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kknlh-0007Ex-HX; Thu, 03 Dec 2020 12:31:29 +0000
-Date:   Thu, 3 Dec 2020 12:31:29 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        X86 ML <x86@kernel.org>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Rik van Riel <riel@surriel.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Subject: Re: [MOCKUP] x86/mm: Lightweight lazy mm refcounting
-Message-ID: <20201203123129.GH11935@casper.infradead.org>
-References: <7c4bcc0a464ca60be1e0aeba805a192be0ee81e5.1606972194.git.luto@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c4bcc0a464ca60be1e0aeba805a192be0ee81e5.1606972194.git.luto@kernel.org>
+        Thu, 3 Dec 2020 07:32:24 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A65CC061A51;
+        Thu,  3 Dec 2020 04:31:44 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id b2so1907456edm.3;
+        Thu, 03 Dec 2020 04:31:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=G7EMVCQFdO/l7+xXFqfNviq49dXz5V317P0jmeOaabc=;
+        b=H7ytE7HHdtRggQc+72AxsSmd1kZOtSSvRS6MJuSFSSmMiFbASHNy00x4wpAB8SQ9pG
+         oL4ttJdLKcWwRWEXu8pGz08keZ1cz//0wcUlmdDQGB1an6AUHMhZ0Jc0F6Z1tGCnEWeu
+         22c/ovfRNLLSNsR+hex8NffNI/O+kqtvrBK4Hth+rgjFJ+8hqn3yGRA3TcCp1BVkzqLp
+         vvWjrvgZder3og/LqMLnRRyrbXiGIRYtEQH936a/29lXq+5xn2h1BAwOqRrqrNybMi/X
+         Gj7lwenhLK8CrEMSQMpoK4REb5XHl/0RL4WnJCdqGZfnArrLGJLXsaNFjnrFNt21emEW
+         U0/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=G7EMVCQFdO/l7+xXFqfNviq49dXz5V317P0jmeOaabc=;
+        b=cQbwleKmcMnAL/+vkR/GRsvtTAi0Ib52MB0XWcyZzQN1luC0qIOXG5Sf+3mBBxsbVT
+         L+UWXoeI2TGtWIBwbuQ8uwmMl1LbAEoZ87AG4Nx8iHZOMLaVpraxg6DjSbjorvuC2qRj
+         UJU+VUCNxBgEPEBv7ZpFnh1tk+MpYXcDvvCX5aJSI2PEoncl2Q2xA42pV0y6ZvfCHBoK
+         D9AUZqZM1azaggdNNp4v+PKm1+crHg30WFFAOEBpV7EJDyn+5dSES8+JZ12VdgWLg/2y
+         N690JoqTUkcUQk8IFX3B9u3H98tqCHoUVCr0VPPnE5ZOTL3A5DP7++bl4cBADpsmXZi+
+         pq8A==
+X-Gm-Message-State: AOAM5318Q7ce7mBZAZ7Q3FST4bgDp8xB1toNXL4YsMI6BB3i3q41ubvV
+        RcRgNxB9MttJm28S69lOWoQ=
+X-Google-Smtp-Source: ABdhPJwOALp/xW4Bo9XnK7hnDAPuWILbFvpEfHsztYVMnOcAvD+OA5kELXPpzfyGIf3Y3rWgVKtz1A==
+X-Received: by 2002:a50:e688:: with SMTP id z8mr2658883edm.129.1606998702824;
+        Thu, 03 Dec 2020 04:31:42 -0800 (PST)
+Received: from ubuntu-laptop ([2a01:598:b905:79de:6c3d:3b27:f281:55d5])
+        by smtp.googlemail.com with ESMTPSA id e19sm1069738edr.61.2020.12.03.04.31.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 03 Dec 2020 04:31:42 -0800 (PST)
+Message-ID: <5b26c234d357512c0bffccf733d6ed8c5dd3a517.camel@gmail.com>
+Subject: Re: [PATCH 2/3] scsi: ufs: Keep device power on only
+ fWriteBoosterBufferFlushDuringHibernate == 1
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Thu, 03 Dec 2020 13:31:40 +0100
+In-Reply-To: <DM6PR04MB65750B6EF8B374476E255FA7FCF20@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201130181143.5739-1-huobean@gmail.com>
+         <20201130181143.5739-3-huobean@gmail.com>
+         <BY5PR04MB6599826730BD3FB0E547E60587F30@BY5PR04MB6599.namprd04.prod.outlook.com>
+         <DM6PR04MB6575B7ECCEA7335B2CFC2AC4FCF20@DM6PR04MB6575.namprd04.prod.outlook.com>
+         <2dafb87ff450776c0406311bb7e235e9816f6ecf.camel@gmail.com>
+         <DM6PR04MB657551290696C7EBD8339328FCF20@DM6PR04MB6575.namprd04.prod.outlook.com>
+         <2578a5fa2323f46b29dc8808b948ed5eaea6fbca.camel@gmail.com>
+         <DM6PR04MB65750B6EF8B374476E255FA7FCF20@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 09:25:51PM -0800, Andy Lutomirski wrote:
-> This code compiles, but I haven't even tried to boot it.  The earlier
-> part of the series isn't terribly interesting -- it's a handful of
-> cleanups that remove all reads of ->active_mm from arch/x86.  I've
-> been meaning to do that for a while, and now I did it.  But, with
-> that done, I think we can move to a totally different lazy mm refcounting
-> model.
+On Thu, 2020-12-03 at 12:15 +0000, Avri Altman wrote:
+> > so, you agree the possiblity of failure  exists.
+> 
+> I was more relating to the lottery part.
+It doesn't matter. even the possibility of winning a lottery is very
+low, but still there is.
+> > 
+> > > Hence we need-not any extra logic protecting device management
+> > > command failures.
+> > 
+> > what extra logic?
+> > 
+> > > 
+> > > if reading the configuration pass correctly, and UFSHCD_CAP_WB_EN
+> > > is
+> > > set,
+> > 
+> > 
+> > UFSHCD_CAP_WB_EN set is DRAM level. still in the cache.
+> > 
+> > > one should expect that any other functionality would work.
+> > > 
+> > 
+> > No,  The programming will consume more power than reading, the
+> > later setting will more possbile fail than reading.
+> > 
+> > > Otherwise, any non-standard behavior should be added with a
+> > > quirk.
+> > > 
+> > 
+> > NO, this is not what is standard or non-standard. This is
+> > independent
+> > of UFS device/controller. It is a software design. IMO, we didn't
+> > deal
+> > with programming status that is a potential bug. If having to
+> > impose to
+> > a component, do you think should be controller or device? Instead
+> > of
+> > addin a quirk, I prefer dropping this patch.
+> 
+> It seems you are adding some special treatment in case some device
+> management command failed,
+> A vanishingly unlikely event but a one that has significant impact
+> over power consumption.
 
-I went back and read Documentation/vm/active_mm.rst recently.
+again, there is nothing with device. Obviously, you didn't do system
+reliability testing in harsh environment. you don't believe this is WB
+driver bug. I will send my next version patch with a fix-tag. even It
+cannot merge. but I want to highlight it is a bug.
 
-I think it's useful to think about how this would have been handled if
-we'd had RCU at the time.  Particularly:
+Thanks,
+Bean
 
-Linus wrote:
-> To support all that, the "struct mm_struct" now has two counters: a
-> "mm_users" counter that is how many "real address space users" there are,
-> and a "mm_count" counter that is the number of "lazy" users (ie anonymous
-> users) plus one if there are any real users.
 
-And this just makes me think RCU freeing of mm_struct.  I'm sure it's
-more complicated than that (then, or now), but if an anonymous process
-is borrowing a freed mm, and the mm is freed by RCU then it will not go
-away until the task context switches.  When we context switch back to
-the anon task, it'll borrow some other task's MM and won't even notice
-that the MM it was using has gone away.
