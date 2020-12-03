@@ -2,114 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6322CE319
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE85F2CE314
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388241AbgLCXuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:50:25 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:51946 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388142AbgLCXuY (ORCPT
+        id S2388087AbgLCXuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:50:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727900AbgLCXuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:50:24 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3NTGIg175539;
-        Thu, 3 Dec 2020 23:48:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Cqu3KSehMgp5GC1qcLE5nXes+mExlunWbJeDddKy1dI=;
- b=Qj+OW82lbGdB/QOBVDKQpK5t89U+g29d/oivBaqtOXx4PDZuIn5c/njHsVYxvgf4OoqW
- adzVM1RYDyMabKkkm+zq1HbYbfz6sPBEr88ra9501mSnKxNAVttnFFbzCzguTO6yJ2/Q
- Kukl4ri0WFV/dJXhH9UYAotKOyzyKWGILmxrHWwhzgsoCtCXUm2cYU6yOBsHIq7aIrFW
- gcQs+AKRrVlQ6eMFJg1sEXYuYgyDFCW7086Gq9h/lgQxZ/QtMd+j2V05blnsLprnKE/S
- xqeRI8RZx/t1jA3aNbK3QtxQUM1W5gfMNMOWomBvmbApqqPl2XEJiBLENVSxwcCw40lB RQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 353c2b8urx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 03 Dec 2020 23:48:51 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3NkdhD063885;
-        Thu, 3 Dec 2020 23:48:50 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 3540ax1d1r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Dec 2020 23:48:50 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B3NmYSG029888;
-        Thu, 3 Dec 2020 23:48:35 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 03 Dec 2020 15:48:34 -0800
-Subject: Re: [PATCH v7 00/15] Free some vmemmap pages of hugetlb page
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, dave.hansen@linux.intel.com,
-        hpa@zytor.com, x86@kernel.org, bp@alien8.de, mingo@redhat.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        pawan.kumar.gupta@linux.intel.com, mchehab+huawei@kernel.org,
-        paulmck@kernel.org, viro@zeniv.linux.org.uk,
-        Peter Zijlstra <peterz@infradead.org>, luto@kernel.org,
-        oneukum@suse.com, jroedel@suse.de,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        anshuman.khandual@arm.com, Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-doc@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <20201130151838.11208-1-songmuchun@bytedance.com>
- <CAMZfGtWvLEytN5gBN+OqntrNXNd3eNRWrfnkeCozvARmpTNAXw@mail.gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <600fd7e2-70b4-810f-8d12-62cba80af80d@oracle.com>
-Date:   Thu, 3 Dec 2020 15:48:32 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Thu, 3 Dec 2020 18:50:13 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D07C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 15:49:32 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id z24so3548719oto.6
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 15:49:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eYzpXn2E+PtsFrowgbtsizm+OigYiy9qJVDjZXkd4Gc=;
+        b=XX5+WOirgJ3HukulXrRv0Kl7iRXGwP+T1hhkDxHO7AKBpL2l1HG7cw30q5Bcwf/Rye
+         fhZ3JIaFK5lDysUQAWN74QGV8ivonjkDMuN3zjYyWFNBqqGCghs+tpEXI7z9CQmLeVQk
+         VIwX8t3pk2b7p0/9oQi3w6TmSU+f9Bz1BPGvwg3OBEb1uTukn7OBpOuWvcVOc/9WDQBs
+         b5MCPjfLRo+VVoqCXlVdDRrXPfh6wGtBSWY2z9C5RrNolCubHtHkpqPjSWM9Z3s/afus
+         VFNqx7qpc+6reHQcJ5U2Szr1o/s8s8jFdURtabgEdKFJclFRnQEPtKFFO3ZBszz4VGxJ
+         y9oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eYzpXn2E+PtsFrowgbtsizm+OigYiy9qJVDjZXkd4Gc=;
+        b=tIPYKzwEY3e7iWFU8b76HkrWC8YAjvGmyG9DVT5hhLRwH5FLyQmjnDylShepYrYdJm
+         axO8Rdqs5cHHOsElFUWfFbyE2kHnneRVlAtNklGDQMT/uPnIkb7B7lWhr73kzhfFntJk
+         Kh+XfvXuRLGukWkwgBF7K+uY7crhFqkObcjR5XphuLrkTUz2HcqpHlR5r9sEiyiO6m9g
+         qpiFuF1UQT/sNu2R3Y7rjYAZIBRJnfged9wrHtobODVZS/SURGioyshDwqO0rWYNmWEj
+         o81RV7fTSVkjQme5x2WYtzciscQXDC9T0PsW+Z/uw5K+JAbzkEgv03ShAsmVgi1NBhDc
+         zzpw==
+X-Gm-Message-State: AOAM533eaQElH8dsIo/Af+u2TQjCj2WOpD2fxXKYLvtDOnu8DL8/W2HX
+        bu0AnBPLR26zP0jrtjv4fWlQqA==
+X-Google-Smtp-Source: ABdhPJwEasVdkAd5MYVhbnGuvDgFL/mC3QqZI/zcW1AUAbRLhIF3jsz0diJRK+YQxI76R5TLm6Z5Qg==
+X-Received: by 2002:a9d:ece:: with SMTP id 72mr1451657otj.358.1607039372217;
+        Thu, 03 Dec 2020 15:49:32 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c6sm226867oif.48.2020.12.03.15.49.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 15:49:31 -0800 (PST)
+Date:   Thu, 3 Dec 2020 17:49:29 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl
+ bindings
+Message-ID: <X8l5ietmcGv/i7Vx@builder.lan>
+References: <20201203070900.2651127-1-vkoul@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAMZfGtWvLEytN5gBN+OqntrNXNd3eNRWrfnkeCozvARmpTNAXw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9824 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=2
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030131
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9824 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012030130
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203070900.2651127-1-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/3/20 12:35 AM, Muchun Song wrote:
-> On Mon, Nov 30, 2020 at 11:19 PM Muchun Song <songmuchun@bytedance.com> wrote:
->>
->> Hi all,
->>
->> This patch series will free some vmemmap pages(struct page structures)
->> associated with each hugetlbpage when preallocated to save memory.
-> 
-> Hi Mike,
-> 
-> What's your opinion on this version?  Any comments or suggestions?
-> And hoping you or more people review the series. Thank you very
-> much.
+On Thu 03 Dec 01:08 CST 2020, Vinod Koul wrote:
 
-Sorry Muchun, I have been busy with other things and have not looked at
-this new version.  Should have some time soon.
+> Add device tree binding Documentation details for Qualcomm SM8350
+> pinctrl driver.
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  .../pinctrl/qcom,sdm8350-pinctrl.yaml         | 151 ++++++++++++++++++
+>  1 file changed, 151 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sdm8350-pinctrl.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sdm8350-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sdm8350-pinctrl.yaml
+> new file mode 100644
+> index 000000000000..a47d120a3fd0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sdm8350-pinctrl.yaml
+> @@ -0,0 +1,151 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/qcom,sdm8350-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies, Inc. SM8350 TLMM block
+> +
+> +maintainers:
+> +  - Vinod Koul <vkoul@kernel.org>
+> +
+> +description: |
+> +  This binding describes the Top Level Mode Multiplexer block found in the
+> +  SM8350 platform.
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,sm8350-pinctrl
+> +
+> +  reg:
+> +    description: Specifies the base address and size of the TLMM register space
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: Specifies the TLMM summary IRQ
+> +    maxItems: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  '#interrupt-cells':
+> +    description: Specifies the PIN numbers and Flags, as defined in
+> +      include/dt-bindings/interrupt-controller/irq.h
+> +    const: 2
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    description: Specifying the pin number and flags, as defined in
+> +      include/dt-bindings/gpio/gpio.h
+> +    const: 2
+> +
+> +  gpio-ranges:
+> +    maxItems: 1
+> +
+> +  gpio-reserved-ranges:
+> +    maxItems: 1
+> +
+> +#PIN CONFIGURATION NODES
+> +patternProperties:
+> +  '-pins$':
+> +    type: object
+> +    description:
+> +      Pinctrl node's client devices use subnodes for desired pin configuration.
+> +      Client device subnodes use below standard properties.
+> +    $ref: "/schemas/pinctrl/pincfg-node.yaml"
+> +
+> +    properties:
+> +      pins:
+> +        description:
+> +          List of gpio pins affected by the properties specified in this subnode.
+> +        items:
+> +          oneOf:
+> +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-1][0-6])$"
 
-As previously mentioned, I feel qualified to review the hugetlb changes
-and some other closely related changes.  However, this patch set is
-touching quite a few areas and I do not feel qualified to make authoritative
-statements about them all.  I too hope others will take a look.
--- 
-Mike Kravetz
+That doesn't cover the entire pin space, I think should be:
+
+	"^gpio([0-9]|[1-9][0-9]|1[0-9][0-9]|20[0-3])$"
+
+> +            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd, sdc2_data ]
+> +        minItems: 1
+> +        maxItems: 36
+> +
+> +      function:
+> +        description:
+> +          Specify the alternative function to be configured for the specified
+> +          pins. Functions are only valid for gpio pins.
+> +        enum: [ atest_char, atest_usb, audio_ref, cam_mclk, cci_async,
+> +                cci_i2c, cci_timer, cmu_rng, coex_uart1, coex_uart2, cri_trng,
+> +                cri_trng0, cri_trng1, dbg_out, ddr_bist, ddr_pxi0, ddr_pxi1,
+> +                ddr_pxi2, ddr_pxi3, dp_hot, dp_lcd, gcc_gp1, gcc_gp2, gcc_gp3,
+> +                gpio, ibi_i3c, jitter_bist, lpass_slimbus, mdp_vsync, mdp_vsync0,
+> +                mdp_vsync1, mdp_vsync2, mdp_vsync3, mi2s0_data0, mi2s0_data1,
+> +                mi2s0_sck, mi2s0_ws, mi2s1_data0, mi2s1_data1, mi2s1_sck,
+> +                mi2s1_ws, mi2s2_data0, mi2s2_data1, mi2s2_sck, mi2s2_ws,
+> +                mss_grfc0, mss_grfc1, mss_grfc10, mss_grfc11, mss_grfc12,
+> +                mss_grfc2, mss_grfc3, mss_grfc4, mss_grfc5, mss_grfc6,
+> +                mss_grfc7, mss_grfc8, mss_grfc9, nav_gpio, pa_indicator,
+> +                pcie0_clkreqn, pcie1_clkreqn, phase_flag, pll_bist, pll_clk,
+> +                pri_mi2s, prng_rosc, qdss_cti, qdss_gpio, qlink0_enable,
+> +                qlink0_request, qlink0_wmss, qlink1_enable, qlink1_request,
+> +                qlink1_wmss, qlink2_enable, qlink2_request, qlink2_wmss, qspi0,
+> +                qspi1, qspi2, qspi3, qspi_clk, qspi_cs, qup0, qup1, qup10,
+> +                qup11, qup12, qup13, qup14, qup15, qup16, qup17, qup18, qup19,
+> +                qup2, qup3, qup4, qup5, qup6, qup7, qup8, qup9, qup_l4, qup_l5,
+> +                qup_l6, sd_write, sdc40, sdc41, sdc42, sdc43, sdc4_clk,
+> +                sdc4_cmd, sec_mi2s, tb_trig, tgu_ch0, tgu_ch1, tgu_ch2,
+> +                tgu_ch3, tsense_pwm1, tsense_pwm2, uim0_clk, uim0_data,
+> +                uim0_present, uim0_reset, uim1_clk, uim1_data, uim1_present,
+> +                uim1_reset, usb2phy_ac, usb_phy, vfr_0, vfr_1, vsense_trigger ]
+> +
+> +
+> +      drive-strength:
+> +        enum: [2, 4, 6, 8, 10, 12, 14, 16]
+> +        default: 2
+> +        description:
+> +          Selects the drive strength for the specified pins, in mA.
+> +
+> +      bias-pull-down: true
+> +
+> +      bias-pull-up: true
+> +
+> +      bias-disable: true
+> +
+> +      output-high: true
+> +
+> +      output-low: true
+> +
+> +    required:
+> +      - pins
+> +      - function
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - interrupt-controller
+> +  - '#interrupt-cells'
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +  - gpio-ranges
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +        tlmm: pinctrl@f000000 {
+> +          compatible = "qcom,sm8350-pinctrl";
+> +          reg = <0x0f100000 0x300000>;
+> +          interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+> +          gpio-controller;
+> +          #gpio-cells = <2>;
+> +          interrupt-controller;
+> +          #interrupt-cells = <2>;
+> +          gpio-ranges = <&tlmm 0 0 203>;
+> +          serial-pins {
+> +            pins = "gpio18", "gpio19";
+> +            function = "qup3";
+> +            drive-strength = <8>;
+> +            bias-disable;
+> +            };
+
+Indentation is slightly off here.
+
+Regards,
+Bjorn
+
+> +        };
+> +
+> +...
+> -- 
+> 2.26.2
+> 
