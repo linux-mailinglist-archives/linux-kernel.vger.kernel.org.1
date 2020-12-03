@@ -2,291 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1BC2CCEA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 880A32CCEAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgLCF0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 00:26:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725793AbgLCF0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:26:41 -0500
-From:   Andy Lutomirski <luto@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        X86 ML <x86@kernel.org>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Rik van Riel <riel@surriel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [MOCKUP] x86/mm: Lightweight lazy mm refcounting
-Date:   Wed,  2 Dec 2020 21:25:51 -0800
-Message-Id: <7c4bcc0a464ca60be1e0aeba805a192be0ee81e5.1606972194.git.luto@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S1727840AbgLCFd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 00:33:26 -0500
+Received: from mail-vk1-f193.google.com ([209.85.221.193]:44775 "EHLO
+        mail-vk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbgLCFd0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 00:33:26 -0500
+Received: by mail-vk1-f193.google.com with SMTP id a4so139869vko.11
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 21:33:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wA1b9A9EUPLRGe8RJxQwQAdWvMshGblOc4esYqWRa/c=;
+        b=YAUu6PD8fujtUjEBXvaL41P09OPbXKRz/z4XGhZrtVrRnu3bRuayEvEhKQA5eJ1In9
+         SbfIb2XBuOW6EvzxEsjrFVZT2S6lDRwyTcgNpDtyFJetzwq+bUx5KZtTOIcVYvfoO2dM
+         18k9GLHXybM5BA4q0btnPS25bp/boOJ/mhMAweq5fM9+jCrhsxFZCLKNTuGjOJ7zFzjG
+         j7UXVK6GlxidQm0OP03nkbomUcBE0XOz1iFmXbbqKXBIG4ZhBk50hnKk57oFqwubn0j1
+         BYBn/ZLYnjaHS+D35VNvAZdj7EDXiLn6A/CSPJtJD6AUSEBGCMh1WlSpA7FtYRrflQrb
+         h6Iw==
+X-Gm-Message-State: AOAM530pd09A+iZC5e4QLJifkx/Dhk2DpzNuoIX7i5Xb6kz75DbobYB1
+        u0kg2jWceRQ6HiSo7gldNJIhL9RDblO8X/+uhF0=
+X-Google-Smtp-Source: ABdhPJzrgCPbCkQrp1O+EjETCBTW1fcDvmIkvtDkh7hDu4X8dJI0fUOJI+akiL0Vi8enVSxXMj9nX5Pb8FzB75BXODs=
+X-Received: by 2002:ac5:c995:: with SMTP id e21mr743879vkm.5.1606973565149;
+ Wed, 02 Dec 2020 21:32:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <5d3e93cb-1a95-589c-71ed-2413932884d5@telusplanet.net> <CAPM=9tw8jSy-uapN-VY5v_+rm6awGdmMzyy_ArBUoXEPhqk9ZQ@mail.gmail.com>
+In-Reply-To: <CAPM=9tw8jSy-uapN-VY5v_+rm6awGdmMzyy_ArBUoXEPhqk9ZQ@mail.gmail.com>
+From:   Ilia Mirkin <imirkin@alum.mit.edu>
+Date:   Thu, 3 Dec 2020 00:32:34 -0500
+Message-ID: <CAKb7UvhUmMrFchhvp6446TNaPVMt9Xv-kUsiNrCFqx4jNuYfrA@mail.gmail.com>
+Subject: Re: [Nouveau] Nouveau video --- [ cut here ] ----- crash dump 5.10.0-rc6
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     bob <gillb4@telusplanet.net>, Ben Skeggs <skeggsb@gmail.com>,
+        nouveau <Nouveau@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For context, this is part of a series here:
+Unfortunately this isn't a crash, but rather a warning that things are
+timing out. By the time you get this, the display is most likely hung.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?h=x86/mm&id=7c4bcc0a464ca60be1e0aeba805a192be0ee81e5
+Was there anything before this, e.g. an error state dump perhaps?
 
-This code compiles, but I haven't even tried to boot it.  The earlier
-part of the series isn't terribly interesting -- it's a handful of
-cleanups that remove all reads of ->active_mm from arch/x86.  I've
-been meaning to do that for a while, and now I did it.  But, with
-that done, I think we can move to a totally different lazy mm refcounting
-model.
+What GPU are you using, what displays, and how are they connected?
+What kind of userspace is running here? X or a Wayland compositor (or
+something else entirely)?
 
-So this patch is a mockup of what this could look like.  The algorithm
-involves no atomics at all in the context switch path except for a
-single atomic_long_xchg() of a percpu variable when going from lazy
-mode to nonlazy mode.  Even that could be optimized -- I suspect it could
-be replaced with non-atomic code if mm_users > 0.  Instead, on mm exit,
-there's a single loop over all CPUs on which that mm could be lazily
-loaded that atomic_long_cmpxchg_relaxed()'s a remote percpu variable to
-tell the CPU to kindly mmdrop() the mm when it reschedules.  All cpus
-that don't have the mm lazily loaded are ignored because they can't
-have lazy references, and no cpus can gain lazy references after
-mm_users hits zero.  (I need to verify that all the relevant barriers
-are in place.  I suspect that they are on x86 but that I'm short an
-smp_mb() on arches for which _relaxed atomics are genuinely relaxed.)
-
-Here's how I think it fits with various arches:
-
-x86: On bare metal (i.e. paravirt flush unavailable), the loop won't do
-much.  The existing TLB shootdown when user tables are freed will
-empty mm_cpumask of everything but the calling CPU.  So x86 ends up
-pretty close to as good as we can get short of reworking mm_cpumask() itself.
-
-arm64: with s/for_each_cpu/for_each_online_cpu, I think it will give
-good performance.  The mmgrab()/mmdrop() overhead goes away, and,
-on smallish systems, the cost of the loop should be low.
-
-power: same as ARM, except that the loop may be rather larger since
-the systems are bigger.  But I imagine it's still faster than Nick's
-approach -- a cmpxchg to a remote cacheline should still be faster than
-an IPI shootdown.  (Nick, don't benchmark this patch -- at least the
-mm_users optimization mentioned above should be done, but also the
-mmgrab() and mmdrop() aren't actually removed.)
-
-Other arches: I don't know.  Further research is required.
-
-What do you all think?
-
-
-As mentioned, there are several things blatantly wrong with this patch:
-
-The coding stype is not up to kernel standars.  I have prototypes in the
-wrong places and other hacks.
-
-mms are likely to be freed with IRQs off.  I think this is safe, but it's
-suboptimal.
-
-This whole thing is in arch/x86.  The core algorithm ought to move outside
-arch/, but doing so without making a mess might take some thought.  It
-doesn't help that different architectures have very different ideas
-of what mm_cpumask() does.
-
-Finally, this patch has no benefit by itself.  I didn't remove the
-active_mm refounting, so the big benefit of removing mmgrab() and
-mmdrop() calls on transitions to and from lazy mode isn't there.
-There is no point at all in benchmarking this patch as is.  That
-being said, getting rid of the active_mm refcounting shouldn't be
-so hard, since x86 (in this tree) no longer uses active_mm at all.
-
-I should contemplate whether the calling CPU is special in
-arch_fixup_lazy_mm_refs().  On a very very quick think, it's not, but
-it needs more thought.
-
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-
- arch/x86/include/asm/tlbflush.h | 20 ++++++++
- arch/x86/mm/tlb.c               | 81 +++++++++++++++++++++++++++++++--
- kernel/fork.c                   |  5 ++
- 3 files changed, 101 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-index 8c87a2e0b660..efcd4f125f2c 100644
---- a/arch/x86/include/asm/tlbflush.h
-+++ b/arch/x86/include/asm/tlbflush.h
-@@ -124,6 +124,26 @@ struct tlb_state {
- 	 */
- 	unsigned short user_pcid_flush_mask;
- 
-+	/*
-+	 * Lazy mm tracking.
-+	 *
-+	 *  - If this is NULL, it means that any mm_struct referenced by
-+	 *    this CPU is kept alive by a real reference count.
-+	 *
-+	 *  - If this is nonzero but the low bit is clear, it points to
-+	 *    an mm_struct that must not be freed out from under this
-+	 *    CPU.
-+	 *
-+	 *  - If the low bit is set, it still points to an mm_struct,
-+	 *    but some other CPU has mmgrab()'d it on our behalf, and we
-+	 *    must mmdrop() it when we're done with it.
-+	 *
-+	 * See lazy_mm_grab() and related functions for the precise
-+	 * access rules.
-+	 */
-+	atomic_long_t		lazy_mm;
-+
-+
- 	/*
- 	 * Access to this CR4 shadow and to H/W CR4 is protected by
- 	 * disabling interrupts when modifying either one.
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index e27300fc865b..00f5bace534b 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -8,6 +8,7 @@
- #include <linux/export.h>
- #include <linux/cpu.h>
- #include <linux/debugfs.h>
-+#include <linux/sched/mm.h>
- 
- #include <asm/tlbflush.h>
- #include <asm/mmu_context.h>
-@@ -420,6 +421,64 @@ void cr4_update_pce(void *ignored)
- static inline void cr4_update_pce_mm(struct mm_struct *mm) { }
- #endif
- 
-+static void lazy_mm_grab(struct mm_struct *mm)
-+{
-+	atomic_long_t *lazy_mm = this_cpu_ptr(&cpu_tlbstate.lazy_mm);
-+
-+	WARN_ON_ONCE(atomic_long_read(lazy_mm) != 0);
-+	atomic_long_set(lazy_mm, (unsigned long)mm);
-+}
-+
-+static void lazy_mm_drop(void)
-+{
-+	atomic_long_t *lazy_mm = this_cpu_ptr(&cpu_tlbstate.lazy_mm);
-+
-+	unsigned long prev = atomic_long_xchg(lazy_mm, 0);
-+	if (prev & 1)
-+		mmdrop((struct mm_struct *)(prev & ~1UL));
-+}
-+
-+void arch_fixup_lazy_mm_refs(struct mm_struct *mm)
-+{
-+	int cpu;
-+
-+	/*
-+	 * mm_users is zero, so no new lazy refs will be taken.
-+	 */
-+	WARN_ON_ONCE(atomic_read(&mm->mm_users) != 0);
-+
-+	for_each_cpu(cpu, mm_cpumask(mm)) {
-+		atomic_long_t *lazy_mm = per_cpu_ptr(&cpu_tlbstate.lazy_mm, cpu);
-+		unsigned long old;
-+
-+		// Hmm, is this check actually useful?
-+		if (atomic_long_read(lazy_mm) != (unsigned long)mm)
-+			continue;
-+
-+		// XXX: we could optimize this by adding a bunch to
-+		// mm_count at the beginning and subtracting the unused refs
-+		// back off at the end.
-+		mmgrab(mm);
-+
-+		// XXX: is relaxed okay here?  We need to be sure that the
-+		// remote CPU has observed mm_users == 0.  This is just
-+		// x86 for now, but we might want to move it into a library
-+		// and use it elsewhere.
-+		old = atomic_long_cmpxchg_relaxed(lazy_mm, (unsigned long)mm,
-+						  (unsigned long)mm | 1);
-+		if (old == (unsigned long)mm) {
-+			/* The remote CPU now owns the reference we grabbed. */
-+		} else {
-+			/*
-+			 * We raced!  The remote CPU switched mms and no longer
-+			 * needs its reference.  We didn't transfer ownership
-+			 * of the reference, so drop it.
-+			 */
-+			mmdrop(mm);
-+		}
-+	}
-+}
-+
- void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
- 			struct task_struct *tsk)
- {
-@@ -587,16 +646,24 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
- 		cr4_update_pce_mm(next);
- 		switch_ldt(real_prev, next);
- 	}
-+
-+	// XXX: this can end up in __mmdrop().  Is this okay with IRQs off?
-+	// It might be nicer to defer this to a later stage in the scheduler
-+	// with IRQs on.
-+	if (was_lazy)
-+		lazy_mm_drop();
- }
- 
- /*
-- * Please ignore the name of this function.  It should be called
-- * switch_to_kernel_thread().
-+ * Please don't think too hard about the name of this function.  It
-+ * should be called something like switch_to_kernel_mm().
-  *
-  * enter_lazy_tlb() is a hint from the scheduler that we are entering a
-- * kernel thread or other context without an mm.  Acceptable implementations
-- * include doing nothing whatsoever, switching to init_mm, or various clever
-- * lazy tricks to try to minimize TLB flushes.
-+ * kernel thread or other context without an mm.  Acceptable
-+ * implementations include switching to init_mm, or various clever lazy
-+ * tricks to try to minimize TLB flushes.  We are, however, required to
-+ * either stop referencing the previous mm or to take some action to
-+ * keep it from being freed out from under us.
-  *
-  * The scheduler reserves the right to call enter_lazy_tlb() several times
-  * in a row.  It will notify us that we're going back to a real mm by
-@@ -607,7 +674,11 @@ void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
- 	if (this_cpu_read(cpu_tlbstate.loaded_mm) == &init_mm)
- 		return;
- 
-+	if (this_cpu_read(cpu_tlbstate.is_lazy))
-+		return;  /* nothing to do */
-+
- 	this_cpu_write(cpu_tlbstate.is_lazy, true);
-+	lazy_mm_grab(mm);
- }
- 
- /*
-diff --git a/kernel/fork.c b/kernel/fork.c
-index da8d360fb032..4d68162c1d02 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1066,6 +1066,9 @@ struct mm_struct *mm_alloc(void)
- 	return mm_init(mm, current, current_user_ns());
- }
- 
-+// XXX: move to a header
-+extern void arch_fixup_lazy_mm_refs(struct mm_struct *mm);
-+
- static inline void __mmput(struct mm_struct *mm)
- {
- 	VM_BUG_ON(atomic_read(&mm->mm_users));
-@@ -1084,6 +1087,8 @@ static inline void __mmput(struct mm_struct *mm)
- 	}
- 	if (mm->binfmt)
- 		module_put(mm->binfmt->module);
-+
-+	arch_fixup_lazy_mm_refs(mm);
- 	mmdrop(mm);
- }
- 
--- 
-2.28.0
-
+On Thu, Dec 3, 2020 at 12:13 AM Dave Airlie <airlied@gmail.com> wrote:
+>
+> cc'ing Ben + nouveau
+>
+> On Thu, 3 Dec 2020 at 14:59, bob <gillb4@telusplanet.net> wrote:
+> >
+> > Hello.  I have a crash dump for:
+> >
+> > $ uname -a
+> > Linux freedom 5.10.0-rc6 #1 SMP Sun Nov 29 17:26:13 MST 2020 x86_64
+> > x86_64 x86_64 GNU/Linux
+> >
+> > Occasionally when this dumps it likes to lock up the computer, but I
+> > caught it this time.
+> >
+> > Also video likes to flicker a lot.   Nouveau has been iffy since kernel
+> > 5.8.0.
+> >
+> > This isn't the only dump, it dumped probably 50 times.  If you are
+> > really desperate for all of it,
+> >
+> > reply to me directly as I'm not on the mailing list.  Here is one of them.
+> >
+> > [39019.426580] ------------[ cut here ]------------
+> > [39019.426589] WARNING: CPU: 6 PID: 14136 at
+> > drivers/gpu/drm/nouveau/dispnv50/disp.c:211 nv50_dmac_wait+0x1e1/0x230
+> > [39019.426590] Modules linked in: mt2131 s5h1409 fuse tda8290 tuner
+> > cx25840 rt2800usb rt2x00usb rt2800lib snd_hda_codec_analog
+> > snd_hda_codec_generic ledtrig_audio rt2x00lib binfmt_misc
+> > intel_powerclamp coretemp cx23885 mac80211 tda18271 altera_stapl
+> > videobuf2_dvb m88ds3103 tveeprom cx2341x dvb_core rc_core i2c_mux
+> > snd_hda_codec_hdmi videobuf2_dma_sg videobuf2_memops videobuf2_v4l2
+> > snd_hda_intel videobuf2_common snd_intel_dspcfg kvm_intel snd_hda_codec
+> > videodev snd_hda_core kvm mc snd_hwdep snd_pcm_oss snd_mixer_oss
+> > irqbypass snd_pcm cfg80211 snd_seq_dummy snd_seq_midi snd_seq_oss
+> > snd_seq_midi_event snd_rawmidi snd_seq intel_cstate snd_seq_device
+> > serio_raw snd_timer input_leds nfsd libarc4 snd asus_atk0110 i7core_edac
+> > soundcore i5500_temp auth_rpcgss nfs_acl lockd grace sch_fq_codel sunrpc
+> > parport_pc ppdev lp parport ip_tables x_tables btrfs blake2b_generic
+> > libcrc32c xor zstd_compress raid6_pq dm_mirror dm_region_hash dm_log
+> > pata_acpi pata_marvell hid_generic usbhid hid psmouse firewire_ohci
+> > [39019.426650]  firewire_core crc_itu_t i2c_i801 ahci sky2 libahci
+> > i2c_smbus lpc_ich
+> > [39019.426658] CPU: 6 PID: 14136 Comm: kworker/u16:0 Tainted: G        W
+> > I       5.10.0-rc6 #1
+> > [39019.426659] Hardware name: System manufacturer System Product
+> > Name/P6T DELUXE, BIOS 2209    09/21/2010
+> > [39019.426662] Workqueue: events_unbound nv50_disp_atomic_commit_work
+> > [39019.426665] RIP: 0010:nv50_dmac_wait+0x1e1/0x230
+> > [39019.426667] Code: 8d 48 04 48 89 4a 68 c7 00 00 00 00 20 49 8b 46 38
+> > 41 c7 86 20 01 00 00 00 00 00 00 49 89 46 68 e8 e4 fc ff ff e9 76 fe ff
+> > ff <0f> 0b b8 92 ff ff ff e9 ed fe ff ff 49 8b be 80 00 00 00 e8 c7 fc
+> > [39019.426668] RSP: 0018:ffffb79d028ebd48 EFLAGS: 00010282
+> > [39019.426670] RAX: ffffffffffffff92 RBX: 000000000000000d RCX:
+> > 0000000000000000
+> > [39019.426671] RDX: ffffffffffffff92 RSI: ffffb79d028ebc88 RDI:
+> > ffffb79d028ebd28
+> > [39019.426671] RBP: ffffb79d028ebd48 R08: 0000000000000000 R09:
+> > ffffb79d028ebc58
+> > [39019.426672] R10: 0000000000000030 R11: 00000000000011c4 R12:
+> > 00000000fffffffb
+> > [39019.426673] R13: ffffa05fc1ebd368 R14: ffffa05fc1ebd3a8 R15:
+> > ffffa05fc2425000
+> > [39019.426675] FS:  0000000000000000(0000) GS:ffffa061f3d80000(0000)
+> > knlGS:0000000000000000
+> > [39019.426676] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [39019.426677] CR2: 00007fb2d58e0000 CR3: 000000026280a000 CR4:
+> > 00000000000006e0
+> > [39019.426678] Call Trace:
+> > [39019.426685]  base827c_image_set+0x2f/0x1d0
+> > [39019.426687]  nv50_wndw_flush_set+0x89/0x1c0
+> > [39019.426688]  nv50_disp_atomic_commit_tail+0x4e7/0x7e0
+> > [39019.426693]  process_one_work+0x1d4/0x370
+> > [39019.426695]  worker_thread+0x4a/0x3b0
+> > [39019.426697]  ? process_one_work+0x370/0x370
+> > [39019.426699]  kthread+0xfe/0x140
+> > [39019.426701]  ? kthread_park+0x90/0x90
+> > [39019.426704]  ret_from_fork+0x22/0x30
+> > [39019.426706] ---[ end trace d512d675211c738c ]---
+> > [39021.426751] ------------[ cut here ]------------
+> >
+> >
+> > Thanks in advance,
+> >
+> > Bob
+> >
+> _______________________________________________
+> Nouveau mailing list
+> Nouveau@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/nouveau
