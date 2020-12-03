@@ -2,108 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6881B2CCF3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C712CCF3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729633AbgLCG17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:27:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729565AbgLCG16 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 01:27:58 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E394C061A4E;
-        Wed,  2 Dec 2020 22:27:18 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id v1so547823pjr.2;
-        Wed, 02 Dec 2020 22:27:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JIdff1VBF+uP5SziDcHY7x/1uDEIyNK1HGkkO+Ce1xk=;
-        b=IofT99cLgaFaJORr+HbK7jwv4M7wNQrOzi+3OMaqTH2qKYyxCTOR/4n75dJV550QTZ
-         esfx/SEMJNju/ZaA5nlmWN/s3dBlE2mITEbov+NZCL1L3+ZGV3+IfQ/WFQqKF0h8B/Xk
-         QoCKlrelkKy0dcHuagzdWnsZnqLfPdk8J6aghrhpF0U80hxw1SRt9fbiT0EpN1CAvtJO
-         LtpR/nTDt3KyIJGP4cAPTtAR3PxSYLkd7foCS9vfpjZFaEHFL5tRG68mUeJLrUPV56vH
-         1DK4PWNB/GQPqJMsuRTCarqVp+nPOz9R0ckl03ZSxeLtNWcZOP6I+EcC68YoCLLRB1Vq
-         DZog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JIdff1VBF+uP5SziDcHY7x/1uDEIyNK1HGkkO+Ce1xk=;
-        b=GiLNyANFO1n1EBwu3YWnpcSstxSF7NWPUm5hY6CudIUczKZYlvKqEnyLmg/nzsrCO5
-         ai5C264zJVDWqhtadbGGeYt4d3pwg7OJHctVBMnCwU1FooinsFtOW+sppv+z1+IAAXS8
-         nA+f1al88D++/dCNoGPq+aENLQb1p/W7G0y5ibfnArGRFs6oYwRdP+hexICN5oHK9t8k
-         JHx97hJszl5LqqFmIe/fzd1vZtf+uC2n7O3p4CQ9GjlARoxDv3l2HLoDE7rcwTAVR9QC
-         KgvFr7e48g5PLzpowpzBw0EAh5a6MDZta5ShuA9AQmMyAj4Sim9PL3jP/LOV/ROtisuv
-         0S9g==
-X-Gm-Message-State: AOAM533THHdYPQfdy5ueGM7TqZeH+24jYDrwbolRM7QxvURZnsWFJyDv
-        xIIL5g5d3S4Q0IVs7nFAI3Y=
-X-Google-Smtp-Source: ABdhPJyjSNv/C2l8ZtaC9KjD/0k/cr478E0J4aUuV0nD73oFdnOeF77Iv6agw2RiQxq+Tc6d+K+PHg==
-X-Received: by 2002:a17:902:9891:b029:d8:fdf6:7c04 with SMTP id s17-20020a1709029891b02900d8fdf67c04mr1727757plp.54.1606976837830;
-        Wed, 02 Dec 2020 22:27:17 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id o9sm277249pjl.11.2020.12.02.22.27.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 22:27:17 -0800 (PST)
-Date:   Wed, 2 Dec 2020 22:27:13 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Cc:     linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-tegra@vger.kernel.org, patches@opensource.cirrus.com,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Sylvain Lemieux <slemieux.tyco@gmail.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Barry Song <baohua@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Nick Dyer <nick@shmanahar.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sangwon Jee <jeesw@melfas.com>,
-        Peter Hutterer <peter.hutterer@redhat.com>,
-        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        kernel@collabora.com
-Subject: Re: [PATCH v2] Input: document inhibiting
-Message-ID: <X8iFQfsZSh0aV+pX@google.com>
-References: <f9007f37-c526-5fa4-3188-a554d2434177@redhat.com>
- <20200617101822.8558-1-andrzej.p@collabora.com>
+        id S1729569AbgLCG2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:28:53 -0500
+Received: from mga12.intel.com ([192.55.52.136]:9697 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726405AbgLCG2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 01:28:53 -0500
+IronPort-SDR: YPCOd+iSU1/nozAEaBfC/L0aYaH8kAj7tGPMuwILBKDdXay4/5FBVdnJ1PaXsYq8ZJPMKdIsqh
+ Ab/0eQ9LZjUw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="152395954"
+X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
+   d="scan'208";a="152395954"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 22:28:12 -0800
+IronPort-SDR: V9bG7QRBSc2woj2zV/e/nSnVoGB8yHdfSnQfplYsXbynws+qCgBnX2Wzarb5Taf0f6umx9AglE
+ hQzNRhfpDdlg==
+X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
+   d="scan'208";a="481845558"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 22:28:12 -0800
+Subject: [PATCH] x86/mm: Fix leak of pmd ptlock
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
+Cc:     stable@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Yi Zhang <yi.zhang@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        willy@infradead.org
+Date:   Wed, 02 Dec 2020 22:28:12 -0800
+Message-ID: <160697689204.605323.17629854984697045602.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617101822.8558-1-andrzej.p@collabora.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 12:18:22PM +0200, Andrzej Pietrasiewicz wrote:
-> Document inhibiting input devices and its relation to being
-> a wakeup source.
-> 
-> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Commit 28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
+introduced a new location where a pmd was released, but neglected to run
+the pmd page destructor. In fact, this happened previously for a
+different pmd release path and was fixed by commit:
 
-Applied, thank you.
+c283610e44ec ("x86, mm: do not leak page->ptl for pmd page tables").
 
--- 
-Dmitry
+This issue was hidden until recently because the failure mode is silent,
+but commit:
+
+b2b29d6d0119 ("mm: account PMD tables like PTE tables")
+
+...turns the failure mode into this signature:
+
+ BUG: Bad page state in process lt-pmem-ns  pfn:15943d
+ page:000000007262ed7b refcount:0 mapcount:-1024 mapping:0000000000000000 index:0x0 pfn:0x15943d
+ flags: 0xaffff800000000()
+ raw: 00affff800000000 dead000000000100 0000000000000000 0000000000000000
+ raw: 0000000000000000 ffff913a029bcc08 00000000fffffbff 0000000000000000
+ page dumped because: nonzero mapcount
+ [..]
+  dump_stack+0x8b/0xb0
+  bad_page.cold+0x63/0x94
+  free_pcp_prepare+0x224/0x270
+  free_unref_page+0x18/0xd0
+  pud_free_pmd_page+0x146/0x160
+  ioremap_pud_range+0xe3/0x350
+  ioremap_page_range+0x108/0x160
+  __ioremap_caller.constprop.0+0x174/0x2b0
+  ? memremap+0x7a/0x110
+  memremap+0x7a/0x110
+  devm_memremap+0x53/0xa0
+  pmem_attach_disk+0x4ed/0x530 [nd_pmem]
+  ? __devm_release_region+0x52/0x80
+  nvdimm_bus_probe+0x85/0x210 [libnvdimm]
+
+Given this is a repeat occurrence it seemed prudent to look for other
+places where this destructor might be missing and whether a better
+helper is needed. try_to_free_pmd_page() looks like a candidate, but
+testing with setting up and tearing down pmd mappings via the dax unit
+tests is thus far not triggering the failure. As for a better helper
+pmd_free() is close, but it is a messy fit due to requiring an @mm arg.
+Also, ___pmd_free_tlb() wants to call paravirt_tlb_remove_table()
+instead of free_page(), so open-coded pgtable_pmd_page_dtor() seems the
+best way forward for now.
+
+Fixes: 28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
+Cc: <stable@vger.kernel.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Co-debugged-by: Matthew Wilcox <willy@infradead.org>
+Tested-by: Yi Zhang <yi.zhang@redhat.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+ arch/x86/mm/pgtable.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index dfd82f51ba66..f6a9e2e36642 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -829,6 +829,8 @@ int pud_free_pmd_page(pud_t *pud, unsigned long addr)
+ 	}
+ 
+ 	free_page((unsigned long)pmd_sv);
++
++	pgtable_pmd_page_dtor(virt_to_page(pmd));
+ 	free_page((unsigned long)pmd);
+ 
+ 	return 1;
+
