@@ -2,203 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7C12CD2B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2C42CD2BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730128AbgLCJkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:40:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbgLCJkH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:40:07 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4442C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 01:39:21 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id y7so1789676lji.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 01:39:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=87JXtw/NuImj4CEAwcS3K0+LyEdyqYc6Ik1YBJGXgHQ=;
-        b=ncAP/4WR3lka3FQV72J3WYpVAM9JcUNBy4yuvRt4oNx4TneevIQByJTgtvfDNqhNRS
-         UhC1GHbWB7yQ3KmyYzHEaz1Hz0dChlFEOi+WCIlC6DzfBbJMoA6/OxFk8FQ/lYjQkW+p
-         xYqbuYmQJ8FuisU3PaVDl1RCGeDNfbl+KjK45jSim2+cjZiBpkz+e3pfXsTxq7o86sDh
-         AMQobK96jPwkWv2DVTymeH8ZHKPSnzRlAWzAsdIltZhDn3PS6Zybd9ikxjCSVVOXKe0T
-         V4OkiPDVQeH9vNu8ymPsa9nk9xawZFhrhqRZd85cizxsKbB9sy9+Hs7TelFr3liYOynX
-         XBYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=87JXtw/NuImj4CEAwcS3K0+LyEdyqYc6Ik1YBJGXgHQ=;
-        b=OBMAo3hqfqlwS/WMZG7nLmHkVRDSuiMP95GidLZpherg6Zpd4tda27ktSoxuHOmXYr
-         2YkkDfYhfyFmg1U1n9fpqiRX+WhM0tAF83I12vBtnWTyCY3HlN5sEOrt6oSZ7KxYvVCR
-         LVzywIBcOzxneAN7wYZs5ajdDAd9UZOIwC7G59ML1Bixgv7XarAhJo6OVbMk6wna1y1M
-         3nClHKntoJGCWlFxfMy6rpVmsm6N9uqVTCHURTtFIpgkh0TBSqcSovqjUZunmWsTf2di
-         ZHoYJp6Lif2NpSJhc32ZV/1HKiwlHyvWupLvrS0hoSCs26tYt6VsO59rYziajBJJMJ14
-         n0dg==
-X-Gm-Message-State: AOAM532AxwSiE9KyEynTqQiIvve+gxXt5i0RssUHWj9RkfQvfLaC5whm
-        qj5ph2udVy3V3dmMcjtTz9Y6hUsfgCBNW4grP3zL5Q==
-X-Google-Smtp-Source: ABdhPJyhx4nIcs643IMbl0F4Dj7bkGFKz8NBBvEA0cDs5cb7dKUi4K5TnYSyPZJ1oHzhBarqJ7Sm79DATF/DhoNyG7U=
-X-Received: by 2002:a2e:8050:: with SMTP id p16mr911186ljg.69.1606988360003;
- Thu, 03 Dec 2020 01:39:20 -0800 (PST)
+        id S2388634AbgLCJkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:40:42 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46142 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387823AbgLCJkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 04:40:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BA0C5AC55;
+        Thu,  3 Dec 2020 09:39:59 +0000 (UTC)
+Subject: Re: [PATCH] drm/hisilicon: Deletted the entire file hibmc_ttm.c
+To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
+        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
+        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
+        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
+References: <1606986347-54007-1-git-send-email-tiantao6@hisilicon.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <4ce462b2-cd48-0e80-0c09-15f0d42f9c55@suse.de>
+Date:   Thu, 3 Dec 2020 10:39:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20201201025944.18260-1-song.bao.hua@hisilicon.com>
- <20201201025944.18260-3-song.bao.hua@hisilicon.com> <CAKfTPtAppZFdku6k3cA=kNYKjU5e7w4A+E3R5_m11z+jy_WCBw@mail.gmail.com>
- <f9d9c6e959e441ec94264891ae90c11d@hisilicon.com> <CAKfTPtDqpQBcjq03cJEKN99XOZdNuV560ja9S-oZzkq7BToR8w@mail.gmail.com>
- <414fbd167b214452b925ac674575f0d6@hisilicon.com> <CAKfTPtALPjSvOZ2xf9cka9R-1uqi3AHQ+GYy7asT3wfvmLqaXw@mail.gmail.com>
- <d81006facd444d8a83bd7f1e24ccf6d9@hisilicon.com>
-In-Reply-To: <d81006facd444d8a83bd7f1e24ccf6d9@hisilicon.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 3 Dec 2020 10:39:08 +0100
-Message-ID: <CAKfTPtAy_5QxnbmHq1pbGRhQYJ69ULovO6CKro-KkNKNnHMveg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Cc: Len Brown" <lenb@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>, "xuwei (O)" <xuwei5@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1606986347-54007-1-git-send-email-tiantao6@hisilicon.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="t4Qn74Rwal5QuoY0zMtUs386QKrdEaNfI"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 at 10:11, Song Bao Hua (Barry Song)
-<song.bao.hua@hisilicon.com> wrote:
->
->
->
-> > -----Original Message-----
-> > From: Vincent Guittot [mailto:vincent.guittot@linaro.org]
-> > Sent: Thursday, December 3, 2020 10:04 PM
-> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > Cc: Valentin Schneider <valentin.schneider@arm.com>; Catalin Marinas
-> > <catalin.marinas@arm.com>; Will Deacon <will@kernel.org>; Rafael J. Wysocki
-> > <rjw@rjwysocki.net>; Cc: Len Brown <lenb@kernel.org>;
-> > gregkh@linuxfoundation.org; Jonathan Cameron <jonathan.cameron@huawei.com>;
-> > Ingo Molnar <mingo@redhat.com>; Peter Zijlstra <peterz@infradead.org>; Juri
-> > Lelli <juri.lelli@redhat.com>; Dietmar Eggemann <dietmar.eggemann@arm.com>;
-> > Steven Rostedt <rostedt@goodmis.org>; Ben Segall <bsegall@google.com>; Mel
-> > Gorman <mgorman@suse.de>; Mark Rutland <mark.rutland@arm.com>; LAK
-> > <linux-arm-kernel@lists.infradead.org>; linux-kernel
-> > <linux-kernel@vger.kernel.org>; ACPI Devel Maling List
-> > <linux-acpi@vger.kernel.org>; Linuxarm <linuxarm@huawei.com>; xuwei (O)
-> > <xuwei5@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>
-> > Subject: Re: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
-> >
-> > On Wed, 2 Dec 2020 at 21:58, Song Bao Hua (Barry Song)
-> > <song.bao.hua@hisilicon.com> wrote:
-> > >
-> > > >
-> > > > Sorry. Please ignore this. I added some printk here while testing
-> > > > one numa. Will update you the data in another email.
-> > >
-> > > Re-tested in one NUMA node(cpu0-cpu23):
-> > >
-> > > g=1
-> > > Running in threaded mode with 1 groups using 40 file descriptors
-> > > Each sender will pass 100000 messages of 100 bytes
-> > > w/o: 7.689 7.485 7.485 7.458 7.524 7.539 7.738 7.693 7.568 7.674=7.5853
-> > > w/ : 7.516 7.941 7.374 7.963 7.881 7.910 7.420 7.556 7.695 7.441=7.6697
-> > > w/ but dropped select_idle_cluster:
-> > >      7.752 7.739 7.739 7.571 7.545 7.685 7.407 7.580 7.605 7.487=7.611
-> > >
-> > > g=2
-> > > Running in threaded mode with 2 groups using 40 file descriptors
-> > > Each sender will pass 100000 messages of 100 bytes
-> > > w/o: 10.127 10.119 10.070 10.196 10.057 10.111 10.045 10.164 10.162
-> > > 9.955=10.1006
-> > > w/ : 9.694 9.654 9.612 9.649 9.686 9.734 9.607 9.842 9.690 9.710=9.6878
-> > > w/ but dropped select_idle_cluster:
-> > >      9.877 10.069 9.951 9.918 9.947 9.790 9.906 9.820 9.863 9.906=9.9047
-> > >
-> > > g=3
-> > > Running in threaded mode with 3 groups using 40 file descriptors
-> > > Each sender will pass 100000 messages of 100 bytes
-> > > w/o: 15.885 15.254 15.932 15.647 16.120 15.878 15.857 15.759 15.674
-> > > 15.721=15.7727
-> > > w/ : 14.974 14.657 13.969 14.985 14.728 15.665 15.191 14.995 14.946
-> > > 14.895=14.9005
-> > > w/ but dropped select_idle_cluster:
-> > >      15.405 15.177 15.373 15.187 15.450 15.540 15.278 15.628 15.228
-> > 15.325=15.3591
-> > >
-> > > g=4
-> > > Running in threaded mode with 4 groups using 40 file descriptors
-> > > Each sender will pass 100000 messages of 100 bytes
-> > > w/o: 20.014 21.025 21.119 21.235 19.767 20.971 20.962 20.914 21.090
-> > 21.090=20.8187
-> > > w/ : 20.331 20.608 20.338 20.445 20.456 20.146 20.693 20.797 21.381
-> > 20.452=20.5647
-> > > w/ but dropped select_idle_cluster:
-> > >      19.814 20.126 20.229 20.350 20.750 20.404 19.957 19.888 20.226
-> > 20.562=20.2306
-> > >
-> >
-> > I assume that you have run this on v5.9 as previous tests.
->
-> Yep
->
-> > The results don't show any real benefit of select_idle_cluster()
-> > inside a node whereas this is where we could expect most of the
-> > benefit. We have to understand why we have such an impact on numa
-> > tests only.
->
-> There is a 4-5.5% increase while g=2 and g=3.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--t4Qn74Rwal5QuoY0zMtUs386QKrdEaNfI
+Content-Type: multipart/mixed; boundary="xWYLecE0OUB0aM4nVXbFiASUR1YBykoHS";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
+ kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
+ dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <4ce462b2-cd48-0e80-0c09-15f0d42f9c55@suse.de>
+Subject: Re: [PATCH] drm/hisilicon: Deletted the entire file hibmc_ttm.c
+References: <1606986347-54007-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1606986347-54007-1-git-send-email-tiantao6@hisilicon.com>
 
-my point was with vs without select_idle_cluster() but still having a
-cluster domain level
-In this case, the diff is -0.8% for g=1 +2.2% for g=2, +3% for g=3 and
--1.7% for g=4
+--xWYLecE0OUB0aM4nVXbFiASUR1YBykoHS
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
->
-> Regarding the huge increase in NUMA case,  at the first beginning, I suspect
-> we have wrong llc domain. For example, if cpu0's llc domain span
-> cpu0-cpu47, then select_idle_cpu() is running in wrong range while
-> it should run in cpu0-cpu23.
->
-> But after printing the llc domain's span, I find it is completely right.
-> Cpu0's llc span: cpu0-cpu23
-> Cpu24's llc span: cpu24-cpu47
+Hi
 
-Have you checked that the cluster mask was also correct ?
+Am 03.12.20 um 10:05 schrieb Tian Tao:
+> Deletted the entire file hibmc_ttm.c. drmm_vram_helper_init() can be
 
->
-> Maybe I need more trace data to figure out if select_idle_cpu() is running
-> correctly. For example, maybe I can figure out if it is always returning -1,
-> or it returns -1 very often?
+Deletted -> Delete
 
-yes, could be interesting to check how often select_idle_cpu return -1
+Here and in the subject line.
 
->
-> Or do you have any idea?
+> called directly from hibmc_load(). hibmc_dumb_create() and
+> hibmc_mode_funcs can go to hibmc_drm_drv.c
+>=20
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 
-tracking migration across nod could help to understand too
+Code changes look good.
 
-Vincent
->
->
-> >
-> > > Thanks
-> > > Barry
->
-> Thanks
-> Barry
->
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+> ---
+>   drivers/gpu/drm/hisilicon/hibmc/Makefile        |  2 +-
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 21 ++++++++++-
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h |  4 --
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c     | 50 ----------------=
+---------
+>   4 files changed, 20 insertions(+), 57 deletions(-)
+>   delete mode 100644 drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+>=20
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/Makefile b/drivers/gpu/drm=
+/hisilicon/hibmc/Makefile
+> index 684ef79..d25c75e 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/Makefile
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/Makefile
+> @@ -1,4 +1,4 @@
+>   # SPDX-License-Identifier: GPL-2.0-only
+> -hibmc-drm-y :=3D hibmc_drm_drv.o hibmc_drm_de.o hibmc_drm_vdac.o hibmc=
+_ttm.o hibmc_drm_i2c.o
+> +hibmc-drm-y :=3D hibmc_drm_drv.o hibmc_drm_de.o hibmc_drm_vdac.o hibmc=
+_drm_i2c.o
+>  =20
+>   obj-$(CONFIG_DRM_HISI_HIBMC) +=3D hibmc-drm.o
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> index 5aea2e9..3687753 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> @@ -16,6 +16,7 @@
+>  =20
+>   #include <drm/drm_atomic_helper.h>
+>   #include <drm/drm_drv.h>
+> +#include <drm/drm_gem_framebuffer_helper.h>
+>   #include <drm/drm_gem_vram_helper.h>
+>   #include <drm/drm_irq.h>
+>   #include <drm/drm_managed.h>
+> @@ -43,6 +44,12 @@ static irqreturn_t hibmc_drm_interrupt(int irq, void=
+ *arg)
+>   	return IRQ_HANDLED;
+>   }
+>  =20
+> +static int hibmc_dumb_create(struct drm_file *file, struct drm_device =
+*dev,
+> +			     struct drm_mode_create_dumb *args)
+> +{
+> +	return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
+> +}
+> +
+>   static const struct drm_driver hibmc_driver =3D {
+>   	.driver_features	=3D DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
+>   	.fops			=3D &hibmc_fops,
+> @@ -77,6 +84,13 @@ static const struct dev_pm_ops hibmc_pm_ops =3D {
+>   				hibmc_pm_resume)
+>   };
+>  =20
+> +static const struct drm_mode_config_funcs hibmc_mode_funcs =3D {
+> +	.mode_valid =3D drm_vram_helper_mode_valid,
+> +	.atomic_check =3D drm_atomic_helper_check,
+> +	.atomic_commit =3D drm_atomic_helper_commit,
+> +	.fb_create =3D drm_gem_fb_create,
+> +};
+> +
+>   static int hibmc_kms_init(struct hibmc_drm_private *priv)
+>   {
+>   	struct drm_device *dev =3D &priv->dev;
+> @@ -262,9 +276,12 @@ static int hibmc_load(struct drm_device *dev)
+>   	if (ret)
+>   		goto err;
+>  =20
+> -	ret =3D hibmc_mm_init(priv);
+> -	if (ret)
+> +	ret =3D drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
+> +				    priv->fb_size);
+> +	if (ret) {
+> +		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
+>   		goto err;
+> +	}
+>  =20
+>   	ret =3D hibmc_kms_init(priv);
+>   	if (ret)
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> index 2786de5..a49c10e 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> @@ -64,10 +64,6 @@ int hibmc_de_init(struct hibmc_drm_private *priv);
+>   int hibmc_vdac_init(struct hibmc_drm_private *priv);
+>  =20
+>   int hibmc_mm_init(struct hibmc_drm_private *hibmc);
+> -int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
+> -		      struct drm_mode_create_dumb *args);
+>   int hibmc_ddc_create(struct drm_device *drm_dev, struct hibmc_connect=
+or *connector);
+>  =20
+> -extern const struct drm_mode_config_funcs hibmc_mode_funcs;
+> -
+>   #endif
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/=
+drm/hisilicon/hibmc/hibmc_ttm.c
+> deleted file mode 100644
+> index 892d566..0000000
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+> +++ /dev/null
+> @@ -1,50 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-or-later
+> -/* Hisilicon Hibmc SoC drm driver
+> - *
+> - * Based on the bochs drm driver.
+> - *
+> - * Copyright (c) 2016 Huawei Limited.
+> - *
+> - * Author:
+> - *	Rongrong Zou <zourongrong@huawei.com>
+> - *	Rongrong Zou <zourongrong@gmail.com>
+> - *	Jianhua Li <lijianhua@huawei.com>
+> - */
+> -
+> -#include <linux/pci.h>
+> -
+> -#include <drm/drm_atomic_helper.h>
+> -#include <drm/drm_gem.h>
+> -#include <drm/drm_gem_framebuffer_helper.h>
+> -#include <drm/drm_gem_vram_helper.h>
+> -#include <drm/drm_print.h>
+> -
+> -#include "hibmc_drm_drv.h"
+> -
+> -int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+> -{
+> -	int ret;
+> -	struct drm_device *dev =3D &hibmc->dev;
+> -
+> -	ret =3D drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
+> -				    hibmc->fb_size);
+> -	if (ret) {
+> -		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
+> -		return ret;
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+> -int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
+> -		      struct drm_mode_create_dumb *args)
+> -{
+> -	return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
+> -}
+> -
+> -const struct drm_mode_config_funcs hibmc_mode_funcs =3D {
+> -	.mode_valid =3D drm_vram_helper_mode_valid,
+> -	.atomic_check =3D drm_atomic_helper_check,
+> -	.atomic_commit =3D drm_atomic_helper_commit,
+> -	.fb_create =3D drm_gem_fb_create,
+> -};
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--xWYLecE0OUB0aM4nVXbFiASUR1YBykoHS--
+
+--t4Qn74Rwal5QuoY0zMtUs386QKrdEaNfI
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/Ism4FAwAAAAAACgkQlh/E3EQov+AC
+fhAAhFjNclNFVa882U241bIruWM91XLLR0nwZXFFdwCmojGySOuigMMaAmkfSKcIk2YMkb9zm0No
+HYc5PL6S+jBPuAkdVExOAR4apOPxjlpovK7vlKLkm3SZR8dBH0Kt/S1GQGZB5oPR5e094qwPJg9p
+dBr6zvjkEaACEteyA+tDfVptcaOftYg/nICND3RLNKtrAhcb/wmCGFgD5luNZ/YqCU5kZ8z59ma1
+D3gLHCCyXtNnOpw+SE2jZravk6CPGpdNKS3oG2Q0j3o9nNLm8QdP8eLU9kzOTy3W+tEZGKLngbcl
+xzUNITp+IHCsm07ZQ+P+mdTPzzXwtD+SuuXFjUEOVyk8Qv501o2GK8n+/JVyBAyw2Igvn5mMbkit
+apQUcnPXx7oZsm9K8MIi1Rfsd/ScDCjcGKv6rgcwXl7LyL1SO7m5OLuZtH9ucXfE5N9UL2noHGbJ
+Np1YNfv46apcXpXsLSbn4/6pNPXQ8UsSSAXZqw4HLhJjJqYNv7lQj/sduNsvjhcPls1CERMvnzt2
+GieXNmFFHlXiF3VtFtVjMD8eWUgrtbO9dVxyzWgxGM+t5FkmBGc5qDt+Ep4bHhUbeyMJkaLkoFHW
+/EwFxhuro/w9ZDE94zvZiBT1hZn2by03iyUZXAPNvXPfpVpW01PCn9AFUECiqQYxLuJS/0pMLqlu
+YE4=
+=Cizf
+-----END PGP SIGNATURE-----
+
+--t4Qn74Rwal5QuoY0zMtUs386QKrdEaNfI--
