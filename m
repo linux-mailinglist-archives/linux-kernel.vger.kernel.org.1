@@ -2,303 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B332CDA43
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D43D2CDA50
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731046AbgLCPlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 10:41:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbgLCPlj (ORCPT
+        id S2389078AbgLCPqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 10:46:44 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:58874 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730832AbgLCPqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:41:39 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078FAC061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 07:40:58 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id g185so4346446wmf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 07:40:58 -0800 (PST)
+        Thu, 3 Dec 2020 10:46:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kCQS8T9IzaK7qsrPFGKkQow9sRMix1gp13CfkJxVIA0=;
-        b=VXideQU4m746yyi4UAyDiWJeEJZT5L3Vw5k/xn06MXy3jlMwGBHa+GGn7QqEtNPCER
-         FDdVWuKd+KJClvrz0z+GKBzLzpx8ZWuHikTch0FrWWRcqlwY7DqoY/6iVFSHbOJPMxqP
-         6OXWx6S0Hb13t0jCiI+Tugt06DUWS8vDj5G6LhXFoMBi3LaIxKfNDpqhOwTIj6au4KWH
-         OP/ndNlq6g46XazbTSibOJlf6GcDeLIkDHGClUaaKQGlHWXDg+0KbY20RPNdp/ZrfUak
-         7qzNy098gY1pCT+PZXnk6/8Mu8jcP+oFn62Pt8LGdy2t3oZBmhPp2RyTaC4NP6EW2fF6
-         2Zwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kCQS8T9IzaK7qsrPFGKkQow9sRMix1gp13CfkJxVIA0=;
-        b=cvelBZ7uZF4hy54jA+m/+lnjwi7YjGI2nvLP+oOp3rUhdGu5/vtYejLzeZrJMgEKZR
-         F+u8Jo5okTpI8OZ+4V0erl7cIu/WqpG4ULAw6DTrmZmiS+BRqcn1NvmLDvPNDO0wos9/
-         vlOjLM8jUoDDKGT5ihoLxhPxpbIaR8MUG0hhWTcSHpmHZtUIFoen3b4wco9cfOFW33Rx
-         tuuncfLA42Mrn4LeFsxKPUPI+N0pYTs+5hxlDAwQmRizmPC/cAIdDYkVAHKclrm6diby
-         F8d+qDaHFv/nV31YJy+1/+sj5bHilRio4NSqt/L23NvawH+Z3e7ue441K0bBXMvCwOdH
-         n67Q==
-X-Gm-Message-State: AOAM533CX9kb8mF3l+7BY63FE5aEO2yB5iJz9EKSv+izB0uhi0kX7ykj
-        NR+iN3KfCHw13Twa1GwBkF/mSg==
-X-Google-Smtp-Source: ABdhPJzLB9zF1QadPDaL6kyXpahnC6RjyhmYQddcNPWEmYzU80qn43ICc2D9JRNcwrSz4Uv2vjnDsA==
-X-Received: by 2002:a1c:5605:: with SMTP id k5mr3976889wmb.99.1607010057394;
-        Thu, 03 Dec 2020 07:40:57 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1c7d:2d7a:9709:b9a2? ([2a01:e34:ed2f:f020:1c7d:2d7a:9709:b9a2])
-        by smtp.googlemail.com with ESMTPSA id e27sm2710605wrc.9.2020.12.03.07.40.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 07:40:56 -0800 (PST)
-Subject: Re: [PATCH v2 3/5] thermal: devfreq_cooling: add new registration
- functions with Energy Model
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
-        orjan.eide@arm.com, robh@kernel.org,
-        alyssa.rosenzweig@collabora.com, steven.price@arm.com,
-        airlied@linux.ie, daniel@ffwll.ch, ionela.voinescu@arm.com
-References: <20201118120358.17150-1-lukasz.luba@arm.com>
- <20201118120358.17150-4-lukasz.luba@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <2eb16ccf-f635-af2d-616f-9cd0cec88ca0@linaro.org>
-Date:   Thu, 3 Dec 2020 16:40:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1607010403; x=1638546403;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=iEqORASAc0p83GGQuYanBv7xolCxl7jigftmZ2kUBGs=;
+  b=NpZ1NDrq6htv4A+v2jygltyMuxZFvv27j2SfP+5sstzH59cTPOM4fxHN
+   Uc9+A/3UP6CrYRERqP6AEZHlRlvU7nXTjSBum2KkvI1gQT1MHGmRw/wbh
+   1lYL5E2UyP2DuezvNZ2V9/BMUIezkLQNyVKh8CDhWoUA/l6Tpv6OAribf
+   k=;
+X-IronPort-AV: E=Sophos;i="5.78,389,1599523200"; 
+   d="scan'208";a="68923395"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 03 Dec 2020 15:42:12 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 7B7B3A2102;
+        Thu,  3 Dec 2020 15:42:08 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 3 Dec 2020 15:42:07 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.160.229) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 3 Dec 2020 15:42:03 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <edumazet@google.com>
+CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <davem@davemloft.net>,
+        <eric.dumazet@gmail.com>, <kafai@fb.com>, <kuba@kernel.org>,
+        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v1 bpf-next 03/11] tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+Date:   Fri, 4 Dec 2020 00:41:59 +0900
+Message-ID: <20201203154159.76404-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
+In-Reply-To: <CANn89i+MtOWryWzeDXnG-waOnqY8SxVxb_Q2Y4C=FdPGsKXivA@mail.gmail.com>
+References: <CANn89i+MtOWryWzeDXnG-waOnqY8SxVxb_Q2Y4C=FdPGsKXivA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201118120358.17150-4-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.229]
+X-ClientProxiedBy: EX13D34UWC003.ant.amazon.com (10.43.162.66) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/11/2020 13:03, Lukasz Luba wrote:
-> The Energy Model (EM) framework supports devices such as Devfreq. Create
-> new registration functions which automatically register EM for the thermal
-> devfreq_cooling devices. This patch prepares the code for coming changes
-> which are going to replace old power model with the new EM.
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 3 Dec 2020 15:31:53 +0100
+> On Thu, Dec 3, 2020 at 3:14 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
+> >
+> > From:   Eric Dumazet <eric.dumazet@gmail.com>
+> > Date:   Tue, 1 Dec 2020 16:25:51 +0100
+> > > On 12/1/20 3:44 PM, Kuniyuki Iwashima wrote:
+> > > > This patch lets reuseport_detach_sock() return a pointer of struct sock,
+> > > > which is used only by inet_unhash(). If it is not NULL,
+> > > > inet_csk_reqsk_queue_migrate() migrates TCP_ESTABLISHED/TCP_SYN_RECV
+> > > > sockets from the closing listener to the selected one.
+> > > >
+> > > > Listening sockets hold incoming connections as a linked list of struct
+> > > > request_sock in the accept queue, and each request has reference to a full
+> > > > socket and its listener. In inet_csk_reqsk_queue_migrate(), we only unlink
+> > > > the requests from the closing listener's queue and relink them to the head
+> > > > of the new listener's queue. We do not process each request and its
+> > > > reference to the listener, so the migration completes in O(1) time
+> > > > complexity. However, in the case of TCP_SYN_RECV sockets, we take special
+> > > > care in the next commit.
+> > > >
+> > > > By default, the kernel selects a new listener randomly. In order to pick
+> > > > out a different socket every time, we select the last element of socks[] as
+> > > > the new listener. This behaviour is based on how the kernel moves sockets
+> > > > in socks[]. (See also [1])
+> > > >
+> > > > Basically, in order to redistribute sockets evenly, we have to use an eBPF
+> > > > program called in the later commit, but as the side effect of such default
+> > > > selection, the kernel can redistribute old requests evenly to new listeners
+> > > > for a specific case where the application replaces listeners by
+> > > > generations.
+> > > >
+> > > > For example, we call listen() for four sockets (A, B, C, D), and close the
+> > > > first two by turns. The sockets move in socks[] like below.
+> > > >
+> > > >   socks[0] : A <-.      socks[0] : D          socks[0] : D
+> > > >   socks[1] : B   |  =>  socks[1] : B <-.  =>  socks[1] : C
+> > > >   socks[2] : C   |      socks[2] : C --'
+> > > >   socks[3] : D --'
+> > > >
+> > > > Then, if C and D have newer settings than A and B, and each socket has a
+> > > > request (a, b, c, d) in their accept queue, we can redistribute old
+> > > > requests evenly to new listeners.
+> > > >
+> > > >   socks[0] : A (a) <-.      socks[0] : D (a + d)      socks[0] : D (a + d)
+> > > >   socks[1] : B (b)   |  =>  socks[1] : B (b) <-.  =>  socks[1] : C (b + c)
+> > > >   socks[2] : C (c)   |      socks[2] : C (c) --'
+> > > >   socks[3] : D (d) --'
+> > > >
+> > > > Here, (A, D) or (B, C) can have different application settings, but they
+> > > > MUST have the same settings at the socket API level; otherwise, unexpected
+> > > > error may happen. For instance, if only the new listeners have
+> > > > TCP_SAVE_SYN, old requests do not have SYN data, so the application will
+> > > > face inconsistency and cause an error.
+> > > >
+> > > > Therefore, if there are different kinds of sockets, we must attach an eBPF
+> > > > program described in later commits.
+> > > >
+> > > > Link: https://lore.kernel.org/netdev/CAEfhGiyG8Y_amDZ2C8dQoQqjZJMHjTY76b=KBkTKcBtA=dhdGQ@mail.gmail.com/
+> > > > Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
+> > > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> > > > ---
+> > > >  include/net/inet_connection_sock.h |  1 +
+> > > >  include/net/sock_reuseport.h       |  2 +-
+> > > >  net/core/sock_reuseport.c          | 10 +++++++++-
+> > > >  net/ipv4/inet_connection_sock.c    | 30 ++++++++++++++++++++++++++++++
+> > > >  net/ipv4/inet_hashtables.c         |  9 +++++++--
+> > > >  5 files changed, 48 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
+> > > > index 7338b3865a2a..2ea2d743f8fc 100644
+> > > > --- a/include/net/inet_connection_sock.h
+> > > > +++ b/include/net/inet_connection_sock.h
+> > > > @@ -260,6 +260,7 @@ struct dst_entry *inet_csk_route_child_sock(const struct sock *sk,
+> > > >  struct sock *inet_csk_reqsk_queue_add(struct sock *sk,
+> > > >                                   struct request_sock *req,
+> > > >                                   struct sock *child);
+> > > > +void inet_csk_reqsk_queue_migrate(struct sock *sk, struct sock *nsk);
+> > > >  void inet_csk_reqsk_queue_hash_add(struct sock *sk, struct request_sock *req,
+> > > >                                unsigned long timeout);
+> > > >  struct sock *inet_csk_complete_hashdance(struct sock *sk, struct sock *child,
+> > > > diff --git a/include/net/sock_reuseport.h b/include/net/sock_reuseport.h
+> > > > index 0e558ca7afbf..09a1b1539d4c 100644
+> > > > --- a/include/net/sock_reuseport.h
+> > > > +++ b/include/net/sock_reuseport.h
+> > > > @@ -31,7 +31,7 @@ struct sock_reuseport {
+> > > >  extern int reuseport_alloc(struct sock *sk, bool bind_inany);
+> > > >  extern int reuseport_add_sock(struct sock *sk, struct sock *sk2,
+> > > >                           bool bind_inany);
+> > > > -extern void reuseport_detach_sock(struct sock *sk);
+> > > > +extern struct sock *reuseport_detach_sock(struct sock *sk);
+> > > >  extern struct sock *reuseport_select_sock(struct sock *sk,
+> > > >                                       u32 hash,
+> > > >                                       struct sk_buff *skb,
+> > > > diff --git a/net/core/sock_reuseport.c b/net/core/sock_reuseport.c
+> > > > index fd133516ac0e..60d7c1f28809 100644
+> > > > --- a/net/core/sock_reuseport.c
+> > > > +++ b/net/core/sock_reuseport.c
+> > > > @@ -216,9 +216,11 @@ int reuseport_add_sock(struct sock *sk, struct sock *sk2, bool bind_inany)
+> > > >  }
+> > > >  EXPORT_SYMBOL(reuseport_add_sock);
+> > > >
+> > > > -void reuseport_detach_sock(struct sock *sk)
+> > > > +struct sock *reuseport_detach_sock(struct sock *sk)
+> > > >  {
+> > > >     struct sock_reuseport *reuse;
+> > > > +   struct bpf_prog *prog;
+> > > > +   struct sock *nsk = NULL;
+> > > >     int i;
+> > > >
+> > > >     spin_lock_bh(&reuseport_lock);
+> > > > @@ -242,8 +244,12 @@ void reuseport_detach_sock(struct sock *sk)
+> > > >
+> > > >             reuse->num_socks--;
+> > > >             reuse->socks[i] = reuse->socks[reuse->num_socks];
+> > > > +           prog = rcu_dereference(reuse->prog);
+> > > >
+> > > >             if (sk->sk_protocol == IPPROTO_TCP) {
+> > > > +                   if (reuse->num_socks && !prog)
+> > > > +                           nsk = i == reuse->num_socks ? reuse->socks[i - 1] : reuse->socks[i];
+> > > > +
+> > > >                     reuse->num_closed_socks++;
+> > > >                     reuse->socks[reuse->max_socks - reuse->num_closed_socks] = sk;
+> > > >             } else {
+> > > > @@ -264,6 +270,8 @@ void reuseport_detach_sock(struct sock *sk)
+> > > >             call_rcu(&reuse->rcu, reuseport_free_rcu);
+> > > >  out:
+> > > >     spin_unlock_bh(&reuseport_lock);
+> > > > +
+> > > > +   return nsk;
+> > > >  }
+> > > >  EXPORT_SYMBOL(reuseport_detach_sock);
+> > > >
+> > > > diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+> > > > index 1451aa9712b0..b27241ea96bd 100644
+> > > > --- a/net/ipv4/inet_connection_sock.c
+> > > > +++ b/net/ipv4/inet_connection_sock.c
+> > > > @@ -992,6 +992,36 @@ struct sock *inet_csk_reqsk_queue_add(struct sock *sk,
+> > > >  }
+> > > >  EXPORT_SYMBOL(inet_csk_reqsk_queue_add);
+> > > >
+> > > > +void inet_csk_reqsk_queue_migrate(struct sock *sk, struct sock *nsk)
+> > > > +{
+> > > > +   struct request_sock_queue *old_accept_queue, *new_accept_queue;
+> > > > +
+> > > > +   old_accept_queue = &inet_csk(sk)->icsk_accept_queue;
+> > > > +   new_accept_queue = &inet_csk(nsk)->icsk_accept_queue;
+> > > > +
+> > > > +   spin_lock(&old_accept_queue->rskq_lock);
+> > > > +   spin_lock(&new_accept_queue->rskq_lock);
+> > >
+> > > Are you sure lockdep is happy with this ?
+> > >
+> > > I would guess it should complain, because :
+> > >
+> > > lock(A);
+> > > lock(B);
+> > > ...
+> > > unlock(B);
+> > > unlock(A);
+> > >
+> > > will fail when the opposite action happens eventually
+> > >
+> > > lock(B);
+> > > lock(A);
+> > > ...
+> > > unlock(A);
+> > > unlock(B);
+> >
+> > I enabled lockdep and did not see warnings of lockdep.
+> >
+> > Also, the inversion deadlock does not happen in this case.
+> > In reuseport_detach_sock(), sk is moved backward in socks[] and poped out
+> > from the eBPF map, so the old listener will not be selected as the new
+> > listener.
 > 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  drivers/thermal/devfreq_cooling.c | 99 ++++++++++++++++++++++++++++++-
->  include/linux/devfreq_cooling.h   | 22 +++++++
->  2 files changed, 120 insertions(+), 1 deletion(-)
+> Until the socket is closed, reallocated and used again. LOCKDEP has no
+> idea about soreuseport logic.
 > 
-> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-> index 925523694462..b354271742c5 100644
-> --- a/drivers/thermal/devfreq_cooling.c
-> +++ b/drivers/thermal/devfreq_cooling.c
-> @@ -50,6 +50,8 @@ static DEFINE_IDA(devfreq_ida);
->   * @capped_state:	index to cooling state with in dynamic power budget
->   * @req_max_freq:	PM QoS request for limiting the maximum frequency
->   *			of the devfreq device.
-> + * @em:		Energy Model for the associated Devfreq device
-> + * @em_registered:	Devfreq cooling registered the EM and should free it.
->   */
->  struct devfreq_cooling_device {
->  	int id;
-> @@ -63,6 +65,8 @@ struct devfreq_cooling_device {
->  	u32 res_util;
->  	int capped_state;
->  	struct dev_pm_qos_request req_max_freq;
-> +	struct em_perf_domain *em;
-
-This pointer is not needed, it is in the struct device.
-
-> +	bool em_registered;
-
-The boolean em_registered is not needed because of the test in the
-function em_dev_unregister_perf_domain():
-
-if (IS_ERR_OR_NULL(dev) || !dev->em_pd)
-                return;
-
-Logically if the 'em' was not initialized, it must be NULL, the
-corresponding struct device was zero-allocated.
-
-
->  };
->  
->  static int devfreq_cooling_get_max_state(struct thermal_cooling_device *cdev,
-> @@ -583,22 +587,115 @@ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df)
->  }
->  EXPORT_SYMBOL_GPL(devfreq_cooling_register);
->  
-> +/**
-> + * devfreq_cooling_em_register_power() - Register devfreq cooling device with
-> + *		power information and attempt to register Energy Model (EM)
-> + * @df:		Pointer to devfreq device.
-> + * @dfc_power:	Pointer to devfreq_cooling_power.
-> + * @em_cb:	Callback functions providing the data of the EM
-> + *
-> + * Register a devfreq cooling device and attempt to register Energy Model. The
-> + * available OPPs must be registered for the device.
-> + *
-> + * If @dfc_power is provided, the cooling device is registered with the
-> + * power extensions. If @em_cb is provided it will be called for each OPP to
-> + * calculate power value and cost. If @em_cb is not provided then simple Energy
-> + * Model is going to be used, which requires "dynamic-power-coefficient" a
-> + * devicetree property.
-> + */
-> +struct thermal_cooling_device *
-> +devfreq_cooling_em_register_power(struct devfreq *df,
-> +				  struct devfreq_cooling_power *dfc_power,
-> +				  struct em_data_callback *em_cb)
-> +{
-> +	struct thermal_cooling_device *cdev;
-> +	struct devfreq_cooling_device *dfc;
-> +	struct device_node *np = NULL;
-> +	struct device *dev;
-> +	int nr_opp, ret;
-> +
-> +	if (IS_ERR_OR_NULL(df))
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	dev = df->dev.parent;
-
-Why the parent ?
-
-> +
-> +	if (em_cb) {
-> +		nr_opp = dev_pm_opp_get_opp_count(dev);
-> +		if (nr_opp <= 0) {
-> +			dev_err(dev, "No valid OPPs found\n");
-> +			return ERR_PTR(-EINVAL);
-> +		}
-> +
-> +		ret = em_dev_register_perf_domain(dev, nr_opp, em_cb, NULL, false);
-> +	} else {
-> +		ret = dev_pm_opp_of_register_em(dev, NULL);
-> +	}
-> +
-> +	if (ret)
-> +		dev_warn(dev, "Unable to register EM for devfreq cooling device (%d)\n",
-> +			 ret);
-> +
-> +	if (dev->of_node)
-> +		np = of_node_get(dev->of_node);
-> +
-> +	cdev = of_devfreq_cooling_register_power(np, df, dfc_power);
-> +
-> +	if (np)
-> +		of_node_put(np);> +
-> +	if (IS_ERR_OR_NULL(cdev)) {
-> +		if (!ret)
-> +			em_dev_unregister_perf_domain(dev);
-> +	} else {
-> +		dfc = cdev->devdata;
-> +		dfc->em_registered = !ret;
-> +	}
-> +
-> +	return cdev;
-> +}
-> +EXPORT_SYMBOL_GPL(devfreq_cooling_em_register_power);
-> +
-> +/**
-> + * devfreq_cooling_em_register() - Register devfreq cooling device together
-> + *				with Energy Model.
-> + * @df:		Pointer to devfreq device.
-> + * @em_cb:	Callback functions providing the data of the Energy Model
-> + *
-> + * This function attempts to register Energy Model for devfreq device and then
-> + * register the devfreq cooling device.
-> + */
-> +struct thermal_cooling_device *
-> +devfreq_cooling_em_register(struct devfreq *df, struct em_data_callback *em_cb)
-> +{
-> +	return devfreq_cooling_em_register_power(df, NULL, em_cb);
-> +}
-> +EXPORT_SYMBOL_GPL(devfreq_cooling_em_register);
-> +
->  /**
->   * devfreq_cooling_unregister() - Unregister devfreq cooling device.
->   * @cdev: Pointer to devfreq cooling device to unregister.
-> + *
-> + * Unregisters devfreq cooling device and related Energy Model if it was
-> + * present.
->   */
->  void devfreq_cooling_unregister(struct thermal_cooling_device *cdev)
->  {
->  	struct devfreq_cooling_device *dfc;
-> +	struct device *dev;
->  
-> -	if (!cdev)
-> +	if (IS_ERR_OR_NULL(cdev))
-
-Why this additional IS_ERR check ?
-
->  		return;
->  
->  	dfc = cdev->devdata;
-> +	dev = dfc->devfreq->dev.parent;
->  
->  	thermal_cooling_device_unregister(dfc->cdev);
->  	ida_simple_remove(&devfreq_ida, dfc->id);
->  	dev_pm_qos_remove_request(&dfc->req_max_freq);
-> +
-> +	if (dfc->em_registered)
-> +		em_dev_unregister_perf_domain(dev);
-> +
-
-As stated before it can be called unconditionally
-
->  	kfree(dfc->power_table);
->  	kfree(dfc->freq_table);
->  
-> diff --git a/include/linux/devfreq_cooling.h b/include/linux/devfreq_cooling.h
-> index 9df2dfca68dd..19868fb922f1 100644
-> --- a/include/linux/devfreq_cooling.h
-> +++ b/include/linux/devfreq_cooling.h
-> @@ -11,6 +11,7 @@
->  #define __DEVFREQ_COOLING_H__
->  
->  #include <linux/devfreq.h>
-> +#include <linux/energy_model.h>
->  #include <linux/thermal.h>
->  
->  
-> @@ -65,6 +66,13 @@ struct thermal_cooling_device *
->  of_devfreq_cooling_register(struct device_node *np, struct devfreq *df);
->  struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df);
->  void devfreq_cooling_unregister(struct thermal_cooling_device *dfc);
-> +struct thermal_cooling_device *
-> +devfreq_cooling_em_register_power(struct devfreq *df,
-> +				  struct devfreq_cooling_power *dfc_power,
-> +				  struct em_data_callback *em_cb);
-> +struct thermal_cooling_device *
-> +devfreq_cooling_em_register(struct devfreq *df,
-> +			    struct em_data_callback *em_cb);
->  
->  #else /* !CONFIG_DEVFREQ_THERMAL */
->  
-> @@ -87,6 +95,20 @@ devfreq_cooling_register(struct devfreq *df)
->  	return ERR_PTR(-EINVAL);
->  }
->  
-> +static inline struct thermal_cooling_device *
-> +devfreq_cooling_em_register_power(struct devfreq *df,
-> +				  struct devfreq_cooling_power *dfc_power,
-> +				  struct em_data_callback *em_cb)
-> +{
-> +	return ERR_PTR(-EINVAL);
-> +}
-> +
-> +static inline struct thermal_cooling_device *
-> +devfreq_cooling_em_register(struct devfreq *df,	struct em_data_callback *em_cb)
-> +{
-> +	return ERR_PTR(-EINVAL);
-> +}
-> +
->  static inline void
->  devfreq_cooling_unregister(struct thermal_cooling_device *dfc)
->  {
+> If you run your tests long enough, lockdep should complain at some point.
 > 
+> git grep -n double_lock
 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thank you, I will change the code like double_lock().
+And I will try to continue testing lockdep without this change for
+curiosity!
