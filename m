@@ -2,88 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D42B2CCFE9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:57:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 311582CCFE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:57:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729814AbgLCG5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:57:06 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8185 "EHLO
+        id S1728698AbgLCG4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:56:41 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8184 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgLCG5F (ORCPT
+        with ESMTP id S1725912AbgLCG4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 01:57:05 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cmmnm0b9qz15WDn;
-        Thu,  3 Dec 2020 14:55:56 +0800 (CST)
-Received: from euler.huawei.com (10.175.124.27) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 3 Dec 2020 14:56:15 +0800
-From:   Wei Li <liwei391@huawei.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>
-CC:     <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yangyingliang@huawei.com>, <guohanjun@huawei.com>
-Subject: [PATCH] MIPS: SMP-CPS: Add support for irq migration when CPU offline
-Date:   Thu, 3 Dec 2020 14:54:43 +0800
-Message-ID: <20201203065443.11263-1-liwei391@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 3 Dec 2020 01:56:41 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CmmnF0crGz15LKB;
+        Thu,  3 Dec 2020 14:55:29 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 3 Dec 2020
+ 14:55:50 +0800
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: avoid race condition for shinker
+ count
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
+CC:     Light Hsieh <Light.Hsieh@mediatek.com>
+References: <20201109170012.2129411-1-jaegeuk@kernel.org>
+ <20201112053414.GB3826485@google.com> <20201112054051.GA4092972@google.com>
+ <X8iAh7quYw77O6XC@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <df364dab-6640-654b-c36e-3f84f4bcbc2b@huawei.com>
+Date:   Thu, 3 Dec 2020 14:55:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
+In-Reply-To: <X8iAh7quYw77O6XC@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently we won't migrate irqs when offline CPUs, which has been
-implemented on most architectures. That will lead to some devices work
-incorrectly if the bound cores are offline.
+On 2020/12/3 14:07, Jaegeuk Kim wrote:
+> On 11/11, Jaegeuk Kim wrote:
+>> Light reported sometimes shinker gets nat_cnt < dirty_nat_cnt resulting in
+>> wrong do_shinker work. Let's avoid to get stale data by using nat_tree_lock.
+>>
+>> Reported-by: Light Hsieh <Light.Hsieh@mediatek.com>
+>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>> ---
+>> v3:
+>>   - fix to use NM_I(sbi)
+>>
+>>   fs/f2fs/shrinker.c | 6 +++++-
+>>   1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/f2fs/shrinker.c b/fs/f2fs/shrinker.c
+>> index d66de5999a26..555712ba06d8 100644
+>> --- a/fs/f2fs/shrinker.c
+>> +++ b/fs/f2fs/shrinker.c
+>> @@ -18,7 +18,11 @@ static unsigned int shrinker_run_no;
+>>   
+>>   static unsigned long __count_nat_entries(struct f2fs_sb_info *sbi)
+>>   {
+>> -	long count = NM_I(sbi)->nat_cnt - NM_I(sbi)->dirty_nat_cnt;
+>> +	long count;
+>> +
+>> +	down_read(&NM_I(sbi)->nat_tree_lock);
+>> +	count = NM_I(sbi)->nat_cnt - NM_I(sbi)->dirty_nat_cnt;
+>> +	up_read(&NM_I(sbi)->nat_tree_lock);
+> 
+> I just fosund this can give kernel hang due to the following backtrace.
+> f2fs_shrink_count
+> shrink_slab
+> shrink_node
+> do_try_to_free_pages
+> try_to_free_pages
+> __alloc_pages_nodemask
+> alloc_pages_current
+> allocate_slab
+> __slab_alloc
+> __slab_alloc
+> kmem_cache_alloc
+> add_free_nid
+> f2fs_flush_nat_entries
+> f2fs_write_checkpoint
 
-While that can be easily supported by enabling GENERIC_IRQ_MIGRATION.
-But i don't pretty known the reason it was not supported on all MIPS
-platforms.
+Oh, I missed that case.
 
-This patch add the support for irq migration on MIPS CPS platform, and
-it's tested on the interAptiv processor.
+> 
+> Let me just check like this.
+> 
+>>From 971163330224449d90aac90957ea38f77d494f0f Mon Sep 17 00:00:00 2001
+> From: Jaegeuk Kim <jaegeuk@kernel.org>
+> Date: Fri, 6 Nov 2020 13:22:05 -0800
+> Subject: [PATCH] f2fs: avoid race condition for shrinker count
+> 
+> Light reported sometimes shinker gets nat_cnt < dirty_nat_cnt resulting in
+> wrong do_shinker work. Let's avoid to return insane overflowed value.
+> 
+> Reported-by: Light Hsieh <Light.Hsieh@mediatek.com>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>   fs/f2fs/shrinker.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/f2fs/shrinker.c b/fs/f2fs/shrinker.c
+> index d66de5999a26..75b5b4aaed99 100644
+> --- a/fs/f2fs/shrinker.c
+> +++ b/fs/f2fs/shrinker.c
+> @@ -18,9 +18,9 @@ static unsigned int shrinker_run_no;
+>   
+>   static unsigned long __count_nat_entries(struct f2fs_sb_info *sbi)
+>   {
+> -	long count = NM_I(sbi)->nat_cnt - NM_I(sbi)->dirty_nat_cnt;
+> -
+> -	return count > 0 ? count : 0;
+> +	if (NM_I(sbi)->nat_cnt > NM_I(sbi)->dirty_nat_cnt)
+> +		return NM_I(sbi)->nat_cnt - NM_I(sbi)->dirty_nat_cnt;
 
-Signed-off-by: Wei Li <liwei391@huawei.com>
----
- arch/mips/Kconfig          | 1 +
- arch/mips/kernel/smp-cps.c | 2 ++
- 2 files changed, 3 insertions(+)
+Hmm.. in the case that we are not in checkpoint progress, nat_cnt and dirty_nat_cnt
+is mutable, how can we make sure the calculation is non-negative after the check
+condition? :(
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index a48cb9a71471..8ece19ffe255 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2510,6 +2510,7 @@ config MIPS_CPS
- 	select SYS_SUPPORTS_SCHED_SMT if CPU_MIPSR6
- 	select SYS_SUPPORTS_SMP
- 	select WEAK_ORDERING
-+	select GENERIC_IRQ_MIGRATION if HOTPLUG_CPU
- 	help
- 	  Select this if you wish to run an SMP kernel across multiple cores
- 	  within a MIPS Coherent Processing System. When this option is
-diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-index 3ab433a8e871..26f74f7d7604 100644
---- a/arch/mips/kernel/smp-cps.c
-+++ b/arch/mips/kernel/smp-cps.c
-@@ -12,6 +12,7 @@
- #include <linux/slab.h>
- #include <linux/smp.h>
- #include <linux/types.h>
-+#include <linux/irq.h>
- 
- #include <asm/bcache.h>
- #include <asm/mips-cps.h>
-@@ -465,6 +466,7 @@ static int cps_cpu_disable(void)
- 	smp_mb__after_atomic();
- 	set_cpu_online(cpu, false);
- 	calculate_cpu_foreign_map();
-+	irq_migrate_all_off_this_cpu();
- 
- 	return 0;
- }
--- 
-2.17.1
+Thanks
 
+> +	return 0;
+>   }
+>   
+>   static unsigned long __count_free_nids(struct f2fs_sb_info *sbi)
+> 
