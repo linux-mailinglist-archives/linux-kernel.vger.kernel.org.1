@@ -2,124 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1342CD34C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F282CD351
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729012AbgLCKUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 05:20:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53243 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726898AbgLCKUw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 05:20:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606990765;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fdoqPowfgaPwgdpg4xdqnBSrmpGIg2cYmWgzjzhfZg8=;
-        b=EBOmkUjuurcdFXdmdMWBeWWNEWOyvDRjbOzOztJq/t1SIE4/J0gfSxfI2sUKr8YCIBN+/W
-        XMEHQ0+TWzfsj3Tvd2r4pyMQeNhoTCP0dIH9J5rKfNVHNhXYYp5fjZhY90fHslxU6msqI9
-        cVB46jOvmrq9JqEoiFOSE33b8sedG7o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-294-NznW8gA9Op-k8sBayTMKlw-1; Thu, 03 Dec 2020 05:19:23 -0500
-X-MC-Unique: NznW8gA9Op-k8sBayTMKlw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        id S1730089AbgLCKWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 05:22:51 -0500
+Received: from mailout05.rmx.de ([94.199.90.90]:57306 "EHLO mailout05.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726080AbgLCKWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 05:22:50 -0500
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6A4141936B8F;
-        Thu,  3 Dec 2020 10:19:17 +0000 (UTC)
-Received: from gondolin (ovpn-113-106.ams2.redhat.com [10.36.113.106])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BE6E35D6AC;
-        Thu,  3 Dec 2020 10:19:09 +0000 (UTC)
-Date:   Thu, 3 Dec 2020 11:19:07 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, borntraeger@de.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
-Subject: Re: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM
- pointer invalidated
-Message-ID: <20201203111907.72a89884.cohuck@redhat.com>
-In-Reply-To: <20201202234101.32169-1-akrowiak@linux.ibm.com>
-References: <20201202234101.32169-1-akrowiak@linux.ibm.com>
-Organization: Red Hat GmbH
+        by mailout05.rmx.de (Postfix) with ESMTPS id 4CmsMf186Sz9v7j;
+        Thu,  3 Dec 2020 11:22:06 +0100 (CET)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4CmsMP5Bthz2TTKc;
+        Thu,  3 Dec 2020 11:21:53 +0100 (CET)
+Received: from N95HX1G2.wgnetz.xx (192.168.54.174) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 3 Dec
+ 2020 11:21:28 +0100
+From:   Christian Eggers <ceggers@arri.de>
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>
+CC:     Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Christian Eggers <ceggers@arri.de>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next v5 0/9] net: dsa: microchip: PTP support for KSZ956x
+Date:   Thu, 3 Dec 2020 11:21:08 +0100
+Message-ID: <20201203102117.8995-1-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.54.174]
+X-RMX-ID: 20201203-112153-YQrxQwYcQmRW-0@out02.hq
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  2 Dec 2020 18:41:01 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+[1]
+http://ww1.microchip.com/downloads/en/DeviceDoc/KSZ9563R-Data-Sheet-DS00002419D.pdf
 
-> The vfio_ap device driver registers a group notifier with VFIO when the
-> file descriptor for a VFIO mediated device for a KVM guest is opened to
-> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
-> event). When the KVM pointer is set, the vfio_ap driver stashes the pointer
-> and calls the kvm_get_kvm() function to increment its reference counter.
-> When the notifier is called to make notification that the KVM pointer has
-> been set to NULL, the driver should clean up any resources associated with
-> the KVM pointer and decrement its reference counter. The current
-> implementation does not take care of this clean up.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->  drivers/s390/crypto/vfio_ap_ops.c | 21 +++++++++++++--------
->  1 file changed, 13 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index e0bde8518745..eeb9c9130756 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -1083,6 +1083,17 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
->  	return NOTIFY_DONE;
->  }
->  
-> +static void vfio_ap_mdev_put_kvm(struct ap_matrix_mdev *matrix_mdev)
-> +{
-> +	if (matrix_mdev->kvm) {
-> +		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> +		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-> +		kvm_put_kvm(matrix_mdev->kvm);
-> +		matrix_mdev->kvm = NULL;
-> +	}
-> +}
-> +
->  static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->  				       unsigned long action, void *data)
->  {
-> @@ -1095,7 +1106,7 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->  	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
->  
->  	if (!data) {
-> -		matrix_mdev->kvm = NULL;
-> +		vfio_ap_mdev_put_kvm(matrix_mdev);
+Changes from v4  --> v5
+------------------------
+[8/9]            -  Fix compile error reported by kernel test robot
+                    (NET_DSA_TAG_KSZ must select NET_PTP_CLASSIFY)
 
-Hm. I'm wondering whether you need to hold the maxtrix_dev lock here as
-well?
+Changes from v3  --> v4
+------------------------
+The first 2 patches of v3 have been applied.
 
->  		return NOTIFY_OK;
->  	}
->  
-> @@ -1222,13 +1233,7 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
->  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->  
->  	mutex_lock(&matrix_dev->lock);
-> -	if (matrix_mdev->kvm) {
-> -		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> -		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> -		vfio_ap_mdev_reset_queues(mdev);
-> -		kvm_put_kvm(matrix_mdev->kvm);
-> -		matrix_mdev->kvm = NULL;
-> -	}
-> +	vfio_ap_mdev_put_kvm(matrix_mdev);
->  	mutex_unlock(&matrix_dev->lock);
->  
->  	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
+[ 5/12]-->[ 3/9] - Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+[ 6/12]-->[ 4/9] - s/low active/active low/
+                 - Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+[ 7/12]-->[ 5/9] - Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+[ 9/12]-->[ 7/9] - Remove useless case statement
+                 - Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+[10/12]-->[ 8/9] - s/low active/active low/
+                 - 80 chars per line
+                 - Use IEEE 802.1AS mode (to suppress forwarding of PDelay messages)
+                 - Enable/disable hardware timestaping at runtime (port_hwtstamp_set)
+                 - Use mutex in port_hwtstamp_set
+                 - Don't use port specific struct hwtstamp_config
+                 - removed #ifdefs from tag_ksz.c
+                 - Set port's tx_latency and rx_latency to 0
+                 - added include/linux/dsa/ksz_common.h to MAINTAINERS
+[11/12]          - removed Patch 11/12 (PPS support)
+[12/12]-->[ 9/9] - 80 chars per line
+                 - reverse christmas tree
+                 - Set default pulse width for perout pulse to 50% (max. 125ms)
+                 - reject unsupported flags for perout_request
+
+
+Changes from v2  --> v3
+------------------------
+Applied all changes requested by Vladimir Oltean. v3 depends on my other
+netdev patches from 2020-11-18:
+- net: ptp: introduce common defines for PTP message types
+- net: dsa: avoid potential use-after-free error
+
+[1/11]-->[1/12]  - dts: remove " OR BSD-2-Clause" from SPDX-License-Identifier
+                 - dts: add "additionalProperties"
+                 - dts: remove quotes
+[2/11]-->[2/12]  - Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+[3/11]           - [Patch removed] (split ksz_common.h)
+[4/11]-->[3/12]  - Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+                 - fixed summary
+[5/11]-->[4/12]  - Use "interrupts-extended" syntax
+[6/11]-->[5+6/12] - Split up patch
+                 - style fixes
+                 - use GENMASK()
+                 - IRQF_ONESHOT|IRQF_SHARED
+[7/11]-->[7/12]  - Remove "default n" from Kconfig
+                 - use mutex in adjfine()
+                 - style fixes
+[8/11]-->[8/12]  - Be more verbose in commit message
+                 - Rename helper
+                 - provide correction instead of t2
+                 - simplify location of UDP header
+[9/11]-->[9+10/12] - Split up patch
+                 - Update commmit messages
+                 - don't use OR operator on irqreturn_t
+                 - spin_lock_irqsave() --> spin_lock_bh()
+                 - style fixes
+                 - remove rx_filter cases for DELAY_REQ
+                 - use new PTP_MSGTYPE_* defines
+                 - inline ksz9477_ptp_should_tstamp()
+                 - ksz9477_tstamp_to_clock() --> ksz9477_tstamp_reconstruct()
+                 - use shared data in include/linux/net/dsa/ksz_common.h
+                 - wait for tx time stamp (within sleepable context)
+                 - use boolean for tx time stamp enable
+                 - move t2 from correction to tail tag (again)
+                 - ...
+
+Changes from RFC --> v2
+------------------------
+I think that all open questions regarding the RFC version could be solved.
+dts: referenced to dsa.yaml
+dts: changed node name to "switch" in example
+dts: changed "ports" subnode to "ethernet-ports"
+ksz_common: support "ethernet-ports" subnode
+tag_ksz: fix usage of correction field (32 bit ns + 16 bit sub-ns)
+tag_ksz: use cached PTP header from device's .port_txtstamp function
+tag_ksz: refactored ksz9477_tstamp_to_clock()
+tag_ksz: pdelay_req: only subtract 2 bit seconds from the correction field
+tag_ksz: pdelay_resp: don't move (negative) correction to the egress tail tag
+ptp_classify: add ptp_onestep_p2p_move_t2_to_correction helper
+ksz9477_ptp: removed E2E support (as suggested by Vladimir)
+ksz9477_ptp: removed master/slave sysfs attributes (nacked by Richard)
+ksz9477_ptp: refactored ksz9477_ptp_port_txtstamp
+ksz9477_ptp: removed "pulse" attribute
+kconfig: depend on PTP_1588_CLOCK (instead of "imply")
+
 
