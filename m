@@ -2,190 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4819D2CDA4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2212CDA52
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730443AbgLCPqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 10:46:14 -0500
-Received: from foss.arm.com ([217.140.110.172]:43654 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgLCPqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:46:13 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B7951063;
-        Thu,  3 Dec 2020 07:45:27 -0800 (PST)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C1CA73F718;
-        Thu,  3 Dec 2020 07:45:25 -0800 (PST)
-Subject: Re: [linux-sunxi] Re: [PATCH 7/8] arm64: dts: allwinner: Add
- Allwinner H616 .dtsi file
-To:     Chen-Yu Tsai <wens@csie.org>
-Cc:     Samuel Holland <samuel@sholland.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        Yangtao Li <frank@allwinnertech.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20201202135409.13683-1-andre.przywara@arm.com>
- <20201202135409.13683-8-andre.przywara@arm.com>
- <3b4f4bf6-2fba-5d35-bdf5-74b8ced10357@sholland.org>
- <34e5618e-4a3d-9a46-5077-179c82592fce@arm.com>
- <CAGb2v67+Bfhnw9hFv8vOLTOqmb-hoYxRnk4Q7CQZjzJbzkQxqg@mail.gmail.com>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
- 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
- i4aIXCH3Wv6K
-Organization: ARM Ltd.
-Message-ID: <3dc67c21-f649-cca5-ec54-c639c54ee56a@arm.com>
-Date:   Thu, 3 Dec 2020 15:44:58 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2389230AbgLCPrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 10:47:03 -0500
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:60127 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389098AbgLCPrC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 10:47:02 -0500
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201203154610euoutp01b4dcd8056819d954ccf9d3431b39749d~NP2rXLfc73189031890euoutp01J
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 15:46:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201203154610euoutp01b4dcd8056819d954ccf9d3431b39749d~NP2rXLfc73189031890euoutp01J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1607010370;
+        bh=z3/D0MJrjrF94npmo1z4sClZBeVcZraVE0CVPLPG7zg=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=KqbHSL+SrT69RkrrVrjvac+gY0GnzGptbDgpfWABETcC6XMxv1QkPlwbFvR0rwVDG
+         FdDgCxmSJ/TOOjINrUs5GPuysc+MrEud1QNUL+3Ur7QG3bKgPr1zdf/GH5GrDpX82K
+         xiakLkkYGGi8vv77qfl5RHvbYuUJbjDDtUfHN/6g=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201203154604eucas1p201d76d19c7044922f703edb697a16eee~NP2mbgiLy1046010460eucas1p25;
+        Thu,  3 Dec 2020 15:46:04 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 2E.66.44805.C3809CF5; Thu,  3
+        Dec 2020 15:46:04 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201203154604eucas1p200d001d25dd344a1dd1c7da34f35aad0~NP2lzGzuR1046410464eucas1p2m;
+        Thu,  3 Dec 2020 15:46:04 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201203154604eusmtrp2955b24b6b96bb204fdacf8696f76ab47~NP2lyYQXW3076630766eusmtrp2O;
+        Thu,  3 Dec 2020 15:46:04 +0000 (GMT)
+X-AuditID: cbfec7f4-b37ff7000000af05-90-5fc9083cd590
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 1F.78.16282.C3809CF5; Thu,  3
+        Dec 2020 15:46:04 +0000 (GMT)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201203154603eusmtip1862c92c36bc22a0a3695d5b3b6a86fc4~NP2lIqFsM0365503655eusmtip1L;
+        Thu,  3 Dec 2020 15:46:03 +0000 (GMT)
+Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
+To:     Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hch@lst.de,
+        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
+        dchinner@redhat.com, linux-kernel@vger.kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <bb95be97-2a50-b345-fc2c-3ff865b60e08@samsung.com>
+Date:   Thu, 3 Dec 2020 16:46:04 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <CAGb2v67+Bfhnw9hFv8vOLTOqmb-hoYxRnk4Q7CQZjzJbzkQxqg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+In-Reply-To: <20201125023234.GH4327@casper.infradead.org>
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrEKsWRmVeSWpSXmKPExsWy7djPc7o2HCfjDTonaVnMWb+GzeLsq7ns
+        Fqs3+VqsXH2UyeLppz4Wi9nTm5ks9uw9yWJxedccNot7a/6zWmxe3MVk8fsHkPux6R6bA4/H
+        4TfvmT0WbCr12LxCy2PTp0nsHidm/Gbx2PnQ0mP3zQY2j49Pb7F4vN93lc3jzIIj7B6fN8kF
+        cEdx2aSk5mSWpRbp2yVwZXyYcJmx4Khuxby7r1gaGBerdzFyckgImEjs+f6QvYuRi0NIYAWj
+        xK4Pe1kgnC+MEu+urIPKfGaU2N74lR2mpfnHfFaIxHJGia1fmqGc94wSe17vYASpEhZwlOh8
+        uhysQ0TAU+Ju1yNGkCJmgUVMElNnv2EDSbAJGEp0ve0Cs3kF7CROHb0G1MDBwSKgInH+ty9I
+        WFQgSeLgxwdQJYISJ2c+YQGxOQUsJVbPOQIWZxaQl2jeOpsZwhaXuPVkPhPILgmB5ZwSDXMX
+        M0Gc7SIxb8EbKFtY4tXxLVDvyEj83wnT0Mwo8fDcWnYIp4dR4nLTDEaIKmuJO+d+sYFcxyyg
+        KbF+lz5E2FHiwOlNzCBhCQE+iRtvBSGO4JOYtG06VJhXoqNNCKJaTWLW8XVwaw9euMQ8gVFp
+        FpLXZiF5ZxaSd2Yh7F3AyLKKUTy1tDg3PbXYKC+1XK84Mbe4NC9dLzk/dxMjMNmd/nf8yw7G
+        5a8+6h1iZOJgPMQowcGsJMJ7e+mJeCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8SVvWxAsJpCeW
+        pGanphakFsFkmTg4pRqY5Na0qGzi3WPk3/Ob4T1j156m7XH6vQGMuauunuReLlM8yWXDLZ+q
+        yyHVx93/lP358ojrRlrJhj0h1h39Hz83l4rN+Fe6TCm/kvHfixpZJ36Fy5K2rI5HfD6yiG+v
+        f/krcasHj2aSjiD/2eeruOfv1nPbaf99Vu8KztsTD2zuTlvlbCWi47iYY96V2onXpq6O9L8w
+        V2rB3qXym/a4r6vv/XydR5qhwmzuG26l/luHF7dvLSydcvp7jVzbD2dX7qaZE13mulVHzdnN
+        d+P2ym5fFfXMJLeAaSzx8kmKDSp1sQLF4ubRB5+zRO89IPbwlO15rxNTXl+uea14fuEiZ2el
+        hWrvquesKRbutsmucylSYinOSDTUYi4qTgQA8Eo5k+UDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCIsWRmVeSWpSXmKPExsVy+t/xu7o2HCfjDZbtYbWYs34Nm8XZV3PZ
+        LVZv8rVYufook8XTT30sFrOnNzNZ7Nl7ksXi8q45bBb31vxntdi8uIvJ4vcPIPdj0z02Bx6P
+        w2/eM3ss2FTqsXmFlsemT5PYPU7M+M3isfOhpcfumw1sHh+f3mLxeL/vKpvHmQVH2D0+b5IL
+        4I7SsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy/gw
+        4TJjwVHdinl3X7E0MC5W72Lk5JAQMJFo/jGftYuRi0NIYCmjxKPbJ9ggEjISJ6c1sELYwhJ/
+        rnWxQRS9ZZR4emkBI0hCWMBRovPpcnYQW0TAU+Ju1yNGkCJmgUVMEnOWzYbquM8kcfXTXLBR
+        bAKGEl1vu8BW8ArYSZw6eg2om4ODRUBF4vxvX5CwqECSxO+la6FKBCVOznzCAmJzClhKrJ5z
+        BCzOLGAmMW/zQ2YIW16ieetsKFtc4taT+UwTGIVmIWmfhaRlFpKWWUhaFjCyrGIUSS0tzk3P
+        LTbSK07MLS7NS9dLzs/dxAiM7m3Hfm7Zwbjy1Ue9Q4xMHIyHGCU4mJVEeG8vPREvxJuSWFmV
+        WpQfX1Sak1p8iNEU6J2JzFKiyfnA9JJXEm9oZmBqaGJmaWBqaWasJM5rcmRNvJBAemJJanZq
+        akFqEUwfEwenVANTh0Nc9nybw86ae7Zv8LJtP8WwtyZsh+jnGIGvM8OPbPf8KSf0MGMdv8R6
+        o/t+jtpLarPOH1DZGFFet8s6wytVVOjWFQVtS5s0wauTHPd/ffxtR/nOKZdKLvdckNUNftMj
+        zMQzIbg/vfllE2tZk3mE0RMng/k7Wldl/U+948H6/Oqz65fj2I9WsC5KEFnw+lTajtrgoOCK
+        nrkGbcdXrz+gkyd8u+bZgWe7f3Qe15ww2ypcrT7x+jGpXwqTdGZ49F/+dXfKKdO8m7Mqb/Fd
+        qVn3OtHcW8mnNvHq5NsTT63tNnRhKWRylxaPVZkp/8z39d0+4evT5Ce3MZx5qP7u2mPttQcn
+        8Pp/OXx/k4dJYucRJZbijERDLeai4kQAmtjg1HcDAAA=
+X-CMS-MailID: 20201203154604eucas1p200d001d25dd344a1dd1c7da34f35aad0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201203154604eucas1p200d001d25dd344a1dd1c7da34f35aad0
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201203154604eucas1p200d001d25dd344a1dd1c7da34f35aad0
+References: <20201112212641.27837-1-willy@infradead.org>
+        <alpine.LSU.2.11.2011160128001.1206@eggly.anvils>
+        <20201117153947.GL29991@casper.infradead.org>
+        <alpine.LSU.2.11.2011170820030.1014@eggly.anvils>
+        <20201117191513.GV29991@casper.infradead.org>
+        <20201117234302.GC29991@casper.infradead.org>
+        <20201125023234.GH4327@casper.infradead.org>
+        <CGME20201203154604eucas1p200d001d25dd344a1dd1c7da34f35aad0@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/12/2020 15:02, Chen-Yu Tsai wrote:
-> On Thu, Dec 3, 2020 at 6:54 PM André Przywara <andre.przywara@arm.com> wrote:
->>
->> On 03/12/2020 03:16, Samuel Holland wrote:
->>
->> Hi,
->>
->>> On 12/2/20 7:54 AM, Andre Przywara wrote:
->>> ...
->>>> +    soc {
->>>> +            compatible = "simple-bus";
->>>> +            #address-cells = <1>;
->>>> +            #size-cells = <1>;
->>>> +            ranges = <0x0 0x0 0x0 0x40000000>;
->>>> +
->>>> +            syscon: syscon@3000000 {
->>>> +                    compatible = "allwinner,sun50i-h616-system-control",
->>>> +                                 "allwinner,sun50i-a64-system-control";
->>>> +                    reg = <0x03000000 0x1000>;
->>>> +                    #address-cells = <1>;
->>>> +                    #size-cells = <1>;
->>>> +                    ranges;
->>>> +
->>>> +                    sram_c: sram@28000 {
->>>> +                            compatible = "mmio-sram";
->>>> +                            reg = <0x00028000 0x30000>;
->>>> +                            #address-cells = <1>;
->>>> +                            #size-cells = <1>;
->>>> +                            ranges = <0 0x00028000 0x30000>;
->>>> +                    };
->>>> +
->>>> +                    sram_c1: sram@1a00000 {
->>>> +                            compatible = "mmio-sram";
->>>> +                            reg = <0x01a00000 0x200000>;
->>>> +                            #address-cells = <1>;
->>>> +                            #size-cells = <1>;
->>>> +                            ranges = <0 0x01a00000 0x200000>;
->>>> +
->>>> +                            ve_sram: sram-section@0 {
->>>> +                                    compatible = "allwinner,sun50i-h616-sram-c1",
->>>> +                                                 "allwinner,sun4i-a10-sram-c1";
->>>> +                                    reg = <0x000000 0x200000>;
->>>> +                            };
->>>> +                    };
->>>> +            };
->>>
->>> You mentioned that you could not find a SRAM A2. How were these SRAM ranges
->>> verified? If you can load eGON.BT0 larger than 32 KiB, then presumably NBROM
->>> uses SRAM C, and it is in the manual, but I see no mention of SRAM C1.
->>
->> The manual says that SRAM C *can* be used by "the system", at boot time,
->> as long as it's configured correctly. I couldn't find any details on how
->> to switch clock sources for SRAM C, and the manual stanza on this is
->> quite gibberish. I presume it's configured either by BROM or by reset
->> default this way. I think the idea is that the later users (VE, DE) take
->> ownership at some point (which means we can't run any firmware in there).
->> The BSP boot0 is 48KB already, so reaching into SRAM C, and the code
->> itself heavily uses SRAM C (found by hacking boot0 to drop to FEL and
->> inspecting the memory afterwards).
->>
->> For C1: I copied this name from the H6 .dtsi, the manual calls this
->> "VE-SRAM", in both manuals, and the description looks identical there
->> for both SoCs. I think this will be later used by the video engine, so I
->> kept it in. The large size made me suspicious, and from former
->> experiments it looks like being aliased to (parts of) SRAM C.
-> 
-> I would just call it sram_ve or ve_sram. SRAM C1 would make more sense if
-> it were part of SRAM C, not the other way around.
+Hi
 
-But isn't that what we do? "sram_c1" is just the node name alias used
-for the parent node. That is actually never referenced anywhere (in any
-of the the H6 .dts), so we can actually remove it, I guess.
-The actual SRAM section is called ve_sram already.
-And I can't change the compatible name, for the fallback, at least.
+On 25.11.2020 03:32, Matthew Wilcox wrote:
+> On Tue, Nov 17, 2020 at 11:43:02PM +0000, Matthew Wilcox wrote:
+>> On Tue, Nov 17, 2020 at 07:15:13PM +0000, Matthew Wilcox wrote:
+>>> I find both of these functions exceptionally confusing.  Does this
+>>> make it easier to understand?
+>> Never mind, this is buggy.  I'll send something better tomorrow.
+> That took a week, not a day.  *sigh*.  At least this is shorter.
+>
+> commit 1a02863ce04fd325922d6c3db6d01e18d55f966b
+> Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Date:   Tue Nov 17 10:45:18 2020 -0500
+>
+>      fix mm-truncateshmem-handle-truncates-that-split-thps.patch
 
-I can make the new compatible string read
-"allwinner,sun50i-h616-ve-sram", if that helps, but that would mean
-deviating from the H6 and other SoCs.
+This patch landed in todays linux-next (20201203) as commit 8678b27f4b8b 
+("8678b27f4b8bfc130a13eb9e9f27171bcd8c0b3b"). Sadly it breaks booting of 
+ANY of my ARM 32bit test systems, which use initrd. ARM64bit based 
+systems boot fine. Here is example of the crash:
 
-Cheers,
-Andre
+Waiting 2 sec before mounting root device...
+RAMDISK: squashfs filesystem found at block 0
+RAMDISK: Loading 37861KiB [1 disk] into ram disk... /
+/
+/
+/
+done.
+using deprecated initrd support, will be removed in 2021.
+------------[ cut here ]------------
+kernel BUG at fs/inode.c:531!
+Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
+Modules linked in:
+CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.10.0-rc6-next-20201203 #2131
+Hardware name: Samsung Exynos (Flattened Device Tree)
+Workqueue: events delayed_fput
+PC is at clear_inode+0x74/0x88
+LR is at clear_inode+0x14/0x88
+pc : [<c02fb334>]    lr : [<c02fb2d4>]    psr: 200001d3
+sp : c1d2be68  ip : c1736ff4  fp : c1208f14
+r10: c1208ec8  r9 : c20020c0  r8 : c209b0d8
+r7 : c02f759c  r6 : c0c13940  r5 : c209b244  r4 : c209b0d8
+r3 : 000024f9  r2 : 00000000  r1 : 00000000  r0 : c209b244
+Flags: nzCv  IRQs off  FIQs off  Mode SVC_32  ISA ARM  Segment none
+Control: 10c5387d  Table: 4000404a  DAC: 00000051
+Process kworker/0:1 (pid: 12, stack limit = 0x(ptrval))
+Stack: (0xc1d2be68 to 0xc1d2c000)
+...
+[<c02fb334>] (clear_inode) from [<c02fc8a0>] (evict+0x12c/0x13c)
+[<c02fc8a0>] (evict) from [<c02f648c>] (__dentry_kill+0xb0/0x188)
+[<c02f648c>] (__dentry_kill) from [<c02f7714>] (dput+0x2d8/0x67c)
+[<c02f7714>] (dput) from [<c02dd300>] (__fput+0xd4/0x24c)
+[<c02dd300>] (__fput) from [<c02dd4b4>] (delayed_fput+0x3c/0x48)
+[<c02dd4b4>] (delayed_fput) from [<c0149660>] (process_one_work+0x234/0x7e4)
+[<c0149660>] (process_one_work) from [<c0149c54>] (worker_thread+0x44/0x51c)
+[<c0149c54>] (worker_thread) from [<c0150a88>] (kthread+0x158/0x1a0)
+[<c0150a88>] (kthread) from [<c010011c>] (ret_from_fork+0x14/0x38)
+Exception stack(0xc1d2bfb0 to 0xc1d2bff8)
+...
+---[ end trace b3c68905048e7f9b ]---
+note: kworker/0:1[12] exited with preempt_count 1
+BUG: sleeping function called from invalid context at 
+./include/linux/percpu-rwsem.h:49
+in_atomic(): 0, irqs_disabled(): 128, non_block: 0, pid: 12, name: 
+kworker/0:1
+INFO: lockdep is turned off.
+irq event stamp: 7498
+hardirqs last  enabled at (7497): [<c02b7fcc>] free_unref_page+0x80/0x88
+hardirqs last disabled at (7498): [<c0b40b18>] _raw_spin_lock_irq+0x24/0x5c
+softirqs last  enabled at (6234): [<c0966af4>] linkwatch_do_dev+0x20/0x80
+softirqs last disabled at (6232): [<c0966a60>] rfc2863_policy+0x30/0xa4
+CPU: 0 PID: 12 Comm: kworker/0:1 Tainted: G      D 
+5.10.0-rc6-next-20201203 #2131
+Hardware name: Samsung Exynos (Flattened Device Tree)
+Workqueue: events delayed_fput
+[<c0111718>] (unwind_backtrace) from [<c010d050>] (show_stack+0x10/0x14)
+[<c010d050>] (show_stack) from [<c0b34310>] (dump_stack+0xb4/0xd4)
+[<c0b34310>] (dump_stack) from [<c015a9d4>] (___might_sleep+0x288/0x2d8)
+[<c015a9d4>] (___might_sleep) from [<c013c744>] (exit_signals+0x38/0x428)
+[<c013c744>] (exit_signals) from [<c012ce18>] (do_exit+0xe4/0xc88)
+[<c012ce18>] (do_exit) from [<c010d28c>] (die+0x238/0x30c)
+[<c010d28c>] (die) from [<c010d560>] (do_undefinstr+0xbc/0x26c)
+[<c010d560>] (do_undefinstr) from [<c0100c1c>] (__und_svc_finish+0x0/0x44)
+Exception stack(0xc1d2be18 to 0xc1d2be60)
+VFS: Mounted root (squashfs filesystem) readonly on device 1:0.
+be00: c209b244 00000000
+be20: 00000000 000024f9 c209b0d8 c209b244 c0c13940 c02f759c c209b0d8 
+c20020c0
+be40: c1208ec8 c1208f14 c1736ff4 c1d2be68 c02fb2d4 c02fb334 200001d3 
+ffffffff
+[<c0100c1c>] (__und_svc_finish) from [<c02fb334>] (clear_inode+0x74/0x88)
+[<c02fb334>] (clear_inode) from [<c02fc8a0>] (evict+0x12c/0x13c)
+[<c02fc8a0>] (evict) from [<c02f648c>] (__dentry_kill+0xb0/0x188)
+[<c02f648c>] (__dentry_kill) from [<c02f7714>] (dput+0x2d8/0x67c)
+[<c02f7714>] (dput) from [<c02dd300>] (__fput+0xd4/0x24c)
+[<c02dd300>] (__fput) from [<c02dd4b4>] (delayed_fput+0x3c/0x48)
+[<c02dd4b4>] (delayed_fput) from [<c0149660>] (process_one_work+0x234/0x7e4)
+[<c0149660>] (process_one_work) from [<c0149c54>] (worker_thread+0x44/0x51c)
+[<c0149c54>] (worker_thread) from [<c0150a88>] (kthread+0x158/0x1a0)
+[<c0150a88>] (kthread) from [<c010011c>] (ret_from_fork+0x14/0x38)
+Exception stack(0xc1d2bfb0 to 0xc1d2bff8)
+bfa0:                                     00000000 00000000 00000000 
+00000000
+bfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 
+00000000
+bfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+EXT4-fs (mmcblk0p6): INFO: recovery required on readonly filesystem
+EXT4-fs (mmcblk0p6): write access will be enabled during recovery
+EXT4-fs (mmcblk0p6): recovery complete
+EXT4-fs (mmcblk0p6): mounted filesystem with ordered data mode. Opts: (null)
+VFS: Mounted root (ext4 filesystem) readonly on device 179:6.
+Trying to move old root to /initrd ...
 
+I suppose this issue can be also reproduced with qemu.
 
-> 
-> Also the sram-section node would make more sense if it were in sram_c, as
-> that is the part that gets switched around, not the full region @ 1a00000.
-> 
-> ChenYu
-> 
->> Maybe some guys with more VE knowledge can shine some light on this?
->>
->> Cheers,
->> Andre
->>
+Best regards
+
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
