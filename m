@@ -2,118 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670452CDB33
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:29:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8F42CDB38
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730264AbgLCQ2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:28:02 -0500
-Received: from pb-smtp21.pobox.com ([173.228.157.53]:53374 "EHLO
-        pb-smtp21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727518AbgLCQ2C (ORCPT
+        id S1727080AbgLCQ3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:29:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46845 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726032AbgLCQ3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:28:02 -0500
-Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id 8B74210A4DD;
-        Thu,  3 Dec 2020 11:27:18 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=jM4hyLW+TSH6eWSfoM8RCvw63Lg=; b=CHo7hv
-        AikdQ7XbJBXtw/sMbKd77sMQQE+YXkwV9L/kZQ9VHDPqJyCyoa4d/mnNVPGbgSHG
-        4olx+JIDjDidSxAznBucOGdOln8ouoLxjfL+NmTC7AeowDuB5A1P392pLx6+7hh9
-        IGOZf10kmoExAqvupniSnNE1OW2Cp6KxSivOQ=
-Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id 824F110A4DC;
-        Thu,  3 Dec 2020 11:27:18 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=3PGlveTzkl/T/55mZzO73S7cfYNfZVyY/4IhZFtmgvk=; b=yFQ4F901q8j6hQqmrmc9p8nd+Dw6HIN7NaGkKozfC4cC/rlfBXmEpYDXqWrasaKVA5RZO64PjmTPQheRlcr4SncIoHhjKf2eXlWY/9UJuJE4hnmb0WVN/0BccASPfbD//0ZdhL1gYmbP8FML1nNCIfr+kM6DMcuA62zlgFDJCKo=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 3 Dec 2020 11:29:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607012886;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jRVA3W7T/pVqUV/EjG25mXlusVZvncykEwttIb9bhjQ=;
+        b=i29keSEe6ZZaoIBAdLM0CSsI8M2RaxTi60xgT7tJJ2Usy0THGX5CDTdpV8I0lfSP6s1Oui
+        WWW1NmoLFjU2VL/KsHQLSc4fr1qU2J0SuUkFt+/sJF/u4kwQbSN94akcX2JhYs+4VIUOGZ
+        oqm13Zlbs0ALVoDEl93HbScQIH8yPBo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-19-W2WSu9giO4W3Z0shG1n8lQ-1; Thu, 03 Dec 2020 11:28:04 -0500
+X-MC-Unique: W2WSu9giO4W3Z0shG1n8lQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id F2B3410A4D6;
-        Thu,  3 Dec 2020 11:27:14 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 49F712DA0B35;
-        Thu,  3 Dec 2020 11:27:13 -0500 (EST)
-Date:   Thu, 3 Dec 2020 11:27:13 -0500 (EST)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-cc:     Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Eric Miao <eric.miao@nvidia.com>,
-        =?ISO-8859-15?Q?Uwe_Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Lukasz Stelmach <l.stelmach@samsung.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chris Brandt <chris.brandt@renesas.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 2/3] ARM: uncompress: Add OF_DT_MAGIC macro
-In-Reply-To: <20201203121916.2870975-3-geert+renesas@glider.be>
-Message-ID: <n5sr2s9o-3n53-91q0-noo6-o576n6o36253@syhkavp.arg>
-References: <20201203121916.2870975-1-geert+renesas@glider.be> <20201203121916.2870975-3-geert+renesas@glider.be>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A04F100671C;
+        Thu,  3 Dec 2020 16:28:02 +0000 (UTC)
+Received: from [10.36.113.250] (ovpn-113-250.ams2.redhat.com [10.36.113.250])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 97CF110013C0;
+        Thu,  3 Dec 2020 16:28:01 +0000 (UTC)
+Subject: Re: [PATCH v2] mm/page_isolation: do not isolate the max order page
+To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Vlastimil Babka <vbabka@suse.cz>
+References: <20201203162237.21885-1-songmuchun@bytedance.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <46fcf0c1-7c38-723b-8905-953d72f1d6bc@redhat.com>
+Date:   Thu, 3 Dec 2020 17:28:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: 674F0A34-3584-11EB-BA09-D609E328BF65-78420484!pb-smtp21.pobox.com
+In-Reply-To: <20201203162237.21885-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020, Geert Uytterhoeven wrote:
-
-> The DTB magic marker is stored as a 32-bit big-endian value, and thus
-> depends on the CPU's endianness.  Add a macro to define this value in
-> native endianness, to reduce #ifdef clutter and (future) duplication.
+On 03.12.20 17:22, Muchun Song wrote:
+> The max order page has no buddy page and never merge to other order.
+> So isolating and then freeing it is pointless. And if order == MAX_ORDER
+> - 1, then the buddy can actually be a !pfn_valid() in some corner case?
+> pfn_valid_within(buddy_pfn) that follows would only catch it on archs
+> with holes in zone. Then is_migrate_isolate_page(buddy) might access an
+> invalid buddy. So this is also a bug fix.
 > 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
 
-Reviewed-by: Nicolas Pitre <nico@fluxnic.net>
+As just replied to v1, I don't think this is required and the patch
+description can be simplified - e.g., stating that we have/had not such
+users.
 
 
-> ---
-> v10:
->   - New.
-> ---
->  arch/arm/boot/compressed/head.S | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
-> index aabdc544c03aafdc..d9cce7238a365081 100644
-> --- a/arch/arm/boot/compressed/head.S
-> +++ b/arch/arm/boot/compressed/head.S
-> @@ -11,6 +11,12 @@
->  
->  #include "efi-header.S"
->  
-> +#ifdef __ARMEB__
-> +#define OF_DT_MAGIC 0xd00dfeed
-> +#else
-> +#define OF_DT_MAGIC 0xedfe0dd0
-> +#endif
-> +
->   AR_CLASS(	.arch	armv7-a	)
->   M_CLASS(	.arch	armv7-m	)
->  
-> @@ -335,11 +341,7 @@ restart:	adr	r0, LC1
->   */
->  
->  		ldr	lr, [r6, #0]
-> -#ifndef __ARMEB__
-> -		ldr	r1, =0xedfe0dd0		@ sig is 0xd00dfeed big endian
-> -#else
-> -		ldr	r1, =0xd00dfeed
-> -#endif
-> +		ldr	r1, =OF_DT_MAGIC
->  		cmp	lr, r1
->  		bne	dtb_check_done		@ not found
->  
-> -- 
-> 2.25.1
-> 
-> 
+-- 
+Thanks,
+
+David / dhildenb
+
