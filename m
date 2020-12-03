@@ -2,124 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E952CDF10
+	by mail.lfdr.de (Postfix) with ESMTP id C3A152CDF11
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389431AbgLCTex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:34:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
+        id S2389439AbgLCTey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:34:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389419AbgLCTex (ORCPT
+        with ESMTP id S2389423AbgLCTex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Dec 2020 14:34:53 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAB7C061A56
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:33:33 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id 64so3046764wra.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:33:33 -0800 (PST)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A894C08C5F2
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:33:34 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id d3so3727582wmb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:33:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SzGjKr69x3cbmbmHwPD8KFyOYIoKwbz8Lzre9kZtenc=;
-        b=q+YQUDN5EsT5ijg6Gn4MTOJIa27h3A4V0Iuf0pwzn4zK/3DKs/Vr2JKsXa9IAI+Bfo
-         ZaDuYt2OnQVKBaTnCJ9Lc3jNuEj7ft8EzkCug/dKMs+pZCidZSRd4r2M701ZdZ9KuozB
-         fxw7UHsj4K3TlysuEHemgmqY9VcNG0ITK5DOuN9bLmur7a2J/ne3j9PHxgTcSdeQcEUo
-         Sb6n8nIeLCcLEnatokbEI/SNlAzUySjB36LHBO7lp6XmeO/qa5bk7mhg98CAWJ0NcqSj
-         pUC80+eXMy/55PvyjtSWejmLGsMh7p+4mYfGUGfKt1Lp0eO8NStkmtZRRSJmlwWNUW1V
-         wQxA==
+        bh=CNyrFdysGwX1lZ4jvGNCJbtkaRTgJ5xOGF3Yu7MEPcI=;
+        b=FJq9/qfyYUf8M5+iO/0KBLOcrbfKyo4j1c16rPAVTUwhdNApYrc7N5CgCRh1sWaZez
+         XMe1HPFJljUADAK42LY9Hkw1D4YbraDt32oDnhdF9RzYxnY7ZYSHFHdow3ttfudlYA9f
+         jYQXSlCGcXhI8FitaTnfXRZHKuM3/XQOY0mHqW/Ni+kmrM66QdXSkHy1nLgWrfAySS0c
+         MZxean9e3PlPvvxZlir6vM0KI1hSSGq0VEm53IXmRgvpJayXGLEfolED555luOfZpN9F
+         9lgg2yzevtC4BQh+KQ2X5nhZMsimJir2qGyiZvJlBtS+m2ank06rmtMBoTzhehbA1OpU
+         Z+2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SzGjKr69x3cbmbmHwPD8KFyOYIoKwbz8Lzre9kZtenc=;
-        b=qPqsruO8hJLYBW7V2SpHbiGxr1alWhRHdXlVSblQe2tFUcBOycXewwlQlgEzV0wrvD
-         NkaEf6kxWR78fbdn93oML4VPyRJog2NGjsPrcPebtcrVpJhshnwYrZVS0AHOf0OBHDdv
-         CBNYZiP6tw8g6pgkEXJSzyVW5kGF9FcHQ8A4qBLKigRl6Aak22VzV0U3ZTeQodBLFZzZ
-         29IyWZfVKMaSUtNm9EA6N0sE7q8uHanFaX2LwUpXeNabepDC8nNLmh2QlOm2KUg8unwj
-         rI6rXBkDjDoOJCf9uwmkhznpAVLth6sC7WHwhN2+vPPx6ooyVF3dhO/96FnHOhJDwR8C
-         E12A==
-X-Gm-Message-State: AOAM530osvnANjUOZk2ZAiyrHtEAclzQCURLgrFTO/35E5JZznZdDaiP
-        E219czofJ1ZXkQTgZKHDGDW27A==
-X-Google-Smtp-Source: ABdhPJzm1NDO3CD9d7wsv1Jupx0kfgpERHxkHu18osMimg4p7XSQCDI7o5LsfGwKfY7gewO4vdd/Og==
-X-Received: by 2002:a5d:44c1:: with SMTP id z1mr774607wrr.375.1607024011776;
-        Thu, 03 Dec 2020 11:33:31 -0800 (PST)
+        bh=CNyrFdysGwX1lZ4jvGNCJbtkaRTgJ5xOGF3Yu7MEPcI=;
+        b=Ps5hfAKYcr59dH3J0H7Ig+6CiIjUS7dRQIvrxDvktf3OneV5UV5u+Qx9gqYfX4xcNe
+         8n+J9h3i2k+LKze+qZKQu7ZJ7fFD3wlc600BQdcDImlj40mspyhx7TOA5b4/oxy/fKiy
+         c5QtGnHp+tPKJSRYfKgaNus7sPPkhvlB2nazzihbRp43CKwlVpRfm9I6oM6kxiO2d77e
+         jFutifppkcYK39xrq9SwRv9WyjaYUnQ/eKWpUup3gHixhdc7eQ5sv6UVDKcd3/gs3vuZ
+         3CsbWhxSGRcz++elEkjdKIwCLOSVhS8mc7yn3tXndRhSdH/hKfilAAtiSOht+71+nrYV
+         xmHA==
+X-Gm-Message-State: AOAM5333f5MHqSlFFDvG/yfrIFEawqJAJV4cFRe00kFlPOPo2gpbpzwr
+        2tKUCX1qB+V5SP3jmgiRS9ysOMZkHYNHGA==
+X-Google-Smtp-Source: ABdhPJyotsd/EWpg3JikHYk4VmznkvwIkA8ISXZIWQ+QDyLSd0ABARA161fJDlOyYJv/viAvuJCR+A==
+X-Received: by 2002:a7b:c208:: with SMTP id x8mr355877wmi.179.1607024012957;
+        Thu, 03 Dec 2020 11:33:32 -0800 (PST)
 Received: from mai.imgcgcw.net ([2a01:e34:ed2f:f020:9cff:9584:adb2:6288])
-        by smtp.gmail.com with ESMTPSA id o83sm382441wme.21.2020.12.03.11.33.30
+        by smtp.gmail.com with ESMTPSA id o83sm382441wme.21.2020.12.03.11.33.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 11:33:31 -0800 (PST)
+        Thu, 03 Dec 2020 11:33:32 -0800 (PST)
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
 To:     tglx@linutronix.de
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 08/13] clocksource/drivers/orion: Add missing clk_disable_unprepare() on error path
-Date:   Thu,  3 Dec 2020 20:32:56 +0100
-Message-Id: <20201203193301.2405835-8-daniel.lezcano@linaro.org>
+Subject: [PATCH 09/13] dt-bindings: timer: renesas: tmu: Document r8a774e1 bindings
+Date:   Thu,  3 Dec 2020 20:32:57 +0100
+Message-Id: <20201203193301.2405835-9-daniel.lezcano@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201203193301.2405835-1-daniel.lezcano@linaro.org>
 References: <028084fa-d29b-a1d5-7eab-17f77ef69863@linaro.org>
  <20201203193301.2405835-1-daniel.lezcano@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
-After calling clk_prepare_enable(), clk_disable_unprepare() need
-be called on error path.
+Document RZ/G2H (R8A774E1) SoC in the Renesas TMU bindings.
 
-Fixes: fbe4b3566ddc ("clocksource/drivers/orion: Convert init function...")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20201111064706.3397156-1-yangyingliang@huawei.com
+Link: https://lore.kernel.org/r/20201110162014.3290109-2-geert+renesas@glider.be
 ---
- drivers/clocksource/timer-orion.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/timer/renesas,tmu.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clocksource/timer-orion.c b/drivers/clocksource/timer-orion.c
-index d01ff4181867..5101e834d78f 100644
---- a/drivers/clocksource/timer-orion.c
-+++ b/drivers/clocksource/timer-orion.c
-@@ -143,7 +143,8 @@ static int __init orion_timer_init(struct device_node *np)
- 	irq = irq_of_parse_and_map(np, 1);
- 	if (irq <= 0) {
- 		pr_err("%pOFn: unable to parse timer1 irq\n", np);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto out_unprep_clk;
- 	}
- 
- 	rate = clk_get_rate(clk);
-@@ -160,7 +161,7 @@ static int __init orion_timer_init(struct device_node *np)
- 				    clocksource_mmio_readl_down);
- 	if (ret) {
- 		pr_err("Failed to initialize mmio timer\n");
--		return ret;
-+		goto out_unprep_clk;
- 	}
- 
- 	sched_clock_register(orion_read_sched_clock, 32, rate);
-@@ -170,7 +171,7 @@ static int __init orion_timer_init(struct device_node *np)
- 			  "orion_event", NULL);
- 	if (ret) {
- 		pr_err("%pOFn: unable to setup irq\n", np);
--		return ret;
-+		goto out_unprep_clk;
- 	}
- 
- 	ticks_per_jiffy = (clk_get_rate(clk) + HZ/2) / HZ;
-@@ -183,5 +184,9 @@ static int __init orion_timer_init(struct device_node *np)
- 	orion_delay_timer_init(rate);
- 
- 	return 0;
-+
-+out_unprep_clk:
-+	clk_disable_unprepare(clk);
-+	return ret;
- }
- TIMER_OF_DECLARE(orion_timer, "marvell,orion-timer", orion_timer_init);
+diff --git a/Documentation/devicetree/bindings/timer/renesas,tmu.txt b/Documentation/devicetree/bindings/timer/renesas,tmu.txt
+index 29159f4e65ab..a36cd61e74fb 100644
+--- a/Documentation/devicetree/bindings/timer/renesas,tmu.txt
++++ b/Documentation/devicetree/bindings/timer/renesas,tmu.txt
+@@ -13,6 +13,7 @@ Required Properties:
+     - "renesas,tmu-r8a774a1" for the r8a774A1 TMU
+     - "renesas,tmu-r8a774b1" for the r8a774B1 TMU
+     - "renesas,tmu-r8a774c0" for the r8a774C0 TMU
++    - "renesas,tmu-r8a774e1" for the r8a774E1 TMU
+     - "renesas,tmu-r8a7778" for the r8a7778 TMU
+     - "renesas,tmu-r8a7779" for the r8a7779 TMU
+     - "renesas,tmu-r8a77970" for the r8a77970 TMU
 -- 
 2.25.1
 
