@@ -2,325 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B667D2CD2F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:53:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D04F22CD2FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbgLCJwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:52:13 -0500
-Received: from mga02.intel.com ([134.134.136.20]:46766 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgLCJwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:52:12 -0500
-IronPort-SDR: 12GvVvOfbgbLV9Z/d9UbfEnqAKqYp4fXNKhVvY1J/pq2DhpkZJd8vQ+1E4IW/Z8QOKY6S1fNwP
- k8nQGs2r6/bw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="160221763"
-X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
-   d="scan'208";a="160221763"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 01:51:27 -0800
-IronPort-SDR: QcBU1u04JhpWQiRdJLxFxX/cSdBACFhwKw4FLICfVLwHDP+FfVgIXGuOYWazRNN9Cx7nIiT70T
- ep8agBBk2HmA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
-   d="scan'208";a="315636700"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Dec 2020 01:51:25 -0800
-Subject: Re: [RFC PATCH v3.1 16/27] mmc: sdhci-uhs2: add set_ios()
-To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ben.chuang@genesyslogic.com.tw,
-        greg.tu@genesyslogic.com.tw
-References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
- <20201106022726.19831-17-takahiro.akashi@linaro.org>
- <7d2b6524-b6ab-0fd0-edfa-8d7ff274cd1a@intel.com>
- <20201130075147.GF48535@laputa>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <bd9b974b-c3c8-33b2-9f13-7cef99140172@intel.com>
-Date:   Thu, 3 Dec 2020 11:51:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2388608AbgLCJyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:54:50 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:40198 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387531AbgLCJyu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 04:54:50 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B39UPMe021465;
+        Thu, 3 Dec 2020 04:53:57 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 355vjen8vh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 04:53:56 -0500
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0B39rtJM054266
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 3 Dec 2020 04:53:55 -0500
+Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 3 Dec 2020 01:53:53 -0800
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
+ SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
+ Thu, 3 Dec 2020 01:53:53 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 3 Dec 2020 01:53:53 -0800
+Received: from saturn.ad.analog.com ([10.48.65.108])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0B39rpsK003027;
+        Thu, 3 Dec 2020 04:53:52 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2] iio: core: register chardev only if needed
+Date:   Thu, 3 Dec 2020 11:53:42 +0200
+Message-ID: <20201203095342.73591-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20201130075147.GF48535@laputa>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-03_06:2020-12-03,2020-12-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 phishscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
+ malwarescore=0 adultscore=0 impostorscore=0 priorityscore=1501 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012030058
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/20 9:51 am, AKASHI Takahiro wrote:
-> On Thu, Nov 26, 2020 at 10:17:11AM +0200, Adrian Hunter wrote:
->> On 6/11/20 4:27 am, AKASHI Takahiro wrote:
->>> This is a sdhci version of mmc's set_ios operation.
->>> It covers both UHS-I and UHS-II.
->>>
->>> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
->>> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
->>> ---
->>>  drivers/mmc/host/sdhci-uhs2.c | 100 ++++++++++++++++++++++++++++++++++
->>>  drivers/mmc/host/sdhci-uhs2.h |   1 +
->>>  drivers/mmc/host/sdhci.c      |  40 +++++++++-----
->>>  drivers/mmc/host/sdhci.h      |   2 +
->>>  4 files changed, 128 insertions(+), 15 deletions(-)
->>>
->>> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
->>> index d9e98c097bfe..637464748cc4 100644
->>> --- a/drivers/mmc/host/sdhci-uhs2.c
->>> +++ b/drivers/mmc/host/sdhci-uhs2.c
->>> @@ -263,6 +263,74 @@ void sdhci_uhs2_set_timeout(struct sdhci_host *host, struct mmc_command *cmd)
->>>  }
->>>  EXPORT_SYMBOL_GPL(sdhci_uhs2_set_timeout);
->>>  
->>> +/**
->>> + * sdhci_uhs2_clear_set_irqs - set Error Interrupt Status Enable register
->>> + * @host:	SDHCI host
->>> + * @clear:	bit-wise clear mask
->>> + * @set:	bit-wise set mask
->>> + *
->>> + * Set/unset bits in UHS-II Error Interrupt Status Enable register
->>> + */
->>> +void sdhci_uhs2_clear_set_irqs(struct sdhci_host *host, u32 clear, u32 set)
->>> +{
->>> +	u32 ier;
->>> +
->>> +	ier = sdhci_readl(host, SDHCI_UHS2_ERR_INT_STATUS_EN);
->>> +	ier &= ~clear;
->>> +	ier |= set;
->>> +	sdhci_writel(host, ier, SDHCI_UHS2_ERR_INT_STATUS_EN);
->>> +	sdhci_writel(host, ier, SDHCI_UHS2_ERR_INT_SIG_EN);
->>> +}
->>> +EXPORT_SYMBOL_GPL(sdhci_uhs2_clear_set_irqs);
->>> +
->>> +static void __sdhci_uhs2_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
->>> +{
->>> +	struct sdhci_host *host = mmc_priv(mmc);
->>> +	u8 cmd_res, dead_lock;
->>> +	u16 ctrl_2;
->>> +	unsigned long flags;
->>> +
->>> +	/* FIXME: why lock? */
->>> +	spin_lock_irqsave(&host->lock, flags);
->>> +
->>> +	/* UHS2 Timeout Control */
->>> +	sdhci_calc_timeout_uhs2(host, &cmd_res, &dead_lock);
->>> +
->>> +	/* change to use calculate value */
->>> +	cmd_res |= dead_lock << SDHCI_UHS2_TIMER_CTRL_DEADLOCK_SHIFT;
->>> +
->>> +	sdhci_uhs2_clear_set_irqs(host,
->>> +				  SDHCI_UHS2_ERR_INT_STATUS_RES_TIMEOUT |
->>> +				  SDHCI_UHS2_ERR_INT_STATUS_DEADLOCK_TIMEOUT,
->>> +				  0);
->>> +	sdhci_writeb(host, cmd_res, SDHCI_UHS2_TIMER_CTRL);
->>> +	sdhci_uhs2_clear_set_irqs(host, 0,
->>> +				  SDHCI_UHS2_ERR_INT_STATUS_RES_TIMEOUT |
->>> +				  SDHCI_UHS2_ERR_INT_STATUS_DEADLOCK_TIMEOUT);
->>> +
->>> +	/* UHS2 timing */
->>> +	ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
->>> +	if (ios->timing == MMC_TIMING_UHS2)
->>> +		ctrl_2 |= SDHCI_CTRL_UHS_2 | SDHCI_CTRL_UHS2_INTERFACE_EN;
->>> +	else
->>> +		ctrl_2 &= ~(SDHCI_CTRL_UHS_2 | SDHCI_CTRL_UHS2_INTERFACE_EN);
->>> +	sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
->>> +
->>> +	if (!(host->quirks2 & SDHCI_QUIRK2_PRESET_VALUE_BROKEN))
->>> +		sdhci_enable_preset_value(host, true);
->>> +
->>> +	if (host->ops->set_power)
->>> +		host->ops->set_power(host, ios->power_mode, ios->vdd);
->>> +	else
->>> +		sdhci_set_power(host, ios->power_mode, ios->vdd);
->>> +	udelay(100);
->>> +
->>> +	host->timing = ios->timing;
->>> +	sdhci_set_clock(host, host->clock);
->>
->> sdhci_set_ios_common() already called ->set_clock() and ->set_power(), so I
->> am not really following what is going on here.  Can you explain some more?
-> 
-> To be frank, I don't know. The logic in Intel's (and/or Ben's?)
-> original code does so.
-> What I changed is to remove the code of setting (ios->vdd and) ios->vdd2,
-> which is executed before calling set_power(), in __sdhci_uhs2_set_ios().
-> 
-> So yes, effectively it may be of no use to call set_power() here.
+We only need a chardev if we need to support buffers and/or events.
 
-Please try to rationalize it.  Also set_ios() should not need the spin lock,
-and that allows clock and power callbacks to sleep if needed.
+With this change, a chardev will be created only if an IIO buffer is
+attached OR an event_interface is configured.
 
-> 
-> -Takahiro Akashi
-> 
->>> +
->>> +	spin_unlock_irqrestore(&host->lock, flags);
->>> +}
->>> +
->>>  /*****************************************************************************\
->>>   *                                                                           *
->>>   * MMC callbacks                                                             *
->>> @@ -286,6 +354,37 @@ static int sdhci_uhs2_start_signal_voltage_switch(struct mmc_host *mmc,
->>>  	return sdhci_start_signal_voltage_switch(mmc, ios);
->>>  }
->>>  
->>> +void sdhci_uhs2_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
->>> +{
->>> +	struct sdhci_host *host = mmc_priv(mmc);
->>> +
->>> +	if (!(host->version >= SDHCI_SPEC_400) ||
->>> +	    !(host->mmc->flags & MMC_UHS2_SUPPORT &&
->>> +	      host->mmc->caps & MMC_CAP_UHS2)) {
->>> +		sdhci_set_ios(mmc, ios);
->>> +		return;
->>> +	}
->>> +
->>> +	if (ios->power_mode == MMC_POWER_UNDEFINED)
->>> +		return;
->>> +
->>> +	if (host->flags & SDHCI_DEVICE_DEAD) {
->>> +		if (!IS_ERR(mmc->supply.vmmc) &&
->>> +		    ios->power_mode == MMC_POWER_OFF)
->>> +			mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, 0);
->>> +		if (!IS_ERR_OR_NULL(mmc->supply.vmmc2) &&
->>> +		    ios->power_mode == MMC_POWER_OFF)
->>> +			mmc_regulator_set_ocr(mmc, mmc->supply.vmmc2, 0);
->>> +		return;
->>> +	}
->>> +
->>> +	/* FIXME: host->timing = ios->timing */
->>> +
->>> +	sdhci_set_ios_common(mmc, ios);
->>> +
->>> +	__sdhci_uhs2_set_ios(mmc, ios);
->>> +}
->>> +
->>>  /*****************************************************************************\
->>>   *                                                                           *
->>>   * Driver init/exit                                                          *
->>> @@ -296,6 +395,7 @@ static int sdhci_uhs2_host_ops_init(struct sdhci_host *host)
->>>  {
->>>  	host->mmc_host_ops.start_signal_voltage_switch =
->>>  		sdhci_uhs2_start_signal_voltage_switch;
->>> +	host->mmc_host_ops.set_ios = sdhci_uhs2_set_ios;
->>>  
->>>  	return 0;
->>>  }
->>> diff --git a/drivers/mmc/host/sdhci-uhs2.h b/drivers/mmc/host/sdhci-uhs2.h
->>> index efe70577bc74..c1ff4ac1ab7a 100644
->>> --- a/drivers/mmc/host/sdhci-uhs2.h
->>> +++ b/drivers/mmc/host/sdhci-uhs2.h
->>> @@ -214,5 +214,6 @@ void sdhci_uhs2_reset(struct sdhci_host *host, u16 mask);
->>>  void sdhci_uhs2_set_power(struct sdhci_host *host, unsigned char mode,
->>>  			  unsigned short vdd);
->>>  void sdhci_uhs2_set_timeout(struct sdhci_host *host, struct mmc_command *cmd);
->>> +void sdhci_uhs2_clear_set_irqs(struct sdhci_host *host, u32 clear, u32 set);
->>>  
->>>  #endif /* __SDHCI_UHS2_H */
->>> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
->>> index 0b741eb546cb..becb228330af 100644
->>> --- a/drivers/mmc/host/sdhci.c
->>> +++ b/drivers/mmc/host/sdhci.c
->>> @@ -48,8 +48,6 @@
->>>  static unsigned int debug_quirks = 0;
->>>  static unsigned int debug_quirks2;
->>>  
->>> -static void sdhci_enable_preset_value(struct sdhci_host *host, bool enable);
->>> -
->>>  static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd);
->>>  
->>>  void sdhci_dumpregs(struct sdhci_host *host)
->>> @@ -1836,6 +1834,9 @@ static u16 sdhci_get_preset_value(struct sdhci_host *host)
->>>  	case MMC_TIMING_MMC_HS400:
->>>  		preset = sdhci_readw(host, SDHCI_PRESET_FOR_HS400);
->>>  		break;
->>> +	case MMC_TIMING_UHS2:
->>> +		preset = sdhci_readw(host, SDHCI_PRESET_FOR_UHS2);
->>> +		break;
->>>  	default:
->>>  		pr_warn("%s: Invalid UHS-I mode selected\n",
->>>  			mmc_hostname(host->mmc));
->>> @@ -2249,20 +2250,9 @@ void sdhci_set_uhs_signaling(struct sdhci_host *host, unsigned timing)
->>>  }
->>>  EXPORT_SYMBOL_GPL(sdhci_set_uhs_signaling);
->>>  
->>> -void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
->>> +void sdhci_set_ios_common(struct mmc_host *mmc, struct mmc_ios *ios)
->>>  {
->>>  	struct sdhci_host *host = mmc_priv(mmc);
->>> -	u8 ctrl;
->>> -
->>> -	if (ios->power_mode == MMC_POWER_UNDEFINED)
->>> -		return;
->>> -
->>> -	if (host->flags & SDHCI_DEVICE_DEAD) {
->>> -		if (!IS_ERR(mmc->supply.vmmc) &&
->>> -		    ios->power_mode == MMC_POWER_OFF)
->>> -			mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, 0);
->>> -		return;
->>> -	}
->>>  
->>>  	/*
->>>  	 * Reset the chip on each power off.
->>> @@ -2299,6 +2289,25 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
->>>  		host->ops->set_power(host, ios->power_mode, ios->vdd);
->>>  	else
->>>  		sdhci_set_power(host, ios->power_mode, ios->vdd);
->>> +}
->>> +EXPORT_SYMBOL_GPL(sdhci_set_ios_common);
->>> +
->>> +void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
->>> +{
->>> +	struct sdhci_host *host = mmc_priv(mmc);
->>> +	u8 ctrl;
->>> +
->>> +	if (ios->power_mode == MMC_POWER_UNDEFINED)
->>> +		return;
->>> +
->>> +	if (host->flags & SDHCI_DEVICE_DEAD) {
->>> +		if (!IS_ERR(mmc->supply.vmmc) &&
->>> +		    ios->power_mode == MMC_POWER_OFF)
->>> +			mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, 0);
->>> +		return;
->>> +	}
->>> +
->>> +	sdhci_set_ios_common(mmc, ios);
->>>  
->>>  	if (host->ops->platform_send_init_74_clocks)
->>>  		host->ops->platform_send_init_74_clocks(host, ios->power_mode);
->>> @@ -2869,7 +2878,7 @@ int sdhci_execute_tuning(struct mmc_host *mmc, u32 opcode)
->>>  }
->>>  EXPORT_SYMBOL_GPL(sdhci_execute_tuning);
->>>  
->>> -static void sdhci_enable_preset_value(struct sdhci_host *host, bool enable)
->>> +void sdhci_enable_preset_value(struct sdhci_host *host, bool enable)
->>>  {
->>>  	/* Host Controller v3.00 defines preset value registers */
->>>  	if (host->version < SDHCI_SPEC_300)
->>> @@ -2897,6 +2906,7 @@ static void sdhci_enable_preset_value(struct sdhci_host *host, bool enable)
->>>  		host->preset_enabled = enable;
->>>  	}
->>>  }
->>> +EXPORT_SYMBOL_GPL(sdhci_enable_preset_value);
->>>  
->>>  static void sdhci_post_req(struct mmc_host *mmc, struct mmc_request *mrq,
->>>  				int err)
->>> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
->>> index 2b5b8295cf92..e84ebddb20d8 100644
->>> --- a/drivers/mmc/host/sdhci.h
->>> +++ b/drivers/mmc/host/sdhci.h
->>> @@ -851,6 +851,8 @@ void sdhci_set_bus_width(struct sdhci_host *host, int width);
->>>  void sdhci_reset(struct sdhci_host *host, u8 mask);
->>>  void sdhci_set_uhs_signaling(struct sdhci_host *host, unsigned timing);
->>>  int sdhci_execute_tuning(struct mmc_host *mmc, u32 opcode);
->>> +void sdhci_enable_preset_value(struct sdhci_host *host, bool enable);
->>> +void sdhci_set_ios_common(struct mmc_host *mmc, struct mmc_ios *ios);
->>>  void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios);
->>>  int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
->>>  				      struct mmc_ios *ios);
->>>
->>
+Otherwise, no chardev will be created, and the IIO device will get
+registered with the 'device_add()' call.
+
+Quite a lot of IIO devices don't really need a chardev, so this is a minor
+improvement to the IIO core, as the IIO device will take up (slightly)
+fewer resources.
+
+In order to not create a chardev, we mostly just need to not initialize the
+indio_dev->dev.devt field. If that is un-initialized, cdev_device_add()
+behaves like device_add().
+
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+
+Changelog v1 -> v2:
+* https://lore.kernel.org/linux-iio/20201117162340.43924-2-alexandru.ardelean@analog.com/
+* split away from series; I don't know when I will have time to re-visit
+  the entire original series, so might as well move forward a few patches
+
+ drivers/iio/industrialio-core.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index c2e4c267c36b..d4de32d878aa 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -1725,6 +1725,15 @@ static const struct file_operations iio_buffer_fileops = {
+ 	.release = iio_chrdev_release,
+ };
+ 
++static const struct file_operations iio_event_fileops = {
++	.owner = THIS_MODULE,
++	.llseek = noop_llseek,
++	.unlocked_ioctl = iio_ioctl,
++	.compat_ioctl = compat_ptr_ioctl,
++	.open = iio_chrdev_open,
++	.release = iio_chrdev_release,
++};
++
+ static int iio_check_unique_scan_index(struct iio_dev *indio_dev)
+ {
+ 	int i, j;
+@@ -1752,6 +1761,7 @@ static const struct iio_buffer_setup_ops noop_ring_setup_ops;
+ 
+ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
+ {
++	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+ 	int ret;
+ 
+ 	if (!indio_dev->info)
+@@ -1769,9 +1779,6 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/* configure elements for the chrdev */
+-	indio_dev->dev.devt = MKDEV(MAJOR(iio_devt), indio_dev->id);
+-
+ 	iio_device_register_debugfs(indio_dev);
+ 
+ 	ret = iio_buffer_alloc_sysfs_and_mask(indio_dev);
+@@ -1800,9 +1807,15 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
+ 		indio_dev->setup_ops == NULL)
+ 		indio_dev->setup_ops = &noop_ring_setup_ops;
+ 
+-	cdev_init(&indio_dev->chrdev, &iio_buffer_fileops);
++	if (indio_dev->buffer)
++		cdev_init(&indio_dev->chrdev, &iio_buffer_fileops);
++	else if (iio_dev_opaque->event_interface)
++		cdev_init(&indio_dev->chrdev, &iio_event_fileops);
+ 
+-	indio_dev->chrdev.owner = this_mod;
++	if (indio_dev->buffer || iio_dev_opaque->event_interface) {
++		indio_dev->dev.devt = MKDEV(MAJOR(iio_devt), indio_dev->id);
++		indio_dev->chrdev.owner = this_mod;
++	}
+ 
+ 	ret = cdev_device_add(&indio_dev->chrdev, &indio_dev->dev);
+ 	if (ret < 0)
+-- 
+2.27.0
 
