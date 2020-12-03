@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF272CCB36
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E822CCB3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728863AbgLCArj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 19:47:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55544 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726689AbgLCArj (ORCPT
+        id S1729027AbgLCAsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 19:48:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726851AbgLCAsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 19:47:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606956372;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tn3Df7eygk6Izda6RvZQkxxok8dSHVZu45DeLEEIxTY=;
-        b=P4RwmPgnKb4X6D+aDEL/Evn4dmqxuxyUMh1aQjGzn+jcucavv0cbxTzjGvfl7JcxHAFGE0
-        jay//RiVokVVuyQmMFyUso3jSXsYv7AEe0+6jKJDR81cG00+JVAhDs92y3CgULSmMr0UTf
-        6AX0BC05wCToVzPnEb99zcDGdk+1OQQ=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-sHjpcHNvPeCPn-2uYcG9LA-1; Wed, 02 Dec 2020 19:46:10 -0500
-X-MC-Unique: sHjpcHNvPeCPn-2uYcG9LA-1
-Received: by mail-qk1-f199.google.com with SMTP id d206so530023qkc.23
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 16:46:09 -0800 (PST)
+        Wed, 2 Dec 2020 19:48:10 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4006AC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 16:47:30 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id j1so188209pld.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 16:47:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=0iSNRCsv4QiujIvck7LYjf+I2m3BZnqlwW9BXnXzbgg=;
+        b=fb/2kM6RvKx/QCzksjNVKwIbgLuaxVZ71SfRliwn9NTj2150eRm466siPuBe+587Hz
+         WUmeb3sK7JQ34RniAA6QgcIZWbKfNGx/KMMgttWuwU2PkKIHCdSYQOi9S7xQ3FZZ6mCp
+         qId5NR09c2AWb0Rr5vIXtkNA9Iy78eUUZby2Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=tn3Df7eygk6Izda6RvZQkxxok8dSHVZu45DeLEEIxTY=;
-        b=YBc8ZhqEAlx0Q2Ft9q5NXRMVUyyBJ/aXALR4ZCZIOvs8Fn3bKSBzCVTg1T1vyRtDGW
-         3/RmBkavqK0CWTsmYlEs4o8njs5B0bzCCet17qVjtLBrBLayvLJbDGXleG9gD9wjH7q9
-         B7bI+CegfBU1ymB572ALeHxOdbxbPcQc05SCr8VOdk2dnZ1STifXshoDLFD8huCSzd87
-         Ado8Aumxl3XkRXi4PmCJgGAWud9B7k1R8DSXtWUNyEj5jhsWrQHU8kiKIxPDvsv40r3a
-         S3ElcYw9irfJBrMTOSTYumYnHWtRewqE8CRl8nXJymgYbalD1q1TkNvZ/ruVO+7Ogsx5
-         Ar9A==
-X-Gm-Message-State: AOAM532dHFyfWVhSFbv5xHCdIzXxLjNPS9OSxyYA8D7xCaTN4e+8hUsR
-        mpRGJdobDkAkMu8vjmyJlImdOFNsl2hxKXMbqAm7bKWwA3vOYool5k43dvRyBbdqc0830SUzw/j
-        LlcD2wUq4s3kj8Uf6jCAl/koU
-X-Received: by 2002:a37:7145:: with SMTP id m66mr516126qkc.396.1606956369586;
-        Wed, 02 Dec 2020 16:46:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzaQv8hATwzHtFhNcgeEgzuieWjSpIuQkb2SlVf60UIlQ0qMAa0FWuaYoO5eZoFUPJPsB6hRw==
-X-Received: by 2002:a37:7145:: with SMTP id m66mr515968qkc.396.1606956367260;
-        Wed, 02 Dec 2020 16:46:07 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id a6sm347081qkg.136.2020.12.02.16.46.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 16:46:06 -0800 (PST)
-Subject: Re: [PATCH] netfilter: conntrack: fix -Wformat
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Joe Perches <joe@perches.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-References: <20201107075550.2244055-1-ndesaulniers@google.com>
- <4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com>
- <CAKwvOdn50VP4h7tidMnnFeMA1M-FevykP+Y0ozieisS7Nn4yoQ@mail.gmail.com>
- <26052c5a0a098aa7d9c0c8a1d39cc4a8f7915dd2.camel@perches.com>
- <CAKwvOdkv6W_dTLVowEBu0uV6oSxwW8F+U__qAsmk7vop6U8tpw@mail.gmail.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <7ca84085-f8e1-6792-7d1c-455815986572@redhat.com>
-Date:   Wed, 2 Dec 2020 16:46:04 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=0iSNRCsv4QiujIvck7LYjf+I2m3BZnqlwW9BXnXzbgg=;
+        b=Ce19Y1dSaDrCqaJ2gzl2nB/LzVI6u+WDvBSEG5Qf7hYxlbq3O5PjMMgwJYWR50Pb3T
+         5owypev7PbmGuWRVRxHY19sBh6PdDV0LN/w7JJLGnpVgoPuiib8wzEt3eH0SsiHzom7S
+         ESnOQsy43+t1wZyE3nXU+FwA7gvbLweU8c7QaORHVcoEZ5Y9SObHAIhcB4JV4dXKxcOY
+         JwKt90EyUudwTCUxNrxZdI2mZpXkIeqwkwNmeAU7biLU/TvzZdPWcQyZxTH3kf+O8Oqp
+         5RX9WreYU2T4pQVTXCmyr3hc7X28JjdObFxdniE+LecQ/vj7Cjs7rLwVV/k2bJs+uW8n
+         4uMg==
+X-Gm-Message-State: AOAM531ddjbONSVsnd8Tp3D+hQhXdkG3vYVMv35JzQcqbSf3K1MDJWIA
+        qyRmwtXiqnpdT/b7YVlidgwv2Q==
+X-Google-Smtp-Source: ABdhPJyv6jlyr3LJAukcdyuq16gEaaYmf9e1YpSO8VOsuY9Xi/2YetHzz+4GVXUde2fs5UvNR5MaAQ==
+X-Received: by 2002:a17:902:b70f:b029:da:b944:f3b7 with SMTP id d15-20020a170902b70fb02900dab944f3b7mr746054pls.82.1606956449808;
+        Wed, 02 Dec 2020 16:47:29 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id l190sm227210pfl.205.2020.12.02.16.47.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 16:47:29 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdkv6W_dTLVowEBu0uV6oSxwW8F+U__qAsmk7vop6U8tpw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <160695172591.2717324.17788035024164242534@swboyd.mtv.corp.google.com>
+References: <20201202214935.1114381-1-swboyd@chromium.org> <CAHNYxRwMD4XahHXWW9z7b=VCOEsdPe5Df4CohNwmBy_ijWJ62g@mail.gmail.com> <160695172591.2717324.17788035024164242534@swboyd.mtv.corp.google.com>
+Subject: Re: [PATCH] spi: spi-geni-qcom: Use the new method of gpio CS control
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+        Akash Asthana <akashast@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>
+To:     Alexandru M Stan <amstan@chromium.org>
+Date:   Wed, 02 Dec 2020 16:47:27 -0800
+Message-ID: <160695644776.2717324.633265815704005177@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Stephen Boyd (2020-12-02 15:28:45)
+> Quoting Alexandru M Stan (2020-12-02 14:18:20)
+> > Unfortunately this patch makes my cros-ec (the main EC that used to
+> > work even before my debugging) also fail to probe:
+> > [    0.839533] cros-ec-spi spi6.0: EC failed to respond in time
+> > [    1.040453] cros-ec-spi spi6.0: EC failed to respond in time
+> > [    1.040852] cros-ec-spi spi6.0: Cannot identify the EC: error -110
+> > [    1.040855] cros-ec-spi spi6.0: cannot register EC, fallback to spid=
+ev
+> > [    1.040942] cros-ec-spi: probe of spi6.0 failed with error -110
+> >=20
+> > I wasn't closely looking at this part closely when I was using my
+> > other spi port with spidev, so this is why I haven't noticed it
+> > before.
+> > Doug suggests this might be a polarity issue. More scoping to be had.
+> >=20
+>=20
+> Ah I see. It looks like the cs-gpios polarity is wrong for the DTS on
+> sc7180. That's a patch that Doug has sent in for the qcom tree, commit
+> 37dd4b777942 ("arm64: dts: qcom: sc7180: Provide pinconf for SPI to use
+> GPIO for CS") and it is pending for the next release (v5.11). Doug says
+> he will send in a fix for the DTS side, but this patch is still "good"
+> as far as I can tell. It moves us to use gpio descriptors and also finds
+> bugs like this in the DTS file that we would have missed otherwise
+> because the legacy mode doesn't look at the polarity flags in DT.
 
-On 12/2/20 2:34 PM, Nick Desaulniers wrote:
-> On Tue, Nov 10, 2020 at 2:04 PM Joe Perches <joe@perches.com> wrote:
->> On Tue, 2020-11-10 at 14:00 -0800, Nick Desaulniers wrote:
->>
->>> Yeah, we could go through and remove %h and %hh to solve this, too, right?
->> Yup.
->>
->> I think one of the checkpatch improvement mentees is adding
->> some suggestion and I hope an automated fix mechanism for that.
->>
->> https://lore.kernel.org/lkml/5e3265c241602bb54286fbaae9222070daa4768e.camel@perches.com/
-> + Tom, who's been looking at leveraging clang-tidy to automate such
-> treewide mechanical changes.
-> ex. https://reviews.llvm.org/D91789
-
-This looks like a good one to automate.
-
-If you don't mind, I'll give it a try next.
-
-Need a break from semicolons ;)
-
-Tom
-
->
-> See also commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging
-> use of unnecessary %h[xudi] and %hh[xudi]") for a concise summary of
-> related context.
-
+And that is wrong. With even more investigation and Doug's eagle eyes it
+seems that the cros-ec driver is overriding the spi::mode to clear out
+the SPI_CS_HIGH bit that the spi core sets in there when using the gpio
+descriptors. I'll send a patch for cros-ec-spi shortly.
