@@ -2,84 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EB32CD3CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1181D2CD3D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388857AbgLCKgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 05:36:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730142AbgLCKg0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 05:36:26 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A536FC061A4D;
-        Thu,  3 Dec 2020 02:35:46 -0800 (PST)
-Date:   Thu, 03 Dec 2020 10:35:44 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606991744;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=+b6gXqajHoczC8+Nlzv+FOWhE7itIPWKxrMdFElui88=;
-        b=exiuQmBx09Uxw8Db/fE31gcsPTVSN2vI7dWohOndsb7nBDdg8+xvpfwRs549hhy13ABpPf
-        42kiPAElAuEqdAL9JmMhPKlDH3VoR6u/2y3JM/VBUiiZHmR36/EStJ4H88BFZHgmfyHVpX
-        RYBKZboWdE9N8440xE0hwE4H6oCiK+5S1obXn66O28BR9gLB8Od3aFS3wEg6d30mOgzDz8
-        oNG5o9Xt826tZ4bdEODw2OAWoc4/eVquwQaBgmMGi+8RebCwmnmsfmKXSZfBDKOF81qXuz
-        IHIRussP1ttkEb66H8ImxdIFTXUpz87ZmJy7Ht9eaeVGYbyG2iCFO8LP/WZ0eg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606991744;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=+b6gXqajHoczC8+Nlzv+FOWhE7itIPWKxrMdFElui88=;
-        b=CAULRPdE6upKC8w6JgNGtNFJZfUaFbQaKR+NFian7Qb/LV0YBnULtCc2dFbqn05FEw5Qk3
-        E2eMYITFCwEjGsDQ==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] atomic: Update MAINTAINERS
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        id S2389042AbgLCKg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 05:36:56 -0500
+Received: from foss.arm.com ([217.140.110.172]:36554 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387840AbgLCKgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 05:36:55 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B7987113E;
+        Thu,  3 Dec 2020 02:36:09 -0800 (PST)
+Received: from [10.37.8.53] (unknown [10.37.8.53])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 54BB33F575;
+        Thu,  3 Dec 2020 02:36:06 -0800 (PST)
+Subject: Re: [PATCH mm v11 27/42] arm64: mte: Add in-kernel tag fault handler
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>
+References: <cover.1606161801.git.andreyknvl@google.com>
+ <ad31529b073e22840b7a2246172c2b67747ed7c4.1606161801.git.andreyknvl@google.com>
+ <20201203102628.GB2224@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <c1e9c10a-c4d0-caf5-5501-6d676ac2abea@arm.com>
+Date:   Thu, 3 Dec 2020 10:39:22 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <160699174418.3364.11772742350803606640.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201203102628.GB2224@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     79f3b4372b74f03ba25784f7f2e4b0c90e3aef47
-Gitweb:        https://git.kernel.org/tip/79f3b4372b74f03ba25784f7f2e4b0c90e3aef47
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 16 Nov 2020 16:02:29 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 03 Dec 2020 11:20:51 +01:00
 
-atomic: Update MAINTAINERS
+On 12/3/20 10:26 AM, Catalin Marinas wrote:
+>>  static inline void uaccess_enable(void)
+>>  {
+>> +	asm volatile(ALTERNATIVE("nop", SET_PSTATE_TCO(1),
+>> +				 ARM64_MTE, CONFIG_KASAN_HW_TAGS));
+>> +
+>>  	__uaccess_enable(ARM64_HAS_PAN);
+>>  }
+> 
+> I think that's insufficient if CONFIG_ARM64_PAN is disabled. In the !PAN
+> case, the get/put_user() accessors use standard LDR/STR instructions
+> which would follow the TCF rather than TCF0 mode checking. However, they
+> don't use the above uaccess_disable/enable() functions.
+> 
+> The current user space support is affected as well but luckily we just
+> skip tag checking on the uaccess routines if !PAN since the kernel TCF
+> is 0. With the in-kernel MTE, TCF may be more strict than TCF0.
+> 
+> My suggestion is to simply make CONFIG_ARM64_MTE depend on (or select)
+> PAN. Architecturally this should work since PAN is required for ARMv8.1,
+> so present with any MTE implementation. This patch is on top of -next,
+> though it has a Fixes tag in 5.10:
+> 
 
-Update the files list to include refcount.h and the Documentation/
+Agreed, since PAN is required for ARMv8.1 we should not find any implementation
+of MTE that lacks PAN.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+> --------------------------8<---------------------------
+> From ecc819804c1fb1ad498d7ced07e01e3b3e055a3f Mon Sep 17 00:00:00 2001
+> From: Catalin Marinas <catalin.marinas@arm.com>
+> Date: Thu, 3 Dec 2020 10:15:39 +0000
+> Subject: [PATCH] arm64: mte: Ensure CONFIG_ARM64_PAN is enabled with MTE
+> 
+> The uaccess routines like get/put_user() rely on the user TCF0 mode
+> setting for tag checking. However, if CONFIG_ARM64_PAN is disabled,
+> these routines would use the standard LDR/STR instructions and therefore
+> the kernel TCF mode. In 5.10, the kernel TCF==0, so no tag checking, but
+> this will change with the in-kernel MTE support.
+> 
+> Make ARM64_MTE depend on ARM64_PAN.
+> 
+> Fixes: 89b94df9dfb1 ("arm64: mte: Kconfig entry")
+> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3da6d8c..6928881 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2982,6 +2982,8 @@ L:	linux-kernel@vger.kernel.org
- S:	Maintained
- F:	arch/*/include/asm/atomic*.h
- F:	include/*/atomic*.h
-+F:	include/linux/refcount.h
-+F:	Documentation/atomic_*.txt
- F:	scripts/atomic/
- 
- ATTO EXPRESSSAS SAS/SATA RAID SCSI DRIVER
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
+> ---
+>  arch/arm64/Kconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> =======================================
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 844d62df776c..f9eed3a5917e 100644
+> 
+> --- a/arch/arm64/Kconfig
+> 
+> +++ b/arch/arm64/Kconfig
+> 
+> @@ -1673,6 +1673,8 @@
+> 
+>  config ARM64_MTE
+> 
+> » default·y
+> » depends·on·ARM64_AS_HAS_MTE·&&·ARM64_TAGGED_ADDR_ABI
+> » depends·on·AS_HAS_ARMV8_5
+> +» #·Required·for·tag·checking·in·the·uaccess·routines
+> +» depends·on·ARM64_PAN
+> » select·ARCH_USES_HIGH_VMA_FLAGS
+> » help
+> » ··Memory·Tagging·(part·of·the·ARMv8.5·Extensions)·provides
+
+-- 
+Regards,
+Vincenzo
