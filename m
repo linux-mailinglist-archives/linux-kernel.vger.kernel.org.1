@@ -2,109 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427D82CDF18
+	by mail.lfdr.de (Postfix) with ESMTP id BB3412CDF19
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbgLCTgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:36:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59680 "EHLO
+        id S1727978AbgLCThH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:37:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726635AbgLCTgu (ORCPT
+        with ESMTP id S1726635AbgLCThH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:36:50 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2747BC061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:36:10 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id d9so3241620qke.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:36:10 -0800 (PST)
+        Thu, 3 Dec 2020 14:37:07 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B78C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:36:21 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id w16so2019437pga.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:36:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RqhxuUAWxbYZSw8sYvp2fumpu+s+7MnPGjbntXrF3WA=;
-        b=RCQTki4Xd/Qb3GhbSR3sRvVmqBu3csotRQTOzEzSjm0eAbpCbHLcAb0W4Grb18P0fK
-         sgbmvGrtwfFysooQrR98bzsGP5sWlv6PrlWpqaj9i9LMkj8Z3lU1nxVPM30XzuMiVSd3
-         3bw8WWEKYrpFSDZ3B6lTSSAeACAp5g/Pdj8ge6CM3D5f1gDCOk7EuzjwMG46vw+QWpXe
-         W+IfQJ/glGKWr6U7ldsLd+TJP4UTgslRJHxv43mW2J4ap9brurs73Gr+bTNpD5ZzoOWP
-         qS540QDpKslxcBKsVx9uq1R0L/0IX8NsXrniI08BKPSqkwue/Or5PXrOPZfVyYlZspkb
-         HUkw==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6eF0QAIv1/KV66bOz8yibVCv90a/ydrrt73kEf7iSL0=;
+        b=XiG4CJIwwDFhuy/CwzksffK4iSUbGJsiF9xFlB3WPBKUSTNqFN1dROzJRaXSk3Mt1I
+         maHF7w9nVaKKiDUR87XP+CeoW1cg9mNwuuQuaBSJNBNo61PfYSQHt+wwe1FZylCK4ms3
+         WcBdBqbwzFS7xSF4EajV5PryEhg/N1UWJrZlEKHrLcZbK71PsUMYYkYzJI7l+vbSHjvr
+         uJ/hFO+v0fZgpH5gvMRg4csxWjUwwluut4EraZz6md3zUAUl0TKAoSUW6I1UHqgJZPyX
+         AzxopWChGHk6EouWsVU3rzG9g24DjQGM57/c8kaK1ko1b/ChJ9MDKHmQVqhw/aSYxuWQ
+         BSwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RqhxuUAWxbYZSw8sYvp2fumpu+s+7MnPGjbntXrF3WA=;
-        b=Azwq8LoumxsYLx/dnrrIKph9KEpE6TPpH5yHtMc/Sf7fo/n7BtkOzzMjC/+p9CZIY7
-         0KuG7szyy3dokNnRTbib9opjOSR9WbAnNMUTwtX+NwlOWHAXhArMgkqKNCFXFPxI4PE9
-         lNOdkSF4PbzbQoobEYd0EjUU6U+Y+GjQ2Bn4kK2Gsb8r+EfWwpnxuh7TPJ/deQ1mWH73
-         FMyEl3hVwwd9YUKYqG3mDIJTY8EWeMoD0nv0cG8VbYrAkRSvChiwkNuZXk360K6U2FVM
-         ta6XrNzITIHFbXW/p9QX1zTmi/srbVFS6xhapMxDz/0rST20ienKsQh3XBYi3OdeuefH
-         k8PA==
-X-Gm-Message-State: AOAM533ZFhy2xRnzyBT3/AJncarWKcbkOxWpSx3jpOO6d57I/x+G0hzz
-        6ZtV6x8BVAMZPy1/wX6DsupAwQ==
-X-Google-Smtp-Source: ABdhPJzTw30UYowxVAv1La2ggQqZSxEIvOi/C1vjSqqYMtGmE+HeZjSfg3f2X2E1jyKyjfUJvbmdEw==
-X-Received: by 2002:a37:9205:: with SMTP id u5mr4740419qkd.345.1607024169296;
-        Thu, 03 Dec 2020 11:36:09 -0800 (PST)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id u72sm2616337qka.15.2020.12.03.11.36.08
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6eF0QAIv1/KV66bOz8yibVCv90a/ydrrt73kEf7iSL0=;
+        b=cmY81ljSqpAdr/IwgTQeihDPtFHtVqTZioL7DsEwl8krAWgy8cv3CNTmJOPLsX4DfP
+         YkdhqxOz/xduGMiIgmn80AJ0gFUgUeOrY10PMCGkfDkkVTr993viMiWPnMO7twf9Lyw7
+         dpwP2UGMbQNkO7aHdkeyLoE8EXiQd537zSMxoRHA7iB5kCHeUPItN7hrnyHt3GLe4k1X
+         bX2OkymoTatIk3dJgRlGgy+m3fbxDvIi0wJLF5Te4OjRqU6FPPV74dua2kFhZ+QAuHxi
+         H22UvyYi2kdhSrz/R7KDaMJJ+0jm0UUvHipFxb36ZCCAkkJnZjvAuuOzpfauM/XmpppA
+         fLuA==
+X-Gm-Message-State: AOAM531/hJ5v1DpNoaNxGVpJO7nAqXcDczVmmlEAkcuecfF82JCey5Mh
+        n5cX6gPlXQjthBMoV3ZzEHQ=
+X-Google-Smtp-Source: ABdhPJxQ69cqa+vTX02ABVOcpHMNCayrSfyBWmKagfJRt8wTHCp1IiB1wF3KUV3C2WVR1dW1MaAA1A==
+X-Received: by 2002:a62:8247:0:b029:19d:b276:96fb with SMTP id w68-20020a6282470000b029019db27696fbmr428918pfd.8.1607024180754;
+        Thu, 03 Dec 2020 11:36:20 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id jz7sm185228pjb.14.2020.12.03.11.36.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 11:36:08 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kkuOd-005bGF-BE; Thu, 03 Dec 2020 15:36:07 -0400
-Date:   Thu, 3 Dec 2020 15:36:07 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
+        Thu, 03 Dec 2020 11:36:19 -0800 (PST)
+Date:   Thu, 3 Dec 2020 11:36:16 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
-Message-ID: <20201203193607.GV5487@ziepe.ca>
-References: <20201202052330.474592-7-pasha.tatashin@soleen.com>
- <20201202163507.GL5487@ziepe.ca>
- <CA+CK2bBT=U+xhbzXTDFwsL5wTvPHgNJ0DRpaeseiUq=w4EOe9w@mail.gmail.com>
- <20201203010809.GQ5487@ziepe.ca>
- <CA+CK2bBRgcCc5Nm0RcsEgVFpGBFC-_icA6UDRiqQxeRJE5U-Aw@mail.gmail.com>
- <20201203141729.GS5487@ziepe.ca>
- <CA+CK2bA=Ahd4E=ebdJ7uwxPyQ1AEy_hxA+Tx+yAi92JcZsQsfA@mail.gmail.com>
- <20201203165937.GU5487@ziepe.ca>
- <CA+CK2bBRqK6_ZOkTbz8qe4Gz6T5pwt-KjJQ0+NzYOC1qO1sPMg@mail.gmail.com>
- <CA+CK2bAErUyg26UNKQJwaZ7wsv4+qv4Ws58Vdmv+QZfLDyrkeQ@mail.gmail.com>
+        Vinod Koul <vkoul@kernel.org>, Eric Anholt <eric@anholt.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] amba: Make the remove callback return void
+Message-ID: <X8k+MDeyKZCWxMOw@google.com>
+References: <20201124133139.3072124-1-uwe@kleine-koenig.org>
+ <20201124133139.3072124-5-uwe@kleine-koenig.org>
+ <20201203130141.ys2s7aaltyzkdena@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CA+CK2bAErUyg26UNKQJwaZ7wsv4+qv4Ws58Vdmv+QZfLDyrkeQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201203130141.ys2s7aaltyzkdena@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 02:15:36PM -0500, Pavel Tatashin wrote:
+On Thu, Dec 03, 2020 at 02:01:41PM +0100, Uwe Kleine-König wrote:
+> Hello,
+> 
+> [This is a resend because somehow my MUA failed to parse the To: list
+> and dropped it without me noticing it. Sorry to those who got it twice
+> now.]
+> 
+> On Tue, Nov 24, 2020 at 02:31:38PM +0100, Uwe Kleine-König wrote:
+> > From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> > 
+> > All amba drivers return 0 in their remove callback. Together with the
+> > driver core ignoring the return value anyhow, it doesn't make sense to
+> > return a value here.
+> > 
+> > Change the remove prototype to return void, which makes it explicit that
+> > returning an error value doesn't work as expected. This simplifies changing
+> > the core remove callback to return void, too.
+> > 
+> > Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> > ---
+> >  drivers/amba/bus.c                                 | 5 ++---
+> >  drivers/char/hw_random/nomadik-rng.c               | 3 +--
+> >  drivers/dma/pl330.c                                | 3 +--
+> >  drivers/gpu/drm/pl111/pl111_drv.c                  | 4 +---
+> >  drivers/hwtracing/coresight/coresight-catu.c       | 3 +--
+> >  drivers/hwtracing/coresight/coresight-cpu-debug.c  | 4 +---
+> >  drivers/hwtracing/coresight/coresight-cti-core.c   | 4 +---
+> >  drivers/hwtracing/coresight/coresight-etb10.c      | 4 +---
+> >  drivers/hwtracing/coresight/coresight-etm3x-core.c | 4 +---
+> >  drivers/hwtracing/coresight/coresight-etm4x-core.c | 4 +---
+> >  drivers/hwtracing/coresight/coresight-funnel.c     | 4 ++--
+> >  drivers/hwtracing/coresight/coresight-replicator.c | 4 ++--
+> >  drivers/hwtracing/coresight/coresight-stm.c        | 4 +---
+> >  drivers/hwtracing/coresight/coresight-tmc-core.c   | 4 +---
+> >  drivers/hwtracing/coresight/coresight-tpiu.c       | 4 +---
+> >  drivers/i2c/busses/i2c-nomadik.c                   | 4 +---
+> >  drivers/input/serio/ambakmi.c                      | 3 +--
 
-> I studied some more, and I think this is not a race:
-> list_add_tail(&head->lru, &cma_page_list) is called only when
-> isolate_lru_page(head) succeeds.
-> isolate_lru_page(head) succeeds only when PageLRU(head) is true.
-> However, in this function we also clear LRU flag before returning
-> success.
-> This means, that if we race with another thread, the other thread
-> won't get to unprotected list_add_tail(&head->lru, &cma_page_list)
-> until head is is back on LRU list.
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Oh interesting, I totally didn't see how that LRU stuff is
-working. So.. this creates a ridiculously expensive spin lock? Not
-broken, but yikes :|
+Thanks.
 
-Jason
+-- 
+Dmitry
