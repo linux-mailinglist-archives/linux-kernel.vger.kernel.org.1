@@ -2,143 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC1C2CE185
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:23:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C612CE18A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729834AbgLCWWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:22:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24553 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729635AbgLCWWg (ORCPT
+        id S1728295AbgLCW0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:26:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726187AbgLCW0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:22:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607034070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+ISPHS/qFGkoXfeg13gVylWvk6gUYj8tbfF+wixKiaM=;
-        b=QUJmcUkkUvDA1+L+/A+V4wUJny+MbuJsnOZWhKB/D0QRG2i8gJ6qa9c+yi3aSlObutn5jB
-        sUp7nBTP7gkZW7c8RSPzx6QREALfTStPcOPQwEOgtdQVaAKTcgkRtJPRzHLDL0CoantNcq
-        v2LdWIOdzJ4FLvicwb//sSE3OhBlllI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-_bslx57CO3iA7XJ7psvDIQ-1; Thu, 03 Dec 2020 17:21:02 -0500
-X-MC-Unique: _bslx57CO3iA7XJ7psvDIQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A92111005513;
-        Thu,  3 Dec 2020 22:21:00 +0000 (UTC)
-Received: from krava (unknown [10.40.195.70])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 98EC65D6AC;
-        Thu,  3 Dec 2020 22:20:58 +0000 (UTC)
-Date:   Thu, 3 Dec 2020 23:20:57 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>
-Subject: Re: [RFC v2 1/2] perf: support build BPF skeletons with perf
-Message-ID: <20201203222057.GD3613628@krava>
-References: <20201201073647.753079-1-songliubraving@fb.com>
- <20201201073647.753079-2-songliubraving@fb.com>
- <20201201205433.GE3169083@krava>
- <709375F7-A386-415B-926E-0A19783D09A5@fb.com>
+        Thu, 3 Dec 2020 17:26:14 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD09C061A4F;
+        Thu,  3 Dec 2020 14:25:33 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id v14so5053121lfo.3;
+        Thu, 03 Dec 2020 14:25:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lZUGplS6otRHZGB4uiEDdWMeSyvXO6myoGBH5DWzVgY=;
+        b=st5i+4HyffCKXte4m5SNX0NoAfoeMZo+7DYMbOn/WSWRpGMwDOEEjVmjvqCfNNK4+E
+         wDfsSmm8xaAj+8E4q1Ha76gyKXlHlZmh/uFE/3G5kIdvjZjP2/ABU/E9E1Vm6tXFl8UY
+         eeCr0UjpemF06+PayWaIfgkEtpFz60pK0RYlaJx/eve8aH4iaixxcg8H6ZPSAWpX2k4O
+         8CUP8k4CuqUicjrNbPIEhRfl7J1XduT73pfCkdQkodNYMsiXaM773QwzLrF4MSs3Ol9u
+         IIVHogLCC7TG+zCfNJlN4F61Uww5HZnVH3dxgPhmAfQ9P3hfTGMHi3VatmUcqgo1mgPo
+         L4FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lZUGplS6otRHZGB4uiEDdWMeSyvXO6myoGBH5DWzVgY=;
+        b=YrpLd++Ut5s1qa6uT/TnNJkFAGXb3tfITp2e4+cHqRnpDLQ1NdujXoa9WXunc/ITvg
+         pyPRVb9hK4+y7NZJ+deesdck8iSWLn+KDmCjgLAjkKq/66Vrha+Yyv0OrjfF1yunohux
+         rsmdntMTcsHssbZvE34/qo9Lfbkrlq+QouCrXTiEjy37G7NMwHf09HSQOHYec45m3pyI
+         eOvNljwZ+o12v9D7Om/wm8Z59ZZSpNLEYQCNor2I4j2sg6TMcOovdgcFpnv3axXoO8PG
+         Ei2yuFrTJJ1pDrYZtoRMiwd34xeMh8kFWqnzz0KRCbIuxYvnAByfjS8dTpM7qp0RN3UG
+         cYeQ==
+X-Gm-Message-State: AOAM532T3ufgeZi1FpYwbjIwJSnXsqGlS3qPnRVUKqB09I3eQqPxaVbP
+        YDBm0D5a3ifhRQq48naKpz0q9KemAES4JWnHoj4=
+X-Google-Smtp-Source: ABdhPJw2KPcZ7OEA4t573BTxnublS3r8cLhXi4GH9AhB5ze7Ibd5eeYqJNdDp+L42MWu1By0HZpJj2+ibW285RfIpws=
+X-Received: by 2002:a19:6a07:: with SMTP id u7mr2012587lfu.252.1607034331908;
+ Thu, 03 Dec 2020 14:25:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <709375F7-A386-415B-926E-0A19783D09A5@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201202182725.265020-1-shy828301@gmail.com> <20201202182725.265020-5-shy828301@gmail.com>
+ <20201203030104.GF1375014@carbon.DHCP.thefacebook.com> <CAHbLzkoUNuKHT_4w8QaWCQA3xs2vTW4Xii26a5vpVqxrDVSX_Q@mail.gmail.com>
+ <20201203200820.GC1571588@carbon.DHCP.thefacebook.com>
+In-Reply-To: <20201203200820.GC1571588@carbon.DHCP.thefacebook.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 3 Dec 2020 14:25:20 -0800
+Message-ID: <CAHbLzkrbd+gBUngiRa3OJhO3q_Z7x3w6+jkX2CkXG0Zm=jufQA@mail.gmail.com>
+Subject: Re: [PATCH 4/9] mm: vmscan: use a new flag to indicate shrinker is registered
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 10:47:59PM +0000, Song Liu wrote:
+On Thu, Dec 3, 2020 at 12:09 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Wed, Dec 02, 2020 at 08:59:40PM -0800, Yang Shi wrote:
+> > On Wed, Dec 2, 2020 at 7:01 PM Roman Gushchin <guro@fb.com> wrote:
+> > >
+> > > On Wed, Dec 02, 2020 at 10:27:20AM -0800, Yang Shi wrote:
+> > > > Currently registered shrinker is indicated by non-NULL shrinker->nr_deferred.
+> > > > This approach is fine with nr_deferred atthe shrinker level, but the following
+> > > > patches will move MEMCG_AWARE shrinkers' nr_deferred to memcg level, so their
+> > > > shrinker->nr_deferred would always be NULL.  This would prevent the shrinkers
+> > > > from unregistering correctly.
+> > > >
+> > > > Introduce a new "state" field to indicate if shrinker is registered or not.
+> > > > We could use the highest bit of flags, but it may be a little bit complicated to
+> > > > extract that bit and the flags is accessed frequently by vmscan (every time shrinker
+> > > > is called).  So add a new field in "struct shrinker", we may waster a little bit
+> > > > memory, but it should be very few since there should be not too many registered
+> > > > shrinkers on a normal system.
+> > > >
+> > > > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > > > ---
+> > > >  include/linux/shrinker.h |  4 ++++
+> > > >  mm/vmscan.c              | 13 +++++++++----
+> > > >  2 files changed, 13 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+> > > > index 0f80123650e2..0bb5be88e41d 100644
+> > > > --- a/include/linux/shrinker.h
+> > > > +++ b/include/linux/shrinker.h
+> > > > @@ -35,6 +35,9 @@ struct shrink_control {
+> > > >
+> > > >  #define SHRINK_STOP (~0UL)
+> > > >  #define SHRINK_EMPTY (~0UL - 1)
+> > > > +
+> > > > +#define SHRINKER_REGISTERED  0x1
+> > > > +
+> > > >  /*
+> > > >   * A callback you can register to apply pressure to ageable caches.
+> > > >   *
+> > > > @@ -66,6 +69,7 @@ struct shrinker {
+> > > >       long batch;     /* reclaim batch size, 0 = default */
+> > > >       int seeks;      /* seeks to recreate an obj */
+> > > >       unsigned flags;
+> > > > +     unsigned state;
+> > >
+> > > Hm, can't it be another flag? It seems like we have a plenty of free bits.
+> >
+> > I thought about this too. But I was not convinced by myself that
+> > messing flags with state is a good practice. We may add more flags in
+> > the future, so we may end up having something like:
+> >
+> > flag
+> > flag
+> > flag
+> > state
+> > flag
+> > flag
+> > ...
+> >
+> > Maybe we could use the highest bit for state?
+>
+> Or just
+> state
+> flag
+> flag
+> flag
+> flag
+> flag
+> ...
+>
+> ?
 
-SNIP
-
-> >> # As per kernel Makefile, avoid funny character set dependencies
-> >> unexport LC_ALL
-> >> @@ -735,7 +737,8 @@ prepare: $(OUTPUT)PERF-VERSION-FILE $(OUTPUT)common-cmds.h archheaders $(drm_ioc
-> >> 	$(x86_arch_prctl_code_array) \
-> >> 	$(rename_flags_array) \
-> >> 	$(arch_errno_name_array) \
-> >> -	$(sync_file_range_arrays)
-> >> +	$(sync_file_range_arrays) \
-> >> +	bpf-skel
-> > 
-> > I think the 'prepare' target is misused already with other stuff,
-> > there's generated bpf_counter.c dependency on util/bpf_skel/bpf_prog_profiler.skel.h
-> > in util/.bpf_counter.o.cmd, that should triger the build no?
-> 
-> This doesn't work for me. Once bpf-skel is removed from "prepare", we hit
-> compilation error before util/.bpf_counter.o.cmd is generated. 
-
-ok, I'll check on that with your new version
-
-SNIP
-
-> >> +submake_extras := feature_display=0
-> >> +
-> >> +$(SKEL_TMP_OUT):
-> >> +	$(Q)$(MKDIR) -p $@
-> >> +
-> >> +$(BPFTOOL): | $(SKEL_TMP_OUT)
-> >> +	CFLAGS= $(MAKE) $(submake_extras) -C ../bpf/bpftool \
-> >> +		OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
-> >> +
-> >> +$(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(BPFOBJ) | $(SKEL_TMP_OUT)
-> >> +	$(call QUIET_CLANG, $@)
-> >> +	$(Q)$(CLANG) -g -O2 -target bpf	-c $(filter util/bpf_skel/%.bpf.c,$^) -o $@ && \
-> >> +	$(LLVM_STRIP) -g $@
-> >> +
-> >> +$(SKEL_OUT)/%.skel.h: $(SKEL_TMP_OUT)/%.bpf.o | $(BPFTOOL)
-> >> +	$(call QUIET_GENSKEL, $@)
-> > 
-> > is there a reason to use call in here? you could define QUIET_GENSKEL
-> > to use $@ and use it the same way as we use the rest of QUIET_* stuf
-> > in Makefile.perf
-> 
-> I am not following here. $(CALL QUIET_xx) was used for QUIET_CLEAN and 
-> QUIET_INSTALL in Makefile.perf. What is the preferred pattern here?
-
-right it's QUIET_CLEAN and QUIET_INSTALL because they need argument,
-QUIET_GENSKEL uses $@, which is used directly in other QUIET_* macros
-
-> 
-> > 
-> >> new file mode 100644
-> >> index 0000000000000..5263e9e6c5d83
-> >> --- /dev/null
-> >> +++ b/tools/perf/util/bpf_skel/.gitignore
-> >> @@ -0,0 +1,3 @@
-> >> +# SPDX-License-Identifier: GPL-2.0-only
-> >> +.tmp
-> >> +*.skel.h
-> >> \ No newline at end of file
-> >> diff --git a/tools/perf/util/bpf_skel/dummy.bpf.c b/tools/perf/util/bpf_skel/dummy.bpf.c
-> >> new file mode 100644
-> >> index 0000000000000..492a43a851deb
-> >> --- /dev/null
-> >> +++ b/tools/perf/util/bpf_skel/dummy.bpf.c
-> > 
-> > hum, what's the reason for dummy skeleton? it just adds
-> > time to compilation no?
-> 
-> It is mostly to test 1/2 of the set works fine. I guess we can remove 
-> it in 2/2?
-
-so it needs to be there otherwise the compilation fails?
-
-I'll check your new version
-
-thanks,
-jirka
-
+It is fine too. We should not add more states in foreseeable future.
