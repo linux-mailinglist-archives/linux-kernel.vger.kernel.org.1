@@ -2,27 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4422CE257
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7772CE25C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729087AbgLCXIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:08:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33834 "EHLO mail.kernel.org"
+        id S1729689AbgLCXIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:08:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgLCXIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:08:23 -0500
+        id S1726179AbgLCXIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 18:08:43 -0500
 From:   Arnd Bergmann <arnd@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Benoit Parrot <bparrot@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Anson Huang <Anson.Huang@nxp.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: ti-vpe: cal: avoid FIELD_GET assertion
-Date:   Fri,  4 Dec 2020 00:07:30 +0100
-Message-Id: <20201203230738.1481199-1-arnd@kernel.org>
+        Anders Roxell <anders.roxell@linaro.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: imx: fix build failure on i.MX SCU clk
+Date:   Fri,  4 Dec 2020 00:07:52 +0100
+Message-Id: <20201203230756.1481397-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -32,39 +38,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-FIELD_GET() must only be used with a mask that is a compile-time
-constant:
+When CONFIG_MXC_CLK_SCU is enabled, but CONFIG_CLK_IMX8QXP is not,
+the kernel fails to link with:
 
-drivers/media/platform/ti-vpe/cal.h: In function 'cal_read_field':
-include/linux/compiler_types.h:320:38: error: call to '__compiletime_assert_247' declared with attribute error: FIELD_GET: mask is not constant
-include/linux/bitfield.h:46:3: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-   46 |   BUILD_BUG_ON_MSG(!__builtin_constant_p(_mask),  \
-      |   ^~~~~~~~~~~~~~~~
-drivers/media/platform/ti-vpe/cal.h:220:9: note: in expansion of macro 'FIELD_GET'
-  220 |  return FIELD_GET(mask, cal_read(cal, offset));
-      |         ^~~~~~~~~
+aarch64-linux-ld: no input files
+make[5]: *** [scripts/Makefile.build:434: drivers/clk/imx/clk-imx-scu.o] Error 1
+aarch64-linux-ld: no input files
+make[5]: *** [scripts/Makefile.build:434: drivers/clk/imx/clk-imx-lpcg-scu.o] Error 1
 
-The problem here is that the function is not always inlined. Mark it
-__always_inline to avoid the problem.
+The only sensible configuration at the moment is to have both mean
+the same thing, so make hide the first one to avoid broken
+configurations.
 
+Fixes: e0d0d4d86c76 ("clk: imx8qxp: Support building i.MX8QXP clock driver as module")
+Reported-by: Anders Roxell <anders.roxell@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/media/platform/ti-vpe/cal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/imx/Kconfig | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/ti-vpe/cal.h b/drivers/media/platform/ti-vpe/cal.h
-index 4123405ee0cf..20d07311d222 100644
---- a/drivers/media/platform/ti-vpe/cal.h
-+++ b/drivers/media/platform/ti-vpe/cal.h
-@@ -215,7 +215,7 @@ static inline void cal_write(struct cal_dev *cal, u32 offset, u32 val)
- 	iowrite32(val, cal->base + offset);
- }
+diff --git a/drivers/clk/imx/Kconfig b/drivers/clk/imx/Kconfig
+index 3b393cb07295..47d9ec3abd2f 100644
+--- a/drivers/clk/imx/Kconfig
++++ b/drivers/clk/imx/Kconfig
+@@ -5,9 +5,7 @@ config MXC_CLK
+ 	depends on ARCH_MXC || COMPILE_TEST
  
--static inline u32 cal_read_field(struct cal_dev *cal, u32 offset, u32 mask)
-+static __always_inline u32 cal_read_field(struct cal_dev *cal, u32 offset, u32 mask)
- {
- 	return FIELD_GET(mask, cal_read(cal, offset));
- }
+ config MXC_CLK_SCU
+-	tristate "IMX SCU clock"
+-	depends on ARCH_MXC || COMPILE_TEST
+-	depends on IMX_SCU && HAVE_ARM_SMCCC
++	tristate
+ 
+ config CLK_IMX1
+ 	def_bool SOC_IMX1
 -- 
 2.27.0
 
