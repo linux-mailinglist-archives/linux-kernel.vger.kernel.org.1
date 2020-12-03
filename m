@@ -2,103 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220312CDAFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 976702CDB06
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389352AbgLCQRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:17:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389290AbgLCQRF (ORCPT
+        id S2436731AbgLCQTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:19:50 -0500
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:38135 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436640AbgLCQTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:17:05 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAD0C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 08:16:25 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id i199so2578988qke.5
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 08:16:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nqxHEehCvii0bTM+IyLO2PbX9ekRddRQu8/eqzIhyOU=;
-        b=GAc8adqNopO2UxLM7/fwMnNg6vA9r6i6BetSSJLPScfhjerYyAldA1uJoM98PM7vBL
-         rXIA6MDX/RpJeevg7cZAsDi+k9chPnnh2L0yLbbwWR23vi6WMn5gcloKgSKLfJTYmfrW
-         gm0zSZzz/hea6375hJiQmOoDpMLSL19wkPQbxFDZ5ybJaS23c3MJ02FJoasFOEoRSlEK
-         Nba7Nt4ZrY+Cdd1ESLexMNkeyAxOe15Iqb7BFqOr5S62iloLJ0rhPaqqfl91FCfDJ+d7
-         rS9Qcj/Q6s4lLHJOaQxW5Rx/IgB5jBb6YowRC415Rr174bB20CV9MU2jQiPug/cDYbrJ
-         UL8A==
+        Thu, 3 Dec 2020 11:19:49 -0500
+Received: by mail-ed1-f66.google.com with SMTP id cw27so2705570edb.5;
+        Thu, 03 Dec 2020 08:19:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=nqxHEehCvii0bTM+IyLO2PbX9ekRddRQu8/eqzIhyOU=;
-        b=F+Z/mVg7EzaL5Y7boGjKfjzX78+0xSd0Oe+Du37+f+Jwq9l5VaZCCjntJ60Afkcm0n
-         JrSEmV2gtIQTDuyP9F3N+wCKpZEipTtZGtIc3H1QkgOhgBZ/yHv42XJfq9X9WDLapFpD
-         RcDl3u4eTbYqE5hXrWvF6YM60hcQ97zTIyzbPnXqYfYVps1OppBIbkjUFqN9uKLwILEe
-         sWHwV+aMg45rZe4838k6fJmdqu9OuAvhn51CRV7pyhGSbW/PVVwqNvkmQtEtzpz/vfy5
-         zBN8NhPivoLwZIS82WWBuwDjMhn/TzlYT0RqOpcSB+nwndGI7Zx/yeH5Ru46+AaXOc1E
-         uZSA==
-X-Gm-Message-State: AOAM5339eG0Ces/RBrISPym6IWKyh10EFGBbhNpJVlYM/gl6r6u5y52j
-        mWvHq79xHSv7rM7CUG8vixVIyg==
-X-Google-Smtp-Source: ABdhPJwpjzIsghB/Lb8L62BvOMvgFhNcU8/Mos3ye1OZbzKmjc7jOvhPfUtV9uBxJENPrsPTbTgrSA==
-X-Received: by 2002:a37:5185:: with SMTP id f127mr3594869qkb.225.1607012184500;
-        Thu, 03 Dec 2020 08:16:24 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id j21sm1524129qtp.10.2020.12.03.08.16.23
+        bh=ODKylo1ARO1Guvyudvma49X5O/saBDRUYXjRotR9i2w=;
+        b=X2XUucHKqYOxi60reNaj65uKVcUrEGR6RmOhxzIZ5mhZt7/WVVsdE2vAINUmSMr7Ju
+         SmZIuLy/fnXZf1ArJxrYaMje5nSRop65mS7Kh4RO+/pRdML8RsQhGFRWHjVQuuZNsy5t
+         nCr2rw9wsANz/MiUR6mUuEU//n5T+7v0cnk3iQr5Ft7Fwsv8S1seWr3lIvxndf3JrbQ2
+         cmcBkEXLVYfECzVpmAkjTuilgVBQWEPzYaXTU4eRpZndUfS6zIbBc63UWS5/bmQWk0HC
+         NMtc4302NsMEsONssJ12cqv55Gz8HJmwM6tSTyTPAAozlMRCWKfko4Wl2rOn8CAnwMan
+         t8mw==
+X-Gm-Message-State: AOAM530mFjINRGEaBVgGGCk/K9bKy0wmLOgMrHIPJ6zRzAnZZJQL3fVS
+        xRQgwqFiixyU7NUZHVbk+UcNufXZwWY=
+X-Google-Smtp-Source: ABdhPJyL9nlMz2v7x3aE+3ruRh8dZzYEMhD1TpwcFCO9mxL5SdTnNGRAR6YqDbwp6RR8z4MEXKEApg==
+X-Received: by 2002:a50:c19a:: with SMTP id m26mr3518773edf.302.1607012347188;
+        Thu, 03 Dec 2020 08:19:07 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id ga11sm1116662ejb.34.2020.12.03.08.19.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 08:16:23 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kkrHK-005XLH-RZ; Thu, 03 Dec 2020 12:16:22 -0400
-Date:   Thu, 3 Dec 2020 12:16:22 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-Message-ID: <20201203161622.GA1317829@ziepe.ca>
-References: <20201201171420.GN1900232@localhost>
- <20201201173540.GH5487@ziepe.ca>
- <87mtywe2zu.fsf@nanos.tec.linutronix.de>
- <20201202162723.GJ5487@ziepe.ca>
- <87a6uwdnfn.fsf@nanos.tec.linutronix.de>
- <20201202205418.GN5487@ziepe.ca>
- <874kl3eu8p.fsf@nanos.tec.linutronix.de>
- <87zh2vd72z.fsf@nanos.tec.linutronix.de>
- <20201203021047.GG3544@piout.net>
- <87pn3qdhli.fsf@nanos.tec.linutronix.de>
+        Thu, 03 Dec 2020 08:19:05 -0800 (PST)
+Date:   Thu, 3 Dec 2020 18:19:04 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: Re: [PATCH net-next] nfc: s3fwrn5: skip the NFC bootloader mode
+Message-ID: <20201203161904.GA16186@kozik-lap>
+References: <20201203153950.13772-1-bongsu.jeon@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87pn3qdhli.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20201203153950.13772-1-bongsu.jeon@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 04:39:21PM +0100, Thomas Gleixner wrote:
+On Fri, Dec 04, 2020 at 12:39:50AM +0900, Bongsu Jeon wrote:
+> From: Bongsu Jeon <bongsu.jeon@samsung.com>
+> 
+> If there isn't proper NFC firmware image,
+> Bootloader mode will be skipped.
 
-> The logic in sync_cmos_clock() and rtc_set_ntp_time() is different as I
-> pointed out: sync_cmos_clock() hands -500ms to rtc_tv_nsec_ok() and
-> rtc_set_ntp_time() uses +500ms, IOW exactly ONE second difference in
-> behaviour.
+Wrap your commit msg as described in submitting patches (so at 75
+character).
 
-I understood this is because the two APIs work differently, rmk
-explained this as:
+> 
+> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+> ---
+>  drivers/nfc/s3fwrn5/core.c     | 44 ++++++++++++++++++++++++----------
+>  drivers/nfc/s3fwrn5/firmware.c | 11 +--------
+>  drivers/nfc/s3fwrn5/firmware.h |  1 +
+>  3 files changed, 33 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/nfc/s3fwrn5/core.c b/drivers/nfc/s3fwrn5/core.c
+> index f8e5d78d9078..df89bc5d7338 100644
+> --- a/drivers/nfc/s3fwrn5/core.c
+> +++ b/drivers/nfc/s3fwrn5/core.c
+> @@ -20,13 +20,26 @@
+>  				NFC_PROTO_ISO14443_B_MASK | \
+>  				NFC_PROTO_ISO15693_MASK)
+>  
+> +static int s3fwrn5_firmware_init(struct s3fwrn5_info *info)
+> +{
+> +	struct s3fwrn5_fw_info *fw_info = &info->fw_info;
+> +	int ret;
+> +
+> +	s3fwrn5_fw_init(fw_info, "sec_s3fwrn5_firmware.bin");
+> +
+> +	/* Get firmware data */
+> +	ret = s3fwrn5_fw_request_firmware(fw_info);
+> +	if (ret < 0)
+> +		dev_err(&fw_info->ndev->nfc_dev->dev,
+> +			"Failed to get fw file, ret=%02x\n", ret);
+> +	return ret;
+> +}
+> +
+>  static int s3fwrn5_firmware_update(struct s3fwrn5_info *info)
+>  {
+>  	bool need_update;
+>  	int ret;
+>  
+> -	s3fwrn5_fw_init(&info->fw_info, "sec_s3fwrn5_firmware.bin");
+> -
+>  	/* Update firmware */
+>  
+>  	s3fwrn5_set_wake(info, false);
+> @@ -109,21 +122,26 @@ static int s3fwrn5_nci_post_setup(struct nci_dev *ndev)
+>  	struct s3fwrn5_info *info = nci_get_drvdata(ndev);
+>  	int ret;
+>  
+> -	ret = s3fwrn5_firmware_update(info);
+> -	if (ret < 0)
+> -		goto out;
+> +	if (s3fwrn5_firmware_init(info) == 0) {
 
-> 1. kernel/time/ntp.c assumes that all RTCs want to be told to set the
->    time at around 500ms into the second.
->
-> 2. drivers/rtc/systohc.c assumes that if the time being set is >= 500ms,
->    then we want to set the _next_ second.
+if (s3fwrn5_firmware_init(info)) {
+	// skip bootloader mode
+	ret = 0;
+	goto out;
+}
 
-ie one path is supposed to round down and one path is supposed to
-round up, so you get to that 1s difference..
+so entire next block won't have to be indented.  This follows usual
+pattern of error handling.
 
-IIRC this is also connected to why the offset is signed..
+Best regards,
+Krzysztof
 
-Jason
+
+> +		ret = s3fwrn5_firmware_update(info);
+> +		if (ret < 0)
+> +			goto out;
+>  
+> -	/* NCI core reset */
+> -
+> -	s3fwrn5_set_mode(info, S3FWRN5_MODE_NCI);
+> -	s3fwrn5_set_wake(info, true);
+> +		/* NCI core reset */
+>  
+> -	ret = nci_core_reset(info->ndev);
+> -	if (ret < 0)
+> -		goto out;
+> +		s3fwrn5_set_mode(info, S3FWRN5_MODE_NCI);
+> +		s3fwrn5_set_wake(info, true);
+>  
+> -	ret = nci_core_init(info->ndev);
+> +		ret = nci_core_reset(info->ndev);
+> +		if (ret < 0)
+> +			goto out;
+>  
+> +		ret = nci_core_init(info->ndev);
+> +	} else {
+> +		dev_info(&info->ndev->nfc_dev->dev,
+> +			 "skip bootloader mode\n");
+> +		ret = 0;
+> +	}
+>  out:
+>  	return ret;
+>  }
