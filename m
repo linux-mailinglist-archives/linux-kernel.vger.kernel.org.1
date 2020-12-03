@@ -2,132 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94B62CD2F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD20A2CD2D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388316AbgLCJxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:53:15 -0500
-Received: from regular1.263xmail.com ([211.150.70.206]:42772 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387548AbgLCJxO (ORCPT
+        id S1730134AbgLCJru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:47:50 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:8928 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbgLCJrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:53:14 -0500
-Received: from localhost (unknown [192.168.167.32])
-        by regular1.263xmail.com (Postfix) with ESMTP id 1C2D71B17;
-        Thu,  3 Dec 2020 17:47:24 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from localhost.localdomain (unknown [14.18.236.70])
-        by smtp.263.net (postfix) whith ESMTP id P26670T140451924260608S1606988834214421_;
-        Thu, 03 Dec 2020 17:47:23 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <4add3ead76855a29643536f784f1c7d0>
-X-RL-SENDER: yili@winhong.com
-X-SENDER: yili@winhong.com
-X-LOGIN-NAME: yili@winhong.com
-X-FST-TO: colyli@suse.de
-X-SENDER-IP: 14.18.236.70
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Yi Li <yili@winhong.com>
-To:     colyli@suse.de
-Cc:     yilikernel@gmail.com, kent.overstreet@gmail.com,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yi Li <yili@winhong.com>, Guo Chao <guochao@winhong.com>
-Subject: [PATCH v2] bcache: fix panic due to cache_set is null
-Date:   Thu,  3 Dec 2020 17:47:11 +0800
-Message-Id: <20201203094711.3236551-1-yili@winhong.com>
-X-Mailer: git-send-email 2.25.3
-In-Reply-To: <CAJfdMYDLydAtoxvPGzaQ+K5jLvwAXg6MvpE-OM9sFjZgz_01sQ@mail.gmail.com>
-References: <CAJfdMYDLydAtoxvPGzaQ+K5jLvwAXg6MvpE-OM9sFjZgz_01sQ@mail.gmail.com>
+        Thu, 3 Dec 2020 04:47:49 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CmrZm1TKNz782q;
+        Thu,  3 Dec 2020 17:46:40 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 3 Dec 2020 17:47:04 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
+        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
+        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
+        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] drm/hisilicon: Delete the entire file hibmc_ttm.c
+Date:   Thu, 3 Dec 2020 17:47:21 +0800
+Message-ID: <1606988841-1373-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bcache_device_detach will release the cache_set after hotunplug cache
-disk.
+Delete the entire file hibmc_ttm.c. drmm_vram_helper_init() can be
+called directly from hibmc_load(). hibmc_dumb_create() and
+hibmc_mode_funcs can go to hibmc_drm_drv.c
 
-Here is how the issue happens.
-1) cached_dev_free do cancel_writeback_rate_update_dwork
-   without bch_register_lock.
-2) Wirting the writeback_percent by sysfs with
-   bch_register_lock will insert a writeback_rate_update work.
-3) cached_dev_free with bch_register_lock to do bcache_device_free.
-   dc->disk.cl will be set NULL
-4) update_writeback_rate will crash when access dc->disk.cl
+v2:
+change Deletted to Delete
 
-Fixes: 80265d8dfd77 ("bcache: acquire bch_register_lock later in cached_dev_free()")
-
-  IP: [<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
-  PGD 879620067 PUD 8755d3067 PMD 0
-  Oops: 0000 [#1] SMP
-  CPU: 8 PID: 1005702 Comm: kworker/8:0 Tainted: G 4.4.0+10 #1
-  Hardware name: Intel BIOS SE5C610.86B.01.01.0021.032120170601 03/21/2017
-  Workqueue: events update_writeback_rate [bcache]
-  task: ffff8808786f3800 ti: ffff88077082c000 task.ti: ffff88077082c000
-  RIP: e030:[<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
-  RSP: e02b:ffff88077082fde0  EFLAGS: 00010202
-  RAX: 0000000000000018 RBX: ffff8808047f0b08 RCX: 0000000000000000
-  RDX: 0000000000000001 RSI: ffff88088170dab8 RDI: ffff88088170dab8
-  RBP: ffff88077082fe18 R08: 000000000000000a R09: 0000000000000000
-  R10: 0000000000000000 R11: 0000000000017bc8 R12: 0000000000000000
-  R13: ffff8808047f0000 R14: 0000000000000200 R15: ffff8808047f0b08
-  FS:  00007f157b6d6700(0000) GS:ffff880881700000(0000) knlGS:0000000000000000
-  CS:  e033 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 0000000000000368 CR3: 0000000875c05000 CR4: 0000000000040660
-  Stack:
-   0000000000000001 0000000000007ff0 ffff88085ff600c0 ffff880881714e80
-   ffff880881719500 0000000000000200 ffff8808047f0b08 ffff88077082fe60
-   ffffffff81088c0c 0000000081714e80 0000000000000000 ffff880881714e80
-  Call Trace:
-   [<ffffffff81088c0c>] process_one_work+0x1fc/0x3b0
-   [<ffffffff81089575>] worker_thread+0x2a5/0x470
-   [<ffffffff815a2f58>] ? __schedule+0x648/0x870
-   [<ffffffff810892d0>] ? rescuer_thread+0x300/0x300
-   [<ffffffff8108e3d5>] kthread+0xd5/0xe0
-   [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
-   [<ffffffff815a704f>] ret_from_fork+0x3f/0x70
-   [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
-
-Reported-by: Guo Chao <guochao@winhong.com>
-Signed-off-by: Yi Li <yili@winhong.com>
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
 ---
- drivers/md/bcache/super.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/hisilicon/hibmc/Makefile        |  2 +-
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 21 ++++++++++-
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h |  4 --
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c     | 50 -------------------------
+ 4 files changed, 20 insertions(+), 57 deletions(-)
+ delete mode 100644 drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 46a00134a36a..8b341f756ac0 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -1334,9 +1334,6 @@ static void cached_dev_free(struct closure *cl)
- {
- 	struct cached_dev *dc = container_of(cl, struct cached_dev, disk.cl);
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/Makefile b/drivers/gpu/drm/hisilicon/hibmc/Makefile
+index 684ef79..d25c75e 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/Makefile
++++ b/drivers/gpu/drm/hisilicon/hibmc/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-hibmc-drm-y := hibmc_drm_drv.o hibmc_drm_de.o hibmc_drm_vdac.o hibmc_ttm.o hibmc_drm_i2c.o
++hibmc-drm-y := hibmc_drm_drv.o hibmc_drm_de.o hibmc_drm_vdac.o hibmc_drm_i2c.o
  
--	if (test_and_clear_bit(BCACHE_DEV_WB_RUNNING, &dc->disk.flags))
--		cancel_writeback_rate_update_dwork(dc);
--
- 	if (!IS_ERR_OR_NULL(dc->writeback_thread))
- 		kthread_stop(dc->writeback_thread);
- 	if (!IS_ERR_OR_NULL(dc->status_update_thread))
-@@ -1344,6 +1341,9 @@ static void cached_dev_free(struct closure *cl)
+ obj-$(CONFIG_DRM_HISI_HIBMC) += hibmc-drm.o
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+index 5aea2e9..3687753 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+@@ -16,6 +16,7 @@
  
- 	mutex_lock(&bch_register_lock);
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_drv.h>
++#include <drm/drm_gem_framebuffer_helper.h>
+ #include <drm/drm_gem_vram_helper.h>
+ #include <drm/drm_irq.h>
+ #include <drm/drm_managed.h>
+@@ -43,6 +44,12 @@ static irqreturn_t hibmc_drm_interrupt(int irq, void *arg)
+ 	return IRQ_HANDLED;
+ }
  
-+	if (test_and_clear_bit(BCACHE_DEV_WB_RUNNING, &dc->disk.flags))
-+		cancel_writeback_rate_update_dwork(dc);
++static int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
++			     struct drm_mode_create_dumb *args)
++{
++	return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
++}
 +
- 	if (atomic_read(&dc->running))
- 		bd_unlink_disk_holder(dc->bdev, dc->disk.disk);
- 	bcache_device_free(&dc->disk);
+ static const struct drm_driver hibmc_driver = {
+ 	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
+ 	.fops			= &hibmc_fops,
+@@ -77,6 +84,13 @@ static const struct dev_pm_ops hibmc_pm_ops = {
+ 				hibmc_pm_resume)
+ };
+ 
++static const struct drm_mode_config_funcs hibmc_mode_funcs = {
++	.mode_valid = drm_vram_helper_mode_valid,
++	.atomic_check = drm_atomic_helper_check,
++	.atomic_commit = drm_atomic_helper_commit,
++	.fb_create = drm_gem_fb_create,
++};
++
+ static int hibmc_kms_init(struct hibmc_drm_private *priv)
+ {
+ 	struct drm_device *dev = &priv->dev;
+@@ -262,9 +276,12 @@ static int hibmc_load(struct drm_device *dev)
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = hibmc_mm_init(priv);
+-	if (ret)
++	ret = drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
++				    priv->fb_size);
++	if (ret) {
++		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
+ 		goto err;
++	}
+ 
+ 	ret = hibmc_kms_init(priv);
+ 	if (ret)
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+index 2786de5..a49c10e 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+@@ -64,10 +64,6 @@ int hibmc_de_init(struct hibmc_drm_private *priv);
+ int hibmc_vdac_init(struct hibmc_drm_private *priv);
+ 
+ int hibmc_mm_init(struct hibmc_drm_private *hibmc);
+-int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
+-		      struct drm_mode_create_dumb *args);
+ int hibmc_ddc_create(struct drm_device *drm_dev, struct hibmc_connector *connector);
+ 
+-extern const struct drm_mode_config_funcs hibmc_mode_funcs;
+-
+ #endif
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+deleted file mode 100644
+index 892d566..0000000
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
++++ /dev/null
+@@ -1,50 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/* Hisilicon Hibmc SoC drm driver
+- *
+- * Based on the bochs drm driver.
+- *
+- * Copyright (c) 2016 Huawei Limited.
+- *
+- * Author:
+- *	Rongrong Zou <zourongrong@huawei.com>
+- *	Rongrong Zou <zourongrong@gmail.com>
+- *	Jianhua Li <lijianhua@huawei.com>
+- */
+-
+-#include <linux/pci.h>
+-
+-#include <drm/drm_atomic_helper.h>
+-#include <drm/drm_gem.h>
+-#include <drm/drm_gem_framebuffer_helper.h>
+-#include <drm/drm_gem_vram_helper.h>
+-#include <drm/drm_print.h>
+-
+-#include "hibmc_drm_drv.h"
+-
+-int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+-{
+-	int ret;
+-	struct drm_device *dev = &hibmc->dev;
+-
+-	ret = drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
+-				    hibmc->fb_size);
+-	if (ret) {
+-		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
+-		      struct drm_mode_create_dumb *args)
+-{
+-	return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
+-}
+-
+-const struct drm_mode_config_funcs hibmc_mode_funcs = {
+-	.mode_valid = drm_vram_helper_mode_valid,
+-	.atomic_check = drm_atomic_helper_check,
+-	.atomic_commit = drm_atomic_helper_commit,
+-	.fb_create = drm_gem_fb_create,
+-};
 -- 
-2.25.3
-
-
+2.7.4
 
