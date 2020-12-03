@@ -2,101 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5202CDB9A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:54:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1EA2CDB9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:56:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501872AbgLCQvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:51:55 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8971 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726828AbgLCQvz (ORCPT
+        id S2387522AbgLCQzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:55:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbgLCQzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:51:55 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc917820000>; Thu, 03 Dec 2020 08:51:14 -0800
-Received: from [10.2.53.244] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Dec
- 2020 16:51:08 +0000
-Subject: Re: [PATCH 5/6] mm: honor PF_MEMALLOC_NOMOVABLE for all allocations
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-CC:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Michal Hocko" <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        <mike.kravetz@oracle.com>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201202052330.474592-6-pasha.tatashin@soleen.com>
- <18c9ab89-185b-395a-97ce-31940388df0e@nvidia.com>
- <CA+CK2bBBcMKcCzQJDwEXgzTZKp7KezUAyPi2DOGX16K75dE7Qw@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <c16c1b3e-0c99-19d7-6181-364a928472b1@nvidia.com>
-Date:   Thu, 3 Dec 2020 08:51:08 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:83.0) Gecko/20100101
- Thunderbird/83.0
+        Thu, 3 Dec 2020 11:55:08 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB8FC061A4E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 08:54:27 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0dc5004496c992b512bfd2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:c500:4496:c992:b512:bfd2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3D3451EC0434;
+        Thu,  3 Dec 2020 17:54:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607014465;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=1k/t6b4LXMSVxlAgVlHShY06OjLTQn6wiKPCdflr+MQ=;
+        b=HBTbaTIxYsabbk+5cJQ6J8bVeIQnRAZol1g0hxZLSIoZ36uq/z5yjXDHNZOGK8hysyvnDH
+        5k+oqqPQsi+Z3d4A2GgOfS2fA9eUAsvfbvqn+uE7i6OR2UKlq/9CHlzzE2YYFBnsr/0Nzj
+        2i4sWgX23kmAgimSEJiISYGC29Xx1eg=
+Date:   Thu, 3 Dec 2020 17:54:20 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] x86/uprobes: Fix not using prefixes.nbytes for
+ loop over prefixes.bytes
+Message-ID: <20201203165420.GL3059@zn.tnic>
+References: <160697102582.3146288.10127018634865687932.stgit@devnote2>
+ <160697103739.3146288.7437620795200799020.stgit@devnote2>
+ <20201203123757.GH3059@zn.tnic>
+ <20201203124121.GI3059@zn.tnic>
+ <20201203124820.GJ3059@zn.tnic>
+ <1c1b265f-34e3-f5cc-0e7b-186dc26c94b7@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+CK2bBBcMKcCzQJDwEXgzTZKp7KezUAyPi2DOGX16K75dE7Qw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607014274; bh=j9IsbDfnAl1qZX4VCgT+JSlCiNo07VX/EW3AlozOMXU=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=hSzd2Q4M3B5A8VY3+3PRm6nr0EEdF7f4dRpuF3yGwczoajchGNPF7U3Hlq7e+KFTu
-         NixR+30OGDTFQQZzVYd8730A871Cg/AZ7CUY9vb4/aeM2QW8hov6sMs0ZJMnuG9pkX
-         +XCZhgGGn3KIaSM49mpInJjdPS8T5j+V3xIRJTJJPM75gY1dJYiNzOoRHDoxbHNwxZ
-         Vg0T7J4CIbCms8mMaCF+3WSnxYr2qVKsfV/fG0Mb90DjBeXMckT9Osgc1z2X0YQ6MO
-         VledQ6ELgzQ54XirC88eq9Jmt3QMoaBmt2sHnUuQKWdhwrZSevREhZtrgSZZAaoF7V
-         Tk45xlZejOzDg==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1c1b265f-34e3-f5cc-0e7b-186dc26c94b7@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/3/20 7:06 AM, Pavel Tatashin wrote:
-...
->>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->>> index 611799c72da5..7a6d86d0bc5f 100644
->>> --- a/mm/page_alloc.c
->>> +++ b/mm/page_alloc.c
->>> @@ -3766,20 +3766,25 @@ alloc_flags_nofragment(struct zone *zone, gfp_t gfp_mask)
->>>        return alloc_flags;
->>>    }
->>>
->>> -static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
->>> -                                     unsigned int alloc_flags)
->>> +static inline unsigned int cma_alloc_flags(gfp_t gfp_mask,
->>> +                                        unsigned int alloc_flags)
->>
->> Actually, maybe the original name should be left intact. This handles current alloc
->> flags, which right now happen to only cover CMA flags, so the original name seems
->> accurate, right?
+On Thu, Dec 03, 2020 at 10:45:48AM -0600, Tom Lendacky wrote:
+> Since this is based on the array size, can
 > 
-> The reason I re-named it is because we do not access current context
-> anymore, only use gfp_mask to get cma flag.
->>> -     unsigned int pflags = current->flags;
+> 	idx < NUM_LEGACY_PREFIXES
 > 
-> So, keeping "current" in the function name makes its intent misleading.
+> be replaced with:
 > 
+> 	idx < ARRAY_SIZE(insn->prefixes.bytes)
 
-OK, I see. That sounds OK then.
+Actually, this needs another change:
 
+struct insn_field {
+        union {
+                insn_value_t value;
+                insn_byte_t bytes[NUM_LEGACY_PREFIXES];
 
-thanks,
+because you can have max. 4 legacy prefixes and then we can do either of
+the checks above.
+
+Mine is shorter tho. :-)
+
 -- 
-John Hubbard
-NVIDIA
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
