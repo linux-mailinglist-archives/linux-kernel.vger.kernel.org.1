@@ -2,516 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F395B2CD127
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A8B2CD129
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388247AbgLCIVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:21:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgLCIVO (ORCPT
+        id S2388373AbgLCIVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:21:45 -0500
+Received: from mx0b-00128a01.pphosted.com ([148.163.139.77]:25996 "EHLO
+        mx0b-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388328AbgLCIVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:21:14 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9519BC061A4D
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 00:20:33 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id d20so1433465lfe.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 00:20:33 -0800 (PST)
+        Thu, 3 Dec 2020 03:21:44 -0500
+Received: from pps.filterd (m0167091.ppops.net [127.0.0.1])
+        by mx0b-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B38Fe6Y002192;
+        Thu, 3 Dec 2020 03:20:59 -0500
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2104.outbound.protection.outlook.com [104.47.55.104])
+        by mx0b-00128a01.pphosted.com with ESMTP id 355vjpchug-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 03:20:59 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RXGapNLWdLIDZVXkXk3HaNHDWkHGaVDJV8axmAu1RKcSBmqjPD7chSzFLK9pIhW3defa1jfWq0bF8XOXpufD9py7otdyfDcRE3oZ+CwdHTKf4L510hAsDtNHeft++klBd20UQyeF8G768FFKhR7HU5B+1bvDc7b32w3pUoJMJ8mXCqQBars/hn0UPzhd4n6PBFGwzCRNeo1aSJuGMXZw/lu1cEOAZO75hLl4Ix6Fxd0jwf0lt5xN7rvfCkeA1R0Qq5NsQ599NvriioSTnxnEq7fv65NiV+8LsMm4po2QnpUo+JezbKlkKeGCdY131j5OG4hMqCzUFEvrASH7sixN8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KINwOijNshbzKhMk03kOuaa0nobs0W5sk+ho1B17MPk=;
+ b=VLEEyWe3IJGIc7/7k104OMQ89smev5HNAz/SWV0A3MzSN3uAacUn1vbCY7U0uTrIYs0NeKvjLWrhHQShvyH4wKRDexm5U5qLwzHRytZPC90jKN3FRfzA1blDBakE4UwDcJ5HiF8wMWtBRlydSS8l//tchh10EC8oR/bSlIJJ6esgdf28H49lgR75MOHl76dDUO+hr8YW1xT7YgQc4nlbEfJMRkk9xbPzt1V+1NGv53aI5Afy9ZuUn7/NfwMnMKVfcJzTDGVfoy8736TyQ8YtLskxegUFy+dJXHgladMocbkwf2IPUaFY3jcBaBNz5Inv0PzmdAZsq30vrw9ieT5mfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=VdnIYr9YeJub2mP2w3Tk7xWX5tJWa5LVTnny6kAVJ6U=;
-        b=p6xnvE8Gbo+5SKXhvH1Lsay+0/8r+Jdhhgks9Mb/1WFB879WVJrRMyxKE3qQk9oEpf
-         WZJzpK02mIxL0OrdAgktHPqtCT1B27cuxePA/WAQ7pZ1Z3q1B7QCVNZ6M/11DaJNe52t
-         Yc80NXmLfgpPqfBJRQDUK3QfpSc+QLiqDi1M0gIopHV25SETYGXJjfLyTgXBW+E7xSPZ
-         D97Ltx//Ic6rbqhg0Imgo8GIWTy+jMCd8XC27CVe1pUMd1RT9b0thVSynisLSC00txay
-         StVcHcBor0PvmJhwWn2DdnUrReu0zIZw+Gmstpslur5WuKaXdyzRczoS7xCS/sQy0sEB
-         ku9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=VdnIYr9YeJub2mP2w3Tk7xWX5tJWa5LVTnny6kAVJ6U=;
-        b=XeKPfp3pfIrLjecd6dMNEvjASWsytFtOM195xzreY23jSU4tMxX2LzXpe5pGn8J1SX
-         EpMh/s7Exe5eslZDkM7EnKCWq8z+zeXVvqa2vvuvmLLbT/kUl/Mv+pgFh2k+Pa3szw7E
-         16w/F3vDPTJ3bianqgnXFo81XNDTkgOt26vn2Gx584X9ecQFhZRRipD7K++HxbO6YX1H
-         tx5xlnwyQIumAm8+Z4cFyMD27LEr4VpCN4f0aRrqRk2dQd0FB4XdRakAuov3YtE+UCiS
-         /vqdxLG8vsn4O9C0rxRhGE5AnUrq2MDF1cE2zyJhuqa8/Cx5ykzpKunmOzR0hu41aZRJ
-         k5VA==
-X-Gm-Message-State: AOAM532WsESkqCsB6rFjqfKT0FTHvL73OUsLCHFbyv2QropUYrSUXEN1
-        5hPn+yuIJ1AHmYy3kD8UCADTcuLdsqb0DA==
-X-Google-Smtp-Source: ABdhPJyrE0ow+GyV52WK7R3rbckrR/AKGZBJnHDfH5BkyeZ1h3eecqFQ8BkpEqeTRcNxOHk49E4cIg==
-X-Received: by 2002:ac2:5619:: with SMTP id v25mr846338lfd.102.1606983631037;
-        Thu, 03 Dec 2020 00:20:31 -0800 (PST)
-Received: from spblnx124 ([185.204.20.3])
-        by smtp.gmail.com with ESMTPSA id p132sm248164lfa.149.2020.12.03.00.20.30
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 03 Dec 2020 00:20:30 -0800 (PST)
-Date:   Thu, 3 Dec 2020 11:20:29 +0300
-From:   Andrew Klychkov <andrew.a.klychkov@gmail.com>
-To:     corbet@lwn.net
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: fix multiple typos found in the admin-guide
- subdirectory
-Message-ID: <20201203082029.GA44830@spblnx124.lan>
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KINwOijNshbzKhMk03kOuaa0nobs0W5sk+ho1B17MPk=;
+ b=JuaKecA+lZig2sngKAl4vVML1QbzCHa68mXnPqI4cVgcvj/xZjUL7Lq6M3Jva0V3g8LvmulDk5eMVtQuNDvr3ZcSakqbNDH/nsd3raq5zK1G4gUTGABzmt+Jna3VXEkf6go6rOZ9c06y32prh4yFNBd4CI0Gl886j2QVfjr/4zQ=
+Received: from CY4PR03MB2966.namprd03.prod.outlook.com (2603:10b6:903:13c::14)
+ by CY1PR03MB2267.namprd03.prod.outlook.com (2a01:111:e400:c612::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Thu, 3 Dec
+ 2020 08:20:57 +0000
+Received: from CY4PR03MB2966.namprd03.prod.outlook.com
+ ([fe80::a45b:c565:97bb:f8ea]) by CY4PR03MB2966.namprd03.prod.outlook.com
+ ([fe80::a45b:c565:97bb:f8ea%4]) with mapi id 15.20.3611.025; Thu, 3 Dec 2020
+ 08:20:57 +0000
+From:   "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>
+Subject: RE: [PATCH v3 2/3] spi: Add SPI_NO_TX/RX support
+Thread-Topic: [PATCH v3 2/3] spi: Add SPI_NO_TX/RX support
+Thread-Index: AQHWxL56iPOaB4DKUkqHZzOC3MBax6ncCBaAgAAAOgCACQdSMA==
+Date:   Thu, 3 Dec 2020 08:20:57 +0000
+Message-ID: <CY4PR03MB29661063937AD783F6B2A010F9F20@CY4PR03MB2966.namprd03.prod.outlook.com>
+References: <20201127130834.136348-1-alexandru.ardelean@analog.com>
+ <20201127130834.136348-2-alexandru.ardelean@analog.com>
+ <CAHp75Vcd4t=RqC31S-b1PXMtd=8sypSLhTrSgRD9hbpSqOphoQ@mail.gmail.com>
+ <CAHp75VctXhpyBVB7Zw+SB5LiGcj6r850x+ehL7u2H0R4=y5rVw@mail.gmail.com>
+In-Reply-To: <CAHp75VctXhpyBVB7Zw+SB5LiGcj6r850x+ehL7u2H0R4=y5rVw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
+ =?utf-8?B?bk5jWVdGeVpHVnNaV0ZjWVhCd1pHRjBZVnh5YjJGdGFXNW5YREE1WkRnME9X?=
+ =?utf-8?B?STJMVE15WkRNdE5HRTBNQzA0TldWbExUWmlPRFJpWVRJNVpUTTFZbHh0YzJk?=
+ =?utf-8?B?elhHMXpaeTAzTldSaE5USTROaTB6TlRRd0xURXhaV0l0WVRWa09DMDBNVFUy?=
+ =?utf-8?B?TkRVd01EQXdNekJjWVcxbExYUmxjM1JjTnpWa1lUVXlPRGd0TXpVME1DMHhN?=
+ =?utf-8?B?V1ZpTFdFMVpEZ3ROREUxTmpRMU1EQXdNRE13WW05a2VTNTBlSFFpSUhONlBT?=
+ =?utf-8?B?SXlNRGMwSWlCMFBTSXhNekkxTVRRMU56STFORFkxT1RNd01URWlJR2c5SWpB?=
+ =?utf-8?B?eVF6aHRPSEZWYXpKeFlVTmxiMnhvVlhsV2RYbDFNamd4U1QwaUlHbGtQU0lp?=
+ =?utf-8?B?SUdKc1BTSXdJaUJpYnowaU1TSWdZMms5SW1OQlFVRkJSVkpJVlRGU1UxSlZS?=
+ =?utf-8?B?azVEWjFWQlFVVnZRMEZCUkhvd1JFMDBWR051VjBGalprd3lVRlY0WW1KRFNY?=
+ =?utf-8?B?ZzRkbGs1VkVaMGMwbG5SRUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRklRVUZCUVVSaFFWRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGRlFVRlJRVUpCUVVGQlozTldNRFJSUVVGQlFVRkJRVUZCUVVGQlFVRkJT?=
+ =?utf-8?B?alJCUVVGQ2FFRkhVVUZoVVVKbVFVaE5RVnBSUW1wQlNGVkJZMmRDYkVGR09F?=
+ =?utf-8?B?RmpRVUo1UVVjNFFXRm5RbXhCUjAxQlpFRkNla0ZHT0VGYVowSm9RVWQzUVdO?=
+ =?utf-8?B?M1FteEJSamhCV21kQ2RrRklUVUZoVVVJd1FVZHJRV1JuUW14QlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVWQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlowRkJRVUZCUVc1blFVRkJSMFZCV2tGQ2NFRkdPRUZqZDBKc1FVZE5RV1JS?=
+ =?utf-8?B?UW5sQlIxVkJXSGRDZDBGSVNVRmlkMEp4UVVkVlFWbDNRakJCU0UxQldIZENN?=
+ =?utf-8?B?RUZIYTBGYVVVSjVRVVJGUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRlJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRMEZCUVVGQlFVTmxRVUZCUVZsUlFtdEJSMnRCV0hkQ2Vr?=
+ =?utf-8?B?RkhWVUZaZDBJeFFVaEpRVnBSUW1aQlNFRkJZMmRDZGtGSGIwRmFVVUpxUVVo?=
+ =?utf-8?B?UlFXTjNRbVpCU0ZGQllWRkNiRUZJU1VGTlowRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZDUVVGQlFVRkJRVUZCUVVsQlFVRkJRVUZCUFQwaUx6NDhMMjFs?=
+ =?utf-8?Q?dGE+?=
+x-dg-rorf: true
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=analog.com;
+x-originating-ip: [137.71.226.54]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: ddd14a69-bf3c-4ae0-f8da-08d897645c45
+x-ms-traffictypediagnostic: CY1PR03MB2267:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY1PR03MB226712B89F57DF0DBE1DAB5AF9F20@CY1PR03MB2267.namprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uwdZA2omKXNmU5kp8dHcUNkt0r5TLVPQ+72a3A9rmjYBkWvXO5WJKCnNXU7b22uYSNoZJPvVhOW1Ous4hzz38scEcIXnKFCA+hod4SVGwP4MLYmHegrXuXRv8WaSb/vWY3voCbP4+Pe1ZxIk/hZlmojkesajYClEDneDA6Q9yJ6QfRImqebV42kBzrab9jDXOI9TL22yYaUoAdVzejJjeq2xGkv77mc5YiGp6oDkEY+zpRvBiS3k4vux+R9uR3NrpbIpaN34JQoAvpE0qN++AEnXXgpMYggPgScVRm9W6IpI60L75H5DIsHf3kLwR4/VqHk88HI8CLPb2iy71O34Qg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR03MB2966.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(396003)(39860400002)(6506007)(66946007)(8676002)(5660300002)(8936002)(83380400001)(4326008)(316002)(54906003)(7696005)(53546011)(186003)(26005)(64756008)(71200400001)(66446008)(66476007)(76116006)(6916009)(66556008)(86362001)(52536014)(2906002)(478600001)(9686003)(107886003)(33656002)(55016002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?QXJXSGgrc1FZZ2UreWFEdVZWdzF0YTBWY1Q1RGxPcHBHdEFtOVBWTmRqYU1h?=
+ =?utf-8?B?bmovdHdna2FJVWo3OVpZUVVZcFYvWFMwWDl1WVJJS2lSUXVNcVNxMVRyNHpo?=
+ =?utf-8?B?K2xJRmh3cFAxNy9FN1ZhUUFXZmp4ajB0VFA2WVllcUllcVVSOHluOWJWUDEr?=
+ =?utf-8?B?Y21CZ0gyMmtJajZPbTFIWWNxYWhpblF2blcwNlFzSllYYlc3WmNXa1NqNDk0?=
+ =?utf-8?B?TG92VDlRSG5tTkQ3ME9hNjFaWllqdFRIdzNHK2g2dEszYlBiOGI3YldIVWNp?=
+ =?utf-8?B?eitIancvL0lKcFJwb0M3NE44YzF3UkpaU2lXQTZQOW83WGYwS0d2ODVwaDFY?=
+ =?utf-8?B?YkNYelFLVVp5VXlGSGw4K3k0cUxLWVZXeHdmV3R1M2ZnUU9qREp1U0sySTRo?=
+ =?utf-8?B?aGNNVWtiYVpWaHpLZDN2cWxXSkFqTlQ5Y3VKNktNYldReE0vdVVVaUJITjZH?=
+ =?utf-8?B?ZzZ3akZrb29xUGsrUjNWTFUzMjVYekFQVEZ1YitreElOVEJTTEQrb1F1WXdv?=
+ =?utf-8?B?UEo5dmdKZ20rekJxWDlhQk5sYkp1Q3pRbDNSZHZNWWNHbmUxeWVMRTI0amU5?=
+ =?utf-8?B?UFphVHdKWHJwdjg1OGptSEhXVGNtSzdoR1M2b1FvV3daOXBjQmg0bktkSDl6?=
+ =?utf-8?B?RmppR29BVEk5NmFnanBFTXBLNGxmUUhiYktYcWJoSGxzSnc2NWIzSW1UeUxG?=
+ =?utf-8?B?d2lBNjZRNERzMHVZR25DNnYwVzAwR1g1WnZsTFNTNENRUjF6UEhEL0xDZHRq?=
+ =?utf-8?B?aVZUSEtjek9XQmd0aFRGd1N2aHNESmZhV1hlejJmSU9NRytoVUk0b0pTV0hy?=
+ =?utf-8?B?c1ZjWTFiVGtXcDNxQ3VUSFJjN1M2cXlnT09Fc1Z1dzVta3hPUGx6VU1sdDBz?=
+ =?utf-8?B?K1I4QVBRNVdsU0xkQ2ppaGV6WnQvZzBtcWxRZUJOU3lXWThGbVpFNkdUTUtv?=
+ =?utf-8?B?cUkxK3BmYitxZXdEY3pWTUFEZ0Y4MDJPS3ZIVW9pRmNNN1V6Y0w4Mmx3Z2tR?=
+ =?utf-8?B?Q0tNVTBQTXk1ZGNkc2dSREthNUgzanNib3prK1BjcFFZbDg4NEQ5c1h6dkJK?=
+ =?utf-8?B?MkNvQ0s4RlMyQ3JJYSt6OFBRVjVCQXpHK3M3Z2trdjJtS1RYRkM1NmpRWVZM?=
+ =?utf-8?B?RjZTWDVuL2RnR2wzeXRFajZtMTFOMmQ2N0lIMFozRWlIZ21uNnErZ05MS1Jy?=
+ =?utf-8?B?ODl1NVo3aVVhbWY0QWN4RzFibC80Q2VXNVRzTGFobEFCejFFYnVxSWUxenNH?=
+ =?utf-8?B?MlN6OUtzTlFLa1crUHZJb3BIWWhtVzJSZ05rRS9Nc05PdWFLTU1RY3J6b1hr?=
+ =?utf-8?Q?3oMZjZM0uwXKs=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR03MB2966.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ddd14a69-bf3c-4ae0-f8da-08d897645c45
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2020 08:20:57.2299
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HIwW0ZDzDJbTyYIHipxYjoZPEznjmhkVo/28es7eGNw7UzuFDjSC3Ds/ACbReGjAhNhOCNAdwJmtE+13KFWI0BeaFkSmwJaJ0ZxRGxBY0Yw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY1PR03MB2267
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-03_03:2020-12-03,2020-12-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=881 clxscore=1015
+ adultscore=0 suspectscore=0 impostorscore=0 spamscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012030050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix thirty seven typos in dm-integrity.rst, dm-raid.rst, dm-zoned.rst,
-verity.rst, writecache.rst, tsx_async_abort.rst, ldm.rst, md.rst,
-bttv.rst, dvb_references.rst, frontend-cardlist.rst, gspca-cardlist.rst,
-ipu3.rst, remote-controller.rst, mm/index.rst, numaperf.rst,
-userfaultfd.rst, module-signing.rst, imx-ddr.rst,
-intel-speed-select.rst, intel_pstate.rst, ramoops.rst, abi.rst,
-kernel.rst, vm.rst
-
-Signed-off-by: Andrew Klychkov <andrew.a.klychkov@gmail.com>
----
- Documentation/admin-guide/device-mapper/dm-integrity.rst | 4 ++--
- Documentation/admin-guide/device-mapper/dm-raid.rst      | 2 +-
- Documentation/admin-guide/device-mapper/dm-zoned.rst     | 6 +++---
- Documentation/admin-guide/device-mapper/verity.rst       | 2 +-
- Documentation/admin-guide/device-mapper/writecache.rst   | 4 ++--
- Documentation/admin-guide/hw-vuln/tsx_async_abort.rst    | 2 +-
- Documentation/admin-guide/ldm.rst                        | 2 +-
- Documentation/admin-guide/md.rst                         | 2 +-
- Documentation/admin-guide/media/bttv.rst                 | 2 +-
- Documentation/admin-guide/media/dvb_references.rst       | 2 +-
- Documentation/admin-guide/media/frontend-cardlist.rst    | 4 ++--
- Documentation/admin-guide/media/gspca-cardlist.rst       | 2 +-
- Documentation/admin-guide/media/ipu3.rst                 | 6 +++---
- Documentation/admin-guide/media/remote-controller.rst    | 2 +-
- Documentation/admin-guide/mm/index.rst                   | 4 ++--
- Documentation/admin-guide/mm/numaperf.rst                | 2 +-
- Documentation/admin-guide/mm/userfaultfd.rst             | 2 +-
- Documentation/admin-guide/module-signing.rst             | 4 ++--
- Documentation/admin-guide/perf/imx-ddr.rst               | 2 +-
- Documentation/admin-guide/pm/intel-speed-select.rst      | 4 ++--
- Documentation/admin-guide/pm/intel_pstate.rst            | 6 +++---
- Documentation/admin-guide/ramoops.rst                    | 2 +-
- Documentation/admin-guide/sysctl/abi.rst                 | 2 +-
- Documentation/admin-guide/sysctl/kernel.rst              | 2 +-
- Documentation/admin-guide/sysctl/vm.rst                  | 2 +-
- 25 files changed, 37 insertions(+), 37 deletions(-)
-
-diff --git a/Documentation/admin-guide/device-mapper/dm-integrity.rst b/Documentation/admin-guide/device-mapper/dm-integrity.rst
-index 3ab4f77..4e6f504 100644
---- a/Documentation/admin-guide/device-mapper/dm-integrity.rst
-+++ b/Documentation/admin-guide/device-mapper/dm-integrity.rst
-@@ -117,7 +117,7 @@ journal_watermark:number
- 
- commit_time:number
- 	Commit time in milliseconds. When this time passes, the journal is
--	written. The journal is also written immediatelly if the FLUSH
-+	written. The journal is also written immediately if the FLUSH
- 	request is received.
- 
- internal_hash:algorithm(:key)	(the key is optional)
-@@ -147,7 +147,7 @@ journal_crypt:algorithm(:key)	(the key is optional)
- 	"salsa20" or "ctr(aes)").
- 
- 	The journal contains history of last writes to the block device,
--	an attacker reading the journal could see the last sector nubmers
-+	an attacker reading the journal could see the last sector numbers
- 	that were written. From the sector numbers, the attacker can infer
- 	the size of files that were written. To protect against this
- 	situation, you can encrypt the journal.
-diff --git a/Documentation/admin-guide/device-mapper/dm-raid.rst b/Documentation/admin-guide/device-mapper/dm-raid.rst
-index 7ef9fe6..bb17e26 100644
---- a/Documentation/admin-guide/device-mapper/dm-raid.rst
-+++ b/Documentation/admin-guide/device-mapper/dm-raid.rst
-@@ -418,6 +418,6 @@ Version History
- 	specific devices are requested via rebuild.  Fix RAID leg
- 	rebuild errors.
-  1.15.0 Fix size extensions not being synchronized in case of new MD bitmap
--        pages allocated;  also fix those not occuring after previous reductions
-+        pages allocated;  also fix those not occurring after previous reductions
-  1.15.1 Fix argument count and arguments for rebuild/write_mostly/journal_(dev|mode)
-         on the status line.
-diff --git a/Documentation/admin-guide/device-mapper/dm-zoned.rst b/Documentation/admin-guide/device-mapper/dm-zoned.rst
-index e6350413..0fac051 100644
---- a/Documentation/admin-guide/device-mapper/dm-zoned.rst
-+++ b/Documentation/admin-guide/device-mapper/dm-zoned.rst
-@@ -24,7 +24,7 @@ The dm-zoned implementation is simple and minimizes system overhead (CPU
- and memory usage as well as storage capacity loss). For a 10TB
- host-managed disk with 256 MB zones, dm-zoned memory usage per disk
- instance is at most 4.5 MB and as little as 5 zones will be used
--internally for storing metadata and performaing reclaim operations.
-+internally for storing metadata and performing reclaim operations.
- 
- dm-zoned target devices are formatted and checked using the dmzadm
- utility available at:
-@@ -102,7 +102,7 @@ the buffer zone assigned. If the accessed chunk has no mapping, or the
- accessed blocks are invalid, the read buffer is zeroed and the read
- operation terminated.
- 
--After some time, the limited number of convnetional zones available may
-+After some time, the limited number of conventional zones available may
- be exhausted (all used to map chunks or buffer sequential zones) and
- unaligned writes to unbuffered chunks become impossible. To avoid this
- situation, a reclaim process regularly scans used conventional zones and
-@@ -158,7 +158,7 @@ Ex::
- 	dmzadm --format /dev/sdxx /dev/sdyy
- 
- 
--Fomatted device(s) can be started with the dmzadm utility, too.:
-+Formatted device(s) can be started with the dmzadm utility, too.:
- 
- Ex::
- 
-diff --git a/Documentation/admin-guide/device-mapper/verity.rst b/Documentation/admin-guide/device-mapper/verity.rst
-index 66f71f0..8c50e5c 100644
---- a/Documentation/admin-guide/device-mapper/verity.rst
-+++ b/Documentation/admin-guide/device-mapper/verity.rst
-@@ -69,7 +69,7 @@ Construction Parameters
- 
- <#opt_params>
-     Number of optional parameters. If there are no optional parameters,
--    the optional paramaters section can be skipped or #opt_params can be zero.
-+    the optional parameters section can be skipped or #opt_params can be zero.
-     Otherwise #opt_params is the number of following arguments.
- 
-     Example of optional parameters section:
-diff --git a/Documentation/admin-guide/device-mapper/writecache.rst b/Documentation/admin-guide/device-mapper/writecache.rst
-index d3d7690..dce0184 100644
---- a/Documentation/admin-guide/device-mapper/writecache.rst
-+++ b/Documentation/admin-guide/device-mapper/writecache.rst
-@@ -37,10 +37,10 @@ Constructor parameters:
- 	autocommit_blocks n	(default: 64 for pmem, 65536 for ssd)
- 		when the application writes this amount of blocks without
- 		issuing the FLUSH request, the blocks are automatically
--		commited
-+		committed
- 	autocommit_time ms	(default: 1000)
- 		autocommit time in milliseconds. The data is automatically
--		commited if this time passes and no FLUSH request is
-+		committed if this time passes and no FLUSH request is
- 		received
- 	fua			(by default on)
- 		applicable only to persistent memory - use the FUA flag
-diff --git a/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst b/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
-index 68d96f0..76673af 100644
---- a/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
-+++ b/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
-@@ -60,7 +60,7 @@ Hyper-Thread attacks are possible.
- 
- The victim of a malicious actor does not need to make use of TSX. Only the
- attacker needs to begin a TSX transaction and raise an asynchronous abort
--which in turn potenitally leaks data stored in the buffers.
-+which in turn potentially leaks data stored in the buffers.
- 
- More detailed technical information is available in the TAA specific x86
- architecture section: :ref:`Documentation/x86/tsx_async_abort.rst <tsx_async_abort>`.
-diff --git a/Documentation/admin-guide/ldm.rst b/Documentation/admin-guide/ldm.rst
-index 12c5713..2cb4146 100644
---- a/Documentation/admin-guide/ldm.rst
-+++ b/Documentation/admin-guide/ldm.rst
-@@ -19,7 +19,7 @@ longer any primary or extended partitions.  Normal MSDOS style partitions are
- now known as Basic Disks.
- 
- If you wish to use Spanned, Striped, Mirrored or RAID 5 Volumes, you must use
--Dynamic Disks.  The journalling allows Windows to make changes to these
-+Dynamic Disks.  The journaling allows Windows to make changes to these
- partitions and filesystems without the need to reboot.
- 
- Once the LDM driver has divided up the disk, you can use the MD driver to
-diff --git a/Documentation/admin-guide/md.rst b/Documentation/admin-guide/md.rst
-index cc8781b..d8fc9a5 100644
---- a/Documentation/admin-guide/md.rst
-+++ b/Documentation/admin-guide/md.rst
-@@ -221,7 +221,7 @@ All md devices contain:
- 
-   layout
-      The ``layout`` for the array for the particular level.  This is
--     simply a number that is interpretted differently by different
-+     simply a number that is interpreted differently by different
-      levels.  It can be written while assembling an array.
- 
-   array_size
-diff --git a/Documentation/admin-guide/media/bttv.rst b/Documentation/admin-guide/media/bttv.rst
-index 4938237..0ef1f20 100644
---- a/Documentation/admin-guide/media/bttv.rst
-+++ b/Documentation/admin-guide/media/bttv.rst
-@@ -77,7 +77,7 @@ the Subsystem ID in the second line, looks like this:
- only bt878-based cards can have a subsystem ID (which does not mean
- that every card really has one).  bt848 cards can't have a Subsystem
- ID and therefore can't be autodetected.  There is a list with the ID's
--at :doc:`bttv-cardlist` (in case you are intrested or want to mail
-+at :doc:`bttv-cardlist` (in case you are interested or want to mail
- patches with updates).
- 
- 
-diff --git a/Documentation/admin-guide/media/dvb_references.rst b/Documentation/admin-guide/media/dvb_references.rst
-index 48445ac..4f0fd42 100644
---- a/Documentation/admin-guide/media/dvb_references.rst
-+++ b/Documentation/admin-guide/media/dvb_references.rst
-@@ -10,7 +10,7 @@ The DVB mailing list linux-dvb is hosted at vger. Please see
- http://vger.kernel.org/vger-lists.html#linux-media for details.
- 
- There are also some other old lists hosted at:
--https://linuxtv.org/lists.php. If you're insterested on that for historic
-+https://linuxtv.org/lists.php. If you're interested on that for historic
- reasons, please check the archive at https://linuxtv.org/pipermail/linux-dvb/.
- 
- The media subsystem Wiki is hosted at https://linuxtv.org/wiki/.
-diff --git a/Documentation/admin-guide/media/frontend-cardlist.rst b/Documentation/admin-guide/media/frontend-cardlist.rst
-index 73a248c..ba5b7c6 100644
---- a/Documentation/admin-guide/media/frontend-cardlist.rst
-+++ b/Documentation/admin-guide/media/frontend-cardlist.rst
-@@ -68,7 +68,7 @@ cx24116         Conexant CX24116 based
- cx24117         Conexant CX24117 based
- cx24120         Conexant CX24120 based
- cx24123         Conexant CX24123 based
--ds3000          Montage Tehnology DS3000 based
-+ds3000          Montage Technology DS3000 based
- mb86a16         Fujitsu MB86A16 based
- mt312           Zarlink VP310/MT312/ZL10313 based
- s5h1420         Samsung S5H1420 based
-@@ -83,7 +83,7 @@ tda10086        Philips TDA10086 based
- tda8083         Philips TDA8083 based
- tda8261         Philips TDA8261 based
- tda826x         Philips TDA826X silicon tuner
--ts2020          Montage Tehnology TS2020 based tuners
-+ts2020          Montage Technology TS2020 based tuners
- tua6100         Infineon TUA6100 PLL
- cx24113         Conexant CX24113/CX24128 tuner for DVB-S/DSS
- itd1000         Integrant ITD1000 Zero IF tuner for DVB-S/DSS
-diff --git a/Documentation/admin-guide/media/gspca-cardlist.rst b/Documentation/admin-guide/media/gspca-cardlist.rst
-index adda933..e3404d1 100644
---- a/Documentation/admin-guide/media/gspca-cardlist.rst
-+++ b/Documentation/admin-guide/media/gspca-cardlist.rst
-@@ -305,7 +305,7 @@ pac7302         093a:2625	Genius iSlim 310
- pac7302         093a:2626	Labtec 2200
- pac7302         093a:2627	Genius FaceCam 300
- pac7302         093a:2628	Genius iLook 300
--pac7302         093a:2629	Genious iSlim 300
-+pac7302         093a:2629	Genius iSlim 300
- pac7302         093a:262a	Webcam 300k
- pac7302         093a:262c	Philips SPC 230 NC
- jl2005bcd       0979:0227	Various brands, 19 known cameras supported
-diff --git a/Documentation/admin-guide/media/ipu3.rst b/Documentation/admin-guide/media/ipu3.rst
-index 07d139b..f59697c 100644
---- a/Documentation/admin-guide/media/ipu3.rst
-+++ b/Documentation/admin-guide/media/ipu3.rst
-@@ -86,7 +86,7 @@ raw Bayer format that is specific to IPU3.
- Let us take the example of ov5670 sensor connected to CSI2 port 0, for a
- 2592x1944 image capture.
- 
--Using the media contorller APIs, the ov5670 sensor is configured to send
-+Using the media controller APIs, the ov5670 sensor is configured to send
- frames in packed raw Bayer format to IPU3 CSI2 receiver.
- 
- .. code-block:: none
-@@ -313,8 +313,8 @@ configuration steps of 0.03125 (1/32).
- 
- **Geometric Distortion Correction**
- 
--Geometric Distortion Correction is used to performe correction of distortions
--and image filtering. It needs some extra filter and envelop padding pixels to
-+Geometric Distortion Correction is used to perform correction of distortions
-+and image filtering. It needs some extra filter and envelope padding pixels to
- work, so the input resolution of GDC should be larger than the output
- resolution.
- 
-diff --git a/Documentation/admin-guide/media/remote-controller.rst b/Documentation/admin-guide/media/remote-controller.rst
-index fa05410..188944b 100644
---- a/Documentation/admin-guide/media/remote-controller.rst
-+++ b/Documentation/admin-guide/media/remote-controller.rst
-@@ -68,7 +68,7 @@ Using without lircd
- 
- Xorg recognizes several IR keycodes that have its numerical value lower
- than 247. With the advent of Wayland, the input driver got updated too,
--and should now accept all keycodes. Yet, you may want to just reasign
-+and should now accept all keycodes. Yet, you may want to just reassign
- the keycodes to something that your favorite media application likes.
- 
- This can be done by setting
-diff --git a/Documentation/admin-guide/mm/index.rst b/Documentation/admin-guide/mm/index.rst
-index cd727cf..4b14d8b 100644
---- a/Documentation/admin-guide/mm/index.rst
-+++ b/Documentation/admin-guide/mm/index.rst
-@@ -3,9 +3,9 @@ Memory Management
- =================
- 
- Linux memory management subsystem is responsible, as the name implies,
--for managing the memory in the system. This includes implemnetation of
-+for managing the memory in the system. This includes implementation of
- virtual memory and demand paging, memory allocation both for kernel
--internal structures and user space programms, mapping of files into
-+internal structures and user space programs, mapping of files into
- processes address space and many other cool things.
- 
- Linux memory management is a complex system with many configurable
-diff --git a/Documentation/admin-guide/mm/numaperf.rst b/Documentation/admin-guide/mm/numaperf.rst
-index 86f2a3c..c2f8264 100644
---- a/Documentation/admin-guide/mm/numaperf.rst
-+++ b/Documentation/admin-guide/mm/numaperf.rst
-@@ -74,7 +74,7 @@ memory node's access class 0 initiators as follows::
- 	/sys/devices/system/node/nodeY/access0/initiators/
- 
- These attributes apply only when accessed from nodes that have the
--are linked under the this access's inititiators.
-+are linked under the this access's initiators.
- 
- The performance characteristics the kernel provides for the local initiators
- are exported are as follows::
-diff --git a/Documentation/admin-guide/mm/userfaultfd.rst b/Documentation/admin-guide/mm/userfaultfd.rst
-index 1dc2d5f..65eefa6 100644
---- a/Documentation/admin-guide/mm/userfaultfd.rst
-+++ b/Documentation/admin-guide/mm/userfaultfd.rst
-@@ -114,7 +114,7 @@ Notes:
-   you must provide some kind of page in your thread after reading from
-   the uffd.  You must provide either ``UFFDIO_COPY`` or ``UFFDIO_ZEROPAGE``.
-   The normal behavior of the OS automatically providing a zero page on
--  an annonymous mmaping is not in place.
-+  an anonymous mmaping is not in place.
- 
- - None of the page-delivering ioctls default to the range that you
-   registered with.  You must fill in all fields for the appropriate
-diff --git a/Documentation/admin-guide/module-signing.rst b/Documentation/admin-guide/module-signing.rst
-index f8b5841..219e286 100644
---- a/Documentation/admin-guide/module-signing.rst
-+++ b/Documentation/admin-guide/module-signing.rst
-@@ -106,7 +106,7 @@ This has a number of options available:
-      certificate and a private key.
- 
-      If the PEM file containing the private key is encrypted, or if the
--     PKCS#11 token requries a PIN, this can be provided at build time by
-+     PKCS#11 token requires a PIN, this can be provided at build time by
-      means of the ``KBUILD_SIGN_PIN`` variable.
- 
- 
-@@ -185,7 +185,7 @@ in a keyring called ".builtin_trusted_keys" that can be seen by::
- 	[root@deneb ~]# cat /proc/keys
- 	...
- 	223c7853 I------     1 perm 1f030000     0     0 keyring   .builtin_trusted_keys: 1
--	302d2d52 I------     1 perm 1f010000     0     0 asymmetri Fedora kernel signing key: d69a84e6bce3d216b979e9505b3e3ef9a7118079: X509.RSA a7118079 []
-+	302d2d52 I------     1 perm 1f010000     0     0 asymmetric Fedora kernel signing key: d69a84e6bce3d216b979e9505b3e3ef9a7118079: X509.RSA a7118079 []
- 	...
- 
- Beyond the public key generated specifically for module signing, additional
-diff --git a/Documentation/admin-guide/perf/imx-ddr.rst b/Documentation/admin-guide/perf/imx-ddr.rst
-index f05f56c..90926d0 100644
---- a/Documentation/admin-guide/perf/imx-ddr.rst
-+++ b/Documentation/admin-guide/perf/imx-ddr.rst
-@@ -4,7 +4,7 @@ Freescale i.MX8 DDR Performance Monitoring Unit (PMU)
- 
- There are no performance counters inside the DRAM controller, so performance
- signals are brought out to the edge of the controller where a set of 4 x 32 bit
--counters is implemented. This is controlled by the CSV modes programed in counter
-+counters is implemented. This is controlled by the CSV modes programmed in counter
- control register which causes a large number of PERF signals to be generated.
- 
- Selection of the value for each counter is done via the config registers. There
-diff --git a/Documentation/admin-guide/pm/intel-speed-select.rst b/Documentation/admin-guide/pm/intel-speed-select.rst
-index 219f135..0a1fbdb 100644
---- a/Documentation/admin-guide/pm/intel-speed-select.rst
-+++ b/Documentation/admin-guide/pm/intel-speed-select.rst
-@@ -57,7 +57,7 @@ To get help on a command, another level of help is provided. For example for the
- 
- Summary of platform capability
- ------------------------------
--To check the current platform and driver capaibilities, execute::
-+To check the current platform and driver capabilities, execute::
- 
- #intel-speed-select --info
- 
-@@ -658,7 +658,7 @@ If -a option is not used, then the following steps are required before enabling
- Intel(R) SST-BF:
- 
- - Discover Intel(R) SST-BF and note low and high priority base frequency
--- Note the high prioity CPU list
-+- Note the high priority CPU list
- - Enable CLOS using core-power feature set
- - Configure CLOS parameters. Use CLOS.min to set to minimum performance
- - Subscribe desired CPUs to CLOS groups
-diff --git a/Documentation/admin-guide/pm/intel_pstate.rst b/Documentation/admin-guide/pm/intel_pstate.rst
-index 5072e70..df29b4f 100644
---- a/Documentation/admin-guide/pm/intel_pstate.rst
-+++ b/Documentation/admin-guide/pm/intel_pstate.rst
-@@ -56,7 +56,7 @@ Operation Modes
- 
- ``intel_pstate`` can operate in two different modes, active or passive.  In the
- active mode, it uses its own internal performance scaling governor algorithm or
--allows the hardware to do preformance scaling by itself, while in the passive
-+allows the hardware to do performance scaling by itself, while in the passive
- mode it responds to requests made by a generic ``CPUFreq`` governor implementing
- a certain performance scaling algorithm.  Which of them will be in effect
- depends on what kernel command line options are used and on the capabilities of
-@@ -380,13 +380,13 @@ argument is passed to the kernel in the command line.
- 
- ``no_turbo``
- 	If set (equal to 1), the driver is not allowed to set any turbo P-states
--	(see `Turbo P-states Support`_).  If unset (equalt to 0, which is the
-+	(see `Turbo P-states Support`_).  If unset (equal to 0, which is the
- 	default), turbo P-states can be set by the driver.
- 	[Note that ``intel_pstate`` does not support the general ``boost``
- 	attribute (supported by some other scaling drivers) which is replaced
- 	by this one.]
- 
--	This attrubute does not affect the maximum supported frequency value
-+	This attribute does not affect the maximum supported frequency value
- 	supplied to the ``CPUFreq`` core and exposed via the policy interface,
- 	but it affects the maximum possible value of per-policy P-state	limits
- 	(see `Interpretation of Policy Attributes`_ below for details).
-diff --git a/Documentation/admin-guide/ramoops.rst b/Documentation/admin-guide/ramoops.rst
-index a60a962..b0a1ae7 100644
---- a/Documentation/admin-guide/ramoops.rst
-+++ b/Documentation/admin-guide/ramoops.rst
-@@ -22,7 +22,7 @@ and type of the memory area are set using three variables:
-   * ``mem_address`` for the start
-   * ``mem_size`` for the size. The memory size will be rounded down to a
-     power of two.
--  * ``mem_type`` to specifiy if the memory type (default is pgprot_writecombine).
-+  * ``mem_type`` to specify if the memory type (default is pgprot_writecombine).
- 
- Typically the default value of ``mem_type=0`` should be used as that sets the pstore
- mapping to pgprot_writecombine. Setting ``mem_type=1`` attempts to use
-diff --git a/Documentation/admin-guide/sysctl/abi.rst b/Documentation/admin-guide/sysctl/abi.rst
-index ac87eaf..77b1d1b 100644
---- a/Documentation/admin-guide/sysctl/abi.rst
-+++ b/Documentation/admin-guide/sysctl/abi.rst
-@@ -28,7 +28,7 @@ vsyscall32 (x86)
- 
- Determines whether the kernels maps a vDSO page into 32-bit processes;
- can be set to 1 to enable, or 0 to disable. Defaults to enabled if
--``CONFIG_COMPAT_VDSO`` is set, disabled otherwide.
-+``CONFIG_COMPAT_VDSO`` is set, disabled otherwise.
- 
- This controls the same setting as the ``vdso32`` kernel boot
- parameter.
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index d4b32cc..b3bc8a5 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -879,7 +879,7 @@ The default value is 127.
- perf_event_mlock_kb
- ===================
- 
--Control size of per-cpu ring buffer not counted agains mlock limit.
-+Control size of per-cpu ring buffer not counted against mlock limit.
- 
- The default value is 512 + 1 page
- 
-diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-index f455fa0..e0cf17a 100644
---- a/Documentation/admin-guide/sysctl/vm.rst
-+++ b/Documentation/admin-guide/sysctl/vm.rst
-@@ -146,7 +146,7 @@ This should be used on systems where stalls for minor page faults are an
- acceptable trade for large contiguous free memory.  Set to 0 to prevent
- compaction from moving pages that are unevictable.  Default value is 1.
- On CONFIG_PREEMPT_RT the default value is 0 in order to avoid a page fault, due
--to compaction, which would block the task from becomming active until the fault
-+to compaction, which would block the task from becoming active until the fault
- is resolved.
- 
- 
--- 
-1.8.3.1
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQW5keSBTaGV2Y2hlbmtv
+IDxhbmR5LnNoZXZjaGVua29AZ21haWwuY29tPg0KPiBTZW50OiBGcmlkYXksIE5vdmVtYmVyIDI3
+LCAyMDIwIDQ6MjQgUE0NCj4gVG86IEFyZGVsZWFuLCBBbGV4YW5kcnUgPGFsZXhhbmRydS5BcmRl
+bGVhbkBhbmFsb2cuY29tPg0KPiBDYzogbGludXgtc3BpIDxsaW51eC1zcGlAdmdlci5rZXJuZWwu
+b3JnPjsgZGV2aWNldHJlZQ0KPiA8ZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc+OyBMaW51eCBL
+ZXJuZWwgTWFpbGluZyBMaXN0IDxsaW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZz47IFJv
+YiBIZXJyaW5nIDxyb2JoK2R0QGtlcm5lbC5vcmc+OyBNYXJrIEJyb3duDQo+IDxicm9vbmllQGtl
+cm5lbC5vcmc+OyBCb2dkYW4sIERyYWdvcyA8RHJhZ29zLkJvZ2RhbkBhbmFsb2cuY29tPg0KPiBT
+dWJqZWN0OiBSZTogW1BBVENIIHYzIDIvM10gc3BpOiBBZGQgU1BJX05PX1RYL1JYIHN1cHBvcnQN
+Cj4gDQo+IE9uIEZyaSwgTm92IDI3LCAyMDIwIGF0IDQ6MjIgUE0gQW5keSBTaGV2Y2hlbmtvDQo+
+IDxhbmR5LnNoZXZjaGVua29AZ21haWwuY29tPiB3cm90ZToNCj4gPiBPbiBGcmksIE5vdiAyNywg
+MjAyMCBhdCAzOjA4IFBNIEFsZXhhbmRydSBBcmRlbGVhbg0KPiA+IDxhbGV4YW5kcnUuYXJkZWxl
+YW5AYW5hbG9nLmNvbT4gd3JvdGU6DQo+IA0KPiAuLi4NCj4gDQo+ID4gPiAtLS0gYS9pbmNsdWRl
+L3VhcGkvbGludXgvc3BpL3NwaS5oDQo+ID4gPiArKysgYi9pbmNsdWRlL3VhcGkvbGludXgvc3Bp
+L3NwaS5oDQo+ID4gPiBAQCAtNDMsNSArNDMsNyBAQA0KPiA+ID4gICNkZWZpbmUgICAgICAgIFNQ
+SV9UWF9PQ1RBTCAgICAgICAgICAgIDB4MjAwMCAgICAgICAgICAvKiB0cmFuc21pdCB3aXRoIDgg
+d2lyZXMgKi8NCj4gPiA+ICAjZGVmaW5lICAgICAgICBTUElfUlhfT0NUQUwgICAgICAgICAgICAw
+eDQwMDAgICAgICAgICAgLyogcmVjZWl2ZSB3aXRoIDggd2lyZXMgKi8NCj4gPiA+ICAjZGVmaW5l
+ICAgICAgICBTUElfM1dJUkVfSElaICAgICAgICAgICAweDgwMDAgICAgICAgICAgLyogaGlnaCBp
+bXBlZGFuY2UgdHVybmFyb3VuZA0KPiAqLw0KPiA+ID4gKyNkZWZpbmUgICAgICAgIFNQSV9OT19U
+WCAgICAgICAgICAgICAgIDB4MTAwMDAgICAgICAgICAvKiBubyB0cmFuc21pdCB3aXJlICovDQo+
+ID4gPiArI2RlZmluZSAgICAgICAgU1BJX05PX1JYICAgICAgICAgICAgICAgMHgyMDAwMCAgICAg
+ICAgIC8qIG5vIHJlY2VpdmUgd2lyZSAqLw0KPiA+DQo+ID4gSXMgaXQgcmVhbGx5IG1hdGVyaWFs
+IGZvciB1QVBJPw0KPiA+IFBlcmhhcHMgd2UgbWF5IGhhdmUgc29tZXRoaW5nIGxpa2UNCj4gPiBT
+UElfTU9ERV9VU0VSX01BU0sgaW4gdUFQSSBhbmQNCj4gPiBpbiBpbnRlcm5hbCBoZWFkZXJzDQoN
+CkhtbSwgaW4gYSB3YXkgdGhpcyBjb3VsZCBtYWtlIHNlbnNlIGZvciBzb21lIFNQSURFVnMgYXMg
+d2VsbCwgdG8gc2V0IHRoZXNlIGZsYWdzIGFuZCBnZXQgYW4gZXJyb3IgaWYgdGhleSB0cnkgdG8g
+VFggd2l0aCB0aGUgTk9fVFggZmxhZyBzZXQuDQpOb3QgcmVhbGx5IHN1cmUgYWJvdXQgdGhpcy4N
+CkluaXRpYWxseSBJIG1lY2hhbmljYWxseSBhZGRlZCB0aGVzZSBoZXJlIGFzIGFuIGluZXJ0aWEg
+dG8gdGhlIHByZXZpb3VzIHBhdGNoIHdoaWNoIGlzIGp1c3QgdW5pZnlpbmcgdGhlIGhlYWRlcnMu
+DQoNCkFueSBvdGhlciBvcGluaW9ucz8gVGhvdWdodHM/DQpNYXJrPw0KDQo+ID4NCj4gPiBTUElf
+TU9ERV9LRVJORUxfTUFTSyB3aXRoDQo+ID4gc3RhdGljX2Fzc2VydChfVVNFUl9NQVNLICYgX0tF
+Uk5FTF9NQVNLKTsgLy8gY2hlY2sgY29uZGl0aW9uYWwNCj4gPg0KPiA+ID8NCj4gDQo+IEFuZCBs
+b2dpY2FsbHkgc3RhcnQgYml0cyBmb3IgdGhlIGtlcm5lbCBmcm9tIHRoZSBlbmQgKDMxLCAzMCwg
+Li4uKS4NCj4gDQo+IC0tDQo+IFdpdGggQmVzdCBSZWdhcmRzLA0KPiBBbmR5IFNoZXZjaGVua28N
+Cg==
