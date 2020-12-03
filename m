@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CD32CDA79
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0B22CDA7E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731108AbgLCP4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 10:56:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbgLCP4k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:56:40 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA83C061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 07:56:00 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id bo9so4119574ejb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 07:56:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9gVQmR6ld/lYpsHK76ZuRZXd01EGXnxILe/SFcJOW2w=;
-        b=eYNFtbruDro6dQJWGgCuegmzBpPQ1LahVDbKosAhd/jN2Cwudb8DQbTVXaBLRxfb8o
-         Th0rdj9064ZJNEbCx5jr4Msx0qQ/j1MEUEcx9QPYlUlHwi5ei/IuvUdhJaTQ6GCeiOsb
-         bgNNMQzUuNCxGp/71Du5NA7g2S+KmbGNQOgPQBG3hJuZAv3+qsUV8dCHb0ACSCH/q2Wt
-         3gViBUy5WgJp1DegkcsSg7E0l5cJ2Ts+L3tMNDMRizt8WuSPT2YP9/0H3hEGjMTc+DhM
-         LTynTdwdGRKYQ4jcKqZ56dTMgPnpUOdQTL7DVddSaI7TqFdTJbJYZxiCR2BZQzmmZTGl
-         3OIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9gVQmR6ld/lYpsHK76ZuRZXd01EGXnxILe/SFcJOW2w=;
-        b=tLonGLgDOMUopSd9wOJpb1jTPCSZV9Yj9OTxw8v/qKn1AiFEAN3X/saBTUHVLbkV7K
-         33Xtaad3nibDgtE84Lo4Bmkcj++mUqy/xcP8x/VJSOSZW8uwWkmcycHoGYmzkvO5kAXs
-         lHdRwAthroSXXmxh/p3BwhpsUvahNkTdXiIYlMBgdHW3iGSxn9tOWgNmZOmTAh02J0+I
-         tXfyiSWBFkybJ3sCpfiys4fnScutd/y3S6b0SP/71ui0TzZARAvJW2i43gWYxLcKUn5i
-         YRg+8bdkLKJe9arLYlyv5m3kc3EfQ/LRC95yEBXHrlLVoI2TXJoESX4R4pHfIGESALCu
-         d8hQ==
-X-Gm-Message-State: AOAM531MQQLwFMogM4XfwNx+RNFuo4+uBhinqRoqRf1odfATYaooVQS2
-        5In9S+U/fM8u2p/zkXxWhhQVrfSkhb/LQXg7jm3J0g==
-X-Google-Smtp-Source: ABdhPJx4jNqDXKZJ7ETQGpqkj49u2SxuSrzCLNoPj2MITdYbco0cQP8gTTPag0zTLJ3vffEXV31zz7RTpiFNDGjFKTs=
-X-Received: by 2002:a17:906:d41:: with SMTP id r1mr2983758ejh.383.1607010958929;
- Thu, 03 Dec 2020 07:55:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201202052330.474592-7-pasha.tatashin@soleen.com> <b44584e0-bee8-3f3b-f9e7-c1cbd981296e@nvidia.com>
-In-Reply-To: <b44584e0-bee8-3f3b-f9e7-c1cbd981296e@nvidia.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 3 Dec 2020 10:55:23 -0500
-Message-ID: <CA+CK2bD+8p6LJR=haaaAyXfMhpaZAB+_Mj_664qm_fyWm1iZRQ@mail.gmail.com>
-Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        id S2389017AbgLCP5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 10:57:33 -0500
+Received: from mga03.intel.com ([134.134.136.65]:37124 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387665AbgLCP5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 10:57:32 -0500
+IronPort-SDR: POaqQrNEu1R/xqUCFxYZViCqgp3vAy4i7gAw0+3dTVRe8xMIKqgHBXvsXd17x2jWMEGx949qR8
+ 6hihZFcZvR6Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="173309989"
+X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
+   d="scan'208";a="173309989"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 07:56:52 -0800
+IronPort-SDR: QTXfd0UHBF2xxeJDIPK47vgt29cm5V2RiGcTsfVJv4BzxpNEjVu0qx77u4M0SX02qmWYZpZdGW
+ iEBaSxNFZ05g==
+X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
+   d="scan'208";a="550534058"
+Received: from sshellma-mobl.amr.corp.intel.com (HELO [10.212.138.60]) ([10.212.138.60])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 07:56:50 -0800
+Subject: Re: [PATCH v15 06/26] x86/mm: Change _PAGE_DIRTY to _PAGE_DIRTY_HW
+To:     Dave Hansen <dave.hansen@intel.com>, Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
         Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
+ <20201110162211.9207-7-yu-cheng.yu@intel.com> <20201203091910.GE3059@zn.tnic>
+ <93eb0255-df5c-5cb3-654f-e74c1af956b2@intel.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <585009b4-537e-0fc9-ea4a-79210c96a514@intel.com>
+Date:   Thu, 3 Dec 2020 07:56:49 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <93eb0255-df5c-5cb3-654f-e74c1af956b2@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I like the cleanup so far, even at this point it's a relief to finally
-> see the nested ifdefs get removed.
->
-> One naming nit/idea below, but this looks fine as is, so:
->
-> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+On 12/3/2020 7:12 AM, Dave Hansen wrote:
+> On 12/3/20 1:19 AM, Borislav Petkov wrote:
+>> On Tue, Nov 10, 2020 at 08:21:51AM -0800, Yu-cheng Yu wrote:
+>>> Before introducing _PAGE_COW for non-hardware memory management purposes in
+>>> the next patch, rename _PAGE_DIRTY to _PAGE_DIRTY_HW and _PAGE_BIT_DIRTY to
+>>> _PAGE_BIT_DIRTY_HW to make meanings more clear.  There are no functional
+>>> changes from this patch.
+>> There's no guarantee for "next" or "this" patch when a patch gets
+>> applied so reword your commit message pls.
+>>
+>> Also, I fail to understand here what _PAGE_DIRTY_HW makes more clear?
+>> The page dirty bit is clear enough to me so why the churn?
+> 
+> Once upon a time in this set, we had:
+> 
+> 	_PAGE_DIRTY	(the old hardware bit)
+> and
+> 	_PAGE_DIRTY_SW	(the new shadow stack necessitated bit)
+> 
+> In *that* case, it made sense to change the name of the hardware one to
+> help differentiate them.  But, over time, we changed _PAGE_DIRTY_SW to
+> _PAGE_COW.
+> 
+> I think you're right.  The renaming is just churn now with the current
+> naming.
+> 
 
-Thank you for reviewing this series.
-
-> Maybe naming it "movable_page_list", would be a nice touch.
-
-Sure, I will change it.
-
-Thank you,
-Pasha
+Ok, I will drop this patch.
