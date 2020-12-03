@@ -2,172 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687562CE11B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 221492CE121
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502092AbgLCVrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 16:47:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
+        id S2502128AbgLCVrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 16:47:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502065AbgLCVrb (ORCPT
+        with ESMTP id S2502110AbgLCVrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 16:47:31 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BD1C08E85F;
-        Thu,  3 Dec 2020 13:46:46 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkwR0-00GJSq-Nw; Thu, 03 Dec 2020 21:46:42 +0000
-From:   Al Viro <viro@ZenIV.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH 10/10] Kconfig: regularize selection of CONFIG_BINFMT_ELF
-Date:   Thu,  3 Dec 2020 21:46:41 +0000
-Message-Id: <20201203214641.3887979-10-viro@ZenIV.linux.org.uk>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20201203214641.3887979-1-viro@ZenIV.linux.org.uk>
-References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
- <20201203214641.3887979-1-viro@ZenIV.linux.org.uk>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        Thu, 3 Dec 2020 16:47:39 -0500
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A59C6C08E861;
+        Thu,  3 Dec 2020 13:46:50 -0800 (PST)
+Received: by mail-qv1-xf43.google.com with SMTP id ek7so1784839qvb.6;
+        Thu, 03 Dec 2020 13:46:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=+E+uz7zuA1WB6pwsgKOtfhChnQQmpTGyAUV3IiWnnIA=;
+        b=VoI87Vp1GJvO6oN9QCkaZxu/0CILLPQ5DYwpQ//SNKkXVXzdiazn2O7O3pDPr8IfS8
+         cELyjT5qIRjIgTw1QBnhU80eNOGQ+Ko/DzP31V1Cr9lXQ1trWzw1YDZpD/Ujb8KU+Dy4
+         xTx5uLcivVMG6EIUi2C1s1KstTPjUkjWKjXve/Q68i44idW0xo6lm1vj3oIPGn8wE/TB
+         z99beYMIr3dPHqY0YnsH9sKO2pvILFZHPMCnps+oOGpLF40IR8DSCbgsLUtvBkAXagUs
+         XrCZTw7j7A1yRvjLBdhPt2OMowx+HhW+fcmuR4ydaO2iXHtaqoCC0fzwl0Q9UTrT6thW
+         PIzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+E+uz7zuA1WB6pwsgKOtfhChnQQmpTGyAUV3IiWnnIA=;
+        b=mQIbsdnlfeEt2bUWqxe7GvL3Ly9SnSI0ciXy122MvQODCyCpmh1Maxj13yStMTUBP/
+         wzGZ8iodWtnrfRser7+l2bHlX4xMwrO8z75moUM6YzfX60LotYe3g3BtsvzNQNlZ7Fwy
+         KTqhh88VIcqeVvfISS117iX0PWmx8PHkNgpaGofNsc6HFznnMrMxjHOO5BGRgMju6cxR
+         nIC/AjCkWhXf42rSoZyatHhbl4y+h9Ywe2Vh1guexpAGg7oDqRkFsL4rVTHIyYH9de9R
+         Oonq+5Zx7bCrC/ta3vnVjMc2PTv/FYyd1Y6zAPmTSWerFfG9JFaMme/9IqwIwhF8Wzh8
+         qZqQ==
+X-Gm-Message-State: AOAM532J31vRmgBhlZPAxd8yfNqfC7GwvaYWYMf2km/FEGHbWUJiieS6
+        1eQ6TZHxUC2vdrlc+Ew3ekg=
+X-Google-Smtp-Source: ABdhPJxhK8uB4IT40UiGaz7gyVsBmPBETd2FXW2E/lVWEyHrKZmfKWve60o9UlhOY3A9lbOWzNDdNw==
+X-Received: by 2002:ad4:5bad:: with SMTP id 13mr1195018qvq.23.1607032009842;
+        Thu, 03 Dec 2020 13:46:49 -0800 (PST)
+Received: from svens-asus.arcx.com ([184.94.50.30])
+        by smtp.gmail.com with ESMTPSA id d66sm3018268qke.132.2020.12.03.13.46.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 13:46:49 -0800 (PST)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     Woojung Huh <woojung.huh@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net v1] net: dsa: ksz8795: use correct number of physical ports
+Date:   Thu,  3 Dec 2020 16:46:45 -0500
+Message-Id: <20201203214645.31217-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
-with mips converted to use of fs/config_binfmt_elf.c, there's no
-need to keep selects of that thing all over arch/* - we can simply
-turn into def_bool y if COMPAT && BINFMT_ELF (in fs/Kconfig.binfmt)
-and get rid of all selects.
+The ksz8795 has five physical ports, but the driver assumes
+it has only four. This prevents the driver from working correctly.
 
-Several architectures got those selects wrong (e.g. you could
-end up with sparc64 sans BINFMT_ELF, with select violating
-dependencies, or with amd64 with X32 and BINFMT_ELF enabled,
-but unable to exec any X32 binaries), etc.
+Fix by indicating the correct number of physical ports.
 
-Randy Dunlap has spotted some of those; IMO this is simpler than
-his fix, but it depends upon the stuff that would need to be
-backported, so we might end up using his variant for -stable.
-
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Fixes: e66f840c08a23 ("net: dsa: ksz: Add Microchip KSZ8795 DSA driver")
+Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # ksz8795
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
 ---
- arch/arm64/Kconfig   | 1 -
- arch/mips/Kconfig    | 2 --
- arch/parisc/Kconfig  | 1 -
- arch/powerpc/Kconfig | 1 -
- arch/s390/Kconfig    | 1 -
- arch/sparc/Kconfig   | 1 -
- arch/x86/Kconfig     | 1 -
- fs/Kconfig.binfmt    | 2 +-
- 8 files changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index f858c352f72a..84a0af4ba8d7 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1196,7 +1196,6 @@ config ARM64_TAGGED_ADDR_ABI
- menuconfig COMPAT
- 	bool "Kernel support for 32-bit EL0"
- 	depends on ARM64_4K_PAGES || EXPERT
--	select COMPAT_BINFMT_ELF if BINFMT_ELF
- 	select HAVE_UID16
- 	select OLD_SIGSUSPEND3
- 	select COMPAT_OLD_SIGACTION
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index f14731aee182..df35ce61aa81 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -3271,7 +3271,6 @@ config MIPS32_O32
- 	select ARCH_WANT_OLD_COMPAT_IPC
- 	select COMPAT
- 	select MIPS32_COMPAT
--	select COMPAT_BINFMT_ELF
- 	select SYSVIPC_COMPAT if SYSVIPC
- 	help
- 	  Select this option if you want to run o32 binaries.  These are pure
-@@ -3285,7 +3284,6 @@ config MIPS32_N32
- 	depends on 64BIT
- 	select ARCH_WANT_COMPAT_IPC_PARSE_VERSION
- 	select COMPAT
--	select COMPAT_BINFMT_ELF
- 	select MIPS32_COMPAT
- 	select SYSVIPC_COMPAT if SYSVIPC
- 	help
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index b234e8154cbd..97c233a7445c 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -336,7 +336,6 @@ source "kernel/Kconfig.hz"
- config COMPAT
- 	def_bool y
- 	depends on 64BIT
--	select COMPAT_BINFMT_ELF if BINFMT_ELF
- 
- config SYSVIPC_COMPAT
- 	def_bool y
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index e9f13fe08492..d27469a024a5 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -278,7 +278,6 @@ config COMPAT
- 	bool "Enable support for 32bit binaries"
- 	depends on PPC64
- 	default y if !CPU_LITTLE_ENDIAN
--	select COMPAT_BINFMT_ELF
- 	select ARCH_WANT_OLD_COMPAT_IPC
- 	select COMPAT_OLD_SIGACTION
- 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 4a2a12be04c9..55d140044f32 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -426,7 +426,6 @@ config 64BIT
- config COMPAT
- 	def_bool y
- 	prompt "Kernel support for 31 bit emulation"
--	select COMPAT_BINFMT_ELF if BINFMT_ELF
- 	select ARCH_WANT_OLD_COMPAT_IPC
- 	select COMPAT_OLD_SIGACTION
- 	select HAVE_UID16
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index a6ca135442f9..12943d94fcd0 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -496,7 +496,6 @@ config COMPAT
- 	bool
- 	depends on SPARC64
- 	default y
--	select COMPAT_BINFMT_ELF
- 	select HAVE_UID16
- 	select ARCH_WANT_OLD_COMPAT_IPC
- 	select COMPAT_OLD_SIGACTION
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 8eea77cf53a7..638fdf3e6578 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2844,7 +2844,6 @@ config IA32_EMULATION
- 	depends on X86_64
- 	select ARCH_WANT_OLD_COMPAT_IPC
- 	select BINFMT_ELF
--	select COMPAT_BINFMT_ELF
- 	select COMPAT_OLD_SIGACTION
- 	help
- 	  Include code to run legacy 32-bit programs under a
-diff --git a/fs/Kconfig.binfmt b/fs/Kconfig.binfmt
-index 885da6d983b4..b32f5df68ae9 100644
---- a/fs/Kconfig.binfmt
-+++ b/fs/Kconfig.binfmt
-@@ -29,7 +29,7 @@ config BINFMT_ELF
- 	  latest version).
- 
- config COMPAT_BINFMT_ELF
--	bool
-+	def_bool y
- 	depends on COMPAT && BINFMT_ELF
- 	select ELFCORE
- 
+Tree: git://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git # 39e367766fe1
+
+To: Woojung Huh <woojung.huh@microchip.com>
+To: Andrew Lunn <andrew@lunn.ch>
+To: Vivien Didelot <vivien.didelot@gmail.com>
+To: Florian Fainelli <f.fainelli@gmail.com>
+To: Vladimir Oltean <olteanv@gmail.com>
+To: "David S. Miller" <davem@davemloft.net>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Marek Vasut <marex@denx.de>
+Cc: Tristram Ha <Tristram.Ha@microchip.com>
+Cc: Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org (open list)
+
+ drivers/net/dsa/microchip/ksz8795.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
+index 1e101ab56cea..367cebe37ae6 100644
+--- a/drivers/net/dsa/microchip/ksz8795.c
++++ b/drivers/net/dsa/microchip/ksz8795.c
+@@ -1194,7 +1194,7 @@ static const struct ksz_chip_data ksz8795_switch_chips[] = {
+ 		.num_alus = 0,
+ 		.num_statics = 8,
+ 		.cpu_ports = 0x10,	/* can be configured as cpu port */
+-		.port_cnt = 4,		/* total physical port count */
++		.port_cnt = 5,		/* total physical port count */
+ 	},
+ 	{
+ 		.chip_id = 0x8794,
 -- 
-2.11.0
+2.17.1
 
