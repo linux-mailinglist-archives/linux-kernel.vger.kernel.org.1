@@ -2,127 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4FC2CE2F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2D32CE30C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387603AbgLCXss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:48:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
+        id S2387921AbgLCXtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:49:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731166AbgLCXsd (ORCPT
+        with ESMTP id S1727445AbgLCXtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:48:33 -0500
+        Thu, 3 Dec 2020 18:49:13 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5292FC061A54;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09A3C061A56;
         Thu,  3 Dec 2020 15:47:53 -0800 (PST)
-Date:   Thu, 03 Dec 2020 23:47:50 -0000
+Date:   Thu, 03 Dec 2020 23:47:51 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607039271;
+        s=2020; t=1607039272;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jSMkjD9Qenurfgi00bT7IfsajSivmOgaJaBsexNMQgw=;
-        b=bqhg7xKqDtKlXub1+B0Qu3f283uPaMf+eSfk42q8MLQaSggFeyTmYzEnYNc4b30jdWuLl9
-        rLR+s6mameXA3c9qM2K9m72cdR0aNcuGaMcf9DKL/nUeKh6U1AcMNOpj6joNxmd269M8o5
-        g6uAyNH+Lkj11VsaTzSs/+kIRiUe5wQ9Say5gAweGFud/p6VfTwagyS7ZfB8R5wRPCT+Y3
-        ZsgwfydZkFXs7z75EIB0jFjyJunlrdMto4OTOPrQQ3ZVW+mmnODeI/1lmKs5b45Qcc/32e
-        OKPznr/4ESi6gfvBsQ+tP/6J/qVZxgjsxdJ5Z+aJnuymU5E9E0gcYXcuz4rjlg==
+        bh=d6HuaTzI63Adcs8d/TYLyU/59/p1gb87Pl8qF+YncMs=;
+        b=ebubQpqpqOxCNcYSXB0wpdcHFMxo3XDffrBaeUWmnMm/kyOolcw0MmxEshtEioPJ0Ywq0U
+        BfPqpEjUk0BJ32F5pK88MQGSJhVjWifS+K2GVgnrUkUy+uVh4ITb6naLMnow03wP9GeJlW
+        sMRETsGxa6/7e8PpcU0v0TDJlmCOEGqltGX3n2xbarqG1i5P9zK6g5Xb/HzSDhU2A6pK8p
+        QHr6il6PehVFSb1PKLgTQMv12SpxHdTTkcemqzmxGYhLkqXJrJlZMsItiFc8We+FOfhVZx
+        56k69yq0m7BEVbxZR5IE0KP8aIFE/jRPn8RqfTuF5tNJ16BbEitAMgk3ivJvXQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607039271;
+        s=2020e; t=1607039272;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jSMkjD9Qenurfgi00bT7IfsajSivmOgaJaBsexNMQgw=;
-        b=aCJ0Jv7x6QoH6nf73wUmwa0LZde34/d/NXmsUToGgX8hzge9zO6LDm9vXjmp1erlStPaMn
-        86ENqovD5gfTkTBg==
-From:   "tip-bot2 for Yang Yingliang" <tip-bot2@linutronix.de>
+        bh=d6HuaTzI63Adcs8d/TYLyU/59/p1gb87Pl8qF+YncMs=;
+        b=yacwht1gDi5M/ErySgGgOum9/dEuV0vfhGwwNdo8+1gukcPG5hG2+VsJwrZ6FXClHfE8SS
+        26tDv35EzwGZVCCA==
+From:   tip-bot2 for =?utf-8?b?5ZGo55Cw5p2w?= (Zhou Yanjie) 
+        <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/orion: Add missing
- clk_disable_unprepare() on error path
-Cc:     Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
+Subject: [tip: timers/core] dt-bindings: timer: Add new OST support for the
+ upcoming new driver.
+Cc:     sernia.zhou@foxmail.com, zhouyanjie@wanyeetech.com,
+        Rob Herring <robh@kernel.org>,
         Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201111064706.3397156-1-yangyingliang@huawei.com>
-References: <20201111064706.3397156-1-yangyingliang@huawei.com>
+In-Reply-To: <20201026155842.10196-2-zhouyanjie@wanyeetech.com>
+References: <20201026155842.10196-2-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Message-ID: <160703927077.3364.12918941878822334244.tip-bot2@tip-bot2>
+Message-ID: <160703927157.3364.4500387551340496666.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     c1e6cad00aa2f17845e7270e38ff3cc82c7b022a
-Gitweb:        https://git.kernel.org/tip/c1e6cad00aa2f17845e7270e38ff3cc82c7b022a
-Author:        Yang Yingliang <yangyingliang@huawei.com>
-AuthorDate:    Wed, 11 Nov 2020 14:47:06 +08:00
+Commit-ID:     0fce2e02a29ca5420472f03d3f2858eedded3fe7
+Gitweb:        https://git.kernel.org/tip/0fce2e02a29ca5420472f03d3f2858eedde=
+d3fe7
+Author:        =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wanyeete=
+ch.com>
+AuthorDate:    Mon, 26 Oct 2020 23:58:42 +08:00
 Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Thu, 03 Dec 2020 19:16:26 +01:00
+CommitterDate: Thu, 03 Dec 2020 19:16:18 +01:00
 
-clocksource/drivers/orion: Add missing clk_disable_unprepare() on error path
+dt-bindings: timer: Add new OST support for the upcoming new driver.
 
-After calling clk_prepare_enable(), clk_disable_unprepare() need
-be called on error path.
+The new OST has one global timer and two or four percpu timers, so there
+will be three combinations in the upcoming new OST driver: the original
+GLOBAL_TIMER + PERCPU_TIMER, the new GLOBAL_TIMER + PERCPU_TIMER0/1 and
+GLOBAL_TIMER + PERCPU_TIMER0/1/2/3, For this, add the macro definition
+about OST_CLK_PERCPU_TIMER0/1/2/3. And in order to ensure that all the
+combinations work normally, the original ABI values of OST_CLK_PERCPU_TIMER
+and OST_CLK_GLOBAL_TIMER need to be exchanged to ensure that in any
+combinations, the clock can be registered (by calling clk_hw_register())
+from index 0.
 
-Fixes: fbe4b3566ddc ("clocksource/drivers/orion: Convert init function...")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Before this patch, OST_CLK_PERCPU_TIMER and OST_CLK_GLOBAL_TIMER are only
+used in two places, one is when using "assigned-clocks" to configure the
+clocks in the DTS file; the other is when registering the clocks in the
+sysost driver. When the values of these two ABIs are exchanged, the ABI
+value used by sysost driver when registering the clock, and the ABI value
+used by DTS when configuring the clock using "assigned-clocks" will also
+change accordingly. Therefore, there is no situation that causes the wrong
+clock to the configured. Therefore, exchanging ABI values will not cause
+errors in the existing codes when registering and configuring the clocks.
+
+Currently, in the mainline, only X1000 and X1830 are using sysost driver,
+and the upcoming X2000 will also use sysost driver. This patch has been
+tested on all three SoCs and all works fine.
+
+Tested-by: =E5=91=A8=E6=AD=A3 (Zhou Zheng) <sernia.zhou@foxmail.com>
+Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wanyeete=
+ch.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20201111064706.3397156-1-yangyingliang@huawei.com
+Link: https://lore.kernel.org/r/20201026155842.10196-2-zhouyanjie@wanyeetech.=
+com
 ---
- drivers/clocksource/timer-orion.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ include/dt-bindings/clock/ingenic,sysost.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clocksource/timer-orion.c b/drivers/clocksource/timer-orion.c
-index d01ff41..5101e83 100644
---- a/drivers/clocksource/timer-orion.c
-+++ b/drivers/clocksource/timer-orion.c
-@@ -143,7 +143,8 @@ static int __init orion_timer_init(struct device_node *np)
- 	irq = irq_of_parse_and_map(np, 1);
- 	if (irq <= 0) {
- 		pr_err("%pOFn: unable to parse timer1 irq\n", np);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto out_unprep_clk;
- 	}
- 
- 	rate = clk_get_rate(clk);
-@@ -160,7 +161,7 @@ static int __init orion_timer_init(struct device_node *np)
- 				    clocksource_mmio_readl_down);
- 	if (ret) {
- 		pr_err("Failed to initialize mmio timer\n");
--		return ret;
-+		goto out_unprep_clk;
- 	}
- 
- 	sched_clock_register(orion_read_sched_clock, 32, rate);
-@@ -170,7 +171,7 @@ static int __init orion_timer_init(struct device_node *np)
- 			  "orion_event", NULL);
- 	if (ret) {
- 		pr_err("%pOFn: unable to setup irq\n", np);
--		return ret;
-+		goto out_unprep_clk;
- 	}
- 
- 	ticks_per_jiffy = (clk_get_rate(clk) + HZ/2) / HZ;
-@@ -183,5 +184,9 @@ static int __init orion_timer_init(struct device_node *np)
- 	orion_delay_timer_init(rate);
- 
- 	return 0;
-+
-+out_unprep_clk:
-+	clk_disable_unprepare(clk);
-+	return ret;
- }
- TIMER_OF_DECLARE(orion_timer, "marvell,orion-timer", orion_timer_init);
+diff --git a/include/dt-bindings/clock/ingenic,sysost.h b/include/dt-bindings=
+/clock/ingenic,sysost.h
+index 9ac88e9..063791b 100644
+--- a/include/dt-bindings/clock/ingenic,sysost.h
++++ b/include/dt-bindings/clock/ingenic,sysost.h
+@@ -1,12 +1,16 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ /*
+- * This header provides clock numbers for the ingenic,tcu DT binding.
++ * This header provides clock numbers for the Ingenic OST DT binding.
+  */
+=20
+ #ifndef __DT_BINDINGS_CLOCK_INGENIC_OST_H__
+ #define __DT_BINDINGS_CLOCK_INGENIC_OST_H__
+=20
+-#define OST_CLK_PERCPU_TIMER	0
+-#define OST_CLK_GLOBAL_TIMER	1
++#define OST_CLK_PERCPU_TIMER	1
++#define OST_CLK_GLOBAL_TIMER	0
++#define OST_CLK_PERCPU_TIMER0	1
++#define OST_CLK_PERCPU_TIMER1	2
++#define OST_CLK_PERCPU_TIMER2	3
++#define OST_CLK_PERCPU_TIMER3	4
+=20
+ #endif /* __DT_BINDINGS_CLOCK_INGENIC_OST_H__ */
