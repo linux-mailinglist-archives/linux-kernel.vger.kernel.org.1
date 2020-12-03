@@ -2,210 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A952CCBF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A64BF2CCBF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727774AbgLCCEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 21:04:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37840 "EHLO
+        id S1727916AbgLCCFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 21:05:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726535AbgLCCEj (ORCPT
+        with ESMTP id S1727070AbgLCCFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 21:04:39 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E7CC061A4D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 18:03:59 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id p8so256234wrx.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 18:03:59 -0800 (PST)
+        Wed, 2 Dec 2020 21:05:10 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0E9C061A4E
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 18:04:30 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id y18so766406qki.11
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 18:04:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r5umzCI4TaFVhL8nuzDezw60k+XBY/fCF3QBJr3x+P4=;
-        b=m5EldO+Qqc6atF60hZX23z1bsSqde0yD5g5UQkyll4aZXY1POybhmvMhP2yhBybBm0
-         DXHDu/hVMcAdZQRp7YPGzE1j0TKuohpl5bncdBCuoJvBr4M2KfK+1oLtre7T9znaZKF8
-         UbsoCgg+EVbKsGqQHygHxrxRC8EkSm2W8ASMYXY410vqrdxL/tfmqQi7leBgTZOQxvWu
-         L6CwZE500sgZPnsl8NIZgcBJ+CznbfjESaw446P2/YhS+A3pg+6mJmPc4nI4WcwN/m21
-         OtUx1E4/zIyQ5rRfkkNQ58vX7ZdAbeu6KYOqKZi5f97CyuyuwTex/73AffQ4YeXpIt5E
-         2Cig==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LJSHYFhSwoD2+U2HGs2pBzQX94ySYSBm9WeKvp7LU9Q=;
+        b=Xfc0106QDTS/pUhEUqG2CmZ4pbR6T4q6Izexc6iu740GtWpd84xwMo0hC//7Lgej3k
+         DII12b1lW/n8mvxgg5ZdI4nwxm8Ur3rAKsSw4pj1/1v+lHT77Wp7pZcHqSDfrzuxXiwj
+         DR5BBcRd+hLuBjeX4/i1fo3duTpORVP30r133t75t5Hgp1PtaUTZ+StRo36NUvQjRFRx
+         ckY4bZiOrsqWZtIwbQ3dniXym5gwq4jDFYObu1ENeWsNsLcLlfA7Ad/qew4YRU+t1t/c
+         1sdqenAVHV+cl+VoSEFu+NTmpzUX9mQP3P52+qnWRorBZPTBKamiGrznF4YsO1IGmVOh
+         9UWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r5umzCI4TaFVhL8nuzDezw60k+XBY/fCF3QBJr3x+P4=;
-        b=GZWpvCQktcgc2kWh1uGkki2p3x1LDY5jUeK2FRi3qswKH8kXjnLtlGg8UBh+Y2QXGU
-         DnlRvbfEWFPse+V00YL588CUlZRwgm2ryNBspZL0Ef6LK7hqlPmbNbhSpROTBiggFGTi
-         Rc4mBg5EJXIPh7k2BhJJmH9U2RvZ9wL4sakntRSgn7DCY1c3ldbtd49TfcUfpoEkMW7D
-         hqbnxZeZfnI9TwzEyAinmngycvaLrwdXyhbaIq/77imuj1bhP0P4nfR3G3OC1vjRgIE6
-         3VpJ0p3JaVlLm15ssPou+b3Zqso86gJJ1qFOj14nL7uaY9SweeMOancaYQDB+gfXw1hy
-         pFTQ==
-X-Gm-Message-State: AOAM533t41zbfd82HeuP87WBLv2vlzG7g0rIt0P7irgs+SeSjFmH9Bho
-        VCgUZmrtTipaQQpJqlae50g5hQ==
-X-Google-Smtp-Source: ABdhPJx/KOLIzYzAJzuJ19MmmmCt3cZapNWF7qykxnDxCWAL957kgpYvEN5Qn/yOtiXS3NY9NfIuGw==
-X-Received: by 2002:adf:f181:: with SMTP id h1mr918858wro.267.1606961037823;
-        Wed, 02 Dec 2020 18:03:57 -0800 (PST)
-Received: from localhost ([2a02:168:96c5:1:55ed:514f:6ad7:5bcc])
-        by smtp.gmail.com with ESMTPSA id x4sm570263wrv.81.2020.12.02.18.03.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LJSHYFhSwoD2+U2HGs2pBzQX94ySYSBm9WeKvp7LU9Q=;
+        b=VKYM1z8UFeJRF2BVO/RJu7rbL/CM/rlZezQopboZvEdgJzUMGs5DAxfjxVgSEEigr1
+         YwRnX6nEtfTkyFmHEDDhrMMY+MbZyrXbH0g3H80JPwiOcGFj38WDzuZL+73zDaftbHjx
+         mACudsy6uXg63NIwgfqFD/2eB3BITmWizL4bdP5ShK0qG1ideyDpjzshGnO60h9W8xJu
+         sCRn/uzwiLnnc8xOMzbn9EX+inXy6Do8CmQDqT9pQMH+BG5pQqDnYa1WNW8HZ/zwvEhj
+         n1YRZUo1QmnPJsU6UOpbruw973ejYK3Q+WvrTrNt+4IMgeA7M8idheUmJ+l5A5EtGQEy
+         paRw==
+X-Gm-Message-State: AOAM531vFBpPMbV6uX/zUEhUTBuAfa4VqAzQp/pB0OYim90BXcEwcmwJ
+        jttUIelKtFlX8fivbYB76wlERw==
+X-Google-Smtp-Source: ABdhPJxeOW7Q0ae8iOkjWtoCj7xlGAAs8tHbcxFgIKVPpgu8xQBnAf60tQtyyMM0guEBxCp3KjxYZw==
+X-Received: by 2002:a05:620a:1387:: with SMTP id k7mr805479qki.338.1606961069387;
+        Wed, 02 Dec 2020 18:04:29 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id c7sm781106qtw.70.2020.12.02.18.04.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 18:03:57 -0800 (PST)
-From:   Jann Horn <jannh@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] tty: Remove dead termiox code
-Date:   Thu,  3 Dec 2020 03:03:31 +0100
-Message-Id: <20201203020331.2394754-1-jannh@google.com>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+        Wed, 02 Dec 2020 18:04:28 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kkdyt-005ISu-Nz; Wed, 02 Dec 2020 22:04:27 -0400
+Date:   Wed, 2 Dec 2020 22:04:27 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Miroslav Lichvar <mlichvar@redhat.com>,
+        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] rtc: adapt allowed RTC update error
+Message-ID: <20201203020427.GR5487@ziepe.ca>
+References: <20201201143835.2054508-1-mlichvar@redhat.com>
+ <20201201161224.GF5487@ziepe.ca>
+ <20201201171420.GN1900232@localhost>
+ <20201201173540.GH5487@ziepe.ca>
+ <87mtywe2zu.fsf@nanos.tec.linutronix.de>
+ <20201202162723.GJ5487@ziepe.ca>
+ <87a6uwdnfn.fsf@nanos.tec.linutronix.de>
+ <20201202205418.GN5487@ziepe.ca>
+ <874kl3eu8p.fsf@nanos.tec.linutronix.de>
+ <87zh2vd72z.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zh2vd72z.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-set_termiox() and the TCGETX handler bail out with -EINVAL immediately
-if ->termiox is NULL, but there are no code paths that can set
-->termiox to a non-NULL pointer; and no such code paths seem to have
-existed since the termiox mechanism was introduced back in
-commit 1d65b4a088de ("tty: Add termiox") in v2.6.28.
-Similarly, no driver actually implements .set_termiox; and it looks like
-no driver ever has.
+On Thu, Dec 03, 2020 at 02:14:12AM +0100, Thomas Gleixner wrote:
 
-Delete this dead code; but leave the definition of struct termiox in the
-UAPI headers intact.
+> If anyone involved seriously believes that any of this solves a real
+> world problem, then please come forth an make your case.
 
-Signed-off-by: Jann Horn <jannh@google.com>
----
- drivers/tty/tty_ioctl.c    | 61 ++------------------------------------
- include/linux/tty.h        |  1 -
- include/linux/tty_driver.h |  9 ------
- 3 files changed, 2 insertions(+), 69 deletions(-)
+The original commit 0f295b0650c9 ("rtc: Allow rtc drivers to specify
+the tv_nsec value for ntp") was tested by myself and RMK on various
+ARM systems and did work as advertised. Here is the giant thread,
+RMK's post explains the problem and gives his measurements of several
+different RTCs:
 
-diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
-index e18f318586ab..4de1c6ddb8ff 100644
---- a/drivers/tty/tty_ioctl.c
-+++ b/drivers/tty/tty_ioctl.c
-@@ -443,51 +443,6 @@ static int get_termio(struct tty_struct *tty, struct t=
-ermio __user *termio)
- 	return 0;
- }
-=20
--
--#ifdef TCGETX
--
--/**
-- *	set_termiox	-	set termiox fields if possible
-- *	@tty: terminal
-- *	@arg: termiox structure from user
-- *	@opt: option flags for ioctl type
-- *
-- *	Implement the device calling points for the SYS5 termiox ioctl
-- *	interface in Linux
-- */
--
--static int set_termiox(struct tty_struct *tty, void __user *arg, int opt)
--{
--	struct termiox tnew;
--	struct tty_ldisc *ld;
--
--	if (tty->termiox =3D=3D NULL)
--		return -EINVAL;
--	if (copy_from_user(&tnew, arg, sizeof(struct termiox)))
--		return -EFAULT;
--
--	ld =3D tty_ldisc_ref(tty);
--	if (ld !=3D NULL) {
--		if ((opt & TERMIOS_FLUSH) && ld->ops->flush_buffer)
--			ld->ops->flush_buffer(tty);
--		tty_ldisc_deref(ld);
--	}
--	if (opt & TERMIOS_WAIT) {
--		tty_wait_until_sent(tty, 0);
--		if (signal_pending(current))
--			return -ERESTARTSYS;
--	}
--
--	down_write(&tty->termios_rwsem);
--	if (tty->ops->set_termiox)
--		tty->ops->set_termiox(tty, &tnew);
--	up_write(&tty->termios_rwsem);
--	return 0;
--}
--
--#endif
--
--
- #ifdef TIOCGETP
- /*
-  * These are deprecated, but there is limited support..
-@@ -815,23 +770,11 @@ int tty_mode_ioctl(struct tty_struct *tty, struct fil=
-e *file,
- 		return ret;
- #endif
- #ifdef TCGETX
--	case TCGETX: {
--		struct termiox ktermx;
--		if (real_tty->termiox =3D=3D NULL)
--			return -EINVAL;
--		down_read(&real_tty->termios_rwsem);
--		memcpy(&ktermx, real_tty->termiox, sizeof(struct termiox));
--		up_read(&real_tty->termios_rwsem);
--		if (copy_to_user(p, &ktermx, sizeof(struct termiox)))
--			ret =3D -EFAULT;
--		return ret;
--	}
-+	case TCGETX:
- 	case TCSETX:
--		return set_termiox(real_tty, p, 0);
- 	case TCSETXW:
--		return set_termiox(real_tty, p, TERMIOS_WAIT);
- 	case TCSETXF:
--		return set_termiox(real_tty, p, TERMIOS_FLUSH);
-+		return -EINVAL;
- #endif=09=09
- 	case TIOCGSOFTCAR:
- 		copy_termios(real_tty, &kterm);
-diff --git a/include/linux/tty.h b/include/linux/tty.h
-index a99e9b8e4e31..52f5544bcd85 100644
---- a/include/linux/tty.h
-+++ b/include/linux/tty.h
-@@ -303,7 +303,6 @@ struct tty_struct {
- 	spinlock_t flow_lock;
- 	/* Termios values are protected by the termios rwsem */
- 	struct ktermios termios, termios_locked;
--	struct termiox *termiox;	/* May be NULL for unsupported */
- 	char name[64];
- 	struct pid *pgrp;		/* Protected by ctrl lock */
- 	struct pid *session;
-diff --git a/include/linux/tty_driver.h b/include/linux/tty_driver.h
-index 358446247ccd..61c3372d3f32 100644
---- a/include/linux/tty_driver.h
-+++ b/include/linux/tty_driver.h
-@@ -224,14 +224,6 @@
-  *	line). See tty_do_resize() if you need to wrap the standard method
-  *	in your own logic - the usual case.
-  *
-- * void (*set_termiox)(struct tty_struct *tty, struct termiox *new);
-- *
-- *	Called when the device receives a termiox based ioctl. Passes down
-- *	the requested data from user space. This method will not be invoked
-- *	unless the tty also has a valid tty->termiox pointer.
-- *
-- *	Optional: Called under the termios lock
-- *
-  * int (*get_icount)(struct tty_struct *tty, struct serial_icounter *icoun=
-t);
-  *
-  *	Called when the device receives a TIOCGICOUNT ioctl. Passed a kernel
-@@ -285,7 +277,6 @@ struct tty_operations {
- 	int (*tiocmset)(struct tty_struct *tty,
- 			unsigned int set, unsigned int clear);
- 	int (*resize)(struct tty_struct *tty, struct winsize *ws);
--	int (*set_termiox)(struct tty_struct *tty, struct termiox *tnew);
- 	int (*get_icount)(struct tty_struct *tty,
- 				struct serial_icounter_struct *icount);
- 	int  (*get_serial)(struct tty_struct *tty, struct serial_struct *p);
+https://lore.kernel.org/linux-arm-kernel/20170920112152.GL20805@n2100.armlinux.org.uk/
 
-base-commit: 3bb61aa61828499a7d0f5e560051625fd02ae7e4
---=20
-2.29.2.576.ga3fc446d84-goog
+And the patch that resulted:
 
+https://lore.kernel.org/linux-arm-kernel/20171013175433.GA22062@obsidianresearch.com/
+
+There is a lot of detail in there.. Keep in mind none of this was for
+the mc146818 style RTCs.
+
+I can't recall any more why no drivers use the set_offset_nsec. I'm
+surprised, maybe I forgot to send the patch for the RTCs I tested or
+maybe it got dropped someplace.. It certainly was needed for some
+maxim I2C chips.
+
+The thread shows rmk had even written a hrtimer patch to go with this,
+but it also got lost for some reason. Maybe all the arguing killed
+further effort?
+
+Jason
