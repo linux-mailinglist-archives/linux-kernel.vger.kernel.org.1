@@ -2,202 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2B52CD0C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E02082CD0C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729871AbgLCIFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:05:43 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18840 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbgLCIFm (ORCPT
+        id S2388182AbgLCIGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:06:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729897AbgLCIGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:05:42 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc89c2e0000>; Thu, 03 Dec 2020 00:05:02 -0800
-Received: from [10.2.53.244] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Dec
- 2020 08:04:55 +0000
-Subject: Re: [PATCH 4/6] mm cma: rename PF_MEMALLOC_NOCMA to
- PF_MEMALLOC_NOMOVABLE
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <akpm@linux-foundation.org>, <vbabka@suse.cz>, <mhocko@suse.com>,
-        <david@redhat.com>, <osalvador@suse.de>,
-        <dan.j.williams@intel.com>, <sashal@kernel.org>,
-        <tyhicks@linux.microsoft.com>, <iamjoonsoo.kim@lge.com>,
-        <mike.kravetz@oracle.com>, <rostedt@goodmis.org>,
-        <mingo@redhat.com>, <jgg@ziepe.ca>, <peterz@infradead.org>,
-        <mgorman@suse.de>, <willy@infradead.org>, <rientjes@google.com>
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201202052330.474592-5-pasha.tatashin@soleen.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <eea5da76-e753-e7c8-60a4-c3e7e58649c1@nvidia.com>
-Date:   Thu, 3 Dec 2020 00:04:55 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:83.0) Gecko/20100101
- Thunderbird/83.0
+        Thu, 3 Dec 2020 03:06:08 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EDCC061A52
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 00:05:27 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id n26so2087200eju.6
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 00:05:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FZ8VxZZvqmh6ehr3KHE/PiRk3db+weOkpDGOlsh3YO8=;
+        b=haDseJv+D02T10aLAxQHXG0BsYACsfkijqaB+ELZmfch2JYU9g6y9ryqDyIqWShXaW
+         yaAZ88xKKVmpIrZKV/qetu3zM2AbVORk0wYWL03XQMh8ss+hr7Dc6CnNOdvjOspJC/vQ
+         R2df0RgSro0FHNGu8o3DpusAvPeMobIgNjOfc7hfwHJ6Nvy0U69h0GmKMctPOdP8JHuK
+         uCRMiqbef850rMYfMmIEUS0TzdqaTlcSg4Jgua9sT1AuBgZSfdy1txMa/Fszl/iCAsRa
+         6RBF8zj3OIpntYgPprvZoROYfpZUKnhmmTVDrR3O2ZTkmVat83g3y0aDOoH39HHPuS4h
+         RbOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FZ8VxZZvqmh6ehr3KHE/PiRk3db+weOkpDGOlsh3YO8=;
+        b=QYoJasX0kPdUjQoF5A/HrZdWxrglIKeWK0h9bGVhfni8atnAu1KbmagACa4t1Ert+G
+         3SC2PkKt99bItUlc5RRxwZYCa8kr9OmW+o6+NNQ/8Uzo0yeWwYsaYJHuptsXb9vG7K+i
+         QXJvQ1a7DSSuGbhhjmtw16MLuwWaZ2KC0k0oddlZj5mk9J0Cup0vf22DdVD10YGRd1Hk
+         hZhL5YaiW78RlAHlMEwc15a624BjI7Z/HWxRh2WpMmqCtk2gAKz766V7UE7ipHRo5J49
+         QdlbV1nf2NvkBNB9UvhpZAFz8ST/wNbWmXdj74oqmdUDvA8jEw3+9MTAGPdSWPdxq45q
+         Bl5A==
+X-Gm-Message-State: AOAM530sjxkFkWcVc4q1peNS3+mWGbHd6pUW8uSRIy9bJwzvLBi7veFh
+        Ob3DlYylEn569GORiOUMgnaaXyvlxa5PaYjrETzJJg==
+X-Google-Smtp-Source: ABdhPJxP2EJznI3pbg+Rqtm4SZQefIKFXf0kkiRRTqzbUDyEG5oMEZvNtOYbyFNg3cm8vTl+G0cfLIdKavT7T0DOD1k=
+X-Received: by 2002:a17:906:7f01:: with SMTP id d1mr1414079ejr.429.1606982726027;
+ Thu, 03 Dec 2020 00:05:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201202052330.474592-5-pasha.tatashin@soleen.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606982702; bh=0r2hX9f4dCvSevFUUl1H/pKvxaPM+mKO3kQFm8fBXXI=;
-        h=Subject:To:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=D/DXVdb7Cld/GynKoUML+/mRn/fWrKZsD/2oBT+AM6Kc46Fk6o2dQ3U+1+oufuh3b
-         bMn7CbwLdOVFk3ZR7p12qiF4WzoPyXwtryxPyGx76e1wQyYKvyTJrK9kjdTehLdA0+
-         5KbbOsWhFX7MYG92VEFCl52Ac+bXKMrI01YHykF0pNcCE01/uMJG9mz+9oCBiwY+w2
-         qD+UgRIsgzkmWSgfMLsajVuqnH2SrihjZ3qU1JbxKWAc0ZJ1yMVTjYQtg0xwRjNLjQ
-         H0OsUrGm5fwMrwk28gq39/UjfaEP1M9ZPVFGsv9fD75r8RjBTmjtGlza5hM1vc0ayT
-         v4IjXhNiuw5ZQ==
+References: <20201123183833.18750-1-nsaenzjulienne@suse.de> <20201123183833.18750-2-nsaenzjulienne@suse.de>
+In-Reply-To: <20201123183833.18750-2-nsaenzjulienne@suse.de>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 3 Dec 2020 09:05:15 +0100
+Message-ID: <CAMpxmJX6zdoYek2THEj2x8ycJYz-bxqE_5RnOz1sYv0vwLSFpA@mail.gmail.com>
+Subject: Re: [PATCH v5 01/11] firmware: raspberrypi: Keep count of all consumers
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-devicetree <devicetree@vger.kernel.org>, wahrenst@gmx.net,
+        Linux Input <linux-input@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 9:23 PM, Pavel Tatashin wrote:
-> PF_MEMALLOC_NOCMA is used for longterm pinning and has an effect of
-> clearing _GFP_MOVABLE or prohibiting allocations from ZONE_MOVABLE.
-> 
-> We will prohibit allocating any pages that are getting
-> longterm pinned from ZONE_MOVABLE, and we would want to unify and re-use
-> this flag. So, rename it to generic PF_MEMALLOC_NOMOVABLE.
-> Also re-name:
-> memalloc_nocma_save()/memalloc_nocma_restore
-> to
-> memalloc_nomovable_save()/memalloc_nomovable_restore()
-> and make the new functions common.
-> 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-
-Looks accurate, and grep didn't find any lingering rename candidates
-after this series is applied. And it's a good rename.
-
-
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
+On Mon, Nov 23, 2020 at 7:38 PM Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> When unbinding the firmware device we need to make sure it has no
+> consumers left. Otherwise we'd leave them with a firmware handle
+> pointing at freed memory.
+>
+> Keep a reference count of all consumers and introduce rpi_firmware_put()
+> which will permit automatically decrease the reference count upon
+> unbinding consumer drivers.
+>
+> Suggested-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 > ---
->   include/linux/sched.h    |  2 +-
->   include/linux/sched/mm.h | 21 +++++----------------
->   mm/gup.c                 |  4 ++--
->   mm/hugetlb.c             |  4 ++--
->   mm/page_alloc.c          |  4 ++--
->   5 files changed, 12 insertions(+), 23 deletions(-)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 76cd21fa5501..f1bf05f5f5fa 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1548,7 +1548,7 @@ extern struct pid *cad_pid;
->   #define PF_SWAPWRITE		0x00800000	/* Allowed to write to swap */
->   #define PF_NO_SETAFFINITY	0x04000000	/* Userland is not allowed to meddle with cpus_mask */
->   #define PF_MCE_EARLY		0x08000000      /* Early kill for mce process policy */
-> -#define PF_MEMALLOC_NOCMA	0x10000000	/* All allocation request will have _GFP_MOVABLE cleared */
-> +#define PF_MEMALLOC_NOMOVABLE	0x10000000	/* All allocation request will have _GFP_MOVABLE cleared */
->   #define PF_FREEZER_SKIP		0x40000000	/* Freezer should not count it as freezable */
->   #define PF_SUSPEND_TASK		0x80000000      /* This thread called freeze_processes() and should not be frozen */
->   
-> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-> index d5ece7a9a403..5bb9a6b69479 100644
-> --- a/include/linux/sched/mm.h
-> +++ b/include/linux/sched/mm.h
-> @@ -254,29 +254,18 @@ static inline void memalloc_noreclaim_restore(unsigned int flags)
->   	current->flags = (current->flags & ~PF_MEMALLOC) | flags;
->   }
->   
-> -#ifdef CONFIG_CMA
-> -static inline unsigned int memalloc_nocma_save(void)
-> +static inline unsigned int memalloc_nomovable_save(void)
->   {
-> -	unsigned int flags = current->flags & PF_MEMALLOC_NOCMA;
-> +	unsigned int flags = current->flags & PF_MEMALLOC_NOMOVABLE;
->   
-> -	current->flags |= PF_MEMALLOC_NOCMA;
-> +	current->flags |= PF_MEMALLOC_NOMOVABLE;
->   	return flags;
->   }
->   
-> -static inline void memalloc_nocma_restore(unsigned int flags)
-> +static inline void memalloc_nomovable_restore(unsigned int flags)
->   {
-> -	current->flags = (current->flags & ~PF_MEMALLOC_NOCMA) | flags;
-> +	current->flags = (current->flags & ~PF_MEMALLOC_NOMOVABLE) | flags;
->   }
-> -#else
-> -static inline unsigned int memalloc_nocma_save(void)
-> -{
-> -	return 0;
-> -}
-> -
-> -static inline void memalloc_nocma_restore(unsigned int flags)
-> -{
-> -}
-> -#endif
->   
->   #ifdef CONFIG_MEMCG
->   DECLARE_PER_CPU(struct mem_cgroup *, int_active_memcg);
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 0e2de888a8b0..724d8a65e1df 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1726,7 +1726,7 @@ static long __gup_longterm_locked(struct mm_struct *mm,
->   			if (!vmas_tmp)
->   				return -ENOMEM;
->   		}
-> -		flags = memalloc_nocma_save();
-> +		flags = memalloc_nomovable_save();
->   	}
->   
->   	rc = __get_user_pages_locked(mm, start, nr_pages, pages,
-> @@ -1749,7 +1749,7 @@ static long __gup_longterm_locked(struct mm_struct *mm,
->   		rc = check_and_migrate_cma_pages(mm, start, rc, pages,
->   						 vmas_tmp, gup_flags);
->   out:
-> -		memalloc_nocma_restore(flags);
-> +		memalloc_nomovable_restore(flags);
->   	}
->   
->   	if (vmas_tmp != vmas)
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 37f15c3c24dc..02213c74ed6b 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1033,10 +1033,10 @@ static void enqueue_huge_page(struct hstate *h, struct page *page)
->   static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
->   {
->   	struct page *page;
-> -	bool nocma = !!(current->flags & PF_MEMALLOC_NOCMA);
-> +	bool nomovable = !!(current->flags & PF_MEMALLOC_NOMOVABLE);
->   
->   	list_for_each_entry(page, &h->hugepage_freelists[nid], lru) {
-> -		if (nocma && is_migrate_cma_page(page))
-> +		if (nomovable && is_migrate_cma_page(page))
->   			continue;
->   
->   		if (PageHWPoison(page))
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index eaa227a479e4..611799c72da5 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -3772,8 +3772,8 @@ static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
->   #ifdef CONFIG_CMA
->   	unsigned int pflags = current->flags;
->   
-> -	if (!(pflags & PF_MEMALLOC_NOCMA) &&
-> -			gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
-> +	if (!(pflags & PF_MEMALLOC_NOMOVABLE) &&
-> +	    gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
->   		alloc_flags |= ALLOC_CMA;
->   
->   #endif
-> 
+>
+> Changes since v3:
+> - Use kref instead of waiting on refcount
+>
+>  drivers/firmware/raspberrypi.c             | 37 +++++++++++++++++++---
+>  include/soc/bcm2835/raspberrypi-firmware.h |  2 ++
+>  2 files changed, 35 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberryp=
+i.c
+> index 30259dc9b805..ed793aef7851 100644
+> --- a/drivers/firmware/raspberrypi.c
+> +++ b/drivers/firmware/raspberrypi.c
+> @@ -7,6 +7,7 @@
+>   */
+>
+>  #include <linux/dma-mapping.h>
+> +#include <linux/kref.h>
+>  #include <linux/mailbox_client.h>
+>  #include <linux/module.h>
+>  #include <linux/of_platform.h>
+> @@ -27,6 +28,8 @@ struct rpi_firmware {
+>         struct mbox_chan *chan; /* The property channel. */
+>         struct completion c;
+>         u32 enabled;
+> +
+> +       struct kref consumers;
+>  };
+>
+>  static DEFINE_MUTEX(transaction_lock);
+> @@ -225,12 +228,27 @@ static void rpi_register_clk_driver(struct device *=
+dev)
+>                                                 -1, NULL, 0);
+>  }
+>
+> +static void rpi_firmware_delete(struct kref *kref)
+> +{
+> +       struct rpi_firmware *fw =3D container_of(kref, struct rpi_firmwar=
+e,
+> +                                              consumers);
+> +
+> +       mbox_free_channel(fw->chan);
+> +       kfree(fw);
+> +}
+> +
+> +void rpi_firmware_put(struct rpi_firmware *fw)
+> +{
+> +       kref_put(&fw->consumers, rpi_firmware_delete);
+> +}
+> +EXPORT_SYMBOL_GPL(rpi_firmware_put);
+> +
+>  static int rpi_firmware_probe(struct platform_device *pdev)
+>  {
+>         struct device *dev =3D &pdev->dev;
+>         struct rpi_firmware *fw;
+>
+> -       fw =3D devm_kzalloc(dev, sizeof(*fw), GFP_KERNEL);
 
+One nit from my side: maybe add a comment here saying that you really
+want to use non-managed kzalloc() because you're going to get people
+blindly converting it to devm_kzalloc() very soon.
+
+Bartosz
+
+> +       fw =3D kzalloc(sizeof(*fw), GFP_KERNEL);
+>         if (!fw)
+>                 return -ENOMEM;
+>
+> @@ -247,6 +265,7 @@ static int rpi_firmware_probe(struct platform_device =
+*pdev)
+>         }
+>
+>         init_completion(&fw->c);
+> +       kref_init(&fw->consumers);
+>
+>         platform_set_drvdata(pdev, fw);
+>
+> @@ -275,25 +294,35 @@ static int rpi_firmware_remove(struct platform_devi=
+ce *pdev)
+>         rpi_hwmon =3D NULL;
+>         platform_device_unregister(rpi_clk);
+>         rpi_clk =3D NULL;
+> -       mbox_free_channel(fw->chan);
+> +
+> +       rpi_firmware_put(fw);
+>
+>         return 0;
+>  }
+>
+>  /**
+> - * rpi_firmware_get - Get pointer to rpi_firmware structure.
+>   * @firmware_node:    Pointer to the firmware Device Tree node.
+>   *
+> + * The reference to rpi_firmware has to be released with rpi_firmware_pu=
+t().
+> + *
+>   * Returns NULL is the firmware device is not ready.
+>   */
+>  struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node)
+>  {
+>         struct platform_device *pdev =3D of_find_device_by_node(firmware_=
+node);
+> +       struct rpi_firmware *fw;
+>
+>         if (!pdev)
+>                 return NULL;
+>
+> -       return platform_get_drvdata(pdev);
+> +       fw =3D platform_get_drvdata(pdev);
+> +       if (!fw)
+> +               return NULL;
+> +
+> +       if (!kref_get_unless_zero(&fw->consumers))
+> +               return NULL;
+> +
+> +       return fw;
+>  }
+>  EXPORT_SYMBOL_GPL(rpi_firmware_get);
+>
+> diff --git a/include/soc/bcm2835/raspberrypi-firmware.h b/include/soc/bcm=
+2835/raspberrypi-firmware.h
+> index cc9cdbc66403..fdfef7fe40df 100644
+> --- a/include/soc/bcm2835/raspberrypi-firmware.h
+> +++ b/include/soc/bcm2835/raspberrypi-firmware.h
+> @@ -140,6 +140,7 @@ int rpi_firmware_property(struct rpi_firmware *fw,
+>                           u32 tag, void *data, size_t len);
+>  int rpi_firmware_property_list(struct rpi_firmware *fw,
+>                                void *data, size_t tag_size);
+> +void rpi_firmware_put(struct rpi_firmware *fw);
+>  struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node)=
+;
+>  #else
+>  static inline int rpi_firmware_property(struct rpi_firmware *fw, u32 tag=
+,
+> @@ -154,6 +155,7 @@ static inline int rpi_firmware_property_list(struct r=
+pi_firmware *fw,
+>         return -ENOSYS;
+>  }
+>
+> +static inline void rpi_firmware_put(struct rpi_firmware *fw) { }
+>  static inline struct rpi_firmware *rpi_firmware_get(struct device_node *=
+firmware_node)
+>  {
+>         return NULL;
+> --
+> 2.29.2
+>
