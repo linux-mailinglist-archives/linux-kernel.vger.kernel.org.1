@@ -2,143 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861602CE10B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 155002CE114
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387871AbgLCVqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 16:46:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
+        id S2502045AbgLCVr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 16:47:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728675AbgLCVqn (ORCPT
+        with ESMTP id S2501986AbgLCVr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 16:46:43 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60E7C061A52
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 13:46:03 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id y24so3273549otk.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 13:46:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=EEDpEPg20mrOi+gLZZh/e5E2eO12nJVyTtIJrwc4Hhw=;
-        b=veGdRpfzhPNSwO2u8ojbMsIDoZ8aR5PYS3mHe8rLoapltHRQzi9akp4g3CPjhqCRig
-         t2zzXVuOnK2AwkcLlnboyxiwmD/RXyFNpOh15F4j62lWfvmoL2RP6Yw5sFKTtlm51O1N
-         8YYQ91xP/ABKVuDOUha6ZMg/dNnrSEKOQwyaeL4ny3yIiS7/2LWByc+twsVedE/zwbK+
-         /s2qCZaOL7bEk+vwlTzSisxNfiKE0XDJtPLFK/g0RfnY9MIJnyh4nMilsazklb8wkj8Q
-         6sA80gGOrB65McsgEFlhtiRkP+7fSaDCgZSb+k0HZDx7jtL543G/NB5Q7HzmMLXDlpnH
-         h7rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=EEDpEPg20mrOi+gLZZh/e5E2eO12nJVyTtIJrwc4Hhw=;
-        b=AwelQ6KI3cHc6V29ghqg2DKHgkc8ZjuqyT/diTeFaO2Stvxc+ZvuB6OT1e+RoAeRTw
-         u0tsuCoG6COlYM2sHLg4gD0Um5qf8ljs2e7pmk/swzHSmwURdgYXbvFkmkxy4ObaBIPu
-         KBY4ELk2C+QMP/LszW3XIyJitA4OpBk7x9wzckPVeJW3/aPF7478a376FTjqAWn7LBlj
-         CuHaGu/yjXRF6j1C3rvETKjLpvIPZIn4XYWqvNrwsiBuCEppk5AjSzfxwvfKeeSbxh22
-         x5GYopH3+JWCo4wOA2AQDTGZEZl857/VlXb2F//JLV4cZSI6XryvFABj317dG0qzU0ov
-         CRAw==
-X-Gm-Message-State: AOAM531ws8x0Ms3sbPy5B9JFvSb6GJzRAXw7GexDsIMU0fnzQDbmONfq
-        f7MZizlj8WEaEZPXlXaBAZlcsQ==
-X-Google-Smtp-Source: ABdhPJzKBX1t/CV6B7SK6h/3beXEgh1qUYgW8FGMbJ3JkvzZauTEh6LkobizKmuZQMhHy0BIdpeAZw==
-X-Received: by 2002:a9d:4b03:: with SMTP id q3mr1085136otf.53.1607031962853;
-        Thu, 03 Dec 2020 13:46:02 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id o6sm194057oon.7.2020.12.03.13.46.01
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 03 Dec 2020 13:46:02 -0800 (PST)
-Date:   Thu, 3 Dec 2020 13:45:42 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-cc:     Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Qian Cai <qcai@redhat.com>, Jan Kara <jack@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hch@lst.de,
-        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
-        dchinner@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
-In-Reply-To: <0107bae8-baaa-9d39-5349-8174cb8abbbe@samsung.com>
-Message-ID: <alpine.LSU.2.11.2012031305070.12944@eggly.anvils>
-References: <20201112212641.27837-1-willy@infradead.org> <alpine.LSU.2.11.2011160128001.1206@eggly.anvils> <20201117153947.GL29991@casper.infradead.org> <alpine.LSU.2.11.2011170820030.1014@eggly.anvils> <20201117191513.GV29991@casper.infradead.org>
- <20201117234302.GC29991@casper.infradead.org> <20201125023234.GH4327@casper.infradead.org> <bb95be97-2a50-b345-fc2c-3ff865b60e08@samsung.com> <CGME20201203172725eucas1p2fddec1d269c55095859d490942b78b93@eucas1p2.samsung.com>
- <0107bae8-baaa-9d39-5349-8174cb8abbbe@samsung.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Thu, 3 Dec 2020 16:47:26 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8935C061A4F;
+        Thu,  3 Dec 2020 13:46:43 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkwQz-00GJS1-Gt; Thu, 03 Dec 2020 21:46:41 +0000
+From:   Al Viro <viro@ZenIV.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH 01/10] binfmt_elf: partially sanitize PRSTATUS_SIZE and SET_PR_FPVALID
+Date:   Thu,  3 Dec 2020 21:46:32 +0000
+Message-Id: <20201203214641.3887979-1-viro@ZenIV.linux.org.uk>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-1876154756-1607031962=:12944"
+Content-Transfer-Encoding: 8bit
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+From: Al Viro <viro@zeniv.linux.org.uk>
 
---0-1876154756-1607031962=:12944
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+On 64bit architectures that support 32bit processes there are
+two possible layouts for NT_PRSTATUS note in ELF coredumps.
+For one thing, several fields are 64bit for native processes
+and 32bit for compat ones (pr_sigpend, etc.).  For another,
+the register dump is obviously different - the size and number
+of registers are not going to be the same for 32bit and 64bit
+variants of processor.
 
-On Thu, 3 Dec 2020, Marek Szyprowski wrote:
-> On 03.12.2020 16:46, Marek Szyprowski wrote:
-> > On 25.11.2020 03:32, Matthew Wilcox wrote:
-> >> On Tue, Nov 17, 2020 at 11:43:02PM +0000, Matthew Wilcox wrote:
-> >>> On Tue, Nov 17, 2020 at 07:15:13PM +0000, Matthew Wilcox wrote:
-> >>>> I find both of these functions exceptionally confusing.=C2=A0 Does t=
-his
-> >>>> make it easier to understand?
-> >>> Never mind, this is buggy.=C2=A0 I'll send something better tomorrow.
-> >> That took a week, not a day.=C2=A0 *sigh*.=C2=A0 At least this is shor=
-ter.
-> >>
-> >> commit 1a02863ce04fd325922d6c3db6d01e18d55f966b
-> >> Author: Matthew Wilcox (Oracle) <willy@infradead.org>
-> >> Date:=C2=A0=C2=A0 Tue Nov 17 10:45:18 2020 -0500
-> >>
-> >> =C2=A0=C2=A0=C2=A0=C2=A0 fix mm-truncateshmem-handle-truncates-that-sp=
-lit-thps.patch
-> >
-> > This patch landed in todays linux-next (20201203) as commit=20
-> > 8678b27f4b8b ("8678b27f4b8bfc130a13eb9e9f27171bcd8c0b3b"). Sadly it=20
-> > breaks booting of ANY of my ARM 32bit test systems, which use initrd.=
-=20
-> > ARM64bit based systems boot fine. Here is example of the crash:
+Usually that's handled by having two structures - elf_prstatus
+for native layout and compat_elf_prstatus for 32bit one.
+32bit processes are handled by fs/compat_binfmt_elf.c, which
+defines a macro called 'elf_prstatus' that expands to compat_elf_prstatus.
+Then it includes fs/binfmt_elf.c, which makes all references to
+struct elf_prstatus to be textually replaced with struct
+compat_elf_prstatus.  Ugly and somewhat brittle, but it works.
 
-kernel BUG at fs/inode.c:531
-evict() hitting clear_inode()'s BUG_ON(inode->i_data.nr_pages)
-Same here on i386 on mmotm (slightly different line number on mmotm).
+However, amd64 is worse - there are _three_ possible layouts.
+One for native 64bit processes, another for i386 (32bit) processes
+and yet another for x32 (32bit address space with full 64bit
+registers).
 
->=20
-> One more thing. Reverting those two:
->=20
-> 1b1aa968b0b6 mm-truncateshmem-handle-truncates-that-split-thps-fix-fix
->=20
-> 8678b27f4b8b mm-truncateshmem-handle-truncates-that-split-thps-fix
->=20
-> on top of linux next-20201203 fixes the boot issues.
+Both i386 and x32 processes are handled by fs/compat_binfmt_elf.c,
+with usual compat_binfmt_elf.c trickery.  However, the layouts
+for i386 and x32 are not identical - they have the common beginning,
+but the register dump part (pr_reg) is bigger on x32.  Worse, pr_reg
+is not the last field - it's followed by int pr_fpvalid, so that
+field ends up at different offsets for i386 and x32 layouts.
 
-Thanks a lot for the report, Marek.  Yes, reverting those two
-(of which "-fix" amounts to a rewrite, and "-fix-fix" is far from
-complete) takes the linux-next tree back to how truncate was before it
-took in yesterday's mmotm: not crashing on 32-bit, but still not good.
+Fortunately, there's not much code that cares about any of that -
+it's all encapsulated in fill_thread_core_info().  Since x32
+variant is bigger, we define compat_elf_prstatus to match that
+layout.  That way i386 processes have enough space to fit
+their layout into.
 
-The 32-bit breakage may turn out to be a simple one-liner like a
-missing cast, or overflow from 0 to -1, somewhere in the rewritten
-truncate_inode_pages_range(); but it did not stand out to me, and
-it does not immediately matter, since other fixes are needed to
-that patch.  I'm afraid it's proving to be work in progress.
+Moreover, since these layouts are identical prior to pr_reg,
+we don't need to distinguish x32 and i386 cases when we are
+setting the fields prior to pr_reg.
 
-I did ask Andrew to revert these earlier in the thread, but it looks
-like that got lost in the jungle of his inbox: I'll send a better
-targetted mail, but what we need is to revert these *four* patches,
-until we have a better tested and stable version.
+Filling pr_reg itself is done by calling ->get() method of
+appropriate regset, and that method knows what layout (and size)
+to use.
 
-mm-truncateshmem-handle-truncates-that-split-thps.patch
-mm-truncateshmem-handle-truncates-that-split-thps-fix.patch
-mm-truncateshmem-handle-truncates-that-split-thps-fix-fix.patch
-mm-filemap-return-only-head-pages-from-find_get_entries.patch
+We do need to distinguish x32 and i386 cases only for two
+things: setting ->pr_fpvalid (offset differs for x32 and
+i386) and choosing the right size for our note.
 
-Hugh
---0-1876154756-1607031962=:12944--
+The way it's done is Not Nice, for the lack of more accurate
+printable description.  There are two macros (PRSTATUS_SIZE and
+SET_PR_FPVALID), that default essentially to sizeof(struct elf_prstatus)
+and (S)->pr_fpvalid = 1.  On x86 asm/compat.h provides its own
+variants.
+
+Unfortunately, quite a few things go wrong there:
+	* PRSTATUS_SIZE doesn't use the normal test for process
+being an x32 one (TIF_X32); it compares the size reported by
+regset with the size of pr_reg.
+	* it hardcodes the sizes of x32 and i386 variants (296 and 144
+resp.), so if some change in includes leads to asm/compat.h pulled
+in by fs/binfmt_elf.c we are in trouble - it will end up using
+the size of x32 variant for 64bit processes.
+	* it's in the wrong place; asm/compat.h couldn't define
+the structure for i386 layout, since it lacks quite a few types
+needed for it.  Hardcoded sizes are largely due to that.
+
+The proper fix would be to have an explicitly defined i386 variant
+of structure and have PRSTATUS_SIZE/SET_PR_FPVALID check for
+TIF_X32 to choose the variant that should be used.  Unfortunately,
+that requires some manipulations of headers; we'll do that later
+in the series, but for now let's go with the minimal variant -
+rename PRSTATUS_SIZE in asm/compat.h to COMPAT_PRSTATUS_SIZE,
+have fs/compat_binfmt_elf.c define PRSTATUS_SIZE to COMPAT_PRSTATUS_SIZE
+and use the normal TIF_X32 check in that macro.  The size of i386 variant
+is kept hardcoded for now.  Similar story for SET_PR_FPVALID.
+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ arch/x86/include/asm/compat.h | 11 +++++++----
+ fs/binfmt_elf.c               | 13 +++++--------
+ fs/compat_binfmt_elf.c        |  8 ++++++++
+ 3 files changed, 20 insertions(+), 12 deletions(-)
+
+diff --git a/arch/x86/include/asm/compat.h b/arch/x86/include/asm/compat.h
+index 0e327a01f50f..1897e1dcbdd2 100644
+--- a/arch/x86/include/asm/compat.h
++++ b/arch/x86/include/asm/compat.h
+@@ -165,10 +165,13 @@ struct compat_shmid64_ds {
+ typedef struct user_regs_struct compat_elf_gregset_t;
+ 
+ /* Full regset -- prstatus on x32, otherwise on ia32 */
+-#define PRSTATUS_SIZE(S, R) (R != sizeof(S.pr_reg) ? 144 : 296)
+-#define SET_PR_FPVALID(S, V, R) \
+-  do { *(int *) (((void *) &((S)->pr_reg)) + R) = (V); } \
+-  while (0)
++#define COMPAT_PRSTATUS_SIZE (test_thread_flag(TIF_X32) \
++	? sizeof(struct compat_elf_prstatus) \
++	: 144)
++#define COMPAT_SET_PR_FPVALID(S) \
++	(*(test_thread_flag(TIF_X32)	\
++	       ? &(S)->pr_fpvalid	\
++               : (int *)((void *)(S) + 140)) = 1)
+ 
+ #ifdef CONFIG_X86_X32_ABI
+ #define COMPAT_USE_64BIT_TIME \
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index b6b3d052ca86..f066882bd270 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -1717,11 +1717,11 @@ static void do_thread_regset_writeback(struct task_struct *task,
+ }
+ 
+ #ifndef PRSTATUS_SIZE
+-#define PRSTATUS_SIZE(S, R) sizeof(S)
++#define PRSTATUS_SIZE sizeof(struct elf_prstatus)
+ #endif
+ 
+ #ifndef SET_PR_FPVALID
+-#define SET_PR_FPVALID(S, V, R) ((S)->pr_fpvalid = (V))
++#define SET_PR_FPVALID(S) ((S)->pr_fpvalid = 1)
+ #endif
+ 
+ static int fill_thread_core_info(struct elf_thread_core_info *t,
+@@ -1729,7 +1729,6 @@ static int fill_thread_core_info(struct elf_thread_core_info *t,
+ 				 long signr, size_t *total)
+ {
+ 	unsigned int i;
+-	int regset0_size;
+ 
+ 	/*
+ 	 * NT_PRSTATUS is the one special case, because the regset data
+@@ -1738,13 +1737,11 @@ static int fill_thread_core_info(struct elf_thread_core_info *t,
+ 	 * We assume that regset 0 is NT_PRSTATUS.
+ 	 */
+ 	fill_prstatus(&t->prstatus, t->task, signr);
+-	regset0_size = regset_get(t->task, &view->regsets[0],
++	regset_get(t->task, &view->regsets[0],
+ 		   sizeof(t->prstatus.pr_reg), &t->prstatus.pr_reg);
+-	if (regset0_size < 0)
+-		return 0;
+ 
+ 	fill_note(&t->notes[0], "CORE", NT_PRSTATUS,
+-		  PRSTATUS_SIZE(t->prstatus, regset0_size), &t->prstatus);
++		  PRSTATUS_SIZE, &t->prstatus);
+ 	*total += notesize(&t->notes[0]);
+ 
+ 	do_thread_regset_writeback(t->task, &view->regsets[0]);
+@@ -1772,7 +1769,7 @@ static int fill_thread_core_info(struct elf_thread_core_info *t,
+ 			continue;
+ 
+ 		if (is_fpreg)
+-			SET_PR_FPVALID(&t->prstatus, 1, regset0_size);
++			SET_PR_FPVALID(&t->prstatus);
+ 
+ 		fill_note(&t->notes[i], is_fpreg ? "CORE" : "LINUX",
+ 			  note_type, ret, data);
+diff --git a/fs/compat_binfmt_elf.c b/fs/compat_binfmt_elf.c
+index 2d24c765cbd7..13cd78773700 100644
+--- a/fs/compat_binfmt_elf.c
++++ b/fs/compat_binfmt_elf.c
+@@ -95,6 +95,14 @@
+ #define	ELF_EXEC_PAGESIZE	COMPAT_ELF_EXEC_PAGESIZE
+ #endif
+ 
++#ifdef	COMPAT_PRSTATUS_SIZE
++#define	PRSTATUS_SIZE COMPAT_PRSTATUS_SIZE
++#endif
++
++#ifdef	COMPAT_SET_PR_FPVALID
++#define	SET_PR_FPVALID(S) COMPAT_SET_PR_FPVALID(S)
++#endif
++
+ #ifdef	COMPAT_ELF_PLAT_INIT
+ #undef	ELF_PLAT_INIT
+ #define	ELF_PLAT_INIT		COMPAT_ELF_PLAT_INIT
+-- 
+2.11.0
+
