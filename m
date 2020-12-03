@@ -2,210 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2487B2CE296
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 117432CE29A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:23:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731294AbgLCXWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:22:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726885AbgLCXWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:22:01 -0500
-From:   Arnd Bergmann <arnd@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Mark Einon <mark.einon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Simon Horman <simon.horman@netronome.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Cc:     Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        oss-drivers@netronome.com
-Subject: [PATCH] ethernet: select CONFIG_CRC32 as needed
-Date:   Fri,  4 Dec 2020 00:20:37 +0100
-Message-Id: <20201203232114.1485603-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1729050AbgLCXXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:23:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726885AbgLCXXN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 18:23:13 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C23C061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 15:22:26 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id x24so2381366pfn.6
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 15:22:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S2evVpZUx4sUY7dWUP7rv8pY8q8EVmsWGDPP1XnlIFk=;
+        b=WXnuoy84v9PFoh0yGywWUCdQtzX/ZN11G5fmsPPcyfgwYUVDhtfFmSY2dF81SliPjo
+         bGT2Og1S58EhP/WctvWmW32jBosDdo15bXBZJJiLqUQldLXgdhmAHrkmEzcUdaQLrV/D
+         Hz62BG50vOqBLptXseMWP+t3YltwmaAnYLeY6t2NEc/PZR3RMLZyFIlGPkQ9NNj8Z4UI
+         m7auC5CxI3a+dxWFl0NLDGy3Du6wUoKzCEqBOwSiJvtYUdfsmqAd0XyLA8y9EovstVK4
+         UVCasyFJa2CyPrl2BhjfzyfS1QcHqDAQWsZ6kUBdo08n9iZckpe1jlYbBLFDtUrpr+P2
+         gGlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S2evVpZUx4sUY7dWUP7rv8pY8q8EVmsWGDPP1XnlIFk=;
+        b=X3pRQ1aM9HElLtDeCU7dJX+cSZG0QZ283LQbYx0thhPCWpOGzNXhRzofrgaKJN1UPR
+         WSYyds2wQbfhgBHjwS5BpIZym4405nSD0QNRN06VJ2BjTZKR5iOibk6Z7DWitWpdpYhe
+         C0pYyaE26R4jMXR1Z5czUFDp8XWx61RLed/hFR1hk3YfKS/b3KdFRUDWE7BB1/uNU/Yg
+         P+VgIrZ8VoZRdKAdgHx9QvxokZ2Gj/MMe15soq0Wmj4N6y7uMKaFwRLQtorrHGmdc6lv
+         PRJMFMU3/xZO4z8eHedJcjZpAHfH77ig1LCGUY/NEzWJIk4buAeLnDiLadNlhxcSr+5u
+         nYGQ==
+X-Gm-Message-State: AOAM532EBsqxE91lB/MUexeUcoKnUHAvsnFfkVmtaHvcUHaUZHS0nrie
+        nFPiPPBcHoRzbzZXhUOLsr8UQk+aCzRv+X08KxdSEA==
+X-Google-Smtp-Source: ABdhPJxjep3/3XGS8n/G3RXpwHMXIYzITsiAcNksBxCoP4xDH3vwycQLjF+qzMdX0EbBWQ9VwQ6iTP8PbGcXwG2WcRQ=
+X-Received: by 2002:a63:8f4f:: with SMTP id r15mr5060126pgn.381.1607037746077;
+ Thu, 03 Dec 2020 15:22:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
+ <20201104005343.4192504-1-ndesaulniers@google.com> <20201104005343.4192504-5-ndesaulniers@google.com>
+ <20201124172836.GA346213@rani.riverdale.lan>
+In-Reply-To: <20201124172836.GA346213@rani.riverdale.lan>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 3 Dec 2020 15:22:14 -0800
+Message-ID: <CAKwvOdkGvLrPr4pHi4LKCF5t74+wencdy7r38d3k_4pC9pQYwQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] Kbuild: implement support for DWARF v5
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Alistair Delva <adelva@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Nov 24, 2020 at 9:28 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> On Tue, Nov 03, 2020 at 04:53:43PM -0800, Nick Desaulniers wrote:
+> > DWARF v5 is the latest standard of the DWARF debug info format.
+> >
+> > Feature detection of DWARF5 is onerous, especially given that we've
+> > removed $(AS), so we must query $(CC) for DWARF5 assembler directive
+> > support.  GNU `as` only recently gained support for specifying
+> > -gdwarf-5.
+>
+> With gcc, using -gdwarf-5 even without -Wa,--gdwarf-5 results in
+> considerably smaller debug info. gcc does not seem to generate the .file 0
+> directive that causes older GNU as to barf.
+>
+> Should the assembler support check be restricted to CC_IS_CLANG?
 
-A number of ethernet drivers require crc32 functionality to be
-avaialable in the kernel, causing a link error otherwise:
+No, because if LLVM_IAS=1 then the assembler support need not be checked.
 
-arm-linux-gnueabi-ld: drivers/net/ethernet/agere/et131x.o: in function `et1310_setup_device_for_multicast':
-et131x.c:(.text+0x5918): undefined reference to `crc32_le'
-arm-linux-gnueabi-ld: drivers/net/ethernet/cadence/macb_main.o: in function `macb_start_xmit':
-macb_main.c:(.text+0x4b88): undefined reference to `crc32_le'
-arm-linux-gnueabi-ld: drivers/net/ethernet/faraday/ftgmac100.o: in function `ftgmac100_set_rx_mode':
-ftgmac100.c:(.text+0x2b38): undefined reference to `crc32_le'
-arm-linux-gnueabi-ld: drivers/net/ethernet/freescale/fec_main.o: in function `set_multicast_list':
-fec_main.c:(.text+0x6120): undefined reference to `crc32_le'
-arm-linux-gnueabi-ld: drivers/net/ethernet/freescale/fman/fman_dtsec.o: in function `dtsec_add_hash_mac_address':
-fman_dtsec.c:(.text+0x830): undefined reference to `crc32_le'
-arm-linux-gnueabi-ld: drivers/net/ethernet/freescale/fman/fman_dtsec.o:fman_dtsec.c:(.text+0xb68): more undefined references to `crc32_le' follow
-arm-linux-gnueabi-ld: drivers/net/ethernet/netronome/nfp/nfpcore/nfp_hwinfo.o: in function `nfp_hwinfo_read':
-nfp_hwinfo.c:(.text+0x250): undefined reference to `crc32_be'
-arm-linux-gnueabi-ld: nfp_hwinfo.c:(.text+0x288): undefined reference to `crc32_be'
-arm-linux-gnueabi-ld: drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.o: in function `nfp_resource_acquire':
-nfp_resource.c:(.text+0x144): undefined reference to `crc32_be'
-arm-linux-gnueabi-ld: nfp_resource.c:(.text+0x158): undefined reference to `crc32_be'
-arm-linux-gnueabi-ld: drivers/net/ethernet/nxp/lpc_eth.o: in function `lpc_eth_set_multicast_list':
-lpc_eth.c:(.text+0x1934): undefined reference to `crc32_le'
-arm-linux-gnueabi-ld: drivers/net/ethernet/rocker/rocker_ofdpa.o: in function `ofdpa_flow_tbl_do':
-rocker_ofdpa.c:(.text+0x2e08): undefined reference to `crc32_le'
-arm-linux-gnueabi-ld: drivers/net/ethernet/rocker/rocker_ofdpa.o: in function `ofdpa_flow_tbl_del':
-rocker_ofdpa.c:(.text+0x3074): undefined reference to `crc32_le'
-arm-linux-gnueabi-ld: drivers/net/ethernet/rocker/rocker_ofdpa.o: in function `ofdpa_port_fdb':
-arm-linux-gnueabi-ld: drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste.o: in function `mlx5dr_ste_calc_hash_index':
-dr_ste.c:(.text+0x354): undefined reference to `crc32_le'
-arm-linux-gnueabi-ld: drivers/net/ethernet/microchip/lan743x_main.o: in function `lan743x_netdev_set_multicast':
-lan743x_main.c:(.text+0x5dc4): undefined reference to `crc32_le'
+>
+> >  /* Stabs debugging sections. */
+> >  #define STABS_DEBUG                                                  \
+> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > index 03c494eefabd..c5b54ba51060 100644
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -274,6 +274,14 @@ config DEBUG_INFO_DWARF4
+> >         It makes the debug information larger, but it significantly
+> >         improves the success of resolving variables in gdb on optimized code.
+> >
+> > +config DEBUG_INFO_DWARF5
+> > +     bool "Generate DWARF5 debuginfo"
+> > +     depends on $(cc-option,-gdwarf-5)
+> > +     depends on $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
+> > +     help
+> > +       Genereate dwarf5 debug info. Requires binutils 2.35+, gcc 5.1+, and
+> > +       gdb 8.0+.
+> > +
+> >  endchoice # "DWARF version"
+>
+> Perhaps this can be expanded with some description of the advantages of
+> dwarf5 over dwarf4?
 
-Add the missing 'select CRC32' entries in Kconfig for each of them.
+Will do.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/ethernet/agere/Kconfig              | 1 +
- drivers/net/ethernet/cadence/Kconfig            | 1 +
- drivers/net/ethernet/faraday/Kconfig            | 1 +
- drivers/net/ethernet/freescale/Kconfig          | 1 +
- drivers/net/ethernet/freescale/fman/Kconfig     | 1 +
- drivers/net/ethernet/mellanox/mlx5/core/Kconfig | 1 +
- drivers/net/ethernet/microchip/Kconfig          | 1 +
- drivers/net/ethernet/netronome/Kconfig          | 1 +
- drivers/net/ethernet/nxp/Kconfig                | 1 +
- drivers/net/ethernet/rocker/Kconfig             | 1 +
- 10 files changed, 10 insertions(+)
+>
+> >
+> >  config DEBUG_INFO_BTF
+> > diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
+> > new file mode 100755
+> > index 000000000000..156ad5ec4274
+> > --- /dev/null
+> > +++ b/scripts/test_dwarf5_support.sh
+> > @@ -0,0 +1,9 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +# Test that assembler accepts -gdwarf-5 and .file 0 directives, which were bugs
+> > +# in binutils < 2.35.
+> > +# https://sourceware.org/bugzilla/show_bug.cgi?id=25612
+> > +# https://sourceware.org/bugzilla/show_bug.cgi?id=25614
+> > +set -e
+> > +echo '.file 0 "filename"' | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
+>
+> This also actually needs --gdwarf-5 to really check the support for the
+> option, but older versions should error on the .file 0 in any case.
 
-diff --git a/drivers/net/ethernet/agere/Kconfig b/drivers/net/ethernet/agere/Kconfig
-index d92516ae59cc..9cd750184947 100644
---- a/drivers/net/ethernet/agere/Kconfig
-+++ b/drivers/net/ethernet/agere/Kconfig
-@@ -21,6 +21,7 @@ config ET131X
- 	tristate "Agere ET-1310 Gigabit Ethernet support"
- 	depends on PCI
- 	select PHYLIB
-+	select CRC32
- 	help
- 	  This driver supports Agere ET-1310 ethernet adapters.
- 
-diff --git a/drivers/net/ethernet/cadence/Kconfig b/drivers/net/ethernet/cadence/Kconfig
-index 85858163bac5..e432a68ac520 100644
---- a/drivers/net/ethernet/cadence/Kconfig
-+++ b/drivers/net/ethernet/cadence/Kconfig
-@@ -23,6 +23,7 @@ config MACB
- 	tristate "Cadence MACB/GEM support"
- 	depends on HAS_DMA && COMMON_CLK
- 	select PHYLINK
-+	select CRC32
- 	help
- 	  The Cadence MACB ethernet interface is found on many Atmel AT32 and
- 	  AT91 parts.  This driver also supports the Cadence GEM (Gigabit
-diff --git a/drivers/net/ethernet/faraday/Kconfig b/drivers/net/ethernet/faraday/Kconfig
-index c2677ec0564d..3d1e9a302148 100644
---- a/drivers/net/ethernet/faraday/Kconfig
-+++ b/drivers/net/ethernet/faraday/Kconfig
-@@ -33,6 +33,7 @@ config FTGMAC100
- 	depends on !64BIT || BROKEN
- 	select PHYLIB
- 	select MDIO_ASPEED if MACH_ASPEED_G6
-+	select CRC32
- 	help
- 	  This driver supports the FTGMAC100 Gigabit Ethernet controller
- 	  from Faraday. It is used on Faraday A369, Andes AG102 and some
-diff --git a/drivers/net/ethernet/freescale/Kconfig b/drivers/net/ethernet/freescale/Kconfig
-index a1d53ddf1593..3f9175bdce77 100644
---- a/drivers/net/ethernet/freescale/Kconfig
-+++ b/drivers/net/ethernet/freescale/Kconfig
-@@ -25,6 +25,7 @@ config FEC
- 	depends on (M523x || M527x || M5272 || M528x || M520x || M532x || \
- 		   ARCH_MXC || SOC_IMX28 || COMPILE_TEST)
- 	default ARCH_MXC || SOC_IMX28 if ARM
-+	select CRC32
- 	select PHYLIB
- 	imply PTP_1588_CLOCK
- 	help
-diff --git a/drivers/net/ethernet/freescale/fman/Kconfig b/drivers/net/ethernet/freescale/fman/Kconfig
-index 34150182cc35..48bf8088795d 100644
---- a/drivers/net/ethernet/freescale/fman/Kconfig
-+++ b/drivers/net/ethernet/freescale/fman/Kconfig
-@@ -4,6 +4,7 @@ config FSL_FMAN
- 	depends on FSL_SOC || ARCH_LAYERSCAPE || COMPILE_TEST
- 	select GENERIC_ALLOCATOR
- 	select PHYLIB
-+	select CRC32
- 	default n
- 	help
- 		Freescale Data-Path Acceleration Architecture Frame Manager
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-index 99f1ec3b2575..3e371d24c462 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-@@ -198,6 +198,7 @@ config MLX5_EN_TLS
- config MLX5_SW_STEERING
- 	bool "Mellanox Technologies software-managed steering"
- 	depends on MLX5_CORE_EN && MLX5_ESWITCH
-+	select CRC32
- 	default y
- 	help
- 	Build support for software-managed steering in the NIC.
-diff --git a/drivers/net/ethernet/microchip/Kconfig b/drivers/net/ethernet/microchip/Kconfig
-index 31f9a82dc113..d0f6dfe0dcf3 100644
---- a/drivers/net/ethernet/microchip/Kconfig
-+++ b/drivers/net/ethernet/microchip/Kconfig
-@@ -47,6 +47,7 @@ config LAN743X
- 	depends on PCI
- 	select PHYLIB
- 	select CRC16
-+	select CRC32
- 	help
- 	  Support for the Microchip LAN743x PCI Express Gigabit Ethernet chip
- 
-diff --git a/drivers/net/ethernet/netronome/Kconfig b/drivers/net/ethernet/netronome/Kconfig
-index d8b99d6a0356..b82758d5beed 100644
---- a/drivers/net/ethernet/netronome/Kconfig
-+++ b/drivers/net/ethernet/netronome/Kconfig
-@@ -22,6 +22,7 @@ config NFP
- 	depends on VXLAN || VXLAN=n
- 	depends on TLS && TLS_DEVICE || TLS_DEVICE=n
- 	select NET_DEVLINK
-+	select CRC32
- 	help
- 	  This driver supports the Netronome(R) NFP4000/NFP6000 based
- 	  cards working as a advanced Ethernet NIC.  It works with both
-diff --git a/drivers/net/ethernet/nxp/Kconfig b/drivers/net/ethernet/nxp/Kconfig
-index ee83a71c2509..c84997db828c 100644
---- a/drivers/net/ethernet/nxp/Kconfig
-+++ b/drivers/net/ethernet/nxp/Kconfig
-@@ -3,6 +3,7 @@ config LPC_ENET
- 	tristate "NXP ethernet MAC on LPC devices"
- 	depends on ARCH_LPC32XX || COMPILE_TEST
- 	select PHYLIB
-+	select CRC32
- 	help
- 	  Say Y or M here if you want to use the NXP ethernet MAC included on
- 	  some NXP LPC devices. You can safely enable this option for LPC32xx
-diff --git a/drivers/net/ethernet/rocker/Kconfig b/drivers/net/ethernet/rocker/Kconfig
-index 99e1290e0307..2318811ff75a 100644
---- a/drivers/net/ethernet/rocker/Kconfig
-+++ b/drivers/net/ethernet/rocker/Kconfig
-@@ -19,6 +19,7 @@ if NET_VENDOR_ROCKER
- config ROCKER
- 	tristate "Rocker switch driver (EXPERIMENTAL)"
- 	depends on PCI && NET_SWITCHDEV && BRIDGE
-+	select CRC32
- 	help
- 	  This driver supports Rocker switch device.
- 
+Based on Jakub's feedback on the earlier thread
+https://lore.kernel.org/lkml/20201104121934.GT3788@tucnak/
+it sounds like the dwarf version also needs to be dumped since GCC 5 <
+x < 7 accepts --gdwarf-5, but did not produce DWARF Version 5 debug
+info.
+
 -- 
-2.27.0
-
+Thanks,
+~Nick Desaulniers
