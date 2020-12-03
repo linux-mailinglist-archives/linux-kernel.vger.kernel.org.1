@@ -2,97 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80FD2CDB25
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2614D2CDB2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730955AbgLCQXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:23:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726032AbgLCQXk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:23:40 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A33C061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 08:23:00 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id f17so1695018pge.6
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 08:23:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yBYfpG4YLx+bPEVhdMCEtM/1Z5BJXzgEmATHplf72ms=;
-        b=OQ3F4Pvyn0v5hFBCX4+xk0ra4wITd692JiulhGTnKo6dLHNpMAa9Lbww/pZf9f+nao
-         +UyVMh9ETgDfp89UiwEv0j7oYGloR6TvGERk+PDDSy07/obSU5r+EksUs/fYEifMhC1z
-         WTXpblLnP3JHfbWb/Dh9aUFjMUKRsb45Z0u+NifhOLShl6Mfw60WFKr+YjIatVLf4Nsj
-         3DG0VWr89J3s5CauJ8ga3WpUz5L/KPpRPfCLfqt6QCWbeXvEmLIfgijmLg/vdEsySkLf
-         P3uXY8VCPtAiIboXtYz2eZhfHns0ucLFFoHSOTzfNkq1ywmtX26MGfUCGrey8o55UocY
-         lf1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yBYfpG4YLx+bPEVhdMCEtM/1Z5BJXzgEmATHplf72ms=;
-        b=dlP8am+eQX9H6GJFSMCpCEsXTQr0DASd2PcxxcAfw0DmST/niWoUZnwnj8fm/5SV44
-         AQtX6W4mWac/rQP1aHq0kUCRuohqkTvphvPDPWySqx/oR/7pOXkEjg2iDC/b8QAOJskj
-         W4yzQ345QspJUdr627QVLG5+tfnmd+huB00ZiMaMaRVXQG4Oye5dIF3xMV16UQKBrBFg
-         TUCgGR8fcx3Altxu3MPU/+PMAvwUNjZjMJOa5KMC1jwH9YagdGnE8lEH80BN4ddiUA1W
-         J1PPpOAgFuAutatytkEw9a68MOuEvRoh+3zCXu0h+5p3niV7plWZOuBH8xyRwwon7gP7
-         pSJw==
-X-Gm-Message-State: AOAM533fl/ToS6oV6yi/VdaYmDUTc3aAbgPCgYMO7CVilgD9MzLJAtET
-        Q57riHGhZ3GxsiyknlZomEG2kw==
-X-Google-Smtp-Source: ABdhPJxL6sIIXBJTQoJVVOD/yVtcARo1F14xpNwxRqBHV3kxUe3mpX7mwzCv43YbLpmc+wPf2Va97w==
-X-Received: by 2002:a63:982:: with SMTP id 124mr3677673pgj.280.1607012579786;
-        Thu, 03 Dec 2020 08:22:59 -0800 (PST)
-Received: from localhost.bytedance.net ([103.136.220.106])
-        by smtp.gmail.com with ESMTPSA id fv22sm1999614pjb.14.2020.12.03.08.22.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Dec 2020 08:22:58 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v2] mm/page_isolation: do not isolate the max order page
-Date:   Fri,  4 Dec 2020 00:22:37 +0800
-Message-Id: <20201203162237.21885-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S1727946AbgLCQ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:27:02 -0500
+Received: from gw.c-home.cz ([89.24.150.100]:34736 "EHLO dmz.c-home.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726811AbgLCQ1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 11:27:02 -0500
+Received: from dmz.c-home.cz (localhost [127.0.0.1])
+        by dmz.c-home.cz (8.14.4+Sun/8.14.4) with ESMTP id 0B3GPO9u008783;
+        Thu, 3 Dec 2020 17:25:29 +0100 (CET)
+Received: from localhost (martin@localhost)
+        by dmz.c-home.cz (8.14.4+Sun/8.14.4/Submit) with ESMTP id 0B3GPLrf008777;
+        Thu, 3 Dec 2020 17:25:22 +0100 (CET)
+X-Authentication-Warning: dmz.c-home.cz: martin owned process doing -bs
+Date:   Thu, 3 Dec 2020 17:25:21 +0100 (CET)
+From:   Martin Cerveny <martin@c-home.cz>
+Reply-To: Martin Cerveny <M.Cerveny@computer.org>
+To:     Chen-Yu Tsai <wens@csie.org>
+cc:     Martin Cerveny <m.cerveny@computer.org>,
+        Maxime Ripard <mripard@kernel.org>, devel@driverdev.osuosl.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Icenowy Zheng <icenowy@aosc.io>
+Subject: Re: [PATCH v3 3/6] ARM: dts: sun8i: v3s: Add node for system
+ control
+In-Reply-To: <CAGb2v66T9aakxRQNBbA+=EC-d5EpmUrZSK5xTW=orK6Z7PyG9Q@mail.gmail.com>
+Message-ID: <alpine.GSO.2.00.2012031617500.7044@dmz.c-home.cz>
+References: <20201116125617.7597-1-m.cerveny@computer.org> <20201116125617.7597-4-m.cerveny@computer.org> <CAGb2v66T9aakxRQNBbA+=EC-d5EpmUrZSK5xTW=orK6Z7PyG9Q@mail.gmail.com>
+User-Agent: Alpine 2.00 (GSO 1167 2008-08-23)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The max order page has no buddy page and never merge to other order.
-So isolating and then freeing it is pointless. And if order == MAX_ORDER
-- 1, then the buddy can actually be a !pfn_valid() in some corner case?
-pfn_valid_within(buddy_pfn) that follows would only catch it on archs
-with holes in zone. Then is_migrate_isolate_page(buddy) might access an
-invalid buddy. So this is also a bug fix.
+Hello.
 
-Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+On Thu, 3 Dec 2020, Chen-Yu Tsai wrote:
+
+> Hi,
+>
+> On Mon, Nov 16, 2020 at 8:57 PM Martin Cerveny <m.cerveny@computer.org> wrote:
+>>
+>> Allwinner V3s has system control and SRAM C1 region similar to H3.
+>>
+>> Signed-off-by: Martin Cerveny <m.cerveny@computer.org>
+>> ---
+>>  arch/arm/boot/dts/sun8i-v3s.dtsi | 14 ++++++++++++++
+>>  1 file changed, 14 insertions(+)
+>>
+>> diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
+>> index 0c7341676921..70193512c222 100644
+>> --- a/arch/arm/boot/dts/sun8i-v3s.dtsi
+>> +++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
+>> @@ -161,6 +161,20 @@ syscon: system-control@1c00000 {
+>>                         #address-cells = <1>;
+>>                         #size-cells = <1>;
+>>                         ranges;
+>> +
+>> +                       sram_c: sram@1d00000 {
+>> +                               compatible = "mmio-sram";
+>> +                               reg = <0x01d00000 0x80000>;
+>
+> How was this address derived? Did you check that there is actually SRAM here?
+
+Yes, I did some checking (mmap). But I repeated measurement and found 
+mirrored regions:
+
+- SRAM_C is mirrored from 0x0000_4000 (primary location) to 0x01d0_4000 (size 0xb000)
+   (probably exact size is 0xb0c0)
+- rest of 0x01d0_0000 are discontinuously filled with R/W register sets
+   (probably some internals registers from VE) that I thought to be SRAM too
+- register SRAM_CTRL_REG0==0x01c00_0000 (value 0x7fff_ffff) switch whole
+   region 0x01d0_0000-0x01df_ffff __AND__ 0x0000_4000-0x0000_ffff
+- VE/cedrus code use this regions indirectly
+   (VE_AVC_SRAM_PORT_OFFSET/VE_AVC_SRAM_PORT_DATA...)
+   and it is not influenced by "true" SRAM mapping or size
+
+-> so I suppose to better use only SRAM_C lower definition:
+
 ---
-Changes in v2:
- - Add Fixes tag in the commit log.
+diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
+index e8f304125e2d..90d703e5b73b 100644
+--- a/arch/arm/boot/dts/sun8i-v3s.dtsi
++++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
+@@ -162,17 +162,17 @@ syscon: system-control@1c00000 {
+  			#size-cells = <1>;
+  			ranges;
 
- mm/page_isolation.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+-			sram_c: sram@1d00000 {
++			sram_c: sram@4000 {
+  				compatible = "mmio-sram";
+-				reg = <0x01d00000 0x80000>;
++				reg = <0x4000 0xb000>;
+  				#address-cells = <1>;
+  				#size-cells = <1>;
+-				ranges = <0 0x01d00000 0x80000>;
++				ranges = <0 0 0x4000 0xb000>;
 
-diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-index a254e1f370a3..bddf788f45bf 100644
---- a/mm/page_isolation.c
-+++ b/mm/page_isolation.c
-@@ -88,7 +88,7 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
- 	 */
- 	if (PageBuddy(page)) {
- 		order = buddy_order(page);
--		if (order >= pageblock_order) {
-+		if (order >= pageblock_order && order < MAX_ORDER - 1) {
- 			pfn = page_to_pfn(page);
- 			buddy_pfn = __find_buddy_pfn(pfn, order);
- 			buddy = page + (buddy_pfn - pfn);
--- 
-2.11.0
+  				ve_sram: sram-section@0 {
+  					compatible = "allwinner,sun8i-v3s-sram-c1",
+  						     "allwinner,sun4i-a10-sram-c1";
+-					reg = <0x000000 0x80000>;
++					reg = <0x0 0xb000>;
+  				};
+  			};
+  		};
+---
 
+Does someone have accessible specific documentation of VE/cedrus for V3s ?
+
+Regards, Martin
+
+> ChenYu
+>
+>> +                               #address-cells = <1>;
+>> +                               #size-cells = <1>;
+>> +                               ranges = <0 0x01d00000 0x80000>;
+>> +
+>> +                               ve_sram: sram-section@0 {
+>> +                                       compatible = "allwinner,sun8i-v3s-sram-c1",
+>> +                                                    "allwinner,sun4i-a10-sram-c1";
+>> +                                       reg = <0x000000 0x80000>;
+>> +                               };
+>> +                       };
+>>                 };
+>>
+>>                 tcon0: lcd-controller@1c0c000 {
+>> --
+>> 2.25.1
+>>
+>>
+>> _______________________________________________
+>> linux-arm-kernel mailing list
+>> linux-arm-kernel@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
