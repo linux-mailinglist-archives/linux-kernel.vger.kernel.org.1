@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623F12CDE3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3FFB2CDE3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731726AbgLCTBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:01:00 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19190 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389144AbgLCTA5 (ORCPT
+        id S1729198AbgLCTAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:00:47 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18301 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727010AbgLCTAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:00:57 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc935c10000>; Thu, 03 Dec 2020 11:00:17 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Dec
- 2020 19:00:15 +0000
+        Thu, 3 Dec 2020 14:00:46 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fc935b60002>; Thu, 03 Dec 2020 11:00:06 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Dec
+ 2020 19:00:02 +0000
 Received: from skomatineni-linux.nvidia.com (172.20.13.39) by mail.nvidia.com
  (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Thu, 3 Dec 2020 19:00:14 +0000
+ Transport; Thu, 3 Dec 2020 19:00:01 +0000
 From:   Sowjanya Komatineni <skomatineni@nvidia.com>
 To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
         <jonathanh@nvidia.com>, <hverkuil@xs4all.nl>,
@@ -27,9 +27,9 @@ To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
 CC:     <bparrot@ti.com>, <mchehab@kernel.org>,
         <linux-media@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 11/13] dt-bindings: tegra: Update csi data-lanes to maximum 8 lanes
-Date:   Thu, 3 Dec 2020 11:00:00 -0800
-Message-ID: <1607022002-26575-12-git-send-email-skomatineni@nvidia.com>
+Subject: [PATCH v3 02/13] media: tegra-video: Enable VI pixel transform for YUV and RGB formats
+Date:   Thu, 3 Dec 2020 10:59:51 -0800
+Message-ID: <1607022002-26575-3-git-send-email-skomatineni@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1607022002-26575-1-git-send-email-skomatineni@nvidia.com>
 References: <1607022002-26575-1-git-send-email-skomatineni@nvidia.com>
@@ -37,48 +37,65 @@ X-NVConfidentiality: public
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607022017; bh=XU0Fn2MfBPn3DHELaCrdMSR4GJ6Z2xcF9JZQJrMVyaA=;
+        t=1607022006; bh=3KvReLIRXcuW/kRnBsqtVyD+GiWXJeSQRRku54/yeMg=;
         h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
          References:X-NVConfidentiality:MIME-Version:Content-Type;
-        b=FyO4rT0fLi6Bcb9fOjYgoRD1YNqmv+sGLmgu2iFhvmATqSlmrc89sya7r6hjpcHcY
-         AkSJTiviR7dKxTtNTRRah4boUeaH70HHZ4gurKhndzUztIdvVq1pNtIJWzlLOZnY41
-         ctNpYqnrwmJqaC82OrRBQ+Z0a8I6j19VxhdeuDTDV3is3WsIalGHzgMhX1bCb3b6Ft
-         r/xzZ93sP631ftPEAQwGyDRmSn/C3YMYea9OhBPRUp1cAM5yAW+k9ZrTDATxcQamUX
-         xWpsQvb4Bv/HOJLm+KzC4YukgmagNlBxqcgWRBiBDyrRLl24tbE1CI0yvZsNGVt7ba
-         eUwmLn0mUzfxw==
+        b=qpY7VaVJB1mUY6k5CwE8i2LCBqJjlP7r0PwhCy4qgEhEBOL4nMvEeBfSDZ9KZeQ15
+         1b+xPZHpTPzK4xBTtAZZXAk+YSjb4FeqbDPsGS4gIYeyO6FJrT1Ql6IG6unlP+uWRq
+         GRM+9rsElqAxnuXzmEsDQnFd73KFZ1sN4sADjGuJWHQSLdC1OFBI1lWGaXTwSDhNtF
+         PW1OFLPhqdluRMv85HAi82IZgQQFvT1UqwZd+/4146Yr4FasBF9CESfUHG+8Q2SNAY
+         s/Lg75xNCIUzeTq6pNLgDSduhkOFrC/T9t5IZiHswec0YZPPQfYsffXnOVb4+/sDCw
+         8pZrJOU6PuX7A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tegra VI/CSI hardware don't have native 8 lane CSI RX port.
+VI Pixel transforms converts source pixel data to selected
+destination pixel formats in memory and aligns properly.
 
-But x8 capture can be supported by using consecutive x4 ports
-simultaneously with HDMI-to-CSI bridges where source image is split
-on to two x4 ports.
+YUV and RGB formats need this pixel transform to be enabled.
 
-This patch updates dt-bindings for csi endpoint data-lane property
-with maximum of 8 lanes.
+RAW formats use T_R16_I destination pixel format in memory and
+does not need pixel transform as they support direct write to
+memory.
+
+So, this patch enables pixel transform for YUV and RGB and keeps
+it bypass for RAW formats.
 
 Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
 ---
- .../devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt       | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/media/tegra-video/tegra210.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
-index 34d9933..8a6d3e1 100644
---- a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
-+++ b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
-@@ -111,8 +111,8 @@ of the following host1x client modules:
+diff --git a/drivers/staging/media/tegra-video/tegra210.c b/drivers/staging/media/tegra-video/tegra210.c
+index ac066c0..6b23aa7 100644
+--- a/drivers/staging/media/tegra-video/tegra210.c
++++ b/drivers/staging/media/tegra-video/tegra210.c
+@@ -178,10 +178,23 @@ static int tegra_channel_capture_setup(struct tegra_vi_channel *chan)
+ 	u32 format = chan->fmtinfo->img_fmt;
+ 	u32 data_type = chan->fmtinfo->img_dt;
+ 	u32 word_count = (width * chan->fmtinfo->bit_width) / 8;
++	u32 bypass_pixel_transform = BIT(BYPASS_PXL_TRANSFORM_OFFSET);
++
++	/*
++	 * VI Pixel transformation unit converts source pixels data format
++	 * into selected destination pixel format and aligns properly while
++	 * interfacing with memory packer.
++	 * This pixel transformation should be enabled for YUV and RGB
++	 * formats and should be bypassed for RAW formats as RAW formats
++	 * only support direct to memory.
++	 */
++	if (chan->pg_mode || data_type == TEGRA_IMAGE_DT_YUV422_8 ||
++	    data_type == TEGRA_IMAGE_DT_RGB888)
++		bypass_pixel_transform = 0;
  
- 	  endpoint (required node)
- 	  Required properties:
--	  - data-lanes: an array of data lane from 1 to 4. Valid array
--	    lengths are 1/2/4.
-+	  - data-lanes: an array of data lane from 1 to 8. Valid array
-+	    lengths are 1/2/4/8.
- 	  - remote-endpoint: phandle to sensor 'endpoint' node.
- 
-         port@1 (required node)
+ 	vi_csi_write(chan, TEGRA_VI_CSI_ERROR_STATUS, 0xffffffff);
+ 	vi_csi_write(chan, TEGRA_VI_CSI_IMAGE_DEF,
+-		     ((chan->pg_mode ? 0 : 1) << BYPASS_PXL_TRANSFORM_OFFSET) |
++		     bypass_pixel_transform |
+ 		     (format << IMAGE_DEF_FORMAT_OFFSET) |
+ 		     IMAGE_DEF_DEST_MEM);
+ 	vi_csi_write(chan, TEGRA_VI_CSI_IMAGE_DT, data_type);
 -- 
 2.7.4
 
