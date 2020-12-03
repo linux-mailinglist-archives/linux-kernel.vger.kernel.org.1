@@ -2,110 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073732CE12B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:52:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D182CE12E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729676AbgLCVwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 16:52:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37543 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726707AbgLCVwp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 16:52:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607032278;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dxg9ZG8en8JStMPYODB9TaL+S3BZxMLpWtTyZT8lIX0=;
-        b=VSLRnqDyYx8IOigJ5NYRzYZnNlAcAeQqWQkC0DOdNOASXa56hdjwDwDCxuXeYg0XpTmlnS
-        07PgByZRpaJu8gbtcBOzXSuXicgL9OAHPLtOTTOMttQfJ50w8KtqEBJ3QsEklqJ4emu0hM
-        3TQkCB2yrQEzEktWxNORnztcSovV5Z0=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-vWXOmjMPMvONySH4vfPxAg-1; Thu, 03 Dec 2020 16:51:17 -0500
-X-MC-Unique: vWXOmjMPMvONySH4vfPxAg-1
-Received: by mail-wr1-f70.google.com with SMTP id f4so1719884wru.21
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 13:51:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Dxg9ZG8en8JStMPYODB9TaL+S3BZxMLpWtTyZT8lIX0=;
-        b=gLbAVY1iD/wlQHn1172tuv0MxHIGtMbsTq8yUCowwTgtQ56C5RQ3Agvr+pnY1UocBL
-         lvJu4FcdQ3GCsYm7Z5IhdH2GxL3nEsiKH3NbSMefz1JjIgP0CP6wQUR6t63SsMmndt0A
-         jjutzIvo1qUHzZEU5f01sIEHz7O6IB9EZ7LGpBt0cL9k/+Fkmt1raOYZqdsVge3dptgs
-         ZIgTHmREB9R38Y3r0fVhZybg2xQZrrIBFS1pRPbAbAX5QyN8kmQlLb5KNp803qWJgUGt
-         jcl7JyJYYUE6Cjxq7kZRSjGov1HC7PgZXdaaH0OnIawxH1l1ckbaLc3KtU8A+CpBBP4k
-         +2TQ==
-X-Gm-Message-State: AOAM532MKU7j8To1JtJN1X1XERPA9ptaicRuXLVf6EmV/7bUN+BuQen4
-        Mbf5DNOStBhexxC0u8DOIA3U/OdZgujpOFDryOdpkUBwT2ZWyT8t93aPzmnFtAHvYo8QQH0QZpC
-        rzFMsK3Q+LXiOqinRwcqwqPAl
-X-Received: by 2002:a1c:cc19:: with SMTP id h25mr867066wmb.124.1607032275899;
-        Thu, 03 Dec 2020 13:51:15 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyP3AxCP3QvFgsJS1C5W/75mdJC72qefimowseEMBt8Y9GscUVzRW+c3oghTAHrrAgIQ/VGRA==
-X-Received: by 2002:a1c:cc19:: with SMTP id h25mr867054wmb.124.1607032275646;
-        Thu, 03 Dec 2020 13:51:15 -0800 (PST)
-Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
-        by smtp.gmail.com with ESMTPSA id 138sm743977wma.41.2020.12.03.13.51.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 13:51:13 -0800 (PST)
-Date:   Thu, 3 Dec 2020 16:51:10 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     "Winkler, Tomas" <tomas.winkler@intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Usyskin, Alexander" <alexander.usyskin@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Wang, Yu1" <yu1.wang@intel.com>,
-        "Liu, Shuo A" <shuo.a.liu@intel.com>,
-        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>
-Subject: Re: [char-misc-next 13/13] mei: virtio: virtualization frontend
- driver
-Message-ID: <20201203164859-mutt-send-email-mst@kernel.org>
-References: <20200818115147.2567012-1-tomas.winkler@intel.com>
- <20200818115147.2567012-14-tomas.winkler@intel.com>
- <20201125160326-mutt-send-email-mst@kernel.org>
- <7f6181d8e80d4efb9464e9ec436800b7@intel.com>
+        id S1730103AbgLCVxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 16:53:50 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:37362 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727700AbgLCVxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 16:53:49 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kkwWz-00A71N-MD; Thu, 03 Dec 2020 22:52:53 +0100
+Date:   Thu, 3 Dec 2020 22:52:53 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Russell King <rmk+kernel@armlinux.org.uk>
+Subject: Re: [PATCH v8 3/4] phy: Add Sparx5 ethernet serdes PHY driver
+Message-ID: <20201203215253.GL2333853@lunn.ch>
+References: <20201203103015.3735373-1-steen.hegelund@microchip.com>
+ <20201203103015.3735373-4-steen.hegelund@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7f6181d8e80d4efb9464e9ec436800b7@intel.com>
+In-Reply-To: <20201203103015.3735373-4-steen.hegelund@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 09:18:04PM +0000, Winkler, Tomas wrote:
-> > 
-> > On Tue, Aug 18, 2020 at 02:51:47PM +0300, Tomas Winkler wrote:
-> > > +#ifndef VIRTIO_ID_MEI
-> > > +#define VIRTIO_ID_MEI 0xFFFE /* virtio mei */ #endif
-> > 
-> > Just noticed now that this driver landed upstream.  Can I ask that you guys
-> > please register IDs with the virtio TC and not just pick a number at random?
-> > In particular this is way outside allowed range.
-> > 
-> > IDs should also be listed in include/uapi/linux/virtio_ids.h
-> > 
-> > If people just pick random numbers like this collistions are unavoidable.
-> > 
-> > List of IDs is part of virtio spec, chapter "Device Types".
-> > 
-> > Please do this change now before this goes out to production!
-> Okay,  this was assigned by ACRN, my impression was it's already registered.
-> Will take care of.
-> Thanks
-> Tomas
+> +/* map from SD25G28 interface width to configuration value */
+> +static u8 sd25g28_get_iw_setting(const u8 interface_width)
+> +{
+> +	switch (interface_width) {
+> +	case 10: return 0;
+> +	case 16: return 1;
+> +	case 32: return 3;
+> +	case 40: return 4;
+> +	case 64: return 5;
+> +	default:
+> +		pr_err("%s: Illegal value %d for interface width\n",
+> +		       __func__, interface_width);
 
-Well nothing happened yet.
+Please make use of dev_err(phy->dev, so we know which PHY has
+configuration problems.
 
-I think at this point we really should revert this patch before Linux is
-released so in the next version the correct ID can be used instead of a reserved one.
-Otherwise Linux will be stuck supporting this forever and will conflict
-with hypervisors using this for what this range is for which is
-experimental use.
+> +static int sparx5_serdes_validate(struct phy *phy, enum phy_mode mode,
+> +					int submode,
+> +					union phy_configure_opts *opts)
+> +{
+> +	struct sparx5_serdes_macro *macro = phy_get_drvdata(phy);
+> +	struct sparx5_serdes_private *priv = macro->priv;
+> +	u32 value, analog_sd;
+> +
+> +	if (mode != PHY_MODE_ETHERNET)
+> +		return -EINVAL;
+> +
+> +	switch (submode) {
+> +	case PHY_INTERFACE_MODE_1000BASEX:
+> +	case PHY_INTERFACE_MODE_SGMII:
+> +	case PHY_INTERFACE_MODE_QSGMII:
+> +	case PHY_INTERFACE_MODE_10GBASER:
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	if (macro->serdestype == SPX5_SDT_6G) {
+> +		value = sdx5_rd(priv, SD6G_LANE_LANE_DF(macro->stpidx));
+> +		analog_sd = SD6G_LANE_LANE_DF_PMA2PCS_RXEI_FILTERED_GET(value);
+> +	} else if (macro->serdestype == SPX5_SDT_10G) {
+> +		value = sdx5_rd(priv, SD10G_LANE_LANE_DF(macro->stpidx));
+> +		analog_sd = SD10G_LANE_LANE_DF_PMA2PCS_RXEI_FILTERED_GET(value);
+> +	} else {
+> +		value = sdx5_rd(priv, SD25G_LANE_LANE_DE(macro->stpidx));
+> +		analog_sd = SD25G_LANE_LANE_DE_LN_PMA_RXEI_GET(value);
+> +	}
+> +	/* Link up is when analog_sd == 0 */
+> +	return analog_sd;
+> +}
 
-Greg, any opinion on that?
+What i have not yet seen is how this code plugs together with
+phylink_pcs_ops?
 
--- 
-MST
+Can this hardware also be used for SATA, USB? As far as i understand,
+the Marvell Comphy is multi-purpose, it is used for networking, USB,
+and SATA, etc. Making it a generic PHY then makes sense, because
+different subsystems need to use it.
 
+But it looks like this is for networking only? So i'm wondering if it
+belongs in driver/net/pcs and it should be accessed using
+phylink_pcs_ops?
+
+	Andrew
