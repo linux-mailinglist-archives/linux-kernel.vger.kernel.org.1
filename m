@@ -2,154 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9491F2CDE6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E2A2CDE74
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:06:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731810AbgLCTE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:04:56 -0500
-Received: from smtprelay0240.hostedemail.com ([216.40.44.240]:46258 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726600AbgLCTEz (ORCPT
+        id S2387799AbgLCTFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:05:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726042AbgLCTFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:04:55 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 72571182CED34;
-        Thu,  3 Dec 2020 19:04:14 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:960:966:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1544:1593:1594:1605:1711:1730:1747:1777:1792:1981:2194:2196:2197:2199:2200:2201:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3653:3865:3866:3867:3868:3870:3871:3873:3874:4250:4321:4385:4605:5007:6119:6120:7903:7904:10004:10848:11232:11233:11658:11914:12043:12048:12291:12297:12555:12679:12683:12723:12737:12740:12895:13161:13229:13439:13894:14096:14097:14181:14659:14721:21063:21080:21221:21433:21611:21627:21740:21939:21990:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: ear41_3411058273be
-X-Filterd-Recvd-Size: 5946
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  3 Dec 2020 19:04:12 +0000 (UTC)
-Message-ID: <40543766190a1d5e054e6573ae00112467acf964.camel@perches.com>
-Subject: Re: [RFC PATCH] checkpatch: correctly detect lines of help text
-From:   Joe Perches <joe@perches.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Nicolai Fischer <nicolai.fischer@fau.de>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-Cc:     apw@canonical.com, johannes.czekay@fau.de,
-        linux-kernel@i4.cs.fau.de,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        kernel-janitors <kernel-janitors@vger.kernel.org>
-Date:   Thu, 03 Dec 2020 11:04:11 -0800
-In-Reply-To: <7a81a3c0-2734-4799-5b34-0a6279c1e59d@infradead.org>
-References: <133ac827-c0d2-c5c7-39d8-7d2c17de7c76@fau.de>
-         <8436bc4191d92af283ea6aa7ca450e36da653e2e.camel@perches.com>
-         <16f0bfd4-61ca-48d8-c9ab-10bfc9a233ad@infradead.org>
-         <a83033e9fcc706be129e9c4c0d30a0542f13d406.camel@perches.com>
-         <7a81a3c0-2734-4799-5b34-0a6279c1e59d@infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 3 Dec 2020 14:05:31 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8DDC061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:04:51 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id w6so1936199pfu.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:04:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MGVJZBDXNN6LdEStSCVvQ7DYrKz46JI0zY/CXjUt84Y=;
+        b=Xpngdm+dVlFRitn2i9O7Ckeyv9yY5k8xWK55Ab3b6x7eM5kQJiJc/IgV7V86j4qg2H
+         amLk/0khYfIAjNlik2isDsQqYyz/ilBOzlQEBFZ6DMpPi+cGaj2elvUtLpjhXqYOb5AQ
+         G8O3zDWWSiyFmCjEcIyMyecmxlJYoXBN3ba0ejgO7NgjloiouWAheLWWDP6mQUpPft7Q
+         TPaUsJh85PI/1XvIG5kAonobzDqw9iwKWWP9UhM+EPX9ckPS/f0zd3Uz30kVeLTa1gyS
+         3EMIdCE3a12qF/S3m/RfefmgYZg6Asg+OeFN+wPWNzMo63obakJbrKvpbdNA1dD5NNhd
+         7Xeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MGVJZBDXNN6LdEStSCVvQ7DYrKz46JI0zY/CXjUt84Y=;
+        b=JXWwX1zzBTyGrMO0sP0cJUXJnQGNc8+AN5B/suiumjWyphFJhJWfK7QsPoTx9pfw+Y
+         Yq9Sfdu7ELTILU5Xj9exwFkZf7rXEYyV+OlB0Xn+EPEMieRB9sNl3E7NO7RoOx3Yb1sO
+         XuO9CB7K0jYWTOFCBeTomCTayJHPmWbDvPrYtqp6lwEOwKA8t2HPzbRvm7zc0PAf1B7s
+         rhVeEG7Q5ZnBRLwcRzAe+lK5wKLQHA3A7n6oQeBsHIu1sUgk3lABRK/0K17843CWn+DL
+         4KOidQ//2fnpRC3fnKSIsCItI4Lu5j/p4b7YiQgt3czcZ5cUhy1TWg2vtIB20TGuYJlE
+         Phfg==
+X-Gm-Message-State: AOAM533dfQnmwosPXVOe1VAyITXZvx0Epw/orXvEgsRYRu2X4yVbgN3O
+        SRlxItmwEBOYpwnraf7/+C7faFs8/lpLvBSigfutgQ==
+X-Google-Smtp-Source: ABdhPJygUP1cIJwRL7tVCs5S0BP8zl26VHCEvSZgnDfJ1ubHqNbQexJfBHlekI9nVH0KVp4PeLXnxJUT/QE7eXpWKqU=
+X-Received: by 2002:a62:1896:0:b029:197:491c:be38 with SMTP id
+ 144-20020a6218960000b0290197491cbe38mr374126pfy.15.1607022290861; Thu, 03 Dec
+ 2020 11:04:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201203170529.1029105-1-maskray@google.com>
+In-Reply-To: <20201203170529.1029105-1-maskray@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 3 Dec 2020 11:04:39 -0800
+Message-ID: <CAKwvOd=8trq9qndYvf8KD4_3XVfaT_BXcNZhrKP67-YH9WQL0g@mail.gmail.com>
+Subject: Re: [PATCH] firmware_loader: Align .builtin_fw to 8
+To:     Fangrui Song <maskray@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        kernel test robot <lkp@intel.com>, dwmw@amazon.co.uk,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-03 at 10:31 -0800, Randy Dunlap wrote:
-> On 12/3/20 9:58 AM, Joe Perches wrote:
-> > On Wed, 2020-12-02 at 10:59 -0800, Randy Dunlap wrote:
-> > 
-> > > There are also large hunks of block/Kconfig and drivers/hid/Kconfig
-> > > that don't use any indentation for help text...
-> > > in case that matters here.
-> > 
-> > Maybe something like this could help.
-> > 
-> > Indent the unindented help blocks by 2 spaces and reflow where appropriate.
-> > 
-> > ---
-> >  block/Kconfig       | 105 +++++-----
-> >  drivers/hid/Kconfig | 549 +++++++++++++++++++++++++++-------------------------
-> >  2 files changed, 335 insertions(+), 319 deletions(-)
-> 
-> 
-> LGTM. Thanks.
+On Thu, Dec 3, 2020 at 9:05 AM Fangrui Song <maskray@google.com> wrote:
+>
+> arm64 references the start address of .builtin_fw (__start_builtin_fw)
+> with a pair of R_AARCH64_ADR_PREL_PG_HI21/R_AARCH64_LDST64_ABS_LO12_NC
+> relocations. The compiler is allowed to emit the
+> R_AARCH64_LDST64_ABS_LO12_NC relocation because struct builtin_fw in
+> include/linux/firmware.h is 8-byte aligned.
+>
+> The R_AARCH64_LDST64_ABS_LO12_NC relocation requires the address to be a
+> multiple of 8, which may not be the case if .builtin_fw is empty.
+> Unconditionally align .builtin_fw to fix the linker error.
+>
+> Fixes: 5658c76 ("firmware: allow firmware files to be built into kernel image")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1204
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Fangrui Song <maskray@google.com>
+> ---
+>  include/asm-generic/vmlinux.lds.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index b2b3d81b1535..3cd4bd1193ab 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -459,6 +459,7 @@
+>         }                                                               \
+>                                                                         \
+>         /* Built-in firmware blobs */                                   \
+> +       ALIGN_FUNCTION();                                               \
 
-btw: there appears to be ~750 help sections in Kconfig files
-that do not use 2 space indentation for the help content vs
-the ~14000 help sections that do use 2 space indentation.
+Thanks for the patch!
 
-Maybe there's some value in standardizing on the 2 space style.
+I'm going to repeat my question from the above link
+(https://github.com/ClangBuiltLinux/linux/issues/1204#issuecomment-737610582)
+just in case it's not naive:
 
-A trivial script to show the sections that don't use 2 spaces:
+ALIGN_FUNCTION() C preprocessor macro seems to be used to realign
+code, while STRUCT_ALIGN() seems to be used to realign data.  It looks
+to me like only data is put into .builtin_fw.  If these relocations
+require an alignment of 8, than multiples of 8 should also be fine
+(STRUCT_ALIGN in 32 for all toolchain version, except gcc 4.9 which is
+64; both are multiples of 8 though).  It looks like only structs are
+placed in .builtin_fw; ie. data.  In that case, I worry that using
+ALIGN_FUNCTION/8 might actually be under-aligning data in this
+section.
 
-$ git grep -n -A1 -P "^\s*help\s*$" -- '*/Kconfig*' |
-  grep -v '^--$' |
-  perl -e 'while (<>) {
-    my $line1 = $_;
-    my $line2 = <>;
+Though, in https://github.com/ClangBuiltLinux/linux/issues/1204#issuecomment-737625134
+you're comment:
 
-    my $l1 = $line1;
-    my $l2 = $line2;
+>> In GNU ld, the empty .builtin_fw is removed
 
-    chomp($l1);
-    chomp($l2);
-
-    $l1 =~ s/^.*:\d+:(\s*).*/$1/;
-    $l2 =~ s/^.*-\d+-(\s*).*/$1/;
-
-    if ("$l1  " ne "$l2") {
-	print "$line1";
-	print "$line2";
-    }
-}'
-
-Change the ne to eq to see the matches.
-
-For instance, a head -50 of the above is:
-
-arch/Kconfig:84:	help
-arch/Kconfig-85-	 This option enables a transparent branch optimization that
-arch/Kconfig:127:	help
-arch/Kconfig-128-	 If function tracer is enabled and the arch supports full
-arch/Kconfig:167:	help
-arch/Kconfig-168-	 Modern versions of GCC (since 4.4) have builtin functions
-arch/Kconfig:1056:       help
-arch/Kconfig-1057-          An architecture should select this if its syscall numbering is sparse
-arch/alpha/Kconfig:147:	help
-arch/alpha/Kconfig-148-	  XL-233 and XL-266-based Alpha systems.
-arch/arm/Kconfig:1001:       help
-arch/arm/Kconfig-1002-	 This option enables the workaround for the 775420 Cortex-A9 (r2p2,
-arch/arm/Kconfig-nommu:9:	help
-arch/arm/Kconfig-nommu-10-	 Say Y to manually set the base addresses and sizes.
-arch/arm/Kconfig.debug:24:	help
-arch/arm/Kconfig.debug-25-		Generate a warning if any W+X mappings are found at boot.
-arch/arm/mach-aspeed/Kconfig:21:	help
-arch/arm/mach-aspeed/Kconfig-22-	 Say yes if you intend to run on an Aspeed ast2400 or similar
-arch/arm/mach-aspeed/Kconfig:31:	help
-arch/arm/mach-aspeed/Kconfig-32-	 Say yes if you intend to run on an Aspeed ast2500 or similar
-arch/arm/mach-aspeed/Kconfig:42:	help
-arch/arm/mach-aspeed/Kconfig-43-	 Say yes if you intend to run on an Aspeed ast2600 or similar
-arch/arm/mach-imx/Kconfig:230:	help
-arch/arm/mach-imx/Kconfig-231-		This enables support for Freescale i.MX7 Dual processor.
-arch/arm/mach-ixp4xx/Kconfig:41:    help
-arch/arm/mach-ixp4xx/Kconfig-42-	  Say 'Y' here if you want your kernel to support the Giant
-arch/arm/mach-ixp4xx/Kconfig:178:	help
-arch/arm/mach-ixp4xx/Kconfig-179-		This board is currently inside the Linksys WRV54G Gateways.
-arch/arm/mach-ixp4xx/Kconfig:216:	help
-arch/arm/mach-ixp4xx/Kconfig-217-          IXP4xx provides two methods of accessing PCI memory space:
-arch/arm/mach-omap1/Kconfig:61:	help
-arch/arm/mach-omap1/Kconfig-62-          TI OMAP 1510 or 1610 Innovator board support. Say Y here if you
-arch/arm/mach-omap1/Kconfig:68:    	help
-arch/arm/mach-omap1/Kconfig-69-	  TI OMAP 1610/1611B H2 board support. Say Y here if you have such
-arch/arm/mach-omap1/Kconfig:75:    	help
-arch/arm/mach-omap1/Kconfig-76-	  TI OMAP 1710 H3 board support. Say Y here if you have such
-arch/arm/mach-omap1/Kconfig:88:    	help
-arch/arm/mach-omap1/Kconfig-89-	  TI OMAP 5912 OSK (OMAP Starter Kit) board support. Say Y here
-arch/arm/mach-omap1/Kconfig:95:    	help
-arch/arm/mach-omap1/Kconfig-96-	  The OSK supports an optional add-on board with a Quarter-VGA
-arch/arm/mach-omap1/Kconfig:103:    	help
-arch/arm/mach-omap1/Kconfig-104-	  Support for TI OMAP 730 Perseus2 board. Say Y here if you have such
-arch/arm/mach-omap1/Kconfig:110:    	help
-arch/arm/mach-omap1/Kconfig-111-	  Support for TI OMAP 850 F-Sample board. Say Y here if you have such
-arch/arm/mach-omap1/Kconfig:126:	help
-arch/arm/mach-omap1/Kconfig-127-	 Support for the Palm Zire71 PDA. To boot the kernel,
-arch/arm/mach-omap1/Kconfig:175:	help
-arch/arm/mach-omap1/Kconfig-176-          Support for generic OMAP-1510, 1610 or 1710 board with
-arch/arm/mach-prima2/Kconfig:24:	help
-arch/arm/mach-prima2/Kconfig-25-          Support for CSR SiRFSoC ARM Cortex A9 Platform
+So that's a difference in behavior between ld.bfd and ld.lld, which is
+fine, but it makes me wonder whether we should instead or additionally
+be discarding this section explicitly via linker script when
+CONFIG_FW_LOADER is not set?
 
 
+>         .builtin_fw        : AT(ADDR(.builtin_fw) - LOAD_OFFSET) {      \
+>                 __start_builtin_fw = .;                                 \
+>                 KEEP(*(.builtin_fw))                                    \
+> --
+> 2.29.2.576.ga3fc446d84-goog
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
