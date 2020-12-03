@@ -2,76 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8F42CDB38
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:29:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8BB52CDB3E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbgLCQ3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:29:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46845 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726032AbgLCQ3c (ORCPT
+        id S1728490AbgLCQav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:30:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726745AbgLCQav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:29:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607012886;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jRVA3W7T/pVqUV/EjG25mXlusVZvncykEwttIb9bhjQ=;
-        b=i29keSEe6ZZaoIBAdLM0CSsI8M2RaxTi60xgT7tJJ2Usy0THGX5CDTdpV8I0lfSP6s1Oui
-        WWW1NmoLFjU2VL/KsHQLSc4fr1qU2J0SuUkFt+/sJF/u4kwQbSN94akcX2JhYs+4VIUOGZ
-        oqm13Zlbs0ALVoDEl93HbScQIH8yPBo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-W2WSu9giO4W3Z0shG1n8lQ-1; Thu, 03 Dec 2020 11:28:04 -0500
-X-MC-Unique: W2WSu9giO4W3Z0shG1n8lQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 3 Dec 2020 11:30:51 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EFAC061A4E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 08:30:11 -0800 (PST)
+Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A04F100671C;
-        Thu,  3 Dec 2020 16:28:02 +0000 (UTC)
-Received: from [10.36.113.250] (ovpn-113-250.ams2.redhat.com [10.36.113.250])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 97CF110013C0;
-        Thu,  3 Dec 2020 16:28:01 +0000 (UTC)
-Subject: Re: [PATCH v2] mm/page_isolation: do not isolate the max order page
-To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Vlastimil Babka <vbabka@suse.cz>
-References: <20201203162237.21885-1-songmuchun@bytedance.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <46fcf0c1-7c38-723b-8905-953d72f1d6bc@redhat.com>
-Date:   Thu, 3 Dec 2020 17:28:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        by ssl.serverraum.org (Postfix) with ESMTPSA id EDBE822EE3;
+        Thu,  3 Dec 2020 17:30:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1607013009;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2dhOrzqSLw2EbXBFqZuXSe7nedigFHcEtpRVK05lFI0=;
+        b=E0iZzF0g76ACWn95Qk3K6WfWQR6AgObUqNLJDOaa21cGGRSWL7ZMsTz2lF0s7xFLigsqGT
+        /QPuO1wSDAZQeUjfEBlsVpJTbBYYCVdP7WkOaVaUf/tuwhGVDq4rasDWkqaVuAcwAG57Dt
+        qb+s50iADGejQfW//eRHbjB3XN+bdTw=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH v8 0/7] mtd: spi-nor: keep lock bits if they are non-volatile
+Date:   Thu,  3 Dec 2020 17:29:52 +0100
+Message-Id: <20201203162959.29589-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20201203162237.21885-1-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.12.20 17:22, Muchun Song wrote:
-> The max order page has no buddy page and never merge to other order.
-> So isolating and then freeing it is pointless. And if order == MAX_ORDER
-> - 1, then the buddy can actually be a !pfn_valid() in some corner case?
-> pfn_valid_within(buddy_pfn) that follows would only catch it on archs
-> with holes in zone. Then is_migrate_isolate_page(buddy) might access an
-> invalid buddy. So this is also a bug fix.
-> 
-> Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
+I bundled this as a series, because otherwise there will be conflicts
+because the "remove global protection flag" patches modify the same lines
+as the main patch.
 
-As just replied to v1, I don't think this is required and the patch
-description can be simplified - e.g., stating that we have/had not such
-users.
+There are now two more patches:
+  mtd: spi-nor: sst: fix BPn bits for the SST25VF064C
+  mtd: spi-nor: ignore errors in spi_nor_unlock_all()
+Both are fixes and are first in this series. This will ensure that they
+might be cherry-picked without conflicts as the following patches touches
+the same lines.
 
+See invdividual patches for the version history.
+
+Michael Walle (7):
+  mtd: spi-nor: sst: fix BPn bits for the SST25VF064C
+  mtd: spi-nor: ignore errors in spi_nor_unlock_all()
+  mtd: spi-nor: atmel: remove global protection flag
+  mtd: spi-nor: sst: remove global protection flag
+  mtd: spi-nor: intel: remove global protection flag
+  mtd: spi-nor: atmel: fix unlock_all() for AT25FS010/040
+  mtd: spi-nor: keep lock bits if they are non-volatile
+
+ drivers/mtd/spi-nor/Kconfig |  44 +++++++++
+ drivers/mtd/spi-nor/atmel.c | 191 ++++++++++++++++++++++++++++++++----
+ drivers/mtd/spi-nor/core.c  |  46 ++++++---
+ drivers/mtd/spi-nor/core.h  |   9 ++
+ drivers/mtd/spi-nor/esmt.c  |   2 +-
+ drivers/mtd/spi-nor/intel.c |  19 ++--
+ drivers/mtd/spi-nor/sst.c   |  32 +++---
+ 7 files changed, 279 insertions(+), 64 deletions(-)
 
 -- 
-Thanks,
-
-David / dhildenb
+2.20.1
 
