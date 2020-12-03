@@ -2,68 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00952CE27F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B89722CE282
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:18:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731261AbgLCXPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:15:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgLCXPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:15:51 -0500
-From:   Arnd Bergmann <arnd@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tiffany Lin <tiffany.lin@mediatek.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: mtk-vcodec: add remoteproc dependency
-Date:   Fri,  4 Dec 2020 00:14:58 +0100
-Message-Id: <20201203231505.1483971-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1728226AbgLCXRj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 18:17:39 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:42756 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727146AbgLCXRj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 18:17:39 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-74-ZN_hijpIMCiOzkEhiip_Rg-1; Thu, 03 Dec 2020 23:16:00 +0000
+X-MC-Unique: ZN_hijpIMCiOzkEhiip_Rg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 3 Dec 2020 23:15:59 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 3 Dec 2020 23:15:59 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Mike Rapoport' <rppt@kernel.org>,
+        Topi Miettinen <toiwoton@gmail.com>
+CC:     "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: RE: [PATCH] mm/vmalloc: randomize vmalloc() allocations
+Thread-Topic: [PATCH] mm/vmalloc: randomize vmalloc() allocations
+Thread-Index: AQHWyUIaOaq71c1O10ObeOeJDE6bhanmALEg
+Date:   Thu, 3 Dec 2020 23:15:59 +0000
+Message-ID: <2a672ff3df0c47538ed7d1974c864f0b@AcuMS.aculab.com>
+References: <20201201214547.9721-1-toiwoton@gmail.com>
+ <9d34fb0a-7aba-1e84-6426-006ea7c3d9f5@gmail.com>
+ <20201203065801.GH751215@kernel.org>
+In-Reply-To: <20201203065801.GH751215@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Mike Rapoport
+> Sent: 03 December 2020 06:58
+> 
+> On Wed, Dec 02, 2020 at 08:49:06PM +0200, Topi Miettinen wrote:
+> > On 1.12.2020 23.45, Topi Miettinen wrote:
+> > > Memory mappings inside kernel allocated with vmalloc() are in
+> > > predictable order and packed tightly toward the low addresses. With
+> > > new kernel boot parameter 'randomize_vmalloc=1', the entire area is
+> > > used randomly to make the allocations less predictable and harder to
+> > > guess for attackers.
 
-The SCP firmware can only be built if CONFIG_REMOTEPROC is
-enabled:
+Isn't that going to horribly fragment the available address space
+and make even moderate sized allocation requests fail (or sleep).
 
-WARNING: unmet direct dependencies detected for MTK_SCP
-  Depends on [n]: REMOTEPROC [=n] && (ARCH_MEDIATEK [=y] || COMPILE_TEST [=y])
-  Selected by [y]:
-  - VIDEO_MEDIATEK_VCODEC [=y] && MEDIA_SUPPORT [=y] && MEDIA_PLATFORM_SUPPORT [=y] && V4L_MEM2MEM_DRIVERS [=y] && (MTK_IOMMU [=y] || COMPILE_TEST [=y]) && VIDEO_DEV [=y] && VIDEO_V4L2 [=y] && (ARCH_MEDIATEK [=y] || COMPILE_TEST [=y])
+I'm not even sure that you need to use 'best fit' rather than
+'first fit'.
+'best fit' is certainly a lot better for a simple linked list
+user space malloc.
 
-Add this as a dependency for mtk-vcodec.
+	David
 
-Fixes: c7244811b1c9 ("media: mtk-vcodec: add SCP firmware ops")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/media/platform/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-index ffffef2267f4..295f74c3c04b 100644
---- a/drivers/media/platform/Kconfig
-+++ b/drivers/media/platform/Kconfig
-@@ -276,6 +276,7 @@ config VIDEO_MEDIATEK_VCODEC
- 	# our dependencies, to avoid missing symbols during link.
- 	depends on VIDEO_MEDIATEK_VPU || !VIDEO_MEDIATEK_VPU
- 	depends on MTK_SCP || !MTK_SCP
-+	depends on REMOTEPROC
- 	select VIDEOBUF2_DMA_CONTIG
- 	select V4L2_MEM2MEM_DEV
- 	select VIDEO_MEDIATEK_VCODEC_VPU if VIDEO_MEDIATEK_VPU
--- 
-2.27.0
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
