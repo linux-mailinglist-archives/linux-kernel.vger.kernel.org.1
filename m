@@ -2,150 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226062CD1D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:55:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D18B22CD1D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:55:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730048AbgLCIxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:53:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57485 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726623AbgLCIxH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:53:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606985500;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kmHQQk3x9/fQA1e1iSjFzwxQBkZrVJB5ySbnzT5Z1Ts=;
-        b=C/vaNLndULgPn+aalST2d6E3eIaeNmaT9BcVA9Watu9IpsdKzpugY7a31gR4OeYA2hIUE8
-        790EpFoyPXzIlImHn1p37nc/S6tuG41BcnCJrxE+Lx5TyJCI00ABZIDzsVdemIHO1JJfa1
-        0s9xbMiIifjzoYUU/1HjHRiDmGjKn9c=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-358-sY1YgnuKNnOGVbeT7Uqp1w-1; Thu, 03 Dec 2020 03:51:39 -0500
-X-MC-Unique: sY1YgnuKNnOGVbeT7Uqp1w-1
-Received: by mail-wr1-f71.google.com with SMTP id f4so956330wru.21
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 00:51:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=kmHQQk3x9/fQA1e1iSjFzwxQBkZrVJB5ySbnzT5Z1Ts=;
-        b=RbtoEADAlf7uOSRpF2c7OPXn1LL+zjL1clyvWHpgA1xfdGfGHgGLy31fP7ET7QJLbb
-         Utxn87CobAv7D5O63Yjz6pZ4bHXnS6ZT74UAo4kKCfO4YwoVLRKYASxv6kDD01x6GUV4
-         8iOrsK7w5KiEGEhVWWXcCpj/AuKwU8I2lZjsSRhJGjrROGAMrzzRPmFwICICUjEwYw1V
-         63JcSsyiwCkWkf5YubbcS8v+1CcPXfUmB4HMB7er0HnkRD3lzcMfp2G214cRb4JYV68X
-         C7K56mkoZUFrbEtvGPN2QsaiFBo/L9y6PQ6KKYND4M20NYUA8eWXmgS5Z9fCru1Db8PJ
-         CSEw==
-X-Gm-Message-State: AOAM532OhdBiyCD3/G/ybU8BtlNHPOce7qN0doQ1ftURafc8Hki/lF98
-        dknEFVT6UYZCy03MjWAeiNEqVK1aQ3A5nUEZgogHCJB2auNrLheta28ekAeEQJ4WJoRFG3ZvxCE
-        RcNCmO23YhtAcZ3qZh6fUMZWb
-X-Received: by 2002:a1c:491:: with SMTP id 139mr2015878wme.81.1606985497760;
-        Thu, 03 Dec 2020 00:51:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyZdEBpodbmanLOpEUOyi80M/b/dUdwtOSrUCsb6f/RM7ptKtbJxdbRF8EPPhSniwmzhFf7uQ==
-X-Received: by 2002:a1c:491:: with SMTP id 139mr2015845wme.81.1606985497408;
-        Thu, 03 Dec 2020 00:51:37 -0800 (PST)
-Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
-        by smtp.gmail.com with ESMTPSA id c129sm598618wma.31.2020.12.03.00.51.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 00:51:36 -0800 (PST)
-Date:   Thu, 3 Dec 2020 09:51:34 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH net-next v1 0/3] vsock: Add flag field in the vsock
- address
-Message-ID: <20201203085134.azxkxvapbjvebciq@steredhat>
-References: <20201201152505.19445-1-andraprs@amazon.com>
- <20201202133754.2ek2wgutkujkvxaf@steredhat>
- <d5c55d2e-5dc3-96f2-2333-37e778c761ae@amazon.com>
+        id S2387637AbgLCIwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:52:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729947AbgLCIwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 03:52:38 -0500
+X-Gm-Message-State: AOAM530gGc3YZhI+fM6k+0eIZox6/6tJB7GTrqYZpnuydhMgArhhXGF5
+        lY+2jsIxXMsyhvsA3uNcd88hMsU2whj1ocAn0CY=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606985517;
+        bh=a+yWvdSDdE24FX9vt8IOCe36Vtka+wQtK+114SX022M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ErTTATeZKbJjFhiphL0HIFp4bCRlFwWs66KSdKMr6YCy5y1Q6mWOJK0gDZSqidDp2
+         F3tIoSYZV3thvyafVZHCnC+IJxl6MLHOmsAh7zX80HTMcMFLDD7jooPzP1+/5FNVRv
+         CdhLbuyvXpQypxYoC9mpv79pPKwPwn9Wy9G9Hhbi9kjZaeu2Q2QAlC5YIhkg26xBUJ
+         QrrHnq6HwbMd5TSHi4fmVH0zb8LdkbX4pMGotg4rWx2Q+Z3KsiWEqBj+4pNVvZxwg8
+         tp9pxJVnofjz/luDuNoMUOzc3hHyIKJaqN+OPzm9AL5l1QrATyaPtkjZdvSwiwJiJI
+         1MaEXtgwrz/mQ==
+X-Google-Smtp-Source: ABdhPJwqlFh25Vd2LWewK1tFkHa0IexqR/iEcj0p/vayAtATNnza5AAw65FicXja6uAVRpV8qxCkg9JUOsft8wUYtHI=
+X-Received: by 2002:a9d:be1:: with SMTP id 88mr1415604oth.210.1606985516770;
+ Thu, 03 Dec 2020 00:51:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d5c55d2e-5dc3-96f2-2333-37e778c761ae@amazon.com>
+References: <20201203004437.389959-1-keescook@chromium.org> <20201203004437.389959-6-keescook@chromium.org>
+In-Reply-To: <20201203004437.389959-6-keescook@chromium.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 3 Dec 2020 09:51:40 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1Br8JFJX2PxyjVxMPMhi-y8mxf+vdEAZQq_Wm2wYP7ZA@mail.gmail.com>
+Message-ID: <CAK8P3a1Br8JFJX2PxyjVxMPMhi-y8mxf+vdEAZQq_Wm2wYP7ZA@mail.gmail.com>
+Subject: Re: [PATCH v2 5/7] ubsan: Enable for all*config builds
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Marco Elver <elver@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        George Popescu <georgepope@android.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 06:18:15PM +0200, Paraschiv, Andra-Irina wrote:
+On Thu, Dec 3, 2020 at 1:44 AM Kees Cook <keescook@chromium.org> wrote:
 >
+> With UBSAN_OBJECT_SIZE disabled for GCC, only UBSAN_ALIGNMENT remained
+> a noisy UBSAN option. Disable it for COMPILE_TEST so the rest of UBSAN
+> can be used for full all*config builds or other large combinations.
 >
->On 02/12/2020 15:37, Stefano Garzarella wrote:
->>
->>Hi Andra,
->>
->>On Tue, Dec 01, 2020 at 05:25:02PM +0200, Andra Paraschiv wrote:
->>>vsock enables communication between virtual machines and the host 
->>>they are
->>>running on. Nested VMs can be setup to use vsock channels, as the multi
->>>transport support has been available in the mainline since the 
->>>v5.5 Linux kernel
->>>has been released.
->>>
->>>Implicitly, if no host->guest vsock transport is loaded, all the 
->>>vsock packets
->>>are forwarded to the host. This behavior can be used to setup 
->>>communication
->>>channels between sibling VMs that are running on the same host. 
->>>One example can
->>>be the vsock channels that can be established within AWS Nitro Enclaves
->>>(see Documentation/virt/ne_overview.rst).
->>>
->>>To be able to explicitly mark a connection as being used for a 
->>>certain use case,
->>>add a flag field in the vsock address data structure. The 
->>>"svm_reserved1" field
->>>has been repurposed to be the flag field. The value of the flag 
->>>will then be
->>>taken into consideration when the vsock transport is assigned.
->>>
->>>This way can distinguish between nested VMs / local communication 
->>>and sibling
->>>VMs use cases. And can also setup one or more types of 
->>>communication at the same
->>>time.
->>>
->>
->>Another thing worth mentioning is that for now it is not supported in
->>vhost-vsock, since we are discarding every packet not addressed to the
->>host.
->
->Right, thanks for the follow-up.
->
->>
->>What we should do would be:
->>- add a new IOCTL to vhost-vsock to enable sibling communication, by
->>  default I'd like to leave it disabled
->>
->>- allow sibling forwarding only if both guests have sibling
->>  communication enabled and we should implement some kind of filtering
->>  or network namespace support to allow the communication only between a
->>  subset of VMs
->>
->>
->>Do you have plans to work on it?
->
->Nope, not yet. But I can take some time in the second part of December 
->/ beginning of January for this. And we can catch up in the meantime 
->if there is something blocking or more clarifications are needed to 
->make it work.
->
+> Link: https://lore.kernel.org/lkml/CAHk-=wgXW=YLxGN0QVpp-1w5GDd2pf1W-FqY15poKzoVfik2qA@mail.gmail.com/
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Good, it will be great!
+Have you checked if this has a notable impact on allmodconfig compile speed
+with gcc or clang? I think I've seen significant increases in build times before
+with this, but I don't remember the actual magnitude.
 
-Thanks,
-Stefano
+Making it 20% slower would probably be ok, but making it twice as slow might
+be too much.
 
+       Arnd
