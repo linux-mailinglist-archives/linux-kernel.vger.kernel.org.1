@@ -2,82 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F3B2CE162
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFEA2CE15B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:10:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729911AbgLCWLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:11:19 -0500
-Received: from mga14.intel.com ([192.55.52.115]:45507 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLCWLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:11:19 -0500
-IronPort-SDR: 5KGgysBdH/HDSYYJn/JsyjDx/pnqIcu4YMRbnI6mEYSIu0JCSzGbLBlNa1Aa4/fZtcntZq6MJL
- d+G/reRUaTRA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="172502586"
-X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
-   d="scan'208";a="172502586"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 14:10:39 -0800
-IronPort-SDR: LYlmX9WbfHSyvShZQdW8EeHv+ntY8nM30ZL6+p8bsedPOGI7QeRFy4kl/AIecGL1vbwtGRNbsE
- G03M+MgrObIQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
-   d="scan'208";a="330989885"
-Received: from uhpatel-desk4.jf.intel.com (HELO uhpatel-desk4.intel.com) ([10.23.15.15])
-  by orsmga003.jf.intel.com with ESMTP; 03 Dec 2020 14:10:38 -0800
-From:   Utkarsh Patel <utkarsh.h.patel@intel.com>
-To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Cc:     heikki.krogerus@linux.intel.com, rajmohan.mani@intel.com,
-        azhar.shaikh@intel.com, Utkarsh Patel <utkarsh.h.patel@intel.com>
-Subject: [PATCH] usb: typec: intel_pmc_mux: Use correct response message bits
-Date:   Thu,  3 Dec 2020 14:08:13 -0800
-Message-Id: <20201203220813.16281-1-utkarsh.h.patel@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729578AbgLCWKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:10:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726707AbgLCWKC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:10:02 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274FDC061A52
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 14:09:22 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id z14so3397580ilm.10
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 14:09:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y4lfXn4NQgT9AE+pcfanwBv5gymGOELzS9Yoccfg59M=;
+        b=USeKbzyXElX2nDf8oeE1czUwhUCqMWIJR4/vvITllJucNT3FEMQFe2e2F+MtmZugQC
+         uAoXsCagTylA+9/st75P/loFx12vESCpg98HsnoRcTk192ILskFmELosw3FjFV6G9zET
+         hf6QA0wWaehLhuOrjatkgjvZt2W5JO6XlaJK8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y4lfXn4NQgT9AE+pcfanwBv5gymGOELzS9Yoccfg59M=;
+        b=W8KajYAkTf9gE6eroXuwvilllzYRqEnGr2JMch3XBPoiHohrJqP9Hf15WWW+uEoYLx
+         eakDilAo00ewtYr20/JzwQ8g/H7L6P7QhoTOkbbE72Ogddbjjw/g9K3NquyrrpEewiwj
+         RHq+B6Z3VtUXM9nazaPJhixtBtlnK4qzLz2a7YbiJxT2VpfGKp9d+WMb6RC0N60fIt29
+         GQ3twZJIasifGElKEq2Sl6wLKFtIv2It1tUGGVT16KjD/32tUYXBIoj1EA9+rhq2EFFn
+         09vPxGEJQpwMl56o+Z8gDuYug8ezDLc04p2qVEs/1yxlM6gykneKHfsmpEgpYqgBkDwy
+         56tA==
+X-Gm-Message-State: AOAM533M55LkFKUctHJtvGgezLXoDemWSZgHnLKyHjdr+e/ZHtRU1P9x
+        kd8dCA2XCvfzAekuVDok/X7LA0rBtsEFnQ==
+X-Google-Smtp-Source: ABdhPJyZNSgegr1pz/oTLNjCfGhLqS7ut5Zpoh/0DMF/1Pr0oDCh24NI286o4nOVJmbWx/2NcM1pZQ==
+X-Received: by 2002:a05:6e02:e8e:: with SMTP id t14mr1727683ilj.207.1607033361324;
+        Thu, 03 Dec 2020 14:09:21 -0800 (PST)
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com. [209.85.166.47])
+        by smtp.gmail.com with ESMTPSA id r3sm315439ilt.76.2020.12.03.14.09.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 14:09:20 -0800 (PST)
+Received: by mail-io1-f47.google.com with SMTP id q137so3728783iod.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 14:09:20 -0800 (PST)
+X-Received: by 2002:a02:830f:: with SMTP id v15mr1698948jag.12.1607033360437;
+ Thu, 03 Dec 2020 14:09:20 -0800 (PST)
+MIME-Version: 1.0
+References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+In-Reply-To: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 3 Dec 2020 14:09:04 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
+Message-ID: <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
+Subject: Re: [PATCHSET] saner elf compat
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When Intel PMC Mux agent driver receives the response message from PMC, it
-checks for the same response bits for all the mux states.
-Corrected it by checking correct response message bits, Bit 8 & 9 for the
-SAFE Mode and Alternate Modes and Bit 16 & 17 for the Connect and
-Disconnect Modes.
+On Thu, Dec 3, 2020 at 1:46 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+>  The answer (for mainline) is that mips compat does *NOT* want
+> COMPAT_BINFMT_ELF.  Not a problem with that series, though, so I'd
+> retested it (seems to work, both for x86_64 and mips64, execs and
+> coredumps for all ABIs alike), with centralization of Kconfig logics
+> thrown in.
 
-Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
----
- drivers/usb/typec/mux/intel_pmc_mux.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Well, the diffstat looks nice:
 
-diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
-index aa3211f1c4c3..e58ae8a7fefb 100644
---- a/drivers/usb/typec/mux/intel_pmc_mux.c
-+++ b/drivers/usb/typec/mux/intel_pmc_mux.c
-@@ -176,6 +176,7 @@ static int hsl_orientation(struct pmc_usb_port *port)
- static int pmc_usb_command(struct pmc_usb_port *port, u8 *msg, u32 len)
- {
- 	u8 response[4];
-+	u8 status_res;
- 	int ret;
- 
- 	/*
-@@ -189,9 +190,13 @@ static int pmc_usb_command(struct pmc_usb_port *port, u8 *msg, u32 len)
- 	if (ret)
- 		return ret;
- 
--	if (response[2] & PMC_USB_RESP_STATUS_FAILURE) {
--		if (response[2] & PMC_USB_RESP_STATUS_FATAL)
-+	status_res = (msg[0] & 0xf) < PMC_USB_SAFE_MODE ?
-+		     response[2] : response[1];
-+
-+	if (status_res & PMC_USB_RESP_STATUS_FAILURE) {
-+		if (status_res & PMC_USB_RESP_STATUS_FATAL)
- 			return -EIO;
-+
- 		return -EBUSY;
- 	}
- 
--- 
-2.17.1
+>  26 files changed, 127 insertions(+), 317 deletions(-)
 
+and the patches didn't trigger anything for me, but how much did this
+get tested? Do you actually have both kinds of 32-bit elf mips
+binaries around and a machine to test on?
+
+Linux-mips was cc'd, but I'm adding Thomas B to the cc here explicitly
+just so that he has a heads-up on this thing and can go and look at
+the mailing list in case it goes to a separate mailbox for him..
+
+               Linus
