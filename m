@@ -2,131 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359D22CD218
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C6E2CD21D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:09:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388450AbgLCJH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:07:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
+        id S2388492AbgLCJIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:08:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728037AbgLCJHZ (ORCPT
+        with ESMTP id S2387504AbgLCJIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:07:25 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B40C061A4D;
-        Thu,  3 Dec 2020 01:06:45 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id j13so758889pjz.3;
-        Thu, 03 Dec 2020 01:06:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=x090Pi/p4YdcyRoV862Kj0ZiAvBp3vZ9F7IWYK4ZvKQ=;
-        b=ckqlCtgiG+ueA5VyNM+O63WETRQ7o586/ee4FYil95hEwBqRa6XNfo9DmTIRJhtGvU
-         yM/nMHEzU0A54LWTZkNZnkYQajIPFM2hViIbMZnao4fBrcdOAEe0SdbnrQnsQMwak2HP
-         wWEa70jJ+oC7e1NOAJoR/SmfkphdRmqSfLbmrSr1zOilYivX8qTIAyhvVaRKLWP9xoD1
-         9YWJL8QInRf55bH0dmDdQft226UAtNeuQsX+ROB7Bnz4sY66IxcroM1nlAsEA50JhEc0
-         bp3J/CAx5nd+UXkJsTkhURdof2tlIjC4jYzKMhMEpz8CtEYb0R6uTHvoeYVzEphjcTSF
-         DVSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=x090Pi/p4YdcyRoV862Kj0ZiAvBp3vZ9F7IWYK4ZvKQ=;
-        b=AwCuv7ey3bgu6fYXDmyEkeQ6n36fI4rCXwEmSDTOigCbBk7S4wxbeXlOcEzQLUugsI
-         Pyy239ekCV1PrFcTcUAprk5TSVgoHwlY1lYFXwl6JPICDP3drD8vMI4S0c6eIgcsjmQt
-         4jdIKAQdtdvMC+JojcpVo7atd6UxRUPhXOK+FEwDLgHFPj0Ln6/9N3H8eBVDjkr4uIQ/
-         FqldR6rQgfZ+qEbYfkuMy5B6ifbhtBfbsn2fcEMXlQcttYyucEEgooF4q9CNKktXZ84h
-         Ahu4fX3Msp5z7k6aJZrM1KpKKJAV18yig8mw0tVhyn2Vx2iOGXQwSKE9M/1mThGYZ+Rh
-         Q44A==
-X-Gm-Message-State: AOAM531SaQErBYGVbifCHqsuetK6sogRLoZwWLIOR9b5mDZzYATtjgGE
-        Fsw4q8SzXeXrpK3IuhnSgxhMHDdxSfTXkJ9jnRe8ocXdTJo=
-X-Google-Smtp-Source: ABdhPJxBpL93a9A1Kw9XZK+wssGAmhgxWbnJ6xbNVEzFbIPfkDK2Lq0Rb/qA8hxQQ/DUxisYvpqdtkBglwBoBth9FrI=
-X-Received: by 2002:a17:902:bd98:b029:d9:7b0:e1e5 with SMTP id
- q24-20020a170902bd98b02900d907b0e1e5mr2151870pls.77.1606986404968; Thu, 03
- Dec 2020 01:06:44 -0800 (PST)
+        Thu, 3 Dec 2020 04:08:12 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56A2C061A4D;
+        Thu,  3 Dec 2020 01:07:31 -0800 (PST)
+Date:   Thu, 03 Dec 2020 09:07:29 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606986449;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zDIknPMIm3lzC3RwS+ZU/AF5O0kS5a1gOT3SJgmIAtc=;
+        b=pxA7WaGJr3/5jV38hxrN758aGsMCYXAvbTww4TnpSYT8fCdVB4srfnIYD4E0WwGVCAEhLq
+        vStmfntdmMMInc+9+PREnLZWs2lOMUmLWzCZOOt73WFV1dL5S8ryHZLfpm63XT29LjwChF
+        odc5CgyF01aj6HBH0iIUsnZDqhLI1FUa2DuXYdItmpUHBBqCclXNt50ntv0NjFuXjbdeXn
+        q7ezJNDqwyWS6p7GU+1gTYmP5CytZWKxcroM4wHUxJIQoDdjwQNyjcORnHatGx4zFctEMQ
+        yCmZGgNYv3UlSxpO1jgXNP8tBH3sn7hu4n0zDgf/oVbBGKeeopKwRs6ZC5QxUg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606986449;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zDIknPMIm3lzC3RwS+ZU/AF5O0kS5a1gOT3SJgmIAtc=;
+        b=CAE4SjaQsLhw4Z1E9Gklt8kpfMa8Bv5mMCnXbEKjr5p8fLpTIsvfs3MekH16ab2y3G7JW2
+        GGU90/poZOjeCfDA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] intel_idle: Build fix
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201130115402.GO3040@hirez.programming.kicks-ass.net>
+References: <20201130115402.GO3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Received: by 2002:a17:90a:7886:0:0:0:0 with HTTP; Thu, 3 Dec 2020 01:06:44
- -0800 (PST)
-In-Reply-To: <79fde596-254a-510c-547a-b1525985de9d@suse.de>
-References: <20201130112137.587437-1-yili@winhong.com> <CAJfdMYDnDJXFVfEECtQ9-E4F9kfsF035PH+x3kaVn6PPSYCydA@mail.gmail.com>
- <b838b790-e1e3-d644-2b1c-5de02a10669f@suse.de> <CAJfdMYCbkAZtWpJ6sgsrRnV4i+5sRahaq-ktMjqcG1JXoazmGQ@mail.gmail.com>
- <79fde596-254a-510c-547a-b1525985de9d@suse.de>
-From:   Yi Li <yilikernel@gmail.com>
-Date:   Thu, 3 Dec 2020 17:06:44 +0800
-Message-ID: <CAJfdMYDLydAtoxvPGzaQ+K5jLvwAXg6MvpE-OM9sFjZgz_01sQ@mail.gmail.com>
-Subject: Re: [PATCH] bcache: fix panic due to cache_set is null
-To:     Coly Li <colyli@suse.de>
-Cc:     Yi Li <yili@winhong.com>, kent.overstreet@gmail.com,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guo Chao <guochao@winhong.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <160698644907.3364.1644696820259028448.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The root cause:
+The following commit has been merged into the locking/urgent branch of tip:
 
-After just  cached_dev_free do cancel_writeback_rate_update_dwork
-without bch_register_lock
-.
-at the same time. Wirting the writeback_percent by sysfs witch
-bch_register_lock will insert a writeback_rate_update work.
+Commit-ID:     4d916140bf28ff027997144ea1bb4299e1536f87
+Gitweb:        https://git.kernel.org/tip/4d916140bf28ff027997144ea1bb4299e1536f87
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Mon, 30 Nov 2020 12:54:34 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 03 Dec 2020 10:00:23 +01:00
 
-cached_dev_free with bch_register_lock to do bcache_device_free.
+intel_idle: Build fix
 
-(it is introduce by patch 80265d8dfd77792e133793cef44a21323aac2908)
+Because CONFIG_ soup.
 
-pls=EF=BC=9A
-1=EF=BC=9A run the shell script
-#!/bin/bash
-while [ true ]
-do
-        echo 0 > /sys/block/bcache0/bcache/writeback_percent
-done
+Fixes: 6e1d2bc675bd ("intel_idle: Fix intel_idle() vs tracing")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20201130115402.GO3040@hirez.programming.kicks-ass.net
+---
+ drivers/idle/intel_idle.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-2: hotplug the cache disk
-
-
-On 12/3/20, Coly Li <colyli@suse.de> wrote:
-> On 12/3/20 2:25 PM, Yi Li wrote:
->>> On 12/1/20 12:35 PM, Yi Li wrote:
->>>> sorry, This patch will cause deadlock, i will check and redo it.
->>>
->>> Can you try latest upstream kernel firstly ? Before spending more time
->>> on the fix.
->>>
->>
->> This issue just happened three times =EF=BC=88xenserver7.5 dom0 kernel=
-=EF=BC=89 on the
->> same machine and cannot reproduce it now. and have not reproduce it
->> using the lastest uptream kernel.
->>
->
-> Hmm, this is something very probably that I am not able to help. It
-> seems the kernel is a third-part maintained Linux v4.4 based kernel +
-> bcache backport, which is out of my view.
->
-> If similar problem happens on latest upstream kernel, or at least v5.8+
-> kernel, I can help to take a look.
->
->
->>> If I remember correctly, when cancel_writeback_rate_update_dwork() is
->>> not timed out, the cache set memory won't be freed before the
->>> writeback_rate_update worker terminates. It is possible that I miss
->>> something in the code, but I suggest to test with a kernel after v5.3,
->>> and better a v5.8+ kernel.
->>>
->>> Coly Li
->>>
->> Thanks.
->>
->> it is  confused that why writeback_rate_update worker run  again after
->> cancel_delayed_work_sync( kernel log telled).
->>
->
-> [snipped]
->
-> Coly Li
->
+diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+index 7ee7ffe..d793355 100644
+--- a/drivers/idle/intel_idle.c
++++ b/drivers/idle/intel_idle.c
+@@ -1140,6 +1140,20 @@ static bool __init intel_idle_max_cstate_reached(int cstate)
+ 	return false;
+ }
+ 
++static bool __init intel_idle_state_needs_timer_stop(struct cpuidle_state *state)
++{
++	unsigned long eax = flg2MWAIT(state->flags);
++
++	if (boot_cpu_has(X86_FEATURE_ARAT))
++		return false;
++
++	/*
++	 * Switch over to one-shot tick broadcast if the target C-state
++	 * is deeper than C1.
++	 */
++	return !!((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK);
++}
++
+ #ifdef CONFIG_ACPI_PROCESSOR_CSTATE
+ #include <acpi/processor.h>
+ 
+@@ -1210,20 +1224,6 @@ static bool __init intel_idle_acpi_cst_extract(void)
+ 	return false;
+ }
+ 
+-static bool __init intel_idle_state_needs_timer_stop(struct cpuidle_state *state)
+-{
+-	unsigned long eax = flg2MWAIT(state->flags);
+-
+-	if (boot_cpu_has(X86_FEATURE_ARAT))
+-		return false;
+-
+-	/*
+-	 * Switch over to one-shot tick broadcast if the target C-state
+-	 * is deeper than C1.
+-	 */
+-	return !!((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK);
+-}
+-
+ static void __init intel_idle_init_cstates_acpi(struct cpuidle_driver *drv)
+ {
+ 	int cstate, limit = min_t(int, CPUIDLE_STATE_MAX, acpi_state_table.count);
