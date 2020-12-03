@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35CD2CDFA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 21:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AEA2CDFA3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 21:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729094AbgLCUUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 15:20:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41778 "EHLO mail.kernel.org"
+        id S1729319AbgLCUUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 15:20:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726938AbgLCUUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726765AbgLCUUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Dec 2020 15:20:47 -0500
 Content-Type: text/plain; charset="utf-8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1607026806;
-        bh=SHlVsajNhEkKDWKAV9w8dMCGebDseuFgbWqCTWpWQj4=;
+        bh=Tkyv4YxmIkfl86eenFjdn9rHENw/f56Yi/8XLBvDLTg=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=I7I3k4jc20+OxTSCd3uph3Ymb5NumBU5p0VR6kkKXwGm+sVnAnwLvUnacNnuyrj4f
-         oZWZGsY7E/0zlO93lWntQ3BkXPc4hcaL2x1xc2VqvY0BQc3mu4HXHRM2OPnR9RqMKg
-         tC3zO8mA5bm1tv67e3vMpoA9MBiL7mj4Ok0u+qXRUYIoQiCr7FZPOctjejAwOVQnaG
-         IjBN+hv9OkDui1Y0Po/fH6z2JX0wJOa2Qq39KE1BXAXfq+n25MDSt7Tl1IsYnHzmMY
-         qlR8hh3+QCuYna6eGwYji8Ou2l4pa9ST+2ROKtfB9qx0CkvOCjFc4r/O0b2fymNhuE
-         B/OcdLhN7EWlQ==
+        b=lcWLH6aTBD1VDKGAgLs+lutOcUSoAXOxXlB0PXQeE+DtzFwQZkZMmLpkzMQXPPm+z
+         4bhTdP3HTw+QgdbCtP60rPtJo9cnKl8an1OgkfZ/IHIEZdJ+qSGT8MIhCedzOJluZI
+         kYEMqWX47RqFGiLrzrhXgSPMXmh9rGF47bMJlsUUPenTpimlXR/HTcyU24OIVrDZtA
+         rPGemBqqGyOoR5Jd4mATGYqZT/k+nxC+vMkzdi0m73FMB9wIzHRTwAXKUhmLkaS3rT
+         xXe8CeBTQMoCm0kQeuDEkayeVl40zSmmI4lhyFt8AEFIw8jGt8lg9IP/wlGPLvnS8g
+         E434uqEqpnI6w==
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: Fix cold build of test_progs-no_alu32
+Subject: Re: [PATCH][next] samples/bpf: Fix spelling mistake "recieving" ->
+ "receiving"
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160702680637.7769.14897046184537989999.git-patchwork-notify@kernel.org>
+Message-Id: <160702680632.7769.6625196471588556263.git-patchwork-notify@kernel.org>
 Date:   Thu, 03 Dec 2020 20:20:06 +0000
-References: <20201203120850.859170-1-jackmanb@google.com>
-In-Reply-To: <20201203120850.859170-1-jackmanb@google.com>
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kpsingh@chromium.org, revest@chromium.org,
-        linux-kernel@vger.kernel.org, jolsa@kernel.org, andriin@fb.com
+References: <20201203114452.1060017-1-colin.king@canonical.com>
+In-Reply-To: <20201203114452.1060017-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     mariuszx.dudek@intel.com, andrii@kernel.org,
+        magnus.karlsson@intel.com, bjorn.topel@intel.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -42,19 +44,19 @@ Hello:
 
 This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-On Thu,  3 Dec 2020 12:08:50 +0000 you wrote:
-> This object lives inside the trunner output dir,
-> i.e. tools/testing/selftests/bpf/no_alu32/btf_data.o
+On Thu,  3 Dec 2020 11:44:52 +0000 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> At some point it gets copied into the parent directory during another
-> part of the build, but that doesn't happen when building
-> test_progs-no_alu32 from clean.
+> There is a spelling mistake in an error message. Fix it.
 > 
-> [...]
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  samples/bpf/xdpsock_user.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - [bpf-next] bpf: Fix cold build of test_progs-no_alu32
-    https://git.kernel.org/bpf/bpf-next/c/58c185b85d0c
+  - [next] samples/bpf: Fix spelling mistake "recieving" -> "receiving"
+    https://git.kernel.org/bpf/bpf-next/c/2faa7328f53b
 
 You are awesome, thank you!
 --
