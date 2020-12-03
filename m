@@ -2,111 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF9E2CD2AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C9D2CD2B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:39:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730125AbgLCJiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:38:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45076 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729955AbgLCJiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:38:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 84187AC55;
-        Thu,  3 Dec 2020 09:37:42 +0000 (UTC)
-Date:   Thu, 3 Dec 2020 09:37:39 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Rafael Aquini <aquini@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>, linux-api@vger.kernel.org
-Subject: Re: [PATCH -V6 RESEND 2/3] NOT kernel/man-pages:
- man2/set_mempolicy.2: Add mode flag MPOL_F_NUMA_BALANCING
-Message-ID: <20201203093739.GB3306@suse.de>
-References: <20201202084234.15797-1-ying.huang@intel.com>
- <20201202084234.15797-3-ying.huang@intel.com>
- <20201202114357.GW3306@suse.de>
- <87ft4npskx.fsf@yhuang-dev.intel.com>
+        id S2388612AbgLCJiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:38:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729955AbgLCJiu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 04:38:50 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF9CC061A4D;
+        Thu,  3 Dec 2020 01:38:09 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id x4so825366pln.8;
+        Thu, 03 Dec 2020 01:38:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ylltcrxB19VsNb7LSx2gG1PfoZfzFKBLNq3pVY2/JJY=;
+        b=gzZp2lzT30ElyJteLBwcbG5dIj5R0BFaaJia9bSIX5+zwA5Uy8knx8B/6/tZOIpOWh
+         P9cEqxzbBkTlN/NAZ4DpBo5FflnmBvudFpYAy/+PN61E2FwZxvzeRAU7WQXoJ6KidS1I
+         mN0AkD9M5ZBxKwmxlb3PpKAsRFrmbTbHyHT4WcsawnYBXsqfkddmbm3C88LvzMHRQqfF
+         WsWk4vfZe/YT1lkcb+EtrDT5fZu04TwKjUlTcItnJbXdq2NuBU8es3BIu3kHldUrQCsg
+         rFRT1jxdfPbz5ZEgmzGWMPWmWeBdqyv9qHq+c0PpdOnIGcDBmwb7fu9za24aaNfxpRiT
+         2+tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ylltcrxB19VsNb7LSx2gG1PfoZfzFKBLNq3pVY2/JJY=;
+        b=RMKBD5GUqYKFm41qD6WpsNqIWDg7cavMTM1Poz1O23qGXxCcznzRg76Y7q5Nb57yKJ
+         k2BpUBZZ9WNBK6oDSLVOcsSA/GOY79D5GyMhg+DPaF8lzh/GTOM1KSpzTJWkeZFXJ5F9
+         lXcJLgMgqTbHS502hYXrSFp3C9UNwc3c9dnxiathww/NnhLmTjyV2Goerx456ARmG2GW
+         gZqGcXpF+ppBu/At7e26ZrZB9Iht/p68WRPSILAK5KLyBPusDOgB9KQfY+PAN7Dt6BGG
+         y0iH4hDDqfJgMDml13ApECyRU4ZK0liE5b4qSkvZdUPo9FD/vbwWmFg3/u1/Z1tgPnG6
+         oFqg==
+X-Gm-Message-State: AOAM532ADcfqKsYOTdnafL4pJVQ0kqvDnA2Fs9bh44npjpJP8yIlFwqh
+        67Q4OmenRjj1Xvs8wn6gX6IOBGIo7egyB8wl2g==
+X-Google-Smtp-Source: ABdhPJy+aysOtZRB462WAqAjNTtAq1ZbnYWrXO9i59nhtPVLaGN+abpDQP6bXkuJBGlCBWLMaIcrc/07smM9AzZPAlQ=
+X-Received: by 2002:a17:90a:bf88:: with SMTP id d8mr2353213pjs.124.1606988289465;
+ Thu, 03 Dec 2020 01:38:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <87ft4npskx.fsf@yhuang-dev.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201203200837.68df59a1@canb.auug.org.au>
+In-Reply-To: <20201203200837.68df59a1@canb.auug.org.au>
+From:   Rui Salvaterra <rsalvaterra@gmail.com>
+Date:   Thu, 3 Dec 2020 09:37:58 +0000
+Message-ID: <CALjTZvZkVzpzCO7r0_+UDS0BEtOvQJGVh70iBgjnoLztBOYO_w@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 09:49:02AM +0800, Huang, Ying wrote:
-> >> diff --git a/man2/set_mempolicy.2 b/man2/set_mempolicy.2
-> >> index 68011eecb..3754b3e12 100644
-> >> --- a/man2/set_mempolicy.2
-> >> +++ b/man2/set_mempolicy.2
-> >> @@ -113,6 +113,12 @@ A nonempty
-> >>  .I nodemask
-> >>  specifies node IDs that are relative to the set of
-> >>  node IDs allowed by the process's current cpuset.
-> >> +.TP
-> >> +.BR MPOL_F_NUMA_BALANCING " (since Linux 5.11)"
-> >> +Enable the Linux kernel NUMA balancing for the task if it is supported
-> >> +by kernel.
-> >> +If the flag isn't supported by Linux kernel, return -1 and errno is
-> >> +set to EINVAL.
-> >>  .PP
-> >>  .I nodemask
-> >>  points to a bit mask of node IDs that contains up to
-> >> @@ -293,6 +299,9 @@ argument specified both
-> >
-> > Should this be expanded more to clarify it applies to MPOL_BIND
-> > specifically?
-> >
-> > Maybe the first patch should be expanded more and explictly fail if
-> > MPOL_F_NUMA_BALANCING is used with anything other than MPOL_BIND?
-> 
-> For MPOL_PREFERRED, why could we not use NUMA balancing to migrate pages
-> to the accessing local node if it is same as the preferred node? 
+Hi, Stephen,
 
-You could but the kernel patch does not do that by making preferred_nid
-stick to the preferred node when hinting faults are trapped on that VMA.
-It would have to be a separate patch coupled with a man page update. If
-you wanted to go in this direction in the future, then the patch should
-explicitly return an error *now* if MPOL_PREFERRED is or'd with
-MPOL_F_NUMA_BALANCING so that an application becomes aware of
-MPOL_F_NUMA_BALANCING then it can detect if support exists in the
-current running kernel.
+On Thu, 3 Dec 2020 at 09:08, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the akpm-current tree, today's linux-next build (powerpc
+> ppc44x_defconfig) failed like this:
+>
+[=E2=80=A6]
+>
+> Caused by commit
+>
+>   a6d52df2d8bc ("zram: break the strict dependency from lzo")
+>
+> I have reverted that commit for today.
 
-> Even for MPOL_INTERLEAVE, if the target node is the same as the
-> accessing local node, can we use NUMA balancing to migrate pages?
-> 
+Thanks for the heads-up, I think I know where the problem is.
 
-The intent of MPOL_INTERLEAVE is to average the costs of the memory
-access so the average cost across the VMA is roughly similar across the
-entire range. This may be particularly important if the VMA is shared
-between multiple threads that are spread out on multiple nodes. A change
-in semantics there should be clearly documented.
-
-Similar, if you want to go in this direction, MPOL_F_NUMA_BALANCING
-should be chcked against MPOL_INTERLEAVE and explicitly fail now so
-suport can be detected at runtime.
-
-> So, I prefer to make MPOL_F_NUMA_BALANCING to be
-> 
->   Optimizing with NUMA balancing if possible, and we may add more
->   optimization in the future.
-> 
-
-Maybe, but I think it's best that the actual behaviour of the kernel is
-documented instead of desired behaviour or future planning.
-
--- 
-Mel Gorman
-SUSE Labs
+Cheers,
+Rui
