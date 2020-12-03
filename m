@@ -2,155 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25C12CD304
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A012CD30D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388660AbgLCJ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:56:28 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:47858 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387616AbgLCJ41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:56:27 -0500
-Received: from [10.130.0.58] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn9MdtshfGl8ZAA--.56052S3;
-        Thu, 03 Dec 2020 17:55:42 +0800 (CST)
-Subject: Re: [PATCH 2/2] MIPS: Add fix_range_node after parse "mem=" parameter
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>
-References: <1606985867-9791-1-git-send-email-hejinyang@loongson.cn>
- <1606985867-9791-3-git-send-email-hejinyang@loongson.cn>
- <A9C59E61-FBF7-4AED-AF87-DB3AAB913871@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <485bbccb-4a18-16fb-b3ac-9f796d7cb4fd@loongson.cn>
-Date:   Thu, 3 Dec 2020 17:55:41 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1730164AbgLCJ5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:57:46 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:56730 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730121AbgLCJ5q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 04:57:46 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B39tR0N005837;
+        Thu, 3 Dec 2020 04:56:53 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 355vj5n7uf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 04:56:53 -0500
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0B39uoYu008262
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 3 Dec 2020 04:56:50 -0500
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 3 Dec 2020 01:56:48 -0800
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 3 Dec 2020 01:56:48 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 3 Dec 2020 01:56:48 -0800
+Received: from saturn.ad.analog.com ([10.48.65.108])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0B39ukah003105;
+        Thu, 3 Dec 2020 04:56:47 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2] iio: core: split __iio_device_attr_init() to init only the attr object
+Date:   Thu, 3 Dec 2020 11:56:42 +0200
+Message-ID: <20201203095642.74622-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <A9C59E61-FBF7-4AED-AF87-DB3AAB913871@flygoat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxn9MdtshfGl8ZAA--.56052S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZrW5Zr17AFW3GF4DtFWrZrb_yoW5trWUpr
-        ZrCFn5GF4kWr97Za4ft348uryrAws5KFWfua17CF15Xas0qr9rAr1SgF15u34jvrW8K3WF
-        vF10g3srua12yaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvSb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l
-        c2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
-        AVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280
-        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
-        ZEXa7IU0nXo5UUUUU==
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-03_06:2020-12-03,2020-12-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ clxscore=1015 malwarescore=0 suspectscore=0 mlxscore=0 bulkscore=0
+ mlxlogscore=999 phishscore=0 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012030059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The __iio_device_attr_init() function initializes a device_attribute
+object, but mostly it just does a lot of name creation logic.
 
+We will want to re-use this logic for name-creation, so this change
+re-purposes the __iio_device_attr_init() to be a __iio_attr_init() function
+which just handles the creation of the attribute name.
 
-On 12/03/2020 05:27 PM, Jiaxun Yang wrote:
->
-> 于 2020年12月3日 GMT+08:00 下午4:57:47, Jinyang He <hejinyang@loongson.cn> 写到:
->> This problem may only occur on NUMA platforms. When machine start
->> with the "mem=" parameter on Loongson64, it cannot boot. When parsing the
->> "mem=" parameter, first all the RAM was removed, and then the memory was
->> not added by memblock_add_node(), which caused the newly added memory to
->> be on MAX_NUMNODES. The key to solve this problem is to fix these memory
->> nodes through memblock_set_node() before bootmem_init() or earlier. So
->> it would be better to fix it before check_kernel_sections_mem().
->> The check_kernel_sections_mem() will check whether the current RAM can be
->> used by the kernel. If this fix is added after that, it will do a redundant
->> memblock_add operation. Adding the fixup_region_node() function can also
->> provide a reference for future platforms using NUMA when encountering
->> such problems.
-> Hi Jingyang,
->
-> Is it possible to do it when parsing cmdline to avoid this kind of fixup?
->
-> Thanks.
->
-> - Jiaxun
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
 
-Hi, Jiaxun,
+Changelog v1 -> v2:
+* https://lore.kernel.org/linux-iio/20201117162340.43924-6-alexandru.ardelean@analog.com/
+* split away from series; I don't know when I will have time to re-visit
+  the entire original series, so might as well move forward a few patches
 
-Of course. But "memmap=" could cause same problem , "mem=" could
-parse many times. So it better to fix it after these parse opertion 
-having done.
+ drivers/iio/industrialio-core.c | 43 +++++++++++++--------------------
+ 1 file changed, 17 insertions(+), 26 deletions(-)
 
-Thanks,
-Jinyang.
-
->> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
->> ---
->> arch/mips/include/asm/bootinfo.h |  1 +
->> arch/mips/kernel/setup.c         |  6 +++++-
->> arch/mips/loongson64/numa.c      | 11 +++++++++++
->> 3 files changed, 17 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
->> index aa03b12..ddc17b1 100644
->> --- a/arch/mips/include/asm/bootinfo.h
->> +++ b/arch/mips/include/asm/bootinfo.h
->> @@ -91,6 +91,7 @@ const char *get_system_type(void);
->> extern unsigned long mips_machtype;
->>
->> extern void detect_memory_region(phys_addr_t start, phys_addr_t sz_min,  phys_addr_t sz_max);
->> +extern void fixup_region_node(void);
->>
->> extern void prom_init(void);
->> extern void prom_free_prom_memory(void);
->> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
->> index b3a711e..fe93882 100644
->> --- a/arch/mips/kernel/setup.c
->> +++ b/arch/mips/kernel/setup.c
->> @@ -110,6 +110,8 @@ void __init detect_memory_region(phys_addr_t start, phys_addr_t sz_min, phys_add
->> 	memblock_add(start, size);
->> }
->>
->> +void __weak fixup_region_node(void) {}
->> +
->> /*
->>   * Manage initrd
->>   */
->> @@ -631,8 +633,10 @@ static void __init arch_mem_init(char **cmdline_p)
->>
->> 	parse_early_param();
->>
->> -	if (usermem)
->> +	if (usermem) {
->> 		pr_info("User-defined physical RAM map overwrite\n");
->> +		fixup_region_node();
->> +	}
->>
->> 	check_kernel_sections_mem();
->>
->> diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
->> index c6f0c48..d8661cc 100644
->> --- a/arch/mips/loongson64/numa.c
->> +++ b/arch/mips/loongson64/numa.c
->> @@ -220,6 +220,17 @@ void __init mem_init(void)
->> 	mem_init_print_info(NULL);
->> }
->>
->> +void __init fixup_region_node(void)
->> +{
->> +	phys_addr_t start, end;
->> +	u64 i;
->> +
->> +	for_each_mem_range(i, &start, &end) {
->> +		memblock_set_node(start, end - start,
->> +				  &memblock.memory, pa_to_nid(start));
->> +	}
->> +}
->> +
->> /* All PCI device belongs to logical Node-0 */
->> int pcibus_to_node(struct pci_bus *bus)
->> {
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index 1da7e518435a..5bfcee277879 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -935,22 +935,15 @@ static ssize_t iio_write_channel_info(struct device *dev,
+ }
+ 
+ static
+-int __iio_device_attr_init(struct device_attribute *dev_attr,
+-			   const char *postfix,
+-			   struct iio_chan_spec const *chan,
+-			   ssize_t (*readfunc)(struct device *dev,
+-					       struct device_attribute *attr,
+-					       char *buf),
+-			   ssize_t (*writefunc)(struct device *dev,
+-						struct device_attribute *attr,
+-						const char *buf,
+-						size_t len),
+-			   enum iio_shared_by shared_by)
++int iio_attr_init(struct attribute *attr,
++		  const char *postfix,
++		  struct iio_chan_spec const *chan,
++		  enum iio_shared_by shared_by)
+ {
+ 	int ret = 0;
+ 	char *name = NULL;
+ 	char *full_postfix;
+-	sysfs_attr_init(&dev_attr->attr);
++	sysfs_attr_init(attr);
+ 
+ 	/* Build up postfix of <extend_name>_<modifier>_postfix */
+ 	if (chan->modified && (shared_by == IIO_SEPARATE)) {
+@@ -1046,17 +1039,7 @@ int __iio_device_attr_init(struct device_attribute *dev_attr,
+ 		ret = -ENOMEM;
+ 		goto error_free_full_postfix;
+ 	}
+-	dev_attr->attr.name = name;
+-
+-	if (readfunc) {
+-		dev_attr->attr.mode |= S_IRUGO;
+-		dev_attr->show = readfunc;
+-	}
+-
+-	if (writefunc) {
+-		dev_attr->attr.mode |= S_IWUSR;
+-		dev_attr->store = writefunc;
+-	}
++	attr->name = name;
+ 
+ error_free_full_postfix:
+ 	kfree(full_postfix);
+@@ -1089,9 +1072,7 @@ int __iio_add_chan_devattr(const char *postfix,
+ 	iio_attr = kzalloc(sizeof(*iio_attr), GFP_KERNEL);
+ 	if (iio_attr == NULL)
+ 		return -ENOMEM;
+-	ret = __iio_device_attr_init(&iio_attr->dev_attr,
+-				     postfix, chan,
+-				     readfunc, writefunc, shared_by);
++	ret = iio_attr_init(&iio_attr->dev_attr.attr, postfix, chan, shared_by);
+ 	if (ret)
+ 		goto error_iio_dev_attr_free;
+ 	iio_attr->c = chan;
+@@ -1107,6 +1088,16 @@ int __iio_add_chan_devattr(const char *postfix,
+ 		}
+ 	list_add(&iio_attr->l, attr_list);
+ 
++	if (readfunc) {
++		iio_attr->dev_attr.attr.mode |= S_IRUGO;
++		iio_attr->dev_attr.show = readfunc;
++	}
++
++	if (writefunc) {
++		iio_attr->dev_attr.attr.mode |= S_IWUSR;
++		iio_attr->dev_attr.store = writefunc;
++	}
++
+ 	return 0;
+ 
+ error_device_attr_deinit:
+-- 
+2.27.0
 
