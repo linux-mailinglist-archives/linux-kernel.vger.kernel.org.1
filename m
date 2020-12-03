@@ -2,79 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2845D2CCD01
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BED72CCD24
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:15:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgLCDHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 22:07:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgLCDHE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 22:07:04 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C08C061A52
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 19:06:18 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id u18so564276lfd.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 19:06:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iabHWxPKR0AIdSLCLpw/C98fo9E+QLOwHBUfijaTHQI=;
-        b=AUQsOHkBeiTCRFg84V/yDRz2/jWuR3J0fKxAp52o5M4SXIBufUW4si5duvf/GMoL1C
-         swixKu+RjjKlS6wWmi4ALcrumj1I3aXZdS3MNLe1WCmrWmDvWBzShKcYMihiWhfD/m6N
-         kMhh5OXRHnmsZXfwMXP9kMPMPmky/B5InN+Z7an/boun8bZWXBkBS5Xp8iH3BFKxlnO2
-         OFzLiyFIa7fykoAUXq1E1plqt4Ik2j1wNwUAAzhg7P0BKM1wibFomM5L6v97uI/U8AQl
-         aTtaFfU5eHGq9ATsbpKp41UUmEI4AtWOrmwXDBBXiGUlyFLutxxVot0xPwYyTmWlKAoN
-         SKgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iabHWxPKR0AIdSLCLpw/C98fo9E+QLOwHBUfijaTHQI=;
-        b=bdjAFodaLVgjtnZwo1jjOqL0i672gNllqPlmAsJz/AdPJ1pb0Ej5w92RcucvW+Bq4l
-         Tb04oQIlVTb6ONsAhMvnYVfOc9fmVn+pZzkAAG0RCbsTlUuk5SYTyoylijcJPpVw/TGQ
-         Sugtmi0kVNDK+9PcODTxweCy9n2haz7U8wM+Ul8Sqfml21RslRzx/ufUKZa7edCLE8/p
-         ovt8BUMS1oMs0THl7k3CwU82FEwT25GcWdpB1ykLCSArZFPqdUstinuIsVPbyOsxW6h+
-         K6gkLOfg3UcYVm7r9l7y56N38hHeE3dTiA6rvdLXnKvyv4J8gFf7nFSIYSA20LLkrUxx
-         5ceQ==
-X-Gm-Message-State: AOAM530ZEYD/yhwlkeHkqSkBOMi7R5KxTZO1ts39dJWt22QXksjBrQvD
-        W2VhF6u5s6unh6kUPPv0EMk0LnodjyGyOBafn5Yv4Q==
-X-Google-Smtp-Source: ABdhPJykgUoWnXraVCTndySD7LalvFP87smyvD+6cUr/lw5/huv1uwshhaw6Nrv3Vqyp1o0ghF0lO5Qq8V2d4oHcPfs=
-X-Received: by 2002:ac2:5102:: with SMTP id q2mr439864lfb.165.1606964776658;
- Wed, 02 Dec 2020 19:06:16 -0800 (PST)
+        id S1728063AbgLCDPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 22:15:09 -0500
+Received: from mail-db8eur05on2082.outbound.protection.outlook.com ([40.107.20.82]:7776
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726938AbgLCDPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 22:15:09 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EKPP9sfZWdStpNGauSTQoTFby3/ChWF2z4Q23FGxQoOWTcIWo/VLQg7D9X/kTgFg21fVm04USS+eg5QJW5NOePs9UtpBtTU4nupDKwxpAWdcRuYItt/L+4ONeFf8GdwETHWGBijFwbijflkSmKvLbcv7sD0hbsiuY+9/wKx6j+BProLXXu4P5ZArSfwBvl+D264JnLi1nlgNZFb5Dzk6/FFR74dcVLCuv7BTQyAaV+z6MZbKZWJS0KWetGa8fzSk/phErzcd1A4sS7ErRYoEQ2bx9SNHnUvY7H4qrPRNFrTu0nuPowSwe7lZXbVgvS9NUBQ7081CU3dHTtJJsqzrjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iTRnOmtA2L0I9hqJY9mxEzszA6lBbrtmadAiUMlfRXE=;
+ b=czU0kGwBuWIgEZJ+KBBguxoyUQr5qLYl61ZX88wBPEdBAIo47Yyw9b7R6czQ7l/US5bKRDBStl+TO5oreF2ccYdR7A69Tc6A3s5SgPvIdPKHxXAvLRUgBjnUchq5LMK5oXEhw6CHplieQ7wrEaIFACvwTziRkfZ6OXJBpyKSr3OnojIrbccSjdsh8ZJVchPr8Y5qfqiK++fs3Du4zrY+kfAB+bkHD44wJ6LcLOIp95iqhXGDQhEfixhIidEB7kfu6Cj5GqQx9pBZW3KBkL583T9T2ku+qTPjsSuIopAEGcnoeasZNSWdWsKOzbmujm2dX63ghpmhKOzWK+SxWHrQIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iTRnOmtA2L0I9hqJY9mxEzszA6lBbrtmadAiUMlfRXE=;
+ b=AP6lfcXHlC2khmQuvTM1/ojE9GYlDzVnqZolV1M2rj7C5DAMDBLBP1G5cR7fjx4QWEZ9EZvLIMzPVmxWwkb/MsarAJ9rL9EfZ22vGtAWRCHhbWcLMEga+fLysE+kqXmxsolxXxmXmBWrNUhGyq9ndD3yFrSXv7GnY2cIjBIJWGQ=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ by VI1PR0402MB2879.eurprd04.prod.outlook.com (2603:10a6:800:b7::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.23; Thu, 3 Dec
+ 2020 03:14:16 +0000
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::dcb7:6117:3def:2685]) by VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::dcb7:6117:3def:2685%7]) with mapi id 15.20.3611.025; Thu, 3 Dec 2020
+ 03:14:15 +0000
+From:   Liu Ying <victor.liu@nxp.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     p.zabel@pengutronix.de, airlied@linux.ie, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, robh+dt@kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, laurentiu.palcu@oss.nxp.com
+Subject: [PATCH v2 0/6] drm/imx: Introduce i.MX8qm/qxp DPU DRM
+Date:   Thu,  3 Dec 2020 11:06:25 +0800
+Message-Id: <1606964791-24927-1-git-send-email-victor.liu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR02CA0028.apcprd02.prod.outlook.com
+ (2603:1096:3:18::16) To VI1PR04MB3983.eurprd04.prod.outlook.com
+ (2603:10a6:803:4c::16)
 MIME-Version: 1.0
-References: <20201202190824.1309398-1-dlatypov@google.com> <20201202190824.1309398-3-dlatypov@google.com>
-In-Reply-To: <20201202190824.1309398-3-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 3 Dec 2020 11:06:05 +0800
-Message-ID: <CABVgOSmiXDS=wGe0XPvr2BDqg+1be43TLFLE8fW79ZNPUYpNYQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] kunit: tool: use `with open()` in unit test
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR02CA0028.apcprd02.prod.outlook.com (2603:1096:3:18::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3632.17 via Frontend Transport; Thu, 3 Dec 2020 03:14:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 473057e7-057f-4bae-9745-08d8973983ec
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB2879:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB287924590436584886D62EE198F20@VI1PR0402MB2879.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hOE6Swx7kMSklLaj4iKeA2HVmDMCtcdceWDdJukqA92ovOpXyg1tA+h5BEMwKJoMUSL7g3Jt4VGoRowVzECgoRbLwdFjDWkUWuB69QdmHQFhTAj6kjYmmX7+ziG5qsTWTewzASPVDHclikch4HVr3kXigUci2gbiMObFcIJ+VCX4UleuDxnndsefscIPcgMo2Uz2cE6r3FXrFYxroZo+XCh5pFgTOKVVHsU3bsnwWVfnacTFdbK5ZWyMsYr88fhPjvkMJ5VVJq17Cq0HFdGNimBaSrk26i3w9G2F3jW7+NcVc+0jgWPZJB1ElMLNZX5jTt6W3Gf8MiIsXSb8dGF7a183dtgqaaXmuD6Hq+KUvtNWeMTaR8GzdqXxdiL8RxZfA4lOUrxBD2Q0ByEoqr2GG47YBfaLEhRWZBNJ0eqBadk1/VNQwKifP5dQ8b3BaGMOyWQiEuiKwc9BzUC9jVGNXw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(366004)(346002)(136003)(8936002)(4326008)(186003)(66476007)(6666004)(66556008)(5660300002)(26005)(478600001)(7416002)(6486002)(956004)(2906002)(6512007)(316002)(2616005)(66946007)(8676002)(69590400008)(86362001)(83380400001)(6506007)(52116002)(966005)(16526019)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hrnt4v00Z88yfv7O3f9Eca3vJKWJRcZiiGXEbdhqp9Bxdcngwh1qJ0yphJI5?=
+ =?us-ascii?Q?mFplm0DKLjMDt6nhMKPfPhBDffEYOl+wiBu2oinoxm7oTvRBcLcQpWlgynw8?=
+ =?us-ascii?Q?310uUciHwNwBhnk4qfjzyQMZ7sgOXBEvi5L7BmMW06dJTSQ0BT77akRIF4gS?=
+ =?us-ascii?Q?VzY8KzXXB1FI51BSRIM9ogej/GtC1C18FZT15dvZzKa6lMBEEQ2zj2D7iV1o?=
+ =?us-ascii?Q?QnXIvvXdKbpM6kmQ5xeJA7Jh8apstbr5qJg0LZmpZjIS6nt9tgTmmgaeAHBC?=
+ =?us-ascii?Q?10blWKpCsIFCqs3nq4ugifR7wSWNjvoKx81KOu+e3ns55r2fTCqjCzF59egz?=
+ =?us-ascii?Q?F1Nht1Z+Kxw8ywPPMVD1tBcfC4pSPqPJIFSUCLLZK+j82iHNmZYgRwxLuz9N?=
+ =?us-ascii?Q?/nGP/Q1+BFjjIuVNhq7bkQ8REhDBkF8gufE+x/Dm4YZ6fOOF3NoAEjcPkIw2?=
+ =?us-ascii?Q?n5ohmSCBnGBfSkAZU0+5+bIBdnr2nPyLejiI71WRxj7zNeMfeBhOhqrXSnGm?=
+ =?us-ascii?Q?ApyGGjpJ+7C9lANOqgP7kY4uXc7rYWB5wQiC5kZSoY/C7C/kPjyRYq6nsvzr?=
+ =?us-ascii?Q?q8vj7uShMIO02TnAKfv8TX98Nya0PObWJvtDmLgtg/VGLAEeLkv80cmV7IN6?=
+ =?us-ascii?Q?4OxV0mxWTpjrBoIoNhyFqopD7VRgUoLzCwACnR4KVjDj8NnnV9uQxfwyrC9E?=
+ =?us-ascii?Q?v4w4tSqqatP7gSvZIBKxwBCIyiz8PoH/rwDyay9hwHUpxmK1fi/OsWiU6TE7?=
+ =?us-ascii?Q?AXH6gdO9P/bKPXUzFbG9FrkV/DkXtvTduwj/R9Sa9+vayerQu5iAtTsrSwg/?=
+ =?us-ascii?Q?LqVp54NW01J2m2nhfHd3KRMl6oeUBBEQRNoguVG1lk2lP9xmRXDRE2pDi5h1?=
+ =?us-ascii?Q?Ap+AgLwFZ7dnMZ5NTOuawqIEmmRI9jJBjnLtUgF3g/sJeOZTkf9h3uc+JGT4?=
+ =?us-ascii?Q?JVg8C8EnaC0TuAXbqfM+cwvJ5fepmFFNI8rYalCUFIo5hi/nvnRgJkSgVzli?=
+ =?us-ascii?Q?rVZm?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 473057e7-057f-4bae-9745-08d8973983ec
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2020 03:14:15.8843
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N3vM4oiaswE5CPT1/r8U8GeMiKDuSXvLEuC0HHEZ75ZtqbCR7a9cR8xNHDFIW2cYf7EBudDBhd5hhPF4PP6Shg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2879
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 3:09 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> The use of manual open() and .close() calls seems to be an attempt to
-> keep the contents in scope.
-> But Python doesn't restrict variables like that, so we can introduce new
-> variables inside of a `with` and use them outside.
->
-> Do so to make the code more Pythonic.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> ---
+Hi,
 
-Reviewed-by: David Gow <davidgow@google.com>
 
-Cheers,
--- David
+This patch set introduces i.MX8qm/qxp Display Processing Unit(DPU) DRM support.
+
+DPU is comprised of a blit engine for 2D graphics, a display controller
+and a command sequencer.  Outside of DPU, optional prefetch engines can
+fetch data from memory prior to some DPU fetchunits of blit engine and
+display controller.  The pre-fetchers support linear formats and Vivante
+GPU tile formats.
+
+Reference manual can be found at:
+https://www.nxp.com/webapp/Download?colCode=IMX8DQXPRM
+
+
+This patch set adds kernel modesetting support for the display controller part.
+It supports two CRTCs per display controller, several planes, prefetch
+engines and some properties of CRTC and plane.  Currently, the registers of
+the controller is accessed without command sequencer involved, instead just by
+using CPU.  DRM connectors would be created from the DPU KMS driver.
+
+
+If people want to try this series with i.MX8qxp, clock patches can be found at:
+https://www.spinics.net/lists/arm-kernel/msg859763.html
+
+and, power domain patches have already landed in Shawn's
+i.MX for-next git branch.
+
+This version drops the device tree patches because we'll use new dt binding
+way to support i.MX8qm/qxp clocks.  It depends on the below series to do basic
+conversions for the platforms which has not landed yet:
+https://www.spinics.net/lists/linux-mmc/msg61965.html
+
+
+I will send other patch sets to add downstream bridges(embedded in i.MX8qxp)
+to support LVDS displays.
+
+A brief look at the pipe:
+prefetch eng -> DPU -> pixel combiner -> pixel link -> pixel to DPI(pxl2dpi) ->
+LVDS display bridge(LDB)
+
+Patch 1 ~ 3 add dt-bindings for DPU and prefetch engines.
+Patch 4 is a minor improvement of a macro to suppress warning as the KMS driver
+uses it.
+Patch 5 introduces the DPU DRM support.
+Patch 6 updates MAINTAINERS.
+
+Welcome comments, thanks.
+
+v1->v2:
+* Test this patch set also with i.MX8qm LVDS displays.
+* Drop the device tree patches because we'll use new dt binding way to
+  support i.MX8qm/qxp clocks.  This depends on a not-yet-landed patch set
+  to do basic conversions for the platforms.
+* Fix dt binding yamllint warnings.
+* Require bypass0 and bypass1 clocks for both i.MX8qxp and i.MX8qm in DPU's
+  dt binding documentation.
+* Use new dt binding way to add clocks in the dt binding examples.
+* Address several comments from Laurentiu on the DPU DRM patch.
+
+Liu Ying (6):
+  dt-bindings: display: imx: Add i.MX8qxp/qm DPU binding
+  dt-bindings: display: imx: Add i.MX8qxp/qm PRG binding
+  dt-bindings: display: imx: Add i.MX8qxp/qm DPR channel binding
+  drm/atomic: Avoid unused-but-set-variable warning on
+    for_each_old_plane_in_state
+  drm/imx: Introduce i.MX8qm/qxp DPU DRM
+  MAINTAINERS: add maintainer for i.MX8qxp DPU DRM driver
+
+ .../bindings/display/imx/fsl,imx8qxp-dprc.yaml     |  87 ++
+ .../bindings/display/imx/fsl,imx8qxp-dpu.yaml      | 416 +++++++++
+ .../bindings/display/imx/fsl,imx8qxp-prg.yaml      |  60 ++
+ MAINTAINERS                                        |   9 +
+ drivers/gpu/drm/imx/Kconfig                        |   1 +
+ drivers/gpu/drm/imx/Makefile                       |   1 +
+ drivers/gpu/drm/imx/dpu/Kconfig                    |  10 +
+ drivers/gpu/drm/imx/dpu/Makefile                   |  10 +
+ drivers/gpu/drm/imx/dpu/dpu-constframe.c           | 170 ++++
+ drivers/gpu/drm/imx/dpu/dpu-core.c                 | 881 ++++++++++++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-crtc.c                 | 926 +++++++++++++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-crtc.h                 |  62 ++
+ drivers/gpu/drm/imx/dpu/dpu-disengcfg.c            | 114 +++
+ drivers/gpu/drm/imx/dpu/dpu-dprc.c                 | 721 ++++++++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-dprc.h                 |  40 +
+ drivers/gpu/drm/imx/dpu/dpu-drv.c                  | 297 +++++++
+ drivers/gpu/drm/imx/dpu/dpu-drv.h                  |  28 +
+ drivers/gpu/drm/imx/dpu/dpu-extdst.c               | 296 +++++++
+ drivers/gpu/drm/imx/dpu/dpu-fetchdecode.c          | 291 +++++++
+ drivers/gpu/drm/imx/dpu/dpu-fetcheco.c             | 221 +++++
+ drivers/gpu/drm/imx/dpu/dpu-fetchlayer.c           | 151 ++++
+ drivers/gpu/drm/imx/dpu/dpu-fetchunit.c            | 609 ++++++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-fetchunit.h            | 191 +++++
+ drivers/gpu/drm/imx/dpu/dpu-fetchwarp.c            | 247 ++++++
+ drivers/gpu/drm/imx/dpu/dpu-framegen.c             | 392 +++++++++
+ drivers/gpu/drm/imx/dpu/dpu-gammacor.c             | 220 +++++
+ drivers/gpu/drm/imx/dpu/dpu-hscaler.c              | 272 ++++++
+ drivers/gpu/drm/imx/dpu/dpu-kms.c                  | 543 ++++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-kms.h                  |  23 +
+ drivers/gpu/drm/imx/dpu/dpu-layerblend.c           | 345 ++++++++
+ drivers/gpu/drm/imx/dpu/dpu-plane.c                | 703 ++++++++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-plane.h                |  56 ++
+ drivers/gpu/drm/imx/dpu/dpu-prg.c                  | 433 ++++++++++
+ drivers/gpu/drm/imx/dpu/dpu-prg.h                  |  45 +
+ drivers/gpu/drm/imx/dpu/dpu-prv.h                  | 203 +++++
+ drivers/gpu/drm/imx/dpu/dpu-tcon.c                 | 249 ++++++
+ drivers/gpu/drm/imx/dpu/dpu-vscaler.c              | 305 +++++++
+ drivers/gpu/drm/imx/dpu/dpu.h                      | 389 +++++++++
+ include/drm/drm_atomic.h                           |   4 +-
+ 39 files changed, 10020 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-prg.yaml
+ create mode 100644 drivers/gpu/drm/imx/dpu/Kconfig
+ create mode 100644 drivers/gpu/drm/imx/dpu/Makefile
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-constframe.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-core.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-crtc.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-crtc.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-disengcfg.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-dprc.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-dprc.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-drv.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-drv.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-extdst.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchdecode.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetcheco.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchlayer.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchunit.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchunit.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchwarp.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-framegen.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-gammacor.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-hscaler.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-kms.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-kms.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-layerblend.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-plane.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-plane.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prg.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prg.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prv.h
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-tcon.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu-vscaler.c
+ create mode 100644 drivers/gpu/drm/imx/dpu/dpu.h
+
+-- 
+2.7.4
+
