@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C49F02CCB30
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 782EB2CCB2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728304AbgLCAqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 19:46:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53852 "EHLO
+        id S1727690AbgLCAqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 19:46:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728035AbgLCAqO (ORCPT
+        with ESMTP id S1726811AbgLCAqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 19:46:14 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0390EC061A4A
+        Wed, 2 Dec 2020 19:46:09 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D681DC061A4B
         for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 16:44:50 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id f1so162069plt.12
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 16:44:49 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id u2so168450pls.10
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 16:44:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=momj+ASHgDWNBxEWCpbYT3s2xBxAd5KeNj7yfrmXJ4k=;
-        b=J+UiHoEEgerhs/xVR+QdCDPPoxkgHW42MgeCYEP5ZKzf7Vvn4mu1VCtSWvVzwKZB05
-         9IhO2K9pkWg0FX/FPQ0tO6LB9WweTORmn2J7OMPzRrV3rXwlbo5KSyQXc/GWZ07BB0TK
-         Tfab9wMOgBc1pnTcUA0ZNC1ry+dKUWeoPPeNA=
+        bh=bLBtcahHUgRey2bocBX3LpkzES6o85CTkdKSQIoTxiU=;
+        b=Yl9WZnMaww0he7QRfW9jOqZSRgqRB8omuAfQPdgmN+mHSJ/1w2KF6OjEaqZ96ay718
+         S3/lMBp4ZRYn4a9gxgDJv+VLx28wtp9e/MsAZkKcE7K1gjsFf/4efo8hg1mrkkc01iFJ
+         wdPmigP/DP9pr2Htj3CmyEohPBnNZ8iEoyIcw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=momj+ASHgDWNBxEWCpbYT3s2xBxAd5KeNj7yfrmXJ4k=;
-        b=rpFXncup9qmQpLFu3ECC0vDdKrYhlu41lO4zl8IpzBimHliWfCGXlcR7pbS0jQBRjm
-         wT6Su17/dCqDLuV5JERfjcqdPW4Q8Hg7fwnQrFQu/8YLeIlUOhdwTl3kVzASOg8zQLFh
-         dhdeHeLZl0qnAdYVc6v09FenvfwirvgZNBIc51cUSLAwwAIKQ/6MKrp3Vztqo2sQPwxz
-         l8wKJ6zP+2cSsHeQo53k65rCdcQUs7XYM6Z9GK6cLIAhzbkFuxHW3/mJ3e+HTF2qPgiJ
-         udKVn81Z++YQg97glSaAugDLhaW70nfjVs0TQ+iz9NTIqgeK+UbvGyykkAMZ2jVU8u89
-         crgA==
-X-Gm-Message-State: AOAM532kx+aNQW21tr+w78e43AORun4iASq9BGnLGrHAHOOGT437xzTD
-        eBmlH0hm3wjitgHe15ikA01wUA==
-X-Google-Smtp-Source: ABdhPJz7IimuMbq8NNgEZKFOWjQEbfSl4zo0aZDs3ZgHm/hyGTkmgZC5RM5dMSOQOdUowmLVJIq/ug==
-X-Received: by 2002:a17:90b:3355:: with SMTP id lm21mr527519pjb.115.1606956289515;
-        Wed, 02 Dec 2020 16:44:49 -0800 (PST)
+        bh=bLBtcahHUgRey2bocBX3LpkzES6o85CTkdKSQIoTxiU=;
+        b=As+oED+jCP/ylDkMn8IM2xrEvTohWlRX/Enu/HJ85xKFDO26NhX0mi3AB2Daj+nBTc
+         vo57wUTSQcJzZvJH9nnFaAd5fKcuRnANUCigfQhGsZckoMzMnNrzs1k4hTpoiBpK7k3n
+         uUfhjYwkmWL+sQ5eIjJG7ZePALI6P2uyGyvO757mdNVqto3Eb9DhMH3KF7Xby/lMekAJ
+         kaeKCfo2dshmo2TgoL1dg9u50GB77M52C1ENDEQnfo+GM6hVPsQ//q6Zi4hvl6qwSYb7
+         UD8Q/OwMlrzadjJYbHfDQvZyhrL6SStqahg5SQqa5ZX6rwNa3SR6MkULhPgTmHWFXiBZ
+         bhgw==
+X-Gm-Message-State: AOAM531Vgpz/82Peqb6vkcuzIcIB1OO/KEhobiGFVbn6LykIeGV+vPk4
+        oJlHfvljBChGWRPko47xQSC4kQ==
+X-Google-Smtp-Source: ABdhPJziTF/7Csvco5TbtDuSOeB++T5uRE9JlkYulykOl44Jt3aDFe7dFZSWRfOtFboJKpuZBB8ktg==
+X-Received: by 2002:a17:90a:eb90:: with SMTP id o16mr546208pjy.45.1606956290467;
+        Wed, 02 Dec 2020 16:44:50 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y25sm231806pfn.44.2020.12.02.16.44.46
+        by smtp.gmail.com with ESMTPSA id s189sm235834pfb.60.2020.12.02.16.44.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 02 Dec 2020 16:44:46 -0800 (PST)
 From:   Kees Cook <keescook@chromium.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
         Nathan Chancellor <natechancellor@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Ard Biesheuvel <ardb@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Masahiro Yamada <masahiroy@kernel.org>,
@@ -64,45 +64,42 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Andrey Ryabinin <aryabinin@virtuozzo.com>,
         clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/7] ubsan: Disable object-size sanitizer under GCC
-Date:   Wed,  2 Dec 2020 16:44:33 -0800
-Message-Id: <20201203004437.389959-4-keescook@chromium.org>
+Subject: [PATCH v2 4/7] ubsan: Disable UBSAN_TRAP for all*config
+Date:   Wed,  2 Dec 2020 16:44:34 -0800
+Message-Id: <20201203004437.389959-5-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201203004437.389959-1-keescook@chromium.org>
 References: <20201203004437.389959-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=21c865d368e205cfd26bd9d13e0f9f89f171384b; i=L4GcuPKCev5MNqQc0RCGb8oc+Sj9uj4IyIr1ANDlbWc=; m=PBJG7bVEbrc41Z+BEj2wLGOXm7yrIzzNY1qvha6xoa8=; p=jGS9rva7ilUpon3Qx1DX+0oWwKBNC+al8p6dZtl31EM=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAl/INPMACgkQiXL039xtwCbIUQ/+OkV vjffTNt2uERV7vMRuPwpM9Ir02sn2AX3wrTDxTrLYtPKqDQ6Nv0c6If7kt/ix1Z9j6iPVez1vmnT7 N3DCeyorgb97zQFmYBlpuyEHsIix9bA2anZmEsjoB1l0ipZbjuPM2TiXeD+MppW23DcZkVyrhwXe5 ztJkUJ4H2yark/GEYoKKRqU99wCbLNkcd+UqpOEKZramY8SmOXaWZOrARgDtd9mEWSvQ5ZU0cFQxV cmki5bWEQ4VjPbJNFbICL19bQ67TR/fhZk8BkUbW0+YNozVxOCgkRA64YO+CZHnw3kUq5fcP0y/Dl VVqQ1VAvlBXwSZxjrbZxfdY7PtVGDkIUwuWqECT0wgn0Uv8KYFVPABjnI379t1+JrPiQ338pGRCIJ yL5xJCYeuZOKTFinRoko5o9qODMwVFpx/3CAmafnoItqQ9mrD9Oo/a3sCliuPaXSD1Dn6+ISruKdm s1Tv5MeTaEMHnAnsCgr7ZPExglNSNE2hhlciEJhqcOsad6qivPuIoeVt1qIQxfHMhZv56BH15ndSZ zvn0HcwnYU87shYo5CmlStdL4qMi+TaX9t8zUmiAt4mgDgWnzcD9h04B5WKo6Uf0+AaaDUjJd+ZmZ BuA2kGzeINXkrbt45W/br+R2YMpnWBFPx8go/Psajs84OaxalYGLC2AGy0MzUeVQ=
+X-Patch-Hashes: v=1; h=sha256; g=7ee65f6e259e469145bd4516a970901be12cf3f3; i=K+dhdzJLSQHC/2OrzylSjjcBSx8EEn7IdlM58268AK0=; m=YBBOuBPVmA0P1a8coxM/uNwSE65GsSmjFIZeFPhFxcA=; p=MLch31Yqya7Wm7SW8qWS5SpAYj2nWDWoZGT+cDhNm18=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAl/INPMACgkQiXL039xtwCYBSw/8DTc om4n+iIU1idXW55ytKK87K4IZv1Fjd3LIN+1ZMVRkJEffet3ABmM7D2LijRwGurqERGdSbAQNg0ds KMf0NneVxosE8z/1ytEp5P0apQexcdIaXPU/1YlGOCzJ5+FXBJ1BwNFozG2VpPQwOxba9WssYbbtm vyL3W0X2VHGgdQXWv3Ogwx11d6X98S0S0geq4rSgOSzKRHqDr6U/bNQGWQHtr4r6hGOU9p5G4uRV1 gQ7R+2cDrDx0HQb8Avg/vES/td9L/wTh5TjzYr6UZTV/6EJXdEq8f+em9QMbS9DwmtMVt461bXuKv qkUnHX3BnSKqWTlAzymTy+cARSzEFry86Rz8ZxPzjtXo/ubTyD/R3IbT3zCsQNn5J1ZsAj33agvLH mTGNArntPT8jfvhsBe+IFKUUNMgFvli6FZhYcyFAGtq6pV5ILsuWsn7NEEAnjht/3hSH8V83eUqhP z8EikJENhLcSALmAQCW0DEZGsPH2P1Dh8LOgBIxj6xEmeO6kepSI/hs0dCg6KinAlk9BRe53uBCIR OxM/ERuEH3QizmQINLxQe1AuomVsx+e+ZiDjYsyOhRq1ukBclw7QSMR1CyshAr5cswbCztLiwwifR f+LEwKTBqV4vCM8x8FVGlv+bLJ4NqrFhHZ3/cV5rIyu3GZlTWs85IABUKSrnGXRg=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GCC's -fsanitize=object-size (as part of CONFIG_UBSAN_MISC) greatly
-increases stack utilization. Do not allow this under GCC.
+Doing all*config builds attempts to build as much as possible. UBSAN_TRAP
+effectively short-circuits lib/usban.c, so it should be disabled for
+COMPILE_TEST so that the lib/ubsan.c code gets built.
 
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/lkml/CAHk-=wjPasyJrDuwDnpHJS2TuQfExwe=px-SzLeN8GFMAQJPmQ@mail.gmail.com/
 Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- lib/Kconfig.ubsan | 3 +++
- 1 file changed, 3 insertions(+)
+ lib/Kconfig.ubsan | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
-index 05147112b355..4190a99b1eaa 100644
+index 4190a99b1eaa..6e8b67d4b0d9 100644
 --- a/lib/Kconfig.ubsan
 +++ b/lib/Kconfig.ubsan
-@@ -113,6 +113,9 @@ config UBSAN_UNSIGNED_OVERFLOW
+@@ -14,6 +14,7 @@ if UBSAN
  
- config UBSAN_OBJECT_SIZE
- 	def_bool UBSAN_MISC
-+	# gcc hugely expands stack usage with -fsanitize=object-size
-+	# https://lore.kernel.org/lkml/CAHk-=wjPasyJrDuwDnpHJS2TuQfExwe=px-SzLeN8GFMAQJPmQ@mail.gmail.com/
-+	depends on !CC_IS_GCC
- 	depends on $(cc-option,-fsanitize=object-size)
- 
- config UBSAN_BOOL
+ config UBSAN_TRAP
+ 	bool "On Sanitizer warnings, abort the running kernel code"
++	depends on !COMPILE_TEST
+ 	depends on $(cc-option, -fsanitize-undefined-trap-on-error)
+ 	help
+ 	  Building kernels with Sanitizer features enabled tends to grow
 -- 
 2.25.1
 
