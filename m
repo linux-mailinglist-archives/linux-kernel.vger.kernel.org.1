@@ -2,226 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3C92CDC3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F5A2CDC54
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389388AbgLCRR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:17:58 -0500
-Received: from mga17.intel.com ([192.55.52.151]:56029 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731416AbgLCRR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:17:58 -0500
-IronPort-SDR: w2ivBGOykBHnyrJm4CM9XvRIzMptEl0OjhkailVuVfKS7cR7F+9Hg+dwIAYGPWMrAgabEx2R2m
- WHZyQQf35GMQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="153060637"
-X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
-   d="scan'208";a="153060637"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 09:14:36 -0800
-IronPort-SDR: 2U/PH/zWXUMraBvOVHZ0Jy+1vTrDlfXHV3+NJLPPKjtnV8VwxC7gV6AOkGQntccCXodJPWLSp2
- /IQC1sInZfrA==
-X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
-   d="scan'208";a="336032790"
-Received: from rhweight-wrk1.ra.intel.com ([137.102.106.140])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 09:14:35 -0800
-From:   matthew.gerlach@linux.intel.com
-To:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mdf@kernel.org, hao.wu@intel.com, trix@redhat.com,
-        linux-doc@vger.kernel.org, corbet@lwn.net
-Cc:     Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: [PATCH v4 2/2] fpga: dfl-pci: locate DFLs by PCIe vendor specific capability
-Date:   Thu,  3 Dec 2020 09:15:48 -0800
-Message-Id: <20201203171548.1538178-3-matthew.gerlach@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201203171548.1538178-1-matthew.gerlach@linux.intel.com>
-References: <20201203171548.1538178-1-matthew.gerlach@linux.intel.com>
+        id S1726869AbgLCR0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:26:03 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:41798 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726066AbgLCR0C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 12:26:02 -0500
+Date:   Thu, 03 Dec 2020 17:25:19 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607016320;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3ENOrf4pJnjaltkMdfBqRyQRe5scB86a028pmLJHifg=;
+        b=F3gQ6KIutH7hi9RYZDmzUE90gRdytpxxaj7Sl1XgOFPUDjzHKCTBUeOiyE8vJZfaS3Qu+o
+        9lvN5M6At1NpwUqsvvzyAYvm2nxSrRpAhR7QEOO4AqVf4uRSgA517LUhKvmG0qX6E9oTmT
+        0gE4fjlZ6yhyNUcJDsc3xq4k1qaXjRFs2qrwz3hGVwhUDtZxzXZiO+AF6CBpd0RW9w9IXK
+        BazU86qtLvbBxKqwjM9zCLgE3oC3VbpTSe1Je7S4t9WdffEU6ZQrSpxxTFecmTcwGaq0Rv
+        ibwq6UgOYkmk0/lhrEL7BE4e4O/Pb2Z7fdvGEz+6uzrSAT62oX7L3qneuU6XLw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607016320;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3ENOrf4pJnjaltkMdfBqRyQRe5scB86a028pmLJHifg=;
+        b=KknVXHRE9Z4fsxr2lz2yv7TEvoiaJU7P+ePFf15RwP7wsv4131lBmCBM/w19CP8TM9Eewe
+        WPWgyqbRO1GIA2BQ==
+From:   "tip-bot2 for Mike Travis" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/platform/uv: Fix UV4 hub revision adjustment
+Cc:     Mike Travis <mike.travis@hpe.com>, Borislav Petkov <bp@suse.de>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201203152252.371199-1-mike.travis@hpe.com>
+References: <20201203152252.371199-1-mike.travis@hpe.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <160701631938.3364.11621785550869389030.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+The following commit has been merged into the x86/urgent branch of tip:
 
-A PCIe vendor specific extended capability is introduced by Intel to
-specify the start of a number of DFLs.
+Commit-ID:     8dcc0e19dfbd73ad6b3172924d6da8f7f3f8b3b0
+Gitweb:        https://git.kernel.org/tip/8dcc0e19dfbd73ad6b3172924d6da8f7f3f8b3b0
+Author:        Mike Travis <mike.travis@hpe.com>
+AuthorDate:    Thu, 03 Dec 2020 09:22:52 -06:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 03 Dec 2020 18:09:18 +01:00
 
-Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+x86/platform/uv: Fix UV4 hub revision adjustment
+
+Currently, UV4 is incorrectly identified as UV4A and UV4A as UV5. Hub
+chip starts with revision 1, fix it.
+
+ [ bp: Massage commit message. ]
+
+Fixes: 647128f1536e ("x86/platform/uv: Update UV MMRs for UV5")
+Signed-off-by: Mike Travis <mike.travis@hpe.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+Acked-by: Dimitri Sivanich <dimitri.sivanich@hpe.com>
+Link: https://lkml.kernel.org/r/20201203152252.371199-1-mike.travis@hpe.com
 ---
-v4: Clarify PCI vs. PCIe in documentation
-    Various cleanup suggested by hao.wu@intel.com
-    Document and enforce specifying a single DFL per BAR
+ arch/x86/kernel/apic/x2apic_uv_x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v3: Add text and ascii art to documentation.
-    Ensure not to exceed PCIe config space in loop.
-
-v2: Update documentation for clarity.
-    Clean up  macro names.
-    Use GENMASK.
-    Removed spurious blank lines.
-    Changed some calls from dev_info to dev_dbg.
-    Specifically check for VSEC not found, -ENODEV.
-    Ensure correct pci vendor id.
-    Remove check for page alignment.
-    Rename find_dfl_in_cfg to find_dfls_by_vsec.
-    Initialize target memory of pci_read_config_dword to invalid values before use.
----
- Documentation/fpga/dfl.rst | 27 ++++++++++++
- drivers/fpga/dfl-pci.c     | 87 +++++++++++++++++++++++++++++++++++++-
- 2 files changed, 113 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-index 0404fe6ffc74..ea8cefc18bdb 100644
---- a/Documentation/fpga/dfl.rst
-+++ b/Documentation/fpga/dfl.rst
-@@ -501,6 +501,33 @@ Developer only needs to provide a sub feature driver with matched feature id.
- FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
- could be a reference.
- 
-+Location of DFLs on a PCI Device
-+===========================
-+The original method for finding a DFL on a PCI device assumed the start of the
-+first DFL to offset 0 of bar 0.  If the first node of the DFL is an FME,
-+then further DFLs in the port(s) are specified in FME header registers.
-+Alternatively, a PCIe vendor specific capability structure can be used to
-+specify the location of all the DFLs on the device, providing flexibility
-+for the type of starting node in the DFL.  Intel has reserved the
-+VSEC ID of 0x43 for this purpose.  The vendor specific
-+data begins with a 4 byte vendor specific register for the number of DFLs followed 4 byte
-+Offset/BIR vendor specific registers for each DFL. Bits 2:0 of Offset/BIR register
-+indicates the BAR, and bits 31:3 form the 8 byte aligned offset where bits 2:0 are
-+zero.
-+
-+        +----------------------------+
-+        |31     Number of DFLS      0|
-+        +----------------------------+
-+        |31     Offset     3|2 BIR  0|
-+        +----------------------------+
-+                      . . .
-+        +----------------------------+
-+        |31     Offset     3|2 BIR  0|
-+        +----------------------------+
-+
-+Being able to specify more than one DFL per BAR has been considered, but it
-+was determined the use case did not provide value.  Specifying a single DFL
-+per BAR simplifies the implementation and allows for extra error checking.
- 
- Open discussion
- ===============
-diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
-index 5100695e27cd..04e47e266f26 100644
---- a/drivers/fpga/dfl-pci.c
-+++ b/drivers/fpga/dfl-pci.c
-@@ -27,6 +27,14 @@
- #define DRV_VERSION	"0.8"
- #define DRV_NAME	"dfl-pci"
- 
-+#define PCI_VSEC_ID_INTEL_DFLS 0x43
-+
-+#define PCI_VNDR_DFLS_CNT 0x8
-+#define PCI_VNDR_DFLS_RES 0xc
-+
-+#define PCI_VNDR_DFLS_RES_BAR_MASK GENMASK(2, 0)
-+#define PCI_VNDR_DFLS_RES_OFF_MASK GENMASK(31, 3)
-+
- struct cci_drvdata {
- 	struct dfl_fpga_cdev *cdev;	/* container device */
- };
-@@ -119,6 +127,80 @@ static int *cci_pci_create_irq_table(struct pci_dev *pcidev, unsigned int nvec)
- 	return table;
- }
- 
-+static int find_dfls_by_vsec(struct pci_dev *pcidev, struct dfl_fpga_enum_info *info)
-+{
-+	u32 bir, offset, vndr_hdr, dfl_cnt, dfl_res;
-+	int dfl_res_off, i, bars, voff = 0;
-+	resource_size_t start, len;
-+
-+	while ((voff = pci_find_next_ext_capability(pcidev, voff, PCI_EXT_CAP_ID_VNDR))) {
-+		vndr_hdr = 0;
-+		pci_read_config_dword(pcidev, voff + PCI_VNDR_HEADER, &vndr_hdr);
-+
-+		if (PCI_VNDR_HEADER_ID(vndr_hdr) == PCI_VSEC_ID_INTEL_DFLS &&
-+		    pcidev->vendor == PCI_VENDOR_ID_INTEL)
-+			break;
-+	}
-+
-+	if (!voff) {
-+		dev_dbg(&pcidev->dev, "%s no DFL VSEC found\n", __func__);
-+		return -ENODEV;
-+	}
-+
-+	dfl_cnt = 0;
-+	pci_read_config_dword(pcidev, voff + PCI_VNDR_DFLS_CNT, &dfl_cnt);
-+	if (dfl_cnt > PCI_STD_NUM_BARS) {
-+		dev_err(&pcidev->dev, "%s too many DFLs %d > %d\n",
-+			__func__, dfl_cnt, PCI_STD_NUM_BARS);
-+		return -EINVAL;
-+	}
-+
-+	dfl_res_off = voff + PCI_VNDR_DFLS_RES;
-+	if (dfl_res_off + (dfl_cnt * sizeof(u32)) > PCI_CFG_SPACE_EXP_SIZE) {
-+		dev_err(&pcidev->dev, "%s DFL VSEC too big for PCIe config space\n",
-+			__func__);
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0, bars = 0; i < dfl_cnt; i++, dfl_res_off += sizeof(u32)) {
-+		dfl_res = GENMASK(31, 0);
-+		pci_read_config_dword(pcidev, dfl_res_off, &dfl_res);
-+
-+		bir = dfl_res & PCI_VNDR_DFLS_RES_BAR_MASK;
-+		if (bir >= PCI_STD_NUM_BARS) {
-+			dev_err(&pcidev->dev, "%s bad bir number %d\n",
-+				__func__, bir);
-+			return -EINVAL;
-+		}
-+
-+		if (bars & BIT(bir)) {
-+			dev_err(&pcidev->dev, "%s DFL for BAR %d already specified\n",
-+				__func__, bir);
-+			return -EINVAL;
-+		}
-+
-+		bars |= BIT(bir);
-+
-+		len = pci_resource_len(pcidev, bir);
-+		offset = dfl_res & PCI_VNDR_DFLS_RES_OFF_MASK;
-+		if (offset >= len) {
-+			dev_err(&pcidev->dev, "%s bad offset %u >= %pa\n",
-+				__func__, offset, &len);
-+			return -EINVAL;
-+		}
-+
-+		dev_dbg(&pcidev->dev, "%s BAR %d offset 0x%x\n", __func__, bir, offset);
-+
-+		len -= offset;
-+
-+		start = pci_resource_start(pcidev, bir) + offset;
-+
-+		dfl_fpga_enum_info_add_dfl(info, start, len);
-+	}
-+
-+	return 0;
-+}
-+
- /* default method of finding dfls starting at offset 0 of bar 0 */
- static int find_dfls_by_default(struct pci_dev *pcidev,
- 				struct dfl_fpga_enum_info *info)
-@@ -220,7 +302,10 @@ static int cci_enumerate_feature_devs(struct pci_dev *pcidev)
- 			goto irq_free_exit;
- 	}
- 
--	ret = find_dfls_by_default(pcidev, info);
-+	ret = find_dfls_by_vsec(pcidev, info);
-+	if (ret == -ENODEV)
-+		ret = find_dfls_by_default(pcidev, info);
-+
- 	if (ret)
- 		goto irq_free_exit;
- 
--- 
-2.25.2
-
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index 1b98f8c..235f5cd 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -161,7 +161,7 @@ static int __init early_set_hub_type(void)
+ 	/* UV4/4A only have a revision difference */
+ 	case UV4_HUB_PART_NUMBER:
+ 		uv_min_hub_revision_id = node_id.s.revision
+-					 + UV4_HUB_REVISION_BASE;
++					 + UV4_HUB_REVISION_BASE - 1;
+ 		uv_hub_type_set(UV4);
+ 		if (uv_min_hub_revision_id == UV4A_HUB_REVISION_BASE)
+ 			uv_hub_type_set(UV4|UV4A);
