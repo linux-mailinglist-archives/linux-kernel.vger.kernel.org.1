@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93B82CD65D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DAF02CD66B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730476AbgLCNH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 08:07:59 -0500
-Received: from mga04.intel.com ([192.55.52.120]:54076 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726302AbgLCNH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 08:07:59 -0500
-IronPort-SDR: mPIvpCo/CgVoWsm4w0sz25zs3qmVrif7GbZtv0QL11ObuSOwbbhxS46DVWhtwWOS0/sZBjmuqf
- B4y2xWhKkvGA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="170620377"
-X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
-   d="scan'208";a="170620377"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 05:06:19 -0800
-IronPort-SDR: UvQDuSGfUyQVAaRYhL3oQIVCyyY9/eny+pQGu/wImv8HKOMrp9XPh/Nq89gkHSVkVqbqdMBxog
- FgOhISFj2Srg==
-X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
-   d="scan'208";a="365772391"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 05:06:17 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kkoKN-00Bl0H-Ku; Thu, 03 Dec 2020 15:07:19 +0200
-Date:   Thu, 3 Dec 2020 15:07:19 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org
-Subject: Re: [PATCH v1 2/5] vfio: platform: Switch to use
- platform_get_mem_or_io_resource()
-Message-ID: <20201203130719.GX4077@smile.fi.intel.com>
-References: <20201027175806.20305-1-andriy.shevchenko@linux.intel.com>
- <20201027175806.20305-2-andriy.shevchenko@linux.intel.com>
- <fb0b02a0-d672-0ff8-be80-b95bdbb58e57@redhat.com>
+        id S1730493AbgLCNMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 08:12:09 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:8687 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728028AbgLCNMJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 08:12:09 -0500
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j+IcvFBg=="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 47.3.4 DYNA|AUTH)
+        with ESMTPSA id Z061efwB3D95qef
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Thu, 3 Dec 2020 14:09:05 +0100 (CET)
+Date:   Thu, 3 Dec 2020 14:08:59 +0100
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Timon =?iso-8859-1?Q?B=E4tz?= <timon.baetz@protonmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "~postmarketos/upstreaming@lists.sr.ht" 
+        <~postmarketos/upstreaming@lists.sr.ht>
+Subject: Re: [PATCH 3/3] ARM: dts: exynos: Fix charging regulator voltage and
+ current for i9100
+Message-ID: <X8jja0JGDjwQ9hnA@gerhold.net>
+References: <20201202203516.43053-1-timon.baetz@protonmail.com>
+ <20201202203516.43053-3-timon.baetz@protonmail.com>
+ <20201202220430.GB135888@kozik-lap>
+ <dDjo3R2SJ6CBCjg0YhsCPdh5JfEGhA--DHNNDqbWjVtTjZC5v7g7_523vqAzu_Ybf1Q-xfKeK47H483YQoVtpO3DI83OaR6c6mbvtC9S1Us=@protonmail.com>
+ <20201203082301.GA3999@kozik-lap>
+ <20201203095041.GA14508@kozik-lap>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fb0b02a0-d672-0ff8-be80-b95bdbb58e57@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201203095041.GA14508@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 01:54:38PM +0100, Auger Eric wrote:
-> Hi Andy,
+On Thu, Dec 03, 2020 at 11:50:41AM +0200, Krzysztof Kozlowski wrote:
 > 
-> On 10/27/20 6:58 PM, Andy Shevchenko wrote:
-> > Switch to use new platform_get_mem_or_io_resource() instead of
-> > home grown analogue.
-> > 
-> > Cc: Eric Auger <eric.auger@redhat.com>
-> > Cc: Alex Williamson <alex.williamson@redhat.com>
-> > Cc: Cornelia Huck <cohuck@redhat.com>
-> > Cc: kvm@vger.kernel.org
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Acked-by: Eric Auger <eric.auger@redhat.com>
+> Unfortunately it seems Samsung started to remove most of older
+> kernel source code from their OS compliance page. S1, S2 and S3 are
+> mostly gone. I was able to find just few remaining sources and I am now
+> updating my vendor-dump with them. I'll upload them later to
+> https://github.com/krzk/linux-vendor-backup .
+> 
 
-Thanks!
+I don't know why they keep removing older kernel sources (it's pretty
+stupid), but so far they added all of them back within a couple of days
+after I made an inquiry on https://opensource.samsung.com/requestInquiry
+(Note: They remove them again after a while so backups are always
+ necessary...)
 
-Greg, do I need to do anything else with this series?
+Might be worth a try if you need some of them :)
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Stephan
