@@ -2,94 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E492CDE67
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0CD2CDE6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728042AbgLCTDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:03:51 -0500
-Received: from mout.kundenserver.de ([212.227.17.13]:52359 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLCTDu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:03:50 -0500
-Received: from [192.168.1.155] ([95.118.71.13]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MrhHm-1kQ59R2orc-00nlJT; Thu, 03 Dec 2020 20:01:13 +0100
-Subject: Re: [PATCH] drivers: gpio: add virtio-gpio guest driver
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org
-Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        mst@redhat.com, jasowang@redhat.com, linux-gpio@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org
-References: <20201127183003.2849-1-info@metux.net>
- <ba756539-2435-3587-3aeb-31e7ce95aad7@infradead.org>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <7aa911af-ea41-d496-cce8-54c7ae671076@metux.net>
-Date:   Thu, 3 Dec 2020 20:01:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729534AbgLCTEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:04:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728118AbgLCTEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 14:04:15 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90D5E208A9;
+        Thu,  3 Dec 2020 19:03:34 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kktt5-00FlRA-Bp; Thu, 03 Dec 2020 19:03:31 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, Keqian Zhu <zhukeqian1@huawei.com>,
+        kvmarm@lists.cs.columbia.edu
+Cc:     Will Deacon <will@kernel.org>, Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        wanghaibin.wang@huawei.com,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH v2 0/2] KVM: arm64: Some fixes and code adjustments for pvtime ST
+Date:   Thu,  3 Dec 2020 19:03:28 +0000
+Message-Id: <160702219014.403179.5103308104909161941.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20200817110728.12196-1-zhukeqian1@huawei.com>
+References: <20200817110728.12196-1-zhukeqian1@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <ba756539-2435-3587-3aeb-31e7ce95aad7@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:ss5/B/vJ/twWN/pOXDCDEl0QrmSL4O1RoPAdX1RwHOs6rEAO0W+
- RepNDCaUv1d1gAbZ5WV1FIfHJROxwr73HClcCPGmzk0+HYap4AMJyBhT6OQI7mhAwftTtI8
- pNb5EhfWxRttNPn8oPBdg9eQG9sZoCCmJGyc56I2xA3lVtIOVpgziCFnDpd+q5GEAOu6rEF
- SMyTC26gFmRbrFklsuQ2Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MUwloyMoVlE=:xGbnPFFtYuJqN1gKfsdHJI
- 2olyfpX41JPC6+KWNGgDc+gKpqThJCWLJwWp6hjqJJCWQTdoswqlUPZDDhqoa483E0/yCZpOG
- iCl4qcW2FdKbej/YNrddOuT8PmjQYD3qWuLPojfXXnLzsmcc7yaw0kGdwUHAzXTvkyCPEUYNO
- MulSgEdHe1hhd3x4OQWHyKRUrgjyG1/2h3bVEKGBnK/TWzvba/5BeYusex34LjerUtaVPiEc9
- YYoMVsf3wQ85Lz36lnHK8/TZ4rOQphMFwek+KsWTmZ4FQgNJwQF43hkaHdS0Ai/ix/dZAy1Bd
- uZSLj6emDBtfjILOWld9QbKbifVN3YdqFnfvwfIsRDYvn0WioF9WnaieVpoYNN8KK/N9/Fe3j
- w8s5cNdg5fZc7HDj/8GvxSEfLZ+1uAZjTAM2lg4ROBwLMVI1hE/jpL6ptpS7V
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, zhukeqian1@huawei.com, kvmarm@lists.cs.columbia.edu, will@kernel.org, drjones@redhat.com, james.morse@arm.com, steven.price@arm.com, suzuki.poulose@arm.com, wanghaibin.wang@huawei.com, catalin.marinas@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.11.20 19:45, Randy Dunlap wrote:
-> On 11/27/20 10:30 AM, Enrico Weigelt, metux IT consult wrote:
->> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
->> index 5d4de5cd6759..e8414d82cf75 100644
->> --- a/drivers/gpio/Kconfig
->> +++ b/drivers/gpio/Kconfig
->> @@ -1613,4 +1613,13 @@ config GPIO_MOCKUP
->>  	  tools/testing/selftests/gpio/gpio-mockup.sh. Reference the usage in
->>  	  it.
->>  
->> +config GPIO_VIRTIO
->> +	tristate "VirtIO GPIO support"
->> +	depends on VIRTIO
->> +	help
->> +	  Say Y here to enable guest support for virtio based GPIOs.
+On Mon, 17 Aug 2020 19:07:26 +0800, Keqian Zhu wrote:
+> During picking up pvtime LPT support for arm64, I do some trivial fixes for
+> pvtime ST.
 > 
-> 	                                         virtio-based
+> change log:
 > 
->> +
->> +	  These virtual gpios can be routed to real GPIOs or attached to
+> v2:
+>  - Add Andrew's and Steven's R-b.
+>  - Correct commit message of the first patch.
+>  - Drop the second patch.
 > 
-> 	                GPIOs
+> [...]
 
-thx. fixed in v2.
+Applied to kvm-arm64/misc-5.11, thanks!
 
+[1/2] KVM: arm64: Some fixes of PV-time interface document
+      commit: 94558543213ae8c83be5d01b83c1fe7530e8a1a0
+[2/2] KVM: arm64: Use kvm_write_guest_lock when init stolen time
+      commit: 652d0b701d136ede6bc8a977b3abbe2d420226b9
 
-> 
->> +	  simulators on the host (qemu).
->> +
->>  endif
-> 
-> 
+Cheers,
 
+	M.
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Without deviation from the norm, progress is not possible.
+
+
