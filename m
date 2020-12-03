@@ -2,167 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AC82CDD09
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D06272CDD07
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:05:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729703AbgLCSEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:04:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30789 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726222AbgLCSEG (ORCPT
+        id S1729244AbgLCSDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:03:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727844AbgLCSDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:04:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607018559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a2+UpSo6XPrHw9eGBG0KMLvoOle6y6b1PoPGuGKDswg=;
-        b=ZCQqG6SKWzdc90m8qgDgrqoWzaFfdGyoTMHvBiiggcKMYUVQB/oqOTDbdHNpceT9HramOO
-        CmkQmybBMAwlmP8byoEMOzo5+OnYdQuPWRPyAPpmMKOD3yJxWWcneZWCQSalROsaq4DAC6
-        EXIsHPB2L+Ym1F1zNXJenIOwgwRrdkc=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-EcScNoQ8NHCdvaYgVMIGmA-1; Thu, 03 Dec 2020 13:02:37 -0500
-X-MC-Unique: EcScNoQ8NHCdvaYgVMIGmA-1
-Received: by mail-qk1-f197.google.com with SMTP id g28so2644870qka.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 10:02:37 -0800 (PST)
+        Thu, 3 Dec 2020 13:03:31 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBC9C061A4E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 10:02:51 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id c9so3706285ybs.8
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 10:02:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=OHcxlT1QLl/FypmS4f7/3LnVbjzBRqlZYN2Df71kYOc=;
+        b=YfLZRH6bg5kepViQkaLDAXuwXmNNZ44BW+UtnlU24zvLry0yspfTHy08MMtE/CcSBe
+         itfWLWvF8BcxRfW070C208+z1lM+ECRkaL4EwpHIpzVJ82/VPAl55iTrwJjK1dSINlJS
+         T5HysDAguzta/NQgWLg9m0EWrDZ4h/9IUgSUo57YTBHWukOLbyyhlLY5+wtXH2TAtTpU
+         xkbXzBcEwP4eg5vWKrkXOCMryFDUW2915AsVusqvs24Ikw1U+OSd7I/tRwqWBbdi3gXW
+         VCHipdobtFw1a1QOJAeVxsBpW3Yr/aNvISm/2fQBB0rWOOk/E65v3VhiHjR0rN0gZxJq
+         jLPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a2+UpSo6XPrHw9eGBG0KMLvoOle6y6b1PoPGuGKDswg=;
-        b=hJw9uS4cfGzHoOZYprYLfwRnyaq6aLRgEAq1CIFjJrjhLF4aGuXTuEjG0zqK3EAABH
-         GjDTgO6QiTdaGY238ttMunugxwxdJt+d16ACDNcDpP95Q9pY84Q40XIghndbK0PBDpTy
-         yV0XF8d9AYsvGBJDFDQayj9tIYysI4eckU+C8j3fDGEzrTP3zH3NPwdPKTGdUt08YuKb
-         p8N+XrxhfpIYNnNzzvL9YZipoa4sGRp0BGNx78Dr+YPKzo2qE9qAa3u7BxSAv3/t6G/l
-         fT7k3YwvJVLBd+7kGVhT5wb5xK6EfUuWEPBxsKfVk3yYugppzbeZ7haBNMLtQHCdfL3x
-         LKcQ==
-X-Gm-Message-State: AOAM532KN9T7gtQqHSZ8uQ8TLaXbX0QQRWldC/fSDjq61qd5XmWBu87z
-        B/2HB83Rzs8tQ0SkVYCU8V+8Pmp21/P6wqYL5/KmUgwSICyn7r1xK4gF19rDzSrLinLgs0hA39r
-        Bc53thuORRNPkaqsUmNx8P9A/
-X-Received: by 2002:a0c:c3cf:: with SMTP id p15mr195944qvi.13.1607018557311;
-        Thu, 03 Dec 2020 10:02:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx6QB5+m7IR/CUDyS+SYYgOVMwH+T7exPAg4NObUJAzQFGaa22mijTPbvgciaVlOORdOrzuhw==
-X-Received: by 2002:a0c:c3cf:: with SMTP id p15mr195906qvi.13.1607018556966;
-        Thu, 03 Dec 2020 10:02:36 -0800 (PST)
-Received: from xz-x1 ([142.126.94.187])
-        by smtp.gmail.com with ESMTPSA id y192sm2281006qkb.12.2020.12.03.10.02.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 10:02:36 -0800 (PST)
-Date:   Thu, 3 Dec 2020 13:02:34 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=OHcxlT1QLl/FypmS4f7/3LnVbjzBRqlZYN2Df71kYOc=;
+        b=Lxnwt6/+eT1mtCOb/HUL1tmXsGKGiHUPiCtmok1MNv6qwqvbtqYz7z+Y4wKz2/dsWE
+         MVTo+NQEHKCdUoQfNfj5qYPsr/GFnnOHJeTIRbeq2bP+M3k4Y2Dm5z36LwzyR99WRsZP
+         J83IQowOdWs+J/Xf6Whvi7agEsNDEkLO1vjjnHWIJhgXJTlFKPdxWalozo/ANpehyhRX
+         4Qn9JQI09MXoN3bACXvUV7PabOWj9TO5+UhCVMbgUaXHYpgqYPqWfpgDKwMlDDYUFXx/
+         MKlvd0mbdIUU2l/l4Yv7IKJqzQ+1DYC3bzwtBY5iuCtziN6w8XAJAhIKN/r3oLMIJNg8
+         +CwQ==
+X-Gm-Message-State: AOAM5332ci17yjrZ9e2I2y+1OJXYRSanKWoPBkB99gv8psw35cY2fZ96
+        LrLDI4EBYFiirODS4fO4lS/tNWLTML4WdguvTZkT
+X-Google-Smtp-Source: ABdhPJxuinEJZ84ydvLjxAaVndzUAZeyW/0anaog6zUnKaGgoL4crbNmfmo7c4A9zPFdnsoazG1CT4MvyYzAc6XW6ut+
+Sender: "axelrasmussen via sendgmr" <axelrasmussen@ajr0.svl.corp.google.com>
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:f693:9fff:feef:c8f8])
+ (user=axelrasmussen job=sendgmr) by 2002:a25:6949:: with SMTP id
+ e70mr321309ybc.313.1607018570266; Thu, 03 Dec 2020 10:02:50 -0800 (PST)
+Date:   Thu,  3 Dec 2020 10:02:44 -0800
+Message-Id: <20201203180244.1811601-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [PATCH v2] userfaultfd: selftests: make __{s,u}64 format specifiers portable
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Shuah Khan <shuah@kernel.org>, Peter Xu <peterx@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
         Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v2] mm: Don't fault around userfaultfd-registered regions
- on reads
-Message-ID: <20201203180234.GJ108496@xz-x1>
-References: <20201130230603.46187-1-peterx@redhat.com>
- <20201201125927.GB11935@casper.infradead.org>
- <20201201223033.GG3277@xz-x1>
- <X8bZk3jTGU8QyJWc@redhat.com>
- <alpine.LSU.2.11.2012021410260.4989@eggly.anvils>
- <20201202234117.GD108496@xz-x1>
- <alpine.LSU.2.11.2012022119010.11674@eggly.anvils>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2012022119010.11674@eggly.anvils>
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Alan Gilbert <dgilbert@redhat.com>
+Cc:     Greg Thelen <gthelen@google.com>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Axel Rasmussen <axelrasmussen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 09:36:45PM -0800, Hugh Dickins wrote:
-> On Wed, 2 Dec 2020, Peter Xu wrote:
-> > On Wed, Dec 02, 2020 at 02:37:33PM -0800, Hugh Dickins wrote:
-> > > On Tue, 1 Dec 2020, Andrea Arcangeli wrote:
-> > > > 
-> > > > Any suggestions on how to have the per-vaddr per-mm _PAGE_UFFD_WP bit
-> > > > survive the pte invalidates in a way that remains associated to a
-> > > > certain vaddr in a single mm (so it can shoot itself in the foot if it
-> > > > wants, but it can't interfere with all other mm sharing the shmem
-> > > > file) would be welcome...
-> > > 
-> > > I think it has to be a new variety of swap-like non_swap_entry() pte,
-> > > see include/linux/swapops.h.  Anything else would be more troublesome.
-> > > 
-> > > Search for non_swap_entry and for migration_entry, to find places that 
-> > > might need to learn about this new variety.
-> > > 
-> > > IIUC you only need a single value, no need to carve out another whole
-> > > swp_type: could probably be swp_offset 0 of any swp_type other than 0.
-> > > 
-> > > Note that fork's copy_page_range() does not "copy ptes where a page
-> > > fault will fill them correctly", so would in effect put a pte_none
-> > > into the child where the parent has this uffd_wp entry.  I don't know
-> > > anything about uffd versus fork, whether that would pose a problem.
-> > 
-> > Thanks for the idea, Hugh!
-> > 
-> > I thought about something similar today, but instead of swap entries, I was
-> > thinking about constantly filling in a pte with a value of "_PAGE_PROTNONE |
-> > _PAGE_UFFD_WP" when e.g. we'd like to zap a page with shmem+uffd-wp. I feel
-> > like the fundamental idea is similar - we can somehow keep the pte with uffd-wp
-> > information even if zapped/swapped-out, so as long as the shmem access will
-> > fruther trap into the fault handler, then we can operate on that pte and read
-> > that information out, like recover that pte into a normal pte (with swap/page
-> > cache, and vma/addr information, we'll be able to) and then we can retry the
-> > fault.
-> 
-> Yes, I think that should work too: I can't predict which way would cause
-> less trouble.
-> 
-> We usually tend to keep away from protnone games, because NUMA balancing
-> use of protnone is already confusing enough.
+On certain platforms (powerpcle is the one on which I ran into this),
+"%Ld" and "%Lu" are unsuitable for printing __s64 and __u64,
+respectively, resulting in build warnings. Cast to {u,}int64_t, and
+use the PRI{d,u}64 macros defined in inttypes.h to print them. This
+ought to be portable to all platforms.
 
-Yes it is tricky.  However it gives me the feeling that numa balancing and its
-protnone trick provided a general solution for things like this, so that we can
-trap a per-mm per-pte page access like this.
+Splitting this off into a separate macro lets us remove some lines,
+and get rid of some (I would argue) stylistically odd cases where we
+joined printf() and exit() into a single statement with a ,.
 
-With that, I'm currently slightly prefer to try the protnone way first, because
-using swp entry could be a bit misleading from the 1st glance - note that when
-this happens, we could have two states for this pte:
+Finally, this also fixes a "missing braces around initializer" warning
+when we initialize prms in wp_range().
 
-  1. Page in shmem page cache
-  2. Page in shmem swap cache (so page cache is a value)
+Acked-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+---
+ tools/testing/selftests/vm/userfaultfd.c | 81 ++++++++++--------------
+ 1 file changed, 35 insertions(+), 46 deletions(-)
 
-And actually there's another 3rd state that should never happen as long as the
-userspace does unprotect properly, but I guess we'd better also take care of:
-
-  3. Page is not cached at all (page missing; logically should not happen
-     because when page cache evicted then all ptes should have been removed,
-     however since this pte is not linked to the page in any way, it could get
-     lost?  Then we should simply retry the fault after recovering the tricky
-     pte into an all-zero pte)
-
-It'll be a bit odd imho to use a swp entry to represent all these states, for
-example we can see the pte is a swp-like entry but in reality the shmem page
-sits right in the page cache..
-
-So I'm thinking whether we could decouple the pte_protnone() idea with numa
-balancing first (currently, there's a close bind), let numa depend on protnone,
-then uffd-wp+shmem can also depend on protnone.
-
-> 
-> But those ptes will be pte_present(), so you must provide a pfn,
-
-Could I ask why?
-
-> and I think if you use the zero_pfn, vm_normal_page() will return false on it,
-> and avoid special casing (and reference counting) it in various places.
-
-I'll keep this in mind, thanks.
-
-Meanwhile, this reminded me another option - besides _PAGE_PROTNONE, can we use
-_PAGE_SPECIAL?  That sounds better at least from its naming that it tells it's
-a special page already. We can also leverage existing pte_special() checks here
-and there, then mimic what we do with pte_devmap(), maybe?
-
+diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
+index 9b0912a01777..70ea08da5f91 100644
+--- a/tools/testing/selftests/vm/userfaultfd.c
++++ b/tools/testing/selftests/vm/userfaultfd.c
+@@ -55,6 +55,8 @@
+ #include <setjmp.h>
+ #include <stdbool.h>
+ #include <assert.h>
++#include <inttypes.h>
++#include <stdint.h>
+ 
+ #include "../kselftest.h"
+ 
+@@ -135,6 +137,13 @@ static void usage(void)
+ 	exit(1);
+ }
+ 
++#define uffd_error(code, fmt, ...)                                             \
++	do {                                                                   \
++		fprintf(stderr, fmt, ##__VA_ARGS__);                           \
++		fprintf(stderr, ": %" PRId64 "\n", (int64_t)(code));           \
++		exit(1);                                                       \
++	} while (0)
++
+ static void uffd_stats_reset(struct uffd_stats *uffd_stats,
+ 			     unsigned long n_cpus)
+ {
+@@ -331,7 +340,7 @@ static int my_bcmp(char *str1, char *str2, size_t n)
+ 
+ static void wp_range(int ufd, __u64 start, __u64 len, bool wp)
+ {
+-	struct uffdio_writeprotect prms = { 0 };
++	struct uffdio_writeprotect prms;
+ 
+ 	/* Write protection page faults */
+ 	prms.range.start = start;
+@@ -340,7 +349,8 @@ static void wp_range(int ufd, __u64 start, __u64 len, bool wp)
+ 	prms.mode = wp ? UFFDIO_WRITEPROTECT_MODE_WP : 0;
+ 
+ 	if (ioctl(ufd, UFFDIO_WRITEPROTECT, &prms)) {
+-		fprintf(stderr, "clear WP failed for address 0x%Lx\n", start);
++		fprintf(stderr, "clear WP failed for address 0x%" PRIx64 "\n",
++			(uint64_t)start);
+ 		exit(1);
+ 	}
+ }
+@@ -474,14 +484,11 @@ static void retry_copy_page(int ufd, struct uffdio_copy *uffdio_copy,
+ 	if (ioctl(ufd, UFFDIO_COPY, uffdio_copy)) {
+ 		/* real retval in ufdio_copy.copy */
+ 		if (uffdio_copy->copy != -EEXIST) {
+-			fprintf(stderr, "UFFDIO_COPY retry error %Ld\n",
+-				uffdio_copy->copy);
+-			exit(1);
++			uffd_error(uffdio_copy->copy,
++				   "UFFDIO_COPY retry error");
+ 		}
+-	} else {
+-		fprintf(stderr,	"UFFDIO_COPY retry unexpected %Ld\n",
+-			uffdio_copy->copy); exit(1);
+-	}
++	} else
++		uffd_error(uffdio_copy->copy, "UFFDIO_COPY retry unexpected");
+ }
+ 
+ static int __copy_page(int ufd, unsigned long offset, bool retry)
+@@ -502,14 +509,10 @@ static int __copy_page(int ufd, unsigned long offset, bool retry)
+ 	uffdio_copy.copy = 0;
+ 	if (ioctl(ufd, UFFDIO_COPY, &uffdio_copy)) {
+ 		/* real retval in ufdio_copy.copy */
+-		if (uffdio_copy.copy != -EEXIST) {
+-			fprintf(stderr, "UFFDIO_COPY error %Ld\n",
+-				uffdio_copy.copy);
+-			exit(1);
+-		}
++		if (uffdio_copy.copy != -EEXIST)
++			uffd_error(uffdio_copy.copy, "UFFDIO_COPY error");
+ 	} else if (uffdio_copy.copy != page_size) {
+-		fprintf(stderr, "UFFDIO_COPY unexpected copy %Ld\n",
+-			uffdio_copy.copy); exit(1);
++		uffd_error(uffdio_copy.copy, "UFFDIO_COPY unexpected copy");
+ 	} else {
+ 		if (test_uffdio_copy_eexist && retry) {
+ 			test_uffdio_copy_eexist = false;
+@@ -788,7 +791,8 @@ static int userfaultfd_open(int features)
+ 		return 1;
+ 	}
+ 	if (uffdio_api.api != UFFD_API) {
+-		fprintf(stderr, "UFFDIO_API error %Lu\n", uffdio_api.api);
++		fprintf(stderr, "UFFDIO_API error: %" PRIu64 "\n",
++			(uint64_t)uffdio_api.api);
+ 		return 1;
+ 	}
+ 
+@@ -950,13 +954,12 @@ static void retry_uffdio_zeropage(int ufd,
+ 				     offset);
+ 	if (ioctl(ufd, UFFDIO_ZEROPAGE, uffdio_zeropage)) {
+ 		if (uffdio_zeropage->zeropage != -EEXIST) {
+-			fprintf(stderr, "UFFDIO_ZEROPAGE retry error %Ld\n",
+-				uffdio_zeropage->zeropage);
+-			exit(1);
++			uffd_error(uffdio_zeropage->zeropage,
++				   "UFFDIO_ZEROPAGE retry error");
+ 		}
+ 	} else {
+-		fprintf(stderr, "UFFDIO_ZEROPAGE retry unexpected %Ld\n",
+-			uffdio_zeropage->zeropage); exit(1);
++		uffd_error(uffdio_zeropage->zeropage,
++			   "UFFDIO_ZEROPAGE retry unexpected");
+ 	}
+ }
+ 
+@@ -965,6 +968,7 @@ static int __uffdio_zeropage(int ufd, unsigned long offset, bool retry)
+ 	struct uffdio_zeropage uffdio_zeropage;
+ 	int ret;
+ 	unsigned long has_zeropage;
++	__s64 res;
+ 
+ 	has_zeropage = uffd_test_ops->expected_ioctls & (1 << _UFFDIO_ZEROPAGE);
+ 
+@@ -976,29 +980,17 @@ static int __uffdio_zeropage(int ufd, unsigned long offset, bool retry)
+ 	uffdio_zeropage.range.len = page_size;
+ 	uffdio_zeropage.mode = 0;
+ 	ret = ioctl(ufd, UFFDIO_ZEROPAGE, &uffdio_zeropage);
++	res = uffdio_zeropage.zeropage;
+ 	if (ret) {
+ 		/* real retval in ufdio_zeropage.zeropage */
+ 		if (has_zeropage) {
+-			if (uffdio_zeropage.zeropage == -EEXIST) {
+-				fprintf(stderr, "UFFDIO_ZEROPAGE -EEXIST\n");
+-				exit(1);
+-			} else {
+-				fprintf(stderr, "UFFDIO_ZEROPAGE error %Ld\n",
+-					uffdio_zeropage.zeropage);
+-				exit(1);
+-			}
+-		} else {
+-			if (uffdio_zeropage.zeropage != -EINVAL) {
+-				fprintf(stderr,
+-					"UFFDIO_ZEROPAGE not -EINVAL %Ld\n",
+-					uffdio_zeropage.zeropage);
+-				exit(1);
+-			}
+-		}
++			uffd_error(res, "UFFDIO_ZEROPAGE %s",
++				   res == -EEXIST ? "-EEXIST" : "error");
++		} else if (res != -EINVAL)
++			uffd_error(res, "UFFDIO_ZEROPAGE not -EINVAL");
+ 	} else if (has_zeropage) {
+-		if (uffdio_zeropage.zeropage != page_size) {
+-			fprintf(stderr, "UFFDIO_ZEROPAGE unexpected %Ld\n",
+-				uffdio_zeropage.zeropage); exit(1);
++		if (res != page_size) {
++			uffd_error(res, "UFFDIO_ZEROPAGE unexpected");
+ 		} else {
+ 			if (test_uffdio_zeropage_eexist && retry) {
+ 				test_uffdio_zeropage_eexist = false;
+@@ -1007,11 +999,8 @@ static int __uffdio_zeropage(int ufd, unsigned long offset, bool retry)
+ 			}
+ 			return 1;
+ 		}
+-	} else {
+-		fprintf(stderr,
+-			"UFFDIO_ZEROPAGE succeeded %Ld\n",
+-			uffdio_zeropage.zeropage); exit(1);
+-	}
++	} else
++		uffd_error(res, "UFFDIO_ZEROPAGE succeeded");
+ 
+ 	return 0;
+ }
 -- 
-Peter Xu
+2.29.2.454.gaff20da3a2-goog
 
