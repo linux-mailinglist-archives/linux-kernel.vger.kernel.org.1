@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220092CDABD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8A92CDAC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731198AbgLCQEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:04:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
+        id S1731232AbgLCQFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:05:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgLCQEx (ORCPT
+        with ESMTP id S1726578AbgLCQFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:04:53 -0500
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984DBC061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 08:03:34 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id v5so1680599wmj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 08:03:34 -0800 (PST)
+        Thu, 3 Dec 2020 11:05:18 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D16AC09424C
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 08:03:39 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id 141so2314446qkh.18
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 08:03:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=IbyQm/n8+pi2q0Ky7fqqHIueT8J7malorhV/m8hIHd0=;
-        b=Nurb0bQUXgEwLKlH5E+dwxUOfz6ZXl/yQpQCvW3kVvQiJ2raqNbOIazSDz9hNWteRv
-         +LvxNCxOuTAnxMk8JjZ3Qtj2MFeuGLY/cCt/E6bvMZKUtwH/Vr5zo88LCYux8jXHt9IL
-         iP2g4OF7JFbLDleVFjYUSBewEgColqkcr4Bhr7k79rR08y33F1Su5i8Zg6eU093n9HP3
-         8rnyG4VwE+aTRu1+LOCCnKtEcbyaBSvkluzY+ijUltDeczBfmQSdqiBLSoF4nkXe6QQx
-         EtbumVv2MTkwa8D38k+kIrgtW8GM2AFDu40LM8e+C89nIA5kGZK/MYSzZbUNVfnPzZOS
-         ZLeg==
+        bh=IMilI2Z6+aKwuOWDf3tm98A2hDsLcRMs3IV5SkkVoW4=;
+        b=ODl5ipUqgCmdiomJnZEgAey6Nrfb6zLj72eClBJGt7MuFtRy5pI9S0EKEh6PzKF1uw
+         K5pNTv6Fb+aHa650ISo858vH7GAnYZlQd2xkgSf3ijCPjxKQ2p/tfNrvvvIZFcsQrrOl
+         iTCPOoZh5c3T88WCtUnaggkYgqxXXugDiIgY0T+I1V6yVFDBchhqVEW7rjxH0mjI/0qp
+         yIMBBJgJ4E+uzCqkGfHst0vspHJLgXWWZwnqi/dr0LKEB60YHGIcJF0JGFZWV5ZAd3LJ
+         Z6hV6S+MSsJHVSaUCt4FC/qaM19Jc2dg9rzgozKvvZe2sN3IcgpG/2ViAztRQYzn43bD
+         1zLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=IbyQm/n8+pi2q0Ky7fqqHIueT8J7malorhV/m8hIHd0=;
-        b=gry5U6Sr1yOnF2x1NVuZLm+U1iHakdiW/JIvAuD2w/Rgl0phOJgubnVNzYomytuVpi
-         tRLTCsIrU+WPKghHf00ToABff7/t+vEVOCOHGg1Vzj9qng3elXLGnLHpGyjX84nIMP8T
-         dbWHEhuNFFe8Dfn+7rVMrWVwn6gyg43qfNeBBKdtd85HiInJLpo0TlOc44xm4tSaLH8R
-         0jDOrSpFLK5erQrmYrouUiaGjgTo/1RS/auw3UucfNuB1Tsrb97zwq13L2EVFyuct/RT
-         V0EFkspRBQCCR92nqimNVU0uQwsA4TR8g2nvJIAjawN8VH9rBeOrDPmHty+X1Q5Rs1iU
-         wS4Q==
-X-Gm-Message-State: AOAM532D6TKJVzZuYUTjCW7fE676aJPstevsxlvHdzPZ1U4cscWn3CsC
-        mBm+VbAe7vygSqrfCm7VLycNi9WVWqCIOw==
-X-Google-Smtp-Source: ABdhPJwODx9KkTc4wAZ00voMZnuvUvFetzDzkNineD7k8tCokZqHIMO8OE449/1wHAHd88n53eCq7kCl9djk9A==
+        bh=IMilI2Z6+aKwuOWDf3tm98A2hDsLcRMs3IV5SkkVoW4=;
+        b=m7Fw+oCARVr42zfTWykMpvChA3m70iP1mCbGKP9/5oJvzHdzzolApWGgEh4utpYsC5
+         iKTEsesjlws+m8/JJQmsvwzrPw93lHYc5Vs4wwH8O/5ZaYK6nAwsdhxj3s7qGez4CFAJ
+         9X0kROzVZ8KOaagWsRNm6sofcivd5SeZMWOurVbnheeOw/yK6yYXRP62zW1yYZAVn2zF
+         6Vik88/RsI7auzRrqISUPYTU2NdLl+2GVX7lWp8ozNfqpwu430dId2d5XL1O7TKdUXyE
+         u32CiSFPLCE5Hg9wfcO1AtyhJxdguHSbPjF/Zq2UMRyYjJ+ufvQqpl6q8T4pfal9MYOX
+         ANzg==
+X-Gm-Message-State: AOAM531JtbDlpTPi8BAdbC2Dk4UkEhcAuTStKXHc4CTli2luF2QCw5TA
+        LHy16jdCKES9IZ6OOBCa1uhA/5IqZLqwUg==
+X-Google-Smtp-Source: ABdhPJyWcI7r5iOiGtGzuUAxvhLA44h5393hO+egwkMucsytcbRIQyR7e8xwVW3kCOBm5nSQUiWqBkzQW27w7w==
 Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a1c:3d86:: with SMTP id
- k128mr4029962wma.66.1607011412987; Thu, 03 Dec 2020 08:03:32 -0800 (PST)
-Date:   Thu,  3 Dec 2020 16:02:42 +0000
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a0c:f809:: with SMTP id
+ r9mr3775595qvn.17.1607011415132; Thu, 03 Dec 2020 08:03:35 -0800 (PST)
+Date:   Thu,  3 Dec 2020 16:02:43 +0000
 In-Reply-To: <20201203160245.1014867-1-jackmanb@google.com>
-Message-Id: <20201203160245.1014867-12-jackmanb@google.com>
+Message-Id: <20201203160245.1014867-13-jackmanb@google.com>
 Mime-Version: 1.0
 References: <20201203160245.1014867-1-jackmanb@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH bpf-next v3 11/14] tools build: Implement feature check for
- BPF atomics in Clang
+Subject: [PATCH bpf-next v3 12/14] bpf: Pull tools/build/feature biz into
+ selftests Makefile
 From:   Brendan Jackman <jackmanb@google.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
@@ -61,73 +61,82 @@ Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
         KP Singh <kpsingh@chromium.org>,
         Florent Revest <revest@chromium.org>,
         linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Hebb <tommyhebb@gmail.com>
+        Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change-Id: Ia15bb76f7152fff2974e38242d7430ce2987a71e
+This is somewhat cargo-culted from the libbpf build. It will be used
+in a subsequent patch to query for Clang BPF atomics support.
 
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Quentin Monnet <quentin@isovalent.com>
-Cc: "Frank Ch. Eigler" <fche@redhat.com>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Thomas Hebb <tommyhebb@gmail.com>
-Change-Id: Ie2c3832eaf050d627764071d1927c7546e7c4b4b
+Change-Id: I9318a1702170eb752acced35acbb33f45126c44c
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- tools/build/feature/Makefile                 | 4 ++++
- tools/build/feature/test-clang-bpf-atomics.c | 9 +++++++++
- 2 files changed, 13 insertions(+)
- create mode 100644 tools/build/feature/test-clang-bpf-atomics.c
+ tools/testing/selftests/bpf/.gitignore |  1 +
+ tools/testing/selftests/bpf/Makefile   | 38 ++++++++++++++++++++++++++
+ 2 files changed, 39 insertions(+)
 
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index cdde783f3018..81370d7fa193 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -70,6 +70,7 @@ FILES=                                          \
-          test-libaio.bin			\
-          test-libzstd.bin			\
-          test-clang-bpf-co-re.bin		\
-+         test-clang-bpf-atomics.bin		\
-          test-file-handle.bin			\
-          test-libpfm4.bin
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index 395ae040ce1f..3c604dff1e20 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -35,3 +35,4 @@ test_cpp
+ /tools
+ /runqslower
+ /bench
++/FEATURE-DUMP.selftests.bpf
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 894192c319fb..f21c4841a612 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -104,8 +104,46 @@ OVERRIDE_TARGETS := 1
+ override define CLEAN
+ 	$(call msg,CLEAN)
+ 	$(Q)$(RM) -r $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES) $(EXTRA_CLEAN)
++	$(Q)$(RM) $(OUTPUT)/FEATURE-DUMP.selftests.bpf
+ endef
  
-@@ -331,6 +332,9 @@ $(OUTPUT)test-clang-bpf-co-re.bin:
- 	$(CLANG) -S -g -target bpf -o - $(patsubst %.bin,%.c,$(@F)) |	\
- 		grep BTF_KIND_VAR
++# This will work when bpf is built in tools env. where srctree
++# isn't set and when invoked from selftests build, where srctree
++# is set to ".". building_out_of_srctree is undefined for in srctree
++# builds
++ifeq ($(srctree),)
++update_srctree := 1
++endif
++ifdef building_out_of_srctree
++update_srctree := 1
++endif
++ifeq ($(update_srctree),1)
++srctree := $(patsubst %/,%,$(dir $(CURDIR)))
++srctree := $(patsubst %/,%,$(dir $(srctree)))
++srctree := $(patsubst %/,%,$(dir $(srctree)))
++srctree := $(patsubst %/,%,$(dir $(srctree)))
++endif
++
++FEATURE_USER = .selftests.bpf
++FEATURE_TESTS = clang-bpf-atomics
++FEATURE_DISPLAY = clang-bpf-atomics
++
++check_feat := 1
++NON_CHECK_FEAT_TARGETS := clean
++ifdef MAKECMDGOALS
++ifeq ($(filter-out $(NON_CHECK_FEAT_TARGETS),$(MAKECMDGOALS)),)
++  check_feat := 0
++endif
++endif
++
++ifeq ($(check_feat),1)
++ifeq ($(FEATURES_DUMP),)
++include $(srctree)/tools/build/Makefile.feature
++else
++include $(FEATURES_DUMP)
++endif
++endif
++
+ include ../lib.mk
  
-+$(OUTPUT)test-clang-bpf-atomics.bin:
-+	$(CLANG) -S -g -target bpf -mcpu=v3 -Werror=implicit-function-declaration -o - $(patsubst %.bin,%.c,$(@F)) 2>&1
-+
- $(OUTPUT)test-file-handle.bin:
- 	$(BUILD)
- 
-diff --git a/tools/build/feature/test-clang-bpf-atomics.c b/tools/build/feature/test-clang-bpf-atomics.c
-new file mode 100644
-index 000000000000..8b5fcdd4ba6f
---- /dev/null
-+++ b/tools/build/feature/test-clang-bpf-atomics.c
-@@ -0,0 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Google
-+
-+int x = 0;
-+
-+int foo(void)
-+{
-+	return __sync_val_compare_and_swap(&x, 1, 2);
-+}
+ SCRATCH_DIR := $(OUTPUT)/tools
 -- 
 2.29.2.454.gaff20da3a2-goog
 
