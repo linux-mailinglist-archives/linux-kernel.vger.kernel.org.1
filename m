@@ -2,154 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA642CDB75
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B542CDB7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:46:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731295AbgLCQnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:43:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726026AbgLCQnr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:43:47 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12742C061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 08:43:07 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id z5so2683249iob.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 08:43:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SNo5GJuMpFLQs7AHm08/krS1qXhCMvpmFpsQ8ALd4rI=;
-        b=Q9A1pAvrtcTQgfC5VsLb86iMlI1OW74d+Orz9VfLqThry56eyqc5UBlSpETr26IbZk
-         jft5kO7jFMcaMiuITL1CH5CRgftBs8sG4v9MnHhpNNFuToTkSyGcDevrSEPnwDDpilta
-         NqfVrQLLUyZbk/9wlZSj6lUsDIo7TYlJNkvGXifer567svocaecqgxlk0MPSt1dKG8Dz
-         ZW1r8SOaSvrkQeskx1HnHjRHRN6smspaepvd/bFAhzFUXc9I1a5Rn7F099SVTuDTLsd1
-         huXwHfX7hAs55Mmd53DWD+DCh5vu/cCeurbDkl/aky7a5N92DFLg/h55RPf0RBq0inyX
-         z8iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SNo5GJuMpFLQs7AHm08/krS1qXhCMvpmFpsQ8ALd4rI=;
-        b=gUX/94E7e3iaiMqrA7n1VfsfLNnp2pWssXt7KKJhcaG7NKdewjXYIGV0zqsI6AG9Zg
-         MysCWPpUuNIE0rU8i2HRf7Jvo0gPCiJbFhWTJ+SLK8scGmJqPultZqb2Ztd+ogmb+3NB
-         sma647R7JjxNDljs0ASvEOWbeMPRtukR/5epMyGZB5qWl6mbdu9lZ9dWXcJVI5F5VpPP
-         82zhX/qMrOoEQo0J3rNESn5YCWjqeTl/9c9wKcbI+9R9J3Ol1pKjhjZRZOCCZLLXRMJX
-         1vj6qbrpCCeVWEAGDFvhBi9WE6zLtX5nXAW5jRFWHNyz1t1OGDVsxQVFOmE2wyfp3PyS
-         VGww==
-X-Gm-Message-State: AOAM5316n3UaMH927nmOTZ/XBw7SuKxVW+Z3RfZXtzjlpaj2LdXnDfMY
-        HRdJn99lncCcXwY9QoupLGQdF6qr+WlskG7QgPegLQ==
-X-Google-Smtp-Source: ABdhPJxY9wwty7iOybffshV/Jnh9deiZ98su7ihtxzLAJduk6yyn9Ip7JSB47ZAZ/4+WaKWBrYtIfKJGQPGYGeEhkWU=
-X-Received: by 2002:a6b:6418:: with SMTP id t24mr3814893iog.145.1607013786217;
- Thu, 03 Dec 2020 08:43:06 -0800 (PST)
+        id S1731363AbgLCQo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:44:58 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:55030 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726958AbgLCQo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 11:44:57 -0500
+Received: from zn.tnic (p200300ec2f0dc5004496c992b512bfd2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:c500:4496:c992:b512:bfd2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7F1261EC0434;
+        Thu,  3 Dec 2020 17:44:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607013856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=/DmkWKu0h3mwMioedlGpNuFallczqE7TKT9kOW5E40c=;
+        b=JZtCYM726FRpT80jAPoqR+Rcwj93drucEOd0Nx8xaqQ034meCQ8vcPWUcLQMGLdKH5BFRe
+        u2gAu3xdfS3WL/7Q4xu5kkZWo4dh/DuExxa0enp6U1ALIJRXhmvUJVSG6v3zv0mQZ3k6hs
+        W9Uu02t9En7V9Ip68K1aJhweDgPLRQ8=
+Date:   Thu, 3 Dec 2020 17:44:11 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+        Kim Phillips <kim.phillips@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>, Pu Wen <puwen@hygon.cn>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/cpu/amd: Remove dead code for TSEG region remapping
+Message-ID: <20201203164411.GK3059@zn.tnic>
+References: <20201127171324.1846019-1-nivedita@alum.mit.edu>
+ <20201127172747.GE13163@zn.tnic>
+ <b726e0d7-7dfb-d902-652f-8aab4bf43e89@amd.com>
+ <X8gWAJ+Pc6KxfYEB@rani.riverdale.lan>
+ <20201203084857.GD3059@zn.tnic>
+ <X8kOzpXyDXNo2PE7@rani.riverdale.lan>
 MIME-Version: 1.0
-References: <000000000000b4862805b54ef573@google.com> <X8kLG5D+j4rT6L7A@elver.google.com>
- <CANn89iJWD5oXPLgtY47umTgo3gCGBaoy+XJfXnw1ecES_EXkCw@mail.gmail.com> <CANpmjNOaWbGJQ5Y=qC3cA31-R-Jy4Fbe+p=OBG5O2Amz8dLtLA@mail.gmail.com>
-In-Reply-To: <CANpmjNOaWbGJQ5Y=qC3cA31-R-Jy4Fbe+p=OBG5O2Amz8dLtLA@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 3 Dec 2020 17:42:54 +0100
-Message-ID: <CANn89iKWf1EVZUuAHup+5ndhxvOqGopq53=vZ9yeok=DnRjggg@mail.gmail.com>
-Subject: Re: WARNING in sk_stream_kill_queues (5)
-To:     Marco Elver <elver@google.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Jann Horn <jannh@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Willem de Bruijn <willemb@google.com>,
-        syzbot <syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <X8kOzpXyDXNo2PE7@rani.riverdale.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 5:34 PM Marco Elver <elver@google.com> wrote:
->
-> On Thu, 3 Dec 2020 at 17:27, Eric Dumazet <edumazet@google.com> wrote:
-> > On Thu, Dec 3, 2020 at 4:58 PM Marco Elver <elver@google.com> wrote:
-> > >
-> > > On Mon, Nov 30, 2020 at 12:40AM -0800, syzbot wrote:
-> > > > Hello,
-> > > >
-> > > > syzbot found the following issue on:
-> > > >
-> > > > HEAD commit:    6147c83f Add linux-next specific files for 20201126
-> > > > git tree:       linux-next
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=117c9679500000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=9b91566da897c24f
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=7b99aafdcc2eedea6178
-> > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=103bf743500000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=167c60c9500000
-> > > >
-> > > > The issue was bisected to:
-> > > >
-> > > > commit 145cd60fb481328faafba76842aa0fd242e2b163
-> > > > Author: Alexander Potapenko <glider@google.com>
-> > > > Date:   Tue Nov 24 05:38:44 2020 +0000
-> > > >
-> > > >     mm, kfence: insert KFENCE hooks for SLUB
-> > > >
-> > > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13abe5b3500000
-> > > > final oops:     https://syzkaller.appspot.com/x/report.txt?x=106be5b3500000
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=17abe5b3500000
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com
-> > > > Fixes: 145cd60fb481 ("mm, kfence: insert KFENCE hooks for SLUB")
-> > > >
-> > > > ------------[ cut here ]------------
-> > > > WARNING: CPU: 0 PID: 11307 at net/core/stream.c:207 sk_stream_kill_queues+0x3c3/0x530 net/core/stream.c:207
-> > > [...]
-> > > > Call Trace:
-> > > >  inet_csk_destroy_sock+0x1a5/0x490 net/ipv4/inet_connection_sock.c:885
-> > > >  __tcp_close+0xd3e/0x1170 net/ipv4/tcp.c:2585
-> > > >  tcp_close+0x29/0xc0 net/ipv4/tcp.c:2597
-> > > >  inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
-> > > >  __sock_release+0xcd/0x280 net/socket.c:596
-> > > >  sock_close+0x18/0x20 net/socket.c:1255
-> > > >  __fput+0x283/0x920 fs/file_table.c:280
-> > > >  task_work_run+0xdd/0x190 kernel/task_work.c:140
-> > > >  exit_task_work include/linux/task_work.h:30 [inline]
-> > > >  do_exit+0xb89/0x29e0 kernel/exit.c:823
-> > > >  do_group_exit+0x125/0x310 kernel/exit.c:920
-> > > >  get_signal+0x3ec/0x2010 kernel/signal.c:2770
-> > > >  arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
-> > > >  handle_signal_work kernel/entry/common.c:144 [inline]
-> > > >  exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
-> > > >  exit_to_user_mode_prepare+0x124/0x200 kernel/entry/common.c:198
-> > > >  syscall_exit_to_user_mode+0x36/0x260 kernel/entry/common.c:275
-> > > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > >
-> > > I've been debugging this and I think enabling KFENCE uncovered that some
-> > > code is assuming that the following is always true:
-> > >
-> > >         ksize(kmalloc(S)) == ksize(kmalloc(S))
-> > >
-> >
-> >
-> > I do not think we make this assumption.
-> >
-> > Each skb tracks the 'truesize' which is populated from __alloc_skb()
-> > using ksize(allocated head) .
-> >
-> > So if ksize() decides to give us random data, it should be still fine,
-> > because we use ksize(buff) only once at alloc skb time, and record the
-> > value in skb->truesize
-> >  (only the socket buffer accounting would be off)
->
-> Good, thanks for clarifying. So something else must be off then.
+On Thu, Dec 03, 2020 at 11:14:06AM -0500, Arvind Sankar wrote:
+> Do any of them have it mapped at all, regardless of the alignment? There
+> seems to be nothing else in the kernel that ever looks at the TSEG MSR,
+> so I would guess that it has to be non-RAM in the E820 map, otherwise
+> nothing would prevent the kernel from allocating and using that space.
 
-Actually we might have the following assumption :
+Ha, that's a very good question. If all those BIOSes from K8 onwards
+would put the TSEG in a non-RAM area and after
 
-buff = kmalloc(size, GFP...)
-if (buff)
-   ASSERT(ksize(buff) >= size)
+  66520ebc2df3 ("x86, mm: Only direct map addresses that are marked as E820_RAM")
 
-So obviously ksize() should not be completely random ;)
+(great investigative work, btw, thanks for that!) then we can simply say
+that that splitting is not needed anymore.
+
+Maybe Tom can ask BIOS people whether they always did that - that being
+to put the TSEG into a non-RAM area. I can boot my debug patch on my
+boxes here but that doesn't mean a whole lot...
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
