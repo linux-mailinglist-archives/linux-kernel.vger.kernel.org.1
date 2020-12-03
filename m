@@ -2,174 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF72B2CD11C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2C02CD126
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388304AbgLCIRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:17:53 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1168 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727957AbgLCIRw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:17:52 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc89f080001>; Thu, 03 Dec 2020 00:17:12 -0800
-Received: from [10.2.53.244] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Dec
- 2020 08:17:02 +0000
-Subject: Re: [PATCH 5/6] mm: honor PF_MEMALLOC_NOMOVABLE for all allocations
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <akpm@linux-foundation.org>, <vbabka@suse.cz>, <mhocko@suse.com>,
-        <david@redhat.com>, <osalvador@suse.de>,
-        <dan.j.williams@intel.com>, <sashal@kernel.org>,
-        <tyhicks@linux.microsoft.com>, <iamjoonsoo.kim@lge.com>,
-        <mike.kravetz@oracle.com>, <rostedt@goodmis.org>,
-        <mingo@redhat.com>, <jgg@ziepe.ca>, <peterz@infradead.org>,
-        <mgorman@suse.de>, <willy@infradead.org>, <rientjes@google.com>
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201202052330.474592-6-pasha.tatashin@soleen.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <18c9ab89-185b-395a-97ce-31940388df0e@nvidia.com>
-Date:   Thu, 3 Dec 2020 00:17:02 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:83.0) Gecko/20100101
- Thunderbird/83.0
+        id S2388361AbgLCIUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:20:31 -0500
+Received: from mout.gmx.net ([212.227.15.15]:38071 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388247AbgLCIUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 03:20:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606983503;
+        bh=+mg95bL0eB1QM3vNqeKO61wWaQkqiUstVwa5YpwRRGo=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=VeSxLyfIY0H0JPcKgmQ5ZLpB7STufUn6B66XhSgKJ71wuAurRNXRXg7g9gbAy/b1u
+         IxXmqfPAHswFGwZT73L2Hq8ZRG6Fvt+RyX1Fx5eBHJ6eIt+0PqA/tEZ9Pi8aB8+DAR
+         CL2SE+FFpcLeWnZn/k2N1HHR4mWUydtuGc1Qmllg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.149.242]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MEV3I-1kwIHV1i2M-00Fz1B; Thu, 03
+ Dec 2020 09:18:23 +0100
+Message-ID: <64ab382309c41ca5c7a601fc3efbb6d2a6e68602.camel@gmx.de>
+Subject: Re: scheduling while atomic in z3fold
+From:   Mike Galbraith <efault@gmx.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org
+Date:   Thu, 03 Dec 2020 09:18:21 +0100
+In-Reply-To: <abe48cb9ab522659a05d7e41ce07317da2a85163.camel@gmx.de>
+References: <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
+         <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
+         <20201129112922.db53kmtpu76xxukj@spock.localdomain>
+         <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
+         <20201130132014.mlvxeyiub3fpwyw7@linutronix.de>
+         <856b5cc2a3d4eb673743b52956bf1e60dcdf87a1.camel@gmx.de>
+         <20201130145229.mhbkrfuvyctniaxi@linutronix.de>
+         <05121515e73891ceb9e5caf64b6111fc8ff43fab.camel@gmx.de>
+         <20201130160327.ov32m4rapk4h432a@linutronix.de>
+         <fca7ecadf1bddafb7e88cbeb4a57d1464c87b044.camel@gmx.de>
+         <20201202220826.5chy56mbgvrwmg3d@linutronix.de>
+         <abe48cb9ab522659a05d7e41ce07317da2a85163.camel@gmx.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <20201202052330.474592-6-pasha.tatashin@soleen.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606983432; bh=tt3ipWNRmelZIOH1gok6CPu43cySDBNfdp0EafzWIpw=;
-        h=Subject:To:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=HN8ouwon52VjICOn9XNJ3C2+eiv4+jZrliRSIA83IAb96b2hCuI8/BzT2/2kyFNDJ
-         FvR2biCjaQNHMLYPWIqdtVHYQP4AvnSMCep4OrY1YiJM8LHEEGOn1LD+oBfYgt7Tdl
-         8w7i8TPKAGHYyHhsO6QICreNLhDoJs/TUhsuz6CuOis5EDHlf+f3wTuDTDO0KVx/qO
-         hWwGlvChrSk5+6Ahy//qPHmosYfjESFoiZdmmGQhQnQgpW0bXCii0f4dCcDh9rhuUi
-         Fx2HHJJ2VNEDcCp/vTvdZHsBltkHVNi6+EWl3evkNjciXGhrjcXFFowqUjbvy0x9Zh
-         q1cHSOIiwuwjA==
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/IX7vUtk4rT5MqHxVvtHQ0lWlxEyiWzRjfnNmJ7bUptZZTISoAg
+ O6a1AVKfK5ZxO7qugA6ryljYEUqAQq5TwUgdcGjSYsLe9nz0CzFt/nMM+9hJLXIDCx+27fJ
+ uUP9UTabMGxbTxKfDEgFUU/ChTMkERwBuhM8W2uLQrgXGtRIgdngMXN3sMU1sy51arftOQs
+ 5IYNvFyW047nOePJiOT8g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IF6acc0iF7Y=:zBvLRz5x4Ka+WeQg42f/QG
+ Kf6rJ6b+fFD+lUhyL0oBdZSsI74V4natxuaKAmdcqGY5GVl0z5JxbNxvTwxFBAONKSd/6cURq
+ 06N8qbjyYBzwClqGdJDKi3SrpSXdnRVzEnpqzDX/DoAlSg0G2Bh5MgTd2LoQ0VlaMz+aoQgs6
+ T69PT9wtmmnS26RgXHEbWTLflI/24IbwmX+m4go8sFVoxKoOl4IIfqtuNEx2p4mj+3SCap5y9
+ 0twXqU6P53r/3NmTBzqR1e7juv3vqwDshQ79HPiM9hNlkpIdauCMFYI2AFyEyXFRs6LJsXbSG
+ 215YZzOHY3JAKJYFARdqGiNzqBQTxwE1PzX6NOGA6Dja4ZN8EVPDdsFeiA4ChxlM2bczC+aVk
+ piSIvIYM3fZglAdpY807Pj7ZnBSVvqQQ55Xb6IubitG1BPgLH1wOqhg6cyIrzm9i7vqAYIWZm
+ C/FHUO2AgGn8I/Gtxt+O2MmutSu+e+dBT+dqnQekeRClrHiFtSl1TFXBWDMDS9dLuM7mexQLc
+ 62WSHQziY/EQe1Og+OY/sUjQzX9TvomcY+cJ1cfWd62by+SzISRBnSXMl2JGOptomhjIR3rBX
+ 1Bm/BNyeJcuZRVamU/YddjezINHkRVEXKbUZP3rDnKjh9DYsVMgD5BBcr7MGkT1D90S413bYz
+ JnSAQsm0GjaraixUF7eqqy7RV+xis3f7KQrGfylXUfNLwpFoGST7RFzDg1suddjnZTB5TCMsU
+ gdX2P82POeBzwZhYATwJDFOsDxYWhskBgTwlo+hy8o81CEED67lWBsOdgHz5LIcxui/dTkUvs
+ MdUiG9Mo1H7m01+Q4/vqX01tIDsoX5tRu4MgaB4oTkav6Qmh/R/KrGo1PTcQdJr18rmLRyY2I
+ FlSIyVvR/IeIjABH1bIw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 9:23 PM, Pavel Tatashin wrote:
-> PF_MEMALLOC_NOMOVABLE is only honored for CMA allocations, extend
-> this flag to work for any allocations by removing __GFP_MOVABLE from
-> gfp_mask when this flag is passed in the current context, thus
-> prohibiting allocations from ZONE_MOVABLE.
-> 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> ---
->   mm/hugetlb.c    |  2 +-
->   mm/page_alloc.c | 26 ++++++++++++++++----------
->   2 files changed, 17 insertions(+), 11 deletions(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 02213c74ed6b..00e786201d8b 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1036,7 +1036,7 @@ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
->   	bool nomovable = !!(current->flags & PF_MEMALLOC_NOMOVABLE);
->   
->   	list_for_each_entry(page, &h->hugepage_freelists[nid], lru) {
-> -		if (nomovable && is_migrate_cma_page(page))
-> +		if (nomovable && is_migrate_movable(get_pageblock_migratetype(page)))
+On Thu, 2020-12-03 at 03:16 +0100, Mike Galbraith wrote:
+> On Wed, 2020-12-02 at 23:08 +0100, Sebastian Andrzej Siewior wrote:
+> Looks like...
+>
+> d8f117abb380 z3fold: fix use-after-free when freeing handles
+>
+> ...wasn't completely effective...
 
+The top two hunks seem to have rendered the thing RT tolerant.
 
-I wonder if we should add a helper, like is_migrate_cma_page(), that avoids having
-to call get_pageblock_migratetype() at all of the callsites?
+diff --git a/mm/z3fold.c b/mm/z3fold.c
+index 18feaa0bc537..851d9f4f1644 100644
+=2D-- a/mm/z3fold.c
++++ b/mm/z3fold.c
+@@ -537,7 +537,7 @@ static void __release_z3fold_page(struct z3fold_header=
+ *zhdr, bool locked)
+ 	spin_unlock(&pool->lock);
 
+ 	/* If there are no foreign handles, free the handles array */
+-	read_lock(&zhdr->slots->lock);
++	write_lock(&zhdr->slots->lock);
+ 	for (i =3D 0; i <=3D BUDDY_MASK; i++) {
+ 		if (zhdr->slots->slot[i]) {
+ 			is_free =3D false;
+@@ -546,7 +546,7 @@ static void __release_z3fold_page(struct z3fold_header=
+ *zhdr, bool locked)
+ 	}
+ 	if (!is_free)
+ 		set_bit(HANDLES_ORPHANED, &zhdr->slots->pool);
+-	read_unlock(&zhdr->slots->lock);
++	write_unlock(&zhdr->slots->lock);
 
->   			continue;
->   
->   		if (PageHWPoison(page))
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 611799c72da5..7a6d86d0bc5f 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -3766,20 +3766,25 @@ alloc_flags_nofragment(struct zone *zone, gfp_t gfp_mask)
->   	return alloc_flags;
->   }
->   
-> -static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
-> -					unsigned int alloc_flags)
-> +static inline unsigned int cma_alloc_flags(gfp_t gfp_mask,
-> +					   unsigned int alloc_flags)
+ 	if (is_free)
+ 		kmem_cache_free(pool->c_handle, zhdr->slots);
+@@ -642,14 +642,16 @@ static inline void add_to_unbuddied(struct z3fold_po=
+ol *pool,
+ {
+ 	if (zhdr->first_chunks =3D=3D 0 || zhdr->last_chunks =3D=3D 0 ||
+ 			zhdr->middle_chunks =3D=3D 0) {
+-		struct list_head *unbuddied =3D get_cpu_ptr(pool->unbuddied);
+-
++		struct list_head *unbuddied;
+ 		int freechunks =3D num_free_chunks(zhdr);
++
++		migrate_disable();
++		unbuddied =3D this_cpu_ptr(pool->unbuddied);
+ 		spin_lock(&pool->lock);
+ 		list_add(&zhdr->buddy, &unbuddied[freechunks]);
+ 		spin_unlock(&pool->lock);
+ 		zhdr->cpu =3D smp_processor_id();
+-		put_cpu_ptr(pool->unbuddied);
++		migrate_enable();
+ 	}
+ }
 
-Actually, maybe the original name should be left intact. This handles current alloc
-flags, which right now happen to only cover CMA flags, so the original name seems
-accurate, right?
+@@ -886,8 +888,9 @@ static inline struct z3fold_header *__z3fold_alloc(str=
+uct z3fold_pool *pool,
+ 	int chunks =3D size_to_chunks(size), i;
 
+ lookup:
++	migrate_disable();
+ 	/* First, try to find an unbuddied z3fold page. */
+-	unbuddied =3D get_cpu_ptr(pool->unbuddied);
++	unbuddied =3D this_cpu_ptr(pool->unbuddied);
+ 	for_each_unbuddied_list(i, chunks) {
+ 		struct list_head *l =3D &unbuddied[i];
 
-thanks,
+@@ -905,7 +908,7 @@ static inline struct z3fold_header *__z3fold_alloc(str=
+uct z3fold_pool *pool,
+ 		    !z3fold_page_trylock(zhdr)) {
+ 			spin_unlock(&pool->lock);
+ 			zhdr =3D NULL;
+-			put_cpu_ptr(pool->unbuddied);
++			migrate_enable();
+ 			if (can_sleep)
+ 				cond_resched();
+ 			goto lookup;
+@@ -919,7 +922,7 @@ static inline struct z3fold_header *__z3fold_alloc(str=
+uct z3fold_pool *pool,
+ 		    test_bit(PAGE_CLAIMED, &page->private)) {
+ 			z3fold_page_unlock(zhdr);
+ 			zhdr =3D NULL;
+-			put_cpu_ptr(pool->unbuddied);
++			migrate_enable();
+ 			if (can_sleep)
+ 				cond_resched();
+ 			goto lookup;
+@@ -934,7 +937,7 @@ static inline struct z3fold_header *__z3fold_alloc(str=
+uct z3fold_pool *pool,
+ 		kref_get(&zhdr->refcount);
+ 		break;
+ 	}
+-	put_cpu_ptr(pool->unbuddied);
++	migrate_enable();
 
-John Hubbard
-NVIDIA
-
->   {
->   #ifdef CONFIG_CMA
-> -	unsigned int pflags = current->flags;
-> -
-> -	if (!(pflags & PF_MEMALLOC_NOMOVABLE) &&
-> -	    gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
-> +	if (gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
->   		alloc_flags |= ALLOC_CMA;
-> -
->   #endif
->   	return alloc_flags;
->   }
->   
-> +static inline gfp_t current_gfp_checkmovable(gfp_t gfp_mask)
-> +{
-> +	unsigned int pflags = current->flags;
-> +
-> +	if ((pflags & PF_MEMALLOC_NOMOVABLE))
-> +		return gfp_mask & ~__GFP_MOVABLE;
-> +	return gfp_mask;
-> +}
-> +
->   /*
->    * get_page_from_freelist goes through the zonelist trying to allocate
->    * a page.
-> @@ -4423,7 +4428,7 @@ gfp_to_alloc_flags(gfp_t gfp_mask)
->   	} else if (unlikely(rt_task(current)) && !in_interrupt())
->   		alloc_flags |= ALLOC_HARDER;
->   
-> -	alloc_flags = current_alloc_flags(gfp_mask, alloc_flags);
-> +	alloc_flags = cma_alloc_flags(gfp_mask, alloc_flags);
->   
->   	return alloc_flags;
->   }
-> @@ -4725,7 +4730,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
->   
->   	reserve_flags = __gfp_pfmemalloc_flags(gfp_mask);
->   	if (reserve_flags)
-> -		alloc_flags = current_alloc_flags(gfp_mask, reserve_flags);
-> +		alloc_flags = cma_alloc_flags(gfp_mask, reserve_flags);
->   
->   	/*
->   	 * Reset the nodemask and zonelist iterators if memory policies can be
-> @@ -4894,7 +4899,7 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
->   	if (should_fail_alloc_page(gfp_mask, order))
->   		return false;
->   
-> -	*alloc_flags = current_alloc_flags(gfp_mask, *alloc_flags);
-> +	*alloc_flags = cma_alloc_flags(gfp_mask, *alloc_flags);
->   
->   	/* Dirty zone balancing only done in the fast path */
->   	ac->spread_dirty_pages = (gfp_mask & __GFP_WRITE);
-> @@ -4932,6 +4937,7 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order, int preferred_nid,
->   	}
->   
->   	gfp_mask &= gfp_allowed_mask;
-> +	gfp_mask = current_gfp_checkmovable(gfp_mask);
->   	alloc_mask = gfp_mask;
->   	if (!prepare_alloc_pages(gfp_mask, order, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
->   		return NULL;
-> 
+ 	if (!zhdr) {
+ 		int cpu;
 
