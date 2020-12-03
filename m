@@ -2,104 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35F42CDCC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B071F2CDCCA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387646AbgLCRv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:51:29 -0500
-Received: from outbound-smtp22.blacknight.com ([81.17.249.190]:59764 "EHLO
-        outbound-smtp22.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387485AbgLCRv2 (ORCPT
+        id S1731496AbgLCRwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:52:35 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:33032 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbgLCRw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:51:28 -0500
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp22.blacknight.com (Postfix) with ESMTPS id D52C9BAABC
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 17:50:35 +0000 (GMT)
-Received: (qmail 7026 invoked from network); 3 Dec 2020 17:50:35 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 3 Dec 2020 17:50:35 -0000
-Date:   Thu, 3 Dec 2020 17:50:34 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 04/10] sched/fair: Return an idle cpu if one is found
- after a failed search for an idle core
-Message-ID: <20201203175034.GX3371@techsingularity.net>
-References: <20201203141124.7391-1-mgorman@techsingularity.net>
- <20201203141124.7391-5-mgorman@techsingularity.net>
- <CAKfTPtBMc=3d0nyoCt7_0s_wFyr_kUX3kET4cqesYjQQwLDhYw@mail.gmail.com>
+        Thu, 3 Dec 2020 12:52:29 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kkslb-0003zJ-3c; Thu, 03 Dec 2020 17:51:43 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Yan-Hsuan Chuang <tony0620emma@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Ching-Te Ku <ku920601@realtek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] rtw88: coex: fix missing unitialization of variable 'interval'
+Date:   Thu,  3 Dec 2020 17:51:42 +0000
+Message-Id: <20201203175142.1071738-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtBMc=3d0nyoCt7_0s_wFyr_kUX3kET4cqesYjQQwLDhYw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 05:35:29PM +0100, Vincent Guittot wrote:
-> > index fc48cc99b03d..845bc0cd9158 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -6066,6 +6066,7 @@ void __update_idle_core(struct rq *rq)
-> >   */
-> >  static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
-> >  {
-> > +       int idle_candidate = -1;
-> >         struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
-> >         int core, cpu;
-> >
-> > @@ -6084,7 +6085,13 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
-> >                         schedstat_inc(this_rq()->sis_scanned);
-> >                         if (!available_idle_cpu(cpu)) {
-> >                                 idle = false;
-> > -                               break;
-> > +                               if (idle_candidate != -1)
-> > +                                       break;
-> 
-> 
-> If I get your changes correctly, it will now continue to loop on all
-> cpus of the smt mask to try to find an idle cpu whereas it was
+From: Colin Ian King <colin.king@canonical.com>
 
-That was an oversight, the intent is that the SMT search breaks but
-the search for an idle core continues. The patch was taken from a very
-different series that unified all the select_idle_* functions as a single
-function and I failed to fix it up properly. The unification series
-didn't generate good results back 9 months ago when I tried and I never
-finished it off. In the current context, it would not make sense to try
-a unification again.
+Currently the variable 'interval' is not initialized and is only set
+to 1 when oex_stat->bt_418_hid_existi is true.  Fix this by inintializing
+variable interval to 0 (which I'm assuming is the intended default).
 
-> With the change above you might end up looping all cpus of llc if
-> there is only one idle cpu in the llc whereas before we were looping
-> only 1 cpu per core at most. The bottom change makes sense but the
-> above on is in some way replacing completely select_idle_cpu and
-> bypass SIS_PROP and we should avoid that IMO
-> 
+Addresses-Coverity: ("Uninitalized scalar variable")
+Fixes: 5b2e9a35e456 ("rtw88: coex: add feature to enhance HID coexistence performance")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/wireless/realtek/rtw88/coex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-You're right of course, it was never intended to behave like that.
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 0a3d338770c4..49b1590e60a9 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6084,8 +6084,7 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
- 		for_each_cpu(cpu, cpu_smt_mask(core)) {
- 			if (!available_idle_cpu(cpu)) {
- 				idle = false;
--				if (idle_candidate != -1)
--					break;
-+				break;
- 			}
+diff --git a/drivers/net/wireless/realtek/rtw88/coex.c b/drivers/net/wireless/realtek/rtw88/coex.c
+index c704c6885a18..24530cafcba7 100644
+--- a/drivers/net/wireless/realtek/rtw88/coex.c
++++ b/drivers/net/wireless/realtek/rtw88/coex.c
+@@ -2051,7 +2051,7 @@ static void rtw_coex_action_bt_a2dp_hid(struct rtw_dev *rtwdev)
+ 	struct rtw_coex_dm *coex_dm = &coex->dm;
+ 	struct rtw_efuse *efuse = &rtwdev->efuse;
+ 	struct rtw_chip_info *chip = rtwdev->chip;
+-	u8 table_case, tdma_case, interval;
++	u8 table_case, tdma_case, interval = 0;
+ 	u32 slot_type = 0;
+ 	bool is_toggle_table = false;
  
- 			if (idle_candidate == -1 &&
-
 -- 
-Mel Gorman
-SUSE Labs
+2.29.2
+
