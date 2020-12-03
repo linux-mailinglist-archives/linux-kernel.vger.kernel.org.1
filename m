@@ -2,84 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3932CD912
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3672CD91F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389118AbgLCO1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 09:27:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729431AbgLCO1S (ORCPT
+        id S1730782AbgLCOa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 09:30:29 -0500
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:39101 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727922AbgLCOa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:27:18 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85EE2C061A4E;
-        Thu,  3 Dec 2020 06:26:38 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id s2so1223854plr.9;
-        Thu, 03 Dec 2020 06:26:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RmlHNhnBbpal8IKytHTdYXXzg8wBb8EaRJxXyVenTR0=;
-        b=quvplfd5ZaoQvtY3zNBqQ/XoGCTzAr5Oj0JZVRPiO2ecBtg65KC0b85Hk8N8Z/7BkR
-         /gAgww4LRd2aRaz79gRiGjy+QhMtjrBHYuFxEuw6kh3gEiyP9I10+09BiTkFmE8QuMIy
-         4/cib1pMzBU8V0W2GnZNQoqtGiCdCnkuAJkQGwCwXfvdlKYI0eanBes8WhVW1B6Ylbwe
-         Oo9Y2vbAg6aQO+nhvhDTewXicRkz9oYpvkoyJu6FlqtbQ1MmWDgm0v6aSnv65Ea3Mqi1
-         4ry6UGO05dIdqUZ92/yT0nVlKtUrDI/13cyDFCgVmgvZr5wn8Jxs9Yz/zrTSGlYjiEor
-         nFjw==
+        Thu, 3 Dec 2020 09:30:29 -0500
+Received: by mail-oo1-f68.google.com with SMTP id l10so546313oom.6;
+        Thu, 03 Dec 2020 06:30:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RmlHNhnBbpal8IKytHTdYXXzg8wBb8EaRJxXyVenTR0=;
-        b=lIi1cqBNW3ydqNSYhguD1UsnFyYxQxIc305uHovx7KAFOik+g7rRt2Sd49BApwVDOm
-         xtU1cKtZCXsPRvW5ELVMUf0vFplhwXN0WJju5uuxHsg2F3ESrkg/8EUkUaohKOCqJieU
-         JFeXe9R2iTHHIG9Gq8tr81P7yBXbt74tkRNpIg1l9L/YySqvkJ6B5nLRCmTvWQfkw9FA
-         c1SSB6eaQEOS3kXGQZpR6CyLvH0770m0OBA3N9Creu1qm3DJcVpy+4HDifna6fc+Kxn4
-         QAIBIIoNoVmBppTBawv7JHn5gmrPnckO9XpGBBgmR7a2mL1+9MnJMBwe8Af7KCubyMPj
-         45JA==
-X-Gm-Message-State: AOAM530RBMbA7dV0r5sON+Ie68Ujn9okpk178HqEX+4CJjl74tpUhfpF
-        n4wiQRY1d3RKlMcLnHv4+WPIbE4Btr8p2vMVNz0=
-X-Google-Smtp-Source: ABdhPJyofuZKZKO5K9Ewu29CW/v+Ah+wyMiFoHzE1a88AA44BaG/yo9Ng8IqRPR5gdc2rcFnKBU/HYTj9REuQzurF9s=
-X-Received: by 2002:a17:902:b7c3:b029:da:76bc:2aa9 with SMTP id
- v3-20020a170902b7c3b02900da76bc2aa9mr3329660plz.21.1607005598115; Thu, 03 Dec
- 2020 06:26:38 -0800 (PST)
+        bh=qnScdmTa9jUhGlp19x28zc+ijbwexrDTUCyumi+GyL8=;
+        b=CHc5AU2jAXgGI1aoBYI0g+4aZSHNxFFXL7avrpXlD7diOKR5XQIqXMlRKaXP41vTNs
+         wV/D3biLXrYVswUY1n00M02naVmGO6r6+xpQzrEYngcd7iZsAfH/qeDMqhO8vhOqP9AN
+         ENMHlgz1fI3zacFJPnXuR4ijwQFTdTKGoxKV+Ei+lXzehKkxi1etyi641EtVrAI7xOfH
+         6CSypv58Rjstt+OXMGG16Qyg233NycmHfihBNprOXvQVXTpa1q1pOvkJ2WBT3lRrbT+o
+         9UNFJtJT+1Vq6M7Xx2J7mcwMATcrvRiwbcCiiXtY9dygR9gJmZxW2GgX++1vbyGD83Oh
+         HmLg==
+X-Gm-Message-State: AOAM532Nc408AuJwKILxH6LeZpLDTIsKtA+wSjKUaYrT7tkphjWPUtds
+        zdvuwQJPIOtKJrBE/CA4ppaSszAj51ZIDCdqrfk=
+X-Google-Smtp-Source: ABdhPJxgsuYf1/RsJTmPbHm679dJlC38zcIxCRNs39CuPDekx5OtuPh2g9Ud54qa2R1YmAwODds+HvxZdB0JKkh82RA=
+X-Received: by 2002:a4a:dc1:: with SMTP id 184mr2292726oob.40.1607005787874;
+ Thu, 03 Dec 2020 06:29:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20201203140531.74470-1-alexandru.ardelean@analog.com>
- <20201203140531.74470-2-alexandru.ardelean@analog.com> <CAHp75Veh=b0JYOP_gETyqqGGEYhO9JcxFCGXSuzSX27-qioprA@mail.gmail.com>
-In-Reply-To: <CAHp75Veh=b0JYOP_gETyqqGGEYhO9JcxFCGXSuzSX27-qioprA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 3 Dec 2020 16:27:26 +0200
-Message-ID: <CAHp75Vd-23R0EeXLMFBqsxy4HzC2huGYPJm6LX6r1==bh5xg2A@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] spi: Add SPI_NO_TX/RX support
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-spi <linux-spi@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Bogdan, Dragos" <dragos.bogdan@analog.com>
+References: <20201203121916.2870975-1-geert+renesas@glider.be>
+ <20201203121916.2870975-4-geert+renesas@glider.be> <20201203140450.GH1551@shell.armlinux.org.uk>
+In-Reply-To: <20201203140450.GH1551@shell.armlinux.org.uk>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 3 Dec 2020 15:29:36 +0100
+Message-ID: <CAMuHMdWuHz_ndk9atkv+9LKtqCpEWik+AfHPrvb+fXTVh4h3rA@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] ARM: uncompress: Validate start of physical
+ memory against passed DTB
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Nicolas Pitre <nico@fluxnic.net>, Ard Biesheuvel <ardb@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Eric Miao <eric.miao@nvidia.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Lukasz Stelmach <l.stelmach@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 4:10 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Thu, Dec 3, 2020 at 4:00 PM Alexandru Ardelean
-> <alexandru.ardelean@analog.com> wrote:
+Hi Russell,
 
-> > +#define SPI_NO_TX      BIT(31)         /* no transmit wire */
-> > +#define SPI_NO_RX      BIT(30)         /* no receive wire */
-> > +#define SPI_MODE_KERNEL_MASK   (SPI_NO_TX | SPI_NO_RX)
+On Thu, Dec 3, 2020 at 3:05 PM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+> On Thu, Dec 03, 2020 at 01:19:16PM +0100, Geert Uytterhoeven wrote:
+> > diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
+> > index d9cce7238a365081..1b6425df87e84e71 100644
+> > --- a/arch/arm/boot/compressed/head.S
+> > +++ b/arch/arm/boot/compressed/head.S
+> > @@ -282,10 +282,36 @@ not_angel:
+> >                * are already placing their zImage in (eg) the top 64MB
+> >                * of this range.
+> >                */
+> > -             mov     r4, pc
+> > -             and     r4, r4, #0xf8000000
+> > +             mov     r0, pc
+> > +             and     r0, r0, #0xf8000000
+> > +#ifdef CONFIG_USE_OF
+> > +             adr     r1, LC1
+> > +#ifdef CONFIG_ARM_APPENDED_DTB
+> > +             /*
+> > +              * Look for an appended DTB.  If found, we cannot use it to
+> > +              * validate the calculated start of physical memory, as its
+> > +              * memory nodes may need to be augmented by ATAGS stored at
+> > +              * an offset from the same start of physical memory.
+> > +              */
+> > +             ldr     r2, [r1, #4]    @ get &_edata
+> > +             add     r2, r2, r1      @ relocate it
+> > +             ldr     r2, [r2]        @ get DTB signature
+> > +             ldr     r3, =OF_DT_MAGIC
+> > +             cmp     r2, r3          @ do we have a DTB there?
+> > +             beq     1f              @ if yes, skip validation
+> > +#endif /* CONFIG_ARM_APPENDED_DTB */
+> > +
+> > +             /* Make sure we have some stack */
+> > +             ldr     sp, [r1]        @ get stack location
+> > +             add     sp, sp, r1      @ apply relocation
+> > +
+> > +             /* Validate calculated start against passed DTB */
+> > +             mov     r1, r8
+> > +             bl      fdt_check_mem_start
 >
-> This needs a comment to explain what's going on with the flags (split).
+> I don't think this is going to work. You can only run C code when
+> it has been linked for a specific address and is loaded at the
+> correct address as it contains absolute addresses. We work around
+> that in the decompressor by (ab)using the GOT table, and the code
+> that fixes up the GOT table is run later, after you've called out
+> to some C code here.
+>
+> Quite how this works for you without the GOT fixups having been
+> done, I'm not sure.
 
-...and to be consistent with proposal in uAPI:
+It works in the same way as the existing atags_to_fdt() works:
 
-#define SPI_MODE_KERNEL_MASK   (~(BIT(30) - 1))
+     * [...] No GOT fixup has occurred
+     * yet, but none of the code we're about to call uses any
+     * global variable.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
