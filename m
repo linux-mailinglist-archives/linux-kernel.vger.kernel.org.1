@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CDD2CD0D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:09:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 210742CD0D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729947AbgLCIIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:08:47 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:9870 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728929AbgLCIIr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:08:47 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B385mNb007754;
-        Thu, 3 Dec 2020 03:07:42 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 355vj5n03q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 03:07:41 -0500
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0B387dSh000771
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 3 Dec 2020 03:07:39 -0500
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 3 Dec 2020 03:07:38 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 3 Dec 2020 03:07:38 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 3 Dec 2020 03:07:37 -0500
-Received: from saturn.ad.analog.com ([10.48.65.108])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0B387W5x027599;
-        Thu, 3 Dec 2020 03:07:33 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <catherine.redmond@analog.com>, <brian.murray@analog.com>,
-        <danail.baylov@analog.com>, <maurice.obrien@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] net: phy: adin: add signal mean square error registers to phy-stats
-Date:   Thu, 3 Dec 2020 10:07:19 +0200
-Message-ID: <20201203080719.30040-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.27.0
+        id S2388252AbgLCILs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:11:48 -0500
+Received: from mga09.intel.com ([134.134.136.24]:1542 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728193AbgLCILs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 03:11:48 -0500
+IronPort-SDR: AWr0W7MHB77Fuj3qIBMnjoKr4a+DyCEwe11syuh2mPNMvMj2qUvuXexKrHFRDwtoHg/Ejx1UgQ
+ kgU7Ls/yT0tg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="173313650"
+X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
+   d="scan'208";a="173313650"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 00:11:07 -0800
+IronPort-SDR: UNLFDTrOs/+Xk6MkL/F/0LzRGv9RvZc7nGayr+kzFLZaBeSNGVPjoGXRaPund9ZfeZShLIimv7
+ uOiDINNhbm+A==
+X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
+   d="scan'208";a="540018282"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 00:11:04 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1kkjig-00BhXF-9Y; Thu, 03 Dec 2020 10:12:06 +0200
+Date:   Thu, 3 Dec 2020 10:12:06 +0200
+From:   "Shevchenko, Andriy" <andriy.shevchenko@intel.com>
+To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Wan Mohamad, Wan Ahmad Zainie" 
+        <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Mark Gross <mgross@linux.intel.com>
+Subject: Re: [PATCH v6 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+Message-ID: <20201203081206.GR4077@smile.fi.intel.com>
+References: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
+ <20201202150205.20150-5-muhammad.husaini.zulkifli@intel.com>
+ <CACRpkdZznKd4NYk8whBtq1sUAj9uhasn3+ykrh50A2XKokp=Aw@mail.gmail.com>
+ <DM6PR11MB28767ED32E97BF93C5F3C7B4B8F20@DM6PR11MB2876.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-03_03:2020-12-03,2020-12-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- clxscore=1015 malwarescore=0 suspectscore=0 mlxscore=0 bulkscore=0
- mlxlogscore=999 phishscore=0 adultscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030049
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB28767ED32E97BF93C5F3C7B4B8F20@DM6PR11MB2876.namprd11.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the link is up on the ADIN1300/ADIN1200, the signal quality on each
-pair is indicated in the mean square error register for each pair (MSE_A,
-MSE_B, MSE_C, and MSE_D registers, Address 0x8402 to Address 0x8405,
-Bits[7:0]).
+On Thu, Dec 03, 2020 at 09:10:14AM +0200, Zulkifli, Muhammad Husaini wrote:
+> >From: Linus Walleij <linus.walleij@linaro.org>
+> >Sent: Thursday, December 3, 2020 2:55 AM
+> >On Wed, Dec 2, 2020 at 8:04 AM <muhammad.husaini.zulkifli@intel.com>
+> >wrote:
 
-These values can be useful for some industrial applications.
+...
 
-This change implements support for these registers using the PHY
-statistics mechanism.
+> >If it should use any abstraction it should be a selector regulator IMO and
+> >while that may seem overengineered it adds something because regulators
+> >are used in  the MMC subsystem for vdd and vqmmc because we are handling
+> >the OCR mask with that and it can support any amount of present and future
+> >voltages for signal levels with that as well. Any future changes to how the
+> >different signal voltages are set or which voltages exist can then be done in
+> >that regulator driver.
+> 
+> This is limitation of Keem Bay HW and I would say Keem Bay HW is somewhat
+> unique in the way of handling the IO bus line voltage.
+> SDcard does not have its own voltage regulator.
+> I created one function sdhci_arasan_keembay_io_line_supply_operation() in sdhci-of-arasan.c
+> to handle the vqmmc(io line supply operation) specific for Keem Bay SoC.
+> 
+> For Keem Bay, to actually modelling this as regulator ,for vqmmc, , we need to handle 2 things:
+> 1) Output expander pins : using gpio regulator
+> 2) voltage rail : call keembay_io_rail_supplied_voltage() to handle the SMCC Arm.
+> 
+> Other hardware might not need this as they might easily configure the vqmmc
+> hooked up to regulator.
+> 
+> IMHO, we do not need to overengineered it to add custom selector
+> regulator just to suit this Keem Bay HW design.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/net/phy/adin.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+I guess Linus has a point. If it can be abstracted as selector regulator it
+will suits generic approach in the MMC code.
 
-diff --git a/drivers/net/phy/adin.c b/drivers/net/phy/adin.c
-index 55a0b91816e2..e4441bba98c3 100644
---- a/drivers/net/phy/adin.c
-+++ b/drivers/net/phy/adin.c
-@@ -184,6 +184,7 @@ struct adin_hw_stat {
- 	const char *string;
- 	u16 reg1;
- 	u16 reg2;
-+	bool do_not_accumulate;
- };
- 
- static const struct adin_hw_stat adin_hw_stats[] = {
-@@ -197,6 +198,10 @@ static const struct adin_hw_stat adin_hw_stats[] = {
- 	{ "odd_preamble_packet_count",		0x9412 },
- 	{ "dribble_bits_frames_count",		0x9413 },
- 	{ "false_carrier_events_count",		0x9414 },
-+	{ "signal_mean_square_error_a",		0x8402,	0,	true },
-+	{ "signal_mean_square_error_b",		0x8403,	0,	true },
-+	{ "signal_mean_square_error_c",		0x8404,	0,	true },
-+	{ "signal_mean_square_error_d",		0x8405,	0,	true },
- };
- 
- /**
-@@ -757,7 +762,10 @@ static u64 adin_get_stat(struct phy_device *phydev, int i)
- 		val = (ret & 0xffff);
- 	}
- 
--	priv->stats[i] += val;
-+	if (stat->do_not_accumulate)
-+		priv->stats[i] = val;
-+	else
-+		priv->stats[i] += val;
- 
- 	return priv->stats[i];
- }
+And what is the problem to have two or more regulators? Or regulator hierarchy?
+
+
 -- 
-2.27.0
+With Best Regards,
+Andy Shevchenko
+
 
