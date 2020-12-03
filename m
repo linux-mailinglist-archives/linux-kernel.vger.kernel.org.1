@@ -2,82 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439DB2CD659
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C2D2CD670
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730526AbgLCNEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 08:04:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730481AbgLCNEL (ORCPT
+        id S1730544AbgLCNOR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 08:14:17 -0500
+Received: from rev9.mylinux.com.br ([44.235.135.210]:39234 "EHLO
+        mail.mylinux.com.br" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729308AbgLCNOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 08:04:11 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D1DC061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 05:03:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0nzBJOGip3OPorIjBIZGgUMsAydpfmGWWw72qte5Nr0=; b=FJi/3EXxP0Rhe1muyFSQFtnLVX
-        B3cfQPpMz7Z7e3YmSl5pZvxFVCy0WiWNQoT7181zali2AtQJBwOj6Nc9TZ3eR+ZueJDB7+Co84K18
-        o163sC78XIA8AQQeA+JUOPWsDRx4SxIUwc35GSeCFnXPO74DOzAmJoRy7ojnqBIRQ2YZI/Sdc+Lyt
-        mfh3Ki6MshGENUZCmEmquJCdoruXoeYT+WlxDCxR8kjzn5zHFGYlfYWnCE5E43OIs7FyjV/zGPd1H
-        VlJNnH53UIAngq/olxaoteo+MXqyx1EjT1VdmPHZPYImRTs3QJXRdPyROfaoRjdKIMLGYfcSby/gZ
-        YEJEd8tA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkoGY-0000ru-0K; Thu, 03 Dec 2020 13:03:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 271CC3059DD;
-        Thu,  3 Dec 2020 14:03:21 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 04B01200EC4EA; Thu,  3 Dec 2020 14:03:21 +0100 (CET)
-Date:   Thu, 3 Dec 2020 14:03:20 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH v2 2/6] genirq: Allow an interrupt to be marked as 'raw'
-Message-ID: <20201203130320.GQ3021@hirez.programming.kicks-ass.net>
-References: <20201124141449.572446-1-maz@kernel.org>
- <20201124141449.572446-3-maz@kernel.org>
- <jhj7dq8ugli.mognet@arm.com>
+        Thu, 3 Dec 2020 08:14:16 -0500
+X-Greylist: delayed 521 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Dec 2020 08:14:16 EST
+Received: from localhost (localhost [127.0.0.1])
+        by mail.mylinux.com.br (Postfix) with ESMTP id 5198524C157;
+        Thu,  3 Dec 2020 10:04:49 -0300 (-03)
+Received: from mail.mylinux.com.br ([127.0.0.1])
+        by localhost (mail.mylinux.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id hKj0wJSB83gZ; Thu,  3 Dec 2020 10:04:48 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.mylinux.com.br (Postfix) with ESMTP id 20A9924D54D;
+        Thu,  3 Dec 2020 10:04:35 -0300 (-03)
+Received: from mail.mylinux.com.br ([127.0.0.1])
+        by localhost (mail.mylinux.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ZFG8FkPGL3dk; Thu,  3 Dec 2020 10:04:35 -0300 (-03)
+Received: from mail.mca.srv.br (reverso.mca.srv.br [18.213.10.210])
+        by mail.mylinux.com.br (Postfix) with ESMTPS id B7A8E24D462;
+        Thu,  3 Dec 2020 10:04:19 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.mca.srv.br (Postfix) with ESMTP id 5B298E12971;
+        Thu,  3 Dec 2020 10:03:38 -0300 (-03)
+Received: from mail.mca.srv.br ([127.0.0.1])
+        by localhost (mail.mca.srv.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id UAwxH13_FwAg; Thu,  3 Dec 2020 10:03:38 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.mca.srv.br (Postfix) with ESMTP id 19BA2E1298A;
+        Thu,  3 Dec 2020 10:03:38 -0300 (-03)
+X-Virus-Scanned: amavisd-new at mca.srv.br
+Received: from mail.mca.srv.br ([127.0.0.1])
+        by localhost (mail.mca.srv.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id plfsq9mdzuRx; Thu,  3 Dec 2020 10:03:38 -0300 (-03)
+Received: from [100.120.41.253] (unknown [212.102.60.145])
+        by mail.mca.srv.br (Postfix) with ESMTPSA id 686E6E1297D;
+        Thu,  3 Dec 2020 10:03:30 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jhj7dq8ugli.mognet@arm.com>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: ANTWORT AUF SPENDENANSPRUCH...
+To:     Recipients <info.charles@gmail.com>
+From:   "Charles W. Jackson Jr" <info.charles@gmail.com>
+Date:   Thu, 03 Dec 2020 14:03:21 +0100
+Reply-To: charlesjacksn020@gmail.com
+X-Antivirus: Avast (VPS 201202-6, 12/02/2020), Outbound message
+X-Antivirus-Status: Clean
+Message-Id: <20201203130330.686E6E1297D@mail.mca.srv.br>
+X-Rspamd-Queue-Id: B7A8E24D462
+X-Spamd-Result: default: False [-7.75 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         HAS_REPLYTO(0.00)[charlesjacksn020@gmail.com];
+         SPFBL_RECEIVED_END_USER(2.00)[145.60.102.212.dnsbl.spfbl.net : 127.0.0.4];
+         FREEMAIL_FROM(0.00)[gmail.com];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         TO_DN_RECIPIENTS(2.00)[];
+         RBL_SARBL_BAD_FAIL(0.00)[server fail];
+         SPFBL_RECEIVED(0.00)[];
+         TO_DN_ALL(0.00)[];
+         SUBJ_ALL_CAPS(2.25)[30];
+         FREEMAIL_TO(0.00)[gmail.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         RCVD_TLS_LAST(0.00)[];
+         R_DKIM_NA(0.00)[];
+         FORGED_RECIPIENTS(2.00)[infocharles@gmail.com,linux-doc@vger.kernel.org ...];
+         ASN(0.00)[asn:14618, ipnet:18.208.0.0/13, country:US];
+         TAGGED_FROM(0.00)[];
+         TO_EQ_FROM(0.00)[];
+         ARC_NA(0.00)[];
+         FREEMAIL_ENVFROM(0.00)[gmail.com];
+         RCVD_COUNT_FIVE(0.00)[6];
+         SPAM_FLAG(5.00)[];
+         FROM_HAS_DN(0.00)[];
+         RBL_NIXSPAM(4.00)[210.10.213.18.ix.dnsbl.manitu.net];
+         TAGGED_RCPT(0.00)[];
+         FREEMAIL_REPLYTO(0.00)[gmail.com];
+         REPLYTO_DOM_EQ_FROM_DOM(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         RCPT_COUNT_ONE(0.00)[1];
+         MIME_TRACE(0.00)[0:+];
+         WHITELIST_SENDER_DOMAIN(-25.00)[gmail.com];
+         DMARC_POLICY_SOFTFAIL(0.10)[gmail.com : No valid SPF, No valid DKIM,none]
+X-Rspamd-Server: ip-172-31-28-100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 06:18:33PM +0000, Valentin Schneider wrote:
-> If I got the RCU bits right from what Thomas mentioned in
-> 
->   https://lore.kernel.org/r/87ft5q18qs.fsf@nanos.tec.linutronix.de
->   https://lore.kernel.org/r/87lfewnmdz.fsf@nanos.tec.linutronix.de
-> 
-> then we're still missing something to notify RCU in the case the IRQ hits
-> the idle task. All I see on our entry path is
-> 
->   trace_hardirqs_off();
->   ...
->   irq_handler()
->     handle_domain_irq();
->   ...
->   trace_hardirqs_on();
-> 
-> so we do currently rely on handle_domain_irq()'s irq_enter() + irq_exit()
-> for that. rcu_irq_enter() says CONFIG_RCU_EQS_DEBUG=y can detect missing
-> bits, but I don't get any warnings with your series on my Juno.
+IHR E-MAIL-KONTO WURDE FÜR EINE SPENDE VON 3.500.000,00 USD FÜR CHARITY AUSGEWÄHLT. Antworten Sie auf die folgende E-Mail, um weitere Informationen zu erhalten
 
-The scheduler IPI really doesn't need RCU either ;-)
+E-Mail: charlesjacksn020@gmail.com
+
+-- 
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
+
