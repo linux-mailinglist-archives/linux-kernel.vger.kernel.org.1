@@ -2,1059 +2,862 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAA82CCBC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 440B02CCBB8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729459AbgLCBh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 20:37:58 -0500
-Received: from mail-eopbgr60065.outbound.protection.outlook.com ([40.107.6.65]:28405
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729428AbgLCBh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:37:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E6ONQv8/Vo05TS/KjMsHAe+Wq4MRQijAxm2LvSOzYS4ghYUZMWGwYOESZ0+uFkWMapHijQSBxd2y0uPMq7Nfbmt9wm8I3k8hOlnvvqc48XOcFZApbyYh3BwmCsWIY5kjwTFrQhv+J64koMpsRjipdc8dd2wTSy7BM2/E0wMs21DWwEqDp0Mgb633sON/+95uG73lKqiSF3uGqfd/BlWhZ3d9bXZKmZYd55ymhigatPblx90ayuaSvn26RPWncOhA2wdzSsmO3ZwsGNl5p3tqHcYbf7t6c/ovVqSgFJYNPx16bMjtVZaB83QNz0hHZLd/UN1qTMyD7Hw4Yqd1/7U4Ug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SCmdyOtMke2Gb58MdPCYf/SHTSbMjxxLkJNtBXBslQ8=;
- b=moEY9MPG0Zn4ZqqPZS5vkZen2IgaUGouFpUjA8rtSeGEwt388xhf5UfYELfbiDdu1MnhGbSQb6jviUniAzC8DxOjudUk2uyBphf+cI3bUWWIC78OJE92leWJGWtlmeS6IfLZmEpcNm4CL2z7/p1RH2gSypNdL6fHzMlDD3efPZxRU1TEpxZ0diSlvq3KZMXDHoFJ6KxLWIRTP7wgA2PYWB5mPUQFT1BDZvxEw+2LgZum1s7BfPQn85cwglRkf1bQVrxu5OwkKWDx3dc0QC5FlL1vPG33nF+XqoL3K3zC5DfscqQkfsO1HWPmKWybLmeWLelSM1Qq3aK1chSNltr5RQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SCmdyOtMke2Gb58MdPCYf/SHTSbMjxxLkJNtBXBslQ8=;
- b=RXsZHjWOjZQO66U1qdZL7DawO1FOFAd8tFrI0Rx2RiGhCgKm4pkiowyGWCzlk1oYa/ukHRzRU4uJrZtXL6gK0/fM/fs6sStJJpjTxhfwc4cX8qke2/SIZWSAjtvLG9XoVNM4Zn9PbtUqv24aOiRbMqVLH50Db+KaMlYtVSxa3Mg=
-Authentication-Results: gondor.apana.org.au; dkim=none (message not signed)
- header.d=none;gondor.apana.org.au; dmarc=none action=none
- header.from=oss.nxp.com;
-Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
- (2603:10a6:803:1c::25) by VI1PR04MB4687.eurprd04.prod.outlook.com
- (2603:10a6:803:72::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Thu, 3 Dec
- 2020 01:37:04 +0000
-Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
- ([fe80::ade4:e169:1f4a:28c]) by VI1PR0402MB3712.eurprd04.prod.outlook.com
- ([fe80::ade4:e169:1f4a:28c%4]) with mapi id 15.20.3632.018; Thu, 3 Dec 2020
- 01:37:04 +0000
-From:   "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Horia Geanta <horia.geanta@nxp.com>
-Cc:     Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx <linux-imx@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>
-Subject: [PATCH 5/5] crypto: caam/qi2 - avoid allocating memory at crypto request runtime
-Date:   Thu,  3 Dec 2020 03:35:24 +0200
-Message-Id: <20201203013524.30495-6-iuliana.prodan@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201203013524.30495-1-iuliana.prodan@oss.nxp.com>
-References: <20201203013524.30495-1-iuliana.prodan@oss.nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [83.217.231.2]
-X-ClientProxiedBy: AM0PR03CA0059.eurprd03.prod.outlook.com (2603:10a6:208::36)
- To VI1PR0402MB3712.eurprd04.prod.outlook.com (2603:10a6:803:1c::25)
+        id S1729356AbgLCBgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 20:36:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:55672 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727066AbgLCBgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 20:36:47 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A84711D4;
+        Wed,  2 Dec 2020 17:36:00 -0800 (PST)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C9203F575;
+        Wed,  2 Dec 2020 17:35:58 -0800 (PST)
+Subject: Re: [PATCH 7/8] arm64: dts: allwinner: Add Allwinner H616 .dtsi file
+To:     =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@siol.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Cc:     Icenowy Zheng <icenowy@aosc.xyz>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yangtao Li <frank@allwinnertech.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20201202135409.13683-1-andre.przywara@arm.com>
+ <20201202135409.13683-8-andre.przywara@arm.com> <8978273.D0rJ4KIVhu@kista>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
+ 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
+ i4aIXCH3Wv6K
+Organization: ARM Ltd.
+Message-ID: <f108d71e-8fb5-8690-8e54-c9c361888e66@arm.com>
+Date:   Thu, 3 Dec 2020 01:35:40 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv15040.swis.ro-buh01.nxp.com (83.217.231.2) by AM0PR03CA0059.eurprd03.prod.outlook.com (2603:10a6:208::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18 via Frontend Transport; Thu, 3 Dec 2020 01:37:02 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c5172171-360b-4348-4da7-08d8972befe1
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4687:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB46875BD1C9CBFA20B1332F53CDF20@VI1PR04MB4687.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /p0KfKxA3+CCHe9KBhSdp1UVXE0ewtGW2OiT4GgSHtoYhmJVw2VcPZMoYHhcP8t0mPtaDfKgpzIY4lrv07ZAcmR7v7fTe4nWUo1QcUVdaSDF0EDMejPvZFaFVPLTLFQwNz9jQAvsDuhreo3idx426QTSoVQmeBl7e5pqJ8pwc2ai5m1dUuiiLXbOjaXK6EQfzPhiV1jDA9qDLm8gVi/UxbMqZENeuOGuaTy1UXyiMVAe5EEPMjkob1swImo8hgvuyE5zlNsysP6f4+ByR07iLdTopcr8WE82kcYeautDOkWnZm6M8ylnrEswrLKVuqKbEy5moVXWzsPa6+qmVJrBxg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3712.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(396003)(366004)(136003)(8936002)(5660300002)(4326008)(66946007)(30864003)(66556008)(66476007)(478600001)(52116002)(6486002)(54906003)(6506007)(316002)(2906002)(110136005)(26005)(1076003)(6666004)(6512007)(186003)(956004)(2616005)(16526019)(86362001)(8676002)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?h+EMUteOS9eNPY3q/YwvFQavJJ/cqzC44Rdb0QVfUsov4KyGEcsdSALfh5rE?=
- =?us-ascii?Q?O9VPdMs89AoTeC0wI85iga+E5FNERtKihSx/9MgBqZnRoit8M6hpm72ezP1E?=
- =?us-ascii?Q?BFsrj8fBHMocQlrJPwCDR0S3QIWDzkyZgNJR+4FmDG197pl9WhgQu7LFNLaF?=
- =?us-ascii?Q?LtTjkUSAT1Zt/X2HA2aLxzpFnS1zk2552JpkOM8rNJZkKh8ywcLu+xG3vbS3?=
- =?us-ascii?Q?IgGUcDqxqjfpyhVcSloldMRUMHCSOUpy3ApyyrEQpVI9NfXG1WOEqOtXbxcV?=
- =?us-ascii?Q?Kbcyt6qsqFflDqtb3eZx83yfXv97Nds0x1vJcfuz1FJXA2UB9c4i7aEVRzkR?=
- =?us-ascii?Q?pOiaAuaU4AjUdHUQJG91TCVnL3/qE1Ebig2IJw1bOXiEH2tSwT5h7dhcdUyL?=
- =?us-ascii?Q?9r5lvMltO2ypo5fKa5ulKOQ3PuEUeeeb/NfbcX7sZN+RsEmHnjb0us4qXRZW?=
- =?us-ascii?Q?AVMeIrToySww9DEHELSq4Eji9pCCDITdK1nmq2EWlIzz5JL3Ljp6Uj+a5Hif?=
- =?us-ascii?Q?WGPbTSvapFe/crWdZLZ557k6rzFMG0KfiodfA94eBYboKbqUxpz1F3QigmwU?=
- =?us-ascii?Q?MxTLRkmAnEx85RWaGRltuM90xI628lTrkc5ox+l77vTeBPxr2pn6QXqKAq5L?=
- =?us-ascii?Q?pyW/SobGKKW2/sXaN1UVjqrXlTCtMsv0yZvLlx61VAl6WP2DByrYcnFCK7y9?=
- =?us-ascii?Q?aDT+zckCJnnhGw9hbG081XIL/VRqR0TYNutG9KSOydIb09NwUHTdg7GAqHUQ?=
- =?us-ascii?Q?O1cqFqd70+/NcAU0V1i5JcwEkwPJJYZL6pdmMM+aKi/E1aIpsECh8/5hjNyI?=
- =?us-ascii?Q?nUYkpLQYfuiuWrDzE3gdvGaRZChPeOctlWspYffdOn35Ps9GZxKm1dd1oblM?=
- =?us-ascii?Q?rvas0HdfIIV2L5tUNk+sNym2KIWlqdU7lgW16inDsBIO8WW3xUTehtOX7puA?=
- =?us-ascii?Q?fpJqBMsuiGKUZU5ECDpncc8YL/95pFCnAPeAG1zgmtxUdh6/MOPLM78SHFe9?=
- =?us-ascii?Q?kMKg?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5172171-360b-4348-4da7-08d8972befe1
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3712.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2020 01:37:04.0111
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vZLJnE15c/mRqj9Jd/qpZF6lsMgReaN0tX53j8xN7ION/o4TjAItg5wV3w0hI8+anxY++bUdZGsynOD7CsEBtg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4687
+In-Reply-To: <8978273.D0rJ4KIVhu@kista>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Iuliana Prodan <iuliana.prodan@nxp.com>
+On 02/12/2020 16:33, Jernej Škrabec wrote:
 
-Remove CRYPTO_ALG_ALLOCATES_MEMORY flag and allocate the memory
-needed by the driver, to fulfil a request, within the crypto
-request object.
-The extra size needed for base extended descriptor, hw
-descriptor commands and link tables is computed in frontend
-driver (caamalg_qi2) initialization and saved in reqsize field
-that indicates how much memory could be needed per request.
+Hi,
 
-CRYPTO_ALG_ALLOCATES_MEMORY flag is limited only to
-dm-crypt use-cases, which seems to be 4 entries maximum.
-Therefore in reqsize we allocate memory for maximum 4 entries
-for src and 4 for dst, aligned.
-If the driver needs more than the 4 entries maximum, the memory
-is dynamically allocated, at runtime.
+> Dne sreda, 02. december 2020 ob 14:54:08 CET je Andre Przywara napisal(a):
+>> This (relatively) new SoC is similar to the H6, but drops the (broken)
+>> PCIe support and the USB 3.0 controller. It also gets the management
+>> controller removed, which in turn removes *some*, but not all of the
+>> devices formerly dedicated to the ARISC (CPUS).
+>> There does not seem to be an external interrupt controller anymore, so
+>> no external interrupts through an NMI pin. The AXP driver needs to learn
+>> living with that.
+>>
+>> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+>> ---
+>>  .../arm64/boot/dts/allwinner/sun50i-h616.dtsi | 704 ++++++++++++++++++
+>>  1 file changed, 704 insertions(+)
+>>  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+>>
+>> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+>> new file mode 100644
+>> index 000000000000..dcffbfdcd26b
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+>> @@ -0,0 +1,704 @@
+>> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>> +// Copyright (C) 2020 Arm Ltd.
+>> +// based on the H6 dtsi, which is:
+>> +//   Copyright (C) 2017 Icenowy Zheng <icenowy@aosc.io>
+>> +
+>> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +#include <dt-bindings/clock/sun50i-h616-ccu.h>
+>> +#include <dt-bindings/clock/sun50i-h6-r-ccu.h>
+>> +#include <dt-bindings/reset/sun50i-h616-ccu.h>
+>> +#include <dt-bindings/reset/sun50i-h6-r-ccu.h>
+>> +
+>> +/ {
+>> +	interrupt-parent = <&gic>;
+>> +	#address-cells = <2>;
+>> +	#size-cells = <2>;
+>> +
+>> +	cpus {
+>> +		#address-cells = <1>;
+>> +		#size-cells = <0>;
+>> +
+>> +		cpu0: cpu@0 {
+>> +			compatible = "arm,cortex-a53";
+>> +			device_type = "cpu";
+>> +			reg = <0>;
+>> +			enable-method = "psci";
+>> +			clocks = <&ccu CLK_CPUX>;
+>> +		};
+>> +
+>> +		cpu1: cpu@1 {
+>> +			compatible = "arm,cortex-a53";
+>> +			device_type = "cpu";
+>> +			reg = <1>;
+>> +			enable-method = "psci";
+>> +			clocks = <&ccu CLK_CPUX>;
+>> +		};
+>> +
+>> +		cpu2: cpu@2 {
+>> +			compatible = "arm,cortex-a53";
+>> +			device_type = "cpu";
+>> +			reg = <2>;
+>> +			enable-method = "psci";
+>> +			clocks = <&ccu CLK_CPUX>;
+>> +		};
+>> +
+>> +		cpu3: cpu@3 {
+>> +			compatible = "arm,cortex-a53";
+>> +			device_type = "cpu";
+>> +			reg = <3>;
+>> +			enable-method = "psci";
+>> +			clocks = <&ccu CLK_CPUX>;
+>> +		};
+>> +	};
+>> +
+>> +	reserved-memory {
+>> +		#address-cells = <2>;
+>> +		#size-cells = <2>;
+>> +		ranges;
+>> +
+>> +		/* 512KiB reserved for ARM Trusted Firmware (BL31) */
+>> +		secmon_reserved: secmon@40000000 {
+>> +			reg = <0x0 0x40000000 0x0 0x80000>;
+>> +			no-map;
+>> +		};
+>> +	};
+>> +
+>> +	osc24M: osc24M_clk {
+>> +		#clock-cells = <0>;
+>> +		compatible = "fixed-clock";
+>> +		clock-frequency = <24000000>;
+>> +		clock-output-names = "osc24M";
+>> +	};
+>> +
+>> +	pmu {
+>> +		compatible = "arm,cortex-a53-pmu";
+>> +		interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>,
+>> +			     <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
+>> +			     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>,
+>> +			     <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>;
+>> +		interrupt-affinity = <&cpu0>, <&cpu1>, <&cpu2>, <&cpu3>;
+>> +	};
+>> +
+>> +	psci {
+>> +		compatible = "arm,psci-0.2";
+>> +		method = "smc";
+>> +	};
+>> +
+>> +	timer {
+>> +		compatible = "arm,armv8-timer";
+>> +		arm,no-tick-in-suspend;
+>> +		interrupts = <GIC_PPI 13
+>> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
+>> +			     <GIC_PPI 14
+>> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
+>> +			     <GIC_PPI 11
+>> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
+>> +			     <GIC_PPI 10
+>> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+>> +	};
+>> +
+>> +	soc {
+>> +		compatible = "simple-bus";
+>> +		#address-cells = <1>;
+>> +		#size-cells = <1>;
+>> +		ranges = <0x0 0x0 0x0 0x40000000>;
+>> +
+>> +		syscon: syscon@3000000 {
+>> +			compatible = "allwinner,sun50i-h616-system-control",
+>> +				     "allwinner,sun50i-a64-system-control";
+> 
+> Those H616 is not compatible to A64 one because it has second emac control 
+> register at offset 0x34, which no other supported SoC has.
 
-Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
----
- drivers/crypto/caam/caamalg_qi2.c | 415 ++++++++++++++++++++----------
- drivers/crypto/caam/caamalg_qi2.h |   6 +
- 2 files changed, 288 insertions(+), 133 deletions(-)
+But this means the H616 is a superset of the A64?
+I changed the driver to extend the regmap to two registers for the H616,
+is that all you need for the second emac?
+How do we tell the EMAC driver which clock register to use? An extra
+compatible? Or can we pass a cell to syscon? syscon = <&syscon 1>; ? Or
+an extra property?
 
-diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
-index a780e627838a..88bbed7dc65b 100644
---- a/drivers/crypto/caam/caamalg_qi2.c
-+++ b/drivers/crypto/caam/caamalg_qi2.c
-@@ -362,17 +362,10 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 	dma_addr_t qm_sg_dma, iv_dma = 0;
- 	int ivsize = 0;
- 	unsigned int authsize = ctx->authsize;
--	int qm_sg_index = 0, qm_sg_nents = 0, qm_sg_bytes;
-+	int qm_sg_index = 0, qm_sg_nents = 0, qm_sg_bytes, edesc_size = 0;
- 	int in_len, out_len;
- 	struct dpaa2_sg_entry *sg_table;
- 
--	/* allocate space for base edesc, link tables and IV */
--	edesc = qi_cache_zalloc(GFP_DMA | flags);
--	if (unlikely(!edesc)) {
--		dev_err(dev, "could not allocate extended descriptor\n");
--		return ERR_PTR(-ENOMEM);
--	}
--
- 	if (unlikely(req->dst != req->src)) {
- 		src_len = req->assoclen + req->cryptlen;
- 		dst_len = src_len + (encrypt ? authsize : (-authsize));
-@@ -381,7 +374,6 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 		if (unlikely(src_nents < 0)) {
- 			dev_err(dev, "Insufficient bytes (%d) in src S/G\n",
- 				src_len);
--			qi_cache_free(edesc);
- 			return ERR_PTR(src_nents);
- 		}
- 
-@@ -389,7 +381,6 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 		if (unlikely(dst_nents < 0)) {
- 			dev_err(dev, "Insufficient bytes (%d) in dst S/G\n",
- 				dst_len);
--			qi_cache_free(edesc);
- 			return ERR_PTR(dst_nents);
- 		}
- 
-@@ -398,7 +389,6 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 						      DMA_TO_DEVICE);
- 			if (unlikely(!mapped_src_nents)) {
- 				dev_err(dev, "unable to map source\n");
--				qi_cache_free(edesc);
- 				return ERR_PTR(-ENOMEM);
- 			}
- 		} else {
-@@ -412,7 +402,6 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 				dev_err(dev, "unable to map destination\n");
- 				dma_unmap_sg(dev, req->src, src_nents,
- 					     DMA_TO_DEVICE);
--				qi_cache_free(edesc);
- 				return ERR_PTR(-ENOMEM);
- 			}
- 		} else {
-@@ -426,7 +415,6 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 		if (unlikely(src_nents < 0)) {
- 			dev_err(dev, "Insufficient bytes (%d) in src S/G\n",
- 				src_len);
--			qi_cache_free(edesc);
- 			return ERR_PTR(src_nents);
- 		}
- 
-@@ -434,7 +422,6 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 					      DMA_BIDIRECTIONAL);
- 		if (unlikely(!mapped_src_nents)) {
- 			dev_err(dev, "unable to map source\n");
--			qi_cache_free(edesc);
- 			return ERR_PTR(-ENOMEM);
- 		}
- 	}
-@@ -466,14 +453,30 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 
- 	sg_table = &edesc->sgt[0];
- 	qm_sg_bytes = qm_sg_nents * sizeof(*sg_table);
--	if (unlikely(offsetof(struct aead_edesc, sgt) + qm_sg_bytes + ivsize >
--		     CAAM_QI_MEMCACHE_SIZE)) {
-+
-+	 /* Check if there's enough space for edesc saved in req */
-+	edesc_size = offsetof(struct aead_edesc, sgt) + qm_sg_bytes + ivsize;
-+	if (unlikely(edesc_size > CAAM_QI_MEMCACHE_SIZE)) {
- 		dev_err(dev, "No space for %d S/G entries and/or %dB IV\n",
- 			qm_sg_nents, ivsize);
- 		caam_unmap(dev, req->src, req->dst, src_nents, dst_nents, 0,
- 			   0, DMA_NONE, 0, 0);
--		qi_cache_free(edesc);
- 		return ERR_PTR(-ENOMEM);
-+	} else if (edesc_size > (crypto_aead_reqsize(aead) -
-+				 sizeof(struct caam_request))) {
-+		/* allocate space for base edesc, link tables and IV */
-+		edesc = qi_cache_zalloc(GFP_DMA | flags);
-+		if (unlikely(!edesc)) {
-+			dev_err(dev, "could not allocate extended descriptor\n");
-+			return ERR_PTR(-ENOMEM);
-+		}
-+		edesc->free = true;
-+	} else {
-+		/* get address for base edesc, link tables and IV */
-+		edesc = (struct aead_edesc *)((u8 *)req_ctx +
-+			 sizeof(struct caam_request));
-+		/* clear memory */
-+		memset(edesc, 0, sizeof(*edesc));
- 	}
- 
- 	if (ivsize) {
-@@ -487,7 +490,8 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 			dev_err(dev, "unable to map IV\n");
- 			caam_unmap(dev, req->src, req->dst, src_nents,
- 				   dst_nents, 0, 0, DMA_NONE, 0, 0);
--			qi_cache_free(edesc);
-+			if (edesc->free)
-+				qi_cache_free(edesc);
- 			return ERR_PTR(-ENOMEM);
- 		}
- 	}
-@@ -511,7 +515,8 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 		dev_err(dev, "unable to map assoclen\n");
- 		caam_unmap(dev, req->src, req->dst, src_nents, dst_nents,
- 			   iv_dma, ivsize, DMA_TO_DEVICE, 0, 0);
--		qi_cache_free(edesc);
-+		if (edesc->free)
-+			qi_cache_free(edesc);
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
-@@ -533,7 +538,8 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 		dma_unmap_single(dev, edesc->assoclen_dma, 4, DMA_TO_DEVICE);
- 		caam_unmap(dev, req->src, req->dst, src_nents, dst_nents,
- 			   iv_dma, ivsize, DMA_TO_DEVICE, 0, 0);
--		qi_cache_free(edesc);
-+		if (edesc->free)
-+			qi_cache_free(edesc);
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
-@@ -1118,7 +1124,7 @@ static struct skcipher_edesc *skcipher_edesc_alloc(struct skcipher_request *req)
- 	dma_addr_t iv_dma;
- 	u8 *iv;
- 	int ivsize = crypto_skcipher_ivsize(skcipher);
--	int dst_sg_idx, qm_sg_ents, qm_sg_bytes;
-+	int dst_sg_idx, qm_sg_ents, qm_sg_bytes, edesc_size = 0;
- 	struct dpaa2_sg_entry *sg_table;
- 
- 	src_nents = sg_nents_for_len(req->src, req->cryptlen);
-@@ -1176,22 +1182,32 @@ static struct skcipher_edesc *skcipher_edesc_alloc(struct skcipher_request *req)
- 		qm_sg_ents = 1 + pad_sg_nents(qm_sg_ents);
- 
- 	qm_sg_bytes = qm_sg_ents * sizeof(struct dpaa2_sg_entry);
--	if (unlikely(offsetof(struct skcipher_edesc, sgt) + qm_sg_bytes +
--		     ivsize > CAAM_QI_MEMCACHE_SIZE)) {
-+
-+	/* Check if there's enough space for edesc saved in req */
-+	edesc_size = offsetof(struct skcipher_edesc, sgt) + qm_sg_bytes + ivsize;
-+	if (unlikely(edesc_size > CAAM_QI_MEMCACHE_SIZE)) {
- 		dev_err(dev, "No space for %d S/G entries and/or %dB IV\n",
- 			qm_sg_ents, ivsize);
- 		caam_unmap(dev, req->src, req->dst, src_nents, dst_nents, 0,
- 			   0, DMA_NONE, 0, 0);
- 		return ERR_PTR(-ENOMEM);
--	}
--
--	/* allocate space for base edesc, link tables and IV */
--	edesc = qi_cache_zalloc(GFP_DMA | flags);
--	if (unlikely(!edesc)) {
--		dev_err(dev, "could not allocate extended descriptor\n");
--		caam_unmap(dev, req->src, req->dst, src_nents, dst_nents, 0,
--			   0, DMA_NONE, 0, 0);
--		return ERR_PTR(-ENOMEM);
-+	} else if (edesc_size > (crypto_skcipher_reqsize(skcipher) -
-+				 sizeof(struct caam_request))) {
-+		/* allocate space for base edesc, link tables and IV */
-+		edesc = qi_cache_zalloc(GFP_DMA | flags);
-+		if (unlikely(!edesc)) {
-+			dev_err(dev, "could not allocate extended descriptor\n");
-+			caam_unmap(dev, req->src, req->dst, src_nents,
-+				   dst_nents, 0, 0, DMA_NONE, 0, 0);
-+			return ERR_PTR(-ENOMEM);
-+		}
-+		edesc->free = true;
-+	} else {
-+		/* get address for base edesc, link tables and IV */
-+		edesc = (struct skcipher_edesc *)((u8 *)req_ctx +
-+			 sizeof(struct caam_request));
-+		/* clear memory */
-+		memset(edesc, 0, sizeof(*edesc));
- 	}
- 
- 	/* Make sure IV is located in a DMAable area */
-@@ -1204,7 +1220,8 @@ static struct skcipher_edesc *skcipher_edesc_alloc(struct skcipher_request *req)
- 		dev_err(dev, "unable to map IV\n");
- 		caam_unmap(dev, req->src, req->dst, src_nents, dst_nents, 0,
- 			   0, DMA_NONE, 0, 0);
--		qi_cache_free(edesc);
-+		if (edesc->free)
-+			qi_cache_free(edesc);
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
-@@ -1228,7 +1245,8 @@ static struct skcipher_edesc *skcipher_edesc_alloc(struct skcipher_request *req)
- 		dev_err(dev, "unable to map S/G table\n");
- 		caam_unmap(dev, req->src, req->dst, src_nents, dst_nents,
- 			   iv_dma, ivsize, DMA_BIDIRECTIONAL, 0, 0);
--		qi_cache_free(edesc);
-+		if (edesc->free)
-+			qi_cache_free(edesc);
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
-@@ -1292,7 +1310,8 @@ static void aead_encrypt_done(void *cbk_ctx, u32 status)
- 		ecode = caam_qi2_strstatus(ctx->dev, status);
- 
- 	aead_unmap(ctx->dev, edesc, req);
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 	aead_request_complete(req, ecode);
- }
- 
-@@ -1313,7 +1332,8 @@ static void aead_decrypt_done(void *cbk_ctx, u32 status)
- 		ecode = caam_qi2_strstatus(ctx->dev, status);
- 
- 	aead_unmap(ctx->dev, edesc, req);
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 	aead_request_complete(req, ecode);
- }
- 
-@@ -1339,7 +1359,8 @@ static int aead_encrypt(struct aead_request *req)
- 	if (ret != -EINPROGRESS &&
- 	    !(ret == -EBUSY && req->base.flags & CRYPTO_TFM_REQ_MAY_BACKLOG)) {
- 		aead_unmap(ctx->dev, edesc, req);
--		qi_cache_free(edesc);
-+		if (edesc->free)
-+			qi_cache_free(edesc);
- 	}
- 
- 	return ret;
-@@ -1367,7 +1388,8 @@ static int aead_decrypt(struct aead_request *req)
- 	if (ret != -EINPROGRESS &&
- 	    !(ret == -EBUSY && req->base.flags & CRYPTO_TFM_REQ_MAY_BACKLOG)) {
- 		aead_unmap(ctx->dev, edesc, req);
--		qi_cache_free(edesc);
-+		if (edesc->free)
-+			qi_cache_free(edesc);
- 	}
- 
- 	return ret;
-@@ -1417,7 +1439,8 @@ static void skcipher_encrypt_done(void *cbk_ctx, u32 status)
- 		memcpy(req->iv, (u8 *)&edesc->sgt[0] + edesc->qm_sg_bytes,
- 		       ivsize);
- 
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 	skcipher_request_complete(req, ecode);
- }
- 
-@@ -1455,7 +1478,8 @@ static void skcipher_decrypt_done(void *cbk_ctx, u32 status)
- 		memcpy(req->iv, (u8 *)&edesc->sgt[0] + edesc->qm_sg_bytes,
- 		       ivsize);
- 
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 	skcipher_request_complete(req, ecode);
- }
- 
-@@ -1511,7 +1535,8 @@ static int skcipher_encrypt(struct skcipher_request *req)
- 	if (ret != -EINPROGRESS &&
- 	    !(ret == -EBUSY && req->base.flags & CRYPTO_TFM_REQ_MAY_BACKLOG)) {
- 		skcipher_unmap(ctx->dev, edesc, req);
--		qi_cache_free(edesc);
-+		if (edesc->free)
-+			qi_cache_free(edesc);
- 	}
- 
- 	return ret;
-@@ -1561,7 +1586,8 @@ static int skcipher_decrypt(struct skcipher_request *req)
- 	if (ret != -EINPROGRESS &&
- 	    !(ret == -EBUSY && req->base.flags & CRYPTO_TFM_REQ_MAY_BACKLOG)) {
- 		skcipher_unmap(ctx->dev, edesc, req);
--		qi_cache_free(edesc);
-+		if (edesc->free)
-+			qi_cache_free(edesc);
- 	}
- 
- 	return ret;
-@@ -1602,7 +1628,15 @@ static int caam_cra_init_skcipher(struct crypto_skcipher *tfm)
- 		container_of(alg, typeof(*caam_alg), skcipher);
- 	struct caam_ctx *ctx = crypto_skcipher_ctx(tfm);
- 	u32 alg_aai = caam_alg->caam.class1_alg_type & OP_ALG_AAI_MASK;
--	int ret = 0;
-+	int ret = 0, extra_reqsize = 0;
-+
-+	/* Compute extra space needed for base edesc, link tables and IV */
-+	extra_reqsize = sizeof(struct skcipher_edesc) +
-+			/* link tables for src and dst:
-+			 * 4 entries max + 1 for IV, aligned = 8
-+			 */
-+			(16 * sizeof(struct dpaa2_sg_entry)) +
-+			AES_BLOCK_SIZE; /* ivsize */
- 
- 	if (alg_aai == OP_ALG_AAI_XTS) {
- 		const char *tfm_name = crypto_tfm_alg_name(&tfm->base);
-@@ -1619,9 +1653,11 @@ static int caam_cra_init_skcipher(struct crypto_skcipher *tfm)
- 
- 		ctx->fallback = fallback;
- 		crypto_skcipher_set_reqsize(tfm, sizeof(struct caam_request) +
--					    crypto_skcipher_reqsize(fallback));
-+					    crypto_skcipher_reqsize(fallback) +
-+					    extra_reqsize);
- 	} else {
--		crypto_skcipher_set_reqsize(tfm, sizeof(struct caam_request));
-+		crypto_skcipher_set_reqsize(tfm, sizeof(struct caam_request) +
-+					    extra_reqsize);
- 	}
- 
- 	ret = caam_cra_init(ctx, &caam_alg->caam, false);
-@@ -1636,8 +1672,17 @@ static int caam_cra_init_aead(struct crypto_aead *tfm)
- 	struct aead_alg *alg = crypto_aead_alg(tfm);
- 	struct caam_aead_alg *caam_alg = container_of(alg, typeof(*caam_alg),
- 						      aead);
-+	int extra_reqsize = 0;
-+
-+	/* Compute extra space needed for base edesc, link tables and IV */
-+	extra_reqsize = sizeof(struct aead_edesc) +
-+			/* link tables for src and dst:
-+			 * 4 entries max + 1 for IV, aligned = 8
-+			 */
-+			(16 * sizeof(struct dpaa2_sg_entry)) +
-+			AES_BLOCK_SIZE; /* ivsize */
- 
--	crypto_aead_set_reqsize(tfm, sizeof(struct caam_request));
-+	crypto_aead_set_reqsize(tfm, sizeof(struct caam_request) + extra_reqsize);
- 	return caam_cra_init(crypto_aead_ctx(tfm), &caam_alg->caam,
- 			     !caam_alg->caam.nodkp);
- }
-@@ -3006,8 +3051,7 @@ static void caam_skcipher_alg_init(struct caam_skcipher_alg *t_alg)
- 	alg->base.cra_module = THIS_MODULE;
- 	alg->base.cra_priority = CAAM_CRA_PRIORITY;
- 	alg->base.cra_ctxsize = sizeof(struct caam_ctx);
--	alg->base.cra_flags |= (CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY |
--			      CRYPTO_ALG_KERN_DRIVER_ONLY);
-+	alg->base.cra_flags |= (CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY);
- 
- 	alg->init = caam_cra_init_skcipher;
- 	alg->exit = caam_cra_exit;
-@@ -3020,8 +3064,7 @@ static void caam_aead_alg_init(struct caam_aead_alg *t_alg)
- 	alg->base.cra_module = THIS_MODULE;
- 	alg->base.cra_priority = CAAM_CRA_PRIORITY;
- 	alg->base.cra_ctxsize = sizeof(struct caam_ctx);
--	alg->base.cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY |
--			      CRYPTO_ALG_KERN_DRIVER_ONLY;
-+	alg->base.cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY;
- 
- 	alg->init = caam_cra_init_aead;
- 	alg->exit = caam_cra_exit_aead;
-@@ -3400,7 +3443,8 @@ static void ahash_done(void *cbk_ctx, u32 status)
- 
- 	ahash_unmap_ctx(ctx->dev, edesc, req, DMA_FROM_DEVICE);
- 	memcpy(req->result, state->caam_ctx, digestsize);
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 
- 	print_hex_dump_debug("ctx@" __stringify(__LINE__)": ",
- 			     DUMP_PREFIX_ADDRESS, 16, 4, state->caam_ctx,
-@@ -3425,7 +3469,8 @@ static void ahash_done_bi(void *cbk_ctx, u32 status)
- 		ecode = caam_qi2_strstatus(ctx->dev, status);
- 
- 	ahash_unmap_ctx(ctx->dev, edesc, req, DMA_BIDIRECTIONAL);
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 
- 	scatterwalk_map_and_copy(state->buf, req->src,
- 				 req->nbytes - state->next_buflen,
-@@ -3465,7 +3510,8 @@ static void ahash_done_ctx_src(void *cbk_ctx, u32 status)
- 
- 	ahash_unmap_ctx(ctx->dev, edesc, req, DMA_BIDIRECTIONAL);
- 	memcpy(req->result, state->caam_ctx, digestsize);
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 
- 	print_hex_dump_debug("ctx@" __stringify(__LINE__)": ",
- 			     DUMP_PREFIX_ADDRESS, 16, 4, state->caam_ctx,
-@@ -3490,7 +3536,8 @@ static void ahash_done_ctx_dst(void *cbk_ctx, u32 status)
- 		ecode = caam_qi2_strstatus(ctx->dev, status);
- 
- 	ahash_unmap_ctx(ctx->dev, edesc, req, DMA_FROM_DEVICE);
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 
- 	scatterwalk_map_and_copy(state->buf, req->src,
- 				 req->nbytes - state->next_buflen,
-@@ -3528,7 +3575,7 @@ static int ahash_update_ctx(struct ahash_request *req)
- 	int in_len = *buflen + req->nbytes, to_hash;
- 	int src_nents, mapped_nents, qm_sg_bytes, qm_sg_src_index;
- 	struct ahash_edesc *edesc;
--	int ret = 0;
-+	int ret = 0, edesc_size = 0;
- 
- 	*next_buflen = in_len & (crypto_tfm_alg_blocksize(&ahash->base) - 1);
- 	to_hash = in_len - *next_buflen;
-@@ -3554,18 +3601,31 @@ static int ahash_update_ctx(struct ahash_request *req)
- 			mapped_nents = 0;
- 		}
- 
--		/* allocate space for base edesc and link tables */
--		edesc = qi_cache_zalloc(GFP_DMA | flags);
--		if (!edesc) {
--			dma_unmap_sg(ctx->dev, req->src, src_nents,
--				     DMA_TO_DEVICE);
--			return -ENOMEM;
--		}
--
--		edesc->src_nents = src_nents;
- 		qm_sg_src_index = 1 + (*buflen ? 1 : 0);
- 		qm_sg_bytes = pad_sg_nents(qm_sg_src_index + mapped_nents) *
- 			      sizeof(*sg_table);
-+
-+		 /* Check if there's enough space for edesc saved in req */
-+		edesc_size = sizeof(*edesc) +  qm_sg_bytes;
-+		if (edesc_size > (crypto_ahash_reqsize(ahash) -
-+				  sizeof(struct caam_hash_state))) {
-+			/* allocate space for base edesc and link tables */
-+			edesc = qi_cache_zalloc(GFP_DMA | flags);
-+			if (!edesc) {
-+				dma_unmap_sg(ctx->dev, req->src, src_nents,
-+					     DMA_TO_DEVICE);
-+				return -ENOMEM;
-+			}
-+			edesc->free = true;
-+		} else {
-+			/* get address for base edesc and link tables */
-+			edesc = (struct ahash_edesc *)((u8 *)state +
-+				 sizeof(struct caam_hash_state));
-+			/* clear memory */
-+			memset(edesc, 0, sizeof(*edesc));
-+		}
-+
-+		edesc->src_nents = src_nents;
- 		sg_table = &edesc->sgt[0];
- 
- 		ret = ctx_map_to_qm_sg(ctx->dev, state, ctx->ctx_len, sg_table,
-@@ -3627,7 +3687,8 @@ static int ahash_update_ctx(struct ahash_request *req)
- 	return ret;
- unmap_ctx:
- 	ahash_unmap_ctx(ctx->dev, edesc, req, DMA_BIDIRECTIONAL);
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 	return ret;
- }
- 
-@@ -3642,18 +3703,31 @@ static int ahash_final_ctx(struct ahash_request *req)
- 	gfp_t flags = (req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP) ?
- 		      GFP_KERNEL : GFP_ATOMIC;
- 	int buflen = state->buflen;
--	int qm_sg_bytes;
-+	int qm_sg_bytes, edesc_size = 0;
- 	int digestsize = crypto_ahash_digestsize(ahash);
- 	struct ahash_edesc *edesc;
- 	struct dpaa2_sg_entry *sg_table;
- 	int ret;
- 
--	/* allocate space for base edesc and link tables */
--	edesc = qi_cache_zalloc(GFP_DMA | flags);
--	if (!edesc)
--		return -ENOMEM;
--
- 	qm_sg_bytes = pad_sg_nents(1 + (buflen ? 1 : 0)) * sizeof(*sg_table);
-+
-+	/* Check if there's enough space for edesc saved in req */
-+	edesc_size = sizeof(*edesc) +  qm_sg_bytes;
-+	if (edesc_size > (crypto_ahash_reqsize(ahash) -
-+			  sizeof(struct caam_hash_state))) {
-+		/* allocate space for base edesc and link tables */
-+		edesc = qi_cache_zalloc(GFP_DMA | flags);
-+		if (!edesc)
-+			return -ENOMEM;
-+		edesc->free = true;
-+	} else {
-+		/* get address for base edesc and link tables */
-+		edesc = (struct ahash_edesc *)((u8 *)state +
-+			 sizeof(struct caam_hash_state));
-+		/* clear memory */
-+		memset(edesc, 0, sizeof(*edesc));
-+	}
-+
- 	sg_table = &edesc->sgt[0];
- 
- 	ret = ctx_map_to_qm_sg(ctx->dev, state, ctx->ctx_len, sg_table,
-@@ -3698,7 +3772,8 @@ static int ahash_final_ctx(struct ahash_request *req)
- 
- unmap_ctx:
- 	ahash_unmap_ctx(ctx->dev, edesc, req, DMA_BIDIRECTIONAL);
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 	return ret;
- }
- 
-@@ -3713,7 +3788,7 @@ static int ahash_finup_ctx(struct ahash_request *req)
- 	gfp_t flags = (req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP) ?
- 		      GFP_KERNEL : GFP_ATOMIC;
- 	int buflen = state->buflen;
--	int qm_sg_bytes, qm_sg_src_index;
-+	int qm_sg_bytes, qm_sg_src_index, edesc_size = 0;
- 	int src_nents, mapped_nents;
- 	int digestsize = crypto_ahash_digestsize(ahash);
- 	struct ahash_edesc *edesc;
-@@ -3737,17 +3812,31 @@ static int ahash_finup_ctx(struct ahash_request *req)
- 		mapped_nents = 0;
- 	}
- 
--	/* allocate space for base edesc and link tables */
--	edesc = qi_cache_zalloc(GFP_DMA | flags);
--	if (!edesc) {
--		dma_unmap_sg(ctx->dev, req->src, src_nents, DMA_TO_DEVICE);
--		return -ENOMEM;
--	}
--
--	edesc->src_nents = src_nents;
- 	qm_sg_src_index = 1 + (buflen ? 1 : 0);
- 	qm_sg_bytes = pad_sg_nents(qm_sg_src_index + mapped_nents) *
- 		      sizeof(*sg_table);
-+
-+	 /* Check if there's enough space for edesc saved in req */
-+	edesc_size = sizeof(*edesc) +  qm_sg_bytes;
-+	if (edesc_size > (crypto_ahash_reqsize(ahash) -
-+			  sizeof(struct caam_hash_state))) {
-+		/* allocate space for base edesc and link tables */
-+		edesc = qi_cache_zalloc(GFP_DMA | flags);
-+		if (!edesc) {
-+			dma_unmap_sg(ctx->dev, req->src, src_nents,
-+				     DMA_TO_DEVICE);
-+			return -ENOMEM;
-+		}
-+		edesc->free = true;
-+	} else {
-+		/* get address for base edesc and link tables */
-+		edesc = (struct ahash_edesc *)((u8 *)state +
-+			 sizeof(struct caam_hash_state));
-+		/* clear memory */
-+		memset(edesc, 0, sizeof(*edesc));
-+	}
-+
-+	edesc->src_nents = src_nents;
- 	sg_table = &edesc->sgt[0];
- 
- 	ret = ctx_map_to_qm_sg(ctx->dev, state, ctx->ctx_len, sg_table,
-@@ -3792,7 +3881,8 @@ static int ahash_finup_ctx(struct ahash_request *req)
- 
- unmap_ctx:
- 	ahash_unmap_ctx(ctx->dev, edesc, req, DMA_BIDIRECTIONAL);
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 	return ret;
- }
- 
-@@ -3807,8 +3897,9 @@ static int ahash_digest(struct ahash_request *req)
- 	gfp_t flags = (req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP) ?
- 		      GFP_KERNEL : GFP_ATOMIC;
- 	int digestsize = crypto_ahash_digestsize(ahash);
--	int src_nents, mapped_nents;
-+	int src_nents, mapped_nents, qm_sg_bytes, edesc_size = 0;
- 	struct ahash_edesc *edesc;
-+	struct dpaa2_sg_entry *sg_table;
- 	int ret = -ENOMEM;
- 
- 	state->buf_dma = 0;
-@@ -3830,21 +3921,33 @@ static int ahash_digest(struct ahash_request *req)
- 		mapped_nents = 0;
- 	}
- 
--	/* allocate space for base edesc and link tables */
--	edesc = qi_cache_zalloc(GFP_DMA | flags);
--	if (!edesc) {
--		dma_unmap_sg(ctx->dev, req->src, src_nents, DMA_TO_DEVICE);
--		return ret;
-+	qm_sg_bytes = pad_sg_nents(mapped_nents) * sizeof(*sg_table);
-+
-+	/* Check if there's enough space for edesc saved in req */
-+	edesc_size = sizeof(*edesc) +  qm_sg_bytes;
-+	if (edesc_size > (crypto_ahash_reqsize(ahash) -
-+			  sizeof(struct caam_hash_state))) {
-+		/* allocate space for base edesc and link tables */
-+		edesc = qi_cache_zalloc(GFP_DMA | flags);
-+		if (!edesc) {
-+			dma_unmap_sg(ctx->dev, req->src, src_nents,
-+				     DMA_TO_DEVICE);
-+			return ret;
-+		}
-+		edesc->free = true;
-+	} else {
-+		/* get address for base edesc and link tables */
-+		edesc = (struct ahash_edesc *)((u8 *)state +
-+			 sizeof(struct caam_hash_state));
-+		/* clear memory */
-+		memset(edesc, 0, sizeof(*edesc));
- 	}
- 
- 	edesc->src_nents = src_nents;
- 	memset(&req_ctx->fd_flt, 0, sizeof(req_ctx->fd_flt));
- 
- 	if (mapped_nents > 1) {
--		int qm_sg_bytes;
--		struct dpaa2_sg_entry *sg_table = &edesc->sgt[0];
--
--		qm_sg_bytes = pad_sg_nents(mapped_nents) * sizeof(*sg_table);
-+		sg_table = &edesc->sgt[0];
- 		sg_to_qm_sg_last(req->src, req->nbytes, sg_table, 0);
- 		edesc->qm_sg_dma = dma_map_single(ctx->dev, sg_table,
- 						  qm_sg_bytes, DMA_TO_DEVICE);
-@@ -3887,7 +3990,8 @@ static int ahash_digest(struct ahash_request *req)
- 
- unmap:
- 	ahash_unmap_ctx(ctx->dev, edesc, req, DMA_FROM_DEVICE);
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 	return ret;
- }
- 
-@@ -3899,18 +4003,17 @@ static int ahash_final_no_ctx(struct ahash_request *req)
- 	struct caam_request *req_ctx = &state->caam_req;
- 	struct dpaa2_fl_entry *in_fle = &req_ctx->fd_flt[1];
- 	struct dpaa2_fl_entry *out_fle = &req_ctx->fd_flt[0];
--	gfp_t flags = (req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP) ?
--		      GFP_KERNEL : GFP_ATOMIC;
- 	u8 *buf = state->buf;
- 	int buflen = state->buflen;
- 	int digestsize = crypto_ahash_digestsize(ahash);
- 	struct ahash_edesc *edesc;
- 	int ret = -ENOMEM;
- 
--	/* allocate space for base edesc and link tables */
--	edesc = qi_cache_zalloc(GFP_DMA | flags);
--	if (!edesc)
--		return ret;
-+	/* get address for base edesc and link tables */
-+	edesc = (struct ahash_edesc *)((u8 *)state +
-+		 sizeof(struct caam_hash_state));
-+	/* clear memory */
-+	memset(edesc, 0, sizeof(*edesc));
- 
- 	if (buflen) {
- 		state->buf_dma = dma_map_single(ctx->dev, buf, buflen,
-@@ -3960,7 +4063,6 @@ static int ahash_final_no_ctx(struct ahash_request *req)
- 
- unmap:
- 	ahash_unmap_ctx(ctx->dev, edesc, req, DMA_FROM_DEVICE);
--	qi_cache_free(edesc);
- 	return ret;
- }
- 
-@@ -3978,7 +4080,7 @@ static int ahash_update_no_ctx(struct ahash_request *req)
- 	int *buflen = &state->buflen;
- 	int *next_buflen = &state->next_buflen;
- 	int in_len = *buflen + req->nbytes, to_hash;
--	int qm_sg_bytes, src_nents, mapped_nents;
-+	int qm_sg_bytes, src_nents, mapped_nents, edesc_size = 0;
- 	struct ahash_edesc *edesc;
- 	int ret = 0;
- 
-@@ -4006,17 +4108,30 @@ static int ahash_update_no_ctx(struct ahash_request *req)
- 			mapped_nents = 0;
- 		}
- 
--		/* allocate space for base edesc and link tables */
--		edesc = qi_cache_zalloc(GFP_DMA | flags);
--		if (!edesc) {
--			dma_unmap_sg(ctx->dev, req->src, src_nents,
--				     DMA_TO_DEVICE);
--			return -ENOMEM;
-+		qm_sg_bytes = pad_sg_nents(1 + mapped_nents) *
-+			      sizeof(*sg_table);
-+
-+		/* Check if there's enough space for edesc saved in req */
-+		edesc_size = sizeof(*edesc) +  qm_sg_bytes;
-+		if (edesc_size > (crypto_ahash_reqsize(ahash) -
-+				  sizeof(struct caam_hash_state))) {
-+			/* allocate space for base edesc and link tables */
-+			edesc = qi_cache_zalloc(GFP_DMA | flags);
-+			if (!edesc) {
-+				dma_unmap_sg(ctx->dev, req->src, src_nents,
-+					     DMA_TO_DEVICE);
-+				return -ENOMEM;
-+			}
-+			edesc->free = true;
-+		} else {
-+			/* get address for base edesc and link tables */
-+			edesc = (struct ahash_edesc *)((u8 *)state +
-+				 sizeof(struct caam_hash_state));
-+			/* clear memory */
-+			memset(edesc, 0, sizeof(*edesc));
- 		}
- 
- 		edesc->src_nents = src_nents;
--		qm_sg_bytes = pad_sg_nents(1 + mapped_nents) *
--			      sizeof(*sg_table);
- 		sg_table = &edesc->sgt[0];
- 
- 		ret = buf_map_to_qm_sg(ctx->dev, sg_table, state);
-@@ -4081,7 +4196,8 @@ static int ahash_update_no_ctx(struct ahash_request *req)
- 	return ret;
- unmap_ctx:
- 	ahash_unmap_ctx(ctx->dev, edesc, req, DMA_TO_DEVICE);
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 	return ret;
- }
- 
-@@ -4096,7 +4212,7 @@ static int ahash_finup_no_ctx(struct ahash_request *req)
- 	gfp_t flags = (req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP) ?
- 		      GFP_KERNEL : GFP_ATOMIC;
- 	int buflen = state->buflen;
--	int qm_sg_bytes, src_nents, mapped_nents;
-+	int qm_sg_bytes, src_nents, mapped_nents, edesc_size = 0;
- 	int digestsize = crypto_ahash_digestsize(ahash);
- 	struct ahash_edesc *edesc;
- 	struct dpaa2_sg_entry *sg_table;
-@@ -4119,15 +4235,29 @@ static int ahash_finup_no_ctx(struct ahash_request *req)
- 		mapped_nents = 0;
- 	}
- 
--	/* allocate space for base edesc and link tables */
--	edesc = qi_cache_zalloc(GFP_DMA | flags);
--	if (!edesc) {
--		dma_unmap_sg(ctx->dev, req->src, src_nents, DMA_TO_DEVICE);
--		return ret;
-+	qm_sg_bytes = pad_sg_nents(2 + mapped_nents) * sizeof(*sg_table);
-+
-+	/* Check if there's enough space for edesc saved in req */
-+	edesc_size = sizeof(*edesc) +  qm_sg_bytes;
-+	if (edesc_size > (crypto_ahash_reqsize(ahash) -
-+			  sizeof(struct caam_hash_state))) {
-+		/* allocate space for base edesc and link tables */
-+		edesc = qi_cache_zalloc(GFP_DMA | flags);
-+		if (!edesc) {
-+			dma_unmap_sg(ctx->dev, req->src, src_nents,
-+				     DMA_TO_DEVICE);
-+			return ret;
-+		}
-+		edesc->free = true;
-+	} else {
-+		/* get address for base edesc and link tables */
-+		edesc = (struct ahash_edesc *)((u8 *)state +
-+			 sizeof(struct caam_hash_state));
-+		/* clear memory */
-+		memset(edesc, 0, sizeof(*edesc));
- 	}
- 
- 	edesc->src_nents = src_nents;
--	qm_sg_bytes = pad_sg_nents(2 + mapped_nents) * sizeof(*sg_table);
- 	sg_table = &edesc->sgt[0];
- 
- 	ret = buf_map_to_qm_sg(ctx->dev, sg_table, state);
-@@ -4177,7 +4307,8 @@ static int ahash_finup_no_ctx(struct ahash_request *req)
- 	return ret;
- unmap:
- 	ahash_unmap_ctx(ctx->dev, edesc, req, DMA_FROM_DEVICE);
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 	return ret;
- }
- 
-@@ -4195,7 +4326,7 @@ static int ahash_update_first(struct ahash_request *req)
- 	int *buflen = &state->buflen;
- 	int *next_buflen = &state->next_buflen;
- 	int to_hash;
--	int src_nents, mapped_nents;
-+	int src_nents, mapped_nents, qm_sg_bytes, edesc_size = 0;
- 	struct ahash_edesc *edesc;
- 	int ret = 0;
- 
-@@ -4224,12 +4355,26 @@ static int ahash_update_first(struct ahash_request *req)
- 			mapped_nents = 0;
- 		}
- 
--		/* allocate space for base edesc and link tables */
--		edesc = qi_cache_zalloc(GFP_DMA | flags);
--		if (!edesc) {
--			dma_unmap_sg(ctx->dev, req->src, src_nents,
--				     DMA_TO_DEVICE);
--			return -ENOMEM;
-+		qm_sg_bytes = pad_sg_nents(mapped_nents) * sizeof(*sg_table);
-+
-+		/* Check if there's enough space for edesc saved in req */
-+		edesc_size = sizeof(*edesc) +  qm_sg_bytes;
-+		if (edesc_size > (crypto_ahash_reqsize(ahash) -
-+				  sizeof(struct caam_hash_state))) {
-+			/* allocate space for base edesc and link tables */
-+			edesc = qi_cache_zalloc(GFP_DMA | flags);
-+			if (!edesc) {
-+				dma_unmap_sg(ctx->dev, req->src, src_nents,
-+					     DMA_TO_DEVICE);
-+				return -ENOMEM;
-+			}
-+			edesc->free = true;
-+		} else {
-+			/* get address for base edesc and link tables */
-+			edesc = (struct ahash_edesc *)((u8 *)state +
-+				 sizeof(struct caam_hash_state));
-+			/* clear memory */
-+			memset(edesc, 0, sizeof(*edesc));
- 		}
- 
- 		edesc->src_nents = src_nents;
-@@ -4240,11 +4385,7 @@ static int ahash_update_first(struct ahash_request *req)
- 		dpaa2_fl_set_len(in_fle, to_hash);
- 
- 		if (mapped_nents > 1) {
--			int qm_sg_bytes;
--
- 			sg_to_qm_sg_last(req->src, src_len, sg_table, 0);
--			qm_sg_bytes = pad_sg_nents(mapped_nents) *
--				      sizeof(*sg_table);
- 			edesc->qm_sg_dma = dma_map_single(ctx->dev, sg_table,
- 							  qm_sg_bytes,
- 							  DMA_TO_DEVICE);
-@@ -4306,7 +4447,8 @@ static int ahash_update_first(struct ahash_request *req)
- 	return ret;
- unmap_ctx:
- 	ahash_unmap_ctx(ctx->dev, edesc, req, DMA_TO_DEVICE);
--	qi_cache_free(edesc);
-+	if (edesc->free)
-+		qi_cache_free(edesc);
- 	return ret;
- }
- 
-@@ -4553,7 +4695,7 @@ static int caam_hash_cra_init(struct crypto_tfm *tfm)
- 					 HASH_MSG_LEN + 64,
- 					 HASH_MSG_LEN + SHA512_DIGEST_SIZE };
- 	dma_addr_t dma_addr;
--	int i;
-+	int i, extra_reqsize = 0;
- 
- 	ctx->dev = caam_hash->dev;
- 
-@@ -4591,8 +4733,15 @@ static int caam_hash_cra_init(struct crypto_tfm *tfm)
- 				   OP_ALG_ALGSEL_SUBMASK) >>
- 				  OP_ALG_ALGSEL_SHIFT];
- 
-+	/* Compute extra space needed for base edesc and link tables */
-+	extra_reqsize = sizeof(struct ahash_edesc) +
-+			/* link tables for src:
-+			 * 4 entries max + max 2 for remaining buf, aligned = 8
-+			 */
-+			(8 * sizeof(struct dpaa2_sg_entry));
-+
- 	crypto_ahash_set_reqsize(__crypto_ahash_cast(tfm),
--				 sizeof(struct caam_hash_state));
-+				 sizeof(struct caam_hash_state) + extra_reqsize);
- 
- 	/*
- 	 * For keyed hash algorithms shared descriptors
-@@ -4647,7 +4796,7 @@ static struct caam_hash_alg *caam_hash_alloc(struct device *dev,
- 	alg->cra_priority = CAAM_CRA_PRIORITY;
- 	alg->cra_blocksize = template->blocksize;
- 	alg->cra_alignmask = 0;
--	alg->cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY;
-+	alg->cra_flags = CRYPTO_ALG_ASYNC;
- 
- 	t_alg->alg_type = template->alg_type;
- 	t_alg->dev = dev;
-diff --git a/drivers/crypto/caam/caamalg_qi2.h b/drivers/crypto/caam/caamalg_qi2.h
-index d35253407ade..3e7367784b39 100644
---- a/drivers/crypto/caam/caamalg_qi2.h
-+++ b/drivers/crypto/caam/caamalg_qi2.h
-@@ -102,6 +102,7 @@ struct dpaa2_caam_priv_per_cpu {
-  * @dst_nents: number of segments in output scatterlist
-  * @iv_dma: dma address of iv for checking continuity and link table
-  * @qm_sg_bytes: length of dma mapped h/w link table
-+ * @free: stored to determine if aead_edesc needs to be freed
-  * @qm_sg_dma: bus physical mapped address of h/w link table
-  * @assoclen: associated data length, in CAAM endianness
-  * @assoclen_dma: bus physical mapped address of req->assoclen
-@@ -112,6 +113,7 @@ struct aead_edesc {
- 	int dst_nents;
- 	dma_addr_t iv_dma;
- 	int qm_sg_bytes;
-+	bool free;
- 	dma_addr_t qm_sg_dma;
- 	unsigned int assoclen;
- 	dma_addr_t assoclen_dma;
-@@ -124,6 +126,7 @@ struct aead_edesc {
-  * @dst_nents: number of segments in output scatterlist
-  * @iv_dma: dma address of iv for checking continuity and link table
-  * @qm_sg_bytes: length of dma mapped qm_sg space
-+ * @free: stored to determine if skcipher_edesc needs to be freed
-  * @qm_sg_dma: I/O virtual address of h/w link table
-  * @sgt: the h/w link table, followed by IV
-  */
-@@ -132,6 +135,7 @@ struct skcipher_edesc {
- 	int dst_nents;
- 	dma_addr_t iv_dma;
- 	int qm_sg_bytes;
-+	bool free;
- 	dma_addr_t qm_sg_dma;
- 	struct dpaa2_sg_entry sgt[];
- };
-@@ -141,12 +145,14 @@ struct skcipher_edesc {
-  * @qm_sg_dma: I/O virtual address of h/w link table
-  * @src_nents: number of segments in input scatterlist
-  * @qm_sg_bytes: length of dma mapped qm_sg space
-+ * @free: stored to determine if ahash_edesc needs to be freed
-  * @sgt: pointer to h/w link table
-  */
- struct ahash_edesc {
- 	dma_addr_t qm_sg_dma;
- 	int src_nents;
- 	int qm_sg_bytes;
-+	bool free;
- 	struct dpaa2_sg_entry sgt[];
- };
- 
--- 
-2.17.1
+> 
+>> +			reg = <0x03000000 0x1000>;
+>> +			#address-cells = <1>;
+>> +			#size-cells = <1>;
+>> +			ranges;
+>> +
+>> +			sram_c: sram@28000 {
+>> +				compatible = "mmio-sram";
+>> +				reg = <0x00028000 0x30000>;
+>> +				#address-cells = <1>;
+>> +				#size-cells = <1>;
+>> +				ranges = <0 0x00028000 0x30000>;
+>> +			};
+>> +
+>> +			sram_c1: sram@1a00000 {
+>> +				compatible = "mmio-sram";
+>> +				reg = <0x01a00000 0x200000>;
+>> +				#address-cells = <1>;
+>> +				#size-cells = <1>;
+>> +				ranges = <0 0x01a00000 0x200000>;
+>> +
+>> +				ve_sram: sram-section@0 {
+>> +					compatible = "allwinner,sun50i-h616-sram-c1",
+>> +						     "allwinner,sun4i-a10-sram-c1";
+>> +					reg = <0x000000 0x200000>;
+>> +				};
+>> +			};
+>> +		};
+>> +
+>> +		ccu: clock@3001000 {
+>> +			compatible = "allwinner,sun50i-h616-ccu";
+>> +			reg = <0x03001000 0x1000>;
+>> +			clocks = <&osc24M>, <&rtc 0>, <&rtc 2>;
+>> +			clock-names = "hosc", "losc", "iosc";
+>> +			#clock-cells = <1>;
+>> +			#reset-cells = <1>;
+>> +		};
+>> +
+>> +		watchdog: watchdog@30090a0 {
+>> +			compatible = "allwinner,sun50i-h616-wdt",
+>> +				     "allwinner,sun6i-a31-wdt";
+>> +			reg = <0x030090a0 0x20>;
+>> +			interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&osc24M>;
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		pio: pinctrl@300b000 {
+>> +			compatible = "allwinner,sun50i-h616-pinctrl";
+>> +			reg = <0x0300b000 0x400>;
+>> +			interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>,
+>> +				     <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>,
+>> +				     <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>,
+>> +				     <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>,
+>> +				     <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_APB1>, <&osc24M>, <&rtc 0>;
+>> +			clock-names = "apb", "hosc", "losc";
+>> +			gpio-controller;
+>> +			#gpio-cells = <3>;
+>> +			interrupt-controller;
+>> +			#interrupt-cells = <3>;
+>> +
+>> +			ext_rgmii_pins: rgmii-pins {
+>> +				pins = "PI0", "PI1", "PI2", "PI3", "PI4",
+>> +				       "PI5", "PI7", "PI8", "PI9", "PI10",
+>> +				       "PI11", "PI12", "PI13", "PI14", "PI15",
+>> +				       "PI16";
+>> +				function = "emac0";
+>> +				drive-strength = <40>;
+>> +			};
+>> +
+>> +			i2c0_pins: i2c0-pins {
+>> +				pins = "PI6", "PI7";
+>> +				function = "i2c0";
+>> +			};
+>> +
+>> +			i2c3_pins_a: i2c1-pins-a {
+>> +				pins = "PH4", "PH5";
+>> +				function = "i2c3";
+>> +			};
+>> +
+>> +			ir_rx_pin: ir_rx_pin {
+>> +				pins = "PH10";
+>> +				function = "ir_rx";
+>> +			};
+>> +
+>> +			mmc0_pins: mmc0-pins {
+>> +				pins = "PF0", "PF1", "PF2", "PF3",
+>> +				       "PF4", "PF5";
+>> +				function = "mmc0";
+>> +				drive-strength = <30>;
+>> +				bias-pull-up;
+>> +			};
+>> +
+>> +			mmc1_pins: mmc1-pins {
+>> +				pins = "PG0", "PG1", "PG2", "PG3",
+>> +				       "PG4", "PG5";
+>> +				function = "mmc1";
+>> +				drive-strength = <30>;
+>> +				bias-pull-up;
+>> +			};
+>> +
+>> +			mmc2_pins: mmc2-pins {
+>> +				pins = "PC0", "PC1", "PC5", "PC6",
+>> +				       "PC8", "PC9", "PC10", "PC11",
+>> +				       "PC13", "PC14", "PC15", "PC16";
+>> +				function = "mmc2";
+>> +				drive-strength = <30>;
+>> +				bias-pull-up;
+>> +			};
+>> +
+>> +			spi0_pins: spi0-pins {
+>> +				pins = "PC0", "PC2", "PC3", "PC4";
+>> +				function = "spi0";
+>> +			};
+>> +
+>> +			spi1_pins: spi1-pins {
+>> +				pins = "PH6", "PH7", "PH8";
+>> +				function = "spi1";
+>> +			};
+>> +
+>> +			spi1_cs_pin: spi1-cs-pin {
+>> +				pins = "PH5";
+>> +				function = "spi1";
+>> +			};
+>> +
+>> +			uart0_ph_pins: uart0-ph-pins {
+>> +				pins = "PH0", "PH1";
+>> +				function = "uart0";
+>> +			};
+>> +
+>> +			uart1_pins: uart1-pins {
+>> +				pins = "PG6", "PG7";
+>> +				function = "uart1";
+>> +			};
+>> +
+>> +			uart1_rts_cts_pins: uart1-rts-cts-pins {
+>> +				pins = "PG8", "PG9";
+>> +				function = "uart1";
+>> +			};
+>> +		};
+>> +
+>> +		gic: interrupt-controller@3021000 {
+>> +			compatible = "arm,gic-400";
+>> +			reg = <0x03021000 0x1000>,
+>> +			      <0x03022000 0x2000>,
+>> +			      <0x03024000 0x2000>,
+>> +			      <0x03026000 0x2000>;
+>> +			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+>> +			interrupt-controller;
+>> +			#interrupt-cells = <3>;
+>> +		};
+>> +
+>> +		mmc0: mmc@4020000 {
+>> +			compatible = "allwinner,sun50i-h616-mmc",
+>> +				     "allwinner,sun50i-a100-mmc";
+>> +			reg = <0x04020000 0x1000>;
+>> +			clocks = <&ccu CLK_BUS_MMC0>, <&ccu CLK_MMC0>;
+>> +			clock-names = "ahb", "mmc";
+>> +			resets = <&ccu RST_BUS_MMC0>;
+>> +			reset-names = "ahb";
+>> +			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
+>> +			pinctrl-names = "default";
+>> +			pinctrl-0 = <&mmc0_pins>;
+>> +			status = "disabled";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +		};
+>> +
+>> +		mmc1: mmc@4021000 {
+>> +			compatible = "allwinner,sun50i-h616-mmc",
+>> +				     "allwinner,sun50i-a100-mmc";
+>> +			reg = <0x04021000 0x1000>;
+>> +			clocks = <&ccu CLK_BUS_MMC1>, <&ccu CLK_MMC1>;
+>> +			clock-names = "ahb", "mmc";
+>> +			resets = <&ccu RST_BUS_MMC1>;
+>> +			reset-names = "ahb";
+>> +			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+>> +			pinctrl-names = "default";
+>> +			pinctrl-0 = <&mmc1_pins>;
+>> +			status = "disabled";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +		};
+>> +
+>> +		mmc2: mmc@4022000 {
+>> +			compatible = "allwinner,sun50i-h616-emmc",
+>> +				     "allwinner,sun50i-a64-emmc";
+>> +			reg = <0x04022000 0x1000>;
+>> +			clocks = <&ccu CLK_BUS_MMC2>, <&ccu CLK_MMC2>;
+>> +			clock-names = "ahb", "mmc";
+>> +			resets = <&ccu RST_BUS_MMC2>;
+>> +			reset-names = "ahb";
+>> +			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+>> +			pinctrl-names = "default";
+>> +			pinctrl-0 = <&mmc2_pins>;
+>> +			status = "disabled";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +		};
+> 
+> I would skip mmc1 and mmc2, as they were not proved to be working yet.
+
+You mentioned on IRC that MMC2 is working now. Can we check the
+existence of the WiFi chip on mmc1 somehow? Without having a proper
+driver, just to prove that this works?
+Does your TV box also use this new Allwinner WiFi chip?
+
+>> +
+>> +		uart0: serial@5000000 {
+>> +			compatible = "snps,dw-apb-uart";
+>> +			reg = <0x05000000 0x400>;
+>> +			interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
+>> +			reg-shift = <2>;
+>> +			reg-io-width = <4>;
+>> +			clocks = <&ccu CLK_BUS_UART0>;
+>> +			resets = <&ccu RST_BUS_UART0>;
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		uart1: serial@5000400 {
+>> +			compatible = "snps,dw-apb-uart";
+>> +			reg = <0x05000400 0x400>;
+>> +			interrupts = <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
+>> +			reg-shift = <2>;
+>> +			reg-io-width = <4>;
+>> +			clocks = <&ccu CLK_BUS_UART1>;
+>> +			resets = <&ccu RST_BUS_UART1>;
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		uart2: serial@5000800 {
+>> +			compatible = "snps,dw-apb-uart";
+>> +			reg = <0x05000800 0x400>;
+>> +			interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
+>> +			reg-shift = <2>;
+>> +			reg-io-width = <4>;
+>> +			clocks = <&ccu CLK_BUS_UART2>;
+>> +			resets = <&ccu RST_BUS_UART2>;
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		uart3: serial@5000c00 {
+>> +			compatible = "snps,dw-apb-uart";
+>> +			reg = <0x05000c00 0x400>;
+>> +			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
+>> +			reg-shift = <2>;
+>> +			reg-io-width = <4>;
+>> +			clocks = <&ccu CLK_BUS_UART3>;
+>> +			resets = <&ccu RST_BUS_UART3>;
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		uart4: serial@5001000 {
+>> +			compatible = "snps,dw-apb-uart";
+>> +			reg = <0x05001000 0x400>;
+>> +			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
+>> +			reg-shift = <2>;
+>> +			reg-io-width = <4>;
+>> +			clocks = <&ccu CLK_BUS_UART4>;
+>> +			resets = <&ccu RST_BUS_UART4>;
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		uart5: serial@5001400 {
+>> +			compatible = "snps,dw-apb-uart";
+>> +			reg = <0x05001400 0x400>;
+>> +			interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
+>> +			reg-shift = <2>;
+>> +			reg-io-width = <4>;
+>> +			clocks = <&ccu CLK_BUS_UART5>;
+>> +			resets = <&ccu RST_BUS_UART5>;
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		i2c0: i2c@5002000 {
+>> +			compatible = "allwinner,sun50i-h616-i2c",
+>> +				     "allwinner,sun6i-a31-i2c";
+>> +			reg = <0x05002000 0x400>;
+>> +			interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_I2C0>;
+>> +			resets = <&ccu RST_BUS_I2C0>;
+>> +			pinctrl-names = "default";
+>> +			pinctrl-0 = <&i2c0_pins>;
+>> +			status = "disabled";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +		};
+>> +
+>> +		i2c1: i2c@5002400 {
+>> +			compatible = "allwinner,sun50i-h616-i2c",
+>> +				     "allwinner,sun6i-a31-i2c";
+>> +			reg = <0x05002400 0x400>;
+>> +			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_I2C1>;
+>> +			resets = <&ccu RST_BUS_I2C1>;
+>> +			status = "disabled";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +		};
+>> +
+>> +		i2c2: i2c@5002800 {
+>> +			compatible = "allwinner,sun50i-h616-i2c",
+>> +				     "allwinner,sun6i-a31-i2c";
+>> +			reg = <0x05002800 0x400>;
+>> +			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_I2C2>;
+>> +			resets = <&ccu RST_BUS_I2C2>;
+>> +			status = "disabled";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +		};
+>> +
+>> +		i2c3: i2c@5002c00 {
+>> +			compatible = "allwinner,sun50i-h616-i2c",
+>> +				     "allwinner,sun6i-a31-i2c";
+>> +			reg = <0x05002c00 0x400>;
+>> +			interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_I2C3>;
+>> +			resets = <&ccu RST_BUS_I2C3>;
+>> +			status = "disabled";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +		};
+>> +
+>> +		i2c4: i2c@5003000 {
+>> +			compatible = "allwinner,sun50i-h616-i2c",
+>> +				     "allwinner,sun6i-a31-i2c";
+>> +			reg = <0x05003000 0x400>;
+>> +			interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_I2C4>;
+>> +			resets = <&ccu RST_BUS_I2C4>;
+>> +			status = "disabled";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +		};
+>> +
+>> +		spi0: spi@5010000 {
+>> +			compatible = "allwinner,sun50i-h616-spi",
+>> +				     "allwinner,sun8i-h3-spi";
+>> +			reg = <0x05010000 0x1000>;
+>> +			interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_SPI0>, <&ccu CLK_SPI0>;
+>> +			clock-names = "ahb", "mod";
+>> +			resets = <&ccu RST_BUS_SPI0>;
+>> +			pinctrl-names = "default";
+>> +			pinctrl-0 = <&spi0_pins>;
+>> +			status = "disabled";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +		};
+>> +
+>> +		spi1: spi@5011000 {
+>> +			compatible = "allwinner,sun50i-h616-spi",
+>> +				     "allwinner,sun8i-h3-spi";
+>> +			reg = <0x05011000 0x1000>;
+>> +			interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_SPI1>, <&ccu CLK_SPI1>;
+>> +			clock-names = "ahb", "mod";
+>> +			resets = <&ccu RST_BUS_SPI1>;
+>> +			pinctrl-names = "default";
+>> +			pinctrl-0 = <&spi1_pins>;
+>> +			status = "disabled";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +		};
+>> +
+>> +		emac0: ethernet@5020000 {
+>> +			compatible = "allwinner,sun50i-h616-emac",
+>> +				     "allwinner,sun50i-a64-emac";
+>> +			syscon = <&syscon>;
+>> +			reg = <0x05020000 0x10000>;
+>> +			interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+>> +			interrupt-names = "macirq";
+>> +			resets = <&ccu RST_BUS_EMAC0>;
+>> +			reset-names = "stmmaceth";
+>> +			clocks = <&ccu CLK_BUS_EMAC0>;
+>> +			clock-names = "stmmaceth";
+>> +			status = "disabled";
+>> +
+>> +			mdio: mdio {
+>> +				compatible = "snps,dwmac-mdio";
+>> +				#address-cells = <1>;
+>> +				#size-cells = <0>;
+>> +			};
+>> +		};
+>> +
+>> +		usbotg: usb@5100000 {
+>> +			compatible = "allwinner,sun50i-h616-musb",
+>> +				     "allwinner,sun8i-a33-musb";
+>> +			reg = <0x05100000 0x0400>;
+>> +			clocks = <&ccu CLK_BUS_OTG>;
+>> +			resets = <&ccu RST_BUS_OTG>;
+>> +			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
+>> +			interrupt-names = "mc";
+>> +			phys = <&usbphy 0>;
+>> +			phy-names = "usb";
+>> +			extcon = <&usbphy 0>;
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		usbphy: phy@5100400 {
+>> +			compatible = "allwinner,sun50i-h616-usb-phy";
+>> +			reg = <0x05100400 0x24>,
+>> +			      <0x05101800 0x4>,
+>> +			      <0x05200800 0x4>,
+>> +			      <0x05310800 0x4>,
+>> +			      <0x05311800 0x4>;
+>> +			reg-names = "phy_ctrl",
+>> +				    "pmu0",
+>> +				    "pmu1",
+>> +				    "pmu2",
+>> +				    "pmu3";
+>> +			clocks = <&ccu CLK_USB_PHY0>,
+>> +				 <&ccu CLK_USB_PHY1>,
+>> +				 <&ccu CLK_USB_PHY2>,
+>> +				 <&ccu CLK_USB_PHY3>;
+>> +			clock-names = "usb0_phy",
+>> +				      "usb1_phy",
+>> +				      "usb2_phy",
+>> +				      "usb3_phy";
+>> +			resets = <&ccu RST_USB_PHY0>,
+>> +				 <&ccu RST_USB_PHY1>,
+>> +				 <&ccu RST_USB_PHY2>,
+>> +				 <&ccu RST_USB_PHY3>;
+>> +			reset-names = "usb0_reset",
+>> +				      "usb1_reset",
+>> +				      "usb2_reset",
+>> +				      "usb3_reset";
+>> +			status = "disabled";
+>> +			#phy-cells = <1>;
+>> +		};
+>> +
+>> +		ehci0: usb@5101000 {
+>> +			compatible = "allwinner,sun50i-h616-ehci",
+>> +				     "generic-ehci";
+>> +			reg = <0x05101000 0x100>;
+>> +			interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_OHCI0>,
+>> +				 <&ccu CLK_BUS_EHCI0>,
+>> +				 <&ccu CLK_USB_OHCI0>;
+>> +			resets = <&ccu RST_BUS_OHCI0>,
+>> +				 <&ccu RST_BUS_EHCI0>;
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		ohci0: usb@5101400 {
+>> +			compatible = "allwinner,sun50i-h616-ohci",
+>> +				     "generic-ohci";
+>> +			reg = <0x05101400 0x100>;
+>> +			interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_OHCI0>,
+>> +				 <&ccu CLK_USB_OHCI0>;
+>> +			resets = <&ccu RST_BUS_OHCI0>;
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		ehci1: usb@5200000 {
+>> +			compatible = "allwinner,sun50i-h616-ehci",
+>> +				     "generic-ehci";
+>> +			reg = <0x05200000 0x100>;
+>> +			interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_OHCI1>,
+>> +				 <&ccu CLK_BUS_EHCI1>,
+>> +				 <&ccu CLK_USB_OHCI1>;
+>> +			resets = <&ccu RST_BUS_OHCI1>,
+>> +				 <&ccu RST_BUS_EHCI1>;
+>> +			phys = <&usbphy 1>;
+>> +			phy-names = "usb";
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		ohci1: usb@5200400 {
+>> +			compatible = "allwinner,sun50i-h616-ohci",
+>> +				     "generic-ohci";
+>> +			reg = <0x05200400 0x100>;
+>> +			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_OHCI1>,
+>> +				 <&ccu CLK_USB_OHCI1>;
+>> +			resets = <&ccu RST_BUS_OHCI1>;
+>> +			phys = <&usbphy 1>;
+>> +			phy-names = "usb";
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		ehci2: usb@5310000 {
+>> +			compatible = "allwinner,sun50i-h616-ehci",
+>> +				     "generic-ehci";
+>> +			reg = <0x05310000 0x100>;
+>> +			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_OHCI2>,
+>> +				 <&ccu CLK_BUS_EHCI2>,
+>> +				 <&ccu CLK_USB_OHCI2>;
+>> +			resets = <&ccu RST_BUS_OHCI2>,
+>> +				 <&ccu RST_BUS_EHCI2>;
+>> +			phys = <&usbphy 2>;
+>> +			phy-names = "usb";
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		ohci2: usb@5310400 {
+>> +			compatible = "allwinner,sun50i-h616-ohci",
+>> +				     "generic-ohci";
+>> +			reg = <0x05310400 0x100>;
+>> +			interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_OHCI2>,
+>> +				 <&ccu CLK_USB_OHCI2>;
+>> +			resets = <&ccu RST_BUS_OHCI2>;
+>> +			phys = <&usbphy 2>;
+>> +			phy-names = "usb";
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		ehci3: usb@5311000 {
+>> +			compatible = "allwinner,sun50i-h616-ehci",
+>> +				     "generic-ehci";
+>> +			reg = <0x05311000 0x100>;
+>> +			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_OHCI3>,
+>> +				 <&ccu CLK_BUS_EHCI3>,
+>> +				 <&ccu CLK_USB_OHCI3>;
+>> +			resets = <&ccu RST_BUS_OHCI3>,
+>> +				 <&ccu RST_BUS_EHCI3>;
+>> +			phys = <&usbphy 3>;
+>> +			phy-names = "usb";
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		ohci3: usb@5311400 {
+>> +			compatible = "allwinner,sun50i-h616-ohci",
+>> +				     "generic-ohci";
+>> +			reg = <0x05311400 0x100>;
+>> +			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&ccu CLK_BUS_OHCI3>,
+>> +				 <&ccu CLK_USB_OHCI3>;
+>> +			resets = <&ccu RST_BUS_OHCI3>;
+>> +			phys = <&usbphy 3>;
+>> +			phy-names = "usb";
+>> +			status = "disabled";
+>> +		};
+>> +
+>> +		rtc: rtc@7000000 {
+>> +			compatible = "allwinner,sun50i-h616-rtc",
+>> +				     "allwinner,sun50i-h6-rtc";
+>> +			reg = <0x07000000 0x400>;
+>> +			interrupts = <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
+>> +				     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clock-output-names = "osc32k", "osc32k-out", "iosc";
+>> +			#clock-cells = <1>;
+>> +		};
+>> +
+>> +		r_ccu: clock@7010000 {
+>> +			compatible = "allwinner,sun50i-h616-r-ccu";
+>> +			reg = <0x07010000 0x400>;
+>> +			clocks = <&osc24M>, <&rtc 0>, <&rtc 2>,
+>> +				 <&ccu CLK_PLL_PERIPH0>;
+>> +			clock-names = "hosc", "losc", "iosc", "pll-periph";
+>> +			#clock-cells = <1>;
+>> +			#reset-cells = <1>;
+>> +		};
+>> +
+>> +		r_pio: pinctrl@7022000 {
+>> +			compatible = "allwinner,sun50i-h616-r-pinctrl";
+>> +			reg = <0x07022000 0x400>;
+>> +			interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&r_ccu CLK_R_APB1>, <&osc24M>, <&rtc 0>;
+>> +			clock-names = "apb", "hosc", "losc";
+>> +			gpio-controller;
+>> +			#gpio-cells = <3>;
+>> +			interrupt-controller;
+>> +			#interrupt-cells = <3>;
+>> +
+>> +			r_i2c_pins: r-i2c-pins {
+>> +				pins = "PL0", "PL1";
+>> +				function = "s_i2c";
+>> +			};
+>> +		};
+>> +
+>> +		ir: ir@7040000 {
+>> +				compatible = "allwinner,sun50i-h616-ir",
+>> +					     "allwinner,sun6i-a31-ir";
+>> +				reg = <0x07040000 0x400>;
+>> +				interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>;
+>> +				clocks = <&ccu CLK_R_APB1_IR>,
+>> +					 <&ccu CLK_IR>;
+> 
+> Above clocks and reset below should reference r_ccu. 
+
+Ah, indeed, thanks for spotting this!
+
+> Maybe we should call 
+> clock CLK_R_IR to know it comes from second clock controller?
+
+Yeah, but it's a bit tricky, since this is shared with the H6, and I'd
+rather avoid the churn of changing the H6 .dtsi as well.
+
+Cheers,
+Andre
+
+> 
+> Best regards,
+> Jernej
+> 
+>> +				clock-names = "apb", "ir";
+>> +				resets = <&ccu RST_R_APB1_IR>;
+>> +				pinctrl-names = "default";
+>> +				pinctrl-0 = <&ir_rx_pin>;
+>> +				status = "disabled";
+>> +		};
+>> +
+>> +		r_i2c: i2c@7081400 {
+>> +			compatible = "allwinner,sun50i-h616-i2c",
+>> +				     "allwinner,sun6i-a31-i2c";
+>> +			reg = <0x07081400 0x400>;
+>> +			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clocks = <&r_ccu CLK_R_APB2_I2C>;
+>> +			resets = <&r_ccu RST_R_APB2_I2C>;
+>> +			status = "disabled";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +		};
+>> +	};
+>> +};
+>> -- 
+>> 2.17.5
+>>
+>>
+> 
+> 
 
