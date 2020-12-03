@@ -2,50 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6372CDC58
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 399212CDC4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387485AbgLCR0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:26:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726929AbgLCR0m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:26:42 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5801C061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 09:26:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=1ys3tD29yyXiFC0wdrbI9llPCLLvllG6Avtg8Riop2w=; b=Ktj16xIdTj3m+YMFkFDzvgkkc/
-        BWsyux4yLGkgmExSv1HICil5cSWVbbPvIpJVFtlZftQBQGAne4ys3cbQ6QBTTmNfDMX7VRf0Ah5n9
-        kTOs7rzItjdLzvl+sTP7n96dfUg10qQ8AG7WjHPjs0dU7z7kMArROSJmugAJ35vkE3izte/rz343g
-        n0Z6YlZqOrchcI5LtdioiEZvrtIBvCs36g+qFUbzE4qlh9YHRgAWWgqor467dCPM1d2OnEXATMXnD
-        UanaImtP8rYDQvmiPS78bVHf7xWNPJShHMCyZ8qXmt+WFQuZjNSp0i+wF7nnEPrDd8pg2L2hZ6XLR
-        HoBL5ooA==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kksMh-00057z-0N; Thu, 03 Dec 2020 17:25:59 +0000
-Subject: Re: [PATCH v3 19/19] vdpa: split vdpasim to core and net modules
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, Oren Duer <oren@nvidia.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Shahaf Shuler <shahafs@nvidia.com>, Eli Cohen <elic@nvidia.com>
-References: <20201203170511.216407-1-sgarzare@redhat.com>
- <20201203170511.216407-20-sgarzare@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <920c4975-a3ae-b7f9-ac89-6444ca2e4c45@infradead.org>
-Date:   Thu, 3 Dec 2020 09:25:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1728890AbgLCRYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:24:32 -0500
+Received: from foss.arm.com ([217.140.110.172]:45838 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726988AbgLCRYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 12:24:31 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AC90511D4;
+        Thu,  3 Dec 2020 09:23:45 -0800 (PST)
+Received: from [10.37.8.53] (unknown [10.37.8.53])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14A7F3F575;
+        Thu,  3 Dec 2020 09:23:42 -0800 (PST)
+Subject: Re: [PATCH v2] lib: stackdepot: Add support to configure
+ STACK_HASH_SIZE
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     vjitta@codeaurora.org, Minchan Kim <minchan@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, ylal@codeaurora.org,
+        vinmenon@codeaurora.org, kasan-dev <kasan-dev@googlegroups.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Qian Cai <qcai@redhat.com>
+References: <1606365835-3242-1-git-send-email-vjitta@codeaurora.org>
+ <7733019eb8c506eee8d29e380aae683a8972fd19.camel@redhat.com>
+ <CAAeHK+w_avr_X2OJ5dm6p6nXQZMvcaAiLCQaF+EWna+7nQxVhg@mail.gmail.com>
+ <ff00097b-e547-185d-2a1a-ce0194629659@arm.com>
+Message-ID: <55b7ba6e-6282-2cf6-c42c-272bdd23a607@arm.com>
+Date:   Thu, 3 Dec 2020 17:26:59 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201203170511.216407-20-sgarzare@redhat.com>
+In-Reply-To: <ff00097b-e547-185d-2a1a-ce0194629659@arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -53,40 +50,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 12/3/20 9:05 AM, Stefano Garzarella wrote:
-> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-> index 2c892e890b9e..b0f91ad8eb47 100644
-> --- a/drivers/vdpa/Kconfig
-> +++ b/drivers/vdpa/Kconfig
-> @@ -9,15 +9,20 @@ menuconfig VDPA
->  if VDPA
->  
->  config VDPA_SIM
-> -	tristate "vDPA device simulator"
-> +	tristate "vDPA device simulator core"
->  	depends on RUNTIME_TESTING_MENU && HAS_DMA
->  	select DMA_OPS
->  	select VHOST_RING
-> +	help
-> +	  Enable this module to support vDPA device simulators. These devices
-> +	  are used for testing, prototyping and development of vDPA.
-> +
-> +config VDPA_SIM_NET
-> +	tristate "vDPA simulator for networking device"
-> +	depends on VDPA_SIM
->  	select GENERIC_NET_UTILS
->  	help
-> -	  vDPA networking device simulator which loop TX traffic back
-> -	  to RX. This device is used for testing, prototyping and
-> -	  development of vDPA.
-> +	  vDPA networking device simulator which loop TX traffic back to RX.
-
-	                                         loops
 
 
-thanks.
+On 12/3/20 4:34 PM, Vincenzo Frascino wrote:
+> Hi Andrey,
+> 
+> On 12/3/20 4:15 PM, Andrey Konovalov wrote:
+>> On Thu, Dec 3, 2020 at 5:04 PM Qian Cai <qcai@redhat.com> wrote:
+>>>
+>>> On Thu, 2020-11-26 at 10:13 +0530, vjitta@codeaurora.org wrote:
+>>>> From: Yogesh Lal <ylal@codeaurora.org>
+>>>>
+>>>> Add a kernel parameter stack_hash_order to configure STACK_HASH_SIZE.
+>>>>
+>>>> Aim is to have configurable value for STACK_HASH_SIZE, so that one
+>>>> can configure it depending on usecase there by reducing the static
+>>>> memory overhead.
+>>>>
+>>>> One example is of Page Owner, default value of STACK_HASH_SIZE lead
+>>>> stack depot to consume 8MB of static memory. Making it configurable
+>>>> and use lower value helps to enable features like CONFIG_PAGE_OWNER
+>>>> without any significant overhead.
+>>>>
+>>>> Suggested-by: Minchan Kim <minchan@kernel.org>
+>>>> Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
+>>>> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
+>>>
+>>> Reverting this commit on today's linux-next fixed boot crash with KASAN.
+>>>
+>>> .config:
+>>> https://cailca.coding.net/public/linux/mm/git/files/master/x86.config
+>>> https://cailca.coding.net/public/linux/mm/git/files/master/arm64.config
+>>
+>> Vincenzo, Catalin, looks like this is the cause of the crash you
+>> observed. Reverting this commit from next-20201203 fixes KASAN for me.
+>>
+>> Thanks for the report Qian!
+>>
+> 
+> Thank you for this. I will try and let you know as well.
+> 
+
+Reverting the patch above works for me as well, and the problem seems to be the
+order on which the initcalls are invoked. In fact stackdepot should be
+initialized before kasan from what I can see.
+
 -- 
-~Randy
-
+Regards,
+Vincenzo
