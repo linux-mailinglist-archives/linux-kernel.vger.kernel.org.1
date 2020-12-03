@@ -2,65 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3FA2CCEC4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4D42CCEC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728347AbgLCFor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 00:44:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727937AbgLCFoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:44:46 -0500
-Date:   Wed, 2 Dec 2020 21:44:04 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606974246;
-        bh=5jCLtc7clczpiCgbZmKWRaXdDHI/Y/DaXxhZwfpU9rA=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MeYkysOeb1XkkM6xc0jc0b7wo8FQ7Cj4xDlXYokr85BMp7+fr4T468BEv6FLTeKJG
-         RVowJIlqa1N/76kXWDzw8xJDdZwK4hYYIhHtqFGuJF4CMblJWiDFy3lLfIRtgRXCVd
-         T6BA/z9po5CbNdzXGU1CSnDepO6SImrH4xoeFySav3zLuzGO/CWmyGsLqSncgerw1m
-         zoPFtR7XphlMKC1ggBKyVdQ1WUZhCeWiZpOr0pMuMnCSYktexW96h9mxB3+sN0SDPN
-         TSO6IzQfxODBDTOlmtTwIyUdPoz6kStiuacdO9LVHZjB/wOO2hxYV0AhO3MdeGJcY2
-         DLYYcRyAVHxXw==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jack Qiu <jack.qiu@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the f2fs tree
-Message-ID: <X8h7JPsjS/wlQDsY@google.com>
-References: <20201202230159.17045522@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202230159.17045522@canb.auug.org.au>
+        id S1728431AbgLCFqW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 00:46:22 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:44625 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727937AbgLCFqW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 00:46:22 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UHNyBks_1606974337;
+Received: from 30.27.144.231(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UHNyBks_1606974337)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 03 Dec 2020 13:45:38 +0800
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH 0/3] arm64:msr: Add MSR driver
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+In-Reply-To: <7e9ae04f3394a85aa3b8fe8947a44009@kernel.org>
+Date:   Thu, 3 Dec 2020 13:45:36 +0800
+Cc:     catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
+        bjorn.andersson@linaro.org, shawnguo@kernel.org, gshan@redhat.com,
+        geert+renesas@glider.be, Anson.Huang@nxp.com, masahiroy@kernel.org,
+        michael@walle.cc, krzk@kernel.org, linux-kernel@vger.kernel.org,
+        vkoul@kernel.org, olof@lixom.net, vincenzo.frascino@arm.com,
+        ardb@kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <4513911D-77BF-4459-B8DF-9889395C16AC@linux.alibaba.com>
+References: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
+ <5e7f7225982b2df63e62ea60ec632376@misterjones.org>
+ <855BA92C-5B22-4F14-965A-B1F72A872B8D@linux.alibaba.com>
+ <059ed4a8768ff3881005796cb4a10d5e@kernel.org>
+ <6FA68A07-F718-46F5-81B4-586A5ED3E479@linux.alibaba.com>
+ <7e9ae04f3394a85aa3b8fe8947a44009@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/02, Stephen Rothwell wrote:
-> Hi all,
-> 
-> In commit
-> 
->   32c202c563c7 ("f2fs: init dirty_secmap incorrectly")
-> 
-> Fixes tag
-> 
->   Fixes: da52f8ade40b ("f2fs: get the right gc victim section when section
-> 
-> has these problem(s):
-> 
->   - Subject has leading but no trailing parentheses
->   - Subject has leading but no trailing quotes
-> 
-> Please do not split Fixes tags over more than one line.
 
-Oh, fixed the wrong commit message. :(
 
+> 2020年12月1日 下午11:37，Marc Zyngier <maz@kernel.org> 写道：
 > 
+> On 2020-12-01 14:25, wangrongwei wrote:
+>>> 2020年12月1日 下午4:12，Marc Zyngier <maz@kernel.org> 写道：
+>>> On 2020-12-01 03:09, wangrongwei wrote:
+>>>> Hi
+>>>> We have validate this driver in vm and physical machine, and works fine.
+>>> But what does "work fine" mean? None of these system registers are supposed
+>>> to be accessible from userspace, so please explain *what* you are trying to
+>>> do with this, other that introducing security holes and general system
+>>> instability?
+>> I think I know what you mean. Do you want me to describe how we achieved it?
+>> In x86, the different registers can be accessed directly using the
+>> rdmsr and wrmsr instructions, but in ARM, since these two instructions
+>> are missing, so we modify the code segment during runtime, similar to
+>> the principle of static_key.
+> 
+> [...]
+> 
+> These are implementation details, none of which answer my question:
+> 
+> What makes you think this is a good idea? I cannot see any legitimate
+In fact, I think this tool useful mainly in the following scenarios:
+	1. performance debug
+	2. Arm-core features test
+	3. Debug-tool for kernel developer 
+Also, for example, MSR-ARM is needed for chip verification and system-level functional verification.
+A simple example, perf stat can test pmu, but the overflow interrupt function and forced overflow function of pmu is not covered.
+In both cases, we need a special interface to configure it, which can be considered as testing requirements, so it can only be tested by configuring (access) registers, e.g., devmem command for memmap registers, MSR-ARM driver for system registers.
+> reason for userspace to ever access privileged system registers, and
+> the fact that x86 has such feature isn't a good justification.
+> 
+>        M.
 > -- 
-> Cheers,
-> Stephen Rothwell
+> Jazz is not dead. It just smells funny…
+
+Sorry for the delayed response.
+
+Regards,
+Rongwei Wang.
 
 
