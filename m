@@ -2,161 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452B92CCE39
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:05:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 825462CCE42
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:07:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgLCFEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 00:04:23 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:20197 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726071AbgLCFEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:04:23 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CmkJD0zqWzKw;
-        Thu,  3 Dec 2020 06:03:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1606971821; bh=f1Gb4SxxHN59H8iTXv8TYBBgv5t2nfeo2X3YmFgqJD0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YaOmlBl+agVMGrEhHyHN43s0EAVir9GS1+Wbt79yyOdWZUIShpjbV5gdth7ujxMF2
-         LSffLJcu0U4U70+5sYBJw8pBWz7CNfN5732TbuuRaN6H1/8fmqgUplaYHdTehFragR
-         9i5S5laWX2M6JdZ+n5jWUsUUVMpbga9Ckv9R13QZHIghDsSwWPLyz/fh4P4jergT3z
-         sAyk4ncmYVg6AboZAOF++YIMpeWs3PY553ogwZUWkjf5yd0bP6Ds3v6NqIEeC0rXzw
-         UoUGFLvULO2bEDhEdW6B5nm46ACSZFeIFDP6sUC6I51iCs8rVdxxCFaFX6ek3vOvC6
-         OSUKxG/KTv5XQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Thu, 3 Dec 2020 06:03:35 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Nick Terrell <terrelln@fb.com>
-Cc:     Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "squashfs-devel@lists.sourceforge.net" 
-        <squashfs-devel@lists.sourceforge.net>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v6 1/3] lib: zstd: Add kernel-specific API
-Message-ID: <20201203050335.GA1532@qmqm.qmqm.pl>
-References: <20201202203242.1187898-1-nickrterrell@gmail.com>
- <20201202203242.1187898-2-nickrterrell@gmail.com>
- <20201203011606.GA20621@qmqm.qmqm.pl>
- <297D9C8B-5F4D-4E3B-A5FD-DA292D8BA12A@fb.com>
- <20201203031429.GA13095@qmqm.qmqm.pl>
- <85E09AFA-F1ED-41CB-B712-7FA75374478F@fb.com>
+        id S1728174AbgLCFGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 00:06:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgLCFGX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 00:06:23 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA816C061A4E
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 21:05:42 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id a6so1508622wmc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 21:05:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XUBoIVUFuTda74sYhc9AaUfIF0VYHNgbgX6L3CSfTWQ=;
+        b=FuUcSxWrRc7RgsOSwe/Ar1EO5Ff3N9odSv2XY0Zqm4g9XP/wOGYy94T5KC5HEmT6Zb
+         CllAZYKNVheNctLUSpCVA6zIh60iTARxAlH2IqE8hO8QtRArgPC4FG1cylYSpVKMkKqk
+         l/WPKsc5i7rBRvupJpVLvzY7Lu6Dye39+pVi0u97RbqVKvYtdT/QyH/uSImekLuKVcZI
+         H2TXJq9pUhq9WbHGZbspm0eqJESP82vmo4Z90qkMrkjglVKyU2w+Rac/C03QfedVdBX2
+         LYJ5cEWr8ojZ0eYqFB+t9XwtqTSSuxp1lTUuvAXfuVZpKCZbQNzq80tI6A6eI04Y+GWe
+         mHVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XUBoIVUFuTda74sYhc9AaUfIF0VYHNgbgX6L3CSfTWQ=;
+        b=diEmGgdFA5P8HCm2K+689hFOqX3aURBJpy/42zSu0QPN0CYZGSSMP0hSUC6sfT8bKB
+         8Z2hXXwJjpEp/8emTXCMHB/h4H2U79uFxx5qOGrLAQO+sNMhC9E8x7YN3PBIXBJBdA4E
+         hM3dRUvZ/HxBrP6qm/843szI9FXlZVkC/tlfaBhiU37O6V7srh+YcT+6xcLRvsCOkzCm
+         HLXhwxXoKOij/p9H2Y+r3AGdjlL8enQP9PHlaOSzXETFOqxiOP+VvEIEBID4/DqANc95
+         SDyoqHScbCIGy/A7lVjI+fWf227fQ2aND7rLWaJP/VrrKkLvr8Ghbvp+hy4F9pDho0wH
+         tfRw==
+X-Gm-Message-State: AOAM533pkS1SJLQGNpobVScQZFZ8Augw21FmnBRz37Z8Wa1bVaLOpia6
+        I27KYz2vUs/bGq44sstH+6CyM2IrmQt2z1zrkKTReaEN4RE=
+X-Google-Smtp-Source: ABdhPJw58yLVfBKzewS+37BuoRbKB9WSMia7+fhXYWK9vuZSkJTJI8hhAr2AGPTvmZJTPupRjW/sGVxlMYUtiS9xZq8=
+X-Received: by 2002:a1c:1d85:: with SMTP id d127mr1216271wmd.49.1606971941686;
+ Wed, 02 Dec 2020 21:05:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <85E09AFA-F1ED-41CB-B712-7FA75374478F@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201128160141.1003903-1-npiggin@gmail.com> <20201128160141.1003903-7-npiggin@gmail.com>
+ <CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com>
+ <CALCETrWBtCfD+jZ3S+O8FK-HFPODuhbDEbbfWvS=-iPATNFAOA@mail.gmail.com>
+ <CALCETrXAR_9EGaOF8ymVkZycxgZkYk0dR+NjEpTfVzdcS3sOVw@mail.gmail.com> <1606879302.tdngvs3yq4.astroid@bobo.none>
+In-Reply-To: <1606879302.tdngvs3yq4.astroid@bobo.none>
+From:   Andy Lutomirski <luto@amacapital.net>
+Date:   Wed, 2 Dec 2020 21:05:30 -0800
+Message-ID: <CALCETrXi7YEk2KVSyXVuhUF_AYTqENx+XzYJqEhAYs=8oiSouA@mail.gmail.com>
+Subject: Re: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb option
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 03:59:21AM +0000, Nick Terrell wrote:
-> On Dec 2, 2020, at 7:14 PM, Michał Mirosław <mirq-linux@rere.qmqm.pl> wrote:
-> > On Thu, Dec 03, 2020 at 01:42:03AM +0000, Nick Terrell wrote:
-> >> On Dec 2, 2020, at 5:16 PM, Michał Mirosław <mirq-linux@rere.qmqm.pl> wrote:
-> >>> On Wed, Dec 02, 2020 at 12:32:40PM -0800, Nick Terrell wrote:
-> >>>> From: Nick Terrell <terrelln@fb.com>
-> >>>> 
-> >>>> This patch:
-> >>>> - Moves `include/linux/zstd.h` -> `lib/zstd/zstd.h`
-> >>>> - Adds a new API in `include/linux/zstd.h` that is functionally
-> >>>> equivalent to the in-use subset of the current API. Functions are
-> >>>> renamed to avoid symbol collisions with zstd, to make it clear it is
-> >>>> not the upstream zstd API, and to follow the kernel style guide.
-> >>>> - Updates all callers to use the new API.
-> >>>> 
-> >>>> There are no functional changes in this patch. Since there are no
-> >>>> functional change, I felt it was okay to update all the callers in a
-> >>>> single patch, since once the API is approved, the callers are
-> >>>> mechanically changed.
-> >>> [...]
-> >>>> --- a/lib/decompress_unzstd.c
-> >>>> +++ b/lib/decompress_unzstd.c
-> >>> [...]
-> >>>> static int INIT handle_zstd_error(size_t ret, void (*error)(char *x))
-> >>>> {
-> >>>> -	const int err = ZSTD_getErrorCode(ret);
-> >>>> -
-> >>>> -	if (!ZSTD_isError(ret))
-> >>>> +	if (!zstd_is_error(ret))
-> >>>> 		return 0;
-> >>>> 
-> >>>> -	switch (err) {
-> >>>> -	case ZSTD_error_memory_allocation:
-> >>>> -		error("ZSTD decompressor ran out of memory");
-> >>>> -		break;
-> >>>> -	case ZSTD_error_prefix_unknown:
-> >>>> -		error("Input is not in the ZSTD format (wrong magic bytes)");
-> >>>> -		break;
-> >>>> -	case ZSTD_error_dstSize_tooSmall:
-> >>>> -	case ZSTD_error_corruption_detected:
-> >>>> -	case ZSTD_error_checksum_wrong:
-> >>>> -		error("ZSTD-compressed data is corrupt");
-> >>>> -		break;
-> >>>> -	default:
-> >>>> -		error("ZSTD-compressed data is probably corrupt");
-> >>>> -		break;
-> >>>> -	}
-> >>>> +	error("ZSTD decompression failed");
-> >>>> 	return -1;
-> >>>> }
-> >>> 
-> >>> This looses diagnostics specificity - is this intended? At least the
-> >>> out-of-memory condition seems useful to distinguish.
-> >> 
-> >> Good point. The zstd API no longer exposes the error code enum,
-> >> but it does expose zstd_get_error_name() which can be used here.
-> >> I was thinking that the string needed to be static for some reason, but
-> >> that is not the case. I will make that change.
-> >> 
-> >>>> +size_t zstd_compress_stream(zstd_cstream *cstream,
-> >>>> +	struct zstd_out_buffer *output, struct zstd_in_buffer *input)
-> >>>> +{
-> >>>> +	ZSTD_outBuffer o;
-> >>>> +	ZSTD_inBuffer i;
-> >>>> +	size_t ret;
-> >>>> +
-> >>>> +	memcpy(&o, output, sizeof(o));
-> >>>> +	memcpy(&i, input, sizeof(i));
-> >>>> +	ret = ZSTD_compressStream(cstream, &o, &i);
-> >>>> +	memcpy(output, &o, sizeof(o));
-> >>>> +	memcpy(input, &i, sizeof(i));
-> >>>> +	return ret;
-> >>>> +}
-> >>> 
-> >>> Is all this copying necessary? How is it different from type-punning by
-> >>> direct pointer cast?
-> >> 
-> >> If breaking strict aliasing and type-punning by pointer casing is okay, then
-> >> we can do that here. These memcpys will be negligible for performance, but
-> >> type-punning would be more succinct if allowed.
-> > 
-> > Ah, this might break LTO builds due to strict aliasing violation.
-> > So I would suggest to just #define the ZSTD names to kernel ones
-> > for the library code.  Unless there is a cleaner solution...
-> 
-> I don’t want to do that because I want in the 3rd series of the patchset I update
-> to zstd-1.4.6. And I’m using zstd-1.4.6 as-is in upstream. This allows us to keep
-> the kernel version up to date, since the patch to update to a new version can be
-> generated automatically (and manually tested), so it doesn’t fall years behind
-> upstream again.
-> 
-> The alternative would be to make upstream zstd’s header public and
-> #define zstd_in_buffer ZSTD_inBuffer. But that would make zstd’s header
-> public, which would somewhat defeat the purpose of having a kernel wrapper.
+> On Dec 1, 2020, at 7:47 PM, Nicholas Piggin <npiggin@gmail.com> wrote:
+>
+> =EF=BB=BFExcerpts from Andy Lutomirski's message of December 1, 2020 4:31=
+ am:
+>> other arch folk: there's some background here:
+>>
+>> https://lkml.kernel.org/r/CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31S=
+aTOZw@mail.gmail.com
+>>
+>>> On Sun, Nov 29, 2020 at 12:16 PM Andy Lutomirski <luto@kernel.org> wrot=
+e:
+>>>
+>>> On Sat, Nov 28, 2020 at 7:54 PM Andy Lutomirski <luto@kernel.org> wrote=
+:
+>>>>
+>>>> On Sat, Nov 28, 2020 at 8:02 AM Nicholas Piggin <npiggin@gmail.com> wr=
+ote:
+>>>>>
+>>>>> On big systems, the mm refcount can become highly contented when doin=
+g
+>>>>> a lot of context switching with threaded applications (particularly
+>>>>> switching between the idle thread and an application thread).
+>>>>>
+>>>>> Abandoning lazy tlb slows switching down quite a bit in the important
+>>>>> user->idle->user cases, so so instead implement a non-refcounted sche=
+me
+>>>>> that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot do=
+wn
+>>>>> any remaining lazy ones.
+>>>>>
+>>>>> Shootdown IPIs are some concern, but they have not been observed to b=
+e
+>>>>> a big problem with this scheme (the powerpc implementation generated
+>>>>> 314 additional interrupts on a 144 CPU system during a kernel compile=
+).
+>>>>> There are a number of strategies that could be employed to reduce IPI=
+s
+>>>>> if they turn out to be a problem for some workload.
+>>>>
+>>>> I'm still wondering whether we can do even better.
+>>>>
+>>>
+>>> Hold on a sec.. __mmput() unmaps VMAs, frees pagetables, and flushes
+>>> the TLB.  On x86, this will shoot down all lazies as long as even a
+>>> single pagetable was freed.  (Or at least it will if we don't have a
+>>> serious bug, but the code seems okay.  We'll hit pmd_free_tlb, which
+>>> sets tlb->freed_tables, which will trigger the IPI.)  So, on
+>>> architectures like x86, the shootdown approach should be free.  The
+>>> only way it ought to have any excess IPIs is if we have CPUs in
+>>> mm_cpumask() that don't need IPI to free pagetables, which could
+>>> happen on paravirt.
+>>
+>> Indeed, on x86, we do this:
+>>
+>> [   11.558844]  flush_tlb_mm_range.cold+0x18/0x1d
+>> [   11.559905]  tlb_finish_mmu+0x10e/0x1a0
+>> [   11.561068]  exit_mmap+0xc8/0x1a0
+>> [   11.561932]  mmput+0x29/0xd0
+>> [   11.562688]  do_exit+0x316/0xa90
+>> [   11.563588]  do_group_exit+0x34/0xb0
+>> [   11.564476]  __x64_sys_exit_group+0xf/0x10
+>> [   11.565512]  do_syscall_64+0x34/0x50
+>>
+>> and we have info->freed_tables set.
+>>
+>> What are the architectures that have large systems like?
+>>
+>> x86: we already zap lazies, so it should cost basically nothing to do
+>
+> This is not zapping lazies, this is freeing the user page tables.
+>
+> "lazy mm" is where a switch to a kernel thread takes on the
+> previous mm for its kernel mapping rather than switch to init_mm.
 
-I thought the problem was API style spill-over from the library to other parts
-of the kernel.  A header-only wrapper can stop this.  I'm not sure symbol
-visibility (namespace pollution) was a concern.
+The intent of the code is to flush the TLB after freeing user pages
+tables, but, on bare metal, lazies get zapped as a side effect.
 
-Best Regards
-Michał Mirosław
+Anyway, I'm going to send out a mockup of an alternative approach shortly.
