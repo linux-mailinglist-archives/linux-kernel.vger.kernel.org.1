@@ -2,154 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8A22CDC92
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A9F2CDC97
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730264AbgLCRko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:40:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54399 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726712AbgLCRkn (ORCPT
+        id S1728355AbgLCRmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:42:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727498AbgLCRmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:40:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607017156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zbIwQHwInAT5GLKTqpYwDY6NAxTvt+ZgkanC6avIhjE=;
-        b=UtgUAIBlbGi0NfgPv2kUoXXoWkfe6DHkkU0N1AHkait5DUwj4EJI2ikXlfweakY80gre84
-        n2HfKF958h+oxYDKboUTeilWRlet7EXodKN2K0rBZCCtcJoWTSFD0oPsDMqSr6yeYI0GWt
-        zV4kjjGjY12mGDI2PXShBacjatJkvLY=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-wIKul7eMN_yn6khP8TVv1A-1; Thu, 03 Dec 2020 12:39:15 -0500
-X-MC-Unique: wIKul7eMN_yn6khP8TVv1A-1
-Received: by mail-ej1-f71.google.com with SMTP id z10so1057386eje.5
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 09:39:14 -0800 (PST)
+        Thu, 3 Dec 2020 12:42:05 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9562DC061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 09:41:24 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id z7so2750446wrn.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 09:41:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XHrW8mjy1C0a9goFULp/hny7Gv2kJDAvY8hVIvI9pdE=;
+        b=iNhxhJDr8zcLFJdo0nG8hI4Yje5IWbV1RsJWPOtN8lmmRZj+2E48OZf3p4m+ghPHOQ
+         knUBCWWS+lEBzmxtvBSZJ7x3/qMedAcTNsYMQYqfS9CBRi4wSBtFNEly3arwLunEzj9S
+         VmHUtdlT67f3WnhIzb+406smRoWv/Pj9st1mL08CQpkECGuySGtSOu9mcvVz1EOBn7/s
+         U5F1mRfkgpTMNc/dEW45LibT23/L4G9ugbXgB/RZxQ64mZV4ZAA2G4nkasNcfmkU7XRp
+         zjwI8Iv4eg0GUWdxFuYiXTOw1T0NFri/vA4BeiGN128wBKnFICfMDPAWpcSJLvKR9Gi9
+         +tcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zbIwQHwInAT5GLKTqpYwDY6NAxTvt+ZgkanC6avIhjE=;
-        b=l3C9EDHE/ZUu9Edp22jofAB2tMH+W/mVoG7KUYp8Q5rSHHIjh/UNPQsRy014Dh94T6
-         Fj/sDiGpaVQJRrqKIsZvWDHbysW6Wx3ctc3mNBqpgkJ5qIEAQZZA2PgI0nOwMXHSAgaF
-         ygcWjydmsUT23LU9UyNaDrCba9wPV37iJCnsCEzmcOrjsgUq587xV00s3xPYw8nD054K
-         U99Mv/mATCM6JEaLxP28TsR7uYhSU1fXyx2jS62f+WegrLqRHqGIkGSehCbf1JIESfQq
-         Izlj1PXXnyQxqaEV3xZ9pKQtbPFUXKUWaXgYO5XrTMUGTPBZ7ImsaxaXPLg/5Cpq+ZoU
-         pVsA==
-X-Gm-Message-State: AOAM533nc6Hna2oqIEw8lhl2Ix1XIarvrk5mdtetYzA2JLDmbbEF/Cth
-        maCfXX9RmPpeyLkwa7GnxZAexLfpkUy6xWss9nf53u9F6LIcQedmz1qXW3OLBvIzNzwk0isRc2D
-        axTQWDGKGtUf+SV2ziVgFrFDLY0zuigp7xHnhapshTbk86hTQAkIXd6eqR0uw2YL1hN7ftJGDOU
-        fN
-X-Received: by 2002:aa7:cb4a:: with SMTP id w10mr3888358edt.343.1607017153515;
-        Thu, 03 Dec 2020 09:39:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzJA9jcVQLaPryS8bR4jvZr1+czrk7Ubj//AYw6JSdyIinZP3c9Va7M1+4lGM9Ovquxqx1bmQ==
-X-Received: by 2002:aa7:cb4a:: with SMTP id w10mr3888335edt.343.1607017153262;
-        Thu, 03 Dec 2020 09:39:13 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id n17sm1278629ejh.49.2020.12.03.09.39.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 09:39:12 -0800 (PST)
-Subject: Re: [PATCH] selftests: kvm/set_memory_region_test: Fix race in move
- region test
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <0fdddb94bb0e31b7da129a809a308d91c10c0b5e.1606941224.git.maciej.szmigiero@oracle.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <6e0f1fcf-c8ac-c05a-778b-eeb7a4cd50e7@redhat.com>
-Date:   Thu, 3 Dec 2020 18:39:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XHrW8mjy1C0a9goFULp/hny7Gv2kJDAvY8hVIvI9pdE=;
+        b=Jmfu8tUSFihP5cKsoDWG3Eog2SSRQDRSav02Hec/AyX26aiSjnwJAYq2MY8qHmnN0q
+         CeWc+rueX0Z3nUsjPeD8Ee18uQWxr2C0jVyq+lbY0TOk6RYJVuk3+MZg93WwbmHTlyCh
+         t4bcyJ2w/clXsHfYNzSB5IQ+bFBozqEcqgOZ7zMRuwDMCs9YWpGb9LaSbJBJGSib+OU5
+         G/UTK8LQ3O6CqhhlqzpCl8Q5u0gSnhTaNN1avYF59qilGNR38uZ6mKc3mOS+sNoaO/WG
+         +7eF5m2uKC9TEc8tD7UIerKaIyFsLGhwGi7tFHMYr790iXqvPH+bqMUK2U9MPBga3eFu
+         KP2A==
+X-Gm-Message-State: AOAM532NHZ3NH4DFFnXo5JcEmTd7jK6fUQa4qLKmb8yJG+aYbz/oaTJE
+        CRWAwL5QbAyLosilhWGvHm11Ng==
+X-Google-Smtp-Source: ABdhPJy5QgCmT/tXl4xio8pvab8y51XBju05TrTuWDH+RCpfqPtZ66iNHn4mNUM/k0ZXVIhD+oXncg==
+X-Received: by 2002:a05:6000:105:: with SMTP id o5mr348769wrx.164.1607017283176;
+        Thu, 03 Dec 2020 09:41:23 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id b14sm233781wrx.35.2020.12.03.09.41.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 09:41:22 -0800 (PST)
+Date:   Thu, 3 Dec 2020 18:41:16 +0100
+From:   Marco Elver <elver@google.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Jann Horn <jannh@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Willem de Bruijn <willemb@google.com>,
+        syzbot <syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com>
+Subject: Re: WARNING in sk_stream_kill_queues (5)
+Message-ID: <X8kjPIrLJUd8uQIX@elver.google.com>
+References: <000000000000b4862805b54ef573@google.com>
+ <X8kLG5D+j4rT6L7A@elver.google.com>
+ <CANn89iJWD5oXPLgtY47umTgo3gCGBaoy+XJfXnw1ecES_EXkCw@mail.gmail.com>
+ <CANpmjNOaWbGJQ5Y=qC3cA31-R-Jy4Fbe+p=OBG5O2Amz8dLtLA@mail.gmail.com>
+ <CANn89iKWf1EVZUuAHup+5ndhxvOqGopq53=vZ9yeok=DnRjggg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <0fdddb94bb0e31b7da129a809a308d91c10c0b5e.1606941224.git.maciej.szmigiero@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANn89iKWf1EVZUuAHup+5ndhxvOqGopq53=vZ9yeok=DnRjggg@mail.gmail.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/12/20 21:35, Maciej S. Szmigiero wrote:
-> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+On Thu, Dec 03, 2020 at 05:42PM +0100, Eric Dumazet wrote:
+> On Thu, Dec 3, 2020 at 5:34 PM Marco Elver <elver@google.com> wrote:
+> >
+> > On Thu, 3 Dec 2020 at 17:27, Eric Dumazet <edumazet@google.com> wrote:
+> > > On Thu, Dec 3, 2020 at 4:58 PM Marco Elver <elver@google.com> wrote:
+> > > >
+> > > > On Mon, Nov 30, 2020 at 12:40AM -0800, syzbot wrote:
+> > > > > Hello,
+> > > > >
+> > > > > syzbot found the following issue on:
+> > > > >
+> > > > > HEAD commit:    6147c83f Add linux-next specific files for 20201126
+> > > > > git tree:       linux-next
+> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=117c9679500000
+> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=9b91566da897c24f
+> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=7b99aafdcc2eedea6178
+> > > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=103bf743500000
+> > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=167c60c9500000
+> > > > >
+> > > > > The issue was bisected to:
+> > > > >
+> > > > > commit 145cd60fb481328faafba76842aa0fd242e2b163
+> > > > > Author: Alexander Potapenko <glider@google.com>
+> > > > > Date:   Tue Nov 24 05:38:44 2020 +0000
+> > > > >
+> > > > >     mm, kfence: insert KFENCE hooks for SLUB
+> > > > >
+> > > > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13abe5b3500000
+> > > > > final oops:     https://syzkaller.appspot.com/x/report.txt?x=106be5b3500000
+> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=17abe5b3500000
+> > > > >
+> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > Reported-by: syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com
+> > > > > Fixes: 145cd60fb481 ("mm, kfence: insert KFENCE hooks for SLUB")
+> > > > >
+> > > > > ------------[ cut here ]------------
+> > > > > WARNING: CPU: 0 PID: 11307 at net/core/stream.c:207 sk_stream_kill_queues+0x3c3/0x530 net/core/stream.c:207
+> > > > [...]
+> > > > > Call Trace:
+> > > > >  inet_csk_destroy_sock+0x1a5/0x490 net/ipv4/inet_connection_sock.c:885
+> > > > >  __tcp_close+0xd3e/0x1170 net/ipv4/tcp.c:2585
+> > > > >  tcp_close+0x29/0xc0 net/ipv4/tcp.c:2597
+> > > > >  inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
+> > > > >  __sock_release+0xcd/0x280 net/socket.c:596
+> > > > >  sock_close+0x18/0x20 net/socket.c:1255
+> > > > >  __fput+0x283/0x920 fs/file_table.c:280
+> > > > >  task_work_run+0xdd/0x190 kernel/task_work.c:140
+> > > > >  exit_task_work include/linux/task_work.h:30 [inline]
+> > > > >  do_exit+0xb89/0x29e0 kernel/exit.c:823
+> > > > >  do_group_exit+0x125/0x310 kernel/exit.c:920
+> > > > >  get_signal+0x3ec/0x2010 kernel/signal.c:2770
+> > > > >  arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
+> > > > >  handle_signal_work kernel/entry/common.c:144 [inline]
+> > > > >  exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+> > > > >  exit_to_user_mode_prepare+0x124/0x200 kernel/entry/common.c:198
+> > > > >  syscall_exit_to_user_mode+0x36/0x260 kernel/entry/common.c:275
+> > > > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > >
+> > > > I've been debugging this and I think enabling KFENCE uncovered that some
+> > > > code is assuming that the following is always true:
+> > > >
+> > > >         ksize(kmalloc(S)) == ksize(kmalloc(S))
+> > > >
+> > >
+> > >
+> > > I do not think we make this assumption.
+> > >
+> > > Each skb tracks the 'truesize' which is populated from __alloc_skb()
+> > > using ksize(allocated head) .
+> > >
+> > > So if ksize() decides to give us random data, it should be still fine,
+> > > because we use ksize(buff) only once at alloc skb time, and record the
+> > > value in skb->truesize
+> > >  (only the socket buffer accounting would be off)
+> >
+> > Good, thanks for clarifying. So something else must be off then.
 > 
-> The current memory region move test correctly handles the situation that
-> the second (realigning) memslot move operation would temporarily trigger
-> MMIO until it completes, however it does not handle the case in which the
-> first (misaligning) move operation does this, too.
-> This results in false test assertions in case it does so.
+> Actually we might have the following assumption :
 > 
-> Fix this by handling temporary MMIO from the first memslot move operation
-> in the test guest code, too.
+> buff = kmalloc(size, GFP...)
+> if (buff)
+>    ASSERT(ksize(buff) >= size)
 > 
-> Fixes: 8a0639fe9201 ("KVM: sefltests: Add explicit synchronization to move mem region test")
-> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> ---
->      The race is pretty hard to trigger on the current KVM memslot code,
->      to trigger it reliably an extra delay in memslot move op is needed:
->      --- a/virt/kvm/kvm_main.c
->      +++ b/virt/kvm/kvm_main.c
->      @@ -1173,7 +1173,7 @@ static struct kvm_memslots *kvm_dup_memslots(struct kvm_memslots *old,
->      
->              return slots;
->       }
->      -
->      +#include <linux/delay.h>
->       static int kvm_set_memslot(struct kvm *kvm,
->                                 const struct kvm_userspace_memory_region *mem,
->                                 struct kvm_memory_slot *old,
->      @@ -1212,6 +1212,8 @@ static int kvm_set_memslot(struct kvm *kvm,
->                       *      - kvm_is_visible_gfn (mmu_check_root)
->                       */
->                      kvm_arch_flush_shadow_memslot(kvm, slot);
->      +
->      +               if (change == KVM_MR_MOVE) mdelay(100);
->              }
->      
->              r = kvm_arch_prepare_memory_region(kvm, new, mem, change);
-> 
->   .../selftests/kvm/set_memory_region_test.c      | 17 +++++++++++++----
->   1 file changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-> index b3ece55a2da6..6f441dd9f33c 100644
-> --- a/tools/testing/selftests/kvm/set_memory_region_test.c
-> +++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-> @@ -156,14 +156,23 @@ static void guest_code_move_memory_region(void)
->   	GUEST_SYNC(0);
->   
->   	/*
-> -	 * Spin until the memory region is moved to a misaligned address.  This
-> -	 * may or may not trigger MMIO, as the window where the memslot is
-> -	 * invalid is quite small.
-> +	 * Spin until the memory region starts getting moved to a
-> +	 * misaligned address.
-> +	 * Every region move may or may not trigger MMIO, as the
-> +	 * window where the memslot is invalid is usually quite small.
->   	 */
->   	val = guest_spin_on_val(0);
->   	GUEST_ASSERT_1(val == 1 || val == MMIO_VAL, val);
->   
-> -	/* Spin until the memory region is realigned. */
-> +	/* Spin until the misaligning memory region move completes. */
-> +	val = guest_spin_on_val(MMIO_VAL);
-> +	GUEST_ASSERT_1(val == 1 || val == 0, val);
-> +
-> +	/* Spin until the memory region starts to get re-aligned. */
-> +	val = guest_spin_on_val(0);
-> +	GUEST_ASSERT_1(val == 1 || val == MMIO_VAL, val);
-> +
-> +	/* Spin until the re-aligning memory region move completes. */
->   	val = guest_spin_on_val(MMIO_VAL);
->   	GUEST_ASSERT_1(val == 1, val);
->   
-> 
+> So obviously ksize() should not be completely random ;)
 
-Queued, thanks.
+One more experiment -- simply adding
 
-paolo
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -207,7 +207,21 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
+ 	 */
+ 	size = SKB_DATA_ALIGN(size);
+ 	size += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
++	size = 1 << kmalloc_index(size); /* HACK */
+ 	data = kmalloc_reserve(size, gfp_mask, node, &pfmemalloc);
 
+
+also got rid of the warnings. Something must be off with some value that
+is computed in terms of ksize(). If not, I don't have any explanation
+for why the above hides the problem.
+
+Thanks,
+-- Marco
