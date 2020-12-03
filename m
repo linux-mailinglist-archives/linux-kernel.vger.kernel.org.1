@@ -2,239 +2,403 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 915702CCB98
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C66602CCB9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729297AbgLCBYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 20:24:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59796 "EHLO
+        id S1726479AbgLCBZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 20:25:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728548AbgLCBYR (ORCPT
+        with ESMTP id S1725959AbgLCBZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:24:17 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DE9C0613D6;
-        Wed,  2 Dec 2020 17:23:37 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id i2so197267wrs.4;
-        Wed, 02 Dec 2020 17:23:37 -0800 (PST)
+        Wed, 2 Dec 2020 20:25:27 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31013C061A4C
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 17:24:10 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id y16so679924ljk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 17:24:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YuhN0DJ5By/Ek6lXt0sSYskGzF0kcgLtFsk361Xyk0o=;
-        b=Z/rQFn5wpMoWreTts4AAVL08vLG4ovM0/6cX2WqJ1CD10QWpuD66eqtlqqHq5xLyon
-         p8rdsDCZP1IW3nd5eAGvDSQbfGlwXSybJxN4f2eVAIFIzVJIDrqDhisd/KMSIW+cf2LS
-         StcjurGDuMuyM5hZ4xV92mlo70EySZ8a2LsQKl60Lr/jrqHh1fD7aj2iK1bNnrD+BKfi
-         gRiQ1SNTJNadYffcbB8ysz3GzJ0DuVJxqIHXbMbqW7niOR3wTZLteOpj+OIiHPrSzNju
-         kK5v3FFgixBq2pOcAzmKYCRrcPCRRskJmwlHuV+8bmi/DkB98bZ80dkZtiQ7UwGLn5Of
-         o7CA==
+         :cc:content-transfer-encoding;
+        bh=4SJOEtqsaS+XLaLMbp05LdTVwUl6vet5pIdjenlMFeA=;
+        b=RVoEywYsYNQyBkVwT07o2Jl8wcDSETRQDxIc5BMa4qLrCAzAlt8SNdGUg3iQPPpF4d
+         5A7RCgs8JWyokrRCO85/8deesP1mjeiJR5KYQwU41pqKt0A/6jDyik4farWqFChqdHsu
+         p4WuLy1HgnU0ZUtD/AdgVggVVowzlIZ3E2EUPc8YB5v01CcLHaND+1PDRK2vNdiKxryQ
+         d165/rqTlHjJcjpLkwMXHsaRMS+ppoajdfzrG3/5Orc+BuEBUWTTM4DR5FJ6xkj4hNDc
+         1zIcFI1nf0iBLksZCt3Zud02VfQU99KO3RP9mHOVrPiX3ozV5A8ZioZU/LVKIu6RAUOP
+         FYEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YuhN0DJ5By/Ek6lXt0sSYskGzF0kcgLtFsk361Xyk0o=;
-        b=bbG42wxjGt8NJ7/4W3KLk8pSTV1cHU+BRMXwt8OAMulFL5oLB4VljPhnSOS47kvCJx
-         Ezq9RGfZo/XVttyq+mFqC83ZyDipntb//Btt2hkBdw9b6F7jl5+cUI9CPr3Ujv+NL2l8
-         FSYLainuOATQNMOCmkGTdH18RaT/jF9hWVncxgewrbOZd2vZ2eCaa6cPslOiRKomAbip
-         bEsABO5CMl9Ex6Ed53wgiHYFGaW8ldT4erW8YoRAT90iGmJOetHQtBZ5pEvltrgJfs5X
-         A/ZUP+7SsVUzJrDFDQ6sd6LqkXTG2AdEdH/j9sV15NgiDkfe5o0t2ETSPRv5M0Xih/cC
-         5Mgg==
-X-Gm-Message-State: AOAM531eMsEMKR1Mf9XuxBX7iYdn469R/CKh9X9NYJA8zUsoc/mTRWGE
-        WS71v2D7by7WyhNr0RpmzqtKGu3q9OVBk3431tw=
-X-Google-Smtp-Source: ABdhPJzHS63idfOQgusbpU5LZi61bnCuD5iNEoC8Vnli6eB/3IEMhHJj1RbJOB2Gtmq7qy6lezdRw0EsQ3ljB6SbrTU=
-X-Received: by 2002:adf:f602:: with SMTP id t2mr887976wrp.40.1606958615994;
- Wed, 02 Dec 2020 17:23:35 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4SJOEtqsaS+XLaLMbp05LdTVwUl6vet5pIdjenlMFeA=;
+        b=qRcFt5CmzLlvn7SP2R7FNvg/U6l9O1kqAG7lIxzbjPj+k+LbUM0nw/J8cIFu1XRnPW
+         ltZrkSv9QwvHL7CkC05/2tR8KI6ImJn0FnXWYY+vi+3Q+NIZZZcRhapT7JmTVD9glHoA
+         58vGlYHwkHBgD7+wXZjWmrrohvOcbVrR+4bWX0jzCHgVflgEUAZEJvR7phm5T9MrD+mf
+         XOiuv74IvcM6jYkyGfYU+afmIZfOT3+gQ1BJjAIIuSqkUW2mQyew+fOAHIDiL3BmVNbN
+         EfB0NDmeYtA/wx86FeI62Ad+8Tt/FYsYjxniXBE8kMT4pIFpynYu8S1Gp04quHRbqUzn
+         6mbA==
+X-Gm-Message-State: AOAM533GcfzUUvNUCRa0x6wfdZAGtjeNoulvmrNUmDNAXzg0k2wIIEyM
+        npA9ZE88LwtuW6WoTnIpZAW1GeO26Z91eC1gjg0=
+X-Google-Smtp-Source: ABdhPJzKv1yCSL5psUql2O4FeNlHYSxZe1hHtkl4vE4Eys0ER9E7iN2FDtPrfehPPpP2UNwrVJSD149Dc8GJnaO1CU4=
+X-Received: by 2002:a2e:bc16:: with SMTP id b22mr257198ljf.166.1606958648472;
+ Wed, 02 Dec 2020 17:24:08 -0800 (PST)
 MIME-Version: 1.0
-References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
- <20201202094717.GX4077@smile.fi.intel.com> <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
- <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
- <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
- <CAM7-yPRBPP6SFzdmwWF5Y99g+aWcp=OY9Uvp-5h1MSDPmsORNw@mail.gmail.com>
- <CAAH8bW-+XnNsd9p3xZ1utmyY24gaBa0ko4tngBii4T+2cMkcYg@mail.gmail.com> <CAM7-yPQCWj6rOyLEgOqF3HGkFV1WKtqyVhEtDbS3HW=2A-HuBA@mail.gmail.com>
-In-Reply-To: <CAM7-yPQCWj6rOyLEgOqF3HGkFV1WKtqyVhEtDbS3HW=2A-HuBA@mail.gmail.com>
-From:   Yun Levi <ppbuk5246@gmail.com>
-Date:   Thu, 3 Dec 2020 10:23:24 +0900
-Message-ID: <CAM7-yPTtiVnUztE=xpNYgRcZTGd1aX_V9ZHd=2YZYc1uQNBXtw@mail.gmail.com>
-Subject: 
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>, dushistov@mail.ru,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
-        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20201201040803.3590442-1-daeho43@gmail.com> <b8d99522-f63a-1866-9bb4-1a4d640d7495@huawei.com>
+ <CACOAw_xafxyUZe1g-nXjTrkisbUqCvSk7js7amhqw3zADAq22Q@mail.gmail.com> <a5c13e8d-38cd-8945-d232-92d3725f7685@huawei.com>
+In-Reply-To: <a5c13e8d-38cd-8945-d232-92d3725f7685@huawei.com>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Thu, 3 Dec 2020 10:23:57 +0900
+Message-ID: <CACOAw_xh01cjjWHw_43qhaGiWg0VAC7HMT__dxDEgVxok6wv9A@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v2 1/2] f2fs: add compress_mode mount option
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 7:51 AM Yun Levi <ppbuk5246@gmail.com> wrote:
+Yep, you're right~ :)
+
+2020=EB=85=84 12=EC=9B=94 3=EC=9D=BC (=EB=AA=A9) =EC=98=A4=EC=A0=84 10:16, =
+Chao Yu <yuchao0@huawei.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
 >
-> On Thu, Dec 3, 2020 at 6:26 AM Yury Norov <yury.norov@gmail.com> wrote:
-> >
-> > On Wed, Dec 2, 2020 at 10:22 AM Yun Levi <ppbuk5246@gmail.com> wrote:
-> > >
-> > > On Thu, Dec 3, 2020 at 2:26 AM Yury Norov <yury.norov@gmail.com> wrote:
-> > >
-> > > > Also look at lib/find_bit_benchmark.c
-> > > Thanks. I'll see.
-> > >
-> > > > We need find_next_*_bit() because find_first_*_bit() can start searching only at word-aligned
-> > > > bits. In the case of find_last_*_bit(), we can start at any bit. So, if my understanding is correct,
-> > > > for the purpose of reverse traversing we can go with already existing find_last_bit(),
-> > >
-> > > Thank you. I haven't thought that way.
-> > > But I think if we implement reverse traversing using find_last_bit(),
-> > > we have a problem.
-> > > Suppose the last bit 0, 1, 2, is set.
-> > > If we start
-> > >     find_last_bit(bitmap, 3) ==> return 2;
-> > >     find_last_bit(bitmap, 2) ==> return 1;
-> > >     find_last_bit(bitmap, 1) ==> return 0;
-> > >     find_last_bit(bitmap, 0) ===> return 0? // here we couldn't
-> > > distinguish size 0 input or 0 is set
-> >
-> > If you traverse backward and reach bit #0, you're done. No need to continue.
-> I think the case when I consider the this macro like
+> On 2020/12/2 18:54, Daeho Jeong wrote:
+> > We might use compress_extension=3D*,compress_option=3Duser.
+> > In this option, we're gonna allocate all the writes in cold zone.
 >
-> #define for_each_clear_bit_reverse(bit, addr, size)
->     for ((bit) = find_last_zero_bit((addr), (size))
->           (bit) < (size);
->           (bit) = find_prev_zero_bit((addr), (size), (bit)))
+> Oh, so all files in data partition will be tagged as compressed file,
+> but the compressing time will be controlled by user, then, only blocks
+> belong to in-compress-process inode will go to cold area, right?
 >
-> If we implement the above macro only with find_last_zero_bit,
-> I think there is no way without adding any additional variable to finish loop.
-> But I don't want to add additional variable to sustain same format
-> with for_each_clear_bit,
-> That's why i decide to implement find_prev_*_bit series.
->
-> I don't know it's correct thinking or biased. Am I wrong?
+> Thanks,
 >
 > >
-> > >
-> > > and the for_each traverse routine prevent above case by returning size
-> > > (nbits) using find_next_bit.
-> > > So, for compatibility and the same expected return value like next traversing,
-> > > I think we need to find_prev_*_bit routine. if my understanding is correct.
-> > >
-> > >
-> > > >  I think this patch has some good catches. We definitely need to implement
-> > > > find_last_zero_bit(), as it is used by fs/ufs, and their local implementation is not optimal.
-> > > >
-> > > > We also should consider adding reverse traversing macros based on find_last_*_bit(),
-> > > > if there are proposed users.
-> > >
-> > > Not only this, I think 'steal_from_bitmap_to_front' can be improved
-> > > using ffind_prev_zero_bit
-> > > like
-> > >
-> > > diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-> > > index af0013d3df63..9debb9707390 100644
-> > > --- a/fs/btrfs/free-space-cache.c
-> > > +++ b/fs/btrfs/free-space-cache.c
-> > > @@ -2372,7 +2372,6 @@ static bool steal_from_bitmap_to_front(struct
-> > > btrfs_free_space_ctl *ctl,
-> > >   u64 bitmap_offset;
-> > >   unsigned long i;
-> > >   unsigned long j;
-> > > - unsigned long prev_j;
-> > >   u64 bytes;
-> > >
-> > >   bitmap_offset = offset_to_bitmap(ctl, info->offset);
-> > > @@ -2388,20 +2387,15 @@ static bool steal_from_bitmap_to_front(struct
-> > > btrfs_free_space_ctl *ctl,
-> > >   return false;
-> > >
-> > >   i = offset_to_bit(bitmap->offset, ctl->unit, info->offset) - 1;
-> > > - j = 0;
-> > > - prev_j = (unsigned long)-1;
-> > > - for_each_clear_bit_from(j, bitmap->bitmap, BITS_PER_BITMAP) {
-> > > - if (j > i)
-> > > - break;
-> > > - prev_j = j;
-> > > - }
-> > > - if (prev_j == i)
-> > > + j = find_prev_zero_bit(bitmap->bitmap, BITS_PER_BITMAP, i);
 > >
-> > This one may be implemented with find_last_zero_bit() as well:
+> > 2020=EB=85=84 12=EC=9B=94 2=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 3:3=
+1, Chao Yu <yuchao0@huawei.com <mailto:yuchao0@huawei.com>>=EB=8B=98=EC=9D=
+=B4 =EC=9E=91=EC=84=B1:
 > >
-> > unsigned log j = find_last_zero_bit(bitmap, BITS_PER_BITMAP);
-> > if (j <= i || j >= BITS_PER_BITMAP)
-> >         return false;
+> >     On 2020/12/1 12:08, Daeho Jeong wrote:
+> >      > From: Daeho Jeong <daehojeong@google.com <mailto:daehojeong@goog=
+le.com>>
+> >      >
+> >      > We will add a new "compress_mode" mount option to control file
+> >      > compression mode. This supports "fs" and "user". In "fs" mode (d=
+efault),
+> >      > f2fs does automatic compression on the compression enabled files=
+.
+> >      > In "user" mode, f2fs disables the automaic compression and gives=
+ the
+> >      > user discretion of choosing the target file and the timing. It m=
+eans
+> >      > the user can do manual compression/decompression on the compress=
+ion
+> >      > enabled files using ioctls.
+> >      >
+> >      > Signed-off-by: Daeho Jeong <daehojeong@google.com <mailto:daehoj=
+eong@google.com>>
+> >      > ---
+> >      > v2: changed mount option name and added more explanation of moun=
+t option
+> >      > ---
+> >      >   Documentation/filesystems/f2fs.rst | 35 ++++++++++++++++++++++=
+++++++++
+> >      >   fs/f2fs/compress.c                 |  2 +-
+> >      >   fs/f2fs/data.c                     |  2 +-
+> >      >   fs/f2fs/f2fs.h                     | 30 ++++++++++++++++++++++=
++++
+> >      >   fs/f2fs/segment.c                  |  2 +-
+> >      >   fs/f2fs/super.c                    | 23 ++++++++++++++++++++
+> >      >   6 files changed, 91 insertions(+), 3 deletions(-)
+> >      >
+> >      > diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/=
+filesystems/f2fs.rst
+> >      > index b8ee761c9922..5eb8d63439ec 100644
+> >      > --- a/Documentation/filesystems/f2fs.rst
+> >      > +++ b/Documentation/filesystems/f2fs.rst
+> >      > @@ -260,6 +260,13 @@ compress_extension=3D%s     Support adding =
+specified extension, so that f2fs can enab
+> >      >                        For other files, we can still enable comp=
+ression via ioctl.
+> >      >                        Note that, there is one reserved special =
+extension '*', it
+> >      >                        can be set to enable compression for all =
+files.
+> >      > +compress_mode=3D%s      Control file compression mode. This sup=
+ports "fs" and "user"
+> >      > +                      modes. In "fs" mode (default), f2fs does =
+automatic compression
+> >      > +                      on the compression enabled files. In "use=
+r" mode, f2fs disables
+> >      > +                      the automaic compression and gives the us=
+er discretion of
+> >      > +                      choosing the target file and the timing. =
+The user can do manual
+> >      > +                      compression/decompression on the compress=
+ion enabled files using
+> >      > +                      ioctls.
+> >      >   inlinecrypt          When possible, encrypt/decrypt the conten=
+ts of encrypted
+> >      >                        files using the blk-crypto framework rath=
+er than
+> >      >                        filesystem-layer encryption. This allows =
+the use of
+> >      > @@ -810,6 +817,34 @@ Compress metadata layout::
+> >      >       | data length | data chksum | reserved |      compressed d=
+ata       |
+> >      >       +-------------+-------------+----------+------------------=
+----------+
+> >      >
+> >      > +Compression mode
+> >      > +--------------------------
+> >      > +
+> >      > +f2fs supports "fs" and "user" compression modes with "compressi=
+on_mode" mount option.
+> >      > +With this option, f2fs provides a choice to select the way how =
+to compress the
+> >      > +compression enabled files (refer to "Compression implementation=
+" section for how to
+> >      > +enable compression on a regular inode).
+> >      > +
+> >      > +1) compress_mode=3Dfs
+> >      > +This is the default option. f2fs does automatic compression in =
+the writeback of the
+> >      > +compression enabled files.
+> >      > +
+> >      > +2) compress_mode=3Duser
+> >      > +This disables the automaic compression and gives the user discr=
+etion of choosing the
+> >      > +target file and the timing. The user can do manual compression/=
+decompression on the
+> >      > +compression enabled files using F2FS_IOC_DECOMPRESS_FILE and F2=
+FS_IOC_COMPRESS_FILE
+> >      > +ioctls like the below.
+> >      > +
+> >      > +To decompress a file,
+> >      > +
+> >      > +fd =3D open(filename, O_WRONLY, 0);
+> >      > +ret =3D ioctl(fd, F2FS_IOC_DECOMPRESS_FILE);
+> >      > +
+> >      > +To compress a file,
+> >      > +
+> >      > +fd =3D open(filename, O_WRONLY, 0);
+> >      > +ret =3D ioctl(fd, F2FS_IOC_COMPRESS_FILE);
+> >      > +
+> >      >   NVMe Zoned Namespace devices
+> >      >   ----------------------------
+> >      >
+> >      > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> >      > index 3957a84a185e..87090da8693d 100644
+> >      > --- a/fs/f2fs/compress.c
+> >      > +++ b/fs/f2fs/compress.c
+> >      > @@ -926,7 +926,7 @@ int f2fs_is_compressed_cluster(struct inode =
+*inode, pgoff_t index)
+> >      >
+> >      >   static bool cluster_may_compress(struct compress_ctx *cc)
+> >      >   {
+> >      > -     if (!f2fs_compressed_file(cc->inode))
+> >      > +     if (!f2fs_need_compress_data(cc->inode))
+> >      >               return false;
+> >      >       if (f2fs_is_atomic_file(cc->inode))
+> >      >               return false;
+> >      > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> >      > index be4da52604ed..42254d3859c7 100644
+> >      > --- a/fs/f2fs/data.c
+> >      > +++ b/fs/f2fs/data.c
+> >      > @@ -3164,7 +3164,7 @@ static inline bool __should_serialize_io(s=
+truct inode *inode,
+> >      >       if (IS_NOQUOTA(inode))
+> >      >               return false;
+> >      >
+> >      > -     if (f2fs_compressed_file(inode))
+> >      > +     if (f2fs_need_compress_data(inode))
+> >      >               return true;
+> >      >       if (wbc->sync_mode !=3D WB_SYNC_ALL)
+> >      >               return true;
+> >      > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> >      > index e0826779a101..94d16bde5e24 100644
+> >      > --- a/fs/f2fs/f2fs.h
+> >      > +++ b/fs/f2fs/f2fs.h
+> >      > @@ -149,6 +149,7 @@ struct f2fs_mount_info {
+> >      >       unsigned char compress_algorithm;       /* algorithm type =
+*/
+> >      >       unsigned compress_log_size;             /* cluster log siz=
+e */
+> >      >       unsigned char compress_ext_cnt;         /* extension count=
+ */
+> >      > +     int compress_mode;                      /* compression mod=
+e */
+> >      >       unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_=
+LEN]; /* extensions */
+> >      >   };
+> >      >
+> >      > @@ -677,6 +678,7 @@ enum {
+> >      >       FI_VERITY_IN_PROGRESS,  /* building fs-verity Merkle tree =
+*/
+> >      >       FI_COMPRESSED_FILE,     /* indicate file's data can be com=
+pressed */
+> >      >       FI_MMAP_FILE,           /* indicate file was mmapped */
+> >      > +     FI_ENABLE_COMPRESS,     /* enable compression in "user" co=
+mpression mode */
+> >      >       FI_MAX,                 /* max flag, never be used */
+> >      >   };
+> >      >
+> >      > @@ -1243,6 +1245,18 @@ enum fsync_mode {
+> >      >       FSYNC_MODE_NOBARRIER,   /* fsync behaves nobarrier based o=
+n posix */
+> >      >   };
+> >      >
+> >      > +enum {
+> >      > +     COMPR_MODE_FS,          /*
+> >      > +                              * automatically compress compress=
+ion
+> >      > +                              * enabled files
+> >      > +                              */
+> >      > +     COMPR_MODE_USER,        /*
+> >      > +                              * automatical compression is disa=
+bled.
+> >      > +                              * user can control the file compr=
+ession
+> >      > +                              * using ioctls
+> >      > +                              */
+> >      > +};
+> >      > +
+> >      >   /*
+> >      >    * this value is set in page as a private data which indicate =
+that
+> >      >    * the page is atomically written, and it is in inmem_pages li=
+st.
+> >      > @@ -2752,6 +2766,22 @@ static inline int f2fs_compressed_file(st=
+ruct inode *inode)
+> >      >               is_inode_flag_set(inode, FI_COMPRESSED_FILE);
+> >      >   }
+> >      >
+> >      > +static inline bool f2fs_need_compress_data(struct inode *inode)
+> >      > +{
+> >      > +     int compress_mode =3D F2FS_OPTION(F2FS_I_SB(inode)).compre=
+ss_mode;
+> >      > +
+> >      > +     if (!f2fs_compressed_file(inode))
+> >      > +             return false;
+> >      > +
+> >      > +     if (compress_mode =3D=3D COMPR_MODE_FS)
+> >      > +             return true;
+> >      > +     else if (compress_mode =3D=3D COMPR_MODE_USER &&
+> >      > +                     is_inode_flag_set(inode, FI_ENABLE_COMPRES=
+S))
+> >      > +             return true;
+> >      > +
+> >      > +     return false;
+> >      > +}
+> >      > +
+> >      >   static inline unsigned int addrs_per_inode(struct inode *inode=
+)
+> >      >   {
+> >      >       unsigned int addrs =3D CUR_ADDRS_PER_INODE(inode) -
+> >      > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> >      > index 1596502f7375..5d6c9d6f237b 100644
+> >      > --- a/fs/f2fs/segment.c
+> >      > +++ b/fs/f2fs/segment.c
+> >      > @@ -3254,7 +3254,7 @@ static int __get_segment_type_6(struct f2f=
+s_io_info *fio)
+> >      >                       else
+> >      >                               return CURSEG_COLD_DATA;
+> >      >               }
+> >      > -             if (file_is_cold(inode) || f2fs_compressed_file(in=
+ode))
+> >      > +             if (file_is_cold(inode) || f2fs_need_compress_data=
+(inode))
 > >
-> Actually, in that code, we don't need to check the bit after i.
-> Originally, if my understanding is correct, former code tries to find
-> the last 0 bit before i.
-> and if all bits are fully set before i, it use next one as i + 1
->
-> that's why i think the if condition should be
->    if (j >= i)
->
-> But above condition couldn't the discern the case when all bits are
-> fully set before i.
-> Also, I think we don't need to check the bit after i and In this case,
-> find_prev_zero_bit which
-> specifies the start point is clear to show the meaning of the code.
->
->
-> > I believe the latter version is better because find_last_*_bit() is simpler in
-> > implementation (and partially exists), has less parameters, and therefore
-> > simpler for users, and doesn't introduce functionality duplication.
-
-I think it's not duplication.
-Actually, former you teach me find_first_*_bit should be start word-aligned bit,
-But as find_first_*_bit declares it as "size of bitmap" not a start offset.
-Though the bitmap size it's word-aligned, it doesn't matter to fine
-first bit in the specified size of bitmap (it no, it will return just
-size of bitmap)
-
-Likewise, find_last_*_bit is also similar in context.
-Fundamentally, it's not a start offset of bitmap but I think it just
-size of bitmap.
-
-That's the reason why we need to find_next_*_bit to start at the
-specified offset.
-In this matter, I think it's better to have find_prev_*_bit.
-
-So, I think we can use both of these functions to be used to achieve a goal.
-But, each function has different concept actually that's why I don't
-think it's not duplication.
-
-if my understanding is wrong.. Forgive me. and let me know..
-
-Thanks.
-
-
-
+> >     Can we keep consistent about writting compressed file to code data =
+area?
 > >
-> > The only consideration I can imagine to advocate find_prev*() is the performance
-> > advantage in the scenario when we know for sure that first N bits of
-> > bitmap are all
-> > set/clear, and we can bypass traversing that area. But again, in this
-> > case we can pass the
-> > bitmap address with the appropriate offset, and stay with find_last_*()
+> >     Or there is other concern about this?
 > >
-> > > +
-> > > + if (j == i)
-> > >   return false;
-> > >
-> > > - if (prev_j == (unsigned long)-1)
-> > > + if (j == BITS_PER_BITMAP)
-> > >   bytes = (i + 1) * ctl->unit;
-> > >   else
-> > > - bytes = (i - prev_j) * ctl->unit;
-> > > + bytes = (i - j) * ctl->unit;
-> > >
-> > >   info->offset -= bytes;
-> > >   info->bytes += bytes;
-> > >
-> > > Thanks.
-> > >
-> > > HTH
-> > > Levi.
->
-> Thanks but
+> >     Thanks,
+> >
+> >      >                       return CURSEG_COLD_DATA;
+> >      >               if (file_is_hot(inode) ||
+> >      >                               is_inode_flag_set(inode, FI_HOT_DA=
+TA) ||
+> >      > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> >      > index 87f7a6e86370..cc6eb4ed80a2 100644
+> >      > --- a/fs/f2fs/super.c
+> >      > +++ b/fs/f2fs/super.c
+> >      > @@ -146,6 +146,7 @@ enum {
+> >      >       Opt_compress_algorithm,
+> >      >       Opt_compress_log_size,
+> >      >       Opt_compress_extension,
+> >      > +     Opt_compress_mode,
+> >      >       Opt_atgc,
+> >      >       Opt_err,
+> >      >   };
+> >      > @@ -214,6 +215,7 @@ static match_table_t f2fs_tokens =3D {
+> >      >       {Opt_compress_algorithm, "compress_algorithm=3D%s"},
+> >      >       {Opt_compress_log_size, "compress_log_size=3D%u"},
+> >      >       {Opt_compress_extension, "compress_extension=3D%s"},
+> >      > +     {Opt_compress_mode, "compress_mode=3D%s"},
+> >      >       {Opt_atgc, "atgc"},
+> >      >       {Opt_err, NULL},
+> >      >   };
+> >      > @@ -934,10 +936,25 @@ static int parse_options(struct super_bloc=
+k *sb, char *options, bool is_remount)
+> >      >                       F2FS_OPTION(sbi).compress_ext_cnt++;
+> >      >                       kfree(name);
+> >      >                       break;
+> >      > +             case Opt_compress_mode:
+> >      > +                     name =3D match_strdup(&args[0]);
+> >      > +                     if (!name)
+> >      > +                             return -ENOMEM;
+> >      > +                     if (!strcmp(name, "fs")) {
+> >      > +                             F2FS_OPTION(sbi).compress_mode =3D=
+ COMPR_MODE_FS;
+> >      > +                     } else if (!strcmp(name, "user")) {
+> >      > +                             F2FS_OPTION(sbi).compress_mode =3D=
+ COMPR_MODE_USER;
+> >      > +                     } else {
+> >      > +                             kfree(name);
+> >      > +                             return -EINVAL;
+> >      > +                     }
+> >      > +                     kfree(name);
+> >      > +                     break;
+> >      >   #else
+> >      >               case Opt_compress_algorithm:
+> >      >               case Opt_compress_log_size:
+> >      >               case Opt_compress_extension:
+> >      > +             case Opt_compress_mode:
+> >      >                       f2fs_info(sbi, "compression options not su=
+pported");
+> >      >                       break;
+> >      >   #endif
+> >      > @@ -1523,6 +1540,11 @@ static inline void f2fs_show_compress_opt=
+ions(struct seq_file *seq,
+> >      >               seq_printf(seq, ",compress_extension=3D%s",
+> >      >                       F2FS_OPTION(sbi).extensions[i]);
+> >      >       }
+> >      > +
+> >      > +     if (F2FS_OPTION(sbi).compress_mode =3D=3D COMPR_MODE_FS)
+> >      > +             seq_printf(seq, ",compress_mode=3D%s", "fs");
+> >      > +     else if (F2FS_OPTION(sbi).compress_mode =3D=3D COMPR_MODE_=
+USER)
+> >      > +             seq_printf(seq, ",compress_mode=3D%s", "user");
+> >      >   }
+> >      >
+> >      >   static int f2fs_show_options(struct seq_file *seq, struct dent=
+ry *root)
+> >      > @@ -1672,6 +1694,7 @@ static void default_options(struct f2fs_sb=
+_info *sbi)
+> >      >       F2FS_OPTION(sbi).compress_algorithm =3D COMPRESS_LZ4;
+> >      >       F2FS_OPTION(sbi).compress_log_size =3D MIN_COMPRESS_LOG_SI=
+ZE;
+> >      >       F2FS_OPTION(sbi).compress_ext_cnt =3D 0;
+> >      > +     F2FS_OPTION(sbi).compress_mode =3D COMPR_MODE_FS;
+> >      >       F2FS_OPTION(sbi).bggc_mode =3D BGGC_MODE_ON;
+> >      >
+> >      >       sbi->sb->s_flags &=3D ~SB_INLINECRYPT;
+> >      >
+> >
