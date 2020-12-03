@@ -2,119 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9ED22CCEB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:38:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D5E2CCEBB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727874AbgLCFhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 00:37:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbgLCFhk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:37:40 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA249C061A4D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 21:36:59 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id b18so736846ots.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 21:36:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=9cw/bjqotF2vwQmETaOHufIj7nZd76v7wUjUpgL4QyE=;
-        b=kNzEbJ/RtYRjNF8qQ577G5fUf/dItIJhDicyhOkL6p8Hw/ONcBdmiwFQrDhKoBvEG/
-         hpB7FWNfD/8eb1w2wO4oUtthh7jEI9L2ebxQgcPv/ggDBeQxANSL6Tee/YeZOO92ECsg
-         8WCV3Z8Pi44W8Qhg5B9MaGGOIbTU5B32PBkW34Nyx12jHOe1uqZal1R6qxGbTVsTK2os
-         rSjU1qyUxGmbpUzycKEmPqxa0NZPzBLnPeuFhdNaQjJ9bYyWWfZ02dC7a/SguGu1TErg
-         Y0RrNGeYLsUbsaUjyBN7PER/VSTou2gBUEQVBUJDYhb1LsxP5ygBocRVb3qOWwytvxIn
-         lOrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=9cw/bjqotF2vwQmETaOHufIj7nZd76v7wUjUpgL4QyE=;
-        b=Rlekwyn3io3Wq0LGEhElkvSMTLTbk8MG748K064Vx+fu7LzvnWyOHLKKvtjVAgTKno
-         WJF2aGbIc1E+r1a2+kDyHAs33ptf5W3Nzz7fjtePjYs1TIqr8VYg6jdN7niDU6/9QSry
-         ANXWW4wDixBU7dcFjiLNt+OXXyBGucMIbshFjkMuHT8YO0m2tJV3kns6oKljzWjDgAk+
-         LQu9Upeq2FRuIsaNzjOfyAOsftCmL/rW7LpAJlgGSwEd2Ng3M8ISVSJpVif0p6JgpN25
-         rg44RCUAhVbl1KwklPtHi1dDxKHnbtlWrek4tnjGZAOll8sbAEpLDwstRz2X/7ZIcd73
-         1UQA==
-X-Gm-Message-State: AOAM533JEBwcMCuB8p+GDfMNHxdkrRWJ07naCbU3UqOfFPMD5JktPKJ3
-        JcjJHEdvxbi5jsBGNpNFHCEdgw==
-X-Google-Smtp-Source: ABdhPJxkE5M9jbZNtgHUOQe8EXbxGoVtxKmZFcrrGGYHPCcUpVVlB0nDWwo3S98JqAEJL+l1zOeiBg==
-X-Received: by 2002:a9d:6d05:: with SMTP id o5mr1008914otp.158.1606973818985;
-        Wed, 02 Dec 2020 21:36:58 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id i24sm9382ood.0.2020.12.02.21.36.57
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 02 Dec 2020 21:36:58 -0800 (PST)
-Date:   Wed, 2 Dec 2020 21:36:45 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Peter Xu <peterx@redhat.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v2] mm: Don't fault around userfaultfd-registered regions
- on reads
-In-Reply-To: <20201202234117.GD108496@xz-x1>
-Message-ID: <alpine.LSU.2.11.2012022119010.11674@eggly.anvils>
-References: <20201130230603.46187-1-peterx@redhat.com> <20201201125927.GB11935@casper.infradead.org> <20201201223033.GG3277@xz-x1> <X8bZk3jTGU8QyJWc@redhat.com> <alpine.LSU.2.11.2012021410260.4989@eggly.anvils> <20201202234117.GD108496@xz-x1>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1728156AbgLCFl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 00:41:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726620AbgLCFl2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 00:41:28 -0500
+Date:   Wed, 2 Dec 2020 21:40:44 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606974047;
+        bh=7LtZmdGMNY3k6PtJS/X5eLZBXXaeBcYfEkFV4LSGCjM=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q0bpd62LTwZxgzsjVqRNHsYjsJx/UvTI6Ceg9q5EWMmn9tza6r7MYRYY/gLfCEzwa
+         yUcVLh3UGh2wAbBjZ7VlaJS84afWgWKAerBp5vUMWMxQBOxoc8BUPgUzepGI5nBViT
+         8yAYUWvr9zYwyQTOcw2ynJn/9vl2n16wxWOKB3V4aRWimdE233chhwoHMAEKx3cyIi
+         gI3jF/NAGn7dWRjePq40H3RqtrR7/iELnYohI5/5frVse9+acBaYcCjhVmylx7D4bL
+         xDWyvnI9huCQCMY/Lco6M8iGR9H0dZ+MkAFVsjwhImnySV2sT3zp9aetW0EaaVGFnV
+         v4uvaBfmCTqXQ==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [f2fs-dev] [PATCH v7 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION
+ ioctl
+Message-ID: <X8h6XK6cYwXqGnV7@google.com>
+References: <20201030041035.394565-1-daeho43@gmail.com>
+ <20201030041035.394565-2-daeho43@gmail.com>
+ <dcf074e3-821c-6858-eb17-63dcc05e7039@huawei.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dcf074e3-821c-6858-eb17-63dcc05e7039@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Dec 2020, Peter Xu wrote:
-> On Wed, Dec 02, 2020 at 02:37:33PM -0800, Hugh Dickins wrote:
-> > On Tue, 1 Dec 2020, Andrea Arcangeli wrote:
-> > > 
-> > > Any suggestions on how to have the per-vaddr per-mm _PAGE_UFFD_WP bit
-> > > survive the pte invalidates in a way that remains associated to a
-> > > certain vaddr in a single mm (so it can shoot itself in the foot if it
-> > > wants, but it can't interfere with all other mm sharing the shmem
-> > > file) would be welcome...
-> > 
-> > I think it has to be a new variety of swap-like non_swap_entry() pte,
-> > see include/linux/swapops.h.  Anything else would be more troublesome.
-> > 
-> > Search for non_swap_entry and for migration_entry, to find places that 
-> > might need to learn about this new variety.
-> > 
-> > IIUC you only need a single value, no need to carve out another whole
-> > swp_type: could probably be swp_offset 0 of any swp_type other than 0.
-> > 
-> > Note that fork's copy_page_range() does not "copy ptes where a page
-> > fault will fill them correctly", so would in effect put a pte_none
-> > into the child where the parent has this uffd_wp entry.  I don't know
-> > anything about uffd versus fork, whether that would pose a problem.
+On 12/03, Chao Yu wrote:
+> Jaegeuk, not sure, is it too late to merge this cleanup into original patch?
+
+Let me merge this on top of tree. Thanks. :)
+
 > 
-> Thanks for the idea, Hugh!
+> From a5c63ec58e0cda6eb5d186b46942eea46422b7a9 Mon Sep 17 00:00:00 2001
+> From: Chao Yu <yuchao0@huawei.com>
+> Date: Thu, 3 Dec 2020 10:04:26 +0800
+> Subject: [PATCH] f2fs: remove f2fs_is_compress_algorithm_valid() for cleanup
 > 
-> I thought about something similar today, but instead of swap entries, I was
-> thinking about constantly filling in a pte with a value of "_PAGE_PROTNONE |
-> _PAGE_UFFD_WP" when e.g. we'd like to zap a page with shmem+uffd-wp. I feel
-> like the fundamental idea is similar - we can somehow keep the pte with uffd-wp
-> information even if zapped/swapped-out, so as long as the shmem access will
-> fruther trap into the fault handler, then we can operate on that pte and read
-> that information out, like recover that pte into a normal pte (with swap/page
-> cache, and vma/addr information, we'll be able to) and then we can retry the
-> fault.
-
-Yes, I think that should work too: I can't predict which way would cause
-less trouble.
-
-We usually tend to keep away from protnone games, because NUMA balancing
-use of protnone is already confusing enough.
-
-But those ptes will be pte_present(), so you must provide a pfn, and I
-think if you use the zero_pfn, vm_normal_page() will return false on it,
-and avoid special casing (and reference counting) it in various places.
-
-Hugh
+> No logic changes.
+> 
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> ---
+>  fs/f2fs/compress.c | 5 -----
+>  fs/f2fs/f2fs.h     | 5 -----
+>  fs/f2fs/file.c     | 2 +-
+>  3 files changed, 1 insertion(+), 11 deletions(-)
+> 
+> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> index dfadbc78946c..869b047a4801 100644
+> --- a/fs/f2fs/compress.c
+> +++ b/fs/f2fs/compress.c
+> @@ -574,11 +574,6 @@ bool f2fs_is_compress_backend_ready(struct inode *inode)
+>  	return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
+>  }
+> 
+> -bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
+> -{
+> -	return f2fs_cops[algorithm] != NULL;
+> -}
+> -
+>  static mempool_t *compress_page_pool;
+>  static int num_compress_pages = 512;
+>  module_param(num_compress_pages, uint, 0444);
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index b70c8d553439..17b45c2d2b04 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -3882,7 +3882,6 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
+>  int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool lock);
+>  void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
+>  bool f2fs_is_compress_backend_ready(struct inode *inode);
+> -bool f2fs_is_compress_algorithm_valid(unsigned char algorithm);
+>  int f2fs_init_compress_mempool(void);
+>  void f2fs_destroy_compress_mempool(void);
+>  void f2fs_do_decompress_pages(struct decompress_io_ctx *dic, bool verity);
+> @@ -3927,10 +3926,6 @@ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
+>  	/* not support compression */
+>  	return false;
+>  }
+> -static inline bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
+> -{
+> -	return false;
+> -}
+>  static inline struct page *f2fs_compress_control_page(struct page *page)
+>  {
+>  	WARN_ON_ONCE(1);
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 300355fe25f0..0453b441228d 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -4016,7 +4016,7 @@ static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+>  	F2FS_I(inode)->i_cluster_size = 1 << option.log_cluster_size;
+>  	f2fs_mark_inode_dirty_sync(inode, true);
+> 
+> -	if (!f2fs_is_compress_algorithm_valid(option.algorithm))
+> +	if (!f2fs_is_compress_backend_ready(inode))
+>  		f2fs_warn(sbi, "compression algorithm is successfully set, "
+>  			"but current kernel doesn't support this algorithm.");
+>  out:
+> -- 
+> 2.26.2
+> 
+> 
+> 
+> 
+> 
+> On 2020/10/30 12:10, Daeho Jeong wrote:
+> > From: Daeho Jeong <daehojeong@google.com>
+> > 
+> > Added a new F2FS_IOC_SET_COMPRESS_OPTION ioctl to change file
+> > compression option of a file.
+> > 
+> > struct f2fs_comp_option {
+> >      u8 algorithm;         => compression algorithm
+> >                            => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
+> >      u8 log_cluster_size;  => log scale cluster size
+> >                            => 2 ~ 8
+> > };
+> > 
+> > struct f2fs_comp_option option;
+> > 
+> > option.algorithm = 1;
+> > option.log_cluster_size = 7;
+> > 
+> > ioctl(fd, F2FS_IOC_SET_COMPRESS_OPTION, &option);
+> > 
+> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> > ---
+> > 
+> > v6: changed the function name of checking compression algorithm validity.
+> > v5: allowed to set algorithm which is not currently enabled by kernel.
+> > v4: changed commit message.
+> > v3: changed the error number more specific.
+> >      folded in fix for build breakage reported by kernel test robot
+> >      <lkp@intel.com> and Dan Carpenter <dan.carpenter@oracle.com>.
+> > v2: added ioctl description.
+> > ---
+> >   fs/f2fs/compress.c |  5 +++++
+> >   fs/f2fs/f2fs.h     |  7 ++++++
+> >   fs/f2fs/file.c     | 54 ++++++++++++++++++++++++++++++++++++++++++++++
+> >   3 files changed, 66 insertions(+)
+> > 
+> > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > index 7895186cc765..b0144670d320 100644
+> > --- a/fs/f2fs/compress.c
+> > +++ b/fs/f2fs/compress.c
+> > @@ -514,6 +514,11 @@ bool f2fs_is_compress_backend_ready(struct inode *inode)
+> >   	return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
+> >   }
+> > +bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
+> > +{
+> > +	return f2fs_cops[algorithm] != NULL;
+> > +}
+> > +
+> >   static mempool_t *compress_page_pool;
+> >   static int num_compress_pages = 512;
+> >   module_param(num_compress_pages, uint, 0444);
+> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > index a33c90cf979b..70a8a2196888 100644
+> > --- a/fs/f2fs/f2fs.h
+> > +++ b/fs/f2fs/f2fs.h
+> > @@ -435,6 +435,8 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
+> >   						struct f2fs_sectrim_range)
+> >   #define F2FS_IOC_GET_COMPRESS_OPTION	_IOR(F2FS_IOCTL_MAGIC, 21,	\
+> >   						struct f2fs_comp_option)
+> > +#define F2FS_IOC_SET_COMPRESS_OPTION	_IOW(F2FS_IOCTL_MAGIC, 22,	\
+> > +						struct f2fs_comp_option)
+> >   /*
+> >    * should be same as XFS_IOC_GOINGDOWN.
+> > @@ -3915,6 +3917,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
+> >   int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool lock);
+> >   void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
+> >   bool f2fs_is_compress_backend_ready(struct inode *inode);
+> > +bool f2fs_is_compress_algorithm_valid(unsigned char algorithm);
+> >   int f2fs_init_compress_mempool(void);
+> >   void f2fs_destroy_compress_mempool(void);
+> >   void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity);
+> > @@ -3945,6 +3948,10 @@ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
+> >   	/* not support compression */
+> >   	return false;
+> >   }
+> > +static inline bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
+> > +{
+> > +	return false;
+> > +}
+> >   static inline struct page *f2fs_compress_control_page(struct page *page)
+> >   {
+> >   	WARN_ON_ONCE(1);
+> > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> > index bd52df84219d..be56702e4939 100644
+> > --- a/fs/f2fs/file.c
+> > +++ b/fs/f2fs/file.c
+> > @@ -3963,6 +3963,57 @@ static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
+> >   	return 0;
+> >   }
+> > +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+> > +{
+> > +	struct inode *inode = file_inode(filp);
+> > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+> > +	struct f2fs_comp_option option;
+> > +	int ret = 0;
+> > +
+> > +	if (!f2fs_sb_has_compression(sbi))
+> > +		return -EOPNOTSUPP;
+> > +
+> > +	if (!(filp->f_mode & FMODE_WRITE))
+> > +		return -EBADF;
+> > +
+> > +	if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg,
+> > +				sizeof(option)))
+> > +		return -EFAULT;
+> > +
+> > +	if (!f2fs_compressed_file(inode) ||
+> > +			option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
+> > +			option.log_cluster_size > MAX_COMPRESS_LOG_SIZE ||
+> > +			option.algorithm >= COMPRESS_MAX)
+> > +		return -EINVAL;
+> > +
+> > +	file_start_write(filp);
+> > +	inode_lock(inode);
+> > +
+> > +	if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
+> > +		ret = -EBUSY;
+> > +		goto out;
+> > +	}
+> > +
+> > +	if (inode->i_size != 0) {
+> > +		ret = -EFBIG;
+> > +		goto out;
+> > +	}
+> > +
+> > +	F2FS_I(inode)->i_compress_algorithm = option.algorithm;
+> > +	F2FS_I(inode)->i_log_cluster_size = option.log_cluster_size;
+> > +	F2FS_I(inode)->i_cluster_size = 1 << option.log_cluster_size;
+> > +	f2fs_mark_inode_dirty_sync(inode, true);
+> > +
+> > +	if (!f2fs_is_compress_algorithm_valid(option.algorithm))
+> > +		f2fs_warn(sbi, "compression algorithm is successfully set, "
+> > +			"but current kernel doesn't support this algorithm.");
+> > +out:
+> > +	inode_unlock(inode);
+> > +	file_end_write(filp);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> >   long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+> >   {
+> >   	if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
+> > @@ -4053,6 +4104,8 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+> >   		return f2fs_sec_trim_file(filp, arg);
+> >   	case F2FS_IOC_GET_COMPRESS_OPTION:
+> >   		return f2fs_ioc_get_compress_option(filp, arg);
+> > +	case F2FS_IOC_SET_COMPRESS_OPTION:
+> > +		return f2fs_ioc_set_compress_option(filp, arg);
+> >   	default:
+> >   		return -ENOTTY;
+> >   	}
+> > @@ -4224,6 +4277,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> >   	case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
+> >   	case F2FS_IOC_SEC_TRIM_FILE:
+> >   	case F2FS_IOC_GET_COMPRESS_OPTION:
+> > +	case F2FS_IOC_SET_COMPRESS_OPTION:
+> >   		break;
+> >   	default:
+> >   		return -ENOIOCTLCMD;
+> > 
