@@ -2,261 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2C42CD2BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E612CD2C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:43:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388634AbgLCJkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:40:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46142 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387823AbgLCJkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:40:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BA0C5AC55;
-        Thu,  3 Dec 2020 09:39:59 +0000 (UTC)
-Subject: Re: [PATCH] drm/hisilicon: Deletted the entire file hibmc_ttm.c
-To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
-        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
-        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
-        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
-References: <1606986347-54007-1-git-send-email-tiantao6@hisilicon.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <4ce462b2-cd48-0e80-0c09-15f0d42f9c55@suse.de>
-Date:   Thu, 3 Dec 2020 10:39:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <1606986347-54007-1-git-send-email-tiantao6@hisilicon.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="t4Qn74Rwal5QuoY0zMtUs386QKrdEaNfI"
+        id S2388645AbgLCJlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:41:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387782AbgLCJlP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 04:41:15 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34C7C061A4D;
+        Thu,  3 Dec 2020 01:40:34 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id x16so2461983ejj.7;
+        Thu, 03 Dec 2020 01:40:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VnJR4zvxLaYxaLIi7m7JIB9O5uK8FoHDelrZFzVzmI0=;
+        b=Eu54DIQUEZly4iruNoc5w4/RdW3QRPdwSP9inV/oTmJGr41KwLQXfr4MRUgaNV+4Me
+         nSAxINR9fWr/k+VtUtPeKbLbBmFIeFXD5I5qdBvSQGqNa9bJ1UaFvvLEMGkQJgjo2Q9a
+         uXVjhYpC8krcRlobmeyoMBK5r5i3Ep5z/ovF6qkoi8p62dpiKD6TCVuvBzi8jfl3vW7p
+         d1ImNLJf/Q/JZd5feVZ+jq+QVj8AMLqw+4Neqk/qI7qNLzleFfq1SKM9470MmvsX8+cx
+         Nrb+bnFHULTqfjsh8Mn0narznctkjjIspcDD+2OQic6inKsBmM1q3Kd5ofHx2yiXoSTY
+         5D/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VnJR4zvxLaYxaLIi7m7JIB9O5uK8FoHDelrZFzVzmI0=;
+        b=NIlGxl6S+s+6teucROobbcqxdOvnzenab6k7rl3XYE/FL+e6bZE8i+1RL7Eo8OcEPm
+         DccOJ7z5qE6YvVn+Q9H3jHJJuO5PTI48ccJQVFdrBkZppPmd3jWTymiJIAERbcduv/fF
+         +YuN33nm0euFDxi0M1S1M8vZiS5WQhMZOZLepUSll77ydZxE8TqfQ0JYGwIKMIU20vUY
+         q8tdmNEeRuH97GkB/ozE2edQaoIJcUSL6y6W7EzgTO4KLkaPgEOK0VGiJtiVsrgnUZ9P
+         n+EFSr27ChHwmfnqK/XvV+3ZwsQgiEFOz7MPVEJyIkOlElPsQ8SBjJMmpdbSfiSzhx5K
+         qKpg==
+X-Gm-Message-State: AOAM531WmlbiS7PL3QdLkYpXcRd+7I1qZcHG2Q/uF09BhjJrBaWRmBRc
+        NA581lLbrXfEdrmHUvOHj/M=
+X-Google-Smtp-Source: ABdhPJwGJ9pPFbYF4BWoB553PT4T4LgJH8IHJmJUErAxvv8iBybvVyQNbVF4VCLrXzoCsYxN0GTVEQ==
+X-Received: by 2002:a17:906:add7:: with SMTP id lb23mr1831288ejb.352.1606988433419;
+        Thu, 03 Dec 2020 01:40:33 -0800 (PST)
+Received: from ubuntu-laptop ([2a01:598:b905:79de:6c3d:3b27:f281:55d5])
+        by smtp.googlemail.com with ESMTPSA id ci20sm427075ejc.26.2020.12.03.01.40.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 03 Dec 2020 01:40:32 -0800 (PST)
+Message-ID: <2dafb87ff450776c0406311bb7e235e9816f6ecf.camel@gmail.com>
+Subject: Re: [PATCH 2/3] scsi: ufs: Keep device power on only
+ fWriteBoosterBufferFlushDuringHibernate == 1
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Thu, 03 Dec 2020 10:40:30 +0100
+In-Reply-To: <DM6PR04MB6575B7ECCEA7335B2CFC2AC4FCF20@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201130181143.5739-1-huobean@gmail.com>
+         <20201130181143.5739-3-huobean@gmail.com>
+         <BY5PR04MB6599826730BD3FB0E547E60587F30@BY5PR04MB6599.namprd04.prod.outlook.com>
+         <DM6PR04MB6575B7ECCEA7335B2CFC2AC4FCF20@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---t4Qn74Rwal5QuoY0zMtUs386QKrdEaNfI
-Content-Type: multipart/mixed; boundary="xWYLecE0OUB0aM4nVXbFiASUR1YBykoHS";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
- kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
- dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
- linux-kernel@vger.kernel.org
-Message-ID: <4ce462b2-cd48-0e80-0c09-15f0d42f9c55@suse.de>
-Subject: Re: [PATCH] drm/hisilicon: Deletted the entire file hibmc_ttm.c
-References: <1606986347-54007-1-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1606986347-54007-1-git-send-email-tiantao6@hisilicon.com>
+On Thu, 2020-12-03 at 07:27 +0000, Avri Altman wrote:
+> > 
+> > From: Bean Huo <beanhuo@micron.com>
+> > 
+> > Keep device power mode as active power mode and VCC supply only if
+> > fWriteBoosterBufferFlushDuringHibernate setting 1 is successful.
 
---xWYLecE0OUB0aM4nVXbFiASUR1YBykoHS
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Hi Avri
+Thanks so much taking time reiew.
 
-Hi
+> Why would it fail?
 
-Am 03.12.20 um 10:05 schrieb Tian Tao:
-> Deletted the entire file hibmc_ttm.c. drmm_vram_helper_init() can be
+During the reliability testing in harsh environments, such as:
+EMS testing, in the high/low-temperature environment. The system would
+reboot itself, there will be programming failure very likely.
+If we assume failure will never hit, why we capture its result
+following with dev_err(). If you keep using your phone in a harsh
+environment, you will see this print message.
 
-Deletted -> Delete
+Of course, in a normal environment, the chance of failure likes you to
+win a lottery, but the possibility still exists.
 
-Here and in the subject line.
+  
+> Since UFSHCD_CAP_WB_EN is toggled off on ufshcd_wb_probe If the
+> device doesn't support wb,
+> The check ufshcd_is_wb_allowed should suffice, isn't it?
+> 
 
-> called directly from hibmc_load(). hibmc_dumb_create() and
-> hibmc_mode_funcs can go to hibmc_drm_drv.c
->=20
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+No, UFSHCD_CAP_WB_EN only tells us if the platform supports WB,
+doesn't tell us fWriteBoosterBufferFlushDuringHibernate status.
 
-Code changes look good.
-
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-> ---
->   drivers/gpu/drm/hisilicon/hibmc/Makefile        |  2 +-
->   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 21 ++++++++++-
->   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h |  4 --
->   drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c     | 50 ----------------=
----------
->   4 files changed, 20 insertions(+), 57 deletions(-)
->   delete mode 100644 drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
->=20
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/Makefile b/drivers/gpu/drm=
-/hisilicon/hibmc/Makefile
-> index 684ef79..d25c75e 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/Makefile
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/Makefile
-> @@ -1,4 +1,4 @@
->   # SPDX-License-Identifier: GPL-2.0-only
-> -hibmc-drm-y :=3D hibmc_drm_drv.o hibmc_drm_de.o hibmc_drm_vdac.o hibmc=
-_ttm.o hibmc_drm_i2c.o
-> +hibmc-drm-y :=3D hibmc_drm_drv.o hibmc_drm_de.o hibmc_drm_vdac.o hibmc=
-_drm_i2c.o
->  =20
->   obj-$(CONFIG_DRM_HISI_HIBMC) +=3D hibmc-drm.o
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
-gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> index 5aea2e9..3687753 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> @@ -16,6 +16,7 @@
->  =20
->   #include <drm/drm_atomic_helper.h>
->   #include <drm/drm_drv.h>
-> +#include <drm/drm_gem_framebuffer_helper.h>
->   #include <drm/drm_gem_vram_helper.h>
->   #include <drm/drm_irq.h>
->   #include <drm/drm_managed.h>
-> @@ -43,6 +44,12 @@ static irqreturn_t hibmc_drm_interrupt(int irq, void=
- *arg)
->   	return IRQ_HANDLED;
->   }
->  =20
-> +static int hibmc_dumb_create(struct drm_file *file, struct drm_device =
-*dev,
-> +			     struct drm_mode_create_dumb *args)
-> +{
-> +	return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
-> +}
-> +
->   static const struct drm_driver hibmc_driver =3D {
->   	.driver_features	=3D DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
->   	.fops			=3D &hibmc_fops,
-> @@ -77,6 +84,13 @@ static const struct dev_pm_ops hibmc_pm_ops =3D {
->   				hibmc_pm_resume)
->   };
->  =20
-> +static const struct drm_mode_config_funcs hibmc_mode_funcs =3D {
-> +	.mode_valid =3D drm_vram_helper_mode_valid,
-> +	.atomic_check =3D drm_atomic_helper_check,
-> +	.atomic_commit =3D drm_atomic_helper_commit,
-> +	.fb_create =3D drm_gem_fb_create,
-> +};
-> +
->   static int hibmc_kms_init(struct hibmc_drm_private *priv)
->   {
->   	struct drm_device *dev =3D &priv->dev;
-> @@ -262,9 +276,12 @@ static int hibmc_load(struct drm_device *dev)
->   	if (ret)
->   		goto err;
->  =20
-> -	ret =3D hibmc_mm_init(priv);
-> -	if (ret)
-> +	ret =3D drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
-> +				    priv->fb_size);
-> +	if (ret) {
-> +		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
->   		goto err;
-> +	}
->  =20
->   	ret =3D hibmc_kms_init(priv);
->   	if (ret)
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/=
-gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> index 2786de5..a49c10e 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> @@ -64,10 +64,6 @@ int hibmc_de_init(struct hibmc_drm_private *priv);
->   int hibmc_vdac_init(struct hibmc_drm_private *priv);
->  =20
->   int hibmc_mm_init(struct hibmc_drm_private *hibmc);
-> -int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
-> -		      struct drm_mode_create_dumb *args);
->   int hibmc_ddc_create(struct drm_device *drm_dev, struct hibmc_connect=
-or *connector);
->  =20
-> -extern const struct drm_mode_config_funcs hibmc_mode_funcs;
-> -
->   #endif
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/=
-drm/hisilicon/hibmc/hibmc_ttm.c
-> deleted file mode 100644
-> index 892d566..0000000
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-> +++ /dev/null
-> @@ -1,50 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0-or-later
-> -/* Hisilicon Hibmc SoC drm driver
-> - *
-> - * Based on the bochs drm driver.
-> - *
-> - * Copyright (c) 2016 Huawei Limited.
-> - *
-> - * Author:
-> - *	Rongrong Zou <zourongrong@huawei.com>
-> - *	Rongrong Zou <zourongrong@gmail.com>
-> - *	Jianhua Li <lijianhua@huawei.com>
-> - */
-> -
-> -#include <linux/pci.h>
-> -
-> -#include <drm/drm_atomic_helper.h>
-> -#include <drm/drm_gem.h>
-> -#include <drm/drm_gem_framebuffer_helper.h>
-> -#include <drm/drm_gem_vram_helper.h>
-> -#include <drm/drm_print.h>
-> -
-> -#include "hibmc_drm_drv.h"
-> -
-> -int hibmc_mm_init(struct hibmc_drm_private *hibmc)
-> -{
-> -	int ret;
-> -	struct drm_device *dev =3D &hibmc->dev;
-> -
-> -	ret =3D drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
-> -				    hibmc->fb_size);
-> -	if (ret) {
-> -		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
-> -		return ret;
-> -	}
-> -
-> -	return 0;
-> -}
-> -
-> -int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
-> -		      struct drm_mode_create_dumb *args)
-> -{
-> -	return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
-> -}
-> -
-> -const struct drm_mode_config_funcs hibmc_mode_funcs =3D {
-> -	.mode_valid =3D drm_vram_helper_mode_valid,
-> -	.atomic_check =3D drm_atomic_helper_check,
-> -	.atomic_commit =3D drm_atomic_helper_commit,
-> -	.fb_create =3D drm_gem_fb_create,
-> -};
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+Thanks,
+Bean
 
 
---xWYLecE0OUB0aM4nVXbFiASUR1YBykoHS--
-
---t4Qn74Rwal5QuoY0zMtUs386QKrdEaNfI
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/Ism4FAwAAAAAACgkQlh/E3EQov+AC
-fhAAhFjNclNFVa882U241bIruWM91XLLR0nwZXFFdwCmojGySOuigMMaAmkfSKcIk2YMkb9zm0No
-HYc5PL6S+jBPuAkdVExOAR4apOPxjlpovK7vlKLkm3SZR8dBH0Kt/S1GQGZB5oPR5e094qwPJg9p
-dBr6zvjkEaACEteyA+tDfVptcaOftYg/nICND3RLNKtrAhcb/wmCGFgD5luNZ/YqCU5kZ8z59ma1
-D3gLHCCyXtNnOpw+SE2jZravk6CPGpdNKS3oG2Q0j3o9nNLm8QdP8eLU9kzOTy3W+tEZGKLngbcl
-xzUNITp+IHCsm07ZQ+P+mdTPzzXwtD+SuuXFjUEOVyk8Qv501o2GK8n+/JVyBAyw2Igvn5mMbkit
-apQUcnPXx7oZsm9K8MIi1Rfsd/ScDCjcGKv6rgcwXl7LyL1SO7m5OLuZtH9ucXfE5N9UL2noHGbJ
-Np1YNfv46apcXpXsLSbn4/6pNPXQ8UsSSAXZqw4HLhJjJqYNv7lQj/sduNsvjhcPls1CERMvnzt2
-GieXNmFFHlXiF3VtFtVjMD8eWUgrtbO9dVxyzWgxGM+t5FkmBGc5qDt+Ep4bHhUbeyMJkaLkoFHW
-/EwFxhuro/w9ZDE94zvZiBT1hZn2by03iyUZXAPNvXPfpVpW01PCn9AFUECiqQYxLuJS/0pMLqlu
-YE4=
-=Cizf
------END PGP SIGNATURE-----
-
---t4Qn74Rwal5QuoY0zMtUs386QKrdEaNfI--
