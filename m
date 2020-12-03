@@ -2,103 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AAB2CDEEC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3E62CDEF7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731683AbgLCT0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:26:34 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:42330 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728287AbgLCT0c (ORCPT
+        id S1731799AbgLCT1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:27:30 -0500
+Received: from esa4.mentor.iphmx.com ([68.232.137.252]:47459 "EHLO
+        esa4.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726620AbgLCT12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:26:32 -0500
-Date:   Thu, 03 Dec 2020 19:25:49 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607023549;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RZgSh8ulagCA/7FmDyfnmfnmWn2C2Vjxl9GQe1i29TQ=;
-        b=RY2Jje1tzPWjShpL+1oXIl3oz/QQAS3IkRHPtzeG5/3qv6WHoQYtXpAcUyNr74pASSmKUO
-        7OnqmyxrMLMnNCaybnF5hfETRI9W0tV6dOjVDBsQ0g6nFglztDtyPmoxvBjej3Ebkaj1Va
-        ozyIyOb3k2bXVW4YIeE3uD8hMsd7Ygfw6o+T5VGyDGbA2RSXtUIsiU2UlRm3dnrvp1gbuT
-        KG6+Xx8p/DiFCReaaxhouxDFfltpevr4jNZa4MqU10QzFGDU3Bqohv/oUiZWikIsaSmfTE
-        ffhVdwoptg51cN2XvCyE13jOP6eTurlu6/NWBg6KwMr7kS8TD8/Pl6QCcO5Fiw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607023549;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RZgSh8ulagCA/7FmDyfnmfnmWn2C2Vjxl9GQe1i29TQ=;
-        b=NqfmHeuISa6RQSMzpgDkqRlU20bSutozDODdRaL+WfWKOCTte+YrtCv0uBaO1p+D9W/y3P
-        adrdawvTDS93WBCw==
-From:   "tip-bot2 for Jarkko Sakkinen" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] x86/sgx: Return -EINVAL on a zero length buffer in
- sgx_ioc_enclave_add_pages()
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201203183527.139317-1-jarkko@kernel.org>
-References: <20201203183527.139317-1-jarkko@kernel.org>
+        Thu, 3 Dec 2020 14:27:28 -0500
+IronPort-SDR: c5GQu1xkEhn8w8+YDEQYdRbJSxe5an2akUdHTSY1JJn2ByJ3naYEWgw2goiscJtnyRX6ijAXA7
+ nF9WF7KT9PWvLDCK7gZqQs6p0U+GiKEiixucaRAiwXslWV1bpYNUwApvFuO9N/g+p4c1VzPNCR
+ ihx/cfEkwfsRlyDfR1+uZQoDeQpoJ7iX4yUFg2mc68hnbJU7Tx9MrTypzds7YMT46VZQQ18cnE
+ SV2gzU/FBPZCBSifKhsG3U3x2W+OzTFAgSc2Y2lI1G9RhBTu4ojcXd9drpMeTesfWjiLHZeAUK
+ t4Q=
+X-IronPort-AV: E=Sophos;i="5.78,390,1599552000"; 
+   d="scan'208";a="55902945"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa4.mentor.iphmx.com with ESMTP; 03 Dec 2020 11:26:32 -0800
+IronPort-SDR: XP3ZEQho3UqMx3BhYt1pQPTeKTRf5W8xIRihDvtCBy7QtU3tUhB7Phh67eaOt39ZLijARoJO73
+ cBW5k8t56e6WIOt9w363v7E0h1PB4g96rULSv/vrukcnALazLbg9LMKxWVlqSItIB4K6zGmnTz
+ u7XrTyVwuFlmYBhsHPoIow3V9+KfZOiXyj+S61ioyEUkHp2VYVyzHPEoMsmwD+WGYEjTfayuI0
+ GzEBbFfSClbc3UwEsqiOgNjJiNBnBtWa04/aokI9hKNeV4uCNJjw9HpC2rb7Qk5jK+xs3yWoiY
+ lis=
+Date:   Thu, 3 Dec 2020 19:26:25 +0000
+From:   Joseph Myers <joseph@codesourcery.com>
+X-X-Sender: jsm28@digraph.polyomino.org.uk
+To:     Florian Weimer <fweimer@redhat.com>
+CC:     Andy Lutomirski <luto@amacapital.net>,
+        Topi Miettinen <toiwoton@gmail.com>,
+        <linux-hardening@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH v5] mm: Optional full ASLR for mmap(), mremap(), vdso
+ and stack
+In-Reply-To: <871rg6yf1i.fsf@oldenburg2.str.redhat.com>
+Message-ID: <alpine.DEB.2.22.394.2012031918220.193081@digraph.polyomino.org.uk>
+References: <e8c458fe-073b-2c4d-4d80-3637041c1485@gmail.com>        <05D72EA3-4862-4D80-82F5-9369834C3461@amacapital.net> <871rg6yf1i.fsf@oldenburg2.str.redhat.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Message-ID: <160702354906.3364.11196477877749355876.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="US-ASCII"
+X-Originating-IP: [137.202.0.90]
+X-ClientProxiedBy: SVR-IES-MBX-04.mgc.mentorg.com (139.181.222.4) To
+ svr-ies-mbx-01.mgc.mentorg.com (139.181.222.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sgx branch of tip:
+On Thu, 3 Dec 2020, Florian Weimer wrote:
 
-Commit-ID:     a4b9c48b96517ff4780b22a784e7537eac5dc21b
-Gitweb:        https://git.kernel.org/tip/a4b9c48b96517ff4780b22a784e7537eac5dc21b
-Author:        Jarkko Sakkinen <jarkko@kernel.org>
-AuthorDate:    Thu, 03 Dec 2020 20:35:27 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 03 Dec 2020 19:54:40 +01:00
+> My knowledge of probability theory is quite limited, so I have to rely
+> on simulations.  But I think you would see a 40 GiB gap somewhere for a
+> 47-bit address space with 32K allocations, most of the time.  Which is
+> not too bad.
 
-x86/sgx: Return -EINVAL on a zero length buffer in sgx_ioc_enclave_add_pages()
+This is very close to a Poisson process (if the number of small 
+allocations being distributed independently in the address space is 
+large), so the probability that any given gap is at least x times the mean 
+gap is about exp(-x).
 
-The sgx_enclave_add_pages.length field is documented as
-
- * @length:     length of the data (multiple of the page size)
-
-Fail with -EINVAL, when the caller gives a zero length buffer of data
-to be added as pages to an enclave. Right now 'ret' is returned as
-uninitialized in that case.
-
- [ bp: Flesh out commit message. ]
-
-Fixes: c6d26d370767 ("x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lore.kernel.org/linux-sgx/X8ehQssnslm194ld@mwanda/
-Link: https://lkml.kernel.org/r/20201203183527.139317-1-jarkko@kernel.org
----
- arch/x86/kernel/cpu/sgx/ioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index c206aee..90a5caf 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -428,7 +428,7 @@ static long sgx_ioc_enclave_add_pages(struct sgx_encl *encl, void __user *arg)
- 	    !IS_ALIGNED(add_arg.src, PAGE_SIZE))
- 		return -EINVAL;
- 
--	if (add_arg.length & (PAGE_SIZE - 1))
-+	if (!add_arg.length || add_arg.length & (PAGE_SIZE - 1))
- 		return -EINVAL;
- 
- 	if (add_arg.offset + add_arg.length - PAGE_SIZE >= encl->size)
+-- 
+Joseph S. Myers
+joseph@codesourcery.com
