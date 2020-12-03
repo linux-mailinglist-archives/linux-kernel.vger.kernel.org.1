@@ -2,72 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237082CE236
+	by mail.lfdr.de (Postfix) with ESMTP id 9109D2CE237
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731912AbgLCWzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:55:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59534 "EHLO mail.kernel.org"
+        id S1731923AbgLCWzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:55:13 -0500
+Received: from ms.lwn.net ([45.79.88.28]:57082 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727972AbgLCWzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:55:04 -0500
-From:   Arnd Bergmann <arnd@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        CK Hu <ck.hu@mediatek.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] phy: mediatek: allow compile-testing the hdmi phy
-Date:   Thu,  3 Dec 2020 23:54:02 +0100
-Message-Id: <20201203225418.1477560-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1727957AbgLCWzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:55:13 -0500
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id CC51624D3;
+        Thu,  3 Dec 2020 22:54:32 +0000 (UTC)
+Date:   Thu, 3 Dec 2020 15:54:31 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Andrew Klychkov <andrew.a.klychkov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: fix typos in process/kernel-docs.rst
+Message-ID: <20201203155431.6c130000@lwn.net>
+In-Reply-To: <20201202074938.GA35075@spblnx124.lan>
+References: <20201202074938.GA35075@spblnx124.lan>
+Organization: LWN.net
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Wed, 2 Dec 2020 10:49:38 +0300
+Andrew Klychkov <andrew.a.klychkov@gmail.com> wrote:
 
-Compile-testing the DRM_MEDIATEK_HDMI driver leads to a harmless
-warning:
+> Fix two typos in kernel-docs.rst
+> 
+> Signed-off-by: Andrew Klychkov <andrew.a.klychkov@gmail.com>
+> ---
+>  Documentation/process/kernel-docs.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-WARNING: unmet direct dependencies detected for PHY_MTK_HDMI
-  Depends on [n]: ARCH_MEDIATEK [=n] && OF [=y]
-  Selected by [y]:
-  - DRM_MEDIATEK_HDMI [=y] && HAS_IOMEM [=y] && DRM_MEDIATEK [=y]
+Applied, thanks.
 
-The driver builds fine, so allow compile-testing it as well
-to get rid of the warning.
-
-Fixes: b28be59a2e26 ("phy: mediatek: Move mtk_hdmi_phy driver into drivers/phy/mediatek folder")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/phy/mediatek/Kconfig | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/phy/mediatek/Kconfig b/drivers/phy/mediatek/Kconfig
-index 65ed26e40c9f..29a85b2738f8 100644
---- a/drivers/phy/mediatek/Kconfig
-+++ b/drivers/phy/mediatek/Kconfig
-@@ -40,7 +40,9 @@ config PHY_MTK_XSPHY
- 
- config PHY_MTK_HDMI
- 	tristate "MediaTek HDMI-PHY Driver"
--	depends on ARCH_MEDIATEK && OF
-+	depends on ARCH_MEDIATEK || COMPILE_TEST
-+	depends on COMMON_CLK
-+	depends on OF
- 	select GENERIC_PHY
- 	help
- 	  Support HDMI PHY for Mediatek SoCs.
--- 
-2.27.0
-
+jon
