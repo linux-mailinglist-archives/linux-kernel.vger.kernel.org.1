@@ -2,135 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2BA2CD567
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 788DC2CD56A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388726AbgLCMVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 07:21:43 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:42258 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388034AbgLCMVm (ORCPT
+        id S1730459AbgLCMVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 07:21:55 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9099 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbgLCMVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 07:21:42 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3CFPi9126840;
-        Thu, 3 Dec 2020 12:18:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=5kE4tnaIOoWss+wgn2FM156GixL1Gar5ddM0M3j3rvU=;
- b=dJjfz5qs2JVgWiSsqHNpQOmb5inr2oiLjB9OgiG2hl3bGpcfjcI9tIx8TO2VCI2IWTjB
- n2ZAVo+fvSIDIzfhMN0CZb9i9lHPRzelf6RGgCdD23aPptKspTkmAPUGf0YjQinI+Vuu
- emKaLfkIVfvwm/KYyaQk8Wslv3EsXA/70rdkCJyn/GuiV8bbw4wfboj5ATPG+gRgmpCP
- OcrEtNpHzUn0092A3F0skPcMQ8rHemLsAWlOsx9I8kI2muYaJ9hMBf05/4QHK3o6O4a1
- nko0kdJ4vGKOtfAM5zuxRuHCzvRwVRPFXHVWRVMM9ZZDq9MWoWfbAD4jpMX1TpDhGBCd Uw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 353c2b5nam-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 03 Dec 2020 12:18:37 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3CGF4W002649;
-        Thu, 3 Dec 2020 12:18:37 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 3540f1rv3r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Dec 2020 12:18:37 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B3CIZ6C007548;
-        Thu, 3 Dec 2020 12:18:35 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 03 Dec 2020 04:18:34 -0800
-Date:   Thu, 3 Dec 2020 15:18:26 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        Thomas Lamprecht <t.lamprecht@proxmox.com>
-Cc:     James.Bottomley@suse.de,
-        jayamohank@hdredirect-lb5-1afb6e2973825a56.elb.us-east-1.amazonaws.com,
-        jejb@linux.ibm.com, jitendra.bhivare@broadcom.com,
-        kernel-janitors@vger.kernel.org, ketan.mukadam@broadcom.com,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, subbu.seetharaman@broadcom.com,
-        stable@vger.kernel.org
-Subject: [PATCH] scsi: be2iscsi: revert "Fix a theoretical leak in
- beiscsi_create_eqs()"
-Message-ID: <X8jXkt6eThjyVP1v@mwanda>
+        Thu, 3 Dec 2020 07:21:54 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cmw0N6bBrzLyy0;
+        Thu,  3 Dec 2020 20:20:36 +0800 (CST)
+Received: from huawei.com (10.174.186.236) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Thu, 3 Dec 2020
+ 20:21:02 +0800
+From:   Yifei Jiang <jiangyifei@huawei.com>
+To:     <anup.patel@wdc.com>, <atish.patra@wdc.com>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <pbonzini@redhat.com>
+CC:     <kvm-riscv@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <victor.zhangxiaofeng@huawei.com>, <wu.wubin@huawei.com>,
+        <zhang.zhanghailiang@huawei.com>, <dengkai1@huawei.com>,
+        <yinyipeng1@huawei.com>, Yifei Jiang <jiangyifei@huawei.com>
+Subject: [PATCH RFC 0/3] Implement guest time scaling in RISC-V KVM
+Date:   Thu, 3 Dec 2020 20:18:36 +0800
+Message-ID: <20201203121839.308-1-jiangyifei@huawei.com>
+X-Mailer: git-send-email 2.26.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <54f36c62-10bf-8736-39ce-27ece097d9de@proxmox.com>
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
- suspectscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012030076
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012030076
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.186.236]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My patch caused kernel Oopses and delays in boot.  Revert it.
+This series implements guest time scaling based on RDTIME instruction
+emulation so that we can allow migrating Guest/VM across Hosts with
+different time frequency.
 
-The problem was that I moved the "mem->dma = paddr;" before the call to
-be_fill_queue().  But the first thing that the be_fill_queue() function
-does is memset the whole struct to zero which overwrites the assignment.
+Why not through para-virt. From arm's experience[1], para-virt implementation
+doesn't really solve the problem for the following two main reasons:
+- RDTIME not only be used in linux, but also in firmware and userspace.
+- It is difficult to be compatible with nested virtualization.
 
-Fixes: 38b2db564d9a ("scsi: be2iscsi: Fix a theoretical leak in beiscsi_create_eqs()")
-Reported-by: Thomas Lamprecht <t.lamprecht@proxmox.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-My original patch was basically a clean up patch and to try silence a
-static checker warning.  I've already updated the static checker to not
-warn about impossible leaks and in this case we know that be_fill_queue()
-cannot fail.
+[1] https://lore.kernel.org/patchwork/cover/1288153/
 
-I was tempted to delete the "mem->va = eq_vaddress;" assignment as a
-clean up but I didn't.  :P
+Yifei Jiang (3):
+  RISC-V: KVM: Change the method of calculating cycles to nanoseconds
+  RISC-V: KVM: Support dynamic time frequency from userspace
+  RISC-V: KVM: Implement guest time scaling
 
- drivers/scsi/be2iscsi/be_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/riscv/include/asm/csr.h            |  3 ++
+ arch/riscv/include/asm/kvm_vcpu_timer.h | 13 +++++--
+ arch/riscv/kvm/vcpu_exit.c              | 35 +++++++++++++++++
+ arch/riscv/kvm/vcpu_timer.c             | 51 ++++++++++++++++++++++---
+ 4 files changed, 93 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
-index 50e464224d47..90fcddb76f46 100644
---- a/drivers/scsi/be2iscsi/be_main.c
-+++ b/drivers/scsi/be2iscsi/be_main.c
-@@ -3020,7 +3020,6 @@ static int beiscsi_create_eqs(struct beiscsi_hba *phba,
- 			goto create_eq_error;
- 		}
- 
--		mem->dma = paddr;
- 		mem->va = eq_vaddress;
- 		ret = be_fill_queue(eq, phba->params.num_eq_entries,
- 				    sizeof(struct be_eq_entry), eq_vaddress);
-@@ -3030,6 +3029,7 @@ static int beiscsi_create_eqs(struct beiscsi_hba *phba,
- 			goto create_eq_error;
- 		}
- 
-+		mem->dma = paddr;
- 		ret = beiscsi_cmd_eq_create(&phba->ctrl, eq,
- 					    BEISCSI_EQ_DELAY_DEF);
- 		if (ret) {
-@@ -3086,7 +3086,6 @@ static int beiscsi_create_cqs(struct beiscsi_hba *phba,
- 			goto create_cq_error;
- 		}
- 
--		mem->dma = paddr;
- 		ret = be_fill_queue(cq, phba->params.num_cq_entries,
- 				    sizeof(struct sol_cqe), cq_vaddress);
- 		if (ret) {
-@@ -3096,6 +3095,7 @@ static int beiscsi_create_cqs(struct beiscsi_hba *phba,
- 			goto create_cq_error;
- 		}
- 
-+		mem->dma = paddr;
- 		ret = beiscsi_cmd_cq_create(&phba->ctrl, cq, eq, false,
- 					    false, 0);
- 		if (ret) {
 -- 
-2.29.2
+2.19.1
 
