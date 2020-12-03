@@ -2,92 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A982CE184
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC1C2CE185
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:23:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729627AbgLCWVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:21:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLCWVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:21:38 -0500
-Date:   Thu, 3 Dec 2020 14:20:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607034057;
-        bh=sJTZOuaQLWgAkLjU/1D2hpQxVLj/LjujUTWRVPbXgoc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uMtG2O4kX2o0F+/hdjxy+ldteyemQOl147uqhmiiqZTAfR01B+ZyV1zKVHvx8Glc+
-         O9MYm4yMKlKBYX/9OiEm8AaF3QMGohDq73Jok3UmCj8fJuRJ9MZucvU6xQQtYp3dHA
-         nM0Z/pYBl7LxiCalLTBPKscMysyYtCAxDH06zDwzeVtS07hqNm/XLui3XjH/5ibqiT
-         9RoVqBjH8oVd7dblCAq16ybGsCy1/ynL67hxFsD7G7NS/2EMaIV7WVjWd5B71s2T11
-         dmYFXYhNiCf5ksZbsn4w29xaLGn3Tpc+gGnj2BItZRjU8Bolc8zVFesJLWI6koJ1qV
-         q5q75pvq5R9BQ==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] Networking for 5.10-rc7
-Message-ID: <20201203142056.5bf81035@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <CAHk-=wgBDP8WwpO-yyv0fvdc0w9qoQwugywvwsARp4HMfUkD1g@mail.gmail.com>
-References: <20201203204459.3963776-1-kuba@kernel.org>
-        <CAHk-=wgBDP8WwpO-yyv0fvdc0w9qoQwugywvwsARp4HMfUkD1g@mail.gmail.com>
+        id S1729834AbgLCWWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:22:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24553 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729635AbgLCWWg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:22:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607034070;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+ISPHS/qFGkoXfeg13gVylWvk6gUYj8tbfF+wixKiaM=;
+        b=QUJmcUkkUvDA1+L+/A+V4wUJny+MbuJsnOZWhKB/D0QRG2i8gJ6qa9c+yi3aSlObutn5jB
+        sUp7nBTP7gkZW7c8RSPzx6QREALfTStPcOPQwEOgtdQVaAKTcgkRtJPRzHLDL0CoantNcq
+        v2LdWIOdzJ4FLvicwb//sSE3OhBlllI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-_bslx57CO3iA7XJ7psvDIQ-1; Thu, 03 Dec 2020 17:21:02 -0500
+X-MC-Unique: _bslx57CO3iA7XJ7psvDIQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A92111005513;
+        Thu,  3 Dec 2020 22:21:00 +0000 (UTC)
+Received: from krava (unknown [10.40.195.70])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 98EC65D6AC;
+        Thu,  3 Dec 2020 22:20:58 +0000 (UTC)
+Date:   Thu, 3 Dec 2020 23:20:57 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>
+Subject: Re: [RFC v2 1/2] perf: support build BPF skeletons with perf
+Message-ID: <20201203222057.GD3613628@krava>
+References: <20201201073647.753079-1-songliubraving@fb.com>
+ <20201201073647.753079-2-songliubraving@fb.com>
+ <20201201205433.GE3169083@krava>
+ <709375F7-A386-415B-926E-0A19783D09A5@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <709375F7-A386-415B-926E-0A19783D09A5@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 13:18:13 -0800 Linus Torvalds wrote:
-> On Thu, Dec 3, 2020 at 12:45 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> > Networking fixes for 5.10-rc7, including fixes from bpf, netfilter,
-> > wireless drivers, wireless mesh and can.  
+On Tue, Dec 01, 2020 at 10:47:59PM +0000, Song Liu wrote:
+
+SNIP
+
+> >> # As per kernel Makefile, avoid funny character set dependencies
+> >> unexport LC_ALL
+> >> @@ -735,7 +737,8 @@ prepare: $(OUTPUT)PERF-VERSION-FILE $(OUTPUT)common-cmds.h archheaders $(drm_ioc
+> >> 	$(x86_arch_prctl_code_array) \
+> >> 	$(rename_flags_array) \
+> >> 	$(arch_errno_name_array) \
+> >> -	$(sync_file_range_arrays)
+> >> +	$(sync_file_range_arrays) \
+> >> +	bpf-skel
+> > 
+> > I think the 'prepare' target is misused already with other stuff,
+> > there's generated bpf_counter.c dependency on util/bpf_skel/bpf_prog_profiler.skel.h
+> > in util/.bpf_counter.o.cmd, that should triger the build no?
 > 
-> Thanks, pulled.
+> This doesn't work for me. Once bpf-skel is removed from "prepare", we hit
+> compilation error before util/.bpf_counter.o.cmd is generated. 
+
+ok, I'll check on that with your new version
+
+SNIP
+
+> >> +submake_extras := feature_display=0
+> >> +
+> >> +$(SKEL_TMP_OUT):
+> >> +	$(Q)$(MKDIR) -p $@
+> >> +
+> >> +$(BPFTOOL): | $(SKEL_TMP_OUT)
+> >> +	CFLAGS= $(MAKE) $(submake_extras) -C ../bpf/bpftool \
+> >> +		OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
+> >> +
+> >> +$(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(BPFOBJ) | $(SKEL_TMP_OUT)
+> >> +	$(call QUIET_CLANG, $@)
+> >> +	$(Q)$(CLANG) -g -O2 -target bpf	-c $(filter util/bpf_skel/%.bpf.c,$^) -o $@ && \
+> >> +	$(LLVM_STRIP) -g $@
+> >> +
+> >> +$(SKEL_OUT)/%.skel.h: $(SKEL_TMP_OUT)/%.bpf.o | $(BPFTOOL)
+> >> +	$(call QUIET_GENSKEL, $@)
+> > 
+> > is there a reason to use call in here? you could define QUIET_GENSKEL
+> > to use $@ and use it the same way as we use the rest of QUIET_* stuf
+> > in Makefile.perf
 > 
-> And btw - maybe I've already talked about this, but since next week is
-> (hopefully) going to be the last week of rc release: since the
-> networking pulls tend to be some of the bigger ones, one thing I've
-> asked David to do in the past is to (a) not send a big networking pull
-> request right before the final release and (b) let me know whether
-> there is anything worrisome going on in networking.
+> I am not following here. $(CALL QUIET_xx) was used for QUIET_CLEAN and 
+> QUIET_INSTALL in Makefile.perf. What is the preferred pattern here?
+
+right it's QUIET_CLEAN and QUIET_INSTALL because they need argument,
+QUIET_GENSKEL uses $@, which is used directly in other QUIET_* macros
+
 > 
-> So if you send it on a Thursday (like this one), then that's all good
-> - it's the "Oh, it's Sunday noon, I was planning on a final release in
-> the afternoon, and I have a big networking fix pull request in my
-> mailbox" that I'd prefer to not see.
+> > 
+> >> new file mode 100644
+> >> index 0000000000000..5263e9e6c5d83
+> >> --- /dev/null
+> >> +++ b/tools/perf/util/bpf_skel/.gitignore
+> >> @@ -0,0 +1,3 @@
+> >> +# SPDX-License-Identifier: GPL-2.0-only
+> >> +.tmp
+> >> +*.skel.h
+> >> \ No newline at end of file
+> >> diff --git a/tools/perf/util/bpf_skel/dummy.bpf.c b/tools/perf/util/bpf_skel/dummy.bpf.c
+> >> new file mode 100644
+> >> index 0000000000000..492a43a851deb
+> >> --- /dev/null
+> >> +++ b/tools/perf/util/bpf_skel/dummy.bpf.c
+> > 
+> > hum, what's the reason for dummy skeleton? it just adds
+> > time to compilation no?
+> 
+> It is mostly to test 1/2 of the set works fine. I guess we can remove 
+> it in 2/2?
 
-Make sense.
+so it needs to be there otherwise the compilation fails?
 
-I'm not anticipating that the last PR will be much smaller, given 
-we get a constant stream of fixes for older releases and the review
-coverage is pretty good so we can apply stuff with confidence.
+I'll check your new version
 
-Sounds like a comparable PR size will not be a major concern to you as
-long as the PR comes in early on Thu and we are reporting any sign of
-trouble. Sounds good!
+thanks,
+jirka
 
-> A heads up on the "Uhhuh - we have something bad going in the
-> networking tree" kind of situation you can obviously send at any time.
-> If there are known issues, I'll just make an rc8 - I prefer not to
-> _have_ to, of course, but I'd always much rather be safe than release
-> the final kernel just because I didn't know of some pending issue.
-
-Will do!
-
-> (And the reverse - just a note saying "everything looks fine, none of
-> this is scary and there's nothing pending that looks at all worrisome
-> either" - for the last rc pull is obviously also always appreciated,
-> but generally I'll assume that unless something else is said, we're in
-> good shape).
-
-Ack, it's been smooth sailing so far in this release. 
-
-No big scares, knock on wood.
-
-This time around (other than the large-ish ibmvnic set which was in 
-the works for a while) the PR was smaller, but I think that's only 
-due to Turkey lethargy.
-
-Thanks for this note, I was shy to ask about the endgame :)
