@@ -2,205 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7FA2CCAD7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EFF2CCAD6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:06:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729260AbgLCAEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729236AbgLCAEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 2 Dec 2020 19:04:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23103 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727474AbgLCAEW (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729200AbgLCAEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 19:04:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606953774;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DpSPL5S+eK2YN+IDF2O7p/fQBnAF7ZUdMUMMwgAm0bo=;
-        b=SBAwabITp+rw95+nlCR01DZmWgxXGyueDOwBmX5RKqyzuSBlAEOHh9+sAnC0Cb6TWOJJit
-        e8faiil49frBmJaCIjAqlMmWwOwOjHKSrwV/ke5TiDPG94GkwZEOP0PXqc2UspwEGVRmUH
-        Ifs6qnHz7465pXFWW5LoH5mQT3za2sI=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-578-JtkhXGD9NRiwHkSJ8dUo8Q-1; Wed, 02 Dec 2020 19:02:53 -0500
-X-MC-Unique: JtkhXGD9NRiwHkSJ8dUo8Q-1
-Received: by mail-qt1-f199.google.com with SMTP id v9so169199qtw.12
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 16:02:53 -0800 (PST)
+        Wed, 2 Dec 2020 19:04:21 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D3DC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 16:03:41 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id cm17so128964edb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 16:03:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HL4ZccAHg5V6Bd07F/4aifaU3FUPzQVBX0asc7HSKow=;
+        b=klh/Kg3BizeiBqwvr7+X9DewlNQbIet2xxxofeWSvOolzkU9vrhZeGs19vQNq8tO4w
+         SPMgZ8AibuFQ5sfLT1meSGaaOo3jfDzMYoYJU86tumYCS9bJH23Fhu2Mjw8cuqeMq4p/
+         D0fR290cz4g2oCt+D+TAFu59j+h6ipOxhWako8EKL5xrcNZqcfevPtFoYRWZPuKTwxf8
+         +B2EJKO59foyBuQ98EPeK3kpJY5KEXe40Ty3H6T9l/eR0Du2Nf83UcvRFBtkMeRNPMSr
+         Tk0odFOyAi18mvyoixC1dCdJzVYHVnWAmlbFPNvgzrpC90i6AjPAc8HuAbWQz2uXn28B
+         Af6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=DpSPL5S+eK2YN+IDF2O7p/fQBnAF7ZUdMUMMwgAm0bo=;
-        b=i23YU2bB7ORPts2Q971zjHSTgqbCUjeih75B6jla11mmWQXqH38tXs4JdCzACCICQ2
-         KovnnrOd7gN21J2soolWMYe++VePifV2ZITHQSwSit5YMlYE6JvkFLdukueiBz1IuHz2
-         eIh5hhOZbjSvqECbAkTWgwKfTaememFfahnuxiMv5eTowqXs/lZfPy6/Lowutni9wxCX
-         J2YNLDEKTaUXIYyV7yO9SvS9bd2mIsA1K0jZuDqRK45A0YmChxLRjrlpORMjAALTVIy1
-         dgXi5TEMmgkSAB5hax6gKbylzcsOPk1JdgxfN25qvryd9c8wj1eQbyX9hcjmqEI/uR/9
-         rwuQ==
-X-Gm-Message-State: AOAM531Fzcmuv4e5tXbvSrTRY44u/nVV70JyVEPep873aFkdvQKK6Zm5
-        oEml+Fqc1BuQ6yE4xKVAijmnxjg0okcuUUvgTC4689bTyPwa1ikpLmwbIX3IwMdrxmVWOvyf9If
-        IgX2M64+8NHf5jj1scAWoXnEs
-X-Received: by 2002:a05:620a:4f4:: with SMTP id b20mr353504qkh.312.1606953773247;
-        Wed, 02 Dec 2020 16:02:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzLfJT6IrMLN763uYcNKj9ZBhKQLRG/d9niB/EMTLK/uFwQC/3Oz0r9LuONEm2GWjzQohoIBg==
-X-Received: by 2002:a05:620a:4f4:: with SMTP id b20mr353484qkh.312.1606953773016;
-        Wed, 02 Dec 2020 16:02:53 -0800 (PST)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id l66sm247224qkd.105.2020.12.02.16.02.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 16:02:52 -0800 (PST)
-References: <20201130232338.106892-1-jsnitsel@redhat.com>
- <20201201025807.162241-1-jsnitsel@redhat.com> <87czzujjg1.fsf@redhat.com>
- <878sahmh5w.fsf@redhat.com> <20201202164931.GA91318@kernel.org>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v2] tpm_tis: Disable interrupts if interrupt storm detected
-In-reply-to: <20201202164931.GA91318@kernel.org>
-Date:   Wed, 02 Dec 2020 17:02:50 -0700
-Message-ID: <87sg8noixh.fsf@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HL4ZccAHg5V6Bd07F/4aifaU3FUPzQVBX0asc7HSKow=;
+        b=hWO0BZ3hRHfDNCcaVR4zqyGxYLQRfdvWiav9rAf+/q9uqwfCaC18enYcEnOILwBPmp
+         79jUkKSIgpQ7wLp1XF2K6BUDnWBjKkMdkh/MFK+5Y29OawFA48DwAGtQSfdxWEx60h9s
+         LVrB5sq5nSbnJpnLE5Y86+xm0PDH4gpCCSRUxEB4P8BLGSvQAmxOPdQtn3O3xtezd+HZ
+         +1SzfEpUdrKoE7egYEqTtJiZbVvFr3uMyfUDzDHfoO2Lq+5fDx/TZGWAaExMfYnxCWwH
+         hurBmRlN2LQ/qCHf37Jb0Gb7H7QN6i2sa/Npiwf6PhrLcL7xkTJmwWbLYM8VlOIBxj2K
+         z7wQ==
+X-Gm-Message-State: AOAM531j80yGTo4YIqQ+61VKMIBBK07JJl3igBHLoyAdK0qX2QiOW2v8
+        Trw/mWtFGa59oEZmjYBV70o02ZZ7UVX4f7bmKjYG3w==
+X-Google-Smtp-Source: ABdhPJydr86sgePFOj6k1Jj0u4GQFzDx78yKdXH78OgTb1z7VSnV/IAzJZVp4n9iByHf4Qtx8nBSIsTJUqBGdWRWyUU=
+X-Received: by 2002:aa7:c652:: with SMTP id z18mr490202edr.60.1606953819960;
+ Wed, 02 Dec 2020 16:03:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-4-pasha.tatashin@soleen.com> <20201202163145.GT1161629@iweiny-DESK2.sc.intel.com>
+ <20201202163312.GU1161629@iweiny-DESK2.sc.intel.com> <CA+CK2bBhW2hBystEfJyJ77xGNY9LHWLOLNN44E8hSuwO2yNs0Q@mail.gmail.com>
+In-Reply-To: <CA+CK2bBhW2hBystEfJyJ77xGNY9LHWLOLNN44E8hSuwO2yNs0Q@mail.gmail.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 2 Dec 2020 19:03:04 -0500
+Message-ID: <CA+CK2bDPje=3gqUW4rhdZnxhsUUvbo2hx9v0Q5xqMh_NRwaixA@mail.gmail.com>
+Subject: Re: [PATCH 3/6] mm/gup: make __gup_longterm_locked common
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Jarkko Sakkinen @ 2020-12-02 09:49 MST:
-
-> On Tue, Dec 01, 2020 at 12:59:23PM -0700, Jerry Snitselaar wrote:
->> 
->> Jerry Snitselaar @ 2020-11-30 20:26 MST:
->> 
->> > Jerry Snitselaar @ 2020-11-30 19:58 MST:
->> >
->> >> When enabling the interrupt code for the tpm_tis driver we have
->> >> noticed some systems have a bios issue causing an interrupt storm to
->> >> occur. The issue isn't limited to a single tpm or system manufacturer
->> >> so keeping a denylist of systems with the issue isn't optimal. Instead
->> >> try to detect the problem occurring, disable interrupts, and revert to
->> >> polling when it happens.
->> >>
->> >> Cc: Jarkko Sakkinen <jarkko@kernel.org>
->> >> Cc: Jason Gunthorpe <jgg@ziepe.ca>
->> >> Cc: Peter Huewe <peterhuewe@gmx.de>
->> >> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
->> >> Cc: Matthew Garrett <mjg59@google.com>
->> >> Cc: Hans de Goede <hdegoede@redhat.com>
->> >> Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
->> >> ---
->> >> v2: drop tpm_tis specific workqueue and use just system_wq
->> >>
->> >> drivers/char/tpm/tpm_tis_core.c | 27 +++++++++++++++++++++++++++
->> >>  drivers/char/tpm/tpm_tis_core.h |  2 ++
->> >>  2 files changed, 29 insertions(+)
->> >>
->> >> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
->> >> index 23b60583928b..72cc8a5a152c 100644
->> >> --- a/drivers/char/tpm/tpm_tis_core.c
->> >> +++ b/drivers/char/tpm/tpm_tis_core.c
->> >> @@ -24,6 +24,8 @@
->> >>  #include <linux/wait.h>
->> >>  #include <linux/acpi.h>
->> >>  #include <linux/freezer.h>
->> >> +#include <linux/workqueue.h>
->> >> +#include <linux/kernel_stat.h>
->> >>  #include "tpm.h"
->> >>  #include "tpm_tis_core.h"
->> >>  
->> >> @@ -745,9 +747,23 @@ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
->> >>  {
->> >>  	struct tpm_chip *chip = dev_id;
->> >>  	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
->> >> +	static bool check_storm = true;
->> >> +	static unsigned int check_start;
->> >>  	u32 interrupt;
->> >>  	int i, rc;
->> >>  
->> >> +	if (unlikely(check_storm)) {
->> >> +		if (!check_start) {
->> >> +			check_start = jiffies_to_msecs(jiffies);
->> >> +		} else if ((kstat_irqs(priv->irq) > 1000) &&
->> >> +			   (jiffies_to_msecs(jiffies) - check_start < 500)) {
->> >> +			check_storm = false;
->> >> +			schedule_work(&priv->storm_work);
->> >> +		} else if (jiffies_to_msecs(jiffies) - check_start >= 500) {
->> >> +			check_storm = false;
->> >> +		}
->> >> +	}
->> >> +
->> >>  	rc = tpm_tis_read32(priv, TPM_INT_STATUS(priv->locality), &interrupt);
->> >>  	if (rc < 0)
->> >>  		return IRQ_NONE;
->> >> @@ -987,6 +1003,14 @@ static const struct tpm_class_ops tpm_tis = {
->> >>  	.clk_enable = tpm_tis_clkrun_enable,
->> >>  };
->> >>  
->> >> +static void tpm_tis_storm_work(struct work_struct *work)
->> >> +{
->> >> +	struct tpm_tis_data *priv = container_of(work, struct tpm_tis_data, storm_work);
->> >> +
->> >> +	disable_interrupts(priv->chip);
->> >> +	dev_warn(&priv->chip->dev, "Interrupt storm detected, using polling.\n");
->> >> +}
->> >> +
->> >>  int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
->> >>  		      const struct tpm_tis_phy_ops *phy_ops,
->> >>  		      acpi_handle acpi_dev_handle)
->> >> @@ -1003,6 +1027,9 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
->> >>  	if (IS_ERR(chip))
->> >>  		return PTR_ERR(chip);
->> >>  
->> >> +	priv->chip = chip;
->> >> +	INIT_WORK(&priv->storm_work, tpm_tis_storm_work);
->> >> +
->> >>  #ifdef CONFIG_ACPI
->> >>  	chip->acpi_dev_handle = acpi_dev_handle;
->> >>  #endif
->> >> diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis_core.h
->> >> index edeb5dc61c95..5630f294dc0c 100644
->> >> --- a/drivers/char/tpm/tpm_tis_core.h
->> >> +++ b/drivers/char/tpm/tpm_tis_core.h
->> >> @@ -95,6 +95,8 @@ struct tpm_tis_data {
->> >>  	u16 clkrun_enabled;
->> >>  	wait_queue_head_t int_queue;
->> >>  	wait_queue_head_t read_queue;
->> >> +	struct work_struct storm_work;
->> >> +	struct tpm_chip *chip;
->> >>  	const struct tpm_tis_phy_ops *phy_ops;
->> >>  	unsigned short rng_quality;
->> >>  };
->> >
->> > I've tested this with the Intel platform that has an Infineon chip that
->> > I found the other week. It works, but isn't the complete fix. With this
->> > on top of James' patchset I sometimes see the message "Lost Interrupt
->> > waiting for TPM stat", so I guess there needs to be a check in
->> > wait_for_tpm_stat and request_locality to see if interrupts were
->> > disabled when the wait_event_interruptible_timeout call times out.
->> 
->> As kernel test robot pointed out. kstat_irqs isn't visible when tpm_tis
->> builds as a module. It looks like it is only called by kstat_irq_usrs,
->> and that is only by the fs/proc code. I have a patch to export it, but
->> the i915 driver open codes their own version instead of using it. Is
->> there any reason not to export it?
+On Wed, Dec 2, 2020 at 1:19 PM Pavel Tatashin <pasha.tatashin@soleen.com> wrote:
 >
-> If you add a patch that exports it, then for coherency it'd be better to
-> also patch i915 driver. Jani?
+> On Wed, Dec 2, 2020 at 11:33 AM Ira Weiny <ira.weiny@intel.com> wrote:
+> >
+> > On Wed, Dec 02, 2020 at 08:31:45AM -0800, 'Ira Weiny' wrote:
+> > > On Wed, Dec 02, 2020 at 12:23:27AM -0500, Pavel Tatashin wrote:
+> > > > __gup_longterm_locked() has CMA || FS_DAX version and a common stub
+> > > > version. In the preparation of prohibiting longterm pinning of pages from
+> > > > movable zone make the CMA || FS_DAX version common, and delete the stub
+> > > > version.
+> > > >
+> > > > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> > > > ---
+> > > >  mm/gup.c | 13 -------------
+> > > >  1 file changed, 13 deletions(-)
+> > > >
+> > > > diff --git a/mm/gup.c b/mm/gup.c
+> > > > index 3a76c005a3e2..0e2de888a8b0 100644
+> > > > --- a/mm/gup.c
+> > > > +++ b/mm/gup.c
+> > > > @@ -1567,7 +1567,6 @@ struct page *get_dump_page(unsigned long addr)
+> > > >  }
+> > > >  #endif /* CONFIG_ELF_CORE */
+> > > >
+> > > > -#if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
+> > > >  #ifdef CONFIG_FS_DAX
+> > > >  static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
+> > > >  {
+> > > > @@ -1757,18 +1756,6 @@ static long __gup_longterm_locked(struct mm_struct *mm,
+> > > >             kfree(vmas_tmp);
+> > > >     return rc;
+> > > >  }
+> > >
+> > > Isn't this going to potentially allocate vmas_tmp only to not need it when
+> > > !FS_DAX and !CMA?
+> >
+> > To clarify, when FOLL_LONGTERM is set...
 >
-> /Jarkko
+> Yes, this is the case. We need that because once migration is checked
+> for all allocations, not only CMA, we need vmas_tmp for all cases.
 
-It looks like this might not solve all cases. I'm having Lenovo test
-another build to make sure I gave them the right code, but they reported
-with the L490 that the system hangs right when it is initializing
-tpm_tis. I'm working on getting a build on the T490s I have to try there
-as well. With the Intel system it spits out that it detects the
-interrupt storm, and continues on its way.
+A slight correction, we only need vmas_tmp for check_dax_vmas().
+Potentially, we could wrap vmas_tmp allocation in a #ifdef for FS_DAX,
+but I do not think this is really needed.
 
+Pasha
+
+>
+> Pasha
+>
+> >
+> > IRa
+> >
+> > >
+> > > Ira
+> > >
+> > > > -#else /* !CONFIG_FS_DAX && !CONFIG_CMA */
+> > > > -static __always_inline long __gup_longterm_locked(struct mm_struct *mm,
+> > > > -                                             unsigned long start,
+> > > > -                                             unsigned long nr_pages,
+> > > > -                                             struct page **pages,
+> > > > -                                             struct vm_area_struct **vmas,
+> > > > -                                             unsigned int flags)
+> > > > -{
+> > > > -   return __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
+> > > > -                                  NULL, flags);
+> > > > -}
+> > > > -#endif /* CONFIG_FS_DAX || CONFIG_CMA */
+> > > >
+> > > >  static bool is_valid_gup_flags(unsigned int gup_flags)
+> > > >  {
+> > > > --
+> > > > 2.25.1
+> > > >
+> > > >
+> > >
