@@ -2,143 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA1C2CD4FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C88CA2CD507
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:00:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387968AbgLCL4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:56:24 -0500
-Received: from ozlabs.org ([203.11.71.1]:42825 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387556AbgLCL4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:56:23 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1730120AbgLCL6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:58:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20183 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726360AbgLCL6p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 06:58:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606996639;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uvudTwkZlrk5cjZrGWhnLWxf/bDsuqFy86ZB03kMeqU=;
+        b=TLRUREJOFjYpa8oCq4Q5L3Mp1nRWVd0bbAX/sZIXro3bMzeIdDbKqjgPr5y8zvpjeK4WJJ
+        UJ8NVbhkrM2NlMav5hsJo3s+ZRTAuBTu5B/A/YdSiYmafUJ1zLmx4fnxyasxIsuk3JwXU3
+        qQSCc0+QW5SGwjOQ3NAMSjEXd1lvYOw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-537-RZmLZlsOMP2e65EnnaD2SQ-1; Thu, 03 Dec 2020 06:57:14 -0500
+X-MC-Unique: RZmLZlsOMP2e65EnnaD2SQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CmvRd42wQz9ryj;
-        Thu,  3 Dec 2020 22:55:41 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1606996541;
-        bh=LVO4s9uIVveCgBubOjnui+gjJXlUQnDqrs3xghQjPUM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=O5uBCrwFrtUjkNJP7Q8upqCfsLkZ3j11YiRaq284cVEQNcphSRlneehNq3Jlh1Cf2
-         6wrPIF25Fp9o2+u6PK83mudOUq5ZybC7X6j+MX60saikZFjPzSA5xeK4XtoQbBQEEt
-         TUTgTF4u/uqu1XaEQ8PbIVnGFplvfmz6sveMdpQs1Y0yht0TBZy0ZP8V29KzxYu5hd
-         IwkdO+U/XHs7kslQYBSqPg77l8Rn/Vly+Z8RusvNDKw4UAgUZ04JOzTRzT2SEDzZ51
-         pGFbmbgLXBaq5Qp4OL68NR4sP/RHaBXwIzFIjq/Awk0ASXlXbOhwioKBf6gjJRP6Wq
-         +hQbSSxPOPk8A==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc/mm: Don't see NULL pointer dereference as a KUAP fault
-In-Reply-To: <8b865b93d25c15c8e6d41e71c368bfc28da4489d.1606816701.git.christophe.leroy@csgroup.eu>
-References: <8b865b93d25c15c8e6d41e71c368bfc28da4489d.1606816701.git.christophe.leroy@csgroup.eu>
-Date:   Thu, 03 Dec 2020 22:55:40 +1100
-Message-ID: <87mtyvumrn.fsf@mpe.ellerman.id.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78517100A64D;
+        Thu,  3 Dec 2020 11:57:12 +0000 (UTC)
+Received: from starship (unknown [10.35.206.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A2BA25C1B4;
+        Thu,  3 Dec 2020 11:57:06 +0000 (UTC)
+Message-ID: <0d8c407cc81bedc9a344646978c857d26f2b5be8.camel@redhat.com>
+Subject: Re: [PATCH 0/2] RFC: Precise TSC migration
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Andy Lutomirski <luto@amacapital.net>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Date:   Thu, 03 Dec 2020 13:57:04 +0200
+In-Reply-To: <FB43C4E2-D7C4-430B-9D6B-15FA59BB5286@amacapital.net>
+References: <874kl5hbgp.fsf@nanos.tec.linutronix.de>
+         <FB43C4E2-D7C4-430B-9D6B-15FA59BB5286@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Sometimes, NULL pointer dereferences are expected. Even when they
-> are accidental they are unlikely an exploit attempt because the
-> first page is never mapped.
+On Tue, 2020-12-01 at 08:19 -0800, Andy Lutomirski wrote:
+> > On Dec 1, 2020, at 6:01 AM, Thomas Gleixner <tglx@linutronix.de> wrote:
+> > 
+> > ﻿On Mon, Nov 30 2020 at 16:16, Marcelo Tosatti wrote:
+> > > Not really. The synchronization logic tries to sync TSCs during
+> > > BIOS boot (and CPU hotplug), because the TSC values are loaded
+> > > sequentially, say:
+> > > 
+> > > CPU        realtime    TSC val
+> > > vcpu0        0 usec        0
+> > > vcpu1        100 usec    0
+> > > vcpu2        200 usec    0
+> > 
+> > That's nonsense, really.
+> > 
+> > > And we'd like to see all vcpus to read the same value at all times.
+> > 
+> > Providing guests with a synchronized and stable TSC on a host with a
+> > synchronized and stable TSC is trivial.
+> > 
+> > Write the _same_ TSC offset to _all_ vcpu control structs and be done
+> > with it. It's not rocket science.
+> > 
+> > The guest TSC read is:
+> > 
+> >    hostTSC + vcpu_offset
+> > 
+> > So if the host TSC is synchronized then the guest TSCs are synchronized
+> > as well.
+> > 
+> > If the host TSC is not synchronized, then don't even try.
+> 
+> This reminds me: if you’re adding a new kvm feature that tells the guest that the TSC works well, could you perhaps only have one structure for all vCPUs in the same guest?
 
-The first page can be mapped if mmap_min_addr is 0.
+I won't mind doing this, but this might be too much work for
+too little gain.
 
-Blocking all faults to the first page would potentially break any
-program that does that.
+IMHO, modern hosts don't need the kvmclock in the first place,
+and should just expose the TSC to the guest 
+together with the invtsc bit.
 
-Also if there is something mapped at 0 it's a good chance it is an
-exploit attempt :)
+Best regards,
+	Maxim Levitsky
 
-cheers
+> 
+> > Thanks,
+> > 
+> >        tglx
 
 
-> The exemple below shows what we get when invoking the "show task"
-> sysrq handler, by writing 't' in /proc/sysrq-trigger
->
-> [ 1117.202054] ------------[ cut here ]------------
-> [ 1117.202102] Bug: fault blocked by AP register !
-> [ 1117.202261] WARNING: CPU: 0 PID: 377 at arch/powerpc/include/asm/nohash/32/kup-8xx.h:66 do_page_fault+0x4a8/0x5ec
-> [ 1117.202310] Modules linked in:
-> [ 1117.202428] CPU: 0 PID: 377 Comm: sh Tainted: G        W         5.10.0-rc5-s3k-dev-01340-g83f53be2de31-dirty #4175
-> [ 1117.202499] NIP:  c0012048 LR: c0012048 CTR: 00000000
-> [ 1117.202573] REGS: cacdbb88 TRAP: 0700   Tainted: G        W          (5.10.0-rc5-s3k-dev-01340-g83f53be2de31-dirty)
-> [ 1117.202625] MSR:  00021032 <ME,IR,DR,RI>  CR: 24082222  XER: 20000000
-> [ 1117.202899]
-> [ 1117.202899] GPR00: c0012048 cacdbc40 c2929290 00000023 c092e554 00000001 c09865e8 c092e640
-> [ 1117.202899] GPR08: 00001032 00000000 00000000 00014efc 28082224 100d166a 100a0920 00000000
-> [ 1117.202899] GPR16: 100cac0c 100b0000 1080c3fc 1080d685 100d0000 100d0000 00000000 100a0900
-> [ 1117.202899] GPR24: 100d0000 c07892ec 00000000 c0921510 c21f4440 0000005c c0000000 cacdbc80
-> [ 1117.204362] NIP [c0012048] do_page_fault+0x4a8/0x5ec
-> [ 1117.204461] LR [c0012048] do_page_fault+0x4a8/0x5ec
-> [ 1117.204509] Call Trace:
-> [ 1117.204609] [cacdbc40] [c0012048] do_page_fault+0x4a8/0x5ec (unreliable)
-> [ 1117.204771] [cacdbc70] [c00112f0] handle_page_fault+0x8/0x34
-> [ 1117.204911] --- interrupt: 301 at copy_from_kernel_nofault+0x70/0x1c0
-> [ 1117.204979] NIP:  c010dbec LR: c010dbac CTR: 00000001
-> [ 1117.205053] REGS: cacdbc80 TRAP: 0301   Tainted: G        W          (5.10.0-rc5-s3k-dev-01340-g83f53be2de31-dirty)
-> [ 1117.205104] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 28082224  XER: 00000000
-> [ 1117.205416] DAR: 0000005c DSISR: c0000000
-> [ 1117.205416] GPR00: c0045948 cacdbd38 c2929290 00000001 00000017 00000017 00000027 0000000f
-> [ 1117.205416] GPR08: c09926ec 00000000 00000000 3ffff000 24082224
-> [ 1117.206106] NIP [c010dbec] copy_from_kernel_nofault+0x70/0x1c0
-> [ 1117.206202] LR [c010dbac] copy_from_kernel_nofault+0x30/0x1c0
-> [ 1117.206258] --- interrupt: 301
-> [ 1117.206372] [cacdbd38] [c004bbb0] kthread_probe_data+0x44/0x70 (unreliable)
-> [ 1117.206561] [cacdbd58] [c0045948] print_worker_info+0xe0/0x194
-> [ 1117.206717] [cacdbdb8] [c00548ac] sched_show_task+0x134/0x168
-> [ 1117.206851] [cacdbdd8] [c005a268] show_state_filter+0x70/0x100
-> [ 1117.206989] [cacdbe08] [c039baa0] sysrq_handle_showstate+0x14/0x24
-> [ 1117.207122] [cacdbe18] [c039bf18] __handle_sysrq+0xac/0x1d0
-> [ 1117.207257] [cacdbe48] [c039c0c0] write_sysrq_trigger+0x4c/0x74
-> [ 1117.207407] [cacdbe68] [c01fba48] proc_reg_write+0xb4/0x114
-> [ 1117.207550] [cacdbe88] [c0179968] vfs_write+0x12c/0x478
-> [ 1117.207686] [cacdbf08] [c0179e60] ksys_write+0x78/0x128
-> [ 1117.207826] [cacdbf38] [c00110d0] ret_from_syscall+0x0/0x34
-> [ 1117.207938] --- interrupt: c01 at 0xfd4e784
-> [ 1117.208008] NIP:  0fd4e784 LR: 0fe0f244 CTR: 10048d38
-> [ 1117.208083] REGS: cacdbf48 TRAP: 0c01   Tainted: G        W          (5.10.0-rc5-s3k-dev-01340-g83f53be2de31-dirty)
-> [ 1117.208134] MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 44002222  XER: 00000000
-> [ 1117.208470]
-> [ 1117.208470] GPR00: 00000004 7fc34090 77bfb4e0 00000001 1080fa40 00000002 7400000f fefefeff
-> [ 1117.208470] GPR08: 7f7f7f7f 10048d38 1080c414 7fc343c0 00000000
-> [ 1117.209104] NIP [0fd4e784] 0xfd4e784
-> [ 1117.209180] LR [0fe0f244] 0xfe0f244
-> [ 1117.209236] --- interrupt: c01
-> [ 1117.209274] Instruction dump:
-> [ 1117.209353] 714a4000 418200f0 73ca0001 40820084 73ca0032 408200f8 73c90040 4082ff60
-> [ 1117.209727] 0fe00000 3c60c082 386399f4 48013b65 <0fe00000> 80010034 3860000b 7c0803a6
-> [ 1117.210102] ---[ end trace 1927c0323393af3e ]---
->
-> So, avoid the big KUAP warning by bailing out of bad_kernel_fault()
-> before calling bad_kuap_fault() when address references the first
-> page.
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/mm/fault.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-> index 0add963a849b..be2b4318206f 100644
-> --- a/arch/powerpc/mm/fault.c
-> +++ b/arch/powerpc/mm/fault.c
-> @@ -198,6 +198,10 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
->  {
->  	int is_exec = TRAP(regs) == 0x400;
->  
-> +	// Kernel fault on first page is likely a NULL pointer dereference
-> +	if (address < PAGE_SIZE)
-> +		return true;
-> +
->  	/* NX faults set DSISR_PROTFAULT on the 8xx, DSISR_NOEXEC_OR_G on others */
->  	if (is_exec && (error_code & (DSISR_NOEXEC_OR_G | DSISR_KEYFAULT |
->  				      DSISR_PROTFAULT))) {
-> -- 
-> 2.25.0
