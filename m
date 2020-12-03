@@ -2,126 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA202CDEB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F31102CDEC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:24:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727398AbgLCTYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:24:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725981AbgLCTYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:24:10 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7E73221EC;
-        Thu,  3 Dec 2020 19:23:28 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kkuCM-00Flnv-BO; Thu, 03 Dec 2020 19:23:26 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     kvmarm@lists.cs.columbia.edu, David Brazdil <dbrazdil@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
-        Christoph Lameter <cl@linux.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH v4 00/26] Opt-in always-on nVHE hypervisor
-Date:   Thu,  3 Dec 2020 19:23:19 +0000
-Message-Id: <160702322202.1501317.9696987088711766533.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201202184122.26046-1-dbrazdil@google.com>
-References: <20201202184122.26046-1-dbrazdil@google.com>
+        id S1729471AbgLCTYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:24:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727662AbgLCTYm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 14:24:42 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A0DC061A4E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:23:55 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id s8so3027509wrw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:23:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=IMGHiljhJdWK0ICC3j0XLkn1KRnwi613NvPHnzcXxdw=;
+        b=wWgdhuMPniP/dSdSE6ty60TiXDxjvEbxseBEx5ORcfQnt5ewPTlaccscMnit79EtUa
+         /2VoZz0yYtttg5Kce+usWp1I0t28qLPwATKew5SkuFRhub5LvbscFsJZGJRvCcw3E3a2
+         xrVR28XY4BE0ppe3/DYAd4Rf+GOyxghEE1858TaGT8JPo4t1n7B5lC+qBfthJmYbHdup
+         IlHTivu0jxIZeqx2+tHVG4oCOJcpqIR+i4pd1H85RzKensDrTuOT52tyAb4c1Nzrwf7Y
+         lI9CnS7xJ2WLMc6NbQ4e5tyiYxF4EgIBH7SXEBR6+9OkEknnDRkyqvGu//MzYJHuaw0j
+         uQSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=IMGHiljhJdWK0ICC3j0XLkn1KRnwi613NvPHnzcXxdw=;
+        b=caYEVBWIvaGB1JLZTDJgBEIrr2RnuGIxzk0nXToF+uibodoiL0f+qSNmfuB2GoKCpp
+         iXRMKT775rDxdqb3W/64x18kGltOG3MwDaQ582+TZm42wrUMZzpGh5BSh65IAFHzOhHA
+         eS1U5j81RRYA85w90SbqmbaTPvMb4WDLBZbb+Hz/pWrQZIA09qbI0dYAgeavIMbKEbPM
+         nAguYog1mv45Kxstycgmm0oCANCwWkKMRlFI9LYhNvqmAOQnvne1QU1b4ChyKFGbPa7l
+         F+oqmHlyb/OZLwT318ZKjOgt1cVzTTGMMANMwO2Wv24ShTXIM3n27ppL7Wn9T5CL8Boc
+         goGA==
+X-Gm-Message-State: AOAM533hstkyTcUKDy3O8A/Smi/0SeGJj/KjTNWA204eCLo0RSOVMNO5
+        wdEjvwCiD3dRrr77dHwqw8moqaAOQZhl4A==
+X-Google-Smtp-Source: ABdhPJwa40qaFduig+ioQMCkyBLikQv7X35lxUnFtarqXDGQ1mkEJmn2C2oZG6aOBqq8rA5uYdVa0A==
+X-Received: by 2002:a5d:474f:: with SMTP id o15mr829455wrs.100.1607023433988;
+        Thu, 03 Dec 2020 11:23:53 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:9cff:9584:adb2:6288? ([2a01:e34:ed2f:f020:9cff:9584:adb2:6288])
+        by smtp.googlemail.com with ESMTPSA id m8sm362229wmc.27.2020.12.03.11.23.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 11:23:53 -0800 (PST)
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [GIT PULL] timer drivers for v5.11
+Message-ID: <028084fa-d29b-a1d5-7eab-17f77ef69863@linaro.org>
+Date:   Thu, 3 Dec 2020 20:23:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: kvmarm@lists.cs.columbia.edu, dbrazdil@google.com, catalin.marinas@arm.com, lorenzo.pieralisi@arm.com, linux-kernel@vger.kernel.org, will@kernel.org, tj@kernel.org, dennis@kernel.org, linux-doc@vger.kernel.org, corbet@lwn.net, kernel-team@android.com, linux-arm-kernel@lists.infradead.org, cl@linux.com, sudeep.holla@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Dec 2020 18:40:56 +0000, David Brazdil wrote:
-> As we progress towards being able to keep guest state private to the
-> host running nVHE hypervisor, this series allows the hypervisor to
-> install itself on newly booted CPUs before the host is allowed to run
-> on them.
-> 
-> All functionality described below is opt-in, guarded by an early param
-> 'kvm-arm.mode=protected'. Future patches specific to the new protected
-> mode should be hidden behind the same param.
-> 
-> [...]
+The following changes since commit b996544916429946bf4934c1c01a306d1690972c:
 
-Applied to kvm-arm64/psci-relay, thanks!
+  tick: Get rid of tick_period (2020-11-19 10:48:29 +0100)
 
-Note that although I pushed it to -next, I still need people to
-eyeball it and give it some Acks. The commit-IDs below will
-thus change as I apply tags, if any.
+are available in the Git repository at:
 
-[01/26] KVM: arm64: Add kvm-arm.mode early kernel parameter
-        commit: 2d4b0ce5c9b62398522b4b078cfd2cc0fa3fb604
-[02/26] KVM: arm64: Add ARM64_KVM_PROTECTED_MODE CPU capability
-        commit: 44e88d43c442adcebebec5b9e23f260a03a25120
-[03/26] psci: Support psci_ops.get_version for v0.1
-        commit: 47e4000e4f6ea4496accf7e3e68c29f38ca4e179
-[04/26] psci: Split functions to v0.1 and v0.2+ variants
-        commit: 1fbb7db86fb5f1cd7a2c9ec9c477acb67ac986a7
-[05/26] psci: Replace psci_function_id array with a struct
-        commit: c801a91084f382ab8f9707bd33e6ccb7012e1e50
-[06/26] psci: Add accessor for psci_0_1_function_ids
-        commit: 26c9988c7330b2225ba39cae9de43b0bfff57e2a
-[07/26] arm64: Make cpu_logical_map() take unsigned int
-        commit: 2346f8b8ea0bb140d67ba6f06b67aec06e238dde
-[08/26] arm64: Extract parts of el2_setup into a macro
-        commit: 9c322020286c60fbdd97f6a8c41362be5f4f8bb9
-[09/26] KVM: arm64: Remove vector_ptr param of hyp-init
-        commit: 1db5bd14716029c8859551e9c38fe76818959b7b
-[10/26] KVM: arm64: Move hyp-init params to a per-CPU struct
-        commit: 4a836c1e69dbeb14f69d554e1fe36d2e619d94fc
-[11/26] KVM: arm64: Init MAIR/TCR_EL2 from params struct
-        commit: 5e664b8539c396dbceaccb6bef2a9ed48964906a
-[12/26] KVM: arm64: Add .hyp.data..ro_after_init ELF section
-        commit: 89f3705ca070900a127f181ce724aa6c1e9c9479
-[13/26] KVM: arm64: Support per_cpu_ptr in nVHE hyp code
-        commit: 2091f4271a400169d8fa8004bf743aa815c3c5d4
-[14/26] KVM: arm64: Create nVHE copy of cpu_logical_map
-        commit: 626aa81e14f9d723fe91fdb5c1030f73f929d0ad
-[15/26] KVM: arm64: Add SMC handler in nVHE EL2
-        commit: 0ec63d737071f483ab6fc63e2d9b59d0d4cc59fd
-[16/26] KVM: arm64: Bootstrap PSCI SMC handler in nVHE EL2
-        commit: 5988416e2234db36b80c510c1ae99a6de0c1431d
-[17/26] KVM: arm64: Add offset for hyp VA <-> PA conversion
-        commit: bf9dc203286ce42de948dbb0d3fdaea51e2ab37f
-[18/26] KVM: arm64: Forward safe PSCI SMCs coming from host
-        commit: 0e11d688605f1772098add3a755503688db2d06f
-[19/26] KVM: arm64: Extract __do_hyp_init into a helper function
-        commit: 294f71ad53625f75531dd43d775efc3507cd9b0a
-[20/26] KVM: arm64: Add function to enter host from KVM nVHE hyp code
-        commit: cb9773719fc405e8cc2041cd457fcd8655863a78
-[21/26] KVM: arm64: Intercept host's CPU_ON SMCs
-        commit: 6ed1b8bd3c623d4e0e4441a2a73dbda162e3ebe7
-[22/26] KVM: arm64: Intercept host's CPU_SUSPEND PSCI SMCs
-        commit: 5f51e7f65258cea36833c793625f4fb6d0e38426
-[23/26] KVM: arm64: Intercept host's SYSTEM_SUSPEND PSCI SMCs
-        commit: dfa751cfd54b3f9ac1d89050cf0ad6c6bc3a9dc5
-[24/26] KVM: arm64: Keep nVHE EL2 vector installed
-        commit: 0c8078f56aa99ab4350d9ae3dabd3504d2f11fbd
-[25/26] KVM: arm64: Trap host SMCs in protected mode
-        commit: 4e3e6c3acb741a9692e0b772e92368fee85dced8
-[26/26] KVM: arm64: Fix EL2 mode availability checks
-        commit: 5e7953174eb1966d4cdc70caf3708afc8c4dd5f9
+  ssh://git@git.linaro.org/people/daniel.lezcano/linux.git tags/timers-v5.11
 
-Cheers,
+for you to fetch changes up to ab3105446f1ec4e98fadfc998ee24feec271c16c:
 
-	M.
+  clocksource/drivers/riscv: Make RISCV_TIMER depends on RISCV_SBI
+(2020-12-03 19:16:26 +0100)
+
+----------------------------------------------------------------
+- Add static annotation for the sp804 init functions (Zhen Lei)
+
+- Code cleanups and error code path at init time fixes on the sp804
+  (Kefen Wang)
+
+- Add new OST timer driver device tree bindings (Zhou Yanjie)
+
+- Remove EZChip NPS clocksource driver corresponding to the NPS
+  platform which was removed from the ARC architecture (Vineet Gupta)
+
+- Add missing clk_disable_unprepare() on error path for Orion (Yang
+  Yingliang)
+
+- Add device tree bindings documentation for Renesas r8a774e1
+  (Marian-Cristian Rotariu)
+
+- Convert Renesas TMU to json-schema (Geert Uytterhoeven)
+
+- Fix memory leak on the error path at init time on the cadence_ttc
+  driver (Yu Kuai)
+
+- Fix section mismatch for Ingenic timer driver (Daniel Lezcano)
+
+- Make RISCV_TIMER depends on RISCV_SBI (Kefeng Wang)
+
+----------------------------------------------------------------
+Daniel Lezcano (1):
+      clocksource/drivers/ingenic: Fix section mismatch
+
+Geert Uytterhoeven (1):
+      dt-bindings: timer: renesas: tmu: Convert to json-schema
+
+Kefeng Wang (5):
+      clocksource/drivers/sp804: Make some symbol static
+      clocksource/drivers/sp804: Use clk_prepare_enable and
+clk_disable_unprepare
+      clocksource/drivers/sp804: Correct clk_get_rate handle
+      clocksource/drivers/sp804: Use pr_fmt
+      clocksource/drivers/riscv: Make RISCV_TIMER depends on RISCV_SBI
+
+Marian-Cristian Rotariu (1):
+      dt-bindings: timer: renesas: tmu: Document r8a774e1 bindings
+
+Vineet Gupta (1):
+      clocksource/drivers/nps: Remove EZChip NPS clocksource driver
+
+Yang Yingliang (1):
+      clocksource/drivers/orion: Add missing clk_disable_unprepare() on
+error path
+
+Yu Kuai (1):
+      clocksource/drivers/cadence_ttc: Fix memory leak in
+ttc_setup_clockevent()
+
+Zhen Lei (1):
+      clocksource/drivers/sp804: Add static for functions such as
+sp804_clockevents_init()
+
+周琰杰 (Zhou Yanjie) (1):
+      dt-bindings: timer: Add new OST support for the upcoming new driver.
+
+ Documentation/devicetree/bindings/timer/renesas,tmu.txt  |  49
+--------------------------
+ Documentation/devicetree/bindings/timer/renesas,tmu.yaml |  99
++++++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/clocksource/Kconfig                              |  12 +------
+ drivers/clocksource/Makefile                             |   1 -
+ drivers/clocksource/ingenic-timer.c                      |   2 +-
+ drivers/clocksource/timer-cadence-ttc.c                  |  18 +++++-----
+ drivers/clocksource/timer-nps.c                          | 284
+--------------------------------------------------------------------------------------------------------------------------------------------------
+ drivers/clocksource/timer-orion.c                        |  11 ++++--
+ drivers/clocksource/timer-sp804.c                        |  49
++++++++++-----------------
+ include/dt-bindings/clock/ingenic,sysost.h               |  10 ++++--
+ 10 files changed, 142 insertions(+), 393 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.txt
+ create mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.yaml
+ delete mode 100644 drivers/clocksource/timer-nps.c
+
 -- 
-Without deviation from the norm, progress is not possible.
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
