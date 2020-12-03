@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C1F2CCC64
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:22:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607812CCC61
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387865AbgLCCUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 21:20:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47484 "EHLO mail.kernel.org"
+        id S2387755AbgLCCUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 21:20:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387467AbgLCCUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2387431AbgLCCUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Dec 2020 21:20:47 -0500
 Content-Type: text/plain; charset="utf-8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1606962006;
-        bh=WfvFgY7WyJmcEeGRAFv4PiV/E7Zm4V2tDWt6oRCbSVs=;
+        bh=k2kpXagaE8QcgyXl15/fGTiJlvBhfcEv5yCvWYsFHSE=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=NzRFNNaQXgVMRBSuw16C6t+1+Ix6D0oPkWhWqx7lZgW/GIN26iYJxhgycXqvC1rye
-         hpQBCa8vlhdoSDW4icx4lzqwHWIFFowYRCKheQWVSDN6emCfPvhseMSTvMQriXiSTs
-         UxgHkP2eoX0++j2ZEjxw+FCAbmEx7/bOhxHDkk+lAVn+zdBFCib78dW3MjBlfk4CE6
-         6Lbh6yrZ3t/AZ+QYD9msWkkp0a40VuSumqczT9UL26pu4+Jqq+rJ24n3EfUl0fLqnR
-         hb++jSucwAUIRlyceIORP09W5RWUTDj7D5laSeHvYZ4svKP5xOoylh3JjwNa1Nd4iw
-         eHb5d23g9Pv4g==
+        b=k9u5r+hK8+F+s5+3/19dPq8iUXv2gPILd/ZMUGIB5H+KlHHYHGMDdQmYamkFB2kiS
+         EsoWThW26bWbk4QeBYmhr77gEmeef+nYEl8K0T7Pd3pBCAhN7+WSvOqPXdWZMecb5i
+         S8HhX0Vik/C7oaH3ZNis5CYkAqm11/Obq5fEEX/iqUeBUYsmc6JyUJmkhC83qgneI/
+         F6v2PInu10U75EWZDkNpP+5wEpCeA596iGYB7V/ncl8mm5Yz2Z4DXJ/pVb6fschq1j
+         EbovoyOq6YuDh5yaLvPtqPKe5po4auzkIjipTh3vUwCE+An/PAanU1fcCX958bTD9q
+         ZPF6D1P81o0bg==
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] cxgb3: fix error return code in t3_sge_alloc_qset()
+Subject: Re: [PATCH net] vxlan: fix error return code in __vxlan_dev_create()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160696200679.5625.4336218337723477968.git-patchwork-notify@kernel.org>
+Message-Id: <160696200674.5625.12486993272321475655.git-patchwork-notify@kernel.org>
 Date:   Thu, 03 Dec 2020 02:20:06 +0000
-References: <1606902965-1646-1-git-send-email-zhangchangzhong@huawei.com>
-In-Reply-To: <1606902965-1646-1-git-send-email-zhangchangzhong@huawei.com>
+References: <1606903122-2098-1-git-send-email-zhangchangzhong@huawei.com>
+In-Reply-To: <1606903122-2098-1-git-send-email-zhangchangzhong@huawei.com>
 To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     rajur@chelsio.com, davem@davemloft.net, kuba@kernel.org,
-        divy@chelsio.com, jgarzik@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, ap420073@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -42,19 +41,19 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Wed, 2 Dec 2020 17:56:05 +0800 you wrote:
+On Wed, 2 Dec 2020 17:58:42 +0800 you wrote:
 > Fix to return a negative error code from the error handling
 > case instead of 0, as done elsewhere in this function.
 > 
-> Fixes: b1fb1f280d09 ("cxgb3 - Fix dma mapping error path")
+> Fixes: 0ce1822c2a08 ("vxlan: add adjacent link to limit depth level")
 > Reported-by: Hulk Robot <hulkci@huawei.com>
 > Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] cxgb3: fix error return code in t3_sge_alloc_qset()
-    https://git.kernel.org/netdev/net/c/ff9924897f8b
+  - [net] vxlan: fix error return code in __vxlan_dev_create()
+    https://git.kernel.org/netdev/net/c/832e09798c26
 
 You are awesome, thank you!
 --
