@@ -2,181 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6212CDB7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 164262CDB81
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501895AbgLCQqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:46:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387522AbgLCQqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:46:09 -0500
-Date:   Thu, 3 Dec 2020 08:45:25 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607013927;
-        bh=Y0iV1RunWskn9BD9xD2fPJamNpVv9vN+8r7Rej431Wk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eS9DCfhixf8+N+bVQkL3bbc4rAFr2WbeYJjr+fbtutmySfM6HeSd/t74XWNBSqbQB
-         2tVNi0m6K59OStLSF+cDI0qwOBkqD8bXc2c0yEbpSKIp8NjJ72pj+7O0RvSlflLmGq
-         Km73pSsU9qhnllyAzpCHQthgXGSw2u2wx1YUNwzZyJJiJTb5faOKwQdn+Tw5mqTtEt
-         Bkh+nofgkT55bGSmb2jgwcS82d292MKjq5gCXuwn8QMSz1D9qemmlPVSYDWpHVl1j4
-         P0xPw41ekoPZuEVAd+yUT1+lp0RrQS7azEnuZ0GDDGAQsMqcEffeuvFvvN9f5XaDQW
-         ImA0ez0R91OLg==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jarod Wilson <jarod@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Ivan Vecera <ivecera@redhat.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: Re: [PATCH net v3] bonding: fix feature flag setting at init time
-Message-ID: <20201203084525.7f1a8e93@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201203004357.3125-1-jarod@redhat.com>
-References: <20201202173053.13800-1-jarod@redhat.com>
-        <20201203004357.3125-1-jarod@redhat.com>
+        id S2501902AbgLCQqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:46:21 -0500
+Received: from smtprelay0015.hostedemail.com ([216.40.44.15]:59498 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728092AbgLCQqV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 11:46:21 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 2D823182CED28;
+        Thu,  3 Dec 2020 16:45:40 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2194:2199:2393:2559:2562:2828:2892:3138:3139:3140:3141:3142:3622:3866:3867:3870:3871:3872:3874:4321:5007:9108:10004:10400:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30054:30075:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: shock56_120e5e2273bd
+X-Filterd-Recvd-Size: 1871
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  3 Dec 2020 16:45:36 +0000 (UTC)
+Message-ID: <e9edd473b8bfc576b8b274c64fd74d021bc4f4d0.camel@perches.com>
+Subject: Re: [PATCH] netfilter: conntrack: fix -Wformat
+From:   Joe Perches <joe@perches.com>
+To:     Tom Rix <trix@redhat.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Thu, 03 Dec 2020 08:45:34 -0800
+In-Reply-To: <844b0184-a74b-4d0a-8470-69d58323391a@redhat.com>
+References: <20201107075550.2244055-1-ndesaulniers@google.com>
+         <4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com>
+         <CAKwvOdn50VP4h7tidMnnFeMA1M-FevykP+Y0ozieisS7Nn4yoQ@mail.gmail.com>
+         <26052c5a0a098aa7d9c0c8a1d39cc4a8f7915dd2.camel@perches.com>
+         <CAKwvOdkv6W_dTLVowEBu0uV6oSxwW8F+U__qAsmk7vop6U8tpw@mail.gmail.com>
+         <7ca84085-f8e1-6792-7d1c-455815986572@redhat.com>
+         <CAKXUXMx0nSZqFfOF63J+awCpkPkgr-kuchUxd2-tuMbA2piD5A@mail.gmail.com>
+         <844b0184-a74b-4d0a-8470-69d58323391a@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  2 Dec 2020 19:43:57 -0500 Jarod Wilson wrote:
-> Don't try to adjust XFRM support flags if the bond device isn't yet
-> registered. Bad things can currently happen when netdev_change_features()
-> is called without having wanted_features fully filled in yet. This code
-> runs on post-module-load mode changes, as well as at module init time
-> and new bond creation time, and in the latter two scenarios, it is
-> running prior to register_netdevice() having been called and
-> subsequently filling in wanted_features. The empty wanted_features led
-> to features also getting emptied out, which was definitely not the
-> intended behavior, so prevent that from happening.
-> 
-> Originally, I'd hoped to stop adjusting wanted_features at all in the
-> bonding driver, as it's documented as being something only the network
-> core should touch, but we actually do need to do this to properly update
-> both the features and wanted_features fields when changing the bond type,
-> or we get to a situation where ethtool sees:
-> 
->     esp-hw-offload: off [requested on]
-> 
-> I do think we should be using netdev_update_features instead of
-> netdev_change_features here though, so we only send notifiers when the
-> features actually changed.
-> 
-> v2: rework based on further testing and suggestions from ivecera
-> v3: add helper function, remove goto, fix problem description
-> 
-> Fixes: a3b658cfb664 ("bonding: allow xfrm offload setup post-module-load")
-> Reported-by: Ivan Vecera <ivecera@redhat.com>
-> Suggested-by: Ivan Vecera <ivecera@redhat.com>
-> Cc: Jay Vosburgh <j.vosburgh@gmail.com>
-> Cc: Veaceslav Falico <vfalico@gmail.com>
-> Cc: Andy Gospodarek <andy@greyhouse.net>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Thomas Davis <tadavis@lbl.gov>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Jarod Wilson <jarod@redhat.com>
-> ---
->  drivers/net/bonding/bond_main.c    | 10 ++++------
->  drivers/net/bonding/bond_options.c | 19 ++++++++++++++-----
->  2 files changed, 18 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> index 47afc5938c26..7905534a763b 100644
-> --- a/drivers/net/bonding/bond_main.c
-> +++ b/drivers/net/bonding/bond_main.c
-> @@ -4747,15 +4747,13 @@ void bond_setup(struct net_device *bond_dev)
->  				NETIF_F_HW_VLAN_CTAG_FILTER;
->  
->  	bond_dev->hw_features |= NETIF_F_GSO_ENCAP_ALL | NETIF_F_GSO_UDP_L4;
-> -#ifdef CONFIG_XFRM_OFFLOAD
-> -	bond_dev->hw_features |= BOND_XFRM_FEATURES;
-> -#endif /* CONFIG_XFRM_OFFLOAD */
->  	bond_dev->features |= bond_dev->hw_features;
->  	bond_dev->features |= NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_STAG_TX;
->  #ifdef CONFIG_XFRM_OFFLOAD
-> -	/* Disable XFRM features if this isn't an active-backup config */
-> -	if (BOND_MODE(bond) != BOND_MODE_ACTIVEBACKUP)
-> -		bond_dev->features &= ~BOND_XFRM_FEATURES;
-> +	bond_dev->hw_features |= BOND_XFRM_FEATURES;
-> +	/* Only enable XFRM features if this is an active-backup config */
-> +	if (BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP)
-> +		bond_dev->features |= BOND_XFRM_FEATURES;
->  #endif /* CONFIG_XFRM_OFFLOAD */
->  }
->  
-> diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
-> index 9abfaae1c6f7..1ae0e5ab8c67 100644
-> --- a/drivers/net/bonding/bond_options.c
-> +++ b/drivers/net/bonding/bond_options.c
-> @@ -745,6 +745,18 @@ const struct bond_option *bond_opt_get(unsigned int option)
->  	return &bond_opts[option];
->  }
->  
-> +#ifdef CONFIG_XFRM_OFFLOAD
-> +static void bond_set_xfrm_features(struct net_device *bond_dev, u64 mode)
-> +{
-> +	if (mode == BOND_MODE_ACTIVEBACKUP)
-> +		bond_dev->wanted_features |= BOND_XFRM_FEATURES;
-> +	else
-> +		bond_dev->wanted_features &= ~BOND_XFRM_FEATURES;
-> +
-> +	netdev_update_features(bond_dev);
-> +}
-> +#endif /* CONFIG_XFRM_OFFLOAD */
-> +
->  static int bond_option_mode_set(struct bonding *bond,
->  				const struct bond_opt_value *newval)
->  {
-> @@ -768,11 +780,8 @@ static int bond_option_mode_set(struct bonding *bond,
->  		bond->params.tlb_dynamic_lb = 1;
->  
->  #ifdef CONFIG_XFRM_OFFLOAD
-> -	if (newval->value == BOND_MODE_ACTIVEBACKUP)
-> -		bond->dev->wanted_features |= BOND_XFRM_FEATURES;
-> -	else
-> -		bond->dev->wanted_features &= ~BOND_XFRM_FEATURES;
-> -	netdev_change_features(bond->dev);
-> +	if (bond->dev->reg_state == NETREG_REGISTERED)
-> +		bond_set_xfrm_features(bond->dev, newval->value);
->  #endif /* CONFIG_XFRM_OFFLOAD */
+On Thu, 2020-12-03 at 06:39 -0800, Tom Rix wrote:
+> I agree if it can be done in checkpatch it should.
+> It is good to have multiple passes on cleaning.
 
-nit: let's narrow down the ifdef-enery
+true
+ 
+> checkpatch is best at fixing new problems,
+> clang-tidy-fix is best at fixing old problems.
 
-no need for the ifdef here, if the helper looks like this:
+checkpatch is a set of brainless regexes that operates on
+incomplete information.  It's not a real parser nor compiler.
 
-+static void bond_set_xfrm_features(struct net_device *bond_dev, u64 mode)
-+{
-+#ifdef CONFIG_XFRM_OFFLOAD
-+	if (mode == BOND_MODE_ACTIVEBACKUP)
-+		bond_dev->wanted_features |= BOND_XFRM_FEATURES;
-+	else
-+		bond_dev->wanted_features &= ~BOND_XFRM_FEATURES;
-+
-+	netdev_update_features(bond_dev);
-+#endif /* CONFIG_XFRM_OFFLOAD */
-+}
-
-Even better:
-
-+static void bond_set_xfrm_features(struct net_device *bond_dev, u64 mode)
-+{
-+	if (!IS_ENABLED(CONFIG_XFRM_OFFLOAD))
-+		return;
-+
-+	if (mode == BOND_MODE_ACTIVEBACKUP)
-+		bond_dev->wanted_features |= BOND_XFRM_FEATURES;
-+	else
-+		bond_dev->wanted_features &= ~BOND_XFRM_FEATURES;
-+
-+	netdev_update_features(bond_dev);
-+}
-
-(Assuming BOND_XFRM_FEATURES doesn't itself hide under an ifdef.)
-
->  
->  	/* don't cache arp_validate between modes */
+It's really only useful as a way to avoid trivial style issues.
 
