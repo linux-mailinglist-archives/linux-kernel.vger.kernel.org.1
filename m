@@ -2,198 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3441A2CDAC8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BE42CDACE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731243AbgLCQFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:05:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38191 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731236AbgLCQFa (ORCPT
+        id S2387919AbgLCQHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:07:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728018AbgLCQH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:05:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607011443;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hr22txaoNLWqIIxA6KQdTOKASYpvNDdZFmcQSpDcxdk=;
-        b=IgCqg3U1xN+zvhFRUQmD6wY6higB/eY2E9weYVmGujGk3IV0zyfUEwFj/S9hPgiIAOg4Mf
-        a4GG07efoJ4hKSWb3zN5dwPQPQMXZmk3ujXS+hKT6NmmSdlAWo4hXG6ZXfscwwuAzqFZfh
-        nrxc6zXKWscS//P6e8iy9Qtv3hnxT4c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-GaqNXf5rPDaJQJAgyB5ReA-1; Thu, 03 Dec 2020 11:03:54 -0500
-X-MC-Unique: GaqNXf5rPDaJQJAgyB5ReA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90A4B2AB;
-        Thu,  3 Dec 2020 16:03:40 +0000 (UTC)
-Received: from ovpn-66-132.rdu2.redhat.com (unknown [10.10.67.132])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F164B1002C11;
-        Thu,  3 Dec 2020 16:03:36 +0000 (UTC)
-Message-ID: <7733019eb8c506eee8d29e380aae683a8972fd19.camel@redhat.com>
-Subject: Re: [PATCH v2] lib: stackdepot: Add support to configure
- STACK_HASH_SIZE
-From:   Qian Cai <qcai@redhat.com>
-To:     vjitta@codeaurora.org, minchan@kernel.org, glider@google.com,
-        dan.j.williams@intel.com, broonie@kernel.org, mhiramat@kernel.org
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        ylal@codeaurora.org, vinmenon@codeaurora.org,
-        kasan-dev@googlegroups.com, sfr@canb.auug.org.au,
-        linux-next@vger.kernel.org
-Date:   Thu, 03 Dec 2020 11:03:36 -0500
-In-Reply-To: <1606365835-3242-1-git-send-email-vjitta@codeaurora.org>
-References: <1606365835-3242-1-git-send-email-vjitta@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Thu, 3 Dec 2020 11:07:29 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE43C061A52;
+        Thu,  3 Dec 2020 08:06:43 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id p6so1388945plo.6;
+        Thu, 03 Dec 2020 08:06:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=XusUUMOcsxyHAHts7eRaEqOJ9Ba5mevgTlGY1m+u6no=;
+        b=DFiej7Rt4Q1riBniDscweT1OzOxLklM91nqD+QbexX28mOEEEQ7cVFuSZItBW0EKCd
+         amgj/bBB62s3FOMn2VoKlJHN+5AcflebE72qIZj+wvJyWwEE5ps7RyQb/3YNiW2bd27Y
+         zbw2x1vFECMayTxbyOUhg+7oGVlYbPqgOf2cPb1M8oculPUjZ37OPHoeXAUCfBoaIZYM
+         hCqlrwodHp0Xuk/urgdXrZjrwpKB/s8bgC5lNppfh0SD8uAw43ts4YEk8L1mYJJBRq3C
+         kzcoCsJ/+6QpCyfbthe/jGfvKjbgxrlZUWJnfDh/kAJzRlfRQ2EjHM6Vdvr4q6AxZ36V
+         Ue+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=XusUUMOcsxyHAHts7eRaEqOJ9Ba5mevgTlGY1m+u6no=;
+        b=X/f/tuKQKy1IzFi4V7LZ9/5AXP1AtLSILybdGcfzCszuGT6JfTFYy2gzf7TFfppuPa
+         ErjIzAqbawdVDiTb4I+sBeUeT9b3KvY3Fm3TZJpcGYSSSfhs6jnJsCzUUN/VRaqioWd4
+         8qPZewUWmlmzZAs9vQM4slFMAlCJ6B5n5YFW8lhoUF10l0nk+U8sBeEoErdXYPLf/fvM
+         8bzDBZa4fV5ckyaXrmppXIrfumo0CA99AtV6mL1R/qnvNRfOIHwF6eecQZC2H4+7L+i6
+         imBcZlP8ak1XwcJeSN8ZBPTj6Gz1hyGN129/twKxTk7MW02ZcDhA2Y164/1qVqvzME6v
+         jhAg==
+X-Gm-Message-State: AOAM530wydiDCr3xRLPNcQISNpwy5poycBL9fmGwlTE0juZ20kKFNZYC
+        UOsXAtDi6CKNBrPyW6GCddI=
+X-Google-Smtp-Source: ABdhPJxLOo1w/yGlUJzY7chjLIJeKvn/HhnjK/TLHIGD/n8YCrn7D7KB77aBVOOqsaowQQp308eBtQ==
+X-Received: by 2002:a17:902:8a87:b029:d7:cf56:ce1f with SMTP id p7-20020a1709028a87b02900d7cf56ce1fmr1839663plo.22.1607011603214;
+        Thu, 03 Dec 2020 08:06:43 -0800 (PST)
+Received: from localhost.localdomain (1-171-1-217.dynamic-ip.hinet.net. [1.171.1.217])
+        by smtp.gmail.com with ESMTPSA id h6sm92503pgc.15.2020.12.03.08.06.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 03 Dec 2020 08:06:42 -0800 (PST)
+From:   cy_huang <u0084500@gmail.com>
+To:     lee.jones@linaro.org, robh+dt@kernel.org
+Cc:     cy_huang@richtek.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v2 1/4] mfd: rt4831: Adds support for Richtek RT4831 MFD core
+Date:   Fri,  4 Dec 2020 00:06:32 +0800
+Message-Id: <1607011595-13603-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-26 at 10:13 +0530, vjitta@codeaurora.org wrote:
-> From: Yogesh Lal <ylal@codeaurora.org>
-> 
-> Add a kernel parameter stack_hash_order to configure STACK_HASH_SIZE.
-> 
-> Aim is to have configurable value for STACK_HASH_SIZE, so that one
-> can configure it depending on usecase there by reducing the static
-> memory overhead.
-> 
-> One example is of Page Owner, default value of STACK_HASH_SIZE lead
-> stack depot to consume 8MB of static memory. Making it configurable
-> and use lower value helps to enable features like CONFIG_PAGE_OWNER
-> without any significant overhead.
-> 
-> Suggested-by: Minchan Kim <minchan@kernel.org>
-> Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
-> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-Reverting this commit on today's linux-next fixed boot crash with KASAN.
+This adds support Richtek RT4831 MFD core. It includes four channel WLED driver
+and Display Bias Voltage outputs.
 
-.config:
-https://cailca.coding.net/public/linux/mm/git/files/master/x86.config
-https://cailca.coding.net/public/linux/mm/git/files/master/arm64.config
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+Changes since v2
+- Add copyright.
+- Refine error log text in probe.
+- Refine comment lines in remove and shutdown callback.
+- Refine Kconfig descriptions.
+---
+ drivers/mfd/Kconfig       |  10 ++++
+ drivers/mfd/Makefile      |   1 +
+ drivers/mfd/rt4831-core.c | 124 ++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 135 insertions(+)
+ create mode 100644 drivers/mfd/rt4831-core.c
 
-
-[    5.135848][    T0] random: get_random_u64 called from __kmem_cache_create+0x2e/0x490 with crng_init=0
-[    5.135909][    T0] BUG: unable to handle page fault for address: 00000000002ac6d0
-[    5.152733][    T0] #PF: supervisor read access in kernel mode
-[    5.158585][    T0] #PF: error_code(0x0000) - not-present page
-[    5.164438][    T0] PGD 0 P4D 0 
-[    5.167670][    T0] Oops: 0000 [#1] SMP KASAN NOPTI
-[    5.172566][    T0] CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.0-rc6-next-20201203+ #3
-[    5.180685][    T0] Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 07/10/2019
-[    5.189950][    T0] RIP: 0010:stack_depot_save+0xf4/0x460
-stack_depot_save at lib/stackdepot.c:272
-[    5.195362][    T0] Code: 00 00 83 ff 01 0f 84 b3 00 00 00 8b 0d 35 67 39 08 b8 01 00 00 00 48 d3 e0 48 8b 0d 46 9c 27 11 48 83 e8 01 21 d8 4c 8d 34 c1 <4d> 8b 2e 4d 85 ed 0f 84 ca 00 00 00 41 8d 74 24 ff 48 c1 e6 03 eb
-[    5.214927][    T0] RSP: 0000:ffffffff99007c18 EFLAGS: 00010002
-[    5.220865][    T0] RAX: 00000000000558da RBX: 00000000caa558da RCX: 0000000000000000
-[    5.228726][    T0] RDX: 0000000000000cc0 RSI: 00000000e11e461a RDI: 0000000000000001
-[    5.236590][    T0] RBP: ffffffff99007c68 R08: 000000002ff39dab R09: 0000000000000007
-[    5.244450][    T0] R10: ffffffff99007b60 R11: 0000000000000005 R12: 0000000000000008
-[    5.252313][    T0] R13: ffff8881000400b7 R14: 00000000002ac6d0 R15: 0000000000000078
-[    5.260173][    T0] FS:  0000000000000000(0000) GS:ffff88881e800000(0000) knlGS:0000000000000000
-[    5.268996][    T0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    5.275674][    T0] CR2: 00000000002ac6d0 CR3: 0000000cc8814000 CR4: 00000000000406b0
-[    5.283534][    T0] Call Trace:
-[    5.286687][    T0]  kasan_save_stack+0x2f/0x40
-[    5.291225][    T0]  ? kasan_save_stack+0x19/0x40
-[    5.295939][    T0]  ? ____kasan_kmalloc.constprop.8+0x85/0xa0
-[    5.301793][    T0]  ? __kmem_cache_create+0x26a/0x490
-[    5.306950][    T0]  ? create_boot_cache+0x75/0x98
-[    5.311751][    T0]  ? kmem_cache_init+0x42/0x146
-[    5.316471][    T0]  ? mm_init+0x64/0x87
-[    5.320399][    T0]  ? start_kernel+0x14c/0x3a7
-[    5.324945][    T0]  ? secondary_startup_64_no_verify+0xc2/0xcb
-[    5.330885][    T0]  ? lockdep_hardirqs_on_prepare+0x3d0/0x3d0
-[    5.336733][    T0]  ? lockdep_hardirqs_on_prepare+0x3d0/0x3d0
-[    5.342590][    T0]  ? __isolate_free_page+0x540/0x540
-[    5.347742][    T0]  ? find_held_lock+0x33/0x1c0
-[    5.352371][    T0]  ? __alloc_pages_nodemask+0x534/0x700
-[    5.357784][    T0]  ? __alloc_pages_slowpath.constprop.110+0x20f0/0x20f0
-[    5.364600][    T0]  ? __kasan_init_slab_obj+0x20/0x30
-[    5.369753][    T0]  ? unpoison_range+0xf/0x30
-[    5.374207][    T0]  ____kasan_kmalloc.constprop.8+0x85/0xa0
-kasan_set_track at mm/kasan/common.c:47
-(inlined by) set_alloc_info at mm/kasan/common.c:405
-(inlined by) ____kasan_kmalloc at mm/kasan/common.c:436
-[    5.379886][    T0]  __kmem_cache_create+0x26a/0x490
-early_kmem_cache_node_alloc at mm/slub.c:3566
-(inlined by) init_kmem_cache_nodes at mm/slub.c:3606
-(inlined by) kmem_cache_open at mm/slub.c:3858
-(inlined by) __kmem_cache_create at mm/slub.c:4468
-[    5.384864][    T0]  create_boot_cache+0x75/0x98
-create_boot_cache at mm/slab_common.c:568
-[    5.389493][    T0]  kmem_cache_init+0x42/0x146
-[    5.394035][    T0]  mm_init+0x64/0x87
-[    5.397791][    T0]  start_kernel+0x14c/0x3a7
-[    5.402159][    T0]  ? copy_bootdata+0x19/0x47
-[    5.406615][    T0]  secondary_startup_64_no_verify+0xc2/0xcb
-[    5.412380][    T0] Modules linked in:
-[    5.416136][    T0] CR2: 00000000002ac6d0
-[    5.420158][    T0] ---[ end trace c97cf41616dddbe6 ]---
-[    5.425483][    T0] RIP: 0010:stack_depot_save+0xf4/0x460
-[    5.430898][    T0] Code: 00 00 83 ff 01 0f 84 b3 00 00 00 8b 0d 35 67 39 08 b8 01 00 00 00 48 d3 e0 48 8b 0d 46 9c 27 11 48 83 e8 01 21 d8 4c 8d 34 c1 <4d> 8b 2e 4d 85 ed 0f 84 ca 00 00 00 41 8d 74 24 ff 48 c1 e6 03 eb
-[    5.450464][    T0] RSP: 0000:ffffffff99007c18 EFLAGS: 00010002
-[    5.456403][    T0] RAX: 00000000000558da RBX: 00000000caa558da RCX: 0000000000000000
-[    5.464264][    T0] RDX: 0000000000000cc0 RSI: 00000000e11e461a RDI: 0000000000000001
-[    5.472127][    T0] RBP: ffffffff99007c68 R08: 000000002ff39dab R09: 0000000000000007
-[    5.479988][    T0] R10: ffffffff99007b60 R11: 0000000000000005 R12: 0000000000000008
-[    5.487849][    T0] R13: ffff8881000400b7 R14: 00000000002ac6d0 R15: 0000000000000078
-[    5.495712][    T0] FS:  0000000000000000(0000) GS:ffff88881e800000(0000) knlGS:0000000000000000
-[    5.504534][    T0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    5.510998][    T0] CR2: 00000000002ac6d0 CR3: 0000000cc8814000 CR4: 00000000000406b0
-[    5.518860][    T0] Kernel panic - not syncing: Fatal exception
-[    5.524915][    T0] ---[ end Kernel panic - not syncing: Fatal exception ]---
-
-> ---
->  lib/stackdepot.c | 27 ++++++++++++++++++++++-----
->  1 file changed, 22 insertions(+), 5 deletions(-)
-> 
-> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-> index 81c69c0..ce53598 100644
-> --- a/lib/stackdepot.c
-> +++ b/lib/stackdepot.c
-> @@ -141,14 +141,31 @@ static struct stack_record *depot_alloc_stack(unsigned long *entries, int size,
->  	return stack;
->  }
->  
-> -#define STACK_HASH_ORDER 20
-> -#define STACK_HASH_SIZE (1L << STACK_HASH_ORDER)
-> +static unsigned int stack_hash_order = 20;
-> +#define STACK_HASH_SIZE (1L << stack_hash_order)
->  #define STACK_HASH_MASK (STACK_HASH_SIZE - 1)
->  #define STACK_HASH_SEED 0x9747b28c
->  
-> -static struct stack_record *stack_table[STACK_HASH_SIZE] = {
-> -	[0 ...	STACK_HASH_SIZE - 1] = NULL
-> -};
-> +static struct stack_record **stack_table;
-> +
-> +static int __init setup_stack_hash_order(char *str)
-> +{
-> +	kstrtouint(str, 0, &stack_hash_order);
-> +	return 0;
-> +}
-> +early_param("stack_hash_order", setup_stack_hash_order);
-> +
-> +static int __init init_stackdepot(void)
-> +{
-> +	int i;
-> +
-> +	stack_table = kvmalloc(sizeof(struct stack_record *) * STACK_HASH_SIZE, GFP_KERNEL);
-> +	for (i = 0; i < STACK_HASH_SIZE; i++)
-> +		stack_table[i] = NULL;
-> +	return 0;
-> +}
-> +
-> +early_initcall(init_stackdepot);
->  
->  /* Calculate hash for a stack */
->  static inline u32 hash_stack(unsigned long *entries, unsigned int size)
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 8b99a13..dfb2640 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -1088,6 +1088,16 @@ config MFD_RDC321X
+ 	  southbridge which provides access to GPIOs and Watchdog using the
+ 	  southbridge PCI device configuration space.
+ 
++config MFD_RT4831
++	tristate "Richtek RT4831 four channel WLED and Display Bias Voltage"
++	depends on I2C
++	select MFD_CORE
++	select REGMAP_I2C
++	help
++	  This enables support for the Richtek RT4831 that includes 4 channel
++	  WLED driving and Display Bias Voltage. It's commonly used to provide
++	  power to the LCD display and LCD backlight.
++
+ config MFD_RT5033
+ 	tristate "Richtek RT5033 Power Management IC"
+ 	depends on I2C
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index 1780019..4108141 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -235,6 +235,7 @@ obj-$(CONFIG_MFD_MENF21BMC)	+= menf21bmc.o
+ obj-$(CONFIG_MFD_HI6421_PMIC)	+= hi6421-pmic-core.o
+ obj-$(CONFIG_MFD_HI655X_PMIC)   += hi655x-pmic.o
+ obj-$(CONFIG_MFD_DLN2)		+= dln2.o
++obj-$(CONFIG_MFD_RT4831)	+= rt4831-core.o
+ obj-$(CONFIG_MFD_RT5033)	+= rt5033.o
+ obj-$(CONFIG_MFD_SKY81452)	+= sky81452.o
+ 
+diff --git a/drivers/mfd/rt4831-core.c b/drivers/mfd/rt4831-core.c
+new file mode 100644
+index 00000000..f837c06
+--- /dev/null
++++ b/drivers/mfd/rt4831-core.c
+@@ -0,0 +1,124 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (c) 2020 Richtek Technology Corp.
++ *
++ * Author: ChiYuan Huang <cy_huang@richtek.com>
++ */
++
++#include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
++#include <linux/kernel.h>
++#include <linux/mfd/core.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++
++#define RT4831_REG_REVISION	0x01
++#define RT4831_REG_ENABLE	0x08
++#define RT4831_REG_I2CPROT	0x15
++
++#define RICHTEK_VID		0x03
++#define RT4831_VID_MASK		GENMASK(1, 0)
++#define RT4831_RESET_MASK	BIT(7)
++#define RT4831_I2CSAFETMR_MASK	BIT(0)
++
++static const struct mfd_cell rt4831_subdevs[] = {
++	OF_MFD_CELL("rt4831-backlight", NULL, NULL, 0, 0, "richtek,rt4831-backlight"),
++	MFD_CELL_NAME("rt4831-regulator")
++};
++
++static bool rt4831_is_accessible_reg(struct device *dev, unsigned int reg)
++{
++	if (reg >= RT4831_REG_REVISION && reg <= RT4831_REG_I2CPROT)
++		return true;
++	return false;
++}
++
++static const struct regmap_config rt4831_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.max_register = RT4831_REG_I2CPROT,
++
++	.readable_reg = rt4831_is_accessible_reg,
++	.writeable_reg = rt4831_is_accessible_reg,
++};
++
++static int rt4831_probe(struct i2c_client *client)
++{
++	struct gpio_desc *enable;
++	struct regmap *regmap;
++	unsigned int val;
++	int ret;
++
++	enable = devm_gpiod_get_optional(&client->dev, "enable", GPIOD_OUT_HIGH);
++	if (IS_ERR(enable)) {
++		dev_err(&client->dev, "Failed to get 'enable' GPIO\n");
++		return PTR_ERR(enable);
++	}
++
++	regmap = devm_regmap_init_i2c(client, &rt4831_regmap_config);
++	if (IS_ERR(regmap)) {
++		dev_err(&client->dev, "Failed to initialize regmap\n");
++		return PTR_ERR(regmap);
++	}
++
++	ret = regmap_read(regmap, RT4831_REG_REVISION, &val);
++	if (ret) {
++		dev_err(&client->dev, "Failed to get H/W revision\n");
++		return ret;
++	}
++
++	if ((val & RT4831_VID_MASK) != RICHTEK_VID) {
++		dev_err(&client->dev, "VID not matched, val = 0x%02x\n", val);
++		return -ENODEV;
++	}
++
++	/*
++	 * Used to prevent the abnormal shutdown.
++	 * If SCL/SDA both keep low for one second to reset HW.
++	 */
++	ret = regmap_update_bits(regmap, RT4831_REG_I2CPROT, RT4831_I2CSAFETMR_MASK,
++				 RT4831_I2CSAFETMR_MASK);
++	if (ret) {
++		dev_err(&client->dev, "Failed to enable I2C safety timer\n");
++		return ret;
++	}
++
++	return devm_mfd_add_devices(&client->dev, PLATFORM_DEVID_AUTO, rt4831_subdevs,
++				    ARRAY_SIZE(rt4831_subdevs), NULL, 0, NULL);
++}
++
++static int rt4831_remove(struct i2c_client *client)
++{
++	struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
++
++	/* Disable WLED and DSV outputs */
++	return regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RESET_MASK, RT4831_RESET_MASK);
++}
++
++static void rt4831_shutdown(struct i2c_client *client)
++{
++	struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
++
++	/* Disable WLED and DSV outputs */
++	regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RESET_MASK, RT4831_RESET_MASK);
++}
++
++static const struct of_device_id __maybe_unused rt4831_of_match[] = {
++	{ .compatible = "richtek,rt4831", },
++	{}
++};
++MODULE_DEVICE_TABLE(of, rt4831_of_match);
++
++static struct i2c_driver rt4831_driver = {
++	.driver = {
++		.name = "rt4831",
++		.of_match_table = of_match_ptr(rt4831_of_match),
++	},
++	.probe_new = rt4831_probe,
++	.remove = rt4831_remove,
++	.shutdown = rt4831_shutdown,
++};
++module_i2c_driver(rt4831_driver);
++
++MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
++MODULE_LICENSE("GPL v2");
+-- 
+2.7.4
 
