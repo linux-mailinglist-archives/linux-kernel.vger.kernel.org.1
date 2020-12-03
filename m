@@ -2,250 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33332CD663
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:11:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E202CD678
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387778AbgLCNKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 08:10:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730481AbgLCNKU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 08:10:20 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F57C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 05:09:40 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id i2so1821537wrs.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 05:09:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rkrWWgy/zAJu0GV6hLcEd4kiWgcX7eH0p2FvB1NfSaM=;
-        b=GnT4MwE0rexDgVy9iVAB+xaJVO2aSitrLemSfO3X0m/uHDffUgDe99WVZ7CmIyHEgE
-         ySVZiyXirmMf99StbP7Z1KdhL2NRzx2ls+pHaZNWF0Tzny41rYvPjmd2mkQsHvSbHOr+
-         iNmpyrX8GjO8eRdX5dR4LkLqp1KX3fUk+RrSZhoqgS2OAzHGfJwkfeY1N4qlGqpmx2C5
-         4i0gAUIDx+sfRyWHJWfCSFRXGJIB3clsDFb9xH/bUDNgKpPECzXMjyx5Rx/b1kfq0ImY
-         YlXYuXLA7hTAPuUQZuE2xpPQqsXk4reC5W0ntOFl5QToPjLrTl0CSQMTgPYDsMKLKmQU
-         Zu3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rkrWWgy/zAJu0GV6hLcEd4kiWgcX7eH0p2FvB1NfSaM=;
-        b=eSWXvV2bQCe+08e0ROqLbpCOpvUNyWuXB8IjfyZT3eS2R9K64gzxYXIP8C0U73q4ko
-         rRhyHryBEjNMeaMm7Fofwr4kO1C9Do6j9d5R2rLeGNtgg5t9+ucKNpZiWEsNUTiwnMV5
-         MzkXo3vgZhyQgJj8MqxkfQlZMpIpkJaVceu2+rycVRHY0YlQpiHRFZNwtyhHnHyPv+an
-         HPQQTkNYa6WRsqvgDhHgiQhTHEMR4RHp6/37kf+1t0wDmC5E/vC16Wief1BqQLEQjdt6
-         qnavCGyS4LGuUxQL5NwGLMDm6DmAHYN+swJ3NGicnxn1u2/DQ51B5HxBPzpjF3Hbyuua
-         H3gA==
-X-Gm-Message-State: AOAM531UilxyJot8hd3V6Z9Oj+V1ltGfewH7cH4E8yn9BYazkcLS3cSm
-        ebqELG9EHy9WKxGI3LkQsB2kAWxJedinMA==
-X-Google-Smtp-Source: ABdhPJz8FWWXiz2Jj8ehlbzz4IZAsN6vLYDaoQyFJcPRXYhvTfUYcQJ7n9arDiqpba2Wmv2W4Vsyig==
-X-Received: by 2002:adf:e7d0:: with SMTP id e16mr3772346wrn.114.1607000978486;
-        Thu, 03 Dec 2020 05:09:38 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1c7d:2d7a:9709:b9a2? ([2a01:e34:ed2f:f020:1c7d:2d7a:9709:b9a2])
-        by smtp.googlemail.com with ESMTPSA id d17sm1861139wro.62.2020.12.03.05.09.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 05:09:37 -0800 (PST)
-Subject: Re: [PATCH v2 2/5] thermal: devfreq_cooling: get a copy of device
- status
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
-        orjan.eide@arm.com, robh@kernel.org,
-        alyssa.rosenzweig@collabora.com, steven.price@arm.com,
-        airlied@linux.ie, daniel@ffwll.ch, ionela.voinescu@arm.com
-References: <20201118120358.17150-1-lukasz.luba@arm.com>
- <20201118120358.17150-3-lukasz.luba@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <5d4743b9-5b2f-8494-8d10-6a5fd2c0fdfd@linaro.org>
-Date:   Thu, 3 Dec 2020 14:09:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730556AbgLCNPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 08:15:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729142AbgLCNPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 08:15:53 -0500
+X-Gm-Message-State: AOAM531MOzNM4tx6BG7D3hJamDbfJqxC/OdZ/YJVT2X4ZsrU3+zRq+wd
+        b+GqVPS2ac+WZOU0q+igYOm8m8fgvrI6ucohnTM=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607001311;
+        bh=wHLRsKwLyAL1YsxpXqFjnM/ttU2qC54cAYKjWpgeiXw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hRpcerMOQm/897lGhejwWFlT+j5M2chlzX+SoA/tMyq0nUGK+wv4g6gcSufs5AHoX
+         vKEK2eBcl4gCfEdzeSolW79jvJeaxj8A+eCv2Pw651jXBEGgW7Yd0R6mrjQ2j+T4/h
+         R0gj82zi++Z23CnUF+f0XGkBtomneHC/ighwM4WgB7tNx2PQcWnGF1ixJABGmEiYaG
+         thZH2zwlfM5PmJC78TK6zR7S2DuxBpkMRbM3rC8qyKF4rxGKC/VHkrvKLuM9BPWgWh
+         3LevI7Vjz5vsO/6C6CpUMI0hntDzKEibEt5rqkt24NCzo1yb5Bb205fcKUDdK33/B2
+         Sza2OxjDzabOw==
+X-Google-Smtp-Source: ABdhPJyPGzEQ8Be8YueOnzuh2IZBB0f3/Ff5AgKIv2Dt5Uvz9cXKDuYq7QvQKbmQD8XFTF+IJvY/DgQ2k78PlWRzPU0=
+X-Received: by 2002:aca:dd0b:: with SMTP id u11mr1759567oig.47.1607001310525;
+ Thu, 03 Dec 2020 05:15:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201118120358.17150-3-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201203121916.2870975-1-geert+renesas@glider.be> <20201203121916.2870975-4-geert+renesas@glider.be>
+In-Reply-To: <20201203121916.2870975-4-geert+renesas@glider.be>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 3 Dec 2020 14:14:59 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGmJFFU_pa_Q+QVdvyvzbMiuDtHrwVx94_F4TCF8wjaAQ@mail.gmail.com>
+Message-ID: <CAMj1kXGmJFFU_pa_Q+QVdvyvzbMiuDtHrwVx94_F4TCF8wjaAQ@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] ARM: uncompress: Validate start of physical
+ memory against passed DTB
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Eric Miao <eric.miao@nvidia.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Lukasz Stelmach <l.stelmach@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/11/2020 13:03, Lukasz Luba wrote:
-> Devfreq cooling needs to now the correct status of the device in order
-> to operate. Do not rely on Devfreq last_status which might be a stale data
-> and get more up-to-date values of the load.
-> 
-> Devfreq framework can change the device status in the background. To
-> mitigate this situation make a copy of the status structure and use it
-> for internal calculations.
-> 
-> In addition this patch adds normalization function, which also makes sure
-> that whatever data comes from the device, it is in a sane range.
-> 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+On Thu, 3 Dec 2020 at 13:19, Geert Uytterhoeven <geert+renesas@glider.be> wrote:
+>
+> Currently, the start address of physical memory is obtained by masking
+> the program counter with a fixed mask of 0xf8000000.  This mask value
+> was chosen as a balance between the requirements of different platforms.
+> However, this does require that the start address of physical memory is
+> a multiple of 128 MiB, precluding booting Linux on platforms where this
+> requirement is not fulfilled.
+>
+> Fix this limitation by validating the masked address against the memory
+> information in the passed DTB.  Only use the start address
+> from DTB when masking would yield an out-of-range address, prefer the
+> traditional method in all other cases.  Note that this applies only to the
+> explicitly passed DTB on modern systems, and not to a DTB appended to
+> the kernel, or to ATAGS.  The appended DTB may need to be augmented by
+> information from ATAGS, which may need to rely on knowledge of the start
+> address of physical memory itself.
+>
+> This allows to boot Linux on r7s9210/rza2mevb using the 64 MiB of SDRAM
+> on the RZA2MEVB sub board, which is located at 0x0C000000 (CS3 space),
+> i.e. not at a multiple of 128 MiB.
+>
+> Suggested-by: Nicolas Pitre <nico@fluxnic.net>
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+
+Unfortunately, this may still blindly overwrite memory that is marked
+as reserved in the device tree, but the current state isn't any
+better, so we can fix that another time. (This would allow us to get
+rid of the games we play with TEXT_OFFSET.)
+
+
 > ---
->  drivers/thermal/devfreq_cooling.c | 52 +++++++++++++++++++++++++------
->  1 file changed, 43 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-> index 659c0143c9f0..925523694462 100644
-> --- a/drivers/thermal/devfreq_cooling.c
-> +++ b/drivers/thermal/devfreq_cooling.c
-> @@ -227,20 +227,46 @@ static inline unsigned long get_total_power(struct devfreq_cooling_device *dfc,
->  							       voltage);
->  }
->  
-> +static void _normalize_load(struct devfreq_dev_status *status)
+> v10:
+>   - Update for commit 9443076e4330a14a ("ARM: p2v: reduce p2v alignment
+>     requirement to 2 MiB"),
+>   - Use OF_DT_MAGIC macro,
+>   - Rename fdt_get_mem_start() to fdt_check_mem_start(),
+>   - Skip validation if there is an appended DTB,
+>   - Pass mem_start to fdt_check_mem_start() to streamline code,
+>   - Optimize register allocation,
+>   - Update CONFIG_AUTO_ZRELADDR help text,
+>   - Check all memory nodes and ranges (not just the first one), and
+>     "linux,usable-memory", similar to early_init_dt_scan_memory(),
+>   - Drop Reviewed-by, Tested-by tags,
+>
+> v9:
+>   - Add minlen parameter to getprop(), for better validation of
+>     memory properties,
+>   - Only use start of memory from the DTB if masking would yield an
+>     out-of-range address, to fix kdump, as suggested by Ard.
+>
+> v8:
+>   - Rebase on top of commit 893ab00439a45513 ("kbuild: remove cc-option
+>     test of -fno-stack-protector"),
+>
+> v7:
+>   - Rebase on top of commit 161e04a5bae58a65 ("ARM: decompressor: split
+>     off _edata and stack base into separate object"),
+>
+> v6:
+>   - Rebase on top of commit 7ae4a78daacf240a ("ARM: 8969/1:
+>     decompressor: simplify libfdt builds"),
+>   - Include <linux/libfdt.h> instead of <libfdt.h>,
+>
+> v5:
+>   - Add Tested-by, Reviewed-by,
+>   - Round up start of memory to satisfy 16 MiB alignment rule,
+>
+> v4:
+>   - Fix stack location after commit 184bf653a7a452c1 ("ARM:
+>     decompressor: factor out routine to obtain the inflated image
+>     size"),
+>
+> v3:
+>   - Add Reviewed-by,
+>   - Fix ATAGs with appended DTB,
+>   - Add Tested-by,
+>
+> v2:
+>   - Use "cmp r0, #-1", instead of "cmn r0, #1",
+>   - Add missing stack setup,
+>   - Support appended DTB.
+> ---
+>  arch/arm/Kconfig                              |   7 +-
+>  arch/arm/boot/compressed/Makefile             |   5 +-
+>  .../arm/boot/compressed/fdt_check_mem_start.c | 131 ++++++++++++++++++
+>  arch/arm/boot/compressed/head.S               |  32 ++++-
+>  4 files changed, 168 insertions(+), 7 deletions(-)
+>  create mode 100644 arch/arm/boot/compressed/fdt_check_mem_start.c
+>
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index b2bf019dcefa6379..c341aa6fa862455c 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -1908,9 +1908,10 @@ config AUTO_ZRELADDR
+>         help
+>           ZRELADDR is the physical address where the decompressed kernel
+>           image will be placed. If AUTO_ZRELADDR is selected, the address
+> -         will be determined at run-time by masking the current IP with
+> -         0xf8000000. This assumes the zImage being placed in the first 128MB
+> -         from start of memory.
+> +         will be determined at run-time, either by masking the current IP
+> +         with 0xf8000000, or, if invalid, from the DTB passed in r2.
+> +         This assumes the zImage being placed in the first 128MB from
+> +         start of memory.
+>
+>  config EFI_STUB
+>         bool
+> diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
+> index a815b1ae990d2d48..7361d45dc2ad603e 100644
+> --- a/arch/arm/boot/compressed/Makefile
+> +++ b/arch/arm/boot/compressed/Makefile
+> @@ -87,10 +87,13 @@ libfdt_objs := fdt_rw.o fdt_ro.o fdt_wip.o fdt.o
+>  ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
+>  OBJS   += $(libfdt_objs) atags_to_fdt.o
+>  endif
+> +ifeq ($(CONFIG_USE_OF),y)
+> +OBJS   += $(libfdt_objs) fdt_check_mem_start.o
+> +endif
+>
+>  # -fstack-protector-strong triggers protection checks in this code,
+>  # but it is being used too early to link to meaningful stack_chk logic.
+> -$(foreach o, $(libfdt_objs) atags_to_fdt.o, \
+> +$(foreach o, $(libfdt_objs) atags_to_fdt.o fdt_check_mem_start.o, \
+>         $(eval CFLAGS_$(o) := -I $(srctree)/scripts/dtc/libfdt -fno-stack-protector))
+>
+>  # These were previously generated C files. When you are building the kernel
+> diff --git a/arch/arm/boot/compressed/fdt_check_mem_start.c b/arch/arm/boot/compressed/fdt_check_mem_start.c
+> new file mode 100644
+> index 0000000000000000..0bd39319d8a7f973
+> --- /dev/null
+> +++ b/arch/arm/boot/compressed/fdt_check_mem_start.c
+> @@ -0,0 +1,131 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/libfdt.h>
+> +#include <linux/sizes.h>
+> +
+> +static const void *get_prop(const void *fdt, const char *node_path,
+> +                           const char *property, int minlen)
 > +{
-> +	/* Make some space if needed */
-> +	if (status->busy_time > 0xffff) {
-> +		status->busy_time >>= 10;
-> +		status->total_time >>= 10;
-> +	}
+> +       const void *prop;
+> +       int offset, len;
 > +
-> +	if (status->busy_time > status->total_time)
-> +		status->busy_time = status->total_time;
-
-How the condition above is possible?
-
-> +	status->busy_time *= 100;
-> +	status->busy_time /= status->total_time ? : 1;
+> +       offset = fdt_path_offset(fdt, node_path);
+> +       if (offset < 0)
+> +               return NULL;
 > +
-> +	/* Avoid division by 0 */
-> +	status->busy_time = status->busy_time ? : 1;
-> +	status->total_time = 100;
-
-Why not base the normalization on 1024? and use an intermediate u64.
-
-For example:
-
-static u32 _normalize_load(struct devfreq_dev_status *status)
-{
-	u64 load = 0;
-
-	/* Prevent divison by zero */
-	if (!status->busy_time)
-		return 0;
-
-	/*
-	 * Assuming status->total_time is always greater or equal
-	 * to status->busy_time, it can not be equal to zero because
-	 * of the test above
-	 */
-	load = status->busy_time * 1024;
-	load /= status->total_time;
-
-	/*
-	 * load is always [1..1024[, so it can not be truncated by a
-	 * u64 -> u32 coercive cast
-	 */
-	return (u32)load;
-}
-
-
+> +       prop = fdt_getprop(fdt, offset, property, &len);
+> +       if (!prop || len < minlen)
+> +               return NULL;
+> +
+> +       return prop;
 > +}
->  
->  static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cdev,
->  					       u32 *power)
->  {
->  	struct devfreq_cooling_device *dfc = cdev->devdata;
->  	struct devfreq *df = dfc->devfreq;
-> -	struct devfreq_dev_status *status = &df->last_status;
-> +	struct devfreq_dev_status status;
->  	unsigned long state;
-> -	unsigned long freq = status->current_frequency;
-> +	unsigned long freq;
->  	unsigned long voltage;
->  	u32 dyn_power = 0;
->  	u32 static_power = 0;
->  	int res;
->  
-> +	mutex_lock(&df->lock);
-> +	res = df->profile->get_dev_status(df->dev.parent, &status);
-> +	mutex_unlock(&df->lock);
-> +	if (res)
-> +		return res;
 > +
-> +	freq = status.current_frequency;
+> +static uint32_t get_cells(const void *fdt, const char *name)
+> +{
+> +       const fdt32_t *prop = get_prop(fdt, "/", name, sizeof(fdt32_t));
 > +
->  	state = freq_get_state(dfc, freq);
->  	if (state == THERMAL_CSTATE_INVALID) {
->  		res = -EAGAIN;
-> @@ -268,16 +294,18 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
->  	} else {
->  		dyn_power = dfc->power_table[state];
->  
-> +		_normalize_load(&status);
-
-		load = _normalize_load(&status);
-
+> +       if (!prop) {
+> +               /* default */
+> +               return 1;
+> +       }
 > +
->  		/* Scale dynamic power for utilization */
-> -		dyn_power *= status->busy_time;
-> -		dyn_power /= status->total_time;
-> +		dyn_power *= status.busy_time;
-> +		dyn_power /= status.total_time;
-
-		/*
-		 * May be change dyn_power to a u64 to prevent overflow
-		 * when multiplied by 'load'
-		 */
-		dyn_power = (dyn_power * load) / 1024;
-
->  		/* Get static power */
->  		static_power = get_static_power(dfc, freq);
->  
->  		*power = dyn_power + static_power;
->  	}
->  
-> -	trace_thermal_power_devfreq_get_power(cdev, status, freq, *power);
-> +	trace_thermal_power_devfreq_get_power(cdev, &status, freq, *power);
->  
->  	return 0;
->  fail:
-> @@ -309,14 +337,20 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
->  {
->  	struct devfreq_cooling_device *dfc = cdev->devdata;
->  	struct devfreq *df = dfc->devfreq;
-> -	struct devfreq_dev_status *status = &df->last_status;
-> -	unsigned long freq = status->current_frequency;
-> +	struct devfreq_dev_status status;
->  	unsigned long busy_time;
-> +	unsigned long freq;
->  	s32 dyn_power;
->  	u32 static_power;
->  	s32 est_power;
->  	int i;
->  
-> +	mutex_lock(&df->lock);
-> +	status = df->last_status;
-> +	mutex_unlock(&df->lock);
+> +       return fdt32_ld(prop);
+> +}
 > +
-> +	freq = status.current_frequency;
+> +static uint64_t get_val(const fdt32_t *cells, uint32_t ncells)
+> +{
+> +       uint64_t r = 0;
 > +
->  	if (dfc->power_ops->get_real_power) {
->  		/* Scale for resource utilization */
->  		est_power = power * dfc->res_util;
-> @@ -328,8 +362,8 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
->  		dyn_power = dyn_power > 0 ? dyn_power : 0;
->  
->  		/* Scale dynamic power for utilization */
-> -		busy_time = status->busy_time ?: 1;
-> -		est_power = (dyn_power * status->total_time) / busy_time;
-> +		busy_time = status.busy_time ?: 1;
-> +		est_power = (dyn_power * status.total_time) / busy_time;
->  	}
->  
->  	/*
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> +       r = fdt32_ld(cells);
+> +       if (ncells > 1)
+> +               r = (r << 32) | fdt32_ld(cells + 1);
+> +
+> +       return r;
+> +}
+> +
+> +/*
+> + * Check the start of physical memory
+> + *
+> + * Traditionally, the start address of physical memory is obtained by masking
+> + * the program counter.  However, this does require that this address is a
+> + * multiple of 128 MiB, precluding booting Linux on platforms where this
+> + * requirement is not fulfilled.
+> + * Hence validate the calculated address against the memory information in the
+> + * DTB, and, if out-of-range, replace it by the real start address.
+> + * To preserve backwards compatibility (systems reserving a block of memory
+> + * at the start of physical memory, kdump, ...), the traditional method is
+> + * always used if it yields a valid address.
+> + *
+> + * Return value: start address of physical memory to use
+> + */
+> +uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+> +{
+> +       uint32_t addr_cells, size_cells, base;
+> +       uint32_t fdt_mem_start = 0xffffffff;
+> +       const fdt32_t *reg, *endp;
+> +       uint64_t size, end;
+> +       const char *type;
+> +       int offset, len;
+> +
+> +       if (!fdt)
+> +               return mem_start;
+> +
+> +       if (fdt_magic(fdt) != FDT_MAGIC)
+> +               return mem_start;
+> +
+> +       /* There may be multiple cells on LPAE platforms */
+> +       addr_cells = get_cells(fdt, "#address-cells");
+> +       size_cells = get_cells(fdt, "#size-cells");
+> +       if (addr_cells > 2 || size_cells > 2)
+> +               return mem_start;
+> +
+> +       /* Walk all memory nodes and regions */
+> +       for (offset = fdt_next_node(fdt, -1, NULL); offset >= 0;
+> +            offset = fdt_next_node(fdt, offset, NULL)) {
+> +               type = fdt_getprop(fdt, offset, "device_type", NULL);
+> +               if (!type || strcmp(type, "memory"))
+> +                       continue;
+> +
+> +               reg = fdt_getprop(fdt, offset, "linux,usable-memory", &len);
+> +               if (!reg)
+> +                       reg = fdt_getprop(fdt, offset, "reg", &len);
+> +               if (!reg)
+> +                       continue;
+> +
+> +               for (endp = reg + (len / sizeof(fdt32_t));
+> +                    endp - reg >= addr_cells + size_cells;
+> +                    reg += addr_cells + size_cells) {
+> +                       size = get_val(reg + addr_cells, size_cells);
+> +                       if (!size)
+> +                               continue;
+> +
+> +                       if (addr_cells > 1 && fdt32_ld(reg)) {
+> +                               /* Outside 32-bit address space, skipping */
+> +                               continue;
+> +                       }
+> +
+> +                       base = fdt32_ld(reg + addr_cells - 1);
+> +                       end = base + size;
+> +                       if (mem_start >= base && mem_start < end) {
+> +                               /* Calculated address is valid, use it */
+> +                               return mem_start;
+> +                       }
+> +
+> +                       if (base < fdt_mem_start)
+> +                               fdt_mem_start = base;
+> +               }
+> +       }
+> +
+> +       if (fdt_mem_start == 0xffffffff) {
+> +               /* No usable memory found, falling back to default */
+> +               return mem_start;
+> +       }
+> +
+> +       /*
+> +        * The calculated address is not usable.
+> +        * Use the lowest usable physical memory address from the DTB instead,
+> +        * and make sure this is a multiple of 2 MiB for phys/virt patching.
+> +        */
+> +       return round_up(fdt_mem_start, SZ_2M);
+> +}
+> diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
+> index d9cce7238a365081..1b6425df87e84e71 100644
+> --- a/arch/arm/boot/compressed/head.S
+> +++ b/arch/arm/boot/compressed/head.S
+> @@ -282,10 +282,36 @@ not_angel:
+>                  * are already placing their zImage in (eg) the top 64MB
+>                  * of this range.
+>                  */
+> -               mov     r4, pc
+> -               and     r4, r4, #0xf8000000
+> +               mov     r0, pc
+> +               and     r0, r0, #0xf8000000
+> +#ifdef CONFIG_USE_OF
+> +               adr     r1, LC1
+> +#ifdef CONFIG_ARM_APPENDED_DTB
+> +               /*
+> +                * Look for an appended DTB.  If found, we cannot use it to
+> +                * validate the calculated start of physical memory, as its
+> +                * memory nodes may need to be augmented by ATAGS stored at
+> +                * an offset from the same start of physical memory.
+> +                */
+> +               ldr     r2, [r1, #4]    @ get &_edata
+> +               add     r2, r2, r1      @ relocate it
+> +               ldr     r2, [r2]        @ get DTB signature
+> +               ldr     r3, =OF_DT_MAGIC
+> +               cmp     r2, r3          @ do we have a DTB there?
+> +               beq     1f              @ if yes, skip validation
+> +#endif /* CONFIG_ARM_APPENDED_DTB */
+> +
+> +               /* Make sure we have some stack */
+> +               ldr     sp, [r1]        @ get stack location
+> +               add     sp, sp, r1      @ apply relocation
+> +
+> +               /* Validate calculated start against passed DTB */
+> +               mov     r1, r8
+> +               bl      fdt_check_mem_start
+> +1:
+> +#endif /* CONFIG_USE_OF */
+>                 /* Determine final kernel image address. */
+> -               add     r4, r4, #TEXT_OFFSET
+> +               add     r4, r0, #TEXT_OFFSET
+>  #else
+>                 ldr     r4, =zreladdr
+>  #endif
+> --
+> 2.25.1
+>
