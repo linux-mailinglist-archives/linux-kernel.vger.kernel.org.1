@@ -2,133 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F982CDCD1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD432CDCD6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731548AbgLCRyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:54:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731158AbgLCRyM (ORCPT
+        id S1731238AbgLCR4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:56:08 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55834 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726689AbgLCR4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:54:12 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E625C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 09:53:32 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kksnC-00083s-SV; Thu, 03 Dec 2020 18:53:22 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kksnA-0005tE-GO; Thu, 03 Dec 2020 18:53:20 +0100
-Date:   Thu, 3 Dec 2020 18:53:20 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v3 net-next 2/2] net: dsa: qca: ar9331: export stats64
-Message-ID: <20201203175320.f3fmyaqoxifydwzv@pengutronix.de>
-References: <20201202140904.24748-1-o.rempel@pengutronix.de>
- <20201202140904.24748-3-o.rempel@pengutronix.de>
- <20201202104207.697cfdbb@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <20201203085011.GA3606@pengutronix.de>
- <20201203083517.3b616782@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        Thu, 3 Dec 2020 12:56:08 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B3HgVBB130409;
+        Thu, 3 Dec 2020 12:55:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=vnnDq3LW8NH7z3EXaRPTTKXXk2eAYKFIH7G5x9+b+n8=;
+ b=qqQfzH3di/nngU2D7SwAJ6cmTu2fKJYDOCzTesOU9A80datEsjIm6HaRvmpfUPM9kuZw
+ iOUGphZae+EGf7jH1LDyHZ5WZ9Q67ZgfYAsl/FPwAk5wmmyndCtsvVyE7xdB1TaxhTie
+ nVpfMap992yStNx9MLanwnNyZnosS9GoHdX+Uwf1a+C8tH12Bux78x6pfh1LnJNblQHK
+ BMflDSgx5Ct8dwBIHRSs1phrzt4BQfNjV8Z9KGsWywvwGI6pmaudQaJauPx4zhxXk0bt
+ 4zZbPIljHstd6KLpVfiPkXDoppjOhjHSxQfEwmD4bmiqOY78RrI602lZYh88dLvo5Ij2 PA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355jjjymec-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 12:55:26 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B3HXHZt099635;
+        Thu, 3 Dec 2020 12:55:25 -0500
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355jjjymc2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 12:55:25 -0500
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B3HqewP010067;
+        Thu, 3 Dec 2020 17:55:19 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06fra.de.ibm.com with ESMTP id 353dthav3t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 17:55:19 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B3HtGDx9765572
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Dec 2020 17:55:17 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D017B5205A;
+        Thu,  3 Dec 2020 17:55:16 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.64.213])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 52B8E5204F;
+        Thu,  3 Dec 2020 17:55:16 +0000 (GMT)
+Date:   Thu, 3 Dec 2020 18:55:14 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
+Subject: Re: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM
+ pointer invalidated
+Message-ID: <20201203185514.54060568.pasic@linux.ibm.com>
+In-Reply-To: <20201202234101.32169-1-akrowiak@linux.ibm.com>
+References: <20201202234101.32169-1-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201203083517.3b616782@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 18:42:17 up 1 day,  7:48, 21 users,  load average: 0.06, 0.06, 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-03_10:2020-12-03,2020-12-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015 impostorscore=0
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012030104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 08:35:17AM -0800, Jakub Kicinski wrote:
-> On Thu, 3 Dec 2020 09:50:11 +0100 Oleksij Rempel wrote:
-> > @Jakub,
-> > 
-> > > You can't take sleeping locks from .ndo_get_stats64.
-> > > 
-> > > Also regmap may sleep?
-> > > 
-> > > +	ret = regmap_read(priv->regmap, reg, &val);  
-> > 
-> > Yes. And underling layer is mdio bus which is by default sleeping as
-> > well.
-> > 
-> > > Am I missing something?  
-> > 
-> > In this log, the  ar9331_get_stats64() was never called from atomic or
-> > irq context. Why it should not be sleeping?
+On Wed,  2 Dec 2020 18:41:01 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+
+> The vfio_ap device driver registers a group notifier with VFIO when the
+> file descriptor for a VFIO mediated device for a KVM guest is opened to
+> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
+> event). When the KVM pointer is set, the vfio_ap driver stashes the pointer
+> and calls the kvm_get_kvm() function to increment its reference counter.
+> When the notifier is called to make notification that the KVM pointer has
+> been set to NULL, the driver should clean up any resources associated with
+> the KVM pointer and decrement its reference counter. The current
+> implementation does not take care of this clean up.
 > 
-> You missed some long discussions about this within last week on netdev.
-> Also Documentation/networking/statistics.rst.
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+
+Do we need a Fixes tag? Do we need this backported? In my opinion
+this is necessary since the interrupt patches.
+
+> ---
+>  drivers/s390/crypto/vfio_ap_ops.c | 21 +++++++++++++--------
+>  1 file changed, 13 insertions(+), 8 deletions(-)
 > 
-> To answer your direct question - try:
-> 
-> # cat /proc/net/dev
-> 
-> procfs iterates over devices while holding only an RCU read lock.
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index e0bde8518745..eeb9c9130756 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -1083,6 +1083,17 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
+>  	return NOTIFY_DONE;
+>  }
+>  
+> +static void vfio_ap_mdev_put_kvm(struct ap_matrix_mdev *matrix_mdev)
 
-Now i can reproduce it :)
+I don't like the name. The function does more that put_kvm. Maybe
+something  like _disconnect_kvm()?
 
-[33683.199864] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
-[33683.210737] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 593, name: cat
-[33683.216796] INFO: lockdep is turned off.
-[33683.222972] CPU: 0 PID: 593 Comm: cat Not tainted 5.10.0-rc3-ar9331-00733-gff7090915bb7-dirty #28
-[33683.231743] Stack : 808f0000 80885ffc 820eba5c 00000000 00000000 d4a19200 80980000 819a93c8
-[33683.240093]         80980ca7 80d43358 804ee1f4 80980000 00000002 800afe08 820eba08 d4a19200
-[33683.247181]         00000000 00000000 8089ffb0 00000000 820ebfe0 00000000 00000000 00000000
-[33683.257767]         820ebab4 77bbfdc0 00fae587 77e859a0 80980000 80000000 00000000 80990000
-[33683.266107]         804ee1f4 80980000 00000002 8200f750 8097ca9c d4a19200 000859df 00000001
-[33683.274529]         ...
-[33683.275626] Call Trace:
-[33683.280156] [<80069ce0>] show_stack+0x9c/0x140
-[33683.283200] [<800afe08>] ___might_sleep+0x220/0x244
-[33683.290441] [<8073c030>] __mutex_lock+0x70/0x374
-[33683.293651] [<8073c360>] mutex_lock_nested+0x2c/0x38
-[33683.300793] [<804ee1f4>] ar9331_read_stats+0x34/0x834
-[33683.304441] [<804eea34>] ar9331_get_stats64+0x40/0x394
-[33683.311797] [<80526584>] dev_get_stats+0x58/0xfc
-[33683.315013] [<805657bc>] dev_seq_printf_stats+0x44/0x228
-[33683.322476] [<805659e8>] dev_seq_show+0x48/0x50
-[33683.325601] [<8021dd28>] seq_read_iter+0x3d8/0x4d0
-[33683.332585] [<8021df60>] seq_read+0x140/0x198
-[33683.335532] [<8026f950>] proc_reg_read+0xe4/0xf8
-[33683.342397] [<801f0840>] vfs_read+0xc8/0x1a8
-[33683.345260] [<801f0b7c>] ksys_read+0x9c/0xfc
-[33683.352056] [<80071aa4>] syscall_common+0x34/0x58
+> +{
+> +	if (matrix_mdev->kvm) {
+> +		(matrix_mdev->kvm);
+> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
 
-Hm.. There is no way i can guarantee that underlying mdio system is
-not using mutexes. So, i can't read stats directly from HW within
-ar9331_get_stats64(), only driver internal storage can be used. It is possible
-to poll it more frequently, but  it make no reals sense on this low power
-devices.
+Is a plain assignment to arch.crypto.pqap_hook apropriate, or do we need
+to take more care?
 
-What kind of options do we have?
+For instance kvm_arch_crypto_set_masks() takes kvm->lock before poking
+kvm->arch.crypto.crycb.
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> +		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
+> +		kvm_put_kvm(matrix_mdev->kvm);
+> +		matrix_mdev->kvm = NULL;
+> +	}
+> +}
+> +
+>  static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
+>  				       unsigned long action, void *data)
+>  {
+> @@ -1095,7 +1106,7 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
+>  	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
+>  
+>  	if (!data) {
+> -		matrix_mdev->kvm = NULL;
+> +		vfio_ap_mdev_put_kvm(matrix_mdev);
+
+The lock question was already raised.
+
+What are the exact circumstances under which this branch can be taken?
+
+>  		return NOTIFY_OK;
+>  	}
+>  
+> @@ -1222,13 +1233,7 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
+>  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+>  
+>  	mutex_lock(&matrix_dev->lock);
+> -	if (matrix_mdev->kvm) {
+> -		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+> -		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+> -		vfio_ap_mdev_reset_queues(mdev);
+> -		kvm_put_kvm(matrix_mdev->kvm);
+> -		matrix_mdev->kvm = NULL;
+> -	}
+> +	vfio_ap_mdev_put_kvm(matrix_mdev);
+>  	mutex_unlock(&matrix_dev->lock);
+>  
+>  	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
+
