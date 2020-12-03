@@ -2,170 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC5A2CD121
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F96D2CD11B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388316AbgLCITF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:19:05 -0500
-Received: from mo-csw1114.securemx.jp ([210.130.202.156]:57296 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387629AbgLCITE (ORCPT
+        id S2388295AbgLCIRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:17:49 -0500
+Received: from atcsqr.andestech.com ([60.248.187.195]:18521 "EHLO
+        ATCSQR.andestech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729887AbgLCIRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:19:04 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1114) id 0B38GtsC030349; Thu, 3 Dec 2020 17:16:55 +0900
-X-Iguazu-Qid: 2wHHO7WlUUsYyHhPnC
-X-Iguazu-QSIG: v=2; s=0; t=1606983414; q=2wHHO7WlUUsYyHhPnC; m=esrYAEcl8iFwxarpR4rmTqyCBxWwvF3ZB9Rezqxt6L4=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
-        by relay.securemx.jp (mx-mr1110) id 0B38GrpO000301;
-        Thu, 3 Dec 2020 17:16:54 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
-        by imx12.toshiba.co.jp  with ESMTP id 0B38GrWo002495;
-        Thu, 3 Dec 2020 17:16:53 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 0B38Grch028118;
-        Thu, 3 Dec 2020 17:16:53 +0900
-From:   Punit Agrawal <punit1.agrawal@toshiba.co.jp>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/4] dt-bindings: gpio: Add bindings for Toshiba Visconti GPIO Controller
-References: <20201201181406.2371881-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-        <20201201181406.2371881-2-nobuhiro1.iwamatsu@toshiba.co.jp>
-Date:   Thu, 03 Dec 2020 17:16:51 +0900
-In-Reply-To: <20201201181406.2371881-2-nobuhiro1.iwamatsu@toshiba.co.jp>
-        (Nobuhiro Iwamatsu's message of "Wed, 2 Dec 2020 03:14:03 +0900")
-X-TSB-HOP: ON
-Message-ID: <87sg8n483w.fsf@kokedama.swc.toshiba.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Thu, 3 Dec 2020 03:17:49 -0500
+Received: from mail.andestech.com (atcpcs16.andestech.com [10.0.1.222])
+        by ATCSQR.andestech.com with ESMTP id 0B38HD2t016615;
+        Thu, 3 Dec 2020 16:17:13 +0800 (GMT-8)
+        (envelope-from tesheng@andestech.com)
+Received: from atcfdc88 (10.0.15.120) by ATCPCS16.andestech.com (10.0.1.222)
+ with Microsoft SMTP Server id 14.3.487.0; Thu, 3 Dec 2020 16:17:00 +0800
+Date:   Thu, 3 Dec 2020 16:16:55 +0800
+From:   Eric Lin <tesheng@andestech.com>
+To:     Pekka Enberg <penberg@gmail.com>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Michel Lespinasse <walken@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 0/2] Let illegal access to user-space memory die
+Message-ID: <20201203081655.GB25276@atcfdc88>
+References: <20201203064826.30832-1-tesheng@andestech.com>
+ <CAOJsxLHo6-6w9M3H1UP1hPX1bnxZ06tqbnc9cwR5_sLQBgA7HA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAOJsxLHo6-6w9M3H1UP1hPX1bnxZ06tqbnc9cwR5_sLQBgA7HA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.0.15.120]
+X-DNSRBL: 
+X-MAIL: ATCSQR.andestech.com 0B38HD2t016615
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Iwamatsu-san,
+On Thu, Dec 03, 2020 at 03:29:57PM +0800, Pekka Enberg wrote:
 
-Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp> writes:
+Hi Pekka, 
 
-> Add bindings for the Toshiba Visconti GPIO Controller.
->
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> ---
->  .../bindings/gpio/toshiba,gpio-visconti.yaml  | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
->
-> diff --git a/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml b/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
-> new file mode 100644
-> index 000000000000..5168a15b90e1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
-> @@ -0,0 +1,85 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/gpio/toshiba,gpio-visconti.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Toshiba Visconti ARM SoCs GPIO controller
-> +
-> +maintainers:
-> +  - Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: toshiba,gpio-tmpv7708
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#gpio-cells":
-> +    const: 2
-> +
-> +  gpio-ranges: true
+> Hi Eric,
+> 
+> On Thu, Dec 3, 2020 at 8:51 AM Eric Lin <tesheng@andestech.com> wrote:
+> >
+> > Accesses to user-space memory without calling uaccess routine
+> > leads to hanging in page fault handler. Like arm64, we let it
+> > die earlier in page fault handler.
+> >
+> > Changes in v2:
+> >     -Add a die_kernel_fault() helper
+> >     -Split one long line code into two
+> 
+> Please also make no_context() use the new helper. Other than that:
+> 
 
-I am not sure I have a good handle on the yaml schema definitions but
-"gpio-ranges" feels like it should be a list of ranges not a boolean.
+OK, I'll make no_context() use the new helper in v3.
+Thanks for your review.
 
-Something like -
-
-    gpio-ranges:
-      maxItems: 1
-
-feels more appropriate.
-
-I see both the usages in gpio bindings and for other range properties so
-maybe it's OK. I hope Rob or somebody more knowledgeable on this can
-clarify the usage.
-
-Otherwise, the patch looks good.
-
-Thanks,
-Punit
-
-> +
-> +  gpio-controller: true
-> +
-> +  interrupt-controller: true
-> +
-> +  "#interrupt-cells":
-> +    const: 2
-> +
-> +  interrupts:
-> +    description:
-> +      interrupt mapping one per GPIO.
-> +    minItems: 16
-> +    maxItems: 16
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#gpio-cells"
-> +  - gpio-ranges
-> +  - gpio-controller
-> +  - interrupt-controller
-> +  - "#interrupt-cells"
-> +  - interrupts
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +      #include <dt-bindings/interrupt-controller/irq.h>
-> +      #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +      soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        gpio: gpio@28020000 {
-> +          compatible = "toshiba,gpio-tmpv7708";
-> +          reg = <0 0x28020000 0 0x1000>;
-> +          #gpio-cells = <0x2>;
-> +          gpio-ranges = <&pmux 0 0 32>;
-> +          gpio-controller;
-> +          interrupt-controller;
-> +          #interrupt-cells = <2>;
-> +          interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>,
-> +              <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
-> +        };
-> +      };
-> +...
+> Reviewed-by: Pekka Enberg <penberg@kernel.org>
