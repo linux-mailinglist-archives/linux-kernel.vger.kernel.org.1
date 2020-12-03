@@ -2,131 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2887A2CD153
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:34:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 361722CD159
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728456AbgLCIec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:34:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgLCIec (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:34:32 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2A6C061A4D
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 00:33:51 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id bo9so2131294ejb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 00:33:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9dfbprICCCrSs+WBMIlheF+1A8ZYjR+D6Ak7ORnabGY=;
-        b=NJFoncHy+4AOXb8Innv/FCULVy0+N8C7fKWW18kIlWveSqghbWln7vhBxVw1/MrCbP
-         muzrjYmmSF/uZXoGtZoHS3YpuHHXFjBdvVyCorQAXPpE+ZblkanGJzdANqXD+bhDTu0R
-         PKs+K6h1GAnSl7O5Qc4QYird35hgdQ2EcSawU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9dfbprICCCrSs+WBMIlheF+1A8ZYjR+D6Ak7ORnabGY=;
-        b=Fr9BDpOzq9ROzd9xZzk9PjIO4KEMqL7MuaM+I3S8P0jcYdiizWdvPMYXuo4pNR/meK
-         gmpIacn+eoTSEErWGiSSTnDZWp3e5VJXIc/HIshrs3GMcLaLJH47JIq3FA4Sb1cFIAyS
-         vV9hgs9TM4P83esbx83SZrrT9B8qgKzEjl/lrSjjOPQEUOgVly6GQSDsdGTsXX1FeQi1
-         3+U3XfYE8JOYut9spj4LgMBC3aQ76ORktdWbReqzrqCFvgrZzfsvnuITEtDFzbWhZPEX
-         Gh6Ak4cfPvno2StA27z57H4c3D8s9KSnKigJnRnVl8p6vyX+4LBIvmD/L2oB4rWUic7+
-         CnUQ==
-X-Gm-Message-State: AOAM530l6+sxQTazJTGpuvXGZh1PUZNN3eRBT7TqkZGVppyUUU/bJH00
-        yHajZk/xGV90c8tMOxMHacEVfOfwttOxjw==
-X-Google-Smtp-Source: ABdhPJxJC4Mpzmvk9poq0MRvOlTyj0t4lWAiJRRdC5e51eVHa2ZMJdwHDTK5SUyyNI0IlJIvmWLboQ==
-X-Received: by 2002:a17:906:6010:: with SMTP id o16mr1518630ejj.55.1606984430082;
-        Thu, 03 Dec 2020 00:33:50 -0800 (PST)
-Received: from [192.168.1.149] (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
-        by smtp.gmail.com with ESMTPSA id n4sm641113edt.46.2020.12.03.00.33.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 00:33:49 -0800 (PST)
-Subject: Re:
-To:     Yun Levi <ppbuk5246@gmail.com>, Yury Norov <yury.norov@gmail.com>
-Cc:     dushistov@mail.ru, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
-        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
- <20201202094717.GX4077@smile.fi.intel.com>
- <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
- <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
- <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
- <CAM7-yPRBPP6SFzdmwWF5Y99g+aWcp=OY9Uvp-5h1MSDPmsORNw@mail.gmail.com>
- <CAAH8bW-+XnNsd9p3xZ1utmyY24gaBa0ko4tngBii4T+2cMkcYg@mail.gmail.com>
- <CAM7-yPQCWj6rOyLEgOqF3HGkFV1WKtqyVhEtDbS3HW=2A-HuBA@mail.gmail.com>
- <CAM7-yPTtiVnUztE=xpNYgRcZTGd1aX_V9ZHd=2YZYc1uQNBXtw@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <a0cc0d2e-9c55-8546-f070-26feed5de37f@rasmusvillemoes.dk>
-Date:   Thu, 3 Dec 2020 09:33:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728764AbgLCIfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:35:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725912AbgLCIfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 03:35:02 -0500
+X-Gm-Message-State: AOAM5318Q0F9G6RFSTrsh3ykdzXu3n9cO4RbPD2VBHqb7M//Ug/i98Ah
+        27C4IpykI7KfPhNTv6T28FVXpaCtP5+juUqsKW0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606984461;
+        bh=TNRBc8S70fvhf0yHPyoCSgJuCvQHb9iMJHwcNzjGzxc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RoODslOz3BhkHfLn8+8sRO2TBxS4PKAj8zSzfTJDcToF45/5pq2xVEWyOJdJlLPql
+         kgHHkbGw5q14RS3IChotlTaVjAn24iEipCHSpLd/x9m4TR2ubLMsE7LfUz3cdtszAE
+         7GjBQONeiX/ZSZlHBgHqk70Tp43RogS91UnSGlXTfa8VA4h9cgWEQX/08wF2p+veP/
+         EA7qtYFuX+bT3EK8p5ujud0kvhM1bnsxf3awESRZrkuwcsqpznM1u/BjT5CWDl86Er
+         d9IlxDmStAZzKkM7eKpJphr+k/T+uUPzrhTysKnUmCvl6N8+bK5X0wMknPe7n6swu6
+         jMU4GSZUez6wQ==
+X-Google-Smtp-Source: ABdhPJzf/lk1AM9MePWVi9O9FasTnU78oWvJQPhG9AV4DMgNQjdXYlVVVWEciE8XVC0YG1P5PqsrcpB7pMiy9CyiS2c=
+X-Received: by 2002:a9d:62c1:: with SMTP id z1mr1341707otk.108.1606984460342;
+ Thu, 03 Dec 2020 00:34:20 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAM7-yPTtiVnUztE=xpNYgRcZTGd1aX_V9ZHd=2YZYc1uQNBXtw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201203013524.30495-1-iuliana.prodan@oss.nxp.com>
+In-Reply-To: <20201203013524.30495-1-iuliana.prodan@oss.nxp.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 3 Dec 2020 09:34:08 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXH+a2ZH=06GXsz4Lj2Bx2YOHmGubeY6i7x=ar5ubvP+7g@mail.gmail.com>
+Message-ID: <CAMj1kXH+a2ZH=06GXsz4Lj2Bx2YOHmGubeY6i7x=ar5ubvP+7g@mail.gmail.com>
+Subject: Re: [PATCH 0/5] crypto: caam - avoid allocating memory at crypto
+ request runtime
+To:     "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-imx <linux-imx@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/12/2020 02.23, Yun Levi wrote:
-> On Thu, Dec 3, 2020 at 7:51 AM Yun Levi <ppbuk5246@gmail.com> wrote:
->>
->> On Thu, Dec 3, 2020 at 6:26 AM Yury Norov <yury.norov@gmail.com> wrote:
->>>
->>> On Wed, Dec 2, 2020 at 10:22 AM Yun Levi <ppbuk5246@gmail.com> wrote:
->>>>
->>>> On Thu, Dec 3, 2020 at 2:26 AM Yury Norov <yury.norov@gmail.com> wrote:
->>>>
->>>>> Also look at lib/find_bit_benchmark.c
->>>> Thanks. I'll see.
->>>>
->>>>> We need find_next_*_bit() because find_first_*_bit() can start searching only at word-aligned
->>>>> bits. In the case of find_last_*_bit(), we can start at any bit. So, if my understanding is correct,
->>>>> for the purpose of reverse traversing we can go with already existing find_last_bit(),
->>>>
->>>> Thank you. I haven't thought that way.
->>>> But I think if we implement reverse traversing using find_last_bit(),
->>>> we have a problem.
->>>> Suppose the last bit 0, 1, 2, is set.
->>>> If we start
->>>>     find_last_bit(bitmap, 3) ==> return 2;
->>>>     find_last_bit(bitmap, 2) ==> return 1;
->>>>     find_last_bit(bitmap, 1) ==> return 0;
->>>>     find_last_bit(bitmap, 0) ===> return 0? // here we couldn't
+On Thu, 3 Dec 2020 at 02:35, Iuliana Prodan (OSS)
+<iuliana.prodan@oss.nxp.com> wrote:
+>
+> From: Iuliana Prodan <iuliana.prodan@nxp.com>
+>
+> This series removes CRYPTO_ALG_ALLOCATES_MEMORY flag and
+> allocates the memory needed by the driver, to fulfil a
+> request, within the crypto request object.
+> The extra size needed for base extended descriptor, hw
+> descriptor commands and link tables is added to the reqsize
+> field that indicates how much memory could be needed per request.
+>
+> CRYPTO_ALG_ALLOCATES_MEMORY flag is limited only to
+> dm-crypt use-cases, which seems to be 4 entries maximum.
+> Therefore in reqsize we allocate memory for maximum 4 entries
+> for src and 4 for dst, aligned.
+> If the driver needs more than the 4 entries maximum, the memory
+> is dynamically allocated, at runtime.
+>
 
-Either just make the return type of all find_prev/find_last be signed
-int and use -1 as the sentinel to indicate "no such position exists", so
-the loop condition would be foo >= 0. Or, change the condition from
-"stop if we get the size returned" to "only continue if we get something
-strictly less than the size we passed in (i.e., something which can
-possibly be a valid bit index). In the latter case, both (unsigned)-1
-aka UINT_MAX and the actual size value passed work equally well as a
-sentinel.
+I'm confused. So the driver does allocate memory in some cases, right?
+So why is it justified to remove CRYPTO_ALG_ALLOCATES_MEMORY?
 
-If one uses UINT_MAX, a for_each_bit_reverse() macro would just be
-something like
-
-for (i = find_last_bit(bitmap, size); i < size; i =
-find_last_bit(bitmap, i))
-
-if one wants to use the size argument as the sentinel, the caller would
-have to supply a scratch variable to keep track of the last i value:
-
-for (j = size, i = find_last_bit(bitmap, j); i < j; j = i, i =
-find_last_bit(bitmap, j))
-
-which is probably a little less ergonomic.
-
-Rasmus
+> Iuliana Prodan (5):
+>   crypto: caam/jr - avoid allocating memory at crypto request runtime
+>     for skcipher
+>   crypto: caam/jr - avoid allocating memory at crypto request runtime
+>     for aead
+>   crypto: caam/jr - avoid allocating memory at crypto request runtime
+>     fost hash
+>   crypto: caam/qi - avoid allocating memory at crypto request runtime
+>   crypto: caam/qi2 - avoid allocating memory at crypto request runtime
+>
+>  drivers/crypto/caam/caamalg.c     | 141 +++++++---
+>  drivers/crypto/caam/caamalg_qi.c  | 134 ++++++----
+>  drivers/crypto/caam/caamalg_qi2.c | 415 ++++++++++++++++++++----------
+>  drivers/crypto/caam/caamalg_qi2.h |   6 +
+>  drivers/crypto/caam/caamhash.c    |  77 ++++--
+>  5 files changed, 538 insertions(+), 235 deletions(-)
+>
+> --
+> 2.17.1
+>
