@@ -2,182 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2EB2CD4A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8871D2CD4AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387757AbgLCLeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:34:04 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:41427 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726061AbgLCLeD (ORCPT
+        id S1729184AbgLCLgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:36:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726868AbgLCLgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:34:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606995218; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Sender; bh=3lEeiYfIabUWjKykhFZltcpohpjJIHJVg3falMmo2a8=; b=LDhJjt11eV4sG/wbrJKa0i6TKaEupBQahM7YQO2Ujs0FNczDebutXqUmn7zgF1W+XRdL7oeT
- v3krTAvnsL1E96POlzEk/dv1FyAcuG8yXXOI/wCkxYSXsxuEVNf5bzkR2wBQWw4zPm5sVlkK
- 9+8YPCk3DdLxj0eSaGMWEVqbbrA=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5fc8ccf789b9bc6268d3bc14 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Dec 2020 11:33:11
- GMT
-Sender: pillair=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4727AC43462; Thu,  3 Dec 2020 11:33:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from Pillair (unknown [49.205.247.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 88C49C433ED;
-        Thu,  3 Dec 2020 11:33:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 88C49C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
-From:   "Rakesh Pillai" <pillair@codeaurora.org>
-To:     "'Doug Anderson'" <dianders@chromium.org>
-Cc:     "'Abhishek Kumar'" <kuabhs@chromium.org>,
-        "'Kalle Valo'" <kvalo@codeaurora.org>,
-        "'LKML'" <linux-kernel@vger.kernel.org>,
-        "'ath10k'" <ath10k@lists.infradead.org>,
-        "'Brian Norris'" <briannorris@chromium.org>,
-        "'linux-wireless'" <linux-wireless@vger.kernel.org>,
-        "'David S. Miller'" <davem@davemloft.net>,
-        "'Jakub Kicinski'" <kuba@kernel.org>,
-        "'netdev'" <netdev@vger.kernel.org>
-References: <20201112200906.991086-1-kuabhs@chromium.org> <20201112200856.v2.1.Ia526132a366886e3b5cf72433d0d58bb7bb1be0f@changeid> <CAD=FV=XKCLgL6Bt+3KfqKByyP5fpwXOh6TNHXAoXkaQJRzjKjQ@mail.gmail.com> <002401d6c242$d78f2140$86ad63c0$@codeaurora.org> <CAD=FV=UnecON-M9eZVQePuNpdygN_E9OtLN495Xe1GL_PA94DQ@mail.gmail.com> <002d01d6c2dd$4386d880$ca948980$@codeaurora.org> <CAD=FV=WQPMnor3oTefDHd6JP6UmpyBo7UsOJ1Sg4Ly1otxr6hw@mail.gmail.com>
-In-Reply-To: <CAD=FV=WQPMnor3oTefDHd6JP6UmpyBo7UsOJ1Sg4Ly1otxr6hw@mail.gmail.com>
-Subject: RE: [PATCH v2 1/1] ath10k: add option for chip-id based BDF selection
-Date:   Thu, 3 Dec 2020 17:03:02 +0530
-Message-ID: <004301d6c968$12ef1b10$38cd5130$@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKxMSkDsdRsNwK99YDuloz1ISNQFAKbjoqbAYQwjuUA6sHy1gG3FmuoAayVhWkBiF+H7qfguODA
-Content-Language: en-us
+        Thu, 3 Dec 2020 06:36:49 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C05C061A4D
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 03:36:08 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id p6so996181plo.6
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 03:36:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=wqd6B3MGg9FU3pSe+TUt1wCgmmcknZUopdwCUSxaGrw=;
+        b=guM1o5Y6XAw7IphxI5qXSTe0jGqIc10MncBmcXcjxH8b1fRlicsuQdbzOwICJHy+Bi
+         aEcJM8QxU0srioGSh9WB8pliTssXUkmNcrvZ45yZaMwas12tKu/0d5hdf7gwH3Rh0KjQ
+         hakt7IjgtSc9hs2vfAvbf88qSQFdUv9eLT23WOysdX+Or9kmNf08ikGr9//0EQcTkAaZ
+         MR3yFv+JroEaox/qJnWcO1yVOIKFoZvLq6SqfFDjBpxTiLdQyqWBkOPAX/0v48rvinEn
+         Fvq2RM+/PXwyZYrWys7rPAEw0nCrR593R9inQsNOrwttWkFbA+jnHPUz05HAzLsStO69
+         a9yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=wqd6B3MGg9FU3pSe+TUt1wCgmmcknZUopdwCUSxaGrw=;
+        b=hnmKbsyzGQGListn0E+v6fa61zyhk0dGYLcmxgny2a23V5WtDi/ssbRaprZG477707
+         X8yMa383Br+/wQd0/g7MoOWPepTIKvcWXEHijl+WuoHGrmEpO0SE6zHnV9R0jUXLzMQd
+         vkHkIHexu0xnCf/nJKgdyXUbX7G35sxZVnnxLp9g99rmaX5E3asLycMOs0CqSrtEffuo
+         m87vnE8baLRmlP+rs9O3GWettyC/smCFP7VhgjMupWgCw0IUo6a1tDNpGRMvrW7PpE0u
+         aft9sQzAJMa3PHKpa9JtLxg2wM68OkKuJQQ2dXtllppPZc+1+gfc2F6woD85NGD9SAzw
+         /TJg==
+X-Gm-Message-State: AOAM53092k64kLKA3fgG2Q/NqLWOIEBiJR4iATvyGGRhdXNJ3vIL+I4R
+        9k3DwIVUY3FmHV7LAwL7DZ4hD5Mku/8=
+X-Google-Smtp-Source: ABdhPJx46Y2bHQRP5Q9sMsDoVEb7XeWcubw21qfiGoH8CWJMxbcrxY9HCu1UGQ0LqNWsBHsLSk2BZQ==
+X-Received: by 2002:a17:902:b28a:b029:da:725c:14db with SMTP id u10-20020a170902b28ab02900da725c14dbmr2683231plr.72.1606995368488;
+        Thu, 03 Dec 2020 03:36:08 -0800 (PST)
+Received: from bj03382pcu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id y25sm1554665pfn.44.2020.12.03.03.36.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 03 Dec 2020 03:36:07 -0800 (PST)
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+X-Google-Original-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+To:     Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: fix a race on nr_swap_pages
+Date:   Thu,  3 Dec 2020 19:36:02 +0800
+Message-Id: <1606995362-16413-1-git-send-email-zhaoyang.huang@unisoc.com>
+X-Mailer: git-send-email 1.7.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The scenario on which "Free swap -4kB" happens in my system, which is caused by
+ get_swap_page_of_type or get_swap_pages racing with show_mem. Remove the race
+ here.
 
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+ mm/swapfile.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-> -----Original Message-----
-> From: Doug Anderson <dianders@chromium.org>
-> Sent: Tuesday, December 1, 2020 12:49 AM
-> To: Rakesh Pillai <pillair@codeaurora.org>
-> Cc: Abhishek Kumar <kuabhs@chromium.org>; Kalle Valo
-> <kvalo@codeaurora.org>; LKML <linux-kernel@vger.kernel.org>; ath10k
-> <ath10k@lists.infradead.org>; Brian Norris <briannorris@chromium.org>;
-> linux-wireless <linux-wireless@vger.kernel.org>; David S. Miller
-> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; netdev
-> <netdev@vger.kernel.org>
-> Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF
-> selection
->=20
-> Hi,
->=20
-> On Tue, Nov 24, 2020 at 7:44 PM Rakesh Pillai <pillair@codeaurora.org>
-> wrote:
-> >
-> > > > I missed on reviewing this change. Also I agree with Doug that =
-this is not
-> > > the change I was looking for.
-> > > >
-> > > > The argument "with_variant" can be renamed to =
-"with_extra_params".
-> > > There is no need for any new argument to this function.
-> > > > Case 1: with_extra_params=3D0,  ar->id.bdf_ext[0] =3D 0          =
-   ->   The
-> default
-> > > name will be used (bus=3Dsnoc,qmi_board_id=3D0xab)
-> > > > Case 2: with_extra_params=3D1,  ar->id.bdf_ext[0] =3D 0          =
-   ->
-> > > bus=3Dsnoc,qmi_board_id=3D0xab,qmi_chip_id=3D0xcd
-> > > > Case 3: with_extra_params=3D1,  ar->id.bdf_ext[0] =3D "xyz"      =
-->
-> > > bus=3Dsnoc,qmi_board_id=3D0xab,qmi_chip_id=3D0xcd,variant=3Dxyz
-> > > >
-> > > > ar->id.bdf_ext[0] depends on the DT entry for variant field.
-> > >
-> > > I'm confused about your suggestion.  Maybe you can help clarify.  =
-Are
-> > > you suggesting:
-> > >
-> > > a) Only two calls to ath10k_core_create_board_name()
-> > >
-> > > I'm pretty sure this will fail in some cases.  Specifically =
-consider
-> > > the case where the device tree has a "variant" defined but the BRD
-> > > file only has one entry for (board-id) and one for (board-id +
-> > > chip-id) but no entry for (board-id + chip-id + variant).  If you =
-are
-> > > only making two calls then I don't think you'll pick the right =
-one.
-> > >
-> > > Said another way...
-> > >
-> > > If the device tree has a variant:
-> > > 1. We should prefer a BRD entry that has board-id + chip-id + =
-variant
-> > > 2. If #1 isn't there, we should prefer a BRD entry that has =
-board-id + chip-
-> id
-> > > 3. If #1 and #2 aren't there we fall back to a BRD entry that has =
-board-id.
-> > >
-> > > ...without 3 calls to ath10k_core_create_board_name() we can't =
-handle
-> > > all 3 cases.
-> >
-> > This can be handled by two calls to ath10k_core_create_board_name
-> > 1) ath10k_core_create_board_name(ar, boardname, sizeof(boardname),
-> true)   :  As per my suggestions, this can result in two possible =
-board names
-> >     a) If DT have the "variant" node, it outputs the #1 from your =
-suggestion
-> (1. We should prefer a BRD entry that has board-id + chip-id + =
-variant)
-> >     b) If DT does not have the "variant" node, it outputs the #2 =
-from your
-> suggestion (2. If #1 isn't there, we should prefer a BRD entry that =
-has board-
-> id + chip-id)
-> >
-> > 2) ath10k_core_create_board_name(ar, boardname, sizeof(boardname),
-> false)    :  This is the second call to this function and outputs the =
-#3 from your
-> suggestion (3. If #1 and #2 aren't there we fall back to a BRD entry =
-that has
-> board-id)
->=20
-> What I'm trying to say is this.  Imagine that:
->=20
-> a) the device tree has the "variant" property.
->=20
-> b) the BRD file has two entries, one for "board-id" (1) and one for
-> "board-id + chip-id" (2).  It doesn't have one for "board-id + chip-id
-> + variant" (3).
->=20
-> With your suggestion we'll see the "variant" property in the device
-> tree.  That means we'll search for (1) and (3).  (3) isn't there, so
-> we'll pick (1).  ...but we really should have picked (2), right?
-
-
-Do we expect board-2.bin to not be populated with the bdf with variant =
-field (if its necessary ?)
-Seems fine for me, if we have 2 fallback names if that is needed.
-
->=20
-> -Doug
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index cf63b5f..13201b6 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -974,6 +974,8 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
+ 	/* Only single cluster request supported */
+ 	WARN_ON_ONCE(n_goal > 1 && size == SWAPFILE_CLUSTER);
+ 
++	spin_lock(&swap_avail_lock);
++
+ 	avail_pgs = atomic_long_read(&nr_swap_pages) / size;
+ 	if (avail_pgs <= 0)
+ 		goto noswap;
+@@ -986,8 +988,6 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
+ 
+ 	atomic_long_sub(n_goal * size, &nr_swap_pages);
+ 
+-	spin_lock(&swap_avail_lock);
+-
+ start_over:
+ 	node = numa_node_id();
+ 	plist_for_each_entry_safe(si, next, &swap_avail_heads[node], avail_lists[node]) {
+@@ -1061,14 +1061,13 @@ swp_entry_t get_swap_page_of_type(int type)
+ 
+ 	spin_lock(&si->lock);
+ 	if (si->flags & SWP_WRITEOK) {
+-		atomic_long_dec(&nr_swap_pages);
+ 		/* This is called for allocating swap entry, not cache */
+ 		offset = scan_swap_map(si, 1);
+ 		if (offset) {
++			atomic_long_dec(&nr_swap_pages);
+ 			spin_unlock(&si->lock);
+ 			return swp_entry(type, offset);
+ 		}
+-		atomic_long_inc(&nr_swap_pages);
+ 	}
+ 	spin_unlock(&si->lock);
+ fail:
+-- 
+1.9.1
 
