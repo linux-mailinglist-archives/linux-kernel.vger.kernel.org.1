@@ -2,180 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5FA22CDDA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D262CDDAB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501931AbgLCSaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:30:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727599AbgLCSaB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:30:01 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98407C061A4E;
-        Thu,  3 Dec 2020 10:29:15 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id f1so1606918plt.12;
-        Thu, 03 Dec 2020 10:29:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+WyCqEHFRXG/znTaYwcRSAz+ikU4KUuDWRGTqiuEseI=;
-        b=Jq1AeVxjxylFag35gbpDoPu6RWql4w6olyXkAzkSvgiJXX/z5a/6KalXnelP8oFs7U
-         hQ/rQwIzWJ7TgKd79uqjVwE26bchVNuMP+6FJegdEdSKA0xJZyYM0417c0moxtGUVFiq
-         iq0Op36EaHeARncOUAKj+VBrfPm9/l8AFhky13Tpib9uOkMVmPcUZKOkCoCcNndgPBfN
-         BD3VK01aF2hL4MZRrs7A16UjaoM6GhfmNU7UTiPE9Zb56W59bW+BMl/JUz5ts5/cmQw9
-         3XuTGWJqvkraNhgLLm7DDat/9WTe6nRIv7V0Sa5MOO1nbjGyLagXPFijR58IMNo+v1Zi
-         bn/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+WyCqEHFRXG/znTaYwcRSAz+ikU4KUuDWRGTqiuEseI=;
-        b=hT2DeMoFR+auy4MqbkEicqub9gDzVszBC/vGEOP+0Lzx4oI6vtHuWI6gDfalNDK5UF
-         HoEwe43nPG4lejX12CT4UgSMadg4hSKGnpS5ODb8E4rlzmDnPFFw0vJDB4+MRTjZ0uQ8
-         T8Ju1OfsJmz29kGN+XEGSq8PT1lOTG2X/dwdh79iduVh04SmNEZQ2dZe2RB0iENBnf5l
-         l0uzThV2YR3kac9teqL6V2Xa5hFy6Os0Xg9KylE+3GVlt2MZROkDtsGkv6mK5JditF2I
-         eJQibe/fNGKZCjhDrIo0hUd8Tfo1+degpdy8/BMcJXOzt5tolNKRzu1wmpzSUYKkIshc
-         ckJQ==
-X-Gm-Message-State: AOAM530plHFunP9KsrH/OHgBr2JGFVYwQzaKbemy0N2/uMItSlYTuO3V
-        RSqV0Lx/pePiw3SDxwswSVOnix9/hdQn6Y4+Y+I=
-X-Google-Smtp-Source: ABdhPJw76gw7sWSLM4C/6LEnb1g+m3GERIOLPxkx5+zN/CF8v9kUqWUvnYpr3RBnylk3CWwPcZLba5heZ9xnwtU6OrU=
-X-Received: by 2002:a17:90a:34cb:: with SMTP id m11mr364955pjf.181.1607020155055;
- Thu, 03 Dec 2020 10:29:15 -0800 (PST)
+        id S2502037AbgLCSaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:30:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727599AbgLCSaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:30:19 -0500
+Date:   Thu, 3 Dec 2020 19:30:44 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607020177;
+        bh=3XXWrx8mR/m+t5lqkDosOVllizg8JN+/aY2WXeZoxPU=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E+wVhhb8vKwfRAXg4lMwE0CQiykQ9fvsp0GdOILSHjBhqBWfPpTZABOCqifxuOXA6
+         PyMh1wR0QfzYpsFNWgxn7dbQhaAui5QFdNf9QFNnVfDDqVQJdR/hrxP7UrO0xxSbvK
+         bzcukMCzOs51okUrLKRnhBeU1xK11BD1uBo20zUo=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "ksummit-discuss@lists.linuxfoundation.org" 
+        <ksummit-discuss@lists.linuxfoundation.org>
+Subject: Re: [Ksummit-discuss] crediting bug reports and fixes folded into
+ original patch
+Message-ID: <X8ku1MmZeeIaMRF4@kroah.com>
+References: <ea32eb02-5e44-0469-772b-34b5cb882543@suse.cz>
+ <CAPcyv4jDHMt4PpR2Htvw27rn5i5sCkwXtoZH-rFbtG8Hj7x1sg@mail.gmail.com>
+ <20201203093458.GA16543@unreal>
+ <CAMuHMdVcPELarE=eJEc-=AdyfmhhZQsYtUggWCaetuEdk=VpMQ@mail.gmail.com>
+ <20201203104047.GD16543@unreal>
 MIME-Version: 1.0
-References: <9af089ea-2532-68ac-5d22-97a669ccec91@canonical.com>
- <CAHp75Ve7Sdf=Zy5N1LN_w22=YwPgWWR-FZtrQcAkOF=ViT2Kbw@mail.gmail.com> <8eb453c7-a221-e741-5fe5-655e59075f34@canonical.com>
-In-Reply-To: <8eb453c7-a221-e741-5fe5-655e59075f34@canonical.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 3 Dec 2020 20:30:03 +0200
-Message-ID: <CAHp75VffBjhvuZ1Uy5Eo5qSiZ4w-+dhH5cR_XgmqGvxtrMd3uQ@mail.gmail.com>
-Subject: Re: media: i2c: add OV02A10 image sensor driver
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203104047.GD16543@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 8:24 PM Colin Ian King <colin.king@canonical.com> wrote:
-> On 03/12/2020 18:10, Andy Shevchenko wrote:
-> > On Thu, Dec 3, 2020 at 8:03 PM Colin Ian King <colin.king@canonical.com> wrote:
+On Thu, Dec 03, 2020 at 12:40:47PM +0200, Leon Romanovsky wrote:
+> On Thu, Dec 03, 2020 at 10:36:56AM +0100, Geert Uytterhoeven wrote:
+> > On Thu, Dec 3, 2020 at 10:35 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > > On Wed, Dec 02, 2020 at 08:02:27PM -0800, Dan Williams wrote:
+> > > > On Wed, Dec 2, 2020 at 3:44 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+> > > > > there was a bit of debate on Twitter about this, so I thought I would bring it
+> > > > > here. Imagine a scenario where patch sits as a commit in -next and there's a bug
+> > > > > report or fix, possibly by a bot or with some static analysis. The maintainer
+> > > > > decides to fold it into the original patch, which makes sense for e.g.
+> > > > > bisectability. But there seem to be no clear rules about attribution in this
+> > > > > case, which looks like there should be, probably in
+> > > > > Documentation/maintainer/modifying-patches.rst
+> > > > >
+> > > > > The original bug fix might include a From: $author, a Reported-by: (e.g.
+> > > > > syzbot), Fixes: $next-commit, some tag such as Addresses-Coverity: to credit the
+> > > > > static analysis tool, and an SoB. After folding, all that's left might be a line
+> > > > > as "include fix from $author" in the SoB area. This is a loss of
+> > > > > metadata/attribution just due to folding, and might make contributors unhappy.
+> > > > > Had they sent the fix after the original commit was mainline and immutable, all
+> > > > > the info above would "survive" in the form of new commit.
+> > > > >
+> > > > > So I think we could decide what the proper format would be, and document it
+> > > > > properly. I personally wouldn't mind just copy/pasting the whole commit message
+> > > > > of the fix (with just a short issue description, no need to include stacktraces
+> > > > > etc if the fix is folded), we could just standardize where, and how to delimit
+> > > > > it from the main commit message. If it's a report (person or bot) of a bug that
+> > > > > the main author then fixed, preserve the Reported-by in the same way (making
+> > > > > clear it's not a Reported-By for the "main thing" addressed by the commit).
+> > > > >
+> > > > > In the debate one less verbose alternatve proposed was a SoB with comment
+> > > > > describing it's for a fix and not whole patch, as some see SoB as the main mark
+> > > > > of contribution, that can be easily found and counted etc. I'm not so sure about
+> > > > > it myself, as AFAIK SoB is mainly a DCO thing, and for a maintainer it means
+> > > > > something else ("passed through my tree") than for a patch author. And this
+> > > > > approach would still lose the other tags.
+> > > > >
+> > > > > Thoughts?
+> > > >
+> > > > How about a convention to add a Reported-by: and a Link: to the
+> > > > incremental fixup discussion? It's just polite to credit helpful
+> > > > feedback, not sure it needs a more formal process.
+> > >
+> > > Maybe "Fixup-Reported-by:" and "Fixup-Link:"?
 > >
-> >> Static analysis on linux-next with Coverity has detected an issue with
-> >> the following commit:
+> > And "Earlier-Review-Comments-Provided-by:"?
 > >
-> > If you want to fix it properly, see my comments below...
-> >
-> >> 529 static int ov02a10_s_stream(struct v4l2_subdev *sd, int on)
-> >> 530 {
-> >> 531        struct ov02a10 *ov02a10 = to_ov02a10(sd);
-> >> 532        struct i2c_client *client =
-> >> v4l2_get_subdevdata(&ov02a10->subdev);
-> >>
-> >>    1. var_decl: Declaring variable ret without initializer.
-> >>
-> >> 533        int ret;
-> >> 534
-> >> 535        mutex_lock(&ov02a10->mutex);
-> >> 536
-> >>
-> >>    2. Condition ov02a10->streaming == on, taking true branch.
-> >>
-> >> 537        if (ov02a10->streaming == on)
-> >>
-> >>    3. Jumping to label unlock_and_return.
-> >>
-> >> 538                goto unlock_and_return;
-> >> 539
-> >> 540        if (on) {
-> >> 541                ret = pm_runtime_get_sync(&client->dev);
-> >> 542                if (ret < 0) {
-> >
-> >> 543                        pm_runtime_put_noidle(&client->dev);
-> >> 544                        goto unlock_and_return;
-> >
-> > Instead of two above:
-> >                        goto err_rpm_put;
-> >
-> >> 545                }
-> >> 546
-> >> 547                ret = __ov02a10_start_stream(ov02a10);
-> >> 548                if (ret) {
-> >> 549                        __ov02a10_stop_stream(ov02a10);
-> >> 550                        ov02a10->streaming = !on;
-> >> 551                        goto err_rpm_put;
-> >> 552                }
-> >> 553        } else {
-> >> 554                __ov02a10_stop_stream(ov02a10);
-> >> 555                pm_runtime_put(&client->dev);
-> >> 556        }
-> >> 557
-> >> 558        ov02a10->streaming = on;
-> >
-> > (1)
-> >
-> >> 559        mutex_unlock(&ov02a10->mutex);
-> >> 560
-> >> 561        return 0;
-> >> 562
-> >> 563 err_rpm_put:
-> >> 564        pm_runtime_put(&client->dev);
-> >
-> >> 565 unlock_and_return:
-> >
-> > Should be moved to (1).
-> >
-> >> 566        mutex_unlock(&ov02a10->mutex);
-> >> 567
-> >>
-> >> Uninitialized scalar variable (UNINIT)
-> >>     4. uninit_use: Using uninitialized value ret.
-> >>
-> >> 568        return ret;
-> >> 569 }
-> >>
-> >> Variable ret has not been initialized, so the error return value is a
-> >> garbage value. It should be initialized with some appropriate negative
-> >> error code, or ret could be removed and the return should return a
-> >> literal value of a error code.
-> >>
-> >> I was unsure what value is appropriate to fix this, so instead I'm
-> >> reporting this issue.
-> >
-> Not sure I fully understand how that fixes it.
+> > How far do we want to go?
+> 
+> I don't want to overload existing meaning of "Reported-by:" and "Link:",
+> so anything else is fine by me.
+> 
+> I imagine that all those who puts their own Reviewed-by, Signed-off-by
+> and Tested-by in the same patch will be happy to use something like you
+> are proposing - "Co-developed-Signed-Reviewed-Tested-by:" tag.
 
-If you are not sure and have no means to test, then don't bother. This
-is not the priority driver anyway.
-
->  Given that ret is
-> currently not initialized when we hit:
->
->          if (ov02a10->streaming == on)
->                 goto unlock_and_return;
->
-> either we initialize ret to 0 at the start of the function, or do:
->
->          if (ov02a10->streaming == on) {
->                 ret = 0;
->                 goto unlock_and_return;
->         }
->
-> (assuming the intention is to return zero for this specific case).
-
-No, please read my message again.
-
--- 
-With Best Regards,
-Andy Shevchenko
+We already have "Co-developerd-by:" as a valid tag, no need to merge
+more into this :)
