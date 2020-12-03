@@ -2,101 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924812CE1D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED76A2CE1DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731151AbgLCWfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:35:34 -0500
-Received: from ozlabs.org ([203.11.71.1]:35825 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727415AbgLCWfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:35:34 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S2387932AbgLCWfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:35:44 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:33655 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387629AbgLCWfo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:35:44 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cn9d45gkYz9sVJ;
-        Fri,  4 Dec 2020 09:34:48 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607034891;
-        bh=VrxoLFii3XtXFphKy9zwC0afo2U9H3/0MV4x2B1n/9c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=N0ga7O3vq/pN8Q7oMT8hzsMk/UCM9Yptjv6HMq6cJb6b4CZunLiykXwdSwXU/YIFZ
-         7AddrX1PNqTqmInXAprdY40tczVszfLg8rHd1hwFDYJkEvNq0xSoGMm6J203v7eUQT
-         h2Ps2EiiwV5PghTAlEWe30GnQFXE3TMWcXcvD6XfcNCl/yzZBwGggtY/D/ZhQr7oCD
-         n5OfDJKPBKo/imMEg3UrVd+Bq+nQ/wPxk1gma1ucXcuuh7UWI29LdjG/GGPBmeDfuO
-         q6J/kdqsKrn5gyOLNaYmnlyWU4L8PiAdyMjx0mx+4PJs62zevigZ/ikXNV5a80d7EN
-         4iTss967j5aLA==
-Date:   Fri, 4 Dec 2020 09:34:47 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        m.szyprowski@samsung.com, qcai@redhat.com, dchinner@redhat.com,
-        hannes@cmpxchg.org, hch@lst.de, jack@suse.cz,
-        kirill.shutemov@linux.intel.com, mm-commits@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, william.kucharski@oracle.com,
-        willy@infradead.org, yang.shi@linux.alibaba.com
-Subject: Re: +
- mm-truncateshmem-handle-truncates-that-split-thps-fix-fix.patch added to
- -mm tree
-Message-ID: <20201204093447.2cf9d164@canb.auug.org.au>
-In-Reply-To: <alpine.LSU.2.11.2012031348120.12944@eggly.anvils>
-References: <20201126054713.GmEiU5MZ_%akpm@linux-foundation.org>
-        <alpine.LSU.2.11.2012031348120.12944@eggly.anvils>
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 8C7D422EE3;
+        Thu,  3 Dec 2020 23:35:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1607034902;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ApfT7BqS8VKiR7VF/My//B2mRx4iTy2qjCIfLunfdUw=;
+        b=efhjip1akBRMhoA4AZ1iYwiyRFfTJ2jJZXPUNttZ+SWLTGrw1BybFcWmKR9LYhPYB3BxZq
+        PKcwhY0GcDIueAwovbzzjFXM3v3ToOSQ23lRvauplrzDcC04LtmYZMeEV7IXXBOoeuJ0to
+        +1YObOy0QhiBdvpqOUv8GPFrVarMmV8=
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/UibknY4IjlQ9I0lgzOL6.ag";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 03 Dec 2020 23:35:02 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] drivers: gpio: add virtio-gpio guest driver
+In-Reply-To: <f14c0197-b346-7af5-9dd0-9b8018baaeaf@metux.net>
+References: <20201127183003.2849-1-info@metux.net>
+ <CAMpxmJXJLTzM20xLCoM4spjibXbA-FfdPmOBp1QcV+9cScNNMw@mail.gmail.com>
+ <f14c0197-b346-7af5-9dd0-9b8018baaeaf@metux.net>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <b287f185d554b5a87b82ea8ca79cb5a2@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/UibknY4IjlQ9I0lgzOL6.ag
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Am 2020-12-03 20:00, schrieb Enrico Weigelt, metux IT consult:
+> On 02.12.20 15:15, Bartosz Golaszewski wrote:
+>>> +               bufwalk = name_buffer;
+>>> +
+>>> +               while (idx < priv->num_gpios &&
+>>> +                      bufwalk < (name_buffer+cf.names_size)) {
+>>> +                       gpio_names[idx] = (strlen(bufwalk) ? bufwalk 
+>>> : NULL);
+>>> +                       bufwalk += strlen(bufwalk)+1;
+>>> +                       idx++;
+>> 
+>> 
+>> Something's wrong with indentation here.
+> 
+> i dont think so: the "bufwalk ..." line belongs to the while expression
+> and is right under the "idx", as it should be. I didn't want to break 
+> up
+> at the "<" operator. shall i do this instead ?
 
-Hi Hugh,
+Or don't break the lines at all. Both lines don't add up to more than 
+100 chars,
+right?
 
-On Thu, 3 Dec 2020 14:04:18 -0800 (PST) Hugh Dickins <hughd@google.com> wro=
-te:
->
-> On Wed, 25 Nov 2020, akpm@linux-foundation.org wrote:
-> >=20
-> > The patch titled
-> >      Subject: mm-truncateshmem-handle-truncates-that-split-thps-fix-fix
-> > has been added to the -mm tree.  Its filename is
-> >      mm-truncateshmem-handle-truncates-that-split-thps-fix-fix.patch =20
->=20
-> This lot is proving to be a work in progress,
-> the current state breaks booting on 32-bit, livelocks trinity,
-> and breaks shmem in more ways than I can quickly explain.
-> Please revert (in reverse order):
->=20
-> mm-truncateshmem-handle-truncates-that-split-thps.patch
-> mm-truncateshmem-handle-truncates-that-split-thps-fix.patch
-> mm-truncateshmem-handle-truncates-that-split-thps-fix-fix.patch
-> mm-filemap-return-only-head-pages-from-find_get_entries.patch
-
-I have removed all 4 patches from linux-next for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/UibknY4IjlQ9I0lgzOL6.ag
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/JaAcACgkQAVBC80lX
-0GwEQAgAgheUQdaeeJkyOAWwDDVh74tnjSTadn8z2CerfltVQxpU0EQDLNPlJU2R
-h5HijEmgz+ZOcujo1O2Toh/U7DJ47jBhuvmueRCDt/PQM7K+bXOPx6RtrL/M68KV
-lMQYVkFAnEXwEmNeINL8D2gBrI3gLg1DvcL4bbCUQjbcvyUUSnEaBWWicJtp3ig/
-2ecetXicKF41Q2YgrCZZoprC7sLck/pQcEfGmgyrqai6a8U1k6Zr5F76uvhFihnk
-azn5q37X1zFRsvkIpzihyucA+rDCPiN3JgZ1s4DxVUEPGn1DvJeHGRFSKv03T1na
-wCIVvi0zbM7jUNUU3bUrHOjPsCXakA==
-=Zfx1
------END PGP SIGNATURE-----
-
---Sig_/UibknY4IjlQ9I0lgzOL6.ag--
+-michael
