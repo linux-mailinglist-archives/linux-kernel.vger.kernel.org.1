@@ -2,191 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD20A2CD2D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FB52CD2DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730134AbgLCJru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:47:50 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:8928 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgLCJrt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:47:49 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CmrZm1TKNz782q;
-        Thu,  3 Dec 2020 17:46:40 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 3 Dec 2020 17:47:04 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] drm/hisilicon: Delete the entire file hibmc_ttm.c
-Date:   Thu, 3 Dec 2020 17:47:21 +0800
-Message-ID: <1606988841-1373-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        id S1730167AbgLCJsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:48:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728900AbgLCJsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 04:48:50 -0500
+Date:   Thu, 3 Dec 2020 09:47:39 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606988889;
+        bh=5X99CjF/w6FuCzH9ST9VSYb0yNBNDgAFDj6aEVF7hRE=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aROK9D3oy/hXocbzQlxP1a9VxjKCwjp/rA+Azd9Jw16exRpgg5LyekFUUki7Nwy7o
+         Ajlr9geQHGbW0V0AOHJBExkMQnyr2DGGVEnkCSI+tlsy6z79sAz9QRmgaldF9iRxuN
+         JIn/A3HobTBLeGCpiPRcsPjOwp1Q27FV70dlUtx3BfU02hXJflgjnErfNZDu9pncGZ
+         8SzUeszP5AgPLA0U8QCzJpV+jm6V/IFc1YY8RG59R/qlhJ46dZJqdQiLF8/4E2ODB2
+         cbQ2dYorXPvmgcIsSPPujZZWmRYVtU4tvQAd3eMOhHcDInfnLWs9eDbrggoutcN0/k
+         VAjvo2k1EiD9g==
+From:   Mark Brown <broonie@kernel.org>
+To:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>
+Subject: Re: [PATCH v3 2/3] spi: Add SPI_NO_TX/RX support
+Message-ID: <20201203094739.GB4700@sirena.org.uk>
+References: <20201127130834.136348-1-alexandru.ardelean@analog.com>
+ <20201127130834.136348-2-alexandru.ardelean@analog.com>
+ <CAHp75Vcd4t=RqC31S-b1PXMtd=8sypSLhTrSgRD9hbpSqOphoQ@mail.gmail.com>
+ <CAHp75VctXhpyBVB7Zw+SB5LiGcj6r850x+ehL7u2H0R4=y5rVw@mail.gmail.com>
+ <CY4PR03MB29661063937AD783F6B2A010F9F20@CY4PR03MB2966.namprd03.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hHWLQfXTYDoKhP50"
+Content-Disposition: inline
+In-Reply-To: <CY4PR03MB29661063937AD783F6B2A010F9F20@CY4PR03MB2966.namprd03.prod.outlook.com>
+X-Cookie: Sacred cows make great hamburgers.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete the entire file hibmc_ttm.c. drmm_vram_helper_init() can be
-called directly from hibmc_load(). hibmc_dumb_create() and
-hibmc_mode_funcs can go to hibmc_drm_drv.c
 
-v2:
-change Deletted to Delete
+--hHWLQfXTYDoKhP50
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
----
- drivers/gpu/drm/hisilicon/hibmc/Makefile        |  2 +-
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 21 ++++++++++-
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h |  4 --
- drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c     | 50 -------------------------
- 4 files changed, 20 insertions(+), 57 deletions(-)
- delete mode 100644 drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+On Thu, Dec 03, 2020 at 08:20:57AM +0000, Ardelean, Alexandru wrote:
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/Makefile b/drivers/gpu/drm/hisilicon/hibmc/Makefile
-index 684ef79..d25c75e 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/Makefile
-+++ b/drivers/gpu/drm/hisilicon/hibmc/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
--hibmc-drm-y := hibmc_drm_drv.o hibmc_drm_de.o hibmc_drm_vdac.o hibmc_ttm.o hibmc_drm_i2c.o
-+hibmc-drm-y := hibmc_drm_drv.o hibmc_drm_de.o hibmc_drm_vdac.o hibmc_drm_i2c.o
- 
- obj-$(CONFIG_DRM_HISI_HIBMC) += hibmc-drm.o
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-index 5aea2e9..3687753 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-@@ -16,6 +16,7 @@
- 
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_drv.h>
-+#include <drm/drm_gem_framebuffer_helper.h>
- #include <drm/drm_gem_vram_helper.h>
- #include <drm/drm_irq.h>
- #include <drm/drm_managed.h>
-@@ -43,6 +44,12 @@ static irqreturn_t hibmc_drm_interrupt(int irq, void *arg)
- 	return IRQ_HANDLED;
- }
- 
-+static int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
-+			     struct drm_mode_create_dumb *args)
-+{
-+	return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
-+}
-+
- static const struct drm_driver hibmc_driver = {
- 	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
- 	.fops			= &hibmc_fops,
-@@ -77,6 +84,13 @@ static const struct dev_pm_ops hibmc_pm_ops = {
- 				hibmc_pm_resume)
- };
- 
-+static const struct drm_mode_config_funcs hibmc_mode_funcs = {
-+	.mode_valid = drm_vram_helper_mode_valid,
-+	.atomic_check = drm_atomic_helper_check,
-+	.atomic_commit = drm_atomic_helper_commit,
-+	.fb_create = drm_gem_fb_create,
-+};
-+
- static int hibmc_kms_init(struct hibmc_drm_private *priv)
- {
- 	struct drm_device *dev = &priv->dev;
-@@ -262,9 +276,12 @@ static int hibmc_load(struct drm_device *dev)
- 	if (ret)
- 		goto err;
- 
--	ret = hibmc_mm_init(priv);
--	if (ret)
-+	ret = drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
-+				    priv->fb_size);
-+	if (ret) {
-+		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
- 		goto err;
-+	}
- 
- 	ret = hibmc_kms_init(priv);
- 	if (ret)
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-index 2786de5..a49c10e 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-@@ -64,10 +64,6 @@ int hibmc_de_init(struct hibmc_drm_private *priv);
- int hibmc_vdac_init(struct hibmc_drm_private *priv);
- 
- int hibmc_mm_init(struct hibmc_drm_private *hibmc);
--int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
--		      struct drm_mode_create_dumb *args);
- int hibmc_ddc_create(struct drm_device *drm_dev, struct hibmc_connector *connector);
- 
--extern const struct drm_mode_config_funcs hibmc_mode_funcs;
--
- #endif
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-deleted file mode 100644
-index 892d566..0000000
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-+++ /dev/null
-@@ -1,50 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/* Hisilicon Hibmc SoC drm driver
-- *
-- * Based on the bochs drm driver.
-- *
-- * Copyright (c) 2016 Huawei Limited.
-- *
-- * Author:
-- *	Rongrong Zou <zourongrong@huawei.com>
-- *	Rongrong Zou <zourongrong@gmail.com>
-- *	Jianhua Li <lijianhua@huawei.com>
-- */
--
--#include <linux/pci.h>
--
--#include <drm/drm_atomic_helper.h>
--#include <drm/drm_gem.h>
--#include <drm/drm_gem_framebuffer_helper.h>
--#include <drm/drm_gem_vram_helper.h>
--#include <drm/drm_print.h>
--
--#include "hibmc_drm_drv.h"
--
--int hibmc_mm_init(struct hibmc_drm_private *hibmc)
--{
--	int ret;
--	struct drm_device *dev = &hibmc->dev;
--
--	ret = drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
--				    hibmc->fb_size);
--	if (ret) {
--		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
--		return ret;
--	}
--
--	return 0;
--}
--
--int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
--		      struct drm_mode_create_dumb *args)
--{
--	return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
--}
--
--const struct drm_mode_config_funcs hibmc_mode_funcs = {
--	.mode_valid = drm_vram_helper_mode_valid,
--	.atomic_check = drm_atomic_helper_check,
--	.atomic_commit = drm_atomic_helper_commit,
--	.fb_create = drm_gem_fb_create,
--};
--- 
-2.7.4
+> > > > @@ -43,5 +43,7 @@
+> > > >  #define        SPI_TX_OCTAL            0x2000          /* transmit with 8 wires */
+> > > >  #define        SPI_RX_OCTAL            0x4000          /* receive with 8 wires */
+> > > >  #define        SPI_3WIRE_HIZ           0x8000          /* high impedance turnaround
+> > */
+> > > > +#define        SPI_NO_TX               0x10000         /* no transmit wire */
+> > > > +#define        SPI_NO_RX               0x20000         /* no receive wire */
 
+> > > Is it really material for uAPI?
+> > > Perhaps we may have something like
+> > > SPI_MODE_USER_MASK in uAPI and
+> > > in internal headers
+
+> Hmm, in a way this could make sense for some SPIDEVs as well, to set these flags and get an error if they try to TX with the NO_TX flag set.
+> Not really sure about this.
+> Initially I mechanically added these here as an inertia to the previous patch which is just unifying the headers.
+
+> Any other opinions? Thoughts?
+> Mark?
+
+spidev is hacky at the best of times...  It *is* probably better to only
+have the usefully mainpulable modes exposed in uapi and then define the
+rest internally though.
+
+--hHWLQfXTYDoKhP50
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/ItDoACgkQJNaLcl1U
+h9Ckwgf/VrYn5fwTeqHxZl9gZCMMNNATL4F7b+ly/CACve6HcvslrstmDsD7tOoV
++wKtnrhgYWzqwHpNzk1ts5IBZSq37RDXbbvylJ/DfWLQLelRYR5ZLrWyThtXnCHP
+uBqM/YppX3AqWLfIAcwObA+QHzLhoxvVOIeMx2cOJrbYZN/5vg/BwvIucZ5aSAvU
+Tv+0HRVGTKG7Ul4CJKnxthqjjr2R3xu+oscuTymdibWSU0yYslpIicdkn13179ZK
+wDzRNXVmaJUPMn5vBSfgHh/GFe9P7287bhf5FksmN2HMkD8p9ZjCrUNDt4g4oVKg
+GJPCc7X4m35E6fZch0J4YViffIvvAA==
+=SB4J
+-----END PGP SIGNATURE-----
+
+--hHWLQfXTYDoKhP50--
