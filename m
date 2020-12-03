@@ -2,369 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C634B2CCF14
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:25:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6277B2CCF16
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728316AbgLCGYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:24:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46400 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727773AbgLCGYm (ORCPT
+        id S1727868AbgLCG0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:26:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgLCG0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 01:24:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606976594;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AfTKax3S+iawkpGIIYdiYS/pWdHeM6vnD6uWxjF77lw=;
-        b=WXPWQ0zagL55Oh8YYO62/aLoTlDtKIeAciGLrZ59kdboS6Y3eJBMWPf1yeb4PiRKex1GbD
-        0a0pxejBwGnF8z0B0b5flsPn2jGPANYSTmKxSgrJXSjeJItdVzuRudvHCZc6DkVDFeYhkJ
-        BXlqxweFDd/LhoRmDY5CyoD1kw8Y0mQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-454--cG4fF9MNo-0MDfWUUDkjw-1; Thu, 03 Dec 2020 01:23:09 -0500
-X-MC-Unique: -cG4fF9MNo-0MDfWUUDkjw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0BF74803F4D;
-        Thu,  3 Dec 2020 06:23:08 +0000 (UTC)
-Received: from mail (ovpn-112-118.rdu2.redhat.com [10.10.112.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 099C75D6BA;
-        Thu,  3 Dec 2020 06:23:03 +0000 (UTC)
-Date:   Thu, 3 Dec 2020 01:23:02 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
-        linux-kernel@vger.kernel.org, Baoquan He <bhe@redhat.com>
-Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
- pageblock_skip on reserved pages
-Message-ID: <X8iERlMGfNCLxab5@redhat.com>
-References: <X76iatgBErQH5El4@redhat.com>
- <a4cc62ba-8066-3e9c-cead-98cd74d313dd@redhat.com>
- <20201125210414.GO123287@linux.ibm.com>
- <X77OyM8utmWcq1Di@redhat.com>
- <20201126093602.GQ123287@linux.ibm.com>
- <3bb709a7-6100-aa5c-4125-7ed80c6d9643@redhat.com>
- <20201126174601.GT123287@linux.ibm.com>
- <20201129123257.GY123287@linux.ibm.com>
- <X8bjgw5LPAZrSrwp@redhat.com>
- <20201202173923.GM123287@linux.ibm.com>
+        Thu, 3 Dec 2020 01:26:02 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091EAC061A4D;
+        Wed,  2 Dec 2020 22:25:22 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id m5so536574pjv.5;
+        Wed, 02 Dec 2020 22:25:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=dF+9WErUEsZZf/F9EgKmI/B4LPzytnYTXLPFiKajYvw=;
+        b=h01NwowopEJlKhteUvBFtAUACt44qR7FliwX0FDAHDGYbG4Q8IiHILTJkJPNG2Z4Bq
+         /0wMlDtoa2yKmm2m3dtCA2WwNeBIrZ/k52xau1umdztFWKMggDVvvFdHAGY0NwYTNB/z
+         nsyChZruVY71wCzkBrL6DBWH5K2q2BjbStwNWYEFZHVqVzGUUo1XFGXcsJmMuoAnln9C
+         uSivj8lTQ+l7WbU7w4XCeQqnayRwnV7Q4fXq/KzxW+izN1q+DbMDl/MqWBwRPQeXdj38
+         B24yuu+XqkLiOmALYokaslKZtfKtTq7rNEnGtMSTIcaSSPhEpijl9nISzrlvzR3SdGrC
+         yKDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dF+9WErUEsZZf/F9EgKmI/B4LPzytnYTXLPFiKajYvw=;
+        b=pN67/TI1gg1Q0rclWU7ZZwd6Mcybl33H1rrD0bmD6c5Qym+OPG+GbewmaVT+7NqETH
+         hZ1iZvX1GjcCqAgT5xP4RRADNFGXAkRlCgzQ1ePdAqopbiJOto4apahU3+ePdbAp7xrB
+         h10Y2kAzSWmV3tZkWtTSll4FvJZ4gBbRVUneT9yCq/UCyPWj0mn3IDH/+FQ4b3ZaTODK
+         xYwVn1zXNqA/Lsjoi54KPFvj2vlmCU7u5ZuoLGotA13zOGfIAXM3kDavLCYai8hWYChM
+         nBiLJKPoQSrVUJDUhkF05mSmmoP1+UPoeH64YkOJg7+N56a2Q9sludd60l5Vme9lY8Rc
+         7nUw==
+X-Gm-Message-State: AOAM532WPFh3QKNkUCdLEJwznEv6o1DGeQyMpmjKgxXhO8FeZF3oNss/
+        yCEoA99kcDZalCbT6SRzrvBLpbUM2oL5qUZ19lPyn0+q6dw=
+X-Google-Smtp-Source: ABdhPJy+jLplZiBL8Rd8+bH246vqSSvHA/6eKKgPMc2nh2bxtxHFP9nZfiKkr31SaMKpdynfjcjIbjYMbpCaHsuC2uk=
+X-Received: by 2002:a17:902:bd98:b029:d9:7b0:e1e5 with SMTP id
+ q24-20020a170902bd98b02900d907b0e1e5mr1652045pls.77.1606976721366; Wed, 02
+ Dec 2020 22:25:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202173923.GM123287@linux.ibm.com>
-User-Agent: Mutt/2.0.2 (2020-11-20)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Received: by 2002:a17:90a:7886:0:0:0:0 with HTTP; Wed, 2 Dec 2020 22:25:20
+ -0800 (PST)
+In-Reply-To: <b838b790-e1e3-d644-2b1c-5de02a10669f@suse.de>
+References: <20201130112137.587437-1-yili@winhong.com> <CAJfdMYDnDJXFVfEECtQ9-E4F9kfsF035PH+x3kaVn6PPSYCydA@mail.gmail.com>
+ <b838b790-e1e3-d644-2b1c-5de02a10669f@suse.de>
+From:   Yi Li <yilikernel@gmail.com>
+Date:   Thu, 3 Dec 2020 14:25:20 +0800
+Message-ID: <CAJfdMYCbkAZtWpJ6sgsrRnV4i+5sRahaq-ktMjqcG1JXoazmGQ@mail.gmail.com>
+Subject: Re: [PATCH] bcache: fix panic due to cache_set is null
+To:     Coly Li <colyli@suse.de>
+Cc:     Yi Li <yili@winhong.com>, kent.overstreet@gmail.com,
+        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guo Chao <guochao@winhong.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 07:39:23PM +0200, Mike Rapoport wrote:
-> Hmm, do you have any logs? It worked on my box and with various memory
-> configurations in qemu.
+> On 12/1/20 12:35 PM, Yi Li wrote:
+>> sorry, This patch will cause deadlock, i will check and redo it.
+>
+> Can you try latest upstream kernel firstly ? Before spending more time
+> on the fix.
+>
 
-It crashes in reserve_bootmem_region so no logs at all since the
-serial console isn't active yet.
+This issue just happened three times =EF=BC=88xenserver7.5 dom0 kernel=EF=
+=BC=89 on the
+same machine and cannot reproduce it now. and have not reproduce it
+using the lastest uptream kernel.
 
-> I believe that the proper solution would be to have all the memory
-> reserved by the firmware added to memblock.memory, like all other
-> architectures do, but I'm not sure if we can easily and reliably
-> determine what of E820 reserved types are actually backed by RAM.
-> So this is not feasible as a short term solution.
-> 
-> My patch [1], though, is an immediate improvement and I think it's worth
-> trying to fix off-by-one's that prevent your system from booting.
-> 
-> [1] https://lore.kernel.org/lkml/20201201181502.2340-1-rppt@kernel.org
+> If I remember correctly, when cancel_writeback_rate_update_dwork() is
+> not timed out, the cache set memory won't be freed before the
+> writeback_rate_update worker terminates. It is possible that I miss
+> something in the code, but I suggest to test with a kernel after v5.3,
+> and better a v5.8+ kernel.
+>
+> Coly Li
+>
+Thanks.
 
-Yes that's the patch I applied.
+it is  confused that why writeback_rate_update worker run  again after
+cancel_delayed_work_sync( kernel log telled).
 
-Relevant points after debugging:
+Maybe i should dig more.
 
-1) can you try again with DEBUG_VM=y?
+Attach some debug info as below.
 
-2) DEBUG_VM=y already enforces the memset(page, 0xff, sizeof(struct
-   page)) on all struct pages allocated, exactly I was suggesting to
-   do in the previous email. I wonder why we're not doing that even
-   with DEBUG_VM=n, perhaps it's too slow for TiB systems. See
-   page_init_poison().
+Nov 30 18:00:44 host-126 kernel: [ 1697.906137] bcache:
+update_writeback_rate() dc =3D ffff880818580000
+Nov 30 18:00:44 host-126 kernel: [ 1697.906145] bcache:
+update_writeback_rate() c =3D ffff8808182c0000
+Nov 30 18:00:44 host-126 kernel: [ 1697.906148] bcache:
+update_writeback_rate() dc->disk.flags =3D ffff8808185800a0
+Nov 30 18:00:44 host-126 kernel: [ 1697.906150] bcache:
+update_writeback_rate() c->flags =3D ffff8808182c0368
+Nov 30 18:00:45 host-126 kernel: [ 1698.578104] bcache:
+update_writeback_rate() dc =3D ffff880839bd0000
+Nov 30 18:00:45 host-126 kernel: [ 1698.578108] bcache:
+update_writeback_rate() c =3D ffff8808182c0000
+Nov 30 18:00:45 host-126 kernel: [ 1698.578109] bcache:
+update_writeback_rate() dc->disk.flags =3D ffff880839bd00a0
+Nov 30 18:00:45 host-126 kernel: [ 1698.578111] bcache:
+update_writeback_rate() c->flags =3D ffff8808182c0368
+Nov 30 18:00:49 host-126 kernel: [ 1702.914126] bcache:
+update_writeback_rate() dc =3D ffff880818580000
+Nov 30 18:00:49 host-126 kernel: [ 1702.914130] bcache:
+update_writeback_rate() c =3D ffff8808182c0000
+Nov 30 18:00:49 host-126 kernel: [ 1702.914132] bcache:
+update_writeback_rate() dc->disk.flags =3D ffff8808185800a0
+Nov 30 18:00:49 host-126 kernel: [ 1702.914133] bcache:
+update_writeback_rate() c->flags =3D ffff8808182c0368
+Nov 30 18:00:50 host-126 kernel: [ 1703.586182] bcache:
+update_writeback_rate() dc =3D ffff880839bd0000
+Nov 30 18:00:50 host-126 kernel: [ 1703.586188] bcache:
+update_writeback_rate() c =3D ffff8808182c0000
+Nov 30 18:00:50 host-126 kernel: [ 1703.586191] bcache:
+update_writeback_rate() dc->disk.flags =3D ffff880839bd00a0
+Nov 30 18:00:50 host-126 kernel: [ 1703.586193] bcache:
+update_writeback_rate() c->flags =3D ffff8808182c0368
+Nov 30 18:00:54 host-126 kernel: [ 1707.922215] bcache:
+update_writeback_rate() dc =3D ffff880818580000
+Nov 30 18:00:54 host-126 kernel: [ 1707.922222] bcache:
+update_writeback_rate() c =3D ffff8808182c0000
+Nov 30 18:00:54 host-126 kernel: [ 1707.922225] bcache:
+update_writeback_rate() dc->disk.flags =3D ffff8808185800a0
+Nov 30 18:00:54 host-126 kernel: [ 1707.922227] bcache:
+update_writeback_rate() c->flags =3D ffff8808182c0368
+Nov 30 18:00:55 host-126 kernel: [ 1708.594202] bcache:
+update_writeback_rate() dc =3D ffff880839bd0000
+Nov 30 18:00:55 host-126 kernel: [ 1708.594206] bcache:
+update_writeback_rate() c =3D ffff8808182c0000
+Nov 30 18:00:55 host-126 kernel: [ 1708.594208] bcache:
+update_writeback_rate() dc->disk.flags =3D ffff880839bd00a0
+Nov 30 18:00:55 host-126 kernel: [ 1708.594210] bcache:
+update_writeback_rate() c->flags =3D ffff8808182c0368
+Nov 30 18:00:55 host-126 kernel: [ 1709.118221] sd 0:0:1:0:
+device_block, handle(0x0009)
+Nov 30 18:00:58 host-126 kernel: [ 1711.368197] sd 0:0:1:0:
+device_unblock and setting to running, handle(0x0009)
+Nov 30 18:00:58 host-126 kernel: [ 1711.368263] sd 0:0:1:0: [sdb]
+tag#0 FAILED Result: hostbyte=3DDID_NO_CONNECT driverbyte=3DDRIVER_OK
+Nov 30 18:00:58 host-126 kernel: [ 1711.368277] sd 0:0:1:0: [sdb]
+tag#0 CDB: Synchronize Cache(10) 35 00 00 00 00 00 00 00 00 00
+Nov 30 18:00:58 host-126 kernel: [ 1711.368289] blk_update_request:
+I/O error, dev sdb, sector 36160
+Nov 30 18:00:58 host-126 kernel: [ 1711.368326] bcache: error on
+96083de4-6b3e-4ede-81d1-44edc1a93729: journal io error, disabling
+caching
+Nov 30 18:00:58 host-126 kernel: [ 1711.368372] sd 0:0:1:0: [sdb]
+tag#1 FAILED Result: hostbyte=3DDID_NO_CONNECT driverbyte=3DDRIVER_OK
+Nov 30 18:00:58 host-126 kernel: [ 1711.368387] sd 0:0:1:0: [sdb]
+tag#1 CDB: Write(10) 2a 00 00 81 b0 40 00 00 08 00
+Nov 30 18:00:58 host-126 kernel: [ 1711.368392] blk_update_request:
+I/O error, dev sdb, sector 8499264
+Nov 30 18:00:58 host-126 kernel: [ 1711.368407] bcache:
+bch_count_io_errors() sdb2: IO error on writing data to cache.
+Nov 30 18:00:58 host-126 kernel: [ 1711.368447] bcache:
+bch_cached_dev_detach() bch_cached_dev_detach start
+Nov 30 18:00:58 host-126 kernel: [ 1711.368458] bcache:
+bch_cached_dev_detach() bch_cached_dev_detach end
+Nov 30 18:00:58 host-126 kernel: [ 1711.368463] bcache:
+conditional_stop_bcache_device() stop_when_cache_set_failed of bcache1
+is "auto" and cache is dirty, stop it to avoid potential data
+corruption.
+Nov 30 18:00:58 host-126 kernel: [ 1711.368466] bcache:
+bch_cached_dev_detach() bch_cached_dev_detach start
+Nov 30 18:00:58 host-126 kernel: [ 1711.368474] bcache:
+bch_cached_dev_detach() bch_cached_dev_detach end
+Nov 30 18:00:58 host-126 kernel: [ 1711.368479] bcache:
+conditional_stop_bcache_device() stop_when_cache_set_failed of bcache0
+is "auto" and cache is clean, keep it alive.
+Nov 30 18:00:58 host-126 kernel: [ 1711.368494] Buffer I/O error on
+dev bcache1, logical block 210979209, lost async page write
+Nov 30 18:00:58 host-126 kernel: [ 1711.368585] bcache:
+cached_dev_detach_finish() cached_dev_detach_finish start
+Nov 30 18:00:58 host-126 kernel: [ 1711.368589] bcache:
+cached_dev_detach_finish() dc->disk.flags =3D f
+Nov 30 18:00:58 host-126 kernel: [ 1711.368591] bcache:
+cancel_writeback_rate_update_dwork()
+cancel_writeback_rate_update_dwork start
+Nov 30 18:00:58 host-126 kernel: [ 1711.368594] bcache:
+cancel_writeback_rate_update_dwork()
+cancel_writeback_rate_update_dwork end
+Nov 30 18:00:58 host-126 kernel: [ 1711.368617] bcache:
+cached_dev_detach_finish() cached_dev_detach_finish start
+Nov 30 18:00:58 host-126 kernel: [ 1711.369022] bcache:
+cached_dev_detach_finish() Caching disabled for sda2
+Nov 30 18:00:58 host-126 kernel: [ 1711.369025] bcache:
+cached_dev_detach_finish() cached_dev_detach_finish end
+Nov 30 18:00:58 host-126 kernel: [ 1711.369035] bcache:
+cached_dev_detach_finish() dc->disk.flags =3D a
+Nov 30 18:00:58 host-126 kernel: [ 1711.369039] bcache:
+cancel_writeback_rate_update_dwork()
+cancel_writeback_rate_update_dwork start
+Nov 30 18:00:58 host-126 kernel: [ 1711.369042] bcache:
+cancel_writeback_rate_update_dwork()
+cancel_writeback_rate_update_dwork end
+Nov 30 18:00:58 host-126 kernel: [ 1711.369460] bcache:
+cached_dev_detach_finish() Caching disabled for sdf2
+Nov 30 18:00:58 host-126 kernel: [ 1711.369464] bcache:
+cached_dev_detach_finish() cached_dev_detach_finish end
+Nov 30 18:00:58 host-126 kernel: [ 1711.374327] sd 0:0:1:0: [sdb]
+Synchronizing SCSI cache
+Nov 30 18:00:58 host-126 kernel: [ 1711.374516] sd 0:0:1:0: [sdb]
+Synchronize Cache(10) failed: Result: hostbyte=3DDID_NO_CONNECT
+driverbyte=3DDRIVER_OK
+Nov 30 18:00:58 host-126 kernel: [ 1711.376907] bcache:
+cache_set_free() Cache set 96083de4-6b3e-4ede-81d1-44edc1a93729
+unregistered
+Nov 30 18:00:58 host-126 kernel: [ 1711.418979] mpt3sas_cm0: removing
+handle(0x0009), sas_addr(0x4433221102000000)
+Nov 30 18:00:58 host-126 kernel: [ 1711.418984] mpt3sas_cm0: removing
+:enclosure logical id(0x5a4bf013514f4000), slot(4)
+Nov 30 18:00:58 host-126 kernel: [ 1711.418988] mpt3sas_cm0: removing
+:enclosure level(0x0000), connector name(     )
+Nov 30 18:01:05 host-126 kernel: [ 1718.873725] bcache:
+cached_dev_free() cached_dev_free start
+Nov 30 18:01:05 host-126 kernel: [ 1718.873776] bcache:
+bcache_device_free() bcache1 stopped
+Nov 30 18:01:05 host-126 kernel: [ 1718.926598] bcache:
+cached_dev_free() cached_dev_free end
+Nov 30 18:01:06 host-126 kernel: [ 1719.668540]  sda: sda1 sda2
+Nov 30 18:01:11 host-126 kernel: [ 1725.010305] bcache:
+update_writeback_rate() dc =3D ffff880818580000
+Nov 30 18:01:11 host-126 kernel: [ 1725.010309] bcache:
+update_writeback_rate() c =3D           (null)
+------------the kernel log show that cache_set is null.
+Nov 30 18:01:11 host-126 kernel: [ 1725.010311] bcache:
+update_writeback_rate() dc->disk.flags =3D ffff8808185800a0
+Nov 30 18:01:12 host-126 kernel: [ 1725.369791] mpt3sas_cm0:
+detecting: handle(0x0009), sas_address(0x4433221102000000), phy(2)
+Nov 30 18:01:12 host-126 kernel: [ 1725.369802] mpt3sas_cm0:
+REPORT_LUNS: handle(0x0009), retries(0)
+Nov 30 18:01:12 host-126 kernel: [ 1725.618138] mpt3sas_cm0:
+TEST_UNIT_READY: handle(0x0009), lun(0)
+Nov 30 18:01:13 host-126 kernel: [ 1726.619148] mpt3sas_cm0:
+detecting: handle(0x0009), sas_address(0x4433221102000000), phy(2)
+Nov 30 18:01:13 host-126 kernel: [ 1726.619156] mpt3sas_cm0:
+REPORT_LUNS: handle(0x0009), retries(0)
+Nov 30 18:01:13 host-126 kernel: [ 1726.619300] mpt3sas_cm0:
+TEST_UNIT_READY: handle(0x0009), lun(0)
+Nov 30 18:01:13 host-126 kernel: [ 1726.622323] scsi 0:0:6:0:
+Direct-Access     ATA      INTEL SSDSC2BB48 0112 PQ: 0 ANSI: 6
+Nov 30 18:01:13 host-126 kernel: [ 1726.622839] scsi 0:0:6:0: SATA:
+handle(0x0009), sas_addr(0x4433221102000000), phy(2),
+device_name(0x55cd2e414d6dcd4b)
+Nov 30 18:01:13 host-126 kernel: [ 1726.622845] scsi 0:0:6:0: SATA:
+enclosure logical id(0x5a4bf013514f4000), slot(4)
+Nov 30 18:01:13 host-126 kernel: [ 1726.622847] scsi 0:0:6:0: SATA:
+enclosure level(0x0000), connector name(     )
+Nov 30 18:01:13 host-126 kernel: [ 1726.622990] scsi 0:0:6:0:
+atapi(n), ncq(y), asyn_notify(n), smart(y), fua(y), sw_preserve(y)
+Nov 30 18:01:13 host-126 kernel: [ 1726.623642] scsi 0:0:6:0:
+serial_number(PHDV7102003Q480BGN  )
+Nov 30 18:01:13 host-126 kernel: [ 1726.626116] sd 0:0:6:0: Attached
+scsi generic sg1 type 0
+Nov 30 18:01:13 host-126 kernel: [ 1726.626784] sd 0:0:6:0: [sdb]
+937703088 512-byte logical blocks: (480 GB/447 GiB)
+Nov 30 18:01:13 host-126 kernel: [ 1726.626789] sd 0:0:6:0: [sdb]
+4096-byte physical blocks
+Nov 30 18:01:13 host-126 kernel: [ 1726.631161] sd 0:0:6:0: [sdb]
+Write Protect is off
+Nov 30 18:01:13 host-126 kernel: [ 1726.631165] sd 0:0:6:0: [sdb] Mode
+Sense: 9b 00 10 08
+Nov 30 18:01:13 host-126 kernel: [ 1726.632513] sd 0:0:6:0: [sdb]
+Write cache: enabled, read cache: enabled, supports DPO and FUA
+Nov 30 18:01:13 host-126 kernel: [ 1726.648068]  sdb: sdb1 sdb2
+Nov 30 18:01:13 host-126 kernel: [ 1726.656841] sd 0:0:6:0: [sdb]
+Attached SCSI disk
 
-3) given 2), your patch below by deleting "0,0" initialization
-   achieves the debug feature to keep PagePoison forever on all
-   uninitialized pages, imagine PagePoison is really
-   NO_NODEID/NO_ZONEID and doesn't need handling other than a crash.
-  
--		__init_single_page(pfn_to_page(pfn), pfn, 0, 0);
-
-4) because of the feature in 3) I now hit the PagePoison VM_BUG_ON
-   because pfn 0 wasn't initialized when reserve_bootmem_region tries
-   to call __SetPageReserved on a PagePoison page.
-
-5) pfn 0 is the classical case where pfn 0 is in a reserved zone in
-   memblock.reserve that doesn't overlap any memblock.memory zone.
-
-   The memblock_start_of_DRAM moves the start of the DMA zone above
-   the pfn 0, so then pfn 0 already ends up in the no zone land David
-   mentioned where it's not trivial to decide to give it a zoneid if
-   it's not even spanned in the zone.
-
-   Not just the zoneid, there's not even a nid.
-
-   So we have a pfn with no zoneid, and no nid, and not part of the
-   zone ranges, not part of the nid ranges not part of the
-   memory.memblock.
-
-   We can't really skip the initialization of the the pfn 0, it has to
-   get the zoneid 0 treatment or if pfn 1 ends up in compaction code,
-   we'd crash again. (although we'd crash with a nice PagePoison(page)
-   == true behavior)
-
-The below fixes the issue and it boots fine again and the compaction
-crash should be solved with both patches applied.
-
-DMA      zone_start_pfn 0            zone_end_pfn() 4096         contiguous 1     
-DMA32    zone_start_pfn 4096         zone_end_pfn() 524252       contiguous 1     
-Normal   zone_start_pfn 0            zone_end_pfn() 0            contiguous 0     
-Movable  zone_start_pfn 0            zone_end_pfn() 0            contiguous 0     
-
-500246 0x7a216000 0x1fff000000001000 reserved True pfn_valid True
-500247 0x7a217000 0x1fff000000000000 reserved False pfn_valid True
-500248 0x7a218000 0x1fff000000000000 reserved False pfn_valid True
-
-==== quote from previous email ====
-73a6e474cb376921a311786652782155eac2fdf0 this changed it:
-
-DMA      zone_start_pfn 1            zone_end_pfn() 4096         contiguous 1
-DMA32    zone_start_pfn 4096         zone_end_pfn() 524252       contiguous 0
-Normal   zone_start_pfn 0            zone_end_pfn() 0            contiguous 0
-Movable  zone_start_pfn 0            zone_end_pfn() 0            contiguous 0
-
-500246 0x7a216000 0xfff000000001000 reserved True
-500247 0x7a217000 0x1fff000000000000 reserved False
-500248 0x7a218000 0x1fff000000010200 reserved False ]
-==== quote from previous email ====
-
-From 89469f063c192ae70aea0bd6e1e2a7e99894e5b6 Mon Sep 17 00:00:00 2001
-From: Andrea Arcangeli <aarcange@redhat.com>
-Date: Wed, 2 Dec 2020 23:23:26 -0500
-Subject: [PATCH 1/1] mm: initialize struct pages in reserved regions outside
- of the zone ranges
-
-pfn 0 wasn't initialized and the PagePoison remained set when
-reserve_bootmem_region() called __SetPageReserved, inducing a silent
-boot failure with DEBUG_VM (and correctly so, because the crash
-signaled the nodeid/nid of pfn 0 would be again wrong).
-
-Without this change, the pfn 0 part of a memblock.reserved range,
-isn't in any zone spanned range, nor in any nid spanned range, when we
-initialize the memblock.memory holes pfn 0 won't be included because
-it has no nid and no zoneid.
-
-There's no enforcement that all memblock.reserved ranges must overlap
-memblock.memory ranges, so the memblock.reserved ranges also require
-an explicit initialization and the zones and nid ranges need to be
-extended to include all memblock.reserved ranges with struct pages, or
-they'll be left uninitialized with PagePoison as it happened to pfn 0.
-
-Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
----
- include/linux/memblock.h | 17 +++++++++---
- mm/debug.c               |  3 ++-
- mm/memblock.c            |  4 +--
- mm/page_alloc.c          | 57 ++++++++++++++++++++++++++++++++--------
- 4 files changed, 63 insertions(+), 18 deletions(-)
-
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index ef131255cedc..c8e30cd69564 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -251,7 +251,8 @@ static inline bool memblock_is_nomap(struct memblock_region *m)
- int memblock_search_pfn_nid(unsigned long pfn, unsigned long *start_pfn,
- 			    unsigned long  *end_pfn);
- void __next_mem_pfn_range(int *idx, int nid, unsigned long *out_start_pfn,
--			  unsigned long *out_end_pfn, int *out_nid);
-+			  unsigned long *out_end_pfn, int *out_nid,
-+			  struct memblock_type *type);
- 
- /**
-  * for_each_mem_pfn_range - early memory pfn range iterator
-@@ -263,9 +264,17 @@ void __next_mem_pfn_range(int *idx, int nid, unsigned long *out_start_pfn,
-  *
-  * Walks over configured memory ranges.
-  */
--#define for_each_mem_pfn_range(i, nid, p_start, p_end, p_nid)		\
--	for (i = -1, __next_mem_pfn_range(&i, nid, p_start, p_end, p_nid); \
--	     i >= 0; __next_mem_pfn_range(&i, nid, p_start, p_end, p_nid))
-+#define for_each_mem_pfn_range(i, nid, p_start, p_end, p_nid)		  \
-+	for (i = -1, __next_mem_pfn_range(&i, nid, p_start, p_end, p_nid, \
-+					  &memblock.memory);		  \
-+	     i >= 0; __next_mem_pfn_range(&i, nid, p_start, p_end, p_nid, \
-+					  &memblock.memory))
-+
-+#define for_each_res_pfn_range(i, nid, p_start, p_end, p_nid)		  \
-+	for (i = -1, __next_mem_pfn_range(&i, nid, p_start, p_end, p_nid, \
-+					  &memblock.reserved);		  \
-+	     i >= 0; __next_mem_pfn_range(&i, nid, p_start, p_end, p_nid, \
-+					  &memblock.reserved))
- 
- #ifdef CONFIG_DEFERRED_STRUCT_PAGE_INIT
- void __next_mem_pfn_range_in_zone(u64 *idx, struct zone *zone,
-diff --git a/mm/debug.c b/mm/debug.c
-index ccca576b2899..6a1d534f5ffc 100644
---- a/mm/debug.c
-+++ b/mm/debug.c
-@@ -64,7 +64,8 @@ void __dump_page(struct page *page, const char *reason)
- 	 * dump_page() when detected.
- 	 */
- 	if (page_poisoned) {
--		pr_warn("page:%px is uninitialized and poisoned", page);
-+		pr_warn("page:%px pfn:%ld is uninitialized and poisoned",
-+			page, page_to_pfn(page));
- 		goto hex_only;
- 	}
- 
-diff --git a/mm/memblock.c b/mm/memblock.c
-index b68ee86788af..3964a5e8914f 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -1198,9 +1198,9 @@ void __init_memblock __next_mem_range_rev(u64 *idx, int nid,
-  */
- void __init_memblock __next_mem_pfn_range(int *idx, int nid,
- 				unsigned long *out_start_pfn,
--				unsigned long *out_end_pfn, int *out_nid)
-+				unsigned long *out_end_pfn, int *out_nid,
-+				struct memblock_type *type)
- {
--	struct memblock_type *type = &memblock.memory;
- 	struct memblock_region *r;
- 	int r_nid;
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index ce2bdaabdf96..3eed49598d66 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1458,6 +1458,7 @@ static void __meminit init_reserved_page(unsigned long pfn)
- {
- 	pg_data_t *pgdat;
- 	int nid, zid;
-+	bool found = false;
- 
- 	if (!early_page_uninitialised(pfn))
- 		return;
-@@ -1468,10 +1469,15 @@ static void __meminit init_reserved_page(unsigned long pfn)
- 	for (zid = 0; zid < MAX_NR_ZONES; zid++) {
- 		struct zone *zone = &pgdat->node_zones[zid];
- 
--		if (pfn >= zone->zone_start_pfn && pfn < zone_end_pfn(zone))
-+		if (pfn >= zone->zone_start_pfn && pfn < zone_end_pfn(zone)) {
-+			found = true;
- 			break;
-+		}
- 	}
--	__init_single_page(pfn_to_page(pfn), pfn, zid, nid);
-+	if (likely(found))
-+		__init_single_page(pfn_to_page(pfn), pfn, zid, nid);
-+	else
-+		WARN_ON_ONCE(1);
- }
- #else
- static inline void init_reserved_page(unsigned long pfn)
-@@ -6227,7 +6233,7 @@ void __init __weak memmap_init(unsigned long size, int nid,
- 			       unsigned long zone,
- 			       unsigned long range_start_pfn)
- {
--	unsigned long start_pfn, end_pfn, next_pfn = 0;
-+	unsigned long start_pfn, end_pfn, prev_pfn = 0;
- 	unsigned long range_end_pfn = range_start_pfn + size;
- 	u64 pgcnt = 0;
- 	int i;
-@@ -6235,7 +6241,7 @@ void __init __weak memmap_init(unsigned long size, int nid,
- 	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
- 		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
- 		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
--		next_pfn = clamp(next_pfn, range_start_pfn, range_end_pfn);
-+		prev_pfn = clamp(prev_pfn, range_start_pfn, range_end_pfn);
- 
- 		if (end_pfn > start_pfn) {
- 			size = end_pfn - start_pfn;
-@@ -6243,10 +6249,10 @@ void __init __weak memmap_init(unsigned long size, int nid,
- 					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 		}
- 
--		if (next_pfn < start_pfn)
--			pgcnt += init_unavailable_range(next_pfn, start_pfn,
-+		if (prev_pfn < start_pfn)
-+			pgcnt += init_unavailable_range(prev_pfn, start_pfn,
- 							zone, nid);
--		next_pfn = end_pfn;
-+		prev_pfn = end_pfn;
- 	}
- 
- 	/*
-@@ -6256,12 +6262,31 @@ void __init __weak memmap_init(unsigned long size, int nid,
- 	 * considered initialized. Make sure that memmap has a well defined
- 	 * state.
- 	 */
--	if (next_pfn < range_end_pfn)
--		pgcnt += init_unavailable_range(next_pfn, range_end_pfn,
-+	if (prev_pfn < range_end_pfn)
-+		pgcnt += init_unavailable_range(prev_pfn, range_end_pfn,
- 						zone, nid);
- 
-+	/*
-+	 * memblock.reserved isn't enforced to overlap with
-+	 * memblock.memory so initialize the struct pages for
-+	 * memblock.reserved too in case it wasn't overlapping.
-+	 *
-+	 * If any struct page associated with a memblock.reserved
-+	 * range isn't overlapping with a zone range, it'll be left
-+	 * uninitialized, ideally with PagePoison, and it'll be a more
-+	 * easily detectable error.
-+	 */
-+	for_each_res_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
-+		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
-+		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
-+
-+		if (end_pfn > start_pfn)
-+			pgcnt += init_unavailable_range(start_pfn, end_pfn,
-+							zone, nid);
-+	}
-+
- 	if (pgcnt)
--		pr_info("%s: Zeroed struct page in unavailable ranges: %lld\n",
-+		pr_info("%s: pages in unavailable ranges: %lld\n",
- 			zone_names[zone], pgcnt);
- }
- 
-@@ -6499,6 +6524,10 @@ void __init get_pfn_range_for_nid(unsigned int nid,
- 		*start_pfn = min(*start_pfn, this_start_pfn);
- 		*end_pfn = max(*end_pfn, this_end_pfn);
- 	}
-+	for_each_res_pfn_range(i, nid, &this_start_pfn, &this_end_pfn, NULL) {
-+		*start_pfn = min(*start_pfn, this_start_pfn);
-+		*end_pfn = max(*end_pfn, this_end_pfn);
-+	}
- 
- 	if (*start_pfn == -1UL)
- 		*start_pfn = 0;
-@@ -7126,7 +7155,13 @@ unsigned long __init node_map_pfn_alignment(void)
-  */
- unsigned long __init find_min_pfn_with_active_regions(void)
- {
--	return PHYS_PFN(memblock_start_of_DRAM());
-+	/*
-+	 * reserved regions must be included so that their page
-+	 * structure can be part of a zone and obtain a valid zoneid
-+	 * before __SetPageReserved().
-+	 */
-+	return min(PHYS_PFN(memblock_start_of_DRAM()),
-+		   PHYS_PFN(memblock.reserved.regions[0].base));
- }
- 
- /*
-
+>>
+>> On 11/30/20, Yi Li <yili@winhong.com> wrote:
+>>> bcache_device_detach will release the cache_set after hotunplug cache
+>>> disk. update_writeback_rate should check validate of cache_set.
+>>>
+>>>   IP: [<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
+>>>   PGD 879620067 PUD 8755d3067 PMD 0
+>>>   Oops: 0000 [#1] SMP
+>>>   CPU: 8 PID: 1005702 Comm: kworker/8:0 Tainted: G 4.4.0+10 #1
+>>>   Hardware name: Intel BIOS SE5C610.86B.01.01.0021.032120170601
+>>> 03/21/2017
+>>>   Workqueue: events update_writeback_rate [bcache]
+>>>   task: ffff8808786f3800 ti: ffff88077082c000 task.ti: ffff88077082c000
+>>>   RIP: e030:[<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0
+>>> [bcache]
+>>>   RSP: e02b:ffff88077082fde0  EFLAGS: 00010202
+>>>   RAX: 0000000000000018 RBX: ffff8808047f0b08 RCX: 0000000000000000
+>>>   RDX: 0000000000000001 RSI: ffff88088170dab8 RDI: ffff88088170dab8
+>>>   RBP: ffff88077082fe18 R08: 000000000000000a R09: 0000000000000000
+>>>   R10: 0000000000000000 R11: 0000000000017bc8 R12: 0000000000000000
+>>>   R13: ffff8808047f0000 R14: 0000000000000200 R15: ffff8808047f0b08
+>>>   FS:  00007f157b6d6700(0000) GS:ffff880881700000(0000)
+>>> knlGS:0000000000000000
+>>>   CS:  e033 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>   CR2: 0000000000000368 CR3: 0000000875c05000 CR4: 0000000000040660
+>>>   Stack:
+>>>    0000000000000001 0000000000007ff0 ffff88085ff600c0 ffff880881714e80
+>>>    ffff880881719500 0000000000000200 ffff8808047f0b08 ffff88077082fe60
+>>>    ffffffff81088c0c 0000000081714e80 0000000000000000 ffff880881714e80
+>>>   Call Trace:
+>>>    [<ffffffff81088c0c>] process_one_work+0x1fc/0x3b0
+>>>    [<ffffffff81089575>] worker_thread+0x2a5/0x470
+>>>    [<ffffffff815a2f58>] ? __schedule+0x648/0x870
+>>>    [<ffffffff810892d0>] ? rescuer_thread+0x300/0x300
+>>>    [<ffffffff8108e3d5>] kthread+0xd5/0xe0
+>>>    [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
+>>>    [<ffffffff815a704f>] ret_from_fork+0x3f/0x70
+>>>    [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
+>>>
+>>> Reported-by: Guo Chao <guochao@winhong.com>
+>>> Signed-off-by: Guo Chao <guochao@winhong.com>
+>>> Signed-off-by: Yi Li <yili@winhong.com>
+>>> ---
+>>>  drivers/md/bcache/writeback.c | 12 +++++++++++-
+>>>  1 file changed, 11 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/md/bcache/writeback.c
+>>> b/drivers/md/bcache/writeback.c
+>>> index 3c74996978da..186c4c6e1607 100644
+>>> --- a/drivers/md/bcache/writeback.c
+>>> +++ b/drivers/md/bcache/writeback.c
+>>> @@ -175,7 +175,15 @@ static void update_writeback_rate(struct
+>>> work_struct
+>>> *work)
+>>>  	struct cached_dev *dc =3D container_of(to_delayed_work(work),
+>>>  					     struct cached_dev,
+>>>  					     writeback_rate_update);
+>>> -	struct cache_set *c =3D dc->disk.c;
+>>> +	struct cache_set *c =3D NULL;
+>>> +
+>>> +	mutex_lock(&bch_register_lock);
+>>> +	c =3D dc->disk.c;
+>>> +
+>>> +	if (c =3D=3D NULL) {
+>>> +		mutex_unlock(&bch_register_lock);
+>>> +		return;
+>>> +	}
+>>>
+>>>  	/*
+>>>  	 * should check BCACHE_DEV_RATE_DW_RUNNING before calling
+>>> @@ -194,6 +202,7 @@ static void update_writeback_rate(struct work_struc=
+t
+>>> *work)
+>>>  		clear_bit(BCACHE_DEV_RATE_DW_RUNNING, &dc->disk.flags);
+>>>  		/* paired with where BCACHE_DEV_RATE_DW_RUNNING is tested */
+>>>  		smp_mb__after_atomic();
+>>> +		mutex_unlock(&bch_register_lock);
+>>>  		return;
+>>>  	}
+>>>
+>>> @@ -230,6 +239,7 @@ static void update_writeback_rate(struct work_struc=
+t
+>>> *work)
+>>>  	clear_bit(BCACHE_DEV_RATE_DW_RUNNING, &dc->disk.flags);
+>>>  	/* paired with where BCACHE_DEV_RATE_DW_RUNNING is tested */
+>>>  	smp_mb__after_atomic();
+>>> +	mutex_unlock(&bch_register_lock);
+>>>  }
+>>>
+>>>  static unsigned int writeback_delay(struct cached_dev *dc,
+>>> --
+>>> 2.25.3
+>>>
+>>>
+>>>
+>>>
+>
+>
