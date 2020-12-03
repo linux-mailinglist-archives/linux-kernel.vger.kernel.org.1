@@ -2,133 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCE72CDA2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7417D2CDA29
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387485AbgLCPgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 10:36:32 -0500
-Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:43799 "EHLO
-        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgLCPgc (ORCPT
+        id S1728827AbgLCPes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 10:34:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726610AbgLCPes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:36:32 -0500
-X-Greylist: delayed 3419 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Dec 2020 10:36:27 EST
-Received: from [192.168.111.113] (p4fd978de.dip0.t-ipconnect.de [79.217.120.222])
-        (authenticated bits=0)
-        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 0B3Ece7L010499
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
-        Thu, 3 Dec 2020 15:38:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
-        s=unimail; t=1607006321;
-        bh=m06X/TIPZ3EDC1a7eYVn2cS1BRtNtu07ZviF30nWP28=;
-        h=To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=X/EJBPNUl7EqRHEHhu3LHxLr00diFcJHPGS7oo4yW7NFtZ0e2vKHBLilU/fpMdUzO
-         QsgztSQ8GNP9EaqiecZEaPYiAmtnc9AH/7k17mVbEhHZSFfJI4OEEQwLqxpxsYQdKB
-         CDv1D7hn3N+W2logSlvZOoP/TPatp8c85WEDIaBc=
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20190408083500.66759-1-alexander.lochmann@tu-dortmund.de>
- <10cfbef1-994c-c604-f8a6-b1042fcc622f@tu-dortmund.de>
- <20201203140405.GC441757@mit.edu>
-From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-Subject: Re: [PATCH v3] Updated locking documentation for transaction_t
-Message-ID: <29d6de5d-4abc-e836-7b14-bb67d782a752@tu-dortmund.de>
-Date:   Thu, 3 Dec 2020 15:38:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 3 Dec 2020 10:34:48 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151E9C061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 07:34:08 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id q5so1478582vsg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 07:34:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h6bUmmhNs5Vo0iuri/gifDqZRZWxy1kGAo1J9lB1K5k=;
+        b=D0ie8/h3FBLr6GsJocONE1JbQgocKTLMtMzcvLZ4m0y7cnANQLWYb2PicTVkU3CHWU
+         0xhY3CUtX4DW0z+8e0aqlOnA0qQynUINmANChrlAvRpPTKilDW7S8pl1Ya7o5kR9BFVg
+         gJdorF74HsyAZkpPn12nGzaqdkO24ic6ate64=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h6bUmmhNs5Vo0iuri/gifDqZRZWxy1kGAo1J9lB1K5k=;
+        b=q3eXSwzJiYx6F2Zw3laHQpLYys7BKCedPPXZgmzYUjaVQLtcbdduETIqTWm/SmmmZt
+         Q68g8TS9fZhxZG4+oCsq9vh7/Fm4DtJYZlYDgQWDNtfsHWjKB+XX/H2PwqEK9wiEZPzp
+         vy16AsrboaMxOH2UoFqwTS0T8uHJyBeSAYafcRdzv0pg4ZBmnx4xh/fTsjFhnFr5yfqp
+         zdGHi3hRw5Hpe0DpknDvGkX56jFjRIpoy8kzkWqfq8g/qNjmy0RiAgAATZCsBEZrfM/H
+         BDVs7XHjjhGKX3hEoDABhs8UiAEAfRZI9rHXo9PRiA7TaAN3w+XvvfTnmmB5yrIU9QL5
+         EuzQ==
+X-Gm-Message-State: AOAM530PaoJdOpa3YTwDf+dz8LSiNBTEufW9j2r6uTbbZ185qJFZwCG5
+        tYEQ+XwmEuJaX9wPiWtKTJB7BbUkRlZMSQ==
+X-Google-Smtp-Source: ABdhPJzgBKsWfIPmCCBFsCdHZ61X/jIIAAGmBQiO85tWkLPNwyUgP6I9SCn9Hk+kdKB4zAQgsa7Gsw==
+X-Received: by 2002:a67:cd16:: with SMTP id u22mr2725795vsl.7.1607009646748;
+        Thu, 03 Dec 2020 07:34:06 -0800 (PST)
+Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com. [209.85.217.46])
+        by smtp.gmail.com with ESMTPSA id z24sm128434uar.5.2020.12.03.07.34.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 07:34:05 -0800 (PST)
+Received: by mail-vs1-f46.google.com with SMTP id b23so1440648vsp.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 07:34:05 -0800 (PST)
+X-Received: by 2002:a67:8c41:: with SMTP id o62mr2741810vsd.49.1607009645158;
+ Thu, 03 Dec 2020 07:34:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201203140405.GC441757@mit.edu>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="0E02t77jjvJL2pXwjrDHLaZHwny6ypUXx"
+References: <20201112200906.991086-1-kuabhs@chromium.org> <20201112200856.v2.1.Ia526132a366886e3b5cf72433d0d58bb7bb1be0f@changeid>
+ <CAD=FV=XKCLgL6Bt+3KfqKByyP5fpwXOh6TNHXAoXkaQJRzjKjQ@mail.gmail.com>
+ <002401d6c242$d78f2140$86ad63c0$@codeaurora.org> <CAD=FV=UnecON-M9eZVQePuNpdygN_E9OtLN495Xe1GL_PA94DQ@mail.gmail.com>
+ <002d01d6c2dd$4386d880$ca948980$@codeaurora.org> <CAD=FV=WQPMnor3oTefDHd6JP6UmpyBo7UsOJ1Sg4Ly1otxr6hw@mail.gmail.com>
+ <004301d6c968$12ef1b10$38cd5130$@codeaurora.org>
+In-Reply-To: <004301d6c968$12ef1b10$38cd5130$@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 3 Dec 2020 07:33:52 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=VCbjRUxUsmyk=64FLDGU=W41EXh5tdfQr1Lg83T8jiEA@mail.gmail.com>
+Message-ID: <CAD=FV=VCbjRUxUsmyk=64FLDGU=W41EXh5tdfQr1Lg83T8jiEA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF selection
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     Abhishek Kumar <kuabhs@chromium.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        ath10k <ath10k@lists.infradead.org>,
+        Brian Norris <briannorris@chromium.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---0E02t77jjvJL2pXwjrDHLaZHwny6ypUXx
-Content-Type: multipart/mixed; boundary="K5UZ4T9vvmf0OGeuXP2VHmznWhaznB3Iz";
- protected-headers="v1"
-From: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-To: "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
- Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <29d6de5d-4abc-e836-7b14-bb67d782a752@tu-dortmund.de>
-Subject: Re: [PATCH v3] Updated locking documentation for transaction_t
-References: <20190408083500.66759-1-alexander.lochmann@tu-dortmund.de>
- <10cfbef1-994c-c604-f8a6-b1042fcc622f@tu-dortmund.de>
- <20201203140405.GC441757@mit.edu>
-In-Reply-To: <20201203140405.GC441757@mit.edu>
+Hi,
 
---K5UZ4T9vvmf0OGeuXP2VHmznWhaznB3Iz
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+On Thu, Dec 3, 2020 at 3:33 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
+>
+> > What I'm trying to say is this.  Imagine that:
+> >
+> > a) the device tree has the "variant" property.
+> >
+> > b) the BRD file has two entries, one for "board-id" (1) and one for
+> > "board-id + chip-id" (2).  It doesn't have one for "board-id + chip-id
+> > + variant" (3).
+> >
+> > With your suggestion we'll see the "variant" property in the device
+> > tree.  That means we'll search for (1) and (3).  (3) isn't there, so
+> > we'll pick (1).  ...but we really should have picked (2), right?
+>
+> Do we expect board-2.bin to not be populated with the bdf with variant field (if its necessary ?)
 
-
-
-On 03.12.20 15:04, Theodore Y. Ts'o wrote:
-> On Thu, Oct 15, 2020 at 03:26:28PM +0200, Alexander Lochmann wrote:
->> Hi folks,
->>
->> I've updated the lock documentation according to our finding for
->> transaction_t.
->> Does this patch look good to you?
->=20
-> I updated the annotations to match with the local usage, e.g:
->=20
-> 	 * When commit was requested [journal_t.j_state_lock]
->=20
-> became:
->=20
-> 	 * When commit was requested [j_state_lock]What do you mean by local u=
-sage?
-The annotations of other members of transaction_t?
-
-Shouldn't the annotation look like this?
-[t_journal->j_state_lock]
-It would be more precise.
->=20
-> Otherwise, looks good.  Thanks for the patch!
-Thanks!
-
-- Alex
->=20
-> 	   	 	       	       - Ted
->=20
-
---=20
-Technische Universit=C3=A4t Dortmund
-Alexander Lochmann                PGP key: 0xBC3EF6FD
-Otto-Hahn-Str. 16                 phone:  +49.231.7556141
-D-44227 Dortmund                  fax:    +49.231.7556116
-http://ess.cs.tu-dortmund.de/Staff/al
+The whole fact that there is a fallback to begin with implies that
+there can be a mismatch between the board-2.bin and the device tree
+file.  Once we accept that there can be a mismatch, it seems good to
+try all 3 fallbacks in order.
 
 
---K5UZ4T9vvmf0OGeuXP2VHmznWhaznB3Iz--
+> Seems fine for me, if we have 2 fallback names if that is needed.
 
---0E02t77jjvJL2pXwjrDHLaZHwny6ypUXx
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+OK, sounds good.  So hopefully Abhishek can post a v3 based on what's
+in <https://crrev.com/c/2556437> and you can confirm you're good with
+it there?
 
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEElhZsUHzVP0dbkjCRWT7tBbw+9v0FAl/I+HAFAwAAAAAACgkQWT7tBbw+9v3H
-4RAApa649SmusVXmkjHe8wcmOyq1Da9GgieaQextJ0bvYvG1BGIL3aN9/5AZs+LWeMtybtEY52tx
-95Ywqa+rGlBgJTXsQvQiMun8ra/N8D2V3QRvJLfN8opiZv/yvPZf3mV0ySYxpNNJHcMZUF0hZFlP
-HuaBpyfLKshVDA5gKLqwEF83pQRhFeDYxDh6EiaspT7NX44SNJeHHGaeVl9HxeWgv7yF8uKap/61
-SKOm5+QiGJA93MXCO1vap6FyfoKA5xLwU5VqMpm5SF/oqNSyx8c/lW/wZmjc1nJU3ma51q57OlS8
-Fa2B1FaSL3LbFNqKYDWn1MuCc5Y85Xsod2zFWfH2lzrHqRMOoc/8v2qu6h3p4HwwKIDUeF5BBbdI
-Tz84I/aSezbV9gi+6vY5CvIypCbZ+NERikH2AtJeT/cpEQ9W0sPEANYY7VjkVQXRnyNEl9PD6ji9
-FoC9Lw8k0lJibkTN/sp0c6XekTz+QGjWXctroBFHpRjW5TvwQ7aCKiCN8Yq0iehPYPMxYAYigNtn
-+hpucH2wgvpYoIdqFn5sKuMeBiOmVlwkmNeDbQdYEKd8PoydXAcuBdgF1hmglJJbzwJvJioTeAEB
-vo9ULMTmT8DCdionZjEya4tm9NdeOWl94X+z+huDb6Ga8ByVsCehESCsd8xfRBZktA0tK472D9aQ
-+KI=
-=aT3U
------END PGP SIGNATURE-----
-
---0E02t77jjvJL2pXwjrDHLaZHwny6ypUXx--
+-Doug
