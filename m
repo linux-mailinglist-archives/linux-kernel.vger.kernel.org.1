@@ -2,76 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41EF2CE1A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0CE2CE1A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731590AbgLCWam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:30:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54798 "EHLO mail.kernel.org"
+        id S2387799AbgLCWaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:30:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLCWal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:30:41 -0500
-From:   Arnd Bergmann <arnd@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] media: i2c: fix an uninitialized error code
-Date:   Thu,  3 Dec 2020 23:29:43 +0100
-Message-Id: <20201203222956.1091606-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1725885AbgLCWaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:30:52 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607034611;
+        bh=xgkQfJ8gQ9Skcnghiv+SrJhxLx0T+KKog7UBJw/CiUI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=HJN3t9uvTnjDfb5YNxoly21/Md8gYiJ9PUluS0FvOX++fYafkRmLUwiKnciU3+qqt
+         25T1g5wcBFFGgdJI9dHvaYDhML930P/+C+6QOcjXJz7/YM1AQMuKmg8R44CmcwKu9F
+         8SRQ7klYnpt2x/iFtlQ6QUG+P8Rf7+Isv0oPUv+HeCt0ZPVb/vKSD1F5xg+4k9UKfP
+         Z3RsDr/rIyYII7AJRp2Xo+/4vEs9UoHkO5I07Dbewcy3DB74TinywmYYMWqNqDdXNz
+         KDdSJwlMsDc+K3sMQzvFLDPZLEneDvbnIOqsilLw3CnTfWOKYx9AA5ZmAMMMccXKRM
+         v7iNTYeRWuWxA==
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [GIT PULL] Networking for 5.10-rc7
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160703461137.774.1632248569911721691.git-patchwork-notify@kernel.org>
+Date:   Thu, 03 Dec 2020 22:30:11 +0000
+References: <20201203204459.3963776-1-kuba@kernel.org>
+In-Reply-To: <20201203204459.3963776-1-kuba@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hello:
 
-Clang points out that the error handling in ov02a10_s_stream() is
-broken, and just returns a random error code:
+This pull request was applied to netdev/net.git (refs/heads/master):
 
-drivers/media/i2c/ov02a10.c:537:6: warning: variable 'ret' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-        if (ov02a10->streaming == on)
-            ^~~~~~~~~~~~~~~~~~~~~~~~
-drivers/media/i2c/ov02a10.c:568:9: note: uninitialized use occurs here
-        return ret;
-               ^~~
-drivers/media/i2c/ov02a10.c:537:2: note: remove the 'if' if its condition is always false
-        if (ov02a10->streaming == on)
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/media/i2c/ov02a10.c:533:9: note: initialize the variable 'ret' to silence this warning
-        int ret;
+On Thu,  3 Dec 2020 12:44:59 -0800 you wrote:
+> The following changes since commit c84e1efae022071a4fcf9f1899bf71777c49943a:
+> 
+>   Merge tag 'asm-generic-fixes-5.10-2' of git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic (2020-11-27 15:00:35 -0800)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.10-rc7
+> 
+> [...]
 
-I assume that -EBUSY is the intended error code, so use that.
+Here is the summary with links:
+  - [GIT,PULL] Networking for 5.10-rc7
+    https://git.kernel.org/netdev/net/c/bbe2ba04c5a9
 
-Fixes: 91807efbe8ec ("media: i2c: add OV02A10 image sensor driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/media/i2c/ov02a10.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-diff --git a/drivers/media/i2c/ov02a10.c b/drivers/media/i2c/ov02a10.c
-index 391718136ade..7ee9c904d9b5 100644
---- a/drivers/media/i2c/ov02a10.c
-+++ b/drivers/media/i2c/ov02a10.c
-@@ -534,8 +534,10 @@ static int ov02a10_s_stream(struct v4l2_subdev *sd, int on)
- 
- 	mutex_lock(&ov02a10->mutex);
- 
--	if (ov02a10->streaming == on)
-+	if (ov02a10->streaming == on) {
-+		ret = -EBUSY;
- 		goto unlock_and_return;
-+	}
- 
- 	if (on) {
- 		ret = pm_runtime_get_sync(&client->dev);
--- 
-2.27.0
 
