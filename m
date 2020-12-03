@@ -2,47 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851112CD6AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 893512CD6B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730742AbgLCN0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 08:26:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43262 "EHLO mail.kernel.org"
+        id S1730732AbgLCN3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 08:29:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730533AbgLCN0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 08:26:23 -0500
-Date:   Thu, 3 Dec 2020 14:26:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607001942;
-        bh=zTg0LRTp2jk/sIarx18z8q2py24tLNT7rye1Bm9xA3Q=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oX4Q1PTJ0gW+smYtC0ojk9WJJh3RiMRdU/g9hf3FYfJlDZIIaeed2u+JkxEdJZFwb
-         /GoeYCVMSRhNDk6XX2L8RYcV2jyLQV2rIhups/uapAuFnRtJ0LeNg/JWvy2/gSspAv
-         Qz5Rt7CsT1QPs1a5TTeTRMHxrp1I2vyOPGpGCd38=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ertza Warraich <ertza.afzal@gmail.com>
-Cc:     balbi@kernel.org, dave.jing.tian@gmail.com, kt0755@gmail.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: NULL pointer dereference bug
-Message-ID: <X8jnmfppPk5Wii6p@kroah.com>
-References: <CAD+hOztkbvSfugYDWSw9UpmBM0vTcmHp=7kfJmYZF6CdC+eZXQ@mail.gmail.com>
+        id S1728067AbgLCN3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 08:29:17 -0500
+From:   Sasha Levin <sashal@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Al Cooper <alcooperx@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com
+Subject: [PATCH AUTOSEL 5.9 01/39] phy: usb: Fix incorrect clearing of tca_drv_sel bit in SETUP reg for 7211
+Date:   Thu,  3 Dec 2020 08:27:55 -0500
+Message-Id: <20201203132834.930999-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD+hOztkbvSfugYDWSw9UpmBM0vTcmHp=7kfJmYZF6CdC+eZXQ@mail.gmail.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 07:56:08PM -0500, Ertza Warraich wrote:
-> We report a null ptr deref bug (in linux-5.8.13) found by FuzzUSB (a
-> modified version of syzkaller).
+From: Al Cooper <alcooperx@gmail.com>
 
-5.8.y is end-of-life, you should test 5.9.y at the oldest.
+[ Upstream commit 209c805835b29495cf66cc705b206da8f4a68e6e ]
 
-Anyway, without a reproducer or a patch for this, it's not going to
-probably go very far :(
+The 7211a0 has a tca_drv_sel bit in the USB SETUP register that
+should never be enabled. This feature is only used if there is a
+USB Type-C PHY, and the 7211 does not have one. If the bit is
+enabled, the VBUS signal will never be asserted. In the 7211a0,
+the bit was incorrectly defaulted to on so the driver had to clear
+the bit. In the 7211c0 the state was inverted so the driver should
+no longer clear the bit. This hasn't been a problem because all
+current 7211 boards don't use the VBUS signal, but there are some
+future customer boards that may use it.
 
-thanks,
+Signed-off-by: Al Cooper <alcooperx@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20201002190115.48017-1-alcooperx@gmail.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-greg k-h
+diff --git a/drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c b/drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c
+index 456dc4a100c20..e63457e145c71 100644
+--- a/drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c
++++ b/drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c
+@@ -270,11 +270,6 @@ static void usb_init_common_7211b0(struct brcm_usb_init_params *params)
+ 	reg |= params->mode << USB_PHY_UTMI_CTL_1_PHY_MODE_SHIFT;
+ 	brcm_usb_writel(reg, usb_phy + USB_PHY_UTMI_CTL_1);
+ 
+-	/* Fix the incorrect default */
+-	reg = brcm_usb_readl(ctrl + USB_CTRL_SETUP);
+-	reg &= ~USB_CTRL_SETUP_tca_drv_sel_MASK;
+-	brcm_usb_writel(reg, ctrl + USB_CTRL_SETUP);
+-
+ 	usb_init_common(params);
+ 
+ 	/*
+-- 
+2.27.0
+
