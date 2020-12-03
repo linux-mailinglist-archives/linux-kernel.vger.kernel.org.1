@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE672CD48A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B1D2CD46A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729720AbgLCL1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:27:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbgLCL1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:27:11 -0500
-Date:   Thu, 3 Dec 2020 11:26:23 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606994790;
-        bh=Z6fRxajiQsjMgIcL2B8U6vdSMQSDFY19TKRTAoS5XwM=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BmIBlbUTavBbJSA9SMVKb3tOHpXr6pmjMIykJxf8ysFQLdGr4NcG39u+tYjgBM15e
-         ND0gIZQk/Z9Q2lye0p54KpIoxeRbEo86wBhS+sakJ/LTeGH97qgsHZUNuhciXa3sjH
-         Sdap/WsTwkwgmaDLJvxtIbvdHONV85FJ/NQJoTHO+D6r6+nGzh+djD8BmVCZPcr1UA
-         9KjdS0id2HpEqXYn1f4KtDSfcRnH9mLEjtLYqQpbDQNvRQtx3PhNUaVOjUSpg7p1Fx
-         +aW7XBdMBvjBOcwlwLm9jvoC5FZG3oy1RfqNQMCD7k9DXou+nfkgGL9P6MIG326q2n
-         FxiM1lHhq2TrA==
-From:   Will Deacon <will@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
-Message-ID: <20201203112622.GA31188@willie-the-truck>
-References: <20201201213707.541432-1-samitolvanen@google.com>
+        id S2388925AbgLCLPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:15:55 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8621 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729194AbgLCLPy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 06:15:54 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CmtXJ2smHz15WDR;
+        Thu,  3 Dec 2020 19:14:40 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 3 Dec 2020 19:15:00 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <support.opensource@diasemi.com>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] regulator: da9121: Mark some symbols with static keyword
+Date:   Thu, 3 Dec 2020 19:26:35 +0800
+Message-ID: <1606994795-36182-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201213707.541432-1-samitolvanen@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sami,
+Fix the following sparse warnings:
 
-On Tue, Dec 01, 2020 at 01:36:51PM -0800, Sami Tolvanen wrote:
-> This patch series adds support for building the kernel with Clang's
-> Link Time Optimization (LTO). In addition to performance, the primary
-> motivation for LTO is to allow Clang's Control-Flow Integrity (CFI)
-> to be used in the kernel. Google has shipped millions of Pixel
-> devices running three major kernel versions with LTO+CFI since 2018.
-> 
-> Most of the patches are build system changes for handling LLVM
-> bitcode, which Clang produces with LTO instead of ELF object files,
-> postponing ELF processing until a later stage, and ensuring initcall
-> ordering.
-> 
-> Note that arm64 support depends on Will's memory ordering patches
-> [1]. I will post x86_64 patches separately after we have fixed the
-> remaining objtool warnings [2][3].
+drivers/regulator/da9121-regulator.c:55:21: warning: symbol 'da9121_10A_2phase_current' was not declared. Should it be static?
+drivers/regulator/da9121-regulator.c:63:21: warning: symbol 'da9121_6A_2phase_current' was not declared. Should it be static?
+drivers/regulator/da9121-regulator.c:71:21: warning: symbol 'da9121_5A_1phase_current' was not declared. Should it be static?
+drivers/regulator/da9121-regulator.c:79:21: warning: symbol 'da9121_3A_1phase_current' was not declared. Should it be static?
+drivers/regulator/da9121-regulator.c:151:32: warning: symbol 'status_event_handling' was not declared. Should it be static?
 
-I took this series for a spin, with my for-next/lto branch merged in but
-I see a failure during the LTO stage with clang 11.0.5 because it doesn't
-understand the '.arch_extension rcpc' directive we throw out in READ_ONCE().
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/regulator/da9121-regulator.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-We actually check that this extension is available before using it in
-the arm64 Kconfig:
+diff --git a/drivers/regulator/da9121-regulator.c b/drivers/regulator/da9121-regulator.c
+index 3ead6a1..893512c 100644
+--- a/drivers/regulator/da9121-regulator.c
++++ b/drivers/regulator/da9121-regulator.c
+@@ -52,7 +52,7 @@ struct da9121_range {
+ 	int reg_max;
+ };
+ 
+-struct da9121_range da9121_10A_2phase_current = {
++static struct da9121_range da9121_10A_2phase_current = {
+ 	.val_min =  7000000,
+ 	.val_max = 20000000,
+ 	.val_stp =  1000000,
+@@ -60,7 +60,7 @@ struct da9121_range da9121_10A_2phase_current = {
+ 	.reg_max = 14,
+ };
+ 
+-struct da9121_range da9121_6A_2phase_current = {
++static struct da9121_range da9121_6A_2phase_current = {
+ 	.val_min =  7000000,
+ 	.val_max = 12000000,
+ 	.val_stp =  1000000,
+@@ -68,7 +68,7 @@ struct da9121_range da9121_6A_2phase_current = {
+ 	.reg_max = 6,
+ };
+ 
+-struct da9121_range da9121_5A_1phase_current = {
++static struct da9121_range da9121_5A_1phase_current = {
+ 	.val_min =  3500000,
+ 	.val_max = 10000000,
+ 	.val_stp =   500000,
+@@ -76,7 +76,7 @@ struct da9121_range da9121_5A_1phase_current = {
+ 	.reg_max = 14,
+ };
+ 
+-struct da9121_range da9121_3A_1phase_current = {
++static struct da9121_range da9121_3A_1phase_current = {
+ 	.val_min = 3500000,
+ 	.val_max = 6000000,
+ 	.val_stp =  500000,
+@@ -148,7 +148,7 @@ struct status_event_data {
+  *
+  * GPIO0/1/2 are not configured for use by default, so should not be seen.
+  */
+-const struct status_event_data status_event_handling[] = {
++static const struct status_event_data status_event_handling[] = {
+ 	DA9xxx_STATUS(0, 0, SG, 0, "Handled E_SG\n"),
+ 	DA9121_STATUS(0, 0, TEMP_CRIT, (REGULATOR_EVENT_OVER_TEMP|REGULATOR_EVENT_DISABLE), NULL),
+ 	DA9121_STATUS(0, 0, TEMP_WARN, REGULATOR_EVENT_OVER_TEMP, NULL),
+-- 
+2.6.2
 
-	config AS_HAS_LDAPR
-		def_bool $(as-instr,.arch_extension rcpc)
-
-so this shouldn't happen. I then realised, I wasn't passing LLVM_IAS=1
-on my Make command line; with that, then the detection works correctly
-and the LTO step succeeds.
-
-Why is it necessary to pass LLVM_IAS=1 if LTO is enabled? I think it
-would be _much_ better if this was implicit (or if LTO depended on it).
-
-Cheers,
-
-Will
