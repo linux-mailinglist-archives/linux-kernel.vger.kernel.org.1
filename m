@@ -2,79 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C88F32CCB5D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 272392CCB64
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727948AbgLCBCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 20:02:18 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:36546 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727384AbgLCBCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:02:18 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx73_qOMhfRz0ZAA--.41109S2;
-        Thu, 03 Dec 2020 09:01:31 +0800 (CST)
-From:   Youling Tang <tangyouling@loongson.cn>
-To:     Neil Horman <nhorman@tuxdriver.com>,
-        Seth Heasley <seth.heasley@intel.com>
-Cc:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] i2c: ismt: Use dma_set_mask_and_coherent
-Date:   Thu,  3 Dec 2020 09:01:30 +0800
-Message-Id: <1606957290-15260-1-git-send-email-tangyouling@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx73_qOMhfRz0ZAA--.41109S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZFW8KFWfJrW8Kw4xAF4Utwb_yoWkCwb_tw
-        10qF92gFsYyr90v347KFW5Xr95t3yrZ34DZF1vy3WI9ry3uwsxJa17uFykAF4UZFsrJFya
-        g3WvyrZ5ArWjvjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb7kYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z2
-        80aVCY1x0267AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_KwCF04k20xvY
-        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
-        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAI
-        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcV
-        CF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcZqXDUUUU
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+        id S2387404AbgLCBEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 20:04:51 -0500
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:36282 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726851AbgLCBEv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 20:04:51 -0500
+Received: by mail-lf1-f44.google.com with SMTP id v14so273061lfo.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 17:04:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FqBDFILtKC1/XhSHgxkhsjETw7FLnQmSQ+/jvyeh0Wg=;
+        b=XdkMLUil0v5UTEWEv5xIPl35soqTEjjbATxpaSjLk1uaiZTjdmsE+WVLc6Z+oQ2oWG
+         nxXcrxCaniW4F8YMcg6ZjRvebyMZu/OZY1moNy267+CV/B4lMSUC94eE0zk4xUtetVMA
+         DE8c11gos/59x8gtKU0VZgcbkVFQqUzASHV1tDlxWLMiTGpZDLS8RtCfaT4IFoo3lhtr
+         7K/hq0Oeu8kpXGMieXTo6UHKi7i8J+9qRWNQjxrirPlxWAJnqW4PbOYEGS3OsJIw+V8G
+         Ieim7SaoYaJvU86QdZEH/AoEbL+7P5S8PgXqXCJsfZOCJPfZeeHuvICs9qfxO0cf9SGp
+         nBgA==
+X-Gm-Message-State: AOAM532lVXRJxUjB+035YlN5x45Kyid3hytYHSfHvjiFBfM7hiXY19UW
+        Cl2yOv2jyfiF+nDH2sidiRHotLKUjfVfRPuu5eU=
+X-Google-Smtp-Source: ABdhPJyadI0Hcq7K79+8DyPpK4TsBJgvKFjUWqW1e7aMukHByOk4AU4OmQC5T9n0r4AoJ5tpfUhKZtLALk/0P48nWYc=
+X-Received: by 2002:a19:38e:: with SMTP id 136mr287491lfd.593.1606957443379;
+ Wed, 02 Dec 2020 17:04:03 -0800 (PST)
+MIME-Version: 1.0
+References: <20201202150205.35750-1-namhyung@kernel.org> <20201202192828.GG1363814@tassilo.jf.intel.com>
+ <CABPqkBR5nCfn756Wb8xQEb9Xse+UQPAbGy969cP4sxO78-Nq4g@mail.gmail.com>
+ <20201202224239.GJ1363814@tassilo.jf.intel.com> <CABPqkBRsS2+gT-792uYq+U84LJepDjY=wwiLku6mtVhgd8mEEA@mail.gmail.com>
+In-Reply-To: <CABPqkBRsS2+gT-792uYq+U84LJepDjY=wwiLku6mtVhgd8mEEA@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 3 Dec 2020 10:03:52 +0900
+Message-ID: <CAM9d7cjrPfn2icWYpi=ZHC90SR8JcV5coTJV-xAAM3r3Yfpd8Q@mail.gmail.com>
+Subject: Re: [RFC 1/2] perf core: Add PERF_COUNT_SW_CGROUP_SWITCHES event
+To:     Stephane Eranian <eranian@google.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
-an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
+Hi Stephane and Andi,
 
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
----
- drivers/i2c/busses/i2c-ismt.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+On Thu, Dec 3, 2020 at 8:40 AM Stephane Eranian <eranian@google.com> wrote:
+>
+> On Wed, Dec 2, 2020 at 2:42 PM Andi Kleen <ak@linux.intel.com> wrote:
+> >
+> > On Wed, Dec 02, 2020 at 11:47:25AM -0800, Stephane Eranian wrote:
+> > > On Wed, Dec 2, 2020 at 11:28 AM Andi Kleen <ak@linux.intel.com> wrote:
+> > > >
+> > > > > +     prev_cgrp = task_css_check(prev, perf_event_cgrp_id, 1)->cgroup;
+> > > > > +     next_cgrp = task_css_check(next, perf_event_cgrp_id, 1)->cgroup;
+> > > > > +
+> > > > > +     if (prev_cgrp != next_cgrp)
+> > > > > +             perf_sw_event_sched(PERF_COUNT_SW_CGROUP_SWITCHES, 1, 0);
+> > > >
+> > > > Seems to be the perf cgroup only, not all cgroups.
+> > > > That's a big difference and needs to be documented properly.
+> > > >
+> > > We care about the all-cgroup case.
+> >
+> > Then it's not correct I think. You need a different hook point.
+> >
+> I realize that ;-(
 
-diff --git a/drivers/i2c/busses/i2c-ismt.c b/drivers/i2c/busses/i2c-ismt.c
-index a35a27c..5f49830 100644
---- a/drivers/i2c/busses/i2c-ismt.c
-+++ b/drivers/i2c/busses/i2c-ismt.c
-@@ -903,16 +903,12 @@ ismt_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		return -ENODEV;
- 	}
- 
--	if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) != 0) ||
--	    (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64)) != 0)) {
--		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) != 0) ||
--		    (pci_set_consistent_dma_mask(pdev,
--						 DMA_BIT_MASK(32)) != 0)) {
-+	if (dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(64)) != 0)
-+		if (dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(32)) != 0) {
- 			dev_err(&pdev->dev, "pci_set_dma_mask fail %p\n",
- 				pdev);
- 			return -ENODEV;
- 		}
--	}
- 
- 	err = ismt_dev_init(priv);
- 	if (err)
--- 
-2.1.0
+If we want to count any cgroup changes, I think we can compare
+task->cgroups (css_set) here instead.
 
+Thanks,
+Namyung
