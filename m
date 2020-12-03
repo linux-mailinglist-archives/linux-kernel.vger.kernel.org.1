@@ -2,68 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CA62CD697
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FDB2CD69F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730715AbgLCNVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 08:21:47 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:48043 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726220AbgLCNVr (ORCPT
+        id S2388819AbgLCNXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 08:23:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49399 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730608AbgLCNXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 08:21:47 -0500
-Received: from marcel-macbook.holtmann.net (unknown [37.83.193.87])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 8D253CECFE;
-        Thu,  3 Dec 2020 14:28:18 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: Re: [PATCH v11 2/5] Bluetooth: Handle system suspend resume case
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20201126122109.v11.2.I3774a8f0d748c7c6ec3402c4adcead32810c9164@changeid>
-Date:   Thu, 3 Dec 2020 14:21:04 +0100
-Cc:     BlueZ development <linux-bluetooth@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        alainm@chromium.org, mcchou@chromium.org, mmandlik@chromium.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+        Thu, 3 Dec 2020 08:23:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607001717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xr6ubetRcdw3MknkwI3+tg6m/AwRRq+QdjB3wYZxUt8=;
+        b=JEjFX2xF4yCXRxTuV9kFRJZhHXIufbaRtHbxRU+FWLMjaU9eDt/OPK2sLZm++3kIJQUq6a
+        bfdBGf7vdp33TkqQ7mcdtlzO//+1w+pveT2ZkZsF3IKCgZmaXDJnjtcRUDAKeAqnk3GVfv
+        tPQsX2O7GU9p6cDpylXvssqXpUzfQts=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-119-ivUdRog-NqWVMt9wROXWjg-1; Thu, 03 Dec 2020 08:21:53 -0500
+X-MC-Unique: ivUdRog-NqWVMt9wROXWjg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4FDC100F350;
+        Thu,  3 Dec 2020 13:21:51 +0000 (UTC)
+Received: from gondolin (ovpn-113-106.ams2.redhat.com [10.36.113.106])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F17035C1BD;
+        Thu,  3 Dec 2020 13:21:42 +0000 (UTC)
+Date:   Thu, 3 Dec 2020 14:21:40 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        kvm@vger.kernel.org, linux-usb@vger.kernel.org,
+        Peng Hao <peng.hao2@zte.com.cn>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v1 1/5] driver core: platform: Introduce
+ platform_get_mem_or_io_resource()
+Message-ID: <20201203142140.73a0c5e6.cohuck@redhat.com>
+In-Reply-To: <20201027175806.20305-1-andriy.shevchenko@linux.intel.com>
+References: <20201027175806.20305-1-andriy.shevchenko@linux.intel.com>
+Organization: Red Hat GmbH
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <1152BFFD-976E-412F-9CF8-762D30FAE961@holtmann.org>
-References: <20201126122109.v11.1.Ib75f58e90c477f9b82c5598f00c59f0e95a1a352@changeid>
- <20201126122109.v11.2.I3774a8f0d748c7c6ec3402c4adcead32810c9164@changeid>
-To:     Howard Chung <howardchung@google.com>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Howard,
+On Tue, 27 Oct 2020 19:58:02 +0200
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-> This patch adds code to handle the system suspension during interleave
-> scan. The interleave scan will be canceled when the system is going to
-> sleep, and will be restarted after waking up.
+> There are at least few existing users of the proposed API which
+> retrieves either MEM or IO resource from platform device.
 > 
-> Signed-off-by: Howard Chung <howardchung@google.com>
-> Reviewed-by: Alain Michaud <alainm@chromium.org>
-> Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
-> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> Make it common to utilize in the existing and new users.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Eric Auger <eric.auger@redhat.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Cornelia Huck <cohuck@redhat.com>
+> Cc: kvm@vger.kernel.org
+> Cc: linux-usb@vger.kernel.org
+> Cc: Peng Hao <peng.hao2@zte.com.cn>
+> Cc: Arnd Bergmann <arnd@arndb.de>
 > ---
+>  include/linux/platform_device.h | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 > 
-> (no changes since v5)
-> 
-> Changes in v5:
-> - Remove the change in hci_req_config_le_suspend_scan
-> 
-> net/bluetooth/hci_request.c | 4 +++-
-> 1 file changed, 3 insertions(+), 1 deletion(-)
+> diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+> index 77a2aada106d..eb8d74744e29 100644
+> --- a/include/linux/platform_device.h
+> +++ b/include/linux/platform_device.h
+> @@ -52,6 +52,19 @@ extern struct device platform_bus;
+>  
+>  extern struct resource *platform_get_resource(struct platform_device *,
+>  					      unsigned int, unsigned int);
+> +static inline
+> +struct resource *platform_get_mem_or_io_resource(struct platform_device *pdev,
 
-patch has been applied to bluetooth-next tree.
+Minor nit: If I would want to break up the long line, I'd use
 
-Regards
+static inline struct resource *
+platform_get_mem_or_io_resource(...)
 
-Marcel
+> +						 unsigned int num)
+> +{
+> +	struct resource *res;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, num);
+> +	if (res)
+> +		return res;
+> +
+> +	return platform_get_resource(pdev, IORESOURCE_IO, num);
+> +}
+> +
+>  extern struct device *
+>  platform_find_device_by_driver(struct device *start,
+>  			       const struct device_driver *drv);
+
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 
