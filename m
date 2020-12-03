@@ -2,176 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77572CD2D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:48:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A94B62CD2F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730144AbgLCJsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:48:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729998AbgLCJsB (ORCPT
+        id S2388316AbgLCJxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:53:15 -0500
+Received: from regular1.263xmail.com ([211.150.70.206]:42772 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387548AbgLCJxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:48:01 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81E3C061A4D;
-        Thu,  3 Dec 2020 01:47:20 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id u12so1211419wrt.0;
-        Thu, 03 Dec 2020 01:47:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dK0NRUVlAwcsui5gjsw4Jx8irBvWKCUPKqEJTVl5wOo=;
-        b=l1lrmNDPTiMcqF3XHdUmkuFymB7t/+6GhZaptCheNCB/E4tKzI98WHPUd86C9vCKzO
-         0jifMY7QINRUs335PhOcNWgbNcLxVDUYdEHWbOeXm4okWFIAGliMxV+yp1lIVv+s4Wn/
-         lHQWanmUgmORQ5HoQKKzzlaeIN7uZTRWOOMwzKEpxMowjf818GD1syz36VOtU1vLOhcE
-         xUkQ24LiJbqp0Xb4tou4Uc8AezF1LTVGcuKYEla3wc6VaNu41JRVv8aIm45ckulHwEGB
-         jmm0EQQY3UcqNpsgyYUbnaYhAXSjyXufY6WqyEIKwH+J9gGgqlRGcTsd/iGkF7lEQiRs
-         dqfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dK0NRUVlAwcsui5gjsw4Jx8irBvWKCUPKqEJTVl5wOo=;
-        b=HC5YkAGjdbx79uGmiSun+LiZqrTRn0S/D/5LBzSW9ICEWT7GXK08hYx54vnjZd4Tnm
-         DQDZaNu3AW1jIT1u4YOk63i6YqzGO+vRG3oUHvepO4mFQHoWNUr0IQfKOQA/L7xMtkHI
-         rUVNWXig6Ds5XCarMiOgAVBP6bjR2KW4AtoHrZCyYUnPa01gb3a1rN/GUCHDRzyXUXeu
-         wweol1FMndQKBL5ZzIdquoocIq7Yc7tYL/U8c+1JIA/sjoDmqfhE6ytHWDvH6svbsJTJ
-         TvduYz2WTpm4VEaKpvDxASmrD92lmpqi7Zses0iXGWMicjw4KNyeqeJkoZEvLleJIQJd
-         dSbw==
-X-Gm-Message-State: AOAM533zpmvbiEpEWDzhXLt7QlFpsfBsW0iE8YhhTkS9X7zSbX1hOc7B
-        9W99pCizmUl5advZkV1ERUeTst9YNEnNBMHtD8s=
-X-Google-Smtp-Source: ABdhPJxjznigo6gl5tQEWfaCO9AliUqwf5NewBcU5kIKVjbpla8ZRtAOVQ8gb+vd0AekhlHCFDcqfCeBv/7Mdy7/npQ=
-X-Received: by 2002:adf:f602:: with SMTP id t2mr2797924wrp.40.1606988839446;
- Thu, 03 Dec 2020 01:47:19 -0800 (PST)
+        Thu, 3 Dec 2020 04:53:14 -0500
+Received: from localhost (unknown [192.168.167.32])
+        by regular1.263xmail.com (Postfix) with ESMTP id 1C2D71B17;
+        Thu,  3 Dec 2020 17:47:24 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from localhost.localdomain (unknown [14.18.236.70])
+        by smtp.263.net (postfix) whith ESMTP id P26670T140451924260608S1606988834214421_;
+        Thu, 03 Dec 2020 17:47:23 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <4add3ead76855a29643536f784f1c7d0>
+X-RL-SENDER: yili@winhong.com
+X-SENDER: yili@winhong.com
+X-LOGIN-NAME: yili@winhong.com
+X-FST-TO: colyli@suse.de
+X-SENDER-IP: 14.18.236.70
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Yi Li <yili@winhong.com>
+To:     colyli@suse.de
+Cc:     yilikernel@gmail.com, kent.overstreet@gmail.com,
+        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yi Li <yili@winhong.com>, Guo Chao <guochao@winhong.com>
+Subject: [PATCH v2] bcache: fix panic due to cache_set is null
+Date:   Thu,  3 Dec 2020 17:47:11 +0800
+Message-Id: <20201203094711.3236551-1-yili@winhong.com>
+X-Mailer: git-send-email 2.25.3
+In-Reply-To: <CAJfdMYDLydAtoxvPGzaQ+K5jLvwAXg6MvpE-OM9sFjZgz_01sQ@mail.gmail.com>
+References: <CAJfdMYDLydAtoxvPGzaQ+K5jLvwAXg6MvpE-OM9sFjZgz_01sQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
- <20201202094717.GX4077@smile.fi.intel.com> <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
- <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
- <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
- <CAM7-yPRBPP6SFzdmwWF5Y99g+aWcp=OY9Uvp-5h1MSDPmsORNw@mail.gmail.com>
- <CAAH8bW-+XnNsd9p3xZ1utmyY24gaBa0ko4tngBii4T+2cMkcYg@mail.gmail.com>
- <CAM7-yPQCWj6rOyLEgOqF3HGkFV1WKtqyVhEtDbS3HW=2A-HuBA@mail.gmail.com>
- <CAM7-yPTtiVnUztE=xpNYgRcZTGd1aX_V9ZHd=2YZYc1uQNBXtw@mail.gmail.com> <a0cc0d2e-9c55-8546-f070-26feed5de37f@rasmusvillemoes.dk>
-In-Reply-To: <a0cc0d2e-9c55-8546-f070-26feed5de37f@rasmusvillemoes.dk>
-From:   Yun Levi <ppbuk5246@gmail.com>
-Date:   Thu, 3 Dec 2020 18:47:06 +0900
-Message-ID: <CAM7-yPQrvYUwX-cbgpzhomCTFEi9sQ9iGuLNcL-Fsj7XZ0knhw@mail.gmail.com>
-Subject: Re:
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Yury Norov <yury.norov@gmail.com>, dushistov@mail.ru,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
-        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> If one uses UINT_MAX, a for_each_bit_reverse() macro would just be
-> something like
->
-> for (i = find_last_bit(bitmap, size); i < size; i =
-> find_last_bit(bitmap, i))
->
-> if one wants to use the size argument as the sentinel, the caller would
-> have to supply a scratch variable to keep track of the last i value:
->
-> for (j = size, i = find_last_bit(bitmap, j); i < j; j = i, i =
-> find_last_bit(bitmap, j))
->
-> which is probably a little less ergonomic.
+bcache_device_detach will release the cache_set after hotunplug cache
+disk.
 
-Actually Because I want to avoid the modification of return type of
-find_last_*_bit for new sentinel,
-I add find_prev_*_bit.
-the big difference between find_last_bit and find_prev_bit is
-   find_last_bit doesn't check the size bit and use sentinel with size.
-   but find_prev_bit check the offset bit and use sentinel with size
-which passed by another argument.
-   So if we use find_prev_bit, we could have a clear iteration if
-using find_prev_bit like.
+Here is how the issue happens.
+1) cached_dev_free do cancel_writeback_rate_update_dwork
+   without bch_register_lock.
+2) Wirting the writeback_percent by sysfs with
+   bch_register_lock will insert a writeback_rate_update work.
+3) cached_dev_free with bch_register_lock to do bcache_device_free.
+   dc->disk.cl will be set NULL
+4) update_writeback_rate will crash when access dc->disk.cl
 
-  #define for_each_set_bit_reverse(bit, addr, size) \
-      for ((bit) = find_last_bit((addr), (size));    \
-            (bit) < (size);                                     \
-            (bit) = find_prev_bit((addr), (size), (bit - 1)))
+Fixes: 80265d8dfd77 ("bcache: acquire bch_register_lock later in cached_dev_free()")
 
-  #define for_each_set_bit_from_reverse(bit, addr, size) \
-      for ((bit) = find_prev_bit((addr), (size), (bit)); \
-             (bit) < (size);                                           \
-             (bit) = find_prev_bit((addr), (size), (bit - 1)))
+  IP: [<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
+  PGD 879620067 PUD 8755d3067 PMD 0
+  Oops: 0000 [#1] SMP
+  CPU: 8 PID: 1005702 Comm: kworker/8:0 Tainted: G 4.4.0+10 #1
+  Hardware name: Intel BIOS SE5C610.86B.01.01.0021.032120170601 03/21/2017
+  Workqueue: events update_writeback_rate [bcache]
+  task: ffff8808786f3800 ti: ffff88077082c000 task.ti: ffff88077082c000
+  RIP: e030:[<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
+  RSP: e02b:ffff88077082fde0  EFLAGS: 00010202
+  RAX: 0000000000000018 RBX: ffff8808047f0b08 RCX: 0000000000000000
+  RDX: 0000000000000001 RSI: ffff88088170dab8 RDI: ffff88088170dab8
+  RBP: ffff88077082fe18 R08: 000000000000000a R09: 0000000000000000
+  R10: 0000000000000000 R11: 0000000000017bc8 R12: 0000000000000000
+  R13: ffff8808047f0000 R14: 0000000000000200 R15: ffff8808047f0b08
+  FS:  00007f157b6d6700(0000) GS:ffff880881700000(0000) knlGS:0000000000000000
+  CS:  e033 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000000000000368 CR3: 0000000875c05000 CR4: 0000000000040660
+  Stack:
+   0000000000000001 0000000000007ff0 ffff88085ff600c0 ffff880881714e80
+   ffff880881719500 0000000000000200 ffff8808047f0b08 ffff88077082fe60
+   ffffffff81088c0c 0000000081714e80 0000000000000000 ffff880881714e80
+  Call Trace:
+   [<ffffffff81088c0c>] process_one_work+0x1fc/0x3b0
+   [<ffffffff81089575>] worker_thread+0x2a5/0x470
+   [<ffffffff815a2f58>] ? __schedule+0x648/0x870
+   [<ffffffff810892d0>] ? rescuer_thread+0x300/0x300
+   [<ffffffff8108e3d5>] kthread+0xd5/0xe0
+   [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
+   [<ffffffff815a704f>] ret_from_fork+0x3f/0x70
+   [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
 
-Though find_prev_*_bit / find_last_*_bit have the same functionality.
-But they also have a small difference.
-I think this small this small difference doesn't make some of
-confusion to user but it help to solve problem
-with a simple way (just like the iteration above).
+Reported-by: Guo Chao <guochao@winhong.com>
+Signed-off-by: Yi Li <yili@winhong.com>
+---
+ drivers/md/bcache/super.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-So I think I need, find_prev_*_bit series.
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index 46a00134a36a..8b341f756ac0 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -1334,9 +1334,6 @@ static void cached_dev_free(struct closure *cl)
+ {
+ 	struct cached_dev *dc = container_of(cl, struct cached_dev, disk.cl);
+ 
+-	if (test_and_clear_bit(BCACHE_DEV_WB_RUNNING, &dc->disk.flags))
+-		cancel_writeback_rate_update_dwork(dc);
+-
+ 	if (!IS_ERR_OR_NULL(dc->writeback_thread))
+ 		kthread_stop(dc->writeback_thread);
+ 	if (!IS_ERR_OR_NULL(dc->status_update_thread))
+@@ -1344,6 +1341,9 @@ static void cached_dev_free(struct closure *cl)
+ 
+ 	mutex_lock(&bch_register_lock);
+ 
++	if (test_and_clear_bit(BCACHE_DEV_WB_RUNNING, &dc->disk.flags))
++		cancel_writeback_rate_update_dwork(dc);
++
+ 	if (atomic_read(&dc->running))
+ 		bd_unlink_disk_holder(dc->bdev, dc->disk.disk);
+ 	bcache_device_free(&dc->disk);
+-- 
+2.25.3
 
-Am I missing anything?
 
-Thanks.
 
-Levi.
-
-On Thu, Dec 3, 2020 at 5:33 PM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> On 03/12/2020 02.23, Yun Levi wrote:
-> > On Thu, Dec 3, 2020 at 7:51 AM Yun Levi <ppbuk5246@gmail.com> wrote:
-> >>
-> >> On Thu, Dec 3, 2020 at 6:26 AM Yury Norov <yury.norov@gmail.com> wrote:
-> >>>
-> >>> On Wed, Dec 2, 2020 at 10:22 AM Yun Levi <ppbuk5246@gmail.com> wrote:
-> >>>>
-> >>>> On Thu, Dec 3, 2020 at 2:26 AM Yury Norov <yury.norov@gmail.com> wrote:
-> >>>>
-> >>>>> Also look at lib/find_bit_benchmark.c
-> >>>> Thanks. I'll see.
-> >>>>
-> >>>>> We need find_next_*_bit() because find_first_*_bit() can start searching only at word-aligned
-> >>>>> bits. In the case of find_last_*_bit(), we can start at any bit. So, if my understanding is correct,
-> >>>>> for the purpose of reverse traversing we can go with already existing find_last_bit(),
-> >>>>
-> >>>> Thank you. I haven't thought that way.
-> >>>> But I think if we implement reverse traversing using find_last_bit(),
-> >>>> we have a problem.
-> >>>> Suppose the last bit 0, 1, 2, is set.
-> >>>> If we start
-> >>>>     find_last_bit(bitmap, 3) ==> return 2;
-> >>>>     find_last_bit(bitmap, 2) ==> return 1;
-> >>>>     find_last_bit(bitmap, 1) ==> return 0;
-> >>>>     find_last_bit(bitmap, 0) ===> return 0? // here we couldn't
->
-> Either just make the return type of all find_prev/find_last be signed
-> int and use -1 as the sentinel to indicate "no such position exists", so
-> the loop condition would be foo >= 0. Or, change the condition from
-> "stop if we get the size returned" to "only continue if we get something
-> strictly less than the size we passed in (i.e., something which can
-> possibly be a valid bit index). In the latter case, both (unsigned)-1
-> aka UINT_MAX and the actual size value passed work equally well as a
-> sentinel.
->
-> If one uses UINT_MAX, a for_each_bit_reverse() macro would just be
-> something like
->
-> for (i = find_last_bit(bitmap, size); i < size; i =
-> find_last_bit(bitmap, i))
->
-> if one wants to use the size argument as the sentinel, the caller would
-> have to supply a scratch variable to keep track of the last i value:
->
-> for (j = size, i = find_last_bit(bitmap, j); i < j; j = i, i =
-> find_last_bit(bitmap, j))
->
-> which is probably a little less ergonomic.
->
-> Rasmus
