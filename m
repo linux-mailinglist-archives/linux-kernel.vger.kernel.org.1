@@ -2,73 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41A82CD8CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3132CD8D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:18:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730929AbgLCORf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 09:17:35 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8999 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726651AbgLCORe (ORCPT
+        id S1730892AbgLCOSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 09:18:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726651AbgLCOSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:17:34 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CmyZ16TdSzhm1Q;
-        Thu,  3 Dec 2020 22:16:25 +0800 (CST)
-Received: from [10.174.187.37] (10.174.187.37) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 3 Dec 2020 22:16:43 +0800
-Subject: Re: [PATCH v2 0/2] KVM: arm64: Some fixes and code adjustments for
- pvtime ST
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>
-References: <20200817110728.12196-1-zhukeqian1@huawei.com>
-CC:     Marc Zyngier <maz@kernel.org>, Steven Price <steven.price@arm.com>,
-        "Andrew Jones" <drjones@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Will Deacon" <will@kernel.org>, James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        <wanghaibin.wang@huawei.com>
-From:   zhukeqian <zhukeqian1@huawei.com>
-Message-ID: <a87412a0-e0ca-d344-550a-91690ce3a612@huawei.com>
-Date:   Thu, 3 Dec 2020 22:16:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Thu, 3 Dec 2020 09:18:12 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97D3C061A4E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 06:17:31 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id q5so2100742qkc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 06:17:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8OibpZHqlmZvNVYfBDxh1hs2pxMvlwSThz0lOwApQaI=;
+        b=dk5q4Lr+q5IgxWjo0A+9TcXXXrq384wcGpfFnW+QthnBUzC+5B7hiePCXYDMPpV6jE
+         sNhAIvlE1T5mx9PVfjK4oGcrSWpFcFeMzVu+qY+xubhZBvnXhJhAYP38b89l5ZZYibf9
+         ocSsdnRcueGyZCJvpT9QabpaDr/Oo55UVTpqQqm85hxK8UMQ3mqzE4IQkNLC9Wqo4cqT
+         emcy7qR9d49DEeksCWwyjYGTuliI6iG0poQtlw8IIaDRn7kfinv8yVxM077suxO3eOa4
+         2KIKuaU0HTR6fp16fNrja+iOMPZgFPEyX6CGqQX4l857+vRgOlhbFMG5sIDG1rPhATEl
+         L8Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8OibpZHqlmZvNVYfBDxh1hs2pxMvlwSThz0lOwApQaI=;
+        b=NmG7jL0gl05RI97HQWLU6z5+a9Y5MkMjGn+Vj4KGkoaB4BmHP8p1ujatA0nPJK4Jnx
+         U7A0oDruYUz4oy8RRIGhLELH0/yb1tLBqjDWxNPEx+zo9oBQnbJpjSvuG29X2qBDJh4g
+         rW2ZfRyeDqIEOpUShi/7ebNO9LzKE9Y1LXhNTd22hsWXOhXEU7/dmXYl8fYoKMGQ/7TV
+         HYg7WI8hFtzheLAII/iUvlgbAx6gUejp5iQ4cbc6fpmt8cdCVUvw3U4+ddltMAQn9udq
+         Xx+aThNHuguss6XoFYt4M64CJf/ByYFU+cSRPDobgwb5uudQ+o/M10TFw0l3ilmPV/X1
+         fYYA==
+X-Gm-Message-State: AOAM532t5rSXXksLigWNmEvPm/qTvnyID1wXCdOmoPw+HL6+rvPniMuO
+        tLnjotBt+57OrVdbnCmFsQ0ILQ==
+X-Google-Smtp-Source: ABdhPJwekmPGYB/ERv8yHMpnOrpDO1avwVj040d2RPkHZ1T7FlCYSfz1dxpVnmg6r8sbfURRChh19A==
+X-Received: by 2002:a05:620a:1489:: with SMTP id w9mr3060597qkj.43.1607005051082;
+        Thu, 03 Dec 2020 06:17:31 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id k188sm1386697qkd.98.2020.12.03.06.17.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 06:17:29 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kkpQH-005V9B-25; Thu, 03 Dec 2020 10:17:29 -0400
+Date:   Thu, 3 Dec 2020 10:17:29 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
+Message-ID: <20201203141729.GS5487@ziepe.ca>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-7-pasha.tatashin@soleen.com>
+ <20201202163507.GL5487@ziepe.ca>
+ <CA+CK2bBT=U+xhbzXTDFwsL5wTvPHgNJ0DRpaeseiUq=w4EOe9w@mail.gmail.com>
+ <20201203010809.GQ5487@ziepe.ca>
+ <CA+CK2bBRgcCc5Nm0RcsEgVFpGBFC-_icA6UDRiqQxeRJE5U-Aw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200817110728.12196-1-zhukeqian1@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.37]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bBRgcCc5Nm0RcsEgVFpGBFC-_icA6UDRiqQxeRJE5U-Aw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On Wed, Dec 02, 2020 at 08:34:32PM -0500, Pavel Tatashin wrote:
 
-Found that this series is not applied for now.
-Does it need some modification? Wish you can pick it up :-)
+> > Either here or perhaps even lower down the call chain when the page is
+> > captured, similar to how GUP fast would detect it. (how is that done
+> > anyhow?)
+> 
+> Ah, thank you for pointing this out. I think I need to address it here:
+> 
+> https://soleen.com/source/xref/linux/mm/gup.c?r=96e1fac1#94
+> 
+> static __maybe_unused struct page *try_grab_compound_head()
+>               if (unlikely(flags & FOLL_LONGTERM) &&  is_migrate_cma_page(page))
+>                    return NULL;
+> 
+> I need to change is_migrate_cma_page() to all migratable pages. Will
+> study, and send an update with this fix.
 
-Thanks,
-Keqian
+Yes, missing the two flows is a common error :(
 
-On 2020/8/17 19:07, Keqian Zhu wrote:
-> During picking up pvtime LPT support for arm64, I do some trivial fixes for
-> pvtime ST.
+Looking at this code some more.. How is it even correct?
+
+1633  				if (!isolate_lru_page(head)) {
+1634  					list_add_tail(&head->lru, &cma_page_list);
+
+Here we are only running under the read side of the mmap sem so multiple
+GUPs can be calling that sequence in parallel. I don't see any
+obvious exclusion that will prevent corruption of head->lru. The first
+GUP thread to do isolate_lru_page() will ClearPageLRU() and the second
+GUP thread will be a NOP for isolate_lru_page().
+
+They will both race list_add_tail and other list ops. That is not OK.
+
+> What I meant is the users of the interface do it incrementally not in
+> large chunks. For example:
 > 
-> change log:
-> 
-> v2:
->  - Add Andrew's and Steven's R-b.
->  - Correct commit message of the first patch.
->  - Drop the second patch.
-> 
-> Keqian Zhu (2):
->   KVM: arm64: Some fixes of PV-time interface document
->   KVM: arm64: Use kvm_write_guest_lock when init stolen time
-> 
->  Documentation/virt/kvm/arm/pvtime.rst | 6 +++---
->  arch/arm64/kvm/pvtime.c               | 6 +-----
->  2 files changed, 4 insertions(+), 8 deletions(-)
-> 
+> vfio_pin_pages_remote
+>    vaddr_get_pfn
+>         ret = pin_user_pages_remote(mm, vaddr, 1, flags |
+> FOLL_LONGTERM, page, NULL, NULL);
+> 1 -> pin only one pages at a time
+
+I don't know why vfio does this, it is why it so ridiculously slow at
+least.
+
+Jason
