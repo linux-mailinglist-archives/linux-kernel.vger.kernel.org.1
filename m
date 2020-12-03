@@ -2,80 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DADB2CD629
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D76E62CD62C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730480AbgLCMzL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 07:55:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726390AbgLCMzL (ORCPT
+        id S1730541AbgLCM4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 07:56:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48018 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730503AbgLCM4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 07:55:11 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19F8C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 04:54:30 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kko7m-0006rU-LQ; Thu, 03 Dec 2020 13:54:18 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kko7j-0006Zq-BC; Thu, 03 Dec 2020 13:54:15 +0100
-Message-ID: <9277bc82766d26d840dbd0a7b4041cd267862a39.camel@pengutronix.de>
-Subject: Re: [PATCH 1/4] reset: hisilicon: correct vendor prefix
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Date:   Thu, 03 Dec 2020 13:54:15 +0100
-In-Reply-To: <20201203120212.1105-2-thunder.leizhen@huawei.com>
-References: <20201203120212.1105-1-thunder.leizhen@huawei.com>
-         <20201203120212.1105-2-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Thu, 3 Dec 2020 07:56:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607000087;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JQ5li8kW8vouw7a1BEvL2lAOLaEbq6lyvNfsM0+NZP8=;
+        b=Ivis+vVlQTzNc4XiWTut0KHCdHChTsVec3PzY7RndG53evPESBkNUxxepzoGmjsOj7jTjo
+        3z2TeY17rs+F6G6fZ483b1cqdEO5p3QZwVjejy4QlMShUlDea7R1FxwSmKwFeZAemKn/Ip
+        rTaZkonM3T6fIokW/eqznon+s6Q0A2Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-392-NzWvwRlEO_ae3PfSfHTaAg-1; Thu, 03 Dec 2020 07:54:46 -0500
+X-MC-Unique: NzWvwRlEO_ae3PfSfHTaAg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05371800050;
+        Thu,  3 Dec 2020 12:54:45 +0000 (UTC)
+Received: from [10.36.112.89] (ovpn-112-89.ams2.redhat.com [10.36.112.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4F94410016F4;
+        Thu,  3 Dec 2020 12:54:40 +0000 (UTC)
+Subject: Re: [PATCH v1 2/5] vfio: platform: Switch to use
+ platform_get_mem_or_io_resource()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org
+References: <20201027175806.20305-1-andriy.shevchenko@linux.intel.com>
+ <20201027175806.20305-2-andriy.shevchenko@linux.intel.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <fb0b02a0-d672-0ff8-be80-b95bdbb58e57@redhat.com>
+Date:   Thu, 3 Dec 2020 13:54:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201027175806.20305-2-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-03 at 20:02 +0800, Zhen Lei wrote:
-> The vendor prefix of "Hisilicon Limited" is "hisilicon", it is clearly
-> stated in "vendor-prefixes.yaml".
+Hi Andy,
+
+On 10/27/20 6:58 PM, Andy Shevchenko wrote:
+> Switch to use new platform_get_mem_or_io_resource() instead of
+> home grown analogue.
 > 
-> Fixes: 1527058736fa ("reset: hisilicon: add reset-hi3660")
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> Cc: Zhangfei Gao <zhangfei.gao@linaro.org>
+> Cc: Eric Auger <eric.auger@redhat.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Cornelia Huck <cohuck@redhat.com>
+> Cc: kvm@vger.kernel.org
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Eric Auger <eric.auger@redhat.com>
+
+Thanks
+
+Eric
 > ---
->  drivers/reset/hisilicon/reset-hi3660.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/vfio/platform/vfio_platform.c | 13 +------------
+>  1 file changed, 1 insertion(+), 12 deletions(-)
 > 
-> diff --git a/drivers/reset/hisilicon/reset-hi3660.c b/drivers/reset/hisilicon/reset-hi3660.c
-> index a7d4445924e558c..8f1953159a65b31 100644
-> --- a/drivers/reset/hisilicon/reset-hi3660.c
-> +++ b/drivers/reset/hisilicon/reset-hi3660.c
-> @@ -83,7 +83,7 @@ static int hi3660_reset_probe(struct platform_device *pdev)
->  	if (!rc)
->  		return -ENOMEM;
+> diff --git a/drivers/vfio/platform/vfio_platform.c b/drivers/vfio/platform/vfio_platform.c
+> index 1e2769010089..84afafb6941b 100644
+> --- a/drivers/vfio/platform/vfio_platform.c
+> +++ b/drivers/vfio/platform/vfio_platform.c
+> @@ -25,19 +25,8 @@ static struct resource *get_platform_resource(struct vfio_platform_device *vdev,
+>  					      int num)
+>  {
+>  	struct platform_device *dev = (struct platform_device *) vdev->opaque;
+> -	int i;
 >  
-> -	rc->map = syscon_regmap_lookup_by_phandle(np, "hisi,rst-syscon");
-> +	rc->map = syscon_regmap_lookup_by_phandle(np, "hisilicon,rst-syscon");
+> -	for (i = 0; i < dev->num_resources; i++) {
+> -		struct resource *r = &dev->resource[i];
+> -
+> -		if (resource_type(r) & (IORESOURCE_MEM|IORESOURCE_IO)) {
+> -			if (!num)
+> -				return r;
+> -
+> -			num--;
+> -		}
+> -	}
+> -	return NULL;
+> +	return platform_get_mem_or_io_resource(dev, num);
+>  }
+>  
+>  static int get_platform_irq(struct vfio_platform_device *vdev, int i)
+> 
 
-What about those that don't upgrade kernel and DT in lock-step?
-It would be easy to fall back to the old compatible if the new one
-fails.
-
-regards
-Philipp
