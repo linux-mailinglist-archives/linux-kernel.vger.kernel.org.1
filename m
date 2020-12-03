@@ -2,61 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65042CD9D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 054572CD9D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730993AbgLCPHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 10:07:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55694 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726330AbgLCPHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:07:15 -0500
-Date:   Thu, 3 Dec 2020 16:07:42 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607007995;
-        bh=va1RiIcGrtGAwqbASYW0M6+mbOZHmFTt3mNNh9Ch5iQ=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QdVrPJNwIfDHYEwriD9hcsbD4TLQXPHf6uVHdig0bwu1AfgCqBZ6I7ABUVUSQ9x5D
-         GjYr/rdjl0XI9Q7aiTiXSNQPGEJ5fcBgDAReWYV5p4YOWKpDs85c5WPCg1LWMblHp8
-         pAnYnBY8MS4kKW9YncbPVUrsDJ3sme6Ura+E6jTU=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     broonie@kernel.org, lgirdwood@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, jgg@nvidia.com,
-        Kiran Patil <kiran.patil@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <X8j/PgVDii3Jthzx@kroah.com>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+        id S1731003AbgLCPIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 10:08:16 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:55113 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727107AbgLCPIP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 10:08:15 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7A6BE5C0184;
+        Thu,  3 Dec 2020 10:07:08 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 03 Dec 2020 10:07:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=qjmrN0EMSMkCmVySFWGLotHkKSP
+        KAsJveSwCM7F6yRc=; b=ReF171xAodVbvadX9n4Zy788Arxmf0LddxLFy9FHigt
+        Zc0ADz6952zMEaY0NOyEiGF6HydQb+RxYUWijQr6NGMjIb2rYbEhYtaOWoNnmQBw
+        pDwq/sXmW/MSdY8ceaFlakvBmmdf+rGEJj8eORzDehyxUauzMT4MHKwaovwdtQpq
+        eCy3QmZlcGJ/n+N5nT5Qu97CsNH/nJsOYIYwmr8gvDKlREpej+7VCp5JbK411CUZ
+        MzSpm6OE0pP98V07HJFRfJ4qKk8EbVaGd2cN/q5fz07uCrssnVf+px4ZgC0fV+ZO
+        fId1GUrrv8NKnuIPwoZFaszoXkpL3D9+IL/8zZp1DVQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=qjmrN0
+        EMSMkCmVySFWGLotHkKSPKAsJveSwCM7F6yRc=; b=m7knTswj5Z0E/lvAOxkSO+
+        7SF30E0R9QOweFPVnCS4valu/zcSkhFwUuaMiJbSOs+ZJ5EU5ZgEXC16a1Pg3H+J
+        Td5EU+bGsrvniBA86GTML8duFW5oK9LuFv+sTGUi9b60QHhdBo6+RbhJ4/GMxPR2
+        837JLHVvJbwbQNnpyKYqhKj1JLJXJvo+uAG4J0PAlBUD4BEbQkdfDQgufsj+JXHx
+        LmxPrBTsaQOCy22FWwHSacon1Ul9QEnkAbrEYIT/apD6bdPVE5jXDEpnvFGeYqsE
+        ec1pXEiBggK2R19/QZ61a9NtW94eBIzskUwa3/aNYJwcm4kiIEFjmSrqZhvbVsyw
+        ==
+X-ME-Sender: <xms:HP_IX9sxE4cTgNexyNZCe0hmN2up4m-cjr9G-8PNxhY3zh64bENELw>
+    <xme:HP_IX2Z9UAo7-E4Aby0Ojgl_nHuokak4ijsWN2JYyYVdxTr7t_2EKPLFcs3DgB14R
+    rgDLqs7mRIdhA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeiiedgjeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
+    dttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheq
+    necuggftrfgrthhtvghrnhepveeuheejgfffgfeivddukedvkedtleelleeghfeljeeiue
+    eggeevueduudekvdetnecukfhppeekfedrkeeirdejgedrieegnecuvehluhhsthgvrhfu
+    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtoh
+    hm
+X-ME-Proxy: <xmx:HP_IX9r9G2RfcPyR6PI5bx9aX39nPFEsU-D2VwPMgnelvzee8KuJtQ>
+    <xmx:HP_IX7_en5jd2FPgztq6jEFBmcFTIuXYOT0mGRl1_Eglc1DZD_Vgtw>
+    <xmx:HP_IX896RKcUMEQJVWA367wpLEoFyi2JK92x7JypymNcqGClhTJeeA>
+    <xmx:HP_IX8dfLNrkCTzeXJYuCU7KYQ3zTcuuIcLWvvskGIcBnZgBmxkAfA>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EB4F224005D;
+        Thu,  3 Dec 2020 10:07:07 -0500 (EST)
+Date:   Thu, 3 Dec 2020 16:08:16 +0100
+From:   Greg KH <greg@kroah.com>
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH] drivers: usb: core: prefer pr_*() macros over bare
+ printk()
+Message-ID: <X8j/YHJwhpOs9hPC@kroah.com>
+References: <20201203142132.30334-1-info@metux.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <20201203142132.30334-1-info@metux.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
-> PS: Greg I know I promised some review on newcomer patches to help with
-> your queue, unfortunately Intel-internal review is keeping my plate
-> full. Again, I do not want other stakeholder to be waiting on me to
-> resolve that backlog.
+On Thu, Dec 03, 2020 at 03:21:32PM +0100, Enrico Weigelt, metux IT consult wrote:
+> pr_*() printing helpers are preferred over using bare printk().
 
-Ah, but it's not only you that should be helping out here.  Why isn't
-anyone else who is wanting this patch merged willing to also help out
-with patch review and bug fixes that have higher priority than adding
-new features like this one?
+Sure, but that's not what you are doing here in this patch :(
 
-It's not your fault by any means, but the lack of anyone else willing to
-do this is quite sad :(
+Please fix up and resend.
 
 greg k-h
