@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BBF2CE2A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0B62CE248
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387519AbgLCX1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:27:15 -0500
-Received: from m12-13.163.com ([220.181.12.13]:41791 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726721AbgLCX1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:27:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=fY+azOiKFWCkO15i5K
-        n8miYs1r6N7Ic8uWA89DDKIuM=; b=TEsJiKiz7XbYZjoMvNCk4J5pEpXEegDiSw
-        1efyY+DfLSKpRebZy30UE040sBzEwYrRqYjSUleoViIK2kTIvvZDthex31y8JYjH
-        f5bJYL3OogcwaC69HNjbeUOO6IyLugKNGCF5KfrRMGF9baeSeEfm33yElQbC940N
-        eynB+A6LE=
-Received: from localhost.localdomain (unknown [36.170.33.20])
-        by smtp9 (Coremail) with SMTP id DcCowADX1IDuAslfnImRUA--.12606S2;
-        Thu, 03 Dec 2020 23:23:27 +0800 (CST)
-From:   carver4lio@163.com
-To:     rppt@kernel.org
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Hailong Liu <liu.hailong6@zte.com.cn>
-Subject: [PATCH] mm/memblock:use a more appropriate order calculation when free memblock pages
-Date:   Thu,  3 Dec 2020 23:23:10 +0800
-Message-Id: <20201203152311.5272-1-carver4lio@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: DcCowADX1IDuAslfnImRUA--.12606S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWruw1UXr4xuF15WryrCry5CFg_yoWDGwb_Ar
-        4rtFZ7uFWFyrZ0ga12vFySqr4UK3yDZr1qvr1fGF1DKFyUJasxWr95GFsxXr1jgFWUtrZa
-        vF1DWryFk3W2gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8iID7UUUUU==
-X-Originating-IP: [36.170.33.20]
-X-CM-SenderInfo: xfdu4v3uuox0i6rwjhhfrp/1tbiKBjvnV7WDQeUIQABs0
+        id S1727243AbgLCXEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:04:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726897AbgLCXEW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 18:04:22 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E52C061A4F;
+        Thu,  3 Dec 2020 15:03:42 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkxdQ-00GKSn-UB; Thu, 03 Dec 2020 23:03:37 +0000
+Date:   Thu, 3 Dec 2020 23:03:36 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCHSET] saner elf compat
+Message-ID: <20201203230336.GC3579531@ZenIV.linux.org.uk>
+References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+ <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hailong Liu <liu.hailong6@zte.com.cn>
+On Thu, Dec 03, 2020 at 02:09:04PM -0800, Linus Torvalds wrote:
+> On Thu, Dec 3, 2020 at 1:46 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >
+> >  The answer (for mainline) is that mips compat does *NOT* want
+> > COMPAT_BINFMT_ELF.  Not a problem with that series, though, so I'd
+> > retested it (seems to work, both for x86_64 and mips64, execs and
+> > coredumps for all ABIs alike), with centralization of Kconfig logics
+> > thrown in.
+> 
+> Well, the diffstat looks nice:
+> 
+> >  26 files changed, 127 insertions(+), 317 deletions(-)
+> 
+> and the patches didn't trigger anything for me, but how much did this
+> get tested? Do you actually have both kinds of 32-bit elf mips
+> binaries around and a machine to test on?
 
-When system in the booting stage, pages span from [start, end] of a memblock
-are freed to buddy in a order as large as possible (less than MAX_ORDER) at
-first, then decrease gradually to a proper order(less than end) in a loop.
+Yes (aptitude install gcc-multilib on debian mips64el/stretch sets the toolchain
+and libraries just fine, and then it's just a matter of -mabi=n32 passed
+to gcc).  "Machine" is qemu-system-mips64el -machine malta -m 1024 -cpu 5KEc
+and the things appear to work; I hadn't tried that on the actual hardware.
+I do have a Loongson-2 box, but it would take a while to dig it out and
+get it up-to-date.
 
-However, *min(MAX_ORDER - 1UL, __ffs(start))* can not get the largest order
-in some cases.
-Instead, *__ffs(end - start)* may be more appropriate and meaningful.
+> Linux-mips was cc'd, but I'm adding Thomas B to the cc here explicitly
+> just so that he has a heads-up on this thing and can go and look at
+> the mailing list in case it goes to a separate mailbox for him..
 
-Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
----
- mm/memblock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/memblock.c b/mm/memblock.c
-index b68ee8678..7c6d0dde7 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -1931,7 +1931,7 @@ static void __init __free_pages_memory(unsigned long start, unsigned long end)
- 	int order;
- 
- 	while (start < end) {
--		order = min(MAX_ORDER - 1UL, __ffs(start));
-+		order = min(MAX_ORDER - 1UL, __ffs(end - start));
- 
- 		while (start + (1UL << order) > end)
- 			order--;
--- 
-2.17.1
-
-
+I would certainly appreciate review and testing - this branch sat
+around in the "should post it someday" state since June (it was
+one of the followups grown from regset work back then), and I'm
+_not_ going to ask pulling it without an explicit OK from mips
+folks.
