@@ -2,258 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37C22CE33F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:58:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3B02CE342
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731634AbgLCX5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:57:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58006 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730868AbgLCX5y (ORCPT
+        id S1731877AbgLCX6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:58:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730868AbgLCX6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:57:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607039786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=o0Y5XLBZZgm1xLBlcuqy6bZggFKiOnfwPeyZXlyCKvk=;
-        b=HyccULDcESkPIF7RmZ7m2SLLxVQV3GRWNpTdKJRDUGeMcSzd7kd8GeuUPJVl459arUTn7K
-        Q65uO4xCJxOxs3pdcnvrOZl5Gi9ldAm37iFmcBjzhrg1Mm/+PkGEmdITjgC0Szb77zUAek
-        o3eN4aaRyFS9hjB0ckPNzNKeypaiRpo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-300-a-ivMIkFOxCN8gCwkSF29A-1; Thu, 03 Dec 2020 18:56:21 -0500
-X-MC-Unique: a-ivMIkFOxCN8gCwkSF29A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3ECEA180A086;
-        Thu,  3 Dec 2020 23:56:20 +0000 (UTC)
-Received: from w520.home (ovpn-112-10.phx2.redhat.com [10.3.112.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A115B5C1B4;
-        Thu,  3 Dec 2020 23:56:19 +0000 (UTC)
-Date:   Thu, 3 Dec 2020 16:56:19 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Chiqijun <chiqijun@huawei.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Yinshi (Stone)" <yin.yinshi@huawei.com>,
-        "Wangxiaoyun (Cloud)" <cloud.wangxiaoyun@huawei.com>,
-        zengweiliang zengweiliang <zengweiliang.zengweiliang@huawei.com>,
-        "Chenlizhong (IT Chip)" <chenlizhong@huawei.com>
-Subject: Re: [PATCH] PCI: Add pci reset quirk for Huawei Intelligent NIC
- virtual function
-Message-ID: <20201203165619.38b8e099@w520.home>
-In-Reply-To: <abe4d926-cb1d-3a70-8cd6-1b011edbed3a@huawei.com>
-References: <20201128061825.2629-1-chiqijun@huawei.com>
-        <20201128232919.GA929748@bjorn-Precision-5520>
-        <20201130084622.0b71d526@w520.home>
-        <9232bf61-8906-0848-8078-a2c6b6a78864@huawei.com>
-        <20201202104617.0e388100@w520.home>
-        <abe4d926-cb1d-3a70-8cd6-1b011edbed3a@huawei.com>
+        Thu, 3 Dec 2020 18:58:04 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35608C061A52
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 15:57:24 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id bj5so2094714plb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 15:57:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=r3iPhcdxqx2nLoy8M4vQlPfXI0ncDfSnm735uhVf2l4=;
+        b=d/iGiH3bSWJT1Ok5lWKWHJazX8nRtciZ2SkqFh9sl21toJzUW3UCNhveT2aQoj8ogX
+         t8QbwYZcTOMwT9M0ATD7aMBq57xHvZ7nJiVMEg3iEVnQTpCHlkNcA7YXikSh4EnjqcWB
+         stzhhr9yJFM5pdjrLS5OWbEUCKgdH29INZ2zyjE9xeUW1FcIhd4Q4iL/Nw/f2/GACHgg
+         aDvQXBk87ZODzpcpMKE0pHui+1uEyo2klybaJRW6e4JiWbP1cTiTkrjTlZ3NjpWie3B3
+         x/eCp8DtTgOmUW9I+63inDoSSbf7/2l1mfqTeH2KsYFmct06Vi5iCwJMCrjqpL36/MTJ
+         o1tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r3iPhcdxqx2nLoy8M4vQlPfXI0ncDfSnm735uhVf2l4=;
+        b=dmETx/vKRiW8SPBwvRzKSn4E1OxZqn/5i9Ljxmw/+4CMwKnIls+WKy2BBqTqtANtXR
+         Riwe5B+MmMJCmT/dFXGg2BtAsBkAzxgnf8L4hpP+b85Ms5CZqop2eMv1yCpeb3tEarCP
+         7zUIe/Lno3FI7pklPZyq7po3UwCIA9twTmlCaX/ZtGKNi9pRl4JcFZdK7Dyd62/Fv4Q0
+         D6jHsgu4YQ6EkTzXKWCtlxr+7T9t8NoKxJ5bBz9kq8pPAh2yeDox498cSxiF4+gdA8b5
+         vKPdF7H/qrTWfqXV827/A1lO2HPM+EplPgGKh0b0epOzVjTKuBSL2fRBJTSH4JAzp0X4
+         ZPeQ==
+X-Gm-Message-State: AOAM531+E4GZv4QQS4oTQSpy2kujJTA5Ao0EbME9zvgA0KJvtVS9JkeH
+        S+WtH5YHPDYRuONCy/xhvYXYMeZPjLXAejZE
+X-Google-Smtp-Source: ABdhPJzNGZB0k9vwg17W0yzDJC60tNxzVr36GnJUcQmz8GR8UJ0qGwRTf4QVg019AhXRMWmMtQBlhw==
+X-Received: by 2002:a17:90b:4c41:: with SMTP id np1mr1449158pjb.186.1607039843547;
+        Thu, 03 Dec 2020 15:57:23 -0800 (PST)
+Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
+        by smtp.gmail.com with ESMTPSA id q23sm2903613pfg.18.2020.12.03.15.57.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 15:57:22 -0800 (PST)
+Date:   Thu, 3 Dec 2020 23:57:18 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v7 0/8] add support for direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <X8l7XgWNz5sO/LQ6@google.com>
+References: <20201117140708.1068688-1-satyat@google.com>
+ <20201117171526.GD445084@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117171526.GD445084@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 19:29:17 +0800
-Chiqijun <chiqijun@huawei.com> wrote:
-
-> On 2020/12/3 1:46, Alex Williamson wrote:
-> > On Wed, 2 Dec 2020 17:18:12 +0800
-> > Chiqijun <chiqijun@huawei.com> wrote:
-> >   
-> >> On 2020/11/30 23:46, Alex Williamson wrote:  
-> >>> On Sat, 28 Nov 2020 17:29:19 -0600
-> >>> Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >>>      
-> >>>> [+cc Alex]
-> >>>>
-> >>>> On Sat, Nov 28, 2020 at 02:18:25PM +0800, Chiqijun wrote:  
-> >>>>> When multiple VFs do FLR at the same time, the firmware is
-> >>>>> processed serially, resulting in some VF FLRs being delayed more
-> >>>>> than 100ms, when the virtual machine restarts and the device
-> >>>>> driver is loaded, the firmware is doing the corresponding VF
-> >>>>> FLR, causing the driver to fail to load.
-> >>>>>
-> >>>>> To solve this problem, add host and firmware status synchronization
-> >>>>> during FLR.  
-> >>>>
-> >>>> Is this because the Huawei Intelligent NIC isn't following the spec,
-> >>>> or is it because Linux isn't correctly waiting for the FLR to
-> >>>> complete?  
-> >>>
-> >>> Seems like a spec compliance issue, I don't recall anything in the spec
-> >>> about coordinating FLR between VFs.  
-> >>
-> >> The spec stipulates that the FLR time of a single VF does not exceed
-> >> 100ms, but when multiple VMs are reset concurrently in Linux, there will
-> >> be multiple VF parallel FLRs, VF of Huawei Intelligent NIC
-> >>    FLR will exceed 100ms in this case.
-> >>  
-> >>>        
-> >>>> If this is a Huawei Intelligent NIC defect, is there documentation
-> >>>> somewhere (errata) that you can reference?  Will it be fixed in future
-> >>>> designs, so we don't have to add future Device IDs to the quirk?
-> >>>>     
-> >>>>> Signed-off-by: Chiqijun <chiqijun@huawei.com>
-> >>>>> ---
-> >>>>>    drivers/pci/quirks.c | 67 ++++++++++++++++++++++++++++++++++++++++++++
-> >>>>>    1 file changed, 67 insertions(+)
-> >>>>>
-> >>>>> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> >>>>> index f70692ac79c5..bd6236ea9064 100644
-> >>>>> --- a/drivers/pci/quirks.c
-> >>>>> +++ b/drivers/pci/quirks.c
-> >>>>> @@ -3912,6 +3912,71 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
-> >>>>>    	return 0;
-> >>>>>    }
-> >>>>>    
-> >>>>> +#define PCI_DEVICE_ID_HINIC_VF  0x375E
-> >>>>> +#define HINIC_VF_FLR_TYPE       0x1000
-> >>>>> +#define HINIC_VF_OP             0xE80
-> >>>>> +#define HINIC_OPERATION_TIMEOUT 15000
-> >>>>> +
-> >>>>> +/* Device-specific reset method for Huawei Intelligent NIC virtual functions */
-> >>>>> +static int reset_hinic_vf_dev(struct pci_dev *pdev, int probe)
-> >>>>> +{
-> >>>>> +	unsigned long timeout;
-> >>>>> +	void __iomem *bar;
-> >>>>> +	u16 old_command;
-> >>>>> +	u32 val;
-> >>>>> +
-> >>>>> +	if (probe)
-> >>>>> +		return 0;
-> >>>>> +
-> >>>>> +	bar = pci_iomap(pdev, 0, 0);
-> >>>>> +	if (!bar)
-> >>>>> +		return -ENOTTY;
-> >>>>> +
-> >>>>> +	pci_read_config_word(pdev, PCI_COMMAND, &old_command);
-> >>>>> +
-> >>>>> +	/*
-> >>>>> +	 * FLR cap bit bit30, FLR ACK bit: bit18, to avoid big-endian conversion
-> >>>>> +	 * the big-endian bit6, bit10 is directly operated here
-> >>>>> +	 */
-> >>>>> +	val = readl(bar + HINIC_VF_FLR_TYPE);
-> >>>>> +	if (!(val & (1UL << 6))) {
-> >>>>> +		pci_iounmap(pdev, bar);
-> >>>>> +		return -ENOTTY;
-> >>>>> +	}  
-> >>>
-> >>>
-> >>> I don't know exactly what this is testing, but it seems like a
-> >>> feature/capability test that can fail, why is it not done as part of
-> >>> the probe?  Can we define bit 6 with a macro?  Same for bit 10 in the
-> >>> VF op register below.  
-> >>
-> >> The firmware of Huawei Intelligent NIC does not support this feature in
-> >> the old version. here is the reading ability to determine whether the
-> >> firmware supports it.
-> >> In the next patch, I will add a comment here and replace bit 6 and bit
-> >> 10 with macro definitions.  
-> > 
-> > 
-> > The question remains why this is not done as part of the probe.  If the
-> > device firmware doesn't support it, isn't it better to try a regular
-> > FLR and have it return error if the time is exceeded rather than claim
-> > we have a functional device specific reset quirk that will always fail
-> > without ever attempting to FLR the VF?  Thanks,
-> > 
-> > Alex
-> >   
+On Tue, Nov 17, 2020 at 12:15:26PM -0500, Theodore Y. Ts'o wrote:
+> What is the expected use case for Direct I/O using fscrypt?  This
+> isn't a problem which is unique to fscrypt, but one of the really
+> unfortunate aspects of the DIO interface is the silent fallback to
+> buffered I/O.  We've lived with this because DIO goes back decades,
+> and the original use case was to keep enterprise databases happy, and
+> the rules around what is necessary for DIO to work was relatively well
+> understood.
 > 
-> The firmware has always supported regular FLR. The regular FLR process 
-> waits for 100ms after the FLR is triggered and the FLR is considered to 
-> be completed, but the Huawei Intelligent NIC will exceed 100ms when the 
-> VF FLR is parallel, so we now need to increase the host to confirm that 
-> the firmware completes the FLR processing operation.
-> So in the probe stage, we return to support FLR, but there is no place 
-> to return whether the firmware supports FLR completion ack capability. 
-> We need to add checks during FLR, If the firmware does not support FLR 
-> completion ack capability, then return -ENOTTY, the kernel will still 
-> execute the regular FLR process.
-
-I see, so we implicitly know the device supports FLR and even though
-it's the device specific reset that essentially acks support for a
-function level reset, we can still fall through to the base FLR reset
-when we're called in the non-probe case.  A bit inconsistent, but OK.
-Thanks,
-
-Alex
-
- 
-> >>>>> +
-> >>>>> +	val = readl(bar + HINIC_VF_OP);
-> >>>>> +	val = val | (1UL << 10);
-> >>>>> +	writel(val, bar + HINIC_VF_OP);
-> >>>>> +
-> >>>>> +	/* Perform the actual device function reset */
-> >>>>> +	pcie_flr(pdev);
-> >>>>> +
-> >>>>> +	pci_write_config_word(pdev, PCI_COMMAND,
-> >>>>> +			      old_command | PCI_COMMAND_MEMORY);
-> >>>>> +
-> >>>>> +	/* Waiting for device reset complete */
-> >>>>> +	timeout = jiffies + msecs_to_jiffies(HINIC_OPERATION_TIMEOUT);  
-> >>>
-> >>> Yikes, 15s timeout!  
-> >>
-> >> Huawei Intelligent NIC supports a maximum of 496 VFs, so the total
-> >> timeout period is set to 15s, which will not reach the timeout time
-> >> under normal circumstances.
-> >>  
-> >>>      
-> >>>>> +	do {
-> >>>>> +		val = readl(bar + HINIC_VF_OP);
-> >>>>> +		if (!(val & (1UL << 10)))
-> >>>>> +			goto reset_complete;
-> >>>>> +		msleep(20);
-> >>>>> +	} while (time_before(jiffies, timeout));
-> >>>>> +
-> >>>>> +	val = readl(bar + HINIC_VF_OP);
-> >>>>> +	if (!(val & (1UL << 10)))
-> >>>>> +		goto reset_complete;
-> >>>>> +
-> >>>>> +	pci_warn(pdev, "Reset dev timeout, flr ack reg: %x\n",
-> >>>>> +		 be32_to_cpu(val));
-> >>>>> +
-> >>>>> +reset_complete:
-> >>>>> +	pci_write_config_word(pdev, PCI_COMMAND, old_command);
-> >>>>> +	pci_iounmap(pdev, bar);
-> >>>>> +
-> >>>>> +	return 0;
-> >>>>> +}
-> >>>>> +
-> >>>>>    static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
-> >>>>>    	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82599_SFP_VF,
-> >>>>>    		 reset_intel_82599_sfp_virtfn },
-> >>>>> @@ -3923,6 +3988,8 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
-> >>>>>    	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
-> >>>>>    	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
-> >>>>>    		reset_chelsio_generic_dev },
-> >>>>> +	{ PCI_VENDOR_ID_HUAWEI, PCI_DEVICE_ID_HINIC_VF,
-> >>>>> +		reset_hinic_vf_dev },
-> >>>>>    	{ 0 }
-> >>>>>    };
-> >>>>>    
-> >>>>> -- 
-> >>>>> 2.17.1
-> >>>>>         
-> >>>>     
-> >>>
-> >>> .
-> >>>      
-> >>  
-> > 
-> > .
-> >   
+> But with fscrypt, there's going to be some additional requirements
+> (e.g., using inline crypto) required or else DIO silently fall back to
+> buffered I/O for encrypted files.  Depending on the intended use case
+> of DIO with fscrypt, this caveat might or might not be unfortunately
+> surprising for applications.
 > 
+> I wonder if we should have some kind of interface so we can more
+> explicitly allow applications to query exactly what the requirements
+> might be for a particular file vis-a-vis Direct I/O.  What are the
+> memory alignment requirements, what are the file offset alignment
+> requirements, what are the write size requirements, for a particular
+> file.
+> 
+(Credit to Eric for the description of use cases that I'm
+copying/summarizing here).
+The primary motivation for this patch series is Android - some devices use
+zram with cold page writeback enabled to an encrypted swap file, so direct
+I/O is needed to avoid double-caching the data in the swap file. In
+general, this patch is useful for avoiding double caching any time a
+loopback device is created in an encrypted directory. We also expect this
+to be useful for databases that want to use direct I/O but also want to
+encrypt data at the FS level.
 
+I do think having a good way to tell userspace about the DIO requirements
+would be great to have. Userspace does have ways to access to most, but not
+all, of the information it needs to figure out the DIO requirements (I
+don't think userspace has any way of figuring out if inline encryption
+hardware is available right now), so it would be nice if there was a
+good/unified API for getting those requirements.
+
+Do you think we'll need that before these patches can go in though? I do
+think the patches as is are useful for their primary use case even without
+the ability to explicitly query for the DIO requirements, because Android
+devices are predictable w.r.t inline encryption support (devices ship with
+either blk-crypto-fallback or have inline encryption hardware, and the
+patchset's requirements are met in either case). And even when used on
+machines without such predictability, this patch is at worst the same as
+the current situation, and at best an improvement.
+> 						- Ted
