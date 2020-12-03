@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5BFB2CD3B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A1E2CD3BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388975AbgLCKdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 05:33:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388608AbgLCKdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 05:33:38 -0500
-Date:   Thu, 3 Dec 2020 10:32:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606991577;
-        bh=43yNdax6pGHrO0BTp2xJ0YBAHuZmVV9Ah1L6cygJuMU=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RNUgwCHMYUgjhrvu5Ze9nx9Prvgbl95hJ+4WEeXVeuh9jqHmetJY9lgIg17dQDyFO
-         J3XOiC68vEB9GfEGK8nUzLnbrroIZTiRqc+9tah/cO4DWnXm8wcmaaqjw8kBME2o+V
-         PLQV9D0DSnG+3gAY1fBep5BABJ/Xqt1IYdftBO4/NjonpKhNEhZBq+KWyo5VX8XjeK
-         9qdV2pHC3AJ3CiQtS9ebm+wMPONbSY1r/QQ0DzMB2yPIeumKROIrguVG/njTNK1AOk
-         prOAiZlmlqds7QlSLaj4xO8OhfSB4IidcNklQLwIgmRIbde3e6x0rJKrBQuNKyp6Mc
-         vqaDydV5/4g+w==
-From:   Mark Brown <broonie@kernel.org>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Boris Brezillon <bbrezillon@kernel.org>,
-        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Subject: Re: [v2 0/4] Porting ASPEED FMC/SPI memory controller driver
-Message-ID: <20201203103227.GC4700@sirena.org.uk>
-References: <20201103072202.24705-1-chin-ting_kuo@aspeedtech.com>
- <160683107674.35139.14509237313835347013.b4-ty@kernel.org>
- <CACPK8Xe4TcRVBnZL7vtqGq1PTe5NEx1k4hvk4FDeYgJQ9HALFg@mail.gmail.com>
+        id S2388774AbgLCKeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 05:34:46 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:41532 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728638AbgLCKep (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 05:34:45 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3AP3p7117317;
+        Thu, 3 Dec 2020 10:34:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=TEhTRIN7rFpOA7sX+QvScPL0U2A4SN0Yj7HS3C0kpTE=;
+ b=WQ3PEb7gzHJxQE/naB5w9UwVi5g+GBzURGK24Isqphf7mqdA01BYqE8cba19rCD0Tkh8
+ om2Qt+MNOaQGsqEt67J98m9Xc41zFK1dZfXDj+CkPi55CgGHR4CxUyX5mwlu2oWqA8ca
+ Rz5mmoVM0i1nCjytU/WpFz078gEKD7j5l7/9pbeYdJ2gSUHE0lEvkjQdAgr3uYHTtpas
+ 9uAENQ/vZ/FJLBASnejGUrV0CoAn/S+JnorF9IDcu6bNymDTvm8WUn7GWQ5kpVSgWg5s
+ R87vPoT9rPpdMDsLDbpIJj8+b7PuNv/49Mz/188jVYFS6ITFp+fgPRy7jxqQtjzbVSsw Vw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 353c2b57q5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 03 Dec 2020 10:34:00 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3APQSe080729;
+        Thu, 3 Dec 2020 10:34:00 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3540g1fs7a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 03 Dec 2020 10:33:59 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B3AXwW4021196;
+        Thu, 3 Dec 2020 10:33:58 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 03 Dec 2020 02:33:57 -0800
+Date:   Thu, 3 Dec 2020 13:33:51 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     "ksummit-discuss@lists.linuxfoundation.org" 
+        <ksummit-discuss@lists.linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [Ksummit-discuss] crediting bug reports and fixes folded into
+ original patch
+Message-ID: <20201203103351.GR2767@kadam>
+References: <ea32eb02-5e44-0469-772b-34b5cb882543@suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ZmUaFz6apKcXQszQ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACPK8Xe4TcRVBnZL7vtqGq1PTe5NEx1k4hvk4FDeYgJQ9HALFg@mail.gmail.com>
-X-Cookie: Sacred cows make great hamburgers.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <ea32eb02-5e44-0469-772b-34b5cb882543@suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012030063
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
+ clxscore=1011 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012030063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I'd like a "Fixes-from: Name email" tag for when someone spots a bug in
+a patch.
 
---ZmUaFz6apKcXQszQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I think we should not give credit for style complaints, because those
+are their own reward and we already have enough bike shedding.
 
-On Wed, Dec 02, 2020 at 09:19:47PM +0000, Joel Stanley wrote:
-> On Tue, 1 Dec 2020 at 13:58, Mark Brown <broonie@kernel.org> wrote:
+regards,
+dan carpenter
 
-> > Applied to
-> >
-> >    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-> Really? Or is there a bug in one of your scripts :)
-
-Not my scripts, b4!
-
---ZmUaFz6apKcXQszQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/IvrsACgkQJNaLcl1U
-h9CS2wf+JYv7MdfNnO9GFIy0AVuTJlRHvbhFYMX35CrKtG3bCDbrHP/9CgwE3NCP
-dv5bms58wdNxCvRtu180AHxs2pVBIZKYFIgIIiNayARpwxqupKFr6qMTGHtx76bR
-hu4n8ErziSlUzhfnTKsl9eB3DjKoYq5f6hyibKQvElzv72wjyeO21B/ME8x6CBiV
-8UGAYjhXnuuu+ovTvKUCp6cTgPrPJ/PVu2rFB//hTj3BxxAhMgUve9Wye6o3TRpC
-mQETkDnHgCPtrVHl0zqDK8LusqGDLf9hZ6FEM6DHC1HgMGizKlVaH2GceMJHFfd2
-pOFCbLwEik6HfoDBjv3wd8NWY7uhiQ==
-=7doF
------END PGP SIGNATURE-----
-
---ZmUaFz6apKcXQszQ--
