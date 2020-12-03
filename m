@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07F12CCF17
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:26:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD92A2CCF1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:26:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728547AbgLCG0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:26:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725984AbgLCG0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 01:26:39 -0500
-Date:   Thu, 3 Dec 2020 08:25:49 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606976758;
-        bh=fG6F0yV3WbLa0cb7k6rq9oA20/ozyUgqvrBOtlDU1Ck=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JfwqIdRZwhgbkHv64aE2ZfYC1P7LJZdagDQPvjet5qFdNAkcwqm9aZ4E4ZZoUaGiT
-         eyhhz6kkFFkUzIHOexv+V2Det/UAEYMTqYSi4hLzqOwWcgbUOIqnzV4b1d3TQCG2gw
-         Wt4N2mMFWU2lD4O1Np0G+sP/QxhQisLa10c5pyUkQHpLtx9hQBud7/qJ2cO17MKrYX
-         ZHnyK6vBeb2emMHleGiyDEAdug+3wYEPdS2QnANlj2VwUjEyI81CKPRq7Nfp40hhuz
-         KbcPZgneOOoRYMF+aTceHOEJ/rh59wri5D7D+BuxoR4Rdpo3c5XIH02VysDX9c3J16
-         P57gUw+KIoy0w==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: refactor initialization of stuct page for holes in
- memory layout
-Message-ID: <20201203062549.GG751215@kernel.org>
-References: <20201201181502.2340-1-rppt@kernel.org>
- <20201202154736.5799e01b4c27a75b98e863fc@linux-foundation.org>
+        id S1729309AbgLCG0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:26:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725984AbgLCG0l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 01:26:41 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC21C061A4E;
+        Wed,  2 Dec 2020 22:26:01 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id m9so797202pgb.4;
+        Wed, 02 Dec 2020 22:26:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a5Hleron+HNO6OSGaVm7+jn0hTolWYgraVmhaIHqv7U=;
+        b=U+Y6zDIhpIkQd0/XkPnsWOx3ty2znoP8t4ISlhFWptNuMbr5LJSUMsW+RTtd0M4x9K
+         zkXL5+4LAq4x//bXrJWzpP34A+rpYm0BEV+gvvB+NvDg8g3Ppup7PuLwiRepugDodQb4
+         IeDv1J0rX0QSTAaUbFsT4RMfXp6C/1AdjuAe9+WX4ydwHoVVaNSpjnpDGw8TqKH/qBxj
+         SFELS12okZcCLgFwMxLX1CdG+AnoH5VLLr3bNMVPRRk2vl+KM5WV2pKelrDbtRPajdey
+         ebvLpD8CW2hjzgstxv63BBMYAENN85quML6Mb//RxXN/Yp/6f77xIF0cuNxsS15D55Ap
+         2BjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a5Hleron+HNO6OSGaVm7+jn0hTolWYgraVmhaIHqv7U=;
+        b=Q6JHKsqa17UP3L7EnspzitZ0iETOyNP96Gsg5XmdMrn8Ak3XYi5oi3rRXEZGjn8jSh
+         upDk2zen+5+5cuFojf4iKXG1Lo4Wfk2iXnKoI/6Pmsr3eSO6NcSVLhqbCY4yfKO0DR8I
+         JOnBIoZ5pO3xXXwHEMvQ5WXkZe2nwecrcjhR3ZZyuc5Om+f7eSBrAo9YgS2oULjZVIVm
+         1FIldu2pp6Augexb6anpLUBzlaZVqUYHmEKJmPfNIvmpk0at+AJgnL/BFCb14ptH7RDl
+         PXLavGBOQ87x9qXDjQgQmwpcjeEZywYosRULJvKugi+xWvfwJVuiCwiabH9aDOVmJ8rJ
+         K6cw==
+X-Gm-Message-State: AOAM533lj6WbLWetQEluhxksV25z0E/2YhN2OpII49OtdguXdyTl48nl
+        ZryiAGApu3sSKfK/u5paKeI=
+X-Google-Smtp-Source: ABdhPJx+P2i1MS4WKP5k78TX7vozpZ6k242noGJ71q6yL4YO0XpxjV8ai5M/byvI+Lbmw/bWUNXyTQ==
+X-Received: by 2002:a65:44c2:: with SMTP id g2mr1824908pgs.256.1606976760622;
+        Wed, 02 Dec 2020 22:26:00 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id 6sm495218pfb.22.2020.12.02.22.25.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 22:25:59 -0800 (PST)
+Date:   Wed, 2 Dec 2020 22:25:55 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Cc:     linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-tegra@vger.kernel.org, patches@opensource.cirrus.com,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Sylvain Lemieux <slemieux.tyco@gmail.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Barry Song <baohua@kernel.org>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Nick Dyer <nick@shmanahar.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ferruh Yigit <fery@cypress.com>,
+        Sangwon Jee <jeesw@melfas.com>,
+        Peter Hutterer <peter.hutterer@redhat.com>,
+        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
+        kernel@collabora.com
+Subject: Re: [PATCH v4 1/7] Input: add input_device_enabled()
+Message-ID: <X8iE81mbK6NVhd0e@google.com>
+References: <2336e15d-ff4b-bbb6-c701-dbf3aa110fcd@redhat.com>
+ <20200608112211.12125-1-andrzej.p@collabora.com>
+ <20200608112211.12125-2-andrzej.p@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201202154736.5799e01b4c27a75b98e863fc@linux-foundation.org>
+In-Reply-To: <20200608112211.12125-2-andrzej.p@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 03:47:36PM -0800, Andrew Morton wrote:
-> On Tue,  1 Dec 2020 20:15:02 +0200 Mike Rapoport <rppt@kernel.org> wrote:
+On Mon, Jun 08, 2020 at 01:22:05PM +0200, Andrzej Pietrasiewicz wrote:
+> A helper function for drivers to decide if the device is used or not.
+> A lockdep check is introduced as inspecting ->users should be done under
+> input device's mutex.
 > 
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > There could be struct pages that are not backed by actual physical memory.
-> > This can happen when the actual memory bank is not a multiple of
-> > SECTION_SIZE or when an architecture does not register memory holes
-> > reserved by the firmware as memblock.memory.
-> > 
-> > Such pages are currently initialized using init_unavailable_mem() function
-> > that iterated through PFNs in holes in memblock.memory and if there is a
-> > struct page corresponding to a PFN, the fields if this page are set to
-> > default values and it is marked as Reserved.
-> > 
-> > init_unavailable_mem() does not take into account zone and node the page
-> > belongs to and sets both zone and node links in struct page to zero.
-> > 
-> > On a system that has firmware reserved holes in a zone above ZONE_DMA, for
-> > instance in a configuration below:
-> > 
-> > 	# grep -A1 E820 /proc/iomem
-> > 	7a17b000-7a216fff : Unknown E820 type
-> > 	7a217000-7bffffff : System RAM
-> > 
-> > unset zone link in struct page will trigger
-> > 
-> > 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
-> 
-> That sounds pretty serious.
-> 
-> > because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link in
-> > struct page) in the same pageblock.
-> > 
-> > Interleave initialization of pages that correspond to holes with the
-> > initialization of memory map, so that zone and node information will be
-> > properly set on such pages.
-> > 
-> 
-> Should this be backported to -stable?  If so, do we have a suitable Fixes:?
+> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-Sorry, I forgot to add
-
-Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
-
+Applied, thank you.
 
 -- 
-Sincerely yours,
-Mike.
+Dmitry
