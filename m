@@ -2,258 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D06272CDD07
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDC22CDD0B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729244AbgLCSDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:03:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
+        id S1731597AbgLCSEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:04:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727844AbgLCSDb (ORCPT
+        with ESMTP id S1729046AbgLCSEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:03:31 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBC9C061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 10:02:51 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id c9so3706285ybs.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 10:02:51 -0800 (PST)
+        Thu, 3 Dec 2020 13:04:37 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23814C061A4E;
+        Thu,  3 Dec 2020 10:03:57 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id r5so3034741eda.12;
+        Thu, 03 Dec 2020 10:03:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=OHcxlT1QLl/FypmS4f7/3LnVbjzBRqlZYN2Df71kYOc=;
-        b=YfLZRH6bg5kepViQkaLDAXuwXmNNZ44BW+UtnlU24zvLry0yspfTHy08MMtE/CcSBe
-         itfWLWvF8BcxRfW070C208+z1lM+ECRkaL4EwpHIpzVJ82/VPAl55iTrwJjK1dSINlJS
-         T5HysDAguzta/NQgWLg9m0EWrDZ4h/9IUgSUo57YTBHWukOLbyyhlLY5+wtXH2TAtTpU
-         xkbXzBcEwP4eg5vWKrkXOCMryFDUW2915AsVusqvs24Ikw1U+OSd7I/tRwqWBbdi3gXW
-         VCHipdobtFw1a1QOJAeVxsBpW3Yr/aNvISm/2fQBB0rWOOk/E65v3VhiHjR0rN0gZxJq
-         jLPg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5TkHFxBitbPqG/QPKtc0c7XAOZRKTBnEK+0NsLlTHo8=;
+        b=iKHfauLpK20iBxA/fCKnyxsVh6ElHn+0g78quOWcU32YVRaDQP6fvodfAwDWYHAuQY
+         fhKK9S7BQ5MhoofXFQRoTwWAy/ID/9E9bQqJ0nd+vZjPMSYV+09eN89JiN5A16NEXxLQ
+         eiLQD7e1zvXbGURGHCm9v+SSH0aDGc3jdM5HJkPdYEG/VZAbqhkWRFhN1XfrJaC5/fH5
+         h2YyxN23kBEi5Y9b8oJLLmmH+6U/zqHPQFlPz98z4BYL9FFiirtPryaqQTVzX4zBc1jN
+         kZguTPFtDBhRzWXxko0qITUdtPswPmN2G/O9x+BRK3/71rQG0XiTn52UDF5Ot9qfMZaV
+         MKgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=OHcxlT1QLl/FypmS4f7/3LnVbjzBRqlZYN2Df71kYOc=;
-        b=Lxnwt6/+eT1mtCOb/HUL1tmXsGKGiHUPiCtmok1MNv6qwqvbtqYz7z+Y4wKz2/dsWE
-         MVTo+NQEHKCdUoQfNfj5qYPsr/GFnnOHJeTIRbeq2bP+M3k4Y2Dm5z36LwzyR99WRsZP
-         J83IQowOdWs+J/Xf6Whvi7agEsNDEkLO1vjjnHWIJhgXJTlFKPdxWalozo/ANpehyhRX
-         4Qn9JQI09MXoN3bACXvUV7PabOWj9TO5+UhCVMbgUaXHYpgqYPqWfpgDKwMlDDYUFXx/
-         MKlvd0mbdIUU2l/l4Yv7IKJqzQ+1DYC3bzwtBY5iuCtziN6w8XAJAhIKN/r3oLMIJNg8
-         +CwQ==
-X-Gm-Message-State: AOAM5332ci17yjrZ9e2I2y+1OJXYRSanKWoPBkB99gv8psw35cY2fZ96
-        LrLDI4EBYFiirODS4fO4lS/tNWLTML4WdguvTZkT
-X-Google-Smtp-Source: ABdhPJxuinEJZ84ydvLjxAaVndzUAZeyW/0anaog6zUnKaGgoL4crbNmfmo7c4A9zPFdnsoazG1CT4MvyYzAc6XW6ut+
-Sender: "axelrasmussen via sendgmr" <axelrasmussen@ajr0.svl.corp.google.com>
-X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:f693:9fff:feef:c8f8])
- (user=axelrasmussen job=sendgmr) by 2002:a25:6949:: with SMTP id
- e70mr321309ybc.313.1607018570266; Thu, 03 Dec 2020 10:02:50 -0800 (PST)
-Date:   Thu,  3 Dec 2020 10:02:44 -0800
-Message-Id: <20201203180244.1811601-1-axelrasmussen@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v2] userfaultfd: selftests: make __{s,u}64 format specifiers portable
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Shuah Khan <shuah@kernel.org>, Peter Xu <peterx@redhat.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5TkHFxBitbPqG/QPKtc0c7XAOZRKTBnEK+0NsLlTHo8=;
+        b=SgDF7GDvUyX3jHzj0c2NzxY1YLX+RKn1dPK7nSJUDzVa398NffZSx69K9BQoqBqnkp
+         qirjG6PVgyRSBoVEIR9zDybLBT5+K6aQHFgwRo4Jk0PbA/4soE1by42I2omMkxQdM4mj
+         xY/ZfPEM6wdCdk1Jz2OSE3ZFmHkF7SVgFlrwBMiwVU38M4W/9DmzTCoZVpIDgx5kAJ6G
+         UCrgy5G784WDYY/hJ6IlNiU59gPD1SRYQ+xMwFewCK25taDPYnNGemke5B6AjNA4mNGW
+         QZOpHzF4lZzZ2Ma/CMD3u7ztOU3NrUizxcSiztinWKARXcWz862pe3oO9HolPzaoEODH
+         RT0g==
+X-Gm-Message-State: AOAM5315nT4LfGm+O0uNEUaOWdnBedmG3FiRMY5qN9MawaSW58WLGruo
+        HU2ss6XMRcFekLDu/Uw5rAFtal50QB56dF+Wt8k=
+X-Google-Smtp-Source: ABdhPJy93eEJr+YxMlf0iuRBbpcsMRkpFvByZ+87VqV0V0uUuyhXahrZmbiS4ufZEE2k5uYbjxrxUvuSzJSe8uCqUh8=
+X-Received: by 2002:a05:6402:1c8a:: with SMTP id cy10mr3960098edb.151.1607018635794;
+ Thu, 03 Dec 2020 10:03:55 -0800 (PST)
+MIME-Version: 1.0
+References: <20201202182725.265020-1-shy828301@gmail.com> <20201202182725.265020-6-shy828301@gmail.com>
+ <20201203030632.GG1375014@carbon.DHCP.thefacebook.com> <CAHbLzkrU0X2LRRiG_rXdOf8tP7BR=46ccJR=3AM6CkWbscBWRw@mail.gmail.com>
+In-Reply-To: <CAHbLzkrU0X2LRRiG_rXdOf8tP7BR=46ccJR=3AM6CkWbscBWRw@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 3 Dec 2020 10:03:44 -0800
+Message-ID: <CAHbLzkpAsoOWeRuFeTM2+YbjfqxY2U3vK7EYX2Nui=YVOBXFpw@mail.gmail.com>
+Subject: Re: [PATCH 5/9] mm: memcontrol: add per memcg shrinker nr_deferred
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Joe Perches <joe@perches.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Alan Gilbert <dgilbert@redhat.com>
-Cc:     Greg Thelen <gthelen@google.com>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Axel Rasmussen <axelrasmussen@google.com>
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On certain platforms (powerpcle is the one on which I ran into this),
-"%Ld" and "%Lu" are unsuitable for printing __s64 and __u64,
-respectively, resulting in build warnings. Cast to {u,}int64_t, and
-use the PRI{d,u}64 macros defined in inttypes.h to print them. This
-ought to be portable to all platforms.
+On Wed, Dec 2, 2020 at 8:54 PM Yang Shi <shy828301@gmail.com> wrote:
+>
+> On Wed, Dec 2, 2020 at 7:06 PM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > On Wed, Dec 02, 2020 at 10:27:21AM -0800, Yang Shi wrote:
+> > > Currently the number of deferred objects are per shrinker, but some slabs, for example,
+> > > vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
+> > >
+> > > The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
+> > > excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
+> > > may suffer from over shrink, excessive reclaim latency, etc.
+> > >
+> > > For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
+> > > heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
+> > > might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
+> > >
+> > > We observed this hit in our production environment which was running vfs heavy workload
+> > > shown as the below tracing log:
+> > >
+> > > <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> > > nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
+> > > cache items 246404277 delta 31345 total_scan 123202138
+> > > <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> > > nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
+> > > last shrinker return val 123186855
+> > >
+> > > The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
+> > > This also resulted in significant amount of page caches were dropped due to inodes eviction.
+> > >
+> > > Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
+> > > better isolation.
+> > >
+> > > When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
+> > > would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
+> > >
+> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > > ---
+> > >  include/linux/memcontrol.h |   9 +++
+> > >  mm/memcontrol.c            | 112 ++++++++++++++++++++++++++++++++++++-
+> > >  mm/vmscan.c                |   4 ++
+> > >  3 files changed, 123 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > > index 922a7f600465..1b343b268359 100644
+> > > --- a/include/linux/memcontrol.h
+> > > +++ b/include/linux/memcontrol.h
+> > > @@ -92,6 +92,13 @@ struct lruvec_stat {
+> > >       long count[NR_VM_NODE_STAT_ITEMS];
+> > >  };
+> > >
+> > > +
+> > > +/* Shrinker::id indexed nr_deferred of memcg-aware shrinkers. */
+> > > +struct memcg_shrinker_deferred {
+> > > +     struct rcu_head rcu;
+> > > +     atomic_long_t nr_deferred[];
+> > > +};
+> >
+> > The idea makes total sense to me. But I wonder if we can add nr_deferred to
+> > struct list_lru_one, instead of adding another per-memcg per-shrinker entity?
+> > I guess it can simplify the code quite a lot. What do you think?
+>
+> Aha, actually this exactly was what I did at the first place. But Dave
+> NAK'ed this approach. You can find the discussion at:
+> https://lore.kernel.org/linux-mm/20200930073152.GH12096@dread.disaster.area/.
 
-Splitting this off into a separate macro lets us remove some lines,
-and get rid of some (I would argue) stylistically odd cases where we
-joined printf() and exit() into a single statement with a ,.
-
-Finally, this also fixes a "missing braces around initializer" warning
-when we initialize prms in wp_range().
-
-Acked-by: Peter Xu <peterx@redhat.com>
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
----
- tools/testing/selftests/vm/userfaultfd.c | 81 ++++++++++--------------
- 1 file changed, 35 insertions(+), 46 deletions(-)
-
-diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-index 9b0912a01777..70ea08da5f91 100644
---- a/tools/testing/selftests/vm/userfaultfd.c
-+++ b/tools/testing/selftests/vm/userfaultfd.c
-@@ -55,6 +55,8 @@
- #include <setjmp.h>
- #include <stdbool.h>
- #include <assert.h>
-+#include <inttypes.h>
-+#include <stdint.h>
- 
- #include "../kselftest.h"
- 
-@@ -135,6 +137,13 @@ static void usage(void)
- 	exit(1);
- }
- 
-+#define uffd_error(code, fmt, ...)                                             \
-+	do {                                                                   \
-+		fprintf(stderr, fmt, ##__VA_ARGS__);                           \
-+		fprintf(stderr, ": %" PRId64 "\n", (int64_t)(code));           \
-+		exit(1);                                                       \
-+	} while (0)
-+
- static void uffd_stats_reset(struct uffd_stats *uffd_stats,
- 			     unsigned long n_cpus)
- {
-@@ -331,7 +340,7 @@ static int my_bcmp(char *str1, char *str2, size_t n)
- 
- static void wp_range(int ufd, __u64 start, __u64 len, bool wp)
- {
--	struct uffdio_writeprotect prms = { 0 };
-+	struct uffdio_writeprotect prms;
- 
- 	/* Write protection page faults */
- 	prms.range.start = start;
-@@ -340,7 +349,8 @@ static void wp_range(int ufd, __u64 start, __u64 len, bool wp)
- 	prms.mode = wp ? UFFDIO_WRITEPROTECT_MODE_WP : 0;
- 
- 	if (ioctl(ufd, UFFDIO_WRITEPROTECT, &prms)) {
--		fprintf(stderr, "clear WP failed for address 0x%Lx\n", start);
-+		fprintf(stderr, "clear WP failed for address 0x%" PRIx64 "\n",
-+			(uint64_t)start);
- 		exit(1);
- 	}
- }
-@@ -474,14 +484,11 @@ static void retry_copy_page(int ufd, struct uffdio_copy *uffdio_copy,
- 	if (ioctl(ufd, UFFDIO_COPY, uffdio_copy)) {
- 		/* real retval in ufdio_copy.copy */
- 		if (uffdio_copy->copy != -EEXIST) {
--			fprintf(stderr, "UFFDIO_COPY retry error %Ld\n",
--				uffdio_copy->copy);
--			exit(1);
-+			uffd_error(uffdio_copy->copy,
-+				   "UFFDIO_COPY retry error");
- 		}
--	} else {
--		fprintf(stderr,	"UFFDIO_COPY retry unexpected %Ld\n",
--			uffdio_copy->copy); exit(1);
--	}
-+	} else
-+		uffd_error(uffdio_copy->copy, "UFFDIO_COPY retry unexpected");
- }
- 
- static int __copy_page(int ufd, unsigned long offset, bool retry)
-@@ -502,14 +509,10 @@ static int __copy_page(int ufd, unsigned long offset, bool retry)
- 	uffdio_copy.copy = 0;
- 	if (ioctl(ufd, UFFDIO_COPY, &uffdio_copy)) {
- 		/* real retval in ufdio_copy.copy */
--		if (uffdio_copy.copy != -EEXIST) {
--			fprintf(stderr, "UFFDIO_COPY error %Ld\n",
--				uffdio_copy.copy);
--			exit(1);
--		}
-+		if (uffdio_copy.copy != -EEXIST)
-+			uffd_error(uffdio_copy.copy, "UFFDIO_COPY error");
- 	} else if (uffdio_copy.copy != page_size) {
--		fprintf(stderr, "UFFDIO_COPY unexpected copy %Ld\n",
--			uffdio_copy.copy); exit(1);
-+		uffd_error(uffdio_copy.copy, "UFFDIO_COPY unexpected copy");
- 	} else {
- 		if (test_uffdio_copy_eexist && retry) {
- 			test_uffdio_copy_eexist = false;
-@@ -788,7 +791,8 @@ static int userfaultfd_open(int features)
- 		return 1;
- 	}
- 	if (uffdio_api.api != UFFD_API) {
--		fprintf(stderr, "UFFDIO_API error %Lu\n", uffdio_api.api);
-+		fprintf(stderr, "UFFDIO_API error: %" PRIu64 "\n",
-+			(uint64_t)uffdio_api.api);
- 		return 1;
- 	}
- 
-@@ -950,13 +954,12 @@ static void retry_uffdio_zeropage(int ufd,
- 				     offset);
- 	if (ioctl(ufd, UFFDIO_ZEROPAGE, uffdio_zeropage)) {
- 		if (uffdio_zeropage->zeropage != -EEXIST) {
--			fprintf(stderr, "UFFDIO_ZEROPAGE retry error %Ld\n",
--				uffdio_zeropage->zeropage);
--			exit(1);
-+			uffd_error(uffdio_zeropage->zeropage,
-+				   "UFFDIO_ZEROPAGE retry error");
- 		}
- 	} else {
--		fprintf(stderr, "UFFDIO_ZEROPAGE retry unexpected %Ld\n",
--			uffdio_zeropage->zeropage); exit(1);
-+		uffd_error(uffdio_zeropage->zeropage,
-+			   "UFFDIO_ZEROPAGE retry unexpected");
- 	}
- }
- 
-@@ -965,6 +968,7 @@ static int __uffdio_zeropage(int ufd, unsigned long offset, bool retry)
- 	struct uffdio_zeropage uffdio_zeropage;
- 	int ret;
- 	unsigned long has_zeropage;
-+	__s64 res;
- 
- 	has_zeropage = uffd_test_ops->expected_ioctls & (1 << _UFFDIO_ZEROPAGE);
- 
-@@ -976,29 +980,17 @@ static int __uffdio_zeropage(int ufd, unsigned long offset, bool retry)
- 	uffdio_zeropage.range.len = page_size;
- 	uffdio_zeropage.mode = 0;
- 	ret = ioctl(ufd, UFFDIO_ZEROPAGE, &uffdio_zeropage);
-+	res = uffdio_zeropage.zeropage;
- 	if (ret) {
- 		/* real retval in ufdio_zeropage.zeropage */
- 		if (has_zeropage) {
--			if (uffdio_zeropage.zeropage == -EEXIST) {
--				fprintf(stderr, "UFFDIO_ZEROPAGE -EEXIST\n");
--				exit(1);
--			} else {
--				fprintf(stderr, "UFFDIO_ZEROPAGE error %Ld\n",
--					uffdio_zeropage.zeropage);
--				exit(1);
--			}
--		} else {
--			if (uffdio_zeropage.zeropage != -EINVAL) {
--				fprintf(stderr,
--					"UFFDIO_ZEROPAGE not -EINVAL %Ld\n",
--					uffdio_zeropage.zeropage);
--				exit(1);
--			}
--		}
-+			uffd_error(res, "UFFDIO_ZEROPAGE %s",
-+				   res == -EEXIST ? "-EEXIST" : "error");
-+		} else if (res != -EINVAL)
-+			uffd_error(res, "UFFDIO_ZEROPAGE not -EINVAL");
- 	} else if (has_zeropage) {
--		if (uffdio_zeropage.zeropage != page_size) {
--			fprintf(stderr, "UFFDIO_ZEROPAGE unexpected %Ld\n",
--				uffdio_zeropage.zeropage); exit(1);
-+		if (res != page_size) {
-+			uffd_error(res, "UFFDIO_ZEROPAGE unexpected");
- 		} else {
- 			if (test_uffdio_zeropage_eexist && retry) {
- 				test_uffdio_zeropage_eexist = false;
-@@ -1007,11 +999,8 @@ static int __uffdio_zeropage(int ufd, unsigned long offset, bool retry)
- 			}
- 			return 1;
- 		}
--	} else {
--		fprintf(stderr,
--			"UFFDIO_ZEROPAGE succeeded %Ld\n",
--			uffdio_zeropage.zeropage); exit(1);
--	}
-+	} else
-+		uffd_error(res, "UFFDIO_ZEROPAGE succeeded");
- 
- 	return 0;
- }
--- 
-2.29.2.454.gaff20da3a2-goog
-
+I did prototypes for both approaches (move nr_deferred to list_lru or
+to memcg). I preferred the list_lru approach at the first place. But
+Dave's opinion does make perfect sense to me. So I dropped that
+list_lru one. That email elaborated why moving nr_deferred to list_lru
+is not appropriate.
