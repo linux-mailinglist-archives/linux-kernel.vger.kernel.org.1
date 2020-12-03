@@ -2,112 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710462CD4F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA1C2CD4FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730334AbgLCLyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:54:51 -0500
-Received: from foss.arm.com ([217.140.110.172]:38240 "EHLO foss.arm.com"
+        id S2387968AbgLCL4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:56:24 -0500
+Received: from ozlabs.org ([203.11.71.1]:42825 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727845AbgLCLyv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:54:51 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7239911D4;
-        Thu,  3 Dec 2020 03:54:05 -0800 (PST)
-Received: from [192.168.178.2] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5DDC43F718;
-        Thu,  3 Dec 2020 03:54:03 -0800 (PST)
-Subject: Re: [PATCH V4 3/3] thermal: cpufreq_cooling: Reuse sched_cpu_util()
- for SMP platforms
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Javi Merino <javi.merino@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org
-References: <cover.1606198885.git.viresh.kumar@linaro.org>
- <c0d7c796be7df6ac0102d8c2701fc6b541d2ff7d.1606198885.git.viresh.kumar@linaro.org>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <95991789-0308-76a9-735b-01ef620031b9@arm.com>
-Date:   Thu, 3 Dec 2020 12:54:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2387556AbgLCL4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 06:56:23 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CmvRd42wQz9ryj;
+        Thu,  3 Dec 2020 22:55:41 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1606996541;
+        bh=LVO4s9uIVveCgBubOjnui+gjJXlUQnDqrs3xghQjPUM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=O5uBCrwFrtUjkNJP7Q8upqCfsLkZ3j11YiRaq284cVEQNcphSRlneehNq3Jlh1Cf2
+         6wrPIF25Fp9o2+u6PK83mudOUq5ZybC7X6j+MX60saikZFjPzSA5xeK4XtoQbBQEEt
+         TUTgTF4u/uqu1XaEQ8PbIVnGFplvfmz6sveMdpQs1Y0yht0TBZy0ZP8V29KzxYu5hd
+         IwkdO+U/XHs7kslQYBSqPg77l8Rn/Vly+Z8RusvNDKw4UAgUZ04JOzTRzT2SEDzZ51
+         pGFbmbgLXBaq5Qp4OL68NR4sP/RHaBXwIzFIjq/Awk0ASXlXbOhwioKBf6gjJRP6Wq
+         +hQbSSxPOPk8A==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] powerpc/mm: Don't see NULL pointer dereference as a KUAP fault
+In-Reply-To: <8b865b93d25c15c8e6d41e71c368bfc28da4489d.1606816701.git.christophe.leroy@csgroup.eu>
+References: <8b865b93d25c15c8e6d41e71c368bfc28da4489d.1606816701.git.christophe.leroy@csgroup.eu>
+Date:   Thu, 03 Dec 2020 22:55:40 +1100
+Message-ID: <87mtyvumrn.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <c0d7c796be7df6ac0102d8c2701fc6b541d2ff7d.1606198885.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/2020 07:26, Viresh Kumar wrote:
-> Several parts of the kernel are already using the effective CPU
-> utilization (as seen by the scheduler) to get the current load on the
-> CPU, do the same here instead of depending on the idle time of the CPU,
-> which isn't that accurate comparatively.
-> 
-> This is also the right thing to do as it makes the cpufreq governor
-> (schedutil) align better with the cpufreq_cooling driver, as the power
-> requested by cpufreq_cooling governor will exactly match the next
-> frequency requested by the schedutil governor since they are both using
-> the same metric to calculate load.
-> 
-> This was tested on ARM Hikey6220 platform with hackbench, sysbench and
-> schbench. None of them showed any regression or significant
-> improvements. Schbench is the most important ones out of these as it
-> creates the scenario where the utilization numbers provide a better
-> estimate of the future.
-> 
-> Scenario 1: The CPUs were mostly idle in the previous polling window of
-> the IPA governor as the tasks were sleeping and here are the details
-> from traces (load is in %):
-> 
->  Old: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=203 load={{0x35,0x1,0x0,0x31,0x0,0x0,0x64,0x0}} dynamic_power=1339
->  New: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=600 load={{0x60,0x46,0x45,0x45,0x48,0x3b,0x61,0x44}} dynamic_power=3960
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Sometimes, NULL pointer dereferences are expected. Even when they
+> are accidental they are unlikely an exploit attempt because the
+> first page is never mapped.
 
-When I ran schbench (-t 16 -r 5) on hikey960 I get multiple (~50)
-instances of ~80ms task activity phase and then ~20ms idle phase on all
-CPUs.
+The first page can be mapped if mmap_min_addr is 0.
 
-So I assume that scenario 1 is at the beginning (but you mentioned the
-task were sleeping?) and scenario 2 is somewhere in the middle of the
-testrun?
-IMHO, the util-based approach delivers really better results at the
-beginning and at the end of the entire testrun.
-During the testrun, the util-based and the idle-based approach deliver
-similar results.
+Blocking all faults to the first page would potentially break any
+program that does that.
 
-It's a little bit tricky to compare test results since the IPA sampling
-rate is 100ms and the load values you get depend on how the workload
-pattern and the IPA sampling align.
+Also if there is something mapped at 0 it's a good chance it is an
+exploit attempt :)
 
-> Here, the "Old" line gives the load and requested_power (dynamic_power
-> here) numbers calculated using the idle time based implementation, while
-> "New" is based on the CPU utilization from scheduler.
-> 
-> As can be clearly seen, the load and requested_power numbers are simply
-> incorrect in the idle time based approach and the numbers collected from
-> CPU's utilization are much closer to the reality.
+cheers
 
-I assume the IPA sampling is done after ~50ms of the first task activity
-phase.
 
-> Scenario 2: The CPUs were busy in the previous polling window of the IPA
-> governor:
-> 
->  Old: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=800 load={{0x64,0x64,0x64,0x64,0x64,0x64,0x64,0x64}} dynamic_power=5280
->  New: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=708 load={{0x4d,0x5c,0x5c,0x5b,0x5c,0x5c,0x51,0x5b}} dynamic_power=4672
-> 
-> As can be seen, the idle time based load is 100% for all the CPUs as it
-> took only the last window into account, but in reality the CPUs aren't
-> that loaded as shown by the utilization numbers.
-
-Is this an IPA sampling at the end of the ~20ms idle phase?
-
-[...]
+> The exemple below shows what we get when invoking the "show task"
+> sysrq handler, by writing 't' in /proc/sysrq-trigger
+>
+> [ 1117.202054] ------------[ cut here ]------------
+> [ 1117.202102] Bug: fault blocked by AP register !
+> [ 1117.202261] WARNING: CPU: 0 PID: 377 at arch/powerpc/include/asm/nohash/32/kup-8xx.h:66 do_page_fault+0x4a8/0x5ec
+> [ 1117.202310] Modules linked in:
+> [ 1117.202428] CPU: 0 PID: 377 Comm: sh Tainted: G        W         5.10.0-rc5-s3k-dev-01340-g83f53be2de31-dirty #4175
+> [ 1117.202499] NIP:  c0012048 LR: c0012048 CTR: 00000000
+> [ 1117.202573] REGS: cacdbb88 TRAP: 0700   Tainted: G        W          (5.10.0-rc5-s3k-dev-01340-g83f53be2de31-dirty)
+> [ 1117.202625] MSR:  00021032 <ME,IR,DR,RI>  CR: 24082222  XER: 20000000
+> [ 1117.202899]
+> [ 1117.202899] GPR00: c0012048 cacdbc40 c2929290 00000023 c092e554 00000001 c09865e8 c092e640
+> [ 1117.202899] GPR08: 00001032 00000000 00000000 00014efc 28082224 100d166a 100a0920 00000000
+> [ 1117.202899] GPR16: 100cac0c 100b0000 1080c3fc 1080d685 100d0000 100d0000 00000000 100a0900
+> [ 1117.202899] GPR24: 100d0000 c07892ec 00000000 c0921510 c21f4440 0000005c c0000000 cacdbc80
+> [ 1117.204362] NIP [c0012048] do_page_fault+0x4a8/0x5ec
+> [ 1117.204461] LR [c0012048] do_page_fault+0x4a8/0x5ec
+> [ 1117.204509] Call Trace:
+> [ 1117.204609] [cacdbc40] [c0012048] do_page_fault+0x4a8/0x5ec (unreliable)
+> [ 1117.204771] [cacdbc70] [c00112f0] handle_page_fault+0x8/0x34
+> [ 1117.204911] --- interrupt: 301 at copy_from_kernel_nofault+0x70/0x1c0
+> [ 1117.204979] NIP:  c010dbec LR: c010dbac CTR: 00000001
+> [ 1117.205053] REGS: cacdbc80 TRAP: 0301   Tainted: G        W          (5.10.0-rc5-s3k-dev-01340-g83f53be2de31-dirty)
+> [ 1117.205104] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 28082224  XER: 00000000
+> [ 1117.205416] DAR: 0000005c DSISR: c0000000
+> [ 1117.205416] GPR00: c0045948 cacdbd38 c2929290 00000001 00000017 00000017 00000027 0000000f
+> [ 1117.205416] GPR08: c09926ec 00000000 00000000 3ffff000 24082224
+> [ 1117.206106] NIP [c010dbec] copy_from_kernel_nofault+0x70/0x1c0
+> [ 1117.206202] LR [c010dbac] copy_from_kernel_nofault+0x30/0x1c0
+> [ 1117.206258] --- interrupt: 301
+> [ 1117.206372] [cacdbd38] [c004bbb0] kthread_probe_data+0x44/0x70 (unreliable)
+> [ 1117.206561] [cacdbd58] [c0045948] print_worker_info+0xe0/0x194
+> [ 1117.206717] [cacdbdb8] [c00548ac] sched_show_task+0x134/0x168
+> [ 1117.206851] [cacdbdd8] [c005a268] show_state_filter+0x70/0x100
+> [ 1117.206989] [cacdbe08] [c039baa0] sysrq_handle_showstate+0x14/0x24
+> [ 1117.207122] [cacdbe18] [c039bf18] __handle_sysrq+0xac/0x1d0
+> [ 1117.207257] [cacdbe48] [c039c0c0] write_sysrq_trigger+0x4c/0x74
+> [ 1117.207407] [cacdbe68] [c01fba48] proc_reg_write+0xb4/0x114
+> [ 1117.207550] [cacdbe88] [c0179968] vfs_write+0x12c/0x478
+> [ 1117.207686] [cacdbf08] [c0179e60] ksys_write+0x78/0x128
+> [ 1117.207826] [cacdbf38] [c00110d0] ret_from_syscall+0x0/0x34
+> [ 1117.207938] --- interrupt: c01 at 0xfd4e784
+> [ 1117.208008] NIP:  0fd4e784 LR: 0fe0f244 CTR: 10048d38
+> [ 1117.208083] REGS: cacdbf48 TRAP: 0c01   Tainted: G        W          (5.10.0-rc5-s3k-dev-01340-g83f53be2de31-dirty)
+> [ 1117.208134] MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 44002222  XER: 00000000
+> [ 1117.208470]
+> [ 1117.208470] GPR00: 00000004 7fc34090 77bfb4e0 00000001 1080fa40 00000002 7400000f fefefeff
+> [ 1117.208470] GPR08: 7f7f7f7f 10048d38 1080c414 7fc343c0 00000000
+> [ 1117.209104] NIP [0fd4e784] 0xfd4e784
+> [ 1117.209180] LR [0fe0f244] 0xfe0f244
+> [ 1117.209236] --- interrupt: c01
+> [ 1117.209274] Instruction dump:
+> [ 1117.209353] 714a4000 418200f0 73ca0001 40820084 73ca0032 408200f8 73c90040 4082ff60
+> [ 1117.209727] 0fe00000 3c60c082 386399f4 48013b65 <0fe00000> 80010034 3860000b 7c0803a6
+> [ 1117.210102] ---[ end trace 1927c0323393af3e ]---
+>
+> So, avoid the big KUAP warning by bailing out of bad_kernel_fault()
+> before calling bad_kuap_fault() when address references the first
+> page.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/mm/fault.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+> index 0add963a849b..be2b4318206f 100644
+> --- a/arch/powerpc/mm/fault.c
+> +++ b/arch/powerpc/mm/fault.c
+> @@ -198,6 +198,10 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
+>  {
+>  	int is_exec = TRAP(regs) == 0x400;
+>  
+> +	// Kernel fault on first page is likely a NULL pointer dereference
+> +	if (address < PAGE_SIZE)
+> +		return true;
+> +
+>  	/* NX faults set DSISR_PROTFAULT on the 8xx, DSISR_NOEXEC_OR_G on others */
+>  	if (is_exec && (error_code & (DSISR_NOEXEC_OR_G | DSISR_KEYFAULT |
+>  				      DSISR_PROTFAULT))) {
+> -- 
+> 2.25.0
