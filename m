@@ -2,103 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 048402CD862
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EDD2CD890
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436462AbgLCOBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 09:01:40 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:35346 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389070AbgLCOBj (ORCPT
+        id S2436457AbgLCOI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 09:08:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728727AbgLCOIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:01:39 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B3E0cSx022951;
-        Thu, 3 Dec 2020 09:00:56 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 355vjenuxy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 09:00:55 -0500
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0B3E0s6a025117
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 3 Dec 2020 09:00:54 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Thu, 3 Dec 2020
- 09:00:53 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 3 Dec 2020 09:00:53 -0500
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0B3E0mEA012864;
-        Thu, 3 Dec 2020 09:00:52 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <broonie@kernel.org>, <robh+dt@kernel.org>,
-        <dragos.bogdan@analog.com>, <andy.shevchenko@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v4 3/3] spi: dt-bindings: document zero value for spi-{rx,tx}-bus-width properties
-Date:   Thu, 3 Dec 2020 16:05:31 +0200
-Message-ID: <20201203140531.74470-3-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201203140531.74470-1-alexandru.ardelean@analog.com>
-References: <20201203140531.74470-1-alexandru.ardelean@analog.com>
+        Thu, 3 Dec 2020 09:08:25 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C088C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 06:07:45 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id s27so2883055lfp.5
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 06:07:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lLqiQTRfRcyzHYfSN5BBZrNgn1qZHvvv8JQINgT7qhM=;
+        b=L7ofV54v+8Hbljj30sqRy5w7AyyabaGCyJYhByvMMc/lzCthZXtwmAAJU8ufUqfWFU
+         KWgDzjV11QMKKSOAxpBP6Q9Qrz73Jisk30k3iWZD6EtyAavQypanNjcOgCd8+hjWxHKn
+         3baaer5xJKZqF+nUMc1jGcggQ1BgiSGx3Oc74=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lLqiQTRfRcyzHYfSN5BBZrNgn1qZHvvv8JQINgT7qhM=;
+        b=TXVSnSdrql1Y/KZaP3Somdiigj2pVgHqk87v2dMsHNfhtT6QpXcZFTWjt16PGWNCnC
+         G89cTENLi2OQNeeRTMFc6HN0BwanwEg9hz1825OC10tLqZztLmCCrh4Rly0cTSfCl6Nz
+         h60PWsOyYqTTmyUSvjsZdqAcxOY2Vy75x5e4lzUsBWLqxV089Xlc5AEheGOAsPjHaX/P
+         fuMEPQ4nqymetSVbPy4P/ltv8q+qflC3YBgOvFhSlchfMdSUR2DVqwmIcDd7xCHK877m
+         drYWn1ENiw+Ey8U/u8e2qAhCPyAlmzPKDMkBBMtUmF4Hg9V2kAktPvP9ZJ6/jCrKPe3g
+         KayA==
+X-Gm-Message-State: AOAM532/zbU7dbUPcOfxdNqaaBR/KCGiQKrxsTL56+NgRnXUmH2/DYMl
+        sgBRG/XkpNIfirvjb30n5Pmy/Vfk3UGqbRGJ68TMqA==
+X-Google-Smtp-Source: ABdhPJzZbTl7VRAElprqqAmRuzqHSlb0q/CDFj8YBCXWG3X68JX3uejnmu5PU0Enc4ceVKPvWktD4MWjEg9qJqLB7jU=
+X-Received: by 2002:a19:8883:: with SMTP id k125mr1337745lfd.10.1607004463795;
+ Thu, 03 Dec 2020 06:07:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-03_07:2020-12-03,2020-12-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 clxscore=1015 mlxscore=0 mlxlogscore=739
- malwarescore=0 adultscore=0 impostorscore=0 priorityscore=1501 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030085
+References: <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
+ <20201130132014.mlvxeyiub3fpwyw7@linutronix.de> <856b5cc2a3d4eb673743b52956bf1e60dcdf87a1.camel@gmx.de>
+ <20201130145229.mhbkrfuvyctniaxi@linutronix.de> <05121515e73891ceb9e5caf64b6111fc8ff43fab.camel@gmx.de>
+ <20201130160327.ov32m4rapk4h432a@linutronix.de> <fca7ecadf1bddafb7e88cbeb4a57d1464c87b044.camel@gmx.de>
+ <20201202220826.5chy56mbgvrwmg3d@linutronix.de> <abe48cb9ab522659a05d7e41ce07317da2a85163.camel@gmx.de>
+ <64ab382309c41ca5c7a601fc3efbb6d2a6e68602.camel@gmx.de> <20201203133934.37aotbdjnd36lrxv@linutronix.de>
+In-Reply-To: <20201203133934.37aotbdjnd36lrxv@linutronix.de>
+From:   Vitaly Wool <vitaly.wool@konsulko.com>
+Date:   Thu, 3 Dec 2020 15:07:32 +0100
+Message-ID: <CAM4kBBLH5uSAYc6MXdZG85BNhON8a2D9SfaBG--ddZ2P+z6DCw@mail.gmail.com>
+Subject: Re: scheduling while atomic in z3fold
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Mike Galbraith <efault@gmx.de>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following a change to the SPI framework, providing a value of zero for
-'spi-rx-bus-width' and 'spi-tx-bus-width' is now possible and will
-essentially mean that no RX or TX is allowed.
+On Thu, Dec 3, 2020 at 2:39 PM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+>
+> On 2020-12-03 09:18:21 [+0100], Mike Galbraith wrote:
+> > On Thu, 2020-12-03 at 03:16 +0100, Mike Galbraith wrote:
+> > > On Wed, 2020-12-02 at 23:08 +0100, Sebastian Andrzej Siewior wrote:
+> > > Looks like...
+> > >
+> > > d8f117abb380 z3fold: fix use-after-free when freeing handles
+> > >
+> > > ...wasn't completely effective...
+> >
+> > The top two hunks seem to have rendered the thing RT tolerant.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
+Thanks for all your efforts, I promise to take a closer look at this
+today, has had my hands full with RISC-V up until now.
 
-Changelog v3 -> v4:
-* https://lore.kernel.org/linux-spi/20201127130834.136348-3-alexandru.ardelean@analog.com/
-* fix typos
+Best regards,
+   Vitaly
 
- Documentation/devicetree/bindings/spi/spi-controller.yaml | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/spi/spi-controller.yaml b/Documentation/devicetree/bindings/spi/spi-controller.yaml
-index 1b56d5e40f1f..cf663e4a4afe 100644
---- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
-+++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
-@@ -125,8 +125,9 @@ patternProperties:
-       spi-rx-bus-width:
-         description:
-           Bus width to the SPI bus used for read transfers.
-+          If 0 is provided, then no RX will be possible on this device.
-         $ref: /schemas/types.yaml#/definitions/uint32
--        enum: [1, 2, 4, 8]
-+        enum: [0, 1, 2, 4, 8]
-         default: 1
- 
-       spi-rx-delay-us:
-@@ -136,8 +137,9 @@ patternProperties:
-       spi-tx-bus-width:
-         description:
-           Bus width to the SPI bus used for write transfers.
-+          If 0 is provided, then no TX will be possible on this device.
-         $ref: /schemas/types.yaml#/definitions/uint32
--        enum: [1, 2, 4, 8]
-+        enum: [0, 1, 2, 4, 8]
-         default: 1
- 
-       spi-tx-delay-us:
--- 
-2.17.1
-
+> Yes, it appears to. I have no idea if this is a proper fix or not.
+> Without your write lock, after a few attempts, KASAN says:
+>
+> | BUG: KASAN: use-after-free in __pv_queued_spin_lock_slowpath+0x293/0x770
+> | Write of size 2 at addr ffff88800e0e10aa by task kworker/u16:3/237
+> |
+> | CPU: 5 PID: 237 Comm: kworker/u16:3 Tainted: G        W         5.10.0-rc6-rt13-rt+
+> | Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1 04/01/2014
+> | Workqueue: zswap1 compact_page_work
+> | Call Trace:
+> |  dump_stack+0x7d/0xa3
+> |  print_address_description.constprop.0+0x19/0x120
+> |  __kasan_report.cold+0x1d/0x35
+> |  kasan_report+0x3a/0x50
+> |  check_memory_region+0x145/0x1a0
+> |  __pv_queued_spin_lock_slowpath+0x293/0x770
+> |  _raw_spin_lock_irq+0xca/0xe0
+> |  rt_read_unlock+0x2c/0x70
+> |  __release_z3fold_page.constprop.0+0x45e/0x620
+> |  do_compact_page+0x674/0xa50
+> |  process_one_work+0x63a/0x1130
+> |  worker_thread+0xd3/0xc80
+> |  kthread+0x401/0x4e0
+> |  ret_from_fork+0x22/0x30
+> |
+> | Allocated by task 225 (systemd-journal):
+> |  kasan_save_stack+0x1b/0x40
+> |  __kasan_kmalloc.constprop.0+0xc2/0xd0
+> |  kmem_cache_alloc+0x103/0x2b0
+> |  z3fold_alloc+0x597/0x1970
+> |  zswap_frontswap_store+0x928/0x1bf0
+> |  __frontswap_store+0x117/0x320
+> |  swap_writepage+0x34/0x70
+> |  pageout+0x268/0x7c0
+> |  shrink_page_list+0x13e1/0x1e80
+> |  shrink_inactive_list+0x303/0xde0
+> |  shrink_lruvec+0x3dd/0x660
+> |  shrink_node_memcgs+0x3a1/0x600
+> |  shrink_node+0x3a7/0x1350
+> |  shrink_zones+0x1f1/0x7f0
+> |  do_try_to_free_pages+0x219/0xcc0
+> |  try_to_free_pages+0x1c5/0x4b0
+> |  __perform_reclaim+0x18f/0x2c0
+> |  __alloc_pages_slowpath.constprop.0+0x7ea/0x1790
+> |  __alloc_pages_nodemask+0x5f5/0x700
+> |  page_cache_ra_unbounded+0x30f/0x690
+> |  do_sync_mmap_readahead+0x3e3/0x640
+> |  filemap_fault+0x981/0x1110
+> |  __xfs_filemap_fault+0x12d/0x840
+> |  __do_fault+0xf3/0x4b0
+> |  do_fault+0x202/0x8c0
+> |  __handle_mm_fault+0x338/0x500
+> |  handle_mm_fault+0x1a8/0x670
+> |  do_user_addr_fault+0x409/0x8b0
+> |  exc_page_fault+0x60/0xc0
+> |  asm_exc_page_fault+0x1e/0x30
+> |
+> | Freed by task 71 (oom_reaper):
+> |  kasan_save_stack+0x1b/0x40
+> |  kasan_set_track+0x1c/0x30
+> |  kasan_set_free_info+0x1b/0x30
+> |  __kasan_slab_free+0x110/0x150
+> |  kmem_cache_free+0x7f/0x450
+> |  z3fold_free+0x1f8/0xc90
+> |  zswap_free_entry+0x168/0x230
+> |  zswap_frontswap_invalidate_page+0x145/0x190
+> |  __frontswap_invalidate_page+0xe8/0x1a0
+> |  swap_range_free.constprop.0+0x266/0x300
+> |  swapcache_free_entries+0x1dc/0x970
+> |  free_swap_slot+0x19c/0x290
+> |  __swap_entry_free+0x139/0x160
+> |  free_swap_and_cache+0xda/0x230
+> |  zap_pte_range+0x275/0x1590
+> |  unmap_page_range+0x320/0x690
+> |  __oom_reap_task_mm+0x207/0x330
+> |  oom_reap_task_mm+0x78/0x7e0
+> |  oom_reap_task+0x6d/0x1a0
+> |  oom_reaper+0x103/0x290
+> |  kthread+0x401/0x4e0
+> |  ret_from_fork+0x22/0x30
+> |
+> | The buggy address belongs to the object at ffff88800e0e1080
+> |  which belongs to the cache z3fold_handle of size 88
+> | The buggy address is located 42 bytes inside of
+> |  88-byte region [ffff88800e0e1080, ffff88800e0e10d8)
+> | The buggy address belongs to the page:
+> | page:000000002ba661bc refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xe0e1
+> | flags: 0xffff800000200(slab)
+> | raw: 000ffff800000200 dead000000000100 dead000000000122 ffff88800aa4eb40
+> | raw: 0000000000000000 0000000000200020 00000001ffffffff 0000000000000000
+> | page dumped because: kasan: bad access detected
+> |
+> | Memory state around the buggy address:
+> |  ffff88800e0e0f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> |  ffff88800e0e1000: 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc
+> | >ffff88800e0e1080: fa fb fb fb fb fb fb fb fb fb fb fc fc fc fc fc
+> |                                   ^
+> |  ffff88800e0e1100: 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc
+> |  ffff88800e0e1180: 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc
+> | ==================================================================
+> | Disabling lock debugging due to kernel taint
+>
+> with the lock I haven't seen anything.
+>
+> Sebastian
