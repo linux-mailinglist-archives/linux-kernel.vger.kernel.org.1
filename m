@@ -2,149 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108862CD8E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B8E2CD8FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389160AbgLCOVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 09:21:06 -0500
-Received: from outbound-smtp45.blacknight.com ([46.22.136.57]:38533 "EHLO
-        outbound-smtp45.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728814AbgLCOVF (ORCPT
+        id S2389132AbgLCOYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 09:24:06 -0500
+Received: from mout.kundenserver.de ([217.72.192.74]:55111 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728159AbgLCOYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:21:05 -0500
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp45.blacknight.com (Postfix) with ESMTPS id 6C8E7FA8D8
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 14:20:14 +0000 (GMT)
-Received: (qmail 27425 invoked from network); 3 Dec 2020 14:20:14 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 3 Dec 2020 14:20:13 -0000
-Date:   Thu, 3 Dec 2020 14:20:11 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 10/10] sched/fair: Avoid revisiting CPUs multiple times
- during select_idle_sibling
-Message-ID: <20201203142011.GW3371@techsingularity.net>
-References: <20201203141124.7391-1-mgorman@techsingularity.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20201203141124.7391-1-mgorman@techsingularity.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Thu, 3 Dec 2020 09:24:06 -0500
+Received: from orion.localdomain ([95.118.71.13]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MQMmF-1kXoui1iF7-00MIsk; Thu, 03 Dec 2020 15:21:33 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-usb@vger.kernel.org
+Subject: [PATCH] drivers: usb: core: prefer pr_*() macros over bare printk()
+Date:   Thu,  3 Dec 2020 15:21:32 +0100
+Message-Id: <20201203142132.30334-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:s8lRoK9f6+7jquvtZUrT18jiSFd37BWHB1ug0mmSZC+a5t++lE0
+ j0mMKA1/7/gxo6I7ZtulJRkf7JD5WBuZPokXzazJg4ZdvJXK038GGynk0EuVrsIKIj6Cdex
+ GoTtazE6J+S6qX6MhW5vTKe2+7WZnhygfrnxMeB36k3d1L2pNTicydexW3SGi+iA4Zn8O2h
+ JVoypRL7udA4jYNODvRiw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tbzYR0dE85U=:NDcLe2wVGM2S3PcxI+9+WU
+ nsuCVYx+KR3Xey0uyd/T54SLip1Kw8eLybEjjZvWvHFdk9lOj/dhvhc/Bi3/3V1cmwtSPtFLS
+ H47OhN2JBPJdxOQgDtLDXwpw010PigRuAKxM/EBgLya1pzhk4G/IzkO5KD4GN79YWhzjC7Hrd
+ yY/6cbhyjdQ/SeMH8F6nnHqlpisurkf6ByDUue5/t83U285g0qLx6s5tEs7ep3pgNVifX05Vc
+ LC69ktB53ju/cihNTJntVIwdWSYM9Yq7p0HsuQ2mtd9k6I+lLqt1EyDeYc0iWIP8nz0nczfNB
+ /Ku9sU1Mkh64qdpZbKcd49YTGrRrNG3On0Y8LIafpz001GrkhZtW/aefTor2rbv7gyDs9weYf
+ zGym94prTOBA+F3Igao7k0ZT8XkInLkPyNIQfV84zlQ3EigSTC0lM3v8rcyAa
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Note: While this is done in the context of select_idle_core(), I would not
-	expect it to be done like this. The intent is to illustrate how
-	idle_cpu_mask could be filtered before select_idle_cpus() scans
-	the rest of a domain or a wider scan was done across a cluster.
+pr_*() printing helpers are preferred over using bare printk().
 
-select_idle_core() potentially searches a number of CPUs for idle candidates
-before select_idle_cpu() clears the mask and revisits the same CPUs. This
-patch moves the initialisation of select_idle_mask to the top-level and
-reuses the same mask across both select_idle_core and select_idle_cpu.
-select_idle_smt() is left alone as the cost of checking one SMT sibling
-is marginal relative to calling __clear_cpumask_cpu() for evey CPU
-visited by select_idle_core().
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 ---
- kernel/sched/fair.c | 29 ++++++++++++++++-------------
- 1 file changed, 16 insertions(+), 13 deletions(-)
+ drivers/usb/core/devio.c | 10 +++++-----
+ drivers/usb/core/file.c  |  5 ++---
+ drivers/usb/core/hcd.c   |  2 +-
+ drivers/usb/core/hub.c   |  2 +-
+ drivers/usb/core/sysfs.c |  2 +-
+ drivers/usb/core/usb.c   |  5 ++---
+ 6 files changed, 12 insertions(+), 14 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index cd95daf9f53e..af2e108c20c0 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6096,10 +6096,9 @@ void __update_idle_core(struct rq *rq)
-  * sd_llc->shared->has_idle_cores and enabled through update_idle_core() above.
-  */
- static int select_idle_core(struct task_struct *p, struct sched_domain *sd,
--							int target, int nr)
-+				int target, int nr, struct cpumask *cpus)
- {
- 	int idle_candidate = -1;
--	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
- 	int core, cpu;
+diff --git a/drivers/usb/core/devio.c b/drivers/usb/core/devio.c
+index 533236366a03..c65651b28ac4 100644
+--- a/drivers/usb/core/devio.c
++++ b/drivers/usb/core/devio.c
+@@ -1169,7 +1169,7 @@ static int do_proc_control(struct usb_dev_state *ps,
+ 		snoop_urb(dev, NULL, pipe, max(i, 0), min(i, 0), COMPLETE, NULL, 0);
+ 	}
+ 	if (i < 0 && i != -EPIPE) {
+-		dev_printk(KERN_DEBUG, &dev->dev, "usbfs: USBDEVFS_CONTROL "
++		dev_dbg(&dev->dev, "usbfs: USBDEVFS_CONTROL "
+ 			   "failed cmd %s rqt %u rq %u len %u ret %d\n",
+ 			   current->comm, ctrl->bRequestType, ctrl->bRequest,
+ 			   ctrl->wLength, i);
+@@ -1861,8 +1861,8 @@ static int proc_do_submiturb(struct usb_dev_state *ps, struct usbdevfs_urb *uurb
+ 	}
  
- 	if (!static_branch_likely(&sched_smt_present))
-@@ -6108,9 +6107,6 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd,
- 	if (!test_idle_cores(target, false))
- 		return -1;
+ 	if (ret) {
+-		dev_printk(KERN_DEBUG, &ps->dev->dev,
+-			   "usbfs: usb_submit_urb returned %d\n", ret);
++		dev_dbg(&ps->dev->dev,
++			"usbfs: usb_submit_urb returned %d\n", ret);
+ 		snoop_urb(ps->dev, as->userurb, as->urb->pipe,
+ 				0, ret, COMPLETE, NULL, 0);
+ 		async_removepending(as);
+@@ -2785,13 +2785,13 @@ int __init usb_devio_init(void)
+ 	retval = register_chrdev_region(USB_DEVICE_DEV, USB_DEVICE_MAX,
+ 					"usb_device");
+ 	if (retval) {
+-		printk(KERN_ERR "Unable to register minors for usb_device\n");
++		pr_err("Unable to register minors for usb_device\n");
+ 		goto out;
+ 	}
+ 	cdev_init(&usb_device_cdev, &usbdev_file_operations);
+ 	retval = cdev_add(&usb_device_cdev, USB_DEVICE_DEV, USB_DEVICE_MAX);
+ 	if (retval) {
+-		printk(KERN_ERR "Unable to get usb_device major %d\n",
++		pr_err("Unable to get usb_device major %d\n",
+ 		       USB_DEVICE_MAJOR);
+ 		goto error_cdev;
+ 	}
+diff --git a/drivers/usb/core/file.c b/drivers/usb/core/file.c
+index 558890ada0e5..760866d38f8a 100644
+--- a/drivers/usb/core/file.c
++++ b/drivers/usb/core/file.c
+@@ -91,7 +91,7 @@ static int init_usb_class(void)
+ 	usb_class->class = class_create(THIS_MODULE, "usbmisc");
+ 	if (IS_ERR(usb_class->class)) {
+ 		result = PTR_ERR(usb_class->class);
+-		printk(KERN_ERR "class_create failed for usb devices\n");
++		pr_err("class_create failed for usb devices\n");
+ 		kfree(usb_class);
+ 		usb_class = NULL;
+ 		goto exit;
+@@ -123,8 +123,7 @@ int usb_major_init(void)
  
--	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
--	__cpumask_clear_cpu(target, cpus);
--
- 	for_each_cpu_wrap(core, cpus, target) {
- 		bool idle = true;
+ 	error = register_chrdev(USB_MAJOR, "usb", &usb_fops);
+ 	if (error)
+-		printk(KERN_ERR "Unable to get major %d for usb devices\n",
+-		       USB_MAJOR);
++		pr_err("Unable to get major %d for usb devices\n", USB_MAJOR);
  
-@@ -6175,7 +6171,7 @@ static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int t
- #else /* CONFIG_SCHED_SMT */
- 
- static inline int select_idle_core(struct task_struct *p, struct sched_domain *sd,
--							int target, int nr)
-+					int target, int nr, struct cpumask *cpus)
- {
- 	return -1;
+ 	return error;
  }
-@@ -6193,14 +6189,10 @@ static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd
-  * average idle time for this rq (as found in rq->avg_idle).
-  */
- static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd,
--							int target, int nr)
-+				int target, int nr, struct cpumask *cpus)
+diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
+index 2c6b9578a7d3..ef74cb8b58e6 100644
+--- a/drivers/usb/core/hcd.c
++++ b/drivers/usb/core/hcd.c
+@@ -2979,7 +2979,7 @@ void usb_mon_deregister (void)
  {
--	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
- 	int cpu;
  
--	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
--	__cpumask_clear_cpu(target, cpus);
--
- 	for_each_cpu_wrap(cpu, cpus, target) {
- 		schedstat_inc(this_rq()->sis_scanned);
- 		if (!--nr)
-@@ -6260,6 +6252,7 @@ static inline bool asym_fits_capacity(int task_util, int cpu)
- static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	if (mon_ops == NULL) {
+-		printk(KERN_ERR "USB: monitor was not registered\n");
++		pr_err("USB: monitor was not registered\n");
+ 		return;
+ 	}
+ 	mon_ops = NULL;
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index 17202b2ee063..b542db35ee3f 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -5674,7 +5674,7 @@ static struct usb_driver hub_driver = {
+ int usb_hub_init(void)
  {
- 	struct sched_domain *sd, *this_sd;
-+	struct cpumask *cpus_visited;
- 	unsigned long task_util;
- 	int i, recent_used_cpu, depth;
- 	u64 time;
-@@ -6358,13 +6351,23 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	if (usb_register(&hub_driver) < 0) {
+-		printk(KERN_ERR "%s: can't register hub driver\n",
++		pr_err("%s: can't register hub driver\n",
+ 			usbcore_name);
+ 		return -1;
+ 	}
+diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
+index 8d134193fa0c..7b09c35c3928 100644
+--- a/drivers/usb/core/sysfs.c
++++ b/drivers/usb/core/sysfs.c
+@@ -448,7 +448,7 @@ static void warn_level(void)
  
- 	depth = sis_search_depth(sd, this_sd);
+ 	if (!level_warned) {
+ 		level_warned = 1;
+-		printk(KERN_WARNING "WARNING! power/level is deprecated; "
++		pr_warn("WARNING! power/level is deprecated; "
+ 				"use power/control instead\n");
+ 	}
+ }
+diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
+index 9b4ac4415f1a..5f67e5f511c1 100644
+--- a/drivers/usb/core/usb.c
++++ b/drivers/usb/core/usb.c
+@@ -241,7 +241,7 @@ struct usb_host_interface *usb_find_alt_setting(
+ 		if (intf_cache->altsetting[i].desc.bAlternateSetting == alt_num)
+ 			return &intf_cache->altsetting[i];
  
-+	/*
-+	 * Init the select_idle_mask. select_idle_core() will mask
-+	 * out the CPUs that have already been limited to limit the
-+	 * search in select_idle_cpu(). Further clearing is not
-+	 * done as select_idle_smt checks only one CPU.
-+	 */
-+	cpus_visited = this_cpu_cpumask_var_ptr(select_idle_mask);
-+	cpumask_and(cpus_visited, sched_domain_span(sd), p->cpus_ptr);
-+	__cpumask_clear_cpu(target, cpus_visited);
-+
- 	schedstat_inc(this_rq()->sis_domain_search);
--	i = select_idle_core(p, sd, target, depth);
-+	i = select_idle_core(p, sd, target, depth, cpus_visited);
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
+-	printk(KERN_DEBUG "Did not find alt setting %u for intf %u, "
++	pr_debug("Did not find alt setting %u for intf %u, "
+ 			"config %u\n", alt_num, iface_num,
+ 			config->desc.bConfigurationValue);
+ 	return NULL;
+@@ -846,8 +846,7 @@ int __usb_get_extra_descriptor(char *buffer, unsigned size,
+ 		header = (struct usb_descriptor_header *)buffer;
  
- 	time = cpu_clock(smp_processor_id());
--	i = select_idle_cpu(p, sd, target, depth);
-+	i = select_idle_cpu(p, sd, target, depth, cpus_visited);
- 	if ((unsigned)i < nr_cpumask_bits)
- 		goto acct_cost;
- 
+ 		if (header->bLength < 2 || header->bLength > size) {
+-			printk(KERN_ERR
+-				"%s: bogus descriptor, type %d length %d\n",
++			pr_err("%s: bogus descriptor, type %d length %d\n",
+ 				usbcore_name,
+ 				header->bDescriptorType,
+ 				header->bLength);
 -- 
-2.26.2
+2.11.0
 
