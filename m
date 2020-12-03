@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A2D2CDCBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A35F42CDCC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731419AbgLCRvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:51:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731330AbgLCRvN (ORCPT
+        id S2387646AbgLCRv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:51:29 -0500
+Received: from outbound-smtp22.blacknight.com ([81.17.249.190]:59764 "EHLO
+        outbound-smtp22.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387485AbgLCRv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:51:13 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65083C061A52;
-        Thu,  3 Dec 2020 09:50:27 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id ck29so3018001edb.8;
-        Thu, 03 Dec 2020 09:50:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=f/lU7wZvUZo1FXkT5r4NrXSCYN/0Xgw0B9cmSE39UdA=;
-        b=ZIrdH97CEuLYgmMBy23rE/QGKt+bIHisjsPFuKIE7wUvYV3UZFNVEhzsNg1prn/CYg
-         Sx+XjGfJnLksyoxByA08Tt86UCiamtth3ueqtTX34kokrB9JwOOMtq5POZ2Zw6Su/7aq
-         uPWhBxRIsrMjAS7wmJJU+ZE18TmWgb4RcxvJBboJCcjcc+aGc9fUTfb78MDX7WiN9A4V
-         WwXRvirp7LKRx8eEWA4HUsV7Nd2QrZg15ajBOsgy/AGi37XTs1sq8kWFOF/1RUnMTstt
-         aeB48LVWJzamq2NvARiHyUNDnIb1uztkt86aJDcTGuaxI8KlB+fcMwpKIUBuOJKRdZd4
-         x6SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=f/lU7wZvUZo1FXkT5r4NrXSCYN/0Xgw0B9cmSE39UdA=;
-        b=lWlEau2AUyin7r1II56WgZj+wMyaGH9G3fy4lDXBz4N9pp2C9NImTnyx+M08wAFKsq
-         FXeCUGuM1duq7G+BxaZyY2zHtaEUYKRvoSb6+cysl7krAtNUZqBzVLULFfZOfkwpoAak
-         5K0An075w7epiDmE6z80n+MYRp3FsQetOfEHhHiRXLe0P0J7ZSpq+qiVz99zBhkFFwRg
-         h+yYRi7MThligzHUEIU5wqt0jF6vQdHojiRjfvrP7qbsx9vPZGHCVL6l45jz5Dcu3EUA
-         v6wUrt+qlxtHiQBZIOMfcFK/4bJbPi1AYb3qnkk/T5kbDlxc9GBcLQ7hsDR6xLWOiikr
-         JtHQ==
-X-Gm-Message-State: AOAM532Z8tY4M7r+HTtEpcokK9QPkeYAwSpvSau3jdgBumou310Jy1u8
-        pJbv2YuDfCeWfeOsxbk2lnfvHODBz7E=
-X-Google-Smtp-Source: ABdhPJwR6NWvGHwhc1bjgyRw9T3sLWlEraTCh5wKTlRR0UCa9FJmDVEgcg02OADiU5aky/CUj3whRA==
-X-Received: by 2002:a50:d6c6:: with SMTP id l6mr3958749edj.80.1607017826093;
-        Thu, 03 Dec 2020 09:50:26 -0800 (PST)
-Received: from skbuf ([188.25.2.120])
-        by smtp.gmail.com with ESMTPSA id r9sm1291588ejd.38.2020.12.03.09.50.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 09:50:25 -0800 (PST)
-Date:   Thu, 3 Dec 2020 19:50:24 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     =?utf-8?B?0JzQsNC60YHQuNC8INCa0LjRgdC10LvRkdCy?= 
-        <bigunclemax@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maxim Kochetkov <fido_max@inbox.ru>
-Subject: Re: [PATCH] spi: spi-fsl-dspi: Add GPIO chip select support
-Message-ID: <20201203175024.hzivclydoxp6txir@skbuf>
-References: <CALHCpMgQPDqV1tB6v0sA0imwfZGkoG_j84NZCehOT1pf8MTuCA@mail.gmail.com>
+        Thu, 3 Dec 2020 12:51:28 -0500
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp22.blacknight.com (Postfix) with ESMTPS id D52C9BAABC
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 17:50:35 +0000 (GMT)
+Received: (qmail 7026 invoked from network); 3 Dec 2020 17:50:35 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 3 Dec 2020 17:50:35 -0000
+Date:   Thu, 3 Dec 2020 17:50:34 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 04/10] sched/fair: Return an idle cpu if one is found
+ after a failed search for an idle core
+Message-ID: <20201203175034.GX3371@techsingularity.net>
+References: <20201203141124.7391-1-mgorman@techsingularity.net>
+ <20201203141124.7391-5-mgorman@techsingularity.net>
+ <CAKfTPtBMc=3d0nyoCt7_0s_wFyr_kUX3kET4cqesYjQQwLDhYw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALHCpMgQPDqV1tB6v0sA0imwfZGkoG_j84NZCehOT1pf8MTuCA@mail.gmail.com>
+In-Reply-To: <CAKfTPtBMc=3d0nyoCt7_0s_wFyr_kUX3kET4cqesYjQQwLDhYw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxim,
-
-On Thu, Dec 03, 2020 at 08:12:19PM +0300, Максим Киселёв wrote:
-> From: Maxim Kiselev <bigunclemax@gmail.com>
-> Date: Thu, 3 Dec 2020 18:56:12 +0300
-> Subject: [PATCH] spi: spi-fsl-dspi: Add GPIO chip select support
+On Thu, Dec 03, 2020 at 05:35:29PM +0100, Vincent Guittot wrote:
+> > index fc48cc99b03d..845bc0cd9158 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -6066,6 +6066,7 @@ void __update_idle_core(struct rq *rq)
+> >   */
+> >  static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
+> >  {
+> > +       int idle_candidate = -1;
+> >         struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
+> >         int core, cpu;
+> >
+> > @@ -6084,7 +6085,13 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
+> >                         schedstat_inc(this_rq()->sis_scanned);
+> >                         if (!available_idle_cpu(cpu)) {
+> >                                 idle = false;
+> > -                               break;
+> > +                               if (idle_candidate != -1)
+> > +                                       break;
 > 
-> This patch allows use of GPIO for the chip select.
-> Because dSPI controller can't send transactions without hardware chip
-> selects, so first unused native CS will be set in SPI_PUSHR_CMD_PCS
+> 
+> If I get your changes correctly, it will now continue to loop on all
+> cpus of the smt mask to try to find an idle cpu whereas it was
 
-Are you sure?
+That was an oversight, the intent is that the SMT search breaks but
+the search for an idle core continues. The patch was taken from a very
+different series that unified all the select_idle_* functions as a single
+function and I failed to fix it up properly. The unification series
+didn't generate good results back 9 months ago when I tried and I never
+finished it off. In the current context, it would not make sense to try
+a unification again.
 
-From the reference manual:
+> With the change above you might end up looping all cpus of llc if
+> there is only one idle cpu in the llc whereas before we were looping
+> only 1 cpu per core at most. The bottom change makes sense but the
+> above on is in some way replacing completely select_idle_cpu and
+> bypass SIS_PROP and we should avoid that IMO
+> 
 
-SPIx_PUSHR bits 10–15 PCS:
-Select which PCS signals are to be asserted for the transfer. Refer to
-the chip-specific SPI information for the number of PCS signals used in
-this chip.
-0 Negate the PCS[x] signal.
-1 Assert the PCS[x] signal.
+You're right of course, it was never intended to behave like that.
 
-And the definition is:
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 0a3d338770c4..49b1590e60a9 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6084,8 +6084,7 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
+ 		for_each_cpu(cpu, cpu_smt_mask(core)) {
+ 			if (!available_idle_cpu(cpu)) {
+ 				idle = false;
+-				if (idle_candidate != -1)
+-					break;
++				break;
+ 			}
+ 
+ 			if (idle_candidate == -1 &&
 
-#define SPI_PUSHR_CMD_PCS(x)		(BIT(x) & GENMASK(5, 0))
-
-Notice the BIT(x).
-
-I expect that you can set the PCS to 0 and no hard chip select will
-assert.
+-- 
+Mel Gorman
+SUSE Labs
