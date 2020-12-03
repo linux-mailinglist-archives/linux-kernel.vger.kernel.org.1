@@ -2,126 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED372CDD33
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9302CDD38
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387635AbgLCSS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:18:29 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:33047 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726443AbgLCSS2 (ORCPT
+        id S2387707AbgLCSUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:20:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725920AbgLCSUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:18:28 -0500
-Received: by mail-ot1-f68.google.com with SMTP id b18so2674185ots.0;
-        Thu, 03 Dec 2020 10:18:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aNOzNwHkOuGXa7Fh+2VeICnOxC6RLTqC8+Fsh7pbYpc=;
-        b=B54bQ7wQTclSsqMy240SK/TtJfK0nPoRMY/LwoFzOoc2GE+dxlW35rkRMz+Ha6FPbK
-         oFs5EuYqg+0Wt98ZGw95Xowi3To7JzhlxNdQeD2zs4+C0rsPNfhHm1MkMzRcnZlcNk9P
-         O4cNuG3/+x5GHlFNEAR8fNg8kIc3pbkEeh0JSmo4LfGJzb50auj+J0Z+DzGPM9FIWtHT
-         LMIWYUl/dNhx1z5nBoiECk4i0zsNDDUxAWvb+HYG462ZCbiah3lLFLNsaUm8C3UGIF1f
-         yxV9KF+m21BfJwKCvWxTA8wiPypgCE7bw0u/jgYnH61NGnrDJp/1h6PkvUImbv3NRkiE
-         e59A==
-X-Gm-Message-State: AOAM531CzQZ5Bw+1otAso2BqqqDf/vH9TK/0FynsMrl0ESv3KDR9zA0Y
-        DMtI5+8jYh3YN39I/dnp6vpnOArt2/I8LaznR+U=
-X-Google-Smtp-Source: ABdhPJwqemI0nHjABZ8DB7T9ID8g6r75bCjCbsZsgEY3dEVpaIf5c1RYqBLsK8j8uDjbk+vtzho1oSX9qn3XWGdKszQ=
-X-Received: by 2002:a05:6830:2385:: with SMTP id l5mr342208ots.321.1607019461761;
- Thu, 03 Dec 2020 10:17:41 -0800 (PST)
+        Thu, 3 Dec 2020 13:20:45 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88240C061A4F;
+        Thu,  3 Dec 2020 10:20:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=cD/gPx1zDgnIQ7RA23nlOJGpnoyXojHHIs8a72pYbw4=; b=3VYA0JzUAEg95sqgTyYJhvZ7Hz
+        59/T3uMOZY3ab1Tvd7FE4IQaahiB7jyRSCYrVuzGdXrqOHxZX9nPLmE51u4KqoTx4M7y2uOBLI8w6
+        HTdqCVq0t1Xe3YprDlwDxqtS6UA4Ku+bvgtvNPuV4QubdWzwuO3at+Jx3NtP4O7Z9EoyPYsWCL+b4
+        R7s4/eUSuVJ9z9IQgRBT/cj1/WA9AZ7Yp38t+L6ICx75Dr6qPuzeyQ1xp9AcI+t4+Q6/+k6kNzVM0
+        17EgiADhpRJ3kDem5S4zhEayqRf6xMuy4Q+xpnM70Znw4oIlAyimlv0JV5g47hBiiQ4/b8dhg2rtn
+        nUbr3jRA==;
+Received: from [2601:1c0:6280:3f0::1494]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kktD1-0001Se-Cw; Thu, 03 Dec 2020 18:20:03 +0000
+Subject: Re: [PATCH] drivers: acpi: add opt-out of Apple-specific property
+ parsing
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-acpi@vger.kernel.org
+References: <20201203174453.12084-1-info@metux.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <88bb006f-27bd-7be6-19b5-6b879f1df131@infradead.org>
+Date:   Thu, 3 Dec 2020 10:19:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201203175756.1405564-1-thierry.reding@gmail.com>
-In-Reply-To: <20201203175756.1405564-1-thierry.reding@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 3 Dec 2020 19:17:30 +0100
-Message-ID: <CAJZ5v0g_FC6Pikrvk2PK=XMvAwqjaNOcYXHYS6eqv6Zc0JgqNQ@mail.gmail.com>
-Subject: Re: [PATCH] driver core: Reorder devices on successful probe
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Saravana Kannan <saravanak@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201203174453.12084-1-info@metux.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 6:58 PM Thierry Reding <thierry.reding@gmail.com> wrote:
->
-> From: Thierry Reding <treding@nvidia.com>
->
-> Device drivers usually depend on the fact that the devices that they
-> control are suspended in the same order that they were probed in. In
-> most cases this is already guaranteed via deferred probe.
->
-> However, there's one case where this can still break: if a device is
-> instantiated before a dependency (for example if it appears before the
-> dependency in device tree) but gets probed only after the dependency is
-> probed. Instantiation order would cause the dependency to get probed
-> later, in which case probe of the original device would be deferred and
-> the suspend/resume queue would get reordered properly. However, if the
-> dependency is provided by a built-in driver and the device depending on
-> that driver is controlled by a loadable module, which may only get
-> loaded after the root filesystem has become available, we can be faced
-> with a situation where the probe order ends up being different from the
-> suspend/resume order.
->
-> One example where this happens is on Tegra186, where the ACONNECT is
-> listed very early in device tree (sorted by unit-address) and depends on
-> BPMP (listed very late because it has no unit-address) for power domains
-> and clocks/resets. If the ACONNECT driver is built-in, there is no
-> problem because it will be probed before BPMP, causing a probe deferral
-> and that in turn reorders the suspend/resume queue. However, if built as
-> a module, it will end up being probed after BPMP, and therefore not
-> result in a probe deferral, and therefore the suspend/resume queue will
-> stay in the instantiation order. This in turn causes problems because
-> ACONNECT will be resumed before BPMP, which will result in a hang
-> because the ACONNECT's power domain cannot be powered on as long as the
-> BPMP is still suspended.
->
-> Fix this by always reordering devices on successful probe. This ensures
-> that the suspend/resume queue is always in probe order and hence meets
-> the natural expectations of drivers vs. their dependencies.
->
-> Reported-by: Jonathan Hunter <jonathanh@nvidia.com>
-> Signed-off-by: Thierry Reding <treding@nvidia.com>
-
-Saravana had submitted a very similar patch (I don't have a pointer to
-that one though) and I was against it at that time due to
-overhead-related concerns.  There still are some, but maybe that
-doesn't matter in practice.
-
-Also, I kind of expect this to blow up somewhere, but since I have no
-examples ready from the top of my head, I think let's try and see, so:
-
-Acked-by: Rafael. J. Wysocki <rafael@kernel.org>
-
+On 12/3/20 9:44 AM, Enrico Weigelt, metux IT consult wrote:
+> Most x86 machines aren't Apple machines, especially VMs.
+> Therefore allow opt-out, making the kernel a few KBs smaller,
+> eg. for embedded or high-density VMs.
+> 
+> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 > ---
->  drivers/base/dd.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 148e81969e04..cfc079e738bb 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -370,6 +370,13 @@ static void driver_bound(struct device *dev)
->
->         device_pm_check_callbacks(dev);
->
-> +       /*
-> +        * Reorder successfully probed devices to the end of the device list.
-> +        * This ensures that suspend/resume order matches probe order, which
-> +        * is usually what drivers rely on.
-> +        */
-> +       device_pm_move_to_tail(dev);
+>  drivers/acpi/Kconfig    | 9 +++++++++
+>  drivers/acpi/Makefile   | 2 +-
+>  drivers/acpi/internal.h | 2 +-
+>  3 files changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+> index edf1558c1105..cc47de4f2b18 100644
+> --- a/drivers/acpi/Kconfig
+> +++ b/drivers/acpi/Kconfig
+> @@ -79,6 +79,15 @@ config ACPI_DEBUGGER_USER
+>  
+>  endif
+>  
+> +config ACPI_APPLE
+> +	bool "Apple ACPI properties support"
+> +	default y if X86
+> +	help
+> +	  Extraction of Apple-specific ACPI properties.
 > +
->         /*
->          * Make sure the device is no longer in one of the deferred lists and
->          * kick off retrying all pending devices
-> --
-> 2.29.2
->
+> +	  Say N if you're sure the kernel won't be used on an Apple machine
+> +	  and wanna save a few kb of memory. (embedded or high-density VMs)
+
+	      want to
+
+As I have said before, don't use "kb". It means kilobits. We don't normally
+measure memory in kilobits.
+
+
+Did you read all of my previous email?
+
+
+> +
+>  config ACPI_SPCR_TABLE
+>  	bool "ACPI Serial Port Console Redirection Support"
+>  	default y if X86
+
+-- 
+~Randy
+
