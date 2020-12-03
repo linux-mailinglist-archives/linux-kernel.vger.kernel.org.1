@@ -2,165 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31102CDEC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A182CDEC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729471AbgLCTYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:24:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727662AbgLCTYm (ORCPT
+        id S1731202AbgLCTZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:25:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42162 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726438AbgLCTZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:24:42 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A0DC061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:23:55 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id s8so3027509wrw.10
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:23:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=IMGHiljhJdWK0ICC3j0XLkn1KRnwi613NvPHnzcXxdw=;
-        b=wWgdhuMPniP/dSdSE6ty60TiXDxjvEbxseBEx5ORcfQnt5ewPTlaccscMnit79EtUa
-         /2VoZz0yYtttg5Kce+usWp1I0t28qLPwATKew5SkuFRhub5LvbscFsJZGJRvCcw3E3a2
-         xrVR28XY4BE0ppe3/DYAd4Rf+GOyxghEE1858TaGT8JPo4t1n7B5lC+qBfthJmYbHdup
-         IlHTivu0jxIZeqx2+tHVG4oCOJcpqIR+i4pd1H85RzKensDrTuOT52tyAb4c1Nzrwf7Y
-         lI9CnS7xJ2WLMc6NbQ4e5tyiYxF4EgIBH7SXEBR6+9OkEknnDRkyqvGu//MzYJHuaw0j
-         uQSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=IMGHiljhJdWK0ICC3j0XLkn1KRnwi613NvPHnzcXxdw=;
-        b=caYEVBWIvaGB1JLZTDJgBEIrr2RnuGIxzk0nXToF+uibodoiL0f+qSNmfuB2GoKCpp
-         iXRMKT775rDxdqb3W/64x18kGltOG3MwDaQ582+TZm42wrUMZzpGh5BSh65IAFHzOhHA
-         eS1U5j81RRYA85w90SbqmbaTPvMb4WDLBZbb+Hz/pWrQZIA09qbI0dYAgeavIMbKEbPM
-         nAguYog1mv45Kxstycgmm0oCANCwWkKMRlFI9LYhNvqmAOQnvne1QU1b4ChyKFGbPa7l
-         F+oqmHlyb/OZLwT318ZKjOgt1cVzTTGMMANMwO2Wv24ShTXIM3n27ppL7Wn9T5CL8Boc
-         goGA==
-X-Gm-Message-State: AOAM533hstkyTcUKDy3O8A/Smi/0SeGJj/KjTNWA204eCLo0RSOVMNO5
-        wdEjvwCiD3dRrr77dHwqw8moqaAOQZhl4A==
-X-Google-Smtp-Source: ABdhPJwa40qaFduig+ioQMCkyBLikQv7X35lxUnFtarqXDGQ1mkEJmn2C2oZG6aOBqq8rA5uYdVa0A==
-X-Received: by 2002:a5d:474f:: with SMTP id o15mr829455wrs.100.1607023433988;
-        Thu, 03 Dec 2020 11:23:53 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:9cff:9584:adb2:6288? ([2a01:e34:ed2f:f020:9cff:9584:adb2:6288])
-        by smtp.googlemail.com with ESMTPSA id m8sm362229wmc.27.2020.12.03.11.23.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 11:23:53 -0800 (PST)
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [GIT PULL] timer drivers for v5.11
-Message-ID: <028084fa-d29b-a1d5-7eab-17f77ef69863@linaro.org>
-Date:   Thu, 3 Dec 2020 20:23:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 3 Dec 2020 14:25:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607023446;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=efV73LyUgTd5E5cnANarY69V1upOhjEKjDTFLhTEw0E=;
+        b=KJurJ5QFq1nBzyjFrSZ79R2q8tbuWosMoR9zQINBIs8vnn9E/zq71ByY3XK1G31vIDwN44
+        i1A+skuAJVm3tRvgf/Nyzzl2gbomJKVfuEJW6bpodN22ehGQQ+fNaILg7mbtjUPW14uw1M
+        yOG/T5FK2m0Xb5xfRNEeAFcVtqHGXaI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-42-nSGgsFzVPm6kO0YBJNaOag-1; Thu, 03 Dec 2020 14:24:04 -0500
+X-MC-Unique: nSGgsFzVPm6kO0YBJNaOag-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04B328581A4;
+        Thu,  3 Dec 2020 19:24:03 +0000 (UTC)
+Received: from [10.36.113.250] (ovpn-113-250.ams2.redhat.com [10.36.113.250])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7E456189BB;
+        Thu,  3 Dec 2020 19:24:01 +0000 (UTC)
+Subject: Re: [PATCH] mm/page_isolation: do not isolate the max order page
+From:   David Hildenbrand <david@redhat.com>
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Muchun Song <songmuchun@bytedance.com>,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+References: <20201202122114.75316-1-songmuchun@bytedance.com>
+ <1505b548-968b-2053-fd17-0cc4ae240a2f@suse.cz>
+ <29022300-6d8e-0532-7abc-6d11ab1db04a@redhat.com>
+ <92e54bf2-adc5-d51b-3b78-b881567335dc@suse.cz>
+ <4acd86de-e5a7-7fbe-5cdc-939e12f7fb3a@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <c53e1580-8d16-1e94-48d2-f112b49ca5a2@redhat.com>
+Date:   Thu, 3 Dec 2020 20:24:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <4acd86de-e5a7-7fbe-5cdc-939e12f7fb3a@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit b996544916429946bf4934c1c01a306d1690972c:
+On 03.12.20 18:48, David Hildenbrand wrote:
+> On 03.12.20 18:15, Vlastimil Babka wrote:
+>> On 12/3/20 5:26 PM, David Hildenbrand wrote:
+>>> On 03.12.20 01:03, Vlastimil Babka wrote:
+>>>> On 12/2/20 1:21 PM, Muchun Song wrote:
+>>>>> The max order page has no buddy page and never merge to other order.
+>>>>> So isolating and then freeing it is pointless.
+>>>>>
+>>>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>>>>
+>>>> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+>>>>
+>>>>> ---
+>>>>>  mm/page_isolation.c | 2 +-
+>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+>>>>> index a254e1f370a3..bddf788f45bf 100644
+>>>>> --- a/mm/page_isolation.c
+>>>>> +++ b/mm/page_isolation.c
+>>>>> @@ -88,7 +88,7 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+>>>>>  	 */
+>>>>>  	if (PageBuddy(page)) {
+>>>>>  		order = buddy_order(page);
+>>>>> -		if (order >= pageblock_order) {
+>>>>> +		if (order >= pageblock_order && order < MAX_ORDER - 1) {
+>>>>>  			pfn = page_to_pfn(page);
+>>>>>  			buddy_pfn = __find_buddy_pfn(pfn, order);
+>>>>>  			buddy = page + (buddy_pfn - pfn);
+>>>>
+>>>> Hm I wonder if order == MAX_ORDER - 1, then the buddy can actually be a
+>>>> !pfn_valid() in some corner case? pfn_valid_within(buddy_pfn) that follows would
+>>>> only catch it on archs with holes in zone. Then is_migrate_isolate_page(buddy)
+>>>> might access an invalid buddy. So this might be actually a bug fix and not just
+>>>> optimization, just the bug hasn't been observed in practice.
+>>>
+>>> I think we have no users that isolate/unisolate close to holes.
+>>>
+>>> CMA regions are properly aligned (to max of page_order /
+>>> max_order_nr_pages) and don't contain holes.
+>>
+>> The problem as I see it, is that buddy_order(page) might be already MAX_ORDER -
+>> 1 (e.g. two pageblocks on x86), and then finding buddy of that one is beyond the
+>> guaranteed alignment (if they merged, which they can't, it would be four
+> 
+> Oh, I see. I would have assume that __find_buddy_pfn() would not hand
+> out invalid buddies. But you're right, it's generic:
+> 
+> pfn = 1024 (4M)
+> order = MAX_ORDER - 1 = 10
+> buddy_pfn = __find_buddy_pfn(pfn, order)
+> 
+> -> pfn ^ (1 << order) = 0
+> 
+> 
+> If that page has no struct page (!pfn_valid), we're doomed, I agree. It
+> would be problematic if we have alloc_contig_range() users with ranges
+> not aligned/multiples of to 8 MB (MAX_ORDER) I guess. virtio-mem and
+> gigantic pages should be fine. CMA might be problematic, though? Do we
+> have such small CMA ranges or with such alignment? COuld be I guess.
+> 
+> cma_init_reserved_mem() only checks
+> 
+> alignment = PAGE_SIZE << max_t(unsigned long, MAX_ORDER - 1,
+> pageblock_order);
+> 
 
-  tick: Get rid of tick_period (2020-11-19 10:48:29 +0100)
+Thinking again (SPARSE), we always end up in a single memory section.
+Usually, all pfns within a single section are valid. The only exception
+is with HAVE_ARCH_PFN_VALID - arm and arm6.
 
-are available in the Git repository at:
+arm64 also has HOLES_IN_ZONE - so we always check for pfn_valid() in
+this code.
 
-  ssh://git@git.linaro.org/people/daniel.lezcano/linux.git tags/timers-v5.11
+arm only has HAVE_ARCH_PFN_VALID with SPARSE on ARCH_OMAP1. So only in
+that combination, we might run into that issue if I am not wrong.
 
-for you to fetch changes up to ab3105446f1ec4e98fadfc998ee24feec271c16c:
 
-  clocksource/drivers/riscv: Make RISCV_TIMER depends on RISCV_SBI
-(2020-12-03 19:16:26 +0100)
-
-----------------------------------------------------------------
-- Add static annotation for the sp804 init functions (Zhen Lei)
-
-- Code cleanups and error code path at init time fixes on the sp804
-  (Kefen Wang)
-
-- Add new OST timer driver device tree bindings (Zhou Yanjie)
-
-- Remove EZChip NPS clocksource driver corresponding to the NPS
-  platform which was removed from the ARC architecture (Vineet Gupta)
-
-- Add missing clk_disable_unprepare() on error path for Orion (Yang
-  Yingliang)
-
-- Add device tree bindings documentation for Renesas r8a774e1
-  (Marian-Cristian Rotariu)
-
-- Convert Renesas TMU to json-schema (Geert Uytterhoeven)
-
-- Fix memory leak on the error path at init time on the cadence_ttc
-  driver (Yu Kuai)
-
-- Fix section mismatch for Ingenic timer driver (Daniel Lezcano)
-
-- Make RISCV_TIMER depends on RISCV_SBI (Kefeng Wang)
-
-----------------------------------------------------------------
-Daniel Lezcano (1):
-      clocksource/drivers/ingenic: Fix section mismatch
-
-Geert Uytterhoeven (1):
-      dt-bindings: timer: renesas: tmu: Convert to json-schema
-
-Kefeng Wang (5):
-      clocksource/drivers/sp804: Make some symbol static
-      clocksource/drivers/sp804: Use clk_prepare_enable and
-clk_disable_unprepare
-      clocksource/drivers/sp804: Correct clk_get_rate handle
-      clocksource/drivers/sp804: Use pr_fmt
-      clocksource/drivers/riscv: Make RISCV_TIMER depends on RISCV_SBI
-
-Marian-Cristian Rotariu (1):
-      dt-bindings: timer: renesas: tmu: Document r8a774e1 bindings
-
-Vineet Gupta (1):
-      clocksource/drivers/nps: Remove EZChip NPS clocksource driver
-
-Yang Yingliang (1):
-      clocksource/drivers/orion: Add missing clk_disable_unprepare() on
-error path
-
-Yu Kuai (1):
-      clocksource/drivers/cadence_ttc: Fix memory leak in
-ttc_setup_clockevent()
-
-Zhen Lei (1):
-      clocksource/drivers/sp804: Add static for functions such as
-sp804_clockevents_init()
-
-周琰杰 (Zhou Yanjie) (1):
-      dt-bindings: timer: Add new OST support for the upcoming new driver.
-
- Documentation/devicetree/bindings/timer/renesas,tmu.txt  |  49
---------------------------
- Documentation/devicetree/bindings/timer/renesas,tmu.yaml |  99
-+++++++++++++++++++++++++++++++++++++++++++++++++++
- drivers/clocksource/Kconfig                              |  12 +------
- drivers/clocksource/Makefile                             |   1 -
- drivers/clocksource/ingenic-timer.c                      |   2 +-
- drivers/clocksource/timer-cadence-ttc.c                  |  18 +++++-----
- drivers/clocksource/timer-nps.c                          | 284
---------------------------------------------------------------------------------------------------------------------------------------------------
- drivers/clocksource/timer-orion.c                        |  11 ++++--
- drivers/clocksource/timer-sp804.c                        |  49
-+++++++++-----------------
- include/dt-bindings/clock/ingenic,sysost.h               |  10 ++++--
- 10 files changed, 142 insertions(+), 393 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.txt
- create mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.yaml
- delete mode 100644 drivers/clocksource/timer-nps.c
+Not sure about !SPARSE and mips.
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Thanks,
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+David / dhildenb
+
