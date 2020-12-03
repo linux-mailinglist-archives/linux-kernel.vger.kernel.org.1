@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADF12CDD00
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C8C2CDCFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731570AbgLCSCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:02:15 -0500
-Received: from gw.c-home.cz ([89.24.150.100]:34746 "EHLO dmz.c-home.cz"
+        id S1731536AbgLCSCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:02:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727427AbgLCSCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:02:13 -0500
-Received: from ubuntu2004.c-home.cz (unifi.c-home.cz [192.168.1.227])
-        by dmz.c-home.cz (8.14.4+Sun/8.14.4) with ESMTP id 0B3I11ap011430;
-        Thu, 3 Dec 2020 19:01:06 +0100 (CET)
-From:   Martin Cerveny <m.cerveny@computer.org>
-To:     Chen-Yu Tsai <wens@csie.org>
-Cc:     Martin Cerveny <m.cerveny@computer.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH] ARM: dts: sun8i: v3s: SRAM_C real mapping
-Date:   Thu,  3 Dec 2020 19:00:40 +0100
-Message-Id: <20201203180040.3284-1-m.cerveny@computer.org>
-X-Mailer: git-send-email 2.25.1
+        id S1727427AbgLCSCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:02:04 -0500
+Date:   Thu, 3 Dec 2020 10:01:21 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607018483;
+        bh=4nwXgQeJ3FL/51sfkz1+8OIrwWTS7/aSglxTmsBTa7Q=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pb1TZJr3u7ZnNO0Ckg0JmHuAEdW5yudxJGD8OMW7otFKw+daw6j/MiP86ArZ3GgXa
+         6YlLSyzQ5ofWiNNep8UzWWIFTJRuXUjQXbnlhHqmDbs3QUwbDUo0+i+2mgj8Zltiih
+         RqlD3MwG4NYfQEbpUoHrinYmbAJZS/olTRyPZfwZcBDSvgZzShzcsv1IaTQsNIgxjW
+         aN8WjwdTXcmV9HLkcM74gW2FE0H0UM8jloMrw+wBPIyo0qWsvZrdnxzcWJeBDlEvcC
+         FSIMCNgSiafyVNbk0usgGIaW4LkF2Kf0fK0qJipGcxeTk8WL+5JFrFO+pQgz05CQre
+         t/d2sGdvueAdQ==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 2/2] net: dsa: qca: ar9331: export stats64
+Message-ID: <20201203100121.64bb2774@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201203175320.f3fmyaqoxifydwzv@pengutronix.de>
+References: <20201202140904.24748-1-o.rempel@pengutronix.de>
+        <20201202140904.24748-3-o.rempel@pengutronix.de>
+        <20201202104207.697cfdbb@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        <20201203085011.GA3606@pengutronix.de>
+        <20201203083517.3b616782@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        <20201203175320.f3fmyaqoxifydwzv@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VideoEngine (cedrus) needs assign dedicated SRAM for decoding.
-SRAM_C1 is usually used for Allwinner platforms.
-Allwinner V3s scale down chip has not SRAM_C1 but only small SRAM_C (44kB).
+On Thu, 3 Dec 2020 18:53:20 +0100 Oleksij Rempel wrote:
+> On Thu, Dec 03, 2020 at 08:35:17AM -0800, Jakub Kicinski wrote:
+> > On Thu, 3 Dec 2020 09:50:11 +0100 Oleksij Rempel wrote:  
+> > > @Jakub,
+> > >   
+> > > > You can't take sleeping locks from .ndo_get_stats64.
+> > > > 
+> > > > Also regmap may sleep?
+> > > > 
+> > > > +	ret = regmap_read(priv->regmap, reg, &val);    
+> > > 
+> > > Yes. And underling layer is mdio bus which is by default sleeping as
+> > > well.
+> > >   
+> > > > Am I missing something?    
+> > > 
+> > > In this log, the  ar9331_get_stats64() was never called from atomic or
+> > > irq context. Why it should not be sleeping?  
+> > 
+> > You missed some long discussions about this within last week on netdev.
+> > Also Documentation/networking/statistics.rst.
+> > 
+> > To answer your direct question - try:
+> > 
+> > # cat /proc/net/dev
+> > 
+> > procfs iterates over devices while holding only an RCU read lock.  
+> 
+> Now i can reproduce it :)
+> 
+> [33683.199864] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
+> [33683.210737] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 593, name: cat
+> [33683.216796] INFO: lockdep is turned off.
+> [33683.222972] CPU: 0 PID: 593 Comm: cat Not tainted 5.10.0-rc3-ar9331-00733-gff7090915bb7-dirty #28
+> [33683.231743] Stack : 808f0000 80885ffc 820eba5c 00000000 00000000 d4a19200 80980000 819a93c8
+> [33683.240093]         80980ca7 80d43358 804ee1f4 80980000 00000002 800afe08 820eba08 d4a19200
+> [33683.247181]         00000000 00000000 8089ffb0 00000000 820ebfe0 00000000 00000000 00000000
+> [33683.257767]         820ebab4 77bbfdc0 00fae587 77e859a0 80980000 80000000 00000000 80990000
+> [33683.266107]         804ee1f4 80980000 00000002 8200f750 8097ca9c d4a19200 000859df 00000001
+> [33683.274529]         ...
+> [33683.275626] Call Trace:
+> [33683.280156] [<80069ce0>] show_stack+0x9c/0x140
+> [33683.283200] [<800afe08>] ___might_sleep+0x220/0x244
+> [33683.290441] [<8073c030>] __mutex_lock+0x70/0x374
+> [33683.293651] [<8073c360>] mutex_lock_nested+0x2c/0x38
+> [33683.300793] [<804ee1f4>] ar9331_read_stats+0x34/0x834
+> [33683.304441] [<804eea34>] ar9331_get_stats64+0x40/0x394
+> [33683.311797] [<80526584>] dev_get_stats+0x58/0xfc
+> [33683.315013] [<805657bc>] dev_seq_printf_stats+0x44/0x228
+> [33683.322476] [<805659e8>] dev_seq_show+0x48/0x50
+> [33683.325601] [<8021dd28>] seq_read_iter+0x3d8/0x4d0
+> [33683.332585] [<8021df60>] seq_read+0x140/0x198
+> [33683.335532] [<8026f950>] proc_reg_read+0xe4/0xf8
+> [33683.342397] [<801f0840>] vfs_read+0xc8/0x1a8
+> [33683.345260] [<801f0b7c>] ksys_read+0x9c/0xfc
+> [33683.352056] [<80071aa4>] syscall_common+0x34/0x58
+> 
+> Hm.. There is no way i can guarantee that underlying mdio system is
+> not using mutexes. So, i can't read stats directly from HW within
+> ar9331_get_stats64(), only driver internal storage can be used. It is possible
+> to poll it more frequently, but  it make no reals sense on this low power
+> devices.
+> 
+> What kind of options do we have?
 
-Result of additional testing:
-
-SRAM_C is mapped in two regions 0x0000_4000 (primary location, by Datasheet)
-(size is 0xb000, probably exact size is 0xb0c0 and it is mapped to 4k boundary
-(to 0x0000_ffff)) and to 0x01d0_4000 (traditional SRAM_C1 region from 0x01d0_0000).
-
-Rest of 0x01d0_0000 are discontinuously filled with R/W register sets
-(probably some internals registers from VE) that I thought to be SRAM too.
-
-Programming register SRAM_CTRL_REG0 (0x01c00_0000) with value 0x7fff_ffff
-switch out whole region 0x01d0_0000-0x01df_ffff and 0x0000_4000-0x0000_ffff
-(dedicate access to VE).
-
-VE/cedrus code use this SRAM region indirectly
-(VE_AVC_SRAM_PORT_OFFSET/VE_AVC_SRAM_PORT_DATA...)
-and it is not influenced by "real" SRAM mapping or size
-so it is working even without this patch.
-
-Signed-off-by: Martin Cerveny <m.cerveny@computer.org>
----
- arch/arm/boot/dts/sun8i-v3s.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
-index e8f304125e2d..90d703e5b73b 100644
---- a/arch/arm/boot/dts/sun8i-v3s.dtsi
-+++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
-@@ -162,17 +162,17 @@ syscon: system-control@1c00000 {
- 			#size-cells = <1>;
- 			ranges;
- 
--			sram_c: sram@1d00000 {
-+			sram_c: sram@4000 {
- 				compatible = "mmio-sram";
--				reg = <0x01d00000 0x80000>;
-+				reg = <0x4000 0xb000>;
- 				#address-cells = <1>;
- 				#size-cells = <1>;
--				ranges = <0 0x01d00000 0x80000>;
-+				ranges = <0 0 0x4000 0xb000>;
- 
- 				ve_sram: sram-section@0 {
- 					compatible = "allwinner,sun8i-v3s-sram-c1",
- 						     "allwinner,sun4i-a10-sram-c1";
--					reg = <0x000000 0x80000>;
-+					reg = <0x0 0xb000>;
- 				};
- 			};
- 		};
--- 
-2.25.1
-
+Vladimir has been looking at solving this, I'll let him answer with his
+latest thoughts.
