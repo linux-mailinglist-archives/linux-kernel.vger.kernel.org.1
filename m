@@ -2,124 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AC82CE06D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:14:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE072CE071
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729625AbgLCVOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 16:14:30 -0500
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:41964 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727181AbgLCVO3 (ORCPT
+        id S1727002AbgLCVQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 16:16:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726071AbgLCVQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 16:14:29 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 2055F1280149;
-        Thu,  3 Dec 2020 13:13:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1607030029;
-        bh=L7wKeBxFaqVMypXVymA48jylQHHP9KGfRKaiDCFxNyA=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=DlJLRTrJX7p7a8EbMc9kQl6ZrgQOfUSMm1tjpEiTn8qqToJfHWoMMernbgbt+DSmw
-         w+YIJeIoao9av6Hs00mRG5hRZnYp9f7H+olaqkyX/T+WfEsLiNAA1sRs9kTWLnrZuk
-         bRtZRKYezMrgEie/nDHW5QJLJ/+EQQ9me8Ui5LZI=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id DYAL0TalDeXu; Thu,  3 Dec 2020 13:13:49 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id A10FC1280121;
-        Thu,  3 Dec 2020 13:13:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1607030028;
-        bh=L7wKeBxFaqVMypXVymA48jylQHHP9KGfRKaiDCFxNyA=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=nz+QAcRzoV6w2gITh66g+io0oXU3sOPlJoY1/+70WZe5DEJpbFmU0o5Hwg8dgHou4
-         1EB4Yr8oHM3pCAyX8JBn8HpNwfZMhDaNkpQl3ycYxo1Up3NIbTYFvKcmlNs7+c7czd
-         8RRgZK5DgumtFG/SjYDC7MQsA8XhJwplqDFffwRo=
-Message-ID: <4b973b02352860978331eef110bae69e0d576adf.camel@HansenPartnership.com>
-Subject: Re: [Ksummit-discuss] crediting bug reports and fixes folded into
- original patch
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Joe Perches <joe@perches.com>
-Cc:     "ksummit-discuss@lists.linuxfoundation.org" 
-        <ksummit-discuss@lists.linuxfoundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Date:   Thu, 03 Dec 2020 13:13:47 -0800
-In-Reply-To: <20201203191731.bpzvwqfldhcjhzfy@chatter.i7.local>
-References: <ea32eb02-5e44-0469-772b-34b5cb882543@suse.cz>
-         <694039d6e386d999fd74d038cf2627f5b3b0ca71.camel@HansenPartnership.com>
-         <3c11134905f06185dda4e9125f2fb7fd30fff979.camel@perches.com>
-         <20201203191731.bpzvwqfldhcjhzfy@chatter.i7.local>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Thu, 3 Dec 2020 16:16:51 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFF9C061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 13:16:05 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id b18so3208343ots.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 13:16:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zE2K/CILOD7x/mQFo0Rz+6Lwz9iUEQy1K2ey3j7mIvY=;
+        b=RJvFpvNVdQHgoMCdGEJOrXTglxIdvZWaCGMEkkFNj5+/KVvxUKXNczdE5ARGh/r+X9
+         kRN9dZlFLDoQIULz9HzkGbo0WG33na8+2Az/iu3B5aSisUYemDodBckMjlQMW0Hul9u9
+         vDvOMQ7yewLVQhXF0RNF7q6iKv9e8vGalRbQg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zE2K/CILOD7x/mQFo0Rz+6Lwz9iUEQy1K2ey3j7mIvY=;
+        b=R9d/0WAGyVwIw+aCPNJMU6X6RsrrqK4xUv+jv3EZ/Cg0Og6KukqbUwAyG8sXRRL9Qp
+         p4FofvuH/porWRs+7GlweYbsvI2WN8165BHM3CBmcrLAuXgZW7tlsKc/Efl0FGhsvAuW
+         uo7KIs9BvGKBgsljOqqWB+yU7AUdzxTcAvmWiAI2zjIe7yIQq2itMdUBi0RQZHeiA/iU
+         ONTtJkcentOuRej3lxUmsQqTZqrd0POrKK5y74h7IxUPLQKqqx3KbVmb8ycgxlc9Gz/R
+         Cj3n5ZUz10RsPeD+EL1Pz/mfqKRbrB4h2ZRo+wblmf0oiJOhzjLsmQlYcGOqQTUhiJec
+         4snQ==
+X-Gm-Message-State: AOAM531HJ1jakYsNf6gzvLnXjJkF15F5VIU6nHJSGc1s0OSHELQKKxoJ
+        uvERtZY23MkVm+m/bdxGQQXGop66UAmZCEgqqo1+7w==
+X-Google-Smtp-Source: ABdhPJwja/l4kUHtGAIlv6RL6aUgPiP7VSPC3Nl7pi1/Z1gf00h+gOaHAH90utQ+YTf9v60rVzhn7EE9I/kZrwvwO/Q=
+X-Received: by 2002:a9d:23ca:: with SMTP id t68mr978736otb.281.1607030164448;
+ Thu, 03 Dec 2020 13:16:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201203191339.u5hfwy6ycrrzeb3z@adolin>
+In-Reply-To: <20201203191339.u5hfwy6ycrrzeb3z@adolin>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 3 Dec 2020 22:15:53 +0100
+Message-ID: <CAKMK7uFWb-4pGPMJyM7wwLkA-ayv1Axcs9+RNyM1q2SzwxHSBQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/vkms: Add setup and testing information
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
+Cc:     Melissa Wen <melissa.srw@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Maxime Ripard <mripard@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-03 at 14:17 -0500, Konstantin Ryabitsev wrote:
-> On Thu, Dec 03, 2020 at 08:55:54AM -0800, Joe Perches wrote:
-> > Perhaps automate a mechanism to capture that information as
-> > git notes for the patches when applied.
-> 
-> Git notes have a limited usefulness for this -- they are indeed part
-> of the repository, but they aren't replicated unless someone does a 
-> --mirror clone (or specifically fetches refs/notes/*). If the goal is
-> to improve visibility for contributors, then putting this info into a
-> git note will hardly make more difference than providing a Link: that
-> someone has to follow to a list archival service. 
-> 
-> I can offer the following proposal:
-> 
-> - kernel.org already monitors all mailing lists that are archived on 
->   lore.kernel.org for the purposes of pull request tracking 
->   (pr-tracker-bot).
-> - in the near future, we will add a separate process that will 
->   auto-explode all pull requests into individual patches and add them
->   to a separate public-inbox archive (think of it as another 
->   transparency log, since pull requests are transient and opaque).
-> 
-> We can additionally:
-> 
-> - identify all Link: and Message-Id: entries in commit messages, 
->   retrieve the threads they refer to, and archive them as part of
+On Thu, Dec 3, 2020 at 8:13 PM Sumera Priyadarsini
+<sylphrenadin@gmail.com> wrote:
+>
+> Update the vkms documentation to contain steps to:
+>
+>  - setup the vkms driver
+>  - run tests using igt
+>
+> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+> ---
+>  Documentation/gpu/vkms.rst | 47 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+>
+> diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
+> index 13bab1d93bb3..d6782174d23f 100644
+> --- a/Documentation/gpu/vkms.rst
+> +++ b/Documentation/gpu/vkms.rst
+> @@ -7,6 +7,53 @@
+>  .. kernel-doc:: drivers/gpu/drm/vkms/vkms_drv.c
+>     :doc: vkms (Virtual Kernel Modesetting)
+>
+> +SETUP
 
->   the same (or adjacent) transparency log.
-> 
-> This offers an improvement over the status quo, because if 
-> lore.kernel.org becomes unavailable, someone would have to have
-> access to all backend archive repositories it is currently tracking
-> in order to be able to reconstitute relevant conversations -- whereas
-> with this change, it should be sufficient to just have the copy of
-> the  transparency log to have a fully self-contained high-relevancy
-> archive of both individual commits and conversations that happened
-> around them.
+Absolute bikeshed, but we generally stick to titlecase for titles, so
+just "Setup" and "Testing with IGT".
+> +=====
+> +
+> +The VKMS driver can be setup with the following steps:
+> +
+> +To check if VKMS is loaded, run::
+> +
+> +  lsmod | grep vkms
+> +
+> +This should list the VKMS driver. If no output is obtained, then
+> +you need to enable and/or load the VKMS driver.
+> +Ensure that the VKMS driver has been set as a loadable module in your
+> +kernel config file. The following line should be present in the .config
+> +file in your kernel root::
+> +
+> +  CONFIG_DRM_VKMS=m
+> +
+> +Compile and build the kernel for the changes to get reflected.
+> +If your existing config already has VKMS available as a loadable module,
+> +then there is no need to build the kernel again.
+> +Now, to load the driver, use::
+> +
+> +  sudo modprobe vkms
+> +
+> +On running the lsmod command now, the VKMS driver will appear listed.
+> +You can also observe the driver being loaded in the dmesg logs.
+> +
+> +To disable the driver, use ::
+> +
+> +  sudo modprobe -r vkms
+> +
+> +TESTING WITH IGT
+> +================
+> +
+> +The IGT GPU Tools is a test suite used specifically for debugging and
+> +development of the DRM drivers.
+> +The IGT Tools can be installed from
+> +`here <https://gitlab.freedesktop.org/drm/igt-gpu-tools>`_ .
+> +Once you have installed IGT, you can run tests using::
+> +
+> +  ./scripts/run-tests.sh -t <name of test>
+> +
+> +For example, to test the functionality of the igt_draw library,
+> +we can run the kms_draw_crc test::
+> +
+> +  ./scripts/run-tests.sh -t kms_draw_crc
 
-I don't think this is strictly necessary because there's more than lore
-that archive's our lists, but the people at the internet history
-project would remind me not to look a gift horse in the mouth, so I
-think this would certainly be a useful addition.
+If we run igt tests directly, there's an option to select the right
+device. This is important if you have more than one gpu driver
+(usually the case if you run this directly, but even on virtual
+machines there should usually be a drm driver around).  E.g. when I
+run a test directly:
 
-The thing which Link: doesn't necessarily track is iterations, so if
-you replied to v2 and your feedback got incorporated, there's a v3
-iteration which has a different msgid.  Is there a way of getting this
-full history, not just the current thread?
+# tests/kms_flip --device drm:/dev/dri/card0
 
-> I'm just not sure if this will help with the subject of the 
-> conversation, or if it does not serve the goal of recognizing
-> developer contributions by making them more visible.
+I'm not sure whether there's an option that's always going to select
+the vkms device. I'm also not sure you can pass these options to
+run-tests.sh, I kinda don't use that one myself ...
 
-I added Jon to the cc since a lot of managers (community or otherwise)
-do use the lwn.net stats as a performance guide.  The real question is
-could we get something measurable out of the data?  say number of
-replies to an accepted patch counting in the reviewer stats or
-something?
+Aside from that looks all good to me.
+-Daniel
 
-James
+> +
+>  TODO
+>  ====
+>
+> --
+> 2.25.1
+>
 
 
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
