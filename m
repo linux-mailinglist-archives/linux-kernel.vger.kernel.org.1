@@ -2,165 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7EE2CDEDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0202CDEDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387853AbgLCT0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:26:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727156AbgLCT0Q (ORCPT
+        id S1731626AbgLCT0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:26:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25090 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727156AbgLCT0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:26:16 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6525FC08C5F2;
-        Thu,  3 Dec 2020 11:25:02 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id v14so4393259lfo.3;
-        Thu, 03 Dec 2020 11:25:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5dCbZvyPJ9eUu2G59fWkwNpYcrEO/zvwjAoLRWdkXSE=;
-        b=comoDseRXVDKzFn9i3gBlbvcVp8U4meW9qg1it+b531GPnMYh5c/hmaQYK9H6BR+3j
-         vx+Y9Rb7vFyhj1kIrNn3X7uRsjhjwwl4pFB94N0VS7Uhj+p0cYchgGoWgL24bNUPP4T3
-         verFelMO9N2fhghS8lU63vb0qfwr5AQPEnmbOqM2WF97LVIyha4soqTI0CPz46iskKPK
-         12pflg8R8wkNpG37q0MZMX/L6AigU4I1z4jZ7Gpc14dkVycGE0jnkDZOHH9Gbg2snnf6
-         029zoIt/n2Tzc/Bw4PdnQGcKdje4EVqfZSFx2q07BnuniqCp5mlUt6kgvWIsVpG03gw3
-         CJYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5dCbZvyPJ9eUu2G59fWkwNpYcrEO/zvwjAoLRWdkXSE=;
-        b=unIimbkgBqTL4qOLriy/eCLflwh8alEuuLdFWZySMwoYmyVkf2NcfAOdpJkXQ0N6gz
-         sF8SZ66A0vUP69mye2hBpus1hbZYqmFEWguPEZY6jUu8i3f5jBC/72z1zd2+iU5ckdJB
-         HW0hm45yyVo2IMNiAK8sgGFxPGwA4uQeg4oLiFI+lzklaOhEebFRSVDxPTQrbPyOchX4
-         0CByt90eE67dWYCb+OWRutGfKBKpTYltK4HlkQ8l1tJqxY7K5LqyDyxXfzKd9tESN5eI
-         2deNJQOdhcQ5f+k0NMS2Sbr+6nYrhc0Vo8k72UZPbzcOoPUH3Io+md6QRguSc9R8cS2j
-         FXCQ==
-X-Gm-Message-State: AOAM533Tzwrli+YN/i7S5mwpGoxftIYvgvGugxM5U6tEFbbCk5xeCxuD
-        8DoFtsb5GAgqCOEjSBG5Bqo=
-X-Google-Smtp-Source: ABdhPJzYUiGTUA6BQcOXvTwrOBG6wlaDUcOd+ZQotdRN43mdbhmOwdlpbdUmvx4fksJKT0SQ4u/0zA==
-X-Received: by 2002:ac2:4da1:: with SMTP id h1mr1868238lfe.412.1607023500935;
-        Thu, 03 Dec 2020 11:25:00 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-53.dynamic.spd-mgts.ru. [109.252.192.53])
-        by smtp.gmail.com with ESMTPSA id z7sm861932lfq.50.2020.12.03.11.24.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 11:25:00 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v11 08/10] drm/tegra: dc: Extend debug stats with total number of events
-Date:   Thu,  3 Dec 2020 22:24:37 +0300
-Message-Id: <20201203192439.16177-9-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201203192439.16177-1-digetx@gmail.com>
-References: <20201203192439.16177-1-digetx@gmail.com>
+        Thu, 3 Dec 2020 14:26:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607023487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AxyrHWJOsmfjpDDJjvbpfuq1IKoXs24Zs2aC+OePWR8=;
+        b=B72hUV2lIvdDvUo0f9YNFm9w9eQ30wfz2bkwnc5y22U1xIT3gJRQkIlqma7gyrXmrSxma4
+        j6HZufHAtZpAg/eB+8ZtscFQrksDlreaNE6mMg0V2ebbAlBFzKeYXcVfLUinVHjoOKom93
+        h0rBmYaSbCQTwZUZjGszp0X71Gqp2cc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-43-bz9-6GunP-yvFOefD-ptDA-1; Thu, 03 Dec 2020 14:24:45 -0500
+X-MC-Unique: bz9-6GunP-yvFOefD-ptDA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BFA0D1005504;
+        Thu,  3 Dec 2020 19:24:42 +0000 (UTC)
+Received: from krava (unknown [10.40.195.70])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 262256085A;
+        Thu,  3 Dec 2020 19:24:38 +0000 (UTC)
+Date:   Thu, 3 Dec 2020 20:24:38 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <songliubraving@fb.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 02/25] bpf: Add size arg to build_id_parse function
+Message-ID: <20201203192438.GA3613628@krava>
+References: <20201126170026.2619053-1-jolsa@kernel.org>
+ <20201126170026.2619053-3-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126170026.2619053-3-jolsa@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's useful to know the total number of underflow events and currently
-the debug stats are getting reset each time CRTC is being disabled. Let's
-account the overall number of events that doesn't get a reset.
+On Thu, Nov 26, 2020 at 06:00:03PM +0100, Jiri Olsa wrote:
+> It's possible to have other build id types (other than default SHA1).
+> Currently there's also ld support for MD5 build id.
+> 
+> Adding size argument to build_id_parse function, that returns (if defined)
+> size of the parsed build id, so we can recognize the build id type.
+> 
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Song Liu <songliubraving@fb.com>
 
-Tested-by: Peter Geis <pgwipeout@gmail.com>
-Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/gpu/drm/tegra/dc.c | 10 ++++++++++
- drivers/gpu/drm/tegra/dc.h |  5 +++++
- 2 files changed, 15 insertions(+)
+Alexei, Song,
+could you guys please check on this one?
 
-diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-index 5c587cfd1bb2..b6676f1fe358 100644
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -1539,6 +1539,11 @@ static int tegra_dc_show_stats(struct seq_file *s, void *data)
- 	seq_printf(s, "underflow: %lu\n", dc->stats.underflow);
- 	seq_printf(s, "overflow: %lu\n", dc->stats.overflow);
- 
-+	seq_printf(s, "frames total: %lu\n", dc->stats.frames_total);
-+	seq_printf(s, "vblank total: %lu\n", dc->stats.vblank_total);
-+	seq_printf(s, "underflow total: %lu\n", dc->stats.underflow_total);
-+	seq_printf(s, "overflow total: %lu\n", dc->stats.overflow_total);
-+
- 	return 0;
- }
- 
-@@ -2310,6 +2315,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		/*
- 		dev_dbg(dc->dev, "%s(): frame end\n", __func__);
- 		*/
-+		dc->stats.frames_total++;
- 		dc->stats.frames++;
- 	}
- 
-@@ -2318,6 +2324,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		dev_dbg(dc->dev, "%s(): vertical blank\n", __func__);
- 		*/
- 		drm_crtc_handle_vblank(&dc->base);
-+		dc->stats.vblank_total++;
- 		dc->stats.vblank++;
- 	}
- 
-@@ -2325,6 +2332,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		/*
- 		dev_dbg(dc->dev, "%s(): underflow\n", __func__);
- 		*/
-+		dc->stats.underflow_total++;
- 		dc->stats.underflow++;
- 	}
- 
-@@ -2332,11 +2340,13 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		/*
- 		dev_dbg(dc->dev, "%s(): overflow\n", __func__);
- 		*/
-+		dc->stats.overflow_total++;
- 		dc->stats.overflow++;
- 	}
- 
- 	if (status & HEAD_UF_INT) {
- 		dev_dbg_ratelimited(dc->dev, "%s(): head underflow\n", __func__);
-+		dc->stats.underflow_total++;
- 		dc->stats.underflow++;
- 	}
- 
-diff --git a/drivers/gpu/drm/tegra/dc.h b/drivers/gpu/drm/tegra/dc.h
-index 0d7bdf66a1ec..ba4ed35139fb 100644
---- a/drivers/gpu/drm/tegra/dc.h
-+++ b/drivers/gpu/drm/tegra/dc.h
-@@ -48,6 +48,11 @@ struct tegra_dc_stats {
- 	unsigned long vblank;
- 	unsigned long underflow;
- 	unsigned long overflow;
-+
-+	unsigned long frames_total;
-+	unsigned long vblank_total;
-+	unsigned long underflow_total;
-+	unsigned long overflow_total;
- };
- 
- struct tegra_windowgroup_soc {
--- 
-2.29.2
+thanks,
+jirka
+
+
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  include/linux/buildid.h |  3 ++-
+>  kernel/bpf/stackmap.c   |  2 +-
+>  lib/buildid.c           | 29 +++++++++++++++++++++--------
+>  3 files changed, 24 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/linux/buildid.h b/include/linux/buildid.h
+> index 3be5b49719f1..72639d433873 100644
+> --- a/include/linux/buildid.h
+> +++ b/include/linux/buildid.h
+> @@ -6,6 +6,7 @@
+>  
+>  #define BUILD_ID_SIZE 20
+>  
+> -int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id);
+> +int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
+> +		   __u32 *size);
+>  
+>  #endif
+> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+> index 7df08f8af5a1..a05fac2cbb05 100644
+> --- a/kernel/bpf/stackmap.c
+> +++ b/kernel/bpf/stackmap.c
+> @@ -199,7 +199,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+>  
+>  	for (i = 0; i < trace_nr; i++) {
+>  		vma = find_vma(current->mm, ips[i]);
+> -		if (!vma || build_id_parse(vma, id_offs[i].build_id)) {
+> +		if (!vma || build_id_parse(vma, id_offs[i].build_id, NULL)) {
+>  			/* per entry fall back to ips */
+>  			id_offs[i].status = BPF_STACK_BUILD_ID_IP;
+>  			id_offs[i].ip = ips[i];
+> diff --git a/lib/buildid.c b/lib/buildid.c
+> index e8d5feb7ef20..dbe1b7e247f3 100644
+> --- a/lib/buildid.c
+> +++ b/lib/buildid.c
+> @@ -12,6 +12,7 @@
+>   */
+>  static inline int parse_build_id(void *page_addr,
+>  				 unsigned char *build_id,
+> +				 __u32 *size,
+>  				 void *note_start,
+>  				 Elf32_Word note_size)
+>  {
+> @@ -38,6 +39,8 @@ static inline int parse_build_id(void *page_addr,
+>  			       nhdr->n_descsz);
+>  			memset(build_id + nhdr->n_descsz, 0,
+>  			       BUILD_ID_SIZE - nhdr->n_descsz);
+> +			if (size)
+> +				*size = nhdr->n_descsz;
+>  			return 0;
+>  		}
+>  		new_offs = note_offs + sizeof(Elf32_Nhdr) +
+> @@ -50,7 +53,8 @@ static inline int parse_build_id(void *page_addr,
+>  }
+>  
+>  /* Parse build ID from 32-bit ELF */
+> -static int get_build_id_32(void *page_addr, unsigned char *build_id)
+> +static int get_build_id_32(void *page_addr, unsigned char *build_id,
+> +			   __u32 *size)
+>  {
+>  	Elf32_Ehdr *ehdr = (Elf32_Ehdr *)page_addr;
+>  	Elf32_Phdr *phdr;
+> @@ -65,7 +69,7 @@ static int get_build_id_32(void *page_addr, unsigned char *build_id)
+>  
+>  	for (i = 0; i < ehdr->e_phnum; ++i) {
+>  		if (phdr[i].p_type == PT_NOTE &&
+> -		    !parse_build_id(page_addr, build_id,
+> +		    !parse_build_id(page_addr, build_id, size,
+>  				    page_addr + phdr[i].p_offset,
+>  				    phdr[i].p_filesz))
+>  			return 0;
+> @@ -74,7 +78,8 @@ static int get_build_id_32(void *page_addr, unsigned char *build_id)
+>  }
+>  
+>  /* Parse build ID from 64-bit ELF */
+> -static int get_build_id_64(void *page_addr, unsigned char *build_id)
+> +static int get_build_id_64(void *page_addr, unsigned char *build_id,
+> +			   __u32 *size)
+>  {
+>  	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)page_addr;
+>  	Elf64_Phdr *phdr;
+> @@ -89,7 +94,7 @@ static int get_build_id_64(void *page_addr, unsigned char *build_id)
+>  
+>  	for (i = 0; i < ehdr->e_phnum; ++i) {
+>  		if (phdr[i].p_type == PT_NOTE &&
+> -		    !parse_build_id(page_addr, build_id,
+> +		    !parse_build_id(page_addr, build_id, size,
+>  				    page_addr + phdr[i].p_offset,
+>  				    phdr[i].p_filesz))
+>  			return 0;
+> @@ -97,8 +102,16 @@ static int get_build_id_64(void *page_addr, unsigned char *build_id)
+>  	return -EINVAL;
+>  }
+>  
+> -/* Parse build ID of ELF file mapped to vma */
+> -int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id)
+> +/*
+> + * Parse build ID of ELF file mapped to vma
+> + * @vma:      vma object
+> + * @build_id: buffer to store build id, at least BUILD_ID_SIZE long
+> + * @size:     returns actual build id size in case of success
+> + *
+> + * Returns 0 on success, otherwise error (< 0).
+> + */
+> +int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
+> +		   __u32 *size)
+>  {
+>  	Elf32_Ehdr *ehdr;
+>  	struct page *page;
+> @@ -126,9 +139,9 @@ int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id)
+>  		goto out;
+>  
+>  	if (ehdr->e_ident[EI_CLASS] == ELFCLASS32)
+> -		ret = get_build_id_32(page_addr, build_id);
+> +		ret = get_build_id_32(page_addr, build_id, size);
+>  	else if (ehdr->e_ident[EI_CLASS] == ELFCLASS64)
+> -		ret = get_build_id_64(page_addr, build_id);
+> +		ret = get_build_id_64(page_addr, build_id, size);
+>  out:
+>  	kunmap_atomic(page_addr);
+>  	put_page(page);
+> -- 
+> 2.26.2
+> 
 
