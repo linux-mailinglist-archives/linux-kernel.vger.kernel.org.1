@@ -2,190 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073C72CE2B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FDB2CE2B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:35:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729527AbgLCXdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:33:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59636 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726392AbgLCXdZ (ORCPT
+        id S1729862AbgLCXek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:34:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727080AbgLCXek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:33:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607038319;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1Y5aAtabZToixQE29rulg3FhlOgphxfybE23QlJHTSQ=;
-        b=g8KCicdw7Q1dw2Q6+7Y2YIMEr6afVd7LSooUq2zyRh0E2zFqv8LgOndHIJiPSmiKEk8SiB
-        jqxCGMwSjnvtfw8VxhJNo5qwc7+sFPfUAfU8xS8dQSAL3FBNjfxm6JJNeI9bz6LlROeaeD
-        89A1j7unKZX2tXQ/TD3bUG1AIcky2+g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-583-03zEdPy9MwuUn3YLwKUxpw-1; Thu, 03 Dec 2020 18:31:57 -0500
-X-MC-Unique: 03zEdPy9MwuUn3YLwKUxpw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82F66809DC9;
-        Thu,  3 Dec 2020 23:31:55 +0000 (UTC)
-Received: from krava (unknown [10.40.195.70])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9B5871A8A2;
-        Thu,  3 Dec 2020 23:31:53 +0000 (UTC)
-Date:   Fri, 4 Dec 2020 00:31:52 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org
-Subject: Re: [PATCH v1 1/2] perf: support build BPF skeletons with perf
-Message-ID: <20201203233152.GF3613628@krava>
-References: <20201202093709.3374099-1-songliubraving@fb.com>
- <20201202093709.3374099-2-songliubraving@fb.com>
+        Thu, 3 Dec 2020 18:34:40 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBDCC061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 15:34:00 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id t18so3540649otk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 15:34:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Nlt5TCZHrcUiLfPk4cKZXl+okLQJSI7yOB6iAjOGzWc=;
+        b=y5SLYw5aFhViOAGUSfQe/vsfi792mLpmL6RQ8gptc9iXRps4I4XyzK3B5+4qvAKU2+
+         g5ZrtsejLP5UB2oV9aiYdrbTDgW09+K8yTZxIi0zM6r2VhnuMJ/T3WlrAoC/mesW/jAU
+         E46NkBnjNvLSg91sXuCosyWkeDotJtxi7ZsZ6uRTlp6UBgcV8LGY7eGhUx8ivv2NGmmF
+         22jYCqroVAqveOLvzni9aCqPIqBvsbPXv2pGiGwMsyzujWJsXD4aHjAcBXlE057MO0Bf
+         BU2FiHE7S5MODvy5mzZI+c8b+PUnchspHeuMeIlsSrlc5XoCfN2Ms23+tx/1NiOIgI2V
+         PGng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Nlt5TCZHrcUiLfPk4cKZXl+okLQJSI7yOB6iAjOGzWc=;
+        b=ptVuaDId9l3OIKrcGlxafuPRr8885wcnghz+GC3zhFz+qlxtBfAwhvFacXlcQLL41N
+         hS2RSFlYy+slTOmElgrPPt3s+06FWN18oPM7C7EGnDJ2n9XFqC9SY4NG/0nGfbY/nOUK
+         aAiEQA4aMwO4EsviTxz1jhl8UHV7ahI04NUK+RUQJWDqbJHVhPICiKBCErHuwwj2WLU8
+         WhpcPbhfnEe6VbuIGvFZPkD+WvP1QF9wer9oOn2tASDCx6SZNUrzpshBCjd3DAaHJR3g
+         2C5TUG0wYDiCXH5/uFd1GSXIhMWWbniSryFhopPr0A6FdxCN5JfGIsjyTu6atiAM9Vwg
+         Bcag==
+X-Gm-Message-State: AOAM533IfjYJi75d+gFYsDi+BsxZt55x7UPaYff+E7bYb5nLqjjEarRu
+        qezZ8mr7oyuXDDOxUM3yUTFwgg==
+X-Google-Smtp-Source: ABdhPJzUGMCjZFhGEILX4taCuORPDa4llhRz+7yRCWz//95EVkzuFKSrUIxo+MkrDkz9QMOr/GUpsQ==
+X-Received: by 2002:a05:6830:1456:: with SMTP id w22mr1454769otp.47.1607038439555;
+        Thu, 03 Dec 2020 15:33:59 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u66sm222457otb.48.2020.12.03.15.33.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 15:33:58 -0800 (PST)
+Date:   Thu, 3 Dec 2020 17:33:57 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] regulator: dt-bindings: Add PM8350x compatibles
+Message-ID: <X8l15Z6TXnbJdl1P@builder.lan>
+References: <20201203071244.2652297-1-vkoul@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201202093709.3374099-2-songliubraving@fb.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20201203071244.2652297-1-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 01:37:08AM -0800, Song Liu wrote:
-> BPF programs are useful in perf to profile BPF programs. BPF skeleton is
-> by far the easiest way to write BPF tools. Enable building BPF skeletons
-> in util/bpf_skel. A dummy bpf skeleton is added. More bpf skeletons will
-> be added for different use cases.
+On Thu 03 Dec 01:12 CST 2020, Vinod Koul wrote:
+
+> Add PM8350 and PM8350C compatibles for these PMICs found in some
+> Qualcomm platforms.
 > 
-> Signed-off-by: Song Liu <songliubraving@fb.com>
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 > ---
->  tools/bpf/bpftool/Makefile           |  2 ++
->  tools/build/Makefile.feature         |  4 ++-
->  tools/perf/Makefile.config           | 10 ++++++
->  tools/perf/Makefile.perf             | 46 ++++++++++++++++++++++++++--
->  tools/perf/util/bpf_skel/.gitignore  |  3 ++
->  tools/perf/util/bpf_skel/dummy.bpf.c | 19 ++++++++++++
->  tools/scripts/Makefile.include       |  1 +
->  7 files changed, 82 insertions(+), 3 deletions(-)
->  create mode 100644 tools/perf/util/bpf_skel/.gitignore
->  create mode 100644 tools/perf/util/bpf_skel/dummy.bpf.c
+>  .../devicetree/bindings/regulator/qcom,rpmh-regulator.txt     | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index f60e6ad3a1dff..a01407ec78dc5 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -120,6 +120,8 @@ endif
->  
->  BPFTOOL_BOOTSTRAP := $(if $(OUTPUT),$(OUTPUT)bpftool-bootstrap,./bpftool-bootstrap)
->  
-> +bootstrap: $(BPFTOOL_BOOTSTRAP)
-> +
->  BOOTSTRAP_OBJS = $(addprefix $(OUTPUT),main.o common.o json_writer.o gen.o btf.o)
->  OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
->  
-> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> index 97cbfb31b7625..4eeeabbaa2947 100644
-> --- a/tools/build/Makefile.feature
-> +++ b/tools/build/Makefile.feature
-> @@ -99,7 +99,9 @@ FEATURE_TESTS_EXTRA :=                  \
->           clang                          \
->           libbpf                         \
->           libpfm4                        \
-> -         libdebuginfod
-> +         libdebuginfod			\
-> +	 clang-bpf-co-re
-
-do not use tabs in here
-
-> +
->  
->  FEATURE_TESTS ?= $(FEATURE_TESTS_BASIC)
->  
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index ce8516e4de34f..c8ff82b4fc1b2 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -621,6 +621,16 @@ ifndef NO_LIBBPF
->    endif
->  endif
->  
-> +$(call feature_check,clang-bpf-co-re)
-> +ifeq ($(feature-clang-bpf-co-re), 0)
-> +  undefine BUILD_BPF_SKEL
-
-we compile with 'make BUILD_BPF_SKEL=1' so we should fail here
-with the standard 'please install..' message we use
-
-> +endif
-> +
-> +ifdef BUILD_BPF_SKEL
-> +    $(call detected,CONFIG_PERF_BPF_SKEL)
-> +    CFLAGS += -DBUILD_BPF_SKEL
-> +endif
-> +
->  dwarf-post-unwind := 1
->  dwarf-post-unwind-text := BUG
->  
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index 7ce3f2e8b9c74..f46f0cd012b2d 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -126,6 +126,8 @@ include ../scripts/utilities.mak
->  #
->  # Define NO_LIBDEBUGINFOD if you do not want support debuginfod
->  #
-> +# Define BUILD_BPF_SKEL to enable BPF skeletons
-> +#
->  
->  # As per kernel Makefile, avoid funny character set dependencies
->  unexport LC_ALL
-> @@ -178,6 +180,8 @@ LD += $(EXTRA_LDFLAGS)
->  HOSTCC  ?= gcc
->  HOSTLD  ?= ld
->  HOSTAR  ?= ar
-> +CLANG ?= clang
-
-please keep the indent with other ?= when possible
-
-> +LLVM_STRIP ?= llvm-strip
->  
->  PKG_CONFIG = $(CROSS_COMPILE)pkg-config
->  LLVM_CONFIG ?= llvm-config
-> @@ -735,7 +739,8 @@ prepare: $(OUTPUT)PERF-VERSION-FILE $(OUTPUT)common-cmds.h archheaders $(drm_ioc
->  	$(x86_arch_prctl_code_array) \
->  	$(rename_flags_array) \
->  	$(arch_errno_name_array) \
-> -	$(sync_file_range_arrays)
-> +	$(sync_file_range_arrays) \
-> +	bpf-skel
->  
->  $(OUTPUT)%.o: %.c prepare FORCE
->  	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=$(build-dir) $@
-> @@ -1008,7 +1013,44 @@ config-clean:
->  python-clean:
->  	$(python-clean)
->  
-> -clean:: $(LIBTRACEEVENT)-clean $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clean $(LIBPERF)-clean config-clean fixdep-clean python-clean
-> +SKEL_OUT := $(abspath util/bpf_skel)
-> +SKEL_TMP_OUT := $(abspath util/bpf_skel/.tmp)
-
-hum, actualy we use $(OUTPUT) and if it's not defined we build
-directly in the tree, this should follow the same
-
-
-> +SKELETONS := $(SKEL_OUT)/dummy.skel.h
-> +
-> +ifdef BUILD_BPF_SKEL
-> +BPFTOOL := $(SKEL_TMP_OUT)/bpftool-bootstrap
-> +LIBBPF_SRC := $(abspath ../lib/bpf)
-> +BPF_INCLUDE := -I$(SKEL_TMP_OUT)/..
-> +submake_extras := feature_display=0
-
-there's no need for the variable, is there?
-also why do we want to hide it?
-
-thanks,
-jirka
-
+> diff --git a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
+> index 97c3e0b7611c..0f5f4029d9a2 100644
+> --- a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
+> +++ b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
+> @@ -26,6 +26,8 @@ Supported regulator node names:
+>  	PM8009:		smps1 - smps2, ldo1 - ldo7
+>  	PM8150:		smps1 - smps10, ldo1 - ldo18
+>  	PM8150L:	smps1 - smps8, ldo1 - ldo11, bob, flash, rgb
+> +	PM8350:		smps1 - smps12, ldo1 - ldo10,
+> +	PM8350C:	smps1 - smps10, ldo1 - ldo13, bob
+>  	PM8998:		smps1 - smps13, ldo1 - ldo28, lvs1 - lvs2
+>  	PMI8998:	bob
+>  	PM6150:         smps1 - smps5, ldo1 - ldo19
+> @@ -43,6 +45,8 @@ First Level Nodes - PMIC
+>  		    "qcom,pm8009-rpmh-regulators"
+>  		    "qcom,pm8150-rpmh-regulators"
+>  		    "qcom,pm8150l-rpmh-regulators"
+> +		    "qcom,pm8350-rpmh-regulators"
+> +		    "qcom,pm8350c-rpmh-regulators"
+>  		    "qcom,pm8998-rpmh-regulators"
+>  		    "qcom,pmi8998-rpmh-regulators"
+>  		    "qcom,pm6150-rpmh-regulators"
+> -- 
+> 2.26.2
+> 
