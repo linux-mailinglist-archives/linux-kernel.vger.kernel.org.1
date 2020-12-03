@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1062CD4C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6EF22CD4D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:44:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388766AbgLCLl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:41:29 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:34472 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388687AbgLCLl2 (ORCPT
+        id S2388868AbgLCLn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:43:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36416 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729054AbgLCLn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:41:28 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 65C661C0B9E; Thu,  3 Dec 2020 12:40:44 +0100 (CET)
-Date:   Thu, 3 Dec 2020 12:40:44 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v11 3/5] dt-bindings: leds: Add LED_FUNCTION_MOONLIGHT
- definitions
-Message-ID: <20201203114044.GA9061@duo.ucw.cz>
-References: <1606906011-25633-1-git-send-email-gene.chen.richtek@gmail.com>
- <1606906011-25633-4-git-send-email-gene.chen.richtek@gmail.com>
- <20201202122329.GA30929@duo.ucw.cz>
- <CAE+NS34D8a6Udt7ZZ0=U7oqm5POtihKvD3WjD_sAADamqQ=1AQ@mail.gmail.com>
+        Thu, 3 Dec 2020 06:43:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606995720;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z2/JUVMbgmiwF4hVlwNNOMPd3HZB9sBekSW1KAEyKUo=;
+        b=eAAGNo9jJ238Io+nRPRPr61HV0KhM0SVlgw9GYABCjWwhgKGjAxn0msKRo+bTtb41mN1Vz
+        AUYZwgUoyuLtQ67MsVP7zAK4VneqO6P8/dftmdbZ1Kg1eCmQj2faSgksNbf5MZ74eZlbHg
+        lNNtcoH/KoMy8Sii3naNm+sW/snz604=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-ReZi_JZbPNewoeLWA89kdw-1; Thu, 03 Dec 2020 06:41:59 -0500
+X-MC-Unique: ReZi_JZbPNewoeLWA89kdw-1
+Received: by mail-ed1-f69.google.com with SMTP id z20so813980edl.21
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 03:41:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=z2/JUVMbgmiwF4hVlwNNOMPd3HZB9sBekSW1KAEyKUo=;
+        b=EDH21MkJJED5RhBYDYlNgCdnzKoZGhRZh05mxvgvVQXg1nz3i9cudzHw3HTalRrnNN
+         VU3R7ybJfSgIglghwCT6/PLLu0t5LVnhii/1JaACrMugv3YCfgKgYQxrJ4Re+KAk/CtE
+         bIkf34VIDqpY7OT9jJVD1mWczAFFRdfILPxuuGKVuR9eZWRCcar3OrQfTGtbCGTGFh1m
+         wzW0t2m7/voJGagnOkmZ759d45yQ0vzzSJK0pYV3UiHDvG5aS5x5EmZOjNct9oqUfaLg
+         7wOktjcIbPXSfVIFXa7HhwWB2OcGZ9G/m8FnpT5TRO9Jzn2qSzyF8AnzrV4QQGTdN1sq
+         nNzg==
+X-Gm-Message-State: AOAM531UmaA0ey/S74HgMqBEEu3gt/X/RQ2er9x1Smki3vtfToO2HFE7
+        8F6yMVJpulDCB3p/CB4KyiilPmJjGiJcYfRchaK0u6C+0I9G5UJIYrHIIqmOYyiHJpgtDAEMqY0
+        9nystnyw1dCSTtT/eyEm9p/E0
+X-Received: by 2002:a17:906:2ec3:: with SMTP id s3mr2053811eji.133.1606995718240;
+        Thu, 03 Dec 2020 03:41:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxW3JyLsSOLmxQokAFrQzTXTB6znHfAxgajBoxXmC9FZky84x7HveAqEGoG3zNV8WzQk1bLWw==
+X-Received: by 2002:a17:906:2ec3:: with SMTP id s3mr2053804eji.133.1606995718043;
+        Thu, 03 Dec 2020 03:41:58 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id z12sm677926ejr.17.2020.12.03.03.41.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 03:41:57 -0800 (PST)
+Subject: Re: [PATCH 0/2] RFC: Precise TSC migration
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Oliver Upton <oupton@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+References: <20201130133559.233242-1-mlevitsk@redhat.com>
+ <87lfehfhez.fsf@nanos.tec.linutronix.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c78ac6dc-8018-11c5-2b1e-c201448472fa@redhat.com>
+Date:   Thu, 3 Dec 2020 12:41:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="liOOAslEiF7prFVr"
-Content-Disposition: inline
-In-Reply-To: <CAE+NS34D8a6Udt7ZZ0=U7oqm5POtihKvD3WjD_sAADamqQ=1AQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87lfehfhez.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 01/12/20 20:35, Thomas Gleixner wrote:
+>> This makes the random error in calculation of this value invariant
+>> across vCPUS, and allows the guest to do kvmclock calculation in userspace
+>> (vDSO) since kvmclock parameters are vCPU invariant.
+>
+> That's not the case today? OMG!
 
---liOOAslEiF7prFVr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's optional. If the host tells the guest that the host TSC is messed 
+up, kvmclock disables its vDSO implementation and falls back to the syscall.
 
-Hi!
+Paolo
 
-> > > +++ b/include/dt-bindings/leds/common.h
-> > > @@ -78,6 +78,7 @@
-> > >  #define LED_FUNCTION_INDICATOR "indicator"
-> > >  #define LED_FUNCTION_LAN "lan"
-> > >  #define LED_FUNCTION_MAIL "mail"
-> > > +#define LED_FUNCTION_MOONLIGHT "moonlight"
-> >
-> > There's "torch" function that should be used for this. I guess comment
-> > should be added with explanation what exactly that is and how should
-> > the LED be named.
-> >
->=20
-> According to mail, 11/25 "Re: [PATCH v7 2/5] dt-bindings: leds: Add
-> LED_COLOR_ID_MOONLIGHT definitions",
-> The Moonlight LED is LED which maximum current more than torch, but
-> less than flash. Such as front camera fill light.
-> I think our channel is moonlight, not torch.
-> I will add this description to comment.
-> We can't exactly define moonlight current level, because every vendor
-> has their own specification.
-
-So... what is the timelimit on moonlight?
-
-But if it is used for camera illumination, I believe it should be
-simply called flash.
-
-Best regards,
-
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---liOOAslEiF7prFVr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX8jOvAAKCRAw5/Bqldv6
-8pj3AJ9cRVAbTOCXxcUiV3mbTJXFFTKK3QCgpfgXoggeGNEUdtl5msUvdmWnkSA=
-=gXOZ
------END PGP SIGNATURE-----
-
---liOOAslEiF7prFVr--
