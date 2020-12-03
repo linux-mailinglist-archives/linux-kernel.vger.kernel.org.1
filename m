@@ -2,272 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDCB2CDCC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A2D2CDCBD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:51:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731330AbgLCRv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:51:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731429AbgLCRvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:51:48 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 641B5207B5;
-        Thu,  3 Dec 2020 17:51:07 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1kksl0-002qvR-9T; Thu, 03 Dec 2020 12:51:06 -0500
-Message-ID: <20201203175106.173081168@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Thu, 03 Dec 2020 12:50:16 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-next][PATCH 3/3] ring-buffer: Add test to validate the time stamp deltas
-References: <20201203175013.038902435@goodmis.org>
+        id S1731419AbgLCRvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:51:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731330AbgLCRvN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 12:51:13 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65083C061A52;
+        Thu,  3 Dec 2020 09:50:27 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id ck29so3018001edb.8;
+        Thu, 03 Dec 2020 09:50:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=f/lU7wZvUZo1FXkT5r4NrXSCYN/0Xgw0B9cmSE39UdA=;
+        b=ZIrdH97CEuLYgmMBy23rE/QGKt+bIHisjsPFuKIE7wUvYV3UZFNVEhzsNg1prn/CYg
+         Sx+XjGfJnLksyoxByA08Tt86UCiamtth3ueqtTX34kokrB9JwOOMtq5POZ2Zw6Su/7aq
+         uPWhBxRIsrMjAS7wmJJU+ZE18TmWgb4RcxvJBboJCcjcc+aGc9fUTfb78MDX7WiN9A4V
+         WwXRvirp7LKRx8eEWA4HUsV7Nd2QrZg15ajBOsgy/AGi37XTs1sq8kWFOF/1RUnMTstt
+         aeB48LVWJzamq2NvARiHyUNDnIb1uztkt86aJDcTGuaxI8KlB+fcMwpKIUBuOJKRdZd4
+         x6SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=f/lU7wZvUZo1FXkT5r4NrXSCYN/0Xgw0B9cmSE39UdA=;
+        b=lWlEau2AUyin7r1II56WgZj+wMyaGH9G3fy4lDXBz4N9pp2C9NImTnyx+M08wAFKsq
+         FXeCUGuM1duq7G+BxaZyY2zHtaEUYKRvoSb6+cysl7krAtNUZqBzVLULFfZOfkwpoAak
+         5K0An075w7epiDmE6z80n+MYRp3FsQetOfEHhHiRXLe0P0J7ZSpq+qiVz99zBhkFFwRg
+         h+yYRi7MThligzHUEIU5wqt0jF6vQdHojiRjfvrP7qbsx9vPZGHCVL6l45jz5Dcu3EUA
+         v6wUrt+qlxtHiQBZIOMfcFK/4bJbPi1AYb3qnkk/T5kbDlxc9GBcLQ7hsDR6xLWOiikr
+         JtHQ==
+X-Gm-Message-State: AOAM532Z8tY4M7r+HTtEpcokK9QPkeYAwSpvSau3jdgBumou310Jy1u8
+        pJbv2YuDfCeWfeOsxbk2lnfvHODBz7E=
+X-Google-Smtp-Source: ABdhPJwR6NWvGHwhc1bjgyRw9T3sLWlEraTCh5wKTlRR0UCa9FJmDVEgcg02OADiU5aky/CUj3whRA==
+X-Received: by 2002:a50:d6c6:: with SMTP id l6mr3958749edj.80.1607017826093;
+        Thu, 03 Dec 2020 09:50:26 -0800 (PST)
+Received: from skbuf ([188.25.2.120])
+        by smtp.gmail.com with ESMTPSA id r9sm1291588ejd.38.2020.12.03.09.50.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 09:50:25 -0800 (PST)
+Date:   Thu, 3 Dec 2020 19:50:24 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     =?utf-8?B?0JzQsNC60YHQuNC8INCa0LjRgdC10LvRkdCy?= 
+        <bigunclemax@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxim Kochetkov <fido_max@inbox.ru>
+Subject: Re: [PATCH] spi: spi-fsl-dspi: Add GPIO chip select support
+Message-ID: <20201203175024.hzivclydoxp6txir@skbuf>
+References: <CALHCpMgQPDqV1tB6v0sA0imwfZGkoG_j84NZCehOT1pf8MTuCA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALHCpMgQPDqV1tB6v0sA0imwfZGkoG_j84NZCehOT1pf8MTuCA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Hi Maxim,
 
-While debugging a situation where a delta for an event was calucalted wrong,
-I realize there was nothing making sure that the delta of events are
-correct. If a single event has an incorrect delta, then all events after it
-will also have one. If the discrepency gets large enough, it could cause
-the time stamps to go backwards when crossing sub buffers, that record a
-full 64 bit time stamp, and the new deltas are added to that.
+On Thu, Dec 03, 2020 at 08:12:19PM +0300, Максим Киселёв wrote:
+> From: Maxim Kiselev <bigunclemax@gmail.com>
+> Date: Thu, 3 Dec 2020 18:56:12 +0300
+> Subject: [PATCH] spi: spi-fsl-dspi: Add GPIO chip select support
+> 
+> This patch allows use of GPIO for the chip select.
+> Because dSPI controller can't send transactions without hardware chip
+> selects, so first unused native CS will be set in SPI_PUSHR_CMD_PCS
 
-Add a way to validate the events at most events and when crossing a buffer
-page. This will help make sure that the deltas are always correct. This test
-will detect if they are ever corrupted.
+Are you sure?
 
-The test adds a high overhead to the ring buffer recording, as it does the
-audit for almost every event, and should only be used for testing the ring
-buffer.
+From the reference manual:
 
-This will catch the bug that is fixed by commit 55ea4cf40380 ("ring-buffer:
-Update write stamp with the correct ts"), which is not applied when this
-commit is applied.
+SPIx_PUSHR bits 10–15 PCS:
+Select which PCS signals are to be asserted for the transfer. Refer to
+the chip-specific SPI information for the number of PCS signals used in
+this chip.
+0 Negate the PCS[x] signal.
+1 Assert the PCS[x] signal.
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/Kconfig       |  20 +++++
- kernel/trace/ring_buffer.c | 150 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 170 insertions(+)
+And the definition is:
 
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index c9b64dea1216..fe60f9d7a0e6 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -845,6 +845,26 @@ config RING_BUFFER_STARTUP_TEST
- 
- 	 If unsure, say N
- 
-+config RING_BUFFER_VALIDATE_TIME_DELTAS
-+	bool "Verify ring buffer time stamp deltas"
-+	depends on RING_BUFFER
-+	help
-+	  This will audit the time stamps on the ring buffer sub
-+	  buffer to make sure that all the time deltas for the
-+	  events on a sub buffer matches the current time stamp.
-+	  This audit is performed for every event that is not
-+	  interrupted, or interrupting another event. A check
-+	  is also made when traversing sub buffers to make sure
-+	  that all the deltas on the previous sub buffer do not
-+	  add up to be greater than the current time stamp.
-+
-+	  NOTE: This adds significant overhead to recording of events,
-+	  and should only be used to test the logic of the ring buffer.
-+	  Do not use it on production systems.
-+
-+	  Only say Y if you understand what this does, and you
-+	  still want it enabled. Otherwise say N
-+
- config MMIOTRACE_TEST
- 	tristate "Test module for mmiotrace"
- 	depends on MMIOTRACE && m
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index ab68f28b8f4b..7cd888ee9ac7 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3193,6 +3193,153 @@ int ring_buffer_unlock_commit(struct trace_buffer *buffer,
- }
- EXPORT_SYMBOL_GPL(ring_buffer_unlock_commit);
- 
-+/* Special value to validate all deltas on a page. */
-+#define CHECK_FULL_PAGE		1L
-+
-+#ifdef CONFIG_RING_BUFFER_VALIDATE_TIME_DELTAS
-+static void dump_buffer_page(struct buffer_data_page *bpage,
-+			     struct rb_event_info *info,
-+			     unsigned long tail)
-+{
-+	struct ring_buffer_event *event;
-+	u64 ts, delta;
-+	int e;
-+
-+	ts = bpage->time_stamp;
-+	pr_warn("  [%lld] PAGE TIME STAMP\n", ts);
-+
-+	for (e = 0; e < tail; e += rb_event_length(event)) {
-+
-+		event = (struct ring_buffer_event *)(bpage->data + e);
-+
-+		switch (event->type_len) {
-+
-+		case RINGBUF_TYPE_TIME_EXTEND:
-+			delta = ring_buffer_event_time_stamp(event);
-+			ts += delta;
-+			pr_warn("  [%lld] delta:%lld TIME EXTEND\n", ts, delta);
-+			break;
-+
-+		case RINGBUF_TYPE_TIME_STAMP:
-+			delta = ring_buffer_event_time_stamp(event);
-+			ts = delta;
-+			pr_warn("  [%lld] absolute:%lld TIME STAMP\n", ts, delta);
-+			break;
-+
-+		case RINGBUF_TYPE_PADDING:
-+			ts += event->time_delta;
-+			pr_warn("  [%lld] delta:%d PADDING\n", ts, event->time_delta);
-+			break;
-+
-+		case RINGBUF_TYPE_DATA:
-+			ts += event->time_delta;
-+			pr_warn("  [%lld] delta:%d\n", ts, event->time_delta);
-+			break;
-+
-+		default:
-+			break;
-+		}
-+	}
-+}
-+
-+static DEFINE_PER_CPU(atomic_t, checking);
-+static atomic_t ts_dump;
-+
-+/*
-+ * Check if the current event time stamp matches the deltas on
-+ * the buffer page.
-+ */
-+static void check_buffer(struct ring_buffer_per_cpu *cpu_buffer,
-+			 struct rb_event_info *info,
-+			 unsigned long tail)
-+{
-+	struct ring_buffer_event *event;
-+	struct buffer_data_page *bpage;
-+	u64 ts, delta;
-+	bool full = false;
-+	int e;
-+
-+	bpage = info->tail_page->page;
-+
-+	if (tail == CHECK_FULL_PAGE) {
-+		full = true;
-+		tail = local_read(&bpage->commit);
-+	} else if (info->add_timestamp &
-+		   (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE)) {
-+		/* Ignore events with absolute time stamps */
-+		return;
-+	}
-+
-+	/*
-+	 * Do not check the first event (skip possible extends too).
-+	 * Also do not check if previous events have not been committed.
-+	 */
-+	if (tail <= 8 || tail > local_read(&bpage->commit))
-+		return;
-+
-+	/*
-+	 * If this interrupted another event, 
-+	 */
-+	if (atomic_inc_return(this_cpu_ptr(&checking)) != 1)
-+		goto out;
-+
-+	ts = bpage->time_stamp;
-+
-+	for (e = 0; e < tail; e += rb_event_length(event)) {
-+
-+		event = (struct ring_buffer_event *)(bpage->data + e);
-+
-+		switch (event->type_len) {
-+
-+		case RINGBUF_TYPE_TIME_EXTEND:
-+			delta = ring_buffer_event_time_stamp(event);
-+			ts += delta;
-+			break;
-+
-+		case RINGBUF_TYPE_TIME_STAMP:
-+			delta = ring_buffer_event_time_stamp(event);
-+			ts = delta;
-+			break;
-+
-+		case RINGBUF_TYPE_PADDING:
-+			if (event->time_delta == 1)
-+				break;
-+			/* fall through */
-+		case RINGBUF_TYPE_DATA:
-+			ts += event->time_delta;
-+			break;
-+
-+		default:
-+			RB_WARN_ON(cpu_buffer, 1);
-+		}
-+	}
-+	if ((full && ts > info->ts) ||
-+	    (!full && ts + info->delta != info->ts)) {
-+		/* If another report is happening, ignore this one */
-+		if (atomic_inc_return(&ts_dump) != 1) {
-+			atomic_dec(&ts_dump);
-+			goto out;
-+		}
-+		atomic_inc(&cpu_buffer->record_disabled);
-+		pr_warn("[CPU: %d]TIME DOES NOT MATCH expected:%lld actual:%lld delta:%lld after:%lld\n",
-+		       cpu_buffer->cpu,
-+		       ts + info->delta, info->ts, info->delta, info->after);
-+		dump_buffer_page(bpage, info, tail);
-+		atomic_dec(&ts_dump);
-+		/* Do not re-enable checking */
-+		return;
-+	}
-+out:
-+	atomic_dec(this_cpu_ptr(&checking));
-+}
-+#else
-+static inline void check_buffer(struct ring_buffer_per_cpu *cpu_buffer,
-+			 struct rb_event_info *info,
-+			 unsigned long tail)
-+{
-+}
-+#endif /* CONFIG_RING_BUFFER_VALIDATE_TIME_DELTAS */
-+
- static struct ring_buffer_event *
- __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 		  struct rb_event_info *info)
-@@ -3252,6 +3399,8 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 				(void)rb_time_cmpxchg(&cpu_buffer->before_stamp,
- 						      info->before, info->after);
- 		}
-+		if (a_ok && b_ok)
-+			check_buffer(cpu_buffer, info, CHECK_FULL_PAGE);
- 		return rb_move_tail(cpu_buffer, tail, info);
- 	}
- 
-@@ -3272,6 +3421,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 			/* Just use full timestamp for inerrupting event */
- 			info->delta = info->ts;
- 		barrier();
-+		check_buffer(cpu_buffer, info, tail);
- 		if (unlikely(info->ts != save_before)) {
- 			/* SLOW PATH - Interrupted between C and E */
- 
--- 
-2.28.0
+#define SPI_PUSHR_CMD_PCS(x)		(BIT(x) & GENMASK(5, 0))
 
+Notice the BIT(x).
 
+I expect that you can set the PCS to 0 and no hard chip select will
+assert.
