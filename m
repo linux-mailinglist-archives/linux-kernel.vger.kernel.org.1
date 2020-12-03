@@ -2,112 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2A62CE242
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14BBF2CE2A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731890AbgLCW5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:57:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728606AbgLCW5g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:57:36 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A041C061A51
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 14:56:56 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id j1so2020810pld.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 14:56:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EHAYrKbj/zPl1+pVBO2mTUTD59eSt3ugUwhIW8vCe/M=;
-        b=ovTruuoqCEsd5W5/yRX9B6q1dnWkeOHgHxocdVVbWfkA3R605oK/EWYMKEVL8CI5EO
-         HUYQcNF0XWX4gYmPHzITxzP6Ow3StkrjkbcWocMtTHrdnGKfCziCOhHCoI2xzgubaOA6
-         OQiN99aPdqBWZkfavhfdXtcqrJokKEJ+UxvjvI5EMgfMxZvHW2wkJUl8+cFvoX84Bijc
-         HqEAJsDWhSF4RFtMUkHO+Zlo9Bm0PzHfwUHj0oPE1yE7VMTzQ1RuFgpwMUfBbL5J+n2w
-         xWUTKTDJgAzxwXdvRSgZOhZ+9zIaPiWDSQPgo++wRTMmbZKzYhw8Wx8ktgyoONFgFdW5
-         +Ocg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EHAYrKbj/zPl1+pVBO2mTUTD59eSt3ugUwhIW8vCe/M=;
-        b=XGM5unFd1c94yBvmvlSfFmF3xeGnwlzWIcgPibC38mRfjo2MGossGUMpQldvJ8mvVa
-         AzO2krb/4u9g2bValzn8Y5sZHRS8yC+mtdPmBAb7oShehoBhdLucx910ZhjJIGLkyQVp
-         ClzNXjoTNnYCgMeBOasVfzMFOGJ66Mt8H8VNAtmq1YvlBspXNH1sMMVILThwi3s+K/1D
-         Dmq0dSamvRwVVZou58bxVsvk1VsDYrjpzndssLCXlEcCc69CoaFsRGfgdDrDkDrJner/
-         NLUQXFNzXM3Uz1DUDE1+mpedDyBB2D5ktuES+QKHla0AMRIHFc5nrTcrUqluTTkqoooo
-         enyA==
-X-Gm-Message-State: AOAM532nvHPpO4U9lOaxfe8j5788wbpVpMTWPceZOEEoe2HQ6tQF/8HT
-        9i/Kl/qX6CyObvI9JPVOr15lqGYsCbT0AjSybc9BQQ==
-X-Google-Smtp-Source: ABdhPJzbOJ8AkzQrZ1pmet6hcC3Amko/IKkWSx77hmaWe06U2WVabo59psGy4ODZ38M2QGHs888LYCI4one4nnVU36Y=
-X-Received: by 2002:a17:902:e901:b029:d8:e727:2595 with SMTP id
- k1-20020a170902e901b02900d8e7272595mr1164945pld.56.1607036215507; Thu, 03 Dec
- 2020 14:56:55 -0800 (PST)
-MIME-Version: 1.0
-References: <20201022012106.1875129-1-ndesaulniers@google.com>
- <20201104000016.GA2399651@rani.riverdale.lan> <CAKwvOdnFstgMa3c+=Vo=QtFYsABDekVeddcPmP=8Pn2bqWfxpg@mail.gmail.com>
- <20201104001703.GA2407187@rani.riverdale.lan>
-In-Reply-To: <20201104001703.GA2407187@rani.riverdale.lan>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 3 Dec 2020 14:56:43 -0800
-Message-ID: <CAKwvOd=U1mxfgep3KyoAJ3WBcsywdx9_wfVgLcgAhd-+kFfZhA@mail.gmail.com>
-Subject: Re: [PATCH] Kbuild: implement support for DWARF5
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S2387519AbgLCX1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:27:15 -0500
+Received: from m12-13.163.com ([220.181.12.13]:41791 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726721AbgLCX1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 18:27:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=fY+azOiKFWCkO15i5K
+        n8miYs1r6N7Ic8uWA89DDKIuM=; b=TEsJiKiz7XbYZjoMvNCk4J5pEpXEegDiSw
+        1efyY+DfLSKpRebZy30UE040sBzEwYrRqYjSUleoViIK2kTIvvZDthex31y8JYjH
+        f5bJYL3OogcwaC69HNjbeUOO6IyLugKNGCF5KfrRMGF9baeSeEfm33yElQbC940N
+        eynB+A6LE=
+Received: from localhost.localdomain (unknown [36.170.33.20])
+        by smtp9 (Coremail) with SMTP id DcCowADX1IDuAslfnImRUA--.12606S2;
+        Thu, 03 Dec 2020 23:23:27 +0800 (CST)
+From:   carver4lio@163.com
+To:     rppt@kernel.org
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Hailong Liu <liu.hailong6@zte.com.cn>
+Subject: [PATCH] mm/memblock:use a more appropriate order calculation when free memblock pages
+Date:   Thu,  3 Dec 2020 23:23:10 +0800
+Message-Id: <20201203152311.5272-1-carver4lio@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: DcCowADX1IDuAslfnImRUA--.12606S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruw1UXr4xuF15WryrCry5CFg_yoWDGwb_Ar
+        4rtFZ7uFWFyrZ0ga12vFySqr4UK3yDZr1qvr1fGF1DKFyUJasxWr95GFsxXr1jgFWUtrZa
+        vF1DWryFk3W2gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8iID7UUUUU==
+X-Originating-IP: [36.170.33.20]
+X-CM-SenderInfo: xfdu4v3uuox0i6rwjhhfrp/1tbiKBjvnV7WDQeUIQABs0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 4:17 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
->
-> On Tue, Nov 03, 2020 at 04:05:36PM -0800, Nick Desaulniers wrote:
-> > On Tue, Nov 3, 2020 at 4:00 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> > >
-> > > On Wed, Oct 21, 2020 at 06:21:06PM -0700, Nick Desaulniers wrote:
-> > > > Further -gdwarf-X where X is an unsupported value doesn't
-> > > > produce an error in $(CC).
-> > >
-> > > Do you have more details here? On godbolt.org, gcc does report an error
-> > > for unsupported dwarf versions.
-> > >
-> > > https://godbolt.org/z/G35798
-> > >
-> > > gcc does not seem to pass the -gdwarf-* options to the assembler when
-> > > compiling C source. For assembler, gcc will pass an appropriate option
-> > > depending on the version of binutils it was configured with: if the
-> > > assembler doesn't support dwarf-5 it can call it with --gdwarf2 for eg.
-> > >
-> > > If the user is using a properly configured toolchain it doesn't look
-> > > like it should be an issue to just use cc-option?
-> >
-> > I wrote the base patch back in May, and didn't revisit until recently.
-> > I could have sworn the cc-option silently failed for the check
-> > cc-option does, which is /dev/null input.  I need to recheck that, but
-> > it doesn't hurt to simply include it for now, which I've done in a v2
-> > I'm about to send.
-> > --
-> > Thanks,
-> > ~Nick Desaulniers
->
-> This is giving me deja vu about the -gz=zlib option.
->
-> Didn't Masahiro fix the cc-option issue with
->   4d0831e8a029 ("kconfig: unify cc-option and as-option")
->
-> The existing -Wa,-gdwarf-2 in the Makefile seems bogus, btw. GCC 4.9.0
-> at least appears to pass on --gdwarf2 automatically.
+From: Hailong Liu <liu.hailong6@zte.com.cn>
 
-It looks like we don't need -Wa,-gdwarf-2 when -gdwarf-2 is set. So I
-can probably drop
-+DEBUG_CFLAGS   += $(dwarf-aflag)
-from v2.  Will retest though.
+When system in the booting stage, pages span from [start, end] of a memblock
+are freed to buddy in a order as large as possible (less than MAX_ORDER) at
+first, then decrease gradually to a proper order(less than end) in a loop.
+
+However, *min(MAX_ORDER - 1UL, __ffs(start))* can not get the largest order
+in some cases.
+Instead, *__ffs(end - start)* may be more appropriate and meaningful.
+
+Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
+---
+ mm/memblock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/memblock.c b/mm/memblock.c
+index b68ee8678..7c6d0dde7 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -1931,7 +1931,7 @@ static void __init __free_pages_memory(unsigned long start, unsigned long end)
+ 	int order;
+ 
+ 	while (start < end) {
+-		order = min(MAX_ORDER - 1UL, __ffs(start));
++		order = min(MAX_ORDER - 1UL, __ffs(end - start));
+ 
+ 		while (start + (1UL << order) > end)
+ 			order--;
 -- 
-Thanks,
-~Nick Desaulniers
+2.17.1
+
+
