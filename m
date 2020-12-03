@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F5A2CDC54
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6372CDC58
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgLCR0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:26:03 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:41798 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbgLCR0C (ORCPT
+        id S2387485AbgLCR0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:26:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726929AbgLCR0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:26:02 -0500
-Date:   Thu, 03 Dec 2020 17:25:19 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607016320;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3ENOrf4pJnjaltkMdfBqRyQRe5scB86a028pmLJHifg=;
-        b=F3gQ6KIutH7hi9RYZDmzUE90gRdytpxxaj7Sl1XgOFPUDjzHKCTBUeOiyE8vJZfaS3Qu+o
-        9lvN5M6At1NpwUqsvvzyAYvm2nxSrRpAhR7QEOO4AqVf4uRSgA517LUhKvmG0qX6E9oTmT
-        0gE4fjlZ6yhyNUcJDsc3xq4k1qaXjRFs2qrwz3hGVwhUDtZxzXZiO+AF6CBpd0RW9w9IXK
-        BazU86qtLvbBxKqwjM9zCLgE3oC3VbpTSe1Je7S4t9WdffEU6ZQrSpxxTFecmTcwGaq0Rv
-        ibwq6UgOYkmk0/lhrEL7BE4e4O/Pb2Z7fdvGEz+6uzrSAT62oX7L3qneuU6XLw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607016320;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3ENOrf4pJnjaltkMdfBqRyQRe5scB86a028pmLJHifg=;
-        b=KknVXHRE9Z4fsxr2lz2yv7TEvoiaJU7P+ePFf15RwP7wsv4131lBmCBM/w19CP8TM9Eewe
-        WPWgyqbRO1GIA2BQ==
-From:   "tip-bot2 for Mike Travis" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/platform/uv: Fix UV4 hub revision adjustment
-Cc:     Mike Travis <mike.travis@hpe.com>, Borislav Petkov <bp@suse.de>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201203152252.371199-1-mike.travis@hpe.com>
-References: <20201203152252.371199-1-mike.travis@hpe.com>
+        Thu, 3 Dec 2020 12:26:42 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5801C061A4E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 09:26:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=1ys3tD29yyXiFC0wdrbI9llPCLLvllG6Avtg8Riop2w=; b=Ktj16xIdTj3m+YMFkFDzvgkkc/
+        BWsyux4yLGkgmExSv1HICil5cSWVbbPvIpJVFtlZftQBQGAne4ys3cbQ6QBTTmNfDMX7VRf0Ah5n9
+        kTOs7rzItjdLzvl+sTP7n96dfUg10qQ8AG7WjHPjs0dU7z7kMArROSJmugAJ35vkE3izte/rz343g
+        n0Z6YlZqOrchcI5LtdioiEZvrtIBvCs36g+qFUbzE4qlh9YHRgAWWgqor467dCPM1d2OnEXATMXnD
+        UanaImtP8rYDQvmiPS78bVHf7xWNPJShHMCyZ8qXmt+WFQuZjNSp0i+wF7nnEPrDd8pg2L2hZ6XLR
+        HoBL5ooA==;
+Received: from [2601:1c0:6280:3f0::1494]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kksMh-00057z-0N; Thu, 03 Dec 2020 17:25:59 +0000
+Subject: Re: [PATCH v3 19/19] vdpa: split vdpasim to core and net modules
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, Oren Duer <oren@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Shahaf Shuler <shahafs@nvidia.com>, Eli Cohen <elic@nvidia.com>
+References: <20201203170511.216407-1-sgarzare@redhat.com>
+ <20201203170511.216407-20-sgarzare@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <920c4975-a3ae-b7f9-ac89-6444ca2e4c45@infradead.org>
+Date:   Thu, 3 Dec 2020 09:25:52 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Message-ID: <160701631938.3364.11621785550869389030.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20201203170511.216407-20-sgarzare@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+Hi,
 
-Commit-ID:     8dcc0e19dfbd73ad6b3172924d6da8f7f3f8b3b0
-Gitweb:        https://git.kernel.org/tip/8dcc0e19dfbd73ad6b3172924d6da8f7f3f8b3b0
-Author:        Mike Travis <mike.travis@hpe.com>
-AuthorDate:    Thu, 03 Dec 2020 09:22:52 -06:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 03 Dec 2020 18:09:18 +01:00
+On 12/3/20 9:05 AM, Stefano Garzarella wrote:
+> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> index 2c892e890b9e..b0f91ad8eb47 100644
+> --- a/drivers/vdpa/Kconfig
+> +++ b/drivers/vdpa/Kconfig
+> @@ -9,15 +9,20 @@ menuconfig VDPA
+>  if VDPA
+>  
+>  config VDPA_SIM
+> -	tristate "vDPA device simulator"
+> +	tristate "vDPA device simulator core"
+>  	depends on RUNTIME_TESTING_MENU && HAS_DMA
+>  	select DMA_OPS
+>  	select VHOST_RING
+> +	help
+> +	  Enable this module to support vDPA device simulators. These devices
+> +	  are used for testing, prototyping and development of vDPA.
+> +
+> +config VDPA_SIM_NET
+> +	tristate "vDPA simulator for networking device"
+> +	depends on VDPA_SIM
+>  	select GENERIC_NET_UTILS
+>  	help
+> -	  vDPA networking device simulator which loop TX traffic back
+> -	  to RX. This device is used for testing, prototyping and
+> -	  development of vDPA.
+> +	  vDPA networking device simulator which loop TX traffic back to RX.
 
-x86/platform/uv: Fix UV4 hub revision adjustment
+	                                         loops
 
-Currently, UV4 is incorrectly identified as UV4A and UV4A as UV5. Hub
-chip starts with revision 1, fix it.
 
- [ bp: Massage commit message. ]
+thanks.
+-- 
+~Randy
 
-Fixes: 647128f1536e ("x86/platform/uv: Update UV MMRs for UV5")
-Signed-off-by: Mike Travis <mike.travis@hpe.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
-Acked-by: Dimitri Sivanich <dimitri.sivanich@hpe.com>
-Link: https://lkml.kernel.org/r/20201203152252.371199-1-mike.travis@hpe.com
----
- arch/x86/kernel/apic/x2apic_uv_x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index 1b98f8c..235f5cd 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -161,7 +161,7 @@ static int __init early_set_hub_type(void)
- 	/* UV4/4A only have a revision difference */
- 	case UV4_HUB_PART_NUMBER:
- 		uv_min_hub_revision_id = node_id.s.revision
--					 + UV4_HUB_REVISION_BASE;
-+					 + UV4_HUB_REVISION_BASE - 1;
- 		uv_hub_type_set(UV4);
- 		if (uv_min_hub_revision_id == UV4A_HUB_REVISION_BASE)
- 			uv_hub_type_set(UV4|UV4A);
