@@ -2,237 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA7B2CE08D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A43AD2CE08B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:22:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729350AbgLCVWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 16:22:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
+        id S1728321AbgLCVV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 16:21:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726314AbgLCVWN (ORCPT
+        with ESMTP id S1726637AbgLCVV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 16:22:13 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F5EC061A51;
-        Thu,  3 Dec 2020 13:21:32 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id g185so5285060wmf.3;
-        Thu, 03 Dec 2020 13:21:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aKeMXOH+eJz7j+HhXLNdNRBb9s9T/2sajZT9nLh+WJ4=;
-        b=VKWs5J1DwItm0Gz458sdJheb1IOXNbPp+TSvfpRljk3gBdmeeoz7MjXgkAG5RHXLtI
-         8g4kFhieLcva3WewYfBDNjmjyIJ2zOIzhdSnZBMe2xVN1O5PZXKfUEF4DI8+JrMd7veU
-         /tDZPdaVon3HkCUhB82jWtimVkh+tjpRwF7z6C/I/YeHz+s7BQ8XH7Sganmj5Kyi4T9r
-         pl8XMmRmOE/q0Cpyk+yAWX0zw9Hf0fEsiognhqmqU1Tm7aw1h+LQPgSZ8EOUr8icn0xX
-         xxLoyiuASEMgVWrdL0rfwgj5E14Djd1vrGYt0DVFMm7evHSVwRL8GYjiDzfXjSoq4ipj
-         NE9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aKeMXOH+eJz7j+HhXLNdNRBb9s9T/2sajZT9nLh+WJ4=;
-        b=TvwbNlOW94HAliEfYSscRcLhCQAhFLA2qg73VZ1lKC9gjHJ1GRA/htFaoujB07xPVq
-         64Rc9MwPqEjcgsS9HYSXQolwiez22Tv2lMPW/TcDyThblY3zlmUeveztdKijcIzbzAc2
-         jQHUKOpIq+9d9/fHK5bcjM1Iph6IdAcFNUCDDr6npjBfB4auZ7ugHmsy3GxQsT6A4Adg
-         pUdvKypJ5eTZwr4xFxy1UZEnyDnA7F0CV6g2f81yehv3f8MyKT7uTXrnOxYuhLKpyh5L
-         Gs+EjKYzVOPkESjNj4FqkegnDjyfIbDjaEsvlpHL5G0eHH0irvXCCSTVhXSDEdAv/w50
-         EYSw==
-X-Gm-Message-State: AOAM533HkiSrAAWVN7K/BKX/Ye0WprZRVPnfZ3Amcpni5KYpKOEUg/w2
-        IPitN2D6rplCwPvj8ZI3RWI=
-X-Google-Smtp-Source: ABdhPJwfgUeIXfND4K1NcXP0WxqZVqBuJ18v6DD/Bif3lF6m5+XnOi8h+0pKXV0O/npg1JfYbBtOnQ==
-X-Received: by 2002:a1c:7e87:: with SMTP id z129mr751718wmc.176.1607030491372;
-        Thu, 03 Dec 2020 13:21:31 -0800 (PST)
-Received: from localhost.localdomain (host-79-13-10-171.retail.telecomitalia.it. [79.13.10.171])
-        by smtp.gmail.com with ESMTPSA id q16sm853280wrn.13.2020.12.03.13.21.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 13:21:30 -0800 (PST)
-From:   Elia Devito <eliadevito@gmail.com>
-Cc:     Elia Devito <eliadevito@gmail.com>,
-        Alex Hung <alex.hung@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] intel-hid: add support for SW_TABLET_MODE
-Date:   Thu,  3 Dec 2020 22:20:01 +0100
-Message-Id: <20201203212000.35898-1-eliadevito@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <69f340f6-4301-6546-f14a-47d90208d44b@redhat.com>
-References: <69f340f6-4301-6546-f14a-47d90208d44b@redhat.com>
+        Thu, 3 Dec 2020 16:21:58 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665F8C061A4F;
+        Thu,  3 Dec 2020 13:21:17 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cn8092Nqjz9sSf;
+        Fri,  4 Dec 2020 08:21:13 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607030475;
+        bh=dguwPFAt+30slOyZA3WdXY1c2DjDJsWu/QmwC3Yo+h0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MKA70ro8DMlYplEq489YCWNPZlvHqZ6T6xujFRFuwjLhhAr6o9l4sYzERaS3NtE/I
+         bU3ZgbIv3ETXxjTpy34hw+f/h3OjBUNt4oIBA5wHEnIVMk9men2D0mfoCEWeMrQhlN
+         VNbkhTXZEKF2Y6mUJ9sOb3heLVOQP4Imcdi698OUE0vsAgp8hk3DXuKzigd/stfoTI
+         Qv16JXwz1D+Bhr7M45Yh9prap092OtZ7noUOCvkuHCJMkPEQISWk8gWP56Zp8VBttH
+         tiSMKw4Is32YTuCTiN1eq1ga5GafFfcOj7XqC2y2U683K5HYIVGI2haEgq9VoRVnq1
+         ymCeccAvehVyA==
+Date:   Fri, 4 Dec 2020 08:21:12 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vjitta@codeaurora.org, Minchan Kim <minchan@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, ylal@codeaurora.org,
+        vinmenon@codeaurora.org, kasan-dev <kasan-dev@googlegroups.com>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Qian Cai <qcai@redhat.com>
+Subject: Re: [PATCH v2] lib: stackdepot: Add support to configure
+ STACK_HASH_SIZE
+Message-ID: <20201204082112.331df654@canb.auug.org.au>
+In-Reply-To: <20201203123253.c00767545ad35c09dabd44ef@linux-foundation.org>
+References: <1606365835-3242-1-git-send-email-vjitta@codeaurora.org>
+        <7733019eb8c506eee8d29e380aae683a8972fd19.camel@redhat.com>
+        <CAAeHK+w_avr_X2OJ5dm6p6nXQZMvcaAiLCQaF+EWna+7nQxVhg@mail.gmail.com>
+        <ff00097b-e547-185d-2a1a-ce0194629659@arm.com>
+        <55b7ba6e-6282-2cf6-c42c-272bdd23a607@arm.com>
+        <20201203123253.c00767545ad35c09dabd44ef@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; boundary="Sig_//jXIelCd6/S1dNu7qWlVKto";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some convertible use the intel-hid ACPI interface to report SW_TABLET_MODE,
-implement this with DMI based allow-list to be sure to activate support
-only on models that effectively have it.
+--Sig_//jXIelCd6/S1dNu7qWlVKto
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Elia Devito <eliadevito@gmail.com>
----
-v2:
-  patch reworked according to received feedbacks
+Hi Andrew,
 
- drivers/platform/x86/intel-hid.c | 98 ++++++++++++++++++++++++++++++++
- 1 file changed, 98 insertions(+)
+On Thu, 3 Dec 2020 12:32:53 -0800 Andrew Morton <akpm@linux-foundation.org>=
+ wrote:
+>
+> Thanks, all.  I'll drop
+> lib-stackdepot-add-support-to-configure-stack_hash_size.patch.
 
-diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel-hid.c
-index 86261970bd8f..fed24d4f28b8 100644
---- a/drivers/platform/x86/intel-hid.c
-+++ b/drivers/platform/x86/intel-hid.c
-@@ -15,6 +15,9 @@
- #include <linux/platform_device.h>
- #include <linux/suspend.h>
- 
-+/* When NOT in tablet mode, VGBS returns with the flag 0x40 */
-+#define TABLET_MODE_FLAG 0x40
-+
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Alex Hung");
- 
-@@ -89,9 +92,26 @@ static const struct dmi_system_id button_array_table[] = {
- 	{ }
- };
- 
-+/*
-+ * Some convertible use the intel-hid ACPI interface to report SW_TABLET_MODE,
-+ * these need to be compared via a DMI based authorization list because some
-+ * models have unreliable VGBS return which could cause incorrect
-+ * SW_TABLET_MODE report.
-+ */
-+static const struct dmi_system_id dmi_vgbs_allow_list[] = {
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "HP Spectre x360 Convertible 15-df0xxx"),
-+		},
-+	},
-+	{ }
-+};
-+
- struct intel_hid_priv {
- 	struct input_dev *input_dev;
- 	struct input_dev *array;
-+	struct input_dev *switches;
- 	bool wakeup_mode;
- };
- 
-@@ -347,6 +367,38 @@ static int intel_button_array_input_setup(struct platform_device *device)
- 	return input_register_device(priv->array);
- }
- 
-+static int intel_hid_switches_setup(struct platform_device *device)
-+{
-+	struct intel_hid_priv *priv = dev_get_drvdata(&device->dev);
-+
-+	/* Setup input device for switches */
-+	priv->switches = devm_input_allocate_device(&device->dev);
-+	if (!priv->switches)
-+		return -ENOMEM;
-+
-+	__set_bit(EV_SW, priv->switches->evbit);
-+	__set_bit(SW_TABLET_MODE, priv->switches->swbit);
-+
-+	priv->switches->name = "Intel HID switches";
-+	priv->switches->id.bustype = BUS_HOST;
-+	return input_register_device(priv->switches);
-+}
-+
-+static void detect_tablet_mode(struct platform_device *device)
-+{
-+	struct intel_hid_priv *priv = dev_get_drvdata(&device->dev);
-+	acpi_handle handle = ACPI_HANDLE(&device->dev);
-+	unsigned long long vgbs;
-+	int m;
-+
-+	if (!intel_hid_evaluate_method(handle, INTEL_HID_DSM_VGBS_FN, &vgbs))
-+		return;
-+
-+	m = !(vgbs & TABLET_MODE_FLAG);
-+	input_report_switch(priv->switches, SW_TABLET_MODE, m);
-+	input_sync(priv->switches);
-+}
-+
- static void notify_handler(acpi_handle handle, u32 event, void *context)
- {
- 	struct platform_device *device = context;
-@@ -363,6 +415,13 @@ static void notify_handler(acpi_handle handle, u32 event, void *context)
- 		if (event == 0xce)
- 			goto wakeup;
- 
-+		/*
-+		 * Switch events will wake the device and report the new switch
-+		 * position to the input subsystem.
-+		 */
-+		if (priv->switches && (event == 0xcc || event == 0xcd))
-+			goto wakeup;
-+
- 		/* Wake up on 5-button array events only. */
- 		if (event == 0xc0 || !priv->array)
- 			return;
-@@ -374,6 +433,21 @@ static void notify_handler(acpi_handle handle, u32 event, void *context)
- 
- wakeup:
- 		pm_wakeup_hard_event(&device->dev);
-+
-+		if (priv->switches) {
-+			if (event == 0xcc) {
-+				input_report_switch(priv->switches, SW_TABLET_MODE, 1);
-+				input_sync(priv->switches);
-+				return;
-+			}
-+
-+			if (event == 0xcd) {
-+				input_report_switch(priv->switches, SW_TABLET_MODE, 0);
-+				input_sync(priv->switches);
-+				return;
-+			}
-+		}
-+
- 		return;
- 	}
- 
-@@ -398,6 +472,20 @@ static void notify_handler(acpi_handle handle, u32 event, void *context)
- 		}
- 	}
- 
-+	if (priv->switches) {
-+		if (event == 0xcc) {
-+			input_report_switch(priv->switches, SW_TABLET_MODE, 1);
-+			input_sync(priv->switches);
-+			return;
-+		}
-+
-+		if (event == 0xcd) {
-+			input_report_switch(priv->switches, SW_TABLET_MODE, 0);
-+			input_sync(priv->switches);
-+			return;
-+		}
-+	}
-+
- 	/* 0xC0 is for HID events, other values are for 5 button array */
- 	if (event != 0xc0) {
- 		if (!priv->array ||
-@@ -485,6 +573,16 @@ static int intel_hid_probe(struct platform_device *device)
- 			pr_err("Failed to setup Intel 5 button array hotkeys\n");
- 	}
- 
-+	/* Setup switches for devices that we know VGBS return correctly */
-+	if (dmi_check_system(dmi_vgbs_allow_list)) {
-+		dev_info(&device->dev, "platform supports switches\n");
-+		err = intel_hid_switches_setup(device);
-+		if (err)
-+			pr_err("Failed to setup Intel HID switches\n");
-+		else
-+			detect_tablet_mode(device);
-+	}
-+
- 	status = acpi_install_notify_handler(handle,
- 					     ACPI_DEVICE_NOTIFY,
- 					     notify_handler,
--- 
-2.28.0
+I have removed that from linux-next today.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_//jXIelCd6/S1dNu7qWlVKto
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/JVsgACgkQAVBC80lX
+0Gw1hgf9GxZkiaL2ZpuXpM7GTSfCax9pLRKqdOp4MNPSb2Q5C6Rl4JmD2/1kYl5l
+THZNCqEdiLZ7SUyxy/9RykfnqjrILfkMcbbjM/mJPce3xJpBqFaWDMgtDjeCI1gI
+Um/aOqwuG0bFAhcCFt7ZvMaI8Tl6P9pY/nP6N38TVt6qLnn4yqzdyyuxvetJ5nOH
+Mni3HX2dBZoYkeyNuayI2Z0ayya5pNQlL2f94bjQaIQ3Lb8AHr7Jv5PHgsEPHz7O
+T+EZaqDajaAyLyN65YCCkSN8zVvsKE60Qt2yeb7V9wbjM9cYy9HD5DsiAH3DbZLZ
+1kg4KWdYbTMRT2yJcudcrpaTXdPnvA==
+=P5DX
+-----END PGP SIGNATURE-----
+
+--Sig_//jXIelCd6/S1dNu7qWlVKto--
