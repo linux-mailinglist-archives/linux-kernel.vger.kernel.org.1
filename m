@@ -2,193 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32EF32CD51E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:05:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1DD2CD515
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730351AbgLCMDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 07:03:42 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8996 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388092AbgLCMDl (ORCPT
+        id S2387983AbgLCMDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 07:03:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728716AbgLCMDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 07:03:41 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CmvbR5FL0zhYQL;
-        Thu,  3 Dec 2020 20:02:27 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.9) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 3 Dec 2020 20:02:45 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        "Manivannan Sadhasivam" <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 4/4] dt-bindings: reset: convert Hisilicon reset controller bindings to json-schema
-Date:   Thu, 3 Dec 2020 20:02:12 +0800
-Message-ID: <20201203120212.1105-5-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20201203120212.1105-1-thunder.leizhen@huawei.com>
-References: <20201203120212.1105-1-thunder.leizhen@huawei.com>
+        Thu, 3 Dec 2020 07:03:09 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0DDC061A4E;
+        Thu,  3 Dec 2020 04:02:28 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id f18so2218537ljg.9;
+        Thu, 03 Dec 2020 04:02:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IaH1Ay2WDIAxMFtXzoOalR9PJQnL9IHu/7OpcWmCb60=;
+        b=GqwPxheJDKpMMqbf8GKtCQsRNdkZ9ty6yZMmX6GnvUKlV8uPMeTHJAWdu0SBMriDtz
+         t/lSst+rrTVjLuyRcEtwSE+uQGscgLF5LcBHrqxErP3K/8K0mc5blLZcS/IpnyfADSq/
+         7B5vQViuH30s4qz6gP6RqkB/NGf59Fv42R/uVzopGsPW8tSqVRjstXsgx0XVmWIdyQNU
+         +sehwVV5DSpWBdFXfjmCr+hPaIveMTNvIi+gpim6bOo/njHtZZZusWOxX0nGW0h6BiQr
+         SNB0hrrz25XEhG6Qgw70P0FBtrfsmskcFnm7j0vAzrhS2czUcX1UQEV1aXV9qUMnEY3t
+         zrAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IaH1Ay2WDIAxMFtXzoOalR9PJQnL9IHu/7OpcWmCb60=;
+        b=fNrBg564IGtCwZZPVkS9iPy5sOUnIxx2UIKsnt6Khv5oDjrulkWjFDv0+HPzk8JDnC
+         ZN0rKUTknJdSFxVv8voAku9HNhbb/66fAX1UynAPo8BG1Y6gbPdo5SYOiMvBgOb9+Ylu
+         gvBpOYMeZHXXhvcZ5yuYtBh4RdjfPrWcuJWyVtMBy+4bJ2Foptw/MdYI3sY9xDzRIVhJ
+         8vWI9pz6pDWgkVZoWTo3431ftmFA6gLb3hlOrSqg3V+JIMfNoF1FDl6ia0rNeVNZFxQ7
+         e+tSmFKf47Eau80udpK9aey9uz7W1e/GM/S0EjclpovyJARr1Q2Za4svznrTgS3DuuOr
+         BbhA==
+X-Gm-Message-State: AOAM5305WsqpZe9KboLSdUQ92xHzz2htnrkPVIWp8U+02FNxv7Lub9ti
+        ug4WdEGs4F7IQmTmeL8wdbZDtbeoXW4=
+X-Google-Smtp-Source: ABdhPJyCzognIJDPh7B1KJBBA0Nm3ojFxr32mjSG1N0v0D144se4CngiUAVcQ5T5T5QBJYTOlu8EUA==
+X-Received: by 2002:a2e:9550:: with SMTP id t16mr1098917ljh.117.1606996946693;
+        Thu, 03 Dec 2020 04:02:26 -0800 (PST)
+Received: from [192.168.1.40] (88-114-216-158.elisa-laajakaista.fi. [88.114.216.158])
+        by smtp.gmail.com with ESMTPSA id h23sm443031lfk.148.2020.12.03.04.02.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 04:02:26 -0800 (PST)
+Subject: Re: [PATCH v5] mm: Optional full ASLR for mmap(), mremap(), vdso and
+ stack
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+References: <20201129211517.2208-1-toiwoton@gmail.com>
+ <87im9j2pbs.fsf@oldenburg2.str.redhat.com>
+From:   Topi Miettinen <toiwoton@gmail.com>
+Message-ID: <e8c458fe-073b-2c4d-4d80-3637041c1485@gmail.com>
+Date:   Thu, 3 Dec 2020 14:02:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.9]
-X-CFilter-Loop: Reflected
+In-Reply-To: <87im9j2pbs.fsf@oldenburg2.str.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Hisilicon reset controller binding to DT schema format using
-json-schema.
+On 3.12.2020 11.47, Florian Weimer wrote:
+> * Topi Miettinen:
+> 
+>> +3   Additionally enable full randomization of memory mappings created
+>> +    with mmap(NULL, ...). With 2, the base of the VMA used for such
+>> +    mappings is random, but the mappings are created in predictable
+>> +    places within the VMA and in sequential order. With 3, new VMAs
+>> +    are created to fully randomize the mappings.
+>> +
+>> +    Also mremap(..., MREMAP_MAYMOVE) will move the mappings even if
+>> +    not necessary and the location of stack and vdso are also
+>> +    randomized.
+>> +
+>> +    On 32 bit systems this may cause problems due to increased VM
+>> +    fragmentation if the address space gets crowded.
+> 
+> Isn't this a bit of an understatement?  I think you'll have to restrict
+> this randomization to a subregion of the entire address space, otherwise
+> the reduction in maximum mapping size due to fragmentation will be a
+> problem on 64-bit architectures as well (which generally do not support
+> the full 64 bits for user-space addresses).
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- .../bindings/reset/hisilicon,hi3660-reset.txt      | 44 -------------
- .../bindings/reset/hisilicon,hi3660-reset.yaml     | 77 ++++++++++++++++++++++
- 2 files changed, 77 insertions(+), 44 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt
- create mode 100644 Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
+Restricting randomization would reduce the address space layout 
+randomization and make this less useful. There's 48 or 56 bits, which 
+translate to 128TB and 64PB of VM for user applications. Is it really 
+possible to build today (or in near future) a system, which would 
+contain so much RAM that such fragmentation could realistically happen? 
+Perhaps also in a special case where lots of 1GB huge pages are 
+necessary? Maybe in those cases you shouldn't use randomize_va_space=3. 
+Or perhaps there could be randomize_va_space=3 which does something, and 
+randomize_va_space=4 for those who want maximum randomization.
 
-diff --git a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt
-deleted file mode 100644
-index aefd26710f9e87d..000000000000000
---- a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt
-+++ /dev/null
-@@ -1,44 +0,0 @@
--Hisilicon System Reset Controller
--======================================
--
--Please also refer to reset.txt in this directory for common reset
--controller binding usage.
--
--The reset controller registers are part of the system-ctl block on
--hi3660 and hi3670 SoCs.
--
--Required properties:
--- compatible: should be one of the following:
--		 "hisilicon,hi3660-reset" for HI3660
--		 "hisilicon,hi3670-reset", "hisilicon,hi3660-reset" for HI3670
--- hisilicon,rst-syscon: phandle of the reset's syscon.
--- #reset-cells : Specifies the number of cells needed to encode a
--  reset source.  The type shall be a <u32> and the value shall be 2.
--
--	 Cell #1 : offset of the reset assert control
--	           register from the syscon register base
--		   offset + 4: deassert control register
--		   offset + 8: status control register
--	 Cell #2 : bit position of the reset in the reset control register
--
--Example:
--	iomcu: iomcu@ffd7e000 {
--		compatible = "hisilicon,hi3660-iomcu", "syscon";
--		reg = <0x0 0xffd7e000 0x0 0x1000>;
--	};
--
--	iomcu_rst: iomcu_rst_controller {
--		compatible = "hisilicon,hi3660-reset";
--		hisilicon,rst-syscon = <&iomcu>;
--		#reset-cells = <2>;
--	};
--
--Specifying reset lines connected to IP modules
--==============================================
--example:
--
--        i2c0: i2c@..... {
--                ...
--		resets = <&iomcu_rst 0x20 3>; /* offset: 0x20; bit: 3 */
--                ...
--        };
-diff --git a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-new file mode 100644
-index 000000000000000..9bf40952e5b7d28
---- /dev/null
-+++ b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-@@ -0,0 +1,77 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/reset/hisilicon,hi3660-reset.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Hisilicon System Reset Controller
-+
-+maintainers:
-+  - Wei Xu <xuwei5@hisilicon.com>
-+
-+description: |
-+  Please also refer to reset.txt in this directory for common reset
-+  controller binding usage.
-+  The reset controller registers are part of the system-ctl block on
-+  hi3660 and hi3670 SoCs.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - const: hisilicon,hi3660-reset
-+      - items:
-+          - const: hisilicon,hi3670-reset
-+          - const: hisilicon,hi3660-reset
-+
-+  hisilicon,rst-syscon:
-+    description: phandle of the reset's syscon.
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  '#reset-cells':
-+    description: |
-+      Specifies the number of cells needed to encode a reset source.
-+      Cell #1 : offset of the reset assert control register from the syscon
-+                register base
-+                offset + 4: deassert control register
-+                offset + 8: status control register
-+      Cell #2 : bit position of the reset in the reset control register
-+    const: 2
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/hi3660-clock.h>
-+
-+    iomcu: iomcu@ffd7e000 {
-+        compatible = "hisilicon,hi3660-iomcu", "syscon";
-+        reg = <0xffd7e000 0x1000>;
-+    };
-+
-+    iomcu_rst: iomcu_rst_controller {
-+        compatible = "hisilicon,hi3660-reset";
-+        hisilicon,rst-syscon = <&iomcu>;
-+        #reset-cells = <2>;
-+    };
-+
-+    /* Specifying reset lines connected to IP modules */
-+    i2c@ffd71000 {
-+        compatible = "snps,designware-i2c";
-+        reg = <0xffd71000 0x1000>;
-+        interrupts = <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        clock-frequency = <400000>;
-+        clocks = <&crg_ctrl HI3660_CLK_GATE_I2C0>;
-+        resets = <&iomcu_rst 0x20 3>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&i2c0_pmx_func &i2c0_cfg_func>;
-+        status = "disabled";
-+    };
-+...
--- 
-1.8.3
+>> +    On all systems, it will reduce performance and increase memory
+>> +    usage due to less efficient use of page tables and inability to
+>> +    merge adjacent VMAs with compatible attributes. In the worst case,
+>> +    additional page table entries of up to 4 pages are created for
+>> +    each mapping, so with small mappings there's considerable penalty.
+> 
+> The number 4 is architecture-specific, right?
 
+Yes, I only know x86_64. Actually it could have 5 level page tables. 
+I'll fix this in next version.
 
+-Topi
