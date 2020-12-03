@@ -2,70 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068FE2CDCF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADF12CDD00
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387485AbgLCSB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:01:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48768 "EHLO mail.kernel.org"
+        id S1731570AbgLCSCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:02:15 -0500
+Received: from gw.c-home.cz ([89.24.150.100]:34746 "EHLO dmz.c-home.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725987AbgLCSB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:01:28 -0500
-X-Gm-Message-State: AOAM5321f7DpYRc/3XljT4snBNXu4t92Z7Cy1NX1ZuuS6hMURgggg1BS
-        q2eCvx4HnYdZH3LWN5wXFxgZ/avBPjK0X/AyUv4=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607018447;
-        bh=FABGuImVXsV+nr09JVj+zQ9EBUfuYv8QZ4jBa/qWBac=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bt+9JRnhQoLVYlUpusbbJNU+Ng5xMD90OOXgJXqRmzPVaVUWlSo+PK5EIwXw7LlmJ
-         JrQz8RNpPhriWaWZtESgVLrqIvAZ4A48bS8lYWf7oL+ym7QRzuLtGlfoCLi0rHHEhy
-         9g5P5balbrxwlRJY3S7h6RZIjrZdxyvD5LIs9DE3PU9m1sFKzRuveJlmz9UwBnWnm9
-         shff21k87Gv0K/qKvlOhxypWbeINmJZI/RO+9lvo7QjuHmVKrfx14LvGISOzznmfd1
-         kXPa/+iMg1TcdluFPcA8cVWDLWHflkf9/coRITc0QiIaA4zvPQIIZefBK239cmxJ5k
-         nSKbGd2RGArvw==
-X-Google-Smtp-Source: ABdhPJww/O/H+p+GzCiMKDAw50e0c47HIgejwRdl9Wx7k1zFogrRwzl/MT69w0GZmNtYyrPjsCHPQjEM6YLRwx8fzP4=
-X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr276973otc.305.1607018446511;
- Thu, 03 Dec 2020 10:00:46 -0800 (PST)
+        id S1727427AbgLCSCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:02:13 -0500
+Received: from ubuntu2004.c-home.cz (unifi.c-home.cz [192.168.1.227])
+        by dmz.c-home.cz (8.14.4+Sun/8.14.4) with ESMTP id 0B3I11ap011430;
+        Thu, 3 Dec 2020 19:01:06 +0100 (CET)
+From:   Martin Cerveny <m.cerveny@computer.org>
+To:     Chen-Yu Tsai <wens@csie.org>
+Cc:     Martin Cerveny <m.cerveny@computer.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH] ARM: dts: sun8i: v3s: SRAM_C real mapping
+Date:   Thu,  3 Dec 2020 19:00:40 +0100
+Message-Id: <20201203180040.3284-1-m.cerveny@computer.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201203170529.1029105-1-maskray@google.com>
-In-Reply-To: <20201203170529.1029105-1-maskray@google.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 3 Dec 2020 19:00:30 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3XiScgpL2cGy_e8-zK0U48Z0VMLJWDYKRM+BRUFC0TSg@mail.gmail.com>
-Message-ID: <CAK8P3a3XiScgpL2cGy_e8-zK0U48Z0VMLJWDYKRM+BRUFC0TSg@mail.gmail.com>
-Subject: Re: [PATCH] firmware_loader: Align .builtin_fw to 8
-To:     Fangrui Song <maskray@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 6:05 PM 'Fangrui Song' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> arm64 references the start address of .builtin_fw (__start_builtin_fw)
-> with a pair of R_AARCH64_ADR_PREL_PG_HI21/R_AARCH64_LDST64_ABS_LO12_NC
-> relocations. The compiler is allowed to emit the
-> R_AARCH64_LDST64_ABS_LO12_NC relocation because struct builtin_fw in
-> include/linux/firmware.h is 8-byte aligned.
->
-> The R_AARCH64_LDST64_ABS_LO12_NC relocation requires the address to be a
-> multiple of 8, which may not be the case if .builtin_fw is empty.
-> Unconditionally align .builtin_fw to fix the linker error.
->
-> Fixes: 5658c76 ("firmware: allow firmware files to be built into kernel image")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1204
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Fangrui Song <maskray@google.com>
+VideoEngine (cedrus) needs assign dedicated SRAM for decoding.
+SRAM_C1 is usually used for Allwinner platforms.
+Allwinner V3s scale down chip has not SRAM_C1 but only small SRAM_C (44kB).
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Result of additional testing:
 
-I found the same thing in randconfig testing, but you beat me to
-sending the fix.
+SRAM_C is mapped in two regions 0x0000_4000 (primary location, by Datasheet)
+(size is 0xb000, probably exact size is 0xb0c0 and it is mapped to 4k boundary
+(to 0x0000_ffff)) and to 0x01d0_4000 (traditional SRAM_C1 region from 0x01d0_0000).
+
+Rest of 0x01d0_0000 are discontinuously filled with R/W register sets
+(probably some internals registers from VE) that I thought to be SRAM too.
+
+Programming register SRAM_CTRL_REG0 (0x01c00_0000) with value 0x7fff_ffff
+switch out whole region 0x01d0_0000-0x01df_ffff and 0x0000_4000-0x0000_ffff
+(dedicate access to VE).
+
+VE/cedrus code use this SRAM region indirectly
+(VE_AVC_SRAM_PORT_OFFSET/VE_AVC_SRAM_PORT_DATA...)
+and it is not influenced by "real" SRAM mapping or size
+so it is working even without this patch.
+
+Signed-off-by: Martin Cerveny <m.cerveny@computer.org>
+---
+ arch/arm/boot/dts/sun8i-v3s.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
+index e8f304125e2d..90d703e5b73b 100644
+--- a/arch/arm/boot/dts/sun8i-v3s.dtsi
++++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
+@@ -162,17 +162,17 @@ syscon: system-control@1c00000 {
+ 			#size-cells = <1>;
+ 			ranges;
+ 
+-			sram_c: sram@1d00000 {
++			sram_c: sram@4000 {
+ 				compatible = "mmio-sram";
+-				reg = <0x01d00000 0x80000>;
++				reg = <0x4000 0xb000>;
+ 				#address-cells = <1>;
+ 				#size-cells = <1>;
+-				ranges = <0 0x01d00000 0x80000>;
++				ranges = <0 0 0x4000 0xb000>;
+ 
+ 				ve_sram: sram-section@0 {
+ 					compatible = "allwinner,sun8i-v3s-sram-c1",
+ 						     "allwinner,sun4i-a10-sram-c1";
+-					reg = <0x000000 0x80000>;
++					reg = <0x0 0xb000>;
+ 				};
+ 			};
+ 		};
+-- 
+2.25.1
+
