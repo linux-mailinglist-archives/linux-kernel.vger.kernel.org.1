@@ -2,63 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB4A2CDDD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 117882CDDE7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:42:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728181AbgLCSgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:36:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726222AbgLCSgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:36:23 -0500
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] x86/sgx: Return -EINVAL on a zero length buffer in sgx_ioc_enclave_add_pages()
-Date:   Thu,  3 Dec 2020 20:35:27 +0200
-Message-Id: <20201203183527.139317-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1731590AbgLCSls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:41:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgLCSls (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:41:48 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A0E4C061A4E;
+        Thu,  3 Dec 2020 10:41:08 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id l23so1630701pjg.1;
+        Thu, 03 Dec 2020 10:41:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iEmWoJviDlBg7vyvlF517uVadCNS9unCFDqTlvcgcyc=;
+        b=AQXx2qWCfdI208jTlT7ebN78buAHzKseunYOS/GGuWnblfW0ncZ6LapDl3zFAw25uY
+         irvQFebGMQ1c0EHHHBOut9okTgLnXGn2G2o9R9N+slTRHGkDOMohrILUcBUDDW6pdgFE
+         wiQEfJ7QIBSZgkKjNmQEFo8xVbWtXiWHB2Fv1+bRfgEb1fyeEGvsNJS5FdPtW6gicvNU
+         PLpq5tHX65hRtu4xSHAYYti8q3JGDAZnVn4Qzy57VppnbkotzLLHaOlq7Jdf+aBdrpf3
+         KyxS6rAQl+tJad7MKSwmdB6Oy/VDel7MJYiF0TBNYDsK+4/xuZoHdVSHMmMK2kHlTA6T
+         aRCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iEmWoJviDlBg7vyvlF517uVadCNS9unCFDqTlvcgcyc=;
+        b=L7q856WE9UHbOpJh7nSqZeJuhbMt1QXJhJ01wZFI45nJjKc5BGDkryJJCWoOiOHf6z
+         sm0RnnTYmZfxRphxSRHBh2MXOU8FSWhLn7wxHogv6/C4SS7JdLE+ZjRhG66ZVooiocML
+         m+4ccXCQd3WIhDPzgKFFizK+midW/RXgm/2frxU2+F3ilmDx2+5Xudr5Is8Bxl8ttW8P
+         bpRdCMnTuE5+IJL+SLTseTegL5Unc2aq+5+V5IoGgSWinVobEivnL8hKiOM1L+P977YY
+         aH5ljBRakRSjnnpD97qKtuHUb+DkXVhUm2WhJ28EuGqUHHvz/ChLTpI5TeEQ9cz2N/0n
+         JLUQ==
+X-Gm-Message-State: AOAM530HdToP1ma4oSN4+tb99O95/igpMt3jdPE9Kp87PFvWim/oxWwt
+        ClJcUcCpq+CIrp8NLfbLbfk=
+X-Google-Smtp-Source: ABdhPJwYo3X+uDI46Nge7gI5/pPBTz6brF/lAfkqk/r6xofqwNk5CFFOy2CG1uBU41nqADrD+44MjA==
+X-Received: by 2002:a17:902:b90b:b029:da:97e2:722d with SMTP id bf11-20020a170902b90bb02900da97e2722dmr482296plb.3.1607020867749;
+        Thu, 03 Dec 2020 10:41:07 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:a629])
+        by smtp.gmail.com with ESMTPSA id az19sm128457pjb.24.2020.12.03.10.41.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 10:41:06 -0800 (PST)
+Date:   Thu, 3 Dec 2020 10:41:05 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH bpf-next] tools/resolve_btfids: Fix some error messages
+Message-ID: <20201203184105.5i4plhakwllywkb2@ast-mbp>
+References: <20201203102234.648540-1-jackmanb@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203102234.648540-1-jackmanb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The length documented as
+On Thu, Dec 03, 2020 at 10:22:34AM +0000, Brendan Jackman wrote:
+> Add missing newlines and fix polarity of strerror argument.
+> 
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
 
- * @length:     length of the data (multiple of the page size)
-
-Fail with -EINVAL, when user gives a zero length buffer. Right now
-'ret' is returned as uninitialized.
-
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Link: https://lore.kernel.org/linux-sgx/X8ehQssnslm194ld@mwanda/
-Fixes: c6d26d370767 ("x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- arch/x86/kernel/cpu/sgx/ioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index c206aee80a04..90a5caf76939 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -428,7 +428,7 @@ static long sgx_ioc_enclave_add_pages(struct sgx_encl *encl, void __user *arg)
- 	    !IS_ALIGNED(add_arg.src, PAGE_SIZE))
- 		return -EINVAL;
- 
--	if (add_arg.length & (PAGE_SIZE - 1))
-+	if (!add_arg.length || add_arg.length & (PAGE_SIZE - 1))
- 		return -EINVAL;
- 
- 	if (add_arg.offset + add_arg.length - PAGE_SIZE >= encl->size)
--- 
-2.27.0
-
+Applied, Thanks
