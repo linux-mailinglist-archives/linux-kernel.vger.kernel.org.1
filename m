@@ -2,134 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88492CDB6D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C042CDB70
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731337AbgLCQkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:40:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60452 "EHLO
+        id S1727974AbgLCQld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:41:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726869AbgLCQkX (ORCPT
+        with ESMTP id S1726026AbgLCQld (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:40:23 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8945DC061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 08:39:37 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id p126so2804455oif.7
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 08:39:37 -0800 (PST)
+        Thu, 3 Dec 2020 11:41:33 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02432C061A4E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 08:40:53 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id ce23so652958ejb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 08:40:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=soleen.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=77vctl4dWxdrgEMXlMd4GIgDppT00p1Hbkr925ijqBE=;
-        b=cTn668FDRvyHPw5XUB+ZeX0rZERlVKTGHjtXGWeI8Q37CBpJlJU7B//c2JCVW2jKUr
-         zP7yukOue5qQt/AaIQBw0mxHPci+UUblty6yGjuQ3HTfOK2elDOsLtZneywmm4PVrEyJ
-         Ie53BmAr5LFr8uHgFcumPbQ5X4kuRzAT6KxZM=
+        bh=ScpuytyG6NLRNL7X2oNhk8CvwGk89oKl1c7QnQJXwzk=;
+        b=L17/rVF3Xhc3L8P6V8zFE34V4ptIG/bCmTq6E1peP7hWNOhjGZuxW4wUxV8x2gJuLT
+         h0pOM8fC67Cs4JphYZRhFK9ERmAvmgFmatc7g/+Gohq6HLEVVtv+IHaFFDcsHgoFIojn
+         owcQsVHQY8iL5jrItIXaTb4Yy/GC1NwldRT5Kv4wGlkikkMzBK0/8mKapJ0IF5PGeNRR
+         6cSe29FL+MTmIa1TkXKKknhhD/0K1v2g5TdU+uLfkz+lpAVyiv6PairUU8kligNVDx5d
+         cizx9piiDlQ/+3+mBzUa45yob/ibHnv3iM2v6ZR5wyZb06kd4T7Rwz2pxmkKXJ8J8GJR
+         i71g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=77vctl4dWxdrgEMXlMd4GIgDppT00p1Hbkr925ijqBE=;
-        b=l7K8lL/lnLXHxmC0mHcEPQsdBFGs6NTgn1S2fmTsgy+fVwp34CEe3NYWkB2VnZCiLX
-         sE3U3DOPD+G4LUZAC+CC9Ogf8OwJoEMX2Dq8Ae7ef7vbqLlp+BzUzauYZ/svZZdcGdlj
-         mR1mIiOHFHL3/xtgzrRjGn0LhGTuNKFoGNY7b1BL3QyhV9K7rTo7nvRE1vp/vCh1yrCY
-         KuonpPvl+fPP5FpNGtSluAm+XdHudo3bRMCMFTpHYSnxpwHLtXZBjBQg7acPRe5/brWK
-         +h7/wasnTUH8SO+fciuDLs7TqTiGBr9PW1k3Hg8QuLF3nnLjQ9b9tUAqGIDjU6J+KiM/
-         F38A==
-X-Gm-Message-State: AOAM530P7xxFbyR8/5DmPCOUvyvZD0t3zJ647F/+BWngF3sysjTaF0Mz
-        ZDeKWHCVRnIbmKZBTLm9YmQt2RcY65D8ncHmZQCaFA==
-X-Google-Smtp-Source: ABdhPJx1vxrvYOB+icZnIcSfpB5MlI5l8ra5SPaX6r27Su/2FSepiwln9iKH+6uHQm3VowvObDnQF95MjTdDlG/uRm0=
-X-Received: by 2002:aca:47cf:: with SMTP id u198mr3548oia.14.1607013576964;
- Thu, 03 Dec 2020 08:39:36 -0800 (PST)
+        bh=ScpuytyG6NLRNL7X2oNhk8CvwGk89oKl1c7QnQJXwzk=;
+        b=B4A+FxwMNK7QN5KYOMADbkM4J/SllKb1VVizLSHANwJ+59vvaycAkciE9SWxqcQ7ZB
+         uZ46EtoBmJ4zxJCHT/CKUhbuB13JFolOCi29/sXdLgNIfMcFWUmXPdJvsOvMPR3eYppq
+         AEfjeulxSSQYjDdavKASc2TJklL6C7vjfMVcGoDYT2IOqYuoZMqapK2k8BkugSiEGe40
+         k2jWYDOKSDCDcDq6JcLn8nGMxRKr75nVnnFsc9gA2KRNfALdO/SdkqTQqG7oWbDIx4gI
+         n+v62sGmfgEjosLJMUfa8EoXkOLEMxSizlRf5rVbu1DbdeGZW9Vg/ChT21//t3aP03wG
+         FiNg==
+X-Gm-Message-State: AOAM531LeW8gcRWX9FwQFHGwMyjuf2SWKRCqS9wXNEaNV9OLcQ3AlRnv
+        nZh6l9r3qlO0LYXqmNEe3gpGoyTYG8qKiuOCOR1daw==
+X-Google-Smtp-Source: ABdhPJweZzhaLuYS4oXjcPMboasHYjDF1XYNOK4O1QMIV986L6OhBriMHC+AldZq7MM3Xyyhx4DTrsMNDXmJ8P6WRNg=
+X-Received: by 2002:a17:906:c04d:: with SMTP id bm13mr3225888ejb.519.1607013651675;
+ Thu, 03 Dec 2020 08:40:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20201203144248.418281-1-hslester96@gmail.com> <e6ebb634-4cb5-34d4-c661-4cebbe2fdbf1@axentia.se>
-In-Reply-To: <e6ebb634-4cb5-34d4-c661-4cebbe2fdbf1@axentia.se>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 3 Dec 2020 17:39:25 +0100
-Message-ID: <CAKMK7uE3Mr2aOEvdnVrQWE=xc-8OQ1vkv9MdURaMVPHXKF5jwQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/fb-helper: Add missed unlocks in setcmap_legacy()
-To:     Peter Rosin <peda@axentia.se>
-Cc:     Chuhong Yuan <hslester96@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-7-pasha.tatashin@soleen.com> <20201202163507.GL5487@ziepe.ca>
+ <CA+CK2bBT=U+xhbzXTDFwsL5wTvPHgNJ0DRpaeseiUq=w4EOe9w@mail.gmail.com>
+ <20201203010809.GQ5487@ziepe.ca> <CA+CK2bBRgcCc5Nm0RcsEgVFpGBFC-_icA6UDRiqQxeRJE5U-Aw@mail.gmail.com>
+ <20201203141729.GS5487@ziepe.ca>
+In-Reply-To: <20201203141729.GS5487@ziepe.ca>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 3 Dec 2020 11:40:15 -0500
+Message-ID: <CA+CK2bA=Ahd4E=ebdJ7uwxPyQ1AEy_hxA+Tx+yAi92JcZsQsfA@mail.gmail.com>
+Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 5:11 PM Peter Rosin <peda@axentia.se> wrote:
+> Looking at this code some more.. How is it even correct?
 >
-> Hi!
+> 1633                            if (!isolate_lru_page(head)) {
+> 1634                                    list_add_tail(&head->lru, &cma_page_list);
 >
-> On 2020-12-03 15:42, Chuhong Yuan wrote:
-> > setcmap_legacy() does not call drm_modeset_unlock_all() in some exits,
-> > add the missed unlocks with goto to fix it.
-> >
-> > Fixes: 964c60063bff ("drm/fb-helper: separate the fb_setcmap helper into atomic and legacy paths")
-> > Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+> Here we are only running under the read side of the mmap sem so multiple
+> GUPs can be calling that sequence in parallel. I don't see any
+> obvious exclusion that will prevent corruption of head->lru. The first
+> GUP thread to do isolate_lru_page() will ClearPageLRU() and the second
+> GUP thread will be a NOP for isolate_lru_page().
 >
-> Yup, my patch fumbled the locking. Sorry, and thanks for cleaning up my mess!
->
-> Acked-by: Peter Rosin <peda@axentia.se>
->
-> (Spelled that as Ached-by at first, what does that mean??)
+> They will both race list_add_tail and other list ops. That is not OK.
 
-Merged already before I've seen your ack here (and we don't rebase so
-can't add it now), thanks for the patch and all.
--Daniel
+Good question. I studied it, and I do not see how this is OK. Worse,
+this race is also exposable as a syscall instead of via driver: two
+move_pages() run simultaneously. Perhaps in other places?
+
+move_pages()
+  kernel_move_pages()
+    mmget()
+    do_pages_move()
+      add_page_for_migratio()
+         mmap_read_lock(mm);
+         list_add_tail(&head->lru, pagelist); <- Not protected
 
 >
-> Cheers,
-> Peter
+> > What I meant is the users of the interface do it incrementally not in
+> > large chunks. For example:
+> >
+> > vfio_pin_pages_remote
+> >    vaddr_get_pfn
+> >         ret = pin_user_pages_remote(mm, vaddr, 1, flags |
+> > FOLL_LONGTERM, page, NULL, NULL);
+> > 1 -> pin only one pages at a time
 >
-> > ---
-> >  drivers/gpu/drm/drm_fb_helper.c | 15 ++++++++++-----
-> >  1 file changed, 10 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
-> > index 1543d9d10970..8033467db4be 100644
-> > --- a/drivers/gpu/drm/drm_fb_helper.c
-> > +++ b/drivers/gpu/drm/drm_fb_helper.c
-> > @@ -923,11 +923,15 @@ static int setcmap_legacy(struct fb_cmap *cmap, struct fb_info *info)
-> >       drm_modeset_lock_all(fb_helper->dev);
-> >       drm_client_for_each_modeset(modeset, &fb_helper->client) {
-> >               crtc = modeset->crtc;
-> > -             if (!crtc->funcs->gamma_set || !crtc->gamma_size)
-> > -                     return -EINVAL;
-> > +             if (!crtc->funcs->gamma_set || !crtc->gamma_size) {
-> > +                     ret = -EINVAL;
-> > +                     goto out;
-> > +             }
-> >
-> > -             if (cmap->start + cmap->len > crtc->gamma_size)
-> > -                     return -EINVAL;
-> > +             if (cmap->start + cmap->len > crtc->gamma_size) {
-> > +                     ret = -EINVAL;
-> > +                     goto out;
-> > +             }
-> >
-> >               r = crtc->gamma_store;
-> >               g = r + crtc->gamma_size;
-> > @@ -940,8 +944,9 @@ static int setcmap_legacy(struct fb_cmap *cmap, struct fb_info *info)
-> >               ret = crtc->funcs->gamma_set(crtc, r, g, b,
-> >                                            crtc->gamma_size, NULL);
-> >               if (ret)
-> > -                     return ret;
-> > +                     goto out;
-> >       }
-> > +out:
-> >       drm_modeset_unlock_all(fb_helper->dev);
-> >
-> >       return ret;
-> >
+> I don't know why vfio does this, it is why it so ridiculously slow at
+> least.
 
+Agreed.
 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+>
+> Jason
