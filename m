@@ -2,111 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64BF2CCBF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A082CCC10
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgLCCFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 21:05:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgLCCFK (ORCPT
+        id S1729453AbgLCCJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 21:09:02 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45642 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727835AbgLCCJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 21:05:10 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0E9C061A4E
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 18:04:30 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id y18so766406qki.11
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 18:04:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LJSHYFhSwoD2+U2HGs2pBzQX94ySYSBm9WeKvp7LU9Q=;
-        b=Xfc0106QDTS/pUhEUqG2CmZ4pbR6T4q6Izexc6iu740GtWpd84xwMo0hC//7Lgej3k
-         DII12b1lW/n8mvxgg5ZdI4nwxm8Ur3rAKsSw4pj1/1v+lHT77Wp7pZcHqSDfrzuxXiwj
-         DR5BBcRd+hLuBjeX4/i1fo3duTpORVP30r133t75t5Hgp1PtaUTZ+StRo36NUvQjRFRx
-         ckY4bZiOrsqWZtIwbQ3dniXym5gwq4jDFYObu1ENeWsNsLcLlfA7Ad/qew4YRU+t1t/c
-         1sdqenAVHV+cl+VoSEFu+NTmpzUX9mQP3P52+qnWRorBZPTBKamiGrznF4YsO1IGmVOh
-         9UWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LJSHYFhSwoD2+U2HGs2pBzQX94ySYSBm9WeKvp7LU9Q=;
-        b=VKYM1z8UFeJRF2BVO/RJu7rbL/CM/rlZezQopboZvEdgJzUMGs5DAxfjxVgSEEigr1
-         YwRnX6nEtfTkyFmHEDDhrMMY+MbZyrXbH0g3H80JPwiOcGFj38WDzuZL+73zDaftbHjx
-         mACudsy6uXg63NIwgfqFD/2eB3BITmWizL4bdP5ShK0qG1ideyDpjzshGnO60h9W8xJu
-         sCRn/uzwiLnnc8xOMzbn9EX+inXy6Do8CmQDqT9pQMH+BG5pQqDnYa1WNW8HZ/zwvEhj
-         n1YRZUo1QmnPJsU6UOpbruw973ejYK3Q+WvrTrNt+4IMgeA7M8idheUmJ+l5A5EtGQEy
-         paRw==
-X-Gm-Message-State: AOAM531vFBpPMbV6uX/zUEhUTBuAfa4VqAzQp/pB0OYim90BXcEwcmwJ
-        jttUIelKtFlX8fivbYB76wlERw==
-X-Google-Smtp-Source: ABdhPJxeOW7Q0ae8iOkjWtoCj7xlGAAs8tHbcxFgIKVPpgu8xQBnAf60tQtyyMM0guEBxCp3KjxYZw==
-X-Received: by 2002:a05:620a:1387:: with SMTP id k7mr805479qki.338.1606961069387;
-        Wed, 02 Dec 2020 18:04:29 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id c7sm781106qtw.70.2020.12.02.18.04.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 18:04:28 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kkdyt-005ISu-Nz; Wed, 02 Dec 2020 22:04:27 -0400
-Date:   Wed, 2 Dec 2020 22:04:27 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-Message-ID: <20201203020427.GR5487@ziepe.ca>
-References: <20201201143835.2054508-1-mlichvar@redhat.com>
- <20201201161224.GF5487@ziepe.ca>
- <20201201171420.GN1900232@localhost>
- <20201201173540.GH5487@ziepe.ca>
- <87mtywe2zu.fsf@nanos.tec.linutronix.de>
- <20201202162723.GJ5487@ziepe.ca>
- <87a6uwdnfn.fsf@nanos.tec.linutronix.de>
- <20201202205418.GN5487@ziepe.ca>
- <874kl3eu8p.fsf@nanos.tec.linutronix.de>
- <87zh2vd72z.fsf@nanos.tec.linutronix.de>
+        Wed, 2 Dec 2020 21:09:00 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B326WgZ065377;
+        Wed, 2 Dec 2020 21:08:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=byTD4NKmU+qfCqX3DcTp3BJ5vLnURAwlR4Q01sTDRLI=;
+ b=GAufvn4ODxhCDr31bhpA7pHo6OIQTOySKP1kHvcYIfMYM4UX2HWMoCMCrQudvzTdDo+M
+ H+CcztkOHQZEOgfe13JnVeRGl4HTown53G1lLzbQ926aQ/c26t1I3OUyxk3B/1pTsKPD
+ jrY9e/obFMEXhoZ1iQ9ocmSQzm3MTRfPwChvJ7e+KwUM2vH8JgaXmoGuyI0OAZlvo6Ci
+ 0Ai7LT7Efpes6Iepr+bypHjXjc1vxn09yuUtGkNrRsQ/PEDj5olpM3jCm4qvN1fF2P6z
+ ghLPVajJmS2M54wOzv03w7nQy9z9HwGRtQ9xbtf9mAHZ1N3OHCS5NfyES+AoYuZx4d9P bw== 
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 356jg86ufu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 21:08:11 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B31uL3P013325;
+        Thu, 3 Dec 2020 02:08:10 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma01wdc.us.ibm.com with ESMTP id 355vrfvc75-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 02:08:10 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B32821Q36110948
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Dec 2020 02:08:02 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D39C78063;
+        Thu,  3 Dec 2020 02:08:09 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D13E078060;
+        Thu,  3 Dec 2020 02:08:08 +0000 (GMT)
+Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  3 Dec 2020 02:08:08 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH v3 00/18] ibmvfc: initial MQ development
+Date:   Wed,  2 Dec 2020 20:07:48 -0600
+Message-Id: <20201203020806.14747-1-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zh2vd72z.fsf@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_14:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ spamscore=0 clxscore=1015 mlxlogscore=999 lowpriorityscore=0
+ malwarescore=0 bulkscore=0 priorityscore=1501 impostorscore=0 phishscore=0
+ suspectscore=3 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012030009
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 02:14:12AM +0100, Thomas Gleixner wrote:
+Recent updates in pHyp Firmware and VIOS releases provide new infrastructure
+towards enabling Subordinate Command Response Queues (Sub-CRQs) such that each
+Sub-CRQ is a channel backed by an actual hardware queue in the FC stack on the
+partner VIOS. Sub-CRQs are registered with the firmware via hypercalls and then
+negotiated with the VIOS via new Management Datagrams (MADs) for channel setup.
 
-> If anyone involved seriously believes that any of this solves a real
-> world problem, then please come forth an make your case.
+This initial implementation adds the necessary Sub-CRQ framework and implements
+the new MADs for negotiating and assigning a set of Sub-CRQs to associated VIOS
+HW backed channels. The event pool and locking still leverages the legacy single
+queue implementation, and as such lock contention is problematic when increasing
+the number of queues. However, this initial work demonstrates a 1.2x factor
+increase in IOPs when configured with two HW queues despite lock contention.
 
-The original commit 0f295b0650c9 ("rtc: Allow rtc drivers to specify
-the tv_nsec value for ntp") was tested by myself and RMK on various
-ARM systems and did work as advertised. Here is the giant thread,
-RMK's post explains the problem and gives his measurements of several
-different RTCs:
+changes in v2:
+* Patch 4: changed firmware support logging to dev_warn_once
+* Patch 6: adjusted locking
+* Patch 15: dropped logging verbosity, moved cancel event tracking into subqueue
+* Patch 17: removed write permission for migration module parameters
+	    drive hard reset after update to num of scsi channels
 
-https://lore.kernel.org/linux-arm-kernel/20170920112152.GL20805@n2100.armlinux.org.uk/
+changes in v2:
+* Patch 4: NULL'd scsi_scrq reference after deallocation
+* Patch 6: Added switch case to handle XPORT event
+* Patch 9: fixed ibmvfc_event leak and double free
+* added support for cancel command with MQ
+* added parameter toggles for MQ settings
 
-And the patch that resulted:
+Tyrel Datwyler (18):
+  ibmvfc: add vhost fields and defaults for MQ enablement
+  ibmvfc: define hcall wrapper for registering a Sub-CRQ
+  ibmvfc: add Subordinate CRQ definitions
+  ibmvfc: add alloc/dealloc routines for SCSI Sub-CRQ Channels
+  ibmvfc: add Sub-CRQ IRQ enable/disable routine
+  ibmvfc: add handlers to drain and complete Sub-CRQ responses
+  ibmvfc: define Sub-CRQ interrupt handler routine
+  ibmvfc: map/request irq and register Sub-CRQ interrupt handler
+  ibmvfc: implement channel enquiry and setup commands
+  ibmvfc: advertise client support for using hardware channels
+  ibmvfc: set and track hw queue in ibmvfc_event struct
+  ibmvfc: send commands down HW Sub-CRQ when channelized
+  ibmvfc: register Sub-CRQ handles with VIOS during channel setup
+  ibmvfc: add cancel mad initialization helper
+  ibmvfc: send Cancel MAD down each hw scsi channel
+  ibmvfc: enable MQ and set reasonable defaults
+  ibmvfc: provide modules parameters for MQ settings
+  ibmvfc: drop host lock when completing commands in CRQ
 
-https://lore.kernel.org/linux-arm-kernel/20171013175433.GA22062@obsidianresearch.com/
+ drivers/scsi/ibmvscsi/ibmvfc.c | 721 +++++++++++++++++++++++++++++----
+ drivers/scsi/ibmvscsi/ibmvfc.h |  79 +++-
+ 2 files changed, 711 insertions(+), 89 deletions(-)
 
-There is a lot of detail in there.. Keep in mind none of this was for
-the mc146818 style RTCs.
+-- 
+2.27.0
 
-I can't recall any more why no drivers use the set_offset_nsec. I'm
-surprised, maybe I forgot to send the patch for the RTCs I tested or
-maybe it got dropped someplace.. It certainly was needed for some
-maxim I2C chips.
-
-The thread shows rmk had even written a hrtimer patch to go with this,
-but it also got lost for some reason. Maybe all the arguing killed
-further effort?
-
-Jason
