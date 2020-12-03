@@ -2,91 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E1E2CD48E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACADC2CD490
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 12:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729964AbgLCL2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 06:28:15 -0500
-Received: from ozlabs.org ([203.11.71.1]:48791 "EHLO ozlabs.org"
+        id S1730162AbgLCL2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 06:28:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42786 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbgLCL2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 06:28:15 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cmtq71dWPz9sW0;
-        Thu,  3 Dec 2020 22:27:29 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1606994852;
-        bh=DhZJx6VS2S3i6rp5eGQb6lMVR2DlQIxOHgVG1xjGFrE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=fZP6igB0dffXJpVPcdAMjoblQ8MgiPxVagbU9j32aVvdtENZ340u7asmb/zevIMam
-         0Zljjs9YIrqkIlnKZNVdDT3NCKBiIziUjE/G02oMM1J4m1sbKNebe4IpqGKedl8RAl
-         wU3n3OS6J1yqIJPH3Bqdx9iUtYQbs6Os7HVLNgJnO3GdxCQq3KYZC6ZG8wehxxixcr
-         JXHk6z0kY89GyKR60cUw2IYC7ReC5nPHHRs4ESewl/BBx98TlPWJvt21tXRj3BqsPy
-         THBPRrHyz/KN9pSs65pYUw6EGble1woG2YzV7nYVM6C9R1AvLrCykcMzvNV+MlRVnU
-         V7fkwXYOLHmfg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Borislav Petkov <bp@alien8.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     Wang ShaoBo <bobo.shaobowang@huawei.com>, mchehab@kernel.org,
-        james.morse@arm.com, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, huawei.libin@huawei.com,
-        cj.chengjian@huawei.com, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] EDAC, mv64x60: Fix error return code in mv64x60_pci_err_probe()
-In-Reply-To: <20201202112515.GC2951@zn.tnic>
-References: <20201124063009.1529-1-bobo.shaobowang@huawei.com> <20201202112515.GC2951@zn.tnic>
-Date:   Thu, 03 Dec 2020 22:27:25 +1100
-Message-ID: <87pn3ruo2q.fsf@mpe.ellerman.id.au>
+        id S1725985AbgLCL2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 06:28:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 538BEACBA;
+        Thu,  3 Dec 2020 11:27:51 +0000 (UTC)
+Subject: Re: [PATCH v2] bcache: fix panic due to cache_set is null
+To:     Yi Li <yili@winhong.com>
+Cc:     yilikernel@gmail.com, kent.overstreet@gmail.com,
+        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guo Chao <guochao@winhong.com>
+References: <CAJfdMYDLydAtoxvPGzaQ+K5jLvwAXg6MvpE-OM9sFjZgz_01sQ@mail.gmail.com>
+ <20201203094711.3236551-1-yili@winhong.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <d25c094a-fcbc-c4da-3bf5-72549578e653@suse.de>
+Date:   Thu, 3 Dec 2020 19:27:45 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201203094711.3236551-1-yili@winhong.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Borislav Petkov <bp@alien8.de> writes:
-> On Tue, Nov 24, 2020 at 02:30:09PM +0800, Wang ShaoBo wrote:
->> Fix to return -ENODEV error code when edac_pci_add_device() failed instaed
->> of 0 in mv64x60_pci_err_probe(), as done elsewhere in this function.
->> 
->> Fixes: 4f4aeeabc061 ("drivers-edac: add marvell mv64x60 driver")
->> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
->> ---
->>  drivers/edac/mv64x60_edac.c | 1 +
->>  1 file changed, 1 insertion(+)
->> 
->> diff --git a/drivers/edac/mv64x60_edac.c b/drivers/edac/mv64x60_edac.c
->> index 3c68bb525d5d..456b9ca1fe8d 100644
->> --- a/drivers/edac/mv64x60_edac.c
->> +++ b/drivers/edac/mv64x60_edac.c
->> @@ -168,6 +168,7 @@ static int mv64x60_pci_err_probe(struct platform_device *pdev)
->>  
->>  	if (edac_pci_add_device(pci, pdata->edac_idx) > 0) {
->>  		edac_dbg(3, "failed edac_pci_add_device()\n");
->> +		res = -ENODEV;
->>  		goto err;
->>  	}
->
-> That driver depends on MV64X60 and I don't see anything in the tree
-> enabling it and I can't select it AFAICT:
->
-> config MV64X60
->         bool
->         select PPC_INDIRECT_PCI
->         select CHECK_CACHE_COHERENCY
+On 12/3/20 5:47 PM, Yi Li wrote:
+> bcache_device_detach will release the cache_set after hotunplug cache
+> disk.
+> 
+> Here is how the issue happens.
+> 1) cached_dev_free do cancel_writeback_rate_update_dwork
+>    without bch_register_lock.
+> 2) Wirting the writeback_percent by sysfs with
+>    bch_register_lock will insert a writeback_rate_update work.
+> 3) cached_dev_free with bch_register_lock to do bcache_device_free.
+>    dc->disk.cl will be set NULL
+> 4) update_writeback_rate will crash when access dc->disk.cl
 
-It was selected by PPC_C2K, but that was dropped in:
+The analysis makes sense, good catch! Thank you for make me understand
+the problem.
 
-  92c8c16f3457 ("powerpc/embedded6xx: Remove C2K board support")
 
-> PPC folks, what do we do here?
->
-> If not used anymore, I'd love to have one less EDAC driver.
+> 
+> Fixes: 80265d8dfd77 ("bcache: acquire bch_register_lock later in cached_dev_free()")
+> 
+>   IP: [<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
+>   PGD 879620067 PUD 8755d3067 PMD 0
+>   Oops: 0000 [#1] SMP
+>   CPU: 8 PID: 1005702 Comm: kworker/8:0 Tainted: G 4.4.0+10 #1
+>   Hardware name: Intel BIOS SE5C610.86B.01.01.0021.032120170601 03/21/2017
+>   Workqueue: events update_writeback_rate [bcache]
+>   task: ffff8808786f3800 ti: ffff88077082c000 task.ti: ffff88077082c000
+>   RIP: e030:[<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
+>   RSP: e02b:ffff88077082fde0  EFLAGS: 00010202
+>   RAX: 0000000000000018 RBX: ffff8808047f0b08 RCX: 0000000000000000
+>   RDX: 0000000000000001 RSI: ffff88088170dab8 RDI: ffff88088170dab8
+>   RBP: ffff88077082fe18 R08: 000000000000000a R09: 0000000000000000
+>   R10: 0000000000000000 R11: 0000000000017bc8 R12: 0000000000000000
+>   R13: ffff8808047f0000 R14: 0000000000000200 R15: ffff8808047f0b08
+>   FS:  00007f157b6d6700(0000) GS:ffff880881700000(0000) knlGS:0000000000000000
+>   CS:  e033 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   CR2: 0000000000000368 CR3: 0000000875c05000 CR4: 0000000000040660
+>   Stack:
+>    0000000000000001 0000000000007ff0 ffff88085ff600c0 ffff880881714e80
+>    ffff880881719500 0000000000000200 ffff8808047f0b08 ffff88077082fe60
+>    ffffffff81088c0c 0000000081714e80 0000000000000000 ffff880881714e80
+>   Call Trace:
+>    [<ffffffff81088c0c>] process_one_work+0x1fc/0x3b0
+>    [<ffffffff81089575>] worker_thread+0x2a5/0x470
+>    [<ffffffff815a2f58>] ? __schedule+0x648/0x870
+>    [<ffffffff810892d0>] ? rescuer_thread+0x300/0x300
+>    [<ffffffff8108e3d5>] kthread+0xd5/0xe0
+>    [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
+>    [<ffffffff815a704f>] ret_from_fork+0x3f/0x70
+>    [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
+> 
+> Reported-by: Guo Chao <guochao@winhong.com>
+> Signed-off-by: Yi Li <yili@winhong.com>
+> ---
+>  drivers/md/bcache/super.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+> index 46a00134a36a..8b341f756ac0 100644
+> --- a/drivers/md/bcache/super.c
+> +++ b/drivers/md/bcache/super.c
+> @@ -1334,9 +1334,6 @@ static void cached_dev_free(struct closure *cl)
+>  {
+>  	struct cached_dev *dc = container_of(cl, struct cached_dev, disk.cl);
+>  
+> -	if (test_and_clear_bit(BCACHE_DEV_WB_RUNNING, &dc->disk.flags))
+> -		cancel_writeback_rate_update_dwork(dc);
+> -
+>  	if (!IS_ERR_OR_NULL(dc->writeback_thread))
+>  		kthread_stop(dc->writeback_thread);
+>  	if (!IS_ERR_OR_NULL(dc->status_update_thread))
+> @@ -1344,6 +1341,9 @@ static void cached_dev_free(struct closure *cl)
+>  
+>  	mutex_lock(&bch_register_lock);
+>  
+> +	if (test_and_clear_bit(BCACHE_DEV_WB_RUNNING, &dc->disk.flags))
+> +		cancel_writeback_rate_update_dwork(dc);
+> +
+>  	if (atomic_read(&dc->running))
+>  		bd_unlink_disk_holder(dc->bdev, dc->disk.disk);
+>  	bcache_device_free(&dc->disk);
+> 
 
-It's dead code, so drop it.
+Such change is problematic, the writeback rate kworker mush stopped
+before writeback and status_update thread, otherwise you may encounter
+other problem.
 
-I can send a patch if no one else wants to.
+And when I review your patch I find another similar potential problem.
 
-cheers
+This is tricky, let me think how to fix it ....
+
+Thank you again, for catch such issue.
+
+Coly Li
+
