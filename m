@@ -2,258 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FF92CCD4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0512CCD4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728828AbgLCD1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 22:27:05 -0500
-Received: from mail-mw2nam10on2068.outbound.protection.outlook.com ([40.107.94.68]:47968
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726977AbgLCD1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 22:27:05 -0500
+        id S1729641AbgLCD14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 22:27:56 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:5724 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726201AbgLCD1z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 22:27:55 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B33QQRQ023036;
+        Wed, 2 Dec 2020 19:26:58 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=liyh3+Vbhgs8GG5T4noSuLf4U1siMAZu0cl7ln2HpHE=;
+ b=YQJ6CguI3NOiGpFCo3UGnjQ6QBuO25voj+5pml7HG7pZ1PubStiFyC8jyVkoYLfRO4zi
+ cLoz47H1WWDrqA0dJPbAQruGD3jZyT98SqsoZudOUBu1cwNgZawxp6x7Jv3UfXs8t4Mw
+ dmM7oZ49hNkGG26gKj8Z6J/uBGdBn3l0xUQ= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 35615fgm42-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 02 Dec 2020 19:26:58 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 2 Dec 2020 19:26:57 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ecT4S6YTTgFst1cS3gIbplaVWgIJ0hQ9GfiZkp+8es5UN8eSvLGs/OQYM11fUOKbuWUOwIPNuPjVy4PPOeJT8ntw0iNss3hLuns5Io7WTFU62iGm7bmgg3gFT4O9K0fUbk4YPurVPQuSn9KNHXSrSkY2VpjCGV4wINauxSgAQRXk69WV8++My3769w9Sql0kFo4VsHFq6AjXbN1BcLHXlS08Gp8zQmkTA7WUXeXGUHe2mtjJN/tg6tGN9qw79pBv32Kb/1olGd5RbnxD0vHY5yAxcEyGNvZnbM1E4tKdsJBpNHN+F1/t0LuKnGFr5ulYfEq//F8oNw6Z3wtNI6DRqw==
+ b=chpOWLHEWWatHlfJ/S06DB5C/672tCGKfuZDkQG0FAfwepCsHvmZnCThUDcHDnIpGX/bxENz9jLhr61xlhnOvIcaWMBf6Pw7INXQCzriPtp63tIbiEDPUnVSVWsSDGsSd9qnp6bYCw7DWYDIPSwyNUkH3JW1l9v94fTP8yz1y/BjgAZXnqOwO6qcuba0e+3yem/bKNNRyK4QXgrZrc+5Jy5VHbyjKodtN7qvNuI/YUiJPzBjVJQoyxlmKMhUL2Eh7otNwrkU7RrsNYknX5Aj4wZX8sgGb+XQPA5fBbiYBY3ycnnYpF2OEUEs6miVBlDnFQ4+Nmt9/ulm6QYMpmaRtQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=adm068yhR+w7YISEFDSl6YbQdJBPKnP4jdDwr7ngTh4=;
- b=e5/Esblqfowmyi330itKXIDfpeADu5l3SsICVt5r3bkUmSmzdI4/ca5fmFf+Xq2UtugMjXShY6IMbWm0YF8gYjfi7rfhSltKaIy+U7DdDXsQng91nt9pP8qHxwnKH9cWT4BBZS1urr0VrXF2L612LvKwOnXaL2wjpT1Mp4+7XM88Nu31bC7FaS0favjGHGZI/q1LTMp/JCks4tQ+7OUimpji397R9Kxbn3U1nGnOiFQjfBtQ6WbAGEj5aLjs9vW0b3y3xWHv50aKOfT8MtxMTwb6J/QWN/y28KKpAKZBZjtiFOVJTFW555V5bgXw34h/kMfisZObdRqXKcP8xsTHQg==
+ bh=liyh3+Vbhgs8GG5T4noSuLf4U1siMAZu0cl7ln2HpHE=;
+ b=oUfCn0r5DYyFoFHvrp6z0qiujg0W1RRM3nnFZub6f0afTc7zoWXvqpMMtk6j2+8mQAeHxTcUNfJ5iXjchyAWMb1Lw75/hWxfAXAOs7X0xPTPiNwzpb4j39U6Of3m33O2wXD2j5nD+oaERB6pS6ykMKQhyJ65CWYS3ntTguV76/TysDn5wolLlfuOAdxAnn6z7hiLwQ4igacGepDwx1WUKHYOITLPmScWUSX0tus7O91PicTuEGie4kJeljKYj0XAyqJ6N5b4zcSzVYmCpF/OGTH8lCDOO4lWaOby6hL4ymKWfv0frvBg9vL7d4uAC8NqpEj6C1+JwbPoork28UX5zw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=adm068yhR+w7YISEFDSl6YbQdJBPKnP4jdDwr7ngTh4=;
- b=dkIlXO7KP1l5onbq5Uc6xSLURbk5fRwF4Z9lh5E1eLZSKWywEV/xqHA3LHuxcRQ1kGB0RQzRQsxLnEeC1Hz+Iq0vR0Hd1/bmRPjbDzjWHXgxypEw7JXgVMoL4+nfPe2+S+sM0FIIuNbjziaOZtpVZQdoyKIzJBnqAMWxNqSujik=
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SN6PR12MB4670.namprd12.prod.outlook.com (2603:10b6:805:11::22) with
+ bh=liyh3+Vbhgs8GG5T4noSuLf4U1siMAZu0cl7ln2HpHE=;
+ b=DRoHkfv4dKbvsSqhnSo6gwaj8iQuxac5AXsN+IqKP9cihRXkGYlZAZvqwx4vE/9Jyx76yAclPbwIdoRg9oWXBM3xEJwj6marsthdPuzEvHVWZ4X7049BhMjdvRxKXS3SRx6ZEWjbTt7B1jDKTvnJdEnCaMxRSYeoQx+avzMX2d8=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BY5PR15MB3601.namprd15.prod.outlook.com (2603:10b6:a03:1fb::30) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Thu, 3 Dec
- 2020 03:26:10 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3611.025; Thu, 3 Dec 2020
- 03:26:10 +0000
-From:   Ashish Kalra <Ashish.Kalra@amd.com>
-To:     konrad.wilk@oracle.com
-Cc:     bp@alien8.de, hch@lst.de, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, x86@kernel.org, luto@kernel.org,
-        peterz@infradead.org, dave.hansen@linux-intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        brijesh.singh@amd.com, Thomas.Lendacky@amd.com, Jon.Grimm@amd.com,
-        rientjes@google.com
-Subject: [PATCH v7] swiotlb: Adjust SWIOTBL bounce buffer size for SEV guests.
-Date:   Thu,  3 Dec 2020 03:25:59 +0000
-Message-Id: <20201203032559.3388-1-Ashish.Kalra@amd.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SN4PR0801CA0008.namprd08.prod.outlook.com
- (2603:10b6:803:29::18) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Thu, 3 Dec
+ 2020 03:26:55 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396%6]) with mapi id 15.20.3632.019; Thu, 3 Dec 2020
+ 03:26:55 +0000
+Date:   Wed, 2 Dec 2020 19:26:45 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next v9 00/34] bpf: switch to memcg-based memory
+ accounting
+Message-ID: <20201203032645.GB1568874@carbon.DHCP.thefacebook.com>
+References: <20201201215900.3569844-1-guro@fb.com>
+ <CAADnVQJThW0_5jJ=0ejjc3jh+w9_qzctqfZ-GvJrNQcKiaGYEQ@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJThW0_5jJ=0ejjc3jh+w9_qzctqfZ-GvJrNQcKiaGYEQ@mail.gmail.com>
+X-Originating-IP: [2620:10d:c090:400::5:2545]
+X-ClientProxiedBy: MW3PR05CA0005.namprd05.prod.outlook.com
+ (2603:10b6:303:2b::10) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by SN4PR0801CA0008.namprd08.prod.outlook.com (2603:10b6:803:29::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Thu, 3 Dec 2020 03:26:09 +0000
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:2545) by MW3PR05CA0005.namprd05.prod.outlook.com (2603:10b6:303:2b::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.9 via Frontend Transport; Thu, 3 Dec 2020 03:26:54 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 13a1970e-a137-453d-ea60-08d8973b2ddd
-X-MS-TrafficTypeDiagnostic: SN6PR12MB4670:
+X-MS-Office365-Filtering-Correlation-Id: 95b5fa5c-d205-4e88-cc2d-08d8973b48a5
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3601:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB4670A9B0BD59D70AA980062E8EF20@SN6PR12MB4670.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Microsoft-Antispam-PRVS: <BY5PR15MB3601E1EBD16CFEA9E17DD45ABEF20@BY5PR15MB3601.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: u2trG4RszYIyrjzFYMa3X+6u/EXZUyU3lpEALBOR333408ZR5mhtDHVFvDHqBjeV5FCg5S8m+L51duPG/+rgIkHvMnKqxhJ/2NQ6MMz1VPDKiglvsKD+NOrOhAed+JzMRfGCt6MXZq+X6VmRVyaBnZaH+bXts3E5FAN16K4dsRXOJSQ1/ydqqnIM7JUHGNBYBf7eCP3DQ1+Wp0k+8z1MIehIAcgpo1tnbLmXf6AqqTF8VnwWNrEn2vmQlSoY7EAAXnzQJegZdt1L5h4y8dO2ZivCPjs3G82irxZD3gwzZ9xeQgHduNsoo9lDzQF0KGz8shT1aRXOusm5aqhsTk+yDA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(136003)(376002)(346002)(83380400001)(7696005)(186003)(478600001)(36756003)(7416002)(52116002)(86362001)(66476007)(6486002)(66556008)(16526019)(66946007)(2616005)(6666004)(8676002)(6916009)(1076003)(2906002)(5660300002)(956004)(316002)(4326008)(26005)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?0W7quKjBYuTEmJuP3Rk2+rgBkz6bSnS7Z6i8fFPIkqTJWFoItIYz4rOJF78L?=
- =?us-ascii?Q?ztqBru9As8ysrnz+/l+VbXcUVQUffZvk72W/gb5hbnLGGiV76Oa9w2msiR0V?=
- =?us-ascii?Q?4gZ+nDQDXxAvoQGD2qy3GCaILFxs3O3GJEFzF8S4Uez6x4inhQKNwMa6WwjQ?=
- =?us-ascii?Q?jexcqKH6YdHTwwv5rjxs71BmY1CT54YqMYun0uyLOeAG7k+iuI4z7+9IzX3x?=
- =?us-ascii?Q?YCKhM9XFhyNa8jbkznIuVX6jaXS56xvuuOQDaMvUqOMRcLXV9udXA8MHAJt7?=
- =?us-ascii?Q?Fk9IvrcdRu5+aiz5KpntVM79Qe5uQUgkbXGTsqpsPAJstjxEw+bn6jIzSS7w?=
- =?us-ascii?Q?oOAjp9YQwcyUvJppypo5zDXrGthiqka3Q/1upcsddTE48xwhHOJUdVqSk7ui?=
- =?us-ascii?Q?DL03E/xgntoYlPlgJ2edp8hfdxCNDLTGffDN8w6P2Bg6Obx8xEwzu4XkI70F?=
- =?us-ascii?Q?NfPYrnM0k1i5+Y3fWqEtoy1aAxyC1tHuI+Ms+++AaKCr4GNgoCBRJImpScQa?=
- =?us-ascii?Q?n9BkcdEGsU1Pn6Saf0309rzjnDE6tZjKCmtnamufwhv285ByTR4qFFryuZeb?=
- =?us-ascii?Q?4/we7mB5LL2YwRTBcWYSY1noPGsdb1ZJPSl6L0tjeEnP2Zo0Iqn/BMgEzTHB?=
- =?us-ascii?Q?UAIhec5Fm2cXRqi+szXXcEVyxYmZhFtscLV/zzWMbITmneVpqHmb8wHRKsGE?=
- =?us-ascii?Q?/PopdQBVXxBoTZb7vpcdNGDjgHAXes7OloN8C+vdhTrA6T/pfreVfmNrEwhA?=
- =?us-ascii?Q?Tv+j9uTX4w37KAbOVVf/FzEI7UYw7d3hHhxH0mR/JLmZvIz5CgWfvnH/OIRC?=
- =?us-ascii?Q?+JODcw+n91/4lEa29r8dM0sQm0pMQ5LiPJ7DvUVcgQYmz1QHSH/gC66NjWIE?=
- =?us-ascii?Q?RrmvS9RwiBL0C2QFkum/WaHrtW0WotfHHrPPZxsD5ru6u8N95OQ5v4ZP1Ybn?=
- =?us-ascii?Q?sMgWzsuKvh+hN0Dy9HHtDqb/CI+9+n0mDO2NoygeN1AIjPbFUanKDGoPLCNh?=
- =?us-ascii?Q?gXFE?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13a1970e-a137-453d-ea60-08d8973b2ddd
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: Ulayp96s2uR7io3vY7H4nFP66e+poThUoVzZ2VyyfpidB0hS3p0tIdF2+K0woukVzxaR+nCsUzXJsBvJr+kzVYbTfSJs32UqidTVWDHf0oM9hoQ3vG7xjAZ2xzyMtDWGdGHDwBPOAZbbNJoK//txGC/nxPJ0ZESXt9sNKxs6C4KmX6+MWhngdkQsbosOaBoziUuCkKRaUexm7ha/Dilzh1Ojc+J3s+9Vj0Z+pvHTrHmCHu3mfyztW3YV9vtJfqpRUaorwDW0kJWKk0evUwq/uWqI1b5cyRCi2n0L0dVr9nmtegQlBAMQqFbR2XDZRAjvoya/Mx+GKqh4PADBbovejw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(39860400002)(136003)(376002)(346002)(8676002)(4744005)(316002)(54906003)(478600001)(5660300002)(1076003)(66556008)(66946007)(66476007)(83380400001)(186003)(33656002)(2906002)(6506007)(4326008)(53546011)(86362001)(55016002)(52116002)(6666004)(7696005)(9686003)(6916009)(8936002)(16526019);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?QcRikL3Jxg064JZKMpKo5qe1dedjXiZfyfA9NOmiy2Xrer2cF5tzzLSBNx65?=
+ =?us-ascii?Q?Wj6Ay/MfX4dkVb+M9o2LQggpmUXkKwaNgOqf0aPRykhYtYabYMONmKUeyZwH?=
+ =?us-ascii?Q?qV1R0AFccgBuFR8hjpvB7uwEgeUG8N/8cG0cK3bnpp0k64Zs/Sfy0LWxfX3r?=
+ =?us-ascii?Q?hQp7nf/3h9kCtXLpo8XFt4TYsz0ULGoay9RHdFG3ZhegVxYck7LG0rIuY5A+?=
+ =?us-ascii?Q?tpy7udNY1sH2n3c5g/tEO1Txk4LApY8lvRvDzTFCECcxtHE17P6GVKP6Ij8I?=
+ =?us-ascii?Q?GBi3RD27JJNgvt0C0tqWVFHIc4ovwcaWXdktm/bQCytz1ioeZAyH4c4acPAL?=
+ =?us-ascii?Q?0zq8JbFaaFQsJwtcJaEdRB9R/dPvI9FU1VcWMTTNNbT1QZF7ptzm2ZAfMN6o?=
+ =?us-ascii?Q?XOWVGV8ipoNR5Tqvd+y3+WRR78DB92QssEqwoDh5HlKSDJOP6M68hQHHzPsB?=
+ =?us-ascii?Q?85o3dhOkiwsLWHxyO6QPf0eYMfG+liZFBIBiezLjwQNYzxlnNXVRU3h7bmNw?=
+ =?us-ascii?Q?yJ5nrtEEaXTLh9j1omrbNpVPOGoJO/HJp1KiFk1NhUZvjw0tujw9E1EUZP6x?=
+ =?us-ascii?Q?18qGLtki/bJ9exPxbXMERPHt4PlACPWRSylZ30p1+fG7j3UFUqMgpYWOgDUb?=
+ =?us-ascii?Q?KrphZBy1jMOWFpB2nEWlX7VUIsOTNwGBTlZok+easzOSKeBfG1EU0pVH6pw9?=
+ =?us-ascii?Q?JaKhesSX0iYc3U+n5kC72v2y7ZKIX2FPMhieNEDp1HOsOBkt2HeiRYKtZNiy?=
+ =?us-ascii?Q?lpB2NxqvK6F8/bylr841GVgW4uQYbyF+hXtW4UR2oQFP8dY9iS0Qywd8WoTW?=
+ =?us-ascii?Q?pd6lRWaGzshTM5XSsACsdECwqDhmzPgz3BSM+EoUajxB3IH4toqPqSccyx/g?=
+ =?us-ascii?Q?uWgiDCOZWWzQkym6rEln+I21zmv9eqTZFR8C8q7MzkoIfy9Mkkjdj2lBE+TI?=
+ =?us-ascii?Q?iipKnWfRaoFNIw+HDbyej68jlBC/GnzbPvhMICXmVMd25tSUOnMZb/fsXnDG?=
+ =?us-ascii?Q?AuysZo4H3S/xsF0OYnNCDEOSog=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95b5fa5c-d205-4e88-cc2d-08d8973b48a5
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2020 03:26:10.3996
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2020 03:26:55.1954
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GpRlfGG01gEVxagfLuBos7rM7mWBJ8u3xYilmMx+Z9XnRncKp8qVDYDlW/8UWzt2NNvAUj6YVXhEakmOu5FBkw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4670
+X-MS-Exchange-CrossTenant-UserPrincipalName: J3+Deh7z1DvFWFyiPkn8qRIoefBww3RA2GD3MyDlElReKCwXZLLzS5GyoFYvU97P
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3601
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-03_01:2020-11-30,2020-12-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ bulkscore=0 lowpriorityscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ adultscore=0 mlxlogscore=999 suspectscore=1 clxscore=1015
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012030019
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ashish Kalra <ashish.kalra@amd.com>
+On Wed, Dec 02, 2020 at 06:54:46PM -0800, Alexei Starovoitov wrote:
+> On Tue, Dec 1, 2020 at 1:59 PM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > 5) Cryptic -EPERM is returned on exceeding the limit. Libbpf even had
+> >    a function to "explain" this case for users.
+> ...
+> > v9:
+> >   - always charge the saved memory cgroup, by Daniel, Toke and Alexei
+> >   - added bpf_map_kzalloc()
+> >   - rebase and minor fixes
+> 
+> This looks great. Applied.
 
-For SEV, all DMA to and from guest has to use shared (un-encrypted) pages.
-SEV uses SWIOTLB to make this happen without requiring changes to device
-drivers.  However, depending on workload being run, the default 64MB of
-SWIOTLB might not be enough and SWIOTLB may run out of buffers to use
-for DMA, resulting in I/O errors and/or performance degradation for
-high I/O workloads.
+Thanks!
 
-Adjust the default size of SWIOTLB for SEV guests using a
-percentage of the total memory available to guest for SWIOTLB buffers.
+> Please follow up with a change to libbpf's pr_perm_msg().
+> That helpful warning should stay for old kernels, but it would be
+> misleading for new kernels.
+> libbpf probably needs a feature check to make this warning conditional.
 
-Using late_initcall() interface to invoke swiotlb_adjust() does not
-work as the size adjustment needs to be done before mem_encrypt_init()
-and reserve_crashkernel() which use the allocated SWIOTLB buffer size,
-hence call it explicitly from setup_arch().
-
-The SWIOTLB default size adjustment needs to be added as an architecture
-specific interface/callback to allow architectures such as those supporting
-memory encryption to adjust/expand SWIOTLB size for their use.
-
-v5 fixed build errors and warnings as
-Reported-by: kbuild test robot <lkp@intel.com>
-
-Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
----
- arch/x86/kernel/setup.c   |  2 ++
- arch/x86/mm/mem_encrypt.c | 31 +++++++++++++++++++++++++++++++
- include/linux/swiotlb.h   |  6 ++++++
- kernel/dma/swiotlb.c      | 22 ++++++++++++++++++++++
- 4 files changed, 61 insertions(+)
-
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 84f581c91db4..31e24e198061 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -1149,6 +1149,8 @@ void __init setup_arch(char **cmdline_p)
- 	if (boot_cpu_has(X86_FEATURE_GBPAGES))
- 		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
- 
-+	swiotlb_adjust();
-+
- 	/*
- 	 * Reserve memory for crash kernel after SRAT is parsed so that it
- 	 * won't consume hotpluggable memory.
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index 1bcfbcd2bfd7..46549bd3d840 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -485,7 +485,38 @@ static void print_mem_encrypt_feature_info(void)
- 	pr_cont("\n");
- }
- 
-+#define SEV_ADJUST_SWIOTLB_SIZE_PERCENT	6
-+
- /* Architecture __weak replacement functions */
-+unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
-+{
-+	unsigned long size = iotlb_default_size;
-+
-+	/*
-+	 * For SEV, all DMA has to occur via shared/unencrypted pages.
-+	 * SEV uses SWOTLB to make this happen without changing device
-+	 * drivers. However, depending on the workload being run, the
-+	 * default 64MB of SWIOTLB may not be enough and`SWIOTLB may
-+	 * run out of buffers for DMA, resulting in I/O errors and/or
-+	 * performance degradation especially with high I/O workloads.
-+	 * Adjust the default size of SWIOTLB for SEV guests using
-+	 * a percentage of guest memory for SWIOTLB buffers.
-+	 * Also as the SWIOTLB bounce buffer memory is allocated
-+	 * from low memory, ensure that the adjusted size is within
-+	 * the limits of low available memory.
-+	 *
-+	 */
-+	if (sev_active()) {
-+		phys_addr_t total_mem = memblock_phys_mem_size();
-+		size = total_mem * SEV_ADJUST_SWIOTLB_SIZE_PERCENT / 100;
-+		size = clamp_val(size, iotlb_default_size, SZ_1G);
-+		pr_info("SWIOTLB bounce buffer size adjusted to %luMB for SEV",
-+			size >> 20);
-+	}
-+
-+	return size;
-+}
-+
- void __init mem_encrypt_init(void)
- {
- 	if (!sme_me_mask)
-diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index 3bb72266a75a..b5904fa4b67c 100644
---- a/include/linux/swiotlb.h
-+++ b/include/linux/swiotlb.h
-@@ -33,6 +33,7 @@ extern void swiotlb_init(int verbose);
- int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
- extern unsigned long swiotlb_nr_tbl(void);
- unsigned long swiotlb_size_or_default(void);
-+unsigned long __init arch_swiotlb_adjust(unsigned long size);
- extern int swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs);
- extern int swiotlb_late_init_with_default_size(size_t default_size);
- extern void __init swiotlb_update_mem_attributes(void);
-@@ -77,6 +78,7 @@ void __init swiotlb_exit(void);
- unsigned int swiotlb_max_segment(void);
- size_t swiotlb_max_mapping_size(struct device *dev);
- bool is_swiotlb_active(void);
-+void __init swiotlb_adjust(void);
- #else
- #define swiotlb_force SWIOTLB_NO_FORCE
- static inline bool is_swiotlb_buffer(phys_addr_t paddr)
-@@ -99,6 +101,10 @@ static inline bool is_swiotlb_active(void)
- {
- 	return false;
- }
-+
-+static inline void swiotlb_adjust(void)
-+{
-+}
- #endif /* CONFIG_SWIOTLB */
- 
- extern void swiotlb_print_info(void);
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 781b9dca197c..0150ca2336bc 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -163,6 +163,28 @@ unsigned long swiotlb_size_or_default(void)
- 	return size ? size : (IO_TLB_DEFAULT_SIZE);
- }
- 
-+unsigned long __init __weak arch_swiotlb_adjust(unsigned long size)
-+{
-+	return size;
-+}
-+
-+void __init swiotlb_adjust(void)
-+{
-+	unsigned long size;
-+
-+	/*
-+	 * If swiotlb parameter has not been specified, give a chance to
-+	 * architectures such as those supporting memory encryption to
-+	 * adjust/expand SWIOTLB size for their use.
-+	 */
-+	if (!io_tlb_nslabs) {
-+		size = arch_swiotlb_adjust(IO_TLB_DEFAULT_SIZE);
-+		size = ALIGN(size, 1 << IO_TLB_SHIFT);
-+		io_tlb_nslabs = size >> IO_TLB_SHIFT;
-+		io_tlb_nslabs = ALIGN(io_tlb_nslabs, IO_TLB_SEGSIZE);
-+	}
-+}
-+
- void swiotlb_print_info(void)
- {
- 	unsigned long bytes = io_tlb_nslabs << IO_TLB_SHIFT;
--- 
-2.17.1
-
+I think we've discussed it several months ago and at that time we didn't
+find a good way to check this feature. I'll think again, but if somebody
+has any ideas here, I'll appreciate a lot.
