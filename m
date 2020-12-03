@@ -2,76 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27CF2CE23F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B6F2CE23C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:57:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388162AbgLCW4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:56:55 -0500
-Received: from mga09.intel.com ([134.134.136.24]:19998 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgLCW4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:56:55 -0500
-IronPort-SDR: sqq01kPgv1iP7xrNursPixfHS1txqIFibS0X7aypE0rv1nifyWc9nrp6VTssH+GTLK/3qejBmS
- uDDMzCUS8I9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="173449010"
-X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
-   d="scan'208";a="173449010"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 14:55:14 -0800
-IronPort-SDR: BlLXb2daAGH6gO1pWQ05HxS+B4qkaFHe+vTk8wuk0phOB3AhT6jWHSL+HxwhLyTSWKtjiBuru4
- 1xLtmtAiVUtQ==
-X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
-   d="scan'208";a="374097572"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 14:55:12 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 100FF21E1A; Fri,  4 Dec 2020 00:55:10 +0200 (EET)
-Date:   Fri, 4 Dec 2020 00:55:10 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: smiapp: avoid printing an uninitialized variable
-Message-ID: <20201203225509.GP852@paasikivi.fi.intel.com>
-References: <20201203222828.1029943-1-arnd@kernel.org>
+        id S1731933AbgLCW4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:56:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725986AbgLCW4A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:56:00 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03896C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 14:55:20 -0800 (PST)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id BFF2D24D3;
+        Thu,  3 Dec 2020 22:55:19 +0000 (UTC)
+Date:   Thu, 3 Dec 2020 15:55:18 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Andrew Klychkov <andrew.a.klychkov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: fix typos found in process, dev-tools,
+ and doc-guide subdirectories
+Message-ID: <20201203155518.1d7bd1ac@lwn.net>
+In-Reply-To: <20201202075438.GA35516@spblnx124.lan>
+References: <20201202075438.GA35516@spblnx124.lan>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203222828.1029943-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Wed, 2 Dec 2020 10:54:38 +0300
+Andrew Klychkov <andrew.a.klychkov@gmail.com> wrote:
 
-Thanks for the patch.
-
-On Thu, Dec 03, 2020 at 11:28:16PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+> Fix four typos in kcov.rst, sphinx.rst, clang-format.rst, and embargoed-hardware-issues.rst
 > 
-> There is no intialization for the 'reg' variable, so printing
-> it produces undefined behavior as well as a compile-time warning:
-> 
-> drivers/media/i2c/ccs/ccs-core.c:314:49: error: variable 'reg' is uninitialized when used here [-Werror,-Wuninitialized]
->                         "0x%8.8x %s pixels: %d %s (pixelcode %u)\n", reg,
-> 
-> Remove the variable and stop printing it.
-> 
-> Fixes: b24cc2a18c50 ("media: smiapp: Rename as "ccs"")
+> Signed-off-by: Andrew Klychkov <andrew.a.klychkov@gmail.com>
+> ---
+>  Documentation/dev-tools/kcov.rst                    | 2 +-
+>  Documentation/doc-guide/sphinx.rst                  | 2 +-
+>  Documentation/process/clang-format.rst              | 2 +-
+>  Documentation/process/embargoed-hardware-issues.rst | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
 
-The patch introducing this was 
+Applied, thanks.
 
-fd9065812c7b ("media: smiapp: Obtain frame descriptor from CCS limits")
-
-so I'll use it instead. Also s/smiapp/ccs/ in the subject.
-
-Interesting that GCC 8.3 didn't complain.
-
--- 
-Kind regards,
-
-Sakari Ailus
+jon
