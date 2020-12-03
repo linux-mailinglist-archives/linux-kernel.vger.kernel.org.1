@@ -2,119 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40FD2CCAD1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D8C2CCAD5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:06:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbgLCACN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 19:02:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726137AbgLCACM (ORCPT
+        id S1729191AbgLCAEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 19:04:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41522 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727536AbgLCAEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 19:02:12 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BFAC0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 16:01:32 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id n10so268663pgv.8
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 16:01:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TfjgZXZpIq5fZzABqVm3ochfUst+vG1roSThKbX3esM=;
-        b=aKU+Elxn2oMCSfhsrlmIncnG+eVufUmT2zZGZTURg6obiMVmWLv2CQrsZALP8JHr6v
-         80wrfU2Kj3rw9JzGE1+ad3sYmQZQVz6coBP/qWBA1CluJ2fZQ9zFZ4l6/vlEm63POXgw
-         PoXOTvefcAuxzcoYa6jNF36cSIGxuqPsczhvBBhEyt1it/5x6Z9UoRq1nyzo8Q/oPO6y
-         8tFie1CBzkzTNDEZnK/uXLIeFNGsuWQZQvA6FlTiEpIBKkZpLzj9c+okfN8BIcEDQF66
-         yCFvYhAsRmLuryGfPwmqK9NiVqvG5a5hjCVx77mxrjmWl+oxa/bmaXsQ2vt2BC7OXv3G
-         fQ2w==
+        Wed, 2 Dec 2020 19:04:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606953760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5DH0t8qqaEn3RqUMO5KivnbVKgQ9Z9+5Q+gHm3Vh9Tw=;
+        b=Vs1OZRrHBr0DmWHtswqw0hdfydg4vOswOGeJbOyAIBowDtnc5tJOZAANZHXf3bAiuULPmh
+        nui5VFUWyaZpnO0uToe2zrNyjUkOmrSDy3tYeXsVSjyu2Hyv7gQBC2yR7XiJzslvCIZU3c
+        gMgH6y/EVKSj6bBZ2tsldqG2wci2p4w=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-504-9f7CXbwgNq-txd-wPO_KuA-1; Wed, 02 Dec 2020 19:02:38 -0500
+X-MC-Unique: 9f7CXbwgNq-txd-wPO_KuA-1
+Received: by mail-qt1-f199.google.com with SMTP id x62so172730qtd.11
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 16:02:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TfjgZXZpIq5fZzABqVm3ochfUst+vG1roSThKbX3esM=;
-        b=rFVDFyu9aX1oflLAYwuDG9GTUqDFPUe6OcljFxuve7OEbsIrZS89dK6GIdTxJSYdBV
-         FWdduyRj/MqHnaW4N13yx+6NkvuIjagGgni0n0QdLiuqJoH3JVdit5f8RTrQFAH3uw4x
-         qfjZjH6WKqncvs15Vy1iLdNh4R+8m0AVFp5UzS4836wPKMJKngZluTRLHSkgvdPj34sH
-         0PftWuRS/2M9GHmFy+R+tSHEEXwS8AHTgA3JVGi7Vyy6l+QL0/i59h0dOUgaN4d+BmXo
-         RGTK17vVFlVbpIm66uAoLjwud+FBiEQL+eR4yV8BbkarTki+AEA/1H+bTDGwrJZ6uEUp
-         /3dA==
-X-Gm-Message-State: AOAM531pY2pe/hAoxxZwf9W9/jpi+BvH1JqRZfqGeFmTMt0MLqGgOgVn
-        bphLSbiAsUvkSfPbvKAdL7tck3CvisDwpc7zLXaN2w==
-X-Google-Smtp-Source: ABdhPJzlujdkqv4BrCfZTRRGmpK19lQ/Z9l2aUuOfXxVaHuxefVyErqf509JoPqL0nZR4gxpFozulWm1c0trs5O9RLg=
-X-Received: by 2002:a62:7905:0:b029:197:f300:5a2a with SMTP id
- u5-20020a6279050000b0290197f3005a2amr614586pfc.30.1606953691833; Wed, 02 Dec
- 2020 16:01:31 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5DH0t8qqaEn3RqUMO5KivnbVKgQ9Z9+5Q+gHm3Vh9Tw=;
+        b=W0fATMAgopqym9IWvbhdcT/hmpDlpLvSsMQWMx3ULKLZSwrgqo2HgNug242FEnfVxa
+         YDqcTLtsxankZCgfoHfmKFQyoJJonBCRjf3PW2CfxatTsAJCI8M07HQgNo9UmyZN+7x3
+         3kK9qwFpDkAbIFmXraOAHws0eaUMqxCH7bnIuxV7NuZJJCgI7AQ3NxCvHeDQSg4XnujX
+         4BOQ9bav2UnGRJsm1n5bMn4G0UbI/G1CaSKQUGImSafWlVZwnqeiXM4y1dnwnoivfSXP
+         l74BSVPyF0+E9Xj8VNZtdpMBSrAizaEjvwyHcQ27KU1MkSWqO4qyZChdj325ChUeFcxJ
+         64dg==
+X-Gm-Message-State: AOAM533NMmCTKacFQv0zXNGe/htMWM26l1FenrBVnUpkCTCmcEGh6Ea/
+        5Z/4iqe4HzKtxF0wOxhxF9T2VL1ODAjlJI5YuV8+S3BpCWPuF2Ip7djQR4geBh3qhgf2Fmvj3tb
+        DbLEBmJ0EMZRh4njFn86uvcJ+
+X-Received: by 2002:ae9:de03:: with SMTP id s3mr368150qkf.218.1606953757241;
+        Wed, 02 Dec 2020 16:02:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxk/AL4kcxqZ1ogOOJxv1t1HGunHRRWZ5UdQ0lVVre8JW7SManmMIHEc30+Z/HknHhrJOet2A==
+X-Received: by 2002:ae9:de03:: with SMTP id s3mr368133qkf.218.1606953757014;
+        Wed, 02 Dec 2020 16:02:37 -0800 (PST)
+Received: from dev.jcline.org ([2605:a601:a638:b301:9966:d978:493:6a3d])
+        by smtp.gmail.com with ESMTPSA id y3sm222428qkl.110.2020.12.02.16.02.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 16:02:35 -0800 (PST)
+From:   Jeremy Cline <jcline@redhat.com>
+To:     Ben Skeggs <bskeggs@redhat.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Jeremy Cline <jcline@redhat.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: [PATCH] drm/nouveau: avoid a use-after-free when BO init fails
+Date:   Wed,  2 Dec 2020 19:02:20 -0500
+Message-Id: <20201203000220.18238-1-jcline@redhat.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201201213707.541432-1-samitolvanen@google.com>
-In-Reply-To: <20201201213707.541432-1-samitolvanen@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 2 Dec 2020 16:01:20 -0800
-Message-ID: <CAKwvOdnJvGR9L8n+w3E6idCXkGyykkycqbjiPQNNQSoCHrabLg@mail.gmail.com>
-Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 1:37 PM Sami Tolvanen <samitolvanen@google.com> wrote:
->
-> This patch series adds support for building the kernel with Clang's
-> Link Time Optimization (LTO). In addition to performance, the primary
-> motivation for LTO is to allow Clang's Control-Flow Integrity (CFI)
-> to be used in the kernel. Google has shipped millions of Pixel
-> devices running three major kernel versions with LTO+CFI since 2018.
->
-> Most of the patches are build system changes for handling LLVM
-> bitcode, which Clang produces with LTO instead of ELF object files,
-> postponing ELF processing until a later stage, and ensuring initcall
-> ordering.
->
-> Note that arm64 support depends on Will's memory ordering patches
-> [1]. I will post x86_64 patches separately after we have fixed the
-> remaining objtool warnings [2][3].
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/lto
-> [2] https://lore.kernel.org/lkml/20201120040424.a3wctajzft4ufoiw@treble/
-> [3] https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git/log/?h=objtool-vmlinux
->
-> You can also pull this series from
->
->   https://github.com/samitolvanen/linux.git lto-v8
->
-> ---
-> Changes in v8:
->
->   - Cleaned up the LTO Kconfig options based on suggestions from
->     Nick and Kees.
+nouveau_bo_init() is backed by ttm_bo_init() and ferries its return code
+back to the caller. On failures, ttm_bo_init() invokes the provided
+destructor which should de-initialize and free the memory.
 
-Thanks Sami, for the series:
+Thus, when nouveau_bo_init() returns an error the gem object has already
+been released and the memory freed by nouveau_bo_del_ttm().
 
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Fixes: 019cbd4a4feb ("drm/nouveau: Initialize GEM object before TTM object")
+Cc: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Jeremy Cline <jcline@redhat.com>
+---
+ drivers/gpu/drm/nouveau/nouveau_gem.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-(build and boot tested under emulation with
-https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/lto
-additionally rebased on top).
-
-As with v7, if the series changes drastically for v9, please consider
-dropping my tested by tag for the individual patches that change and I
-will help re-test them.
+diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c b/drivers/gpu/drm/nouveau/nouveau_gem.c
+index 787d05eefd9c..d30157cc7169 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_gem.c
++++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
+@@ -211,10 +211,8 @@ nouveau_gem_new(struct nouveau_cli *cli, u64 size, int align, uint32_t domain,
+ 	}
+ 
+ 	ret = nouveau_bo_init(nvbo, size, align, domain, NULL, NULL);
+-	if (ret) {
+-		nouveau_bo_ref(NULL, &nvbo);
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	/* we restrict allowed domains on nv50+ to only the types
+ 	 * that were requested at creation time.  not possibly on
 -- 
-Thanks,
-~Nick Desaulniers
+2.28.0
+
