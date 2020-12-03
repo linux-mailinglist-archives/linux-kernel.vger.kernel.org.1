@@ -2,87 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8472CD840
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C661E2CD842
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730806AbgLCNxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 08:53:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgLCNxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 08:53:08 -0500
-From:   Jessica Yu <jeyu@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-kernel@vger.kernel.org, systemd-devel@lists.freedesktop.org
-Cc:     Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>,
-        Franck Bui <fbui@suse.com>, Jessica Yu <jeyu@kernel.org>
-Subject: [PATCH RFC 1/1] module: delay kobject uevent until after module init call
-Date:   Thu,  3 Dec 2020 14:51:24 +0100
-Message-Id: <20201203135124.16695-2-jeyu@kernel.org>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20201203135124.16695-1-jeyu@kernel.org>
-References: <20201203135124.16695-1-jeyu@kernel.org>
+        id S2389001AbgLCNy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 08:54:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727065AbgLCNy5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 08:54:57 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A45C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 05:54:11 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id f23so3609567ejk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 05:54:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=essensium.com; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=dZoNrIv6luoppB1moIu/G1luuav3IB0WKtYk1t6susw=;
+        b=LYpEWPHfDqrC9YwMQyshIiEjce5BcSItpSX5YhpOE93vLaQOCbU1pk9guDLImSsk0Z
+         pMpFdEKwJ8vLScBG/V+uihhfM5vqEVlWRSEHTPaXNF51AWdbJhk8DGFnzNU32M1O/XmJ
+         wJnpOCPn8FsutWmSsbNIU3GJuRKkpaHswo4Obca6j3o//RbIZHJH0JYb1FCLOEIJAtqI
+         ePsxmobQGeI39y0hskIzLGrfDvg345cXgv9yJi5B4qZccI5Rs8VlFgFF875PuFrKFZ/3
+         W7vAiGqk7jiZql/C7puS0MFB7PKaDaSP9fiZ0lDwT52XYx0E3jjlPwFO1CY8B1xpiGI9
+         GJvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dZoNrIv6luoppB1moIu/G1luuav3IB0WKtYk1t6susw=;
+        b=TzBp1xPnhXGTzt2T3EA+V5BMvAtsxoiCTdzJBSZ3bJNDe2P4fq4EzwwAATnXznBNxE
+         5RlIuOSc+Qc8CPGzcrJixxscIxLNhX7jy5aIWDalTX87zCjP5HyWWt7oqxoui9Gt58Mv
+         ZIsDRlPISX7AdLYf/eWegkIoK7cbP0L0FTTPq9bU7wplcqYTLZV7ZPkNPhKhO2sc61pS
+         ydGJbykEJLeyIfSvA/I9H8NrQDCRmGOLyZqLaMg6QBWmBbUssWe/ZnjJB92iIE8EXbkJ
+         K3bZKf1IFb0xGxb4VFp1A8yIrVxYqp9Pymwv9JYFx4fp7LqJZE0QfAUu9v0Fk4ETPMfg
+         b5LA==
+X-Gm-Message-State: AOAM533umHNU5FyiTF20jJWrFr/Y1+/nM78OcTjIw1UZgVMjnyo/SYy/
+        fR41Ik8AGrfPJtNcIDj0yBF8dtQuCP88IA==
+X-Google-Smtp-Source: ABdhPJwkVsPCSb91iSsgKGmzw52TfBcLend+JNm0Mk1QVeEMF5+Fsfi3yi3Ceu5PxGSut6zgHwpH5Q==
+X-Received: by 2002:a17:906:b2d1:: with SMTP id cf17mr2656808ejb.281.1607003649968;
+        Thu, 03 Dec 2020 05:54:09 -0800 (PST)
+Received: from [10.8.0.46] (ip-188-118-3-185.reverse.destiny.be. [188.118.3.185])
+        by smtp.gmail.com with ESMTPSA id u19sm912447ejg.16.2020.12.03.05.54.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 05:54:09 -0800 (PST)
+Subject: Re: [PATCH 2/4] net: freescale/fman-port: remove direct use of
+ __devm_request_region
+To:     Madalin Bucur <madalin.bucur@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201202161600.23738-1-patrick.havelange@essensium.com>
+ <20201202161600.23738-2-patrick.havelange@essensium.com>
+ <AM6PR04MB3976E5A576C3E1AA157DA711ECF20@AM6PR04MB3976.eurprd04.prod.outlook.com>
+From:   Patrick Havelange <patrick.havelange@essensium.com>
+Message-ID: <6e64e64d-0bbe-bab6-72a1-db6a304858f6@essensium.com>
+Date:   Thu, 3 Dec 2020 14:54:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <AM6PR04MB3976E5A576C3E1AA157DA711ECF20@AM6PR04MB3976.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apparently there has been a longstanding race between udev/systemd and
-the module loader. Currently, the module loader sends a uevent right
-after sysfs initialization, but before the module calls its init
-function. However, some udev rules expect that the module has
-initialized already upon receiving the uevent.
+On 2020-12-03 09:44, Madalin Bucur wrote:
+>> -----Original Message-----
+>> From: Patrick Havelange <patrick.havelange@essensium.com>
+>> Sent: 02 December 2020 18:16
+>> To: Madalin Bucur <madalin.bucur@nxp.com>; David S. Miller
+>> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>;
+>> netdev@vger.kernel.org; linux-kernel@vger.kernel.org
+>> Cc: Patrick Havelange <patrick.havelange@essensium.com>
+>> Subject: [PATCH 2/4] net: freescale/fman-port: remove direct use of
+>> __devm_request_region
+>>
+>> This driver was directly calling __devm_request_region with a specific
+>> resource on the stack as parameter. This is invalid as
+>> __devm_request_region expects the given resource passed as parameter
+>> to live longer than the call itself, as the pointer to the resource
+>> will be stored inside the internal struct used by the devres
+>> management.
+>>
+>> In addition to this issue, a related bug has been found by kmemleak
+>> with this trace :
+>> unreferenced object 0xc0000001efc01880 (size 64):
+>>    comm "swapper/0", pid 1, jiffies 4294669078 (age 3620.536s)
+>>    hex dump (first 32 bytes):
+>>      00 00 00 0f fe 4a c0 00 00 00 00 0f fe 4a cf ff  .....J.......J..
+>>      c0 00 00 00 00 ee 9d 98 00 00 00 00 80 00 02 00  ................
+>>    backtrace:
+>>      [<c000000000078874>] .alloc_resource+0xb8/0xe0
+>>      [<c000000000079b50>] .__request_region+0x70/0x1c4
+>>      [<c00000000007a010>] .__devm_request_region+0x8c/0x138
+>>      [<c0000000006e0dc8>] .fman_port_probe+0x170/0x420
+>>      [<c0000000005cecb8>] .platform_drv_probe+0x84/0x108
+>>      [<c0000000005cc620>] .driver_probe_device+0x2c4/0x394
+>>      [<c0000000005cc814>] .__driver_attach+0x124/0x128
+>>      [<c0000000005c9ad4>] .bus_for_each_dev+0xb4/0x110
+>>      [<c0000000005cca1c>] .driver_attach+0x34/0x4c
+>>      [<c0000000005ca9b0>] .bus_add_driver+0x264/0x2a4
+>>      [<c0000000005cd9e0>] .driver_register+0x94/0x160
+>>      [<c0000000005cfea4>] .__platform_driver_register+0x60/0x7c
+>>      [<c000000000f86a00>] .fman_port_load+0x28/0x64
+>>      [<c000000000f4106c>] .do_one_initcall+0xd4/0x1a8
+>>      [<c000000000f412fc>] .kernel_init_freeable+0x1bc/0x2a4
+>>      [<c00000000000180c>] .kernel_init+0x24/0x138
+>>
+>> Indeed, the new resource (created in __request_region) will be linked
+>> to the given resource living on the stack, which will end its lifetime
+>> after the function calling __devm_request_region has finished.
+>> Meaning the new resource allocated is no longer reachable.
+>>
+>> Now that the main fman driver is no longer reserving the region
+>> used by fman-port, this previous hack is no longer needed
+>> and we can use the regular call to devm_request_mem_region instead,
+>> solving those bugs at the same time.
+>>
+>> Signed-off-by: Patrick Havelange <patrick.havelange@essensium.com>
+>> ---
+>>   drivers/net/ethernet/freescale/fman/fman_port.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/freescale/fman/fman_port.c
+>> b/drivers/net/ethernet/freescale/fman/fman_port.c
+>> index d9baac0dbc7d..354974939d9d 100644
+>> --- a/drivers/net/ethernet/freescale/fman/fman_port.c
+>> +++ b/drivers/net/ethernet/freescale/fman/fman_port.c
+>> @@ -1878,10 +1878,10 @@ static int fman_port_probe(struct platform_device
+>> *of_dev)
+>>
+>>   	of_node_put(port_node);
+>>
+>> -	dev_res = __devm_request_region(port->dev, &res, res.start,
+>> -					resource_size(&res), "fman-port");
+>> +	dev_res = devm_request_mem_region(port->dev, res.start,
+>> +					  resource_size(&res), "fman-port");
+>>   	if (!dev_res) {
+>> -		dev_err(port->dev, "%s: __devm_request_region() failed\n",
+>> +		dev_err(port->dev, "%s: devm_request_mem_region() failed\n",
+>>   			__func__);
+>>   		err = -EINVAL;
+>>   		goto free_port;
+>> --
+>> 2.17.1
+> 
+> Hi Patrick,
+> 
+> please send a fix for the issue, targeting the net tree, separate from the
+> other change you are trying to introduce. We need a better explanation for
+> the latter and it should go through the net-next tree, if accepted.
 
-This race has been triggered recently (see link in references) in some
-systemd mount unit files. For instance, the configfs module creates the
-/sys/kernel/config mount point in its init function, however the module
-loader issues the uevent before this happens. sys-kernel-config.mount
-expects to be able to mount /sys/kernel/config upon receipt of the
-module loading uevent, but if the configfs module has not called its
-init function yet, then this directory will not exist and the mount unit
-fails. A similar situation exists for sys-fs-fuse-connections.mount, as
-the fuse sysfs mount point is created during the fuse module's init
-function. If udev is faster than module initialization then the mount
-unit would fail in a similar fashion.
+Hello,
 
-To fix this race, delay the module KOBJ_ADD uevent until after the
-module has finished calling its init routine.
+I've resent the series with a cover letter having a bit more 
+explanations. I think all the patches should be applied on net, as they 
+are linked to the same issue/resolution, and are not independent.
 
-References: https://github.com/systemd/systemd/issues/17586
-Signed-off-by: Jessica Yu <jeyu@kernel.org>
----
- kernel/module.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+BR,
 
-diff --git a/kernel/module.c b/kernel/module.c
-index a40ec708f8f2..e1dd0df57244 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -1897,7 +1897,6 @@ static int mod_sysfs_init(struct module *mod)
- 	if (err)
- 		mod_kobject_put(mod);
- 
--	/* delay uevent until full sysfs population */
- out:
- 	return err;
- }
-@@ -1934,7 +1933,6 @@ static int mod_sysfs_setup(struct module *mod,
- 	add_sect_attrs(mod, info);
- 	add_notes_attrs(mod, info);
- 
--	kobject_uevent(&mod->mkobj.kobj, KOBJ_ADD);
- 	return 0;
- 
- out_unreg_modinfo_attrs:
-@@ -3656,6 +3654,9 @@ static noinline int do_init_module(struct module *mod)
- 	blocking_notifier_call_chain(&module_notify_list,
- 				     MODULE_STATE_LIVE, mod);
- 
-+	/* Delay uevent until module has finished its init routine */
-+	kobject_uevent(&mod->mkobj.kobj, KOBJ_ADD);
-+
- 	/*
- 	 * We need to finish all async code before the module init sequence
- 	 * is done.  This has potential to deadlock.  For example, a newly
--- 
-2.16.4
-
+Patrick H.
