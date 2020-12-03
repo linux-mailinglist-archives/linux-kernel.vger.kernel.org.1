@@ -2,862 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440B02CCBB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B47D2CCBC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729356AbgLCBgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 20:36:48 -0500
-Received: from foss.arm.com ([217.140.110.172]:55672 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727066AbgLCBgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:36:47 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A84711D4;
-        Wed,  2 Dec 2020 17:36:00 -0800 (PST)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C9203F575;
-        Wed,  2 Dec 2020 17:35:58 -0800 (PST)
-Subject: Re: [PATCH 7/8] arm64: dts: allwinner: Add Allwinner H616 .dtsi file
-To:     =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@siol.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     Icenowy Zheng <icenowy@aosc.xyz>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yangtao Li <frank@allwinnertech.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20201202135409.13683-1-andre.przywara@arm.com>
- <20201202135409.13683-8-andre.przywara@arm.com> <8978273.D0rJ4KIVhu@kista>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
- 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
- i4aIXCH3Wv6K
-Organization: ARM Ltd.
-Message-ID: <f108d71e-8fb5-8690-8e54-c9c361888e66@arm.com>
-Date:   Thu, 3 Dec 2020 01:35:40 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727406AbgLCBn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 20:43:56 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51632 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726479AbgLCBn4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 20:43:56 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B31UH3d028138;
+        Wed, 2 Dec 2020 17:42:11 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=XQW4cpdvAvV0zvlH2Jyu8KCGsr3ZxhO51i+C/F5wOHo=;
+ b=nzZupqFFFstqKa3EUVrIlJXwWhSl+ywT+0qVAZqXldBi9+U0B2lnlZ/vv6oXmcb08ZoM
+ r592nQRiGj0S1xu+LDwDQ7VAZPZOCE/EgQB2ngWScg/dQ+kvKtaoI4i2v/KnEni4txKE
+ YASFReH03D1fs9BvpJ0QQi6xnFB84UbIZyE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 355wgw9cam-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 02 Dec 2020 17:42:11 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 2 Dec 2020 17:42:09 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lYa/JgGA6nifyzmsaVEiVhPy710q3WtZCTClp9wyEtw2fJ5FFmULzPMrk35NzZNkSAAgAuu4sh+4KNvKdsYlEEnYzu7fcV0mBBHd9waHzji4z30VYhHUYzljxVuYBB026bnhYK/Jz1FQG3HXZKm6M1dvMqnIiGGmmqMIbi4BElDM+T9DcSCiXeGzqmrDjahfYqxhRM2He7vL6Dsl6Y3lvcGIVI6rvEhaTfOCLJudBny8YWl5htLyC8L94hJxPTE+60irfl292i8NMGak/qJVXUXgdgPnyt6RYzi4+Cg/IYhgsW5vStxAgupOmFku1oiT1Yl/DlchnnSTovM3gbdJBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XQW4cpdvAvV0zvlH2Jyu8KCGsr3ZxhO51i+C/F5wOHo=;
+ b=jrbXz7oG6XmbeDS8gwfob90cALEtaedMHbn4JezxWAV53BGrlLpohuB3d9wgh4UE1qnA2eNW84TnPCBwe+Qb8eXHSGtp2i0o7UbqN5tAGUzHuqCMoFspTwFiWCt7d4sSRxJv9xOAiFTxV7dNl5M5nKVLDmRQTvZVMxAJJhdELKcO7ngVJ3MI6ZzkJ98DczCUo9PNbDM3u0vFOfKpVQCb4Ac5xg6EKU1G/bJPlvtyogaZON2DwUhrJMT+0P+iEDFjYhmTlcuuLl7hbBJ/T89NU9QVdbJnAUt05W04BIM5uEOEJYKo95b9hqD5FcZGJXFryjg0QbhwNz4ANUiv/9K23w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XQW4cpdvAvV0zvlH2Jyu8KCGsr3ZxhO51i+C/F5wOHo=;
+ b=lM6GIZeZ/ZYZiOMBY8Yg0cstddygUYKJHnSS9kKv7tl8Do3EMefrCdr1RRrfgbgCJHIf9hGJxKqEfwy4qJ+TV0WT7z9TjGrDFIM6b4xKm4d+jk+mmIq3YcI/vBdgUFt1zjmy3jZk4jaeo8BR6ksnTCn5hLSbsnKBiys0WYSdfFM=
+Received: from BY5PR15MB3667.namprd15.prod.outlook.com (2603:10b6:a03:1f9::18)
+ by BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Thu, 3 Dec
+ 2020 01:42:04 +0000
+Received: from BY5PR15MB3667.namprd15.prod.outlook.com
+ ([fe80::17e:aa61:eb50:290c]) by BY5PR15MB3667.namprd15.prod.outlook.com
+ ([fe80::17e:aa61:eb50:290c%7]) with mapi id 15.20.3611.025; Thu, 3 Dec 2020
+ 01:42:04 +0000
+From:   Nick Terrell <terrelln@fb.com>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+CC:     Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "squashfs-devel@lists.sourceforge.net" 
+        <squashfs-devel@lists.sourceforge.net>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>, Chris Mason <clm@fb.com>,
+        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v6 1/3] lib: zstd: Add kernel-specific API
+Thread-Topic: [PATCH v6 1/3] lib: zstd: Add kernel-specific API
+Thread-Index: AQHWyOnYHjSKEx1KvUy8OD/sVz0sN6nkkesAgAAHQIA=
+Date:   Thu, 3 Dec 2020 01:42:03 +0000
+Message-ID: <297D9C8B-5F4D-4E3B-A5FD-DA292D8BA12A@fb.com>
+References: <20201202203242.1187898-1-nickrterrell@gmail.com>
+ <20201202203242.1187898-2-nickrterrell@gmail.com>
+ <20201203011606.GA20621@qmqm.qmqm.pl>
+In-Reply-To: <20201203011606.GA20621@qmqm.qmqm.pl>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: rere.qmqm.pl; dkim=none (message not signed)
+ header.d=none;rere.qmqm.pl; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:c4c5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8d686446-af06-4f06-98aa-08d8972ca300
+x-ms-traffictypediagnostic: BY5PR15MB3571:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR15MB35714690965FE44FA5406F61ABF20@BY5PR15MB3571.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Qo0WsAAvqjeFAek4DCmQTPZIBVF+xyahQBVF6haeoep/KeoJQ6paLgIR7ocTBZERGRWe/zqZbLTXO6LVG81BRgWLEqoKQfZIMpFWyh26aDjNy7RmaEa7AFfJ28ZHJ+i6NFGE5M1rwkQEbT0RP04HZFWh10fncltbwCB6tLhGpDtXPfJgHikfk3nm33Bb9hJCJQEaBPQCHif+L6j86OBSg3q6uNDPWisFFetDcRBZSDpThh1GdYYjKkhZiURwKWIetk3tOVYy1r9Cs7ZbVQFY5dawM+Pq0MqA6NxmExcPhVusHlQW3Lvye23ooLB0DJeRwuyoDPs5sCOntH5h4W4sBw1If8DosbBknGhQiesbD2OfFpY18vlUyZk5ovUcVqdd
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3667.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(396003)(39860400002)(346002)(86362001)(66476007)(66446008)(66556008)(66946007)(64756008)(8936002)(4326008)(478600001)(54906003)(53546011)(6512007)(6506007)(71200400001)(36756003)(76116006)(7416002)(91956017)(6486002)(2906002)(316002)(33656002)(8676002)(186003)(6916009)(66574015)(5660300002)(2616005)(83380400001)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?WTFoM3hxVW4vNFJwTFR2c1lsbi92QVJ0OUR2M2V5VHdNMFRnZThaMk9ENzZZ?=
+ =?utf-8?B?TEYrV3VlNGY2ZDMybm50WGw0N0d6STRrTEYrZkUxd0xGRzlPOTJTRGxIVSto?=
+ =?utf-8?B?OFl5SjVuN0o3NmthWG5SczZkd1h6V1paRzJ5dm1oL0Z2dk9KUkNQcW9qWDBs?=
+ =?utf-8?B?djNab0JYTjV4WkFPZVdKNXpUd3pmaExIc2ZXMDBLS3A0N0hFUXZxbmZZbWlk?=
+ =?utf-8?B?R3Z1cE1Cb3MxekRzYUV5WVBRTDkrZWgxbTQxTDlSWFNvUFBZUDBFWTVINDhJ?=
+ =?utf-8?B?V0xGOE1wWWpvNEM0U2xxYWpwNFVYUFg0TTFWMmxISjJMVWdMRHJCaXNYNHNm?=
+ =?utf-8?B?bGxNLzhCbENFaDBCbHlTK0MzRVgzSjZDK0EyczJ4a0ZadWRTTG5qN1RGRTkw?=
+ =?utf-8?B?dEZWTElsYnM1cklUQkN3YzNmeGJrdWQ5NmxWVDFlMlIyU3kzRmdQWTBFTlJP?=
+ =?utf-8?B?Q0V4QlQ4MDBhdWFUcUpyWnh3S1VobDNrUVYrakFicGNndk5RZmxkaTlJVDVN?=
+ =?utf-8?B?elcraEpjRkkycVkxbW1DQjFDaGg5WlNOR2djVG1XcGErVXYyZFN6dTBIZFI1?=
+ =?utf-8?B?NVA0cVlpZlN2UGgrRUIrcjVTS0pYREl0Y0N2TnJqd2NKWGlGMzNPL0p4ZFQ3?=
+ =?utf-8?B?NGp3ZnROSGUvZExUU3RpbTZkRFpjTDB0c0NaaTJwYjBsOEpFMElvWVJXU3Ez?=
+ =?utf-8?B?ajdVUGZJK0VMcTVKZG83bXV5UVZTR29UVnF5azgrZ1NtK0wzZGtlWDgyU0NL?=
+ =?utf-8?B?ZmJsaDRodEhPR3Z1R0w4QTROTFRrNjNqc3o3a1NNK29TdGpjZEFmUUkxc3dV?=
+ =?utf-8?B?aXI3VjM3L3pQOGN5azlVYmErZ1ZYYXhPeHdCOXdiQU14elZ6aWpOeXY5S0xL?=
+ =?utf-8?B?b2ZSTWU3anR1dGtKRUFrZDNLUm1VRjVQZlgrYXMrVjBCQzAyajNmbEo2djVZ?=
+ =?utf-8?B?LzlmNXRWUEtKU3gwaW9HUTBNMnJ3bXB3d1QzeXFWS25NYi81NU96SlU4K3Jy?=
+ =?utf-8?B?OVNZS0dBVEZtTncvaStJMWVvZCsrbWJxM3dEdDA1SE91Z2ZvbHFqc25hTG5y?=
+ =?utf-8?B?bXd5Y3A5QWxVbWhxMG5MRmE4aDhkaTJDVVdyYWVEemRlSlEvdlhQYkd1akRh?=
+ =?utf-8?B?ZC95RUoydWZoM0tzQzJNY3owaHU4ZVViWXI1UXF6am9WRGVCZS8yNUlDWGg5?=
+ =?utf-8?B?ZXJ3NmV3aU9zRllHMlYrVTlXRWFoSkpqcWhNYy9wenp3S3BFUUc0V2ZkWlpu?=
+ =?utf-8?B?MXozc1NlWDd2L0JXdW5UY29PN2FzUm8vWFhNNlFQSk1DZlI4K1JXeWs5WndW?=
+ =?utf-8?B?Z09PSHFZeUlnY1N4Z0FsMHZkSnVvMmhxdDR0RHRaMjJDQ2gxcXBJOGI1MWFH?=
+ =?utf-8?Q?Q+7GmpiP+5F0AmBsRQJYL3M789enAIs0=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9559B14BF34002418B1442F4D8EDE418@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <8978273.D0rJ4KIVhu@kista>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3667.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d686446-af06-4f06-98aa-08d8972ca300
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2020 01:42:03.9647
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: m9wsKfw8jOhH2/gQMhBPHzlymsXym/c9I9q4UVu54gIx5XbxBmMt0hcGwpU/l8ko
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3571
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_14:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ clxscore=1011 impostorscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
+ adultscore=0 suspectscore=0 priorityscore=1501 mlxscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012030006
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/12/2020 16:33, Jernej Škrabec wrote:
-
-Hi,
-
-> Dne sreda, 02. december 2020 ob 14:54:08 CET je Andre Przywara napisal(a):
->> This (relatively) new SoC is similar to the H6, but drops the (broken)
->> PCIe support and the USB 3.0 controller. It also gets the management
->> controller removed, which in turn removes *some*, but not all of the
->> devices formerly dedicated to the ARISC (CPUS).
->> There does not seem to be an external interrupt controller anymore, so
->> no external interrupts through an NMI pin. The AXP driver needs to learn
->> living with that.
->>
->> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
->> ---
->>  .../arm64/boot/dts/allwinner/sun50i-h616.dtsi | 704 ++++++++++++++++++
->>  1 file changed, 704 insertions(+)
->>  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
->>
->> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
->> new file mode 100644
->> index 000000000000..dcffbfdcd26b
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
->> @@ -0,0 +1,704 @@
->> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
->> +// Copyright (C) 2020 Arm Ltd.
->> +// based on the H6 dtsi, which is:
->> +//   Copyright (C) 2017 Icenowy Zheng <icenowy@aosc.io>
->> +
->> +#include <dt-bindings/interrupt-controller/arm-gic.h>
->> +#include <dt-bindings/clock/sun50i-h616-ccu.h>
->> +#include <dt-bindings/clock/sun50i-h6-r-ccu.h>
->> +#include <dt-bindings/reset/sun50i-h616-ccu.h>
->> +#include <dt-bindings/reset/sun50i-h6-r-ccu.h>
->> +
->> +/ {
->> +	interrupt-parent = <&gic>;
->> +	#address-cells = <2>;
->> +	#size-cells = <2>;
->> +
->> +	cpus {
->> +		#address-cells = <1>;
->> +		#size-cells = <0>;
->> +
->> +		cpu0: cpu@0 {
->> +			compatible = "arm,cortex-a53";
->> +			device_type = "cpu";
->> +			reg = <0>;
->> +			enable-method = "psci";
->> +			clocks = <&ccu CLK_CPUX>;
->> +		};
->> +
->> +		cpu1: cpu@1 {
->> +			compatible = "arm,cortex-a53";
->> +			device_type = "cpu";
->> +			reg = <1>;
->> +			enable-method = "psci";
->> +			clocks = <&ccu CLK_CPUX>;
->> +		};
->> +
->> +		cpu2: cpu@2 {
->> +			compatible = "arm,cortex-a53";
->> +			device_type = "cpu";
->> +			reg = <2>;
->> +			enable-method = "psci";
->> +			clocks = <&ccu CLK_CPUX>;
->> +		};
->> +
->> +		cpu3: cpu@3 {
->> +			compatible = "arm,cortex-a53";
->> +			device_type = "cpu";
->> +			reg = <3>;
->> +			enable-method = "psci";
->> +			clocks = <&ccu CLK_CPUX>;
->> +		};
->> +	};
->> +
->> +	reserved-memory {
->> +		#address-cells = <2>;
->> +		#size-cells = <2>;
->> +		ranges;
->> +
->> +		/* 512KiB reserved for ARM Trusted Firmware (BL31) */
->> +		secmon_reserved: secmon@40000000 {
->> +			reg = <0x0 0x40000000 0x0 0x80000>;
->> +			no-map;
->> +		};
->> +	};
->> +
->> +	osc24M: osc24M_clk {
->> +		#clock-cells = <0>;
->> +		compatible = "fixed-clock";
->> +		clock-frequency = <24000000>;
->> +		clock-output-names = "osc24M";
->> +	};
->> +
->> +	pmu {
->> +		compatible = "arm,cortex-a53-pmu";
->> +		interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>,
->> +			     <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
->> +			     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>,
->> +			     <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>;
->> +		interrupt-affinity = <&cpu0>, <&cpu1>, <&cpu2>, <&cpu3>;
->> +	};
->> +
->> +	psci {
->> +		compatible = "arm,psci-0.2";
->> +		method = "smc";
->> +	};
->> +
->> +	timer {
->> +		compatible = "arm,armv8-timer";
->> +		arm,no-tick-in-suspend;
->> +		interrupts = <GIC_PPI 13
->> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
->> +			     <GIC_PPI 14
->> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
->> +			     <GIC_PPI 11
->> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
->> +			     <GIC_PPI 10
->> +			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
->> +	};
->> +
->> +	soc {
->> +		compatible = "simple-bus";
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		ranges = <0x0 0x0 0x0 0x40000000>;
->> +
->> +		syscon: syscon@3000000 {
->> +			compatible = "allwinner,sun50i-h616-system-control",
->> +				     "allwinner,sun50i-a64-system-control";
-> 
-> Those H616 is not compatible to A64 one because it has second emac control 
-> register at offset 0x34, which no other supported SoC has.
-
-But this means the H616 is a superset of the A64?
-I changed the driver to extend the regmap to two registers for the H616,
-is that all you need for the second emac?
-How do we tell the EMAC driver which clock register to use? An extra
-compatible? Or can we pass a cell to syscon? syscon = <&syscon 1>; ? Or
-an extra property?
-
-> 
->> +			reg = <0x03000000 0x1000>;
->> +			#address-cells = <1>;
->> +			#size-cells = <1>;
->> +			ranges;
->> +
->> +			sram_c: sram@28000 {
->> +				compatible = "mmio-sram";
->> +				reg = <0x00028000 0x30000>;
->> +				#address-cells = <1>;
->> +				#size-cells = <1>;
->> +				ranges = <0 0x00028000 0x30000>;
->> +			};
->> +
->> +			sram_c1: sram@1a00000 {
->> +				compatible = "mmio-sram";
->> +				reg = <0x01a00000 0x200000>;
->> +				#address-cells = <1>;
->> +				#size-cells = <1>;
->> +				ranges = <0 0x01a00000 0x200000>;
->> +
->> +				ve_sram: sram-section@0 {
->> +					compatible = "allwinner,sun50i-h616-sram-c1",
->> +						     "allwinner,sun4i-a10-sram-c1";
->> +					reg = <0x000000 0x200000>;
->> +				};
->> +			};
->> +		};
->> +
->> +		ccu: clock@3001000 {
->> +			compatible = "allwinner,sun50i-h616-ccu";
->> +			reg = <0x03001000 0x1000>;
->> +			clocks = <&osc24M>, <&rtc 0>, <&rtc 2>;
->> +			clock-names = "hosc", "losc", "iosc";
->> +			#clock-cells = <1>;
->> +			#reset-cells = <1>;
->> +		};
->> +
->> +		watchdog: watchdog@30090a0 {
->> +			compatible = "allwinner,sun50i-h616-wdt",
->> +				     "allwinner,sun6i-a31-wdt";
->> +			reg = <0x030090a0 0x20>;
->> +			interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&osc24M>;
->> +			status = "disabled";
->> +		};
->> +
->> +		pio: pinctrl@300b000 {
->> +			compatible = "allwinner,sun50i-h616-pinctrl";
->> +			reg = <0x0300b000 0x400>;
->> +			interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>,
->> +				     <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>,
->> +				     <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>,
->> +				     <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>,
->> +				     <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_APB1>, <&osc24M>, <&rtc 0>;
->> +			clock-names = "apb", "hosc", "losc";
->> +			gpio-controller;
->> +			#gpio-cells = <3>;
->> +			interrupt-controller;
->> +			#interrupt-cells = <3>;
->> +
->> +			ext_rgmii_pins: rgmii-pins {
->> +				pins = "PI0", "PI1", "PI2", "PI3", "PI4",
->> +				       "PI5", "PI7", "PI8", "PI9", "PI10",
->> +				       "PI11", "PI12", "PI13", "PI14", "PI15",
->> +				       "PI16";
->> +				function = "emac0";
->> +				drive-strength = <40>;
->> +			};
->> +
->> +			i2c0_pins: i2c0-pins {
->> +				pins = "PI6", "PI7";
->> +				function = "i2c0";
->> +			};
->> +
->> +			i2c3_pins_a: i2c1-pins-a {
->> +				pins = "PH4", "PH5";
->> +				function = "i2c3";
->> +			};
->> +
->> +			ir_rx_pin: ir_rx_pin {
->> +				pins = "PH10";
->> +				function = "ir_rx";
->> +			};
->> +
->> +			mmc0_pins: mmc0-pins {
->> +				pins = "PF0", "PF1", "PF2", "PF3",
->> +				       "PF4", "PF5";
->> +				function = "mmc0";
->> +				drive-strength = <30>;
->> +				bias-pull-up;
->> +			};
->> +
->> +			mmc1_pins: mmc1-pins {
->> +				pins = "PG0", "PG1", "PG2", "PG3",
->> +				       "PG4", "PG5";
->> +				function = "mmc1";
->> +				drive-strength = <30>;
->> +				bias-pull-up;
->> +			};
->> +
->> +			mmc2_pins: mmc2-pins {
->> +				pins = "PC0", "PC1", "PC5", "PC6",
->> +				       "PC8", "PC9", "PC10", "PC11",
->> +				       "PC13", "PC14", "PC15", "PC16";
->> +				function = "mmc2";
->> +				drive-strength = <30>;
->> +				bias-pull-up;
->> +			};
->> +
->> +			spi0_pins: spi0-pins {
->> +				pins = "PC0", "PC2", "PC3", "PC4";
->> +				function = "spi0";
->> +			};
->> +
->> +			spi1_pins: spi1-pins {
->> +				pins = "PH6", "PH7", "PH8";
->> +				function = "spi1";
->> +			};
->> +
->> +			spi1_cs_pin: spi1-cs-pin {
->> +				pins = "PH5";
->> +				function = "spi1";
->> +			};
->> +
->> +			uart0_ph_pins: uart0-ph-pins {
->> +				pins = "PH0", "PH1";
->> +				function = "uart0";
->> +			};
->> +
->> +			uart1_pins: uart1-pins {
->> +				pins = "PG6", "PG7";
->> +				function = "uart1";
->> +			};
->> +
->> +			uart1_rts_cts_pins: uart1-rts-cts-pins {
->> +				pins = "PG8", "PG9";
->> +				function = "uart1";
->> +			};
->> +		};
->> +
->> +		gic: interrupt-controller@3021000 {
->> +			compatible = "arm,gic-400";
->> +			reg = <0x03021000 0x1000>,
->> +			      <0x03022000 0x2000>,
->> +			      <0x03024000 0x2000>,
->> +			      <0x03026000 0x2000>;
->> +			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
->> +			interrupt-controller;
->> +			#interrupt-cells = <3>;
->> +		};
->> +
->> +		mmc0: mmc@4020000 {
->> +			compatible = "allwinner,sun50i-h616-mmc",
->> +				     "allwinner,sun50i-a100-mmc";
->> +			reg = <0x04020000 0x1000>;
->> +			clocks = <&ccu CLK_BUS_MMC0>, <&ccu CLK_MMC0>;
->> +			clock-names = "ahb", "mmc";
->> +			resets = <&ccu RST_BUS_MMC0>;
->> +			reset-names = "ahb";
->> +			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
->> +			pinctrl-names = "default";
->> +			pinctrl-0 = <&mmc0_pins>;
->> +			status = "disabled";
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +		};
->> +
->> +		mmc1: mmc@4021000 {
->> +			compatible = "allwinner,sun50i-h616-mmc",
->> +				     "allwinner,sun50i-a100-mmc";
->> +			reg = <0x04021000 0x1000>;
->> +			clocks = <&ccu CLK_BUS_MMC1>, <&ccu CLK_MMC1>;
->> +			clock-names = "ahb", "mmc";
->> +			resets = <&ccu RST_BUS_MMC1>;
->> +			reset-names = "ahb";
->> +			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
->> +			pinctrl-names = "default";
->> +			pinctrl-0 = <&mmc1_pins>;
->> +			status = "disabled";
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +		};
->> +
->> +		mmc2: mmc@4022000 {
->> +			compatible = "allwinner,sun50i-h616-emmc",
->> +				     "allwinner,sun50i-a64-emmc";
->> +			reg = <0x04022000 0x1000>;
->> +			clocks = <&ccu CLK_BUS_MMC2>, <&ccu CLK_MMC2>;
->> +			clock-names = "ahb", "mmc";
->> +			resets = <&ccu RST_BUS_MMC2>;
->> +			reset-names = "ahb";
->> +			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
->> +			pinctrl-names = "default";
->> +			pinctrl-0 = <&mmc2_pins>;
->> +			status = "disabled";
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +		};
-> 
-> I would skip mmc1 and mmc2, as they were not proved to be working yet.
-
-You mentioned on IRC that MMC2 is working now. Can we check the
-existence of the WiFi chip on mmc1 somehow? Without having a proper
-driver, just to prove that this works?
-Does your TV box also use this new Allwinner WiFi chip?
-
->> +
->> +		uart0: serial@5000000 {
->> +			compatible = "snps,dw-apb-uart";
->> +			reg = <0x05000000 0x400>;
->> +			interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
->> +			reg-shift = <2>;
->> +			reg-io-width = <4>;
->> +			clocks = <&ccu CLK_BUS_UART0>;
->> +			resets = <&ccu RST_BUS_UART0>;
->> +			status = "disabled";
->> +		};
->> +
->> +		uart1: serial@5000400 {
->> +			compatible = "snps,dw-apb-uart";
->> +			reg = <0x05000400 0x400>;
->> +			interrupts = <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
->> +			reg-shift = <2>;
->> +			reg-io-width = <4>;
->> +			clocks = <&ccu CLK_BUS_UART1>;
->> +			resets = <&ccu RST_BUS_UART1>;
->> +			status = "disabled";
->> +		};
->> +
->> +		uart2: serial@5000800 {
->> +			compatible = "snps,dw-apb-uart";
->> +			reg = <0x05000800 0x400>;
->> +			interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
->> +			reg-shift = <2>;
->> +			reg-io-width = <4>;
->> +			clocks = <&ccu CLK_BUS_UART2>;
->> +			resets = <&ccu RST_BUS_UART2>;
->> +			status = "disabled";
->> +		};
->> +
->> +		uart3: serial@5000c00 {
->> +			compatible = "snps,dw-apb-uart";
->> +			reg = <0x05000c00 0x400>;
->> +			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
->> +			reg-shift = <2>;
->> +			reg-io-width = <4>;
->> +			clocks = <&ccu CLK_BUS_UART3>;
->> +			resets = <&ccu RST_BUS_UART3>;
->> +			status = "disabled";
->> +		};
->> +
->> +		uart4: serial@5001000 {
->> +			compatible = "snps,dw-apb-uart";
->> +			reg = <0x05001000 0x400>;
->> +			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
->> +			reg-shift = <2>;
->> +			reg-io-width = <4>;
->> +			clocks = <&ccu CLK_BUS_UART4>;
->> +			resets = <&ccu RST_BUS_UART4>;
->> +			status = "disabled";
->> +		};
->> +
->> +		uart5: serial@5001400 {
->> +			compatible = "snps,dw-apb-uart";
->> +			reg = <0x05001400 0x400>;
->> +			interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
->> +			reg-shift = <2>;
->> +			reg-io-width = <4>;
->> +			clocks = <&ccu CLK_BUS_UART5>;
->> +			resets = <&ccu RST_BUS_UART5>;
->> +			status = "disabled";
->> +		};
->> +
->> +		i2c0: i2c@5002000 {
->> +			compatible = "allwinner,sun50i-h616-i2c",
->> +				     "allwinner,sun6i-a31-i2c";
->> +			reg = <0x05002000 0x400>;
->> +			interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_I2C0>;
->> +			resets = <&ccu RST_BUS_I2C0>;
->> +			pinctrl-names = "default";
->> +			pinctrl-0 = <&i2c0_pins>;
->> +			status = "disabled";
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +		};
->> +
->> +		i2c1: i2c@5002400 {
->> +			compatible = "allwinner,sun50i-h616-i2c",
->> +				     "allwinner,sun6i-a31-i2c";
->> +			reg = <0x05002400 0x400>;
->> +			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_I2C1>;
->> +			resets = <&ccu RST_BUS_I2C1>;
->> +			status = "disabled";
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +		};
->> +
->> +		i2c2: i2c@5002800 {
->> +			compatible = "allwinner,sun50i-h616-i2c",
->> +				     "allwinner,sun6i-a31-i2c";
->> +			reg = <0x05002800 0x400>;
->> +			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_I2C2>;
->> +			resets = <&ccu RST_BUS_I2C2>;
->> +			status = "disabled";
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +		};
->> +
->> +		i2c3: i2c@5002c00 {
->> +			compatible = "allwinner,sun50i-h616-i2c",
->> +				     "allwinner,sun6i-a31-i2c";
->> +			reg = <0x05002c00 0x400>;
->> +			interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_I2C3>;
->> +			resets = <&ccu RST_BUS_I2C3>;
->> +			status = "disabled";
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +		};
->> +
->> +		i2c4: i2c@5003000 {
->> +			compatible = "allwinner,sun50i-h616-i2c",
->> +				     "allwinner,sun6i-a31-i2c";
->> +			reg = <0x05003000 0x400>;
->> +			interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_I2C4>;
->> +			resets = <&ccu RST_BUS_I2C4>;
->> +			status = "disabled";
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +		};
->> +
->> +		spi0: spi@5010000 {
->> +			compatible = "allwinner,sun50i-h616-spi",
->> +				     "allwinner,sun8i-h3-spi";
->> +			reg = <0x05010000 0x1000>;
->> +			interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_SPI0>, <&ccu CLK_SPI0>;
->> +			clock-names = "ahb", "mod";
->> +			resets = <&ccu RST_BUS_SPI0>;
->> +			pinctrl-names = "default";
->> +			pinctrl-0 = <&spi0_pins>;
->> +			status = "disabled";
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +		};
->> +
->> +		spi1: spi@5011000 {
->> +			compatible = "allwinner,sun50i-h616-spi",
->> +				     "allwinner,sun8i-h3-spi";
->> +			reg = <0x05011000 0x1000>;
->> +			interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_SPI1>, <&ccu CLK_SPI1>;
->> +			clock-names = "ahb", "mod";
->> +			resets = <&ccu RST_BUS_SPI1>;
->> +			pinctrl-names = "default";
->> +			pinctrl-0 = <&spi1_pins>;
->> +			status = "disabled";
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +		};
->> +
->> +		emac0: ethernet@5020000 {
->> +			compatible = "allwinner,sun50i-h616-emac",
->> +				     "allwinner,sun50i-a64-emac";
->> +			syscon = <&syscon>;
->> +			reg = <0x05020000 0x10000>;
->> +			interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
->> +			interrupt-names = "macirq";
->> +			resets = <&ccu RST_BUS_EMAC0>;
->> +			reset-names = "stmmaceth";
->> +			clocks = <&ccu CLK_BUS_EMAC0>;
->> +			clock-names = "stmmaceth";
->> +			status = "disabled";
->> +
->> +			mdio: mdio {
->> +				compatible = "snps,dwmac-mdio";
->> +				#address-cells = <1>;
->> +				#size-cells = <0>;
->> +			};
->> +		};
->> +
->> +		usbotg: usb@5100000 {
->> +			compatible = "allwinner,sun50i-h616-musb",
->> +				     "allwinner,sun8i-a33-musb";
->> +			reg = <0x05100000 0x0400>;
->> +			clocks = <&ccu CLK_BUS_OTG>;
->> +			resets = <&ccu RST_BUS_OTG>;
->> +			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
->> +			interrupt-names = "mc";
->> +			phys = <&usbphy 0>;
->> +			phy-names = "usb";
->> +			extcon = <&usbphy 0>;
->> +			status = "disabled";
->> +		};
->> +
->> +		usbphy: phy@5100400 {
->> +			compatible = "allwinner,sun50i-h616-usb-phy";
->> +			reg = <0x05100400 0x24>,
->> +			      <0x05101800 0x4>,
->> +			      <0x05200800 0x4>,
->> +			      <0x05310800 0x4>,
->> +			      <0x05311800 0x4>;
->> +			reg-names = "phy_ctrl",
->> +				    "pmu0",
->> +				    "pmu1",
->> +				    "pmu2",
->> +				    "pmu3";
->> +			clocks = <&ccu CLK_USB_PHY0>,
->> +				 <&ccu CLK_USB_PHY1>,
->> +				 <&ccu CLK_USB_PHY2>,
->> +				 <&ccu CLK_USB_PHY3>;
->> +			clock-names = "usb0_phy",
->> +				      "usb1_phy",
->> +				      "usb2_phy",
->> +				      "usb3_phy";
->> +			resets = <&ccu RST_USB_PHY0>,
->> +				 <&ccu RST_USB_PHY1>,
->> +				 <&ccu RST_USB_PHY2>,
->> +				 <&ccu RST_USB_PHY3>;
->> +			reset-names = "usb0_reset",
->> +				      "usb1_reset",
->> +				      "usb2_reset",
->> +				      "usb3_reset";
->> +			status = "disabled";
->> +			#phy-cells = <1>;
->> +		};
->> +
->> +		ehci0: usb@5101000 {
->> +			compatible = "allwinner,sun50i-h616-ehci",
->> +				     "generic-ehci";
->> +			reg = <0x05101000 0x100>;
->> +			interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_OHCI0>,
->> +				 <&ccu CLK_BUS_EHCI0>,
->> +				 <&ccu CLK_USB_OHCI0>;
->> +			resets = <&ccu RST_BUS_OHCI0>,
->> +				 <&ccu RST_BUS_EHCI0>;
->> +			status = "disabled";
->> +		};
->> +
->> +		ohci0: usb@5101400 {
->> +			compatible = "allwinner,sun50i-h616-ohci",
->> +				     "generic-ohci";
->> +			reg = <0x05101400 0x100>;
->> +			interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_OHCI0>,
->> +				 <&ccu CLK_USB_OHCI0>;
->> +			resets = <&ccu RST_BUS_OHCI0>;
->> +			status = "disabled";
->> +		};
->> +
->> +		ehci1: usb@5200000 {
->> +			compatible = "allwinner,sun50i-h616-ehci",
->> +				     "generic-ehci";
->> +			reg = <0x05200000 0x100>;
->> +			interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_OHCI1>,
->> +				 <&ccu CLK_BUS_EHCI1>,
->> +				 <&ccu CLK_USB_OHCI1>;
->> +			resets = <&ccu RST_BUS_OHCI1>,
->> +				 <&ccu RST_BUS_EHCI1>;
->> +			phys = <&usbphy 1>;
->> +			phy-names = "usb";
->> +			status = "disabled";
->> +		};
->> +
->> +		ohci1: usb@5200400 {
->> +			compatible = "allwinner,sun50i-h616-ohci",
->> +				     "generic-ohci";
->> +			reg = <0x05200400 0x100>;
->> +			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_OHCI1>,
->> +				 <&ccu CLK_USB_OHCI1>;
->> +			resets = <&ccu RST_BUS_OHCI1>;
->> +			phys = <&usbphy 1>;
->> +			phy-names = "usb";
->> +			status = "disabled";
->> +		};
->> +
->> +		ehci2: usb@5310000 {
->> +			compatible = "allwinner,sun50i-h616-ehci",
->> +				     "generic-ehci";
->> +			reg = <0x05310000 0x100>;
->> +			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_OHCI2>,
->> +				 <&ccu CLK_BUS_EHCI2>,
->> +				 <&ccu CLK_USB_OHCI2>;
->> +			resets = <&ccu RST_BUS_OHCI2>,
->> +				 <&ccu RST_BUS_EHCI2>;
->> +			phys = <&usbphy 2>;
->> +			phy-names = "usb";
->> +			status = "disabled";
->> +		};
->> +
->> +		ohci2: usb@5310400 {
->> +			compatible = "allwinner,sun50i-h616-ohci",
->> +				     "generic-ohci";
->> +			reg = <0x05310400 0x100>;
->> +			interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_OHCI2>,
->> +				 <&ccu CLK_USB_OHCI2>;
->> +			resets = <&ccu RST_BUS_OHCI2>;
->> +			phys = <&usbphy 2>;
->> +			phy-names = "usb";
->> +			status = "disabled";
->> +		};
->> +
->> +		ehci3: usb@5311000 {
->> +			compatible = "allwinner,sun50i-h616-ehci",
->> +				     "generic-ehci";
->> +			reg = <0x05311000 0x100>;
->> +			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_OHCI3>,
->> +				 <&ccu CLK_BUS_EHCI3>,
->> +				 <&ccu CLK_USB_OHCI3>;
->> +			resets = <&ccu RST_BUS_OHCI3>,
->> +				 <&ccu RST_BUS_EHCI3>;
->> +			phys = <&usbphy 3>;
->> +			phy-names = "usb";
->> +			status = "disabled";
->> +		};
->> +
->> +		ohci3: usb@5311400 {
->> +			compatible = "allwinner,sun50i-h616-ohci",
->> +				     "generic-ohci";
->> +			reg = <0x05311400 0x100>;
->> +			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&ccu CLK_BUS_OHCI3>,
->> +				 <&ccu CLK_USB_OHCI3>;
->> +			resets = <&ccu RST_BUS_OHCI3>;
->> +			phys = <&usbphy 3>;
->> +			phy-names = "usb";
->> +			status = "disabled";
->> +		};
->> +
->> +		rtc: rtc@7000000 {
->> +			compatible = "allwinner,sun50i-h616-rtc",
->> +				     "allwinner,sun50i-h6-rtc";
->> +			reg = <0x07000000 0x400>;
->> +			interrupts = <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
->> +				     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
->> +			clock-output-names = "osc32k", "osc32k-out", "iosc";
->> +			#clock-cells = <1>;
->> +		};
->> +
->> +		r_ccu: clock@7010000 {
->> +			compatible = "allwinner,sun50i-h616-r-ccu";
->> +			reg = <0x07010000 0x400>;
->> +			clocks = <&osc24M>, <&rtc 0>, <&rtc 2>,
->> +				 <&ccu CLK_PLL_PERIPH0>;
->> +			clock-names = "hosc", "losc", "iosc", "pll-periph";
->> +			#clock-cells = <1>;
->> +			#reset-cells = <1>;
->> +		};
->> +
->> +		r_pio: pinctrl@7022000 {
->> +			compatible = "allwinner,sun50i-h616-r-pinctrl";
->> +			reg = <0x07022000 0x400>;
->> +			interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&r_ccu CLK_R_APB1>, <&osc24M>, <&rtc 0>;
->> +			clock-names = "apb", "hosc", "losc";
->> +			gpio-controller;
->> +			#gpio-cells = <3>;
->> +			interrupt-controller;
->> +			#interrupt-cells = <3>;
->> +
->> +			r_i2c_pins: r-i2c-pins {
->> +				pins = "PL0", "PL1";
->> +				function = "s_i2c";
->> +			};
->> +		};
->> +
->> +		ir: ir@7040000 {
->> +				compatible = "allwinner,sun50i-h616-ir",
->> +					     "allwinner,sun6i-a31-ir";
->> +				reg = <0x07040000 0x400>;
->> +				interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>;
->> +				clocks = <&ccu CLK_R_APB1_IR>,
->> +					 <&ccu CLK_IR>;
-> 
-> Above clocks and reset below should reference r_ccu. 
-
-Ah, indeed, thanks for spotting this!
-
-> Maybe we should call 
-> clock CLK_R_IR to know it comes from second clock controller?
-
-Yeah, but it's a bit tricky, since this is shared with the H6, and I'd
-rather avoid the churn of changing the H6 .dtsi as well.
-
-Cheers,
-Andre
-
-> 
-> Best regards,
-> Jernej
-> 
->> +				clock-names = "apb", "ir";
->> +				resets = <&ccu RST_R_APB1_IR>;
->> +				pinctrl-names = "default";
->> +				pinctrl-0 = <&ir_rx_pin>;
->> +				status = "disabled";
->> +		};
->> +
->> +		r_i2c: i2c@7081400 {
->> +			compatible = "allwinner,sun50i-h616-i2c",
->> +				     "allwinner,sun6i-a31-i2c";
->> +			reg = <0x07081400 0x400>;
->> +			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&r_ccu CLK_R_APB2_I2C>;
->> +			resets = <&r_ccu RST_R_APB2_I2C>;
->> +			status = "disabled";
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +		};
->> +	};
->> +};
->> -- 
->> 2.17.5
->>
->>
-> 
-> 
-
+DQoNCj4gT24gRGVjIDIsIDIwMjAsIGF0IDU6MTYgUE0sIE1pY2hhxYIgTWlyb3PFgmF3IDxtaXJx
+LWxpbnV4QHJlcmUucW1xbS5wbD4gd3JvdGU6DQo+IA0KPiBPbiBXZWQsIERlYyAwMiwgMjAyMCBh
+dCAxMjozMjo0MFBNIC0wODAwLCBOaWNrIFRlcnJlbGwgd3JvdGU6DQo+PiBGcm9tOiBOaWNrIFRl
+cnJlbGwgPHRlcnJlbGxuQGZiLmNvbT4NCj4+IA0KPj4gVGhpcyBwYXRjaDoNCj4+IC0gTW92ZXMg
+YGluY2x1ZGUvbGludXgvenN0ZC5oYCAtPiBgbGliL3pzdGQvenN0ZC5oYA0KPj4gLSBBZGRzIGEg
+bmV3IEFQSSBpbiBgaW5jbHVkZS9saW51eC96c3RkLmhgIHRoYXQgaXMgZnVuY3Rpb25hbGx5DQo+
+PiAgZXF1aXZhbGVudCB0byB0aGUgaW4tdXNlIHN1YnNldCBvZiB0aGUgY3VycmVudCBBUEkuIEZ1
+bmN0aW9ucyBhcmUNCj4+ICByZW5hbWVkIHRvIGF2b2lkIHN5bWJvbCBjb2xsaXNpb25zIHdpdGgg
+enN0ZCwgdG8gbWFrZSBpdCBjbGVhciBpdCBpcw0KPj4gIG5vdCB0aGUgdXBzdHJlYW0genN0ZCBB
+UEksIGFuZCB0byBmb2xsb3cgdGhlIGtlcm5lbCBzdHlsZSBndWlkZS4NCj4+IC0gVXBkYXRlcyBh
+bGwgY2FsbGVycyB0byB1c2UgdGhlIG5ldyBBUEkuDQo+PiANCj4+IFRoZXJlIGFyZSBubyBmdW5j
+dGlvbmFsIGNoYW5nZXMgaW4gdGhpcyBwYXRjaC4gU2luY2UgdGhlcmUgYXJlIG5vDQo+PiBmdW5j
+dGlvbmFsIGNoYW5nZSwgSSBmZWx0IGl0IHdhcyBva2F5IHRvIHVwZGF0ZSBhbGwgdGhlIGNhbGxl
+cnMgaW4gYQ0KPj4gc2luZ2xlIHBhdGNoLCBzaW5jZSBvbmNlIHRoZSBBUEkgaXMgYXBwcm92ZWQs
+IHRoZSBjYWxsZXJzIGFyZQ0KPj4gbWVjaGFuaWNhbGx5IGNoYW5nZWQuDQo+IFsuLi5dDQo+PiAt
+LS0gYS9saWIvZGVjb21wcmVzc191bnpzdGQuYw0KPj4gKysrIGIvbGliL2RlY29tcHJlc3NfdW56
+c3RkLmMNCj4gWy4uLl0NCj4+IHN0YXRpYyBpbnQgSU5JVCBoYW5kbGVfenN0ZF9lcnJvcihzaXpl
+X3QgcmV0LCB2b2lkICgqZXJyb3IpKGNoYXIgKngpKQ0KPj4gew0KPj4gLQljb25zdCBpbnQgZXJy
+ID0gWlNURF9nZXRFcnJvckNvZGUocmV0KTsNCj4+IC0NCj4+IC0JaWYgKCFaU1REX2lzRXJyb3Io
+cmV0KSkNCj4+ICsJaWYgKCF6c3RkX2lzX2Vycm9yKHJldCkpDQo+PiAJCXJldHVybiAwOw0KPj4g
+DQo+PiAtCXN3aXRjaCAoZXJyKSB7DQo+PiAtCWNhc2UgWlNURF9lcnJvcl9tZW1vcnlfYWxsb2Nh
+dGlvbjoNCj4+IC0JCWVycm9yKCJaU1REIGRlY29tcHJlc3NvciByYW4gb3V0IG9mIG1lbW9yeSIp
+Ow0KPj4gLQkJYnJlYWs7DQo+PiAtCWNhc2UgWlNURF9lcnJvcl9wcmVmaXhfdW5rbm93bjoNCj4+
+IC0JCWVycm9yKCJJbnB1dCBpcyBub3QgaW4gdGhlIFpTVEQgZm9ybWF0ICh3cm9uZyBtYWdpYyBi
+eXRlcykiKTsNCj4+IC0JCWJyZWFrOw0KPj4gLQljYXNlIFpTVERfZXJyb3JfZHN0U2l6ZV90b29T
+bWFsbDoNCj4+IC0JY2FzZSBaU1REX2Vycm9yX2NvcnJ1cHRpb25fZGV0ZWN0ZWQ6DQo+PiAtCWNh
+c2UgWlNURF9lcnJvcl9jaGVja3N1bV93cm9uZzoNCj4+IC0JCWVycm9yKCJaU1RELWNvbXByZXNz
+ZWQgZGF0YSBpcyBjb3JydXB0Iik7DQo+PiAtCQlicmVhazsNCj4+IC0JZGVmYXVsdDoNCj4+IC0J
+CWVycm9yKCJaU1RELWNvbXByZXNzZWQgZGF0YSBpcyBwcm9iYWJseSBjb3JydXB0Iik7DQo+PiAt
+CQlicmVhazsNCj4+IC0JfQ0KPj4gKwllcnJvcigiWlNURCBkZWNvbXByZXNzaW9uIGZhaWxlZCIp
+Ow0KPj4gCXJldHVybiAtMTsNCj4+IH0NCj4gDQo+IFRoaXMgbG9vc2VzIGRpYWdub3N0aWNzIHNw
+ZWNpZmljaXR5IC0gaXMgdGhpcyBpbnRlbmRlZD8gQXQgbGVhc3QgdGhlDQo+IG91dC1vZi1tZW1v
+cnkgY29uZGl0aW9uIHNlZW1zIHVzZWZ1bCB0byBkaXN0aW5ndWlzaC4NCg0KR29vZCBwb2ludC4g
+VGhlIHpzdGQgQVBJIG5vIGxvbmdlciBleHBvc2VzIHRoZSBlcnJvciBjb2RlIGVudW0sDQpidXQg
+aXQgZG9lcyBleHBvc2UgenN0ZF9nZXRfZXJyb3JfbmFtZSgpIHdoaWNoIGNhbiBiZSB1c2VkIGhl
+cmUuDQpJIHdhcyB0aGlua2luZyB0aGF0IHRoZSBzdHJpbmcgbmVlZGVkIHRvIGJlIHN0YXRpYyBm
+b3Igc29tZSByZWFzb24sIGJ1dA0KdGhhdCBpcyBub3QgdGhlIGNhc2UuIEkgd2lsbCBtYWtlIHRo
+YXQgY2hhbmdlLg0KDQo+PiArc2l6ZV90IHpzdGRfY29tcHJlc3Nfc3RyZWFtKHpzdGRfY3N0cmVh
+bSAqY3N0cmVhbSwNCj4+ICsJc3RydWN0IHpzdGRfb3V0X2J1ZmZlciAqb3V0cHV0LCBzdHJ1Y3Qg
+enN0ZF9pbl9idWZmZXIgKmlucHV0KQ0KPj4gK3sNCj4+ICsJWlNURF9vdXRCdWZmZXIgbzsNCj4+
+ICsJWlNURF9pbkJ1ZmZlciBpOw0KPj4gKwlzaXplX3QgcmV0Ow0KPj4gKw0KPj4gKwltZW1jcHko
+Jm8sIG91dHB1dCwgc2l6ZW9mKG8pKTsNCj4+ICsJbWVtY3B5KCZpLCBpbnB1dCwgc2l6ZW9mKGkp
+KTsNCj4+ICsJcmV0ID0gWlNURF9jb21wcmVzc1N0cmVhbShjc3RyZWFtLCAmbywgJmkpOw0KPj4g
+KwltZW1jcHkob3V0cHV0LCAmbywgc2l6ZW9mKG8pKTsNCj4+ICsJbWVtY3B5KGlucHV0LCAmaSwg
+c2l6ZW9mKGkpKTsNCj4+ICsJcmV0dXJuIHJldDsNCj4+ICt9DQo+IA0KPiBJcyBhbGwgdGhpcyBj
+b3B5aW5nIG5lY2Vzc2FyeT8gSG93IGlzIGl0IGRpZmZlcmVudCBmcm9tIHR5cGUtcHVubmluZyBi
+eQ0KPiBkaXJlY3QgcG9pbnRlciBjYXN0Pw0KDQpJZiBicmVha2luZyBzdHJpY3QgYWxpYXNpbmcg
+YW5kIHR5cGUtcHVubmluZyBieSBwb2ludGVyIGNhc2luZyBpcyBva2F5LCB0aGVuDQp3ZSBjYW4g
+ZG8gdGhhdCBoZXJlLiBUaGVzZSBtZW1jcHlzIHdpbGwgYmUgbmVnbGlnaWJsZSBmb3IgcGVyZm9y
+bWFuY2UsIGJ1dA0KdHlwZS1wdW5uaW5nIHdvdWxkIGJlIG1vcmUgc3VjY2luY3QgaWYgYWxsb3dl
+ZC4NCg0KQmVzdCwNCk5pY2sNCg0K
