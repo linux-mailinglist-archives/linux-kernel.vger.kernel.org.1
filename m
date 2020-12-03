@@ -2,72 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E5D2CDDA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C472CDD76
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:29:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729242AbgLCS1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:27:04 -0500
-Received: from mout.kundenserver.de ([217.72.192.74]:60139 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727440AbgLCS1B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:27:01 -0500
-Received: from orion.localdomain ([95.118.71.13]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1M597q-1klzCv0zXI-00191P; Thu, 03 Dec 2020 19:24:25 +0100
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com, m@bues.ch,
-        linux-gpio@vger.kernel.org
-Subject: [PATCH 3/3] drivers: gpio: amd8111: use SPDX-License-Identifier
-Date:   Thu,  3 Dec 2020 19:24:23 +0100
-Message-Id: <20201203182423.5499-3-info@metux.net>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201203182423.5499-1-info@metux.net>
-References: <20201203182423.5499-1-info@metux.net>
-X-Provags-ID: V03:K1:K6rguvECz7albWgihc5SpVddtWHUKDYK1w304F8q96OZlg3LuEs
- maz2qVgYcn/nfVZ1lxunxfjzBOUhN3dpHypiNvj8NXhkkeb1KU2EoCZleDdl/B+sH9J+9MC
- SyH1t4xupsuf3OBeBJ9rOZNEzJlnDA3RUGzjxOQI6MJ7eatWHdjpxwnUzEBveCX15GnI3pi
- KMutGdWrna+46bnA8tADw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9SFYdtNulQs=:hqqxdRQEQQQ/A0OAXbvfg1
- BM7tlRkVpImlerK5pgUC0PLUk2NDi4ape4GW6Zt9C81dUqVY4Ph3nptWaYxIYxApS8xX2xgZs
- /eA2Zk3hEtWWH6UeB1h1g1my4Mv91xGXZ2sZcCbkAvnzues6HjS1IVSCQ2d2pN74K4EBrslmc
- e2cleYdYkPFezfPLeGNHCuxhLXvdB9By6ifZrk0PIxS0fqYtGHZ2SbhyDYJJa5IRCxgnVSue4
- LTojlkpPbuEOuK+Lym7iXplP9ml09+sKjIu/0R/vaPdHg5CLAZiteyQU1JFli/BJGCm1RXUc8
- JVyakhtCROYszW1KEzAORyH2di3vbBWCVs2vVSGyxXvl1t8V82G/IQ0/Iw3L4dCDJvcu7cFx+
- /HQzlo+dmHX8igNtzpLVIs3T6pFT5PUQBda8vMZJUf9vvikUIyobkp/u5zwVU
+        id S1731623AbgLCSZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:25:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731594AbgLCSZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:25:05 -0500
+Date:   Thu, 3 Dec 2020 12:24:23 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607019864;
+        bh=OSYjR3KU12Rh2mAMrwtk4wsx9Qj28rYM92rA8hzOoJk=;
+        h=From:To:Cc:Subject:In-Reply-To:From;
+        b=obo0nDCtSHQuTaolGry8nmvcpThiQsMJPk4PCnntVYyIAtI6JPR3IBCF1yM/IAVuk
+         3jj5/DY6oaP4fr+gTNjC5tckZ0VmghCRZJ66FY8Djyu5Vz07IuhBBhVbR6jiC7XaYw
+         oKdoO+/XSHK/fqoK3o4xhc+8zGUEQpXBe+84oqGc5B6w1slXUd4wTrG+FppUsFyXjt
+         a+rViIG9dfLnxF7RftJqhq+1jhz+NNNC0lsg2TXU7tMxntgNrS5TCaRWPErz+TPckF
+         cj5dac5pi6Kp5NYnhjVvmWi9P+e0+AGs61834a+SIVRL9Z/zw4p7sBodOT1INkU/G9
+         VuvOe8s3owWWw==
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     bhelgaas@google.com, lorenzo.pieralisi@arm.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH V2] PCI/MSI: Set device flag indicating only 32-bit MSI
+ support
+Message-ID: <20201203182423.GA1555592@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124105035.24573-1-vidyas@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prefer SPDX-License-Identifier over hand-written texts.
+On Tue, Nov 24, 2020 at 04:20:35PM +0530, Vidya Sagar wrote:
+> There are devices (Ex:- Marvell SATA controller) that don't support
+> 64-bit MSIs and the same is advertised through their MSI capability
+> register. Set no_64bit_msi flag explicitly for such devices in the
+> MSI setup code so that the msi_verify_entries() API would catch
+> if the MSI arch code tries to use 64-bit MSI.
 
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
----
- drivers/gpio/gpio-amd8111.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+This seems good to me.  I'll post a possible revision to set
+dev->no_64bit_msi in the device enumeration path instead of in the IRQ
+allocation path, since it's really a property of the device, not of
+the msi_desc.
 
-diff --git a/drivers/gpio/gpio-amd8111.c b/drivers/gpio/gpio-amd8111.c
-index 0e260950992d..14e6b3e64add 100644
---- a/drivers/gpio/gpio-amd8111.c
-+++ b/drivers/gpio/gpio-amd8111.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * GPIO driver for AMD 8111 south bridges
-  *
-@@ -20,10 +21,6 @@
-  * Hardware driver for Intel i810 Random Number Generator (RNG)
-  * Copyright 2000,2001 Jeff Garzik <jgarzik@pobox.com>
-  * Copyright 2000,2001 Philipp Rumpf <prumpf@mandrakesoft.com>
-- *
-- * This file is licensed under  the terms of the GNU General Public
-- * License version 2. This program is licensed "as is" without any
-- * warranty of any kind, whether express or implied.
-  */
- #include <linux/ioport.h>
- #include <linux/module.h>
--- 
-2.11.0
+I like the extra checking this gives us.  Was this prompted by
+tripping over something, or is it something you noticed by code
+reading?  If the former, a hint about what was wrong and how it's
+being fixed would be useful.
 
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+> V2:
+> * Addressed Bjorn's comment and changed the error message
+> 
+>  drivers/pci/msi.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> index d52d118979a6..8de5ba6b4a59 100644
+> --- a/drivers/pci/msi.c
+> +++ b/drivers/pci/msi.c
+> @@ -581,10 +581,12 @@ msi_setup_entry(struct pci_dev *dev, int nvec, struct irq_affinity *affd)
+>  	entry->msi_attrib.multi_cap	= (control & PCI_MSI_FLAGS_QMASK) >> 1;
+>  	entry->msi_attrib.multiple	= ilog2(__roundup_pow_of_two(nvec));
+>  
+> -	if (control & PCI_MSI_FLAGS_64BIT)
+> +	if (control & PCI_MSI_FLAGS_64BIT) {
+>  		entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_64;
+> -	else
+> +	} else {
+>  		entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_32;
+> +		dev->no_64bit_msi = 1;
+> +	}
+>  
+>  	/* Save the initial mask status */
+>  	if (entry->msi_attrib.maskbit)
+> @@ -602,8 +604,9 @@ static int msi_verify_entries(struct pci_dev *dev)
+>  	for_each_pci_msi_entry(entry, dev) {
+>  		if (!dev->no_64bit_msi || !entry->msg.address_hi)
+>  			continue;
+> -		pci_err(dev, "Device has broken 64-bit MSI but arch"
+> -			" tried to assign one above 4G\n");
+> +		pci_err(dev, "Device has either broken 64-bit MSI or "
+> +			"only 32-bit MSI support but "
+> +			"arch tried to assign one above 4G\n");
+>  		return -EIO;
+>  	}
+>  	return 0;
+> -- 
+> 2.17.1
+> 
