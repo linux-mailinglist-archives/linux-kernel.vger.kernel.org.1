@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C442CE1C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:35:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEAE2CE1BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731869AbgLCWdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:33:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58914 "EHLO
+        id S1731843AbgLCWdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:33:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731857AbgLCWdy (ORCPT
+        with ESMTP id S1728636AbgLCWds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:33:54 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E72C061A55
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 14:32:26 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id v3so1962718plz.13
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 14:32:26 -0800 (PST)
+        Thu, 3 Dec 2020 17:33:48 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B507C08E860
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 14:32:27 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id o9so2287564pfd.10
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 14:32:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=SPmFoB1my9jXoLv2dn26VSZIQKA7cIMRdqpuLUFB/zE=;
-        b=uibFYOvnC4zY0yQjSghNFXGoITN/klJGjUJawm7CLMgnwHLEgoSF8aYrp3JujngJOL
-         Q1/1efT1Sk1ZvEgzkg0itaC6uT+mpiCbV+wr2qFTg/EhXoM8USYjKCA49GdnVTWWZ0tP
-         rahJLwwp8GwB0lIDDNsa/yfR1+ZYu8Jzevvs/J5ONrYw8jKGlEw9eov6jWgP39zOBXFG
-         iIH8Qv+lpLNP2Zhd2G7dAvg8kGv/PxOxkG6KmZP9h1L9cCQQNa1jrvom/D1PErxBspZJ
-         iVqODTL1y2FkymUDIFPNBB6S6aotiP8SU7ZbbYz16SRlFub6isCp3ufmz/yH1ijPlqxp
-         oF/g==
+        h=subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=isS72LcXXBRrXr0Ako/fe2G087FHJYFoOicsYh1AWO8=;
+        b=n9Tgm2HiezYP/Ask48/IujNV3+jpE7cAZxD1tbqft+4LOAW8/m/e4j9wHEoLavTI4Z
+         hSLUicihywE1d/WNoTSMTG5cPEt6IL70OKZXoNWZKKsNB8F8OkFKzDHZqm+f/sOZNYPz
+         8j5e+HCi8SdKdA7Xu2RuFpwxLd62E/liW6ieEEDoJO1kbRJ7HadhezHYjY2iSllw8wbQ
+         tUkB72H2Css+K9VJVsCYkwSfkLuH324cFrRzdu9C/twxVdfY+7sTOiEDRSZLMsa0UJkB
+         wjzzKRldHy8lIsto9UZtLgh7GCR7mYt6IsYqp6pH8Tj46iWzOI8zERroIO9s4oMqIBLi
+         zN1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=SPmFoB1my9jXoLv2dn26VSZIQKA7cIMRdqpuLUFB/zE=;
-        b=n1FbVGxgm7ym3EVV/3UMjldxkoq+8Tcc/A1ZbH9QcAPqbckpWzhafM8GOtVkx0OCgv
-         pLuO40dZzZmhcyEq3sNLB1395ft1n6wv3Jzr7HRMe/j+vdg/q8SFALvAeV1UzP/CIzbQ
-         kZNBG6fiSxLYKIjbE1JQPG8Rc3vcOlXCxpv7oUpKmcjtN7qLP66QEMJY8iqVZDdxPndi
-         e2mxgSSuHpP2UMQAkE/LrJkuX4dGomWOhJxO3jXd700MYijp52MIw0NF7aIeqq2kbEt8
-         En9S/PtoxjWxI9fmGMk7+xZeiipyqcjtXU+eIjLYN+jb6cQCuJL5zmdiJ3DtY2CCrGWX
-         v6Iw==
-X-Gm-Message-State: AOAM531avrY6FS53R5NtHnKIJ1IwVNSLLWVC07IUAPq+r2Ddb6kXc4Lz
-        ihdGCkHBHjL9D+XEvSk0n9udNw==
-X-Google-Smtp-Source: ABdhPJxhPr+P5fujnqKI96o2pvSvJ5MAQGdtq4scxTMGJtMVGb63v//A39PGQQlbMjp5MmCtDbhQGg==
-X-Received: by 2002:a17:902:469:b029:da:17d0:e755 with SMTP id 96-20020a1709020469b02900da17d0e755mr954487ple.53.1607034745298;
-        Thu, 03 Dec 2020 14:32:25 -0800 (PST)
+        h=x-gm-message-state:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding:cc:from:to;
+        bh=isS72LcXXBRrXr0Ako/fe2G087FHJYFoOicsYh1AWO8=;
+        b=Vj+OPclFpGD513tG9rdCswjeqHKvtREAS5P8rk+D9vCQh82uva6gTrPg/DUqDdPYNB
+         XWrN5gi/TZsOAMb5M9ethzBNf7nSDAmoDQyToEHvTNpoHHzmHlkui0FJhiQF8ASXhNvi
+         0M3PyaVdpXm0naVyX8JSuJXM9sIUJVSdqOh/KSgQCu6pSoqHIcuIJC0rEqzoKvMf2+RU
+         2XrN1A2AwIjqOmoZbKZM2clBHpuzMQGGO94a86BnSYpuJS5+JLG2L05Pcs+mUT08aPl8
+         iETbO+V8Yaa+sZQl0RH6t6iKZ/NHQjhcHyO2I61SpJ1he4JsljPJvGp6u+usH0A2C0Dp
+         aNOQ==
+X-Gm-Message-State: AOAM5303nxqVaXIMveMoNz370/T/W03DwHF3DApLdW8SH97hlhHmmm7z
+        tHYCKSqouUVclN8gk7SUZLwvsg==
+X-Google-Smtp-Source: ABdhPJxyBjD8G9ISMJWXF9KC/iPnxZEl+jlMD7j47CrGjE+X5vfqNVKfzgCqsSq3L3yisx8iqaM2cQ==
+X-Received: by 2002:a65:679a:: with SMTP id e26mr4855403pgr.394.1607034746754;
+        Thu, 03 Dec 2020 14:32:26 -0800 (PST)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id x23sm2646437pfo.209.2020.12.03.14.32.24
+        by smtp.gmail.com with ESMTPSA id gp14sm333425pjb.6.2020.12.03.14.32.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 14:32:24 -0800 (PST)
-Subject: [PATCH v1 0/5] dm: dm-user: New target that proxies BIOs to userspace
-Date:   Thu,  3 Dec 2020 13:58:54 -0800
-Message-Id: <20201203215859.2719888-1-palmer@dabbelt.com>
+        Thu, 03 Dec 2020 14:32:26 -0800 (PST)
+Subject: [PATCH v1 1/5] Documentation: Describe dm-user
+Date:   Thu,  3 Dec 2020 13:58:55 -0800
+Message-Id: <20201203215859.2719888-2-palmer@dabbelt.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+In-Reply-To: <20201203215859.2719888-1-palmer@dabbelt.com>
+References: <20201203215859.2719888-1-palmer@dabbelt.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc:     corbet@lwn.net, song@kernel.org,
@@ -65,48 +67,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set contains dm-user, a device mapper target that proxies incoming
-BIOs to userspace via a misc device.  Essentially it's FUSE, but for block
-devices.  There's more information in the documentation patch and as a handful
-of commends, so I'm just going to avoid duplicating that here.  I don't really
-think there's any fundamental functionality that dm-user enables, as one could
-use something along the lines of nbd/iscsi, but dm-user does result in
-extremely simple userspace daemons -- so simple that when I tried to write a
-helper userspace library for dm-user I just ended up with nothing.
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-I talked about this a bit at Plumbers and was hoping to send patches a bit
-earlier on in the process, but got tied up with a few things.  As a result this
-is actually quite far along: it's at the point where we're starting to run this
-on real devices as part of an updated Android OTA update flow, where we're
-using this to provide an Android-specific compressed backing store for
-dm-snap-persistent.  The bulk of that project is scattered throughout the
-various Android trees, so there are kselftests and a (somewhat bare for now)
-Documentation entry with the intent of making this a self-contained
-contribution.  There's a lot to the Android userspace daemon, but it doesn't
-interact with dm-user in a very complex manner.
+I started by patterning this after the Fuse documentation, which is
+located at Documentation/fs/fuse.rst.  There's not a whole lot of that
+left, though.
 
-This is still in a somewhat early stage, but it's at the point where things
-largely function.  I'm certainly not ready to commit to the user ABI
-implemented here and there are a bunch of FIXMEs scattered throughout the code,
-but I do think that it's far along enough to begin a more concrete discussion
-of where folks would like to go with something like this.  While I'd intending
-on sorting that stuff out, I'd like to at least get a feel for whether this is
-a path worth pursuing before spending a bunch more time on it.
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-I haven't done much in the way of performance analysis for dm-user.  Earlier on
-I did some simple throughput tests and found that dm-user/ext4 was faster than
-half the speed of tmpfs, which is way out of the realm of being an issue for
-our use case (decompressing blocks out of a phone's storage).  The design of
-dm-user does preclude an extremely high performance implementation, where I
-assume one would want an explicit ring buffer and zero copy, but I feel like
-users who want that degree of performance are probably better served writing a
-proper kernel driver.  I wouldn't be opposed to pushing on performance (ideally
-without a major design change), but for now I feel like time is better spent
-fortifying the user ABI and fixing the various issues with the implementation.
+---
 
-The patches follow as usual, but in case it's easier I've published a tree as
-well:
+This is a work in progress, but nothing in there should be incorrect.
+---
+ Documentation/block/dm-user.rst | 99 +++++++++++++++++++++++++++++++++
+ 1 file changed, 99 insertions(+)
+ create mode 100644 Documentation/block/dm-user.rst
 
-    git://git.kernel.org/pub/scm/linux/kernel/git/palmer/dm-user.git -b dm-user-v1
-
+diff --git a/Documentation/block/dm-user.rst b/Documentation/block/dm-user.rst
+new file mode 100644
+index 000000000000..5eb3120f3fd5
+--- /dev/null
++++ b/Documentation/block/dm-user.rst
+@@ -0,0 +1,99 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++=======
++dm-user
++=======
++
++What is dm-user?
++================
++
++dm-user is a device mapper target that allows block accesses to be satisfied by
++an otherwise unprivileged daemon running in userspace.  Conceptually it is
++FUSE, but for block devices as opposed to file systems.
++
++Creating a dm-user Target
++=========================
++
++dm-user is implemented as a Device Mapper target, which allows for various
++device management tasks.  In general dm-user targets function in the same
++fashion as other device-mapper targets, with the exception that dm-user targets
++handle requests via a userspace daemon as opposed to one of various in-kernel
++mechanisms.  As such there is little difference between creating a dm-user
++target and any other device mapper target: the standard device mapper control
++device and ioctl() calls are used to create a table with at least one target of
++the "user" type.  Like all other targets this table entry needs a start/size
++pair.  The additional required argument is the name of the control device that
++will be associated with this target.  Specifically:
++
++````
++user <start sector> <number of sectors> <path to control device>
++````
++
++As a concrete example, the following `dmsetup` invocation will create a new
++device mapper block device available at `/dev/mapper/blk`, consisting entirely
++of a single target which can be controlled via a stream of messages passed over
++`/dev/dm-user/ctl`.
++
++````
++dmsetup create blk <<EOF
++0 1024 user 0 1024 ctl
++EOF
++dmsetup resume blk
++````
++
++Userspace is expected to spin up a daemon to handle those block requests, which
++will block in the meantime.  The various Device Mapper operations should all
++function as they do for other targets.  If the userspace daemon terminates (or
++otherwise closes the control file descriptor) then the kernel will continue to
++queue up BIOs until userspace either starts a new daemon or destroys the
++target.
++
++Userspace may open each control device multiple times, in which case the kernel
++will distribute messages among each file instance.
++
++Writing a dm-user Daemon
++========================
++
++tools/testing/selftests/dm-user contains a handful of test daemons.
++functional/simple-read-all.c is also suitable as an example.
++
++Kernel - userspace interface
++****************************
++
++FIXME: A description of `struct dm_user_message`
++
++Kernel Implementation
++=====================
++
++BIO Lifecycle
++*************
++
++| "dd if=/dev/mapper/user ...             " | dm-user block server
++|                                           |
++|                                           | >sys_read()
++|                                           |  >dev_read()
++|                                           |   [sleep on c->wq]
++|                                           |
++| >sys_read()                               |
++|  [... block and DM layer ... ]            |
++|  >user_map()                              |
++|   [enqueue message]                       |
++|   [wake up c->wq]                         |
++|  <user_map()                              |   [woken up]
++| [sleep on BIO completion]                 |   [copy message to user]
++|                                           |  <dev_read()
++|                                           | <sys_read()
++|                                           |
++|                                           | [obtain request data]
++|                                           |
++|                                           | >sys_write()
++|                                           |  >dev_write()
++|                                           |   [copy message from user]
++|                                           |   [complete BIO]
++|  [woken up on BIO completion]             |  <dev_write()
++| <sys_read()                               | <sys_write()
++|                                           |
++| [write and loop]                          | [loop for more messages]
++
++Locking Scheme
++**************
+-- 
+2.29.2.454.gaff20da3a2-goog
 
