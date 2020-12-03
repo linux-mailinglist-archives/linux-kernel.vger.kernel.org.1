@@ -2,121 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198D02CDF51
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 21:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 779582CDF58
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 21:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgLCUHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 15:07:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
+        id S1729208AbgLCUHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 15:07:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLCUHF (ORCPT
+        with ESMTP id S1725885AbgLCUHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 15:07:05 -0500
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DAB6C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 12:06:25 -0800 (PST)
-Received: by mail-vs1-xe42.google.com with SMTP id z16so1976584vsp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 12:06:25 -0800 (PST)
+        Thu, 3 Dec 2020 15:07:32 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCBF1C061A54;
+        Thu,  3 Dec 2020 12:06:51 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id g14so3124317wrm.13;
+        Thu, 03 Dec 2020 12:06:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WwWDqEC8lyXk+mn1FQGbjXgjK1A6t7ai7KM73ZqCvxQ=;
-        b=JZlzLv/7eUN9ngMAPHflR850vYNlUh906JW7nXe5twIRxisHFKPZJttlH5jNpvEvhb
-         yKG/KJaF+YlnxZhqOAHdfTcGPlsMWZ+gnBWwmeafntjEpWxINf2/us1f1y63BGbuPoGE
-         B4o/tnChgNBLLw7eeBdBwGq1VGAqi9VDdQcTQ=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PWPu1GzqV5FHg9xfQEvSGAQ5O7PflnkxSHLUb6RuJyM=;
+        b=POS58uipglTVurisya+5rLohAt4eYU71k/c9L9Bltt3/oIrteIkrshnDW0l2ncjz6O
+         vTyEq7haqlzshO+n2+++DxdnwTNrTd21393ZbXF2cSGelFOjPNZgr1GWvbBturH2Sz12
+         RgQ6CNvxQ5dc/NUe5rdBn5cMP8Xb+40FXWFAEdGuZqBl7YdrQgZ3tt5dl5nxtgxBuO1d
+         9PX0cgN8H/q/Sc//z4FEb8csQy5ePxscGBctMZQZPQ7amVIwIcMSh+BgEYRFWGJ6QsFg
+         ZxDTa6zdpDuKPMT1h8EMJ6lIRVl7xKIowMfGk+9aAwi2yg7nzpSwFJTVBKfDEjvCcbef
+         4u6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WwWDqEC8lyXk+mn1FQGbjXgjK1A6t7ai7KM73ZqCvxQ=;
-        b=im8XtiIbjg0fTiTYFT7tBP+zMzJ/y0ty7MJHx6Q9BuaoshDqLGU/F3ZrJ8EXuSFDt0
-         uZVoH0i+rn+zlpzjVLr1AKusF8Z6jfq0e2jQX7kxkntA8qnjaKD9IgKuC2Ld6Jwb2ps7
-         vXOyWHC2o7N0bTOn5IvL63yTTIJ/vp5zkaaaIQStFFOvrhaeYby0Hq0Si04Kq5MHVmWu
-         XwqUXfaP/kjiv6yN7mnWBuywHKnVLgE7LwPQie4dmv9tJL7JafgVkOCdJYftrcfE+Ln9
-         6/yeSR/mQ9nleewkqx354okEs//lTVYZdVakiwiePw3N62GZTiKGmDw3TILl4S2mWz97
-         um+Q==
-X-Gm-Message-State: AOAM530HJ7wOjX4FffWE5JspQUe9Le0sZPq++lIB1VQsrzQe8FKy8P75
-        ZcmZfENeHYSwTMy98LGQCKyGkoDRZ+vpgQ==
-X-Google-Smtp-Source: ABdhPJwIeikJLuJgOdXs/ZKdRz5Z2jNezFfHCkzK7iTWygRZQYwfdLb5rSQQLBKFdiakhM4chaeyzw==
-X-Received: by 2002:a67:cb0e:: with SMTP id b14mr1059915vsl.60.1607025984135;
-        Thu, 03 Dec 2020 12:06:24 -0800 (PST)
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
-        by smtp.gmail.com with ESMTPSA id u1sm58281uap.6.2020.12.03.12.06.23
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PWPu1GzqV5FHg9xfQEvSGAQ5O7PflnkxSHLUb6RuJyM=;
+        b=TJJlQEA7xyUcdhknLCAgeFIQ05sLKpRkatzUhufw2BNvc022UpEn6ZGVACyxH4UwRc
+         nEeOsZ5dWBhHh+4qghkWN/iPuYaJ2MSYNmGc02gGR492ezbePET7SfdTpzTXEQ0+E4U9
+         xHqoXDlkQLDylbSYKQGs4s28ksvRxAZqZQlDmIGiWHvAwI2lx0uAx1ASyN580AbulCPz
+         nQFqZNl0Bj7AeOWgHkRA3y32sQzkUefKvOqpNtKmZMJn7lH8Vg3jSsC8VtKt1Btvdn4G
+         QwIYP61m1uE1KEYMLOhAsINb2owTNTqM32/abDoOeSV7wRW428tw3us8ikjbmdZZgG8s
+         4rNQ==
+X-Gm-Message-State: AOAM531w4S+bs80W6mr5FcuM+LntsJHpjhrbOnAfHrPVojU659DgGdn0
+        QDf9DCCfurYXh1h3e7dWFk8=
+X-Google-Smtp-Source: ABdhPJxAioMssVD6ZRb5IlWH5ouH50sbnP5fPPTaWPj9wd/3CdZiufgPuMXWtLmqim46JhmP6mK6+w==
+X-Received: by 2002:a5d:530d:: with SMTP id e13mr1018783wrv.92.1607026010695;
+        Thu, 03 Dec 2020 12:06:50 -0800 (PST)
+Received: from ?IPv6:2a01:110f:b59:fd00:2969:dca1:ffae:a9ff? ([2a01:110f:b59:fd00:2969:dca1:ffae:a9ff])
+        by smtp.gmail.com with ESMTPSA id c2sm741399wrf.68.2020.12.03.12.06.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 12:06:23 -0800 (PST)
-Received: by mail-vs1-f41.google.com with SMTP id j140so1977320vsd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 12:06:23 -0800 (PST)
-X-Received: by 2002:a67:4242:: with SMTP id p63mr1071347vsa.34.1607025982604;
- Thu, 03 Dec 2020 12:06:22 -0800 (PST)
+        Thu, 03 Dec 2020 12:06:50 -0800 (PST)
+Subject: Re: [PATCH v11 3/5] dt-bindings: leds: Add LED_FUNCTION_MOONLIGHT
+ definitions
+To:     Pavel Machek <pavel@ucw.cz>,
+        Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+References: <1606906011-25633-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1606906011-25633-4-git-send-email-gene.chen.richtek@gmail.com>
+ <20201202122329.GA30929@duo.ucw.cz>
+ <CAE+NS34D8a6Udt7ZZ0=U7oqm5POtihKvD3WjD_sAADamqQ=1AQ@mail.gmail.com>
+ <20201203114044.GA9061@duo.ucw.cz>
+From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Message-ID: <87a4f0b9-1450-cd9f-70ea-dd5b408893f3@gmail.com>
+Date:   Thu, 3 Dec 2020 21:06:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20201202214935.1114381-1-swboyd@chromium.org> <CAHNYxRwMD4XahHXWW9z7b=VCOEsdPe5Df4CohNwmBy_ijWJ62g@mail.gmail.com>
- <160695172591.2717324.17788035024164242534@swboyd.mtv.corp.google.com> <160695644776.2717324.633265815704005177@swboyd.mtv.corp.google.com>
-In-Reply-To: <160695644776.2717324.633265815704005177@swboyd.mtv.corp.google.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 3 Dec 2020 12:06:10 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WDYdfURHWf8qGOSwT+7Y5i=9FMgRn5hYZA-oTfR6KoFQ@mail.gmail.com>
-Message-ID: <CAD=FV=WDYdfURHWf8qGOSwT+7Y5i=9FMgRn5hYZA-oTfR6KoFQ@mail.gmail.com>
-Subject: Re: [PATCH] spi: spi-geni-qcom: Use the new method of gpio CS control
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Alexandru M Stan <amstan@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201203114044.GA9061@duo.ucw.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Pavel,
 
-On Wed, Dec 2, 2020 at 4:47 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Stephen Boyd (2020-12-02 15:28:45)
-> > Quoting Alexandru M Stan (2020-12-02 14:18:20)
-> > > Unfortunately this patch makes my cros-ec (the main EC that used to
-> > > work even before my debugging) also fail to probe:
-> > > [    0.839533] cros-ec-spi spi6.0: EC failed to respond in time
-> > > [    1.040453] cros-ec-spi spi6.0: EC failed to respond in time
-> > > [    1.040852] cros-ec-spi spi6.0: Cannot identify the EC: error -110
-> > > [    1.040855] cros-ec-spi spi6.0: cannot register EC, fallback to spidev
-> > > [    1.040942] cros-ec-spi: probe of spi6.0 failed with error -110
-> > >
-> > > I wasn't closely looking at this part closely when I was using my
-> > > other spi port with spidev, so this is why I haven't noticed it
-> > > before.
-> > > Doug suggests this might be a polarity issue. More scoping to be had.
-> > >
-> >
-> > Ah I see. It looks like the cs-gpios polarity is wrong for the DTS on
-> > sc7180. That's a patch that Doug has sent in for the qcom tree, commit
-> > 37dd4b777942 ("arm64: dts: qcom: sc7180: Provide pinconf for SPI to use
-> > GPIO for CS") and it is pending for the next release (v5.11). Doug says
-> > he will send in a fix for the DTS side, but this patch is still "good"
-> > as far as I can tell. It moves us to use gpio descriptors and also finds
-> > bugs like this in the DTS file that we would have missed otherwise
-> > because the legacy mode doesn't look at the polarity flags in DT.
->
-> And that is wrong. With even more investigation and Doug's eagle eyes it
-> seems that the cros-ec driver is overriding the spi::mode to clear out
-> the SPI_CS_HIGH bit that the spi core sets in there when using the gpio
-> descriptors. I'll send a patch for cros-ec-spi shortly.
+On 12/3/20 12:40 PM, Pavel Machek wrote:
+> Hi!
+> 
+>>>> +++ b/include/dt-bindings/leds/common.h
+>>>> @@ -78,6 +78,7 @@
+>>>>   #define LED_FUNCTION_INDICATOR "indicator"
+>>>>   #define LED_FUNCTION_LAN "lan"
+>>>>   #define LED_FUNCTION_MAIL "mail"
+>>>> +#define LED_FUNCTION_MOONLIGHT "moonlight"
+>>>
+>>> There's "torch" function that should be used for this. I guess comment
+>>> should be added with explanation what exactly that is and how should
+>>> the LED be named.
+>>>
+>>
+>> According to mail, 11/25 "Re: [PATCH v7 2/5] dt-bindings: leds: Add
+>> LED_COLOR_ID_MOONLIGHT definitions",
+>> The Moonlight LED is LED which maximum current more than torch, but
+>> less than flash. Such as front camera fill light.
+>> I think our channel is moonlight, not torch.
+>> I will add this description to comment.
+>> We can't exactly define moonlight current level, because every vendor
+>> has their own specification.
+> 
+> So... what is the timelimit on moonlight?
+> 
+> But if it is used for camera illumination, I believe it should be
+> simply called flash.
 
-So do we need any coordinating here, are we OK w/ trogdor devices
-being broken for a short period of time?
+Let's keep FLASH reserved for LED flash class devices.
+This device has already two other flash iouts.
 
-I think the device tree changes switching to use GPIO for chip select
-is already queued in linux-next.  That means if we land this patch
-before the fix to cros_ec [1] then we'll end up in a broken state.
-Would we be able to do some quick landing to get the cros-ec fix into
-v5.10 and then target the SPI patch for 5.11?
+Also iouts amperage gives clue that they have three different
+functions.
 
--Doug
-
-[1] https://lore.kernel.org/r/20201203011649.1405292-2-swboyd@chromium.org/
+-- 
+Best regards,
+Jacek Anaszewski
