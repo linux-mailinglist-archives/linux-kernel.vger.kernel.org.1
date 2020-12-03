@@ -2,100 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91362CD357
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B9B2CD368
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:28:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730197AbgLCKX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 05:23:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
+        id S2388425AbgLCK07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 05:26:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726080AbgLCKXZ (ORCPT
+        with ESMTP id S1730279AbgLCK06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 05:23:25 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46665C061A4D
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 02:22:39 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id c137so2040542ybf.21
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 02:22:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=vsqjzCG97dcihSHBib7qbR9auIczQ/SwW03OgCf6BLA=;
-        b=KO9gk6ofgaQ/Jly7j0A1VuJ6WlC1hiy7I+SkR3CY5r4rxRyKJeUQJmvfI/EQno6COp
-         Pd5OebmmiB9NnixUYZFdzXYXFPucr2NFVCJ7nsQLg4JEgZ8uM3j6/SLlKg6hm1FJVOBu
-         vGKFcN2JlhWOB/MmW4n59K6e6vFmIyzDiqEVKgJN+4MitUUEpIXYlefxLkirm+Ji95+9
-         kWj/WrWvm0TWkh91QmiTAY7BkkiwOMsXCHkbtaPOLWd+z8GpWdK56UOyIDk3JCvz9Wl8
-         9cKrvOom8gi+fx+rfKBTzI4qnYw3HlJm7SXwg3gonwaCZzLeSdMV/qKKn9pa8x8WNwTZ
-         2ezQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=vsqjzCG97dcihSHBib7qbR9auIczQ/SwW03OgCf6BLA=;
-        b=qDkK2w1jc7FlmZlgq2OS08y+4SayVPXmcE7BJORjgz6nV3fCfKlC5J6Ck7TJpfdp46
-         0bP3IrjEEL1N2bVZhTIBWMSgApplOHdndFbiH5o3Znj+nRrgrvoBY1Dql32xYHMMIyJt
-         TA+jC4Taiae3hMjeraXaXqA2MiAWzABF1+DBBmGGcitgA5piKcxkGNuH+Bp2+xTlIg6W
-         xnhfZVGvO7q5DWAR/9I7E3Volia+oP8i0ulkkkWYZvGT+bSIXiUFNVQCXLRZx9IjNP/p
-         sq32oJUxWoy77YmyAvdStfQsTE7baMQtCC0VOy9ELbQTaVVAJhgRadX+ypVeAMc8AhLR
-         7hKA==
-X-Gm-Message-State: AOAM533Hj7aNDm0khkb8Hu4i27+NT4VGOb5RYj6k6G1wArXgSkIbPKIK
-        eE/6AgQbs/4vD2XE7l2fdQoJoPEw1tEIBw==
-X-Google-Smtp-Source: ABdhPJwtpbLRCdwh6CxXu9InNBnq8+upXgOOu++rmsLwSfcBgI9lS5mLYW0FM3hQKqkKOC18S/foZathvHFdPw==
-Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a25:38d2:: with SMTP id
- f201mr3520867yba.103.1606990958512; Thu, 03 Dec 2020 02:22:38 -0800 (PST)
-Date:   Thu,  3 Dec 2020 10:22:34 +0000
-Message-Id: <20201203102234.648540-1-jackmanb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH bpf-next] tools/resolve_btfids: Fix some error messages
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 3 Dec 2020 05:26:58 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BCCC061A4D;
+        Thu,  3 Dec 2020 02:26:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XCWg7Tb5mZvG/2h9CQXFxMTAJ32rXCudkFDrtro7Gcc=; b=X4Zcth9JiusNnNnWu7clwftyDq
+        K8OL3GQ2KYXRgp+9HQySN/sgRAPUMbF0WtNs/OOtYPr9Qty0LJ2jg5YVe4MkzOQECLOilt529ucBq
+        yEX1qDpFCsYEAbsGf6LnwTPTAK1B1jxTvvpZjxjEyh+V0isms7IbTIpycgadu4TGpssSLt8UeLXQh
+        AQEsJGDUy/Y4qM64Z+fVepduWehHYj6pGfPVDnwh4DmIVDfiGgRx8zjiaGNoIkMoz+fb+/hr+4X1T
+        uAPx4fchwaaWS/WiU4zCCcs7EYFI+g3658KtLnOuKBL82Pw8yvEHn6/Gk373iNYiJQelAdEjj7cuy
+        T+Zd7McA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kklo8-0007qk-6I; Thu, 03 Dec 2020 10:25:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B1B67302753;
+        Thu,  3 Dec 2020 11:25:50 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9308A201BAA75; Thu,  3 Dec 2020 11:25:50 +0100 (CET)
+Date:   Thu, 3 Dec 2020 11:25:50 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>, linux-api@vger.kernel.org
+Subject: Re: [PATCH -V6 RESEND 1/3] numa balancing: Migrate on fault among
+ multiple bound nodes
+Message-ID: <20201203102550.GK2414@hirez.programming.kicks-ass.net>
+References: <20201202084234.15797-1-ying.huang@intel.com>
+ <20201202084234.15797-2-ying.huang@intel.com>
+ <20201202114054.GV3306@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202114054.GV3306@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing newlines and fix polarity of strerror argument.
+On Wed, Dec 02, 2020 at 11:40:54AM +0000, Mel Gorman wrote:
+> On Wed, Dec 02, 2020 at 04:42:32PM +0800, Huang Ying wrote:
+> > Now, NUMA balancing can only optimize the page placement among the
+> > NUMA nodes if the default memory policy is used.  Because the memory
+> > policy specified explicitly should take precedence.  But this seems
+> > too strict in some situations.  For example, on a system with 4 NUMA
+> > nodes, if the memory of an application is bound to the node 0 and 1,
+> > NUMA balancing can potentially migrate the pages between the node 0
+> > and 1 to reduce cross-node accessing without breaking the explicit
+> > memory binding policy.
+> > 
+> 
+> Ok, I think this part is ok and while the test case is somewhat
+> superficial, it at least demonstrated that the NUMA balancing overhead
+> did not offset any potential benefit
+> 
+> Acked-by: Mel Gorman <mgorman@suse.de>
 
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
- tools/bpf/resolve_btfids/main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-index dfa540d8a02d..e3ea569ee125 100644
---- a/tools/bpf/resolve_btfids/main.c
-+++ b/tools/bpf/resolve_btfids/main.c
-@@ -454,7 +454,7 @@ static int symbols_collect(struct object *obj)
- 			return -ENOMEM;
- 
- 		if (id->addr_cnt >= ADDR_CNT) {
--			pr_err("FAILED symbol %s crossed the number of allowed lists",
-+			pr_err("FAILED symbol %s crossed the number of allowed lists\n",
- 				id->name);
- 			return -1;
- 		}
-@@ -477,8 +477,8 @@ static int symbols_resolve(struct object *obj)
- 	btf = btf__parse(obj->btf ?: obj->path, NULL);
- 	err = libbpf_get_error(btf);
- 	if (err) {
--		pr_err("FAILED: load BTF from %s: %s",
--			obj->path, strerror(err));
-+		pr_err("FAILED: load BTF from %s: %s\n",
-+			obj->path, strerror(-err));
- 		return -1;
- 	}
- 
-
-base-commit: 97306be45fbe7a02461c3c2a57e666cf662b1aaf
--- 
-2.29.2.454.gaff20da3a2-goog
-
+Who do we expect to merge this, me through tip/sched/core or akpm ?
