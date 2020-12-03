@@ -2,97 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6422CDB4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B802CDB4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731341AbgLCQbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:31:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731334AbgLCQbm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:31:42 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB5EC061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 08:31:01 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id bj5so1434336plb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 08:31:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UUlsCpyemxPUGQpIBc3drhb3sc/Fkh4PtlzYbjVQNa8=;
-        b=HZ6E/ni9UlGIxxR2BMbpyFFrvxiyLLK/RkdhroUMEVqnOWKmVXyd9TZmPMSfFUiNe2
-         BCXQhAC+V52TJMomN/Y3bN74/vuS4dIRpmRLM5l0NrZmyhQFlUL6tpnRHXqGCeh5Htwu
-         FSPGqArFMdbtiIMrB/2MxotpFJWUIfEFnsm6rtlkL2RisaEVCIMrwl6eeV8ex4CmavCb
-         E1UbVC3eRxmq/0VcQHcrxfMnvmO8mitkiqwbiSmNwcT7BYmgzBWFyyA4AzvULuotN+XY
-         W2JdAPYMGXHpnY6QS+75KG+QsnepLi8V6AUYw2qCGQ0lfVrI2G/MfrlyFcPfOWC1b6XY
-         ceLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UUlsCpyemxPUGQpIBc3drhb3sc/Fkh4PtlzYbjVQNa8=;
-        b=HqwiGvbCYL9oKoj5Qrefo/wSFFkHueBNAdJd5NxFVjzH0Z4aqRl+539JVyexQWiQYD
-         i74KryWRaLQrG9IXAdDwrWAfk6XnavIy4qyLT2osAi2dcizM8fwC/nSu9fX3wThivqwT
-         ctxXjQobjrJACspE8rfG4X9NH0G+Z41Nc5vYkETnmV/ByQxPq+NhRA5ouxK4ctdjYmN6
-         jiCYQ000ZjOuPj9/bhakhPwOLu804a8QbhxQOxBLGHLLQ9zQ/1kObdD1CFFws4L+EIY/
-         OGFZ2LLf9lUxrdPyUZGmUhUVdJIji3J9Vy9OYGSInGJqi4nSoed89X55x/tInTJRJyFj
-         obOg==
-X-Gm-Message-State: AOAM5327xnOsYhRzhQwo20c+sGJLI9Btil5GRQfYL82kofnQZk+L+Qpc
-        nVuyEnh5xPP3ls8So5r3D6Y8IkFWJYFPejietU8=
-X-Google-Smtp-Source: ABdhPJyGpaBbPYigJz61z6dE/n5rsekW4wIydbSaYp/wf1bKc73V+I0B8uhEJRMvQA5TE3/pm31rBwrkVMh+3O6XPns=
-X-Received: by 2002:a17:90a:34cb:: with SMTP id m11mr3783185pjf.181.1607013060896;
- Thu, 03 Dec 2020 08:31:00 -0800 (PST)
+        id S1731347AbgLCQbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:31:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:44666 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731154AbgLCQbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 11:31:50 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17AF611D4;
+        Thu,  3 Dec 2020 08:31:04 -0800 (PST)
+Received: from [10.37.8.53] (unknown [10.37.8.53])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BE0E3F575;
+        Thu,  3 Dec 2020 08:31:01 -0800 (PST)
+Subject: Re: [PATCH v2] lib: stackdepot: Add support to configure
+ STACK_HASH_SIZE
+To:     Andrey Konovalov <andreyknvl@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     vjitta@codeaurora.org, Minchan Kim <minchan@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, ylal@codeaurora.org,
+        vinmenon@codeaurora.org, kasan-dev <kasan-dev@googlegroups.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Qian Cai <qcai@redhat.com>
+References: <1606365835-3242-1-git-send-email-vjitta@codeaurora.org>
+ <7733019eb8c506eee8d29e380aae683a8972fd19.camel@redhat.com>
+ <CAAeHK+w_avr_X2OJ5dm6p6nXQZMvcaAiLCQaF+EWna+7nQxVhg@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <ff00097b-e547-185d-2a1a-ce0194629659@arm.com>
+Date:   Thu, 3 Dec 2020 16:34:18 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201113235242.k6fzlwmwm2xqhqsi@tomti.i.net-space.pl>
-In-Reply-To: <20201113235242.k6fzlwmwm2xqhqsi@tomti.i.net-space.pl>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 3 Dec 2020 18:31:49 +0200
-Message-ID: <CAHp75Ve4jSBXfeyMQHn1=T21Dkf4q4DF7DWPTc2U_QO79Pn_TQ@mail.gmail.com>
-Subject: Re: [SPECIFICATION RFC] The firmware and bootloader log specification
-To:     Daniel Kiper <daniel.kiper@oracle.com>
-Cc:     coreboot@coreboot.org, grub-devel@gnu.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        systemd-devel@lists.freedesktop.org,
-        trenchboot-devel@googlegroups.com,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        xen-devel@lists.xenproject.org, alecb@umass.edu,
-        alexander.burmashev@oracle.com, allen.cryptic@gmail.com,
-        andrew.cooper3@citrix.com,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>, btrotter@gmail.com,
-        dpsmith@apertussolutions.com, eric.devolder@oracle.com,
-        eric.snowberg@oracle.com, "H. Peter Anvin" <hpa@zytor.com>,
-        hun@n-dimensional.de,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        joao.m.martins@oracle.com, kanth.ghatraju@oracle.com,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        krystian.hebel@3mdeb.com, Leif Lindholm <leif@nuviainc.com>,
-        lukasz.hawrylko@intel.com, Andy Lutomirski <luto@amacapital.net>,
-        michal.zygowski@3mdeb.com, Matthew Garrett <mjg59@google.com>,
-        mtottenh@akamai.com, phcoder@gmail.com, piotr.krol@3mdeb.com,
-        Peter Jones <pjones@redhat.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>, roger.pau@citrix.com,
-        ross.philipson@oracle.com, tyhicks@linux.microsoft.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAAeHK+w_avr_X2OJ5dm6p6nXQZMvcaAiLCQaF+EWna+7nQxVhg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 2:01 AM Daniel Kiper <daniel.kiper@oracle.com> wrote:
+Hi Andrey,
 
-...
+On 12/3/20 4:15 PM, Andrey Konovalov wrote:
+> On Thu, Dec 3, 2020 at 5:04 PM Qian Cai <qcai@redhat.com> wrote:
+>>
+>> On Thu, 2020-11-26 at 10:13 +0530, vjitta@codeaurora.org wrote:
+>>> From: Yogesh Lal <ylal@codeaurora.org>
+>>>
+>>> Add a kernel parameter stack_hash_order to configure STACK_HASH_SIZE.
+>>>
+>>> Aim is to have configurable value for STACK_HASH_SIZE, so that one
+>>> can configure it depending on usecase there by reducing the static
+>>> memory overhead.
+>>>
+>>> One example is of Page Owner, default value of STACK_HASH_SIZE lead
+>>> stack depot to consume 8MB of static memory. Making it configurable
+>>> and use lower value helps to enable features like CONFIG_PAGE_OWNER
+>>> without any significant overhead.
+>>>
+>>> Suggested-by: Minchan Kim <minchan@kernel.org>
+>>> Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
+>>> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
+>>
+>> Reverting this commit on today's linux-next fixed boot crash with KASAN.
+>>
+>> .config:
+>> https://cailca.coding.net/public/linux/mm/git/files/master/x86.config
+>> https://cailca.coding.net/public/linux/mm/git/files/master/arm64.config
+> 
+> Vincenzo, Catalin, looks like this is the cause of the crash you
+> observed. Reverting this commit from next-20201203 fixes KASAN for me.
+> 
+> Thanks for the report Qian!
+>
 
-> The log specification should be as much as possible platform agnostic
-> and self contained. The final version of this spec should be merged into
-> existing specifications, e.g. UEFI, ACPI, Multiboot2, or be a standalone
-> spec, e.g. as a part of OASIS Standards. The former seems better but is
-> not perfect too...
+Thank you for this. I will try and let you know as well.
 
-With all respect... https://xkcd.com/927/
-
+>>> ---
+>>>  lib/stackdepot.c | 27 ++++++++++++++++++++++-----
+>>>  1 file changed, 22 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+>>> index 81c69c0..ce53598 100644
+>>> --- a/lib/stackdepot.c
+>>> +++ b/lib/stackdepot.c
+>>> @@ -141,14 +141,31 @@ static struct stack_record *depot_alloc_stack(unsigned long *entries, int size,
+>>>       return stack;
+>>>  }
+>>>
+>>> -#define STACK_HASH_ORDER 20
+>>> -#define STACK_HASH_SIZE (1L << STACK_HASH_ORDER)
+>>> +static unsigned int stack_hash_order = 20;
+>>> +#define STACK_HASH_SIZE (1L << stack_hash_order)
+>>>  #define STACK_HASH_MASK (STACK_HASH_SIZE - 1)
+>>>  #define STACK_HASH_SEED 0x9747b28c
+>>>
+>>> -static struct stack_record *stack_table[STACK_HASH_SIZE] = {
+>>> -     [0 ...  STACK_HASH_SIZE - 1] = NULL
+>>> -};
+>>> +static struct stack_record **stack_table;
+>>> +
+>>> +static int __init setup_stack_hash_order(char *str)
+>>> +{
+>>> +     kstrtouint(str, 0, &stack_hash_order);
+>>> +     return 0;
+>>> +}
+>>> +early_param("stack_hash_order", setup_stack_hash_order);
+>>> +
+>>> +static int __init init_stackdepot(void)
+>>> +{
+>>> +     int i;
+>>> +
+>>> +     stack_table = kvmalloc(sizeof(struct stack_record *) * STACK_HASH_SIZE, GFP_KERNEL);
+>>> +     for (i = 0; i < STACK_HASH_SIZE; i++)
+>>> +             stack_table[i] = NULL;
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +early_initcall(init_stackdepot);
+>>>
+>>>  /* Calculate hash for a stack */
+>>>  static inline u32 hash_stack(unsigned long *entries, unsigned int size)
+>>
+>> --
+>> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+>> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+>> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/7733019eb8c506eee8d29e380aae683a8972fd19.camel%40redhat.com.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+Vincenzo
