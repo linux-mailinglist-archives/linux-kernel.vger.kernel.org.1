@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70722CCD08
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:11:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC7C2CCD11
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729567AbgLCDJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 22:09:44 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8931 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726629AbgLCDJo (ORCPT
+        id S1729616AbgLCDK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 22:10:59 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:53835 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727392AbgLCDK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 22:09:44 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CmglY37FJzhm0B;
-        Thu,  3 Dec 2020 11:08:41 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 3 Dec 2020 11:08:56 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/hisilicon: Use managed VRAM-helper initialization
-Date:   Thu, 3 Dec 2020 11:09:13 +0800
-Message-ID: <1606964953-24309-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        Wed, 2 Dec 2020 22:10:59 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 495265802C9;
+        Wed,  2 Dec 2020 22:10:13 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 02 Dec 2020 22:10:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=F
+        SgQvZoglQetGYEJFgiWoedLNRJXBHY71to2V3053SQ=; b=kf+AoImueCgPccNgI
+        qDb4cXuy61xaretU5H7dqYyi6wioypibLjvQX/Smwr97NS2B/EaKJvhAGZsgCoY8
+        OF+QCFZlKT1A/ZUIL++gZVjnACpDzmJ2XIUd5pUz+z7KbRoyxmZuDlkqkiVPnxZd
+        DXlvP5s3bwQZFAw/hCeNp/oq6c98IisPU2CdC2kBfSpUzZnTGcw6jvi8l8b9eyQY
+        JhlmP+aZKSVks1qMsLAPKn6BwOdqTSaJMlrcgNAPpYJWDOUQ/YgK3MmYdJGdpjlV
+        urE+J+VV1IRIcgXmldU/uU6ypvW/P+vjTpKv9mFZhR1RW/JOnR9Hj8TJyGVETK0E
+        A70YA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=FSgQvZoglQetGYEJFgiWoedLNRJXBHY71to2V3053
+        SQ=; b=E2GoCYwyl1Ud6jZr+OdCpnxAPy773Z3xcN7UFL/bkHPkmmjatl4Yg//l0
+        +w49uf2tw4NVD9OTfvgYUmVpz6jFeIXIvrszPV4tPZRjGWFlH9q8GLvDaRJRxFn/
+        vvGnxBqhAraH1yZtrZqBr7amCu/OmV2fOnN0KSsJDEpBYp4TrgnvR+gTsA65zk1G
+        VDuzVLbesZ7Pi1g/lHCHs2k3iV0fDT7T0DNA4U+LYbriNtp0JAADncZlF5So8Bn8
+        vWCcjfY6DTsLARluCO36INm6Lrv/2MXzIZ+PGiisZQPYftFhihy/25PmxJW9Hfct
+        bbVvIVTvhGRjXMI/0S5CacVezIwRA==
+X-ME-Sender: <xms:ElfIX80H5W111qkFImCXUtwgGLlwcNZ0K_uzUETQAeisF30MceuOrQ>
+    <xme:ElfIX65UN87bvj7KnEbGoprCThFeYHjGmugK9xv_KHlBqGc0-PxxOLcuMvRUSO7IS
+    8m3K5bFmYQmmXP8Cw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeihedgheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
+    uefgtedtgeegnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
+    nhgurdhorhhg
+X-ME-Proxy: <xmx:ElfIX9_BWMq_O6jlD3kJrM06Fy6l5p78kuhHLUGtrtxUvjV-gRoDbA>
+    <xmx:ElfIX5VBZ3WXlcD_ch5wAHV_7Flj4sr-mOJeMKdzm9gUwlm5bHae1A>
+    <xmx:ElfIX4rFp_skJavwk9OxGjaH9Ttt14gY5Tv7CJKAdpJVfO5LSCGsQw>
+    <xmx:FVfIX8-IFRg8R42sUCLJpLJ9fFK3Q6Jztu2loupC139uOjvE_kzz8A>
+Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 33343240066;
+        Wed,  2 Dec 2020 22:10:10 -0500 (EST)
+Subject: Re: [PATCH 7/8] arm64: dts: allwinner: Add Allwinner H616 .dtsi file
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Andre Przywara <andre.przywara@arm.com>
+Cc:     devicetree@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-sunxi@googlegroups.com, linux-kernel@vger.kernel.org,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Icenowy Zheng <icenowy@aosc.xyz>,
+        Yangtao Li <frank@allwinnertech.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <20201202135409.13683-1-andre.przywara@arm.com>
+ <20201202135409.13683-8-andre.przywara@arm.com>
+ <20201202160504.klxbpqgagra4uxeh@gilmour>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <07e8d86e-0e1b-03d3-f43e-78e5bcbb53cc@sholland.org>
+Date:   Wed, 2 Dec 2020 21:10:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201202160504.klxbpqgagra4uxeh@gilmour>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-updated to use drmm_vram_helper_init()
+On 12/2/20 10:05 AM, Maxime Ripard wrote:
+>> +	timer {
+>> +		compatible = "arm,armv8-timer";
+>> +		arm,no-tick-in-suspend;
+> 
+> This was tested with crust I assume?
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c |  1 -
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h |  1 -
- drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c     | 19 +++----------------
- 3 files changed, 3 insertions(+), 18 deletions(-)
+No, there is no AR100 and supposedly no SRAM A2, so there is no place for crust
+to run. I assume it was copied from the H6 .dtsi.
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-index 8020604..5aea2e9 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-@@ -249,7 +249,6 @@ static int hibmc_unload(struct drm_device *dev)
- 
- 	pci_disable_msi(dev->pdev);
- 	hibmc_kms_fini(priv);
--	hibmc_mm_fini(priv);
- 	dev->dev_private = NULL;
- 	return 0;
- }
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-index 7e0c756..2786de5 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-@@ -64,7 +64,6 @@ int hibmc_de_init(struct hibmc_drm_private *priv);
- int hibmc_vdac_init(struct hibmc_drm_private *priv);
- 
- int hibmc_mm_init(struct hibmc_drm_private *hibmc);
--void hibmc_mm_fini(struct hibmc_drm_private *hibmc);
- int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
- 		      struct drm_mode_create_dumb *args);
- int hibmc_ddc_create(struct drm_device *drm_dev, struct hibmc_connector *connector);
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-index e84fb81..892d566 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-@@ -23,15 +23,12 @@
- 
- int hibmc_mm_init(struct hibmc_drm_private *hibmc)
- {
--	struct drm_vram_mm *vmm;
- 	int ret;
- 	struct drm_device *dev = &hibmc->dev;
- 
--	vmm = drm_vram_helper_alloc_mm(dev,
--				       pci_resource_start(dev->pdev, 0),
--				       hibmc->fb_size);
--	if (IS_ERR(vmm)) {
--		ret = PTR_ERR(vmm);
-+	ret = drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
-+				    hibmc->fb_size);
-+	if (ret) {
- 		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
- 		return ret;
- 	}
-@@ -39,16 +36,6 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
- 	return 0;
- }
- 
--void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
--{
--	struct drm_device *dev = &hibmc->dev;
--
--	if (!dev->vram_mm)
--		return;
--
--	drm_vram_helper_release_mm(dev);
--}
--
- int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
- 		      struct drm_mode_create_dumb *args)
- {
--- 
-2.7.4
+However, regardless of where the PSCI implementation runs, even if it's on CPUX,
+it will likely disable OSC24M to save power. So the counter will stop, and the
+property is appropriate to add.
 
+Cheers,
+Samuel
