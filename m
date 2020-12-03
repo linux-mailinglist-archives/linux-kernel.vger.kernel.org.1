@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257AE2CD565
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9933F2CD572
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387914AbgLCMVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 07:21:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgLCMVc (ORCPT
+        id S2388928AbgLCMXc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 07:23:32 -0500
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:59644 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726148AbgLCMXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 07:21:32 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FDEC061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 04:20:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9zUFKXJHVhzH96g7NGAMXYc3BeOdBcaev2tbX+KB8xI=; b=p1A0qtoGwppA7hWqxk6zCAqS3B
-        T+wfwCgYISmVnf262FjCDRsHKJNrqiygpHpZcr/a2TLJ8KOsGqgYhBotigDnPlIIdk4wC/9x7I8FO
-        KnF6mp+L65rIDbvAvSB0D5rVgUa/y1msESPBtnohJgIELeuC5hQXltL5Q451x8z/mQdc5RZcIjQoC
-        6MU8K7gDpzLckYfGn8FReUiwnUpZbLMwWV/hRVN1VoLGtP8BbXOyhAiWpmvwt+kDXcwcmNrdPh0I4
-        UR97WFDNYwW/CdoBzJN5hNUfHC+mor17yt8SftEjRINksVHGdk+uJgXz2SmKCAHqB0NBsqGBiqloX
-        lBLjbPHA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kknbG-0006e1-6M; Thu, 03 Dec 2020 12:20:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 99C783059DD;
-        Thu,  3 Dec 2020 13:20:40 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6A9EB235F86BC; Thu,  3 Dec 2020 13:20:40 +0100 (CET)
-Date:   Thu, 3 Dec 2020 13:20:40 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [RFC 1/2] perf core: Add PERF_COUNT_SW_CGROUP_SWITCHES event
-Message-ID: <20201203122040.GO3021@hirez.programming.kicks-ass.net>
-References: <20201202150205.35750-1-namhyung@kernel.org>
- <20201202192828.GG1363814@tassilo.jf.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202192828.GG1363814@tassilo.jf.intel.com>
+        Thu, 3 Dec 2020 07:23:31 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UHPxg.D_1606998163;
+Received: from 30.27.144.231(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UHPxg.D_1606998163)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 03 Dec 2020 20:22:44 +0800
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH 0/3] arm64:msr: Add MSR driver
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+In-Reply-To: <6698aa55cf4ee69a18049c4bf8a21c4f@kernel.org>
+Date:   Thu, 3 Dec 2020 20:22:43 +0800
+Cc:     catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
+        bjorn.andersson@linaro.org, shawnguo@kernel.org, gshan@redhat.com,
+        geert+renesas@glider.be, Anson.Huang@nxp.com, masahiroy@kernel.org,
+        michael@walle.cc, krzk@kernel.org, linux-kernel@vger.kernel.org,
+        vkoul@kernel.org, olof@lixom.net, vincenzo.frascino@arm.com,
+        ardb@kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <82A9ACCC-9A2A-48A7-939A-6E13E13EA465@linux.alibaba.com>
+References: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
+ <5e7f7225982b2df63e62ea60ec632376@misterjones.org>
+ <855BA92C-5B22-4F14-965A-B1F72A872B8D@linux.alibaba.com>
+ <059ed4a8768ff3881005796cb4a10d5e@kernel.org>
+ <6FA68A07-F718-46F5-81B4-586A5ED3E479@linux.alibaba.com>
+ <7e9ae04f3394a85aa3b8fe8947a44009@kernel.org>
+ <4513911D-77BF-4459-B8DF-9889395C16AC@linux.alibaba.com>
+ <4f89671e080eb23b084c0e0942f111e6@kernel.org>
+ <58C4701C-DEAC-4FE9-B54C-3B9ADC8E197D@linux.alibaba.com>
+ <6698aa55cf4ee69a18049c4bf8a21c4f@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 11:28:28AM -0800, Andi Kleen wrote:
-> > +	prev_cgrp = task_css_check(prev, perf_event_cgrp_id, 1)->cgroup;
-> > +	next_cgrp = task_css_check(next, perf_event_cgrp_id, 1)->cgroup;
-> > +
-> > +	if (prev_cgrp != next_cgrp)
-> > +		perf_sw_event_sched(PERF_COUNT_SW_CGROUP_SWITCHES, 1, 0);
-> 
-> Seems to be the perf cgroup only, not all cgroups.
-> That's a big difference and needs to be documented properly.
 
-With cgroup-v2 that's all the same, no?
+
+> On Dec 3, 2020, at 7:45 PM, Marc Zyngier <maz@kernel.org> wrote:
+> 
+> On 2020-12-03 11:25, Rongwei Wang wrote:
+>>> 2020年12月3日 下午4:35，Marc Zyngier <maz@kernel.org> 写道：
+> 
+> [...]
+> 
+>>> But what does it mean to change random system registers while the kernel
+>>> itself is using them in parallel? All you are introducing is a bunch of
+>>> uncontrolled, unexpected, and possibly fatal side effects.
+>> This problem exists when writing to a register, but it does not exist
+>> when reading a register.
+> 
+> If you're not aware that the ARM architecture does have system registers
+> with read side-effects, you really shouldn't be writing this code.
+Thanks, Does it make sense to put this feature in the drivers/ directory, likes misc drivers? Whether it can exist as a debugging tool in kernel or not?
+When debugging, then enables CONFIG_ARM64_MSR or CONFIG_ARM64_MSR_DEBUG.
+> 
+>        M.
+> -- 
+> Jazz is not dead. It just smells funny…
+Thanks,
+Rongwei Wang.
+
