@@ -2,71 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0B62CE248
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 972252CE24E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727243AbgLCXEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:04:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726897AbgLCXEW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:04:22 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E52C061A4F;
-        Thu,  3 Dec 2020 15:03:42 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkxdQ-00GKSn-UB; Thu, 03 Dec 2020 23:03:37 +0000
-Date:   Thu, 3 Dec 2020 23:03:36 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCHSET] saner elf compat
-Message-ID: <20201203230336.GC3579531@ZenIV.linux.org.uk>
-References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
- <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
+        id S1727569AbgLCXFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:05:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726179AbgLCXFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 18:05:47 -0500
+From:   Arnd Bergmann <arnd@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        Rander Wang <rander.wang@intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] soundwire: intel: fix another unused-function warning
+Date:   Fri,  4 Dec 2020 00:04:56 +0100
+Message-Id: <20201203230502.1480063-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 02:09:04PM -0800, Linus Torvalds wrote:
-> On Thu, Dec 3, 2020 at 1:46 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> >  The answer (for mainline) is that mips compat does *NOT* want
-> > COMPAT_BINFMT_ELF.  Not a problem with that series, though, so I'd
-> > retested it (seems to work, both for x86_64 and mips64, execs and
-> > coredumps for all ABIs alike), with centralization of Kconfig logics
-> > thrown in.
-> 
-> Well, the diffstat looks nice:
-> 
-> >  26 files changed, 127 insertions(+), 317 deletions(-)
-> 
-> and the patches didn't trigger anything for me, but how much did this
-> get tested? Do you actually have both kinds of 32-bit elf mips
-> binaries around and a machine to test on?
+From: Arnd Bergmann <arnd@arndb.de>
 
-Yes (aptitude install gcc-multilib on debian mips64el/stretch sets the toolchain
-and libraries just fine, and then it's just a matter of -mabi=n32 passed
-to gcc).  "Machine" is qemu-system-mips64el -machine malta -m 1024 -cpu 5KEc
-and the things appear to work; I hadn't tried that on the actual hardware.
-I do have a Loongson-2 box, but it would take a while to dig it out and
-get it up-to-date.
+Without CONFIG_PM, there is another warning about an unused function:
 
-> Linux-mips was cc'd, but I'm adding Thomas B to the cc here explicitly
-> just so that he has a heads-up on this thing and can go and look at
-> the mailing list in case it goes to a separate mailbox for him..
+drivers/soundwire/intel.c:530:12: error: 'intel_link_power_down' defined but not used [-Werror=unused-function]
 
-I would certainly appreciate review and testing - this branch sat
-around in the "should post it someday" state since June (it was
-one of the followups grown from regset work back then), and I'm
-_not_ going to ask pulling it without an explicit OK from mips
-folks.
+After a previous fix, the driver already uses both an #ifdef and
+a __maybe_unused annotation but still gets it wrong. Remove the
+ifdef and instead use __maybe_unused consistently to avoid the
+problem for good.
+
+Fixes: f046b2334083 ("soundwire: intel: fix intel_suspend/resume defined but not used warning")
+Fixes: ebf878eddbb4 ("soundwire: intel: add pm_runtime support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/soundwire/intel.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 6a1e862b16c3..66adb258a425 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -1585,8 +1585,6 @@ int intel_master_process_wakeen_event(struct platform_device *pdev)
+  * PM calls
+  */
+ 
+-#ifdef CONFIG_PM
+-
+ static int __maybe_unused intel_suspend(struct device *dev)
+ {
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+@@ -1641,7 +1639,7 @@ static int __maybe_unused intel_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int intel_suspend_runtime(struct device *dev)
++static int __maybe_unused intel_suspend_runtime(struct device *dev)
+ {
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
+@@ -1796,7 +1794,7 @@ static int __maybe_unused intel_resume(struct device *dev)
+ 	return ret;
+ }
+ 
+-static int intel_resume_runtime(struct device *dev)
++static int __maybe_unused intel_resume_runtime(struct device *dev)
+ {
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
+@@ -1969,8 +1967,6 @@ static int intel_resume_runtime(struct device *dev)
+ 	return ret;
+ }
+ 
+-#endif
+-
+ static const struct dev_pm_ops intel_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
+ 	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
+-- 
+2.27.0
+
