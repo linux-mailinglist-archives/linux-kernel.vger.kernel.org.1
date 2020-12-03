@@ -2,108 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB35C2CCAE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D83822CCAEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:19:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgLCANf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 19:13:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:54420 "EHLO foss.arm.com"
+        id S1728054AbgLCAPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 19:15:06 -0500
+Received: from mga07.intel.com ([134.134.136.100]:52855 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLCANf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 19:13:35 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39101113E;
-        Wed,  2 Dec 2020 16:12:49 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95B713F575;
-        Wed,  2 Dec 2020 16:12:45 -0800 (PST)
-Subject: Re: [RFC V2 0/3] mm/hotplug: Pre-validate the address range with
- platform
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
- <20201202203540.GC11274@osiris>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <2d2a947f-3c4f-6106-583a-7da4e757a7aa@arm.com>
-Date:   Thu, 3 Dec 2020 05:42:35 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726024AbgLCAPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 19:15:05 -0500
+IronPort-SDR: 6UdY58sAkUBajAyjaIIstI2KditAAwG3a3LL8QSuymNchkxlUflz87qAICrUZU5/njXf3ll3aA
+ o7E4N4kCl92Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="237232805"
+X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
+   d="scan'208";a="237232805"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 16:14:23 -0800
+IronPort-SDR: VxqRjXolw0UN8KCUEolJWFxaus3AE1LIUCamSj3kYK7mTqh0YUxi+pubuxQSNKzkIIwgumPZDH
+ cg/qOMsdpKBQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
+   d="scan'208";a="373694673"
+Received: from lkp-server01.sh.intel.com (HELO 54133fc185c3) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Dec 2020 16:14:22 -0800
+Received: from kbuild by 54133fc185c3 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kkcGL-0000QU-LM; Thu, 03 Dec 2020 00:14:21 +0000
+Date:   Thu, 03 Dec 2020 08:13:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/sgx] BUILD SUCCESS
+ bab8c183d1d452f5fdc059aef2f0788bd2986231
+Message-ID: <5fc82db5.DHCukN0PcdNvDIbY%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20201202203540.GC11274@osiris>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/sgx
+branch HEAD: bab8c183d1d452f5fdc059aef2f0788bd2986231  x86/sgx: Fix a typo in kernel-doc markup
 
+elapsed time: 723m
 
-On 12/3/20 2:05 AM, Heiko Carstens wrote:
-> On Mon, Nov 30, 2020 at 08:59:49AM +0530, Anshuman Khandual wrote:
->> This series adds a mechanism allowing platforms to weigh in and prevalidate
->> incoming address range before proceeding further with the memory hotplug.
->> This helps prevent potential platform errors for the given address range,
->> down the hotplug call chain, which inevitably fails the hotplug itself.
->>
->> This mechanism was suggested by David Hildenbrand during another discussion
->> with respect to a memory hotplug fix on arm64 platform.
->>
->> https://lore.kernel.org/linux-arm-kernel/1600332402-30123-1-git-send-email-anshuman.khandual@arm.com/
->>
->> This mechanism focuses on the addressibility aspect and not [sub] section
->> alignment aspect. Hence check_hotplug_memory_range() and check_pfn_span()
->> have been left unchanged. Wondering if all these can still be unified in
->> an expanded memhp_range_allowed() check, that can be called from multiple
->> memory hot add and remove paths.
->>
->> This series applies on v5.10-rc6 and has been slightly tested on arm64.
->> But looking for some early feedback here.
->>
->> Changes in RFC V2:
->>
->> Incorporated all review feedbacks from David.
->>
->> - Added additional range check in __segment_load() on s390 which was lost
->> - Changed is_private init in pagemap_range()
->> - Moved the framework into mm/memory_hotplug.c
->> - Made arch_get_addressable_range() a __weak function
->> - Renamed arch_get_addressable_range() as arch_get_mappable_range()
->> - Callback arch_get_mappable_range() only handles range requiring linear mapping
->> - Merged multiple memhp_range_allowed() checks in register_memory_resource()
->> - Replaced WARN() with pr_warn() in memhp_range_allowed()
->> - Replaced error return code ERANGE with E2BIG
->>
->> Changes in RFC V1:
->>
->> https://lore.kernel.org/linux-mm/1606098529-7907-1-git-send-email-anshuman.khandual@arm.com/
->>
->> Cc: Heiko Carstens <hca@linux.ibm.com>
->> Cc: Vasily Gorbik <gor@linux.ibm.com>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Ard Biesheuvel <ardb@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-s390@vger.kernel.org
->> Cc: linux-mm@kvack.org
->> Cc: linux-kernel@vger.kernel.org
-> 
-> Btw. please use git send-email's --cc-cover option to make sure that
-> all patches of this series will be sent to all listed cc's.
-> I really dislike to receive only the cover-letter and maybe on patch
-> and then have to figure out where to find the rest.
+configs tested: 165
+configs skipped: 2
 
-Okay, will ensure that.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 
-> Thanks :)
-> 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                           se7206_defconfig
+sh                          sdk7786_defconfig
+sparc64                          alldefconfig
+arm                          exynos_defconfig
+mips                           ip32_defconfig
+mips                      loongson3_defconfig
+powerpc                       maple_defconfig
+arm                           h3600_defconfig
+arm                           stm32_defconfig
+mips                        bcm63xx_defconfig
+arm                              alldefconfig
+arm                        clps711x_defconfig
+arm                        shmobile_defconfig
+powerpc64                        alldefconfig
+mips                 decstation_r4k_defconfig
+nios2                         3c120_defconfig
+mips                         bigsur_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                         mpc30x_defconfig
+microblaze                      mmu_defconfig
+sh                     sh7710voipgw_defconfig
+arm                           u8500_defconfig
+m68k                            mac_defconfig
+sh                          rsk7264_defconfig
+powerpc                        fsp2_defconfig
+sh                             shx3_defconfig
+sh                        sh7785lcr_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                     sbc8548_defconfig
+arm                        mini2440_defconfig
+sh                        apsh4ad0a_defconfig
+h8300                               defconfig
+powerpc                 mpc836x_mds_defconfig
+sh                            titan_defconfig
+csky                             alldefconfig
+m68k                          sun3x_defconfig
+arm                          ep93xx_defconfig
+powerpc                     powernv_defconfig
+powerpc                      walnut_defconfig
+arm                         s3c6400_defconfig
+arm                       aspeed_g5_defconfig
+sparc                       sparc32_defconfig
+mips                         tb0287_defconfig
+m68k                          hp300_defconfig
+mips                     cu1830-neo_defconfig
+sh                           se7343_defconfig
+arm                            u300_defconfig
+m68k                             alldefconfig
+arm                        spear6xx_defconfig
+arm                         assabet_defconfig
+sh                              ul2_defconfig
+xtensa                  nommu_kc705_defconfig
+mips                         rt305x_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                       cns3420vb_defconfig
+m68k                       m5275evb_defconfig
+microblaze                    nommu_defconfig
+nds32                             allnoconfig
+sh                           se7724_defconfig
+arm                       versatile_defconfig
+sh                            hp6xx_defconfig
+arm                           sunxi_defconfig
+arm                       mainstone_defconfig
+m68k                            q40_defconfig
+powerpc               mpc834x_itxgp_defconfig
+sh                ecovec24-romimage_defconfig
+mips                        nlm_xlr_defconfig
+arc                     nsimosci_hs_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                 mpc8272_ads_defconfig
+openrisc                            defconfig
+powerpc                       holly_defconfig
+arm                            mmp2_defconfig
+arm                        mvebu_v5_defconfig
+sparc                            alldefconfig
+xtensa                  audio_kc705_defconfig
+sh                           sh2007_defconfig
+arm                          prima2_defconfig
+arc                           tb10x_defconfig
+arm                        keystone_defconfig
+xtensa                              defconfig
+powerpc                     stx_gp3_defconfig
+arm                           omap1_defconfig
+mips                       rbtx49xx_defconfig
+arm                         s3c2410_defconfig
+arm                         nhk8815_defconfig
+mips                        maltaup_defconfig
+h8300                    h8300h-sim_defconfig
+arm                           corgi_defconfig
+powerpc                     ep8248e_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                 mpc85xx_cds_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20201202
+x86_64               randconfig-a006-20201202
+x86_64               randconfig-a001-20201202
+x86_64               randconfig-a002-20201202
+x86_64               randconfig-a005-20201202
+x86_64               randconfig-a003-20201202
+i386                 randconfig-a004-20201202
+i386                 randconfig-a005-20201202
+i386                 randconfig-a001-20201202
+i386                 randconfig-a002-20201202
+i386                 randconfig-a006-20201202
+i386                 randconfig-a003-20201202
+i386                 randconfig-a014-20201202
+i386                 randconfig-a013-20201202
+i386                 randconfig-a011-20201202
+i386                 randconfig-a015-20201202
+i386                 randconfig-a012-20201202
+i386                 randconfig-a016-20201202
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a016-20201202
+x86_64               randconfig-a012-20201202
+x86_64               randconfig-a014-20201202
+x86_64               randconfig-a013-20201202
+x86_64               randconfig-a015-20201202
+x86_64               randconfig-a011-20201202
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
