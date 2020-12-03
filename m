@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0CB2CCD71
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 850602CCD73
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727929AbgLCDse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 22:48:34 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8182 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726734AbgLCDsd (ORCPT
+        id S1728197AbgLCDtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 22:49:18 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:51275 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726734AbgLCDtS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 22:48:33 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CmhcD1YJvz15WqW;
-        Thu,  3 Dec 2020 11:47:24 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 3 Dec 2020
- 11:47:49 +0800
-Subject: Re: linux-next: manual merge of the block tree with the f2fs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jens Axboe <axboe@kernel.dk>, Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     Chao Yu <chao@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20201203144348.70f139a9@canb.auug.org.au>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <047a6e22-2e8a-4c36-bcbc-3108606c58ff@huawei.com>
-Date:   Thu, 3 Dec 2020 11:47:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Wed, 2 Dec 2020 22:49:18 -0500
+X-UUID: abc59549ce8f44e1a23c93508b954a8a-20201203
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=egwE3BGfFnVU42RB8G4cDpSLIosNS6Hpw+CGdp7GE4A=;
+        b=JoFETGIITk3xxYGUSEELhsvLMpKEcfAQthxQIoAIJnguHQxvN3ThP/MFYtoRK3wDD4S9zuoyg6Sc+6HOA2XX0OOVF6P6+St0sx2GQxEb772Izjv9qvkD92s8OSKfnEWyh75sQC4/q6u+vrExbe78fKsk7stV56Kt6sDjDiIKQBM=;
+X-UUID: abc59549ce8f44e1a23c93508b954a8a-20201203
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 742371175; Thu, 03 Dec 2020 11:48:25 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31DR.mediatek.inc
+ (172.27.6.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Dec
+ 2020 11:48:18 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 3 Dec 2020 11:48:18 +0800
+Message-ID: <1606967298.14736.67.camel@mhfsdcap03>
+Subject: Re: [v1] PCI: Export pci_pio_to_address() for module use
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <youlin.pei@mediatek.com>,
+        Sj Huang <sj.huang@mediatek.com>
+Date:   Thu, 3 Dec 2020 11:48:18 +0800
+In-Reply-To: <20201202134903.GA1419281@bjorn-Precision-5520>
+References: <20201202134903.GA1419281@bjorn-Precision-5520>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20201203144348.70f139a9@canb.auug.org.au>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+X-TM-SNTS-SMTP: B083340B9C9A9BFA0D69806F47BFEE28F5C6E5BE94BE9DD35B07D24188C0507B2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/3 11:43, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the block tree got conflicts in:
-> 
->    fs/f2fs/checkpoint.c
->    fs/f2fs/f2fs.h
->    fs/f2fs/super.c
-> 
-> between commit:
-> 
->    5c0602188dc7 ("f2fs: fix kbytes written stat for multi-device case")
-> 
-> from the f2fs tree and commits:
-> 
->    8446fe9255be ("block: switch partition lookup to use struct block_device")
->    9499ffc75217 ("f2fs: remove a few bd_part checks")
-> 
-> from the block tree.
-> 
-> I fixed it up (I think, see below, fs/f2fs/f2fs.h and fs/f2fs/super.c
-> used the versions from the f2fs tree) and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
-> 
-
-The fix looks good to me. :)
-
-Thanks,
+T24gV2VkLCAyMDIwLTEyLTAyIGF0IDA3OjQ5IC0wNjAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0K
+PiBPbiBXZWQsIERlYyAwMiwgMjAyMCBhdCAwOToxMjo1NVBNICswODAwLCBKaWFuanVuIFdhbmcg
+d3JvdGU6DQo+ID4gVGhpcyBpbnRlcmZhY2Ugd2lsbCBiZSB1c2VkIGJ5IFBDSSBob3N0IGRyaXZl
+cnMgZm9yIFBJTyB0cmFuc2xhdGlvbiwNCj4gPiBleHBvcnQgaXQgdG8gc3VwcG9ydCBjb21waWxp
+bmcgdGhvc2UgZHJpdmVycyBhcyBrZXJuZWwgbW9kdWxlcy4NCj4gPiANCj4gPiBTaWduZWQtb2Zm
+LWJ5OiBKaWFuanVuIFdhbmcgPGppYW5qdW4ud2FuZ0BtZWRpYXRlay5jb20+DQo+IA0KPiBQbGVh
+c2UgaW5jbHVkZSB0aGlzIGluIGEgc2VyaWVzIHRoYXQgYWRkcyBhIG1vZHVsYXIgaG9zdCBkcml2
+ZXIgb3INCj4gY29udmVydHMgYW4gZXhpc3Rpbmcgb25lIHRvIGJlIG1vZHVsYXIuICBUaGF0IHdh
+eSB3ZSBrbm93IHdlIGhhdmUgYXQNCj4gbGVhc3Qgb25lIHVzZXIgYW5kIHRoaW5ncyBnZXQgbWVy
+Z2VkIGluIHRoZSByaWdodCBvcmRlci4NCg0KSGkgQmpvcm4sDQoNCk9LLCBJIHdpbGwgaW5jbHVk
+ZSB0aGlzIHBhdGNoIGluIHRoZSBuZXh0IHZlcnNpb24gb2YgcGNpZS1tZWRpYXRlay1nZW4zDQpz
+ZXJpZXMuDQoNCnRoYW5rcy4NCj4gDQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvcGNpL3BjaS5jIHwg
+MSArDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQ0KPiA+IA0KPiA+IGRpZmYg
+LS1naXQgYS9kcml2ZXJzL3BjaS9wY2kuYyBiL2RyaXZlcnMvcGNpL3BjaS5jDQo+ID4gaW5kZXgg
+YTQ1OGM0NmQ3ZTM5Li41MDkwMDg4OTkxODIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9wY2kv
+cGNpLmMNCj4gPiArKysgYi9kcml2ZXJzL3BjaS9wY2kuYw0KPiA+IEBAIC00MDAzLDYgKzQwMDMs
+NyBAQCBwaHlzX2FkZHJfdCBwY2lfcGlvX3RvX2FkZHJlc3ModW5zaWduZWQgbG9uZyBwaW8pDQo+
+ID4gIA0KPiA+ICAJcmV0dXJuIGFkZHJlc3M7DQo+ID4gIH0NCj4gPiArRVhQT1JUX1NZTUJPTChw
+Y2lfcGlvX3RvX2FkZHJlc3MpOw0KPiA+ICANCj4gPiAgdW5zaWduZWQgbG9uZyBfX3dlYWsgcGNp
+X2FkZHJlc3NfdG9fcGlvKHBoeXNfYWRkcl90IGFkZHJlc3MpDQo+ID4gIHsNCj4gPiAtLSANCj4g
+PiAyLjI1LjENCj4gPiANCg0K
 
