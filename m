@@ -2,187 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561C22CD20D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 359D22CD218
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388325AbgLCJGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:06:33 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8620 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbgLCJGc (ORCPT
+        id S2388450AbgLCJH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:07:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728037AbgLCJHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:06:32 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cmqg60x3Qz15Ws1;
-        Thu,  3 Dec 2020 17:05:22 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 3 Dec 2020 17:05:30 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/hisilicon: Deletted the entire file hibmc_ttm.c
-Date:   Thu, 3 Dec 2020 17:05:47 +0800
-Message-ID: <1606986347-54007-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 3 Dec 2020 04:07:25 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B40C061A4D;
+        Thu,  3 Dec 2020 01:06:45 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id j13so758889pjz.3;
+        Thu, 03 Dec 2020 01:06:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=x090Pi/p4YdcyRoV862Kj0ZiAvBp3vZ9F7IWYK4ZvKQ=;
+        b=ckqlCtgiG+ueA5VyNM+O63WETRQ7o586/ee4FYil95hEwBqRa6XNfo9DmTIRJhtGvU
+         yM/nMHEzU0A54LWTZkNZnkYQajIPFM2hViIbMZnao4fBrcdOAEe0SdbnrQnsQMwak2HP
+         wWEa70jJ+oC7e1NOAJoR/SmfkphdRmqSfLbmrSr1zOilYivX8qTIAyhvVaRKLWP9xoD1
+         9YWJL8QInRf55bH0dmDdQft226UAtNeuQsX+ROB7Bnz4sY66IxcroM1nlAsEA50JhEc0
+         bp3J/CAx5nd+UXkJsTkhURdof2tlIjC4jYzKMhMEpz8CtEYb0R6uTHvoeYVzEphjcTSF
+         DVSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=x090Pi/p4YdcyRoV862Kj0ZiAvBp3vZ9F7IWYK4ZvKQ=;
+        b=AwCuv7ey3bgu6fYXDmyEkeQ6n36fI4rCXwEmSDTOigCbBk7S4wxbeXlOcEzQLUugsI
+         Pyy239ekCV1PrFcTcUAprk5TSVgoHwlY1lYFXwl6JPICDP3drD8vMI4S0c6eIgcsjmQt
+         4jdIKAQdtdvMC+JojcpVo7atd6UxRUPhXOK+FEwDLgHFPj0Ln6/9N3H8eBVDjkr4uIQ/
+         FqldR6rQgfZ+qEbYfkuMy5B6ifbhtBfbsn2fcEMXlQcttYyucEEgooF4q9CNKktXZ84h
+         Ahu4fX3Msp5z7k6aJZrM1KpKKJAV18yig8mw0tVhyn2Vx2iOGXQwSKE9M/1mThGYZ+Rh
+         Q44A==
+X-Gm-Message-State: AOAM531SaQErBYGVbifCHqsuetK6sogRLoZwWLIOR9b5mDZzYATtjgGE
+        Fsw4q8SzXeXrpK3IuhnSgxhMHDdxSfTXkJ9jnRe8ocXdTJo=
+X-Google-Smtp-Source: ABdhPJxBpL93a9A1Kw9XZK+wssGAmhgxWbnJ6xbNVEzFbIPfkDK2Lq0Rb/qA8hxQQ/DUxisYvpqdtkBglwBoBth9FrI=
+X-Received: by 2002:a17:902:bd98:b029:d9:7b0:e1e5 with SMTP id
+ q24-20020a170902bd98b02900d907b0e1e5mr2151870pls.77.1606986404968; Thu, 03
+ Dec 2020 01:06:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Received: by 2002:a17:90a:7886:0:0:0:0 with HTTP; Thu, 3 Dec 2020 01:06:44
+ -0800 (PST)
+In-Reply-To: <79fde596-254a-510c-547a-b1525985de9d@suse.de>
+References: <20201130112137.587437-1-yili@winhong.com> <CAJfdMYDnDJXFVfEECtQ9-E4F9kfsF035PH+x3kaVn6PPSYCydA@mail.gmail.com>
+ <b838b790-e1e3-d644-2b1c-5de02a10669f@suse.de> <CAJfdMYCbkAZtWpJ6sgsrRnV4i+5sRahaq-ktMjqcG1JXoazmGQ@mail.gmail.com>
+ <79fde596-254a-510c-547a-b1525985de9d@suse.de>
+From:   Yi Li <yilikernel@gmail.com>
+Date:   Thu, 3 Dec 2020 17:06:44 +0800
+Message-ID: <CAJfdMYDLydAtoxvPGzaQ+K5jLvwAXg6MvpE-OM9sFjZgz_01sQ@mail.gmail.com>
+Subject: Re: [PATCH] bcache: fix panic due to cache_set is null
+To:     Coly Li <colyli@suse.de>
+Cc:     Yi Li <yili@winhong.com>, kent.overstreet@gmail.com,
+        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guo Chao <guochao@winhong.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Deletted the entire file hibmc_ttm.c. drmm_vram_helper_init() can be
-called directly from hibmc_load(). hibmc_dumb_create() and
-hibmc_mode_funcs can go to hibmc_drm_drv.c
+The root cause:
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- drivers/gpu/drm/hisilicon/hibmc/Makefile        |  2 +-
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 21 ++++++++++-
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h |  4 --
- drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c     | 50 -------------------------
- 4 files changed, 20 insertions(+), 57 deletions(-)
- delete mode 100644 drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+After just  cached_dev_free do cancel_writeback_rate_update_dwork
+without bch_register_lock
+.
+at the same time. Wirting the writeback_percent by sysfs witch
+bch_register_lock will insert a writeback_rate_update work.
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/Makefile b/drivers/gpu/drm/hisilicon/hibmc/Makefile
-index 684ef79..d25c75e 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/Makefile
-+++ b/drivers/gpu/drm/hisilicon/hibmc/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
--hibmc-drm-y := hibmc_drm_drv.o hibmc_drm_de.o hibmc_drm_vdac.o hibmc_ttm.o hibmc_drm_i2c.o
-+hibmc-drm-y := hibmc_drm_drv.o hibmc_drm_de.o hibmc_drm_vdac.o hibmc_drm_i2c.o
- 
- obj-$(CONFIG_DRM_HISI_HIBMC) += hibmc-drm.o
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-index 5aea2e9..3687753 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-@@ -16,6 +16,7 @@
- 
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_drv.h>
-+#include <drm/drm_gem_framebuffer_helper.h>
- #include <drm/drm_gem_vram_helper.h>
- #include <drm/drm_irq.h>
- #include <drm/drm_managed.h>
-@@ -43,6 +44,12 @@ static irqreturn_t hibmc_drm_interrupt(int irq, void *arg)
- 	return IRQ_HANDLED;
- }
- 
-+static int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
-+			     struct drm_mode_create_dumb *args)
-+{
-+	return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
-+}
-+
- static const struct drm_driver hibmc_driver = {
- 	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
- 	.fops			= &hibmc_fops,
-@@ -77,6 +84,13 @@ static const struct dev_pm_ops hibmc_pm_ops = {
- 				hibmc_pm_resume)
- };
- 
-+static const struct drm_mode_config_funcs hibmc_mode_funcs = {
-+	.mode_valid = drm_vram_helper_mode_valid,
-+	.atomic_check = drm_atomic_helper_check,
-+	.atomic_commit = drm_atomic_helper_commit,
-+	.fb_create = drm_gem_fb_create,
-+};
-+
- static int hibmc_kms_init(struct hibmc_drm_private *priv)
- {
- 	struct drm_device *dev = &priv->dev;
-@@ -262,9 +276,12 @@ static int hibmc_load(struct drm_device *dev)
- 	if (ret)
- 		goto err;
- 
--	ret = hibmc_mm_init(priv);
--	if (ret)
-+	ret = drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
-+				    priv->fb_size);
-+	if (ret) {
-+		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
- 		goto err;
-+	}
- 
- 	ret = hibmc_kms_init(priv);
- 	if (ret)
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-index 2786de5..a49c10e 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-@@ -64,10 +64,6 @@ int hibmc_de_init(struct hibmc_drm_private *priv);
- int hibmc_vdac_init(struct hibmc_drm_private *priv);
- 
- int hibmc_mm_init(struct hibmc_drm_private *hibmc);
--int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
--		      struct drm_mode_create_dumb *args);
- int hibmc_ddc_create(struct drm_device *drm_dev, struct hibmc_connector *connector);
- 
--extern const struct drm_mode_config_funcs hibmc_mode_funcs;
--
- #endif
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-deleted file mode 100644
-index 892d566..0000000
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-+++ /dev/null
-@@ -1,50 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/* Hisilicon Hibmc SoC drm driver
-- *
-- * Based on the bochs drm driver.
-- *
-- * Copyright (c) 2016 Huawei Limited.
-- *
-- * Author:
-- *	Rongrong Zou <zourongrong@huawei.com>
-- *	Rongrong Zou <zourongrong@gmail.com>
-- *	Jianhua Li <lijianhua@huawei.com>
-- */
--
--#include <linux/pci.h>
--
--#include <drm/drm_atomic_helper.h>
--#include <drm/drm_gem.h>
--#include <drm/drm_gem_framebuffer_helper.h>
--#include <drm/drm_gem_vram_helper.h>
--#include <drm/drm_print.h>
--
--#include "hibmc_drm_drv.h"
--
--int hibmc_mm_init(struct hibmc_drm_private *hibmc)
--{
--	int ret;
--	struct drm_device *dev = &hibmc->dev;
--
--	ret = drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
--				    hibmc->fb_size);
--	if (ret) {
--		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
--		return ret;
--	}
--
--	return 0;
--}
--
--int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
--		      struct drm_mode_create_dumb *args)
--{
--	return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
--}
--
--const struct drm_mode_config_funcs hibmc_mode_funcs = {
--	.mode_valid = drm_vram_helper_mode_valid,
--	.atomic_check = drm_atomic_helper_check,
--	.atomic_commit = drm_atomic_helper_commit,
--	.fb_create = drm_gem_fb_create,
--};
--- 
-2.7.4
+cached_dev_free with bch_register_lock to do bcache_device_free.
 
+(it is introduce by patch 80265d8dfd77792e133793cef44a21323aac2908)
+
+pls=EF=BC=9A
+1=EF=BC=9A run the shell script
+#!/bin/bash
+while [ true ]
+do
+        echo 0 > /sys/block/bcache0/bcache/writeback_percent
+done
+
+2: hotplug the cache disk
+
+
+On 12/3/20, Coly Li <colyli@suse.de> wrote:
+> On 12/3/20 2:25 PM, Yi Li wrote:
+>>> On 12/1/20 12:35 PM, Yi Li wrote:
+>>>> sorry, This patch will cause deadlock, i will check and redo it.
+>>>
+>>> Can you try latest upstream kernel firstly ? Before spending more time
+>>> on the fix.
+>>>
+>>
+>> This issue just happened three times =EF=BC=88xenserver7.5 dom0 kernel=
+=EF=BC=89 on the
+>> same machine and cannot reproduce it now. and have not reproduce it
+>> using the lastest uptream kernel.
+>>
+>
+> Hmm, this is something very probably that I am not able to help. It
+> seems the kernel is a third-part maintained Linux v4.4 based kernel +
+> bcache backport, which is out of my view.
+>
+> If similar problem happens on latest upstream kernel, or at least v5.8+
+> kernel, I can help to take a look.
+>
+>
+>>> If I remember correctly, when cancel_writeback_rate_update_dwork() is
+>>> not timed out, the cache set memory won't be freed before the
+>>> writeback_rate_update worker terminates. It is possible that I miss
+>>> something in the code, but I suggest to test with a kernel after v5.3,
+>>> and better a v5.8+ kernel.
+>>>
+>>> Coly Li
+>>>
+>> Thanks.
+>>
+>> it is  confused that why writeback_rate_update worker run  again after
+>> cancel_delayed_work_sync( kernel log telled).
+>>
+>
+> [snipped]
+>
+> Coly Li
+>
