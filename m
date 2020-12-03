@@ -2,219 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52482CE066
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AC82CE06D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388059AbgLCVLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 16:11:45 -0500
-Received: from mga11.intel.com ([192.55.52.93]:57209 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728312AbgLCVLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 16:11:45 -0500
-IronPort-SDR: NiARvOgoCel5E8bHXWN/MscqMq5hlGNFooTgfSYD90BiA43wfCPkzARhRnZF7FPJJm45Gpql9I
- igOw6Yn76xIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="169773026"
-X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
-   d="scan'208";a="169773026"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 13:10:04 -0800
-IronPort-SDR: r6xf39njFsBxFY2BekDOH8q5JxTa/J7b2Xwzj4qevRaFkyjWjNNcCwjac+XK6Y2J7k57KXUr/I
- mohsjDIn+VTg==
-X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
-   d="scan'208";a="330971750"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.251.23.110])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 13:10:04 -0800
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH v7 7/7] fpga: sec-mgr: expose hardware error info
-Date:   Thu,  3 Dec 2020 13:09:58 -0800
-Message-Id: <20201203210958.241329-8-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201203210958.241329-1-russell.h.weight@intel.com>
-References: <20201203210958.241329-1-russell.h.weight@intel.com>
+        id S1729625AbgLCVOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 16:14:30 -0500
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:41964 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727181AbgLCVO3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 16:14:29 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 2055F1280149;
+        Thu,  3 Dec 2020 13:13:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1607030029;
+        bh=L7wKeBxFaqVMypXVymA48jylQHHP9KGfRKaiDCFxNyA=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=DlJLRTrJX7p7a8EbMc9kQl6ZrgQOfUSMm1tjpEiTn8qqToJfHWoMMernbgbt+DSmw
+         w+YIJeIoao9av6Hs00mRG5hRZnYp9f7H+olaqkyX/T+WfEsLiNAA1sRs9kTWLnrZuk
+         bRtZRKYezMrgEie/nDHW5QJLJ/+EQQ9me8Ui5LZI=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id DYAL0TalDeXu; Thu,  3 Dec 2020 13:13:49 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id A10FC1280121;
+        Thu,  3 Dec 2020 13:13:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1607030028;
+        bh=L7wKeBxFaqVMypXVymA48jylQHHP9KGfRKaiDCFxNyA=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=nz+QAcRzoV6w2gITh66g+io0oXU3sOPlJoY1/+70WZe5DEJpbFmU0o5Hwg8dgHou4
+         1EB4Yr8oHM3pCAyX8JBn8HpNwfZMhDaNkpQl3ycYxo1Up3NIbTYFvKcmlNs7+c7czd
+         8RRgZK5DgumtFG/SjYDC7MQsA8XhJwplqDFffwRo=
+Message-ID: <4b973b02352860978331eef110bae69e0d576adf.camel@HansenPartnership.com>
+Subject: Re: [Ksummit-discuss] crediting bug reports and fixes folded into
+ original patch
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Joe Perches <joe@perches.com>
+Cc:     "ksummit-discuss@lists.linuxfoundation.org" 
+        <ksummit-discuss@lists.linuxfoundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Date:   Thu, 03 Dec 2020 13:13:47 -0800
+In-Reply-To: <20201203191731.bpzvwqfldhcjhzfy@chatter.i7.local>
+References: <ea32eb02-5e44-0469-772b-34b5cb882543@suse.cz>
+         <694039d6e386d999fd74d038cf2627f5b3b0ca71.camel@HansenPartnership.com>
+         <3c11134905f06185dda4e9125f2fb7fd30fff979.camel@perches.com>
+         <20201203191731.bpzvwqfldhcjhzfy@chatter.i7.local>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the FPGA Security Manager class driver to include
-an optional update/hw_errinfo sysfs node that can be used
-to retrieve 64 bits of device specific error information
-following a secure update failure.
+On Thu, 2020-12-03 at 14:17 -0500, Konstantin Ryabitsev wrote:
+> On Thu, Dec 03, 2020 at 08:55:54AM -0800, Joe Perches wrote:
+> > Perhaps automate a mechanism to capture that information as
+> > git notes for the patches when applied.
+> 
+> Git notes have a limited usefulness for this -- they are indeed part
+> of the repository, but they aren't replicated unless someone does a 
+> --mirror clone (or specifically fetches refs/notes/*). If the goal is
+> to improve visibility for contributors, then putting this info into a
+> git note will hardly make more difference than providing a Link: that
+> someone has to follow to a list archival service. 
+> 
+> I can offer the following proposal:
+> 
+> - kernel.org already monitors all mailing lists that are archived on 
+>   lore.kernel.org for the purposes of pull request tracking 
+>   (pr-tracker-bot).
+> - in the near future, we will add a separate process that will 
+>   auto-explode all pull requests into individual patches and add them
+>   to a separate public-inbox archive (think of it as another 
+>   transparency log, since pull requests are transient and opaque).
+> 
+> We can additionally:
+> 
+> - identify all Link: and Message-Id: entries in commit messages, 
+>   retrieve the threads they refer to, and archive them as part of
 
-The underlying driver must provide a get_hw_errinfo() callback
-function to enable this feature. This data is treated as
-opaque by the class driver. It is left to user-space software
-or support personnel to interpret this data.
+>   the same (or adjacent) transparency log.
+> 
+> This offers an improvement over the status quo, because if 
+> lore.kernel.org becomes unavailable, someone would have to have
+> access to all backend archive repositories it is currently tracking
+> in order to be able to reconstitute relevant conversations -- whereas
+> with this change, it should be sufficient to just have the copy of
+> the  transparency log to have a fully self-contained high-relevancy
+> archive of both individual commits and conversations that happened
+> around them.
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
----
-v7:
-  - Changed Date in documentation file to December 2020
-v6:
-  - No change
-v5:
-  - No change
-v4:
-  - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
-    and removed unnecessary references to "Intel".
-  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
-v3:
-  - No change
-v2:
-  - Bumped documentation date and version
----
- .../ABI/testing/sysfs-class-fpga-sec-mgr      | 14 +++++++
- drivers/fpga/fpga-sec-mgr.c                   | 38 +++++++++++++++++++
- include/linux/fpga/fpga-sec-mgr.h             |  5 +++
- 3 files changed, 57 insertions(+)
+I don't think this is strictly necessary because there's more than lore
+that archive's our lists, but the people at the internet history
+project would remind me not to look a gift horse in the mouth, so I
+think this would certainly be a useful addition.
 
-diff --git a/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-index 96694f229aff..448651909dc6 100644
---- a/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-+++ b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-@@ -65,3 +65,17 @@ Description:	Read-only. Returns a string describing the failure
- 		idle state. If this file is read while a secure
- 		update is in progress, then the read will fail with
- 		EBUSY.
-+
-+What: 		/sys/class/fpga_sec_mgr/fpga_secX/update/hw_errinfo
-+Date:		December 2020
-+KernelVersion:  5.11
-+Contact:	Russ Weight <russell.h.weight@intel.com>
-+Description:	Read-only. Returns a 64 bit error value providing
-+		hardware specific information that may be useful in
-+		debugging errors that occur during FPGA image updates.
-+		This file is only visible if the underlying device
-+		supports it. The hw_errinfo value is only accessible
-+		when the secure update engine is in the idle state.
-+		If this file is read while a secure update is in
-+		progress, then the read will fail with EBUSY.
-+		Format: "0x%llx".
-diff --git a/drivers/fpga/fpga-sec-mgr.c b/drivers/fpga/fpga-sec-mgr.c
-index d354fe2ab582..aebe06d9a54a 100644
---- a/drivers/fpga/fpga-sec-mgr.c
-+++ b/drivers/fpga/fpga-sec-mgr.c
-@@ -38,10 +38,17 @@ static void set_error(struct fpga_sec_mgr *smgr, enum fpga_sec_err err_code)
- 	smgr->err_code = err_code;
- }
- 
-+static void set_hw_errinfo(struct fpga_sec_mgr *smgr)
-+{
-+	if (smgr->sops->get_hw_errinfo)
-+		smgr->hw_errinfo = smgr->sops->get_hw_errinfo(smgr);
-+}
-+
- static void fpga_sec_dev_error(struct fpga_sec_mgr *smgr,
- 			       enum fpga_sec_err err_code)
- {
- 	set_error(smgr, err_code);
-+	set_hw_errinfo(smgr);
- 	smgr->sops->cancel(smgr);
- }
- 
-@@ -227,6 +234,23 @@ error_show(struct device *dev, struct device_attribute *attr, char *buf)
- }
- static DEVICE_ATTR_RO(error);
- 
-+static ssize_t
-+hw_errinfo_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct fpga_sec_mgr *smgr = to_sec_mgr(dev);
-+	int ret;
-+
-+	mutex_lock(&smgr->lock);
-+	if (smgr->progress != FPGA_SEC_PROG_IDLE)
-+		ret = -EBUSY;
-+	else
-+		ret = sysfs_emit(buf, "0x%llx\n", smgr->hw_errinfo);
-+	mutex_unlock(&smgr->lock);
-+
-+	return ret;
-+}
-+static DEVICE_ATTR_RO(hw_errinfo);
-+
- static ssize_t remaining_size_show(struct device *dev,
- 				   struct device_attribute *attr, char *buf)
- {
-@@ -258,6 +282,7 @@ static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
- 	}
- 
- 	smgr->err_code = FPGA_SEC_ERR_NONE;
-+	smgr->hw_errinfo = 0;
- 	smgr->request_cancel = false;
- 	smgr->progress = FPGA_SEC_PROG_READING;
- 	reinit_completion(&smgr->update_done);
-@@ -292,18 +317,31 @@ static ssize_t cancel_store(struct device *dev, struct device_attribute *attr,
- }
- static DEVICE_ATTR_WO(cancel);
- 
-+static umode_t
-+sec_mgr_update_visible(struct kobject *kobj, struct attribute *attr, int n)
-+{
-+	struct fpga_sec_mgr *smgr = to_sec_mgr(kobj_to_dev(kobj));
-+
-+	if (attr == &dev_attr_hw_errinfo.attr && !smgr->sops->get_hw_errinfo)
-+		return 0;
-+
-+	return attr->mode;
-+}
-+
- static struct attribute *sec_mgr_update_attrs[] = {
- 	&dev_attr_filename.attr,
- 	&dev_attr_cancel.attr,
- 	&dev_attr_status.attr,
- 	&dev_attr_error.attr,
- 	&dev_attr_remaining_size.attr,
-+	&dev_attr_hw_errinfo.attr,
- 	NULL,
- };
- 
- static struct attribute_group sec_mgr_update_attr_group = {
- 	.name = "update",
- 	.attrs = sec_mgr_update_attrs,
-+	.is_visible = sec_mgr_update_visible,
- };
- 
- static ssize_t name_show(struct device *dev,
-diff --git a/include/linux/fpga/fpga-sec-mgr.h b/include/linux/fpga/fpga-sec-mgr.h
-index e63e6437f394..04235fab8667 100644
---- a/include/linux/fpga/fpga-sec-mgr.h
-+++ b/include/linux/fpga/fpga-sec-mgr.h
-@@ -40,6 +40,9 @@ enum fpga_sec_err {
-  *			    function and is called at the completion
-  *			    of the update, whether success or failure,
-  *			    if the prepare function succeeded.
-+ * @get_hw_errinfo:	    Optional: Return u64 hw specific error info.
-+ *			    The software err_code may used to determine
-+ *			    whether the hw error info is applicable.
-  */
- struct fpga_sec_mgr_ops {
- 	enum fpga_sec_err (*prepare)(struct fpga_sec_mgr *smgr);
-@@ -48,6 +51,7 @@ struct fpga_sec_mgr_ops {
- 	enum fpga_sec_err (*poll_complete)(struct fpga_sec_mgr *smgr);
- 	enum fpga_sec_err (*cancel)(struct fpga_sec_mgr *smgr);
- 	void (*cleanup)(struct fpga_sec_mgr *smgr);
-+	u64 (*get_hw_errinfo)(struct fpga_sec_mgr *smgr);
- };
- 
- /* Update progress codes */
-@@ -73,6 +77,7 @@ struct fpga_sec_mgr {
- 	enum fpga_sec_prog progress;
- 	enum fpga_sec_prog err_state;	/* progress state at time of failure */
- 	enum fpga_sec_err err_code;	/* security manager error code */
-+	u64 hw_errinfo;			/* 64 bits of HW specific error info */
- 	bool request_cancel;
- 	bool driver_unload;
- 	void *priv;
--- 
-2.25.1
+The thing which Link: doesn't necessarily track is iterations, so if
+you replied to v2 and your feedback got incorporated, there's a v3
+iteration which has a different msgid.  Is there a way of getting this
+full history, not just the current thread?
+
+> I'm just not sure if this will help with the subject of the 
+> conversation, or if it does not serve the goal of recognizing
+> developer contributions by making them more visible.
+
+I added Jon to the cc since a lot of managers (community or otherwise)
+do use the lwn.net stats as a performance guide.  The real question is
+could we get something measurable out of the data?  say number of
+replies to an accepted patch counting in the reviewer stats or
+something?
+
+James
+
 
