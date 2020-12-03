@@ -2,162 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F622CCC4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C218D2CCC5C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387742AbgLCCLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 21:11:31 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:37779 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgLCCLb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 21:11:31 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id F102B200002;
-        Thu,  3 Dec 2020 02:10:47 +0000 (UTC)
-Date:   Thu, 3 Dec 2020 03:10:47 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-Message-ID: <20201203021047.GG3544@piout.net>
-References: <20201201143835.2054508-1-mlichvar@redhat.com>
- <20201201161224.GF5487@ziepe.ca>
- <20201201171420.GN1900232@localhost>
- <20201201173540.GH5487@ziepe.ca>
- <87mtywe2zu.fsf@nanos.tec.linutronix.de>
- <20201202162723.GJ5487@ziepe.ca>
- <87a6uwdnfn.fsf@nanos.tec.linutronix.de>
- <20201202205418.GN5487@ziepe.ca>
- <874kl3eu8p.fsf@nanos.tec.linutronix.de>
- <87zh2vd72z.fsf@nanos.tec.linutronix.de>
+        id S1728726AbgLCCSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 21:18:32 -0500
+Received: from mout.gmx.net ([212.227.15.15]:57811 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725859AbgLCCSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 21:18:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606961774;
+        bh=2skB8aCmzq6dDMF6IK8Lo93lDruUxEaD4jrfymHSWYI=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=gogmm6l7roQjuQsJuE25Siqr8BvuY0N9sf6/PsU57Ngn+BLIGkDKvsvibqBnGFeo3
+         q5cTmxXq9jKRB9achhymSg4Xos6GGzRnUXmnCouzszqEmhTjDgkHKfxj9/rRWaEgvi
+         U83JiQEnl0giIJ7dzK4HO5UIR+gAl+udJxV2wQDI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.149.242]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M9o1v-1kqRat3AX7-005mkW; Thu, 03
+ Dec 2020 03:16:14 +0100
+Message-ID: <abe48cb9ab522659a05d7e41ce07317da2a85163.camel@gmx.de>
+Subject: Re: scheduling while atomic in z3fold
+From:   Mike Galbraith <efault@gmx.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org
+Date:   Thu, 03 Dec 2020 03:16:12 +0100
+In-Reply-To: <20201202220826.5chy56mbgvrwmg3d@linutronix.de>
+References: <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
+         <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
+         <20201129112922.db53kmtpu76xxukj@spock.localdomain>
+         <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
+         <20201130132014.mlvxeyiub3fpwyw7@linutronix.de>
+         <856b5cc2a3d4eb673743b52956bf1e60dcdf87a1.camel@gmx.de>
+         <20201130145229.mhbkrfuvyctniaxi@linutronix.de>
+         <05121515e73891ceb9e5caf64b6111fc8ff43fab.camel@gmx.de>
+         <20201130160327.ov32m4rapk4h432a@linutronix.de>
+         <fca7ecadf1bddafb7e88cbeb4a57d1464c87b044.camel@gmx.de>
+         <20201202220826.5chy56mbgvrwmg3d@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87zh2vd72z.fsf@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:gzCigAg9onWa1Aqoc6zWJqyVUF3JkkH2Dk64Hun2h5p+wwryf7t
+ wfKUwmppG/nyTXUQ9c9caw6za5jHhQHxJMjYTgOygZPwalxvCFjKbGWQmb6SR1h+TqDdS5c
+ 8YHWZivhGYS1k8/oXJowLGn7zoVN28DGoifNt8lmQek18IzkPQwdkMMIrkhXAn4vcWh7ocu
+ iHtyysyQJw8SdbdEyEqQQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6jyZYoie4Uk=:HUuO4gxdrQ0umfsbQ/Y48v
+ ei4+2554XhixiiE1bFZhzZnzLdniSDVa6pVX1cQOv3leG+qtAb5YNbeYS+/1Ex/OtShB47sBz
+ bqg3W0m0Y4XhLSVisFL1LGFWti2eEPj6E4vBCscXtdHPowQqjyzl9YMbBfB+BGi+LOrUkq/so
+ FsUSPeyGBKYKOGQrXYVMN41/w26Tytj7VrjJAlbFM2rMx+TVWXBBkrKsgK/mPXHfgm/CYvxZk
+ /9SqSDqEp9f1dn/19azrFJ+YcxQSjCEZ/6bOjq/ldYBcjLiQezDFCU74r39S4LU+G+Xs8OkrA
+ 9Oiz3gTWiYc4DzhHuzClcW4KSbQGaPxJnzbz9rfyWX0rE3TmV4x1Sk9ebtLEYJy+SG0eBdro6
+ FvSSn5CT6CYhQrr86UcC6d5PgY4o9ocK+ewOO4e4+rCjdouecua463LSEnmmdlGBeJrABHhPm
+ IZhuCZFTGR6aBSePL5Qj3182ZAi53RcrxcsLjWFQSdaRdhttCp2LR6NTQ8fL+oJzKtPRbeUEM
+ vCEl9CqIkzfN8G/jZj18L6TdRrc6hpF2+6A1nwwrhxB2+96Yiqg8VaHO5QOUrrAVHQpxhMWtW
+ dk7XmKzGb29MtFJ68MH2eQ78e06QUc4wyf/j/jZPRC28IWc+ITMSs+7hjgFfAzEsZpE1xB4II
+ XxnvJoN/hYhWZb2uKmQq9hARfqH2hj3hScYr0EbChCzDhY8dKlgv35J7JXLbmvD5jLxv4xpGe
+ GXV0MnqdTtSwLki8dI/blDRurwTTguSDvfwU2rPzbPeq/RURFvFGryqenZGRFwhzYF787odRg
+ xzWG53Pa+/CW4bnEDr9+sK5uUd8er1UgUe3zO+tj5BIMqxNSi6Ug40H463lUp3vXjvW+C17G3
+ NRm+lx3r9mHUDHdOxaqQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Thomas,
+On Wed, 2020-12-02 at 23:08 +0100, Sebastian Andrzej Siewior wrote:
+> On 2020-12-02 03:30:27 [+0100], Mike Galbraith wrote:
+>
+> > What I'm seeing is the below.  rt_mutex_has_waiters() says yup we have
+> > a waiter, rt_mutex_top_waiter() emits the missing cached leftmost, and
+> > rt_mutex_dequeue_pi() chokes on it.  Lock is buggered.
+>
+> correct. So this:
+>
+> diff --git a/mm/z3fold.c b/mm/z3fold.c
+> --- a/mm/z3fold.c
+> +++ b/mm/z3fold.c
+> @@ -342,7 +342,7 @@ static inline void free_handle(unsigned long handle)
+>
+>  	if (is_free) {
+>  		struct z3fold_pool *pool =3D slots_to_pool(slots);
+> -
+> +		memset(slots, 0xee, sizeof(struct z3fold_buddy_slots));
+>  		kmem_cache_free(pool->c_handle, slots);
+>  	}
+>  }
+> @@ -548,8 +549,10 @@ static void __release_z3fold_page(struct z3fold_hea=
+der *zhdr, bool locked)
+>  		set_bit(HANDLES_ORPHANED, &zhdr->slots->pool);
+>  	read_unlock(&zhdr->slots->lock);
+>
+> -	if (is_free)
+> +	if (is_free) {
+> +		memset(zhdr->slots, 0xdd, sizeof(struct z3fold_buddy_slots));
+>  		kmem_cache_free(pool->c_handle, zhdr->slots);
+> +	}
+>
+>  	if (locked)
+>  		z3fold_page_unlock(zhdr);
+>
+> resulted in:
+>
+> |[  377.200696] Out of memory: Killed process 284358 (oom01) total-vm:15=
+780488kB, anon-rss:150624kB, file-rss:0kB, shmem-rss:0kB, UID:0 pgtables:1=
+6760kB oom_score_adj:0
+> |[  377.205438] ------------[ cut here ]------------
+> |[  377.205441] pvqspinlock: lock 0xffff8880105c6828 has corrupted value=
+ 0xdddddddd!
+> |[  377.205448] WARNING: CPU: 6 PID: 72 at kernel/locking/qspinlock_para=
+virt.h:498 __pv_queued_spin_unlock_slowpath+0xb3/0xc0
+> |[  377.205455] Modules linked in:
+> |[  377.205456] CPU: 6 PID: 72 Comm: oom_reaper Not tainted 5.10.0-rc6-r=
+t13-rt+ #103
+> |[  377.205458] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS=
+ 1.14.0-1 04/01/2014
+> |[  377.205460] RIP: 0010:__pv_queued_spin_unlock_slowpath+0xb3/0xc0
+> =E2=80=A6
+> |[  377.205475] Call Trace:
+> |[  377.205477]  __raw_callee_save___pv_queued_spin_unlock_slowpath+0x11=
+/0x20
+> |[  377.205481]  .slowpath+0x9/0xe
+> |[  377.205483]  _raw_spin_unlock_irqrestore+0x5/0x50
+> |[  377.205486]  rt_mutex_futex_unlock+0x9e/0xb0
+> |[  377.205488]  z3fold_free+0x2b0/0x470
+> |[  377.205491]  zswap_free_entry+0x7d/0xc0
+> |[  377.205493]  zswap_frontswap_invalidate_page+0x87/0x90
+> |[  377.205495]  __frontswap_invalidate_page+0x58/0x90
+> |[  377.205496]  swap_range_free.constprop.0+0x99/0xb0
+> |[  377.205499]  swapcache_free_entries+0x131/0x390
+> |[  377.205501]  free_swap_slot+0x99/0xc0
+> |[  377.205502]  __swap_entry_free+0x8a/0xa0
+> |[  377.205504]  free_swap_and_cache+0x36/0xd0
+> |[  377.205506]  zap_pte_range+0x16a/0x940
+> |[  377.205509]  unmap_page_range+0x1d8/0x310
+> |[  377.205514]  __oom_reap_task_mm+0xe7/0x190
+> |[  377.205520]  oom_reap_task_mm+0x5a/0x280
+> |[  377.205521]  oom_reaper+0x98/0x1c0
+> |[  377.205525]  kthread+0x18c/0x1b0
+> |[  377.205528]  ret_from_fork+0x22/0x30
+> |[  377.205531] ---[ end trace 0000000000000002 ]---
+>
+> Then I reverted commit
+>    4a3ac9311dac3 ("mm/z3fold.c: add inter-page compaction")
+>
+> and it seems to work now. Any suggestions? It looks like use-after-free.
 
-I'll take more time to reply more in depth to the whole email but...
+Looks like...
 
-On 03/12/2020 02:14:12+0100, Thomas Gleixner wrote:
-> Aside of that the magic correction of the time which is written to the
-> RTC is completely bogus. Lets start with the interface and the two
-> callers of it:
-> 
-> static inline bool rtc_tv_nsec_ok(s64 set_offset_nsec,
->                                   struct timespec64 *to_set,
->                                   const struct timespec64 *now)
-> 
-> The callers are:
-> 
->   sync_cmos_clock()   /* The legacy RTC cruft */
->     struct timespec64 now;
->     struct timespec64 adjust;
->     long target_nsec = NSEC_PER_SEC / 2;
-> 
->     ktime_get_real_ts64(&now);
->     if (rtc_tv_nsec_ok(-1 * target_nsec, &adjust, &now)) {
->        if (persistent_clock_is_local)
-> 	  adjust.tv_sec -= (sys_tz.tz_minuteswest * 60);
->        rc = update_persistent_clock64(adjust);
->     } 
->        
->   sync_rtc_clock()
->     unsigned long target_nsec;          <- Signed unsigned ....
->     struct timespec64 adjust, now;
-> 
->     ktime_get_real_ts64(&now);
-> 
->     adjust = now;                       <- Why the difference to the above?
-> 
->     if (persistent_clock_is_local)      <- Again, why is the ordering different?
-> 	adjust.tv_sec -= (sys_tz.tz_minuteswest * 60);
->     
->     rc = rtc_set_ntp_time(adjust, &target_nsec)
->        // int rtc_set_ntp_time(struct timespec64 now, unsigned long *target_nsec)
-> 
->          struct timespec64 to_set;
-> 
-> 	 set_normalized_timespec64(&to_set, 0, -rtc->set_offset_nsec);
-> 	 *target_nsec = to_set.tv_nsec;      <- target_nsec = rtc->set_offset_nsec
->                                                 because the timespec is normalized
->                                                 ergo == rtc->set_offset_nsec
->                                                 unless the set_offset_nsec would
->                                                 be negative which makes at all.
-> 
->          if (rtc_tv_nsec_ok(rtc->set_offset_nsec, &to_set, &now))
->          	update_rtc(...);
-> 
-> So sync_cmos_clock hands in -(NSEC_PER_SEC/2) and the rtc cruft hands in
-> NSEC_PER_SEC/2 by default. The comment in drivers/rtc/class.c says:
-> 
-> drivers/rtc/class.c-    /* Drivers can revise this default after allocating the device. */
-> drivers/rtc/class.c:    rtc->set_offset_nsec =  NSEC_PER_SEC / 2;
-> 
-> but no driver ever bothered to change that value. Also the idea of
-> having this offset as type s64 is beyond my understanding. Why the heck
-> would any RTC require to set an offset which is _after_ the second
-> transition.
-> 
+d8f117abb380 z3fold: fix use-after-free when freeing handles
 
-This (no driver making use of set_offset_nsec) happened because it got
-applied without me agreeing to the change. I did complain at the time
-and RMK walked away.
+...wasn't completely effective.  write_unlock() in handle_free() is
+where I see explosions.  Only trouble is that 4a3ac9311dac3 arrived in
+5.5, and my 5.[5-7]-rt refuse to reproduce (d8f117abb380 applied),
+whereas 5.9 and 5.10 do so quite reliably.  There is a heisenbug aspect
+though, one trace_printk() in handle_free() made bug go hide, so the
+heisen-fairies in earlier trees were probably just messing with me..
+because they can, being the twisted little freaks they are ;-)
 
-[...]
+	-Mike
 
-> That said, can somebody answer the one million dollar question which
-> problem is solved by all of this magic nonsense?
-> 
-
-The goal was to remove the 500ms offset for all the RTCs but the
-MC146818 because there are RTC that will reset properly their counter
-when setting the time, meaning they can be set very precisely.
-
-IIRC, used in conjunction with rtc_hctosys which also adds
-inconditionnaly 500ms this can ends up with the system time
-being one second away from the wall clock time which NTP will take quite
-some time to remove.
-
-> If anyone involved seriously believes that any of this solves a real
-> world problem, then please come forth an make your case.
-> 
-> If not, all of this illusionary attempts to be "correct" can be removed
-> for good and the whole thing reduced to a
-> 
->     update_rtc_plus_minus_a_second()
-> 
-> mechanism, which is exactly what we have today just without the code
-> which pretends to be *exact* or whatever.
-> 
-
-Coincidentally, I was going to revert those patches for v5.11. Also,
-honestly, I still don't understand why the kernel needs to set the RTC
-while userspace is very well equipped to do that. chrony is able to set
-the RTC time and it can do so precisely. It can even compute how that RTC is
-time drifting and that value can already be used to adjust the RTC
-crystal.
-
-From my tests, with some efforts, userspace can set the RTC time with a
-20µs precision, even on low end systems. To do so, it doesn't need
-set_offset_nsec.
-
-I also don't like hctosys, it is currently wrong but I can see use cases
-and now systemd relies on its presence so my plan is to fix it.
-
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
