@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 906392CFB19
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 12:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E979A2CFB1B
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 12:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729518AbgLELHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 06:07:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
+        id S1729560AbgLELKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 06:10:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729484AbgLELFE (ORCPT
+        with ESMTP id S1729340AbgLELE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 06:05:04 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C524C061A55
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 03:04:18 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id b73so8518350edf.13
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 03:04:18 -0800 (PST)
+        Sat, 5 Dec 2020 06:04:59 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BCDC0613D1;
+        Sat,  5 Dec 2020 03:04:16 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id a16so12486706ejj.5;
+        Sat, 05 Dec 2020 03:04:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:message-id:subject:to:cc:in-reply-to:references:date
+        h=message-id:subject:from:to:cc:in-reply-to:references:date
          :mime-version:content-transfer-encoding;
-        bh=ptB7VjFOHXGa3Nl2TvXAUSYtLzguBp9ctPeePIRKIvM=;
-        b=mjYNJ6wrOZ/8oP6erkxFQT5rWHE0geqzUr2wuhi57zBWlSf0GkHslQultnxdYadYPi
-         qEZejANd1krMu6PmWcdBj9SN0R/2u1eP9ypxXDbvnBbSRTGcFQvpvp7UfdUdx6wIo/37
-         EpjPqgZbSmkqle5HyZo6fvSUTTJXhBhR5n6K29Yye2N2pRYukUGwDZTLytTd5SvRQEPA
-         OQbVq4MAX3YoX5NtV+la9YiDKlU2Ca9LdCmjKRxgHnmpUpi/lXHqjGXS55ayZVXsxusd
-         xWVfhTi+9Y8tY71fbJFG2iPnLVRRR8k5V+ZvaSsH3DnS4M5vsGXoCb8wqIjnQk8Rp9JK
-         2O2g==
+        bh=NHruUIRUPikDpSK6wixebj+vz7uT4fAyp4/i/do8fV8=;
+        b=W0/7KLvOybvPHt9/gLEJ2+/fnwDOiUQ0v1CmDyPHhjbZl9DeSZv5qG0e2gESoM4UCO
+         biPJLR1X+G1El98j815+M/L46QJm81cc17aOYg/dKUqF6llsIl4zAIFPFpt9OIwMNXyQ
+         WRy+qhiFlxG/nm+7IiYAkFYSU9RrFlCBmMCGD0kGPp+cn9qQ46fJ10MHHRLeUPhFP3AA
+         2R5RnEFCjsv16TJUAVVaBmLPSRyE/lYeRh5EOqbrOrI4tsNXKtusJ9fG6jMsVFQaGAqn
+         p5HSzIBb5ejuiEWFLSBs8QX186Gd6bpAyECcOXqSbhbvsGXn8hgqFp00GAYnhv0id7FT
+         i6/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:subject:to:cc:in-reply-to
+        h=x-gm-message-state:message-id:subject:from:to:cc:in-reply-to
          :references:date:mime-version:content-transfer-encoding;
-        bh=ptB7VjFOHXGa3Nl2TvXAUSYtLzguBp9ctPeePIRKIvM=;
-        b=JQOuuy2imDgIfmdQHOaFKKKfQ35YVz5M512vonI4CqCWjBkNLsUi44Z5v6f25dRRXy
-         4ay8R+oO1jDHCoKCWC2dfFbJCCikRBKBS0qA2Cl4GgfDejr0QP8KU85DYWzPHrvBV90N
-         BRz6dayzCDShztuVK9/SevcsZwxtVh9qRxE8/858vIl+RFtPxjLRojnJ8VMnwTL1WuRN
-         IkgWI/o3HEooWJHCqJdI4h+aRMYIDkeyC5x6V/Gu5I8r673sFD1tln+5RJko7qwYEnup
-         f96voWvvwgzRu29eFVKYH5yVGCdv7XvywpXkng/lFdyDAUmLswbJ40ULe3/ilzVRIuGq
-         Kmxw==
-X-Gm-Message-State: AOAM531iko2WjlcgbfrCrZyn03eiRs/vcaRTD45V+5faBeUnc9IbyT/W
-        X2cXefbEaNC1CiyZMKDV5Gc=
-X-Google-Smtp-Source: ABdhPJww6rtnhyZ6J5HO0cyBw7T7LcSslvTFiC1k1kUHZvqssKFJtXIpiRv9/asus/Ky1CQsJO+QtA==
-X-Received: by 2002:a50:ff0c:: with SMTP id a12mr11701689edu.79.1607166257309;
-        Sat, 05 Dec 2020 03:04:17 -0800 (PST)
+        bh=NHruUIRUPikDpSK6wixebj+vz7uT4fAyp4/i/do8fV8=;
+        b=O5fJmPGpec03AF/nQNcQUIxbQVcWTZfc0gN7Lh+/05Vp/WC99SnReG/t+g53yKlfXO
+         TZ+coV50fcroCrSkWi1byDchzcGp1kxBNHs1NKcyqQqW/hgwduNq0PmovbPtQ2t3k88w
+         sW/GmP9p1pk5R31XIEPkKKU5+MyIxORn03EZhbKacCvXWxhNUo2kYb581X3btv443JLh
+         72KV2N/mVUIJmplbs1/Ip1VnxKYb0VDu2+ZhG7b9DNe4Itt0qJHc5jFJidCqv/BGtq4W
+         eR+LWoE7f9f51s7Z/0evM4xhdE2nIlJ3CZF17rMk0f0Y1+e/BdvllDBOw/K12wi3GFj5
+         JD3A==
+X-Gm-Message-State: AOAM5334AhaMuy6LHS++ta78KN81IE8d85dIzd+ZOIFN3JYaeiJSVppv
+        KhXpGQ31wsvHI0FPVD9rvl0=
+X-Google-Smtp-Source: ABdhPJw1M6GA3TK87awBb7U1UCkDdWQ40/pNmPu/G2RzenLtohJsLODrRYOyIpEZwwlJkVjukxbDsg==
+X-Received: by 2002:a17:906:38c8:: with SMTP id r8mr11360628ejd.39.1607166255415;
+        Sat, 05 Dec 2020 03:04:15 -0800 (PST)
 Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id n1sm4963181ejb.2.2020.12.05.03.04.15
+        by smtp.googlemail.com with ESMTPSA id u1sm5436338edf.65.2020.12.05.03.04.14
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 05 Dec 2020 03:04:16 -0800 (PST)
-From:   Bean Huo <beanhuo.cn@gmail.com>
-X-Google-Original-From: Bean Huo <huobean@gmail.com>
-Message-ID: <bf1ca326b432444e7d97cac7210e07d2a4ea7fcf.camel@gmail.com>
-Subject: Re: [PATCH RFC] mm: Let readahead submit larger batches of pages
- in case of ra->ra_pages == 0
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, beanhuo@micron.com,
-        Richard Weinberger <richard@nod.at>
-In-Reply-To: <20200911094709.GB14158@infradead.org>
-References: <20200904144807.31810-1-huobean@gmail.com>
-         <20200904110938.d9a2cb53a58e67a15c960f47@linux-foundation.org>
-         <ef82be594709a8f954f4933968bd96888e589df3.camel@gmail.com>
-         <20200911094709.GB14158@infradead.org>
+        Sat, 05 Dec 2020 03:04:14 -0800 (PST)
+Message-ID: <d323ea3e12dbd8a7683c6d6c194f422519157728.camel@gmail.com>
+Subject: Re: [PATCH 2/3] scsi: ufs: Keep device power on only
+ fWriteBoosterBufferFlushDuringHibernate == 1
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+In-Reply-To: <DM6PR04MB6575B7ECCEA7335B2CFC2AC4FCF20@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201130181143.5739-1-huobean@gmail.com>
+         <20201130181143.5739-3-huobean@gmail.com>
+         <BY5PR04MB6599826730BD3FB0E547E60587F30@BY5PR04MB6599.namprd04.prod.outlook.com>
+         <DM6PR04MB6575B7ECCEA7335B2CFC2AC4FCF20@DM6PR04MB6575.namprd04.prod.outlook.com>
 Content-Type: text/plain; charset="UTF-8"
-Date:   Fri, 11 Sep 2020 13:35:23 +0200
+Date:   Thu, 03 Dec 2020 10:36:08 +0100
 Mime-Version: 1.0
 X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 Content-Transfer-Encoding: 7bit
@@ -71,33 +78,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-09-11 at 10:47 +0100, Christoph Hellwig wrote:
-> > Hi Andrew
-> > Sorry, I am still not quite understanding your above three
-> > questions. 
+On Thu, 2020-12-03 at 07:27 +0000, Avri Altman wrote:
 > > 
-> > Based on my shallow understanding, ra_pages is associated with
-> > read_ahead_kb. Seems ra_pages controls the maximum read-ahead
-> > window
-> > size, but it doesn't work when the requested size exceeds
-> > ra_pages. 
+> > From: Bean Huo <beanhuo@micron.com>
 > > 
-> > If I set the read_ahead_kb to 0, also, as Christoph mentioned, MTD
-> > forcibly sets ra_pages to 0.  I think the intention is that only
-> > wants
-> > to disable read-ahead, however, doesn't want
-> > generic_file_buffered_read() to split the request and read data
-> > with
-> > 4KB chunk size separately.
+> > Keep device power mode as active power mode and VCC supply only if
+> > fWriteBoosterBufferFlushDuringHibernate setting 1 is successful.
 > 
-> They way I understood Richard this is intentional.
+Hi Avri
+Thanks so much taking time reiew.
 
-Hi Christoph
-Thanks. understood now, MTD expects this result. Even so, I think this
-patch doesn't impact MTD because the flash-based FS only achieved the
-readpage. Inside __do_page_cache_readahead will use mapping->a_ops-
->readpage to read data.
+> Why would it fail?
+
+During the reliability testing in harsh environments, such as:
+EMS testing, in the high/low-temperature environment. The system would
+reboot itself, there will be programming failure very likely.
+If we assume failure will never hit, why we capture its result
+following with dev_err(). If you keep using your phone in a harsh
+environment, you will see this print message.
+
+Of course, in a normal environment, the chance of failure likes you to
+win a lottery, but the possibility still exists.
+
+  
+> Since UFSHCD_CAP_WB_EN is toggled off on ufshcd_wb_probe If the
+> device doesn't support wb,
+> The check ufshcd_is_wb_allowed should suffice, isn't it?
+> 
+Tot at all, UFSHCD_CAP_WB_EN only tells us if the platform supports WB,
+doesn't tell us fWriteBoosterBufferFlushDuringHibernate status.
 
 Thanks,
 Bean
+
 
