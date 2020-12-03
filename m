@@ -2,95 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA732CD898
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F822CD8A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730832AbgLCOJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 09:09:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729342AbgLCOJy (ORCPT
+        id S2389105AbgLCOMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 09:12:18 -0500
+Received: from outbound-smtp15.blacknight.com ([46.22.139.232]:43643 "EHLO
+        outbound-smtp15.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726396AbgLCOMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:09:54 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52990C061A4E;
-        Thu,  3 Dec 2020 06:09:14 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id b26so1363811pfi.3;
-        Thu, 03 Dec 2020 06:09:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wJ7u1l2czPx09HJWCSw/GmDg+rkIf9SaGFfB2vz8DE0=;
-        b=MPP+YY48bbGpf4uMpzlQnJ0NsdZyHG5oMLo1ZX9mAuBJGih1zUDyIuwV/QENfZRoOm
-         mLio+3icihdlceE50ysgNBBczvZEfzLI/zukKmRRAKgNKylbUXLAZYQ/A19VIFbbxs6v
-         uhC7kcSOyzdEiAPYdc0NPr7fDE8OcB2+yqmnFM5tau+HzSNTvCI6dBzMjvVn0SMoVLy2
-         L25teH6LUHPkijypP3xIASQqUw/HG+xXB0e35x4A9q5Gmsjxz3KDZH0gz1r8jk+sT5DU
-         j6w4UbjjUxlk4kpQjVIC30uf5FcIyAbDkXpBXgJzRHDmUl20lJrokhNKhRzsgqCXrKJj
-         AZWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wJ7u1l2czPx09HJWCSw/GmDg+rkIf9SaGFfB2vz8DE0=;
-        b=Olqp2czTfCAajwLoz5l/6HpNyHYcmyjZFBi7tkHfFOwa4M4uAiPEVzRdW36hPBP0k6
-         LRIK0V19pJBcNNfZJdxGaCdL0zgZ0Wuo/WITajKq38sCWpDyl/PtA21Sdth71bruJKBD
-         BCt5/oAlvZA7hNjemX+hSx3i1xziFv6g1Vu2DMVMMfqNYbjTWT9KlCar9Hz199pdbjnz
-         Ob26CyFcoz5BfEZGpXbFNQH9uj1J5FeCQJYkK5FKnRnZCmNqnwqzhGczsuaUx3ftx+lv
-         W01vaBUBOmVYyi4I/iu+Obp+cK/FifqK9RRYkd+OpD4ysc8dgkhvsxIOCKtthmX7D/cc
-         r7Eg==
-X-Gm-Message-State: AOAM5325sbH0tgf53wDjwLG+/SqmFg67nxehu6TyIbwEa4JoD/JxJ2GX
-        61vHz+CIWHSJFORBmKREuAlCo4UQT/gfrYebgDc=
-X-Google-Smtp-Source: ABdhPJy8gwkOuaOTstt9oMs1cJBUajEsYkOqutZ5s21vSkL0HssiI9Fujv2aRtCbYo+mm3LSggCPb1WAXHXNmWVe/PY=
-X-Received: by 2002:a62:445:0:b029:19c:162b:bbef with SMTP id
- 66-20020a6204450000b029019c162bbbefmr3227328pfe.40.1607004553823; Thu, 03 Dec
- 2020 06:09:13 -0800 (PST)
+        Thu, 3 Dec 2020 09:12:17 -0500
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp15.blacknight.com (Postfix) with ESMTPS id B85341C370E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 14:11:24 +0000 (GMT)
+Received: (qmail 22633 invoked from network); 3 Dec 2020 14:11:24 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPA; 3 Dec 2020 14:11:24 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [RFC PATCH 00/10] Reduce time complexity of select_idle_sibling
+Date:   Thu,  3 Dec 2020 14:11:14 +0000
+Message-Id: <20201203141124.7391-1-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20201203140531.74470-1-alexandru.ardelean@analog.com> <20201203140531.74470-2-alexandru.ardelean@analog.com>
-In-Reply-To: <20201203140531.74470-2-alexandru.ardelean@analog.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 3 Dec 2020 16:10:02 +0200
-Message-ID: <CAHp75Veh=b0JYOP_gETyqqGGEYhO9JcxFCGXSuzSX27-qioprA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] spi: Add SPI_NO_TX/RX support
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-spi <linux-spi@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Bogdan, Dragos" <dragos.bogdan@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 4:00 PM Alexandru Ardelean
-<alexandru.ardelean@analog.com> wrote:
-> From: Dragos Bogdan <dragos.bogdan@analog.com>
->
-> Transmit/receive only is a valid SPI mode. For example, the MOSI/TX line
-> might be missing from an ADC while for a DAC the MISO/RX line may be
-> optional. This patch adds these two new modes: SPI_NO_TX and
-> SPI_NO_RX. This way, the drivers will be able to identify if any of
-> these two lines is missing and to adjust the transfers accordingly.
+This is an early prototype that has not been tested heavily. While parts
+of it may stand on its own, the motivation to release early is Aubrey
+Li's series on using an idle cpumask to optimise the search and Barry
+Song's series on representing clusters on die. The series is based on
+tip/sched/core rebased to 5.10-rc6.
 
-...
+Patches 1-2 add schedstats to track the search efficiency of
+	select_idle_sibling. They can be dropped from the final version but
+	are useful when looking at select_idle_sibling in general. MMTests
+	can already parse the stats and generate useful data including
+	graphs over time.
 
-> +       BUILD_BUG_ON(SPI_MODE_USER_MASK & SPI_MODE_KERNEL_MASK);
+Patch 3 kills SIS_AVG_CPU but is partially reintroduced later in the
+	context of SIS_PROP.
 
-Please, use static_assert() as I have been pointed out. It may be
-located outside of a function scope. You may attach it directly to the
-definition of the KERNEL_MASK (I haven't tried yet with header
-though).
+Patch 4 notes that select_idle_core() can find an idle CPU that is
+	not a free core yet it is ignored and a second search is conducted
+	in select_idle_cpu() which is wasteful. Note that this patch
+	will definitely change in the final version.
 
-...
+Patch 5 adjusts p->recent_used_cpu so that it has a higher success rate
+	and avoids searching the domain in some cases.
 
-> +#define SPI_NO_TX      BIT(31)         /* no transmit wire */
-> +#define SPI_NO_RX      BIT(30)         /* no receive wire */
-> +#define SPI_MODE_KERNEL_MASK   (SPI_NO_TX | SPI_NO_RX)
+Patch 6 notes that select_idle_* always starts with a CPU that is
+	definitely not idle and fixes that.
 
-This needs a comment to explain what's going on with the flags (split).
+Patch 7 notes that SIS_PROP is only partially accounting for search
+	costs. While this might be accidentally beneficial, it makes it
+	much harder to reason about the effectiveness of SIS_PROP.
+
+Patch 8 uses similar logic to SIS_AVG_CPU but in the context of
+	SIS_PROP to throttle the search depth.
+
+Patches 9 and 10 are stupid in the context of this series. They
+	are included even though it makes no sense to use SIS_PROP logic in
+	select_idle_core() as it already has throttling logic. The point
+	is to illustrate that the select_idle_mask can be initialised
+	at the start of a domain search used to mask out CPUs that have
+	already been visited.
+
+In the context of Aubrey's and Barry's work, select_idle_mask would
+be initialised *after* select_idle_core as select_idle_core uses
+select_idle_mask for its own purposes. In Aubrey's case, the next
+step would be to scan idle_cpus_span as those CPUs may still be idle
+and bias the search towards likely idle candidates. If that fails,
+select_idle_mask clears all the bits set in idle_cpus_span and then
+scans the remainder. Similar observations apply to Barry's work, scan the
+local domain first, mask out those bits then scan the remaining CPUs in
+the cluster.
+
+The final version of this series will drop patches 1-2 unless there is
+demand and definitely drop patches 9-10. However, all 4 patches may be
+useful in the context of Aubrey's and Barry's work. Patches 1-2 would
+give more precise results on exactly how much they are improving "SIS
+Domain Search Efficiency" which may be more illustrative than just the
+headline performance figures of a given workload. The final version of
+this series will also adjust patch 4. If select_idle_core() runs at all
+then it definitely should return a CPU -- either an idle CPU or the target
+as it has already searched the entire domain and no further searching
+should be conducted. Barry might change that back so that a cluster can
+be scanned but it would be done in the context of the cluster series.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.26.2
+
