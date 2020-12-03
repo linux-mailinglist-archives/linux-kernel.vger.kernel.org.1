@@ -2,151 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B3B2CD048
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 08:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2990D2CD050
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 08:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388067AbgLCHTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 02:19:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388002AbgLCHTT (ORCPT
+        id S1729837AbgLCHWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 02:22:21 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:50410 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726085AbgLCHWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 02:19:19 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A9DC061A54
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 23:18:28 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id s2so634100plr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 23:18:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=XboQBpa5SksH1iZ7g9IuRzqF6Oz1AM+DEQhjumRKkpU=;
-        b=gJeZZTf1TU9E/PphFzlCR3PhtxCTKrw85fe2boTXN2UfZUD5faSjo2MsqUodQrLjH5
-         zauS9CHw8F/p/nJKZEvy0o1GIbK1HBYkurUupjJCdn9Cdpw+zahjLVz7bvpPpXQVGqCq
-         +2KSkItg1JS0p2JCKMMdOrtIGd689aHsdj0H4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=XboQBpa5SksH1iZ7g9IuRzqF6Oz1AM+DEQhjumRKkpU=;
-        b=gUXIJvKcd/iC/Tgklxhd+lIKco8i9pMLbMLR1bRBTryf9Ul7+mpFM72K4Dk3nw6DcI
-         p0S5RuhGJxavr3hDTIw/xHeGOPovH/M4ergusT7MvbYugjbJNEZt4YPwcP8Ng5H/mDii
-         iLVXalYi8xKjhuN5xXzlaeKtMZ+fH0hLVHDTcxFDXAf2LXr3TO7Pi6XneRSSMiETAezq
-         l8Y0wn5YLruEcxiT52wcJYyqFNQXFA5sgdLgOsA2mWFinJNesJvnNZT7f5ROfjhMfjBZ
-         BYJXq9cvKoQ+W0tW+DkefxwSbFO6ZGZEeQAZVpEvMw4IXteLIju9TnJYedqTnei8poIl
-         exsA==
-X-Gm-Message-State: AOAM5312grl31EoBJsu5st3pSF6qmswyJQPQBLR7LiWoJzmE8UQly6TL
-        skFmLG9/eDfNPl8Yy6R/T2eO/lf7Mn79Cw==
-X-Google-Smtp-Source: ABdhPJxkH2B4+N1724zMBChAGI+PsJEn6+Y/h5Paxsz4QrRHNnHMdmdONnH14euFPegHQKQ7TqzpZA==
-X-Received: by 2002:a17:90b:204d:: with SMTP id ji13mr1917017pjb.20.1606979907857;
-        Wed, 02 Dec 2020 23:18:27 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id y21sm745604pfr.90.2020.12.02.23.18.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 23:18:27 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 3 Dec 2020 02:22:20 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B37HJbN024899;
+        Wed, 2 Dec 2020 23:21:38 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=YyR69L4hu/oRHcKWIfHtQbXQeGzFY2FBPwiZ5EB419k=;
+ b=c7tzPQBeqFaKB7Oqma82IasoOwGEf6fPoQrszhyj/wj6GaJA6FiIjtZn2zUKbdYanes3
+ IACmTVt7HalSqRlT1KfxlSOrsJG0xagubcUyjn4QPYtSnAE9KpOEZns+0AgDUgqEQCa4
+ I6qZZqtGWSUf3C+CR1awSEH0Trbvj8JhxY5R9UMEj++n2Gbbz4M+fSI68cXeMBQwXGdH
+ qfOXnUDsfq0uxsjNMUzbBtwU/if2FjnEJsHyRYiZSS/62v3qCQX2btzFaR6kQmV8aEbI
+ V09e0oJl0ewNJmaazWG0jAxY6bqRPbGpiv2czDqS4pLG6GsyWdFEc82WOC2cji5tgXQ/ 2w== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 355w50cxap-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 23:21:38 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 2 Dec
+ 2020 23:21:37 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 2 Dec
+ 2020 23:21:36 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 2 Dec 2020 23:21:36 -0800
+Received: from jupiter064.il.marvell.com (unknown [10.5.116.100])
+        by maili.marvell.com (Postfix) with ESMTP id 8AED03F7040;
+        Wed,  2 Dec 2020 23:21:34 -0800 (PST)
+From:   Mickey Rachamim <mickeyr@marvell.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        <linux-kernel@vger.kernel.org>
+CC:     Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Mickey Rachamim <mickeyr@marvell.com>
+Subject: [PATCH] MAINTAINERS: Add entry for Marvell Prestera Ethernet Switch driver
+Date:   Thu, 3 Dec 2020 09:18:56 +0200
+Message-ID: <20201203071856.21414-1-mickeyr@marvell.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1606714572-1113-1-git-send-email-dikshita@codeaurora.org>
-References: <1606714572-1113-1-git-send-email-dikshita@codeaurora.org>
-Subject: Re: [PATCH] venus: core: add support to dump FW region
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-To:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Date:   Wed, 02 Dec 2020 23:18:25 -0800
-Message-ID: <160697990547.2717324.13284456705336253152@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-03_03:2020-11-30,2020-12-03 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dikshita Agarwal (2020-11-29 21:36:12)
-> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/pla=
-tform/qcom/venus/core.c
-> index 6103aaf..01a0cfe 100644
-> --- a/drivers/media/platform/qcom/venus/core.c
-> +++ b/drivers/media/platform/qcom/venus/core.c
-> @@ -22,6 +24,48 @@
->  #include "firmware.h"
->  #include "pm_helpers.h"
-> =20
-> +static int subsystem_dump(struct venus_core *core)
-> +{
-> +       struct device_node *node;
-> +       struct device *dev;
-> +       struct resource r;
-> +       void *mem_va;
-> +       size_t mem_size;
-> +       void *data;
-> +       int ret;
-> +
-> +       dev =3D core->dev;
-> +       node =3D of_parse_phandle(dev->of_node, "memory-region", 0);
+Add maintainers info for new Marvell Prestera Ethernet switch driver.
 
-Any chance this could be done at probe time and saved away as some sort
-of pointer?
+Signed-off-by: Mickey Rachamim <mickeyr@marvell.com>
+---
+ MAINTAINERS | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> +       if (!node)
-> +               return -EINVAL;
-> +
-> +       ret =3D of_address_to_resource(node, 0, &r);
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a7bdebf955bb..04a27eb89428 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10540,6 +10540,15 @@ S:	Supported
+ F:	Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
+ F:	drivers/net/ethernet/marvell/octeontx2/af/
+ 
++MARVELL PRESTERA ETHERNET SWITCH DRIVER
++M:	Vadym Kochan <vkochan@marvell.com>
++M:	Taras Chornyi <tchornyi@marvell.com>
++M:	Mickey Rachamim <mickeyr@marvell.com>
++L:	netdev@vger.kernel.org
++S:	Supported
++W:	http://www.marvell.com
++F:	drivers/net/ethernet/marvell/prestera/
++
+ MARVELL SOC MMC/SD/SDIO CONTROLLER DRIVER
+ M:	Nicolas Pitre <nico@fluxnic.net>
+ S:	Odd Fixes
+-- 
+2.17.1
 
-of_node_put(node);
-
-> +       if (ret)
-> +               goto err_put_node;
-
-And then just return ret;
-
-> +
-> +       mem_size =3D resource_size(&r);
-> +
-> +       mem_va =3D memremap(r.start, mem_size, MEMREMAP_WC);
-> +       if (!mem_va) {
-> +               ret =3D -ENOMEM;
-> +               goto err_put_node;
-
-And return -ENOMEM;
-
-> +       }
-> +
-> +       data =3D vmalloc(mem_size);
-> +       if (!data) {
-> +               ret =3D -EINVAL;
-> +               goto err_unmap;
-> +       }
-> +
-> +       memcpy(data, mem_va, mem_size);
-> +
-> +       dev_coredumpv(dev, data, mem_size, GFP_KERNEL);
-> +err_unmap:
-> +       memunmap(mem_va);
-> +err_put_node:
-> +       of_node_put(node);
-> +       return ret;
-> +}
->  static void venus_event_notify(struct venus_core *core, u32 event)
->  {
->         struct venus_inst *inst;
-> @@ -67,6 +111,9 @@ static void venus_sys_error_handler(struct work_struct=
- *work)
-> =20
->         venus_shutdown(core);
-> =20
-> +       dev_warn(core->dev, "dumping FW region!\n");
-
-Do we need this warning?
-
-> +       subsystem_dump(core);
-
-Maybe call it venus_do_coredump() so it isn't so generic.
-
-> +
->         pm_runtime_put_sync(core->dev);
-> =20
->         while (core->pmdomains[0] && pm_runtime_active(core->pmdomains[0]=
-))
