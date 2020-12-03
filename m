@@ -2,198 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346F12CE2E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:48:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D571C2CE2E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730056AbgLCXqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:46:47 -0500
-Received: from mail-02.mail-europe.com ([51.89.119.103]:42462 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729721AbgLCXqq (ORCPT
+        id S1728901AbgLCXqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:46:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727877AbgLCXqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:46:46 -0500
-Date:   Thu, 03 Dec 2020 23:45:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1607039121;
-        bh=qmuWDzOsFI/zkFO7+hg/4oeX2zrEQVi6H5VQzyMJoG0=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=sRhaay1oZxiA6Hz7SyAMn3K7K0g66+jksKGe7XLs1uD+DSFoyV3oMPY9HcYoqExJC
-         ZIKW3HkKFLBRj1t5+5kFkh0pXuC8v2bzLd1nmjuwU3tgohUCk+WyfWUkSXMmWSXjy1
-         SoE5j8sjkRf1WR4yCk/qhFdcdUQY3Vg5hliyolUA=
-To:     Elia Devito <eliadevito@gmail.com>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     Alex Hung <alex.hung@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH v2 2/2] intel-hid: add alternative method to enable switches
-Message-ID: <u_tIRoW7nG4DQc7H_wcr9yn8oIc5rO9SsWKfOoJz4c9KKDJtUsYore_4tyNYxn3r0OpEOI5rsyrE__1Y2hbIc8lnS5cJKeeFmqyPdRjDVyU=@protonmail.com>
-In-Reply-To: <20201203212148.36039-1-eliadevito@gmail.com>
-References: <69f340f6-4301-6546-f14a-47d90208d44b@redhat.com> <20201203212148.36039-1-eliadevito@gmail.com>
+        Thu, 3 Dec 2020 18:46:00 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39257C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 15:45:20 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id f16so3518189otl.11
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 15:45:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uS7KQLK0U5gabPQdDiHHbCBP4og7myvp4pgL7QMqsmk=;
+        b=iQYjQ/3Cp+Bagku5Jo6rhYtUkaXeSP1S1/VBJjWvrSGgzBbeqV8ZoRpL6Olgx463EV
+         kUgp+jzxr0e7t57Q63kHX3gFR8TXs8et6vPaNeS4Yvdhxm8UhCx3Mo8DDbgF3Sf6nzuD
+         Yg2/ZecVWm/TEsBRws4neuIBL77pQikTa7MoMZqlCfYehCvUAAJETH+nIKVwRtR1His7
+         LZL43ITgi55guLkJ0iRx5EU9/9IQDKQCJPWtid353PXHYG4ddFqiUVn8Tz6h+mI0e57H
+         zbVezEHXap/vZLrXKBmEnPzmB34hVissh1U+UDNm+pfO/CgPDG3+Dt4KAAeFaPu6afRH
+         Nygg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uS7KQLK0U5gabPQdDiHHbCBP4og7myvp4pgL7QMqsmk=;
+        b=hKOfM0spX7qA91TZASgQmlTuh1TZsQuJiGAUN0pZXQtY6ZLKZAoTc6/VaYHQ+YDn8S
+         THTClM1cXMx1a1fQPAuNbZduC9jaisnBNgF5P7No+Cy3AKSoDJk6zsrvp2s2fr3BA4jn
+         vf0k1B+VLN6c/+akjOZIQs5EtSkowJ6iQR5HOBn2YKRfpufXEjRYOBVO07MgEoYH1Iox
+         uSV0ehjzJXIRA6sV6vh3W1i0yb70OLslwA3zD/fFPXrvCiMltt0LsIpoJB2gicPyTMVs
+         TotUM2FVyb5y4UE3vb8eLkxLMt2f/uCunHLow+XSAmuh4xdigcBs7eMf5axaR8NG56uo
+         B+PQ==
+X-Gm-Message-State: AOAM530GXBB1EDIeqzzz6LFOSMK3UOg7LfdO0ukCAxvi7XR55VbT01Z/
+        tFVPKNPxdN1bTD6jiw+dxUdyRg==
+X-Google-Smtp-Source: ABdhPJywp8aHWzZXEymU0Z/dLtlfTIGsbKnetdQeOLD4UqK8xE0zsHXz6HBHWCdx7XcSX6tyfPNCIw==
+X-Received: by 2002:a9d:5388:: with SMTP id w8mr1435765otg.311.1607039119614;
+        Thu, 03 Dec 2020 15:45:19 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t21sm223571otr.77.2020.12.03.15.45.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 15:45:18 -0800 (PST)
+Date:   Thu, 3 Dec 2020 17:45:17 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/2] regulator: qcom-rpmh: Add support for PM8350/PM8350c
+Message-ID: <X8l4jThf8XlRnyjy@builder.lan>
+References: <20201203071244.2652297-1-vkoul@kernel.org>
+ <20201203071244.2652297-2-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203071244.2652297-2-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Thu 03 Dec 01:12 CST 2020, Vinod Koul wrote:
 
+> Add support from RPMH regulators found in PM8350 and PM8350c PMICs
+> 
 
-2020. december 3., cs=C3=BCt=C3=B6rt=C3=B6k 22:21 keltez=C3=A9ssel, Elia De=
-vito =C3=ADrta:
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-> [...]
-> diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/inte=
-l-hid.c
-> index 86261970bd8f..fed24d4f28b8 100644
-> --- a/drivers/platform/x86/intel-hid.c
-> +++ b/drivers/platform/x86/intel-hid.c
-> @@ -15,6 +15,9 @@
->  #include <linux/platform_device.h>
->  #include <linux/suspend.h>
->
-> +/* When NOT in tablet mode, VGBS returns with the flag 0x40 */
-> +#define TABLET_MODE_FLAG 0x40
-
-I think `BIT(6)` would be better (linux/bits.h).
-
-
-> +
->  MODULE_LICENSE("GPL");
->  MODULE_AUTHOR("Alex Hung");
->
-> @@ -89,9 +92,26 @@ static const struct dmi_system_id button_array_table[]=
- =3D {
->  =09{ }
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/regulator/qcom-rpmh-regulator.c | 62 +++++++++++++++++++++++++
+>  1 file changed, 62 insertions(+)
+> 
+> diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
+> index d488325499a9..800072b90efd 100644
+> --- a/drivers/regulator/qcom-rpmh-regulator.c
+> +++ b/drivers/regulator/qcom-rpmh-regulator.c
+> @@ -865,6 +865,60 @@ static const struct rpmh_vreg_init_data pm8150l_vreg_data[] = {
+>  	{},
 >  };
-> [...]
-> +static void detect_tablet_mode(struct platform_device *device)
-
-I believe `report_tablet_mode_state()` or something similar would be a more=
- apt name.
-
-
-> +{
-> +=09struct intel_hid_priv *priv =3D dev_get_drvdata(&device->dev);
-> +=09acpi_handle handle =3D ACPI_HANDLE(&device->dev);
-> +=09unsigned long long vgbs;
-> +=09int m;
+>  
+> +static const struct rpmh_vreg_init_data pm8350_vreg_data[] = {
+> +	RPMH_VREG("smps1",  "smp%s1",  &pmic5_ftsmps510, "vdd-s1"),
+> +	RPMH_VREG("smps2",  "smp%s2",  &pmic5_ftsmps510, "vdd-s2"),
+> +	RPMH_VREG("smps3",  "smp%s3",  &pmic5_ftsmps510, "vdd-s3"),
+> +	RPMH_VREG("smps4",  "smp%s4",  &pmic5_ftsmps510, "vdd-s4"),
+> +	RPMH_VREG("smps5",  "smp%s5",  &pmic5_ftsmps510, "vdd-s5"),
+> +	RPMH_VREG("smps6",  "smp%s6",  &pmic5_ftsmps510, "vdd-s6"),
+> +	RPMH_VREG("smps7",  "smp%s7",  &pmic5_ftsmps510, "vdd-s7"),
+> +	RPMH_VREG("smps8",  "smp%s8",  &pmic5_ftsmps510, "vdd-s8"),
+> +	RPMH_VREG("smps9",  "smp%s9",  &pmic5_ftsmps510, "vdd-s9"),
+> +	RPMH_VREG("smps10", "smp%s10", &pmic5_hfsmps510, "vdd-s10"),
+> +	RPMH_VREG("smps11", "smp%s11", &pmic5_hfsmps510, "vdd-s11"),
+> +	RPMH_VREG("smps12", "smp%s12", &pmic5_hfsmps510, "vdd-s12"),
+> +	RPMH_VREG("ldo1",   "ldo%s1",  &pmic5_nldo,      "vdd-l1-l4"),
+> +	RPMH_VREG("ldo2",   "ldo%s2",  &pmic5_pldo,      "vdd-l2-l7"),
+> +	RPMH_VREG("ldo3",   "ldo%s3",  &pmic5_nldo,      "vdd-l3-l5"),
+> +	RPMH_VREG("ldo4",   "ldo%s4",  &pmic5_nldo,      "vdd-l1-l4"),
+> +	RPMH_VREG("ldo5",   "ldo%s5",  &pmic5_nldo,      "vdd-l3-l5"),
+> +	RPMH_VREG("ldo6",   "ldo%s6",  &pmic5_nldo,      "vdd-l6-l9-l10"),
+> +	RPMH_VREG("ldo7",   "ldo%s7",  &pmic5_pldo,      "vdd-l2-l7"),
+> +	RPMH_VREG("ldo8",   "ldo%s8",  &pmic5_nldo,      "vdd-l8"),
+> +	RPMH_VREG("ldo9",   "ldo%s9",  &pmic5_nldo,      "vdd-l6-l9-l10"),
+> +	RPMH_VREG("ldo10",  "ldo%s10", &pmic5_nldo,      "vdd-l6-l9-l10"),
+> +	{},
+> +};
 > +
-> +=09if (!intel_hid_evaluate_method(handle, INTEL_HID_DSM_VGBS_FN, &vgbs))
-> +=09=09return;
+> +static const struct rpmh_vreg_init_data pm8350c_vreg_data[] = {
+> +	RPMH_VREG("smps1",  "smp%s1",  &pmic5_hfsmps510, "vdd-s1"),
+> +	RPMH_VREG("smps2",  "smp%s2",  &pmic5_ftsmps510, "vdd-s2"),
+> +	RPMH_VREG("smps3",  "smp%s3",  &pmic5_ftsmps510, "vdd-s3"),
+> +	RPMH_VREG("smps4",  "smp%s4",  &pmic5_ftsmps510, "vdd-s4"),
+> +	RPMH_VREG("smps5",  "smp%s5",  &pmic5_ftsmps510, "vdd-s5"),
+> +	RPMH_VREG("smps6",  "smp%s6",  &pmic5_ftsmps510, "vdd-s6"),
+> +	RPMH_VREG("smps7",  "smp%s7",  &pmic5_ftsmps510, "vdd-s7"),
+> +	RPMH_VREG("smps8",  "smp%s8",  &pmic5_ftsmps510, "vdd-s8"),
+> +	RPMH_VREG("smps9",  "smp%s9",  &pmic5_ftsmps510, "vdd-s9"),
+> +	RPMH_VREG("smps10", "smp%s10", &pmic5_ftsmps510, "vdd-s10"),
+> +	RPMH_VREG("ldo1",   "ldo%s1",  &pmic5_pldo_lv,   "vdd-l1-l12"),
+> +	RPMH_VREG("ldo2",   "ldo%s2",  &pmic5_pldo_lv,   "vdd-l2-l8"),
+> +	RPMH_VREG("ldo3",   "ldo%s3",  &pmic5_pldo,      "vdd-l3-l4-l5-l7-l13"),
+> +	RPMH_VREG("ldo4",   "ldo%s4",  &pmic5_pldo,      "vdd-l3-l4-l5-l7-l13"),
+> +	RPMH_VREG("ldo5",   "ldo%s5",  &pmic5_pldo,      "vdd-l3-l4-l5-l7-l13"),
+> +	RPMH_VREG("ldo6",   "ldo%s6",  &pmic5_pldo,      "vdd-l6-l9-l11"),
+> +	RPMH_VREG("ldo7",   "ldo%s7",  &pmic5_pldo,      "vdd-l3-l4-l5-l7-l13"),
+> +	RPMH_VREG("ldo8",   "ldo%s8",  &pmic5_pldo_lv,   "vdd-l2-l8"),
+> +	RPMH_VREG("ldo9",   "ldo%s9",  &pmic5_pldo,      "vdd-l6-l9-l11"),
+> +	RPMH_VREG("ldo10",  "ldo%s10", &pmic5_nldo,      "vdd-l10"),
+> +	RPMH_VREG("ldo11",  "ldo%s11", &pmic5_pldo,      "vdd-l6-l9-l11"),
+> +	RPMH_VREG("ldo12",  "ldo%s12", &pmic5_pldo_lv,   "vdd-l1-l12"),
+> +	RPMH_VREG("ldo13",  "ldo%s13", &pmic5_pldo,      "vdd-l3-l4-l5-l7-l13"),
+> +	RPMH_VREG("bob",    "bob%s1",  &pmic5_bob,       "vdd-bob"),
+> +	{},
+> +};
 > +
-> +=09m =3D !(vgbs & TABLET_MODE_FLAG);
-> +=09input_report_switch(priv->switches, SW_TABLET_MODE, m);
-> +=09input_sync(priv->switches);
-> +}
-> +
->  static void notify_handler(acpi_handle handle, u32 event, void *context)
->  {
->  =09struct platform_device *device =3D context;
-> @@ -363,6 +415,13 @@ static void notify_handler(acpi_handle handle, u32 e=
-vent, void *context)
->  =09=09if (event =3D=3D 0xce)
->  =09=09=09goto wakeup;
->
-> +=09=09/*
-> +=09=09 * Switch events will wake the device and report the new switch
-> +=09=09 * position to the input subsystem.
-> +=09=09 */
-> +=09=09if (priv->switches && (event =3D=3D 0xcc || event =3D=3D 0xcd))
-> +=09=09=09goto wakeup;
-> +
->  =09=09/* Wake up on 5-button array events only. */
->  =09=09if (event =3D=3D 0xc0 || !priv->array)
->  =09=09=09return;
-> @@ -374,6 +433,21 @@ static void notify_handler(acpi_handle handle, u32 e=
-vent, void *context)
->
->  wakeup:
->  =09=09pm_wakeup_hard_event(&device->dev);
-> +
-> +=09=09if (priv->switches) {
-> +=09=09=09if (event =3D=3D 0xcc) {
-> +=09=09=09=09input_report_switch(priv->switches, SW_TABLET_MODE, 1);
-> +=09=09=09=09input_sync(priv->switches);
-> +=09=09=09=09return;
-> +=09=09=09}
-> +
-> +=09=09=09if (event =3D=3D 0xcd) {
-> +=09=09=09=09input_report_switch(priv->switches, SW_TABLET_MODE, 0);
-> +=09=09=09=09input_sync(priv->switches);
-> +=09=09=09=09return;
-> +=09=09=09}
-> +=09=09}
-> +
->  =09=09return;
->  =09}
->
-> @@ -398,6 +472,20 @@ static void notify_handler(acpi_handle handle, u32 e=
-vent, void *context)
->  =09=09}
->  =09}
->
-> +=09if (priv->switches) {
-> +=09=09if (event =3D=3D 0xcc) {
-> +=09=09=09input_report_switch(priv->switches, SW_TABLET_MODE, 1);
-> +=09=09=09input_sync(priv->switches);
-> +=09=09=09return;
-> +=09=09}
-> +
-> +=09=09if (event =3D=3D 0xcd) {
-> +=09=09=09input_report_switch(priv->switches, SW_TABLET_MODE, 0);
-> +=09=09=09input_sync(priv->switches);
-> +=09=09=09return;
-> +=09=09}
-> +=09}
-
-Wouldn't be better to create a new function `bool report_tablet_mode_event(=
-)`
-which would basically contain the above `if` or better, a `switch`, and the=
-n
-you could use it here and in the wake-up path like the following:
-
-```
-if (report_tablet_mode_event(priv->switches, event))
-  return;
-```
-(or similarly)
-
-
-> +
->  =09/* 0xC0 is for HID events, other values are for 5 button array */
->  =09if (event !=3D 0xc0) {
->  =09=09if (!priv->array ||
-> @@ -485,6 +573,16 @@ static int intel_hid_probe(struct platform_device *d=
-evice)
->  =09=09=09pr_err("Failed to setup Intel 5 button array hotkeys\n");
->  =09}
->
-> +=09/* Setup switches for devices that we know VGBS return correctly */
-> +=09if (dmi_check_system(dmi_vgbs_allow_list)) {
-> +=09=09dev_info(&device->dev, "platform supports switches\n");
-> +=09=09err =3D intel_hid_switches_setup(device);
-> +=09=09if (err)
-> +=09=09=09pr_err("Failed to setup Intel HID switches\n");
-> +=09=09else
-> +=09=09=09detect_tablet_mode(device);
-> +=09}
-> +
->  =09status =3D acpi_install_notify_handler(handle,
->  =09=09=09=09=09     ACPI_DEVICE_NOTIFY,
->  =09=09=09=09=09     notify_handler,
-> --
-> 2.28.0
-
-
-Regards,
-Barnab=C3=A1s P=C5=91cze
+>  static const struct rpmh_vreg_init_data pm8009_vreg_data[] = {
+>  	RPMH_VREG("smps1",  "smp%s1",  &pmic5_hfsmps510, "vdd-s1"),
+>  	RPMH_VREG("smps2",  "smp%s2",  &pmic5_hfsmps515, "vdd-s2"),
+> @@ -984,6 +1038,14 @@ static const struct of_device_id __maybe_unused rpmh_regulator_match_table[] = {
+>  		.compatible = "qcom,pm8150l-rpmh-regulators",
+>  		.data = pm8150l_vreg_data,
+>  	},
+> +	{
+> +		.compatible = "qcom,pm8350-rpmh-regulators",
+> +		.data = pm8350_vreg_data,
+> +	},
+> +	{
+> +		.compatible = "qcom,pm8350c-rpmh-regulators",
+> +		.data = pm8350c_vreg_data,
+> +	},
+>  	{
+>  		.compatible = "qcom,pm8998-rpmh-regulators",
+>  		.data = pm8998_vreg_data,
+> -- 
+> 2.26.2
+> 
