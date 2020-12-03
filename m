@@ -2,137 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE6E2CDE8E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA882CDE9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728293AbgLCTOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:14:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726829AbgLCTOd (ORCPT
+        id S1729402AbgLCTPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:15:40 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52630 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726829AbgLCTPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:14:33 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CBFC061A53;
-        Thu,  3 Dec 2020 11:13:47 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id o5so1982019pgm.10;
-        Thu, 03 Dec 2020 11:13:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=UB64UbUSJb9UjIl1DSmlKznWzh2B71H9tWiWqFm1ZJM=;
-        b=BLJbvXwmkwl6XhAADig3fsLHsyb6HK3nyco5RlxSqUtO/djuLDg2Zv4fp9/tJ1kcJQ
-         AbDJWNgtt5skMZ6xI6NNCdhq7EIEM1EhiDl6OHz0yK3UUrB1AOOPy8vOcXtT4IeX476D
-         xIWMgQGYplVr8dIZuCX3UT73s7pNclmobTjfCPjhkJZGepjrH9QHHob8PBWzLspnn9VN
-         n5C+64lIELXL5bTzAaLiKX/FMz8uB38orGaMZAFzoYwb5zDU1tM2vnBhDrnuxeCWmXNY
-         iMmPQpjzypj+tL1ZSgmOMW/V+fjyxzS/fby27yU77Gis/+mwrhqmqrkcV5FDr+J+zSuj
-         JaBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=UB64UbUSJb9UjIl1DSmlKznWzh2B71H9tWiWqFm1ZJM=;
-        b=i8ZkBaP/SmCaxOJP7DVNEK1uFX8JFAsaEe0iKuAhXqjsnGFe1Ew3zU9CER9gJOoCKh
-         AVCclLLn+Qpt0T75/z31hRlyqi1Ywkg4RmDnCXlDYVQzNepaCHU/sD5ouX9lAoZ0l39K
-         CPS6HuCq0jk7rM8RbRkVOyzlIMFYQKmg9ztU3wUKfwe0TC5LW7VSuXyBG+Q9cvlLCyE5
-         QeRVo7MAbniPEMxYE6vohuJVByyINSRIPBcsN3jRdVohvyJYJYbc5PYfjdqW6YtEKpKo
-         MHxuWDDcBk+qIRf23zxVP/u1RYZQIrVLhcmn7hpLI7rWXFARGJplQp/Y8sSfAwAX2xGa
-         u8lA==
-X-Gm-Message-State: AOAM530Vdv/1W64qYaNaQhgqikOGklfWF3hq9t8AgbrK52doWR+c9CrA
-        7z1kNkdECI5PgPizb+LyBrU=
-X-Google-Smtp-Source: ABdhPJz9yWlfT7ehjo7zLQpsqHuAuYSbMtbgIPfqsEDwOA98FxlFGKncve4+x3YYqITYx2QyvjGQ5Q==
-X-Received: by 2002:a63:1b1d:: with SMTP id b29mr4441309pgb.84.1607022826615;
-        Thu, 03 Dec 2020 11:13:46 -0800 (PST)
-Received: from adolin ([49.207.211.146])
-        by smtp.gmail.com with ESMTPSA id j9sm2455797pfa.58.2020.12.03.11.13.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 11:13:45 -0800 (PST)
-Date:   Fri, 4 Dec 2020 00:43:39 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     melissa.srw@gmail.com
-Cc:     daniel@ffwll.ch, hamohammed.sa@gmail.com,
-        rodrigosiqueiramelo@gmail.com, airlied@linux.ie,
-        mripard@kernel.org, maarten.lankhorst@linux.intel.com,
-        tzimmermann@suse.de, corbet@lwn.net,
-        dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/vkms: Add setup and testing information
-Message-ID: <20201203191339.u5hfwy6ycrrzeb3z@adolin>
+        Thu, 3 Dec 2020 14:15:39 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B3J2AP7144237;
+        Thu, 3 Dec 2020 14:14:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=sxUfLc0WsUlnI3s6mQc/gnCFxbAMIxUa9zBeXAumMvQ=;
+ b=ilDKDVbIrCWnweRx2BwT2ZLaNR8ACV2HomgHr2JuB3O76a3wAQNyleedy1z2KLi4PkG3
+ F119veb9BWWsOKdc3h302HePuL+oUcRsC956GsFyK7GJUHC22DKUZS8zfolia0hNSE3n
+ tGR+RHlTbzTdXpb6HbycRMjAgOOzh01+z8ARYpSazisQLm0rUB3OcEbuXsDXgE+CwaLv
+ y/wJKvblq6vsEH2mh2CMfgxuJHp7Nf3gXKDyaPrwEPTw7FbyDSexEfcxGYWAg92W9c3L
+ PntRgEJSryAhXPLp/9pkeplUE8Z9md60of+PZKyTqkvRg/eR/h+XobKESV6En2Ev83Oy Xw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3573jf4wtm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 14:14:56 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B3J2HsI145053;
+        Thu, 3 Dec 2020 14:14:55 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3573jf4wt4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 14:14:55 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B3Ivh0R006586;
+        Thu, 3 Dec 2020 19:14:54 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma03dal.us.ibm.com with ESMTP id 356xqhbtqf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Dec 2020 19:14:54 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B3JEs4a20841264
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Dec 2020 19:14:54 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EBA13112061;
+        Thu,  3 Dec 2020 19:14:53 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6AE3B112063;
+        Thu,  3 Dec 2020 19:14:53 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.195.249])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu,  3 Dec 2020 19:14:53 +0000 (GMT)
+Subject: Re: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM pointer
+ invalidated
+To:     Halil Pasic <pasic@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, borntraeger@de.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
+References: <20201202234101.32169-1-akrowiak@linux.ibm.com>
+ <20201203111907.72a89884.cohuck@redhat.com>
+ <20201203180141.19425931.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <3299bd03-f0b8-39ac-4f0e-04bd198633fa@linux.ibm.com>
+Date:   Thu, 3 Dec 2020 14:14:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20201203180141.19425931.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-03_11:2020-12-03,2020-12-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 suspectscore=3 phishscore=0 clxscore=1015 malwarescore=0
+ adultscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=859 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012030109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the vkms documentation to contain steps to:
 
- - setup the vkms driver
- - run tests using igt
 
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
----
- Documentation/gpu/vkms.rst | 47 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+On 12/3/20 12:01 PM, Halil Pasic wrote:
+> On Thu, 3 Dec 2020 11:19:07 +0100
+> Cornelia Huck <cohuck@redhat.com> wrote:
+>
+>>> @@ -1095,7 +1106,7 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
+>>>   	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
+>>>   
+>>>   	if (!data) {
+>>> -		matrix_mdev->kvm = NULL;
+>>> +		vfio_ap_mdev_put_kvm(matrix_mdev);
+>> Hm. I'm wondering whether you need to hold the maxtrix_dev lock here as
+>> well?
+> In v12 we eventually did come along and patch "s390/vfio-ap: allow hot
+> plug/unplug of AP resources using mdev device" made this a part of a
+> critical section protected by the matrix_dev->lock.
+>
+> IMHO the cleanup should definitely happen with the matrix_dev->lock held.
 
-diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
-index 13bab1d93bb3..d6782174d23f 100644
---- a/Documentation/gpu/vkms.rst
-+++ b/Documentation/gpu/vkms.rst
-@@ -7,6 +7,53 @@
- .. kernel-doc:: drivers/gpu/drm/vkms/vkms_drv.c
-    :doc: vkms (Virtual Kernel Modesetting)
- 
-+SETUP
-+=====
-+
-+The VKMS driver can be setup with the following steps:
-+
-+To check if VKMS is loaded, run::
-+
-+  lsmod | grep vkms
-+
-+This should list the VKMS driver. If no output is obtained, then
-+you need to enable and/or load the VKMS driver.
-+Ensure that the VKMS driver has been set as a loadable module in your
-+kernel config file. The following line should be present in the .config
-+file in your kernel root::
-+
-+  CONFIG_DRM_VKMS=m
-+
-+Compile and build the kernel for the changes to get reflected.
-+If your existing config already has VKMS available as a loadable module,
-+then there is no need to build the kernel again.
-+Now, to load the driver, use::
-+
-+  sudo modprobe vkms
-+
-+On running the lsmod command now, the VKMS driver will appear listed.
-+You can also observe the driver being loaded in the dmesg logs.
-+
-+To disable the driver, use ::
-+
-+  sudo modprobe -r vkms
-+
-+TESTING WITH IGT
-+================
-+
-+The IGT GPU Tools is a test suite used specifically for debugging and
-+development of the DRM drivers.
-+The IGT Tools can be installed from
-+`here <https://gitlab.freedesktop.org/drm/igt-gpu-tools>`_ .
-+Once you have installed IGT, you can run tests using::
-+
-+  ./scripts/run-tests.sh -t <name of test>
-+
-+For example, to test the functionality of the igt_draw library,
-+we can run the kms_draw_crc test::
-+
-+  ./scripts/run-tests.sh -t kms_draw_crc
-+
- TODO
- ====
- 
--- 
-2.25.1
+Agreed!
+
+>
+> Regards,
+> Halil
 
