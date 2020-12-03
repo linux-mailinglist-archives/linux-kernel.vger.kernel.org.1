@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22B72CE133
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7DD2CE134
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731707AbgLCVzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 16:55:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727554AbgLCVzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731634AbgLCVzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 3 Dec 2020 16:55:09 -0500
-Subject: Re: [GIT PULL] Networking for 5.10-rc7
+Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727274AbgLCVzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 16:55:09 -0500
+Subject: Re: [GIT PULL] s390 updates for 5.10-rc7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1607032468;
-        bh=Lo7lrm+mn84w8svm5yg/I/G8i8Iv7PH55ylXthuHHLY=;
+        bh=6Qy+b3M9ViG0/Ldb1f4xnlS0TkI+fwD8geoO7WlUftw=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=HCRkXoUAEKx9xialrv10p3FMTmwmfR6P7NvQVemu/6WBJ0No60jEUzuCQwiwCV9fa
-         gTE9m5mJ4vRCRkTJvgCNuF1lJ6rZap0NtfEREkICWiB7hpV+K2EFAKq5QWfIjvSajv
-         sss/eKoX0raOQTV2Ky/d7/nGzorjc1AleeE2QedILyx2kBYmpc6/VZTkWo6enITy9p
-         XoINuKZRxFzEA2PUlrPLJAeZRTuP/Aobgo3wnrAZZgyjyh8K9Jc3PexiH1ZVAwQywE
-         gly7+oAouCpT7+lvvXrUttzW8BtvXz7zJltVDIX+pUBrBb4f6ZPfU3PPMnKnRKuimu
-         IyNPAWdIXgYUw==
+        b=g+tYqx5NuVx38HE8V4AL5Bq33cI3320eNYzUTMPuMUiwAIs+FCk88m0pmfPx6lYiZ
+         yGaXoDNyhkNpekcat2znJIP874wdO9apIszhLHAw8n28w9l6QkLcQMmiL4WQiFuYfv
+         obWjRNDbKoToIyEo6TrHdbhVvAmQMWeAQq3fQ6wdR4LVqRqHSzov6Jaj/Tcovdt0Wj
+         fqeVDi7sAxDOREc3IZzQcotdU2xITEiGkkorikI5n5jC1bDFB61FaSBK3FAegPoDyD
+         2nFasinGigG6z53IjnOxyx694WZsC9z4Fe9PYXe+SeV8XVdfaBpwUNBaPD0m9CH1rp
+         +nu0Mr6Rqb0lQ==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201203204459.3963776-1-kuba@kernel.org>
-References: <20201203204459.3963776-1-kuba@kernel.org>
+In-Reply-To: <20201203193052.GD9994@osiris>
+References: <20201203193052.GD9994@osiris>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201203204459.3963776-1-kuba@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.10-rc7
-X-PR-Tracked-Commit-Id: 6f076ce6ab1631abf566a6fb830c02fe5797be9a
+X-PR-Tracked-Message-Id: <20201203193052.GD9994@osiris>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.10-6
+X-PR-Tracked-Commit-Id: b1cae1f84a0f609a34ebcaa087fbecef32f69882
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bbe2ba04c5a92a49db8a42c850a5a2f6481e47eb
-Message-Id: <160703246842.16480.7501069381542589789.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: fee5be18524f961de653fe6103f927c84ebbfd38
+Message-Id: <160703246826.16480.9164224896469159516.pr-tracker-bot@kernel.org>
 Date:   Thu, 03 Dec 2020 21:54:28 +0000
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu,  3 Dec 2020 12:44:59 -0800:
+The pull request you sent on Thu, 3 Dec 2020 20:30:52 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.10-rc7
+> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.10-6
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bbe2ba04c5a92a49db8a42c850a5a2f6481e47eb
+https://git.kernel.org/torvalds/c/fee5be18524f961de653fe6103f927c84ebbfd38
 
 Thank you!
 
