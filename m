@@ -2,176 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAEE2CCDD3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 05:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B043E2CCDD6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 05:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727247AbgLCEQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 23:16:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbgLCEQg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 23:16:36 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A4CC061A4D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 20:15:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=7OtiwI+RbrOUTcd6ZNTb5KMJE5Y6Y667iZfJzsWfUPc=; b=OnJocBIy36aLw2g2aivCBciMJ2
-        DwaTc7kKNahT/6+eJsYL0URaJomQcb7YeBIzMNsdo4vDNpnuqDqZxqJaQdXN+COXcNzXqCQOm7h/H
-        GuTQNBpUIk84ZQyHB21S0md8AMyR1Hc2LUQS2SmuEudeoV9Xq856nkMcGl/fDZp84Iwr54yMaJi2B
-        xdGWFYaGGHzZZK3a0rRfM5PhppZoNKf4mf/FKJZqpBFEQ0NfdGKavwht58iT5I9mVP8MvgTRL4NYn
-        Gn/1GKXYURE725RcGHNb6XB9lPBwBxDDjyf1VKDW3U+BInokZMebUdynBP9mbh94FcqpILPbawyl1
-        3U16Jztg==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkg24-0002gW-Br; Thu, 03 Dec 2020 04:15:52 +0000
-Subject: Re: WARNING: filesystem loop5 was created with 512 inodes, the real
- maximum is 511, mounting anyway
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>
-Cc:     syzbot <syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-References: <00000000000019cd7c05b515da9a@google.com>
- <7e108ab1-0b07-50dd-5862-a5121eab6094@infradead.org>
- <CACT4Y+YkH042G=+ErWY+dRLs5H0i1ao1xnSeHvGx8x=dn5KH1A@mail.gmail.com>
- <8d5ec04c-4646-3b70-6f6c-ea989e6c2c59@infradead.org>
- <CACT4Y+ZByhXxObU0cc6apB8-vMzyD6xu1_WAFtGqzximAvokGA@mail.gmail.com>
- <dc76e615-a2fc-64e1-c979-4699d0d57309@infradead.org>
-Message-ID: <0bc4dbbe-1adb-de9d-641f-bdc2a02efc8b@infradead.org>
-Date:   Wed, 2 Dec 2020 20:15:47 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <dc76e615-a2fc-64e1-c979-4699d0d57309@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1727023AbgLCEVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 23:21:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726071AbgLCEVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 23:21:19 -0500
+Date:   Thu, 3 Dec 2020 13:20:32 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606969238;
+        bh=hPQQVmuQd7VmGzIYfkhMqANTM9k5cWKXQchSIWSDRLw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KOFfET2teJ0Xcqqb1Q5Fdcqzo0+OXLhMjnpwCxf2VyPejgxGTN9w0WulzWs8xSHrx
+         O1UnQJ2/tU3NKg8yMbB0f7Ym4qMjneoYQh1YhctReKigB3rexwEd8ePxu3RnDbRHE2
+         ESDbb5uQM+IsXDH7dUC11lM2aneuQ8PBibG6oCcM4uP3HVMObHDFuWNrke21qt20Li
+         rOEuwKcy9zwLqsW9stTgqauA7QJNWgRI++B+3N4H2hXeWzNmhU5b/K3Hr6qYPrgy3P
+         zGt7icb7HEo/OAc/NHj14vZEV2HnX0w9cPHFi0niMQYBeP1fE3/YXM24En0rgsHTo8
+         SCu56a3nyQ7rg==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Kees Cook <keescook@chromium.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] x86/uprobes: Fix not using prefixes.nbytes for loop
+ over prefixes.bytes
+Message-Id: <20201203132032.392d7dce940ed89c34341169@kernel.org>
+In-Reply-To: <20201202145135.GF528281@linux.vnet.ibm.com>
+References: <160689905099.3084105.7880450206184269465.stgit@devnote2>
+        <160689907597.3084105.18019089399087866918.stgit@devnote2>
+        <20201202145135.GF528281@linux.vnet.ibm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 1:17 PM, Randy Dunlap wrote:
-> On 11/30/20 11:47 PM, Dmitry Vyukov wrote:
->> On Tue, Dec 1, 2020 at 2:03 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>>
->>> On 11/30/20 12:43 AM, Dmitry Vyukov wrote:
->>>> On Mon, Nov 30, 2020 at 5:29 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>>>>
->>>>> On 11/27/20 4:32 AM, syzbot wrote:
->>>>>> Hello,
->>>>>>
->>>>>> syzbot found the following issue on:
->>>>>>
->>>>>> HEAD commit:    418baf2c Linux 5.10-rc5
->>>>>> git tree:       upstream
->>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=171555b9500000
->>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=b81aff78c272da44
->>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=3fd34060f26e766536ff
->>>>>> compiler:       gcc (GCC) 10.1.0-syz 20200507
->>>>>>
->>>>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>>>>
->>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>>>> Reported-by: syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com
->>>>>>
->>>>>> BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
->>>>>> BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
->>>>>> BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
->>>>>> BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
->>>>>> BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
->>>>>> BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
->>>>>>
->>>>>>
->>>>>> ---
->>>>>> This report is generated by a bot. It may contain errors.
->>>>>> See https://goo.gl/tpsmEJ for more information about syzbot.
->>>>>> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>>>>>
->>>>>> syzbot will keep track of this issue. See:
->>>>>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On Wed, 2 Dec 2020 20:21:35 +0530
+Srikar Dronamraju <srikar@linux.vnet.ibm.com> wrote:
 
-...
+> * Masami Hiramatsu <mhiramat@kernel.org> [2020-12-02 17:51:16]:
+> 
+> > Since the insn.prefixes.nbytes can be bigger than the size of
+> > insn.prefixes.bytes[] when a same prefix is repeated, we have to
+> > check whether the insn.prefixes.bytes[i] != 0 and i < 4 instead
+> > of insn.prefixes.nbytes.
+> > 
+> > Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install and remove uprobes breakpoints")
+> > Cc: stable@vger.kernel.org
+> > Reported-by: Kees Cook <keescook@chromium.org>
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> 
+> Looks good to me.
+> 
+> Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 
->>>> Hi Randy,
->>>>
->>>> I see this bug was reported with a reproducer:
->>>> https://syzkaller.appspot.com/bug?id=a32ebd5db2f7c957b82cf54b97bdecf367bf0421
->>>> I assume it's a dup of this one.
->>>
->>> Sure, looks the same.
->>>
->>>> If you need the image itself, you can dump it to a file in the C
->>>> reproducer inside of syz_mount_image before mount call.
->>>
->>> Yes, got that.
->>>
->>> What outcome or result are you looking for here?
->>> Or what do you see as the problem?
->>
->> Hi Randy,
->>
->> "WARNING:" in kernel output is supposed to mean a kernel source bug.
->> Presence of that kernel bug is what syzbot has reported.
->>
->> Note: the bug may be a misuse of the "WARNING:" for invalid user
->> inputs in output as well :)
-> 
-> 
-> [adding Al Viro]
-> 
-> Hi Dmitry,
-> 
-> I expect that the "WARNING:" message is being interpreted incorrectly here,
-> but that's a minor issue IMO.
-> 
-> 	if (info->si_lasti == BFS_MAX_LASTI)
-> 		printf("WARNING: filesystem %s was created with 512 inodes, the real maximum is 511, mounting anyway\n", s->s_id);
-> 
-
-...
-
-> 
-> 
-> However, in testing this, I see that the BFS image is not mounted
-> on /dev/loop# at all.
-> 
-> 'mount' says:
-> 
-> # mount -t bfs -o loop bfsfilesyz000.img  /mnt/stand
-> mount: /mnt/stand: mount(2) system call failed: Not a directory.
-> 
-> (but it is a directory)
-> 
-> and I have tracked that down to fs/namespace.c::graft_tree()
-> returning -ENOTDIR, but I don't know why that is happening.
-> 
-> 
-> Al, can you provide any insights on this?
-
-OK, with Al's help, here is the situation.
-
-If I use a regular file instead of a directory, the mount
-command succeeds.
-
-The printk() from fs/bfs/inode.c that uses the WARNING: string
-is not a WARN() or WARN_ON(). It's just a printk().
-
-<linux/asm-generic/bug.h> says:
-
- * Do not include "BUG"/"WARNING" in format strings manually to make these
- * conditions distinguishable from kernel issues.
-
-so if I change fs/bfs/inode.c to use "warning:" or "Warning," or "Note:",
-this little problem should go away.  Is that correct?
+Thanks Srikar!
 
 
-thanks.
+> 
+> > ---
+> >  arch/x86/kernel/uprobes.c |    4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+> > index 3fdaa042823d..bb3ea3705b99 100644
+> > --- a/arch/x86/kernel/uprobes.c
+> > +++ b/arch/x86/kernel/uprobes.c
+> > @@ -257,7 +257,7 @@ static bool is_prefix_bad(struct insn *insn)
+> >  {
+> >  	int i;
+> > 
+> > -	for (i = 0; i < insn->prefixes.nbytes; i++) {
+> > +	for (i = 0; insn->prefixes.bytes[i] && i < 4; i++) {
+> >  		insn_attr_t attr;
+> > 
+> >  		attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
+> > @@ -746,7 +746,7 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+> >  	 * Intel and AMD behavior differ in 64-bit mode: Intel ignores 66 prefix.
+> >  	 * No one uses these insns, reject any branch insns with such prefix.
+> >  	 */
+> > -	for (i = 0; i < insn->prefixes.nbytes; i++) {
+> > +	for (i = 0; insn->prefixes.bytes[i] && i < 4; i++) {
+> >  		if (insn->prefixes.bytes[i] == 0x66)
+> >  			return -ENOTSUPP;
+> >  	}
+> > 
+> 
+> -- 
+> Thanks and Regards
+> Srikar Dronamraju
+
+
 -- 
-~Randy
-
+Masami Hiramatsu <mhiramat@kernel.org>
