@@ -2,187 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640B52CE212
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:51:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 419A92CE217
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728798AbgLCWty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:49:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727664AbgLCWty (ORCPT
+        id S1728718AbgLCWv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:51:27 -0500
+Received: from relay12.mail.gandi.net ([217.70.178.232]:50109 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727359AbgLCWv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:49:54 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD824C061A4F;
-        Thu,  3 Dec 2020 14:49:13 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id y10so4390149ljc.7;
-        Thu, 03 Dec 2020 14:49:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m2KIRqm5C9Jb+1GBg3YOa+h+M1YJN2474HFTwVQNFbI=;
-        b=tRQA/Fy3xfTQmn8yjHzihBY8BM3bi9J4b8ExnFFNIUCjK0jo4vduz120DgtyDvRTWu
-         U319VlqY0W8vFGs8Tu7jXs99u6HH9jhV7p72h8abmQdmM0Wid4z3cw35o1rh6XIVBS2n
-         C3LjVBcX8HrxYnHhpck60m58l5RRrzq4nZ/5hRYYytBeHvSMPBPB8f1Tv7OAn/uQI6G5
-         hT6GkGmxvUmmjBO6qF7Sy96ZJa077uIyMLy5jLKleEpX1EXA8H3j/pzhuAoCUV2VDqBx
-         oJ2TrCr0Ab3LFOYf2w03XGr4e2JMMrhpVPUjAbSO4uI5I3gcBvpjfbWcRa8gx79Uh7I6
-         ARJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m2KIRqm5C9Jb+1GBg3YOa+h+M1YJN2474HFTwVQNFbI=;
-        b=a27A94YSlIg34s5m/pWiHpIJR8IP3XwofOFira2p+/DMuvX/oLA1NRgWLStMwGKomr
-         kXGERG2B6aAmOoYW9UMrHuAFGKW5SMZlgfGSSi1DSsae5OVU44YUjc6pr1+KB9RwdwL5
-         HCo3BvO30HgHSZBhLuU4zm+oKWxk3tcnymx99w4jE6NAecgiwktMwZSZ64s5OoOTq0tC
-         j42p+wzLPce6Y1U6uKvviu6Lw9kNSZ4SHDgUJOYwm+KnNmh6Oo3qOpPyhvZaOFmmUagv
-         PA4HHlQxOTOj79H7tMaDevoYzet+1Eh6mtWUrN/+ySeU9L8pfn+y9t+IIBFiNSqzTQAS
-         1nfQ==
-X-Gm-Message-State: AOAM5318yXt0v1DCYdGWJZTtn3i7G6fBCRn4L0//BM4b29DrfkxHguKJ
-        lk1l2AjHMdJIpD8ogvsn312yMkArfmqVCX2eiyM=
-X-Google-Smtp-Source: ABdhPJyBVpsbhvAeQ29b6jvJxTu/41UCWsu3CU4yMcRdBA07o5FPXVhJIeHUEW56dVlDpfwkN1XDYXC88jdUTsDie/g=
-X-Received: by 2002:a2e:9b90:: with SMTP id z16mr2198827lji.433.1607035752296;
- Thu, 03 Dec 2020 14:49:12 -0800 (PST)
+        Thu, 3 Dec 2020 17:51:26 -0500
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id DEDA2200002;
+        Thu,  3 Dec 2020 22:50:43 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rtc: ep93xx: Fix NULL pointer dereference in ep93xx_rtc_read_time
+Date:   Thu,  3 Dec 2020 23:50:43 +0100
+Message-Id: <160703582070.102006.18400612794022743785.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201201095507.10317-1-nikita.shubin@maquefel.me>
+References: <20201201095131.9772-1-nikita.shubin@maquefel.me> <20201201095507.10317-1-nikita.shubin@maquefel.me>
 MIME-Version: 1.0
-References: <20201202182725.265020-1-shy828301@gmail.com> <20201202182725.265020-6-shy828301@gmail.com>
- <20201203030632.GG1375014@carbon.DHCP.thefacebook.com> <CAHbLzkrU0X2LRRiG_rXdOf8tP7BR=46ccJR=3AM6CkWbscBWRw@mail.gmail.com>
- <CAHbLzkpAsoOWeRuFeTM2+YbjfqxY2U3vK7EYX2Nui=YVOBXFpw@mail.gmail.com> <20201203200715.GB1571588@carbon.DHCP.thefacebook.com>
-In-Reply-To: <20201203200715.GB1571588@carbon.DHCP.thefacebook.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 3 Dec 2020 14:49:00 -0800
-Message-ID: <CAHbLzkoUaLehmngW7geCDj+Fzd5+tkk3tBsbcdHuSXUXKLBuyw@mail.gmail.com>
-Subject: Re: [PATCH 5/9] mm: memcontrol: add per memcg shrinker nr_deferred
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 12:07 PM Roman Gushchin <guro@fb.com> wrote:
->
-> On Thu, Dec 03, 2020 at 10:03:44AM -0800, Yang Shi wrote:
-> > On Wed, Dec 2, 2020 at 8:54 PM Yang Shi <shy828301@gmail.com> wrote:
-> > >
-> > > On Wed, Dec 2, 2020 at 7:06 PM Roman Gushchin <guro@fb.com> wrote:
-> > > >
-> > > > On Wed, Dec 02, 2020 at 10:27:21AM -0800, Yang Shi wrote:
-> > > > > Currently the number of deferred objects are per shrinker, but some slabs, for example,
-> > > > > vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
-> > > > >
-> > > > > The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
-> > > > > excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
-> > > > > may suffer from over shrink, excessive reclaim latency, etc.
-> > > > >
-> > > > > For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
-> > > > > heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
-> > > > > might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
-> > > > >
-> > > > > We observed this hit in our production environment which was running vfs heavy workload
-> > > > > shown as the below tracing log:
-> > > > >
-> > > > > <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > > > > nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
-> > > > > cache items 246404277 delta 31345 total_scan 123202138
-> > > > > <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > > > > nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
-> > > > > last shrinker return val 123186855
-> > > > >
-> > > > > The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
-> > > > > This also resulted in significant amount of page caches were dropped due to inodes eviction.
-> > > > >
-> > > > > Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
-> > > > > better isolation.
-> > > > >
-> > > > > When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
-> > > > > would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
-> > > > >
-> > > > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > > > > ---
-> > > > >  include/linux/memcontrol.h |   9 +++
-> > > > >  mm/memcontrol.c            | 112 ++++++++++++++++++++++++++++++++++++-
-> > > > >  mm/vmscan.c                |   4 ++
-> > > > >  3 files changed, 123 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > > > index 922a7f600465..1b343b268359 100644
-> > > > > --- a/include/linux/memcontrol.h
-> > > > > +++ b/include/linux/memcontrol.h
-> > > > > @@ -92,6 +92,13 @@ struct lruvec_stat {
-> > > > >       long count[NR_VM_NODE_STAT_ITEMS];
-> > > > >  };
-> > > > >
-> > > > > +
-> > > > > +/* Shrinker::id indexed nr_deferred of memcg-aware shrinkers. */
-> > > > > +struct memcg_shrinker_deferred {
-> > > > > +     struct rcu_head rcu;
-> > > > > +     atomic_long_t nr_deferred[];
-> > > > > +};
-> > > >
-> > > > The idea makes total sense to me. But I wonder if we can add nr_deferred to
-> > > > struct list_lru_one, instead of adding another per-memcg per-shrinker entity?
-> > > > I guess it can simplify the code quite a lot. What do you think?
-> > >
-> > > Aha, actually this exactly was what I did at the first place. But Dave
-> > > NAK'ed this approach. You can find the discussion at:
-> > > https://lore.kernel.org/linux-mm/20200930073152.GH12096@dread.disaster.area/.
->
-> Yes, this makes sense for me. Thank you for the link!
->
-> >
-> > I did prototypes for both approaches (move nr_deferred to list_lru or
-> > to memcg). I preferred the list_lru approach at the first place. But
-> > Dave's opinion does make perfect sense to me. So I dropped that
-> > list_lru one. That email elaborated why moving nr_deferred to list_lru
-> > is not appropriate.
->
-> Hm, shouldn't we move list_lru to memcg then? It's not directly related
-> to your patchset, but maybe it's something we should consider in the future.
+On Tue, 1 Dec 2020 12:55:07 +0300, Nikita Shubin wrote:
+> Mismatch in probe platform_set_drvdata set's and method's that call
+> dev_get_platdata will result in "Unable to handle kernel NULL pointer
+> dereference", let's use according method for getting driver data after
+> platform_set_drvdata.
+> 
+> 8<--- cut here ---
+> Unable to handle kernel NULL pointer dereference at virtual address 00000000
+> pgd = (ptrval)
+> [00000000] *pgd=00000000
+> Internal error: Oops: 5 [#1] ARM
+> Modules linked in:
+> CPU: 0 PID: 1 Comm: swapper Not tainted 5.9.10-00003-g723e101e0037-dirty #4
+> Hardware name: Technologic Systems TS-72xx SBC
+> PC is at ep93xx_rtc_read_time+0xc/0x2c
+> LR is at __rtc_read_time+0x4c/0x8c
+> pc : [<c02b01c8>]    lr : [<c02ac38c>]    psr: 40000053
+> sp : c441dcf0  ip : c441dd50  fp : 00000000
+> r10: fffffdfb  r9 : 00000000  r8 : c0520ca8
+> r7 : c149b53c  r6 : c149b400  r5 : c441dd2c  r4 : c149b400
+> r3 : 00000000  r2 : c441dd2c  r1 : c441dd2c  r0 : c04ea2a0
+> Flags: nZcv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment none
+> Control: 0000717f  Table: 00004000  DAC: 00000053
+> Process swapper (pid: 1, stack limit = 0x(ptrval))
+> Stack: (0xc441dcf0 to 0xc441e000)
+> dce0:                                     c149b400 c02ac38c 00000000 c441dd2c
+> dd00: c149b400 c02ac3f8 c441dde4 c04ea290 c149b400 c149b400 c0520ca8 c02acc54
+> dd20: c400ce60 c04e5230 ffffffff 00000000 00000000 00000000 00000000 00000000
+> dd40: 00000000 00000000 00000000 00000000 c144f745 c144f740 00000005 c441dd7c
+> dd60: c045c56e c0231240 00000000 c045c56f 00000004 c04e5228 c04ea290 c1496120
+> dd80: c04ea290 c149b400 00000000 c0520ca8 00000000 fffffdfb 00000000 c02abd80
+> dda0: c14967c0 c00ab884 c4400160 00000dc0 c14967c0 c4400160 00000dc0 c02ae70c
+> ddc0: 40000053 c03b6f10 c149b400 c0265700 c14967e0 c149b400 00000000 c14967e0
+> dde0: c0503d44 c14967e4 00000004 c02ae754 00000000 c1496120 c04ea290 ffffffff
+> de00: 00000000 c0520ca8 00000000 c04e5228 c1496120 c04ea290 ffffffff c0520ca8
+> de20: 00000000 fffffdfb 00000000 c02b028c c04ea2a0 c0503e90 00000000 c0503e90
+> de40: c0520ca8 c026424c c04ea2a0 00000000 00000000 c0262918 00000000 c04ea2a0
+> de60: c0503e90 c0502240 c050e000 c0498504 c04d5840 c0262da0 00000000 c04ea2a0
+> de80: c0503e90 c0262e70 c04ea2a0 c0503e90 c0262dbc c0260d44 c0502240 c4408c70
+> dea0: c4478440 c04e5228 c0503e90 c45b6900 00000000 c026223c c0503e90 c0261dd8
+> dec0: c04347ed c04347f5 c441ba60 c0503e90 c04cb99c ffffe000 00000000 c026342c
+> dee0: c050e000 c04cb99c ffffe000 c0264210 c050e000 c04cb9ac c050e000 c000973c
+> df00: c04466a2 c002d734 c440a480 c04b9300 c0498504 0000005c 00000006 00000006
+> df20: 00000000 c0498c34 0000005b c0498c34 c4400200 c440a4ef 00000000 c04e5228
+> df40: 00000dc0 00000006 0000005c c04e5228 c04d585c 00000007 0000005c c440a480
+> df60: c04d5860 c04b9ecc 00000006 00000006 00000000 c04b93e4 00000000 c04dfb50
+> df80: c441c000 00000000 c03b2220 00000000 00000000 00000000 00000000 00000000
+> dfa0: 00000000 c03b2228 00000000 c00082c0 00000000 00000000 00000000 00000000
+> dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> dfe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+> [<c02b01c8>] (ep93xx_rtc_read_time) from [<c02ac38c>] (__rtc_read_time+0x4c/0x8c)
+> [<c02ac38c>] (__rtc_read_time) from [<c02ac3f8>] (rtc_read_time+0x2c/0x4c)
+> [<c02ac3f8>] (rtc_read_time) from [<c02acc54>] (__rtc_read_alarm+0x28/0x358)
+> [<c02acc54>] (__rtc_read_alarm) from [<c02abd80>] (__rtc_register_device+0x124/0x2ec)
+> [<c02abd80>] (__rtc_register_device) from [<c02b028c>] (ep93xx_rtc_probe+0xa4/0xac)
+> [<c02b028c>] (ep93xx_rtc_probe) from [<c026424c>] (platform_drv_probe+0x24/0x5c)
+> [<c026424c>] (platform_drv_probe) from [<c0262918>] (really_probe+0x218/0x374)
+> [<c0262918>] (really_probe) from [<c0262da0>] (device_driver_attach+0x44/0x60)
+> [<c0262da0>] (device_driver_attach) from [<c0262e70>] (__driver_attach+0xb4/0xc0)
+> [<c0262e70>] (__driver_attach) from [<c0260d44>] (bus_for_each_dev+0x68/0xac)
+> [<c0260d44>] (bus_for_each_dev) from [<c026223c>] (driver_attach+0x18/0x24)
+> [<c026223c>] (driver_attach) from [<c0261dd8>] (bus_add_driver+0x150/0x1b4)
+> [<c0261dd8>] (bus_add_driver) from [<c026342c>] (driver_register+0xb0/0xf4)
+> [<c026342c>] (driver_register) from [<c0264210>] (__platform_driver_register+0x30/0x48)
+> [<c0264210>] (__platform_driver_register) from [<c04cb9ac>] (ep93xx_rtc_driver_init+0x10/0x1c)
+> [<c04cb9ac>] (ep93xx_rtc_driver_init) from [<c000973c>] (do_one_initcall+0x7c/0x1c0)
+> [<c000973c>] (do_one_initcall) from [<c04b9ecc>] (kernel_init_freeable+0x168/0x1ac)
+> [<c04b9ecc>] (kernel_init_freeable) from [<c03b2228>] (kernel_init+0x8/0xf4)
+> [<c03b2228>] (kernel_init) from [<c00082c0>] (ret_from_fork+0x14/0x34)
+> Exception stack(0xc441dfb0 to 0xc441dff8)
+> dfa0:                                     00000000 00000000 00000000 00000000
+> dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> Code: e12fff1e e92d4010 e590303c e1a02001 (e5933000)
+> ---[ end trace c914d6030eaa95c8 ]---
 
-I haven't thought about this yet. I agree we could look into it
-further later on.
+Applied, thanks!
 
->
-> What worries me is that with your patchset we'll have 3 separate
-> per-memcg (per-node) per-shrinker entity, each with slightly different
-> approach to allocate/extend/reparent/release. So it begs for some
-> unification. I don't think it's a showstopper for your work though, it
-> can be done later.
+[1/1] rtc: ep93xx: Fix NULL pointer dereference in ep93xx_rtc_read_time
+      commit: 00c33482bb6110bce8110daa351f9b3baf4df7dc
 
-Off the top of my head, we may be able to have shrinker_info struct,
-it should look like:
-
-struct shrinker_info {
-    atomic_long_t nr_deferred;
-    /* Just one bit is used now */
-    u8 map:1;
-}
-
-struct memcg_shrinker_info {
-    struct rcu_head rcu;
-    /* Indexed by shrinker ID */
-    struct shrinker_info info[];
-}
-
-Then in struct mem_cgroup_per_node, we could have:
-
-struct mem_cgroup_per_node {
-    ....
-    struct memcg_shrinker_info __rcu *shrinker_info;
-    ....
-}
-
-In this way shrinker_info should be allocated to all memcgs, including
-root. But shrinker could ignore root's map bit. We may waste a little
-bit memory, but we get unification.
-
-Would that work?
+Best regards,
+-- 
+Alexandre Belloni <alexandre.belloni@bootlin.com>
