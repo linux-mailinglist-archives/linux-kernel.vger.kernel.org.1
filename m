@@ -2,114 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F8A2CD265
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F4B2CD269
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729936AbgLCJUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:20:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726003AbgLCJUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:20:10 -0500
-Date:   Thu, 3 Dec 2020 09:19:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606987168;
-        bh=g4ZTxyDoJc2ofiLEywA7CSH7BT199Th4IfgPacy3FN8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ql0QhUGhdAJl7TpjBdm2ozOMwP7frnOPgrdvJQsFGtfROn++9HOOSD403Xj2DCuRP
-         RjILnJ2mFMEhnhM9TWoaINr/w5kLWK/vcZ8AOherzLmqEOvJLhJLJPEADm01yYswRA
-         d4GKnr0vXXcGQooxPydiYdBHVgohYVHIavNyH4GRvaHXMx43AOb8uEFCiva+5OucsL
-         Rw1wr2LfwYhvfb8jrqmWHlnS1lnoeAZoZEXrI42OlcrBmkOHBX3Q6hT1SSN0iPMHQg
-         XMXMVT4ra/Ae1GERYkbVVbbLkFgLC/Aqb4t1cRubyF9HZhLP3CA7fuN52bI9wKQhpb
-         8y+Px29AjV2FA==
-From:   Will Deacon <will@kernel.org>
-To:     "liwei (GF)" <liwei391@huawei.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        guohanjun@huawei.com
-Subject: Re: [PATCH v3] drivers/perf: Add support for ARMv8.3-SPE
-Message-ID: <20201203091922.GA30817@willie-the-truck>
-References: <20201127060322.29025-1-liwei391@huawei.com>
- <20201130100628.GB24098@willie-the-truck>
- <47201e85-7cf3-7c94-d1be-9c83ef8c3416@huawei.com>
+        id S1729988AbgLCJVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:21:12 -0500
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:5975 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726003AbgLCJVK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 04:21:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1606987270; x=1638523270;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cEtZG8CzappP1JMZACxHlWy5D0g972poZlbDDstlN+M=;
+  b=gT7e28F7xsDrl5ZZZDsN81eJOdMflGPHb2ZHhJFQPieQFi5A/jhsdpsV
+   nsqqMJXVRhDrz9ZrUNiIpVMr5WPpG8iV0Bz3w7w8Agnf30PpN+6r4SHmz
+   rAEHAdbClzk+73Pwxbjq8qLfISaKKQrlubTOZZeJmdfrqtnjjUm0jJewg
+   Bvio6Ap/Tg99HFrUbSF8UbYRkiPZpmZzb4xDdpUd/vONeE7UZ9fJnFSZi
+   PVAeI9KV4ggesv04RUjaBHBkAdJu954URl0x+vJIWu0Q1AYW7ddq4Ye9O
+   TYyKWhuV/MM3UdmCz53ItDFXuzQeUGgPgs6Z1ueLAHNgL8WXX/AuqFYtX
+   A==;
+IronPort-SDR: GRX9KEdt50jeDyuZjGYMEpOWe7Nr8rTP3+o059LFntscDJOUGIqWA/SulD4EME081M4J2ZSYA7
+ gXV5vOSjqA7ejzl2Jux+w1gxjbXjOmPj5T+x60/JJ0rLI7+/8A9VsV1MlYsGe3MEGDJHn/XXAj
+ uLBU7T3xe4K2IW3LinMpwZ38GVE4+tZfwE205Npg7CjYHrGjeZaom9Av+gzInE4JN+o14Ow0Zo
+ etxxPwP+si5k53hGw6nkxLi/soYTgIG1jJ0s4hlDCqjsoAzrbTjdDwKzeLWEzLSRKizB+7GGA3
+ KBc=
+X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
+   d="scan'208";a="101252675"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Dec 2020 02:20:04 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 3 Dec 2020 02:20:04 -0700
+Received: from ness.microchip.com (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 3 Dec 2020 02:20:01 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Dan Sneddon <dan.sneddon@microchip.com>,
+        Cristian Birsan <cristian.birsan@microchip.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH] ARM: dts: at91: sama5d2: fix CAN message ram offset and size
+Date:   Thu, 3 Dec 2020 10:19:49 +0100
+Message-ID: <20201203091949.9015-1-nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47201e85-7cf3-7c94-d1be-9c83ef8c3416@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-On Thu, Dec 03, 2020 at 04:42:20PM +0800, liwei (GF) wrote:
-> On 2020/11/30 18:06, Will Deacon wrote:
-> > On Fri, Nov 27, 2020 at 02:03:22PM +0800, Wei Li wrote:
-> >>  /* Perf callbacks */
-> >>  static int arm_spe_pmu_event_init(struct perf_event *event)
-> >>  {
-> >> @@ -670,7 +686,7 @@ static int arm_spe_pmu_event_init(struct perf_event *event)
-> >>  	    !cpumask_test_cpu(event->cpu, &spe_pmu->supported_cpus))
-> >>  		return -ENOENT;
-> >>  
-> >> -	if (arm_spe_event_to_pmsevfr(event) & SYS_PMSEVFR_EL1_RES0)
-> >> +	if (arm_spe_event_to_pmsevfr(event) & arm_spe_pmsevfr_res0(spe_pmu->pmsver))
-> >>  		return -EOPNOTSUPP;
-> >>  
-> >>  	if (attr->exclude_idle)
-> >> @@ -937,6 +953,7 @@ static void __arm_spe_pmu_dev_probe(void *info)
-> >>  			fld, smp_processor_id());
-> >>  		return;
-> >>  	}
-> >> +	spe_pmu->pmsver = (u16)fld;
-> > 
-> > ... which also means we should clamp this value now that we expose it to
-> > userspace. Otherwise, userspace can't rely on this field for anything.
-> > 
-> > That said -- please can you tell me what userspace intends to do with
-> > this version number?
-> > 
-> 
-> In fact, it is only used in our testcase for now, which needs to know the real version the
-> chip has implemented, as these is no other way to get the info now. So i added it in the
-> probe message in v1 at first.
+CAN0 and CAN1 instances share the same message ram configured
+at 0x210000 on sama5d2 Linux systems.
+According to current configuration of CAN0, we need 0x1c00 bytes
+so that the CAN1 don't overlap its message ram:
+64 x RX FIFO0 elements => 64 x 72 bytes
+32 x TXE (TX Event FIFO) elements => 32 x 8 bytes
+32 x TXB (TX Buffer) elements => 32 x 72 bytes
+So a total of 7168 bytes (0x1C00).
 
-If it's not needed, then let's not expose it yet. ABIs aren't cheap!
+Fix offset to match this needed size.
+Make the CAN0 message ram ioremap match exactly this size so that is
+easily understandable.  Adapt CAN1 size accordingly.
 
-> Especially we use the of_device_id "arm,statistical-profiling-extension-v1" and the
-> platform_device_id "arm,spe-v1". It's a little weird to ARMv8.3-SPE.
-> 
+Reported-by: Dan Sneddon <dan.sneddon@microchip.com>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Tested-by: Cristian Birsan <cristian.birsan@microchip.com>
+Fixes: bc6d5d7666b7 ("ARM: dts: at91: sama5d2: add m_can nodes")
+Cc: stable@vger.kernel.org # v4.13+
+---
+ arch/arm/boot/dts/sama5d2.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-What exactly breaks? It looks like it should work fine to me, but I don't
-have any SPE systems to test on. The "v1" in the compatible string doesn't
-really do anything at the moment because we can probe everything other than
-the interrupt topology at runtime, so I wouldn't get hung up on that.
+diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
+index 2ddc85dff8ce..8f3c40e5b7ca 100644
+--- a/arch/arm/boot/dts/sama5d2.dtsi
++++ b/arch/arm/boot/dts/sama5d2.dtsi
+@@ -724,7 +724,7 @@ AT91_XDMAC_DT_PERID(31))>,
+ 
+ 			can0: can@f8054000 {
+ 				compatible = "bosch,m_can";
+-				reg = <0xf8054000 0x4000>, <0x210000 0x4000>;
++				reg = <0xf8054000 0x4000>, <0x210000 0x1c00>;
+ 				reg-names = "m_can", "message_ram";
+ 				interrupts = <56 IRQ_TYPE_LEVEL_HIGH 7>,
+ 					     <64 IRQ_TYPE_LEVEL_HIGH 7>;
+@@ -1130,7 +1130,7 @@ AT91_XDMAC_DT_PERID(33))>,
+ 
+ 			can1: can@fc050000 {
+ 				compatible = "bosch,m_can";
+-				reg = <0xfc050000 0x4000>, <0x210000 0x4000>;
++				reg = <0xfc050000 0x4000>, <0x210000 0x3800>;
+ 				reg-names = "m_can", "message_ram";
+ 				interrupts = <57 IRQ_TYPE_LEVEL_HIGH 7>,
+ 					     <65 IRQ_TYPE_LEVEL_HIGH 7>;
+@@ -1140,7 +1140,7 @@ can1: can@fc050000 {
+ 				assigned-clocks = <&pmc PMC_TYPE_GCK 57>;
+ 				assigned-clock-parents = <&pmc PMC_TYPE_CORE PMC_UTMI>;
+ 				assigned-clock-rates = <40000000>;
+-				bosch,mram-cfg = <0x1100 0 0 64 0 0 32 32>;
++				bosch,mram-cfg = <0x1c00 0 0 64 0 0 32 32>;
+ 				status = "disabled";
+ 			};
+ 
+-- 
+2.29.2
 
-> Further more i am wondering if we need to add the 'spe-v2' device_id. If
-> not, i think it's broken on a big.LITTLE system [1] as we can register
-> only one device and the driver will work incorrectly if the big and LITTLE
-> cores have different version of SPE.
-
-This is only an issue for ACPI, right? I don't think that was ever intended
-to work with big.LITTLE. See:
-
-	pr_warn("ACPI: SPE must be homogeneous\n");
-
-DT should handle it though.
-
-Anyway, please can you post a new version of this patch without the ABI
-changes? In other words, just including the RES0 part.
-
-Thanks,
-
-Will
