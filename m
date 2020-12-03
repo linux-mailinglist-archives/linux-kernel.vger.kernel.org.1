@@ -2,215 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473BF2CD5EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE96A2CD5F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 13:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730454AbgLCMtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 07:49:01 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:46440 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730437AbgLCMtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 07:49:01 -0500
-Received: from zn.tnic (p200300ec2f0dc500b89b6474ddf31320.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:c500:b89b:6474:ddf3:1320])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4521B1EC011B;
-        Thu,  3 Dec 2020 13:48:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606999699;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=wgap4O9lM1H6N1i1P+35A4XMd/puQPXDxz/23uMUBd0=;
-        b=TmKRZ9yT4j6B0OaUILGIOto6Fi19jSqfS8shROVHw4svnbZ4X5EeY/NfFghECUCUwFTDTl
-        6HK940bah32MfDDRy31YdLOMQlqFwUqoDISwNy2sQtJi5aROw2ORZd+SMfHhIoz0n2A6Rw
-        hGhEP7xbcazI/yawmYPdL8H75GFbjJE=
-Date:   Thu, 3 Dec 2020 13:48:20 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] x86/uprobes: Fix not using prefixes.nbytes for
- loop over prefixes.bytes
-Message-ID: <20201203124820.GJ3059@zn.tnic>
-References: <160697102582.3146288.10127018634865687932.stgit@devnote2>
- <160697103739.3146288.7437620795200799020.stgit@devnote2>
- <20201203123757.GH3059@zn.tnic>
- <20201203124121.GI3059@zn.tnic>
+        id S1730487AbgLCMto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 07:49:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730479AbgLCMtn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 07:49:43 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DEBC061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 04:49:02 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id o9so1200233pfd.10
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 04:49:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bPYnhrsvsymVgI4dIOwlvS+ALlvDhFJqcsBpBX3jCVU=;
+        b=HTLpbfuxAQHsAyHafUIKQayYnjNANpaMeGVFMD/TI2oS7/FkoQ2Wm6b++lxo2kl06Q
+         9fsUEzQBcCHEjVrDh9x7dWTa8zlwimms3T7U60gD1F6gDHCimICp2X+I5gajiJtB7anO
+         RrTHh450L6Ozzk13ygR/ygO/lJgeiGsIu4IutqqpoXV4iTAsvyYPWyc0Kvr+Az/oigEb
+         14+gUzfA83aNhvJ/doRJvrwp3+DX1gwEOurCHa51Xydd6htX5jmnyzMarkkr7mC7uEmt
+         W32hFKEq24KGhgA8hVe1mQvruWpjNe8jcOdWELT1Lc3cYrkiyzsXqoNPWkMeLi8Ju+fs
+         w9+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bPYnhrsvsymVgI4dIOwlvS+ALlvDhFJqcsBpBX3jCVU=;
+        b=TgKN7+oJNZvY3XKuhhCw78J+x60hP4rci6oyNasAclIwX4LlcMyos67BFfopobl7gZ
+         dFqmzJLrTbR0LhmGszJyrEtanvLYVGIeA9S8z7LzmRCgI2LLcRjmMjPMQR4p0k10AJBO
+         bZXo9ma98iISzZbyIk8iHR9XQQWhR0cl4LNFzWCaOoTkf0OWeC83gD1R/LYPSnh4RAks
+         67X61mOyHGxcsm+5Fbj/6J4bJb914wB/BJeWakCclCF80jfnUa7LhHQ5/lMjaQLDP4mx
+         0sICYkxbqOXBOu4jvlJB8zcSWGDmmKcLLpER0HT2QTW8zOSHsBd5VL4y9heMWGr3znAF
+         3R5Q==
+X-Gm-Message-State: AOAM531GsAbRnpwnWAe8Lb4QdNlEq0oZd/CSM9gP+sppt5U18zQTTuEd
+        fBzgGXGw/lW01mQkadIGMhWeJS6pe84aS8/9l2/fnw==
+X-Google-Smtp-Source: ABdhPJzbQsp200jdS8zI0+yDTBzSIOfZFhwYGDqCR1ZPqyj3n1jak2ybII3aJ4i+vRLqN/cdXLBKuk+wX893vr1HF2E=
+X-Received: by 2002:a63:f919:: with SMTP id h25mr2918514pgi.440.1606999742261;
+ Thu, 03 Dec 2020 04:49:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201203124121.GI3059@zn.tnic>
+References: <20201203195247.498b7ac1@canb.auug.org.au>
+In-Reply-To: <20201203195247.498b7ac1@canb.auug.org.au>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Thu, 3 Dec 2020 13:48:51 +0100
+Message-ID: <CAAeHK+xborghfQ_TQ3qDFwy+Xr4QXK_x3M=aoeyCjvMSTeg+Ww@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the akpm tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
+        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So it ended up like this:
+On Thu, Dec 3, 2020 at 9:52 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the akpm tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>
+> mm/kasan/quarantine.c: In function 'quarantine_put':
+> mm/kasan/quarantine.c:197:15: error: 'info' undeclared (first use in this function)
+>   197 |   qlink_free(&info->quarantine_link, cache);
+>       |               ^~~~
+> mm/kasan/quarantine.c:197:15: note: each undeclared identifier is reported only once for each function it appears in
+> mm/kasan/quarantine.c:199:3: error: 'return' with no value, in function returning non-void [-Werror=return-type]
+>   199 |   return;
+>       |   ^~~~~~
+> mm/kasan/quarantine.c:171:6: note: declared here
+>   171 | bool quarantine_put(struct kmem_cache *cache, void *object)
+>       |      ^~~~~~~~~~~~~~
+>
+> Caused by patches
+>
+>   "kasan: rename get_alloc/free_info"
+>   "kasan: sanitize objects when metadata doesn't fit"
 
----
-From 5014e4e902778d63ce392f864b3654baa4b72384 Mon Sep 17 00:00:00 2001
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Date: Thu, 3 Dec 2020 13:50:37 +0900
-Subject: [PATCH] x86/uprobes: Do not use prefixes.nbytes when looping over
- prefixes.bytes
+Yeah, this is conflict with the "kasan: fix object remain in offline
+per-cpu quarantine" patch.
 
-Since insn.prefixes.nbytes can be bigger than the size of
-insn.prefixes.bytes[] when a prefix is repeated, the proper check must
-be
+> I have applied the following fix patch:
+>
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Thu, 3 Dec 2020 19:41:49 +1100
+> Subject: [PATCH] kasan-rename-get_alloc-free_info-fix
+>
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  mm/kasan/quarantine.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
+> index feae26ea5cbb..d98b516f372f 100644
+> --- a/mm/kasan/quarantine.c
+> +++ b/mm/kasan/quarantine.c
+> @@ -194,9 +194,9 @@ bool quarantine_put(struct kmem_cache *cache, void *object)
+>
+>         q = this_cpu_ptr(&cpu_quarantine);
+>         if (q->offline) {
+> -               qlink_free(&info->quarantine_link, cache);
+> +               qlink_free(&meta->quarantine_link, cache);
+>                 local_irq_restore(flags);
+> -               return;
+> +               return false;
+>         }
+>         qlist_put(q, &meta->quarantine_link, cache->size);
+>         if (unlikely(q->bytes > QUARANTINE_PERCPU_SIZE)) {
+> --
+> 2.29.2
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
-  insn.prefixes.bytes[i] != 0 and i < 4
-
-instead of using insn.prefixes.nbytes.
-
-Introduce a for_each_insn_prefix() macro for this purpose. Debugged by
-Kees Cook <keescook@chromium.org>.
-
- [ bp: Massage commit message, add NUM_LEGACY_PREFIXES, sync with the
-   respective header in tools/ and drop "we". ]
-
-Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install and remove uprobes breakpoints")
-Reported-by: syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/160697103739.3146288.7437620795200799020.stgit@devnote2
----
- arch/x86/include/asm/insn.h       | 16 ++++++++++++++++
- arch/x86/kernel/uprobes.c         | 10 ++++++----
- tools/arch/x86/include/asm/insn.h | 18 +++++++++++++++++-
- 3 files changed, 39 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
-index 5c1ae3eff9d4..fe8e862004d3 100644
---- a/arch/x86/include/asm/insn.h
-+++ b/arch/x86/include/asm/insn.h
-@@ -58,6 +58,7 @@ struct insn {
- };
- 
- #define MAX_INSN_SIZE	15
-+#define NUM_LEGACY_PREFIXES 4
- 
- #define X86_MODRM_MOD(modrm) (((modrm) & 0xc0) >> 6)
- #define X86_MODRM_REG(modrm) (((modrm) & 0x38) >> 3)
-@@ -201,6 +202,21 @@ static inline int insn_offset_immediate(struct insn *insn)
- 	return insn_offset_displacement(insn) + insn->displacement.nbytes;
- }
- 
-+/**
-+ * for_each_insn_prefix() -- Iterate prefixes in the instruction
-+ * @insn: Pointer to struct insn.
-+ * @idx:  Index storage.
-+ * @prefix: Prefix byte.
-+ *
-+ * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
-+ * and the index is stored in @idx (note that this @idx is just for a cursor,
-+ * do not change it.)
-+ * Since prefixes.nbytes can be bigger than NUM_LEGACY_PREFIXES if some prefixes
-+ * are repeated, it cannot be used for looping over the prefixes.
-+ */
-+#define for_each_insn_prefix(insn, idx, prefix)	\
-+	for (idx = 0; idx < NUM_LEGACY_PREFIXES && (prefix = insn->prefixes.bytes[idx]) != 0; idx++)
-+
- #define POP_SS_OPCODE 0x1f
- #define MOV_SREG_OPCODE 0x8e
- 
-diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 3fdaa042823d..138bdb1fd136 100644
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -255,12 +255,13 @@ static volatile u32 good_2byte_insns[256 / 32] = {
- 
- static bool is_prefix_bad(struct insn *insn)
- {
-+	insn_byte_t p;
- 	int i;
- 
--	for (i = 0; i < insn->prefixes.nbytes; i++) {
-+	for_each_insn_prefix(insn, i, p) {
- 		insn_attr_t attr;
- 
--		attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
-+		attr = inat_get_opcode_attribute(p);
- 		switch (attr) {
- 		case INAT_MAKE_PREFIX(INAT_PFX_ES):
- 		case INAT_MAKE_PREFIX(INAT_PFX_CS):
-@@ -715,6 +716,7 @@ static const struct uprobe_xol_ops push_xol_ops = {
- static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
- {
- 	u8 opc1 = OPCODE1(insn);
-+	insn_byte_t p;
- 	int i;
- 
- 	switch (opc1) {
-@@ -746,8 +748,8 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
- 	 * Intel and AMD behavior differ in 64-bit mode: Intel ignores 66 prefix.
- 	 * No one uses these insns, reject any branch insns with such prefix.
- 	 */
--	for (i = 0; i < insn->prefixes.nbytes; i++) {
--		if (insn->prefixes.bytes[i] == 0x66)
-+	for_each_insn_prefix(insn, i, p) {
-+		if (p == 0x66)
- 			return -ENOTSUPP;
- 	}
- 
-diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/asm/insn.h
-index 568854b14d0a..fe8e862004d3 100644
---- a/tools/arch/x86/include/asm/insn.h
-+++ b/tools/arch/x86/include/asm/insn.h
-@@ -8,7 +8,7 @@
-  */
- 
- /* insn_attr_t is defined in inat.h */
--#include "inat.h"
-+#include <asm/inat.h>
- 
- struct insn_field {
- 	union {
-@@ -58,6 +58,7 @@ struct insn {
- };
- 
- #define MAX_INSN_SIZE	15
-+#define NUM_LEGACY_PREFIXES 4
- 
- #define X86_MODRM_MOD(modrm) (((modrm) & 0xc0) >> 6)
- #define X86_MODRM_REG(modrm) (((modrm) & 0x38) >> 3)
-@@ -201,6 +202,21 @@ static inline int insn_offset_immediate(struct insn *insn)
- 	return insn_offset_displacement(insn) + insn->displacement.nbytes;
- }
- 
-+/**
-+ * for_each_insn_prefix() -- Iterate prefixes in the instruction
-+ * @insn: Pointer to struct insn.
-+ * @idx:  Index storage.
-+ * @prefix: Prefix byte.
-+ *
-+ * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
-+ * and the index is stored in @idx (note that this @idx is just for a cursor,
-+ * do not change it.)
-+ * Since prefixes.nbytes can be bigger than NUM_LEGACY_PREFIXES if some prefixes
-+ * are repeated, it cannot be used for looping over the prefixes.
-+ */
-+#define for_each_insn_prefix(insn, idx, prefix)	\
-+	for (idx = 0; idx < NUM_LEGACY_PREFIXES && (prefix = insn->prefixes.bytes[idx]) != 0; idx++)
-+
- #define POP_SS_OPCODE 0x1f
- #define MOV_SREG_OPCODE 0x8e
- 
--- 
-2.21.0
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+This fixup looks good to me. Thanks!
