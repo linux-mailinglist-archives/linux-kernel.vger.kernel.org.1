@@ -2,75 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6B12CD96B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E038F2CD971
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 15:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730978AbgLCOkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 09:40:25 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:42431 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730963AbgLCOkY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:40:24 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        id S2389281AbgLCOkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 09:40:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387666AbgLCOkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 09:40:40 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id C9CAC22EE3;
-        Thu,  3 Dec 2020 15:39:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1607006381;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u13M+Fi/wa3Z0rVt0fxqI18Wvs+Sch7UcGcItdEZP2Q=;
-        b=T4y41W5r0OE+EslRkxis9lWHQAdUDT0/bB31ZdeQErgYi4gjV/1HTtu5LvMroMmwFelpVq
-        BzHsScTJO20FLxN5xNcdnXZM5DBFsntFTfsRnD+j+jfRrLV8v7R60j/AqwHdJtM5u7yEor
-        FgCOw7UBvVsUvT/OU6FB89EN2Sn5yy8=
+        by mail.kernel.org (Postfix) with ESMTPSA id 6374522799;
+        Thu,  3 Dec 2020 14:39:58 +0000 (UTC)
+Date:   Thu, 3 Dec 2020 09:39:56 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Xianting Tian <tian.xianting@h3c.com>
+Cc:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <bsegall@google.com>,
+        <mgorman@suse.de>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sched/rt: Print curr when RT throttling activated
+Message-ID: <20201203093956.6dd8a753@gandalf.local.home>
+In-Reply-To: <20201203075129.17902-1-tian.xianting@h3c.com>
+References: <20201203075129.17902-1-tian.xianting@h3c.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 03 Dec 2020 15:39:40 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor.Ambarus@microchip.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        boris.brezillon@collabora.com, stable@vger.kernel.org
-Subject: Re: [PATCH v7 1/7] mtd: spi-nor: sst: fix BPn bits for the
- SST25VF064C
-In-Reply-To: <44be8e3c-86ca-501e-e575-55f17747bda6@microchip.com>
-References: <20201202230040.14009-1-michael@walle.cc>
- <20201202230040.14009-2-michael@walle.cc>
- <44be8e3c-86ca-501e-e575-55f17747bda6@microchip.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <bf31d41ca489b5d1b7976bfb8ede88e9@walle.cc>
-X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-12-03 15:34, schrieb Tudor.Ambarus@microchip.com:
-> On 12/3/20 1:00 AM, Michael Walle wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
->> the content is safe
->> 
->> This flash part actually has 4 block protection bits.
->> 
->> Reported-by: Tudor Ambarus <tudor.ambarus@microchip.com>
->> Cc: stable@vger.kernel.org # v5.7+
+On Thu, 3 Dec 2020 15:51:29 +0800
+Xianting Tian <tian.xianting@h3c.com> wrote:
+
+> We may meet the issue, that one RT thread occupied the cpu by 950ms/1s,
+> The RT thread maybe is a business thread or other unknown thread.
 > 
-> While the patch is correct according to the datasheet, it was
-> not tested, so it's not a candidate for stable. I would update
-> the commit message to indicate that the the patch was made
-> solely on datasheet info and not tested, I would add the fixes
-> tag, and strip cc-ing to stable.
+> Currently, it only outputs the print "sched: RT throttling activated"
+> when RT throttling happen. It is hard to know what is the RT thread,
+> For further analysis, we need add more prints.
+> 
+> This patch is to print current RT task when RT throttling activated,
+> It help us to know what is the RT thread in the first time.
 
-What is the difference? Any commit with a Fixes tag will also land
-in the stable trees. Just that it will cause compile errors for
-kernel older than 5.7.
+I think this can be useful information to include.
 
-So if you don't want to have it in stable then you must not add
-a Fixes: tag either.
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
--michael
+-- Steve
+
+> 
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> ---
+>  kernel/sched/rt.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+> index f215eea6a..8913f38cb 100644
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -946,7 +946,7 @@ static inline int rt_se_prio(struct sched_rt_entity *rt_se)
+>  	return rt_task_of(rt_se)->prio;
+>  }
+>  
+> -static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
+> +static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq, struct task_struct *curr)
+>  {
+>  	u64 runtime = sched_rt_runtime(rt_rq);
+>  
+> @@ -970,7 +970,8 @@ static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
+>  		 */
+>  		if (likely(rt_b->rt_runtime)) {
+>  			rt_rq->rt_throttled = 1;
+> -			printk_deferred_once("sched: RT throttling activated\n");
+> +			printk_deferred_once("sched: RT throttling activated (curr: pid %d, comm %s)\n",
+> +						curr->pid, curr->comm);
+>  		} else {
+>  			/*
+>  			 * In case we did anyway, make it go away,
+> @@ -1026,7 +1027,7 @@ static void update_curr_rt(struct rq *rq)
+>  		if (sched_rt_runtime(rt_rq) != RUNTIME_INF) {
+>  			raw_spin_lock(&rt_rq->rt_runtime_lock);
+>  			rt_rq->rt_time += delta_exec;
+> -			if (sched_rt_runtime_exceeded(rt_rq))
+> +			if (sched_rt_runtime_exceeded(rt_rq, curr))
+>  				resched_curr(rq);
+>  			raw_spin_unlock(&rt_rq->rt_runtime_lock);
+>  		}
+
