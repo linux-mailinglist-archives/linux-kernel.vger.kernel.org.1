@@ -2,253 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515812CCF0B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FA22CCF0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728655AbgLCGSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:18:22 -0500
-Received: from mga06.intel.com ([134.134.136.31]:44405 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgLCGSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 01:18:21 -0500
-IronPort-SDR: nWnIsqfyKQBTAHngGp+IJcnMihzlwxH+bEaAqlm9+qTaLvISfxY2Jc18OmpQ7bFMo2OCw5JTXG
- EC8vd6jXuuGg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="234746606"
-X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
-   d="scan'208";a="234746606"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 22:16:40 -0800
-IronPort-SDR: GN97xz7zz5hG86qKUjh4I1g4AvS8u+wqV7hMxmg5Y34w9DjViNC6skdgvv0dTkYhhESLUbDTTZ
- XRcDWXmDEneg==
-X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; 
-   d="scan'208";a="550370055"
-Received: from hongyuni-mobl1.ccr.corp.intel.com (HELO [10.238.1.49]) ([10.238.1.49])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 22:16:30 -0800
-Subject: Re: [PATCH -tip 00/32] Core scheduling (v9)
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        Alexander Graf <graf@amazon.com>, konrad.wilk@oracle.com,
-        Dario Faggioli <dfaggioli@suse.com>,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>,
-        Jiang Biao <benbjiang@tencent.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        OWeisse@umich.edu, Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <CAKfTPtCWPL9=5crDT8LxQh6RrEi3cbwwTAy7GK2qG83JkiLVgg@mail.gmail.com>
- <CAEXW_YR2Tr=vVcbuChzxDGN3JwtTD1Oy9KcbuCsPRDmd_bx6iw@mail.gmail.com>
-From:   "Ning, Hongyu" <hongyu.ning@linux.intel.com>
-Message-ID: <2aa08e37-c938-c98b-8212-556d63eb730f@linux.intel.com>
-Date:   Thu, 3 Dec 2020 14:16:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728553AbgLCGSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:18:15 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8932 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgLCGSP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 01:18:15 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cmlx2710QzhkBQ;
+        Thu,  3 Dec 2020 14:17:10 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 3 Dec 2020 14:17:20 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH v6] f2fs: compress: support compress level
+Date:   Thu, 3 Dec 2020 14:17:15 +0800
+Message-ID: <20201203061715.60447-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <CAEXW_YR2Tr=vVcbuChzxDGN3JwtTD1Oy9KcbuCsPRDmd_bx6iw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Expand 'compress_algorithm' mount option to accept parameter as format of
+<algorithm>:<level>, by this way, it gives a way to allow user to do more
+specified config on lz4 and zstd compression level, then f2fs compression
+can provide higher compress ratio.
 
-On 2020/11/24 23:08, Joel Fernandes wrote:
->>>
->>> Core-Scheduling
->>> ===============
->>> Enclosed is series v9 of core scheduling.
->>> v9 is rebased on tip/master (fe4adf6f92c4 ("Merge branch 'irq/core'"))..
->>> I hope that this version is acceptable to be merged (pending any new review
->>> comments that arise) as the main issues in the past are all resolved:
->>>  1. Vruntime comparison.
->>>  2. Documentation updates.
->>>  3. CGroup and per-task interface developed by Google and Oracle.
->>>  4. Hotplug fixes.
->>> Almost all patches also have Reviewed-by or Acked-by tag. See below for full
->>> list of changes in v9.
->>>
->>> Introduction of feature
->>> =======================
->>> Core scheduling is a feature that allows only trusted tasks to run
->>> concurrently on cpus sharing compute resources (eg: hyperthreads on a
->>> core). The goal is to mitigate the core-level side-channel attacks
->>> without requiring to disable SMT (which has a significant impact on
->>> performance in some situations). Core scheduling (as of v7) mitigates
->>> user-space to user-space attacks and user to kernel attack when one of
->>> the siblings enters the kernel via interrupts or system call.
->>>
->>> By default, the feature doesn't change any of the current scheduler
->>> behavior. The user decides which tasks can run simultaneously on the
->>> same core (for now by having them in the same tagged cgroup). When a tag
->>> is enabled in a cgroup and a task from that cgroup is running on a
->>> hardware thread, the scheduler ensures that only idle or trusted tasks
->>> run on the other sibling(s). Besides security concerns, this feature can
->>> also be beneficial for RT and performance applications where we want to
->>> control how tasks make use of SMT dynamically.
->>>
->>> Both a CGroup and Per-task interface via prctl(2) are provided for configuring
->>> core sharing. More details are provided in documentation patch.  Kselftests are
->>> provided to verify the correctness/rules of the interface.
->>>
->>> Testing
->>> =======
->>> ChromeOS testing shows 300% improvement in keypress latency on a Google
->>> docs key press with Google hangout test (the maximum latency drops from 150ms
->>> to 50ms for keypresses).
->>>
->>> Julien: TPCC tests showed improvements with core-scheduling as below. With kernel
->>> protection enabled, it does not show any regression. Possibly ASI will improve
->>> the performance for those who choose kernel protection (can be toggled through
->>> sched_core_protect_kernel sysctl).
->>>                                 average         stdev           diff
->>> baseline (SMT on)               1197.272        44.78312824
->>> core sched (   kernel protect)  412.9895        45.42734343     -65.51%
->>> core sched (no kernel protect)  686.6515        71.77756931     -42.65%
->>> nosmt                           408.667         39.39042872     -65.87%
->>> (Note these results are from v8).
->>>
->>> Vineeth tested sysbench and does not see any regressions.
->>> Hong and Aubrey tested v9 and see results similar to v8. There is a known issue
->>> with uperf that does regress. This appears to be because of ksoftirq heavily
->>> contending with other tasks on the core. The consensus is this can be improved
->>> in the future.
->>>
->>> Changes in v9
->>> =============
->>> - Note that the vruntime snapshot change is written in 2 patches to show the
->>>   progression of the idea and prevent merge conflicts:
->>>     sched/fair: Snapshot the min_vruntime of CPUs on force idle
->>>     sched: Improve snapshotting of min_vruntime for CGroups
->>>   Same with the RT priority inversion change:
->>>     sched: Fix priority inversion of cookied task with sibling
->>>     sched: Improve snapshotting of min_vruntime for CGroups
->>> - Disable coresched on certain AMD HW.
->>>
+In order to set compress level for lz4 algorithm, it needs to set
+CONFIG_LZ4HC_COMPRESS and CONFIG_F2FS_FS_LZ4HC config to enable lz4hc
+compress algorithm.
 
-Adding workloads and negative case test results for core scheduling v9 posted: 
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+v6:
+- fix warning reported by checkpatch.pl
+ Documentation/filesystems/f2fs.rst |  5 +++
+ fs/f2fs/Kconfig                    |  9 ++++
+ fs/f2fs/compress.c                 | 40 +++++++++++++++--
+ fs/f2fs/f2fs.h                     |  9 ++++
+ fs/f2fs/super.c                    | 72 +++++++++++++++++++++++++++++-
+ include/linux/f2fs_fs.h            |  3 ++
+ 6 files changed, 133 insertions(+), 5 deletions(-)
 
-- kernel under test: 
-	-- coresched community v9 posted from https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/log/?h=sched/coresched-v9-posted (tag: sched/coresched-v9-posted)
-	-- latest commit: d48636e429de (HEAD -> coresched-v9-posted, tag: sched/coresched-v9-posted) sched: Debug bits...
-	-- coresched=on kernel parameter applied
-- workloads: 
-	-- A. sysbench cpu (192 threads) + sysbench cpu (192 threads)
-	-- B. sysbench cpu (192 threads) + sysbench mysql (192 threads, mysqld forced into the same cgroup)
-	-- C. uperf netperf.xml (192 threads over TCP or UDP protocol separately)
-	-- D. will-it-scale context_switch via pipe (192 threads)
-- negative case:
-	-- A. continuously toggle cpu.core_tag, during full loading uperf workload running with cs_on
-	-- B. continuously toggle smt setting via /sys/devices/system/cpu/smt/control, during full loading uperf workload running with cs_on
-	-- C. continuously cgroup switch between cs_on cgroup and cs_off cgroup via cgclassify, during full loading uperf workload running
-- test machine setup: 
-	CPU(s):              192
-	On-line CPU(s) list: 0-191
-	Thread(s) per core:  2
-	Core(s) per socket:  48
-	Socket(s):           2
-	NUMA node(s):        4
-- test results of workloads, no obvious performance drop compared to community v8 build:
-	-- workload A:
-	+----------------------+------+----------------------+------------------------+
-	| workloads            | **   | sysbench cpu * 192   | sysbench cpu * 192     |
-	+======================+======+======================+========================+
-	| cgroup               | **   | cg_sysbench_cpu_0    | cg_sysbench_cpu_1      |
-	+----------------------+------+----------------------+------------------------+
-	| record_item          | **   | Tput_avg (events/s)  | Tput_avg (events/s)    |
-	+----------------------+------+----------------------+------------------------+
-	| coresched_normalized | **   | 0.97                 | 1.02                   |
-	+----------------------+------+----------------------+------------------------+
-	| default_normalized   | **   | 1.00                 | 1.00                   |
-	+----------------------+------+----------------------+------------------------+
-	| smtoff_normalized    | **   | 0.60                 | 0.60                   |
-	+----------------------+------+----------------------+------------------------+
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index fd413d319e93..73ab31bbf694 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -249,6 +249,11 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
+ 			 This space is reclaimed once checkpoint=enable.
+ compress_algorithm=%s	 Control compress algorithm, currently f2fs supports "lzo",
+ 			 "lz4", "zstd" and "lzo-rle" algorithm.
++compress_algorithm=%s:%d Control compress algorithm and its compress level, now, only
++			 "lz4" and "zstd" support compress level config.
++			 algorithm	level range
++			 lz4		3 - 16
++			 zstd		1 - 22
+ compress_log_size=%u	 Support configuring compress cluster size, the size will
+ 			 be 4KB * (1 << %u), 16KB is minimum size, also it's
+ 			 default size.
+diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+index d13c5c6a9787..8134b145ae4f 100644
+--- a/fs/f2fs/Kconfig
++++ b/fs/f2fs/Kconfig
+@@ -119,6 +119,15 @@ config F2FS_FS_LZ4
+ 	help
+ 	  Support LZ4 compress algorithm, if unsure, say Y.
+ 
++config F2FS_FS_LZ4HC
++	bool "LZ4HC compression support"
++	depends on F2FS_FS_COMPRESSION
++	depends on F2FS_FS_LZ4
++	select LZ4HC_COMPRESS
++	default y
++	help
++	  Support LZ4HC compress algorithm, if unsure, say Y.
++
+ config F2FS_FS_ZSTD
+ 	bool "ZSTD compression support"
+ 	depends on F2FS_FS_COMPRESSION
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index db82da311fe4..dfadbc78946c 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -254,8 +254,13 @@ static const struct f2fs_compress_ops f2fs_lzo_ops = {
+ #ifdef CONFIG_F2FS_FS_LZ4
+ static int lz4_init_compress_ctx(struct compress_ctx *cc)
+ {
+-	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
+-				LZ4_MEM_COMPRESS, GFP_NOFS);
++	unsigned int size;
++	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
++						COMPRESS_LEVEL_OFFSET;
++
++	size = level ? LZ4HC_MEM_COMPRESS : LZ4_MEM_COMPRESS;
++
++	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode), size, GFP_NOFS);
+ 	if (!cc->private)
+ 		return -ENOMEM;
+ 
+@@ -274,10 +279,34 @@ static void lz4_destroy_compress_ctx(struct compress_ctx *cc)
+ 	cc->private = NULL;
+ }
+ 
++#ifdef CONFIG_F2FS_FS_LZ4HC
++static int lz4hc_compress_pages(struct compress_ctx *cc)
++{
++	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
++						COMPRESS_LEVEL_OFFSET;
++	int len;
++
++	if (level)
++		len = LZ4_compress_HC(cc->rbuf, cc->cbuf->cdata, cc->rlen,
++					cc->clen, level, cc->private);
++	else
++		len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
++						cc->clen, cc->private);
++	if (!len)
++		return -EAGAIN;
++
++	cc->clen = len;
++	return 0;
++}
++#endif
++
+ static int lz4_compress_pages(struct compress_ctx *cc)
+ {
+ 	int len;
+ 
++#ifdef CONFIG_F2FS_FS_LZ4HC
++	return lz4hc_compress_pages(cc);
++#endif
+ 	len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
+ 						cc->clen, cc->private);
+ 	if (!len)
+@@ -327,8 +356,13 @@ static int zstd_init_compress_ctx(struct compress_ctx *cc)
+ 	ZSTD_CStream *stream;
+ 	void *workspace;
+ 	unsigned int workspace_size;
++	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
++						COMPRESS_LEVEL_OFFSET;
++
++	if (!level)
++		level = F2FS_ZSTD_DEFAULT_CLEVEL;
+ 
+-	params = ZSTD_getParams(F2FS_ZSTD_DEFAULT_CLEVEL, cc->rlen, 0);
++	params = ZSTD_getParams(level, cc->rlen, 0);
+ 	workspace_size = ZSTD_CStreamWorkspaceBound(params.cParams);
+ 
+ 	workspace = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 377a2e2bf466..76edec7483f3 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -147,6 +147,7 @@ struct f2fs_mount_info {
+ 	/* For compression */
+ 	unsigned char compress_algorithm;	/* algorithm type */
+ 	unsigned char compress_log_size;	/* cluster log size */
++	unsigned char compress_level;		/* compress level */
+ 	bool compress_chksum;			/* compressed data chksum */
+ 	unsigned char compress_ext_cnt;		/* extension count */
+ 	int compress_mode;			/* compression mode */
+@@ -736,6 +737,7 @@ struct f2fs_inode_info {
+ 	atomic_t i_compr_blocks;		/* # of compressed blocks */
+ 	unsigned char i_compress_algorithm;	/* algorithm type */
+ 	unsigned char i_log_cluster_size;	/* log of cluster size */
++	unsigned char i_compress_level;		/* compress level (lz4hc,zstd) */
+ 	unsigned short i_compress_flag;		/* compress flag */
+ 	unsigned int i_cluster_size;		/* cluster size */
+ };
+@@ -1308,6 +1310,8 @@ struct compress_data {
+ 
+ #define F2FS_COMPRESSED_PAGE_MAGIC	0xF5F2C000
+ 
++#define	COMPRESS_LEVEL_OFFSET	8
++
+ /* compress context */
+ struct compress_ctx {
+ 	struct inode *inode;		/* inode the context belong to */
+@@ -3959,6 +3963,11 @@ static inline void set_compress_context(struct inode *inode)
+ 				1 << COMPRESS_CHKSUM : 0;
+ 	F2FS_I(inode)->i_cluster_size =
+ 			1 << F2FS_I(inode)->i_log_cluster_size;
++	if (F2FS_I(inode)->i_compress_algorithm == COMPRESS_LZ4 &&
++			F2FS_OPTION(sbi).compress_level)
++		F2FS_I(inode)->i_compress_flag |=
++				F2FS_OPTION(sbi).compress_level <<
++				COMPRESS_LEVEL_OFFSET;
+ 	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
+ 	set_inode_flag(inode, FI_COMPRESSED_FILE);
+ 	stat_inc_compr_inode(inode);
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 8442333ca0e2..44ba870bb352 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -25,6 +25,8 @@
+ #include <linux/quota.h>
+ #include <linux/unicode.h>
+ #include <linux/part_stat.h>
++#include <linux/zstd.h>
++#include <linux/lz4.h>
+ 
+ #include "f2fs.h"
+ #include "node.h"
+@@ -466,6 +468,57 @@ static int f2fs_set_test_dummy_encryption(struct super_block *sb,
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++static int f2fs_compress_set_level(struct f2fs_sb_info *sbi, const char *str,
++						int type)
++{
++	unsigned int level;
++	int len;
++
++	if (type == COMPRESS_LZ4)
++		len = 3;
++	else if (type == COMPRESS_ZSTD)
++		len = 4;
++	else
++		return 0;
++
++	if (strlen(str) == len)
++		return 0;
++
++	str += len;
++
++	if (str[0] != ':') {
++		f2fs_info(sbi, "wrong format, e.g. <alg_name>:<compr_level>");
++		return -EINVAL;
++	}
++	if (kstrtouint(str + 1, 10, &level))
++		return -EINVAL;
++	if (type == COMPRESS_LZ4) {
++#ifdef CONFIG_F2FS_FS_LZ4HC
++		if (level < LZ4HC_MIN_CLEVEL || level > LZ4HC_MAX_CLEVEL) {
++			f2fs_info(sbi, "invalid lz4hc compress level: %d", level);
++			return -EINVAL;
++		}
++#else
++		f2fs_info(sbi, "doesn't support lz4hc compression");
++		return 0;
++#endif
++	} else if (type == COMPRESS_ZSTD) {
++#ifdef CONFIG_F2FS_FS_ZSTD
++		if (!level || level > ZSTD_maxCLevel()) {
++			f2fs_info(sbi, "invalid zstd compress level: %d", level);
++			return -EINVAL;
++		}
++#else
++		f2fs_info(sbi, "doesn't support zstd compression");
++		return 0;
++#endif
++	}
++	F2FS_OPTION(sbi).compress_level = level;
++	return 0;
++}
++#endif
++
+ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ {
+ 	struct f2fs_sb_info *sbi = F2FS_SB(sb);
+@@ -886,10 +939,22 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 			if (!strcmp(name, "lzo")) {
+ 				F2FS_OPTION(sbi).compress_algorithm =
+ 								COMPRESS_LZO;
+-			} else if (!strcmp(name, "lz4")) {
++			} else if (!strncmp(name, "lz4", 3)) {
++				ret = f2fs_compress_set_level(sbi, name,
++								COMPRESS_LZ4);
++				if (ret) {
++					kfree(name);
++					return -EINVAL;
++				}
+ 				F2FS_OPTION(sbi).compress_algorithm =
+ 								COMPRESS_LZ4;
+-			} else if (!strcmp(name, "zstd")) {
++			} else if (!strncmp(name, "zstd", 4)) {
++				ret = f2fs_compress_set_level(sbi, name,
++								COMPRESS_ZSTD);
++				if (ret) {
++					kfree(name);
++					return -EINVAL;
++				}
+ 				F2FS_OPTION(sbi).compress_algorithm =
+ 								COMPRESS_ZSTD;
+ 			} else if (!strcmp(name, "lzo-rle")) {
+@@ -1547,6 +1612,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
+ 	}
+ 	seq_printf(seq, ",compress_algorithm=%s", algtype);
+ 
++	if (!F2FS_OPTION(sbi).compress_level)
++		seq_printf(seq, ":%d", F2FS_OPTION(sbi).compress_level);
++
+ 	seq_printf(seq, ",compress_log_size=%u",
+ 			F2FS_OPTION(sbi).compress_log_size);
+ 
+diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+index 55be7afeee90..2dcc63fe8494 100644
+--- a/include/linux/f2fs_fs.h
++++ b/include/linux/f2fs_fs.h
+@@ -275,6 +275,9 @@ struct f2fs_inode {
+ 			__u8 i_compress_algorithm;	/* compress algorithm */
+ 			__u8 i_log_cluster_size;	/* log of cluster size */
+ 			__le16 i_compress_flag;		/* compress flag */
++						/* 0 bit: chksum flag
++						 * [10,15] bits: compress level
++						 */
+ 			__le32 i_extra_end[0];	/* for attribute size calculation */
+ 		} __packed;
+ 		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
+-- 
+2.26.2
 
-	-- workload B:
-	+----------------------+------+----------------------+------------------------+
-	| workloads            | **   | sysbench cpu * 192   | sysbench mysql * 192   |
-	+======================+======+======================+========================+
-	| cgroup               | **   | cg_sysbench_cpu_0    | cg_sysbench_mysql_0    |
-	+----------------------+------+----------------------+------------------------+
-	| record_item          | **   | Tput_avg (events/s)  | Tput_avg (events/s)    |
-	+----------------------+------+----------------------+------------------------+
-	| coresched_normalized | **   | 0.94                 | 0.88                   |
-	+----------------------+------+----------------------+------------------------+
-	| default_normalized   | **   | 1.00                 | 1.00                   |
-	+----------------------+------+----------------------+------------------------+
-	| smtoff_normalized    | **   | 0.56                 | 0.84                   |
-	+----------------------+------+----------------------+------------------------+
-
-	-- workload C:
-	+----------------------+------+---------------------------+---------------------------+
-	| workloads            | **   | uperf netperf TCP * 192   | uperf netperf UDP * 192   |
-	+======================+======+===========================+===========================+
-	| cgroup               | **   | cg_uperf                  | cg_uperf                  |
-	+----------------------+------+---------------------------+---------------------------+
-	| record_item          | **   | Tput_avg (Gb/s)           | Tput_avg (Gb/s)           |
-	+----------------------+------+---------------------------+---------------------------+
-	| coresched_normalized | **   | 0.64                      | 0.68                      |
-	+----------------------+------+---------------------------+---------------------------+
-	| default_normalized   | **   | 1.00                      | 1.00                      |
-	+----------------------+------+---------------------------+---------------------------+
-	| smtoff_normalized    | **   | 0.92                      | 0.89                      |
-	+----------------------+------+---------------------------+---------------------------+
-
-	-- workload D:
-	+----------------------+------+-------------------------------+
-	| workloads            | **   | will-it-scale  * 192          |
-	|                      |      | (pipe based context_switch)   |
-	+======================+======+===============================+
-	| cgroup               | **   | cg_will-it-scale              |
-	+----------------------+------+-------------------------------+
-	| record_item          | **   | threads_avg                   |
-	+----------------------+------+-------------------------------+
-	| coresched_normalized | **   | 0.30                          |
-	+----------------------+------+-------------------------------+
-	| default_normalized   | **   | 1.00                          |
-	+----------------------+------+-------------------------------+
-	| smtoff_normalized    | **   | 0.87                          |
-	+----------------------+------+-------------------------------+
-
-	-- notes on record_item:
-	* coresched_normalized: smton, cs enabled, test result normalized by default value
-	* default_normalized: smton, cs disabled, test result normalized by default value
-	* smtoff_normalized: smtoff, test result normalized by default value
-
-- test results of negative case, all as expected, no kernel panic or system hang observed
-
-Hongyu
