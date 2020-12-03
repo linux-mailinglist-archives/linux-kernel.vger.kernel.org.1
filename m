@@ -2,125 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CBF2CDD4C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 167E52CDD4F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731033AbgLCSXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:23:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53654 "EHLO mail.kernel.org"
+        id S1731510AbgLCSXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:23:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729508AbgLCSXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:23:40 -0500
-Date:   Thu, 3 Dec 2020 18:22:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607019780;
-        bh=5a8ME2oAXsKqPoeqJfEFvJGi2qwglFd3HcH42x+ZJqE=;
+        id S1727770AbgLCSXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:23:43 -0500
+Date:   Thu, 3 Dec 2020 19:24:10 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607019783;
+        bh=nRXtesF7itSWsJNL3nW9/JfPzZbpQfZ44W7acNczB0M=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j4tuv3canVKeGWPc00whrPf+yMo+rCeJBSSu9hQ8JKopGOeh22g/l4jLBxki+Q3S4
-         GSy6xiQfH2GEr5ORIucdbbEVNr0+FmT1NytvINuFt62ibIHSwQQe+XYxmKQbFUBoQm
-         Pe3O1nyWoKMJPEEb4rf10UT8GM0TMsNCoKs0CA1Y6VDqMD3Fa15DWO2+8KzDpouaH/
-         jk1NY9n6DPz7lGFPTSZZ3NhJoqHMrLxT9UBGdtIKfzs7C+/Z/dfeNnE5pmTpJgadKr
-         WuTbKHZQrQHeug6qVN5E7eo5w7WLqpt9nlELvChtCWZI3JyjnMxiQXEC4zYRHhnct0
-         /Nj+EdgBLhJYA==
-From:   Will Deacon <will@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
-Message-ID: <20201203182252.GA32011@willie-the-truck>
-References: <20201201213707.541432-1-samitolvanen@google.com>
- <20201203112622.GA31188@willie-the-truck>
- <CABCJKueby8pUoN7f5=6RoyLSt4PgWNx8idUej0sNwAi0F3Xqzw@mail.gmail.com>
+        b=Qa40vJsECiADdzvc+lDaBEeTMw1R/jqeFEM51AHxmj44iGPX4tt+7aMXy8oGTMGGd
+         xM1zJNaSohmdb5J2tTNpsgkorU2xOE2oGpdB3YC4R7NtpQ9RAhjl82YmVMyMOsx0p1
+         C37kca9C4dGklVx5uSSPv1Yzct+qK041zQPJ0+Sc=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tudor.Ambarus@microchip.com
+Cc:     michael@walle.cc, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, boris.brezillon@collabora.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v7 1/7] mtd: spi-nor: sst: fix BPn bits for the
+ SST25VF064C
+Message-ID: <X8ktStibpw1phn4G@kroah.com>
+References: <20201202230040.14009-1-michael@walle.cc>
+ <20201202230040.14009-2-michael@walle.cc>
+ <44be8e3c-86ca-501e-e575-55f17747bda6@microchip.com>
+ <bf31d41ca489b5d1b7976bfb8ede88e9@walle.cc>
+ <2c66659b-ecff-c6bb-38c1-c1172780c710@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABCJKueby8pUoN7f5=6RoyLSt4PgWNx8idUej0sNwAi0F3Xqzw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <2c66659b-ecff-c6bb-38c1-c1172780c710@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 09:07:30AM -0800, Sami Tolvanen wrote:
-> On Thu, Dec 3, 2020 at 3:26 AM Will Deacon <will@kernel.org> wrote:
-> > On Tue, Dec 01, 2020 at 01:36:51PM -0800, Sami Tolvanen wrote:
-> > > This patch series adds support for building the kernel with Clang's
-> > > Link Time Optimization (LTO). In addition to performance, the primary
-> > > motivation for LTO is to allow Clang's Control-Flow Integrity (CFI)
-> > > to be used in the kernel. Google has shipped millions of Pixel
-> > > devices running three major kernel versions with LTO+CFI since 2018.
-> > >
-> > > Most of the patches are build system changes for handling LLVM
-> > > bitcode, which Clang produces with LTO instead of ELF object files,
-> > > postponing ELF processing until a later stage, and ensuring initcall
-> > > ordering.
-> > >
-> > > Note that arm64 support depends on Will's memory ordering patches
-> > > [1]. I will post x86_64 patches separately after we have fixed the
-> > > remaining objtool warnings [2][3].
-> >
-> > I took this series for a spin, with my for-next/lto branch merged in but
-> > I see a failure during the LTO stage with clang 11.0.5 because it doesn't
-> > understand the '.arch_extension rcpc' directive we throw out in READ_ONCE().
+On Thu, Dec 03, 2020 at 03:08:49PM +0000, Tudor.Ambarus@microchip.com wrote:
+> On 12/3/20 4:39 PM, Michael Walle wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > Am 2020-12-03 15:34, schrieb Tudor.Ambarus@microchip.com:
+> >> On 12/3/20 1:00 AM, Michael Walle wrote:
+> >>> EXTERNAL EMAIL: Do not click links or open attachments unless you know
+> >>> the content is safe
+> >>>
+> >>> This flash part actually has 4 block protection bits.
+> >>>
+> >>> Reported-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> >>> Cc: stable@vger.kernel.org # v5.7+
+> >>
+> >> While the patch is correct according to the datasheet, it was
+> >> not tested, so it's not a candidate for stable. I would update
+> >> the commit message to indicate that the the patch was made
+> >> solely on datasheet info and not tested, I would add the fixes
+> >> tag, and strip cc-ing to stable.
+> > 
+> > What is the difference? Any commit with a Fixes tag will also land
+> > in the stable trees. Just that it will cause compile errors for
+> > kernel older than 5.7.
+> > 
+> > So if you don't want to have it in stable then you must not add
+> > a Fixes: tag either.
+> > 
 > 
-> I just tested this with Clang 11.0.0, which I believe is the latest
-> 11.x version, and the current Clang 12 development branch, and both
-> work for me. Godbolt confirms that '.arch_extension rcpc' is supported
-> by the integrated assembler starting with Clang 11 (the example fails
-> with 10.0.1):
+> Documentation/process/stable-kernel-rules.rst doesn't say that the
+> Fixes tag is a guarantee that a patch will hit the stable kernels.
 > 
-> https://godbolt.org/z/1csGcT
+> Since this patch was not tested, it's not a candidate for stable as
+> per the first rule. It's a theoretical fix, because it should indeed
+> fix the locking as per the datasheet. Even for theoretical fixes, I
+> would like to know what commit broke the functionality, and that's why
+> I asked for the Fixes tag.
 > 
-> What does running clang --version and ld.lld --version tell you?
-
-I'm using some Android prebuilts I had kicking around:
-
-Android (6875598, based on r399163b) clang version 11.0.5 (https://android.googlesource.com/toolchain/llvm-project 87f1315dfbea7c137aa2e6d362dbb457e388158d)
-Target: x86_64-unknown-linux-gnu
-Thread model: posix
-InstalledDir: /usr/local/google/home/willdeacon/work/android/repo/android-kernel/prebuilts-master/clang/host/linux-x86/clang-r399163b/bin
-
-and:
-
-LLD 11.0.5 (/buildbot/tmp/tmpx1DlI_ 87f1315dfbea7c137aa2e6d362dbb457e388158d) (compatible with GNU linkers)
-
-> > We actually check that this extension is available before using it in
-> > the arm64 Kconfig:
-> >
-> >         config AS_HAS_LDAPR
-> >                 def_bool $(as-instr,.arch_extension rcpc)
-> >
-> > so this shouldn't happen. I then realised, I wasn't passing LLVM_IAS=1
-> > on my Make command line; with that, then the detection works correctly
-> > and the LTO step succeeds.
-> >
-> > Why is it necessary to pass LLVM_IAS=1 if LTO is enabled? I think it
-> > would be _much_ better if this was implicit (or if LTO depended on it).
+> We don't want the patch in stable, so that's why I said that I would
+> indicate in the commit message that it was not tested, and that I
+> would strip the cc to stable.
 > 
-> Without LLVM_IAS=1, Clang uses two different assemblers when LTO is
-> enabled: the external GNU assembler for stand-alone assembly, and
-> LLVM's integrated assembler for inline assembly. as-instr tests the
-> external assembler and makes an admittedly reasonable assumption that
-> the test is also valid for inline assembly.
-> 
-> I agree that it would reduce confusion in future if we just always
-> enabled IAS with LTO. Nick, Nathan, any thoughts about this?
+> Maybe it's just my understanding. Others may help.
 
-That works for me, although I'm happy with anything which means that the
-assembler checks via as-instr apply to the assembler which will ultimately
-be used.
+Your understanding is correct.  But note that we might accidentally pick
+it up with the Fixes: tag at a later date, so be aware that you might
+want to make the text in the changelog really obvious that it should not
+go into a stable kernel, and why not (hint, if you have a Fixes: tag,
+that's usually a good reason _to_ include it...)
 
-Will
+thanks,
+
+greg k-h
