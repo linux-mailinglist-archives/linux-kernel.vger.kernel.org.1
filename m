@@ -2,270 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141B02CD2E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F032CD2EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730219AbgLCJvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:51:00 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:11812 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730201AbgLCJu6 (ORCPT
+        id S1730235AbgLCJv1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 04:51:27 -0500
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:39602 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730201AbgLCJv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:50:58 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B39UIM8020964;
-        Thu, 3 Dec 2020 04:50:16 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 355vjen8ns-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 04:50:16 -0500
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0B39oFup007861
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 3 Dec 2020 04:50:15 -0500
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 3 Dec 2020 04:50:14 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 3 Dec 2020 04:50:14 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 3 Dec 2020 04:50:14 -0500
-Received: from saturn.ad.analog.com ([10.48.65.108])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0B39o9EC002710;
-        Thu, 3 Dec 2020 04:50:12 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 3/3] iio: dummy: use devm_iio_triggered_buffer_setup() for buffer setup
-Date:   Thu, 3 Dec 2020 11:50:05 +0200
-Message-ID: <20201203095005.72252-3-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201203095005.72252-1-alexandru.ardelean@analog.com>
-References: <20201203095005.72252-1-alexandru.ardelean@analog.com>
+        Thu, 3 Dec 2020 04:51:26 -0500
+Received: by mail-ej1-f65.google.com with SMTP id n26so2514465eju.6;
+        Thu, 03 Dec 2020 01:51:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=zIi/0Gk+POPxQXzfzK/flFDHb00Mu6VDDpn3MrPay+U=;
+        b=aWNzq4+85ljJnLKH565CqtDhKRnEpSNx1tA+6Mg1X/tps9i4Eorp6bMy6YTpqRKXwV
+         DvR5YgBqaRSUes24Hq3NxzF/0baDvFxtmFEPbLk13ZXxQvzTlgurzFDNgPKTQCJdA8Om
+         6U0PKM8LGbRkBC4z3cGwEzbgw9xuOvWETQpD6cFOXJiYGITdmTbEWkKRS9lzyANK6HUS
+         NkY9Wlhg9f9YlwV4y3++CoU6p8ZdrV1+YGqseLlvL7Xii4W7HSU/mASOhX4ceTUE9JiY
+         GB2nmMlyzrkGbiGwsWIBnpwkkANvo7RQdjzPd3GgyUNiQBB8GSY2naOsH51Bftyim1iI
+         A7SA==
+X-Gm-Message-State: AOAM532KRSNw3780xZQcYJhX220xBeBQbzU8fWsmeeofjupxl4pqmAKb
+        2dposUiwQMg/nHE8CAxDCqU=
+X-Google-Smtp-Source: ABdhPJxzs5zlrR2KVLdPKT32M/bDkg6bGqfhyrosRE+ocveA3Ul8/IKXaWh6g33OKKEI5YiRRypB8A==
+X-Received: by 2002:a17:907:2131:: with SMTP id qo17mr1742622ejb.546.1606989043852;
+        Thu, 03 Dec 2020 01:50:43 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id b14sm782174edx.0.2020.12.03.01.50.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 01:50:42 -0800 (PST)
+Date:   Thu, 3 Dec 2020 11:50:41 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Timon =?utf-8?B?QsOkdHo=?= <timon.baetz@protonmail.com>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "~postmarketos/upstreaming@lists.sr.ht" 
+        <~postmarketos/upstreaming@lists.sr.ht>
+Subject: Re: [PATCH 3/3] ARM: dts: exynos: Fix charging regulator voltage and
+ current for i9100
+Message-ID: <20201203095041.GA14508@kozik-lap>
+References: <20201202203516.43053-1-timon.baetz@protonmail.com>
+ <20201202203516.43053-3-timon.baetz@protonmail.com>
+ <20201202220430.GB135888@kozik-lap>
+ <dDjo3R2SJ6CBCjg0YhsCPdh5JfEGhA--DHNNDqbWjVtTjZC5v7g7_523vqAzu_Ybf1Q-xfKeK47H483YQoVtpO3DI83OaR6c6mbvtC9S1Us=@protonmail.com>
+ <20201203082301.GA3999@kozik-lap>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-03_06:2020-12-03,2020-12-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
- malwarescore=0 adultscore=0 impostorscore=0 priorityscore=1501 spamscore=0
- suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030058
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201203082301.GA3999@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The iio_simple_dummy_configure_buffer() function is pretty much just the
-iio_triggered_buffer_setup() function.
-This change makes use of the devm_iio_triggered_buffer_setup() directly so
-that we can tie the life-time and unwinding to the same parent object in
-the probe function.
+On Thu, Dec 03, 2020 at 10:23:01AM +0200, Krzysztof Kozlowski wrote:
+> On Thu, Dec 03, 2020 at 05:46:03AM +0000, Timon Bätz wrote:
+> > On Wednesday, December 2, 2020 11:04 PM, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > 
+> > > On Wed, Dec 02, 2020 at 09:07:28PM +0000, Timon Baetz wrote:
+> > >
+> > > > Set CHARGER current and CHARGER_CV voltage according to Galaxy S2 kernel
+> > > > fork.
+> > > >
+> > > > Signed-off-by: Timon Baetz timon.baetz@protonmail.com
+> > > >
+> > > > ------------------------------------------------------
+> > > >
+> > > > arch/arm/boot/dts/exynos4210-i9100.dts | 8 ++++----
+> > > > 1 file changed, 4 insertions(+), 4 deletions(-)
+> > > > diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts/exynos4210-i9100.dts
+> > > > index 9f8d927e0d21..2700d53ea01b 100644
+> > > > --- a/arch/arm/boot/dts/exynos4210-i9100.dts
+> > > > +++ b/arch/arm/boot/dts/exynos4210-i9100.dts
+> > > > @@ -558,14 +558,14 @@ safe2_sreg: ESAFEOUT2 {
+> > > >
+> > > >       	charger_reg: CHARGER {
+> > > >       		regulator-name = "CHARGER";
+> > > >
+> > > >
+> > > > -       		regulator-min-microamp = <60000>;
+> > > >
+> > > >
+> > > > -       		regulator-max-microamp = <2580000>;
+> > > >
+> > > >
+> > > >
+> > > > -       		regulator-min-microamp = <200000>;
+> > > >
+> > > >
+> > > > -       		regulator-max-microamp = <950000>;
+> > > >         	};
+> > > >
+> > > >         	chargercv_reg: CHARGER_CV {
+> > > >         		regulator-name = "CHARGER_CV";
+> > > >
+> > > >
+> > > >
+> > > > -       		regulator-min-microvolt = <3800000>;
+> > > >
+> > > >
+> > > > -       		regulator-max-microvolt = <4100000>;
+> > > >
+> > > >
+> > > >
+> > > > -       		regulator-min-microvolt = <4200000>;
+> > > >
+> > > >
+> > > > -       		regulator-max-microvolt = <4200000>;
+> > > >
+> > > >
+> > >
+> > > I am looking at my sources of Android 3.0 for GT-I9100 but I cannot find
+> > > charger voltages for it. Where did you find it?
+> > >
+> > > Best regards,
+> > > Krzysztof
+> > 
+> > Thanks all the feedback Krzysztof,
+> > 
+> > Voltage is set in the charger probe function of the downstream kernel fork: https://github.com/LineageOS/android_kernel_samsung_smdk4412/blob/lineage-17.0/drivers/power/max8997_charger_u1.c#L390-L391
+> 
+> You need to fix your email client to wrap lines.
+> 
+> The fork cannot be used as a reference because of poor quality of
+> explanations for origins of the code.
+> 
+> The commit which added 4.2 V is described as "samsung update 1" which
+> basically means nothing. If at least it was "drop sources of
+> GT-I9105"... but in this form it is useless.
+> 
+> For the things we are not sure how they should be implemented, we
+> sometimes accept the reason "vendor sources do like this". However Lineage
+> or any other fork are not vendor sources.
+> 
+> Therefore you need to provide a valid explanation for this voltage
+> change.
 
-With this, the devm_iio_device_register() can be used directly in the probe
-function, removing the iio_dummy_remove() function entirely.
+I checked vendor sources for Samsung Galaxy S2 Epic 4G Touch (SPH-D710)
+and indeed it uses the max8997 charger U1 which sets v4.2 volts.
 
-One side-effect that is negligible for this driver is that the name of
-the poll-function gets changed from 'iio_simple_dummy_consumer%d' to
-'%s_consumer%d' where %s is 'indio_dev->name'.
+You can use it to fix up the commit msg.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/dummy/iio_simple_dummy.c        | 37 +---------
- drivers/iio/dummy/iio_simple_dummy.h        | 11 +--
- drivers/iio/dummy/iio_simple_dummy_buffer.c | 78 ++-------------------
- 3 files changed, 13 insertions(+), 113 deletions(-)
+Unfortunately it seems Samsung started to remove most of older
+kernel source code from their OS compliance page. S1, S2 and S3 are
+mostly gone. I was able to find just few remaining sources and I am now
+updating my vendor-dump with them. I'll upload them later to
+https://github.com/krzk/linux-vendor-backup .
 
-diff --git a/drivers/iio/dummy/iio_simple_dummy.c b/drivers/iio/dummy/iio_simple_dummy.c
-index a746b34ae7a3..06baa356e264 100644
---- a/drivers/iio/dummy/iio_simple_dummy.c
-+++ b/drivers/iio/dummy/iio_simple_dummy.c
-@@ -630,47 +630,17 @@ static struct iio_sw_device *iio_dummy_probe(const char *name)
- 	if (ret < 0)
- 		return ERR_PTR(ret);
- 
--	ret = iio_simple_dummy_configure_buffer(indio_dev);
-+	ret = iio_simple_dummy_configure_buffer(parent, indio_dev);
- 	if (ret < 0)
- 		return ERR_PTR(ret);
- 
--	ret = iio_device_register(indio_dev);
-+	ret = devm_iio_device_register(parent, indio_dev);
- 	if (ret < 0)
--		goto error_unconfigure_buffer;
-+		return ERR_PTR(ret);
- 
- 	iio_swd_group_init_type_name(swd, name, &iio_dummy_type);
- 
- 	return swd;
--error_unconfigure_buffer:
--	iio_simple_dummy_unconfigure_buffer(indio_dev);
--	return ERR_PTR(ret);
--}
--
--/**
-- * iio_dummy_remove() - device instance removal function
-- * @swd: pointer to software IIO device abstraction
-- *
-- * Parameters follow those of iio_dummy_probe for buses.
-- */
--static int iio_dummy_remove(struct iio_sw_device *swd)
--{
--	/*
--	 * Get a pointer to the device instance iio_dev structure
--	 * from the bus subsystem. E.g.
--	 * struct iio_dev *indio_dev = i2c_get_clientdata(client);
--	 * struct iio_dev *indio_dev = spi_get_drvdata(spi);
--	 */
--	struct iio_dev *indio_dev = swd->device;
--
--	/* Unregister the device */
--	iio_device_unregister(indio_dev);
--
--	/* Device specific code to power down etc */
--
--	/* Buffered capture related cleanup */
--	iio_simple_dummy_unconfigure_buffer(indio_dev);
--
--	return 0;
- }
- 
- /*
-@@ -685,7 +655,6 @@ static int iio_dummy_remove(struct iio_sw_device *swd)
-  */
- static const struct iio_sw_device_ops iio_dummy_device_ops = {
- 	.probe = iio_dummy_probe,
--	.remove = iio_dummy_remove,
- };
- 
- static struct iio_sw_device_type iio_dummy_device = {
-diff --git a/drivers/iio/dummy/iio_simple_dummy.h b/drivers/iio/dummy/iio_simple_dummy.h
-index b1ca6e97ed3f..d4fd16b8691b 100644
---- a/drivers/iio/dummy/iio_simple_dummy.h
-+++ b/drivers/iio/dummy/iio_simple_dummy.h
-@@ -105,17 +105,12 @@ enum iio_simple_dummy_scan_elements {
- };
- 
- #ifdef CONFIG_IIO_SIMPLE_DUMMY_BUFFER
--int iio_simple_dummy_configure_buffer(struct iio_dev *indio_dev);
--void iio_simple_dummy_unconfigure_buffer(struct iio_dev *indio_dev);
-+int iio_simple_dummy_configure_buffer(struct device *parent, struct iio_dev *indio_dev);
- #else
--static inline int iio_simple_dummy_configure_buffer(struct iio_dev *indio_dev)
-+static inline int iio_simple_dummy_configure_buffer(struct device *parent,
-+						    struct iio_dev *indio_dev)
- {
- 	return 0;
- }
--
--static inline
--void iio_simple_dummy_unconfigure_buffer(struct iio_dev *indio_dev)
--{}
--
- #endif /* CONFIG_IIO_SIMPLE_DUMMY_BUFFER */
- #endif /* _IIO_SIMPLE_DUMMY_H_ */
-diff --git a/drivers/iio/dummy/iio_simple_dummy_buffer.c b/drivers/iio/dummy/iio_simple_dummy_buffer.c
-index 5512d5edc707..76476b45dc8b 100644
---- a/drivers/iio/dummy/iio_simple_dummy_buffer.c
-+++ b/drivers/iio/dummy/iio_simple_dummy_buffer.c
-@@ -16,9 +16,9 @@
- #include <linux/bitmap.h>
- 
- #include <linux/iio/iio.h>
--#include <linux/iio/trigger_consumer.h>
- #include <linux/iio/buffer.h>
--#include <linux/iio/kfifo_buf.h>
-+#include <linux/iio/triggered_buffer.h>
-+#include <linux/iio/trigger_consumer.h>
- 
- #include "iio_simple_dummy.h"
- 
-@@ -101,74 +101,10 @@ static irqreturn_t iio_simple_dummy_trigger_h(int irq, void *p)
- static const struct iio_buffer_setup_ops iio_simple_dummy_buffer_setup_ops = {
- };
- 
--int iio_simple_dummy_configure_buffer(struct iio_dev *indio_dev)
--{
--	int ret;
--	struct iio_buffer *buffer;
--
--	/* Allocate a buffer to use - here a kfifo */
--	buffer = iio_kfifo_allocate();
--	if (!buffer) {
--		ret = -ENOMEM;
--		goto error_ret;
--	}
--
--	iio_device_attach_buffer(indio_dev, buffer);
--
--	/*
--	 * Tell the core what device type specific functions should
--	 * be run on either side of buffer capture enable / disable.
--	 */
--	indio_dev->setup_ops = &iio_simple_dummy_buffer_setup_ops;
--
--	/*
--	 * Configure a polling function.
--	 * When a trigger event with this polling function connected
--	 * occurs, this function is run. Typically this grabs data
--	 * from the device.
--	 *
--	 * NULL for the bottom half. This is normally implemented only if we
--	 * either want to ping a capture now pin (no sleeping) or grab
--	 * a timestamp as close as possible to a data ready trigger firing.
--	 *
--	 * IRQF_ONESHOT ensures irqs are masked such that only one instance
--	 * of the handler can run at a time.
--	 *
--	 * "iio_simple_dummy_consumer%d" formatting string for the irq 'name'
--	 * as seen under /proc/interrupts. Remaining parameters as per printk.
--	 */
--	indio_dev->pollfunc = iio_alloc_pollfunc(NULL,
--						 &iio_simple_dummy_trigger_h,
--						 IRQF_ONESHOT,
--						 indio_dev,
--						 "iio_simple_dummy_consumer%d",
--						 indio_dev->id);
--
--	if (!indio_dev->pollfunc) {
--		ret = -ENOMEM;
--		goto error_free_buffer;
--	}
--
--	/*
--	 * Notify the core that this device is capable of buffered capture
--	 * driven by a trigger.
--	 */
--	indio_dev->modes |= INDIO_BUFFER_TRIGGERED;
--
--	return 0;
--
--error_free_buffer:
--	iio_kfifo_free(indio_dev->buffer);
--error_ret:
--	return ret;
--}
--
--/**
-- * iio_simple_dummy_unconfigure_buffer() - release buffer resources
-- * @indio_dev: device instance state
-- */
--void iio_simple_dummy_unconfigure_buffer(struct iio_dev *indio_dev)
-+int iio_simple_dummy_configure_buffer(struct device *parent, struct iio_dev *indio_dev)
- {
--	iio_dealloc_pollfunc(indio_dev->pollfunc);
--	iio_kfifo_free(indio_dev->buffer);
-+	return devm_iio_triggered_buffer_setup(parent, indio_dev,
-+					       &iio_simple_dummy_trigger_h,
-+					       NULL,
-+					       &iio_simple_dummy_buffer_setup_ops);
- }
--- 
-2.27.0
+Best regards,
+Krzysztof
 
