@@ -2,127 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B3B2CDC2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB412CDC32
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731523AbgLCRQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:16:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50782 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726167AbgLCRQH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:16:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607015681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3iwcG8+s5F+FEk/BmczMtBbT8rfaBFSaW5JqYcJIHRE=;
-        b=eLsF3hDwmWhWNXBSb3hILCzFIxIFy60dPBnzlTQkaCoDmmLEN15jFD2sFO1m0J48yu3XPM
-        FH7IgdvLRtR/EJEWPedZ2AYIQ++kw8ZEFYevo7szFZdt8Y7+rZJSVBbvohqYFDFh4ndVj/
-        NafepwG4RsV7UVH83cU0fxbiyB5gQH4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-580-tNDDupLyM1a6eS7RCtlSKA-1; Thu, 03 Dec 2020 12:14:39 -0500
-X-MC-Unique: tNDDupLyM1a6eS7RCtlSKA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B33CAFA88;
-        Thu,  3 Dec 2020 17:14:36 +0000 (UTC)
-Received: from rtux.redhat.com (unknown [10.40.196.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DCBC260BFA;
-        Thu,  3 Dec 2020 17:14:32 +0000 (UTC)
-From:   Alexey Klimov <aklimov@redhat.com>
-To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Cc:     peterz@infradead.org, yury.norov@gmail.com, tglx@linutronix.de,
-        jobaker@redhat.com, audralmitchel@gmail.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, rafael@kernel.org, tj@kernel.org,
-        lizefan@huawei.com, qais.yousef@arm.com, hannes@cmpxchg.org,
-        klimov.linux@gmail.com
-Subject: [RFC][PATCH] cpu/hotplug: wait for cpuset_hotplug_work to finish on cpu online
-Date:   Thu,  3 Dec 2020 17:14:31 +0000
-Message-Id: <20201203171431.256675-1-aklimov@redhat.com>
+        id S2502007AbgLCRQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:16:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39256 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502001AbgLCRQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 12:16:19 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EFBA6AC2E;
+        Thu,  3 Dec 2020 17:15:37 +0000 (UTC)
+To:     David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+References: <20201202122114.75316-1-songmuchun@bytedance.com>
+ <1505b548-968b-2053-fd17-0cc4ae240a2f@suse.cz>
+ <29022300-6d8e-0532-7abc-6d11ab1db04a@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm/page_isolation: do not isolate the max order page
+Message-ID: <92e54bf2-adc5-d51b-3b78-b881567335dc@suse.cz>
+Date:   Thu, 3 Dec 2020 18:15:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <29022300-6d8e-0532-7abc-6d11ab1db04a@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a CPU offlined and onlined via device_offline() and device_online()
-the userspace gets uevent notification. If, after receiving uevent,
-userspace executes sched_setaffinity() on some task trying to move it
-to a recently onlined CPU, then it will fail with -EINVAL. Userspace needs
-to wait around 5..30 ms before sched_setaffinity() will succeed for
-recently onlined CPU after receiving uevent.
+On 12/3/20 5:26 PM, David Hildenbrand wrote:
+> On 03.12.20 01:03, Vlastimil Babka wrote:
+>> On 12/2/20 1:21 PM, Muchun Song wrote:
+>>> The max order page has no buddy page and never merge to other order.
+>>> So isolating and then freeing it is pointless.
+>>>
+>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>> 
+>> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+>> 
+>>> ---
+>>>  mm/page_isolation.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+>>> index a254e1f370a3..bddf788f45bf 100644
+>>> --- a/mm/page_isolation.c
+>>> +++ b/mm/page_isolation.c
+>>> @@ -88,7 +88,7 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+>>>  	 */
+>>>  	if (PageBuddy(page)) {
+>>>  		order = buddy_order(page);
+>>> -		if (order >= pageblock_order) {
+>>> +		if (order >= pageblock_order && order < MAX_ORDER - 1) {
+>>>  			pfn = page_to_pfn(page);
+>>>  			buddy_pfn = __find_buddy_pfn(pfn, order);
+>>>  			buddy = page + (buddy_pfn - pfn);
+>> 
+>> Hm I wonder if order == MAX_ORDER - 1, then the buddy can actually be a
+>> !pfn_valid() in some corner case? pfn_valid_within(buddy_pfn) that follows would
+>> only catch it on archs with holes in zone. Then is_migrate_isolate_page(buddy)
+>> might access an invalid buddy. So this might be actually a bug fix and not just
+>> optimization, just the bug hasn't been observed in practice.
+> 
+> I think we have no users that isolate/unisolate close to holes.
+> 
+> CMA regions are properly aligned (to max of page_order /
+> max_order_nr_pages) and don't contain holes.
 
-If in_mask for sched_setaffinity() has only recently onlined CPU, it
-quickly fails with such flow:
+The problem as I see it, is that buddy_order(page) might be already MAX_ORDER -
+1 (e.g. two pageblocks on x86), and then finding buddy of that one is beyond the
+guaranteed alignment (if they merged, which they can't, it would be four
+pageblocks). Might not be just a hole within zone, but also across zone boundary?
+While being isolated and used pages migrated away, the freed pages shouldn't
+merge to MAX_ORDER-1, but if the MAX_ORDER-1 free page was already there before
+the isolation?
 
-  sched_setaffinity()
-    cpuset_cpus_allowed()
-      guarantee_online_cpus()   <-- cs->effective_cpus mask does not
-                                        contain recently onlined cpu
-    cpumask_and()               <-- final new_mask is empty
-    __set_cpus_allowed_ptr()
-      cpumask_any_and_distribute() <-- returns dest_cpu equal to nr_cpu_ids
-      returns -EINVAL
-
-Cpusets are updated using workqueue from cpuset_update_active_cpus() which
-in its turn is called from cpu hotplug callback sched_cpu_activate() hence
-the delay observable by sched_setaffinity().
-Out of line uevent can be avoided if we will ensure that cpuset_hotplug_work
-has run to completion using cpuset_wait_for_hotplug() after onlining the
-cpu in cpu_up(). Unfortunately, the execution time of
-echo 1 > /sys/devices/system/cpu/cpuX/online roughly doubled with this
-change (on my test machine).
-
-Co-analyzed-by: Joshua Baker <jobaker@redhat.com>
-Signed-off-by: Alexey Klimov <aklimov@redhat.com>
----
-
-The commit "cpuset: Make cpuset hotplug synchronous" would also get rid of the
-early uevent but it was reverted.
-
-The nature of this bug is also described here (with different consequences):
-https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
-
-Reproducer: https://gitlab.com/0xeafffffe/xlam
-
-It could be that I missed the correct place for cpuset synchronisation and it should
-be done in cpu_device_up() instead.
-I also in doubts if we need cpuset_wait_for_hotplug() in cpuhp_online_cpu_device()
-since an online uevent is sent there too.
-Currently with such change the reproducer code continues to work without issues.
-The idea is to avoid the situation when userspace receives the event about
-onlined CPU which is not ready to take tasks for a while after uevent.
-
-
- kernel/cpu.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 6ff2578ecf17..f39a27a7f24b 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -15,6 +15,7 @@
- #include <linux/sched/smt.h>
- #include <linux/unistd.h>
- #include <linux/cpu.h>
-+#include <linux/cpuset.h>
- #include <linux/oom.h>
- #include <linux/rcupdate.h>
- #include <linux/export.h>
-@@ -1275,6 +1276,8 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
- 	}
- 
- 	err = _cpu_up(cpu, 0, target);
-+	if (!err)
-+		cpuset_wait_for_hotplug();
- out:
- 	cpu_maps_update_done();
- 	return err;
--- 
-2.26.2
+> virtio-mem does not apply as it knows its range has no holes.
+> 
+> gigantic pages are aligned naturally and we check that there are no
+> holes upfront.
+> 
+> There are no other users.
+> 
+> 
+> I don't see a need for stable/fixes.
+> 
 
