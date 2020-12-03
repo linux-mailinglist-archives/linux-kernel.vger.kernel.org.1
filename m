@@ -2,225 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F032CCE0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 05:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C692CCE1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 05:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbgLCErY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 23:47:24 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:44132 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726075AbgLCErY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 23:47:24 -0500
-Received: by mail-pl1-f195.google.com with SMTP id b23so443383pls.11;
-        Wed, 02 Dec 2020 20:47:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aAG23Weit5T1H3h9q3ADXcaHYdrFnCkvvkEQnZGgOak=;
-        b=s2ZUfxM9OLxFpe8bsB6MvJsC7h4lJDuP9Q2eUI8e0LQxkd17T8ywZOmG6jisAFI0eK
-         ZNx5j5mZ+xE9jienA8f7miCsWH/fNHH0I3FlE17mnEQ0SeSi8VaDAZ5Pi8fSoRaVDNti
-         LudRvCNKHzhsbPVaK3WXO2Y4LNfX8Ybnw0rlct9q4CVrRE8I/EHNnckt+KsUVRduP/0u
-         yVStOtSCv9caEJ0Zsb0+dqs3OML0Y53oOfTojt4Js/AAiyqf8ShL8CAgdzY69ytlLnxc
-         FkC8DySIyGq+x2HlIq8HuO2SoBruUT2Y43kUW7mwsmrzTuoxZzGOubhTXTLxqQKtHWLF
-         JoDw==
-X-Gm-Message-State: AOAM533/9r9S88NJfzJjntbG0XsmJQDlNgTzHrVzmU7ZmvQDjF2DRxO/
-        44n0IFB+7vlEpgHuSYNOUu5kArwqqYMo8Q==
-X-Google-Smtp-Source: ABdhPJwLt5yYeK82HSLF33fmBokmFMoA8XyypfogEbdrJmwcYSVzBD+PdZRGq375DRH+ASZw2wOccA==
-X-Received: by 2002:a17:90a:d307:: with SMTP id p7mr1356778pju.214.1606970802649;
-        Wed, 02 Dec 2020 20:46:42 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id r7sm419816pjd.8.2020.12.02.20.46.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 20:46:41 -0800 (PST)
-Date:   Wed, 2 Dec 2020 20:46:40 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-clk@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Moritz Fischer <mdf@kernel.org>
-Subject: Re: [PATCH 1/2] clk: axi-clkgen: wrap limits in a struct and keep
- copy on the state object
-Message-ID: <X8htsIO+iYMMSuaK@archbook>
-References: <20201019111809.56374-1-alexandru.ardelean@analog.com>
- <CA+U=DsrpLTc7uti7pHSEDFzVSgVfbgxXzy3oiDb=csOSakmOZw@mail.gmail.com>
+        id S1727816AbgLCE5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 23:57:06 -0500
+Received: from cmta19.telus.net ([209.171.16.92]:46256 "EHLO cmta19.telus.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726125AbgLCE5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 23:57:05 -0500
+X-Greylist: delayed 380 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Dec 2020 23:57:04 EST
+Received: from [192.168.20.38] ([209.89.189.71])
+        by cmsmtp with SMTP
+        id kgZ7kvCzkc2CmkgZ9kPpGb; Wed, 02 Dec 2020 21:50:03 -0700
+X-Telus-Authed: Z2lsbGI0
+X-Authority-Analysis: v=2.4 cv=NMEQR22g c=1 sm=1 tr=0 ts=5fc86e7b
+ a=lXP6RixAJDH2mbiCOq84ew==:117 a=lXP6RixAJDH2mbiCOq84ew==:17
+ a=IkcTkHD0fZMA:10 a=8qRUqkmczX7pih-us7MA:9 a=QEXdDO2ut3YA:10
+ a=pHzHmUro8NiASowvMSCR:22 a=nt3jZW36AmriUCFCBwmW:22
+To:     linux-kernel@vger.kernel.org
+From:   bob <gillb4@telusplanet.net>
+Subject: Nouveau video --- [ cut here ] ----- crash dump 5.10.0-rc6
+Message-ID: <5d3e93cb-1a95-589c-71ed-2413932884d5@telusplanet.net>
+Date:   Wed, 2 Dec 2020 21:50:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+U=DsrpLTc7uti7pHSEDFzVSgVfbgxXzy3oiDb=csOSakmOZw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CMAE-Envelope: MS4xfK8Rb6RWUGYWpDWVVPUPgC7QtfDjmBVC4JNV570MipBwtZ5AiFF3rPxSFYDYlY2LfWLJZHcgFHgxbXk/RZf7LF8i89ad407xpYQGxHVDnj2BEH5iZBgV
+ dzN07d8jnEZvaqTDYXokNn3OKM4XxBo4CiEhCATTghd3xBS5QKN/OYvumgB31n+w+k302Q2bWXnvrOPTZKC7H3Q03vufSb+/XPw=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+Hello.  I have a crash dump for:
 
-On Wed, Dec 02, 2020 at 06:10:42PM +0200, Alexandru Ardelean wrote:
-> On Mon, Oct 19, 2020 at 2:14 PM Alexandru Ardelean
-> <alexandru.ardelean@analog.com> wrote:
-> >
-> > Up until now the these limits were global/hard-coded, since they are
-> > typically limits of the fabric.
-> >
-> > However, since this is an FPGA generated clock, this may run on setups
-> > where one clock is on a fabric, and another one synthesized on another
-> > fabric connected via PCIe (or some other inter-connect), and then these
-> > limits need to be adjusted for each instance of the AXI CLKGEN.
-> >
-> > This change wraps the current constants in 'axi_clkgen_limits' struct and
-> > the 'axi_clkgen' instance keeps a copy of these limits, which is
-> > initialized at probe from the default limits.
-> >
-> > The limits are stored on the device-tree OF table, so that we can adjust
-> > them via the compatible string.
-> 
-> ping on this;
-> should i do a re-send for this?
+$ uname -a
+Linux freedom 5.10.0-rc6 #1 SMP Sun Nov 29 17:26:13 MST 2020 x86_64 
+x86_64 x86_64 GNU/Linux
 
-I'd try resending, yes.
-> 
-> >
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > ---
-> >  drivers/clk/clk-axi-clkgen.c | 48 +++++++++++++++++++++++-------------
-> >  1 file changed, 31 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
-> > index 14d803e6af62..963a62e9c728 100644
-> > --- a/drivers/clk/clk-axi-clkgen.c
-> > +++ b/drivers/clk/clk-axi-clkgen.c
-> > @@ -46,9 +46,17 @@
-> >  #define MMCM_CLK_DIV_DIVIDE    BIT(11)
-> >  #define MMCM_CLK_DIV_NOCOUNT   BIT(12)
-> >
-> > +struct axi_clkgen_limits {
-> > +       unsigned int fpfd_min;
-> > +       unsigned int fpfd_max;
-> > +       unsigned int fvco_min;
-> > +       unsigned int fvco_max;
-> > +};
-> > +
-> >  struct axi_clkgen {
-> >         void __iomem *base;
-> >         struct clk_hw clk_hw;
-> > +       struct axi_clkgen_limits limits;
-> >  };
-> >
-> >  static uint32_t axi_clkgen_lookup_filter(unsigned int m)
-> > @@ -100,12 +108,15 @@ static uint32_t axi_clkgen_lookup_lock(unsigned int m)
-> >         return 0x1f1f00fa;
-> >  }
-> >
-> > -static const unsigned int fpfd_min = 10000;
-> > -static const unsigned int fpfd_max = 300000;
-> > -static const unsigned int fvco_min = 600000;
-> > -static const unsigned int fvco_max = 1200000;
-> > +static const struct axi_clkgen_limits axi_clkgen_zynq_default_limits = {
-> > +       .fpfd_min = 10000,
-> > +       .fpfd_max = 300000,
-> > +       .fvco_min = 600000,
-> > +       .fvco_max = 1200000,
-> > +};
-> >
-> > -static void axi_clkgen_calc_params(unsigned long fin, unsigned long fout,
-> > +static void axi_clkgen_calc_params(const struct axi_clkgen_limits *limits,
-> > +       unsigned long fin, unsigned long fout,
-> >         unsigned int *best_d, unsigned int *best_m, unsigned int *best_dout)
-> >  {
-> >         unsigned long d, d_min, d_max, _d_min, _d_max;
-> > @@ -122,12 +133,12 @@ static void axi_clkgen_calc_params(unsigned long fin, unsigned long fout,
-> >         *best_m = 0;
-> >         *best_dout = 0;
-> >
-> > -       d_min = max_t(unsigned long, DIV_ROUND_UP(fin, fpfd_max), 1);
-> > -       d_max = min_t(unsigned long, fin / fpfd_min, 80);
-> > +       d_min = max_t(unsigned long, DIV_ROUND_UP(fin, limits->fpfd_max), 1);
-> > +       d_max = min_t(unsigned long, fin / limits->fpfd_min, 80);
-> >
-> >  again:
-> > -       fvco_min_fract = fvco_min << fract_shift;
-> > -       fvco_max_fract = fvco_max << fract_shift;
-> > +       fvco_min_fract = limits->fvco_min << fract_shift;
-> > +       fvco_max_fract = limits->fvco_max << fract_shift;
-> >
-> >         m_min = max_t(unsigned long, DIV_ROUND_UP(fvco_min_fract, fin) * d_min, 1);
-> >         m_max = min_t(unsigned long, fvco_max_fract * d_max / fin, 64 << fract_shift);
-> > @@ -319,6 +330,7 @@ static int axi_clkgen_set_rate(struct clk_hw *clk_hw,
-> >         unsigned long rate, unsigned long parent_rate)
-> >  {
-> >         struct axi_clkgen *axi_clkgen = clk_hw_to_axi_clkgen(clk_hw);
-> > +       const struct axi_clkgen_limits *limits = &axi_clkgen->limits;
-> >         unsigned int d, m, dout;
-> >         struct axi_clkgen_div_params params;
-> >         uint32_t power = 0;
-> > @@ -328,7 +340,7 @@ static int axi_clkgen_set_rate(struct clk_hw *clk_hw,
-> >         if (parent_rate == 0 || rate == 0)
-> >                 return -EINVAL;
-> >
-> > -       axi_clkgen_calc_params(parent_rate, rate, &d, &m, &dout);
-> > +       axi_clkgen_calc_params(limits, parent_rate, rate, &d, &m, &dout);
-> >
-> >         if (d == 0 || dout == 0 || m == 0)
-> >                 return -EINVAL;
-> > @@ -368,10 +380,12 @@ static int axi_clkgen_set_rate(struct clk_hw *clk_hw,
-> >  static long axi_clkgen_round_rate(struct clk_hw *hw, unsigned long rate,
-> >         unsigned long *parent_rate)
-> >  {
-> > +       struct axi_clkgen *axi_clkgen = clk_hw_to_axi_clkgen(hw);
-> > +       const struct axi_clkgen_limits *limits = &axi_clkgen->limits;
-> >         unsigned int d, m, dout;
-> >         unsigned long long tmp;
-> >
-> > -       axi_clkgen_calc_params(*parent_rate, rate, &d, &m, &dout);
-> > +       axi_clkgen_calc_params(limits, *parent_rate, rate, &d, &m, &dout);
-> >
-> >         if (d == 0 || dout == 0 || m == 0)
-> >                 return -EINVAL;
-> > @@ -485,6 +499,7 @@ static const struct clk_ops axi_clkgen_ops = {
-> >  static const struct of_device_id axi_clkgen_ids[] = {
-> >         {
-> >                 .compatible = "adi,axi-clkgen-2.00.a",
-> > +               .data = &axi_clkgen_zynq_default_limits,
-> >         },
-> >         { },
-> >  };
-> > @@ -492,7 +507,7 @@ MODULE_DEVICE_TABLE(of, axi_clkgen_ids);
-> >
-> >  static int axi_clkgen_probe(struct platform_device *pdev)
-> >  {
-> > -       const struct of_device_id *id;
-> > +       const struct axi_clkgen_limits *dflt_limits;
-> >         struct axi_clkgen *axi_clkgen;
-> >         struct clk_init_data init;
-> >         const char *parent_names[2];
-> > @@ -501,11 +516,8 @@ static int axi_clkgen_probe(struct platform_device *pdev)
-> >         unsigned int i;
-> >         int ret;
-> >
-> > -       if (!pdev->dev.of_node)
-> > -               return -ENODEV;
-> > -
-> > -       id = of_match_node(axi_clkgen_ids, pdev->dev.of_node);
-> > -       if (!id)
-> > +       dflt_limits = device_get_match_data(&pdev->dev);
-> > +       if (!dflt_limits)
-> >                 return -ENODEV;
-> >
-> >         axi_clkgen = devm_kzalloc(&pdev->dev, sizeof(*axi_clkgen), GFP_KERNEL);
-> > @@ -527,6 +539,8 @@ static int axi_clkgen_probe(struct platform_device *pdev)
-> >                         return -EINVAL;
-> >         }
-> >
-> > +       memcpy(&axi_clkgen->limits, dflt_limits, sizeof(axi_clkgen->limits));
-> > +
-> >         clk_name = pdev->dev.of_node->name;
-> >         of_property_read_string(pdev->dev.of_node, "clock-output-names",
-> >                 &clk_name);
-> > --
-> > 2.17.1
-> >
+Occasionally when this dumps it likes to lock up the computer, but I 
+caught it this time.
 
-- Moritz
+Also video likes to flicker a lot.   Nouveau has been iffy since kernel 
+5.8.0.
+
+This isn't the only dump, it dumped probably 50 times.  If you are 
+really desperate for all of it,
+
+reply to me directly as I'm not on the mailing list.  Here is one of them.
+
+[39019.426580] ------------[ cut here ]------------
+[39019.426589] WARNING: CPU: 6 PID: 14136 at 
+drivers/gpu/drm/nouveau/dispnv50/disp.c:211 nv50_dmac_wait+0x1e1/0x230
+[39019.426590] Modules linked in: mt2131 s5h1409 fuse tda8290 tuner 
+cx25840 rt2800usb rt2x00usb rt2800lib snd_hda_codec_analog 
+snd_hda_codec_generic ledtrig_audio rt2x00lib binfmt_misc 
+intel_powerclamp coretemp cx23885 mac80211 tda18271 altera_stapl 
+videobuf2_dvb m88ds3103 tveeprom cx2341x dvb_core rc_core i2c_mux 
+snd_hda_codec_hdmi videobuf2_dma_sg videobuf2_memops videobuf2_v4l2 
+snd_hda_intel videobuf2_common snd_intel_dspcfg kvm_intel snd_hda_codec 
+videodev snd_hda_core kvm mc snd_hwdep snd_pcm_oss snd_mixer_oss 
+irqbypass snd_pcm cfg80211 snd_seq_dummy snd_seq_midi snd_seq_oss 
+snd_seq_midi_event snd_rawmidi snd_seq intel_cstate snd_seq_device 
+serio_raw snd_timer input_leds nfsd libarc4 snd asus_atk0110 i7core_edac 
+soundcore i5500_temp auth_rpcgss nfs_acl lockd grace sch_fq_codel sunrpc 
+parport_pc ppdev lp parport ip_tables x_tables btrfs blake2b_generic 
+libcrc32c xor zstd_compress raid6_pq dm_mirror dm_region_hash dm_log 
+pata_acpi pata_marvell hid_generic usbhid hid psmouse firewire_ohci
+[39019.426650]  firewire_core crc_itu_t i2c_i801 ahci sky2 libahci 
+i2c_smbus lpc_ich
+[39019.426658] CPU: 6 PID: 14136 Comm: kworker/u16:0 Tainted: G        W 
+I       5.10.0-rc6 #1
+[39019.426659] Hardware name: System manufacturer System Product 
+Name/P6T DELUXE, BIOS 2209    09/21/2010
+[39019.426662] Workqueue: events_unbound nv50_disp_atomic_commit_work
+[39019.426665] RIP: 0010:nv50_dmac_wait+0x1e1/0x230
+[39019.426667] Code: 8d 48 04 48 89 4a 68 c7 00 00 00 00 20 49 8b 46 38 
+41 c7 86 20 01 00 00 00 00 00 00 49 89 46 68 e8 e4 fc ff ff e9 76 fe ff 
+ff <0f> 0b b8 92 ff ff ff e9 ed fe ff ff 49 8b be 80 00 00 00 e8 c7 fc
+[39019.426668] RSP: 0018:ffffb79d028ebd48 EFLAGS: 00010282
+[39019.426670] RAX: ffffffffffffff92 RBX: 000000000000000d RCX: 
+0000000000000000
+[39019.426671] RDX: ffffffffffffff92 RSI: ffffb79d028ebc88 RDI: 
+ffffb79d028ebd28
+[39019.426671] RBP: ffffb79d028ebd48 R08: 0000000000000000 R09: 
+ffffb79d028ebc58
+[39019.426672] R10: 0000000000000030 R11: 00000000000011c4 R12: 
+00000000fffffffb
+[39019.426673] R13: ffffa05fc1ebd368 R14: ffffa05fc1ebd3a8 R15: 
+ffffa05fc2425000
+[39019.426675] FS:  0000000000000000(0000) GS:ffffa061f3d80000(0000) 
+knlGS:0000000000000000
+[39019.426676] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[39019.426677] CR2: 00007fb2d58e0000 CR3: 000000026280a000 CR4: 
+00000000000006e0
+[39019.426678] Call Trace:
+[39019.426685]  base827c_image_set+0x2f/0x1d0
+[39019.426687]  nv50_wndw_flush_set+0x89/0x1c0
+[39019.426688]  nv50_disp_atomic_commit_tail+0x4e7/0x7e0
+[39019.426693]  process_one_work+0x1d4/0x370
+[39019.426695]  worker_thread+0x4a/0x3b0
+[39019.426697]  ? process_one_work+0x370/0x370
+[39019.426699]  kthread+0xfe/0x140
+[39019.426701]  ? kthread_park+0x90/0x90
+[39019.426704]  ret_from_fork+0x22/0x30
+[39019.426706] ---[ end trace d512d675211c738c ]---
+[39021.426751] ------------[ cut here ]------------
+
+
+Thanks in advance,
+
+Bob
+
