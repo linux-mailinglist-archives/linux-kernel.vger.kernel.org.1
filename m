@@ -2,120 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04472CD9FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9597F2CD9FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729200AbgLCPQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 10:16:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44074 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728022AbgLCPQr (ORCPT
+        id S1730782AbgLCPRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 10:17:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728022AbgLCPRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:16:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607008520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=DyM6M0CaXHuUyJ1W1c9GKjJJgZPBG5nzEO24r4+1bEU=;
-        b=i7KFhesaXxLnBsgiysKBEpCLWC4f4HWO0YCyKF3LoYO4SZOiCNVBRdnHtyZhainRd32tMz
-        eW9BtqFvC79j53mGCVfuT1siolP9YpMzozAUa3UFhNtcCxbr0TOKjCsuJ0IWxMmCX0eHRf
-        xYd4A8wn696etgF9zmPKtIb5QRpfctM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-56-iio3t5tINAOA8sJd5cCiLQ-1; Thu, 03 Dec 2020 10:15:18 -0500
-X-MC-Unique: iio3t5tINAOA8sJd5cCiLQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 77E96800D62;
-        Thu,  3 Dec 2020 15:15:17 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DDB0E1F075;
-        Thu,  3 Dec 2020 15:15:16 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     stable@vger.kernel.org, "Denis V . Lunev" <den@openvz.org>
-Subject: [PATCH] KVM: x86: reinstate vendor-agnostic check on SPEC_CTRL cpuid bits
-Date:   Thu,  3 Dec 2020 10:15:16 -0500
-Message-Id: <20201203151516.14441-1-pbonzini@redhat.com>
+        Thu, 3 Dec 2020 10:17:05 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B9BC061A4E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 07:16:19 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id b2so2475923edm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 07:16:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5CZTZvxfaWDdWMFYGm2hND2LpKwDsHuS9rmNu18OIv4=;
+        b=UtM5hsRalnp74tSB5DseBJYzuu6zRCp5gk6C43T8HHM5b7lYUKHv5m+ajdCcBtz4Yk
+         f2EZA76SNOQrDhRAcbtmsgGPb3H9x5UCiS0h0OQGsu+gpvmPmfspIoXCFn3XEckXGHr/
+         g1o9BllsAicf+nJnyaVXCPJfQ6pEMl2mH6IMuP5ADAoFuU857Q89P5GXGYp4g8j67x8o
+         YpUOpqR4/kpRemrx9hLFBornNXP7VCBeO9pVJ4EgcIliVaO/uoGgb5o25xeB3mL6J8lw
+         qMM4m+R+0ncqtpR62mEGAIks/bzFn5Edlz2K7FIaKtK+pJ5PBFtfO9jeL9y2wHQDkDlG
+         xg1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5CZTZvxfaWDdWMFYGm2hND2LpKwDsHuS9rmNu18OIv4=;
+        b=jck/deiXcxgjVJ14qxf4Vu2AS37onm37f62FZ6svqK6QKE5qVsohApktEawf07huPS
+         Mv+h77iMLs2O2IMIYQ4YJzalRwz+NcDZKqupzgOZjHjUPyGxURFtFIGf2tjv7iu0CXCe
+         jzeZpDWf8AWYx1Pz6mZrIQ6xrRKniHF7BpIDbj0l8OB9MdBPvQ4alxh36ZVTOmCmFOLI
+         19G2PpJONN6MObmLSiU54D2eN9EIgkOG9+braIJ4CKPNxndGQSR/YRnTvqRLkYn1+4l5
+         oNV1xDRO5d5xhYjmVVjxKBU1toGtzjq4b8/tZPRLTyN5mVAL+SYFSBHq6DrB/wF3KOn6
+         lWFQ==
+X-Gm-Message-State: AOAM532FQe883YZmodWqmP8v1LsrQ98Uk132e3ol81MFrS5HVqwExrXd
+        vYyt/08hkkPTUD3UtMa31bP2/rGD25RAQBc7dbv7Pw==
+X-Google-Smtp-Source: ABdhPJw6odafP1GdIbk0bpCzcdTdqrTkgnN1/7o8gJXJ4rZHiQFVpk3Yd14/5h6npa6yf2STfKPxmA1RtvcW4TlXT4w=
+X-Received: by 2002:a50:e00f:: with SMTP id e15mr3443366edl.210.1607008577734;
+ Thu, 03 Dec 2020 07:16:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-6-pasha.tatashin@soleen.com> <20201203091703.GA17338@dhcp22.suse.cz>
+In-Reply-To: <20201203091703.GA17338@dhcp22.suse.cz>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 3 Dec 2020 10:15:41 -0500
+Message-ID: <CA+CK2bB-BC-5Szs1Piv3O=OGxQbJSGWzgMmDUtDewrCqEoNaXw@mail.gmail.com>
+Subject: Re: [PATCH 5/6] mm: honor PF_MEMALLOC_NOMOVABLE for all allocations
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Until commit e7c587da1252 ("x86/speculation: Use synthetic bits for IBRS/IBPB/STIBP",
-2018-05-17), KVM was testing both Intel and AMD CPUID bits before allowing the
-guest to write MSR_IA32_SPEC_CTRL and MSR_IA32_PRED_CMD.  Testing only Intel bits
-on VMX processors, or only AMD bits on SVM processors, fails if the guests are
-created with the "opposite" vendor as the host.
+On Thu, Dec 3, 2020 at 4:17 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 02-12-20 00:23:29, Pavel Tatashin wrote:
+> [...]
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index 611799c72da5..7a6d86d0bc5f 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -3766,20 +3766,25 @@ alloc_flags_nofragment(struct zone *zone, gfp_t gfp_mask)
+> >       return alloc_flags;
+> >  }
+> >
+> > -static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
+> > -                                     unsigned int alloc_flags)
+> > +static inline unsigned int cma_alloc_flags(gfp_t gfp_mask,
+> > +                                        unsigned int alloc_flags)
+> >  {
+> >  #ifdef CONFIG_CMA
+> > -     unsigned int pflags = current->flags;
+> > -
+> > -     if (!(pflags & PF_MEMALLOC_NOMOVABLE) &&
+> > -         gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
+> > +     if (gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
+> >               alloc_flags |= ALLOC_CMA;
+> > -
+> >  #endif
+> >       return alloc_flags;
+> >  }
+> >
+> > +static inline gfp_t current_gfp_checkmovable(gfp_t gfp_mask)
+> > +{
+> > +     unsigned int pflags = current->flags;
+> > +
+> > +     if ((pflags & PF_MEMALLOC_NOMOVABLE))
+> > +             return gfp_mask & ~__GFP_MOVABLE;
+> > +     return gfp_mask;
+> > +}
+> > +
+>
+> It sucks that we have to control both ALLOC and gfp flags. But wouldn't
+> it be simpler and more straightforward to keep current_alloc_flags as is
+> (module PF rename) and hook the gfp mask evaluation into current_gfp_context
+> and move it up before the first allocation attempt?
 
-While at it, also tweak the host CPU check to use the vendor-agnostic feature bit
-X86_FEATURE_IBPB, since we only care about the availability of the MSR on the host
-here and not about specific CPUID bits.
+We could do that, but perhaps as a separate patch? I am worried about
+hidden implication of adding extra scope (GFP_NOIO|GFP_NOFS) to the
+fast path. Also, current_gfp_context() is used elsewhere, and in some
+places removing __GFP_MOVABLE from gfp_mask means that we will need to
+also change other things. For example [1], in try_to_free_pages() we
+call current_gfp_context(gfp_mask) which can reduce the maximum zone
+idx, yet we simply set it to: reclaim_idx = gfp_zone(gfp_mask), not to
+the newly determined gfp_mask.
 
-Fixes: e7c587da1252 ("x86/speculation: Use synthetic bits for IBRS/IBPB/STIBP")
-Cc: stable@vger.kernel.org
-Reported-by: Denis V. Lunev <den@openvz.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/svm/svm.c |  3 ++-
- arch/x86/kvm/vmx/vmx.c | 10 +++++++---
- 2 files changed, 9 insertions(+), 4 deletions(-)
+[1] https://soleen.com/source/xref/linux/mm/vmscan.c?r=2da9f630#3239
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 62390fbc9233..0b4aa60b2754 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -2686,12 +2686,13 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
- 		break;
- 	case MSR_IA32_PRED_CMD:
- 		if (!msr->host_initiated &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL) &&
- 		    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_IBPB))
- 			return 1;
- 
- 		if (data & ~PRED_CMD_IBPB)
- 			return 1;
--		if (!boot_cpu_has(X86_FEATURE_AMD_IBPB))
-+		if (!boot_cpu_has(X86_FEATURE_IBPB))
- 			return 1;
- 		if (!data)
- 			break;
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index c3441e7e5a87..b74d2105ced7 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -2028,7 +2028,10 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		break;
- 	case MSR_IA32_SPEC_CTRL:
- 		if (!msr_info->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL))
-+                    !guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL) &&
-+                    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_STIBP) &&
-+                    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_IBRS) &&
-+                    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_SSBD))
- 			return 1;
- 
- 		if (kvm_spec_ctrl_test_value(data))
-@@ -2063,12 +2066,13 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		goto find_uret_msr;
- 	case MSR_IA32_PRED_CMD:
- 		if (!msr_info->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL))
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL) &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_IBPB))
- 			return 1;
- 
- 		if (data & ~PRED_CMD_IBPB)
- 			return 1;
--		if (!boot_cpu_has(X86_FEATURE_SPEC_CTRL))
-+		if (!boot_cpu_has(X86_FEATURE_IBPB))
- 			return 1;
- 		if (!data)
- 			break;
--- 
-2.26.2
 
+ All scope flags
+> should be applicable to the hot path as well. It would add few cycles to
+> there but the question is whether that would be noticeable over just
+> handling PF_MEMALLOC_NOMOVABLE on its own. The cache line would be
+> pulled in anyway.
+
+Let's try it in a separate patch? I will add it in the next version of
+this series.
+
+Thank you,
+Pasha
