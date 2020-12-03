@@ -2,86 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89722CE282
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E6E2CE285
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbgLCXRj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 18:17:39 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:42756 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727146AbgLCXRj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:17:39 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-74-ZN_hijpIMCiOzkEhiip_Rg-1; Thu, 03 Dec 2020 23:16:00 +0000
-X-MC-Unique: ZN_hijpIMCiOzkEhiip_Rg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 3 Dec 2020 23:15:59 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 3 Dec 2020 23:15:59 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Mike Rapoport' <rppt@kernel.org>,
-        Topi Miettinen <toiwoton@gmail.com>
-CC:     "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: RE: [PATCH] mm/vmalloc: randomize vmalloc() allocations
-Thread-Topic: [PATCH] mm/vmalloc: randomize vmalloc() allocations
-Thread-Index: AQHWyUIaOaq71c1O10ObeOeJDE6bhanmALEg
-Date:   Thu, 3 Dec 2020 23:15:59 +0000
-Message-ID: <2a672ff3df0c47538ed7d1974c864f0b@AcuMS.aculab.com>
-References: <20201201214547.9721-1-toiwoton@gmail.com>
- <9d34fb0a-7aba-1e84-6426-006ea7c3d9f5@gmail.com>
- <20201203065801.GH751215@kernel.org>
-In-Reply-To: <20201203065801.GH751215@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1731077AbgLCXR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:17:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729801AbgLCXR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 18:17:59 -0500
+From:   Arnd Bergmann <arnd@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: rc: select CONFIG_BITREVERSE where needed
+Date:   Fri,  4 Dec 2020 00:17:03 +0100
+Message-Id: <20201203231714.1484408-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport
-> Sent: 03 December 2020 06:58
-> 
-> On Wed, Dec 02, 2020 at 08:49:06PM +0200, Topi Miettinen wrote:
-> > On 1.12.2020 23.45, Topi Miettinen wrote:
-> > > Memory mappings inside kernel allocated with vmalloc() are in
-> > > predictable order and packed tightly toward the low addresses. With
-> > > new kernel boot parameter 'randomize_vmalloc=1', the entire area is
-> > > used randomly to make the allocations less predictable and harder to
-> > > guess for attackers.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Isn't that going to horribly fragment the available address space
-and make even moderate sized allocation requests fail (or sleep).
+A number of remote control drivers require the bitreverse
+helper, and run into a link error when it is disabled:
 
-I'm not even sure that you need to use 'best fit' rather than
-'first fit'.
-'best fit' is certainly a lot better for a simple linked list
-user space malloc.
+arm-linux-gnueabi-ld: drivers/media/rc/img-ir/img-ir-nec.o: in function `img_ir_nec_scancode':
+img-ir-nec.c:(.text+0x10c): undefined reference to `byte_rev_table'
+arm-linux-gnueabi-ld: drivers/media/rc/img-ir/img-ir-nec.o: in function `img_ir_nec_filter':
+img-ir-nec.c:(.text+0x2dc): undefined reference to `byte_rev_table'
+arm-linux-gnueabi-ld: drivers/media/usb/cx231xx/cx231xx-input.o: in function `get_key_isdbt':
+cx231xx-input.c:(.text+0x38c): undefined reference to `byte_rev_table'
+arm-linux-gnueabi-ld: drivers/media/usb/em28xx/em28xx-input.o: in function `em28xx_get_key_em_haup':
+em28xx-input.c:(.text+0x1704): undefined reference to `byte_rev_table'
 
-	David
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/media/rc/Kconfig          | 2 ++
+ drivers/media/rc/img-ir/Kconfig   | 1 +
+ drivers/media/usb/cx231xx/Kconfig | 1 +
+ drivers/media/usb/em28xx/Kconfig  | 1 +
+ 4 files changed, 5 insertions(+)
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/drivers/media/rc/Kconfig b/drivers/media/rc/Kconfig
+index 2c0ee2e5b446..8a4b4040be45 100644
+--- a/drivers/media/rc/Kconfig
++++ b/drivers/media/rc/Kconfig
+@@ -92,6 +92,7 @@ config IR_SONY_DECODER
+ config IR_SANYO_DECODER
+ 	tristate "Enable IR raw decoder for the Sanyo protocol"
+ 	depends on RC_CORE
++	select BITREVERSE
+ 
+ 	help
+ 	   Enable this option if you have an infrared remote control which
+@@ -101,6 +102,7 @@ config IR_SANYO_DECODER
+ config IR_SHARP_DECODER
+ 	tristate "Enable IR raw decoder for the Sharp protocol"
+ 	depends on RC_CORE
++	select BITREVERSE
+ 
+ 	help
+ 	   Enable this option if you have an infrared remote control which
+diff --git a/drivers/media/rc/img-ir/Kconfig b/drivers/media/rc/img-ir/Kconfig
+index 5c0508f2719f..a80cfcd87a95 100644
+--- a/drivers/media/rc/img-ir/Kconfig
++++ b/drivers/media/rc/img-ir/Kconfig
+@@ -30,6 +30,7 @@ config IR_IMG_HW
+ config IR_IMG_NEC
+ 	bool "NEC protocol support"
+ 	depends on IR_IMG_HW
++	select BITREVERSE
+ 	help
+ 	   Say Y here to enable support for the NEC, extended NEC, and 32-bit
+ 	   NEC protocols in the ImgTec infrared decoder block.
+diff --git a/drivers/media/usb/cx231xx/Kconfig b/drivers/media/usb/cx231xx/Kconfig
+index 2fe2b2d335ba..b80661b8375f 100644
+--- a/drivers/media/usb/cx231xx/Kconfig
++++ b/drivers/media/usb/cx231xx/Kconfig
+@@ -18,6 +18,7 @@ config VIDEO_CX231XX_RC
+ 	bool "Conexant cx231xx Remote Controller additional support"
+ 	depends on RC_CORE=y || RC_CORE=VIDEO_CX231XX
+ 	depends on VIDEO_CX231XX
++	select BITREVERSE
+ 	default y
+ 	help
+ 	  cx231xx hardware has a builtin RX/TX support. However, a few
+diff --git a/drivers/media/usb/em28xx/Kconfig b/drivers/media/usb/em28xx/Kconfig
+index f2031a933e54..8a24731b373a 100644
+--- a/drivers/media/usb/em28xx/Kconfig
++++ b/drivers/media/usb/em28xx/Kconfig
+@@ -77,5 +77,6 @@ config VIDEO_EM28XX_RC
+ 	depends on VIDEO_EM28XX
+ 	depends on !(RC_CORE=m && VIDEO_EM28XX=y)
+ 	default VIDEO_EM28XX
++	select BITREVERSE
+ 	help
+ 	  Enables Remote Controller support on em28xx driver.
+-- 
+2.27.0
 
