@@ -2,144 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE902CE17E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A982CE184
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:23:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727927AbgLCWUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:20:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726707AbgLCWUM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:20:12 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346CEC061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 14:19:32 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id t18so3367794otk.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 14:19:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=QIvdaXMerZjHKN16VIAknaqTSxjYn/RYpNcQZGlB0eM=;
-        b=lqkpuDgPEmdoc2666gMa9RbwXHp9urjMEjXlMv/r516+5uWHSkWLdJrQOrUi/dLCY3
-         WytTyd9zO8543c5RUqrF+D8FAOdOzmhAQ33L5+OoDxlyUo6yuB5mTN9lanUW3vU6iW80
-         br/N7YjPVtGNfTQNwk2ShkWO92y58G2ZqZhW+0CRLpvLUBTTJ1T5HF9D++K+jB3LqgdV
-         UUxOpE8g5qPxY78om6kXySy4HykQQnj5C92TrhqtBQk1oNm/Ag3KKIkR9o+MiScHAjkj
-         rTMsxB+p9+/T/x+UEfLjSDy9LH0vDXXfxLTsL1XSYMQPf6k/SC9wpTEW4qzrVLiC6poB
-         tkBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=QIvdaXMerZjHKN16VIAknaqTSxjYn/RYpNcQZGlB0eM=;
-        b=G0vYW/rNKk77LLhpKHNt1imj+lHxwwCSFgcBVZmYG+qaOOmdkLj5BZ0j+WfA3796Rg
-         Irkmy5qKWov8Ma7/UJ3K7I5Wgd+r56lcqgwAfazp6QINaS03GLKCucVpxRQkYPKyyMlm
-         JBEX0qUZC2J1Ru4xBJC6waMBdS5Cl/yrjOZVNPdtGEITO9e09TuXJu+BIm5AD8io8KT6
-         cZzapzGWM5cUPlvO/T4CAtYTHRnGKqCrlS+2maQ2Q819mdvkWRaX8fVJO1iGRQVjVQQJ
-         LeSP+E8H9NixsdSfw81MGJBFD9Og8BsMjmwBmTxfWc/g7OUNFLuxhSfc1n2oqIxm3C6y
-         tkCA==
-X-Gm-Message-State: AOAM531Qgk4LocuyI/SYtmRG7PmcvV++gBWefHDCVAAPG7hocBQBQFCo
-        nGVyocTwekvjzk0sCe4i/Fb/wg==
-X-Google-Smtp-Source: ABdhPJz+sexSHIB+05eqb2T1lZzhZyEx7yf1cjHtX9/Ed5S5Uku8jnBQFjK+/kyd4vQhQAGU1GWwig==
-X-Received: by 2002:a9d:6312:: with SMTP id q18mr1194866otk.264.1607033971283;
-        Thu, 03 Dec 2020 14:19:31 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id t21sm172229otr.77.2020.12.03.14.19.29
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 03 Dec 2020 14:19:30 -0800 (PST)
-Date:   Thu, 3 Dec 2020 14:19:19 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Qian Cai <qcai@redhat.com>
-cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hch@lst.de,
-        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
-        dchinner@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
-In-Reply-To: <e4616d748b2137d05376eb517b4c8d675bc11712.camel@redhat.com>
-Message-ID: <alpine.LSU.2.11.2012031415090.13206@eggly.anvils>
-References: <20201112212641.27837-1-willy@infradead.org> <alpine.LSU.2.11.2011160128001.1206@eggly.anvils> <20201117153947.GL29991@casper.infradead.org> <alpine.LSU.2.11.2011170820030.1014@eggly.anvils> <20201117191513.GV29991@casper.infradead.org>
- <20201117234302.GC29991@casper.infradead.org> <20201125023234.GH4327@casper.infradead.org> <bb95be97-2a50-b345-fc2c-3ff865b60e08@samsung.com> <CGME20201203172725eucas1p2fddec1d269c55095859d490942b78b93@eucas1p2.samsung.com> <0107bae8-baaa-9d39-5349-8174cb8abbbe@samsung.com>
- <e4616d748b2137d05376eb517b4c8d675bc11712.camel@redhat.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1729627AbgLCWVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:21:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725885AbgLCWVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:21:38 -0500
+Date:   Thu, 3 Dec 2020 14:20:56 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607034057;
+        bh=sJTZOuaQLWgAkLjU/1D2hpQxVLj/LjujUTWRVPbXgoc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uMtG2O4kX2o0F+/hdjxy+ldteyemQOl147uqhmiiqZTAfR01B+ZyV1zKVHvx8Glc+
+         O9MYm4yMKlKBYX/9OiEm8AaF3QMGohDq73Jok3UmCj8fJuRJ9MZucvU6xQQtYp3dHA
+         nM0Z/pYBl7LxiCalLTBPKscMysyYtCAxDH06zDwzeVtS07hqNm/XLui3XjH/5ibqiT
+         9RoVqBjH8oVd7dblCAq16ybGsCy1/ynL67hxFsD7G7NS/2EMaIV7WVjWd5B71s2T11
+         dmYFXYhNiCf5ksZbsn4w29xaLGn3Tpc+gGnj2BItZRjU8Bolc8zVFesJLWI6koJ1qV
+         q5q75pvq5R9BQ==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] Networking for 5.10-rc7
+Message-ID: <20201203142056.5bf81035@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <CAHk-=wgBDP8WwpO-yyv0fvdc0w9qoQwugywvwsARp4HMfUkD1g@mail.gmail.com>
+References: <20201203204459.3963776-1-kuba@kernel.org>
+        <CAHk-=wgBDP8WwpO-yyv0fvdc0w9qoQwugywvwsARp4HMfUkD1g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020, Qian Cai wrote:
-> On Thu, 2020-12-03 at 18:27 +0100, Marek Szyprowski wrote:
-> > On 03.12.2020 16:46, Marek Szyprowski wrote:
-> > > On 25.11.2020 03:32, Matthew Wilcox wrote:
-> > > > On Tue, Nov 17, 2020 at 11:43:02PM +0000, Matthew Wilcox wrote:
-> > > > > On Tue, Nov 17, 2020 at 07:15:13PM +0000, Matthew Wilcox wrote:
-> > > > > > I find both of these functions exceptionally confusing.  Does this
-> > > > > > make it easier to understand?
-> > > > > Never mind, this is buggy.  I'll send something better tomorrow.
-> > > > That took a week, not a day.  *sigh*.  At least this is shorter.
-> > > > 
-> > > > commit 1a02863ce04fd325922d6c3db6d01e18d55f966b
-> > > > Author: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > > > Date:   Tue Nov 17 10:45:18 2020 -0500
-> > > > 
-> > > >      fix mm-truncateshmem-handle-truncates-that-split-thps.patch
-> > > 
-> > > This patch landed in todays linux-next (20201203) as commit 
-> > > 8678b27f4b8b ("8678b27f4b8bfc130a13eb9e9f27171bcd8c0b3b"). Sadly it 
-> > > breaks booting of ANY of my ARM 32bit test systems, which use initrd. 
-> > > ARM64bit based systems boot fine. Here is example of the crash:
-> > 
-> > One more thing. Reverting those two:
-> > 
-> > 1b1aa968b0b6 mm-truncateshmem-handle-truncates-that-split-thps-fix-fix
-> > 
-> > 8678b27f4b8b mm-truncateshmem-handle-truncates-that-split-thps-fix
-> > 
-> > on top of linux next-20201203 fixes the boot issues.
+On Thu, 3 Dec 2020 13:18:13 -0800 Linus Torvalds wrote:
+> On Thu, Dec 3, 2020 at 12:45 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> > Networking fixes for 5.10-rc7, including fixes from bpf, netfilter,
+> > wireless drivers, wireless mesh and can.  
 > 
-> We have to revert those two patches as well to fix this one process keeps
-> running 100% CPU in find_get_entries() and all other threads are blocking on the
-> i_mutex almost forever.
+> Thanks, pulled.
 > 
-> [  380.735099] INFO: task trinity-c58:2143 can't die for more than 125 seconds.
-> [  380.742923] task:trinity-c58     state:R  running task     stack:26056 pid: 2143 ppid:  1914 flags:0x00004006
-> [  380.753640] Call Trace:
-> [  380.756811]  ? find_get_entries+0x339/0x790
-> find_get_entry at mm/filemap.c:1848
-> (inlined by) find_get_entries at mm/filemap.c:1904
-> [  380.761723]  ? __lock_page_or_retry+0x3f0/0x3f0
-> [  380.767009]  ? shmem_undo_range+0x3bf/0xb60
-> [  380.771944]  ? unmap_mapping_pages+0x96/0x230
-> [  380.777036]  ? find_held_lock+0x33/0x1c0
-> [  380.781688]  ? shmem_write_begin+0x1b0/0x1b0
-> [  380.786703]  ? unmap_mapping_pages+0xc2/0x230
-> [  380.791796]  ? down_write+0xe0/0x150
-> [  380.796114]  ? do_wp_page+0xc60/0xc60
-> [  380.800507]  ? shmem_truncate_range+0x14/0x80
-> [  380.805618]  ? shmem_setattr+0x827/0xc70
-> [  380.810274]  ? notify_change+0x6cf/0xc30
-> [  380.814941]  ? do_truncate+0xe2/0x180
-> [  380.819335]  ? do_truncate+0xe2/0x180
-> [  380.823741]  ? do_sys_openat2+0x5c0/0x5c0
-> [  380.828484]  ? do_sys_ftruncate+0x2e2/0x4e0
-> [  380.833417]  ? trace_hardirqs_on+0x1c/0x150
-> [  380.838335]  ? do_syscall_64+0x33/0x40
-> [  380.842828]  ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> And btw - maybe I've already talked about this, but since next week is
+> (hopefully) going to be the last week of rc release: since the
+> networking pulls tend to be some of the bigger ones, one thing I've
+> asked David to do in the past is to (a) not send a big networking pull
+> request right before the final release and (b) let me know whether
+> there is anything worrisome going on in networking.
+> 
+> So if you send it on a Thursday (like this one), then that's all good
+> - it's the "Oh, it's Sunday noon, I was planning on a final release in
+> the afternoon, and I have a big networking fix pull request in my
+> mailbox" that I'd prefer to not see.
 
-Thanks for trinitizing.  If you have time, please would you try
-replacing the shmem_undo_range() in mm/shmem.c by the version I gave in
+Make sense.
 
-https://lore.kernel.org/linux-mm/alpine.LSU.2.11.2012031305070.12944@eggly.anvils/T/#mc15d60a2166f80fe284a18d4758eb4c04cc3255d
+I'm not anticipating that the last PR will be much smaller, given 
+we get a constant stream of fixes for older releases and the review
+coverage is pretty good so we can apply stuff with confidence.
 
-That will not help at all with the 32-bit booting issue,
-but it does have a good chance of placating trinity.
+Sounds like a comparable PR size will not be a major concern to you as
+long as the PR comes in early on Thu and we are reporting any sign of
+trouble. Sounds good!
 
-Thanks,
-Hugh
+> A heads up on the "Uhhuh - we have something bad going in the
+> networking tree" kind of situation you can obviously send at any time.
+> If there are known issues, I'll just make an rc8 - I prefer not to
+> _have_ to, of course, but I'd always much rather be safe than release
+> the final kernel just because I didn't know of some pending issue.
+
+Will do!
+
+> (And the reverse - just a note saying "everything looks fine, none of
+> this is scary and there's nothing pending that looks at all worrisome
+> either" - for the last rc pull is obviously also always appreciated,
+> but generally I'll assume that unless something else is said, we're in
+> good shape).
+
+Ack, it's been smooth sailing so far in this release. 
+
+No big scares, knock on wood.
+
+This time around (other than the large-ish ibmvnic set which was in 
+the works for a while) the PR was smaller, but I think that's only 
+due to Turkey lethargy.
+
+Thanks for this note, I was shy to ask about the endgame :)
