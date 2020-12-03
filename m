@@ -2,108 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04922CCD53
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB1C2CCD59
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:34:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729620AbgLCDaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 22:30:21 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:45538 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726938AbgLCDaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 22:30:20 -0500
-Received: from [10.130.0.58] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx73+dW8hfhUcZAA--.41169S3;
-        Thu, 03 Dec 2020 11:29:34 +0800 (CST)
-Subject: Re: [PATCH] MIPS: KASLR: Fix sync_icache() trapped in loop when
- synci_step is zero
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1606878005-11427-1-git-send-email-hejinyang@loongson.cn>
- <20201202103943.GA9065@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <642b9149-6de5-fa04-80e2-aed7367b3cce@loongson.cn>
-Date:   Thu, 3 Dec 2020 11:29:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1729677AbgLCDbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 22:31:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726734AbgLCDbM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 22:31:12 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8B6C061A4D
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 19:30:26 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id w4so521863pgg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 19:30:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ccj6b9pxrqpLMEQV5KpSS6RxrNoGGzMjVrA/qC32hfE=;
+        b=TdmdMAXcbIkcPSaPzbV896gbNaogvjXSo8idr4V3kUarOjDeBV+aB2G9WX3zsoab26
+         OBz5pWCSkCNzOkbDu9TkFxlEG+HNevlIqJ3UQb5YvIXNXpNLTJkJbRLHGnMUz9R8JDYV
+         /KjQtCGGKqgObEyEs6lZGxXwHKmxaJnFFUTOA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ccj6b9pxrqpLMEQV5KpSS6RxrNoGGzMjVrA/qC32hfE=;
+        b=qB4TKac11PIg7jD9citheALJgwI2jnqM9iFisDmQqDIBVIlWdJgRiPyVtdBi3DZ+J0
+         CnolAfZ5iQVNWoYB9oku4H1sgf0KhQ+STSzEvgKLHN6k+X+6TWBgqmPB2KoUI3FvlfWL
+         79CdVo5Dk+DHfkNmNnYl7UOP5/Qohi1Gqv+u81lpRzudpQ/0ewAJHCFaoZW8q2iljmTK
+         rHruq03azgzCa2YKgmg77e7ye73CgKZE0rEdreMLFrcGEwhH1MQNvecaUtAGhHMTd+6x
+         yTSaI+1880Ipvc3tW6VTe/VeZ0c0b73K6+GeeRMJI/RAvriumIYZtHeVyIxI9t1GPpbF
+         XOzA==
+X-Gm-Message-State: AOAM531aet0twF5BOCu7NNLW2Jo2/4rdaQhVGF1msAzyDbPcRvfTLUuU
+        3pyTkUA1DEPwTLlp+ZMfFytlIfwyN10vP1NzSqhIOw==
+X-Google-Smtp-Source: ABdhPJzoBgT28c7z3yMIzACokhuRY837a+IEnLu4EkS/3QjHToN3HgaQLczFSCGvS7Y1qrTMIBNzmhNgyVK3OJWt/40=
+X-Received: by 2002:aa7:9803:0:b029:198:26c8:51e8 with SMTP id
+ e3-20020aa798030000b029019826c851e8mr1409486pfl.42.1606966225868; Wed, 02 Dec
+ 2020 19:30:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201202103943.GA9065@alpha.franken.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dx73+dW8hfhUcZAA--.41169S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7try8Xw1ktFWUGr15ur15Jwb_yoW8trWxpF
-        WUKw1rJrsxWr48ta4UJ3yDZw1fAw1Y9rW3GF15t345Aas8u3s7KF1Fga1Fga92vrWkGw12
-        vFWjqr4YvFsrZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvqb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjc
-        xK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr
-        0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxv
-        r21lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWUXVWUAwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
-        ZFpf9x07b7WlkUUUUU=
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+References: <20200930022159.5559-1-crystal.guo@mediatek.com>
+ <20200930022159.5559-4-crystal.guo@mediatek.com> <20201130111340.GA3042402@chromium.org>
+ <1606907202.14806.65.camel@mhfsdcap03>
+In-Reply-To: <1606907202.14806.65.camel@mhfsdcap03>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Thu, 3 Dec 2020 11:30:15 +0800
+Message-ID: <CAATdQgDXYHMst2TO_ohvaiYF3_SZunrzpKs3MW6tOgez5W2j=Q@mail.gmail.com>
+Subject: Re: [v6, 3/3] reset-controller: ti: force the write operation when
+ assert or deassert
+To:     Crystal Guo <crystal.guo@mediatek.com>
+Cc:     "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        =?UTF-8?B?WW9uZyBMaWFuZyAo5qKB5YuHKQ==?= <Yong.Liang@mediatek.com>,
+        =?UTF-8?B?U3RhbmxleSBDaHUgKOacseWOn+mZnik=?= 
+        <stanley.chu@mediatek.com>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        =?UTF-8?B?U2VpeWEgV2FuZyAo546L6L+65ZCbKQ==?= 
+        <seiya.wang@mediatek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?RmFuIENoZW4gKOmZs+WHoSk=?= <fan.chen@mediatek.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        =?UTF-8?B?WWluZ2pvZSBDaGVuICjpmbPoi7HmtLIp?= 
+        <Yingjoe.Chen@mediatek.com>, "s-anna@ti.com" <s-anna@ti.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Thomas,
-
-On 12/02/2020 06:39 PM, Thomas Bogendoerfer wrote:
-> On Wed, Dec 02, 2020 at 11:00:05AM +0800, Jinyang He wrote:
->> Reading synci_step by using rdhwr instruction may return zero if no cache
->> need be synchronized. On the one hand, to make sure all load operation and
->> store operation finished we do __sync() for every platform. On the other
->> hand, some platform need operate synci one time although step is zero.
-> Should this be someting like: Avoid endless loop, if no synci is needed ?
+On Wed, Dec 2, 2020 at 7:07 PM Crystal Guo <crystal.guo@mediatek.com> wrote:
 >
->> diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
->> index 57bdd276..47aeb33 100644
->> --- a/arch/mips/kernel/relocate.c
->> +++ b/arch/mips/kernel/relocate.c
->> @@ -64,7 +64,7 @@ static void __init sync_icache(void *kbase, unsigned long kernel_length)
->>   			: "r" (kbase));
->>   
->>   		kbase += step;
->> -	} while (kbase < kend);
->> +	} while (step && kbase < kend);
-> why not do a
+> On Mon, 2020-11-30 at 19:13 +0800, Ikjoon Jang wrote:
+> > On Wed, Sep 30, 2020 at 10:21:59AM +0800, Crystal Guo wrote:
+> > > Force the write operation in case the read already happens
+> > > to return the correct value.
+> > >
+> > > Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
+> > > ---
+> > >  drivers/reset/reset-ti-syscon.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/reset/reset-ti-syscon.c b/drivers/reset/reset-ti-syscon.c
+> > > index 5d1f8306cd4f..c34394f1e9e2 100644
+> > > --- a/drivers/reset/reset-ti-syscon.c
+> > > +++ b/drivers/reset/reset-ti-syscon.c
+> > > @@ -97,7 +97,7 @@ static int ti_syscon_reset_assert(struct reset_controller_dev *rcdev,
+> > >     mask = BIT(control->assert_bit);
+> > >     value = (control->flags & ASSERT_SET) ? mask : 0x0;
+> > >
+> > > -   return regmap_update_bits(data->regmap, control->assert_offset, mask, value);
+> > > +   return regmap_write_bits(data->regmap, control->assert_offset, mask, value);
+> > >  }
+> >
+> > I don't think there are no reset controllers with cached regmap,
+> > thus I don't think this is needed.
+> > Are there any specific reasons behind this, what I've missed here?
+> >
+> > We need to be sure that all other devices using this driver
+> > should have no side effects on write.
+> >
+> > I can think of a weird controller doing unwanted things internally
+> > on every write disregarding the current state. (or is this overly
+> > paranoid?)
+> >
+> The specific reason is that, the clear bit may keep the same value with
+> the set bit, but the clear operation can be only be completed by writing
+> 1 to the clear bit, not just with the current fake state "1".
 >
-> 	if (step == 0)
-> 		return;
+
+sorry. I didn't think of that case,
+then I think this patch must be applied. 8-)
+
+I've thought that the bit automatically flipped to the current reset state
+after the internal operation is done.
+
+
+
+> > >
+> > >  /**
+> > > @@ -128,7 +128,7 @@ static int ti_syscon_reset_deassert(struct reset_controller_dev *rcdev,
+> > >     mask = BIT(control->deassert_bit);
+> > >     value = (control->flags & DEASSERT_SET) ? mask : 0x0;
+> > >
+> > > -   return regmap_update_bits(data->regmap, control->deassert_offset, mask, value);
+> > > +   return regmap_write_bits(data->regmap, control->deassert_offset, mask, value);
+> > >  }
+> > >
+> > >  /**
 >
-> before entering the loop ? According to MIPS32PRA no synci is needed,
-> if stepi value is zero.
-
-Thanks for your reply.
-
-Most platforms do not need to do synci instruction operations
-when synci_step is 0. But for example, the synci implementation
-on Loongson64 platform has some changes. On the one hand, it
-ensures that the memory access instructions have been completed.
-On the other hand, it guarantees that all prefetch instructions
-need to be fetched again. And its address information is useless.
-Thus, only one synci operation is required when synci_step is 0
-on Loongson64 platform. I guess that some other platforms have
-similar implementations on synci, so add judgment conditions in
-`while` to ensure that at least all platforms perform synci
-operations once. For those platforms that do not need synci,
-they just do one more operation similar to nop.
-
-I will modify the submitted information and send v2.
-
-> Thomas.
-> PS: Does anybody know a reason, why this code doesn't use an old fashioned
-> dache/icache flushing, which might be slower but would work also on
-> legecy cores ?
-For this, my thought is that different platforms using the cache
-instruction to flush caches is inconsistent. Here is just a more
-general way to flush these caches.
-
-Thanks,
-Jinyang.
-
