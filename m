@@ -2,111 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AF32CE2F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1ED22CE2EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:48:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731147AbgLCXsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:48:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728086AbgLCXsc (ORCPT
+        id S1731489AbgLCXsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:48:35 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:43440 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727693AbgLCXsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Dec 2020 18:48:32 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126F3C061A51;
-        Thu,  3 Dec 2020 15:47:52 -0800 (PST)
-Date:   Thu, 03 Dec 2020 23:47:48 -0000
+Date:   Thu, 03 Dec 2020 23:47:49 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607039270;
+        s=2020; t=1607039269;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=itsyXZdM2nEnIsJh0sX7synjjNKHkpZ+E3EabHl0Jyw=;
-        b=dZ7iP7wycKAIBt/RZUWv3OmlSA7aPAPTJ4VMNYT90ljtc4P0yKF+E7XqtVTKamk4HEUJ9x
-        w+DO6AOAquJFRFY5xY+Qv7a7UVU81QnCfrv6W6/zbNWkbBRPX8W5BJNq75ftXm6G2tpCdV
-        bsAJP+fUd62s2+7+CH5aLCPl//6RSzM5U2yFACzm9vP2dOep1/anXJDODQtQLkRT2TWQjm
-        ZrxWX83ydKwLjkIEfPj1RyV4114it2IWsOEhEmHF4aRbU4ODXKLX62Rv7o2ltSma3XAqI0
-        xANG4ukW7gJ3IBNM/hTD81AeVhD28LabnLqQqphUTe3o6vJQMLRtnnF2N9jF7w==
+        bh=aj+bwNzxfz+m6pVUkdDu4SIQ51pSi5YKNJTCHY1zGxQ=;
+        b=rQgpuXRjSZTpYCitZ1G8+koaLGraJgL3GsrYtD+F9XL8DX0UIF9vwKfA8gAtkw0B91Qr1A
+        6lqRL8ML/NVQ35SJ6p5sQ5n9KnmX1C3dV4GG8rXCA3wkLTCnd6y5Y3cnC1FW/ICtM07tMy
+        o5TZniSPViNDyPENwdNdPrWi8Xjc0oAowAMw/NOVzK7x28WiY3B7E7qHcipXQfmOmu4k2f
+        lB26ZrOdMsQL9oHBQb7/L0wSXpEgawLxknhUrR+Z+prqi/Dhe+NkBF1D85j0iyOYjZflPn
+        Oxmni+hUgJa3PQl/6op6VKsMROsH/DnsO7pD8n3v4/KXzQcouSgfMJGy82Plzg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607039270;
+        s=2020e; t=1607039269;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=itsyXZdM2nEnIsJh0sX7synjjNKHkpZ+E3EabHl0Jyw=;
-        b=Ge93S1dTVEYrD1K+DT3RrkcKrQ8JHXRb/MuTg5biLYO1dRkzgi7lX+UcDv7co0T7NmSAW7
-        /n2fWkkGX1vWWgAQ==
-From:   "tip-bot2 for Daniel Lezcano" <tip-bot2@linutronix.de>
+        bh=aj+bwNzxfz+m6pVUkdDu4SIQ51pSi5YKNJTCHY1zGxQ=;
+        b=PmVQV9bDKclxDB/85ENgctXPedmwiZZM3EUuMlmaXaQYEkZbgk6Ijt9jImmsN2EMzW+CXB
+        9YNzXJFtJPA2LzCw==
+From:   "tip-bot2 for Yu Kuai" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/ingenic: Fix section mismatch
-Cc:     kernel test robot <lkp@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        zhouyanjie@wanyeetech.com, x86@kernel.org,
+Subject: [tip: timers/core] clocksource/drivers/cadence_ttc: Fix memory leak
+ in ttc_setup_clockevent()
+Cc:     Hulk Robot <hulkci@huawei.com>, Yu Kuai <yukuai3@huawei.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201125102346.1816310-1-daniel.lezcano@linaro.org>
-References: <20201125102346.1816310-1-daniel.lezcano@linaro.org>
+In-Reply-To: <20201116135123.2164033-1-yukuai3@huawei.com>
+References: <20201116135123.2164033-1-yukuai3@huawei.com>
 MIME-Version: 1.0
-Message-ID: <160703926877.3364.2896296134554460342.tip-bot2@tip-bot2>
+Message-ID: <160703926935.3364.302668536378787132.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     5bd7cb29eceb52e4b108917786fdbf2a2c2048ef
-Gitweb:        https://git.kernel.org/tip/5bd7cb29eceb52e4b108917786fdbf2a2c2=
-048ef
-Author:        Daniel Lezcano <daniel.lezcano@linaro.org>
-AuthorDate:    Wed, 25 Nov 2020 11:23:45 +01:00
+Commit-ID:     eee422c46e6840a81c9db18a497b74387a557b29
+Gitweb:        https://git.kernel.org/tip/eee422c46e6840a81c9db18a497b74387a557b29
+Author:        Yu Kuai <yukuai3@huawei.com>
+AuthorDate:    Mon, 16 Nov 2020 21:51:23 +08:00
 Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
 CommitterDate: Thu, 03 Dec 2020 19:16:26 +01:00
 
-clocksource/drivers/ingenic: Fix section mismatch
+clocksource/drivers/cadence_ttc: Fix memory leak in ttc_setup_clockevent()
 
-The function ingenic_tcu_get_clock() is annotated for the __init
-section but it is actually called from the online cpu callback.
+If clk_notifier_register() failed, ttc_setup_clockevent() will return
+without freeing 'ttcce', which will leak memory.
 
-That will lead to a crash if a CPU is hotplugged after boot time.
-
-Remove the __init annotation for the ingenic_tcu_get_clock()
-function.
-
-Fixes: f19d838d08fc (clocksource/drivers/ingenic: Add high resolution timer s=
-upport for SMP/SMT)
-Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 70504f311d4b ("clocksource/drivers/cadence_ttc: Convert init function to return error")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-Tested-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wanyeetech.c=
-om>
-Link: https://lore.kernel.org/r/20201125102346.1816310-1-daniel.lezcano@linar=
-o.org
+Link: https://lore.kernel.org/r/20201116135123.2164033-1-yukuai3@huawei.com
 ---
- drivers/clocksource/ingenic-timer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clocksource/timer-cadence-ttc.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/clocksource/ingenic-timer.c b/drivers/clocksource/ingeni=
-c-timer.c
-index 58fd918..905fd6b 100644
---- a/drivers/clocksource/ingenic-timer.c
-+++ b/drivers/clocksource/ingenic-timer.c
-@@ -127,7 +127,7 @@ static irqreturn_t ingenic_tcu_cevt_cb(int irq, void *dev=
-_id)
- 	return IRQ_HANDLED;
+diff --git a/drivers/clocksource/timer-cadence-ttc.c b/drivers/clocksource/timer-cadence-ttc.c
+index 80e9606..4efd0cf 100644
+--- a/drivers/clocksource/timer-cadence-ttc.c
++++ b/drivers/clocksource/timer-cadence-ttc.c
+@@ -413,10 +413,8 @@ static int __init ttc_setup_clockevent(struct clk *clk,
+ 	ttcce->ttc.clk = clk;
+ 
+ 	err = clk_prepare_enable(ttcce->ttc.clk);
+-	if (err) {
+-		kfree(ttcce);
+-		return err;
+-	}
++	if (err)
++		goto out_kfree;
+ 
+ 	ttcce->ttc.clk_rate_change_nb.notifier_call =
+ 		ttc_rate_change_clockevent_cb;
+@@ -426,7 +424,7 @@ static int __init ttc_setup_clockevent(struct clk *clk,
+ 				    &ttcce->ttc.clk_rate_change_nb);
+ 	if (err) {
+ 		pr_warn("Unable to register clock notifier.\n");
+-		return err;
++		goto out_kfree;
+ 	}
+ 
+ 	ttcce->ttc.freq = clk_get_rate(ttcce->ttc.clk);
+@@ -455,15 +453,17 @@ static int __init ttc_setup_clockevent(struct clk *clk,
+ 
+ 	err = request_irq(irq, ttc_clock_event_interrupt,
+ 			  IRQF_TIMER, ttcce->ce.name, ttcce);
+-	if (err) {
+-		kfree(ttcce);
+-		return err;
+-	}
++	if (err)
++		goto out_kfree;
+ 
+ 	clockevents_config_and_register(&ttcce->ce,
+ 			ttcce->ttc.freq / PRESCALE, 1, 0xfffe);
+ 
+ 	return 0;
++
++out_kfree:
++	kfree(ttcce);
++	return err;
  }
-=20
--static struct clk * __init ingenic_tcu_get_clock(struct device_node *np, int=
- id)
-+static struct clk *ingenic_tcu_get_clock(struct device_node *np, int id)
- {
- 	struct of_phandle_args args;
-=20
+ 
+ static int __init ttc_timer_probe(struct platform_device *pdev)
