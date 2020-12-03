@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E022CCEF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:02:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 040472CCEF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729389AbgLCGBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:01:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46004 "EHLO
+        id S1729338AbgLCGBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:01:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727868AbgLCGBw (ORCPT
+        with ESMTP id S1727729AbgLCGBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Dec 2020 01:01:52 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292C4C061A53;
-        Wed,  2 Dec 2020 22:00:40 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id e25so2582318wme.0;
-        Wed, 02 Dec 2020 22:00:40 -0800 (PST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7B3C061A54;
+        Wed,  2 Dec 2020 22:00:42 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id h21so2572162wmb.2;
+        Wed, 02 Dec 2020 22:00:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=zSxt96h/9Fwk+2Z2TEbldRZc+6ZVMG3i55XI3KvBZvc=;
-        b=VFvg3Adxx0ksKE22uUwcKNp4cFVzM4T5QUBNmhSnxAnJLeGjsCnEdZjvpx05rqcDYt
-         kJRYD3pAYdRfpw3DnMHK4fIMJdYQrx6tb3+lkWeMCZSZQTxSc3aPRrulmt6Ja4cJqYi+
-         G2MqocUhvUS70aSpU7HT9jCWI5bfok2OvUN8c8IiuZogL0diSXSEBOScZeFwSVW1HWib
-         2xXmDOHbZjLbRNP1KgPOqRwlRGvE+4DaUd+mOexaca2S1K7i1MLRW82hbSv1j+ipfAFg
-         5tI3RAHX+PYc5Ln7F0tbgQwdM0Mt7K7E7KjAgdw+uyUo0oGsHlqIHtiUZDTUDyIxbyzz
-         c/3w==
+        bh=flzzMcNnuQ2TK+9oOreZP7+ZK5g8q35jbbhYIv7bR/Q=;
+        b=b4oROn2uYBd3EJILA6VTP3ZDTBrWylRxn6PJTleoUIkOvvCZOYF2O5TCsKirv7nKwd
+         8yxywt0SE3XJ8NZx1PY1nDQIWU7Pn7zvp2zIg8/Q3abg0d9k6gazejgLdybzJ5Phs6Z9
+         VCfFmaL3TrGx4ArFqlzCmqemyijff4HfifG0IAzqFCIUwpI6EJhOTrzJdvvVSIN5Wi50
+         RSDPuzJitQ70GCzfOyQXEyBhFrXxeEt9rivzMiHQF1Gl4hqeJwlsEQrI2MMVoxTnUmm6
+         s2VDOVOvRInrBckzN7BlAAlRHcT1PyX9qauil1ld1uZNwvJgSMF+6xlhtWARAekuCren
+         rQDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=zSxt96h/9Fwk+2Z2TEbldRZc+6ZVMG3i55XI3KvBZvc=;
-        b=UKVkun6cIFGKi/03r0/B6CsZvTTHsZdVFQot0aO4yxFLR2xGo4JHmEUNI6kk8JeG//
-         LG3588hyWdK0vsJdE3iAfUSYEOHqqqhbdZDXRVmQVSl/Y/bHGuG4gCRqfLanpeTSWWJQ
-         XTY1AikGgdW+Ezwm+F108x/r41QU9ssjQhxheztuoK/FS3K/ItolbqqYJvII13oDfxTu
-         S2PeaMRir8KBXgPWp0H/8gqDTVj3l92KSTachp18Fa84hSIei94eZYQTvUqv0ED1WNX9
-         QU7LdMKL1DhyNCbYHKKxInV6cO4TXPrmEnVJKX+CBTEst+tzUJeycoxK737tG7Vl1AUh
-         Q1TA==
-X-Gm-Message-State: AOAM532/klUDFq9s0gWMANPceoKgwq5smxBF+SFxCVDcrkRDF5Ytl5h3
-        AvnsgkDGS/LBOJ4+V9fZ7Us=
-X-Google-Smtp-Source: ABdhPJzHmIjDKNbLIWfBgHU0/GqU0Mf1N1LiuXCkgkMfJTjxj6NxVrWbNX+KayAjQr2//5v7SJMYLg==
-X-Received: by 2002:a1c:5946:: with SMTP id n67mr1360920wmb.162.1606975238897;
-        Wed, 02 Dec 2020 22:00:38 -0800 (PST)
+        bh=flzzMcNnuQ2TK+9oOreZP7+ZK5g8q35jbbhYIv7bR/Q=;
+        b=J5EwFKdMZO0LGLkuD7ZGLn4YQrKPlqnu4ZvkAPmleQ4LV6ERNJvJhT8BBmhnybNSUY
+         /ijnSwPmnQZugMIE8AdFdAF6mLhqnv/+dWMj2YlT8B9svlLB+T05zmpFb80+IXaokI0R
+         1NQVKwKKWF46XI2hk2hOWDZdHNEOxYhFtjmqflmO1g0MZCZyHYWuKNHnkszxYU/KULK2
+         m6v/rcmu0xWz7IZgi34C9XgRx9GlkmCaRU8DGcZy/M4kLBeFQXPGovNBp9zBB9AY2UtI
+         pfTd63/JWaqwNvE/4vaUoEhvYOHwgH74DIER5Vzz9FQkRMFrzM6Zl8rCSESjyQ8bcwXd
+         D61Q==
+X-Gm-Message-State: AOAM530fGK2v7CEnsBAnGadCM+W7K+k7TOpOz62g0QyVtv3YkrWgbVmc
+        514hbD5peVwiwj0tB1VtGZ4=
+X-Google-Smtp-Source: ABdhPJyasl5FzioZeX74Iy3aXqmjj6CpZAy6X9j/0JXgw2knVm/Hcb1ZR5D932g1/aJpwkMPrcH6Vw==
+X-Received: by 2002:a1c:e901:: with SMTP id q1mr1395679wmc.148.1606975241061;
+        Wed, 02 Dec 2020 22:00:41 -0800 (PST)
 Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id i11sm218439wro.85.2020.12.02.22.00.36
+        by smtp.gmail.com with ESMTPSA id i11sm218439wro.85.2020.12.02.22.00.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 22:00:38 -0800 (PST)
+        Wed, 02 Dec 2020 22:00:40 -0800 (PST)
 From:   Christian Hewitt <christianshewitt@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -54,9 +54,9 @@ To:     Rob Herring <robh+dt@kernel.org>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH v4 5/7] arm64: dts: meson: add audio playback to odroid-c2
-Date:   Thu,  3 Dec 2020 06:00:21 +0000
-Message-Id: <20201203060023.9454-6-christianshewitt@gmail.com>
+Subject: [PATCH v4 6/7] arm64: dts: meson: add audio playback to wetek-hub
+Date:   Thu,  3 Dec 2020 06:00:22 +0000
+Message-Id: <20201203060023.9454-7-christianshewitt@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201203060023.9454-1-christianshewitt@gmail.com>
 References: <20201203060023.9454-1-christianshewitt@gmail.com>
@@ -69,29 +69,26 @@ Add initial audio support limited to HDMI i2s.
 Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
 Acked-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- .../boot/dts/amlogic/meson-gxbb-odroidc2.dts  | 40 +++++++++++++++++++
+ .../boot/dts/amlogic/meson-gxbb-wetek-hub.dts | 40 +++++++++++++++++++
  1 file changed, 40 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
-index 70fcfb7b0683..9d8c919c6e19 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
-@@ -9,6 +9,7 @@
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-hub.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-hub.dts
+index 83b985bb015e..0c1570153842 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-hub.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek-hub.dts
+@@ -7,10 +7,50 @@
+ /dts-v1/;
  
- #include "meson-gxbb.dtsi"
- #include <dt-bindings/gpio/gpio.h>
+ #include "meson-gxbb-wetek.dtsi"
 +#include <dt-bindings/sound/meson-aiu.h>
  
  / {
- 	compatible = "hardkernel,odroid-c2", "amlogic,meson-gxbb";
-@@ -172,6 +173,45 @@
- 			};
- 		};
- 	};
+ 	compatible = "wetek,hub", "amlogic,meson-gxbb";
+ 	model = "WeTek Hub";
 +
 +	sound {
 +		compatible = "amlogic,gx-sound-card";
-+		model = "GXBB-ODROID-C2";
++		model = "GXBB-WETEK-HUB";
 +		assigned-clocks = <&clkc CLKID_MPLL0>,
 +				  <&clkc CLKID_MPLL1>,
 +				  <&clkc CLKID_MPLL2>;
@@ -129,7 +126,7 @@ index 70fcfb7b0683..9d8c919c6e19 100644
 +	status = "okay";
  };
  
- &cec_AO {
+ &ir {
 -- 
 2.17.1
 
