@@ -2,301 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528162CDD40
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA682CDD45
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727662AbgLCSWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:22:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
+        id S1729144AbgLCSWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:22:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726142AbgLCSWR (ORCPT
+        with ESMTP id S1726142AbgLCSWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:22:17 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785D1C061A52
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 10:21:37 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id iq13so1548387pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 10:21:37 -0800 (PST)
+        Thu, 3 Dec 2020 13:22:43 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA2CC061A53;
+        Thu,  3 Dec 2020 10:22:03 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id y18so2977166qki.11;
+        Thu, 03 Dec 2020 10:22:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=otIoGHbn7Rfd0rLmiLwNWK05LwSDv/Nt905fdvrdyCY=;
-        b=JPbifgGxS9YNfGJwnEa8CQ3vEC02+iZI76KpYuNCogGRbfgqdJELn+erdmQdp1bbyS
-         Ugjyw9li4ziVFRGt8m7dz7pDrw+KDn8sqdhHCtMHPrAc73Fw5u/q6OXBzZl2nnVA7xMp
-         uaFwO1ZoKIISebNcYBuvnei+8T6VUrkcSxsoD6UrrHAOfT25eq7Pfvo39wCCp3hRke4W
-         7eLiGVYdnFJ9FGTRQrg7WCRNHI6gRWcvgZbNNMwewSwDvoHVx9RJ1AEPkHlRwL7df+OI
-         hs5VoZyQW7oUZdDNmwRpe5ajSf3ZzxQQ9DwiWdeM1GPSKhTrnyZ3MQ0iyKjWtOuHeoKT
-         gawA==
+        bh=jSR8ftEy+ZPymQ2+ANnTCIcrdEyC6rgz8i/C+YFDrrs=;
+        b=Ic4QleiYjTsHIMM0On90To1JYUkzfryly4JE00oJVw6xM1knMCPDBhHTFqo48Us3e3
+         MF3QjiQL1yjayz+ETueVi50Cn9wqU1xj9ng0fJUbRI+swr7mmTUxDCH4/w/s1H+CN7nV
+         OMmtIxG/V/PGVXNAQ6+q7qtZP4eFDcBe5sneK8fRhFRpoA6Nvajm1Z7NHt4ZNxR64L+m
+         4StPiEoHrbNTyS5/bdTMBY7TWfxjJGh0p0nIYygOwtneo34JRlkXmRO2GZTSE3KheRhh
+         U93GV8FOoYr6XPNft2A1/QvVK5CEPDl6SJRZHBpQO5yh83pv4jtkzUzrLEyURHK7A70P
+         Dbgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=otIoGHbn7Rfd0rLmiLwNWK05LwSDv/Nt905fdvrdyCY=;
-        b=tL12dnGFQaPw55thgYzubNMX7zdLR2AkFjvc31n/ik138ZVtsXcWm0z+VPkZ7ppCjg
-         fsaVJUCKIRL+66e1lLk/iinqqFxxHD0Vkkm4g/ayrTRSqt7nyhayEpGDdAtWrdKiMK9A
-         N2qo4ebKSgho2mH3lz+GyfNI6wWieHpqvTRLHRj+lIfQcSUqK0O+FnEVnq0jpuyDRWon
-         qm4zd1jIxHOyZGX0r4jtKrjiSXHb61dporkdY7vzyeATPblzSMK3Z9WEZgD30pSd7di1
-         s5b43eT2lafENr0Gg46zHBie8Kk8mlqgcihYprxUhgEgdgpe4ZNS5IFu+qmuAG+Ta20i
-         y+Ew==
-X-Gm-Message-State: AOAM533vYK0eOV7uJtqwClLSrm1lPoxmReq58hWZtuu04zpWK8S6qjbl
-        JxbTbmKbiCPUl4wko3yBi8Xrig==
-X-Google-Smtp-Source: ABdhPJxA9AkPm7uiLpJrdgk/TT/Jy/1MSGD8uAMEULK6xKuTtcTuwGXxIB3fH8D4ReKx5qHxCd8jIA==
-X-Received: by 2002:a17:90b:1b0b:: with SMTP id nu11mr335462pjb.143.1607019696793;
-        Thu, 03 Dec 2020 10:21:36 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 85sm2516873pfy.179.2020.12.03.10.21.35
+        bh=jSR8ftEy+ZPymQ2+ANnTCIcrdEyC6rgz8i/C+YFDrrs=;
+        b=n4lwUmA/IT6z/B4P1qxuA54E5liT/VchDg3jRPAWlI1dVGrCy9h0GHWPXimcYocvD9
+         cfB0nq2ofWsssywl+/L/u8uRyAL36nOFGEsKzfPv2E1fdnRjgwPU2BAshr5XuyxpdMEV
+         GM/H/llEFasHqkiCTohs2hiET8xtLS7uA28Q7OhJBJQmjGJdTouRrQJNxhNq54zxfIi9
+         3WKCwa/eV6ZizoP+e0Uw6LHIrgOKKTwcnu8n9iazLEFHrgAC4WE7eBkoloKcMiyxkaww
+         OaoePkjvdtlQ4I531itHevpq79KGRnlub3GahIRxD1gVOY0f8+ivg1kfWLvvMEP+JfXf
+         JBCg==
+X-Gm-Message-State: AOAM5308u9USVSegQ7YA8mP5f1sxWkkr8O7tsM0DCVv91O4Gv5MOqwgK
+        m+zZ22ln9n07JZiugs0i0xg=
+X-Google-Smtp-Source: ABdhPJxLBGQRSAEg/JvKkC/BNSVvgOhlpSDC2EIcQCGCOFwysswuak0jbyXtVU7AXdFmRsqK6IIjeA==
+X-Received: by 2002:a05:620a:1489:: with SMTP id w9mr4240006qkj.43.1607019722685;
+        Thu, 03 Dec 2020 10:22:02 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id s8sm1812350qtw.61.2020.12.03.10.22.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 10:21:36 -0800 (PST)
-Date:   Thu, 3 Dec 2020 11:21:34 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, s-anna@ti.com,
-        linux-remoteproc@vger.kernel.org, robh+dt@kernel.org,
-        lee.jones@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, praneeth@ti.com,
-        rogerq@ti.com
-Subject: Re: [PATCH v2 4/6] remoteproc/pru: Add pru-specific debugfs support
-Message-ID: <20201203182134.GA1392978@xps15>
-References: <20201119140850.12268-1-grzegorz.jaszczyk@linaro.org>
- <20201119140850.12268-5-grzegorz.jaszczyk@linaro.org>
+        Thu, 03 Dec 2020 10:22:01 -0800 (PST)
+Date:   Thu, 3 Dec 2020 11:21:59 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
+Message-ID: <20201203182159.GA2104680@ubuntu-m3-large-x86>
+References: <20201201213707.541432-1-samitolvanen@google.com>
+ <20201203112622.GA31188@willie-the-truck>
+ <CABCJKueby8pUoN7f5=6RoyLSt4PgWNx8idUej0sNwAi0F3Xqzw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119140850.12268-5-grzegorz.jaszczyk@linaro.org>
+In-Reply-To: <CABCJKueby8pUoN7f5=6RoyLSt4PgWNx8idUej0sNwAi0F3Xqzw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 03:08:48PM +0100, Grzegorz Jaszczyk wrote:
-> From: Suman Anna <s-anna@ti.com>
+On Thu, Dec 03, 2020 at 09:07:30AM -0800, Sami Tolvanen wrote:
+> On Thu, Dec 3, 2020 at 3:26 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > Hi Sami,
+> >
+> > On Tue, Dec 01, 2020 at 01:36:51PM -0800, Sami Tolvanen wrote:
+> > > This patch series adds support for building the kernel with Clang's
+> > > Link Time Optimization (LTO). In addition to performance, the primary
+> > > motivation for LTO is to allow Clang's Control-Flow Integrity (CFI)
+> > > to be used in the kernel. Google has shipped millions of Pixel
+> > > devices running three major kernel versions with LTO+CFI since 2018.
+> > >
+> > > Most of the patches are build system changes for handling LLVM
+> > > bitcode, which Clang produces with LTO instead of ELF object files,
+> > > postponing ELF processing until a later stage, and ensuring initcall
+> > > ordering.
+> > >
+> > > Note that arm64 support depends on Will's memory ordering patches
+> > > [1]. I will post x86_64 patches separately after we have fixed the
+> > > remaining objtool warnings [2][3].
+> >
+> > I took this series for a spin, with my for-next/lto branch merged in but
+> > I see a failure during the LTO stage with clang 11.0.5 because it doesn't
+> > understand the '.arch_extension rcpc' directive we throw out in READ_ONCE().
 > 
-> The remoteproc core creates certain standard debugfs entries,
-> that does not give a whole lot of useful information for the
-> PRUs. The PRU remoteproc driver is enhanced to add additional
-> debugfs entries for PRU. These will be auto-cleaned up when
-> the parent rproc debug directory is removed.
+> I just tested this with Clang 11.0.0, which I believe is the latest
+> 11.x version, and the current Clang 12 development branch, and both
+> work for me. Godbolt confirms that '.arch_extension rcpc' is supported
+> by the integrated assembler starting with Clang 11 (the example fails
+> with 10.0.1):
 > 
-> The enhanced debugfs support adds two new entries: 'regs' and
-> 'single_step'. The 'regs' dumps out the useful CTRL sub-module
-> registers as well as each of the 32 GPREGs and CT_REGs registers.
-> The GPREGs and CT_REGs though are printed only when the PRU is
-> halted and accessible as per the IP design.
+> https://godbolt.org/z/1csGcT
 > 
-> The 'single_step' utilizes the single-step execution of the PRU
-> cores. Writing a non-zero value performs a single step, and a
-> zero value restores the PRU to execute in the same mode as the
-> mode before the first single step. (note: if the PRU is halted
-> because of a halt instruction, then no change occurs).
-> 
-> Logic for setting the PC and jumping over a halt instruction shall
-> be added in the future.
-> 
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> ---
->  drivers/remoteproc/pru_rproc.c | 137 +++++++++++++++++++++++++++++++++
->  1 file changed, 137 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-> index c68c3d6bfddd..d5f04d77ad54 100644
-> --- a/drivers/remoteproc/pru_rproc.c
-> +++ b/drivers/remoteproc/pru_rproc.c
-> @@ -11,6 +11,7 @@
->   */
->  
->  #include <linux/bitops.h>
-> +#include <linux/debugfs.h>
->  #include <linux/irqdomain.h>
->  #include <linux/module.h>
->  #include <linux/of_device.h>
-> @@ -25,6 +26,13 @@
->  /* PRU_ICSS_PRU_CTRL registers */
->  #define PRU_CTRL_CTRL		0x0000
->  #define PRU_CTRL_STS		0x0004
-> +#define PRU_CTRL_WAKEUP_EN	0x0008
-> +#define PRU_CTRL_CYCLE		0x000C
-> +#define PRU_CTRL_STALL		0x0010
-> +#define PRU_CTRL_CTBIR0		0x0020
-> +#define PRU_CTRL_CTBIR1		0x0024
-> +#define PRU_CTRL_CTPPR0		0x0028
-> +#define PRU_CTRL_CTPPR1		0x002C
->  
->  /* CTRL register bit-fields */
->  #define CTRL_CTRL_SOFT_RST_N	BIT(0)
-> @@ -34,6 +42,10 @@
->  #define CTRL_CTRL_SINGLE_STEP	BIT(8)
->  #define CTRL_CTRL_RUNSTATE	BIT(15)
->  
-> +/* PRU_ICSS_PRU_DEBUG registers */
-> +#define PRU_DEBUG_GPREG(x)	(0x0000 + (x) * 4)
-> +#define PRU_DEBUG_CT_REG(x)	(0x0080 + (x) * 4)
-> +
->  /* PRU Core IRAM address masks */
->  #define PRU_IRAM_ADDR_MASK	0x3ffff
->  #define PRU0_IRAM_ADDR_MASK	0x34000
-> @@ -73,6 +85,8 @@ enum pru_iomem {
->   * @mapped_irq: virtual interrupt numbers of created fw specific mapping
->   * @pru_interrupt_map: pointer to interrupt mapping description (firmware)
->   * @pru_interrupt_map_sz: pru_interrupt_map size
-> + * @dbg_single_step: debug state variable to set PRU into single step mode
-> + * @dbg_continuous: debug state variable to restore PRU execution mode
->   * @evt_count: number of mapped events
->   */
->  struct pru_rproc {
-> @@ -85,6 +99,8 @@ struct pru_rproc {
->  	int *mapped_irq;
->  	struct pru_irq_rsc *pru_interrupt_map;
->  	size_t pru_interrupt_map_sz;
-> +	u32 dbg_single_step;
-> +	u32 dbg_continuous;
->  	u8 evt_count;
->  };
->  
-> @@ -99,6 +115,125 @@ void pru_control_write_reg(struct pru_rproc *pru, unsigned int reg, u32 val)
->  	writel_relaxed(val, pru->mem_regions[PRU_IOMEM_CTRL].va + reg);
->  }
->  
-> +static inline u32 pru_debug_read_reg(struct pru_rproc *pru, unsigned int reg)
-> +{
-> +	return readl_relaxed(pru->mem_regions[PRU_IOMEM_DEBUG].va + reg);
-> +}
-> +
-> +static int regs_show(struct seq_file *s, void *data)
-> +{
-> +	struct rproc *rproc = s->private;
-> +	struct pru_rproc *pru = rproc->priv;
-> +	int i, nregs = 32;
-> +	u32 pru_sts;
-> +	int pru_is_running;
-> +
-> +	seq_puts(s, "============== Control Registers ==============\n");
-> +	seq_printf(s, "CTRL      := 0x%08x\n",
-> +		   pru_control_read_reg(pru, PRU_CTRL_CTRL));
-> +	pru_sts = pru_control_read_reg(pru, PRU_CTRL_STS);
-> +	seq_printf(s, "STS (PC)  := 0x%08x (0x%08x)\n", pru_sts, pru_sts << 2);
-> +	seq_printf(s, "WAKEUP_EN := 0x%08x\n",
-> +		   pru_control_read_reg(pru, PRU_CTRL_WAKEUP_EN));
-> +	seq_printf(s, "CYCLE     := 0x%08x\n",
-> +		   pru_control_read_reg(pru, PRU_CTRL_CYCLE));
-> +	seq_printf(s, "STALL     := 0x%08x\n",
-> +		   pru_control_read_reg(pru, PRU_CTRL_STALL));
-> +	seq_printf(s, "CTBIR0    := 0x%08x\n",
-> +		   pru_control_read_reg(pru, PRU_CTRL_CTBIR0));
-> +	seq_printf(s, "CTBIR1    := 0x%08x\n",
-> +		   pru_control_read_reg(pru, PRU_CTRL_CTBIR1));
-> +	seq_printf(s, "CTPPR0    := 0x%08x\n",
-> +		   pru_control_read_reg(pru, PRU_CTRL_CTPPR0));
-> +	seq_printf(s, "CTPPR1    := 0x%08x\n",
-> +		   pru_control_read_reg(pru, PRU_CTRL_CTPPR1));
-> +
-> +	seq_puts(s, "=============== Debug Registers ===============\n");
-> +	pru_is_running = pru_control_read_reg(pru, PRU_CTRL_CTRL) &
-> +				CTRL_CTRL_RUNSTATE;
-> +	if (pru_is_running) {
-> +		seq_puts(s, "PRU is executing, cannot print/access debug registers.\n");
-> +		return 0;
-> +	}
-> +
-> +	for (i = 0; i < nregs; i++) {
-> +		seq_printf(s, "GPREG%-2d := 0x%08x\tCT_REG%-2d := 0x%08x\n",
-> +			   i, pru_debug_read_reg(pru, PRU_DEBUG_GPREG(i)),
-> +			   i, pru_debug_read_reg(pru, PRU_DEBUG_CT_REG(i)));
-> +	}
-> +
-> +	return 0;
-> +}
-> +
+> What does running clang --version and ld.lld --version tell you?
 
-Here there is an extra line but below for DEFINE_SIMPLE_ATTRIBUTE() there isn't.
-Please pick a heuristic and stick with it.
+11.0.5 is AOSP's clang, which is behind the upstream 11.0.0 release so
+it is most likely the case that it is missing the patch that added rcpc.
+I think that a version based on the development branch (12.0.0) is in
+the works but I am not sure.
 
-With that:
-
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
-> +DEFINE_SHOW_ATTRIBUTE(regs);
-> +
-> +/*
-> + * Control PRU single-step mode
-> + *
-> + * This is a debug helper function used for controlling the single-step
-> + * mode of the PRU. The PRU Debug registers are not accessible when the
-> + * PRU is in RUNNING state.
-> + *
-> + * Writing a non-zero value sets the PRU into single-step mode irrespective
-> + * of its previous state. The PRU mode is saved only on the first set into
-> + * a single-step mode. Writing a zero value will restore the PRU into its
-> + * original mode.
-> + */
-> +static int pru_rproc_debug_ss_set(void *data, u64 val)
-> +{
-> +	struct rproc *rproc = data;
-> +	struct pru_rproc *pru = rproc->priv;
-> +	u32 reg_val;
-> +
-> +	val = val ? 1 : 0;
-> +	if (!val && !pru->dbg_single_step)
-> +		return 0;
-> +
-> +	reg_val = pru_control_read_reg(pru, PRU_CTRL_CTRL);
-> +
-> +	if (val && !pru->dbg_single_step)
-> +		pru->dbg_continuous = reg_val;
-> +
-> +	if (val)
-> +		reg_val |= CTRL_CTRL_SINGLE_STEP | CTRL_CTRL_EN;
-> +	else
-> +		reg_val = pru->dbg_continuous;
-> +
-> +	pru->dbg_single_step = val;
-> +	pru_control_write_reg(pru, PRU_CTRL_CTRL, reg_val);
-> +
-> +	return 0;
-> +}
-> +
-> +static int pru_rproc_debug_ss_get(void *data, u64 *val)
-> +{
-> +	struct rproc *rproc = data;
-> +	struct pru_rproc *pru = rproc->priv;
-> +
-> +	*val = pru->dbg_single_step;
-> +
-> +	return 0;
-> +}
-> +DEFINE_SIMPLE_ATTRIBUTE(pru_rproc_debug_ss_fops, pru_rproc_debug_ss_get,
-> +			pru_rproc_debug_ss_set, "%llu\n");
-> +
-> +/*
-> + * Create PRU-specific debugfs entries
-> + *
-> + * The entries are created only if the parent remoteproc debugfs directory
-> + * exists, and will be cleaned up by the remoteproc core.
-> + */
-> +static void pru_rproc_create_debug_entries(struct rproc *rproc)
-> +{
-> +	if (!rproc->dbg_dir)
-> +		return;
-> +
-> +	debugfs_create_file("regs", 0400, rproc->dbg_dir,
-> +			    rproc, &regs_fops);
-> +	debugfs_create_file("single_step", 0600, rproc->dbg_dir,
-> +			    rproc, &pru_rproc_debug_ss_fops);
-> +}
-> +
->  static void pru_dispose_irq_mapping(struct pru_rproc *pru)
->  {
->  	while (pru->evt_count--) {
-> @@ -573,6 +708,8 @@ static int pru_rproc_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> +	pru_rproc_create_debug_entries(rproc);
-> +
->  	dev_dbg(dev, "PRU rproc node %pOF probed successfully\n", np);
->  
->  	return 0;
-> -- 
-> 2.29.0
+> > We actually check that this extension is available before using it in
+> > the arm64 Kconfig:
+> >
+> >         config AS_HAS_LDAPR
+> >                 def_bool $(as-instr,.arch_extension rcpc)
+> >
+> > so this shouldn't happen. I then realised, I wasn't passing LLVM_IAS=1
+> > on my Make command line; with that, then the detection works correctly
+> > and the LTO step succeeds.
+> >
+> > Why is it necessary to pass LLVM_IAS=1 if LTO is enabled? I think it
+> > would be _much_ better if this was implicit (or if LTO depended on it).
 > 
+> Without LLVM_IAS=1, Clang uses two different assemblers when LTO is
+> enabled: the external GNU assembler for stand-alone assembly, and
+> LLVM's integrated assembler for inline assembly. as-instr tests the
+> external assembler and makes an admittedly reasonable assumption that
+> the test is also valid for inline assembly.
+> 
+> I agree that it would reduce confusion in future if we just always
+> enabled IAS with LTO. Nick, Nathan, any thoughts about this?
+
+I am personally fine with that. As far as I am aware, we are in a fairly
+good spot on arm64 and x86_64 when it comes to the integrated assembler.
+Should we make it so that the user has to pass LLVM_IAS=1 explicitly or
+we just make adding the no integrated assembler flag to CLANG_FLAGS
+depend on not LTO (although that will require extra handling because
+Kconfig is not available at that stage I think)?
+
+Cheers,
+Nathan
