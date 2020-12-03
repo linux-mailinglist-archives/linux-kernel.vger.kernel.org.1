@@ -2,126 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B93982CDCBB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2E12CDCB8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731363AbgLCRvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:51:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44081 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731330AbgLCRvL (ORCPT
+        id S1731274AbgLCRuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:50:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731136AbgLCRux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:51:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607017784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XZBiVCU94S1OuP6ARtameblgcsjWj/5Vo7asS36mdWU=;
-        b=asFxoaN5jb2HkXOlQmdJ0WFIjFCk2ofPPuKFDfaGBxzU1006l5Gt4CwD6lPmaF931HntaB
-        +KCMBq7jlMYKE21CQe5OSKCTQwztS7uUIczjunKjGR1XsdYcJ0t4BS/kNWZbRQl2grGZiC
-        jS0aA0MgCU2Snam3ukVt/E/9daZWftc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-65-RS2WyDaZMeax9a0TOpUkoA-1; Thu, 03 Dec 2020 12:49:43 -0500
-X-MC-Unique: RS2WyDaZMeax9a0TOpUkoA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B4E57612A0;
-        Thu,  3 Dec 2020 17:49:41 +0000 (UTC)
-Received: from [10.36.113.250] (ovpn-113-250.ams2.redhat.com [10.36.113.250])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0B85960861;
-        Thu,  3 Dec 2020 17:49:39 +0000 (UTC)
-Subject: Re: [PATCH 2/2] hv_balloon: do adjust_managed_page_count() when
- ballooning/un-ballooning
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-hyperv@vger.kernel.org
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20201202161245.2406143-1-vkuznets@redhat.com>
- <20201202161245.2406143-3-vkuznets@redhat.com>
- <9202aafa-f30e-4d96-72a9-3ccd083cc58c@redhat.com>
- <871rg6ok4v.fsf@vitty.brq.redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <13524c28-dfec-dd21-8a45-216b161deb72@redhat.com>
-Date:   Thu, 3 Dec 2020 18:49:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 3 Dec 2020 12:50:53 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E67EC061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 09:50:07 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id b12so1556093pjl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 09:50:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ppnO25OuYQ/1IjELB2kgBioJi4rv6POx6IlxQIXXNpk=;
+        b=HOHj6ayscVe3ZO0DpYfNEMtrxcPpXBfSBduTRP26eJAi9qWeDaEaqvnlWyD1tkgsNn
+         WHf/c+iph12AtDq5ZPiB0xBf7vpVwaQ+d4FmzkhPANMYu7p/pjev/8GYudVFNTVY2ars
+         R0psmS9bdHBmvimevhcc3vnoNApM2yiWbbZqFciw03VA6B2hsct4V9O85JtoFFYiWG/+
+         CQ1HnSZiPPrui+eqkQEZ//rCuCzBXtD68Sm5lSes2CW89A6EAEjmGkSAk95oQI7exFis
+         skTuSOtL2uFNQ/9INU1C2swi0XB4WpYbH2P6PwK4LjQvHJAXEczMh6WIpsHUAxlFLy2R
+         hq0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ppnO25OuYQ/1IjELB2kgBioJi4rv6POx6IlxQIXXNpk=;
+        b=r6bAlHTXveIPlupP00dceedBYzM6n6WRA8Jg8mMoFQbo68QHZJQE/jNwh/tjUQ57DD
+         3YjA525EvylBNqOCNoz7cNjST1s70qg8OnFnN20K7SWjjOuz928vp+8ND5tEjaTjxn3x
+         kLSkpZH811LlOc9UW5we7woZtGajEwUG2TCLJCr8ZQNik9NVbA82hTX041kMEyVu/2Dt
+         H0YX1bf+/aA1vOWazJb/XTnjPL1cR5hU3xr3yaigt9nUZ1GTeonfaMjuQyQITYNyVyxa
+         +zflYFfhqVWwWGA4LWDx7i8yuetMHKGO26BvB/TU3+X55MvyHm53bXgRf+9q4lJ5oHQT
+         afBw==
+X-Gm-Message-State: AOAM532AVkYjlMnqDBMnMJWRFdi1/7kw5LfgdmqMvAeIvLtL80gQpppy
+        Uc/GNHJ4OIlvqqfjGebGT29MCZmqGgXQ8g==
+X-Google-Smtp-Source: ABdhPJxllA5bbSYrFdTd4toUUA9bg5VaxzP3LGpwUAiBmd2AiI89u7amTYs88FKICVUaW8O+Hlmcgw==
+X-Received: by 2002:a17:90a:7e0f:: with SMTP id i15mr230116pjl.93.1607017806270;
+        Thu, 03 Dec 2020 09:50:06 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id e66sm2251101pfe.165.2020.12.03.09.50.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 09:50:05 -0800 (PST)
+Subject: Re: [iov_iter] 9bd0e337c6: will-it-scale.per_process_ops -4.8%
+ regression
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>
+Cc:     David Howells <dhowells@redhat.com>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
+ <20201203064536.GE27350@xsang-OptiPlex-9020>
+ <CAHk-=wif1iGLiqcsx1YdLS4tN01JuH-MV_oem0duHqskhDTY9A@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <8124ce0d-c934-0771-5e34-cf5ea030fc08@kernel.dk>
+Date:   Thu, 3 Dec 2020 10:50:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <871rg6ok4v.fsf@vitty.brq.redhat.com>
+In-Reply-To: <CAHk-=wif1iGLiqcsx1YdLS4tN01JuH-MV_oem0duHqskhDTY9A@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.12.20 18:49, Vitaly Kuznetsov wrote:
-> David Hildenbrand <david@redhat.com> writes:
-> 
->> On 02.12.20 17:12, Vitaly Kuznetsov wrote:
->>> Unlike virtio_balloon/virtio_mem/xen balloon drivers, Hyper-V balloon driver
->>> does not adjust managed pages count when ballooning/un-ballooning and this leads
->>> to incorrect stats being reported, e.g. unexpected 'free' output.
->>>
->>> Note, the calculation in post_status() seems to remain correct: ballooned out
->>> pages are never 'available' and we manually add dm->num_pages_ballooned to
->>> 'commited'.
->>>
->>> Suggested-by: David Hildenbrand <david@redhat.com>
->>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->>> ---
->>>  drivers/hv/hv_balloon.c | 5 ++++-
->>>  1 file changed, 4 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
->>> index da3b6bd2367c..8c471823a5af 100644
->>> --- a/drivers/hv/hv_balloon.c
->>> +++ b/drivers/hv/hv_balloon.c
->>> @@ -1198,6 +1198,7 @@ static void free_balloon_pages(struct hv_dynmem_device *dm,
->>>  		__ClearPageOffline(pg);
->>>  		__free_page(pg);
->>>  		dm->num_pages_ballooned--;
->>> +		adjust_managed_page_count(pg, 1);
->>>  	}
->>>  }
->>>  
->>> @@ -1238,8 +1239,10 @@ static unsigned int alloc_balloon_pages(struct hv_dynmem_device *dm,
->>>  			split_page(pg, get_order(alloc_unit << PAGE_SHIFT));
->>>  
->>>  		/* mark all pages offline */
->>> -		for (j = 0; j < alloc_unit; j++)
->>> +		for (j = 0; j < alloc_unit; j++) {
->>>  			__SetPageOffline(pg + j);
->>> +			adjust_managed_page_count(pg + j, -1);
->>> +		}
->>>  
->>>  		bl_resp->range_count++;
->>>  		bl_resp->range_array[i].finfo.start_page =
->>>
+On 12/3/20 10:47 AM, Linus Torvalds wrote:
+> On Wed, Dec 2, 2020 at 10:31 PM kernel test robot <oliver.sang@intel.com> wrote:
 >>
->> I assume this has been properly tested such that it does not change the
->> system behavior regarding when/how HyperV decides to add/remove memory.
->>
+>> FYI, we noticed a -4.8% regression of will-it-scale.per_process_ops due to commit:
 > 
-> I'm always reluctant to confirm 'proper testing' as no matter how small
-> and 'obvious' the change is, regressions keep happening :-) But yes,
-> this was tested on a Hyper-V host and 'stress' and I observed 'free'
-> when the balloon was both inflated and deflated, values looked sane.
+> Ok, I guess that's bigger than expected, but the profile data does
+> show how bad the indirect branches are.
 
-That;s what I wanted to hear ;)
-
+It's also in the same range (3-6%) as the microbenchmarks I ran and posted.
+So at least there's correlation there too.
 
 -- 
-Thanks,
-
-David / dhildenb
+Jens Axboe
 
