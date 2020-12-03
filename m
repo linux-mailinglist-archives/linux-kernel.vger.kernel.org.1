@@ -2,82 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8AD2CCEFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBA72CCEFD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728237AbgLCGGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:06:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25202 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725872AbgLCGGW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 01:06:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606975496;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ghG3uetExCwjAGSJ9dJf6EukQbWFwXvbKJ6Hw65gwok=;
-        b=Sb4XRe7EDe+I39BNGBUV7hSoBjlCgJLaGdNtrV3B0oT6DB7ApA+Y08KZ35oxAry94QQWpm
-        Rs7e2+wZ/i7GsSVXt+zoEYz1f8eGoWyav6/T7Z1h6zCHshlxL+hsJUC5tlbPTzD56VdKRR
-        Mhi4eGaZP12E128RB73eDSkLDf8NjrQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-595-DGUKdB5jNSy-a192JYrQUQ-1; Thu, 03 Dec 2020 01:04:52 -0500
-X-MC-Unique: DGUKdB5jNSy-a192JYrQUQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E154185E489;
-        Thu,  3 Dec 2020 06:04:51 +0000 (UTC)
-Received: from p1g2.redhat.com (ovpn-113-92.phx2.redhat.com [10.3.113.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0768C5C1B4;
-        Thu,  3 Dec 2020 06:04:49 +0000 (UTC)
-From:   Scott Wood <swood@redhat.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Scott Wood <swood@redhat.com>
-Subject: [PATCH] sched/fair: Don't migrate with src_cpu == dst_cpu
-Date:   Thu,  3 Dec 2020 00:04:49 -0600
-Message-Id: <20201203060449.3352126-1-swood@redhat.com>
+        id S1728426AbgLCGHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:07:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42226 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726707AbgLCGHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 01:07:45 -0500
+Date:   Wed, 2 Dec 2020 22:07:03 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606975625;
+        bh=4kjEtMFrjeavxN2mKqcqGSsSXeUIsDMbjS/Wf+Mx0Pg=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CNLKdNI9nav5vjFiwqpHfrqa7SXQ6v+4dePorn5Eg16hdtZTBTzPd+tYZWN3U9l44
+         vZSmWU1IJVsGnGqIx8p87LRPDCxyE7BkqxfI21iqJjY8lDT1q0CV+3ZMFAiio9gPdC
+         lwxr/vFiSI/xOanTRDPbsEQWC8RzrN5438XfqhvGtR2ol0GhOWTVFvdZKYaEzHTye1
+         8h18Igg0otkF9koO/n1u1r6ZZ88Pc+1Z4Zjmh2hN5A6Tld/6gWbZ6b2WvFrk7GSnlf
+         wBmycrI6GhoEXGUyAbi+Eh0MalQcEuLbLL740WeKgfZGxnhfOMD+4GOOt1zyc7wyGV
+         ej9vku+173V2Q==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Light Hsieh <Light.Hsieh@mediatek.com>
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: avoid race condition for shinker
+ count
+Message-ID: <X8iAh7quYw77O6XC@google.com>
+References: <20201109170012.2129411-1-jaegeuk@kernel.org>
+ <20201112053414.GB3826485@google.com>
+ <20201112054051.GA4092972@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112054051.GA4092972@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Besides being a waste of time to try to move tasks to where they already
-are, this avoids triggering the WARN_ON_ONCE(is_migration_disabled(p))
-in set_task_cpu().
+On 11/11, Jaegeuk Kim wrote:
+> Light reported sometimes shinker gets nat_cnt < dirty_nat_cnt resulting in
+> wrong do_shinker work. Let's avoid to get stale data by using nat_tree_lock.
+> 
+> Reported-by: Light Hsieh <Light.Hsieh@mediatek.com>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+> v3:
+>  - fix to use NM_I(sbi)
+> 
+>  fs/f2fs/shrinker.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/f2fs/shrinker.c b/fs/f2fs/shrinker.c
+> index d66de5999a26..555712ba06d8 100644
+> --- a/fs/f2fs/shrinker.c
+> +++ b/fs/f2fs/shrinker.c
+> @@ -18,7 +18,11 @@ static unsigned int shrinker_run_no;
+>  
+>  static unsigned long __count_nat_entries(struct f2fs_sb_info *sbi)
+>  {
+> -	long count = NM_I(sbi)->nat_cnt - NM_I(sbi)->dirty_nat_cnt;
+> +	long count;
+> +
+> +	down_read(&NM_I(sbi)->nat_tree_lock);
+> +	count = NM_I(sbi)->nat_cnt - NM_I(sbi)->dirty_nat_cnt;
+> +	up_read(&NM_I(sbi)->nat_tree_lock);
 
-Signed-off-by: Scott Wood <swood@redhat.com>
+I just fosund this can give kernel hang due to the following backtrace.
+f2fs_shrink_count
+shrink_slab
+shrink_node
+do_try_to_free_pages
+try_to_free_pages
+__alloc_pages_nodemask
+alloc_pages_current
+allocate_slab
+__slab_alloc
+__slab_alloc
+kmem_cache_alloc
+add_free_nid
+f2fs_flush_nat_entries
+f2fs_write_checkpoint
+
+Let me just check like this.
+
+From 971163330224449d90aac90957ea38f77d494f0f Mon Sep 17 00:00:00 2001
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+Date: Fri, 6 Nov 2020 13:22:05 -0800
+Subject: [PATCH] f2fs: avoid race condition for shrinker count
+
+Light reported sometimes shinker gets nat_cnt < dirty_nat_cnt resulting in
+wrong do_shinker work. Let's avoid to return insane overflowed value.
+
+Reported-by: Light Hsieh <Light.Hsieh@mediatek.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 ---
-Patch is against tip/master.  Assertion was seen by running rteval on the
-RT tree.
+ fs/f2fs/shrinker.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
- kernel/sched/fair.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index e7e21ac479a2..f443626164d4 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7574,7 +7574,8 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+diff --git a/fs/f2fs/shrinker.c b/fs/f2fs/shrinker.c
+index d66de5999a26..75b5b4aaed99 100644
+--- a/fs/f2fs/shrinker.c
++++ b/fs/f2fs/shrinker.c
+@@ -18,9 +18,9 @@ static unsigned int shrinker_run_no;
  
- 		/* Prevent to re-select dst_cpu via env's CPUs: */
- 		for_each_cpu_and(cpu, env->dst_grpmask, env->cpus) {
--			if (cpumask_test_cpu(cpu, p->cpus_ptr)) {
-+			if (cpu != env->src_cpu &&
-+			    cpumask_test_cpu(cpu, p->cpus_ptr)) {
- 				env->flags |= LBF_DST_PINNED;
- 				env->new_dst_cpu = cpu;
- 				break;
+ static unsigned long __count_nat_entries(struct f2fs_sb_info *sbi)
+ {
+-	long count = NM_I(sbi)->nat_cnt - NM_I(sbi)->dirty_nat_cnt;
+-
+-	return count > 0 ? count : 0;
++	if (NM_I(sbi)->nat_cnt > NM_I(sbi)->dirty_nat_cnt)
++		return NM_I(sbi)->nat_cnt - NM_I(sbi)->dirty_nat_cnt;
++	return 0;
+ }
+ 
+ static unsigned long __count_free_nids(struct f2fs_sb_info *sbi)
 -- 
-2.27.0
+2.29.2.454.gaff20da3a2-goog
 
+
+
+>  
+>  	return count > 0 ? count : 0;
+>  }
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
