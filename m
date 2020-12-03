@@ -2,147 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9345F2CD22F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C362CD232
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388594AbgLCJJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:09:22 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:43633 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388383AbgLCJJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:09:21 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cmqkt0Svcz9sVx;
-        Thu,  3 Dec 2020 20:08:38 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606986518;
-        bh=v57HY7yzbu2n48GAoHI2xpG949ISV126+/mBCGIwqoU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ludUBYFzWyrkcybz9c3U+f55oDtA+OaG0GOW6y3K3m8Nwmc+GSYBiXnuuUsR2jDGr
-         3SgYgdv6aNBRWOkmJpTkOcVnENoJCQgHDPSOlDp4DN6bFDuWIX/vfxoaf7Sj25JYya
-         yNxMxVwkujATCYNPR6ywsULMaaveSUy6Z53bg/QeRVtR1vXhCnAM3eiHnWDLa1EpgJ
-         epuJeaJ0s43bw6E3MXc02bXLH08BrMPqgyFsYCx7WOJf3iXMwa+rbAnO+Hq/f/aS1g
-         Zy9elv3K8pz+o9bLXjfNd6/XzfcoVosuhdheIgsXHeX6rQrjdsWV5vHEIySqKDKe3w
-         aUMICVAaDvwVg==
-Date:   Thu, 3 Dec 2020 20:08:37 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Rui Salvaterra <rsalvaterra@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20201203200837.68df59a1@canb.auug.org.au>
+        id S2388361AbgLCJMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:12:02 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2196 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388247AbgLCJMB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 04:12:01 -0500
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cmqlj6mWGz67LZp;
+        Thu,  3 Dec 2020 17:09:21 +0800 (CST)
+Received: from lhreml716-chm.china.huawei.com (10.201.108.67) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 3 Dec 2020 10:11:18 +0100
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ lhreml716-chm.china.huawei.com (10.201.108.67) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Thu, 3 Dec 2020 09:11:17 +0000
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
+ Thu, 3 Dec 2020 17:11:15 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+CC:     Valentin Schneider <valentin.schneider@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Cc: Len Brown" <lenb@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>
+Subject: RE: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
+Thread-Topic: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
+Thread-Index: AQHWx46tyJL5OgLpakCat9sEfhhBKKni9KEAgACKRLD//5RWAIAAjDiggAAA9pCAAKpoUIAARlmAgACFXCA=
+Date:   Thu, 3 Dec 2020 09:11:15 +0000
+Message-ID: <d81006facd444d8a83bd7f1e24ccf6d9@hisilicon.com>
+References: <20201201025944.18260-1-song.bao.hua@hisilicon.com>
+ <20201201025944.18260-3-song.bao.hua@hisilicon.com>
+ <CAKfTPtAppZFdku6k3cA=kNYKjU5e7w4A+E3R5_m11z+jy_WCBw@mail.gmail.com>
+ <f9d9c6e959e441ec94264891ae90c11d@hisilicon.com>
+ <CAKfTPtDqpQBcjq03cJEKN99XOZdNuV560ja9S-oZzkq7BToR8w@mail.gmail.com>
+ <414fbd167b214452b925ac674575f0d6@hisilicon.com>
+ <CAKfTPtALPjSvOZ2xf9cka9R-1uqi3AHQ+GYy7asT3wfvmLqaXw@mail.gmail.com>
+In-Reply-To: <CAKfTPtALPjSvOZ2xf9cka9R-1uqi3AHQ+GYy7asT3wfvmLqaXw@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.109]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/uDw.SJl9/QsNuxOCE4QhoGW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/uDw.SJl9/QsNuxOCE4QhoGW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-After merging the akpm-current tree, today's linux-next build (powerpc
-ppc44x_defconfig) failed like this:
-
-WARNING: unmet direct dependencies detected for CRYPTO_LZO
-  Depends on [m]: CRYPTO [=3Dm]
-  Selected by [y]:
-  - ZRAM_DEF_COMP_LZORLE [=3Dy] && <choice>
-  Selected by [m]:
-  - UBIFS_FS [=3Dm] && MISC_FILESYSTEMS [=3Dy] && MTD_UBI [=3Dm] && UBIFS_F=
-S_LZO [=3Dy]
-
-WARNING: unmet direct dependencies detected for CRYPTO_LZO
-  Depends on [m]: CRYPTO [=3Dm]
-  Selected by [y]:
-  - ZRAM_DEF_COMP_LZORLE [=3Dy] && <choice>
-  Selected by [m]:
-  - UBIFS_FS [=3Dm] && MISC_FILESYSTEMS [=3Dy] && MTD_UBI [=3Dm] && UBIFS_F=
-S_LZO [=3Dy]
-
-WARNING: unmet direct dependencies detected for CRYPTO_LZO
-  Depends on [m]: CRYPTO [=3Dm]
-  Selected by [y]:
-  - ZRAM_DEF_COMP_LZORLE [=3Dy] && <choice>
-  Selected by [m]:
-  - UBIFS_FS [=3Dm] && MISC_FILESYSTEMS [=3Dy] && MTD_UBI [=3Dm] && UBIFS_F=
-S_LZO [=3Dy]
-
-WARNING: unmet direct dependencies detected for CRYPTO_LZO
-  Depends on [m]: CRYPTO [=3Dm]
-  Selected by [y]:
-  - ZRAM_DEF_COMP_LZORLE [=3Dy] && <choice>
-  Selected by [m]:
-  - UBIFS_FS [=3Dm] && MISC_FILESYSTEMS [=3Dy] && MTD_UBI [=3Dm] && UBIFS_F=
-S_LZO [=3Dy]
-
-WARNING: unmet direct dependencies detected for CRYPTO_LZO
-  Depends on [m]: CRYPTO [=3Dm]
-  Selected by [y]:
-  - ZRAM_DEF_COMP_LZORLE [=3Dy] && <choice>
-  Selected by [m]:
-  - UBIFS_FS [=3Dm] && MISC_FILESYSTEMS [=3Dy] && MTD_UBI [=3Dm] && UBIFS_F=
-S_LZO [=3Dy]
-ld: crypto/lzo.o: in function `lzo_compress':
-lzo.c:(.text+0xbc): undefined reference to `lzo1x_1_compress'
-ld: crypto/lzo.o: in function `lzo_scompress':
-lzo.c:(.text+0x228): undefined reference to `lzo1x_1_compress'
-ld: crypto/lzo.o: in function `lzo_mod_fini':
-lzo.c:(.exit.text+0x1c): undefined reference to `crypto_unregister_alg'
-ld: lzo.c:(.exit.text+0x34): undefined reference to `crypto_unregister_scom=
-p'
-ld: crypto/lzo.o: in function `lzo_mod_init':
-lzo.c:(.init.text+0x20): undefined reference to `crypto_register_alg'
-ld: lzo.c:(.init.text+0x30): undefined reference to `crypto_register_scomp'
-ld: lzo.c:(.init.text+0x40): undefined reference to `crypto_unregister_alg'
-ld: crypto/lzo-rle.o: in function `lzorle_compress':
-lzo-rle.c:(.text+0xbc): undefined reference to `lzorle1x_1_compress'
-ld: crypto/lzo-rle.o: in function `lzorle_scompress':
-lzo-rle.c:(.text+0x228): undefined reference to `lzorle1x_1_compress'
-ld: crypto/lzo-rle.o: in function `lzorle_mod_fini':
-lzo-rle.c:(.exit.text+0x1c): undefined reference to `crypto_unregister_alg'
-ld: lzo-rle.c:(.exit.text+0x34): undefined reference to `crypto_unregister_=
-scomp'
-ld: crypto/lzo-rle.o: in function `lzorle_mod_init':
-lzo-rle.c:(.init.text+0x20): undefined reference to `crypto_register_alg'
-ld: lzo-rle.c:(.init.text+0x30): undefined reference to `crypto_register_sc=
-omp'
-ld: lzo-rle.c:(.init.text+0x40): undefined reference to `crypto_unregister_=
-alg'
-
-Caused by commit
-
-  a6d52df2d8bc ("zram: break the strict dependency from lzo")
-
-I have reverted that commit for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/uDw.SJl9/QsNuxOCE4QhoGW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/IqxUACgkQAVBC80lX
-0GyZkQgAmQbfqBv+DG62p7CPvkKkeuA1UVe0Fq8l5ghEHnT75/jJBYsoDjGqTH6B
-BN7x61bMHezcMtkVT/o9gwsc0oKPO8cKevCqM6sOVsP4esQIatPSefUVW0iDkImp
-BYkH7QZ44xN03O40TMDtjwBu2+ko9mWvCkdsRoNYIubC6istZwc4akqtP/jFx24R
-Q+ZBWClBdhLrvyuUqLPF8Vgh0/moONwRAp1yrNSzj4Wl5ARIjvMNTKaIudx9AV8m
-4XsM7X77n7OmJPzR2t7xdtlxPhZ3bO/KuBTV5aIHp31szWyhv3fFCmGbCcQ+ELLt
-5cN7K5L+XO01i0qLcW7G6WRKchZ6JQ==
-=qfgH
------END PGP SIGNATURE-----
-
---Sig_/uDw.SJl9/QsNuxOCE4QhoGW--
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVmluY2VudCBHdWl0dG90
+IFttYWlsdG86dmluY2VudC5ndWl0dG90QGxpbmFyby5vcmddDQo+IFNlbnQ6IFRodXJzZGF5LCBE
+ZWNlbWJlciAzLCAyMDIwIDEwOjA0IFBNDQo+IFRvOiBTb25nIEJhbyBIdWEgKEJhcnJ5IFNvbmcp
+IDxzb25nLmJhby5odWFAaGlzaWxpY29uLmNvbT4NCj4gQ2M6IFZhbGVudGluIFNjaG5laWRlciA8
+dmFsZW50aW4uc2NobmVpZGVyQGFybS5jb20+OyBDYXRhbGluIE1hcmluYXMNCj4gPGNhdGFsaW4u
+bWFyaW5hc0Bhcm0uY29tPjsgV2lsbCBEZWFjb24gPHdpbGxAa2VybmVsLm9yZz47IFJhZmFlbCBK
+LiBXeXNvY2tpDQo+IDxyandAcmp3eXNvY2tpLm5ldD47IENjOiBMZW4gQnJvd24gPGxlbmJAa2Vy
+bmVsLm9yZz47DQo+IGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnOyBKb25hdGhhbiBDYW1lcm9u
+IDxqb25hdGhhbi5jYW1lcm9uQGh1YXdlaS5jb20+Ow0KPiBJbmdvIE1vbG5hciA8bWluZ29AcmVk
+aGF0LmNvbT47IFBldGVyIFppamxzdHJhIDxwZXRlcnpAaW5mcmFkZWFkLm9yZz47IEp1cmkNCj4g
+TGVsbGkgPGp1cmkubGVsbGlAcmVkaGF0LmNvbT47IERpZXRtYXIgRWdnZW1hbm4gPGRpZXRtYXIu
+ZWdnZW1hbm5AYXJtLmNvbT47DQo+IFN0ZXZlbiBSb3N0ZWR0IDxyb3N0ZWR0QGdvb2RtaXMub3Jn
+PjsgQmVuIFNlZ2FsbCA8YnNlZ2FsbEBnb29nbGUuY29tPjsgTWVsDQo+IEdvcm1hbiA8bWdvcm1h
+bkBzdXNlLmRlPjsgTWFyayBSdXRsYW5kIDxtYXJrLnJ1dGxhbmRAYXJtLmNvbT47IExBSw0KPiA8
+bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnPjsgbGludXgta2VybmVsDQo+IDxs
+aW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgQUNQSSBEZXZlbCBNYWxpbmcgTGlzdA0KPiA8
+bGludXgtYWNwaUB2Z2VyLmtlcm5lbC5vcmc+OyBMaW51eGFybSA8bGludXhhcm1AaHVhd2VpLmNv
+bT47IHh1d2VpIChPKQ0KPiA8eHV3ZWk1QGh1YXdlaS5jb20+OyBaZW5ndGFvIChCKSA8cHJpbWUu
+emVuZ0BoaXNpbGljb24uY29tPg0KPiBTdWJqZWN0OiBSZTogW1JGQyBQQVRDSCB2MiAyLzJdIHNj
+aGVkdWxlcjogYWRkIHNjaGVkdWxlciBsZXZlbCBmb3IgY2x1c3RlcnMNCj4gDQo+IE9uIFdlZCwg
+MiBEZWMgMjAyMCBhdCAyMTo1OCwgU29uZyBCYW8gSHVhIChCYXJyeSBTb25nKQ0KPiA8c29uZy5i
+YW8uaHVhQGhpc2lsaWNvbi5jb20+IHdyb3RlOg0KPiA+DQo+ID4gPg0KPiA+ID4gU29ycnkuIFBs
+ZWFzZSBpZ25vcmUgdGhpcy4gSSBhZGRlZCBzb21lIHByaW50ayBoZXJlIHdoaWxlIHRlc3RpbmcN
+Cj4gPiA+IG9uZSBudW1hLiBXaWxsIHVwZGF0ZSB5b3UgdGhlIGRhdGEgaW4gYW5vdGhlciBlbWFp
+bC4NCj4gPg0KPiA+IFJlLXRlc3RlZCBpbiBvbmUgTlVNQSBub2RlKGNwdTAtY3B1MjMpOg0KPiA+
+DQo+ID4gZz0xDQo+ID4gUnVubmluZyBpbiB0aHJlYWRlZCBtb2RlIHdpdGggMSBncm91cHMgdXNp
+bmcgNDAgZmlsZSBkZXNjcmlwdG9ycw0KPiA+IEVhY2ggc2VuZGVyIHdpbGwgcGFzcyAxMDAwMDAg
+bWVzc2FnZXMgb2YgMTAwIGJ5dGVzDQo+ID4gdy9vOiA3LjY4OSA3LjQ4NSA3LjQ4NSA3LjQ1OCA3
+LjUyNCA3LjUzOSA3LjczOCA3LjY5MyA3LjU2OCA3LjY3ND03LjU4NTMNCj4gPiB3LyA6IDcuNTE2
+IDcuOTQxIDcuMzc0IDcuOTYzIDcuODgxIDcuOTEwIDcuNDIwIDcuNTU2IDcuNjk1IDcuNDQxPTcu
+NjY5Nw0KPiA+IHcvIGJ1dCBkcm9wcGVkIHNlbGVjdF9pZGxlX2NsdXN0ZXI6DQo+ID4gICAgICA3
+Ljc1MiA3LjczOSA3LjczOSA3LjU3MSA3LjU0NSA3LjY4NSA3LjQwNyA3LjU4MCA3LjYwNSA3LjQ4
+Nz03LjYxMQ0KPiA+DQo+ID4gZz0yDQo+ID4gUnVubmluZyBpbiB0aHJlYWRlZCBtb2RlIHdpdGgg
+MiBncm91cHMgdXNpbmcgNDAgZmlsZSBkZXNjcmlwdG9ycw0KPiA+IEVhY2ggc2VuZGVyIHdpbGwg
+cGFzcyAxMDAwMDAgbWVzc2FnZXMgb2YgMTAwIGJ5dGVzDQo+ID4gdy9vOiAxMC4xMjcgMTAuMTE5
+IDEwLjA3MCAxMC4xOTYgMTAuMDU3IDEwLjExMSAxMC4wNDUgMTAuMTY0IDEwLjE2Mg0KPiA+IDku
+OTU1PTEwLjEwMDYNCj4gPiB3LyA6IDkuNjk0IDkuNjU0IDkuNjEyIDkuNjQ5IDkuNjg2IDkuNzM0
+IDkuNjA3IDkuODQyIDkuNjkwIDkuNzEwPTkuNjg3OA0KPiA+IHcvIGJ1dCBkcm9wcGVkIHNlbGVj
+dF9pZGxlX2NsdXN0ZXI6DQo+ID4gICAgICA5Ljg3NyAxMC4wNjkgOS45NTEgOS45MTggOS45NDcg
+OS43OTAgOS45MDYgOS44MjAgOS44NjMgOS45MDY9OS45MDQ3DQo+ID4NCj4gPiBnPTMNCj4gPiBS
+dW5uaW5nIGluIHRocmVhZGVkIG1vZGUgd2l0aCAzIGdyb3VwcyB1c2luZyA0MCBmaWxlIGRlc2Ny
+aXB0b3JzDQo+ID4gRWFjaCBzZW5kZXIgd2lsbCBwYXNzIDEwMDAwMCBtZXNzYWdlcyBvZiAxMDAg
+Ynl0ZXMNCj4gPiB3L286IDE1Ljg4NSAxNS4yNTQgMTUuOTMyIDE1LjY0NyAxNi4xMjAgMTUuODc4
+IDE1Ljg1NyAxNS43NTkgMTUuNjc0DQo+ID4gMTUuNzIxPTE1Ljc3MjcNCj4gPiB3LyA6IDE0Ljk3
+NCAxNC42NTcgMTMuOTY5IDE0Ljk4NSAxNC43MjggMTUuNjY1IDE1LjE5MSAxNC45OTUgMTQuOTQ2
+DQo+ID4gMTQuODk1PTE0LjkwMDUNCj4gPiB3LyBidXQgZHJvcHBlZCBzZWxlY3RfaWRsZV9jbHVz
+dGVyOg0KPiA+ICAgICAgMTUuNDA1IDE1LjE3NyAxNS4zNzMgMTUuMTg3IDE1LjQ1MCAxNS41NDAg
+MTUuMjc4IDE1LjYyOCAxNS4yMjgNCj4gMTUuMzI1PTE1LjM1OTENCj4gPg0KPiA+IGc9NA0KPiA+
+IFJ1bm5pbmcgaW4gdGhyZWFkZWQgbW9kZSB3aXRoIDQgZ3JvdXBzIHVzaW5nIDQwIGZpbGUgZGVz
+Y3JpcHRvcnMNCj4gPiBFYWNoIHNlbmRlciB3aWxsIHBhc3MgMTAwMDAwIG1lc3NhZ2VzIG9mIDEw
+MCBieXRlcw0KPiA+IHcvbzogMjAuMDE0IDIxLjAyNSAyMS4xMTkgMjEuMjM1IDE5Ljc2NyAyMC45
+NzEgMjAuOTYyIDIwLjkxNCAyMS4wOTANCj4gMjEuMDkwPTIwLjgxODcNCj4gPiB3LyA6IDIwLjMz
+MSAyMC42MDggMjAuMzM4IDIwLjQ0NSAyMC40NTYgMjAuMTQ2IDIwLjY5MyAyMC43OTcgMjEuMzgx
+DQo+IDIwLjQ1Mj0yMC41NjQ3DQo+ID4gdy8gYnV0IGRyb3BwZWQgc2VsZWN0X2lkbGVfY2x1c3Rl
+cjoNCj4gPiAgICAgIDE5LjgxNCAyMC4xMjYgMjAuMjI5IDIwLjM1MCAyMC43NTAgMjAuNDA0IDE5
+Ljk1NyAxOS44ODggMjAuMjI2DQo+IDIwLjU2Mj0yMC4yMzA2DQo+ID4NCj4gDQo+IEkgYXNzdW1l
+IHRoYXQgeW91IGhhdmUgcnVuIHRoaXMgb24gdjUuOSBhcyBwcmV2aW91cyB0ZXN0cy4NCg0KWWVw
+DQoNCj4gVGhlIHJlc3VsdHMgZG9uJ3Qgc2hvdyBhbnkgcmVhbCBiZW5lZml0IG9mIHNlbGVjdF9p
+ZGxlX2NsdXN0ZXIoKQ0KPiBpbnNpZGUgYSBub2RlIHdoZXJlYXMgdGhpcyBpcyB3aGVyZSB3ZSBj
+b3VsZCBleHBlY3QgbW9zdCBvZiB0aGUNCj4gYmVuZWZpdC4gV2UgaGF2ZSB0byB1bmRlcnN0YW5k
+IHdoeSB3ZSBoYXZlIHN1Y2ggYW4gaW1wYWN0IG9uIG51bWENCj4gdGVzdHMgb25seS4NCg0KVGhl
+cmUgaXMgYSA0LTUuNSUgaW5jcmVhc2Ugd2hpbGUgZz0yIGFuZCBnPTMuDQoNClJlZ2FyZGluZyB0
+aGUgaHVnZSBpbmNyZWFzZSBpbiBOVU1BIGNhc2UsICBhdCB0aGUgZmlyc3QgYmVnaW5uaW5nLCBJ
+IHN1c3BlY3QNCndlIGhhdmUgd3JvbmcgbGxjIGRvbWFpbi4gRm9yIGV4YW1wbGUsIGlmIGNwdTAn
+cyBsbGMgZG9tYWluIHNwYW4NCmNwdTAtY3B1NDcsIHRoZW4gc2VsZWN0X2lkbGVfY3B1KCkgaXMg
+cnVubmluZyBpbiB3cm9uZyByYW5nZSB3aGlsZQ0KaXQgc2hvdWxkIHJ1biBpbiBjcHUwLWNwdTIz
+Lg0KDQpCdXQgYWZ0ZXIgcHJpbnRpbmcgdGhlIGxsYyBkb21haW4ncyBzcGFuLCBJIGZpbmQgaXQg
+aXMgY29tcGxldGVseSByaWdodC4NCkNwdTAncyBsbGMgc3BhbjogY3B1MC1jcHUyMw0KQ3B1MjQn
+cyBsbGMgc3BhbjogY3B1MjQtY3B1NDcNCg0KTWF5YmUgSSBuZWVkIG1vcmUgdHJhY2UgZGF0YSB0
+byBmaWd1cmUgb3V0IGlmIHNlbGVjdF9pZGxlX2NwdSgpIGlzIHJ1bm5pbmcNCmNvcnJlY3RseS4g
+Rm9yIGV4YW1wbGUsIG1heWJlIEkgY2FuIGZpZ3VyZSBvdXQgaWYgaXQgaXMgYWx3YXlzIHJldHVy
+bmluZyAtMSwNCm9yIGl0IHJldHVybnMgLTEgdmVyeSBvZnRlbj8NCg0KT3IgZG8geW91IGhhdmUg
+YW55IGlkZWE/DQoNCg0KPiANCj4gPiBUaGFua3MNCj4gPiBCYXJyeQ0KDQpUaGFua3MNCkJhcnJ5
+DQoNCg==
