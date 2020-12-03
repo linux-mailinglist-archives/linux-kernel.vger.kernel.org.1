@@ -2,99 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568F92CDCA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C6852CDCA3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731171AbgLCRr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:47:26 -0500
-Received: from mout.kundenserver.de ([212.227.17.10]:33771 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729117AbgLCRr0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:47:26 -0500
-Received: from orion.localdomain ([95.118.71.13]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1N79ly-1k6NSs0f5Y-017V2z; Thu, 03 Dec 2020 18:44:54 +0100
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+        id S1726869AbgLCRqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:46:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726041AbgLCRql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 12:46:41 -0500
+From:   Oded Gabbay <ogabbay@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
-Cc:     linux-acpi@vger.kernel.org
-Subject: [PATCH] drivers: acpi: add opt-out of Apple-specific property parsing
-Date:   Thu,  3 Dec 2020 18:44:53 +0100
-Message-Id: <20201203174453.12084-1-info@metux.net>
-X-Mailer: git-send-email 2.11.0
-X-Provags-ID: V03:K1:LvjuyA2u5eCtPPbEeuvjQ0IX4ORlQhvyN6V9Z3iNHsVxtOMeRF+
- ihOt8bi5Z8R4JrbzQasJMijNrgT3MiU/cfRQY015uV/sDMtDsQSSGXnv7PDRxa23jaPHGtp
- bMY2BiTtGjxUyadvuzdOSKhQUBjOoX8mXuNdbz4T3Tp0HUMm16Paiqfa3zd/zEKsSQvUEuI
- lrGEGef1IZweZVHxtiCaw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kJR+McMam84=:xjk6yLz3jJfMAu/OtaR5B7
- oVcoKONx0vrXLqQhiB17Fle6pMnmd/Ibb0gjxNA5E3ef5LdKU766Q5ytdpGzQJP0C0eQPmNcT
- t36TmRMYEakHYTqYUgSRdgt3JpdWTcdcWpLy5ZDqYZZWtw8Od6d4K9fyAuH6NMsHdmxib1kNu
- oVHDDiEFMM8myZuq9n0wLD+T8ggR3fxS0lloiXsw6Pi+MaplO7FpFqcNGqNztfmFN57VeVS1p
- GgEmhtfhnl4EZELmFuc2LGZRGhTgupJ16dGJEKr5d3nLcCY80BiEzaMhN851j5/gLZTBAdfz1
- 1LK+5EGKJrK2xjS30Ha67nqZvqNAAFWiC8IdxnA5Lke3V5q2P5cwP16ViyGvVX0hmhpbvNwjX
- jR1JFYBsmBQd8dqrKh89wMpJWRy06S8LATl5C262OnuvABKurXXE3b71kfVHu
+Cc:     SW_Drivers@habana.ai, Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH] habanalabs: preboot hard reset support
+Date:   Thu,  3 Dec 2020 19:45:54 +0200
+Message-Id: <20201203174554.31472-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most x86 machines aren't Apple machines, especially VMs.
-Therefore allow opt-out, making the kernel a few KBs smaller,
-eg. for embedded or high-density VMs.
+From: Ofir Bitton <obitton@habana.ai>
 
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+FW hard reset capability indication is now moved to preboot stage.
+Driver will check if HW is dirty only after it validated preboot
+is up. If HW is dirty, driver will perform a hard reset according
+to the FW capability.
+In addition, FW defines a new message which driver need to send in
+order to initiate a hard reset.
+
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/acpi/Kconfig    | 9 +++++++++
- drivers/acpi/Makefile   | 2 +-
- drivers/acpi/internal.h | 2 +-
- 3 files changed, 11 insertions(+), 2 deletions(-)
+ drivers/misc/habanalabs/common/firmware_if.c  | 25 ++++++++++---------
+ drivers/misc/habanalabs/gaudi/gaudi.c         | 17 +++++++------
+ drivers/misc/habanalabs/goya/goya.c           | 12 ++++-----
+ .../habanalabs/include/common/hl_boot_if.h    |  2 ++
+ 4 files changed, 31 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-index edf1558c1105..cc47de4f2b18 100644
---- a/drivers/acpi/Kconfig
-+++ b/drivers/acpi/Kconfig
-@@ -79,6 +79,15 @@ config ACPI_DEBUGGER_USER
+diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
+index 0e1c629e9800..c970bfc6db66 100644
+--- a/drivers/misc/habanalabs/common/firmware_if.c
++++ b/drivers/misc/habanalabs/common/firmware_if.c
+@@ -627,7 +627,9 @@ int hl_fw_read_preboot_status(struct hl_device *hdev, u32 cpu_boot_status_reg,
+ 	security_status = RREG32(cpu_security_boot_status_reg);
  
- endif
- 
-+config ACPI_APPLE
-+	bool "Apple ACPI properties support"
-+	default y if X86
-+	help
-+	  Extraction of Apple-specific ACPI properties.
+ 	/* We read security status multiple times during boot:
+-	 * 1. preboot - we check if fw security feature is supported
++	 * 1. preboot - a. Check whether the security status bits are valid
++	 *              b. Check whether fw security is enabled
++	 *              c. Check whether hard reset is done by fw
+ 	 * 2. boot cpu - we get boot cpu security status
+ 	 * 3. FW application - we get FW application security status
+ 	 *
+@@ -637,13 +639,20 @@ int hl_fw_read_preboot_status(struct hl_device *hdev, u32 cpu_boot_status_reg,
+ 	 */
+ 	if (security_status & CPU_BOOT_DEV_STS0_ENABLED) {
+ 		hdev->asic_prop.fw_security_status_valid = 1;
+-		prop->fw_security_disabled =
+-			!(security_status & CPU_BOOT_DEV_STS0_SECURITY_EN);
 +
-+	  Say N if you're sure the kernel won't be used on an Apple machine
-+	  and wanna save a few kb of memory. (embedded or high-density VMs)
++		if (!(security_status & CPU_BOOT_DEV_STS0_SECURITY_EN))
++			prop->fw_security_disabled = true;
 +
- config ACPI_SPCR_TABLE
- 	bool "ACPI Serial Port Console Redirection Support"
- 	default y if X86
-diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-index 44e412506317..ed1f4405c90a 100644
---- a/drivers/acpi/Makefile
-+++ b/drivers/acpi/Makefile
-@@ -52,7 +52,7 @@ acpi-y				+= evged.o
- acpi-y				+= sysfs.o
- acpi-y				+= property.o
- acpi-$(CONFIG_X86)		+= acpi_cmos_rtc.o
--acpi-$(CONFIG_X86)		+= x86/apple.o
-+acpi-$(CONFIG_ACPI_APPLE)	+= x86/apple.o
- acpi-$(CONFIG_X86)		+= x86/utils.o
- acpi-$(CONFIG_DEBUG_FS)		+= debugfs.o
- acpi-y				+= acpi_lpat.o
-diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-index e3638bafb941..fa1b6ef7829a 100644
---- a/drivers/acpi/internal.h
-+++ b/drivers/acpi/internal.h
-@@ -239,7 +239,7 @@ static inline void suspend_nvs_restore(void) {}
- void acpi_init_properties(struct acpi_device *adev);
- void acpi_free_properties(struct acpi_device *adev);
++		if (security_status & CPU_BOOT_DEV_STS0_FW_HARD_RST_EN)
++			hdev->asic_prop.hard_reset_done_by_fw = true;
+ 	} else {
+ 		hdev->asic_prop.fw_security_status_valid = 0;
+ 		prop->fw_security_disabled = true;
+ 	}
  
--#ifdef CONFIG_X86
-+#ifdef CONFIG_ACPI_APPLE
- void acpi_extract_apple_properties(struct acpi_device *adev);
- #else
- static inline void acpi_extract_apple_properties(struct acpi_device *adev) {}
++	dev_dbg(hdev->dev, "Firmware hard-reset is %s\n",
++		hdev->asic_prop.hard_reset_done_by_fw ? "enabled" : "disabled");
++
+ 	dev_info(hdev->dev, "firmware-level security is %s\n",
+ 		prop->fw_security_disabled ? "disabled" : "enabled");
+ 
+@@ -797,18 +806,10 @@ int hl_fw_init_cpu(struct hl_device *hdev, u32 cpu_boot_status_reg,
+ 	}
+ 
+ 	/* Read FW application security bits */
+-	if (hdev->asic_prop.fw_security_status_valid) {
++	if (hdev->asic_prop.fw_security_status_valid)
+ 		hdev->asic_prop.fw_app_security_map =
+ 				RREG32(cpu_security_boot_status_reg);
+ 
+-		if (hdev->asic_prop.fw_app_security_map &
+-				CPU_BOOT_DEV_STS0_FW_HARD_RST_EN)
+-			hdev->asic_prop.hard_reset_done_by_fw = true;
+-	}
+-
+-	dev_dbg(hdev->dev, "Firmware hard-reset is %s\n",
+-		hdev->asic_prop.hard_reset_done_by_fw ? "enabled" : "disabled");
+-
+ 	dev_info(hdev->dev, "Successfully loaded firmware to device\n");
+ 
+ out:
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 278c4de98e22..e465c158eaeb 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -654,12 +654,6 @@ static int gaudi_early_init(struct hl_device *hdev)
+ 	if (rc)
+ 		goto free_queue_props;
+ 
+-	if (gaudi_get_hw_state(hdev) == HL_DEVICE_HW_STATE_DIRTY) {
+-		dev_info(hdev->dev,
+-			"H/W state is dirty, must reset before initializing\n");
+-		hdev->asic_funcs->hw_fini(hdev, true);
+-	}
+-
+ 	/* Before continuing in the initialization, we need to read the preboot
+ 	 * version to determine whether we run with a security-enabled firmware
+ 	 */
+@@ -672,6 +666,12 @@ static int gaudi_early_init(struct hl_device *hdev)
+ 		goto pci_fini;
+ 	}
+ 
++	if (gaudi_get_hw_state(hdev) == HL_DEVICE_HW_STATE_DIRTY) {
++		dev_info(hdev->dev,
++			"H/W state is dirty, must reset before initializing\n");
++		hdev->asic_funcs->hw_fini(hdev, true);
++	}
++
+ 	return 0;
+ 
+ pci_fini:
+@@ -3881,7 +3881,10 @@ static void gaudi_hw_fini(struct hl_device *hdev, bool hard_reset)
+ 	/* I don't know what is the state of the CPU so make sure it is
+ 	 * stopped in any means necessary
+ 	 */
+-	WREG32(mmPSOC_GLOBAL_CONF_KMD_MSG_TO_CPU, KMD_MSG_GOTO_WFE);
++	if (hdev->asic_prop.hard_reset_done_by_fw)
++		WREG32(mmPSOC_GLOBAL_CONF_KMD_MSG_TO_CPU, KMD_MSG_RST_DEV);
++	else
++		WREG32(mmPSOC_GLOBAL_CONF_KMD_MSG_TO_CPU, KMD_MSG_GOTO_WFE);
+ 
+ 	WREG32(mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR, GAUDI_EVENT_HALT_MACHINE);
+ 
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index b66fd55accb5..d61177bf36a5 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -613,12 +613,6 @@ static int goya_early_init(struct hl_device *hdev)
+ 	if (rc)
+ 		goto free_queue_props;
+ 
+-	if (goya_get_hw_state(hdev) == HL_DEVICE_HW_STATE_DIRTY) {
+-		dev_info(hdev->dev,
+-			"H/W state is dirty, must reset before initializing\n");
+-		hdev->asic_funcs->hw_fini(hdev, true);
+-	}
+-
+ 	/* Before continuing in the initialization, we need to read the preboot
+ 	 * version to determine whether we run with a security-enabled firmware
+ 	 */
+@@ -631,6 +625,12 @@ static int goya_early_init(struct hl_device *hdev)
+ 		goto pci_fini;
+ 	}
+ 
++	if (goya_get_hw_state(hdev) == HL_DEVICE_HW_STATE_DIRTY) {
++		dev_info(hdev->dev,
++			"H/W state is dirty, must reset before initializing\n");
++		hdev->asic_funcs->hw_fini(hdev, true);
++	}
++
+ 	if (!hdev->pldm) {
+ 		val = RREG32(mmPSOC_GLOBAL_CONF_BOOT_STRAP_PINS);
+ 		if (val & PSOC_GLOBAL_CONF_BOOT_STRAP_PINS_SRIOV_EN_MASK)
+diff --git a/drivers/misc/habanalabs/include/common/hl_boot_if.h b/drivers/misc/habanalabs/include/common/hl_boot_if.h
+index e5801ecf0cb2..755c4800f002 100644
+--- a/drivers/misc/habanalabs/include/common/hl_boot_if.h
++++ b/drivers/misc/habanalabs/include/common/hl_boot_if.h
+@@ -204,6 +204,8 @@ enum kmd_msg {
+ 	KMD_MSG_GOTO_WFE,
+ 	KMD_MSG_FIT_RDY,
+ 	KMD_MSG_SKIP_BMC,
++	RESERVED,
++	KMD_MSG_RST_DEV,
+ };
+ 
+ enum cpu_msg_status {
 -- 
-2.11.0
+2.17.1
 
