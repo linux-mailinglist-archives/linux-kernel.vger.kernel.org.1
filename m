@@ -2,94 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2352CD3A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C6C2CD3BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388928AbgLCKcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 05:32:16 -0500
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:9744 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387620AbgLCKcQ (ORCPT
+        id S2388739AbgLCKdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 05:33:53 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:36077 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388701AbgLCKdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 05:32:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606991535; x=1638527535;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HYvqfDOJAQzsbDFrol1vkz2s/fsDFmkTjeSVK52uWyE=;
-  b=gYQB+TRi0ltbNTLaqiEthV7jWmqT+zdcGBH2WE4zjL4sl5VSgDNJxeCb
-   tcS8mQkveQqNVR9O/HpiDJpgF4DOwjdZmzDn9YVKIkmip0YRmHHJgVHlw
-   akV+d3f6bgeOvOu4oiEqT36SrwUlaU7RtfKWgmgQgJ7goomUQuglC9vWN
-   gL622iguclTNWCs1pn7jGJh6GCXc2vRk6tn9+AfE1nkvsoGrI1Sb8pzvv
-   uVChzzDZyTSXWW+XFlDF0u8AdddLpI85iG78++e67JsD9F5Q6JmzjnlhI
-   mw4LtUhuAmlS4iAsNnpC6DOeUF7rkB+oB8jxhXTegvpg6FSkRhI9YW1MY
-   w==;
-IronPort-SDR: /muQGuZvVJ63hGcW/XN7V9Ns/4opOGqoyFWx44j8GQ5bjpDGYv0GBXIXbTA9MDga9gxnkEGKS7
- Pf0nu2KZnigbVYugdNaWCOZp2Q+Gnyz96F/Oo3ZrHMl7N/Q2/KlcBFt2AD4KViCQaR8s9Vkoea
- J0oER7TpzDjfFjnusVjGc+SZAK9NBsyQc9codokD8HwcFqqIQYPvxpZ01PD+t+//siCJ3FaBBU
- qe3QeM3ITclO5K9dbVXU8CkOfSZ6XDJ3XWamD4uYl1ovbJTA3SOkNRY8Hf59ZWdmKRu1oLcZhz
- 7F4=
-X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
-   d="scan'208";a="105989344"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Dec 2020 03:30:41 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 3 Dec 2020 03:30:41 -0700
-Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 3 Dec 2020 03:30:39 -0700
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v8 4/4] arm64: dts: sparx5: Add Sparx5 serdes driver node
-Date:   Thu, 3 Dec 2020 11:30:15 +0100
-Message-ID: <20201203103015.3735373-5-steen.hegelund@microchip.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201203103015.3735373-1-steen.hegelund@microchip.com>
-References: <20201203103015.3735373-1-steen.hegelund@microchip.com>
+        Thu, 3 Dec 2020 05:33:52 -0500
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 03 Dec 2020 02:32:44 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 03 Dec 2020 02:32:42 -0800
+X-QCInternal: smtphost
+Received: from c-rojay-linux.qualcomm.com ([10.206.21.80])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 03 Dec 2020 16:01:59 +0530
+Received: by c-rojay-linux.qualcomm.com (Postfix, from userid 88981)
+        id 31E3F2819; Thu,  3 Dec 2020 16:01:58 +0530 (IST)
+From:   Roja Rani Yarubandi <rojay@codeaurora.org>
+To:     wsa@kernel.org
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        vkaur@codeaurora.org, pyarlaga@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+Subject: [RESEND PATCH V6 0/2] Implement Shutdown callback for geni-i2c
+Date:   Thu,  3 Dec 2020 16:01:54 +0530
+Message-Id: <20201203103156.32595-1-rojay@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Sparx5 serdes driver node, and enable it generally for all
-reference boards.
+Hi,
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Below patch is picked:
+[V6,1/3] soc: qcom: geni: Remove "iova" check
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 8e7724d413fb..797601a9d542 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -287,5 +287,13 @@ tmon0: tmon@610508110 {
- 			#thermal-sensor-cells = <0>;
- 			clocks = <&ahb_clk>;
- 		};
-+
-+		serdes: serdes@10808000 {
-+			compatible = "microchip,sparx5-serdes";
-+			#phy-cells = <1>;
-+			clocks = <&sys_clk>;
-+			reg = <0x6 0x10808000 0x5d0000>;
-+		};
-+
- 	};
- };
+Resending below patches for review:
+[V6,2/3] i2c: i2c-qcom-geni: Store DMA mapping data in geni_i2c_dev struct
+[V6,3/3] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+
+Thanks,
+Roja
+
+Roja Rani Yarubandi (2):
+  i2c: i2c-qcom-geni: Store DMA mapping data in geni_i2c_dev struct
+  i2c: i2c-qcom-geni: Add shutdown callback for i2c
+
+ drivers/i2c/busses/i2c-qcom-geni.c | 104 ++++++++++++++++++++++++-----
+ 1 file changed, 88 insertions(+), 16 deletions(-)
+
 -- 
-2.29.2
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
