@@ -2,540 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052EB2CCECF
+	by mail.lfdr.de (Postfix) with ESMTP id 72E382CCED0
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728462AbgLCFrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 00:47:35 -0500
-Received: from a2.mail.mailgun.net ([198.61.254.61]:25088 "EHLO
-        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727707AbgLCFre (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:47:34 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606974434; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=RJ6ihlXIOoxItIPNLL5d1EMzw+/2TkjAnZXk00LylQ4=;
- b=dHcwAUZxLa7dxQnSF0E/haM69FdwW3chs+8DiILk7s4HJW9suEwf4wzKq+xSsygfWkZc0RbF
- WSsYkRkPa+6Sr+aSXsCL5CMT3YmAr4BPWvftihbLHv3iTTAuz5C76DB2CAvGPYX9eNC2clBF
- t7CfT8hUv6u7O8QRW+0WUV1ZlcE=
-X-Mailgun-Sending-Ip: 198.61.254.61
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5fc87bc53ea99bd03b38eced (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Dec 2020 05:46:45
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 117A7C43468; Thu,  3 Dec 2020 05:46:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3D48DC433ED;
-        Thu,  3 Dec 2020 05:46:42 +0000 (UTC)
+        id S1728553AbgLCFsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 00:48:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33468 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728023AbgLCFsE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 00:48:04 -0500
+Date:   Wed, 2 Dec 2020 21:47:21 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606974443;
+        bh=sjBL4bXjKo5x6Xl3BjEQeVq24MLGIR3Ca86zeF4PGp8=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rCEroEISuXwe0OLs6Li4Yl/5NYKgwnHqAAicDGrA7mqAOOLbEN1GX/6y7oeW+ud9A
+         ZQVIq+8hmEzxFZiivbYQRxDslM8RMHXzjnUO63XGEAvUPqfOHLfJBnsqzlgIfGY0fv
+         cOln5js77GG4A4OjBYQeNTBi6yQ5aOr+BzBkoFay8YSbG5vPPloxMoY0Y9JXjwYUXQ
+         gePsEUIZAJRPruoVTCOwRln9V4FO0TGbqYO2lnuu+4V6gKmkGR5ko+1Iak5ofscs2u
+         CInzsp7syZoHkcv50Koumaz2SNgjMPkui0ENh+e3WwSm+JCIP6/FiWQJcAzli26tlB
+         nlywnYy4T0+xA==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH v5] f2fs: compress: support compress level
+Message-ID: <X8h76U0K1H8uiXFy@google.com>
+References: <20201203033104.42484-1-yuchao0@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 03 Dec 2020 13:46:42 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
-        beanhuo@micron.com, asutoshd@codeaurora.org,
-        matthias.bgg@gmail.com, bvanassche@acm.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
-        jiajie.hao@mediatek.com, alice.chao@mediatek.com,
-        huadian.liu@mediatek.com
-Subject: Re: [PATCH v1 2/3] scsi: ufs: Refine error history functions
-In-Reply-To: <20201126053839.25889-3-stanley.chu@mediatek.com>
-References: <20201126053839.25889-1-stanley.chu@mediatek.com>
- <20201126053839.25889-3-stanley.chu@mediatek.com>
-Message-ID: <6c60939b5b6465ae997f48dce135af88@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203033104.42484-1-yuchao0@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-26 13:38, Stanley Chu wrote:
-> Nowadays UFS error history does not only have "history of errors"
-> but also have history of some other events which are not defined
-> as errors.
+On 12/03, Chao Yu wrote:
+> Expand 'compress_algorithm' mount option to accept parameter as format of
+> <algorithm>:<level>, by this way, it gives a way to allow user to do more
+> specified config on lz4 and zstd compression level, then f2fs compression
+> can provide higher compress ratio.
 > 
-> This patch fixes the confused naming of related functions,
-> and change the way for updating and printing history as preparation
-> of next patch.
+> In order to set compress level for lz4 algorithm, it needs to set
+> CONFIG_LZ4HC_COMPRESS and CONFIG_F2FS_FS_LZ4HC config to enable lz4hc
+> compress algorithm.
 > 
-> This patch shall not change any functionality.
-> 
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
 > ---
->  drivers/scsi/ufs/ufshcd.c | 118 +++++++++++++++++++++-----------------
->  drivers/scsi/ufs/ufshcd.h |  71 ++++++++++-------------
->  2 files changed, 97 insertions(+), 92 deletions(-)
+> v5:
+> - avoid compile error if CONFIG_F2FS_FS_ZSTD is off.
+>  Documentation/filesystems/f2fs.rst |  5 +++
+>  fs/f2fs/Kconfig                    |  9 ++++
+>  fs/f2fs/compress.c                 | 40 +++++++++++++++--
+>  fs/f2fs/f2fs.h                     |  9 ++++
+>  fs/f2fs/super.c                    | 72 +++++++++++++++++++++++++++++-
+>  include/linux/f2fs_fs.h            |  3 ++
+>  6 files changed, 133 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 28e4def13f21..7194bed1f10b 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -413,20 +413,25 @@ static void ufshcd_print_clk_freqs(struct ufs_hba 
-> *hba)
->  	}
->  }
-> 
-> -static void ufshcd_print_err_hist(struct ufs_hba *hba,
-> -				  struct ufs_err_reg_hist *err_hist,
-> -				  char *err_name)
-> +static void ufshcd_print_evt(struct ufs_hba *hba, u32 id,
-> +			     char *err_name)
->  {
->  	int i;
->  	bool found = false;
-> +	struct ufs_event_hist *e;
-> 
-> -	for (i = 0; i < UFS_ERR_REG_HIST_LENGTH; i++) {
-> -		int p = (i + err_hist->pos) % UFS_ERR_REG_HIST_LENGTH;
-> +	if (id >= UFS_EVT_CNT)
-> +		return;
-> +
-> +	e = &hba->ufs_stats.event[id];
-> 
-> -		if (err_hist->tstamp[p] == 0)
-> +	for (i = 0; i < UFS_EVENT_HIST_LENGTH; i++) {
-> +		int p = (i + e->pos) % UFS_EVENT_HIST_LENGTH;
-> +
-> +		if (e->tstamp[p] == 0)
->  			continue;
->  		dev_err(hba->dev, "%s[%d] = 0x%x at %lld us\n", err_name, p,
-> -			err_hist->reg[p], ktime_to_us(err_hist->tstamp[p]));
-> +			e->val[p], ktime_to_us(e->tstamp[p]));
->  		found = true;
->  	}
-> 
-> @@ -434,26 +439,26 @@ static void ufshcd_print_err_hist(struct ufs_hba 
-> *hba,
->  		dev_err(hba->dev, "No record of %s\n", err_name);
->  }
-> 
-> -static void ufshcd_print_host_regs(struct ufs_hba *hba)
-> +static void ufshcd_print_evt_hist(struct ufs_hba *hba)
->  {
->  	ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
-> 
-> -	ufshcd_print_err_hist(hba, &hba->ufs_stats.pa_err, "pa_err");
-> -	ufshcd_print_err_hist(hba, &hba->ufs_stats.dl_err, "dl_err");
-> -	ufshcd_print_err_hist(hba, &hba->ufs_stats.nl_err, "nl_err");
-> -	ufshcd_print_err_hist(hba, &hba->ufs_stats.tl_err, "tl_err");
-> -	ufshcd_print_err_hist(hba, &hba->ufs_stats.dme_err, "dme_err");
-> -	ufshcd_print_err_hist(hba, &hba->ufs_stats.auto_hibern8_err,
-> -			      "auto_hibern8_err");
-> -	ufshcd_print_err_hist(hba, &hba->ufs_stats.fatal_err, "fatal_err");
-> -	ufshcd_print_err_hist(hba, &hba->ufs_stats.link_startup_err,
-> -			      "link_startup_fail");
-> -	ufshcd_print_err_hist(hba, &hba->ufs_stats.resume_err, 
-> "resume_fail");
-> -	ufshcd_print_err_hist(hba, &hba->ufs_stats.suspend_err,
-> -			      "suspend_fail");
-> -	ufshcd_print_err_hist(hba, &hba->ufs_stats.dev_reset, "dev_reset");
-> -	ufshcd_print_err_hist(hba, &hba->ufs_stats.host_reset, "host_reset");
-> -	ufshcd_print_err_hist(hba, &hba->ufs_stats.task_abort, "task_abort");
-> +	ufshcd_print_evt(hba, UFS_EVT_PA_ERR, "pa_err");
-> +	ufshcd_print_evt(hba, UFS_EVT_DL_ERR, "dl_err");
-> +	ufshcd_print_evt(hba, UFS_EVT_NL_ERR, "nl_err");
-> +	ufshcd_print_evt(hba, UFS_EVT_TL_ERR, "tl_err");
-> +	ufshcd_print_evt(hba, UFS_EVT_DME_ERR, "dme_err");
-> +	ufshcd_print_evt(hba, UFS_EVT_AUTO_HIBERN8_ERR,
-> +			 "auto_hibern8_err");
-> +	ufshcd_print_evt(hba, UFS_EVT_FATAL_ERR, "fatal_err");
-> +	ufshcd_print_evt(hba, UFS_EVT_LINK_STARTUP_FAIL,
-> +			 "link_startup_fail");
-> +	ufshcd_print_evt(hba, UFS_EVT_RESUME_ERR, "resume_fail");
-> +	ufshcd_print_evt(hba, UFS_EVT_SUSPEND_ERR,
-> +			 "suspend_fail");
-> +	ufshcd_print_evt(hba, UFS_EVT_DEV_RESET, "dev_reset");
-> +	ufshcd_print_evt(hba, UFS_EVT_HOST_RESET, "host_reset");
-> +	ufshcd_print_evt(hba, UFS_EVT_ABORT, "task_abort");
-> 
->  	ufshcd_vops_dbg_register_dump(hba);
->  }
-> @@ -3856,7 +3861,7 @@ static int ufshcd_uic_pwr_ctrl(struct ufs_hba
-> *hba, struct uic_command *cmd)
->  	if (ret) {
->  		ufshcd_print_host_state(hba);
->  		ufshcd_print_pwr_info(hba);
-> -		ufshcd_print_host_regs(hba);
-> +		ufshcd_print_evt_hist(hba);
->  	}
-> 
->  	spin_lock_irqsave(hba->host->host_lock, flags);
-> @@ -4468,14 +4473,19 @@ static inline int
-> ufshcd_disable_device_tx_lcc(struct ufs_hba *hba)
->  	return ufshcd_disable_tx_lcc(hba, true);
->  }
-> 
-> -void ufshcd_update_reg_hist(struct ufs_err_reg_hist *reg_hist,
-> -			    u32 reg)
-> +void ufshcd_update_evt_hist(struct ufs_hba *hba, u32 id, u32 val)
->  {
-> -	reg_hist->reg[reg_hist->pos] = reg;
-> -	reg_hist->tstamp[reg_hist->pos] = ktime_get();
-> -	reg_hist->pos = (reg_hist->pos + 1) % UFS_ERR_REG_HIST_LENGTH;
-> +	struct ufs_event_hist *e;
-> +
-> +	if (id >= UFS_EVT_CNT)
-> +		return;
-> +
-> +	e = &hba->ufs_stats.event[id];
-> +	e->val[e->pos] = val;
-> +	e->tstamp[e->pos] = ktime_get();
-> +	e->pos = (e->pos + 1) % UFS_EVENT_HIST_LENGTH;
->  }
-> -EXPORT_SYMBOL_GPL(ufshcd_update_reg_hist);
-> +EXPORT_SYMBOL_GPL(ufshcd_update_evt_hist);
-> 
->  /**
->   * ufshcd_link_startup - Initialize unipro link startup
-> @@ -4504,7 +4514,8 @@ static int ufshcd_link_startup(struct ufs_hba 
-> *hba)
-> 
->  		/* check if device is detected by inter-connect layer */
->  		if (!ret && !ufshcd_is_device_present(hba)) {
-> -			ufshcd_update_reg_hist(&hba->ufs_stats.link_startup_err,
-> +			ufshcd_update_evt_hist(hba,
-> +					       UFS_EVT_LINK_STARTUP_FAIL,
->  					       0);
->  			dev_err(hba->dev, "%s: Device not present\n", __func__);
->  			ret = -ENXIO;
-> @@ -4517,7 +4528,8 @@ static int ufshcd_link_startup(struct ufs_hba 
-> *hba)
->  		 * succeeds. So reset the local Uni-Pro and try again.
->  		 */
->  		if (ret && ufshcd_hba_enable(hba)) {
-> -			ufshcd_update_reg_hist(&hba->ufs_stats.link_startup_err,
-> +			ufshcd_update_evt_hist(hba,
-> +					       UFS_EVT_LINK_STARTUP_FAIL,
->  					       (u32)ret);
->  			goto out;
->  		}
-> @@ -4525,7 +4537,8 @@ static int ufshcd_link_startup(struct ufs_hba 
-> *hba)
-> 
->  	if (ret) {
->  		/* failed to get the link up... retire */
-> -		ufshcd_update_reg_hist(&hba->ufs_stats.link_startup_err,
-> +		ufshcd_update_evt_hist(hba,
-> +				       UFS_EVT_LINK_STARTUP_FAIL,
->  				       (u32)ret);
->  		goto out;
->  	}
-> @@ -4559,7 +4572,7 @@ static int ufshcd_link_startup(struct ufs_hba 
-> *hba)
->  		dev_err(hba->dev, "link startup failed %d\n", ret);
->  		ufshcd_print_host_state(hba);
->  		ufshcd_print_pwr_info(hba);
-> -		ufshcd_print_host_regs(hba);
-> +		ufshcd_print_evt_hist(hba);
->  	}
->  	return ret;
->  }
-> @@ -4914,7 +4927,7 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba,
-> struct ufshcd_lrb *lrbp)
->  		dev_err(hba->dev,
->  				"OCS error from controller = %x for tag %d\n",
->  				ocs, lrbp->task_tag);
-> -		ufshcd_print_host_regs(hba);
-> +		ufshcd_print_evt_hist(hba);
->  		ufshcd_print_host_state(hba);
->  		break;
->  	} /* end of switch */
-> @@ -5796,7 +5809,7 @@ static void ufshcd_err_handler(struct work_struct 
-> *work)
->  		spin_unlock_irqrestore(hba->host->host_lock, flags);
->  		ufshcd_print_host_state(hba);
->  		ufshcd_print_pwr_info(hba);
-> -		ufshcd_print_host_regs(hba);
-> +		ufshcd_print_evt_hist(hba);
->  		ufshcd_print_tmrs(hba, hba->outstanding_tasks);
->  		ufshcd_print_trs(hba, hba->outstanding_reqs, pr_prdt);
->  		spin_lock_irqsave(hba->host->host_lock, flags);
-> @@ -5941,7 +5954,7 @@ static irqreturn_t
-> ufshcd_update_uic_error(struct ufs_hba *hba)
->  	reg = ufshcd_readl(hba, REG_UIC_ERROR_CODE_PHY_ADAPTER_LAYER);
->  	if ((reg & UIC_PHY_ADAPTER_LAYER_ERROR) &&
->  	    (reg & UIC_PHY_ADAPTER_LAYER_ERROR_CODE_MASK)) {
-> -		ufshcd_update_reg_hist(&hba->ufs_stats.pa_err, reg);
-> +		ufshcd_update_evt_hist(hba, UFS_EVT_PA_ERR, reg);
->  		/*
->  		 * To know whether this error is fatal or not, DB timeout
->  		 * must be checked but this error is handled separately.
-> @@ -5971,7 +5984,7 @@ static irqreturn_t
-> ufshcd_update_uic_error(struct ufs_hba *hba)
->  	reg = ufshcd_readl(hba, REG_UIC_ERROR_CODE_DATA_LINK_LAYER);
->  	if ((reg & UIC_DATA_LINK_LAYER_ERROR) &&
->  	    (reg & UIC_DATA_LINK_LAYER_ERROR_CODE_MASK)) {
-> -		ufshcd_update_reg_hist(&hba->ufs_stats.dl_err, reg);
-> +		ufshcd_update_evt_hist(hba, UFS_EVT_DL_ERR, reg);
-> 
->  		if (reg & UIC_DATA_LINK_LAYER_ERROR_PA_INIT)
->  			hba->uic_error |= UFSHCD_UIC_DL_PA_INIT_ERROR;
-> @@ -5990,7 +6003,7 @@ static irqreturn_t
-> ufshcd_update_uic_error(struct ufs_hba *hba)
->  	reg = ufshcd_readl(hba, REG_UIC_ERROR_CODE_NETWORK_LAYER);
->  	if ((reg & UIC_NETWORK_LAYER_ERROR) &&
->  	    (reg & UIC_NETWORK_LAYER_ERROR_CODE_MASK)) {
-> -		ufshcd_update_reg_hist(&hba->ufs_stats.nl_err, reg);
-> +		ufshcd_update_evt_hist(hba, UFS_EVT_NL_ERR, reg);
->  		hba->uic_error |= UFSHCD_UIC_NL_ERROR;
->  		retval |= IRQ_HANDLED;
->  	}
-> @@ -5998,7 +6011,7 @@ static irqreturn_t
-> ufshcd_update_uic_error(struct ufs_hba *hba)
->  	reg = ufshcd_readl(hba, REG_UIC_ERROR_CODE_TRANSPORT_LAYER);
->  	if ((reg & UIC_TRANSPORT_LAYER_ERROR) &&
->  	    (reg & UIC_TRANSPORT_LAYER_ERROR_CODE_MASK)) {
-> -		ufshcd_update_reg_hist(&hba->ufs_stats.tl_err, reg);
-> +		ufshcd_update_evt_hist(hba, UFS_EVT_TL_ERR, reg);
->  		hba->uic_error |= UFSHCD_UIC_TL_ERROR;
->  		retval |= IRQ_HANDLED;
->  	}
-> @@ -6006,7 +6019,7 @@ static irqreturn_t
-> ufshcd_update_uic_error(struct ufs_hba *hba)
->  	reg = ufshcd_readl(hba, REG_UIC_ERROR_CODE_DME);
->  	if ((reg & UIC_DME_ERROR) &&
->  	    (reg & UIC_DME_ERROR_CODE_MASK)) {
-> -		ufshcd_update_reg_hist(&hba->ufs_stats.dme_err, reg);
-> +		ufshcd_update_evt_hist(hba, UFS_EVT_DME_ERR, reg);
->  		hba->uic_error |= UFSHCD_UIC_DME_ERROR;
->  		retval |= IRQ_HANDLED;
->  	}
-> @@ -6048,7 +6061,8 @@ static irqreturn_t ufshcd_check_errors(struct
-> ufs_hba *hba)
->  	irqreturn_t retval = IRQ_NONE;
-> 
->  	if (hba->errors & INT_FATAL_ERRORS) {
-> -		ufshcd_update_reg_hist(&hba->ufs_stats.fatal_err, hba->errors);
-> +		ufshcd_update_evt_hist(hba, UFS_EVT_FATAL_ERR,
-> +				       hba->errors);
->  		queue_eh_work = true;
->  	}
-> 
-> @@ -6065,7 +6079,7 @@ static irqreturn_t ufshcd_check_errors(struct
-> ufs_hba *hba)
->  			__func__, (hba->errors & UIC_HIBERNATE_ENTER) ?
->  			"Enter" : "Exit",
->  			hba->errors, ufshcd_get_upmcrs(hba));
-> -		ufshcd_update_reg_hist(&hba->ufs_stats.auto_hibern8_err,
-> +		ufshcd_update_evt_hist(hba, UFS_EVT_AUTO_HIBERN8_ERR,
->  				       hba->errors);
->  		ufshcd_set_link_broken(hba);
->  		queue_eh_work = true;
-> @@ -6606,7 +6620,7 @@ static int ufshcd_eh_device_reset_handler(struct
-> scsi_cmnd *cmd)
-> 
->  out:
->  	hba->req_abort_count = 0;
-> -	ufshcd_update_reg_hist(&hba->ufs_stats.dev_reset, (u32)err);
-> +	ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, (u32)err);
->  	if (!err) {
->  		err = SUCCESS;
->  	} else {
-> @@ -6743,7 +6757,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->  	 * handling stage: reset and restore.
->  	 */
->  	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN) {
-> -		ufshcd_update_reg_hist(&hba->ufs_stats.task_abort, lrbp->lun);
-> +		ufshcd_update_evt_hist(hba, UFS_EVT_ABORT, lrbp->lun);
->  		return ufshcd_eh_host_reset_handler(cmd);
->  	}
-> 
-> @@ -6769,8 +6783,8 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->  	 */
->  	scsi_print_command(hba->lrb[tag].cmd);
->  	if (!hba->req_abort_count) {
-> -		ufshcd_update_reg_hist(&hba->ufs_stats.task_abort, tag);
-> -		ufshcd_print_host_regs(hba);
-> +		ufshcd_update_evt_hist(hba, UFS_EVT_ABORT, tag);
-> +		ufshcd_print_evt_hist(hba);
->  		ufshcd_print_host_state(hba);
->  		ufshcd_print_pwr_info(hba);
->  		ufshcd_print_trs(hba, 1 << tag, true);
-> @@ -6853,7 +6867,7 @@ static int ufshcd_host_reset_and_restore(struct
-> ufs_hba *hba)
->  out:
->  	if (err)
->  		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
-> -	ufshcd_update_reg_hist(&hba->ufs_stats.host_reset, (u32)err);
-> +	ufshcd_update_evt_hist(hba, UFS_EVT_HOST_RESET, (u32)err);
->  	return err;
->  }
-> 
-> @@ -8708,7 +8722,7 @@ static int ufshcd_suspend(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  	hba->pm_op_in_progress = 0;
-> 
->  	if (ret)
-> -		ufshcd_update_reg_hist(&hba->ufs_stats.suspend_err, (u32)ret);
-> +		ufshcd_update_evt_hist(hba, UFS_EVT_SUSPEND_ERR, (u32)ret);
->  	return ret;
->  }
-> 
-> @@ -8832,7 +8846,7 @@ static int ufshcd_resume(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  out:
->  	hba->pm_op_in_progress = 0;
->  	if (ret)
-> -		ufshcd_update_reg_hist(&hba->ufs_stats.resume_err, (u32)ret);
-> +		ufshcd_update_evt_hist(hba, UFS_EVT_RESUME_ERR, (u32)ret);
->  	return ret;
->  }
-> 
-> @@ -9284,7 +9298,7 @@ int ufshcd_init(struct ufs_hba *hba, void
-> __iomem *mmio_base, unsigned int irq)
->  	err = ufshcd_hba_enable(hba);
->  	if (err) {
->  		dev_err(hba->dev, "Host controller enable failed\n");
-> -		ufshcd_print_host_regs(hba);
-> +		ufshcd_print_evt_hist(hba);
->  		ufshcd_print_host_state(hba);
->  		goto free_tmf_queue;
->  	}
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 61344c49c2cc..82c2fc5597bb 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -58,6 +58,29 @@ enum dev_cmd_type {
->  	DEV_CMD_TYPE_QUERY		= 0x1,
->  };
-> 
-> +enum ufs_event_type {
-> +	/* uic specific errors */
-> +	UFS_EVT_PA_ERR = 0,
-> +	UFS_EVT_DL_ERR,
-> +	UFS_EVT_NL_ERR,
-> +	UFS_EVT_TL_ERR,
-> +	UFS_EVT_DME_ERR,
-> +
-> +	/* fatal errors */
-> +	UFS_EVT_AUTO_HIBERN8_ERR,
-> +	UFS_EVT_FATAL_ERR,
-> +	UFS_EVT_LINK_STARTUP_FAIL,
-> +	UFS_EVT_RESUME_ERR,
-> +	UFS_EVT_SUSPEND_ERR,
-> +
-> +	/* abnormal events */
-> +	UFS_EVT_DEV_RESET,
-> +	UFS_EVT_HOST_RESET,
-> +	UFS_EVT_ABORT,
-> +
-> +	UFS_EVT_CNT,
-> +};
-> +
->  /**
->   * struct uic_command - UIC command structure
->   * @command: UIC command
-> @@ -406,17 +429,17 @@ struct ufs_clk_scaling {
->  	bool is_suspended;
->  };
-> 
-> -#define UFS_ERR_REG_HIST_LENGTH 8
-> +#define UFS_EVENT_HIST_LENGTH 8
->  /**
-> - * struct ufs_err_reg_hist - keeps history of errors
-> + * struct ufs_event_hist - keeps history of errors
->   * @pos: index to indicate cyclic buffer position
->   * @reg: cyclic buffer for registers value
->   * @tstamp: cyclic buffer for time stamp
->   */
-> -struct ufs_err_reg_hist {
-> +struct ufs_event_hist {
->  	int pos;
-> -	u32 reg[UFS_ERR_REG_HIST_LENGTH];
-> -	ktime_t tstamp[UFS_ERR_REG_HIST_LENGTH];
-> +	u32 val[UFS_EVENT_HIST_LENGTH];
-> +	ktime_t tstamp[UFS_EVENT_HIST_LENGTH];
->  };
-> 
->  /**
-> @@ -427,19 +450,6 @@ struct ufs_err_reg_hist {
->   *		reset this after link-startup.
->   * @last_hibern8_exit_tstamp: Set time after the hibern8 exit.
->   *		Clear after the first successful command completion.
-> - * @pa_err: tracks pa-uic errors
-> - * @dl_err: tracks dl-uic errors
-> - * @nl_err: tracks nl-uic errors
-> - * @tl_err: tracks tl-uic errors
-> - * @dme_err: tracks dme errors
-> - * @auto_hibern8_err: tracks auto-hibernate errors
-> - * @fatal_err: tracks fatal errors
-> - * @linkup_err: tracks link-startup errors
-> - * @resume_err: tracks resume errors
-> - * @suspend_err: tracks suspend errors
-> - * @dev_reset: tracks device reset events
-> - * @host_reset: tracks host reset events
-> - * @tsk_abort: tracks task abort events
->   */
->  struct ufs_stats {
->  	u32 last_intr_status;
-> @@ -447,25 +457,7 @@ struct ufs_stats {
-> 
->  	u32 hibern8_exit_cnt;
->  	ktime_t last_hibern8_exit_tstamp;
-> -
-> -	/* uic specific errors */
-> -	struct ufs_err_reg_hist pa_err;
-> -	struct ufs_err_reg_hist dl_err;
-> -	struct ufs_err_reg_hist nl_err;
-> -	struct ufs_err_reg_hist tl_err;
-> -	struct ufs_err_reg_hist dme_err;
-> -
-> -	/* fatal errors */
-> -	struct ufs_err_reg_hist auto_hibern8_err;
-> -	struct ufs_err_reg_hist fatal_err;
-> -	struct ufs_err_reg_hist link_startup_err;
-> -	struct ufs_err_reg_hist resume_err;
-> -	struct ufs_err_reg_hist suspend_err;
-> -
-> -	/* abnormal events */
-> -	struct ufs_err_reg_hist dev_reset;
-> -	struct ufs_err_reg_hist host_reset;
-> -	struct ufs_err_reg_hist task_abort;
-> +	struct ufs_event_hist event[UFS_EVT_CNT];
->  };
-> 
->  enum ufshcd_quirks {
-> @@ -909,8 +901,7 @@ int ufshcd_wait_for_register(struct ufs_hba *hba,
-> u32 reg, u32 mask,
->  				u32 val, unsigned long interval_us,
->  				unsigned long timeout_ms);
->  void ufshcd_parse_dev_ref_clk_freq(struct ufs_hba *hba, struct clk 
-> *refclk);
-> -void ufshcd_update_reg_hist(struct ufs_err_reg_hist *reg_hist,
-> -			    u32 reg);
-> +void ufshcd_update_evt_hist(struct ufs_hba *hba, u32 id, u32 val);
-> 
->  static inline void check_upiu_size(void)
->  {
-> @@ -1216,7 +1207,7 @@ static inline void
-> ufshcd_vops_device_reset(struct ufs_hba *hba)
->  		if (!err)
->  			ufshcd_set_ufs_dev_active(hba);
->  		if (err != -EOPNOTSUPP)
-> -			ufshcd_update_reg_hist(&hba->ufs_stats.dev_reset, err);
-> +			ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, err);
->  	}
->  }
+> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+> index fd413d319e93..eef683c3266f 100644
+> --- a/Documentation/filesystems/f2fs.rst
+> +++ b/Documentation/filesystems/f2fs.rst
+> @@ -249,6 +249,11 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
+>  			 This space is reclaimed once checkpoint=enable.
+>  compress_algorithm=%s	 Control compress algorithm, currently f2fs supports "lzo",
+>  			 "lz4", "zstd" and "lzo-rle" algorithm.
+> +compress_algorithm=%s:%d Control compress algorithm and its compress level, now, only
+> +			 "lz4" and "zstd" support compress level config.
+> +			 		level range
 
-Reviewed-by: Can Guo <cang@codeaurora.org>
+This gives a warning like below.
+
+Applying: f2fs: compress: support compress level
+.git/rebase-apply/patch:22: space before tab in indent.
+			 		level range
+warning: 1 line adds whitespace errors.
+
+
+> +			 lz4		3 - 16
+> +			 zstd		1 - 22
+>  compress_log_size=%u	 Support configuring compress cluster size, the size will
+>  			 be 4KB * (1 << %u), 16KB is minimum size, also it's
+>  			 default size.
+> diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+> index d13c5c6a9787..8134b145ae4f 100644
+> --- a/fs/f2fs/Kconfig
+> +++ b/fs/f2fs/Kconfig
+> @@ -119,6 +119,15 @@ config F2FS_FS_LZ4
+>  	help
+>  	  Support LZ4 compress algorithm, if unsure, say Y.
+>  
+> +config F2FS_FS_LZ4HC
+> +	bool "LZ4HC compression support"
+> +	depends on F2FS_FS_COMPRESSION
+> +	depends on F2FS_FS_LZ4
+> +	select LZ4HC_COMPRESS
+> +	default y
+> +	help
+> +	  Support LZ4HC compress algorithm, if unsure, say Y.
+> +
+>  config F2FS_FS_ZSTD
+>  	bool "ZSTD compression support"
+>  	depends on F2FS_FS_COMPRESSION
+> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> index db82da311fe4..dfadbc78946c 100644
+> --- a/fs/f2fs/compress.c
+> +++ b/fs/f2fs/compress.c
+> @@ -254,8 +254,13 @@ static const struct f2fs_compress_ops f2fs_lzo_ops = {
+>  #ifdef CONFIG_F2FS_FS_LZ4
+>  static int lz4_init_compress_ctx(struct compress_ctx *cc)
+>  {
+> -	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
+> -				LZ4_MEM_COMPRESS, GFP_NOFS);
+> +	unsigned int size;
+> +	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
+> +						COMPRESS_LEVEL_OFFSET;
+> +
+> +	size = level ? LZ4HC_MEM_COMPRESS : LZ4_MEM_COMPRESS;
+> +
+> +	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode), size, GFP_NOFS);
+>  	if (!cc->private)
+>  		return -ENOMEM;
+>  
+> @@ -274,10 +279,34 @@ static void lz4_destroy_compress_ctx(struct compress_ctx *cc)
+>  	cc->private = NULL;
+>  }
+>  
+> +#ifdef CONFIG_F2FS_FS_LZ4HC
+> +static int lz4hc_compress_pages(struct compress_ctx *cc)
+> +{
+> +	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
+> +						COMPRESS_LEVEL_OFFSET;
+> +	int len;
+> +
+> +	if (level)
+> +		len = LZ4_compress_HC(cc->rbuf, cc->cbuf->cdata, cc->rlen,
+> +					cc->clen, level, cc->private);
+> +	else
+> +		len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
+> +						cc->clen, cc->private);
+> +	if (!len)
+> +		return -EAGAIN;
+> +
+> +	cc->clen = len;
+> +	return 0;
+> +}
+> +#endif
+> +
+>  static int lz4_compress_pages(struct compress_ctx *cc)
+>  {
+>  	int len;
+>  
+> +#ifdef CONFIG_F2FS_FS_LZ4HC
+> +	return lz4hc_compress_pages(cc);
+> +#endif
+>  	len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
+>  						cc->clen, cc->private);
+>  	if (!len)
+> @@ -327,8 +356,13 @@ static int zstd_init_compress_ctx(struct compress_ctx *cc)
+>  	ZSTD_CStream *stream;
+>  	void *workspace;
+>  	unsigned int workspace_size;
+> +	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
+> +						COMPRESS_LEVEL_OFFSET;
+> +
+> +	if (!level)
+> +		level = F2FS_ZSTD_DEFAULT_CLEVEL;
+>  
+> -	params = ZSTD_getParams(F2FS_ZSTD_DEFAULT_CLEVEL, cc->rlen, 0);
+> +	params = ZSTD_getParams(level, cc->rlen, 0);
+>  	workspace_size = ZSTD_CStreamWorkspaceBound(params.cParams);
+>  
+>  	workspace = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 377a2e2bf466..76edec7483f3 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -147,6 +147,7 @@ struct f2fs_mount_info {
+>  	/* For compression */
+>  	unsigned char compress_algorithm;	/* algorithm type */
+>  	unsigned char compress_log_size;	/* cluster log size */
+> +	unsigned char compress_level;		/* compress level */
+>  	bool compress_chksum;			/* compressed data chksum */
+>  	unsigned char compress_ext_cnt;		/* extension count */
+>  	int compress_mode;			/* compression mode */
+> @@ -736,6 +737,7 @@ struct f2fs_inode_info {
+>  	atomic_t i_compr_blocks;		/* # of compressed blocks */
+>  	unsigned char i_compress_algorithm;	/* algorithm type */
+>  	unsigned char i_log_cluster_size;	/* log of cluster size */
+> +	unsigned char i_compress_level;		/* compress level (lz4hc,zstd) */
+>  	unsigned short i_compress_flag;		/* compress flag */
+>  	unsigned int i_cluster_size;		/* cluster size */
+>  };
+> @@ -1308,6 +1310,8 @@ struct compress_data {
+>  
+>  #define F2FS_COMPRESSED_PAGE_MAGIC	0xF5F2C000
+>  
+> +#define	COMPRESS_LEVEL_OFFSET	8
+> +
+>  /* compress context */
+>  struct compress_ctx {
+>  	struct inode *inode;		/* inode the context belong to */
+> @@ -3959,6 +3963,11 @@ static inline void set_compress_context(struct inode *inode)
+>  				1 << COMPRESS_CHKSUM : 0;
+>  	F2FS_I(inode)->i_cluster_size =
+>  			1 << F2FS_I(inode)->i_log_cluster_size;
+> +	if (F2FS_I(inode)->i_compress_algorithm == COMPRESS_LZ4 &&
+> +			F2FS_OPTION(sbi).compress_level)
+> +		F2FS_I(inode)->i_compress_flag |=
+> +				F2FS_OPTION(sbi).compress_level <<
+> +				COMPRESS_LEVEL_OFFSET;
+>  	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
+>  	set_inode_flag(inode, FI_COMPRESSED_FILE);
+>  	stat_inc_compr_inode(inode);
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 8442333ca0e2..44ba870bb352 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -25,6 +25,8 @@
+>  #include <linux/quota.h>
+>  #include <linux/unicode.h>
+>  #include <linux/part_stat.h>
+> +#include <linux/zstd.h>
+> +#include <linux/lz4.h>
+>  
+>  #include "f2fs.h"
+>  #include "node.h"
+> @@ -466,6 +468,57 @@ static int f2fs_set_test_dummy_encryption(struct super_block *sb,
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> +static int f2fs_compress_set_level(struct f2fs_sb_info *sbi, const char *str,
+> +						int type)
+> +{
+> +	unsigned int level;
+> +	int len;
+> +
+> +	if (type == COMPRESS_LZ4)
+> +		len = 3;
+> +	else if (type == COMPRESS_ZSTD)
+> +		len = 4;
+> +	else
+> +		return 0;
+> +
+> +	if (strlen(str) == len)
+> +		return 0;
+> +
+> +	str += len;
+> +
+> +	if (str[0] != ':') {
+> +		f2fs_info(sbi, "wrong format, e.g. <alg_name>:<compr_level>");
+> +		return -EINVAL;
+> +	}
+> +	if (kstrtouint(str + 1, 10, &level))
+> +		return -EINVAL;
+> +	if (type == COMPRESS_LZ4) {
+> +#ifdef CONFIG_F2FS_FS_LZ4HC
+> +		if (level < LZ4HC_MIN_CLEVEL || level > LZ4HC_MAX_CLEVEL) {
+> +			f2fs_info(sbi, "invalid lz4hc compress level: %d", level);
+> +			return -EINVAL;
+> +		}
+> +#else
+> +		f2fs_info(sbi, "doesn't support lz4hc compression");
+> +		return 0;
+> +#endif
+> +	} else if (type == COMPRESS_ZSTD) {
+> +#ifdef CONFIG_F2FS_FS_ZSTD
+> +		if (!level || level > ZSTD_maxCLevel()) {
+> +			f2fs_info(sbi, "invalid zstd compress level: %d", level);
+> +			return -EINVAL;
+> +		}
+> +#else
+> +		f2fs_info(sbi, "doesn't support zstd compression");
+> +		return 0;
+> +#endif
+> +	}
+> +	F2FS_OPTION(sbi).compress_level = level;
+> +	return 0;
+> +}
+> +#endif
+> +
+>  static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>  {
+>  	struct f2fs_sb_info *sbi = F2FS_SB(sb);
+> @@ -886,10 +939,22 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>  			if (!strcmp(name, "lzo")) {
+>  				F2FS_OPTION(sbi).compress_algorithm =
+>  								COMPRESS_LZO;
+> -			} else if (!strcmp(name, "lz4")) {
+> +			} else if (!strncmp(name, "lz4", 3)) {
+> +				ret = f2fs_compress_set_level(sbi, name,
+> +								COMPRESS_LZ4);
+> +				if (ret) {
+> +					kfree(name);
+> +					return -EINVAL;
+> +				}
+>  				F2FS_OPTION(sbi).compress_algorithm =
+>  								COMPRESS_LZ4;
+> -			} else if (!strcmp(name, "zstd")) {
+> +			} else if (!strncmp(name, "zstd", 4)) {
+> +				ret = f2fs_compress_set_level(sbi, name,
+> +								COMPRESS_ZSTD);
+> +				if (ret) {
+> +					kfree(name);
+> +					return -EINVAL;
+> +				}
+>  				F2FS_OPTION(sbi).compress_algorithm =
+>  								COMPRESS_ZSTD;
+>  			} else if (!strcmp(name, "lzo-rle")) {
+> @@ -1547,6 +1612,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
+>  	}
+>  	seq_printf(seq, ",compress_algorithm=%s", algtype);
+>  
+> +	if (!F2FS_OPTION(sbi).compress_level)
+> +		seq_printf(seq, ":%d", F2FS_OPTION(sbi).compress_level);
+> +
+>  	seq_printf(seq, ",compress_log_size=%u",
+>  			F2FS_OPTION(sbi).compress_log_size);
+>  
+> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+> index 55be7afeee90..2dcc63fe8494 100644
+> --- a/include/linux/f2fs_fs.h
+> +++ b/include/linux/f2fs_fs.h
+> @@ -275,6 +275,9 @@ struct f2fs_inode {
+>  			__u8 i_compress_algorithm;	/* compress algorithm */
+>  			__u8 i_log_cluster_size;	/* log of cluster size */
+>  			__le16 i_compress_flag;		/* compress flag */
+> +						/* 0 bit: chksum flag
+> +						 * [10,15] bits: compress level
+> +						 */
+>  			__le32 i_extra_end[0];	/* for attribute size calculation */
+>  		} __packed;
+>  		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
+> -- 
+> 2.26.2
