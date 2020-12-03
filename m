@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822672CE03F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 21:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A3A2CE044
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 22:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387999AbgLCU5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 15:57:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43914 "EHLO
+        id S1729313AbgLCVAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 16:00:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387560AbgLCU5N (ORCPT
+        with ESMTP id S1726597AbgLCVAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 15:57:13 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55E6C061A51
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 12:56:26 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id hg11so1946985pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 12:56:26 -0800 (PST)
+        Thu, 3 Dec 2020 16:00:23 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A462C061A52
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 12:59:43 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id b4so1867481plk.17
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 12:59:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:message-id:mime-version:subject:from:to:cc;
         bh=S5ra3fFtwyrR4DBSDAkXB7bmFSTJjJvoJm1aScqSvD8=;
-        b=LBTW4G1yq8Tlr8j60sdrqz5HWAARs1V+8aIMhV3V5AQLPx6JTlpixUJ5GfUFelcDwW
-         wXHs1SeZdVZXtuID6Oekg9t3XeAP4+ILetytMukbpIbSjcIGt0KpUh7r5ihOA7uYlvcY
-         jnb7iYbl4p7UsgRbX5OuBqAKSmm0x4WiiStX7RazsIyIWOfnXG6avJc44OEP48/9R/FI
-         WHXpHTzUZKF35lQZHHryI4l7Up3rMNW6Rhz+YFgAY6Pf/AKrOYpY0k3maORqmuMNkB+9
-         UeqK8C2XVnlf+XLCKB7Zfa+8p68DYcRLpmc5CQKVcQ53zzlquK/3bKdiJjp8cunqIhUt
-         UYoA==
+        b=CMgmPGQ3LRAJ91emyWbIDeeu4Npdy86zsS9HBSAc8ghZ8AyFtq8IPAKujurb3BXMl6
+         qydVnY5AUbZc+vdzxNbWWmIYmU4B56Pn368RqYqcA/O84Rn1fAmI+r5iI/4QxefdR5L4
+         iQPuaefyDoLSUm69oF0b5m4cjGZdtvwKugIsWO4AGpChjbjG3aZNa/TpTARfvmP7XDMv
+         kYG4ybDJe0sJEk612YLAPX11BceZM8h3ap3K0/bEhhEFT2n2BI4/ChT6ITK0bUC3ZAtT
+         gej5444rFOdUyWbg53TWG8bvVleKc4MyYctWo1+IF5Y2QdMGnyziGqHn4tNa6P/rBz3k
+         R3fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
          :to:cc;
         bh=S5ra3fFtwyrR4DBSDAkXB7bmFSTJjJvoJm1aScqSvD8=;
-        b=kSmqjqV2QDdzX4Vj/BH2HC/XZ344FLMKA5GQtu3vY7htSt7UNkXeplin9J9UtBKkzg
-         VcX+Ai5Rpo7JRJyn0F+NnnQRK/eFizXy6WPDaQ0DODgeZg18Z2n75fOjDkHWbkTNVL2t
-         zQyZB7z2kwZNYihqZxOeH0dNtRT4vRYwm0cF1bilmEeSKV7HKnm1ZQ3Dlt/0FsLq2cVQ
-         OAOwH4/37bWh3X4dO5Se107IHeUG0aG0AXxc0E0Vy0xDX+SJOEHW3X9GhwcQMlVTi3VP
-         GlTNKZW4zLia/HdEmIcv2vd7E/3Ae8zHiR1o+AAxYt3oy3+zdYwQAgogCebhi4iomw2Y
-         bTUg==
-X-Gm-Message-State: AOAM53253Mp8YJeknuou0U1m/SK7xeXX+1SRZubTnueu7TEQ0kcOCcqp
-        6qILy4jjvAMtl1xEGnK6Jtlf5ZkpOa8Uqg==
-X-Google-Smtp-Source: ABdhPJwsY5PNMZvpoZhrIaqeJ0b9FPlsxwsCuhz3fm3arOdqksu0Bt1ad3hJMyJCA0wd5j0AzpgGDqTjitcjcg==
+        b=PF8IjP4dQFh5e0Xze6S8oKRjvwIYCVnslw6WIuqAjZqAYA9wkytHzbuFnj5vD8q7gn
+         X2bX16GRFC1y4tP27wKSo32gHbv4l9QyennbDxyuH1lY5Ao8hXt4v60YHuxV3TGzRmUr
+         dUDsLeAzrECWBlEUta7qmGQh/DsjUSuEAR8vNTEqNEsUQ1fa/x5ACB8HdDi5SWIsV6ES
+         KgAMV+ZQzaLgNyqItFLbXg4XB9kooEXjsjEQfO0YqVAECLM4+Jap6FBIzs72Jhk0ThkD
+         +z5r0ftqLjGFcnoKmFkWCrEiFwUCSxzw6onGlKqqQiAcF2BJUT0WH8MjIVQ1xofhh+vy
+         HRvA==
+X-Gm-Message-State: AOAM530GmhfIg7514Fe4gvhhmarXa5ztLcxGcFlQXEDQbZ448K/CfMsT
+        U0vIRqBBbibs4pDhmk90nRR5LH6xciSO5A==
+X-Google-Smtp-Source: ABdhPJzp6sEpJwizJg9kJ4t6HFh8/cL5/4seSshW8xQdAExolaPsro05znE1zqmIooU9dIASPm7CyJikDZMC8w==
 Sender: "jacobhxu via sendmgr" <jacobhxu@mhmmm.sea.corp.google.com>
 X-Received: from mhmmm.sea.corp.google.com ([2620:15c:100:202:f693:9fff:feef:a9a1])
- (user=jacobhxu job=sendmgr) by 2002:a17:90a:bc0a:: with SMTP id
- w10mr847025pjr.79.1607028986454; Thu, 03 Dec 2020 12:56:26 -0800 (PST)
-Date:   Thu,  3 Dec 2020 12:56:19 -0800
-Message-Id: <20201203205619.1776417-1-jacobhxu@google.com>
+ (user=jacobhxu job=sendmgr) by 2002:a62:1a16:0:b029:197:eabc:9b74 with SMTP
+ id a22-20020a621a160000b0290197eabc9b74mr683802pfa.62.1607029182775; Thu, 03
+ Dec 2020 12:59:42 -0800 (PST)
+Date:   Thu,  3 Dec 2020 12:59:39 -0800
+Message-Id: <20201203205939.1783969-1-jacobhxu@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 Subject: [PATCH] kvm: svm: de-allocate svm_cpu_data for all cpus in svm_cpu_uninit()
