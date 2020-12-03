@@ -2,52 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3841F2CDD92
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AE32CDDA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502102AbgLCSZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:25:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54670 "EHLO mail.kernel.org"
+        id S1731474AbgLCS2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:28:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502049AbgLCSZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:25:28 -0500
-Date:   Thu, 3 Dec 2020 19:25:54 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607019887;
-        bh=7POOkLn/pGoxGwO2tQdCyFK5VE+L2sQPNH6OYXqq6sc=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rylAs9dPfCHUKOsnHMEM9KUR4CMhPVNrvs3yV2m1x/YdJ2hstQweiFWD1YLchYbUt
-         90OuedVL4/YwhfzxR+ySNpnLdeluzi9Fr3QROoxAYh61Z0zGo9cPmJsVP3kJMn3wzg
-         3KzYzxT2GI+fUn0VTAdcskq9hMOkYaSEPBNaOXUY=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Scott Cheloha <cheloha@linux.ibm.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] powerpc/hotplug: assign hot added LMB to the right node
-Message-ID: <X8ktsoAv4/h+p1/8@kroah.com>
-References: <20201203101514.33591-1-ldufour@linux.ibm.com>
+        id S1728893AbgLCS2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:28:44 -0500
+Date:   Thu, 3 Dec 2020 10:28:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607020083;
+        bh=79pVmEiGY09uStaLdHgvpv8VoidOztdyQWlxY1kgCwA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=A06Bm35mVRT0NBoRGsjIZQoIWX4hX325fHqCGBaEwR25QoJ9Q2UtEamABN2nliHl4
+         ump2zDNxgagmbC3XrzMg2+xW3zNMSX75zQKoh0Fv4bOKLa01gNNCKuhjzO2kBelZfa
+         uTxqeLVYTmaLL2IVLjL0frhVg/q0RKSzC6V7yKcdLwf8eqTfrPDPEn2Xg1V6DHQdat
+         lez353KoHeaKE4+6Kud9rQ4ugNwA7KGd8gQSHO0Rd+FKHCuByIeR3aUgxvyX05E3ep
+         tnxZNBsK8ogPXwRGPIFDWL074hiivScxOP5RsJ7xx0R8SjCTXr4c7ioF6ra9t9Kgqu
+         UxeWEJoOC4amQ==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Joseph Huang <Joseph.Huang@garmin.com>
+Cc:     Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Linus =?UTF-8?B?TMO8c3Npbmc=?= <linus.luessing@c0d3.blue>
+Subject: Re: [PATCH] bridge: Fix a deadlock when enabling multicast snooping
+Message-ID: <20201203102802.62bc86ba@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201201214047.128948-1-Joseph.Huang@garmin.com>
+References: <20201201214047.128948-1-Joseph.Huang@garmin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203101514.33591-1-ldufour@linux.ibm.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 11:15:14AM +0100, Laurent Dufour wrote:
-> This patch applies to 5.9 and earlier kernels only.
+On Tue, 1 Dec 2020 16:40:47 -0500 Joseph Huang wrote:
+> When enabling multicast snooping, bridge module deadlocks on multicast_lock
+> if 1) IPv6 is enabled, and 2) there is an existing querier on the same L2
+> network.
 > 
-> Since 5.10, this has been fortunately fixed by the commit
-> e5e179aa3a39 ("pseries/drmem: don't cache node id in drmem_lmb struct").
+> The deadlock was caused by the following sequence: While holding the lock,
+> br_multicast_open calls br_multicast_join_snoopers, which eventually causes
+> IP stack to (attempt to) send out a Listener Report (in igmp6_join_group).
+> Since the destination Ethernet address is a multicast address, br_dev_xmit
+> feeds the packet back to the bridge via br_multicast_rcv, which in turn
+> calls br_multicast_add_group, which then deadlocks on multicast_lock.
+> 
+> The fix is to move the call br_multicast_join_snoopers outside of the
+> critical section. This works since br_multicast_join_snoopers only deals
+> with IP and does not modify any multicast data structures of the bridge,
+> so there's no need to hold the lock.
+> 
+> Fixes: 4effd28c1245 ("bridge: join all-snoopers multicast address")
+> 
+> Signed-off-by: Joseph Huang <Joseph.Huang@garmin.com>
 
-Why can't we just backport that patch instead?  It's almost always
-better to do that than to have a one-off patch, as almost always those
-have bugs in them.
-
-thanks,
-
-greg k-h
+Nik, Linus - how does this one look?
