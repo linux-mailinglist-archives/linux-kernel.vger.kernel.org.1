@@ -2,670 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F0B2CCBD8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2F92CCBDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729394AbgLCBuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 20:50:08 -0500
-Received: from gproxy7-pub.mail.unifiedlayer.com ([70.40.196.235]:39006 "EHLO
-        gproxy7-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729356AbgLCBuH (ORCPT
+        id S1729438AbgLCBuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 20:50:51 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:43118 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727030AbgLCBuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:50:07 -0500
-Received: from cmgw15.unifiedlayer.com (unknown [10.9.0.15])
-        by gproxy7.mail.unifiedlayer.com (Postfix) with ESMTP id 2FCE7215DB0
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 18:49:24 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id kdkJkV8uMh41lkdkJkXtCK; Wed, 02 Dec 2020 18:49:24 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=RNid4bq+ c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=zTNgK-yGK50A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=iyzGlLGqAAAA:8
- a=h0ABR8M4AAAA:8 a=pAjEUoC2524An-LGXNIA:9 a=CjuIK1q_8ugA:10:nop_charset_2
- a=KUY6m_o_WN0hX3XauQzx:22 a=IAbmOp1NCR458IescZAd:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=alWFn3yWPRns+ACtNlT3h8jz6L5CZhqo7k1uIO6SYok=; b=GHnINWHVK5Fei3pYJdMk5tq863
-        w7gaQPPptO9Ux/JuJMQeNxtnleX26UClAU0U0kZ58xzecG3kX7l5+hZoZ/1Rl9ZHnAhu2eWlcb1WG
-        05PsKgDefPHRWctUodF3iZPdYj/TCyBm3PGpTwzV2guDKzwdakZqyAtTl1rrmrCLWYjbqzMBOaG6e
-        uHI2OC9RS0mzSlIJK2Ahg7jlVdToRknKHAUFAKN3J49z1ssr06ycJtV/czfSN1qm38ZAAl+SYQwX4
-        RprbYrw/dTFjskuGe1raITKWfw+a6plJCknbM6lhFdOrwCjL98t38CnjzbPEfGXcMWbiVNTp5vtXY
-        yCgM5qCg==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:40150 helo=localhost)
-        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kkdkJ-002Rn4-3X; Thu, 03 Dec 2020 01:49:23 +0000
-Date:   Wed, 2 Dec 2020 17:49:22 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     "xiao.ma" <max701@126.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xiao.mx.ma@deltaww.com,
-        jiajia.feng@deltaww.com
-Subject: Re: [PATCH v10] hwmon:Driver for Delta power supplies Q54SJ108A2
-Message-ID: <20201203014922.GA240532@roeck-us.net>
-References: <20201202025900.1842-1-max701@126.com>
+        Wed, 2 Dec 2020 20:50:51 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id EF6ED58BC6C;
+        Thu,  3 Dec 2020 12:50:04 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kkdkx-00HUoo-T7; Thu, 03 Dec 2020 12:50:03 +1100
+Date:   Thu, 3 Dec 2020 12:50:03 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        David Howells <dhowells@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Eric Sandeen <sandeen@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org,
+        linux-man <linux-man@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>
+Subject: Re: [PATCH V2] uapi: fix statx attribute value overlap for DAX &
+ MOUNT_ROOT
+Message-ID: <20201203015003.GN2842436@dread.disaster.area>
+References: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
+ <20201202160049.GD1447340@iweiny-DESK2.sc.intel.com>
+ <CAJfpegt6w4h28VLctpaH46r2pkbcUNJ4pUhwUqZ-zbrOrXPEEQ@mail.gmail.com>
+ <641397.1606926232@warthog.procyon.org.uk>
+ <CAJfpegsQxi+_ttNshHu5MP+uLn3px9+nZRoTLTxh9-xwU8s1yg@mail.gmail.com>
+ <X8flmVAwl0158872@kroah.com>
+ <20201202204045.GM2842436@dread.disaster.area>
+ <X8gBUc0fkdh6KK01@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201202025900.1842-1-max701@126.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kkdkJ-002Rn4-3X
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:40150
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 16
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+In-Reply-To: <X8gBUc0fkdh6KK01@kroah.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=20KFwNOVAAAA:8 a=VwQbUJbxAAAA:8
+        a=7-415B0cAAAA:8 a=o35mPQnByGLdvpFsgc0A:9 a=CjuIK1q_8ugA:10
+        a=1R1Xb7_w0-cA:10 a=OREKyDgYLcYA:10 a=AjGcO6oz07-iQ99wixmX:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 04:59:00PM -1000, xiao.ma wrote:
-> From: "xiao.ma" <xiao.mx.ma@deltaww.com>
+On Wed, Dec 02, 2020 at 10:04:17PM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Dec 03, 2020 at 07:40:45AM +1100, Dave Chinner wrote:
+> > On Wed, Dec 02, 2020 at 08:06:01PM +0100, Greg Kroah-Hartman wrote:
+> > > On Wed, Dec 02, 2020 at 06:41:43PM +0100, Miklos Szeredi wrote:
+> > > > On Wed, Dec 2, 2020 at 5:24 PM David Howells <dhowells@redhat.com> wrote:
+> > > > >
+> > > > > Miklos Szeredi <miklos@szeredi.hu> wrote:
+> > > > >
+> > > > > > Stable cc also?
+> > > > > >
+> > > > > > Cc: <stable@vger.kernel.org> # 5.8
+> > > > >
+> > > > > That seems to be unnecessary, provided there's a Fixes: tag.
+> > > > 
+> > > > Is it?
+> > > > 
+> > > > Fixes: means it fixes a patch, Cc: stable means it needs to be
+> > > > included in stable kernels.  The two are not necessarily the same.
+> > > > 
+> > > > Greg?
+> > > 
+> > > You are correct.  cc: stable, as is documented in
+> > >     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> > > ensures that the patch will get merged into the stable tree.
+> > > 
+> > > Fixes: is independent of it.  It's great to have for stable patches so
+> > > that I know how far back to backport patches.
+> > > 
+> > > We do scan all commits for Fixes: tags that do not have cc: stable, and
+> > > try to pick them up when we can and have the time to do so.  But it's
+> > > not guaranteed at all that this will happen.
+> > > 
+> > > I don't know why people keep getting confused about this, we don't
+> > > document the "Fixes: means it goes to stable" anywhere...
+> > 
+> > Except that is exactly what happens, sometimes within a day of two
+> > of a patch with a Fixes tag hitting Linus' kernel. We have had a
+> > serious XFS regression in the 5.9.9 stable kernel that should never
+> > have happened as a result of exactly this "Fixes = automatically
+> > swept immediately into stable kernels" behaviour. See here for
+> > post-mortem analysis:
+> > 
+> > https://lore.kernel.org/linux-xfs/20201126071323.GF2842436@dread.disaster.area/T/#m26e14ebd28ad306025f4ebf37e2aae9a304345a5
+> > 
+> > This happened because these auotmated Fixes scans seem to occur
+> > weekly during -rcX release periods, which means there really is *no
+> > practical difference* between the way the stable process treats
+> > Fixes tags and cc: stable.
 > 
-> The driver supports Q54SJ108A2 series modules of Delta.
-> Standard attributes are in sysfs, and other attributes are in debugfs.
+> Sometimes, yes, that is true.  But as it went into Linus's tree at the
+> same time, we just ended up with "bug compatible" trees :)
 > 
-> Signed-off-by: xiao.ma <xiao.mx.ma@deltaww.com>
+> Not a big deal overall, happens every few releases, we fix it up and
+> move on.  The benifits in doing all of this _FAR_ outweigh the very
+> infrequent times that kernel developers get something wrong.
 
-Applied.
+I'm not debating that users benefit from backports. I'm talking
+about managing risk profiles and how to prevent an entirely
+preventable stable kernel regression from happening again.
 
-Thanks,
-Guenter
+Talking about risk profiles, the issue here is that the regression
+that slipped through to the stable kernels had a -catastrophic- risk
+profile. That's exactly the sort of things that the stable kernel is
+supposed to avoid exposing users to, and that raises the importance
+and priority of ensuring that *never happens again*.
 
-> ---
+And the cause of this regression slipping through to stable kernel
+users? It was a result of the automated "fixes" scan done by the
+stable process that results in "fixes" meaning the same thing as
+"cc: stable"....
+
+> As always, if you do NOT want your subsystem to have fixes: tags picked
+> up automatically by us for stable trees, just email us and let us know
+> to not do that and we gladly will.
+
+No, that is not an acceptible solution for anyone. The stable
+maintainers need to stop suggesting this as a solution to any
+criticism that is raised against the stable process. You may as well
+just say "shut up, go away, we don't care what you want".
+
+> > It seems like this can all be avoided simply by scheduling the
+> > automated fixes scans once the upstream kernel is released, not
+> > while it is still being stabilised by -rc releases. That way stable
+> > kernels get better tested fixes, they still get the same quantity of
+> > fixes, and upstream developers have some margin to detect and
+> > correct regressions in fixes before they get propagated to users.
 > 
-> Notes:
->     Patch v2 changelog:
->     	Add delta.rst in Documentation/hwmon.
->     	Tristate "DELTA" in Kconfig is changed to "DELTA_POWER_SUPPLIED".
->     	Modify code: drop the excessive empty lines, correct the comment content, adjust indent, remove extra brackets.
->     Patch v3 changelog:
->     	Add delta.rst to Documentation/hwmon/index.rst.
->     	Tristate "DELTA_POWER_SUPPLIES" in Kconfig is changed to "Delta Power Supplies".
->     Patch v4 changelog:
->     	Correct the spelling "Temperature" in the delta.rst.
->     	Add Write_protect when write command VOUT_OV_RESPONSE and IOUT_OC_FAULT_RESPONSE.
->     Patch v5 changelog:
->     	Add some non-standard attributes in sysfs system.
->     Patch v6 changelog:
->     	delta.c and delta.rst are renamed to q54sj108a2.c and q54sj108a2.rst.
->     	Add q54sj108a2 to index.rst.
->     	Tristate in Kconfig is changed to "Delta Power Supplies Q54SJ108A2".
->     	The non-standard attributes are added to debugfs.
->     Patch v7 changelog:
->     	Use standard fuctions bin2hex and hex2bin.
->     	The return of debugfs write is changed to count.
->     	Drop the error checking of debugfs fuctions.
->     	Use probe_new fuction.
->     	Remove the .remove fuction.
->     Patch v8 changelog:
->     	Use kstrtou8_from_user instead of hex2bin.
->     	Remove included head files which are not used.
->     	Done label in debugfs_read fuction is deleted.
->     	Change email to send the patch.
->     Patch v9 changelog:
->     	Fix the compile errors and warnings.
->     Patch v10 changelog:
->     	Fix the reports from checkpatch.
->     	Name of driver is changed to "q54sj108a2".
+> So the "magic" -final release from Linus would cause this to happen?
+> That means that the world would go for 3 months without some known fixes
+> being applied to the tree?  That's not acceptable to me, as I started
+> doing this because it was needed to be done, not just because I wanted
+> to do more work...
+
+I'm not suggesting that all fixes across the entire kernel get held
+until release. That's just taking things to extremes for no valid
+reason as the risk profiles of most subsystems don't justify needing
+a margin of error that large. I'm asking that specific subsystems
+with catastrophic failure risk profiles be allowed to opt
+out of the "just merged" fixes scans and instead have them replaced
+by a less frequent scan.
+
+Perhaps we don't even need to wait for the full release. Maybe just
+increasing the fixes scanning window for those subsystems to pick up
+changes in -rc(X-2) so that the commits have been exposed to testing
+for a couple of weeks before being considered a stable backport
+candidate. 
+
+That mitigates the immediate risk concern as it gives developers
+time to catch and fix regressions before stable backports are done.
+Such a 2 week delay would have avoided exposing stable kernel users
+to dangerous regression that should never have been released outside
+developer and test machines exercising the upstream -rcX tree.
+
+> > It also creates a clear demarcation between fixes and cc: stable for
+> > maintainers and developers: only patches with a cc: stable will be
+> > backported immediately to stable. Developers know what patches need
+> > urgent backports and, unlike developers, the automated fixes scan
+> > does not have the subject matter expertise or background to make
+> > that judgement....
 > 
->  Documentation/hwmon/index.rst      |   1 +
->  Documentation/hwmon/q54sj108a2.rst |  54 ++++
->  drivers/hwmon/pmbus/Kconfig        |   9 +
->  drivers/hwmon/pmbus/Makefile       |   1 +
->  drivers/hwmon/pmbus/q54sj108a2.c   | 422 +++++++++++++++++++++++++++++
->  5 files changed, 487 insertions(+)
->  create mode 100644 Documentation/hwmon/q54sj108a2.rst
->  create mode 100644 drivers/hwmon/pmbus/q54sj108a2.c
-> 
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index b797db738225..4bb680b3c7ea 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -148,6 +148,7 @@ Hardware Monitoring Kernel Drivers
->     powr1220
->     pxe1610
->     pwm-fan
-> +   q54sj108a2
->     raspberrypi-hwmon
->     sch5627
->     sch5636
-> diff --git a/Documentation/hwmon/q54sj108a2.rst b/Documentation/hwmon/q54sj108a2.rst
-> new file mode 100644
-> index 000000000000..fabce671985a
-> --- /dev/null
-> +++ b/Documentation/hwmon/q54sj108a2.rst
-> @@ -0,0 +1,54 @@
-> +.. SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +Kernel driver q54sj108a2
-> +=====================
-> +
-> +Supported chips:
-> +
-> +  * DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH, Q54SJ108A2NCPG, Q54SJ108A2NCPH
-> +
-> +    Prefix: 'Q54SJ108A2'
-> +
-> +    Addresses scanned: -
-> +
-> +    Datasheet: https://filecenter.delta-china.com.cn/products/download/01/0102/datasheet/DS_Q54SJ108A2.pdf
-> +
-> +Authors:
-> +    Xiao.ma <xiao.mx.ma@deltaww.com>
-> +
-> +
-> +Description
-> +-----------
-> +
-> +This driver implements support for DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH,
-> +Q54SJ108A2NCPG, and Q54SJ108A2NCPH 1/4 Brick DC/DC Regulated Power Module
-> +with PMBus support.
-> +
-> +The driver is a client driver to the core PMBus driver.
-> +Please see Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
-> +
-> +
-> +Usage Notes
-> +-----------
-> +
-> +This driver does not auto-detect devices. You will have to instantiate the
-> +devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-> +details.
-> +
-> +
-> +Sysfs entries
-> +-------------
-> +
-> +===================== ===== ==================================================
-> +curr1_alarm           RO    Output current alarm
-> +curr1_input           RO    Output current
-> +curr1_label           RO    'iout1'
-> +in1_alarm             RO    Input voltage alarm
-> +in1_input             RO    Input voltage
-> +in1_label             RO    'vin'
-> +in2_alarm             RO    Output voltage alarm
-> +in2_input             RO    Output voltage
-> +in2_label             RO    'vout1'
-> +temp1_alarm           RO    Temperature alarm
-> +temp1_input           RO    Chip temperature
-> +===================== ===== ==================================================
-> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-> index a25faf69fce3..01de280820ee 100644
-> --- a/drivers/hwmon/pmbus/Kconfig
-> +++ b/drivers/hwmon/pmbus/Kconfig
-> @@ -229,6 +229,15 @@ config SENSORS_PXE1610
->  	  This driver can also be built as a module. If so, the module will
->  	  be called pxe1610.
->  
-> +config SENSORS_Q54SJ108A2
-> +	tristate "Delta Power Supplies Q54SJ108A2"
-> +	help
-> +	  If you say yes here you get hardware monitoring support for Delta
-> +	  Q54SJ108A2 series Power Supplies.
-> +
-> +	  This driver can also be built as a module. If so, the module will
-> +	  be called q54sj108a2.
-> +
->  config SENSORS_TPS40422
->  	tristate "TI TPS40422"
->  	help
-> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-> index 4c97ad0bd791..a50122cd455b 100644
-> --- a/drivers/hwmon/pmbus/Makefile
-> +++ b/drivers/hwmon/pmbus/Makefile
-> @@ -26,6 +26,7 @@ obj-$(CONFIG_SENSORS_MAX34440)	+= max34440.o
->  obj-$(CONFIG_SENSORS_MAX8688)	+= max8688.o
->  obj-$(CONFIG_SENSORS_MP2975)	+= mp2975.o
->  obj-$(CONFIG_SENSORS_PXE1610)	+= pxe1610.o
-> +obj-$(CONFIG_SENSORS_Q54SJ108A2)	+= q54sj108a2.o
->  obj-$(CONFIG_SENSORS_TPS40422)	+= tps40422.o
->  obj-$(CONFIG_SENSORS_TPS53679)	+= tps53679.o
->  obj-$(CONFIG_SENSORS_UCD9000)	+= ucd9000.o
-> diff --git a/drivers/hwmon/pmbus/q54sj108a2.c b/drivers/hwmon/pmbus/q54sj108a2.c
-> new file mode 100644
-> index 000000000000..cbeb1b1ea60c
-> --- /dev/null
-> +++ b/drivers/hwmon/pmbus/q54sj108a2.c
-> @@ -0,0 +1,422 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Driver for Delta modules, Q54SJ108A2 series 1/4 Brick DC/DC
-> + * Regulated Power Module
-> + *
-> + * Copyright 2020 Delta LLC.
-> + */
-> +
-> +#include <linux/debugfs.h>
-> +#include <linux/i2c.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include "pmbus.h"
-> +
-> +#define STORE_DEFAULT_ALL         0x11
-> +#define ERASE_BLACKBOX_DATA       0xD1
-> +#define READ_HISTORY_EVENT_NUMBER 0xD2
-> +#define READ_HISTORY_EVENTS       0xE0
-> +#define SET_HISTORY_EVENT_OFFSET  0xE1
-> +#define PMBUS_FLASH_KEY_WRITE     0xEC
-> +
-> +enum chips {
-> +	q54sj108a2
-> +};
-> +
-> +enum {
-> +	Q54SJ108A2_DEBUGFS_OPERATION = 0,
-> +	Q54SJ108A2_DEBUGFS_CLEARFAULT,
-> +	Q54SJ108A2_DEBUGFS_WRITEPROTECT,
-> +	Q54SJ108A2_DEBUGFS_STOREDEFAULT,
-> +	Q54SJ108A2_DEBUGFS_VOOV_RESPONSE,
-> +	Q54SJ108A2_DEBUGFS_IOOC_RESPONSE,
-> +	Q54SJ108A2_DEBUGFS_PMBUS_VERSION,
-> +	Q54SJ108A2_DEBUGFS_MFR_ID,
-> +	Q54SJ108A2_DEBUGFS_MFR_MODEL,
-> +	Q54SJ108A2_DEBUGFS_MFR_REVISION,
-> +	Q54SJ108A2_DEBUGFS_MFR_LOCATION,
-> +	Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE,
-> +	Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET,
-> +	Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET,
-> +	Q54SJ108A2_DEBUGFS_BLACKBOX_READ,
-> +	Q54SJ108A2_DEBUGFS_FLASH_KEY,
-> +	Q54SJ108A2_DEBUGFS_NUM_ENTRIES
-> +};
-> +
-> +struct q54sj108a2_data {
-> +	enum chips chip;
-> +	struct i2c_client *client;
-> +
-> +	int debugfs_entries[Q54SJ108A2_DEBUGFS_NUM_ENTRIES];
-> +};
-> +
-> +#define to_psu(x, y) container_of((x), struct q54sj108a2_data, debugfs_entries[(y)])
-> +
-> +static struct pmbus_driver_info q54sj108a2_info[] = {
-> +	[q54sj108a2] = {
-> +		.pages = 1,
-> +
-> +		/* Source : Delta Q54SJ108A2 */
-> +		.format[PSC_TEMPERATURE] = linear,
-> +		.format[PSC_VOLTAGE_IN] = linear,
-> +		.format[PSC_CURRENT_OUT] = linear,
-> +
-> +		.func[0] = PMBUS_HAVE_VIN |
-> +		PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
-> +		PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
-> +		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP |
-> +		PMBUS_HAVE_STATUS_INPUT,
-> +	},
-> +};
-> +
-> +static ssize_t  q54sj108a2_debugfs_read(struct file *file, char __user *buf,
-> +					size_t count, loff_t *ppos)
-> +{
-> +	int rc;
-> +	int *idxp = file->private_data;
-> +	int idx = *idxp;
-> +	struct q54sj108a2_data *psu = to_psu(idxp, idx);
-> +	char data[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
-> +	char data_char[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
-> +	char *res;
-> +
-> +	switch (idx) {
-> +	case Q54SJ108A2_DEBUGFS_OPERATION:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_OPERATION);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_WRITEPROTECT:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_WRITE_PROTECT);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_VOOV_RESPONSE:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_VOUT_OV_FAULT_RESPONSE);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_IOOC_RESPONSE:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_IOUT_OC_FAULT_RESPONSE);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_PMBUS_VERSION:
-> +		rc = i2c_smbus_read_byte_data(psu->client, PMBUS_REVISION);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_MFR_ID:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_ID, data);
-> +		if (rc < 0)
-> +			return rc;
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_MFR_MODEL:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_MODEL, data);
-> +		if (rc < 0)
-> +			return rc;
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_MFR_REVISION:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_REVISION, data);
-> +		if (rc < 0)
-> +			return rc;
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_MFR_LOCATION:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_MFR_LOCATION, data);
-> +		if (rc < 0)
-> +			return rc;
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET:
-> +		rc = i2c_smbus_read_byte_data(psu->client, READ_HISTORY_EVENT_NUMBER);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = snprintf(data, 3, "%02x", rc);
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_READ:
-> +		rc = i2c_smbus_read_block_data(psu->client, READ_HISTORY_EVENTS, data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		res = bin2hex(data, data_char, 32);
-> +		rc = res - data;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_FLASH_KEY:
-> +		rc = i2c_smbus_read_block_data(psu->client, PMBUS_FLASH_KEY_WRITE, data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		res = bin2hex(data, data_char, 4);
-> +		rc = res - data;
-> +
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	data[rc] = '\n';
-> +	rc += 2;
-> +
-> +	return simple_read_from_buffer(buf, count, ppos, data, rc);
-> +}
-> +
-> +static ssize_t q54sj108a2_debugfs_write(struct file *file, const char __user *buf,
-> +					size_t count, loff_t *ppos)
-> +{
-> +	u8 flash_key[4];
-> +	u8 dst_data;
-> +	ssize_t rc;
-> +	int *idxp = file->private_data;
-> +	int idx = *idxp;
-> +	struct q54sj108a2_data *psu = to_psu(idxp, idx);
-> +
-> +	rc = i2c_smbus_write_byte_data(psu->client, PMBUS_WRITE_PROTECT, 0);
-> +	if (rc)
-> +		return rc;
-> +
-> +	switch (idx) {
-> +	case Q54SJ108A2_DEBUGFS_OPERATION:
-> +		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_OPERATION, dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_CLEARFAULT:
-> +		rc = i2c_smbus_write_byte(psu->client, PMBUS_CLEAR_FAULTS);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_STOREDEFAULT:
-> +		flash_key[0] = 0x7E;
-> +		flash_key[1] = 0x15;
-> +		flash_key[2] = 0xDC;
-> +		flash_key[3] = 0x42;
-> +		rc = i2c_smbus_write_block_data(psu->client, PMBUS_FLASH_KEY_WRITE, 4, flash_key);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = i2c_smbus_write_byte(psu->client, STORE_DEFAULT_ALL);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_VOOV_RESPONSE:
-> +		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_VOUT_OV_FAULT_RESPONSE, dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_IOOC_RESPONSE:
-> +		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = i2c_smbus_write_byte_data(psu->client, PMBUS_IOUT_OC_FAULT_RESPONSE, dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE:
-> +		rc = i2c_smbus_write_byte(psu->client, ERASE_BLACKBOX_DATA);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	case Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET:
-> +		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		rc = i2c_smbus_write_byte_data(psu->client, SET_HISTORY_EVENT_OFFSET, dst_data);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return count;
-> +}
-> +
-> +static const struct file_operations q54sj108a2_fops = {
-> +	.llseek = noop_llseek,
-> +	.read = q54sj108a2_debugfs_read,
-> +	.write = q54sj108a2_debugfs_write,
-> +	.open = simple_open,
-> +};
-> +
-> +static const struct i2c_device_id q54sj108a2_id[] = {
-> +	{ "q54sj108a2", q54sj108a2 },
-> +	{ },
-> +};
-> +
-> +MODULE_DEVICE_TABLE(i2c, q54sj108a2_id);
-> +
-> +static int q54sj108a2_probe(struct i2c_client *client)
-> +{
-> +	struct device *dev = &client->dev;
-> +	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
-> +	enum chips chip_id;
-> +	int ret, i;
-> +	struct dentry *debugfs;
-> +	struct dentry *q54sj108a2_dir;
-> +	struct q54sj108a2_data *psu;
-> +
-> +	if (!i2c_check_functionality(client->adapter,
-> +				     I2C_FUNC_SMBUS_BYTE_DATA |
-> +				     I2C_FUNC_SMBUS_WORD_DATA |
-> +				     I2C_FUNC_SMBUS_BLOCK_DATA))
-> +		return -ENODEV;
-> +
-> +	if (client->dev.of_node)
-> +		chip_id = (enum chips)(unsigned long)of_device_get_match_data(dev);
-> +	else
-> +		chip_id = i2c_match_id(q54sj108a2_id, client)->driver_data;
-> +
-> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, buf);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "Failed to read Manufacturer ID\n");
-> +		return ret;
-> +	}
-> +	if (ret != 5 || strncmp(buf, "DELTA", 5)) {
-> +		buf[ret] = '\0';
-> +		dev_err(dev, "Unsupported Manufacturer ID '%s'\n", buf);
-> +		return -ENODEV;
-> +	}
-> +
-> +	/*
-> +	 * The chips support reading PMBUS_MFR_MODEL.
-> +	 */
-> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to read Manufacturer Model\n");
-> +		return ret;
-> +	}
-> +	if (ret != 14 || strncmp(buf, "Q54SJ108A2", 10)) {
-> +		buf[ret] = '\0';
-> +		dev_err(dev, "Unsupported Manufacturer Model '%s'\n", buf);
-> +		return -ENODEV;
-> +	}
-> +
-> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_REVISION, buf);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to read Manufacturer Revision\n");
-> +		return ret;
-> +	}
-> +	if (ret != 4 || buf[0] != 'S') {
-> +		buf[ret] = '\0';
-> +		dev_err(dev, "Unsupported Manufacturer Revision '%s'\n", buf);
-> +		return -ENODEV;
-> +	}
-> +
-> +	ret = pmbus_do_probe(client, &q54sj108a2_info[chip_id]);
-> +	if (ret)
-> +		return ret;
-> +
-> +	psu = devm_kzalloc(&client->dev, sizeof(*psu), GFP_KERNEL);
-> +	if (!psu)
-> +		return 0;
-> +
-> +	psu->client = client;
-> +
-> +	debugfs = pmbus_get_debugfs_dir(client);
-> +
-> +	q54sj108a2_dir = debugfs_create_dir(client->name, debugfs);
-> +
-> +	for (i = 0; i < Q54SJ108A2_DEBUGFS_NUM_ENTRIES; ++i)
-> +		psu->debugfs_entries[i] = i;
-> +
-> +	debugfs_create_file("operation", 0644, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_OPERATION],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("clear_fault", 0200, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_CLEARFAULT],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("write_protect", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_WRITEPROTECT],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("store_default", 0200, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_STOREDEFAULT],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("vo_ov_response", 0644, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_VOOV_RESPONSE],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("io_oc_response", 0644, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_IOOC_RESPONSE],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("pmbus_revision", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_PMBUS_VERSION],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("mfr_id", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_ID],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("mfr_model", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_MODEL],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("mfr_revision", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_REVISION],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("mfr_location", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_MFR_LOCATION],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("blackbox_erase", 0200, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_ERASE],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("blackbox_read_offset", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_READ_OFFSET],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("blackbox_set_offset", 0200, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("blackbox_read", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_BLACKBOX_READ],
-> +			    &q54sj108a2_fops);
-> +	debugfs_create_file("flash_key", 0444, q54sj108a2_dir,
-> +			    &psu->debugfs_entries[Q54SJ108A2_DEBUGFS_FLASH_KEY],
-> +			    &q54sj108a2_fops);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id q54sj108a2_of_match[] = {
-> +	{ .compatible = "delta,q54sj108a2", .data = (void *)q54sj108a2 },
-> +	{ },
-> +};
-> +
-> +MODULE_DEVICE_TABLE(of, q54sj108a2_of_match);
-> +
-> +static struct i2c_driver q54sj108a2_driver = {
-> +	.driver = {
-> +		.name = "q54sj108a2",
-> +		.of_match_table = q54sj108a2_of_match,
-> +	},
-> +	.probe_new = q54sj108a2_probe,
-> +	.id_table = q54sj108a2_id,
-> +};
-> +
-> +module_i2c_driver(q54sj108a2_driver);
-> +
-> +MODULE_AUTHOR("Xiao.Ma <xiao.mx.ma@deltaww.com>");
-> +MODULE_DESCRIPTION("PMBus driver for Delta Q54SJ108A2 series modules");
-> +MODULE_LICENSE("GPL");
+> Some subsystems do not have such clear demarcation at all. Heck, some
+> subsystems don't even add a cc: stable to known major fixes.  And that's
+> ok, the goal of the stable kernel work is to NOT impose additional work
+> on developers or maintainers if they don't want to do that work.
+
+Engineering is as much about improving processes as it is about
+improving the thing that is being built.  I'm not asking you to stop
+backporting fixes or stop improving the stable kernels. All I'm
+asking for is to increase the latency of backports for some
+subsystems because a margin of error is needed to minimise the risk
+profile stable users are exposed to. IOWs, I'm asking for a *minor
+tweak* to the existing process, not asking you to start all over
+again.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
