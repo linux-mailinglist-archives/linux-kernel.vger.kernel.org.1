@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F872CCB51
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E742F2CCB54
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729027AbgLCA5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 19:57:23 -0500
-Received: from a2.mail.mailgun.net ([198.61.254.61]:21616 "EHLO
-        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727689AbgLCA5W (ORCPT
+        id S1728121AbgLCA6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 19:58:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726851AbgLCA6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 19:57:22 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606957018; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Vj8nrHDgg99YLM6FLI7an5SjWZ9GcConJyimHTHWAb4=; b=aotZLm7nizizelEDjSSXuCxqI0WrAF1FRLmV759FvFE9az4cMEMohmkWw7a7mBJzq3qW2xFT
- Qt9XgBXa7vrwkEz5+dRzzJrDXhJmAwPcNnIOwI/qR1CjKflaoR6fqlD6VlYarGy8WP9SbdLJ
- y207ZbVDLHvY1vqTMnIJx0eneuo=
-X-Mailgun-Sending-Ip: 198.61.254.61
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5fc837bca5d4da3a6c7ab4fd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Dec 2020 00:56:28
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id ED28CC43463; Thu,  3 Dec 2020 00:56:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E7F77C43460;
-        Thu,  3 Dec 2020 00:56:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E7F77C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v3 7/7] bus: mhi: Improve documentation on channel
- transfer setup APIs
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, loic.poulain@linaro.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-References: <1606952438-15321-1-git-send-email-bbhatt@codeaurora.org>
- <1606952438-15321-8-git-send-email-bbhatt@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <bce26c8f-72d3-ced1-bdfa-aace2abdfb14@codeaurora.org>
-Date:   Wed, 2 Dec 2020 16:56:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 2 Dec 2020 19:58:21 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37F7C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 16:57:40 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id 2so430538ybc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 16:57:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FkizqJ6c/Vsd/MpdMpQch0kvtzt0G2b1DvFErYdRhNc=;
+        b=ET/Yjgf2Zgn7uXv460cwS3T1TrEshtsPxfSCW3+RCYoAUfNMcu3yFwHqIvUZ5wacq3
+         uO9/mZGyURL9xLN/4Pbw4KCb3/Xd4UJWY7gc19vetRDrZA7eyYBydPKtJZDLQXZj/IEj
+         KL4rBSRV6hsHNu+Wejivqtgcjt/NtvgtPVfyF6+2PUmA4PVI7OAIaSK/u1uTHglOHu9J
+         kuGla5QCbL72F3Ytp35bsyVN8t3cR9pjE01cfOCAL39Ne3zUEXl0RanoYoUZm2JyM/0A
+         7glr4C7F5evV6xw79fleXoMYwMb1D1/KncMQIfCm6WFa034dScI9CpM6EWQ3eQ/KJ2Of
+         IFxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FkizqJ6c/Vsd/MpdMpQch0kvtzt0G2b1DvFErYdRhNc=;
+        b=L9bwX/xeQkU3xyHy+IEe5bbQh/+iZadoGnuFOLyMpfFePptHJkDwJ8uTqhTt1XseYb
+         4fMBbLH9TIkFQsmhDAelQqFNDB43XNpBJ7ANWdbnHRs/ioxJ5aqUxk6fexNPwTi55ecM
+         NocsWpSHj5QlZoTPjcUFyXWxm+EHD1i9s8rXFkJ74UH//GIWIcFJMo4jI6Sv8paZveg6
+         E2a5QfZeLEbHMZpNRhG4vDahGCwb2s8WU2AlFwqDAwroGyveU1+9YhG+jMsXRZX88U4Q
+         3LSzOnFcPBpHPGm4BBGIStIMVDgWFDIePEwu6qnSlSdtskNAbZfD43KGeeMR2yBskxrS
+         GRGw==
+X-Gm-Message-State: AOAM533MNhEH+GqnOgQFDnJtER7IsU2rq5SdsAUVX/33F+zMYhOiRMii
+        t0soi3AzZXzTP/A0Hso8dnUtKl55AfJjzlcwyYA=
+X-Google-Smtp-Source: ABdhPJx3ykm6Ub65Kx8LhCpIKFpTdhfVUAcZc+q11JZ3cp6vqbutIRcmG4ddusoIvOVs33lmOHKkpd/Cgv2loKNf/9k=
+X-Received: by 2002:a25:df55:: with SMTP id w82mr1100249ybg.135.1606957059549;
+ Wed, 02 Dec 2020 16:57:39 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1606952438-15321-8-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201202075438.GA35516@spblnx124.lan>
+In-Reply-To: <20201202075438.GA35516@spblnx124.lan>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 3 Dec 2020 01:57:28 +0100
+Message-ID: <CANiq72=5+COhecuTxn4J4WQ7_MkXzOo=hN3FHHzYekjB0vLY6Q@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: fix typos found in process, dev-tools, and
+ doc-guide subdirectories
+To:     Andrew Klychkov <andrew.a.klychkov@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/2/20 3:40 PM, Bhaumik Bhatt wrote:
-> The mhi_prepare_for_transfer() and mhi_unprepare_from_transfer()
-> APIs could use better explanation, especially with the addition
-> of two new APIs to start and stop the transfers on channels. Add
-> better set of information for those APIs.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+On Wed, Dec 2, 2020 at 8:56 AM Andrew Klychkov
+<andrew.a.klychkov@gmail.com> wrote:
+>
+> Fix four typos in kcov.rst, sphinx.rst, clang-format.rst, and embargoed-hardware-issues.rst
+>
+> Signed-off-by: Andrew Klychkov <andrew.a.klychkov@gmail.com>
 > ---
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+>  Documentation/dev-tools/kcov.rst                    | 2 +-
+>  Documentation/doc-guide/sphinx.rst                  | 2 +-
+>  Documentation/process/clang-format.rst              | 2 +-
 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Thanks!
+
+Acked-by: Miguel Ojeda <ojeda@kernel.org>
+
+Cheers,
+Miguel
