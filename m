@@ -2,112 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0692CDCEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068FE2CDCF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731454AbgLCSBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:01:05 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:33236 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731413AbgLCSBE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:01:04 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kkstx-0005Pt-3z; Thu, 03 Dec 2020 18:00:21 +0000
-To:     Dongchun Zhu <dongchun.zhu@mediatek.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: media: i2c: add OV02A10 image sensor driver
-Message-ID: <9af089ea-2532-68ac-5d22-97a669ccec91@canonical.com>
-Date:   Thu, 3 Dec 2020 18:00:20 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2387485AbgLCSB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:01:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725987AbgLCSB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:01:28 -0500
+X-Gm-Message-State: AOAM5321f7DpYRc/3XljT4snBNXu4t92Z7Cy1NX1ZuuS6hMURgggg1BS
+        q2eCvx4HnYdZH3LWN5wXFxgZ/avBPjK0X/AyUv4=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607018447;
+        bh=FABGuImVXsV+nr09JVj+zQ9EBUfuYv8QZ4jBa/qWBac=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bt+9JRnhQoLVYlUpusbbJNU+Ng5xMD90OOXgJXqRmzPVaVUWlSo+PK5EIwXw7LlmJ
+         JrQz8RNpPhriWaWZtESgVLrqIvAZ4A48bS8lYWf7oL+ym7QRzuLtGlfoCLi0rHHEhy
+         9g5P5balbrxwlRJY3S7h6RZIjrZdxyvD5LIs9DE3PU9m1sFKzRuveJlmz9UwBnWnm9
+         shff21k87Gv0K/qKvlOhxypWbeINmJZI/RO+9lvo7QjuHmVKrfx14LvGISOzznmfd1
+         kXPa/+iMg1TcdluFPcA8cVWDLWHflkf9/coRITc0QiIaA4zvPQIIZefBK239cmxJ5k
+         nSKbGd2RGArvw==
+X-Google-Smtp-Source: ABdhPJww/O/H+p+GzCiMKDAw50e0c47HIgejwRdl9Wx7k1zFogrRwzl/MT69w0GZmNtYyrPjsCHPQjEM6YLRwx8fzP4=
+X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr276973otc.305.1607018446511;
+ Thu, 03 Dec 2020 10:00:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201203170529.1029105-1-maskray@google.com>
+In-Reply-To: <20201203170529.1029105-1-maskray@google.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 3 Dec 2020 19:00:30 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3XiScgpL2cGy_e8-zK0U48Z0VMLJWDYKRM+BRUFC0TSg@mail.gmail.com>
+Message-ID: <CAK8P3a3XiScgpL2cGy_e8-zK0U48Z0VMLJWDYKRM+BRUFC0TSg@mail.gmail.com>
+Subject: Re: [PATCH] firmware_loader: Align .builtin_fw to 8
+To:     Fangrui Song <maskray@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Dec 3, 2020 at 6:05 PM 'Fangrui Song' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> arm64 references the start address of .builtin_fw (__start_builtin_fw)
+> with a pair of R_AARCH64_ADR_PREL_PG_HI21/R_AARCH64_LDST64_ABS_LO12_NC
+> relocations. The compiler is allowed to emit the
+> R_AARCH64_LDST64_ABS_LO12_NC relocation because struct builtin_fw in
+> include/linux/firmware.h is 8-byte aligned.
+>
+> The R_AARCH64_LDST64_ABS_LO12_NC relocation requires the address to be a
+> multiple of 8, which may not be the case if .builtin_fw is empty.
+> Unconditionally align .builtin_fw to fix the linker error.
+>
+> Fixes: 5658c76 ("firmware: allow firmware files to be built into kernel image")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1204
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Fangrui Song <maskray@google.com>
 
-Static analysis on linux-next with Coverity has detected an issue with
-the following commit:
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-529 static int ov02a10_s_stream(struct v4l2_subdev *sd, int on)
-530 {
-531        struct ov02a10 *ov02a10 = to_ov02a10(sd);
-532        struct i2c_client *client =
-v4l2_get_subdevdata(&ov02a10->subdev);
-
-   1. var_decl: Declaring variable ret without initializer.
-
-533        int ret;
-534
-535        mutex_lock(&ov02a10->mutex);
-536
-
-   2. Condition ov02a10->streaming == on, taking true branch.
-
-537        if (ov02a10->streaming == on)
-
-   3. Jumping to label unlock_and_return.
-
-538                goto unlock_and_return;
-539
-540        if (on) {
-541                ret = pm_runtime_get_sync(&client->dev);
-542                if (ret < 0) {
-543                        pm_runtime_put_noidle(&client->dev);
-544                        goto unlock_and_return;
-545                }
-546
-547                ret = __ov02a10_start_stream(ov02a10);
-548                if (ret) {
-549                        __ov02a10_stop_stream(ov02a10);
-550                        ov02a10->streaming = !on;
-551                        goto err_rpm_put;
-552                }
-553        } else {
-554                __ov02a10_stop_stream(ov02a10);
-555                pm_runtime_put(&client->dev);
-556        }
-557
-558        ov02a10->streaming = on;
-559        mutex_unlock(&ov02a10->mutex);
-560
-561        return 0;
-562
-563 err_rpm_put:
-564        pm_runtime_put(&client->dev);
-565 unlock_and_return:
-566        mutex_unlock(&ov02a10->mutex);
-567
-
-Uninitialized scalar variable (UNINIT)
-    4. uninit_use: Using uninitialized value ret.
-
-568        return ret;
-569 }
-
-Variable ret has not been initialized, so the error return value is a
-garbage value. It should be initialized with some appropriate negative
-error code, or ret could be removed and the return should return a
-literal value of a error code.
-
-I was unsure what value is appropriate to fix this, so instead I'm
-reporting this issue.
-
-Colin
+I found the same thing in randconfig testing, but you beat me to
+sending the fix.
