@@ -2,16 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404BD2CD241
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF52E2CD255
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388379AbgLCJOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:14:11 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39510 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730089AbgLCJOF (ORCPT
+        id S2388602AbgLCJPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:15:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728764AbgLCJOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:14:05 -0500
+        Thu, 3 Dec 2020 04:14:02 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3C8C061A4E;
+        Thu,  3 Dec 2020 01:13:22 -0800 (PST)
 Date:   Thu, 03 Dec 2020 09:13:20 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1606986801;
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=z1Jqmtp3tY43MUG33PjQHmqEZxQbypHmXIYfgS4ZeCs=;
-        b=EZyX8QALlbS4TJKR5TbvaOF7E/VJGIh+RK9ZzX7Y3fGmGLcLScf8PjINVrrykUMbgyfoEm
-        IppFO9ze9Z5qIuCcvPCtR/FUrHcWlfMTpfBdUuuT6rFDenBsumS4eFrh1Khn+t6sWcnm3v
-        P7znjoKh9JKKUysRXTNN3dzwGYQ1cQajrS5Ql/6IefS2XQvWYC1qMjwxZ6i9x9bVkPEzd1
-        u6hsq+tvOjHy1UeMdGXh89YOXR6U8KnFk2D90d0Nfd2Bo7lQxRCx4Fnv9JFCTqKFHgOP15
-        viS12jNirew2KQq/l0JtyVw/zbRoijQzMS1HQ0e04GMgfMQxwRPR9ADy0z1zrg==
+        bh=VIkKosaBcX+Ew9O7TRSvoATVKwe3UK0Q+EST2eiBX3M=;
+        b=InWutED0oVr6hdMklslXLHrI2lwXpvqJ2gcMSSP2a9T6IZyY+mNR7VFKOHaMwBePemEZCa
+        RXVZxinOHJ+hkIVExp802jsUAkrci2z4ywpHsiIIxo+WavyBt/tLuPZaqwA5j86++wults
+        zkcVaBqiG+R2yoDRzRaylHsnBX9aOK/8UChwDaTEWro5EdF46DW7PRHT6fB56VLnOWAym6
+        hOjNuoBMuPpsrSJJVXbqIKBADrUVPpl2y4FU97WX7tj+US9QGbm0y+xgO2mQ1oHIBaSOr1
+        34ZwvufJxTGpio54tPSvPA1kA+mswYjtRlFNOPGQfytlmDpBg5IT01eEGuv4QA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1606986801;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,22 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=z1Jqmtp3tY43MUG33PjQHmqEZxQbypHmXIYfgS4ZeCs=;
-        b=lvOnJg3ZhxsveF56RyzX0LJ4cS701eNlWTb7/E6ejZlBzXHdrrVQDGx8JWnR5b8GGBATvL
-        lqIrquePPKun+xDg==
-From:   "tip-bot2 for Nathan Fontenot" <tip-bot2@linutronix.de>
+        bh=VIkKosaBcX+Ew9O7TRSvoATVKwe3UK0Q+EST2eiBX3M=;
+        b=PdtnRIrCeNr0L7M1hh3TMvtcDC4xwJ5gwA/oZE+y+CRveABXMz7jhiiZy8bUqYdMDGBmJc
+        pCqqaKqxbObSwuDQ==
+From:   "tip-bot2 for Giovanni Gherdovich" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] x86, sched: Calculate frequency invariance for AMD systems
-Cc:     Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: sched/core] x86, sched: Use midpoint of max_boost and max_P for
+ frequency invariance on AMD EPYC
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201112182614.10700-2-ggherdovich@suse.cz>
-References: <20201112182614.10700-2-ggherdovich@suse.cz>
+In-Reply-To: <20201112182614.10700-3-ggherdovich@suse.cz>
+References: <20201112182614.10700-3-ggherdovich@suse.cz>
 MIME-Version: 1.0
-Message-ID: <160698680075.3364.11539086826689116966.tip-bot2@tip-bot2>
+Message-ID: <160698680062.3364.2318205075982527285.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,232 +61,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     0edb0fb35fa687e633322d23e5f44b7cfd21a5c5
-Gitweb:        https://git.kernel.org/tip/0edb0fb35fa687e633322d23e5f44b7cfd21a5c5
-Author:        Nathan Fontenot <nathan.fontenot@amd.com>
-AuthorDate:    Thu, 12 Nov 2020 19:26:12 +01:00
+Commit-ID:     46609527577d1def0af29ca5b56cffeeea771ada
+Gitweb:        https://git.kernel.org/tip/46609527577d1def0af29ca5b56cffeeea771ada
+Author:        Giovanni Gherdovich <ggherdovich@suse.cz>
+AuthorDate:    Thu, 12 Nov 2020 19:26:13 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 03 Dec 2020 10:00:34 +01:00
+CommitterDate: Thu, 03 Dec 2020 10:00:35 +01:00
 
-x86, sched: Calculate frequency invariance for AMD systems
+x86, sched: Use midpoint of max_boost and max_P for frequency invariance on AMD EPYC
 
-This is the first pass in creating the ability to calculate the
-frequency invariance on AMD systems. This approach uses the CPPC
-highest performance and nominal performance values that range from
-0 - 255 instead of a high and base frquency. This is because we do
-not have the ability on AMD to get a highest frequency value.
+Frequency invariant accounting calculations need the ratio
+freq_curr/freq_max, but freq_max is unknown as it depends on dynamic power
+allocation between cores: AMD EPYC CPUs implement "Core Performance Boost".
+Three candidates are considered to estimate this value:
 
-On AMD systems the highest performance and nominal performance
-vaues do correspond to the highest and base frequencies for the system
-so using them should produce an appropriate ratio but some tweaking
-is likely necessary.
+- maximum non-boost frequency
+- maximum boost frequency
+- the mid point between the above two
 
-Due to CPPC being initialized later in boot than when the frequency
-invariant calculation is currently made, I had to create a callback
-from the CPPC init code to do the calculation after we have CPPC
-data.
+Experimental data on an AMD EPYC Zen2 machine slightly favors the third
+option, which is applied with this patch.
 
-Special thanks to "kernel test robot <lkp@intel.com>" for reporting that
-compilation of drivers/acpi/cppc_acpi.c is conditional to
-CONFIG_ACPI_CPPC_LIB, not just CONFIG_ACPI.
+The analysis uses the ondemand cpufreq governor as baseline, and compares
+it with schedutil in a number of configurations. Using the freq_max value
+described above offers a moderate advantage in performance and efficiency:
 
-[ ggherdovich@suse.cz: made safe under CPU hotplug, edited changelog ]
-Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
-Signed-off-by: Nathan Fontenot <nathan.fontenot@amd.com>
+sugov-max (freq_max=max_boost) performs the worst on tbench: less
+throughput and reduced efficiency than the other invariant-schedutil
+options (see "Data Overview" below). Consider that tbench is generally a
+problematic case as no schedutil version currently is better than ondemand.
+
+sugov-P0 (freq_max=max_P) is the worst on dbench, while the other sugov's
+can surpass ondemand with less filesystem latency and slightly increased
+efficiency.
+
+1. DATA OVERVIEW
+2. DETAILED PERFORMANCE TABLES
+3. POWER CONSUMPTION TABLE
+
+1. DATA OVERVIEW
+================
+
+sugov-noinv : non-invariant schedutil governor
+sugov-max   : invariant schedutil, freq_max=max_boost
+sugov-mid   : invariant schedutil, freq_max=midpoint
+sugov-P0    : invariant schedutil, freq_max=max_P
+perfgov     : performance governor
+
+driver      : acpi_cpufreq
+machine     : AMD EPYC 7742 (Zen2, aka "Rome"), dual socket,
+              128 cores / 256 threads, SATA SSD storage, 250G of memory,
+	      XFS filesystem
+
+Benchmarks are described in the next section.
+Tilde (~) means the value is the same as baseline.
+
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201112182614.10700-2-ggherdovich@suse.cz
+Link: https://lkml.kernel.org/r/20201112182614.10700-3-ggherdovich@suse.cz
 ---
- arch/x86/include/asm/topology.h |  5 ++-
- arch/x86/kernel/smpboot.c       | 76 +++++++++++++++++++++++++++++---
- drivers/acpi/cppc_acpi.c        |  7 +++-
- 3 files changed, 83 insertions(+), 5 deletions(-)
+ arch/x86/kernel/smpboot.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
-index f423457..488a8e8 100644
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -218,4 +218,9 @@ static inline void arch_set_max_freq_ratio(bool turbo_disabled)
- }
- #endif
- 
-+#ifdef CONFIG_ACPI_CPPC_LIB
-+void init_freq_invariance_cppc(void);
-+#define init_freq_invariance_cppc init_freq_invariance_cppc
-+#endif
-+
- #endif /* _ASM_X86_TOPOLOGY_H */
 diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index de776b2..a4ab5cf 100644
+index a4ab5cf..c5dd5f6 100644
 --- a/arch/x86/kernel/smpboot.c
 +++ b/arch/x86/kernel/smpboot.c
-@@ -82,6 +82,10 @@
- #include <asm/hw_irq.h>
- #include <asm/stackprotector.h>
- 
-+#ifdef CONFIG_ACPI_CPPC_LIB
-+#include <acpi/cppc_acpi.h>
-+#endif
-+
- /* representing HT siblings of each logical CPU */
- DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_sibling_map);
- EXPORT_PER_CPU_SYMBOL(cpu_sibling_map);
-@@ -148,7 +152,7 @@ static inline void smpboot_restore_warm_reset_vector(void)
- 	*((volatile u32 *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = 0;
- }
- 
--static void init_freq_invariance(bool secondary);
-+static void init_freq_invariance(bool secondary, bool cppc_ready);
- 
- /*
-  * Report back to the Boot Processor during boot time or to the caller processor
-@@ -186,7 +190,7 @@ static void smp_callin(void)
- 	 */
- 	set_cpu_sibling_map(raw_smp_processor_id());
- 
--	init_freq_invariance(true);
-+	init_freq_invariance(true, false);
- 
- 	/*
- 	 * Get our bogomips.
-@@ -1340,7 +1344,7 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
- 	set_sched_topology(x86_topology);
- 
- 	set_cpu_sibling_map(0);
--	init_freq_invariance(false);
-+	init_freq_invariance(false, false);
- 	smp_sanity_check();
- 
- 	switch (apic_intr_mode) {
-@@ -2027,6 +2031,46 @@ out:
- 	return true;
- }
- 
-+#ifdef CONFIG_ACPI_CPPC_LIB
-+static bool amd_set_max_freq_ratio(void)
-+{
-+	struct cppc_perf_caps perf_caps;
-+	u64 highest_perf, nominal_perf;
-+	u64 perf_ratio;
-+	int rc;
-+
-+	rc = cppc_get_perf_caps(0, &perf_caps);
-+	if (rc) {
-+		pr_debug("Could not retrieve perf counters (%d)\n", rc);
-+		return false;
-+	}
-+
-+	highest_perf = perf_caps.highest_perf;
-+	nominal_perf = perf_caps.nominal_perf;
-+
-+	if (!highest_perf || !nominal_perf) {
-+		pr_debug("Could not retrieve highest or nominal performance\n");
-+		return false;
-+	}
-+
-+	perf_ratio = div_u64(highest_perf * SCHED_CAPACITY_SCALE, nominal_perf);
-+	if (!perf_ratio) {
-+		pr_debug("Non-zero highest/nominal perf values led to a 0 ratio\n");
-+		return false;
-+	}
-+
-+	arch_turbo_freq_ratio = perf_ratio;
-+	arch_set_max_freq_ratio(false);
-+
-+	return true;
-+}
-+#else
-+static bool amd_set_max_freq_ratio(void)
-+{
-+	return false;
-+}
-+#endif
-+
- static void init_counter_refs(void)
- {
- 	u64 aperf, mperf;
-@@ -2038,7 +2082,7 @@ static void init_counter_refs(void)
- 	this_cpu_write(arch_prev_mperf, mperf);
- }
- 
--static void init_freq_invariance(bool secondary)
-+static void init_freq_invariance(bool secondary, bool cppc_ready)
- {
- 	bool ret = false;
- 
-@@ -2054,6 +2098,12 @@ static void init_freq_invariance(bool secondary)
- 
- 	if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
- 		ret = intel_set_max_freq_ratio();
-+	else if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD) {
-+		if (!cppc_ready) {
-+			return;
-+		}
-+		ret = amd_set_max_freq_ratio();
-+	}
- 
- 	if (ret) {
- 		init_counter_refs();
-@@ -2063,6 +2113,22 @@ static void init_freq_invariance(bool secondary)
- 	}
- }
- 
-+#ifdef CONFIG_ACPI_CPPC_LIB
-+static DEFINE_MUTEX(freq_invariance_lock);
-+
-+void init_freq_invariance_cppc(void)
-+{
-+	static bool secondary;
-+
-+	mutex_lock(&freq_invariance_lock);
-+
-+	init_freq_invariance(secondary, true);
-+	secondary = true;
-+
-+	mutex_unlock(&freq_invariance_lock);
-+}
-+#endif
-+
- static void disable_freq_invariance_workfn(struct work_struct *work)
- {
- 	static_branch_disable(&arch_scale_freq_key);
-@@ -2112,7 +2178,7 @@ error:
- 	schedule_work(&disable_freq_invariance_work);
- }
- #else
--static inline void init_freq_invariance(bool secondary)
-+static inline void init_freq_invariance(bool secondary, bool cppc_ready)
- {
- }
- #endif /* CONFIG_X86_64 */
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 7a99b19..a852dc4 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -39,6 +39,7 @@
- #include <linux/ktime.h>
- #include <linux/rwsem.h>
- #include <linux/wait.h>
-+#include <linux/topology.h>
- 
- #include <acpi/cppc_acpi.h>
- 
-@@ -688,6 +689,10 @@ static bool is_cppc_supported(int revision, int num_ent)
-  *	}
-  */
- 
-+#ifndef init_freq_invariance_cppc
-+static inline void init_freq_invariance_cppc(void) { }
-+#endif
-+
- /**
-  * acpi_cppc_processor_probe - Search for per CPU _CPC objects.
-  * @pr: Ptr to acpi_processor containing this CPU's logical ID.
-@@ -850,6 +855,8 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
- 		goto out_free;
+@@ -2054,6 +2054,8 @@ static bool amd_set_max_freq_ratio(void)
  	}
  
-+	init_freq_invariance_cppc();
-+
- 	kfree(output.pointer);
- 	return 0;
- 
+ 	perf_ratio = div_u64(highest_perf * SCHED_CAPACITY_SCALE, nominal_perf);
++	/* midpoint between max_boost and max_P */
++	perf_ratio = (perf_ratio + SCHED_CAPACITY_SCALE) >> 1;
+ 	if (!perf_ratio) {
+ 		pr_debug("Non-zero highest/nominal perf values led to a 0 ratio\n");
+ 		return false;
