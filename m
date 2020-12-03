@@ -2,155 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BDF2CDEAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA202CDEB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 20:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgLCTU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 14:20:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726708AbgLCTU2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:20:28 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A90C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 11:19:48 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id g15so3066612ybq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 11:19:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UUYfB3LhbOXH/qWX5ow3QLdCqkjf8YNWyBuEVSInt6w=;
-        b=tAd4JdpSkRPjjrscn5ThUbDcRYUSaRgmc8LmMW8HU7IePg47OQhCVJdawgzjaN7syv
-         e3N3DviCmLqpIzkG8sO9XhRF7Xf5itcYmV+qZhq7FZqrC0InNtmGC17CoIJH1Wfphncr
-         Rg3+TeoBuBit3SqGgU3LvdQFbIl4Hfvd3BljTLXwQyaI0Nmmgvg8oNhs51a3TPi3/ykN
-         3T79WmLyPDK6zN22VMLIOPq8xzaeDsW3ln56eq9MCq3v+uSGTB7yi3dNZ01zx+siGqKN
-         vaiTRladSGMR+rgnYUqa2sd69sMLzM0Csre6QiBaviz0vCyosEHEY5UGK4etRXSK2MqN
-         PnAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UUYfB3LhbOXH/qWX5ow3QLdCqkjf8YNWyBuEVSInt6w=;
-        b=BnIDLLYqjUKUuEI8ukZTVatl/dZ8yiyXTyZtr8b5Z78JriiOmRzVQUQrbrVpuugpjJ
-         B3IOIgk8vnvkvdTNmyOguSpW9y575djHedPuZ+/Avh4HdmuokSGVskd52w2ZP3dNYImT
-         d6QBJ2cLu8065gPhFfALWNgkMh+MawNKhwroRx9z41oLjkbIgzlrdYiM+evNc/SF76GH
-         juRYRVmT2W4XhM+4rrmgOnzSbiTUX/KA5Yb+MLEcuFpJveSlf0XUax9kYXTFqROGP1Y7
-         /c37LDSZKnXE5wf1YEOj2pM544UlK4jfw1s1UBb4h5vc3kw0Np91YTVCFFdL0mhDRTOO
-         J1Sg==
-X-Gm-Message-State: AOAM531l3U8mN26K9MsJw7iHXk52DLBKDQroe/+Zs+CZr+ngXSkHur5I
-        CJLgPXb3C4rKHfIw/z5wKcg7U9moBwb+MaOhnQPC7g==
-X-Google-Smtp-Source: ABdhPJyhXbsmp80bw0icNNI9ciSn4KKgQYFLMDbMBvVHnJ7Dp8BN0RFUQsPErKCI3u7Ti+5A7pCXg92G1jadJjuVlVw=
-X-Received: by 2002:a25:8401:: with SMTP id u1mr1068640ybk.96.1607023187549;
- Thu, 03 Dec 2020 11:19:47 -0800 (PST)
+        id S1727398AbgLCTYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 14:24:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725981AbgLCTYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 14:24:10 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7E73221EC;
+        Thu,  3 Dec 2020 19:23:28 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kkuCM-00Flnv-BO; Thu, 03 Dec 2020 19:23:26 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     kvmarm@lists.cs.columbia.edu, David Brazdil <dbrazdil@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
+        Christoph Lameter <cl@linux.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH v4 00/26] Opt-in always-on nVHE hypervisor
+Date:   Thu,  3 Dec 2020 19:23:19 +0000
+Message-Id: <160702322202.1501317.9696987088711766533.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201202184122.26046-1-dbrazdil@google.com>
+References: <20201202184122.26046-1-dbrazdil@google.com>
 MIME-Version: 1.0
-References: <20201203175756.1405564-1-thierry.reding@gmail.com> <CAJZ5v0g_FC6Pikrvk2PK=XMvAwqjaNOcYXHYS6eqv6Zc0JgqNQ@mail.gmail.com>
-In-Reply-To: <CAJZ5v0g_FC6Pikrvk2PK=XMvAwqjaNOcYXHYS6eqv6Zc0JgqNQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 3 Dec 2020 11:19:11 -0800
-Message-ID: <CAGETcx9wrKNfvV36v1YJLa_A8jtb6OvZRMjsNG9AYxLPDvdpgQ@mail.gmail.com>
-Subject: Re: [PATCH] driver core: Reorder devices on successful probe
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: kvmarm@lists.cs.columbia.edu, dbrazdil@google.com, catalin.marinas@arm.com, lorenzo.pieralisi@arm.com, linux-kernel@vger.kernel.org, will@kernel.org, tj@kernel.org, dennis@kernel.org, linux-doc@vger.kernel.org, corbet@lwn.net, kernel-team@android.com, linux-arm-kernel@lists.infradead.org, cl@linux.com, sudeep.holla@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 10:17 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Thu, Dec 3, 2020 at 6:58 PM Thierry Reding <thierry.reding@gmail.com> wrote:
-> >
-> > From: Thierry Reding <treding@nvidia.com>
-> >
-> > Device drivers usually depend on the fact that the devices that they
-> > control are suspended in the same order that they were probed in. In
-> > most cases this is already guaranteed via deferred probe.
-> >
-> > However, there's one case where this can still break: if a device is
-> > instantiated before a dependency (for example if it appears before the
-> > dependency in device tree) but gets probed only after the dependency is
-> > probed. Instantiation order would cause the dependency to get probed
-> > later, in which case probe of the original device would be deferred and
-> > the suspend/resume queue would get reordered properly. However, if the
-> > dependency is provided by a built-in driver and the device depending on
-> > that driver is controlled by a loadable module, which may only get
-> > loaded after the root filesystem has become available, we can be faced
-> > with a situation where the probe order ends up being different from the
-> > suspend/resume order.
-> >
-> > One example where this happens is on Tegra186, where the ACONNECT is
-> > listed very early in device tree (sorted by unit-address) and depends on
-> > BPMP (listed very late because it has no unit-address) for power domains
-> > and clocks/resets. If the ACONNECT driver is built-in, there is no
-> > problem because it will be probed before BPMP, causing a probe deferral
-> > and that in turn reorders the suspend/resume queue. However, if built as
-> > a module, it will end up being probed after BPMP, and therefore not
-> > result in a probe deferral, and therefore the suspend/resume queue will
-> > stay in the instantiation order. This in turn causes problems because
-> > ACONNECT will be resumed before BPMP, which will result in a hang
-> > because the ACONNECT's power domain cannot be powered on as long as the
-> > BPMP is still suspended.
-> >
-> > Fix this by always reordering devices on successful probe. This ensures
-> > that the suspend/resume queue is always in probe order and hence meets
-> > the natural expectations of drivers vs. their dependencies.
-> >
-> > Reported-by: Jonathan Hunter <jonathanh@nvidia.com>
-> > Signed-off-by: Thierry Reding <treding@nvidia.com>
->
-> Saravana had submitted a very similar patch (I don't have a pointer to
-> that one though) and I was against it at that time due to
-> overhead-related concerns.  There still are some, but maybe that
-> doesn't matter in practice.
+On Wed, 2 Dec 2020 18:40:56 +0000, David Brazdil wrote:
+> As we progress towards being able to keep guest state private to the
+> host running nVHE hypervisor, this series allows the hypervisor to
+> install itself on newly booted CPUs before the host is allowed to run
+> on them.
+> 
+> All functionality described below is opt-in, guarded by an early param
+> 'kvm-arm.mode=protected'. Future patches specific to the new protected
+> mode should be hidden behind the same param.
+> 
+> [...]
 
-Yeah, it's a very similar patch but I also suggested deleting the
-reorder done in the deferred probe code (I'm pretty sure we can drop
-it). Here's the thread:
-https://lore.kernel.org/lkml/20200625032430.152447-1-saravanak@google.com/
+Applied to kvm-arm64/psci-relay, thanks!
 
-Btw, I've been wondering about this recently. Do we even need
-device_pm_move_to_tail() to do the recursive thing once we do "add
-device to end of list when added" + "move probed devices to the end
-after probe" thing here? Doesn't this guarantee that none of the
-consumers can come before the supplier in the dpm list?
+Note that although I pushed it to -next, I still need people to
+eyeball it and give it some Acks. The commit-IDs below will
+thus change as I apply tags, if any.
 
--Saravana
+[01/26] KVM: arm64: Add kvm-arm.mode early kernel parameter
+        commit: 2d4b0ce5c9b62398522b4b078cfd2cc0fa3fb604
+[02/26] KVM: arm64: Add ARM64_KVM_PROTECTED_MODE CPU capability
+        commit: 44e88d43c442adcebebec5b9e23f260a03a25120
+[03/26] psci: Support psci_ops.get_version for v0.1
+        commit: 47e4000e4f6ea4496accf7e3e68c29f38ca4e179
+[04/26] psci: Split functions to v0.1 and v0.2+ variants
+        commit: 1fbb7db86fb5f1cd7a2c9ec9c477acb67ac986a7
+[05/26] psci: Replace psci_function_id array with a struct
+        commit: c801a91084f382ab8f9707bd33e6ccb7012e1e50
+[06/26] psci: Add accessor for psci_0_1_function_ids
+        commit: 26c9988c7330b2225ba39cae9de43b0bfff57e2a
+[07/26] arm64: Make cpu_logical_map() take unsigned int
+        commit: 2346f8b8ea0bb140d67ba6f06b67aec06e238dde
+[08/26] arm64: Extract parts of el2_setup into a macro
+        commit: 9c322020286c60fbdd97f6a8c41362be5f4f8bb9
+[09/26] KVM: arm64: Remove vector_ptr param of hyp-init
+        commit: 1db5bd14716029c8859551e9c38fe76818959b7b
+[10/26] KVM: arm64: Move hyp-init params to a per-CPU struct
+        commit: 4a836c1e69dbeb14f69d554e1fe36d2e619d94fc
+[11/26] KVM: arm64: Init MAIR/TCR_EL2 from params struct
+        commit: 5e664b8539c396dbceaccb6bef2a9ed48964906a
+[12/26] KVM: arm64: Add .hyp.data..ro_after_init ELF section
+        commit: 89f3705ca070900a127f181ce724aa6c1e9c9479
+[13/26] KVM: arm64: Support per_cpu_ptr in nVHE hyp code
+        commit: 2091f4271a400169d8fa8004bf743aa815c3c5d4
+[14/26] KVM: arm64: Create nVHE copy of cpu_logical_map
+        commit: 626aa81e14f9d723fe91fdb5c1030f73f929d0ad
+[15/26] KVM: arm64: Add SMC handler in nVHE EL2
+        commit: 0ec63d737071f483ab6fc63e2d9b59d0d4cc59fd
+[16/26] KVM: arm64: Bootstrap PSCI SMC handler in nVHE EL2
+        commit: 5988416e2234db36b80c510c1ae99a6de0c1431d
+[17/26] KVM: arm64: Add offset for hyp VA <-> PA conversion
+        commit: bf9dc203286ce42de948dbb0d3fdaea51e2ab37f
+[18/26] KVM: arm64: Forward safe PSCI SMCs coming from host
+        commit: 0e11d688605f1772098add3a755503688db2d06f
+[19/26] KVM: arm64: Extract __do_hyp_init into a helper function
+        commit: 294f71ad53625f75531dd43d775efc3507cd9b0a
+[20/26] KVM: arm64: Add function to enter host from KVM nVHE hyp code
+        commit: cb9773719fc405e8cc2041cd457fcd8655863a78
+[21/26] KVM: arm64: Intercept host's CPU_ON SMCs
+        commit: 6ed1b8bd3c623d4e0e4441a2a73dbda162e3ebe7
+[22/26] KVM: arm64: Intercept host's CPU_SUSPEND PSCI SMCs
+        commit: 5f51e7f65258cea36833c793625f4fb6d0e38426
+[23/26] KVM: arm64: Intercept host's SYSTEM_SUSPEND PSCI SMCs
+        commit: dfa751cfd54b3f9ac1d89050cf0ad6c6bc3a9dc5
+[24/26] KVM: arm64: Keep nVHE EL2 vector installed
+        commit: 0c8078f56aa99ab4350d9ae3dabd3504d2f11fbd
+[25/26] KVM: arm64: Trap host SMCs in protected mode
+        commit: 4e3e6c3acb741a9692e0b772e92368fee85dced8
+[26/26] KVM: arm64: Fix EL2 mode availability checks
+        commit: 5e7953174eb1966d4cdc70caf3708afc8c4dd5f9
 
->
-> Also, I kind of expect this to blow up somewhere, but since I have no
-> examples ready from the top of my head, I think let's try and see, so:
->
-> Acked-by: Rafael. J. Wysocki <rafael@kernel.org>
->
-> > ---
-> >  drivers/base/dd.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> > index 148e81969e04..cfc079e738bb 100644
-> > --- a/drivers/base/dd.c
-> > +++ b/drivers/base/dd.c
-> > @@ -370,6 +370,13 @@ static void driver_bound(struct device *dev)
-> >
-> >         device_pm_check_callbacks(dev);
-> >
-> > +       /*
-> > +        * Reorder successfully probed devices to the end of the device list.
-> > +        * This ensures that suspend/resume order matches probe order, which
-> > +        * is usually what drivers rely on.
-> > +        */
-> > +       device_pm_move_to_tail(dev);
-> > +
-> >         /*
-> >          * Make sure the device is no longer in one of the deferred lists and
-> >          * kick off retrying all pending devices
-> > --
-> > 2.29.2
-> >
+Cheers,
+
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
+
