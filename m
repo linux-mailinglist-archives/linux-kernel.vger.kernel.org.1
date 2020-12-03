@@ -2,98 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793B72CCB3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AAA2CCB42
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727737AbgLCAwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 19:52:04 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33908 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726730AbgLCAwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 19:52:03 -0500
-Received: from [10.130.0.193] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxutGCNshfgzwZAA--.56902S3;
-        Thu, 03 Dec 2020 08:51:15 +0800 (CST)
-Subject: Re: [PATCH] i2c: busses: Use dma_set_mask_and_coherent
-To:     Wolfram Sang <wsa@kernel.org>
-References: <1606223315-13390-1-git-send-email-tangyouling@loongson.cn>
- <20201202160147.GG13425@kunai>
-Cc:     Seth Heasley <seth.heasley@intel.com>,
-        Neil Horman <nhorman@tuxdriver.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Youling Tang <tangyouling@loongson.cn>
-Message-ID: <c3b2aed2-1c65-d242-648e-11624fd7b629@loongson.cn>
-Date:   Thu, 3 Dec 2020 08:51:14 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1727948AbgLCAw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 19:52:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725916AbgLCAwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 19:52:25 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A74C0617A6;
+        Wed,  2 Dec 2020 16:51:44 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CmcjR4bQtz9sT5;
+        Thu,  3 Dec 2020 11:51:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606956701;
+        bh=fWF5uj3a4ILlBULHxMHRrMJZJWYp+rRV3bFYXjTz8mQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dBifTR1P1tdC3ua+smIYimj+WhC6u0YpSaYKBBBbDG0PNUAdEdtp/y/c0hGsOPLeF
+         g59YFzQcZYLiCFGH3/Jm7QhzRJ8asFdvNxf3/0t9pn+9+6ESm60WPtW6RcwCR+nMr7
+         ZaCD97h+fniCPf/+ck1/IAEepewGBtY12d9y9Mhe9K52ONw53L6QnKWRCCIlwmU/TS
+         4Q6/Lr+o6Lkp7e3pKhE54V47NyeqUQZw13vVTJB/1u8Cj5aenaSO7FnEhITy6+7NQL
+         kXByu+IU6Gz2mzzHsxqWzJdEZWmOJjHWH+TTRzrA+EB4TlQjn0fUF0eNRcFKH2Vqgd
+         CWNB4epV1g+Zg==
+Date:   Thu, 3 Dec 2020 11:51:37 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Luka Kovacic <luka.kovacic@sartura.hr>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: linux-next: manual merge of the v4l-dvb tree with the mvebu tree
+Message-ID: <20201203115137.6620f27a@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20201202160147.GG13425@kunai>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxutGCNshfgzwZAA--.56902S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tw17ur4UJw1DKF48KFy8Zrb_yoW8XF4fpw
-        1UGa43C3yxtFyYqa45Aw45XryYgws0gr98KrW7KwnxZay5WFyktr1Iyr43Kr18JFyI9r1f
-        Z3yDt3WYgF1Fya7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvFb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY
-        02Avz4vE14v_twCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
-        xUISdyUUUUU
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+Content-Type: multipart/signed; boundary="Sig_/USkYRJ.kjSQ4=svWLK4Gwyg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Wolfram
+--Sig_/USkYRJ.kjSQ4=svWLK4Gwyg
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 12/03/2020 12:01 AM, Wolfram Sang wrote:
-> On Tue, Nov 24, 2020 at 09:08:35PM +0800, Youling Tang wrote:
->> 'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
->> an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
->>
->> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
-> Please use "i2c: ismt:", so driver maintainers know that the patch is
-> relevant to them.
-Thank you for your suggestion, I'll send v2 later.
+Hi all,
 
-Thanks.
-Youling.
->> ---
->>   drivers/i2c/busses/i2c-ismt.c | 8 ++------
->>   1 file changed, 2 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/i2c/busses/i2c-ismt.c b/drivers/i2c/busses/i2c-ismt.c
->> index a35a27c..5f49830 100644
->> --- a/drivers/i2c/busses/i2c-ismt.c
->> +++ b/drivers/i2c/busses/i2c-ismt.c
->> @@ -903,16 +903,12 @@ ismt_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->>   		return -ENODEV;
->>   	}
->>   
->> -	if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) != 0) ||
->> -	    (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64)) != 0)) {
->> -		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) != 0) ||
->> -		    (pci_set_consistent_dma_mask(pdev,
->> -						 DMA_BIT_MASK(32)) != 0)) {
->> +	if (dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(64)) != 0)
->> +		if (dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(32)) != 0) {
->>   			dev_err(&pdev->dev, "pci_set_dma_mask fail %p\n",
->>   				pdev);
->>   			return -ENODEV;
->>   		}
->> -	}
->>   
->>   	err = ismt_dev_init(priv);
->>   	if (err)
->> -- 
->> 2.1.0
->>
+Today's linux-next merge of the v4l-dvb tree got a conflict in:
 
+  MAINTAINERS
+
+between commit:
+
+  8c4e256e3d42 ("MAINTAINERS: Add an entry for MikroTik CRS3xx 98DX3236 boa=
+rds")
+
+from the mvebu tree and commit:
+
+  b24cc2a18c50 ("media: smiapp: Rename as "ccs"")
+
+from the v4l-dvb tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc MAINTAINERS
+index 90acea633c4e,02437abc94c9..000000000000
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@@ -11664,17 -11630,17 +11665,28 @@@ M:	Oliver Neukum <oliver@neukum.org
+  S:	Maintained
+  F:	drivers/usb/image/microtek.*
+ =20
+ +MIKROTIK CRS3XX 98DX3236 BOARD SUPPORT
+ +M:	Luka Kovacic <luka.kovacic@sartura.hr>
+ +M:	Luka Perkov <luka.perkov@sartura.hr>
+ +S:	Maintained
+ +F:	arch/arm/boot/dts/armada-xp-crs305-1g-4s-bit.dts
+ +F:	arch/arm/boot/dts/armada-xp-crs305-1g-4s.dts
+ +F:	arch/arm/boot/dts/armada-xp-crs326-24g-2s-bit.dts
+ +F:	arch/arm/boot/dts/armada-xp-crs326-24g-2s.dts
+ +F:	arch/arm/boot/dts/armada-xp-crs328-4c-20s-4s-bit.dts
+ +F:	arch/arm/boot/dts/armada-xp-crs328-4c-20s-4s.dts
+ +
++ MIPI CCS, SMIA AND SMIA++ IMAGE SENSOR DRIVER
++ M:	Sakari Ailus <sakari.ailus@linux.intel.com>
++ L:	linux-media@vger.kernel.org
++ S:	Maintained
++ F:	Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
++ F:	Documentation/driver-api/media/drivers/ccs/
++ F:	drivers/media/i2c/ccs/
++ F:	drivers/media/i2c/smiapp-pll.c
++ F:	drivers/media/i2c/smiapp-pll.h
++ F:	include/uapi/linux/smiapp.h
++=20
+  MIPS
+  M:	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+  L:	linux-mips@vger.kernel.org
+
+--Sig_/USkYRJ.kjSQ4=svWLK4Gwyg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/INpoACgkQAVBC80lX
+0Gw/Xgf+LPlUTuovtHxw06oh9GsU8B1B9NLBuIX5S9mhTrvykFv6JimL5AUQEA4D
+4CaLMtv29Npq1qJv/Iu5p92EThcDzm+lVIAS4sqW7t90QQiZDB0R27ktucy74lpw
+2T4x4NvTHG9f2vE7erWnRSzOJGZMZG/wAQ/bJHAiFf7olTtz5wM+7N5TsFPqzGpM
+09DGFIORnd2lxqezIGSaKTAFDWMMT3dRmE65KnOIydyd8Qw0otBLmZnWLqhf0TNc
+yORcoRyhMfHfkGFkgTV4rotUi3knwYp8csmT/BkGzn4E1Rn9NRHnPyG8X/xDufX+
+TYx5sS5Ty6Cktas/CZ5FTpmMrhtsbw==
+=4Xe6
+-----END PGP SIGNATURE-----
+
+--Sig_/USkYRJ.kjSQ4=svWLK4Gwyg--
