@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E742F2CCB54
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C88F32CCB5D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 02:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgLCA6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 19:58:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726851AbgLCA6V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 19:58:21 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37F7C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 16:57:40 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id 2so430538ybc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 16:57:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FkizqJ6c/Vsd/MpdMpQch0kvtzt0G2b1DvFErYdRhNc=;
-        b=ET/Yjgf2Zgn7uXv460cwS3T1TrEshtsPxfSCW3+RCYoAUfNMcu3yFwHqIvUZ5wacq3
-         uO9/mZGyURL9xLN/4Pbw4KCb3/Xd4UJWY7gc19vetRDrZA7eyYBydPKtJZDLQXZj/IEj
-         KL4rBSRV6hsHNu+Wejivqtgcjt/NtvgtPVfyF6+2PUmA4PVI7OAIaSK/u1uTHglOHu9J
-         kuGla5QCbL72F3Ytp35bsyVN8t3cR9pjE01cfOCAL39Ne3zUEXl0RanoYoUZm2JyM/0A
-         7glr4C7F5evV6xw79fleXoMYwMb1D1/KncMQIfCm6WFa034dScI9CpM6EWQ3eQ/KJ2Of
-         IFxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FkizqJ6c/Vsd/MpdMpQch0kvtzt0G2b1DvFErYdRhNc=;
-        b=L9bwX/xeQkU3xyHy+IEe5bbQh/+iZadoGnuFOLyMpfFePptHJkDwJ8uTqhTt1XseYb
-         4fMBbLH9TIkFQsmhDAelQqFNDB43XNpBJ7ANWdbnHRs/ioxJ5aqUxk6fexNPwTi55ecM
-         NocsWpSHj5QlZoTPjcUFyXWxm+EHD1i9s8rXFkJ74UH//GIWIcFJMo4jI6Sv8paZveg6
-         E2a5QfZeLEbHMZpNRhG4vDahGCwb2s8WU2AlFwqDAwroGyveU1+9YhG+jMsXRZX88U4Q
-         3LSzOnFcPBpHPGm4BBGIStIMVDgWFDIePEwu6qnSlSdtskNAbZfD43KGeeMR2yBskxrS
-         GRGw==
-X-Gm-Message-State: AOAM533MNhEH+GqnOgQFDnJtER7IsU2rq5SdsAUVX/33F+zMYhOiRMii
-        t0soi3AzZXzTP/A0Hso8dnUtKl55AfJjzlcwyYA=
-X-Google-Smtp-Source: ABdhPJx3ykm6Ub65Kx8LhCpIKFpTdhfVUAcZc+q11JZ3cp6vqbutIRcmG4ddusoIvOVs33lmOHKkpd/Cgv2loKNf/9k=
-X-Received: by 2002:a25:df55:: with SMTP id w82mr1100249ybg.135.1606957059549;
- Wed, 02 Dec 2020 16:57:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20201202075438.GA35516@spblnx124.lan>
-In-Reply-To: <20201202075438.GA35516@spblnx124.lan>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 3 Dec 2020 01:57:28 +0100
-Message-ID: <CANiq72=5+COhecuTxn4J4WQ7_MkXzOo=hN3FHHzYekjB0vLY6Q@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: fix typos found in process, dev-tools, and
- doc-guide subdirectories
-To:     Andrew Klychkov <andrew.a.klychkov@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727948AbgLCBCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 20:02:18 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:36546 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727384AbgLCBCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 20:02:18 -0500
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx73_qOMhfRz0ZAA--.41109S2;
+        Thu, 03 Dec 2020 09:01:31 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Neil Horman <nhorman@tuxdriver.com>,
+        Seth Heasley <seth.heasley@intel.com>
+Cc:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] i2c: ismt: Use dma_set_mask_and_coherent
+Date:   Thu,  3 Dec 2020 09:01:30 +0800
+Message-Id: <1606957290-15260-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx73_qOMhfRz0ZAA--.41109S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFW8KFWfJrW8Kw4xAF4Utwb_yoWkCwb_tw
+        10qF92gFsYyr90v347KFW5Xr95t3yrZ34DZF1vy3WI9ry3uwsxJa17uFykAF4UZFsrJFya
+        g3WvyrZ5ArWjvjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7kYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z2
+        80aVCY1x0267AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_KwCF04k20xvY
+        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAI
+        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcV
+        CF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcZqXDUUUU
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 8:56 AM Andrew Klychkov
-<andrew.a.klychkov@gmail.com> wrote:
->
-> Fix four typos in kcov.rst, sphinx.rst, clang-format.rst, and embargoed-hardware-issues.rst
->
-> Signed-off-by: Andrew Klychkov <andrew.a.klychkov@gmail.com>
-> ---
->  Documentation/dev-tools/kcov.rst                    | 2 +-
->  Documentation/doc-guide/sphinx.rst                  | 2 +-
->  Documentation/process/clang-format.rst              | 2 +-
+'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
+an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
 
-Thanks!
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ drivers/i2c/busses/i2c-ismt.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-Acked-by: Miguel Ojeda <ojeda@kernel.org>
+diff --git a/drivers/i2c/busses/i2c-ismt.c b/drivers/i2c/busses/i2c-ismt.c
+index a35a27c..5f49830 100644
+--- a/drivers/i2c/busses/i2c-ismt.c
++++ b/drivers/i2c/busses/i2c-ismt.c
+@@ -903,16 +903,12 @@ ismt_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		return -ENODEV;
+ 	}
+ 
+-	if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) != 0) ||
+-	    (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64)) != 0)) {
+-		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) != 0) ||
+-		    (pci_set_consistent_dma_mask(pdev,
+-						 DMA_BIT_MASK(32)) != 0)) {
++	if (dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(64)) != 0)
++		if (dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(32)) != 0) {
+ 			dev_err(&pdev->dev, "pci_set_dma_mask fail %p\n",
+ 				pdev);
+ 			return -ENODEV;
+ 		}
+-	}
+ 
+ 	err = ismt_dev_init(priv);
+ 	if (err)
+-- 
+2.1.0
 
-Cheers,
-Miguel
