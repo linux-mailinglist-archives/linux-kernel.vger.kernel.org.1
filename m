@@ -2,135 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60DD2CDC28
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:16:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B3B2CDC2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501977AbgLCRPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:15:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731419AbgLCRPF (ORCPT
+        id S1731523AbgLCRQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:16:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50782 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726167AbgLCRQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:15:05 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 142CBC061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 09:14:25 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id p6so1494802plr.7
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 09:14:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=jpxIDRJby02bDSmzqib9oh8ZXDBqI+2pH5k0P2lzdWM=;
-        b=aRJu1HO4xnNzb8jocw95sh/+CjsELYLpn2jhaJctdiBvV0Fo/IKe2d9DUjnFTVLurX
-         Zz5jY6puhccVi4/XYJcF7M1WWjBZ/WYrYvOH0BlxpJnlRQ5Gv20I5Qa54qDavxIpMqu7
-         46YMj6QXtaEh429/CwE53Heyk8rCED0kC2GVSiksY3g51x/NcNUwhV8nC9XoV+cO/mxt
-         4h3T5yaHfoFjomEoJs048LrdfUJhUseSC4iy7RdIuoRUVb60jBp4vPTph+8LXJR4h17K
-         q4oZzEwHYNz5a1MVWTTRm26Dfo5pZpVJIp2icQJRZ7CVgm0Yy3vM/31Kuj9RXfgsUNyL
-         FvEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=jpxIDRJby02bDSmzqib9oh8ZXDBqI+2pH5k0P2lzdWM=;
-        b=HbmVb1XjBkQgOi3YbfVZfID/J2rNVdtIYqYOYDb7KyDUx46zFdwKwM/kU0JHrIyAHM
-         UcjNOuTajHqnW6HdvXSWn3RHS9Da1O2a9ALi40NWnbUI8hcJHM8EKHCQLsKv8ZeTe/Hj
-         9keXR99B/ZWfzFWwxk8bWEXG9d/Pd1o9mo5W8xsl3ozNm78RKq9sh+y+fjt05pMMfqm9
-         DfNYTDbAyDJ8nRKev9e4RpM6rV3WYu1MUbj4O/38rS3qN8MVTBm7gCiYiPsdWc1swTLr
-         ML09p1+6E/wmL1q4baVz7Br002m7YGKTjq9geThE9k5NlFA0/KwFo/KVDw2QDXmtRhQa
-         LzVQ==
-X-Gm-Message-State: AOAM532UPMENLLtKCEwI0+HQ9s1A2fXFOtimbnyk+C/U2S2W3T2tJ2fx
-        BmpiNlfeqfbpi4I1LbeV2zXGxw==
-X-Google-Smtp-Source: ABdhPJwE4etOoyGMx9UOKs7yAhw7hgOhsifHtas0tGfE12clfk9l2UH+s+JZSLZnFMT+6hGUVEc2Aw==
-X-Received: by 2002:a17:90a:5988:: with SMTP id l8mr120805pji.82.1607015664612;
-        Thu, 03 Dec 2020 09:14:24 -0800 (PST)
-Received: from ?IPv6:2600:1010:b02c:6432:59d6:b4ed:32aa:4315? ([2600:1010:b02c:6432:59d6:b4ed:32aa:4315])
-        by smtp.gmail.com with ESMTPSA id t9sm30146pjq.46.2020.12.03.09.14.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 09:14:23 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb option
-Date:   Thu, 3 Dec 2020 09:14:22 -0800
-Message-Id: <E6BC2596-6087-49F2-8758-CA5598998BBE@amacapital.net>
-References: <20201203170332.GA27195@oc3871087118.ibm.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
-In-Reply-To: <20201203170332.GA27195@oc3871087118.ibm.com>
-To:     Alexander Gordeev <agordeev@linux.ibm.com>
-X-Mailer: iPhone Mail (18B121)
+        Thu, 3 Dec 2020 12:16:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607015681;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3iwcG8+s5F+FEk/BmczMtBbT8rfaBFSaW5JqYcJIHRE=;
+        b=eLsF3hDwmWhWNXBSb3hILCzFIxIFy60dPBnzlTQkaCoDmmLEN15jFD2sFO1m0J48yu3XPM
+        FH7IgdvLRtR/EJEWPedZ2AYIQ++kw8ZEFYevo7szFZdt8Y7+rZJSVBbvohqYFDFh4ndVj/
+        NafepwG4RsV7UVH83cU0fxbiyB5gQH4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-580-tNDDupLyM1a6eS7RCtlSKA-1; Thu, 03 Dec 2020 12:14:39 -0500
+X-MC-Unique: tNDDupLyM1a6eS7RCtlSKA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B33CAFA88;
+        Thu,  3 Dec 2020 17:14:36 +0000 (UTC)
+Received: from rtux.redhat.com (unknown [10.40.196.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DCBC260BFA;
+        Thu,  3 Dec 2020 17:14:32 +0000 (UTC)
+From:   Alexey Klimov <aklimov@redhat.com>
+To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Cc:     peterz@infradead.org, yury.norov@gmail.com, tglx@linutronix.de,
+        jobaker@redhat.com, audralmitchel@gmail.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, rafael@kernel.org, tj@kernel.org,
+        lizefan@huawei.com, qais.yousef@arm.com, hannes@cmpxchg.org,
+        klimov.linux@gmail.com
+Subject: [RFC][PATCH] cpu/hotplug: wait for cpuset_hotplug_work to finish on cpu online
+Date:   Thu,  3 Dec 2020 17:14:31 +0000
+Message-Id: <20201203171431.256675-1-aklimov@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When a CPU offlined and onlined via device_offline() and device_online()
+the userspace gets uevent notification. If, after receiving uevent,
+userspace executes sched_setaffinity() on some task trying to move it
+to a recently onlined CPU, then it will fail with -EINVAL. Userspace needs
+to wait around 5..30 ms before sched_setaffinity() will succeed for
+recently onlined CPU after receiving uevent.
+
+If in_mask for sched_setaffinity() has only recently onlined CPU, it
+quickly fails with such flow:
+
+  sched_setaffinity()
+    cpuset_cpus_allowed()
+      guarantee_online_cpus()   <-- cs->effective_cpus mask does not
+                                        contain recently onlined cpu
+    cpumask_and()               <-- final new_mask is empty
+    __set_cpus_allowed_ptr()
+      cpumask_any_and_distribute() <-- returns dest_cpu equal to nr_cpu_ids
+      returns -EINVAL
+
+Cpusets are updated using workqueue from cpuset_update_active_cpus() which
+in its turn is called from cpu hotplug callback sched_cpu_activate() hence
+the delay observable by sched_setaffinity().
+Out of line uevent can be avoided if we will ensure that cpuset_hotplug_work
+has run to completion using cpuset_wait_for_hotplug() after onlining the
+cpu in cpu_up(). Unfortunately, the execution time of
+echo 1 > /sys/devices/system/cpu/cpuX/online roughly doubled with this
+change (on my test machine).
+
+Co-analyzed-by: Joshua Baker <jobaker@redhat.com>
+Signed-off-by: Alexey Klimov <aklimov@redhat.com>
+---
+
+The commit "cpuset: Make cpuset hotplug synchronous" would also get rid of the
+early uevent but it was reverted.
+
+The nature of this bug is also described here (with different consequences):
+https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
+
+Reproducer: https://gitlab.com/0xeafffffe/xlam
+
+It could be that I missed the correct place for cpuset synchronisation and it should
+be done in cpu_device_up() instead.
+I also in doubts if we need cpuset_wait_for_hotplug() in cpuhp_online_cpu_device()
+since an online uevent is sent there too.
+Currently with such change the reproducer code continues to work without issues.
+The idea is to avoid the situation when userspace receives the event about
+onlined CPU which is not ready to take tasks for a while after uevent.
 
 
-> On Dec 3, 2020, at 9:09 AM, Alexander Gordeev <agordeev@linux.ibm.com> wro=
-te:
->=20
-> =EF=BB=BFOn Mon, Nov 30, 2020 at 10:31:51AM -0800, Andy Lutomirski wrote:
->> other arch folk: there's some background here:
+ kernel/cpu.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
->=20
->>=20
->> power: Ridiculously complicated, seems to vary by system and kernel confi=
-g.
->>=20
->> So, Nick, your unconditional IPI scheme is apparently a big
->> improvement for power, and it should be an improvement and have low
->> cost for x86.  On arm64 and s390x it will add more IPIs on process
->> exit but reduce contention on context switching depending on how lazy
->=20
-> s390 does not invalidate TLBs per-CPU explicitly - we have special
-> instructions for that. Those in turn initiate signalling to other
-> CPUs, completely transparent to OS.
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 6ff2578ecf17..f39a27a7f24b 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -15,6 +15,7 @@
+ #include <linux/sched/smt.h>
+ #include <linux/unistd.h>
+ #include <linux/cpu.h>
++#include <linux/cpuset.h>
+ #include <linux/oom.h>
+ #include <linux/rcupdate.h>
+ #include <linux/export.h>
+@@ -1275,6 +1276,8 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
+ 	}
+ 
+ 	err = _cpu_up(cpu, 0, target);
++	if (!err)
++		cpuset_wait_for_hotplug();
+ out:
+ 	cpu_maps_update_done();
+ 	return err;
+-- 
+2.26.2
 
-Just to make sure I understand: this means that you broadcast flushes to all=
- CPUs, not just a subset?
-
->=20
-> Apart from mm_count, I am struggling to realize how the suggested
-> scheme could change the the contention on s390 in connection with
-> TLB. Could you clarify a bit here, please?
-
-I=E2=80=99m just talking about mm_count. Maintaining mm_count is quite expen=
-sive on some workloads.
-
->=20
->> TLB works.  I suppose we could try it for all architectures without
->> any further optimizations.  Or we could try one of the perhaps
->> excessively clever improvements I linked above.  arm64, s390x people,
->> what do you think?
->=20
-> I do not immediately see anything in the series that would harm
-> performance on s390.
->=20
-> We however use mm_cpumask to distinguish between local and global TLB
-> flushes. With this series it looks like mm_cpumask is *required* to
-> be consistent with lazy users. And that is something quite diffucult
-> for us to adhere (at least in the foreseeable future).
-
-You don=E2=80=99t actually need to maintain mm_cpumask =E2=80=94 we could sc=
-an all CPUs instead.
-
->=20
-> But actually keeping track of lazy users in a cpumask is something
-> the generic code would rather do AFAICT.
-
-The problem is that arches don=E2=80=99t agree on what the contents of mm_cp=
-umask should be.  Tracking a mask of exactly what the arch wants in generic c=
-ode is a nontrivial operation.
