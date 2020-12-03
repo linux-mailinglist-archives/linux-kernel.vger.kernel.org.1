@@ -2,164 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8062CCF10
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D94322CCF11
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729135AbgLCGTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:19:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728318AbgLCGTP (ORCPT
+        id S1728599AbgLCGVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:21:54 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8933 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgLCGVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 01:19:15 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4528DC061A4D;
-        Wed,  2 Dec 2020 22:18:35 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id y9so914280ilb.0;
-        Wed, 02 Dec 2020 22:18:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WWc60qRkgAP4/AhDOQSUVOyIFCAFSIZPZYbAmsVDLvA=;
-        b=EqpQt8WKlMC8JpSDIKOhSMtpE8OLP1oVgZoGnQCqrKr5aya3IfoFAIVVV7pxqHhBNC
-         vH8CZ69gqkbB/jsZcwclPIJpseIVlVfnBw5ef+COmtquSWN8IH+fFdTneGPeyDN7I11F
-         llHyti6dL8jqm+rZxrPMEhbLNGHgL2eNFOEHSD+qzFKO6bkF337ruSgWlIvBxljO78zQ
-         pbxUr0pR5FGT4C2OSJSx5NgMgSG5uyL2d0rCI1oXuHac1xlbrFAr9oSmyUCxfi0cW5Al
-         UYo62/Kvvdj1QNdaBCbNxOcjje6IVKc/7GoacsW9wP018ySMJhSQkl2LZR8gdUhZ/i0k
-         1C+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WWc60qRkgAP4/AhDOQSUVOyIFCAFSIZPZYbAmsVDLvA=;
-        b=Cx9Z67zY+YSWqiergWd5Oy9+XOzN+Hh5PqG0P8SjpfRbDp+cS7rzGHKZzZNwqoZlhA
-         9fp4W9mvPN9qzoHMGTRypjiZR0jhXzTtRucbRcD4ZL+1I3hYKotpfYN5lKXwQN1/2rpp
-         bLqERdAyW7UgkaY/FqleBVrleeJqsjkvr375XQ2+W0X8taEhsJ6+r47/TqiTvwFR8SEa
-         8N6SRim5bgN93k3MyXpIRNbaZfoEYy1ottOMvnFOBu6wo5xDncaURvkbh70hLMXbySSt
-         clnBtoI//9+6qCgiuAvrmitWGX+UBWWtDCqRj95FlUsqQh6R4Iges9EJ64ukROKN2iL0
-         5ahg==
-X-Gm-Message-State: AOAM5302uJOUbPdLCtM2MhWrsl83D71naepYL4ne6BvUO7fEdCqfLvc/
-        DkWoZl49734oMWzvlgWEt2Cr6q6pxyXstKhRMKI=
-X-Google-Smtp-Source: ABdhPJz36LCXTX0/SCIOBeXZg650dbCCwPENwVekcYOEKfG4AR3MNh3N57CJyu1yS3dMiCG4Jr+vOaeTZ+tl7lnJmvM=
-X-Received: by 2002:a92:da82:: with SMTP id u2mr1725751iln.137.1606976314613;
- Wed, 02 Dec 2020 22:18:34 -0800 (PST)
+        Thu, 3 Dec 2020 01:21:54 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cmm1F4g79zhYDB;
+        Thu,  3 Dec 2020 14:20:49 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 3 Dec 2020
+ 14:21:06 +0800
+Subject: Re: [f2fs-dev] [PATCH v7 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION
+ ioctl
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     Daeho Jeong <daehojeong@google.com>, <kernel-team@android.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20201030041035.394565-1-daeho43@gmail.com>
+ <20201030041035.394565-2-daeho43@gmail.com>
+ <dcf074e3-821c-6858-eb17-63dcc05e7039@huawei.com>
+ <X8h6XK6cYwXqGnV7@google.com> <X8iAyiB0RIgm/EgB@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <4ce24298-a531-723d-77a8-1a5eda181869@huawei.com>
+Date:   Thu, 3 Dec 2020 14:21:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
- <20201202160049.GD1447340@iweiny-DESK2.sc.intel.com> <CAJfpegt6w4h28VLctpaH46r2pkbcUNJ4pUhwUqZ-zbrOrXPEEQ@mail.gmail.com>
- <641397.1606926232@warthog.procyon.org.uk> <CAJfpegsQxi+_ttNshHu5MP+uLn3px9+nZRoTLTxh9-xwU8s1yg@mail.gmail.com>
- <X8flmVAwl0158872@kroah.com> <20201202204045.GM2842436@dread.disaster.area> <X8gBUc0fkdh6KK01@kroah.com>
-In-Reply-To: <X8gBUc0fkdh6KK01@kroah.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 3 Dec 2020 08:18:23 +0200
-Message-ID: <CAOQ4uxhNvTxEo_-wkHy-KO8Jhz0Amh-g2Nz+PzN_8OODWJPz7w@mail.gmail.com>
-Subject: Re: [PATCH V2] uapi: fix statx attribute value overlap for DAX & MOUNT_ROOT
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        David Howells <dhowells@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Sandeen <sandeen@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Xiaoli Feng <xifeng@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, Jan Kara <jack@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <X8iAyiB0RIgm/EgB@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > It seems like this can all be avoided simply by scheduling the
-> > automated fixes scans once the upstream kernel is released, not
-> > while it is still being stabilised by -rc releases. That way stable
-> > kernels get better tested fixes, they still get the same quantity of
-> > fixes, and upstream developers have some margin to detect and
-> > correct regressions in fixes before they get propagated to users.
->
-> So the "magic" -final release from Linus would cause this to happen?
-> That means that the world would go for 3 months without some known fixes
-> being applied to the tree?  That's not acceptable to me, as I started
-> doing this because it was needed to be done, not just because I wanted
-> to do more work...
->
+On 2020/12/3 14:08, Jaegeuk Kim wrote:
+> On 12/02, Jaegeuk Kim wrote:
+>> On 12/03, Chao Yu wrote:
+>>> Jaegeuk, not sure, is it too late to merge this cleanup into original patch?
+>>
+>> Let me merge this on top of tree. Thanks. :)
+> 
+> I integrated this into the original patch since I had to revise this commit. :(
+> ("f2fs: avoid race condition for shinker count")
 
-Nobody was trying to undermine the need for expediting important fixes
-into stable kernels. Quite the contrary.
-
-> > It also creates a clear demarcation between fixes and cc: stable for
-> > maintainers and developers: only patches with a cc: stable will be
-> > backported immediately to stable. Developers know what patches need
-> > urgent backports and, unlike developers, the automated fixes scan
-> > does not have the subject matter expertise or background to make
-> > that judgement....
->
-> Some subsystems do not have such clear demarcation at all.  Heck, some
-> subsystems don't even add a cc: stable to known major fixes.  And that's
-> ok, the goal of the stable kernel work is to NOT impose additional work
-> on developers or maintainers if they don't want to do that work.
->
-
-Greg,
-
-Please acknowledge that there is something to improve.
-Saying that some subsystems maintainers don't care is not a great
-argument for subsystem maintainers that do care and try to improve the process.
-
-I am speaking here both as a maintainer of a downstream stable kernel,
-who cares specifically about xfs fixes and as an upstream developer who
-"contributes" patches to stable kernels. And I am not a passive contributor
-to stable kernels. I try to take good care of overlayfs and fsnotify patches
-being properly routed to stable kernels, as well as prepping the patches
-for backport-ability during review and occasional backporting.
-I also try to help with auditing the AUTOSEL patch selection of xfs.
-
-The process can improve. This is an indisputable fact, because as contributors
-we want to improve the quality of the stable kernels but missing the
-tools to do so.
-
-As a downstream user of stable kernels I learned to wait out a few .y releases
-after xfs fixes have flowed in. This is possible because xfs stable
-fixes are not
-flowing that often.
-Do you see what happened? You did not make the problem go away, but pushed
-it down to your downstream users.
-I would not have complained unless I thought that we could do better.
-
-Here is a recent example, where during patch review, I requested NOT to include
-any stable backport triggers [1]:
-"...We should consider sending this to stable, but maybe let's merge
-first and let it
- run in master for a while before because it is not a clear and
-immediate danger..."
-
-This is just one patch and I put a mental trigger to myself to stop it
-during stable
-patch review if it gets selected, but you can see how this solution
-does not scale.
-
-As a developer and as a reviewer, I wish (as Dave implied) that I had a way to
-communicate to AUTOSEL that auto backport of this patch has more risk than
-the risk of not backporting. I could also use a way to communicate
-that this patch
-(although may fix a bug) should be "treated as a feature", meaning that it needs
-a full release cycle to stabilize should not see the light of day
-before the upstream
-.0 release. Some fixes are just like that.
-
-The question is how to annotate these changes.
-Thinking out loud:
-    Cc: stable@vger.kernel.org#v5.9<<v5.10
-    Cc: stable@vger.kernel.org#v5.9<<v5.10-rc5
-
-For patches that need to soak a few cycles in master or need to linger in
-master until the .0 release.
+It's fine to me. :)
 
 Thanks,
-Amir.
 
-[1] https://lore.kernel.org/linux-unionfs/CAOQ4uxiUTsXEdQsE275qxTh61tZOB+-wqCp6gaNLkOw5ueUJgw@mail.gmail.com/
+> 
+>>
+>>>
+>>>  From a5c63ec58e0cda6eb5d186b46942eea46422b7a9 Mon Sep 17 00:00:00 2001
+>>> From: Chao Yu <yuchao0@huawei.com>
+>>> Date: Thu, 3 Dec 2020 10:04:26 +0800
+>>> Subject: [PATCH] f2fs: remove f2fs_is_compress_algorithm_valid() for cleanup
+>>>
+>>> No logic changes.
+>>>
+>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>>> ---
+>>>   fs/f2fs/compress.c | 5 -----
+>>>   fs/f2fs/f2fs.h     | 5 -----
+>>>   fs/f2fs/file.c     | 2 +-
+>>>   3 files changed, 1 insertion(+), 11 deletions(-)
+>>>
+>>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+>>> index dfadbc78946c..869b047a4801 100644
+>>> --- a/fs/f2fs/compress.c
+>>> +++ b/fs/f2fs/compress.c
+>>> @@ -574,11 +574,6 @@ bool f2fs_is_compress_backend_ready(struct inode *inode)
+>>>   	return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
+>>>   }
+>>>
+>>> -bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
+>>> -{
+>>> -	return f2fs_cops[algorithm] != NULL;
+>>> -}
+>>> -
+>>>   static mempool_t *compress_page_pool;
+>>>   static int num_compress_pages = 512;
+>>>   module_param(num_compress_pages, uint, 0444);
+>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>> index b70c8d553439..17b45c2d2b04 100644
+>>> --- a/fs/f2fs/f2fs.h
+>>> +++ b/fs/f2fs/f2fs.h
+>>> @@ -3882,7 +3882,6 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
+>>>   int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool lock);
+>>>   void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
+>>>   bool f2fs_is_compress_backend_ready(struct inode *inode);
+>>> -bool f2fs_is_compress_algorithm_valid(unsigned char algorithm);
+>>>   int f2fs_init_compress_mempool(void);
+>>>   void f2fs_destroy_compress_mempool(void);
+>>>   void f2fs_do_decompress_pages(struct decompress_io_ctx *dic, bool verity);
+>>> @@ -3927,10 +3926,6 @@ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
+>>>   	/* not support compression */
+>>>   	return false;
+>>>   }
+>>> -static inline bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
+>>> -{
+>>> -	return false;
+>>> -}
+>>>   static inline struct page *f2fs_compress_control_page(struct page *page)
+>>>   {
+>>>   	WARN_ON_ONCE(1);
+>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>>> index 300355fe25f0..0453b441228d 100644
+>>> --- a/fs/f2fs/file.c
+>>> +++ b/fs/f2fs/file.c
+>>> @@ -4016,7 +4016,7 @@ static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+>>>   	F2FS_I(inode)->i_cluster_size = 1 << option.log_cluster_size;
+>>>   	f2fs_mark_inode_dirty_sync(inode, true);
+>>>
+>>> -	if (!f2fs_is_compress_algorithm_valid(option.algorithm))
+>>> +	if (!f2fs_is_compress_backend_ready(inode))
+>>>   		f2fs_warn(sbi, "compression algorithm is successfully set, "
+>>>   			"but current kernel doesn't support this algorithm.");
+>>>   out:
+>>> -- 
+>>> 2.26.2
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> On 2020/10/30 12:10, Daeho Jeong wrote:
+>>>> From: Daeho Jeong <daehojeong@google.com>
+>>>>
+>>>> Added a new F2FS_IOC_SET_COMPRESS_OPTION ioctl to change file
+>>>> compression option of a file.
+>>>>
+>>>> struct f2fs_comp_option {
+>>>>       u8 algorithm;         => compression algorithm
+>>>>                             => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
+>>>>       u8 log_cluster_size;  => log scale cluster size
+>>>>                             => 2 ~ 8
+>>>> };
+>>>>
+>>>> struct f2fs_comp_option option;
+>>>>
+>>>> option.algorithm = 1;
+>>>> option.log_cluster_size = 7;
+>>>>
+>>>> ioctl(fd, F2FS_IOC_SET_COMPRESS_OPTION, &option);
+>>>>
+>>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+>>>> ---
+>>>>
+>>>> v6: changed the function name of checking compression algorithm validity.
+>>>> v5: allowed to set algorithm which is not currently enabled by kernel.
+>>>> v4: changed commit message.
+>>>> v3: changed the error number more specific.
+>>>>       folded in fix for build breakage reported by kernel test robot
+>>>>       <lkp@intel.com> and Dan Carpenter <dan.carpenter@oracle.com>.
+>>>> v2: added ioctl description.
+>>>> ---
+>>>>    fs/f2fs/compress.c |  5 +++++
+>>>>    fs/f2fs/f2fs.h     |  7 ++++++
+>>>>    fs/f2fs/file.c     | 54 ++++++++++++++++++++++++++++++++++++++++++++++
+>>>>    3 files changed, 66 insertions(+)
+>>>>
+>>>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+>>>> index 7895186cc765..b0144670d320 100644
+>>>> --- a/fs/f2fs/compress.c
+>>>> +++ b/fs/f2fs/compress.c
+>>>> @@ -514,6 +514,11 @@ bool f2fs_is_compress_backend_ready(struct inode *inode)
+>>>>    	return f2fs_cops[F2FS_I(inode)->i_compress_algorithm];
+>>>>    }
+>>>> +bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
+>>>> +{
+>>>> +	return f2fs_cops[algorithm] != NULL;
+>>>> +}
+>>>> +
+>>>>    static mempool_t *compress_page_pool;
+>>>>    static int num_compress_pages = 512;
+>>>>    module_param(num_compress_pages, uint, 0444);
+>>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>>> index a33c90cf979b..70a8a2196888 100644
+>>>> --- a/fs/f2fs/f2fs.h
+>>>> +++ b/fs/f2fs/f2fs.h
+>>>> @@ -435,6 +435,8 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
+>>>>    						struct f2fs_sectrim_range)
+>>>>    #define F2FS_IOC_GET_COMPRESS_OPTION	_IOR(F2FS_IOCTL_MAGIC, 21,	\
+>>>>    						struct f2fs_comp_option)
+>>>> +#define F2FS_IOC_SET_COMPRESS_OPTION	_IOW(F2FS_IOCTL_MAGIC, 22,	\
+>>>> +						struct f2fs_comp_option)
+>>>>    /*
+>>>>     * should be same as XFS_IOC_GOINGDOWN.
+>>>> @@ -3915,6 +3917,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
+>>>>    int f2fs_truncate_partial_cluster(struct inode *inode, u64 from, bool lock);
+>>>>    void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
+>>>>    bool f2fs_is_compress_backend_ready(struct inode *inode);
+>>>> +bool f2fs_is_compress_algorithm_valid(unsigned char algorithm);
+>>>>    int f2fs_init_compress_mempool(void);
+>>>>    void f2fs_destroy_compress_mempool(void);
+>>>>    void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity);
+>>>> @@ -3945,6 +3948,10 @@ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
+>>>>    	/* not support compression */
+>>>>    	return false;
+>>>>    }
+>>>> +static inline bool f2fs_is_compress_algorithm_valid(unsigned char algorithm)
+>>>> +{
+>>>> +	return false;
+>>>> +}
+>>>>    static inline struct page *f2fs_compress_control_page(struct page *page)
+>>>>    {
+>>>>    	WARN_ON_ONCE(1);
+>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>>>> index bd52df84219d..be56702e4939 100644
+>>>> --- a/fs/f2fs/file.c
+>>>> +++ b/fs/f2fs/file.c
+>>>> @@ -3963,6 +3963,57 @@ static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
+>>>>    	return 0;
+>>>>    }
+>>>> +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+>>>> +{
+>>>> +	struct inode *inode = file_inode(filp);
+>>>> +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>>>> +	struct f2fs_comp_option option;
+>>>> +	int ret = 0;
+>>>> +
+>>>> +	if (!f2fs_sb_has_compression(sbi))
+>>>> +		return -EOPNOTSUPP;
+>>>> +
+>>>> +	if (!(filp->f_mode & FMODE_WRITE))
+>>>> +		return -EBADF;
+>>>> +
+>>>> +	if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg,
+>>>> +				sizeof(option)))
+>>>> +		return -EFAULT;
+>>>> +
+>>>> +	if (!f2fs_compressed_file(inode) ||
+>>>> +			option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
+>>>> +			option.log_cluster_size > MAX_COMPRESS_LOG_SIZE ||
+>>>> +			option.algorithm >= COMPRESS_MAX)
+>>>> +		return -EINVAL;
+>>>> +
+>>>> +	file_start_write(filp);
+>>>> +	inode_lock(inode);
+>>>> +
+>>>> +	if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
+>>>> +		ret = -EBUSY;
+>>>> +		goto out;
+>>>> +	}
+>>>> +
+>>>> +	if (inode->i_size != 0) {
+>>>> +		ret = -EFBIG;
+>>>> +		goto out;
+>>>> +	}
+>>>> +
+>>>> +	F2FS_I(inode)->i_compress_algorithm = option.algorithm;
+>>>> +	F2FS_I(inode)->i_log_cluster_size = option.log_cluster_size;
+>>>> +	F2FS_I(inode)->i_cluster_size = 1 << option.log_cluster_size;
+>>>> +	f2fs_mark_inode_dirty_sync(inode, true);
+>>>> +
+>>>> +	if (!f2fs_is_compress_algorithm_valid(option.algorithm))
+>>>> +		f2fs_warn(sbi, "compression algorithm is successfully set, "
+>>>> +			"but current kernel doesn't support this algorithm.");
+>>>> +out:
+>>>> +	inode_unlock(inode);
+>>>> +	file_end_write(filp);
+>>>> +
+>>>> +	return ret;
+>>>> +}
+>>>> +
+>>>>    long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>>>>    {
+>>>>    	if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
+>>>> @@ -4053,6 +4104,8 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>>>>    		return f2fs_sec_trim_file(filp, arg);
+>>>>    	case F2FS_IOC_GET_COMPRESS_OPTION:
+>>>>    		return f2fs_ioc_get_compress_option(filp, arg);
+>>>> +	case F2FS_IOC_SET_COMPRESS_OPTION:
+>>>> +		return f2fs_ioc_set_compress_option(filp, arg);
+>>>>    	default:
+>>>>    		return -ENOTTY;
+>>>>    	}
+>>>> @@ -4224,6 +4277,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>>>>    	case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
+>>>>    	case F2FS_IOC_SEC_TRIM_FILE:
+>>>>    	case F2FS_IOC_GET_COMPRESS_OPTION:
+>>>> +	case F2FS_IOC_SET_COMPRESS_OPTION:
+>>>>    		break;
+>>>>    	default:
+>>>>    		return -ENOIOCTLCMD;
+>>>>
+>>
+>>
+>> _______________________________________________
+>> Linux-f2fs-devel mailing list
+>> Linux-f2fs-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> .
+> 
