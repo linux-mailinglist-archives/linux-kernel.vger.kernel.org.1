@@ -2,146 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117432CE29A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B63A32CE2A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 00:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729050AbgLCXXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 18:23:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgLCXXN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:23:13 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C23C061A51
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 15:22:26 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id x24so2381366pfn.6
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 15:22:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S2evVpZUx4sUY7dWUP7rv8pY8q8EVmsWGDPP1XnlIFk=;
-        b=WXnuoy84v9PFoh0yGywWUCdQtzX/ZN11G5fmsPPcyfgwYUVDhtfFmSY2dF81SliPjo
-         bGT2Og1S58EhP/WctvWmW32jBosDdo15bXBZJJiLqUQldLXgdhmAHrkmEzcUdaQLrV/D
-         Hz62BG50vOqBLptXseMWP+t3YltwmaAnYLeY6t2NEc/PZR3RMLZyFIlGPkQ9NNj8Z4UI
-         m7auC5CxI3a+dxWFl0NLDGy3Du6wUoKzCEqBOwSiJvtYUdfsmqAd0XyLA8y9EovstVK4
-         UVCasyFJa2CyPrl2BhjfzyfS1QcHqDAQWsZ6kUBdo08n9iZckpe1jlYbBLFDtUrpr+P2
-         gGlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S2evVpZUx4sUY7dWUP7rv8pY8q8EVmsWGDPP1XnlIFk=;
-        b=X3pRQ1aM9HElLtDeCU7dJX+cSZG0QZ283LQbYx0thhPCWpOGzNXhRzofrgaKJN1UPR
-         WSYyds2wQbfhgBHjwS5BpIZym4405nSD0QNRN06VJ2BjTZKR5iOibk6Z7DWitWpdpYhe
-         C0pYyaE26R4jMXR1Z5czUFDp8XWx61RLed/hFR1hk3YfKS/b3KdFRUDWE7BB1/uNU/Yg
-         P+VgIrZ8VoZRdKAdgHx9QvxokZ2Gj/MMe15soq0Wmj4N6y7uMKaFwRLQtorrHGmdc6lv
-         PRJMFMU3/xZO4z8eHedJcjZpAHfH77ig1LCGUY/NEzWJIk4buAeLnDiLadNlhxcSr+5u
-         nYGQ==
-X-Gm-Message-State: AOAM532EBsqxE91lB/MUexeUcoKnUHAvsnFfkVmtaHvcUHaUZHS0nrie
-        nFPiPPBcHoRzbzZXhUOLsr8UQk+aCzRv+X08KxdSEA==
-X-Google-Smtp-Source: ABdhPJxjep3/3XGS8n/G3RXpwHMXIYzITsiAcNksBxCoP4xDH3vwycQLjF+qzMdX0EbBWQ9VwQ6iTP8PbGcXwG2WcRQ=
-X-Received: by 2002:a63:8f4f:: with SMTP id r15mr5060126pgn.381.1607037746077;
- Thu, 03 Dec 2020 15:22:26 -0800 (PST)
+        id S2387454AbgLCX06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 18:26:58 -0500
+Received: from mga14.intel.com ([192.55.52.115]:51637 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727243AbgLCX05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 18:26:57 -0500
+IronPort-SDR: Yf3+dfZKvDd7PQ1wdGguBXRe58ifEQg3rFmmswoH4WGR8u5oeDzaZXbNPc33pKfbhfZVEtgxVi
+ ounzaDpjtgdA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="172512667"
+X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
+   d="scan'208";a="172512667"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 15:26:17 -0800
+IronPort-SDR: vftLmPPF3Qnay6GIz6pnN6spag9yV5Oj/5MHQL5lEzVzPKira7RPf4hAEUSofjowxoI/NOeCr7
+ YN5WCiC1upcQ==
+X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
+   d="scan'208";a="482158928"
+Received: from rchatre-mobl1.jf.intel.com ([10.54.70.7])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 15:26:16 -0800
+From:   Reinette Chatre <reinette.chatre@intel.com>
+To:     tglx@linutronix.de, fenghua.yu@intel.com, bp@alien8.de,
+        tony.luck@intel.com
+Cc:     kuo-lang.tseng@intel.com, shakeelb@google.com,
+        valentin.schneider@arm.com, mingo@redhat.com, babu.moger@amd.com,
+        james.morse@arm.com, hpa@zytor.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>
+Subject: [PATCH 0/3] x86/resctrl: Fix a few issues in moving a task to a resource group
+Date:   Thu,  3 Dec 2020 15:25:47 -0800
+Message-Id: <cover.1607036601.git.reinette.chatre@intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
- <20201104005343.4192504-1-ndesaulniers@google.com> <20201104005343.4192504-5-ndesaulniers@google.com>
- <20201124172836.GA346213@rani.riverdale.lan>
-In-Reply-To: <20201124172836.GA346213@rani.riverdale.lan>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 3 Dec 2020 15:22:14 -0800
-Message-ID: <CAKwvOdkGvLrPr4pHi4LKCF5t74+wencdy7r38d3k_4pC9pQYwQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] Kbuild: implement support for DWARF v5
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Alistair Delva <adelva@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 9:28 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
->
-> On Tue, Nov 03, 2020 at 04:53:43PM -0800, Nick Desaulniers wrote:
-> > DWARF v5 is the latest standard of the DWARF debug info format.
-> >
-> > Feature detection of DWARF5 is onerous, especially given that we've
-> > removed $(AS), so we must query $(CC) for DWARF5 assembler directive
-> > support.  GNU `as` only recently gained support for specifying
-> > -gdwarf-5.
->
-> With gcc, using -gdwarf-5 even without -Wa,--gdwarf-5 results in
-> considerably smaller debug info. gcc does not seem to generate the .file 0
-> directive that causes older GNU as to barf.
->
-> Should the assembler support check be restricted to CC_IS_CLANG?
+When a user writes a task id to the resctrl "tasks" file the task will be
+moved to the resource group to which the destination "tasks" file belongs.
+Primarily this includes updating the task's closid and rmid in its task_struct
+and, for a running task, setting these new values in the PQR_ASSOC register
+that reflects the active closid and rmid on a CPU.
 
-No, because if LLVM_IAS=1 then the assembler support need not be checked.
+Moving a task to a new resource group is currently accomplished by
+updating its task_struct and queueing the work that updates the PQR_ASSOC
+register. This queued work will be run as soon as possible if the task is
+running or if the task is not running the queued work will be run when the task
+exits the kernel and returns to user mode (task_work_add(...,..., TWA_RESUME)).
 
->
-> >  /* Stabs debugging sections. */
-> >  #define STABS_DEBUG                                                  \
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index 03c494eefabd..c5b54ba51060 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -274,6 +274,14 @@ config DEBUG_INFO_DWARF4
-> >         It makes the debug information larger, but it significantly
-> >         improves the success of resolving variables in gdb on optimized code.
-> >
-> > +config DEBUG_INFO_DWARF5
-> > +     bool "Generate DWARF5 debuginfo"
-> > +     depends on $(cc-option,-gdwarf-5)
-> > +     depends on $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
-> > +     help
-> > +       Genereate dwarf5 debug info. Requires binutils 2.35+, gcc 5.1+, and
-> > +       gdb 8.0+.
-> > +
-> >  endchoice # "DWARF version"
->
-> Perhaps this can be expanded with some description of the advantages of
-> dwarf5 over dwarf4?
+Updating the PQR_ASSOC MSR as soon as possible on the CPU a moved task
+is running is the right thing to do. Queueing work for a task that is
+not running is unnecessary (the PQR_ASSOC MSR is already updated when the
+task is scheduled in) and causing system resource waste with the way in
+which it is implemented: Work to update the PQR_ASSOC register is queued
+every time the user writes a task id to the "tasks" file, even if the task
+already belongs to the resource group. This could result in multiple pending
+work items associated with a single task even if they are all identical and
+even though only a single update with most recent values is needed.
+Specifically, even if a task is moved between different resource groups
+while it is sleeping, then it is only the last move that is relevant but
+yet a work item is queued during each move.
+This unnecessary queueing of work items could result in significant system
+resource waste, especially on tasks sleeping for a long time. For example,
+as demonstrated by Shakeel Butt in [1] writing the same task id to the
+"tasks" file can quickly consume significant memory. The same problem
+(wasted system resources) occurs when moving a task between different
+resource groups. As pointed out by Valentin Schneider in [2] there is an
+additional issue with the way in which the queueing of work is done in that
+the task_struct update is currently done after the work is queued, resulting
+in a race with the register update possibly done before the data needed
+by the update is available.
 
-Will do.
+This series fixes all the above issues related to the queueing of the updates
+to the PQR_ASSOC register.
 
->
-> >
-> >  config DEBUG_INFO_BTF
-> > diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
-> > new file mode 100755
-> > index 000000000000..156ad5ec4274
-> > --- /dev/null
-> > +++ b/scripts/test_dwarf5_support.sh
-> > @@ -0,0 +1,9 @@
-> > +#!/bin/sh
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +
-> > +# Test that assembler accepts -gdwarf-5 and .file 0 directives, which were bugs
-> > +# in binutils < 2.35.
-> > +# https://sourceware.org/bugzilla/show_bug.cgi?id=25612
-> > +# https://sourceware.org/bugzilla/show_bug.cgi?id=25614
-> > +set -e
-> > +echo '.file 0 "filename"' | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
->
-> This also actually needs --gdwarf-5 to really check the support for the
-> option, but older versions should error on the .file 0 in any case.
+There is already a way in which resctrl moves tasks that can guide towards
+a solution. Within resctrl tasks are also moved between resource groups when
+a resource group is removed, also an action initiated by the user with "rmdir"
+of the resource group directory. In this case resctrl moves all tasks belonging
+to the removed group to the default resource group (in the case of a control
+group) or the parent resource group (in the case of a monitor resource
+group). These task moves are handled synchronously by resctrl with an
+immediate update of the PQR_ASSOC register on the CPU the task is currently
+running.
 
-Based on Jakub's feedback on the earlier thread
-https://lore.kernel.org/lkml/20201104121934.GT3788@tucnak/
-it sounds like the dwarf version also needs to be dumped since GCC 5 <
-x < 7 accepts --gdwarf-5, but did not produce DWARF Version 5 debug
-info.
+This fix follows the same update mechanism used as when resource groups are
+removed. The task's closid and rmid is updated in its task_struct as
+before. Instead of queueing work to update the PQR_ASSOC register with the
+new values this update is done immediately on the CPU where the task is
+currently running. If the task is not running there is no action since the
+register will be updated when the task is scheduled in.
 
+After patch 1 does some preparations, patch 2 updates
+the PQR_ASSOC MSR in synchronous way instead of in a callback.
+Patch 3 fixes the issue of unnecessary work when a task move is not needed
+(when user writes a task id to a "tasks" file to which it already belongs)
+by adding sanity checking to avoid costly move operations in the same resource
+group.
+
+Valentin's series in [2] ends by adding memory barriers to support the
+updating of the task_struct from one CPU and the usage of the task_struct data
+from another CPU. This work is still needed and as discussed with Valentin in
+that thread the work would be re-evaluated by him after seeing how this series
+turns out.
+
+[1]: https://lore.kernel.org/lkml/CALvZod7E9zzHwenzf7objzGKsdBmVwTgEJ0nPgs0LUFU3SN5Pw@mail.gmail.com/
+[2]: https://lore.kernel.org/lkml/20201123022433.17905-1-valentin.schneider@arm.com
+
+Fenghua Yu (3):
+  x86/resctrl: Move setting task's active CPU in a mask into helpers
+  x86/resctrl: Update PQR_ASSOC MSR synchronously when moving task to
+    resource group
+  x86/resctrl: Don't move a task to the same resource group
+
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 159 +++++++++++++------------
+ 1 file changed, 82 insertions(+), 77 deletions(-)
+
+
+base-commit: b65054597872ce3aefbc6a666385eabdf9e288da
 -- 
-Thanks,
-~Nick Desaulniers
+2.26.2
+
