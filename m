@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6402CE164
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D62F2CE173
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730182AbgLCWMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:12:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
+        id S1729584AbgLCWOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:14:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLCWMm (ORCPT
+        with ESMTP id S1727990AbgLCWOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:12:42 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC48C061A51
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 14:12:02 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id f18so4282539ljg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 14:12:02 -0800 (PST)
+        Thu, 3 Dec 2020 17:14:30 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B015C061A51;
+        Thu,  3 Dec 2020 14:13:50 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id o7so1958988pjj.2;
+        Thu, 03 Dec 2020 14:13:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QF1ANqOQBqZLcWlpFbE2WrA4M94QqjKls+F32sntMMY=;
-        b=T1kC1Kg7NGIo6tMwYyuuSIkbUM2VuNQz7qLiEEJZtDFibEewJn1anNB9g2y80hPxkX
-         iuvhJivzZgd6XEn3oUb3bwhkxuLp8C0ke4zyslQ0f29RT2lbodQCYp6n1erOyIs4LoZy
-         EUqgqNTRaA9IbgSoFHG/SrrM2zc5q8yCV93/QpCAmfQCi2kdb6q8EmgwRQYRFCvDvS8t
-         Bg2+nLT7Gmk2KOP7TRTnEDvSGvD7h+4Nk1weYi2DWGEOEuqKcxzWnMnngV0S8DBlk/Kk
-         ToaYG83BoQojs0cXLtz/RJ3CPGKDOIbfzrgK58ch/RGfQUP/Kdm39CIG8jJOESnFVjs8
-         0gIg==
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=eEmxf4uLm5+F9e4VAD5l7evhNTpueoEKmJf7NHBSgF8=;
+        b=UPHGqln5b2MVwkQJ9DPW4W+c/WOYPO4pDdYgSkuUBuPAEool6k1o9tCh15tbT9uHrK
+         Att6CPPLElr2Kizx6k8SBYlHiYybik+D2pHNYrEi6lvIa/OVMCqcofSbjZiFQCWNagWm
+         gpfCcQKaP4yJ2ZfKAd6w0i3b/1ey0c1DO4esRuIh3lZT4EjH/cz8VKCKfqyuShuaeYhd
+         x0YLD40CLwN02ITpU2TIn1dchmgPuXgxg9Hw3uQ8i6iktCUFcnDMyR1iVOdnAXdjnV9J
+         dlREfCYAI47ZTNuw4m686ZqB4sYG5SbZx+ElCOdLB971GcExKVCtR58og1IlVpDkeiRG
+         GVzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QF1ANqOQBqZLcWlpFbE2WrA4M94QqjKls+F32sntMMY=;
-        b=BL2zW16kmEIPej0dl9OR5cay94wpKEGUe+qpZtihtUP4V4HwFzBle4yTwVs1rvKXuS
-         mPPT9BYav2BcEzB/hC4GuEaWE76vx630lca0DYuHd8+uKiJ0n2NO/4MqKSnr+MS/bK/d
-         N2wGYmI6lLfl8dYEr1bYmsMEGxvPk03q/kGgNsFVqLvB+/wFHkEklgDeUNAXREMmY6sn
-         yH3LHLT0wh/He1ydhV8WStKfqtsYePZ96kOl8foybmQ/w719kpiqZ3xZmdZKE1ynvD5e
-         qycrwNjXC37Gk0xUIdANrGPTxxEY1zGiihMHRjft0tPYIQlNZzsq7Ia8XEADEIGa0Cxl
-         sDAQ==
-X-Gm-Message-State: AOAM533JJmFXD8UalUELQzuasxxGygJzUBgNUsuLjoI9ZgJPgztDlcyI
-        IAAh6R1x3aXvJtMRUW8jnWVVSBct/bfouOLjl5TRSA==
-X-Google-Smtp-Source: ABdhPJxZcU+lCfn5RqsAVafhGSLZ7zVxw6S18ukw3rg0CDcwpepwRKN8lz8uLajcxg5pr4bmkUNKYM+C/v1mj2n/svs=
-X-Received: by 2002:a2e:b16a:: with SMTP id a10mr2083994ljm.446.1607033520505;
- Thu, 03 Dec 2020 14:12:00 -0800 (PST)
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=eEmxf4uLm5+F9e4VAD5l7evhNTpueoEKmJf7NHBSgF8=;
+        b=FlNZE4b7yFP1PfUPA3ekk+GiwxBmDE118Ls7F0vMiP528wUfo4cjDJ6fm1CjSO3EPk
+         MBglHtPIi9TOx9yf4cFy23CgSfjdamvux5rzG+ameVYQhUveu0fYdS5cHBkhbMcOB2JS
+         ZpXXqibHveSV7orjuqOkvCYCOy0TdpV9D58xQfk5ZKNHfoNVGoVin4OXaQoQb3Btnu4B
+         0JrJ85C0Cu7fct3Aa8a2E9IVi1sSjtRSz5cOMTUvSnizpUk2cY3MtCq4AiFqJNxrGqCT
+         +lXuII9YQYEUxpsKDqDHyMrC1188UG0Ii0xjMfbUmCCm0WtWDmNcZpe3Hva3MG14MKNS
+         eOpw==
+X-Gm-Message-State: AOAM531YGhfHr/4Tzs/Wwok9GxO/I0T2YqWyjMupQUBdIxOOJQfpXuiX
+        jSgjSlq5RLOjHE+UjJbuqjQ=
+X-Google-Smtp-Source: ABdhPJz9kr0b40p8QhJurdR1DemR7fcJ+w7w3vdRbJJ4sHZwhGLmJpARUd3RcgIEF27oxEAuC/OzQg==
+X-Received: by 2002:a17:90a:d308:: with SMTP id p8mr1145716pju.110.1607033630047;
+        Thu, 03 Dec 2020 14:13:50 -0800 (PST)
+Received: from localhost ([2001:8004:1480:55d9:df22:9c5d:bdf7:7c2b])
+        by smtp.gmail.com with ESMTPSA id kb12sm318120pjb.2.2020.12.03.14.13.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 14:13:49 -0800 (PST)
+Date:   Fri, 04 Dec 2020 08:13:40 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [MOCKUP] x86/mm: Lightweight lazy mm refcounting
+To:     Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Rik van Riel <riel@surriel.com>,
+        Will Deacon <will@kernel.org>, X86 ML <x86@kernel.org>
+References: <7c4bcc0a464ca60be1e0aeba805a192be0ee81e5.1606972194.git.luto@kernel.org>
+        <20201203084448.GF2414@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201203084448.GF2414@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20201203220242.158165-1-mike.kravetz@oracle.com>
-In-Reply-To: <20201203220242.158165-1-mike.kravetz@oracle.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 3 Dec 2020 14:11:49 -0800
-Message-ID: <CALvZod44ZLA8U=ormvuKZhJ1vCJf8qOHMRSouih4E-oaLihV=Q@mail.gmail.com>
-Subject: Re: [PATCH] hugetlb_cgroup: fix offline of hugetlb cgroup with reservations
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Adrian Moreno <amorenoz@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <1607033145.hcppy9ndl4.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 2:04 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> Adrian Moreno was ruuning a kubernetes 1.19 + containerd/docker workload
-> using hugetlbfs.  In this environment the issue is reproduced by:
-> 1 - Start a simple pod that uses the recently added HugePages medium
->     feature (pod yaml attached)
-> 2 - Start a DPDK app. It doesn't need to run successfully (as in transfer
->     packets) nor interact with real hardware. It seems just initializing
->     the EAL layer (which handles hugepage reservation and locking) is
->     enough to trigger the issue
-> 3 - Delete the Pod (or let it "Complete").
->
-> This would result in a kworker thread going into a tight loop (top output):
->  1425 root      20   0       0      0      0 R  99.7   0.0   5:22.45
-> kworker/28:7+cgroup_destroy
->
-> 'perf top -g' reports:
-> -   63.28%     0.01%  [kernel]                    [k] worker_thread
->    - 49.97% worker_thread
->       - 52.64% process_one_work
->          - 62.08% css_killed_work_fn
->             - hugetlb_cgroup_css_offline
->                  41.52% _raw_spin_lock
->                - 2.82% _cond_resched
->                     rcu_all_qs
->                  2.66% PageHuge
->       - 0.57% schedule
->          - 0.57% __schedule
->
-> We are spinning in the do-while loop in hugetlb_cgroup_css_offline.
-> Worse yet, we are holding the master cgroup lock (cgroup_mutex) while
-> infinitely spinning.  Little else can be done on the system as the
-> cgroup_mutex can not be acquired.
->
-> Do note that the issue can be reproduced by simply offlining a hugetlb
-> cgroup containing pages with reservation counts.
->
-> The loop in hugetlb_cgroup_css_offline is moving page counts from the
-> cgroup being offlined to the parent cgroup.  This is done for each hstate,
-> and is repeated until hugetlb_cgroup_have_usage returns false.  The routine
-> moving counts (hugetlb_cgroup_move_parent) is only moving 'usage' counts.
-> The routine hugetlb_cgroup_have_usage is checking for both 'usage' and
-> 'reservation' counts.  Discussion about what to do with reservation
-> counts when reparenting was discussed here:
->
-> https://lore.kernel.org/linux-kselftest/CAHS8izMFAYTgxym-Hzb_JmkTK1N_S9tGN71uS6MFV+R7swYu5A@mail.gmail.com/
->
-> The decision was made to leave a zombie cgroup for with reservation
-> counts.  Unfortunately, the code checking reservation counts was
-> incorrectly added to hugetlb_cgroup_have_usage.
->
-> To fix the issue, simply remove the check for reservation counts.  While
-> fixing this issue, a related bug in hugetlb_cgroup_css_offline was noticed.
-> The hstate index is not reinitialized each time through the do-while loop.
-> Fix this as well.
->
-> Fixes: 1adc4d419aa2 ("hugetlb_cgroup: add interface for charge/uncharge hugetlb reservations")
-> Cc: <stable@vger.kernel.org>
-> Reported-by: Adrian Moreno <amorenoz@redhat.com>
-> Tested-by: Adrian Moreno <amorenoz@redhat.com>
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Excerpts from Peter Zijlstra's message of December 3, 2020 6:44 pm:
+> On Wed, Dec 02, 2020 at 09:25:51PM -0800, Andy Lutomirski wrote:
+>=20
+>> power: same as ARM, except that the loop may be rather larger since
+>> the systems are bigger.  But I imagine it's still faster than Nick's
+>> approach -- a cmpxchg to a remote cacheline should still be faster than
+>> an IPI shootdown.=20
+>=20
+> While a single atomic might be cheaper than an IPI, the comparison
+> doesn't work out nicely. You do the xchg() on every unlazy, while the
+> IPI would be once per process exit.
+>=20
+> So over the life of the process, it might do very many unlazies, adding
+> up to a total cost far in excess of what the single IPI would've been.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Yeah this is the concern, I looked at things that add cost to the
+idle switch code and it gets hard to justify the scalability improvement
+when you slow these fundmaental things down even a bit.
+
+I still think working on the assumption that IPIs =3D scary expensive=20
+might not be correct. An IPI itself is, but you only issue them when=20
+you've left a lazy mm on another CPU which just isn't that often.
+
+Thanks,
+Nick
