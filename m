@@ -2,112 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E42C2CCE22
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 05:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2B12CCE29
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgLCE6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 23:58:04 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:42519 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727023AbgLCE6D (ORCPT
+        id S1726149AbgLCFAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 00:00:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbgLCFAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 23:58:03 -0500
-Received: by mail-io1-f71.google.com with SMTP id m9so541406ioa.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 20:57:41 -0800 (PST)
+        Thu, 3 Dec 2020 00:00:33 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634ACC061A4D;
+        Wed,  2 Dec 2020 20:59:53 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id jx16so1490888ejb.10;
+        Wed, 02 Dec 2020 20:59:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bKGVg3cjoOrKRnpZuJPclcM34b/MdOnvCpoVioB4GiE=;
+        b=aA3dQ5LwD94gHv9tuPNuUTnydYahQYDyWyTmwK7CdUxoIyAgiHV3lFQIu9GU7MkGGm
+         +MEB1P9NgZdsBkS+/oy4qafMnAmQS67ktM2RFqAPox/x+zvdGzJz/uqei3aNltfJkjKh
+         M2j3O7a62J5kp0St7LaBLBaGqn1GQQEwjhL8NxHNq29hSZt9y6ubPgCLoulUvnSDDrKI
+         GInIO9fBexHoAGvIeMBSGPlok8o6C/LxRWEDAZhiXKmxUmYkKzksnKK/VT/YOsku3Voc
+         6inFezZ0jt4dz95SILjpO12BsoExFtRfUI5TenhIQTR00z+mAVEsVh/PUQZkIbXKno4o
+         uwuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=SAx9PhfeVrYqyaYNcf2KDgEtd7YkNHPWgeaoXP3xg7g=;
-        b=BmGiXBhU/AF42wOIrKufSwdL4IdXkd8LHPhjJe4mjYOLzOFaucOROCAm4qkpUe72F2
-         TsY9oDO0VN56If62HupNWSxESMbklEKIb2GUduIp+u+kOFshCIbd96jsk3ovwLnNfQdi
-         mfzd2jposoL2IfFMQxMljpaWnpOag2JJ1Jfz0TA16iyr9yjpzHpc8YV29T64gap9j3oJ
-         EKowMH3i+wVS4eDG/2Kn8I9+mEoqkWQaGQlrwAc+6JngeMHobLfE0sTSX2rD8KoY7D+8
-         Z0P246Rlug1gxQuLxtebCESiswgpUGgbwxeyFi0ufQCWl/MIlbQ9uxn2QOW5vwURNZqn
-         vDWw==
-X-Gm-Message-State: AOAM532LvTZ7Njuu2/INvVsoMYZSwdkUUKj3EzSgb2s/pcnh43Kp6aYa
-        BfVSBZiSNeRM2fRO+399J9xPrOmWHmlOuFAXEkG6bcyrl7oI
-X-Google-Smtp-Source: ABdhPJwP4pRRB626bjZtdMxRJmKWOuEe9/Q2JoyrOyxIhtBtvjYvgylyyfZSm3G8atEnSmGruJ/XF/OgM0A51uNne7HIIwvYXuUy
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bKGVg3cjoOrKRnpZuJPclcM34b/MdOnvCpoVioB4GiE=;
+        b=HrP3PbMD94GG39j0ILtlQypEBd5wK+2LDgins9p0cyWGHh7KflawAv1Cf4T0bwEuVS
+         DXL/dMEOofRUNjbkoGqNVTzeaCIpLnFBCH6ZwrBObdggByVKnOJe4HIXZqpZ6nC1WBjv
+         huvj+k50uFr2bEbDIIXFZz7NTuESH35e47wM/mjLEa4qwDtKDJWBUmByiY+iAcfpQ+zQ
+         AWt1JOmbhMwSP6Wctdd1uHTILVdWbC7zX3vWp4iw83XrcnxNW/OUYAqKFEQswAzddRsB
+         vkCL9vICLZ6Z2pmdDteEhdgfmQUshWjvt6FC/W/EiLyks27AUQFsfXPRY6fnDlfovFk5
+         E6ZQ==
+X-Gm-Message-State: AOAM533eicim+elmsySMOKMwtb9nI5GATpLMAopLHEAVc0UQ4Yyukqca
+        Wbt0f8GQ5ky+WnQMUvZBoyFXPyNVGjT53m52V58=
+X-Google-Smtp-Source: ABdhPJzy0wACDe5vcyUC6PWOelt+YwF9TErWrS5iOQVmq9w+OL/9iO2OP92bKuLVWAfv3guXpwKa7CwZ5v8vxT9DNh8=
+X-Received: by 2002:a17:906:cd06:: with SMTP id oz6mr997936ejb.25.1606971592123;
+ Wed, 02 Dec 2020 20:59:52 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:c2a:: with SMTP id q10mr1535959ilg.92.1606971436309;
- Wed, 02 Dec 2020 20:57:16 -0800 (PST)
-Date:   Wed, 02 Dec 2020 20:57:16 -0800
-In-Reply-To: <000000000000f6530105b48b2816@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a023c905b588314b@google.com>
-Subject: Re: WARNING in cm109_input_ev/usb_submit_urb
-From:   syzbot <syzbot+150f793ac5bc18eee150@syzkaller.appspotmail.com>
-To:     dmitry.torokhov@gmail.com, eli.billauer@gmail.com,
-        gregkh@linuxfoundation.org, gustavoars@kernel.org,
-        ingrassia@epigenesys.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com,
-        vulab@iscas.ac.cn
+References: <20201202182725.265020-1-shy828301@gmail.com> <20201202182725.265020-5-shy828301@gmail.com>
+ <20201203030104.GF1375014@carbon.DHCP.thefacebook.com>
+In-Reply-To: <20201203030104.GF1375014@carbon.DHCP.thefacebook.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 2 Dec 2020 20:59:40 -0800
+Message-ID: <CAHbLzkoUNuKHT_4w8QaWCQA3xs2vTW4Xii26a5vpVqxrDVSX_Q@mail.gmail.com>
+Subject: Re: [PATCH 4/9] mm: vmscan: use a new flag to indicate shrinker is registered
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Dec 2, 2020 at 7:01 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Wed, Dec 02, 2020 at 10:27:20AM -0800, Yang Shi wrote:
+> > Currently registered shrinker is indicated by non-NULL shrinker->nr_deferred.
+> > This approach is fine with nr_deferred atthe shrinker level, but the following
+> > patches will move MEMCG_AWARE shrinkers' nr_deferred to memcg level, so their
+> > shrinker->nr_deferred would always be NULL.  This would prevent the shrinkers
+> > from unregistering correctly.
+> >
+> > Introduce a new "state" field to indicate if shrinker is registered or not.
+> > We could use the highest bit of flags, but it may be a little bit complicated to
+> > extract that bit and the flags is accessed frequently by vmscan (every time shrinker
+> > is called).  So add a new field in "struct shrinker", we may waster a little bit
+> > memory, but it should be very few since there should be not too many registered
+> > shrinkers on a normal system.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  include/linux/shrinker.h |  4 ++++
+> >  mm/vmscan.c              | 13 +++++++++----
+> >  2 files changed, 13 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+> > index 0f80123650e2..0bb5be88e41d 100644
+> > --- a/include/linux/shrinker.h
+> > +++ b/include/linux/shrinker.h
+> > @@ -35,6 +35,9 @@ struct shrink_control {
+> >
+> >  #define SHRINK_STOP (~0UL)
+> >  #define SHRINK_EMPTY (~0UL - 1)
+> > +
+> > +#define SHRINKER_REGISTERED  0x1
+> > +
+> >  /*
+> >   * A callback you can register to apply pressure to ageable caches.
+> >   *
+> > @@ -66,6 +69,7 @@ struct shrinker {
+> >       long batch;     /* reclaim batch size, 0 = default */
+> >       int seeks;      /* seeks to recreate an obj */
+> >       unsigned flags;
+> > +     unsigned state;
+>
+> Hm, can't it be another flag? It seems like we have a plenty of free bits.
 
-HEAD commit:    3bb61aa6 Merge tag 'arm64-fixes' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10837e9d500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c3904d1cc0af152
-dashboard link: https://syzkaller.appspot.com/bug?extid=150f793ac5bc18eee150
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12b9c19d500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c422e3500000
+I thought about this too. But I was not convinced by myself that
+messing flags with state is a good practice. We may add more flags in
+the future, so we may end up having something like:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+150f793ac5bc18eee150@syzkaller.appspotmail.com
+flag
+flag
+flag
+state
+flag
+flag
+...
 
-------------[ cut here ]------------
-URB 00000000fa7e6a0b submitted while active
-WARNING: CPU: 0 PID: 8462 at drivers/usb/core/urb.c:378 usb_submit_urb+0xf57/0x1510 drivers/usb/core/urb.c:378
-Modules linked in:
-CPU: 0 PID: 8462 Comm: syz-executor064 Not tainted 5.10.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:usb_submit_urb+0xf57/0x1510 drivers/usb/core/urb.c:378
-Code: 5c 41 5d 41 5e 41 5f 5d e9 76 5b ff ff e8 c1 e9 04 fc c6 05 45 10 8b 07 01 48 c7 c7 a0 b6 5b 8a 4c 89 e6 31 c0 e8 69 08 d5 fb <0f> 0b e9 20 f1 ff ff e8 9d e9 04 fc eb 05 e8 96 e9 04 fc bb a6 ff
-RSP: 0018:ffffc90000ecf6d8 EFLAGS: 00010046
-RAX: ed1497fd940bbe00 RBX: ffff8880113d2108 RCX: ffff88801b269a40
-RDX: 0000000000000000 RSI: 0000000080000002 RDI: 0000000000000000
-RBP: 0000000000000a20 R08: ffffffff815d29e2 R09: ffffed1017383ffc
-R10: ffffed1017383ffc R11: 0000000000000000 R12: ffff8880113d2100
-R13: dffffc0000000000 R14: dffffc0000000000 R15: ffff88801d001850
-FS:  00000000013ac880(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000558946f0cf78 CR3: 0000000011c70000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- cm109_submit_buzz_toggle drivers/input/misc/cm109.c:351 [inline]
- cm109_toggle_buzzer_async drivers/input/misc/cm109.c:487 [inline]
- cm109_input_ev+0x1dc/0x3a0 drivers/input/misc/cm109.c:621
- input_handle_event+0x895/0x1510 drivers/input/input.c:376
- input_inject_event+0x1e8/0x280 drivers/input/input.c:471
- kd_sound_helper+0xfc/0x200 drivers/tty/vt/keyboard.c:242
- input_handler_for_each_handle+0xc8/0x160 drivers/input/input.c:2356
- kd_mksound+0x6c/0x140 drivers/tty/vt/keyboard.c:266
- do_con_trol drivers/tty/vt/vt.c:2152 [inline]
- do_con_write+0x3325/0xdee0 drivers/tty/vt/vt.c:2911
- con_write+0x20/0x40 drivers/tty/vt/vt.c:3255
- process_output_block drivers/tty/n_tty.c:595 [inline]
- n_tty_write+0xcc2/0x1160 drivers/tty/n_tty.c:2333
- do_tty_write drivers/tty/tty_io.c:962 [inline]
- tty_write+0x585/0x8f0 drivers/tty/tty_io.c:1046
- vfs_write+0x220/0xab0 fs/read_write.c:603
- ksys_write+0x11b/0x220 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x444839
-Code: e8 bc af 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 9b d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffeb806aaf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00000000004002e0 RCX: 0000000000444839
-RDX: 0000000000001006 RSI: 00000000200002c0 RDI: 0000000000000005
-RBP: 00000000006d0018 R08: 00000000004002e0 R09: 00000000004002e0
-R10: 000000000000000d R11: 0000000000000246 R12: 0000000000402460
-R13: 00000000004024f0 R14: 0000000000000000 R15: 0000000000000000
+Maybe we could use the highest bit for state?
 
+>
+> >
+> >       /* These are for internal use */
+> >       struct list_head list;
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 457ce04eebf2..0d628299e55c 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -378,6 +378,7 @@ void register_shrinker_prepared(struct shrinker *shrinker)
+> >       if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> >               idr_replace(&shrinker_idr, shrinker, shrinker->id);
+> >  #endif
+> > +     shrinker->state |= SHRINKER_REGISTERED;
+> >       up_write(&shrinker_rwsem);
+> >  }
+> >
+> > @@ -397,13 +398,17 @@ EXPORT_SYMBOL(register_shrinker);
+> >   */
+> >  void unregister_shrinker(struct shrinker *shrinker)
+> >  {
+> > -     if (!shrinker->nr_deferred)
+> > -             return;
+> > -     if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> > -             unregister_memcg_shrinker(shrinker);
+> >       down_write(&shrinker_rwsem);
+> > +     if (!shrinker->state) {
+> > +             up_write(&shrinker_rwsem);
+> > +             return;
+> > +     }
+> >       list_del(&shrinker->list);
+> > +     shrinker->state &= ~SHRINKER_REGISTERED;
+> >       up_write(&shrinker_rwsem);
+> > +
+> > +     if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> > +             unregister_memcg_shrinker(shrinker);
+> >       kfree(shrinker->nr_deferred);
+> >       shrinker->nr_deferred = NULL;
+> >  }
+> > --
+> > 2.26.2
+> >
