@@ -2,66 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F4D2CCB08
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E0B2CCB09
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 01:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729274AbgLCAe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 19:34:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
+        id S2387467AbgLCAfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 19:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726630AbgLCAe5 (ORCPT
+        with ESMTP id S1726024AbgLCAfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 19:34:57 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015BAC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 16:34:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=BSqvkZ6qretH2eghiZ1Eez1JnJWG5PoN6DJJDepZGPE=; b=yVheqf9B5iEktBwp6BUsG9CQdX
-        TuL0Ilx6ZialiPlU22DsLj68lbeU056cobFrz1l28/kZSBitfwejWMA5wQr0n+9cy0n2swy4XI27/
-        e6rR8sL9HKWQcy1Fql8GtH3K8Q5x+Oyiw7SD6+dw62nIcplOoJ6pRLA8JltOy6NfetnLX3shADGYX
-        9X1zvst/73jo7/ac5zyKbCW5GlWNCqcvmgp/RGf4dU3Yqw7yqySUBOQr8VCKlDMHqlk8bcl5Hqyzt
-        DLIbpKKCcy5tXO881OCOA0Dxuekyhi3BqMTQwUlyPMY5GcURrVllLt3wesmDQ/WDBK2jilrrduXoU
-        qAxbSWVw==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkcZa-0000Em-Tn; Thu, 03 Dec 2020 00:34:15 +0000
-Subject: Re: [PATCH] Documentation: fix typos found in process, dev-tools, and
- doc-guide subdirectories
-To:     Andrew Klychkov <andrew.a.klychkov@gmail.com>, corbet@lwn.net
-Cc:     linux-kernel@vger.kernel.org
-References: <20201202075438.GA35516@spblnx124.lan>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <45b007e6-9001-9018-49bf-1e1907686241@infradead.org>
-Date:   Wed, 2 Dec 2020 16:34:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 2 Dec 2020 19:35:01 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BB2C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 16:34:21 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id iq13so125084pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 16:34:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=L56VCJacW1q2c0bHUonnqO3sZEHGpPYCKrI7PJZeV18=;
+        b=bzscgACWYc3NUKhdAGji4SgKcfDJVJkF+yXxV6yxbdh1qhcafmxgf4Pu5euI16pCgT
+         kDAbPD/T8/TxwCo7vykXENNbWhmbWyLjTiY1+uJQzQPDFvZG4BhxDeVSWs28CkCSoO7G
+         slUhuLp3WEnD9UZHpRMUZFcc2juBUh9I3gybu70uOsPke6hmk4nq/WAIDiz7xsItS+OO
+         Ix5X3TxPKvD79KclsDJOi3H/MvnD3HtNmqPMU4PxttgGYhB4WKLuRV/WpSIlXccZ0sG6
+         R1fvITBHAzw0SdT34EpjWpjLZeKHyL8bBBwkjDeg6e2dmpdF6EooIzDpLZo5/eQfK2w1
+         LeAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=L56VCJacW1q2c0bHUonnqO3sZEHGpPYCKrI7PJZeV18=;
+        b=NdxECLCJBxZDeyYM/tOPJp0+994t3RvMdLz/7FOgh9x+k7j4ItwRxJBUnDZfCMf7wA
+         sgtFU9YRsIAkRwRfNowilkDIJr2Gq4Am3RSu2Wu96Fad78w8ny3GavieYXY62c9pIgJH
+         YNntn9rBWGV/qAGzjnPjux9lxDXjQBod9Dpl547eeafS75D+coLnj0cyMxPgenPNhnKw
+         vCM+hDnbPonWGCtNURUVSsG2edRS2MzhamLLBh/sdg+8h+O8mrABDfYAdc3NduWPHosc
+         4n4uvn6oTXXxQxBLsJefYzLKYLWyeYPCe8mWSHRN1zyAVguBEYXY8y6AKqbgxG+5IyJY
+         2MRw==
+X-Gm-Message-State: AOAM5300RiCnaMLQYvVCXSyX1Y2BNtyxPKFrgHoiOWhHGoyQbdXGk7N3
+        DiUWddgCoAGk8lDIs3xexIjLWg==
+X-Google-Smtp-Source: ABdhPJxqypXKe6FQ2p7bMz8nSZ4/SvwZtiHbun2SpE8LadQ6NSeXdctJSImynfpBWexsdCaeDUb9Zg==
+X-Received: by 2002:a17:90a:e2ce:: with SMTP id fr14mr527792pjb.89.1606955660397;
+        Wed, 02 Dec 2020 16:34:20 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id e2sm83742pjv.10.2020.12.02.16.34.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 16:34:19 -0800 (PST)
+Date:   Wed, 2 Dec 2020 16:34:12 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, joro@8bytes.org, bp@suse.de,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, srutherford@google.com,
+        brijesh.singh@amd.com, dovmurik@linux.vnet.ibm.com, tobin@ibm.com,
+        jejb@linux.ibm.com, frankeh@us.ibm.com, dgilbert@redhat.com
+Subject: Re: [PATCH v2 1/9] KVM: x86: Add AMD SEV specific Hypercall3
+Message-ID: <X8gyhCsEMf8QU9H/@google.com>
+References: <cover.1606782580.git.ashish.kalra@amd.com>
+ <b6bc54ed6c8ae4444f3acf1ed4386010783ad386.1606782580.git.ashish.kalra@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20201202075438.GA35516@spblnx124.lan>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b6bc54ed6c8ae4444f3acf1ed4386010783ad386.1606782580.git.ashish.kalra@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 11:54 PM, Andrew Klychkov wrote:
-> Fix four typos in kcov.rst, sphinx.rst, clang-format.rst, and embargoed-hardware-issues.rst
+On Tue, Dec 01, 2020, Ashish Kalra wrote:
+> From: Brijesh Singh <brijesh.singh@amd.com>
 > 
-> Signed-off-by: Andrew Klychkov <andrew.a.klychkov@gmail.com>
+> KVM hypercall framework relies on alternative framework to patch the
+> VMCALL -> VMMCALL on AMD platform. If a hypercall is made before
+> apply_alternative() is called then it defaults to VMCALL. The approach
+> works fine on non SEV guest. A VMCALL would causes #UD, and hypervisor
+> will be able to decode the instruction and do the right things. But
+> when SEV is active, guest memory is encrypted with guest key and
+> hypervisor will not be able to decode the instruction bytes.
+> 
+> Add SEV specific hypercall3, it unconditionally uses VMMCALL. The hypercall
+> will be used by the SEV guest to notify encrypted pages to the hypervisor.
+
+What if we invert KVM_HYPERCALL and X86_FEATURE_VMMCALL to default to VMMCALL
+and opt into VMCALL?  It's a synthetic feature flag either way, and I don't
+think there are any existing KVM hypercalls that happen before alternatives are
+patched, i.e. it'll be a nop for sane kernel builds.
+
+I'm also skeptical that a KVM specific hypercall is the right approach for the
+encryption behavior, but I'll take that up in the patches later in the series.
+
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: x86@kernel.org
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Reviewed-by: Steve Rutherford <srutherford@google.com>
+> Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 > ---
->  Documentation/dev-tools/kcov.rst                    | 2 +-
->  Documentation/doc-guide/sphinx.rst                  | 2 +-
->  Documentation/process/clang-format.rst              | 2 +-
->  Documentation/process/embargoed-hardware-issues.rst | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
-
-LGTM. Thanks.
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
--- 
-~Randy
-
+>  arch/x86/include/asm/kvm_para.h | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
+> index 338119852512..bc1b11d057fc 100644
+> --- a/arch/x86/include/asm/kvm_para.h
+> +++ b/arch/x86/include/asm/kvm_para.h
+> @@ -85,6 +85,18 @@ static inline long kvm_hypercall4(unsigned int nr, unsigned long p1,
+>  	return ret;
+>  }
+>  
+> +static inline long kvm_sev_hypercall3(unsigned int nr, unsigned long p1,
+> +				      unsigned long p2, unsigned long p3)
+> +{
+> +	long ret;
+> +
+> +	asm volatile("vmmcall"
+> +		     : "=a"(ret)
+> +		     : "a"(nr), "b"(p1), "c"(p2), "d"(p3)
+> +		     : "memory");
+> +	return ret;
+> +}
+> +
+>  #ifdef CONFIG_KVM_GUEST
+>  bool kvm_para_available(void);
+>  unsigned int kvm_arch_para_features(void);
+> -- 
+> 2.17.1
+> 
