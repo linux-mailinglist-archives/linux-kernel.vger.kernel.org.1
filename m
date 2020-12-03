@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D735A2CDA18
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCE72CDA2D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730964AbgLCP0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 10:26:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726820AbgLCP0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:26:03 -0500
-Date:   Thu, 3 Dec 2020 09:25:20 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607009122;
-        bh=t6uY6ro8Jkf/b2wDnMZ+UsDuM+Xx/9in/WQwjNSs57g=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=u/5ZqneflBgpH/J0WPKQMiC+LH9J+ai3mPOlIWHp59+o8tsRBJgzZiDzzydEr3Rkv
-         deVpHeb3/gSZZPXEJRRPRbRrRGY9JaP8GhRrNUlYqBq2xI7gT4xi4IGs9erolFT6mY
-         7zEZ7bs1Sp9uygmQTycQwcY0TewEZKqsQNPH4pi+tovI2v6hteMpGw5zmU8/BiP7UY
-         brI5TnPCri/b98dDTmpVNGPVunYeOxYB+AzCY4Gq0yyT8acwzwYoAYQkv6/LCg5l/R
-         oypADefLOyqgfyRIuldyzNfiJDHW1J8IgQ3XR1jcnLlZO9UyEKdHYzJKOFc3Psd6lp
-         s6yt7DGusPWsQ==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc:     "Surendrakumar Upadhyay, TejaskumarX" 
-        <tejaskumarx.surendrakumar.upadhyay@intel.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        "De Marchi, Lucas" <lucas.demarchi@intel.com>,
-        "Roper, Matthew D" <matthew.d.roper@intel.com>,
-        "Pandey, Hariom" <hariom.pandey@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>
-Subject: Re: [PATCH] x86/gpu: add JSL stolen memory support
-Message-ID: <20201203152520.GA1554214@bjorn-Precision-5520>
+        id S2387485AbgLCPgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 10:36:32 -0500
+Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:43799 "EHLO
+        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgLCPgc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 10:36:32 -0500
+X-Greylist: delayed 3419 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Dec 2020 10:36:27 EST
+Received: from [192.168.111.113] (p4fd978de.dip0.t-ipconnect.de [79.217.120.222])
+        (authenticated bits=0)
+        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 0B3Ece7L010499
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
+        Thu, 3 Dec 2020 15:38:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
+        s=unimail; t=1607006321;
+        bh=m06X/TIPZ3EDC1a7eYVn2cS1BRtNtu07ZviF30nWP28=;
+        h=To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=X/EJBPNUl7EqRHEHhu3LHxLr00diFcJHPGS7oo4yW7NFtZ0e2vKHBLilU/fpMdUzO
+         QsgztSQ8GNP9EaqiecZEaPYiAmtnc9AH/7k17mVbEhHZSFfJI4OEEQwLqxpxsYQdKB
+         CDv1D7hn3N+W2logSlvZOoP/TPatp8c85WEDIaBc=
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20190408083500.66759-1-alexander.lochmann@tu-dortmund.de>
+ <10cfbef1-994c-c604-f8a6-b1042fcc622f@tu-dortmund.de>
+ <20201203140405.GC441757@mit.edu>
+From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Subject: Re: [PATCH v3] Updated locking documentation for transaction_t
+Message-ID: <29d6de5d-4abc-e836-7b14-bb67d782a752@tu-dortmund.de>
+Date:   Thu, 3 Dec 2020 15:38:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <160698518967.3553.11319067086667823352@jlahtine-mobl.ger.corp.intel.com>
+In-Reply-To: <20201203140405.GC441757@mit.edu>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="0E02t77jjvJL2pXwjrDHLaZHwny6ypUXx"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 10:46:29AM +0200, Joonas Lahtinen wrote:
-> Quoting Bjorn Helgaas (2020-12-02 22:22:53)
-> > On Wed, Dec 02, 2020 at 05:21:58AM +0000, Surendrakumar Upadhyay, TejaskumarX wrote:
-> > > Yes it fails all the tests which are allocating from this stolen
-> > > memory bunch. For example IGT tests like "
-> > > igt@kms_frontbuffer_tracking@-[fbc|fbcpsr].* |
-> > > igt@kms_fbcon_fbt@fbc.* " are failing as they totally depend to work
-> > > on stolen memory.
-> 
-> That's just because we have de-duped the stolen memory detection code.
-> If it's not detected at the early quirks, it's not detected by the
-> driver at all.
-> 
-> So if the patch is not merged to early quirks, we'd have to refactor the
-> code to add alternative detection path to i915. Before that is done, the
-> failures are expected.
-> 
-> > I'm sure that means something to graphics developers, but I have no
-> > idea!  Do you have URLs for the test case source, outputs, dmesg log,
-> > lspci info, bug reports, etc?
-> 
-> The thing is, the bug reports for stuff like this would only start to
-> flow after Jasperlake systems are shipping widely and the less common
-> OEMs start integrating it to into strangely behaving BIOSes. Or that
-> is the assumption.
-> 
-> If it's fine to merge this through i915 for now with an Acked-by, like
-> the previous patches, that'd be great. We can start a discussion on if
-> the new platforms are affected anymore. But I'd rather not drop it
-> before we have that understanding, as the previous problems have
-> included boot time memory corruption.
-> 
-> Would that work?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--0E02t77jjvJL2pXwjrDHLaZHwny6ypUXx
+Content-Type: multipart/mixed; boundary="K5UZ4T9vvmf0OGeuXP2VHmznWhaznB3Iz";
+ protected-headers="v1"
+From: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+To: "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+ Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <29d6de5d-4abc-e836-7b14-bb67d782a752@tu-dortmund.de>
+Subject: Re: [PATCH v3] Updated locking documentation for transaction_t
+References: <20190408083500.66759-1-alexander.lochmann@tu-dortmund.de>
+ <10cfbef1-994c-c604-f8a6-b1042fcc622f@tu-dortmund.de>
+ <20201203140405.GC441757@mit.edu>
+In-Reply-To: <20201203140405.GC441757@mit.edu>
 
-Like I said, I'm not objecting if somebody else wants to apply this.
+--K5UZ4T9vvmf0OGeuXP2VHmznWhaznB3Iz
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-I'm just pointing out that there's a little bit of voodoo here because
-it's not clear what makes a BIOS strangely behaving or what causes
-boot-time memory corruption, and that means we don't really have any
-hope of resolving this stream of quirk updates.
 
-Bjorn
+
+On 03.12.20 15:04, Theodore Y. Ts'o wrote:
+> On Thu, Oct 15, 2020 at 03:26:28PM +0200, Alexander Lochmann wrote:
+>> Hi folks,
+>>
+>> I've updated the lock documentation according to our finding for
+>> transaction_t.
+>> Does this patch look good to you?
+>=20
+> I updated the annotations to match with the local usage, e.g:
+>=20
+> 	 * When commit was requested [journal_t.j_state_lock]
+>=20
+> became:
+>=20
+> 	 * When commit was requested [j_state_lock]What do you mean by local u=
+sage?
+The annotations of other members of transaction_t?
+
+Shouldn't the annotation look like this?
+[t_journal->j_state_lock]
+It would be more precise.
+>=20
+> Otherwise, looks good.  Thanks for the patch!
+Thanks!
+
+- Alex
+>=20
+> 	   	 	       	       - Ted
+>=20
+
+--=20
+Technische Universit=C3=A4t Dortmund
+Alexander Lochmann                PGP key: 0xBC3EF6FD
+Otto-Hahn-Str. 16                 phone:  +49.231.7556141
+D-44227 Dortmund                  fax:    +49.231.7556116
+http://ess.cs.tu-dortmund.de/Staff/al
+
+
+--K5UZ4T9vvmf0OGeuXP2VHmznWhaznB3Iz--
+
+--0E02t77jjvJL2pXwjrDHLaZHwny6ypUXx
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEElhZsUHzVP0dbkjCRWT7tBbw+9v0FAl/I+HAFAwAAAAAACgkQWT7tBbw+9v3H
+4RAApa649SmusVXmkjHe8wcmOyq1Da9GgieaQextJ0bvYvG1BGIL3aN9/5AZs+LWeMtybtEY52tx
+95Ywqa+rGlBgJTXsQvQiMun8ra/N8D2V3QRvJLfN8opiZv/yvPZf3mV0ySYxpNNJHcMZUF0hZFlP
+HuaBpyfLKshVDA5gKLqwEF83pQRhFeDYxDh6EiaspT7NX44SNJeHHGaeVl9HxeWgv7yF8uKap/61
+SKOm5+QiGJA93MXCO1vap6FyfoKA5xLwU5VqMpm5SF/oqNSyx8c/lW/wZmjc1nJU3ma51q57OlS8
+Fa2B1FaSL3LbFNqKYDWn1MuCc5Y85Xsod2zFWfH2lzrHqRMOoc/8v2qu6h3p4HwwKIDUeF5BBbdI
+Tz84I/aSezbV9gi+6vY5CvIypCbZ+NERikH2AtJeT/cpEQ9W0sPEANYY7VjkVQXRnyNEl9PD6ji9
+FoC9Lw8k0lJibkTN/sp0c6XekTz+QGjWXctroBFHpRjW5TvwQ7aCKiCN8Yq0iehPYPMxYAYigNtn
++hpucH2wgvpYoIdqFn5sKuMeBiOmVlwkmNeDbQdYEKd8PoydXAcuBdgF1hmglJJbzwJvJioTeAEB
+vo9ULMTmT8DCdionZjEya4tm9NdeOWl94X+z+huDb6Ga8ByVsCehESCsd8xfRBZktA0tK472D9aQ
++KI=
+=aT3U
+-----END PGP SIGNATURE-----
+
+--0E02t77jjvJL2pXwjrDHLaZHwny6ypUXx--
