@@ -2,149 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908A72CCC4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:12:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F622CCC4F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729627AbgLCCLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 21:11:25 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:35950 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgLCCLY (ORCPT
+        id S2387742AbgLCCLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 21:11:31 -0500
+Received: from relay12.mail.gandi.net ([217.70.178.232]:37779 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbgLCCLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 21:11:24 -0500
-Received: by mail-lf1-f65.google.com with SMTP id v14so454352lfo.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 18:11:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CODcqWU9dJfympMWTdQNPabcVNI+FJqAgdc2bmt5Tvw=;
-        b=TFDNVj+kAvjOQR3hqqAKwisSqi3bGJXbiuJXdAUKKXqvOCQaQjhFqBkHHNcSH+2nkl
-         ST5ZbY0+ZJSEcAVYm8pvlnkR4EmsPXEuPeBk/RydRcVXIRUcSPrkMUKtYJlWMsc3sLB6
-         ZGc0TUnpnEBjEPeLtMIlb5BV2Ets+usl62DmrRnMVHyg7eveb0ajcPn5GLbHrC7H1+lr
-         AsM9mW5quBlbNwHxVSNGdSFGOI8OS5uB07WE5NVrO0KfX52ommXUr4Rr7Ipl/K/I9Xi1
-         oNmNhDvfTgZx4rp+GVdOnp9T2TYO8PQvsGeK/0uOxPe5rSEhudwAJwjpD0CXwQZhX7Z8
-         P8SA==
-X-Gm-Message-State: AOAM532lDF28Jpw0PvrH5/Jf41sUSO9xSD5wk0f7lVRbi/53uHwxcYn3
-        Da6oIutZ5H9YJ8yqQFgPFcYlhYUnr/yYti7UEzE=
-X-Google-Smtp-Source: ABdhPJzPRSxTTqB+2U7FqTeT4eZS6v07ZYbhfU9w8S8pHbqKTbUppt4nmXMP3AL/EAHWXooROHDSDYr44fKI+HBGDHM=
-X-Received: by 2002:a19:38e:: with SMTP id 136mr367231lfd.593.1606961442392;
- Wed, 02 Dec 2020 18:10:42 -0800 (PST)
+        Wed, 2 Dec 2020 21:11:31 -0500
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id F102B200002;
+        Thu,  3 Dec 2020 02:10:47 +0000 (UTC)
+Date:   Thu, 3 Dec 2020 03:10:47 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] rtc: adapt allowed RTC update error
+Message-ID: <20201203021047.GG3544@piout.net>
+References: <20201201143835.2054508-1-mlichvar@redhat.com>
+ <20201201161224.GF5487@ziepe.ca>
+ <20201201171420.GN1900232@localhost>
+ <20201201173540.GH5487@ziepe.ca>
+ <87mtywe2zu.fsf@nanos.tec.linutronix.de>
+ <20201202162723.GJ5487@ziepe.ca>
+ <87a6uwdnfn.fsf@nanos.tec.linutronix.de>
+ <20201202205418.GN5487@ziepe.ca>
+ <874kl3eu8p.fsf@nanos.tec.linutronix.de>
+ <87zh2vd72z.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201202150205.35750-1-namhyung@kernel.org> <20201202161934.GL3021@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201202161934.GL3021@hirez.programming.kicks-ass.net>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 3 Dec 2020 11:10:30 +0900
-Message-ID: <CAM9d7cjMsofCLNbBWisd6d03q6Ucx2FG9xxV2mALp+gykDkAyg@mail.gmail.com>
-Subject: Re: [RFC 1/2] perf core: Add PERF_COUNT_SW_CGROUP_SWITCHES event
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87zh2vd72z.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 1:19 AM Peter Zijlstra <peterz@infradead.org> wrote:
+Hello Thomas,
 
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index 9a38f579bc76..5eb284819ee5 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -1174,25 +1174,19 @@ DECLARE_PER_CPU(struct pt_regs, __perf_regs[4]);
->   * which is guaranteed by us not actually scheduling inside other swevents
->   * because those disable preemption.
->   */
-> -static __always_inline void
-> -perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)
-> +static __always_inline void __perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)
+I'll take more time to reply more in depth to the whole email but...
 
-It'd be nice to avoid the __ prefix if possible.
+On 03/12/2020 02:14:12+0100, Thomas Gleixner wrote:
+> Aside of that the magic correction of the time which is written to the
+> RTC is completely bogus. Lets start with the interface and the two
+> callers of it:
+> 
+> static inline bool rtc_tv_nsec_ok(s64 set_offset_nsec,
+>                                   struct timespec64 *to_set,
+>                                   const struct timespec64 *now)
+> 
+> The callers are:
+> 
+>   sync_cmos_clock()   /* The legacy RTC cruft */
+>     struct timespec64 now;
+>     struct timespec64 adjust;
+>     long target_nsec = NSEC_PER_SEC / 2;
+> 
+>     ktime_get_real_ts64(&now);
+>     if (rtc_tv_nsec_ok(-1 * target_nsec, &adjust, &now)) {
+>        if (persistent_clock_is_local)
+> 	  adjust.tv_sec -= (sys_tz.tz_minuteswest * 60);
+>        rc = update_persistent_clock64(adjust);
+>     } 
+>        
+>   sync_rtc_clock()
+>     unsigned long target_nsec;          <- Signed unsigned ....
+>     struct timespec64 adjust, now;
+> 
+>     ktime_get_real_ts64(&now);
+> 
+>     adjust = now;                       <- Why the difference to the above?
+> 
+>     if (persistent_clock_is_local)      <- Again, why is the ordering different?
+> 	adjust.tv_sec -= (sys_tz.tz_minuteswest * 60);
+>     
+>     rc = rtc_set_ntp_time(adjust, &target_nsec)
+>        // int rtc_set_ntp_time(struct timespec64 now, unsigned long *target_nsec)
+> 
+>          struct timespec64 to_set;
+> 
+> 	 set_normalized_timespec64(&to_set, 0, -rtc->set_offset_nsec);
+> 	 *target_nsec = to_set.tv_nsec;      <- target_nsec = rtc->set_offset_nsec
+>                                                 because the timespec is normalized
+>                                                 ergo == rtc->set_offset_nsec
+>                                                 unless the set_offset_nsec would
+>                                                 be negative which makes at all.
+> 
+>          if (rtc_tv_nsec_ok(rtc->set_offset_nsec, &to_set, &now))
+>          	update_rtc(...);
+> 
+> So sync_cmos_clock hands in -(NSEC_PER_SEC/2) and the rtc cruft hands in
+> NSEC_PER_SEC/2 by default. The comment in drivers/rtc/class.c says:
+> 
+> drivers/rtc/class.c-    /* Drivers can revise this default after allocating the device. */
+> drivers/rtc/class.c:    rtc->set_offset_nsec =  NSEC_PER_SEC / 2;
+> 
+> but no driver ever bothered to change that value. Also the idea of
+> having this offset as type s64 is beyond my understanding. Why the heck
+> would any RTC require to set an offset which is _after_ the second
+> transition.
+> 
+
+This (no driver making use of set_offset_nsec) happened because it got
+applied without me agreeing to the change. I did complain at the time
+and RMK walked away.
+
+[...]
+
+> That said, can somebody answer the one million dollar question which
+> problem is solved by all of this magic nonsense?
+> 
+
+The goal was to remove the 500ms offset for all the RTCs but the
+MC146818 because there are RTC that will reset properly their counter
+when setting the time, meaning they can be set very precisely.
+
+IIRC, used in conjunction with rtc_hctosys which also adds
+inconditionnaly 500ms this can ends up with the system time
+being one second away from the wall clock time which NTP will take quite
+some time to remove.
+
+> If anyone involved seriously believes that any of this solves a real
+> world problem, then please come forth an make your case.
+> 
+> If not, all of this illusionary attempts to be "correct" can be removed
+> for good and the whole thing reduced to a
+> 
+>     update_rtc_plus_minus_a_second()
+> 
+> mechanism, which is exactly what we have today just without the code
+> which pretends to be *exact* or whatever.
+> 
+
+Coincidentally, I was going to revert those patches for v5.11. Also,
+honestly, I still don't understand why the kernel needs to set the RTC
+while userspace is very well equipped to do that. chrony is able to set
+the RTC time and it can do so precisely. It can even compute how that RTC is
+time drifting and that value can already be used to adjust the RTC
+crystal.
+
+From my tests, with some efforts, userspace can set the RTC time with a
+20µs precision, even on low end systems. To do so, it doesn't need
+set_offset_nsec.
+
+I also don't like hctosys, it is currently wrong but I can see use cases
+and now systemd relies on its presence so my plan is to fix it.
 
 
->  {
-> -       if (static_key_false(&perf_swevent_enabled[event_id])) {
-> -               struct pt_regs *regs = this_cpu_ptr(&__perf_regs[0]);
-> +       struct pt_regs *regs = this_cpu_ptr(&__perf_regs[0]);
->
-> -               perf_fetch_caller_regs(regs);
-> -               ___perf_sw_event(event_id, nr, regs, addr);
-> -       }
-> +       perf_fetch_caller_regs(regs);
-> +       ___perf_sw_event(event_id, nr, regs, addr);
->  }
->
->  extern struct static_key_false perf_sched_events;
->
-> -static __always_inline bool
-> -perf_sw_migrate_enabled(void)
-> +static __always_inline bool __perf_sw_enabled(int swevt)
-
-Ditto.
-
-
->  {
-> -       if (static_key_false(&perf_swevent_enabled[PERF_COUNT_SW_CPU_MIGRATIONS]))
-> -               return true;
-> -       return false;
-> +       return static_key_false(&perf_swevent_enabled[swevt]);
->  }
->
->  static inline void perf_event_task_migrate(struct task_struct *task)
-> @@ -1207,11 +1201,9 @@ static inline void perf_event_task_sched_in(struct task_struct *prev,
->         if (static_branch_unlikely(&perf_sched_events))
->                 __perf_event_task_sched_in(prev, task);
->
-> -       if (perf_sw_migrate_enabled() && task->sched_migrated) {
-> -               struct pt_regs *regs = this_cpu_ptr(&__perf_regs[0]);
-> -
-> -               perf_fetch_caller_regs(regs);
-> -               ___perf_sw_event(PERF_COUNT_SW_CPU_MIGRATIONS, 1, regs, 0);
-> +       if (__perf_sw_enabled(PERF_COUNT_SW_CPU_MIGRATIONS) &&
-> +           task->sched_migrated) {
-
-It seems task->sched_migrate is set only if the event is enabled,
-then can we just check the value here?
-
-
-> +               __perf_sw_event_sched(PERF_COUNT_SW_CPU_MIGRATIONS, 1, 0);
->                 task->sched_migrated = 0;
->         }
->  }
-> @@ -1219,7 +1211,13 @@ static inline void perf_event_task_sched_in(struct task_struct *prev,
->  static inline void perf_event_task_sched_out(struct task_struct *prev,
->                                              struct task_struct *next)
->  {
-> -       perf_sw_event_sched(PERF_COUNT_SW_CONTEXT_SWITCHES, 1, 0);
-> +       if (__perf_sw_enabled(PERF_COUNT_SW_CONTEXT_SWITCHES))
-> +               __perf_sw_event_sched(PERF_COUNT_SW_CONTEXT_SWITCHES, 1, 0);
-> +
-> +       if (__perf_sw_enabled(PERF_COUNT_SW_CGROUP_SWITCHES) &&
-> +           (task_css_check(prev, perf_event_cgrp_id, 1)->cgroup !=
-> +            task_css_check(next, perf_event_cgrp_id, 1)->cgroup))
-> +               __perf_sw_event_sched(PERF_COUNT_SW_CGROUP_SWITCHES, 1, 0);
-
-I was not clear about the RCU protection here.  Is it ok to access
-the task's css_set directly?
-
-Thanks,
-Namhyung
-
->
->         if (static_branch_unlikely(&perf_sched_events))
->                 __perf_event_task_sched_out(prev, next);
-> @@ -1475,8 +1473,6 @@ static inline int perf_event_refresh(struct perf_event *event, int refresh)
->  static inline void
->  perf_sw_event(u32 event_id, u64 nr, struct pt_regs *regs, u64 addr)    { }
->  static inline void
-> -perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)                    { }
-> -static inline void
->  perf_bp_event(struct perf_event *event, void *data)                    { }
->
->  static inline int perf_register_guest_info_callbacks
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
