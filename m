@@ -2,100 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D62F2CE173
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE59F2CE179
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729584AbgLCWOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:14:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
+        id S1727990AbgLCWPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727990AbgLCWOa (ORCPT
+        with ESMTP id S1726518AbgLCWPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:14:30 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B015C061A51;
-        Thu,  3 Dec 2020 14:13:50 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id o7so1958988pjj.2;
-        Thu, 03 Dec 2020 14:13:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=eEmxf4uLm5+F9e4VAD5l7evhNTpueoEKmJf7NHBSgF8=;
-        b=UPHGqln5b2MVwkQJ9DPW4W+c/WOYPO4pDdYgSkuUBuPAEool6k1o9tCh15tbT9uHrK
-         Att6CPPLElr2Kizx6k8SBYlHiYybik+D2pHNYrEi6lvIa/OVMCqcofSbjZiFQCWNagWm
-         gpfCcQKaP4yJ2ZfKAd6w0i3b/1ey0c1DO4esRuIh3lZT4EjH/cz8VKCKfqyuShuaeYhd
-         x0YLD40CLwN02ITpU2TIn1dchmgPuXgxg9Hw3uQ8i6iktCUFcnDMyR1iVOdnAXdjnV9J
-         dlREfCYAI47ZTNuw4m686ZqB4sYG5SbZx+ElCOdLB971GcExKVCtR58og1IlVpDkeiRG
-         GVzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=eEmxf4uLm5+F9e4VAD5l7evhNTpueoEKmJf7NHBSgF8=;
-        b=FlNZE4b7yFP1PfUPA3ekk+GiwxBmDE118Ls7F0vMiP528wUfo4cjDJ6fm1CjSO3EPk
-         MBglHtPIi9TOx9yf4cFy23CgSfjdamvux5rzG+ameVYQhUveu0fYdS5cHBkhbMcOB2JS
-         ZpXXqibHveSV7orjuqOkvCYCOy0TdpV9D58xQfk5ZKNHfoNVGoVin4OXaQoQb3Btnu4B
-         0JrJ85C0Cu7fct3Aa8a2E9IVi1sSjtRSz5cOMTUvSnizpUk2cY3MtCq4AiFqJNxrGqCT
-         +lXuII9YQYEUxpsKDqDHyMrC1188UG0Ii0xjMfbUmCCm0WtWDmNcZpe3Hva3MG14MKNS
-         eOpw==
-X-Gm-Message-State: AOAM531YGhfHr/4Tzs/Wwok9GxO/I0T2YqWyjMupQUBdIxOOJQfpXuiX
-        jSgjSlq5RLOjHE+UjJbuqjQ=
-X-Google-Smtp-Source: ABdhPJz9kr0b40p8QhJurdR1DemR7fcJ+w7w3vdRbJJ4sHZwhGLmJpARUd3RcgIEF27oxEAuC/OzQg==
-X-Received: by 2002:a17:90a:d308:: with SMTP id p8mr1145716pju.110.1607033630047;
-        Thu, 03 Dec 2020 14:13:50 -0800 (PST)
-Received: from localhost ([2001:8004:1480:55d9:df22:9c5d:bdf7:7c2b])
-        by smtp.gmail.com with ESMTPSA id kb12sm318120pjb.2.2020.12.03.14.13.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 14:13:49 -0800 (PST)
-Date:   Fri, 04 Dec 2020 08:13:40 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [MOCKUP] x86/mm: Lightweight lazy mm refcounting
-To:     Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Rik van Riel <riel@surriel.com>,
-        Will Deacon <will@kernel.org>, X86 ML <x86@kernel.org>
-References: <7c4bcc0a464ca60be1e0aeba805a192be0ee81e5.1606972194.git.luto@kernel.org>
-        <20201203084448.GF2414@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201203084448.GF2414@hirez.programming.kicks-ass.net>
+        Thu, 3 Dec 2020 17:15:53 -0500
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38924C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 14:15:13 -0800 (PST)
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id 7FBBCC009; Thu,  3 Dec 2020 23:15:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1607033711; bh=9RnW75V2ft6CYV2AWxcLJJxN6B3UJUIpbVBcN0U+JaY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OFVh/CZnaz9Ib5kGBsHdWXhDebaWor4yi8e7e+LvZdveeekJMS+aTgtILS52HamNf
+         iXHcwcyzmG6whJcJoECWtn+8y2EiweJigxrzBT0GRHxU7K4eC4NBaL5bs9m6FYrIhh
+         NWTn1mTOL42mKL0awS7Q0hMDPNZRkpKZgjMorBfoe+caJwHQ456leuec83W0ghRGaw
+         vYLhYkE9JOvNT4tFOiWzbIa2BeAGsbJwPctWOnPpe9VM1tz3uFV5mnRYxpB2gPFe/s
+         W4qnNSSTQilGnvY03q1xCewTFmBvuJW1aDAPPWMbYZAELAKQsWXQem+lWUV7D0I3Kn
+         dxZlFEbLyloxw==
+Date:   Thu, 3 Dec 2020 23:14:56 +0100
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     v9fs-developer@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] 9p update for 5.10-rc7 (restore splice ops)
+Message-ID: <20201203221456.GA20620@nautica>
+References: <20201203103315.GA3298@nautica>
+ <CAHk-=wigRSokT5YLRGH5Jyun1CwgYHR_1RMcoHjUyz7NJ8wG_g@mail.gmail.com>
 MIME-Version: 1.0
-Message-Id: <1607033145.hcppy9ndl4.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wigRSokT5YLRGH5Jyun1CwgYHR_1RMcoHjUyz7NJ8wG_g@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Peter Zijlstra's message of December 3, 2020 6:44 pm:
-> On Wed, Dec 02, 2020 at 09:25:51PM -0800, Andy Lutomirski wrote:
->=20
->> power: same as ARM, except that the loop may be rather larger since
->> the systems are bigger.  But I imagine it's still faster than Nick's
->> approach -- a cmpxchg to a remote cacheline should still be faster than
->> an IPI shootdown.=20
->=20
-> While a single atomic might be cheaper than an IPI, the comparison
-> doesn't work out nicely. You do the xchg() on every unlazy, while the
-> IPI would be once per process exit.
->=20
-> So over the life of the process, it might do very many unlazies, adding
-> up to a total cost far in excess of what the single IPI would've been.
+Linus Torvalds wrote on Thu, Dec 03, 2020:
+> Pulled.
 
-Yeah this is the concern, I looked at things that add cost to the
-idle switch code and it gets hard to justify the scalability improvement
-when you slow these fundmaental things down even a bit.
+Thanks!
 
-I still think working on the assumption that IPIs =3D scary expensive=20
-might not be correct. An IPI itself is, but you only issue them when=20
-you've left a lazy mm on another CPU which just isn't that often.
+> > (Thanks for letting me know my mails got flagged as spam last time, I've
+> > taken the time to setup dkim/dmarc which brings its share of problems
+> > with some mailing lists but hopefully will help here)
+> 
+> It looks good here, but I would suggest you edit your DKIM configuration a bit.
+> 
+> In particular, you have "List-ID" in your set of header files that
+> DKIM hashes, and that means that any mailing list that then adds that
+> header will destroy your DKIM hash.
 
-Thanks,
-Nick
+Hmm, good catch, but that one was on me just now -- I just resent the
+mail as I got it through the v9fs list to reuse recipients instead of
+the one I had sent before so I did send a bogus list-id, which happened
+to get signed.
+... looking at list archives it looks like majordomo took that to be a
+spam and didn't forward the mail at all, that's a discrete way to sneak
+a direct mail without any Cc!
+I was about to add it to ignored headers for signing but I'll just have
+to be careful about that now. Or figure how to make mutt drop it first.
+
+
+The problems I had with dkim are all lists that add footers so really
+not much to do about header filtering (normally lists would change the
+from when they do that or change subject, but for some reason the two
+I'm thinking of don't, one of the two even strips dkim headers so even
+the body length flag (l=) isn't helping)
+I haven't had problems with kernel lists which don't mess with key
+headers, good job admins.
+
+
+Anyway, it's a bit off topic -- good to know new mail didn't go to spam
+at least :)
+-- 
+Dominique
