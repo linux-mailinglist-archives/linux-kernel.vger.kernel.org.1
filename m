@@ -2,46 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9109D2CE237
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E85572CE23B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 23:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731923AbgLCWzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 17:55:13 -0500
-Received: from ms.lwn.net ([45.79.88.28]:57082 "EHLO ms.lwn.net"
+        id S1731834AbgLCWzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 17:55:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727957AbgLCWzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 17:55:13 -0500
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id CC51624D3;
-        Thu,  3 Dec 2020 22:54:32 +0000 (UTC)
-Date:   Thu, 3 Dec 2020 15:54:31 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Andrew Klychkov <andrew.a.klychkov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: fix typos in process/kernel-docs.rst
-Message-ID: <20201203155431.6c130000@lwn.net>
-In-Reply-To: <20201202074938.GA35075@spblnx124.lan>
-References: <20201202074938.GA35075@spblnx124.lan>
-Organization: LWN.net
+        id S1725986AbgLCWzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 17:55:44 -0500
+From:   Arnd Bergmann <arnd@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Cheng-Yi Chiang <cychiang@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Tzung-Bi Shih <tzungbi@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Guenter Roeck <groeck@chromium.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: cros_ec_codec: fix uninitialized memory read
+Date:   Thu,  3 Dec 2020 23:54:41 +0100
+Message-Id: <20201203225458.1477830-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Dec 2020 10:49:38 +0300
-Andrew Klychkov <andrew.a.klychkov@gmail.com> wrote:
+From: Arnd Bergmann <arnd@arndb.de>
 
-> Fix two typos in kernel-docs.rst
-> 
-> Signed-off-by: Andrew Klychkov <andrew.a.klychkov@gmail.com>
-> ---
->  Documentation/process/kernel-docs.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+gcc points out a memory area that is copied to a device
+but not initialized:
 
-Applied, thanks.
+sound/soc/codecs/cros_ec_codec.c: In function 'i2s_rx_event':
+arch/x86/include/asm/string_32.h:83:20: error: '*((void *)&p+4)' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+   83 |   *((int *)to + 1) = *((int *)from + 1);
 
-jon
+Initialize all the unused fields to zero.
+
+Fixes: 727f1c71c780 ("ASoC: cros_ec_codec: refactor I2S RX")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/soc/codecs/cros_ec_codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+index 58894bf47514..f33a2a9654e7 100644
+--- a/sound/soc/codecs/cros_ec_codec.c
++++ b/sound/soc/codecs/cros_ec_codec.c
+@@ -332,7 +332,7 @@ static int i2s_rx_event(struct snd_soc_dapm_widget *w,
+ 		snd_soc_dapm_to_component(w->dapm);
+ 	struct cros_ec_codec_priv *priv =
+ 		snd_soc_component_get_drvdata(component);
+-	struct ec_param_ec_codec_i2s_rx p;
++	struct ec_param_ec_codec_i2s_rx p = {};
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-- 
+2.27.0
+
