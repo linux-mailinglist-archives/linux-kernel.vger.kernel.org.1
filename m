@@ -2,131 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B682CDBE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:09:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBC92CDBE9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 18:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731468AbgLCRIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 12:08:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725918AbgLCRIa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:08:30 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586A8C061A4E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 09:07:44 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id v14so3793463lfo.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 09:07:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+MQyiUOcMt6gFRBNfnN0H07pYjhZgF4qm1+bZjvfjTY=;
-        b=Cx6oEw3asYjWnT8nYuCvr3UMa7sC7zqGfjZH+6NM/LRsctzlYBq4jWYT5t+CTuzy81
-         ufA/35gbWjoyI3GR4sHKJJ/dXIYNWsy/BxrQVF9OwKV8d6p4mG8Br2zZ9qAR1jhR1sR5
-         XFtBts/povF4EP6Ny/d1T5ZXYf5b7sm8jc1Iq+39jvlvaKhZ804pJUPhzTdzV+xw97qN
-         T4REXRSQqTMIj7T7Nw8GXA7uRLUe6tmfZ+hAOZ2AadWxtejiV4KjYgBy29l+9CK6RmgP
-         /m7bEmZBumCr+ghR9RTNKJtACi6yZ1mK18q6oD/IvZz6axncMy9glbpDQAxZ3Bj+bHAk
-         275w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+MQyiUOcMt6gFRBNfnN0H07pYjhZgF4qm1+bZjvfjTY=;
-        b=M0/FMXEaywvGKgfDsZ74f6gZWogbee72KQwc7ZvH4/0KiRqU09t5x2QOe9aaAcVKlp
-         IWkAyDxnCdW2vbEA1e08QkozTcErfk14IAngwc0rFAQgcbgziVhl8tEk4o8HDdsoSpB8
-         94TenHes/ULVZ6iZMqOFbbwZPWH7Ig4WVdk5cRyiUfx3jpGCYHS4AqugoA+w7Kx1ajhe
-         /cYcHObnahAgl6uZPEF054byhSEJjPZ+QL9Tq/FACsHRVAQDfSzXH0lhmfeVtLF98acg
-         FPeRRy28Eil2A9f46IBTAFbrsx+ga4fU1QUGmUwq8GGfH5kapq6J9xdi+xzTILkUqqj/
-         f2SQ==
-X-Gm-Message-State: AOAM532vMczZ0lnIRP/eUM4UGaRKugPEcFAelFsQ3hos7whu4bPfSrs8
-        8IC2fdM5evr6XZkzaBWjIM45T1EwyA5smC78ZEL/6A==
-X-Google-Smtp-Source: ABdhPJyeNpRimBzFqDhGioLOrE5ouq1kJk4Pby6GpAHMXjB75Cnj+2lIjlrUJWt+qddSs9EdyIaV3e9wcFRpPEdvaH8=
-X-Received: by 2002:a19:c815:: with SMTP id y21mr1656793lff.589.1607015262357;
- Thu, 03 Dec 2020 09:07:42 -0800 (PST)
+        id S2501925AbgLCRIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 12:08:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728074AbgLCRIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 12:08:35 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C993207AE;
+        Thu,  3 Dec 2020 17:07:54 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kks5A-00FjC8-59; Thu, 03 Dec 2020 17:07:52 +0000
 MIME-Version: 1.0
-References: <20201201213707.541432-1-samitolvanen@google.com> <20201203112622.GA31188@willie-the-truck>
-In-Reply-To: <20201203112622.GA31188@willie-the-truck>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Thu, 3 Dec 2020 09:07:30 -0800
-Message-ID: <CABCJKueby8pUoN7f5=6RoyLSt4PgWNx8idUej0sNwAi0F3Xqzw@mail.gmail.com>
-Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
-To:     Will Deacon <will@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 03 Dec 2020 17:07:52 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v6 1/2] arm64: kvm: Save/restore MTE registers
+In-Reply-To: <20201127152113.13099-2-steven.price@arm.com>
+References: <20201127152113.13099-1-steven.price@arm.com>
+ <20201127152113.13099-2-steven.price@arm.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <946b1e7b06c4d286a78cf61408e0fc8d@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 3:26 AM Will Deacon <will@kernel.org> wrote:
->
-> Hi Sami,
->
-> On Tue, Dec 01, 2020 at 01:36:51PM -0800, Sami Tolvanen wrote:
-> > This patch series adds support for building the kernel with Clang's
-> > Link Time Optimization (LTO). In addition to performance, the primary
-> > motivation for LTO is to allow Clang's Control-Flow Integrity (CFI)
-> > to be used in the kernel. Google has shipped millions of Pixel
-> > devices running three major kernel versions with LTO+CFI since 2018.
-> >
-> > Most of the patches are build system changes for handling LLVM
-> > bitcode, which Clang produces with LTO instead of ELF object files,
-> > postponing ELF processing until a later stage, and ensuring initcall
-> > ordering.
-> >
-> > Note that arm64 support depends on Will's memory ordering patches
-> > [1]. I will post x86_64 patches separately after we have fixed the
-> > remaining objtool warnings [2][3].
->
-> I took this series for a spin, with my for-next/lto branch merged in but
-> I see a failure during the LTO stage with clang 11.0.5 because it doesn't
-> understand the '.arch_extension rcpc' directive we throw out in READ_ONCE().
 
-I just tested this with Clang 11.0.0, which I believe is the latest
-11.x version, and the current Clang 12 development branch, and both
-work for me. Godbolt confirms that '.arch_extension rcpc' is supported
-by the integrated assembler starting with Clang 11 (the example fails
-with 10.0.1):
+> diff --git a/arch/arm64/include/asm/sysreg.h 
+> b/arch/arm64/include/asm/sysreg.h
+> index e2ef4c2edf06..b6668ffa04d9 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -569,7 +569,8 @@
+>  #define SCTLR_ELx_M	(BIT(0))
+> 
+>  #define SCTLR_ELx_FLAGS	(SCTLR_ELx_M  | SCTLR_ELx_A | SCTLR_ELx_C | \
+> -			 SCTLR_ELx_SA | SCTLR_ELx_I | SCTLR_ELx_IESB)
+> +			 SCTLR_ELx_SA | SCTLR_ELx_I | SCTLR_ELx_IESB | \
+> +			 SCTLR_ELx_ITFSB)
+> 
+>  /* SCTLR_EL2 specific flags. */
+>  #define SCTLR_EL2_RES1	((BIT(4))  | (BIT(5))  | (BIT(11)) | (BIT(16)) 
+> | \
+> diff --git a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+> b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+> index cce43bfe158f..45255ba60152 100644
+> --- a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+> +++ b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+> @@ -18,6 +18,11 @@
+>  static inline void __sysreg_save_common_state(struct kvm_cpu_context 
+> *ctxt)
+>  {
+>  	ctxt_sys_reg(ctxt, MDSCR_EL1)	= read_sysreg(mdscr_el1);
+> +	if (system_supports_mte()) {
 
-https://godbolt.org/z/1csGcT
+Please move the per-VM predicate to this patch so that it can be used
+not to save/restore the MTE registers if we don't need to.
 
-What does running clang --version and ld.lld --version tell you?
+> +		ctxt_sys_reg(ctxt, RGSR_EL1)	= read_sysreg_s(SYS_RGSR_EL1);
+> +		ctxt_sys_reg(ctxt, GCR_EL1)	= read_sysreg_s(SYS_GCR_EL1);
+> +		ctxt_sys_reg(ctxt, TFSRE0_EL1)	= read_sysreg_s(SYS_TFSRE0_EL1);
+> +	}
 
-> We actually check that this extension is available before using it in
-> the arm64 Kconfig:
->
->         config AS_HAS_LDAPR
->                 def_bool $(as-instr,.arch_extension rcpc)
->
-> so this shouldn't happen. I then realised, I wasn't passing LLVM_IAS=1
-> on my Make command line; with that, then the detection works correctly
-> and the LTO step succeeds.
->
-> Why is it necessary to pass LLVM_IAS=1 if LTO is enabled? I think it
-> would be _much_ better if this was implicit (or if LTO depended on it).
+Overall, I still don't understand how this is going to work once
+we have MTE in the kernel. You mentioned having the ability to
+create turn off the tag checks at times, but I don't see that
+in this patch (and I'm not sure we want that either).
 
-Without LLVM_IAS=1, Clang uses two different assemblers when LTO is
-enabled: the external GNU assembler for stand-alone assembly, and
-LLVM's integrated assembler for inline assembly. as-instr tests the
-external assembler and makes an admittedly reasonable assumption that
-the test is also valid for inline assembly.
+Thanks,
 
-I agree that it would reduce confusion in future if we just always
-enabled IAS with LTO. Nick, Nathan, any thoughts about this?
-
-Sami
+         M.
+-- 
+Jazz is not dead. It just smells funny...
