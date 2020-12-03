@@ -2,130 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A662CCE1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 05:56:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1251D2CCE24
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 05:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgLCEzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 23:55:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727023AbgLCEzo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 23:55:44 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814B1C061A4D;
-        Wed,  2 Dec 2020 20:55:03 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id g20so1560953ejb.1;
-        Wed, 02 Dec 2020 20:55:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hMZ/CoXr7rG2rPWo+uH3O4w1xYXh8+l7UsyrUayDNgc=;
-        b=MyeceJ/MnvUoQZlEkdJUF/PNAjmS9cb+O9H0M999APAmXuB1ykgu2WYO3kNjeT/dIT
-         x73rT0rD+oso8pvKkN7c4Rtib3zJRnnlsdI7rSXMbDmb1uQSxTmWYeMDfLJBZn9L5pV7
-         J7r+Q91L27e5jyXZuQj1zYzzH9TEZiA66oh1YZBO6xzEffHNXuehk7IkeKmyUe3T35ja
-         YEPkgIE4/a1kgS63sbTyApSrfGB1xGVcmxfJTcB0B8xjO0Hc8M5BUafrFENbPOPn/mDz
-         Uh0uOjH38vyf50ycfrws9lwYwFLHFbFVpBr0BqU9EbQMdiQbXTdf7lV6uYqNH83tYwa4
-         xfiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hMZ/CoXr7rG2rPWo+uH3O4w1xYXh8+l7UsyrUayDNgc=;
-        b=HWNN0ayhePCu2yzZ/vLY+PIc311M8FNNpjPw+1STiFI0NJcwLjboKDtHRmjy48c3Af
-         DKmhmWujEg9FIvsoCmpb0F7jAFFccVtddpnPT8ZqJOFTU+PHKBCf/Zow3RyJcGKSGZ9j
-         p6CjAWZwNpdIXhZ3Q9h3DfcFavs3lX6ngt8QtAhkWdvF243WUM7t6eFflEEBzJoqYw5i
-         a9LD1exjAS+nlt6jaBIO1psMrzwjgArFALivfRXCtWzQT9egG72P9rf3KAuUGQaqf+dR
-         5AqG8XAwjh/Jyw4gfxzqxhKwzpB2lU8uF3XljHnRSA/fjEQAsVba4p8f1boasiFqLlXC
-         P/Uw==
-X-Gm-Message-State: AOAM532XUMHZ+Tp/sbactqVcLNZfSw5gs47Ga+TQSB2UL+zsf410HLgz
-        1CdW7jUcqGmRlkQbnjWcpZ4ga2DnKHwlnxvN39o=
-X-Google-Smtp-Source: ABdhPJxjSVe1Wfr/oFwfvDkweZqNU2z+vvr9rMkC/SrFrwv5wL7TTPsdwmC61tKYQZqtrZ6bKzlDVbBEy7bU8eyVdNg=
-X-Received: by 2002:a17:906:cd06:: with SMTP id oz6mr989147ejb.25.1606971302241;
- Wed, 02 Dec 2020 20:55:02 -0800 (PST)
-MIME-Version: 1.0
-References: <20201202182725.265020-1-shy828301@gmail.com> <20201202182725.265020-6-shy828301@gmail.com>
- <20201203030632.GG1375014@carbon.DHCP.thefacebook.com>
-In-Reply-To: <20201203030632.GG1375014@carbon.DHCP.thefacebook.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 2 Dec 2020 20:54:50 -0800
-Message-ID: <CAHbLzkrU0X2LRRiG_rXdOf8tP7BR=46ccJR=3AM6CkWbscBWRw@mail.gmail.com>
-Subject: Re: [PATCH 5/9] mm: memcontrol: add per memcg shrinker nr_deferred
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728210AbgLCE6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 23:58:09 -0500
+Received: from m42-5.mailgun.net ([69.72.42.5]:36349 "EHLO m42-5.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728161AbgLCE6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 23:58:08 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606971468; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=HWuXebYv12wNMeG1Ca/OcvuDX/u/4CvTfnBhCKp9NuU=; b=Ra0sK4y2K1wOZcuV28lqOKnl6kOT1985EsjLJFD+gKp/F/eSHiX3abcHo4009/AjTXCYB6dh
+ uf3Qt2QMVgqXTR8lcyzWLAR1TiCNDqbNf1m7up7G773D5itFKMBXpWbD5KGRy6JxCLnijApl
+ HpvW3JyB+AVbdqq5XLhCeiZeIRk=
+X-Mailgun-Sending-Ip: 69.72.42.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5fc8703235b60e964a8d86ae (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Dec 2020 04:57:22
+ GMT
+Sender: zijuhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 419ACC43463; Thu,  3 Dec 2020 04:57:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E5688C43460;
+        Thu,  3 Dec 2020 04:57:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E5688C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zijuhu@codeaurora.org
+From:   Zijun Hu <zijuhu@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
+Subject: [PATCH v1] Bluetooth: btusb: support download nvm with different board id for wcn6855
+Date:   Thu,  3 Dec 2020 12:57:14 +0800
+Message-Id: <1606971434-23709-1-git-send-email-zijuhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 7:06 PM Roman Gushchin <guro@fb.com> wrote:
->
-> On Wed, Dec 02, 2020 at 10:27:21AM -0800, Yang Shi wrote:
-> > Currently the number of deferred objects are per shrinker, but some slabs, for example,
-> > vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
-> >
-> > The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
-> > excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
-> > may suffer from over shrink, excessive reclaim latency, etc.
-> >
-> > For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
-> > heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
-> > might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
-> >
-> > We observed this hit in our production environment which was running vfs heavy workload
-> > shown as the below tracing log:
-> >
-> > <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
-> > cache items 246404277 delta 31345 total_scan 123202138
-> > <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
-> > last shrinker return val 123186855
-> >
-> > The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
-> > This also resulted in significant amount of page caches were dropped due to inodes eviction.
-> >
-> > Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
-> > better isolation.
-> >
-> > When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
-> > would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
-> >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >  include/linux/memcontrol.h |   9 +++
-> >  mm/memcontrol.c            | 112 ++++++++++++++++++++++++++++++++++++-
-> >  mm/vmscan.c                |   4 ++
-> >  3 files changed, 123 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 922a7f600465..1b343b268359 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -92,6 +92,13 @@ struct lruvec_stat {
-> >       long count[NR_VM_NODE_STAT_ITEMS];
-> >  };
-> >
-> > +
-> > +/* Shrinker::id indexed nr_deferred of memcg-aware shrinkers. */
-> > +struct memcg_shrinker_deferred {
-> > +     struct rcu_head rcu;
-> > +     atomic_long_t nr_deferred[];
-> > +};
->
-> The idea makes total sense to me. But I wonder if we can add nr_deferred to
-> struct list_lru_one, instead of adding another per-memcg per-shrinker entity?
-> I guess it can simplify the code quite a lot. What do you think?
+From: Tim Jiang <tjiang@codeaurora.org>
 
-Aha, actually this exactly was what I did at the first place. But Dave
-NAK'ed this approach. You can find the discussion at:
-https://lore.kernel.org/linux-mm/20200930073152.GH12096@dread.disaster.area/.
+we define many nvm files for wcn6855 btsoc and host driver
+should find the correct nvm file based on board ID and then
+download it.
+
+Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+---
+ drivers/bluetooth/btusb.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 3bbe8f43e7fa..c5d4a3084282 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3469,12 +3469,14 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
+ #define QCA_SYSCFG_UPDATED	0x40
+ #define QCA_PATCH_UPDATED	0x80
+ #define QCA_DFU_TIMEOUT		3000
++#define QCA_FLAG_MULTI_NVM      0x80
+ 
+ struct qca_version {
+ 	__le32	rom_version;
+ 	__le32	patch_version;
+ 	__le32	ram_version;
+-	__le32	ref_clock;
++	__le16	board_id;
++	__le16	flag;
+ 	__u8	reserved[4];
+ } __packed;
+ 
+@@ -3657,8 +3659,14 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+ 	char fwname[64];
+ 	int err;
+ 
+-	snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+-		 le32_to_cpu(ver->rom_version));
++	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
++		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
++			 le32_to_cpu(ver->rom_version),
++			 le16_to_cpu(ver->board_id));
++	} else {
++		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
++			 le32_to_cpu(ver->rom_version));
++	}
+ 
+ 	err = request_firmware(&fw, fwname, &hdev->dev);
+ 	if (err) {
+@@ -3725,6 +3733,11 @@ static int btusb_setup_qca(struct hci_dev *hdev)
+ 			return err;
+ 	}
+ 
++	err = btusb_qca_send_vendor_req(udev, QCA_GET_TARGET_VERSION, &ver,
++					sizeof(ver));
++	if (err < 0)
++		return err;
++
+ 	if (!(status & QCA_SYSCFG_UPDATED)) {
+ 		err = btusb_setup_qca_load_nvm(hdev, &ver, info);
+ 		if (err < 0)
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+
