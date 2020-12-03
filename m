@@ -2,88 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4D42CCEC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:47:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE492CCECE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 06:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728431AbgLCFqW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 00:46:22 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:44625 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727937AbgLCFqW (ORCPT
+        id S1728531AbgLCFrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 00:47:35 -0500
+Received: from mail-02.mail-europe.com ([51.89.119.103]:41910 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728023AbgLCFrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:46:22 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UHNyBks_1606974337;
-Received: from 30.27.144.231(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UHNyBks_1606974337)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 03 Dec 2020 13:45:38 +0800
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH 0/3] arm64:msr: Add MSR driver
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-In-Reply-To: <7e9ae04f3394a85aa3b8fe8947a44009@kernel.org>
-Date:   Thu, 3 Dec 2020 13:45:36 +0800
-Cc:     catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
-        bjorn.andersson@linaro.org, shawnguo@kernel.org, gshan@redhat.com,
-        geert+renesas@glider.be, Anson.Huang@nxp.com, masahiroy@kernel.org,
-        michael@walle.cc, krzk@kernel.org, linux-kernel@vger.kernel.org,
-        vkoul@kernel.org, olof@lixom.net, vincenzo.frascino@arm.com,
-        ardb@kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <4513911D-77BF-4459-B8DF-9889395C16AC@linux.alibaba.com>
-References: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
- <5e7f7225982b2df63e62ea60ec632376@misterjones.org>
- <855BA92C-5B22-4F14-965A-B1F72A872B8D@linux.alibaba.com>
- <059ed4a8768ff3881005796cb4a10d5e@kernel.org>
- <6FA68A07-F718-46F5-81B4-586A5ED3E479@linux.alibaba.com>
- <7e9ae04f3394a85aa3b8fe8947a44009@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Thu, 3 Dec 2020 00:47:35 -0500
+Date:   Thu, 03 Dec 2020 05:46:03 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1606974369;
+        bh=TGhD9D270psDdoXJ2XkA/M3rk2f0vppeLABuncCXu/E=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=N7WuEgaN/Yv5rTEAyVzl1y547Y8ennIuP7rS7K16+i7c/9yrZvDfOEXBgMpXHqpdz
+         Lu01nEMP878GO2jMOW0f9/fgnhJ4mwMq3Qg+IuEUrkuDvDnCqjLqxtFd9QupOYLwqt
+         JI8Qf3zualaz/p9HkFEp5K4wrlyfaUv7uTAphNF4=
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+From:   =?utf-8?Q?Timon_B=C3=A4tz?= <timon.baetz@protonmail.com>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "~postmarketos/upstreaming@lists.sr.ht" 
+        <~postmarketos/upstreaming@lists.sr.ht>
+Reply-To: =?utf-8?Q?Timon_B=C3=A4tz?= <timon.baetz@protonmail.com>
+Subject: Re: [PATCH 3/3] ARM: dts: exynos: Fix charging regulator voltage and current for i9100
+Message-ID: <dDjo3R2SJ6CBCjg0YhsCPdh5JfEGhA--DHNNDqbWjVtTjZC5v7g7_523vqAzu_Ybf1Q-xfKeK47H483YQoVtpO3DI83OaR6c6mbvtC9S1Us=@protonmail.com>
+In-Reply-To: <20201202220430.GB135888@kozik-lap>
+References: <20201202203516.43053-1-timon.baetz@protonmail.com> <20201202203516.43053-3-timon.baetz@protonmail.com> <20201202220430.GB135888@kozik-lap>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wednesday, December 2, 2020 11:04 PM, Krzysztof Kozlowski <krzk@kernel.o=
+rg> wrote:
 
+> On Wed, Dec 02, 2020 at 09:07:28PM +0000, Timon Baetz wrote:
+>
+> > Set CHARGER current and CHARGER_CV voltage according to Galaxy S2 kerne=
+l
+> > fork.
+> >
+> > Signed-off-by: Timon Baetz timon.baetz@protonmail.com
+> >
+> > ------------------------------------------------------
+> >
+> > arch/arm/boot/dts/exynos4210-i9100.dts | 8 ++++----
+> > 1 file changed, 4 insertions(+), 4 deletions(-)
+> > diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts=
+/exynos4210-i9100.dts
+> > index 9f8d927e0d21..2700d53ea01b 100644
+> > --- a/arch/arm/boot/dts/exynos4210-i9100.dts
+> > +++ b/arch/arm/boot/dts/exynos4210-i9100.dts
+> > @@ -558,14 +558,14 @@ safe2_sreg: ESAFEOUT2 {
+> >
+> >       =09charger_reg: CHARGER {
+> >       =09=09regulator-name =3D "CHARGER";
+> >
+> >
+> > -       =09=09regulator-min-microamp =3D <60000>;
+> >
+> >
+> > -       =09=09regulator-max-microamp =3D <2580000>;
+> >
+> >
+> >
+> > -       =09=09regulator-min-microamp =3D <200000>;
+> >
+> >
+> > -       =09=09regulator-max-microamp =3D <950000>;
+> >         =09};
+> >
+> >         =09chargercv_reg: CHARGER_CV {
+> >         =09=09regulator-name =3D "CHARGER_CV";
+> >
+> >
+> >
+> > -       =09=09regulator-min-microvolt =3D <3800000>;
+> >
+> >
+> > -       =09=09regulator-max-microvolt =3D <4100000>;
+> >
+> >
+> >
+> > -       =09=09regulator-min-microvolt =3D <4200000>;
+> >
+> >
+> > -       =09=09regulator-max-microvolt =3D <4200000>;
+> >
+> >
+>
+> I am looking at my sources of Android 3.0 for GT-I9100 but I cannot find
+> charger voltages for it. Where did you find it?
+>
+> Best regards,
+> Krzysztof
 
-> 2020年12月1日 下午11:37，Marc Zyngier <maz@kernel.org> 写道：
-> 
-> On 2020-12-01 14:25, wangrongwei wrote:
->>> 2020年12月1日 下午4:12，Marc Zyngier <maz@kernel.org> 写道：
->>> On 2020-12-01 03:09, wangrongwei wrote:
->>>> Hi
->>>> We have validate this driver in vm and physical machine, and works fine.
->>> But what does "work fine" mean? None of these system registers are supposed
->>> to be accessible from userspace, so please explain *what* you are trying to
->>> do with this, other that introducing security holes and general system
->>> instability?
->> I think I know what you mean. Do you want me to describe how we achieved it?
->> In x86, the different registers can be accessed directly using the
->> rdmsr and wrmsr instructions, but in ARM, since these two instructions
->> are missing, so we modify the code segment during runtime, similar to
->> the principle of static_key.
-> 
-> [...]
-> 
-> These are implementation details, none of which answer my question:
-> 
-> What makes you think this is a good idea? I cannot see any legitimate
-In fact, I think this tool useful mainly in the following scenarios:
-	1. performance debug
-	2. Arm-core features test
-	3. Debug-tool for kernel developer 
-Also, for example, MSR-ARM is needed for chip verification and system-level functional verification.
-A simple example, perf stat can test pmu, but the overflow interrupt function and forced overflow function of pmu is not covered.
-In both cases, we need a special interface to configure it, which can be considered as testing requirements, so it can only be tested by configuring (access) registers, e.g., devmem command for memmap registers, MSR-ARM driver for system registers.
-> reason for userspace to ever access privileged system registers, and
-> the fact that x86 has such feature isn't a good justification.
-> 
->        M.
-> -- 
-> Jazz is not dead. It just smells funny…
+Thanks all the feedback Krzysztof,
 
-Sorry for the delayed response.
+Voltage is set in the charger probe function of the downstream kernel fork:=
+ https://github.com/LineageOS/android_kernel_samsung_smdk4412/blob/lineage-=
+17.0/drivers/power/max8997_charger_u1.c#L390-L391
 
-Regards,
-Rongwei Wang.
-
+Mainline uses the regulator: https://github.com/torvalds/linux/blob/master/=
+drivers/regulator/max8997-regulator.c#L418-L419
 
