@@ -2,121 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A202CCBF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A952CCBF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727599AbgLCCDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 21:03:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgLCCDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 21:03:49 -0500
-Date:   Thu, 3 Dec 2020 11:03:02 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606960988;
-        bh=uJVG156LJ2Xk3EybB328xWcZ6wvKtQV2KDv5WfLuRLc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pPY/59Ns3ZPEFTSKguFAk5uuU4PuvB94Qmh3H51svOReB4jFBR/wF7W+dtFc9gVe1
-         HM7znNlclMESLwzZNtjre0IfyaoZODgEsVSgVbzwq8lvdyJQrThMsc5mxlkqDIt8bW
-         Pj0rwQDH3Hg4V5dk2/UZ7xHDlSs9ZVFBAPhVE2XUm1UfsO68x2rrlXuoP+qa/mr/J/
-         NxJxYKqgPe3FV6NMdmcd9k5ciF2dsJ8db5xVzURJ/JlHQw5DIEViwBlckJcGQc02sm
-         4IEAUB/khKXXLnb/l1gkCfeoZyie+8wYqdPuHcrf0ubtlDU8iPcIC8GqDtME78Jc8u
-         2gbcRLkD+5AEQ==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] x86/sev-es: Fix not using prefixes.nbytes for loop
- over prefixes.bytes
-Message-Id: <20201203110302.79bb318c885b4673d2b0be19@kernel.org>
-In-Reply-To: <202012021104.0C38FB7FD@keescook>
-References: <160689905099.3084105.7880450206184269465.stgit@devnote2>
-        <160689906460.3084105.3134729514028168934.stgit@devnote2>
-        <54417a56-241b-14f9-2540-11b23e40e2b2@amd.com>
-        <202012021104.0C38FB7FD@keescook>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727774AbgLCCEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 21:04:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726535AbgLCCEj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 21:04:39 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E7CC061A4D
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 18:03:59 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id p8so256234wrx.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 18:03:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r5umzCI4TaFVhL8nuzDezw60k+XBY/fCF3QBJr3x+P4=;
+        b=m5EldO+Qqc6atF60hZX23z1bsSqde0yD5g5UQkyll4aZXY1POybhmvMhP2yhBybBm0
+         DXHDu/hVMcAdZQRp7YPGzE1j0TKuohpl5bncdBCuoJvBr4M2KfK+1oLtre7T9znaZKF8
+         UbsoCgg+EVbKsGqQHygHxrxRC8EkSm2W8ASMYXY410vqrdxL/tfmqQi7leBgTZOQxvWu
+         L6CwZE500sgZPnsl8NIZgcBJ+CznbfjESaw446P2/YhS+A3pg+6mJmPc4nI4WcwN/m21
+         OtUx1E4/zIyQ5rRfkkNQ58vX7ZdAbeu6KYOqKZi5f97CyuyuwTex/73AffQ4YeXpIt5E
+         2Cig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r5umzCI4TaFVhL8nuzDezw60k+XBY/fCF3QBJr3x+P4=;
+        b=GZWpvCQktcgc2kWh1uGkki2p3x1LDY5jUeK2FRi3qswKH8kXjnLtlGg8UBh+Y2QXGU
+         DnlRvbfEWFPse+V00YL588CUlZRwgm2ryNBspZL0Ef6LK7hqlPmbNbhSpROTBiggFGTi
+         Rc4mBg5EJXIPh7k2BhJJmH9U2RvZ9wL4sakntRSgn7DCY1c3ldbtd49TfcUfpoEkMW7D
+         hqbnxZeZfnI9TwzEyAinmngycvaLrwdXyhbaIq/77imuj1bhP0P4nfR3G3OC1vjRgIE6
+         3VpJ0p3JaVlLm15ssPou+b3Zqso86gJJ1qFOj14nL7uaY9SweeMOancaYQDB+gfXw1hy
+         pFTQ==
+X-Gm-Message-State: AOAM533t41zbfd82HeuP87WBLv2vlzG7g0rIt0P7irgs+SeSjFmH9Bho
+        VCgUZmrtTipaQQpJqlae50g5hQ==
+X-Google-Smtp-Source: ABdhPJx/KOLIzYzAJzuJ19MmmmCt3cZapNWF7qykxnDxCWAL957kgpYvEN5Qn/yOtiXS3NY9NfIuGw==
+X-Received: by 2002:adf:f181:: with SMTP id h1mr918858wro.267.1606961037823;
+        Wed, 02 Dec 2020 18:03:57 -0800 (PST)
+Received: from localhost ([2a02:168:96c5:1:55ed:514f:6ad7:5bcc])
+        by smtp.gmail.com with ESMTPSA id x4sm570263wrv.81.2020.12.02.18.03.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 18:03:57 -0800 (PST)
+From:   Jann Horn <jannh@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] tty: Remove dead termiox code
+Date:   Thu,  3 Dec 2020 03:03:31 +0100
+Message-Id: <20201203020331.2394754-1-jannh@google.com>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Dec 2020 11:07:26 -0800
-Kees Cook <keescook@chromium.org> wrote:
+set_termiox() and the TCGETX handler bail out with -EINVAL immediately
+if ->termiox is NULL, but there are no code paths that can set
+->termiox to a non-NULL pointer; and no such code paths seem to have
+existed since the termiox mechanism was introduced back in
+commit 1d65b4a088de ("tty: Add termiox") in v2.6.28.
+Similarly, no driver actually implements .set_termiox; and it looks like
+no driver ever has.
 
-> On Wed, Dec 02, 2020 at 09:31:57AM -0600, Tom Lendacky wrote:
-> > On 12/2/20 2:51 AM, Masami Hiramatsu wrote:
-> > > Since the insn.prefixes.nbytes can be bigger than the size of
-> > > insn.prefixes.bytes[] when a same prefix is repeated, we have to
-> > > check whether the insn.prefixes.bytes[i] != 0 and i < 4 instead
-> > > of insn.prefixes.nbytes.
-> > > 
-> > > Fixes: 25189d08e516 ("x86/sev-es: Add support for handling IOIO exceptions")
-> > > Reported-by: Kees Cook <keescook@chromium.org>
-> > > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > > ---
-> > >   arch/x86/boot/compressed/sev-es.c |    2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/x86/boot/compressed/sev-es.c b/arch/x86/boot/compressed/sev-es.c
-> > > index 954cb2702e23..6a7a3027c9ac 100644
-> > > --- a/arch/x86/boot/compressed/sev-es.c
-> > > +++ b/arch/x86/boot/compressed/sev-es.c
-> > > @@ -36,7 +36,7 @@ static bool insn_has_rep_prefix(struct insn *insn)
-> > >   	insn_get_prefixes(insn);
-> > > -	for (i = 0; i < insn->prefixes.nbytes; i++) {
-> > > +	for (i = 0; insn->prefixes.bytes[i] && i < 4; i++) {
-> 
-> You must test "i" before bytes[i] or you still do the out-of-bounds-read.
+Delete this dead code; but leave the definition of struct termiox in the
+UAPI headers intact.
 
-Oops, thanks.
+Signed-off-by: Jann Horn <jannh@google.com>
+---
+ drivers/tty/tty_ioctl.c    | 61 ++------------------------------------
+ include/linux/tty.h        |  1 -
+ include/linux/tty_driver.h |  9 ------
+ 3 files changed, 2 insertions(+), 69 deletions(-)
 
-> 
-> > 
-> > Wouldn't it be better to create a #define for the size rather than hard
-> > coding 4 in the various files? That would protect everything should the
-> > bytes array size ever change in the future.
-> 
-> Agreed, and perhaps instead of repeating the idiom in the for loop, add
-> a helper like:
-> 
-> #define insn_prefix_valid(prefixes, i) (i >=0 && i < 4 && prefixes->bytes[i])
-> 
-> to be used like:
-> 
-> 	for (i = 0; insn_prefix_valid(&insn->prefixes, i); i++) {
+diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
+index e18f318586ab..4de1c6ddb8ff 100644
+--- a/drivers/tty/tty_ioctl.c
++++ b/drivers/tty/tty_ioctl.c
+@@ -443,51 +443,6 @@ static int get_termio(struct tty_struct *tty, struct t=
+ermio __user *termio)
+ 	return 0;
+ }
+=20
+-
+-#ifdef TCGETX
+-
+-/**
+- *	set_termiox	-	set termiox fields if possible
+- *	@tty: terminal
+- *	@arg: termiox structure from user
+- *	@opt: option flags for ioctl type
+- *
+- *	Implement the device calling points for the SYS5 termiox ioctl
+- *	interface in Linux
+- */
+-
+-static int set_termiox(struct tty_struct *tty, void __user *arg, int opt)
+-{
+-	struct termiox tnew;
+-	struct tty_ldisc *ld;
+-
+-	if (tty->termiox =3D=3D NULL)
+-		return -EINVAL;
+-	if (copy_from_user(&tnew, arg, sizeof(struct termiox)))
+-		return -EFAULT;
+-
+-	ld =3D tty_ldisc_ref(tty);
+-	if (ld !=3D NULL) {
+-		if ((opt & TERMIOS_FLUSH) && ld->ops->flush_buffer)
+-			ld->ops->flush_buffer(tty);
+-		tty_ldisc_deref(ld);
+-	}
+-	if (opt & TERMIOS_WAIT) {
+-		tty_wait_until_sent(tty, 0);
+-		if (signal_pending(current))
+-			return -ERESTARTSYS;
+-	}
+-
+-	down_write(&tty->termios_rwsem);
+-	if (tty->ops->set_termiox)
+-		tty->ops->set_termiox(tty, &tnew);
+-	up_write(&tty->termios_rwsem);
+-	return 0;
+-}
+-
+-#endif
+-
+-
+ #ifdef TIOCGETP
+ /*
+  * These are deprecated, but there is limited support..
+@@ -815,23 +770,11 @@ int tty_mode_ioctl(struct tty_struct *tty, struct fil=
+e *file,
+ 		return ret;
+ #endif
+ #ifdef TCGETX
+-	case TCGETX: {
+-		struct termiox ktermx;
+-		if (real_tty->termiox =3D=3D NULL)
+-			return -EINVAL;
+-		down_read(&real_tty->termios_rwsem);
+-		memcpy(&ktermx, real_tty->termiox, sizeof(struct termiox));
+-		up_read(&real_tty->termios_rwsem);
+-		if (copy_to_user(p, &ktermx, sizeof(struct termiox)))
+-			ret =3D -EFAULT;
+-		return ret;
+-	}
++	case TCGETX:
+ 	case TCSETX:
+-		return set_termiox(real_tty, p, 0);
+ 	case TCSETXW:
+-		return set_termiox(real_tty, p, TERMIOS_WAIT);
+ 	case TCSETXF:
+-		return set_termiox(real_tty, p, TERMIOS_FLUSH);
++		return -EINVAL;
+ #endif=09=09
+ 	case TIOCGSOFTCAR:
+ 		copy_termios(real_tty, &kterm);
+diff --git a/include/linux/tty.h b/include/linux/tty.h
+index a99e9b8e4e31..52f5544bcd85 100644
+--- a/include/linux/tty.h
++++ b/include/linux/tty.h
+@@ -303,7 +303,6 @@ struct tty_struct {
+ 	spinlock_t flow_lock;
+ 	/* Termios values are protected by the termios rwsem */
+ 	struct ktermios termios, termios_locked;
+-	struct termiox *termiox;	/* May be NULL for unsupported */
+ 	char name[64];
+ 	struct pid *pgrp;		/* Protected by ctrl lock */
+ 	struct pid *session;
+diff --git a/include/linux/tty_driver.h b/include/linux/tty_driver.h
+index 358446247ccd..61c3372d3f32 100644
+--- a/include/linux/tty_driver.h
++++ b/include/linux/tty_driver.h
+@@ -224,14 +224,6 @@
+  *	line). See tty_do_resize() if you need to wrap the standard method
+  *	in your own logic - the usual case.
+  *
+- * void (*set_termiox)(struct tty_struct *tty, struct termiox *new);
+- *
+- *	Called when the device receives a termiox based ioctl. Passes down
+- *	the requested data from user space. This method will not be invoked
+- *	unless the tty also has a valid tty->termiox pointer.
+- *
+- *	Optional: Called under the termios lock
+- *
+  * int (*get_icount)(struct tty_struct *tty, struct serial_icounter *icoun=
+t);
+  *
+  *	Called when the device receives a TIOCGICOUNT ioctl. Passed a kernel
+@@ -285,7 +277,6 @@ struct tty_operations {
+ 	int (*tiocmset)(struct tty_struct *tty,
+ 			unsigned int set, unsigned int clear);
+ 	int (*resize)(struct tty_struct *tty, struct winsize *ws);
+-	int (*set_termiox)(struct tty_struct *tty, struct termiox *tnew);
+ 	int (*get_icount)(struct tty_struct *tty,
+ 				struct serial_icounter_struct *icount);
+ 	int  (*get_serial)(struct tty_struct *tty, struct serial_struct *p);
 
-Hm, for all of these usage, they are looping on the prefixes, so
+base-commit: 3bb61aa61828499a7d0f5e560051625fd02ae7e4
+--=20
+2.29.2.576.ga3fc446d84-goog
 
-for_each_insn_prefix(insn, idx, prefix) {
-...
-}
-
-will be simpler.
-
-Thank you,
-
-> 
-> > 
-> > Thanks,
-> > Tom
-> > 
-> > >   		insn_byte_t p = insn->prefixes.bytes[i];
-> > >   		if (p == 0xf2 || p == 0xf3)
-> > > 
-> 
-> -- 
-> Kees Cook
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
