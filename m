@@ -2,133 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075BF2CD84F
+	by mail.lfdr.de (Postfix) with ESMTP id E2FDE2CD851
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 14:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730702AbgLCN5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 08:57:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727065AbgLCN5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 08:57:06 -0500
-X-Gm-Message-State: AOAM5302kb/ljAGV1BW2mZVH+J1W7wunoF9+t/LH2IwgmIN8iEXrXzFD
-        WGVYqjZgt/HBt1BFSe9vt6luYnQbHt2Pt5bJ4P4=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607003785;
-        bh=SzLHBJpAHuHrXn0+hQf5Nq+hpLvEsV2HnB2QFidHmT8=;
-        h=From:Date:Subject:To:From;
-        b=JtkIcsXMGat2sYH+Zx4WPMcPh/9vJupqujLi1dnzoQBEpnJcrlLXlCqLD+VnsgdAT
-         3ydkD5+uHVkTg3RUpApfG6gev56wqxlcTNzxgX4BFyN4xLCveJrXdFziF9GRrd7KIA
-         NLivaPtkRo1fgDztQESSyKSPGfXpAAFe0syhxNZKNsvH6SWVKkdPsJ/v200BlJrSQK
-         zgNUdpSthpLXvX669pJZr0bca+tQRVLyqZVfgnjHNwszV+voGshW9tCS7jlt73kpvX
-         r3PcRgYXDYJcqREK4nglhyH4EqVAnP4eyyqUKGfc0nFGQ+/SqjGGcdsLcIpdqktugr
-         7Xcp41wB52ibg==
-X-Google-Smtp-Source: ABdhPJzYjrn+qqLboUkw+x3nO6VYMin9jU5iPUEcPj8ZzwEueQ/dniJvQ/Ax93yEP/0edzTbbkrznBa1TNutWTdpRSE=
-X-Received: by 2002:a9d:be1:: with SMTP id 88mr2155198oth.210.1607003784111;
- Thu, 03 Dec 2020 05:56:24 -0800 (PST)
+        id S1730820AbgLCN6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 08:58:15 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:43532 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgLCN6O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 08:58:14 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3Dt4S5149893;
+        Thu, 3 Dec 2020 13:56:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=+1N8mqMKsZKiLOq1eUSX0dnvawOP7u5ut7g73azXomY=;
+ b=0dyHqQ1pMp4quGYHNjh3i9g8fesNeIdEzusvADrEG5XgmFsUlZaxIHa3JpFKb3dcI4zv
+ SM8Wgl9InEv40buevN1Ohjyh2YzEKeBjEfLYQYD+FlKVmBTLowSPxR4psC9X1rjEUcTc
+ d6THaS98YgnXnqYRZV2LGTntwCoW15nmzmx8ft2ZJKVLEIviU2ooSPORmtfJ7e8tS+Dw
+ /sD7GEv8cVmuqkXSop8KX/KQzqeiGT0qmRidb4hIMDBDoLbWEwLfeEd01UA5fuYrzhzs
+ VYqQ1jarH8v9h0YRYtmhNznG8s8dsTZ1AcXfTxm7zItCkfCXlsrEDtX1a3uILmB1dCt/ bw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 353egkx092-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 03 Dec 2020 13:56:58 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3DuMfG036368;
+        Thu, 3 Dec 2020 13:56:58 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 3540aw5muw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 03 Dec 2020 13:56:57 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B3DuoaH011497;
+        Thu, 3 Dec 2020 13:56:50 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 03 Dec 2020 05:56:50 -0800
+Date:   Thu, 3 Dec 2020 16:56:40 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Greg KH <greg@kroah.com>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        devel@driverdev.osuosl.org, f.fainelli@gmail.com,
+        sbranden@broadcom.com, rjui@broadcom.com, mchehab@kernel.org,
+        speakup@linux-speakup.org, linux-kernel@vger.kernel.org,
+        rcy@google.com, rspringer@google.com,
+        laurent.pinchart@ideasonboard.com, netdev@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, toddpoynor@google.com,
+        nsaenzjulienne@suse.de, linux-media@vger.kernel.org
+Subject: Re: [PATCH 01/11] drivers: staging: speakup: remove unneeded
+ MODULE_VERSION() call
+Message-ID: <20201203135640.GS2767@kadam>
+References: <20201203124803.23390-1-info@metux.net>
+ <X8jnO5cPUQGEK9cr@kroah.com>
 MIME-Version: 1.0
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 3 Dec 2020 14:56:07 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a20LXgEQkYSpbFFrJs1mdg19W72dp3pbebH9Pkpib2g-g@mail.gmail.com>
-Message-ID: <CAK8P3a20LXgEQkYSpbFFrJs1mdg19W72dp3pbebH9Pkpib2g-g@mail.gmail.com>
-Subject: objtool crashes with some clang produced .o files
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: multipart/mixed; boundary="000000000000b4881805b58fb9a2"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8jnO5cPUQGEK9cr@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012030084
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012030084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000b4881805b58fb9a2
-Content-Type: text/plain; charset="UTF-8"
+On Thu, Dec 03, 2020 at 02:25:15PM +0100, Greg KH wrote:
+> On Thu, Dec 03, 2020 at 01:47:53PM +0100, Enrico Weigelt, metux IT consult wrote:
+> > Remove MODULE_VERSION(), as it doesn't seem to serve any practical
+> > purpose. For in-tree drivers, the kernel version matters.
+> > 
+> > The drivers have received lots of changes, without the module version
+> > (or the underlying DRV_VERSION macro) ever changed, since the code
+> > landed in the kernel tree. So, it doesn't seem to have any practical
+> > meaning anymore.
+> > 
+> > Signed-off-by: Enrico Weigelt <info@metux.net>
+> > ---
+> >  drivers/accessibility/speakup/main.c           | 1 -
+> 
+> <snip>
+> 
+> Yous subject line is odd, these are not "staging" drivers anymore, so
+> why do you say they are there?
 
-I see occasional randconfig builds failing on x86 with clang-11
-and clang-12 when objtool crashes with a segmentation fault.
+Also putting "drivers:" in the subject always seems superfluous.
 
-The simplest test case I managed to create is
+regards,
+dan carpenter
 
-$ echo "__SCK__tp_func_cdev_update() { __SCT__tp_func_cdev_update(); }" > file.c
-$ clang-12 -c file.c -O2 -fno-asynchronous-unwind-tables
-$ ./tools/objtool/objtool orc generate  file.o
-Segmentation fault (core dumped)
-$ clang-12 -S file.c -O2 -fno-asynchronous-unwind-tables -o-
-.text
-.file "file.c"
-.globl __SCK__tp_func_cdev_update      # -- Begin function
-__SCK__tp_func_cdev_update
-.p2align 4, 0x90
-.type __SCK__tp_func_cdev_update,@function
-__SCK__tp_func_cdev_update:             # @__SCK__tp_func_cdev_update
-# %bb.0:
-xorl %eax, %eax
-jmp __SCT__tp_func_cdev_update      # TAILCALL
-.Lfunc_end0:
-.size __SCK__tp_func_cdev_update, .Lfunc_end0-__SCK__tp_func_cdev_update
-                                        # -- End function
-.ident "Ubuntu clang version
-12.0.0-++20201129052612+ce134da4b18-1~exp1~20201129163253.238"
-.section ".note.GNU-stack","",@progbits
-.addrsig
-
-The behavior seems to depend on the specific symbol names, and it only happens
-for the integrated assembler, not the GNU assembler.
-
-Attaching both .o files for reference.
-
-        Arnd
-
---000000000000b4881805b58fb9a2
-Content-Type: application/x-object; name="integrated-as.o"
-Content-Disposition: attachment; filename="integrated-as.o"
-Content-Transfer-Encoding: base64
-Content-ID: <f_ki8wjdxl0>
-X-Attachment-Id: f_ki8wjdxl0
-
-f0VMRgIBAQAAAAAAAAAAAAEAPgABAAAAAAAAAAAAAAAAAAAAAAAAAJgBAAAAAAAAAAAAAEAAAAAA
-AEAACAABADHA6QAAAAAAVWJ1bnR1IGNsYW5nIHZlcnNpb24gMTIuMC4wLSsrMjAyMDExMjkwNTI2
-MTIrY2UxMzRkYTRiMTgtMX5leHAxfjIwMjAxMTI5MTYzMjUzLjIzOAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAGkAAAAEAPH/AAAAAAAAAAAAAAAAAAAAAE4AAAASAAIAAAAAAAAAAAAHAAAA
-AAAAADMAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAABAAAAAMAAAD8/////////wAucmVs
-YS50ZXh0AC5jb21tZW50AC5ub3RlLkdOVS1zdGFjawAubGx2bV9hZGRyc2lnAF9fU0NUX190cF9m
-dW5jX2NkZXZfdXBkYXRlAF9fU0NLX190cF9mdW5jX2NkZXZfdXBkYXRlAGZpbGUuYwAuc3RydGFi
-AC5zeW10YWIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAHAAAAADAAAAAAAAAAAAAAAAAAAAAAAAABgBAAAAAAAAgAAAAAAAAAAA
-AAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAGAAAAAQAAAAYAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAcA
-AAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAQAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAEA
-AAAAAAAYAAAAAAAAAAcAAAACAAAACAAAAAAAAAAYAAAAAAAAAAwAAAABAAAAMAAAAAAAAAAAAAAA
-AAAAAEcAAAAAAAAAVAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAQAAAAAAAAAVAAAAAQAAAAAAAAAA
-AAAAAAAAAAAAAACbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAJQAAAANM
-/28AAACAAAAAAAAAAAAAAAAAGAEAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
-AHgAAAACAAAAAAAAAAAAAAAAAAAAAAAAAKAAAAAAAAAAYAAAAAAAAAABAAAAAgAAAAgAAAAAAAAA
-GAAAAAAAAAA=
---000000000000b4881805b58fb9a2
-Content-Type: application/x-object; name="gnu-as.o"
-Content-Disposition: attachment; filename="gnu-as.o"
-Content-Transfer-Encoding: base64
-Content-ID: <f_ki8wjdya1>
-X-Attachment-Id: f_ki8wjdya1
-
-f0VMRgIBAQAAAAAAAAAAAAEAPgABAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAAAAAAAAAAEAAAAAA
-AEAACgAJADHA6QAAAAAAVWJ1bnR1IGNsYW5nIHZlcnNpb24gMTIuMC4wLSsrMjAyMDExMjkwNTI2
-MTIrY2UxMzRkYTRiMTgtMX5leHAxfjIwMjAxMTI5MTYzMjUzLjIzOAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAEAAAAEAPH/AAAAAAAAAAAAAAAAAAAAAAAAAAADAAEAAAAAAAAAAAAAAAAA
-AAAAAAAAAAADAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAD
-AAYAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAUAAAAAAAAAAAAAAAAAAAAAAAgAAAASAAEAAAAAAAAA
-AAAHAAAAAAAAACMAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAABmaWxlLmMAX19TQ0tfX3RwX2Z1bmNf
-Y2Rldl91cGRhdGUAX19TQ1RfX3RwX2Z1bmNfY2Rldl91cGRhdGUAAAADAAAAAAAAAAQAAAAIAAAA
-/P////////8ALnN5bXRhYgAuc3RydGFiAC5zaHN0cnRhYgAucmVsYS50ZXh0AC5kYXRhAC5ic3MA
-LmNvbW1lbnQALm5vdGUuR05VLXN0YWNrAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAQAAAAYAAAAAAAAAAAAA
-AAAAAABAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAGwAAAAQAAABAAAAA
-AAAAAAAAAAAAAAAAuAEAAAAAAAAYAAAAAAAAAAcAAAABAAAACAAAAAAAAAAYAAAAAAAAACYAAAAB
-AAAAAwAAAAAAAAAAAAAAAAAAAEcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA
-AAAsAAAACAAAAAMAAAAAAAAAAAAAAAAAAABHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA
-AAAAAAAAAAAAMQAAAAEAAAAwAAAAAAAAAAAAAAAAAAAARwAAAAAAAABUAAAAAAAAAAAAAAAAAAAA
-AQAAAAAAAAABAAAAAAAAADoAAAABAAAAAAAAAAAAAAAAAAAAAAAAAJsAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAgAAAAAAAAAAAAAAAAAAAAAAAACgAAAAAAAAANgA
-AAAAAAAACAAAAAcAAAAIAAAAAAAAABgAAAAAAAAACQAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAeAEA
-AAAAAAA+AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAABEAAAADAAAAAAAAAAAAAAAAAAAA
-AAAAANABAAAAAAAASgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=
---000000000000b4881805b58fb9a2--
