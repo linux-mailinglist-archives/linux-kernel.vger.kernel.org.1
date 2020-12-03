@@ -2,137 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD182CD9F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9332CD9F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 16:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389144AbgLCPMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 10:12:54 -0500
-Received: from mga04.intel.com ([192.55.52.120]:2297 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725962AbgLCPMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:12:53 -0500
-IronPort-SDR: gu1jjzfL268ZB64SZ5Tzurar0BYeI03XQ8Dqmu1iwFknaw09jZzzkdDMjPwaZ5Uf0j7FMq74fY
- dVPh0Ljb1pMg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="170638920"
-X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
-   d="scan'208";a="170638920"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 07:12:13 -0800
-IronPort-SDR: i7KQkcpUJ28wKPXWW18lIiWkkfEz4b6cZPCEweAox9lggMqz3a2G+pkSw+epgvhhMc13y30EYi
- g4eBdv3zb9CQ==
-X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
-   d="scan'208";a="346261525"
-Received: from jemerrit-mobl1.amr.corp.intel.com (HELO [10.212.135.245]) ([10.212.135.245])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 07:12:12 -0800
-Subject: Re: [PATCH v15 06/26] x86/mm: Change _PAGE_DIRTY to _PAGE_DIRTY_HW
-To:     Borislav Petkov <bp@alien8.de>, Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
- <20201110162211.9207-7-yu-cheng.yu@intel.com> <20201203091910.GE3059@zn.tnic>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <93eb0255-df5c-5cb3-654f-e74c1af956b2@intel.com>
-Date:   Thu, 3 Dec 2020 07:12:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727496AbgLCPQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 10:16:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725962AbgLCPQD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 10:16:03 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C140CC061A4E;
+        Thu,  3 Dec 2020 07:15:17 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id o1so2226600wrx.7;
+        Thu, 03 Dec 2020 07:15:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fFaCriGSYx/jNXnz0XbvUiNq6DB0Sw/tCXGOND8c0og=;
+        b=SST5AJWfppZNIQZ1c71S4pRZRCgOpDQjBFI7O004IV1EmRNpg7MNTNTChLeSluy6b8
+         fr8gFfYFH1zQA+FY3C2DufLFhZWzCtsl+5fnNjqBd17+afqCq19pyYzSFO41g5c0Tvzh
+         679xIVJ88m/lyucAI/F6Pbmc5zqI3vTbP/ci1l459V1GnhILstgOizY3A4qySqeRJk9O
+         DiRlr89YzB49dNS9hbUqt5w3iUnJBsZRI4sFMBdm/iltObUWqy70gcmjjSnrBk1BiFa0
+         yTzGGehtkmFCOSm3Rwk06NYVuOo6oLdgpgAblJ3xOsMIKF9BKya7x9Ykhqv7OV/V0F3U
+         H29Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fFaCriGSYx/jNXnz0XbvUiNq6DB0Sw/tCXGOND8c0og=;
+        b=uJiJ7la5WWGDB/7VRitZ4FFEpoFlWifh2foelckr4sLqDpTQVuJ9fbceMoRiN5U1e/
+         ZEfuU3hjsKX19mwNHu3bjuH1y/PO4BakTX0fBWWXVaXTJzU9AiB46eVUcOg/pKHITb0T
+         Ry2LJfTNad0xyQhc3EtsQHHfjPB0odJ8ovEs4stD+KnM6YpgnzwfCSF6Yj/wDUGuPrJF
+         ez44W9TvWsnvEa/86wJNtiM6NnUiuTiad/a6W9vzRfmNVtBCVcM+fQZ+sgXGS5FVtTKr
+         wi5RjpLzS8klXLK6YdmXN0j64VQAemHlPZV4nBfngpAJItOVmj45t/snA2Tqh34pso5R
+         BiSQ==
+X-Gm-Message-State: AOAM530Dtad5NKZQ9VdzK9YTQ1DI9zDTXYlqeDr7NuCerPPQReVYdAC5
+        wOFERiu+/nEbv7XHTZsUIVs1w1eedIrjoyQcnO0=
+X-Google-Smtp-Source: ABdhPJxFa6CoW2qkpeaUpLguTFOPv/6+OfkPZg79klK1iRQ7vQVjZnha+cFTtwHNmnpoGelHzHOcchdhsRgIiCveiJo=
+X-Received: by 2002:adf:ed04:: with SMTP id a4mr4273079wro.172.1607008515458;
+ Thu, 03 Dec 2020 07:15:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201203091910.GE3059@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201203114452.1060017-1-colin.king@canonical.com>
+In-Reply-To: <20201203114452.1060017-1-colin.king@canonical.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Thu, 3 Dec 2020 16:15:02 +0100
+Message-ID: <CAJ+HfNiFcyqGYCNigs22k4=g_GQ_hJiZ=eE7f+hguOyN2ScdsA@mail.gmail.com>
+Subject: Re: [PATCH][next] samples/bpf: Fix spelling mistake "recieving" -> "receiving"
+To:     Colin King <colin.king@canonical.com>
+Cc:     Mariusz Dudek <mariuszx.dudek@intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/3/20 1:19 AM, Borislav Petkov wrote:
-> On Tue, Nov 10, 2020 at 08:21:51AM -0800, Yu-cheng Yu wrote:
->> Before introducing _PAGE_COW for non-hardware memory management purposes in
->> the next patch, rename _PAGE_DIRTY to _PAGE_DIRTY_HW and _PAGE_BIT_DIRTY to
->> _PAGE_BIT_DIRTY_HW to make meanings more clear.  There are no functional
->> changes from this patch.
-> There's no guarantee for "next" or "this" patch when a patch gets
-> applied so reword your commit message pls.
-> 
-> Also, I fail to understand here what _PAGE_DIRTY_HW makes more clear?
-> The page dirty bit is clear enough to me so why the churn?
+On Thu, 3 Dec 2020 at 12:46, Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There is a spelling mistake in an error message. Fix it.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Once upon a time in this set, we had:
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 
-	_PAGE_DIRTY	(the old hardware bit)
-and
-	_PAGE_DIRTY_SW	(the new shadow stack necessitated bit)
-
-In *that* case, it made sense to change the name of the hardware one to
-help differentiate them.  But, over time, we changed _PAGE_DIRTY_SW to
-_PAGE_COW.
-
-I think you're right.  The renaming is just churn now with the current
-naming.
+> ---
+>  samples/bpf/xdpsock_user.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+> index 0fee7f3aef3c..9553c7c47fc4 100644
+> --- a/samples/bpf/xdpsock_user.c
+> +++ b/samples/bpf/xdpsock_user.c
+> @@ -1570,7 +1570,7 @@ recv_xsks_map_fd(int *xsks_map_fd)
+>
+>         err =3D recv_xsks_map_fd_from_ctrl_node(sock, xsks_map_fd);
+>         if (err) {
+> -               fprintf(stderr, "Error %d recieving fd\n", err);
+> +               fprintf(stderr, "Error %d receiving fd\n", err);
+>                 return err;
+>         }
+>         return 0;
+> --
+> 2.29.2
+>
