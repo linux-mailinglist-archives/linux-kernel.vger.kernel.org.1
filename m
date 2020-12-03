@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EC42CCFED
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 469542CCFEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729840AbgLCG5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:57:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52118 "EHLO mx2.suse.de"
+        id S1729859AbgLCG6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:58:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgLCG5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 01:57:31 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6A023ABE9;
-        Thu,  3 Dec 2020 06:56:49 +0000 (UTC)
-To:     Yi Li <yilikernel@gmail.com>
-Cc:     Yi Li <yili@winhong.com>, kent.overstreet@gmail.com,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guo Chao <guochao@winhong.com>
-References: <20201130112137.587437-1-yili@winhong.com>
- <CAJfdMYDnDJXFVfEECtQ9-E4F9kfsF035PH+x3kaVn6PPSYCydA@mail.gmail.com>
- <b838b790-e1e3-d644-2b1c-5de02a10669f@suse.de>
- <CAJfdMYCbkAZtWpJ6sgsrRnV4i+5sRahaq-ktMjqcG1JXoazmGQ@mail.gmail.com>
-From:   Coly Li <colyli@suse.de>
-Subject: Re: [PATCH] bcache: fix panic due to cache_set is null
-Message-ID: <79fde596-254a-510c-547a-b1525985de9d@suse.de>
-Date:   Thu, 3 Dec 2020 14:56:45 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        id S1725912AbgLCG6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 01:58:50 -0500
+Date:   Thu, 3 Dec 2020 08:58:01 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606978689;
+        bh=TrahpHtUn6GtqyFBng48QBtZBmbO/ucz4YAA+WbUKig=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ghQbsZuCi9XwCdX3NAJgSxP/7c1XcmHf/kQRBOIXzOlRecfT6XSTYQYgl5tvlwx6D
+         R0SQ+Dw2FdGkfYaqbMk8zDkUTfAWezJfVeqpWK13vz/lge/dC0LiMiJkVnhGgTE0Ty
+         9dFdYrskZBgZZCqkgJxmSoPXJA0tvF5BoYCnE3i6d2j6hK/OOmhR8SYA6P928RvKF6
+         Ruo96i16CQ13dghMOmpBRz9ioP0mhCzH5OM5/IUJhmRz3oWA//FgYExkptVENDeWvt
+         9ZuN8MgMcCGsZx4pYWPD/AIQF1XKrLbtoIh7YggGewNqT45S5NeO60FA2sZmb++1Lz
+         yYIfGJawsZuUA==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Topi Miettinen <toiwoton@gmail.com>
+Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH] mm/vmalloc: randomize vmalloc() allocations
+Message-ID: <20201203065801.GH751215@kernel.org>
+References: <20201201214547.9721-1-toiwoton@gmail.com>
+ <9d34fb0a-7aba-1e84-6426-006ea7c3d9f5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJfdMYCbkAZtWpJ6sgsrRnV4i+5sRahaq-ktMjqcG1JXoazmGQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9d34fb0a-7aba-1e84-6426-006ea7c3d9f5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/3/20 2:25 PM, Yi Li wrote:
->> On 12/1/20 12:35 PM, Yi Li wrote:
->>> sorry, This patch will cause deadlock, i will check and redo it.
->>
->> Can you try latest upstream kernel firstly ? Before spending more time
->> on the fix.
->>
+On Wed, Dec 02, 2020 at 08:49:06PM +0200, Topi Miettinen wrote:
+> On 1.12.2020 23.45, Topi Miettinen wrote:
+> > Memory mappings inside kernel allocated with vmalloc() are in
+> > predictable order and packed tightly toward the low addresses. With
+> > new kernel boot parameter 'randomize_vmalloc=1', the entire area is
+> > used randomly to make the allocations less predictable and harder to
+> > guess for attackers.
+> > 
 > 
-> This issue just happened three times （xenserver7.5 dom0 kernel） on the
-> same machine and cannot reproduce it now. and have not reproduce it
-> using the lastest uptream kernel.
+> This also seems to randomize module addresses. I was going to check that
+> next, so nice surprise!
+
+Heh, that's because module_alloc() uses vmalloc() in that way or another :)
+
+> -Topi
 > 
-
-Hmm, this is something very probably that I am not able to help. It
-seems the kernel is a third-part maintained Linux v4.4 based kernel +
-bcache backport, which is out of my view.
-
-If similar problem happens on latest upstream kernel, or at least v5.8+
-kernel, I can help to take a look.
-
-
->> If I remember correctly, when cancel_writeback_rate_update_dwork() is
->> not timed out, the cache set memory won't be freed before the
->> writeback_rate_update worker terminates. It is possible that I miss
->> something in the code, but I suggest to test with a kernel after v5.3,
->> and better a v5.8+ kernel.
->>
->> Coly Li
->>
-> Thanks.
-> 
-> it is  confused that why writeback_rate_update worker run  again after
-> cancel_delayed_work_sync( kernel log telled).
+> >   	spin_unlock(&free_vmap_area_lock);
+> >   	if (unlikely(addr == vend))
+> > 
 > 
 
-[snipped]
-
-Coly Li
+-- 
+Sincerely yours,
+Mike.
