@@ -2,161 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A012CD30D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3CE12CD30F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730164AbgLCJ5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:57:46 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:56730 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730121AbgLCJ5q (ORCPT
+        id S2388526AbgLCJ54 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 04:57:56 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2198 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730121AbgLCJ5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:57:46 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B39tR0N005837;
-        Thu, 3 Dec 2020 04:56:53 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 355vj5n7uf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 04:56:53 -0500
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0B39uoYu008262
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 3 Dec 2020 04:56:50 -0500
-Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+        Thu, 3 Dec 2020 04:57:55 -0500
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cmrmg6RY4z67Hq5;
+        Thu,  3 Dec 2020 17:55:15 +0800 (CST)
+Received: from lhreml714-chm.china.huawei.com (10.201.108.65) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 3 Dec 2020 01:56:48 -0800
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 3 Dec 2020 01:56:48 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 3 Dec 2020 01:56:48 -0800
-Received: from saturn.ad.analog.com ([10.48.65.108])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0B39ukah003105;
-        Thu, 3 Dec 2020 04:56:47 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, <lars@metafoo.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v2] iio: core: split __iio_device_attr_init() to init only the attr object
-Date:   Thu, 3 Dec 2020 11:56:42 +0200
-Message-ID: <20201203095642.74622-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.27.0
+ 15.1.2106.2; Thu, 3 Dec 2020 10:57:12 +0100
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ lhreml714-chm.china.huawei.com (10.201.108.65) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Thu, 3 Dec 2020 09:57:11 +0000
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
+ Thu, 3 Dec 2020 17:57:09 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>
+Subject: RE: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
+Thread-Topic: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
+Thread-Index: AQHWx46tyJL5OgLpakCat9sEfhhBKKnh4fQAgAK2JoCAAItncA==
+Date:   Thu, 3 Dec 2020 09:57:09 +0000
+Message-ID: <ebc9da1f1fdf45479651906edbfc55a6@hisilicon.com>
+References: <20201201025944.18260-1-song.bao.hua@hisilicon.com>
+ <20201201025944.18260-3-song.bao.hua@hisilicon.com>
+ <jhj1rg9v7gr.mognet@arm.com>
+ <20201203092831.GH2414@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201203092831.GH2414@hirez.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.109]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-03_06:2020-12-03,2020-12-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- clxscore=1015 malwarescore=0 suspectscore=0 mlxscore=0 bulkscore=0
- mlxlogscore=999 phishscore=0 adultscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030059
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __iio_device_attr_init() function initializes a device_attribute
-object, but mostly it just does a lot of name creation logic.
 
-We will want to re-use this logic for name-creation, so this change
-re-purposes the __iio_device_attr_init() to be a __iio_attr_init() function
-which just handles the creation of the attribute name.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
+> -----Original Message-----
+> From: Peter Zijlstra [mailto:peterz@infradead.org]
+> Sent: Thursday, December 3, 2020 10:29 PM
+> To: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
+> catalin.marinas@arm.com; will@kernel.org; rjw@rjwysocki.net; lenb@kernel.org;
+> gregkh@linuxfoundation.org; Jonathan Cameron <jonathan.cameron@huawei.com>;
+> mingo@redhat.com; juri.lelli@redhat.com; vincent.guittot@linaro.org;
+> dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
+> mgorman@suse.de; mark.rutland@arm.com; linux-arm-kernel@lists.infradead.org;
+> linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org; Linuxarm
+> <linuxarm@huawei.com>; xuwei (O) <xuwei5@huawei.com>; Zengtao (B)
+> <prime.zeng@hisilicon.com>
+> Subject: Re: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
+> 
+> On Tue, Dec 01, 2020 at 04:04:04PM +0000, Valentin Schneider wrote:
+> >
+> > Gating this behind this new config only leveraged by arm64 doesn't make it
+> > very generic. Note that powerpc also has this newish "CACHE" level which
+> > seems to overlap in function with your "CLUSTER" one (both are arch
+> > specific, though).
+> >
+> > I think what you are after here is an SD_SHARE_PKG_RESOURCES domain walk,
+> > i.e. scan CPUs by increasing cache "distance". We already have it in some
+> > form, as we scan SMT & LLC domains; AFAICT LLC always maps to MC, except
+> > for said powerpc's CACHE thingie.
+> 
+> There's some intel chips with a smaller L2, but I don't think we ever
+> bothered.
+> 
+> There's also the extended topology stuff from Intel: SMT, Core, Module,
+> Tile, Die, of which we've only partially used Die I think.
+> 
+> Whatever we do, it might make sense to not all use different names.
 
-Changelog v1 -> v2:
-* https://lore.kernel.org/linux-iio/20201117162340.43924-6-alexandru.ardelean@analog.com/
-* split away from series; I don't know when I will have time to re-visit
-  the entire original series, so might as well move forward a few patches
+Yep. Valentin was actually recommending the same SD_SHARE_PKG_RESOURCES sd flags
+by ignoring the actual names of the hardware.
+But the question is where we should start, in case we have 3 domains under llc,
+maybe it is not good to scan from the first level domain as it is gathering
+too much.
 
- drivers/iio/industrialio-core.c | 43 +++++++++++++--------------------
- 1 file changed, 17 insertions(+), 26 deletions(-)
+> 
+> Also, I think Mel said he was cooking something for
+> select_idle_balance().
+> 
+> Also, I've previously posted patches that fold all the iterations into
+> one, so it might make sense to revisit some of that if Mel also already
+> didn.t
 
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index 1da7e518435a..5bfcee277879 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -935,22 +935,15 @@ static ssize_t iio_write_channel_info(struct device *dev,
- }
- 
- static
--int __iio_device_attr_init(struct device_attribute *dev_attr,
--			   const char *postfix,
--			   struct iio_chan_spec const *chan,
--			   ssize_t (*readfunc)(struct device *dev,
--					       struct device_attribute *attr,
--					       char *buf),
--			   ssize_t (*writefunc)(struct device *dev,
--						struct device_attribute *attr,
--						const char *buf,
--						size_t len),
--			   enum iio_shared_by shared_by)
-+int iio_attr_init(struct attribute *attr,
-+		  const char *postfix,
-+		  struct iio_chan_spec const *chan,
-+		  enum iio_shared_by shared_by)
- {
- 	int ret = 0;
- 	char *name = NULL;
- 	char *full_postfix;
--	sysfs_attr_init(&dev_attr->attr);
-+	sysfs_attr_init(attr);
- 
- 	/* Build up postfix of <extend_name>_<modifier>_postfix */
- 	if (chan->modified && (shared_by == IIO_SEPARATE)) {
-@@ -1046,17 +1039,7 @@ int __iio_device_attr_init(struct device_attribute *dev_attr,
- 		ret = -ENOMEM;
- 		goto error_free_full_postfix;
- 	}
--	dev_attr->attr.name = name;
--
--	if (readfunc) {
--		dev_attr->attr.mode |= S_IRUGO;
--		dev_attr->show = readfunc;
--	}
--
--	if (writefunc) {
--		dev_attr->attr.mode |= S_IWUSR;
--		dev_attr->store = writefunc;
--	}
-+	attr->name = name;
- 
- error_free_full_postfix:
- 	kfree(full_postfix);
-@@ -1089,9 +1072,7 @@ int __iio_add_chan_devattr(const char *postfix,
- 	iio_attr = kzalloc(sizeof(*iio_attr), GFP_KERNEL);
- 	if (iio_attr == NULL)
- 		return -ENOMEM;
--	ret = __iio_device_attr_init(&iio_attr->dev_attr,
--				     postfix, chan,
--				     readfunc, writefunc, shared_by);
-+	ret = iio_attr_init(&iio_attr->dev_attr.attr, postfix, chan, shared_by);
- 	if (ret)
- 		goto error_iio_dev_attr_free;
- 	iio_attr->c = chan;
-@@ -1107,6 +1088,16 @@ int __iio_add_chan_devattr(const char *postfix,
- 		}
- 	list_add(&iio_attr->l, attr_list);
- 
-+	if (readfunc) {
-+		iio_attr->dev_attr.attr.mode |= S_IRUGO;
-+		iio_attr->dev_attr.show = readfunc;
-+	}
-+
-+	if (writefunc) {
-+		iio_attr->dev_attr.attr.mode |= S_IWUSR;
-+		iio_attr->dev_attr.store = writefunc;
-+	}
-+
- 	return 0;
- 
- error_device_attr_deinit:
--- 
-2.27.0
+Would you point out the link of your previous patches?
+
+Thanks
+Barry
 
