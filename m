@@ -2,101 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FA52CDFAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 21:26:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF102CDFB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 21:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729461AbgLCUZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 15:25:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39046 "EHLO
+        id S1727450AbgLCU2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 15:28:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLCUZX (ORCPT
+        with ESMTP id S1726915AbgLCU2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 15:25:23 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD71C061A4F;
-        Thu,  3 Dec 2020 12:24:42 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id qw4so5374729ejb.12;
-        Thu, 03 Dec 2020 12:24:42 -0800 (PST)
+        Thu, 3 Dec 2020 15:28:23 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE2EC061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 12:27:43 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id b12so1809044pjl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 12:27:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WAMwGQJofZcxAkzkOGcHcKLf+ucZS6CWJ3WzoBEMmso=;
-        b=VZr8zH5PzjZQU/7uboMkLfdntAYqEu8ZQXD7jgTo9VKJf9m3ehMTgwQG6ti5V4foGK
-         ct1pHwR/cs8ocSH5tLC9y1DAvgDkUQmewpV8yX5ncBNSXoVbgR9/BsjelfhP/6rPjNtB
-         S1YjFYe2fN6SUEIYc51QzvDPo4zSsD4DJWcleL+bhezem0soFIe1LnAz8baoEHH75hrD
-         a2cPZ/jB/Gbp0uS+YMr4FliL2OQUo13gOs/5+XHRUcR30tWVTlXRgGzMHp1BaUI1plER
-         qiHBoMTWlca2eK5GhEOB6yJVQsS0WNoKuX26vEakHxcEnVEsvSYTIcXnOhSj/Ds9jd/u
-         EmwQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6c6iTUosRVrmzGiP/7D9+PLxepmiQNzcidmSqRByqjY=;
+        b=P5vIYvPKNrqAHbY+37GxHogE+dsicUpBmvZgrwQHiqxH1dN/QDFkNS4CHeqX0Klynh
+         RPpodRunirGMRa1lbe22VFDlAne/i4zyDGOLxn6tThQN3JMOCkGOe4QMgEsT4rzB2xzU
+         NJ+rv9emMXNv5oCTFgKJk9NONjPuYP5XC7FppqfCfhcBKEPF2Weu5X3QFVLM/OSTbuka
+         RdNracu5rjrrEeZ6ivk71nZ0I9X/HLaNl9ndqba4TQtG7dqrQuvnTZimGzHOceasfjXp
+         uGg7Bp57PhU7d9REcSV+IixxlQibyidOAdEfQqcJC5M6ChGWMGXy21ztAvQWsO0DSa4a
+         tSeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WAMwGQJofZcxAkzkOGcHcKLf+ucZS6CWJ3WzoBEMmso=;
-        b=CHMxdZb1s6liNc9GkhWPzI47UWIb/0rrhKsPvdGzfFLdM1/C3CK8mUNw+HDKrTQ4W5
-         AeMYlYd4GNbYoCZh9mGt/AAzdiJRN8tkRKgZWcdVjgtKKFnV8OoqcoOfeHb/xH33vwtM
-         FL469gXZnprGoQJ6laumoPQ+bwhg/Ff0vhoOyC5YVAZ5xlqBV85z+dBkUZNnEH3x6rxl
-         4x6rmavksNTH/h2Ivt0KdqnV6E3YHagM+ceE5SGQD9oaRNsewYlnSnhllWDhdXg9US35
-         2nC6ltYcohPKmYGwkBBDKKp+dCI1qQv6lqdupJUdMhyh7E5GRY4QKoYjoTmW/FgV0Pu+
-         ZHJw==
-X-Gm-Message-State: AOAM5301gJBljEbpy8pOEjSp1hjVcxE0NFxmgWG14IFfGi+f6bciGM1q
-        cFCSxDtk1Igwwtj7FwvylIo=
-X-Google-Smtp-Source: ABdhPJxozj0QaM9vnKJhVYPNhxjS2n2ZJ8JlOXZYHa24nHLU5Itc/+q+hxgVZXNeE5OygOJ7jtB8QQ==
-X-Received: by 2002:a17:906:1cd4:: with SMTP id i20mr4170880ejh.415.1607027081299;
-        Thu, 03 Dec 2020 12:24:41 -0800 (PST)
-Received: from ?IPv6:2a01:110f:b59:fd00:2969:dca1:ffae:a9ff? ([2a01:110f:b59:fd00:2969:dca1:ffae:a9ff])
-        by smtp.gmail.com with ESMTPSA id w3sm1942365edt.84.2020.12.03.12.24.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 12:24:40 -0800 (PST)
-Subject: Re: [PATCH v11 4/5] dt-bindings: leds: Add bindings for MT6360 LED
-To:     Gene Chen <gene.chen.richtek@gmail.com>, pavel@ucw.cz,
-        robh+dt@kernel.org, matthias.bgg@gmail.com
-Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-References: <1606906011-25633-1-git-send-email-gene.chen.richtek@gmail.com>
- <1606906011-25633-5-git-send-email-gene.chen.richtek@gmail.com>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <f9f3e471-8fbd-e8f9-31e9-2631703eda67@gmail.com>
-Date:   Thu, 3 Dec 2020 21:24:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6c6iTUosRVrmzGiP/7D9+PLxepmiQNzcidmSqRByqjY=;
+        b=MLtaszcsc2KBB+1xr8FB5CB+RIe4J5nBHeCf4NvdnPqXp2mCpGGy65+jCa8QTnp8n4
+         RBvc2fzhTFZDil+cpt66H8favZOBJqrjInmJ4Vgt3ByJVyI58Kjo+JdAvrwnDze9OzdE
+         wQb8gweteziMdiEHfGLDVnmwXt5WzYse6X5KNSRbVbYsuq9hvbhRHAokTV5zJ0c4ucFq
+         Ptz4uXveqnG8c/RVZLyNmcXpM+UtFSybEyVGTZIwnEuxqoRYv/CN2P1Za9y54HBrtUL4
+         k7KRG/4fBx75GCfNpQ2xz3qtZ5XpA+Kad5LZpz/V0WMFAkHlkonKU5fWCpW3JVNsuwCJ
+         BCIQ==
+X-Gm-Message-State: AOAM530vHj+iXHbPUFhtbnVApDhOG98Ws/CgRDCS+5QjbJbg/yTwrVNM
+        n5NSohZwMiuOUiSnNvEDjP30pQ==
+X-Google-Smtp-Source: ABdhPJx6QkUBqweo7oQdPA48Ai0FtNZPUHQPt5H2J3HGuEr+QdVmoNFtgjOXybM803OsnuHkeTZtwQ==
+X-Received: by 2002:a17:902:b7c3:b029:da:76bc:2aa9 with SMTP id v3-20020a170902b7c3b02900da76bc2aa9mr671331plz.21.1607027262306;
+        Thu, 03 Dec 2020 12:27:42 -0800 (PST)
+Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+        by smtp.gmail.com with ESMTPSA id o14sm2008267pgh.1.2020.12.03.12.27.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 12:27:41 -0800 (PST)
+Date:   Thu, 3 Dec 2020 12:27:37 -0800
+From:   Fangrui Song <maskray@google.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        kernel test robot <lkp@intel.com>, dwmw@amazon.co.uk,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Jakub Jelinek <jakub@redhat.com>
+Subject: Re: [PATCH] firmware_loader: Align .builtin_fw to 8
+Message-ID: <20201203202737.7c4wrifqafszyd5y@google.com>
+References: <20201203170529.1029105-1-maskray@google.com>
+ <CAKwvOd=8trq9qndYvf8KD4_3XVfaT_BXcNZhrKP67-YH9WQL0g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1606906011-25633-5-git-send-email-gene.chen.richtek@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAKwvOd=8trq9qndYvf8KD4_3XVfaT_BXcNZhrKP67-YH9WQL0g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gene,
+On 2020-12-03, Nick Desaulniers wrote:
+>On Thu, Dec 3, 2020 at 9:05 AM Fangrui Song <maskray@google.com> wrote:
+>>
+>> arm64 references the start address of .builtin_fw (__start_builtin_fw)
+>> with a pair of R_AARCH64_ADR_PREL_PG_HI21/R_AARCH64_LDST64_ABS_LO12_NC
+>> relocations. The compiler is allowed to emit the
+>> R_AARCH64_LDST64_ABS_LO12_NC relocation because struct builtin_fw in
+>> include/linux/firmware.h is 8-byte aligned.
+>>
+>> The R_AARCH64_LDST64_ABS_LO12_NC relocation requires the address to be a
+>> multiple of 8, which may not be the case if .builtin_fw is empty.
+>> Unconditionally align .builtin_fw to fix the linker error.
+>>
+>> Fixes: 5658c76 ("firmware: allow firmware files to be built into kernel image")
+>> Link: https://github.com/ClangBuiltLinux/linux/issues/1204
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Fangrui Song <maskray@google.com>
+>> ---
+>>  include/asm-generic/vmlinux.lds.h | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+>> index b2b3d81b1535..3cd4bd1193ab 100644
+>> --- a/include/asm-generic/vmlinux.lds.h
+>> +++ b/include/asm-generic/vmlinux.lds.h
+>> @@ -459,6 +459,7 @@
+>>         }                                                               \
+>>                                                                         \
+>>         /* Built-in firmware blobs */                                   \
+>> +       ALIGN_FUNCTION();                                               \
+>
+>Thanks for the patch!
+>
+>I'm going to repeat my question from the above link
+>(https://github.com/ClangBuiltLinux/linux/issues/1204#issuecomment-737610582)
+>just in case it's not naive:
+>
+>ALIGN_FUNCTION() C preprocessor macro seems to be used to realign
+>code, while STRUCT_ALIGN() seems to be used to realign data.  It looks
+>to me like only data is put into .builtin_fw.  If these relocations
+>require an alignment of 8, than multiples of 8 should also be fine
+>(STRUCT_ALIGN in 32 for all toolchain version, except gcc 4.9 which is
+>64; both are multiples of 8 though).  It looks like only structs are
+>placed in .builtin_fw; ie. data.  In that case, I worry that using
+>ALIGN_FUNCTION/8 might actually be under-aligning data in this
+>section.
 
-Thanks for the update.
+Regarding STRUCT_ALIGN (32 for GCC>4.9) in
+include/asm-generic/vmlinux.lds.h, it is probably not suitable for
+.builtin_fw
 
-On 12/2/20 11:46 AM, Gene Chen wrote:
-> From: Gene Chen <gene_chen@richtek.com>
-> 
-> Add bindings document for LED support on MT6360 PMIC
-> 
-> Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> ---
->   .../devicetree/bindings/leds/leds-mt6360.yaml      | 159 +++++++++++++++++++++
->   1 file changed, 159 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/leds-mt6360.yaml b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> new file mode 100644
-> index 0000000..73c67b1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+* Its comment is a bit unclear. It probably should mention that the
+   32-byte overalignment is only for global structure variables which are
+   at least 32 byte large. But this is just my observation. Adding a GCC
+   maintainer to comment on this.
+* Even if GCC does overalign defined global struct variables, it is unlikely
+   that GCC will leverage this property for undefined `extern struct
+   builtin_fw __start_builtin_fw[]` (drivers/base/firmware_loader/main.c)
 
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+To make .builtin_fw aligned, I agree that ALIGN_FUNCTION() is probably a
+misuse. Maybe I should just use `. = ALIGN(8)` if the kernel linker
+script prefers `. = ALIGN(8)` to an output section alignment
+(https://sourceware.org/binutils/docs/ld/Output-Section-Description.html#Output-Section-Description
+https://lld.llvm.org/ELF/linker_script.html#output-section-alignment)
 
--- 
-Best regards,
-Jacek Anaszewski
+>Though, in https://github.com/ClangBuiltLinux/linux/issues/1204#issuecomment-737625134
+>you're comment:
+>
+>>> In GNU ld, the empty .builtin_fw is removed
+>
+>So that's a difference in behavior between ld.bfd and ld.lld, which is
+>fine, but it makes me wonder whether we should instead or additionally
+>be discarding this section explicitly via linker script when
+>CONFIG_FW_LOADER is not set?
+
+Short answer: No, we should not discard .builtin_fw
+
+   .builtin_fw        : AT(ADDR(.builtin_fw) - LOAD_OFFSET) {
+   __start_builtin_fw = .; ... }
+
+In LLD, either a section reference (`ADDR(.builtin_fw)`) or a
+non-PROVIDE symbol assignment __start_builtin_fw makes the section non-discardable.
+
+It can be argued that discarding an output section with a symbol
+assignment (GNU ld) is strange because the symbol (st_shndx) will be
+defined relative to an arbitrary unrelated section. Retaining the
+section can avoid some other issues.
+
+>>         .builtin_fw        : AT(ADDR(.builtin_fw) - LOAD_OFFSET) {      \
+>>                 __start_builtin_fw = .;                                 \
+>>                 KEEP(*(.builtin_fw))                                    \
+>> --
+>> 2.29.2.576.ga3fc446d84-goog
+>>
+>
+>
+>-- 
+>Thanks,
+>~Nick Desaulniers
