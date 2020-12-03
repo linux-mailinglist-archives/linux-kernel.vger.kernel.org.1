@@ -2,133 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273202CCD39
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A79E2CCD3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 04:20:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729744AbgLCDRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 22:17:38 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:38813 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726276AbgLCDRi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 22:17:38 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 0BD92580307;
-        Wed,  2 Dec 2020 22:16:52 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 02 Dec 2020 22:16:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=c
-        gJ/TsRJBaRDzx8MdnyAEwfSEaMJToTmA0O7gCafcTg=; b=kWKxhUbIGL1Mh5BP4
-        WUaGxoGqwK0SulgLE89GuS8Gw0hVrZsr/14vky1h5I8O0kBiZTVCTj9pllJE1asb
-        xklBMDuag8IFA0hG+N7fcJROEXnn+ZCBpw18BbTTxmkLzNEZJ8n3o6CC1IwB8Ds5
-        52BFWyzEgvEe4b6kst1W94g8HSBWRbroliwla+1mIQ2RjExwoUKGf+rnB+c1h7WV
-        R3Bi4k22fcr7a/K/UA4zCkt4x4uuMxyrri0at7aeUKp2utaM8NXolgRHXuiLggC3
-        q0n9kjrXS13XKrzvhPkOlMh8LWF1fidI6M07pSFehymonWV96E6UrVgpTMZmciEn
-        CA6Yw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=cgJ/TsRJBaRDzx8MdnyAEwfSEaMJToTmA0O7gCafc
-        Tg=; b=ngfYa96K1n1UR+Z8zJr6fAxhSWrVTvLtWDNWNLagIrumaH7iy1cZiRhO6
-        ZxbqLL0AUB1Md9gc+KMyelXn3HoOgZKQIgt6n8/n/UZBwDSiLO6EmDjeehDThgK8
-        exCavdWzSXUfDYliRbRRgDIXWijFwnnM5InSG4uKmZQIhsowFMKVo0AxojUTKPvC
-        8IZop6aqxnttc9GRenKnTByaBZ/mRgVDlYAYNVTb3oLHcqbr47eq16K0/QnpnZ4/
-        p38GmBxM034fG37hpio3th7hTH6RWDgDnj+JQnPp5AzYzPmu60JdLW+m1wTjcf7T
-        GWQOonESiJaL6vgi9tM9V3u375OVw==
-X-ME-Sender: <xms:oljIX8PO3xLbWXMaLJpXW_9RzOFasMpwOvYC2F6oQjUGcigNfg0--A>
-    <xme:oljIX5_7ADb7mPzKkjBzthhTv2THi33KASiqPRxrVNjZkHIFpZYJEp3e17C-N5mY2
-    4dtMpxwnY2Kptn6jw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeihedgheeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
-    uefgtedtgeegnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
-    nhgurdhorhhg
-X-ME-Proxy: <xmx:oljIX4QK-ib49kfpTb8WJ3ysmP2yQv6Rl-rARwnqMA9Wa0C8GgHl3A>
-    <xmx:oljIXzkguUDgyX_40cuKIPhlsNJO9pCiM1RKmvD2oQxQ49dBTtVLFQ>
-    <xmx:oljIXwQkk7FV8bNocrcI6AS3jam4cywOv7c61hr6ic7NyI7_n1TRcA>
-    <xmx:pFjIX_MZKWi2lcvvNoktCxeVNeiwoC9iXdHiD4Wydtl8zTJE7IArIg>
-Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4E01E24005E;
-        Wed,  2 Dec 2020 22:16:50 -0500 (EST)
-Subject: Re: [PATCH 7/8] arm64: dts: allwinner: Add Allwinner H616 .dtsi file
-To:     Andre Przywara <andre.przywara@arm.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        Yangtao Li <frank@allwinnertech.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20201202135409.13683-1-andre.przywara@arm.com>
- <20201202135409.13683-8-andre.przywara@arm.com>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <3b4f4bf6-2fba-5d35-bdf5-74b8ced10357@sholland.org>
-Date:   Wed, 2 Dec 2020 21:16:49 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20201202135409.13683-8-andre.przywara@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1729749AbgLCDTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 22:19:52 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:43116 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727550AbgLCDTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 22:19:50 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv9MoWchfqUYZAA--.49875S2;
+        Thu, 03 Dec 2020 11:19:05 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH 0/2] memblock debug
+Date:   Thu,  3 Dec 2020 11:19:02 +0800
+Message-Id: <1606965544-22611-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxv9MoWchfqUYZAA--.49875S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYr7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
+        IFyTuYvjfU1NVyDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andre,
+Tiezhu Yang (2):
+  MIPS: Move memblock_dump_all() to the end of setup_arch()
+  MIPS: Select ARCH_KEEP_MEMBLOCK to enable sysfs memblock debug
 
-On 12/2/20 7:54 AM, Andre Przywara wrote:
-...
-> +	soc {
-> +		compatible = "simple-bus";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x0 0x0 0x0 0x40000000>;
-> +
-> +		syscon: syscon@3000000 {
-> +			compatible = "allwinner,sun50i-h616-system-control",
-> +				     "allwinner,sun50i-a64-system-control";
-> +			reg = <0x03000000 0x1000>;
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			ranges;
-> +
-> +			sram_c: sram@28000 {
-> +				compatible = "mmio-sram";
-> +				reg = <0x00028000 0x30000>;
-> +				#address-cells = <1>;
-> +				#size-cells = <1>;
-> +				ranges = <0 0x00028000 0x30000>;
-> +			};
-> +
-> +			sram_c1: sram@1a00000 {
-> +				compatible = "mmio-sram";
-> +				reg = <0x01a00000 0x200000>;
-> +				#address-cells = <1>;
-> +				#size-cells = <1>;
-> +				ranges = <0 0x01a00000 0x200000>;
-> +
-> +				ve_sram: sram-section@0 {
-> +					compatible = "allwinner,sun50i-h616-sram-c1",
-> +						     "allwinner,sun4i-a10-sram-c1";
-> +					reg = <0x000000 0x200000>;
-> +				};
-> +			};
-> +		};
+ arch/mips/Kconfig        | 1 +
+ arch/mips/kernel/setup.c | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-You mentioned that you could not find a SRAM A2. How were these SRAM ranges
-verified? If you can load eGON.BT0 larger than 32 KiB, then presumably NBROM
-uses SRAM C, and it is in the manual, but I see no mention of SRAM C1.
+-- 
+2.1.0
 
-Cheers,
-Samuel
