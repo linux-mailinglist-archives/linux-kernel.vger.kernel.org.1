@@ -2,162 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63F62CCFE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D42B2CCFE9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729661AbgLCGzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:55:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728524AbgLCGzo (ORCPT
+        id S1729814AbgLCG5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:57:06 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8185 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgLCG5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 01:55:44 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C1EC061A4D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 22:55:03 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id x22so1668503wmc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 22:55:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=AKmXevT8drdUH2skv3DTg3x+JAfuhsvELYJQvYu/Upc=;
-        b=OVXUVppObbNgGzbktdcsv9I5gq22Tr7SGewBgJsJY3fVwWtGPcLfABKyeScwnIAxhS
-         35Dr33bZXY11uecwk/GGz1oLK3CfQay82aTGAKG23k7hIm77hlsVijcXp9C9Maik9x3Q
-         0Ui8Lo31s64v7uyTdMN40z+G37REecnWMHByPNB30IAEZq9zleF6FCwiQdquq+q+t93D
-         udBeaXXPGZMpVhLXWRB/8BeRrFqDOY0NjSncEKhMFF4Zm1/XLjgB82T/OBSrLHYsvmnQ
-         huTlPX/fASZkgBFDu+oj6CGtgUPY3NeCTaw5I16gN1TCwMtjlG7+/LFasBKElvahFVwO
-         iuzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=AKmXevT8drdUH2skv3DTg3x+JAfuhsvELYJQvYu/Upc=;
-        b=Q/AbBZoDrHCQMaFYWN1IYBNWH7P+1zDSW0zGB1JYBswJNNaW1Hv/JUzOOrBEuPfd//
-         1ZqFaSPfastVoLcSu86w9OuJQYs4j2yvY+QwJl6fl85Ma1/VTrzULJZQfa/uimB0S9zR
-         T1o8giu8lsOXATU6y0ZmMOZjuAyUpMmUpWmEqYAOanQo3k0rbcht+8E9Gp5RJVvMBzN8
-         j5fldRDWvF1LNWEDbpc5CsEXCvlrOvYEthWQaq38CN/sTb1Rg73WQQGP5SakH6V5GhiW
-         UNjpYPVgERC4KFw1aF3V/V6AQM+yfnzI/lnezNGsG4jfCE5gljTpe6LnpsQu4cNFozVv
-         ofaA==
-X-Gm-Message-State: AOAM533Z0+SzQye3+QmXFvLl++f11UzLTLsVwQnLPa8iTuC4aauGM5WY
-        tzc/1m+dFGTPRyUR2VMeq2vIKbmuirX2jw==
-X-Google-Smtp-Source: ABdhPJwPof0T9rcDrsp5436Aum0R/KLU+3Qsrr/Q0ML3g3VbMuPO7CGAZtm7Vm3mj4/Rq/WZ27jfLg==
-X-Received: by 2002:a1c:9dd8:: with SMTP id g207mr1560810wme.15.1606978502320;
-        Wed, 02 Dec 2020 22:55:02 -0800 (PST)
-Received: from rum-mikhail-dt.world.mentorg.com (nat-rum.mentorg.com. [139.181.33.34])
-        by smtp.gmail.com with ESMTPSA id l11sm118738wmh.46.2020.12.02.22.55.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Dec 2020 22:55:01 -0800 (PST)
-From:   mdurnev@gmail.com
-X-Google-Original-From: mikhail_durnev@mentor.com
-To:     kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org
-Cc:     mikhail_durnev@mentor.com
-Subject: [PATCH v1] ASoC: rsnd: core: Check convert rate in rsnd_hw_params
-Date:   Thu,  3 Dec 2020 16:54:27 +1000
-Message-Id: <1606978467-13806-1-git-send-email-mikhail_durnev@mentor.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 3 Dec 2020 01:57:05 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cmmnm0b9qz15WDn;
+        Thu,  3 Dec 2020 14:55:56 +0800 (CST)
+Received: from euler.huawei.com (10.175.124.27) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 3 Dec 2020 14:56:15 +0800
+From:   Wei Li <liwei391@huawei.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>
+CC:     <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yangyingliang@huawei.com>, <guohanjun@huawei.com>
+Subject: [PATCH] MIPS: SMP-CPS: Add support for irq migration when CPU offline
+Date:   Thu, 3 Dec 2020 14:54:43 +0800
+Message-ID: <20201203065443.11263-1-liwei391@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikhail Durnev <mikhail_durnev@mentor.com>
+Currently we won't migrate irqs when offline CPUs, which has been
+implemented on most architectures. That will lead to some devices work
+incorrectly if the bound cores are offline.
 
-snd_pcm_hw_params_set_rate_near can return incorrect sample rate in
-some cases, e.g. when the backend output rate is set to some value higher
-than 48000 Hz and the input rate is 8000 Hz. So passing the value returned
-by snd_pcm_hw_params_set_rate_near to snd_pcm_hw_params will result in
-"FSO/FSI ratio error" and playing no audio at all while the userland
-is not properly notified about the issue.
+While that can be easily supported by enabling GENERIC_IRQ_MIGRATION.
+But i don't pretty known the reason it was not supported on all MIPS
+platforms.
 
-If SRC is unable to convert the requested sample rate to the sample rate
-the backend is using, then the requested sample rate should be adjusted in
-rsnd_hw_params. The userland will be notified about that change in the
-returned hw_params structure.
+This patch add the support for irq migration on MIPS CPS platform, and
+it's tested on the interAptiv processor.
 
-Signed-off-by: Mikhail Durnev <mikhail_durnev@mentor.com>
+Signed-off-by: Wei Li <liwei391@huawei.com>
 ---
- sound/soc/sh/rcar/core.c | 69 +++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 68 insertions(+), 1 deletion(-)
+ arch/mips/Kconfig          | 1 +
+ arch/mips/kernel/smp-cps.c | 2 ++
+ 2 files changed, 3 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 6e670b3..289928d 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1428,8 +1428,75 @@ static int rsnd_hw_params(struct snd_soc_component *component,
- 		}
- 		if (io->converted_chan)
- 			dev_dbg(dev, "convert channels = %d\n", io->converted_chan);
--		if (io->converted_rate)
-+		if (io->converted_rate) {
-+			/*
-+			 * SRC supports convert rates from params_rate(hw_params)/k_down
-+			 * to params_rate(hw_params)*k_up, where k_up is always 6, and
-+			 * k_down depends on number of channels and SRC unit.
-+			 * So all SRC units can upsample audio up to 6 times regardless
-+			 * its number of channels. And all SRC units can downsample
-+			 * 2 channel audio up to 6 times too.
-+			 */
-+			int k_up = 6;
-+			int k_down = 6;
-+			int channel;
-+			struct rsnd_mod *src_mod = rsnd_io_to_mod_src(io);
-+
- 			dev_dbg(dev, "convert rate     = %d\n", io->converted_rate);
-+
-+			channel = io->converted_chan ? io->converted_chan :
-+				  params_channels(hw_params);
-+
-+			switch (rsnd_mod_id(src_mod)) {
-+			/*
-+			 * SRC0 can downsample 4, 6 and 8 channel audio up to 4 times.
-+			 * SRC1, SRC3 and SRC4 can downsample 4 channel audio
-+			 * up to 4 times.
-+			 * SRC1, SRC3 and SRC4 can downsample 6 and 8 channel audio
-+			 * no more than twice.
-+			 */
-+			case 1:
-+			case 3:
-+			case 4:
-+				if (channel > 4) {
-+					k_down = 2;
-+					break;
-+				}
-+				fallthrough;
-+			case 0:
-+				if (channel > 2)
-+					k_down = 4;
-+				break;
-+
-+			/* Other SRC units do not support more than 2 channels */
-+			default:
-+				if (channel > 2)
-+					return -EINVAL;
-+			}
-+
-+			if (params_rate(hw_params) > io->converted_rate * k_down) {
-+				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->min =
-+					io->converted_rate * k_down;
-+				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->max =
-+					io->converted_rate * k_down;
-+				hw_params->cmask |= SNDRV_PCM_HW_PARAM_RATE;
-+			} else if (params_rate(hw_params) * k_up < io->converted_rate) {
-+				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->min =
-+					(io->converted_rate + k_up - 1) / k_up;
-+				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->max =
-+					(io->converted_rate + k_up - 1) / k_up;
-+				hw_params->cmask |= SNDRV_PCM_HW_PARAM_RATE;
-+			}
-+
-+			/*
-+			 * TBD: Max SRC input and output rates also depend on number
-+			 * of channels and SRC unit:
-+			 * SRC1, SRC3 and SRC4 do not support more than 128kHz
-+			 * for 6 channel and 96kHz for 8 channel audio.
-+			 * Perhaps this function should return EINVAL if the input or
-+			 * the output rate exceeds the limitation.
-+			 */
-+		}
- 	}
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index a48cb9a71471..8ece19ffe255 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2510,6 +2510,7 @@ config MIPS_CPS
+ 	select SYS_SUPPORTS_SCHED_SMT if CPU_MIPSR6
+ 	select SYS_SUPPORTS_SMP
+ 	select WEAK_ORDERING
++	select GENERIC_IRQ_MIGRATION if HOTPLUG_CPU
+ 	help
+ 	  Select this if you wish to run an SMP kernel across multiple cores
+ 	  within a MIPS Coherent Processing System. When this option is
+diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+index 3ab433a8e871..26f74f7d7604 100644
+--- a/arch/mips/kernel/smp-cps.c
++++ b/arch/mips/kernel/smp-cps.c
+@@ -12,6 +12,7 @@
+ #include <linux/slab.h>
+ #include <linux/smp.h>
+ #include <linux/types.h>
++#include <linux/irq.h>
  
- 	return rsnd_dai_call(hw_params, io, substream, hw_params);
+ #include <asm/bcache.h>
+ #include <asm/mips-cps.h>
+@@ -465,6 +466,7 @@ static int cps_cpu_disable(void)
+ 	smp_mb__after_atomic();
+ 	set_cpu_online(cpu, false);
+ 	calculate_cpu_foreign_map();
++	irq_migrate_all_off_this_cpu();
+ 
+ 	return 0;
+ }
 -- 
-2.7.4
+2.17.1
 
