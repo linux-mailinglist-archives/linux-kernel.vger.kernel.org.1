@@ -2,127 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AB52CD314
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6562CD317
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730083AbgLCKA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 05:00:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726981AbgLCKA0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 05:00:26 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79658C061A4D
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 01:59:40 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id b23so849272pls.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 01:59:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Q69KsiFydwKCuMI7D00S2So//GnJB60DE1anI6+oqlc=;
-        b=MaGLUSpxokzJi81vFpAWPMRHIXOfWZ+f4BaMrGtcSlOO1g15+I9n3VBwa4gW7xeHby
-         j3GA9BK/+Za3GqZhBjE8/DQ+GgU5VAWDV/Dm2SA5PZGAN4Kk5zAaA4IWyvoB4YzjNlX4
-         4LxLhaAbnGMWSKlLjNYsiaJD3/FSzHWDZgCCRzofgUh+zCq6mirH+GQm+GZfB9k7Nd9S
-         2BtpHrhhEifZ511+WmUT8Z7RMcGT3m3PLhe3dTGsvj05iFgrxvkDOdfULSvFypHJk6FN
-         wwJLopNippi+Vc1OmaJ7Xkp65aeLIapydugivjp7h1wCBEprx0x50J6PlfL3EfYo6hrF
-         B1DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Q69KsiFydwKCuMI7D00S2So//GnJB60DE1anI6+oqlc=;
-        b=WzgyDmZgh3nGEdIvwMOwN5DYHudJZ7vKxNk/Rb3Mfsq6D+1QbRp9LqxzNvOC11//Z2
-         15tjY4iWYTzzg0VMr5yLlOCcLLb9kFUxpgvAMsi/QQKedsy8gZatwbe2B1EggDf0kuPF
-         3UN7pCQlAvqk0wuqREh/BwjiTcCCZv8rXHUOz1J57qH0wB5tJRruddVR6Rq9iRhQOQgY
-         7fpETah9tw/8smej5YmdvZHIzqCboz9hODKZbOJgFt2JeIpi6hHNK3u/YqUknZRIrAau
-         PZVENnIMMEXfrW1CcGdQ4fArKTspgKM75pMxhpu/PdwlinsnkRbtnhrffBTOkbBezHfl
-         p3Ow==
-X-Gm-Message-State: AOAM5330OGClHGRF4DU9A9nXp7I45GyNY6/pcgkf2v9GJ9IJcJIaIRUX
-        EBx9NGEtHy0h5givip1rUIA=
-X-Google-Smtp-Source: ABdhPJxf0qUiN0aXVwqbckesUIXrKA0YgpGp5M6GYDjpW/ZR2y1xB66cxWMDy1bx3pidWl8u+WCguQ==
-X-Received: by 2002:a17:90b:a53:: with SMTP id gw19mr2355333pjb.216.1606989579772;
-        Thu, 03 Dec 2020 01:59:39 -0800 (PST)
-Received: from [192.168.43.245] ([42.111.136.176])
-        by smtp.gmail.com with ESMTPSA id y24sm1258100pfn.176.2020.12.03.01.59.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 01:59:39 -0800 (PST)
-From:   Aditya <yashsri421@gmail.com>
-Subject: Re: [PATCH -mmots] checkpatch: add fix for non-standard signature -
- co-authored-by
-To:     Joe Perches <joe@perches.com>
-Cc:     lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <280235acc0e91365f3fd3b5be5a5244eced1ff61.camel@perches.com>
- <20201202183045.9309-1-yashsri421@gmail.com>
- <5afbcd1423ee8fc2dfad191d94aef6efc17198c8.camel@perches.com>
-Message-ID: <a2c74693-93ae-cd5a-7836-4ffff643fc09@gmail.com>
-Date:   Thu, 3 Dec 2020 15:29:27 +0530
+        id S1730134AbgLCKDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 05:03:16 -0500
+Received: from mga17.intel.com ([192.55.52.151]:6536 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728361AbgLCKDQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 05:03:16 -0500
+IronPort-SDR: dpZxTw49nvYeljR6Tn3k0Tars6j+F0oHd1gRhnayPUZgD6w6DpTUCiTmTX48FopLcMVc63n6QH
+ q0GgJcaIj/Rg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="152994607"
+X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
+   d="scan'208";a="152994607"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 02:02:36 -0800
+IronPort-SDR: 9m5NA9f9NZgWGQuQqw+P8EBYdVT7Eotlu06rdoSfqi+S26oUrkHtpDpNy2SGfrA3Fr2tPbg7bN
+ 3EWaO2ad7R8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
+   d="scan'208";a="335900256"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by orsmga006.jf.intel.com with ESMTP; 03 Dec 2020 02:02:34 -0800
+Subject: Re: [RFC PATCH v3.1 00/27] Add support UHS-II for GL9755
+To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ben.chuang@genesyslogic.com.tw,
+        greg.tu@genesyslogic.com.tw
+References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
+ <20201125074125.GC62993@laputa>
+ <c8f7e9ad-3e8d-01cc-edeb-5be364bfcc36@intel.com>
+ <20201201030937.GE43403@laputa>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <a810af40-882f-c1fe-4d58-1173c0fcef6f@intel.com>
+Date:   Thu, 3 Dec 2020 12:02:06 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <5afbcd1423ee8fc2dfad191d94aef6efc17198c8.camel@perches.com>
+In-Reply-To: <20201201030937.GE43403@laputa>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/12/20 12:26 am, Joe Perches wrote:
-> On Thu, 2020-12-03 at 00:00 +0530, Aditya Srivastava wrote:
->> Currently, checkpatch.pl warns us for BAD_SIGN_OFF on the usage of
->> non-standard signatures.
->>
->> An evaluation on v4.13..v5.8 showed that out of 539 warnings due to
->> non-standard signatures, 43 are due to the use of 'Co-authored-by'
->> tag, which may seem correct, but is not standard.
->>
->> The standard signature equivalent for 'Co-authored-by' is
->> 'Co-developed-by'.
+On 1/12/20 5:09 am, AKASHI Takahiro wrote:
+> Adrian,
 > 
-> I'm not going to ack this as I don't mind non-standard signatures.
+> Thank you for your review comments.
 > 
-
-What do you suggest?
-Should I drop this patch and move on?
-
-> You should also always use patch subject versioning and include
-> a changelog after the --- line.
-> 
-
-Ok, will do. Actually I had not included the version changelogs and
-versioning from our previous patch, as the subject for the patch had
-changed. Will keep in mind for future though.
-
-Thanks
-Aditya
-
->> Provide a fix by suggesting users with this signature alternative and
->> replacing.
+> On Thu, Nov 26, 2020 at 10:18:55AM +0200, Adrian Hunter wrote:
+>> On 25/11/20 9:41 am, AKASHI Takahiro wrote:
+>>> Gentle ping;
+>>>
+>>> On Fri, Nov 06, 2020 at 11:26:59AM +0900, AKASHI Takahiro wrote:
+>>>> This is an interim snapshot of our next version, v4, for enabling
+>>>> UHS-II on MMC/SD.
+>>>>
+>>>> It is focused on 'sdhci' side to address Adrian's comments regarding
+>>>> "modularising" sdhci-uhs2.c.
+>>>> The whole aim of this version is to get early feedback from Adrian (and
+>>>> others) on this issue. Without any consensus about the code structure,
+>>>
+>>> Any comments so far?
+>>>
 >>
->> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
->> ---
->>  scripts/checkpatch.pl | 3 +++
->>  1 file changed, 3 insertions(+)
+>> Overall, I like this approach of separating UHS2 from legacy sdhci as much
+>> as possible.  The only major change, is to drop support for legacy quirks
+>> and features that you do not need.  The reason for that, is that there may
+>> be few drivers that end up with UHS-II support (opting instead for SD
+>> Express), so there is no point going to a lot of trouble to support things
+>> that never get used.
 >>
->> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
->> index 4a026926139f..fc036d545d2d 100755
->> --- a/scripts/checkpatch.pl
->> +++ b/scripts/checkpatch.pl
->> @@ -2832,6 +2832,9 @@ sub process {
->>  
->>
->>  			if ($sign_off !~ /$signature_tags/) {
->>  				my $suggested_signature = find_standard_signature($sign_off);
->> +				if ($sign_off =~ /co-authored-by:/i) {
->> +					$suggested_signature = "Co-developed-by:";
->> +				}
->>  				if ($suggested_signature eq "") {
->>  					WARN("BAD_SIGN_OFF",
->>  					     "Non-standard signature: $sign_off\n" . $herecurr);
+>> From what I have seen that looks like it includes:
+>> 	- any quirks
 > 
+> GLI driver (gl9755) needs
+>   * SDHCI_QUIRK_NO_ENDATTR_IN_NOPDESC
+>   * SDHCI_QUIRK2_BROKEN_DDR50
+> but they are managed in sdhci code.
 > 
+>> 	- SDHCI LED support
+>> 	- external DMA support
+> 
+> Should we add 'depends on !SDHCI_UHS2' to MMC_SDHCI_EXTERNAL_DMA?
 
+No because SDHCI_UHS2 does not necessary mean UHS-II is actually being used
+i.e. same kernel can support both even if no controller uses both
