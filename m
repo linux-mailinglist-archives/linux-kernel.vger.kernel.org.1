@@ -2,177 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892492CDADE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7C12CDAE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731136AbgLCQKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:10:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727395AbgLCQKa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:10:30 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CEEC061A51
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 08:09:50 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id k14so2441514wrn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 08:09:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Egp56+bWfac+3k12p/dmisOXz1k0Ww/MYP5K1gwdQ58=;
-        b=IbKIdizWv0uaVk1vhtYurj8fNhCBBnAN4q2j0WS9KRqrF2U6oz3IrfaUHX1Qtrfx3i
-         ogaKErJH4njzq3nwtbFQAWMx40OAREHKSdnaxxaEDqG2eqlKRM9i4+OYUz8q0pdywmzJ
-         Y+u4VUxK5hAvJpJOhlVNgAbvhzDCmnJAWDGkOUq5QOCsK5EAzxttQ+a5nGdZch+09os6
-         py9ikEmpyXVadNtvdOOw/LGKP7EbI0dnf75bFCMvS+ePPdg7udWoXco1Ux1VHxt9CuOW
-         v5phtZ8cA4Ye1+BWlVYKx+U7T0+l9yZAAsPVaAEbXQiHo6AFEmiNfFlwvufw2ewYAap8
-         Z71A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Egp56+bWfac+3k12p/dmisOXz1k0Ww/MYP5K1gwdQ58=;
-        b=Oi3mC8WSoo0N9voZAfcaCSy+nAFRWL80zxsrZn6ulD47/6FW7BwxbnrGvipWKpGaf2
-         cYFcJNnLxFTaVDFnCdJkAiNgCUDRg8QD008wzI/uOgagtfR+8UQSMtWZBvAbg+UxF3w0
-         Hp+ehGMA1seh8lnrRS4waRO3Jv1EGGL8H9WAqi6G0PuSQIm4qjtmjYzO142K2ge+pe5o
-         2QQVEN2PaIhzkMDx4zUaSmaOGO6KfvNd8hW+dN9GL/6ltVwftISFOGo03f/OasSrL7pL
-         tFEYyYamBhD/NG2aoo+UHpP7XaNo5FMUPN9jY014qoqW9JIOxbClB98EwLRaEumfSMK8
-         eapA==
-X-Gm-Message-State: AOAM530vNGU12a3rib4iql0GaA4ic+1EBL3aYy3ENdwyIBL/FQHF2jfb
-        ArRa7H24vXfJYNdlmafU97TQfg==
-X-Google-Smtp-Source: ABdhPJx+gI/bhjY3qusZeY90Fqj3HltB+Pt0HmNnq6N7kRujX0WWTNyi+4zTbYCRxzLDMVulGuZCyA==
-X-Received: by 2002:a5d:5689:: with SMTP id f9mr4547592wrv.181.1607011788834;
-        Thu, 03 Dec 2020 08:09:48 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:9cff:9584:adb2:6288? ([2a01:e34:ed2f:f020:9cff:9584:adb2:6288])
-        by smtp.googlemail.com with ESMTPSA id o83sm2009235wme.21.2020.12.03.08.09.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 08:09:48 -0800 (PST)
-Subject: Re: [PATCH v2 2/5] thermal: devfreq_cooling: get a copy of device
- status
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, orjan.eide@arm.com, robh@kernel.org,
-        alyssa.rosenzweig@collabora.com, steven.price@arm.com,
-        airlied@linux.ie, daniel@ffwll.ch, ionela.voinescu@arm.com
-References: <20201118120358.17150-1-lukasz.luba@arm.com>
- <20201118120358.17150-3-lukasz.luba@arm.com>
- <5d4743b9-5b2f-8494-8d10-6a5fd2c0fdfd@linaro.org>
- <d9906ed8-e3bf-5e42-2e43-09071848ae48@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <224c6b9b-977a-d553-f22b-2056223a84bc@linaro.org>
-Date:   Thu, 3 Dec 2020 17:09:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <d9906ed8-e3bf-5e42-2e43-09071848ae48@arm.com>
-Content-Type: text/plain; charset=utf-8
+        id S1731163AbgLCQKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:10:35 -0500
+Received: from mga03.intel.com ([134.134.136.65]:38648 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727395AbgLCQKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 11:10:34 -0500
+IronPort-SDR: NbIDQHrMeHpwnnbKeXHwG4/gYzQu6pRG4pFL2EwFXBNGLReWmFjjYxqb7FzzDWhqvv7jhyggRe
+ LUmsD0g04c3Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="173313616"
+X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
+   d="scan'208";a="173313616"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 08:09:53 -0800
+IronPort-SDR: LYM7I8+BojnjDsLO4N0coxQXHm/tmeSw9FJIrCIPDHcRbFJkxjZbCTPy/ZJ2pgQ8LZZV5pTSCo
+ QW86oRPRFZww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; 
+   d="scan'208";a="365886413"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Dec 2020 08:09:52 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 3 Dec 2020 08:09:52 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 3 Dec 2020 08:09:52 -0800
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (104.47.45.54) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Thu, 3 Dec 2020 08:09:51 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WXJoUgAgt4Zp9og6ScSm5d++kUwvKQbW3zcT1VwN01uRf554TNg2ETbMv2diZ7NMfBvX5gMNjG1ssr4ASZn0jk0YinItXhuUzpM56Oc2P4BDwZJDuunzPdcVVYeI3Z9i9N5Cj3DXJFBx5wPoQQ8Wc1DLgECV/mDIFqdQEU2LWJly0ne+1Oy5JE2++IeJSmQUmJ0Nlo3DMO/rUqOJZQNbTL8Cbb4XoiPzXa8cdxEhZ5TtObyk4CBV6j4toKL3wFXWbaOfk7epyfJbTYWXY4LPJSt+fwvXMuX7TAHLAQwV6W7Jd9ZD/LaT+vyfmHAAGowznNz1flR9x5SKHL0OuI3F3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HO2cym3or93g+wAwXrmPOBbcjX01rMWUvIXsKUyq/FI=;
+ b=Rnya0D4kqZL9He91bOvO3A4gzjwWG7IIeB+X2U3XSf631E4Meetzfgpn4LUpQmDakWpjvpGzhniYOZiGz1rUXJZp0ZOyiBQ5mtbVe1l1ma2poH5/Wm1adaM+uaEbbYdgOLbpQGnUP7iD/vY+EeWzKE3YsqwX8oih6kCmOVBoTmal+cD6xE+JIu7402kYeM5LmJUKv1H1nVV/VKG/FKoqPhiFAHtDAv38SlZ9IGnRs/sC8ZmOHw0TtJUTzqte8GdAQ/e7p/cRNmp4bw/g/+XedjXyj/bRlfU+0vcT1G5jrfq1LxRLXd/mYLgKCLzPb273S+R6bogAfpHs/Coa2t5t+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HO2cym3or93g+wAwXrmPOBbcjX01rMWUvIXsKUyq/FI=;
+ b=S+S4a5nF26k7mvSdYIoXpp6ToMV5jYlGE/w6Hy08+VeePv+8L4V2UG3GOasVA5GzImsVgfZWMa1xJkAPFodzh1bNV2hhrWXfrVPnzomIrfzMQMLBPBeJdQrKOF+m6fCCXLpliep+xGxZ6Cml0zCWOiAfSO0o63qfmR05iIHpjVE=
+Received: from SN6PR11MB3421.namprd11.prod.outlook.com (2603:10b6:805:cd::27)
+ by SN6PR11MB2573.namprd11.prod.outlook.com (2603:10b6:805:53::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Thu, 3 Dec
+ 2020 16:09:50 +0000
+Received: from SN6PR11MB3421.namprd11.prod.outlook.com
+ ([fe80::a975:345b:8dcc:50ff]) by SN6PR11MB3421.namprd11.prod.outlook.com
+ ([fe80::a975:345b:8dcc:50ff%6]) with mapi id 15.20.3611.025; Thu, 3 Dec 2020
+ 16:09:50 +0000
+From:   "Surendrakumar Upadhyay, TejaskumarX" 
+        <tejaskumarx.surendrakumar.upadhyay@intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+CC:     Jesse Barnes <jsbarnes@google.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "De Marchi, Lucas" <lucas.demarchi@intel.com>,
+        "Roper, Matthew D" <matthew.d.roper@intel.com>,
+        "Pandey, Hariom" <hariom.pandey@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>
+Subject: RE: [PATCH] x86/gpu: add JSL stolen memory support
+Thread-Topic: [PATCH] x86/gpu: add JSL stolen memory support
+Thread-Index: AQHWstDzxN2Pwg+4lUqs/o8gwa6wpqm5S1QAgABL34CAAUSNAIATRwMAgABjNQCAABWMgIAArfUAgACitgCAAC1YAIAQi95ggABnAACAAmNxkIAA/FuAgADPwoCAAG9wAIAADA0w
+Date:   Thu, 3 Dec 2020 16:09:50 +0000
+Message-ID: <SN6PR11MB34212EA0A59FB5827D3D4C9DDFF20@SN6PR11MB3421.namprd11.prod.outlook.com>
+References: <160698518967.3553.11319067086667823352@jlahtine-mobl.ger.corp.intel.com>
+ <20201203152520.GA1554214@bjorn-Precision-5520>
+In-Reply-To: <20201203152520.GA1554214@bjorn-Precision-5520>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [43.250.165.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e7a6f7be-ec02-4a84-bb1f-08d897a5dd09
+x-ms-traffictypediagnostic: SN6PR11MB2573:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR11MB2573CC7CFC67888752AAB7A8DFF20@SN6PR11MB2573.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:826;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: g04avq6lusjlyP0mPQFrM+uOxDIGiijHdLNcoTdBLLLEtDVLimZNGO9P2Gt8tUyEvYYM3Y5+5Xk6RIaFoBI8LRAeJ2c133yM2VpAG1RKuKvbyz+N9JPrONUKe77oh1UAZXIhTbMMZae8xfucvPIE3aTLjNhcyd6HNvbjQB85x6sJNoQFkm+u//w1dRcWWAUSYD4qcCHXw+8L8Ly8/K+ipwAuD/+5chsgD4ANhZWhWOOlohbMHf4UbKUKqgr5RRtvAoaChmDTBAQNQbW1W6ePskkNLhDfmOgDagvy2P1hXCD6m5D4eD+oml8DcoWse7hM80LE7xfdWYC9paeAGAOvPA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3421.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(110136005)(8676002)(66946007)(55016002)(66446008)(498600001)(9686003)(86362001)(186003)(26005)(64756008)(33656002)(76116006)(66556008)(66476007)(7696005)(7416002)(71200400001)(4326008)(8936002)(2906002)(52536014)(6506007)(54906003)(83380400001)(53546011)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?QX8LDX6hwIuc0XF9eM9zhF13rIyI3Le6zIknniykbNkevXjDlPgVj0wUd843?=
+ =?us-ascii?Q?EKoslmDXLqv04Y5ZYC/s3CinHLla1ZpyWBF9+qGFk30xnZBi8tgXjreE4rHy?=
+ =?us-ascii?Q?yfl++5MjoVK5n5hAJV7ZJhr2O+750xTi7jPi3YvVX8rqfIBNOzgeCsVM+PbN?=
+ =?us-ascii?Q?qNo4WIGxk6VKFObx7HZsu53znIwN4WsNJaB8RnOV0YjfQI3heD0fev6WDVvy?=
+ =?us-ascii?Q?T4jb3atOyLSZmUaIxEyvUAII2qx5iAAV44NMJTqcKa1ctZMOP1yVluv+W7qF?=
+ =?us-ascii?Q?ZOHD3lWF0RJWuROXT1YmAp/pjea/qLrcv7tlU01XNxEeosfVdsEz982Pf+R1?=
+ =?us-ascii?Q?NacSq524EjBw1hTTh/zL6dJJnDPo1bG76BR9w9xDERefKuAW4bC+TLdLkimS?=
+ =?us-ascii?Q?ZvJxlm2EbtADwm0+XLEhsVVC3Y7mjxOSzdfxu2IV/ntWfWxjUnDNmxjObJA9?=
+ =?us-ascii?Q?sqjPoojj9yIVCZkbPnL9gwLWDoJi8rE0zA5nE7LHRUV6vMFjbYdd9zc4qPTA?=
+ =?us-ascii?Q?LYgGMOS5pqmSPbZ/r0k4WlrNv6kZjKmvrMEmQulbkvKe8Y0GLpG1Usqp33Dv?=
+ =?us-ascii?Q?cYY1mKaoOXDSb3O6ieDHWm8RhlFNBsRi+5r+ox/ymZIAvYDtehlD28h2IMUL?=
+ =?us-ascii?Q?7flmYEmiry/k/al02qj+dE6XPJ31OgRXk/cWQehpJT3DmiLk81orpN6+jsxl?=
+ =?us-ascii?Q?ACdSIfLlaVD4krFY1YRo/tqGJkAs1wpP9q/3OA3gfe0oaidsAdEst7vpThnQ?=
+ =?us-ascii?Q?kLyeZb+qB6fXs5rPPuhrXNc5t1Dm5FnTJaPD4L2t6bZuWgVnXdu9MRyeoYTt?=
+ =?us-ascii?Q?ZYm4xi5Gan6VTvACCLyMsrMFZIMBgKDtsnmWtXS/tL42QToZkuvqM37uqLH0?=
+ =?us-ascii?Q?lzBGjLNVR12IB+b3RFl8XtXodbRl5AgAVjefk8/IR6p5633GfAWfrZypSG/y?=
+ =?us-ascii?Q?IJswdCAAV9kt1m2NGZaEZmCeZxNjJG2KP05e8LYta6Q=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3421.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7a6f7be-ec02-4a84-bb1f-08d897a5dd09
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2020 16:09:50.5336
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rscKhzyS/ZDaX9ZfzD7oyNjjXQusua5DDJQSkyvSsq+6qMR9fXJvxfGY88rZajFvOhONgks0UHm+1sk2n+TXuE5qAST+9Jx0yeAtjQlXjFToCOSo0kszTCI3pDBI2o4Wq1vvFN4+hcVW0UfPR3W6UQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2573
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/12/2020 16:38, Lukasz Luba wrote:
-> 
-> 
-> On 12/3/20 1:09 PM, Daniel Lezcano wrote:
->> On 18/11/2020 13:03, Lukasz Luba wrote:
->>> Devfreq cooling needs to now the correct status of the device in order
->>> to operate. Do not rely on Devfreq last_status which might be a stale
->>> data
->>> and get more up-to-date values of the load.
->>>
->>> Devfreq framework can change the device status in the background. To
->>> mitigate this situation make a copy of the status structure and use it
->>> for internal calculations.
->>>
->>> In addition this patch adds normalization function, which also makes
->>> sure
->>> that whatever data comes from the device, it is in a sane range.
->>>
->>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>> ---
->>>   drivers/thermal/devfreq_cooling.c | 52 +++++++++++++++++++++++++------
->>>   1 file changed, 43 insertions(+), 9 deletions(-)
->>>
->>> diff --git a/drivers/thermal/devfreq_cooling.c
->>> b/drivers/thermal/devfreq_cooling.c
->>> index 659c0143c9f0..925523694462 100644
->>> --- a/drivers/thermal/devfreq_cooling.c
->>> +++ b/drivers/thermal/devfreq_cooling.c
->>> @@ -227,20 +227,46 @@ static inline unsigned long
->>> get_total_power(struct devfreq_cooling_device *dfc,
->>>                                      voltage);
->>>   }
->>>   +static void _normalize_load(struct devfreq_dev_status *status)
->>> +{
->>> +    /* Make some space if needed */
->>> +    if (status->busy_time > 0xffff) {
->>> +        status->busy_time >>= 10;
->>> +        status->total_time >>= 10;
->>> +    }
->>> +
->>> +    if (status->busy_time > status->total_time)
->>> +        status->busy_time = status->total_time;
->>
->> How the condition above is possible?
-> 
-> They should, be checked by the driver, but I cannot trust
-> and have to check for all corner cases: (div by 0, overflow
-> one of them, etc). The busy_time and total_time are unsigned long,
-> which means 4B on 32bit machines.
-> If these values are coming from device counters, which count every
-> busy cycle and total cycles of a clock of a device running at e.g.
-> 1GHz they would overflow every ~4s.
+Okay then I will wait for someone to respond with "Reviewed-by". So this ca=
+n be merged.
 
-I don't think it is up to this routine to check the driver is correctly
-implemented, especially at every call to get_requested_power.
+Thanks,
+Tejas
 
-If the normalization ends up by doing this kind of thing, there is
-certainly something wrong in the 'status' computation to be fixed before
-submitting this series.
-
-
-> Normally IPA polling are 1s and 100ms, it's platform specific. But there
-> are also 'empty' periods when IPA sees temperature very low and does not
-> even call the .get_requested_power() callbacks for the cooling devices,
-> just grants max freq to all. This is problematic. I am investigating it
-> and will propose a solution for IPA soon.
-> 
-> I would avoid all of this if devfreq core would have default for all
-> devices a reliable polling timer... Let me check some possibilities also
-> for this case.
-
-Ok, may be create an API to compute the 'idle,busy,total times' to be
-used by the different the devfreq drivers and then fix the overflow in
-this common place.
-
->>> +    status->busy_time *= 100;
->>> +    status->busy_time /= status->total_time ? : 1;
->>> +
->>> +    /* Avoid division by 0 */
->>> +    status->busy_time = status->busy_time ? : 1;
->>> +    status->total_time = 100;
->>
->> Why not base the normalization on 1024? and use an intermediate u64.
-> 
-> You are the 2nd reviewer who is asking this. I tried to keep 'load' as
-> in range [0, 100] since we also have 'load' in cpufreq cooling in this
-> range. Maybe I should switch to 1024 (Ionela was also asking for this).
-
-Well it is common practice to compute normalization with 1024 because
-the division is a bit shift and the compiler optimize the code very well
-with that value.
-
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> -----Original Message-----
+> From: Bjorn Helgaas <helgaas@kernel.org>
+> Sent: 03 December 2020 20:55
+> To: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+> Cc: Surendrakumar Upadhyay, TejaskumarX
+> <tejaskumarx.surendrakumar.upadhyay@intel.com>; Jesse Barnes
+> <jsbarnes@google.com>; Daniel Vetter <daniel@ffwll.ch>; Linux PCI <linux-
+> pci@vger.kernel.org>; Linux Kernel Mailing List <linux-
+> kernel@vger.kernel.org>; X86 ML <x86@kernel.org>; Borislav Petkov
+> <bp@alien8.de>; De Marchi, Lucas <lucas.demarchi@intel.com>; Roper,
+> Matthew D <matthew.d.roper@intel.com>; Pandey, Hariom
+> <hariom.pandey@intel.com>; Jani Nikula <jani.nikula@linux.intel.com>; Viv=
+i,
+> Rodrigo <rodrigo.vivi@intel.com>; David Airlie <airlied@linux.ie>
+> Subject: Re: [PATCH] x86/gpu: add JSL stolen memory support
+>=20
+> On Thu, Dec 03, 2020 at 10:46:29AM +0200, Joonas Lahtinen wrote:
+> > Quoting Bjorn Helgaas (2020-12-02 22:22:53)
+> > > On Wed, Dec 02, 2020 at 05:21:58AM +0000, Surendrakumar Upadhyay,
+> TejaskumarX wrote:
+> > > > Yes it fails all the tests which are allocating from this stolen
+> > > > memory bunch. For example IGT tests like "
+> > > > igt@kms_frontbuffer_tracking@-[fbc|fbcpsr].* |
+> > > > igt@kms_fbcon_fbt@fbc.* " are failing as they totally depend to
+> > > > work on stolen memory.
+> >
+> > That's just because we have de-duped the stolen memory detection code.
+> > If it's not detected at the early quirks, it's not detected by the
+> > driver at all.
+> >
+> > So if the patch is not merged to early quirks, we'd have to refactor
+> > the code to add alternative detection path to i915. Before that is
+> > done, the failures are expected.
+> >
+> > > I'm sure that means something to graphics developers, but I have no
+> > > idea!  Do you have URLs for the test case source, outputs, dmesg
+> > > log, lspci info, bug reports, etc?
+> >
+> > The thing is, the bug reports for stuff like this would only start to
+> > flow after Jasperlake systems are shipping widely and the less common
+> > OEMs start integrating it to into strangely behaving BIOSes. Or that
+> > is the assumption.
+> >
+> > If it's fine to merge this through i915 for now with an Acked-by, like
+> > the previous patches, that'd be great. We can start a discussion on if
+> > the new platforms are affected anymore. But I'd rather not drop it
+> > before we have that understanding, as the previous problems have
+> > included boot time memory corruption.
+> >
+> > Would that work?
+>=20
+> Like I said, I'm not objecting if somebody else wants to apply this.
+>=20
+> I'm just pointing out that there's a little bit of voodoo here because it=
+'s not
+> clear what makes a BIOS strangely behaving or what causes boot-time
+> memory corruption, and that means we don't really have any hope of
+> resolving this stream of quirk updates.
+>=20
+> Bjorn
