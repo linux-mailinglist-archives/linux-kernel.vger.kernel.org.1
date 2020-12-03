@@ -2,171 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9F92CCF94
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B1E2CCF99
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 07:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387830AbgLCGh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 01:37:27 -0500
-Received: from mail-mw2nam12on2077.outbound.protection.outlook.com ([40.107.244.77]:55649
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727908AbgLCGh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 01:37:26 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CrY8CXsCXuqRCcVRedrhnrAjAfFDEP9h4NMUTxVAdw3I6eTrcUsNras8hLDnLevV74MHz8MXKGEe7sfSfRsr2XwGj3k7StaqTPTlo/IR5NYH4r8BsX20rkvpy9nMafC2QkIZjbJ8DAd5A84DO3v2o9M8c1oZOKuXrO+vbeyE3EWFFR6zztgppSg6/icluFEPmOTQj5bzJ12QTjOU1AWXwXw1GAnpc7AOEUWXuACFNzZFGz6zbTQqun7rg+X28JqjlwP/6nDqfbG0hf1WgjW0is4NKjFBymVUD7Z0zblStQfdLqXD45OxEyu2+N98mcwThSMvWcvhB4vPVHLXyqb2mw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2RztgGnOW09w3RsugC599Ue61IRnRdky32cOFPWSVrY=;
- b=oJy2tImu0bM3lGqip9wVhvyCVUmiqog8ijblj0CRY5UETgYbNupV9yBmjiG4/7634eOJ2Mbbz1bNFlNkd1iLcEOKDzwgVyW/DNeoOhHhH3uBVwYc8FJKCkF7iR5mxRU8UPTHr+C5Nv+O3z/Pu5MefV8gPzbXzRZ1z5nZEn93STu8CPUA5HSZoxmRZ4x4OZf8vr0NdxAFzeNYNdwEt1uEjhFOte7LsAT4nXzknv7Ng5TRuH3NrnrNxJh63WMcsXjmW51v+3YDB84fBAJkqizcjh1yp+6/rBQmJCcdpazr/aTVSnkmcQRTwu3yi/j2dpwl1gFMnXe4FMbzERZlrorZZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=openfive.com;
- dkim=pass header.d=openfive.com; arc=none
+        id S1729817AbgLCGjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 01:39:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729808AbgLCGjW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 01:39:22 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C907C061A4D
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 22:38:36 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id d8so1152147lfa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 22:38:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=osportal.onmicrosoft.com; s=selector2-osportal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2RztgGnOW09w3RsugC599Ue61IRnRdky32cOFPWSVrY=;
- b=IvOcrzSTjnBdL62IPGdKUclH4KfStoAg2D5IOs3fkWNOdMpIxfBs1IXaGiZFbvbZ6EJJu/zFEv1rtUeqf5Z6a84rTqcR1biljPBiYgXAkTC7IZnbf0N/EUi1xlCzQ3bGg3pE9CDNITwWUAC5X2IDOpe6vrLW8C3+IWjeciu466s=
-Received: from BY5PR13MB4453.namprd13.prod.outlook.com (2603:10b6:a03:1d1::19)
- by BY5PR13MB4520.namprd13.prod.outlook.com (2603:10b6:a03:1d3::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.6; Thu, 3 Dec
- 2020 06:36:32 +0000
-Received: from BY5PR13MB4453.namprd13.prod.outlook.com
- ([fe80::7c13:1ac6:9f2a:5eae]) by BY5PR13MB4453.namprd13.prod.outlook.com
- ([fe80::7c13:1ac6:9f2a:5eae%8]) with mapi id 15.20.3654.005; Thu, 3 Dec 2020
- 06:36:32 +0000
-From:   Yash Shah <yash.shah@openfive.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "peter@korsgaard.com" <peter@korsgaard.com>,
-        "Paul Walmsley ( Sifive)" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        Sachin Ghadi <sachin.ghadi@openfive.com>
-Subject: RE: [PATCH 1/4] dt-bindings: riscv: Update DT binding docs to support
- SiFive FU740 SoC
-Thread-Topic: [PATCH 1/4] dt-bindings: riscv: Update DT binding docs to
- support SiFive FU740 SoC
-Thread-Index: AQHWyIHBGfYvEaJ6f0qSdKOZggdFCqnj5iWAgAEFz3A=
-Date:   Thu, 3 Dec 2020 06:36:32 +0000
-Message-ID: <BY5PR13MB4453B21AD0714272B39B375982F20@BY5PR13MB4453.namprd13.prod.outlook.com>
-References: <1606896236-62780-1-git-send-email-yash.shah@sifive.com>
- <1606896236-62780-2-git-send-email-yash.shah@sifive.com>
- <20201202145823.GC2324545@lunn.ch>
-In-Reply-To: <20201202145823.GC2324545@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=openfive.com;
-x-originating-ip: [103.109.13.228]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c01b394d-a1d6-44ce-3428-08d89755c648
-x-ms-traffictypediagnostic: BY5PR13MB4520:
-x-ld-processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR13MB4520BF8E53256F7EC213475D82F20@BY5PR13MB4520.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PVJNyFs8K9RXxiUH/2oHgzFJ7Eg/HJftmqg8vnNP8KW2qju6E+p8iVcpUtPHf+1OD/o0Eqwi3d6EsfRpZtYqDoaWwpPAMc6CC3j+XellyDwag7uEqH+dxy7q3nK9VbdZYK2u3K3Noo98up96gG/LeiDMKbgUvUIix0dB4IbwAIMSIgn0XsP3+258m00MCPD4ceh/XdrO9ZQOgqHudzeTl5Jcqt5DegdvQjW05mUSZvKR4iYC+J3oyghZABW/fg4D2a0/oNpurNGdn3wn4UCGOa8XceCmrastKhvnaSEnGCvbs7/Sibd8ZCLlBkY8jBuQcJ7yhvDEG5rEOEs3mAzzbg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR13MB4453.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(39840400004)(136003)(346002)(366004)(376002)(396003)(7696005)(66446008)(53546011)(52536014)(6506007)(4326008)(5660300002)(64756008)(107886003)(66946007)(66556008)(66476007)(186003)(26005)(76116006)(55016002)(9686003)(54906003)(71200400001)(6916009)(15650500001)(478600001)(2906002)(83380400001)(86362001)(8936002)(7416002)(33656002)(316002)(8676002)(44832011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?xYSfoCz+wR0kTQRgfwNFBhFbicJR5mHoDsUbKmmq19761rPQbBKUR9urL+5E?=
- =?us-ascii?Q?XuOv9Hs+GJUMZZP4y/Lw4vma86ZuMYxV7Mn48H41k46ge9m0aF65yrOJmmia?=
- =?us-ascii?Q?glTMbPpBlJlHM9p6YAxAdErKGCJYdCahxErp0qy4BqoXkA8pV7nFt/SAMAds?=
- =?us-ascii?Q?P3JdNaBlQn/owH002ZeD3LMR29Iudp/JXpn4DqVpdo5GJYg+GW66Ym+9klfZ?=
- =?us-ascii?Q?I8HCYAKIQOxE0umrgHrIeP3jBI9c+oMx6HwuYWvOxKB1B2hcoXc+2pjQGyaf?=
- =?us-ascii?Q?292HyRrAp8yC2ho6jOfVcbgQ2eAe3e0BhSF+DsFP7QzFoyyD2aut/BXVb4Xu?=
- =?us-ascii?Q?2yf5YEACb16R5WXM3sbnjpjQlRyPGP6yBqX59ZlGlZ57GA4g4vW9Ei9NHSvQ?=
- =?us-ascii?Q?Ri6fMJ15LXYMSllSJEqohNCfA8jtkAaZkdbXbaA4D58MsoMFqKH6NKChKpni?=
- =?us-ascii?Q?jOqYottsqIaqM3/tu2tNFEnDbpRoC4MZPwbSuHxQ87F0qQb0my5djM7YgsW0?=
- =?us-ascii?Q?LqtQPYWh72LxDlnIdQUu4rlPQCk3J0j06Vl6SghvkoB9YT+EFwgltizo9pYY?=
- =?us-ascii?Q?X8djNSVheD+zsfRIct1v6jJWeHI+bVdtqI5RXGsjEfRemVNOZs0V6gU7fBEZ?=
- =?us-ascii?Q?EfdJd4DNtFeGZBEVM+V6UC9zYtyILHMXcKRZsaNV/6O8P3oI25YoL7DVIyYH?=
- =?us-ascii?Q?H1Lvz6NKYTZzXcA1h4095ygxceDtDBho/DaVN1g6FLcxBq0pRmjq9Z6zZfxj?=
- =?us-ascii?Q?jFhrDlBaqlcrJWkGWoxvV3nIG6UCErS0nQ3Y7E5nUvoKHmuh6YO/UJBm17Gh?=
- =?us-ascii?Q?RAJSw2J2KbLG/1wzrzI2o+xy95laiDsjcY5iYr/j2cGpipQ7XjL39EydZfO7?=
- =?us-ascii?Q?1NET/I10p8kezUG6u4HuBKfvMK4hZa+n55vVvmWYqTEv/YvtEmrCtd9I6RoN?=
- =?us-ascii?Q?UKdEd6bKFbry+AYSEPESAFdmfhVkq1abyuPkVmrRSiU=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tDbVCUYC5fALwRpDFoDkF3ggntqlVa1OHX/vjw8Vu3w=;
+        b=DKQvbXQ3vycdLb0N8T0Mj+y89yj1lu/0nsZmZUYAD+3ZGXZEIqRUbD2+yAKtJf4Wj2
+         YsZdVWdDXMSXvTrJikjMQdDTT9uYJFW26t555nnGEM17+jSQh0d78oAEJJPsTBsXlhnB
+         +Z74LNDVGBq0TIse1iu3nXtNXyXInFiHNwNNKsUVngZ/GNQ5xEs3TdDdO8AbzDqqabyq
+         W0goBbbV2QsJwctunXVSDb0ZcxQcp+3J8mXB2fKj5SLS6TcM8MQj3t5wP0CNzYGSgh5O
+         /8lwkZBDNgOj0fm3xUXKv6rSgvR5iiB9/R5yqZgpbtT4S5pGNLjDRGOjlb9SlxPilBDS
+         0HBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tDbVCUYC5fALwRpDFoDkF3ggntqlVa1OHX/vjw8Vu3w=;
+        b=p7xW66k6OvUOB+i63OweDewPNuOMQ5Id/TlNvSmdUuzPY/Wr02P+NYBjtkLDTdVJlg
+         ZO3+0ocTypJ5GTCqiJnBEevR8FfvYVPTxHMD+3jns9SqN5G4kUpgv+gtCKJmB2vwroSF
+         d9MzQ4gecq71RYiHIJtdQw+2EoZk8pX6kxAhw49oPnRUDCVSXgCQSKjbH7RYad8aNj0d
+         g1leBa99lg/9oUHfn1maSB8/AHdPTtv5K8VykbbjfqL8Q9OIkY8eyewyzXWoRZ6r/HOK
+         8W3Deo4YVksoKHuuXBzSP+vo44lXgkFLaByVjZ8WQ2QlEdmyj2K+j4kzopnDVefxsByd
+         TN0g==
+X-Gm-Message-State: AOAM53253ZuwsZd3vvMuKd3k4oSwL0OTRDBqVmGJybOINxZLAoFmk0w9
+        b8/9jr9n+B7HPI00V/w58a70mxa8aLzXdRZm3Vk=
+X-Google-Smtp-Source: ABdhPJxvEBm0NUQiKXCs26+PXQDs5qrQj/UR0q4opvcWF6Sg2gtKN8Wiar+MrTMhsnUpYVMwdEMqm10aYze2P6Sx4bQ=
+X-Received: by 2002:a19:be58:: with SMTP id o85mr721997lff.346.1606977514631;
+ Wed, 02 Dec 2020 22:38:34 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: openfive.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR13MB4453.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c01b394d-a1d6-44ce-3428-08d89755c648
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2020 06:36:32.6136
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 16wh5RM7AeJwrfdaNzH5FqDOJqCJC2qQWCzXXIw+fJ+ZCD6mnZo4EFY9MNtJm1EZx1pa8xrGHNrJtoqhXPFKDQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR13MB4520
+References: <20201202145837.48040-1-foxhlchen@gmail.com> <X8fc+LYtRkPa6ZGg@kroah.com>
+In-Reply-To: <X8fc+LYtRkPa6ZGg@kroah.com>
+From:   Fox Chen <foxhlchen@gmail.com>
+Date:   Thu, 3 Dec 2020 14:38:22 +0800
+Message-ID: <CAC2o3D+okRbs222hnd5j3Pba8dqVQJifXg=2Py0fyRiEx62P7w@mail.gmail.com>
+Subject: Re: [PATCH 0/2] kernfs: speed up concurrency performance
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     tj@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 3, 2020 at 2:28 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Dec 02, 2020 at 10:58:35PM +0800, Fox Chen wrote:
+> > Hello,
+> >
+> > kernfs is an important facillity to support pseudo file systems and cgroup.
+> > Currently, with a global mutex, reading files concurrently from kernfs (e.g. /sys)
+> > is very slow.
+> >
+> > This problem is reported by Brice Goglin on thread:
+> > Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
+> > https://lore.kernel.org/lkml/X60dvJoT4fURcnsF@kroah.com/
+> >
+> > I independently comfirmed this on a 96-core AWS c5.metal server.
+> > Do open+read+write on /sys/devices/system/cpu/cpu15/topology/core_id 1000 times.
+> > With a single thread it takes ~2.5 us for each open+read+close.
+> > With one thread per core, 96 threads running simultaneously takes 540 us
+> > for each of the same operation (without much variation) -- 200x slower than the
+> > single thread one.
+> >
+> > The problem can only be observed in large machines (>=16 cores).
+> > The more cores you have the slower it can be.
+> >
+> > Perf shows that CPUs spend most of the time (>80%) waiting on mutex locks in
+> > kernfs_iop_permission and kernfs_dop_revalidate.
+> >
+> > This patchset contains the following 2 patches:
+> > 0001-kernfs-replace-the-mutex-in-kernfs_iop_permission-wi.patch
+> > 0002-kernfs-remove-mutex-in-kernfs_dop_revalidate.patch
+> >
+> > 0001 replace the mutex lock in kernfs_iop_permission with a new rwlock and
+> > 0002 removes the mutex lock in kernfs_dop_revalidate.
+> >
+> > After applying this patchset, the multi-thread performance becomes linear with
+> > the fastest one at ~30 us to the worst at ~150 us, very similar as I tested it
+> > on a normal ext4 file system with fastest one at ~20 us to slowest at ~100 us.
+> > And I believe that is largely due to spin_locks in filesystems which are normal.
+> >
+> > Although it's still slower than single thread, users can benefit from this
+> > patchset, especially ones working on HPC realm with lots of cpu cores and want to
+> > fetch system information from sysfs.
+>
+> Does this mean that the changes slow down the single-threaded case?  Or
+> that it's just not as good as the speed of a single-threaded access?
 
+No, It won't influence the single-threaded case. I meant
+multi-threaded case is still not as good as single-threaded one.
 
-> -----Original Message-----
-> From: Andrew Lunn <andrew@lunn.ch>
-> Sent: 02 December 2020 20:28
-> To: Yash Shah <yash.shah@openfive.com>
-> Cc: linux-spi@vger.kernel.org; linux-serial@vger.kernel.org; linux-
-> pwm@vger.kernel.org; linux-i2c@vger.kernel.org; linux-
-> kernel@vger.kernel.org; linux-riscv@lists.infradead.org;
-> devicetree@vger.kernel.org; linux-gpio@vger.kernel.org;
-> broonie@kernel.org; gregkh@linuxfoundation.org; aou@eecs.berkeley.edu;
-> lee.jones@linaro.org; u.kleine-koenig@pengutronix.de;
-> thierry.reding@gmail.com; peter@korsgaard.com; Paul Walmsley ( Sifive)
-> <paul.walmsley@sifive.com>; palmer@dabbelt.com; robh+dt@kernel.org;
-> bgolaszewski@baylibre.com; linus.walleij@linaro.org; Sachin Ghadi
-> <sachin.ghadi@openfive.com>
-> Subject: Re: [PATCH 1/4] dt-bindings: riscv: Update DT binding docs to
-> support SiFive FU740 SoC
->=20
-> [External Email] Do not click links or attachments unless you recognize t=
-he
-> sender and know the content is safe
->=20
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-ocores.txt
-> > b/Documentation/devicetree/bindings/i2c/i2c-ocores.txt
-> > index 6b25a80..1966b2c 100644
-> > --- a/Documentation/devicetree/bindings/i2c/i2c-ocores.txt
-> > +++ b/Documentation/devicetree/bindings/i2c/i2c-ocores.txt
-> > @@ -3,9 +3,11 @@ Device tree configuration for i2c-ocores  Required
-> > properties:
-> >  - compatible      : "opencores,i2c-ocores"
-> >                      "aeroflexgaisler,i2cmst"
-> > -                    "sifive,fu540-c000-i2c", "sifive,i2c0"
-> > +                    "sifive,<chip>-i2c", "sifive,i2c0"
->=20
-> Please make this a full list. At some point, this file will get turned in=
-to yaml, at
-> which point substitution like this will need expanding. It is better to d=
-o that
-> now.
+> But anyway, thanks so much for looking into this, it should help the
+> crazy systems out today, which means the normal systems in 5 years will
+> really appreciate this :)
 
-Ok sure, will do that in patch v2.
-
-- Yash
-
->=20
->      Andrew
+thanks :)
