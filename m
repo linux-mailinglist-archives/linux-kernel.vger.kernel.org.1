@@ -2,125 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021F22CD0B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54ADC2CD0B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 09:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387604AbgLCICg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 03:02:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
+        id S2387753AbgLCICl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 03:02:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgLCICf (ORCPT
+        with ESMTP id S1728187AbgLCICl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 03:02:35 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967FEC061A4D
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 00:01:49 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id y22so1105849edv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 00:01:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RuHOe2Akk+J2QlLhyukacf2T9N/gwVrROTnJh+LYhs4=;
-        b=EkMCF9aat7r8j0C4i0IhP/4yixIPCsHiv4aS8xJM37D5skQz6JTOvy00LnNj26hCOH
-         vo0L2AC8XvXwGaaBsknW6dYFSEasyMyaqJywrTUGK144dfeal6MA5GPI5qn4G6KTBc99
-         po5whjHpThY7nFCifXlSMSYB4Mv2JRVvrO2yPvx/e2yRWlbf3aPtDDjKH9PY7LAzvtOg
-         jz9TixThxbFD4y8RBCPlRXrU6rEQZMKOS5ic1vc+VfHlEoRWXRwg//Nzhs5D2ew0UeQF
-         JQreqGwNEj78/0qKi4+vFIk5J6N6BDkH1ozDeBqxDKVKmfBcGjOHFolgMm3Ecs5ptIBK
-         JAqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RuHOe2Akk+J2QlLhyukacf2T9N/gwVrROTnJh+LYhs4=;
-        b=prAN95fSWiNGrpwQ4XGJ1Qpj9RM0xORDFDmMnFr0lew2+r+ZRpZSI3t04zQuHCuVwV
-         gcF3S2YS7DfFjcwCE4o3kbfv/XCpOajzUIPCgZTtJt88PTLcYebTbm7lStd/M8fy3sa0
-         uWySqjLBZBY55A4og6XuG+0UUY8vznQNWuQLAB85E5EN/0M8eGzBHBamlGrpfLT/0QHd
-         eZM0Xha16GeDDwnnii/NABS7PJfs8ekbta+RHQWSARldtrArpIg6Xnkt+spD/W6tTkCj
-         iNRgfHbSg7MJnbNBjkovFesJ8KoGMAUjBOJNfytLBD/W9BBHcuKt20Ys1OX2DvwAxK7+
-         6bGA==
-X-Gm-Message-State: AOAM5322TBjM8Uv8jyAibL4jD2iVQlebQYx0zSJ5Tcu5uAM6qqSiTU8o
-        FLhOumvETtos5a15lqaDpldFHlr9UGnvwfeFeBEqhw==
-X-Google-Smtp-Source: ABdhPJxPRhOJ0mVusBf7DGxwNYxazF+B0dm42xTTpebRsIgCx4qZcDu8yl6pTQtVn0Q3Ma+cXndWRbx6dbfXdcasMYc=
-X-Received: by 2002:aa7:d54b:: with SMTP id u11mr1694134edr.341.1606982508208;
- Thu, 03 Dec 2020 00:01:48 -0800 (PST)
+        Thu, 3 Dec 2020 03:02:41 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C3AC061A51;
+        Thu,  3 Dec 2020 00:02:01 -0800 (PST)
+Date:   Thu, 03 Dec 2020 08:01:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606982518;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=U2gzum94MVzbA49l84sMu0yte4pizNa3znOvuSTlN/I=;
+        b=2+4TG3Xz9sC4hHtQ8qS/WsMZAE+ICrv8ITGO2oc0Ho9XksuAIqxsDCEbsVHDIhbogjQ7do
+        BWwl+29pxhg/toR22uCa05uSGEgZR2589JYWBpsjfzIpbWrmO3H+oFZbZjzLMMvU3DQFSw
+        8TfAww21OMoJqM8YVx3UmRH3n2wedC6JyRDV4TP7E559SDo5QxdPjgVNZaJ9MwCkb0YNb0
+        mfH6fzQy6Rtg9RbSKRW8p9DA/YoQNarrZgXgGWHk6PR9zvufpGN5craJ0bRszPTJeVSR+D
+        F7ih7yYOJmIdPqAUTx4cAfhixYgvR0TC6vLjB0TTHSb/p3/b6u04g0p6hd8o7g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606982518;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=U2gzum94MVzbA49l84sMu0yte4pizNa3znOvuSTlN/I=;
+        b=XTD9YRb0dulCFGuG7RJjMTsQ7YHRKoVkuzfTeof0YEKSgxk6PkPlxHYn0HtusgbtQfACDa
+        B1WPO6EjesqppuCg==
+From:   "tip-bot2 for Zou Wei" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/platform] x86/platform/uv: Make uv_pcibus_kset and
+ uv_hubs_kset static
+Cc:     Zou Wei <zou_wei@huawei.com>, Borislav Petkov <bp@suse.de>,
+        Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <1606734713-43919-1-git-send-email-zou_wei@huawei.com>
+References: <1606734713-43919-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-References: <20201203073910.20113-1-biwen.li@oss.nxp.com>
-In-Reply-To: <20201203073910.20113-1-biwen.li@oss.nxp.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 3 Dec 2020 09:01:37 +0100
-Message-ID: <CAMpxmJV97uexBKK3zHuOWfBQ77uorgxadUcrieBP2fLPs0dPeA@mail.gmail.com>
-Subject: Re: [PATCH] gpio: mpc8xxx: resolve coverity warnings
-To:     Biwen Li <biwen.li@oss.nxp.com>
-Cc:     Li Yang <leoyang.li@nxp.com>, aisheng.dong@nxp.com,
-        LKML <linux-kernel@vger.kernel.org>, jiafei.pan@nxp.com,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Biwen Li <biwen.li@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160698251802.3364.12660165138923593684.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 8:31 AM Biwen Li <biwen.li@oss.nxp.com> wrote:
->
-> From: Biwen Li <biwen.li@nxp.com>
->
-> Resolve coverity warnings as follows,
->     cond_at_most: Checking gpio >= 28U implies that gpio may be up
->     to 27 on the false branch.
->     overrun-call: Overrunning callees array of size 3 by passing
->     argument gpio (which evaluates to 27)
->     in call to *mpc8xxx_gc->direction_output
->
->     cond_at_least: Checking gpio <= 3U implies that gpio is at least 4 on
->     the false branch.
->     overrun-call: Overrunning callee's array of size 3 by passing argument
->     gpio (which evaluates to 4) in call to *mpc8xxx_gc->direction_output
->
-> Signed-off-by: Biwen Li <biwen.li@nxp.com>
-> ---
->  drivers/gpio/gpio-mpc8xxx.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
-> index a6c2bbdcaa10..12c9a91d87b7 100644
-> --- a/drivers/gpio/gpio-mpc8xxx.c
-> +++ b/drivers/gpio/gpio-mpc8xxx.c
-> @@ -3,6 +3,7 @@
->   *
->   * Copyright (C) 2008 Peter Korsgaard <jacmet@sunsite.dk>
->   * Copyright (C) 2016 Freescale Semiconductor Inc.
-> + * Copyright 2020 NXP
+The following commit has been merged into the x86/platform branch of tip:
 
-A copyright notice on a two-line change is a bit too much, don't you think?
+Commit-ID:     0c683e9de0c78ee53e220eac9ee3604ca662737a
+Gitweb:        https://git.kernel.org/tip/0c683e9de0c78ee53e220eac9ee3604ca662737a
+Author:        Zou Wei <zou_wei@huawei.com>
+AuthorDate:    Mon, 30 Nov 2020 19:11:53 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 03 Dec 2020 08:53:47 +01:00
 
->   *
->   * This file is licensed under the terms of the GNU General Public License
->   * version 2.  This program is licensed "as is" without any warranty of any
-> @@ -80,7 +81,7 @@ static int mpc5121_gpio_dir_out(struct gpio_chip *gc,
->  {
->         struct mpc8xxx_gpio_chip *mpc8xxx_gc = gpiochip_get_data(gc);
->         /* GPIO 28..31 are input only on MPC5121 */
-> -       if (gpio >= 28)
-> +       if (gpio >= 28U)
->                 return -EINVAL;
+x86/platform/uv: Make uv_pcibus_kset and uv_hubs_kset static
 
-I don't really understand the commit message but looking at the code
-is even more confusing. What are you fixing here actually?
+Fix the following sparse warnings:
 
-Bartosz
+  drivers/platform/x86/uv_sysfs.c:22:13: warning: symbol \
+	  'uv_pcibus_kset' was not declared. Should it be static?
+  drivers/platform/x86/uv_sysfs.c:23:13: warning: symbol \
+	  'uv_hubs_kset' was not declared. Should it be static?
 
->
->         return mpc8xxx_gc->direction_output(gc, gpio, val);
-> @@ -91,7 +92,7 @@ static int mpc5125_gpio_dir_out(struct gpio_chip *gc,
->  {
->         struct mpc8xxx_gpio_chip *mpc8xxx_gc = gpiochip_get_data(gc);
->         /* GPIO 0..3 are input only on MPC5125 */
-> -       if (gpio <= 3)
-> +       if (gpio <= 3U)
->                 return -EINVAL;
->
->         return mpc8xxx_gc->direction_output(gc, gpio, val);
-> --
-> 2.17.1
->
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lkml.kernel.org/r/1606734713-43919-1-git-send-email-zou_wei@huawei.com
+---
+ drivers/platform/x86/uv_sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/platform/x86/uv_sysfs.c b/drivers/platform/x86/uv_sysfs.c
+index e17ce8c..c27f5ff 100644
+--- a/drivers/platform/x86/uv_sysfs.c
++++ b/drivers/platform/x86/uv_sysfs.c
+@@ -19,8 +19,8 @@
+ #define INVALID_CNODE -1
+ 
+ struct kobject *sgi_uv_kobj;
+-struct kset *uv_pcibus_kset;
+-struct kset *uv_hubs_kset;
++static struct kset *uv_pcibus_kset;
++static struct kset *uv_hubs_kset;
+ static struct uv_bios_hub_info *hub_buf;
+ static struct uv_bios_port_info **port_buf;
+ static struct uv_hub **uv_hubs;
