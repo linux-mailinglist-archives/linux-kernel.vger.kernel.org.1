@@ -2,147 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04F22CD2FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB012CD301
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 10:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388608AbgLCJyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 04:54:50 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:40198 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387531AbgLCJyu (ORCPT
+        id S2388643AbgLCJzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 04:55:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387531AbgLCJzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 04:54:50 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B39UPMe021465;
-        Thu, 3 Dec 2020 04:53:57 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 355vjen8vh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Dec 2020 04:53:56 -0500
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0B39rtJM054266
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 3 Dec 2020 04:53:55 -0500
-Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 3 Dec 2020 01:53:53 -0800
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
- SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
- Thu, 3 Dec 2020 01:53:53 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 3 Dec 2020 01:53:53 -0800
-Received: from saturn.ad.analog.com ([10.48.65.108])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0B39rpsK003027;
-        Thu, 3 Dec 2020 04:53:52 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, <lars@metafoo.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v2] iio: core: register chardev only if needed
-Date:   Thu, 3 Dec 2020 11:53:42 +0200
-Message-ID: <20201203095342.73591-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 3 Dec 2020 04:55:08 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D1CFC061A4D
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 01:54:22 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id r18so1881861ljc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 01:54:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wEueHcV7l/ctvMvBAXQKBWYAUOQJ5GZrrhWLBwBeD4o=;
+        b=rNuyqmJ5C2MhebdamXLkPH+dVt6AdIFw5GuyIWWpgzKbEhsEab0J+yt5FA89LvtYEy
+         AXOv9K+LUJ5KkzCL3CzUABhpWP3EMkVFmEtzDVrsJeoPWKoYVodZK++P9LyEtM1gs4a7
+         WSKRNoY913ctUeHc0ZvLRDPlvHCGFLXocy4F0xlfXtkv1WB9PaRZ2D9dhAn1ly0AF6fJ
+         rrW9fi1J0Rd3cgDM2xBQcF3wwgBdqRfnP8j8pibuqGD1twuxmEscFPq+nBbh0b46jhG0
+         14Ugpem3J6WbxQs3pk/bsox0x6Pv7rt28Eh/I03moh6cGtcjyKfOYH/9vbynfFzfz/sH
+         wPxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wEueHcV7l/ctvMvBAXQKBWYAUOQJ5GZrrhWLBwBeD4o=;
+        b=j/+GDGkLsbJJ6W8/JLHxGznbQkuHv2NmcxW7qw+82IzNHGbdxNT1k1tp7QrLe4w5gp
+         kVFzeLujgv8ybNAfyEp+IutUbJz1bGY9jngO5vcLuz6RAp7DpIMxoLtnW/EHxff2bVbk
+         Zlo6Wb3BMemM6fNd7P0fCi00JzeiuiMlx2+BASWhIho7uPSdc8ZxEz75WIIo38kFGegP
+         RdF2tfxB2AzL6RfGZlEvuh+G6EjWByJyh8lZnNc1vlvb3DPvYQuiM55D/VS8+FyXG9F4
+         tlD2kUENQQgA3kxIIfAI0M1SfwYzrKWALkVlvRfHOsALyFSlvag5c4QbT+OdYpCY3Qw+
+         Xxpw==
+X-Gm-Message-State: AOAM533KqpNyj2SeP+iZvnQolz6RfgtLoKUhC9bt6uobQ7KYW+T/Lvhz
+        ihtK9DL86t5fL9S7BW2Nx4AhCPBBzwzc+bVCwszLsQ==
+X-Google-Smtp-Source: ABdhPJwdjaSsw7GE05hNk15bu9q/1poMmL86Ci331MBFX4yFGGVAd9RviAK5X2nqsWakHczDAvzczO+p7F7KynjSr28=
+X-Received: by 2002:a2e:b8d0:: with SMTP id s16mr884517ljp.423.1606989260776;
+ Thu, 03 Dec 2020 01:54:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-03_06:2020-12-03,2020-12-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
- malwarescore=0 adultscore=0 impostorscore=0 priorityscore=1501 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030058
+References: <20201201025944.18260-1-song.bao.hua@hisilicon.com>
+ <20201201025944.18260-3-song.bao.hua@hisilicon.com> <CAKfTPtAppZFdku6k3cA=kNYKjU5e7w4A+E3R5_m11z+jy_WCBw@mail.gmail.com>
+ <f9d9c6e959e441ec94264891ae90c11d@hisilicon.com> <CAKfTPtDqpQBcjq03cJEKN99XOZdNuV560ja9S-oZzkq7BToR8w@mail.gmail.com>
+ <414fbd167b214452b925ac674575f0d6@hisilicon.com> <CAKfTPtALPjSvOZ2xf9cka9R-1uqi3AHQ+GYy7asT3wfvmLqaXw@mail.gmail.com>
+ <d81006facd444d8a83bd7f1e24ccf6d9@hisilicon.com> <CAKfTPtAy_5QxnbmHq1pbGRhQYJ69ULovO6CKro-KkNKNnHMveg@mail.gmail.com>
+In-Reply-To: <CAKfTPtAy_5QxnbmHq1pbGRhQYJ69ULovO6CKro-KkNKNnHMveg@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 3 Dec 2020 10:54:09 +0100
+Message-ID: <CAKfTPtDaU9G43-8EEUP04R343_bBtomRX_iAxJUCbY6FciOKTQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Cc: Len Brown" <lenb@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We only need a chardev if we need to support buffers and/or events.
+On Thu, 3 Dec 2020 at 10:39, Vincent Guittot <vincent.guittot@linaro.org> wrote:
+>
+> On Thu, 3 Dec 2020 at 10:11, Song Bao Hua (Barry Song)
+> <song.bao.hua@hisilicon.com> wrote:
+> >
+> >
+> >
+> > > -----Original Message-----
+> > > From: Vincent Guittot [mailto:vincent.guittot@linaro.org]
+> > > Sent: Thursday, December 3, 2020 10:04 PM
+> > > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > > Cc: Valentin Schneider <valentin.schneider@arm.com>; Catalin Marinas
+> > > <catalin.marinas@arm.com>; Will Deacon <will@kernel.org>; Rafael J. Wysocki
+> > > <rjw@rjwysocki.net>; Cc: Len Brown <lenb@kernel.org>;
+> > > gregkh@linuxfoundation.org; Jonathan Cameron <jonathan.cameron@huawei.com>;
+> > > Ingo Molnar <mingo@redhat.com>; Peter Zijlstra <peterz@infradead.org>; Juri
+> > > Lelli <juri.lelli@redhat.com>; Dietmar Eggemann <dietmar.eggemann@arm.com>;
+> > > Steven Rostedt <rostedt@goodmis.org>; Ben Segall <bsegall@google.com>; Mel
+> > > Gorman <mgorman@suse.de>; Mark Rutland <mark.rutland@arm.com>; LAK
+> > > <linux-arm-kernel@lists.infradead.org>; linux-kernel
+> > > <linux-kernel@vger.kernel.org>; ACPI Devel Maling List
+> > > <linux-acpi@vger.kernel.org>; Linuxarm <linuxarm@huawei.com>; xuwei (O)
+> > > <xuwei5@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>
+> > > Subject: Re: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
+> > >
+> > > On Wed, 2 Dec 2020 at 21:58, Song Bao Hua (Barry Song)
+> > > <song.bao.hua@hisilicon.com> wrote:
+> > > >
+> > > > >
+> > > > > Sorry. Please ignore this. I added some printk here while testing
+> > > > > one numa. Will update you the data in another email.
+> > > >
+> > > > Re-tested in one NUMA node(cpu0-cpu23):
+> > > >
+> > > > g=1
+> > > > Running in threaded mode with 1 groups using 40 file descriptors
+> > > > Each sender will pass 100000 messages of 100 bytes
+> > > > w/o: 7.689 7.485 7.485 7.458 7.524 7.539 7.738 7.693 7.568 7.674=7.5853
+> > > > w/ : 7.516 7.941 7.374 7.963 7.881 7.910 7.420 7.556 7.695 7.441=7.6697
+> > > > w/ but dropped select_idle_cluster:
+> > > >      7.752 7.739 7.739 7.571 7.545 7.685 7.407 7.580 7.605 7.487=7.611
+> > > >
+> > > > g=2
+> > > > Running in threaded mode with 2 groups using 40 file descriptors
+> > > > Each sender will pass 100000 messages of 100 bytes
+> > > > w/o: 10.127 10.119 10.070 10.196 10.057 10.111 10.045 10.164 10.162
+> > > > 9.955=10.1006
+> > > > w/ : 9.694 9.654 9.612 9.649 9.686 9.734 9.607 9.842 9.690 9.710=9.6878
+> > > > w/ but dropped select_idle_cluster:
+> > > >      9.877 10.069 9.951 9.918 9.947 9.790 9.906 9.820 9.863 9.906=9.9047
+> > > >
+> > > > g=3
+> > > > Running in threaded mode with 3 groups using 40 file descriptors
+> > > > Each sender will pass 100000 messages of 100 bytes
+> > > > w/o: 15.885 15.254 15.932 15.647 16.120 15.878 15.857 15.759 15.674
+> > > > 15.721=15.7727
+> > > > w/ : 14.974 14.657 13.969 14.985 14.728 15.665 15.191 14.995 14.946
+> > > > 14.895=14.9005
+> > > > w/ but dropped select_idle_cluster:
+> > > >      15.405 15.177 15.373 15.187 15.450 15.540 15.278 15.628 15.228
+> > > 15.325=15.3591
+> > > >
+> > > > g=4
+> > > > Running in threaded mode with 4 groups using 40 file descriptors
+> > > > Each sender will pass 100000 messages of 100 bytes
+> > > > w/o: 20.014 21.025 21.119 21.235 19.767 20.971 20.962 20.914 21.090
+> > > 21.090=20.8187
+> > > > w/ : 20.331 20.608 20.338 20.445 20.456 20.146 20.693 20.797 21.381
+> > > 20.452=20.5647
+> > > > w/ but dropped select_idle_cluster:
+> > > >      19.814 20.126 20.229 20.350 20.750 20.404 19.957 19.888 20.226
+> > > 20.562=20.2306
+> > > >
+> > >
+> > > I assume that you have run this on v5.9 as previous tests.
+> >
+> > Yep
+> >
+> > > The results don't show any real benefit of select_idle_cluster()
+> > > inside a node whereas this is where we could expect most of the
+> > > benefit. We have to understand why we have such an impact on numa
+> > > tests only.
+> >
+> > There is a 4-5.5% increase while g=2 and g=3.
+>
+> my point was with vs without select_idle_cluster() but still having a
+> cluster domain level
+> In this case, the diff is -0.8% for g=1 +2.2% for g=2, +3% for g=3 and
+> -1.7% for g=4
+>
+> >
+> > Regarding the huge increase in NUMA case,  at the first beginning, I suspect
+> > we have wrong llc domain. For example, if cpu0's llc domain span
+> > cpu0-cpu47, then select_idle_cpu() is running in wrong range while
+> > it should run in cpu0-cpu23.
+> >
+> > But after printing the llc domain's span, I find it is completely right.
+> > Cpu0's llc span: cpu0-cpu23
+> > Cpu24's llc span: cpu24-cpu47
+>
+> Have you checked that the cluster mask was also correct ?
+>
+> >
+> > Maybe I need more trace data to figure out if select_idle_cpu() is running
+> > correctly. For example, maybe I can figure out if it is always returning -1,
+> > or it returns -1 very often?
+>
+> yes, could be interesting to check how often select_idle_cpu return -1
+>
+> >
+> > Or do you have any idea?
+>
+> tracking migration across nod could help to understand too
 
-With this change, a chardev will be created only if an IIO buffer is
-attached OR an event_interface is configured.
+Also the v6 of https://lkml.org/lkml/2020/11/26/187 might also help you
 
-Otherwise, no chardev will be created, and the IIO device will get
-registered with the 'device_add()' call.
-
-Quite a lot of IIO devices don't really need a chardev, so this is a minor
-improvement to the IIO core, as the IIO device will take up (slightly)
-fewer resources.
-
-In order to not create a chardev, we mostly just need to not initialize the
-indio_dev->dev.devt field. If that is un-initialized, cdev_device_add()
-behaves like device_add().
-
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
-
-Changelog v1 -> v2:
-* https://lore.kernel.org/linux-iio/20201117162340.43924-2-alexandru.ardelean@analog.com/
-* split away from series; I don't know when I will have time to re-visit
-  the entire original series, so might as well move forward a few patches
-
- drivers/iio/industrialio-core.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index c2e4c267c36b..d4de32d878aa 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -1725,6 +1725,15 @@ static const struct file_operations iio_buffer_fileops = {
- 	.release = iio_chrdev_release,
- };
- 
-+static const struct file_operations iio_event_fileops = {
-+	.owner = THIS_MODULE,
-+	.llseek = noop_llseek,
-+	.unlocked_ioctl = iio_ioctl,
-+	.compat_ioctl = compat_ptr_ioctl,
-+	.open = iio_chrdev_open,
-+	.release = iio_chrdev_release,
-+};
-+
- static int iio_check_unique_scan_index(struct iio_dev *indio_dev)
- {
- 	int i, j;
-@@ -1752,6 +1761,7 @@ static const struct iio_buffer_setup_ops noop_ring_setup_ops;
- 
- int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
- {
-+	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
- 	int ret;
- 
- 	if (!indio_dev->info)
-@@ -1769,9 +1779,6 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
- 	if (ret < 0)
- 		return ret;
- 
--	/* configure elements for the chrdev */
--	indio_dev->dev.devt = MKDEV(MAJOR(iio_devt), indio_dev->id);
--
- 	iio_device_register_debugfs(indio_dev);
- 
- 	ret = iio_buffer_alloc_sysfs_and_mask(indio_dev);
-@@ -1800,9 +1807,15 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
- 		indio_dev->setup_ops == NULL)
- 		indio_dev->setup_ops = &noop_ring_setup_ops;
- 
--	cdev_init(&indio_dev->chrdev, &iio_buffer_fileops);
-+	if (indio_dev->buffer)
-+		cdev_init(&indio_dev->chrdev, &iio_buffer_fileops);
-+	else if (iio_dev_opaque->event_interface)
-+		cdev_init(&indio_dev->chrdev, &iio_event_fileops);
- 
--	indio_dev->chrdev.owner = this_mod;
-+	if (indio_dev->buffer || iio_dev_opaque->event_interface) {
-+		indio_dev->dev.devt = MKDEV(MAJOR(iio_devt), indio_dev->id);
-+		indio_dev->chrdev.owner = this_mod;
-+	}
- 
- 	ret = cdev_device_add(&indio_dev->chrdev, &indio_dev->dev);
- 	if (ret < 0)
--- 
-2.27.0
-
+>
+> Vincent
+> >
+> >
+> > >
+> > > > Thanks
+> > > > Barry
+> >
+> > Thanks
+> > Barry
+> >
