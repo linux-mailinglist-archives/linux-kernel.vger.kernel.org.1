@@ -2,321 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3052CDAA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D5B2CDAA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 17:05:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731080AbgLCQDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 11:03:02 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:33351 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgLCQDB (ORCPT
+        id S2389281AbgLCQDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 11:03:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389264AbgLCQDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:03:01 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607011359; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: Cc: References: To:
- Subject: Sender; bh=7ANFtGnf0oNJK5+hIiLtqzococFZCRezjE3zTlu+MFA=; b=Uml1ziibUiQk0qssrxU+7WS30FVn+KMMzRB/C6ws0YYeRBuCd2STZcJ0IghCBcqKfv/7HmpV
- CJd2ln8kxkOOqd4M/SV5CSRtv8CkeTFdUUYBdUpiCHhoda+lo6S8t4HpL/szbLmbZ4ckioSx
- hcceOQIqCzcnL2+YOM0+9n5usiY=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5fc90c057e5eb22240a4dcd4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Dec 2020 16:02:13
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C180DC43461; Thu,  3 Dec 2020 16:02:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.10] (unknown [61.3.236.97])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0BB72C433C6;
-        Thu,  3 Dec 2020 16:02:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0BB72C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH v2 1/3] drm/msm: adreno: Make speed-bin support generic
-To:     Jordan Crouse <jcrouse@codeaurora.org>
-References: <1606481386-22867-1-git-send-email-akhilpo@codeaurora.org>
- <20201130170231.GF16856@jcrouse1-lnx.qualcomm.com>
- <39ae4584-e935-363e-62af-17558781e913@codeaurora.org>
- <20201202163032.GG16856@jcrouse1-lnx.qualcomm.com>
-Cc:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        robh@kernel.org, dri-devel@freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <244772bd-bde1-ebb7-e3f7-e4af870d968c@codeaurora.org>
-Date:   Thu, 3 Dec 2020 21:32:05 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <20201202163032.GG16856@jcrouse1-lnx.qualcomm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 3 Dec 2020 11:03:51 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B3CC061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 08:03:11 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id a205so1418771wme.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 08:03:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Umt6coDnn4aZpAALuE3BNX1YhLXZCr34hXrUZ71njTk=;
+        b=C3HBhRolseNEzsSxkUobwV6xR5RqddG0sq+ojtufOrz8uZMgV4OTse5wwhhFQtV6WE
+         F4XNOoTPIJdC1LQ+a4N7SLUj9rfaAhc8gyOldkg0TSVPsokmAs/CDr93hjrvJkkTwj/b
+         DYoyHS/Og/vzFT1cef/YEsJqTws3yLnj1CNVWbG/fZ/t16TLFVWZ56moJHvypdl+7dG9
+         l/gWP5wgRyEplBhYtmi3CfKGSwbeHTj+nIju0Gd7l54w3CJscCiN8wYDMT6ocpUGnGhK
+         lv3Yk01Y3c7BfKPXQmAAh0HSqDz111vRJWuQ1DVbhFhyqsI0ATkRhpamSCTYE+wTQ4rz
+         g1vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Umt6coDnn4aZpAALuE3BNX1YhLXZCr34hXrUZ71njTk=;
+        b=rtUx70IFvm5ZRxStpSPzgcBXZvbEI0GsFdssq4F+cD+yJvHrkZYQOUBZhKtPOEk5lT
+         OZbbd7GbnvHfhTKKNzjJzlYlSGiWC+lMiFHJpK0i3la+1CmmwNUA+mSh7qasEHSTpgw8
+         W8oygCe9mBSXFQnHZyp5DPc6PuF6Ff9Cb0cbfzuR7zKwpJPv1BHX9V55Zh0QRhGnKvL1
+         NWUvzpTCDSn2+ayNFG1HtbXH5JXuFAeKG7TiNRO+N7dBgK9mOCuASnW7V3m4LYen0WyI
+         IcPjQ1kV2Mp5I04iczPPlUDBymwUyG3FSaE2ngq4c/mY8O1xrxoEWgkhmZKLoa2ctvD6
+         XBwQ==
+X-Gm-Message-State: AOAM533toAtqmKcTXSVOU1PTk8Eadk1ymqfVPAlbyrRQg7QXC+WinWui
+        s+sNc5nNBxTK1htLJexCc6RqfYC9Esj5eg==
+X-Google-Smtp-Source: ABdhPJzFt8qBiRvs5wq+69dJNKDvJH0zM4rlkm9pKh5y+4L6Qbvp1Dc/OIlZVrhocfA12YWxMT0WCX75hUXkFA==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a1c:2b03:: with SMTP id
+ r3mr4146344wmr.184.1607011388856; Thu, 03 Dec 2020 08:03:08 -0800 (PST)
+Date:   Thu,  3 Dec 2020 16:02:31 +0000
+Message-Id: <20201203160245.1014867-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [PATCH bpf-next v3 00/14] Atomics for eBPF
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/2020 10:00 PM, Jordan Crouse wrote:
-> On Wed, Dec 02, 2020 at 08:53:51PM +0530, Akhil P Oommen wrote:
->> On 11/30/2020 10:32 PM, Jordan Crouse wrote:
->>> On Fri, Nov 27, 2020 at 06:19:44PM +0530, Akhil P Oommen wrote:
->>>> So far a530v2 gpu has support for detecting its supported opps
->>>> based on a fuse value called speed-bin. This patch makes this
->>>> support generic across gpu families. This is in preparation to
->>>> extend speed-bin support to a6x family.
->>>>
->>>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
->>>> ---
->>>> Changes from v1:
->>>> 	1. Added the changes to support a618 sku to the series.
->>>> 	2. Avoid failing probe in case of an unsupported sku. (Rob)
->>>>
->>>>   drivers/gpu/drm/msm/adreno/a5xx_gpu.c      | 34 --------------
->>>>   drivers/gpu/drm/msm/adreno/adreno_device.c |  4 ++
->>>>   drivers/gpu/drm/msm/adreno/adreno_gpu.c    | 71 ++++++++++++++++++++++++++++++
->>>>   drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  5 +++
->>>>   4 files changed, 80 insertions(+), 34 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
->>>> index 8fa5c91..7d42321 100644
->>>> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
->>>> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
->>>> @@ -1531,38 +1531,6 @@ static const struct adreno_gpu_funcs funcs = {
->>>>   	.get_timestamp = a5xx_get_timestamp,
->>>>   };
->>>> -static void check_speed_bin(struct device *dev)
->>>> -{
->>>> -	struct nvmem_cell *cell;
->>>> -	u32 val;
->>>> -
->>>> -	/*
->>>> -	 * If the OPP table specifies a opp-supported-hw property then we have
->>>> -	 * to set something with dev_pm_opp_set_supported_hw() or the table
->>>> -	 * doesn't get populated so pick an arbitrary value that should
->>>> -	 * ensure the default frequencies are selected but not conflict with any
->>>> -	 * actual bins
->>>> -	 */
->>>> -	val = 0x80;
->>>> -
->>>> -	cell = nvmem_cell_get(dev, "speed_bin");
->>>> -
->>>> -	if (!IS_ERR(cell)) {
->>>> -		void *buf = nvmem_cell_read(cell, NULL);
->>>> -
->>>> -		if (!IS_ERR(buf)) {
->>>> -			u8 bin = *((u8 *) buf);
->>>> -
->>>> -			val = (1 << bin);
->>>> -			kfree(buf);
->>>> -		}
->>>> -
->>>> -		nvmem_cell_put(cell);
->>>> -	}
->>>> -
->>>> -	dev_pm_opp_set_supported_hw(dev, &val, 1);
->>>> -}
->>>> -
->>>>   struct msm_gpu *a5xx_gpu_init(struct drm_device *dev)
->>>>   {
->>>>   	struct msm_drm_private *priv = dev->dev_private;
->>>> @@ -1588,8 +1556,6 @@ struct msm_gpu *a5xx_gpu_init(struct drm_device *dev)
->>>>   	a5xx_gpu->lm_leakage = 0x4E001A;
->>>> -	check_speed_bin(&pdev->dev);
->>>> -
->>>>   	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 4);
->>>>   	if (ret) {
->>>>   		a5xx_destroy(&(a5xx_gpu->base.base));
->>>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
->>>> index 87c8b03..e0ff16c 100644
->>>> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
->>>> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
->>>> @@ -18,6 +18,8 @@ bool snapshot_debugbus = false;
->>>>   MODULE_PARM_DESC(snapshot_debugbus, "Include debugbus sections in GPU devcoredump (if not fused off)");
->>>>   module_param_named(snapshot_debugbus, snapshot_debugbus, bool, 0600);
->>>> +const u32 a530v2_speedbins[] = {0, 1, 2, 3, 4, 5, 6, 7};
->>>> +
->>>>   static const struct adreno_info gpulist[] = {
->>>>   	{
->>>>   		.rev   = ADRENO_REV(2, 0, 0, 0),
->>>> @@ -163,6 +165,8 @@ static const struct adreno_info gpulist[] = {
->>>>   			ADRENO_QUIRK_FAULT_DETECT_MASK,
->>>>   		.init = a5xx_gpu_init,
->>>>   		.zapfw = "a530_zap.mdt",
->>>> +		.speedbins = a530v2_speedbins,
->>>> +		.speedbins_count = ARRAY_SIZE(a530v2_speedbins),
->>>>   	}, {
->>>>   		.rev = ADRENO_REV(5, 4, 0, 2),
->>>>   		.revn = 540,
->>>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->>>> index f21561d..b342fa4 100644
->>>> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->>>> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->>>> @@ -14,6 +14,7 @@
->>>>   #include <linux/pm_opp.h>
->>>>   #include <linux/slab.h>
->>>>   #include <linux/soc/qcom/mdt_loader.h>
->>>> +#include <linux/nvmem-consumer.h>
->>>>   #include <soc/qcom/ocmem.h>
->>>>   #include "adreno_gpu.h"
->>>>   #include "msm_gem.h"
->>>> @@ -891,6 +892,69 @@ void adreno_gpu_ocmem_cleanup(struct adreno_ocmem *adreno_ocmem)
->>>>   			   adreno_ocmem->hdl);
->>>>   }
->>>> +static int adreno_set_supported_hw(struct device *dev,
->>>> +		struct adreno_gpu *adreno_gpu)
->>>> +{
->>>> +	u8 speedbins_count = adreno_gpu->info->speedbins_count;
->>>> +	const u32 *speedbins = adreno_gpu->info->speedbins;
->>>> +	struct nvmem_cell *cell;
->>>> +	u32 bin, i;
->>>> +	u32 val = 0;
->>>> +	void *buf, *opp_table;
->>>> +
->>>> +	cell = nvmem_cell_get(dev, "speed_bin");
->>>> +	/*
->>>> +	 * -ENOENT means that the platform doesn't support speedbin which is
->>>> +	 * fine
->>>> +	 */
->>>> +	if (PTR_ERR(cell) == -ENOENT)
->>>> +		return 0;
->>>> +	else if (IS_ERR(cell))
->>>> +		return PTR_ERR(cell);
->>>> +
->>>> +	if (!speedbins)
->>>> +		goto done;
->>>> +
->>>> +	buf = nvmem_cell_read(cell, NULL);
->>>> +	if (IS_ERR(buf)) {
->>>> +		nvmem_cell_put(cell);
->>>> +		return PTR_ERR(buf);
->>>> +	}
->>>> +
->>>> +	bin = *((u32 *) buf);
->>>> +
->>>> +	for (i = 0; i < speedbins_count; i++) {
->>>> +		if (bin == speedbins[i]) {
->>>> +			val = (1 << i);
->>>> +			break;
->>>> +		}
->>>> +	}
->>>> +
->>>> +	kfree(buf);
->>>> +done:
->>>> +	nvmem_cell_put(cell);
->>>> +
->>>> +	if (!val) {
->>>> +		DRM_DEV_ERROR(dev,
->>>> +				"missing support for speed-bin: %u. Some OPPs may not be supported by hardware",
->>>> +				bin);
->>>> +		val = ~0U;
->>>> +	}
->>>> +
->>>> +	opp_table = dev_pm_opp_set_supported_hw(dev, &val, 1);
->>>> +	if (IS_ERR(opp_table))
->>>> +		return PTR_ERR(opp_table);
->>>> +
->>>> +	adreno_gpu->opp_table = opp_table;
->>>> +	return 0;
->>>> +}
->>>> +
->>>> +static void adreno_put_supported_hw(struct opp_table *opp_table)
->>>> +{
->>>> +	if (opp_table)
->>>> +		dev_pm_opp_put_supported_hw(opp_table);
->>>> +}
->>>> +
->>>>   int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->>>>   		struct adreno_gpu *adreno_gpu,
->>>>   		const struct adreno_gpu_funcs *funcs, int nr_rings)
->>>> @@ -899,6 +963,7 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->>>>   	struct adreno_platform_config *config = dev->platform_data;
->>>>   	struct msm_gpu_config adreno_gpu_config  = { 0 };
->>>>   	struct msm_gpu *gpu = &adreno_gpu->base;
->>>> +	int ret;
->>>>   	adreno_gpu->funcs = funcs;
->>>>   	adreno_gpu->info = adreno_info(config->rev);
->>>> @@ -910,6 +975,10 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->>>>   	adreno_gpu_config.nr_rings = nr_rings;
->>>> +	ret = adreno_set_supported_hw(dev, adreno_gpu);
->>>> +	if (ret)
->>>> +		return ret;
->>>> +
->>>
->>> I still don't understand why we are doing this here instead of a5xx_gpu.c and
->>> a6xx_gpu.c.
->>>
->>> Jordan
->>
->> Could you please clarify why you prefer so?
-> 
-> Putting this support in the target specific code avoids declaring more global
-> variables and skips a bit of extra code for the vast majority of targets that do
-> not have speed bins. I don't mind sharing the common helper function but a5xx
-> has shown that this can be safely done in the target specific code and I don't
-> see any reason to deviate from that.
-> 
-> Jordan
-Alright. Then it seems better to move everything to target specific 
-code. Will post another patch shortly.
+Status of the patches
+=====================
 
--Akhil.
->>
->> -Akhil
->>>
->>>>   	adreno_get_pwrlevels(dev, gpu);
->>>>   	pm_runtime_set_autosuspend_delay(dev,
->>>> @@ -936,4 +1005,6 @@ void adreno_gpu_cleanup(struct adreno_gpu *adreno_gpu)
->>>>   	icc_put(gpu->icc_path);
->>>>   	icc_put(gpu->ocmem_icc_path);
->>>> +
->>>> +	adreno_put_supported_hw(adreno_gpu->opp_table);
->>>>   }
->>>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
->>>> index c3775f7..a756ad7 100644
->>>> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
->>>> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
->>>> @@ -55,6 +55,7 @@ struct adreno_reglist {
->>>>   };
->>>>   extern const struct adreno_reglist a630_hwcg[], a640_hwcg[], a650_hwcg[];
->>>> +extern const u32 a618_speedbins[];
->>>>   struct adreno_info {
->>>>   	struct adreno_rev rev;
->>>> @@ -67,6 +68,8 @@ struct adreno_info {
->>>>   	const char *zapfw;
->>>>   	u32 inactive_period;
->>>>   	const struct adreno_reglist *hwcg;
->>>> +	const u32 *speedbins;
->>>> +	const u8 speedbins_count;
->>>>   };
->>>>   const struct adreno_info *adreno_info(struct adreno_rev rev);
->>>> @@ -112,6 +115,8 @@ struct adreno_gpu {
->>>>   	 * code (a3xx_gpu.c) and stored in this common location.
->>>>   	 */
->>>>   	const unsigned int *reg_offsets;
->>>> +
->>>> +	struct opp_table *opp_table;
->>>>   };
->>>>   #define to_adreno_gpu(x) container_of(x, struct adreno_gpu, base)
->>>> -- 
->>>> 2.7.4
->>>>
->>>
->>
->> _______________________________________________
->> dri-devel mailing list
->> dri-devel@lists.freedesktop.org
->> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> 
+Thanks for the reviews! Differences from v2->v3 [1]:
+
+* More minor fixes and naming/comment changes
+
+* Dropped atomic subtract: compilers can implement this by preceding
+  an atomic add with a NEG instruction (which is what the x86 JIT did
+  under the hood anyway).
+
+* Dropped the use of -mcpu=v4 in the Clang BPF command-line; there is
+  no longer an architecture version bump. Instead a feature test is
+  added to Kbuild - it builds a source file to check if Clang
+  supports BPF atomics.
+
+* Fixed the prog_test so it no longer breaks
+  test_progs-no_alu32. This requires some ifdef acrobatics to avoid
+  complicating the prog_tests model where the same userspace code
+  exercises both the normal and no_alu32 BPF test objects, using the
+  same skeleton header.
+
+Differences from v1->v2 [1]:
+
+* Fixed mistakes in the netronome driver
+
+* Addd sub, add, or, xor operations
+
+* The above led to some refactors to keep things readable. (Maybe I
+  should have just waited until I'd implemented these before starting
+  the review...)
+
+* Replaced BPF_[CMP]SET | BPF_FETCH with just BPF_[CMP]XCHG, which
+  include the BPF_FETCH flag
+
+* Added a bit of documentation. Suggestions welcome for more places
+  to dump this info...
+
+The prog_test that's added depends on Clang/LLVM features added by
+Yonghong in https://reviews.llvm.org/D72184
+
+This only includes a JIT implementation for x86_64 - I don't plan to
+implement JIT support myself for other architectures.
+
+Operations
+==========
+
+This patchset adds atomic operations to the eBPF instruction set. The
+use-case that motivated this work was a trivial and efficient way to
+generate globally-unique cookies in BPF progs, but I think it's
+obvious that these features are pretty widely applicable.  The
+instructions that are added here can be summarised with this list of
+kernel operations:
+
+* atomic[64]_[fetch_]add
+* atomic[64]_[fetch_]and
+* atomic[64]_[fetch_]or
+* atomic[64]_xchg
+* atomic[64]_cmpxchg
+
+The following are left out of scope for this effort:
+
+* 16 and 8 bit operations
+* Explicit memory barriers
+
+Encoding
+========
+
+I originally planned to add new values for bpf_insn.opcode. This was
+rather unpleasant: the opcode space has holes in it but no entire
+instruction classes[2]. Yonghong Song had a better idea: use the
+immediate field of the existing STX XADD instruction to encode the
+operation. This works nicely, without breaking existing programs,
+because the immediate field is currently reserved-must-be-zero, and
+extra-nicely because BPF_ADD happens to be zero.
+
+Note that this of course makes immediate-source atomic operations
+impossible. It's hard to imagine a measurable speedup from such
+instructions, and if it existed it would certainly not benefit x86,
+which has no support for them.
+
+The BPF_OP opcode fields are re-used in the immediate, and an
+additional flag BPF_FETCH is used to mark instructions that should
+fetch a pre-modification value from memory.
+
+So, BPF_XADD is now called BPF_ATOMIC (the old name is kept to avoid
+breaking userspace builds), and where we previously had .imm = 0, we
+now have .imm = BPF_ADD (which is 0).
+
+Operands
+========
+
+Reg-source eBPF instructions only have two operands, while these
+atomic operations have up to four. To avoid needing to encode
+additional operands, then:
+
+- One of the input registers is re-used as an output register
+  (e.g. atomic_fetch_add both reads from and writes to the source
+  register).
+
+- Where necessary (i.e. for cmpxchg) , R0 is "hard-coded" as one of
+  the operands.
+
+This approach also allows the new eBPF instructions to map directly
+to single x86 instructions.
+
+[1] Previous patchset:
+    https://lore.kernel.org/bpf/20201123173202.1335708-1-jackmanb@google.com/
+
+[2] Visualisation of eBPF opcode space:
+    https://gist.github.com/bjackman/00fdad2d5dfff601c1918bc29b16e778
+
+
+Brendan Jackman (14):
+  bpf: x86: Factor out emission of ModR/M for *(reg + off)
+  bpf: x86: Factor out emission of REX byte
+  bpf: x86: Factor out function to emit NEG
+  bpf: x86: Factor out a lookup table for some ALU opcodes
+  bpf: Rename BPF_XADD and prepare to encode other atomics in .imm
+  bpf: Move BPF_STX reserved field check into BPF_STX verifier code
+  bpf: Add BPF_FETCH field / create atomic_fetch_add instruction
+  bpf: Add instructions for atomic_[cmp]xchg
+  bpf: Pull out a macro for interpreting atomic ALU operations
+  bpf: Add bitwise atomic instructions
+  tools build: Implement feature check for BPF atomics in Clang
+  bpf: Pull tools/build/feature biz into selftests Makefile
+  bpf: Add tests for new BPF atomic operations
+  bpf: Document new atomic instructions
+
+ Documentation/networking/filter.rst           |  56 +++-
+ arch/arm/net/bpf_jit_32.c                     |   7 +-
+ arch/arm64/net/bpf_jit_comp.c                 |  16 +-
+ arch/mips/net/ebpf_jit.c                      |  11 +-
+ arch/powerpc/net/bpf_jit_comp64.c             |  25 +-
+ arch/riscv/net/bpf_jit_comp32.c               |  20 +-
+ arch/riscv/net/bpf_jit_comp64.c               |  16 +-
+ arch/s390/net/bpf_jit_comp.c                  |  27 +-
+ arch/sparc/net/bpf_jit_comp_64.c              |  17 +-
+ arch/x86/net/bpf_jit_comp.c                   | 241 +++++++++++-----
+ arch/x86/net/bpf_jit_comp32.c                 |   6 +-
+ drivers/net/ethernet/netronome/nfp/bpf/jit.c  |  14 +-
+ drivers/net/ethernet/netronome/nfp/bpf/main.h |   4 +-
+ .../net/ethernet/netronome/nfp/bpf/verifier.c |  15 +-
+ include/linux/filter.h                        |  97 ++++++-
+ include/uapi/linux/bpf.h                      |   8 +-
+ kernel/bpf/core.c                             |  66 ++++-
+ kernel/bpf/disasm.c                           |  43 ++-
+ kernel/bpf/verifier.c                         |  75 +++--
+ lib/test_bpf.c                                |   2 +-
+ samples/bpf/bpf_insn.h                        |   4 +-
+ samples/bpf/sock_example.c                    |   2 +-
+ samples/bpf/test_cgrp2_attach.c               |   4 +-
+ tools/build/feature/Makefile                  |   4 +
+ tools/build/feature/test-clang-bpf-atomics.c  |   9 +
+ tools/include/linux/filter.h                  |  97 ++++++-
+ tools/include/uapi/linux/bpf.h                |   8 +-
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |  42 +++
+ .../selftests/bpf/prog_tests/atomics_test.c   | 262 ++++++++++++++++++
+ .../bpf/prog_tests/cgroup_attach_multi.c      |   4 +-
+ .../selftests/bpf/progs/atomics_test.c        | 154 ++++++++++
+ .../selftests/bpf/verifier/atomic_and.c       |  77 +++++
+ .../selftests/bpf/verifier/atomic_cmpxchg.c   |  96 +++++++
+ .../selftests/bpf/verifier/atomic_fetch_add.c | 106 +++++++
+ .../selftests/bpf/verifier/atomic_or.c        |  77 +++++
+ .../selftests/bpf/verifier/atomic_xchg.c      |  46 +++
+ .../selftests/bpf/verifier/atomic_xor.c       |  77 +++++
+ tools/testing/selftests/bpf/verifier/ctx.c    |   7 +-
+ .../testing/selftests/bpf/verifier/leak_ptr.c |   4 +-
+ tools/testing/selftests/bpf/verifier/unpriv.c |   3 +-
+ tools/testing/selftests/bpf/verifier/xadd.c   |   2 +-
+ 42 files changed, 1666 insertions(+), 186 deletions(-)
+ create mode 100644 tools/build/feature/test-clang-bpf-atomics.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/atomics_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/atomics_test.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_and.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_fetch_add.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_or.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xchg.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xor.c
+
+
+base-commit: 97306be45fbe7a02461c3c2a57e666cf662b1aaf
+--
+2.29.2.454.gaff20da3a2-goog
 
