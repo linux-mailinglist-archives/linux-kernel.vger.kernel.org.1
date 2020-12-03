@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F40B2CDD0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8604D2CDD10
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 19:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731572AbgLCSEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 13:04:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45374 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729046AbgLCSEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:04:33 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8CE2DAC2E;
-        Thu,  3 Dec 2020 18:03:51 +0000 (UTC)
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1606995362-16413-1-git-send-email-zhaoyang.huang@unisoc.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm: fix a race on nr_swap_pages
-Message-ID: <4c9b5a0c-9971-9960-b6a2-4e2966fb145b@suse.cz>
-Date:   Thu, 3 Dec 2020 19:03:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1731599AbgLCSF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 13:05:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729651AbgLCSF1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:05:27 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94018C061A52
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 10:04:46 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id f18so3526320ljg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 10:04:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hyvfbSevo8Se/4y3iGk+lQg5JO2pXQRwoWZK6AVmSCc=;
+        b=Gjv1aL6P6xJwooMOiOVXI2rySRClbrUY3HGVe50LjDG6cXh38kZ+sHSB/0xeLOSW+9
+         KzfnPdBnHXwJGIJd7YUlF/R7CYA7zxSe6UAPykXdN+th0PqF3iMNmSPkggw3h7OtjYFq
+         jXrwfcED6y2TT4DMjNHYAYn4nz6N4tLwE3MVw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hyvfbSevo8Se/4y3iGk+lQg5JO2pXQRwoWZK6AVmSCc=;
+        b=Pf08CVaEr3F1fhVuBQC7kh0OH13hdMSlmWr2eq6qodGa1YjBWbrde7Ymv//vCWqm77
+         JfJ9ykFFaxTBADEJ/gfuWwzq3VBkMiIprTAYt5eT7EMgr2wio+kR4a0FqwQ+7Aghtup/
+         7qNdfWSVe1Hm3okIZeHwGy/++5baa1XtkcZkXDy4cUfGgh2KC3podCkS3tQTXgrrzMkQ
+         CfWcXYgij1wNJLlAx8jS3jEeec9rHpn2Qe3muDZyeL6WRtGlgPX4Rd6izCalubLeKTwK
+         1aZMPpCMqGSUxQ1RObb1K+g0RIdu6pptttfmR+qqbDxrBfQYsk7jA0166lv7vAXkTKAX
+         iFQw==
+X-Gm-Message-State: AOAM532ezw1tslhDTQ0nuzs0u//1fjuL3x2Zqx1n1o6bBVMyWLawyzYN
+        lF+t72U0JZmXmzMeuAIr0cmH+ifz9kXoGw==
+X-Google-Smtp-Source: ABdhPJxWFpRWri1QhF8el/3F+wH2UfrhTqppSmigPMcw6D+vVw06Eua9hBAyOkStJsUzswEPbiig5g==
+X-Received: by 2002:a2e:8983:: with SMTP id c3mr1680115lji.184.1607018684522;
+        Thu, 03 Dec 2020 10:04:44 -0800 (PST)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id u8sm752411lfo.168.2020.12.03.10.04.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 10:04:43 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id f24so3504136ljk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 10:04:42 -0800 (PST)
+X-Received: by 2002:a2e:9d83:: with SMTP id c3mr1626934ljj.314.1607018682473;
+ Thu, 03 Dec 2020 10:04:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1606995362-16413-1-git-send-email-zhaoyang.huang@unisoc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
+ <7027520f-7c79-087e-1d00-743bdefa1a1e@redhat.com> <20201202021633.GA1455219@iweiny-DESK2.sc.intel.com>
+ <CAHk-=wjiU5Fq7aG0-H6QN1ZsK-U3Hw1K310N2z_eCPPDTKeysA@mail.gmail.com> <20201203024504.GA1563847@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20201203024504.GA1563847@iweiny-DESK2.sc.intel.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 3 Dec 2020 10:04:26 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whWC==8VNeVG=_DwT+RT9x1uiseUDH0X9sYKMetrh6c3w@mail.gmail.com>
+Message-ID: <CAHk-=whWC==8VNeVG=_DwT+RT9x1uiseUDH0X9sYKMetrh6c3w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] uapi: fix statx attribute value overlap for DAX & MOUNT_ROOT
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Eric Sandeen <sandeen@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        xfs <linux-xfs@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Xiaoli Feng <xifeng@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/3/20 12:36 PM, Zhaoyang Huang wrote:
-> The scenario on which "Free swap -4kB" happens in my system, which is caused by
->  get_swap_page_of_type or get_swap_pages racing with show_mem. Remove the race
->  here.
-> 
-> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> ---
->  mm/swapfile.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index cf63b5f..13201b6 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -974,6 +974,8 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
->  	/* Only single cluster request supported */
->  	WARN_ON_ONCE(n_goal > 1 && size == SWAPFILE_CLUSTER);
->  
-> +	spin_lock(&swap_avail_lock);
-> +
->  	avail_pgs = atomic_long_read(&nr_swap_pages) / size;
->  	if (avail_pgs <= 0)
->  		goto noswap;
+On Wed, Dec 2, 2020 at 6:45 PM Ira Weiny <ira.weiny@intel.com> wrote:
+> >
+> > What would the typical failure cases be in practice?
+>
+> The failure will be a user not seeing their file operating in DAX mode when
+> they expect it to.
+>
+> I discussed this with Dan Williams today.  He and I agreed the flag is new
+> enough that we don't think users have any released code to the API just yet.
+> So I think we will be ok.
 
-This goto will leave with the spin lock locked, so that's a bug.
+Ok, thanks for verification. I've applied it locally in my tree, it
+will be pushed out later today with other work..
 
-> @@ -986,8 +988,6 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
->  
->  	atomic_long_sub(n_goal * size, &nr_swap_pages);
->  
-> -	spin_lock(&swap_avail_lock);
-> -
-
-Is the problem that while we adjust n_goal with a min3(..., avail_pgs), somebody
-else can decrease nr_swap_pages in the meanwhile and then we underflow? If yes,
-the spin lock won't eliminate all such cases it seems, as e.g.
-get_swap_page_of_type isn't done under the same lock, AFAIK.
-
->  start_over:
->  	node = numa_node_id();
->  	plist_for_each_entry_safe(si, next, &swap_avail_heads[node], avail_lists[node]) {
-> @@ -1061,14 +1061,13 @@ swp_entry_t get_swap_page_of_type(int type)
->  
->  	spin_lock(&si->lock);
->  	if (si->flags & SWP_WRITEOK) {
-> -		atomic_long_dec(&nr_swap_pages);
->  		/* This is called for allocating swap entry, not cache */
->  		offset = scan_swap_map(si, 1);
->  		if (offset) {
-> +			atomic_long_dec(&nr_swap_pages);
->  			spin_unlock(&si->lock);
->  			return swp_entry(type, offset);
->  		}
-> -		atomic_long_inc(&nr_swap_pages);
-
-This hunk looks safer, unless I miss something. Did you check if it's enough to
-prevent the negative values on your systems?
-
->  	}
->  	spin_unlock(&si->lock);
->  fail:
-> 
-
+           Linus
