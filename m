@@ -2,107 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72ADC2CD3E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A732CD3EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 11:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729554AbgLCKnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 05:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727431AbgLCKnH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 05:43:07 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81AF6C061A4E;
-        Thu,  3 Dec 2020 02:42:21 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id s8so1551314yba.13;
-        Thu, 03 Dec 2020 02:42:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hfm3YC+N0lPHZ6ksRkiUm92xWhUJaA74Y3jMuhyWfs8=;
-        b=L0zaM4a4o64DBsbJDO7dYT1Q9pkzr/Fymx8GIKWeaachDCrOYD4z2/uon0uaT6U73A
-         bdsFCCgzaRuYDNUk9FDbS8NnerYatLK4qdYUwteNbqmKzOTihoYs3SEA2L1Hbgyl8DuW
-         isa0fKwBWtTnG4jftCPOvrx7PTGYrEZzQToQpMkzXc5CyNf3hvvGTzkdwKkrNF4QooeQ
-         zQDfz9KfiBDtrJpHTxwEipJDKlXNubFvSCZfK2Yu8GLP/RZbLx2nJ70JKjK5ideuK17g
-         /tkrKUaLbD6TQHt5JV2ky/xsXfpTOT1aG0ZanUw953OKxDvXm7HvSvYQH2gjRg1pGAUW
-         1L5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hfm3YC+N0lPHZ6ksRkiUm92xWhUJaA74Y3jMuhyWfs8=;
-        b=fL6F54DXl6QeEIv+SsNlP4FFApVWUHDrpGNrOK8//wwBNHeaT2taqKzTma/UOiicWd
-         m6HQQJ9IXQKIw43stMh2Lq2CP4BKeNSxLEz8r23Hii3oYvhrKeXmbhCdeHly98QI7Hup
-         VGV9ZUfKXPgAJMTvOvTcy0P9jUmncIHpIJhi4hPZC6vtZVf4vmNgQA0JNQ4l+2hb26As
-         dJC3MNVTRndE1vOe4Ir/oDTfoe7wC4k8DLMxtoIh7QowsQEZOE6G7ogXheJKWYXSPCUN
-         nZ9Nc5coC2VfQSrjWGRHD4xBoxz19PXyccIeuAFlOnNzUJX2WNrLLh312fqEGvztMZPE
-         DDVQ==
-X-Gm-Message-State: AOAM531TKhH4zTuhdTcIMwsk+MiV6wJEUfUFT+3SALabkhqLwha/x3Re
-        i3w4WKX/1Tcgq5+zN082TfhygiGqMqEacyP52bs=
-X-Google-Smtp-Source: ABdhPJxVKrqsLes0pmj5XcNDHVPGuT72dSLFKSlykNNMhvPLVewk1WzacGkS8+DQLZTtQSGSihapk8/vyqOogGQq2QY=
-X-Received: by 2002:a25:209:: with SMTP id 9mr3780458ybc.127.1606992140812;
- Thu, 03 Dec 2020 02:42:20 -0800 (PST)
+        id S1730157AbgLCKnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 05:43:43 -0500
+Received: from foss.arm.com ([217.140.110.172]:36678 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727007AbgLCKnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 05:43:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F2AF113E;
+        Thu,  3 Dec 2020 02:42:57 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.0.87])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D5F43F575;
+        Thu,  3 Dec 2020 02:42:53 -0800 (PST)
+Date:   Thu, 3 Dec 2020 10:42:46 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 04/26] psci: Split functions to v0.1 and v0.2+ variants
+Message-ID: <20201203104246.GA96754@C02TD0UTHF1T.local>
+References: <20201202184122.26046-1-dbrazdil@google.com>
+ <20201202184122.26046-5-dbrazdil@google.com>
 MIME-Version: 1.0
-References: <20201126191146.8753-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20201126191146.8753-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Thu, 3 Dec 2020 10:41:54 +0000
-Message-ID: <CA+V-a8vjTQv7wrdJFe6TS3saUE=Sj6ty0JSz0VZUd=TyDVfp4Q@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] memory: renesas-rpc-if: Trivial fixes
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jiri Kosina <trivial@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202184122.26046-5-dbrazdil@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Wed, Dec 02, 2020 at 06:41:00PM +0000, David Brazdil wrote:
+> Refactor implementation of v0.1+ functions (CPU_SUSPEND, CPU_OFF,
+> CPU_ON, MIGRATE) to have two functions psci_0_1_foo / psci_0_2_foo that
+> select the function ID and call a common helper __psci_foo.
+> 
+> This is a small cleanup so that the function ID array is only used for
+> v0.1 configurations.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
 
-On Thu, Nov 26, 2020 at 7:11 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
->
-> Hi All,
->
-> This patch series fixes trivial issues in RPC-IF driver.
->
-> Changes for v2:
-> * Balanced PM in rpcif_disable_rpm
-> * Fixed typo in patch 4/5
-> * Dropped C++ style fixes patch
-> * Included RB tags from Sergei
->
-> Cheers,
-> Prabhakar
->
-> Lad Prabhakar (5):
->   memory: renesas-rpc-if: Return correct value to the caller of
->     rpcif_manual_xfer()
->   memory: renesas-rpc-if: Fix unbalanced pm_runtime_enable in
->     rpcif_{enable,disable}_rpm
->   memory: renesas-rpc-if: Fix a reference leak in rpcif_probe()
->   memory: renesas-rpc-if: Make rpcif_enable/disable_rpm() as static
->     inline
->   memory: renesas-rpc-if: Export symbols as GPL
->
-As these are fixes to the existing driver will these be part of v5.10 release ?
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-Cheers,
-Prabhakar
+Mark.
 
->  drivers/memory/renesas-rpc-if.c | 28 +++++++++-------------------
->  include/memory/renesas-rpc-if.h | 13 +++++++++++--
->  2 files changed, 20 insertions(+), 21 deletions(-)
->
-> --
-> 2.25.1
->
+> ---
+>  drivers/firmware/psci/psci.c | 94 +++++++++++++++++++++++-------------
+>  1 file changed, 60 insertions(+), 34 deletions(-)
+> 
+> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
+> index ace5b9ac676c..13b9ed71b446 100644
+> --- a/drivers/firmware/psci/psci.c
+> +++ b/drivers/firmware/psci/psci.c
+> @@ -168,46 +168,80 @@ int psci_set_osi_mode(bool enable)
+>  	return psci_to_linux_errno(err);
+>  }
+>  
+> -static int psci_cpu_suspend(u32 state, unsigned long entry_point)
+> +static int __psci_cpu_suspend(u32 fn, u32 state, unsigned long entry_point)
+>  {
+>  	int err;
+> -	u32 fn;
+>  
+> -	fn = psci_function_id[PSCI_FN_CPU_SUSPEND];
+>  	err = invoke_psci_fn(fn, state, entry_point, 0);
+>  	return psci_to_linux_errno(err);
+>  }
+>  
+> -static int psci_cpu_off(u32 state)
+> +static int psci_0_1_cpu_suspend(u32 state, unsigned long entry_point)
+> +{
+> +	return __psci_cpu_suspend(psci_function_id[PSCI_FN_CPU_SUSPEND],
+> +				  state, entry_point);
+> +}
+> +
+> +static int psci_0_2_cpu_suspend(u32 state, unsigned long entry_point)
+> +{
+> +	return __psci_cpu_suspend(PSCI_FN_NATIVE(0_2, CPU_SUSPEND),
+> +				  state, entry_point);
+> +}
+> +
+> +static int __psci_cpu_off(u32 fn, u32 state)
+>  {
+>  	int err;
+> -	u32 fn;
+>  
+> -	fn = psci_function_id[PSCI_FN_CPU_OFF];
+>  	err = invoke_psci_fn(fn, state, 0, 0);
+>  	return psci_to_linux_errno(err);
+>  }
+>  
+> -static int psci_cpu_on(unsigned long cpuid, unsigned long entry_point)
+> +static int psci_0_1_cpu_off(u32 state)
+> +{
+> +	return __psci_cpu_off(psci_function_id[PSCI_FN_CPU_OFF], state);
+> +}
+> +
+> +static int psci_0_2_cpu_off(u32 state)
+> +{
+> +	return __psci_cpu_off(PSCI_0_2_FN_CPU_OFF, state);
+> +}
+> +
+> +static int __psci_cpu_on(u32 fn, unsigned long cpuid, unsigned long entry_point)
+>  {
+>  	int err;
+> -	u32 fn;
+>  
+> -	fn = psci_function_id[PSCI_FN_CPU_ON];
+>  	err = invoke_psci_fn(fn, cpuid, entry_point, 0);
+>  	return psci_to_linux_errno(err);
+>  }
+>  
+> -static int psci_migrate(unsigned long cpuid)
+> +static int psci_0_1_cpu_on(unsigned long cpuid, unsigned long entry_point)
+> +{
+> +	return __psci_cpu_on(psci_function_id[PSCI_FN_CPU_ON], cpuid, entry_point);
+> +}
+> +
+> +static int psci_0_2_cpu_on(unsigned long cpuid, unsigned long entry_point)
+> +{
+> +	return __psci_cpu_on(PSCI_FN_NATIVE(0_2, CPU_ON), cpuid, entry_point);
+> +}
+> +
+> +static int __psci_migrate(u32 fn, unsigned long cpuid)
+>  {
+>  	int err;
+> -	u32 fn;
+>  
+> -	fn = psci_function_id[PSCI_FN_MIGRATE];
+>  	err = invoke_psci_fn(fn, cpuid, 0, 0);
+>  	return psci_to_linux_errno(err);
+>  }
+>  
+> +static int psci_0_1_migrate(unsigned long cpuid)
+> +{
+> +	return __psci_migrate(psci_function_id[PSCI_FN_MIGRATE], cpuid);
+> +}
+> +
+> +static int psci_0_2_migrate(unsigned long cpuid)
+> +{
+> +	return __psci_migrate(PSCI_FN_NATIVE(0_2, MIGRATE), cpuid);
+> +}
+> +
+>  static int psci_affinity_info(unsigned long target_affinity,
+>  		unsigned long lowest_affinity_level)
+>  {
+> @@ -352,7 +386,7 @@ static void __init psci_init_system_suspend(void)
+>  
+>  static void __init psci_init_cpu_suspend(void)
+>  {
+> -	int feature = psci_features(psci_function_id[PSCI_FN_CPU_SUSPEND]);
+> +	int feature = psci_features(PSCI_FN_NATIVE(0_2, CPU_SUSPEND));
+>  
+>  	if (feature != PSCI_RET_NOT_SUPPORTED)
+>  		psci_cpu_suspend_feature = feature;
+> @@ -426,24 +460,16 @@ static void __init psci_init_smccc(void)
+>  static void __init psci_0_2_set_functions(void)
+>  {
+>  	pr_info("Using standard PSCI v0.2 function IDs\n");
+> -	psci_ops.get_version = psci_0_2_get_version;
+> -
+> -	psci_function_id[PSCI_FN_CPU_SUSPEND] =
+> -					PSCI_FN_NATIVE(0_2, CPU_SUSPEND);
+> -	psci_ops.cpu_suspend = psci_cpu_suspend;
+> -
+> -	psci_function_id[PSCI_FN_CPU_OFF] = PSCI_0_2_FN_CPU_OFF;
+> -	psci_ops.cpu_off = psci_cpu_off;
+> -
+> -	psci_function_id[PSCI_FN_CPU_ON] = PSCI_FN_NATIVE(0_2, CPU_ON);
+> -	psci_ops.cpu_on = psci_cpu_on;
+>  
+> -	psci_function_id[PSCI_FN_MIGRATE] = PSCI_FN_NATIVE(0_2, MIGRATE);
+> -	psci_ops.migrate = psci_migrate;
+> -
+> -	psci_ops.affinity_info = psci_affinity_info;
+> -
+> -	psci_ops.migrate_info_type = psci_migrate_info_type;
+> +	psci_ops = (struct psci_operations){
+> +		.get_version = psci_0_2_get_version,
+> +		.cpu_suspend = psci_0_2_cpu_suspend,
+> +		.cpu_off = psci_0_2_cpu_off,
+> +		.cpu_on = psci_0_2_cpu_on,
+> +		.migrate = psci_0_2_migrate,
+> +		.affinity_info = psci_affinity_info,
+> +		.migrate_info_type = psci_migrate_info_type,
+> +	};
+>  
+>  	arm_pm_restart = psci_sys_reset;
+>  
+> @@ -523,22 +549,22 @@ static int __init psci_0_1_init(struct device_node *np)
+>  
+>  	if (!of_property_read_u32(np, "cpu_suspend", &id)) {
+>  		psci_function_id[PSCI_FN_CPU_SUSPEND] = id;
+> -		psci_ops.cpu_suspend = psci_cpu_suspend;
+> +		psci_ops.cpu_suspend = psci_0_1_cpu_suspend;
+>  	}
+>  
+>  	if (!of_property_read_u32(np, "cpu_off", &id)) {
+>  		psci_function_id[PSCI_FN_CPU_OFF] = id;
+> -		psci_ops.cpu_off = psci_cpu_off;
+> +		psci_ops.cpu_off = psci_0_1_cpu_off;
+>  	}
+>  
+>  	if (!of_property_read_u32(np, "cpu_on", &id)) {
+>  		psci_function_id[PSCI_FN_CPU_ON] = id;
+> -		psci_ops.cpu_on = psci_cpu_on;
+> +		psci_ops.cpu_on = psci_0_1_cpu_on;
+>  	}
+>  
+>  	if (!of_property_read_u32(np, "migrate", &id)) {
+>  		psci_function_id[PSCI_FN_MIGRATE] = id;
+> -		psci_ops.migrate = psci_migrate;
+> +		psci_ops.migrate = psci_0_1_migrate;
+>  	}
+>  
+>  	return 0;
+> -- 
+> 2.29.2.454.gaff20da3a2-goog
+> 
