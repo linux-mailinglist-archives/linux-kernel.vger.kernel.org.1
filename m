@@ -2,55 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94ECC2CCBEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A8B2CCBED
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 03:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727264AbgLCB6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 20:58:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43812 "EHLO mail.kernel.org"
+        id S1727872AbgLCB7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 20:59:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgLCB6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:58:17 -0500
-Subject: Re: [GIT PULL] gfs2 fixes for 5.10-rc5
+        id S1726920AbgLCB7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 20:59:15 -0500
+Date:   Wed, 2 Dec 2020 17:58:02 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606960656;
-        bh=gXjHYn6T6l1LeJ9/l4yt8UsDjR469dSxOnc/GvwV8Pk=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=iAqELExPN1zwOvWGoXsbI6VAjRoFQMH0m3GVMRmJPqDfpfNu/joD4T/qE0tbN/gzp
-         n1+jlkxVQV8jsQMRN3gkK/KE+sFfIXa3pali+57zCPEN4D5ImWn6x0rLJblJQxWrun
-         86aHBRucMCrFQwK5YJfysLGau7HPyqfVQBTXJC/dyn3gy5S1xu5MrXoGOvP6zRoOue
-         s0AzG0RFGQldPUElnD6gGAhnL15K0rmZ/6t7PeZ1VfWXpDkhsjct3IXpPqyXSqTO4+
-         dy3THzoRX0ZNVC/sZ4GhhihZw5kReVH3dK3dps9N5OquFs6uPqqMcBswu/ndRUfqMu
-         PyOTZO1oR21pQ==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201202205839.843476-1-agruenba@redhat.com>
-References: <20201202205839.843476-1-agruenba@redhat.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201202205839.843476-1-agruenba@redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.10-rc5-fixes
-X-PR-Tracked-Commit-Id: dd0ecf544125639e54056d851e4887dbb94b6d2f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 34816d20f173a90389c8a7e641166d8ea9dce70a
-Message-Id: <160696065642.25461.15012834995463992596.pr-tracker-bot@kernel.org>
-Date:   Thu, 03 Dec 2020 01:57:36 +0000
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
+        s=k20201202; t=1606960684;
+        bh=XQZoLAN3s38jpF9PN2JGqByStnM6cmr+jF9FRNUrCSk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=B2JTJOWCE1oMPtqNr80UDQyQz5dvdwPUHxBVmPmuTd9uT6jEfMexuV3a1nobTV/V3
+         NcjTVepD3ptzjp4HzPVVgmSCcrPWW8uVGzquuEz+URccE+om2kaIJTnrFV9eoxzeq5
+         H8OeHvEVy5DeLo9vogAd2LWeKu5BbOl4GzVl0YbxsqwYY5jzPqyCNX5g3RM+gB22fX
+         jxl9x5EkrJ1LONsHOdImnGx+p1nqenpusQTVMyr/VBKEcv9zFmsRhPGXoEUYfdh7SV
+         CwvaIgsRxGnrj97/GJru/0EhZN1+rTex74aQhHFbGp4MUOaKTecOqNBFzYb67eAPMd
+         Nrfc9clTbqPnQ==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
+Cc:     krzk@kernel.org, linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: Re: [PATCH v5 net-next 0/4] nfc: s3fwrn5: Support a UART interface
+Message-ID: <20201202175802.1dd9fb1e@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <1606909661-3814-1-git-send-email-bongsu.jeon@samsung.com>
+References: <1606909661-3814-1-git-send-email-bongsu.jeon@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed,  2 Dec 2020 21:58:39 +0100:
+On Wed,  2 Dec 2020 20:47:37 +0900 Bongsu Jeon wrote:
+> S3FWRN82 is the Samsung's NFC chip that supports the UART communication.
+> Before adding the UART driver module, I did refactoring the s3fwrn5_i2c module 
+> to reuse the common blocks.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.10-rc5-fixes
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/34816d20f173a90389c8a7e641166d8ea9dce70a
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Applied, thanks!
