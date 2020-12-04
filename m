@@ -2,194 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C072CF5DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A7D2CF5E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729298AbgLDUxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 15:53:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
+        id S1728147AbgLDU5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 15:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgLDUxc (ORCPT
+        with ESMTP id S1726524AbgLDU5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 15:53:32 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D43AC061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:52:52 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id t3so4253234pgi.11
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:52:52 -0800 (PST)
+        Fri, 4 Dec 2020 15:57:05 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659B7C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:56:25 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id t9so7689845oic.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:56:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=mEQ3gaJd3KfpSvV/0MrjNCIinjXitvVhyYq2m08x7tc=;
-        b=p+ejBgzwka3GdfEbq0flsr0H61NROkaSqa1wJSCx4+pQEnP23hmeAFw6Rvp+MFHtwi
-         FkSycYYQrVwe2ll3VhU8tc8Rnq50QjDE+/2ZGWdT/SaTUR2sjwzhS/O8bnalTGcAK1w7
-         7EZ2iIzrC4UH8nIh2er8iXjvFUCCwndXjQKBeeIxwmfr2cHANL8D4qC4qmX6u9/LdvjL
-         yZqmCyV1J+ZwVp9CNFZAs7NGZO3WPZ8LFE2iWeHDjvuB2EWReG5THuVU4mphJFgqabAH
-         hecFVEa2uaKrKWi4ZnLQ58fy9qs621Bwhebp/UY3okwK0Zflr1P6B0/myx0P/m+7rOZ/
-         8zQA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oCRFwoQksFKYxL9oDoarBzLvwPjlXv3hZNckKayt7VE=;
+        b=qtVhX699Z+sdbwQ0ORNcWDXHwHjkZyYC8BLl8PrsqffUGnX1Nflju5sQJ9vxci2hTA
+         pNcPyzTncdV4ImSnFytm/qrKywE5ktZDoohXPdzQdTeAqgPRAU1WwMrvvATQO00FLhnQ
+         ptLQcrME+z99/L4GzViD6O1B/mcnIBZQrr4jJgtErgbr/gSWh+N76dM+5eZp9P5wOx7i
+         0JWz09RtGf3eWmo5MMtrrjFZMUGB+4QmOVxfIV5BCbiPsvUaWULkjXEFOBcGL9FRZk4t
+         h2A5oz2Rt6X42vobKLOOuvZKsbrMZ1lPzlSpdNPN3mDpsk/CiiiB8WFsiFU9161Y66XS
+         qTrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=mEQ3gaJd3KfpSvV/0MrjNCIinjXitvVhyYq2m08x7tc=;
-        b=ZpwxMvHtidYhkzpPrSUk+FX/ak3gBfFQWcbzTaMGq73MpW+Gf1+QUHExnTrKytxxnN
-         FKYb1/oXBCST3p40WRt8H+lb0ISgx2YO0wdU/A9NJlfBLEC4aaHWIqoYD5IHpqG3rYbX
-         5pLFzw1yGIHS373+xP8ZlTho5bW4rmfczlV7xAG9tmdJf96tmNyS0U7MwMUVFCm3IRfh
-         dj+LK43qlcF9CAYDOyzTWUjrymqLNFr2j3vgWNMqRg7fw6rZqRRjaDZ7BnZy5PMBN5+G
-         FwTFTGp17hWtiKxsfoKDSt1OCGFCkeyxM4IAAzy7ER7mgKDUiqbYHgXTxv3sR+4Mdr46
-         KATA==
-X-Gm-Message-State: AOAM532ZIJ7w3lIVbjRwXoOlHYMWon6J0tb8LZoIZA9wmMlV7ltwavGp
-        sUQq4Nt/sYKsPbOb3nQHJgfELw0t4gz0Hg==
-X-Google-Smtp-Source: ABdhPJz1YNWf1cUhfxs0vZ1szsy9kJtssRa8C6k15YY6jMKerbGOq0bjLzQaz1sJjfPTsclGBocHcw==
-X-Received: by 2002:a62:2ac2:0:b029:18c:25ff:d68 with SMTP id q185-20020a622ac20000b029018c25ff0d68mr5581084pfq.64.1607115171887;
-        Fri, 04 Dec 2020 12:52:51 -0800 (PST)
-Received: from [192.168.1.9] ([122.164.27.91])
-        by smtp.gmail.com with ESMTPSA id o132sm5861837pfg.100.2020.12.04.12.52.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 12:52:51 -0800 (PST)
-Message-ID: <b5bd7b0924bd239eb8d6557e10eead8bb2b939a5.camel@rajagiritech.edu.in>
-Subject: Re: BUG: KASAN lib/test_kasan.c
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Marco Elver <elver@google.com>
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        lkml <linux-kernel@vger.kernel.org>
-Date:   Sat, 05 Dec 2020 02:22:47 +0530
-In-Reply-To: <CANpmjNMCiCf9w34duqGpQ90=qB4QGnRR8Xny+wOVf=2WG=JVoA@mail.gmail.com>
-References: <dc46ab93e6b08fa6168591c7f6345b9dc91a81bb.camel@rajagiritech.edu.in>
-         <CANpmjNMCiCf9w34duqGpQ90=qB4QGnRR8Xny+wOVf=2WG=JVoA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-2 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oCRFwoQksFKYxL9oDoarBzLvwPjlXv3hZNckKayt7VE=;
+        b=cXBG+qkAk9NBwHMT8BBpSZuC9VAdABc5Rl7FeLmDd876OJCoyDIlcup0EpoZSRtX5l
+         lwUzz7sI+KCbQnzM20Sfujxj97UhC5j1OKACvH6yuFzJHToPiiyEtPZdqug13Vrn6YBk
+         oZMLj/TTtTh7p7nNR0NfB3DKYvsw4wP3yn3xvptM3ug0SDGl4OwxXrShjnc5w+aYRSSb
+         jFYnPo33TnUjEM449xNrRBuNFF+SJ+b6c4HPVvprPvBEJqrSfZ/RPwdyKE8fWxjID3qF
+         ld2knOeIB64blJUzwFNK6+RwLXygU+KBLgxfBabg4eU+S0CPWClUwSKsx+C+o07KRSQU
+         GtmA==
+X-Gm-Message-State: AOAM531dd1enTY+q/lMC5eW0uJvF3VvRlkrMZTsXRfJEFTBwXNNbo93k
+        dGuw6P35WNiXDpP6cL2oe52FQUvzD96ppW86460=
+X-Google-Smtp-Source: ABdhPJyXohy3tSCW8i4Y64blynsYCsiiFXP/mTHQmJppzn38tpXoDpmHXnpmSlNLMQD2uV987pardlFK657tYR2yRWM=
+X-Received: by 2002:a54:4608:: with SMTP id p8mr4365387oip.5.1607115384748;
+ Fri, 04 Dec 2020 12:56:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201204165128.3747878-1-arnd@kernel.org>
+In-Reply-To: <20201204165128.3747878-1-arnd@kernel.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 4 Dec 2020 15:56:13 -0500
+Message-ID: <CADnq5_NBqx5U+JAxSAaUD6qwCmZsnCzGk1mF9=rkPRPm0Ug0yw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: fw_attestation: fix unused function warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        John Clements <john.clements@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-04 at 21:29 +0100, Marco Elver wrote:
-> On Fri, 4 Dec 2020 at 19:56, Jeffrin Jose T
-> <jeffrin@rajagiritech.edu.in> wrote:
-> > hello,
-> > 
-> >  detected   KASAN   BUG
-> > 
-> > [ related information ]
-> > 
-> > -------------------x-------------------x------------------------>
-> > [   43.616259] BUG: KASAN: vmalloc-out-of-bounds in
-> > vmalloc_oob+0x146/0x2c0
-> > 
-> > (gdb) l *vmalloc_oob+0x146/0x2c0
-> > 0xffffffff81b8b0b0 is in vmalloc_oob (lib/test_kasan.c:764).
-> 
-> This is the KASAN test. It's a feature, not a bug. ;-)
-> 
-> > 759             kfree_sensitive(ptr);
-> > 760             KUNIT_EXPECT_KASAN_FAIL(test,
-> > kfree_sensitive(ptr));
-> > 761     }
-> > 762
-> > 763     static void vmalloc_oob(struct kunit *test)
-> > 764     {
-> > 765             void *area;
-> > 766
-> > 767             if (!IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
-> > 768                     kunit_info(test, "CONFIG_KASAN_VMALLOC is
-> > not
-> > enabled.");
-> > (gdb) l *vmalloc_oob+0x146
-> > 0xffffffff81b8b1f6 is in vmalloc_oob (lib/test_kasan.c:779).
-> > 774              * The MMU will catch that and crash us.
-> > 775              */
-> > 776             area = vmalloc(3000);
-> > 777             KUNIT_ASSERT_NOT_ERR_OR_NULL(test, area);
-> > 778
-> > 779             KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char
-> > *)area)[3100]);
-> > 780             vfree(area);
-> > 781     }
-> > 782
-> > 783     static struct kunit_case kasan_kunit_test_cases[] = {
-> > ----------------x-----------------------------x--------------------
-> > >
-> > 
-> > Reported by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-> 
-> Which CI system is reporting these?
-> 
-> If you look, this is the KASAN test, and the report is very much
-> intended since it's testing KASAN. Please blacklist the KASAN test
-> (and any other tests testing debugging tools).
-> 
-> Thanks,
-> -- Marco
+On Fri, Dec 4, 2020 at 11:51 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Without debugfs, the compiler notices one function that is not used at
+> all:
+>
+> drivers/gpu/drm/amd/amdgpu/amdgpu_fw_attestation.c:123:12: error: unused function 'amdgpu_is_fw_attestation_supported' [-Werror,-Wunused-function]
+>
+> In fact the static const amdgpu_fw_attestation_debugfs_ops structure is
+> also unused here, but that warning is currently disabled.
+>
+> Removing the #ifdef check does the right thing and leads to all of this
+> code to be dropped without warning.
+>
+> Fixes: 19ae333001b3 ("drm/amdgpu: added support for psp fw attestation")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-gdb session was started by me.  (gdb ./vmlinux)
+Applied.  Thanks!
 
-portion from dmesg output is as follows
---------------------x------------------------x-------------------------
--->
-[   43.616259] BUG: KASAN: vmalloc-out-of-bounds in
-vmalloc_oob+0x146/0x2c0
-[   43.630470] Read of size 1 at addr ffffc9000006ec1c by task
-kunit_try_catch/193
+Alex
 
-[   43.659055] CPU: 2 PID: 193 Comm: kunit_try_catch Tainted: G    B  
-5.10.0-rc6+ #10
-[   43.659070] Hardware name: ASUSTeK COMPUTER INC. VivoBook 15_ASUS
-Laptop X507UAR/X507UAR, BIOS X507UAR.203 05/31/2018
-[   43.659080] Call Trace:
-[   43.659105]  dump_stack+0x119/0x179
-[   43.659131]  print_address_description.constprop.0+0x1c/0x210
-[   43.659163]  ? vmalloc_oob+0x146/0x2c0
-[   43.659185]  kasan_report.cold+0x1f/0x37
-[   43.659210]  ? vmalloc_oob+0x146/0x2c0
-[   43.659234]  vmalloc_oob+0x146/0x2c0
-[   43.659259]  ? kasan_global_oob+0x280/0x280
-[   43.659287]  ? kunit_fail_assert_format+0xa0/0xa0
-[   43.659313]  ? lock_release+0xb2/0x730
-[   43.659334]  ? __kthread_parkme+0xa1/0x120
-[   43.659356]  ? lock_acquired+0xb4/0x5b0
-[   43.659379]  ? lock_downgrade+0x3d0/0x3d0
-[   43.659403]  ? lock_contended+0x6e0/0x6e0
-[   43.659423]  ? do_raw_spin_lock+0x1b0/0x1b0
-[   43.659447]  ? io_schedule_timeout+0xb0/0xb0
-[   43.659467]  ? static_obj+0x31/0x80
-[   43.659492]  ? lockdep_hardirqs_on_prepare+0xe/0x240
-[   43.659517]  ? memcg_accounted_kmem_cache+0x1b0/0x1b0
-[   43.659542]  kunit_try_run_case+0xa6/0x150
-[   43.659567]  ? kunit_catch_run_case+0x170/0x170
-[   43.659591]  ? kunit_try_catch_throw+0x40/0x40
-[   43.659617]  kunit_generic_run_threadfn_adapter+0x2e/0x50
-[   43.659637]  kthread+0x232/0x260
-[   43.659659]  ? __kthread_bind_mask+0x90/0x90
-[   43.659684]  ret_from_fork+0x22/0x30
-
-
-[   43.686511] Memory state around the buggy address:
-[   43.700445]  ffffc9000006eb00: 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00
-[   43.714559]  ffffc9000006eb80: 00 00 00 00 00 00 00 f8 f8 f8 f8 f8
-f8 f8 f8 f8
-[   43.728725] >ffffc9000006ec00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-f8 f8 f8 f8
-[   43.742808]                             ^
-[   43.757156]  ffffc9000006ec80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-f8 f8 f8 f8
-[   43.771845]  ffffc9000006ed00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-f8 f8 f8 f8
-[   43.785957]
-==================================================================
-
--------------------x-----------------------------x---------------------
----------->
-
-
--- 
-software engineer
-rajagiri school of engineering and technology - autonomous
-
-
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_fw_attestation.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fw_attestation.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_fw_attestation.c
+> index e47bca1c7635..7c6e02e35573 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fw_attestation.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fw_attestation.c
+> @@ -130,7 +130,6 @@ static int amdgpu_is_fw_attestation_supported(struct amdgpu_device *adev)
+>
+>  void amdgpu_fw_attestation_debugfs_init(struct amdgpu_device *adev)
+>  {
+> -#if defined(CONFIG_DEBUG_FS)
+>         if (!amdgpu_is_fw_attestation_supported(adev))
+>                 return;
+>
+> @@ -139,5 +138,4 @@ void amdgpu_fw_attestation_debugfs_init(struct amdgpu_device *adev)
+>                             adev_to_drm(adev)->primary->debugfs_root,
+>                             adev,
+>                             &amdgpu_fw_attestation_debugfs_ops);
+> -#endif
+>  }
+> --
+> 2.27.0
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
