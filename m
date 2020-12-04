@@ -2,197 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3B32CEC73
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E451A2CEC77
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:49:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387825AbgLDKrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 05:47:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726735AbgLDKrA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 05:47:00 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD919C0613D1;
-        Fri,  4 Dec 2020 02:46:13 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id 7so8056181ejm.0;
-        Fri, 04 Dec 2020 02:46:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=TZyqh6ptYlihraD2b1FndRpYclk9mikTkr3/jwSxY8I=;
-        b=J+QfY0fDBqvQwH8IMbTR9NFnix3NYx2WQfu39bKEQ6EQcreYVG9DF5Pgvt8S+IiGwt
-         YhD6106K+McI96ZwqH+9qQ1ZVvY7nWqYPLcUsaMAU0PqvXuw6DabzalMiwcz/ll0WyTh
-         d0pMp8+oNzsOxDluo5+0GY2lxYACxgZbbPmpx+fGKjdEFQV0IVLjBRTIYewJoNHjy++8
-         mXGZEIR8tMlCMFKcdxb1w4kGAbZalg+rnQjagHnn/aMNcGOVNdKHm16WoPrdoB9orG+n
-         nm6CO7LF2ZyMt+4NNXWKJxj8dslE43cGZyOZuHl05dMesNnJQs5VceofnGxiomKn2NQ8
-         fSag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TZyqh6ptYlihraD2b1FndRpYclk9mikTkr3/jwSxY8I=;
-        b=sA7TgxvfG7TedlPQ1KFfKWf6rjCRMZKK3BPtaHShwTHf8Eqy/gF5HAf/Pon8Ge1P8z
-         8XqVhm4ze4HJteopDr9fWl0JqV4MpqTnZ090XCpdkyrSgeuJUUPQzV0Jggk0RGoOxWuc
-         x4L11T7byEKrdbprFPBkMomVzbtkq03xAKsKP8tBUr7gWO1dWtXJJFLTF3kVGmo2ZOxb
-         cQzu13OY0wR2WaohxKfMcjluH1sbsOscJPYmT+YanfJPCJgvfrJ4+LpIxPSP4joBbIAt
-         O9NysHjgUyoBQE/KeLfblj0BVIi6S/NvaGPzMTo5E3+IbgF/orAEO87GldWG+MOsTQLn
-         vlWw==
-X-Gm-Message-State: AOAM531TGjqdvK7ZkALdI1S68LYAMQm2UL3UYzciVLCSSBdCK4aW9rjO
-        SL/GiFUuPZ8o6+YVYnbCUjY=
-X-Google-Smtp-Source: ABdhPJzgG4ZQ33plbJ6DmN3bKD2NZhx4EP0JVX5IICKTKOosmqc9iUbg7S5aC5sJa3sMJopaEfIXIg==
-X-Received: by 2002:a17:906:74c1:: with SMTP id z1mr6692642ejl.182.1607078772351;
-        Fri, 04 Dec 2020 02:46:12 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id lc18sm2826034ejb.77.2020.12.04.02.46.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 02:46:10 -0800 (PST)
-Date:   Fri, 4 Dec 2020 11:46:09 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH] driver core: Reorder devices on successful probe
-Message-ID: <X8oTcS9vManhNH1n@ulmo>
-References: <20201203175756.1405564-1-thierry.reding@gmail.com>
- <CAJZ5v0g_FC6Pikrvk2PK=XMvAwqjaNOcYXHYS6eqv6Zc0JgqNQ@mail.gmail.com>
- <CAGETcx9wrKNfvV36v1YJLa_A8jtb6OvZRMjsNG9AYxLPDvdpgQ@mail.gmail.com>
+        id S1729870AbgLDKsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 05:48:05 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:19320 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726014AbgLDKsE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 05:48:04 -0500
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fca13ba0000>; Fri, 04 Dec 2020 18:47:22 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 4 Dec
+ 2020 10:47:18 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 4 Dec 2020 10:47:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TJTDtunYPsnkvSluXX/6mWp2/jgyBlRaBggEF8bItT6oqCDT7kB1AwysBv6svNiLTcPRXVULn2Kniuvs3FWWMN907lO9gD+nJBgFmcabn2ZOY8xoKFzRLmhhtbhTaZ0iIMAsvPAhoR6rFxMSdG+9J7LMgMLPo4Z3MetO+6Ou00ftuEcofHzIQJJSppwZEZxLO1AUNwjOUKzX9MFRBELLTTr2yCzodIUH2vASYB+Rhu3McfqrOafbpkYtWCzQ+VPOPTmc0aXpOnjrne+DNo57F1dN5LZLOnMMKTJRawifLFgAGSY3RKC0EYpFrVeOUxphbVktjd+rZ6IOT3yFNMHvaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WY474EomvXmpAfK4uZdCSxpmELGgktXwCaXptW1Xi/w=;
+ b=RkpCaVfxSAiUDKyqOnNXS/yYFvkbsTOeBNZ4J2CJ/NvwTCLRV7igBCh/kNXM8jtZEjtdk+xuKHaKrjGlgwjVtuoKCZN17IYVFOUta8qtPse850sf/7/yFnrUMdCoz5OkYWjJZXDTqJ8onsbq9BcHlqukz/wcpNWPavCxB04ftQrtG4O/vBSbv00EETDusV5NDc74kIjr2iwNEtfGgs2cZyBVTdoJfuNsujE2pebzck3CGlkeDdKshQDhMd9sKleRE+sRi5ev3oB1NsUKBiyDMYzLiEsCdlcfn7b4mHI+is375SwezBpbsoHs2rwWiB2f911Uc15fojrmrJXhtVUWbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM5PR12MB1356.namprd12.prod.outlook.com (2603:10b6:3:74::18) by
+ DM6PR12MB3465.namprd12.prod.outlook.com (2603:10b6:5:3a::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3632.18; Fri, 4 Dec 2020 10:47:15 +0000
+Received: from DM5PR12MB1356.namprd12.prod.outlook.com
+ ([fe80::3cc2:a2d6:2919:6a5a]) by DM5PR12MB1356.namprd12.prod.outlook.com
+ ([fe80::3cc2:a2d6:2919:6a5a%6]) with mapi id 15.20.3632.017; Fri, 4 Dec 2020
+ 10:47:15 +0000
+Subject: Re: [PATCH net] net: bridge: vlan: fix error return code in
+ __vlan_add()
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1607071737-33875-1-git-send-email-zhangchangzhong@huawei.com>
+From:   Nikolay Aleksandrov <nikolay@nvidia.com>
+Message-ID: <b90689c4-ffa9-d3ca-2cd4-f39e84446639@nvidia.com>
+Date:   Fri, 4 Dec 2020 12:47:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+In-Reply-To: <1607071737-33875-1-git-send-email-zhangchangzhong@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [213.179.129.39]
+X-ClientProxiedBy: ZR0P278CA0014.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:16::24) To DM5PR12MB1356.namprd12.prod.outlook.com
+ (2603:10b6:3:74::18)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="IWeSzFgMjGsB0/Jx"
-Content-Disposition: inline
-In-Reply-To: <CAGETcx9wrKNfvV36v1YJLa_A8jtb6OvZRMjsNG9AYxLPDvdpgQ@mail.gmail.com>
-User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.21.241.129] (213.179.129.39) by ZR0P278CA0014.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:16::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Fri, 4 Dec 2020 10:47:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b8c29b2b-f898-4186-1e4a-08d89841f696
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3465:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3465651AE251B1A2D1B6DC41DFF10@DM6PR12MB3465.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nICrYPt/cRCYsmECgJSpEDer8Oj7DYxs+M+uO3/kvfMsnle0m82LvBnDStAIdR0kXWk8iQhy0oMpIjjLxMTiH7MvdOXkgI4wElaMwHUQfcJGr+NCALl561a3zcv/DSEpPMfrVQWlOG5/nvZX2bH+bbho7Wh7nqosXZs1lfgLOK0TzGsCORm4akNeeZpvq+PJE1No73OzEvxkxDuhI7lQiXB3aNITECN+xAOGMJO3T51+/0TniO7gg8qzE7vpkaFaPBrWd9uhBaDhlKpIfwPBlessDYr/+GmYZiKHMaOnSvnpO1kkvSvrf/CbjrOCS1FQcwsyxY7ExWFn+VGAPc4o58BsxB2EMVjg9JwE1uifARuOEJuGd2D5rKjRb/YqjYpTXosycYbsu+KoLY9NzQPK1soNeIaMS1YyEogCkKy9cqU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1356.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(39860400002)(396003)(8936002)(16576012)(2906002)(6486002)(83380400001)(956004)(36756003)(26005)(16526019)(186003)(66946007)(66476007)(53546011)(31686004)(66556008)(2616005)(31696002)(8676002)(5660300002)(478600001)(4326008)(110136005)(6666004)(86362001)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?angzMjA0czJPMFlJbjNCaEJhRzlNbFBhUll6ZFgvcHAwTmtwUHIxczU4ZzNw?=
+ =?utf-8?B?L2p3b3ZJWFZoTmVXK21odEhCZHJtYTg5VmNYdlByZ01aL3VvNWpDSThsRzdv?=
+ =?utf-8?B?V3JqVjJpWGFyQ3lJbnVuQkVXaFdFTDBlYUJaMW45ZW1aMjFwWjZYamFDRWVx?=
+ =?utf-8?B?RWJIYlVCREhmN2JHZ1JPNURsekRBRHNZZDN0U1p3R1lqNXMxbFNOV1lSV3JP?=
+ =?utf-8?B?dm92K3lLOWVNaFpsbFFhTUYzMFVoYmRUeXBIbVZwZXNhcmg5UjNYMVBrUGVV?=
+ =?utf-8?B?TkNmc01FWlU2bSs5bUFqQ2ZrQjBwY3JDSk9naFFmUWprc3laRGcyaFVVQ2FL?=
+ =?utf-8?B?WUlSSno0WnN5YVRETVgreXMrc2hLRVVuVnhoYVdQektkVkNROStjelR2MVVV?=
+ =?utf-8?B?M3Z4RnBvQitudkkxTDdWTHZMK1BVZmFzUkVqN2ZIc0J0UXJlNFRnOWJ1eEs4?=
+ =?utf-8?B?SnE2bHh4UVUyWEE0SnFlRG8reUtpNEpyQnNmY2lCVFVJWWNUSXl2UVEzRGN0?=
+ =?utf-8?B?S25idGRYZUM3Wm5hZTU1d1B2d1Z3YUxiL0dBcG9ZdFYzS3RCcGhRbisrSE94?=
+ =?utf-8?B?cTRlN2xGcEY2OUkwcjVRR2tFK2ZUZFF5MDBLWWs3L3RKWXp6OWNJNHl3QXJn?=
+ =?utf-8?B?c3UvWDFlaFJiSkZ5ZWdkaTAycFI0bGJyZ2NRYjl4NlJLd2l1c0FseGJFWjBa?=
+ =?utf-8?B?U1BjekdFV3dwRWl4Wk5PdlZyZjErcm01ZldTRUUrbzhiMk5nWUtHR1IxRGNQ?=
+ =?utf-8?B?M1dKcWJqUVBTdEJDZnlqYUw2UjY4V0pkamhSWmFJUnRIYm81dkl0ZFpGcGVh?=
+ =?utf-8?B?cGpseDNlTVFTaTA0U2xETndkSDhEbGtHUEpzWXBlRkR4dyt6eDVFanhIdjRX?=
+ =?utf-8?B?UFYrQk1WaFBoK3lmYzV6STM1cmU3YWlibDVSMWJwdWpQVFUySU55Ukw5ZGN2?=
+ =?utf-8?B?dTlVWGRkYXJEOUUxRGtBUFJicDhma0xBa0Q0U2J1N1gwYStxakluVlhqbnQ2?=
+ =?utf-8?B?aXB6QWVrRHdWTitzV2l3MWpUWjdCV1dld2xvUEJjSzVqKzB3L2NJVW9tWHlJ?=
+ =?utf-8?B?Mm9STUUxQ3QxVm4vRk1CMDd1SnQva25GR3k0VFpXQnVlRThGQzBSUGRHbEQy?=
+ =?utf-8?B?RDdFdmRFeDczYmNkN01XdXhoZm1lRHZJejhvRWxwWURmTHdWakIwb1ZCd0F1?=
+ =?utf-8?B?WnV0dk43elVybjI0aDVLQ09JOEp1R0ZESnBoemRyVE9EaHRvdGpTS3dUSHpK?=
+ =?utf-8?B?M1VYakFEVjZtaUthNWhNNDBNQzdVMVkrL21IT0I0OHRFdjdjc2FCUWNJcnVk?=
+ =?utf-8?Q?MsSlICiM0F6bb/q7vkJzoqCQYpCRllmilS?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8c29b2b-f898-4186-1e4a-08d89841f696
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1356.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 10:47:15.3673
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9G+TdlhhuIEDkqhAbyFymx6kR9fhpg3tVJvZZCnA9idakFFtjkvyKyDXavvHbGeeBlw8gL6HWPN5Ui8PfPz2LQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3465
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607078842; bh=WY474EomvXmpAfK4uZdCSxpmELGgktXwCaXptW1Xi/w=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:
+         Authentication-Results:Subject:To:CC:References:From:Message-ID:
+         Date:User-Agent:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy:
+         MIME-Version:X-MS-Exchange-MessageSentRepresentingType:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
+         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
+         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=hddLOleZ01qaI2O02vHI4O+9XrX54pmbETrzz161Y66CuBj2FLC2HUxNcr0eCWboj
+         rnFSxPmiWwt8f0X00jikxLy8XisDLdym5UYA0bnLKmUNaCxM+QGplEDGKQ+CJwe2nq
+         yOJ9blU7Am9sPDyiK/q9cEDZWsLv3Pz541hcCKe8Z3v6247phznZ0J6DZ7DXBpi63V
+         4fJLDyuamu2/sg5lneZD+O5xlfgMcCXDQtj8f1odE0WxR+TK+7iYEjckKicASBIY5o
+         HmS4jBnVHhPzeoWbAq9yrOXZHAmiezch/IzYHCDKRNkGh4GbJbur4KpQBD3CZdb4fZ
+         Hwl8MvvpYzWQQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 04/12/2020 10:48, Zhang Changzhong wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+> 
+> Fixes: f8ed289fab84 ("bridge: vlan: use br_vlan_(get|put)_master to deal with refcounts")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> ---
+>  net/bridge/br_vlan.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/bridge/br_vlan.c b/net/bridge/br_vlan.c
+> index 3e493eb..08c7741 100644
+> --- a/net/bridge/br_vlan.c
+> +++ b/net/bridge/br_vlan.c
+> @@ -266,8 +266,10 @@ static int __vlan_add(struct net_bridge_vlan *v, u16 flags,
+>  		}
+>  
+>  		masterv = br_vlan_get_master(br, v->vid, extack);
+> -		if (!masterv)
+> +		if (!masterv) {
+> +			err = -ENOMEM;
+>  			goto out_filt;
+> +		}
+>  		v->brvlan = masterv;
+>  		if (br_opt_get(br, BROPT_VLAN_STATS_PER_PORT)) {
+>  			v->stats = netdev_alloc_pcpu_stats(struct br_vlan_stats);
+> 
 
---IWeSzFgMjGsB0/Jx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
 
-On Thu, Dec 03, 2020 at 11:19:11AM -0800, Saravana Kannan wrote:
-> On Thu, Dec 3, 2020 at 10:17 AM Rafael J. Wysocki <rafael@kernel.org> wro=
-te:
-> >
-> > On Thu, Dec 3, 2020 at 6:58 PM Thierry Reding <thierry.reding@gmail.com=
-> wrote:
-> > >
-> > > From: Thierry Reding <treding@nvidia.com>
-> > >
-> > > Device drivers usually depend on the fact that the devices that they
-> > > control are suspended in the same order that they were probed in. In
-> > > most cases this is already guaranteed via deferred probe.
-> > >
-> > > However, there's one case where this can still break: if a device is
-> > > instantiated before a dependency (for example if it appears before the
-> > > dependency in device tree) but gets probed only after the dependency =
-is
-> > > probed. Instantiation order would cause the dependency to get probed
-> > > later, in which case probe of the original device would be deferred a=
-nd
-> > > the suspend/resume queue would get reordered properly. However, if the
-> > > dependency is provided by a built-in driver and the device depending =
-on
-> > > that driver is controlled by a loadable module, which may only get
-> > > loaded after the root filesystem has become available, we can be faced
-> > > with a situation where the probe order ends up being different from t=
-he
-> > > suspend/resume order.
-> > >
-> > > One example where this happens is on Tegra186, where the ACONNECT is
-> > > listed very early in device tree (sorted by unit-address) and depends=
- on
-> > > BPMP (listed very late because it has no unit-address) for power doma=
-ins
-> > > and clocks/resets. If the ACONNECT driver is built-in, there is no
-> > > problem because it will be probed before BPMP, causing a probe deferr=
-al
-> > > and that in turn reorders the suspend/resume queue. However, if built=
- as
-> > > a module, it will end up being probed after BPMP, and therefore not
-> > > result in a probe deferral, and therefore the suspend/resume queue wi=
-ll
-> > > stay in the instantiation order. This in turn causes problems because
-> > > ACONNECT will be resumed before BPMP, which will result in a hang
-> > > because the ACONNECT's power domain cannot be powered on as long as t=
-he
-> > > BPMP is still suspended.
-> > >
-> > > Fix this by always reordering devices on successful probe. This ensur=
-es
-> > > that the suspend/resume queue is always in probe order and hence meets
-> > > the natural expectations of drivers vs. their dependencies.
-> > >
-> > > Reported-by: Jonathan Hunter <jonathanh@nvidia.com>
-> > > Signed-off-by: Thierry Reding <treding@nvidia.com>
-> >
-> > Saravana had submitted a very similar patch (I don't have a pointer to
-> > that one though) and I was against it at that time due to
-> > overhead-related concerns.  There still are some, but maybe that
-> > doesn't matter in practice.
->=20
-> Yeah, it's a very similar patch but I also suggested deleting the
-> reorder done in the deferred probe code (I'm pretty sure we can drop
-> it). Here's the thread:
-> https://lore.kernel.org/lkml/20200625032430.152447-1-saravanak@google.com/
-
-Yeah, I was thinking about that as well and I agree with your assessment
-that this should no longer be necessary after this patch. Any device
-that would've gotten reordered by a deferred probe should now get
-reordered after successful probe as well. The ordering of the DPM list
-may not end up being exactly the same, but at least it should be from a
-functional point of view.
-
-I didn't want to roll these changes all into one so that we could first
-make sure that this change itself works and then at a later time we
-could remove the deferred probe reordering incrementally to validate
-that we really no longer need it.
-
-But thinking about it, it might be worth making these changes all at
-once, so that when we break things we break them once instead of
-potentially twice.
-
-> Btw, I've been wondering about this recently. Do we even need
-> device_pm_move_to_tail() to do the recursive thing once we do "add
-> device to end of list when added" + "move probed devices to the end
-> after probe" thing here? Doesn't this guarantee that none of the
-> consumers can come before the supplier in the dpm list?
-
-I think we still at least need to reorder the children recursively, but
-I'm pretty sure we could also drop the reordering of consumer device
-links because, yes, every consumer should defer probe if the provider
-hasn't been probed yet, which in turn would cause the consumer to get
-sorted into the right position in the DPM queue after its successful
-probe.
-
-Thierry
-
---IWeSzFgMjGsB0/Jx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/KE20ACgkQ3SOs138+
-s6FY2w/+KfnnfH/20hfPqZ8Bh6SpeXb+3eoc9ah5S+EOwVGa4hqpp1EeIEk2ZES9
-6U5z/IDKgpX0qK3mwuRhneWP4Lz7R/dHjuRlH828/zJ8ucEOCyTk2zcRsVGDJi1Z
-b7ICRZaDc0+Ym2tCBl+1fwWXXfmMruKXKP/JnH3PNUroc4pFzcp4kiekVLCUtAa0
-ABpeJ0B6iIy6oqNaRAfFM7Dd4ZfYWjBRbiLt/xTqxJhYxoC+brodetlrL4oLQtU9
-B4xxl0ECZlnFP94n07fRDD138x3edtCpZmReVoFf9fc1pUsH+NbDQOG0/+dscdo8
-4aOfNi8VrMzEsJca4vZqbCiAJ/avx4N5pgaJjWmlrxFZChi38LUaE9FuZwxrb8sI
-lfbN4+hvPaIvBjmLT9GI7EopDg8CqjVGQRUWHeIVUjNbonPVIzdp4qVWUtZwMkGs
-QJ4l9OUN/bnRguK5V5ET19GOy8XBXrQZoUcOJVmHV0r0K+lnwklwjnTwUAUAxzLx
-iGoQDzAp+LSECkac1dc9MyOV0prz8OYNtJ2Jg9Cf/bDyQceerzL+e9FFba+rGSEa
-/rKgeAVJAduYVioKPnBAuq/ipXrPCvQzGbk6FJ/wz+Oq/CAsrGOkGuzGjr1MqvXg
-XY4GVzno5mNGkWZQ3Fr3PKH2s/6Wu98pR+f8GuXsk9p1fypQHD0=
-=HyxY
------END PGP SIGNATURE-----
-
---IWeSzFgMjGsB0/Jx--
