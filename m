@@ -2,144 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807FB2CF1C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C02C2CF1C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727211AbgLDQUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:20:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726166AbgLDQUq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:20:46 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CF9C061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 08:20:06 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id 131so4030316pfb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 08:20:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fe+vbNKf2orQSQdQfp84tFWO7dmTK0e8xZVK2kuk9vc=;
-        b=00ymjmeHcRm+t9WqfDypR12xjjGpRELcXY0sIkHfHtMG6GdeFg8EcQt28ccHWoeOIk
-         tOcEiwui9V9z5lzZCtEYUMXKoXacmBh3GI5G/Obk0zIwy7KXlWsq7P8hxvuUC9JLs4cT
-         NatI8Rdmu1F+VnftUvhJ6bJj+11mSL4aVSPk7Qt8f5pEYc29Sva7p5t1SmunuF4uZlLV
-         DAoYBcmG/3chKFux9QqTK0Y+YruaH4fHQglRAaT4ywJ5KetCdUKm5N5kWPd6ultHAUpO
-         G6oupDP9ndJQ4STkntJw/zwi4f1qtk5NJbc4eX9ND0GJAgw6X5UEcw2iFT1Opd4n3cKz
-         V6IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fe+vbNKf2orQSQdQfp84tFWO7dmTK0e8xZVK2kuk9vc=;
-        b=M1/+HC4xHmTq0aQll73RkJ73zp9UTbTzo6BRyZdjvNBUgncvYUGrOzOx5l66SCp/H7
-         f4iexIRcw5gWduw2v7QdKHOzs3cpyWXBN2JpORCtp2/axzA+hxA82zdEAR3QpM/6j7DU
-         SG7Lw5MclqBpIR1B9v/NQetDfg6VoJPPqreQdkuDvPXmLgml80/DUDKaydF8itHirgsp
-         sycK12qoiFXnY0O0TqqvpRz3a17RrFMGTeSKrOOJo2WQnK5Hx5Xh93mQjRyodR8dFzj5
-         //kWMR0q4maKGLgvybvpZ+9m7UTZd6bho1fWiXb3b0iABV5asPuwP++db657DkECayN5
-         EGCQ==
-X-Gm-Message-State: AOAM531KwuvfJKeWjtf/JHvfOaTjRWJKu4jYq97w6P+RN7zSrBcxscyY
-        KUZDuYT/19ewfSLYAbdgRtwcUXOhMt1MkJss/F+U9bKKvO3lBg==
-X-Google-Smtp-Source: ABdhPJx3djr9fUf8EXR6B02YTCxWp5UKSEi9b1HmR59NDusa/KdvB75cQjsaMRdK5L9unlrT3dQcwY8opF6Bq/+6m5U=
-X-Received: by 2002:a62:3103:0:b029:19b:d4e8:853c with SMTP id
- x3-20020a6231030000b029019bd4e8853cmr4524242pfx.59.1607098806291; Fri, 04 Dec
- 2020 08:20:06 -0800 (PST)
+        id S1730395AbgLDQUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:20:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40784 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726102AbgLDQUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 11:20:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E23D3ACC4;
+        Fri,  4 Dec 2020 16:19:35 +0000 (UTC)
+Subject: Re: [PATCH v2] mm: fix a race on nr_swap_pages
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1607050340-4535-1-git-send-email-zhaoyang.huang@unisoc.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <56407d04-2178-8a0e-ae1b-a1a4b9d7912a@suse.cz>
+Date:   Fri, 4 Dec 2020 17:19:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20201203031111.3187-1-songmuchun@bytedance.com> <20201204154613.GA176901@cmpxchg.org>
-In-Reply-To: <20201204154613.GA176901@cmpxchg.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 5 Dec 2020 00:19:30 +0800
-Message-ID: <CAMZfGtUkQUoy39qyHLPTdBY_38U23yThmFaHx2yfqz5ocfMViw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] mm/memcontrol: make the slab
- calculation consistent
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1607050340-4535-1-git-send-email-zhaoyang.huang@unisoc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 11:48 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Thu, Dec 03, 2020 at 11:11:11AM +0800, Muchun Song wrote:
-> > Although the ratio of the slab is one, we also should read the ratio
-> > from the related memory_stats instead of hard-coding. And the local
-> > variable of size is already the value of slab_unreclaimable. So we
-> > do not need to read again. Simplify the code here.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Acked-by: Roman Gushchin <guro@fb.com>
->
-> I agree that ignoring the ratio right now is not very pretty, but
->
->                 size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
->                        memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
->                 seq_buf_printf(&s, "slab %llu\n", size);
->
-> is way easier to understand and more robust than using idx and idx + 1
-> and then requiring a series of BUG_ONs to ensure these two items are
-> actually adjacent and in the right order.
->
-> There is a redundant call to memcg_page_state(), granted, but that
-> function is extremely cheap compared with e.g. seq_buf_printf().
->
-> >  mm/memcontrol.c | 26 +++++++++++++++++++++-----
-> >  1 file changed, 21 insertions(+), 5 deletions(-)
->
-> IMO this really just complicates the code with little discernible
-> upside. It's going to be a NAK from me, unfortunately.
->
->
-> In retrospect, I think that memory_stats[] table was a mistake. It
-> would probably be easier to implement this using a wrapper for
-> memcg_page_state() that has a big switch() for unit
-> conversion. Something like this:
->
-> /* Translate stat items to the correct unit for memory.stat output */
-> static unsigned long memcg_page_state_output(memcg, item)
-> {
->         unsigned long value = memcg_page_state(memcg, item);
->         int unit = PAGE_SIZE;
->
->         switch (item) {
->         case NR_SLAB_RECLAIMABLE_B:
->         case NR_SLAB_UNRECLAIMABLE_B:
->         case WORKINGSET_REFAULT_ANON:
->         case WORKINGSET_REFAULT_FILE:
->         case WORKINGSET_ACTIVATE_ANON:
->         case WORKINGSET_ACTIVATE_FILE:
->         case WORKINGSET_RESTORE_ANON:
->         case WORKINGSET_RESTORE_FILE:
->         case MEMCG_PERCPU_B:
->                 unit = 1;
->                 break;
->         case NR_SHMEM_THPS:
->         case NR_FILE_THPS:
->         case NR_ANON_THPS:
->                 unit = HPAGE_PMD_SIZE;
->                 break;
->         case NR_KERNEL_STACK_KB:
->                 unit = 1024;
->                 break;
->         }
->
->         return value * unit;
-> }
->
-> This would fix the ratio inconsistency, get rid of the awkward mix of
-> static and runtime initialization of the table, is probably about the
-> same amount of code, but simpler and more obvious overall.
+On 12/4/20 3:52 AM, Zhaoyang Huang wrote:
+> The scenario on which "Free swap = -4kB" happens in my system, which is caused
+> by several get_swap_pages racing with each other and show_swap_cache_info
+> happens simutaniously. No need to add a lock on get_swap_page_of_type as we
+> remove "Presub/PosAdd" here.
+> 
+> ProcessA			ProcessB			ProcessC
+> ngoals = 1			ngoals = 1
+> avail = nr_swap_pages(1)	avail = nr_swap_pages(1)
+> nr_swap_pages(1) -= ngoals
+> 				nr_swap_pages(0) -= ngoals
+> 								nr_swap_pages = -1
+> 
+> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-Good idea. I can do that :)
+Better now.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Thanks.
+> ---
+> change of v2: fix bug of unpaired of spin_lock
+> ---
+> ---
+>  mm/swapfile.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index cf63b5f..1212f17 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -974,9 +974,13 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
+>  	/* Only single cluster request supported */
+>  	WARN_ON_ONCE(n_goal > 1 && size == SWAPFILE_CLUSTER);
+>  
+> +	spin_lock(&swap_avail_lock);
+> +
+>  	avail_pgs = atomic_long_read(&nr_swap_pages) / size;
+> -	if (avail_pgs <= 0)
+> +	if (avail_pgs <= 0) {
+> +		spin_unlock(&swap_avail_lock);
+>  		goto noswap;
+> +	}
+>  
+>  	if (n_goal > SWAP_BATCH)
+>  		n_goal = SWAP_BATCH;
+> @@ -986,8 +990,6 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
+>  
+>  	atomic_long_sub(n_goal * size, &nr_swap_pages);
+>  
+> -	spin_lock(&swap_avail_lock);
+> -
+>  start_over:
+>  	node = numa_node_id();
+>  	plist_for_each_entry_safe(si, next, &swap_avail_heads[node], avail_lists[node]) {
+> @@ -1061,14 +1063,13 @@ swp_entry_t get_swap_page_of_type(int type)
+>  
+>  	spin_lock(&si->lock);
+>  	if (si->flags & SWP_WRITEOK) {
+> -		atomic_long_dec(&nr_swap_pages);
+>  		/* This is called for allocating swap entry, not cache */
+>  		offset = scan_swap_map(si, 1);
+>  		if (offset) {
+> +			atomic_long_dec(&nr_swap_pages);
+>  			spin_unlock(&si->lock);
+>  			return swp_entry(type, offset);
+>  		}
+> -		atomic_long_inc(&nr_swap_pages);
+>  	}
+>  	spin_unlock(&si->lock);
+>  fail:
+> 
 
--- 
-Yours,
-Muchun
