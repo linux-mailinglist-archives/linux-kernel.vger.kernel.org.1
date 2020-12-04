@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE2B2CE850
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 07:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5722CE858
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728509AbgLDGsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 01:48:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725601AbgLDGsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 01:48:50 -0500
-From:   Chen-Yu Tsai <wens@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: rockchip: rk3328: Fix UART pull-ups
-Date:   Fri,  4 Dec 2020 14:48:05 +0800
-Message-Id: <20201204064805.6480-1-wens@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S1728162AbgLDG7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 01:59:39 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:42086 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgLDG7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 01:59:38 -0500
+Received: by mail-ej1-f66.google.com with SMTP id d17so7134660ejy.9;
+        Thu, 03 Dec 2020 22:59:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e50yAptPk4qvH2DjIDkzdRdD/+Aa+SiLK2zM+mJlFWA=;
+        b=eC5k0J95DjW8FrZJhU3Z+5kXbR/eCy0IEYRe2JqcboV8SotoZ/2TOKp59zWAExaaEH
+         5Dbu3Ixe5HIHnQMFqE0cnQ9PciUFqkEFNA4MtWmt1GGL+BM0HKb/RksQgMxwlNYWS/iZ
+         i1COKAnuGUocvAxCtZMAJVAcjJ6iJFhRi2aWinh2AiuVEFHWe+1/QwRC5wqeuybKwrWz
+         vmlIf0He6BYEsJP4A4USmwrHbHyCPKZVin5CdRR4xQyA4IFi6vBPFQFoHc6qzUYiWIG7
+         jhZHdxLLk7ChHA8tdaG2EQ4KLQkJXu7T0Dy9QlangXMBHIhO7URP4qiq2XboSpZNSro2
+         qg/A==
+X-Gm-Message-State: AOAM533KuKBKMrUsVWgbHO0O6Snm1tu6drmTREAh2n4LrQ5zPeymmppf
+        LD/KLUfAFTIXxgtNiZvaSTaisfZ6h7UNgQ==
+X-Google-Smtp-Source: ABdhPJy5MEfKbVUJFTnh1vKqmxmxnnoKlgi6kcqIAd4ISej8g/3EJ6ptUx8ssAV5yi5x1hhhmvLh+Q==
+X-Received: by 2002:a17:906:d72:: with SMTP id s18mr5900964ejh.110.1607065136221;
+        Thu, 03 Dec 2020 22:58:56 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id x20sm2418231ejv.66.2020.12.03.22.58.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 22:58:55 -0800 (PST)
+Subject: Re: [PATCH 0/5] tty: add flag to suppress ready signalling on open
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Mychaela Falconia <mychaela.falconia@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201130153742.9163-1-johan@kernel.org>
+ <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
+ <c8f3e485-54c6-99c7-4888-6eef2e174bf6@kernel.org>
+ <X8d/Ac5Z4bT/W7ZA@localhost>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <a58e3a7b-58bb-0430-2344-8e8155758e45@kernel.org>
+Date:   Fri, 4 Dec 2020 07:58:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <X8d/Ac5Z4bT/W7ZA@localhost>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen-Yu Tsai <wens@csie.org>
+On 02. 12. 20, 12:48, Johan Hovold wrote:
+>>> but I question the
+>>> usefulness of doing so, as it is a chicken and egg problem: one needs
+>>> to open the tty device in order to do termios ioctls on it, and if
+>>> that initial open triggers DTR/RTS hardware actions, then the end user
+>>> is still screwed.  If Johan or someone else can see a potential use
+>>> case for manipulating this new flag via termios (as opposed to sysfs
+>>> or USB-ID-based driver quirks), perhaps you could elaborate on it?
+>>
+>> We would need to (ab)use another open flag (e.g. O_DIRECT). I am not
+>> biased to either of solutions.
+> 
+> Forgot to mention that using open-flags would prevent using standard
+> utilities like cat, echo and terminal programs. So for that reason a
+> termios and/or sysfs interface is also preferred.
 
-For UARTs, the local pull-ups should be on the RX pin, not the TX pin.
-UARTs transmit active-low, so a disconnected RX pin should be pulled
-high instead of left floating to prevent noise being interpreted as
-transmissions.
+Nope, I meant it differently. You set it up once using the special open 
+flag. Like with setserial, one sets I/O port, irqs etc. and then uses 
+standard tools as the port is already set up (marked as NORDY in this case).
 
-This gets rid of bogus sysrq events when the UART console is not
-connected.
-
-Fixes: 52e02d377a72 ("arm64: dts: rockchip: add core dtsi file for RK3328 SoCs")
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
----
- arch/arm64/boot/dts/rockchip/rk3328.dtsi | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-index 521c4678ec35..1e3aa6acbc11 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-@@ -1265,8 +1265,8 @@ otp_out: otp-out {
- 
- 		uart0 {
- 			uart0_xfer: uart0-xfer {
--				rockchip,pins = <1 RK_PB1 1 &pcfg_pull_up>,
--						<1 RK_PB0 1 &pcfg_pull_none>;
-+				rockchip,pins = <1 RK_PB1 1 &pcfg_pull_none>,
-+						<1 RK_PB0 1 &pcfg_pull_up>;
- 			};
- 
- 			uart0_cts: uart0-cts {
-@@ -1284,8 +1284,8 @@ uart0_rts_pin: uart0-rts-pin {
- 
- 		uart1 {
- 			uart1_xfer: uart1-xfer {
--				rockchip,pins = <3 RK_PA4 4 &pcfg_pull_up>,
--						<3 RK_PA6 4 &pcfg_pull_none>;
-+				rockchip,pins = <3 RK_PA4 4 &pcfg_pull_none>,
-+						<3 RK_PA6 4 &pcfg_pull_up>;
- 			};
- 
- 			uart1_cts: uart1-cts {
-@@ -1303,15 +1303,15 @@ uart1_rts_pin: uart1-rts-pin {
- 
- 		uart2-0 {
- 			uart2m0_xfer: uart2m0-xfer {
--				rockchip,pins = <1 RK_PA0 2 &pcfg_pull_up>,
--						<1 RK_PA1 2 &pcfg_pull_none>;
-+				rockchip,pins = <1 RK_PA0 2 &pcfg_pull_none>,
-+						<1 RK_PA1 2 &pcfg_pull_up>;
- 			};
- 		};
- 
- 		uart2-1 {
- 			uart2m1_xfer: uart2m1-xfer {
--				rockchip,pins = <2 RK_PA0 1 &pcfg_pull_up>,
--						<2 RK_PA1 1 &pcfg_pull_none>;
-+				rockchip,pins = <2 RK_PA0 1 &pcfg_pull_none>,
-+						<2 RK_PA1 1 &pcfg_pull_up>;
- 			};
- 		};
- 
+thanks,
 -- 
-2.29.2
-
+js
