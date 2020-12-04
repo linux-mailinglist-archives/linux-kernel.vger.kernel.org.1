@@ -2,130 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BABCB2CF05B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D82C2CF058
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730404AbgLDPG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:06:59 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55622 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726635AbgLDPG6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:06:58 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B4F5GG6108931;
-        Fri, 4 Dec 2020 09:05:16 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607094316;
-        bh=x3QQpVqGD3Chyeor/qyNF9e/Ifi7+TxddtR8br0FcC0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=beDMLR2F2b0vX4LtEZVKhLWSvvEgIF/zj52w5G0h5t5JqeYKbDvnVdzOGPHyTLDiR
-         M8CHn6vinImn2yRgvQn4WG2KMFWfp4OPW1yfSFztRjTIud937SO0kpm2MKlngfadjl
-         P0J9fzweeDR2UeHZ7uR52WBE63azojKO7faku3CA=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B4F5G79008358
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 4 Dec 2020 09:05:16 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 4 Dec
- 2020 09:05:15 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 4 Dec 2020 09:05:15 -0600
-Received: from [10.250.68.46] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B4F590Z054621;
-        Fri, 4 Dec 2020 09:05:10 -0600
-Subject: Re: [PATCH v2 0/6] Add a PRU remoteproc driver
-To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
-        <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <robh+dt@kernel.org>,
-        <lee.jones@linaro.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <praneeth@ti.com>,
-        <rogerq@ti.com>
-References: <20201119140850.12268-1-grzegorz.jaszczyk@linaro.org>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <d31a38a2-940c-2ce6-b496-4b4ac2fbe08e@ti.com>
-Date:   Fri, 4 Dec 2020 09:05:08 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730424AbgLDPGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:06:03 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:34638 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726715AbgLDPGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 10:06:02 -0500
+Received: from zn.tnic (p200300ec2f12b100a8acd31b3e2f4e6b.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:b100:a8ac:d31b:3e2f:4e6b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 76F1F1EC0380;
+        Fri,  4 Dec 2020 16:05:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607094321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=8vwBFDJPYoB3/M/m0V1lRoy6WWaJ5t8cn3KMXOOqFvI=;
+        b=rJvQvvvPF68xiUsi3O+q8ks5y7OQFPhlPIYGperspDWn19yt8r8pzzKjDcMPb6FseERN1n
+        bo3HItdEhgffVRjFmfbCSP/fm8X+s7uH/tqljLxfaLagCF5542ga0+Ral6ryczM6KmyItj
+        NbuS9yWa9PaEk63fJHb8tKeIc3u8Xxk=
+Date:   Fri, 4 Dec 2020 16:05:22 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] x86/uprobes: Fix not using prefixes.nbytes for
+ loop over prefixes.bytes
+Message-ID: <20201204150522.GG31534@zn.tnic>
+References: <160707930875.3296595.12884856538916078988.stgit@devnote2>
+ <160707931985.3296595.4852247459424743502.stgit@devnote2>
 MIME-Version: 1.0
-In-Reply-To: <20201119140850.12268-1-grzegorz.jaszczyk@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <160707931985.3296595.4852247459424743502.stgit@devnote2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Fri, Dec 04, 2020 at 07:55:20PM +0900, Masami Hiramatsu wrote:
+> +/**
+> + * for_each_insn_prefix() -- Iterate prefixes in the instruction
+> + * @insn: Pointer to struct insn.
+> + * @idx:  Index storage.
+> + * @prefix: Prefix byte.
+> + *
+> + * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
+> + * and the index is stored in @idx (note that this @idx is just for a cursor,
+> + * do not change it.)
+> + * Since prefixes.nbytes can be bigger than NUM_INSN_FIELD_BYTES when some
+> + * prefixes are repeated, it can not be used for looping over the prefixes.
+> + */
+> +#define for_each_insn_prefix(insn, idx, prefix)				\
+> +	for (idx = 0;							\
+> +	     idx < MAX_LEGACY_PREFIX_GROUPS &&				\
 
-On 11/19/20 8:08 AM, Grzegorz Jaszczyk wrote:
-> Hi All,
-> 
-> The Programmable Real-Time Unit and Industrial Communication Subsystem
-> (PRU-ICSS or simply PRUSS) on various TI SoCs consists of dual 32-bit
-> RISC cores (Programmable Real-Time Units, or PRUs) for program execution.
-> 
-> The K3 AM65x amd J721E SoCs have the next generation of the PRU-ICSS IP,
-> commonly called ICSSG. The ICSSG IP on AM65x SoCs has two PRU cores,
-> two auxiliary custom PRU cores called Real Time Units (RTUs). The K3
-> AM65x SR2.0 and J721E SoCs have a revised version of the ICSSG IP, and
-> include two additional custom auxiliary PRU cores called Transmit PRUs
-> (Tx_PRUs).
-> 
-> This series contains the PRUSS remoteproc driver together with relevant
-> dt-binding. This is the 3rd foundation component for PRUSS subsystem, the
-> previous two were already merged and can be found under:
-> 1) drivers/soc/ti/pruss.c
->    Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
-> 2) drivers/irqchip/irq-pruss-intc.c
->    Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
-> 
-> The following is a v2 version of the series. Please see the individual patches
-> for exact changes in each patch, following are the main changes from v1:
-> - Patch #1: fix two yamllint warnings.
-> - Patch #2: address Suman comments: minor style improvements and fix for
-> 	    optional resource table handling (moved from patch #3).
-> - Patch #3: address Suman comment: minor style, comments and trace improvements
-> 	    (no functional changes).
-> - Patch #4: No changes.
-> - Patch #5: Update documentation of pru_rproc_memcpy() function and is_k3 flag.
-> - Patch #6: No changes.
-> 
-> Best regards,
-> Grzegorz
-> 
-> Grzegorz Jaszczyk (1):
->   remoteproc/pru: Add support for PRU specific interrupt configuration
-> 
-> Suman Anna (5):
->   dt-bindings: remoteproc: Add binding doc for PRU cores in the PRU-ICSS
->   remoteproc/pru: Add a PRU remoteproc driver
->   remoteproc/pru: Add pru-specific debugfs support
->   remoteproc/pru: Add support for various PRU cores on K3 AM65x SoCs
->   remoteproc/pru: Add support for various PRU cores on K3 J721E SoCs
+The problem I see here is that you check for the index limit to be
+< MAX_LEGACY_PREFIX_GROUPS but the array itself is defined using
+NUM_INSN_FIELD_BYTES, and that is confusing.
 
-One minor change for v3 when you repost to address Mathieu's comments, can you
-please adjust the patch titles to use
-"remoteproc: pru:" instead following the latest convention.
+I guess this should be:
 
-Thanks,
-Suman
+#define MAX_LEGACY_PREFIX_GROUPS	4
+#define NUM_INSN_FIELD_BYTES		MAX_LEGACY_PREFIX_GROUPS
 
-> 
->  .../bindings/remoteproc/ti,pru-rproc.yaml     | 214 +++++
->  drivers/remoteproc/Kconfig                    |  12 +
->  drivers/remoteproc/Makefile                   |   1 +
->  drivers/remoteproc/pru_rproc.c                | 877 ++++++++++++++++++
->  drivers/remoteproc/pru_rproc.h                |  46 +
->  5 files changed, 1150 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
->  create mode 100644 drivers/remoteproc/pru_rproc.c
->  create mode 100644 drivers/remoteproc/pru_rproc.h
-> 
+and later, iff the legacy prefixes array size needs separating from the
+insn field array size, then the defines would need to change too.
 
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
