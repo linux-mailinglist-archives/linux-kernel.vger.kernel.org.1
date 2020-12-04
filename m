@@ -2,61 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F072CE514
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AFC2CE518
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389594AbgLDBYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:24:38 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8637 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389549AbgLDBYf (ORCPT
+        id S1732004AbgLDBYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:24:45 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:60928 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389551AbgLDBYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:24:35 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnFLq519Xz15XBG;
-        Fri,  4 Dec 2020 09:22:43 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 4 Dec 2020 09:23:06 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/vc4: Deleted the drm_device declaration
-Date:   Fri, 4 Dec 2020 09:23:15 +0800
-Message-ID: <1607044999-47666-10-git-send-email-tiantao6@hisilicon.com>
+        Thu, 3 Dec 2020 20:24:30 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607045050; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=FjSnLKdvb6abuHYAurOezxszLcK8yYfLKY8ArV3r4oY=; b=c2YHWf2j7zhYlOy8QP38mJPs9iLI2yF6qrAEn3pDZih4Kw8gkbrTgsuitN9H+ZIC/VN5L/Y6
+ pzj1OOkE+no7zeGzDxOFXxI8gQHumtYBPD/hvWMgSAFBgV/kuEk2Hj+E5XQIAKbZMTfA0kKV
+ abB3BZAW5/YujjNHa83viBtvink=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5fc98f92dc0fd8a31774d69e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Dec 2020 01:23:30
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 98A71C43463; Fri,  4 Dec 2020 01:23:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C21BCC433C6;
+        Fri,  4 Dec 2020 01:23:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C21BCC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, loic.poulain@linaro.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v4 7/8] bus: mhi: core: Remove __ prefix for MHI channel unprepare function
+Date:   Thu,  3 Dec 2020 17:23:16 -0800
+Message-Id: <1607044997-19577-8-git-send-email-bbhatt@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607044999-47666-1-git-send-email-tiantao6@hisilicon.com>
-References: <1607044999-47666-1-git-send-email-tiantao6@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <1607044997-19577-1-git-send-email-bbhatt@codeaurora.org>
+References: <1607044997-19577-1-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drm_modeset_lock.h already declares struct drm_device, so there's no
-need to declare it in vc4_drv.h
+The __mhi_unprepare_channel() API does not require the __ prefix.
+Get rid of it and make the internal function consistent with the
+other function names.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 ---
- drivers/gpu/drm/vc4/vc4_drv.h | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/bus/mhi/core/main.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
-index 8c8d96b..8717a1c 100644
---- a/drivers/gpu/drm/vc4/vc4_drv.h
-+++ b/drivers/gpu/drm/vc4/vc4_drv.h
-@@ -19,7 +19,6 @@
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index f4026af..7d48dfd 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -1311,8 +1311,8 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+ 	return -EINVAL;
+ }
  
- #include "uapi/drm/vc4_drm.h"
+-static void __mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
+-				    struct mhi_chan *mhi_chan)
++static void mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
++				  struct mhi_chan *mhi_chan)
+ {
+ 	int ret;
+ 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+@@ -1425,7 +1425,7 @@ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
  
--struct drm_device;
- struct drm_gem_object;
+ error_pre_alloc:
+ 	mutex_unlock(&mhi_chan->mutex);
+-	__mhi_unprepare_channel(mhi_cntrl, mhi_chan);
++	mhi_unprepare_channel(mhi_cntrl, mhi_chan);
  
- /* Don't forget to update vc4_bo.c: bo_type_names[] when adding to
+ 	return ret;
+ }
+@@ -1542,7 +1542,7 @@ int mhi_prepare_for_transfer(struct mhi_device *mhi_dev)
+ 		if (!mhi_chan)
+ 			continue;
+ 
+-		__mhi_unprepare_channel(mhi_cntrl, mhi_chan);
++		mhi_unprepare_channel(mhi_cntrl, mhi_chan);
+ 	}
+ 
+ 	return ret;
+@@ -1560,7 +1560,7 @@ void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev)
+ 		if (!mhi_chan)
+ 			continue;
+ 
+-		__mhi_unprepare_channel(mhi_cntrl, mhi_chan);
++		mhi_unprepare_channel(mhi_cntrl, mhi_chan);
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
 -- 
-2.7.4
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
