@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DC42CEC93
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3782CEC99
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387922AbgLDK42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 05:56:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387832AbgLDK42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 05:56:28 -0500
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] x86/sev-es: Fix not using prefixes.nbytes for loop over prefixes.bytes
-Date:   Fri,  4 Dec 2020 19:55:41 +0900
-Message-Id: <160707934115.3296595.3872305876615112518.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <160707930875.3296595.12884856538916078988.stgit@devnote2>
-References: <160707930875.3296595.12884856538916078988.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S2387953AbgLDK5e convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Dec 2020 05:57:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726735AbgLDK5d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 05:57:33 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D55C061A53
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 02:56:53 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kl8lS-0004Tj-Og; Fri, 04 Dec 2020 11:56:38 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kl8lM-0006gu-8p; Fri, 04 Dec 2020 11:56:32 +0100
+Message-ID: <2c36ef4c2d022f6f83ec5c78a951d5e76f95378e.camel@pengutronix.de>
+Subject: Re: [PATCH 1/5] media: dt-bindings: add the required property
+ 'additionalProperties'
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-mediatek <linux-mediatek@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 04 Dec 2020 11:56:32 +0100
+In-Reply-To: <20201204093813.1275-2-thunder.leizhen@huawei.com>
+References: <20201204093813.1275-1-thunder.leizhen@huawei.com>
+         <20201204093813.1275-2-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the insn.prefixes.nbytes can be bigger than the size of
-insn.prefixes.bytes[] when a same prefix is repeated, we have to
-check whether the i < 4 and insn.prefixes.bytes[i] != 0 instead
-of insn.prefixes.nbytes.
+On Fri, 2020-12-04 at 17:38 +0800, Zhen Lei wrote:
+> When I do dt_binding_check for any YAML file, below wanring is always
+> reported:
+> 
+> xxx/media/coda.yaml: 'additionalProperties' is a required property
+> xxx/media/coda.yaml: ignoring, error in schema:
+> warning: no schema found in file: xxx/media/coda.yaml
+> 
+> There are three properties defined in allOf, they should be explicitly
+> declared. Otherwise, "additionalProperties: false" will prohibit them.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-Fixes: 25189d08e516 ("x86/sev-es: Add support for handling IOIO exceptions")
-Reported-by: syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com
-Debugged-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- arch/x86/boot/compressed/sev-es.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Thank you, there already is a patch to fix this:
 
-diff --git a/arch/x86/boot/compressed/sev-es.c b/arch/x86/boot/compressed/sev-es.c
-index 954cb2702e23..27826c265aab 100644
---- a/arch/x86/boot/compressed/sev-es.c
-+++ b/arch/x86/boot/compressed/sev-es.c
-@@ -32,13 +32,12 @@ struct ghcb *boot_ghcb;
-  */
- static bool insn_has_rep_prefix(struct insn *insn)
- {
-+	insn_byte_t p;
- 	int i;
- 
- 	insn_get_prefixes(insn);
- 
--	for (i = 0; i < insn->prefixes.nbytes; i++) {
--		insn_byte_t p = insn->prefixes.bytes[i];
--
-+	for_each_insn_prefix(insn, i, p) {
- 		if (p == 0xf2 || p == 0xf3)
- 			return true;
- 	}
+https://lore.kernel.org/linux-media/20201117200752.4004368-1-robh@kernel.org/
 
+regards
+Philipp
