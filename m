@@ -2,99 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B1E2CF35F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F582CF362
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728210AbgLDRwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:52:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40672 "EHLO
+        id S2387728AbgLDRwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:52:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgLDRwN (ORCPT
+        with ESMTP id S2387580AbgLDRwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:52:13 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E8E7C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 09:51:33 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id a16so9925594ejj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 09:51:33 -0800 (PST)
+        Fri, 4 Dec 2020 12:52:47 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235C4C061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 09:52:01 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id i18so6638503ioa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 09:52:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=31hFFArVFLayAbe984Eq857Ijkymag2EX547dIYCVVI=;
-        b=BrJgrP7Vo3LsmjP4/uK2WLmNtvnlKQyJEgcHA5V4T3luCMqNP3fshfXe3HuzodHt6N
-         JSLH3JnZlJTHfVDwCtHwD2/CTz2RYeTVdOrgd2tziEliPzMWNRwdbC+1cYlekpPqoDCP
-         Im+3pT9EMLVmgyto13Vn0baiJoH2KNA9WJHLqX+0JKEkZNiVhHVuyFjkhVCyeio42C6V
-         1mIpkLUflzsJLCB/dzLd1YjC9x4tYWkJejs/98rtk762W2VNuIvdWnwZh2qZbNGF6khU
-         ASF4BNQnqx/5CYt4fw5dzqAKRDmqMpkNDMBFs9ZvXvqHELGFEyjqBJxY2cp4a6VIhqGj
-         g7WA==
+        bh=7UAVaDXI+I5u9V+JJpY6eb9l7dnPddi/+P+0R/fGgMY=;
+        b=AjlKtvRF/fi9F8lPROkXKg51IjrxmrrtIDYi5sz1HKdVda2FMTzJCtoidPFpsLedvF
+         togG9/KWphvdHTDOGeIlz1Mx/vJGAxIMxBYRbs+xMZUl0vNscohNS6Smpy6YBV2JJmW6
+         eS1H66CEcz07rLjMmevcT0oN+JVCmOdsgyWeSKXJaQwy/rcTKn+ELv8LmofPqSbt7wdu
+         2sJ1zpBA6MsuOEKBZDoU+YFUos6p4Et0XrSg9r/GqGE4JKei4NtQP0CiJ3DvUdjdMsDK
+         0u8Hwkho8bFJVZHqeqghFZv6x60COdfFVYG7TIlNFO5+fQr4if81wHxlKP7655rP3CGO
+         K60g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=31hFFArVFLayAbe984Eq857Ijkymag2EX547dIYCVVI=;
-        b=XemS3x9UUz9idsNbUGnd45UwnBQLnZ8p+68UowW9NTPXHxOCoR1okQANWfHNtw5U/S
-         eLZFZMQKHO60hnDn7HKsba9HZA1IoNdNhEsW2MK0dn+QMwjXo4eamK+Zz7VgiZNmNbtl
-         fUMYZ/5TsH3TjXYbgo2Mrv9k9Ikt45gl7h2eiwmVa6Lh51UJYQMHXiDwo2tt6Xl6JoXB
-         WZrjLmfDFH+XaxIv25GL2bzVYPPqfREa0ZWVOTxZoUVA0gMys/cqFWeS9HUFnTb5kNz1
-         R6HUVKlf4RfOCIA4Ofunm3mVzIHL6Y/hNM6ZJXx3ZpyzqjdC68Qitqi+1rY81282BHNj
-         SJnQ==
-X-Gm-Message-State: AOAM533gPK9BJrSVA9psAY+tESpty/CQjvgL5TBcNdc+tU02UsLBbaKJ
-        l70OC4HKnRxMhFCiCoyozcEGA/hDwlcRlQHOepCOzg==
-X-Google-Smtp-Source: ABdhPJzQ5DmWTJPAXFIAqFmYUlq/WxtfwZmY+wOrx2ijrmExTi6caux3QODt6HEXqCy/qW7swrllDjZ5kKs2VzYYJBM=
-X-Received: by 2002:a17:906:fb9b:: with SMTP id lr27mr8443175ejb.175.1607104291943;
- Fri, 04 Dec 2020 09:51:31 -0800 (PST)
+        bh=7UAVaDXI+I5u9V+JJpY6eb9l7dnPddi/+P+0R/fGgMY=;
+        b=SBSxednIyiZJn3zJa0i1OZaIrgtW4u+RVN9tfihaQZdyQMy6efaVOKdin1KwKtOLk1
+         CZlg65BETI0m8zmqVrsTYfTBLjlTnL8fenDJeGL9MHRpmFSw2dcD3fNbAKZuYPIvu+vB
+         AWnZieFDBJvI0jdi7rFkVNo/IR1Ge7mrhNW01hABaZ8YoJhtUwYTrduksd8l4gBSiXpi
+         YEDUIGPPQjQPzHmGvnSExsOcvtnRXxCDi1ZgZvZ0PPnxnfW/kkEI+LfbvKfQPSv1ydHG
+         zjIkMuKdc9tCokL4efSRybVvE4EIftHA9PrL6zYxDFyUt5loC7VB29qOlkjpCWBFTy5B
+         WomQ==
+X-Gm-Message-State: AOAM5321P06e8izALxKz5yob3Roq1OLPZpBC2X3NQefchpMKSX5hnwDZ
+        oL7tuV3pQjnIzenZfG0OEGn2Ksr/+tc9a/ysRNk33A==
+X-Google-Smtp-Source: ABdhPJyI3pTXHexcHgBPq8OSBX6ioRMzSNf+GCrlVplPEh/3zrvNYahNpsh1ZldQNo3MU+KoMgSUBVxGggJrmOmyB1s=
+X-Received: by 2002:a5e:db4b:: with SMTP id r11mr7636498iop.148.1607104320277;
+ Fri, 04 Dec 2020 09:52:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201204035953.GA17056@js1304-desktop> <CA+CK2bCD7XYyJB9TNZZeUMAuntotZopVYNjDXnyVZyzKe2_A1Q@mail.gmail.com>
- <20201204161005.GD5487@ziepe.ca>
-In-Reply-To: <20201204161005.GD5487@ziepe.ca>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Fri, 4 Dec 2020 12:50:56 -0500
-Message-ID: <CA+CK2bCGGoBXg7FbhGMDdWRnePKFgvtsM_PJmA2qtMNsvPMZbg@mail.gmail.com>
-Subject: Re: [PATCH 0/6] prohibit pinning pages in ZONE_MOVABLE
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Joonsoo Kim <js1304@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        mike.kravetz@oracle.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>
+References: <20201120214245.172963-1-mathieu.poirier@linaro.org>
+ <20201123160610.GA19108@ubuntu> <20201202110555.GA65230@ubuntu>
+ <20201202203954.GC1282360@xps15> <20201203204218.GA13001@ubuntu>
+In-Reply-To: <20201203204218.GA13001@ubuntu>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Fri, 4 Dec 2020 10:51:49 -0700
+Message-ID: <CANLsYkzDiWtyNvYm8a_MBgz=cryb2mNNUwVA9=K2yrO3XTa-xA@mail.gmail.com>
+Subject: Re: [PATCH v7 0/8] rpmsg: Make RPMSG name service modular
+To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        virtualization@lists.linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Yes, this indeed could be a problem for some configurations. I will
-> > add your comment to the commit log of one of the patches.
->
-> It sounds like there is some inherent tension here, breaking THP's
-> when doing pin_user_pages() is a really nasty thing to do. DMA
-> benefits greatly from THP.
->
-> I know nothing about ZONE_MOVABLE, is this auto-setup or an admin
-> option? If the result of this patch is standard systems can no longer
-> pin > 80% of their memory I have some regression concerns..
+I am adding Vincent Whitchurch and the virtualization mailing list...
 
-ZONE_MOVABLE can be configured via kernel parameter, or when memory
-nodes are onlined after hot-add; so this is something that admins
-configure. ZONE_MOVABLE is designed to gurantee memory hot-plug
-functionality, and not availability of THP, however, I did not know
-about the use case where some admins might configure ZONE_MOVABLE to
-increase availability of THP because pages are always migratable in
-them. The thing is, if we fragment ZONE_MOVABLE by pinning pages in
-it, the availability of THP also suffers.  We can migrate pages in
-ZONE_NORMAL, just not guaranteed, so we can create THP in ZONE_NORMAL
-as well, which is the usual case.
+On Thu, 3 Dec 2020 at 13:42, Guennadi Liakhovetski
+<guennadi.liakhovetski@linux.intel.com> wrote:
+>
+> (adding vhost maintainers and the author of [1])
+>
+> Hi,
+>
+> I'm working on an Audio DSP virtualisation solution [2] and the next
+> step in its upstreaming should be an RPMsg vhost implementation, based
+> on [3], which contains a simple addition to the current library-style
+> vhost API. Later in [1] a different approach has been presented,
+> converting the vhost framework to a proper bus-type and device driver.
+> Therefore my questions:
+>
+> 1. if the latter approach is prefered, should we expect follow up
+> versions of [1] and their upstreaming?
+> 2. judging by the size and complexity of [1] would it maybe be
+> preferable to first extract a minimum patch set just to add vhost
+> rpmsg? Looking at the patch set it should be doable and not too
+> difficult? Kishon, would it be something you could submit?
+
+To me that is the best approach.  It might be best for you to do the
+work and credit Kishon where needed.
+
+> 3. or would it be preferable to keep vhost in its present form, use
+> [3] for rpmsg support and re-implement [1] based on a different
+> vhost / vringh approach?
+>
+> Thanks
+> Guennadi
+>
+> [1] https://www.spinics.net/lists/kvm/msg219632.html
+> [2] https://mailman.alsa-project.org/pipermail/sound-open-firmware/2020-April/003766.html
+> [3] https://www.spinics.net/lists/linux-virtualization/msg43359.html
+>
+> On Wed, Dec 02, 2020 at 01:39:54PM -0700, Mathieu Poirier wrote:
+> > Good day,
+> >
+> > On Wed, Dec 02, 2020 at 12:05:55PM +0100, Guennadi Liakhovetski wrote:
+> > > Hi Mathieu,
+> > >
+> > > I'd like to resume reviewing and begin upstreaming of the next steps of
+> > > my Audio DSP Virtualisation work, based on this your patch set. How
+> >
+> > I'm all for it too.
+> >
+> > > confident are we that it's going to be upstreamed in its present form?
+> > > What's the plan to push it to "next?"
+> > >
+> >
+> > I thought we were pretty unanimous that something like what Kishon did was the
+> > way to go.
+> >
+> > > Thanks
+> > > Guennadi
+> > >
+> > > On Mon, Nov 23, 2020 at 05:06:10PM +0100, Guennadi Liakhovetski wrote:
+> > > > Hi Mathieu,
+> > > >
+> > > > Thanks for bringing all the stuff together and for polishing it!
+> > > >
+> > > > For the entire series:
+> > > >
+> > > > Tested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> > > > Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> > > >
+> > > > Thanks
+> > > > Guennadi
+> > > >
+> > > > On Fri, Nov 20, 2020 at 02:42:37PM -0700, Mathieu Poirier wrote:
+> > > > > This revision addresses comments received from the previous revision,
+> > > > > i.e V6.  Please see details below.
+> > > > >
+> > > > > It starts by making the RPMSG protocol transport agnostic by
+> > > > > moving the headers it uses to generic types and using those in the
+> > > > > current implementation.  From there it re-uses the work that Arnaud
+> > > > > published[1] to make the name service modular.
+> > > > >
+> > > > > Tested on stm32mp157 with the RPMSG client sample application.  Applies
+> > > > > cleanly on rpmsg-next.
+> > > > >
+> > > > > Thanks,
+> > > > > Mathieu
+> > > > >
+> > > > > [1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=338335
+> > > > >
+> > > > > -------
+> > > > > New for V7:
+> > > > > - Fixed error path in rpmsg_probe() as reported by Guennadi
+> > > > >
+> > > > > Arnaud Pouliquen (4):
+> > > > >   rpmsg: virtio: Rename rpmsg_create_channel
+> > > > >   rpmsg: core: Add channel creation internal API
+> > > > >   rpmsg: virtio: Add rpmsg channel device ops
+> > > > >   rpmsg: Turn name service into a stand alone driver
+> > > > >
+> > > > > Mathieu Poirier (4):
+> > > > >   rpmsg: Introduce __rpmsg{16|32|64} types
+> > > > >   rpmsg: virtio: Move from virtio to rpmsg byte conversion
+> > > > >   rpmsg: Move structure rpmsg_ns_msg to header file
+> > > > >   rpmsg: Make rpmsg_{register|unregister}_device() public
+> > > > >
+> > > > >  drivers/rpmsg/Kconfig            |   9 ++
+> > > > >  drivers/rpmsg/Makefile           |   1 +
+> > > > >  drivers/rpmsg/rpmsg_core.c       |  44 ++++++++
+> > > > >  drivers/rpmsg/rpmsg_internal.h   |  14 ++-
+> > > > >  drivers/rpmsg/rpmsg_ns.c         | 126 +++++++++++++++++++++
+> > > > >  drivers/rpmsg/virtio_rpmsg_bus.c | 186 +++++++++++--------------------
+> > > > >  include/linux/rpmsg.h            |  63 ++++++++++-
+> > > > >  include/linux/rpmsg/byteorder.h  |  67 +++++++++++
+> > > > >  include/linux/rpmsg/ns.h         |  45 ++++++++
+> > > > >  include/uapi/linux/rpmsg_types.h |  11 ++
+> > > > >  10 files changed, 439 insertions(+), 127 deletions(-)
+> > > > >  create mode 100644 drivers/rpmsg/rpmsg_ns.c
+> > > > >  create mode 100644 include/linux/rpmsg/byteorder.h
+> > > > >  create mode 100644 include/linux/rpmsg/ns.h
+> > > > >  create mode 100644 include/uapi/linux/rpmsg_types.h
+> > > > >
+> > > > > --
+> > > > > 2.25.1
+> > > > >
