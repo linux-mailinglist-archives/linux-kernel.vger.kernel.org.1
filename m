@@ -2,141 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A64D2CF19D
+	by mail.lfdr.de (Postfix) with ESMTP id C78D12CF19E
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730404AbgLDQKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:10:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727096AbgLDQKr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:10:47 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B5BC061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 08:10:07 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id l7so4251013qtp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 08:10:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VgRFU7+U3dcM21Ber7g78naiXHMx8/x0mx6S23m379c=;
-        b=TxQQ3A4gPUb/c6DaNSH8sSZrpSZ6sh+4Kao8BUigB8ZB0+dG67Z7ykp2uwIWWShMWk
-         UKN+qrOzqwIa1PPeKfy+NpjPfj04Ckq6aAHGudbjMJHEotnoqGM+emLLcQh1+ECQ7lbg
-         1I4RWNBxawpsn4sERFYuKUnYJmx+QJnUXAQgtXZ+GYcfI7xeMKvpo1tnhquqzHMp6G95
-         TpTsY3FOT91lCb0ofY3U/iMb+WVfV2Av8BcKN05VanSsIInlyn/ntD7UlBwoA4RzoeGX
-         +zRTNsADj7a0zPLZ5xa+CWuiPQlu28cMhvJb9o1ykX60oLPDmsHXlwEXGAVBEqqILXEn
-         +bqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VgRFU7+U3dcM21Ber7g78naiXHMx8/x0mx6S23m379c=;
-        b=ZXG0Kosm9JF63wlAImNeIhiQCQUgfj6+fyskWU94yPjqBVMDbU6DXmTSH4P21s9pXq
-         vWQRb5pSN3y9CS13IvVNhyAkAlxos9DkjXvMjl+OlAAEMY2Lt7dcbDU2HAVgJHmSu4aZ
-         EBwS/eCAqbKF9YdewGXns2wELfClCaKbgblza1XPxCdUkAFj8NntwbIxjFcKL8gbSbww
-         Wk0qvPrzvBHLxjsrzH4ErzFfm7rCjHL+1eNSSMGRylre2DGEWYJf+GxpFB1WJbESxQb9
-         trdwy4bN9Se1lrE+sqmbOezHyXfMlcrwCB+cU8uHlTMIR7wuEeqU0bioeMqsUyIEvCYe
-         Np1g==
-X-Gm-Message-State: AOAM531Zh89afxCmy88KBzotqX6k/N1MiJYqpqakS1B6whC+kpi11HW4
-        I6/Up0aXQAV/b5ktR5kqT9Q7AQ==
-X-Google-Smtp-Source: ABdhPJyJBAEvJJb4cjudhvvR8M4t3aSdim44E4b1pefhuATcOoSqitkM9LGsEmvZ/5HNVRh6F6PjXA==
-X-Received: by 2002:ac8:4f11:: with SMTP id b17mr10092063qte.338.1607098206515;
-        Fri, 04 Dec 2020 08:10:06 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id z20sm5167491qto.40.2020.12.04.08.10.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 08:10:05 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1klDen-005vbe-3D; Fri, 04 Dec 2020 12:10:05 -0400
-Date:   Fri, 4 Dec 2020 12:10:05 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     Joonsoo Kim <js1304@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        mike.kravetz@oracle.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH 0/6] prohibit pinning pages in ZONE_MOVABLE
-Message-ID: <20201204161005.GD5487@ziepe.ca>
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201204035953.GA17056@js1304-desktop>
- <CA+CK2bCD7XYyJB9TNZZeUMAuntotZopVYNjDXnyVZyzKe2_A1Q@mail.gmail.com>
+        id S1730731AbgLDQKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:10:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35462 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727096AbgLDQKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 11:10:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607098207; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D33SdhwZNJi2uBaYJpFAFfeHS3fk9aEn8alrEz4biwo=;
+        b=R4nG2RhjBXbm0SfRECtr8SQfRq+9lcVM56MVjR5KL1t3L6IlXzTgIxsu3BwXuEFoZC4bvm
+        edF09KND73+4y/drqmjOe6NkMKrRUVAhHPDTlfEVK7JJ8tXebIAjiKrUDGqxMJKL+NFT8p
+        ZDHlLQfGNfa9u1rsEknSMnZGXFfQRiQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 81BDCAC9A;
+        Fri,  4 Dec 2020 16:10:07 +0000 (UTC)
+Date:   Fri, 4 Dec 2020 17:10:07 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: recursion handling: Re: [PATCH next v2 3/3] printk: remove
+ logbuf_lock, add syslog_lock
+Message-ID: <X8pfX/qPBuY360k/@alley>
+References: <20201201205341.3871-1-john.ogness@linutronix.de>
+ <20201201205341.3871-4-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+CK2bCD7XYyJB9TNZZeUMAuntotZopVYNjDXnyVZyzKe2_A1Q@mail.gmail.com>
+In-Reply-To: <20201201205341.3871-4-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 10:55:30AM -0500, Pavel Tatashin wrote:
-> On Thu, Dec 3, 2020 at 11:03 PM Joonsoo Kim <js1304@gmail.com> wrote:
-> >
-> > Hello,
-> >
-> > On Wed, Dec 02, 2020 at 12:23:24AM -0500, Pavel Tatashin wrote:
-> > > When page is pinned it cannot be moved and its physical address stays
-> > > the same until pages is unpinned.
-> > >
-> > > This is useful functionality to allows userland to implementation DMA
-> > > access. For example, it is used by vfio in vfio_pin_pages().
-> > >
-> > > However, this functionality breaks memory hotplug/hotremove assumptions
-> > > that pages in ZONE_MOVABLE can always be migrated.
-> > >
-> > > This patch series fixes this issue by forcing new allocations during
-> > > page pinning to omit ZONE_MOVABLE, and also to migrate any existing
-> > > pages from ZONE_MOVABLE during pinning.
-> >
-> > I love what this patchset does, but, at least, it's better to consider
-> > the side-effect of this patchset and inform it in somewhere. IIUC,
-> > ZONE_MOVABLE exists for two purposes.
-> >
-> > 1) increasing availability of THP
-> > 2) memory hot-unplug
-> >
-> > Potential issue would come from the case 1). They uses ZONE_MOVABLE
-> > for THP availability and hard guarantee for migration isn't required
-> > until now. So, there would be a system with following congifuration.
-> >
-> > - memory layout: ZONE_NORMAL-512MB, ZONE_MOVABLE-512MB
-> > - memory usage: unmovable-256MB, movable pinned-256MB, movable
-> >   unpinned-512MB
-> >
-> > With this patchset, movable pinned should be placed in ZONE_NORMAL so
-> > 512MB is required for ZONE_NORMAL. ZONE_NORMAL would be exhausted and
-> > system performance would be highly afftect according to memory usage
-> > pattern.
-> >
-> > I'm not sure whether such configuration exists or not, but, at least,
-> > it's better to write down this risk on commit message or something
-> > else.
+On Tue 2020-12-01 21:59:41, John Ogness wrote:
+> Since the ringbuffer is lockless, there is no need for it to be
+> protected by @logbuf_lock. Remove @logbuf_lock.
 > 
-> Yes, this indeed could be a problem for some configurations. I will
-> add your comment to the commit log of one of the patches.
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -1847,6 +1811,65 @@ static void call_console_drivers(const char *ext_text, size_t ext_len,
+>  	}
+>  }
 
-It sounds like there is some inherent tension here, breaking THP's
-when doing pin_user_pages() is a really nasty thing to do. DMA
-benefits greatly from THP.
+The recursion-related code needs some explanation or we should do it
+another way. I spent quite some time on it and I am still not sure
+that I understand it. Let me describe how I understand it.
 
-I know nothing about ZONE_MOVABLE, is this auto-setup or an admin
-option? If the result of this patch is standard systems can no longer
-pin > 80% of their memory I have some regression concerns..
 
-Jason
+> +#ifdef CONFIG_PRINTK_NMI
+> +#define NUM_RECURSION_CTX 2
+> +#else
+> +#define NUM_RECURSION_CTX 1
+> +#endif
+
+OK, the number of context is limited because interrupts are disabled inside
+print_enter()/printk_exit(). It is basically the same reason why
+we have only two printk_safe buffers (NNI + other contexts).
+
+What is the exact reason to disable interrupts around the entire
+vprintk_store(), please? It should get documented.
+
+One reason is the use of per-cpu variables. Alternative solution would
+be to store printk_context into task_struct. Well, I am not sure if
+"current" task is available during early boot. But it might solve
+problems with per-cpu variables that are not working during early boot.
+
+That said, I am not sure if it is worth it.
+
+
+> +
+> +struct printk_recursion {
+> +	char	count[NUM_RECURSION_CTX];
+> +};
+>
+> +static DEFINE_PER_CPU(struct printk_recursion, percpu_printk_recursion);
+> +static char printk_recursion_count[NUM_RECURSION_CTX];
+
+This is pretty confusing. The array is hidden in a struct when per-cpu
+variables are used. And a naked array is used for early boot.
+
+Is the structure really needed? What about?
+
+static DEFINE_PER_CPU(char [PRINTK_CTX_NUM], printk_count);
+static char printk_count_early[NUM_RECURSION_CTX];
+
+> +
+> +static char *get_printk_count(void)
+> +{
+> +	struct printk_recursion *rec;
+> +	char *count;
+> +
+> +	if (!printk_percpu_data_ready()) {
+> +		count = &printk_recursion_count[0];
+
+I see why you avoided per-cpu variables for early boot. I am just
+curious how printk_context variable works these days. It is used by
+any printk(), including early code, see vprintk_func().
+
+
+> +	} else {
+> +		rec = this_cpu_ptr(&percpu_printk_recursion);
+> +
+> +		count = &rec->count[0];
+> +	}
+> +
+> +#ifdef CONFIG_PRINTK_NMI
+> +	if (in_nmi())
+> +		count++;
+> +#endif
+
+This is extremely confusing. It is far from obvious that
+the pointer and not the value is incremented.
+
+If we really need this to avoid per-cpu variables during early boot
+then a more clear implementation would be:
+
+char *get_printk_counter_by_ctx()
+{
+	int ctx = 0;
+
+	if (in_nmi)
+		ctx = 1;
+
+	if (!printk_percpu_data_ready())
+		return &printk_count_early[ctx];
+
+	return this_cpu_ptr(printk_count[ctx]);
+}
+
+> +
+> +	return count;
+> +}
+> +
+> +static bool printk_enter(unsigned long *flags)
+> +{
+> +	char *count;
+> +
+> +	local_irq_save(*flags);
+> +	count = get_printk_count();
+> +	/* Only 1 level of recursion allowed. */
+
+We should allow at least some level of recursion. Otherwise, we would
+not see warnings printed from vsprintf code.
+
+> +	if (*count > 1) {
+> +		local_irq_restore(*flags);
+> +		return false;
+> +	}
+> +	(*count)++;
+> +
+> +	return true;
+> +}
+
+This should be unified with printk_context, printk_nmi_enter(),
+printk_nmi_exit(). It does not make sense to have two separate
+printk context counters.
+
+Or is there any plan to remove printk_safe and printk_context?
+
+BTW: I prefer to use the bitmask approach. It allows to check
+the normal context by a single operation (no bit is set).
+There is no need to go through all counters.
+
+Note that we need at least one more context for gdb.
+
+Best Regards,
+Petr
