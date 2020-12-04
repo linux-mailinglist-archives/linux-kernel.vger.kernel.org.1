@@ -2,131 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DCF2CE5C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:41:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CA32CE5CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbgLDCk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 21:40:58 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:33046 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725986AbgLDCk5 (ORCPT
+        id S1726488AbgLDCmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 21:42:47 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:64374 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725960AbgLDCmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 21:40:57 -0500
-Received: by mail-lj1-f193.google.com with SMTP id t22so4929499ljk.0;
-        Thu, 03 Dec 2020 18:40:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NUIaE3HrpMZoU5b6Uamr3FqDYfPfXMVixD+//IxLNmo=;
-        b=gu9+9N6pDWCQZy1hE3kjqa7G6VIHlvnmyOxO/RkHxbcVEVMbwN0ns0sJRD8SA3v7D1
-         9F97ycxDuVFz7wx+59H3DJSqf7VtGlN3TXAlz4xYBPlXWhbnYPGfcwj/tYfhOqgaKiSM
-         o1kdh7RbOlqTIATEBqhl4jVuoavPrtuBooRg3Gl6X2XRdYR6bg7Y1So59nxEFurS0oSA
-         G9Js5ga2st25357ohJjm1oFNTEwZMWYeakSlf2o9+t/93wztRkbIU3as/tI79YvEUj1D
-         1GsuEEaV4Jqe17ZPbOPV7h1olNIt7KJULhE+CixVNPseJ6a0EIIw5A5vSjsYTqray+3I
-         0FuA==
-X-Gm-Message-State: AOAM530tDyyeRBdAtZA9V43+YK3mW2Dq4WW6Pjg4MU3QcC0XCAVC4iG5
-        mDIWHYyuwwGYSyyHleIPAz/IBtzZucib4A==
-X-Google-Smtp-Source: ABdhPJxTZzbWk4rei5jpb/+fB2l2tUwUuI97GjTm0F8/LsDu6Sp1BnqMZeayNLb1F47avQo/QIl7wA==
-X-Received: by 2002:a2e:8909:: with SMTP id d9mr2544291lji.399.1607049609717;
-        Thu, 03 Dec 2020 18:40:09 -0800 (PST)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id a30sm1089048ljd.91.2020.12.03.18.40.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 18:40:09 -0800 (PST)
-Received: by mail-lf1-f43.google.com with SMTP id r24so5667692lfm.8;
-        Thu, 03 Dec 2020 18:40:09 -0800 (PST)
-X-Received: by 2002:ac2:483b:: with SMTP id 27mr2659205lft.551.1607049609342;
- Thu, 03 Dec 2020 18:40:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20201203181454.13389-1-m.cerveny@computer.org>
-In-Reply-To: <20201203181454.13389-1-m.cerveny@computer.org>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Fri, 4 Dec 2020 10:39:58 +0800
-X-Gmail-Original-Message-ID: <CAGb2v67-QwUpy5ca6CPBgzAYcEVRPT6O1f6+XrgOQyEeF+B1aQ@mail.gmail.com>
-Message-ID: <CAGb2v67-QwUpy5ca6CPBgzAYcEVRPT6O1f6+XrgOQyEeF+B1aQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: dts: sun8i: v3s: SRAM_C real mapping
-To:     Martin Cerveny <m.cerveny@computer.org>
-Cc:     devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 3 Dec 2020 21:42:46 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607049746; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=UlnuFDZEr4coK9LP683YsaRoIhNC5rjOBPyID5rEGHQ=; b=W2I8SSFCs9EElWY/kdgnOrj4L67XOyQrVCA72ZprSYrnarC5KmcDcBFmddP8h+WE0vHPSKAt
+ 8oTnAwKICQV8OwEYba4oFC84mZ6xA5dSnWrUDUj6uxQveV9919PWAaTivBuFnvbkNcSlF70r
+ 2XxbWx4QYEqqXasmCwCFSE4J7QI=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fc9a1f7b50fb3818af4d883 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Dec 2020 02:41:59
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BB0B6C43466; Fri,  4 Dec 2020 02:41:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 58EDEC433C6;
+        Fri,  4 Dec 2020 02:41:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 58EDEC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+From:   Hemant Kumar <hemantk@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org,
+        Hemant Kumar <hemantk@codeaurora.org>
+Subject: [RESEND v15 0/4] userspace MHI client interface driver
+Date:   Thu,  3 Dec 2020 18:41:47 -0800
+Message-Id: <1607049711-31776-1-git-send-email-hemantk@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 2:15 AM Martin Cerveny <m.cerveny@computer.org> wrote:
->
-> VideoEngine (cedrus) needs assign dedicated SRAM for decoding.
-> SRAM_C1 is usually used for Allwinner platforms.
-> Allwinner V3s scale down chip has not SRAM_C1 but only small SRAM_C (44kB).
->
-> Result of additional testing:
->
-> SRAM_C is mapped in two regions 0x0000_4000 (primary location,
-> by Datasheet) (size is 0xb000, probably exact size is 0xb0c0
-> and it is mapped to 4k boundary (to 0x0000_ffff))
-> and to 0x01d0_4000 (traditional SRAM_C1 region from 0x01d0_0000).
->
-> Rest of 0x01d0_0000 are discontinuously filled with R/W register sets
-> (probably some internals registers from VE) that I thought to be SRAM too.
->
-> Programming register SRAM_CTRL_REG0 (0x01c00_0000) with value 0x7fff_ffff
-> switch out whole region 0x01d0_0000-0x01df_ffff and 0x0000_4000-0x0000_ffff
-> (dedicate access to VE).
->
-> VE/cedrus code use this SRAM region indirectly
-> (VE_AVC_SRAM_PORT_OFFSET/VE_AVC_SRAM_PORT_DATA...)
-> and it is not influenced by "real" SRAM mapping or size
-> so it is working even without this patch.
->
-> Signed-off-by: Martin Cerveny <m.cerveny@computer.org>
-> ---
->  arch/arm/boot/dts/sun8i-v3s.dtsi | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
-> index e8f304125e2d..bc4b4a0200cb 100644
-> --- a/arch/arm/boot/dts/sun8i-v3s.dtsi
-> +++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
-> @@ -162,17 +162,17 @@ syscon: system-control@1c00000 {
->                         #size-cells = <1>;
->                         ranges;
->
-> -                       sram_c: sram@1d00000 {
-> +                       sram_c: sram@4000 {
->                                 compatible = "mmio-sram";
-> -                               reg = <0x01d00000 0x80000>;
-> +                               reg = <0x4000 0xb000>;
->                                 #address-cells = <1>;
->                                 #size-cells = <1>;
-> -                               ranges = <0 0x01d00000 0x80000>;
-> +                               ranges = <0 0x4000 0xb000>;
->
->                                 ve_sram: sram-section@0 {
->                                         compatible = "allwinner,sun8i-v3s-sram-c1",
+This patch series adds support for UCI driver. UCI driver enables userspace
+clients to communicate to external MHI devices like modem and WLAN. UCI driver
+probe creates standard character device file nodes for userspace clients to
+perform open, read, write, poll and release file operations. These file
+operations call MHI core layer APIs to perform data transfer using MHI bus
+to communicate with MHI device. Patch is tested using arm64 and x86 based
+platform.
 
-Using C1 in the compatible string is confusing at this point, as the
-name is never mentioned in the manual.
+v15:
+- Updated documentation related to poll and release operations.
 
-Please change it to sram-ve instead. Please also update the binding.
+V14:
+- Fixed device file node format to /dev/<mhi_dev_name> instead of
+  /dev/mhi_<mhi_dev_name> because "mhi" is already part of mhi device name.
+  For example old format: /dev/mhi_mhi0_QMI new format: /dev/mhi0_QMI.
+- Updated MHI documentation to reflect index mhi controller name in
+  QMI usage example.
 
-Since the DT patches this depends on haven't been merged yet, please
-just do another version of the remaining patches with the changes
-included.
+V13:
+- Removed LOOPBACK channel from mhi_device_id table from this patch series.
+  Pushing a new patch series to add support for LOOPBACK channel and the user
+  space test application. Also removed the description from kernel documentation.
+- Added QMI channel to mhi_device_id table. QMI channel has existing libqmi
+  support from user space.
+- Updated kernel Documentation for QMI channel and provided external reference
+  for libqmi.
+- Updated device file node name by appending mhi device name only, which already
+  includes mhi controller device name.
 
+V12:
+- Added loopback test driver under selftest/drivers/mhi. Updated kernel
+  documentation for the usage of the loopback test application.
+- Addressed review comments for renaming variable names, updated inline
+  comments and removed two redundant dev_dbg.
 
-ChenYu
+V11:
+- Fixed review comments for UCI documentation by expanding TLAs and rewording
+  some sentences.
 
+V10:
+- Replaced mutex_lock with mutex_lock_interruptible in read() and write() file
+  ops call back.
 
->                                                      "allwinner,sun4i-a10-sram-c1";
-> -                                       reg = <0x000000 0x80000>;
-> +                                       reg = <0x0 0xb000>;
->                                 };
->                         };
->                 };
-> --
-> 2.25.1
->
+V9:
+- Renamed dl_lock to dl_pending _lock and pending list to dl_pending for
+  clarity.
+- Used read lock to protect cur_buf.
+- Change transfer status check logic and only consider 0 and -EOVERFLOW as
+  only success.
+- Added __int to module init function.
+- Print channel name instead of minor number upon successful probe.
+
+V8:
+- Fixed kernel test robot compilation error by changing %lu to %zu for
+  size_t.
+- Replaced uci with UCI in Kconfig, commit text, and comments in driver
+  code.
+- Fixed minor style related comments.
+
+V7:
+- Decoupled uci device and uci channel objects. uci device is
+  associated with device file node. uci channel is associated
+  with MHI channels. uci device refers to uci channel to perform
+  MHI channel operations for device file operations like read()
+  and write(). uci device increments its reference count for
+  every open(). uci device calls mhi_uci_dev_start_chan() to start
+  the MHI channel. uci channel object is tracking number of times
+  MHI channel is referred. This allows to keep the MHI channel in
+  start state until last release() is called. After that uci channel
+  reference count goes to 0 and uci channel clean up is performed
+  which stops the MHI channel. After the last call to release() if
+  driver is removed uci reference count becomes 0 and uci object is
+  cleaned up.
+- Use separate uci channel read and write lock to fine grain locking
+  between reader and writer.
+- Use uci device lock to synchronize open, release and driver remove.
+- Optimize for downlink only or uplink only UCI device.
+
+V6:
+- Moved uci.c to mhi directory.
+- Updated Kconfig to add module information.
+- Updated Makefile to rename uci object file name as mhi_uci
+- Removed kref for open count
+
+V5:
+- Removed mhi_uci_drv structure.
+- Used idr instead of creating global list of uci devices.
+- Used kref instead of local ref counting for uci device and
+  open count.
+- Removed unlikely macro.
+
+V4:
+- Fix locking to protect proper struct members.
+- Updated documentation describing uci client driver use cases.
+- Fixed uci ref counting in mhi_uci_open for error case.
+- Addressed style related review comments.
+
+V3: Added documentation for MHI UCI driver.
+
+V2:
+- Added mutex lock to prevent multiple readers to access same
+- mhi buffer which can result into use after free.
+Hemant Kumar (4):
+  bus: mhi: core: Add helper API to return number of free TREs
+  bus: mhi: core: Move MHI_MAX_MTU to external header file
+  docs: Add documentation for userspace client interface
+  bus: mhi: Add userspace client interface driver
+
+ Documentation/mhi/index.rst     |   1 +
+ Documentation/mhi/uci.rst       |  95 ++++++
+ drivers/bus/mhi/Kconfig         |  13 +
+ drivers/bus/mhi/Makefile        |   3 +
+ drivers/bus/mhi/core/internal.h |   1 -
+ drivers/bus/mhi/core/main.c     |  12 +
+ drivers/bus/mhi/uci.c           | 664 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mhi.h             |  12 +
+ 8 files changed, 800 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/mhi/uci.rst
+ create mode 100644 drivers/bus/mhi/uci.c
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
