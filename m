@@ -2,364 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601892CF1B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2CF2CF1B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388246AbgLDQOM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Dec 2020 11:14:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
+        id S1728815AbgLDQPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:15:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388147AbgLDQOM (ORCPT
+        with ESMTP id S1726102AbgLDQPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:14:12 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D135AC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 08:13:31 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1klDi5-0005zx-Ng; Fri, 04 Dec 2020 17:13:29 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1klDi4-0004bn-Iz; Fri, 04 Dec 2020 17:13:28 +0100
-Message-ID: <f620c4aa8ca3ed10701c5fe050a2bed04ff759db.camel@pengutronix.de>
-Subject: Re: [PATCH 2/2] reset: bcm4908-usb: add driver for BCM4908 USB
- reset controller
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-Date:   Fri, 04 Dec 2020 17:13:28 +0100
-In-Reply-To: <20201204093704.11359-2-zajec5@gmail.com>
-References: <20201204093704.11359-1-zajec5@gmail.com>
-         <20201204093704.11359-2-zajec5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Fri, 4 Dec 2020 11:15:18 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5D6C0613D1;
+        Fri,  4 Dec 2020 08:14:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=0dFCi3dO+UYL4nkvs6+C1FDOofT8cJizS+e4ezR7aD8=; b=hXRqFiXawHurFc3fyyednFjzNH
+        zop25DurbFy86QIx5Cg/EDOLgnWxzXZ0+UL8ZRZaqUtIfxVz8nfvWINUVogHgBsSGT88PNNABCGNW
+        8gqOTIWzOcNcLz4XF+/x2onCAuLn2c8j32++x4ymoPJqmK4IY2lB/PUsxFpygL7rS7vc=;
+Received: from p200300ccff0a0b001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0a:b00:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1klDj3-0007ag-Bn; Fri, 04 Dec 2020 17:14:29 +0100
+Date:   Fri, 4 Dec 2020 17:14:28 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+Subject: Re: [PATCH] ARM: OMAP2+: omap_device: fix idling of devices during
+ probe
+Message-ID: <20201204171428.0a011188@aktux>
+In-Reply-To: <CAD=FV=WLcEBv7gaA3MOVYmxJ3d2Q+mo+Amkex=0eu_19jMtjrA@mail.gmail.com>
+References: <20201204095539.31705-1-andreas@kemnade.info>
+        <CAD=FV=WLcEBv7gaA3MOVYmxJ3d2Q+mo+Amkex=0eu_19jMtjrA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafał,
+On Fri, 4 Dec 2020 07:44:33 -0800
+Doug Anderson <dianders@chromium.org> wrote:
 
-On Fri, 2020-12-04 at 10:37 +0100, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+> Hi,
 > 
-> This controller is responsible for OHCI, EHCI, XHCI and PHYs setup that
-> has to be handled in the proper order.
+> On Fri, Dec 4, 2020 at 1:55 AM Andreas Kemnade <andreas@kemnade.info> wrote:
+> >
+> > On the GTA04A5 od->_driver_status was not set to BUS_NOTIFY_BIND_DRIVER
+> > during probe of the second mmc used for wifi. Therefore
+> > omap_device_late_idle idled the device during probing causing oopses when
+> > accessing the registers.
+> >
+> > It was not set because od->_state was set to OMAP_DEVICE_STATE_IDLE
+> > in the notifier callback. Therefore set od->_driver_status also in that
+> > case.
+> >
+> > This came apparent after
+> > commit 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4")
+> > causing this oops:
+> >
+> > [    3.179534] omap_hsmmc 480b4000.mmc: omap_device_late_idle: enabled but no driver.  Idling
+> > [    3.265594] 8<--- cut here ---
+> > [    3.268707] Unhandled fault: external abort on non-linefetch (0x1028) at 0xfa0b402c
+> > [    3.276397] pgd = (ptrval)
+> > [    3.279144] [fa0b402c] *pgd=48011452(bad)
+> > [    3.283203] Internal error: : 1028 [#1] SMP ARM
+> > [    3.287750] Modules linked in:
+> > [    3.290832] CPU: 0 PID: 7 Comm: kworker/u2:0 Not tainted 5.10.0-rc6 #3
+> > [    3.297393] Hardware name: Generic OMAP36xx (Flattened Device Tree)
+> > [    3.303710] Workqueue: events_unbound async_run_entry_fn
+> > [    3.309082] PC is at omap_hsmmc_set_bus_width+0x8/0x78
+> > [    3.314239] LR is at omap_hsmmc_set_ios+0x11c/0x258
+> > [    3.319152] pc : [<c079787c>]    lr : [<c07996bc>]    psr: 20000013
+> > [    3.325469] sp : c10f9e00  ip : c175c800  fp : 00000066
+> > [    3.330718] r10: c175cb80  r9 : fa0b4000  r8 : 00000000
+> > [    3.335968] r7 : c123e010  r6 : c175ca58  r5 : c175cb80  r4 : c175c800
+> > [    3.342529] r3 : 00000001  r2 : 58ad940c  r1 : fa0b4000  r0 : c175cb80
+> > [    3.349090] Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+> > [    3.356262] Control: 10c5387d  Table: 80004019  DAC: 00000051
+> > [    3.362030] Process kworker/u2:0 (pid: 7, stack limit = 0x(ptrval))
+> > [    3.368347] Stack: (0xc10f9e00 to 0xc10fa000)
+> > [    3.372741] 9e00: c175c800 00000007 c123e000 c123e010 00000000 c077b2b0 c175c800 00000000
+> > [    3.380950] 9e20: c123e000 c077c14c c175c800 c077d284 c175c800 c175c800 c123e000 c0799190
+> > [    3.389190] 9e40: 00000000 c1755040 c175cb80 00000000 c123fd68 58ad940c 00000001 c123e010
+> > [    3.397430] 9e60: 00000000 c0edaec8 00000000 00000000 c0edaec8 00000006 ffffe000 c0666728
+> > [    3.405639] 9e80: c123e010 c0f38c28 c0f38c30 00000000 00000000 c066457c c123e010 c0edaec8
+> > [    3.413879] 9ea0: c06649bc c0e051c8 00000000 00000000 c0efa4a0 c06648b8 00000000 c10f9ef4
+> > [    3.422119] 9ec0: c06649bc c066298c 00000000 c1039e6c c1653738 58ad940c c123e010 c123e010
+> > [    3.430328] 9ee0: c0e051c8 c123e054 c100f000 c0663e60 c0e03d00 c123e010 00010101 58ad940c
+> > [    3.438568] 9f00: c12642d0 c0f02018 c12642c0 c015da48 c12642d0 c10bbf00 c1009400 c100f000
+> > [    3.446807] 9f20: 00000000 c0153b74 c10bc800 c1009400 00000088 c10bbf00 c10bbf14 c1009400
+> > [    3.455017] 9f40: 00000088 c1009418 c0e03d00 c1009400 ffffe000 c0153eec ffffe000 00000000
+> > [    3.463256] 9f60: c10bbf00 00000000 c10b1ac0 c10b1c40 c10f8000 c0153ec0 c10bbf00 c10ebe94
+> > [    3.471466] 9f80: c10b1ae4 c015a9ac 00000001 c10b1c40 c015a87c 00000000 00000000 00000000
+> > [    3.479705] 9fa0: 00000000 00000000 00000000 c0100168 00000000 00000000 00000000 00000000
+> > [    3.487945] 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> > [    3.496154] 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+> > [    3.504394] [<c079787c>] (omap_hsmmc_set_bus_width) from [<c07996bc>] (omap_hsmmc_set_ios+0x11c/0x258)
+> > [    3.513763] [<c07996bc>] (omap_hsmmc_set_ios) from [<c077b2b0>] (mmc_power_up.part.8+0x3c/0xd0)
+> > [    3.522521] [<c077b2b0>] (mmc_power_up.part.8) from [<c077c14c>] (mmc_start_host+0x88/0x9c)
+> > [    3.530944] [<c077c14c>] (mmc_start_host) from [<c077d284>] (mmc_add_host+0x58/0x84)
+> > [    3.538726] [<c077d284>] (mmc_add_host) from [<c0799190>] (omap_hsmmc_probe+0x5fc/0x8c0)
+> > [    3.546874] [<c0799190>] (omap_hsmmc_probe) from [<c0666728>] (platform_drv_probe+0x48/0x98)
+> > [    3.555358] [<c0666728>] (platform_drv_probe) from [<c066457c>] (really_probe+0x1dc/0x3b4)
+> > [    3.563690] [<c066457c>] (really_probe) from [<c06648b8>] (driver_probe_device+0x58/0xb4)
+> > [    3.571929] [<c06648b8>] (driver_probe_device) from [<c066298c>] (bus_for_each_drv+0x7c/0xc4)
+> > [    3.580505] [<c066298c>] (bus_for_each_drv) from [<c0663e60>] (__device_attach_async_helper+0xa4/0xd8)
+> > [    3.589874] [<c0663e60>] (__device_attach_async_helper) from [<c015da48>] (async_run_entry_fn+0x3c/0x1)
+> > [    3.599487] [<c015da48>] (async_run_entry_fn) from [<c0153b74>] (process_one_work+0x228/0x574)
+> > [    3.608154] [<c0153b74>] (process_one_work) from [<c0153eec>] (worker_thread+0x2c/0x5d0)
+> > [    3.616302] [<c0153eec>] (worker_thread) from [<c015a9ac>] (kthread+0x130/0x144)
+> > [    3.623748] [<c015a9ac>] (kthread) from [<c0100168>] (ret_from_fork+0x14/0x2c)
+> >
+> > Fixes: 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4")  
 > 
-> One unusual thing about this controller is that is provides access to
-> the MDIO bus. There are two registers (in the middle of block space)
-> responsible for that. For that reason this driver initializes regmap so
-> a proper MDIO driver can use them.
+> From the description it sounds like this problem has always existed
+> but the async probe just tickled it reliably.  Seems like it'd make
+> sense to tag the "Fixes" as some earlier commit so you make sure your
+> fix gets picked to kernels even if they don't have the async probe
+> patch?
 > 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 
-This doesn't look like a reset controller to me, but rather like
-something that belongs in drivers/usb.
+Hmm, maybe 
+Fixes: 04abaf07f6d5 ("ARM: OMAP2+: omap_device: Sync omap_device and
+pm_runtime after probe defer")
 
-regards
-Philipp
+But on the other hand to stable branches only such patches are applied
+which solve pratical problems not only theoretical problems. But maybe
+it solves several random issues where nobody took care to debug them.
 
-> ---
->  drivers/reset/Kconfig             |   8 +
->  drivers/reset/Makefile            |   1 +
->  drivers/reset/reset-bcm4908-usb.c | 250 ++++++++++++++++++++++++++++++
->  3 files changed, 259 insertions(+)
->  create mode 100644 drivers/reset/reset-bcm4908-usb.c
-> 
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index f393f7e17e33..bb4d2bea9e95 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -35,6 +35,14 @@ config RESET_AXS10X
->  	help
->  	  This enables the reset controller driver for AXS10x.
->  
-> +config RESET_BCM4908_USB
-> +	tristate "Broadcom BCM4908 USB controller"
-> +	depends on ARM64 || COMPILE_TEST
-> +	default ARCH_BCM4908
-> +	help
-> +	  This enables driver for the Broadcom BCM4908 USB controller
-> +	  responsible for initializing OHCI, EHCI, XHCI and PHYs.
-> +
->  config RESET_BERLIN
->  	bool "Berlin Reset Driver" if COMPILE_TEST
->  	default ARCH_BERLIN
-> diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-> index 0dd5d42050dc..f2627bbc7ad4 100644
-> --- a/drivers/reset/Makefile
-> +++ b/drivers/reset/Makefile
-> @@ -6,6 +6,7 @@ obj-$(CONFIG_ARCH_TEGRA) += tegra/
->  obj-$(CONFIG_RESET_A10SR) += reset-a10sr.o
->  obj-$(CONFIG_RESET_ATH79) += reset-ath79.o
->  obj-$(CONFIG_RESET_AXS10X) += reset-axs10x.o
-> +obj-$(CONFIG_RESET_BCM4908_USB) += reset-bcm4908-usb.o
->  obj-$(CONFIG_RESET_BERLIN) += reset-berlin.o
->  obj-$(CONFIG_RESET_BRCM_PMB) += reset-brcm-pmb.o
->  obj-$(CONFIG_RESET_BRCMSTB) += reset-brcmstb.o
-> diff --git a/drivers/reset/reset-bcm4908-usb.c b/drivers/reset/reset-bcm4908-usb.c
-> new file mode 100644
-> index 000000000000..e9b7d369c894
-> --- /dev/null
-> +++ b/drivers/reset/reset-bcm4908-usb.c
-> @@ -0,0 +1,250 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2013 Broadcom
-> + * Copyright (C) 2020 Rafał Miłecki <rafal@milecki.pl>
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/phy/phy.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/reset-controller.h>
-> +#include <linux/reset.h>
-> +
-> +#define BCM4908_USB_RESET_SETUP						0x0000
-> +#define  BCM4908_USBH_IPP						(1<<5)
-> +#define  BCM4908_USBH_IOC						(1<<4)
-> +#define  BCM4908_USB2_OC_DISABLE_PORT0					(1<<28)
-> +#define  BCM4908_USB2_OC_DISABLE_PORT1					(1<<29)
-> +#define  BCM4908_USB3_OC_DISABLE_PORT0					(1<<30)
-> +#define  BCM4908_USB3_OC_DISABLE_PORT1					(1<<31)
-> +#define BCM4908_USB_RESET_PLL_CTL					0x0004
-> +#define BCM4908_USB_RESET_FLADJ_VALUE					0x0008
-> +#define BCM4908_USB_RESET_BRIDGE_CTL					0x000c
-> +#define BCM4908_USB_RESET_SPARE1					0x0010
-> +#define BCM4908_USB_RESET_MDIO						0x0014
-> +#define BCM4908_USB_RESET_MDIO2						0x0018
-> +#define BCM4908_USB_RESET_TEST_PORT_CONTROL				0x001c
-> +#define BCM4908_USB_RESET_USB_SIMCTL					0x0020
-> +#define  BCM4908_USBH_OHCI_MEM_REQ_DIS					(1<<1)
-> +#define BCM4908_USB_RESET_USB_TESTCTL					0x0024
-> +#define BCM4908_USB_RESET_USB_TESTMON					0x0028
-> +#define BCM4908_USB_RESET_UTMI_CTL_1					0x002c
-> +#define BCM4908_USB_RESET_SPARE2					0x0030
-> +#define BCM4908_USB_RESET_USB_PM					0x0034
-> +#define  BCM4908_XHC_SOFT_RESETB					(1<<22)
-> +#define  BCM4908_USB_PWRDWN						(1<<31)
-> +#define BCM4908_USB_RESET_USB_PM_STATUS					0x0038
-> +#define BCM4908_USB_RESET_SPARE3					0x003c
-> +#define BCM4908_USB_RESET_PLL_LDO_CTL					0x0040
-> +#define BCM4908_USB_RESET_PLL_LDO_PLLBIAS				0x0044
-> +#define BCM4908_USB_RESET_PLL_AFE_BG_CNTL				0x0048
-> +#define BCM4908_USB_RESET_AFE_USBIO_TST					0x004c
-> +#define BCM4908_USB_RESET_PLL_NDIV_FRAC					0x0050
-> +#define BCM4908_USB_RESET_TP_DIAG					0x0054
-> +#define BCM4908_USB_RESET_AHB_CAPTURE_FIFO				0x0058
-> +#define BCM4908_USB_RESET_SPARE4					0x005c
-> +#define BCM4908_USB_RESET_USB30_CTL1					0x0060
-> +#define  BCM4908_PHY3_PLL_SEQ_START					(1<<4)
-> +#define BCM4908_USB_RESET_USB30_CTL2					0x0064
-> +#define BCM4908_USB_RESET_USB30_CTL3					0x0068
-> +#define BCM4908_USB_RESET_USB30_CTL4					0x006c
-> +#define BCM4908_USB_RESET_USB30_PCTL					0x0070
-> +#define BCM4908_USB_RESET_USB30_CTL5					0x0074
-> +#define BCM4908_USB_RESET_SPARE5					0x0078
-> +#define BCM4908_USB_RESET_SPARE6					0x007c
-> +#define BCM4908_USB_RESET_SPARE7					0x0080
-> +#define BCM4908_USB_RESET_USB_DEVICE_CTL1				0x0090
-> +#define BCM4908_USB_RESET_USB_DEVICE_CTL2				0x0094
-> +#define BCM4908_USB_RESET_USB20_ID					0x0150
-> +#define BCM4908_USB_RESET_USB30_ID					0x0154
-> +#define BCM4908_USB_RESET_BDC_COREID					0x0158
-> +#define BCM4908_USB_RESET_USB_REVID					0x015c
-> +
-> +struct bcm4908usb {
-> +	struct device *dev;
-> +	void __iomem *base;
-> +	struct regmap *regmap;
-> +	struct reset_control *reset;
-> +	struct phy *usb2_phy;
-> +	struct phy *usb3_phy;
-> +	struct reset_controller_dev rcdev;
-> +};
-> +
-> +static const struct regmap_config bcm4908_usb_reset_regmap_config = {
-> +	.reg_bits =	32,
-> +	.reg_stride =	4,
-> +	.val_bits =	32,
-> +	.fast_io =	true,
-> +};
-> +
-> +static u32 bcm4908_usb_reset_read(struct bcm4908usb *usb, u32 reg)
-> +{
-> +	return readl(usb->base + reg);
-> +}
-> +
-> +static void bcm4908_usb_reset_write(struct bcm4908usb *usb, u32 reg, u32 value)
-> +{
-> +	writel(value, usb->base + reg);
-> +}
-> +
-> +static void bcm4908_usb_reset_update_bits(struct bcm4908usb *usb, u32 reg, u32 mask, u32 val)
-> +{
-> +	u32 tmp;
-> +
-> +	WARN_ON(val & ~mask);
-> +
-> +	tmp = readl(usb->base + reg);
-> +	tmp &= ~mask;
-> +	tmp |= val & mask;
-> +	writel(tmp, usb->base + reg);
-> +}
-> +
-> +static int bcm4908_usb_deassert(struct reset_controller_dev *rcdev, unsigned long id)
-> +{
-> +	struct bcm4908usb *usb = container_of(rcdev, struct bcm4908usb, rcdev);
-> +	struct device *dev = usb->dev;
-> +	u32 val;
-> +	int err;
-> +
-> +	err = reset_control_deassert(usb->reset);
-> +	if (err) {
-> +		dev_err(dev, "failed to deassert");
-> +		return err;
-> +	}
-> +
-> +	mdelay(1);
-> +
-> +	/* adjust over current & port power polarity */
-> +	bcm4908_usb_reset_update_bits(usb, BCM4908_USB_RESET_SETUP,
-> +				      BCM4908_USBH_IOC, BCM4908_USBH_IOC);
-> +	bcm4908_usb_reset_update_bits(usb, BCM4908_USB_RESET_SETUP,
-> +				      BCM4908_USBH_IPP, BCM4908_USBH_IPP);
-> +
-> +	/* enable USB PHYs */
-> +	bcm4908_usb_reset_update_bits(usb, BCM4908_USB_RESET_USB_PM,
-> +				      BCM4908_USB_PWRDWN, 0);
-> +	mdelay(1);
-> +
-> +	err = phy_init(usb->usb3_phy);
-> +	if (err) {
-> +		dev_err(usb->dev, "failed to init USB 3.0 PHY: %d\n", err);
-> +		return err;
-> +	}
-> +	mdelay(300);
-> +
-> +	bcm4908_usb_reset_update_bits(usb, BCM4908_USB_RESET_USB30_CTL1,
-> +				      BCM4908_PHY3_PLL_SEQ_START, BCM4908_PHY3_PLL_SEQ_START);
-> +	bcm4908_usb_reset_update_bits(usb, BCM4908_USB_RESET_USB_PM,
-> +				      BCM4908_XHC_SOFT_RESETB, BCM4908_XHC_SOFT_RESETB);
-> +
-> +	err = phy_init(usb->usb2_phy);
-> +	if (err) {
-> +		dev_err(usb->dev, "failed to init USB 2.0 PHY: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	/* no swap for data & descriptors */
-> +	bcm4908_usb_reset_update_bits(usb, BCM4908_USB_RESET_BRIDGE_CTL, 0xf, 0);
-> +
-> +	/* reset host controllers for possible fake overcurrent indications */
-> +	val = bcm4908_usb_reset_read(usb, BCM4908_USB_RESET_USB_PM);
-> +	bcm4908_usb_reset_write(usb, BCM4908_USB_RESET_USB_PM, 0);
-> +	bcm4908_usb_reset_write(usb, BCM4908_USB_RESET_USB_PM, val);
-> +	mdelay(1);
-> +
-> +	/* TODO: erdy nump bypass */
-> +
-> +	/* Reduce accesses to DDR during USB idle time when Self-Refresh feature is compiled in */
-> +	bcm4908_usb_reset_update_bits(usb, BCM4908_USB_RESET_USB_SIMCTL,
-> +				      BCM4908_USBH_OHCI_MEM_REQ_DIS, BCM4908_USBH_OHCI_MEM_REQ_DIS);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct reset_control_ops bcm4908_usb_reset_control_ops = {
-> +	.deassert = bcm4908_usb_deassert,
-> +};
-> +
-> +static int bcm4908_usb_reset_xlate(struct reset_controller_dev *rcdev,
-> +				   const struct of_phandle_args *reset_spec)
-> +{
-> +	if (WARN_ON(reset_spec->args_count))
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
-> +static int bcm4908_usb_reset_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct bcm4908usb *usb;
-> +	int err;
-> +
-> +	usb = devm_kzalloc(dev, sizeof(*usb), GFP_KERNEL);
-> +	if (!usb)
-> +		return -ENOMEM;
-> +
-> +	usb->dev = dev;
-> +
-> +	usb->base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(usb->base))
-> +		return PTR_ERR(usb->base);
-> +
-> +	usb->regmap = devm_regmap_init_mmio(dev, usb->base, &bcm4908_usb_reset_regmap_config);
-> +	if (IS_ERR(usb->regmap)) {
-> +		err = PTR_ERR(usb->regmap);
-> +		dev_err(dev, "failed to init regmap: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	usb->reset = of_reset_control_array_get_optional_exclusive(usb->dev->of_node);
-> +	if (IS_ERR(usb->reset)) {
-> +		err = PTR_ERR(usb->reset);
-> +		return err;
-> +	}
-> +
-> +	usb->usb2_phy = devm_phy_get(dev, "usb2");
-> +	if (IS_ERR(usb->usb2_phy)) {
-> +		err = PTR_ERR(usb->usb2_phy);
-> +		dev_err(dev, "Failed to get USB 2.0 PHY: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	usb->usb3_phy = devm_phy_get(dev, "usb3");
-> +	if (IS_ERR(usb->usb3_phy)) {
-> +		err = PTR_ERR(usb->usb3_phy);
-> +		dev_err(dev, "Failed to get USB 2.0 PHY: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	usb->rcdev.ops = &bcm4908_usb_reset_control_ops;
-> +	usb->rcdev.owner = THIS_MODULE;
-> +	usb->rcdev.of_node = dev->of_node;
-> +	usb->rcdev.of_reset_n_cells = 0;
-> +	usb->rcdev.of_xlate = bcm4908_usb_reset_xlate;
-> +
-> +	return devm_reset_controller_register(dev, &usb->rcdev);
-> +}
-> +
-> +static const struct of_device_id bcm4908_usb_reset_of_match[] = {
-> +	{ .compatible = "brcm,bcm4908-usb-reset" },
-> +	{ },
-> +};
-> +
-> +static struct platform_driver bcm4908_usb_reset_driver = {
-> +	.probe = bcm4908_usb_reset_probe,
-> +	.driver = {
-> +		.name	= "bcm4908-usb-reset",
-> +		.of_match_table	= bcm4908_usb_reset_of_match,
-> +	}
-> +};
-> +module_platform_driver(bcm4908_usb_reset_driver);
-> +
-> +MODULE_AUTHOR("Rafał Miłecki");
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DEVICE_TABLE(of, bcm4908_usb_reset_of_match);
+That would be since v4.11.
+
+Regards
+Andreas
