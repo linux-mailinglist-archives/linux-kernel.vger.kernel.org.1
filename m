@@ -2,175 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D0B2CEE54
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16ECE2CEE5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728722AbgLDMsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 07:48:30 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:45825 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726988AbgLDMs3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:48:29 -0500
-Received: by mail-lj1-f195.google.com with SMTP id q8so6432093ljc.12;
-        Fri, 04 Dec 2020 04:48:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=voM8CIdlVjogp2cZAMUdQ7vlFQs6bZFYlhKRFXAOqlQ=;
-        b=VXG/YO2GEkIBWSNzxq9vvC8g9zscmfEQ2hQwZUQsdG0afEwNVuoGRzxL4v/bqSzjX6
-         zRDKY42dCs+03X83TqyBleaTr4yVFulUyKuySQiiI932zgE2TR2AZz7fb7FrIP1l2LWT
-         ZI6e868j+Q9vSQ1ehOJeRQRRz5Pf0ug4DSkyUzNMG93n9nV90Xm14JQM1sX5+nC11usv
-         vJZpGinTxohPnupWIi3Jiml3fPKQWolQ7N+AqvFgrls5aYeq9CVXr9EKTFHacOKkoYTq
-         lsdiG4b+EbHIHHYjQ32p9boX3ECk5SbRaxk4dCFmj7TCerTkroQ7OdnGRHurxAg78ATr
-         3Umg==
-X-Gm-Message-State: AOAM5323C+KX1a+NaVIfbN4g/zL/pk9A4Nmli+9Uu3AiMn9gujoQMADa
-        6SLaFLPYz/HHe3NCnRnt0ts=
-X-Google-Smtp-Source: ABdhPJy1XOH4L6tEIzyYtRblGbiMDgqDFMY3POHBaiCdobtelzoAtH2S0rx52L9BlMl2VI0QzTbtQg==
-X-Received: by 2002:a2e:a40e:: with SMTP id p14mr1007400ljn.63.1607086061254;
-        Fri, 04 Dec 2020 04:47:41 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id f2sm1714164ljn.39.2020.12.04.04.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 04:47:40 -0800 (PST)
-Date:   Fri, 4 Dec 2020 14:47:34 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Cong Pham <cpham2403@gmail.com>, rostokus@gmail.com,
-        fan.chen@mediatek.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [RFC PATCH v2 3/6] mfd: prepare to support BD718xx-charger
-Message-ID: <ebcd976ba60a8cf417787b8b0643f12dcc68cf0a.1607085199.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1607085199.git.matti.vaittinen@fi.rohmeurope.com>
+        id S1730179AbgLDMus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 07:50:48 -0500
+Received: from retiisi.eu ([95.216.213.190]:51284 "EHLO hillosipuli.retiisi.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729010AbgLDMus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 07:50:48 -0500
+Received: from valkosipuli.localdomain (unknown [IPv6:fd35:1bc8:1a6:d3d5::80:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 511E1634C24;
+        Fri,  4 Dec 2020 14:48:48 +0200 (EET)
+Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@retiisi.org.uk>)
+        id 1klAW0-0003Ou-Pn; Fri, 04 Dec 2020 14:48:48 +0200
+Date:   Fri, 4 Dec 2020 14:48:48 +0200
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com, hverkuil@xs4all.nl,
+        robh+dt@kernel.org, bparrot@ti.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 10/13] media: v4l2-fwnode: Update
+ V4L2_FWNODE_CSI2_MAX_DATA_LANES to 8
+Message-ID: <20201204124848.GK4351@valkosipuli.retiisi.org.uk>
+References: <1607022002-26575-1-git-send-email-skomatineni@nvidia.com>
+ <1607022002-26575-11-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1607085199.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <1607022002-26575-11-git-send-email-skomatineni@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add definitions for ROHM BD718(27/28/78) PMIC's charger blocks.
+On Thu, Dec 03, 2020 at 10:59:59AM -0800, Sowjanya Komatineni wrote:
+> Some CSI2 receivers support 8 data lanes.
+> 
+> So, this patch updates CSI2 maximum data lanes to be 8.
+> 
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-
-This patch was not in v1. This brings in some charger registers
-for the BD71828 charger driver which is in following patches. Patch
-split here reflects the subsystem change (for non RFC submitted for
-inclusion this would probably be Lee's territory). Now provided in
-this RFC series to give more context
-
- include/linux/mfd/rohm-bd71828.h | 65 ++++++++++++++++++++++++++++++++
- include/linux/mfd/rohm-generic.h |  2 +
- 2 files changed, 67 insertions(+)
-
-diff --git a/include/linux/mfd/rohm-bd71828.h b/include/linux/mfd/rohm-bd71828.h
-index 017a4c01cb31..1a6a7804d28b 100644
---- a/include/linux/mfd/rohm-bd71828.h
-+++ b/include/linux/mfd/rohm-bd71828.h
-@@ -185,6 +185,71 @@ enum {
- /* Charger/Battey */
- #define BD71828_REG_CHG_STATE		0x65
- #define BD71828_REG_CHG_FULL		0xd2
-+#define BD71828_REG_CHG_EN		0x6F
-+#define BD71828_REG_DCIN_STAT		0x68
-+#define BD71828_MASK_DCIN_DET		0x01
-+#define BD71828_REG_VDCIN_U		0x9c
-+#define BD71828_MASK_CHG_EN		0x01
-+#define BD71828_CHG_MASK_DCIN_U		0x0f
-+#define BD71828_REG_BAT_STAT		0x67
-+#define BD71828_REG_BAT_TEMP		0x6c
-+#define BD71828_MASK_BAT_TEMP		0x07
-+#define BD71828_BAT_TEMP_OPEN		0x07
-+#define BD71828_MASK_BAT_DET		0x20
-+#define BD71828_MASK_BAT_DET_DONE	0x10
-+#define BD71828_REG_CHG_STATE		0x65
-+#define BD71828_REG_VBAT_U		0x8c
-+#define BD71828_MASK_VBAT_U		0x0f
-+#define BD71828_REG_VBAT_REX_AVG_U	0x92
-+
-+#define BD71828_REG_OCV_PWRON_U		0x8A
-+
-+#define BD71828_REG_VBAT_MIN_AVG_U	0x8e
-+#define BD71828_REG_VBAT_MIN_AVG_L	0x8f
-+
-+#define BD71828_REG_CC_CNT3		0xb5
-+#define BD71828_REG_CC_CNT2		0xb6
-+#define BD71828_REG_CC_CNT1		0xb7
-+#define BD71828_REG_CC_CNT0		0xb8
-+#define BD71828_REG_CC_CURCD_AVG_U	0xb2
-+#define BD71828_MASK_CC_CURCD_AVG_U	0x3f
-+#define BD71828_MASK_CC_CUR_DIR		0x80
-+#define BD71828_REG_VM_BTMP_U		0xa1
-+#define BD71828_REG_VM_BTMP_L		0xa2
-+#define BD71828_MASK_VM_BTMP_U		0x0f
-+#define BD71828_REG_COULOMB_CTRL	0xc4
-+#define BD71828_REG_COULOMB_CTRL2	0xd2
-+#define BD71828_MASK_REX_CC_CLR		0x01
-+#define BD71828_MASK_FULL_CC_CLR	0x10
-+#define BD71828_REG_CC_CNT_FULL3	0xbd
-+#define BD71828_REG_CC_CNT_CHG3		0xc1
-+
-+#define BD71828_REG_VBAT_INITIAL1_U	0x86
-+#define BD71828_REG_VBAT_INITIAL1_L	0x87
-+
-+#define BD71828_REG_VBAT_INITIAL2_U	0x88
-+#define BD71828_REG_VBAT_INITIAL2_L	0x89
-+
-+#define BD71828_REG_IBAT_U		0xb0
-+#define BD71828_REG_IBAT_L		0xb1
-+
-+#define BD71828_REG_IBAT_AVG_U		0xb2
-+#define BD71828_REG_IBAT_AVG_L		0xb3
-+
-+#define BD71828_REG_VSYS_AVG_U		0x96
-+#define BD71828_REG_VSYS_AVG_L		0x97
-+#define BD71828_REG_VSYS_MIN_AVG_U	0x98
-+#define BD71828_REG_VSYS_MIN_AVG_L	0x99
-+#define BD71828_REG_CHG_SET1		0x75
-+#define BD71828_REG_ALM_VBAT_LIMIT_U	0xaa
-+#define BD71828_REG_BATCAP_MON_LIMIT_U	0xcc
-+#define BD71828_REG_CONF		0x64
-+
-+#define BD71828_REG_DCIN_CLPS		0x71
-+
-+#define BD71828_REG_MEAS_CLEAR		0xaf
-+
-+
- 
- /* LEDs */
- #define BD71828_REG_LED_CTRL		0x4A
-diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-generic.h
-index 4283b5b33e04..48af41d22d3f 100644
---- a/include/linux/mfd/rohm-generic.h
-+++ b/include/linux/mfd/rohm-generic.h
-@@ -12,6 +12,8 @@ enum rohm_chip_type {
- 	ROHM_CHIP_TYPE_BD71847,
- 	ROHM_CHIP_TYPE_BD70528,
- 	ROHM_CHIP_TYPE_BD71828,
-+	ROHM_CHIP_TYPE_BD71827,
-+	ROHM_CHIP_TYPE_BD71878,
- 	ROHM_CHIP_TYPE_AMOUNT
- };
- 
--- 
-2.25.4
-
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
 -- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+Sakari Ailus
