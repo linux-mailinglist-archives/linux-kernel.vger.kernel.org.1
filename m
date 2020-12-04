@@ -2,721 +2,643 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3A92CEDCD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:13:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1C92CEDDB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730168AbgLDMMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 07:12:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726618AbgLDMMI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:12:08 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5B8C0613D1;
-        Fri,  4 Dec 2020 04:11:22 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id x16so8337869ejj.7;
-        Fri, 04 Dec 2020 04:11:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=rxzClRfWrigViB5AicI/pk+858BbyfX+mBRJSVCNBN8=;
-        b=WeMtNcA/Jx4532/m8f+R0gk48oRFHYuUeWdWOUBCqjoHnf9e/88B96ETMquvC3qTpr
-         RRS8DPbfnP5yX33jplE1iL/0Mkzv48ylJLif4W5gkiED5eWr6615QqxPPkcXMERrLeze
-         jF6VdXBo2mROj2yriZ+bRo0NV22/2TpysZAY3wZrbhB3X+vYC3jyaZBxONwRx+FvI7kM
-         vh73B4lmOPyJm0UVZoWAidiGwxeMw5UkHL34Ehn7cEkod4Wy0TC+4BTGe7dA01j6a+mQ
-         LUHGM2rkyMEL54p9y26eZ/JyV/Nx/a3gIOpKAmbFRnZwl/Xr4pizIP63WO3HZBbEhrhl
-         K9Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rxzClRfWrigViB5AicI/pk+858BbyfX+mBRJSVCNBN8=;
-        b=NbApQmGH3R7O4OiL+w1OT8C8OM1X6aN70fePgDCSUpoHIWI4ryx5FYP/aWo+SulPac
-         jqsUXby9LaoGi1vd80DEKsk6dmSAy18uBgcMyLyMEBmfa0EXR9KXxKU1GP3rYelW7hXB
-         MN9j0pmsV4sAlQbQH9mQhu17VX9/oUQPEGckD4kZEa6+rHhWrAvDEGZb6D0tn7uJwvSu
-         RxKM/mgjOceZdGsx6ujGZTQbky6M1kTmX2CIkGMHwJuRcq9rBakwT6mqesqsETpD7Hww
-         Px14ZBaYekrvS1mrs1EDlAmkGd/XwqFs+bdgfgX8VSAKiHfdq3aEsPeaF+ZOx3q23d9F
-         IveA==
-X-Gm-Message-State: AOAM532IXYXTqXwePwR6cVSNC15IQ//xFxzevtDGAayYoUun5VlA7T9U
-        vpX+7KYZQMrV20L5PCg7sRE=
-X-Google-Smtp-Source: ABdhPJw0yfKhLLUyHmicKUedkLlSTPnpQzo5k22WucB81l1agWa64SKawAvUT+WdS3Pi80F25IrZvg==
-X-Received: by 2002:a17:906:b217:: with SMTP id p23mr6871865ejz.461.1607083881023;
-        Fri, 04 Dec 2020 04:11:21 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id o11sm2929679ejh.55.2020.12.04.04.11.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 04:11:19 -0800 (PST)
-Date:   Fri, 4 Dec 2020 13:11:17 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     jonathanh@nvidia.com, broonie@kernel.org, robh+dt@kernel.org,
-        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 3/7] spi: qspi-tegra: Add support for Tegra210 QSPI
- controller
-Message-ID: <X8onZQRMLxV5spo+@ulmo>
-References: <1606857168-5839-1-git-send-email-skomatineni@nvidia.com>
- <1606857168-5839-4-git-send-email-skomatineni@nvidia.com>
+        id S2388100AbgLDMNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 07:13:01 -0500
+Received: from mga18.intel.com ([134.134.136.126]:44777 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388034AbgLDMNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 07:13:00 -0500
+IronPort-SDR: 0hjKql3LX3R0gOaa70gvbXX+Pg7e0ly8pkXJmpHWuO7gLxA1mqbPlb3SzXeDAlR/X5DrpkAX3W
+ wCf4f031YXWg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="161135965"
+X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
+   d="gz'50?scan'50,208,50";a="161135965"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 04:12:16 -0800
+IronPort-SDR: bV2gKqWxaBQmhlVGzL336XyavjaYhe9stVEDUEPAzlZx+fVpWZQYQ3dGzCXzmUXlWARSeLiFK2
+ 4e2ASW/Kb7nQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
+   d="gz'50?scan'50,208,50";a="316113250"
+Received: from lkp-server02.sh.intel.com (HELO f74a175f0d75) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 04 Dec 2020 04:12:12 -0800
+Received: from kbuild by f74a175f0d75 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kl9wZ-00005s-7l; Fri, 04 Dec 2020 12:12:11 +0000
+Date:   Fri, 4 Dec 2020 20:11:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: drivers/android/binder.c:5015:13: warning: stack frame size of 2160
+ bytes in function 'binder_ioctl'
+Message-ID: <202012042033.uEmgNBVJ-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TECbwuUcC4y1JUON"
+Content-Type: multipart/mixed; boundary="bp/iNruPH9dso1Pn"
 Content-Disposition: inline
-In-Reply-To: <1606857168-5839-4-git-send-email-skomatineni@nvidia.com>
-User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---TECbwuUcC4y1JUON
-Content-Type: text/plain; charset=us-ascii
+--bp/iNruPH9dso1Pn
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Dec 01, 2020 at 01:12:44PM -0800, Sowjanya Komatineni wrote:
-> Tegra SoC has a Quad SPI controller starting from Tegra210.
->=20
-> This patch adds support for Tegra210 QSPI controller.
->=20
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
->  drivers/spi/Kconfig      |    9 +
->  drivers/spi/Makefile     |    1 +
->  drivers/spi/qspi-tegra.c | 1418 ++++++++++++++++++++++++++++++++++++++++=
-++++++
->  3 files changed, 1428 insertions(+)
->  create mode 100644 drivers/spi/qspi-tegra.c
->=20
-> diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-> index 3fd16b7..1a021e8 100644
-> --- a/drivers/spi/Kconfig
-> +++ b/drivers/spi/Kconfig
-> @@ -844,6 +844,15 @@ config SPI_MXS
->  	help
->  	  SPI driver for Freescale MXS devices.
-> =20
-> +config QSPI_TEGRA
-
-You already discussed this with Mark, but perhaps a better name would be
-SPI_TEGRA210_QUAD or something. SPI_TEGRA210 is too generic because
-there is a regular SPI controller on Tegra210 as well.
-
-SPI_TEGRA210_QUAD is in line with the likes of SPI_TEGRA20_SFLASH and
-SPI_TEGRA20_SLINK.
-
-> +	tristate "Nvidia Tegra QSPI Controller"
-
-NVIDIA
-
-> +	depends on (ARCH_TEGRA && TEGRA20_APB_DMA) || COMPILE_TEST
-
-I don't think we need the ARCH_TEGRA part there because TEGRA20_APB_DMA
-already depends on that. Also, there's not strictly a dependency on
-TEGRA20_APB_DMA specifically, but rather a dependency on DMA_ENGINE,
-right? The DMA channels could be coming from some other driver on some
-other SoC generation, such as the Tegra186 and later GPCDMA.
-
-> +	depends on RESET_CONTROLLER
-> +	help
-> +	  QSPI driver for Nvidia Tegra QSPI Controller interface. This
-
-NVIDIA
-
-> +	  controller is different from the spi controller and is available
-
-SPI
-
-> +	  on Tegra SoCs starting from Tegra210.
-> +
->  config SPI_TEGRA114
->  	tristate "NVIDIA Tegra114 SPI Controller"
->  	depends on (ARCH_TEGRA && TEGRA20_APB_DMA) || COMPILE_TEST
-[...]
-> diff --git a/drivers/spi/qspi-tegra.c b/drivers/spi/qspi-tegra.c
-[...]
-> +struct tegra_qspi_client_data {
-> +	int tx_clk_tap_delay;
-> +	int rx_clk_tap_delay;
-> +};
-
-If this is client data, why are we dealing with this in the controller
-driver? Is this perhaps something that could be added to struct
-spi_device?
-
-> +
-> +struct tegra_qspi_data {
-
-That _data just seems to be 5 extra characters that don't add any value.
-
-> +	struct device				*dev;
-> +	struct spi_master			*master;
-> +	/* Lock to protect data accessed by irq */
-> +	spinlock_t				lock;
-> +
-> +	struct clk				*clk;
-> +	struct reset_control			*rst;
-> +	void __iomem				*base;
-> +	phys_addr_t				phys;
-> +	unsigned int				irq;
-> +
-> +	u32					cur_speed;
-> +	unsigned int				cur_pos;
-> +	unsigned int				words_per_32bit;
-> +	unsigned int				bytes_per_word;
-> +	unsigned int				curr_dma_words;
-> +	unsigned int				cur_direction;
-> +
-> +	unsigned int				cur_rx_pos;
-> +	unsigned int				cur_tx_pos;
-> +
-> +	unsigned int				dma_buf_size;
-> +	unsigned int				max_buf_size;
-> +	bool					is_curr_dma_xfer;
-> +
-> +	struct completion			rx_dma_complete;
-> +	struct completion			tx_dma_complete;
-> +
-> +	u32					tx_status;
-> +	u32					rx_status;
-> +	u32					status_reg;
-> +	bool					is_packed;
-> +	bool					use_dma;
-> +
-> +	u32					command1_reg;
-> +	u32					dma_control_reg;
-> +	u32					def_command1_reg;
-> +	u32					def_command2_reg;
-> +	u32					spi_cs_timing1;
-> +	u32					spi_cs_timing2;
-> +	u8					dummy_cycles;
-> +
-> +	struct completion			xfer_completion;
-> +	struct spi_transfer			*curr_xfer;
-> +
-> +	struct dma_chan				*rx_dma_chan;
-> +	u32					*rx_dma_buf;
-> +	dma_addr_t				rx_dma_phys;
-> +	struct dma_async_tx_descriptor		*rx_dma_desc;
-> +
-> +	struct dma_chan				*tx_dma_chan;
-> +	u32					*tx_dma_buf;
-> +	dma_addr_t				tx_dma_phys;
-> +	struct dma_async_tx_descriptor		*tx_dma_desc;
-> +};
-> +
-> +static int tegra_qspi_runtime_suspend(struct device *dev);
-> +static int tegra_qspi_runtime_resume(struct device *dev);
-
-Can't we just reorder the code so that these don't have to be forward-
-declared?
-
-> +
-> +static inline u32 tegra_qspi_readl(struct tegra_qspi_data *tqspi,
-> +				   unsigned long reg)
-
-Nit: I prefer "offset" over "reg" because I think it's slightly more
-accurate.
-
-> +{
-> +	return readl(tqspi->base + reg);
-> +}
-> +
-> +static inline void tegra_qspi_writel(struct tegra_qspi_data *tqspi,
-> +				     u32 val, unsigned long reg)
-
-I also prefer "value" over "val" because "val" could also be short for
-"valid". Anyway, I am pedantic that way, so feel free to ignore that.
-
-[...]
-> +static unsigned int
-> +tegra_qspi_calculate_curr_xfer_param(struct tegra_qspi_data *tqspi,
-> +				     struct spi_transfer *t)
-> +{
-> +	unsigned int remain_len =3D t->len - tqspi->cur_pos;
-> +	unsigned int max_word;
-> +	unsigned int bits_per_word =3D t->bits_per_word;
-> +	unsigned int max_len;
-> +	unsigned int total_fifo_words;
-
-You could list some of these on the same line to make this a bit more
-compact. Something I've often seen done that makes this really clean is
-to have uninitialized variables on one line and then assignments on
-separate lines, then sort lines by length:
-
-	unsigned int max_word, max_len, total_fifo_words;
-	unsigned int remain_len =3D t->len - tqspi->cur_pos;
-	unsigned int bits_per_word =3D t->bits_per_word;
-
-This also applies to some other functions further down.
-
-[...]
-> +static void
-> +tegra_qspi_copy_client_txbuf_to_qspi_txbuf(struct tegra_qspi_data *tqspi,
-> +					   struct spi_transfer *t)
-> +{
-> +	/* Make the dma buffer to read by cpu */
-
-This comment seems a bit redundant. dma_sync_single_for_cpu() is a well-
-documented function that doesn't need explanation.
-
-> +	dma_sync_single_for_cpu(tqspi->dev, tqspi->tx_dma_phys,
-> +				tqspi->dma_buf_size, DMA_TO_DEVICE);
-> +
-> +	if (tqspi->is_packed) {
-> +		unsigned int len =3D tqspi->curr_dma_words *
-> +				   tqspi->bytes_per_word;
-> +
-> +		memcpy(tqspi->tx_dma_buf, t->tx_buf + tqspi->cur_pos, len);
-> +		tqspi->cur_tx_pos +=3D tqspi->curr_dma_words *
-> +				     tqspi->bytes_per_word;
-> +	} else {
-> +		u8 *tx_buf =3D (u8 *)t->tx_buf + tqspi->cur_tx_pos;
-> +		unsigned int i;
-> +		unsigned int count;
-> +		unsigned int consume;
-> +		unsigned int write_bytes;
-> +
-> +		consume =3D tqspi->curr_dma_words * tqspi->bytes_per_word;
-> +		if (consume > t->len - tqspi->cur_pos)
-> +			consume =3D t->len - tqspi->cur_pos;
-> +		write_bytes =3D consume;
-> +		for (count =3D 0; count < tqspi->curr_dma_words; count++) {
-> +			u32 x =3D 0;
-> +
-> +			for (i =3D 0; consume && (i < tqspi->bytes_per_word);
-> +							i++, consume--)
-> +				x |=3D (u32)(*tx_buf++) << (i * 8);
-> +			tqspi->tx_dma_buf[count] =3D x;
-> +		}
-> +
-> +		tqspi->cur_tx_pos +=3D write_bytes;
-> +	}
-> +
-> +	/* Make the dma buffer to read by dma */
-
-Same here.
-
-> +	dma_sync_single_for_device(tqspi->dev, tqspi->tx_dma_phys,
-> +				   tqspi->dma_buf_size, DMA_TO_DEVICE);
-> +}
-> +
-> +static void
-> +tegra_qspi_copy_qspi_rxbuf_to_client_rxbuf(struct tegra_qspi_data *tqspi,
-> +					   struct spi_transfer *t)
-> +{
-> +	/* Make the dma buffer to read by cpu */
-
-And here.
-
-> +	dma_sync_single_for_cpu(tqspi->dev, tqspi->rx_dma_phys,
-> +				tqspi->dma_buf_size, DMA_FROM_DEVICE);
-> +
-> +	if (tqspi->is_packed) {
-> +		unsigned int len =3D tqspi->curr_dma_words *
-> +				   tqspi->bytes_per_word;
-> +
-> +		memcpy(t->rx_buf + tqspi->cur_rx_pos, tqspi->rx_dma_buf, len);
-> +		tqspi->cur_rx_pos +=3D tqspi->curr_dma_words *
-> +				     tqspi->bytes_per_word;
-> +	} else {
-> +		unsigned char *rx_buf =3D t->rx_buf + tqspi->cur_rx_pos;
-> +		u32 rx_mask =3D ((u32)1 << t->bits_per_word) - 1;
-> +		unsigned int i;
-> +		unsigned int count;
-> +		unsigned int consume;
-> +		unsigned int read_bytes;
-> +
-> +		consume =3D tqspi->curr_dma_words * tqspi->bytes_per_word;
-> +		if (consume > t->len - tqspi->cur_pos)
-> +			consume =3D t->len - tqspi->cur_pos;
-> +		read_bytes =3D consume;
-> +		for (count =3D 0; count < tqspi->curr_dma_words; count++) {
-> +			u32 x =3D tqspi->rx_dma_buf[count] & rx_mask;
-> +
-> +			for (i =3D 0; consume && (i < tqspi->bytes_per_word);
-> +							i++, consume--)
-> +				*rx_buf++ =3D (x >> (i * 8)) & 0xFF;
-> +		}
-> +
-> +		tqspi->cur_rx_pos +=3D read_bytes;
-> +	}
-> +
-> +	/* Make the dma buffer to read by dma */
-
-And here.
-
-> +	dma_sync_single_for_device(tqspi->dev, tqspi->rx_dma_phys,
-> +				   tqspi->dma_buf_size, DMA_FROM_DEVICE);
-> +}
-> +
-> +static void tegra_qspi_dma_complete(void *args)
-> +{
-> +	struct completion *dma_complete =3D args;
-> +
-> +	complete(dma_complete);
-> +}
-> +
-> +static int tegra_qspi_start_tx_dma(struct tegra_qspi_data *tqspi, int le=
-n)
-> +{
-> +	reinit_completion(&tqspi->tx_dma_complete);
-> +	tqspi->tx_dma_desc =3D dmaengine_prep_slave_single(tqspi->tx_dma_chan,
-> +				tqspi->tx_dma_phys, len, DMA_MEM_TO_DEV,
-> +				DMA_PREP_INTERRUPT |  DMA_CTRL_ACK);
-
-Looks like most of this driver is wrapped at 80 columns. That rule was
-relaxed a bit a while ago and checkpatch now only warns if you exceed
-100 columns. There are various places in this driver that could benefit
-=66rom longer lines, such as the above.
-
-> +	if (!tqspi->tx_dma_desc) {
-> +		dev_err(tqspi->dev, "Not able to get desc for Tx\n");
-
-Perhaps: "Unable to get TX descriptor\n"?
-
-> +		return -EIO;
-> +	}
-> +
-> +	tqspi->tx_dma_desc->callback =3D tegra_qspi_dma_complete;
-> +	tqspi->tx_dma_desc->callback_param =3D &tqspi->tx_dma_complete;
-> +
-> +	dmaengine_submit(tqspi->tx_dma_desc);
-> +	dma_async_issue_pending(tqspi->tx_dma_chan);
-> +	return 0;
-> +}
-> +
-> +static int tegra_qspi_start_rx_dma(struct tegra_qspi_data *tqspi, int le=
-n)
-> +{
-> +	reinit_completion(&tqspi->rx_dma_complete);
-> +	tqspi->rx_dma_desc =3D dmaengine_prep_slave_single(tqspi->rx_dma_chan,
-> +				tqspi->rx_dma_phys, len, DMA_DEV_TO_MEM,
-> +				DMA_PREP_INTERRUPT |  DMA_CTRL_ACK);
-> +	if (!tqspi->rx_dma_desc) {
-> +		dev_err(tqspi->dev, "Not able to get desc for Rx\n");
-
-Same here.
-
-> +		return -EIO;
-> +	}
-> +
-> +	tqspi->rx_dma_desc->callback =3D tegra_qspi_dma_complete;
-> +	tqspi->rx_dma_desc->callback_param =3D &tqspi->rx_dma_complete;
-> +
-> +	dmaengine_submit(tqspi->rx_dma_desc);
-> +	dma_async_issue_pending(tqspi->rx_dma_chan);
-> +	return 0;
-> +}
-> +
-> +static int tegra_qspi_flush_fifos(struct tegra_qspi_data *tqspi)
-> +{
-> +	unsigned long timeout =3D jiffies + HZ;
-> +	u32 status;
-> +
-> +	status =3D tegra_qspi_readl(tqspi, QSPI_FIFO_STATUS);
-> +	if ((status & QSPI_FIFO_EMPTY) =3D=3D QSPI_FIFO_EMPTY)
-> +		return 0;
-> +
-> +	status |=3D QSPI_RX_FIFO_FLUSH | QSPI_TX_FIFO_FLUSH;
-> +	tegra_qspi_writel(tqspi, status, QSPI_FIFO_STATUS);
-> +	while ((status & QSPI_FIFO_EMPTY) !=3D QSPI_FIFO_EMPTY) {
-> +		status =3D tegra_qspi_readl(tqspi, QSPI_FIFO_STATUS);
-> +		if (time_after(jiffies, timeout)) {
-> +			dev_err(tqspi->dev,
-> +				"timeout waiting for fifo flush\n");
-
-FIFO is an abbreviation, so it should be all uppercase in text.
-
-> +			return -EIO;
-> +		}
-> +
-> +		udelay(1);
-
-It looks like this function can be called from both interrupt and
-process contexts, where the latter is the more common case and it is
-only ever used in interrupt context to clean up on error.
-
-I wonder if it's worth adding an "atomic" parameter to the function and
-make this a sleeping loop whenever possible. Also, can this not use one
-of the helpers from linux/iopoll.h?
-
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void tegra_qspi_unmask_irq(struct tegra_qspi_data *tqspi)
-> +{
-> +	u32 intr_mask;
-> +
-> +	intr_mask =3D tegra_qspi_readl(tqspi, QSPI_INTR_MASK);
-> +	intr_mask &=3D ~(QSPI_INTR_RDY_MASK | QSPI_INTR_RX_TX_FIFO_ERR);
-> +	tegra_qspi_writel(tqspi, intr_mask, QSPI_INTR_MASK);
-> +}
-> +
-> +static int tegra_qspi_start_dma_based_transfer(struct tegra_qspi_data *t=
-qspi,
-> +					       struct spi_transfer *t)
-> +{
-> +	u32 val;
-> +	unsigned int len;
-> +	int ret =3D 0;
-> +	u8 dma_burst;
-> +	struct dma_slave_config dma_sconfig =3D {0};
-
-I think checkpatch wants spaces after { and before }.
-
-> +
-> +	val =3D QSPI_DMA_BLK_SET(tqspi->curr_dma_words - 1);
-> +	tegra_qspi_writel(tqspi, val, QSPI_DMA_BLK);
-> +
-> +	tegra_qspi_unmask_irq(tqspi);
-> +
-> +	if (tqspi->is_packed)
-> +		len =3D DIV_ROUND_UP(tqspi->curr_dma_words *
-> +				   tqspi->bytes_per_word, 4) * 4;
-> +	else
-> +		len =3D tqspi->curr_dma_words * 4;
-> +
-> +	/* Set attention level based on length of transfer */
-> +	val =3D 0;
-> +	if (len & 0xF) {
-
-Nit: hexadecimal literals are usually lowercase.
-
-> +		val |=3D QSPI_TX_TRIG_1 | QSPI_RX_TRIG_1;
-> +		dma_burst =3D 1;
-> +	} else if (((len) >> 4) & 0x1) {
-> +		val |=3D QSPI_TX_TRIG_4 | QSPI_RX_TRIG_4;
-> +		dma_burst =3D 4;
-> +	} else {
-> +		val |=3D QSPI_TX_TRIG_8 | QSPI_RX_TRIG_8;
-> +		dma_burst =3D 8;
-> +	}
-> +
-> +	tegra_qspi_writel(tqspi, val, QSPI_DMA_CTL);
-> +	tqspi->dma_control_reg =3D val;
-> +
-> +	dma_sconfig.device_fc =3D true;
-> +	if (tqspi->cur_direction & DATA_DIR_TX) {
-> +		dma_sconfig.dst_addr =3D tqspi->phys + QSPI_TX_FIFO;
-> +		dma_sconfig.dst_addr_width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
-> +		dma_sconfig.dst_maxburst =3D dma_burst;
-> +		ret =3D dmaengine_slave_config(tqspi->tx_dma_chan, &dma_sconfig);
-> +		if (ret < 0) {
-> +			dev_err(tqspi->dev,
-> +				"DMA slave config failed: %d\n", ret);
-> +			return ret;
-> +		}
-> +
-> +		tegra_qspi_copy_client_txbuf_to_qspi_txbuf(tqspi, t);
-> +		ret =3D tegra_qspi_start_tx_dma(tqspi, len);
-> +		if (ret < 0) {
-> +			dev_err(tqspi->dev,
-> +				"Starting tx dma failed: %d\n", ret);
-
-"TX" and "DMA"
-
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	if (tqspi->cur_direction & DATA_DIR_RX) {
-> +		dma_sconfig.src_addr =3D tqspi->phys + QSPI_RX_FIFO;
-> +		dma_sconfig.src_addr_width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
-> +		dma_sconfig.src_maxburst =3D dma_burst;
-> +		ret =3D dmaengine_slave_config(tqspi->rx_dma_chan, &dma_sconfig);
-> +		if (ret < 0) {
-> +			dev_err(tqspi->dev,
-> +				"DMA slave config failed: %d\n", ret);
-> +			return ret;
-> +		}
-> +
-> +		/* Make the dma buffer to read by dma */
-
-Again, not a useful comment.
-
-> +		dma_sync_single_for_device(tqspi->dev, tqspi->rx_dma_phys,
-> +					   tqspi->dma_buf_size,
-> +					   DMA_FROM_DEVICE);
-> +
-> +		ret =3D tegra_qspi_start_rx_dma(tqspi, len);
-> +		if (ret < 0) {
-> +			dev_err(tqspi->dev,
-> +				"Starting rx dma failed: %d\n", ret);
-
-"RX" and "DMA"
-
-[...]
-> +static int tegra_qspi_init_dma_param(struct tegra_qspi_data *tqspi,
-> +				     bool dma_to_memory)
-> +{
-> +	struct dma_chan *dma_chan;
-> +	u32 *dma_buf;
-> +	dma_addr_t dma_phys;
-> +
-> +	if (!device_property_present(tqspi->dev, "dmas"))
-> +		return 0;
-
-If DMA support is optional, then we definitely don't want to depend on
-TEGRA20_APB_DMA (or any other specific driver).
-
-> +
-> +	dma_chan =3D dma_request_chan(tqspi->dev, dma_to_memory ? "rx" : "tx");
-
-Does this return some specific value when there's no channel for this?
-I.e. what happens if the "dmas" property exists in device tree but we
-don't have a driver for the provider enabled? Since we have code to use
-as fallback, we may want to special case that here and allow the driver
-to continue.
-
-> +	if (IS_ERR(dma_chan))
-> +		return dev_err_probe(tqspi->dev, PTR_ERR(dma_chan),
-> +				     "Dma channel is not available\n");
-
-"DMA"
-
-[...]
-> +static int tegra_qspi_start_transfer_one(struct spi_device *spi,
-> +					 struct spi_transfer *t, u32 command1)
-> +{
-[...]
-> +	command1 &=3D ~QSPI_INTERFACE_WIDTH_MASK;
-> +	if (bus_width =3D=3D SPI_NBITS_QUAD)
-> +		command1 |=3D QSPI_INTERFACE_WIDTH_QUAD;
-> +	else if (bus_width =3D=3D SPI_NBITS_DUAL)
-> +		command1 |=3D QSPI_INTERFACE_WIDTH_DUAL;
-> +	else
-> +		command1 |=3D QSPI_INTERFACE_WIDTH_SINGLE;
-> +	tqspi->command1_reg =3D command1;
-
-This (and in some other places in the driver) could use a couple of
-blank lines to make this less cluttered.
-
-[...]
-> +static void tegra_qspi_cleanup(struct spi_device *spi)
-> +{
-> +	struct tegra_qspi_client_data *cdata =3D spi->controller_data;
-> +
-> +	spi->controller_data =3D NULL;
-> +	if (spi->dev.of_node)
-
-Can this ever fail? Do we support SPI device instantiation from
-somewhere else than DT?
-
-> +		kfree(cdata);
-> +}
-> +
-> +static int tegra_qspi_setup(struct spi_device *spi)
-> +{
-> +	struct tegra_qspi_data *tqspi =3D spi_master_get_devdata(spi->master);
-> +	struct tegra_qspi_client_data *cdata =3D spi->controller_data;
-> +	u32 tx_tap =3D 0, rx_tap =3D 0;
-> +	u32 val;
-> +	unsigned long flags;
-> +	int ret;
-> +
-> +	dev_dbg(&spi->dev, "setup %d bpw, %scpol, %scpha, %dHz\n",
-> +		spi->bits_per_word,
-> +		spi->mode & SPI_CPOL ? "" : "~",
-> +		spi->mode & SPI_CPHA ? "" : "~",
-> +		spi->max_speed_hz);
-> +
-> +	if (!cdata) {
-> +		cdata =3D tegra_qspi_parse_cdata_dt(spi);
-
-Oh... I see that this is actually parsed from the SPI device node, so
-perhaps this is okay to do.
-
-[...]
-> +static int tegra_qspi_transfer_one_message(struct spi_master *master,
-> +					   struct spi_message *msg)
-> +{
-[...]
-> +		is_first_msg =3D false;
-> +		ret =3D wait_for_completion_timeout(&tqspi->xfer_completion,
-> +						  QSPI_DMA_TIMEOUT);
-> +		if (WARN_ON(ret =3D=3D 0)) {
-> +			dev_err(tqspi->dev,
-> +				"qspi transfer timeout: %d\n", ret);
-
-"QSPI", or alternatively leave this out completely because it should be
-obvious that the transfer that failed is a QSPI transfer just from the
-device name.
-
-> +			if (tqspi->is_curr_dma_xfer &&
-> +			    (tqspi->cur_direction & DATA_DIR_TX))
-> +				dmaengine_terminate_all(tqspi->tx_dma_chan);
-> +			if (tqspi->is_curr_dma_xfer &&
-> +			    (tqspi->cur_direction & DATA_DIR_RX))
-> +				dmaengine_terminate_all(tqspi->rx_dma_chan);
-> +			ret =3D -EIO;
-> +			tegra_qspi_dump_regs(tqspi);
-> +			tegra_qspi_flush_fifos(tqspi);
-> +			reset_control_assert(tqspi->rst);
-> +			udelay(2);
-> +			reset_control_deassert(tqspi->rst);
-> +			goto exit;
-> +		}
-> +
-> +		if (tqspi->tx_status ||  tqspi->rx_status) {
-> +			ret =3D -EIO;
-> +			dev_err(tqspi->dev, "error in transfer: %d\n", ret);
-
-Would it make sense to output tx_status and/or rx_status in this message
-rather than -EIO unconditionally?
-
-[...]
-> +static irqreturn_t handle_cpu_based_xfer(struct tegra_qspi_data *tqspi)
-> +{
-> +	struct spi_transfer *t =3D tqspi->curr_xfer;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&tqspi->lock, flags);
-> +	if (tqspi->tx_status ||  tqspi->rx_status) {
-> +		dev_err(tqspi->dev, "CpuXfer ERROR bit set 0x%x\n",
-> +			tqspi->status_reg);
-> +		dev_err(tqspi->dev, "CpuXfer 0x%08x:0x%08x\n",
-> +			tqspi->command1_reg, tqspi->dma_control_reg);
-> +		tegra_qspi_dump_regs(tqspi);
-> +		tegra_qspi_flush_fifos(tqspi);
-> +		complete(&tqspi->xfer_completion);
-> +		spin_unlock_irqrestore(&tqspi->lock, flags);
-> +		reset_control_assert(tqspi->rst);
-> +		udelay(2);
-> +		reset_control_deassert(tqspi->rst);
-> +		return IRQ_HANDLED;
-> +	}
-
-Can this error handling be somehow unified with the DMA error handling?
-Having markers such as "CpuXfer" in error messages is not really helpful
-to users. Maybe have the driver output an INFO message or so during
-probe when it falls back to PIO mode, that would be a good enough
-indicator to someone debugging some issue that PIO mode is being used.
-And then you can just treat transfer failures more uniformly.
-
-Thierry
-
---TECbwuUcC4y1JUON
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/KJ10ACgkQ3SOs138+
-s6ELAxAAhsSBbtG4BQPdZln9PRwuDv+Jyu6IY4GLbQgJ0QFSqHu9IXSmx1ENuInx
-+16g8LlX6Tf6S2UA+qvg/VJeeWEYRuNQCbTJHWZf+ZBJEK2S+/k6BApd42AYyixD
-I1bd6q93k7ibLtaAZzPIMQQEhzBvF/0mW0JzIQ7ixiSg2WIYnXWHoOtEmiM0LJZS
-LDSspIm1kuR5b60psDDB9+zeiA86cJfaUt07htH5j7fc8d3qprWUv36ygbOiOLTN
-smpYBzcJO00bf2ZBnr8CHHup20JXzrqKuHN5SISa8YFjXAKqb7jfZbx/Qh5DERSd
-qxDEz+L3h3/o3e/T73SZAc6eViDGpI+F5H2DvCo5WNlLcJKlmxJXp05tkMbBDUsu
-ATQs7Ds6qA5Gl4ZDcVbbxE2OiwfLzhPdnM1hhNbS0wNezoqWuh6BNXeHAn5qCIAO
-nsJfuhXUcui1l21oFDQIHavdqXSdvxOf/6o5Xyk6OzD1HOvXDf49vTlsOVkmUBOv
-F40jCdT802494sOzj+K0kHXrcJ+oQKmDC5LZ2FeBBEV6l9WAXwE9ulxXa3ubtS8W
-MD6cH+aw7lnhrxKT4WALhnwZXE5wiebeGRac89woSSciI/gXPMxOIX4fsqHpTHyD
-M7ZP9QoZbioodrVBd7U0Ysrl3AKppc5qp54lOWfqjfBeu+l4Zc0=
-=OZBk
------END PGP SIGNATURE-----
-
---TECbwuUcC4y1JUON--
+Content-Transfer-Encoding: 8bit
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bbe2ba04c5a92a49db8a42c850a5a2f6481e47eb
+commit: ee0a49a6870ea75e25b4d4984c1bb6b3b7c65f2b powerpc/uaccess: Switch __put_user_size_allowed() to __put_user_asm_goto()
+date:   3 months ago
+config: powerpc-randconfig-r016-20201204 (attached as .config)
+compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 32c501dd88b62787d3a5ffda7aabcf4650dbe3cd)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install powerpc cross compiling tool for clang build
+        # apt-get install binutils-powerpc-linux-gnu
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ee0a49a6870ea75e25b4d4984c1bb6b3b7c65f2b
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout ee0a49a6870ea75e25b4d4984c1bb6b3b7c65f2b
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/android/binder.c:5015:13: warning: stack frame size of 2160 bytes in function 'binder_ioctl' [-Wframe-larger-than=]
+   static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+               ^
+   1 warning generated.
+
+vim +/binder_ioctl +5015 drivers/android/binder.c
+
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5014  
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03 @5015  static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5016  {
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5017  	int ret;
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5018  	struct binder_proc *proc = filp->private_data;
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5019  	struct binder_thread *thread;
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5020  	unsigned int size = _IOC_SIZE(cmd);
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5021  	void __user *ubuf = (void __user *)arg;
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5022  
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5023  	/*pr_info("binder_ioctl: %d:%d %x %lx\n",
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5024  			proc->pid, current->pid, cmd, arg);*/
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5025  
+4175e2b46fd4b9 drivers/android/binder.c         Sherry Yang        2017-08-23  5026  	binder_selftest_alloc(&proc->alloc);
+4175e2b46fd4b9 drivers/android/binder.c         Sherry Yang        2017-08-23  5027  
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5028  	trace_binder_ioctl(cmd, arg);
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5029  
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5030  	ret = wait_event_interruptible(binder_user_error_wait, binder_stop_on_user_error < 2);
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5031  	if (ret)
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5032  		goto err_unlocked;
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5033  
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5034  	thread = binder_get_thread(proc);
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5035  	if (thread == NULL) {
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5036  		ret = -ENOMEM;
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5037  		goto err;
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5038  	}
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5039  
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5040  	switch (cmd) {
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5041  	case BINDER_WRITE_READ:
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5042  		ret = binder_ioctl_write_read(filp, cmd, arg, thread);
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5043  		if (ret)
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5044  			goto err;
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5045  		break;
+b3e6861283790d drivers/android/binder.c         Todd Kjos          2017-06-29  5046  	case BINDER_SET_MAX_THREADS: {
+b3e6861283790d drivers/android/binder.c         Todd Kjos          2017-06-29  5047  		int max_threads;
+b3e6861283790d drivers/android/binder.c         Todd Kjos          2017-06-29  5048  
+b3e6861283790d drivers/android/binder.c         Todd Kjos          2017-06-29  5049  		if (copy_from_user(&max_threads, ubuf,
+b3e6861283790d drivers/android/binder.c         Todd Kjos          2017-06-29  5050  				   sizeof(max_threads))) {
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5051  			ret = -EINVAL;
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5052  			goto err;
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5053  		}
+b3e6861283790d drivers/android/binder.c         Todd Kjos          2017-06-29  5054  		binder_inner_proc_lock(proc);
+b3e6861283790d drivers/android/binder.c         Todd Kjos          2017-06-29  5055  		proc->max_threads = max_threads;
+b3e6861283790d drivers/android/binder.c         Todd Kjos          2017-06-29  5056  		binder_inner_proc_unlock(proc);
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5057  		break;
+b3e6861283790d drivers/android/binder.c         Todd Kjos          2017-06-29  5058  	}
+ec74136ded792d drivers/android/binder.c         Todd Kjos          2019-01-14  5059  	case BINDER_SET_CONTEXT_MGR_EXT: {
+ec74136ded792d drivers/android/binder.c         Todd Kjos          2019-01-14  5060  		struct flat_binder_object fbo;
+ec74136ded792d drivers/android/binder.c         Todd Kjos          2019-01-14  5061  
+ec74136ded792d drivers/android/binder.c         Todd Kjos          2019-01-14  5062  		if (copy_from_user(&fbo, ubuf, sizeof(fbo))) {
+ec74136ded792d drivers/android/binder.c         Todd Kjos          2019-01-14  5063  			ret = -EINVAL;
+ec74136ded792d drivers/android/binder.c         Todd Kjos          2019-01-14  5064  			goto err;
+ec74136ded792d drivers/android/binder.c         Todd Kjos          2019-01-14  5065  		}
+ec74136ded792d drivers/android/binder.c         Todd Kjos          2019-01-14  5066  		ret = binder_ioctl_set_ctx_mgr(filp, &fbo);
+ec74136ded792d drivers/android/binder.c         Todd Kjos          2019-01-14  5067  		if (ret)
+ec74136ded792d drivers/android/binder.c         Todd Kjos          2019-01-14  5068  			goto err;
+ec74136ded792d drivers/android/binder.c         Todd Kjos          2019-01-14  5069  		break;
+ec74136ded792d drivers/android/binder.c         Todd Kjos          2019-01-14  5070  	}
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5071  	case BINDER_SET_CONTEXT_MGR:
+ec74136ded792d drivers/android/binder.c         Todd Kjos          2019-01-14  5072  		ret = binder_ioctl_set_ctx_mgr(filp, NULL);
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5073  		if (ret)
+78260ac625e91d drivers/staging/android/binder.c Tair Rzayev        2014-06-03  5074  			goto err;
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5075  		break;
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5076  	case BINDER_THREAD_EXIT:
+56b468fc709b2b drivers/staging/android/binder.c Anmol Sarma        2012-10-30  5077  		binder_debug(BINDER_DEBUG_THREADS, "%d:%d exit\n",
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5078  			     proc->pid, thread->pid);
+7a4408c6bd3eb1 drivers/android/binder.c         Todd Kjos          2017-06-29  5079  		binder_thread_release(proc, thread);
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5080  		thread = NULL;
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5081  		break;
+36c89c0a6bebaf drivers/staging/android/binder.c Mathieu Maret      2014-04-15  5082  	case BINDER_VERSION: {
+36c89c0a6bebaf drivers/staging/android/binder.c Mathieu Maret      2014-04-15  5083  		struct binder_version __user *ver = ubuf;
+36c89c0a6bebaf drivers/staging/android/binder.c Mathieu Maret      2014-04-15  5084  
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5085  		if (size != sizeof(struct binder_version)) {
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5086  			ret = -EINVAL;
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5087  			goto err;
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5088  		}
+36c89c0a6bebaf drivers/staging/android/binder.c Mathieu Maret      2014-04-15  5089  		if (put_user(BINDER_CURRENT_PROTOCOL_VERSION,
+36c89c0a6bebaf drivers/staging/android/binder.c Mathieu Maret      2014-04-15  5090  			     &ver->protocol_version)) {
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5091  			ret = -EINVAL;
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5092  			goto err;
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5093  		}
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5094  		break;
+36c89c0a6bebaf drivers/staging/android/binder.c Mathieu Maret      2014-04-15  5095  	}
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5096  	case BINDER_GET_NODE_INFO_FOR_REF: {
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5097  		struct binder_node_info_for_ref info;
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5098  
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5099  		if (copy_from_user(&info, ubuf, sizeof(info))) {
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5100  			ret = -EFAULT;
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5101  			goto err;
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5102  		}
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5103  
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5104  		ret = binder_ioctl_get_node_info_for_ref(proc, &info);
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5105  		if (ret < 0)
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5106  			goto err;
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5107  
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5108  		if (copy_to_user(ubuf, &info, sizeof(info))) {
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5109  			ret = -EFAULT;
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5110  			goto err;
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5111  		}
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5112  
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5113  		break;
+b7e6a8961b5d6d drivers/android/binder.c         Martijn Coenen     2018-09-07  5114  	}
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5115  	case BINDER_GET_NODE_DEBUG_INFO: {
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5116  		struct binder_node_debug_info info;
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5117  
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5118  		if (copy_from_user(&info, ubuf, sizeof(info))) {
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5119  			ret = -EFAULT;
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5120  			goto err;
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5121  		}
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5122  
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5123  		ret = binder_ioctl_get_node_debug_info(proc, &info);
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5124  		if (ret < 0)
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5125  			goto err;
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5126  
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5127  		if (copy_to_user(ubuf, &info, sizeof(info))) {
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5128  			ret = -EFAULT;
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5129  			goto err;
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5130  		}
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5131  		break;
+abcc61537e3566 drivers/android/binder.c         Colin Cross        2017-08-31  5132  	}
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5133  	default:
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5134  		ret = -EINVAL;
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5135  		goto err;
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5136  	}
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5137  	ret = 0;
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5138  err:
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5139  	if (thread)
+08dabceefee0ed drivers/android/binder.c         Todd Kjos          2017-06-29  5140  		thread->looper_need_return = false;
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5141  	wait_event_interruptible(binder_user_error_wait, binder_stop_on_user_error < 2);
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5142  	if (ret && ret != -ERESTARTSYS)
+56b468fc709b2b drivers/staging/android/binder.c Anmol Sarma        2012-10-30  5143  		pr_info("%d:%d ioctl %x %lx returned %d\n", proc->pid, current->pid, cmd, arg, ret);
+975a1ac9a9fe65 drivers/staging/android/binder.c Arve Hjønnevåg     2012-10-16  5144  err_unlocked:
+975a1ac9a9fe65 drivers/staging/android/binder.c Arve Hjønnevåg     2012-10-16  5145  	trace_binder_ioctl_done(ret);
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5146  	return ret;
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5147  }
+355b0502f6efea drivers/staging/android/binder.c Greg Kroah-Hartman 2011-11-30  5148  
+
+:::::: The code at line 5015 was first introduced by commit
+:::::: 78260ac625e91d2402d72dd2f8c7109f98c1d19a staging: android: binder.c: binder_ioctl() cleanup
+
+:::::: TO: Tair Rzayev <tair.rzayev@gmail.com>
+:::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--bp/iNruPH9dso1Pn
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+
+--bp/iNruPH9dso1Pn--
