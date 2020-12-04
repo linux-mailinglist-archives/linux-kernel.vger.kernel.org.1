@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66E72CEFD0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 486422CEFDC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730340AbgLDOjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:39:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38862 "EHLO
+        id S2388022AbgLDOkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:40:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730320AbgLDOjX (ORCPT
+        with ESMTP id S2387781AbgLDOkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:39:23 -0500
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833F4C061A53
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:38:43 -0800 (PST)
-Received: by mail-ua1-x943.google.com with SMTP id x13so1911174uar.4
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:38:43 -0800 (PST)
+        Fri, 4 Dec 2020 09:40:18 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3ADC08ED7E
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:39:06 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id l11so7974781lfg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:39:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vwpuxaaZbL1aUgf+1bfZQEaatrFcmPToO36aqopJneA=;
-        b=V0/ZJW1pimWXHb5XHK92onAUgt5du6OUKqfD2kvZ4I6vLZAh/oD4cWmR2aQUdUozGm
-         BFw4K0Jr/Dte3vzRwP0a+qYRGbHGniiTs0I7D0ZV3wwG0nmizWRi6ps/ghOXAQzVbdmp
-         +q3fWU+OtVKd4IS92/mn4mZmZDLJ2WQhSlnkF/YowL6HNPY4C7a+3ZgF1V894wRjKGWg
-         OH4FllR62z/9BRG6zmmLWRycDiXFQtvUApmWBask4Kt6gb6BkMIp6OjDEb9+BKUX7yve
-         dUi/mscp6gKqu6JrDggWFjrlY3n1vkXGZ/MaK7Se9PWoDUS6O+TEh0y+U+XNoDwl1yWN
-         a+pA==
+        bh=gCvgf9SsePfgxYMuD1WNMKjq/viyendYVg7MdniZolA=;
+        b=VeTyCc9cXxNLbp1W4GPY73r1xI0NKKLDr84XjBcpHqLokqbvULGt9MwbbkPly0tSu6
+         29+65aa8KGh0MGS5C+EZdKq33GMRLQKua8u3yLZAKNEUGogjVYeHaaSfAfWN6h1aRUqh
+         lG6q4IIMR//hI1DZKGIvDJXWtYDBhq5fAxvENZVaFRFzWpuHGK7ce6beir0KJuXcEJ90
+         YwSI4aZJpkdQ41QXopHfLQGWz1c3Il9UrRXfmaPSbfsizkF9AxPz7dEPHon37TaJ4K2v
+         dnLkWZpWyLGYC4OhbPg5YfQ7SvGXZxL3dhbd5IfoW3LbjOAnwoQWv+UmcTcJu+RnrprB
+         m5Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vwpuxaaZbL1aUgf+1bfZQEaatrFcmPToO36aqopJneA=;
-        b=U7Njh73HK5E18PpydbxWw0LMrPsmfGn5/oT8uyRxc6nFuv1moodHnxn6dKRimtILRs
-         zg0iKQJpJ7CSaXL/6V4EPnWQkRL+jQ7E+PdH+xCBOd25sQ8fr/pTxGwNzzlwpGzUwh1U
-         Vdltvx/FljtZNlAsLP8XZ5cc0BXIICWWEH72y7/nb8J7fLPjXVmY4hxFdQpaGOLQoocC
-         ooA8eDh26mj1PG5kcQmkGawf8BGNWmh8BOZ1Xj1ynTuyriDbA8yOKJHhLVvKl394rzdz
-         ADLhX4H2u10IrvzsUzFmxLiTrUxgDS4YIWoK3c6iUeQ1dPe9Go3VKr8l2qc4wUkGyOUd
-         r5FA==
-X-Gm-Message-State: AOAM532gaT380Fm2jxN6U/o51dFrRAnDbPJGfLBOigynLnMZzyLGI762
-        CM7ItZBfgtXi/rxvXdrvPWKAiKA60Dztscbd6oJHvA==
-X-Google-Smtp-Source: ABdhPJzRn9F4pmIEZTb+X83QUxDi1ljME12Y/RmmipMsNVsDfDtmIvA4x3ulGS73cdI+/Aq6lQmwjmX/e6zQsbxPgno=
-X-Received: by 2002:a9f:3e4b:: with SMTP id c11mr3325774uaj.19.1607092722711;
- Fri, 04 Dec 2020 06:38:42 -0800 (PST)
+        bh=gCvgf9SsePfgxYMuD1WNMKjq/viyendYVg7MdniZolA=;
+        b=ksj2FakwzP1d6UaYQdxllj7iVvyT3+87BhWcLa8HlJ4ZYuj5R8Zaa1z9+Dqy6qw4Zb
+         ptivzylpw146JYRDv9rvm5BgiQIdMgnMnQAFsX2Jxlggj98ko/gQd7ZLeSA6VWSmwQuU
+         KFZbwE2kRH9hMOm3dsuznFRAVbgZpQv4geFEXrC4m2G3OfYsXycWkK7VMsByo1fXd9Tu
+         D/R831RrUuOFBVIhzxBrgfo43BABdISW48z60W225RN3TJefrJYTmchzOAe6y5gW3wil
+         V8boByDCVH1k7r3mitI77vh/kegzy4uAf55ddOg8cKSRdFMXjMHMT6mcAy96SRG1rXBd
+         sFyA==
+X-Gm-Message-State: AOAM5327gO0uzumpX5QWOJc1fTGu075TFtCvPyCHdHuxeMoW5u13DSTV
+        QV6L2/9I0L8lbiSOfWz3R5bfWq7QDWJAEAGv3si3Nw==
+X-Google-Smtp-Source: ABdhPJyXme2sn852/oSVQ2LSWRFUTlW9YLFL6WModQ4nu/BipCDYdbPjNCrjJI2L4cpLI/5sXGDNK7CadH2SUm1+x7I=
+X-Received: by 2002:ac2:498e:: with SMTP id f14mr3229359lfl.59.1607092745405;
+ Fri, 04 Dec 2020 06:39:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20201125110145.2824-1-benchuanggli@gmail.com>
-In-Reply-To: <20201125110145.2824-1-benchuanggli@gmail.com>
+References: <5fa17dfe4b42abefd84b4cbb7b8bcd4d31398f40.1606914986.git.michal.simek@xilinx.com>
+In-Reply-To: <5fa17dfe4b42abefd84b4cbb7b8bcd4d31398f40.1606914986.git.michal.simek@xilinx.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 4 Dec 2020 15:38:06 +0100
-Message-ID: <CAPDyKFpCJrHpb0gzDY5Tpg=7YnKpYr80q7m3KaQqBLnNgRPLmw@mail.gmail.com>
-Subject: Re: [PATCH,v2] mmc: sdhci-pci-gli: Disable slow mode in HS400 mode
- for GL9763E
-To:     Ben Chuang <benchuanggli@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        greg.tu@genesyslogic.com.tw
+Date:   Fri, 4 Dec 2020 15:38:17 +0100
+Message-ID: <CAPDyKFqTqKeV0kjqddQVQkdJg4iu04Yq+aT=4A6_bVxMZzwYeg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mmc: Fix xlnx,mio-bank property values for
+ arasan driver
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Simek <monstr@monstr.eu>, git@xilinx.com,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Nov 2020 at 12:01, Ben Chuang <benchuanggli@gmail.com> wrote:
+On Wed, 2 Dec 2020 at 14:16, Michal Simek <michal.simek@xilinx.com> wrote:
 >
-> From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> Xilinx ZynqMP has 3 mio banks and all of them are valid. That's why also
+> list the first one which is missing. Property is enumeration not range.
 >
-> The GL9763E uses 150Mhz (slow mode) by default in HS400 mode. In order
-> to make HS400 mode run at 200Mhz, the slow mode needs to be turned off.
->
-> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 
 Applied for next, thanks!
 
@@ -79,34 +78,23 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/sdhci-pci-gli.c | 7 +++++++
->  1 file changed, 7 insertions(+)
 >
-> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-> index 9887485a4134..d45d7e529150 100644
-> --- a/drivers/mmc/host/sdhci-pci-gli.c
-> +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> @@ -87,6 +87,9 @@
->  #define PCIE_GLI_9763E_SCR      0x8E0
->  #define   GLI_9763E_SCR_AXI_REQ           BIT(9)
+>  Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> +#define PCIE_GLI_9763E_MMC_CTRL  0x960
-> +#define   GLI_9763E_HS400_SLOW     BIT(3)
-> +
->  #define SDHCI_GLI_9763E_CQE_BASE_ADDR   0x200
->  #define GLI_9763E_CQE_TRNS_MODE           (SDHCI_TRNS_MULTI | \
->                                     SDHCI_TRNS_BLK_CNT_EN | \
-> @@ -764,6 +767,10 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
->         value |= GLI_9763E_SCR_AXI_REQ;
->         pci_write_config_dword(pdev, PCIE_GLI_9763E_SCR, value);
+> diff --git a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
+> index 58fe9d02a781..8958e54e522d 100644
+> --- a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
+> @@ -147,7 +147,7 @@ properties:
 >
-> +       pci_read_config_dword(pdev, PCIE_GLI_9763E_MMC_CTRL, &value);
-> +       value &= ~GLI_9763E_HS400_SLOW;
-> +       pci_write_config_dword(pdev, PCIE_GLI_9763E_MMC_CTRL, value);
-> +
->         pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
->         value &= ~GLI_9763E_VHS_REV;
->         value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
+>    xlnx,mio-bank:
+>      $ref: /schemas/types.yaml#/definitions/uint32
+> -    enum: [0, 2]
+> +    enum: [0, 1, 2]
+>      default: 0
+>      description:
+>        The MIO bank number in which the command and data lines are configured.
 > --
 > 2.29.2
 >
