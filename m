@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174D32CE4AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D97E2CE4AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbgLDBBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:01:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
+        id S1730021AbgLDBCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:02:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726075AbgLDBBj (ORCPT
+        with ESMTP id S1726075AbgLDBCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:01:39 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6ACC061A51;
-        Thu,  3 Dec 2020 17:00:58 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id jx16so6261884ejb.10;
-        Thu, 03 Dec 2020 17:00:58 -0800 (PST)
+        Thu, 3 Dec 2020 20:02:44 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352D9C061A4F;
+        Thu,  3 Dec 2020 17:02:04 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id o4so2512150pgj.0;
+        Thu, 03 Dec 2020 17:02:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8n6wwjYgChlAVqfmH483TiY/2xa2k7YWDunQ91Fs8HQ=;
-        b=k+egXQz0y+luTnzzFHeF7ngy0eK3UueIg9YxEdNSERA+uo8POU/JeCb22f0xILB+tc
-         GPDQG/5jQBW6uA2pDVLiWPGo55Y2c7iJ7OcIdhaSBT9gocKE++p0XvYhxQnbB29Go8Pr
-         GL/iLmeIe1n43MC5RcBGFsE4hLErEldpok+mO1cMQfK3LHj9XC5ejBnkEcQyVLa7Qgci
-         GFS9rTq+dhqix0xTH+KxkcqpyVXMb+QNCWLgrJnmHnny9ZlsRZ62l+X8eVWcAIBtsmvp
-         VB0/k7sAydXU08xXfe9Pn/rtNbwj4nt08Zkjq7wRgFRlpbO9CTWWK8QkkJlxx1De0iqP
-         0+jA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=+k4B/H3vzmToeDmgTEl/tBZ/Z3trqu0Vfopl/HAWVbU=;
+        b=PlFMalRnzad67ULuWCrUCJ7tSt6b10UeKjOOpecBgy4+Ucx4HxbOfAEF5D+sYrfK4u
+         Myft8BTTEgDlTozdYkXkN1SLJnExxbSqDUOYPQIOUQwC8NI3zaagKM2rQyM2aVwXBHKG
+         CK9/WK6+hckH6fhgDhlrTA/fvhKWrSuERWO2uvTa7rauO87bK0tNEnPh1j86viIGcLHV
+         mlbpHZGVzzfBS8e28Ux3rHsgITcOqx0cHyrfGfsPi4HOOvmp9vpkx4xhQF5mnNNPxgkI
+         4nJsnFWAYZQlZOTYddHpKXYGTaEwIhdpUarcdnPBFGuY2ieuVsPME32iNTZJ9adkAjVL
+         vJtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8n6wwjYgChlAVqfmH483TiY/2xa2k7YWDunQ91Fs8HQ=;
-        b=jUhYZJzd2i9tn1m4LkU7G7zxTh1rsIrBR9KvqD1w9C2VLYlvfSrJc1hJo/vg1UdlcK
-         DoIlNTznljrryAdfHN0IRQQadpXFaBQAzvgIfktDetb8+YuYJugibacTttuqlqZhtc3v
-         wLcXMDx0RVAlb+vrGq68lg6bEXu0LJ6eFHc2dwHxbUxdqGfz8iqfARDqytfAeVPJZYTq
-         kMrH2FvVT6qIGoKOMKJsQ2qDZ7b3yYodeRLmjsXM3Wse9QkISrvBaGrj/jV54DVsj4MK
-         t0v1ylQTHATB90w1PCaNtAuok1AAAbhipwVxhqL2Y6FBt2R4QHsSAY8sXn6MltsKeWGz
-         qcWg==
-X-Gm-Message-State: AOAM531Cl2a/2XupLlDtwjjydK4b2SRsO/HBwSnMpVDK60ZiqzYnehG4
-        u6b0OKgLpTwehWlBfNswfIBssGqLkeU=
-X-Google-Smtp-Source: ABdhPJzGf4h/EtobVqYCGg7XXprLO3dPpHol0SyIoQRgJTUotQVWlYjOjhNJdOtyx60n1h7IPUlH+Q==
-X-Received: by 2002:a17:906:2708:: with SMTP id z8mr4747104ejc.428.1607043652735;
-        Thu, 03 Dec 2020 17:00:52 -0800 (PST)
-Received: from skbuf ([188.25.2.120])
-        by smtp.gmail.com with ESMTPSA id k3sm1936776ejd.36.2020.12.03.17.00.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 17:00:52 -0800 (PST)
-Date:   Fri, 4 Dec 2020 03:00:50 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Christian Eggers <ceggers@arri.de>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v5 9/9] net: dsa: microchip: ksz9477: add
- periodic output support
-Message-ID: <20201204010050.xbu23yynlwt7jskg@skbuf>
-References: <20201203102117.8995-1-ceggers@arri.de>
- <20201203102117.8995-10-ceggers@arri.de>
- <20201203141255.GF4734@hoboy.vegasvil.org>
- <11406377.LS7tM95F4J@n95hx1g2>
- <20201204004556.GB18560@hoboy.vegasvil.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=+k4B/H3vzmToeDmgTEl/tBZ/Z3trqu0Vfopl/HAWVbU=;
+        b=Hbf8W8huWVnkMSupm3YKYLfJUIHufIifETDrDUv044l0rUjjSaqV0saRd9OCdkqcS4
+         lddbyXQHLX6RLViOMmKBd/QNiD//xt+/B6O+J+2mLJUjq/z/EqZA5p8VzQK6Xws5nIwq
+         T7l0X5czSohteXUX3Sz9eab9TttBom4LVxn1zCZmQ3TVLry6x4WhuFGbql/7eFLcYOAw
+         yfL920Xjl6XLX0uPmvMf3bdyYoV3PTUh7vtl6YtktbXHOoUiT/9Z35ysrmpS2Oycjuui
+         WoiVdAB+zE+Nk9qAor3FT3TqLzNtpqQWQggfDs8e7LPOGtlJJgWw3WLdaDJ/dLBzQx1u
+         wOXQ==
+X-Gm-Message-State: AOAM530SKF11y04XyrYqJbjDxcb3UQ7bKRaXgZJ95eSdJsedWe2lfqi2
+        E3cw82XDvqWaO7XEBjHKJSo=
+X-Google-Smtp-Source: ABdhPJx0cmn7UDpPn24WNrHRSy4DINS4UcehR/0yc6O0Ap5eHPixjc50wQNrWDLZFYasilknGCA31Q==
+X-Received: by 2002:a63:1959:: with SMTP id 25mr5378796pgz.201.1607043723792;
+        Thu, 03 Dec 2020 17:02:03 -0800 (PST)
+Received: from [10.10.15.233] (220-135-135-179.HINET-IP.hinet.net. [220.135.135.179])
+        by smtp.gmail.com with ESMTPSA id gw21sm452406pjb.28.2020.12.03.17.02.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 17:02:02 -0800 (PST)
+Subject: Re: [PATCH v6] hwmon: Add driver for STMicroelectronics PM6764
+ Voltage Regulator
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        alan@redhat.com
+References: <20201202132334.GA168086@roeck-us.net>
+ <339c66fe-e946-d8b7-1ca7-aa33c3ad1eb3@gmail.com>
+ <20201203154814.GA85686@roeck-us.net>
+From:   Charles <hsu.yungteng@gmail.com>
+Message-ID: <b43f18ba-b67e-bd0b-79da-a057d3ee3843@gmail.com>
+Date:   Fri, 4 Dec 2020 09:02:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204004556.GB18560@hoboy.vegasvil.org>
+In-Reply-To: <20201203154814.GA85686@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 04:45:56PM -0800, Richard Cochran wrote:
-> On Thu, Dec 03, 2020 at 04:36:26PM +0100, Christian Eggers wrote:
-> > Should ptp_sysfs be extended with a "pulse" attribute with calls
-> > enable() with only PTP_PEROUT_DUTY_CYCLE set?
+On 3/12/2020 下午11:48, Guenter Roeck wrote:
+> On Thu, Dec 03, 2020 at 08:34:32PM +0800, Charles wrote:
+> [ ... ]
+>> It's really weird. I sent a mail to myself, and it looks good.
+>> @@ -220,6 +220,15 @@ config SENSORS_MP2975
+>>   	  This driver can also be built as a module. If so, the module will
+>>   	  be called mp2975.
+>> +config SENSORS_PM6764TR
+>>
+> But the above doesn't look good. The empty line is again missing.
+> It looks like your e-mail system manipulates/modifies the message
+> and removes that line.
 >
-> Yes, that would make sense.  It would bring sysfs back to feature
-> parity with the ioctls.
+>> I have applied my patch with "git am", and it did work.
+>> Applying: Add-driver-for-STMicroelectronics-PM6764-Voltage-Regulator
+>>
+>> I think I should use another e-mail system.
+> That may be a good idea. FWIW, I use msmtp, and git send-email.
+>
+> Thanks,
+> Guenter
 
-Which is a good thing?
+I will try this way to send my patch, thank you.
 
-Anyway, Christian, if you do decide to do that, here's some context why
-I didn't do it when I added the additional knobs for periodic output:
-https://www.mail-archive.com/linuxptp-devel@lists.sourceforge.net/msg04150.html
+Charles
+
