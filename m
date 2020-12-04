@@ -2,167 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5BF2CF6C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE8E2CF6CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:34:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgLDWbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 17:31:17 -0500
-Received: from mx0b-000eb902.pphosted.com ([205.220.177.212]:54618 "EHLO
-        mx0b-000eb902.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726149AbgLDWbQ (ORCPT
+        id S1726149AbgLDWdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 17:33:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgLDWdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 17:31:16 -0500
-Received: from pps.filterd (m0220299.ppops.net [127.0.0.1])
-        by mx0a-000eb902.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B4MUStJ021631;
-        Fri, 4 Dec 2020 16:30:28 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garmin.com; h=from : to : subject :
- date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pps1;
- bh=s9AwL8mZyEkWKFjJfD1YRSi+5QbLOdQkxOuRumwLvoo=;
- b=dN64vp8T7er3yN25aMzE19aHZWnXj2dfw9XVx+IWb793GtdCdxKUQ00QNu9xElgWyL4G
- +7n7AxA0IlasrPAl250oBkmceJygybdCZYt5p5hHMYxPa4s9cs69jtfd8M376TNZQuuh
- AOfTxpaoGZqT2zE74CQFUu13pCiJdLTV2TdNKRXeeBtQYimCbfDC23l0xQgxq1wmnvTl
- PqYulBvhPROW000l74JejmnviRYlvEmTv2Zw7dZWtgdgAbNReQLr98Zwcwpiwn3JerMP
- /xuRuKwrvqfo+QxQhYX9ZA4hL5eVkT6IQ2k5XZ/lonbEzWEqwSRwX0elarvDsZweKoXP Mw== 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
-        by mx0a-000eb902.pphosted.com with ESMTP id 355wbrd1v5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 16:30:28 -0600
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DIH6wRUs/XA9qxcxQj5MmVJqH/AUhb674uQ9WSUImkAUvzwyMlWPpUUqeKJTzrxRImbqfU/JLUga9hUOUQRCEo9HPkB2aTbXzXp/dHfZjdZTmQx44/yv2yPgXNghGAqJBzD8ovSc7iVj0YJyazDhynQFBHwje8LSBaMH/YABKHZffjGiPP+uIGosZv0P1T19Pl5AMqMPaYHjKYwxDtlRBWWbVg2hWzG1mQV0EZghbhYAjc/YyRzd2VM/e7E/QhAKKlqPo/gDXsr6D30BtGEQeXC3pKV29En3NOXfsvcYBchD+OgDXdpyC2sR96h8pnVlRNapp5/NjrCwfWTSi254HA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s9AwL8mZyEkWKFjJfD1YRSi+5QbLOdQkxOuRumwLvoo=;
- b=ndER5jvSSqGnCFazyB9+vvJUT/P8USTmswutW8qHDCQ/o2ZpbcKdTuOTDJoMaZo3PSXh3J8g5mbNf/O7ubWIY+Q6feylMqB4sjZuiCo8R8uw/EEcl2BAigD78kMTLgJ+Q/+0L+VzJmqXdYcbcJt01V1wpoSPdoqO5qBPBqpB/ioSfMB1mUOKu9XMLNNpIFq5l13Yj9MFu1XavnzcmWIeVQ+Ruk/AUQnX5REQnzWt7Nhu0Sfg+TqNMysx9YX6MG+jjdVAZqcqByfjt49Pb6TEBaRhG3Q2RJA8A/uefpiNn0pEy8yqE3Spfqs/wsNaD/yo0XQW6Gymgdd+IF1n5E7Rdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 204.77.163.244) smtp.rcpttodomain=nvidia.com smtp.mailfrom=garmin.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=garmin.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=garmin.onmicrosoft.com; s=selector1-garmin-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s9AwL8mZyEkWKFjJfD1YRSi+5QbLOdQkxOuRumwLvoo=;
- b=1CIUKwf6UXlIa0pM3XStbxBvKG7GAsV0xHn1a1Ex2e8tqQv0cvwWG8WKrvfszv2hqVZtqt0QQtVMu1InXXHd0UGhbyj9XQ7czg6xnSuTuaqVIHrH20D4JBNdJkMZt1u48hJQI3PH9K+SqSnOdkAJd2ofyTaomuaGusCgpN3Q9ARdkuizt3BSiqyv8C8zkykdl4QM4aftIK0ixNg5vqKdG2gntfh65uCQNjZ53MwymmGffxeevrkf/S6Nu7MXdBmxPxuQl1yg8unP0Rjbx7d8Uj8N03ddJMA2XltxP/NzTGJsjtI5zcATIdJP7WerscCzVt5NeCHVThl7tVddMnNkQQ==
-Received: from MWHPR04CA0035.namprd04.prod.outlook.com (2603:10b6:300:ee::21)
- by CH2PR04MB6805.namprd04.prod.outlook.com (2603:10b6:610:9c::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Fri, 4 Dec
- 2020 22:30:25 +0000
-Received: from MW2NAM10FT043.eop-nam10.prod.protection.outlook.com
- (2603:10b6:300:ee:cafe::9a) by MWHPR04CA0035.outlook.office365.com
- (2603:10b6:300:ee::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend
- Transport; Fri, 4 Dec 2020 22:30:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 204.77.163.244)
- smtp.mailfrom=garmin.com; nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=pass action=none header.from=garmin.com;
-Received-SPF: Pass (protection.outlook.com: domain of garmin.com designates
- 204.77.163.244 as permitted sender) receiver=protection.outlook.com;
- client-ip=204.77.163.244; helo=edgetransport.garmin.com;
-Received: from edgetransport.garmin.com (204.77.163.244) by
- MW2NAM10FT043.mail.protection.outlook.com (10.13.155.9) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3632.20 via Frontend Transport; Fri, 4 Dec 2020 22:30:24 +0000
-Received: from OLAWPA-EXMB2.ad.garmin.com (10.5.144.24) by
- olawpa-edge3.garmin.com (10.60.4.226) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Fri, 4 Dec 2020 16:30:22 -0600
-Received: from OLAWPA-EXMB4.ad.garmin.com (10.5.144.25) by
- OLAWPA-EXMB2.ad.garmin.com (10.5.144.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 4 Dec 2020 16:30:23 -0600
-Received: from OLAWPA-EXMB4.ad.garmin.com ([fe80::d9c:e89c:1ef1:23c]) by
- OLAWPA-EXMB4.ad.garmin.com ([fe80::d9c:e89c:1ef1:23c%23]) with mapi id
- 15.01.2106.004; Fri, 4 Dec 2020 16:30:22 -0600
-From:   "Huang, Joseph" <Joseph.Huang@garmin.com>
-To:     Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] bridge: Fix a deadlock when enabling multicast
- snooping
-Thread-Topic: [PATCH v2] bridge: Fix a deadlock when enabling multicast
- snooping
-Thread-Index: AQHWyoX7oBuHLnFgYUumoQfWnBQaz6nn5HsA//+cZuY=
-Date:   Fri, 4 Dec 2020 22:30:22 +0000
-Message-ID: <977913cfd91b4c6d8fb2e25d8762aaee@garmin.com>
-References: <20201201214047.128948-1-Joseph.Huang@garmin.com>
- <20201204213900.234913-1-Joseph.Huang@garmin.com>,<f771d272-3146-2d8c-391d-87d1db8b8e76@nvidia.com>
-In-Reply-To: <f771d272-3146-2d8c-391d-87d1db8b8e76@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.50.4.7]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 4 Dec 2020 17:33:51 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E75C0613D1;
+        Fri,  4 Dec 2020 14:33:10 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607121189;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YbRXY429jy10ThX2bWwmeNckWbunoi+DH/zVHNz4Hkg=;
+        b=zZgk97fS/Cu1ayNQt8zCSx+RyGvBPt3BEbtm4/2J0+wYSt7qAt6S6lrIbTMFbW5zPvJAU1
+        zR4xvxFeAx/SRlb7YupffZ8F6YfLtK8qQ8zNls/G+rvxmeqVtD770eJ0vGJ9mB8n0/b1JA
+        Cdj9si6bqurOhG4SB5uF58outH8W5uvUm3+K95JPjhBxa13SygviLAmCHaYJeblezOyfLs
+        N+J1GlhrZWDPMVMh28Jz8zrYUtKlIXwRHZFcNT+tvzdKkMPK2NnRAvUPb8d7vVedO7smUv
+        28AQaFm92Jbtf4yp602X8ur9q7xCkWiNgVBSfABcaMLndKkOgSR0sNCxTTlxpg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607121189;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YbRXY429jy10ThX2bWwmeNckWbunoi+DH/zVHNz4Hkg=;
+        b=upIBhyrHbsbvHciDx/4TpyV/LlhEy5Xqw9SdhaA99Phzx/iTH3SYoU7Xz2RPcQPNxHNKwU
+        86WcyyOx8qiQaFAA==
+To:     Ira Weiny <ira.weiny@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        David Howells <dhowells@redhat.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Steve French <sfrench@samba.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Brian King <brking@us.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH 03/17] drivers/gpu: Convert to mem*_page()
+In-Reply-To: <20201204160504.GH1563847@iweiny-DESK2.sc.intel.com>
+References: <20201124060755.1405602-1-ira.weiny@intel.com> <20201124060755.1405602-4-ira.weiny@intel.com> <160648211578.10416.3269409785516897908@jlahtine-mobl.ger.corp.intel.com> <20201204160504.GH1563847@iweiny-DESK2.sc.intel.com>
+Date:   Fri, 04 Dec 2020 23:33:08 +0100
+Message-ID: <878sad9p7f.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5db07108-2a70-4464-57f0-08d898a43195
-X-MS-TrafficTypeDiagnostic: CH2PR04MB6805:
-X-Microsoft-Antispam-PRVS: <CH2PR04MB6805E66BD9D6988ABD2F9D07FBF10@CH2PR04MB6805.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sj1Ienrifm3Lds4R3KuxzfLKgifdruF/xvqpa6p6kpPNRrzmuFfLln09peM5xkq+nbup7H+ylEZPt5NJBOfyxUbNvvHdNNsbEANGBLrLLEHa40uijXX3YS462h/UAsuDDIox4T6wMx8WkFEJ3hkcZKfe7MzmP2nOJ+DInTdY/dlUrWpfwholGfNEBbTRBvZdJvgjlNhKIOEs1qdfFq3NJ8nHt04UYcaFC5ZtI3kXtEy/SLV9USWzvhijUQEFf1SBdgWQzGyZ+Stm6pJzXNzr02mmaE2cQf0pvD+gTrB9jYbi1xwKgqvDpLA1HMRDT+9PLMdOh/Xd2Rg4RwZP6Q8R9v/q9bGFJ7kWtrmcrhc/qu+pLy5CMQ3wUEhc3/2h9FrzE3W+Zb6jG1rTySplIxaKXg==
-X-Forefront-Antispam-Report: CIP:204.77.163.244;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:edgetransport.garmin.com;PTR:extedge.garmin.com;CAT:NONE;SFS:(396003)(346002)(376002)(39860400002)(136003)(46966005)(8676002)(336012)(2616005)(356005)(82310400003)(478600001)(108616005)(110136005)(26005)(47076004)(7696005)(316002)(36756003)(86362001)(24736004)(8936002)(2906002)(82740400003)(7636003)(186003)(70586007)(70206006)(5660300002)(4744005)(426003);DIR:OUT;SFP:1102;
-X-OriginatorOrg: garmin.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 22:30:24.5415
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5db07108-2a70-4464-57f0-08d898a43195
-X-MS-Exchange-CrossTenant-Id: 38d0d425-ba52-4c0a-a03e-2a65c8e82e2d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38d0d425-ba52-4c0a-a03e-2a65c8e82e2d;Ip=[204.77.163.244];Helo=[edgetransport.garmin.com]
-X-MS-Exchange-CrossTenant-AuthSource: MW2NAM10FT043.eop-nam10.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6805
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_12:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
- priorityscore=1501 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
- impostorscore=0 bulkscore=0 phishscore=0 mlxlogscore=835
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040127
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +     if (join_snoopers)
-> > +             br_multicast_join_snoopers(br);
-> > +     else if (leave_snoopers)
-> > +             br_multicast_leave_snoopers(br);
->=20
-> If I'm not missing anything this can be just 1 bool like "change_snoopers=
-" or
-> something which if set to true will check BROPT_MULTICAST_ENABLED and
-> act accordingly, i.e.
-> if (change_snoopers) {
->     if (br_opt_get(br, BROPT_MULTICAST_ENABLED))
->          br_multicast_join_snoopers(br);
->     else
->          br_multicast_leave_snoopers(br); }
->=20
-> This is not really something critical, just an observation. Up to your
-> preference if you decide to leave it with 2 bools. :-)
->=20
-> Cheers,
->  Nik
+On Fri, Dec 04 2020 at 08:05, Ira Weiny wrote:
+> So I think I'm going to submit the base patch to Andrew today (with some
+> cleanups per the comments in this thread).
 
-I wasn't sure how expensive the call to br_opt_get is, so I used a bool for=
- each.
-
-I just checked and it seems that br_opt_get is probably just as cheap as a =
-bool,
-so I'll change it according to what you suggested here.
-
-Thanks for your comments!!
+Could you please base that on tip core/mm where the kmap_local() muck is
+and use kmap_local() right away?
 
 Thanks,
-Joseph=
+
+        tglx
