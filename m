@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45BF2CF103
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B77D92CF12F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:51:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730662AbgLDPrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:47:20 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:57543 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725987AbgLDPrS (ORCPT
+        id S1730895AbgLDPtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:49:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730148AbgLDPtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:47:18 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9982A580144;
-        Fri,  4 Dec 2020 10:46:32 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 04 Dec 2020 10:46:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=0e7pP2gtmRQ29hprbKu2oy4kdew
-        zAhRmyRinSUbFXGI=; b=ZqOkCU/Elo9/DT91sFqoy4VDx/hJNiSyNsU2qc8PyT2
-        l16vgpTu3T+wSQ1hQzcH9FtxzkLK9LXd2DzAFjC1PXrkCB8xaq0zX6exxxmqT9Cf
-        TEmd4yVvVjSrgeO7mxOxPwlaCu0Lyc1quCfbWtaAqsy5u9D4a5EHeP2ps9iY8Hvj
-        EksqeAmlET0KyrUTbCXVT1IPJHJWHkukpmPS9f/FTQIY60fqzoDfZd0gcBy3dzWh
-        9Xb7/Xz9HsIClfQCtD+ibO0CrnQjcrP5q48qzmhFAh4HbPD3th9qX1mfbWGDT0pB
-        YNhiDdx2CiQwAByCXTGzir900BEeUNJoJh26a1xp50w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=0e7pP2
-        gtmRQ29hprbKu2oy4kdewzAhRmyRinSUbFXGI=; b=k6H8oTSs6ROTEyzgDLjEKi
-        2lAZr2+iu5gtcm3wQSwiHZKUBW80StyHcmzxfkOmBay+hU0qjmoqGOf2YLZE8LbR
-        jYODpeYwaG/brVh0Jvqqj6DHZrxAcLk2s5qvZm3uN6BURRrBqtapu4C/693rHkmO
-        c68oCvTLIf2pBoLWj19FW8tNisTVrfyFGE+I57LsEfPI5Fc84EC1FMknBRV8OQuZ
-        uAE4gcfdRQ4d0NzorJQbGoKlyyaNdiCEnuMPw/Z8QWUf51nDCpTnKjBTcVXlMazR
-        tRAotxJBpxHYLftkoFGXCGQDT3EymOJYmidDiNSNv7ssd0g87ntgzMacdEYyg45w
-        ==
-X-ME-Sender: <xms:11nKXx5EFci9Q17YW9szG0v0H8Z-OSzOqUI2Qj-8LV00u7odRUSaKg>
-    <xme:11nKXyvJnWMTX-1UFfAPDhySw4RAITDEa03fUQSthB4gwbyGmi22GCexd7rhlgSw_
-    h_L0mSppfLFcQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeikedgkeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
-    dttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheq
-    necuggftrfgrthhtvghrnhepveeuheejgfffgfeivddukedvkedtleelleeghfeljeeiue
-    eggeevueduudekvdetnecukfhppeekfedrkeeirdejgedrieegnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtoh
-    hm
-X-ME-Proxy: <xmx:11nKXxip3DyQYkY2WZKFwWZU2JejKDs6RREPa9XpmB5LHscX2OpScQ>
-    <xmx:11nKX9rq2U8zSxgENDMmoi5XXFOlHAfQQRa8j7ny06kac5cIRGkdzg>
-    <xmx:11nKX-vVKeR2uvsEI9RSvKLLdy5SupdUDp8hJ8ch-jgaGWBcKc9Qzw>
-    <xmx:2FnKX9wqPWg4zTQCCL6d_pNIsIS_Y-RGvrNQDjVEFooGMRmPEl-7Cg>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id DD5E124005E;
-        Fri,  4 Dec 2020 10:46:30 -0500 (EST)
-Date:   Fri, 4 Dec 2020 16:47:48 +0100
-From:   Greg KH <greg@kroah.com>
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        toddpoynor@google.com, sbranden@broadcom.com, rjui@broadcom.com,
-        speakup@linux-speakup.org, rcy@google.com, f.fainelli@gmail.com,
-        rspringer@google.com, laurent.pinchart@ideasonboard.com,
-        netdev@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        mchehab@kernel.org, nsaenzjulienne@suse.de,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH 04/11] drivers: staging: goldfish: remove unneeded
- MODULE_VERSION() call
-Message-ID: <X8paJN2bDNFZppr1@kroah.com>
-References: <20201203124803.23390-1-info@metux.net>
- <20201203124803.23390-4-info@metux.net>
+        Fri, 4 Dec 2020 10:49:41 -0500
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D85C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 07:48:56 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id y11so2939707qvu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:48:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=PA56DtQ3U6OS3ADt3JtiQH9iJ5okRT03tMtGP16RXIA=;
+        b=p4AZo33WMTXTpz74XuTaQCvr8JjiLn7ypdk62+VPzm5BdMKt9igpjZmiV4Ts4qi6+J
+         SKGTsVwNJHxvNy9D43S5RpkEjJtwvyjUcFbtGl6g7qLXlUFpBTsSCxXpBePSHE5OPbfm
+         mksQaolb9sXzm7+22TDrXsouNjPDrgzfQk55cGZ8dcksUDtecVBuIrV/rL0rDS4FIXGa
+         CvPH8RXGjKym1lMM679nc6sYC/ea1CzYYsrPdIStasXpT1d5deVX/6/ey0wtHLMxDXaU
+         REoOC8e2HrqtsbjM8fzvA/EMqQSINaRo0nL6ofS1dQc6bP4Jew/L1eiqWwgkD+J/NGRS
+         Uo0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=PA56DtQ3U6OS3ADt3JtiQH9iJ5okRT03tMtGP16RXIA=;
+        b=U1A/IbnL9XIdhoz6zviWav2PueMB2hlnxOcvdngw75AVFRusedYw2fMG4vhxUbtXxi
+         0bx5ATp4540Xy3TuITOR3edOjOSFM3X9HopubBawO8f0iMIcpGXQNzZi4Pfn6v4cpm2O
+         fZhG0fqcvKStEZ5hxAlOVXLw/BzRF97YxjuWspdRF7Pn4Ma7AiR5HpiJP5jIlYtxB+3L
+         XMAsUquOnKiveyAuwurYdGW+tmkY31KAkAIP4dIwgg0rj/UKaBHEigMDaaMuGbyxb7Ru
+         hVz171zmFBO90ekXzciMKrCk01+JwHTaeF1E8HLvyTFyJJEDbL3wUrvDiRlMxlU2Byvv
+         pgcw==
+X-Gm-Message-State: AOAM533f+sPBWZssEZPaMTOZcDByLpZa0/KxuNEx1KkcbIldB3Qac3Cx
+        ENFG32LVUtSLZ7qEN2K7u9Fy2Q==
+X-Google-Smtp-Source: ABdhPJxnvGuh1h4AicIp2Z2Ob074CL8yAHW4/pb+/Ip6VIx5jqWNzkUvWI0x5L/Pf3ERPP+MY/J4+Q==
+X-Received: by 2002:a0c:e18f:: with SMTP id p15mr6149469qvl.12.1607096935114;
+        Fri, 04 Dec 2020 07:48:55 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id y1sm5586436qky.63.2020.12.04.07.48.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Dec 2020 07:48:54 -0800 (PST)
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Subject: [LSFMMBPF 2021] A status update
+Message-ID: <fd5264ac-c84d-e1d4-01e2-62b9c05af892@toxicpanda.com>
+Date:   Fri, 4 Dec 2020 10:48:53 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203124803.23390-4-info@metux.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 01:47:56PM +0100, Enrico Weigelt, metux IT consult wrote:
-> Remove MODULE_VERSION(), as it doesn't seem to have much practical purpose.
-> For in-kernel drivers, the kernel version matters. The driver received lots
-> of changes, but version number has remained the same since it's introducing
-> into mainline, seven years ago. So, it doesn't seem to have much practical
-> meaning anymore.
-> 
-> Signed-off-by: Enrico Weigelt <info@metux.net>
-> ---
->  drivers/staging/goldfish/goldfish_audio.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/staging/goldfish/goldfish_audio.c b/drivers/staging/goldfish/goldfish_audio.c
-> index 0c65a0121dde..4a23f40e549a 100644
-> --- a/drivers/staging/goldfish/goldfish_audio.c
-> +++ b/drivers/staging/goldfish/goldfish_audio.c
-> @@ -24,7 +24,6 @@
->  MODULE_AUTHOR("Google, Inc.");
->  MODULE_DESCRIPTION("Android QEMU Audio Driver");
->  MODULE_LICENSE("GPL");
-> -MODULE_VERSION("1.0");
->  
->  struct goldfish_audio {
->  	char __iomem *reg_base;
+Hello,
 
-This file isn't even in my tree, are you sure you made this patch series
-against the correct branch/tree?
+We on the program committee hope everybody has been able to stay safe and 
+healthy during this challenging time, and look forward to being able to see all 
+of you in person again when it is safe.
 
-Please fix this series up and resend.
+The current plans for LSFMMBPF 2021 are to schedule an in person conference in 
+H2 (after June) of 2021.  The tentative plan is to use the same hotel that we 
+had planned to use for 2020, as we still have contracts with them.  However 
+clearly that is not set in stone.  The Linux Foundation has done a wonderful job 
+of working with us to formulate a plan and figure out the logistics that will 
+work the best for everybody, I really can't thank them enough for their help.
 
-thanks,
+Once we have a finalized date we will redo the CFP emails, probably coming out 
+March time frame.  If you have any questions or concerns please feel free to 
+respond to this email, or email me or any of the other PC members privately and 
+we will do our best to answer your questions.  Rest assured the general timing 
+of the conference is going to take into account the wide variety of schedules 
+that we are dealing with, and we will do our best to come up with something that 
+works for as many as people as possible.
 
-greg k-h
+We hope that you and your families continue to stay safe and health.  Thank you 
+on behalf of the program committee:
+
+	Josef Bacik (Filesystems)
+	Amir Goldstein (Filesystems)
+	Martin K. Petersen (Storage)
+	Omar Sandoval (Storage)
+	Michal Hocko (MM)
+	Dan Williams (MM)
+	Alexei Starovoitov (BPF)
+	Daniel Borkmann (BPF)
