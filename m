@@ -2,115 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C252CF66F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 22:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9002CF674
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729150AbgLDV4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 16:56:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50270 "EHLO
+        id S1729706AbgLDV7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 16:59:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727798AbgLDV4Q (ORCPT
+        with ESMTP id S1725903AbgLDV7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 16:56:16 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EE5C061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 13:55:35 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1klJ32-0005ls-2d; Fri, 04 Dec 2020 22:55:28 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1klJ2z-0007sJ-H3; Fri, 04 Dec 2020 22:55:25 +0100
-Date:   Fri, 4 Dec 2020 22:55:25 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Young <sean@mess.org>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, thierry.reding@gmail.com,
-        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
- configuration
-Message-ID: <20201204215525.uvjxlebth457aoj5@pengutronix.de>
-References: <202011281128.54eLfMWr-lkp@intel.com>
- <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
- <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
- <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
- <20201204112115.wopx5p5elgte7gad@pengutronix.de>
- <20201204114036.GB6547@gofer.mess.org>
+        Fri, 4 Dec 2020 16:59:44 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59ACCC0613D1;
+        Fri,  4 Dec 2020 13:59:04 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id n10so4352387pgv.8;
+        Fri, 04 Dec 2020 13:59:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bOYSy1/W+IvqY8VNMWbqot9NddWFzlzpEDfybh9Rd5c=;
+        b=b2vEQeoXBtlIel+He++NoP+ym6WgZmlCXqhipUZQDrxaUKcn1aRJaKyA13lmTPgdY+
+         NIZbE6Wrla+D4fgayTHMmef2G9qSWr0ku6EbwofDp7w54P2Q7uvGpJDhKrySfjvKdUqa
+         jfWJssdr8Q5Gjw/Qms4ebI/SmIweC5lqiNGblxN+s3Vlu5rxrRPeSFO46TUoVXUBwRTs
+         l8PxheIhtfHZ9ZNK2DZIGYqR9BGVPEdqSWoFTewbRX79j4OvemBZTifRgCROD7BXM75R
+         RjElmoZzHEUvvJV2OxPeA4gw65QlDI1E/g9FzLQhO3PgeV+RVcGOdfQWFEoQSdMf/SXi
+         MfZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bOYSy1/W+IvqY8VNMWbqot9NddWFzlzpEDfybh9Rd5c=;
+        b=X//MM4sYHHMf9h8mVVE6PTVbfBjXmcux1X9rb7351ooAyfg0nh53hYf8/DD9Ile821
+         waO3aUWYBww5jQRVsn1yKzN8mAVfe0Rd6J2oYjYdp1altGeb9ar82XK1mO7V5XjGXeCl
+         dFf0dlDJv339KGk4iG7Ql02q+t9X5JZ/z9yKcOu+NeVTCJ3KjNOZpiei5QANWuV1tGo2
+         bRI+GC+VAiiuFBMSpCxFjN921zvC48blHPtkkL232rc3rdm7mPvD8OJduNg3ZBstmK82
+         t5Igt5EBKHfqicR1g9MKqff69RZ6x797qdCkLcKuGoMkjpERY9GwiRkeKnm1/5YuJ1Aw
+         OjMA==
+X-Gm-Message-State: AOAM532uqWC/axmLIjlgl3RItgEIQD/1kC7TO1uXJejj8PAUTLHUYoFC
+        joPP4HnFjk4Sb5EezGDnidK4HbRilQxpT4TX
+X-Google-Smtp-Source: ABdhPJxWZkwKOMw5wsvhYFHPjNU09TJegdW4joQRoUqOVAx1CiDNQolr7Dx7r+0KyjWzdasJM90s+g==
+X-Received: by 2002:a63:4716:: with SMTP id u22mr9281667pga.407.1607119143128;
+        Fri, 04 Dec 2020 13:59:03 -0800 (PST)
+Received: from localhost.localdomain ([49.207.200.112])
+        by smtp.gmail.com with ESMTPSA id s17sm5016246pge.37.2020.12.04.13.58.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 13:59:02 -0800 (PST)
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+49d4cab497c2142ee170@syzkaller.appspotmail.com
+Subject: [PATCH] net: wireless: validate key indexes for cfg80211_registered_device
+Date:   Sat,  5 Dec 2020 03:28:25 +0530
+Message-Id: <20201204215825.129879-1-anant.thazhemadam@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="juipum4h3khpb5mp"
-Content-Disposition: inline
-In-Reply-To: <20201204114036.GB6547@gofer.mess.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot discovered a bug in which an OOB access was being made because
+an unsuitable key_idx value was wrongly considered to be acceptable
+while deleting a key in nl80211_del_key().
 
---juipum4h3khpb5mp
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Since we don't know the cipher at the time of deletion, if
+cfg80211_validate_key_settings() were to be called directly in
+nl80211_del_key(), even valid keys would be wrongly determined invalid,
+and deletion wouldn't occur correctly.
+For this reason, a new function - cfg80211_valid_key_idx(), has been
+created, to determine if the key_idx value provided is valid or not.
+cfg80211_valid_key_idx() is directly called in 2 places -
+nl80211_del_key(), and cfg80211_validate_key_settings().
 
-Hello Sean,
+Reported-by: syzbot+49d4cab497c2142ee170@syzkaller.appspotmail.com
+Tested-by: syzbot+49d4cab497c2142ee170@syzkaller.appspotmail.com
+Suggested-by: Johannes Berg <johannes@sipsolutions.net>
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+---
+For the bug that was getting triggered, pairwise was true, and 
+the NL80211_EXT_FEATURE_BEACON_PROTECTION feature was set too.
+The control logic for cfg80211_validate_key_settings() has been
+designed keeping this also in mind.
 
-On Fri, Dec 04, 2020 at 11:40:36AM +0000, Sean Young wrote:
-> On Fri, Dec 04, 2020 at 12:21:15PM +0100, Uwe Kleine-K=F6nig wrote:
-> > On Fri, Dec 04, 2020 at 12:42:15AM +0100, Lino Sanfilippo wrote:
-> > > On 29.11.20 at 19:10, Uwe Kleine-K=F6nig wrote:
-> > > > You're storing an unsigned long long (i.e. 64 bits) in an u32. If
-> > > > you are sure that this won't discard relevant bits, please explain
-> > > > this in a comment for the cursory reader.
-> > >=20
-> > > What about an extra check then to make sure that the period has not b=
-een truncated,
-> > > e.g:
-> > >=20
-> > > 	value =3D DIV_ROUND_CLOSEST_ULL(state->period, scaler);
-> > >=20
-> > > 	/* dont accept a period that is too small or has been truncated */
-> > > 	if ((value < PERIOD_MIN) ||
-> > > 	    (value !=3D DIV_ROUND_CLOSEST_ULL(state->period, scaler)))
-> > > 		return -EINVAL;
-> >=20
-> > I'd make value an unsigned long long and check for > 0xffffffff instead
-> > of repeating the (expensive) division. (Hmm, maybe the compiler is smart
-> > enough to not actually repeat it, but still.)
->=20
-> I wonder where you got that idea from.
+ net/wireless/core.h    |  2 ++
+ net/wireless/nl80211.c |  7 ++++---
+ net/wireless/util.c    | 27 ++++++++++++++++++++-------
+ 3 files changed, 26 insertions(+), 10 deletions(-)
 
-I don't know how to honestly answer your question.
-Which idea do you mean? That divisions are expensive? Or that compilers
-might be smart? And do you consider it a good idea? Or do you disagree?
+diff --git a/net/wireless/core.h b/net/wireless/core.h
+index e3e9686859d4..7df91f940212 100644
+--- a/net/wireless/core.h
++++ b/net/wireless/core.h
+@@ -433,6 +433,8 @@ void cfg80211_sme_abandon_assoc(struct wireless_dev *wdev);
+ 
+ /* internal helpers */
+ bool cfg80211_supported_cipher_suite(struct wiphy *wiphy, u32 cipher);
++bool cfg80211_valid_key_idx(struct cfg80211_registered_device *rdev,
++			    int key_idx, bool pairwise);
+ int cfg80211_validate_key_settings(struct cfg80211_registered_device *rdev,
+ 				   struct key_params *params, int key_idx,
+ 				   bool pairwise, const u8 *mac_addr);
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index a77174b99b07..db36158911ae 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -4260,9 +4260,6 @@ static int nl80211_del_key(struct sk_buff *skb, struct genl_info *info)
+ 	if (err)
+ 		return err;
+ 
+-	if (key.idx < 0)
+-		return -EINVAL;
+-
+ 	if (info->attrs[NL80211_ATTR_MAC])
+ 		mac_addr = nla_data(info->attrs[NL80211_ATTR_MAC]);
+ 
+@@ -4278,6 +4275,10 @@ static int nl80211_del_key(struct sk_buff *skb, struct genl_info *info)
+ 	    key.type != NL80211_KEYTYPE_GROUP)
+ 		return -EINVAL;
+ 
++	if (!cfg80211_valid_key_idx(rdev, key.idx,
++				    key.type == NL80211_KEYTYPE_PAIRWISE))
++		return -EINVAL;
++
+ 	if (!rdev->ops->del_key)
+ 		return -EOPNOTSUPP;
+ 
+diff --git a/net/wireless/util.c b/net/wireless/util.c
+index f01746894a4e..07b17feb9b1e 100644
+--- a/net/wireless/util.c
++++ b/net/wireless/util.c
+@@ -272,18 +272,31 @@ bool cfg80211_supported_cipher_suite(struct wiphy *wiphy, u32 cipher)
+ 	return false;
+ }
+ 
+-int cfg80211_validate_key_settings(struct cfg80211_registered_device *rdev,
+-				   struct key_params *params, int key_idx,
+-				   bool pairwise, const u8 *mac_addr)
++bool cfg80211_valid_key_idx(struct cfg80211_registered_device *rdev,
++			    int key_idx, bool pairwise)
+ {
+ 	int max_key_idx = 5;
+ 
+-	if (wiphy_ext_feature_isset(&rdev->wiphy,
+-				    NL80211_EXT_FEATURE_BEACON_PROTECTION) ||
+-	    wiphy_ext_feature_isset(&rdev->wiphy,
+-				    NL80211_EXT_FEATURE_BEACON_PROTECTION_CLIENT))
++	if (pairwise)
++		max_key_idx = 3;
++
++	else if (wiphy_ext_feature_isset(&rdev->wiphy,
++					 NL80211_EXT_FEATURE_BEACON_PROTECTION) ||
++		 wiphy_ext_feature_isset(&rdev->wiphy,
++					 NL80211_EXT_FEATURE_BEACON_PROTECTION_CLIENT))
+ 		max_key_idx = 7;
++
+ 	if (key_idx < 0 || key_idx > max_key_idx)
++		return false;
++
++	return true;
++}
++
++int cfg80211_validate_key_settings(struct cfg80211_registered_device *rdev,
++				   struct key_params *params, int key_idx,
++				   bool pairwise, const u8 *mac_addr)
++{
++	if (!cfg80211_valid_key_idx(rdev, key_idx, pairwise))
+ 		return -EINVAL;
+ 
+ 	if (!pairwise && mac_addr && !(rdev->wiphy.flags & WIPHY_FLAG_IBSS_RSN))
+-- 
+2.25.1
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---juipum4h3khpb5mp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/KsEoACgkQwfwUeK3K
-7Ann8Af6An6pTuGI9oEii/TBR5WoX2fxdM3bseKav5aJAmIRLbG0lWnlnzc0mkpI
-gO3ZwQrM2pB/RVmQjyp97nDSUVR9UlmUm7Pz/wKOEdBlnBxECOBe/1QIDMbqVPBw
-ASax5IwD+wgid7GSZ4qt1pDMiUffE6Mg4N2vgy3HEeG1bGLfeKDYLdnO2of9U8MD
-MOSsmni2Q4RGnAuypa5rz6DCgKQfK3klqprtjho27rnoqScjEhM9Haz19w4vACy3
-yfasJHf79npmYCZeetOjfFz4nBFbmENUSK0zEHUNC0BYZuTTLP8k8XNhbh69SZgL
-gkIyIv/lYAyr9+n2kkal1tEUcks55A==
-=Ve9/
------END PGP SIGNATURE-----
-
---juipum4h3khpb5mp--
