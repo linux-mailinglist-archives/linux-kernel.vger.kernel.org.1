@@ -2,111 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FD32CF57E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:20:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C372CF57A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388115AbgLDUUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 15:20:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
+        id S2387922AbgLDUUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 15:20:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388072AbgLDUUS (ORCPT
+        with ESMTP id S1728017AbgLDUUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 15:20:18 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56063C09424E
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:18:26 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id u18so9354446lfd.9
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:18:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=u6TvCy/F7eRWtUNo/MxFFiMZO9h7izN6lekg9c6lpkc=;
-        b=zTJIsspapB64C5r5loN0+0GDKLFNDnEMlGm5RHOQgShnFOeXFexxBihVypXTdPf1n1
-         TcoPsxiTRkIZlexfVgyIdhu1JYBbMGlycaL3NBzLTldpom6UA6jl7BF02ALHZXNgg3/V
-         2zfG9moKzOBr5l3ppCWUh6kTsw9UhqC1tM2m6bQTJRq0x7DO1YgfPLSswbgpNr4KpgpI
-         miSL76z/9e4UCkjK/0H+g8awm2BPHn+Hf+zfm+k+ezxb8OQ5CMfwI9TGc+TizhmPD6wq
-         Tmkvwz3zxxWbVeoKvQfuly+EJ4XK9Ak+kSMTpa/NU7eIlmpLay2xmx5Qadj7s37igAAZ
-         2jfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=u6TvCy/F7eRWtUNo/MxFFiMZO9h7izN6lekg9c6lpkc=;
-        b=jbU/74cJj6swbU5PX56EJxbINpxpGj2y66BQgOYnWkxyACCmsr65AtFAnjchxsmx5X
-         J7vsGuCqr2Mw7mLUutEO1K6WjQdRmT5oj+IuL6cgtDFuQB7m1YJamlRFvaJ3f/Y6J36Q
-         jM1H9e9CBVN3hmilbWzunujRG8kE6Br59O6upOQGqw6vMkqQ+1sj3/7V7nzGtcbyndAG
-         v6NLuNejn+h2b/UZkqVgaF46CDta/rpity21FwKoy6wTgjAG8seQddB5HdbWcnMFHxPf
-         o4HwKOrXUCtK0/cP54+CLF+FBbc88InT2XovgTRv8cfF4FhlCSBO86dPcxy1N2B/QBOS
-         QTVQ==
-X-Gm-Message-State: AOAM532gG38T2VnsB1h/bJlcOYQVf+aZ6xYNruRArG47wt85b0GrcocW
-        +ry76RMpygP7MF5EFyLQlA48aDyp6LHtDA==
-X-Google-Smtp-Source: ABdhPJx86pDawmjihnBby2Ln8g2zAZeAcXoUgXGJVDzaLglJkBUW+wxsCPzW8TQpxT/Hm4XxtMCeDg==
-X-Received: by 2002:ac2:5307:: with SMTP id c7mr3694123lfh.28.1607113104899;
-        Fri, 04 Dec 2020 12:18:24 -0800 (PST)
-Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id w21sm2036918lff.280.2020.12.04.12.18.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Dec 2020 12:18:24 -0800 (PST)
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, s-anna@ti.com
-Cc:     grzegorz.jaszczyk@linaro.org, linux-remoteproc@vger.kernel.org,
-        robh+dt@kernel.org, lee.jones@linaro.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        praneeth@ti.com, rogerq@ti.com
-Subject: [PATCH v3 6/6] remoteproc: pru: Add support for various PRU cores on K3 J721E SoCs
-Date:   Fri,  4 Dec 2020 21:18:07 +0100
-Message-Id: <20201204201807.14716-7-grzegorz.jaszczyk@linaro.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201204201807.14716-1-grzegorz.jaszczyk@linaro.org>
-References: <20201204201807.14716-1-grzegorz.jaszczyk@linaro.org>
+        Fri, 4 Dec 2020 15:20:02 -0500
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022CEC061A55
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:19:39 -0800 (PST)
+Received: from localhost (home.natalenko.name [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 83A348C4585;
+        Fri,  4 Dec 2020 21:19:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1607113170;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5i7pvUEzEqeo1L0MFc38H7RyxsyPdYm+kQhMqhBD5tg=;
+        b=xMKD1dwT5YMN0h/MSKwJAr08RqEdE2fq5AigQlR5D+Mw9e81XxR4QHqTdyRZ5SCL4629iz
+        Ocw5XD94zHXsGsQerTv7FqinaVVyfC/ogExYJahdqf9aFpWhdcNkyAGvD4hbA8uoIlrfHD
+        rIjnCFcfaTXOF7epgBldEm6JQ//calI=
+Date:   Fri, 4 Dec 2020 21:19:30 +0100
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     bugzilla-daemon@bugzilla.kernel.org
+Cc:     jdelvare@suse.de, wsa@kernel.org, benjamin.tissoires@redhat.com,
+        rui.zhang@intel.com, tglx@linutronix.de, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Bug 202453] TRACE irq/18-i801_smb Tainted when enabled
+ threadirqs in kernel commandline.
+Message-ID: <20201204201930.vtvitsq6xcftjj3o@spock.localdomain>
+References: <bug-202453-19117@https.bugzilla.kernel.org/>
+ <bug-202453-19117-0k1QQBMPTi@https.bugzilla.kernel.org/>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bug-202453-19117-0k1QQBMPTi@https.bugzilla.kernel.org/>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suman Anna <s-anna@ti.com>
+On Thu, Dec 03, 2020 at 07:04:00PM +0000, bugzilla-daemon@bugzilla.kernel.org wrote:
+> https://bugzilla.kernel.org/show_bug.cgi?id=202453
+> 
+> --- Comment #7 from Thomas Gleixner (tglx@linutronix.de) ---
+> On Tue, Aug 06 2019 at 14:07, bugzilla-daemon wrote:
+> > Jean Delvare (jdelvare@suse.de) changed:
+> >
+> > Is this happening with vanilla kernels or gentoo kernels?
+> >
+> > Thomas, I'm not sure if this is a bug in the i2c-i801 driver or something
+> > more
+> > general in how we handle the interrupts under threadirqs. Any suggestion how
+> > to
+> > investigate this further?
+> 
+> Bah. What happens is that the i2c-i801 driver interrupt handler does:
+> 
+> i801_isr()
+> 
+>       ...
+>         return i801_host_notify_isr(priv);
+> 
+> which invokes:
+> 
+>       i2c_handle_smbus_host_notify()
+> 
+> which in turn invokes
+> 
+>       generic_handle_irq()
+> 
+> and that explodes with forced interrupt threading because it's called
+> with interrupts enabled.
+> 
+> The root of all evil is the usage of generic_handle_irq() under the
+> assumption that this is always called from hard interrupt context. That
+> assumption is not true since 8d32a307e4fa ("genirq: Provide forced
+> interrupt threading") which went into 2.6.39 almost 10 years ago.
+> 
+> Seems you got lucky that since 10 years someone no user of this uses a
+> threaded interrupt handler, like some of the i2c drivers actually do. :)
+> 
+> So there are a couple of options to fix this:
+> 
+>    1) Set the IRQF_NO_THREAD flag and replace the waitqueue as that
+>       won't work on RT.
+> 
+>       Looking at the usage it's a single waiter wakeup and a single
+>       waiter at a time because the xfer is fully serialized by the
+>       core. So we can switch it to rcuwait, if there would be
+>       rcu_wait_event_timeout(), but that's fixable.
+> 
+>    2) Have a wrapper around handle_generic_irq() which ensures that
+>       interrupts are disabled before invoking it.
+> 
+>    3) Make the interrupt which is dispatched there to be requested with
+>       [devm_]request_any_context_irq(). That also requires that the
+>       NESTED_THREAD flag is set on the irq descriptor.
+> 
+>       That's exactly made for the use case where the dispatching
+>       interrupt can be either threaded or in hard interrupt context.
+> 
+>       But that's lots of churn.
+> 
+> And because we have so many options, here is the question:
+> 
+>    Is i2c_handle_smbus_host_notify() guaranteed to be called from hard
+>    interrupt handlers (assumed that we use #1 above)?
+> 
+>    I can't tell because there is also i2c_slave_host_notify_cb() which
+>    invokes it and my i2c foo is not good enough to figure that out.
+> 
+> If that's the case the #1 would be the straight forward solution. If
+> not, then you want #2 because then the problem will just pop up via the
+> slave thing and that might be not as trivial to fix as this one.
+> 
+> If you can answer that, I can send you the proper patch :)
 
-The K3 J721E family of SoCs have a revised version of the AM65x ICSSG IP
-and contains two instances of this newer ICSSG IP. Each ICSSG processor
-subsystem contains 2 primary PRU cores, 2 auxiliary PRU cores called RTUs,
-and 2 new auxiliary cores called Transmit PRUs (Tx_PRUs).
+tglx suggested moving this to the appropriate mailing lists, so I'mm
+Cc'ing those.
 
-Enhance the existing PRU remoteproc driver to support these new PRU
-and RTU cores by using specific compatibles. The cores have the same
-memory copying limitations as on AM65x, so reuses the custom memcpy
-function within the driver's ELF loader implementation. The initial
-names for the firmware images for each PRU core are retrieved from
-DT nodes, and can be adjusted through sysfs if required.
+Jean, Wolfram, Benjamin, or someone else, could you please check Thomas'
+questions above and let us know what you think?
 
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
-v2->v3:
-- Add Reviewed-by: tag
----
- drivers/remoteproc/pru_rproc.c | 3 +++
- 1 file changed, 3 insertions(+)
+I'll copy-paste my attempt to answer this in bugzilla below:
 
-diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-index f76423792acb..e32123c099de 100644
---- a/drivers/remoteproc/pru_rproc.c
-+++ b/drivers/remoteproc/pru_rproc.c
-@@ -849,6 +849,9 @@ static const struct of_device_id pru_rproc_match[] = {
- 	{ .compatible = "ti,am654-pru",		.data = &k3_pru_data },
- 	{ .compatible = "ti,am654-rtu",		.data = &k3_rtu_data },
- 	{ .compatible = "ti,am654-tx-pru",	.data = &k3_tx_pru_data },
-+	{ .compatible = "ti,j721e-pru",		.data = &k3_pru_data },
-+	{ .compatible = "ti,j721e-rtu",		.data = &k3_rtu_data },
-+	{ .compatible = "ti,j721e-tx-pru",	.data = &k3_tx_pru_data },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, pru_rproc_match);
+```
+As far as I can grep through bus drivers, yes, it is called from hard
+interrupt handlers only.
+
+i2c_handle_smbus_host_notify() is indeed called from
+i2c_slave_host_notify_cb(), which, in its turn, is set to be called as
+->slave_cb() via i2c_slave_event() wrapper only.
+
+Also, check [1], slide #9. I'm not sure about that "usually" word
+though since I couldn't find any examples of "unusual" usage.
+
+/* not an i2c guru here either, just looking around the code */
+
+[1] https://elinux.org/images/f/f6/ELCE15-WolframSang-ShinyNewI2CSlaveFramework.pdf
+```
+
+and also tglx' follow-up question:
+
+```
+The question is whether it's guaranteed under all circumstances
+including forced irq threading. The i801 driver has assumptions about
+this, so I wouldn't be surprised if there are more.
+```
+
+Thanks.
+
 -- 
-2.29.0
-
+  Oleksandr Natalenko (post-factum)
