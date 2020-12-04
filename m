@@ -2,53 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE702CF1D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 709DA2CF1DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgLDQZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:25:57 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:39187 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725923AbgLDQZ5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:25:57 -0500
-X-Originating-IP: 91.224.148.103
-Received: from localhost.localdomain (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 3FF331BF205;
-        Fri,  4 Dec 2020 16:25:14 +0000 (UTC)
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Arnd Bergmann <arnd@kernel.org>, linux-mtd@lists.infradead.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [for NAND] ARM: s3c: gta02: fix for missing linux/mtd/nand_ecc.h
-Date:   Fri,  4 Dec 2020 17:25:13 +0100
-Message-Id: <20201204162513.1142-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201204161137.2729220-1-arnd@kernel.org>
-References: 
+        id S1729906AbgLDQ0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:26:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725923AbgLDQ0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 11:26:40 -0500
+Date:   Fri, 4 Dec 2020 08:25:58 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607099160;
+        bh=MHHKkmoKjWu0cQa0MJSAx0XzbIRrcNJEsWUXYjQipb8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MLvlA35HN4ohV3iZow6D9YHeAHxFSJ3uPa6MbZFLdDwWj7Zyr58H/PSnExYJOqODJ
+         EfJWAWip59iY29pTqqNIqPGFXN10Iia11P11c9xb/Ln6SHa9G+Slpdy60vJ2bligCR
+         LW7Jh9uEV4sjc0I6m+IJY8uYG4cCeDZrLDhRVK65CeT/lLo3Yq3WouzIdZ25VmIhpK
+         63d75Jb50lFlvPYXyXAfZ2Wdgh9YuYPRZM7gr+at0ocFyndIuSyVe6yz+X4ABBG3y7
+         gJ+Z27Ur7XalOsKughxN9oyVa4LJLeGZdNlTKCS33IZ1vWueF3VN+GCIir5zUDkw9I
+         j6zMFjspjvd3w==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, jgg@nvidia.com,
+        Dan Williams <dan.j.williams@intel.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, davem@davemloft.net,
+        Kiran Patil <kiran.patil@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <20201204082558.4eb8c8c2@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201204125455.GI16543@unreal>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+        <X8os+X515fxeqefg@kroah.com>
+        <20201204125455.GI16543@unreal>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 7a26863a23e4fbfee040f8c8c5fdce0419dc0920
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-04 at 16:10:12 UTC, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Fri, 4 Dec 2020 14:54:55 +0200 Leon Romanovsky wrote:
+> Thanks, pulled to mlx5-next
 > 
-> The header file got renamed, so any file including it needs to
-> be adapted to avoid:
+> Jason, Jakob,
 > 
-> arch/arm/mach-s3c/mach-gta02.c:40:10: fatal error: 'linux/mtd/nand_ecc.h' file not found
-> 
-> Fixes: 3f27bb3e3777 ("mtd: nand: ecc-hamming: Move Hamming code to the generic NAND layer")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Can you please pull that mlx5-next branch to your trees?
+> git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Could you post a PR with a proper description and so on?
 
-Miquel
+Thanks!
