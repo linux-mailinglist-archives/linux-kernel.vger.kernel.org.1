@@ -2,75 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3554E2CF2E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8872CF2F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731245AbgLDRPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:15:39 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42870 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728129AbgLDRPi (ORCPT
+        id S1730826AbgLDRSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:18:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726606AbgLDRSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:15:38 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B4HE2Y2018225
-        for <linux-kernel@vger.kernel.org>; Fri, 4 Dec 2020 11:14:02 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607102042;
-        bh=HNrijLJnGK3T9CnkGIR6IB4XYT+8wc5LNUFsnL/FAUI=;
-        h=From:To:CC:Subject:Date;
-        b=r+/p3+ZSqXeLQnh2BnnFv/2BbWsGfHHd1rk0Jn8GcExaZsnd3lFI5IptTYniC6W90
-         QXzLShxZnxGsRcc70s+nYVsicdioExPYziba8E/oJcYpR5eyDrs2dCwTNwyR5l/bBX
-         fB5BkZsNtDnsqovjpPJGIsW0udKsK2Wvdt5belI8=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B4HE277018035
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-kernel@vger.kernel.org>; Fri, 4 Dec 2020 11:14:02 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 4 Dec
- 2020 11:14:01 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 4 Dec 2020 11:14:01 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B4HDxB7034323;
-        Fri, 4 Dec 2020 11:14:00 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, Sekhar Nori <nsekhar@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>
-Subject: [PATCH] MAINTAINERS: Add myself as a reviewer for CADENCE USB3 DRD IP DRIVER
-Date:   Fri, 4 Dec 2020 22:43:57 +0530
-Message-ID: <20201204171357.15402-1-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 4 Dec 2020 12:18:45 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78141C061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 09:17:59 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id i15so78944ljg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 09:17:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ll5ceqpDB5AdmiQFATtP2DWHGOxrfl42uXcXhf76pqk=;
+        b=xdGWAY0zvpDfyJTgs6/RnXCyaYqU4PutYcp33RY6VqcJwLk7gQMoH6e4uMop3GpyEZ
+         Ewv1KBXzGIPDRAQI/qli28e7GuVAuk5BrpLQX8c7lIB5sVuek5NOV6ripxJR1HNuGtcM
+         iC1ghHKxGJ0GUz1HaXnWUGAmDIxLwd4yWAMMaCWstChYe0LRHzANUjO3h+zARuYKY4jK
+         IEEPQOORJFuCRKzDFDI6eEL5GWkRW2UR47J/PsnZlMin6QAawFw6BgnnUiJPmkNsrX4w
+         92MkmIng19yUTsmMK57/Y+hWR1Mt+BxOFRDpLUyhxFAWQPZST7vjFqG0Fb6CSR8ajViJ
+         EfDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ll5ceqpDB5AdmiQFATtP2DWHGOxrfl42uXcXhf76pqk=;
+        b=mBvHCKkg1NxHmfofET9wRKnkxBASGSnMAtn+vXzMMAtQ3dxa5ozjvQHiBKD4lqsf+L
+         DuXwNJSHJkZl+FeEsKQc14/lGu9Nt8P2j2uOpM4DGwfyH6wC/8+FpJ2S6J/TwFr5LV/h
+         5oEVpiHXs98NpKZZ6ZWb7ljK19Fcj62I7j+RwgeaZXma76icbFKH5XKJH/eOgz9xXXwg
+         BJ1eIj3yLbQExV/zwAB0I/lg+GoboawekaZz5nHsnLIsRGtsE8v92c7KUlV/FM8y3Cet
+         M7YFVkaQYbaFYQ8Nq/eVRUbeTnQssnlRVjhYsSZLuBmV4ws1puUzDRFQaUQFde3mApN2
+         UzpA==
+X-Gm-Message-State: AOAM530y0DOoUwXxdd8SSiQolmvp8ge6ez+Og7aTJ9aedcbMsIH+03Ru
+        0elYTa2YFEyrXXqSTweeXEj9PoPb5gtIXExP
+X-Google-Smtp-Source: ABdhPJzxsOJ3qEOb5WmcVd8vJ97fQ4sUK96p6qsU+5u1svoxfj3O0sS93J3LoY3K4K7mmmvrhbuYcQ==
+X-Received: by 2002:a2e:9c8d:: with SMTP id x13mr3825747lji.468.1607102277264;
+        Fri, 04 Dec 2020 09:17:57 -0800 (PST)
+Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
+        by smtp.gmail.com with ESMTPSA id w12sm1919802ljo.67.2020.12.04.09.17.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Dec 2020 09:17:56 -0800 (PST)
+From:   Marcin Wojtas <mw@semihalf.com>
+To:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+Cc:     ulf.hansson@linaro.org, huziji@marvell.com,
+        adrian.hunter@intel.com, jaz@semihalf.com, tn@semihalf.com,
+        ard.biesheuvel@arm.com, kostap@marvell.com,
+        Marcin Wojtas <mw@semihalf.com>
+Subject: [PATCH v4 0/4] sdhci-xenon ACPI support
+Date:   Fri,  4 Dec 2020 18:16:22 +0100
+Message-Id: <20201204171626.10935-1-mw@semihalf.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I would like to help in reviewing CADENCE USB3 DRD IP DRIVER patches
+Hi,
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+The fourth version of the sdhci-xenon ACPI support
+addresses a comment regarding clk handling in xenon_runtime_resume.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6aac0f845f34..ff9bd7d18d94 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3861,6 +3861,7 @@ CADENCE USB3 DRD IP DRIVER
- M:	Peter Chen <peter.chen@nxp.com>
- M:	Pawel Laszczak <pawell@cadence.com>
- M:	Roger Quadros <rogerq@ti.com>
-+R:	Aswath Govindraju <a-govindraju@ti.com>
- L:	linux-usb@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/peter.chen/usb.git
+The MacchiatoBin firmware for testing can be obtained from:
+https://drive.google.com/file/d/1Y8BhyaCrksQgT_GPfpqqiYHpQ41kP8Kp
+
+Changelog:
+v3->v4
+  * [3/4] Call clk_prepare_enable unconditionally in xenon_runtime_resume.
+  * Add Adrian's Acked-by to all patches.
+
+v2->v3
+  * [3/4] Call clk_disable_unprepare unconditionally.
+  * Add Adrian's Acked-by to all patches.
+
+v1->v2
+  * Split single commit to 4
+  * Use device_match_data and dedicated ACPI ID's per controller
+    variant
+
+Marcin Wojtas (4):
+  mmc: sdhci-xenon: use match data for controllers variants
+  mmc: sdhci-xenon: switch to device_* API
+  mmc: sdhci-xenon: use clk only with DT
+  mmc: sdhci-xenon: introduce ACPI support
+
+ drivers/mmc/host/sdhci-xenon.h     | 12 ++-
+ drivers/mmc/host/sdhci-xenon-phy.c | 40 +++++----
+ drivers/mmc/host/sdhci-xenon.c     | 91 +++++++++++++-------
+ 3 files changed, 91 insertions(+), 52 deletions(-)
+
 -- 
-2.17.1
+2.29.0
 
