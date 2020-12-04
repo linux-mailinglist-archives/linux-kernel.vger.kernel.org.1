@@ -2,77 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A80E2CEFBA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE472CEFBC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729365AbgLDOcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:32:09 -0500
-Received: from outbound-smtp31.blacknight.com ([81.17.249.62]:42483 "EHLO
-        outbound-smtp31.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726605AbgLDOcJ (ORCPT
+        id S1729486AbgLDOdX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Dec 2020 09:33:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726312AbgLDOdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:32:09 -0500
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp31.blacknight.com (Postfix) with ESMTPS id CB1D1C0DF2
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 14:31:16 +0000 (GMT)
-Received: (qmail 25023 invoked from network); 4 Dec 2020 14:31:16 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 4 Dec 2020 14:31:16 -0000
-Date:   Fri, 4 Dec 2020 14:31:15 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 06/10] sched/fair: Clear the target CPU from the cpumask
- of CPUs searched
-Message-ID: <20201204143115.GB3371@techsingularity.net>
-References: <20201203141124.7391-1-mgorman@techsingularity.net>
- <20201203141124.7391-7-mgorman@techsingularity.net>
- <CAKfTPtDm880Rs7D1xUCQd_X9okqzhgrmCJVhwg90Rt3krq9ytg@mail.gmail.com>
- <20201203175204.GY3371@techsingularity.net>
- <CAKfTPtBGsXb0RqE_qs2miZGi_uax4VY1_8y1NGhQ17Q8mBx8dw@mail.gmail.com>
- <20201204113030.GZ3371@techsingularity.net>
- <CAKfTPtDRqwUoX51rU0Xd3H9Dwqf8bLAFBxhoeMF1brKYmAZDJg@mail.gmail.com>
- <CAKfTPtBABBY1QSfFtbhBQ7+a8HOp2YfTyJaMVo07T5GU7sp_MA@mail.gmail.com>
- <3d8a6d19-afac-dc93-127d-da6505402cdf@linux.intel.com>
- <CAKfTPtAp+SyjmAsxTpSo5owQq0AeDpBWdo5ds0fVZvDr2OK_iw@mail.gmail.com>
+        Fri, 4 Dec 2020 09:33:22 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A11C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:32:42 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1klC8R-0002pr-W0; Fri, 04 Dec 2020 15:32:35 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1klC8Q-0003Ke-69; Fri, 04 Dec 2020 15:32:34 +0100
+Message-ID: <ebaf3126dddf686e1ff07e00c61cd43c07ab07cd.camel@pengutronix.de>
+Subject: Re: [EXT] Re: [PATCH v5 07/10] media: Add parsing for APP14 data
+ segment in jpeg helpers
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>
+Cc:     dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "laurent.pinchart+renesas@ideasonboard.com" 
+        <laurent.pinchart+renesas@ideasonboard.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "paul.kocialkowski@bootlin.com" <paul.kocialkowski@bootlin.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "niklas.soderlund+renesas@ragnatech.se" 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        "dafna.hirschfeld@collabora.com" <dafna.hirschfeld@collabora.com>,
+        "ezequiel@collabora.com" <ezequiel@collabora.com>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
+Date:   Fri, 04 Dec 2020 15:32:34 +0100
+In-Reply-To: <2bffcb5a2454dfc2188cc11b0f796f965cc7291e.camel@oss.nxp.com>
+References: <20201112030557.8540-1-mirela.rabulea@oss.nxp.com>
+         <20201112030557.8540-8-mirela.rabulea@oss.nxp.com>
+         <6acf2724130aa2e927cd116ecd216bec3e0321a5.camel@pengutronix.de>
+         <2bffcb5a2454dfc2188cc11b0f796f965cc7291e.camel@oss.nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtAp+SyjmAsxTpSo5owQq0AeDpBWdo5ds0fVZvDr2OK_iw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 02:47:48PM +0100, Vincent Guittot wrote:
-> > IIUC, select_idle_core and select_idle_cpu share the same cpumask(select_idle_mask)?
-> > If the target's sibling is removed from select_idle_mask from select_idle_core(),
-> > select_idle_cpu() will lose the chance to pick it up?
+On Fri, 2020-12-04 at 14:13 +0000, Mirela Rabulea (OSS) wrote:
+> Hi Phipipp,
+>
+> On Wed, 2020-12-02 at 16:18 +0100, Philipp Zabel wrote:
+> > Hi Mirela,
+> > 
+> > On Thu, 2020-11-12 at 05:05 +0200, Mirela Rabulea (OSS) wrote:
+> > > From: Mirela Rabulea <mirela.rabulea@nxp.com>
+> > > 
+> > > According to Rec. ITU-T T.872 (06/2012) 6.5.3
+> > > APP14 segment is for color encoding, it contains a transform flag,
+> > > which
+> > > may have values of 0, 1 and 2 and are interpreted as follows:
+> > > 0 - CMYK for images that are encoded with four components
+> > >   - RGB for images that are encoded with three components
+> > > 1 - An image encoded with three components using YCbCr colour
+> > > encoding.
+> > > 2 - An image encoded with four components using YCCK colour
+> > > encoding.
+> > > 
+> > > This is used in imx-jpeg decoder, to distinguish between
+> > > YUV444 and RGB24.
+> > > 
+> > > Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
+> > > ---
+> > > Changes in v5:
+> > > This was patch 8 in previous version
+> > > Replaced a struct for app14 data with just an int, since the
+> > > transform flag is the only meaningfull information from this
+> > > segment
+> > 
+> > Could we turn this into an enum for the transform flag, and include
+> > the
+> > above spec reference in its kerneldoc comment? I think this would be
+> > better than checking for (app14_tf == <magic_number>) in the drivers.
 > 
-> This is only relevant for patch 10 which is not to be included IIUC
-> what mel said in cover letter : "Patches 9 and 10 are stupid in the
-> context of this series."
-> 
+> Appreciate your feedback, for all patches, I'll address it in v6.
+> Where would be a better place for this enum, v4l2-jpeg.h, or maybe
+> include/uapi/linux/v4l2-controls.h?
 
-Patch 10 was stupid in the context of the prototype because
-select_idle_core always returned a CPU. A variation ended up being
-reintroduced at the end of the Series Yet To Be Posted so that SMT siblings
-are cleared during select_idle_core() but select_idle_cpu() still has a
-mask with unvisited CPUs to consider if no idle cores are found.
+v4l2-jpeg.h seems like the right place to me.
 
-As far as I know, this would still be compatible with Aubrey's idle
-cpu mask as long as it's visited and cleared between select_idle_core
-and select_idle_cpu. It relaxes the contraints on Aubrey to some extent
-because the idle cpu mask would be a hint so if the information is out
-of date, an idle cpu may still be found the normal way.
-
--- 
-Mel Gorman
-SUSE Labs
+regards
+Philipp
