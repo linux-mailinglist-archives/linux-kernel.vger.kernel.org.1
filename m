@@ -2,185 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6ABD2CF77C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9F22CF77F
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727409AbgLDX2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 18:28:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726508AbgLDX2j (ORCPT
+        id S1728890AbgLDX3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 18:29:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31817 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726111AbgLDX3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 18:28:39 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3089C061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 15:27:13 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id i6so818070otr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 15:27:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zLc7/3okPvFxP0Z5cS+hPwJjhxGd6v5dEl0jnqjK1K0=;
-        b=xQwJageZbIycG4kTT8ShqMD3nUbwD7r8wUnxsVIIr+DgCBye6qng9WoGeVERzlid29
-         k/ObBybIk//OMjj5X5o6YZ0k0F4YAbF832KqRuemDPxAcGvpXGz4INpWkjsvJ/5BU8zJ
-         Qf7/ZZlvvJbUKw/nn1qkD3DgSqL7BZqwgj4xqzlmiG/PCX2A4z4QX3GYSWBzdNtfezVv
-         hbrkMNgU0Ogaga1hWbEu58REJxvLrJ/YyXTVkcispMWDJKH07SatPkBvKuiG1UyvjT6f
-         uRrkVoAcABjtKNGxhr6n3YqlTzMBrQLIw1cXMB8i991kgSJJhcPVqWsPcFOQd3eQ+uR4
-         TsIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zLc7/3okPvFxP0Z5cS+hPwJjhxGd6v5dEl0jnqjK1K0=;
-        b=sxwRWBjm3sg2ZjOwcKJZaUpCcJRrbLpZ7SuUaTNvzdhuwAICo20EUgrx3h71vQs2d1
-         rLuzkaVPaf4LYq8u6/r3dKrUFrb3Vl1NhElFxfX2CCYmMYOeVhpHNXC9QSMiBR24Ix8V
-         w3YmICKnYECg1w7YoH6n64PlRd3eGq5cnuocQ3xhnLTdf586PY9Dx57Y+H+uyDfVWT/5
-         HqXxsWNtSdJFKjbjxdsk129Hw5B5RWdWvdVtv8AyWawcGwNcw/VhvQPbWPIkiAm3q1Zt
-         XaT0RPzNxcUOyiC61TaSEDQe5nzGf7cgmutiOER5i6NIBJc+EXLUoJF2hl7gwaoUa8qo
-         n3Iw==
-X-Gm-Message-State: AOAM530nqMgrbQUlopHGqo1S0RHSPCNtUN5ErqctokYask+gpBa4RXV0
-        Mj+2oTBYmC9yvy/1nF2mpSYeTw==
-X-Google-Smtp-Source: ABdhPJx/5ojyUAiGu0IYqd4XJaPj3ZSo9l52l1eGs5DI9MrJXP8DByhPu8SeKg2BBP6DoIR4XpMftA==
-X-Received: by 2002:a9d:7401:: with SMTP id n1mr5323426otk.21.1607124433014;
-        Fri, 04 Dec 2020 15:27:13 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id k1sm949788ood.4.2020.12.04.15.27.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 15:27:12 -0800 (PST)
-Date:   Fri, 4 Dec 2020 17:27:10 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Evan Green <evgreen@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Dai <daidavid1@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] interconnect: qcom: fix rpmh link failures
-Message-ID: <X8rFzqURIVHeH4SL@builder.lan>
-References: <20201204165030.3747484-1-arnd@kernel.org>
+        Fri, 4 Dec 2020 18:29:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607124468;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ohTS7EreoYXvKStB5ImYk5vobWiE5nT6sWzMWLbKmyI=;
+        b=Y6FOHQoQdQR1QClVjCFKKPhZVpHMfkD0d8XAn2HI1Js4U4QKqsFIEbgaHLDPdyDIhNNWtc
+        uhBA9OC+cfUWthu1VDBx+CvwQ9rot4biEm/2TzM843VZsbRENlVJ3pzOqThijid6e+j78d
+        cNcSaXJ8UKbSc90eAeNcJupFQ+XSAHY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-4DKl_I2TO0O1QU5wR9MXhw-1; Fri, 04 Dec 2020 18:27:44 -0500
+X-MC-Unique: 4DKl_I2TO0O1QU5wR9MXhw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37E0A180A086;
+        Fri,  4 Dec 2020 23:27:43 +0000 (UTC)
+Received: from krava (unknown [10.40.192.39])
+        by smtp.corp.redhat.com (Postfix) with SMTP id EECE26087C;
+        Fri,  4 Dec 2020 23:27:40 +0000 (UTC)
+Date:   Sat, 5 Dec 2020 00:27:39 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     kan.liang@linux.intel.com
+Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
+        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
+Subject: Re: [PATCH V2 03/12] perf script: Support data page size
+Message-ID: <20201204232739.GI3613628@krava>
+References: <20201130172803.2676-1-kan.liang@linux.intel.com>
+ <20201130172803.2676-4-kan.liang@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201204165030.3747484-1-arnd@kernel.org>
+In-Reply-To: <20201130172803.2676-4-kan.liang@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 04 Dec 10:50 CST 2020, Arnd Bergmann wrote:
+On Mon, Nov 30, 2020 at 09:27:54AM -0800, kan.liang@linux.intel.com wrote:
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When CONFIG_COMPILE_TEST is set, it is possible to build some
-> of the interconnect drivers into the kernel while their dependencies
-> are loadable modules, which is bad:
-> 
-> arm-linux-gnueabi-ld: drivers/interconnect/qcom/bcm-voter.o: in function `qcom_icc_bcm_voter_commit':
-> (.text+0x1f8): undefined reference to `rpmh_invalidate'
-> arm-linux-gnueabi-ld: (.text+0x20c): undefined reference to `rpmh_write_batch'
-> arm-linux-gnueabi-ld: (.text+0x2b0): undefined reference to `rpmh_write_batch'
-> arm-linux-gnueabi-ld: (.text+0x2e8): undefined reference to `rpmh_write_batch'
-> arm-linux-gnueabi-ld: drivers/interconnect/qcom/icc-rpmh.o: in function `qcom_icc_bcm_init':
-> (.text+0x2ac): undefined reference to `cmd_db_read_addr'
-> arm-linux-gnueabi-ld: (.text+0x2c8): undefined reference to `cmd_db_read_aux_data'
-> 
-> The exact dependencies are a bit complicated, so split them out into a
-> hidden Kconfig symbol that all drivers can in turn depend on to get it
-> right.
-> 
-> Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+SNIP
 
-Your patch looks correct to me, so:
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-
-But we're going to have to sprinkle a handful of these throughout the
-tree and we're not a lot of people who "understand" what it does (and at
-least I keep getting them wrong...)
-
-Perhaps it would be more reasonable to maintain this long term if we
-drop the possibility of compile testing these drivers independently of
-rpmh and command db? (I.e. drop the function stubs and rely on
-RPMH/COMMAND_DB to enable building under COMPILE_TEST)?
-
-
-And just to make it clear, I think we should merge your patch to fix
-v5.11; then consider to simplify this past that.
-
-Regards,
-Bjorn
-
-> ---
->  drivers/interconnect/qcom/Kconfig | 23 +++++++++++++++--------
->  1 file changed, 15 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/interconnect/qcom/Kconfig b/drivers/interconnect/qcom/Kconfig
-> index a8f93ba265f8..b3fb5b02bcf1 100644
-> --- a/drivers/interconnect/qcom/Kconfig
-> +++ b/drivers/interconnect/qcom/Kconfig
-> @@ -42,13 +42,23 @@ config INTERCONNECT_QCOM_QCS404
->  	  This is a driver for the Qualcomm Network-on-Chip on qcs404-based
->  	  platforms.
+>  #endif /* __PERF_RECORD_H */
+> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> index 5cc722b6fe7c..e73f579f31d3 100644
+> --- a/tools/perf/util/session.c
+> +++ b/tools/perf/util/session.c
+> @@ -1260,10 +1260,30 @@ static void dump_event(struct evlist *evlist, union perf_event *event,
+>  	       event->header.size, perf_event__name(event->header.type));
+>  }
 >  
-> +config INTERCONNECT_QCOM_RPMH_POSSIBLE
-> +	tristate
-> +	default INTERCONNECT_QCOM
-> +	depends on QCOM_RPMH || (COMPILE_TEST && !QCOM_RPMH)
-> +	depends on QCOM_COMMAND_DB || (COMPILE_TEST && !QCOM_COMMAND_DB)
-> +	depends on OF || COMPILE_TEST
-> +	help
-> +	  Compile-testing RPMH drivers is possible on other platforms,
-> +	  but in order to avoid link failures, drivers must not be built-in
-> +	  when QCOM_RPMH or QCOM_COMMAND_DB are loadable modules
+> +char *get_page_size_name(u64 size, char *str)
+> +{
+> +	const char suffixes[5] = { 'B', 'K', 'M', 'G', 'T' };
+> +	int i;
 > +
->  config INTERCONNECT_QCOM_RPMH
->  	tristate
->  
->  config INTERCONNECT_QCOM_SC7180
->  	tristate "Qualcomm SC7180 interconnect driver"
-> -	depends on INTERCONNECT_QCOM
-> -	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
-> +	depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
->  	select INTERCONNECT_QCOM_RPMH
->  	select INTERCONNECT_QCOM_BCM_VOTER
->  	help
-> @@ -57,8 +67,7 @@ config INTERCONNECT_QCOM_SC7180
->  
->  config INTERCONNECT_QCOM_SDM845
->  	tristate "Qualcomm SDM845 interconnect driver"
-> -	depends on INTERCONNECT_QCOM
-> -	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
-> +	depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
->  	select INTERCONNECT_QCOM_RPMH
->  	select INTERCONNECT_QCOM_BCM_VOTER
->  	help
-> @@ -67,8 +76,7 @@ config INTERCONNECT_QCOM_SDM845
->  
->  config INTERCONNECT_QCOM_SM8150
->  	tristate "Qualcomm SM8150 interconnect driver"
-> -	depends on INTERCONNECT_QCOM
-> -	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
-> +	depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
->  	select INTERCONNECT_QCOM_RPMH
->  	select INTERCONNECT_QCOM_BCM_VOTER
->  	help
-> @@ -77,8 +85,7 @@ config INTERCONNECT_QCOM_SM8150
->  
->  config INTERCONNECT_QCOM_SM8250
->  	tristate "Qualcomm SM8250 interconnect driver"
-> -	depends on INTERCONNECT_QCOM
-> -	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
-> +	depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
->  	select INTERCONNECT_QCOM_RPMH
->  	select INTERCONNECT_QCOM_BCM_VOTER
->  	help
-> -- 
-> 2.27.0
-> 
+> +	if (size == 0) {
+> +		snprintf(str, PAGE_SIZE_NAME_LEN, "%s", "N/A");
+> +		return str;
+> +	}
+> +	for (i = 0; i < 5; i++) {
+> +		if (size < 1024)
+> +			break;
+> +		size /= 1024;
+> +	}
+> +
+> +	snprintf(str, PAGE_SIZE_NAME_LEN, "%lu%c", size, suffixes[i]);
+> +	return str;
+> +}
+
+we have the same code in unit_number__scnprintf,
+you just need to add support for 'T' and 'N/A'
+
+jirka
+
