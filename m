@@ -2,69 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54622CEC00
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:18:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A75F02CEC21
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729774AbgLDKS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 05:18:27 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9105 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbgLDKS0 (ORCPT
+        id S1729866AbgLDKZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 05:25:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34590 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726014AbgLDKZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 05:18:26 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CnTCR4gN4zM0BR;
-        Fri,  4 Dec 2020 18:17:07 +0800 (CST)
-Received: from compute.localdomain (10.175.112.70) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 4 Dec 2020 18:17:36 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        "Magnus Karlsson" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-CC:     Zhang Changzhong <zhangchangzhong@huawei.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net v2] xsk: Return error code if force_zc is set
-Date:   Fri, 4 Dec 2020 18:21:16 +0800
-Message-ID: <1607077277-41995-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 4 Dec 2020 05:25:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607077459;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2T15ek84GRYZBFIB7crwXKiwkKfTgxR0/uZEpJtiF7w=;
+        b=bfIHGsbHkh52/70HynzLze12z7NeTwS2b5kRUVJ1m24iMymYuWhlyWetHmJifSs/aEZId3
+        1uIMt4wfFXac2EDUyewo4PZu1AqOc4iplaFohYcu61Fehu194unNDP3XLXzObO9ZC8Al60
+        DwUFxFt0UKMLn+V1325aoOukKXX2RXo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-481-EHJ7jY99MrmUOFed-1HElg-1; Fri, 04 Dec 2020 05:24:13 -0500
+X-MC-Unique: EHJ7jY99MrmUOFed-1HElg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E4C8180A087;
+        Fri,  4 Dec 2020 10:24:11 +0000 (UTC)
+Received: from [10.36.112.89] (ovpn-112-89.ams2.redhat.com [10.36.112.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 59A2C620D7;
+        Fri,  4 Dec 2020 10:23:59 +0000 (UTC)
+Subject: Re: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
+ unmanaged ASIDs
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     wangxingang <wangxingang5@huawei.com>,
+        Xieyingtai <xieyingtai@huawei.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        qubingbing <qubingbing@hisilicon.com>
+References: <20201118112151.25412-8-eric.auger@redhat.com>
+ <1606829590-25924-1-git-send-email-wangxingang5@huawei.com>
+ <2e69adf5-8207-64f7-fa8e-9f2bd3a3c4e3@redhat.com>
+ <e10ad90dc5144c0d9df98a9a078091af@huawei.com>
+ <20201204095338.GA1912466@myrica>
+ <2de03a797517452cbfeab022e12612b7@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <0bf50dd6-ef3c-7aba-cbc1-1c2e17088470@redhat.com>
+Date:   Fri, 4 Dec 2020 11:23:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+In-Reply-To: <2de03a797517452cbfeab022e12612b7@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If force_zc is set, we should exit out with an error, not fall back to
-copy mode.
+Hi Shameer, Jean-Philippe,
 
-Fixes: 921b68692abb ("xsk: Enable sharing of dma mappings")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- net/xdp/xsk_buff_pool.c | 1 +
- 1 file changed, 1 insertion(+)
+On 12/4/20 11:20 AM, Shameerali Kolothum Thodi wrote:
+> Hi Jean,
+> 
+>> -----Original Message-----
+>> From: Jean-Philippe Brucker [mailto:jean-philippe@linaro.org]
+>> Sent: 04 December 2020 09:54
+>> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+>> Cc: Auger Eric <eric.auger@redhat.com>; wangxingang
+>> <wangxingang5@huawei.com>; Xieyingtai <xieyingtai@huawei.com>;
+>> kvm@vger.kernel.org; maz@kernel.org; joro@8bytes.org; will@kernel.org;
+>> iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
+>> vivek.gautam@arm.com; alex.williamson@redhat.com;
+>> zhangfei.gao@linaro.org; robin.murphy@arm.com;
+>> kvmarm@lists.cs.columbia.edu; eric.auger.pro@gmail.com; Zengtao (B)
+>> <prime.zeng@hisilicon.com>; qubingbing <qubingbing@hisilicon.com>
+>> Subject: Re: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
+>> unmanaged ASIDs
+>>
+>> Hi Shameer,
+>>
+>> On Thu, Dec 03, 2020 at 06:42:57PM +0000, Shameerali Kolothum Thodi wrote:
+>>> Hi Jean/zhangfei,
+>>> Is it possible to have a branch with minimum required SVA/UACCE related
+>> patches
+>>> that are already public and can be a "stable" candidate for future respin of
+>> Eric's series?
+>>> Please share your thoughts.
+>>
+>> By "stable" you mean a fixed branch with the latest SVA/UACCE patches
+>> based on mainline? 
+> 
+> Yes. 
+> 
+>  The uacce-devel branches from
+>> https://github.com/Linaro/linux-kernel-uadk do provide this at the moment
+>> (they track the latest sva/zip-devel branch
+>> https://jpbrucker.net/git/linux/ which is roughly based on mainline.)
+> 
+> Thanks. 
+> 
+> Hi Eric,
+> 
+> Could you please take a look at the above branches and see whether it make sense
+> to rebase on top of either of those?
+> 
+> From vSVA point of view, it will be less rebase hassle if we can do that.
 
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index 9287edd..d5adeee 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -175,6 +175,7 @@ static int __xp_assign_dev(struct xsk_buff_pool *pool,
- 
- 	if (!pool->dma_pages) {
- 		WARN(1, "Driver did not DMA map zero-copy buffers");
-+		err = -EINVAL;
- 		goto err_unreg_xsk;
- 	}
- 	pool->umem->zc = true;
--- 
-2.9.5
+Sure. I will rebase on top of this ;-)
+
+Thanks
+
+Eric
+> 
+> Thanks,
+> Shameer
+> 
+>> Thanks,
+>> Jean
+> 
 
