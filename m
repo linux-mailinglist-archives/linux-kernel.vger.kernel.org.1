@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A7A2CF76B
+	by mail.lfdr.de (Postfix) with ESMTP id B0D772CF76C
 	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgLDXZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 18:25:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLDXZQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 18:25:16 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A33BC061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 15:24:36 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id bj5so4000817plb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 15:24:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Dp4a4I+CGeFhV9BXWLgWJG8THoDXEJYYnGVTWyWsFu0=;
-        b=bXts64vtazkEv2OjbCqbdaD9U8GVsVJnQmEDL9b6088YJRpesI6caMXbOdtWkpdB+Q
-         19RLwmCuAsjnnGiofDhFpbgMy8T09aytIJIG2joIsHqotjSr+Cz/uMhhX4cFbVONxbMk
-         0hpY+kDJNklJHHxbNr53xeznEV6SgeWq20JQ1u5ISV2jkdoYwoGpLbcJFNwKv33/vWqW
-         iNFPk7ZHhFqpYSR8ywqZHipoQUewxd8aT1ckSZpYhwm9mpNewavasN5LTwD/nbyiQuLm
-         FhK7CBHyZDs7vG0xBtF5KCvfD6dM9NAcjWZrLyZNLjGi9wF1+vIR9MAekJgtxj1lU/z6
-         plng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Dp4a4I+CGeFhV9BXWLgWJG8THoDXEJYYnGVTWyWsFu0=;
-        b=tIFDJQKfqYtYmYxAY2reCpzFkdq+Ton30Odfa6oPznkErvwTO61VTcYa7E9IhHSxur
-         9j2R1GNG7uqtkPXqVgJLcqyDdMLSB77Dipgf7tcsG4+CzUUxpH7Y2BGWnJq0MroToeQq
-         lBqS76PHbbKg3Mxdoouu/RGHaiR5b0RUQZ5Xsf0vYr07PfyhGB3PCehMeYopCRfVNM0k
-         /YU+xOI8XsuYgJYNmA+jegkP8KHR1F3zdmc4Lf64H88N1J4KNRCeeF0dlTdpQKJpfYoL
-         dvBCiOcW1PJyDcWnGkq0/PnRIGAcanZDlmwkuekM9+JWaRiEDfB8QNqQCMs6v9BR8YWR
-         yhWw==
-X-Gm-Message-State: AOAM533SnkOieChUnJ0abxrTIEQJg/H0j4UChDucC8XnE/2rpV+x0J5/
-        AfQfyIoAGK6GvZymeWE31GKnpA==
-X-Google-Smtp-Source: ABdhPJze8kI8LCo+CNtM8rZfjc3ETpwe4yoo4ibkkStpdGcu1RwnDl8O28MicEKOlPuVWLpM0VL5uw==
-X-Received: by 2002:a17:902:bcca:b029:da:61e3:a032 with SMTP id o10-20020a170902bccab02900da61e3a032mr5822157pls.63.1607124275801;
-        Fri, 04 Dec 2020 15:24:35 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id t16sm4921930pga.51.2020.12.04.15.24.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 15:24:35 -0800 (PST)
-Date:   Fri, 4 Dec 2020 15:24:28 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     akpm@linux-foundation.org, jeyu@kernel.org, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, luto@kernel.org,
-        dave.hansen@linux.intel.com, peterz@infradead.org, x86@kernel.org,
-        rppt@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        dan.j.williams@intel.com, elena.reshetova@intel.com,
-        ira.weiny@intel.com
-Subject: Re: [PATCH RFC 01/10] vmalloc: Add basic perm alloc implementation
-Message-ID: <X8rFLHGSqJ7JCZ/N@google.com>
-References: <20201120202426.18009-1-rick.p.edgecombe@intel.com>
- <20201120202426.18009-2-rick.p.edgecombe@intel.com>
+        id S1727362AbgLDXZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 18:25:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725885AbgLDXZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 18:25:38 -0500
+Date:   Fri, 4 Dec 2020 15:24:56 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607124297;
+        bh=W4DgIKA8fUXuOQ3qFucixeZIaJgsASGHjFYuF59z0f0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Gj3xCSqe7FEkfA6gw+ltNvvw3vhaGTYDOj2WF4LHgwVxdUlFnJJoZPZo/YWwFcS3s
+         AfV8Ckd5okxcHymBg6TnHbsIS01HAs75SiHa0psxnrFWxtPxJrt5nMs4C8DAau4qCX
+         TzBrYiZndwoqmV9s0OnTGUa4QaM1WMqTSKsd3okZpRiCJeCb50DLOtSH595BOhBG1u
+         hrUk+jKiOKQWJHYhMyTpJP3RObiQQc7sF/ILLtVcGVqd6E4C+RnUKUIWu50GFGsDBy
+         hyzt2yOpDzKCs/3MX8d1AjBCln+R65hab8LYKfujcSRc9IE5FnhZSxztUIx9CPcmpR
+         d1G+M4+1uDIug==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        David S Miller <davem@davemloft.net>,
+        Marek Vasut <marex@denx.de>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v1] net: dsa: ksz8795: use correct number of
+ physical ports
+Message-ID: <20201204152456.247769b1@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201203214645.31217-1-TheSven73@gmail.com>
+References: <20201203214645.31217-1-TheSven73@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120202426.18009-2-rick.p.edgecombe@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020, Rick Edgecombe wrote:
-> +struct perm_allocation {
-> +	struct page **pages;
-> +	virtual_perm cur_perm;
-> +	virtual_perm orig_perm;
-> +	struct vm_struct *area;
-> +	unsigned long offset;
-> +	unsigned long size;
-> +	void *writable;
-> +};
-> +
-> +/*
-> + * Allocate a special permission kva region. The region may not be mapped
-> + * until a call to perm_writable_finish(). A writable region will be mapped
-> + * immediately at the address returned by perm_writable_addr(). The allocation
-> + * will be made between the start and end virtual addresses.
-> + */
-> +struct perm_allocation *perm_alloc(unsigned long vstart, unsigned long vend, unsigned long page_cnt,
-> +				   virtual_perm perms);
+On Thu,  3 Dec 2020 16:46:45 -0500 Sven Van Asbroeck wrote:
+> From: Sven Van Asbroeck <thesven73@gmail.com>
+> 
+> The ksz8795 has five physical ports, but the driver assumes
+> it has only four. This prevents the driver from working correctly.
+> 
+> Fix by indicating the correct number of physical ports.
+> 
+> Fixes: e66f840c08a23 ("net: dsa: ksz: Add Microchip KSZ8795 DSA driver")
+> Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # ksz8795
+> Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
 
-IMO, 'perm' as the root namespace is too generic, and perm_ is already very
-prevelant throughout the kernel.  E.g. it's not obvious when looking at the
-callers that perm_alloc() is the first step in setting up an alternate kernel
-VA->PA mapping.
+All the port counts here are -1 compared to datasheets, so I'm assuming
+the are not supposed to include the host facing port or something?
 
-I don't have a suggestion for a more intuitive name, but in the absence of a
-perfect name, I'd vote for an acronym that is easy to grep.  Something like
-pvmap?  That isn't currently used in the kernel, though I can't help but read it
-as "paravirt map"...
+Can you describe the exact problem you're trying to solve?
+
+DSA devices are not supposed to have a netdev for the host facing port
+on the switch (sorry for stating the obvious).
+
+> diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
+> index 1e101ab56cea..367cebe37ae6 100644
+> --- a/drivers/net/dsa/microchip/ksz8795.c
+> +++ b/drivers/net/dsa/microchip/ksz8795.c
+> @@ -1194,7 +1194,7 @@ static const struct ksz_chip_data ksz8795_switch_chips[] = {
+>  		.num_alus = 0,
+>  		.num_statics = 8,
+>  		.cpu_ports = 0x10,	/* can be configured as cpu port */
+> -		.port_cnt = 4,		/* total physical port count */
+> +		.port_cnt = 5,		/* total physical port count */
+>  	},
+>  	{
+>  		.chip_id = 0x8794,
+
