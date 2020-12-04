@@ -2,82 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45DFF2CED81
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 298372CED9E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729793AbgLDLxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:53:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24799 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725999AbgLDLxY (ORCPT
+        id S2388100AbgLDLzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:55:15 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:40198 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728666AbgLDLzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:53:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607082718;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d6DMcyImwNW8/yN8tZ5x35hfAGMlLSWgGVlroAI+zwE=;
-        b=g6fp3hP4ZtzlYeImnBfqgIC3JLu0ihB3+n9l8GRpubyx4pvqs9fbMim0GzUM925ssp5NED
-        us6bPcpMXNfi0qp6W5xhaynSkWmlDkGqugFCnB/AzoDsi6QuetF/4sVZrEXK2S4JNMGylT
-        04/igAK+S7lozz8GxlkamJQBfP/S5lI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-274-leC3jpfvOhWjVCqCD3DNVA-1; Fri, 04 Dec 2020 06:51:54 -0500
-X-MC-Unique: leC3jpfvOhWjVCqCD3DNVA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2558618C8C00;
-        Fri,  4 Dec 2020 11:51:52 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A484210016F5;
-        Fri,  4 Dec 2020 11:51:49 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20201203064536.GE27350@xsang-OptiPlex-9020>
-References: <20201203064536.GE27350@xsang-OptiPlex-9020>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     dhowells@redhat.com, lkp@lists.01.org, lkp@intel.com,
-        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        Pavel Begunkov <asml.silence@gmail.com>,
+        Fri, 4 Dec 2020 06:55:14 -0500
+Received: by mail-wm1-f67.google.com with SMTP id a3so6758222wmb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 03:54:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=wHqmBeW2IFxVt4oHJizfcV3fQQX4Hgdaz39Wp4K7c0A=;
+        b=qlp9PhdRghtfGxUhq6Yr02LvnLfDF8oruWwkFQQhz/iNOf3aHArn4YqYLIKck2FIcL
+         /yx1KGpv+OpqPIfteu7Rjm/URHLYV/0cPj2AzWEfM+aNd7b7dRpuJ957oai1ARNGw4HO
+         Oie+gJNx5I6hWIoJaWE7LPKSgKho7hj6VwTRMT0ryvxmLGXVKwMOkaMPTXmDr1iPfwHT
+         sGe1hz8ul3W+bfYUzwmBnG/KB4QYM7d9ydWOEJZEMDRk87De7ACTMa0dR5bdtXhv/WT3
+         QOdlaA4xaVtStVrXw8huAWLzjt+CM5BZlG6GDsstFwpwCekscBYcrl957b0denBM+2WJ
+         iuLQ==
+X-Gm-Message-State: AOAM5307tnpoNRasq8PBYZeZn3lIFuq1hOAe/6I+sCxDSOXkTV9Wgz92
+        DryxQuLGmsBPl2XIjWsNRxw=
+X-Google-Smtp-Source: ABdhPJz3k3/M4l7ovBWHXv3cerqd8tc5RbeKIr8k7pXjJ8RslEzOgI+FhEYt0rRwwhaYS4XH6t8M9g==
+X-Received: by 2002:a7b:c087:: with SMTP id r7mr3791014wmh.153.1607082872591;
+        Fri, 04 Dec 2020 03:54:32 -0800 (PST)
+Received: from [10.9.0.26] ([185.248.161.177])
+        by smtp.gmail.com with ESMTPSA id u26sm3027316wmm.24.2020.12.04.03.54.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Dec 2020 03:54:31 -0800 (PST)
+Reply-To: alex.popov@linux.com
+Subject: Re: [PATCH RFC v2 2/6] mm/slab: Perform init_on_free earlier
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>, Will Deacon <will@kernel.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Patrick Bellasi <patrick.bellasi@arm.com>,
+        David Howells <dhowells@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
         Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [iov_iter] 9bd0e337c6: will-it-scale.per_process_ops -4.8% regression
+        Pavel Machek <pavel@denx.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        LKML <linux-kernel@vger.kernel.org>, notify@kernel.org
+References: <20200929183513.380760-1-alex.popov@linux.com>
+ <20200929183513.380760-3-alex.popov@linux.com>
+ <CAG_fn=WY9OFKuy6utMHOgyr+1DYNsuzVruGCGHMDnEnaLY6s9g@mail.gmail.com>
+ <1772bc7d-e87f-0f62-52a8-e9d9ac99f5e3@linux.com>
+ <20201203124914.25e63b013e9c69c79d481831@linux-foundation.org>
+From:   Alexander Popov <alex.popov@linux.com>
+Message-ID: <9b9861c0-4c94-a51f-bbac-bd5e9b77d9e0@linux.com>
+Date:   Fri, 4 Dec 2020 14:54:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <98293.1607082708.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 04 Dec 2020 11:51:48 +0000
-Message-ID: <98294.1607082708@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20201203124914.25e63b013e9c69c79d481831@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot <oliver.sang@intel.com> wrote:
+On 03.12.2020 23:49, Andrew Morton wrote:
+> On Thu, 3 Dec 2020 22:50:27 +0300 Alexander Popov <alex.popov@linux.com> wrote:
+> 
+>> On 30.09.2020 15:50, Alexander Potapenko wrote:
+>>> On Tue, Sep 29, 2020 at 8:35 PM Alexander Popov <alex.popov@linux.com> wrote:
+>>>>
+>>>> Currently in CONFIG_SLAB init_on_free happens too late, and heap
+>>>> objects go to the heap quarantine being dirty. Lets move memory
+>>>> clearing before calling kasan_slab_free() to fix that.
+>>>>
+>>>> Signed-off-by: Alexander Popov <alex.popov@linux.com>
+>>> Reviewed-by: Alexander Potapenko <glider@google.com>
+>>
+>> Hello!
+>>
+>> Can this particular patch be considered for the mainline kernel?
+> 
+> All patches are considered ;) And merged if they're reviewed, tested,
+> judged useful, etc.
+> 
+> If you think this particular patch should be fast-tracked then please
+> send it as a non-RFC, standalone patch.  Please also enhance the
+> changelog so that it actually explains what goes wrong.  Presumably
+> "objects go to the heap quarantine being dirty" causes some
+> user-visible problem?  What is that problem?
 
-> FYI, we noticed a -4.8% regression of will-it-scale.per_process_ops due =
-to commit:
-> =
+Ok, thanks!
+I'll improve the commit message and send the patch separately.
 
-> =
-
-> commit: 9bd0e337c633aed3e8ec3c7397b7ae0b8436f163 ("[PATCH 01/29] iov_ite=
-r: Switch to using a table of operations")
-
-Out of interest, would it be possible for you to run this on the tail of t=
-he
-series on the same hardware?
-
-Thanks,
-David
-
+Best regards,
+Alexander
