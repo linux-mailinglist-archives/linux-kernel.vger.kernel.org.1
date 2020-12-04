@@ -2,1038 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D052CF09C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0519A2CF0A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730491AbgLDPWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:22:02 -0500
-Received: from gproxy1-pub.mail.unifiedlayer.com ([69.89.25.95]:34932 "EHLO
-        gproxy1-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728708AbgLDPWB (ORCPT
+        id S1730565AbgLDPW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:22:28 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21926 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730556AbgLDPW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:22:01 -0500
-Received: from cmgw15.unifiedlayer.com (unknown [10.9.0.15])
-        by gproxy1.mail.unifiedlayer.com (Postfix) with ESMTP id 98F5DBFA4B567
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 08:21:17 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id lCtZkhPyqh41llCtZkjw0G; Fri, 04 Dec 2020 08:21:17 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=U5S889ju c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=IkcTkHD0fZMA:10:nop_charset_1
- a=zTNgK-yGK50A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=gAnH3GRIAAAA:8
- a=Gr4KiaeddmBv_ZHwf9oA:9 a=QEXdDO2ut3YA:10:nop_charset_2
- a=oVHKYsEdi7-vN-J5QA_j:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=I1+/A4PzKWdvPssG7uynVe7JtxxMBwJTQWuGCj+/DPc=; b=Eq1jyoEGkOuYYrpPZqr+9zq9Xg
-        Ey23zy6s9h9avinlOARlOwS+SHciAchCekXAM7kL+iTRq6PVm9lcIY3TqcupPeD0U/3hbajyIM5hB
-        giwQMF2p2ReHVPCA/6Eopw3NkRceHWxnv0WnpAbOGO+c/09vwIVUw9F8DO+mEj0K/aq0TMvkFPJ78
-        oNNGS3ZrG4QPiSvnzMSnSJOEinTAfCD9dptWr14W90Fcw7YAWje9AQOzMJjDFhXUsvxfIPd5VNbko
-        7MCW86zPBxXn6Nz6+UdezYgBJaGm403kOYf0SIrekV+Q5KN+JHCeu6kzVftvOuYsxLAFj7YePtjcw
-        LK7cAjsA==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:46524 helo=localhost)
-        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1klCtY-001k3v-Eh; Fri, 04 Dec 2020 15:21:16 +0000
-Date:   Fri, 4 Dec 2020 07:21:15 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     alexandru.tachici@analog.com
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Weston.Sapia@analog.com,
-        Brad.Lovell@analog.com, Sal.Afzal@analog.com, robh+dt@kernel.org
-Subject: Re: [PATCH v3 1/3] hwmon: ltc2992: Add support
-Message-ID: <20201204152115.GA135107@roeck-us.net>
-References: <20201203071155.68859-1-alexandru.tachici@analog.com>
- <20201203071155.68859-2-alexandru.tachici@analog.com>
+        Fri, 4 Dec 2020 10:22:27 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4FB6Qq014831;
+        Fri, 4 Dec 2020 07:21:28 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=TKuoFalUHG67aYFEGGZfZEbv4MVrWKHi2z1k8rQj+SI=;
+ b=nUF9fUwXC0WcljtaaUfE7JrRTbHRBL3DrN6E+QdHxzRNDeY2fhoYoM3EGcQeXzXt4MDi
+ jbUgdkusEGFWLInq8pnkXfx7BsGymkwwSCJnCbDhee9jNDZ1yOIQLrqhJ84Hj9GtYXv5
+ GNgoYlk42XkuTArEucuI5lIsklLuV+d3Zm4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 356xfr1xh1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 04 Dec 2020 07:21:27 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 4 Dec 2020 07:21:26 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Rb7fPUPOSOGnEFjYHXb2qMw7jzj3eLMmeBP21sSeTbTRJweOIjLMXMF4VzQnq1dk/PP/nyf3aSWjar58kquihx1Sgwh1zmCXvIjPmVeuHnLTJPbAG7HiWUdcNMES7QvLSEGGwcWpaGo8fmfMINaLvAmZMbtq+dvo9VCxYHKfJ6CUBCTm7EMqqsrgEHnbJ8HtWTEHueySYeezgZ3J/EWVVyOctmAsRRe2zrIDg8yUVEqrdtLC7mqhvuLt+lGb7TicCtYt4jMCzYCOdbiT36uVZ2zFyA7wgItYJUF9/kjRy1matAqu06DPc8dFepf3YLu+ub8je0fb4/iiisTHlx/skQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TKuoFalUHG67aYFEGGZfZEbv4MVrWKHi2z1k8rQj+SI=;
+ b=lIIVSR/1lLbSAaTqPCYL/5Oaxc47BTrQM6ZM8Nns9FHoMz5kg2c/ucGqa2yLIZTW4fV5lhgj4RClyteTCLTU53UQOf7dcb24ejQQ9FPDl4mjBG2HyiAr3TwmjvVrxpPP+4O5A1nwPIparJrHn/iKqoNwl9Sp/d/SvMcjYr//fzZcPhJRZY3eXL6Ie0SUYpkifQf2dBbhTVDPmcL3MnqQoHu1BTD8GQ2l+9Iw4OgY2A9298R8DRQ1o0qtyUvHxxIrnQUDkohEYjennEuC0bcOfp4P0nx6NiWsi6SSgz5Qmpkv/jncTcA4evyQgnK/ndl10EhyHMh8sri136dLdoEnrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TKuoFalUHG67aYFEGGZfZEbv4MVrWKHi2z1k8rQj+SI=;
+ b=SS2gJZcRNFSR8Mnl48WTtEi7vH9OXC9q92fuK0CADfGfg8s7ju7c7H6BTqn5Soov61Dip+YzA/SDzsr6nROiyQRWttNhHJbBFhzPZ1L0Cn/gxhB0Vo5QiprpQAj5FU5odjlzAaAc8ITSEckRMaJxxsWlAiz3DvD0xQmatH70I5Y=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2408.namprd15.prod.outlook.com (2603:10b6:a02:85::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Fri, 4 Dec
+ 2020 15:21:25 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3632.021; Fri, 4 Dec 2020
+ 15:21:24 +0000
+Subject: Re: [PATCH bpf-next v3 10/14] bpf: Add bitwise atomic instructions
+To:     Brendan Jackman <jackmanb@google.com>
+CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
+References: <20201203160245.1014867-1-jackmanb@google.com>
+ <20201203160245.1014867-11-jackmanb@google.com>
+ <86a88eba-83a1-93c0-490d-ceba238e3aad@fb.com> <X8oDEsEjU059T7+k@google.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <534a6371-a5ed-2459-999b-90b8a8b773e8@fb.com>
+Date:   Fri, 4 Dec 2020 07:21:22 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
+In-Reply-To: <X8oDEsEjU059T7+k@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:fab1]
+X-ClientProxiedBy: MW3PR05CA0015.namprd05.prod.outlook.com
+ (2603:10b6:303:2b::20) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201203071155.68859-2-alexandru.tachici@analog.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1klCtY-001k3v-Eh
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:46524
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 6
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c8::12b3] (2620:10d:c090:400::5:fab1) by MW3PR05CA0015.namprd05.prod.outlook.com (2603:10b6:303:2b::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Fri, 4 Dec 2020 15:21:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bedc9bfc-7d07-468f-3ab6-08d898684356
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2408:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2408199FEBD90AEAEEF38E0CD3F10@BYAPR15MB2408.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VUUBkDI+IT+dPjg4xHlYbbgOrM9MvxW86bfvEfmMR0BJM1LMsjhQwb3cLwee5D1ld22otzKWBxyhRjUitbaskav2YREVpFv2dx/U0cNoC0XshJSoixro/W8rKUWF8RHnrR1lL3Bt5aDh+lejwIN18onWgBQ615QHNV8dK7P1AL2TP+S6IWyH29umyasU5sLaLikxyzWtQW09xbX4kIN1j1GsPxA2/IcWpFErL5BIgmgQPaqTJc7AmtJqBKc9iRHtZ9JvWKOUKqK1J5d9SBmII+nDZBmPyVmIGModubr/vlZTuQ3kI7QAFh5F4A2+ZComVVCT0UH2/hcgKk9hpdobm4PdTq0s00QpHE+Mkkl9aeYURTEUGcZzUCBUXv8+OQRdwhPQfwHRjci7DTi36asCU0m18kEJx8YDQVRNm+ZL/C0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(376002)(396003)(366004)(346002)(52116002)(8936002)(8676002)(5660300002)(86362001)(316002)(2906002)(54906003)(6916009)(36756003)(31696002)(53546011)(16526019)(66946007)(66476007)(66556008)(83380400001)(186003)(478600001)(4326008)(6486002)(31686004)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?U0NBZ1VjRE1jNFpvRG56L3ZWNU9LVGR3UDJxS2J5MGlhVVN4SVNESVlnMkli?=
+ =?utf-8?B?R1lnYmZ3dDh3ZFcrWjdKSHE1SnBnMyt3L25aWmtUb3Y1WjBOVnUvS0FEeGR6?=
+ =?utf-8?B?RVdwNVJUaWxDN3lnQ29IK3VHZEpqb3BKM2RrT0hOSGRWeU9hWTdjVFlJUyti?=
+ =?utf-8?B?eTFLc0Q5dndTRXdNV0w2V0FFNGxrazB1ZXV6ZHV5S0w5bmxVZkVOK0JTWWkw?=
+ =?utf-8?B?UHFIdUQrbm9qQzVKMFhtNHpKWWhpbURUTzlBejhRNnF5eitVbmlNZGxaZ3Ex?=
+ =?utf-8?B?ZUNqancxWWxockNxTGNzWjhhUHZxV0Y4MnFiTkFzSUdUd011NStMQmtYZk16?=
+ =?utf-8?B?WkVXUGMvbHpRNURuVmV1aTFZdm93ZnNMMDEvTUNyTHdRNXpOSnRuWDJIMStq?=
+ =?utf-8?B?b01TWllIb01yQitjVDA2SEhJQVpjZjIyTktOSmJ2T2l0UjBXOHFpcTdMVDJP?=
+ =?utf-8?B?RGUrUll6YjNSREdnZ2dEdWVFY2J6K0toOEIxNDhEOC91TCtITmE1aTI3MVhz?=
+ =?utf-8?B?S3ZqV2tCYmIxUmtJalloVkJ5ZWVSRy9CRC9xbGVYVmpNdFNRT3BBczBGUlJm?=
+ =?utf-8?B?VElOdVVxOVlzMkdtRldSNVV5T2hxSFNJRmdaL2dHSW00aGVzT3RPcTBNQ3kv?=
+ =?utf-8?B?OE1NOHlvWVR4TUwzQkhQZzVETlQ5Tk5KNnFUQ0swK29EaU5jdTY0dHpPR0R4?=
+ =?utf-8?B?Q1Bmczh0aEg3ckZCa2VxSWU4SjY3eWx6MGY3cXI3b3JiRi9haTdndk92Rzc2?=
+ =?utf-8?B?RTZ1U1ROQzA0ZkJMMENYUlg2eDBtT3VldTd0QlZuMWV5cXhIemhVbWtVd2g1?=
+ =?utf-8?B?UHIySHpvS2tYTEdBVmNwOHk4akZzajRvZitqYXNHalNiekw4UFRKYzNJVDdp?=
+ =?utf-8?B?R1pWRUxYa1U2ekkrV1VPK3E4TGZ6Y21GTmRXamt3ZXVzTC9YSENyM3NxT3V1?=
+ =?utf-8?B?aHkwZzNnRUV3RFEwR2piVG01UE9TZ1lReGlFVkhQVFpGMEdrY3pZOXBVVzJG?=
+ =?utf-8?B?aHNpYVh5bTcwdEc3Wm1mclNMb2JBdklBNURuQnJabG9OdGhKUFg5UTlHYUE5?=
+ =?utf-8?B?WnJYLzlKOWNNM1FvYlBDbmpuSUNlV1NJV1Y1eFE1YkxuQk1tVUxDSml0Q1pz?=
+ =?utf-8?B?Z0RrV0VVd25iQVpLN3E1eXJJRWlkL1RzMzdUNE9tekRaVDRIb3Q0dGZvc2I5?=
+ =?utf-8?B?bkVUQjR0NnZDaWx1U1VucVJBaFBvRlZja1JQQzJycUNBVU9kcmZTOFEvNVA0?=
+ =?utf-8?B?QjErd0xEUDBCeW56WDlFMTFLMitOYXpqN1ppajkyZ3FHY3BrN0pjTzhTb21T?=
+ =?utf-8?B?c2U5NFhBd0J5OTFQSGR6TDJvMjFnSlZjdE95aTluZWs4MFVXMnZFQlA2aTlD?=
+ =?utf-8?B?ZU9SaFMxRDdFZkE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: bedc9bfc-7d07-468f-3ab6-08d898684356
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 15:21:24.8549
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3YBHHx02lqiIJ199qTRKOO2B7HlY9U3OV2aZDf3MpDLvIywHV0PjuczcKEMGOtyV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2408
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_05:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 adultscore=0
+ priorityscore=1501 spamscore=0 mlxlogscore=999 mlxscore=0 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040089
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 09:11:53AM +0200, alexandru.tachici@analog.com wrote:
-> From: Alexandru Tachici <alexandru.tachici@analog.com>
-> 
-> LTC2992 is a rail-to-rail system monitor that
-> measures current, voltage, and power of two supplies.
-> 
-> Two ADCs simultaneously measure each supply’s current.
-> A third ADC monitors the input voltages and four
-> auxiliary external voltages.
-> 
-> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
 
-Applied.
 
-Thanks,
-Guenter
-
-> ---
->  Documentation/hwmon/index.rst   |   1 +
->  Documentation/hwmon/ltc2992.rst |  56 +++
->  drivers/hwmon/Kconfig           |  11 +
->  drivers/hwmon/Makefile          |   1 +
->  drivers/hwmon/ltc2992.c         | 813 ++++++++++++++++++++++++++++++++
->  5 files changed, 882 insertions(+)
->  create mode 100644 Documentation/hwmon/ltc2992.rst
->  create mode 100644 drivers/hwmon/ltc2992.c
+On 12/4/20 1:36 AM, Brendan Jackman wrote:
+> On Thu, Dec 03, 2020 at 10:42:19PM -0800, Yonghong Song wrote:
+>>
+>>
+>> On 12/3/20 8:02 AM, Brendan Jackman wrote:
+>>> This adds instructions for
+>>>
+>>> atomic[64]_[fetch_]and
+>>> atomic[64]_[fetch_]or
+>>> atomic[64]_[fetch_]xor
+>>>
+>>> All these operations are isomorphic enough to implement with the same
+>>> verifier, interpreter, and x86 JIT code, hence being a single commit.
+>>>
+>>> The main interesting thing here is that x86 doesn't directly support
+>>> the fetch_ version these operations, so we need to generate a CMPXCHG
+>>> loop in the JIT. This requires the use of two temporary registers,
+>>> IIUC it's safe to use BPF_REG_AX and x86's AUX_REG for this purpose.
+>>>
+>>> Change-Id: I340b10cecebea8cb8a52e3606010cde547a10ed4
+>>> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+>>> ---
+>>>    arch/x86/net/bpf_jit_comp.c  | 50 +++++++++++++++++++++++++++++-
+>>>    include/linux/filter.h       | 60 ++++++++++++++++++++++++++++++++++++
+>>>    kernel/bpf/core.c            |  5 ++-
+>>>    kernel/bpf/disasm.c          | 21 ++++++++++---
+>>>    kernel/bpf/verifier.c        |  6 ++++
+>>>    tools/include/linux/filter.h | 60 ++++++++++++++++++++++++++++++++++++
+>>>    6 files changed, 196 insertions(+), 6 deletions(-)
+>>>
+> [...]
+>>> diff --git a/include/linux/filter.h b/include/linux/filter.h
+>>> index 6186280715ed..698f82897b0d 100644
+>>> --- a/include/linux/filter.h
+>>> +++ b/include/linux/filter.h
+>>> @@ -280,6 +280,66 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
+> [...]
+>>> +#define BPF_ATOMIC_FETCH_XOR(SIZE, DST, SRC, OFF)		\
+>>> +	((struct bpf_insn) {					\
+>>> +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
+>>> +		.dst_reg = DST,					\
+>>> +		.src_reg = SRC,					\
+>>> +		.off   = OFF,					\
+>>> +		.imm   = BPF_XOR | BPF_FETCH })
+>>> +
+>>>    /* Atomic exchange, src_reg = atomic_xchg((dst_reg + off), src_reg) */
+>>
+>> Looks like BPF_ATOMIC_XOR/OR/AND/... all similar to each other.
+>> The same is for BPF_ATOMIC_FETCH_XOR/OR/AND/...
+>>
+>> I am wondering whether it makes sence to have to
+>> BPF_ATOMIC_BOP(BOP, SIZE, DST, SRC, OFF) and
+>> BPF_ATOMIC_FETCH_BOP(BOP, SIZE, DST, SRC, OFF)
+>> can have less number of macros?
 > 
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index e6b91ab12978..98575a8b1918 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -100,6 +100,7 @@ Hardware Monitoring Kernel Drivers
->     lm95234
->     lm95245
->     lochnagar
-> +   ltc2992
->     ltc2945
->     ltc2947
->     ltc2978
-> diff --git a/Documentation/hwmon/ltc2992.rst b/Documentation/hwmon/ltc2992.rst
-> new file mode 100644
-> index 000000000000..46aa1aa84a1a
-> --- /dev/null
-> +++ b/Documentation/hwmon/ltc2992.rst
-> @@ -0,0 +1,56 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +Kernel driver ltc2992
-> +=====================
-> +
-> +Supported chips:
-> +  * Linear Technology LTC2992
-> +    Prefix: 'ltc2992'
-> +    Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ltc2992.pdf
-> +
-> +Author: Alexandru Tachici <alexandru.tachici@analog.com>
-> +
-> +
-> +Description
-> +-----------
-> +
-> +This driver supports hardware monitoring for Linear Technology LTC2992 power monitor.
-> +
-> +LTC2992 is a rail-to-rail system monitor that measures current,
-> +voltage, and power of two supplies.
-> +
-> +Two ADCs simultaneously measure each supply’s current. A third ADC monitors
-> +the input voltages and four auxiliary external voltages.
-> +
-> +
-> +Sysfs entries
-> +-------------
-> +
-> +The following attributes are supported. Limits are read-write,
-> +all other attributes are read-only.
-> +
-> +in_reset_history	Reset all highest/lowest values.
-> +
-> +inX_input		Measured voltage.
-> +inX_lowest		Minimum measured voltage.
-> +inX_highest		Maximum measured voltage.
-> +inX_min			Minimum voltage allowed.
-> +inX_max			Maximum voltage allowed.
-> +inX_min_alarm		An undervoltage occurred. Cleared on read.
-> +inX_max_alarm		An overvoltage occurred. Cleared on read.
-> +
-> +currX_input		Measured current.
-> +currX_lowest		Minimum measured current.
-> +currX_highest		Maximum measured current.
-> +currX_min		Minimum current allowed.
-> +currX_max		Maximum current allowed.
-> +currX_min_alarm		An undercurrent occurred. Cleared on read.
-> +currX_max_alarm		An overcurrent occurred. Cleared on read.
-> +
-> +powerX_input		Measured power.
-> +powerX_input_lowest	Minimum measured voltage.
-> +powerX_input_highest	Maximum measured voltage.
-> +powerX_min		Minimum power.
-> +powerX_max		Maximum power.
-> +powerX_min_alarm	An underpower occurred. Cleared on read.
-> +powerX_max_alarm	An overpower occurred. Cleared on read.
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index a850e4f0e0bd..bf9e387270d6 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -858,6 +858,17 @@ config SENSORS_LTC2990
->  	  This driver can also be built as a module. If so, the module will
->  	  be called ltc2990.
->  
-> +config SENSORS_LTC2992
-> +	tristate "Linear Technology LTC2992"
-> +	depends on I2C
-> +	help
-> +	  If you say yes here you get support for Linear Technology LTC2992
-> +	  I2C System Monitor. The LTC2992 measures current, voltage, and
-> +	  power of two supplies.
-> +
-> +	  This driver can also be built as a module. If so, the module will
-> +	  be called ltc2992.
-> +
->  config SENSORS_LTC4151
->  	tristate "Linear Technology LTC4151"
->  	depends on I2C
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index 9db2903b61e5..d6172c4807c4 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -118,6 +118,7 @@ obj-$(CONFIG_SENSORS_LTC2947)	+= ltc2947-core.o
->  obj-$(CONFIG_SENSORS_LTC2947_I2C) += ltc2947-i2c.o
->  obj-$(CONFIG_SENSORS_LTC2947_SPI) += ltc2947-spi.o
->  obj-$(CONFIG_SENSORS_LTC2990)	+= ltc2990.o
-> +obj-$(CONFIG_SENSORS_LTC2992)	+= ltc2992.o
->  obj-$(CONFIG_SENSORS_LTC4151)	+= ltc4151.o
->  obj-$(CONFIG_SENSORS_LTC4215)	+= ltc4215.o
->  obj-$(CONFIG_SENSORS_LTC4222)	+= ltc4222.o
-> diff --git a/drivers/hwmon/ltc2992.c b/drivers/hwmon/ltc2992.c
-> new file mode 100644
-> index 000000000000..c11d585a9600
-> --- /dev/null
-> +++ b/drivers/hwmon/ltc2992.c
-> @@ -0,0 +1,813 @@
-> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +/*
-> + * LTC2992 - Dual Wide Range Power Monitor
-> + *
-> + * Copyright 2020 Analog Devices Inc.
-> + */
-> +
-> +#include <linux/bitfield.h>
-> +#include <linux/bitops.h>
-> +#include <linux/err.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/i2c.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/property.h>
-> +#include <linux/regmap.h>
-> +
-> +#define LTC2992_CTRLB			0x01
-> +#define LTC2992_FAULT1			0x03
-> +#define LTC2992_POWER1			0x05
-> +#define LTC2992_POWER1_MAX		0x08
-> +#define LTC2992_POWER1_MIN		0x0B
-> +#define LTC2992_POWER1_MAX_THRESH	0x0E
-> +#define LTC2992_POWER1_MIN_THRESH	0x11
-> +#define LTC2992_DSENSE1			0x14
-> +#define LTC2992_DSENSE1_MAX		0x16
-> +#define LTC2992_DSENSE1_MIN		0x18
-> +#define LTC2992_DSENSE1_MAX_THRESH	0x1A
-> +#define LTC2992_DSENSE1_MIN_THRESH	0x1C
-> +#define LTC2992_SENSE1			0x1E
-> +#define LTC2992_SENSE1_MAX		0x20
-> +#define LTC2992_SENSE1_MIN		0x22
-> +#define LTC2992_SENSE1_MAX_THRESH	0x24
-> +#define LTC2992_SENSE1_MIN_THRESH	0x26
-> +#define LTC2992_G1			0x28
-> +#define LTC2992_G1_MAX			0x2A
-> +#define LTC2992_G1_MIN			0x2C
-> +#define LTC2992_G1_MAX_THRESH		0x2E
-> +#define LTC2992_G1_MIN_THRESH		0x30
-> +#define LTC2992_FAULT2			0x35
-> +#define LTC2992_G2			0x5A
-> +#define LTC2992_G2_MAX			0x5C
-> +#define LTC2992_G2_MIN			0x5E
-> +#define LTC2992_G2_MAX_THRESH		0x60
-> +#define LTC2992_G2_MIN_THRESH		0x62
-> +#define LTC2992_G3			0x64
-> +#define LTC2992_G3_MAX			0x66
-> +#define LTC2992_G3_MIN			0x68
-> +#define LTC2992_G3_MAX_THRESH		0x6A
-> +#define LTC2992_G3_MIN_THRESH		0x6C
-> +#define LTC2992_G4			0x6E
-> +#define LTC2992_G4_MAX			0x70
-> +#define LTC2992_G4_MIN			0x72
-> +#define LTC2992_G4_MAX_THRESH		0x74
-> +#define LTC2992_G4_MIN_THRESH		0x76
-> +#define LTC2992_FAULT3			0x92
-> +
-> +#define LTC2992_POWER(x)		(LTC2992_POWER1 + ((x) * 0x32))
-> +#define LTC2992_POWER_MAX(x)		(LTC2992_POWER1_MAX + ((x) * 0x32))
-> +#define LTC2992_POWER_MIN(x)		(LTC2992_POWER1_MIN + ((x) * 0x32))
-> +#define LTC2992_POWER_MAX_THRESH(x)	(LTC2992_POWER1_MAX_THRESH + ((x) * 0x32))
-> +#define LTC2992_POWER_MIN_THRESH(x)	(LTC2992_POWER1_MIN_THRESH + ((x) * 0x32))
-> +#define LTC2992_DSENSE(x)		(LTC2992_DSENSE1 + ((x) * 0x32))
-> +#define LTC2992_DSENSE_MAX(x)		(LTC2992_DSENSE1_MAX + ((x) * 0x32))
-> +#define LTC2992_DSENSE_MIN(x)		(LTC2992_DSENSE1_MIN + ((x) * 0x32))
-> +#define LTC2992_DSENSE_MAX_THRESH(x)	(LTC2992_DSENSE1_MAX_THRESH + ((x) * 0x32))
-> +#define LTC2992_DSENSE_MIN_THRESH(x)	(LTC2992_DSENSE1_MIN_THRESH + ((x) * 0x32))
-> +#define LTC2992_SENSE(x)		(LTC2992_SENSE1 + ((x) * 0x32))
-> +#define LTC2992_SENSE_MAX(x)		(LTC2992_SENSE1_MAX + ((x) * 0x32))
-> +#define LTC2992_SENSE_MIN(x)		(LTC2992_SENSE1_MIN + ((x) * 0x32))
-> +#define LTC2992_SENSE_MAX_THRESH(x)	(LTC2992_SENSE1_MAX_THRESH + ((x) * 0x32))
-> +#define LTC2992_SENSE_MIN_THRESH(x)	(LTC2992_SENSE1_MIN_THRESH + ((x) * 0x32))
-> +#define LTC2992_POWER_FAULT(x)		(LTC2992_FAULT1 + ((x) * 0x32))
-> +#define LTC2992_SENSE_FAULT(x)		(LTC2992_FAULT1 + ((x) * 0x32))
-> +#define LTC2992_DSENSE_FAULT(x)		(LTC2992_FAULT1 + ((x) * 0x32))
-> +
-> +/* CTRLB register bitfields */
-> +#define LTC2992_RESET_HISTORY		BIT(3)
-> +
-> +/* FAULT1 FAULT2 registers common bitfields */
-> +#define LTC2992_POWER_FAULT_MSK(x)	(BIT(6) << (x))
-> +#define LTC2992_DSENSE_FAULT_MSK(x)	(BIT(4) << (x))
-> +#define LTC2992_SENSE_FAULT_MSK(x)	(BIT(2) << (x))
-> +
-> +/* FAULT1 bitfields */
-> +#define LTC2992_GPIO1_FAULT_MSK(x)	(BIT(0) << (x))
-> +
-> +/* FAULT2 bitfields */
-> +#define LTC2992_GPIO2_FAULT_MSK(x)	(BIT(0) << (x))
-> +
-> +/* FAULT3 bitfields */
-> +#define LTC2992_GPIO3_FAULT_MSK(x)	(BIT(6) << (x))
-> +#define LTC2992_GPIO4_FAULT_MSK(x)	(BIT(4) << (x))
-> +
-> +#define LTC2992_IADC_NANOV_LSB		12500
-> +#define LTC2992_VADC_UV_LSB		25000
-> +#define LTC2992_VADC_GPIO_UV_LSB	500
-> +
-> +struct ltc2992_state {
-> +	struct i2c_client		*client;
-> +	struct regmap			*regmap;
-> +	u32				r_sense_uohm[2];
-> +};
-> +
-> +struct ltc2992_gpio_regs {
-> +	u8	data;
-> +	u8	max;
-> +	u8	min;
-> +	u8	max_thresh;
-> +	u8	min_thresh;
-> +	u8	alarm;
-> +	u8	min_alarm_msk;
-> +	u8	max_alarm_msk;
-> +};
-> +
-> +static const struct ltc2992_gpio_regs ltc2992_gpio_addr_map[] = {
-> +	{
-> +		.data = LTC2992_G1,
-> +		.max = LTC2992_G1_MAX,
-> +		.min = LTC2992_G1_MIN,
-> +		.max_thresh = LTC2992_G1_MAX_THRESH,
-> +		.min_thresh = LTC2992_G1_MIN_THRESH,
-> +		.alarm = LTC2992_FAULT1,
-> +		.min_alarm_msk = LTC2992_GPIO1_FAULT_MSK(0),
-> +		.max_alarm_msk = LTC2992_GPIO1_FAULT_MSK(1),
-> +	},
-> +	{
-> +		.data = LTC2992_G2,
-> +		.max = LTC2992_G2_MAX,
-> +		.min = LTC2992_G2_MIN,
-> +		.max_thresh = LTC2992_G2_MAX_THRESH,
-> +		.min_thresh = LTC2992_G2_MIN_THRESH,
-> +		.alarm = LTC2992_FAULT2,
-> +		.min_alarm_msk = LTC2992_GPIO2_FAULT_MSK(0),
-> +		.max_alarm_msk = LTC2992_GPIO2_FAULT_MSK(1),
-> +	},
-> +	{
-> +		.data = LTC2992_G3,
-> +		.max = LTC2992_G3_MAX,
-> +		.min = LTC2992_G3_MIN,
-> +		.max_thresh = LTC2992_G3_MAX_THRESH,
-> +		.min_thresh = LTC2992_G3_MIN_THRESH,
-> +		.alarm = LTC2992_FAULT3,
-> +		.min_alarm_msk = LTC2992_GPIO3_FAULT_MSK(0),
-> +		.max_alarm_msk = LTC2992_GPIO3_FAULT_MSK(1),
-> +	},
-> +	{
-> +		.data = LTC2992_G4,
-> +		.max = LTC2992_G4_MAX,
-> +		.min = LTC2992_G4_MIN,
-> +		.max_thresh = LTC2992_G4_MAX_THRESH,
-> +		.min_thresh = LTC2992_G4_MIN_THRESH,
-> +		.alarm = LTC2992_FAULT3,
-> +		.min_alarm_msk = LTC2992_GPIO4_FAULT_MSK(0),
-> +		.max_alarm_msk = LTC2992_GPIO4_FAULT_MSK(1),
-> +	},
-> +};
-> +
-> +static int ltc2992_read_reg(struct ltc2992_state *st, u8 addr, const u8 reg_len)
-> +{
-> +	u8 regvals[4];
-> +	int ret;
-> +	int val;
-> +	int i;
-> +
-> +	ret = regmap_bulk_read(st->regmap, addr, regvals, reg_len);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	val = 0;
-> +	for (i = 0; i < reg_len; i++)
-> +		val |= regvals[reg_len - i - 1] << (i * 8);
-> +
-> +	return val;
-> +}
-> +
-> +static int ltc2992_write_reg(struct ltc2992_state *st, u8 addr, const u8 reg_len, u32 val)
-> +{
-> +	u8 regvals[4];
-> +	int i;
-> +
-> +	for (i = 0; i < reg_len; i++)
-> +		regvals[reg_len - i - 1] = (val >> (i * 8)) & 0xFF;
-> +
-> +	return regmap_bulk_write(st->regmap, addr, regvals, reg_len);
-> +}
-> +
-> +static umode_t ltc2992_is_visible(const void *data, enum hwmon_sensor_types type, u32 attr,
-> +				  int channel)
-> +{
-> +	const struct ltc2992_state *st = data;
-> +
-> +	switch (type) {
-> +	case hwmon_chip:
-> +		switch (attr) {
-> +		case hwmon_chip_in_reset_history:
-> +			return 0200;
-> +		}
-> +		break;
-> +	case hwmon_in:
-> +		switch (attr) {
-> +		case hwmon_in_input:
-> +		case hwmon_in_lowest:
-> +		case hwmon_in_highest:
-> +		case hwmon_in_min_alarm:
-> +		case hwmon_in_max_alarm:
-> +			return 0444;
-> +		case hwmon_in_min:
-> +		case hwmon_in_max:
-> +			return 0644;
-> +		}
-> +		break;
-> +	case hwmon_curr:
-> +		switch (attr) {
-> +		case hwmon_curr_input:
-> +		case hwmon_curr_lowest:
-> +		case hwmon_curr_highest:
-> +		case hwmon_curr_min_alarm:
-> +		case hwmon_curr_max_alarm:
-> +			if (st->r_sense_uohm[channel])
-> +				return 0444;
-> +			break;
-> +		case hwmon_curr_min:
-> +		case hwmon_curr_max:
-> +			if (st->r_sense_uohm[channel])
-> +				return 0644;
-> +			break;
-> +		}
-> +		break;
-> +	case hwmon_power:
-> +		switch (attr) {
-> +		case hwmon_power_input:
-> +		case hwmon_power_input_lowest:
-> +		case hwmon_power_input_highest:
-> +		case hwmon_power_min_alarm:
-> +		case hwmon_power_max_alarm:
-> +			if (st->r_sense_uohm[channel])
-> +				return 0444;
-> +			break;
-> +		case hwmon_power_min:
-> +		case hwmon_power_max:
-> +			if (st->r_sense_uohm[channel])
-> +				return 0644;
-> +			break;
-> +		}
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ltc2992_get_voltage(struct ltc2992_state *st, u32 reg, u32 scale, long *val)
-> +{
-> +	int reg_val;
-> +
-> +	reg_val = ltc2992_read_reg(st, reg, 2);
-> +	if (reg_val < 0)
-> +		return reg_val;
-> +
-> +	reg_val = reg_val >> 4;
-> +	*val = DIV_ROUND_CLOSEST(reg_val * scale, 1000);
-> +
-> +	return 0;
-> +}
-> +
-> +static int ltc2992_set_voltage(struct ltc2992_state *st, u32 reg, u32 scale, long val)
-> +{
-> +	val = DIV_ROUND_CLOSEST(val * 1000, scale);
-> +	val = val << 4;
-> +
-> +	return ltc2992_write_reg(st, reg, 2, val);
-> +}
-> +
-> +static int ltc2992_read_gpio_alarm(struct ltc2992_state *st, int nr_gpio, u32 attr, long *val)
-> +{
-> +	int reg_val;
-> +	u32 mask;
-> +
-> +	if (attr == hwmon_in_max_alarm)
-> +		mask = ltc2992_gpio_addr_map[nr_gpio].max_alarm_msk;
-> +	else
-> +		mask = ltc2992_gpio_addr_map[nr_gpio].min_alarm_msk;
-> +
-> +	reg_val = ltc2992_read_reg(st, ltc2992_gpio_addr_map[nr_gpio].alarm, 1);
-> +	if (reg_val < 0)
-> +		return reg_val;
-> +
-> +	*val = !!(reg_val & mask);
-> +	reg_val &= ~mask;
-> +
-> +	return ltc2992_write_reg(st, ltc2992_gpio_addr_map[nr_gpio].alarm, 1, reg_val);
-> +}
-> +
-> +static int ltc2992_read_gpios_in(struct device *dev, u32 attr, int nr_gpio, long *val)
-> +{
-> +	struct ltc2992_state *st = dev_get_drvdata(dev);
-> +	u32 reg;
-> +
-> +	switch (attr) {
-> +	case hwmon_in_input:
-> +		reg = ltc2992_gpio_addr_map[nr_gpio].data;
-> +		break;
-> +	case hwmon_in_lowest:
-> +		reg = ltc2992_gpio_addr_map[nr_gpio].min;
-> +		break;
-> +	case hwmon_in_highest:
-> +		reg = ltc2992_gpio_addr_map[nr_gpio].max;
-> +		break;
-> +	case hwmon_in_min:
-> +		reg = ltc2992_gpio_addr_map[nr_gpio].min_thresh;
-> +		break;
-> +	case hwmon_in_max:
-> +		reg = ltc2992_gpio_addr_map[nr_gpio].max_thresh;
-> +		break;
-> +	case hwmon_in_min_alarm:
-> +	case hwmon_in_max_alarm:
-> +		return ltc2992_read_gpio_alarm(st, nr_gpio, attr, val);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return ltc2992_get_voltage(st, reg, LTC2992_VADC_GPIO_UV_LSB, val);
-> +}
-> +
-> +static int ltc2992_read_in_alarm(struct ltc2992_state *st, int channel, long *val, u32 attr)
-> +{
-> +	u32 reg_val;
-> +	u32 mask;
-> +
-> +	if (attr == hwmon_in_max_alarm)
-> +		mask = LTC2992_SENSE_FAULT_MSK(1);
-> +	else
-> +		mask = LTC2992_SENSE_FAULT_MSK(0);
-> +
-> +	reg_val = ltc2992_read_reg(st, LTC2992_SENSE_FAULT(channel), 1);
-> +	if (reg_val < 0)
-> +		return reg_val;
-> +
-> +	*val = !!(reg_val & mask);
-> +	reg_val &= ~mask;
-> +
-> +	return ltc2992_write_reg(st, LTC2992_SENSE_FAULT(channel), 1, reg_val);
-> +}
-> +
-> +static int ltc2992_read_in(struct device *dev, u32 attr, int channel, long *val)
-> +{
-> +	struct ltc2992_state *st = dev_get_drvdata(dev);
-> +	u32 reg;
-> +
-> +	if (channel > 1)
-> +		return ltc2992_read_gpios_in(dev, attr, channel - 2, val);
-> +
-> +	switch (attr) {
-> +	case hwmon_in_input:
-> +		reg = LTC2992_SENSE(channel);
-> +		break;
-> +	case hwmon_in_lowest:
-> +		reg = LTC2992_SENSE_MIN(channel);
-> +		break;
-> +	case hwmon_in_highest:
-> +		reg = LTC2992_SENSE_MAX(channel);
-> +		break;
-> +	case hwmon_in_min:
-> +		reg = LTC2992_SENSE_MIN_THRESH(channel);
-> +		break;
-> +	case hwmon_in_max:
-> +		reg = LTC2992_SENSE_MAX_THRESH(channel);
-> +		break;
-> +	case hwmon_in_min_alarm:
-> +	case hwmon_in_max_alarm:
-> +		return ltc2992_read_in_alarm(st, channel, val, attr);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return ltc2992_get_voltage(st, reg, LTC2992_VADC_UV_LSB, val);
-> +}
-> +
-> +static int ltc2992_get_current(struct ltc2992_state *st, u32 reg, u32 channel, long *val)
-> +{
-> +	u32 reg_val;
-> +
-> +	reg_val = ltc2992_read_reg(st, reg, 2);
-> +	if (reg_val < 0)
-> +		return reg_val;
-> +
-> +	reg_val = reg_val >> 4;
-> +	*val = DIV_ROUND_CLOSEST(reg_val * LTC2992_IADC_NANOV_LSB, st->r_sense_uohm[channel]);
-> +
-> +	return 0;
-> +}
-> +
-> +static int ltc2992_set_current(struct ltc2992_state *st, u32 reg, u32 channel, long val)
-> +{
-> +	u32 reg_val;
-> +
-> +	reg_val = DIV_ROUND_CLOSEST(val * st->r_sense_uohm[channel], LTC2992_IADC_NANOV_LSB);
-> +	reg_val = reg_val << 4;
-> +
-> +	return ltc2992_write_reg(st, reg, 2, reg_val);
-> +}
-> +
-> +static int ltc2992_read_curr_alarm(struct ltc2992_state *st, int channel, long *val, u32 attr)
-> +{
-> +	u32 reg_val;
-> +	u32 mask;
-> +
-> +	if (attr == hwmon_curr_max_alarm)
-> +		mask = LTC2992_DSENSE_FAULT_MSK(1);
-> +	else
-> +		mask = LTC2992_DSENSE_FAULT_MSK(0);
-> +
-> +	reg_val = ltc2992_read_reg(st, LTC2992_DSENSE_FAULT(channel), 1);
-> +	if (reg_val < 0)
-> +		return reg_val;
-> +
-> +	*val = !!(reg_val & mask);
-> +
-> +	reg_val &= ~mask;
-> +	return ltc2992_write_reg(st, LTC2992_DSENSE_FAULT(channel), 1, reg_val);
-> +}
-> +
-> +static int ltc2992_read_curr(struct device *dev, u32 attr, int channel, long *val)
-> +{
-> +	struct ltc2992_state *st = dev_get_drvdata(dev);
-> +	u32 reg;
-> +
-> +	switch (attr) {
-> +	case hwmon_curr_input:
-> +		reg = LTC2992_DSENSE(channel);
-> +		break;
-> +	case hwmon_curr_lowest:
-> +		reg = LTC2992_DSENSE_MIN(channel);
-> +		break;
-> +	case hwmon_curr_highest:
-> +		reg = LTC2992_DSENSE_MAX(channel);
-> +		break;
-> +	case hwmon_curr_min:
-> +		reg = LTC2992_DSENSE_MIN_THRESH(channel);
-> +		break;
-> +	case hwmon_curr_max:
-> +		reg = LTC2992_DSENSE_MAX_THRESH(channel);
-> +		break;
-> +	case hwmon_curr_min_alarm:
-> +	case hwmon_curr_max_alarm:
-> +		return ltc2992_read_curr_alarm(st, channel, val, attr);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return ltc2992_get_current(st, reg, channel, val);
-> +}
-> +
-> +static int ltc2992_get_power(struct ltc2992_state *st, u32 reg, u32 channel, long *val)
-> +{
-> +	u32 reg_val;
-> +
-> +	reg_val = ltc2992_read_reg(st, reg, 3);
-> +	if (reg_val < 0)
-> +		return reg_val;
-> +
-> +	*val = mul_u64_u32_div(reg_val, LTC2992_VADC_UV_LSB * LTC2992_IADC_NANOV_LSB,
-> +			       st->r_sense_uohm[channel] * 1000);
-> +
-> +	return 0;
-> +}
-> +
-> +static int ltc2992_set_power(struct ltc2992_state *st, u32 reg, u32 channel, long val)
-> +{
-> +	u32 reg_val;
-> +
-> +	reg_val = mul_u64_u32_div(val, st->r_sense_uohm[channel] * 1000,
-> +				  LTC2992_VADC_UV_LSB * LTC2992_IADC_NANOV_LSB);
-> +
-> +	return ltc2992_write_reg(st, reg, 3, reg_val);
-> +}
-> +
-> +static int ltc2992_read_power_alarm(struct ltc2992_state *st, int channel, long *val, u32 attr)
-> +{
-> +	u32 reg_val;
-> +	u32 mask;
-> +
-> +	if (attr == hwmon_power_max_alarm)
-> +		mask = LTC2992_POWER_FAULT_MSK(1);
-> +	else
-> +		mask = LTC2992_POWER_FAULT_MSK(0);
-> +
-> +	reg_val = ltc2992_read_reg(st, LTC2992_POWER_FAULT(channel), 1);
-> +	if (reg_val < 0)
-> +		return reg_val;
-> +
-> +	*val = !!(reg_val & mask);
-> +	reg_val &= ~mask;
-> +
-> +	return ltc2992_write_reg(st, LTC2992_POWER_FAULT(channel), 1, reg_val);
-> +}
-> +
-> +static int ltc2992_read_power(struct device *dev, u32 attr, int channel, long *val)
-> +{
-> +	struct ltc2992_state *st = dev_get_drvdata(dev);
-> +	u32 reg;
-> +
-> +	switch (attr) {
-> +	case hwmon_power_input:
-> +		reg = LTC2992_POWER(channel);
-> +		break;
-> +	case hwmon_power_input_lowest:
-> +		reg = LTC2992_POWER_MIN(channel);
-> +		break;
-> +	case hwmon_power_input_highest:
-> +		reg = LTC2992_POWER_MAX(channel);
-> +		break;
-> +	case hwmon_power_min:
-> +		reg = LTC2992_POWER_MIN_THRESH(channel);
-> +		break;
-> +	case hwmon_power_max:
-> +		reg = LTC2992_POWER_MAX_THRESH(channel);
-> +		break;
-> +	case hwmon_power_min_alarm:
-> +	case hwmon_power_max_alarm:
-> +		return ltc2992_read_power_alarm(st, channel, val, attr);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return ltc2992_get_power(st, reg, channel, val);
-> +}
-> +
-> +static int ltc2992_read(struct device *dev, enum hwmon_sensor_types type, u32 attr, int channel,
-> +			long *val)
-> +{
-> +	switch (type) {
-> +	case hwmon_in:
-> +		return ltc2992_read_in(dev, attr, channel, val);
-> +	case hwmon_curr:
-> +		return ltc2992_read_curr(dev, attr, channel, val);
-> +	case hwmon_power:
-> +		return ltc2992_read_power(dev, attr, channel, val);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int ltc2992_write_curr(struct device *dev, u32 attr, int channel, long val)
-> +{
-> +	struct ltc2992_state *st = dev_get_drvdata(dev);
-> +	u32 reg;
-> +
-> +	switch (attr) {
-> +	case hwmon_curr_min:
-> +		reg = LTC2992_DSENSE_MIN_THRESH(channel);
-> +		break;
-> +	case hwmon_curr_max:
-> +		reg = LTC2992_DSENSE_MAX_THRESH(channel);
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return ltc2992_set_current(st, reg, channel, val);
-> +}
-> +
-> +static int ltc2992_write_gpios_in(struct device *dev, u32 attr, int nr_gpio, long val)
-> +{
-> +	struct ltc2992_state *st = dev_get_drvdata(dev);
-> +	u32 reg;
-> +
-> +	switch (attr) {
-> +	case hwmon_in_min:
-> +		reg = ltc2992_gpio_addr_map[nr_gpio].min_thresh;
-> +		break;
-> +	case hwmon_in_max:
-> +		reg = ltc2992_gpio_addr_map[nr_gpio].max_thresh;
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return ltc2992_set_voltage(st, reg, LTC2992_VADC_GPIO_UV_LSB, val);
-> +}
-> +
-> +static int ltc2992_write_in(struct device *dev, u32 attr, int channel, long val)
-> +{
-> +	struct ltc2992_state *st = dev_get_drvdata(dev);
-> +	u32 reg;
-> +
-> +	if (channel > 1)
-> +		return ltc2992_write_gpios_in(dev, attr, channel - 2, val);
-> +
-> +	switch (attr) {
-> +	case hwmon_in_min:
-> +		reg = LTC2992_SENSE_MIN_THRESH(channel);
-> +		break;
-> +	case hwmon_in_max:
-> +		reg = LTC2992_SENSE_MAX_THRESH(channel);
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return ltc2992_set_voltage(st, reg, LTC2992_VADC_UV_LSB, val);
-> +}
-> +
-> +static int ltc2992_write_power(struct device *dev, u32 attr, int channel, long val)
-> +{
-> +	struct ltc2992_state *st = dev_get_drvdata(dev);
-> +	u32 reg;
-> +
-> +	switch (attr) {
-> +	case hwmon_power_min:
-> +		reg = LTC2992_POWER_MIN_THRESH(channel);
-> +		break;
-> +	case hwmon_power_max:
-> +		reg = LTC2992_POWER_MAX_THRESH(channel);
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return ltc2992_set_power(st, reg, channel, val);
-> +}
-> +
-> +static int ltc2992_write_chip(struct device *dev, u32 attr, int channel, long val)
-> +{
-> +	struct ltc2992_state *st = dev_get_drvdata(dev);
-> +
-> +	switch (attr) {
-> +	case hwmon_chip_in_reset_history:
-> +		return regmap_update_bits(st->regmap, LTC2992_CTRLB, LTC2992_RESET_HISTORY,
-> +					  LTC2992_RESET_HISTORY);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int ltc2992_write(struct device *dev, enum hwmon_sensor_types type, u32 attr, int channel,
-> +			 long val)
-> +{
-> +	switch (type) {
-> +	case hwmon_chip:
-> +		return ltc2992_write_chip(dev, attr, channel, val);
-> +	case hwmon_in:
-> +		return ltc2992_write_in(dev, attr, channel, val);
-> +	case hwmon_curr:
-> +		return ltc2992_write_curr(dev, attr, channel, val);
-> +	case hwmon_power:
-> +		return ltc2992_write_power(dev, attr, channel, val);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static const struct hwmon_ops ltc2992_hwmon_ops = {
-> +	.is_visible = ltc2992_is_visible,
-> +	.read = ltc2992_read,
-> +	.write = ltc2992_write,
-> +};
-> +
-> +static const u32 ltc2992_chip_config[] = {
-> +	HWMON_C_IN_RESET_HISTORY,
-> +	0
-> +};
-> +
-> +static const struct hwmon_channel_info ltc2992_chip = {
-> +	.type = hwmon_chip,
-> +	.config = ltc2992_chip_config,
-> +};
-> +
-> +static const u32 ltc2992_in_config[] = {
-> +	HWMON_I_INPUT | HWMON_I_LOWEST | HWMON_I_HIGHEST | HWMON_I_MIN | HWMON_I_MAX |
-> +	HWMON_I_MIN_ALARM | HWMON_I_MAX_ALARM,
-> +	HWMON_I_INPUT | HWMON_I_LOWEST | HWMON_I_HIGHEST | HWMON_I_MIN | HWMON_I_MAX |
-> +	HWMON_I_MIN_ALARM | HWMON_I_MAX_ALARM,
-> +	HWMON_I_INPUT | HWMON_I_LOWEST | HWMON_I_HIGHEST | HWMON_I_MIN | HWMON_I_MAX |
-> +	HWMON_I_MIN_ALARM | HWMON_I_MAX_ALARM,
-> +	HWMON_I_INPUT | HWMON_I_LOWEST | HWMON_I_HIGHEST | HWMON_I_MIN | HWMON_I_MAX |
-> +	HWMON_I_MIN_ALARM | HWMON_I_MAX_ALARM,
-> +	HWMON_I_INPUT | HWMON_I_LOWEST | HWMON_I_HIGHEST | HWMON_I_MIN | HWMON_I_MAX |
-> +	HWMON_I_MIN_ALARM | HWMON_I_MAX_ALARM,
-> +	HWMON_I_INPUT | HWMON_I_LOWEST | HWMON_I_HIGHEST | HWMON_I_MIN | HWMON_I_MAX |
-> +	HWMON_I_MIN_ALARM | HWMON_I_MAX_ALARM,
-> +	0
-> +};
-> +
-> +static const struct hwmon_channel_info ltc2992_in = {
-> +	.type = hwmon_in,
-> +	.config = ltc2992_in_config,
-> +};
-> +
-> +static const u32 ltc2992_curr_config[] = {
-> +	HWMON_C_INPUT | HWMON_C_LOWEST | HWMON_C_HIGHEST | HWMON_C_MIN | HWMON_C_MAX |
-> +	HWMON_C_MIN_ALARM | HWMON_C_MAX_ALARM,
-> +	HWMON_C_INPUT | HWMON_C_LOWEST | HWMON_C_HIGHEST | HWMON_C_MIN | HWMON_C_MAX |
-> +	HWMON_C_MIN_ALARM | HWMON_C_MAX_ALARM,
-> +	0
-> +};
-> +
-> +static const struct hwmon_channel_info ltc2992_curr = {
-> +	.type = hwmon_curr,
-> +	.config = ltc2992_curr_config,
-> +};
-> +
-> +static const u32 ltc2992_power_config[] = {
-> +	HWMON_P_INPUT | HWMON_P_INPUT_LOWEST | HWMON_P_INPUT_HIGHEST | HWMON_P_MIN | HWMON_P_MAX |
-> +	HWMON_P_MIN_ALARM | HWMON_P_MAX_ALARM,
-> +	HWMON_P_INPUT | HWMON_P_INPUT_LOWEST | HWMON_P_INPUT_HIGHEST | HWMON_P_MIN | HWMON_P_MAX |
-> +	HWMON_P_MIN_ALARM | HWMON_P_MAX_ALARM,
-> +	0
-> +};
-> +
-> +static const struct hwmon_channel_info ltc2992_power = {
-> +	.type = hwmon_power,
-> +	.config = ltc2992_power_config,
-> +};
-> +
-> +static const struct hwmon_channel_info *ltc2992_info[] = {
-> +	&ltc2992_chip,
-> +	&ltc2992_in,
-> +	&ltc2992_curr,
-> +	&ltc2992_power,
-> +	NULL
-> +};
-> +
-> +static const struct hwmon_chip_info ltc2992_chip_info = {
-> +	.ops = &ltc2992_hwmon_ops,
-> +	.info = ltc2992_info,
-> +};
-> +
-> +static const struct regmap_config ltc2992_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +	.max_register = 0xE8,
-> +};
-> +
-> +static int ltc2992_parse_dt(struct ltc2992_state *st)
-> +{
-> +	struct fwnode_handle *fwnode;
-> +	struct fwnode_handle *child;
-> +	u32 addr;
-> +	u32 val;
-> +	int ret;
-> +
-> +	fwnode = dev_fwnode(&st->client->dev);
-> +
-> +	fwnode_for_each_available_child_node(fwnode, child) {
-> +		ret = fwnode_property_read_u32(child, "reg", &addr);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		if (addr > 1)
-> +			return -EINVAL;
-> +
-> +		ret = fwnode_property_read_u32(child, "shunt-resistor-micro-ohms", &val);
-> +		if (!ret)
-> +			st->r_sense_uohm[addr] = val;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ltc2992_i2c_probe(struct i2c_client *client, const struct i2c_device_id *id)
-> +{
-> +	struct device *hwmon_dev;
-> +	struct ltc2992_state *st;
-> +	int ret;
-> +
-> +	st = devm_kzalloc(&client->dev, sizeof(*st), GFP_KERNEL);
-> +	if (!st)
-> +		return -ENOMEM;
-> +
-> +	st->client = client;
-> +	st->regmap = devm_regmap_init_i2c(client, &ltc2992_regmap_config);
-> +	if (IS_ERR(st->regmap))
-> +		return PTR_ERR(st->regmap);
-> +
-> +	ret = ltc2992_parse_dt(st);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	hwmon_dev = devm_hwmon_device_register_with_info(&client->dev, client->name, st,
-> +							 &ltc2992_chip_info, NULL);
-> +
-> +	return PTR_ERR_OR_ZERO(hwmon_dev);
-> +}
-> +
-> +static const struct of_device_id ltc2992_of_match[] = {
-> +	{ .compatible = "adi,ltc2992" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, ltc2992_of_match);
-> +
-> +static const struct i2c_device_id ltc2992_i2c_id[] = {
-> +	{"ltc2992", 0},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(i2c, ltc2992_i2c_id);
-> +
-> +static struct i2c_driver ltc2992_i2c_driver = {
-> +	.driver = {
-> +		.name = "ltc2992",
-> +		.of_match_table = ltc2992_of_match,
-> +	},
-> +	.probe    = ltc2992_i2c_probe,
-> +	.id_table = ltc2992_i2c_id,
-> +};
-> +
-> +module_i2c_driver(ltc2992_i2c_driver);
-> +
-> +MODULE_AUTHOR("Alexandru Tachici <alexandru.tachici@analog.com>");
-> +MODULE_DESCRIPTION("Hwmon driver for Linear Technology 2992");
-> +MODULE_LICENSE("Dual BSD/GPL");
-> -- 
-> 2.20.1
+> Hmm yeah I think that's probably a good idea, it would be consistent
+> with the macros for non-atomic ALU ops.
+> 
+> I don't think 'BOP' would be very clear though, 'ALU' might be more
+> obvious.
+
+BPF_ATOMIC_ALU and BPF_ATOMIC_FETCH_ALU indeed better.
+
 > 
