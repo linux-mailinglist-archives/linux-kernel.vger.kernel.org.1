@@ -2,90 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA6E2CECD4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0F52CECD6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729956AbgLDLNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:13:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725839AbgLDLNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:13:13 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52608227BF;
-        Fri,  4 Dec 2020 11:12:32 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kl90o-00Fxre-2h; Fri, 04 Dec 2020 11:12:30 +0000
+        id S1729996AbgLDLOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:14:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729976AbgLDLOQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 06:14:16 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E5FC061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 03:13:36 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kl91l-0006DV-2e; Fri, 04 Dec 2020 12:13:29 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kl91i-00046Q-HT; Fri, 04 Dec 2020 12:13:26 +0100
+Date:   Fri, 4 Dec 2020 12:13:26 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Young <sean@mess.org>
+Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, thierry.reding@gmail.com,
+        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
+        rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
+ configuration
+Message-ID: <20201204111326.qjux6k2472dmukot@pengutronix.de>
+References: <202011281128.54eLfMWr-lkp@intel.com>
+ <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
+ <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
+ <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
+ <20201204084417.GA2154@gofer.mess.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 04 Dec 2020 11:12:29 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Christoffer Dall <cdall@cs.columbia.edu>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        David Brazdil <dbrazdil@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: linux-next: manual merge of the kvm-arm tree with the arm64 tree
-In-Reply-To: <20201204164445.6f0cdfc3@canb.auug.org.au>
-References: <20201204164445.6f0cdfc3@canb.auug.org.au>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <0ccca763055617d85f0f36d229eee4d1@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: sfr@canb.auug.org.au, cdall@cs.columbia.edu, catalin.marinas@arm.com, will@kernel.org, dbrazdil@google.com, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, mark.rutland@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gm4bedrwxq43tqli"
+Content-Disposition: inline
+In-Reply-To: <20201204084417.GA2154@gofer.mess.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
 
-On 2020-12-04 05:44, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the kvm-arm tree got a conflict in:
-> 
->   arch/arm64/kernel/head.S
-> 
-> between commits:
-> 
->   2ffac9e3fdbd ("arm64: head.S: cleanup SCTLR_ELx initialization")
->   d87a8e65b510 ("arm64: head.S: always initialize PSTATE")
-> 
-> from the arm64 tree and commit:
-> 
->   9c322020286c ("arm64: Extract parts of el2_setup into a macro")
-> 
-> from the kvm-arm tree.
-> 
-> I have no idea how to fix this up, so I just used the kvm-arm tree from
-> next-20201203 instead for today.
+--gm4bedrwxq43tqli
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Oops, my bad. I was planning to merge Mark's branch in before pushing 
-the
-whole thing out, and obviously forgot. Apologies for the mess.
+Hello,
 
-I've now rebased David'd series on top of arm64/for-next/uaccess and 
-pushed
-the result out in the kvmarm/next branch.
+On Fri, Dec 04, 2020 at 08:44:17AM +0000, Sean Young wrote:
+> On Fri, Dec 04, 2020 at 12:42:15AM +0100, Lino Sanfilippo wrote:
+> > > You're storing an unsigned long long (i.e. 64 bits) in an u32. If
+> > > you are sure that this won't discard relevant bits, please explain
+> > > this in a comment for the cursory reader.
+> >=20
+> > What about an extra check then to make sure that the period has not bee=
+n truncated,
+> > e.g:
+> >=20
+> > 	value =3D DIV_ROUND_CLOSEST_ULL(state->period, scaler);
+> >=20
+> > 	/* dont accept a period that is too small or has been truncated */
+> > 	if ((value < PERIOD_MIN) ||
+> > 	    (value !=3D DIV_ROUND_CLOSEST_ULL(state->period, scaler)))
+> > 		return -EINVAL;
+>=20
+> Rather than doing another 64 bit division which is expensive (esp on 32 b=
+it
+> kernels), you could assign to u64 and check:
+>=20
+> 	if (value < PERIOD || value > U32_MAX)
+> 		return -EINVAL;
 
-Mark, David: I'd appreciate if you could have a look at the rebase 
-result,
-and let me know if you spot anything that would require fixing.
+Given that value is a u32, value > U32_MAX will never trigger.
 
-Thanks,
+Maybe checking period before doing the division is more sensible.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> > > Also note that round_closed is probably wrong, as .apply() is
+> > > supposed to round down the period to the next achievable period. (But
+> > > fixing this has to do done in a separate patch.)
+> >=20
+> > According to commit 11fc4edc4 rounding to the closest integer has been =
+introduced
+> > to improve precision in case that the pwm controller is used by the pwm=
+-ir-tx driver.
+> > I dont know how strong the requirement is to round down the period in a=
+pply(), but I
+> > can imagine that this may be a good reason to deviate from this rule.
+> > (CCing Sean Young who introduced DIV_ROUND_CLOSEST)
+>=20
+> There was a problem where the carrier is incorrect for some IR hardware
+> which uses a carrier of 455kHz. With periods that small, rounding errors
+> do really matter and rounding down might cause problems.
+>=20
+> A policy of rounding down the carrier is not the right thing to do
+> for pwm-ir-tx, and such a change will probably break pwm-ir-tx in some
+> edge cases.
+
+IMO it's not an option to say: pwm-driver A is used for IR, so A's
+=2Eapply uses round-nearest and pwm-driver B is used for $somethingelse,
+so B's .apply uses round-down. To be a sensible API pwm_apply_state
+should have a fixed behaviour. I consider round-down the sensible
+choice (because it is easier to implmement the other options with this)
+and for consumers like the IR stuff we need to provide some more
+functions to allow it selecting a better suited state. Something like:
+
+	pwm_round_state_nearest(pwm, { .period =3D 2198, .. }, &state)
+
+which queries the hardwares capabilities and then assigns state.period =3D
+2200 instead of 2100.
+
+Where can I find the affected (consumer) driver?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--gm4bedrwxq43tqli
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/KGdMACgkQwfwUeK3K
+7AmNDwf+MoowMGzcyU/5yAwSkPGkjJDBASacRhu95RcC7ey4zPTQK6pl9kOCZqIS
+fFAekyFO6neCy2EDeMKwDmVcZS0rZRS/HskJhhAcop3LbsT3Xg2kcK6zV5Pabahn
+KLp0drec7iLTGS9blagebWAqTsLnu3S/UNUA18vHviIZ+f7qpuxdzCri17bi+j8Z
+y+muPtgemDF8Ip0edZMoV4pABJ3RP1bJR+CF3hIes8d62uuQnydHDsFBAXNAc6Dm
+vEWErWr4Q7HQUmsrMKcXJARIF9L+LRclOXu690ao7TVAz5NgJSKU6aE9vk/N8/Xv
+DGFmvEXzlOeEXpFEjWHADtDXH5yWLg==
+=OBqj
+-----END PGP SIGNATURE-----
+
+--gm4bedrwxq43tqli--
