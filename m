@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D6C2CEAFB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E162CEB04
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729386AbgLDJe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:34:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726394AbgLDJe4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:34:56 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F812C061A4F;
-        Fri,  4 Dec 2020 01:34:16 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607074454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hgQbpciJbizYKA4AVJ09dODrpMGMg9MJPg1/jfecOMY=;
-        b=YupU4aqaYx1YHrhVbQZs2jdm69vyI4x5Q9CEEyOxbVko6CVMZNbrqLo1VKkQqlVzXYSpDY
-        eQbdS1mOq82fSzNbm5RwhA6OYGI87lvQFxoIe7JGpvmho87nDWgCWhlAMIuEKKtnIZIcSw
-        GaMUC576+VUDtNqv5aHgDKNPJszGJs9ugYEFqVrkh1rQfYVlsZc+0aLrCe7H8Ztq+azwwZ
-        g1nrWhROkmSjj/DN5m9jD7Jj1D/Z1YaQMN9mlFwcRjPkWPYS7M70hGJuS3gyOYdoJgCFRR
-        eyV6A6QL1GqVu+Q07+xvhEo3UGHCtyyTD7NGpmt13bu8MKVimYa0LPv3+xmfbA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607074454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hgQbpciJbizYKA4AVJ09dODrpMGMg9MJPg1/jfecOMY=;
-        b=+pTOGJuA4vZzLRir7Sj//2FAE/l7NuxgaQ+9p3xm1eA9ebbxnRtBajdnDBPuW73ceGQhPm
-        J0/kJNnWXnjP/MBw==
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-In-Reply-To: <20201203220027.GB74177@piout.net>
-References: <87mtywe2zu.fsf@nanos.tec.linutronix.de> <20201202162723.GJ5487@ziepe.ca> <87a6uwdnfn.fsf@nanos.tec.linutronix.de> <20201202205418.GN5487@ziepe.ca> <874kl3eu8p.fsf@nanos.tec.linutronix.de> <87zh2vd72z.fsf@nanos.tec.linutronix.de> <20201203021047.GG3544@piout.net> <87pn3qdhli.fsf@nanos.tec.linutronix.de> <20201203161622.GA1317829@ziepe.ca> <87zh2ubny2.fsf@nanos.tec.linutronix.de> <20201203220027.GB74177@piout.net>
-Date:   Fri, 04 Dec 2020 10:34:13 +0100
-Message-ID: <87im9hc3u2.fsf@nanos.tec.linutronix.de>
+        id S1729458AbgLDJgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:36:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725866AbgLDJgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 04:36:24 -0500
+Date:   Fri, 4 Dec 2020 09:35:36 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607074543;
+        bh=KiPYOwivri/c/ItidAb+vtLMDjOCyhBGcMSitc7cncU=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GjN8UC0To43FRm/tsZr8kvb4HKDZZt6WfrVN1DsurESfPe+l2A94uzzhu1vPpsxIE
+         SWXV209qIxN9vnROEFL2hbNTbFoFDX2aTz789bdBU7n8IEYjja66swjjuutShEenPk
+         HdAj42XjCW4qxd/vLG1PP2j/ZzWjMZOk5uAeayL+wv+giLCOA8bxFRjVaGRHLozHTh
+         YlQwRVBgo7c4uojoeCTTzDC1zQLC8umPbJxt9odbBalrhfUgV5LSzI9t2Ue27J/55s
+         xclSHIhMn7kaICKKuX/AMEWHc4UQCP5TBXKhUl7az+NuJaijbxMdBxQnu8hmWKcpH/
+         GkZxlHDT8oL8A==
+From:   Will Deacon <will@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, Jian Cai <jiancai@google.com>,
+        Kristof Beyls <Kristof.Beyls@arm.com>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
+Message-ID: <20201204093535.GB461@willie-the-truck>
+References: <20201201213707.541432-1-samitolvanen@google.com>
+ <20201203112622.GA31188@willie-the-truck>
+ <CABCJKueby8pUoN7f5=6RoyLSt4PgWNx8idUej0sNwAi0F3Xqzw@mail.gmail.com>
+ <20201203182252.GA32011@willie-the-truck>
+ <CAKwvOdnvq=L=gQMv9MHaStmKMOuD5jvffzMedhp3gytYB6R7TQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdnvq=L=gQMv9MHaStmKMOuD5jvffzMedhp3gytYB6R7TQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03 2020 at 23:00, Alexandre Belloni wrote:
-> On 03/12/2020 22:05:09+0100, Thomas Gleixner wrote:
->> 2) I2C/SPI ...
->> 
->>    tsched t0                 t1                     t2
->>           transfer(newsec)   RTC update (newsec)    RTC increments seconds
->> 
->>    Lets assume that ttransfer = t1 - t0 is known.
->
-> Note that ttransfer is one of the reason why setting set_offset_nsec
-> from the RTC driver is not a good idea. The same RTC may be on busses
-> with different rates and there is no way to know that. I think that was
-> one of my objections at the time.
->
-> ttransfer is not a function of the RTC model but rather of how it is
-> integrated in the system.
+On Thu, Dec 03, 2020 at 02:32:13PM -0800, Nick Desaulniers wrote:
+> On Thu, Dec 3, 2020 at 10:23 AM Will Deacon <will@kernel.org> wrote:
+> > On Thu, Dec 03, 2020 at 09:07:30AM -0800, Sami Tolvanen wrote:
+> > > Without LLVM_IAS=1, Clang uses two different assemblers when LTO is
+> > > enabled: the external GNU assembler for stand-alone assembly, and
+> > > LLVM's integrated assembler for inline assembly. as-instr tests the
+> > > external assembler and makes an admittedly reasonable assumption that
+> > > the test is also valid for inline assembly.
+> > >
+> > > I agree that it would reduce confusion in future if we just always
+> > > enabled IAS with LTO. Nick, Nathan, any thoughts about this?
+> >
+> > That works for me, although I'm happy with anything which means that the
+> > assembler checks via as-instr apply to the assembler which will ultimately
+> > be used.
+> 
+> I agree with Will.
 
-Yes, but it's the right place to store that information.
+[...]
 
-It's a fundamental problem of the RTC driver because that's the one
-which has to be able to tell the caller about it. The caller has
-absolutely no way to figure it out because it does not even know what
-type of RTC is there.
+> So I'd recommend to Sami to simply make the Kconfig also depend on
+> clang's integrated assembler (not just llvm-nm and llvm-ar).  If
+> someone cares about LTO with Clang as the compiler but GAS as the
+> assembler, then we can revisit supporting that combination (and the
+> changes to KCONFIG), but it shouldn't be something we consider Tier 1
+> supported or a combination that need be supported in a minimum viable
+> product. And at that point we should make it avoid clang's integrated
+> assembler entirely (I suspect LTO won't work at all in that case, so
+> maybe even considering it is a waste of time).
+> 
+> One question I have to Will; if for aarch64 LTO will depend on RCpc,
+> but RCpc is an ARMv8.3 extension, what are the implications for LTO on
+> pre-ARMv8.3 aarch64 processors?
 
-So either the RTC knows the requirements for tsched, e.g. the MC14xxx
-datasheet, or it can retrieve that information from DT or by querying
-the underlying bus mechanics for the xfer time estimate or just by
-timing an xfer for reference.
+It doesn't depend on RCpc -- we just emit a more expensive instruction
+(an RCsc acquire) if the RCpc one is not supported by both the toolchain
+and the CPU. So the implication for those processors is that READ_ONCE()
+may be more expensive.
 
-Thanks,
-
-        tglx
-
-
-
-
-
+Will
