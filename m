@@ -2,63 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1522CE6BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 548662CE6BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgLDDyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 22:54:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52300 "EHLO
+        id S1727920AbgLDDyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 22:54:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726469AbgLDDyO (ORCPT
+        with ESMTP id S1726469AbgLDDyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 22:54:14 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B045FC061A51
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 19:53:34 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id p5so4002366iln.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 19:53:34 -0800 (PST)
+        Thu, 3 Dec 2020 22:54:22 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAF8C061A52
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 19:53:36 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id p5so4002405iln.8
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 19:53:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=G3QBgwx91Q/A2CS3hhM9B3jxiZ4Jn3CYUV0Ip0YOJa4=;
-        b=Zwayyk3mEHk+oK4QYbKvF1OLnEGYSnkIXf6yo4ApcRP+wSQnn5+wWnQjm2j1Zj7+ld
-         f5a4+9f75IZWWIiXy1vQq18zaKFYiWUyCTNw0zMcB2csZFtbL4a1QoWd3cFJ+ojjuy1y
-         5U4awl+j/4dnGn0BoEw+WVQ7XspTWi9lx/o6NHh/aofSI3UMphn9OPhi6dbbzMQ5bxy6
-         LwnEvW0Co9Wu8epXw4a0Cx/bLZSs4lVK0MAOlIvYUBJqsI05qj7LklNgAC8AtkChYG2M
-         CHCD50WDkFTWbCBqTBjniPFV79lCTNVIDn48AWfDQyJW656WwT9grpkzjti5XnjmP64r
-         VWNQ==
+        bh=ULTmDl5ODAp5+pGiMlfRgGgqG7bhEVtrrqJo/V0Wv5o=;
+        b=IqWzw/7LhLKatX2EcMZ7gPXa4FX987fJvD2fIX7S33kmZPPX9/QQhdFXd18ExVQsKP
+         sW/pxBbVFcILY5G+8C0Hd7JrF91UtzuNPSkxy9+moOonfKdGEv38ehQddV13jPK8qZhS
+         5lgBjYtrCsgneZH6Ityt0+U1RYuwDszWp9fQnAf5y1EYCsqnlcy3PHp6yiKYVItjFZc1
+         z1/aSSLurV/FbaOfmjYkWwRXL6Mg0jbQ/ow+kszM5s5wHf8YGqfOt8ACPLi+LzM/USzM
+         f/rrzkzNiPg2zE2ul+Jwmp2Cfb7HbEMQCOV+sQcBxl9WYyd8o1Y3Ng1IRztDmYk/EqS1
+         Ahfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=G3QBgwx91Q/A2CS3hhM9B3jxiZ4Jn3CYUV0Ip0YOJa4=;
-        b=NqyDsYMdDzH8tCHUKcy7wsYaxI51PJAFWZYhyGL7qhDdggzGE8wLa/Jn2FhpSqnyhB
-         s82Oy+RK2A1+Jiv7l9Tk0QD8OTY9PSV9nqO/PxPpC2dAfEYplYbHN1a2Jv3AVCQ3xrug
-         kXlMVsjod1VcfMvShx0FMC46dRQnfgDk5r9h83RA4US4Grqh4VeHbh+F4ZVBuEb35Yhg
-         p54aO9AkraV6OAeVHWxfCnYFI3c1Q5FG7f96X8vScrLCLlF7IZ0AwusAz2d4AbhHfuuj
-         M49eFg3/qHYndRfr5aV1LHhSnvgPDsN+yBYsc7Kfbsmv+rY7qKYbhoeVxOqcL2A9LeBf
-         B3Wg==
-X-Gm-Message-State: AOAM531y/FymPX8w/j/jcYvnBH3EXX8phy7CX1xB4RkKpjsCZpWcPs9d
-        +IUsSECymYzxw/HOckgbgSE=
-X-Google-Smtp-Source: ABdhPJwAT9E8nFzVeztvUeOO127CewpdZpDB481zD+7fgylaMdgjTqYSOwrCaGKMIOmkh8siMMAQJg==
-X-Received: by 2002:a92:4002:: with SMTP id n2mr3337611ila.293.1607054013883;
-        Thu, 03 Dec 2020 19:53:33 -0800 (PST)
+        bh=ULTmDl5ODAp5+pGiMlfRgGgqG7bhEVtrrqJo/V0Wv5o=;
+        b=hqqvvkArqzn0dgsve+oXpT0dHSb2Xv7EtUBfYup8BBzyUndHsej9ToiZz1rEgjSNY2
+         Me+cJIL9+txsKdvn2oasMbYXnBYSKCBqlM0qqU7HQd6rH1Sp1gqhqxBA8DM/7fGEyGeQ
+         5XDFMJ26J2OZwnDScZwnuxx0lowMMretvWKW1t8swkUTLn2R5eDw+a6NDwtbZBVchLcO
+         +G8uE8XkIxG5fTJuA+KytADtLIWSKsvja5pDCiiuRtaVsqDNFVx+u+SnSHw1EfF4r797
+         uqV6fCCnvff+ppJvgW/vjQiznYoU5bnUmg8GcqJKDhWacVWIFdpCjwwZhnPZ5EjXJtS1
+         XTYg==
+X-Gm-Message-State: AOAM530GbxdBVuuyAyjY4YQN2qFrOnPUeIT9kfaHI5odwYlCwVlLC9cY
+        gxBlQMAo/wD33KCkYNhEewk=
+X-Google-Smtp-Source: ABdhPJw/GpPxKvmdLgpe0UZqYix1EOwTWX/EGSHFiJY3r/MukaIIZNjhO1ojAeLgFHMsed0OsIErJA==
+X-Received: by 2002:a92:58cb:: with SMTP id z72mr3406498ilf.104.1607054015671;
+        Thu, 03 Dec 2020 19:53:35 -0800 (PST)
 Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id o12sm671361ilj.55.2020.12.03.19.53.33
+        by smtp.googlemail.com with ESMTPSA id o12sm671361ilj.55.2020.12.03.19.53.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 19:53:33 -0800 (PST)
+        Thu, 03 Dec 2020 19:53:35 -0800 (PST)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 Cc:     jbaron@akamai.com, Jim Cromie <jim.cromie@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: [RFC PATCH 1/2] drm: RFC add choice to use dynamic debug in drm-debug
-Date:   Thu,  3 Dec 2020 20:53:17 -0700
-Message-Id: <20201204035318.332419-2-jim.cromie@gmail.com>
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Subject: [RFC PATCH 2/2] i915: POC use dynamic_debug_exec_queries to control pr_debugs in gvt
+Date:   Thu,  3 Dec 2020 20:53:18 -0700
+Message-Id: <20201204035318.332419-3-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201204035318.332419-1-jim.cromie@gmail.com>
 References: <20201204035318.332419-1-jim.cromie@gmail.com>
@@ -68,122 +72,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drm's debug system uses distinct categories of debug messages, mapped
-to bits in drm.debug.  Currently, code does a lot of unlikely bit-mask
-checks on drm.debug (in drm_debug_enabled), we can use dynamic debug
-instead, and get all that jump_label goodness.
+The gvt component of this driver has ~120 pr_debugs, in 9 "classes".
+Following model of drm.debug, add a parameter to map bits to these
+classes.
 
-RFC: dynamic debug has no concept of category, but we can do without
-one if we can prepend a class-prefix to each printk format.  Then we
-can use "format ^prefix" to select the whole category with one query.
-This is a log-facing and user visible change, but it seems unlikely to
-cause trouble for log watchers; they're not relying on the absence of
-class prefix strings.
-
-This conversion yields ~2100 new callsites on my i7 laptop:
-
-  dyndbg: 195 debug prints in module drm_kms_helper
-  dyndbg: 298 debug prints in module drm
-  dyndbg: 1630 debug prints in module i915
-
-Since this change has wide-ranging effects (many drm drivers, with
-many callsites, and kernel image growth), and most vendors don't
-enable DYNAMIC_DEBUG, we supplement the existing mechanism, adding
-CONFIG_DRM_USE_DYNAMIC_DEBUG to enable the new one.
-
-The indirection/switchover has a few parts:
-
-1 a new callback on drm.debug which calls dynamic_debug_exec_queries
-  to map those bits to specific query/commands
-  dynamic_debug_exec_queries("format ^drm:kms: +p", "drm*");
-
-2 a "converted" or "classy" DRM_UT_* map
-  similar to DRM_UT_* ( symbol => bit-mask )
-  named it  cDRM_UT_* ( symbol => format-class-prefix-string )
-
-  cDRM_UT_* is either ( CONFIG_DRM_USE_DYNAMIC_DEBUG )
-  legacy: cDRM_UT_* <-- DRM_UT_*
-  enabled:
-  +#define cDRM_UT_KMS    "drm:kms: "
-  +#define cDRM_UT_PRIME  "drm:prime: "
-  +#define cDRM_UT_ATOMIC "drm:atomic: "
-
-  these are similar to "gvt: cmd:" in i915/gvt
-  and effectively a replacement for DRM_NAME
-  please bikeshed on keys, values. latter are log-facing.
-
-3 drm_dev_dbg & drm_debug are renamed (prefixed with '_')
-  old names are now macros, which are ifdefd
-  legacy:  -> to renamed fn
-  enabled: -> dev_dbg & pr_debug, after prepending prefix to format.
-
-4 names in (2) are called from DRM_DEBUG_<Category> and drm_dbg_<Category>.
-  all these get "converted" to use cDRM_UT_*, to get right token type.
-
-RFC: for dynamic debug, category is a source-facing addition;
-something like pr_debug_cat(cat, ...) would do it, iff cat is a
-compile-time const.  Note that cat isn't needed in the printing, it
-would be saved into a new field in struct _ddebug, and used only for
-callsite selection, activation and control.
+In Makefile, add DYNAMIC_DEBUG_MODULE.  This converts gvt's pr_debugs,
+even if the rest of drm is not using CONFIG_DRM_USE_DYNAMIC_DEBUG.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- drivers/gpu/drm/Kconfig     | 13 ++++++
- drivers/gpu/drm/drm_print.c | 75 ++++++++++++++++++++++++++++--
- include/drm/drm_print.h     | 92 +++++++++++++++++++++++++++----------
- 3 files changed, 153 insertions(+), 27 deletions(-)
+ drivers/gpu/drm/i915/gvt/Makefile  |  1 +
+ drivers/gpu/drm/i915/i915_params.c | 74 ++++++++++++++++++++++++++++++
+ 2 files changed, 75 insertions(+)
 
-diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index 147d61b9674e..854bc1ad21fb 100644
---- a/drivers/gpu/drm/Kconfig
-+++ b/drivers/gpu/drm/Kconfig
-@@ -54,6 +54,19 @@ config DRM_DEBUG_MM
+diff --git a/drivers/gpu/drm/i915/gvt/Makefile b/drivers/gpu/drm/i915/gvt/Makefile
+index ea8324abc784..e38a1eb618bd 100644
+--- a/drivers/gpu/drm/i915/gvt/Makefile
++++ b/drivers/gpu/drm/i915/gvt/Makefile
+@@ -6,4 +6,5 @@ GVT_SOURCE := gvt.o aperture_gm.o handlers.o vgpu.o trace_points.o firmware.o \
+ 	fb_decoder.o dmabuf.o page_track.o
  
- 	  If in doubt, say "N".
- 
-+config DRM_USE_DYNAMIC_DEBUG
-+	bool "use dynamic debug to implement drm.debug"
-+	default n
-+	depends on DRM
-+	depends on DYNAMIC_DEBUG
-+	depends on JUMP_LABEL
-+	help
-+	  The drm debug category facility does a lot of unlikely bit-field
-+	  tests at runtime; while cheap individually, the cost accumulates.
-+	  This option uses dynamic debug facility (if configured and
-+	  using jump_label) to avoid those runtime checks, patching
-+	  the kernel when those debugs are desired.
+ ccflags-y				+= -I $(srctree)/$(src) -I $(srctree)/$(src)/$(GVT_DIR)/
++ccflags-y				+= -DDYNAMIC_DEBUG_MODULE
+ i915-y					+= $(addprefix $(GVT_DIR)/, $(GVT_SOURCE))
+diff --git a/drivers/gpu/drm/i915/i915_params.c b/drivers/gpu/drm/i915/i915_params.c
+index 7f139ea4a90b..ecc825558e00 100644
+--- a/drivers/gpu/drm/i915/i915_params.c
++++ b/drivers/gpu/drm/i915/i915_params.c
+@@ -260,3 +260,77 @@ void i915_params_free(struct i915_params *params)
+ 	I915_PARAMS_FOR_EACH(FREE);
+ #undef FREE
+ }
 +
- config DRM_DEBUG_SELFTEST
- 	tristate "kselftests for DRM"
- 	depends on DRM
-diff --git a/drivers/gpu/drm/drm_print.c b/drivers/gpu/drm/drm_print.c
-index 111b932cf2a9..e2acdfc7088b 100644
---- a/drivers/gpu/drm/drm_print.c
-+++ b/drivers/gpu/drm/drm_print.c
-@@ -52,8 +52,75 @@ MODULE_PARM_DESC(debug, "Enable debug output, where each bit enables a debug cat
- "\t\tBit 5 (0x20)  will enable VBL messages (vblank code)\n"
- "\t\tBit 7 (0x80)  will enable LEASE messages (leasing code)\n"
- "\t\tBit 8 (0x100) will enable DP messages (displayport code)");
++/* POC for callback -> dynamic_debug_exec_queries */
++unsigned long __gvt_debug;
++EXPORT_SYMBOL(__gvt_debug);
 +
-+#ifndef CONFIG_DRM_USE_DYNAMIC_DEBUG
- module_param_named(debug, __drm_debug, int, 0600);
- 
-+#else
-+static char *format_class_prefixes[] = {
-+	cDRM_UT_CORE,
-+	cDRM_UT_DRIVER,
-+	cDRM_UT_KMS,
-+	cDRM_UT_PRIME,
-+	cDRM_UT_ATOMIC,
-+	cDRM_UT_VBL,
-+	cDRM_UT_STATE,
-+	cDRM_UT_LEASE,
-+	cDRM_UT_DP,
-+	cDRM_UT_DRMRES
++static char *format_prefix_classes[] = {
++	"gvt: cmd: ",
++	"gvt: core: ",
++	"gvt: dpy: ",
++	"gvt: el: ",
++	"gvt: irq: ",
++	"gvt: mm: ",
++	"gvt: mmio: ",
++	"gvt: render: ",
++	"gvt: sched: "
 +};
++#define NUM_CLASSES	ARRAY_SIZE(format_prefix_classes)
++#define OUR_QUERY_SIZE	128 /* we need about 20 */
 +
-+#define OUR_QUERY_SIZE 64 /* > strlen "format '^%s' %cp" + longest prefix */
++#include <linux/module.h>
 +
 +static int param_set_dyndbg(const char *instr, const struct kernel_param *kp)
 +{
@@ -194,255 +133,50 @@ index 111b932cf2a9..e2acdfc7088b 100644
 +
 +	rc = kstrtouint(instr, 0, &val);
 +	if (rc) {
-+		pr_err("%s: failed\n", __func__);
++		pr_err("set_dyndbg: failed\n");
 +		return -EINVAL;
 +	}
 +	result = val;
-+	changes = result ^ __drm_debug;
++	pr_info("set_dyndbg: result:0x%lx from %s\n", result, instr);
 +
-+	pr_debug("changes:0x%lx from result:0x%lx\n", changes, result);
++	changes = result ^ __gvt_debug;
 +
-+	for_each_set_bit(bitpos, &changes, ARRAY_SIZE(format_class_prefixes)) {
++	for_each_set_bit(bitpos, &changes, NUM_CLASSES) {
 +
-+		sprintf(query, "format '^%s' %cp", format_class_prefixes[bitpos],
++		sprintf(query, "format '^%s' %cp", format_prefix_classes[bitpos],
 +			test_bit(bitpos, &result) ? '+' : '-');
 +
-+		chgct = dynamic_debug_exec_queries(query, "drm*");
-+		if (chgct < 0) {
-+			pr_err("%s: exec err:%d on: %s\n", __func__, chgct, query);
-+			continue;
-+		}
-+		pr_debug("change ct:%d on %s\n", chgct, query);
++		chgct = dynamic_debug_exec_queries(query, "i915");
++
++		pr_info("%d changes on: %s\n", chgct, query);
 +		totct += chgct;
 +	}
-+	pr_debug("total changes: %d\n", totct);
-+	__drm_debug = result;
++	pr_info("total changes: %d\n", totct);
++	__gvt_debug = result;
 +	return 0;
 +}
-+
 +static int param_get_dyndbg(char *buffer, const struct kernel_param *kp)
 +{
-+	pr_debug("debug-val:0x%x %u\n", __drm_debug, *((unsigned int *)kp->arg));
 +	return scnprintf(buffer, PAGE_SIZE, "%u\n",
 +			 *((unsigned int *)kp->arg));
 +}
-+static const struct kernel_param_ops param_ops_debug = {
++static const struct kernel_param_ops param_ops_dyndbg = {
 +	.set = param_set_dyndbg,
 +	.get = param_get_dyndbg,
 +};
-+module_param_cb(debug, &param_ops_debug, &__drm_debug, 0644);
 +
-+#endif /* CONFIG_DRM_USE_DYNAMIC_DEBUG */
++MODULE_PARM_DESC(debug_gvt, " gvt debug categories:"
++		 "\n\t0x1\t gvt: cmd:"
++		 "\n\t0x2\t gvt: core:"
++		 "\n\t0x4\t gvt: dpy:"
++		 "\n\t0x8\t gvt: el:"
++		 "\n\t0x10\t gvt: irq:"
++		 "\n\t0x20\t gvt: mm:"
++		 "\n\t0x40\t gvt: mmio:"
++		 "\n\t0x80\t gvt: render:"
++		 "\n\t0x100\t gvt: sched:" "\n");
 +
- void __drm_puts_coredump(struct drm_printer *p, const char *str)
- {
- 	struct drm_print_iterator *iterator = p->arg;
-@@ -256,7 +323,7 @@ void drm_dev_printk(const struct device *dev, const char *level,
- }
- EXPORT_SYMBOL(drm_dev_printk);
- 
--void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
-+void _drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
- 		 const char *format, ...)
- {
- 	struct va_format vaf;
-@@ -278,9 +345,9 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
- 
- 	va_end(args);
- }
--EXPORT_SYMBOL(drm_dev_dbg);
-+EXPORT_SYMBOL(_drm_dev_dbg);
- 
--void __drm_dbg(enum drm_debug_category category, const char *format, ...)
-+void ___drm_dbg(enum drm_debug_category category, const char *format, ...)
- {
- 	struct va_format vaf;
- 	va_list args;
-@@ -297,7 +364,7 @@ void __drm_dbg(enum drm_debug_category category, const char *format, ...)
- 
- 	va_end(args);
- }
--EXPORT_SYMBOL(__drm_dbg);
-+EXPORT_SYMBOL(___drm_dbg);
- 
- void __drm_err(const char *format, ...)
- {
-diff --git a/include/drm/drm_print.h b/include/drm/drm_print.h
-index f32d179e139d..2bd5c38aa100 100644
---- a/include/drm/drm_print.h
-+++ b/include/drm/drm_print.h
-@@ -319,6 +319,51 @@ enum drm_debug_category {
- 	DRM_UT_DRMRES		= 0x200,
- };
- 
-+#if !defined(CONFIG_DRM_USE_DYNAMIC_DEBUG)
-+
-+/* Use legacy drm-debug functions, implying drm_debug_enabled().
-+ * For cDRM_UT_* (converted category), identity map to DRM_UT_*
-+ */
-+#define __drm_dbg(cls, fmt, ...)					\
-+	___drm_dbg(cls, fmt, ##__VA_ARGS__)
-+#define drm_dev_dbg(dev, cls, fmt, ...)					\
-+	_drm_dev_dbg(dev, cls, fmt, ##__VA_ARGS__)
-+
-+#define cDRM_UT_CORE	DRM_UT_CORE
-+#define cDRM_UT_DRIVER	DRM_UT_DRIVER
-+#define cDRM_UT_KMS	DRM_UT_KMS
-+#define cDRM_UT_PRIME	DRM_UT_PRIME
-+#define cDRM_UT_ATOMIC	DRM_UT_ATOMIC
-+#define cDRM_UT_VBL	DRM_UT_VBL
-+#define cDRM_UT_STATE	DRM_UT_STATE
-+#define cDRM_UT_LEASE	DRM_UT_LEASE
-+#define cDRM_UT_DP	DRM_UT_DP
-+#define cDRM_UT_DRMRES	DRM_UT_DRMRES
-+
-+#else /* CONFIG_DRM_USE_DYNAMIC_DEBUG */
-+
-+/* use dynamic_debug to avoid drm_debug_enabled.
-+ * dyndbg has no category, so we prefix format with a class-string,
-+ * and alter cDRM_UT_* to provide those class strings
-+ */
-+#define __drm_dbg(cls, fmt, ...)					\
-+	pr_debug(cls # fmt, ##__VA_ARGS__)
-+#define drm_dev_dbg(dev, cls, fmt, ...)					\
-+	dev_dbg(dev, cls fmt, ##__VA_ARGS__)
-+
-+#define cDRM_UT_CORE	"drm:core: "
-+#define cDRM_UT_DRIVER	"drm:drvr: "
-+#define cDRM_UT_KMS	"drm:kms: "
-+#define cDRM_UT_PRIME	"drm:prime: "
-+#define cDRM_UT_ATOMIC	"drm:atomic: "
-+#define cDRM_UT_VBL	"drm:vbl: "
-+#define cDRM_UT_STATE	"drm:state: "
-+#define cDRM_UT_LEASE	"drm:lease: "
-+#define cDRM_UT_DP	"drm:dp: "
-+#define cDRM_UT_DRMRES	"drm:res "
-+
-+#endif /* !CONFIG_DRM_USE_DYNAMIC_DEBUG */
-+
- static inline bool drm_debug_enabled(enum drm_debug_category category)
- {
- 	return unlikely(__drm_debug & category);
-@@ -334,7 +379,7 @@ __printf(3, 4)
- void drm_dev_printk(const struct device *dev, const char *level,
- 		    const char *format, ...);
- __printf(3, 4)
--void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
-+void _drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
- 		 const char *format, ...);
- 
- /**
-@@ -383,7 +428,7 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
-  * @fmt: printf() like format string.
-  */
- #define DRM_DEV_DEBUG(dev, fmt, ...)					\
--	drm_dev_dbg(dev, DRM_UT_CORE, fmt, ##__VA_ARGS__)
-+	drm_dev_dbg(dev, cDRM_UT_CORE, fmt, ##__VA_ARGS__)
- /**
-  * DRM_DEV_DEBUG_DRIVER() - Debug output for vendor specific part of the driver
-  *
-@@ -391,7 +436,7 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
-  * @fmt: printf() like format string.
-  */
- #define DRM_DEV_DEBUG_DRIVER(dev, fmt, ...)				\
--	drm_dev_dbg(dev, DRM_UT_DRIVER,	fmt, ##__VA_ARGS__)
-+	drm_dev_dbg(dev, cDRM_UT_DRIVER, fmt, ##__VA_ARGS__)
- /**
-  * DRM_DEV_DEBUG_KMS() - Debug output for modesetting code
-  *
-@@ -443,25 +488,25 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
- 
- 
- #define drm_dbg_core(drm, fmt, ...)					\
--	drm_dev_dbg((drm)->dev, DRM_UT_CORE, fmt, ##__VA_ARGS__)
-+	drm_dev_dbg((drm)->dev, cDRM_UT_CORE, fmt, ##__VA_ARGS__)
- #define drm_dbg(drm, fmt, ...)						\
--	drm_dev_dbg((drm)->dev, DRM_UT_DRIVER, fmt, ##__VA_ARGS__)
-+	drm_dev_dbg((drm)->dev, cDRM_UT_DRIVER, fmt, ##__VA_ARGS__)
- #define drm_dbg_kms(drm, fmt, ...)					\
--	drm_dev_dbg((drm)->dev, DRM_UT_KMS, fmt, ##__VA_ARGS__)
-+	drm_dev_dbg((drm)->dev, cDRM_UT_KMS, fmt, ##__VA_ARGS__)
- #define drm_dbg_prime(drm, fmt, ...)					\
--	drm_dev_dbg((drm)->dev, DRM_UT_PRIME, fmt, ##__VA_ARGS__)
-+	drm_dev_dbg((drm)->dev, cDRM_UT_PRIME, fmt, ##__VA_ARGS__)
- #define drm_dbg_atomic(drm, fmt, ...)					\
--	drm_dev_dbg((drm)->dev, DRM_UT_ATOMIC, fmt, ##__VA_ARGS__)
-+	drm_dev_dbg((drm)->dev, cDRM_UT_ATOMIC, fmt, ##__VA_ARGS__)
- #define drm_dbg_vbl(drm, fmt, ...)					\
--	drm_dev_dbg((drm)->dev, DRM_UT_VBL, fmt, ##__VA_ARGS__)
-+	drm_dev_dbg((drm)->dev, cDRM_UT_VBL, fmt, ##__VA_ARGS__)
- #define drm_dbg_state(drm, fmt, ...)					\
--	drm_dev_dbg((drm)->dev, DRM_UT_STATE, fmt, ##__VA_ARGS__)
-+	drm_dev_dbg((drm)->dev, cDRM_UT_STATE, fmt, ##__VA_ARGS__)
- #define drm_dbg_lease(drm, fmt, ...)					\
--	drm_dev_dbg((drm)->dev, DRM_UT_LEASE, fmt, ##__VA_ARGS__)
-+	drm_dev_dbg((drm)->dev, cDRM_UT_LEASE, fmt, ##__VA_ARGS__)
- #define drm_dbg_dp(drm, fmt, ...)					\
--	drm_dev_dbg((drm)->dev, DRM_UT_DP, fmt, ##__VA_ARGS__)
-+	drm_dev_dbg((drm)->dev, cDRM_UT_DP, fmt, ##__VA_ARGS__)
- #define drm_dbg_drmres(drm, fmt, ...)					\
--	drm_dev_dbg((drm)->dev, DRM_UT_DRMRES, fmt, ##__VA_ARGS__)
-+	drm_dev_dbg((drm)->dev, cDRM_UT_DRMRES, fmt, ##__VA_ARGS__)
- 
- 
- /*
-@@ -471,7 +516,7 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
-  */
- 
- __printf(2, 3)
--void __drm_dbg(enum drm_debug_category category, const char *format, ...);
-+void ___drm_dbg(enum drm_debug_category category, const char *format, ...);
- __printf(1, 2)
- void __drm_err(const char *format, ...);
- 
-@@ -500,29 +545,30 @@ void __drm_err(const char *format, ...);
- #define DRM_ERROR_RATELIMITED(fmt, ...)					\
- 	DRM_DEV_ERROR_RATELIMITED(NULL, fmt, ##__VA_ARGS__)
- 
-+
- #define DRM_DEBUG(fmt, ...)						\
--	__drm_dbg(DRM_UT_CORE, fmt, ##__VA_ARGS__)
-+	__drm_dbg(cDRM_UT_CORE, fmt, ##__VA_ARGS__)
- 
- #define DRM_DEBUG_DRIVER(fmt, ...)					\
--	__drm_dbg(DRM_UT_DRIVER, fmt, ##__VA_ARGS__)
-+	__drm_dbg(cDRM_UT_DRIVER, fmt, ##__VA_ARGS__)
- 
- #define DRM_DEBUG_KMS(fmt, ...)						\
--	__drm_dbg(DRM_UT_KMS, fmt, ##__VA_ARGS__)
-+	__drm_dbg(cDRM_UT_KMS, fmt, ##__VA_ARGS__)
- 
- #define DRM_DEBUG_PRIME(fmt, ...)					\
--	__drm_dbg(DRM_UT_PRIME, fmt, ##__VA_ARGS__)
-+	__drm_dbg(cDRM_UT_PRIME, fmt, ##__VA_ARGS__)
- 
- #define DRM_DEBUG_ATOMIC(fmt, ...)					\
--	__drm_dbg(DRM_UT_ATOMIC, fmt, ##__VA_ARGS__)
-+	__drm_dbg(cDRM_UT_ATOMIC, fmt, ##__VA_ARGS__)
- 
- #define DRM_DEBUG_VBL(fmt, ...)						\
--	__drm_dbg(DRM_UT_VBL, fmt, ##__VA_ARGS__)
-+	__drm_dbg(cDRM_UT_VBL, fmt, ##__VA_ARGS__)
- 
- #define DRM_DEBUG_LEASE(fmt, ...)					\
--	__drm_dbg(DRM_UT_LEASE, fmt, ##__VA_ARGS__)
-+	__drm_dbg(cDRM_UT_LEASE, fmt, ##__VA_ARGS__)
- 
- #define DRM_DEBUG_DP(fmt, ...)						\
--	__drm_dbg(DRM_UT_DP, fmt, ## __VA_ARGS__)
-+	__drm_dbg(cDRM_UT_DP, fmt, ## __VA_ARGS__)
- 
- 
- #define DRM_DEBUG_KMS_RATELIMITED(fmt, ...)				\
-@@ -531,7 +577,7 @@ void __drm_err(const char *format, ...);
- 				      DEFAULT_RATELIMIT_INTERVAL,       \
- 				      DEFAULT_RATELIMIT_BURST);         \
- 	if (__ratelimit(&_rs))						\
--		drm_dev_dbg(NULL, DRM_UT_KMS, fmt, ##__VA_ARGS__);	\
-+		drm_dev_dbg(NULL, cDRM_UT_KMS, fmt, ##__VA_ARGS__);	\
- })
- 
- /*
++module_param_cb(debug_gvt, &param_ops_dyndbg, &__gvt_debug, 0644);
 -- 
 2.28.0
 
