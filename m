@@ -2,92 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33A72CEABC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F082CEAC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729580AbgLDJUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:20:30 -0500
-Received: from mga14.intel.com ([192.55.52.115]:31264 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727518AbgLDJU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:20:29 -0500
-IronPort-SDR: sH59V9v+e6q5cPCnG1ZTpGmQ7p3AyooHWRrIqqyJMSLwgJFSqIMe9kuQay7NISKVFIb9NmuqUM
- +HB0lkUgFC1A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="172569553"
-X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="172569553"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 01:19:47 -0800
-IronPort-SDR: aFiaaPkZWWqyxh5clPDGED9VSPqi4LCqSepHW4MVnQMjcnc6V82VYRsUGsblGD/XX2/aHufqht
- 3U1Oi9S9CG0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="366213115"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.50])
-  by fmsmga004.fm.intel.com with ESMTP; 04 Dec 2020 01:19:44 -0800
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mel Gorman <mgorman@suse.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>, linux-api@vger.kernel.org
-Subject: Re: [PATCH -V6 RESEND 1/3] numa balancing: Migrate on fault among multiple bound nodes
-References: <20201202084234.15797-1-ying.huang@intel.com>
-        <20201202084234.15797-2-ying.huang@intel.com>
-        <20201202114054.GV3306@suse.de>
-        <20201203102550.GK2414@hirez.programming.kicks-ass.net>
-Date:   Fri, 04 Dec 2020 17:19:43 +0800
-In-Reply-To: <20201203102550.GK2414@hirez.programming.kicks-ass.net> (Peter
-        Zijlstra's message of "Thu, 3 Dec 2020 11:25:50 +0100")
-Message-ID: <87zh2ulyhc.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1729601AbgLDJUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:20:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727518AbgLDJUv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 04:20:51 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB474C061A4F;
+        Fri,  4 Dec 2020 01:20:10 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CnRxf2ZMXz9sWt;
+        Fri,  4 Dec 2020 20:20:06 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607073607;
+        bh=bAsk8n7gqFwKjHWwsHSOXYDy5wkPoQQyApSqZbNhf4E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=COBC7McCpEGqFC/wJt6Ji1ZUxqSBbcsgMDiH0OSauzjbuvowuzHXDpraMKu0hK4vo
+         O7oTfw65+pxvnA2eT5Qa3+Y9Lijmwh52qTME9LTd1w40IfgIwnA7S6hZ2tD9Dez3E4
+         fAEigSI2laov23FS/NMJYNdM+nLBx2sTJFXlNdSpHCJJIUtLDu4yenyNtBCW0k8M7l
+         vFUqArdK1JxBKBJvRW+RSGjJYoQzLbhbqz8tEzOKrsRYFY8IhhVjhPBUo1zuG5TTl2
+         gypIgfpy9vd78mZbvxThAwnqPxMtI0nasSwYOBeqbKAhwiBI0vn8OypJV9k24Gm9Yf
+         DsI/GZ4c5blEA==
+Date:   Fri, 4 Dec 2020 20:20:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>
+Subject: linux-next: manual merge of the akpm-current tree with the bpf-next
+ tree
+Message-ID: <20201204202005.3fb1304f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: multipart/signed; boundary="Sig_/+K=st_HCMWn3JpH6IhaFwtk";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> writes:
+--Sig_/+K=st_HCMWn3JpH6IhaFwtk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On Wed, Dec 02, 2020 at 11:40:54AM +0000, Mel Gorman wrote:
->> On Wed, Dec 02, 2020 at 04:42:32PM +0800, Huang Ying wrote:
->> > Now, NUMA balancing can only optimize the page placement among the
->> > NUMA nodes if the default memory policy is used.  Because the memory
->> > policy specified explicitly should take precedence.  But this seems
->> > too strict in some situations.  For example, on a system with 4 NUMA
->> > nodes, if the memory of an application is bound to the node 0 and 1,
->> > NUMA balancing can potentially migrate the pages between the node 0
->> > and 1 to reduce cross-node accessing without breaking the explicit
->> > memory binding policy.
->> > 
->> 
->> Ok, I think this part is ok and while the test case is somewhat
->> superficial, it at least demonstrated that the NUMA balancing overhead
->> did not offset any potential benefit
->> 
->> Acked-by: Mel Gorman <mgorman@suse.de>
->
-> Who do we expect to merge this, me through tip/sched/core or akpm ?
+Hi all,
 
-Hi, Peter,
+Today's linux-next merge of the akpm-current tree got conflicts in:
 
-Per my understanding, this is NUMA balancing related, so could go
-through your tree.
+  include/linux/memcontrol.h
+  mm/memcontrol.c
 
-BTW: I have just sent -V7 with some small changes per Mel's latest
-comments.
+between commit:
 
-Hi, Andrew,
+  bcfe06bf2622 ("mm: memcontrol: Use helpers to read page's memcg data")
 
-Do you agree?
+from the bpf-next tree and commits:
 
-Best Regards,
-Huang, Ying
+  6771a349b8c3 ("mm/memcg: remove incorrect comment")
+  c3970fcb1f21 ("mm: move lruvec stats update functions to vmstat.h")
+
+from the akpm-current tree.
+
+I fixed it up (see below - I used the latter version of memcontrol.h)
+and can carry the fix as necessary. This is now fixed as far as
+linux-next is concerned, but any non trivial conflicts should be
+mentioned to your upstream maintainer when your tree is submitted for
+merging.  You may also want to consider cooperating with the maintainer
+of the conflicting tree to minimise any particularly complex conflicts.
+
+I also added this merge fix patch:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 4 Dec 2020 19:53:40 +1100
+Subject: [PATCH] fixup for "mm: move lruvec stats update functions to vmsta=
+t.h"
+
+conflict against "mm: memcontrol: Use helpers to read page's memcg data"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ mm/memcontrol.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6f5733779927..3b6db4e906b5 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -851,16 +851,17 @@ void __mod_lruvec_page_state(struct page *page, enum =
+node_stat_item idx,
+ 			     int val)
+ {
+ 	struct page *head =3D compound_head(page); /* rmap on tail pages */
++	struct mem_cgroup *memcg =3D page_memcg(head);
+ 	pg_data_t *pgdat =3D page_pgdat(page);
+ 	struct lruvec *lruvec;
+=20
+ 	/* Untracked pages have no memcg, no lruvec. Update only the node */
+-	if (!head->mem_cgroup) {
++	if (!memcg) {
+ 		__mod_node_page_state(pgdat, idx, val);
+ 		return;
+ 	}
+=20
+-	lruvec =3D mem_cgroup_lruvec(head->mem_cgroup, pgdat);
++	lruvec =3D mem_cgroup_lruvec(memcg, pgdat);
+ 	__mod_lruvec_state(lruvec, idx, val);
+ }
+=20
+--=20
+2.29.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/memcontrol.h
+index 320369c841f5,ff02f831e7e1..000000000000
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+diff --cc mm/memcontrol.c
+index 7535042ac1ec,c9a5dce4343d..000000000000
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@@ -2880,9 -2984,9 +2975,9 @@@ static void cancel_charge(struct mem_cg
+ =20
+  static void commit_charge(struct page *page, struct mem_cgroup *memcg)
+  {
+ -	VM_BUG_ON_PAGE(page->mem_cgroup, page);
+ +	VM_BUG_ON_PAGE(page_memcg(page), page);
+  	/*
+- 	 * Any of the following ensures page->mem_cgroup stability:
++ 	 * Any of the following ensures page's memcg stability:
+  	 *
+  	 * - the page lock
+  	 * - LRU isolation
+@@@ -6977,11 -7012,10 +6997,10 @@@ void mem_cgroup_migrate(struct page *ol
+  		return;
+ =20
+  	/* Page cache replacement: new page already charged? */
+ -	if (newpage->mem_cgroup)
+ +	if (page_memcg(newpage))
+  		return;
+ =20
+- 	/* Swapcache readahead pages can get replaced before being charged */
+ -	memcg =3D oldpage->mem_cgroup;
+ +	memcg =3D page_memcg(oldpage);
+  	if (!memcg)
+  		return;
+ =20
+
+--Sig_/+K=st_HCMWn3JpH6IhaFwtk
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/J/0UACgkQAVBC80lX
+0GykHAf9ENaQyGwvRrQbXCkHZza/eM9habEfZViXxqugniIt/xpHxIioPAu5LIyi
+zBMYr+/rGhg8EOtuDFNGoRmjP9YUU6Q6714o9arCHE1uO7edQVK20jCthVF1MwTR
+IfJ3hCAj9h/hj5VS5U5TACTMAoCXYcdbQW/PzCVf65Uz29XVnOwQDR2BkjiGZ/g3
+7nao9ycs8AR3C8yFkoyXQ7V4p1c8KKafgbYSGQ/tVPmWQg47pAkL0WZK+9+6sgcK
+yhhoW88ZE3bcn3tFmYXsAf2XIGiIesoLfNyIvygPkso8YIXtVBtzfZjLAkG2mQHS
+lv9G2Hc03BoO7ey4wydgqJyvl/339g==
+=QOWV
+-----END PGP SIGNATURE-----
+
+--Sig_/+K=st_HCMWn3JpH6IhaFwtk--
