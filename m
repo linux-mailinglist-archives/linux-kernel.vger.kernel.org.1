@@ -2,93 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654782CEDB2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3DB2CEDC4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgLDMJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 07:09:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55184 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728306AbgLDMJX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:09:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607083677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YSihSOsWFmLzIa7KPfAOw3HjE0N1/4AahcgnwcmoJog=;
-        b=Nu+lutG9JLRLOyTY3As+oYFoV48OF3us6EWFWhnTlcFphhSB8E3ggJkyORCb7XK1zw5zpm
-        SZyfADkhqqBbW469WPTRVXO4wvLGJP5J18YQfgaz2M3VN2aNbF1OCZYOC9qW+L0VFUBQyw
-        w3nRkD5D/yHowap/53/zvuiL9cQJ75I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-497-GNRffqxnO026qXfrPzNb7A-1; Fri, 04 Dec 2020 07:07:53 -0500
-X-MC-Unique: GNRffqxnO026qXfrPzNb7A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43FC6190B2A2;
-        Fri,  4 Dec 2020 12:07:52 +0000 (UTC)
-Received: from [10.36.112.238] (ovpn-112-238.ams2.redhat.com [10.36.112.238])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B6A8027C55;
-        Fri,  4 Dec 2020 12:07:50 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Wang Hai" <wanghai38@huawei.com>
-Cc:     pshelar@ovn.org, davem@davemloft.net, kuba@kernel.org,
-        dev@openvswitch.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] openvswitch: fix error return code in
- validate_and_copy_dec_ttl()
-Date:   Fri, 04 Dec 2020 13:07:48 +0100
-Message-ID: <40A832BA-4065-4FB2-9C33-D41CF4B336CF@redhat.com>
-In-Reply-To: <20201204114314.1596-1-wanghai38@huawei.com>
-References: <20201204114314.1596-1-wanghai38@huawei.com>
+        id S1730151AbgLDMLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 07:11:09 -0500
+Received: from elvis.franken.de ([193.175.24.41]:48093 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728110AbgLDMKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 07:10:54 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kl9ud-0005Nb-02; Fri, 04 Dec 2020 13:10:11 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 0226DC02E5; Fri,  4 Dec 2020 13:08:16 +0100 (CET)
+Date:   Fri, 4 Dec 2020 13:08:16 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH 2/2] MIPS: Select ARCH_KEEP_MEMBLOCK to enable sysfs
+ memblock debug
+Message-ID: <20201204120816.GC10011@alpha.franken.de>
+References: <1606965544-22611-1-git-send-email-yangtiezhu@loongson.cn>
+ <1606965544-22611-3-git-send-email-yangtiezhu@loongson.cn>
+ <9c9af0de-387b-f113-b0a2-c5767c31c16d@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9c9af0de-387b-f113-b0a2-c5767c31c16d@flygoat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 03, 2020 at 11:58:51AM +0800, Jiaxun Yang wrote:
+> 
+> 
+> 在 2020/12/3 上午11:19, Tiezhu Yang 写道:
+> > In the current code, CONFIG_ARCH_KEEP_MEMBLOCK is not set for MIPS arch,
+> > memblock_discard() will discard memory and reserved arrays if they were
+> > allocated, select ARCH_KEEP_MEMBLOCK to give a chance to track "memory"
+> > and "reserved" memblocks after early boot, with this patch, we can see
+> > the following two sysfs interfaces under DEBUG_FS.
+> > 
+> > /sys/kernel/debug/memblock/memory
+> > /sys/kernel/debug/memblock/reserved
+> 
+> Is this really necessary?
+> memblock data is not really necessary after boot for non-debug purpose.
+> 
+> Given that MIPS is widely used in embedded systems which doesn't have much
+> memory, keeping unused data after boot is kinda unconvincing.
 
+about how much memory are talking here ?
 
-On 4 Dec 2020, at 12:43, Wang Hai wrote:
+> 
+> If you intend to debug that please do it locally.
 
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
->
-> Changing 'return start' to 'return action_start' can fix this bug.
->
-> Fixes: 69929d4c49e1 ("net: openvswitch: fix TTL decrement action 
-> netlink message format")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+maybe we can add a
 
-Thanks for fixing!
+if DEBUG_KERNEL 
 
-Reviewed-by: Eelco Chaudron <echaudro@redhat.com>
+since enabling DEBUG_KERNEL will cost already some memory...
 
-> ---
->  net/openvswitch/flow_netlink.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/openvswitch/flow_netlink.c 
-> b/net/openvswitch/flow_netlink.c
-> index ec0689ddc635..4c5c2331e764 100644
-> --- a/net/openvswitch/flow_netlink.c
-> +++ b/net/openvswitch/flow_netlink.c
-> @@ -2531,7 +2531,7 @@ static int validate_and_copy_dec_ttl(struct net 
-> *net,
->
->  	action_start = add_nested_action_start(sfa, OVS_DEC_TTL_ATTR_ACTION, 
-> log);
->  	if (action_start < 0)
-> -		return start;
-> +		return action_start;
->
->  	err = __ovs_nla_copy_actions(net, actions, key, sfa, eth_type,
->  				     vlan_tci, mpls_label_count, log);
-> -- 
-> 2.17.1
+Thomas.
 
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
