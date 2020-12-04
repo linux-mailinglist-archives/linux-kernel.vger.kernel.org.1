@@ -2,90 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452E92CEC15
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A0E2CEC18
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387953AbgLDKVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 05:21:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbgLDKVU (ORCPT
+        id S1729842AbgLDKW7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Dec 2020 05:22:59 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2518 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729763AbgLDKW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 05:21:20 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E00C0613D1;
-        Fri,  4 Dec 2020 02:20:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=CyALSvgNYXpCyLGL7J4jQD4Lj1WdhcYdlQtfqx1dD3k=; b=t2RDh01T6jqfyvJKY96GON17K
-        FvZM0e/TcQs1S1Bq78kiwPfU7r4OvLI14cil0OW1CNoPSIrWZhSx/R0L2eCbc/qGqXbGkgYeqsZU+
-        8raeqyfE02XS4m3+YrxkAfHCERSTAPVqpJDN5WgwH0rRI4H475l0Kf71cTyUSRSjw1JiE+7cTzt95
-        +UpQ5gUvAss3Lkt0jaYJldCorTlsp9cdv7xt3YLlZTGPTZijomlyHENo2e23ppm0k0jtMmJwsCjUC
-        KeFJ2TpOPMKbjfS80U6MRT4qA1MsVGTnio+EVDUMRNT9rAgDDuFGJua/lC/JG2Px74OIFDA6v+jaJ
-        PwdMKLiEQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39620)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kl8C4-0004BU-H8; Fri, 04 Dec 2020 10:20:04 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kl8C3-0000a7-JL; Fri, 04 Dec 2020 10:20:03 +0000
-Date:   Fri, 4 Dec 2020 10:20:03 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 3/4] phy: Add Sparx5 ethernet serdes PHY driver
-Message-ID: <20201204102003.GJ1551@shell.armlinux.org.uk>
-References: <20201203103015.3735373-1-steen.hegelund@microchip.com>
- <20201203103015.3735373-4-steen.hegelund@microchip.com>
- <20201203215253.GL2333853@lunn.ch>
- <20201203225232.GI1551@shell.armlinux.org.uk>
- <20201204075633.GC74177@piout.net>
+        Fri, 4 Dec 2020 05:22:59 -0500
+Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CnTJv5JjDzQndf;
+        Fri,  4 Dec 2020 18:21:51 +0800 (CST)
+Received: from dggemi753-chm.china.huawei.com (10.1.198.139) by
+ DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Fri, 4 Dec 2020 18:20:30 +0800
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ dggemi753-chm.china.huawei.com (10.1.198.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 4 Dec 2020 18:20:29 +0800
+Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
+ lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
+ 15.01.1913.007; Fri, 4 Dec 2020 10:20:27 +0000
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+CC:     Auger Eric <eric.auger@redhat.com>,
+        wangxingang <wangxingang5@huawei.com>,
+        Xieyingtai <xieyingtai@huawei.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        qubingbing <qubingbing@hisilicon.com>
+Subject: RE: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
+ unmanaged ASIDs
+Thread-Topic: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
+ unmanaged ASIDs
+Thread-Index: AQHWvZ36CODK3kmCyk2T9hmchYhCqqniWTe/gANqCPCAAQgyAIAABi8Q
+Date:   Fri, 4 Dec 2020 10:20:26 +0000
+Message-ID: <2de03a797517452cbfeab022e12612b7@huawei.com>
+References: <20201118112151.25412-8-eric.auger@redhat.com>
+ <1606829590-25924-1-git-send-email-wangxingang5@huawei.com>
+ <2e69adf5-8207-64f7-fa8e-9f2bd3a3c4e3@redhat.com>
+ <e10ad90dc5144c0d9df98a9a078091af@huawei.com>
+ <20201204095338.GA1912466@myrica>
+In-Reply-To: <20201204095338.GA1912466@myrica>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.200.67.145]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204075633.GC74177@piout.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 08:56:33AM +0100, Alexandre Belloni wrote:
-> Hi Russell,
+Hi Jean,
+
+> -----Original Message-----
+> From: Jean-Philippe Brucker [mailto:jean-philippe@linaro.org]
+> Sent: 04 December 2020 09:54
+> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+> Cc: Auger Eric <eric.auger@redhat.com>; wangxingang
+> <wangxingang5@huawei.com>; Xieyingtai <xieyingtai@huawei.com>;
+> kvm@vger.kernel.org; maz@kernel.org; joro@8bytes.org; will@kernel.org;
+> iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
+> vivek.gautam@arm.com; alex.williamson@redhat.com;
+> zhangfei.gao@linaro.org; robin.murphy@arm.com;
+> kvmarm@lists.cs.columbia.edu; eric.auger.pro@gmail.com; Zengtao (B)
+> <prime.zeng@hisilicon.com>; qubingbing <qubingbing@hisilicon.com>
+> Subject: Re: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
+> unmanaged ASIDs
 > 
-> On 03/12/2020 22:52:33+0000, Russell King - ARM Linux admin wrote:
-> > You still have not Cc'd me on your patches. Please can you either:
-> > 
-> > 1) use get_maintainer.pl to find out whom you should be sending
-> >    your patches to
-> > or
-> > 2) include me in your cc for this patch set as phylink maintainer in
-> >    your patch set so I can review your use of phylink.
-> > 
+> Hi Shameer,
 > 
-> Note that this series is different from the network (switchdev) driver
-> series and doesn't make use of phylink.
+> On Thu, Dec 03, 2020 at 06:42:57PM +0000, Shameerali Kolothum Thodi wrote:
+> > Hi Jean/zhangfei,
+> > Is it possible to have a branch with minimum required SVA/UACCE related
+> patches
+> > that are already public and can be a "stable" candidate for future respin of
+> Eric's series?
+> > Please share your thoughts.
+> 
+> By "stable" you mean a fixed branch with the latest SVA/UACCE patches
+> based on mainline? 
 
-Oh, didn't realise that; it's difficult to tell when you don't get the
-original messages, and only end up being Cc'd on a very trimmed down
-reply.
+Yes. 
 
-Email is a broken form of communication...
+ The uacce-devel branches from
+> https://github.com/Linaro/linux-kernel-uadk do provide this at the moment
+> (they track the latest sva/zip-devel branch
+> https://jpbrucker.net/git/linux/ which is roughly based on mainline.)
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Thanks. 
+
+Hi Eric,
+
+Could you please take a look at the above branches and see whether it make sense
+to rebase on top of either of those?
+
+From vSVA point of view, it will be less rebase hassle if we can do that.
+
+Thanks,
+Shameer
+
+> Thanks,
+> Jean
+
