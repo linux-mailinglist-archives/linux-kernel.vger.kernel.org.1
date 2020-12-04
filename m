@@ -2,139 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276692CF193
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E838D2CF197
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730630AbgLDQIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:08:50 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:32852 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730148AbgLDQIt (ORCPT
+        id S1730744AbgLDQJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:09:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727425AbgLDQJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:08:49 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201204160757euoutp02d82dfa254fc180982fafef5488d0e4e9~Njy-Nmke62129221292euoutp02E
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 16:07:57 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201204160757euoutp02d82dfa254fc180982fafef5488d0e4e9~Njy-Nmke62129221292euoutp02E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1607098077;
-        bh=eLywhzEGDczru3//t5TSCz8Ic7MsFZbZMi9uwx/nsa4=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=TMNSTx2VfxxmaXd7OnsWUhvzlCtLXQkeX59drzCiqSx1FR4EzgQ2sDDnPJ+VXqnbT
-         h9wJIC9yfGUMHvZlT5eVmj5AZUAdbxhhMpW2CBKCiFZ2f/np4GvecBTtTFuKTF6QAJ
-         0lwvlQ3bz5rjwtwK9cdAQVkrzqHPSNNvhFT9b0jU=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201204160752eucas1p18e2cb8b4e8ac200da29acbfc21211ff3~Njy6X8kIB3097330973eucas1p1U;
-        Fri,  4 Dec 2020 16:07:52 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 1C.34.27958.8DE5ACF5; Fri,  4
-        Dec 2020 16:07:52 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201204160751eucas1p13cc7aad8c68dd2a495c4bbf422c4228c~Njy6CGSJJ1941019410eucas1p1r;
-        Fri,  4 Dec 2020 16:07:51 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201204160751eusmtrp2ea95d3855e710af042781e414b654ff1~Njy6BcKr90992509925eusmtrp2H;
-        Fri,  4 Dec 2020 16:07:51 +0000 (GMT)
-X-AuditID: cbfec7f2-efdff70000006d36-1e-5fca5ed8358a
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id B2.05.16282.7DE5ACF5; Fri,  4
-        Dec 2020 16:07:51 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201204160751eusmtip2ed071fbbad4ec32c434cb53dcc55677f~Njy5di4x40287302873eusmtip2Q;
-        Fri,  4 Dec 2020 16:07:51 +0000 (GMT)
-Subject: Re: [PATCH] mm/memblock:use a more appropriate order calculation
- when free memblock pages
-To:     Qian Cai <qcai@redhat.com>, carver4lio@163.com, rppt@kernel.org
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Hailong Liu <liu.hailong6@zte.com.cn>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <adc36428-05eb-f885-9394-080cc805818f@samsung.com>
-Date:   Fri, 4 Dec 2020 17:07:50 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.5.1
+        Fri, 4 Dec 2020 11:09:08 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D7FC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 08:08:28 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id qw4so9384695ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 08:08:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AgJ3P5TSBGZilokHFX8v5OKRIwn1E+p9CC+Sd10NgMQ=;
+        b=LK/Ok/J7yG5aJDlJu3t4ObQmoWk9vv1x4VKKVqhoqZ6Rp9H41TAXFWtXqWaRmZGG6c
+         +of8NdIYflycxa9MMZwjUWNVSDU4ZujAWKT0Bsh8pv2N/O2A/ypIiwUzljXRPgQHntZb
+         AVw3LQb/yaP2aLSkRDX1uoDwzbTNnifaheWIVSN5FLXFszfCpjoeDnl3nkmu0Svin0GT
+         xsToUnZa2J3mOjlFUkF3eJILBjMtRWC2GKZmHOdon8sHNsg6CC8kOLTNRtx6RToaVqAM
+         kURXO187jDRswd2iE64ufKBM1W4Cg8Ry/tWS8EnFTFjvY2+E1RfwpyaROJDyhJIeq/xN
+         LTQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AgJ3P5TSBGZilokHFX8v5OKRIwn1E+p9CC+Sd10NgMQ=;
+        b=or8DyD1YeIOjEmsq4uC5wCJyXhmvn5jQYeTkG7wwhf4WpAtrnedndt+QKlBDs9+kEj
+         t6AAyEMurnP8OKKh6xx2rPSCr1eAVgmf13mXHKLsUQGJobTY7fIQunIbxkVJ10s6X52o
+         JeFOkSYQSfYfQWbTAfa0WJt0l2jPr7+J/0zcz+bpahROG9JVoGhFYWv6jDnSO+saJucY
+         vtaj5V7n1q8kvXMDTIcdcsX9MmZLEBo/KnW1qBOzhzsZMYUqG1yyoJ8PIR/4Kuarv2rS
+         KullOtP4uGyRsJzYAu1Aail0IO1/ttEytS4Ripoc96/w5Su1VxEM712xFXWiAPKukTxF
+         xM2Q==
+X-Gm-Message-State: AOAM531lzzTyaH5k5szYwf/HI8/nEI3ECuplPpHg+b+bmpzJm3od8B0u
+        4eYJI8vxzGqRb9QWhiiwk6vj7eeNAW4gva26wdswZA==
+X-Google-Smtp-Source: ABdhPJw///BFE4BaSY8UnV6aE0C4WBjQc/DC3TSJISHaKAazmCia7ZOh3/BZ8cz1zZ13sXf8TG/iQdUxReSmgKICNfE=
+X-Received: by 2002:a17:906:fb9b:: with SMTP id lr27mr7997127ejb.175.1607098107080;
+ Fri, 04 Dec 2020 08:08:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <a5bc444ec40a2248009d0894fda61b822d030235.camel@redhat.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEKsWRmVeSWpSXmKPExsWy7djPc7o34k7FGxx7xWMxZ/0aNouNM9az
-        Wrx/t4Hd4vKuOWwW99b8Z7U4uLCN0WLRsklsFr+/N7NaHFm/ncli696r7A5cHotXTGH1aLxx
-        g81j06pOIPFpErvHiRm/WTze77vK5tG3ZRWjx+dNch5r9v1gCeCM4rJJSc3JLEst0rdL4Mro
-        erKeqaCVo2LH9N0sDYxH2boYOTkkBEwkdh25wN7FyMUhJLCCUeLSqYMsEM4XRomT81YzQjif
-        GSXOPf7B1MXIAdZy/qcBRHw5o8SzB1eZIJyPjBJ/9x9lBJkrLJAiseHwM3YQW0TAWeLq0o9g
-        RcwCk5kk7jw6BpZgEzCU6HrbBXYIr4CdxOUr55lAbBYBFYlHjXNYQWxRgSSJ9V0/oGoEJU7O
-        fMICYnMKeEgsmQvxBLOAvMT2t3OYIWxxiVtP5oMtkxDo55Q40XqKHeJTF4n9T48zQdjCEq+O
-        b4GKy0j83wnT0Mwo8fDcWnYIp4dR4nLTDEaIKmuJO+d+sYECgFlAU2L9Ln2IsKPEsY/3mCHh
-        widx460gxBF8EpO2TYcK80p0tAlBVKtJzDq+Dm7twQuXmCcwKs1C8tosJO/MQvLOLIS9CxhZ
-        VjGKp5YW56anFhvmpZbrFSfmFpfmpesl5+duYgQms9P/jn/awTj31Ue9Q4xMHIyHGCU4mJVE
-        eGNVT8YL8aYkVlalFuXHF5XmpBYfYpTmYFES5101e028kEB6YklqdmpqQWoRTJaJg1OqgclT
-        vYl345nbPwwm+RzZVzfVYl/tG02bv+dn+Ezwln1W/XtLqtNByUMyh2/cCs6W3LLnU+HLzxGy
-        MpFL5K7ZpKXMOco7sY8vZsKWxF/7yo8Kai65FXLHQL6pmN3z1mW1+3IfOvMe9F9TTJ7X37Jq
-        X/CuB/wfGq57NtnUdTZ0xjbe2ftEadEqlgOf3qfvWJC+MvDbt7S4WWWf1/n0Z/vJl+wt+b97
-        4u4/c5S7Iqe85/ObVfF02iK9Nb5Cy2MbVnwTmJQcUndti2XvPyfjXad9qg53PwtmVPn2s1ph
-        w9N5nzaKvOz1ZC+cyVOb1xbCpGTKWbrgZbPexvlrSmM2zJDcJ1pQVHRfZydT5IddM1Zp/ylT
-        YinOSDTUYi4qTgQAiKh0p9UDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRmVeSWpSXmKPExsVy+t/xe7rX407FG/zsMLOYs34Nm8XGGetZ
-        Ld6/28BucXnXHDaLe2v+s1ocXNjGaLFo2SQ2i9/fm1ktjqzfzmSxde9Vdgcuj8UrprB6NN64
-        weaxaVUnkPg0id3jxIzfLB7v911l8+jbsorR4/MmOY81+36wBHBG6dkU5ZeWpCpk5BeX2CpF
-        G1oY6RlaWugZmVjqGRqbx1oZmSrp29mkpOZklqUW6dsl6GV0PVnPVNDKUbFj+m6WBsajbF2M
-        HBwSAiYS538adDFycggJLGWUmN2XDWJLCMhInJzWwAphC0v8udYFVM4FVPOeUWLRrg8sIL3C
-        AikSL86EgtSICDhLXF36kQmkhllgMpPE48UdTBBDSyRmt51mA7HZBAwlut52gdm8AnYSl6+c
-        B6thEVCReNQ4hxVkpqhAksTZ04IQJYISJ2c+YQGxOQU8JJbMPQrWyixgJjFv80NmCFteYvvb
-        OVC2uMStJ/OZJjAKzULSPgtJyywkLbOQtCxgZFnFKJJaWpybnltspFecmFtcmpeul5yfu4kR
-        GLXbjv3csoNx5auPeocYmTgYDzFKcDArifDGqp6MF+JNSaysSi3Kjy8qzUktPsRoCvTORGYp
-        0eR8YNrIK4k3NDMwNTQxszQwtTQzVhLnNTmyJl5IID2xJDU7NbUgtQimj4mDU6qBqejhnUjX
-        Sh/+vpTgTcs3LqrfZcreqrQoKoTFK07c6VFEsnHjeXGlYw9L+Sf2vy/cssHpHJdMnKKUvH/m
-        ZIHaLRpmWuey4yc/uPJmqn95pk58u06wieicac8COJkTk41nn4/jmV7dWPTxoPpmo80t1XfP
-        s+y4LuNx2CC6qXRhD8dei9bDHxZY/k9XOl86I7PARe/xabPmaQWpnxliH3gackWYVtfOMMj8
-        zXVjrt7MR7fncgfyOH51qb74YPmh6fOrj9w6ctjhekrupJk1388dWnTHWrhgjt9mz6QznPOf
-        tLhydzL7JD53vy2yenZK9rRVElr83gtYPSf6VciEmm3KK/rfs0tVnWPp/nlbI48psRRnJBpq
-        MRcVJwIAXxkPS2MDAAA=
-X-CMS-MailID: 20201204160751eucas1p13cc7aad8c68dd2a495c4bbf422c4228c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201204160751eucas1p13cc7aad8c68dd2a495c4bbf422c4228c
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201204160751eucas1p13cc7aad8c68dd2a495c4bbf422c4228c
-References: <20201203152311.5272-1-carver4lio@163.com>
-        <a5bc444ec40a2248009d0894fda61b822d030235.camel@redhat.com>
-        <CGME20201204160751eucas1p13cc7aad8c68dd2a495c4bbf422c4228c@eucas1p1.samsung.com>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-6-pasha.tatashin@soleen.com> <20201203091703.GA17338@dhcp22.suse.cz>
+ <CA+CK2bB-BC-5Szs1Piv3O=OGxQbJSGWzgMmDUtDewrCqEoNaXw@mail.gmail.com>
+ <20201204084312.GA25569@dhcp22.suse.cz> <20201204085401.GB25569@dhcp22.suse.cz>
+In-Reply-To: <20201204085401.GB25569@dhcp22.suse.cz>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 4 Dec 2020 11:07:51 -0500
+Message-ID: <CA+CK2bCyMWMXpz9xmPMRey0euS1AYuPEjmXo6OF9Hsv9x+f9GQ@mail.gmail.com>
+Subject: Re: [PATCH 5/6] mm: honor PF_MEMALLOC_NOMOVABLE for all allocations
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On Fri, Dec 4, 2020 at 3:54 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 04-12-20 09:43:13, Michal Hocko wrote:
+> > On Thu 03-12-20 10:15:41, Pavel Tatashin wrote:
+> [...]
+> > > Also, current_gfp_context() is used elsewhere, and in some
+> > > places removing __GFP_MOVABLE from gfp_mask means that we will need to
+> > > also change other things. For example [1], in try_to_free_pages() we
+> > > call current_gfp_context(gfp_mask) which can reduce the maximum zone
+> > > idx, yet we simply set it to: reclaim_idx = gfp_zone(gfp_mask), not to
+> > > the newly determined gfp_mask.
+> >
+> > Yes and the direct reclaim should honor the movable zone restriction.
+> > Why should we reclaim ZONE_MOVABLE when the allocation cannot really
+> > allocate from it? Or have I misunderstood your concern?
+>
+> Btw. if we have gfp mask properly filtered for the fast path then we can
+> remove the additional call to current_gfp_context from the direct
+> reclaim path. Something for a separate patch.
 
-On 04.12.2020 14:42, Qian Cai wrote:
-> On Thu, 2020-12-03 at 23:23 +0800, carver4lio@163.com wrote:
->> From: Hailong Liu <liu.hailong6@zte.com.cn>
->>
->> When system in the booting stage, pages span from [start, end] of a memblock
->> are freed to buddy in a order as large as possible (less than MAX_ORDER) at
->> first, then decrease gradually to a proper order(less than end) in a loop.
->>
->> However, *min(MAX_ORDER - 1UL, __ffs(start))* can not get the largest order
->> in some cases.
->> Instead, *__ffs(end - start)* may be more appropriate and meaningful.
->>
->> Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
-> Reverting this commit on the top of today's linux-next fixed boot crashes on
-> multiple NUMA systems.
+Good point. I am thinking to make a preparation patch at the beginning
+of the series where we move current_gfp_context() to the fast path,
+and also address all other cases where this call is not going to be
+needed anymore, or where the gfp_mask will needed to be set according
+to what current_gfp_context() returned.
 
-I confirm. Reverting commit 4df001639c84 ("mm/memblock: use a more 
-appropriate order calculation when free memblock pages") on top of linux 
-next-20201204 fixed booting of my ARM32bit test systems.
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+Thanks,
+Pasha
