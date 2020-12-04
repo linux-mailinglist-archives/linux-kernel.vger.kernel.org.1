@@ -2,113 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 597912CECFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4487C2CED03
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729925AbgLDLYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:24:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28698 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726031AbgLDLYT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:24:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607080973;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2xYmq1WDTNwe1WMK0sFOwKcOwQdm9xnUmb1ObuGviYU=;
-        b=dLMhL3eaFcT5uTMDquQyfdPFjoGzlTFDN204ttVa9nShLlLyDMVoTDIeo+jGvoRZkWWre/
-        lfck76MySkGHd+qAkXIin5oVlmzATy+z3UVMdLw/bB3tdV61X+QFSLX0bVxKcIGSGYyTL8
-        eALZ8hCC2CsGOjhW3EMdHiSq0Hy07B8=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-90-aNuxZLI4MJisVD0VR0s_1g-1; Fri, 04 Dec 2020 06:22:52 -0500
-X-MC-Unique: aNuxZLI4MJisVD0VR0s_1g-1
-Received: by mail-ed1-f69.google.com with SMTP id dh21so1385278edb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 03:22:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2xYmq1WDTNwe1WMK0sFOwKcOwQdm9xnUmb1ObuGviYU=;
-        b=uMBL/2nslv15i/7eY+WSSwueIu07AQ75VONa4xonkx6+owdCboUsyKmZfI+W6DtLrT
-         nhZzDofEOgl6fJtOwNyAOc3gyN7GGnZb+4w5ZcFZGbZeCKjJ61GoUwhs09QFGrvj9D/4
-         9u/LXCdAiC0KrMMqG4v/fAs9K7zD+pmgVTw/LWo9h1kJYNbFfjCS3H6ktmqu/mPQvmD3
-         vMQDCZIQayhia/B1I/nVU3ugVGwxwLPtTlZrJxz4HQzOLQMWJ+JNhHxlvfJqYSIXBrc4
-         32HkBUv3sG6i3SkcicsFJ6oFikCKt4pYvGFg8xa849l87KKuJuHYeUSDVDV4izT8tIBw
-         ga1A==
-X-Gm-Message-State: AOAM530BL3QNvJODg7GacmQpTBnrOgVRtMvEwFHI+kUmQHs6KvYw92XC
-        kkk2JpHkT87WFXo5zlGqsmVS7xZ33YIGQbCuP0CMsI9VtQR85BonYKdmcVmRyVw6Er+47zGbWGf
-        h7roIsudyWp/VKOgGLcEQmTOb
-X-Received: by 2002:a17:906:6683:: with SMTP id z3mr6827626ejo.27.1607080970816;
-        Fri, 04 Dec 2020 03:22:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw343SknxiSSuY0NNWzbJs4msxXhsprD6WBOFGcibn/gINRccGkPWRXPfY4u3yR4ha4Ysx8pw==
-X-Received: by 2002:a17:906:6683:: with SMTP id z3mr6827610ejo.27.1607080970670;
-        Fri, 04 Dec 2020 03:22:50 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u1sm3256230edf.65.2020.12.04.03.22.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Dec 2020 03:22:49 -0800 (PST)
-Subject: Re: [PATCH v8 18/18] KVM: SVM: Enable SEV live migration feature
- implicitly on Incoming VM(s).
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, Thomas.Lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, rientjes@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-References: <cover.1588711355.git.ashish.kalra@amd.com>
- <a70e7ea40c47116339f968b7d2d2bf120f452c1e.1588711355.git.ashish.kalra@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <7a3e57c5-8a8c-30dc-4414-cd46b201eed3@redhat.com>
-Date:   Fri, 4 Dec 2020 12:22:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1730011AbgLDLZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:25:04 -0500
+Received: from mga09.intel.com ([134.134.136.24]:21992 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725999AbgLDLZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 06:25:03 -0500
+IronPort-SDR: bpwbxSIbTvituL4H7G5isqh4UQ3YaX9L1K7sXlHpzBhD7XErGcCgG1MbxgvNo+JWU2tsvnpRZR
+ /FquEPV67MrQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="173518019"
+X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
+   d="scan'208";a="173518019"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:23:22 -0800
+IronPort-SDR: v9bNW00gKieqeSryPmnm9xh9U8RkPJlGVFX0+Bcr3vFvqs1pO94h3YNcnk+6L4nNouK7wnhjxo
+ vlrTstwbSS+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
+   d="scan'208";a="435784644"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 04 Dec 2020 03:23:19 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 04 Dec 2020 13:23:18 +0200
+Date:   Fri, 4 Dec 2020 13:23:18 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH 0/2] Remove one more platform_device_add_properties() call
+Message-ID: <20201204112318.GA4013126@kuha.fi.intel.com>
+References: <20201123153148.52647-1-heikki.krogerus@linux.intel.com>
+ <CAJZ5v0jAaz2zELkJoKjHtxyfuKEi=ORuCCad-F0yp6KephieGg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <a70e7ea40c47116339f968b7d2d2bf120f452c1e.1588711355.git.ashish.kalra@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jAaz2zELkJoKjHtxyfuKEi=ORuCCad-F0yp6KephieGg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/05/20 23:22, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
-> 
-> For source VM, live migration feature is enabled explicitly
-> when the guest is booting, for the incoming VM(s) it is implied.
-> This is required for handling A->B->C->... VM migrations case.
-> 
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->   arch/x86/kvm/svm/sev.c | 7 +++++++
->   1 file changed, 7 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 6f69c3a47583..ba7c0ebfa1f3 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1592,6 +1592,13 @@ int svm_set_page_enc_bitmap(struct kvm *kvm,
->   	if (ret)
->   		goto unlock;
->   
-> +	/*
-> +	 * For source VM, live migration feature is enabled
-> +	 * explicitly when the guest is booting, for the
-> +	 * incoming VM(s) it is implied.
-> +	 */
-> +	sev_update_migration_flags(kvm, KVM_SEV_LIVE_MIGRATION_ENABLED);
-> +
->   	bitmap_copy(sev->page_enc_bmap + BIT_WORD(gfn_start), bitmap,
->   		    (gfn_end - gfn_start));
->   
-> 
+Hi Felipe,
 
-I would prefer that userspace does this using KVM_SET_MSR instead.
+On Mon, Nov 23, 2020 at 06:06:31PM +0100, Rafael J. Wysocki wrote:
+> On Mon, Nov 23, 2020 at 4:32 PM Heikki Krogerus
+> <heikki.krogerus@linux.intel.com> wrote:
+> >
+> > Hi,
+> >
+> > I originally introduced these as part of my series where I was
+> > proposing PM ops for software nodes [1], but since that still needs
+> > work, I'm sending these two separately.
+> >
+> > So basically I'm only modifying dwc3-pci.c so it registers a software
+> > node directly at this point. That will remove one more user of
+> > platform_device_add_properties().
+> >
+> > [1] https://lore.kernel.org/lkml/20201029105941.63410-1-heikki.krogerus@linux.intel.com/
+> >
+> > thanks,
+> >
+> > Heikki Krogerus (2):
+> >   software node: Introduce device_add_software_node()
+> >   usb: dwc3: pci: Register a software node for the dwc3 platform device
+> >
+> >  drivers/base/swnode.c       | 69 ++++++++++++++++++++++++++++++++-----
+> >  drivers/usb/dwc3/dwc3-pci.c | 61 +++++++++++++++++++-------------
+> >  include/linux/property.h    |  3 ++
+> >  3 files changed, 100 insertions(+), 33 deletions(-)
+> >
+> > --
+> 
+> These look good to me.
+> 
+> If you want me to take them, though, I need an ACK from the dwc3 side.
 
-Paolo
+Is this OK?
 
+thanks,
+
+-- 
+heikki
