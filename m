@@ -2,183 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4399C2CE58B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C742CE590
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgLDCIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 21:08:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55600 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725885AbgLDCIm (ORCPT
+        id S1726871AbgLDCLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 21:11:15 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:60978 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726080AbgLDCLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 21:08:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607047634;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HxHGQsBlpLQuTDMJXZrWsBJjFIx/LYv87Cod4+aHr9s=;
-        b=Qa06mvvXHVbq2U5iJdQ6F1vG+K8iqIjjF1TDoWwFqXuSXiQs5VKKBRO0LioUGGdAVfgKhp
-        62PsQ8sF2Yi1plCZQreE8g+xLE3z6+2JDW/bBT4w19Q85h3UPjTvZklyk/L3IQBWswNGLX
-        PF5/sw0PYETezPlKQ/20NjYxUqR4S5g=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-397-KF6F0wUxMu-tcM3EDUm-lw-1; Thu, 03 Dec 2020 21:07:12 -0500
-X-MC-Unique: KF6F0wUxMu-tcM3EDUm-lw-1
-Received: by mail-pj1-f70.google.com with SMTP id p6so2842147pjr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 18:07:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HxHGQsBlpLQuTDMJXZrWsBJjFIx/LYv87Cod4+aHr9s=;
-        b=E+5V5JG3DV8hFGAOSF9+Kwxwec/Ny2CXEatIYDm1KWnpzgi3EsJi3I/mdpbI1TSVFS
-         P8/nf6Jg3nbncX2L4oQ1wtDnNb/KNc3kMztGl8Dqw9XtMD8rOFFj7UHiOnJVi8oBz1hH
-         /gSCcvnrMfNSgYZlYSqWAUu+l04Jy+rH68Qa9+nrpgC/6Yov6XosMbfqCSayxylgdb5P
-         wyLI0kZdNqtm89CU2H5bQQil+pAyBTnPXxJynJx2uoLzTH/eAiouRFF3xD7CMQhnuRw3
-         QXu2BP22aU3t2VM+qfWXQBPDpCJCZ01omp8QIo68aJ3hGVblK29npj9eVd4/4rNKw8pt
-         0v2g==
-X-Gm-Message-State: AOAM532hUB7TBJOy5f7nA8/mC8ae7zNH1SVZYtKXlfFt0oQBqOHunk+b
-        ugYelxOueU4MZT5ugVfh2bBlLItGmJexTBR0MgFWibbVMBA4IOqRhHWcaq+xGXoq4Pi0s8j+i4I
-        lrWJan2tulD6jpQK9G5TTj+JE
-X-Received: by 2002:a63:e502:: with SMTP id r2mr5641670pgh.308.1607047631317;
-        Thu, 03 Dec 2020 18:07:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyVCcgiTEAfs2WeNWNAikcp00j2f14t84/QAqAvr6qrNmjA30ji78GzwaEsS5x0E1WOnWspKw==
-X-Received: by 2002:a63:e502:: with SMTP id r2mr5641649pgh.308.1607047630945;
-        Thu, 03 Dec 2020 18:07:10 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id y19sm3063476pfp.211.2020.12.03.18.07.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 18:07:10 -0800 (PST)
-Date:   Fri, 4 Dec 2020 10:06:59 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>, jaegeuk@kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v6] f2fs: compress: support compress level
-Message-ID: <20201204020659.GB1963435@xiangao.remote.csb>
-References: <20201203061715.60447-1-yuchao0@huawei.com>
- <X8k9UoUKcyThlJNU@gmail.com>
- <20201204003119.GA1957051@xiangao.remote.csb>
- <7b975d1a-a06c-4e14-067e-064afc200934@huawei.com>
+        Thu, 3 Dec 2020 21:11:15 -0500
+X-UUID: e49db857a0f243ac81c8110829029f86-20201204
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3fEAzKsdz//maaMh1QCscTkvSeFpqqfoqta+RxuF5gc=;
+        b=OoKsbKyWhVDSoBw1doGgdBnkBkfMquEWgSzfjCy7EwXBjj/zdk//q5U4sX5CTuf1xyhwBVn3PR9nRzNg0W/5lHPFxX3Sdx9Abwp4sSumzuOMDWMDi9KfXNcPpSRtXLHo6C62RIeCjbtZIWrQBhmz9zbfjA+WzdEu8hMY1HNzecE=;
+X-UUID: e49db857a0f243ac81c8110829029f86-20201204
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <dongchun.zhu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1648836214; Fri, 04 Dec 2020 10:10:30 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs05n1.mediatek.inc
+ (172.21.101.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 4 Dec
+ 2020 10:10:28 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 4 Dec 2020 10:10:27 +0800
+Message-ID: <1607047828.4733.172.camel@mhfsdcap03>
+Subject: Re: [PATCH] media: i2c: fix an uninitialized error code
+From:   Dongchun Zhu <dongchun.zhu@mediatek.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, <linux-media@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <clang-built-linux@googlegroups.com>, <tfiga@google.com>,
+        <sj.huang@mediatek.com>
+Date:   Fri, 4 Dec 2020 10:10:28 +0800
+In-Reply-To: <20201203222956.1091606-1-arnd@kernel.org>
+References: <20201203222956.1091606-1-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <7b975d1a-a06c-4e14-067e-064afc200934@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 09:56:27AM +0800, Chao Yu wrote:
-> Hi Xiang,
-> 
-> On 2020/12/4 8:31, Gao Xiang wrote:
-> > Hi Chao,
-> > 
-> > On Thu, Dec 03, 2020 at 11:32:34AM -0800, Eric Biggers wrote:
-> > 
-> > ...
-> > 
-> > > 
-> > > What is the use case for storing the compression level on-disk?
-> > > 
-> > > Keep in mind that compression levels are an implementation detail; the exact
-> > > compressed data that is produced by a particular algorithm at a particular
-> > > compression level is *not* a stable interface.  It can change when the
-> > > compressor is updated, as long as the output continues to be compatible with the
-> > > decompressor.
-> > > 
-> > > So does compression level really belong in the on-disk format?
-> > > 
-> > 
-> > Curious about this, since f2fs compression uses 16k f2fs compress cluster
-> > by default (doesn't do sub-block compression by design as what btrfs did),
-> > so is there significant CR difference between lz4 and lz4hc on 16k
-> > configuration (I guess using zstd or lz4hc for 128k cluster like btrfs
-> > could make more sense), could you leave some CR numbers about these
-> > algorithms on typical datasets (enwik9, silisia.tar or else.) with 16k
-> > cluster size?
-> 
-> Yup, I can figure out some numbers later. :)
-> 
-> > 
-> > As you may noticed, lz4hc is much slower than lz4, so if it's used online,
-> > it's a good way to keep all CPUs busy (under writeback) with unprivileged
-> > users. I'm not sure if it does matter. (Ok, it'll give users more options
-> > at least, yet I'm not sure end users are quite understand what these
-> > algorithms really mean, I guess it spends more CPU time but without much
-> > more storage saving by the default 16k configuration.)
-> > 
-> > from https://github.com/lz4/lz4    Core i7-9700K CPU @ 4.9GHz
-> > Silesia Corpus
-> > 
-> > Compressor              Ratio   Compression     Decompression
-> > memcpy                  1.000   13700 MB/s      13700 MB/s
-> > Zstandard 1.4.0 -1      2.883   515 MB/s	1380 MB/s
-> > LZ4 HC -9 (v1.9.0)      2.721   41 MB/s         4900 MB/s
-> 
-> There is one solutions now, Daeho has submitted two patches:
-> 
-> f2fs: add compress_mode mount option
-> f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE
-> 
-> Which allows to specify all files in data partition be compressible, by default,
-> all files are written as non-compressed one, at free time of system, we can use
-> ioctl to reload and compress data for specific files.
-> 
-
-Yeah, my own premature suggestion is there are many compression options
-exist in f2fs compression, but end users are not compression experts.
-So it'd better to leave advantage options to users (or users might be
-confused or select wrong algorithm or make potential complaint...)
-
-Keep lz4hc dirty data under writeback could block writeback, make kswapd
-busy, and direct memory reclaim path, I guess that's why rare online
-compression chooses it. My own premature suggestion is that it'd better
-to show the CR or performance benefits in advance, and prevent unprivileged
-users from using high-level lz4hc algorithm (to avoid potential system attack.)
-either from mount options or ioctl.
-
-> > 
-> > Also a minor thing is lzo-rle, initially it was only used for in-memory
-> > anonymous pages and it won't be kept on-disk so that's fine. I'm not sure
-> > if lzo original author want to support it or not. It'd be better to get
-> 
-> 
-> Hmm.. that's a problem, as there may be existed potential users who are
-> using lzo-rle, remove lzo-rle support will cause compatibility issue...
-> 
-> IMO, the condition "f2fs may has persisted lzo-rle compress format data already"
-> may affect the decision of not supporting that algorithm from author.
-> 
-> > some opinion before keeping it on-disk.
-> 
-> Yes, I can try to ask... :)
-
-Yeah, it'd be better to ask the author first, or it may have to maintain
-a private lz4-rle folk...
-
-Thanks,
-Gao Xiang
-
-> 
-> Thanks,
-> 
-> > 
-> > Thanks,
-> > Gao Xiang
-> > 
-> > > - Eric
-> > > 
-> > > 
-> > > _______________________________________________
-> > > Linux-f2fs-devel mailing list
-> > > Linux-f2fs-devel@lists.sourceforge.net
-> > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> > 
-> > .
-> > 
-> 
+SGkgQXJuZCwNCg0KVGhhbmtzIGZvciB0aGUgcGF0Y2guDQoNCk9uIFRodSwgMjAyMC0xMi0wMyBh
+dCAyMzoyOSArMDEwMCwgQXJuZCBCZXJnbWFubiB3cm90ZToNCj4gRnJvbTogQXJuZCBCZXJnbWFu
+biA8YXJuZEBhcm5kYi5kZT4NCj4gDQo+IENsYW5nIHBvaW50cyBvdXQgdGhhdCB0aGUgZXJyb3Ig
+aGFuZGxpbmcgaW4gb3YwMmExMF9zX3N0cmVhbSgpIGlzDQo+IGJyb2tlbiwgYW5kIGp1c3QgcmV0
+dXJucyBhIHJhbmRvbSBlcnJvciBjb2RlOg0KPiANCj4gZHJpdmVycy9tZWRpYS9pMmMvb3YwMmEx
+MC5jOjUzNzo2OiB3YXJuaW5nOiB2YXJpYWJsZSAncmV0JyBpcyB1c2VkIHVuaW5pdGlhbGl6ZWQg
+d2hlbmV2ZXIgJ2lmJyBjb25kaXRpb24gaXMgdHJ1ZSBbLVdzb21ldGltZXMtdW5pbml0aWFsaXpl
+ZF0NCj4gICAgICAgICBpZiAob3YwMmExMC0+c3RyZWFtaW5nID09IG9uKQ0KPiAgICAgICAgICAg
+ICBefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4gZHJpdmVycy9tZWRpYS9pMmMvb3YwMmExMC5j
+OjU2ODo5OiBub3RlOiB1bmluaXRpYWxpemVkIHVzZSBvY2N1cnMgaGVyZQ0KPiAgICAgICAgIHJl
+dHVybiByZXQ7DQo+ICAgICAgICAgICAgICAgIF5+fg0KPiBkcml2ZXJzL21lZGlhL2kyYy9vdjAy
+YTEwLmM6NTM3OjI6IG5vdGU6IHJlbW92ZSB0aGUgJ2lmJyBpZiBpdHMgY29uZGl0aW9uIGlzIGFs
+d2F5cyBmYWxzZQ0KPiAgICAgICAgIGlmIChvdjAyYTEwLT5zdHJlYW1pbmcgPT0gb24pDQo+ICAg
+ICAgICAgXn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4gZHJpdmVycy9tZWRpYS9pMmMv
+b3YwMmExMC5jOjUzMzo5OiBub3RlOiBpbml0aWFsaXplIHRoZSB2YXJpYWJsZSAncmV0JyB0byBz
+aWxlbmNlIHRoaXMgd2FybmluZw0KPiAgICAgICAgIGludCByZXQ7DQo+IA0KPiBJIGFzc3VtZSB0
+aGF0IC1FQlVTWSBpcyB0aGUgaW50ZW5kZWQgZXJyb3IgY29kZSwgc28gdXNlIHRoYXQuDQo+IA0K
+PiBGaXhlczogOTE4MDdlZmJlOGVjICgibWVkaWE6IGkyYzogYWRkIE9WMDJBMTAgaW1hZ2Ugc2Vu
+c29yIGRyaXZlciIpDQo+IFNpZ25lZC1vZmYtYnk6IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIu
+ZGU+DQo+IC0tLQ0KPiAgZHJpdmVycy9tZWRpYS9pMmMvb3YwMmExMC5jIHwgNCArKystDQo+ICAx
+IGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9tZWRpYS9pMmMvb3YwMmExMC5jIGIvZHJpdmVycy9tZWRpYS9pMmMv
+b3YwMmExMC5jDQo+IGluZGV4IDM5MTcxODEzNmFkZS4uN2VlOWM5MDRkOWI1IDEwMDY0NA0KPiAt
+LS0gYS9kcml2ZXJzL21lZGlhL2kyYy9vdjAyYTEwLmMNCj4gKysrIGIvZHJpdmVycy9tZWRpYS9p
+MmMvb3YwMmExMC5jDQo+IEBAIC01MzQsOCArNTM0LDEwIEBAIHN0YXRpYyBpbnQgb3YwMmExMF9z
+X3N0cmVhbShzdHJ1Y3QgdjRsMl9zdWJkZXYgKnNkLCBpbnQgb24pDQo+ICANCj4gIAltdXRleF9s
+b2NrKCZvdjAyYTEwLT5tdXRleCk7DQo+ICANCj4gLQlpZiAob3YwMmExMC0+c3RyZWFtaW5nID09
+IG9uKQ0KPiArCWlmIChvdjAyYTEwLT5zdHJlYW1pbmcgPT0gb24pIHsNCj4gKwkJcmV0ID0gLUVC
+VVNZOw0KPiAgCQlnb3RvIHVubG9ja19hbmRfcmV0dXJuOw0KPiArCX0NCj4gIA0KPiAgCWlmIChv
+bikgew0KPiAgCQlyZXQgPSBwbV9ydW50aW1lX2dldF9zeW5jKCZjbGllbnQtPmRldik7DQoNCk9u
+bHkgaWYgc2Vuc29yIGZhaWxzIHRvIHN0cmVhbSBvbiwgcmV0IGNhbiByZXR1cm4gYSBuZWdhdGl2
+ZSBlcnJvciBjb2RlLg0KVGh1cyByZXQgYWJvdmUgbmVlZHMgdG8gYmUgaW5pdGlhbGl6ZWQgdG8g
+JzAnLg0KQWxzbyB5b3UgY291bGQgZml4IHRoZSBjbGFuZyBlcnJvciBsaWtlIHRoaXMuDQoNCnN0
+YXRpYyBpbnQgb3YwMmExMF9zX3N0cmVhbShzdHJ1Y3QgdjRsMl9zdWJkZXYgKnNkLCBpbnQgb24p
+DQp7DQoJc3RydWN0IG92MDJhMTAgKm92MDJhMTAgPSB0b19vdjAyYTEwKHNkKTsNCgkuLi4NCglp
+bnQgcmV0ID0gMDsNCg0KCS4uLg0KCWlmIChvdjAyYTEwLT5zdHJlYW1pbmcgPT0gb24pDQoJCWdv
+dG8gdW5sb2NrX2FuZF9yZXR1cm47DQoNCgkuLi4NCn0NCg0K
 
