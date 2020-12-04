@@ -2,126 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE7F2CEB74
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B906D2CEB78
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387981AbgLDJwe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Dec 2020 04:52:34 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:56713 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387601AbgLDJwe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:52:34 -0500
-Received: from mac-pro.holtmann.net (unknown [37.83.193.87])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 9A946CED11;
-        Fri,  4 Dec 2020 10:59:02 +0100 (CET)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: Re: [PATCH v1 1/5] Bluetooth: advmon offload MSFT add rssi support
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <CAJQfnxHDThaJ58iFSpyq4bLopeuATvd+4fOR2AAgbNaabNSMuQ@mail.gmail.com>
-Date:   Fri, 4 Dec 2020 10:51:47 +0100
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Yun-Hao Chung <howardchung@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <25116F72-CE7C-46B6-A83A-5D33E9142BF9@holtmann.org>
-References: <20201203102936.4049556-1-apusaka@google.com>
- <20201203182903.v1.1.I92d2e2a87419730d60136680cbe27636baf94b15@changeid>
- <20B6F2AD-1A60-4E3C-84C2-E3CB7294FABC@holtmann.org>
- <CAJQfnxHDThaJ58iFSpyq4bLopeuATvd+4fOR2AAgbNaabNSMuQ@mail.gmail.com>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
+        id S2387999AbgLDJwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:52:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387983AbgLDJws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 04:52:48 -0500
+Date:   Fri, 4 Dec 2020 10:52:02 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607075527;
+        bh=VBEU0/umszddH3l73gwxnFt6AiwKnUwdHry/s8NXBpo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VtM0Vc9JF05yTvT1EWnZp9K5SoE9Wnc5zB+HFTVrwV1X1zit+vBXEgu5NWc3A8fUQ
+         NjA9Rs3I9+tz6KWwGg6wlPf+/NsY4oUVSRAFJVCEITOxiEH9egeHmdoGFXgT37CEk8
+         3lMfvAf0kmTaVWk8dAkq2W6IK2UIe87eSXNj5zN2gJyf9eLckcHXT56pt81Wsma6K2
+         r0i72mJZQeay6TLviQsuQfvcapqTU+gdmXzX2avv5ioc+ZO7e9GoX551w02jSj7G26
+         NTB6tfPrXlUlgySqaEEB82aokgszjydUrZJPpzrIlqJIKR6B2HJsbl1Q0hSh2CR+a7
+         RQ0aorsHnjOyA==
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     "Jonathan Corbet" <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] scripts: get_feat.pl: make complete table more
+ coincise
+Message-ID: <20201204105202.3d5862a7@coco.lan>
+In-Reply-To: <47d1d76bf557716cb90d7382c31fe3d1ade65a2e.1607074458.git.mchehab+huawei@kernel.org>
+References: <7c82a766867f2813a1e5c7b982b5e952e50b6c5e.1607073967.git.mchehab+huawei@kernel.org>
+        <47d1d76bf557716cb90d7382c31fe3d1ade65a2e.1607074458.git.mchehab+huawei@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
+Em Fri,  4 Dec 2020 10:35:44 +0100
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
->>> MSFT needs rssi parameter for monitoring advertisement packet,
->>> therefore we should supply them from mgmt.
->>> 
->>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
->>> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
->>> Reviewed-by: Yun-Hao Chung <howardchung@google.com>
->> 
->> I don’t need any Reviewed-by if they are not catching an obvious user API breakage.
->> 
->>> ---
->>> 
->>> include/net/bluetooth/hci_core.h | 9 +++++++++
->>> include/net/bluetooth/mgmt.h     | 9 +++++++++
->>> net/bluetooth/mgmt.c             | 8 ++++++++
->>> 3 files changed, 26 insertions(+)
->>> 
->>> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
->>> index 9873e1c8cd16..42d446417817 100644
->>> --- a/include/net/bluetooth/hci_core.h
->>> +++ b/include/net/bluetooth/hci_core.h
->>> @@ -246,8 +246,17 @@ struct adv_pattern {
->>>      __u8 value[HCI_MAX_AD_LENGTH];
->>> };
->>> 
->>> +struct adv_rssi_thresholds {
->>> +     __s8 low_threshold;
->>> +     __s8 high_threshold;
->>> +     __u16 low_threshold_timeout;
->>> +     __u16 high_threshold_timeout;
->>> +     __u8 sampling_period;
->>> +};
->>> +
->>> struct adv_monitor {
->>>      struct list_head patterns;
->>> +     struct adv_rssi_thresholds rssi;
->>>      bool            active;
->>>      __u16           handle;
->>> };
->>> diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
->>> index d8367850e8cd..dc534837be0e 100644
->>> --- a/include/net/bluetooth/mgmt.h
->>> +++ b/include/net/bluetooth/mgmt.h
->>> @@ -763,9 +763,18 @@ struct mgmt_adv_pattern {
->>>      __u8 value[31];
->>> } __packed;
->>> 
->>> +struct mgmt_adv_rssi_thresholds {
->>> +     __s8 high_threshold;
->>> +     __le16 high_threshold_timeout;
->>> +     __s8 low_threshold;
->>> +     __le16 low_threshold_timeout;
->>> +     __u8 sampling_period;
->>> +} __packed;
->>> +
->>> #define MGMT_OP_ADD_ADV_PATTERNS_MONITOR      0x0052
->>> struct mgmt_cp_add_adv_patterns_monitor {
->>>      __u8 pattern_count;
->>> +     struct mgmt_adv_rssi_thresholds rssi;
->>>      struct mgmt_adv_pattern patterns[];
->>> } __packed;
->> 
->> This is something we can not do. It breaks an userspace facing API. Is the mgmt opcode 0x0052 in an already released kernel?
+> Currently, there are too many white spaces at the tables,
+> and the information is very sparsed on it.
 > 
-> Yes, the opcode does exist in an already released kernel.
+> Make the format a lot more compact.
 > 
-> The DBus method which accesses this API is put behind the experimental
-> flag, therefore we expect they are flexible enough to support changes.
-> Previously, we already had a discussion in an email thread with the
-> title "Offload RSSI tracking to controller", and the outcome supports
-> this change.
-> 
-> Here is an excerpt of the discussion.
+> Suggested-by: Jonathan Corbet <corbet@lwn.net>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-it doesn’t matter. This is fixed API now and so we can not just change it. The argument above is void. What matters if it is in already released kernel.
+...
 
-Regards
+> +		my @lines;
+> +		my $line = "";
+> +		foreach my $arch (sort {
+> +					($arch_table{$a} cmp $arch_table{$b}) or
+> +					("\L$a" cmp "\L$b")
+> +				       } keys %arch_table) {
 
-Marcel
+Actually, I have one doubt myself with the above sort.
+
+Right now, it places things on this order:
+
+	Not Compatible: ...
+	TODO: ...
+	ok: ...
+
+I'm wondering if it would it be better to place them at the reverse order,
+e. g.:
+
+	ok: ...
+	TODO: ...
+	Not Compatible: ...
+
+In other words, to output it like:
+
++---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
+|Feature              |Kconfig / Description                                                    |Status per architecture                                     |
++=====================+=========================================================================+============================================================+
+|batch-unmap-tlb-flush|``ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH``                                    |- **ok**: x86                                               |
+|                     |                                                                         |- **TODO**: alpha, arc, arm, arm64, csky, hexagon, ia64     |
+|                     |arch supports deferral of TLB flush until multiple pages are unmapped    |  mips, nds32, parisc, powerpc, riscv, s390, sh, sparc      |
+|                     |                                                                         |  xtensa                                                    |
+|                     |                                                                         |- **Not compatible**: c6x, h8300, m68k, microblaze, nios2   |
+|                     |                                                                         |  openrisc, um                                              |
++---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
+|ELF-ASLR             |``ARCH_HAS_ELF_RANDOMIZE``                                               |- **ok**: arm, arm64, mips, parisc, powerpc, s390, x86      |
+|                     |                                                                         |- **TODO**: alpha, arc, c6x, csky, h8300, hexagon, ia64     |
+|                     |arch randomizes the stack, heap and binary images of ELF binaries        |  m68k, microblaze, nds32, nios2, openrisc, riscv, sh       |
+|                     |                                                                         |  sparc, um, xtensa                                         |
++---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
+|huge-vmap            |``HAVE_ARCH_HUGE_VMAP``                                                  |- **ok**: arm64, powerpc, x86                               |
+|                     |                                                                         |- **TODO**: alpha, arc, arm, c6x, csky, h8300, hexagon      |
+|                     |arch supports the ioremap_pud_enabled() and ioremap_pmd_enabled() VM APIs|  ia64, m68k, microblaze, mips, nds32, nios2, openrisc      |
+|                     |                                                                         |  parisc, riscv, s390, sh, sparc, um, xtensa                |
++---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
+|ioremap_prot         |``HAVE_IOREMAP_PROT``                                                    |- **ok**: arc, mips, powerpc, s390, sh, x86                 |
+|                     |                                                                         |- **TODO**: alpha, arm, arm64, c6x, csky, h8300, hexagon    |
+|                     |arch has ioremap_prot()                                                  |  ia64, m68k, microblaze, nds32, nios2, openrisc, parisc    |
+|                     |                                                                         |  riscv, sparc, um, xtensa                                  |
++---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
+|PG_uncached          |``ARCH_USES_PG_UNCACHED``                                                |- **ok**: ia64, x86                                         |
+|                     |                                                                         |- **TODO**: alpha, arc, arm, arm64, c6x, csky, h8300        |
+|                     |arch supports the PG_uncached page flag                                  |  hexagon, m68k, microblaze, mips, nds32, nios2, openrisc   |
+|                     |                                                                         |  parisc, powerpc, riscv, s390, sh, sparc, um, xtensa       |
++---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
+|pte_special          |``ARCH_HAS_PTE_SPECIAL``                                                 |- **ok**: arc, arm, arm64, mips, powerpc, riscv, s390, sh   |
+|                     |                                                                         |  sparc, x86                                                |
+|                     |arch supports the pte_special()/pte_mkspecial() VM APIs                  |- **TODO**: alpha, c6x, csky, h8300, hexagon, ia64, m68k    |
+|                     |                                                                         |  microblaze, nds32, nios2, openrisc, parisc, um, xtensa    |
++---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
+|THP                  |``HAVE_ARCH_TRANSPARENT_HUGEPAGE``                                       |- **ok**: arc, arm, arm64, mips, powerpc, s390, sparc, x86  |
+|                     |                                                                         |- **TODO**: alpha, ia64, nds32, parisc, riscv               |
+|                     |arch supports transparent hugepages                                      |- **Not compatible**: c6x, csky, h8300, hexagon, m68k       |
+|                     |                                                                         |  microblaze, nios2, openrisc, sh, um, xtensa               |
++---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
+
+Changing the order is one line patch (see enclosed).
+
+If you think that reverting the order looks better, feel
+free to apply the enclosed patch, or fold it with the
+previous one.
+
+Thanks,
+Mauro
+
+[PATCH] script: get_feat: change the group by order
+
+Right now, arch compatibility is grouped by status at the
+alphabetical order from A to Z, and then from a to z, e. g:.
+
+	---
+	TODO
+	ok
+
+Revert the order, in order to print first the OK results,
+then TODO, and, finally, the not compatible ones.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+diff --git a/scripts/get_feat.pl b/scripts/get_feat.pl
+index 10bf23fbc9c5..3f73c8534059 100755
+--- a/scripts/get_feat.pl
++++ b/scripts/get_feat.pl
+@@ -397,7 +397,7 @@ sub output_matrix {
+ 		my @lines;
+ 		my $line = "";
+ 		foreach my $arch (sort {
+-					($arch_table{$a} cmp $arch_table{$b}) or
++					($arch_table{$b} cmp $arch_table{$a}) or
+ 					("\L$a" cmp "\L$b")
+ 				       } keys %arch_table) {
+ 
 
