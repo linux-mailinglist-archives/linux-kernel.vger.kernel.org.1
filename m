@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA0B2CED2A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:40:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E4B2CED2D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:40:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729906AbgLDLhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:37:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
+        id S1729971AbgLDLhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:37:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726851AbgLDLhk (ORCPT
+        with ESMTP id S1726031AbgLDLhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:37:40 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF866C061A55
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 03:36:21 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id g185so6728294wmf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 03:36:21 -0800 (PST)
+        Fri, 4 Dec 2020 06:37:45 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F7EC08E85E
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 03:36:22 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id g185so6728345wmf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 03:36:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vXUt9QR6W/2xypB9zqeID7fSJysj66ekgYEFFzk0u3s=;
-        b=M8VVpn2j0Mamn/J9XrTVaYx67YMPiKTCcqkORGZkkY2bPk4iBr7PVQQW13pMhqSEfb
-         A+3S8KjGCgOOKa/vbCMYBmO/jGdGQBjK502cJ5zsmmjnbLPUUSHZjdBbXfA+/rxhKBkg
-         AEtLmeyaz25uSLlhre7xQqu8pFIefO1fNpmQ4=
+        bh=Em/8NeYdIzugho+SO5PV0hSPwS01qcpVUL59QlZehwE=;
+        b=FA0Up1Q/OH+bmpxDC/uqJL/qEaa7qDtgdffIxChpU+o3rYAc10p7f+lGl4VkGWudxX
+         z4CHTUkHsB+/atpvlkLXLrjKc5jHuciOurEZYq5TpA9inCbpfOznypijwQNxoxQTk72m
+         67JqVKqE7x16SqlLIQucKu2Xq1+qrujqtHn9A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vXUt9QR6W/2xypB9zqeID7fSJysj66ekgYEFFzk0u3s=;
-        b=khNnY4wMmAjY9EW+PtGbRdopA4DS2m7XpggZrr3p1cfkoye3V2BBtIv0E93iaMENex
-         6DW+RPYcDyhWBmNwPelEwgjQJvMbqQN2eOaT1NfoamFHD9zgMoqbqrpYxmAKEtsd1q+7
-         rUF7QsMqaPyIZLKfNCtXxCXVvQLhZf/+fRZWzYRQCj517/3GwOVXjtI7iaj4IQ+9JrBq
-         GqEUzU6ISIBVN2GsNI/LbgVgVVZW4yicjKhK6lRgENlDQ42OnAF+cmosxS6Gbg7V6X6b
-         wXEkFLJtUZaLEYzfnwZTZQymDfu6sIeObZY8pdALQqHz27wu36/1inuAmctfaurOnfRO
-         9Oeg==
-X-Gm-Message-State: AOAM5332O3XuCwKZw2qXSwTPlNhfEBgw8KkosRseIu4UncACuf23cp/y
-        lEihZ9nEBhqvGw3tpliy7iIzaw==
-X-Google-Smtp-Source: ABdhPJye4B8dDFbmGY6ImaaUYrrR2Sy5uuk2eixv15LJmLNAfKjKJZizosdgZvxiAMQfc6I5y0CtnQ==
-X-Received: by 2002:a1c:3d86:: with SMTP id k128mr3629454wma.66.1607081780439;
-        Fri, 04 Dec 2020 03:36:20 -0800 (PST)
+        bh=Em/8NeYdIzugho+SO5PV0hSPwS01qcpVUL59QlZehwE=;
+        b=Y0O2jC16kzzKj0SI5HQuGRtUlFmtFLh7lo5ukbAjOZ0MJQwuGqfWY98j+qeDqdfXAN
+         ZWdvRWCDjxyupZ47MhVdCqSecZMAnn2jWOQ4vmPQSIncmX/mu1FlHdR5GCjG8vokFkSP
+         OR4dRZqi/nBUHuIOuV7zOkjgAigdnXcgpbBjFVaaRrWW59jCocAvuUPgJjw1JRy9AiC6
+         aUDdnvSCereR1xG6KLsAuYcQF6gT4VUG2xy/6xsItRNgQaIsZEC/yAYoooC/9KoX+7l/
+         8Idee1T627cma10oTGRVYAfdBp602+P9uzsbG8p1spJIIXoyPS8kockpG+UZHJJ8zMfi
+         oY9w==
+X-Gm-Message-State: AOAM5312MUpvsxLSZjBl60SVFIsFB5QEMseI9HTiHrmld98Pan6gmZaw
+        XUQg3N+BZcYXJeiCJaGwapikyw==
+X-Google-Smtp-Source: ABdhPJy70/eSEBKa8zd+XZDQu4MNFv7y/yAlyXw/uQWuX3y6m028oDwSHWK3SZmlHlRYXKfyiywnPA==
+X-Received: by 2002:a1c:4684:: with SMTP id t126mr3688952wma.165.1607081781503;
+        Fri, 04 Dec 2020 03:36:21 -0800 (PST)
 Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
-        by smtp.gmail.com with ESMTPSA id j6sm3202750wrq.38.2020.12.04.03.36.19
+        by smtp.gmail.com with ESMTPSA id j6sm3202750wrq.38.2020.12.04.03.36.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 03:36:19 -0800 (PST)
+        Fri, 04 Dec 2020 03:36:20 -0800 (PST)
 From:   Florent Revest <revest@chromium.org>
 X-Google-Original-From: Florent Revest <revest@google.com>
 To:     bpf@vger.kernel.org
 Cc:     viro@zeniv.linux.org.uk, davem@davemloft.net, kuba@kernel.org,
         ast@kernel.org, daniel@iogearbox.net, kafai@fb.com, yhs@fb.com,
         andrii@kernel.org, kpsingh@chromium.org, revest@google.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        KP Singh <kpsingh@google.com>
-Subject: [PATCH bpf-next v5 3/6] bpf: Expose bpf_sk_storage_* to iterator programs
-Date:   Fri,  4 Dec 2020 12:36:06 +0100
-Message-Id: <20201204113609.1850150-3-revest@google.com>
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH bpf-next v5 4/6] selftests/bpf: Add an iterator selftest for bpf_sk_storage_delete
+Date:   Fri,  4 Dec 2020 12:36:07 +0100
+Message-Id: <20201204113609.1850150-4-revest@google.com>
 X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 In-Reply-To: <20201204113609.1850150-1-revest@google.com>
 References: <20201204113609.1850150-1-revest@google.com>
@@ -65,31 +64,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Iterators are currently used to expose kernel information to userspace
-over fast procfs-like files but iterators could also be used to
-manipulate local storage. For example, the task_file iterator could be
-used to initialize a socket local storage with associations between
-processes and sockets or to selectively delete local storage values.
+The eBPF program iterates over all entries (well, only one) of a socket
+local storage map and deletes them all. The test makes sure that the
+entry is indeed deleted.
 
 Signed-off-by: Florent Revest <revest@google.com>
 Acked-by: Martin KaFai Lau <kafai@fb.com>
-Acked-by: KP Singh <kpsingh@google.com>
 ---
- net/core/bpf_sk_storage.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 64 +++++++++++++++++++
+ .../progs/bpf_iter_bpf_sk_storage_helpers.c   | 23 +++++++
+ 2 files changed, 87 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c
 
-diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index a32037daa933..4edd033e899c 100644
---- a/net/core/bpf_sk_storage.c
-+++ b/net/core/bpf_sk_storage.c
-@@ -394,6 +394,7 @@ static bool bpf_sk_storage_tracing_allowed(const struct bpf_prog *prog)
- 	 * use the bpf_sk_storage_(get|delete) helper.
- 	 */
- 	switch (prog->expected_attach_type) {
-+	case BPF_TRACE_ITER:
- 	case BPF_TRACE_RAW_TP:
- 		/* bpf_sk_storage has no trace point */
- 		return true;
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+index 448885b95eed..bb4a638f2e6f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+@@ -20,6 +20,7 @@
+ #include "bpf_iter_bpf_percpu_hash_map.skel.h"
+ #include "bpf_iter_bpf_array_map.skel.h"
+ #include "bpf_iter_bpf_percpu_array_map.skel.h"
++#include "bpf_iter_bpf_sk_storage_helpers.skel.h"
+ #include "bpf_iter_bpf_sk_storage_map.skel.h"
+ #include "bpf_iter_test_kern5.skel.h"
+ #include "bpf_iter_test_kern6.skel.h"
+@@ -913,6 +914,67 @@ static void test_bpf_percpu_array_map(void)
+ 	bpf_iter_bpf_percpu_array_map__destroy(skel);
+ }
+ 
++/* An iterator program deletes all local storage in a map. */
++static void test_bpf_sk_storage_delete(void)
++{
++	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
++	struct bpf_iter_bpf_sk_storage_helpers *skel;
++	union bpf_iter_link_info linfo;
++	int err, len, map_fd, iter_fd;
++	struct bpf_link *link;
++	int sock_fd = -1;
++	__u32 val = 42;
++	char buf[64];
++
++	skel = bpf_iter_bpf_sk_storage_helpers__open_and_load();
++	if (CHECK(!skel, "bpf_iter_bpf_sk_storage_helpers__open_and_load",
++		  "skeleton open_and_load failed\n"))
++		return;
++
++	map_fd = bpf_map__fd(skel->maps.sk_stg_map);
++
++	sock_fd = socket(AF_INET6, SOCK_STREAM, 0);
++	if (CHECK(sock_fd < 0, "socket", "errno: %d\n", errno))
++		goto out;
++	err = bpf_map_update_elem(map_fd, &sock_fd, &val, BPF_NOEXIST);
++	if (CHECK(err, "map_update", "map_update failed\n"))
++		goto out;
++
++	memset(&linfo, 0, sizeof(linfo));
++	linfo.map.map_fd = map_fd;
++	opts.link_info = &linfo;
++	opts.link_info_len = sizeof(linfo);
++	link = bpf_program__attach_iter(skel->progs.delete_bpf_sk_storage_map,
++					&opts);
++	if (CHECK(IS_ERR(link), "attach_iter", "attach_iter failed\n"))
++		goto out;
++
++	iter_fd = bpf_iter_create(bpf_link__fd(link));
++	if (CHECK(iter_fd < 0, "create_iter", "create_iter failed\n"))
++		goto free_link;
++
++	/* do some tests */
++	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
++		;
++	if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
++		goto close_iter;
++
++	/* test results */
++	err = bpf_map_lookup_elem(map_fd, &sock_fd, &val);
++	if (CHECK(!err || errno != ENOENT, "bpf_map_lookup_elem",
++		  "map value wasn't deleted (err=%d, errno=%d)\n", err, errno))
++		goto close_iter;
++
++close_iter:
++	close(iter_fd);
++free_link:
++	bpf_link__destroy(link);
++out:
++	if (sock_fd >= 0)
++		close(sock_fd);
++	bpf_iter_bpf_sk_storage_helpers__destroy(skel);
++}
++
+ static void test_bpf_sk_storage_map(void)
+ {
+ 	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
+@@ -1067,6 +1129,8 @@ void test_bpf_iter(void)
+ 		test_bpf_percpu_array_map();
+ 	if (test__start_subtest("bpf_sk_storage_map"))
+ 		test_bpf_sk_storage_map();
++	if (test__start_subtest("bpf_sk_storage_delete"))
++		test_bpf_sk_storage_delete();
+ 	if (test__start_subtest("rdonly-buf-out-of-bound"))
+ 		test_rdonly_buf_out_of_bound();
+ 	if (test__start_subtest("buf-neg-offset"))
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c
+new file mode 100644
+index 000000000000..01ff3235e413
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2020 Google LLC. */
++#include "bpf_iter.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++struct {
++	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, int);
++} sk_stg_map SEC(".maps");
++
++SEC("iter/bpf_sk_storage_map")
++int delete_bpf_sk_storage_map(struct bpf_iter__bpf_sk_storage_map *ctx)
++{
++	if (ctx->sk)
++		bpf_sk_storage_delete(&sk_stg_map, ctx->sk);
++
++	return 0;
++}
 -- 
 2.29.2.576.ga3fc446d84-goog
 
