@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C3A2CEFE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:42:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B94CE2CEFE2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:42:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730361AbgLDOkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730370AbgLDOkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 4 Dec 2020 09:40:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730352AbgLDOku (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:40:50 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1DAC061A52
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:40:10 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id z12so3190971pjn.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:40:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=QbGG+QSHQ3ZiuhAQdumnEcGwmaXAKMHyqeMSedOarG8=;
-        b=pCdeO8ca1BLD8/+3MrfyO1Oaf0o02KRsUH5zSuWitu5IAXiq09fT7hetTlPVAhu78m
-         UkAa+0hmWkUOcjGK6uS6M7wv9/yr5RTAUh8eoK294muZY44AXcWQAb2eAx7C+XxEbev4
-         B0Ris1Hf5ZpeC/bV/Yy4vHxqYsDiCFQqjwGCUDKYNFmsJKvvonzq9X0o9ZZZnMJHIYsj
-         Ifcz5vjSBevjTC4i0GRX6yE90mIhXMIZG8CiYhzJoEEyABVEVbDK1CT9ZkgQ5ADpSLUs
-         l4b7J8QeNCZyVVdPJ7xChghuZyEEcO73WEhovoanHmE+k5sJX+3DJkk8lyu5MR0zdYzj
-         bKig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=QbGG+QSHQ3ZiuhAQdumnEcGwmaXAKMHyqeMSedOarG8=;
-        b=qE5Zp9wtkHTBUo1jsnK1kQJZyAb23sW3MsWxnoL6urg0sr8OrVZVqiszvCnSm7te5A
-         Wt53egh1MuyjLIVo1GIfkCeOckhMliYKR6Ro22moa604cyOZMRO5bqegw5W7T6DAkqS8
-         EoTfFQ3B7Vk8Vsn9tGpH2AhlBiijrIE4GFqe8OUKigzVLwpFAGFK85fKaMpEtBWcC2SU
-         WEf1Q08bB9kdsZVgc8j8wEBPWS2hhA720ZV9R54lkNTtbWp2IZRbGD3mgkwtRCGvZtOd
-         QXgVKjWAvEYP8p0GInqroat+FongVgnMUqyUAIQ9YsWggIalkOtwTvT2gGJJf/AMT3n/
-         aKvQ==
-X-Gm-Message-State: AOAM533d7F9eUXcLZZVQTvTE4g2kUNKdVbsdn/YAFop2sFWfaezXh4Qp
-        nmqiN2+qeT1FWxxfCAlGFWSf8doBppgq4w==
-X-Google-Smtp-Source: ABdhPJwX7nzTsLtA7yQjhbEF6V6IBUFuFwSQNYLS1ZauHkXgYQ4viF1Zz/SNOraBkisdVNmarie8QA==
-X-Received: by 2002:a17:902:76c1:b029:da:2f5:ed5d with SMTP id j1-20020a17090276c1b02900da02f5ed5dmr4231470plt.25.1607092809768;
-        Fri, 04 Dec 2020 06:40:09 -0800 (PST)
-Received: from localhost.localdomain ([2402:3a80:43f:b9bb:d059:d26:c75b:b30a])
-        by smtp.googlemail.com with ESMTPSA id y69sm2435140pfg.75.2020.12.04.06.40.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 06:40:09 -0800 (PST)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH v6] checkpatch: add fix for non-standard signature - co-authored-by
-Date:   Fri,  4 Dec 2020 20:10:00 +0530
-Message-Id: <20201204144000.21734-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <a2c74693-93ae-cd5a-7836-4ffff643fc09@gmail.com>
-References: <a2c74693-93ae-cd5a-7836-4ffff643fc09@gmail.com>
+Received: from mail.kernel.org ([198.145.29.99]:56214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726438AbgLDOkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 09:40:51 -0500
+Date:   Fri, 4 Dec 2020 23:40:03 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607092810;
+        bh=uvtPoUqekE4ysrPkcwN2m2pvmLXmJsPsKTH0pCoQOwU=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I7lh3BQP018ZryVSybF2HF+vDP9xIgie2+3oUbLevvAPt1bI5uCSFT3O857/mw6tH
+         2dAaMkiSlJXFlsnh7E0zL6i1ElPKE7r97FFgtt6lG/FG7sgDmFmSvksH0gtqds8JXZ
+         euyKyTB+IFz5FZVtcc5dVttsZdsYwdKPCl9uNPPLPWjGb6fLqdwH+pLhxMwvIbUEUU
+         z1BaIEGceWAPgxjSoh8MfssdXWvYRWhotdB6/h+0AkWnbw/4Qhf4XxNZ+6czkvqrIK
+         4tpPwkUiWg/9BcaCRZXxvJjLDifRCK+bJJWSL3x6AuAEW5DzAaRTdAjKcR6ixo9jAi
+         klEnMtskQGb3w==
+From:   Keith Busch <kbusch@kernel.org>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     SelvaKumar S <selvakuma.s1@samsung.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>, "hch@lst.de" <hch@lst.de>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "selvajove@gmail.com" <selvajove@gmail.com>,
+        "nj.shetty@samsung.com" <nj.shetty@samsung.com>,
+        "joshi.k@samsung.com" <joshi.k@samsung.com>,
+        "javier.gonz@samsung.com" <javier.gonz@samsung.com>
+Subject: Re: [RFC PATCH v2 0/2] add simple copy support
+Message-ID: <20201204144003.GA8868@redsun51.ssa.fujisawa.hgst.com>
+References: <CGME20201204094719epcas5p23b3c41223897de3840f92ae3c229cda5@epcas5p2.samsung.com>
+ <20201204094659.12732-1-selvakuma.s1@samsung.com>
+ <CH2PR04MB6522F1188557C829285ED5E8E7F10@CH2PR04MB6522.namprd04.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CH2PR04MB6522F1188557C829285ED5E8E7F10@CH2PR04MB6522.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, checkpatch.pl warns us for BAD_SIGN_OFF on the usage of
-non-standard signatures.
+On Fri, Dec 04, 2020 at 11:25:12AM +0000, Damien Le Moal wrote:
+> On 2020/12/04 20:02, SelvaKumar S wrote:
+> > This patchset tries to add support for TP4065a ("Simple Copy Command"),
+> > v2020.05.04 ("Ratified")
+> > 
+> > The Specification can be found in following link.
+> > https://nvmexpress.org/wp-content/uploads/NVM-Express-1.4-Ratified-TPs-1.zip
+> > 
+> > This is an RFC. Looking forward for any feedbacks or other alternate
+> > designs for plumbing simple copy to IO stack.
+> > 
+> > Simple copy command is a copy offloading operation and is  used to copy
+> > multiple contiguous ranges (source_ranges) of LBA's to a single destination
+> > LBA within the device reducing traffic between host and device.
+> > 
+> > This implementation accepts destination, no of sources and arrays of
+> > source ranges from application and attach it as payload to the bio and
+> > submits to the device.
+> > 
+> > Following limits are added to queue limits and are exposed in sysfs
+> > to userspace
+> > 	- *max_copy_sectors* limits the sum of all source_range length
+> > 	- *max_copy_nr_ranges* limits the number of source ranges
+> > 	- *max_copy_range_sectors* limit the maximum number of sectors
+> > 		that can constitute a single source range.
+> 
+> Same comment as before. I think this is a good start, but for this to be really
+> useful to users and kernel components alike, this really needs copy emulation
+> for drives that do not have a native copy feature, similarly to what write zeros
+> handling for instance: if the drive does not have a copy command (simple copy
+> for NVMe or XCOPY for scsi), then the block layer should issue read/write
+> commands to seamlessly execute the copy. Otherwise, this will only serve a small
+> niche for users and will not be optimal for FS and DM drivers that could be
+> simplified with a generic block layer copy functionality.
+> 
+> This is my 10 cents though, others may differ about this.
 
-An evaluation on v4.13..v5.8 showed that out of 539 warnings due to
-non-standard signatures, 43 are due to the use of 'Co-authored-by'
-tag, which may seem correct, but is not standard.
-
-The standard signature equivalent for 'Co-authored-by' is
-'Co-developed-by'.
-
-Provide a fix by suggesting users with this signature alternative and
-replacing.
-
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
-applies perfectly on the latest next-20201204 branch
-
-changes in v2: replace commit specific example with brief evaluation
-
-changes in v3: provide rationale to users for every signature tag suggestion;
-modify commit message describing arrival to conclusion in a structured way
-
-changes in v4: modify rationale for certain suggestions
-
-changes in v5: remove the tag deletion suggestions, ie "Generated-by" and "Celebrated-by"; rebase on last accepted changes; modify commit message
-
-changes in v6: reduce tag suggestions to only "Co-authored-by"; modify commit message accordingly; include complete version changelog
-
- scripts/checkpatch.pl | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 4a026926139f..fc036d545d2d 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2832,6 +2832,9 @@ sub process {
- 
- 			if ($sign_off !~ /$signature_tags/) {
- 				my $suggested_signature = find_standard_signature($sign_off);
-+				if ($sign_off =~ /co-authored-by:/i) {
-+					$suggested_signature = "Co-developed-by:";
-+				}
- 				if ($suggested_signature eq "") {
- 					WARN("BAD_SIGN_OFF",
- 					     "Non-standard signature: $sign_off\n" . $herecurr);
--- 
-2.17.1
-
+Yes, I agree that copy emulation support should be included with the
+hardware enabled solution.
