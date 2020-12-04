@@ -2,119 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654512CE6A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E8C2CE6AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727811AbgLDDkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 22:40:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50222 "EHLO
+        id S1727857AbgLDDoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 22:44:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726469AbgLDDks (ORCPT
+        with ESMTP id S1726469AbgLDDoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 22:40:48 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891B0C061A52
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 19:40:08 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id w16so2694444pga.9
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 19:40:08 -0800 (PST)
+        Thu, 3 Dec 2020 22:44:16 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A78CC061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 19:43:36 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id a9so5839451lfh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 19:43:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kP0kqVxYlLhlxakYbEWvE8pzB4Mj7yplj9IQfIP/Nqo=;
-        b=RXeno4fHs2hClfvDpmt84Kb0l0ffZ+tfCf4eGR4N2xKr5d+GEweCV3ikwwgvmK8Jz8
-         7yRlfUm9ZgJHUw0G7xO4JpRTa6nHUnxHGOP3ecvxLWNCVn2qfP0+4sEXxg+TQ6dzvNdB
-         8fFJclIAPEb3EGx/lzzZi/6MYFK1BUfwM3r0BthCHtK3IOfFmB7QRDuVsNQ+2GSAaMLj
-         Fx7lToXjBVngkeA49IgqF5XW44cP2AB3Llrt2EDOfpZX1pB/6wcSb6Q/s5a06s8rxYkP
-         f6HLsRbClLzTOVfJPPeTaEpznXSGk9wCHNM+A1LjcwaYFE4EheH05Ug+dHysIlihP4qm
-         fqUw==
+         :cc:content-transfer-encoding;
+        bh=gWJppt1udYQQeW4uGML9hDSCvSJGKtR5Pb4awjBzTJU=;
+        b=OHeL8X1iRMBjDf9NetzGmz04p+DWn5SewE3USyr9SoLDIh+/sFp0OP6SoHCVWWCN3x
+         ag4ejFQHAZl6qgzphD6qz0IjKLddUxjw6Y5INYTIMmsWELd75BdVo3Ra5Do6dp+HC+kQ
+         hQZ1lrFhaMZvUbeijh45WWT1HYl6u5/cxtpqHpdyyDbYGUTQQM1cVdESjD9DaY+UcUJe
+         3BEzigJCAY/QjDcusWZtvHGWUfqs+LSB4cXSsKTZDgZ5msfB0mk3QJICyU4KsPJ9yZAo
+         WBVLnPhcou31Fi6hlVu3JSMLwqelcDfNOrB8LALFK1hFEbx5yKlX05Hw9umwwIaMqPDe
+         ipNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kP0kqVxYlLhlxakYbEWvE8pzB4Mj7yplj9IQfIP/Nqo=;
-        b=RQfRzQTEj/blHBkZzrrJ46wxL34ToiJoibeszXOEruq34OWiThutP4SqJq5AE9ud4o
-         Pm00lmCi6C+t2n5UgOK8l716oAPS9utLiVG5coQSbUZaS7FTuOcaH5QQ3OPpsg7IheLP
-         Uuw1IDkaLTVKJ/UIgl7xmQXkMdnuovqUi5XIaQudZa5nTZT/x+QzIOdOcBbiFpOIGvVf
-         c79H0YTruOWt+O+J/ZhYbE4aPxN8BH1L3obdnEmlYsM3XVPnaDlzSqxKY3kRP3imJsZB
-         3F1QElX+aBzzD6upKEEpgX4oc7eSLVJv+gVDDko0BKLBFGdxWGI03qutxPK9elSVo44w
-         uIHQ==
-X-Gm-Message-State: AOAM532PY2DwPK/34RAhkthHlHJCWHdoWabQXzMlY2msexCDRy0tTsy0
-        PlaJAscxsYeU3e4Yumo+2djRw1Lq0VDzjzmgRVeLkA==
-X-Google-Smtp-Source: ABdhPJynCEO+aYzaCWwl98Gj7aTZquZAjP6gvBEF+xIuWOhnCtjsbj71ZJ7LyQ2PQpmasXLQiRg6kelKrNEq9MwhbLk=
-X-Received: by 2002:a63:1203:: with SMTP id h3mr2402111pgl.273.1607053207913;
- Thu, 03 Dec 2020 19:40:07 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gWJppt1udYQQeW4uGML9hDSCvSJGKtR5Pb4awjBzTJU=;
+        b=UxFdnez3MyFIRnamMOOoccKIfbZkM8OtfNL5uJKdQb05rFDLt5j8MAoy9LNsJ/+8Tf
+         OnDBeHmrZT3v4DmcG3Vqk6BpswV9mhxwQ6s2dkQWK6JHms6vg8Mgezz5WfANwSqwwDQ8
+         DosgkxodEO9N3uD3pvVCa+kdpNwV9RRHeBBvTaFmEkDnyoh9o4APCG/cMdaxPj7PSABN
+         IBw38bKxxIQLTcJthgEqa5OBb14WUWpSF1LBpnFqoUr4/ZwUDGQvHzQIvC6h967hwRVu
+         13En/9tY0Lk5/RsOlPQRiHV4221oHtvU79Gf5dgUSXs6Qc0p45NZMPTmUSMWOeGuz4JW
+         q2Cg==
+X-Gm-Message-State: AOAM533cm+HW+zq3DY8l0SBpZ0nJ9ekpA5IAOSIlmK1OVhBgVF/c+g2d
+        MWzMjaQq12TNUgcJvAYuuJ9JNl1s9L8VsUbEfpA=
+X-Google-Smtp-Source: ABdhPJyoICtH1jPOqijPSZsG9CLRcNKMeQFZsKF/5yrs1eYz2Eb9dPPjHpUYM2VYDExFyu+Wdyr9OeNA2wQ18aNrjC0=
+X-Received: by 2002:a19:7dc4:: with SMTP id y187mr2514294lfc.326.1607053414500;
+ Thu, 03 Dec 2020 19:43:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20201130151838.11208-1-songmuchun@bytedance.com>
- <CAMZfGtWvLEytN5gBN+OqntrNXNd3eNRWrfnkeCozvARmpTNAXw@mail.gmail.com> <600fd7e2-70b4-810f-8d12-62cba80af80d@oracle.com>
-In-Reply-To: <600fd7e2-70b4-810f-8d12-62cba80af80d@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 4 Dec 2020 11:39:31 +0800
-Message-ID: <CAMZfGtX2mu1tyE_898mQeEpmP4Pd+rEKOHpYF=KN=5v4WExpig@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v7 00/15] Free some vmemmap pages of
- hugetlb page
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, dave.hansen@linux.intel.com,
-        hpa@zytor.com, x86@kernel.org, bp@alien8.de, mingo@redhat.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        pawan.kumar.gupta@linux.intel.com, mchehab+huawei@kernel.org,
-        paulmck@kernel.org, viro@zeniv.linux.org.uk,
-        Peter Zijlstra <peterz@infradead.org>, luto@kernel.org,
-        oneukum@suse.com, jroedel@suse.de,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        anshuman.khandual@arm.com, Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-doc@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201204005847.654074-1-daeho43@gmail.com> <X8msy1T8uqZ4Z/iR@sol.localdomain>
+In-Reply-To: <X8msy1T8uqZ4Z/iR@sol.localdomain>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Fri, 4 Dec 2020 12:43:23 +0900
+Message-ID: <CACOAw_wTFsfgLfrWKRoM1o_HQorJE-=2ztZftQTn+comcpmHxQ@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: fix race of pending_pages in decompression
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 7:49 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+STEP_VERITY is enabled by f2fs_need_verity() and the function is like below=
+.
+We already know the second condition (idx < DIV_ROUND_UP...) is
+satisfied when invoking f2fs_alloc_dic().
+
+static inline bool f2fs_need_verity(const struct inode *inode, pgoff_t idx)
+{
+        return fsverity_active(inode) &&
+               idx < DIV_ROUND_UP(inode->i_size, PAGE_SIZE);
+}
+
+2020=EB=85=84 12=EC=9B=94 4=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 12:28, =
+Eric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
 >
-> On 12/3/20 12:35 AM, Muchun Song wrote:
-> > On Mon, Nov 30, 2020 at 11:19 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> >>
-> >> Hi all,
-> >>
-> >> This patch series will free some vmemmap pages(struct page structures)
-> >> associated with each hugetlbpage when preallocated to save memory.
-> >
-> > Hi Mike,
-> >
-> > What's your opinion on this version?  Any comments or suggestions?
-> > And hoping you or more people review the series. Thank you very
-> > much.
+> On Fri, Dec 04, 2020 at 09:58:47AM +0900, Daeho Jeong wrote:
+> > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > index 87090da8693d..cdf72e153da0 100644
+> > --- a/fs/f2fs/compress.c
+> > +++ b/fs/f2fs/compress.c
+> > @@ -803,8 +803,6 @@ void f2fs_decompress_pages(struct bio *bio, struct =
+page *page, bool verity)
+> >       if (cops->destroy_decompress_ctx)
+> >               cops->destroy_decompress_ctx(dic);
+> >  out_free_dic:
+> > -     if (verity)
+> > -             atomic_set(&dic->pending_pages, dic->nr_cpages);
+> >       if (!verity)
+> >               f2fs_decompress_end_io(dic->rpages, dic->cluster_size,
+> >                                                               ret, fals=
+e);
+> > @@ -1498,6 +1496,8 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct c=
+ompress_ctx *cc)
+> >       dic->magic =3D F2FS_COMPRESSED_PAGE_MAGIC;
+> >       dic->inode =3D cc->inode;
+> >       atomic_set(&dic->pending_pages, cc->nr_cpages);
+> > +     if (fsverity_active(cc->inode))
+> > +             atomic_set(&dic->verity_pages, cc->nr_cpages);
+> >       dic->cluster_idx =3D cc->cluster_idx;
+> >       dic->cluster_size =3D cc->cluster_size;
+> >       dic->log_cluster_size =3D cc->log_cluster_size;
 >
-> Sorry Muchun, I have been busy with other things and have not looked at
-> this new version.  Should have some time soon.
-
-Thanks very much.
-
+> The check for fsverity_active() is wrong.  It looks like you need to know
+> whether the bio needs to go through the fs-verity data verification.  The
+> correct way to determine that is to check whether STEP_VERITY is enabled =
+in the
+> bio's bio_post_read_ctx.  It's set by f2fs_grab_read_bio() when needed.
 >
-> As previously mentioned, I feel qualified to review the hugetlb changes
-> and some other closely related changes.  However, this patch set is
-> touching quite a few areas and I do not feel qualified to make authoritative
-> statements about them all.  I too hope others will take a look.
-
-Agree. I also hope others can take a look at other modules(e.g.
-sparse-vmemmap, memory-hotplug). Thanks for everyone's efforts
-on this.
-
-> --
-> Mike Kravetz
-
-
-
--- 
-Yours,
-Muchun
+> - Eric
