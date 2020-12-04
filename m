@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD0E2CED6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C36C2CED6B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730065AbgLDLrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:47:52 -0500
-Received: from mga09.intel.com ([134.134.136.24]:23463 "EHLO mga09.intel.com"
+        id S1729965AbgLDLr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:47:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729971AbgLDLrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:47:51 -0500
-IronPort-SDR: z0wxT/YFD4Isl/H/t7CN07hlH2yT2HkAf2yiDnqDWUZ1BRXSydXNMwBGi75R2aMY/Ag7H3NDDa
- YRyplyJDkjpw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="173519530"
-X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="173519530"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:46:10 -0800
-IronPort-SDR: b/EZCUkSMIKhXp9sytwU2rgnnqY79FSByzTHVkslKxyrfy05FKPwO4H42c2Jne3p6e1VPC/su8
- cq4slRisNJ7Q==
-X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="331189433"
-Received: from spandruv-mobl.amr.corp.intel.com ([10.254.181.204])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:46:09 -0800
-Message-ID: <a921aecf97915bd7c618e99e8959f6bf60ea7f6d.camel@linux.intel.com>
-Subject: Re: add custom hinge sensor support
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Ye Xiang <xiang.ye@intel.com>, jikos@kernel.org, jic23@kernel.org
-Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 04 Dec 2020 03:46:08 -0800
-In-Reply-To: <20201203035352.13918-1-xiang.ye@intel.com>
-References: <20201203035352.13918-1-xiang.ye@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1727319AbgLDLrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 06:47:25 -0500
+Date:   Fri, 4 Dec 2020 12:48:01 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607082405;
+        bh=F+/ErHovTdtUsCMpIvEKrgPVJOpwVez3+Uw4pVqQnXM=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lCi+qOLQegcb1zS0cQxC6f3qalRxPBxOGNFLeqnQnpnhL8KrPTeDz11jk5YYAG4YW
+         ODrdlMvx89SV4f6XpOJUwGwjthd3ygdvOwVXN/TdFeG/yxZj1ATvi8gOlYXt7lO1iZ
+         DPPoLdfHnWsVA+fm38acp7krMijKmzrgSEtaDY+k=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     broonie@kernel.org, lgirdwood@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, jgg@nvidia.com,
+        Kiran Patil <kiran.patil@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] driver core: auxiliary bus: minor coding style tweaks
+Message-ID: <X8oh8SCN0D2aF08t@kroah.com>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <X8ogtmrm7tOzZo+N@kroah.com>
+ <X8og8xi3WkoYXet9@kroah.com>
+ <X8ohB1ks1NK7kPop@kroah.com>
+ <X8ohGE8IBKiafzka@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8ohGE8IBKiafzka@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-03 at 11:53 +0800, Ye Xiang wrote:
-> Here three separate iio devices are presented which presents angle
-> for
-> hinge, keyboard and screen.
-You are presenting one IIO device now with three channels.
+On Fri, Dec 04, 2020 at 12:44:24PM +0100, Greg KH wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> For some reason, the original aux bus patch had some really long lines
+> in a few places, probably due to it being a very long-lived patch in
+> development by many different people.  Fix that up so that the two files
+> all have the same length lines and function formatting styles.
+> 
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/base/Kconfig     |  2 +-
+>  drivers/base/auxiliary.c | 58 ++++++++++++++++++++++------------------
+>  2 files changed, 33 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
+> index 040be48ce046..ba52b2c40202 100644
+> --- a/drivers/base/Kconfig
+> +++ b/drivers/base/Kconfig
+> @@ -2,7 +2,7 @@
+>  menu "Generic Driver Options"
+>  
+>  config AUXILIARY_BUS
+> -	bool
+> +	tristate "aux bus!"
+>  
+>  config UEVENT_HELPER
+>  	bool "Support for uevent helper"
 
-> 
-> This driver works on devices with Intel integrated sensor hub, where
-> hinge sensor is presented using a custom sensor usage id.
-> 
-> Here the angle is presented in degrees, which is converted to
-> radians.
-> 
-> Changes since v2:
->   - use 1 iio device instead of 3 for hinge sensor.
->   - use indexed channel instead of modified channel and added channel
->     labels.
->   - remove 2,3 patch in last version, add a document patch to
-> describe the
->     hinge channels.
->   - hid-sensor-custom: use meaningful return value in 
->     get_known_custom_sensor_index and checked in call side.
->   - hid-sensor-ids.h: use HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(x)
-> to 
->     define custom sensor value.
-> 
-> Changes since v1:
->   - fixed errors reported by lkp
-> 
-> Ye Xiang (3):
->   HID: hid-sensor-custom: Add custom sensor iio support
->   iio: hid-sensors: Add hinge sensor driver
->   iio:Documentation: Add documentation for hinge sensor channels
-> 
->  Documentation/ABI/testing/sysfs-bus-iio       |  17 +
->  drivers/hid/hid-sensor-custom.c               | 181 ++++++++
->  .../hid-sensors/hid-sensor-attributes.c       |   2 +
->  drivers/iio/position/Kconfig                  |  16 +
->  drivers/iio/position/Makefile                 |   1 +
->  .../position/hid-sensor-custom-intel-hinge.c  | 393
-> ++++++++++++++++++
->  include/linux/hid-sensor-ids.h                |  14 +
->  7 files changed, 624 insertions(+)
->  create mode 100644 drivers/iio/position/hid-sensor-custom-intel-
-> hinge.c
-> 
+Argh, wrong version of this patch, this was added locally for me to test
+with, let me fix up and resend a v2 of this patch.
 
+thanks,
+
+greg k-h
