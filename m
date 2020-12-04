@@ -2,84 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFF22CE6B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4210E2CE6B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727727AbgLDDv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 22:51:27 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:20052 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727557AbgLDDv0 (ORCPT
+        id S1727857AbgLDDyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 22:54:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbgLDDyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 22:51:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607053865; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=2zXx42H2jlJHQujp0kTucgeVJDa3h6362hTqC0O1HPs=; b=UHvzSL26ItifxpkyVyFngtpZz/iyFbyX3p91/brHY8MoP+iXdRk5Mgvvoqclwepd/m70m+an
- om4wtUdJNhxg4OZLhnvlnV1HfYGq66f2aEXwolNVmdLeqZBwZW+0meR8uuzPi0Y30XlOF9d7
- 3o/p8fJqDDghMixWZwY7fRfVqbo=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5fc9b20efc7bcec11831bc80 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Dec 2020 03:50:38
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D0394C43462; Fri,  4 Dec 2020 03:50:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CAA8BC433CA;
-        Fri,  4 Dec 2020 03:50:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CAA8BC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v4 5/8] bus: mhi: core: Add support to stop or start
- channel data transfers
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, loic.poulain@linaro.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-References: <1607044997-19577-1-git-send-email-bbhatt@codeaurora.org>
- <1607044997-19577-6-git-send-email-bbhatt@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <b5a54ae4-c1d6-8fc5-8e3d-d20252a043c1@codeaurora.org>
-Date:   Thu, 3 Dec 2020 19:50:36 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 3 Dec 2020 22:54:10 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE28C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 19:53:29 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id z5so4393767iob.11
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 19:53:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K46J11OuhAH7Ds8aixOF5TU2H/Kjo5yHrmhtSRIp5TU=;
+        b=p0BGihhBa64eNmopWOvTN7ox4Ck1IVh2mFJsyp8lB1U1vZ4WdGaz6rcUpopFT9JLez
+         lYhANwAM+c66g9Os6Cr5SgXWXP9UnsvFd6O7lUKg8StYJIlPich5Qz3v2g6282sAdku/
+         C4KFE4YmHYNbEsaNqBCVjXPjlSbvJdTZu4dOA/5NFURw7FQbFKQDOs8mmOBkjLRx4idR
+         3zRSJQHHYpoEMaNBZZTTf38+3UHaDw98w4B98ISA0HVkpwOMR5WTXcbT9hnvyRXuM64O
+         GsKpcvx+jzU1rq72oOM/OLH1+HKehCkAnXDDjYmlNKLq/CU9/si8uSIBmYBokBNmNN1t
+         1kXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K46J11OuhAH7Ds8aixOF5TU2H/Kjo5yHrmhtSRIp5TU=;
+        b=cLiu0HltgfCGWMeT+iX1k0bBGY1KVSfu+GnHPFrTpUZaK13zOL/gSt2MObi5PPU2d0
+         aJq/Hnp5cG9Ver3/LQqsE0GsTApF/DMZiv8ycoTbk7HnLE2L505KL0a0Q0N+cA59q2B/
+         4PJm8BRgjcHmHan+/MDz9+bmGNkkVP7ZfmvmnDm4aN+1DRPt4ZNDMErnCDGgPtc1LRql
+         iyZcsCTgGdD13wlsttMoPCmMRjFVZ8gr8kICEHdzms/k18JXdflWnIvMMHlki1eUqw9E
+         O20Ny7vM+Err7nF+30E91zR251jBW+VbLs5cFbnEMRL454WpEZUj0lYt8A3bf45r44Yt
+         goqQ==
+X-Gm-Message-State: AOAM532mXL44zJ7y7i2FrIkcOSjw1kyUV+QaMuzWT0DqKXsGugXz6xLh
+        ALyH1YboEMAGglMCVNd/yQG+2AwDWXw=
+X-Google-Smtp-Source: ABdhPJykXXanjpHBCbmyiGm2JEVaEU8jlsqOBpQAQQyq/B36FBcHwgS+ru3hhjyd2ymyz6ZR5GUysQ==
+X-Received: by 2002:a02:ccca:: with SMTP id k10mr3490531jaq.100.1607054009282;
+        Thu, 03 Dec 2020 19:53:29 -0800 (PST)
+Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
+        by smtp.googlemail.com with ESMTPSA id o12sm671361ilj.55.2020.12.03.19.53.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 19:53:28 -0800 (PST)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     jbaron@akamai.com, Jim Cromie <jim.cromie@gmail.com>
+Subject: [RFC PATCH 0/2] drm: use dynamic_debug
+Date:   Thu,  3 Dec 2020 20:53:16 -0700
+Message-Id: <20201204035318.332419-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <1607044997-19577-6-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+hello gentle readers,
 
+These 2 rfc patches convert part of drm-world to use dynamic debug.
 
-On 12/3/20 5:23 PM, Bhaumik Bhatt wrote:
-> Some MHI client drivers may want to request a pause or halt of
-> data transfer activity on their channels. Support for this does
-> not exist and must be introduced, wherein the channel context is
-> not reset or cleared but only the STOP channel command is issued.
-> This would need to be paired with an API that allows resuming the
-> data transfer activity on channels by use of the START channel
-> command. Enable this using two new APIs, mhi_start_transfer() and
-> mhi_stop_transfer().
-> 
-> Signed-off-by: Bhaumik Bhatt<bbhatt@codeaurora.org>
+1st one addresses drm.debug category based logging.  If DYNAMIC_DEBUG
+is configured, then CONFIG_DRM_USE_DYNAMIC_DEBUG controls whether
+dynamic-debug is used to avoid runtime costs of drm_debug_enabled().
+We require CONFIG_JUMP_LABEL too, since we are selling its
+optimization.
 
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+This change adds many new callsites to /proc/dynamic_debug/control;
+~300 in drm, ~200 in drm_kms_helper, as well as ~1500 in i915 driver,
+and ~3200 in amdgpu.  So there are substantial implications here.
+
+2nd one is for i915, which I have in my laptop.  `grep pr_debug` found
+~90 callsites with a meaningful format-prefix-string, to demonstrate
+use of "format ^prefix" to control user categorized debugs.
+
+Jim Cromie (2):
+  drm: RFC add choice to use dynamic debug in drm-debug
+  i915: POC use dynamic_debug_exec_queries to control pr_debugs in gvt
+
+ drivers/gpu/drm/Kconfig            | 13 +++++
+ drivers/gpu/drm/drm_print.c        | 75 ++++++++++++++++++++++--
+ drivers/gpu/drm/i915/gvt/Makefile  |  1 +
+ drivers/gpu/drm/i915/i915_params.c | 74 ++++++++++++++++++++++++
+ include/drm/drm_print.h            | 92 ++++++++++++++++++++++--------
+ 5 files changed, 228 insertions(+), 27 deletions(-)
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.28.0
+
