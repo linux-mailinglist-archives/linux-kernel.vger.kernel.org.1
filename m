@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C952CE8AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E05AA2CE8AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728347AbgLDHgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 02:36:39 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9010 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727518AbgLDHgj (ORCPT
+        id S1728152AbgLDHgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 02:36:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727518AbgLDHgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 02:36:39 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CnPcx6ktLzhmMj;
-        Fri,  4 Dec 2020 15:35:29 +0800 (CST)
-Received: from [10.174.187.37] (10.174.187.37) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 4 Dec 2020 15:35:50 +0800
-Subject: Re: [PATCH v2 1/2] clocksource: arm_arch_timer: Use stable count
- reader in erratum sne
-To:     Marc Zyngier <maz@kernel.org>
-References: <20200818032814.15968-1-zhukeqian1@huawei.com>
- <20200818032814.15968-2-zhukeqian1@huawei.com>
- <c8e0506a7976deef0427a30b0d10e35b@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        <wanghaibin.wang@huawei.com>
-From:   zhukeqian <zhukeqian1@huawei.com>
-Message-ID: <e83c5aa4-3d1a-7647-dea6-4713606bacf8@huawei.com>
-Date:   Fri, 4 Dec 2020 15:35:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Fri, 4 Dec 2020 02:36:36 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8177C061A52
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 23:35:55 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id r5so4779480eda.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 23:35:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ib4z7ovnO/Is9x9bv4eZdlrrRMtAOfboZBD7JQtUG5M=;
+        b=MlznnxVBeS9Jeb9K6pxCGMSisJ5di5vo8rnZgccJEokQkubT+b5ELOaP/qYZPZYens
+         LTQTZ5qK5+rN7i7TrBiUt/aTlSX5Si22lwK89sloMRq0lkL5fRELUsL6cmnUB3ewrYzQ
+         1C9XmpiDtksVcCp4aPdPDUu7mqzrhfTMil4Ii3r3Z+W4Rch+qHSCIy5nHqdZZHzjfuFC
+         CouE9HwiB531iUdh3GBA/XBU2A5lxBYq8LwhDwqMK/fdnMIEGn+ShaX5yrUWSLlOXrdb
+         pcuY+emGUnm4SuFF1EGQYrkKyVUfjNb/nVosCF9na3545V2UELil7agJD0NNoLsVMpuy
+         +qqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ib4z7ovnO/Is9x9bv4eZdlrrRMtAOfboZBD7JQtUG5M=;
+        b=JEDOEO2513h9+blYem+6ZEE9vMNR7LZ4GF036v6/7atzjmyUY6am++vrFGarVPVarN
+         DarP0awopHGELzOBVd5Qk1XKUVkQOL8dzceh0ZmG2LaG5Q7DQmf16J6XzTK8uPGQTF6P
+         Y3ZQoqb0J0zTB2ppqqSAjUnHHVHEZ1aD994Hk4xTXa4pVrTv6Q1ga2abewf/tCzC6lmi
+         XsVmELy9zcbH/Y97XPxuaRAnqsJdVaBJPHCJhAQGBDobqT77iP7m2rv2kSrbUKkqTM/X
+         lLXD9OAJXIb9OXhlth/QuqK1WKgzRaMqwwOb7xzgcCbXOeU8JCk8Q8MBz1T5Et5WWfB6
+         J9bg==
+X-Gm-Message-State: AOAM532iEQGsTNYBPH2iNiBZntt0JG5vCVd/flNDiRcErCvqf1ySwDEz
+        43y1D8VBsDMSUdNsmesWkZPudMHglSquSCJWjRO5nAfzjfM+lw==
+X-Google-Smtp-Source: ABdhPJxnSZOAJkjodNrzG83gLmg0TXLoPO+mgtRWWPBjvZDtvRpGbpYSdnh6boOt1ZZAav86Y2rNmJuHLlFwPeiDAfk=
+X-Received: by 2002:a50:e00f:: with SMTP id e15mr6641049edl.210.1607067354664;
+ Thu, 03 Dec 2020 23:35:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <c8e0506a7976deef0427a30b0d10e35b@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.37]
-X-CFilter-Loop: Reflected
+References: <20201111054356.793390-1-ben.widawsky@intel.com>
+ <20201111054356.793390-6-ben.widawsky@intel.com> <8d332852-9c54-95e0-58c7-72939f347aa6@jonmasters.org>
+In-Reply-To: <8d332852-9c54-95e0-58c7-72939f347aa6@jonmasters.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 3 Dec 2020 23:35:51 -0800
+Message-ID: <CAPcyv4hYR8Ty2vq6kfG6_h6XRQPv2=-x4S0DgyzAykgx0TWzog@mail.gmail.com>
+Subject: Re: [RFC PATCH 5/9] cxl/mem: Find device capabilities
+To:     Jon Masters <jcm@jonmasters.org>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On Wed, Nov 25, 2020 at 10:06 PM Jon Masters <jcm@jonmasters.org> wrote:
+>
+> On 11/11/20 12:43 AM, Ben Widawsky wrote:
+>
+> > +             case CXL_CAPABILITIES_CAP_ID_SECONDARY_MAILBOX:
+> > +                     dev_dbg(&cxlm->pdev->dev,
+> > +                                "found UNSUPPORTED Secondary Mailbox capability\n");
+>
+> Per spec, the secondary mailbox is intended for use by platform
+> firmware, so Linux should never be using it anyway. Maybe that message
+> is slightly misleading?
+>
+> Jon.
+>
+> P.S. Related - I've severe doubts about the mailbox approach being
+> proposed by CXL and have begun to push back through the spec org.
 
-On 2020/12/3 22:58, Marc Zyngier wrote:
-> On 2020-08-18 04:28, Keqian Zhu wrote:
->> In commit 0ea415390cd3 ("clocksource/arm_arch_timer: Use arch_timer_read_counter
->> to access stable counters"), we separate stable and normal count reader to omit
->> unnecessary overhead on systems that have no timer erratum.
->>
->> However, in erratum_set_next_event_tval_generic(), count reader becomes normal
->> reader. This converts it to stable reader.
->>
->> Fixes: 0ea415390cd3 ("clocksource/arm_arch_timer: Use
->>        arch_timer_read_counter to access stable counters")
-> 
-> On a single line.
-Addressed. Thanks.
+The more Linux software voices the better. At the same time the spec
+is released so we're into xkcd territory [1] of what the driver will
+be expected to support for any future improvements.
 
-> 
->> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
->> ---
->>  drivers/clocksource/arm_arch_timer.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/clocksource/arm_arch_timer.c
->> b/drivers/clocksource/arm_arch_timer.c
->> index 6c3e841..777d38c 100644
->> --- a/drivers/clocksource/arm_arch_timer.c
->> +++ b/drivers/clocksource/arm_arch_timer.c
->> @@ -396,10 +396,10 @@ static void
->> erratum_set_next_event_tval_generic(const int access, unsigned long
->>      ctrl &= ~ARCH_TIMER_CTRL_IT_MASK;
->>
->>      if (access == ARCH_TIMER_PHYS_ACCESS) {
->> -        cval = evt + arch_counter_get_cntpct();
->> +        cval = evt + arch_counter_get_cntpct_stable();
->>          write_sysreg(cval, cntp_cval_el0);
->>      } else {
->> -        cval = evt + arch_counter_get_cntvct();
->> +        cval = evt + arch_counter_get_cntvct_stable();
->>          write_sysreg(cval, cntv_cval_el0);
->>      }
-> 
-> With that fixed:
-> 
-> Acked-by: Marc Zyngier <maz@kernel.org>
-> 
-> This should go via the clocksource tree.
-Added Cc to it's maintainers, thanks.
-
-> 
-> Thanks,
-> 
->         M.
-Cheers,
-Keqian
+[1]: https://xkcd.com/927/
