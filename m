@@ -2,143 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77CC2CF016
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E32732CF01D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728727AbgLDO4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:56:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725923AbgLDO4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:56:02 -0500
-X-Gm-Message-State: AOAM530fRn+jG/7r2aRwor6yNl0aC7xpKh32Lk+SxC1yClFqyW4T9d5Y
-        QXB84mYxxHZNm9tCj1VuO8vk8i8SHgKJ3SQohPk=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607093722;
-        bh=qGUZ+1dL4G4WyrQWUkYKJEc8DutOEdYhYFuupUNzlyk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=A1dP7j+7Iu93950O3626NFqdsC0LKQdwiXFyBli4wzqASDhZy9+IXMpZKsGuDoDY6
-         mdzabAv0QxoMk3lQd/Kwn15V3G6aUqUQ+a+nlhaaoEzJktP5+fAT/niQkLYKj9mvqF
-         y7QCZohJuHfZGZAPXwTpFp+D35yCRj5VljQR3TqjvqguAswaxNTHoz1EKBl6CqGe60
-         JjUi4oH8kYsK9kdntbO0cceE1FjdR3eKtkyF8AE3YvARoSANS6brW6ignZ9LPHNhtb
-         fcVAm05ZwauaDLTXgD0vn2kXvF5KzlSqE6QPtvt5aC2DcH3NfFnSokytxYGRGL0zeg
-         x3GricqBEeyug==
-X-Google-Smtp-Source: ABdhPJxosiEcP3n8aXD6Ztpyp2agBQbOVGOw9SFaLMj/+6lrSftY4Ms6n1Z/TqYNWm3jQWaDwMiFp86WazgYRXqrNXQ=
-X-Received: by 2002:a05:6808:9a9:: with SMTP id e9mr3493815oig.4.1607093721297;
- Fri, 04 Dec 2020 06:55:21 -0800 (PST)
+        id S2388246AbgLDO5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:57:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388173AbgLDO5Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 09:57:24 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B05C061A55
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:56:35 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1klCVY-0005Ei-KX; Fri, 04 Dec 2020 15:56:28 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1klCVV-00033t-He; Fri, 04 Dec 2020 15:56:25 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH v4 net-next 0/2] net: dsa: add stats64 support 
+Date:   Fri,  4 Dec 2020 15:56:22 +0100
+Message-Id: <20201204145624.11713-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201203222922.1067522-1-arnd@kernel.org> <CAPDyKFqtFYqc8i_fVzOUnuZGJjtwjVLqE-vebtOKuYJ-4PrDBg@mail.gmail.com>
- <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com> <CAPDyKFqS5touMvORyovCS-QQrHZg+0LGob9DtS1m61quvXYezw@mail.gmail.com>
-In-Reply-To: <CAPDyKFqS5touMvORyovCS-QQrHZg+0LGob9DtS1m61quvXYezw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 4 Dec 2020 15:55:05 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0PvxT3B+4WYmbarLPY_uHbKL_z5Jd7WU=PZ79QXjtwOw@mail.gmail.com>
-Message-ID: <CAK8P3a0PvxT3B+4WYmbarLPY_uHbKL_z5Jd7WU=PZ79QXjtwOw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mediatek: mark PM functions as __maybe_unused
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
-        yong mao <yong.mao@mediatek.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 3:38 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-.
-> >
-> > I don't see a lot of other instances of that yet, and it's fairly new.
-> > Maybe we should fix it before it gets propagated further.
-> >
-> > I would suggest we redefine pm_ptr like
-> >
-> > #define pm_ptr(_ptr) (IS_ENABLED(CONFIG_PM) ? (_ptr) : NULL)
->
-> Why is this better than the original definition?
+changes v4:
+- do no read MIBs withing stats64 call
+- change polling frequency to 0.3Hz
 
-It tells the compiler that the _ptr is referenced from here, so it does
-not warn about an unused symbol, but at the same time it still
-knows that it can discard it along with the functions referenced by
-it and should not emit any of that output.
+changes v3:
+- fix wrong multiplication
+- cancel port workers on remove
 
-> > and remove the __maybe_unused annotations on those that we
-> > already have. This also has the effect of dropping the unused
-> > data from the object, but without having to an an #ifdef or
-> > __maybe_unused.
->
-> I didn't quite get this (sorry it's Friday afternoon... getting
-> tired), can you perhaps give a concrete example?
+changes v2:
+- use stats64 instead of get_ethtool_stats
+- add worked to poll for the stats
 
-These work:
+Oleksij Rempel (2):
+  net: dsa: add optional stats64 support
+  net: dsa: qca: ar9331: export stats64
 
-a)
-static const struct dev_pm_ops __maybe_unused ops = { ... };
-...
-      .ops = &ops,
-...
+ drivers/net/dsa/qca/ar9331.c | 247 ++++++++++++++++++++++++++++++++++-
+ include/net/dsa.h            |   3 +
+ net/dsa/slave.c              |  14 +-
+ 3 files changed, 262 insertions(+), 2 deletions(-)
 
-b)
-static const struct dev_pm_ops ops = { ... };
-...
-      .ops = &ops,
-...
+-- 
+2.29.2
 
-c)
-#ifdef CONFIG_PM
-static const struct dev_pm_ops ops = { ... };
-#endif
-...
-#ifdef CONFIG_PM
-     .ops = ops,
-#endif
-...
-
-d)
-static const struct dev_pm_ops __maybe_unused ops = { ... };
-...
-#ifdef CONFIG_PM
-     .ops = ops,
-#endif
-...
-
-e)
-static const struct dev_pm_ops ops = { ... };
-...
-     .ops = IS_ENABLED(CONFIG_PM) ? ops : NULL,
-...
-
-But these do not work:
-
-f)
-#ifdef CONFIG_PM
-static const struct dev_pm_ops ops = { ... };
-#endif
-...
-/* error: missing declaration for ops */
-     .ops = IS_ENABLED(CONFIG_PM) ? ops : NULL,
-...
-
-g)
-static struct dev_pm_ops ops = { ... };
-...
-/* warning: unused variable */
-#ifndef CONFIG_PM
-     .ops = NULL,
-#else
-    .ops = ops,
-#endif
-...
-
-       Arnd
