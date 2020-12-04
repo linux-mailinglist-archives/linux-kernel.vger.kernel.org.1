@@ -2,152 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 834302CEF09
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 268F42CEF0F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730305AbgLDNwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 08:52:18 -0500
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:60581 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725920AbgLDNwR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 08:52:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1607089937; x=1638625937;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ck/uu08xuRYdD8AcD/ZXVJ8Zeup1t0ngXLoX1ZNCizk=;
-  b=1gJkdzheqKjV/JlXz5DZxZkyac1AaVR7/0AHCMKtYgeYJ0hwD5IUW4L8
-   efauTQRBdKWB1D2Y7KPlveFVfaHem7kFBA/mQ0ICZ2UphjzXwxLWj6vnl
-   wLXRxT18OCUeCKVtlBJpCzfsIhdX5NDS7th8XnI2CgMz/E45AszpGqxB1
-   iNzBKuejBJ6sGJykMNwqnTEkFL5Lt1gQinWWZxpNPJsuHdGfPiMqnaBws
-   xUNxVRLKOWX1HvF7VVgZuN7AXh0v8unQ16F/I5vO9mjTugsxW8f7tMna5
-   80T4I+9HaOgF42zitwmT1afKHnNBkwp0DMzBG1kmBF6plwa++Iony+s8V
-   g==;
-IronPort-SDR: 7KKCuq7zDvodWckmI6RAQQ9MrOeg96i4TLPR41wNH5Sm43aeNZoqG4hD8n/kUOUDwwH3uaU2Uu
- Bv5LjC5sUwTtNtAHhT5cATUsLrAQGjOUZx+7hRbSSaoLoD7QbpDp4YldyMzZR/nBStcWujgelX
- ne+WetyNeAkollwoq0NXpb0a/h2Jq/FpuhHW6brcFeJdz7HoofwI2FsYWjfnVzkbzxCFC7Njqr
- VsiosUM4udBwhxLMSoPZuT88NUhBj5DLnw5fuQPVOGDim5IHOFPsbBeInQxR7145SbEP1/JsbA
- VI8=
-X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="100924024"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Dec 2020 06:51:11 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 4 Dec 2020 06:51:11 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Fri, 4 Dec 2020 06:51:11 -0700
-Date:   Fri, 4 Dec 2020 14:51:10 +0100
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-CC:     Andrew Lunn <andrew@lunn.ch>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 3/4] phy: Add Sparx5 ethernet serdes PHY driver
-Message-ID: <20201204135110.p5kdyvhxmuplao2u@mchp-dev-shegelun>
-References: <20201203103015.3735373-1-steen.hegelund@microchip.com>
- <20201203103015.3735373-4-steen.hegelund@microchip.com>
- <20201203215253.GL2333853@lunn.ch>
- <20201203225232.GI1551@shell.armlinux.org.uk>
+        id S1730001AbgLDNyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 08:54:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729031AbgLDNyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 08:54:31 -0500
+X-Gm-Message-State: AOAM533mqCH+4AqZaPavrzWxvTx4HLFVo7lpopWAc6b3MXSt5cQ/MbPw
+        TQ5flk6rtiWWr8xuI8zwga++YrSQH3xHaK/Gxrk=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607090030;
+        bh=kAyij9+4RX0y0DZNsysqqpS1CMViaFGNvc5aF6KEUiQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fNBgfc8cplNLpBDM+NibHgduG0XDO8cs7v9dphCQ7WINUnYGSjM1eVnHfn3vUcwqp
+         soJLV/DyUpPVzgQ73ov0qNLMrNgb9csscWZ8J0x7TUhSWs7ShxJwa/Iv18wagSshot
+         DNJgdJLrS9QxdTj7mjtl9DruPxFIJOrdWhonVDyaq6Ak7PHc+bxJr2KBw/2yyWHhJt
+         w02nx+87/T4ClDvQE9b1dyvFHedLX+rwZ8k+CICSsiJfQVf3JobbVERK0jjtQ1xvOK
+         AXUUSuFPGuSgfJdq4Y+3JQNPGjuRieaEsVQNEsBjwXY+89cqoS/LGZv+yljyCoG1Bd
+         ZQRvCvPjYXDPw==
+X-Google-Smtp-Source: ABdhPJyEkwJM1qhY4HUoSSRjTOLYZ7XOJZyRjgIIVnOtMvJEUNP3hofxY3AfejJTYvYN3Qv/dNvHa5aCwDT6HzFYVE8=
+X-Received: by 2002:a9d:6317:: with SMTP id q23mr3706573otk.251.1607090029623;
+ Fri, 04 Dec 2020 05:53:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201203225232.GI1551@shell.armlinux.org.uk>
+References: <20201203225418.1477560-1-arnd@kernel.org> <1607046425.7284.17.camel@mhfsdcap03>
+In-Reply-To: <1607046425.7284.17.camel@mhfsdcap03>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 4 Dec 2020 14:53:33 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3tbXLD-0UBCkYX+s1AR=edbT085AcMmU8iPO1o-TMF=Q@mail.gmail.com>
+Message-ID: <CAK8P3a3tbXLD-0UBCkYX+s1AR=edbT085AcMmU8iPO1o-TMF=Q@mail.gmail.com>
+Subject: Re: [PATCH] phy: mediatek: allow compile-testing the hdmi phy
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        CK Hu <ck.hu@mediatek.com>, Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.12.2020 22:52, Russell King - ARM Linux admin wrote:
->EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->
->On Thu, Dec 03, 2020 at 10:52:53PM +0100, Andrew Lunn wrote:
->> > +/* map from SD25G28 interface width to configuration value */
->> > +static u8 sd25g28_get_iw_setting(const u8 interface_width)
->> > +{
->> > +   switch (interface_width) {
->> > +   case 10: return 0;
->> > +   case 16: return 1;
->> > +   case 32: return 3;
->> > +   case 40: return 4;
->> > +   case 64: return 5;
->> > +   default:
->> > +           pr_err("%s: Illegal value %d for interface width\n",
->> > +                  __func__, interface_width);
->>
->> Please make use of dev_err(phy->dev, so we know which PHY has
->> configuration problems.
->>
->> > +static int sparx5_serdes_validate(struct phy *phy, enum phy_mode mode,
->> > +                                   int submode,
->> > +                                   union phy_configure_opts *opts)
->> > +{
->> > +   struct sparx5_serdes_macro *macro = phy_get_drvdata(phy);
->> > +   struct sparx5_serdes_private *priv = macro->priv;
->> > +   u32 value, analog_sd;
->> > +
->> > +   if (mode != PHY_MODE_ETHERNET)
->> > +           return -EINVAL;
->> > +
->> > +   switch (submode) {
->> > +   case PHY_INTERFACE_MODE_1000BASEX:
->> > +   case PHY_INTERFACE_MODE_SGMII:
->> > +   case PHY_INTERFACE_MODE_QSGMII:
->> > +   case PHY_INTERFACE_MODE_10GBASER:
->> > +           break;
->> > +   default:
->> > +           return -EINVAL;
->> > +   }
->> > +   if (macro->serdestype == SPX5_SDT_6G) {
->> > +           value = sdx5_rd(priv, SD6G_LANE_LANE_DF(macro->stpidx));
->> > +           analog_sd = SD6G_LANE_LANE_DF_PMA2PCS_RXEI_FILTERED_GET(value);
->> > +   } else if (macro->serdestype == SPX5_SDT_10G) {
->> > +           value = sdx5_rd(priv, SD10G_LANE_LANE_DF(macro->stpidx));
->> > +           analog_sd = SD10G_LANE_LANE_DF_PMA2PCS_RXEI_FILTERED_GET(value);
->> > +   } else {
->> > +           value = sdx5_rd(priv, SD25G_LANE_LANE_DE(macro->stpidx));
->> > +           analog_sd = SD25G_LANE_LANE_DE_LN_PMA_RXEI_GET(value);
->> > +   }
->> > +   /* Link up is when analog_sd == 0 */
->> > +   return analog_sd;
->> > +}
->
->You still have not Cc'd me on your patches. Please can you either:
->
->1) use get_maintainer.pl to find out whom you should be sending
->   your patches to
->or
->2) include me in your cc for this patch set as phylink maintainer in
->   your patch set so I can review your use of phylink.
->
->Consider your patches NAK'd until you send them to me so that I can
->review them.
->
->Thanks.
+On Fri, Dec 4, 2020 at 2:47 AM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
 
-Hi Russell,
+> > diff --git a/drivers/phy/mediatek/Kconfig b/drivers/phy/mediatek/Kconfig
+> > index 65ed26e40c9f..29a85b2738f8 100644
+> > --- a/drivers/phy/mediatek/Kconfig
+> > +++ b/drivers/phy/mediatek/Kconfig
+> > @@ -40,7 +40,9 @@ config PHY_MTK_XSPHY
+> >
+> >  config PHY_MTK_HDMI
+> >       tristate "MediaTek HDMI-PHY Driver"
+> > -     depends on ARCH_MEDIATEK && OF
+> > +     depends on ARCH_MEDIATEK || COMPILE_TEST
+> > +     depends on COMMON_CLK
+> Seems no need add COMMON_CLK here
 
-I will CC you on the next version of this series.  In reality I was
-just asked by Vladimir Oltean to crosspost to netdev.  This is a
-series for the Generic PHY subsystem.
-Sorry about the confusion.
->
->--
->RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
->FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+My mistake, I had squashed two build fixes for the same driver but
+forgot to update the changelog with the other output. This is what
+happens without CONFIG_COMMON_CLK:
 
-BR
-Steen
+arm-linux-gnueabi-ld: drivers/phy/mediatek/phy-mtk-hdmi.o: in function
+`mtk_hdmi_phy_probe':
+phy-mtk-hdmi.c:(.text+0xd8): undefined reference to `__clk_get_name'
+arm-linux-gnueabi-ld: phy-mtk-hdmi.c:(.text+0x12c): undefined
+reference to `devm_clk_register'
+arm-linux-gnueabi-ld: phy-mtk-hdmi.c:(.text+0x250): undefined
+reference to `of_clk_add_provider'
+arm-linux-gnueabi-ld: phy-mtk-hdmi.c:(.text+0x298): undefined
+reference to `of_clk_src_simple_get'
 
----------------------------------------
-Steen Hegelund
-steen.hegelund@microchip.com
+I'll resend with that added in.
+
+       Arnd
