@@ -2,114 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368122CE568
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C853E2CE56D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgLDBvZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 20:51:25 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2330 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgLDBvY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:51:24 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4CnFyB1NRjz13Pqk;
-        Fri,  4 Dec 2020 09:49:54 +0800 (CST)
-Received: from dggpemm000002.china.huawei.com (7.185.36.174) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 4 Dec 2020 09:50:41 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggpemm000002.china.huawei.com (7.185.36.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Fri, 4 Dec 2020 09:50:41 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
- Fri, 4 Dec 2020 09:50:41 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     "liwei (CM)" <liwei213@huawei.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "will@kernel.org" <will@kernel.org>
-CC:     fengbaopeng <fengbaopeng2@hisilicon.com>,
-        "nsaenzjulienne@suse.de" <nsaenzjulienne@suse.de>,
-        "steve.capper@arm.com" <steve.capper@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        butao <butao@hisilicon.com>
-Subject: RE: [PATCH] arm64: mm: decrease the section size to reduce the memory
- reserved for the page map
-Thread-Topic: [PATCH] arm64: mm: decrease the section size to reduce the
- memory reserved for the page map
-Thread-Index: AQHWyd8Pm9rJc08RmUuZbQcVlySHKKnmKYSA
-Date:   Fri, 4 Dec 2020 01:50:40 +0000
-Message-ID: <731f9389df474a968b2799fa698821da@hisilicon.com>
-References: <20201204014443.43329-1-liwei213@huawei.com>
-In-Reply-To: <20201204014443.43329-1-liwei213@huawei.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726143AbgLDBzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:55:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725885AbgLDBzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 20:55:49 -0500
+Date:   Fri, 4 Dec 2020 03:55:03 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607046908;
+        bh=1EBAEgi/GdqMHwgkXccqcj/tzFjO4VDB3yBUOdqh4GA=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RekxbN+XyNXoMrFnx3fd9QHKhP2rcofkFcFwckWWIAIBqVVpoqGh7M+uuA/lwjTpO
+         G0ouTfgqL2EW5br5+A9hByk7ZkE6edKGSRiZm1FOTUzAEAstCyb9hvAyW3wTX4rCed
+         4KgQEI7PxnDvA6YnpH96cotwKURSkgtz2TH3nfLVsq5hCVMeeFEZSuOq7MNOC43B3x
+         k4NAgnUjwfiQobuDez3bu5l0+056C0fQK/fhun0uqxh4f80zNWe6zSmibUh8U5SoGt
+         uh0HcH9QmREQ1DYqUvEQdu2AlzO3o9MctktYbnzwaeENXnJ7glUA0NE1EqaFnQ4Uxv
+         hlFBw4XoDNghQ==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     linux-man <linux-man@vger.kernel.org>, linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sgx.7: New page with overview of Software Guard
+ eXtensions (SGX)
+Message-ID: <20201204015503.GA146985@kernel.org>
+References: <20201202071543.74866-1-jarkko@kernel.org>
+ <CAKgNAkhROLJMmfAUiDCQhW0LCck08sF8jnYVJhSircxA059wXg@mail.gmail.com>
+ <20201202171742.GA91954@kernel.org>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202171742.GA91954@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: liwei (CM)
-> Sent: Friday, December 4, 2020 2:45 PM
-> To: catalin.marinas@arm.com; rppt@linux.ibm.com; will@kernel.org; liwei (CM)
-> <liwei213@huawei.com>
-> Cc: fengbaopeng <fengbaopeng2@hisilicon.com>; nsaenzjulienne@suse.de;
-> steve.capper@arm.com; Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
-> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; butao
-> <butao@hisilicon.com>
-> Subject: [PATCH] arm64: mm: decrease the section size to reduce the memory
-> reserved for the page map
+On Wed, Dec 02, 2020 at 07:17:42PM +0200, Jarkko Sakkinen wrote:
+> On Wed, Dec 02, 2020 at 11:37:01AM +0100, Michael Kerrisk (man-pages) wrote:
+> > Hi Jarkko,
+> > 
+> > Thanks for the page. I'll have some more comments later, most likely.
+> > But to begin with, are there any other manual pages that should be
+> > listed in a SEE ALSO section for this manual page, and are there any
+> > pages in man-pages that you think should refer to this page in their
+> > SEE ALSO sections?
 > 
-> For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
-> do not free the reserved memory for the page map, decrease the section
-> size can reduce the waste of reserved memory.
+> Thanks for quick response.
 > 
-> Signed-off-by: Wei Li <liwei213@huawei.com>
-> Signed-off-by: Baopeng Feng <fengbaopeng2@hisilicon.com>
-> Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
-> ---
-
-Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
-
-When page size is 4K, for each 1GB memory, we need 16MB vmemmap;
-For each 128MB memory, we need 2MB vmemmap.
-
-So while we have memory hole like 928MB(1GB-64MB),if SECTION_SIZE_BITS
-is 30, we waste 15MB; if SECTION_SIZE_BITS is 27, we waste 1MB only.
-
->  arch/arm64/include/asm/sparsemem.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> SGX does not declare any syscalls but it does have an ioctl API and
+> a vDSO.
 > 
-> diff --git a/arch/arm64/include/asm/sparsemem.h
-> b/arch/arm64/include/asm/sparsemem.h
-> index 1f43fcc79738..8963bd3def28 100644
-> --- a/arch/arm64/include/asm/sparsemem.h
-> +++ b/arch/arm64/include/asm/sparsemem.h
-> @@ -7,7 +7,7 @@
-> 
->  #ifdef CONFIG_SPARSEMEM
->  #define MAX_PHYSMEM_BITS	CONFIG_ARM64_PA_BITS
-> -#define SECTION_SIZE_BITS	30
-> +#define SECTION_SIZE_BITS	27
->  #endif
-> 
->  #endif
-> --
-> 2.15.0
+> I think one thing that the man page is missing is SIGSEGV handling.
+> When user space directly invokes ENCLU[EENTER], then the exceptions
+> inside are recognized through SIGSEV. This should be probably added,
+> and then "SEE ALSO" should point out to sigaction().
 
-Thanks
-Barry
+Obviously I need to have references to mmap() and mprotect() too.
 
+Ignoring everything else related to this feature and simplify the
+concept, in SGX you build an enclave yet to be mapped memory, then
+mmap() it and possibly mprotect() it. When you build an enclave, you
+assign permissions to each page, and there's an invariant in the kernel
+implementation that mmap/mprotect() permissions are not allowed to
+surpass the intended permissions. The implementation is multi-process
+by nature, i.e. one process can build an enclave and other process can
+just map it (e.g. getting fd through fork or SCM_RIGHTS).
+
+Hmm... that would be a good paragraph for my man page (with editing of
+course) before any other details, when describing enclave construction
+:-)
+
+/Jarkko
