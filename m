@@ -2,163 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DEAD2CF52F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F08442CF538
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388147AbgLDTy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 14:54:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727693AbgLDTy3 (ORCPT
+        id S1730654AbgLDT7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 14:59:18 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:21234 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729459AbgLDT7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 14:54:29 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A12AC061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 11:53:49 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id f11so7457801oij.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 11:53:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uovmCUxUV2XC7RFIwwrup7x/dcZweDNtrR8W3IZoNxo=;
-        b=nA2GNzWPBT3QyDRifKe5iezCOKMjXHINbZrXYH7F1JT5LBsslp4/pGusqnMe7oEpao
-         5UFhjPUH2RIO2SeyIXjFopGsJkd0EAVycdDQsmenMCodb6lO9U5IS3oZ8YjlGynGZZuK
-         sw76IRSK3ZWOu33q0ScLHKC9GfbmA3GflBSR3LKA1BQQM5Qz0fHtguzu+tVLup5NlzTi
-         Bn5oge5x6GU2ysLt4yHaa8gv1JP1P8cZrFnE20dhbyIAX7ENw+cuy+wHrJ6tPN4DZWbY
-         f4FaF5UqNkyy6VKNhtu9Csp4JU4L8L8ZUYVRdHQ6oqE0D3sQ3fx796CzPo7jEazIF7S8
-         3OCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uovmCUxUV2XC7RFIwwrup7x/dcZweDNtrR8W3IZoNxo=;
-        b=ZQkPvEH62U7gdbq5SV+u+ItqtJyoKbnyE2B4h0lIlQXS5VBO2i/+X9fYqd5tomjv0P
-         ReQJf2VGxPaLpTHeBrukUr9ZPC3DScTJuQ4kVEMU77h3zO0qhK7siuAebLTo5+Skz93H
-         44kulvL5bHTuEQRG1e4rVuuMMahID0FcEOOvUDcZsLfJNFwmQxodIQiUwVv7PRdZ5XWO
-         U75Gfflep+Ov2ND0WfsrxQOgxUn8JpJ+yJ34OHCApow5L95ZpVquDCQdDROfHVep5tRi
-         PmXlP/Ztj6/RttA8YrHCOSWEQ1D9SLISHW+GrFdchl10Prc6+89y3pedba5k7YKSuuBp
-         /2tw==
-X-Gm-Message-State: AOAM530waKHUwdRaSDvE4PtHAJzcoCPrVqPTgTVbJU0gR+Lby0WW4aBT
-        YS1U31cDwBNvuBt2WxJ31kCKdFyhi+2NyIT4dAy/Cw==
-X-Google-Smtp-Source: ABdhPJxq86hrkdIyQHPvAu6M847wDbq10D41IpbgkVRN42F8ZK4o3jO2CXx/PsNsA7WK33Y3suogILK1DqrytjqcwZY=
-X-Received: by 2002:aca:448b:: with SMTP id r133mr2307367oia.121.1607111628147;
- Fri, 04 Dec 2020 11:53:48 -0800 (PST)
+        Fri, 4 Dec 2020 14:59:17 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4JnjPq015612;
+        Fri, 4 Dec 2020 11:58:16 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=cRkbfXc/ZuM971xXL+FiegGOvguS7QuLwmMH+Sezxj0=;
+ b=awGg7HHg9eHrNO4yI/Vhs9PPjeOxEO2hrpKJxxxClrWiOFoJYGTFMTBbWhONr1snRvct
+ 83xiScVxiFQp7A3ouaNh/tlCWy79aQNimBDGtCQDJDmR0em4GlgH4XV8M7cDWDywpEaW
+ 2XeRQrIjWfw9cp7iPjTDvLLdv9exr0jxGww= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 357quespyy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 04 Dec 2020 11:58:15 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 4 Dec 2020 11:58:14 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TlspojIKie+0JXB0+3+NZnag0Z4M8A/6cal+mLZzXDhannj6KLIniO/9v117+V892R/EX1m6vDO8yWCVtU5CnZOJyD5n7bQzUOkOnayT68ssgxC+VdZnL8FIkitRnR76zC9Zfk1z8I2+N/vrtWj4NQ/bC9Ihod+QTp2yYsk8n0Wp+xqLEX1cjiG8JnsIZJ4G+heH3U79TRww1cdozVwnSjJ9sisqC1OtUyzM1yYJoVmJShQ/DaTdejWIXACx+KTq8sZ2mjlx3d7OnK62Ztzb9K9K5eFXrQaz/a8eDChZqsu4MegdIMEALUHebQjRm6211Gi9wdf6jodtvVtB0G/CNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cRkbfXc/ZuM971xXL+FiegGOvguS7QuLwmMH+Sezxj0=;
+ b=FTMyauaBHHE4jcUudur56Zky2PpFmUQYkCQPE0auHSmlizZ/wnwYrvRFv+MCQDBnogTLyx1yWIhgU5ddzJX68X43S/58tt2ny9WhHksSVG9uEXuc/0hq/157NdOiXdob7yRGS7aA91rvFVSVB6BZsedF8VaGLaCGrgsMJy6shD19jhGQrRNidfadu9GH0TGeMzQkJYCfDOHHOrrYn+HRvJO/20y423vCUCuCi4wmsZhxfmUN+LX2dN9KC5ZCoGtCGIAHTOyMJ1dRJTULYX9dkQ2GGY80uH2RWR+ODGAVLRQ4SuGurll3oQsmnmCu6y+85QTw18P+7bFROu5EEO5PsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cRkbfXc/ZuM971xXL+FiegGOvguS7QuLwmMH+Sezxj0=;
+ b=fV+HXm+OuoCLT4gGMDI7nzHgkdSGJc13eWT+Zw/yBQH8HF6NVMG3ovSGz8g+syhk+LhtNvtgVz9YfTecBZONiAj/y+RmxnsWGuoxnWNfTB2EYFZgsJcKFsxc3vrgvn6We89RaYluqAzz2w5LsIi6m34TYWMqT3Ounqxxriddx8k=
+Authentication-Results: amazon.co.jp; dkim=none (message not signed)
+ header.d=none;amazon.co.jp; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2950.namprd15.prod.outlook.com (2603:10b6:a03:f6::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Fri, 4 Dec
+ 2020 19:58:13 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::2831:21bf:8060:a0b]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::2831:21bf:8060:a0b%7]) with mapi id 15.20.3632.021; Fri, 4 Dec 2020
+ 19:58:13 +0000
+Date:   Fri, 4 Dec 2020 11:58:07 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>,
+        <osa-contribution-log@amazon.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 bpf-next 09/11] bpf: Support
+ bpf_get_socket_cookie_sock() for BPF_PROG_TYPE_SK_REUSEPORT.
+Message-ID: <20201204195807.mnckuteadncd4spr@kafai-mbp.dhcp.thefacebook.com>
+References: <20201201144418.35045-1-kuniyu@amazon.co.jp>
+ <20201201144418.35045-10-kuniyu@amazon.co.jp>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201144418.35045-10-kuniyu@amazon.co.jp>
+X-Originating-IP: [2620:10d:c090:400::5:adde]
+X-ClientProxiedBy: MWHPR13CA0046.namprd13.prod.outlook.com
+ (2603:10b6:300:95::32) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:adde) by MWHPR13CA0046.namprd13.prod.outlook.com (2603:10b6:300:95::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Fri, 4 Dec 2020 19:58:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a4d641b6-b34b-491e-a33c-08d8988eeef0
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2950:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2950FE10B4872B67BE726287D5F10@BYAPR15MB2950.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RhQDy3LkI8LNyUsE9qrQ5HIxN/gOkmF6JjdkjSZf3Tb9z8Fyi4foiokBIFo9FqOm1fQnBAKAEwsdRXSEQiehqoeXmpWbCAKXTbC0SPmtE2ASPhBfoaQ3DjG4mvF+46IzjfuD6Tlf3rtucwoD4PXo7URxh0jSBvHqUO87s9JrVFrGjthO6PSPb3iMqdHRa4mXuuTz22j7wsU7sh0d5CAw6BTBgcOfWHgm/JGXmdJ8+4W3qdevvRqrBvtQ06mhLhW3Md/ONQc1N7XEx1+OWQY16FkrS/5tLBM5yabzFsADNSWuLWt4YyhJPWRtRWxMO4G6rj1LVTisVorDS61pVNy4Auvip8O0BwN3qDeT/7CxPv/ZtzcYd1xKCOMlrMefb/82nR5VsU2ootHnuIyoFFkfnw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(376002)(39860400002)(136003)(366004)(7696005)(83380400001)(6666004)(2906002)(478600001)(8676002)(52116002)(7416002)(8936002)(316002)(6506007)(6916009)(186003)(16526019)(54906003)(1076003)(86362001)(966005)(66556008)(66476007)(5660300002)(55016002)(66946007)(4326008)(9686003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?lyKD1ZkwUdzH6aafPf1oz/mQi70upzne3ZbCC2hj0S15PfT8kQPZQezHT7ID?=
+ =?us-ascii?Q?mOejD/qbnvDhjxGVq0FUD1c2UI0KRQPcEj0+vSh8m04sRWo6LFzvIyRQYoji?=
+ =?us-ascii?Q?btR4USEZWAJ/oAfxRBbmI+9Uz/s+Ee9Izu/XOrIefFJRhneGiDM9/5Cdpy7E?=
+ =?us-ascii?Q?wD4SmzhAIBHnzW1ARXIo7oe7pJ+I0B0BzaaOiQ38HJagxEkLTVs5TPl0sEbk?=
+ =?us-ascii?Q?cmwM6RA4yxFMsRpFRLuUAE3IxuMzE3LyfgxNR7AguVejcjB5SrUixhDvhS40?=
+ =?us-ascii?Q?7SKq5+kJNebt0J0VJMBtPhHh2t0m2fEPTZydEg1XLDnN5cTn/8iuVN22hEhO?=
+ =?us-ascii?Q?WiwVFyiVmK8yEg0m2JedBGQioLjOheqFSUhBMQSHaEIjKgizbsrZQ8Tuqtvx?=
+ =?us-ascii?Q?iSTLE4ygVdSb+NruQrrKJzbfhRV1fMg39jMIHcw0U8tjyXpYiqPOBhD2HHe5?=
+ =?us-ascii?Q?/h6FQxE5Pf8bsXXAlyBwmKIXJiRgOHgHdHX8BBMrf68byLBmZwYoxyieakiJ?=
+ =?us-ascii?Q?GH7TJeNs0if6jT7lWrf+Wmyjpu3MOR+6Tb5SGIKec/p3iPzjlTK0/TXX4P0b?=
+ =?us-ascii?Q?VbJwuSy+AkBd2eTdJFNTb26RT3wShz59q5/JjM0JZQlKP5H8GKbuIjEw4d7o?=
+ =?us-ascii?Q?7lbAZi8b7aqKWpQNg6iN+9Z/OU/qUEVCG8b2lYMf8uuBV9oOTwqy1q9P8kCj?=
+ =?us-ascii?Q?rAqwZQB7oHEEArtsSEENqMnjZWBcMwpZmA9zGi4I49yeGfvIWD3ysiObOdGB?=
+ =?us-ascii?Q?veta4Y6CfrwoJoolIpWxwW8ccs5vk54E9TYRoMNtNXDve/paqRsNcqKwXU4m?=
+ =?us-ascii?Q?Z1JmEnFR/83/uNUHbdr1+Lq9f0sFbOjlsQKUQ3UQMrjYpNrIgOkePrgnM19L?=
+ =?us-ascii?Q?OSIuvVgeTEnH+msDnIbX5iqmUIca8TXElakOhpM9k2FJ71EPbsgITkyu/Llu?=
+ =?us-ascii?Q?SoAu5m0tz5tmru9rqPCxdqPndSY5sIDvBIk8Fs/eCmiicjtf4AZ9qem5VnNi?=
+ =?us-ascii?Q?cbJz2L+w5HhEKFfsfue2qbFFIw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4d641b6-b34b-491e-a33c-08d8988eeef0
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 19:58:13.5650
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lHzaAgupYyVdp3J48f6J0lcPDHoW0qu86WK/mXIbUiZckzM9LXYBXJvjFOQ6vjss
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2950
+X-OriginatorOrg: fb.com
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <CA+G9fYsHo-9tmxCKGticDowF8e3d1RkcLamapOgMQqeP6OdEEg@mail.gmail.com>
-In-Reply-To: <CA+G9fYsHo-9tmxCKGticDowF8e3d1RkcLamapOgMQqeP6OdEEg@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 4 Dec 2020 20:53:36 +0100
-Message-ID: <CANpmjNPpOym1eHYQBK4TyGgsDA=WujRJeR3aMpZPa6Y7ahtgKA@mail.gmail.com>
-Subject: Re: BUG: KCSAN: data-race in tick_nohz_next_event / tick_nohz_stop_tick
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        lkft-triage@lists.linaro.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, fweisbec@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_09:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 spamscore=0
+ suspectscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040114
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 at 20:04, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> LKFT started testing KCSAN enabled kernel from the linux next tree.
-> Here we have found BUG: KCSAN: data-race in tick_nohz_next_event /
-> tick_nohz_stop_tick
+On Tue, Dec 01, 2020 at 11:44:16PM +0900, Kuniyuki Iwashima wrote:
+> We will call sock_reuseport.prog for socket migration in the next commit,
+> so the eBPF program has to know which listener is closing in order to
+> select the new listener.
+> 
+> Currently, we can get a unique ID for each listener in the userspace by
+> calling bpf_map_lookup_elem() for BPF_MAP_TYPE_REUSEPORT_SOCKARRAY map.
+> 
+> This patch makes the sk pointer available in sk_reuseport_md so that we can
+> get the ID by BPF_FUNC_get_socket_cookie() in the eBPF program.
+> 
+> Link: https://lore.kernel.org/netdev/20201119001154.kapwihc2plp4f7zc@kafai-mbp.dhcp.thefacebook.com/
+> Suggested-by: Martin KaFai Lau <kafai@fb.com>
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> ---
+>  include/uapi/linux/bpf.h       |  8 ++++++++
+>  net/core/filter.c              | 12 +++++++++++-
+>  tools/include/uapi/linux/bpf.h |  8 ++++++++
+>  3 files changed, 27 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index efe342bf3dbc..3e9b8bd42b4e 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1650,6 +1650,13 @@ union bpf_attr {
+>   * 		A 8-byte long non-decreasing number on success, or 0 if the
+>   * 		socket field is missing inside *skb*.
+>   *
+> + * u64 bpf_get_socket_cookie(struct bpf_sock *sk)
+> + * 	Description
+> + * 		Equivalent to bpf_get_socket_cookie() helper that accepts
+> + * 		*skb*, but gets socket from **struct bpf_sock** context.
+> + * 	Return
+> + * 		A 8-byte long non-decreasing number.
+> + *
+>   * u64 bpf_get_socket_cookie(struct bpf_sock_addr *ctx)
+>   * 	Description
+>   * 		Equivalent to bpf_get_socket_cookie() helper that accepts
+> @@ -4420,6 +4427,7 @@ struct sk_reuseport_md {
+>  	__u32 bind_inany;	/* Is sock bound to an INANY address? */
+>  	__u32 hash;		/* A hash of the packet 4 tuples */
+>  	__u8 migration;		/* Migration type */
+> +	__bpf_md_ptr(struct bpf_sock *, sk); /* current listening socket */
+>  };
+>  
+>  #define BPF_TAG_SIZE	8
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 0a0634787bb4..1059d31847ef 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4628,7 +4628,7 @@ static const struct bpf_func_proto bpf_get_socket_cookie_sock_proto = {
+>  	.func		= bpf_get_socket_cookie_sock,
+>  	.gpl_only	= false,
+>  	.ret_type	= RET_INTEGER,
+> -	.arg1_type	= ARG_PTR_TO_CTX,
+> +	.arg1_type	= ARG_PTR_TO_SOCKET,
+This will break existing bpf prog (BPF_PROG_TYPE_CGROUP_SOCK)
+using this proto.  A new proto is needed and there is
+an on-going patch doing this [0].
 
-Thank you for looking into KCSAN. Would it be possible to collect
-these reports in a moderation queue for now?
-
-I'm currently trying to work out a strategy on how to best proceed
-with all the data races in the kernel. We do know there are plenty. On
-syzbot's internal moderation queue, we're currently looking at >300 of
-them (some here:
-https://syzkaller.appspot.com/upstream?manager=ci2-upstream-kcsan-gce).
-Part of this strategy involves prioritizing certain concurrency bug
-classes. Let's define the following buckets for concurrency bugs:
-
-A. Data race, where failure due to current compilers is unlikely
-(supposedly "benign"); merely marking the accesses
-appropriately is sufficient. Finding a crash for these will
-require a miscompilation, but otherwise look "benign" at the
-C-language level.
-
-B. Race-condition bugs where the bug manifests as a data race,
-too -- simply marking things doesn't fix the problem. These
-are the types of bugs where a data race would point out a
-more severe issue.
-
-C. Race-condition bugs where the bug never manifests as a data
-race. An example of these might be 2 threads that acquire the
-necessary locks, yet some interleaving of them still results
-in a bug (e.g. because the logic inside the critical sections
-is buggy). These are harder to detect with KCSAN as-is, and
-require using ASSERT_EXCLUSIVE_ACCESS() or
-ASSERT_EXCLUSIVE_WRITER() in the right place. See
-https://lwn.net/Articles/816854/.
-
-One problem currently is that the kernel has quite a lot type-(A)
-reports if we run KCSAN, which makes it harder to identify bugs of type
-(B) and (C). My wish for the future is that we can get to a place, where
-the kernel has almost no unintentional (A) issues, so that we primarily
-find (B) and (C) bugs.
-
-The report below looks to be of type (A). Generally, the best strategy
-for resolving these is to send a patch, and not a report. However, be
-aware that sometimes it is really quite difficult to say if we're
-looking at a type (A) or (B) issue, in which case it may still be fair
-to send a report and briefly describe what you think is happening
-(because that'll increase the likelihood of getting a response). I
-recommend also reading "Developer/Maintainer data-race strategies" in
-https://lwn.net/Articles/816854/ -- specifically note "[...] you
-should not respond to KCSAN reports by mindlessly adding READ_ONCE(),
-data_race(), and WRITE_ONCE(). Instead, a patch addressing a KCSAN
-report must clearly identify the fix's approach and why that approach
-is appropriate."
-
-I recommend reading https://lwn.net/Articles/816850/ for more details.
-
-> This report is from an x86_64 machine clang-11 linux next 20201201.
-> Since we are running for the first time we do not call this regression.
->
-> [   47.811425] BUG: KCSAN: data-race in tick_nohz_next_event /
-> tick_nohz_stop_tick
-> [   47.818738]
-> [   47.820239] write to 0xffffffffa4cbe920 of 4 bytes by task 0 on cpu 2:
-> [   47.826766]  tick_nohz_stop_tick+0x8b/0x310
-> [   47.830951]  tick_nohz_idle_stop_tick+0xcb/0x170
-> [   47.835571]  do_idle+0x193/0x250
-> [   47.838804]  cpu_startup_entry+0x25/0x30
-> [   47.842728]  start_secondary+0xa0/0xb0
-> [   47.846482]  secondary_startup_64_no_verify+0xc2/0xcb
-> [   47.851531]
-> [   47.853034] read to 0xffffffffa4cbe920 of 4 bytes by task 0 on cpu 3:
-> [   47.859473]  tick_nohz_next_event+0x165/0x1e0
-> [   47.863831]  tick_nohz_get_sleep_length+0x94/0xd0
-> [   47.868539]  menu_select+0x250/0xac0
-> [   47.872116]  cpuidle_select+0x47/0x50
-> [   47.875781]  do_idle+0x17c/0x250
-> [   47.879015]  cpu_startup_entry+0x25/0x30
-> [   47.882942]  start_secondary+0xa0/0xb0
-> [   47.886694]  secondary_startup_64_no_verify+0xc2/0xcb
-> [   47.891743]
-> [   47.893234] Reported by Kernel Concurrency Sanitizer on:
-> [   47.898541] CPU: 3 PID: 0 Comm: swapper/3 Not tainted
-> 5.10.0-rc6-next-20201201 #2
-> [   47.906017] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> 2.2 05/23/2018
-
-This report should have line numbers, otherwise it's impossible to say
-which accesses are racing.
-
-[ For those curious, this is the same report on syzbot's moderation
-queue, with line numbers:
-https://syzkaller.appspot.com/bug?id=d835c53d1a5e27922fcd1fbefc926a74790156cb
-]
-
-Thanks,
--- Marco
+[0]: https://lore.kernel.org/bpf/20201203213330.1657666-1-revest@google.com/
