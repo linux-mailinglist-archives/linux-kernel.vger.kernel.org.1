@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B61F2CEAB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D33A72CEABC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:20:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729567AbgLDJUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:20:11 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8648 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728279AbgLDJUK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:20:10 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnRwN0GQKz15XR8;
-        Fri,  4 Dec 2020 17:19:00 +0800 (CST)
-Received: from [10.174.179.81] (10.174.179.81) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 4 Dec 2020 17:19:25 +0800
-Subject: Re: [PATCH] staging: greybus: audio: Add missing unlock in
- gbaudio_dapm_free_controls()
-To:     Johan Hovold <johan@kernel.org>,
-        Vaibhav Agarwal <vaibhav.sr@gmail.com>
-CC:     <elder@kernel.org>, <gregkh@linuxfoundation.org>,
-        <dan.carpenter@oracle.com>, <aibhav.sr@gmail.com>,
-        <greybus-dev@lists.linaro.org>, <devel@driverdev.osuosl.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201204021350.28182-1-wanghai38@huawei.com>
- <X8n2CL58pQ/077rQ@localhost>
-From:   "wanghai (M)" <wanghai38@huawei.com>
-Message-ID: <d95dac95-09d0-66bb-4f3b-5ffa154be174@huawei.com>
-Date:   Fri, 4 Dec 2020 17:19:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1729580AbgLDJUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:20:30 -0500
+Received: from mga14.intel.com ([192.55.52.115]:31264 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727518AbgLDJU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 04:20:29 -0500
+IronPort-SDR: sH59V9v+e6q5cPCnG1ZTpGmQ7p3AyooHWRrIqqyJMSLwgJFSqIMe9kuQay7NISKVFIb9NmuqUM
+ +HB0lkUgFC1A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="172569553"
+X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
+   d="scan'208";a="172569553"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 01:19:47 -0800
+IronPort-SDR: aFiaaPkZWWqyxh5clPDGED9VSPqi4LCqSepHW4MVnQMjcnc6V82VYRsUGsblGD/XX2/aHufqht
+ 3U1Oi9S9CG0A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
+   d="scan'208";a="366213115"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.50])
+  by fmsmga004.fm.intel.com with ESMTP; 04 Dec 2020 01:19:44 -0800
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mel Gorman <mgorman@suse.de>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>, linux-api@vger.kernel.org
+Subject: Re: [PATCH -V6 RESEND 1/3] numa balancing: Migrate on fault among multiple bound nodes
+References: <20201202084234.15797-1-ying.huang@intel.com>
+        <20201202084234.15797-2-ying.huang@intel.com>
+        <20201202114054.GV3306@suse.de>
+        <20201203102550.GK2414@hirez.programming.kicks-ass.net>
+Date:   Fri, 04 Dec 2020 17:19:43 +0800
+In-Reply-To: <20201203102550.GK2414@hirez.programming.kicks-ass.net> (Peter
+        Zijlstra's message of "Thu, 3 Dec 2020 11:25:50 +0100")
+Message-ID: <87zh2ulyhc.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <X8n2CL58pQ/077rQ@localhost>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.81]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Peter Zijlstra <peterz@infradead.org> writes:
 
-ÔÚ 2020/12/4 16:40, Johan Hovold Ð´µÀ:
-> On Fri, Dec 04, 2020 at 10:13:50AM +0800, Wang Hai wrote:
->> Add the missing unlock before return from function
->> gbaudio_dapm_free_controls() in the error handling case.
->>
->> Fixes: 510e340efe0c ("staging: greybus: audio: Add helper APIs for dynamic audio module")
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Wang Hai <wanghai38@huawei.com>
->> ---
->>   drivers/staging/greybus/audio_helper.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
->> index 237531ba60f3..293675dbea10 100644
->> --- a/drivers/staging/greybus/audio_helper.c
->> +++ b/drivers/staging/greybus/audio_helper.c
->> @@ -135,6 +135,7 @@ int gbaudio_dapm_free_controls(struct snd_soc_dapm_context *dapm,
->>   		if (!w) {
->>   			dev_err(dapm->dev, "%s: widget not found\n",
->>   				widget->name);
->> +			mutex_unlock(&dapm->card->dapm_mutex);
->>   			return -EINVAL;
->>   		}
->>   		widget++;
-> This superficially looks correct, but there seems to be another bug in
-> this function. It can be used free an array of widgets, but if one of
-> them isn't found we just leak the rest. Perhaps that return should
-> rather be "widget++; continue;".
+> On Wed, Dec 02, 2020 at 11:40:54AM +0000, Mel Gorman wrote:
+>> On Wed, Dec 02, 2020 at 04:42:32PM +0800, Huang Ying wrote:
+>> > Now, NUMA balancing can only optimize the page placement among the
+>> > NUMA nodes if the default memory policy is used.  Because the memory
+>> > policy specified explicitly should take precedence.  But this seems
+>> > too strict in some situations.  For example, on a system with 4 NUMA
+>> > nodes, if the memory of an application is bound to the node 0 and 1,
+>> > NUMA balancing can potentially migrate the pages between the node 0
+>> > and 1 to reduce cross-node accessing without breaking the explicit
+>> > memory binding policy.
+>> > 
+>> 
+>> Ok, I think this part is ok and while the test case is somewhat
+>> superficial, it at least demonstrated that the NUMA balancing overhead
+>> did not offset any potential benefit
+>> 
+>> Acked-by: Mel Gorman <mgorman@suse.de>
 >
-I think this is a good idea, should I send a v2 patch?
->
+> Who do we expect to merge this, me through tip/sched/core or akpm ?
+
+Hi, Peter,
+
+Per my understanding, this is NUMA balancing related, so could go
+through your tree.
+
+BTW: I have just sent -V7 with some small changes per Mel's latest
+comments.
+
+Hi, Andrew,
+
+Do you agree?
+
+Best Regards,
+Huang, Ying
