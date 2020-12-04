@@ -2,93 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E32A2CE757
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 06:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1533D2CE786
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 06:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbgLDFUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 00:20:33 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:45014 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgLDFUd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 00:20:33 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B45AE9h063448;
-        Fri, 4 Dec 2020 05:19:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=D3SVi5YfXLIU4troA0CDGC8dn3+fd5w4lAX5Yqvaf1o=;
- b=GMs1dMZJduuWlpw/xgAxV7ZiEIHlh/vDv1iVQhMFYDhsEhUoV2lD/XBflmYDSKgQktDC
- JExPkghD0rwj/OH0+xo/WEdpY3S0s1Krehp5r+enTj8POOJdLnIXWpy7zq9kIGslPYCH
- ftDrB23X4MYJ6SKC2HotYeKIMj09nh3Ag6TMQymI4TpChT17hOVf20wwNc9KCxEkCkjF
- vkzbs0OHb8nWH17VUeZrazmdD5w0dyxHPd1sLoUSZDTT2E7yKAalPv8BFiWK3XxInK4U
- S92wneqNfnNLydTJisolCBtr9wyVQIYsXrWXqoOMwxp91aEZj5CDSm286za03cKQLYiy ag== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 353c2b9h30-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 04 Dec 2020 05:19:44 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B45AESf078935;
-        Fri, 4 Dec 2020 05:19:44 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 3540f2ufdm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Dec 2020 05:19:44 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B45JgxH005798;
-        Fri, 4 Dec 2020 05:19:43 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 03 Dec 2020 21:19:42 -0800
-Date:   Fri, 4 Dec 2020 08:19:34 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH] x86/sgx: Return -EINVAL on a zero length buffer in
- sgx_ioc_enclave_add_pages()
-Message-ID: <20201204051934.GR2789@kadam>
-References: <20201203183527.139317-1-jarkko@kernel.org>
+        id S1727007AbgLDF1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 00:27:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725300AbgLDF1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 00:27:03 -0500
+From:   Andy Lutomirski <luto@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        X86 ML <x86@kernel.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Rik van Riel <riel@surriel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Jann Horn <jannh@google.com>, Andy Lutomirski <luto@kernel.org>
+Subject: [RFC v2 0/2] lazy mm refcounting
+Date:   Thu,  3 Dec 2020 21:26:15 -0800
+Message-Id: <cover.1607059162.git.luto@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203183527.139317-1-jarkko@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9824 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
- suspectscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012040029
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9824 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- clxscore=1011 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012040029
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 08:35:27PM +0200, Jarkko Sakkinen wrote:
-> The length documented as
-> 
->  * @length:     length of the data (multiple of the page size)
-> 
-> Fail with -EINVAL, when user gives a zero length buffer. Right now
-> 'ret' is returned as uninitialized.
-> 
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Link: https://lore.kernel.org/linux-sgx/X8ehQssnslm194ld@mwanda/ 
-> Fixes: c6d26d370767 ("x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES")
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+This is part of a larger series here, but the beginning bit is irrelevant
+to the current discussion:
 
-Acked-by: Dan Carpenter <dan.carpenter@oracle.com>
+https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?h=x86/mm&id=203d39d11562575fd8bd6a094d97a3a332d8b265
 
-regards,
-dan carpenter
+This is IMO a lot better than v1.  It's now almost entirely in generic
+code.  (It looks like it's 100% generic, but that's a lie -- the
+generic code currently that all possible lazy mm refs are in
+mm_cpumask(), and that's not true on all arches.  So, if we take my
+approach, we'll need to have a little arch hook to control this.)
+
+Here's how I think it fits with various arches:
+
+x86: On bare metal (i.e. paravirt flush unavailable), the loop won't do
+much.  The existing TLB shootdown when user tables are freed will
+empty mm_cpumask of everything but the calling CPU.  So x86 ends up
+pretty close to as good as we can get short of reworking mm_cpumask() itself.
+
+arm64: It needs the fixup above for correctness, but I think performance
+should be pretty good.  Compared to current kernels, we lose an mmgrab()
+and mmdrop() on each lazy transition, and we add a reasonably fast loop
+over all cpus on process exit.  Someone (probably me) needs to make
+sure we don't need some extra barriers.
+
+power: Similar to x86.
+
+s390x: Should be essentially the same as arm64.
+
+Other arches: I don't know.  Further research is required.
+
+What do you all think?
+
+Andy Lutomirski (2):
+  [NEEDS HELP] x86/mm: Handle unlazying membarrier core sync in the arch
+    code
+  [MOCKUP] sched/mm: Lightweight lazy mm refcounting
+
+ arch/x86/mm/tlb.c    |  17 +++++-
+ kernel/fork.c        |   4 ++
+ kernel/sched/core.c  | 134 +++++++++++++++++++++++++++++++++++++------
+ kernel/sched/sched.h |  11 +++-
+ 4 files changed, 145 insertions(+), 21 deletions(-)
+
+-- 
+2.28.0
 
