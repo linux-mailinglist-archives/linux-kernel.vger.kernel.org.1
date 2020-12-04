@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28EE2CE47B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1561D2CE483
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:38:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388205AbgLDAdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 19:33:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52153 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726478AbgLDAdE (ORCPT
+        id S1728407AbgLDAhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 19:37:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726285AbgLDAhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 19:33:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607041897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8mAp0zfGpgeyDdpWyEdaWC5DSXakMnn28Gue+5urM60=;
-        b=PTjLtGsUNAjvMDiWeiPHcu3O2JD/8iYgV2YbW5BGYFJd+yya2En2vswLvxocoHRLOBgcLi
-        hCcyS4wfnn+GapoPQFoTTuuaFTJZPtYZ7dXImMUk33UQE4+3n97dezwl5Vr7vCxISCTGCs
-        GVF1JxxR6/c2nwZwH3HH9MQZoVc8eLU=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-519-bi_NP-v3Nsm-a0D4CWs7jQ-1; Thu, 03 Dec 2020 19:31:35 -0500
-X-MC-Unique: bi_NP-v3Nsm-a0D4CWs7jQ-1
-Received: by mail-pl1-f197.google.com with SMTP id x11so2150204plo.19
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 16:31:35 -0800 (PST)
+        Thu, 3 Dec 2020 19:37:04 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52286C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 16:36:24 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id c79so2507800pfc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 16:36:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=u42CbjiqH6yH/u4ofLvYgcwvhaYpZ3AArTDQstrAzmY=;
+        b=wIaFO/wSzHzjZwn1K9BZkWRiMVTHUfLIky33xyclPtHbQNj4cUInEma62So9YDnJBD
+         4Ygg+MvKHE8OeBie7rddhxhxkGcjq6ncB+tPP9WqwkIt6QOtt79nu3AuehcVCjq7nBvo
+         aR7E1S9kdDStyl/fX+L1svgxyGuuZ3lbmvH2/TbBl8umw1ksQ0ZX1a/+Na9r8qDYQuNQ
+         6UNUjq5pZTzQx9pWPGuISyHb1iygcO0qla7HqRD4obXPmzLf5V7Jl0pCBN6CaGoppFKj
+         3mBaWXJ5/lQe7h54ABxPertLI88b1wq8hzkQfMWYIiDn7KDjztNkAFfK9F79EmT7Ed7H
+         JsPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8mAp0zfGpgeyDdpWyEdaWC5DSXakMnn28Gue+5urM60=;
-        b=uXzPyoxsvMtKuSIhf8L5ZmRIVsO4YRXniAaU8aerv6PHvVVOrF/DHQFxH0UjyBVZUl
-         w7BWBvythMf6ZRbj9N7RJV7A1v4JaQWX+/yztI2Cio1GeGe5hYq6u+ZsSMUEVhRWV/W/
-         cy4dyDFGiOm1MSFHyTW10fF852B8xvGx+2hNMyIbPh8feJsujYo+8Xk2Yy+sYqwTVPxF
-         krfQg4BWXQhHub5n3dywuA8NKsmCBSDSPV7GtHrQS6eNQLqnUDeymCh4dlre46ofdsCX
-         lHQGyna7HGoFrDtjrnnMfkDb0Tgj5jyQsGRvHAcCwYlDoTIdZuS4eJ07BpCYKp7XZw9y
-         w6Kg==
-X-Gm-Message-State: AOAM532rTJv+k44ittmwlVKI1cLGQUzq22A1IV4TX4MZ68e63Dp6ZMzq
-        YlY3Z0JuKJAvkib4nmU5Ynb/G2/6XW4ntuAeE1cYfFpG2ALnifvkZ0NdVLsMhTYBUun4wqJY6T+
-        Dslqsu5eGfty101NA8z+s5+Q0
-X-Received: by 2002:a17:90a:fcc:: with SMTP id 70mr1574187pjz.168.1607041894609;
-        Thu, 03 Dec 2020 16:31:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwVzK1aMZnIsdP2uBywNAqLlD6nz6l7chr6tH9+UsvJY25t+xk7F+gDLz78gw2UP2gnAZNkxQ==
-X-Received: by 2002:a17:90a:fcc:: with SMTP id 70mr1574176pjz.168.1607041894347;
-        Thu, 03 Dec 2020 16:31:34 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id u205sm2915866pfc.146.2020.12.03.16.31.30
+         :mime-version:content-disposition:in-reply-to;
+        bh=u42CbjiqH6yH/u4ofLvYgcwvhaYpZ3AArTDQstrAzmY=;
+        b=JbLzx5MHTOjKue9HczBZpbqiVjdu868PciQNDyxdYyfBgWH4b1VvdaCEPuS3Waq0Ig
+         1rCz2st/E7M3QfZUGefp2yZ2Q+6nZ6eefQCURP8QJFC/dPFfKTglmqQMIvFjB39s2uzw
+         smfeAW9qDrAoT8mHGs0m/ecpFfjfgFTM8DMb3kXjfVxuU97vMDBnFuvFbLj04hGc4gZW
+         qJId0B/dZ9oOsQOYuin5690RZvKpStk/Ixyfp+T335kgFYCEr7RjdaSnPC5W/X3ZlMGQ
+         UF+roKrqK98mdMbfBq2c6ikMNaeSUU4iQQ1cV7HAebNJ/8rGc9jkzKd/QPbPkL35NQjF
+         P4bQ==
+X-Gm-Message-State: AOAM53137B7RL7I4MGwJ7fqk/WGiZqAIeCe2jmmGl36pQ6F5CgyoHC5l
+        13Ab9ykbxaZ9LI2bbCtFmmRgQg==
+X-Google-Smtp-Source: ABdhPJxvoWOtHpgv1xEaceUoRj3awXWl1dkFM7Q9a7dGVnWw/wkMg5i5rqtQhMD8830KNmta/N5pDA==
+X-Received: by 2002:a63:d312:: with SMTP id b18mr5267980pgg.233.1607042183627;
+        Thu, 03 Dec 2020 16:36:23 -0800 (PST)
+Received: from google.com (h208-100-161-3.bendor.broadband.dynamic.tds.net. [208.100.161.3])
+        by smtp.gmail.com with ESMTPSA id k1sm2104233pgm.21.2020.12.03.16.36.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 16:31:33 -0800 (PST)
-Date:   Fri, 4 Dec 2020 08:31:19 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>, jaegeuk@kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v6] f2fs: compress: support compress level
-Message-ID: <20201204003119.GA1957051@xiangao.remote.csb>
-References: <20201203061715.60447-1-yuchao0@huawei.com>
- <X8k9UoUKcyThlJNU@gmail.com>
+        Thu, 03 Dec 2020 16:36:22 -0800 (PST)
+Date:   Thu, 3 Dec 2020 16:36:20 -0800
+From:   William Mcvicker <willmcvicker@google.com>
+To:     Jessica Yu <jeyu@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Saravana Kannan <saravanak@google.com>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 0/2] Adds support to capture module's SCM version
+Message-ID: <X8mEhIeYeMjZc/+7@google.com>
+References: <CAGETcx8unBFUHxM67VdOoaWRENGXYoc4qWq2Oir=2rUyJ7F5nA@mail.gmail.com>
+ <20201125010541.309848-1-willmcvicker@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X8k9UoUKcyThlJNU@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201125010541.309848-1-willmcvicker@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chao,
-
-On Thu, Dec 03, 2020 at 11:32:34AM -0800, Eric Biggers wrote:
-
-...
-
+On Wed, Nov 25, 2020 at 01:05:39AM +0000, Will McVicker wrote:
+> Hi All,
 > 
-> What is the use case for storing the compression level on-disk?
+> I have updated the patchset to:
 > 
-> Keep in mind that compression levels are an implementation detail; the exact
-> compressed data that is produced by a particular algorithm at a particular
-> compression level is *not* a stable interface.  It can change when the
-> compressor is updated, as long as the output continues to be compatible with the
-> decompressor.
+>  *) Include Documentation.
+>  *) Use a consistent output pattern for the SCM version.
 > 
-> So does compression level really belong in the on-disk format?
+> In my debugging, I found that the vermagic reported by modinfo can actually
+> vary based on how the module was loaded. For example, if you have a module in
+> the initramfs that is newer than the module on disk, then the initramfs module
+> will be loaded (not the one on disk) during boot. Then, when you run the
+> command:
 > 
+>   $ modinfo MODULENAME
+> 
+> The vermagic returned will actually be the vermagic of the module on disk and
+> not the one in the initramfs which was actually loaded. With that being said,
+> adding this scmversion attribute ensures that you can *always* get the correct
+> SCM version of the module that loaded.
+> 
+> Please take a look at the updated patch and provide any comments you find.
+> 
+> Thanks,
+> Will
+> 
+> Will McVicker (2):
+>   scripts/setlocalversion: allow running in a subdir
+>   modules: add scmversion field
+> 
+>  Documentation/ABI/stable/sysfs-module | 17 +++++++++++++++++
+>  include/linux/module.h                |  1 +
+>  kernel/module.c                       |  2 ++
+>  scripts/Makefile.modpost              | 20 ++++++++++++++++++++
+>  scripts/mod/modpost.c                 | 24 +++++++++++++++++++++++-
+>  scripts/setlocalversion               |  5 ++---
+>  6 files changed, 65 insertions(+), 4 deletions(-)
+> 
+> -- 
+> 2.29.2.454.gaff20da3a2-goog
+> 
+Hi Jessica, Masahiro, and Michal,
 
-Curious about this, since f2fs compression uses 16k f2fs compress cluster
-by default (doesn't do sub-block compression by design as what btrfs did),
-so is there significant CR difference between lz4 and lz4hc on 16k
-configuration (I guess using zstd or lz4hc for 128k cluster like btrfs
-could make more sense), could you leave some CR numbers about these
-algorithms on typical datasets (enwik9, silisia.tar or else.) with 16k
-cluster size?
-
-As you may noticed, lz4hc is much slower than lz4, so if it's used online,
-it's a good way to keep all CPUs busy (under writeback) with unprivileged
-users. I'm not sure if it does matter. (Ok, it'll give users more options
-at least, yet I'm not sure end users are quite understand what these
-algorithms really mean, I guess it spends more CPU time but without much
-more storage saving by the default 16k configuration.)
-
-from https://github.com/lz4/lz4    Core i7-9700K CPU @ 4.9GHz
-Silesia Corpus
-
-Compressor              Ratio   Compression     Decompression
-memcpy                  1.000   13700 MB/s      13700 MB/s
-Zstandard 1.4.0 -1      2.883   515 MB/s	1380 MB/s
-LZ4 HC -9 (v1.9.0)      2.721   41 MB/s         4900 MB/s
-
-Also a minor thing is lzo-rle, initially it was only used for in-memory
-anonymous pages and it won't be kept on-disk so that's fine. I'm not sure
-if lzo original author want to support it or not. It'd be better to get
-some opinion before keeping it on-disk.
+Friendly reminder :)
 
 Thanks,
-Gao Xiang
-
-> - Eric
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-
+Will
