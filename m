@@ -2,130 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48A92CE700
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 05:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5F52CE704
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 05:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727561AbgLDEYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 23:24:52 -0500
-Received: from pb-smtp21.pobox.com ([173.228.157.53]:61229 "EHLO
-        pb-smtp21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726038AbgLDEYw (ORCPT
+        id S1726485AbgLDEbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 23:31:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbgLDEbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 23:24:52 -0500
-Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id 8ED61111CA9;
-        Thu,  3 Dec 2020 23:24:10 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=3PN7+dhj56TpvZ/QEmMRDjeq+70=; b=m0is3n
-        lruKj+Mxrr/Ats9nNhNbId/4G3c7o7OhzbO4GO80amr33WkTNd3QewIw09HcRYqi
-        dmFrAXQ34iCyu4gBw/KKD1voM4ynH2ot8KF/kwVMuemR4jTnglXk0xMpbKqARAYb
-        onWn2VQsZehT0bTW3OQHSuNlwwiiHBEkKEzSk=
-Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id 87245111CA8;
-        Thu,  3 Dec 2020 23:24:10 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=wYsG55wCwVlnNuBZDyuyP9nA7lynkKBaXTgh1MoGBCI=; b=aFsxI2/INdj5cIUuXWogCLdJzLhU0oioyHZ+MFEWed4sdGZzUsq4RgR1P+ijrntXMY8fpDG845udCAnI6oQhf3pV0P0yXhn+OVnr01oaYm3G77W/9SnQvX80kjgEibf+lhGGRID1HQ6wQcrw1aSHqJUPSH5e9I5tptJ3AY8Bpms=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id 65654111CA7;
-        Thu,  3 Dec 2020 23:24:07 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 9844F2DA0639;
-        Thu,  3 Dec 2020 23:24:05 -0500 (EST)
-Date:   Thu, 3 Dec 2020 23:24:05 -0500 (EST)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Parshuram Thombare <pthombar@cadence.com>
-cc:     alexandre.belloni@bootlin.com, slongerbeam@gmail.com,
-        vitor.soares@synopsys.com, praneeth@ti.com, mparab@cadence.com,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 2/7] i3c: master: use i3c_master_register only for
- main master
-In-Reply-To: <1606717066-3785-1-git-send-email-pthombar@cadence.com>
-Message-ID: <2s3n7419-1nr9-8885-882o-7qrsos6qq6q@syhkavp.arg>
-References: <1606716983-3645-1-git-send-email-pthombar@cadence.com> <1606717066-3785-1-git-send-email-pthombar@cadence.com>
+        Thu, 3 Dec 2020 23:31:55 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40068C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 20:31:15 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id r18so5131176ljc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 20:31:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ktrYpX+PX9gYP19cphCNlBkQ//YDNX4xO30NBDFiHic=;
+        b=G+K4k+QRVIcqBpiniR98E2i04SzytSueXbyUbePP/tzHYCXScQCtfOpD3FDqFJIiNa
+         PaoWl/uOeCcNnk0pzfJvb3Gp9mILali+q4Od8QR+b4sPnbNOfFY03zgZWy8UN04Ll8Gs
+         7kAoYZcrP7ADjMszw1JNB8nmnPbO7MXNqXanNDVaN3QGHseaeVPnPu0d8070o3xxLA0B
+         Ekf8dIiwINEAir7R6QWCPpPvI19pXTfaCOLC1OmUWASv6vUBTBZ6JoitLkgObFdHYx5u
+         NHeNrOm/d9nyXA3+CY2Q4cw/AG4FaDj0Cwt8kT2wt79a+Dd/ZQZFSqlgTzWMEVZTn1Nm
+         7Rlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ktrYpX+PX9gYP19cphCNlBkQ//YDNX4xO30NBDFiHic=;
+        b=KOO8nQJXRORGJzOB5RC+fockMVfnshaNBG6sS2vqhSqrgisuwEwnVG5KUXmn0UiKM4
+         +PvERZxv6RKN31z9KEfJNyqJ4xbqT1oaIEfgtnihheJBGo9MEoR+eglcIohA608maLWx
+         KLP4xIwTPP4KpXiua97Jm3/OtjamB86WhLAwOBoAsukqK7VQ8nO/sForvuQr+F1s3Q+U
+         n37236aKyl+TXQCIgeq5J1O+32fxVyeE8awD+Yl3CwqC6vlNhF79c0J2lXkzvlJWSMXx
+         0TSWSiZODeuno9vQww8mKGZK169j/k/ExWvVlTmsQp0dQXXbaf+S3LS6iqYnLoN1t4Yc
+         SYzw==
+X-Gm-Message-State: AOAM533Sje37BaQRapkbU4CkJP11eke90Trxgo9/IYmfNBTNLp58Hz4r
+        ypwqB74MUVIfO30s2MTjDz1FMrn1zycXOGcyH0M=
+X-Google-Smtp-Source: ABdhPJw0FeImudjdeH5qfoDpOQfWxMjQ4PsUd97gtFUlbztvcwa8aphO0i7QnrxdlIge7kWnZlhCFnApVq4xoHTNbw8=
+X-Received: by 2002:a2e:9654:: with SMTP id z20mr2505992ljh.335.1607056273762;
+ Thu, 03 Dec 2020 20:31:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: 8CB4D5B0-35E8-11EB-87AA-D609E328BF65-78420484!pb-smtp21.pobox.com
+References: <20201204005847.654074-1-daeho43@gmail.com> <X8msy1T8uqZ4Z/iR@sol.localdomain>
+ <CACOAw_wTFsfgLfrWKRoM1o_HQorJE-=2ztZftQTn+comcpmHxQ@mail.gmail.com> <X8m0qbd7rvQyiwOt@sol.localdomain>
+In-Reply-To: <X8m0qbd7rvQyiwOt@sol.localdomain>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Fri, 4 Dec 2020 13:31:02 +0900
+Message-ID: <CACOAw_y2HRE8CDk-HAjA6w_HzGJpRpivPY5zKRMC4_SNYTnTGg@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: fix race of pending_pages in decompression
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Nov 2020, Parshuram Thombare wrote:
+> Are you sure?  I thought that compression (and encryption) apply to the whole
+> file, including any Merkle tree blocks past i_size.
 
-> Removed last argument 'secondary' and restructured i3c_master_register
-> to move code that can be common to i3c_secondary_master_register
-> to separate function i3c_master_init.
-> 
-> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
+This "dic" structure is only for "de"compression, so we don't need to
+worry about going beyond i_size case.
 
-[...]
+> Also, even if you include the i_size check, it's still wrong to check
+> fsverity_active() in the middle of the I/O because FS_IOC_ENABLE_VERITY can
+> execute concurrently, causing fsverity_active() to return false at the beginning
+> of the I/O and true later in the I/O.  It needs to be checked only once, at the
+> beginning...
 
-> +static int i3c_master_init(struct i3c_master_controller *master,
-> +			   struct device *parent,
-> +			   const struct i3c_master_controller_ops *ops,
-> +			   bool secondary)
->  {
->  	unsigned long i2c_scl_rate = I3C_BUS_I2C_FM_PLUS_SCL_RATE;
->  	struct i3c_bus *i3cbus = i3c_master_get_bus(master);
-> @@ -2535,10 +2514,49 @@ int i3c_master_register(struct i3c_master_controller *master,
->  		goto err_put_dev;
->  	}
->  
-> -	ret = i3c_master_bus_init(master);
-> +	ret = i3c_primary_master_bus_init(master);
->  	if (ret)
->  		goto err_destroy_wq;
->  
-> +	return 0;
-> +
-> +err_destroy_wq:
-> +	destroy_workqueue(master->wq);
-> +
-> +err_put_dev:
-> +	put_device(&master->dev);
-> +
-> +	return ret;
-> +}
+Got it. Our previous implementation didn't consider this case. Need to fix this.
 
-[...]
-
-> +int i3c_primary_master_register(struct i3c_master_controller *master,
-> +				struct device *parent,
-> +				const struct i3c_master_controller_ops *ops)
-> +{
-> +	int ret;
-> +
-> +	ret = i3c_master_init(master, parent, ops, false);
-> +	if (ret)
-> +		return ret;
-> +
->  	ret = device_add(&master->dev);
->  	if (ret)
->  		goto err_cleanup_bus;
-> @@ -2568,15 +2586,13 @@ int i3c_master_register(struct i3c_master_controller *master,
->  err_cleanup_bus:
->  	i3c_master_bus_cleanup(master);
->  
-> -err_destroy_wq:
->  	destroy_workqueue(master->wq);
->  
-> -err_put_dev:
->  	put_device(&master->dev);
->  
->  	return ret;
->  }
-
-This looks a bit confusing. Here you're rolling back detailss in 
-i3c_primary_master_register() that were factored out in 
-i3c_master_init(). If i3c_master_init() is successful, then you 
-shouldn't be undoing its things openly in i3c_primary_master_register(). 
-Instead, there should be another function that does the reverse of 
-i3c_master_init() here.
-
-
-Nicolas
+Thanks,
