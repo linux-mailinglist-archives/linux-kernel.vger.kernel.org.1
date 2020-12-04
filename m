@@ -2,127 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A75A2CED79
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F0D2CED75
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730122AbgLDLtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:49:49 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2208 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728444AbgLDLtt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:49:49 -0500
-Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CnWBn2fqhz67L7M;
-        Fri,  4 Dec 2020 19:46:41 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 4 Dec 2020 12:49:07 +0100
-Received: from [10.47.5.251] (10.47.5.251) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 4 Dec 2020
- 11:49:06 +0000
-Subject: Re: [PATCH v6 00/12] perf tools: fix perf stat with large socket IDs
-To:     Jiri Olsa <jolsa@redhat.com>, James Clark <james.clark@arm.com>
-CC:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <namhyung@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>
-References: <20201126141328.6509-1-james.clark@arm.com>
- <20201203153923.GA3613481@krava>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <30c4426d-b314-98ff-e6d5-6d5152f316e8@huawei.com>
-Date:   Fri, 4 Dec 2020 11:48:36 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1730096AbgLDLs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:48:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726618AbgLDLs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 06:48:59 -0500
+Date:   Fri, 4 Dec 2020 12:49:28 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607082492;
+        bh=8riUQT9bCbW54dDW4SqSDmsIYyllOic9IBnpv2jP8RY=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A46brJwjdIa872dTM+2vM7n7K9F806vWyhU5xH27mw1GwGZ5jCWn615wnRuCk0ifP
+         aQ3U7L5uYHJDQ36n16uxjcx5LSjr50uszqUtlt8YBWaxj1oAUopkNCgdr3I3mQZTPu
+         q0LaHDbMkjd5a4WnQiS1tSIRdE4kyw7f8vikc8Ck=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     broonie@kernel.org, lgirdwood@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, jgg@nvidia.com,
+        Kiran Patil <kiran.patil@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 3/3] driver core: auxiliary bus: minor coding style tweaks
+Message-ID: <X8oiSFTpYHw1xE/o@kroah.com>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <X8ogtmrm7tOzZo+N@kroah.com>
+ <X8og8xi3WkoYXet9@kroah.com>
+ <X8ohB1ks1NK7kPop@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20201203153923.GA3613481@krava>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.5.251]
-X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8ohB1ks1NK7kPop@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/12/2020 15:39, Jiri Olsa wrote:
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-+
+For some reason, the original aux bus patch had some really long lines
+in a few places, probably due to it being a very long-lived patch in
+development by many different people.  Fix that up so that the two files
+all have the same length lines and function formatting styles.
 
-> On Thu, Nov 26, 2020 at 04:13:16PM +0200, James Clark wrote:
->> Changes since v5:
->>    * Fix test for cpu_map__get_die() by shifting id before testing.
->>    * Fix test for cpu_map__get_socket() by not using cpu_map__id_to_socket()
->>      which is only valid in CPU aggregation mode.
->>
->> James Clark (12):
->>    perf tools: Improve topology test
->>    perf tools: Use allocator for perf_cpu_map
->>    perf tools: Add new struct for cpu aggregation
->>    perf tools: Replace aggregation ID with a struct
->>    perf tools: add new map type for aggregation
->>    perf tools: drop in cpu_aggr_map struct
->>    perf tools: Start using cpu_aggr_id in map
->>    perf tools: Add separate node member
->>    perf tools: Add separate socket member
->>    perf tools: Add separate die member
->>    perf tools: Add separate core member
->>    perf tools: Add separate thread member
-> 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
-> 
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+v2: include the right files in the patch...
 
-Tested-by: John Garry <john.garry@huawei.com>
+ drivers/base/auxiliary.c      | 58 +++++++++++++++++++----------------
+ include/linux/auxiliary_bus.h |  6 ++--
+ 2 files changed, 35 insertions(+), 29 deletions(-)
 
-I still think that vendors (like us) need to fix/improve their firmware 
-tables so that we don't get silly big numbers for socket/package IDs, 
-like S5418-D0, below:
-
-$./perf stat -a --per-die
-
-  Performance counter stats for 'system wide':
-
-S36-D0   48   72,216.31 msec cpu-clock      #   47.933 CPUs utilized
-S36-D0   48        174     context-switches #   0.002 K/sec
-S36-D0   48         48     cpu-migrations   #   0.001 K/sec
-S36-D0   48         0     page-faults    #   0.000 K/sec
-S36-D0   48   7,991,698     cycles    #   0.000 GHz
-S36-D0   48   4,750,040     instructions   #   0.59  insn per cycle
-S36-D0    1   <not supported>     branches
-S36-D0   48      32,928     branch-misses    #   0.00% of all branches
-S5418-D0   48   72,189.54 msec cpu-clock     #   47.915 CPUs utilized
-S5418-D0   48        176     context-switches  #   0.002 K/sec
-S5418-D0   48         48     cpu-migrations   #   0.001 K/sec
-S5418-D0   48         0     page-faults     #   0.000 K/sec
-S5418-D0   48   5,677,218     cycles    #    0.000 GHz
-S5418-D0   48   3,872,285     instructions   #  0.68  insn per cycle
-S5418-D0    1   <not supported>     branches
-S5418-D0   48      29,208     branch-misses   #  0.00% of all branches
-
-       1.506615297 seconds time elapsed
-
-but at least it works now. Thanks.
-
-> 
->>
->>   tools/perf/builtin-stat.c      | 128 ++++++++++++------------
->>   tools/perf/tests/topology.c    |  64 ++++++++++--
->>   tools/perf/util/cpumap.c       | 171 ++++++++++++++++++++++-----------
->>   tools/perf/util/cpumap.h       |  55 ++++++-----
->>   tools/perf/util/stat-display.c | 102 ++++++++++++--------
->>   tools/perf/util/stat.c         |   2 +-
->>   tools/perf/util/stat.h         |   9 +-
->>   7 files changed, 337 insertions(+), 194 deletions(-)
->>
->> -- 
->> 2.28.0
->>
-> 
-> .
-> 
+diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+index c44e85802b43..f303daadf843 100644
+--- a/drivers/base/auxiliary.c
++++ b/drivers/base/auxiliary.c
+@@ -50,8 +50,8 @@ static int auxiliary_uevent(struct device *dev, struct kobj_uevent_env *env)
+ 	name = dev_name(dev);
+ 	p = strrchr(name, '.');
+ 
+-	return add_uevent_var(env, "MODALIAS=%s%.*s", AUXILIARY_MODULE_PREFIX, (int)(p - name),
+-			      name);
++	return add_uevent_var(env, "MODALIAS=%s%.*s", AUXILIARY_MODULE_PREFIX,
++			      (int)(p - name), name);
+ }
+ 
+ static const struct dev_pm_ops auxiliary_dev_pm_ops = {
+@@ -113,16 +113,18 @@ static struct bus_type auxiliary_bus_type = {
+  * auxiliary_device_init - check auxiliary_device and initialize
+  * @auxdev: auxiliary device struct
+  *
+- * This is the first step in the two-step process to register an auxiliary_device.
++ * This is the first step in the two-step process to register an
++ * auxiliary_device.
+  *
+- * When this function returns an error code, then the device_initialize will *not* have
+- * been performed, and the caller will be responsible to free any memory allocated for the
+- * auxiliary_device in the error path directly.
++ * When this function returns an error code, then the device_initialize will
++ * *not* have been performed, and the caller will be responsible to free any
++ * memory allocated for the auxiliary_device in the error path directly.
+  *
+- * It returns 0 on success.  On success, the device_initialize has been performed.  After this
+- * point any error unwinding will need to include a call to auxiliary_device_uninit().
+- * In this post-initialize error scenario, a call to the device's .release callback will be
+- * triggered, and all memory clean-up is expected to be handled there.
++ * It returns 0 on success.  On success, the device_initialize has been
++ * performed.  After this point any error unwinding will need to include a call
++ * to auxiliary_device_uninit().  In this post-initialize error scenario, a call
++ * to the device's .release callback will be triggered, and all memory clean-up
++ * is expected to be handled there.
+  */
+ int auxiliary_device_init(struct auxiliary_device *auxdev)
+ {
+@@ -149,16 +151,19 @@ EXPORT_SYMBOL_GPL(auxiliary_device_init);
+  * @auxdev: auxiliary bus device to add to the bus
+  * @modname: name of the parent device's driver module
+  *
+- * This is the second step in the two-step process to register an auxiliary_device.
++ * This is the second step in the two-step process to register an
++ * auxiliary_device.
+  *
+- * This function must be called after a successful call to auxiliary_device_init(), which
+- * will perform the device_initialize.  This means that if this returns an error code, then a
+- * call to auxiliary_device_uninit() must be performed so that the .release callback will
+- * be triggered to free the memory associated with the auxiliary_device.
++ * This function must be called after a successful call to
++ * auxiliary_device_init(), which will perform the device_initialize.  This
++ * means that if this returns an error code, then a call to
++ * auxiliary_device_uninit() must be performed so that the .release callback
++ * will be triggered to free the memory associated with the auxiliary_device.
+  *
+- * The expectation is that users will call the "auxiliary_device_add" macro so that the caller's
+- * KBUILD_MODNAME is automatically inserted for the modname parameter.  Only if a user requires
+- * a custom name would this version be called directly.
++ * The expectation is that users will call the "auxiliary_device_add" macro so
++ * that the caller's KBUILD_MODNAME is automatically inserted for the modname
++ * parameter.  Only if a user requires a custom name would this version be
++ * called directly.
+  */
+ int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname)
+ {
+@@ -166,13 +171,13 @@ int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname)
+ 	int ret;
+ 
+ 	if (!modname) {
+-		pr_err("auxiliary device modname is NULL\n");
++		dev_err(dev, "auxiliary device modname is NULL\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	ret = dev_set_name(dev, "%s.%s.%d", modname, auxdev->name, auxdev->id);
+ 	if (ret) {
+-		pr_err("auxiliary device dev_set_name failed: %d\n", ret);
++		dev_err(dev, "auxiliary device dev_set_name failed: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -197,9 +202,9 @@ EXPORT_SYMBOL_GPL(__auxiliary_device_add);
+  * if it does.  If the callback returns non-zero, this function will
+  * return to the caller and not iterate over any more devices.
+  */
+-struct auxiliary_device *
+-auxiliary_find_device(struct device *start, const void *data,
+-		      int (*match)(struct device *dev, const void *data))
++struct auxiliary_device *auxiliary_find_device(struct device *start,
++					       const void *data,
++					       int (*match)(struct device *dev, const void *data))
+ {
+ 	struct device *dev;
+ 
+@@ -217,14 +222,15 @@ EXPORT_SYMBOL_GPL(auxiliary_find_device);
+  * @owner: owning module/driver
+  * @modname: KBUILD_MODNAME for parent driver
+  */
+-int __auxiliary_driver_register(struct auxiliary_driver *auxdrv, struct module *owner,
+-				const char *modname)
++int __auxiliary_driver_register(struct auxiliary_driver *auxdrv,
++				struct module *owner, const char *modname)
+ {
+ 	if (WARN_ON(!auxdrv->probe) || WARN_ON(!auxdrv->id_table))
+ 		return -EINVAL;
+ 
+ 	if (auxdrv->name)
+-		auxdrv->driver.name = kasprintf(GFP_KERNEL, "%s.%s", modname, auxdrv->name);
++		auxdrv->driver.name = kasprintf(GFP_KERNEL, "%s.%s", modname,
++						auxdrv->name);
+ 	else
+ 		auxdrv->driver.name = kasprintf(GFP_KERNEL, "%s", modname);
+ 	if (!auxdrv->driver.name)
+diff --git a/include/linux/auxiliary_bus.h b/include/linux/auxiliary_bus.h
+index d67b17606210..fc51d45f106b 100644
+--- a/include/linux/auxiliary_bus.h
++++ b/include/linux/auxiliary_bus.h
+@@ -70,8 +70,8 @@ void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv);
+ #define module_auxiliary_driver(__auxiliary_driver) \
+ 	module_driver(__auxiliary_driver, auxiliary_driver_register, auxiliary_driver_unregister)
+ 
+-struct auxiliary_device *
+-auxiliary_find_device(struct device *start, const void *data,
+-		      int (*match)(struct device *dev, const void *data));
++struct auxiliary_device *auxiliary_find_device(struct device *start,
++					       const void *data,
++					       int (*match)(struct device *dev, const void *data));
+ 
+ #endif /* _AUXILIARY_BUS_H_ */
+-- 
+2.29.2
 
