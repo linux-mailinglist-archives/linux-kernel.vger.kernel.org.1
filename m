@@ -2,301 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F24D2CF408
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1502CF407
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:28:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730256AbgLDS2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:28:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726775AbgLDS2f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730166AbgLDS2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 4 Dec 2020 13:28:35 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 242BCC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:27:55 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id e5so3600274pjt.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:27:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UiBa8wrmmIee1HgOai5JrghjADTpG0X/oWxIh9/BKcM=;
-        b=R3szqApXOzhleqO5LbirR5gKIfTfm8VKz55yhE0zOFyg0zKv+hipO3Rx2b1V5cFtKC
-         Hy5c1vRajoueHiyvN18vwiD8vCBxHVBLuhiZ9/2l3fA7/ROpImr/w+De57U0KYMNZSRw
-         0taFxcw3rDis/hHIjNspHR+/I0A8nmMiOVDpD4R7rWoyrtbo/EZE2XNbKYUSOdTc0qBK
-         SoFJzg9VLjNUSiJHgn2BH+QUMCNNbRrFWfPpm3JbSPfiHOfxFzcUfzMw66LoAFtXQhou
-         PM6i6G9WyXv2xr7mgOy76z68oFUfXisN9MsiInrfm3DrRZWx0ClbypPm/vP/s2dii8B8
-         HKeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UiBa8wrmmIee1HgOai5JrghjADTpG0X/oWxIh9/BKcM=;
-        b=g2uFEZZd7ow+OvkcNOFbAF9ox8AJj4VcDYh27QDlHbIz+ypW8hNzoz1TYH8iGn4sHE
-         NDguEmkGc3LGkwO+A3FuVIzlLo9KBNjxK2gXaIRAQipvpGXYZKvCLQBAGLUsjgRYCw99
-         YRhZ/5uc2oQ4DPAErsscUHgqT6GCo7O+MaPtNAF3mCDU/IvisLYOSfzwmxMXk6iraY1U
-         XhOhPFXWpHH3+B2ZsBx4WnteUorQTuuxgP32ImQSugqDNoxgJSA7xSAmG4pqqJdEHbbI
-         nNgSS7BAd0VDN9zpDWcmVPfH8YQ5DokYBQxTSYHCVoqESiUjusZvX/oxJjD00bsNM5B7
-         EOpw==
-X-Gm-Message-State: AOAM530CuYXeDRF/3FbylRLrJbn5Z/1cXwiID/muZkHM312yxwMJJHkn
-        1pjXd8d7w0dPgFyx0CjUUNv4+A==
-X-Google-Smtp-Source: ABdhPJwjVB3oS+U5cw5V+eL+8QbuK3M+h2Ct8oaf9k7GFRKPKFNbm4X73N4XxlNifkH+lzTIfd37XA==
-X-Received: by 2002:a17:90a:bd16:: with SMTP id y22mr5127131pjr.203.1607106474631;
-        Fri, 04 Dec 2020 10:27:54 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id i16sm5543737pfr.183.2020.12.04.10.27.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 10:27:54 -0800 (PST)
-Date:   Fri, 4 Dec 2020 11:27:51 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Kim Phillips <kim.phillips@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mian Yousaf Kaukab <ykaukab@suse.de>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH] coresight: remove broken __exit annotations
-Message-ID: <20201204182751.GA1424711@xps15>
-References: <20201203231232.1482792-1-arnd@kernel.org>
+Received: from mail.kernel.org ([198.145.29.99]:47136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726775AbgLDS2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:28:34 -0500
+Date:   Fri, 4 Dec 2020 10:27:52 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607106474;
+        bh=7QObN262lN7U2H2PbSCYY4+ZzUd87AL0IMmRt7dNZDA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ECF6oIUCmzXtNAnIrA38lCryDwEWhqCGEOayiMZlK4u98JnrMB8l5R9t11oHcgf6M
+         EsraJgTO2dhqi+Ngq177KtVqsQsOh2XNeU+ZFhomDlT7HcxPhvmexd1+DHmEemNqzA
+         wbNR8Y+MP5mKNb13bVZcwDxWG6E9POEaC5Z8rmQM15gRa79gtGWzOhkad3f4hyYcAK
+         Dj2p2SwcMys0a6qu01STum9RzmjwVk+1rKJkrJ+QtKHH/9GJp0aFwMVrKSvyEUkznu
+         zodKh4CM1OkJ1hhl+mVefx4MI0HnwqkV8T81ECDmBGX6Ai76/sNnHn4UCHl73SRuIm
+         KMNCEcAgF0Aqg==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Anders Roxell <anders.roxell@linaro.org>, madalin.bucur@nxp.com,
+        David Miller <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] dpaa_eth: fix build errorr in dpaa_fq_init
+Message-ID: <20201204102752.4bfac75d@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <CAJ+HfNg97HtDciv_z8F6Gs5Yncuua2Gx27HLxCYBNmA9Bk1jxg@mail.gmail.com>
+References: <20201203144343.790719-1-anders.roxell@linaro.org>
+        <CAJ+HfNg97HtDciv_z8F6Gs5Yncuua2Gx27HLxCYBNmA9Bk1jxg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203231232.1482792-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 12:11:40AM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Functions that are annotated __exit are discarded for built-in drivers,
-> but the .remove callback in a device driver must still be kept around
-> to allow bind/unbind operations.
-> 
-> There is now a linker warning for the discarded symbol references:
-> 
-> `tmc_remove' referenced in section `.data' of drivers/hwtracing/coresight/coresight-tmc-core.o: defined in discarded section `.exit.text' of drivers/hwtracing/coresight/coresight-tmc-core.o
-> `tpiu_remove' referenced in section `.data' of drivers/hwtracing/coresight/coresight-tpiu.o: defined in discarded section `.exit.text' of drivers/hwtracing/coresight/coresight-tpiu.o
-> `etb_remove' referenced in section `.data' of drivers/hwtracing/coresight/coresight-etb10.o: defined in discarded section `.exit.text' of drivers/hwtracing/coresight/coresight-etb10.o
-> `static_funnel_remove' referenced in section `.data' of drivers/hwtracing/coresight/coresight-funnel.o: defined in discarded section `.exit.text' of drivers/hwtracing/coresight/coresight-funnel.o
-> `dynamic_funnel_remove' referenced in section `.data' of drivers/hwtracing/coresight/coresight-funnel.o: defined in discarded section `.exit.text' of drivers/hwtracing/coresight/coresight-funnel.o
-> `static_replicator_remove' referenced in section `.data' of drivers/hwtracing/coresight/coresight-replicator.o: defined in discarded section `.exit.text' of drivers/hwtracing/coresight/coresight-replicator.o
-> `dynamic_replicator_remove' referenced in section `.data' of drivers/hwtracing/coresight/coresight-replicator.o: defined in discarded section `.exit.text' of drivers/hwtracing/coresight/coresight-replicator.o
-> `catu_remove' referenced in section `.data' of drivers/hwtracing/coresight/coresight-catu.o: defined in discarded section `.exit.text' of drivers/hwtracing/coresight/coresight-catu.o
-> 
-> Remove all those annotations.
-> 
-> Fixes: 8b0cf82677d1 ("coresight: stm: Allow to build coresight-stm as a module")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Thu, 3 Dec 2020 15:49:21 +0100 Bj=C3=B6rn T=C3=B6pel wrote:
+> On Thu, 3 Dec 2020 at 15:46, Anders Roxell <anders.roxell@linaro.org> wro=
+te:
+> >
+> > When building FSL_DPAA_ETH the following build error shows up:
+> >
+> > /tmp/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c: In function =E2=80=
+=98dpaa_fq_init=E2=80=99:
+> > /tmp/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c:1135:9: error: too =
+few arguments to function =E2=80=98xdp_rxq_info_reg=E2=80=99
+> >  1135 |   err =3D xdp_rxq_info_reg(&dpaa_fq->xdp_rxq, dpaa_fq->net_dev,
+> >       |         ^~~~~~~~~~~~~~~~
+> >
+> > Commit b02e5a0ebb17 ("xsk: Propagate napi_id to XDP socket Rx path")
+> > added an extra argument to function xdp_rxq_info_reg and commit
+> > d57e57d0cd04 ("dpaa_eth: add XDP_TX support") didn't know about that
+> > extra argument.
+> >
+> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> > ---
+> >
+> > I think this issue is seen since both patches went in at the same time
+> > to bpf-next and net-next.
+> > =20
+>=20
+> Thanks Anders!
+>=20
+> Indeed, when bpf-next is pulled into net-next this needs to be applied.
+>=20
+> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 
-I have applied this patch.
+Applied, thanks!
 
-> ---
->  drivers/hwtracing/coresight/coresight-catu.c       | 2 +-
->  drivers/hwtracing/coresight/coresight-cti-core.c   | 2 +-
->  drivers/hwtracing/coresight/coresight-etb10.c      | 2 +-
->  drivers/hwtracing/coresight/coresight-etm3x-core.c | 4 ++--
->  drivers/hwtracing/coresight/coresight-etm4x-core.c | 4 ++--
->  drivers/hwtracing/coresight/coresight-funnel.c     | 6 +++---
->  drivers/hwtracing/coresight/coresight-replicator.c | 6 +++---
->  drivers/hwtracing/coresight/coresight-stm.c        | 2 +-
->  drivers/hwtracing/coresight/coresight-tmc-core.c   | 2 +-
->  drivers/hwtracing/coresight/coresight-tpiu.c       | 2 +-
->  10 files changed, 16 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
-> index 99430f6cf5a5..a61313f320bd 100644
-> --- a/drivers/hwtracing/coresight/coresight-catu.c
-> +++ b/drivers/hwtracing/coresight/coresight-catu.c
-> @@ -567,7 +567,7 @@ static int catu_probe(struct amba_device *adev, const struct amba_id *id)
->  	return ret;
->  }
->  
-> -static int __exit catu_remove(struct amba_device *adev)
-> +static int catu_remove(struct amba_device *adev)
->  {
->  	struct catu_drvdata *drvdata = dev_get_drvdata(&adev->dev);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
-> index d28eae93e55c..61dbc1afd8da 100644
-> --- a/drivers/hwtracing/coresight/coresight-cti-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
-> @@ -836,7 +836,7 @@ static void cti_device_release(struct device *dev)
->  	if (drvdata->csdev_release)
->  		drvdata->csdev_release(dev);
->  }
-> -static int __exit cti_remove(struct amba_device *adev)
-> +static int cti_remove(struct amba_device *adev)
->  {
->  	struct cti_drvdata *drvdata = dev_get_drvdata(&adev->dev);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
-> index 1b320ab581ca..0cf6f0b947b6 100644
-> --- a/drivers/hwtracing/coresight/coresight-etb10.c
-> +++ b/drivers/hwtracing/coresight/coresight-etb10.c
-> @@ -803,7 +803,7 @@ static int etb_probe(struct amba_device *adev, const struct amba_id *id)
->  	return ret;
->  }
->  
-> -static int __exit etb_remove(struct amba_device *adev)
-> +static int etb_remove(struct amba_device *adev)
->  {
->  	struct etb_drvdata *drvdata = dev_get_drvdata(&adev->dev);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-etm3x-core.c b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-> index 47f610b1c2b1..5bf5a5a4ce6d 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm3x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-> @@ -902,14 +902,14 @@ static int etm_probe(struct amba_device *adev, const struct amba_id *id)
->  	return 0;
->  }
->  
-> -static void __exit clear_etmdrvdata(void *info)
-> +static void clear_etmdrvdata(void *info)
->  {
->  	int cpu = *(int *)info;
->  
->  	etmdrvdata[cpu] = NULL;
->  }
->  
-> -static int __exit etm_remove(struct amba_device *adev)
-> +static int etm_remove(struct amba_device *adev)
->  {
->  	struct etm_drvdata *drvdata = dev_get_drvdata(&adev->dev);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index d78a37b6592c..3ad5c2a01033 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -1575,14 +1575,14 @@ static struct amba_cs_uci_id uci_id_etm4[] = {
->  	}
->  };
->  
-> -static void __exit clear_etmdrvdata(void *info)
-> +static void clear_etmdrvdata(void *info)
->  {
->  	int cpu = *(int *)info;
->  
->  	etmdrvdata[cpu] = NULL;
->  }
->  
-> -static int __exit etm4_remove(struct amba_device *adev)
-> +static int etm4_remove(struct amba_device *adev)
->  {
->  	struct etmv4_drvdata *drvdata = dev_get_drvdata(&adev->dev);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
-> index 39be46b74dfe..071c723227db 100644
-> --- a/drivers/hwtracing/coresight/coresight-funnel.c
-> +++ b/drivers/hwtracing/coresight/coresight-funnel.c
-> @@ -274,7 +274,7 @@ static int funnel_probe(struct device *dev, struct resource *res)
->  	return ret;
->  }
->  
-> -static int __exit funnel_remove(struct device *dev)
-> +static int funnel_remove(struct device *dev)
->  {
->  	struct funnel_drvdata *drvdata = dev_get_drvdata(dev);
->  
-> @@ -328,7 +328,7 @@ static int static_funnel_probe(struct platform_device *pdev)
->  	return ret;
->  }
->  
-> -static int __exit static_funnel_remove(struct platform_device *pdev)
-> +static int static_funnel_remove(struct platform_device *pdev)
->  {
->  	funnel_remove(&pdev->dev);
->  	pm_runtime_disable(&pdev->dev);
-> @@ -370,7 +370,7 @@ static int dynamic_funnel_probe(struct amba_device *adev,
->  	return funnel_probe(&adev->dev, &adev->res);
->  }
->  
-> -static int __exit dynamic_funnel_remove(struct amba_device *adev)
-> +static int dynamic_funnel_remove(struct amba_device *adev)
->  {
->  	return funnel_remove(&adev->dev);
->  }
-> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
-> index 6772f23e5c4b..7e2a2b7f503f 100644
-> --- a/drivers/hwtracing/coresight/coresight-replicator.c
-> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
-> @@ -291,7 +291,7 @@ static int replicator_probe(struct device *dev, struct resource *res)
->  	return ret;
->  }
->  
-> -static int __exit replicator_remove(struct device *dev)
-> +static int replicator_remove(struct device *dev)
->  {
->  	struct replicator_drvdata *drvdata = dev_get_drvdata(dev);
->  
-> @@ -318,7 +318,7 @@ static int static_replicator_probe(struct platform_device *pdev)
->  	return ret;
->  }
->  
-> -static int __exit static_replicator_remove(struct platform_device *pdev)
-> +static int static_replicator_remove(struct platform_device *pdev)
->  {
->  	replicator_remove(&pdev->dev);
->  	pm_runtime_disable(&pdev->dev);
-> @@ -388,7 +388,7 @@ static int dynamic_replicator_probe(struct amba_device *adev,
->  	return replicator_probe(&adev->dev, &adev->res);
->  }
->  
-> -static int __exit dynamic_replicator_remove(struct amba_device *adev)
-> +static int dynamic_replicator_remove(struct amba_device *adev)
->  {
->  	return replicator_remove(&adev->dev);
->  }
-> diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
-> index 32d29704206b..99791773f682 100644
-> --- a/drivers/hwtracing/coresight/coresight-stm.c
-> +++ b/drivers/hwtracing/coresight/coresight-stm.c
-> @@ -951,7 +951,7 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
->  	return ret;
->  }
->  
-> -static int __exit stm_remove(struct amba_device *adev)
-> +static int stm_remove(struct amba_device *adev)
->  {
->  	struct stm_drvdata *drvdata = dev_get_drvdata(&adev->dev);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> index 5653e0945c74..8169dff5a9f6 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> @@ -559,7 +559,7 @@ static void tmc_shutdown(struct amba_device *adev)
->  	spin_unlock_irqrestore(&drvdata->spinlock, flags);
->  }
->  
-> -static int __exit tmc_remove(struct amba_device *adev)
-> +static int tmc_remove(struct amba_device *adev)
->  {
->  	struct tmc_drvdata *drvdata = dev_get_drvdata(&adev->dev);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-tpiu.c b/drivers/hwtracing/coresight/coresight-tpiu.c
-> index 010762a46087..d5dfee9ee556 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpiu.c
-> +++ b/drivers/hwtracing/coresight/coresight-tpiu.c
-> @@ -173,7 +173,7 @@ static int tpiu_probe(struct amba_device *adev, const struct amba_id *id)
->  	return PTR_ERR(drvdata->csdev);
->  }
->  
-> -static int __exit tpiu_remove(struct amba_device *adev)
-> +static int tpiu_remove(struct amba_device *adev)
->  {
->  	struct tpiu_drvdata *drvdata = dev_get_drvdata(&adev->dev);
->  
-> -- 
-> 2.27.0
-> 
+Looks like there is a mention of this function in an
+example in Documentation/ that may need updating, too.
