@@ -2,290 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B6D2CE46E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:24:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C21E22CE470
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:26:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729981AbgLDAXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 19:23:37 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16962 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgLDAXg (ORCPT
+        id S1729923AbgLDAZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 19:25:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34651 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726356AbgLDAZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 19:23:36 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc9815f0000>; Thu, 03 Dec 2020 16:22:55 -0800
-Received: from [10.2.90.244] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 4 Dec
- 2020 00:22:55 +0000
-Subject: Re: [PATCH v1 3/7] spi: qspi-tegra: Add support for Tegra210 QSPI
- controller
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <robh+dt@kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <1606857168-5839-1-git-send-email-skomatineni@nvidia.com>
- <1606857168-5839-4-git-send-email-skomatineni@nvidia.com>
- <20201202172721.GL5560@sirena.org.uk>
- <2257bc33-80ef-a6d8-8542-480defa32937@nvidia.com>
-Message-ID: <be8291fc-8e69-b577-d8f4-20aeca0b45cc@nvidia.com>
-Date:   Thu, 3 Dec 2020 16:22:54 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <2257bc33-80ef-a6d8-8542-480defa32937@nvidia.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607041375; bh=os3SsoQJuogSnBhNud5ZHwdxrswyR7qg6N2lKrWM8gE=;
-        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=nJMBR1YNf8UvJYya3G1mFxnISCDUikiwbe9TTQYvbHDMPLzOwMCOpt/9ndxxrBs2V
-         c10O11M8E8MwvSNxuKuavkk5GpNdpVlBd7ptpXMbA6ea/C89EOaIAc/uHFBgWW8ZER
-         UKOQZZg37CHy9ccbM0w/gDlVIc5wIGOnw9Mc9JmhpjrXVK5abnAyGbHpuHuSpgwKr5
-         Anzm2ZzyjuDe32CqNMBGb1o5s3O2CVp0x2MGUB8Re0Yf9PjsMOQDtbPCPfNlY+v9QQ
-         RCkHhVca335vBgxAFvGnF+LFCX+nR4q8AbRqiw1mi8UNCsRrQ+1jmJrP+rkzONOeZH
-         10i/eg5fEAeCQ==
+        Thu, 3 Dec 2020 19:25:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607041429;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=du/u2v1/DxvufjA15mfH4Eua6kZGexaeRkZxBRj4seA=;
+        b=DkXOoc8Zq/k+XAjigqpmZeJ71GCTHUsqQmPHPSrz5QvPqmtgO29S8uNxG9s+lfWmkQerlJ
+        /TMzgKZVQjzNoGh0IeBiT21W0XsFy1/W1hbjPKt3NxUhh5AdLLV+LIOLSl7ensxC0mH5rD
+        ROsWGrfORUylZu5+A/iYhq8810Q36XQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-421-Xui1FmsmNcqUjPJDcRvZiw-1; Thu, 03 Dec 2020 19:23:45 -0500
+X-MC-Unique: Xui1FmsmNcqUjPJDcRvZiw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F6DBA0C04;
+        Fri,  4 Dec 2020 00:23:43 +0000 (UTC)
+Received: from ovpn-112-36.rdu2.redhat.com (ovpn-112-36.rdu2.redhat.com [10.10.112.36])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3BDEF60861;
+        Fri,  4 Dec 2020 00:23:34 +0000 (UTC)
+Message-ID: <e17c3fb24cdad2fec1dc10da5ef6f5e37cfe7c03.camel@redhat.com>
+Subject: Re: [PATCH v4 11/19] sched/core: Make migrate disable and CPU
+ hotplug cooperative
+From:   Qian Cai <qcai@redhat.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org, ouwen210@hotmail.com
+Date:   Thu, 03 Dec 2020 19:23:33 -0500
+In-Reply-To: <jhjpn4bwznx.mognet@arm.com>
+References: <20201023101158.088940906@infradead.org>
+         <20201023102347.067278757@infradead.org>
+         <ff62e3ee994efb3620177bf7b19fab16f4866845.camel@redhat.com>
+         <jhjpn4bwznx.mognet@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+FYI, it did crash on arm64 (Thunder X2) as well, so I'll re-run to gather more
+information too.
 
-On 12/2/20 11:17 AM, Sowjanya Komatineni wrote:
->
-> On 12/2/20 9:27 AM, Mark Brown wrote:
->> On Tue, Dec 01, 2020 at 01:12:44PM -0800, Sowjanya Komatineni wrote:
->>> Tegra SoC has a Quad SPI controller starting from Tegra210.
->>>
->>> This patch adds support for Tegra210 QSPI controller.
->> This looks pretty clean but I've got a few questions below about how
->> this integrates with the frameworks as well as some more minor issues.
->>
->>> +config QSPI_TEGRA
->>> +=A0=A0=A0 tristate "Nvidia Tegra QSPI Controller"
->> Everything else in this file is SPI_, even the qspi controllers.
-> Will rename in v2
->>> +++ b/drivers/spi/qspi-tegra.c
->>> @@ -0,0 +1,1418 @@
->>> +// SPDX-License-Identifier: GPL-2.0-only
->>> +/*
->>> + * Copyright (C) 2020 NVIDIA CORPORATION.=A0 All rights reserved.
->>> + */
->> Please make the entire comment a C++ one.=A0 It also appears that the "A=
-ll
->> rights reserved" here conflicts with the GPL-2.0-only SPDX statement...
-> Will fix in v2
->>
->>> +static void
->>> +tegra_qspi_copy_client_txbuf_to_qspi_txbuf(struct tegra_qspi_data=20
->>> *tqspi,
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 str=
-uct spi_transfer *t)
->>> +{
->>> +=A0=A0=A0 /* Make the dma buffer to read by cpu */
->>> +=A0=A0=A0 dma_sync_single_for_cpu(tqspi->dev, tqspi->tx_dma_phys,
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 tqspi->dma_buf_size, DMA=
-_TO_DEVICE);
->>> +
->>> +=A0=A0=A0 if (tqspi->is_packed) {
->>> +=A0=A0=A0=A0=A0=A0=A0 unsigned int len =3D tqspi->curr_dma_words *
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 tqspi->bytes_pe=
-r_word;
->>> +
->>> +=A0=A0=A0=A0=A0=A0=A0 memcpy(tqspi->tx_dma_buf, t->tx_buf + tqspi->cur=
-_pos, len);
->>> +=A0=A0=A0=A0=A0=A0=A0 tqspi->cur_tx_pos +=3D tqspi->curr_dma_words *
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 tqspi->by=
-tes_per_word;
->> It seems weird that this device needs us to do a memcpy() to do DMA,
->> most devices are able to DMA directly from the buffers provided by the
->> SPI API (and let the SPI core sync things).=A0 What is going on here?
->
-> For transfers of size more than max DMA transfer limit, data transfer=20
-> happens in multiple iterations with each iteration transferring up to=20
-> max DMA transfer limit.
->
-> So using separate dma buffers and on every iteration copying them to=20
-> SPI core provided tx/rx buffers.
-Also unpack mode needs to manually put the bytes together from read data=20
-to SPI core rx buffer.
->
-> Transferring data logic in this driver is similar as Tegra SPI driver=20
-> except register changes and some QSPI specific register programming.
->
->>
->>> +=A0=A0=A0 tegra_qspi_writel(tqspi, status, QSPI_FIFO_STATUS);
->>> +=A0=A0=A0 while ((status & QSPI_FIFO_EMPTY) !=3D QSPI_FIFO_EMPTY) {
->>> +=A0=A0=A0=A0=A0=A0=A0 status =3D tegra_qspi_readl(tqspi, QSPI_FIFO_STA=
-TUS);
->>> +=A0=A0=A0=A0=A0=A0=A0 if (time_after(jiffies, timeout)) {
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 dev_err(tqspi->dev,
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "timeout waiting for fif=
-o flush\n");
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return -EIO;
->>> +=A0=A0=A0=A0=A0=A0=A0 }
->>> +
->>> +=A0=A0=A0=A0=A0=A0=A0 udelay(1);
->>> +=A0=A0=A0 }
->> It'd be good to put a cpu_relax() in the busy loop.
-> Will update in v2.
->>
->>> +static u32 tegra_qspi_setup_transfer_one(struct spi_device *spi,
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 struct sp=
-i_transfer *t,
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 bool is_f=
-irst_of_msg)
->>> +{
->>> +=A0=A0=A0=A0=A0=A0=A0 /* toggle cs to active state */
->>> +=A0=A0=A0=A0=A0=A0=A0 if (spi->mode & SPI_CS_HIGH)
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 command1 |=3D QSPI_CS_SW_VAL;
->>> +=A0=A0=A0=A0=A0=A0=A0 else
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 command1 &=3D ~QSPI_CS_SW_VAL;
->>> +=A0=A0=A0=A0=A0=A0=A0 tegra_qspi_writel(tqspi, command1, QSPI_COMMAND1=
-);
->> This is worrying, the client device might be confused if /CS is doing
->> things outside of the standard handling.
->
-> Do you mean to honor spi_transfer cs_change flag?
->
-> Tegra QSPI is master and is used only with QSPI flash devices. Looking=20
-> at SPI NOR driver, I see QSPI Flash commands are executed with one=20
-> flash command per spi_message and I dont see cs_change flag usage=20
-> w.r.t QSPI flash. So, using SW based CS control for QSPI.
->
-> Please correct me if I miss something to understand here.
->
-> Also Tegra186 and later QSPI controller supports combined sequence=20
-> mode where command, address, data phases can be combined in a single GO.
->
-> This saves some cycles in transfer and for this we need to use SW=20
-> based CS control only.
->
->
->>> +=A0=A0=A0 of_property_read_u32(slave_np, "nvidia,tx-clk-tap-delay",
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &cdata->tx_clk_tap_de=
-lay);
->>> +=A0=A0=A0 of_property_read_u32(slave_np, "nvidia,rx-clk-tap-delay",
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &cdata->rx_clk_tap_de=
-lay);
->> These properties are not mentioned in the binding document.
-> Thanks Mark. Missed them. Will add in v2.
->>
->>> +static int tegra_qspi_setup(struct spi_device *spi)
->>> +{
->>> +=A0=A0=A0 if (cdata && cdata->tx_clk_tap_delay)
->>> +=A0=A0=A0=A0=A0=A0=A0 tx_tap =3D cdata->tx_clk_tap_delay;
->>> +=A0=A0=A0 if (cdata && cdata->rx_clk_tap_delay)
->>> +=A0=A0=A0=A0=A0=A0=A0 rx_tap =3D cdata->rx_clk_tap_delay;
->>> +=A0=A0=A0 tqspi->def_command2_reg =3D QSPI_TX_TAP_DELAY(tx_tap) |
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 QSPI_RX_TAP_DELAY(=
-rx_tap);
->>> +=A0=A0=A0 tegra_qspi_writel(tqspi, tqspi->def_command2_reg, QSPI_COMMA=
-ND2);
->> The setup for one device shouldn't be able to affect the operation of
->> another, already running, device so either these need to be configured
->> as part of the controller probe or these configurations need to be
->> deferred until we're actually doing a transfer.
-> We will only have 1 device on QSPI as we only support single chip select.
->>
->>> +=A0=A0=A0 /*
->>> +=A0=A0=A0=A0 * Tegra QSPI hardware support dummy bytes transfer based =
-on the
->>> +=A0=A0=A0=A0 * programmed dummy clock cyles in QSPI register.
->>> +=A0=A0=A0=A0 * So, get the total dummy bytes from the dummy bytes tran=
-sfer in
->>> +=A0=A0=A0=A0 * spi_messages and convert to dummy clock cyles.
->>> +=A0=A0=A0=A0 */
->>> +=A0=A0=A0 list_for_each_entry(xfer, &msg->transfers, transfer_list) {
->>> +=A0=A0=A0=A0=A0=A0=A0 if (ntransfers =3D=3D DUMMY_BYTES_XFER &&
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 !(list_is_last(&xfer->transfer_list,=
- &msg->transfers)))
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 dummy_cycles =3D xfer->len * 8 / xfe=
-r->tx_nbits;
->>> +=A0=A0=A0=A0=A0=A0=A0 ntransfers++;
->>> +=A0=A0=A0 }
->> This seems weird, there's some hard coded assumption about particular
->> patterns that the client device is going to send.=A0 What's going on her=
-e?
->> I don't really understand what this is trying to do.
->
-> QSPI flash needs dummy cycles for data read operation which is=20
-> actually the initial read latency and no. of dummy cycles required are=20
-> vendor specific.
->
-> SPI NOR driver gets required dummy cycles based on mode clock cycles=20
-> and wait state clock cycles.
->
-> During read operations, spi_nor_spimem_read_data() converts dummy=20
-> cycles to number of dummy bytes.
->
-> Tegra QSPI controller supports dummy clock cycles register and when=20
-> programmed QSPI controller sends dummy bytes rather than SW handling=20
-> extra cycles for transferring dummy bytes.
->
-> Above equation converts this dummy bytes back to dummy clock cycles to=20
-> program into QSPI register and avoid manual SW transfer of dummy bytes.
->
->>
->>> +static irqreturn_t tegra_qspi_isr(int irq, void *context_data)
->>> +{
->>> +=A0=A0=A0 struct tegra_qspi_data *tqspi =3D context_data;
->>> +
->>> +=A0=A0=A0 tqspi->status_reg =3D tegra_qspi_readl(tqspi, QSPI_FIFO_STAT=
-US);
->>> +=A0=A0=A0 if (tqspi->cur_direction & DATA_DIR_TX)
->>> +=A0=A0=A0=A0=A0=A0=A0 tqspi->tx_status =3D tqspi->status_reg &
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (QSPI_TX_FIFO_U=
-NF | QSPI_TX_FIFO_OVF);
->>> +
->>> +=A0=A0=A0 if (tqspi->cur_direction & DATA_DIR_RX)
->>> +=A0=A0=A0=A0=A0=A0=A0 tqspi->rx_status =3D tqspi->status_reg &
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (QSPI_RX_FIFO_O=
-VF | QSPI_RX_FIFO_UNF);
->>> +=A0=A0=A0 tegra_qspi_mask_clear_irq(tqspi);
->>> +
->>> +=A0=A0=A0 return IRQ_WAKE_THREAD;
->>> +}
->> It's a bit unclear to me the value we gain from having this handler - if
->> we don't specify a handler genirq will already mask the interrupt until
->> we get to the thread anyway and we could just read the status in the
->> threaded handler.=A0 OTOH it doesn't do any harm, just struck me as a bi=
-t
->> odd.
->
-> I started QSPI driver by taking SPI driver as data transfer and=20
-> interrupt handling are similar.
->
-> So kept this handler for clearing status registers and masking=20
-> interrupts as I did not see anything wrong with this.
->
->>
->>> +=A0=A0=A0 master =3D spi_alloc_master(&pdev->dev, sizeof(*tqspi));
->>> +=A0=A0=A0 if (!master) {
->>> +=A0=A0=A0=A0=A0=A0=A0 dev_err(&pdev->dev, "master allocation failed\n"=
-);
->>> +=A0=A0=A0=A0=A0=A0=A0 return -ENOMEM;
->>> +=A0=A0=A0 }
->> Please switch to using the devm_ version of the API to allocate
->> controller, it makes things much more robust.
-> Will update in v2
->>
->>> +=A0=A0=A0 if (of_property_read_u32(pdev->dev.of_node, "spi-max-frequen=
-cy",
->>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &master->max_speed_hz=
-))
->>> +=A0=A0=A0=A0=A0=A0=A0 master->max_speed_hz =3D QSPI_MAX_SPEED;
->> The core will do this for you.
->
-> Will remove this in v2.
->
-> Thanks
->
-> Sowjanya
->
+.config: https://cailca.coding.net/public/linux/mm/git/files/master/arm64.config
+
+[20370.682747][T77637] psci: CPU123 killed (polled 0 ms) 
+[20370.823651][  T635] IRQ 43: no longer affine to CPU124 
+[20370.828862][  T635] IRQ 49: no longer affine to CPU124 
+[20370.834072][  T635] IRQ 60: no longer affine to CPU124 
+[20370.839517][  T635] IRQ 94: no longer affine to CPU124 
+[20370.845778][T77637] CPU124: shutdown 
+[20370.861891][T77637] psci: CPU124 killed (polled 10 ms) 
+[20371.425434][T77637] CPU125: shutdown 
+[20371.441464][T77637] psci: CPU125 killed (polled 10 ms) 
+[20371.984072][T77637] CPU126: shutdown 
+[20372.000057][T77637] psci: CPU126 killed (polled 10 ms) 
+[20372.223858][  T650] ------------[ cut here ]------------ 
+[20372.229599][  T650] kernel BUG at kernel/sched/core.c:7594! 
+[20372.235165][  T650] Internal error: Oops - BUG: 0 [#1] SMP 
+[20372.240643][  T650] Modules linked in: vfio_pci vfio_virqfd vfio_iommu_type1
+vfio loop processor ip_tables x_tables sd_mod mlx5_core firmware_class ahci
+libahci libata dm_mirror dm_region_hash dm_log dm_mod efivarfs 
+[20372.259814][  T650] CPU: 127 PID: 650 Comm: migration/127 Tainted: G             L    5.10.0-rc6-next-20201203+ #5 
+[20372.270152][  T650] Hardware name: HPE Apollo 70             /C01_APACHE_MB         , BIOS L50_5.13_1.16 07/29/2020 
+[20372.280579][  T650] Stopper: multi_cpu_stop+0x0/0x390 <- 0x0 
+[20372.286230][  T650] pstate: 20400089 (nzCv daIf +PAN -UAO -TCO BTYPE=--) 
+[20372.292923][  T650] pc : sched_cpu_dying+0x198/0x1b8 
+[20372.297879][  T650] lr : sched_cpu_dying+0x68/0x1b8 
+[20372.302748][  T650] sp : ffff00001076fba0 
+[20372.306747][  T650] x29: ffff00001076fba0 x28: 0000000000000000  
+[20372.312751][  T650] x27: 0000000000000001 x26: ffff800011db3000  
+[20372.318753][  T650] x25: ffff000e7bdd16a8 x24: 000000000000005a  
+[20372.324754][  T650] x23: 000000000000007f x22: 0000000000000080  
+[20372.330756][  T650] x21: 000000000000fab7 x20: ffff000e7be63818  
+[20372.336757][  T650] x19: ffff000e7be63800 x18: 1fffe001cf7cb3ed  
+[20372.342758][  T650] x17: 0000000000001308 x16: 0000000000000000  
+[20372.348759][  T650] x15: 000000000001053f x14: 000000000001053f  
+[20372.354761][  T650] x13: ffff6000020edf65 x12: 1fffe000020edf64  
+[20372.360763][  T650] x11: 1fffe000020edf64 x10: ffff6000020edf64  
+[20372.366764][  T650] x9 : dfff800000000000 x8 : ffff00001076fb23  
+[20372.372766][  T650] x7 : 0000000000000001 x6 : 0000000000000001  
+[20372.378767][  T650] x5 : 1fffe000020b9a0a x4 : dfff800000000000  
+[20372.384769][  T650] x3 : dfff800000000000 x2 : 0000000000000003  
+[20372.390770][  T650] x1 : ffff000e7be63840 x0 : 0000000000000002  
+[20372.396771][  T650] Call trace: 
+[20372.399905][  T650]  sched_cpu_dying+0x198/0x1b8 
+[20372.404514][  T650]  cpuhp_invoke_callback+0x208/0x2bf0 
+[20372.409730][  T650]  take_cpu_down+0x11c/0x1f0 
+[20372.414165][  T650]  multi_cpu_stop+0x184/0x390 
+[20372.418687][  T650]  cpu_stopper_thread+0x1f0/0x430 
+[20372.423557][  T650]  smpboot_thread_fn+0x3a8/0x9c8 
+[20372.428339][  T650]  kthread+0x3a0/0x448 
+[20372.432253][  T650]  ret_from_fork+0x10/0x1c 
+[20372.436517][  T650] Code: d65f03c0 911a82a2 140004fb 17ffffd9 (d4210000)  
+[20372.443298][  T650] ---[ end trace c51d5b6889ec29a8 ]--- 
+[20372.448602][  T650] Kernel panic - not syncing: Oops - BUG: Fatal exception 
+
