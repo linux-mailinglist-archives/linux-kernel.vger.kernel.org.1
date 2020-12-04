@@ -2,61 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D012CE503
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B79D2CE513
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389425AbgLDBYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:24:04 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8633 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728484AbgLDBX6 (ORCPT
+        id S2389582AbgLDBYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:24:35 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:61962 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389546AbgLDBYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:23:58 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnFLq46ktz15WbQ;
-        Fri,  4 Dec 2020 09:22:43 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 4 Dec 2020 09:23:06 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/tilcdc: Remove unnecessary THIS_MODULE
-Date:   Fri, 4 Dec 2020 09:23:13 +0800
-Message-ID: <1607044999-47666-8-git-send-email-tiantao6@hisilicon.com>
+        Thu, 3 Dec 2020 20:24:32 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607045053; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=ivznYdvrzxMQucceaJCLvY3I+3vzVXBm9IYM1AxNLmk=; b=jlJXW2X8PZm9yVYXJKSjGeCTz+2gubFQYXj79lYA69PYSYYg2bIWL2DGgGU7rOB3OZuoyq/V
+ CykEPYr51PuNIHPWQuMqqx+NO25vYonqaL+CKPiZzYdLNxSiFTqjtF73LF04OCTE2PvcS8qm
+ ++f/YIp1iW4xRC8nuwwmvB4Ormg=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5fc98f91288b6f9d8a181796 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Dec 2020 01:23:29
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1E81DC433C6; Fri,  4 Dec 2020 01:23:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 09589C433CA;
+        Fri,  4 Dec 2020 01:23:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 09589C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, loic.poulain@linaro.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v4 4/8] bus: mhi: core: Clear configuration from channel context during reset
+Date:   Thu,  3 Dec 2020 17:23:13 -0800
+Message-Id: <1607044997-19577-5-git-send-email-bbhatt@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607044999-47666-1-git-send-email-tiantao6@hisilicon.com>
-References: <1607044999-47666-1-git-send-email-tiantao6@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <1607044997-19577-1-git-send-email-bbhatt@codeaurora.org>
+References: <1607044997-19577-1-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As THIS_MODULE has been set in platform_driver_register(),
-so remove it.
+When clearing up the channel context after client drivers are
+done using channels, the configuration is currently not being
+reset entirely. Ensure this is done to appropriately handle
+issues where clients unaware of the context state end up calling
+functions which expect a context.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 ---
- drivers/gpu/drm/tilcdc/tilcdc_panel.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/bus/mhi/core/init.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/gpu/drm/tilcdc/tilcdc_panel.c b/drivers/gpu/drm/tilcdc/tilcdc_panel.c
-index 00efc30..4235780 100644
---- a/drivers/gpu/drm/tilcdc/tilcdc_panel.c
-+++ b/drivers/gpu/drm/tilcdc/tilcdc_panel.c
-@@ -399,7 +399,6 @@ static struct platform_driver panel_driver = {
- 	.probe = panel_probe,
- 	.remove = panel_remove,
- 	.driver = {
--		.owner = THIS_MODULE,
- 		.name = "tilcdc-panel",
- 		.of_match_table = panel_of_match,
- 	},
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index 5cdddb2..1b6962d 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -553,6 +553,7 @@ void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
+ 	struct mhi_ring *buf_ring;
+ 	struct mhi_ring *tre_ring;
+ 	struct mhi_chan_ctxt *chan_ctxt;
++	u32 tmp;
+ 
+ 	buf_ring = &mhi_chan->buf_ring;
+ 	tre_ring = &mhi_chan->tre_ring;
+@@ -563,7 +564,19 @@ void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
+ 	vfree(buf_ring->base);
+ 
+ 	buf_ring->base = tre_ring->base = NULL;
++	tre_ring->ctxt_wp = NULL;
+ 	chan_ctxt->rbase = 0;
++	chan_ctxt->rlen = 0;
++	chan_ctxt->rp = 0;
++	chan_ctxt->wp = 0;
++
++	tmp = chan_ctxt->chcfg;
++	tmp &= ~CHAN_CTX_CHSTATE_MASK;
++	tmp |= (MHI_CH_STATE_DISABLED << CHAN_CTX_CHSTATE_SHIFT);
++	chan_ctxt->chcfg = tmp;
++
++	/* Update to all cores */
++	smp_wmb();
+ }
+ 
+ int mhi_init_chan_ctxt(struct mhi_controller *mhi_cntrl,
 -- 
-2.7.4
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
