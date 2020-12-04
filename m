@@ -2,68 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710262CE920
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B14312CE923
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728925AbgLDIAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:00:01 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8684 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728448AbgLDIAA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:00:00 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnQ7f3wmzzkl46;
-        Fri,  4 Dec 2020 15:58:38 +0800 (CST)
-Received: from compute.localdomain (10.175.112.70) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 4 Dec 2020 15:59:07 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Alexander Graf <agraf@suse.de>,
-        "J. German Rivera" <German.Rivera@freescale.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Zhang Changzhong <zhangchangzhong@huawei.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] bus: fsl-mc: fix error return code in fsl_mc_object_allocate()
-Date:   Fri, 4 Dec 2020 16:02:47 +0800
-Message-ID: <1607068967-31991-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1728754AbgLDIBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:01:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728006AbgLDIBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 03:01:12 -0500
+Date:   Fri, 4 Dec 2020 09:01:36 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607068832;
+        bh=KbgMLWqu/q/WfIjx7vih5Bs5YLK0QKMwGERH9O/ubkE=;
+        h=From:To:Cc:Subject:From;
+        b=VzU1lt65LOCZwL6xXpN/k9rdNdUmEb5is/1GPcR1Q0O51OtSQgt7jyUn6eSonrejc
+         i2clp31L7xVq1iFzeqiv4420SaaXW5GyzGrsIQWG8D2bvtr1K0M6im9bBL6vjteXqY
+         8NS46T/TpJhjnYUUsZWRfpQLviGe3GDIJyqNci4g=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ilil Blum Shem-Tov <ilil.blum.shem-tov@intel.com>
+Subject: [PATCH] crypto: asym_tpm: correct zero out potential secrets
+Message-ID: <X8ns4AfwjKudpyfe@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+The function derive_pub_key() should be calling memzero_explicit()
+instead of memset() in case the complier decides to optimize away the
+call to memset() because it "knows" no one is going to touch the memory
+anymore.
 
-Fixes: 197f4d6a4a00 ("staging: fsl-mc: fsl-mc object allocator driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Reported-by: Ilil Blum Shem-Tov <ilil.blum.shem-tov@intel.com>
+Tested-by: Ilil Blum Shem-Tov <ilil.blum.shem-tov@intel.com>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/bus/fsl-mc/fsl-mc-allocator.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ crypto/asymmetric_keys/asym_tpm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/bus/fsl-mc/fsl-mc-allocator.c b/drivers/bus/fsl-mc/fsl-mc-allocator.c
-index e71a6f5..2d7c764 100644
---- a/drivers/bus/fsl-mc/fsl-mc-allocator.c
-+++ b/drivers/bus/fsl-mc/fsl-mc-allocator.c
-@@ -292,8 +292,10 @@ int __must_check fsl_mc_object_allocate(struct fsl_mc_device *mc_dev,
- 		goto error;
+diff --git a/crypto/asymmetric_keys/asym_tpm.c b/crypto/asymmetric_keys/asym_tpm.c
+index 378b18b9bc34..84a5d6af9609 100644
+--- a/crypto/asymmetric_keys/asym_tpm.c
++++ b/crypto/asymmetric_keys/asym_tpm.c
+@@ -354,7 +354,7 @@ static uint32_t derive_pub_key(const void *pub_key, uint32_t len, uint8_t *buf)
+ 	memcpy(cur, e, sizeof(e));
+ 	cur += sizeof(e);
+ 	/* Zero parameters to satisfy set_pub_key ABI. */
+-	memset(cur, 0, SETKEY_PARAMS_SIZE);
++	memzero_explicit(cur, SETKEY_PARAMS_SIZE);
  
- 	mc_adev = resource->data;
--	if (!mc_adev)
-+	if (!mc_adev) {
-+		error = -EINVAL;
- 		goto error;
-+	}
- 
- 	mc_adev->consumer_link = device_link_add(&mc_dev->dev,
- 						 &mc_adev->dev,
+ 	return cur - buf;
+ }
 -- 
-2.9.5
+2.29.2
 
