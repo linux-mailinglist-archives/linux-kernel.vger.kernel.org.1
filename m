@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC54E2CE994
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B506A2CE996
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:29:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729132AbgLDI3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:29:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728067AbgLDI3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:29:09 -0500
-X-Gm-Message-State: AOAM530pPy1UhylqktQmBvlFwA1raLdYzVhHE07EUZgdMYDUS2PPqdDU
-        CFaYahFwDhgdYyK7dbnuOjPtJJboE4u2dNVcsuQ=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607070508;
-        bh=BFz3wtlydRdBCLt2TC7R8FQN/cjuYB3BQdmcqZcvaC8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sMUOuwpM1mjcyB7jBZde6GKfioq7mpVZo5v2qaWgUQtGD59LKTyMibetZjT1GsYuX
-         4EZLfWSZOn5qjOPyHIEuLcJafyb6qkJs7df/PlKByeJb0je+jekrRBAgLF1YiOU5ox
-         lbccItDj6OuOoJ2qZxVymeUSrf/1tBw1MFeHHFAmBx/RS3ytoXjPtUXoBDsdsY9/HD
-         LsrEAKc38CQ3mQM2lYlDcafO0jmukrpx4dURW9sXQ4xIfPKvNpE9KsmE1sVEqX7MQ/
-         xEen1CaZcc0793EA789I3/O2/dgt/hN5OQrjdTXjEK6rHzEzP3NsD1P9Ak+0VfdlxB
-         GlpAdWZCQAHLQ==
-X-Google-Smtp-Source: ABdhPJxHBJQFwzULk9x5VQBenjJYD648I/eZ8dzgx9dnZcZOXrI7Q96m0GQGG2BEeb+MJg4Vyh9/QLizXMl6+0QMev0=
-X-Received: by 2002:a9d:6317:: with SMTP id q23mr2769894otk.251.1607070508028;
- Fri, 04 Dec 2020 00:28:28 -0800 (PST)
-MIME-Version: 1.0
-References: <20201203225458.1477830-1-arnd@kernel.org> <CA+Px+wWmJrS46TzWgKWiufJH7ryB+mOH7H4xfGZex2j=NutfLA@mail.gmail.com>
-In-Reply-To: <CA+Px+wWmJrS46TzWgKWiufJH7ryB+mOH7H4xfGZex2j=NutfLA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 4 Dec 2020 09:28:11 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3qrPa0Jue-eLrXn+ufBsvY4+UQr7SQ9ZHxuEMtvoYMhA@mail.gmail.com>
-Message-ID: <CAK8P3a3qrPa0Jue-eLrXn+ufBsvY4+UQr7SQ9ZHxuEMtvoYMhA@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: cros_ec_codec: fix uninitialized memory read
-To:     Tzung-Bi Shih <tzungbi@google.com>
-Cc:     Cheng-Yi Chiang <cychiang@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <groeck@chromium.org>,
-        ALSA development <alsa-devel@alsa-project.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S1728811AbgLDI3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:29:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726037AbgLDI3k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 03:29:40 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D43C061A4F;
+        Fri,  4 Dec 2020 00:29:00 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id lt17so7496533ejb.3;
+        Fri, 04 Dec 2020 00:29:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VuVUapvBZOzCnZE6zLH38tG2kKBhvbLGgD5G9pUcXeI=;
+        b=hneajKGE+rdsfgBYYw3euCHldlrLYtD1ukxgFTpwxxtSVtDWTHKhHE4hFghC/tyYYy
+         uaXNnf2OhdosXlN+BkBwweQDHGS1uI5HP6rWPMuZ+LavT1I/oNGlAQBJ0Hh5UXj2Aecg
+         zzi3mARA/ZIwgoElv4L/gOT4keBgDgE43Q7/jXEoGSHwlw7Z767FN2Joe6sjKGekPY4l
+         IXJ/+UFj4+BFLX450SYy+btZUI+Pp0oMUYjF9M2q0ggDmLCbo4FLmtAZpP+xteYF3HZt
+         fK7UOtus9sL3GYbY91VDyQuHafSdNOLGFLo0Ep9rwD2X26dY5VytJDhjkXVPAJuTqqYR
+         D/cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VuVUapvBZOzCnZE6zLH38tG2kKBhvbLGgD5G9pUcXeI=;
+        b=JzTpbhnNt89BQtDsvu5HjmYMFKVtxmiL2TPOR9wX4OpLRy0gb3PFtuSutGdru0jIhO
+         PFPlFAgJ0j2+Y9gptStbsG/5hXSh8aeedGwi5H/CZP22llqBFX3dgo+U3VGIJLVPokCn
+         wWIqdOV/MoeGoTw124fW5Bh1sdM2ozlcFoqjy7AZ1K9jQ6vdN3+/p4UHDg6Bv/cqyfWD
+         4EbGsr5zOtBQxYlfomzy8CwOlRS5xKeseu3hLdRhC29uEwoRSqomRZ9Yk+aegkXZAwy9
+         Vw1PyC5rZxrbZeSTXrr/gfxfbpX89sRbFRID2dcA0X0RhqlRaQm/W/Hb9dGOnDgbTM1Z
+         fZLQ==
+X-Gm-Message-State: AOAM530oOiP6pQVdr+UF1nYnOyiggZnj++60CuRM+8Xo/RdTENG3qPj2
+        b0dyqxmywoGXrk9Lh+ZIOcE=
+X-Google-Smtp-Source: ABdhPJxMORfce2kUQwReZ47M86buZbLdNB+F//gpPJa8iRX+0NAazl0bgcTgWX+pNWP/NM8NR/UWNg==
+X-Received: by 2002:a17:906:1412:: with SMTP id p18mr6177462ejc.480.1607070538872;
+        Fri, 04 Dec 2020 00:28:58 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id q19sm2589800ejz.90.2020.12.04.00.28.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 04 Dec 2020 00:28:58 -0800 (PST)
+Message-ID: <2a682e702de6eb431c7f204962d3e54b67dbd2ff.camel@gmail.com>
+Subject: Re: [PATCH 2/3] scsi: ufs: Keep device power on only
+ fWriteBoosterBufferFlushDuringHibernate == 1
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 04 Dec 2020 09:28:57 +0100
+In-Reply-To: <c4e810873ac9e15735369d0159fbb664@codeaurora.org>
+References: <20201130181143.5739-1-huobean@gmail.com>
+         <20201130181143.5739-3-huobean@gmail.com>
+         <c4e810873ac9e15735369d0159fbb664@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 3:56 AM Tzung-Bi Shih <tzungbi@google.com> wrote:
->
-> On Fri, Dec 4, 2020 at 6:55 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > gcc points out a memory area that is copied to a device
-> > but not initialized:
-> >
-> > sound/soc/codecs/cros_ec_codec.c: In function 'i2s_rx_event':
-> > arch/x86/include/asm/string_32.h:83:20: error: '*((void *)&p+4)' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-> >    83 |   *((int *)to + 1) = *((int *)from + 1);
-> >
-> > Initialize all the unused fields to zero.
-> >
-> > Fixes: 727f1c71c780 ("ASoC: cros_ec_codec: refactor I2S RX")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> Acked-by: Tzung-Bi Shih <tzungbi@google.com>
->
-> In the case in i2s_rx_event(), only the "cmd" member is used.  But it
-> is fine to please the compiler.
+On Fri, 2020-12-04 at 11:26 +0800, Can Guo wrote:
+> > 
+> >        if (!ufshcd_is_wb_allowed(hba))
+> >                return false;
+> > +
+> > +     if (!hba->dev_info.is_hibern8_wb_flush)
+> > +             return false;
+> 
+> The check is in the wrong place - even if say
+> fWriteBoosterBufferFlushDuringHibernate is failed to be enabled,
+> ufshcd_wb_need_flush() still needs to reflect the fact that whether
+> the wb buffer needs to be flushed or not - it should not be decided
+> by the flag.
+> 
+Can,
+you are right, let me take it out from this function, and see if
+acceptable.
 
-I wouldn't do it just to please the compiler. I sent this patch since
-the code clearly copies the uninitialized data here. If only
-one byte is meant to be copied, then we should change the
-function call to not pass the entire structure. I'll send a new
-patch for that.
+Thanks,
+Bean
 
-> struct __ec_align4 ec_param_ec_codec_i2s_rx {
->         uint8_t cmd; /* enum ec_codec_i2s_rx_subcmd */
->         uint8_t reserved[3];
->
->         union {
->             ...
->         };
-> };
->
-> I am a bit curious about, in other use cases of
-> ec_param_ec_codec_i2s_rx, why the compiler doesn't complain about
-> uninitialization of the "reserved" member?
+> Thanks,
+> 
+> Can Guo.
 
-The -Wmaybe-uninitialized warning is fundamentally unreliable.
-In this case, the __constant_memcpy() function accesses the
-members one at a time, and the warning is for the first 'int' array
-member that is completely uninitialized, while the 'reserved'
-part of the structure is still in the first 'int' that is partially initialized.
-
-      Arnd
