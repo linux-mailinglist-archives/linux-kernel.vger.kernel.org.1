@@ -2,121 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0E52CEB3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521832CEB3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729527AbgLDJoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:44:10 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:35687 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726999AbgLDJoK (ORCPT
+        id S2387662AbgLDJoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:44:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726330AbgLDJoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:44:10 -0500
-Received: by mail-ot1-f66.google.com with SMTP id t18so4626799otk.2;
-        Fri, 04 Dec 2020 01:43:54 -0800 (PST)
+        Fri, 4 Dec 2020 04:44:16 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4E6C061A4F;
+        Fri,  4 Dec 2020 01:43:35 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id r3so4669595wrt.2;
+        Fri, 04 Dec 2020 01:43:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=MjqjECPeOH2m0iAxDctLXcUNw5RcIYEsTXl8EIb+gZY=;
+        b=qOS3L9ocGEhG1+ifZHBITCgl+Qej21GCcB+JCclNZbP7GUM5r13hGAWwtnBn7z2QsW
+         4Tmb7wKn4x3RySFfbFZrVAt5n43BFN7gM3w5tB/R0xsKzcr4hiJ9MFmJPg9gHck7Csu2
+         hNl9iocszISKLY5jADOfBOIsylWfdj0fH6veEqqyrlXoJEPoqVKegwO+4uVS0lk4BlJs
+         I8XAtAUWlqSy8jOIJ9WUnmYEwN3WtJPuASGaj42zxGVspGJKYjSVbG+/EQmGPKVZi7j3
+         Zh+txVDyoTCt74IMigr9fmAFxVxrtC85qElAotn54kxD1fueH6h6N0X8L4EfSbzxZ382
+         34bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vWnMuYS3DqYvyte2bJR+CQw9EeKiRYtc7g55CoJJvhY=;
-        b=l+elcDQ/K9JuTc9SR4JYD4YIcTwxyy92JGGraI8Y6oc/gTNAHrj5tIFmmyFIEBsLk+
-         l/REVHMXCyIaiMBVMsJPnMMaSDx1rZ1qm/baC1Q7ta1eJhIA8FpuWCAq725S9AXk5YSw
-         Ug1lxFBCVXXmz3CzpuNYpr11O9c4aXkNkA0zpKFLuc5uVDZVEcLaZMZfQanOjACXjR+b
-         mWQLwrypxNAcZKsWJNwTGQDOav41PpTRKJFqbvBCjs7t0rXYzK8xIPW7Pu70ibASPMxK
-         ebCFgRcVkegA2/pX/jMv9GNWNPVFBAdJXdvIrX1l/A+L9nZ+gkDKiH8C3oh33QqdjMXQ
-         E+CA==
-X-Gm-Message-State: AOAM530Ubm4GNor9mYs5LPSa1YsgSzvcXVTUsrDnBT+CyBsZ/Lghy394
-        C/iqLYyeAr/w6kf3dBrMjgAfgAFnnJ5LMudZ4EmZSSfZ
-X-Google-Smtp-Source: ABdhPJwa2nHZxZfwgznkfp4cNPcEXFV9DPoRmPn1AE2ri2l4LBz9GBMkyMKpdQXRMVrJiVY7AnVg4oB9zB7xPivnnuY=
-X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr2983512oth.250.1607075009366;
- Fri, 04 Dec 2020 01:43:29 -0800 (PST)
-MIME-Version: 1.0
-References: <20201203121916.2870975-1-geert+renesas@glider.be>
- <20201203121916.2870975-2-geert+renesas@glider.be> <CAMj1kXEKdRGQXFh9qMgrWcZnoW5s8Bj5TaKqStU=w1qJ-Nu9zA@mail.gmail.com>
-In-Reply-To: <CAMj1kXEKdRGQXFh9qMgrWcZnoW5s8Bj5TaKqStU=w1qJ-Nu9zA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 4 Dec 2020 10:43:17 +0100
-Message-ID: <CAMuHMdVBCVWWNqFfziGy5RbDRyudV9wm3m62BA4mvmgtvA4Axw@mail.gmail.com>
-Subject: Re: [PATCH v10 1/3] ARM: uncompress: Add be32tocpu macro
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Eric Miao <eric.miao@nvidia.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Lukasz Stelmach <l.stelmach@samsung.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chris Brandt <chris.brandt@renesas.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=MjqjECPeOH2m0iAxDctLXcUNw5RcIYEsTXl8EIb+gZY=;
+        b=smCyJAvcZRyppDasyiAsTRRQ2Tv3ugQohxISh1Voucrvw03/un5l+CFxBmp60XwWKa
+         GlZ819l8BLWdichP7pJ80UxxC4kiOx/9S3E8y4WZv6mmRqKMVr8L6GbrbZbByBCXjhIw
+         qPfqtVMx3DVHS3n39WLLK40UkuatarsMe2mnwRq27l9YEiXwufzZi/FQdq/C6MTrMiCT
+         Lgo8VK2IqVu1xgu4Azxq0SZPb9XbkR6eRU2rwCfVXvvvRMbwChsDVckVQbgO0lZ+GNNI
+         zRahxcNj1ehJRjYRVRGVwWLMeCzjO1/G2U17iDlFVq9e5Mz+EIPmub7whAidv6IQJZE2
+         YS+Q==
+X-Gm-Message-State: AOAM532+x82H5A+t6VobQ+zQWNrwSvPYeRkKu6F8z+5hiJsuJi2EcplL
+        Kj4nh7zXuVszoi8Ttn+2fgE=
+X-Google-Smtp-Source: ABdhPJzncTngv/sB2oooIknou+Rx9IueAWksmTMW8Mo7ghBaoUBuv89giU0hchvNMea0VZ8pSVEaNw==
+X-Received: by 2002:adf:e6cf:: with SMTP id y15mr3873613wrm.403.1607075014510;
+        Fri, 04 Dec 2020 01:43:34 -0800 (PST)
+Received: from einonmac.psycm.cf.ac.uk (81.91.2.81.in-addr.arpa. [81.2.91.81])
+        by smtp.googlemail.com with ESMTPSA id z140sm2565028wmc.30.2020.12.04.01.43.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 01:43:33 -0800 (PST)
+Message-ID: <0ad0411ff960078e599bd2da9a1a0309d55e31b4.camel@gmail.com>
+Subject: Re: [PATCH] ethernet: select CONFIG_CRC32 as needed
+From:   Mark Einon <mark.einon@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Simon Horman <simon.horman@netronome.com>,
+        Jiri Pirko <jiri@resnulli.us>
+Cc:     Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        oss-drivers@netronome.com
+Date:   Fri, 04 Dec 2020 09:43:32 +0000
+In-Reply-To: <20201203232114.1485603-1-arnd@kernel.org>
+References: <20201203232114.1485603-1-arnd@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ard,
+On Fri, 2020-12-04 at 00:20 +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> A number of ethernet drivers require crc32 functionality to be
+> avaialable in the kernel, causing a link error otherwise:
+> 
+> arm-linux-gnueabi-ld: drivers/net/ethernet/agere/et131x.o: in function
+> `et1310_setup_device_for_multicast':
+> et131x.c:(.text+0x5918): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/cadence/macb_main.o: in
+> function `macb_start_xmit':
+> macb_main.c:(.text+0x4b88): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/faraday/ftgmac100.o: in
+> function `ftgmac100_set_rx_mode':
+> ftgmac100.c:(.text+0x2b38): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/freescale/fec_main.o: in
+> function `set_multicast_list':
+> fec_main.c:(.text+0x6120): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld:
+> drivers/net/ethernet/freescale/fman/fman_dtsec.o: in function
+> `dtsec_add_hash_mac_address':
+> fman_dtsec.c:(.text+0x830): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld:
+> drivers/net/ethernet/freescale/fman/fman_dtsec.o:fman_dtsec.c:(.text+0
+> xb68): more undefined references to `crc32_le' follow
+> arm-linux-gnueabi-ld:
+> drivers/net/ethernet/netronome/nfp/nfpcore/nfp_hwinfo.o: in function
+> `nfp_hwinfo_read':
+> nfp_hwinfo.c:(.text+0x250): undefined reference to `crc32_be'
+> arm-linux-gnueabi-ld: nfp_hwinfo.c:(.text+0x288): undefined reference
+> to `crc32_be'
+> arm-linux-gnueabi-ld:
+> drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.o: in function
+> `nfp_resource_acquire':
+> nfp_resource.c:(.text+0x144): undefined reference to `crc32_be'
+> arm-linux-gnueabi-ld: nfp_resource.c:(.text+0x158): undefined
+> reference to `crc32_be'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/nxp/lpc_eth.o: in function
+> `lpc_eth_set_multicast_list':
+> lpc_eth.c:(.text+0x1934): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/rocker/rocker_ofdpa.o: in
+> function `ofdpa_flow_tbl_do':
+> rocker_ofdpa.c:(.text+0x2e08): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/rocker/rocker_ofdpa.o: in
+> function `ofdpa_flow_tbl_del':
+> rocker_ofdpa.c:(.text+0x3074): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/rocker/rocker_ofdpa.o: in
+> function `ofdpa_port_fdb':
+> arm-linux-gnueabi-ld:
+> drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste.o: in function
+> `mlx5dr_ste_calc_hash_index':
+> dr_ste.c:(.text+0x354): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/microchip/lan743x_main.o:
+> in function `lan743x_netdev_set_multicast':
+> lan743x_main.c:(.text+0x5dc4): undefined reference to `crc32_le'
+> 
+> Add the missing 'select CRC32' entries in Kconfig for each of them.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/net/ethernet/agere/Kconfig              | 1 +
+>  drivers/net/ethernet/cadence/Kconfig            | 1 +
+>  drivers/net/ethernet/faraday/Kconfig            | 1 +
+>  drivers/net/ethernet/freescale/Kconfig          | 1 +
+>  drivers/net/ethernet/freescale/fman/Kconfig     | 1 +
+>  drivers/net/ethernet/mellanox/mlx5/core/Kconfig | 1 +
+>  drivers/net/ethernet/microchip/Kconfig          | 1 +
+>  drivers/net/ethernet/netronome/Kconfig          | 1 +
+>  drivers/net/ethernet/nxp/Kconfig                | 1 +
+>  drivers/net/ethernet/rocker/Kconfig             | 1 +
+>  10 files changed, 10 insertions(+)
 
-On Thu, Dec 3, 2020 at 1:50 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> On Thu, 3 Dec 2020 at 13:19, Geert Uytterhoeven <geert+renesas@glider.be> wrote:
-> > DTB stores all values as 32-bit big-endian integers.
-> > Add a macro to convert such values to native CPU endianness, to reduce
-> > duplication.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> > v10:
-> >   - New.
-> > ---
-> >  arch/arm/boot/compressed/head.S | 26 ++++++++++++--------------
-> >  1 file changed, 12 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
-> > index 835ce64f1674c9a2..aabdc544c03aafdc 100644
-> > --- a/arch/arm/boot/compressed/head.S
-> > +++ b/arch/arm/boot/compressed/head.S
-> > @@ -165,6 +165,16 @@
-> >                 orr     \res, \res, \tmp1, lsl #24
-> >                 .endm
-> >
-> > +               .macro  be32tocpu, val, tmp
-> > +#ifndef __ARMEB__
-> > +               /* convert to little endian */
-> > +               eor     \tmp, \val, \val, ror #16
-> > +               bic     \tmp, \tmp, #0x00ff0000
-> > +               mov     \val, \val, ror #8
-> > +               eor     \val, \val, \tmp, lsr #8
-> > +#endif
-> > +               .endm
-> > +
->
-> Thanks for cleaning this up.
->
-> This patch is fine as is.
->
-> Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+For the Agere et131x driver:
 
-Thanks, submitted to rmk's patch tracker.
+Acked-by: Mark Einon <mark.einon@gmail.com>
 
-> However, I would like to note that, since we are touching this code,
-> we might do it properly. (Given the v10, feel free to ignore or defer
-> to a later time)
-
-[...]
-
-Thanks for the suggestion, adding to my list.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
