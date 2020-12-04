@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9260E2CEA6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D952CEA73
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:05:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729422AbgLDJCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:02:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
+        id S1729168AbgLDJEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:04:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgLDJCj (ORCPT
+        with ESMTP id S1728211AbgLDJEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:02:39 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0996C061A52;
-        Fri,  4 Dec 2020 01:01:58 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id y10so1286121plr.10;
-        Fri, 04 Dec 2020 01:01:58 -0800 (PST)
+        Fri, 4 Dec 2020 04:04:36 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FEBC061A52
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 01:03:56 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id v14so6681292lfo.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 01:03:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qJuEMpFeakpm8CLh9OTsyBj5JDMbjjrQXYjCXTp57Ts=;
-        b=V8zGIoeRaecT0z8WXoS/TBaUMP88C+DOu5ESr7bKkfQEhzRVWSfK2b8B85E48On5pa
-         fLOl/C321OUEutrCAJnhqrEAKeARejAc91B2Hw/Vd24ZS+qkgkhvvmM2myZWiY4xMjUY
-         pqr+a5aGBzUD+ClMdT6LoDwPahXOYEBr8uQCxewxgbP+4A1S1IRvi0RQybwNoQRRMtke
-         OiObrtnoZ1cU3A7sMhFqyO2XxMt6ITOekgaQUsrM8uE8fhQaK1BLW7GaaTknjDknlX3i
-         +yBzH07SEYL6LR+bFhy4+fAWLCt6ldF6S7bwoMAbDMr/U/okzOKtFxoxNb2uS2yU54R/
-         hkHg==
+        bh=9eIl/TfXf3DAnCHJTvjBTc2NPdhLLKlNS7U/UUzxHKU=;
+        b=va2ghVLb3DmX1s39aM+Iex7op7cd9cU0tApBoKhZsQNzHsUugDe6hXp8iUdQLKFCJF
+         4kVBSccSEqu4KZ/F6TwouW7QKCNnqIE/D8aRTwq5lmVh06c+WJ0ewJfxNQaqtgPrcX4/
+         1wxB/CD360gFYd0AAfLnWYiTqmdPrLGF+pgEG2V2zxasXn++UvbL6Hd452/7y5DjT6Io
+         CEnUiwTNsGBG2n5l3sgRZwaCzVnrZ6I2yYS4tBgNI41+vxEIHfK6yZmA+TwiESDiQVZd
+         BsTOULm+bREEs5t9ExGw8yNWKYLrt4k6jNVKisPFaKU+A9TesItNET9OpWfyN6xYUl62
+         M2nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qJuEMpFeakpm8CLh9OTsyBj5JDMbjjrQXYjCXTp57Ts=;
-        b=h8Ta2llakgJoUT6Wabr4zBxZgqo3kFRbrziFTks8r8SNw5fO0peLkUwtBfllxPfRK9
-         HkCm/2ZgVu2fHKWj1DdG+HEgBx6/BBu5HpAKvz1gyfko6Ca9y4P8O1ksFDKiAAgXaRAF
-         jSqSS/RUDeAu9EtD8uJXBtVu/+wnloBXEzdzBPnnVQg49SlGZyHxhDZiztni7NMM5BG8
-         ROdNJ5g6voC7W04u8QsoTFf6ScxTlG8BGyEqYzPDFtxX9NRNAgl38vqcym51uK0adt0s
-         dr8+bPsatozElHmOlAocuklH3aCqcScZfum5hsFldT9MUmCTq6cb1dbxQ8ZBaX6jgFFp
-         F/Kg==
-X-Gm-Message-State: AOAM533LHhlvha20hHImkQpoD1K6djVPjAT5XuJb5XTRecEF1iw3soWp
-        t4IWqeFfeWBV9sXo5IuhHCGqZTW9e3l/8Z1QkLs=
-X-Google-Smtp-Source: ABdhPJymOI5g3U7qVxiizeZ5s8Vuq6qmqImYaTJGpA2MTNfQYf28aMcDLxSUFzSz87Vaystx535lX9o40oX0jQbWC84=
-X-Received: by 2002:a17:90a:8b8b:: with SMTP id z11mr3202614pjn.117.1607072518441;
- Fri, 04 Dec 2020 01:01:58 -0800 (PST)
+        bh=9eIl/TfXf3DAnCHJTvjBTc2NPdhLLKlNS7U/UUzxHKU=;
+        b=Bjs+B5fs9DYK+kCUCQ3MwEhDB1b/X7w6NV6iL22cG2/0mQ2ZSS6xAvVHjDERAsJlYe
+         icCHVgzMW2loiVgIm0MaPVf0ZG50dECM9/PsySx6k1r2nVooeVvnrVL6HJnF3FbkC37D
+         SE2fyx4HnaVoXF4l4MzENqGPAV8iec6XUjfOW6OlNKCAR3Dxvq5imrXQ9+IMefS1AzWL
+         l87tJ7/1MQHIfDDXY1oHPNOwXumi6GeYuTZaK/uYxBQ6fcmbqE/CRLV3YFfgXpFYNwMR
+         blaSe1+9tRU+0+5sOnC2EkR1fi6j1bBpPfbt0+qOvSG67/xon8nCm0yTpJFUwDQlCuqT
+         KuKQ==
+X-Gm-Message-State: AOAM533XC/1FVppH/l6KWek/b2utWmB1sykpBBmQ+23ZH4SXa627Fc9k
+        HUmZRigObNQnxg9CsAmmMGwusd0RBa9JFIl6izV18Q==
+X-Google-Smtp-Source: ABdhPJyoHESKYA7IrkIFAt32QtmombtH52ErTrcHhA9JhPlHGC/3rwDAqReT28YMaTsKNRSqbUvel8daR4JYsosWa28=
+X-Received: by 2002:a05:6512:3e7:: with SMTP id n7mr2784417lfq.585.1607072634424;
+ Fri, 04 Dec 2020 01:03:54 -0800 (PST)
 MIME-Version: 1.0
-References: <1607071819-34127-1-git-send-email-zhangchangzhong@huawei.com>
-In-Reply-To: <1607071819-34127-1-git-send-email-zhangchangzhong@huawei.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Fri, 4 Dec 2020 10:01:47 +0100
-Message-ID: <CAJ8uoz0LCkR+zHKSto9JyTqeybRXqF1SbH_B6cBHu9n5r-UXKA@mail.gmail.com>
-Subject: Re: [PATCH net] xsk: Fix error return code in __xp_assign_dev()
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
+References: <20201125130320.311059-1-coiby.xu@gmail.com>
+In-Reply-To: <20201125130320.311059-1-coiby.xu@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 4 Dec 2020 10:03:43 +0100
+Message-ID: <CACRpkdaYJZxj1QS190dd-hftO+VpAdFWQ8iRezoyw3WAa8h+AQ@mail.gmail.com>
+Subject: Re: [PATCH v4] pinctrl: amd: remove debounce filter setting in IRQ
+ type setting
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Baq Domalaq <domalak@gmail.com>,
+        Pedro Ribeiro <pedrib@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        stable <stable@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 9:49 AM Zhang Changzhong
-<zhangchangzhong@huawei.com> wrote:
+On Wed, Nov 25, 2020 at 2:03 PM Coiby Xu <coiby.xu@gmail.com> wrote:
+
+> Debounce filter setting should be independent from IRQ type setting
+> because according to the ACPI specs, there are separate arguments for
+> specifying debounce timeout and IRQ type in GpioIo() and GpioInt().
 >
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
+> Together with commit 06abe8291bc31839950f7d0362d9979edc88a666
+> ("pinctrl: amd: fix incorrect way to disable debounce filter") and
+> Andy's patch "gpiolib: acpi: Take into account debounce settings" [1],
+> this will fix broken touchpads for laptops whose BIOS set the
+> debounce timeout to a relatively large value. For example, the BIOS
+> of Lenovo AMD gaming laptops including Legion-5 15ARH05 (R7000),
+> Legion-5P (R7000P) and IdeaPad Gaming 3 15ARH05, set the debounce
+> timeout to 124.8ms. This led to the kernel receiving only ~7 HID
+> reports per second from the Synaptics touchpad
+> (MSFT0001:00 06CB:7F28).
 >
-> Fixes: 921b68692abb ("xsk: Enable sharing of dma mappings")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> Existing touchpads like [2][3] are not troubled by this bug because
+> the debounce timeout has been set to 0 by the BIOS before enabling
+> the debounce filter in setting IRQ type.
+>
+> [1] https://lore.kernel.org/linux-gpio/20201111222008.39993-11-andriy.shevchenko@linux.intel.com/
+> [2] https://github.com/Syniurge/i2c-amd-mp2/issues/11#issuecomment-721331582
+> [3] https://forum.manjaro.org/t/random-short-touchpad-freezes/30832/28
+>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190
+> Link: https://lore.kernel.org/linux-gpio/CAHp75VcwiGREBUJ0A06EEw-SyabqYsp%2Bdqs2DpSrhaY-2GVdAA%40mail.gmail.com/
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 > ---
->  net/xdp/xsk_buff_pool.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-> index 9287edd..d5adeee 100644
-> --- a/net/xdp/xsk_buff_pool.c
-> +++ b/net/xdp/xsk_buff_pool.c
-> @@ -175,6 +175,7 @@ static int __xp_assign_dev(struct xsk_buff_pool *pool,
->
->         if (!pool->dma_pages) {
->                 WARN(1, "Driver did not DMA map zero-copy buffers");
-> +               err = -EINVAL;
+> Changelog v4:
+>  - Note in the commit message that this patch depends on other two
+>    patches to fix the broken touchpad [Hans de Goede]
+>  - Add in the commit message that one more touchpad could be fixed.
 
-Good catch! My intention here by not setting err is that it should
-fall back to copy mode, which it does. The problem is that the
-force_zc flag is disregarded when err is not set (see exit code below)
-and your patch fixes that. If force_zc is set, we should exit out with
-an error, not fall back. Could you please write about this in your
-cover letter and send a v2?
+Patch applied for fixes adding a reference to Andy's commit.
+Thanks for sorting this out!
 
-BTW, what is the "Hulk Robot" that is in your Reported-by tag?
-
-Thank you: Magnus
-
-err_unreg_xsk:
-        xp_disable_drv_zc(pool);
-err_unreg_pool:
-        if (!force_zc)
-                err = 0; /* fallback to copy mode */
-        if (err)
-                xsk_clear_pool_at_qid(netdev, queue_id);
-        return err;
-
->                 goto err_unreg_xsk;
->         }
->         pool->umem->zc = true;
-> --
-> 2.9.5
->
+Yours,
+Linus Walleij
