@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BD12CE995
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 628122CE99F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729177AbgLDI3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:29:18 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8685 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbgLDI3S (ORCPT
+        id S1729044AbgLDIbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:31:14 -0500
+Received: from mout.kundenserver.de ([212.227.17.13]:42415 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgLDIbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:29:18 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnQnW45h2zkkCN;
-        Fri,  4 Dec 2020 16:27:59 +0800 (CST)
-Received: from compute.localdomain (10.175.112.70) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 4 Dec 2020 16:28:26 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Smith <alex.smith@imgtec.com>
-CC:     Zhang Changzhong <zhangchangzhong@huawei.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] memory: jz4780_nemc: Fix potential NULL dereference in jz4780_nemc_probe()
-Date:   Fri, 4 Dec 2020 16:31:57 +0800
-Message-ID: <1607070717-32880-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 4 Dec 2020 03:31:14 -0500
+Received: from [192.168.1.155] ([95.114.158.118]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1McY0J-1kAPBb3rJt-00cyWv; Fri, 04 Dec 2020 09:28:31 +0100
+Subject: Re: [PATCH] drivers: gpio: add virtio-gpio guest driver
+To:     Michael Walle <michael@walle.cc>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv@lists.infradead.org
+References: <20201127183003.2849-1-info@metux.net>
+ <CAMpxmJXJLTzM20xLCoM4spjibXbA-FfdPmOBp1QcV+9cScNNMw@mail.gmail.com>
+ <f14c0197-b346-7af5-9dd0-9b8018baaeaf@metux.net>
+ <b287f185d554b5a87b82ea8ca79cb5a2@walle.cc>
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+Message-ID: <8ab347b9-8b1a-f49f-d194-f98284fa6099@metux.net>
+Date:   Fri, 4 Dec 2020 09:28:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+In-Reply-To: <b287f185d554b5a87b82ea8ca79cb5a2@walle.cc>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:dUT0JUegZ42giGfrKmvHoKDvhv2oHRjR2063rWeXiFKSlSKKSyF
+ WV3WiUrtvsZF8oudGAy6r09BIw/6WCr/bvdKoDhqqeFsgRNMxZiIcr/bEbVJVAbNONrMlLL
+ ZKyfCItATcn+5Cjf9IiwAlWeioaYBVHkZbBmOtEJMapTGLJGku2ayhdFc+ZdiwURrgBL1zQ
+ eYyGWJ48hhAM00fOJggdg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wJpMIBpJjRM=:Zv5F/JE0GNEQiLQcvQT3Kk
+ pvvBPGjOoKfmD6WIu2hZZcnJuc4GTp8QcZIOCWowwKSVSAYayPuVlHPEQBSd5V6Q1xlMbogB1
+ ZWbgeu2rVH0pueqyXhtJgRoLMTBBdPGQ8mirjUMQ7NR1LUc9HrN2CWbR/51Ggqh4j9F9o0MuA
+ 3acqKkusqAK1L0lguerq37BmBS7ugEVE4jJurmX+A4lhZ1+NNIpRcIr5sxHXQCmT/8aq/F1rJ
+ KdlTugkX5k5yx9l+2MusPfQefa6xGnZpi5GRsi/CvyJh6aZDDuk3csd7iDLX6/IF/qYkGx6g1
+ NFg6+7jGf9gJ+bSkiuomIcRIsWd9YFvB9RV/YO+OhY1uhUajnKCIsiRRG+YX2Unkn98FNq044
+ wVDPk/nv94eA/WxauJpokuglPDiEl86izI+N7eEyp5db3b9Ziib556pDZqpfk
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-platform_get_resource() may fail and return NULL, so we should
-better check it's return value to avoid a NULL pointer dereference
-a bit later in the code.
+On 03.12.20 23:35, Michael Walle wrote:
+> Am 2020-12-03 20:00, schrieb Enrico Weigelt, metux IT consult:
+>> On 02.12.20 15:15, Bartosz Golaszewski wrote:
+>>>> +               bufwalk = name_buffer;
+>>>> +
+>>>> +               while (idx < priv->num_gpios &&
+>>>> +                      bufwalk < (name_buffer+cf.names_size)) {
+>>>> +                       gpio_names[idx] = (strlen(bufwalk) ? bufwalk
+>>>> : NULL);
+>>>> +                       bufwalk += strlen(bufwalk)+1;
+>>>> +                       idx++;
+>>>
+>>>
+>>> Something's wrong with indentation here.
+>>
+>> i dont think so: the "bufwalk ..." line belongs to the while expression
+>> and is right under the "idx", as it should be. I didn't want to break up
+>> at the "<" operator. shall i do this instead ?
+> 
+> Or don't break the lines at all. Both lines don't add up to more than
+> 100 chars,
+> right?
 
-This is detected by Coccinelle semantic patch.
+IIRC checkpatch complains at 80 chars. Has that been changed ?
 
-@@
-expression pdev, res, n, t, e, e1, e2;
-@@
 
-res = \(platform_get_resource\|platform_get_resource_byname\)(pdev, t,
-n);
-+ if (!res)
-+   return -EINVAL;
-... when != res == NULL
-e = devm_ioremap(e1, res->start, e2);
+--mtx
 
-Fixes: 911a88829725 ("memory: jz4780-nemc: driver for the NEMC on JZ4780 SoCs")
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- drivers/memory/jz4780-nemc.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/memory/jz4780-nemc.c b/drivers/memory/jz4780-nemc.c
-index 3ec5cb0..465ea92 100644
---- a/drivers/memory/jz4780-nemc.c
-+++ b/drivers/memory/jz4780-nemc.c
-@@ -291,6 +291,8 @@ static int jz4780_nemc_probe(struct platform_device *pdev)
- 	nemc->dev = dev;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res)
-+		return -EINVAL;
- 
- 	/*
- 	 * The driver currently only uses the registers up to offset
 -- 
-2.9.5
-
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
