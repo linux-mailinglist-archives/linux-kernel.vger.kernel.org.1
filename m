@@ -2,196 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C852CED59
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFB62CED68
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388176AbgLDLnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:43:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38754 "EHLO mail.kernel.org"
+        id S1728737AbgLDLrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:47:20 -0500
+Received: from mga11.intel.com ([192.55.52.93]:58576 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728721AbgLDLnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:43:49 -0500
-Date:   Fri, 4 Dec 2020 12:44:24 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607082188;
-        bh=fq/9ik6SfqapT/k/I6QzVE0S1KeSa8ddttOC6wf8sP8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k10zOjlHjxusAPfYissHzBSFO43kto7VEIXNsGmUC0OjchoyvsaKGNdVZshTT0Jxy
-         mK7Yi+BabyG/oLIBm/zVdriuU/I8pg8YFVWokUXqkLmwB4XxiYZWlkkzerUhEjbTSh
-         RDjaWA925XCOiE4CZGO/2+NJzSLp7zlszoucdtoA=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     broonie@kernel.org, lgirdwood@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, jgg@nvidia.com,
-        Kiran Patil <kiran.patil@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] driver core: auxiliary bus: minor coding style tweaks
-Message-ID: <X8ohGE8IBKiafzka@kroah.com>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
- <X8ogtmrm7tOzZo+N@kroah.com>
- <X8og8xi3WkoYXet9@kroah.com>
- <X8ohB1ks1NK7kPop@kroah.com>
+        id S1727100AbgLDLrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 06:47:18 -0500
+IronPort-SDR: 6O3PvRfDTG3ErnCOeapQceG0wI9dCTLys2MAn4LnuSnfP83fBmtQgj0EbmaKk6ltubhl4j2thT
+ obkKr8zWry1A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="169857506"
+X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
+   d="scan'208";a="169857506"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:45:37 -0800
+IronPort-SDR: slZITTdZZgS3TJf6ncwEHOUcWPDqpSd03g7ZcabsatqOfCMNKSDL+aDwvNNYba732ekCMsLipC
+ j1fMqV9PYD6g==
+X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
+   d="scan'208";a="482361261"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:45:34 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 5DF3720676; Fri,  4 Dec 2020 13:45:32 +0200 (EET)
+Date:   Fri, 4 Dec 2020 13:45:32 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: media: i2c: add OV02A10 image sensor driver
+Message-ID: <20201204114532.GT852@paasikivi.fi.intel.com>
+References: <9af089ea-2532-68ac-5d22-97a669ccec91@canonical.com>
+ <CAHp75Ve7Sdf=Zy5N1LN_w22=YwPgWWR-FZtrQcAkOF=ViT2Kbw@mail.gmail.com>
+ <8eb453c7-a221-e741-5fe5-655e59075f34@canonical.com>
+ <CAHp75VffBjhvuZ1Uy5Eo5qSiZ4w-+dhH5cR_XgmqGvxtrMd3uQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X8ohB1ks1NK7kPop@kroah.com>
+In-Reply-To: <CAHp75VffBjhvuZ1Uy5Eo5qSiZ4w-+dhH5cR_XgmqGvxtrMd3uQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Thu, Dec 03, 2020 at 08:30:03PM +0200, Andy Shevchenko wrote:
+> On Thu, Dec 3, 2020 at 8:24 PM Colin Ian King <colin.king@canonical.com> wrote:
+> > On 03/12/2020 18:10, Andy Shevchenko wrote:
+> > > On Thu, Dec 3, 2020 at 8:03 PM Colin Ian King <colin.king@canonical.com> wrote:
+> > >
+> > >> Static analysis on linux-next with Coverity has detected an issue with
+> > >> the following commit:
+> > >
+> > > If you want to fix it properly, see my comments below...
+> > >
+> > >> 529 static int ov02a10_s_stream(struct v4l2_subdev *sd, int on)
+> > >> 530 {
+> > >> 531        struct ov02a10 *ov02a10 = to_ov02a10(sd);
+> > >> 532        struct i2c_client *client =
+> > >> v4l2_get_subdevdata(&ov02a10->subdev);
+> > >>
+> > >>    1. var_decl: Declaring variable ret without initializer.
+> > >>
+> > >> 533        int ret;
+> > >> 534
+> > >> 535        mutex_lock(&ov02a10->mutex);
+> > >> 536
+> > >>
+> > >>    2. Condition ov02a10->streaming == on, taking true branch.
+> > >>
+> > >> 537        if (ov02a10->streaming == on)
+> > >>
+> > >>    3. Jumping to label unlock_and_return.
+> > >>
+> > >> 538                goto unlock_and_return;
+> > >> 539
+> > >> 540        if (on) {
+> > >> 541                ret = pm_runtime_get_sync(&client->dev);
+> > >> 542                if (ret < 0) {
+> > >
+> > >> 543                        pm_runtime_put_noidle(&client->dev);
+> > >> 544                        goto unlock_and_return;
+> > >
+> > > Instead of two above:
+> > >                        goto err_rpm_put;
+> > >
+> > >> 545                }
+> > >> 546
+> > >> 547                ret = __ov02a10_start_stream(ov02a10);
+> > >> 548                if (ret) {
+> > >> 549                        __ov02a10_stop_stream(ov02a10);
+> > >> 550                        ov02a10->streaming = !on;
+> > >> 551                        goto err_rpm_put;
+> > >> 552                }
+> > >> 553        } else {
+> > >> 554                __ov02a10_stop_stream(ov02a10);
+> > >> 555                pm_runtime_put(&client->dev);
+> > >> 556        }
+> > >> 557
+> > >> 558        ov02a10->streaming = on;
+> > >
+> > > (1)
+> > >
+> > >> 559        mutex_unlock(&ov02a10->mutex);
+> > >> 560
+> > >> 561        return 0;
+> > >> 562
+> > >> 563 err_rpm_put:
+> > >> 564        pm_runtime_put(&client->dev);
+> > >
+> > >> 565 unlock_and_return:
+> > >
+> > > Should be moved to (1).
+> > >
+> > >> 566        mutex_unlock(&ov02a10->mutex);
+> > >> 567
+> > >>
+> > >> Uninitialized scalar variable (UNINIT)
+> > >>     4. uninit_use: Using uninitialized value ret.
+> > >>
+> > >> 568        return ret;
+> > >> 569 }
+> > >>
+> > >> Variable ret has not been initialized, so the error return value is a
+> > >> garbage value. It should be initialized with some appropriate negative
+> > >> error code, or ret could be removed and the return should return a
+> > >> literal value of a error code.
+> > >>
+> > >> I was unsure what value is appropriate to fix this, so instead I'm
+> > >> reporting this issue.
+> > >
+> > Not sure I fully understand how that fixes it.
+> 
+> If you are not sure and have no means to test, then don't bother. This
+> is not the priority driver anyway.
 
-For some reason, the original aux bus patch had some really long lines
-in a few places, probably due to it being a very long-lived patch in
-development by many different people.  Fix that up so that the two files
-all have the same length lines and function formatting styles.
+Arnd sent a patch to address this:
 
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/base/Kconfig     |  2 +-
- drivers/base/auxiliary.c | 58 ++++++++++++++++++++++------------------
- 2 files changed, 33 insertions(+), 27 deletions(-)
+<URL:https://patchwork.linuxtv.org/project/linux-media/patch/20201204082037.1658297-1-arnd@kernel.org/>
 
-diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
-index 040be48ce046..ba52b2c40202 100644
---- a/drivers/base/Kconfig
-+++ b/drivers/base/Kconfig
-@@ -2,7 +2,7 @@
- menu "Generic Driver Options"
- 
- config AUXILIARY_BUS
--	bool
-+	tristate "aux bus!"
- 
- config UEVENT_HELPER
- 	bool "Support for uevent helper"
-diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
-index c44e85802b43..f303daadf843 100644
---- a/drivers/base/auxiliary.c
-+++ b/drivers/base/auxiliary.c
-@@ -50,8 +50,8 @@ static int auxiliary_uevent(struct device *dev, struct kobj_uevent_env *env)
- 	name = dev_name(dev);
- 	p = strrchr(name, '.');
- 
--	return add_uevent_var(env, "MODALIAS=%s%.*s", AUXILIARY_MODULE_PREFIX, (int)(p - name),
--			      name);
-+	return add_uevent_var(env, "MODALIAS=%s%.*s", AUXILIARY_MODULE_PREFIX,
-+			      (int)(p - name), name);
- }
- 
- static const struct dev_pm_ops auxiliary_dev_pm_ops = {
-@@ -113,16 +113,18 @@ static struct bus_type auxiliary_bus_type = {
-  * auxiliary_device_init - check auxiliary_device and initialize
-  * @auxdev: auxiliary device struct
-  *
-- * This is the first step in the two-step process to register an auxiliary_device.
-+ * This is the first step in the two-step process to register an
-+ * auxiliary_device.
-  *
-- * When this function returns an error code, then the device_initialize will *not* have
-- * been performed, and the caller will be responsible to free any memory allocated for the
-- * auxiliary_device in the error path directly.
-+ * When this function returns an error code, then the device_initialize will
-+ * *not* have been performed, and the caller will be responsible to free any
-+ * memory allocated for the auxiliary_device in the error path directly.
-  *
-- * It returns 0 on success.  On success, the device_initialize has been performed.  After this
-- * point any error unwinding will need to include a call to auxiliary_device_uninit().
-- * In this post-initialize error scenario, a call to the device's .release callback will be
-- * triggered, and all memory clean-up is expected to be handled there.
-+ * It returns 0 on success.  On success, the device_initialize has been
-+ * performed.  After this point any error unwinding will need to include a call
-+ * to auxiliary_device_uninit().  In this post-initialize error scenario, a call
-+ * to the device's .release callback will be triggered, and all memory clean-up
-+ * is expected to be handled there.
-  */
- int auxiliary_device_init(struct auxiliary_device *auxdev)
- {
-@@ -149,16 +151,19 @@ EXPORT_SYMBOL_GPL(auxiliary_device_init);
-  * @auxdev: auxiliary bus device to add to the bus
-  * @modname: name of the parent device's driver module
-  *
-- * This is the second step in the two-step process to register an auxiliary_device.
-+ * This is the second step in the two-step process to register an
-+ * auxiliary_device.
-  *
-- * This function must be called after a successful call to auxiliary_device_init(), which
-- * will perform the device_initialize.  This means that if this returns an error code, then a
-- * call to auxiliary_device_uninit() must be performed so that the .release callback will
-- * be triggered to free the memory associated with the auxiliary_device.
-+ * This function must be called after a successful call to
-+ * auxiliary_device_init(), which will perform the device_initialize.  This
-+ * means that if this returns an error code, then a call to
-+ * auxiliary_device_uninit() must be performed so that the .release callback
-+ * will be triggered to free the memory associated with the auxiliary_device.
-  *
-- * The expectation is that users will call the "auxiliary_device_add" macro so that the caller's
-- * KBUILD_MODNAME is automatically inserted for the modname parameter.  Only if a user requires
-- * a custom name would this version be called directly.
-+ * The expectation is that users will call the "auxiliary_device_add" macro so
-+ * that the caller's KBUILD_MODNAME is automatically inserted for the modname
-+ * parameter.  Only if a user requires a custom name would this version be
-+ * called directly.
-  */
- int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname)
- {
-@@ -166,13 +171,13 @@ int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname)
- 	int ret;
- 
- 	if (!modname) {
--		pr_err("auxiliary device modname is NULL\n");
-+		dev_err(dev, "auxiliary device modname is NULL\n");
- 		return -EINVAL;
- 	}
- 
- 	ret = dev_set_name(dev, "%s.%s.%d", modname, auxdev->name, auxdev->id);
- 	if (ret) {
--		pr_err("auxiliary device dev_set_name failed: %d\n", ret);
-+		dev_err(dev, "auxiliary device dev_set_name failed: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -197,9 +202,9 @@ EXPORT_SYMBOL_GPL(__auxiliary_device_add);
-  * if it does.  If the callback returns non-zero, this function will
-  * return to the caller and not iterate over any more devices.
-  */
--struct auxiliary_device *
--auxiliary_find_device(struct device *start, const void *data,
--		      int (*match)(struct device *dev, const void *data))
-+struct auxiliary_device *auxiliary_find_device(struct device *start,
-+					       const void *data,
-+					       int (*match)(struct device *dev, const void *data))
- {
- 	struct device *dev;
- 
-@@ -217,14 +222,15 @@ EXPORT_SYMBOL_GPL(auxiliary_find_device);
-  * @owner: owning module/driver
-  * @modname: KBUILD_MODNAME for parent driver
-  */
--int __auxiliary_driver_register(struct auxiliary_driver *auxdrv, struct module *owner,
--				const char *modname)
-+int __auxiliary_driver_register(struct auxiliary_driver *auxdrv,
-+				struct module *owner, const char *modname)
- {
- 	if (WARN_ON(!auxdrv->probe) || WARN_ON(!auxdrv->id_table))
- 		return -EINVAL;
- 
- 	if (auxdrv->name)
--		auxdrv->driver.name = kasprintf(GFP_KERNEL, "%s.%s", modname, auxdrv->name);
-+		auxdrv->driver.name = kasprintf(GFP_KERNEL, "%s.%s", modname,
-+						auxdrv->name);
- 	else
- 		auxdrv->driver.name = kasprintf(GFP_KERNEL, "%s", modname);
- 	if (!auxdrv->driver.name)
 -- 
-2.29.2
-
+Sakari Ailus
