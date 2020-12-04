@@ -2,177 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF74F2CF3C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 702FC2CF3CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:17:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729897AbgLDSPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:15:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
+        id S1729945AbgLDSRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:17:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728625AbgLDSPK (ORCPT
+        with ESMTP id S1726173AbgLDSRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:15:10 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637E9C061A51;
-        Fri,  4 Dec 2020 10:14:30 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id p187so6684498iod.4;
-        Fri, 04 Dec 2020 10:14:30 -0800 (PST)
+        Fri, 4 Dec 2020 13:17:02 -0500
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20375C061A4F;
+        Fri,  4 Dec 2020 10:16:22 -0800 (PST)
+Received: by mail-vs1-xe42.google.com with SMTP id v8so3775189vso.2;
+        Fri, 04 Dec 2020 10:16:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZeqAUwb1qImEM55Z2Q5iwzyPLoi4IGltZ9uy0XSgvoA=;
-        b=DlxWxXTxSYoXlBMigwU9B7eSF8h3U64mEFRGgpuxWyB4tnqbnqmiTbOnkvHs0Z6se7
-         jLnGGuLmQiJyPJuDlepCLa1x8ZyUoeZSvy/wil1e6LGz0pcIZKuArtn23x24A4Ybtkmy
-         RZtFfvCshYH9+wfi8v4a8+FneVH/6GPjLEXjLECuYuThnkA6aopWJJkTGV2p1r3KPfXw
-         xe4g4MPZUmPzQMPGs+udzJy2e2fokQoOKoPGry067tuS9untKTQhOCQN0fpB84F3BHp4
-         Xpc14uYkowTJcKvULWj/75MEsUguj8mbADMoDfE0BIEq/H7Wg9JIaChP2kj+RM+Budw0
-         FvrA==
+        bh=MWLXASZeJdeOYt8fL09ZQPfBaLmTlB8Z4GJYyPClGmQ=;
+        b=F10kPjFs82ueAXZxmYIVvOxf9FXPj3+r2qdCN/5ca2g3MmKnI2Z2A9E2Ioeoskx/C1
+         eU4jb/YzfvljD+sjAVtjE/wAu3pR/Ao/DDa7k7ygenA+1/szzwi+xoeh/c58Jtg+wIZL
+         uT5V5Gv8FZVKQYSxbevXTflbBQZtUiJFxkF7MRssg/MUaBiZmXFXQE7aJc4zoOqrxlZX
+         JPwbEcETrsjkAjStGfRn9xlQgrUV7h4QDhQ0WHmyrr1VO7Bal6g4fKyiawc8E1xH0aay
+         SylZka02VmmbtQ6BtxEUO7QE7LXbETHuPg3K2rpb/bgyVVq0TEyMnK9bXKGC7zDcdNfz
+         vmhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZeqAUwb1qImEM55Z2Q5iwzyPLoi4IGltZ9uy0XSgvoA=;
-        b=Q+/bHKkTRapwIaiiXPnT0MIYxo/Wb0UHBE9hKUzgTqqksa4O8XLPSCIKM9z+acQtGA
-         ZYicKSJkUJMbuzEriOx9EAvxfhd4OZjInr9OJTkBQPiBgxvtHqAbzhgDxcr+LJu8BZ2J
-         qPQU9BcOR7cm33SpIhorKfougLNcINkuJuQo5dDXaWaDh71CjOJ2NPJCEgc7QVZIbxC9
-         uFxCkqTE8+UVumjvRrX1VxZCkUL9BW8PPRay5PYTQ1MBQXVYeiPQ5K+ZeIH6EaBSXAUt
-         A7C24GHB+jMZUj5QO4q6P0AHTBF7K5m5jalLwC8qWwGvHBYaIg+wCdrwt5Vs56KCPX+o
-         xs+g==
-X-Gm-Message-State: AOAM530E79d/rZCte8o/B7wqHsa7MSb41G4YBXHpfmReJrJKw8e509hg
-        6K89RR+vZpxP7fS45KyYBWvnfhlUnMtXTO/P5Nw=
-X-Google-Smtp-Source: ABdhPJyiLv+RkBFHWodIIQ+ZNqmMQGrQT1sE2/YwhYnMpKB7HGd/1Sg3rmhYEkgkXI0r/RcV6ca2JvZ1MsFOWbfn4g8=
-X-Received: by 2002:a5e:aa0d:: with SMTP id s13mr2476177ioe.210.1607105669604;
- Fri, 04 Dec 2020 10:14:29 -0800 (PST)
+        bh=MWLXASZeJdeOYt8fL09ZQPfBaLmTlB8Z4GJYyPClGmQ=;
+        b=YoUv8tQF3oZqOqoX30udCcZ3I6CHuUK7MZjE6acTVZI8bNYQip1LbIsrtwMWDhZP6D
+         awEM6aq/P6xlOtgKXD5IfPfDu1B6QbyiX9lqjM6qKTZpEt6w7QJHY79f+irKUCul1qQ2
+         nbNCSykxGwTqbj/Ea7kzxtkp6BChDD57cOiOds9e+7DAa4GMm5WLfa2Ei5TXiMlNDVbF
+         1N9QdpG4rOTfEu9h5/T4Caq1VW8u8gUA4NN0jf7KeHu/clTN11DnF5EFN6JQ2j0bdT2M
+         ZkpyjAzlC7T+t2MySSpbj3o+DCEMVpgUW+UieGhRfMn07kWWNIFEW+EAbfdSs9cmA3Ri
+         zp+A==
+X-Gm-Message-State: AOAM532kX0iMdCwmR70Nh8uO7jrHaJ4MSwYtPCrldi3BfMC8Hwqjhapj
+        YLNZ23JVqyTm5EW3UYGpDqGgTUTIa3CD/bQZK6w=
+X-Google-Smtp-Source: ABdhPJyyI719dKemAEBYCPWMicMfo1HL0TntavWPGmAgnlq2JCZqAnUumEcXhfEDlnCV9u1TKUNYvdvxwl0IavHd7xw=
+X-Received: by 2002:a67:ea02:: with SMTP id g2mr5281276vso.3.1607105781297;
+ Fri, 04 Dec 2020 10:16:21 -0800 (PST)
 MIME-Version: 1.0
-References: <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
- <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
- <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
- <CAM7-yPRBPP6SFzdmwWF5Y99g+aWcp=OY9Uvp-5h1MSDPmsORNw@mail.gmail.com>
- <CAAH8bW-+XnNsd9p3xZ1utmyY24gaBa0ko4tngBii4T+2cMkcYg@mail.gmail.com>
- <CAM7-yPQCWj6rOyLEgOqF3HGkFV1WKtqyVhEtDbS3HW=2A-HuBA@mail.gmail.com>
- <CAM7-yPTtiVnUztE=xpNYgRcZTGd1aX_V9ZHd=2YZYc1uQNBXtw@mail.gmail.com>
- <a0cc0d2e-9c55-8546-f070-26feed5de37f@rasmusvillemoes.dk> <CAM7-yPQrvYUwX-cbgpzhomCTFEi9sQ9iGuLNcL-Fsj7XZ0knhw@mail.gmail.com>
- <CAAH8bW9=J_now4SU=-WzvBOa=ftStgGVpspyw_g7oafbuNHNHQ@mail.gmail.com>
- <20201203185257.GA29072@1wt.eu> <CAM7-yPQiG-akz6SC3m4oPGDMyOq4p8-yf8Kh+pumCoqvWY4w9w@mail.gmail.com>
-In-Reply-To: <CAM7-yPQiG-akz6SC3m4oPGDMyOq4p8-yf8Kh+pumCoqvWY4w9w@mail.gmail.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Fri, 4 Dec 2020 10:14:18 -0800
-Message-ID: <CAAH8bW_5z8PF4xRtMzG3sNbxAR10rwY=7ftL_E2K-TxzNtnarA@mail.gmail.com>
-Subject: Re:
-To:     Yun Levi <ppbuk5246@gmail.com>
-Cc:     Willy Tarreau <w@1wt.eu>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>, dushistov@mail.ru,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
-        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20200926130306.13843-1-kholk11@gmail.com>
+In-Reply-To: <20200926130306.13843-1-kholk11@gmail.com>
+From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
+Date:   Fri, 4 Dec 2020 19:16:10 +0100
+Message-ID: <CAK7fi1akLi8uJTwCtT4pY50JwSYjr8TkwMqyK7pcWxAGCvuqDA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] SDM630/660 Multimedia and GPU clock controllers
+To:     Andy Gross <agross@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, marijns95@gmail.com,
+        Konrad Dybcio <konradybcio@gmail.com>, martin.botka1@gmail.com,
+        MSM <linux-arm-msm@vger.kernel.org>, phone-devel@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 5:36 PM Yun Levi <ppbuk5246@gmail.com> wrote:
+Il giorno sab 26 set 2020 alle ore 15:03 <kholk11@gmail.com> ha scritto:
 >
-> >On Fri, Dec 4, 2020 at 3:53 AM Willy Tarreau <w@1wt.eu> wrote:
-> >
-> > On Thu, Dec 03, 2020 at 10:46:25AM -0800, Yury Norov wrote:
-> > > Yun, could you please stop top-posting and excessive trimming in the thread?
-> >
-> > And re-configure the mail agent to make the "Subject" field appear and
-> > fill it.
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 >
-> >On Thu, Dec 03, 2020 at 10:46:25AM -0800, Yury Norov wrote:
-> > Yun, could you please stop top-posting and excessive trimming in the thread?
-> Sorry to make you uncomfortable... Thanks for advice.
+> This patch series brings up the MultiMedia Clock Controller (MMCC)
+> and the GPU Clock Controller (GPUCC) on the SDM660 series of SoCs,
+> including SDM630, SDM636, SDM660 and SDA variants, where applicable.
 >
-> >On Thu, Dec 03, 2020 at 10:46:25AM -0800, Yury Norov wrote:
-> > As you said, find_last_bit() and proposed find_prev_*_bit() have the
-> > same functionality.
-> > If you really want to have find_prev_*_bit(), could you please at
-> > least write it using find_last_bit(), otherwise it would be just a
-> > blottering.
+> This series depends on "Qualcomm clock fixes and preparation for SDM660",
+> which is required for the drivers to work correctly and to even compile
+> (due to the gfx3d rcg2 changes).
 >
-> Actually find_prev_*_bit call _find_prev_bit which is a common helper function
-> like _find_next_bit.
-> As you know this function is required to support __BIGEDIAN's little
-> endian search.
-> find_prev_bit actually wrapper of _find_prev_bit which have a feature
-> the find_last_bit.
+> This patch series has been tested against the following devices:
+>  - Sony Xperia XA2 Ultra (SDM630 Nile Discovery)
+>  - Sony Xperia 10        (SDM630 Ganges Kirin)
+>  - Sony Xperia 10 Plus   (SDM636 Ganges Mermaid)
 >
-> That makes the semantics difference between find_last_bit and find_prev_bit.
-> -- specify where you find from and
->    In loop, find_last_bit couldn't sustain original size as sentinel
-> return value
->     (we should change the size argument for next searching
->      But it means whenever we call, "NOT SET or NOT CLEAR"'s sentinel
-> return value is changed per call).
+> AngeloGioacchino Del Regno (4):
+>   dt-bindings: clock: Add support for the SDM630 and SDM660 mmcc
+>   clk: qcom: mmcc-sdm660: Add MDP clock source CXC to MDSS GDSC
+>   clk: qcom: Add SDM660 GPU Clock Controller (GPUCC) driver
+>   dt-bindings: clock: Add QCOM SDM630 and SDM660 graphics clock bindings
 >
-> Because we should have _find_prev_bit,
-> I think it's the matter to choose which is better to usein
-> find_prev_bit (find_last_bit? or _find_prev_bit?)
-> sustaining find_prev_bit feature (give size as sentinel return, from
-> where I start).
-> if my understanding is correct.
+> Martin Botka (1):
+>   clk: qcom: Add SDM660 Multimedia Clock Controller (MMCC) driver
 >
-> In my view, I prefer to use _find_prev_bit like find_next_bit for
-> integrated format.
+>  .../devicetree/bindings/clock/qcom,mmcc.yaml  |    2 +
+>  .../bindings/clock/qcom,sdm660-gpucc.yaml     |   75 +
+>  drivers/clk/qcom/Kconfig                      |   18 +
+>  drivers/clk/qcom/Makefile                     |    2 +
+>  drivers/clk/qcom/gpucc-sdm660.c               |  349 ++
+>  drivers/clk/qcom/mmcc-sdm660.c                | 2857 +++++++++++++++++
+>  include/dt-bindings/clock/qcom,gpucc-sdm660.h |   28 +
+>  include/dt-bindings/clock/qcom,mmcc-sdm660.h  |  162 +
+>  8 files changed, 3493 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,sdm660-gpucc.yaml
+>  create mode 100644 drivers/clk/qcom/gpucc-sdm660.c
+>  create mode 100644 drivers/clk/qcom/mmcc-sdm660.c
+>  create mode 100644 include/dt-bindings/clock/qcom,gpucc-sdm660.h
+>  create mode 100644 include/dt-bindings/clock/qcom,mmcc-sdm660.h
 >
-> But In some of the benchmarking, find_last_bit is better than _find_prev_bit,
-> here what I tested (look similar but sometimes have some difference).
+> --
+> 2.28.0
 >
->               Start testing find_bit() with random-filled bitmap
-> [  +0.001850] find_next_bit:                  842792 ns, 163788 iterations
-> [  +0.000873] find_prev_bit:                  870914 ns, 163788 iterations
-> [  +0.000824] find_next_zero_bit:             821959 ns, 163894 iterations
-> [  +0.000677] find_prev_zero_bit:             676240 ns, 163894 iterations
-> [  +0.000777] find_last_bit:                  659103 ns, 163788 iterations
-> [  +0.001822] find_first_bit:                1708041 ns,  16250 iterations
-> [  +0.000539] find_next_and_bit:              492182 ns,  73871 iterations
-> [  +0.000001]
->               Start testing find_bit() with sparse bitmap
-> [  +0.000222] find_next_bit:                   13227 ns,    654 iterations
-> [  +0.000013] find_prev_bit:                   11652 ns,    654 iterations
-> [  +0.001845] find_next_zero_bit:            1723869 ns, 327028 iterations
-> [  +0.001538] find_prev_zero_bit:            1355808 ns, 327028 iterations
-> [  +0.000010] find_last_bit:                    8114 ns,    654 iterations
-> [  +0.000867] find_first_bit:                 710639 ns,    654 iterations
-> [  +0.000006] find_next_and_bit:                4273 ns,      1 iterations
-> [  +0.000004] find_next_and_bit:                3278 ns,      1 iterations
->
->               Start testing find_bit() with random-filled bitmap
-> [  +0.001784] find_next_bit:                  805553 ns, 164240 iterations
-> [  +0.000643] find_prev_bit:                  632474 ns, 164240 iterations
-> [  +0.000950] find_next_zero_bit:             877215 ns, 163442 iterations
-> [  +0.000664] find_prev_zero_bit:             662339 ns, 163442 iterations
-> [  +0.000680] find_last_bit:                  602204 ns, 164240 iterations
-> [  +0.001912] find_first_bit:                1758208 ns,  16408 iterations
-> [  +0.000760] find_next_and_bit:              531033 ns,  73798 iterations
-> [  +0.000002]
->               Start testing find_bit() with sparse bitmap
-> [  +0.000203] find_next_bit:                   12468 ns,    656 iterations
-> [  +0.000205] find_prev_bit:                   10948 ns,    656 iterations
-> [  +0.001759] find_next_zero_bit:            1579447 ns, 327026 iterations
-> [  +0.001935] find_prev_zero_bit:            1931961 ns, 327026 iterations
-> [  +0.000013] find_last_bit:                    9543 ns,    656 iterations
-> [  +0.000732] find_first_bit:                 562009 ns,    656 iterations
-> [  +0.000217] find_next_and_bit:                6804 ns,      1 iterations
-> [  +0.000007] find_next_and_bit:                4367 ns,      1 iterations
->
-> Is it better to write find_prev_bit using find_last_bit?
-> I question again.
+Hello!
+Is this patch series getting lost and forgotten?
+Can this please get some attention before it gets buried forever?
 
-I answer again. It's better not to write find_prev_bit at all and
-learn how to use existing functionality.
-
-Yury
-
-> Thanks for your great advice, But please forgive my fault and lackness.
->
-> HTH.
-> Levi.
+Thanks,
+Angelo
