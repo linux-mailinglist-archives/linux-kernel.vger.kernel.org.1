@@ -2,64 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A702CE755
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 06:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E32A2CE757
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 06:20:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727720AbgLDFTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 00:19:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725300AbgLDFTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 00:19:35 -0500
-Date:   Thu, 3 Dec 2020 21:18:53 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607059135;
-        bh=NTtFOG1GQx90cr9hCi4Q6/ZGEbwo1wz4YjAws8quq+Y=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KeJEBuIP38Tw8Wdzo5/eCldxIhwTUc8sNMSvPvgbFt2S20Y9dxy9kLd62M+gHvkxo
-         O8HVGaq6anDcfW50A8aEF4n/ZpmXLzLoUc4Zzs7+lKhKhxMng0nuuL9adZeytp/OSB
-         LyEAOjTfLbu3fhCdYgGoje7zBqi/3efX5GzhWskoDMWAJVlMbb0qhM8VBslu194Sma
-         4XmZXW8sf7Ysvsv2QL2KYcLZ1PynVMnTRL047LF4GgZFZMt/Wkszc3acv8bt1U89WP
-         nPI79ftT1h9Au9Z6v+kyfAXWUKIEZfx99g53LYngTW0GWixkycvUpetG94nhsFCfTB
-         A2njq7xqQhaGA==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Subject: Re: [f2fs-dev] [PATCH] f2fs: fix race of pending_pages in
- decompression
-Message-ID: <X8nGvfEeTDTLa6FL@sol.localdomain>
-References: <20201204005847.654074-1-daeho43@gmail.com>
- <X8msy1T8uqZ4Z/iR@sol.localdomain>
- <CACOAw_wTFsfgLfrWKRoM1o_HQorJE-=2ztZftQTn+comcpmHxQ@mail.gmail.com>
- <X8m0qbd7rvQyiwOt@sol.localdomain>
- <CACOAw_y2HRE8CDk-HAjA6w_HzGJpRpivPY5zKRMC4_SNYTnTGg@mail.gmail.com>
- <CACOAw_xzKjZcpVTo3aj5sJUQ_BjLr=5ZhnfuyFwYerpyzZu+aw@mail.gmail.com>
- <X8nAParf9GW9LaGV@sol.localdomain>
- <CACOAw_wOShYf23Y0txs6Fk_Qq9JGEjXGRb0MzMxrBxJpzCfLmA@mail.gmail.com>
+        id S1727894AbgLDFUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 00:20:33 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:45014 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgLDFUd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 00:20:33 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B45AE9h063448;
+        Fri, 4 Dec 2020 05:19:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=D3SVi5YfXLIU4troA0CDGC8dn3+fd5w4lAX5Yqvaf1o=;
+ b=GMs1dMZJduuWlpw/xgAxV7ZiEIHlh/vDv1iVQhMFYDhsEhUoV2lD/XBflmYDSKgQktDC
+ JExPkghD0rwj/OH0+xo/WEdpY3S0s1Krehp5r+enTj8POOJdLnIXWpy7zq9kIGslPYCH
+ ftDrB23X4MYJ6SKC2HotYeKIMj09nh3Ag6TMQymI4TpChT17hOVf20wwNc9KCxEkCkjF
+ vkzbs0OHb8nWH17VUeZrazmdD5w0dyxHPd1sLoUSZDTT2E7yKAalPv8BFiWK3XxInK4U
+ S92wneqNfnNLydTJisolCBtr9wyVQIYsXrWXqoOMwxp91aEZj5CDSm286za03cKQLYiy ag== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 353c2b9h30-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 04 Dec 2020 05:19:44 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B45AESf078935;
+        Fri, 4 Dec 2020 05:19:44 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 3540f2ufdm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Dec 2020 05:19:44 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B45JgxH005798;
+        Fri, 4 Dec 2020 05:19:43 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 03 Dec 2020 21:19:42 -0800
+Date:   Fri, 4 Dec 2020 08:19:34 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH] x86/sgx: Return -EINVAL on a zero length buffer in
+ sgx_ioc_enclave_add_pages()
+Message-ID: <20201204051934.GR2789@kadam>
+References: <20201203183527.139317-1-jarkko@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACOAw_wOShYf23Y0txs6Fk_Qq9JGEjXGRb0MzMxrBxJpzCfLmA@mail.gmail.com>
+In-Reply-To: <20201203183527.139317-1-jarkko@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9824 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
+ suspectscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012040029
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9824 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
+ clxscore=1011 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012040029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 02:00:34PM +0900, Daeho Jeong wrote:
-> I think I don't understand how verity works.
-> Right after verity is enabled on a file, is the verity logic working
-> for the whole file data area?
-> Or it's just working for the data area which is updated after verity is enabled?
+On Thu, Dec 03, 2020 at 08:35:27PM +0200, Jarkko Sakkinen wrote:
+> The length documented as
 > 
+>  * @length:     length of the data (multiple of the page size)
+> 
+> Fail with -EINVAL, when user gives a zero length buffer. Right now
+> 'ret' is returned as uninitialized.
+> 
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Link: https://lore.kernel.org/linux-sgx/X8ehQssnslm194ld@mwanda/ 
+> Fixes: c6d26d370767 ("x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES")
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-It's for the whole file.
+Acked-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-My point is just that if there is a bio that saw that verity isn't enabled yet
-when it started and therefore STEP_VERITY didn't get set in the
-bio_post_read_ctx (or the bio_post_read_ctx didn't get allocated due to one not
-being needed), then the filesystem shouldn't change its mind and try to verify
-the pages when the bio completes if verity happened to be enabled concurrently.
-It's too late for that bio.
+regards,
+dan carpenter
 
-- Eric
