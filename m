@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1172CF3BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1922CF3F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387521AbgLDSOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:14:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44466 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387419AbgLDSOf (ORCPT
+        id S1730182AbgLDSXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:23:44 -0500
+Received: from mail.oakviewlaw.com ([184.105.149.4]:36436 "EHLO
+        mail.oakviewlaw.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726276AbgLDSXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:14:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607105589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4jiiSi2OMHYLdag0OnlL3n5HoKBr3a25AnpGnahrkVE=;
-        b=SvXVNBygKR31p1cXqk4HD1B62iGDvVMXwh+TL4VVnj3IoCJLV3DHcSBN3mbBpvIX+LSYsz
-        G9pHusU4aR1AkD0+cudBnLQoeHbTJ0lIkLO555xtLQ6rpTtOH0XDn/NF/VwE5UjI9zcu3v
-        wm3sXQCfeVQzmF0pl819AM+HycBDDrI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262-96BjG46sM5uJfziFAbbziQ-1; Fri, 04 Dec 2020 13:13:05 -0500
-X-MC-Unique: 96BjG46sM5uJfziFAbbziQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 33890858180;
-        Fri,  4 Dec 2020 18:13:03 +0000 (UTC)
-Received: from mail (ovpn-112-211.rdu2.redhat.com [10.10.112.211])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E24931A8A5;
-        Fri,  4 Dec 2020 18:12:56 +0000 (UTC)
-Date:   Fri, 4 Dec 2020 13:12:56 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v2] mm: Don't fault around userfaultfd-registered regions
- on reads
-Message-ID: <X8p8KNJXD3aK9TkF@redhat.com>
-References: <20201201125927.GB11935@casper.infradead.org>
- <20201201223033.GG3277@xz-x1>
- <X8bZk3jTGU8QyJWc@redhat.com>
- <alpine.LSU.2.11.2012021410260.4989@eggly.anvils>
- <20201202234117.GD108496@xz-x1>
- <alpine.LSU.2.11.2012022119010.11674@eggly.anvils>
- <20201203180234.GJ108496@xz-x1>
- <X8lADgHCRqlQi3Xa@redhat.com>
- <20201204023051.GL108496@xz-x1>
- <X8m2qv9h7+e79UjJ@redhat.com>
+        Fri, 4 Dec 2020 13:23:43 -0500
+X-Greylist: delayed 560 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Dec 2020 13:23:43 EST
+Received: from localhost (localhost [127.0.0.1])
+        by mail.oakviewlaw.com (Postfix) with ESMTP id 22B1B4FB77A;
+        Fri,  4 Dec 2020 18:13:23 +0000 (UTC)
+Received: from mail.oakviewlaw.com ([127.0.0.1])
+        by localhost (mail.oakviewlaw.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id QThKpeWE_2As; Fri,  4 Dec 2020 18:13:22 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.oakviewlaw.com (Postfix) with ESMTP id AEF0E4FB6DC;
+        Fri,  4 Dec 2020 18:13:22 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.oakviewlaw.com AEF0E4FB6DC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oakviewlaw.com;
+        s=selector; t=1607105602;
+        bh=O4faEs1u5TKKd2DgIzfqFIrp/N/6fhS+j4xcsYavjXw=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=fl5pvVBOGiOTXsRtBDjf9EbaLoiqA+o07pK6FWJrrdq6a07Ude4kbyj/xK3qLgnxM
+         BKlYLQ+DD8PQnEJAzruhA/EXFNWgQUrFIf+9UibZ7fFdVywBT1q8eLCY8ohCwKsNWC
+         ChRfpRWbZmc0hW2l1zR3TH0+H3wfCIaAo4F2mKDnX5WPrTJ447zi1aYwZvVNwcPFeJ
+         B3uw9BtQwFgT/OBs3zFb1AOt/0mbSQjTxW73QJywE6UG1/laR/INUatKeqbvDlfSNm
+         IE15N2z0zPkDEEnAZO/WuJumYA+j+aUK7RajUgUFLOTtk7Na545vxYECNdroJbx18l
+         Jklr+oFmHuBTg==
+X-Virus-Scanned: amavisd-new at oakviewlaw.com
+Received: from mail.oakviewlaw.com ([127.0.0.1])
+        by localhost (mail.oakviewlaw.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id DkJWENCuXQT4; Fri,  4 Dec 2020 18:13:22 +0000 (UTC)
+Received: from [192.168.1.195] (unknown [91.187.51.3])
+        by mail.oakviewlaw.com (Postfix) with ESMTPSA id E6E4D4FB8AE;
+        Fri,  4 Dec 2020 18:13:11 +0000 (UTC)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X8m2qv9h7+e79UjJ@redhat.com>
-User-Agent: Mutt/2.0.2 (2020-11-20)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: NEDBANK
+To:     Recipients <zimbra@oakviewlaw.com>
+From:   "Mr. Casmir Nkulu" <zimbra@oakviewlaw.com>
+Date:   Fri, 04 Dec 2020 10:13:03 -0800
+Reply-To: serty@webmail.co.za
+Message-Id: <20201204181311.E6E4D4FB8AE@mail.oakviewlaw.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 11:10:18PM -0500, Andrea Arcangeli wrote:
-> from the pte, one that cannot ever be set in any swp entry today. I
-> assume it can't be _PAGE_SWP_UFFD_WP since that already can be set but
-> you may want to verify it...
+Attention: Esteemed Customer
 
-I thought more about the above, and I think the already existing
-pte_swp_mkuffd_wp will just be enough without having to reserve an
-extra bitflag if we encode it as a non migration entry.
+Note that the NED-BANK of RSA  have received the authority by United State =
+of  America Federal Reserve  Bank  in conjunction with the International Mo=
+netary Fund (IMF) and the  World Bank to finally release all pending Lotter=
+y winning payments, Contracts payments, Inheritance/ATM funds and Loan paym=
+ents.
 
-The check:
+Most importantly, we have received banking antennary as stated below for th=
+e transfer of your funds, as such we urgently request that you reconfirm wi=
+th us if you have given such mandate or not, failure to receive immediate r=
+esponse from you within the next seven workings days we shall believe that =
+such mandate was issued by you, to that effect we shall then commence with =
+the transfer of the fund into the bank details below.
 
-if (!pte_present && !pte_none && pte_swp_uffd_wp && not_anonymous_vma && !is_migration_entry)
 
-should be enough to disambiguate it. When setting it, it'd be enough
-to set the pte to the value _PAGE_SWP_UFFD_WP.
+Bank Name: HSBC SINGAPORE
+Bank
+Address: Blk 131 Jurong East Street 13,
 
-Although if you prefer to check for:
+Account N=B0: 486 4761 10
 
-if (!pte_present && !pte_none && swp_type == 1 && swp_offset == 0 && not_anonymous_vma && !is_migration_entry)
+Account name: Mr. Jurong Koui
 
-that would do as well.
+Swift Code: HSBCSGS2XXX
 
-It's up to you, just my preference is to reuse _PAGE_SWP_UFFD_WP since
-it has already to exist, there are already all the pte_swp_*uffd*
-methods available or uffd-wp cannot work.
+Beneficiary: Mr. Jurong Koui
 
-Thanks,
-Andrea
+Address: 131 Jurong Gateway Road
 
+Singapore 600131
+
+
+
+Regards,
+
+Mr Casmir Nkulu
+
+Head Foreign payment Department
+
+NED- Bank RSA
+
+#135 Rivonia roads, Sandown, Johannesburg South Africa
