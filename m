@@ -2,106 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EB22CF17C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D682CF17E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730723AbgLDQDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:03:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
+        id S1730737AbgLDQE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:04:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728355AbgLDQDl (ORCPT
+        with ESMTP id S1728355AbgLDQE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:03:41 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA5FC061A4F;
-        Fri,  4 Dec 2020 08:02:55 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id a6so5942252wmc.2;
-        Fri, 04 Dec 2020 08:02:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Q1yfTlb9bBZ0gNH36CjYMIoHV//7gjPmTR0/ONE5eBo=;
-        b=Fq5VRsGUzKL1rNfyyfzfPtKgF154pn72SL/iiLNp7wtl4FTufNsrsdy77+jBAZlS71
-         ODL1sXYk6CI0OtIji0/B0qSyUu6V8g+c0q0un8rLBh8g3nJjtOmomf317Mo84dsEGWuo
-         1bMW1mniAfZt+8Vt4+MMdCAxXfCGaDFFd62O8hYwhy07xHBB7Y+kFba8u4QDL50SbuNN
-         LV1PndF02tm+fKyIU9B8+GXam3yDZjB/CYKbgltAw0xtxJtiBdpkbVq6uFPYG4o7gL+l
-         AqVFnYeFkuYPrEf9JOwnKlrHkdsEdQXEP9SLg6uVUv6H4icDVzOCx/shQIBLq2tDDAO7
-         6qLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Q1yfTlb9bBZ0gNH36CjYMIoHV//7gjPmTR0/ONE5eBo=;
-        b=a2n9XJbMGZnXTZCAbqcGW6vY1eE3///hXOwp7WU0CDdFoSJws8/6Jsi3h289bZnCoe
-         TObLQ78mEszPXyXFqCEq/4fwBRvDSsMlTk7kooBaD0eMxn74O0aIBosGpJH8Izax/MWz
-         TYg6Nup05aBdUWYZEMLpCarnozlELZJNMvF0L6/yW8O9bboj3DMTq7JQWMGHB8ss5LAo
-         O9krJaTfpXSk7TDOIDFHFAlR+kuOIwYFqzsZWiRQUUL8XyRMu0wXPb3NxTw/4UdWDTXS
-         VD7atLCQNz5+2JjTw6++W47KtOuAs117GoyewjfnMOuljjzc1OBVyC4gQ3073FoMr1fm
-         crwQ==
-X-Gm-Message-State: AOAM531rpKDQtGiwsD4qWXIoNtY1BpIj4DOQM4jRCliaM0Wake7utoG2
-        Oqu5DRrePPtgEJQwU06n/ZZNR1UqLqPIT4DP
-X-Google-Smtp-Source: ABdhPJzctET2f7fFmeWCjVPWYE5J25cDkCuQaq+8jtixNgpsflmmv+PzlEU28cXsDvls9scQjdw3Jg==
-X-Received: by 2002:a1c:9a4d:: with SMTP id c74mr5189275wme.5.1607097774126;
-        Fri, 04 Dec 2020 08:02:54 -0800 (PST)
-Received: from localhost.localdomain (host-79-13-10-171.retail.telecomitalia.it. [79.13.10.171])
-        by smtp.gmail.com with ESMTPSA id d15sm4350075wrx.93.2020.12.04.08.02.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 08:02:53 -0800 (PST)
-From:   Elia Devito <eliadevito@gmail.com>
-X-Google-Original-From: Elia Devito <elia@xvalue.it>
-Cc:     Elia Devito <eliadevito@gmail.com>,
-        Alex Hung <alex.hung@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] intel-hid: add alternative method to enable switches
-Date:   Fri,  4 Dec 2020 17:02:35 +0100
-Message-Id: <20201204160234.36832-1-elia@xvalue.it>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201203212000.35898-1-eliadevito@gmail.com>
-References: <20201203212000.35898-1-eliadevito@gmail.com>
+        Fri, 4 Dec 2020 11:04:29 -0500
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074A7C0613D1;
+        Fri,  4 Dec 2020 08:03:49 -0800 (PST)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id DF8FC6F73; Fri,  4 Dec 2020 11:03:47 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org DF8FC6F73
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1607097827;
+        bh=ERIkl1BDXlF5O6syA29Bwhswr1FuTLeR381zvqC+rxM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b1JQi9U80NaedGr7RHRaQCnG5xEb1uwUKyGuRYMKooN+bXDIHFlQ/Cln4KMm+3YMB
+         2RA6oh05GDlF4ZCKlCkKbUcS+97xKciT+0QrSFC4ldMYSkYip8ldKOr/vTiipIM9RZ
+         eVl7dWRSgWW1tfpFPNJL17gbMtkai9ahTAXcshoQ=
+Date:   Fri, 4 Dec 2020 11:03:47 -0500
+From:   Bruce Fields <bfields@fieldses.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-afs@lists.infradead.org
+Subject: Re: Why the auxiliary cipher in gss_krb5_crypto.c?
+Message-ID: <20201204160347.GA26933@fieldses.org>
+References: <20201204154626.GA26255@fieldses.org>
+ <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com>
+ <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
+ <118876.1607093975@warthog.procyon.org.uk>
+ <122997.1607097713@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <122997.1607097713@warthog.procyon.org.uk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Elia Devito <eliadevito@gmail.com>
+On Fri, Dec 04, 2020 at 04:01:53PM +0000, David Howells wrote:
+> Bruce Fields <bfields@fieldses.org> wrote:
+> 
+> > > Reading up on CTS, I'm guessing the reason it's like this is that CTS is the
+> > > same as the non-CTS, except for the last two blocks, but the non-CTS one is
+> > > more efficient.
+> > 
+> > CTS is cipher-text stealing, isn't it?  I think it was Kevin Coffman
+> > that did that, and I don't remember the history.  I thought it was
+> > required by some spec or peer implementation (maybe Windows?) but I
+> > really don't remember.  It may predate git.  I'll dig around and see
+> > what I can find.
+> 
+> rfc3961 and rfc3962 specify CTS-CBC with AES.
 
-Some convertible have unreliable VGBS return, in these cases we enable
-support when receiving the first event.
+OK, I guess I don't understand the question.  I haven't thought about
+this code in at least a decade.  What's an auxilary cipher?  Is this a
+question about why we're implementing something, or how we're
+implementing it?
 
-Signed-off-by: Elia Devito <eliadevito@gmail.com>
----
- drivers/platform/x86/intel-hid.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel-hid.c
-index d2f892665ec6..054bc37da2cf 100644
---- a/drivers/platform/x86/intel-hid.c
-+++ b/drivers/platform/x86/intel-hid.c
-@@ -423,6 +423,19 @@ static void notify_handler(acpi_handle handle, u32 event, void *context)
- 	struct platform_device *device = context;
- 	struct intel_hid_priv *priv = dev_get_drvdata(&device->dev);
- 	unsigned long long ev_index;
-+	int err;
-+
-+	/*
-+	 * Some convertible have unreliable VGBS return which could cause incorrect
-+	 * SW_TABLET_MODE report, in these cases we enable support when receiving
-+	 * the first event instead of during driver setup.
-+	 */
-+	if (!priv->switches && (event == 0xcc || event == 0xcd)) {
-+		dev_info(&device->dev, "switch event received, enable switches supports\n");
-+		err = intel_hid_switches_setup(device);
-+		if (err)
-+			pr_err("Failed to setup Intel HID switches\n");
-+	}
- 
- 	if (priv->wakeup_mode) {
- 		/*
--- 
-2.28.0
-
+--b.
