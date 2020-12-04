@@ -2,90 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AF22CEA0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FB42CEA14
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729120AbgLDIok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:44:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727056AbgLDIoj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:44:39 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94093C061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 00:43:58 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id v14so6609791lfo.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 00:43:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KET1E+zuak3FlCY4zF7z/1ILHVvC2UNzSxg2qMKY1c0=;
-        b=HxSx5uVAmmhLrfNvxVpDEfIm79FjWwE+/pIOwU9OCK4itu6RvC3I29vkt6XN+XnlQO
-         35qbSosF0096esxtPaOnQPzrtaaFB7ldlWwSM8k6l7VOnau3V36cTZM947r6Yy5jxp6j
-         V/UltUuV1NUcCDh14YfCLi2AQKk8jemX3ddOis+X+igZvQK39fa643oOfJrBRyI7Cdbb
-         paw/zZAVesnY5ei4at4uYjHLTYCaHAvyWaqAf0sGcjOPfNlnYoyO7Pn8kbXazuKA3Z28
-         OYVHXUhRguDKlf0ec/j9CbVkRgRlnWXbPEL1PlzphOt8/IImroG9s1ne8Axif63KivuQ
-         WtEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KET1E+zuak3FlCY4zF7z/1ILHVvC2UNzSxg2qMKY1c0=;
-        b=krRe7MVCKGGv1l2jpgNwH99sQsVM2YXHaHVXujT4x/xIYIlNTEpuU1M+gPZJkTgowM
-         wlXg0GpGUWS5WXcDkejmzE/ASB2LQxXLEybSkEIyCqZN0+SuGI6Owun+wNfNPmxf99gB
-         27PSs89+frwPeI5Mc9p3RMR2M9JsqlbyTEtHjhJd0vW9G3TY9h6BLlIQJX6T3ZQTaiXb
-         PSeuefcvGZ0d0luptssErgw6uSBx/jqnYT0zXO2JAntVN0hAtZLYU3u/5tVuvZmXfIkG
-         kwXKZ6cTaYZHSK5ir1nzIbHt7YBvUem4f/MNm3ZT2XhVoSr3GYuWGdMSWc1SaOd2cvcf
-         K+VA==
-X-Gm-Message-State: AOAM530byj6PU7ZeY4kuLGdgvmuPA1kpQwO27BcRBTVxIpxd/B/Qxe6Y
-        wAsf9F+ifq7g76rbJsNBvtiSUZZnX85a45716dPZ7Q==
-X-Google-Smtp-Source: ABdhPJxSmtAp/6oFP6JQUcOPafIUSq25E/Xy3Sy4VeE2x4VQ+ZmXA8JyQPwmPHVM/WpFq9Ryq05QtDCFXaeHkuFJhTs=
-X-Received: by 2002:ac2:4308:: with SMTP id l8mr2768677lfh.260.1607071437123;
- Fri, 04 Dec 2020 00:43:57 -0800 (PST)
+        id S1729016AbgLDIpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:45:03 -0500
+Received: from gofer.mess.org ([88.97.38.141]:49175 "EHLO gofer.mess.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727056AbgLDIpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 03:45:02 -0500
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id EBCAFC64ED; Fri,  4 Dec 2020 08:44:17 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1607071457; bh=0GRGIK4YsIhbmKXjmZr8ocLCjLu/Ct8TXGitNBF/kEg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jmcX1xwmjgUKHnX93Lw6UIv3GhF+t14P/YJ2GQNB6PzJUS82dgp1ZDh0k6FK/IneF
+         KRZ7gZaGXzfm3577wvxNLOlFQ/xAFLyixCpnccbcQ9WHyidzvl3w6+kRoNp7Ga92r9
+         fPKpVeGnmfpyXXA2vUkgBWBujSFR4LAhQiIAvWJ5DOmnlB0AhLRBDQAyCQInQ8eJLr
+         +6lKh6wJeyr9dWX9qySYLycjvz14Ij3kou9t3fCYzvfRzy6jPcDSkOd1lzzvV0DsJx
+         YntUspU35hmS1VWYYzzDaV0ZEraw4Eqea9nML1Pb0V9OwVIksA8sfICX4BwMatPxlN
+         HDKQrm3r3ZHLA==
+Date:   Fri, 4 Dec 2020 08:44:17 +0000
+From:   Sean Young <sean@mess.org>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, thierry.reding@gmail.com,
+        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
+        rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
+ configuration
+Message-ID: <20201204084417.GA2154@gofer.mess.org>
+References: <202011281128.54eLfMWr-lkp@intel.com>
+ <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
+ <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
+ <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
 MIME-Version: 1.0
-References: <20201120093058.7248-1-zhiyong.tao@mediatek.com> <20201120093058.7248-2-zhiyong.tao@mediatek.com>
-In-Reply-To: <20201120093058.7248-2-zhiyong.tao@mediatek.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 4 Dec 2020 09:43:46 +0100
-Message-ID: <CACRpkdYbVbgUEvGk4t2YHieUaFvMMg1EOR8opuCqm-w4wCYCOg@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: fix low level output voltage issue
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>, srv_heupstream@mediatek.com,
-        hui.liu@mediatek.com, huang eddie <eddie.huang@mediatek.com>,
-        jg_poxu@mediatek.com, Biao Huang <biao.huang@mediatek.com>,
-        Hongzhou Yang <hongzhou.yang@mediatek.com>,
-        Erin Lo <erin.lo@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>, seiya.wang@mediatek.com,
-        sj.huang@mediatek.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 10:31 AM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
+Hi,
 
-> This patch is used to fix low level output voltage issue.
-> A pin is changed from input pull-up to output high.
-> The Dout value of the pin is default as 0.
-> If we change the direction of the pin before the dout value of the pin,
-> It maybe produce a low level output voltage between "input pull-up" and
-> "output high".
->
-> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+On Fri, Dec 04, 2020 at 12:42:15AM +0100, Lino Sanfilippo wrote:
+> > You're storing an unsigned long long (i.e. 64 bits) in an u32. If
+> > you are sure that this won't discard relevant bits, please explain
+> > this in a comment for the cursory reader.
+> 
+> What about an extra check then to make sure that the period has not been truncated,
+> e.g:
+> 
+> 	value = DIV_ROUND_CLOSEST_ULL(state->period, scaler);
+> 
+> 	/* dont accept a period that is too small or has been truncated */
+> 	if ((value < PERIOD_MIN) ||
+> 	    (value != DIV_ROUND_CLOSEST_ULL(state->period, scaler)))
+> 		return -EINVAL;
 
-Patch applied!
+Rather than doing another 64 bit division which is expensive (esp on 32 bit
+kernels), you could assign to u64 and check:
 
-Yours,
-Linus Walleij
+	if (value < PERIOD || value > U32_MAX)
+		return -EINVAL;
+
+> > Also note that round_closed is probably wrong, as .apply() is
+> > supposed to round down the period to the next achievable period. (But
+> > fixing this has to do done in a separate patch.)
+> 
+> According to commit 11fc4edc4 rounding to the closest integer has been introduced
+> to improve precision in case that the pwm controller is used by the pwm-ir-tx driver.
+> I dont know how strong the requirement is to round down the period in apply(), but I
+> can imagine that this may be a good reason to deviate from this rule.
+> (CCing Sean Young who introduced DIV_ROUND_CLOSEST)
+
+There was a problem where the carrier is incorrect for some IR hardware
+which uses a carrier of 455kHz. With periods that small, rounding errors
+do really matter and rounding down might cause problems.
+
+A policy of rounding down the carrier is not the right thing to do
+for pwm-ir-tx, and such a change will probably break pwm-ir-tx in some
+edge cases.
+
+Thanks
+
+Sean
