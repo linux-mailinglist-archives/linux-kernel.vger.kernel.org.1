@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD2E2CF002
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F192CF007
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730314AbgLDOtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:49:35 -0500
-Received: from smtp-bc0a.mail.infomaniak.ch ([45.157.188.10]:59745 "EHLO
-        smtp-bc0a.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729716AbgLDOte (ORCPT
+        id S1730337AbgLDOum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:50:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728722AbgLDOum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:49:34 -0500
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CnbDv6MYszlhrjs;
-        Fri,  4 Dec 2020 15:48:47 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4CnbDt1CdYzlh8TT;
-        Fri,  4 Dec 2020 15:48:46 +0100 (CET)
-Subject: Re: [PATCH v1 1/9] certs: Fix blacklisted hexadecimal hash string
- check
-To:     David Howells <dhowells@redhat.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-References: <20201120180426.922572-2-mic@digikod.net>
- <20201120180426.922572-1-mic@digikod.net>
- <113785.1607090759@warthog.procyon.org.uk>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <c9664a67-61b7-6b4a-86d7-5aca9ff06fa5@digikod.net>
-Date:   Fri, 4 Dec 2020 15:48:45 +0100
-User-Agent: 
+        Fri, 4 Dec 2020 09:50:42 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1548DC061A4F;
+        Fri,  4 Dec 2020 06:50:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=2dK3ir+LWB8RCghaNvBM70NFqDOUmqfEAJGTzJx4JcM=; b=U/+dMsGz+KRkBhCjE3vEtvIyAW
+        2+CuNTlRUDBVogyedVFbcSvgyyc6nsCCy/akGkVFrWCdc95OZxUabkAjoVYa+zS2Qk5CBjTcSZNAT
+        4GGSLyEp1uGV2BFRfJlr8LRONuq+t+EykCwgUKzF9KvadFKpb8HIbHNg2PPzUX1U7W+A=;
+Received: from p200300ccff0a0b001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0a:b00:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1klCPG-0006nV-FI; Fri, 04 Dec 2020 15:49:58 +0100
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1klCPG-00026m-6o; Fri, 04 Dec 2020 15:49:58 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     pali@kernel.org, dmurphy@ti.com, sre@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH] power: bq27xxx: fix polarity of current_now
+Date:   Fri,  4 Dec 2020 15:49:50 +0100
+Message-Id: <20201204144950.8062-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <113785.1607090759@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+current_now has to be negative during discharging and positive during
+charging, the behavior seen is the other way round.
 
-On 04/12/2020 15:05, David Howells wrote:
-> Mickaël Salaün <mic@digikod.net> wrote:
-> 
->> When looking for a blacklisted hash, bin2hex() is used to transform a
->> binary hash to an ascii (lowercase) hexadecimal string.  This string is
->> then search for in the description of the keys from the blacklist
->> keyring.  When adding a key to the blacklist keyring,
->> blacklist_vet_description() checks the hash prefix and the hexadecimal
->> string, but not that this string is lowercase.  It is then valid to set
->> hashes with uppercase hexadecimal, which will be silently ignored by the
->> kernel.
->>
->> Add an additional check to blacklist_vet_description() to check that
->> hexadecimal strings are in lowercase.
-> 
-> I wonder if it would be a better idea to allow the keyring type to adjust the
-> description string - in this instance to change it to all lowercase.
+Tested on GTA04 with Openmoko battery
 
-Right now, this patch helps user space identifies which hashes where
-ignored. I think it is an interesting information on its own because it
-enables to remove a false sense of security and warns about
-mis-blacklisted certificates or binaries.
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+---
+ drivers/power/supply/bq27xxx_battery.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-When authenticity/signature of such hash is taken into account, I also
-prefer to not change the data that user space signed and pushed to the
-kernel, but to teach user space what is correct.
+diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
+index 315e0909e6a4..3ecc18b01d49 100644
+--- a/drivers/power/supply/bq27xxx_battery.c
++++ b/drivers/power/supply/bq27xxx_battery.c
+@@ -1789,7 +1789,7 @@ static int bq27xxx_battery_current(struct bq27xxx_device_info *di,
+ 
+ 	if (di->opts & BQ27XXX_O_ZERO) {
+ 		flags = bq27xxx_read(di, BQ27XXX_REG_FLAGS, true);
+-		if (flags & BQ27000_FLAG_CHGS) {
++		if (!(flags & BQ27000_FLAG_CHGS)) {
+ 			dev_dbg(di->dev, "negative current!\n");
+ 			curr = -curr;
+ 		}
+@@ -1797,7 +1797,7 @@ static int bq27xxx_battery_current(struct bq27xxx_device_info *di,
+ 		val->intval = curr * BQ27XXX_CURRENT_CONSTANT / BQ27XXX_RS;
+ 	} else {
+ 		/* Other gauges return signed value */
+-		val->intval = (int)((s16)curr) * 1000;
++		val->intval = -(int)((s16)curr) * 1000;
+ 	}
+ 
+ 	return 0;
+-- 
+2.20.1
 
-Moreover, modifying the description cannot be done with the
-vet_description-type function and would be a more invasive keyring
-modification because, AFAIK, no current key type already does such change.
-
-> 
-> David
-> 
