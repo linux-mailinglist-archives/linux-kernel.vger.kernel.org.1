@@ -2,82 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756532CED48
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D3C2CED4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:42:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387909AbgLDLlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:41:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgLDLlS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:41:18 -0500
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87151C0613D1;
-        Fri,  4 Dec 2020 03:40:38 -0800 (PST)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 74F6CC63B3; Fri,  4 Dec 2020 11:40:36 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1607082036; bh=X9lIo10egin06IAG613mKzLT1qTrqN6EI08M7P8iL14=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k91fdar8ih3LWqV4ABQ52GXceFOVNux9RtwLETtUZmOZgEWGLQvZHbooqWzFb2OHS
-         vh/AORxGLnyumsBW+lAHt/ywhyogH+0jHnb91N1YJQmsxzVoM5g9+v6biDdm9BAdX3
-         sU0HthYz+/tj0JOwowyva6yjEaB+7AyhSfovWiP1MQn/e4cpcn6IDg2gafsUdQRz4x
-         RO6ALNaTcx1WaMuN60+de9FFKYm0v2e8SuoRPDBWUxfTvJ1ecvCXLy8HBGMgy+34fl
-         nmTDz9EbdCwuqqorzgFGbxndfsOXL7ht3MLwkmPweRe2I1EyWDzQMrMvlgvY96Tfq3
-         V9QuXxJzIgNig==
-Date:   Fri, 4 Dec 2020 11:40:36 +0000
-From:   Sean Young <sean@mess.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, thierry.reding@gmail.com,
-        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
- configuration
-Message-ID: <20201204114036.GB6547@gofer.mess.org>
-References: <202011281128.54eLfMWr-lkp@intel.com>
- <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
- <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
- <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
- <20201204112115.wopx5p5elgte7gad@pengutronix.de>
+        id S1730120AbgLDLmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:42:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725999AbgLDLmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 06:42:11 -0500
+Date:   Fri, 4 Dec 2020 12:42:46 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607082090;
+        bh=U+D8jQyF2x7hxn+mgXKApvlrbJWVFjxv8aEqAKyetO4=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pgzHwqQII3NRBJIRuBKi8KUHFpoykh2NAC8oAmuATii8kf7GxzUu5WwCliXD1+7KD
+         SLwaG5RKj8YEjSZFdnw97/idOqD3UmftByYTQE+u1gB6pQ6RRVQK/is2uWeoAyR3nd
+         lB+8Q9xv9WeKHfmSB1weOGsoHXMTlFdTgFgW5VJ0=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     broonie@kernel.org, lgirdwood@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, jgg@nvidia.com,
+        Kiran Patil <kiran.patil@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <X8ogtmrm7tOzZo+N@kroah.com>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201204112115.wopx5p5elgte7gad@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 12:21:15PM +0100, Uwe Kleine-König wrote:
-> Hello Lino,
+On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
+> From: Dave Ertman <david.m.ertman@intel.com>
 > 
-> On Fri, Dec 04, 2020 at 12:42:15AM +0100, Lino Sanfilippo wrote:
-> > On 29.11.20 at 19:10, Uwe Kleine-König wrote:
-> > > You're storing an unsigned long long (i.e. 64 bits) in an u32. If
-> > > you are sure that this won't discard relevant bits, please explain
-> > > this in a comment for the cursory reader.
-> > 
-> > What about an extra check then to make sure that the period has not been truncated,
-> > e.g:
-> > 
-> > 	value = DIV_ROUND_CLOSEST_ULL(state->period, scaler);
-> > 
-> > 	/* dont accept a period that is too small or has been truncated */
-> > 	if ((value < PERIOD_MIN) ||
-> > 	    (value != DIV_ROUND_CLOSEST_ULL(state->period, scaler)))
-> > 		return -EINVAL;
+> Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> It enables drivers to create an auxiliary_device and bind an
+> auxiliary_driver to it.
 > 
-> I'd make value an unsigned long long and check for > 0xffffffff instead
-> of repeating the (expensive) division. (Hmm, maybe the compiler is smart
-> enough to not actually repeat it, but still.)
+> The bus supports probe/remove shutdown and suspend/resume callbacks.
+> Each auxiliary_device has a unique string based id; driver binds to
+> an auxiliary_device based on this id through the bus.
+> 
+> Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> Reviewed-by: Parav Pandit <parav@mellanox.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Reviewed-by: Martin Habets <mhabets@solarflare.com>
+> Link: https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+> This patch is "To:" the maintainers that have a pending backlog of
+> driver updates dependent on this facility, and "Cc:" Greg. Greg, I
+> understand you have asked for more time to fully review this and apply
+> it to driver-core.git, likely for v5.12, but please consider Acking it
+> for v5.11 instead. It looks good to me and several other stakeholders.
+> Namely, stakeholders that have pressure building up behind this facility
+> in particular Mellanox RDMA, but also SOF, Intel Ethernet, and later on
+> Compute Express Link.
+> 
+> I will take the blame for the 2 months of silence that made this awkward
+> to take through driver-core.git, but at the same time I do not want to
+> see that communication mistake inconvenience other parties that
+> reasonably thought this was shaping up to land in v5.11.
+> 
+> I am willing to host this version at:
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux tags/auxiliary-bus-for-5.11
+> 
+> ...for all the independent drivers to have a common commit baseline. It
+> is not there yet pending Greg's Ack.
+> 
+> For example implementations incorporating this patch, see Dave Ertman's
+> SOF series:
+> 
+> https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
+> 
+> ...and Leon's mlx5 series:
+> 
+> http://lore.kernel.org/r/20201026111849.1035786-1-leon@kernel.org
+> 
+> PS: Greg I know I promised some review on newcomer patches to help with
+> your queue, unfortunately Intel-internal review is keeping my plate
+> full. Again, I do not want other stakeholder to be waiting on me to
+> resolve that backlog.
 
-I wonder where you got that idea from.
+Ok, I spent some hours today playing around with this.  I wrote up a
+small test-patch for this (how did anyone test this thing???) and while
+it feels awkward in places, and it feels like there is still way too
+much "boilerplate" code that a user has to write and manage, I don't
+have the time myself to fix it up right now.
 
+So I'll go apply this to my tree, and provide a tag for everyone else to
+be able to pull from for their different development trees so they can
+work on.
 
-Sean
+I do have 3 follow-on patches that I will send to the list in response
+to this message that I will be applying on top of this patch.  They do
+some minor code formatting changes, as well as change the return type of
+the remove function to make it more future-proof.  That last change will
+require users of this code to change their implementations, but it will
+be obvious what to do as you will get a build warning.
+
+Note, I'm still not comfortable with a few things here.  The
+documentation feels odd, and didn't really help me out in writing any
+test code, which doesn't seem right.  Also the use of strings and '.' as
+part of the api feels awkward, and messy, and of course, totally
+undocumented.
+
+But, as the use of '.' is undocumented, that means we can change it in
+the future!  Because no driver or device name should ever be a user api
+reliant thing, if we come up with a better way to do all of this in the
+future, that shouldn't be a problem to change existing users over to
+this.  So this is a warning to everyone, you CAN NOT depend on the sysfs
+name of a device or bus name for any tool.  If so, your userspace tool
+is broken.
+
+Thanks for everyone in sticking with this, I know it's been a long slog,
+hopefully this will help some driver authors move forward with their
+crazy complex devices :)
+
+thanks,
+
+greg k-h
