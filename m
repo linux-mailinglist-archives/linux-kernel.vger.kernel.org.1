@@ -2,215 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7419F2CE676
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 071CF2CE683
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727641AbgLDD0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 22:26:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727007AbgLDD0W (ORCPT
+        id S1727744AbgLDD1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 22:27:03 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:45259 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727680AbgLDD1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 22:26:22 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C6FC061A52
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 19:25:42 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id s30so5789740lfc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 19:25:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mA1Wv1n0Daq3I8BlilK/8KwVWbxbDL4vk61Ftxly1uc=;
-        b=gRNwNNlw1U8QA2hmClwF+qjbC7oMNWBG1xNWtNAOYvIibzJ7OYQBJuykBpxfEeYLK6
-         QtudSIUg4vOTJ2JWxxKtR7Usjlq603GFH4qvSd994pr/xvSkrcIIn1x4XuGFIQQz69kj
-         qXDfUy4W1cOHXHBaILB5bfY0CxclHj+uoApkgJq2Egs2RFtWeaiKw72CreJobkwWMTUf
-         bC3Y7UKy68ccuf7V9BFbyPo0Zza47K+dhR1UYGvr1B2J8VlAx0Bm/QkXMBIRa+0D592l
-         SEIYbV99QIE943PmG+Osaq3okD/IQmoqa5oQOX8FxTVKfczqgXcXCrFuu4/GgvrUJPYC
-         LyCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mA1Wv1n0Daq3I8BlilK/8KwVWbxbDL4vk61Ftxly1uc=;
-        b=r4yAQc6/s3KSEK6llcRBsWLTrrkUcSxYPPP1f0N3mHejiQ4Slt7Oyp8DZIc/CbxMD1
-         PjPrhSYljGF1Gge/rhprVnI+68Ey6DFwO+V/rIEmPjsRIevhg/O80+ZKjhfRHTTXXdwM
-         IKZBQ14go1NnYndItjWfv4WEDQ1RgQI3zWoQds8MbHP78TSxllhLTd011zhZ2DkHKRfd
-         kMVnY5CeocHUo4D046sSIAVDSWtG2zGJwsDwt2CyWZCF8YzFHSLNxeWkyKLx2ajUx/fR
-         1wSvZdkb0UeiPFomIpB1Bn9hscC8ivlI2i0Zp/xsWMAcDK9CZTedGYx7MAuG/RjeysXA
-         DlUQ==
-X-Gm-Message-State: AOAM531fr36aR4KZssKi27yaAetNaGAqRo4gFOFceWhrIRPbgiq+mZsw
-        +ULxNkxjh5TUMOdtxRhGivCTcbkfNljzRLoYP8mreA==
-X-Google-Smtp-Source: ABdhPJyQn7zdhlYenIte2Cy4pidG0EtQXYrXdRBjQoj/p0aEQBmtulIwC9KYNy7Au8oZ47MyTXsBuo+dbvagHaT006E=
-X-Received: by 2002:a05:6512:338f:: with SMTP id h15mr2502528lfg.40.1607052340341;
- Thu, 03 Dec 2020 19:25:40 -0800 (PST)
+        Thu, 3 Dec 2020 22:27:03 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607052404; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=aiTONYRNd6Usbi2ahCG39HakveG8khxqD02yr5/luQs=;
+ b=FvJOtQE1+syXeBEyoKJdiUXk8R4Pxq10TP4H+zKFR+7OkLNRmtAcECzX+pB/dmc6ghHlhZvl
+ 7EmriMrP+jZLiVghdQI8SNNXciBWRdxN6guLXjmMujR79W0iQdIHT9G8uMl+PvPgkgercA5X
+ j15aGWKAlbAWJy/z58l/g9Geik4=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5fc9ac5856444c64457f01d0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Dec 2020 03:26:16
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CF459C43465; Fri,  4 Dec 2020 03:26:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9BA1C433CA;
+        Fri,  4 Dec 2020 03:26:14 +0000 (UTC)
 MIME-Version: 1.0
-References: <20201203102936.4049556-1-apusaka@google.com> <20201203182903.v1.1.I92d2e2a87419730d60136680cbe27636baf94b15@changeid>
- <20B6F2AD-1A60-4E3C-84C2-E3CB7294FABC@holtmann.org>
-In-Reply-To: <20B6F2AD-1A60-4E3C-84C2-E3CB7294FABC@holtmann.org>
-From:   Archie Pusaka <apusaka@google.com>
-Date:   Fri, 4 Dec 2020 11:25:29 +0800
-Message-ID: <CAJQfnxHDThaJ58iFSpyq4bLopeuATvd+4fOR2AAgbNaabNSMuQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/5] Bluetooth: advmon offload MSFT add rssi support
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Yun-Hao Chung <howardchung@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 04 Dec 2020 11:26:14 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] scsi: ufs: Keep device power on only
+ fWriteBoosterBufferFlushDuringHibernate == 1
+In-Reply-To: <20201130181143.5739-3-huobean@gmail.com>
+References: <20201130181143.5739-1-huobean@gmail.com>
+ <20201130181143.5739-3-huobean@gmail.com>
+Message-ID: <c4e810873ac9e15735369d0159fbb664@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
+On 2020-12-01 02:11, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> Keep device power mode as active power mode and VCC supply only if
+> fWriteBoosterBufferFlushDuringHibernate setting 1 is successful.
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> ---
+>  drivers/scsi/ufs/ufs.h    |  2 ++
+>  drivers/scsi/ufs/ufshcd.c | 11 ++++++++++-
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
+> index d593edb48767..311d5f7a024d 100644
+> --- a/drivers/scsi/ufs/ufs.h
+> +++ b/drivers/scsi/ufs/ufs.h
+> @@ -530,6 +530,8 @@ struct ufs_dev_info {
+>  	bool f_power_on_wp_en;
+>  	/* Keeps information if any of the LU is power on write protected */
+>  	bool is_lu_power_on_wp;
+> +	/* Indicates if flush WB buffer during hibern8 successfully enabled 
+> */
+> +	bool is_hibern8_wb_flush;
+>  	/* Maximum number of general LU supported by the UFS device */
+>  	u8 max_lu_supported;
+>  	u8 wb_dedicated_lu;
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 639ba9d1ccbb..eb7a2534b072 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -285,10 +285,16 @@ static inline void ufshcd_wb_config(struct 
+> ufs_hba *hba)
+>  		dev_err(hba->dev, "%s: Enable WB failed: %d\n", __func__, ret);
+>  	else
+>  		dev_info(hba->dev, "%s: Write Booster Configured\n", __func__);
+> +
+>  	ret = ufshcd_wb_toggle_flush_during_h8(hba, true);
+> -	if (ret)
+> +	if (ret) {
+>  		dev_err(hba->dev, "%s: En WB flush during H8: failed: %d\n",
+>  			__func__, ret);
+> +		hba->dev_info.is_hibern8_wb_flush = false;
+> +	} else {
+> +		hba->dev_info.is_hibern8_wb_flush = true;
+> +	}
+> +
+>  	ufshcd_wb_toggle_flush(hba, true);
+>  }
+> 
+> @@ -5440,6 +5446,9 @@ static bool ufshcd_wb_need_flush(struct ufs_hba 
+> *hba)
+> 
+>  	if (!ufshcd_is_wb_allowed(hba))
+>  		return false;
+> +
+> +	if (!hba->dev_info.is_hibern8_wb_flush)
+> +		return false;
 
-On Thu, 3 Dec 2020 at 22:03, Marcel Holtmann <marcel@holtmann.org> wrote:
->
-> Hi Archie,
->
-> > MSFT needs rssi parameter for monitoring advertisement packet,
-> > therefore we should supply them from mgmt.
-> >
-> > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> > Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> > Reviewed-by: Yun-Hao Chung <howardchung@google.com>
->
-> I don=E2=80=99t need any Reviewed-by if they are not catching an obvious =
-user API breakage.
->
-> > ---
-> >
-> > include/net/bluetooth/hci_core.h | 9 +++++++++
-> > include/net/bluetooth/mgmt.h     | 9 +++++++++
-> > net/bluetooth/mgmt.c             | 8 ++++++++
-> > 3 files changed, 26 insertions(+)
-> >
-> > diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/h=
-ci_core.h
-> > index 9873e1c8cd16..42d446417817 100644
-> > --- a/include/net/bluetooth/hci_core.h
-> > +++ b/include/net/bluetooth/hci_core.h
-> > @@ -246,8 +246,17 @@ struct adv_pattern {
-> >       __u8 value[HCI_MAX_AD_LENGTH];
-> > };
-> >
-> > +struct adv_rssi_thresholds {
-> > +     __s8 low_threshold;
-> > +     __s8 high_threshold;
-> > +     __u16 low_threshold_timeout;
-> > +     __u16 high_threshold_timeout;
-> > +     __u8 sampling_period;
-> > +};
-> > +
-> > struct adv_monitor {
-> >       struct list_head patterns;
-> > +     struct adv_rssi_thresholds rssi;
-> >       bool            active;
-> >       __u16           handle;
-> > };
-> > diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.=
-h
-> > index d8367850e8cd..dc534837be0e 100644
-> > --- a/include/net/bluetooth/mgmt.h
-> > +++ b/include/net/bluetooth/mgmt.h
-> > @@ -763,9 +763,18 @@ struct mgmt_adv_pattern {
-> >       __u8 value[31];
-> > } __packed;
-> >
-> > +struct mgmt_adv_rssi_thresholds {
-> > +     __s8 high_threshold;
-> > +     __le16 high_threshold_timeout;
-> > +     __s8 low_threshold;
-> > +     __le16 low_threshold_timeout;
-> > +     __u8 sampling_period;
-> > +} __packed;
-> > +
-> > #define MGMT_OP_ADD_ADV_PATTERNS_MONITOR      0x0052
-> > struct mgmt_cp_add_adv_patterns_monitor {
-> >       __u8 pattern_count;
-> > +     struct mgmt_adv_rssi_thresholds rssi;
-> >       struct mgmt_adv_pattern patterns[];
-> > } __packed;
->
-> This is something we can not do. It breaks an userspace facing API. Is th=
-e mgmt opcode 0x0052 in an already released kernel?
-
-Yes, the opcode does exist in an already released kernel.
-
-The DBus method which accesses this API is put behind the experimental
-flag, therefore we expect they are flexible enough to support changes.
-Previously, we already had a discussion in an email thread with the
-title "Offload RSSI tracking to controller", and the outcome supports
-this change.
-
-Here is an excerpt of the discussion.
-On Thu, 1 Oct 2020 at 05:58, Miao-chen Chou <mcchou@google.com> wrote:
->
-> Hi Luiz,
->
-> Yes, the RSSI is included as a part of the Adv monitor API, and the RSSI =
-tracking is currently implemented (the patch series is still under review) =
-in bluetoothd and used by bluetoothctl (submenu advmon). As mentioned, we a=
-re planning to offload the RSSI tracking to the controller as well, so ther=
-e will be changes to the corresponding MGMT commands.
-> Thanks for your quick feedback!
->
-> Regards,
-> Miao
->
-> On Wed, Sep 30, 2020 at 2:00 PM Von Dentz, Luiz <luiz.von.dentz@intel.com=
-> wrote:
->>
->> Hi Miao,
->>
->> I do recall seeing these at D-Bus level, or perhaps it was in use by blu=
-etoothctl commands? Anyway since these are still experimental it should be =
-fine to change them.
->> ________________________________
->> From: Miao-chen Chou <mcchou@google.com>
->> Sent: Wednesday, September 30, 2020 12:51 PM
->> To: Holtmann, Marcel <marcel.holtmann@intel.com>; Von Dentz, Luiz <luiz.=
-von.dentz@intel.com>
->> Cc: Alain Michaud <alainmichaud@google.com>; Yun-hao Chung <howardchung@=
-google.com>; Manish Mandlik <mmandlik@google.com>; Archie Pusaka <apusaka@g=
-oogle.com>
->> Subject: Offload RSSI tracking to controller.
->>
->> Hi Luiz and Marcel,
->>
->> Going forward to 2020 Q4, we will be working on offloading the content f=
-iltering to the controllers based on controll's support of MSFT HCI extensi=
-on. In the meantime, we are planning to change the existing MGMT commands o=
-f Adv monitoring to allow the offloading of RSSI tracking shortly. Here is =
-a snippet of potential changes.
->>
->> +struct mgmt_adv_rssi_thresholds {
->> +       __s8 high_rssi_threshold;
->> +       u16 high_rssi_threshold_timeout;
->> +       __s8 low_rssi_threshold;
->> +       u16 high_rssi_threshold_timeout;
->> +} __packed;
->>
->> struct mgmt_cp_add_adv_patterns_monitor {
->>         u8 pattern_count;
->> +        struct mgmt_adv_rssi_thresholds rssi_thresholds;
->>         struct mgmt_adv_pattern patterns[];
->> } __packed;
->>
->> Note that as suggested by you, the D-Bus Adv monitor API which accesses =
-these MGMT commands is currently hidden behind the experimental flag, so th=
-ey are still mutable. We'd like to hear your early feedback on changing the=
- corresponding MGMT commands.
->>
->> Thanks,
->> Miao
+The check is in the wrong place - even if say
+fWriteBoosterBufferFlushDuringHibernate is failed to be enabled,
+ufshcd_wb_need_flush() still needs to reflect the fact that whether
+the wb buffer needs to be flushed or not - it should not be decided
+by the flag.
 
 Thanks,
-Archie
+
+Can Guo.
+
+>  	/*
+>  	 * The ufs device needs the vcc to be ON to flush.
+>  	 * With user-space reduction enabled, it's enough to enable flush
