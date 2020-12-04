@@ -2,147 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 803FC2CE578
+	by mail.lfdr.de (Postfix) with ESMTP id 1386C2CE577
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgLDCAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 21:00:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22515 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725960AbgLDCAv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 21:00:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607047165;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AO9KskpXVmAduaic0zCXBgWNAte8nJh9/1a58DWq0Gw=;
-        b=Tnz/EzaCTvjOVaIZWSQWsCKff+UzSA+d7jpCOcht3DHtw8vgzbVb4oaIIb0x2deyEJW9hN
-        oaEZ7TjExqdXvtCmy+kHy+L9bvXGgRCrV5qiuiDnfxIGRHN91hbwyhbBuUb4xYJ7xP7HX8
-        bsV7E5nRoAxL4hnpOLH8RDuEWI4uN8s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-170-ESXzDMVUOfKMufvWxj-Q8g-1; Thu, 03 Dec 2020 20:59:21 -0500
-X-MC-Unique: ESXzDMVUOfKMufvWxj-Q8g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD4391005513;
-        Fri,  4 Dec 2020 01:59:18 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-98.rdu2.redhat.com [10.10.117.98])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 319671001901;
-        Fri,  4 Dec 2020 01:59:14 +0000 (UTC)
-Subject: Re: [PATCH 2/3] rwsem: Implement down_read_interruptible
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Vasiliy Kulikov <segoon@openwall.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Christopher Yeoh <cyeoh@au1.ibm.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-References: <87tut2bqik.fsf@x220.int.ebiederm.org>
- <87k0tybqfy.fsf@x220.int.ebiederm.org>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <620f0908-c70a-9e54-e1b5-71d086b20756@redhat.com>
-Date:   Thu, 3 Dec 2020 20:59:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726634AbgLDCAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 21:00:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725885AbgLDCAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 21:00:35 -0500
+Date:   Fri, 4 Dec 2020 03:59:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607047194;
+        bh=PeZO2gjoa/V1mPB2S2eb4xzoKaQoCBQJNYYuC39RM/U=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fkPVj2iDVtcQDki1bXaBZyC6/JCAQ9EPTuEh/SqCW0QKTLeRLlNQEC+LzJpbpEy+j
+         R7uI5SZGvy/a7Zh/8eP1E9HGdQsWbTrXCTCYHggD5Hx+CVZUbdRa5OShE8p3zYh2Z/
+         iRlzDDhK/u2X5SqIWPMs3fJCUZLZI2Q7zX5SLFLbJHUfspXrtF68zgDl552wmo4+7v
+         E7VdL+jYGPJgaa4gZgABDwvRkrup7NH4XtF9rOergpT2DyezwMO8d9MVszhUABNV5r
+         L8RGU+u3PzNzRLDha4DbWc7GpxlZXmX4GnRi3Zb4yNhSoh4AKlUoGkO+1kyI7Iuk4B
+         Y4I4HsdX1a8sg==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jerry Snitselaar <jsnitsel@redhat.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v2] tpm_tis: Disable interrupts if interrupt storm
+ detected
+Message-ID: <20201204015948.GA147710@kernel.org>
+References: <20201130232338.106892-1-jsnitsel@redhat.com>
+ <20201201025807.162241-1-jsnitsel@redhat.com>
+ <87czzujjg1.fsf@redhat.com>
+ <878sahmh5w.fsf@redhat.com>
+ <20201202164931.GA91318@kernel.org>
+ <87sg8noixh.fsf@redhat.com>
+ <87lfefe7vm.fsf@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <87k0tybqfy.fsf@x220.int.ebiederm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lfefe7vm.fsf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/3/20 3:11 PM, Eric W. Biederman wrote:
-> In preparation for converting exec_update_mutex to a rwsem so that
-> multiple readers can execute in parallel and not deadlock, add
-> down_read_interruptible.  This is needed for perf_event_open to be
-> converted (with no semantic changes) from working on a mutex to
-> wroking on a rwsem.
->
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
-> ---
->   include/linux/rwsem.h  |  1 +
->   kernel/locking/rwsem.c | 26 ++++++++++++++++++++++++++
->   2 files changed, 27 insertions(+)
->
-> diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
-> index 13021b08b2ed..4c715be48717 100644
-> --- a/include/linux/rwsem.h
-> +++ b/include/linux/rwsem.h
-> @@ -123,6 +123,7 @@ static inline int rwsem_is_contended(struct rw_semaphore *sem)
->    * lock for reading
->    */
->   extern void down_read(struct rw_semaphore *sem);
-> +extern int __must_check down_read_interruptible(struct rw_semaphore *sem);
->   extern int __must_check down_read_killable(struct rw_semaphore *sem);
->   
->   /*
-> diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-> index 54d11cb97551..a163542d178e 100644
-> --- a/kernel/locking/rwsem.c
-> +++ b/kernel/locking/rwsem.c
-> @@ -1345,6 +1345,18 @@ static inline void __down_read(struct rw_semaphore *sem)
->   	}
->   }
->   
-> +static inline int __down_read_interruptible(struct rw_semaphore *sem)
-> +{
-> +	if (!rwsem_read_trylock(sem)) {
-> +		if (IS_ERR(rwsem_down_read_slowpath(sem, TASK_INTERRUPTIBLE)))
-> +			return -EINTR;
-> +		DEBUG_RWSEMS_WARN_ON(!is_rwsem_reader_owned(sem), sem);
-> +	} else {
-> +		rwsem_set_reader_owned(sem);
-> +	}
-> +	return 0;
-> +}
-> +
->   static inline int __down_read_killable(struct rw_semaphore *sem)
->   {
->   	if (!rwsem_read_trylock(sem)) {
-> @@ -1495,6 +1507,20 @@ void __sched down_read(struct rw_semaphore *sem)
->   }
->   EXPORT_SYMBOL(down_read);
->   
-> +int __sched down_read_interruptible(struct rw_semaphore *sem)
-> +{
-> +	might_sleep();
-> +	rwsem_acquire_read(&sem->dep_map, 0, 0, _RET_IP_);
-> +
-> +	if (LOCK_CONTENDED_RETURN(sem, __down_read_trylock, __down_read_interruptible)) {
-> +		rwsem_release(&sem->dep_map, _RET_IP_);
-> +		return -EINTR;
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(down_read_interruptible);
-> +
->   int __sched down_read_killable(struct rw_semaphore *sem)
->   {
->   	might_sleep();
+On Wed, Dec 02, 2020 at 11:11:41PM -0700, Jerry Snitselaar wrote:
+> 
+> Jerry Snitselaar @ 2020-12-02 17:02 MST:
+> 
+> > Jarkko Sakkinen @ 2020-12-02 09:49 MST:
+> >
+> >> On Tue, Dec 01, 2020 at 12:59:23PM -0700, Jerry Snitselaar wrote:
+> >>> 
+> >>> Jerry Snitselaar @ 2020-11-30 20:26 MST:
+> >>> 
+> >>> > Jerry Snitselaar @ 2020-11-30 19:58 MST:
+> >>> >
+> >>> >> When enabling the interrupt code for the tpm_tis driver we have
+> >>> >> noticed some systems have a bios issue causing an interrupt storm to
+> >>> >> occur. The issue isn't limited to a single tpm or system manufacturer
+> >>> >> so keeping a denylist of systems with the issue isn't optimal. Instead
+> >>> >> try to detect the problem occurring, disable interrupts, and revert to
+> >>> >> polling when it happens.
+> >>> >>
+> >>> >> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> >>> >> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> >>> >> Cc: Peter Huewe <peterhuewe@gmx.de>
+> >>> >> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+> >>> >> Cc: Matthew Garrett <mjg59@google.com>
+> >>> >> Cc: Hans de Goede <hdegoede@redhat.com>
+> >>> >> Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
+> >>> >> ---
+> >>> >> v2: drop tpm_tis specific workqueue and use just system_wq
+> >>> >>
+> >>> >> drivers/char/tpm/tpm_tis_core.c | 27 +++++++++++++++++++++++++++
+> >>> >>  drivers/char/tpm/tpm_tis_core.h |  2 ++
+> >>> >>  2 files changed, 29 insertions(+)
+> >>> >>
+> >>> >> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+> >>> >> index 23b60583928b..72cc8a5a152c 100644
+> >>> >> --- a/drivers/char/tpm/tpm_tis_core.c
+> >>> >> +++ b/drivers/char/tpm/tpm_tis_core.c
+> >>> >> @@ -24,6 +24,8 @@
+> >>> >>  #include <linux/wait.h>
+> >>> >>  #include <linux/acpi.h>
+> >>> >>  #include <linux/freezer.h>
+> >>> >> +#include <linux/workqueue.h>
+> >>> >> +#include <linux/kernel_stat.h>
+> >>> >>  #include "tpm.h"
+> >>> >>  #include "tpm_tis_core.h"
+> >>> >>  
+> >>> >> @@ -745,9 +747,23 @@ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
+> >>> >>  {
+> >>> >>  	struct tpm_chip *chip = dev_id;
+> >>> >>  	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+> >>> >> +	static bool check_storm = true;
+> >>> >> +	static unsigned int check_start;
+> >>> >>  	u32 interrupt;
+> >>> >>  	int i, rc;
+> >>> >>  
+> >>> >> +	if (unlikely(check_storm)) {
+> >>> >> +		if (!check_start) {
+> >>> >> +			check_start = jiffies_to_msecs(jiffies);
+> >>> >> +		} else if ((kstat_irqs(priv->irq) > 1000) &&
+> >>> >> +			   (jiffies_to_msecs(jiffies) - check_start < 500)) {
+> >>> >> +			check_storm = false;
+> >>> >> +			schedule_work(&priv->storm_work);
+> >>> >> +		} else if (jiffies_to_msecs(jiffies) - check_start >= 500) {
+> >>> >> +			check_storm = false;
+> >>> >> +		}
+> >>> >> +	}
+> >>> >> +
+> >>> >>  	rc = tpm_tis_read32(priv, TPM_INT_STATUS(priv->locality), &interrupt);
+> >>> >>  	if (rc < 0)
+> >>> >>  		return IRQ_NONE;
+> >>> >> @@ -987,6 +1003,14 @@ static const struct tpm_class_ops tpm_tis = {
+> >>> >>  	.clk_enable = tpm_tis_clkrun_enable,
+> >>> >>  };
+> >>> >>  
+> >>> >> +static void tpm_tis_storm_work(struct work_struct *work)
+> >>> >> +{
+> >>> >> +	struct tpm_tis_data *priv = container_of(work, struct tpm_tis_data, storm_work);
+> >>> >> +
+> >>> >> +	disable_interrupts(priv->chip);
+> >>> >> +	dev_warn(&priv->chip->dev, "Interrupt storm detected, using polling.\n");
+> >>> >> +}
+> >>> >> +
+> >>> >>  int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+> >>> >>  		      const struct tpm_tis_phy_ops *phy_ops,
+> >>> >>  		      acpi_handle acpi_dev_handle)
+> >>> >> @@ -1003,6 +1027,9 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+> >>> >>  	if (IS_ERR(chip))
+> >>> >>  		return PTR_ERR(chip);
+> >>> >>  
+> >>> >> +	priv->chip = chip;
+> >>> >> +	INIT_WORK(&priv->storm_work, tpm_tis_storm_work);
+> >>> >> +
+> >>> >>  #ifdef CONFIG_ACPI
+> >>> >>  	chip->acpi_dev_handle = acpi_dev_handle;
+> >>> >>  #endif
+> >>> >> diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis_core.h
+> >>> >> index edeb5dc61c95..5630f294dc0c 100644
+> >>> >> --- a/drivers/char/tpm/tpm_tis_core.h
+> >>> >> +++ b/drivers/char/tpm/tpm_tis_core.h
+> >>> >> @@ -95,6 +95,8 @@ struct tpm_tis_data {
+> >>> >>  	u16 clkrun_enabled;
+> >>> >>  	wait_queue_head_t int_queue;
+> >>> >>  	wait_queue_head_t read_queue;
+> >>> >> +	struct work_struct storm_work;
+> >>> >> +	struct tpm_chip *chip;
+> >>> >>  	const struct tpm_tis_phy_ops *phy_ops;
+> >>> >>  	unsigned short rng_quality;
+> >>> >>  };
+> >>> >
+> >>> > I've tested this with the Intel platform that has an Infineon chip that
+> >>> > I found the other week. It works, but isn't the complete fix. With this
+> >>> > on top of James' patchset I sometimes see the message "Lost Interrupt
+> >>> > waiting for TPM stat", so I guess there needs to be a check in
+> >>> > wait_for_tpm_stat and request_locality to see if interrupts were
+> >>> > disabled when the wait_event_interruptible_timeout call times out.
+> >>> 
+> >>> As kernel test robot pointed out. kstat_irqs isn't visible when tpm_tis
+> >>> builds as a module. It looks like it is only called by kstat_irq_usrs,
+> >>> and that is only by the fs/proc code. I have a patch to export it, but
+> >>> the i915 driver open codes their own version instead of using it. Is
+> >>> there any reason not to export it?
+> >>
+> >> If you add a patch that exports it, then for coherency it'd be better to
+> >> also patch i915 driver. Jani?
+> >>
+> >> /Jarkko
+> >
+> > It looks like this might not solve all cases. I'm having Lenovo test
+> > another build to make sure I gave them the right code, but they reported
+> > with the L490 that the system hangs right when it is initializing
+> > tpm_tis. I'm working on getting a build on the T490s I have to try there
+> > as well. With the Intel system it spits out that it detects the
+> > interrupt storm, and continues on its way.
+> 
+> The interrupt storm detection code works on the T490s. I'm not sure what
+> is going on with the L490. I will see if I can get access to one.
 
-Acked-by: Waiman Long <longman@redhat.com>
+If you cannot, just send it. We can consider applying it, if it does
+not make life worse everyone else, even if it turned out to have some
+bad spots.
 
--Longman
-
+/Jarkko
