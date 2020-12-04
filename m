@@ -2,135 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DACE2CF39A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 833B42CF3A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387536AbgLDSHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:07:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727997AbgLDSHC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:07:02 -0500
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE059C061A52;
-        Fri,  4 Dec 2020 10:06:21 -0800 (PST)
-Received: by mail-vk1-xa43.google.com with SMTP id 145so1472250vky.2;
-        Fri, 04 Dec 2020 10:06:21 -0800 (PST)
+        id S2387724AbgLDSHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:07:52 -0500
+Received: from mail-bn8nam12on2040.outbound.protection.outlook.com ([40.107.237.40]:26208
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726330AbgLDSHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:07:52 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kyRYQyGQd5+Pa4NAlybcHmqI41wZ4lJr9Msf/ZIJ3hIRvApJ/BCz6W0poSbfMQxBQ+HIIHGYSsXn7ZruGPoo1JopBkvSk9A5qbCrFsBHMb0HWM7EOOaajxZkn+MkpP3GdxrVgzj5onf/FnrA+lWBaJSp1VlXPjgcQ14E5yhgJFLMNylf0+tyEtxUFV5wtQJ0Oxn+qxI7ss4eL2qy0oryD4w2eor56ipFMj4+bFhGu/5Bxq/5FXjqlInFM3HxJsv4ZG+qRRTm7shQFRX57uyL2FHDFuQXQk0kMLZobXKpzNoValDXRnp0NEK6v2eXv7P4fjT+RKnZ6h+bEcK3dObFpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SqtlYiB7SlsGU27zMvWx80kTuZFINQ3U0kB1mhCHcBc=;
+ b=ASLh2CkYjNGWvi77A8jc8IktfmCD1R4kkctHLDp0x3M51ah9g9NPbjkm105vPQgrJTI0qNjmRNdArYUzS0U3J7+BOGZ0FQZBixdGrK5oZCCIPYwnuqtl+KZgfECxZrmEzwIR18su+SoYWJuYj57j2n9yoPoahPEQXjkc+VzoBbcNCZI9bgbPc6qS7J3RvgHj09UiAOtdJnfzeHjk3AtUZD81B5F7OFJ7eWJlCIhDA6SC9ulhwCaHaK/8/RF0u8IcGqi9J3OWzhwr1TOFC5irbjYhH/rZtOPmi/5XBJw+JpvJOXbpK1vqcGBJSppPsjQ4ZEYyuMlVFHz37ny90caQmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QRr0ZNZnscQyUTRMXdBCHRyqUplZRl6ao3xQwu2hQ2c=;
-        b=SwFYmamExdBbtafEcD80BWi/4ObSmCg6tPhL99ALH+TnOB+ciAjv+wwX/Rx9Y9eC7H
-         tuadWc23kn14xUXEg1v3Ht60WGKcZwF0iTCnlZkrZJrfxEEACzjeRp7jZTIzxqBHq5Vb
-         oMmxp23xbsPtovYk43rZfQT92XRfOv9w3pId1E9p6vzwd5Xay51g6NMOPte9LtqDHhib
-         VKjHegbVtHakbwLvSDU1nwA7+/mGR8ncPyIia2HoZUuHl/VmBmNA2aX4X32ROouN61iS
-         tc/vogbnG+rOCZDSfE0WW9Uf2m8hApyPYKyC9hOKmSba1xrrIl2nzRiqoLP5gAFoA+8K
-         TPqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QRr0ZNZnscQyUTRMXdBCHRyqUplZRl6ao3xQwu2hQ2c=;
-        b=N/Mr14vcuiQNqrNITcM0DwP/QpH4N4Sgf1uswcQd9zwAuiZey9SpudPvFmUay9+n6K
-         IPo+CI5zHUHJGUwnL2OqMinRJvaoDnPjnyDh7Gn0ZWuhyb02i9+OakGnJ0/s0wDQAT6h
-         Wi9Ha3C5T8YdWiTCwXTi8kfLYOOcG1vLAD4FubQKbWV5RJdRIG/5L28FdrUDxfYciAXd
-         B/QNpTt2CjXmeFvzq3JFGO/8u14xvBsUjcogVvzyoTPtzt+LQHzoSusKISJEQTGLGKKN
-         W0qyw7nrf/faPNCMMpVD/a/yo7T/F/xNyRH/CCUsZlTAuBouz920VN/f4B10GHsraEVx
-         NZyg==
-X-Gm-Message-State: AOAM532MCR8Mj2kGRj8Bb7SqIZr5SIZdXXtZh2bg7sgPVLnaR1sQN3Zm
-        Gicuu7aJpqv/qe1o1WsL5aDr8RuFRYoYeTjfLio=
-X-Google-Smtp-Source: ABdhPJyusVJ4WEj3a2Jdt5TrXQ+w/i8ds4OcB/ET0MCxSaqFofz6EYNZnNg1a/Z82p839eKaiwoJf6wxgSL+s55Y0dg=
-X-Received: by 2002:a1f:e7c2:: with SMTP id e185mr4937438vkh.23.1607105180783;
- Fri, 04 Dec 2020 10:06:20 -0800 (PST)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SqtlYiB7SlsGU27zMvWx80kTuZFINQ3U0kB1mhCHcBc=;
+ b=ihTw0CnjznH3bSXPj7t91dGPAjEuQyiTcA/MLjNyke4GGFe1CcOZqQBLfdbgj9NCmKvMU2obLNpwvXZK42HgdaLRcelrLtRdyzCdcZpE2aRQAZ7ytw6vgHVdX0/zw9dMUYA+Sjq4YwksyyMZFisIAAgxMbaGK28W0iQ6aJwxDqk=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SA0PR12MB4495.namprd12.prod.outlook.com (2603:10b6:806:70::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Fri, 4 Dec
+ 2020 18:06:57 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3611.025; Fri, 4 Dec 2020
+ 18:06:57 +0000
+From:   Ashish Kalra <Ashish.Kalra@amd.com>
+To:     seanjc@google.com
+Cc:     Ashish.Kalra@amd.com, Thomas.Lendacky@amd.com, bp@suse.de,
+        brijesh.singh@amd.com, hpa@zytor.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com, rientjes@google.com,
+        srutherford@google.com, tglx@linutronix.de,
+        venu.busireddy@oracle.com, x86@kernel.org
+Subject: Re: [PATCH v8 13/18] KVM: x86: Introduce new KVM_FEATURE_SEV_LIVE_MIGRATION feature & Custom MSR.
+Date:   Fri,  4 Dec 2020 18:06:45 +0000
+Message-Id: <20201204180645.1228-1-Ashish.Kalra@amd.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <X8pocPZzn6C5rtSC@google.com>
+References: <X8pocPZzn6C5rtSC@google.com>
+Content-Type: text/plain
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: CH2PR05CA0020.namprd05.prod.outlook.com (2603:10b6:610::33)
+ To SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
 MIME-Version: 1.0
-References: <20201017133718.31327-1-kholk11@gmail.com> <20201017133718.31327-3-kholk11@gmail.com>
- <24ad51dd-ff54-35af-a7bc-92d8cfa30c48@linaro.org>
-In-Reply-To: <24ad51dd-ff54-35af-a7bc-92d8cfa30c48@linaro.org>
-From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
-Date:   Fri, 4 Dec 2020 19:06:09 +0100
-Message-ID: <CAK7fi1ZC8F57WmDg57tAS=b++ewjPcMhBXmeuM7Cjqkp-5Zu9Q@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] interconnect: qcom: Add SDM660 interconnect
- provider driver
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>, marijns95@gmail.com,
-        Konrad Dybcio <konradybcio@gmail.com>, martin.botka1@gmail.com,
-        MSM <linux-arm-msm@vger.kernel.org>, phone-devel@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by CH2PR05CA0020.namprd05.prod.outlook.com (2603:10b6:610::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.5 via Frontend Transport; Fri, 4 Dec 2020 18:06:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e1c31409-2e3c-4b9a-1b10-08d8987f639f
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4495:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4495BEC236005715D13CA18E8EF10@SA0PR12MB4495.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cGYVB6tQzH31qxWL9u+murwXEQZ2Xom2Do0QC888ZkYwbigIQGvpIyrpHhelU8Ci6Axbl3XfljqG3hGOG6SE9e9JqyYN4PaS7k6e0pnoVR9678UEzFZ4F5sM0ZRc2rbEFoQharaIL0BWMQQGIw52CwIbO06VWY01MmeLmCr/iiGHZTRf+fp1Z1FSP+0eJ3wrEVi4FKBIdxg1m1BnMX83Ae2xbqSl0q7u3X861ys4ayoAAlocX5jBJRf94Xf/hJp6CoDobd3SmwhuQp2oRMGXbHpq+JgDFUFRuJkxXCKC9y5O172EXowu5MepwqrYqsd/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(39860400002)(366004)(396003)(66556008)(66476007)(66946007)(6916009)(316002)(6666004)(36756003)(26005)(4326008)(186003)(7696005)(558084003)(16526019)(7416002)(1076003)(6486002)(8936002)(5660300002)(956004)(52116002)(2906002)(8676002)(2616005)(86362001)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+a694h88efJ0lCABl6oYfRdNinRYqt2yOYmqpl8ojzFHLT94G03eGDE/sUCv?=
+ =?us-ascii?Q?k5/2SmArqJdAficg0/2BlGDu+wk2v6bUTIrcqc1ReNQfl7gcv4Cx6tBbY3/S?=
+ =?us-ascii?Q?4CpcFwI38hJWIo8WIPU0fjwWzNIdAnGvW6hAqAElI1I7NzSUZBU/1Ymy2359?=
+ =?us-ascii?Q?rkIzdq4MKcCvYPPmuHmk9k+yLliN01NPt8Mry78tdUTXWA9ySPylY0ES007H?=
+ =?us-ascii?Q?9DftYBifKwWUoQfrVQYUkWrUZIQqvwm4bT+pK2M2QUP8Seg7pVKr3RpBL1ZV?=
+ =?us-ascii?Q?8lHsy609cDatoUhZL+M5cv3kpo8MgB8gj1muQLZ+fQzwshJN1FmnjxfroSRG?=
+ =?us-ascii?Q?MzMkjWhFUPbFFJe7nqSkSRLTMSmRAP0O09Lsc75C2kbvI4C7XsOmTNWQx/sX?=
+ =?us-ascii?Q?/zdtw5VGVItvSAutGvQ/X3GTqQ2npjY64R3OH+xNQryp+AEr4DVsOTDH1lNN?=
+ =?us-ascii?Q?77vKlNhzX3xSZGi6t4HXM+Dn73seamcJx4519Trhw7WjH/Z28iRbDBvtGBQz?=
+ =?us-ascii?Q?PP0qlhN1zDsjljn8kte1PMt1xOq3MBcIsLDKaFzX2zW7JyKRVbyiljTp7ffG?=
+ =?us-ascii?Q?vBVAYdyuf9Kr/ZCy1ITqeeAOw5JZFxYzvVQPDZ79WBOx18iCs1qAIymy5JJW?=
+ =?us-ascii?Q?Aru6bLGhDWsSvV0VuLuL1O+rQ0NNCrIw4PI3JSdLlgiZhVuL3+w2k3F8QvaX?=
+ =?us-ascii?Q?NhzTROjpiuj8q4XS2WY84lrP12kKfFGcdjWySW/EebRYoxbZT6mZFGEORnjg?=
+ =?us-ascii?Q?dIGYaujqXxDQc27hpO7M25RXVqN/8CU/OPincgvD3RhQG90Lk1i/oHN4Wm8h?=
+ =?us-ascii?Q?jwc8Pm/ocfptHJFvmehNBRxxwn54ZRekA/brNYyfoX72frDtFrqvd6S6Jhhu?=
+ =?us-ascii?Q?efCJ/xeIqLUnow9m/WJSkOx2z+VEh7UcgJYnkjuX/Wg7VNsYsYjp6x0uQACg?=
+ =?us-ascii?Q?M/ILg3SfoyBUjFZP/Yju0tEhAC4OkewQFkgSWLarAQGqQGDYzDAuX4eM8fB+?=
+ =?us-ascii?Q?z9JV?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1c31409-2e3c-4b9a-1b10-08d8987f639f
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 18:06:57.8401
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cdLly1RbZ9WXe7SlKgWUOJQna8qY93K9tm5sEDgcT5f70A7ExkKcDMKQDpe8gyNmnx3o48LwacCJxgY127jrkw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4495
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno mar 3 nov 2020 alle ore 17:24 Georgi Djakov
-<georgi.djakov@linaro.org> ha scritto:
->
-> On 10/17/20 16:37, kholk11@gmail.com wrote:
-> > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> >
-> > Introduce a driver for the Qualcomm interconnect busses found in
-> > the SDM630/SDM636/SDM660 SoCs.
-> > The topology consists of several NoCs that are controlled by a
-> > remote processor that collects the aggregated bandwidth for each
-> > master-slave pairs.
-> >
-> > On a note, these chips are managing the "bus QoS" in a "hybrid"
-> > fashion: some of the paths in the topology are managed through
-> > (and by, of course) the RPM uC, while some others are "AP Owned",
-> > meaning that the AP shall do direct writes to the appropriate
-> > QoS registers for the specific paths and ports, instead of sending
-> > an indication to the RPM and leaving the job to that one.
-> >
-> > Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> > ---
-> >  drivers/interconnect/qcom/Kconfig  |   9 +
-> >  drivers/interconnect/qcom/Makefile |   2 +
-> >  drivers/interconnect/qcom/sdm660.c | 922 +++++++++++++++++++++++++++++
-> >  3 files changed, 933 insertions(+)
-> >  create mode 100644 drivers/interconnect/qcom/sdm660.c
-> >
-> [..]> +static const struct of_device_id sdm660_noc_of_match[] = {
-> > +     { .compatible = "qcom,sdm660-a2noc", .data = &sdm660_a2noc },
-> > +     { .compatible = "qcom,sdm660-bimc", .data = &sdm660_bimc },
-> > +     { .compatible = "qcom,sdm660-cnoc", .data = &sdm660_cnoc },
-> > +     { .compatible = "qcom,sdm660-gnoc", .data = &sdm660_gnoc },
-> > +     { .compatible = "qcom,sdm660-mnoc", .data = &sdm660_mnoc },
-> > +     { .compatible = "qcom,sdm660-snoc", .data = &sdm660_snoc },
-> > +     { },
-> > +};
-> > +MODULE_DEVICE_TABLE(of, sdm660_noc_of_match);
-> > +
-> > +static struct platform_driver sdm660_noc_driver = {
-> > +     .probe = qnoc_probe,
-> > +     .remove = qnoc_remove,
-> > +     .driver = {
-> > +             .name = "qnoc-sdm660",
-> > +             .of_match_table = sdm660_noc_of_match,
->
-> Just noticed that here we should set the sync_state callback:
->                 .sync_state = icc_sync_state,
->
-> I will fix it up before applying. Are you planning to send a patch
-> that adds the DT nodes?
->
-> Thanks,
-> Georgi
->
-I'm sorry for the extremely late reply... Anyway, yes, we have lots of
-patches that are bringing up almost the entire feature set in the
-SDM630/660 SoCs and we are waiting for them to get merged in
-before sending the DT updates.
+Yes i will post a fresh version of the live migration patches. 
 
-Cheers,
-Angelo
+Also, can you please check your email settings, we are only able to see your response on the
+mailing list but we are not getting your direct responses.
 
-> > +     },
-> > +};
-> > +module_platform_driver(sdm660_noc_driver);
-> > +MODULE_DESCRIPTION("Qualcomm sdm660 NoC driver");
-> > +MODULE_LICENSE("GPL v2");
+Thanks,
+Ashish
