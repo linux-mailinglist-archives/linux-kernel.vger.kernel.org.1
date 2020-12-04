@@ -2,119 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154182CF487
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 079602CF489
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387493AbgLDTI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 14:08:28 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38626 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726021AbgLDTI1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 14:08:27 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4J6qnk167443;
-        Fri, 4 Dec 2020 14:07:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=341the/jWzmsDSyFh/kypimy2W9A0JNne9mVTs9imtA=;
- b=su9kAN4GFN17vohEkvdIoc/DeXRFI0Fi47VOoWNu9zNrGDslMoHJuYZU0UsK1Jj8395D
- BdkZ7l+Zwpwd2bDcgEmsCWC+T9jRZXeYLl0SiqI0/MhXrvg4n5LKUz/e+1ZhRtelxZJ6
- uLiMUxtxUlERiFSVTvquYmrFck+xzdCbPp9ukTk812Up6pjXaqzOhmO5LtM08dzt4NA8
- Lg0W+NzrSdHgYEm3wlLTPpdmROZ9LQ8xFeK9YwI42LGbMXtKG6h3n2ZhRaXeJ+9kpAAV
- FGUf9iEyfBcqYxCz59ma8iuw3Z7r0zHC5xuWUUavjUIBWjZ1MstvllK8E/Q06KSGcmtA /g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 357743ct1r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 14:07:42 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B4J76fA168139;
-        Fri, 4 Dec 2020 14:07:20 -0500
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 357743csmu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 14:07:19 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B4J42XZ031526;
-        Fri, 4 Dec 2020 19:05:10 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06fra.de.ibm.com with ESMTP id 353dthbdxn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 19:05:09 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B4J57kE7537182
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 4 Dec 2020 19:05:07 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F12C652050;
-        Fri,  4 Dec 2020 19:05:06 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.171.41.218])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 6F6FF5204F;
-        Fri,  4 Dec 2020 19:05:06 +0000 (GMT)
-Date:   Fri, 4 Dec 2020 20:05:02 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com,
-        Janosch Frank <frankja@linux.ibm.com>
-Subject: Re: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM
- pointer invalidated
-Message-ID: <20201204200502.1c34ae58.pasic@linux.ibm.com>
-In-Reply-To: <a8a90aed-97df-6f10-85c2-8e18dba8f085@linux.ibm.com>
-References: <20201202234101.32169-1-akrowiak@linux.ibm.com>
-        <20201203185514.54060568.pasic@linux.ibm.com>
-        <a8a90aed-97df-6f10-85c2-8e18dba8f085@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        id S2387814AbgLDTIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 14:08:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726021AbgLDTIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 14:08:32 -0500
+Date:   Fri, 4 Dec 2020 11:07:49 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607108870;
+        bh=vcvDuRv1uwRKThqduLlz6F+/gxfvdvUYr1lQV0KroVs=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XF5RwMIhIVex2ZSCv1r1IoOSw/RgT1ePbwEdJUej05xS0g5EL8IDFOv0EPLvTo2Th
+         ZpUcRNMxoo8NOsCSCuHkYJxvNxCld/oepsbfaI4OOjXpkQxaHOLRPijNJehYF06geM
+         YFJxC0GDhslhHMtyPBrvKB4LXL7T7a1uKaQkFAjup/PY0F4Wsy1Tnc11UBUN6QmPRj
+         ymZbTKaSZS9XQTtfil4S01dYniG5KHkrzkMYeY6x0YjdRJJL0ZEJ9MFaRbbrHxmzXS
+         sUMAQB8b8SZ+88WrnjSmN+Z7iRWq6+VksJypfEQdNY6v/j5FnbwI01DUwhy1ehau99
+         +JEBZnCd3hdmw==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH v7] f2fs: compress: support compress level
+Message-ID: <X8qJBdQZmZ2SyN9m@google.com>
+References: <20201204102423.114091-1-yuchao0@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_07:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- priorityscore=1501 mlxscore=0 suspectscore=0 impostorscore=0
- lowpriorityscore=0 bulkscore=0 adultscore=0 clxscore=1015 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040106
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204102423.114091-1-yuchao0@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 09:43:59 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-
-> >> +{
-> >> +	if (matrix_mdev->kvm) {
-> >> +		(matrix_mdev->kvm);
-> >> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;  
-> > Is a plain assignment to arch.crypto.pqap_hook apropriate, or do we need
-> > to take more care?
-> >
-> > For instance kvm_arch_crypto_set_masks() takes kvm->lock before poking
-> > kvm->arch.crypto.crycb.  
+On 12/04, Chao Yu wrote:
+> Expand 'compress_algorithm' mount option to accept parameter as format of
+> <algorithm>:<level>, by this way, it gives a way to allow user to do more
+> specified config on lz4 and zstd compression level, then f2fs compression
+> can provide higher compress ratio.
 > 
-> I do not think so. The CRYCB is used by KVM to provide crypto resources
-> to the guest so it makes sense to protect it from changes to it while 
-> passing
-> the AP devices through to the guest. The hook is used only when an AQIC
-> executed on the guest is intercepted by KVM. If the notifier
-> is being invoked to notify vfio_ap that KVM has been set to NULL, this means
-> the guest is gone in which case there will be no AP instructions to 
-> intercept.
+> In order to set compress level for lz4 algorithm, it needs to set
+> CONFIG_LZ4HC_COMPRESS and CONFIG_F2FS_FS_LZ4HC config to enable lz4hc
+> compress algorithm.
+> 
+> CR and performance number on lz4/lz4hc algorithm:
+> 
+> dd if=enwik9 of=compressed_file conv=fsync
+> 
+> Original blocks:	244382
+> 
+> 			lz4			lz4hc-9
+> compressed blocks	170647			163270
+> compress ratio		69.8%			66.8%
+> speed			16.4207 s, 60.9 MB/s	26.7299 s, 37.4 MB/s
+> 
+> compress ratio = after / before
+> 
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> ---
+> v7:
+> - add test numbers for lz4/lz4hc
+> - fix wrong compress level print
+> - add compatibility description for LZ4HC in Kconfig
+>  Documentation/filesystems/f2fs.rst |  5 +++
+>  fs/f2fs/Kconfig                    | 10 +++++
+>  fs/f2fs/compress.c                 | 40 ++++++++++++++++--
+>  fs/f2fs/f2fs.h                     |  9 ++++
+>  fs/f2fs/super.c                    | 67 +++++++++++++++++++++++++++++-
+>  include/linux/f2fs_fs.h            |  3 ++
+>  6 files changed, 129 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+> index dae15c96e659..6ed2a787c947 100644
+> --- a/Documentation/filesystems/f2fs.rst
+> +++ b/Documentation/filesystems/f2fs.rst
+> @@ -249,6 +249,11 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
+>  			 This space is reclaimed once checkpoint=enable.
+>  compress_algorithm=%s	 Control compress algorithm, currently f2fs supports "lzo",
+>  			 "lz4", "zstd" and "lzo-rle" algorithm.
+> +compress_algorithm=%s:%d Control compress algorithm and its compress level, now, only
+> +			 "lz4" and "zstd" support compress level config.
+> +			 		level range
 
-If the update to pqap_hook isn't observed as atomic we still have a
-problem. With torn writes or reads we would try to use a corrupt function
-pointer. While the compiler probably ain't likely to generate silly code
-for the above assignment (multiple write instructions less then
-quadword wide), I know of nothing that would prohibit the compiler to do
-so.
+I removed wrong spaces here and merged in dev-test till getting reviewed.
 
-I'm not certain about the scope of the kvm->lock (if it's supposed to
-protect the whole sub-tree of objects). Maybe Janosch can help us out.
-@Janosch: what do you think?
-
-Regards,
-Halil
+> +			 lz4		3 - 16
+> +			 zstd		1 - 22
+>  compress_log_size=%u	 Support configuring compress cluster size, the size will
+>  			 be 4KB * (1 << %u), 16KB is minimum size, also it's
+>  			 default size.
+> diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+> index d13c5c6a9787..63c1fc1a0e3b 100644
+> --- a/fs/f2fs/Kconfig
+> +++ b/fs/f2fs/Kconfig
+> @@ -119,6 +119,16 @@ config F2FS_FS_LZ4
+>  	help
+>  	  Support LZ4 compress algorithm, if unsure, say Y.
+>  
+> +config F2FS_FS_LZ4HC
+> +	bool "LZ4HC compression support"
+> +	depends on F2FS_FS_COMPRESSION
+> +	depends on F2FS_FS_LZ4
+> +	select LZ4HC_COMPRESS
+> +	default y
+> +	help
+> +	  Support LZ4HC compress algorithm, LZ4HC has compatible on-disk
+> +	  layout with LZ4, if unsure, say Y.
+> +
+>  config F2FS_FS_ZSTD
+>  	bool "ZSTD compression support"
+>  	depends on F2FS_FS_COMPRESSION
+> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> index 247f4705e897..5bf37feea5a6 100644
+> --- a/fs/f2fs/compress.c
+> +++ b/fs/f2fs/compress.c
+> @@ -252,8 +252,13 @@ static const struct f2fs_compress_ops f2fs_lzo_ops = {
+>  #ifdef CONFIG_F2FS_FS_LZ4
+>  static int lz4_init_compress_ctx(struct compress_ctx *cc)
+>  {
+> -	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
+> -				LZ4_MEM_COMPRESS, GFP_NOFS);
+> +	unsigned int size;
+> +	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
+> +						COMPRESS_LEVEL_OFFSET;
+> +
+> +	size = level ? LZ4HC_MEM_COMPRESS : LZ4_MEM_COMPRESS;
+> +
+> +	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode), size, GFP_NOFS);
+>  	if (!cc->private)
+>  		return -ENOMEM;
+>  
+> @@ -272,10 +277,34 @@ static void lz4_destroy_compress_ctx(struct compress_ctx *cc)
+>  	cc->private = NULL;
+>  }
+>  
+> +#ifdef CONFIG_F2FS_FS_LZ4HC
+> +static int lz4hc_compress_pages(struct compress_ctx *cc)
+> +{
+> +	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
+> +						COMPRESS_LEVEL_OFFSET;
+> +	int len;
+> +
+> +	if (level)
+> +		len = LZ4_compress_HC(cc->rbuf, cc->cbuf->cdata, cc->rlen,
+> +					cc->clen, level, cc->private);
+> +	else
+> +		len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
+> +						cc->clen, cc->private);
+> +	if (!len)
+> +		return -EAGAIN;
+> +
+> +	cc->clen = len;
+> +	return 0;
+> +}
+> +#endif
+> +
+>  static int lz4_compress_pages(struct compress_ctx *cc)
+>  {
+>  	int len;
+>  
+> +#ifdef CONFIG_F2FS_FS_LZ4HC
+> +	return lz4hc_compress_pages(cc);
+> +#endif
+>  	len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
+>  						cc->clen, cc->private);
+>  	if (!len)
+> @@ -325,8 +354,13 @@ static int zstd_init_compress_ctx(struct compress_ctx *cc)
+>  	ZSTD_CStream *stream;
+>  	void *workspace;
+>  	unsigned int workspace_size;
+> +	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
+> +						COMPRESS_LEVEL_OFFSET;
+> +
+> +	if (!level)
+> +		level = F2FS_ZSTD_DEFAULT_CLEVEL;
+>  
+> -	params = ZSTD_getParams(F2FS_ZSTD_DEFAULT_CLEVEL, cc->rlen, 0);
+> +	params = ZSTD_getParams(level, cc->rlen, 0);
+>  	workspace_size = ZSTD_CStreamWorkspaceBound(params.cParams);
+>  
+>  	workspace = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 7364d453783f..d6a83539153c 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -146,6 +146,7 @@ struct f2fs_mount_info {
+>  	/* For compression */
+>  	unsigned char compress_algorithm;	/* algorithm type */
+>  	unsigned char compress_log_size;	/* cluster log size */
+> +	unsigned char compress_level;		/* compress level */
+>  	bool compress_chksum;			/* compressed data chksum */
+>  	unsigned char compress_ext_cnt;		/* extension count */
+>  	int compress_mode;			/* compression mode */
+> @@ -735,6 +736,7 @@ struct f2fs_inode_info {
+>  	atomic_t i_compr_blocks;		/* # of compressed blocks */
+>  	unsigned char i_compress_algorithm;	/* algorithm type */
+>  	unsigned char i_log_cluster_size;	/* log of cluster size */
+> +	unsigned char i_compress_level;		/* compress level (lz4hc,zstd) */
+>  	unsigned short i_compress_flag;		/* compress flag */
+>  	unsigned int i_cluster_size;		/* cluster size */
+>  };
+> @@ -1310,6 +1312,8 @@ struct compress_data {
+>  
+>  #define F2FS_COMPRESSED_PAGE_MAGIC	0xF5F2C000
+>  
+> +#define	COMPRESS_LEVEL_OFFSET	8
+> +
+>  /* compress context */
+>  struct compress_ctx {
+>  	struct inode *inode;		/* inode the context belong to */
+> @@ -3932,6 +3936,11 @@ static inline void set_compress_context(struct inode *inode)
+>  				1 << COMPRESS_CHKSUM : 0;
+>  	F2FS_I(inode)->i_cluster_size =
+>  			1 << F2FS_I(inode)->i_log_cluster_size;
+> +	if (F2FS_I(inode)->i_compress_algorithm == COMPRESS_LZ4 &&
+> +			F2FS_OPTION(sbi).compress_level)
+> +		F2FS_I(inode)->i_compress_flag |=
+> +				F2FS_OPTION(sbi).compress_level <<
+> +				COMPRESS_LEVEL_OFFSET;
+>  	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
+>  	set_inode_flag(inode, FI_COMPRESSED_FILE);
+>  	stat_inc_compr_inode(inode);
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index c6a3365f4844..d16c84cc148d 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -25,6 +25,8 @@
+>  #include <linux/quota.h>
+>  #include <linux/unicode.h>
+>  #include <linux/part_stat.h>
+> +#include <linux/zstd.h>
+> +#include <linux/lz4.h>
+>  
+>  #include "f2fs.h"
+>  #include "node.h"
+> @@ -464,6 +466,52 @@ static int f2fs_set_test_dummy_encryption(struct super_block *sb,
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> +static int f2fs_compress_set_level(struct f2fs_sb_info *sbi, const char *str,
+> +						int type)
+> +{
+> +	unsigned int level;
+> +	int len;
+> +
+> +	if (type == COMPRESS_LZ4)
+> +		len = 3;
+> +	else if (type == COMPRESS_ZSTD)
+> +		len = 4;
+> +	else
+> +		return 0;
+> +
+> +	if (strlen(str) == len)
+> +		return 0;
+> +
+> +	str += len;
+> +
+> +	if (str[0] != ':') {
+> +		f2fs_info(sbi, "wrong format, e.g. <alg_name>:<compr_level>");
+> +		return -EINVAL;
+> +	}
+> +	if (kstrtouint(str + 1, 10, &level))
+> +		return -EINVAL;
+> +	if (type == COMPRESS_LZ4) {
+> +#ifdef CONFIG_F2FS_FS_LZ4HC
+> +		if (level < LZ4HC_MIN_CLEVEL || level > LZ4HC_MAX_CLEVEL) {
+> +			f2fs_info(sbi, "invalid lz4hc compress level: %d", level);
+> +			return -EINVAL;
+> +		}
+> +#else
+> +		f2fs_info(sbi, "doesn't support lz4hc compression");
+> +		return 0;
+> +#endif
+> +	} else if (type == COMPRESS_ZSTD) {
+> +		if (!level || level > ZSTD_maxCLevel()) {
+> +			f2fs_info(sbi, "invalid zstd compress level: %d", level);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +	F2FS_OPTION(sbi).compress_level = level;
+> +	return 0;
+> +}
+> +#endif
+> +
+>  static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>  {
+>  	struct f2fs_sb_info *sbi = F2FS_SB(sb);
+> @@ -884,10 +932,22 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>  			if (!strcmp(name, "lzo")) {
+>  				F2FS_OPTION(sbi).compress_algorithm =
+>  								COMPRESS_LZO;
+> -			} else if (!strcmp(name, "lz4")) {
+> +			} else if (!strncmp(name, "lz4", 3)) {
+> +				ret = f2fs_compress_set_level(sbi, name,
+> +								COMPRESS_LZ4);
+> +				if (ret) {
+> +					kfree(name);
+> +					return -EINVAL;
+> +				}
+>  				F2FS_OPTION(sbi).compress_algorithm =
+>  								COMPRESS_LZ4;
+> -			} else if (!strcmp(name, "zstd")) {
+> +			} else if (!strncmp(name, "zstd", 4)) {
+> +				ret = f2fs_compress_set_level(sbi, name,
+> +								COMPRESS_ZSTD);
+> +				if (ret) {
+> +					kfree(name);
+> +					return -EINVAL;
+> +				}
+>  				F2FS_OPTION(sbi).compress_algorithm =
+>  								COMPRESS_ZSTD;
+>  			} else if (!strcmp(name, "lzo-rle")) {
+> @@ -1539,6 +1599,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
+>  	}
+>  	seq_printf(seq, ",compress_algorithm=%s", algtype);
+>  
+> +	if (F2FS_OPTION(sbi).compress_level)
+> +		seq_printf(seq, ":%d", F2FS_OPTION(sbi).compress_level);
+> +
+>  	seq_printf(seq, ",compress_log_size=%u",
+>  			F2FS_OPTION(sbi).compress_log_size);
+>  
+> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+> index 7dc2a06cf19a..c6cc0a566ef5 100644
+> --- a/include/linux/f2fs_fs.h
+> +++ b/include/linux/f2fs_fs.h
+> @@ -274,6 +274,9 @@ struct f2fs_inode {
+>  			__u8 i_compress_algorithm;	/* compress algorithm */
+>  			__u8 i_log_cluster_size;	/* log of cluster size */
+>  			__le16 i_compress_flag;		/* compress flag */
+> +						/* 0 bit: chksum flag
+> +						 * [10,15] bits: compress level
+> +						 */
+>  			__le32 i_extra_end[0];	/* for attribute size calculation */
+>  		} __packed;
+>  		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
+> -- 
+> 2.29.2
