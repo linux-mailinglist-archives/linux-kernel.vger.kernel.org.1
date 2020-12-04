@@ -2,122 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8CD2CEE90
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A095D2CEE97
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:07:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728722AbgLDNDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 08:03:41 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:47320 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbgLDNDk (ORCPT
+        id S2387533AbgLDNF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 08:05:57 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60230 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726432AbgLDNF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 08:03:40 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607086978;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xfStrtfHtwUI64W2JPjkFzboXAtc1kqYjRgdv9IJXmg=;
-        b=ffNTsTe+S0B5e3Eo0joCpAnud7EdBp43wxBRpBsohkUULahr9F2C8HOVtjMyK+Nc0GBEmI
-        ZMcvyDEfnVcj90ghrlBkdpg2mNQXzqT3UOS8iKk0VtIKEUsrRd0ueRRphnlZ8ZW4bDyFgO
-        u+2eDfowF45SO9C0CbWYsQyiInmFt1pakLDIH1ZeJjvvIhmS+FcLcmsjhK3rRvWAOkiwXC
-        3s5Gm0PlCbK9NcPLuTEaEEelNShGKm8Q8Xh21OIlWHHasigc1RNnlxzkgSBs2g3l7B++MJ
-        JphAq03xO5hf+iOiPB1Pms4QsZ3xT4cXxMCLal8e4c4S5I4Sq+ulKbFCf1Ak9Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607086978;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xfStrtfHtwUI64W2JPjkFzboXAtc1kqYjRgdv9IJXmg=;
-        b=cG+3zp0wdx8dnb3pzIJaBYFCKelyUM1qN5nUEsZnBRfoAirGPLEKupOGom3VEfTXgn0ROm
-        rkAsqsN9HvGLQHCw==
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-In-Reply-To: <20201203223646.GA1335797@ziepe.ca>
-References: <20201202162723.GJ5487@ziepe.ca> <87a6uwdnfn.fsf@nanos.tec.linutronix.de> <20201202205418.GN5487@ziepe.ca> <874kl3eu8p.fsf@nanos.tec.linutronix.de> <87zh2vd72z.fsf@nanos.tec.linutronix.de> <20201203021047.GG3544@piout.net> <87pn3qdhli.fsf@nanos.tec.linutronix.de> <20201203161622.GA1317829@ziepe.ca> <87zh2ubny2.fsf@nanos.tec.linutronix.de> <87wnxybmqx.fsf@nanos.tec.linutronix.de> <20201203223646.GA1335797@ziepe.ca>
-Date:   Fri, 04 Dec 2020 14:02:57 +0100
-Message-ID: <877dpxbu66.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Fri, 4 Dec 2020 08:05:56 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4D3EZx056402;
+        Fri, 4 Dec 2020 08:05:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=jctQgMWgSlsHPOjsDmaUeXfSF+9Z30/WArFoiAk/M3o=;
+ b=GrZPzRTenWKY3N4pDjkeB3jRv/wXCs4bTLDjRFU9/A0SD0vPZNyo2GJKCHkiF1oUTMen
+ mMZsHF8jM7yqoh0RymQRoA41x5zkS/K4foDqbCk9HEuME9ClGd/hcoMYcF30ICEfm3ej
+ hM7YKz0ek1ZGoZqMZdQWjyOgl82bXTsXlCSIvea538e6kdjuIWg9VtO8C5oRAtzdHh32
+ Us391JD8M9SNhmOVsBKMnWRaHJ5mKiE4/nHbqUCfGwEWFxSlnD3ANU5kDG65R2PReUxy
+ Rz0P+FCH0S66XgfCGJW6MOg3oWgxs+IdA0j9YCm15JPCrJ5E1nyx+QRzgebodFUufASZ 3g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 357m7hjj7b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 08:05:05 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B4D3d2Q058711;
+        Fri, 4 Dec 2020 08:05:05 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 357m7hjj4n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 08:05:05 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B4CmvoA000390;
+        Fri, 4 Dec 2020 13:05:02 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 354fpdd1m3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 13:05:02 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B4D50Av52298134
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Dec 2020 13:05:00 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6547DA4054;
+        Fri,  4 Dec 2020 13:05:00 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 55E3BA4064;
+        Fri,  4 Dec 2020 13:04:58 +0000 (GMT)
+Received: from sig-9-65-202-27.ibm.com (unknown [9.65.202.27])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  4 Dec 2020 13:04:57 +0000 (GMT)
+Message-ID: <0eec775cf5c44f646defe33aec5f241a06844d3a.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 06/11] evm: Ignore INTEGRITY_NOLABEL if no HMAC key
+ is loaded
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "mjg59@google.com" <mjg59@google.com>
+Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+Date:   Fri, 04 Dec 2020 08:04:57 -0500
+In-Reply-To: <3c628dc54804469597a72d03c33e8315@huawei.com>
+References: <20201111092302.1589-1-roberto.sassu@huawei.com>
+         <20201111092302.1589-7-roberto.sassu@huawei.com>
+         <b9f1a31e9b2dfb7a7167574a39652932263488e8.camel@linux.ibm.com>
+         <3c628dc54804469597a72d03c33e8315@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_04:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=3 malwarescore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03 2020 at 18:36, Jason Gunthorpe wrote:
-> On Thu, Dec 03, 2020 at 10:31:02PM +0100, Thomas Gleixner wrote:
->> On Thu, Dec 03 2020 at 22:05, Thomas Gleixner wrote:
->> > On Thu, Dec 03 2020 at 12:16, Jason Gunthorpe wrote:
->> > So now we have two options to fix this:
->> >
->> >    1) Use a negative sync_offset for devices which need #1 above
->> >       (rtc_cmos & similar)
->> >
->> >       That requires setting tsched to t2 - abs(sync_offset)
->> >
->> >    2) Use always a positive sync_offset and a flag which tells
->> >       rtc_tv_nsec_ok() whether it needs to add or subtract.
->> >
->> > #1 is good enough. All it takes is a comment at the timer start code why
->> > abs() is required.
->> >
->> > Let me hack that up along with the hrtimer muck.
->> 
->> That comment in rtc.h makes me cry:
->> 
->> 	/* Number of nsec it takes to set the RTC clock. This influences when
->> 	 * the set ops are called. An offset:
->> 	 *   - of 0.5 s will call RTC set for wall clock time 10.0 s at 9.5 s
->> 	 *   - of 1.5 s will call RTC set for wall clock time 10.0 s at 8.5 s
->> 	 *   - of -0.5 s will call RTC set for wall clock time 10.0 s at 10.5 s
->> 	 */
->> 
->> Setting the wall clock time 10.0 at 10.5 is only possible for time
->> traveling RTCs. It magically works, but come on ...
->
-> No tardis required. You can think of storing to a RTC as including a
-> millisecond component, so the three examples are: 10.0 stores 9.5,
-> 10.0 stores 8.5, 10.0 stores 10.5.
->
-> It was probably included due to cmos, either as a misunderstanding
-> what it does, or it does actually store 10.5 when you store 10.0..
+On Fri, 2020-12-04 at 08:05 +0000, Roberto Sassu wrote:
+> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > Sent: Thursday, December 3, 2020 9:43 PM
+> > Hi Roberto,
+> > 
+> > On Wed, 2020-11-11 at 10:22 +0100, Roberto Sassu wrote:
+> > > When a file is being created, LSMs can set the initial label with the
+> > > inode_init_security hook. If no HMAC key is loaded, the new file will have
+> > > LSM xattrs but not the HMAC.
+> > >
+> > > Unfortunately, EVM will deny any further metadata operation on new
+> > files,
+> > > as evm_protect_xattr() will always return the INTEGRITY_NOLABEL error.
+> > This
+> > > would limit the usability of EVM when only a public key is loaded, as
+> > > commands such as cp or tar with the option to preserve xattrs won't work.
+> > >
+> > > Ignoring this error won't be an issue if no HMAC key is loaded, as the
+> > > inode is locked until the post hook, and EVM won't calculate the HMAC on
+> > > metadata that wasn't previously verified. Thus this patch checks if an
+> > > HMAC key is loaded and if not, ignores INTEGRITY_NOLABEL.
+> > 
+> > I'm not sure what problem this patch is trying to solve.
+> > evm_protect_xattr() is only called by evm_inode_setxattr() and
+> > evm_inode_removexattr(), which first checks whether
+> > EVM_ALLOW_METADATA_WRITES is enabled.
+> 
+> The idea is to also support EVM verification when only a public key
+> is loaded. An advantage to do that is that for example we can prevent
+> accidental metadata changes when the signature is portable.
 
-Yes, it kinda stores 10.5 because after the write the next seconds
-increment happens 500ms later.
+Right, there are a couple of  scenarios.  Let's be more specific as to
+which scenario this patch is addressing.
 
-But none of this magic is actually required because the behaviour of
-most RTCs is that the next seconds increment happens exactly 1000ms
-_after_ the write.
+- a public key is loaded and EVM_ALLOW_METADATA_WRITES is enabled,
+- a public key is loaded and EVM_ALLOW_METADATA_WRITES is disabled,
+- an HMAC key is loaded
 
-Which means _all_ of these offsets are positive:
+For the first and last case, this patch shouldn't be necessary.  Only
+the second case, with EVM_ALLOW_METADATA_WRITES disabled, probably does
+not work.  I would claim that is working as designed.
 
-   tsched         twrite           tnextsec
+thanks,
 
-For CMOS tsched == twrite and tnextsec - twrite = 500ms
+Mimi
 
-For I2C  tsched = tnextsec - 1000ms - ttransport
-
-which means the formula is the same for all of them
-
-      tRTCinc = tnextsec - twrite
-
-      tsched = tnextsec - tRTCinc - ttransport
-
-And this covers also the (probably unlikely) case where the I2C RTC has
-a tRTCinc != 1000ms. Imagine a i2c based MC14xxx which would have:
-
-  offset = 500ms + ttransport
-
-No magic sign calculation required if you look at it from the actual
-timeline and account the time between write and next second increment
-correctly.
-
-Thanks,
-
-        tglx
