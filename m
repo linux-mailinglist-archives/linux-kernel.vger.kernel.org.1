@@ -2,118 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C032CF43F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDBD2CF442
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729871AbgLDSmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:42:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726021AbgLDSmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:42:16 -0500
-Date:   Fri, 4 Dec 2020 10:41:32 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607107295;
-        bh=25oeJh7b6yTNs1uUjAz7FURgo0slNPpUweE8Jq1EW2U=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZQJGYf8Sv9pjnoC8grlmknSQ7fK2DeQW3ZN4xj/sHziOSYiJYQgvgmY7naIbepwhj
-         58MNntm9lXg1LjFRiUzFe3x5wvBUaZAyJ5BdbApGZyEe7dSwuffMMkO7YtshfTpdvr
-         pRIXYQ/TVzPZwEz7drZlSGXoYQ+dBTbR7by6VGLscHXBsjpi/rVkRMp/Hf6ZjejDDY
-         Ajqv47VBbzRMdg0zEV1xaZclxA4/apnHKrA9kkxTbtZfGiY738obJt0Jy9uuPW0s0k
-         oMz1ZYOrs6PtW4cDPXi4sHJuVqePMCfTkdzPgaL6ZyCkRLabb2lxkS4ZwTE2Qtf1ed
-         UA1xt6u5fWz/w==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
-        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de
-Subject: Re: [PATCH v14 04/10] fs/ntfs3: Add file operations and
- implementation
-Message-ID: <X8qC3NaNv1kmCO4c@sol.localdomain>
-References: <20201204154600.1546096-1-almaz.alexandrovich@paragon-software.com>
- <20201204154600.1546096-5-almaz.alexandrovich@paragon-software.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204154600.1546096-5-almaz.alexandrovich@paragon-software.com>
+        id S1730209AbgLDSmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:42:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729897AbgLDSmp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:42:45 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B660FC061A54
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:42:04 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id h9so8177410ybj.10
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:42:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=qYqdLh2r9ds49rUYM9FZPJyUKuPOU47SmGZigVynXKs=;
+        b=Q2AMV/9A3jFEOq6M9VJy0Oqg82Ibmk8kaxkd0OnHys1ZC5ZmdBThPlK4JUqug5mTS+
+         KzP6Hn9VvcVEhNwe48pQb8iH8aIfx7ng+R1VZj+3b0VQVEKY6zTxcJlh4tp2BEAa4mqM
+         INlJ2wDN5es7SmaHswQ149yybKCocdj37OmvhUQ2fgQQQMkbvEVbMsdgAOdNw1kNY5vy
+         MX6aJwBMCg4uUg/HvL8KZ4X9F+uYJ4InfuJNUOcWv6LKDvW3WlxGMGkQd7IbR6TRx84f
+         2T3mQPUMTpC1Y5Fgx+KV0jbJVrEHTqLOe3HaVYGaewfcD6iBdsds2wot5X/e3PBGjdWc
+         gXBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=qYqdLh2r9ds49rUYM9FZPJyUKuPOU47SmGZigVynXKs=;
+        b=VrvXteZIMoU6P2LSwtWUG1Lx+/X5+7ExL2jkQuoYi98IoPzCt9Myk5menGz3bJtwgL
+         ymmK4+0wk1oW7WwjM9ky5PY737UIdkYINUXxCD4BVEIkXJf3lFZHVWvE4tTAXRKbh+Dm
+         ujSJ+dheTdwxUds1lFq7a1abB5V0UZMvw5DYF8baIHMZV5rAQcozT6vKtzS/9//fwgxR
+         NatMskNYWcHsIt0yh49o9FitfRSQJfbVOcwUrA5aqsCbkqT9W10jgpOYAzgsVcB8gxDQ
+         UZ7WroUHFhOHd7GXtoQLQysQbQb3NrCRl7c0Tkt9E7YU88If2NX8+Z6hk7Pau/IJpIkV
+         CZeA==
+X-Gm-Message-State: AOAM530ISIxjaYCBDKDeIOaqZe7WcFBCP5nXfaCqPuTf7otsm580Ni3g
+        +xGbZu0/uPJB/Uv3CSGE7Apw7KWwj7Psog==
+X-Google-Smtp-Source: ABdhPJzaFMRnjSfkArW15w0TJtc/X1de0v4Zw7VW53oAoljTA9N9aKVmkT12EP9Tlg2JvL0CvkFvdl/o6XTL3g==
+Sender: "tstrudel via sendgmr" <tstrudel@legoland2.mtv.corp.google.com>
+X-Received: from legoland2.mtv.corp.google.com ([2620:15c:211:1:7220:84ff:fe09:fd20])
+ (user=tstrudel job=sendgmr) by 2002:a25:e758:: with SMTP id
+ e85mr7814924ybh.51.1607107323941; Fri, 04 Dec 2020 10:42:03 -0800 (PST)
+Date:   Fri,  4 Dec 2020 10:41:59 -0800
+Message-Id: <20201204184159.4043159-1-tstrudel@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH v2] PM: domains: create debugfs nodes when adding power domains
+From:   Thierry Strudel <tstrudel@google.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thierry Strudel <tstrudel@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 06:45:54PM +0300, Konstantin Komarov wrote:
-> +/* external compression lzx/xpress */
-> +static int decompress_lzx_xpress(struct ntfs_sb_info *sbi, const char *cmpr,
-> +				 size_t cmpr_size, void *unc, size_t unc_size,
-> +				 u32 frame_size)
-> +{
-> +	int err;
-> +	void *ctx;
-> +
-> +	if (cmpr_size == unc_size) {
-> +		/* frame not compressed */
-> +		memcpy(unc, cmpr, unc_size);
-> +		return 0;
-> +	}
-> +
-> +	err = 0;
-> +	ctx = NULL;
-> +	spin_lock(&sbi->compress.lock);
-> +	if (frame_size == 0x8000) {
-> +		/* LZX: frame compressed */
-> +		if (!sbi->compress.lzx) {
-> +			/* Lazy initialize lzx decompress context */
-> +			spin_unlock(&sbi->compress.lock);
-> +			ctx = lzx_allocate_decompressor(0x8000);
-> +			if (!ctx)
-> +				return -ENOMEM;
-> +			if (IS_ERR(ctx)) {
-> +				/* should never failed */
-> +				err = PTR_ERR(ctx);
-> +				goto out;
-> +			}
-> +
-> +			spin_lock(&sbi->compress.lock);
-> +			if (!sbi->compress.lzx) {
-> +				sbi->compress.lzx = ctx;
-> +				ctx = NULL;
-> +			}
-> +		}
-> +
-> +		if (lzx_decompress(sbi->compress.lzx, cmpr, cmpr_size, unc,
-> +				   unc_size)) {
-> +			err = -EINVAL;
-> +		}
-> +	} else {
-> +		/* XPRESS: frame compressed */
-> +		if (!sbi->compress.xpress) {
-> +			/* Lazy initialize xpress decompress context */
-> +			spin_unlock(&sbi->compress.lock);
-> +			ctx = xpress_allocate_decompressor();
-> +			if (!ctx)
-> +				return -ENOMEM;
-> +
-> +			spin_lock(&sbi->compress.lock);
-> +			if (!sbi->compress.xpress) {
-> +				sbi->compress.xpress = ctx;
-> +				ctx = NULL;
-> +			}
-> +		}
-> +
-> +		if (xpress_decompress(sbi->compress.xpress, cmpr, cmpr_size,
-> +				      unc, unc_size)) {
-> +			err = -EINVAL;
-> +		}
-> +	}
-> +	spin_unlock(&sbi->compress.lock);
-> +out:
-> +	ntfs_free(ctx);
-> +	return err;
-> +}
+debugfs nodes were created in genpd_debug_init alled in late_initcall
+preventing power domains registered though loadable modules to have
+a debugfs entry.
 
-Decompression is a somewhat heavyweight operation.  Not the type of thing that
-should be done while holding a spin lock.
+Create/remove debugfs nodes when the power domain is added/removed
+to/from the internal gpd_list.
 
-- Eric
+Signed-off-by: Thierry Strudel <tstrudel@google.com>
+---
+v2: fix forward declaration and genpd_debugfs_dir being NULL - Ulf
+ drivers/base/power/domain.c | 83 ++++++++++++++++++++++++-------------
+ 1 file changed, 55 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+index 743268996336..3e40ef5cd9ab 100644
+--- a/drivers/base/power/domain.c
++++ b/drivers/base/power/domain.c
+@@ -24,6 +24,16 @@
+ 
+ #include "power.h"
+ 
++#ifdef CONFIG_DEBUG_FS
++#include <linux/pm.h>
++#include <linux/device.h>
++#include <linux/debugfs.h>
++#include <linux/seq_file.h>4
++#include <linux/init.h>
++#include <linux/kobject.h>
++static struct dentry *genpd_debugfs_dir;
++#endif
++
+ #define GENPD_RETRY_MAX_MS	250		/* Approximate */
+ 
+ #define GENPD_DEV_CALLBACK(genpd, type, callback, dev)		\
+@@ -1880,6 +1890,21 @@ static void genpd_lock_init(struct generic_pm_domain *genpd)
+ 	}
+ }
+ 
++#ifdef CONFIG_DEBUG_FS
++static void genpd_debug_add(struct generic_pm_domain *genpd);
++
++static void genpd_debug_remove(struct generic_pm_domain *genpd)
++{
++	struct dentry *d;
++
++	d = debugfs_lookup(genpd->name, genpd_debugfs_dir);
++	debugfs_remove(d);
++}
++#else
++static void genpd_debug_add(struct generic_pm_domain *genpd) {}
++static void genpd_debug_remove(struct generic_pm_domain *genpd) {}
++#endif
++
+ /**
+  * pm_genpd_init - Initialize a generic I/O PM domain object.
+  * @genpd: PM domain object to initialize.
+@@ -1954,6 +1979,7 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
+ 
+ 	mutex_lock(&gpd_list_lock);
+ 	list_add(&genpd->gpd_list_node, &gpd_list);
++	genpd_debug_add(genpd);
+ 	mutex_unlock(&gpd_list_lock);
+ 
+ 	return 0;
+@@ -1987,6 +2013,7 @@ static int genpd_remove(struct generic_pm_domain *genpd)
+ 		kfree(link);
+ 	}
+ 
++	genpd_debug_remove(genpd);
+ 	list_del(&genpd->gpd_list_node);
+ 	genpd_unlock(genpd);
+ 	cancel_work_sync(&genpd->power_off_work);
+@@ -2893,14 +2920,6 @@ core_initcall(genpd_bus_init);
+ /***        debugfs support        ***/
+ 
+ #ifdef CONFIG_DEBUG_FS
+-#include <linux/pm.h>
+-#include <linux/device.h>
+-#include <linux/debugfs.h>
+-#include <linux/seq_file.h>
+-#include <linux/init.h>
+-#include <linux/kobject.h>
+-static struct dentry *genpd_debugfs_dir;
+-
+ /*
+  * TODO: This function is a slightly modified version of rtpm_status_show
+  * from sysfs.c, so generalize it.
+@@ -3177,9 +3196,34 @@ DEFINE_SHOW_ATTRIBUTE(total_idle_time);
+ DEFINE_SHOW_ATTRIBUTE(devices);
+ DEFINE_SHOW_ATTRIBUTE(perf_state);
+ 
+-static int __init genpd_debug_init(void)
++static void genpd_debug_add(struct generic_pm_domain *genpd)
+ {
+ 	struct dentry *d;
++
++	if (!genpd_debugfs_dir)
++		return;
++
++	d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
++
++	debugfs_create_file("current_state", 0444,
++			    d, genpd, &status_fops);
++	debugfs_create_file("sub_domains", 0444,
++			    d, genpd, &sub_domains_fops);
++	debugfs_create_file("idle_states", 0444,
++			    d, genpd, &idle_states_fops);
++	debugfs_create_file("active_time", 0444,
++			    d, genpd, &active_time_fops);
++	debugfs_create_file("total_idle_time", 0444,
++			    d, genpd, &total_idle_time_fops);
++	debugfs_create_file("devices", 0444,
++			    d, genpd, &devices_fops);
++	if (genpd->set_performance_state)
++		debugfs_create_file("perf_state", 0444,
++				    d, genpd, &perf_state_fops);
++}
++
++static int __init genpd_debug_init(void)
++{
+ 	struct generic_pm_domain *genpd;
+ 
+ 	genpd_debugfs_dir = debugfs_create_dir("pm_genpd", NULL);
+@@ -3187,25 +3231,8 @@ static int __init genpd_debug_init(void)
+ 	debugfs_create_file("pm_genpd_summary", S_IRUGO, genpd_debugfs_dir,
+ 			    NULL, &summary_fops);
+ 
+-	list_for_each_entry(genpd, &gpd_list, gpd_list_node) {
+-		d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
+-
+-		debugfs_create_file("current_state", 0444,
+-				d, genpd, &status_fops);
+-		debugfs_create_file("sub_domains", 0444,
+-				d, genpd, &sub_domains_fops);
+-		debugfs_create_file("idle_states", 0444,
+-				d, genpd, &idle_states_fops);
+-		debugfs_create_file("active_time", 0444,
+-				d, genpd, &active_time_fops);
+-		debugfs_create_file("total_idle_time", 0444,
+-				d, genpd, &total_idle_time_fops);
+-		debugfs_create_file("devices", 0444,
+-				d, genpd, &devices_fops);
+-		if (genpd->set_performance_state)
+-			debugfs_create_file("perf_state", 0444,
+-					    d, genpd, &perf_state_fops);
+-	}
++	list_for_each_entry(genpd, &gpd_list, gpd_list_node)
++		genpd_debug_add(genpd);
+ 
+ 	return 0;
+ }
+-- 
+2.29.2.576.ga3fc446d84-goog
+
