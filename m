@@ -2,118 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EC92CE3CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D3CD2CE3E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389476AbgLDAFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 19:05:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
+        id S2389482AbgLDAHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 19:07:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388195AbgLDAFk (ORCPT
+        with ESMTP id S1728595AbgLDAHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 19:05:40 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12A8C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 16:04:54 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id w6so2462636pfu.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 16:04:54 -0800 (PST)
+        Thu, 3 Dec 2020 19:07:02 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E156CC061A55
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 16:06:18 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id j12so3574282ota.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 16:06:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=tl5Utng9ytojtJagiqymkbPGSz2X+7BJN1ECR1XJmdk=;
-        b=Wd3/5S5tk2qpeNkG1ZR6yr5Ao/cQdLRr+Xxc+RBPqqRGflpAxei2YGZamgE2qeI1Ql
-         IW0+JlMniOfHCDVB11iWFvFOJ35JI3WJtssx0LkGQm+ZKTblndHLIsLrfbKfSycogDcT
-         WIfS3K5tDqgohvZlt1qrI4G/ltTwvz6PXfcOY=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jVsiot8Y1A046lL18k/UOo07aqMmS1df6VhZY+TySxc=;
+        b=xtyhAKYScBg0oa61H3UpkZ+gwuq/eRBTNYXRQ/raewLzXKt/Zr4XW1bJb5BUEBtogN
+         DNXa+F1syfTPU4figu57df/xPjKJOSYsicMV8NW9HEm2mujdehIsi4N05/WFQPskNr8l
+         x+ebglCl7vqW7GzfYmHmmNIg5Jv4cCxz9YonCpVHM601/ngTbo56DXBugETILuhWtBsd
+         pLih91zGwtH+AVt0HIV9HyMaUDaSwkun80zdU1yZp4MvsYYw0otLYhun87ySxfax4g+P
+         HdhwXZgWnbD6BGr7lblaKoS5+W+c9D6tnNUBQFOKpC/MDW7nSUBpIv44BSM/5mLLyJ+N
+         PqWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=tl5Utng9ytojtJagiqymkbPGSz2X+7BJN1ECR1XJmdk=;
-        b=n2feGdjk6A0KuCaZzHIt0vjDR6u92iAhcwwS0fhuedQ+BqQbSP33Ok3LI5nonJSbRV
-         OyWH3opWU6REGUm1CMlKuzqBe22nVjXCDTu0GM9alK+MdlAahfbqfY3UK6bfzQM56a16
-         Mm0zp8T+6UJCXgkho0rYOG14BhlEcI93wizZGXB9C9V/lSXrM6VNlIHbVHRlJJie5ISx
-         e4u2UcIhv0KdU9YA/mBClVAoQCrlQ+uj+A1hyLxPP+LUcUPwBPKMP6QWjXgFIIJcSV7Z
-         ftnQxBCXx5D3hlKFLWv4HaS23DoWQP4kUC7dGaRm/JbD2Ykm5ltyHOfETvWSxoa0Rm0M
-         V39g==
-X-Gm-Message-State: AOAM531ro4nXckxXkB8nP0i5PBnZMPMDbZJJeGuawwaFDvPlx6xPZ6Jv
-        JEhG6pgI9kJAtn0OUhShyOnCtzDPcG8iGw==
-X-Google-Smtp-Source: ABdhPJwqWAtfUq0a7sJA6kpYXTEPQNtxrnLYrGTjJeUVg2jwAslTLepC7yHks13wUQXND/NxfuaxEg==
-X-Received: by 2002:a63:c749:: with SMTP id v9mr5125868pgg.451.1607040294421;
-        Thu, 03 Dec 2020 16:04:54 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id p7sm2858430pfn.56.2020.12.03.16.04.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jVsiot8Y1A046lL18k/UOo07aqMmS1df6VhZY+TySxc=;
+        b=WfY+SI6+OvW8H2OuBIcVmd7EpNjQv+73ddTKdpXetkFp3+HiEwgDQ3qO3eU5xbwy+J
+         SZD6d5orJQpLzTDmCe3hPWDOsdhkbgdbNYztuw5U4lYBtFSCaBwxnv0iMRwfglMSSUCD
+         wQRheQ9SOOjtw6seZCxpNqt8qtdFtt3qOtlPmgxT2KVSok6qA8hS4NUh7j2XoxPVt0vP
+         cOwivJR5JMyojK6WfH5QJV8EYEFSMcVKnyNGf29VVLuz/Z+CuYuvt1wGIXovFzN/30Td
+         Ms2EwDBA+lRfkhOKTmKngAs1Z/+neW5XUhoJ0l8thT9+WW4CXtqbyAOAiLjPYtLadWF8
+         I8uA==
+X-Gm-Message-State: AOAM533ZkByK2Hp0AWjY2xh0uIFyJH6h03vXohGd51+igU94t2uzTS+0
+        g5bSLQyYF5ET+b1BZzsPdZiKMw==
+X-Google-Smtp-Source: ABdhPJwQWWSoAqrs9pA1uzrM5WPFnN8NTlNcTYAh8mVHw3DLvRWAqlV8o+StC4xBzLxbaDAWU7YKaQ==
+X-Received: by 2002:a9d:410:: with SMTP id 16mr1448961otc.315.1607040376660;
+        Thu, 03 Dec 2020 16:06:16 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id m81sm241191oib.37.2020.12.03.16.06.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 16:04:53 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 03 Dec 2020 16:06:15 -0800 (PST)
+Date:   Thu, 3 Dec 2020 18:06:13 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Vivek Aknurwar <viveka@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeevan Shriram <jshriram@codeaurora.org>
+Subject: Re: [PATCH 5/5] clk: qcom: gcc: Add clock driver for SM8350
+Message-ID: <X8l9dRfo7qdRTAMe@builder.lan>
+References: <20201203070241.2648874-1-vkoul@kernel.org>
+ <20201203070241.2648874-6-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201203231232.1482792-1-arnd@kernel.org>
-References: <20201203231232.1482792-1-arnd@kernel.org>
-Subject: Re: [PATCH] coresight: remove broken __exit annotations
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mian Yousaf Kaukab <ykaukab@suse.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Kim Phillips <kim.phillips@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Date:   Thu, 03 Dec 2020 16:04:52 -0800
-Message-ID: <160704029234.1580929.9183785406117157105@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203070241.2648874-6-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Arnd Bergmann (2020-12-03 15:11:40)
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> Functions that are annotated __exit are discarded for built-in drivers,
-> but the .remove callback in a device driver must still be kept around
-> to allow bind/unbind operations.
->=20
-> There is now a linker warning for the discarded symbol references:
->=20
-> `tmc_remove' referenced in section `.data' of drivers/hwtracing/coresight=
-/coresight-tmc-core.o: defined in discarded section `.exit.text' of drivers=
-/hwtracing/coresight/coresight-tmc-core.o
-> `tpiu_remove' referenced in section `.data' of drivers/hwtracing/coresigh=
-t/coresight-tpiu.o: defined in discarded section `.exit.text' of drivers/hw=
-tracing/coresight/coresight-tpiu.o
-> `etb_remove' referenced in section `.data' of drivers/hwtracing/coresight=
-/coresight-etb10.o: defined in discarded section `.exit.text' of drivers/hw=
-tracing/coresight/coresight-etb10.o
-> `static_funnel_remove' referenced in section `.data' of drivers/hwtracing=
-/coresight/coresight-funnel.o: defined in discarded section `.exit.text' of=
- drivers/hwtracing/coresight/coresight-funnel.o
-> `dynamic_funnel_remove' referenced in section `.data' of drivers/hwtracin=
-g/coresight/coresight-funnel.o: defined in discarded section `.exit.text' o=
-f drivers/hwtracing/coresight/coresight-funnel.o
-> `static_replicator_remove' referenced in section `.data' of drivers/hwtra=
-cing/coresight/coresight-replicator.o: defined in discarded section `.exit.=
-text' of drivers/hwtracing/coresight/coresight-replicator.o
-> `dynamic_replicator_remove' referenced in section `.data' of drivers/hwtr=
-acing/coresight/coresight-replicator.o: defined in discarded section `.exit=
-.text' of drivers/hwtracing/coresight/coresight-replicator.o
-> `catu_remove' referenced in section `.data' of drivers/hwtracing/coresigh=
-t/coresight-catu.o: defined in discarded section `.exit.text' of drivers/hw=
-tracing/coresight/coresight-catu.o
->=20
-> Remove all those annotations.
->=20
-> Fixes: 8b0cf82677d1 ("coresight: stm: Allow to build coresight-stm as a m=
-odule")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
+On Thu 03 Dec 01:02 CST 2020, Vinod Koul wrote:
+> diff --git a/drivers/clk/qcom/gcc-sm8350.c b/drivers/clk/qcom/gcc-sm8350.c
+[..]
+> +static int gcc_sm8350_probe(struct platform_device *pdev)
+> +{
+> +	struct regmap *regmap;
+> +	int ret;
+> +
+> +	regmap = qcom_cc_map(pdev, &gcc_sm8350_desc);
+> +	if (IS_ERR(regmap)) {
+> +		dev_err(&pdev->dev, "Failed to map gcc registers\n");
+> +		return PTR_ERR(regmap);
+> +	}
+> +
+> +	ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks, ARRAY_SIZE(gcc_dfs_clocks));
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* FORCE_MEM_CORE_ON for ufs phy ice core clocks */
+> +	regmap_update_bits(regmap, gcc_ufs_phy_ice_core_clk.halt_reg, BIT(14), BIT(14));
+> +
+> +	/*
+> +	 * Enable clocks required by the i2c-connected pm8008 regulators. Don't
+> +	 * register them with the clock framework so that client requests are
+> +	 * short-circuited before grabbing the enable/prepare locks. This
+> +	 * prevents deadlocks between the clk/regulator frameworks.
+> +	 *
+> +	 *	gcc_qupv3_wrap_1_m_ahb_clk
+> +	 *	gcc_qupv3_wrap_1_s_ahb_clk
+> +	 *	gcc_qupv3_wrap1_s5_clk
+> +	 */
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Isn't this a workaround inherited from the downstream control of
+regulators from within the clock core? Does this still apply upstream?
+
+Regards,
+Bjorn
+
+> +	regmap_update_bits(regmap, 0x52008, BIT(20), BIT(20));
+> +	regmap_update_bits(regmap, 0x52008, BIT(21), BIT(21));
+> +	regmap_update_bits(regmap, 0x52008, BIT(27), BIT(27));
+> +
+> +	return qcom_cc_really_probe(pdev, &gcc_sm8350_desc, regmap);
+> +}
+> +
+> +static struct platform_driver gcc_sm8350_driver = {
+> +	.probe = gcc_sm8350_probe,
+> +	.driver = {
+> +		.name = "sm8350-gcc",
+> +		.of_match_table = gcc_sm8350_match_table,
+> +	},
+> +};
+> +
+> +static int __init gcc_sm8350_init(void)
+> +{
+> +	return platform_driver_register(&gcc_sm8350_driver);
+> +}
+> +subsys_initcall(gcc_sm8350_init);
+> +
+> +static void __exit gcc_sm8350_exit(void)
+> +{
+> +	platform_driver_unregister(&gcc_sm8350_driver);
+> +}
+> +module_exit(gcc_sm8350_exit);
+> +
+> +MODULE_DESCRIPTION("QTI GCC SM8350 Driver");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.26.2
+> 
