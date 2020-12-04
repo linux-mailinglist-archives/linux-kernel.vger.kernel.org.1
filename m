@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50422CEC6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DDFB2CEC70
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387702AbgLDKpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 05:45:34 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:46692 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726735AbgLDKpe (ORCPT
+        id S2387769AbgLDKpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 05:45:35 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:35499 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727977AbgLDKpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 05:45:34 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607078692;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6sB8HC3yBfEXc+Ab6LpPmtUtZKgKBsugWZ3DmrepoAo=;
-        b=jO8qHFrlQ+NVMPX/90ibQrYDlWXTc2waWdoKXiMUonX6DxuSJxTkAyHrQRn7br1+l/wfbm
-        eQ2zBsZZ/G3syE0B3QznBJOMuk2RI79kWu7VWjHmvwE/LQxpm9Lyq+7ueAih06Ug5+W9Mx
-        YnfrhQrG0+wQxOu34AQyLXfL4FEgV8iT6KvfasmtOY+PBuRucLbI/NIaLUPRNnKu4wPv9o
-        II/ZpSJ5Y4YYT+vWKTduhoVWkIs81/UnCdwxcRPS5aW63B7e0kRbXniJGlMEo4NgxRPsO7
-        X/TcEO1CAkB2YziqcHuaFHiGWgSZOYTwt35Fp7LSFSmm2kxyz0NUE7K84T4s7g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607078692;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6sB8HC3yBfEXc+Ab6LpPmtUtZKgKBsugWZ3DmrepoAo=;
-        b=DUfQdElh8F0G2ppDE07nUwBz/SXdP67ddlqTuBT8bSpgXu3Cf5qtVo+vVIVcNIxgamWz+9
-        TL150+DVd6QYNCCA==
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-In-Reply-To: <20201204095138.GG74177@piout.net>
-References: <87a6uwdnfn.fsf@nanos.tec.linutronix.de> <20201202205418.GN5487@ziepe.ca> <874kl3eu8p.fsf@nanos.tec.linutronix.de> <87zh2vd72z.fsf@nanos.tec.linutronix.de> <20201203021047.GG3544@piout.net> <87pn3qdhli.fsf@nanos.tec.linutronix.de> <20201203161622.GA1317829@ziepe.ca> <87zh2ubny2.fsf@nanos.tec.linutronix.de> <20201203220027.GB74177@piout.net> <87im9hc3u2.fsf@nanos.tec.linutronix.de> <20201204095138.GG74177@piout.net>
-Date:   Fri, 04 Dec 2020 11:44:51 +0100
-Message-ID: <87ft4lc0kc.fsf@nanos.tec.linutronix.de>
+        Fri, 4 Dec 2020 05:45:35 -0500
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 4544E601C1;
+        Fri,  4 Dec 2020 10:44:49 +0000 (UTC)
+Date:   Fri, 4 Dec 2020 11:44:56 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: bcm2835: fix vchiq_mmal dependencies
+Message-ID: <20201204104456.hhu76as6ruf5vmqq@uno.localdomain>
+References: <20201203223836.1362313-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201203223836.1362313-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04 2020 at 10:51, Alexandre Belloni wrote:
-> On 04/12/2020 10:34:13+0100, Thomas Gleixner wrote:
->> So either the RTC knows the requirements for tsched, e.g. the MC14xxx
->> datasheet, or it can retrieve that information from DT or by querying
->> the underlying bus mechanics for the xfer time estimate or just by
->> timing an xfer for reference.
->> 
+Hi Arnd,
+
+On Thu, Dec 03, 2020 at 11:38:30PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> What I do from userspace is that the caller is the one estimating the
-> transfer time and this works very well. I really think that the ntp code
-> could do just the same.
+> When the MMAL code is built-in but the vchiq core config is
+> set to =m, the mmal code never gets built, which in turn can
+> lead to link errors:
 
-For MC14xxx type RTCs tsched is defined by a constant, so heuristics are
-really horrible because you have to poll the RTC to get it correct.
-What's the point if the driver can just provide the value from the data
-sheet?
+My bad, I repetedly ignored the error report received from the 'kernel
+test robot' about this. Thanks for fixing.
 
-For RTC's behind a bus the driver its pretty simple to let the driver
-tell at RTC registration time that the transfer time is unknown. So you
-don't have to add the estimation procedure to each driver. You simply
-can add it to the core in one place and expose that info to user space
-as well as a starting point.
+For my eduction, why would the vchiq-mmal code not get build if
+vchiq-core is set to M ? I mean, that configuration is indeed wrong,
+as vchiq-mmal uses symbols from vchiq-core and I would expect that to
+fail when building the kernel image, not have the other modules (as
+bcm2835-camera) fail as a consequence when building modules.
 
-Sticking that into the NTP code is really the wrong place. That's like
-asking the users of a timer device to calibrate it before usage.
+>
+> ERROR: modpost: "vchiq_mmal_port_set_format" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "vchiq_mmal_port_disable" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "vchiq_mmal_port_parameter_set" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "vchiq_mmal_component_finalise" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "vchiq_mmal_port_connect_tunnel" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "vchiq_mmal_component_enable" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "vchiq_mmal_finalise" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "vchiq_mmal_component_init" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "vchiq_mmal_component_disable" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "mmal_vchi_buffer_init" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "vchiq_mmal_port_enable" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "vchiq_mmal_version" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "vchiq_mmal_submit_buffer" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "vchiq_mmal_init" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "mmal_vchi_buffer_cleanup" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+> ERROR: modpost: "vchiq_mmal_port_parameter_get" [drivers/staging/vc04_services/bcm2835-camera/bcm2835-v4l2.ko] undefined!
+>
+> Change the Kconfig to depend on BCM2835_VCHIQ like the other drivers,
+> and remove the now redundant dependencies.
+>
+> Fixes: b18ee53ad297 ("staging: bcm2835: Break MMAL support out from camera")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-The requirements for writing a RTC are not a problem of the caller, they
-are fundamental properties of the RTC itself. So why on earth are you
-asking every user to implement heuristics to figure these out themself?
+Acked-by: Jacopo Mondi <jacopo@jmondi.org>
 
-Having it as property of the RTC device gives at least a halfways
-correct value for the periodic kernel side update and if user space
-want's to do better then it still can do so.
+If you noticed this from the same error notification I recevied it
+might be fair to report:
+Reported-by: kernel test robot <lkp@intel.com>
 
-Thanks,
+Thanks
+   j
 
-        tglx
+> ---
+>  drivers/staging/vc04_services/vchiq-mmal/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/staging/vc04_services/vchiq-mmal/Kconfig b/drivers/staging/vc04_services/vchiq-mmal/Kconfig
+> index 500c0d12e4ff..c99525a0bb45 100644
+> --- a/drivers/staging/vc04_services/vchiq-mmal/Kconfig
+> +++ b/drivers/staging/vc04_services/vchiq-mmal/Kconfig
+> @@ -1,6 +1,6 @@
+>  config BCM2835_VCHIQ_MMAL
+>  	tristate "BCM2835 MMAL VCHIQ service"
+> -	depends on (ARCH_BCM2835 || COMPILE_TEST)
+> +	depends on BCM2835_VCHIQ
+>  	help
+>  	  Enables the MMAL API over VCHIQ interface as used for the
+>  	  majority of the multimedia services on VideoCore.
+> --
+> 2.27.0
+>
