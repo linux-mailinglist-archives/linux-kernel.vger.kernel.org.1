@@ -2,346 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFF52CE84E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 07:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D042CE82C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 07:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728315AbgLDGsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 01:48:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50110 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725601AbgLDGsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 01:48:38 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B8C58AB63;
-        Fri,  4 Dec 2020 06:47:55 +0000 (UTC)
-Date:   Thu, 3 Dec 2020 22:22:57 -0800
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Mauro Carvalho Chehab <mchehab@s-opensource.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-usb@vger.kernel.org
-Subject: Re: [RFC PATCH] usb: hcd: complete URBs in threaded-IRQ context
- instead of tasklet
-Message-ID: <20201204062257.GA13304@linux-p48b.lan>
-References: <20180216170450.yl5owfphuvltstnt@breakpoint.cc>
- <20180227143934.2aa847ac@vento.lan>
- <20180308095739.okdn7ghvlpy4oiy5@linutronix.de>
- <20180416140103.33s2xarrxxeecttk@linutronix.de>
+        id S1727761AbgLDGbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 01:31:25 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:39838 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725372AbgLDGbZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 01:31:25 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B46T2te008074;
+        Thu, 3 Dec 2020 22:30:24 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=h+rVcsTEac9GhRn8AmDK55Y1KA/0T+E8grHYCH3slUE=;
+ b=UM34xw5OCUoJ3D+dlGnO+X52NfWwodeR7a6SWdVoGKEn4kiKNCLIeqLyxch375cY9Frm
+ Hn+nJbCmdEZCM47UHL9YSQef/0MlOUwFkY+1JA3au/vfHjbRrmko1NGSHaeprWGabxIn
+ +cekgn+oiujTmYI0PsM9C1J6ZFUYtpYLwi0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 35615fsy3j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 03 Dec 2020 22:30:23 -0800
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 3 Dec 2020 22:30:23 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cdCYmYA2+96y8P3Vk+GjEmraABKl+G/i8ENQ+RCAxxfugQ4vK8RPcmjFcRlWnU4bCsLtGJZOGmEf/otS3Dk+McvY/H9SCL+XIV0vG3hfDB1vvQykpxR4MTJHxnWGCTK3qyaT6nq9NXwaCwfE2E8exv07/zm/6M0aeSjWG6Oj/vcJzArFt6hGbyp3FIbYKHZc3NnpyMoRFIrUd7yC+knurGkBBFCvYDe+ZFaHHlJ8dxEpZFlLq9wamSohRM5I2Hz053IdXBkHmxI+X2zG2ARsWOIw9CutM/kYITyKgzZl8TAf3HRc5NgCVSVgi6HCZ6sQKeN5UiFPY8XmpkyxihypHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h+rVcsTEac9GhRn8AmDK55Y1KA/0T+E8grHYCH3slUE=;
+ b=kF6T0iQCxO30/ljIZBzmm5zYOANlJiir/vZLe9ZZ8KO98/nbw9h9VX/oo59T6vWV4V0ETs4ObHWd9/OgSJtYS3386sToE8jW21NP1RexxfPSDN+TAefse1j6iM3SWxE08Rt3/RB+/q/TqkqEZ2agbq86jKLk0JVce7Dwsw2jDgisuxKw1ERGihu6vFA1RX79ga2mcilnby75KOs5oRR00cNFdlWSTk/A5TvJmPjxNd2Y5bFqHMQe+uKDupb3FyfBXn4Va6HP+VsazkvDk/0WC/VfiGQb1FQU/scptAIoRo1Ya6mOmwcrg4/jpAHihoVk98v4JqIFUxo84bXRQSTreA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h+rVcsTEac9GhRn8AmDK55Y1KA/0T+E8grHYCH3slUE=;
+ b=KiIxsdtPSdAx13bG3bwyFLcjZLN+Cc8Gwh811au2vUQ0uTYS17bbpQxP1pGwSFkkvGriphSK30rHbOKYqMnlM8rvpWlF2bVHW+tEl3AOJJnAMmSpXQ13NRetrIhNfTQ3HEDxeje4LUkyrtbfWbj0YJMBWJpi59+zDBpSRRK4Xas=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB4085.namprd15.prod.outlook.com (2603:10b6:a02:bf::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Fri, 4 Dec
+ 2020 06:30:20 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3632.021; Fri, 4 Dec 2020
+ 06:30:20 +0000
+Subject: Re: [PATCH bpf-next v3 09/14] bpf: Pull out a macro for interpreting
+ atomic ALU operations
+To:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
+References: <20201203160245.1014867-1-jackmanb@google.com>
+ <20201203160245.1014867-10-jackmanb@google.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <f1d5ec7e-6231-0876-f25d-9dd5da4112d0@fb.com>
+Date:   Thu, 3 Dec 2020 22:30:18 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
+In-Reply-To: <20201203160245.1014867-10-jackmanb@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:1dae]
+X-ClientProxiedBy: SJ0PR13CA0182.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c3::7) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20180416140103.33s2xarrxxeecttk@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c8::12b3] (2620:10d:c090:400::5:1dae) by SJ0PR13CA0182.namprd13.prod.outlook.com (2603:10b6:a03:2c3::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Fri, 4 Dec 2020 06:30:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 935eac4b-bd40-4e22-7630-08d8981e125e
+X-MS-TrafficTypeDiagnostic: BYAPR15MB4085:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB40859B750998FF06FCF56208D3F10@BYAPR15MB4085.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CoU5dRtnUH00sQEHdIR+M1CX0MTQImK/vZaO3WnjgmlPJMkG7h9FallFTvmQQBv4Om0lGy0rA3xj9jBilSVh3CoqkbqRPsq2Ce+L0zURux0gYv9YCCIn6VFbM1it/L1KgcDt7xv5Si8YcOWQxA6u+SMxRq5IZCa2Dv+rnRf3ob8SHO65YZO3hlUCwzMl36P7COsZ7xxm7ukUgLzyJH9nTqg3qkyX2GAUYtefO3f61AOKxYm0Ou//gycdvxSbq3h6r8KwxO/OnUIqe1wUWZ19fFvorA2JGufSP0Kp7gwlSpjmRWUTy/gMWMBhrqY5LuzIjZQrnHG4XYPD+VBEyWTJtICkWxKVSWm46SGPpcHczMg5p391zvqPgC6tXSO3OX97Ks7kv973h9RDcDGFfH+w3T9UPXocWZE8FgeAXogMrIU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(396003)(39860400002)(376002)(478600001)(4326008)(31686004)(83380400001)(66946007)(52116002)(66476007)(66556008)(31696002)(36756003)(16526019)(186003)(8676002)(53546011)(2906002)(8936002)(86362001)(54906003)(5660300002)(316002)(2616005)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cHhqYVZoZmQ5elJrVmZHb2QrbG9WWWdDdGpOdHAza2RPUktqRkJFVDRQVkNz?=
+ =?utf-8?B?Z1VSTXh1NGJYc1dzZlpPenZSdzN5NFJjcmV5M0lvdlRpdnFxS0x0VGhSSnA3?=
+ =?utf-8?B?NHpaYjRneitOUlR3UHBlcnZNdWpkMUxyYTlpMFR3NlI5WVA2V29OY0xCQ2Ji?=
+ =?utf-8?B?a3ZPNGhzNnZmbFhaY2JXbFZSRUpzS0hObkZnOVRuWWMzVENLRzBnNzZUaEJ1?=
+ =?utf-8?B?OEdUNUJoUGtCWjJxdlFFVzdPVVIrYWQxazNnRkl5NXJWb2F6RVc3d2pQZW9O?=
+ =?utf-8?B?bjJCN2ZvdWM1SWtrRm1EV1g1YU9zQzExeTJ5eDhOc0tOQk9zT09hc3cxT0lU?=
+ =?utf-8?B?L0t4UmtnRkdxK1QyMDN0TWRiMHZIL0xXTTZnR2JjWU8xNDNmUytPL3ozckZ1?=
+ =?utf-8?B?aEhlNW80di9sMjNiQVh0OU04Ulc2VmE2ekhFRTUrT09zM244OGZFNVpVSjhw?=
+ =?utf-8?B?RktoMDN4M2JwaElQcWRlVE9XdGo5SUJaSnJFYWRMY05GUnlvTnJsMHhPTEFv?=
+ =?utf-8?B?b0I2dlFkU1RPNWVJV1ZCRndDZ2FjcC9TandJSTFLbDdHbjBzK2xQaHRHRFRU?=
+ =?utf-8?B?UkVhSWZqSWFvckswVlhJREsrM1FQamhxMEJHdVNWZDF0Qkk2SzNWaG5KTDZI?=
+ =?utf-8?B?NHVlRkd6djlOM01oU1hZdXptZ3BZSU5kNkxQNVpwTFJjZWJ5dUl3TDN6UDBU?=
+ =?utf-8?B?TUt6YkV5a0hmbE15R0lrK3F5Y2tTa2xoN3Z2RUVSMWUwUEkyMUxKcFFjNDZw?=
+ =?utf-8?B?MlRIRSs0bTdQbndlK1BBbnhJbndOemdzZ1grSWM2Y2R4Zkc5UDhBcDhRd1o1?=
+ =?utf-8?B?VjFuS2lKaHFmNlB2WmMrM1k4aEdCeXlmNjR6QjF2RnJqbC8zV3FMT0pyUWlE?=
+ =?utf-8?B?UTlUTFJRUE9GSEZuS2puamdIa2tVZ1Nmb2E4ZlF5V0ZnYzQzTnNhL2ZBeUkv?=
+ =?utf-8?B?bzUxbFBXRit5S3JnZy8rcTlIM3NDcy9QdDVrbkVpSmlmYW1FRXFxeUhXOEpu?=
+ =?utf-8?B?V09MUFROTDJFbmJmTWlUL0k5SXdseDl2Unhyb3JNWk5rWEJwOVhmVUFqaGhy?=
+ =?utf-8?B?enF1Q0h2SmUxUUZlRGU3R1ZmbXNRd0pOR3BaSGEwaTJVK1FNQm1xOUs3Y3BS?=
+ =?utf-8?B?TXN4dVQ3SnZISFFrc3lrVjRwTmRKNUtvY0gzdGd6alVNTklqSG5rRjVNZzhJ?=
+ =?utf-8?B?cHJ5ZE8wMnRuQWdORVo2ZkZzRzJobnI0MndZdkFkTVUrNHF1Z1FPdGRXbTgw?=
+ =?utf-8?B?aVBVWE9BdlpXTGg3Ulp0NGp5ckRqUmNmcmFtYU83elE1UXhDVmYvd3FtRUhk?=
+ =?utf-8?B?aE1FS1Vlcm9NcDBLZUVqRUZzM0F6OWpEejlOWFFFbXpCNTQrOEQxQSs5blly?=
+ =?utf-8?B?d2RSc1J2c3BLNGc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 935eac4b-bd40-4e22-7630-08d8981e125e
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 06:30:19.9525
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jbOyLDrFFgF+sx9Xk5lL5fYYvQm4QuwgfAoj8eCq7d03R9//ynX92Hasxp80uOGo
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4085
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_01:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ bulkscore=0 lowpriorityscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ adultscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012040036
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Apr 2018, Sebastian Andrzej Siewior wrote:
 
->On 2018-03-08 10:57:39 [+0100], To Mauro Carvalho Chehab wrote:
->> On 2018-02-27 14:39:34 [-0300], Mauro Carvalho Chehab wrote:
->> > Hi Sebastian,
->> Hi Mauro,
->>
->> > Sorry for taking some time to test it, has been busy those days...
->> :)
->>
->> > Anyway, I tested it today. Didn't work. It keep losing data.
->>
->> Okay, this was unexpected. What I learned from the thread is that you
->> use the dwc2 controller and once upgrade to a kernel which completes the
->> URBs in BH context then you starting losing data from your DVB-s USB
->> device. And it was assumed that this is because BH/ksoftirq is getting
->> "paused" if it is running for too long. If that is the case then a
->> revert of "let us complete the URB in BH context" should get it working
->> again. Is that so?
->
->ping
 
-I ran into this while looking at getting rid of tasklets in drivers/usb.
+On 12/3/20 8:02 AM, Brendan Jackman wrote:
+> Since the atomic operations that are added in subsequent commits are
+> all isomorphic with BPF_ADD, pull out a macro to avoid the
+> interpreter becoming dominated by lines of atomic-related code.
+> 
+> Note that this sacrificies interpreter performance (combining
+> STX_ATOMIC_W and STX_ATOMIC_DW into single switch case means that we
+> need an extra conditional branch to differentiate them) in favour of
+> compact and (relatively!) simple C code.
+> 
+> Change-Id: I8cae5b66e75f34393de6063b91c05a8006fdd9e6
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
 
-Mauro, were you ever able to try reverting 8add17cf8e4 like Sebastian suggested?
-If not would you mind trying the below, please? Considering this thread is from
-over two years ago, it's a rebase of Sebastian's patch to complete urbs in process
-context + the dwc2 changes not to use defer urb into bh.
+Ack with a minor suggestion below.
 
-Thanks,
-Davidlohr
+Acked-by: Yonghong Song <yhs@fb.com>
 
-----8<---------------------------------------------------------------------------
-diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-index 60886a7464c3..4952a8fc1719 100644
---- a/drivers/usb/core/hcd.c
-+++ b/drivers/usb/core/hcd.c
-@@ -1665,33 +1665,76 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
-	usb_put_urb(urb);
- }
+> ---
+>   kernel/bpf/core.c | 79 +++++++++++++++++++++++------------------------
+>   1 file changed, 38 insertions(+), 41 deletions(-)
+> 
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 28f960bc2e30..498d3f067be7 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -1618,55 +1618,52 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+>   	LDX_PROBE(DW, 8)
+>   #undef LDX_PROBE
+>   
+> -	STX_ATOMIC_W:
+> -		switch (IMM) {
+> -		case BPF_ADD:
+> -			/* lock xadd *(u32 *)(dst_reg + off16) += src_reg */
+> -			atomic_add((u32) SRC, (atomic_t *)(unsigned long)
+> -				   (DST + insn->off));
+> -			break;
+> -		case BPF_ADD | BPF_FETCH:
+> -			SRC = (u32) atomic_fetch_add(
+> -				(u32) SRC,
+> -				(atomic_t *)(unsigned long) (DST + insn->off));
+> -			break;
+> -		case BPF_XCHG:
+> -			SRC = (u32) atomic_xchg(
+> -				(atomic_t *)(unsigned long) (DST + insn->off),
+> -				(u32) SRC);
+> -			break;
+> -		case BPF_CMPXCHG:
+> -			BPF_R0 = (u32) atomic_cmpxchg(
+> -				(atomic_t *)(unsigned long) (DST + insn->off),
+> -				(u32) BPF_R0, (u32) SRC);
+> +#define ATOMIC(BOP, KOP)						\
 
--static void usb_giveback_urb_bh(struct tasklet_struct *t)
-+static void usb_hcd_rh_gb_urb(struct work_struct *work)
- {
--	struct giveback_urb_bh *bh = from_tasklet(bh, t, bh);
--	struct list_head local_list;
-+	struct giveback_urb *bh;
-+	struct list_head urb_list;
-+
-+	bh = container_of(work, struct giveback_urb, rh_compl);
+ATOMIC a little bit generic. Maybe ATOMIC_FETCH_BOP?
 
-	spin_lock_irq(&bh->lock);
--	bh->running = true;
-- restart:
--	list_replace_init(&bh->head, &local_list);
-+	list_replace_init(&bh->rh_head, &urb_list);
-	spin_unlock_irq(&bh->lock);
-
--	while (!list_empty(&local_list)) {
-+	while (!list_empty(&urb_list)) {
-		struct urb *urb;
-
--		urb = list_entry(local_list.next, struct urb, urb_list);
-+		urb = list_first_entry(&urb_list, struct urb, urb_list);
-		list_del_init(&urb->urb_list);
--		bh->completing_ep = urb->ep;
-		__usb_hcd_giveback_urb(urb);
--		bh->completing_ep = NULL;
-+	}
-+}
-+
-+#define URB_PRIO_HIGH	0
-+#define URB_PRIO_LOW	1
-+
-+static irqreturn_t usb_hcd_gb_urb(int irq, void *__hcd)
-+{
-+	struct usb_hcd *hcd = __hcd;
-+	struct giveback_urb *bh = &hcd->gb_urb;
-+	struct list_head urb_list[2];
-+	int i;
-+
-+	INIT_LIST_HEAD(&urb_list[URB_PRIO_HIGH]);
-+	INIT_LIST_HEAD(&urb_list[URB_PRIO_LOW]);
-+
-+	spin_lock_irq(&bh->lock);
-+ restart:
-+	list_splice_tail_init(&bh->prio_hi_head, &urb_list[URB_PRIO_HIGH]);
-+	list_splice_tail_init(&bh->prio_lo_head, &urb_list[URB_PRIO_LOW]);
-+	spin_unlock_irq(&bh->lock);
-+
-+	for (i = 0; i < ARRAY_SIZE(urb_list); i++) {
-+		while (!list_empty(&urb_list[i])) {
-+			struct urb *urb;
-+
-+			urb = list_first_entry(&urb_list[i],
-+					       struct urb, urb_list);
-+			list_del_init(&urb->urb_list);
-+			if (i == URB_PRIO_HIGH)
-+				bh->completing_ep = urb->ep;
-+
-+			__usb_hcd_giveback_urb(urb);
-+
-+			if (i == URB_PRIO_HIGH)
-+				bh->completing_ep = NULL;
-+
-+			if (i == URB_PRIO_LOW &&
-+			    !list_empty_careful(&urb_list[URB_PRIO_HIGH])) {
-+				spin_lock_irq(&bh->lock);
-+				goto restart;
-+			}
-+		}
-	}
-
-	/* check if there are new URBs to giveback */
-	spin_lock_irq(&bh->lock);
--	if (!list_empty(&bh->head))
-+	if (!list_empty(&bh->prio_hi_head) ||
-+	    !list_empty(&bh->prio_lo_head))
-		goto restart;
--	bh->running = false;
-	spin_unlock_irq(&bh->lock);
-+
-+	return IRQ_HANDLED;
- }
-
- /**
-@@ -1717,37 +1760,34 @@ static void usb_giveback_urb_bh(struct tasklet_struct *t)
-  */
- void usb_hcd_giveback_urb(struct usb_hcd *hcd, struct urb *urb, int status)
- {
--	struct giveback_urb_bh *bh;
--	bool running, high_prio_bh;
-+	struct giveback_urb	*bh = &hcd->gb_urb;
-+	struct list_head	*lh;
-
-	/* pass status to tasklet via unlinked */
-	if (likely(!urb->unlinked))
-		urb->unlinked = status;
-
--	if (!hcd_giveback_urb_in_bh(hcd) && !is_root_hub(urb->dev)) {
--		__usb_hcd_giveback_urb(urb);
-+	if (is_root_hub(urb->dev)) {
-+		spin_lock(&bh->lock);
-+		list_add_tail(&urb->urb_list, &bh->rh_head);
-+		spin_unlock(&bh->lock);
-+		queue_work(system_highpri_wq, &bh->rh_compl);
-		return;
-	}
-
--	if (usb_pipeisoc(urb->pipe) || usb_pipeint(urb->pipe)) {
--		bh = &hcd->high_prio_bh;
--		high_prio_bh = true;
--	} else {
--		bh = &hcd->low_prio_bh;
--		high_prio_bh = false;
-+	if (!hcd_giveback_urb_in_bh(hcd)) {
-+		__usb_hcd_giveback_urb(urb);
-+		return;
-	}
-
-+	if (usb_pipeisoc(urb->pipe) || usb_pipeint(urb->pipe))
-+		lh = &bh->prio_hi_head;
-+	else
-+		lh = &bh->prio_lo_head;
-+
-	spin_lock(&bh->lock);
--	list_add_tail(&urb->urb_list, &bh->head);
--	running = bh->running;
-+	list_add_tail(&urb->urb_list, lh);
-	spin_unlock(&bh->lock);
--
--	if (running)
--		;
--	else if (high_prio_bh)
--		tasklet_hi_schedule(&bh->bh);
--	else
--		tasklet_schedule(&bh->bh);
- }
- EXPORT_SYMBOL_GPL(usb_hcd_giveback_urb);
-
-@@ -2334,8 +2374,17 @@ irqreturn_t usb_hcd_irq (int irq, void *__hcd)
-		rc = IRQ_NONE;
-	else if (hcd->driver->irq(hcd) == IRQ_NONE)
-		rc = IRQ_NONE;
--	else
--		rc = IRQ_HANDLED;
-+	else {
-+		struct giveback_urb	*bh = &hcd->gb_urb;
-+
-+		spin_lock(&bh->lock);
-+		if (!list_empty(&bh->prio_hi_head) ||
-+		    !list_empty(&bh->prio_lo_head))
-+			rc = IRQ_WAKE_THREAD;
-+		else
-+			rc = IRQ_HANDLED;
-+		spin_unlock(&bh->lock);
-+	}
-
-	return rc;
- }
-@@ -2410,12 +2459,12 @@ EXPORT_SYMBOL_GPL (usb_hc_died);
-
- /*-------------------------------------------------------------------------*/
-
--static void init_giveback_urb_bh(struct giveback_urb_bh *bh)
-+static void init_giveback_urb(struct giveback_urb *bh)
- {
--
--	spin_lock_init(&bh->lock);
--	INIT_LIST_HEAD(&bh->head);
--	tasklet_setup(&bh->bh, usb_giveback_urb_bh);
-+	INIT_LIST_HEAD(&bh->prio_lo_head);
-+	INIT_LIST_HEAD(&bh->prio_hi_head);
-+	INIT_LIST_HEAD(&bh->rh_head);
-+	INIT_WORK(&bh->rh_compl, usb_hcd_rh_gb_urb);
- }
-
- struct usb_hcd *__usb_create_hcd(const struct hc_driver *driver,
-@@ -2593,8 +2642,9 @@ static int usb_hcd_request_irqs(struct usb_hcd *hcd,
-
-		snprintf(hcd->irq_descr, sizeof(hcd->irq_descr), "%s:usb%d",
-				hcd->driver->description, hcd->self.busnum);
--		retval = request_irq(irqnum, &usb_hcd_irq, irqflags,
--				hcd->irq_descr, hcd);
-+		retval = request_threaded_irq(irqnum, &usb_hcd_irq,
-+					      usb_hcd_gb_urb, irqflags,
-+					      hcd->irq_descr, hcd);
-		if (retval != 0) {
-			dev_err(hcd->self.controller,
-					"request interrupt %d failed\n",
-@@ -2783,9 +2833,7 @@ int usb_add_hcd(struct usb_hcd *hcd,
-			&& device_can_wakeup(&hcd->self.root_hub->dev))
-		dev_dbg(hcd->self.controller, "supports USB remote wakeup\n");
-
--	/* initialize tasklets */
--	init_giveback_urb_bh(&hcd->high_prio_bh);
--	init_giveback_urb_bh(&hcd->low_prio_bh);
-+	init_giveback_urb(&hcd->gb_urb);
-
-	/* enable irqs just before we start the controller,
-	 * if the BIOS provides legacy PCI irqs.
-diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index e9ac215b9663..fa6a0e7eb899 100644
---- a/drivers/usb/dwc2/hcd.c
-+++ b/drivers/usb/dwc2/hcd.c
-@@ -4162,7 +4162,9 @@ void dwc2_host_complete(struct dwc2_hsotg *hsotg, struct dwc2_qtd *qtd,
-	kfree(qtd->urb);
-	qtd->urb = NULL;
-
-+	spin_unlock(&hsotg->lock);
-	usb_hcd_giveback_urb(dwc2_hsotg_to_hcd(hsotg), urb, status);
-+	spin_lock(&hsotg->lock);
- }
-
- /*
-@@ -4902,7 +4904,7 @@ static struct hc_driver dwc2_hc_driver = {
-	.hcd_priv_size = sizeof(struct wrapper_priv_data),
-
-	.irq = _dwc2_hcd_irq,
--	.flags = HCD_MEMORY | HCD_USB2 | HCD_BH,
-+	.flags = HCD_MEMORY | HCD_USB2,
-
-	.start = _dwc2_hcd_start,
-	.stop = _dwc2_hcd_stop,
-diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
-index 96281cd50ff6..15a55aaa0e9c 100644
---- a/include/linux/usb/hcd.h
-+++ b/include/linux/usb/hcd.h
-@@ -64,11 +64,12 @@
-
- /*-------------------------------------------------------------------------*/
-
--struct giveback_urb_bh {
--	bool running;
-+struct giveback_urb {
-	spinlock_t lock;
--	struct list_head  head;
--	struct tasklet_struct bh;
-+	struct list_head	prio_lo_head;
-+	struct list_head	prio_hi_head;
-+	struct list_head	rh_head;
-+	struct work_struct	rh_compl;
-	struct usb_host_endpoint *completing_ep;
- };
-
-@@ -179,8 +180,7 @@ struct usb_hcd {
-	resource_size_t		rsrc_len;	/* memory/io resource length */
-	unsigned		power_budget;	/* in mA, 0 = no limit */
-
--	struct giveback_urb_bh  high_prio_bh;
--	struct giveback_urb_bh  low_prio_bh;
-+	struct giveback_urb     gb_urb;
-
-	/* bandwidth_mutex should be taken before adding or removing
-	 * any new bus bandwidth constraints:
-@@ -420,7 +420,7 @@ static inline int hcd_giveback_urb_in_bh(struct usb_hcd *hcd)
- static inline bool hcd_periodic_completion_in_progress(struct usb_hcd *hcd,
-		struct usb_host_endpoint *ep)
- {
--	return hcd->high_prio_bh.completing_ep == ep;
-+	return hcd->gb_urb.completing_ep == ep;
- }
-
- static inline bool hcd_uses_dma(struct usb_hcd *hcd)
+> +		case BOP:						\
+> +			if (BPF_SIZE(insn->code) == BPF_W)		\
+> +				atomic_##KOP((u32) SRC, (atomic_t *)(unsigned long) \
+> +					     (DST + insn->off));	\
+> +			else						\
+> +				atomic64_##KOP((u64) SRC, (atomic64_t *)(unsigned long) \
+> +					       (DST + insn->off));	\
+> +			break;						\
+> +		case BOP | BPF_FETCH:					\
+> +			if (BPF_SIZE(insn->code) == BPF_W)		\
+> +				SRC = (u32) atomic_fetch_##KOP(		\
+> +					(u32) SRC,			\
+> +					(atomic_t *)(unsigned long) (DST + insn->off)); \
+> +			else						\
+> +				SRC = (u64) atomic64_fetch_##KOP(	\
+> +					(u64) SRC,			\
+> +					(atomic64_t *)(s64) (DST + insn->off)); \
+>   			break;
+> -		default:
+> -			goto default_label;
+> -		}
+> -		CONT;
+>   
+>   	STX_ATOMIC_DW:
+> +	STX_ATOMIC_W:
+>   		switch (IMM) {
+> -		case BPF_ADD:
+> -			/* lock xadd *(u64 *)(dst_reg + off16) += src_reg */
+> -			atomic64_add((u64) SRC, (atomic64_t *)(unsigned long)
+> -				     (DST + insn->off));
+> -			break;
+> -		case BPF_ADD | BPF_FETCH:
+> -			SRC = (u64) atomic64_fetch_add(
+> -				(u64) SRC,
+> -				(atomic64_t *)(s64) (DST + insn->off));
+> -			break;
+> +		ATOMIC(BPF_ADD, add)
+> +
+>   		case BPF_XCHG:
+> -			SRC = (u64) atomic64_xchg(
+> -				(atomic64_t *)(u64) (DST + insn->off),
+> -				(u64) SRC);
+> +			if (BPF_SIZE(insn->code) == BPF_W)
+> +				SRC = (u32) atomic_xchg(
+> +					(atomic_t *)(unsigned long) (DST + insn->off),
+> +					(u32) SRC);
+> +			else
+> +				SRC = (u64) atomic64_xchg(
+> +					(atomic64_t *)(u64) (DST + insn->off),
+> +					(u64) SRC);
+>   			break;
+>   		case BPF_CMPXCHG:
+> -			BPF_R0 = (u64) atomic64_cmpxchg(
+> -				(atomic64_t *)(u64) (DST + insn->off),
+> -				(u64) BPF_R0, (u64) SRC);
+> +			if (BPF_SIZE(insn->code) == BPF_W)
+> +				BPF_R0 = (u32) atomic_cmpxchg(
+> +					(atomic_t *)(unsigned long) (DST + insn->off),
+> +					(u32) BPF_R0, (u32) SRC);
+> +			else
+> +				BPF_R0 = (u64) atomic64_cmpxchg(
+> +					(atomic64_t *)(u64) (DST + insn->off),
+> +					(u64) BPF_R0, (u64) SRC);
+>   			break;
+> +
+>   		default:
+>   			goto default_label;
+>   		}
+> 
