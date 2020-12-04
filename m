@@ -2,77 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01ED2CF3B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 908582CF3BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729733AbgLDSO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:14:28 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47966 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726775AbgLDSO1 (ORCPT
+        id S2387691AbgLDSOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:14:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387419AbgLDSOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:14:27 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0B4IDIuo007813
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 4 Dec 2020 13:13:18 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id DA510420136; Fri,  4 Dec 2020 13:13:17 -0500 (EST)
-Date:   Fri, 4 Dec 2020 13:13:17 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Bruce Fields <bfields@fieldses.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-afs@lists.infradead.org
-Subject: Re: Why the auxiliary cipher in gss_krb5_crypto.c?
-Message-ID: <20201204181317.GD577125@mit.edu>
-References: <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com>
- <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
- <118876.1607093975@warthog.procyon.org.uk>
+        Fri, 4 Dec 2020 13:14:40 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F1FC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:14:00 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id 4so3559063plk.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:14:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kqGXK79089Igpi5A56cNttm6UXf51X+FqX4gQrf7XWk=;
+        b=wCO/6Lvwmk8upUzjOhryX/gmfrvUQ1tYhDHtArOvGZRgt15t00AfsFwuAZzlfz13fH
+         ldpyxqZ9ICcl2aUDlC2QiXNSoXxHS1OvzDaym0iHVzsWY9pHPG0PiVS8X4cUxyedXfHm
+         1PZwzrhzGAjfurbGmwV9G6Q9t6CRNUoomGduWfVwgWYeJcwlyNs87y6kvpu+Q5mV6EpJ
+         Bt08UWuxSlPxbT+ZvdBwZdPBz4u1p+QuEj/rOYLh3mSVKyJ4I3npyBl5Jz0M+VqXP2jA
+         RaifWFTox2bsId1FLm4IVQkz9k3W5UPWm7k+6d5xO/X0m2vvKPDEKFeSZIWSBm1lIUew
+         jNOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kqGXK79089Igpi5A56cNttm6UXf51X+FqX4gQrf7XWk=;
+        b=pjcJc2W5SWTgBW99MpUi2vj5msd5Abh8hG0Cf2lZp11mtFBOHGRrIKgHKjRmnLA9rg
+         DrN56D5NtWCjBjxRwK96vmmiRa/K50DPTDWu8ijaum2br3E8V8W5eljIGmzw45fqvOXk
+         hODyQZlcDu4IfuNeg7L19oZoKRi7L646iDsHBmVLanKFqJslZC90GT2gge7zcESYq0Ky
+         zRHq5Bq8WDAJjAiRFHgR3spdULcV8DCT2+nMFJ2UWYp4LnMl3cXx6Barkkg5KDaWbbNG
+         1UlIhjoOCWYK8898NPcgF3h44HZhPITg20A3/K7Wymfgh0zVbdDtcalvePJoJaaB8JWR
+         temQ==
+X-Gm-Message-State: AOAM533hHOCjUxT6julgNFZdMjjNEBTxlhBs8zTe88/V6g4/GCTp5LU7
+        y1pxG8EHWpCSWZ1GHhk1Y3pnRw==
+X-Google-Smtp-Source: ABdhPJyBMLFBT9JovCw0WWc62g37gI+7/e2jXEiSJ3ZTOSt2NarIdLMfryl8EUJV4NtaVAnxEGnN9w==
+X-Received: by 2002:a17:90b:3852:: with SMTP id nl18mr5105143pjb.188.1607105639990;
+        Fri, 04 Dec 2020 10:13:59 -0800 (PST)
+Received: from google.com (h208-100-161-3.bendor.broadband.dynamic.tds.net. [208.100.161.3])
+        by smtp.gmail.com with ESMTPSA id i11sm2732864pjl.53.2020.12.04.10.13.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 10:13:58 -0800 (PST)
+Date:   Fri, 4 Dec 2020 10:13:56 -0800
+From:   Will McVicker <willmcvicker@google.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jessica Yu <jeyu@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 0/2] Adds support to capture module's SCM version
+Message-ID: <X8p8ZK1sXQ2E7hSA@google.com>
+References: <CAGETcx8unBFUHxM67VdOoaWRENGXYoc4qWq2Oir=2rUyJ7F5nA@mail.gmail.com>
+ <20201125010541.309848-1-willmcvicker@google.com>
+ <X8mEhIeYeMjZc/+7@google.com>
+ <20201204075159.GA29752@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <118876.1607093975@warthog.procyon.org.uk>
+In-Reply-To: <20201204075159.GA29752@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 02:59:35PM +0000, David Howells wrote:
-> Hi Chuck, Bruce,
-> 
-> Why is gss_krb5_crypto.c using an auxiliary cipher?  For reference, the
-> gss_krb5_aes_encrypt() code looks like the attached.
-> 
-> From what I can tell, in AES mode, the difference between the main cipher and
-> the auxiliary cipher is that the latter is "cbc(aes)" whereas the former is
-> "cts(cbc(aes))" - but they have the same key.
-> 
-> Reading up on CTS, I'm guessing the reason it's like this is that CTS is the
-> same as the non-CTS, except for the last two blocks, but the non-CTS one is
-> more efficient.
+On Fri, Dec 04, 2020 at 07:51:59AM +0000, Christoph Hellwig wrote:
+> I think your decription still shows absolutely no benefit for the
+> kernel, so I'not sure why anyone would want to waste time on this.
+Hi Christoph,
 
-The reason to use CTS is if you don't want to expand the size of the
-cipher text to the cipher block size.  e.g., if you have a 53 byte
-plaintext, and you can't afford to let the ciphertext be 56 bytes, the
-cryptographic engineer will reach for CTS instead of CBC.
+Did you get a chance to read my earlier responses regarding the uses for
+in-tree modules?
 
-So that probably explains the explanation to use CTS (and it's
-required by the spec in any case).  As far as why CBC is being used
-instead of CTS, the only reason I can think of is the one you posted.
-Perhaps there was some hardware or software configureation where
-cbc(aes) was hardware accelerated, and cts(cbc(aes)) would not be?
+The biggest benefit for the upstream community is being about to get the SCM
+version for *any* module (including in-tree modules) in the initramfs via the
+sysfs node. Currently there is no way to do that and there is no guarantee that
+those modules in the initramfs were compiled with the running kernel. In fact,
+running,
 
-In any case, using cbc(aes) for all but the last two blocks, and using
-cts(cbc(aes)) for the last two blocks, is identical to using
-cts(cbc(aes)) for the whole encryption.  So the only reason to do this
-in the more complex way would be because for performance reasons.
+  modinfo -F vermagic MODULENAME
 
-       	    	    	      	 	 - Ted
+will return an invalid vermagic string if the same module with different
+vermagic strings exists in the initramfs and on disk because modinfo only looks
+at the module on disk (not in memory).
+
+The second most useful benefit goes hand-in-hand with MODVERSIONS. The purpose
+of MODVERSIONS is to create a stable interface that allows one to update the
+kernel and kernel modules (including in-tree modules) independently. So when
+developers do update their kernels independently (think for security bug
+fixes), the `scmversion` attribute guarantees developers that they can still
+identify the modules' or kernel's SCM version.
+
+I hope that helps. If not, then please let me know why these reasons "show
+absolutely no benefit for the kernel?"
+
+Thanks,
+Will
