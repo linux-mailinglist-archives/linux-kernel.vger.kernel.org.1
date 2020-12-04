@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6312CF263
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF032CF265
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388274AbgLDQwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:52:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58330 "EHLO mail.kernel.org"
+        id S2388147AbgLDQwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:52:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729906AbgLDQwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:52:32 -0500
-Date:   Fri, 4 Dec 2020 08:51:50 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607100712;
-        bh=KJqNaqHbmtc9D1ZmzcLY1TWjh+0ckI5vvJziXj0vsOQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=r5AaJiRvo6hKeFR0RTaceQ9a5ah8jt/TGmIYbY2rD+g8lvownJ9Vaf5oCI5HmptVD
-         OSE2yd7YQq3mQ8gVf8UxFCK3F1QdTrxf5dRNnJDadEaUK+NPimXyl3OsygXoXDiQjz
-         GCNSPZYv/WtS8qOWpV52VXoS1yqbTLE5DJ9i+XuRDcqhivSc1sodQJZCqtEAroIlxy
-         GAZB5ikGk9aRxBD9oD36lTs1vlliE2L8lgwOIiZc+XXEzx8bzGJTJ9Ldnhw2bJdV94
-         Jl+IuQtIeBgmP/OunulvlaJmj2PrThcJB7qOpjCn5p9becxVoZKVKKx6wi/vpFPkOX
-         q0L8xhAJGpOqA==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Claudiu Manoil <claudiu.manoil@nxp.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Ioana Ciornei <ioana.cionei@nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Walle <michael@walle.cc>, Po Liu <po.liu@nxp.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] enetc: fix build warning
-Message-ID: <20201204085150.42f6409b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <DB8PR04MB67644946C4F1DAF8F8F38A4196F10@DB8PR04MB6764.eurprd04.prod.outlook.com>
-References: <20201203223747.1337389-1-arnd@kernel.org>
-        <DB8PR04MB67644946C4F1DAF8F8F38A4196F10@DB8PR04MB6764.eurprd04.prod.outlook.com>
+        id S1726330AbgLDQwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 11:52:43 -0500
+From:   Arnd Bergmann <arnd@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        Madhav Chauhan <madhav.chauhan@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Martin Peres <martin.peres@mupuf.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/ttm: fix unused function warning
+Date:   Fri,  4 Dec 2020 17:51:52 +0100
+Message-Id: <20201204165158.3748141-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 12:18:16 +0000 Claudiu Manoil wrote:
-> >-----Original Message-----
-> >From: Arnd Bergmann <arnd@kernel.org>
-> >Sent: Friday, December 4, 2020 12:37 AM  
-> [...]
-> >Subject: [PATCH] enetc: fix build warning
-> >
-> >From: Arnd Bergmann <arnd@arndb.de>
-> >
-> >When CONFIG_OF is disabled, there is a harmless warning about
-> >an unused variable:
-> >
-> >enetc_pf.c: In function 'enetc_phylink_create':
-> >enetc_pf.c:981:17: error: unused variable 'dev' [-Werror=unused-variable]
-> >
-> >Slightly rearrange the code to pass around the of_node as a
-> >function argument, which avoids the problem without hurting
-> >readability.
-> >
-> >Fixes: 71b77a7a27a3 ("enetc: Migrate to PHYLINK and PCS_LYNX")
-> >Signed-off-by: Arnd Bergmann <arnd@arndb.de>  
-> 
-> Very nice cleanup, the code looks much better like this.
-> For some reason this patch is marked as "Not applicable" in patchwork.
-> So I took the patch, made a small cosmetic change (see nit below), added a more
-> verbose subject line, tested and resent it, patchwork link here:
-> https://patchwork.ozlabs.org/project/netdev/patch/20201204120800.17193-1-claudiu.manoil@nxp.com/
+From: Arnd Bergmann <arnd@arndb.de>
 
-We switched to a different PW instance:
+ttm_pool_type_count() is not used when debugfs is disabled:
 
-https://patchwork.kernel.org/project/netdevbpf/patch/20201203223747.1337389-1-arnd@kernel.org/
+drivers/gpu/drm/ttm/ttm_pool.c:243:21: error: unused function 'ttm_pool_type_count' [-Werror,-Wunused-function]
+static unsigned int ttm_pool_type_count(struct ttm_pool_type *pt)
 
-> >---
-> > .../net/ethernet/freescale/enetc/enetc_pf.c   | 21 +++++++++----------
-> >@@ -1005,9 +1003,10 @@ static int enetc_pf_probe(struct pci_dev *pdev,
-> > 	struct net_device *ndev;
-> > 	struct enetc_si *si;
-> > 	struct enetc_pf *pf;
-> >+	struct device_node *node = pdev->dev.of_node;  
-> 
-> Nit: move this long line to the top (reverse tree)
+Move the definition into the #ifdef block.
 
-Now it's gonna get marked as changes requested ;)
+Fixes: d099fc8f540a ("drm/ttm: new TT backend allocation pool v3")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/ttm/ttm_pool.c | 29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
+index 5455b2044759..7b2f60616750 100644
+--- a/drivers/gpu/drm/ttm/ttm_pool.c
++++ b/drivers/gpu/drm/ttm/ttm_pool.c
+@@ -239,21 +239,6 @@ static struct page *ttm_pool_type_take(struct ttm_pool_type *pt)
+ 	return p;
+ }
+ 
+-/* Count the number of pages available in a pool_type */
+-static unsigned int ttm_pool_type_count(struct ttm_pool_type *pt)
+-{
+-	unsigned int count = 0;
+-	struct page *p;
+-
+-	spin_lock(&pt->lock);
+-	/* Only used for debugfs, the overhead doesn't matter */
+-	list_for_each_entry(p, &pt->pages, lru)
+-		++count;
+-	spin_unlock(&pt->lock);
+-
+-	return count;
+-}
+-
+ /* Initialize and add a pool type to the global shrinker list */
+ static void ttm_pool_type_init(struct ttm_pool_type *pt, struct ttm_pool *pool,
+ 			       enum ttm_caching caching, unsigned int order)
+@@ -543,6 +528,20 @@ void ttm_pool_fini(struct ttm_pool *pool)
+ EXPORT_SYMBOL(ttm_pool_fini);
+ 
+ #ifdef CONFIG_DEBUG_FS
++/* Count the number of pages available in a pool_type */
++static unsigned int ttm_pool_type_count(struct ttm_pool_type *pt)
++{
++	unsigned int count = 0;
++	struct page *p;
++
++	spin_lock(&pt->lock);
++	/* Only used for debugfs, the overhead doesn't matter */
++	list_for_each_entry(p, &pt->pages, lru)
++		++count;
++	spin_unlock(&pt->lock);
++
++	return count;
++}
+ 
+ /* Dump information about the different pool types */
+ static void ttm_pool_debugfs_orders(struct ttm_pool_type *pt,
+-- 
+2.27.0
+
