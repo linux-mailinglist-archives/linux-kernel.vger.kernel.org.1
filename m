@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAE92CF2E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3554E2CF2E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731237AbgLDRO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:14:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57473 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726539AbgLDRO0 (ORCPT
+        id S1731245AbgLDRPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:15:39 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42870 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728129AbgLDRPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:14:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607101980;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nag/x65iAPAl/1Alf3Nf9G48tZh8GI4qc8JEI5vv/wk=;
-        b=eCRvq9VvhmKn/IDNz1UTyjX/PJQeFqPKiarAst/khoc8FW7PVF3V28VV/FRzr0ta08dOSh
-        DkkS43cANssQVhrP5WHo1YeSa7CO4mByEkBR54blZTO4TkLIBo84OgjtOGpnRoluwfkV9d
-        hStCmdChocSDIgQkcRh8Hvr8phF+msw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-480-oCOkwryzMNixMwsWKjQ0Hw-1; Fri, 04 Dec 2020 12:12:58 -0500
-X-MC-Unique: oCOkwryzMNixMwsWKjQ0Hw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1939AC7401;
-        Fri,  4 Dec 2020 17:12:57 +0000 (UTC)
-Received: from [10.36.112.162] (ovpn-112-162.ams2.redhat.com [10.36.112.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C7CA310023AE;
-        Fri,  4 Dec 2020 17:12:55 +0000 (UTC)
-Subject: Re: [External] Re: [PATCH v2] mm/page_isolation: do not isolate the
- max order page
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-References: <20201203162237.21885-1-songmuchun@bytedance.com>
- <46fcf0c1-7c38-723b-8905-953d72f1d6bc@redhat.com>
- <CAMZfGtVdFtLB8f2uDfJ1H-YG4CsJ+RxxFbAWzePDnqBB1MU0ig@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <49b09de4-4b21-e6a7-0730-e125fcb398b3@redhat.com>
-Date:   Fri, 4 Dec 2020 18:12:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 4 Dec 2020 12:15:38 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B4HE2Y2018225
+        for <linux-kernel@vger.kernel.org>; Fri, 4 Dec 2020 11:14:02 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607102042;
+        bh=HNrijLJnGK3T9CnkGIR6IB4XYT+8wc5LNUFsnL/FAUI=;
+        h=From:To:CC:Subject:Date;
+        b=r+/p3+ZSqXeLQnh2BnnFv/2BbWsGfHHd1rk0Jn8GcExaZsnd3lFI5IptTYniC6W90
+         QXzLShxZnxGsRcc70s+nYVsicdioExPYziba8E/oJcYpR5eyDrs2dCwTNwyR5l/bBX
+         fB5BkZsNtDnsqovjpPJGIsW0udKsK2Wvdt5belI8=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B4HE277018035
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-kernel@vger.kernel.org>; Fri, 4 Dec 2020 11:14:02 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 4 Dec
+ 2020 11:14:01 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 4 Dec 2020 11:14:01 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B4HDxB7034323;
+        Fri, 4 Dec 2020 11:14:00 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, Sekhar Nori <nsekhar@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>
+Subject: [PATCH] MAINTAINERS: Add myself as a reviewer for CADENCE USB3 DRD IP DRIVER
+Date:   Fri, 4 Dec 2020 22:43:57 +0530
+Message-ID: <20201204171357.15402-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <CAMZfGtVdFtLB8f2uDfJ1H-YG4CsJ+RxxFbAWzePDnqBB1MU0ig@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.12.20 17:12, Muchun Song wrote:
-> On Fri, Dec 4, 2020 at 12:28 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 03.12.20 17:22, Muchun Song wrote:
->>> The max order page has no buddy page and never merge to other order.
->>> So isolating and then freeing it is pointless. And if order == MAX_ORDER
->>> - 1, then the buddy can actually be a !pfn_valid() in some corner case?
->>> pfn_valid_within(buddy_pfn) that follows would only catch it on archs
->>> with holes in zone. Then is_migrate_isolate_page(buddy) might access an
->>> invalid buddy. So this is also a bug fix.
->>>
->>> Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
->>
->> As just replied to v1, I don't think this is required and the patch
-> 
-> You mean we should remove the Fixes tag? Thanks.
+I would like to help in reviewing CADENCE USB3 DRD IP DRIVER patches
 
-As discussed in v1, I don't think we really have systems where this
-applies, but could be in corner cases on MIPS or with FLATMEM. Let's
-just leave it like that. :)
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6aac0f845f34..ff9bd7d18d94 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3861,6 +3861,7 @@ CADENCE USB3 DRD IP DRIVER
+ M:	Peter Chen <peter.chen@nxp.com>
+ M:	Pawel Laszczak <pawell@cadence.com>
+ M:	Roger Quadros <rogerq@ti.com>
++R:	Aswath Govindraju <a-govindraju@ti.com>
+ L:	linux-usb@vger.kernel.org
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/peter.chen/usb.git
 -- 
-Thanks,
-
-David / dhildenb
+2.17.1
 
