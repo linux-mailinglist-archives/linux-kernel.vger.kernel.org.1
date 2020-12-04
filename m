@@ -2,96 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7A52CE827
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 07:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B65BF2CE7E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 07:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgLDG0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 01:26:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgLDG0P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 01:26:15 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B13C061A4F;
-        Thu,  3 Dec 2020 22:25:35 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id p6so2550596plr.7;
-        Thu, 03 Dec 2020 22:25:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=RWUO9HBW83jm6ODmJA+8hyD8R17bJQiOrlPxs4/56dQ=;
-        b=m9gwR3icwrA9Pdlb3ADR4lbiG0VoV6mKx4i25K8n6Ts8kZmAWQ7IA5VETsRfbPnb5E
-         h5L46hCPRK5b6iGZY/lzagvv4iHaJk3D3GEZ50m7eY+8qBU/+zL2NE9I6GB8dXijBKzS
-         LsPNNBnoPkt1RdycNTU/9Jfd3DF06BoIkxSzub/SWmVZcEqPbLaN/4ER34kkZ7FUslQT
-         wDGQCzoxAnU34ZVc2gUdClO0oJRIxtYv4UFi9P6h/6O2EouKQnKg3VqGkwEFE7V6XWmZ
-         PSMmuwvwBe4vjSGik1Af9HGrRd7n8pCqnW+i+vI+EDcbG9epRGgqAUdnFYBuG4I4gfqT
-         0i7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=RWUO9HBW83jm6ODmJA+8hyD8R17bJQiOrlPxs4/56dQ=;
-        b=VO5I32Xff+/EudWdPRRI8LkDSHvW0TZZRLlApUEe5usFi51epJo6KxEwcf2Mx3K3uZ
-         uoiTwJQt0SYKoxrjRb8dhF3F2dC8bsrzLhExZoykJiljKUKKncKRsLpek9XODObNuhJP
-         UYsTZwEN3+1EkxliOR2YsXSGev2c8xRCD3hrwF7IA+lsVBlDGSNeUZFSRj6Bl1Sre2dj
-         nop81gszn4m5wgCHEcjjtwafjbnBf1ghcLod3iGMkd/z/BTrmCdc6Na1rjraS8RpcVtv
-         c++/3IWHmlC/T11ndafndMs1udy5u99vErjTso7oPOa37QJDaGidUEFg+D/GqB2FvaLN
-         OYLA==
-X-Gm-Message-State: AOAM533P6TjT0s0KFn7t9HBLqN8+upgmqJL0bLcezIoSMhF4kCzF75yW
-        iwgIKW6Ta2OfyzLTfxPTMow=
-X-Google-Smtp-Source: ABdhPJw2hzaf3E+5KCxRnDaO1zbKdsFZCQg2BUCwEWGpLw1FLGNxjGc/GQMsV3oINvkwX/lMsbrITw==
-X-Received: by 2002:a17:902:5985:b029:da:c737:5842 with SMTP id p5-20020a1709025985b02900dac7375842mr2710651pli.21.1607063135099;
-        Thu, 03 Dec 2020 22:25:35 -0800 (PST)
-Received: from kernel-4-19.asia-east2-a.c.savvy-summit-295307.internal (53.207.96.34.bc.googleusercontent.com. [34.96.207.53])
-        by smtp.googlemail.com with ESMTPSA id 24sm3344368pgy.45.2020.12.03.22.25.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Dec 2020 22:25:34 -0800 (PST)
-From:   Bui Quang Minh <minhquangbui99@gmail.com>
-Cc:     Bui Quang Minh <minhquangbui99@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Jules Irenge <jbi.octave@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] USB: dummy-hcd: Fix uninitialized array use in init()
-Date:   Fri,  4 Dec 2020 06:24:49 +0000
-Message-Id: <1607063090-3426-1-git-send-email-minhquangbui99@gmail.com>
-X-Mailer: git-send-email 2.7.4
-To:     unlisted-recipients:; (no To-header on input)
+        id S1726395AbgLDGJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 01:09:11 -0500
+Received: from mga18.intel.com ([134.134.136.126]:6167 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725550AbgLDGJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 01:09:11 -0500
+IronPort-SDR: hKnKYZ49qun6/7pg8Dxo54ZCmJRz/5uxODrcmxkkdcCRzDsMQKrpUKCWiFcUhSdz0B7OSVNKX1
+ ZS3guItS61Ow==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="161102417"
+X-IronPort-AV: E=Sophos;i="5.78,391,1599548400"; 
+   d="scan'208";a="161102417"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 22:08:30 -0800
+IronPort-SDR: m2U3ur9ZeyXrCSX4YikePn5IZBwaxCwIuitcpmHSLpyn0TSMDyxMdNWF3671C3zyx7ycr22PuN
+ FBSdYTW23DuQ==
+X-IronPort-AV: E=Sophos;i="5.78,391,1599548400"; 
+   d="scan'208";a="550824443"
+Received: from xshen14-linux.bj.intel.com ([10.238.155.105])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 22:08:26 -0800
+From:   Xiaochen Shen <xiaochen.shen@intel.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        tony.luck@intel.com, fenghua.yu@intel.com,
+        reinette.chatre@intel.com
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, pei.p.jia@intel.com,
+        xiaochen.shen@intel.com
+Subject: [PATCH] x86/resctrl: Fix incorrect local bandwidth when mba_sc is enabled
+Date:   Fri,  4 Dec 2020 14:27:59 +0800
+Message-Id: <1607063279-19437-1-git-send-email-xiaochen.shen@intel.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This error path
+MBA software controller (mba_sc) is a feedback loop which periodically
+reads MBM counters and tries to restrict the bandwidth below a user
+specified bandwidth. It tags along MBM counter overflow handler to do
+the updates with 1s interval in mbm_update() and update_mba_bw().
 
-	err_add_pdata:
-		for (i = 0; i < mod_data.num; i++)
-			kfree(dum[i]);
+The purpose of mbm_update() is to periodically read the MBM counters to
+make sure that the hardware counter doesn't wrap around more than once
+between user samplings. mbm_update() calls __mon_event_count() for local
+bandwidth updating when mba_sc is not enabled, but calls mbm_bw_count()
+instead when mba_sc is enabled. __mon_event_count() will not be called
+for local bandwidth updating in MBM counter overflow handler, but it is
+still called when reading MBM local bandwidth counter file
+'mbm_local_bytes', the call path is as below:
 
-can be triggered when not all dum's elements are initialized.
+  rdtgroup_mondata_show()
+    mon_event_read()
+      mon_event_count()
+        __mon_event_count()
 
-Fix this by initializing all dum's elements to NULL.
+In __mon_event_count(), m->chunks is updated by delta chunks which is
+calculated from previous MSR value (m->prev_msr) and current MSR value.
+When mba_sc is enabled, m->chunks is also updated in mbm_update() by
+mistake by the delta chunks which is calculated from m->prev_bw_msr
+instead of m->prev_msr. But m->chunks is not used in update_mba_bw() in
+the mba_sc feedback loop.
 
-Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+When reading MBM local bandwidth counter file, m->chunks was changed
+unexpectedly by mbm_bw_count(). As a result, the incorrect local
+bandwidth counter which calculated from incorrect m->chunks is read out
+to the user.
+
+Fix this by removing incorrect m->chunks updating in mbm_bw_count() in
+MBM counter overflow handler, and always calling __mon_event_count() in
+mbm_update() to make sure that the hardware local bandwidth counter
+doesn't wrap around.
+
+Test steps:
+  # Run workload with aggressive memory bandwidth (e.g., 10 GB/s)
+  git clone https://github.com/intel/intel-cmt-cat && cd intel-cmt-cat
+  && make
+  ./tools/membw/membw -c 0 -b 10000 --read
+
+  # Enable MBA software controller
+  mount -t resctrl resctrl -o mba_MBps /sys/fs/resctrl
+
+  # Create control group c1
+  mkdir /sys/fs/resctrl/c1
+
+  # Set MB throttle to 6 GB/s
+  echo "MB:0=6000;1=6000" > /sys/fs/resctrl/c1/schemata
+
+  # Write PID of the workload to tasks file
+  echo `pidof membw` > /sys/fs/resctrl/c1/tasks
+
+  # Read local bytes counters twice with 1s interval, the calculated
+  # local bandwidth is not as expected (approaching to 6 GB/s):
+  local_1=`cat /sys/fs/resctrl/c1/mon_data/mon_L3_00/mbm_local_bytes`
+  sleep 1
+  local_2=`cat /sys/fs/resctrl/c1/mon_data/mon_L3_00/mbm_local_bytes`
+  echo "local b/w (bytes/s):" `expr $local_2 - $local_1`
+
+Before fix:
+  local b/w (bytes/s): 11076796416
+
+After fix:
+  local b/w (bytes/s): 5465014272
+
+Fixes: ba0f26d8529c (x86/intel_rdt/mba_sc: Prepare for feedback loop)
+Signed-off-by: Xiaochen Shen <xiaochen.shen@intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
 ---
- drivers/usb/gadget/udc/dummy_hcd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/cpu/resctrl/monitor.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/dummy_hcd.c b/drivers/usb/gadget/udc/dummy_hcd.c
-index 0eeaead..a2cf009 100644
---- a/drivers/usb/gadget/udc/dummy_hcd.c
-+++ b/drivers/usb/gadget/udc/dummy_hcd.c
-@@ -2734,7 +2734,7 @@ static int __init init(void)
- {
- 	int	retval = -ENOMEM;
- 	int	i;
--	struct	dummy *dum[MAX_NUM_UDC];
-+	struct	dummy *dum[MAX_NUM_UDC] = {};
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index 54dffe574e67..a98519a3a2e6 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -279,7 +279,6 @@ static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
+ 		return;
  
- 	if (usb_disabled())
- 		return -ENODEV;
+ 	chunks = mbm_overflow_count(m->prev_bw_msr, tval, rr->r->mbm_width);
+-	m->chunks += chunks;
+ 	cur_bw = (chunks * r->mon_scale) >> 20;
+ 
+ 	if (m->delta_comp)
+@@ -450,15 +449,14 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d, int rmid)
+ 	}
+ 	if (is_mbm_local_enabled()) {
+ 		rr.evtid = QOS_L3_MBM_LOCAL_EVENT_ID;
++		__mon_event_count(rmid, &rr);
+ 
+ 		/*
+ 		 * Call the MBA software controller only for the
+ 		 * control groups and when user has enabled
+ 		 * the software controller explicitly.
+ 		 */
+-		if (!is_mba_sc(NULL))
+-			__mon_event_count(rmid, &rr);
+-		else
++		if (is_mba_sc(NULL))
+ 			mbm_bw_count(rmid, &rr);
+ 	}
+ }
 -- 
-2.7.4
+1.8.3.1
 
