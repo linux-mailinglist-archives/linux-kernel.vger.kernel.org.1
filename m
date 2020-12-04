@@ -2,84 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5722CE858
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:00:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B75E2CE85E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728162AbgLDG7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 01:59:39 -0500
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:42086 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgLDG7i (ORCPT
+        id S1728293AbgLDHCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 02:02:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgLDHCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 01:59:38 -0500
-Received: by mail-ej1-f66.google.com with SMTP id d17so7134660ejy.9;
-        Thu, 03 Dec 2020 22:59:22 -0800 (PST)
+        Fri, 4 Dec 2020 02:02:47 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F049C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 23:02:07 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id o24so5416960ljj.6
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 23:02:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DGtZLLbFDWoCQqYx9LfvjHPyF73CfxgpUXIf4y83koQ=;
+        b=PKdyv27y3AZcNIpFmJN4IexnpXLeYF7dsYQD0hLr6Re40GrmkO6dSIBUQzFksxPrWy
+         qnQaRAqgM85WhG4I9zWQzxu1CbBtXf052bshXLmR8KcrOFQ/tIQKFmuTsOrb8ZqC+yyj
+         9HwEYGuufCYCuuZsY9BEBI/tY/d5bmrUYc/LfRQpQil7msHn33KHeb7m8ftfYc5oEkqJ
+         qV41Jfn0skzideGxiH9UXZILkWCwerJAqj1u60Y3UI/A8G1e77kqiAqbXiWeGcdmbJUn
+         fjnffPmoeZUmL8IuMGKce+brMxyVYtbwiCVRD/nKUEhOHT70MK8G0rSunGqISv0e5gx5
+         UO/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=e50yAptPk4qvH2DjIDkzdRdD/+Aa+SiLK2zM+mJlFWA=;
-        b=eC5k0J95DjW8FrZJhU3Z+5kXbR/eCy0IEYRe2JqcboV8SotoZ/2TOKp59zWAExaaEH
-         5Dbu3Ixe5HIHnQMFqE0cnQ9PciUFqkEFNA4MtWmt1GGL+BM0HKb/RksQgMxwlNYWS/iZ
-         i1COKAnuGUocvAxCtZMAJVAcjJ6iJFhRi2aWinh2AiuVEFHWe+1/QwRC5wqeuybKwrWz
-         vmlIf0He6BYEsJP4A4USmwrHbHyCPKZVin5CdRR4xQyA4IFi6vBPFQFoHc6qzUYiWIG7
-         jhZHdxLLk7ChHA8tdaG2EQ4KLQkJXu7T0Dy9QlangXMBHIhO7URP4qiq2XboSpZNSro2
-         qg/A==
-X-Gm-Message-State: AOAM533KuKBKMrUsVWgbHO0O6Snm1tu6drmTREAh2n4LrQ5zPeymmppf
-        LD/KLUfAFTIXxgtNiZvaSTaisfZ6h7UNgQ==
-X-Google-Smtp-Source: ABdhPJy5MEfKbVUJFTnh1vKqmxmxnnoKlgi6kcqIAd4ISej8g/3EJ6ptUx8ssAV5yi5x1hhhmvLh+Q==
-X-Received: by 2002:a17:906:d72:: with SMTP id s18mr5900964ejh.110.1607065136221;
-        Thu, 03 Dec 2020 22:58:56 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id x20sm2418231ejv.66.2020.12.03.22.58.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 22:58:55 -0800 (PST)
-Subject: Re: [PATCH 0/5] tty: add flag to suppress ready signalling on open
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Mychaela Falconia <mychaela.falconia@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201130153742.9163-1-johan@kernel.org>
- <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
- <c8f3e485-54c6-99c7-4888-6eef2e174bf6@kernel.org>
- <X8d/Ac5Z4bT/W7ZA@localhost>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <a58e3a7b-58bb-0430-2344-8e8155758e45@kernel.org>
-Date:   Fri, 4 Dec 2020 07:58:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DGtZLLbFDWoCQqYx9LfvjHPyF73CfxgpUXIf4y83koQ=;
+        b=eJHTnOKoKl88smE4JwNSMXikql3294Vuyzp81ebT741h5fcLbXXAOIUqjOCFMlMHpR
+         BRY3M2G+wxo+XE91wpICYqc/gbyB/E9Kv6CtcxOnC19QKPComjPSft5/3I7Jc+HfTjsC
+         tbkIqHrfFsAIxgZTZtvzyEe5fRS8T1oGozjIUMNvOkse3GYiLY5iCOvUjnX9DA6GFXrO
+         /CXAFOXg+FhR5irsmaUeZ67+AnCCuN2v75Sztdekh7N5iWSI8DofNxZqnD7PjX7oTVR7
+         NSy/wsY9BJAR1HhqNZjaiYFHUezd3Qj1hRXMkLopKbnOHXEllFWnNPOcAqSmqfP4XWQ/
+         jYsg==
+X-Gm-Message-State: AOAM530/fcFe1byCw56hUQHnu8y75K/H7knZ/3Gc6L6owzI/A+u86KoR
+        ySJxE0rRelkIn2t3ySsZPCkq1cGy+x3lnFJ9K38=
+X-Google-Smtp-Source: ABdhPJx03vml2qZJmzdaER4GawRDs1zl5iA2sew69N6FEp9q2vwnZucI8MjZIGzQkHAh4gRehD7/1CHLqBps1MLJDB8=
+X-Received: by 2002:a2e:9707:: with SMTP id r7mr2658587lji.265.1607065324902;
+ Thu, 03 Dec 2020 23:02:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <X8d/Ac5Z4bT/W7ZA@localhost>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201204005847.654074-1-daeho43@gmail.com> <X8msy1T8uqZ4Z/iR@sol.localdomain>
+ <CACOAw_wTFsfgLfrWKRoM1o_HQorJE-=2ztZftQTn+comcpmHxQ@mail.gmail.com>
+ <X8m0qbd7rvQyiwOt@sol.localdomain> <CACOAw_y2HRE8CDk-HAjA6w_HzGJpRpivPY5zKRMC4_SNYTnTGg@mail.gmail.com>
+ <CACOAw_xzKjZcpVTo3aj5sJUQ_BjLr=5ZhnfuyFwYerpyzZu+aw@mail.gmail.com>
+ <X8nAParf9GW9LaGV@sol.localdomain> <CACOAw_wOShYf23Y0txs6Fk_Qq9JGEjXGRb0MzMxrBxJpzCfLmA@mail.gmail.com>
+ <X8nGvfEeTDTLa6FL@sol.localdomain>
+In-Reply-To: <X8nGvfEeTDTLa6FL@sol.localdomain>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Fri, 4 Dec 2020 16:01:54 +0900
+Message-ID: <CACOAw_wfew8xER-CibUtddRKVtcr3k_iGzjQ-bVYxqRUuEVCcw@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: fix race of pending_pages in decompression
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02. 12. 20, 12:48, Johan Hovold wrote:
->>> but I question the
->>> usefulness of doing so, as it is a chicken and egg problem: one needs
->>> to open the tty device in order to do termios ioctls on it, and if
->>> that initial open triggers DTR/RTS hardware actions, then the end user
->>> is still screwed.  If Johan or someone else can see a potential use
->>> case for manipulating this new flag via termios (as opposed to sysfs
->>> or USB-ID-based driver quirks), perhaps you could elaborate on it?
->>
->> We would need to (ab)use another open flag (e.g. O_DIRECT). I am not
->> biased to either of solutions.
-> 
-> Forgot to mention that using open-flags would prevent using standard
-> utilities like cat, echo and terminal programs. So for that reason a
-> termios and/or sysfs interface is also preferred.
+Thanks for the explanation about verity.
+I got your point. Thanks~
 
-Nope, I meant it differently. You set it up once using the special open 
-flag. Like with setserial, one sets I/O port, irqs etc. and then uses 
-standard tools as the port is already set up (marked as NORDY in this case).
-
-thanks,
--- 
-js
+2020=EB=85=84 12=EC=9B=94 4=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 2:18, E=
+ric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Fri, Dec 04, 2020 at 02:00:34PM +0900, Daeho Jeong wrote:
+> > I think I don't understand how verity works.
+> > Right after verity is enabled on a file, is the verity logic working
+> > for the whole file data area?
+> > Or it's just working for the data area which is updated after verity is=
+ enabled?
+> >
+>
+> It's for the whole file.
+>
+> My point is just that if there is a bio that saw that verity isn't enable=
+d yet
+> when it started and therefore STEP_VERITY didn't get set in the
+> bio_post_read_ctx (or the bio_post_read_ctx didn't get allocated due to o=
+ne not
+> being needed), then the filesystem shouldn't change its mind and try to v=
+erify
+> the pages when the bio completes if verity happened to be enabled concurr=
+ently.
+> It's too late for that bio.
+>
+> - Eric
