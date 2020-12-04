@@ -2,102 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998532CE8A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB5E2CE8BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728739AbgLDHdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 02:33:09 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9103 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726826AbgLDHdG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 02:33:06 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CnPXh56xczM0M1;
-        Fri,  4 Dec 2020 15:31:48 +0800 (CST)
-Received: from DESKTOP-5IS4806.china.huawei.com (10.174.187.37) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 4 Dec 2020 15:32:14 +0800
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>
-CC:     Marc Zyngier <maz@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "Sean Christopherson" <sean.j.christopherson@intel.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, Keqian Zhu <zhukeqian1@huawei.com>
-Subject: [PATCH v3 2/2] clocksource: arm_arch_timer: Correct fault programming of CNTKCTL_EL1.EVNTI
-Date:   Fri, 4 Dec 2020 15:31:26 +0800
-Message-ID: <20201204073126.6920-3-zhukeqian1@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20201204073126.6920-1-zhukeqian1@huawei.com>
-References: <20201204073126.6920-1-zhukeqian1@huawei.com>
-MIME-Version: 1.0
+        id S1728546AbgLDHmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 02:42:51 -0500
+Received: from mail-eopbgr00078.outbound.protection.outlook.com ([40.107.0.78]:33294
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727007AbgLDHmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 02:42:50 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IW3/OdRJO2v+yFQOmv780ov0tolcsJYvo5Q5QME3sLC/RA+7hsX07sQIS1XKt/TqQlGBve8wC6SuOegBuinT0GLTJPIUdnZiCFi8xJZNmTc7HwLohIV/FAX9T27nTo/N8/lqD/jLlECXc3pqdvszDejTI3jmIUcgLxrc6rDVBAdkUPry+p5fXx2184ayP6cpCKLrb4bdRvH+Y9miS53DqjNOe2CDokFokLNbjn3SNIJBj6+Bk6VINP9iZQlgEVfFlV7zEspmnqdWf68sxCZWAa2mAZzSXi48EZcmFRMTqhH+fHWti75dzBkC0frK2ReU21Qxh+DPTCrOFoD/Fhb5gQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v0cEOFW7tKkEV6WK4zPlv5xQbwB8az6coFiyUC48yTY=;
+ b=hiR68VjGh+wEfERxH1Pl4sUAedIlZA7tfi1SxaZBo6LEJ0s6MHAMhe/21dQeOZMU4R60CI0z6fKs2+KARDWB57ijSFGTjAXZukTKgtwSTX1YQFbyarNke6X05pIi03wchcTffwCAaJgIi3aWdtfJRfCxgwCTmIKBhdeJk/FhtibAx8Z0qL5ILpAWbaabBRMyfmQauciC5kt61Lx7lzSks6ectPlKOJpmIRUhVLqNg/YjG1ExHj+Wa2ngCHHJm6uW9SZO/311kMGR4wt+a8V8LpzJw4G6ucRxkpt9Tw2qFwfK0QC5GWITxgyKLXkfZg782muLCdUun6H7xlecff6CdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v0cEOFW7tKkEV6WK4zPlv5xQbwB8az6coFiyUC48yTY=;
+ b=GmeNhJFRVnuKEm89j6u8BHkT/V7wqWTfT6Ao34BdmkuhypP+zie08yNPkMCU8JePU35e3ilVLXqzCvSN+0Jf4Ur2AE6awBYsclkuWi5h9etIYWDV9KcCFT2dEtj4v3udHDusfYJkX6URSaNXKvYnwg/My1qFxLlXeUp9WSuTcyg=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ by VI1PR0402MB3421.eurprd04.prod.outlook.com (2603:10a6:803:5::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Fri, 4 Dec
+ 2020 07:42:01 +0000
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::dcb7:6117:3def:2685]) by VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::dcb7:6117:3def:2685%7]) with mapi id 15.20.3611.025; Fri, 4 Dec 2020
+ 07:42:01 +0000
+From:   Liu Ying <victor.liu@nxp.com>
+To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org,
+        a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, airlied@linux.ie, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, agx@sigxcpu.org,
+        robert.chiras@nxp.com, martin.kepplinger@puri.sm
+Subject: [PATCH 0/4] phy: phy-fsl-imx8-mipi-dphy: Add i.MX8qxp LVDS PHY mode support
+Date:   Fri,  4 Dec 2020 15:33:40 +0800
+Message-Id: <1607067224-15616-1-git-send-email-victor.liu@nxp.com>
+X-Mailer: git-send-email 2.7.4
 Content-Type: text/plain
-X-Originating-IP: [10.174.187.37]
-X-CFilter-Loop: Reflected
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR01CA0098.apcprd01.prod.exchangelabs.com
+ (2603:1096:3:15::24) To VI1PR04MB3983.eurprd04.prod.outlook.com
+ (2603:10a6:803:4c::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR01CA0098.apcprd01.prod.exchangelabs.com (2603:1096:3:15::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3632.17 via Frontend Transport; Fri, 4 Dec 2020 07:41:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e80bc99f-ef20-41a2-7d4a-08d898281610
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3421:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB34215EE8093BC5AE2BD29DEB98F10@VI1PR0402MB3421.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: urOciwoREfirDy6fLZtbioiKBvOxAypfVMmS17RE6PzjLXmzKV3tSg3pxT3+c8qgN620Aiz6qVbxrgp9gECiGBqIKBJm05abi5Kgq1sklHFDapcH5qdQ8GkZKgxP5uzasu9izNxzl0Rv0r+0NUeVrvRexkwmGKtYIQP4twJgaWxz854F5dO/PXHdNDaqRpESMA8L1h3DiiZxrrJBrYHAeFLuFKJqOPCyZFq3dh+bIZMtrwXpL0oXfJVwRkYURndEqnjaDGh4eihrLhbFlvRPbjafKFUOYFCqD8hfRSbgFu5TC2ScuhlcMG9KIOP/HzlEfdousNgoDdzy3y9YtoXvwZ83x1DEhN7g4EUosXqMOkbFSDV5PKzNllIfLJ+graFm
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(39860400002)(346002)(396003)(4326008)(66556008)(6512007)(66476007)(69590400008)(66946007)(83380400001)(316002)(8676002)(36756003)(7416002)(2906002)(86362001)(6486002)(8936002)(26005)(186003)(52116002)(16526019)(2616005)(956004)(478600001)(6666004)(5660300002)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?1fkclGaVG+ITUX/2TyDJiTOCCaygm9iVZpzm/An0P94ifBqdayUVa24nEVnk?=
+ =?us-ascii?Q?2KfTCbmANDiqsu1V5xZNQ14g+/K5HUPO3tTYawJ5+iEXBI7GgzAg0rnvIzjx?=
+ =?us-ascii?Q?WHd84dRpiwHuAuuwoYtWMVvl6WbZUP0lEFt6IwphKJg/MgObOFJwG9Om8vd5?=
+ =?us-ascii?Q?LOtp55SpFTzlOJuPNGfjQJLHbSSPJIc6KW2zsj0TA0HanhXqgrayeULieFe+?=
+ =?us-ascii?Q?1thX2aP1UwlAcF1mqqXfLV0okYxJur6FDRZfSfShlwZljJPYtNXU7QvP3Q/B?=
+ =?us-ascii?Q?h03xFVP3Mx2iKJFKLaGKvpiv3nxiEejMFXUc25+1EocfsJVUKMtN7BlvdPHf?=
+ =?us-ascii?Q?j8+t1IhrUTwnNEtsxlBvH3drg4wtr73OHlzfR/91SikYdCUOFikWf9aP1pYA?=
+ =?us-ascii?Q?OKGcpDjfmxIDqFaF0WxwBqip73E5dVmqGazAfuFfpYj16DgXYkLbw20MSAu5?=
+ =?us-ascii?Q?/ZrrkuVYRe5ZknmmAz3ifJ70fxpSpCCIsJquiMOhWe949qTCDSbAXAcbtwcX?=
+ =?us-ascii?Q?rGIoztjTwvFJiNhTwtqDJyUanFlmhA0d2ARFCTg+iNXCxj+Y6zpfEFqlJ+3S?=
+ =?us-ascii?Q?DFKYN5mpl09l4n9Ko05QgeL28WxQufLw3zfgNmGZNZuD0WKaa9x4+LrMaShK?=
+ =?us-ascii?Q?YL8rhMVIMSj+mclT/LClsfth2Go9YmeTy13pBlENMCqSZ/ihTVL2nGYyKezQ?=
+ =?us-ascii?Q?jFNq4Dt9O8Qs+tLwh4Rhh3XGrhpZJuKIm879l8kudN7v3MwSqvVj3rXDEzBR?=
+ =?us-ascii?Q?OTwhlq2JQZIvVHwEKg8BbYchIp3R1gCe1U6n+QgRx9+df9guN8hAnPKABnTZ?=
+ =?us-ascii?Q?iAtaBtj72Ra+EJK66DCWulowlbQX8jSkyqUdVkCXQ6Ny+psIm04j52kj2QIU?=
+ =?us-ascii?Q?oJ1NqV1LDD1FK1SxRBclBrbQJNOjkb4raZb2t/AUttYTqkEaLQ1dMKKQfAAc?=
+ =?us-ascii?Q?K1ofe3T8STIGALl3MmSoK6m7ScRbXN1+YD4g3gQk31WserJB88Nd34Cky2Ra?=
+ =?us-ascii?Q?a1e0?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e80bc99f-ef20-41a2-7d4a-08d898281610
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 07:42:01.1826
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bo4S2Hx3+Hd7wERDrq684NsN0OIQetQSuRXRIVzt31PsFw8+12ILwktD79xsmYmxYVOgspcBE4HyiJm+XFTYTg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3421
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ARM virtual counter supports event stream, it can only trigger an event
-when the trigger bit (the value of CNTKCTL_EL1.EVNTI) of CNTVCT_EL0 changes,
-so the actual period of event stream is 2^(cntkctl_evnti + 1). For example,
-when the trigger bit is 0, then virtual counter trigger an event for every
-two cycles.
+Hi,
 
-Fixes: 037f637767a8 ("drivers: clocksource: add support for ARM architected timer event stream")
-Suggested-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
----
- drivers/clocksource/arm_arch_timer.c | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+This series adds i.MX8qxp LVDS PHY mode support for the Mixel PHY in the
+Freescale i.MX8qxp SoC.
 
-diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index 777d38cb39b0..d0177824c518 100644
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -822,15 +822,24 @@ static void arch_timer_evtstrm_enable(int divider)
- 
- static void arch_timer_configure_evtstream(void)
- {
--	int evt_stream_div, pos;
-+	int evt_stream_div, lsb;
-+
-+	/*
-+	 * As the event stream can at most be generated at half the frequency
-+	 * of the counter, use half the frequency when computing the divider.
-+	 */
-+	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ / 2;
-+
-+	/*
-+	 * Find the closest power of two to the divisor. If the adjacent bit
-+	 * of lsb (last set bit, starts from 0) is set, then we use (lsb + 1).
-+	 */
-+	lsb = fls(evt_stream_div) - 1;
-+	if (lsb > 0 && (evt_stream_div & BIT(lsb - 1)))
-+		lsb++;
- 
--	/* Find the closest power of two to the divisor */
--	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ;
--	pos = fls(evt_stream_div);
--	if (pos > 1 && !(evt_stream_div & (1 << (pos - 2))))
--		pos--;
- 	/* enable event stream */
--	arch_timer_evtstrm_enable(min(pos, 15));
-+	arch_timer_evtstrm_enable(max(0, min(lsb, 15)));
- }
- 
- static void arch_counter_set_user_access(void)
+The Mixel PHY is MIPI DPHY + LVDS PHY combo, which can works in either
+MIPI DPHY mode or LVDS PHY mode.  The PHY mode is controlled by i.MX8qxp
+SCU firmware.  The PHY driver would call a SCU function to configure the
+mode.
+
+The PHY driver is already supporting the Mixel MIPI DPHY in i.MX8mq SoC,
+where it appears to be a single MIPI DPHY.
+
+
+Patch 1/4 sets PHY mode in the Northwest Logic MIPI DSI host controller
+bridge driver, since i.MX8qxp SoC embeds this controller IP to support
+MIPI DSI displays together with the Mixel PHY.
+
+Patch 2/4 allows LVDS PHYs to be configured through the generic PHY functions
+and through a custom structure added to the generic PHY configuration union.
+
+Patch 3/4 adds dt binding support for the Mixel combo PHY in i.MX8qxp SoC.
+
+Patch 4/4 adds the i.MX8qxp LVDS PHY mode support in the Mixel PHY driver.
+
+
+Welcome comments, thanks.
+
+
+Liu Ying (4):
+  drm/bridge: nwl-dsi: Set PHY mode in nwl_dsi_enable()
+  phy: Add LVDS configuration options
+  dt-bindings: phy: mixel: mipi-dsi-phy: Add Mixel combo PHY support for
+    i.MX8qxp
+  phy: freescale: phy-fsl-imx8-mipi-dphy: Add i.MX8qxp LVDS PHY mode
+    support
+
+ .../devicetree/bindings/phy/mixel,mipi-dsi-phy.txt |   8 +-
+ drivers/gpu/drm/bridge/nwl-dsi.c                   |   6 +
+ drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c     | 266 ++++++++++++++++++++-
+ include/linux/phy/phy-lvds.h                       |  48 ++++
+ include/linux/phy/phy.h                            |   4 +
+ 5 files changed, 320 insertions(+), 12 deletions(-)
+ create mode 100644 include/linux/phy/phy-lvds.h
+
 -- 
-2.23.0
+2.7.4
 
