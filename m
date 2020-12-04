@@ -2,182 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94852CE826
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 07:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7A52CE827
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 07:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728118AbgLDGY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 01:24:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
+        id S1728194AbgLDG0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 01:26:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgLDGY0 (ORCPT
+        with ESMTP id S1725372AbgLDG0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 01:24:26 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3D5C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 22:23:40 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id 91so223455wrj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 22:23:40 -0800 (PST)
+        Fri, 4 Dec 2020 01:26:15 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B13C061A4F;
+        Thu,  3 Dec 2020 22:25:35 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id p6so2550596plr.7;
+        Thu, 03 Dec 2020 22:25:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=98JkySW9/YPknIOP/vurrpriMRdU3Eb0izq2wDpGtMs=;
-        b=ptlG2MEbVrPb2egLQW7XfjoIdnyFnJSEl5UOV3qQqSXT/R/9N5qJh785SkNjtSVafY
-         eI5+ODstgUwiwtYUySnaBR+Yc1TSrmYFb2p77jCtkDub+G4YAANIA4qjFRAhpF4pinjq
-         LBn9eCES70H/Rleg6etUGUaH+6TfwXpTH1aiEgsI17gT5vxOTf7YgafJSYqTzU47+L9h
-         1mYojfdBNMc5Nxn2K1fD7nSv7OS0k/ioAJRfHKXjUYOfdSa1Ltc+FU7t5+ncTAfoxUXT
-         +vKLY4WHsptaZu5r0T7cOSJZIIzN96EYHHwaR8qyEVg7PZzCkfd9x/Q8cTa+wXS4yPaq
-         x2gw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=RWUO9HBW83jm6ODmJA+8hyD8R17bJQiOrlPxs4/56dQ=;
+        b=m9gwR3icwrA9Pdlb3ADR4lbiG0VoV6mKx4i25K8n6Ts8kZmAWQ7IA5VETsRfbPnb5E
+         h5L46hCPRK5b6iGZY/lzagvv4iHaJk3D3GEZ50m7eY+8qBU/+zL2NE9I6GB8dXijBKzS
+         LsPNNBnoPkt1RdycNTU/9Jfd3DF06BoIkxSzub/SWmVZcEqPbLaN/4ER34kkZ7FUslQT
+         wDGQCzoxAnU34ZVc2gUdClO0oJRIxtYv4UFi9P6h/6O2EouKQnKg3VqGkwEFE7V6XWmZ
+         PSMmuwvwBe4vjSGik1Af9HGrRd7n8pCqnW+i+vI+EDcbG9epRGgqAUdnFYBuG4I4gfqT
+         0i7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=98JkySW9/YPknIOP/vurrpriMRdU3Eb0izq2wDpGtMs=;
-        b=Z/Qzvty17PjGim/g4zfO9fu6+CwE0hzCLV0LOFv+6fIu4vtSzz6Fc8OhQ5dRrZrymR
-         MzTHxPl1i96QbxGArR+b118Ze7BBmlBELLpPdfi8vzcE3MSg8+AJDupGvjvT4gvPRKhe
-         Im/mctNkhxUL3MKR9nQvtC5NCsN8PN3MpzDyB5J055NooOknzB748gfYjdu5cnUGIxUM
-         QxXEXXizH1NQ1MU8Na730nsmfPVy5WJ0tmGhG4IRcvuuH9lKaat73DTpePTyEkFUnk5q
-         SgyAMyFVI74zIs8xxeg1zDphdJR0DthhAINn63wqhncLDyI9RhQ2xRGbd+QBdgG7RHED
-         6slw==
-X-Gm-Message-State: AOAM530DfIb7V4VwmI89aZhKYe2mM9JNnzudzUceBugYgRG4+B6X8YU9
-        /0Y+4pWJPaPtjF3tK3kQ02eyLBTk6gJVizLzjddyxA==
-X-Google-Smtp-Source: ABdhPJzEy0kjlzbhbJ4HskVgZqUeu1kU8i5mODdxRXXs4BAgs5Hjr/NV8JA3TzwWGgwm85BkW3SiHNkFcJ5K0AD0aOI=
-X-Received: by 2002:adf:e54f:: with SMTP id z15mr3093292wrm.159.1607063018670;
- Thu, 03 Dec 2020 22:23:38 -0800 (PST)
-MIME-Version: 1.0
-References: <9af089ea-2532-68ac-5d22-97a669ccec91@canonical.com>
- <CAHp75Ve7Sdf=Zy5N1LN_w22=YwPgWWR-FZtrQcAkOF=ViT2Kbw@mail.gmail.com> <1607049966.4733.189.camel@mhfsdcap03>
-In-Reply-To: <1607049966.4733.189.camel@mhfsdcap03>
-From:   Tomasz Figa <tfiga@google.com>
-Date:   Fri, 4 Dec 2020 15:23:28 +0900
-Message-ID: <CAAFQd5C0_v7hyvu7BHtkH_ecYUXPGTGq75Xrr63b3Fe81r=tuA@mail.gmail.com>
-Subject: Re: media: i2c: add OV02A10 image sensor driver
-To:     Dongchun Zhu <dongchun.zhu@mediatek.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sj Huang <sj.huang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=RWUO9HBW83jm6ODmJA+8hyD8R17bJQiOrlPxs4/56dQ=;
+        b=VO5I32Xff+/EudWdPRRI8LkDSHvW0TZZRLlApUEe5usFi51epJo6KxEwcf2Mx3K3uZ
+         uoiTwJQt0SYKoxrjRb8dhF3F2dC8bsrzLhExZoykJiljKUKKncKRsLpek9XODObNuhJP
+         UYsTZwEN3+1EkxliOR2YsXSGev2c8xRCD3hrwF7IA+lsVBlDGSNeUZFSRj6Bl1Sre2dj
+         nop81gszn4m5wgCHEcjjtwafjbnBf1ghcLod3iGMkd/z/BTrmCdc6Na1rjraS8RpcVtv
+         c++/3IWHmlC/T11ndafndMs1udy5u99vErjTso7oPOa37QJDaGidUEFg+D/GqB2FvaLN
+         OYLA==
+X-Gm-Message-State: AOAM533P6TjT0s0KFn7t9HBLqN8+upgmqJL0bLcezIoSMhF4kCzF75yW
+        iwgIKW6Ta2OfyzLTfxPTMow=
+X-Google-Smtp-Source: ABdhPJw2hzaf3E+5KCxRnDaO1zbKdsFZCQg2BUCwEWGpLw1FLGNxjGc/GQMsV3oINvkwX/lMsbrITw==
+X-Received: by 2002:a17:902:5985:b029:da:c737:5842 with SMTP id p5-20020a1709025985b02900dac7375842mr2710651pli.21.1607063135099;
+        Thu, 03 Dec 2020 22:25:35 -0800 (PST)
+Received: from kernel-4-19.asia-east2-a.c.savvy-summit-295307.internal (53.207.96.34.bc.googleusercontent.com. [34.96.207.53])
+        by smtp.googlemail.com with ESMTPSA id 24sm3344368pgy.45.2020.12.03.22.25.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 03 Dec 2020 22:25:34 -0800 (PST)
+From:   Bui Quang Minh <minhquangbui99@gmail.com>
+Cc:     Bui Quang Minh <minhquangbui99@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Jules Irenge <jbi.octave@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] USB: dummy-hcd: Fix uninitialized array use in init()
+Date:   Fri,  4 Dec 2020 06:24:49 +0000
+Message-Id: <1607063090-3426-1-git-send-email-minhquangbui99@gmail.com>
+X-Mailer: git-send-email 2.7.4
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 11:47 AM Dongchun Zhu <dongchun.zhu@mediatek.com> wrote:
->
-> Hi Andy,
->
-> On Thu, 2020-12-03 at 20:10 +0200, Andy Shevchenko wrote:
-> > On Thu, Dec 3, 2020 at 8:03 PM Colin Ian King <colin.king@canonical.com> wrote:
-> >
-> > > Static analysis on linux-next with Coverity has detected an issue with
-> > > the following commit:
-> >
-> > If you want to fix it properly, see my comments below...
-> >
-> > > 529 static int ov02a10_s_stream(struct v4l2_subdev *sd, int on)
-> > > 530 {
-> > > 531        struct ov02a10 *ov02a10 = to_ov02a10(sd);
-> > > 532        struct i2c_client *client =
-> > > v4l2_get_subdevdata(&ov02a10->subdev);
-> > >
-> > >    1. var_decl: Declaring variable ret without initializer.
-> > >
-> > > 533        int ret;
-> > > 534
-> > > 535        mutex_lock(&ov02a10->mutex);
-> > > 536
-> > >
-> > >    2. Condition ov02a10->streaming == on, taking true branch.
-> > >
-> > > 537        if (ov02a10->streaming == on)
-> > >
-> > >    3. Jumping to label unlock_and_return.
-> > >
-> > > 538                goto unlock_and_return;
-> > > 539
-> > > 540        if (on) {
-> > > 541                ret = pm_runtime_get_sync(&client->dev);
-> > > 542                if (ret < 0) {
-> >
-> > > 543                        pm_runtime_put_noidle(&client->dev);
-> > > 544                        goto unlock_and_return;
-> >
-> > Instead of two above:
->
-> From the document, pm_runtime_put_noidle is to decrease the runtime PM
-> usage counter of a device unless it is 0 already; while pm_runtime_put
-> would additionally run pm_request_idle to turn off the power if usage
-> counter is zero.
->
-> So here maybe we can really use pm_runtime_put instead of
-> pm_runtime_put_noidle, although it seems that 'pm_runtime_get_sync' and
-> 'pm_runtime_put_noidle' often appear in pairs.
->
+This error path
 
-In an error state (e.g. if pm_runtime_get_sync() fails),
-pm_runtime_put() would decrement the usage counter and call rpm_idle()
-which would instantly return an error code. The end result would be
-the same, except that pm_runtime_put() would return a non-zero error
-code, but we ignore it anyway. However strange it looks, this seems to
-be an API guarantee, so Andy's suggestion is correct.
+	err_add_pdata:
+		for (i = 0; i < mod_data.num; i++)
+			kfree(dum[i]);
 
-Best regards,
-Tomasz
+can be triggered when not all dum's elements are initialized.
 
-> >                        goto err_rpm_put;
-> >
-> > > 545                }
-> > > 546
-> > > 547                ret = __ov02a10_start_stream(ov02a10);
-> > > 548                if (ret) {
-> > > 549                        __ov02a10_stop_stream(ov02a10);
-> > > 550                        ov02a10->streaming = !on;
-> > > 551                        goto err_rpm_put;
-> > > 552                }
-> > > 553        } else {
-> > > 554                __ov02a10_stop_stream(ov02a10);
-> > > 555                pm_runtime_put(&client->dev);
-> > > 556        }
-> > > 557
-> > > 558        ov02a10->streaming = on;
-> >
-> > (1)
-> >
-> > > 559        mutex_unlock(&ov02a10->mutex);
-> > > 560
-> > > 561        return 0;
-> > > 562
-> > > 563 err_rpm_put:
-> > > 564        pm_runtime_put(&client->dev);
-> >
-> > > 565 unlock_and_return:
-> >
-> > Should be moved to (1).
-> >
-> > > 566        mutex_unlock(&ov02a10->mutex);
-> > > 567
-> > >
-> > > Uninitialized scalar variable (UNINIT)
-> > >     4. uninit_use: Using uninitialized value ret.
-> > >
-> > > 568        return ret;
-> > > 569 }
-> > >
-> > > Variable ret has not been initialized, so the error return value is a
-> > > garbage value. It should be initialized with some appropriate negative
-> > > error code, or ret could be removed and the return should return a
-> > > literal value of a error code.
-> > >
-> > > I was unsure what value is appropriate to fix this, so instead I'm
-> > > reporting this issue.
-> >
->
+Fix this by initializing all dum's elements to NULL.
+
+Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+---
+ drivers/usb/gadget/udc/dummy_hcd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/gadget/udc/dummy_hcd.c b/drivers/usb/gadget/udc/dummy_hcd.c
+index 0eeaead..a2cf009 100644
+--- a/drivers/usb/gadget/udc/dummy_hcd.c
++++ b/drivers/usb/gadget/udc/dummy_hcd.c
+@@ -2734,7 +2734,7 @@ static int __init init(void)
+ {
+ 	int	retval = -ENOMEM;
+ 	int	i;
+-	struct	dummy *dum[MAX_NUM_UDC];
++	struct	dummy *dum[MAX_NUM_UDC] = {};
+ 
+ 	if (usb_disabled())
+ 		return -ENODEV;
+-- 
+2.7.4
+
