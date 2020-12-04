@@ -2,104 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F372CE51C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED2A2CE51F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:29:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729393AbgLDB0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:26:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727293AbgLDB0f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:26:35 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCAFC061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 17:25:55 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CnFQQ5Mx0z9ryj;
-        Fri,  4 Dec 2020 12:25:50 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1607045152;
-        bh=4HSAD6xXrbFZYCa+s18rvCcwKjmHfdu4XDPdOyGqFaA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=GhmVr/vSuHBo5JxGky6+aVTtxV0w9ifWUBzgvvZcO5or6uHnvAPyZBClp9NRWZNX0
-         yYP8kLvJUJdm6HBCY+1yoVkgRLFIlk2df/yzxo75defNqGrLcQN/Q2mrHRRZN0W9FC
-         o+z1Bi+ANIdMhAfu/mtlRGrAFVV8sYFFVxjf7GGbmbBGq/9fm63zDfsLhvD5xZyz2x
-         50ZoSSraKIBzSxlt5/RUP3TV1Lltgqka67h+LNnoOLVjgMv8oEz2MnHs0GRYU7Corf
-         bWV6MKEY3kmbpndKfcpUrffggudl+oyX5LvGONmGw/sBOawXd8d7oYLZkg9wd5BHcC
-         ncE3qicoVA22w==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     syzkaller <syzkaller@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: WARN_ON_ONCE
-In-Reply-To: <CACT4Y+ZHH5DiDj7KvRKtPqkV1CS0TFOkCH-M5bitfCgd5PWotg@mail.gmail.com>
-References: <87f443cf-26c0-6302-edee-556045bca18a@ozlabs.ru> <CACT4Y+ZAyhk6CuddQNix0fAupXhOpv1t3iOdcXbDh4VDEPyOJQ@mail.gmail.com> <CACT4Y+ZHH5DiDj7KvRKtPqkV1CS0TFOkCH-M5bitfCgd5PWotg@mail.gmail.com>
-Date:   Fri, 04 Dec 2020 12:25:47 +1100
-Message-ID: <87k0tyuztw.fsf@mpe.ellerman.id.au>
+        id S1727489AbgLDB2u convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 20:28:50 -0500
+Received: from smtp.h3c.com ([60.191.123.50]:2010 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726158AbgLDB2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 20:28:50 -0500
+Received: from DAG2EX02-BASE.srv.huawei-3com.com ([10.8.0.65])
+        by h3cspam02-ex.h3c.com with ESMTP id 0B41RCuI075840;
+        Fri, 4 Dec 2020 09:27:12 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX02-BASE.srv.huawei-3com.com (10.8.0.65) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 4 Dec 2020 09:27:13 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.2106.002; Fri, 4 Dec 2020 09:27:13 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>
+CC:     "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] ext4: remove the null check of bio_vec page
+Thread-Topic: [PATCH] ext4: remove the null check of bio_vec page
+Thread-Index: AQHWpruDhYzwIts0bkGkoCqDPV0JCqmhVUyAgEPTgYCAAULUUA==
+Date:   Fri, 4 Dec 2020 01:27:13 +0000
+Message-ID: <1758a0c58d174070915534f538aaf52d@h3c.com>
+References: <20201020082201.34257-1-tian.xianting@h3c.com>
+ <20201021102503.GC19726@quack2.suse.cz> <20201203141127.GF441757@mit.edu>
+In-Reply-To: <20201203141127.GF441757@mit.edu>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 0B41RCuI075840
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmitry Vyukov <dvyukov@google.com> writes:
-> On Thu, Dec 3, 2020 at 10:19 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->> On Thu, Dec 3, 2020 at 10:10 AM Alexey Kardashevskiy <aik@ozlabs.ru> wrote:
->> >
->> > Hi!
->> >
->> > Syzkaller triggered WARN_ON_ONCE at
->> >
->> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/tracepoint.c?h=v5.10-rc6#n266
->> >
->> >
->> > ===
->> > static int tracepoint_add_func(struct tracepoint *tp,
->> >                                struct tracepoint_func *func, int prio)
->> > {
->> >         struct tracepoint_func *old, *tp_funcs;
->> >         int ret;
->> >
->> >         if (tp->regfunc && !static_key_enabled(&tp->key)) {
->> >                 ret = tp->regfunc();
->> >                 if (ret < 0)
->> >                         return ret;
->> >         }
->> >
->> >         tp_funcs = rcu_dereference_protected(tp->funcs,
->> >                         lockdep_is_held(&tracepoints_mutex));
->> >         old = func_add(&tp_funcs, func, prio);
->> >         if (IS_ERR(old)) {
->> >                 WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
->> >                 return PTR_ERR(old);
->> >         }
->> >
->> > ===
->> >
->> > What is the common approach here? Syzkaller reacts on this as if it was
->> > a bug but WARN_ON_ONCE here seems intentional. Do we still push for
->> > removing such warnings?
+Thanks Ted :)
 
-AFAICS it is a bug if that fires.
+-----Original Message-----
+From: Theodore Y. Ts'o [mailto:tytso@mit.edu] 
+Sent: Thursday, December 03, 2020 10:11 PM
+To: Jan Kara <jack@suse.cz>
+Cc: tianxianting (RD) <tian.xianting@h3c.com>; adilger.kernel@dilger.ca; linux-ext4@vger.kernel.org; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: remove the null check of bio_vec page
 
-See the commit that added it:
-  d66a270be331 ("tracepoint: Do not warn on ENOMEM")
+On Wed, Oct 21, 2020 at 12:25:03PM +0200, Jan Kara wrote:
+> On Tue 20-10-20 16:22:01, Xianting Tian wrote:
+> > bv_page can't be NULL in a valid bio_vec, so we can remove the NULL 
+> > check, as we did in other places when calling 
+> > bio_for_each_segment_all() to go through all bio_vec of a bio.
+> > 
+> > Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> 
+> Thanks for the patch. It looks good to me. You can add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-Which says:
-  Tracepoint should only warn when a kernel API user does not respect the
-  required preconditions (e.g. same tracepoint enabled twice, or called
-  to remove a tracepoint that does not exist).
-  
-  Silence warning in out-of-memory conditions, given that the error is
-  returned to the caller.
+Applied, thanks.
 
-
-So if you're seeing it then you've someone caused it to return something
-other than ENOMEM, and that is a bug.
-
-cheers
+					- Ted
