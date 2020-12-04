@@ -2,103 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEB12CF377
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 509832CF37B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387962AbgLDR5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:57:43 -0500
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:57236 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726021AbgLDR5m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:57:42 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id EFE5C12806D3;
-        Fri,  4 Dec 2020 09:57:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1607104620;
-        bh=j/eiQ9XC4YVyXHPaGvnixXqre38vTxKbe7IysEXG/gQ=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=LJv6d585fMMbsbl72vwxEil6yGk8n+dpPg0+K0c9QGLI6z2Tnb35IajlkkZ/poYVt
-         Apwk3JR5UaJjDvC46VLJvsCb+SFQ5eqvWGVnU98pT0RQI8tTzpuqlku09Jz0OireDV
-         CvQHnAFrsu77RWt/AkDGWfrret+uJBj5l78JAyzI=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id INp-1Jb0T2J6; Fri,  4 Dec 2020 09:57:00 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 92AB012806D2;
-        Fri,  4 Dec 2020 09:56:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1607104620;
-        bh=j/eiQ9XC4YVyXHPaGvnixXqre38vTxKbe7IysEXG/gQ=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=LJv6d585fMMbsbl72vwxEil6yGk8n+dpPg0+K0c9QGLI6z2Tnb35IajlkkZ/poYVt
-         Apwk3JR5UaJjDvC46VLJvsCb+SFQ5eqvWGVnU98pT0RQI8tTzpuqlku09Jz0OireDV
-         CvQHnAFrsu77RWt/AkDGWfrret+uJBj5l78JAyzI=
-Message-ID: <d706cdbcc4eba3fb3fe17453017a6623f1ec80dc.camel@HansenPartnership.com>
-Subject: Re: [RFC PATCH v1 00/12] Replace strstarts() by str_has_prefix()
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     laniel_francis@privacyrequired.com,
-        Russell King <linux@armlinux.org.uk>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Bin Liu <b-liu@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jessica Yu <jeyu@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-efi@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Date:   Fri, 04 Dec 2020 09:56:58 -0800
-In-Reply-To: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
-References: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S2388023AbgLDR6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:58:12 -0500
+Received: from smtp205.alice.it ([82.57.200.101]:25465 "EHLO smtp205.alice.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728833AbgLDR6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 12:58:11 -0500
+Received: from alice.it (204.195.51.215) by smtp205.alice.it (8.6.150.01) (authenticated as daniela.jappelli@alice.it)
+        id 5FBFC2F90108169B; Fri, 4 Dec 2020 18:57:11 +0100
+Message-ID: <5FBFC2F90108169B@smtp205.alice.it> (added by postmaster@alice.it)
+Reply-To: <cahilfrank-investment@cheapnet.it>
+From:   "Cahil Frank" <daniela.jappelli@alice.it>
+To:     alexd.79@alice.it
+Subject: Re: Business Expansion *Capital
+Date:   Sat, 5 Dec 2020 02:57:06 +0900
 MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="euc-jp"
 Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-04 at 18:03 +0100, laniel_francis@privacyrequired.com
-wrote:
-> In this patch set, I replaced all calls to strstarts() by calls to
-> str_has_prefix(). Indeed, the kernel has two functions to test if a
-> string begins with an other:
-> 1. strstarts() which returns a bool, so 1 if the string begins with
-> the prefix,0 otherwise.
-> 2. str_has_prefix() which returns the length of the prefix or 0.
-> 
-> str_has_prefix() was introduced later than strstarts(), in commit
-> 495d714ad140 which also stated that str_has_prefix() should replace
-> strstarts(). This is what this patch set does.
+My name is Cahil Frank an advertising agent with Eurocredit & loan services, the company pays me commission as per each client introduced to them. The Company specializes in providing equity funding for projects and corporate also Personal loan funding at 3% Interest Rate for duration of 10 to 15 Years. They also have financial capability to provide early stage funding including fresh cut BG's, MTN and MT760.
 
-What's the reason why?  If you look at the use cases for the
-replacement of strstart()  they're all cases where we need to know the
-length we're skipping and this is hard coded, leading to potential
-errors later.  This is a classic example:  3d739c1f6156 ("tracing: Use
-the return of str_has_prefix() to remove open coded numbers").  However
-you're not doing this transformation in the conversion, so the
-conversion is pretty useless.  I also see no case for replacing
-strstart() where we're using it simply as a boolean without needing to
-know the length of the prefix.
+They are a private equity firm made up and funded by indigenous i n v e s t o r s and Lenders as its shareholders across the Asia Region, with support from the Hong Kong government at our disposal.
 
-James
+NB: * Starting up a Franchise * Business Acquisition * Business Expansion *Capital / Infrastructural Project* Commercial Agriculture * Commercial Real Estate purchase * Contract Execution * Trade Financing etc. funding is from USD$1 million up to USD $2 billion depending on the nature and viability of the business, investment or project. We are open to having a good business relationship with our clients. If you have a profitable project. Investment or business, kindly contact me so I can forward the contact information of this Loan company so you can contact them to share your loan executive summary and any project/business you need funding. They will give you the best and most reliable services.
 
-
+Kind regards,
+Cahil Frank
