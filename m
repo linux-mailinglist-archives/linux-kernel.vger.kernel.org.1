@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932442CF317
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1727E2CF318
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731057AbgLDRZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:25:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38184 "EHLO mail.kernel.org"
+        id S1731229AbgLDR0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:26:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60776 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727639AbgLDRZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:25:41 -0500
-Date:   Fri, 4 Dec 2020 11:24:59 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607102701;
-        bh=iTGJnJveZ1JPdxHDy4lgNoqXVSHErcta5MseI1687Es=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=at1vtv1jRXO7DNFHV5M3AMYymgp8qmqMYd/OeyrVj5ylPI+BQnNx2vDcu0qymlQ1I
-         +GeXe3MCitxTaao8BbcZhj2knF17YNgXaCNMDGSrDnhecv6bZXf6ZXLw9JeC0tLgTt
-         dtwRTsqHxdd6wSaM9DGHOCXXkoY1Z6Ss/2/5pSwKXYqEfQBLYWqDq0CPH9lFYz7ZYz
-         YPE7NPgBrbIy5mElw0W+H/PA0+fV6P67klRAHBloNKWXHXtk20celWDObhAnrmEsLw
-         wXfRJRoHvNbrJhzEsdRlQYOz5aIffSJkSdeDC1tjQRvKdkfC5JXwWDSA9fCDlFDGJc
-         diP6xV/XFY19A==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Kelley, Sean V" <sean.v.kelley@intel.com>
-Cc:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "xerces.zhao@gmail.com" <xerces.zhao@gmail.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>,
-        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v12 12/15] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
-Message-ID: <20201204172459.GA1694978@bjorn-Precision-5520>
+        id S1731043AbgLDR0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 12:26:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 316DFAD20;
+        Fri,  4 Dec 2020 17:25:32 +0000 (UTC)
+Subject: Re: [PATCH 3/7] mm,madvise: call soft_offline_page() without
+ MF_COUNT_INCREASED
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     akpm@linux-foundation.org, n-horiguchi@ah.jp.nec.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20201119105716.5962-1-osalvador@suse.de>
+ <20201119105716.5962-4-osalvador@suse.de>
+ <2aa4bf71-443b-9b9b-b761-12761263dfec@suse.cz> <20201201113511.GA22242@linux>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <840d4669-ae3f-b7c4-6132-e20d1bf9e952@suse.cz>
+Date:   Fri, 4 Dec 2020 18:25:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4FD8E577-2F6A-4829-B92F-45D5E13BF9A4@intel.com>
+In-Reply-To: <20201201113511.GA22242@linux>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 05:17:58PM +0000, Kelley, Sean V wrote:
-> On Dec 3, 2020, at 4:01 PM, Bjorn Helgaas <helgaas@kernel.org> wrote:
-
-> > OK, so if we want a comment here, I assume it would be along the lines
-> > of:
-> > 
-> >  If "bridge" has no subordinate bus, it's an RCEC or an RCiEP.  In
-> >  either of those cases, we want to call the callback on "bridge"
-> >  itself.
+On 12/1/20 12:35 PM, Oscar Salvador wrote:
+> On Wed, Nov 25, 2020 at 07:20:33PM +0100, Vlastimil Babka wrote:
+>> On 11/19/20 11:57 AM, Oscar Salvador wrote:
+>> > From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+>> > 
+>> > The call to get_user_pages_fast is only to get the pointer to a struct
+>> > page of a given address, pinning it is memory-poisoning handler's job,
+>> > so drop the refcount grabbed by get_user_pages_fast().
+>> > 
+>> > Note that the target page is still pinned after this put_page() because
+>> > the current process should have refcount from mapping.
+>> 
+>> Well, but can't it go away due to reclaim, migration or whatever?
 > 
-> Correct.
-
-OK, good.  I think the function comment now captures this.
-
-> > So IIUC, the code would be:
-> > 
-> >  if (bridge->subordinate)
-> >    pci_walk_bus(bridge->subordinate, cb, userdata);
-> >  else
-> >    cb(bridge, userdata);    /* RCEC or RCiEP */
-> > 
-> > Right?
+> Yes, it can.
 > 
-> Right, as before.
-
-Updated to match this.
-
-> > I pushed a pci/err branch
-> > (https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/log/?h=pci/err)
-> > with some tweaks in these areas.  Diff from your v12 posting appended
-> > below.  I split the RCEC/RCiEP error recovery pieces up a little bit
-> > differently than in your posting.  Let me know if you see anything
-> > that should be changed.  I dropped one of Jonathan's
-> > reviewed/tested-by but probably should have dropped others to avoid
-> > putting words in his mouth.
+>> > @@ -900,20 +900,23 @@ static int madvise_inject_error(int behavior,
+>> >   		 */
+>> >   		size = page_size(compound_head(page));
+>> > +		/*
+>> > +		 * The get_user_pages_fast() is just to get the pfn of the
+>> > +		 * given address, and the refcount has nothing to do with
+>> > +		 * what we try to test, so it should be released immediately.
+>> > +		 * This is racy but it's intended because the real hardware
+>> > +		 * errors could happen at any moment and memory error handlers
+>> > +		 * must properly handle the race.
+>> 
+>> Sure they have to. We might just be unexpectedly messing with other process'
+>> memory. Or does anything else prevent that?
 > 
-> Thanks very much for doing this update.  It looks good to me.
+> No, nothing does, and I have to confess that I managed to confuse myself here.
+> If we release such page and that page ends up in buddy, nothing prevents someone
+> else to get that page, and then we would be messing with other process memory.
+> 
+> I guess the right thing to do is just to make sure we got that page and that
+> that page remains pinned as long as the memory failure handling goes.
 
-I just updated this for the "rc used before initialization" error.
-Current head f74d7cf9f2bc ("PCI/AER: Add RCEC AER error injection
-support").
+OK, so that means we don't introduce this race for MADV_SOFT_OFFLINE, but it's
+already (and still) there for MADV_HWPOISON since Dan's 23e7b5c2e271 ("mm,
+madvise_inject_error: Let memory_failure() optionally take a page reference") no?
+
+> I will remove those patches from the patchset and re-submit with only the
+> refactoring and pcp-disabling.
+> 
+> Thanks Vlastimil
+> 
+
