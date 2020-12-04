@@ -2,115 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 462D52CE45A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 027EA2CE45D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731909AbgLDAOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 19:14:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
+        id S1728154AbgLDAQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 19:16:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728154AbgLDAOw (ORCPT
+        with ESMTP id S1726082AbgLDAQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 19:14:52 -0500
-Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 127E7C061A51;
-        Thu,  3 Dec 2020 16:13:57 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 9B0F640548;
-        Fri,  4 Dec 2020 01:13:52 +0100 (CET)
-Subject: Re: [PATCH 11/13] dt-bindings: cpufreq: Convert qcom-cpufreq-hw to
- YAML binding
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     viresh.kumar@linaro.org, rjw@rjwysocki.net,
-        jorge.ramirez-ortiz@linaro.org, robh+dt@kernel.org,
-        konrad.dybcio@somainline.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ulf.hansson@linaro.org,
-        nks@flawful.org, lgirdwood@gmail.com, daniel.lezcano@linaro.org,
-        devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
-        phone-devel@vger.kernel.org, broonie@kernel.org,
-        linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        robh@kernel.org
-References: <20201126184559.3052375-1-angelogioacchino.delregno@somainline.org>
- <20201126184559.3052375-12-angelogioacchino.delregno@somainline.org>
- <20201130172305.GA2661895@robh.at.kernel.org>
- <20201203111427.GA3937@thinkpad>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <d66e05be-4ea1-dfb7-40ee-bfe417ab1a77@somainline.org>
-Date:   Fri, 4 Dec 2020 01:13:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 3 Dec 2020 19:16:53 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B1FC061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 16:16:07 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id o71so3790820ybc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 16:16:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=hW+tDMcroBnYjVio+hhjus4Lc01NoQdNAIz2e/PH8bE=;
+        b=D/wIGfkoRntgV7Ro2xaCzABphrSrzeyCLVp+DJ7nI+LWZo5M+N0p48lSdg7K4DtZh6
+         zbdVyi/qse2yZmY4hzUfjFHNYHWOwrp64/4pdfU9+rTXFwH/HgrxfBLgrbZfGllb/8SK
+         HcRtwMI6rLh47ubxH8nzzsA6mQ6/2AIIloyORSnlu5CDRdgINVcca7AwjFtmUZBtL9/5
+         Od5v5lSdZexg+NCA6fRiQEAE2b7xYH4Uyy5WD0evdk0hRolYKAkpiN4frfQ8y7uV13rk
+         BOKpGyxDjKjmbg8SL8Yd5OQJDnXcrxASkg1VIPBAh/U+MV3qDKFjSC95IGPRNFJuTpqg
+         rvSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=hW+tDMcroBnYjVio+hhjus4Lc01NoQdNAIz2e/PH8bE=;
+        b=NDNhG1/2//GQM8fws8VRmanIC16F4A+aOFGzUc5rn0u96f3y6/M8HY///o15vdS+IL
+         l+JA+QuP1IiSOOQ52TK/ZTaGwWsNjzmlqOepKCNxRu6fXVbGQeb+Grs9i+oNtO2/VZxj
+         x9JVa/NxIi37jnaEm3PvadLIfo+nMqY+fDv6m7deiaeP3uZX2XWGfBc39XmGy92xkaR7
+         RFGGMV//DgopQ7m64WxJx+8OTwOWxtSXRh165UkCo60VUDcqoTGA5rMK4vYBM5fzRyJ1
+         fs1qqQ1DYgYRIJcgBlDrxac3M0A1oa+Na69HbnXOkHpXb2z5DpgTApb8/7GAN0tJ9+dj
+         vdWg==
+X-Gm-Message-State: AOAM5333AZOdTurXaqksHRu8jZEMBoFyGG09X+v4P7/g8D0la0xwxK3M
+        VnIS1ph48EhrBHFoJcfrfjl9+OmTWnTmhbsqexBab935nwI=
+X-Google-Smtp-Source: ABdhPJxJXtvnUtuHKYJm4cz9vEXSaXxF0nvOnN+rpykTovFSsS8I96H3xiPrK5vu8/9ROQAdqoniKmMHs2FgNRzyvzU=
+X-Received: by 2002:a25:9345:: with SMTP id g5mr2473223ybo.208.1607040965867;
+ Thu, 03 Dec 2020 16:16:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201203111427.GA3937@thinkpad>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   James Courtier-Dutton <james.dutton@gmail.com>
+Date:   Fri, 4 Dec 2020 00:15:29 +0000
+Message-ID: <CAAMvbhFFkFstAH9xm2_KA8vYzW7cu9=V4YXTwioaDhb-mR_Dig@mail.gmail.com>
+Subject: SO_REUSEADDR compatibility problems
+To:     LKML Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 03/12/20 12:14, Manivannan Sadhasivam ha scritto:
-> Hi,
-> 
-> On Mon, Nov 30, 2020 at 10:23:05AM -0700, Rob Herring wrote:
->> On Thu, 26 Nov 2020 19:45:57 +0100, AngeloGioacchino Del Regno wrote:
->>> Convert the qcom-cpufreq-hw documentation to YAML binding as
->>> qcom,cpufreq-hw.yaml.
->>>
->>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> 
-> There is already a patch floating for this. Please see:
-> https://lkml.org/lkml/2020/10/20/676
-> 
-> Thanks,
-> Mani
-> 
-Oh, I'm sorry, I wasn't aware of that, didn't want to step on you.
+Hi,
 
-Should I rebase patch 1345789 (patch 13/13 of this series) on top of
-the one that you pointed out and drop this one?
+The use case I am struggling with is the use of a Windows program
+running in wine that is sending and receiving UDP packets.
+This particular windows program uses SO_REUSEADDR socket option and
+opens two sockets. Lets call the first one socket A, and the second
+one Socket B.
 
-- Angelo
+The SO_REUSEADDR from the Windows application is translated by "wine" into a
+SO_REUSEADDR in Linux.
+Unfortunately the behaviour of these is different between Windows and
+Linux so the Windows application fails to run on Linux under wine.
+1 ) On windows:
+All received unicast UDP packets will arrive on the first opened
+socket. Thus on socket A.
+2) On Linux:
+All received unicast UDP packets will arrive on the last opened
+socket. Thus on socket B.
 
->>> ---
->>>   .../bindings/cpufreq/cpufreq-qcom-hw.txt      | 173 +---------------
->>>   .../bindings/cpufreq/qcom,cpufreq-hw.yaml     | 196 ++++++++++++++++++
->>>   2 files changed, 197 insertions(+), 172 deletions(-)
->>>   create mode 100644 Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
->>>
->>
->>
->> My bot found errors running 'make dt_binding_check' on your patch:
->>
->> yamllint warnings/errors:
->>
->> dtschema/dtc warnings/errors:
->> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml: properties:clock-names: [{'const': 'xo'}, {'const': 'ref'}] is not of type 'object', 'boolean'
->> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml: maintainers:0: 'TBD' is not a 'email'
->> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml: ignoring, error in schema: properties: clock-names
->> warning: no schema found in file: ./Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
->> Error: Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.example.dts:150.3-151.1 syntax error
->> FATAL ERROR: Unable to parse input tree
->> make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.example.dt.yaml] Error 1
->> make[1]: *** Waiting for unfinished jobs....
->> make: *** [Makefile:1364: dt_binding_check] Error 2
->>
->>
->> See https://patchwork.ozlabs.org/patch/1406857
->>
->> The base for the patch is generally the last rc1. Any dependencies
->> should be noted.
->>
->> If you already ran 'make dt_binding_check' and didn't see the above
->> error(s), then make sure 'yamllint' is installed and dt-schema is up to
->> date:
->>
->> pip3 install dtschema --upgrade
->>
->> Please check and re-submit.
->>
+The problem is that this windows program only expects to receive
+unicast UDP packets on socket A, and thus it sees no packets.
 
+There are no currently existing socket options in Linux that would
+permit wine to simulate the Windows behaviour.
+And thus, the reason I am asking the question here.
+Please can we add an extra socket option to the Linux socket options
+such that we can get wine to simulate Windows correctly. I.e. behave
+like (1) above.
+Now wine is pretty good at simulating most things Windows throws at
+it, but socket options is not one of them yet.
+Also note, that (1) is actually more secure than (2) because it
+prevents other applications with the same UserID from hijacking the
+socket.
+Although (2) is more helpful in more gracefully handling some error edge cases.
+
+Suggested new option name:  SO_REUSEADDR_WS
+
+Kind Regards
+
+James
