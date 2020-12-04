@@ -2,92 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9421E2CE96A
+	by mail.lfdr.de (Postfix) with ESMTP id 2480A2CE969
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387444AbgLDIUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:20:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
+        id S1728966AbgLDIUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:20:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727783AbgLDIUp (ORCPT
+        with ESMTP id S1727783AbgLDIUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:20:45 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A670AC061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 00:19:59 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id k14so4440823wrn.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 00:19:59 -0800 (PST)
+        Fri, 4 Dec 2020 03:20:41 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C21C061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 00:20:01 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id g185so6220149wmf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 00:20:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uFjKy1JMQGds6QCWv9HgfQo7basi56RFkixKbM89qBQ=;
-        b=iLmFK7YliCdlWPtPemg20hSOC9+X0t97zFpxwojlugyjm5Ntx5rhE2aymcQjZFsI7A
-         FcAkMDcv4bJ4q7Wv/C9JK60TLmp0sRkQFNE1k8Qk8lt2bSoIoKCak+UH5vbtlcXeBdRz
-         m73MSfm60b/c4NPBoAaarCInCaV2yx1Wh1KIbMGbBprjxwQ89iAlXD+IAvlGY4vCFtql
-         iMb/7WcIp3bpSXipN7GY2Ex9qkHJ2SXlMY51CpWW61OJbWOa1UcTNcSJ8TvaHl/2f07E
-         q+lqbW/z1pxM8yXsNze2PxmqhbgYt/FAaYzbN5JslOIwNF1R+ghXS6L3AxwFYKxsAino
-         2smg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qB2SYCS1v55sYBnoh6a9A5+nyB8wI9x+IMkUjRVdEyU=;
+        b=ccMmR3vntuVwCLyqCesY4T0znkXgfHiXTnq0Gfqpmm9HTwG6ct0MAfHZMb2oDeCArn
+         1nLK4Eu61t+NF96Gt0GPU7KyEBcyHU1FZ0ifBWS90HGCpl3nED5ZKBYU5kQOAlk7oNDZ
+         uR9o1QAz+c6cPiNc26TuGW7uoCI6+fgmbwmB536uos4WiP9CvNQ3lMgaK7xiLyvhPNtB
+         FnJXjPSSlKTYFmrhXPob9KQhIdISIvf3nam868Q9yq0UBc4aFgDcv2UUGLCCUxn4NEyW
+         E0o/6e6uxmZziWhlajv4l6fH8jplyKEMp7BwBcnF/HKLVvlMux6bCwt620d2m2mM+kTd
+         RB1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uFjKy1JMQGds6QCWv9HgfQo7basi56RFkixKbM89qBQ=;
-        b=pSi4/hKESQJkKR5s/AhRhSWGkWO2QdCXrl8FNXDW0kmk12tOB1tDAPkIMXztc+hZEo
-         gdNwKWu1EwBj4xwADnL60xIPX+0SEfyX2tKRb2ENAxWGZR7xA2WFAr5w+fAlak0f9m78
-         PwDoIf/j6FOHHWUPCegO5nZZ8guyKaUCBI1GXtjQeZLpYZ0z/a04dELQ8OnYIW63ToVa
-         L5iQzKzOO1zKP3vO7A4fN08K7v1FMuhiz53I+caw0x+NrhwFawfu+P+QBNA2UMz8ry9d
-         hxN56BwdBMyYP6M2NsH2p1ax3+z22fQjW517Q8OH2Tst3bxJIdeXaRg5YiDqp2VmZ4q9
-         s01w==
-X-Gm-Message-State: AOAM531vpESx3ICM1uE/KQiLYVp9aMYSHPAmDTPRi8KGG0Rgee4ryHVr
-        TCaG7be9Lun1NxyLYNMqtTMe2w==
-X-Google-Smtp-Source: ABdhPJykB+eU1y7MuAmsKGB/sLYnbS2V5dqlJBOTpU3F9+1gTVE8TYjBwDFd8NbGB5pAHfOHTslnWA==
-X-Received: by 2002:a5d:634c:: with SMTP id b12mr3477924wrw.130.1607069998193;
-        Fri, 04 Dec 2020 00:19:58 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qB2SYCS1v55sYBnoh6a9A5+nyB8wI9x+IMkUjRVdEyU=;
+        b=PuhlNLjE4INawj603ik0RE04dy2s6TMy36n6ask7A9fqiqyJO2ThMok2oP0YYfa4UN
+         yNSPnKRlpnGH1Z6jUc7r6oOjRBnyl5ssPgVDdCjBqFjt46acqWg834uLNokdCZUqVI+F
+         soHK30nRKvPDj0ntCebOHq7ZIFfauvWq89NUfIWeQR/Wn5XgY39ViU29rGutXv+0J7vt
+         XfAmv71/QAyXm4KSorZX0XPIKK9nSs021Egeyc47HujfXC+aPoGkfD0FhS8mQ/eJsq4d
+         z3tttIEgwKqdHpWIapx+HRpS0PIrJcQZ7jeDnUQ4e5uEzXK1A+ZVfExc/i+ghWf9lfIz
+         Un1A==
+X-Gm-Message-State: AOAM532Z1MLEvMt82lH+FGqTneLOAZqOezDybmGwx9VeYSaa/hGjzeJt
+        JYBZSZWxUcNpNrjGD/ax13GZGw==
+X-Google-Smtp-Source: ABdhPJzrpFgeI141caO0N8Tzp+D9LOCP9wb+YCgmPCkrvEZHVVVGvZXPcNLDcIUBBkFD7Rirz4jVww==
+X-Received: by 2002:a1c:9949:: with SMTP id b70mr2852681wme.85.1607069999842;
+        Fri, 04 Dec 2020 00:19:59 -0800 (PST)
 Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:296a:40d9:d5a0:bbc5])
-        by smtp.gmail.com with ESMTPSA id b17sm1691156wrv.10.2020.12.04.00.19.56
+        by smtp.gmail.com with ESMTPSA id b17sm1691156wrv.10.2020.12.04.00.19.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 00:19:57 -0800 (PST)
+        Fri, 04 Dec 2020 00:19:59 -0800 (PST)
 From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     sam@ravnborg.org
+To:     sam@ravnborg.org, devicetree@vger.kernel.org
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH v2 0/2] drm: panel: add support for the Khadas TS050 panel
-Date:   Fri,  4 Dec 2020 09:19:47 +0100
-Message-Id: <20201204081949.38418-1-narmstrong@baylibre.com>
+Subject: [PATCH v2 1/2] dt-bindings: panel-simple-dsi: add Khadas TS050 panel bindings
+Date:   Fri,  4 Dec 2020 09:19:48 +0100
+Message-Id: <20201204081949.38418-2-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201204081949.38418-1-narmstrong@baylibre.com>
+References: <20201204081949.38418-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This add support & bindings for the Khadas TS050 1080x1920 5" LCD DSI panel designed
-to work with the Khadas Edge-V, Captain, VIM3 and VIM3L Single Board Computers.
-It provides a MIPI DSI interface to the host, a built-in LED backlight
-and touch controller.
+This add the bindings for the Khadas TS050 1080x1920 5" LCD DSI panel designed to work
+with the Khadas Edge-V, Captain, VIM3 and VIM3L Single Board Computers.
 
-Changes since v1:
-- removed drm_print include
-- added reset_gpio to 1 after prepare failure
-- now ignore regulator_disable() on prepare failure
-- mark prepared=false whatever the result of the unprepare function errors
-- also reset_gpio to 1 on unprepare
-- do not return on mipi_dsi_dcs_enter_sleep_mode error on unprepare
-- mark enabled=true unconditionnally
-- use dev_err_probe in probe()
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+---
+ .../devicetree/bindings/display/panel/panel-simple-dsi.yaml     | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Neil Armstrong (2):
-  dt-bindings: panel-simple-dsi: add Khadas TS050 panel bindings
-  drm: panel: add Khadas TS050 panel driver
-
- .../display/panel/panel-simple-dsi.yaml       |   2 +
- drivers/gpu/drm/panel/Kconfig                 |  11 +
- drivers/gpu/drm/panel/Makefile                |   1 +
- drivers/gpu/drm/panel/panel-khadas-ts050.c    | 866 ++++++++++++++++++
- 4 files changed, 880 insertions(+)
- create mode 100644 drivers/gpu/drm/panel/panel-khadas-ts050.c
-
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
+index 72e4b6d4d5e1..fbd71669248f 100644
+--- a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
+@@ -35,6 +35,8 @@ properties:
+       - boe,tv080wum-nl0
+         # Innolux P079ZCA 7.85" 768x1024 TFT LCD panel
+       - innolux,p079zca
++        # Khadas TS050 5" 1080x1920 LCD panel
++      - khadas,ts050
+         # Kingdisplay KD097D04 9.7" 1536x2048 TFT LCD panel
+       - kingdisplay,kd097d04
+         # LG ACX467AKM-7 4.95" 1080×1920 LCD Panel
 -- 
 2.25.1
 
