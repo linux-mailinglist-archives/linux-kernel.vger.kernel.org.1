@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1ADA2CF78B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C107F2CF782
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730933AbgLDXbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 18:31:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41964 "EHLO mail.kernel.org"
+        id S1729972AbgLDXac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 18:30:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726634AbgLDXbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 18:31:12 -0500
+        id S1726583AbgLDXab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 18:30:31 -0500
 From:   Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     Arnd Bergmann <arnd@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Benson Leung <bleung@chromium.org>,
+        Takashi Iwai <tiwai@suse.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Timur Tabi <timur@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
         Jaroslav Kysela <perex@perex.cz>
-Cc:     linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Guenter Roeck <groeck@chromium.org>,
         Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <20201203222900.1042578-1-arnd@kernel.org>
-References: <20201203222900.1042578-1-arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_aud2htx: mark PM functions as __maybe_unused
-Message-Id: <160712460213.7629.13692802144415827947.b4-ty@kernel.org>
+In-Reply-To: <20201203225458.1477830-1-arnd@kernel.org>
+References: <20201203225458.1477830-1-arnd@kernel.org>
+Subject: Re: [PATCH] ASoC: cros_ec_codec: fix uninitialized memory read
+Message-Id: <160712460214.7629.8343797244506085540.b4-ty@kernel.org>
 Date:   Fri, 04 Dec 2020 23:30:02 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -36,13 +36,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 23:28:47 +0100, Arnd Bergmann wrote:
-> When CONFIG_PM is disabled, we get a warning for unused functions:
+On Thu, 3 Dec 2020 23:54:41 +0100, Arnd Bergmann wrote:
+> gcc points out a memory area that is copied to a device
+> but not initialized:
 > 
-> sound/soc/fsl/fsl_aud2htx.c:261:12: error: unused function 'fsl_aud2htx_runtime_suspend' [-Werror,-Wunused-function]
-> static int fsl_aud2htx_runtime_suspend(struct device *dev)
-> sound/soc/fsl/fsl_aud2htx.c:271:12: error: unused function 'fsl_aud2htx_runtime_resume' [-Werror,-Wunused-function]
-> static int fsl_aud2htx_runtime_resume(struct device *dev)
+> sound/soc/codecs/cros_ec_codec.c: In function 'i2s_rx_event':
+> arch/x86/include/asm/string_32.h:83:20: error: '*((void *)&p+4)' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+>    83 |   *((int *)to + 1) = *((int *)from + 1);
 > 
 > [...]
 
@@ -52,8 +52,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_aud2htx: mark PM functions as __maybe_unused
-      commit: 7b153760513cee875515398f4a9ba329a8d426e2
+[1/1] ASoC: cros_ec_codec: fix uninitialized memory read
+      commit: 7061b8a52296e044eed47b605d136a48da1a7761
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
