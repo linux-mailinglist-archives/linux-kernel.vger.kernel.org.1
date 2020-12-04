@@ -2,232 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7F22CE46C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B6D2CE46E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731021AbgLDAXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 19:23:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgLDAXq (ORCPT
+        id S1729981AbgLDAXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 19:23:37 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16962 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726356AbgLDAXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 19:23:46 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047DDC061A4F;
-        Thu,  3 Dec 2020 16:23:06 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id cm17so4076908edb.4;
-        Thu, 03 Dec 2020 16:23:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2BQ4XmRXJ5tJU8cInjEvRj0foj83VwXtchWn6lsH22k=;
-        b=rjY13WWf2DfIGGqwhIce1xx6USao8fCscXZaRajag8S8qcaqLmaiaegoeQucW4nbwW
-         DAn4DDQXDDe5oYRbLmPMNOlX3aS12EffgCOJZEFdUYTnr2WE4Nltn3N23wxtu2irC/EN
-         8PKiCgEgtmp+Y8YGaY30UBbk7sCDYt01zeiRQlWlMklPdeeVNOqoI2Jnkx5f2Uo4448S
-         HFIbMpTld7jT1quZDidaRMfA5AIHe4N6FbFAyqziJcWJIkM4Ku6XNGNXPUU9Ak9d1ekS
-         RL2F+26H5kjnudBCEBFBb3JR/oy9oDzxXGQKLPzhgF7JOWPiqbZ42OtBqOL0KQuqtey8
-         VH3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2BQ4XmRXJ5tJU8cInjEvRj0foj83VwXtchWn6lsH22k=;
-        b=MSP11ZRD0M+pMd0WPmw9FPNWdjYS2TtZ8SjedO33ipOCAYC6NM7bHMzKMsVSBaVHWV
-         AIR+mG6KAGgypB2tP5agPok35LwVeELjVhZKXpEutkmLiFdO2LHzTUnDYlz/sIQgmmq+
-         v40sCoN1xHR4Ncc7yn/hFQtNlWKZPLUnwYFvtKiwPuKiHd3WZ5vGGY7aiCVpFvT6o1bQ
-         UcXOY8DSb46v2ISg01U+rlOM5oFkayZDNjpHhPkUGPWnQtIVkzlFlfxJ9sA3ZFv/c46R
-         7HzhHkW9vzE48wQI69Q7xfX1lQr5JW92bk2alN9Omv4tHIzj3Dw4THqOgW/g7YHQ2Tbm
-         a7qA==
-X-Gm-Message-State: AOAM531mtdBdfb2ge8sjMyyfpy7ViH/C6mWTch6riwjELlHqfJmTXX0Z
-        yy3tnbELuanZCnYpyOQa15DDIJtKpqZ4LTYhwg4=
-X-Google-Smtp-Source: ABdhPJzCo4SHEUWMcFzF1/m19jYL7aZWsHDZNE0y3CX9ULPe5r9BI1aIBCScbllQJa2E6Yq6ZptvDLN/PTHVT7Cl/20=
-X-Received: by 2002:aa7:d54a:: with SMTP id u10mr5220398edr.168.1607041384684;
- Thu, 03 Dec 2020 16:23:04 -0800 (PST)
+        Thu, 3 Dec 2020 19:23:36 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fc9815f0000>; Thu, 03 Dec 2020 16:22:55 -0800
+Received: from [10.2.90.244] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 4 Dec
+ 2020 00:22:55 +0000
+Subject: Re: [PATCH v1 3/7] spi: qspi-tegra: Add support for Tegra210 QSPI
+ controller
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <robh+dt@kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <1606857168-5839-1-git-send-email-skomatineni@nvidia.com>
+ <1606857168-5839-4-git-send-email-skomatineni@nvidia.com>
+ <20201202172721.GL5560@sirena.org.uk>
+ <2257bc33-80ef-a6d8-8542-480defa32937@nvidia.com>
+Message-ID: <be8291fc-8e69-b577-d8f4-20aeca0b45cc@nvidia.com>
+Date:   Thu, 3 Dec 2020 16:22:54 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201202182725.265020-1-shy828301@gmail.com> <20201202182725.265020-6-shy828301@gmail.com>
- <20201203030632.GG1375014@carbon.DHCP.thefacebook.com> <CAHbLzkrU0X2LRRiG_rXdOf8tP7BR=46ccJR=3AM6CkWbscBWRw@mail.gmail.com>
- <CAHbLzkpAsoOWeRuFeTM2+YbjfqxY2U3vK7EYX2Nui=YVOBXFpw@mail.gmail.com>
- <20201203200715.GB1571588@carbon.DHCP.thefacebook.com> <CAHbLzkoUaLehmngW7geCDj+Fzd5+tkk3tBsbcdHuSXUXKLBuyw@mail.gmail.com>
- <20201203233055.GA1669930@carbon.DHCP.thefacebook.com>
-In-Reply-To: <20201203233055.GA1669930@carbon.DHCP.thefacebook.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 3 Dec 2020 16:22:52 -0800
-Message-ID: <CAHbLzkowkLEfBp=dXcnX9_w87E5ZifRW9af+s8DGaXDkM8__PQ@mail.gmail.com>
-Subject: Re: [PATCH 5/9] mm: memcontrol: add per memcg shrinker nr_deferred
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2257bc33-80ef-a6d8-8542-480defa32937@nvidia.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607041375; bh=os3SsoQJuogSnBhNud5ZHwdxrswyR7qg6N2lKrWM8gE=;
+        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=nJMBR1YNf8UvJYya3G1mFxnISCDUikiwbe9TTQYvbHDMPLzOwMCOpt/9ndxxrBs2V
+         c10O11M8E8MwvSNxuKuavkk5GpNdpVlBd7ptpXMbA6ea/C89EOaIAc/uHFBgWW8ZER
+         UKOQZZg37CHy9ccbM0w/gDlVIc5wIGOnw9Mc9JmhpjrXVK5abnAyGbHpuHuSpgwKr5
+         Anzm2ZzyjuDe32CqNMBGb1o5s3O2CVp0x2MGUB8Re0Yf9PjsMOQDtbPCPfNlY+v9QQ
+         RCkHhVca335vBgxAFvGnF+LFCX+nR4q8AbRqiw1mi8UNCsRrQ+1jmJrP+rkzONOeZH
+         10i/eg5fEAeCQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 3:31 PM Roman Gushchin <guro@fb.com> wrote:
->
-> On Thu, Dec 03, 2020 at 02:49:00PM -0800, Yang Shi wrote:
-> > On Thu, Dec 3, 2020 at 12:07 PM Roman Gushchin <guro@fb.com> wrote:
-> > >
-> > > On Thu, Dec 03, 2020 at 10:03:44AM -0800, Yang Shi wrote:
-> > > > On Wed, Dec 2, 2020 at 8:54 PM Yang Shi <shy828301@gmail.com> wrote:
-> > > > >
-> > > > > On Wed, Dec 2, 2020 at 7:06 PM Roman Gushchin <guro@fb.com> wrote:
-> > > > > >
-> > > > > > On Wed, Dec 02, 2020 at 10:27:21AM -0800, Yang Shi wrote:
-> > > > > > > Currently the number of deferred objects are per shrinker, but some slabs, for example,
-> > > > > > > vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
-> > > > > > >
-> > > > > > > The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
-> > > > > > > excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
-> > > > > > > may suffer from over shrink, excessive reclaim latency, etc.
-> > > > > > >
-> > > > > > > For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
-> > > > > > > heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
-> > > > > > > might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
-> > > > > > >
-> > > > > > > We observed this hit in our production environment which was running vfs heavy workload
-> > > > > > > shown as the below tracing log:
-> > > > > > >
-> > > > > > > <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > > > > > > nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
-> > > > > > > cache items 246404277 delta 31345 total_scan 123202138
-> > > > > > > <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > > > > > > nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
-> > > > > > > last shrinker return val 123186855
-> > > > > > >
-> > > > > > > The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
-> > > > > > > This also resulted in significant amount of page caches were dropped due to inodes eviction.
-> > > > > > >
-> > > > > > > Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
-> > > > > > > better isolation.
-> > > > > > >
-> > > > > > > When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
-> > > > > > > would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
-> > > > > > >
-> > > > > > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > > > > > > ---
-> > > > > > >  include/linux/memcontrol.h |   9 +++
-> > > > > > >  mm/memcontrol.c            | 112 ++++++++++++++++++++++++++++++++++++-
-> > > > > > >  mm/vmscan.c                |   4 ++
-> > > > > > >  3 files changed, 123 insertions(+), 2 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > > > > > index 922a7f600465..1b343b268359 100644
-> > > > > > > --- a/include/linux/memcontrol.h
-> > > > > > > +++ b/include/linux/memcontrol.h
-> > > > > > > @@ -92,6 +92,13 @@ struct lruvec_stat {
-> > > > > > >       long count[NR_VM_NODE_STAT_ITEMS];
-> > > > > > >  };
-> > > > > > >
-> > > > > > > +
-> > > > > > > +/* Shrinker::id indexed nr_deferred of memcg-aware shrinkers. */
-> > > > > > > +struct memcg_shrinker_deferred {
-> > > > > > > +     struct rcu_head rcu;
-> > > > > > > +     atomic_long_t nr_deferred[];
-> > > > > > > +};
-> > > > > >
-> > > > > > The idea makes total sense to me. But I wonder if we can add nr_deferred to
-> > > > > > struct list_lru_one, instead of adding another per-memcg per-shrinker entity?
-> > > > > > I guess it can simplify the code quite a lot. What do you think?
-> > > > >
-> > > > > Aha, actually this exactly was what I did at the first place. But Dave
-> > > > > NAK'ed this approach. You can find the discussion at:
-> > > > > https://lore.kernel.org/linux-mm/20200930073152.GH12096@dread.disaster.area/.
-> > >
-> > > Yes, this makes sense for me. Thank you for the link!
-> > >
-> > > >
-> > > > I did prototypes for both approaches (move nr_deferred to list_lru or
-> > > > to memcg). I preferred the list_lru approach at the first place. But
-> > > > Dave's opinion does make perfect sense to me. So I dropped that
-> > > > list_lru one. That email elaborated why moving nr_deferred to list_lru
-> > > > is not appropriate.
-> > >
-> > > Hm, shouldn't we move list_lru to memcg then? It's not directly related
-> > > to your patchset, but maybe it's something we should consider in the future.
-> >
-> > I haven't thought about this yet. I agree we could look into it
-> > further later on.
-> >
-> > >
-> > > What worries me is that with your patchset we'll have 3 separate
-> > > per-memcg (per-node) per-shrinker entity, each with slightly different
-> > > approach to allocate/extend/reparent/release. So it begs for some
-> > > unification. I don't think it's a showstopper for your work though, it
-> > > can be done later.
-> >
-> > Off the top of my head, we may be able to have shrinker_info struct,
-> > it should look like:
-> >
-> > struct shrinker_info {
-> >     atomic_long_t nr_deferred;
-> >     /* Just one bit is used now */
-> >     u8 map:1;
-> > }
-> >
-> > struct memcg_shrinker_info {
-> >     struct rcu_head rcu;
-> >     /* Indexed by shrinker ID */
-> >     struct shrinker_info info[];
-> > }
-> >
-> > Then in struct mem_cgroup_per_node, we could have:
-> >
-> > struct mem_cgroup_per_node {
-> >     ....
-> >     struct memcg_shrinker_info __rcu *shrinker_info;
-> >     ....
-> > }
-> >
-> > In this way shrinker_info should be allocated to all memcgs, including
-> > root. But shrinker could ignore root's map bit. We may waste a little
-> > bit memory, but we get unification.
-> >
-> > Would that work?
->
-> Hm, not exactly, then you'll an ability to iterate with
->         for_each_set_bit(i, map->map, shrinker_nr_max)...
 
-Instead we could just iterate each shrinker_info struct to check if
-its map is set.
-
-> But you can probably do something like:
+On 12/2/20 11:17 AM, Sowjanya Komatineni wrote:
 >
-> struct shrinker_info {
->    atomic_long_t nr_deferred;
+> On 12/2/20 9:27 AM, Mark Brown wrote:
+>> On Tue, Dec 01, 2020 at 01:12:44PM -0800, Sowjanya Komatineni wrote:
+>>> Tegra SoC has a Quad SPI controller starting from Tegra210.
+>>>
+>>> This patch adds support for Tegra210 QSPI controller.
+>> This looks pretty clean but I've got a few questions below about how
+>> this integrates with the frameworks as well as some more minor issues.
+>>
+>>> +config QSPI_TEGRA
+>>> +=A0=A0=A0 tristate "Nvidia Tegra QSPI Controller"
+>> Everything else in this file is SPI_, even the qspi controllers.
+> Will rename in v2
+>>> +++ b/drivers/spi/qspi-tegra.c
+>>> @@ -0,0 +1,1418 @@
+>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>> +/*
+>>> + * Copyright (C) 2020 NVIDIA CORPORATION.=A0 All rights reserved.
+>>> + */
+>> Please make the entire comment a C++ one.=A0 It also appears that the "A=
+ll
+>> rights reserved" here conflicts with the GPL-2.0-only SPDX statement...
+> Will fix in v2
+>>
+>>> +static void
+>>> +tegra_qspi_copy_client_txbuf_to_qspi_txbuf(struct tegra_qspi_data=20
+>>> *tqspi,
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 str=
+uct spi_transfer *t)
+>>> +{
+>>> +=A0=A0=A0 /* Make the dma buffer to read by cpu */
+>>> +=A0=A0=A0 dma_sync_single_for_cpu(tqspi->dev, tqspi->tx_dma_phys,
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 tqspi->dma_buf_size, DMA=
+_TO_DEVICE);
+>>> +
+>>> +=A0=A0=A0 if (tqspi->is_packed) {
+>>> +=A0=A0=A0=A0=A0=A0=A0 unsigned int len =3D tqspi->curr_dma_words *
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 tqspi->bytes_pe=
+r_word;
+>>> +
+>>> +=A0=A0=A0=A0=A0=A0=A0 memcpy(tqspi->tx_dma_buf, t->tx_buf + tqspi->cur=
+_pos, len);
+>>> +=A0=A0=A0=A0=A0=A0=A0 tqspi->cur_tx_pos +=3D tqspi->curr_dma_words *
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 tqspi->by=
+tes_per_word;
+>> It seems weird that this device needs us to do a memcpy() to do DMA,
+>> most devices are able to DMA directly from the buffers provided by the
+>> SPI API (and let the SPI core sync things).=A0 What is going on here?
 >
->    struct list_lru_one[]; /* optional, depends on the shrinker implementation */
-> };
+> For transfers of size more than max DMA transfer limit, data transfer=20
+> happens in multiple iterations with each iteration transferring up to=20
+> max DMA transfer limit.
 >
-> struct memcg_shrinker_info {
->     /* Indexed by shrinker ID */
->     unsigned long *map[];
->     struct shrinker_info *shrinker_info[];
-
-Both map and shrinker_info has to be extendable, so they have to be
-struct with rcu_head. So actually it is the same with separate
-shrinker_map and shrinker_deferred, but under one struct. Actually I
-tried this in my prototype, but I gave up it since it didn't simplify
-the code IMHO.
-
-> }
+> So using separate dma buffers and on every iteration copying them to=20
+> SPI core provided tx/rx buffers.
+Also unpack mode needs to manually put the bytes together from read data=20
+to SPI core rx buffer.
 >
-> Then you'll be able to allocate individual shrinker_info structures on-demand.
+> Transferring data logic in this driver is similar as Tegra SPI driver=20
+> except register changes and some QSPI specific register programming.
 >
-> But, please, take this all with a grain of salt, I didn't check if it's all really
-> possible or there are some obstacles.
-
-Thanks a lot for all the kind suggestions. I'd agree with you we could
-revisit the unification later on. It seems there is not a simple and
-straightforward way to unify them at the first glance. There might be
-more evils in the detail.
-
+>>
+>>> +=A0=A0=A0 tegra_qspi_writel(tqspi, status, QSPI_FIFO_STATUS);
+>>> +=A0=A0=A0 while ((status & QSPI_FIFO_EMPTY) !=3D QSPI_FIFO_EMPTY) {
+>>> +=A0=A0=A0=A0=A0=A0=A0 status =3D tegra_qspi_readl(tqspi, QSPI_FIFO_STA=
+TUS);
+>>> +=A0=A0=A0=A0=A0=A0=A0 if (time_after(jiffies, timeout)) {
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 dev_err(tqspi->dev,
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "timeout waiting for fif=
+o flush\n");
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return -EIO;
+>>> +=A0=A0=A0=A0=A0=A0=A0 }
+>>> +
+>>> +=A0=A0=A0=A0=A0=A0=A0 udelay(1);
+>>> +=A0=A0=A0 }
+>> It'd be good to put a cpu_relax() in the busy loop.
+> Will update in v2.
+>>
+>>> +static u32 tegra_qspi_setup_transfer_one(struct spi_device *spi,
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 struct sp=
+i_transfer *t,
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 bool is_f=
+irst_of_msg)
+>>> +{
+>>> +=A0=A0=A0=A0=A0=A0=A0 /* toggle cs to active state */
+>>> +=A0=A0=A0=A0=A0=A0=A0 if (spi->mode & SPI_CS_HIGH)
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 command1 |=3D QSPI_CS_SW_VAL;
+>>> +=A0=A0=A0=A0=A0=A0=A0 else
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 command1 &=3D ~QSPI_CS_SW_VAL;
+>>> +=A0=A0=A0=A0=A0=A0=A0 tegra_qspi_writel(tqspi, command1, QSPI_COMMAND1=
+);
+>> This is worrying, the client device might be confused if /CS is doing
+>> things outside of the standard handling.
 >
-> Thanks!
+> Do you mean to honor spi_transfer cs_change flag?
+>
+> Tegra QSPI is master and is used only with QSPI flash devices. Looking=20
+> at SPI NOR driver, I see QSPI Flash commands are executed with one=20
+> flash command per spi_message and I dont see cs_change flag usage=20
+> w.r.t QSPI flash. So, using SW based CS control for QSPI.
+>
+> Please correct me if I miss something to understand here.
+>
+> Also Tegra186 and later QSPI controller supports combined sequence=20
+> mode where command, address, data phases can be combined in a single GO.
+>
+> This saves some cycles in transfer and for this we need to use SW=20
+> based CS control only.
+>
+>
+>>> +=A0=A0=A0 of_property_read_u32(slave_np, "nvidia,tx-clk-tap-delay",
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &cdata->tx_clk_tap_de=
+lay);
+>>> +=A0=A0=A0 of_property_read_u32(slave_np, "nvidia,rx-clk-tap-delay",
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &cdata->rx_clk_tap_de=
+lay);
+>> These properties are not mentioned in the binding document.
+> Thanks Mark. Missed them. Will add in v2.
+>>
+>>> +static int tegra_qspi_setup(struct spi_device *spi)
+>>> +{
+>>> +=A0=A0=A0 if (cdata && cdata->tx_clk_tap_delay)
+>>> +=A0=A0=A0=A0=A0=A0=A0 tx_tap =3D cdata->tx_clk_tap_delay;
+>>> +=A0=A0=A0 if (cdata && cdata->rx_clk_tap_delay)
+>>> +=A0=A0=A0=A0=A0=A0=A0 rx_tap =3D cdata->rx_clk_tap_delay;
+>>> +=A0=A0=A0 tqspi->def_command2_reg =3D QSPI_TX_TAP_DELAY(tx_tap) |
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 QSPI_RX_TAP_DELAY(=
+rx_tap);
+>>> +=A0=A0=A0 tegra_qspi_writel(tqspi, tqspi->def_command2_reg, QSPI_COMMA=
+ND2);
+>> The setup for one device shouldn't be able to affect the operation of
+>> another, already running, device so either these need to be configured
+>> as part of the controller probe or these configurations need to be
+>> deferred until we're actually doing a transfer.
+> We will only have 1 device on QSPI as we only support single chip select.
+>>
+>>> +=A0=A0=A0 /*
+>>> +=A0=A0=A0=A0 * Tegra QSPI hardware support dummy bytes transfer based =
+on the
+>>> +=A0=A0=A0=A0 * programmed dummy clock cyles in QSPI register.
+>>> +=A0=A0=A0=A0 * So, get the total dummy bytes from the dummy bytes tran=
+sfer in
+>>> +=A0=A0=A0=A0 * spi_messages and convert to dummy clock cyles.
+>>> +=A0=A0=A0=A0 */
+>>> +=A0=A0=A0 list_for_each_entry(xfer, &msg->transfers, transfer_list) {
+>>> +=A0=A0=A0=A0=A0=A0=A0 if (ntransfers =3D=3D DUMMY_BYTES_XFER &&
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 !(list_is_last(&xfer->transfer_list,=
+ &msg->transfers)))
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 dummy_cycles =3D xfer->len * 8 / xfe=
+r->tx_nbits;
+>>> +=A0=A0=A0=A0=A0=A0=A0 ntransfers++;
+>>> +=A0=A0=A0 }
+>> This seems weird, there's some hard coded assumption about particular
+>> patterns that the client device is going to send.=A0 What's going on her=
+e?
+>> I don't really understand what this is trying to do.
+>
+> QSPI flash needs dummy cycles for data read operation which is=20
+> actually the initial read latency and no. of dummy cycles required are=20
+> vendor specific.
+>
+> SPI NOR driver gets required dummy cycles based on mode clock cycles=20
+> and wait state clock cycles.
+>
+> During read operations, spi_nor_spimem_read_data() converts dummy=20
+> cycles to number of dummy bytes.
+>
+> Tegra QSPI controller supports dummy clock cycles register and when=20
+> programmed QSPI controller sends dummy bytes rather than SW handling=20
+> extra cycles for transferring dummy bytes.
+>
+> Above equation converts this dummy bytes back to dummy clock cycles to=20
+> program into QSPI register and avoid manual SW transfer of dummy bytes.
+>
+>>
+>>> +static irqreturn_t tegra_qspi_isr(int irq, void *context_data)
+>>> +{
+>>> +=A0=A0=A0 struct tegra_qspi_data *tqspi =3D context_data;
+>>> +
+>>> +=A0=A0=A0 tqspi->status_reg =3D tegra_qspi_readl(tqspi, QSPI_FIFO_STAT=
+US);
+>>> +=A0=A0=A0 if (tqspi->cur_direction & DATA_DIR_TX)
+>>> +=A0=A0=A0=A0=A0=A0=A0 tqspi->tx_status =3D tqspi->status_reg &
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (QSPI_TX_FIFO_U=
+NF | QSPI_TX_FIFO_OVF);
+>>> +
+>>> +=A0=A0=A0 if (tqspi->cur_direction & DATA_DIR_RX)
+>>> +=A0=A0=A0=A0=A0=A0=A0 tqspi->rx_status =3D tqspi->status_reg &
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (QSPI_RX_FIFO_O=
+VF | QSPI_RX_FIFO_UNF);
+>>> +=A0=A0=A0 tegra_qspi_mask_clear_irq(tqspi);
+>>> +
+>>> +=A0=A0=A0 return IRQ_WAKE_THREAD;
+>>> +}
+>> It's a bit unclear to me the value we gain from having this handler - if
+>> we don't specify a handler genirq will already mask the interrupt until
+>> we get to the thread anyway and we could just read the status in the
+>> threaded handler.=A0 OTOH it doesn't do any harm, just struck me as a bi=
+t
+>> odd.
+>
+> I started QSPI driver by taking SPI driver as data transfer and=20
+> interrupt handling are similar.
+>
+> So kept this handler for clearing status registers and masking=20
+> interrupts as I did not see anything wrong with this.
+>
+>>
+>>> +=A0=A0=A0 master =3D spi_alloc_master(&pdev->dev, sizeof(*tqspi));
+>>> +=A0=A0=A0 if (!master) {
+>>> +=A0=A0=A0=A0=A0=A0=A0 dev_err(&pdev->dev, "master allocation failed\n"=
+);
+>>> +=A0=A0=A0=A0=A0=A0=A0 return -ENOMEM;
+>>> +=A0=A0=A0 }
+>> Please switch to using the devm_ version of the API to allocate
+>> controller, it makes things much more robust.
+> Will update in v2
+>>
+>>> +=A0=A0=A0 if (of_property_read_u32(pdev->dev.of_node, "spi-max-frequen=
+cy",
+>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &master->max_speed_hz=
+))
+>>> +=A0=A0=A0=A0=A0=A0=A0 master->max_speed_hz =3D QSPI_MAX_SPEED;
+>> The core will do this for you.
+>
+> Will remove this in v2.
+>
+> Thanks
+>
+> Sowjanya
+>
