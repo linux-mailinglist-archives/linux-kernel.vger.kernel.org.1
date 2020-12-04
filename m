@@ -2,92 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56A22CEFF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 467F12CEFFB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:48:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730344AbgLDOqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:46:54 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:40138 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730101AbgLDOqy (ORCPT
+        id S2387641AbgLDOrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:47:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728626AbgLDOrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:46:54 -0500
-Received: by mail-lj1-f196.google.com with SMTP id y10so6888050ljc.7;
-        Fri, 04 Dec 2020 06:46:37 -0800 (PST)
+        Fri, 4 Dec 2020 09:47:42 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93134C061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:47:02 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id d9so5555411qke.8
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:47:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=u4EQAHLQ1StzXBCYHDVSsMeAsH8zoc/eEcaaN+3AhSk=;
+        b=WDinJLzV2BCmwbrSoe61S6nE4F9g7KP2b2iDKEwm9I0RjiFbM64zVGnP1ii3fyB/eC
+         hfjH73ZN76OaD23A/PvGMJQTqI95shSZEXtMttymsTNqnoz8yQdYISYzw2mVIJvOWQvZ
+         TKM9jrWo2omsqtUmsznSyXLyxDCGi0tYMsNq/3Efpb0KB9wOtuOV1vu3cf0S3gYrcb5V
+         /61z3sBwjghfso+qgO707uxfi6o6KmxkV6pbpsHn+MKWf/QAnDQnHseAWxLeGM7g+pZJ
+         ckLP63x20njiE6PoPIqXJHfTEOUyY+a09gwtlOA9bgzfHJiHZzunZK1yUlX+zXSbcSb2
+         /Q3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=YuN8v+wl7n8X6ofmOSfbc2YBxTt+XcxIQ84FcqRFIhU=;
-        b=UcmsduDCGA67QusEkwL9MO21gdS3K/bhuyVnaAMT8paoq2HP9ep2SAmR1iuhhqPeJa
-         7OWlt/sUnMUR/982gaHh4LkIy50dK2KKid25NEIMK2vT6F6wRMCzqtjTp2UPuQeQkpTU
-         Dbw0tcty41p5SB/Ga6dgrea9ORNQhiAS7P0+083yp/G1KdH1Ev4t8f+QbI5fpxkZKyvW
-         WsEg5mxhmej9xPNaHrOUnEM/T6uc4vctYa9mQN1OCxF2JtR+aJhHGT/xnemMJOa+Z2yn
-         Jmps8uQ+h9yvodos3wOn9fKAFaFBj//+d+31E7icnEqnStkNe/76Fjz72QIqUr9XhvEV
-         M1mw==
-X-Gm-Message-State: AOAM530nc2eje2k+C6CNT4ag2MhkyNsZgiWSh7OAMGpzZgwHaiRtLB7/
-        ga14AS2LQkjvIkINDKGcbVk=
-X-Google-Smtp-Source: ABdhPJzYZArFYZhD7wduBUpvCwP3MOuOH2jpvSitvYO8oRE8ySnOEhqfcE03NOS7ZEGc0zipDFsazA==
-X-Received: by 2002:a05:651c:3cf:: with SMTP id f15mr3573033ljp.118.1607093171959;
-        Fri, 04 Dec 2020 06:46:11 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id f2sm1810567ljc.118.2020.12.04.06.46.10
+        bh=u4EQAHLQ1StzXBCYHDVSsMeAsH8zoc/eEcaaN+3AhSk=;
+        b=eBR5J6W0QfPsXCjQTyXqGQGWzDbFQdv49nt6Jrt+EQMJnEcmVqgLAqpQKpwhFr29f6
+         mvBhMyn5v7R5heuh34jwrjzmrXnmbvYfi29KjpvqgqufiKb9CuobYRevbjVjT5tAaqC3
+         jp5hnYZWTyFl2/68j2S2Jy1J44LfVTLWoyHVlRvNgVXfZiFFxNzpb3NOvgwse6XDV1Ut
+         4boSiAv/e62pml/Uvp3wzwCWSp9+RnCtM6Rs70IwPNluDk+GCgkhb2hbvqd9yYYxTc1Q
+         h+h0/KvKgPiRKsCQkrr0izv4KwxYOC4Hv5JEcOiE+5w6QjXdweQWl3boFQ1fKhUAPsJC
+         3I5Q==
+X-Gm-Message-State: AOAM532Y8XUPA2eFEAbMj8FkFebIWtBhOQKjpG+IygEXcvqqJxzmpS27
+        KOavl7MRXXtqE6rM5goouaYvfA==
+X-Google-Smtp-Source: ABdhPJyl+2z/Jit+laF4PE23ykeXHQpocKDc+GjPrgKHOpx/6Ejz8Uby2e7q9XH/qd7BNMSnuLKJoQ==
+X-Received: by 2002:a37:9a94:: with SMTP id c142mr8896235qke.480.1607093221750;
+        Fri, 04 Dec 2020 06:47:01 -0800 (PST)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id r48sm5687910qtr.21.2020.12.04.06.47.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 06:46:11 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1klCM9-0005Mv-HH; Fri, 04 Dec 2020 15:46:45 +0100
-Date:   Fri, 4 Dec 2020 15:46:45 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 08/15] usb: misc: idmouse: update to use
- usb_control_msg_send()
-Message-ID: <X8pL1bRUTyq2re7Z@localhost>
-References: <20201130011819.2576481-1-anant.thazhemadam@gmail.com>
- <20201130013031.2580265-1-anant.thazhemadam@gmail.com>
+        Fri, 04 Dec 2020 06:47:00 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1klCMN-005su3-LC; Fri, 04 Dec 2020 10:46:59 -0400
+Date:   Fri, 4 Dec 2020 10:46:59 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] rtc: adapt allowed RTC update error
+Message-ID: <20201204144659.GY5487@ziepe.ca>
+References: <87zh2vd72z.fsf@nanos.tec.linutronix.de>
+ <20201203021047.GG3544@piout.net>
+ <87pn3qdhli.fsf@nanos.tec.linutronix.de>
+ <20201203161622.GA1317829@ziepe.ca>
+ <87zh2ubny2.fsf@nanos.tec.linutronix.de>
+ <87wnxybmqx.fsf@nanos.tec.linutronix.de>
+ <20201203223646.GA1335797@ziepe.ca>
+ <877dpxbu66.fsf@nanos.tec.linutronix.de>
+ <20201204140819.GX5487@ziepe.ca>
+ <20201204143735.GI74177@piout.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201130013031.2580265-1-anant.thazhemadam@gmail.com>
+In-Reply-To: <20201204143735.GI74177@piout.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 07:00:31AM +0530, Anant Thazhemadam wrote:
-> The newer usb_control_msg_{send|recv}() API are an improvement on the
-> existing usb_control_msg() as it ensures that a short read/write is treated
-> as an error, data can be used off the stack, and raw usb pipes need not be
-> created in the calling functions.
-> For this reason, the instance of usb_control_msg() has been replaced with
-> usb_control_msg_send() appropriately.
+On Fri, Dec 04, 2020 at 03:37:35PM +0100, Alexandre Belloni wrote:
+> On 04/12/2020 10:08:19-0400, Jason Gunthorpe wrote:
+> > On Fri, Dec 04, 2020 at 02:02:57PM +0100, Thomas Gleixner wrote:
+> > 
+> > > No magic sign calculation required if you look at it from the actual
+> > > timeline and account the time between write and next second increment
+> > > correctly.
+> > 
+> > Yes, it is equivalent to break things into two values, and does look
+> > to be more understandable as one can read at least one of the values
+> > from a datasheet and the other could be estimated by timing a read
+> > clock
+> > 
 > 
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> ---
->  drivers/usb/misc/idmouse.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> If you want to read an RTC accurately, you don't want to time a read,
+> what you want is to time an alarm. This is a common misconception and
+> is, again, why hctosys in its current state is not useful.
 
-Especially for control transfers without a data stage there isn't
-really any benefit of the new helper.
+I mean literatally time the excution of something like a straight
+read. This will give some estimate of the bus latency and it should
+linearly relate to the bus latency for a write.
 
-I'd just leave this one unchanged.
+The driver could time configuring an alarm as well, if it likes.
 
-> diff --git a/drivers/usb/misc/idmouse.c b/drivers/usb/misc/idmouse.c
-> index e9437a176518..52126441a633 100644
-> --- a/drivers/usb/misc/idmouse.c
-> +++ b/drivers/usb/misc/idmouse.c
-> @@ -56,8 +56,9 @@ static const struct usb_device_id idmouse_table[] = {
->  #define FTIP_SCROLL  0x24
->  
->  #define ftip_command(dev, command, value, index) \
-> -	usb_control_msg(dev->udev, usb_sndctrlpipe(dev->udev, 0), command, \
-> -	USB_TYPE_VENDOR | USB_RECIP_ENDPOINT | USB_DIR_OUT, value, index, NULL, 0, 1000)
-> +	usb_control_msg_send(dev->udev, 0, command, \
-> +	USB_TYPE_VENDOR | USB_RECIP_ENDPOINT | USB_DIR_OUT, \
-> +	value, index, NULL, 0, 1000, GFP_KERNEL)
->  
->  MODULE_DEVICE_TABLE(usb, idmouse_table);
+> And because people using systohc are definitively using hctosys, this
+> will still result in an up to 500ms error in the current time.
+> As said, the price to pay for a proper solution will be an up to one
+> second delay when booting which is not acceptable for most users.
 
-Johan
+IIRC I had fixed this in some embedded system long ago by having
+hctosys reading seconds time during boot, then in parallel using the
+'up to one second' method to get the sub-second resolution.
+
+This means there was a sub second non-monotonicity in the realtime
+clock, but the system was designed to tolerate this as it also ran a
+modified NTP which would unconditionally step the clock on first sync
+if it was over .1s out of alignment.
+
+The goal was to bring the system to correct time as quickly as
+possible in as many cases as possible, not to maintain the
+monotonicity of the realtime clock.
+
+> Is "fixing" systohc worth the effort and the maintenance cost?
+
+As I said before, if there is no desire to address the read side then
+the whole thing should be abandoned.
+
+Jason 
