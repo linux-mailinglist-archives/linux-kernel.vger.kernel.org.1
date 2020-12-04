@@ -2,156 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6F62CF46A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:56:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0272CF465
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:55:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730324AbgLDSzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:55:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729780AbgLDSzh (ORCPT
+        id S1729939AbgLDSzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:55:04 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:47555 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726405AbgLDSzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:55:37 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58741C061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:54:51 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id 1so6451950qka.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:54:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rg7lrS/4cr2DIOho7mbjVZXSDz3+KMSUQybW7MPBlNA=;
-        b=twndtQ1CF5ITaAzRNV/5rAfbKfs+6rjo4uTloJ1pRExv5sQhw1SELhyHv/uLbYchHG
-         OTGkOYTH1eBROSNK+yTXPNY62q7M+aOkghEDJ584QyK2euCGKPBdsdakiW1Cwic33peI
-         glBoNZbYxdxPfibwDuInPMBJ+f3IXfiGqHjz56KaIG8jGSC6Jth5BgqVuCJSCTxOL58a
-         yWVIgJVys6vFWeVmIHMhhLOFar4qS0BX8QJzRClyQU9UjNct0DdeQLYYQyyiKHJVZUV/
-         axI8PAqs1DqDTd9/kv9P7gjaA66x1EatLotAAc6sXtbvkA3ugA0ba8mdPPwQlm6ycK7D
-         aO3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rg7lrS/4cr2DIOho7mbjVZXSDz3+KMSUQybW7MPBlNA=;
-        b=XiwmGBboRZbOWDV+9Oy9qFtfQjo9T1Ot3ps1TJgOICggNkfl7SfewB+BpmyKd48mcM
-         wrrQ02n3Podr9WME5fXOZODxzHMQM49B/gqpegNLCT22qXvGDk/X59bJbrSTBcnZH9t4
-         B9de2X/91ceeVJc5WBKuIBmB/WJmUKiobN5ClrFsfbire0FcjKhaDOgvhIA+3yQLQgOR
-         PJpBLKLQ14c92mRQg+Pi2qTv9RCNj1uswhTIVzdv6neQpzxSlauddexnvrrf+dMIVa6x
-         e8jNVZz7O2YIpRybWYVWZ/CsXHWUXM/ijBzWtbhMheYWrn2QrkmeCtYzzqaSeIHJJV3f
-         gibA==
-X-Gm-Message-State: AOAM532OS0xNdG66F7mcvC8JDWL0t9oF6JFu9tsnDV6nN9Td88+yogxd
-        sJEgrPCSD7L8kefwur3cixeoaw==
-X-Google-Smtp-Source: ABdhPJyQVuWk9koWKozYjk4xSbqAGSTa/BUZAQJ0yr3p51asd8OHOsW1+VTpzgu+YAEf8hAdK7BrVw==
-X-Received: by 2002:a37:6358:: with SMTP id x85mr10465468qkb.405.1607108090466;
-        Fri, 04 Dec 2020 10:54:50 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:a180])
-        by smtp.gmail.com with ESMTPSA id 60sm1938803qth.14.2020.12.04.10.54.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 10:54:49 -0800 (PST)
-Date:   Fri, 4 Dec 2020 13:52:47 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/9] mm: vmscan: use a new flag to indicate shrinker is
- registered
-Message-ID: <20201204185247.GA182921@cmpxchg.org>
-References: <20201202182725.265020-1-shy828301@gmail.com>
- <20201202182725.265020-5-shy828301@gmail.com>
- <20201203030104.GF1375014@carbon.DHCP.thefacebook.com>
- <CAHbLzkoUNuKHT_4w8QaWCQA3xs2vTW4Xii26a5vpVqxrDVSX_Q@mail.gmail.com>
- <20201203200820.GC1571588@carbon.DHCP.thefacebook.com>
- <CAHbLzkrbd+gBUngiRa3OJhO3q_Z7x3w6+jkX2CkXG0Zm=jufQA@mail.gmail.com>
+        Fri, 4 Dec 2020 13:55:03 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1klGDl-0003af-DS; Fri, 04 Dec 2020 18:54:21 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ceph: remove redundant assignment to variable i
+Date:   Fri,  4 Dec 2020 18:54:21 +0000
+Message-Id: <20201204185421.1149669-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHbLzkrbd+gBUngiRa3OJhO3q_Z7x3w6+jkX2CkXG0Zm=jufQA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 02:25:20PM -0800, Yang Shi wrote:
-> On Thu, Dec 3, 2020 at 12:09 PM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > On Wed, Dec 02, 2020 at 08:59:40PM -0800, Yang Shi wrote:
-> > > On Wed, Dec 2, 2020 at 7:01 PM Roman Gushchin <guro@fb.com> wrote:
-> > > >
-> > > > On Wed, Dec 02, 2020 at 10:27:20AM -0800, Yang Shi wrote:
-> > > > > Currently registered shrinker is indicated by non-NULL shrinker->nr_deferred.
-> > > > > This approach is fine with nr_deferred atthe shrinker level, but the following
-> > > > > patches will move MEMCG_AWARE shrinkers' nr_deferred to memcg level, so their
-> > > > > shrinker->nr_deferred would always be NULL.  This would prevent the shrinkers
-> > > > > from unregistering correctly.
-> > > > >
-> > > > > Introduce a new "state" field to indicate if shrinker is registered or not.
-> > > > > We could use the highest bit of flags, but it may be a little bit complicated to
-> > > > > extract that bit and the flags is accessed frequently by vmscan (every time shrinker
-> > > > > is called).  So add a new field in "struct shrinker", we may waster a little bit
-> > > > > memory, but it should be very few since there should be not too many registered
-> > > > > shrinkers on a normal system.
-> > > > >
-> > > > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > > > > ---
-> > > > >  include/linux/shrinker.h |  4 ++++
-> > > > >  mm/vmscan.c              | 13 +++++++++----
-> > > > >  2 files changed, 13 insertions(+), 4 deletions(-)
-> > > > >
-> > > > > diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-> > > > > index 0f80123650e2..0bb5be88e41d 100644
-> > > > > --- a/include/linux/shrinker.h
-> > > > > +++ b/include/linux/shrinker.h
-> > > > > @@ -35,6 +35,9 @@ struct shrink_control {
-> > > > >
-> > > > >  #define SHRINK_STOP (~0UL)
-> > > > >  #define SHRINK_EMPTY (~0UL - 1)
-> > > > > +
-> > > > > +#define SHRINKER_REGISTERED  0x1
-> > > > > +
-> > > > >  /*
-> > > > >   * A callback you can register to apply pressure to ageable caches.
-> > > > >   *
-> > > > > @@ -66,6 +69,7 @@ struct shrinker {
-> > > > >       long batch;     /* reclaim batch size, 0 = default */
-> > > > >       int seeks;      /* seeks to recreate an obj */
-> > > > >       unsigned flags;
-> > > > > +     unsigned state;
-> > > >
-> > > > Hm, can't it be another flag? It seems like we have a plenty of free bits.
-> > >
-> > > I thought about this too. But I was not convinced by myself that
-> > > messing flags with state is a good practice. We may add more flags in
-> > > the future, so we may end up having something like:
-> > >
-> > > flag
-> > > flag
-> > > flag
-> > > state
-> > > flag
-> > > flag
-> > > ...
-> > >
-> > > Maybe we could use the highest bit for state?
-> >
-> > Or just
-> > state
-> > flag
-> > flag
-> > flag
-> > flag
-> > flag
-> > ...
-> >
-> > ?
-> 
-> It is fine too. We should not add more states in foreseeable future.
+From: Colin Ian King <colin.king@canonical.com>
 
-It's always possible to shuffle things around for cleanup later on,
-too. We don't have to provide binary compatibility for existing flags,
-and changing a couple of adjacent bits isn't a big deal to keep things
-neat. Or am I missing something?
+The variable i is being initialized with a value that is never read
+and it is being updated later with a new value in a for-loop.  The
+initialization is redundant and can be removed.
+
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ fs/ceph/mds_client.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+index 8f1d7500a7ec..b70937caa7a7 100644
+--- a/fs/ceph/mds_client.c
++++ b/fs/ceph/mds_client.c
+@@ -1243,7 +1243,7 @@ static struct ceph_msg *create_session_open_msg(struct ceph_mds_client *mdsc, u6
+ {
+ 	struct ceph_msg *msg;
+ 	struct ceph_mds_session_head *h;
+-	int i = -1;
++	int i;
+ 	int extra_bytes = 0;
+ 	int metadata_key_count = 0;
+ 	struct ceph_options *opt = mdsc->fsc->client->options;
+-- 
+2.29.2
+
