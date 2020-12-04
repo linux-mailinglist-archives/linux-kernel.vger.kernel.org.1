@@ -2,200 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378222CE867
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7612CE86A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:09:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbgLDHHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 02:07:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbgLDHHT (ORCPT
+        id S1728582AbgLDHHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 02:07:36 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:5086 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725550AbgLDHHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 02:07:19 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8D4C061A53;
-        Thu,  3 Dec 2020 23:06:39 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id t8so3065180pfg.8;
-        Thu, 03 Dec 2020 23:06:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=dwVSxo/1M8Xnxof7fMzvWiOBGddp/mlVm0/8qxQR6mk=;
-        b=AhugiSj4YJkXajtvEzfvX3moDLw+5SLDF+ycyp2F6eeUGPNWtZ0JsFXZd/X+JHC/Gj
-         ZucGXjwL4NWbZq8nulSLC3Gc12igAVspRrM1Je4YFt1KwMiaVyzUN+fQ+oTUM9heWFxs
-         5uKrnkb2kUa/5Zc2MvQI9wapHq8dS+XClP4zsUK2cwjkdJfGLrbQkOkXLAFTbdoEC2Cc
-         lR3G+gHvamcmMgPMPRd/OsOhv3X+IfOnxUbqFB0emsSjKA8HQx9iEudOkEMMWNL39sHb
-         EjuGWwpFLjImyDhBtxSCB6qycdrit+l3HsPQ0Wd+hoK1D1bXv6kFhiMUdZXXhyYCBypH
-         LgZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=dwVSxo/1M8Xnxof7fMzvWiOBGddp/mlVm0/8qxQR6mk=;
-        b=MhAA9oCGnob3bjL8POZSIRL5RupbOfZ5JfqjHmj3AT/A2n+BJv+a3CrJ43HbI32vAJ
-         FLTeNM9vVjhh5SaHVGkppYcG5bfeB/J2pWIpw8QaZmUrT9lHmA+fUxrFh0YsuiXfUXlP
-         /xkfGiOSGgiI39skc7j8VSYzuiB3jXWseBeuPGCMOY7FZBsmKPm8SPEKGhela0dBwgHL
-         3/EccBQ9XjUinh0jSQSbfgRD4f+DSf8M4VASBus0NUT78mOzkkfNmUxu61PQdFlZe6ex
-         GDBhZ/MNj6rPoedp5NODtmWZEvwt6m//Ux7nWZACAc9j7hJb/30HfJ/+bDxMhiAddMfE
-         tJdA==
-X-Gm-Message-State: AOAM533Km2OOYWZjsrJGvv+X3xrm3Q1mEXLiNVd+vtGa55qfbtSYVYPv
-        h5paTYaqAuH/0BkwTEhuPU0=
-X-Google-Smtp-Source: ABdhPJwg8+UkY63KZldOOJwcvxUsaRy0zBOIGCCPjMwwIJi9lyXUsbx8/+G9pNWlaAjZwFOxEMvGNg==
-X-Received: by 2002:a62:ea09:0:b029:198:3d34:989 with SMTP id t9-20020a62ea090000b02901983d340989mr2681973pfh.42.1607065598913;
-        Thu, 03 Dec 2020 23:06:38 -0800 (PST)
-Received: from localhost ([1.129.136.33])
-        by smtp.gmail.com with ESMTPSA id b13sm3676126pfo.15.2020.12.03.23.06.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 23:06:38 -0800 (PST)
-Date:   Fri, 04 Dec 2020 17:06:31 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [RFC v2 1/2] [NEEDS HELP] x86/mm: Handle unlazying membarrier
- core sync in the arch code
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Jann Horn <jannh@google.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Will Deacon <will@kernel.org>, X86 ML <x86@kernel.org>
-References: <cover.1607059162.git.luto@kernel.org>
-        <203d39d11562575fd8bd6a094d97a3a332d8b265.1607059162.git.luto@kernel.org>
-In-Reply-To: <203d39d11562575fd8bd6a094d97a3a332d8b265.1607059162.git.luto@kernel.org>
+        Fri, 4 Dec 2020 02:07:35 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0B4764sb030673;
+        Thu, 3 Dec 2020 23:06:36 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=nAc6/uboaRe2wmVJ710R/lJSzG2j2JKbJ1BFM9+cLe0=;
+ b=gl5lMFEmxwuZhpqq9niG/EtHFOQ/2YWKn6bRu1wdhrOdDKVEq0XK1C0W7oN4nDPW3PUu
+ rWdjjuGbAyomYDdstOOIqw2XzC5U/uwa/TAJgasDH3ZmBwi6mPVqk1nD/crBekhDwh1L
+ u0ALDKYq39KmQRDZegw7q9FLWLrS0qHexAY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 357682bvmc-15
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 03 Dec 2020 23:06:35 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 3 Dec 2020 23:06:35 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bEP+Q72Bz70AFpXqEVmvSTerEG3Yj4wTlAcHqAn/2tU+Wov0DjqY++EvvBLRa2JyQS9nEtX55jU851yWqIOOeazKBwGxEEo/IkunM0ihvdtjRaio4U2CD3upN2Gy/pGE9UxqY8Q0VjElxhz32KH6Adgpd41e9zIvn4cH54IWX8aWlm8U2wo0BEjPFJCp7CHqq9ZdfdfLSHIA4I/LmJn2Q+Q3IKcKZbzwxNEriyHTrVI4e6nIbLgGVQrYgmhTai4ezZ+dyrbN/f23tvk77kzua8TgPyhvOqvu9gKn12YXsPSXrsmlzuYlWn9nImHVBIpbQYkBjvuRXKCmdtEyTAgwFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pZECKzDiaPzrrjrKCmIl6J+XB238Z+ji0gb+wz/k/gw=;
+ b=GdZJtDNV0XR4+C21e1qyFUztx53j2cfl7QEmhePLK2ZHY2cPXP8934LWwVeuJaDQEAfDjlsr1qDVJi/9BTH+q5U9Dfxaybjv2hou1GrpUrFm3qy9aMNeAFF2qv900sWASyMcTU3KI3fptbj6B08hMIpY09AW8jciuVatcBp/uQ0NEV43hp12KIBGAi1lU17zFQ1gtjAyPgruhrqKUzDnx3V/QV90S8DyB3tkhUb8fUUIkvFPUw5s0U+R0yC3e4qSITqzqfaIfO4Tb421it7MerjHPdL/NU8B+NjQCoXy1cHObQUiE4NmkbOvPrhbrRp0OoOrONLfNxcVnlbO8FLEhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pZECKzDiaPzrrjrKCmIl6J+XB238Z+ji0gb+wz/k/gw=;
+ b=VGpBgK6UvjguATe9vOB+s/3PlSBRVlt+o6+Y8aYysYF2edJ3/64JSoAYOsBTOPVZwBVU8UATyJGv2N8rpFVTqyywfyjC30m434cD1PM7Dpl50H22iwByIsXvuOoF9gZHFF7nR0ObSIIAJj41GmgaL0CV/qbYpAlYtBcBRtfShNs=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Fri, 4 Dec
+ 2020 07:06:33 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3632.021; Fri, 4 Dec 2020
+ 07:06:33 +0000
+Subject: Re: [PATCH bpf-next v3 13/14] bpf: Add tests for new BPF atomic
+ operations
+To:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
+References: <20201203160245.1014867-1-jackmanb@google.com>
+ <20201203160245.1014867-14-jackmanb@google.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <b629793c-fb9c-6ef5-e2d6-7acaf1d2fc7f@fb.com>
+Date:   Thu, 3 Dec 2020 23:06:31 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
+In-Reply-To: <20201203160245.1014867-14-jackmanb@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Originating-IP: [2620:10d:c090:400::5:1dae]
+X-ClientProxiedBy: MWHPR15CA0059.namprd15.prod.outlook.com
+ (2603:10b6:301:4c::21) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c8::12b3] (2620:10d:c090:400::5:1dae) by MWHPR15CA0059.namprd15.prod.outlook.com (2603:10b6:301:4c::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Fri, 4 Dec 2020 07:06:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0420924d-a76b-46dd-5677-08d8982321f5
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3571:
+X-Microsoft-Antispam-PRVS: <BY5PR15MB3571CE550F2281A219243CA8D3F10@BY5PR15MB3571.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bD2BWShO3jUV6ZiIRRgS5vFrZ++eOYlhjJvD8ZMES1taiiN1idPqWjh749YnWGitmlHa4tT8AhNJzSohs68iMhguw4GLNkDnQMAJtwSw+BRj5503P8m+TV94iUnBtrYRy/d+d28YeYdo6xffm5SeLwZjyOrT05WlgI6Bv1dQKFi4M0+Yd+gGtC0GVPOQbobD7rDIHnKYBvWfB27WkrMUSuSbkHfdwuHzbuOoSB3OKc8MHeg6Q+GvH9xyZA/eHkqPtA0iIVl+tz7up3CHnlbWPLutAideGS/ljd4yTbOM6Xbph3+cvBS8o+7XJUfSRVdufv40CA5ysZ14WXEedC2hrTJqgxu2EHds4/WRPqiIOa14+2HaC2bfbP/XN7QKPe9WZFWYHJAWVXTXDhAWUT4vrq81SCRdmvMVqZnnCj+LNq4BYPJddnpstLqytQTeIZpNxS56tPfSFjLKFRwkBLn/63RuCB6r2he3FP3UaZzWxqE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(396003)(39860400002)(376002)(136003)(53546011)(8676002)(52116002)(36756003)(83380400001)(54906003)(316002)(5660300002)(8936002)(186003)(4326008)(66946007)(66556008)(66476007)(16526019)(2906002)(478600001)(86362001)(6486002)(31686004)(2616005)(31696002)(966005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?b25PZnpVejlZc1BCKyt0emxkeDVrOE94OFNobUs1LytxdlBwRFlXMjVjcFhI?=
+ =?utf-8?B?dXMzL0ZBS3dwVXNmOXVScWk3Y3ptczRVbHE3WlF6SXJOY2RTdmdqWlhRK2U0?=
+ =?utf-8?B?Q0Y5NGxtMWVrT2xmZGRmckdWdUNxdXpEWGV0V2RhSU95QzVyUUZyU2ZBR3lI?=
+ =?utf-8?B?RlpWRHJYQ2R2WGI2QTdHTDI1dUZjOE5lNWNFRzFHV1R5NlhLSmtTdTZyYTlu?=
+ =?utf-8?B?TlY5VHlDaE9mVVdFa3gxMmJnZ0ZwU2M2R0RocWY5TzFYYW9kcDhmbEh5V2py?=
+ =?utf-8?B?d2R4cjFPZHd2MkFrYjY0U2E4V2kvQXJ3YWV3VGdGYldRdVdob3d2cEI4M1RD?=
+ =?utf-8?B?YmJNMis3aHpmZXBCR29jYlpHRnAzbDJJMGp3dG9sZEMzYjNyNjhZSFZZSzU4?=
+ =?utf-8?B?VitHUW9OSTBRbER6YXN1OERZRGxsdngxNjFnOU5OQkNBaGkrTXdTYS9hR1pK?=
+ =?utf-8?B?WFpNcXl6bW83cUN2c1RUKzVlMzBUd3htWWlCUmpwU0UzcVpMbWNhckNUOHJm?=
+ =?utf-8?B?SlhFVGhPdkFQR0o1VG5LSEpTMXk0REZnb080cHo0aXJaR3JWSi9la004SmUw?=
+ =?utf-8?B?K1ErWGJJWUE4MjdlRitCYk9nb0owekw5WVd0VTNmc2pUdHZHMDQ5ejIzSzJw?=
+ =?utf-8?B?Y1VKazZVTVFjWkI2eVBBeWVodFRYZHRqZzFhNGtaYkVVYnZWVUU0NVRBZGZD?=
+ =?utf-8?B?dHVHVmpYU01EdzRHK3lHZWJaK2hJamtMekZvODhnSDZpOUR1QlB0bnRIN2FR?=
+ =?utf-8?B?STlCZnFKd0VZSXdGa01NbUhMS3JuQTlLNkFVY2VaOUFGS29nQkFXc3hIK3lz?=
+ =?utf-8?B?RzFEdHUxc1B2eUs4a25QWDZQeWhmN1J6R3BEc29lTWk4M0JlNlZ2Kzd2cWJM?=
+ =?utf-8?B?eDVvMXJ2WmwrL3RHMmhyREVRNUR1dXBURVBFN1Z4S1dDVytHMERwMXhJaDNn?=
+ =?utf-8?B?R2ZwZzhuWXkyTndheGVjdFBzeUk5aVlpOWl6Q2ZNMldHR2hTeEZSbzVoTjRS?=
+ =?utf-8?B?MUVORGZzdFNxMW5MVUgvcmVRNWVaZlk2L3Jaczkrc000VUNKeXl6YzVrUkRr?=
+ =?utf-8?B?a2Y5aGhWQk5hN0x0cHZDaW54S3Jwd1QxeWIwckVGalZFQzdLSGpJUXp6UEVV?=
+ =?utf-8?B?Tk9Xb2dPM2QrR2dVMSt1TWg1SlFDZHUrOElvV21JbGxudEJ1RlRoeVl4eUcy?=
+ =?utf-8?B?MXJRMkMvSVB2MHNlQzAxWFhJUVJUNnZYUlEvdVhFaEI4STNKdzYzY0R1K1lX?=
+ =?utf-8?B?cHJUSEg5K1JNa3JzMzhXYmQ1bHcvVXlXdGMzWkgyZEw5M0h5Q3RJNjBkVEhj?=
+ =?utf-8?B?RlRNbU5CdER0aHFUcUROd0lzbXczY1lyTXZGVzMvSzRkWEJaZ3hrdDRwOHNE?=
+ =?utf-8?B?ZGlzWFJzSEtQNVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0420924d-a76b-46dd-5677-08d8982321f5
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 07:06:33.5198
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Tz/DGvlFu9u8nYvbaxV17uWZkxYNrXHEaYL1ffzpHIguFaaXy4GklNA6hQSMXEG1
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3571
+X-OriginatorOrg: fb.com
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
 MIME-Version: 1.0
-Message-Id: <1607064851.hub15e677x.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_02:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 spamscore=0
+ bulkscore=0 malwarescore=0 priorityscore=1501 clxscore=1015 adultscore=0
+ mlxlogscore=999 suspectscore=0 lowpriorityscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040039
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Andy Lutomirski's message of December 4, 2020 3:26 pm:
-> The core scheduler isn't a great place for
-> membarrier_mm_sync_core_before_usermode() -- the core scheduler doesn't
-> actually know whether we are lazy.  With the old code, if a CPU is
-> running a membarrier-registered task, goes idle, gets unlazied via a TLB
-> shootdown IPI, and switches back to the membarrier-registered task, it
-> will do an unnecessary core sync.
->=20
-> Conveniently, x86 is the only architecture that does anything in this
-> hook, so we can just move the code.
 
-This should go on top of my series that adds the exit_lazy_mm call
-and switches x86 over, at least.
 
-> XXX: there are some comments in swich_mm_irqs_off() that seem to be
-> trying to document what barriers are expected, and it's not clear to me
-> that these barriers are actually present in all paths through the
-> code.  So I think this change makes the code more comprehensible and
-> has no effect on the code's correctness, but I'm not at all convinced
-> that the code is correct.
->=20
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+On 12/3/20 8:02 AM, Brendan Jackman wrote:
+> This relies on the work done by Yonghong Song in
+> https://reviews.llvm.org/D72184
+> 
+> Note the use of a define called ENABLE_ATOMICS_TESTS: this is used
+> to:
+> 
+>   - Avoid breaking the build for people on old versions of Clang
+>   - Avoid needing separate lists of test objects for no_alu32, where
+>     atomics are not supported even if Clang has the feature.
+> 
+> The atomics_test.o BPF object is built unconditionally both for
+> test_progs and test_progs-no_alu32. For test_progs, if Clang supports
+> atomics, ENABLE_ATOMICS_TESTS is defined, so it includes the proper
+> test code. Otherwise, progs and global vars are defined anyway, as
+> stubs; this means that the skeleton user code still builds.
+> 
+> The atomics_test.o userspace object is built once and used for both
+> test_progs and test_progs-no_alu32. A variable called skip_tests is
+> defined in the BPF object's data section, which tells the userspace
+> object whether to skip the atomics test.
+> 
+> Change-Id: Iecc12f35f0ded4a1dd805cce1be576e7b27917ef
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
 > ---
->  arch/x86/mm/tlb.c   | 17 ++++++++++++++++-
->  kernel/sched/core.c | 14 +++++++-------
->  2 files changed, 23 insertions(+), 8 deletions(-)
->=20
-> diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-> index 3338a1feccf9..23df035b80e8 100644
-> --- a/arch/x86/mm/tlb.c
-> +++ b/arch/x86/mm/tlb.c
-> @@ -8,6 +8,7 @@
->  #include <linux/export.h>
->  #include <linux/cpu.h>
->  #include <linux/debugfs.h>
-> +#include <linux/sched/mm.h>
-> =20
->  #include <asm/tlbflush.h>
->  #include <asm/mmu_context.h>
-> @@ -496,6 +497,8 @@ void switch_mm_irqs_off(struct mm_struct *prev, struc=
-t mm_struct *next,
->  		 * from one thread in a process to another thread in the same
->  		 * process. No TLB flush required.
->  		 */
+>   tools/testing/selftests/bpf/Makefile          |   4 +
+>   .../selftests/bpf/prog_tests/atomics_test.c   | 262 ++++++++++++++++++
+>   .../selftests/bpf/progs/atomics_test.c        | 154 ++++++++++
+>   .../selftests/bpf/verifier/atomic_and.c       |  77 +++++
+>   .../selftests/bpf/verifier/atomic_cmpxchg.c   |  96 +++++++
+>   .../selftests/bpf/verifier/atomic_fetch_add.c | 106 +++++++
+>   .../selftests/bpf/verifier/atomic_or.c        |  77 +++++
+>   .../selftests/bpf/verifier/atomic_xchg.c      |  46 +++
+>   .../selftests/bpf/verifier/atomic_xor.c       |  77 +++++
+>   9 files changed, 899 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/atomics_test.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/atomics_test.c
+>   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_and.c
+>   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+>   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_fetch_add.c
+>   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_or.c
+>   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xchg.c
+>   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xor.c
+> 
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index f21c4841a612..448a9eb1a56c 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -431,11 +431,15 @@ TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
+>   		       $(wildcard progs/btf_dump_test_case_*.c)
+>   TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
+>   TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
+> +ifeq ($(feature-clang-bpf-atomics),1)
+> +  TRUNNER_BPF_CFLAGS += -DENABLE_ATOMICS_TESTS
+> +endif
+>   TRUNNER_BPF_LDFLAGS := -mattr=+alu32
+>   $(eval $(call DEFINE_TEST_RUNNER,test_progs))
+>   
+>   # Define test_progs-no_alu32 test runner.
+>   TRUNNER_BPF_BUILD_RULE := CLANG_NOALU32_BPF_BUILD_RULE
+> +TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
+>   TRUNNER_BPF_LDFLAGS :=
+>   $(eval $(call DEFINE_TEST_RUNNER,test_progs,no_alu32))
+>   
+> diff --git a/tools/testing/selftests/bpf/prog_tests/atomics_test.c b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
+> new file mode 100644
+> index 000000000000..66f0ccf4f4ec
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
+> @@ -0,0 +1,262 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +
-> +		// XXX: why is this okay wrt membarrier?
->  		if (!was_lazy)
->  			return;
-> =20
-> @@ -508,12 +511,24 @@ void switch_mm_irqs_off(struct mm_struct *prev, str=
-uct mm_struct *next,
->  		smp_mb();
->  		next_tlb_gen =3D atomic64_read(&next->context.tlb_gen);
->  		if (this_cpu_read(cpu_tlbstate.ctxs[prev_asid].tlb_gen) =3D=3D
-> -				next_tlb_gen)
-> +		    next_tlb_gen) {
-> +			/*
-> +			 * We're reactivating an mm, and membarrier might
-> +			 * need to serialize.  Tell membarrier.
-> +			 */
+> +#include <test_progs.h>
 > +
-> +			// XXX: I can't understand the logic in
-> +			// membarrier_mm_sync_core_before_usermode().  What's
-> +			// the mm check for?
-
-Writing CR3 is serializing, apparently. Another x86ism that gets=20
-commented and moved into arch/x86 with my patch.
-
-
-> +			membarrier_mm_sync_core_before_usermode(next);
->  			return;
-> +		}
-> =20
->  		/*
->  		 * TLB contents went out of date while we were in lazy
->  		 * mode. Fall through to the TLB switching code below.
-> +		 * No need for an explicit membarrier invocation -- the CR3
-> +		 * write will serialize.
->  		 */
->  		new_asid =3D prev_asid;
->  		need_flush =3D true;
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 2d95dc3f4644..6c4b76147166 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -3619,22 +3619,22 @@ static struct rq *finish_task_switch(struct task_=
-struct *prev)
->  	kcov_finish_switch(current);
-> =20
->  	fire_sched_in_preempt_notifiers(current);
 > +
->  	/*
->  	 * When switching through a kernel thread, the loop in
->  	 * membarrier_{private,global}_expedited() may have observed that
->  	 * kernel thread and not issued an IPI. It is therefore possible to
->  	 * schedule between user->kernel->user threads without passing though
->  	 * switch_mm(). Membarrier requires a barrier after storing to
-> -	 * rq->curr, before returning to userspace, so provide them here:
-> +	 * rq->curr, before returning to userspace, and mmdrop() provides
-> +	 * this barrier.
->  	 *
-> -	 * - a full memory barrier for {PRIVATE,GLOBAL}_EXPEDITED, implicitly
-> -	 *   provided by mmdrop(),
-> -	 * - a sync_core for SYNC_CORE.
-> +	 * XXX: I don't think mmdrop() actually does this.  There's no
-> +	 * smp_mb__before/after_atomic() in there.
-
-mmdrop definitely does provide a full barrier.
-
->  	 */
-> -	if (mm) {
-> -		membarrier_mm_sync_core_before_usermode(mm);
-> +	if (mm)
->  		mmdrop(mm);
-> -	}
+> +#include "atomics_test.skel.h"
 > +
->  	if (unlikely(prev_state =3D=3D TASK_DEAD)) {
->  		if (prev->sched_class->task_dead)
->  			prev->sched_class->task_dead(prev);
-> --=20
-> 2.28.0
->=20
->=20
+> +static struct atomics_test *setup(void)
+> +{
+> +	struct atomics_test *atomics_skel;
+> +	__u32 duration = 0, err;
+> +
+> +	atomics_skel = atomics_test__open_and_load();
+> +	if (CHECK(!atomics_skel, "atomics_skel_load", "atomics skeleton failed\n"))
+> +		return NULL;
+> +
+> +	if (atomics_skel->data->skip_tests) {
+> +		printf("%s:SKIP:no ENABLE_ATOMICS_TEST (missing Clang BPF atomics support)",
+> +		       __func__);
+> +		test__skip();
+> +		goto err;
+> +	}
+> +
+> +	err = atomics_test__attach(atomics_skel);
+> +	if (CHECK(err, "atomics_attach", "atomics attach failed: %d\n", err))
+> +		goto err;
+> +
+> +	return atomics_skel;
+> +
+> +err:
+> +	atomics_test__destroy(atomics_skel);
+> +	return NULL;
+> +}
+> +
+> +static void test_add(void)
+> +{
+> +	struct atomics_test *atomics_skel;
+> +	int err, prog_fd;
+> +	__u32 duration = 0, retval;
+> +
+> +	atomics_skel = setup();
+
+When running the test, I observed a noticeable delay between skel load 
+and skel attach. The reason is the bpf program object file contains
+multiple programs and the above setup() tries to do attachment
+for ALL programs but actually below only "add" program is tested.
+This will unnecessarily increase test_progs running time.
+
+The best is for setup() here only load and attach program "add".
+The libbpf API bpf_program__set_autoload() can set a particular
+program not autoload. You can call attach function explicitly
+for one specific program. This should be able to reduce test
+running time.
+
+> +	if (!atomics_skel)
+> +		return;
+> +
+> +	prog_fd = bpf_program__fd(atomics_skel->progs.add);
+> +	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+> +				NULL, NULL, &retval, &duration);
+> +	if (CHECK(err || retval, "test_run add",
+> +		  "err %d errno %d retval %d duration %d\n",
+> +		  err, errno, retval, duration))
+> +		goto cleanup;
+> +
+> +	ASSERT_EQ(atomics_skel->data->add64_value, 3, "add64_value");
+> +	ASSERT_EQ(atomics_skel->bss->add64_result, 1, "add64_result");
+> +
+> +	ASSERT_EQ(atomics_skel->data->add32_value, 3, "add32_value");
+> +	ASSERT_EQ(atomics_skel->bss->add32_result, 1, "add32_result");
+> +
+> +	ASSERT_EQ(atomics_skel->bss->add_stack_value_copy, 3, "add_stack_value");
+> +	ASSERT_EQ(atomics_skel->bss->add_stack_result, 1, "add_stack_result");
+> +
+> +	ASSERT_EQ(atomics_skel->data->add_noreturn_value, 3, "add_noreturn_value");
+> +
+> +cleanup:
+> +	atomics_test__destroy(atomics_skel);
+> +}
+> +
+> +static void test_sub(void)
+> +{
+> +	struct atomics_test *atomics_skel;
+> +	int err, prog_fd;
+> +	__u32 duration = 0, retval;
+> +
+> +	atomics_skel = setup();
+> +	if (!atomics_skel)
+> +		return;
+> +
+[...]
