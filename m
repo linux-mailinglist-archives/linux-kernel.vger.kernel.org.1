@@ -2,90 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7656D2CEF5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:05:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7581D2CEF56
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:05:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730001AbgLDOFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:05:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46334 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726775AbgLDOFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:05:30 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 04381AC75;
-        Fri,  4 Dec 2020 14:04:49 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DBFD1DA7E3; Fri,  4 Dec 2020 15:03:14 +0100 (CET)
-Date:   Fri, 4 Dec 2020 15:03:14 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        kbuild-all@lists.01.org, linux-crypto@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Chris Mason <chris.mason@fusionio.com>,
-        Petr Malat <oss@malat.biz>
-Subject: Re: [PATCH v6 3/3] lib: zstd: Upgrade to latest upstream zstd
- version 1.4.6
-Message-ID: <20201204140314.GS6430@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, kernel test robot <lkp@intel.com>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>, kbuild-all@lists.01.org,
-        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Chris Mason <chris.mason@fusionio.com>, Petr Malat <oss@malat.biz>
-References: <20201202203242.1187898-4-nickrterrell@gmail.com>
- <202012030743.Xg5AJ7Ms-lkp@intel.com>
+        id S1729310AbgLDOE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:04:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727275AbgLDOE0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 09:04:26 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA995C061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:03:45 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1klBgT-0007qa-SV; Fri, 04 Dec 2020 15:03:41 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1klBgT-0005FI-7m; Fri, 04 Dec 2020 15:03:41 +0100
+Date:   Fri, 4 Dec 2020 15:03:36 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Walle <michael@walle.cc>, kernel@pengutronix.de,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH RESEND for 5.10] pwm: sl28cpld: fix getting driver data
+ in pwm callbacks
+Message-ID: <20201204140336.jkemihnqqwozu45x@pengutronix.de>
+References: <20201203084142.3810204-1-u.kleine-koenig@pengutronix.de>
+ <X8oubGP9CvoOQKtF@ulmo>
+ <20201204132436.GO4801@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6qdq4ny3jrifkzby"
 Content-Disposition: inline
-In-Reply-To: <202012030743.Xg5AJ7Ms-lkp@intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20201204132436.GO4801@dell>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 07:58:16AM +0800, kernel test robot wrote:
-> All warnings (new ones prefixed by >>):
-> 
->    lib/zstd/compress/zstd_double_fast.c: In function 'ZSTD_compressBlock_doubleFast_extDict_generic':
-> >> lib/zstd/compress/zstd_double_fast.c:501:1: warning: the frame size of 3724 bytes is larger than 1280 bytes [-Wframe-larger-than=]
 
-Frame size 3724?
+--6qdq4ny3jrifkzby
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->    lib/zstd/compress/zstd_double_fast.c: In function 'ZSTD_compressBlock_doubleFast':
->    lib/zstd/compress/zstd_double_fast.c:336:1: warning: the frame size of 3792 bytes is larger than 1280 bytes [-Wframe-larger-than=]
+Hello Lee,
 
-3792
+On Fri, Dec 04, 2020 at 01:24:36PM +0000, Lee Jones wrote:
+> On Fri, 04 Dec 2020, Thierry Reding wrote:
+> > Now, I can no longer find a link to the discussion that I recall, so it
+> > was either on IRC (where I don't have any logs) or I'm loosing my mind.
+>=20
+> Don't worry, you are (probably!) still quite sane.
+>=20
+> The discussion happened over IRC.
 
->    lib/zstd/compress/zstd_double_fast.c: In function 'ZSTD_compressBlock_doubleFast_dictMatchState':
->    lib/zstd/compress/zstd_double_fast.c:356:1: warning: the frame size of 3808 bytes is larger than 1280 bytes [-Wframe-larger-than=]
+FTR, the conversation was as follows (with lag =3D Lee, tags =3D Thierry and
+ukleinek =3D me):
 
-3808
+1606741876 < ukleinek> tagr, lag: would you mind if I send 20201124212432.3=
+117322-1-u.kleine-koenig@pengutronix.de to Linus?
+1606741894 < ukleinek> tagr: or if you do mind, can you please send it?
+[...]
+1606742364 < lag> ukleinek: I assume this is the container_of() patch?
+1606742370 < ukleinek> lag: right
+1606742402 < lag> ukleinek: It seems very wrong that a leaf controller driv=
+er's ops would be called before it has probed
+1606742410 < lag> ukleinek: How is that a thing?
+1606742428 < ukleinek> lag: the ops can be called as soon as pwmchip_add co=
+mpletes
+1606742443 < lag> ukleinek: Where is pwmchip_add() called
+1606742470 < lag> I guess I can grep that myself
+1606742480 < ukleinek> lag: just before platform_set_drvdata(pdev, priv) in=
+ sl28cpld_pwm_probe()
+1606742755 < lag> ukleinek: What about moving pwmchip_add() after platform_=
+set_drvdata() or vice versa?
+1606742789 < ukleinek> lag: did you read the commit log?
+1606742845 < lag> ukleinek: I did
+1606742981 < ukleinek> lag: then I don't get your question
+1606743049 < lag> ukleinek: Why is using container_of, which is generally h=
+orrible and only used if there is no other way to obtain data, better than =
+changing order of the calls such that the dependencies are met
+1606743127 < ukleinek> container_of is a well understood concept and it's c=
+heaper than dev_get_drvdata
+1606743198 < ukleinek> and conceptually it's easier too. (But that might on=
+ly be me)
+1606743241 < ukleinek> for one thing it cannot happen that I get a wrong po=
+inter because platform_set_drvdata was called too late
+1606743281 < ukleinek> also it makes use of the fact that platform_set_drvd=
+ata sets the driver's driver data and not something in the platform device
 
->    lib/zstd/compress/zstd_fast.c: In function 'ZSTD_compressBlock_fast_extDict_generic':
-> >> lib/zstd/compress/zstd_fast.c:476:1: warning: the frame size of 2736 bytes is larger than 1280 bytes [-Wframe-larger-than=]
+> I highlighted my concerns, but Uwe didn't respond to them.  This patch
+> was the next time I saw anything on the subject.
 
-2736
+So I did respond and if you didn't see it the problem is on your end.
 
->    lib/zstd/compress/zstd_fast.c: In function 'ZSTD_compressBlock_fast':
->    lib/zstd/compress/zstd_fast.c:204:1: warning: the frame size of 1508 bytes is larger than 1280 bytes [-Wframe-larger-than=]
+Best regards
+Uwe
 
-1508
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
->    lib/zstd/compress/zstd_fast.c: In function 'ZSTD_compressBlock_fast_dictMatchState':
->    lib/zstd/compress/zstd_fast.c:372:1: warning: the frame size of 1540 bytes is larger than 1280 bytes [-Wframe-larger-than=]
+--6qdq4ny3jrifkzby
+Content-Type: application/pgp-signature; name="signature.asc"
 
-1540
+-----BEGIN PGP SIGNATURE-----
 
-For userspace code it's nothing but in kernel it's a lot for a single
-function. The largest number is almost one page, there were days where
-this would be one half of the whole stack space. We can't waste precious
-resources like that. Taking the userspace code as-is does not seem to
-work.
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/KQbUACgkQwfwUeK3K
+7Al5dAf+KPhOCIV6qY1UnYHozlCainhVo1LpKDWeEFNaXNH4PFlIDG3vJEVqhWbI
+7TZOFG/J6zPr9c3wItzPsd09zVHqWtjrEj9TX4Ux+xM3iSmZf2W1YMMTRx0LQzNG
+f0alrCiI6tm7kndiI1FLbYMV3brcGJJUvuBwcILUA9kbi4AMyDbG94QVAxGAvB85
+gCQDhJmpuIJbtPVoRwC6xNKkQ5sdpHQQHvB27wMrt4IW9cFHkZah0LWbYLYCzPxe
+XtNu6QeML3GebVH48+/6EgCcW6a0YSkaeNNMsEDdwzGLwx/LfH4I6an1D57rhDrY
+BeYk62zKtSCFwUXqpjVcbFC3DMTqxg==
+=rtCp
+-----END PGP SIGNATURE-----
+
+--6qdq4ny3jrifkzby--
