@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A122CF2D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 685D02CF2CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388561AbgLDRKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:10:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34180 "EHLO
+        id S1730961AbgLDRKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:10:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388443AbgLDRKe (ORCPT
+        with ESMTP id S2388437AbgLDRKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:10:34 -0500
+        Fri, 4 Dec 2020 12:10:35 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A0CC061A52
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 09:09:54 -0800 (PST)
-Message-Id: <20201204170805.114951971@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46229C061A53
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 09:09:55 -0800 (PST)
+Message-Id: <20201204170805.232293729@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607101792;
+        s=2020; t=1607101793;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=d2SDdF9xv+zq6v5sNKxHuwQ+lcm0BVMKzJifrr4qeYE=;
-        b=CpPIEGxqz39z7xrP4MKUEulGmd5JJy2f0Th+qAo+hoKvYZMIDm+Q/Gmd/3SEoxZIjE51AU
-        crJlsZ7ERs99ibN8IN/teZodCY/f2IdCPsYQ8frZ5BZAozsnFvNT/xdrNa2rSTP5D9zcZO
-        FRJhjojlN5HAnX2k5dI+QPmRIZn2vpv/nkXYT+/tcc3bFs1Xr+4QsFq5ZkjCbCvT89uF3D
-        vBCGCPhmsgKC9DY73NnsPLPTsJrjiPo5nyzujNlE/fvc7bcfxlVnr0R0lUKExJaW0sgD8j
-        Fin4C9o9kFpvcD4EAcBJ7yuz+aNy2O6eyJfajU6qwz60g0+3YFRYzP5y2P/2+w==
+        bh=ut+xfhfjAeWR5XwkEIdbGgZ0xpY7Wr1KR2JhRfjIcFw=;
+        b=uKeix71pEV3HfcAcSDX0+4oZBH4sNEZcErSi68m83BpmzEuzQIT9Kaj85wU2h/UFeJyWsE
+        FDswEpwcbonfn+ftPN+mEEVFVOSotsUrzym7Xci6qBfGIYQjVk8bkp7OOR7yt0c1t1L/H5
+        cpQ7hzmhyN4U+4b7bX4niXRSx0jQFHSr8Rj92/nTBWFQ6OqeKeyfKZs7MahwnYJH+S9ELs
+        Sm56IWEGofQjcqPJ6IuTPc7LwFhR11VevfVV1EMlVDwNDv+Kar22qr/ce5nJR8aDUCtJph
+        GoCDVGyQpk3NZQCu/Tff+3ot5GcMZmBemH9u8RyPrVvFuSuOYtfunMGo2pzJtA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607101792;
+        s=2020e; t=1607101793;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=d2SDdF9xv+zq6v5sNKxHuwQ+lcm0BVMKzJifrr4qeYE=;
-        b=q8K7gzIdqSR84TUs1a9YQJcuEV433yTYiBDwQklUFA4pnx/zQ1htB6vdj+SgVTkFctpol1
-        Tw3qm7FR4a8E6ZBw==
-Date:   Fri, 04 Dec 2020 18:01:55 +0100
+        bh=ut+xfhfjAeWR5XwkEIdbGgZ0xpY7Wr1KR2JhRfjIcFw=;
+        b=zf6hYzPBEDNYaiQCMlFoT2FDLoJM/IIGo98sDE/J62XZ+r6AK9cfx3M201Pgqc0PD5P5Lf
+        lJAZEsnxLvNZdeBA==
+Date:   Fri, 04 Dec 2020 18:01:56 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Paul McKenney <paulmck@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [patch V2 4/9] softirq: Make softirq control and processing RT aware
+Subject: [patch V2 5/9] tick/sched: Prevent false positive softirq pending
+ warnings on RT
 References: <20201204170151.960336698@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,257 +54,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Provide a local lock based serialization for soft interrupts on RT which
-allows the local_bh_disabled() sections and servicing soft interrupts to be
-preemptible.
+On RT a task which has soft interrupts disabled can block on a lock and
+schedule out to idle while soft interrupts are pending. This triggers the
+warning in the NOHZ idle code which complains about going idle with pending
+soft interrupts. But as the task is blocked soft interrupt processing is
+temporarily blocked as well which means that such a warning is a false
+positive.
 
-Provide the necessary inline helpers which allow to reuse the bulk of the
-softirq processing code.
+To prevent that check the per CPU state which indicates that a scheduled
+out task has soft interrupts disabled.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V2: Adjusted to Frederic's changes
----
- include/linux/bottom_half.h |    2 
- kernel/softirq.c            |  188 ++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 182 insertions(+), 8 deletions(-)
+ include/linux/bottom_half.h |    6 ++++++
+ kernel/softirq.c            |   15 +++++++++++++++
+ kernel/time/tick-sched.c    |    2 +-
+ 3 files changed, 22 insertions(+), 1 deletion(-)
 
 --- a/include/linux/bottom_half.h
 +++ b/include/linux/bottom_half.h
-@@ -4,7 +4,7 @@
+@@ -32,4 +32,10 @@ static inline void local_bh_enable(void)
+ 	__local_bh_enable_ip(_THIS_IP_, SOFTIRQ_DISABLE_OFFSET);
+ }
  
- #include <linux/preempt.h>
- 
--#ifdef CONFIG_TRACE_IRQFLAGS
-+#if defined(CONFIG_PREEMPT_RT) || defined(CONFIG_TRACE_IRQFLAGS)
- extern void __local_bh_disable_ip(unsigned long ip, unsigned int cnt);
- #else
- static __always_inline void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
++#ifdef CONFIG_PREEMPT_RT
++extern bool local_bh_blocked(void);
++#else
++static inline bool local_bh_blocked(void) { return false; }
++#endif
++
+ #endif /* _LINUX_BH_H */
 --- a/kernel/softirq.c
 +++ b/kernel/softirq.c
-@@ -13,6 +13,7 @@
- #include <linux/kernel_stat.h>
- #include <linux/interrupt.h>
- #include <linux/init.h>
-+#include <linux/local_lock.h>
- #include <linux/mm.h>
- #include <linux/notifier.h>
- #include <linux/percpu.h>
-@@ -100,20 +101,189 @@ EXPORT_PER_CPU_SYMBOL_GPL(hardirq_contex
- #endif
+@@ -138,6 +138,21 @@ static DEFINE_PER_CPU(struct softirq_ctr
+ 	.lock	= INIT_LOCAL_LOCK(softirq_ctrl.lock),
+ };
  
- /*
-- * preempt_count and SOFTIRQ_OFFSET usage:
-- * - preempt_count is changed by SOFTIRQ_OFFSET on entering or leaving
-- *   softirq processing.
-- * - preempt_count is changed by SOFTIRQ_DISABLE_OFFSET (= 2 * SOFTIRQ_OFFSET)
-+ * SOFTIRQ_OFFSET usage:
++/**
++ * local_bh_blocked() - Check for idle whether BH processing is blocked
 + *
-+ * On !RT kernels 'count' is the preempt counter, on RT kernels this applies
-+ * to a per CPU counter and to task::softirqs_disabled_cnt.
++ * Returns false if the per CPU softirq::cnt is 0 otherwise true.
 + *
-+ * - count is changed by SOFTIRQ_OFFSET on entering or leaving softirq
-+ *   processing.
-+ *
-+ * - count is changed by SOFTIRQ_DISABLE_OFFSET (= 2 * SOFTIRQ_OFFSET)
-  *   on local_bh_disable or local_bh_enable.
-+ *
-  * This lets us distinguish between whether we are currently processing
-  * softirq and whether we just have bh disabled.
-  */
-+#ifdef CONFIG_PREEMPT_RT
-+
-+/*
-+ * RT accounts for BH disabled sections in task::softirqs_disabled_cnt and
-+ * also in per CPU softirq_ctrl::cnt. This is necessary to allow tasks in a
-+ * softirq disabled section to be preempted.
-+ *
-+ * The per task counter is used for softirq_count(), in_softirq() and
-+ * in_serving_softirqs() because these counts are only valid when the task
-+ * holding softirq_ctrl::lock is running.
-+ *
-+ * The per CPU counter prevents pointless wakeups of ksoftirqd in case that
-+ * the task which is in a softirq disabled section is preempted or blocks.
++ * This is invoked from the idle task to guard against false positive
++ * softirq pending warnings, which would happen when the task which holds
++ * softirq_ctrl::lock was the only running task on the CPU and blocks on
++ * some other lock.
 + */
-+struct softirq_ctrl {
-+	local_lock_t	lock;
-+	int		cnt;
-+};
-+
-+static DEFINE_PER_CPU(struct softirq_ctrl, softirq_ctrl) = {
-+	.lock	= INIT_LOCAL_LOCK(softirq_ctrl.lock),
-+};
-+
-+void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
++bool local_bh_blocked(void)
 +{
-+	unsigned long flags;
-+	int newcnt;
-+
-+	WARN_ON_ONCE(in_hardirq());
-+
-+	/* First entry of a task into a BH disabled section? */
-+	if (!current->softirq_disable_cnt) {
-+		if (preemptible()) {
-+			local_lock(&softirq_ctrl.lock);
-+			/* Required to meet the RCU bottomhalf requirements. */
-+			rcu_read_lock();
-+		} else {
-+			DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt));
-+		}
-+	}
-+
-+	/*
-+	 * Track the per CPU softirq disabled state. On RT this is per CPU
-+	 * state to allow preemption of bottom half disabled sections.
-+	 */
-+	newcnt = __this_cpu_add_return(softirq_ctrl.cnt, cnt);
-+	/*
-+	 * Reflect the result in the task state to prevent recursion on the
-+	 * local lock and to make softirq_count() & al work.
-+	 */
-+	current->softirq_disable_cnt = newcnt;
-+
-+	if (IS_ENABLED(CONFIG_TRACE_IRQFLAGS) && newcnt == cnt) {
-+		raw_local_irq_save(flags);
-+		lockdep_softirqs_off(ip);
-+		raw_local_irq_restore(flags);
-+	}
-+}
-+EXPORT_SYMBOL(__local_bh_disable_ip);
-+
-+static void __local_bh_enable(unsigned int cnt, bool unlock)
-+{
-+	unsigned long flags;
-+	int newcnt;
-+
-+	DEBUG_LOCKS_WARN_ON(current->softirq_disable_cnt !=
-+			    this_cpu_read(softirq_ctrl.cnt));
-+
-+	if (IS_ENABLED(CONFIG_TRACE_IRQFLAGS) && softirq_count() == cnt) {
-+		raw_local_irq_save(flags);
-+		lockdep_softirqs_on(_RET_IP_);
-+		raw_local_irq_restore(flags);
-+	}
-+
-+	newcnt = __this_cpu_sub_return(softirq_ctrl.cnt, cnt);
-+	current->softirq_disable_cnt = newcnt;
-+
-+	if (!newcnt && unlock) {
-+		rcu_read_unlock();
-+		local_unlock(&softirq_ctrl.lock);
-+	}
++	return this_cpu_read(softirq_ctrl.cnt) != 0;
 +}
 +
-+void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
-+{
-+	bool preempt_on = preemptible();
-+	unsigned long flags;
-+	u32 pending;
-+	int curcnt;
-+
-+	WARN_ON_ONCE(in_irq());
-+	lockdep_assert_irqs_enabled();
-+
-+	local_irq_save(flags);
-+	curcnt = this_cpu_read(softirq_ctrl.cnt);
-+
-+	/*
-+	 * If this is not reenabling soft interrupts, no point in trying to
-+	 * run pending ones.
-+	 */
-+	if (curcnt != cnt)
-+		goto out;
-+
-+	pending = local_softirq_pending();
-+	if (!pending || ksoftirqd_running(pending))
-+		goto out;
-+
-+	/*
-+	 * If this was called from non preemptible context, wake up the
-+	 * softirq daemon.
-+	 */
-+	if (!preempt_on) {
-+		wakeup_softirqd();
-+		goto out;
-+	}
-+
-+	/*
-+	 * Adjust softirq count to SOFTIRQ_OFFSET which makes
-+	 * in_serving_softirq() become true.
-+	 */
-+	cnt = SOFTIRQ_OFFSET;
-+	__local_bh_enable(cnt, false);
-+	__do_softirq();
-+
-+out:
-+	__local_bh_enable(cnt, preempt_on);
-+	local_irq_restore(flags);
-+}
-+EXPORT_SYMBOL(__local_bh_enable_ip);
-+
-+/*
-+ * Invoked from ksoftirqd_run() outside of the interrupt disabled section
-+ * to acquire the per CPU local lock for reentrancy protection.
-+ */
-+static inline void ksoftirqd_run_begin(void)
-+{
-+	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
-+	local_irq_disable();
-+}
-+
-+/* Counterpart to ksoftirqd_run_begin() */
-+static inline void ksoftirqd_run_end(void)
-+{
-+	__local_bh_enable(SOFTIRQ_OFFSET, true);
-+	WARN_ON_ONCE(in_interrupt());
-+	local_irq_enable();
-+}
-+
-+static inline void softirq_handle_begin(void) { }
-+static inline void softirq_handle_end(void) { }
-+
-+static inline bool should_wake_ksoftirqd(void)
-+{
-+	return !this_cpu_read(softirq_ctrl.cnt);
-+}
-+
-+static inline void invoke_softirq(void)
-+{
-+	if (should_wake_ksoftirqd())
-+		wakeup_softirqd();
-+}
-+
-+#else /* CONFIG_PREEMPT_RT */
- 
--#ifdef CONFIG_TRACE_IRQFLAGS
- /*
-- * This is for softirq.c-internal use, where hardirqs are disabled
-+ * This one is for softirq.c-internal use, where hardirqs are disabled
-  * legitimately:
-  */
-+#ifdef CONFIG_TRACE_IRQFLAGS
  void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
  {
  	unsigned long flags;
-@@ -274,6 +444,8 @@ asmlinkage __visible void do_softirq(voi
- 	local_irq_restore(flags);
- }
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -925,7 +925,7 @@ static bool can_stop_idle_tick(int cpu,
+ 	if (unlikely(local_softirq_pending())) {
+ 		static int ratelimit;
  
-+#endif /* !CONFIG_PREEMPT_RT */
-+
- /*
-  * We restart softirq processing for at most MAX_SOFTIRQ_RESTART times,
-  * but break the loop if need_resched() is set or after 2 ms.
-@@ -378,8 +550,10 @@ asmlinkage __visible void __softirq_entr
- 		pending >>= softirq_bit;
- 	}
- 
--	if (__this_cpu_read(ksoftirqd) == current)
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
-+	    __this_cpu_read(ksoftirqd) == current)
- 		rcu_softirq_qs();
-+
- 	local_irq_disable();
- 
- 	pending = local_softirq_pending();
+-		if (ratelimit < 10 &&
++		if (ratelimit < 10 && !local_bh_blocked() &&
+ 		    (local_softirq_pending() & SOFTIRQ_STOP_IDLE_MASK)) {
+ 			pr_warn("NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #%02x!!!\n",
+ 				(unsigned int) local_softirq_pending());
 
