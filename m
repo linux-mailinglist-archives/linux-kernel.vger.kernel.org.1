@@ -2,228 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7242CE5A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6AF2CE5B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbgLDCYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 21:24:16 -0500
-Received: from mga11.intel.com ([192.55.52.93]:18554 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726342AbgLDCYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 21:24:15 -0500
-IronPort-SDR: k2ttTMurs2F2HcxTDGZUKAS1vpRW4LEFrPmwhVyYQlPkan/K0I8kkSE3PsSjgPh9nHCNCm4Cxr
- zGV97sQY9+Aw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="169810332"
-X-IronPort-AV: E=Sophos;i="5.78,391,1599548400"; 
-   d="scan'208";a="169810332"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 18:23:35 -0800
-IronPort-SDR: PAqyTjD4ctXqeUm8KsO5m395Y/nKaML4QZaDousp5h+MoC55y6o/SIusnCtmy8wmo1GlmPQx5I
- BVD50p5GXL4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,391,1599548400"; 
-   d="scan'208";a="373760028"
-Received: from lkp-server01.sh.intel.com (HELO 14e4acb3e84f) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 03 Dec 2020 18:23:34 -0800
-Received: from kbuild by 14e4acb3e84f with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kl0kv-00001G-DF; Fri, 04 Dec 2020 02:23:33 +0000
-Date:   Fri, 04 Dec 2020 10:22:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:perf/urgent] BUILD SUCCESS
- fc17db8aa4c53cbd2d5469bb0521ea0f0a6dbb27
-Message-ID: <5fc99d77.BG0rqBgidoneZkSE%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726885AbgLDC03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 21:26:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbgLDC03 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 21:26:29 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D252EC061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 18:25:48 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id a16so6521580ejj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 18:25:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=DO2xSdkoTjdlOhwLjGKycx0I0ttwZPhfw3VO7/8AxUA=;
+        b=T3vNnr3UXhvrIChk0P38SJ3aAvOvz0eQDMiiVV+GIXFjTMAzrKc4tO5BXpjrBgIzfW
+         WNX7zd/BKiPLKBqewKGcftbjZWlMuY67tn1k/k3K2i3MydW7q7pccI8S/KpjibgEaNLk
+         GghIgPNcQPwk219BSK+zCXam5MktY/mvYhwtfMiFTUzK83sYYLOGWg709JIF34TCS70X
+         NimUpEB73ECkfD1EK1MR6YioSqAduEkCYESIiX/P9qFQcspKFNXf8XSGApPUmxpbqLo6
+         2tnc0BAFhMNuxzIeO589xCPudZNcYrWaVw6VOTaC5tmjwfOI+2T69qxcIy+OiWaw5oKB
+         CFWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=DO2xSdkoTjdlOhwLjGKycx0I0ttwZPhfw3VO7/8AxUA=;
+        b=Sw+6jmNr8phmv1Tlw+YEYV/ma4zG8u97rGYpHv9kHWUn6DiEQKGgTYTZslSpMeCK31
+         7MhVZXTHpcYj6Dd3AkWwC6uAVD2DKpoZOHXHUfmL/DqLYZp0K9me395hECKC7PrDHplx
+         iixstEK2z3RCW6ENyztGJILGzB7FjXEi0MJaeTvXmHzgYQ1OJI30MbfBL2TnptvP8YNZ
+         mlmpZjXEucz8qW+IvIBpa4WLMmfhD+5GY3GqtP/lP+JWQ4bLpbD538/A2kMlfLOdpm5C
+         gp/5qj076TqkhF/ZjeoPJbIm227Tb+d4GTFIfcHE6lPNGc9qQdnxjR6pena5eBos8PJQ
+         r40g==
+X-Gm-Message-State: AOAM5332cuTYEjC7SBhlcHv241OCEijXq/47kyEo8UIH/3gu6KmQlz8/
+        d76+9sAGbFCpRscytYPzyl7IF7GV1ZarMAlC1sY=
+X-Google-Smtp-Source: ABdhPJxfOuXVdtTktLmenafSzfpdzVFlPqbHBlDMCs8mMrp368IyGcVhDWmU2Mq9POYlvQlShTUQzW2pjb32zWEYx7w=
+X-Received: by 2002:a17:906:8152:: with SMTP id z18mr5346134ejw.317.1607048746941;
+ Thu, 03 Dec 2020 18:25:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 4 Dec 2020 12:25:35 +1000
+Message-ID: <CAPM=9twdEoUbczSb9v0vAFD7w1qfB8-89tP-xjAEq5P=uBezCw@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.10-rc7
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  perf/urgent
-branch HEAD: fc17db8aa4c53cbd2d5469bb0521ea0f0a6dbb27  perf/x86/intel: Check PEBS status correctly
+Hi Linus,
 
-elapsed time: 1038m
+This week's regular fixes. i915 has fixes for a few races,
+use-after-free, gpu hangs,
+tegra just has some minor fixes that I didn't see much point in
+hanging on to. The
+nouveau fix is for all pre-nv50 cards and was reported a few times.
+Otherwise it's
+just some amdgpu, and a few misc fixes.
 
-configs tested: 164
-configs skipped: 4
+Regards,
+Dave.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+drm-fixes-2020-12-04:
+drm fixes for 5.10-rc7
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                             pxa_defconfig
-arm                           h3600_defconfig
-arm                          tango4_defconfig
-powerpc                 mpc837x_mds_defconfig
-xtensa                  nommu_kc705_defconfig
-powerpc                   motionpro_defconfig
-mips                     cu1830-neo_defconfig
-sh                        sh7763rdp_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                     sbc8548_defconfig
-arm                      footbridge_defconfig
-h8300                       h8s-sim_defconfig
-arm                       aspeed_g4_defconfig
-powerpc                    klondike_defconfig
-arm                       imx_v6_v7_defconfig
-arc                           tb10x_defconfig
-powerpc                 mpc8315_rdb_defconfig
-riscv                            alldefconfig
-powerpc                      ppc6xx_defconfig
-arm                            hisi_defconfig
-arm                            dove_defconfig
-arc                     nsimosci_hs_defconfig
-arm                          imote2_defconfig
-sh                          r7780mp_defconfig
-sh                           se7712_defconfig
-arc                         haps_hs_defconfig
-arm                            mmp2_defconfig
-xtensa                  audio_kc705_defconfig
-m68k                          multi_defconfig
-m68k                             alldefconfig
-arm                         socfpga_defconfig
-mips                     loongson1b_defconfig
-sh                ecovec24-romimage_defconfig
-m68k                       m5275evb_defconfig
-arm                          moxart_defconfig
-c6x                                 defconfig
-xtensa                       common_defconfig
-sh                                  defconfig
-sh                          r7785rp_defconfig
-powerpc                      arches_defconfig
-arm                            xcep_defconfig
-arm                             ezx_defconfig
-powerpc                      walnut_defconfig
-arm                        spear6xx_defconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                    mvme5100_defconfig
-powerpc                       eiger_defconfig
-powerpc                      obs600_defconfig
-sh                             sh03_defconfig
-mips                           rs90_defconfig
-sh                        sh7757lcr_defconfig
-sh                           se7721_defconfig
-mips                      malta_kvm_defconfig
-arm                          pcm027_defconfig
-mips                         tb0226_defconfig
-s390                       zfcpdump_defconfig
-powerpc                     mpc5200_defconfig
-powerpc                     pq2fads_defconfig
-arm                        cerfcube_defconfig
-sh                          sdk7786_defconfig
-powerpc                 mpc832x_mds_defconfig
-ia64                            zx1_defconfig
-arm                            mps2_defconfig
-arm                          simpad_defconfig
-arm                          collie_defconfig
-arm                         ebsa110_defconfig
-arc                      axs103_smp_defconfig
-h8300                    h8300h-sim_defconfig
-mips                          ath25_defconfig
-sh                        edosk7705_defconfig
-sh                   sh7724_generic_defconfig
-arm                         bcm2835_defconfig
-mips                         mpc30x_defconfig
-powerpc                     tqm8560_defconfig
-powerpc                     skiroot_defconfig
-arm                        multi_v5_defconfig
-mips                  decstation_64_defconfig
-xtensa                           alldefconfig
-mips                          malta_defconfig
-powerpc                     sequoia_defconfig
-um                            kunit_defconfig
-powerpc                    ge_imp3a_defconfig
-sh                             espt_defconfig
-powerpc                      cm5200_defconfig
-sh                           se7343_defconfig
-powerpc                      makalu_defconfig
-m68k                          hp300_defconfig
-mips                      loongson3_defconfig
-powerpc64                        alldefconfig
-xtensa                  cadence_csp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201203
-i386                 randconfig-a005-20201203
-i386                 randconfig-a001-20201203
-i386                 randconfig-a002-20201203
-i386                 randconfig-a006-20201203
-i386                 randconfig-a003-20201203
-x86_64               randconfig-a016-20201203
-x86_64               randconfig-a012-20201203
-x86_64               randconfig-a014-20201203
-x86_64               randconfig-a013-20201203
-x86_64               randconfig-a015-20201203
-x86_64               randconfig-a011-20201203
-i386                 randconfig-a014-20201203
-i386                 randconfig-a013-20201203
-i386                 randconfig-a011-20201203
-i386                 randconfig-a015-20201203
-i386                 randconfig-a012-20201203
-i386                 randconfig-a016-20201203
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+amdgpu:
+- SMU11 manual fan fix
+- Renoir display clock fix
+- VCN3 dynamic powergating fix
 
-clang tested configs:
-x86_64               randconfig-a004-20201203
-x86_64               randconfig-a006-20201203
-x86_64               randconfig-a001-20201203
-x86_64               randconfig-a002-20201203
-x86_64               randconfig-a005-20201203
-x86_64               randconfig-a003-20201203
+i915:
+- Program mocs:63 for cache eviction on gen9
+- Protect context lifetime with RCU
+- Split the breadcrumb spinlock between global and contexts
+- Retain default context state across shrinking
+- Limit frequency drop to RPe on parking
+- Return earlier from intel_modeset_init() without display
+- Defer initial modeset until after GGTT is initialized
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+nouveau:
+- pre-nv50 regression fix
+
+rockchip:
+- uninitialised LVDS property fix
+
+omap:
+- bridge fix
+
+panel:
+- race fix
+
+mxsfb:
+- fence sync fix
+- modifiers fix
+
+tegra:
+- idr init fix
+- sor fixes
+- output/of cleanup fix
+The following changes since commit b65054597872ce3aefbc6a666385eabdf9e288da=
+:
+
+  Linux 5.10-rc6 (2020-11-29 15:50:50 -0800)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-12-04
+
+for you to fetch changes up to de9b485d1dc993f1fb579b5d15a8176284627f4a:
+
+  Merge tag 'drm-misc-fixes-2020-12-03' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes (2020-12-04
+11:53:50 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.10-rc7
+
+amdgpu:
+- SMU11 manual fan fix
+- Renoir display clock fix
+- VCN3 dynamic powergating fix
+
+i915:
+- Program mocs:63 for cache eviction on gen9 (Chris)
+- Protect context lifetime with RCU (Chris)
+- Split the breadcrumb spinlock between global and contexts (Chris)
+- Retain default context state across shrinking (Venkata)
+- Limit frequency drop to RPe on parking (Chris)
+- Return earlier from intel_modeset_init() without display (Jani)
+- Defer initial modeset until after GGTT is initialized (Chris)
+
+nouveau:
+- pre-nv50 regression fix
+
+rockchip:
+- uninitialised LVDS property fix
+
+omap:
+- bridge fix
+
+panel:
+- race fix
+
+mxsfb:
+- fence sync fix
+- modifiers fix
+
+tegra:
+- idr init fix
+- sor fixes
+- output/of cleanup fix
+
+----------------------------------------------------------------
+Arunpravin (1):
+      drm/amdgpu/pm/smu11: Fix fan set speed bug
+
+Boyuan Zhang (2):
+      drm/amdgpu/vcn3.0: stall DPG when WPTR/RPTR reset
+      drm/amdgpu/vcn3.0: remove old DPG workaround
+
+Brandon Syu (1):
+      drm/amd/display: Init clock value by current vbios CLKs
+
+Chris Wilson (5):
+      drm/i915/gt: Program mocs:63 for cache eviction on gen9
+      drm/i915/gt: Protect context lifetime with RCU
+      drm/i915/gt: Split the breadcrumb spinlock between global and context=
+s
+      drm/i915/gt: Limit frequency drop to RPe on parking
+      drm/i915/display: Defer initial modeset until after GGTT is initialis=
+ed
+
+Christian K=C3=B6nig (1):
+      drm/nouveau: make sure ret is initialized in nouveau_ttm_io_mem_reser=
+ve
+
+Daniel Abrecht (1):
+      drm: mxsfb: Implement .format_mod_supported
+
+Dave Airlie (4):
+      Merge tag 'drm/tegra/for-5.10-rc7' of
+ssh://git.freedesktop.org/git/tegra/linux into drm-fixes
+      Merge tag 'drm-intel-fixes-2020-12-03' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+      Merge tag 'amd-drm-fixes-5.10-2020-12-02' of
+git://people.freedesktop.org/~agd5f/linux into drm-fixes
+      Merge tag 'drm-misc-fixes-2020-12-03' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+
+Deepak R Varma (1):
+      drm/tegra: replace idr_init() by idr_init_base()
+
+Jani Nikula (1):
+      drm/i915/display: return earlier from intel_modeset_init() without di=
+splay
+
+Jon Hunter (1):
+      drm/tegra: sor: Don't warn on probe deferral
+
+Lucas Stach (1):
+      drm: mxsfb: fix fence synchronization
+
+Marc Zyngier (1):
+      drm/tegra: sor: Ensure regulators are disabled on teardown
+
+Paul Kocialkowski (1):
+      drm/rockchip: Avoid uninitialized use of endpoint id in LVDS
+
+Qinglang Miao (1):
+      drm/tegra: sor: Disable clocks on error in tegra_sor_init()
+
+Sebastian Reichel (1):
+      drm/panel: sony-acx565akm: Fix race condition in probe
+
+Thierry Reding (1):
+      drm/tegra: output: Do not put OF node twice
+
+Tomi Valkeinen (1):
+      drm/omap: sdi: fix bridge enable/disable
+
+Venkata Ramana Nayana (1):
+      drm/i915/gt: Retain default context state across shrinking
+
+ drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c              |  25 ++-
+ .../drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c  |  13 +-
+ drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c     |   7 +-
+ drivers/gpu/drm/i915/display/intel_display.c       |  24 +--
+ drivers/gpu/drm/i915/gt/intel_breadcrumbs.c        | 168 +++++++++--------=
+----
+ drivers/gpu/drm/i915/gt/intel_breadcrumbs_types.h  |   6 +-
+ drivers/gpu/drm/i915/gt/intel_context.c            |  15 +-
+ drivers/gpu/drm/i915/gt/intel_context_types.h      |  23 ++-
+ drivers/gpu/drm/i915/gt/intel_mocs.c               |  14 +-
+ drivers/gpu/drm/i915/gt/intel_rps.c                |   4 +
+ drivers/gpu/drm/i915/gt/shmem_utils.c              |   7 +-
+ drivers/gpu/drm/i915/i915_request.h                |   6 +-
+ drivers/gpu/drm/mxsfb/mxsfb_kms.c                  |  11 ++
+ drivers/gpu/drm/nouveau/nouveau_bo.c               |   2 +-
+ drivers/gpu/drm/omapdrm/dss/sdi.c                  |  10 +-
+ drivers/gpu/drm/panel/panel-sony-acx565akm.c       |   2 +-
+ drivers/gpu/drm/rockchip/rockchip_lvds.c           |   2 +-
+ drivers/gpu/drm/tegra/drm.c                        |   2 +-
+ drivers/gpu/drm/tegra/output.c                     |   1 -
+ drivers/gpu/drm/tegra/sor.c                        |  76 +++++-----
+ 20 files changed, 233 insertions(+), 185 deletions(-)
