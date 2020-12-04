@@ -2,85 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06552CE9F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 717D92CE9FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728585AbgLDIgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:36:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727479AbgLDIgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:36:35 -0500
-Date:   Fri, 4 Dec 2020 09:36:54 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607070948;
-        bh=xrXVeRA19rHpKc9qsMMpJxvtwCWgsBKzuPRdt9bWhr4=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ftKTOAOd5E3OglR/1sPUwyQ7LkTfzKF3RoOZLWgyMnrvkNAJNMCT4m0TYzT5X02PC
-         yJVPUUkZbflsPj6/jVceJODgKY9FoWuFFfzLxfSr0buI2uwZW/gdKPVWfS0mDBJFHB
-         5E8aNy1QSi0Y+tFCIfrwNad2M+iN+BXBZ2HA+f6Q=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: Remove dead termiox code
-Message-ID: <X8n1JiDS8ZVA6e6o@kroah.com>
-References: <20201203020331.2394754-1-jannh@google.com>
- <5cca5126-60ba-d123-0f7d-47fdbac4c4db@kernel.org>
- <X8nwnXQKOYWBWBZ+@kroah.com>
- <93834a92-b342-aaee-c400-2883d5df0cdc@kernel.org>
+        id S1729071AbgLDIin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:38:43 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:35044 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725969AbgLDIin (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 03:38:43 -0500
+Received: by mail-ed1-f67.google.com with SMTP id u19so4994295edx.2;
+        Fri, 04 Dec 2020 00:38:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eAUgRhiSnZxN+OGD6Xc3OKsBy+RlXxdYJUYaOeKp06I=;
+        b=by8GUec4J0rnTceCPoMmXWv1MBDJwrfqdrFDbNI9NtoAnKO5uo1dVTY5x0SwzYTpuD
+         UW7/8AChC/TIomvribsWJjRkoSoI3k4hAfCHYSERvcHuy8Omv2Aai87fHSxEZyuIrErK
+         +gGjGgkUPxo4L5y6xTN2WCHi2UB4raZd4ef9VNV0H8WUHDZwdgGIGj913Sm7QRRim0K/
+         8jPgR8lJPQtET/xjGX1G8sI8IXYD6OZ2lrnmdnhQH8KEkG52XxbCWcHMPgbBJteqL/GZ
+         D+ga/Q3BXaUh659zOjDUzlraQaQPGtcQuUG/xOuGCAMN2T/0ncYLeoQCyvT/1iVjBJ1S
+         mAgw==
+X-Gm-Message-State: AOAM533VLpCxG1b9pd9s0XY14BZqeoTncl2B6SspaWZhNUv9YH5/0m4I
+        9xhgxtIyoRYtVitd1ZUKFa6qLCGnZ9s=
+X-Google-Smtp-Source: ABdhPJwoeQ7DRUewSq/Xsuh/+Aqe+eXqWEbDCW2HM2O2CWaN5JIHQ73iQJSmCs5B/CGsVPM+2/ZnhA==
+X-Received: by 2002:a05:6402:2059:: with SMTP id bc25mr6528472edb.13.1607071076163;
+        Fri, 04 Dec 2020 00:37:56 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id s26sm2891210edc.33.2020.12.04.00.37.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 00:37:55 -0800 (PST)
+Date:   Fri, 4 Dec 2020 10:37:53 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: Re: [PATCH v2 net-next] nfc: s3fwrn5: skip the NFC bootloader mode
+Message-ID: <20201204083753.GB5418@kozik-lap>
+References: <20201203225257.2446-1-bongsu.jeon@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <93834a92-b342-aaee-c400-2883d5df0cdc@kernel.org>
+In-Reply-To: <20201203225257.2446-1-bongsu.jeon@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 09:20:39AM +0100, Jiri Slaby wrote:
-> On 04. 12. 20, 9:17, Greg Kroah-Hartman wrote:
-> > On Fri, Dec 04, 2020 at 08:22:41AM +0100, Jiri Slaby wrote:
-> > > On 03. 12. 20, 3:03, Jann Horn wrote:
-> > > > set_termiox() and the TCGETX handler bail out with -EINVAL immediately
-> > > > if ->termiox is NULL, but there are no code paths that can set
-> > > > ->termiox to a non-NULL pointer; and no such code paths seem to have
-> > > > existed since the termiox mechanism was introduced back in
-> > > > commit 1d65b4a088de ("tty: Add termiox") in v2.6.28.
-> > > > Similarly, no driver actually implements .set_termiox; and it looks like
-> > > > no driver ever has.
-> > > 
-> > > Nice!
-> > > 
-> > > > Delete this dead code; but leave the definition of struct termiox in the
-> > > > UAPI headers intact.
-> > > 
-> > > I am thinking -- can/should we mark the structure as deprecated so that
-> > > userspace stops using it eventually?
-> > 
-> > If it doesn't do anything, how can userspace even use it today?  :)
+On Fri, Dec 04, 2020 at 07:52:57AM +0900, Bongsu Jeon wrote:
+> From: Bongsu Jeon <bongsu.jeon@samsung.com>
 > 
-> Well, right. I am in favor to remove it, BUT: what if someone tries that
-> ioctl and bails out if EINVAL is returned. I mean: if they define a local
-> var of that struct type and pass it to the ioctl, we would break the build
-> by removing the struct completely. Even if the code didn't do anything
-> useful, it still could be built. So is this very potential breakage OK?
+> If there isn't a proper NFC firmware image, Bootloader mode will be
+> skipped.
+> 
+> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+> ---
+> 
+>  ChangeLog:
+>   v2:
+>    - change the commit message.
+>    - change the skip handling code.
 
-I'm sorry, but I don't understand.  This is a kernel-internal-only
-structure, right?  If someone today tries to call these ioctls, they
-will get a -EINVAL error as no serial driver in the tree supports them.
+Patch is now much cleaner and smaller. Thanks.
 
-If we remove the structure (i.e. what this patch does), and someone
-makes an ioctl call, they will still get the same -EINVAL error they did
-before.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-So nothing has changed as far as userspace can tell.
+Best regards,
+Krzysztof
 
-Now if they have an out-of-tree serial driver that does implement this
-call, then yes, they will have problems, but that's not our problem,
-that is theirs for not ever submitting their code.  We don't support
-in-kernel apis with no in-kernel users.
-
-Or am I still confused?
-
-thanks,
-
-greg k-h
+> 
+>  drivers/nfc/s3fwrn5/core.c     | 23 +++++++++++++++++++++--
+>  drivers/nfc/s3fwrn5/firmware.c | 11 +----------
+>  drivers/nfc/s3fwrn5/firmware.h |  1 +
+>  3 files changed, 23 insertions(+), 12 deletions(-)
