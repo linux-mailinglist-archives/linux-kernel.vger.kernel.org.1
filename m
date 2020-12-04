@@ -2,71 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B81B2CEA46
+	by mail.lfdr.de (Postfix) with ESMTP id C829C2CEA47
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729328AbgLDIxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:53:05 -0500
-Received: from smtp21.cstnet.cn ([159.226.251.21]:40912 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728487AbgLDIxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:53:05 -0500
-Received: from localhost.localdomain (unknown [124.16.141.242])
-        by APP-01 (Coremail) with SMTP id qwCowACXn0+q+MlfGBnaAA--.27966S2;
-        Fri, 04 Dec 2020 16:51:55 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org, joel@jms.id.au,
-        andrew@aj.id.au, rentao.bupt@gmail.com, benh@kernel.crashing.org,
-        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: gadget: aspeed: Remove redundant null check before clk_disable_unprepare
-Date:   Fri,  4 Dec 2020 08:51:50 +0000
-Message-Id: <20201204085150.3063-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: qwCowACXn0+q+MlfGBnaAA--.27966S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZFy8CFy8AFWxXryxJFy7KFg_yoWfGrgEkr
-        1UWF4xW3WYvwsIyw1UGay5C34qga4kuw409F1ktFn5ZFWjgw43XryjvrZ5CF17Za17C3Z5
-        Awn8Gr43Zw4fujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFyl42xK82IY
-        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
-        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
-        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUx6wCDUUUU
-X-Originating-IP: [124.16.141.242]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQoAA102ZxEfFgAAsU
+        id S1729168AbgLDIxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:53:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725969AbgLDIxo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 03:53:44 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 619CCC061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 00:53:04 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id o1so3425948qtp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 00:53:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ie25EXYGJygVSq1WCc3nxTESm5cgyIfQIT3ckwHo9Es=;
+        b=nI0FiqTRD2Uc7pujsoo8JHuFJYFma9yUkqVRq8LWwnqTcUo5rxCgfAx05yc+PWUiJH
+         OzP5V3COQ/H1HwDb5aa1TZvyTdFXUAVnGqDDZOIrG2cHX/zOvQaqPhabHoPphkzXiUQ2
+         BIPWES+dlWXWdWzC4ZY69aTC041wbemwIxCL38PdrzphqzarVGYtlbhWJcZDiDzjldVc
+         lFi47XJ1O7T/jSVoQ+rirQn+Tfqg4BiW3kyppNwiZ6OMVr0E0XSAAXpVvrme92mwrZi8
+         wYBvpMGukkROYPtVUUUJy4BMDeMsbaUyfGvW59Y6AzaccMh2ZqcgCKLHOQo7OGn6/C0v
+         HSRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ie25EXYGJygVSq1WCc3nxTESm5cgyIfQIT3ckwHo9Es=;
+        b=HgpqhEiDKDMoRbxHU11tI6U5kIfmQxqdAR++vHJpEerXkiqtyjU/+gcdovR0gzviqn
+         amSaukFbanA3dalb9BsOUq/z0o1NXCx9IkzYUSM1Rm4LIfbgprmo9W8heALdMYwsuqsG
+         mUg22SH+B9eGirY/2KohVajTAj1vei91322aStyqOvtxdaSRfUvCBPL19hYgOUc+yB0W
+         I2d7Z/KINq8R/gd77SWqB7k6LF51x/PhUxzKTkEef+PVkbLhuglpR0QX0/oPHqRahoBy
+         NxndVCie8LixwFK/7TAxsyM20Hj3CxL2/1LqMhefnTmFCffW/h4lFNZlbd+48CaGH8mF
+         QZiw==
+X-Gm-Message-State: AOAM531xZCfVWrLQFuY9ov6zExJH8/JLkXbV5JXhA32j6sl2PdBdgBrB
+        tN8N8NfuulKYp/jq/Im7m7OlQfN97b3o+CJRPFQ=
+X-Google-Smtp-Source: ABdhPJzeojDScSBtppSAW7yMarKnc8Aa6DXfy/aKs60aX6n3wPYeQQQQ/xQJh3Yz18uPiJFsmwumDDZhj0hRntXMRPI=
+X-Received: by 2002:a05:622a:24b:: with SMTP id c11mr7237941qtx.166.1607071983687;
+ Fri, 04 Dec 2020 00:53:03 -0800 (PST)
+MIME-Version: 1.0
+References: <20201125071132.39988-1-zhongguohua1@huawei.com>
+In-Reply-To: <20201125071132.39988-1-zhongguohua1@huawei.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Fri, 4 Dec 2020 09:52:52 +0100
+Message-ID: <CAFLxGvxSycd=6WE4=XnrXxuF2Bc6A6ULA8GfkT8QvgcX=2Gk8g@mail.gmail.com>
+Subject: Re: [PATCH v2] phram: Allow the user to set the erase page size.
+To:     Guohua Zhong <zhongguohua1@huawei.com>
+Cc:     patrick@baymotion.com, Joern Engel <joern@lazybastard.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
+        Xiaoming Ni <nixiaoming@huawei.com>, wangle6@huawei.com,
+        young.liuyang@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because clk_disable_unprepare() already checked NULL clock parameter,
-so the additional check is unnecessary, just remove it.
+On Wed, Nov 25, 2020 at 8:14 AM Guohua Zhong <zhongguohua1@huawei.com> wrote:
+>
+> Permit the user to specify the erase page size as a parameter.
+> This solves two problems:
+>
+> - phram can access images made by mkfs.jffs2.  mkfs.jffs2 won't
+> create images with erase sizes less than 8KiB; many architectures
+> define PAGE_SIZE as 4KiB.
+>
+> - Allows more effective use of small capacity devices.  JFFS2
+> needs somewhere between 2 and 5 empty pages for garbage collection;
+> and for an NVRAM part with only 32KiB of space, a smaller erase page
+> allows much better utilization in applications where garbage collection
+> is important.
+>
+> Signed-off-by: Patrick O'Grady <patrick@baymotion.com>
+> Reviewed-by: Joern Engel <joern@logfs.org>
+> Link: https://lore.kernel.org/lkml/CAJ7m5OqYv_=JB9NhHsqBsa8YU0DFRoP7C+W10PY22wonAGJK=A@mail.gmail.com/
+> [Guohua Zhong: fix token array index out of bounds and update patch for kernel master branch]
+> Signed-off-by: Guohua Zhong <zhongguohua1@huawei.com>
+> Reported-by: kernel test robot <lkp@intel.com>
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/usb/gadget/udc/aspeed-vhub/core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Looks good to me, except the authorship.
+If I understand correctly, you took this old patch and resend it.
+Please make sure that the "From:"-Line contains the original author.
+You can fix this up using git commit --amend --author=.
+The git format-patch will create a correct patch.
 
-diff --git a/drivers/usb/gadget/udc/aspeed-vhub/core.c b/drivers/usb/gadget/udc/aspeed-vhub/core.c
-index be7bb64e3594..ea47f4b98de9 100644
---- a/drivers/usb/gadget/udc/aspeed-vhub/core.c
-+++ b/drivers/usb/gadget/udc/aspeed-vhub/core.c
-@@ -282,8 +282,7 @@ static int ast_vhub_remove(struct platform_device *pdev)
- 	       VHUB_CTRL_PHY_RESET_DIS,
- 	       vhub->regs + AST_VHUB_CTRL);
- 
--	if (vhub->clk)
--		clk_disable_unprepare(vhub->clk);
-+	clk_disable_unprepare(vhub->clk);
- 
- 	spin_unlock_irqrestore(&vhub->lock, flags);
- 
 -- 
-2.17.1
-
+Thanks,
+//richard
