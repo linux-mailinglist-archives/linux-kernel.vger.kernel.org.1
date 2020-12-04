@@ -2,68 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162DD2CEB9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 316642CEB9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387750AbgLDKC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 05:02:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41150 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729512AbgLDKC4 (ORCPT
+        id S2387725AbgLDKCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 05:02:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387707AbgLDKCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 05:02:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607076089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XlvcJUka0tYhtcNhhsL+bNUMPIgts9pFj1H8hxUelvI=;
-        b=ihVYhE8s09EB3m6V91ITxM62T/CQkcTfRS7oAszihlQ9w+jXxloHObdU7dJj2E+SL5Ww9p
-        +OwC0ZqfKLpfLVOP1Dhk3jWod5O7SNfOujEzlgDfly8Pb8OVF9uwfhxHBiqeeAnSy6dLjr
-        v8x182NqyMie+/9c7s/jSLWurqPZC4c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-529-08q1DeYmMMWwk6PPLGRg6Q-1; Fri, 04 Dec 2020 05:01:27 -0500
-X-MC-Unique: 08q1DeYmMMWwk6PPLGRg6Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AAE1180A086;
-        Fri,  4 Dec 2020 10:01:26 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8ADA310021AA;
-        Fri,  4 Dec 2020 10:01:22 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20201111172439.60d5a8f0@canb.auug.org.au>
-References: <20201111172439.60d5a8f0@canb.auug.org.au> <20201021124733.344e5107@canb.auug.org.au>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     dhowells@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: Re: linux-next: manual merge of the notifications tree with Linus' tree
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <93331.1607076081.1@warthog.procyon.org.uk>
-Date:   Fri, 04 Dec 2020 10:01:21 +0000
-Message-ID: <93332.1607076081@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Fri, 4 Dec 2020 05:02:51 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDC3C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 02:02:05 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id g20so7858207ejb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 02:02:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=++IltyY+m+4yKbR7UfN2/Vuk9NOT6dGaxBYrXiv56uE=;
+        b=o5EIhWkQaGJbqel6RrK8cy2sadIRCrcnAYY1avee7tk6Sk8xUMWcf1rK/l7JdGQxZr
+         /CUHgVogmoM/N3O/lCbep9M6Zkud0YxRYyNQFPkuqO/A6KRxgHpLacxbXz3QFa+pwtq0
+         x/1/ajHblq4b7qsX7As4ddmDiK4akAVcaHXkZKdYNvFxW2KVG55eMziw1hu4LbYTFoJ3
+         /WAdePA8PY+Bm1pH/OOb8cgjCp4MT+0Po9NTNZw5e3ql7d935/3AT574Fx1uut8d5F9d
+         Y2sN9YPAWI7ZcdnvDeHOb9aGIKg3H4GsE9INcWwXe0Fs6/xr9jMSZnLeahrory9GOQuq
+         w5iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=++IltyY+m+4yKbR7UfN2/Vuk9NOT6dGaxBYrXiv56uE=;
+        b=Aif7dYr5p5JgKCRCzi+skQEHEHTQLnwdGEloyofuSjd0NNXurnOL89ko5QHiPXA3gn
+         naLJyxhJaejY69jlQ0iWzUif/9EnOYlErC6Pzzq/hkkhRxo/NZUzlr48VYJBJP/b3kf+
+         npEEjvnZS0jhqiu3MYoj2Vz0J3Omr1XiJDfAF4k2Lmji8bhe3VzJS0chkvTRS6pROuAK
+         YDx5/WDaAKlFC3xz+ymDML3K7d8OyQmOhgrk1/EYYDn0258FjUBLg5k6+mUppkk+APcL
+         FEHm8GwcZEb90ecmGcaDxqEfOLLCK9SqflpZH1WVsTXOdI5aCy8+58oEx84Y1MKa3xnY
+         ERJQ==
+X-Gm-Message-State: AOAM532syRwmedi3OPXAk2NCGeXKyCpPFCLiRP9WZpRs3EgYaKGdQsEi
+        GvIYYcQNjTmAM4RTXvdpFNR68fYYYxyctOnR
+X-Google-Smtp-Source: ABdhPJyht7qkOJKWnkXNSY3BjrtshQwuVw/XNG6XyOCd/JAMlt2ZGRgMACbRNdWPbFXAYuCEJP4F+g==
+X-Received: by 2002:a17:907:2718:: with SMTP id w24mr6038881ejk.525.1607076123943;
+        Fri, 04 Dec 2020 02:02:03 -0800 (PST)
+Received: from localhost.localdomain (hst-221-106.medicom.bg. [84.238.221.106])
+        by smtp.gmail.com with ESMTPSA id p35sm3238242edd.58.2020.12.04.02.02.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 02:02:02 -0800 (PST)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     dikshita@codeaurora.org, Alexandre Courbot <acourbot@chromium.org>,
+        Vikash Garodia <vgarodia@codeaurora.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH v2 0/4] Venus encoder improvements
+Date:   Fri,  4 Dec 2020 12:01:35 +0200
+Message-Id: <20201204100139.6216-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+Hello,
 
-> Do you intend to keep this change?  If so, will you rebase it?
+Changes since v1:
+  * 1/4 - fixed error handling in hfi_session_deinit (Alex)
+        - keep venc_set_properties invocation from start_streaming (Dikshita) 
+  * 2/4 - keep original mutex_lock (Alex)
+  * 3/4 - move msg queue inside if statement (Fritz)
+        - move rx_req setting before triggering soft interrupt (Alex)
+  * Add one more patch 4/4 to address comments for hfi_session_init
+    EINVAL return error code (Alex)
 
-At the moment, I don't know.  It needs something like fsinfo() so that you can
-retrieve the mount change counter in the event of an overrun - but adding it
-to /proc/self/mountinfo is too heavy and too slow.
+The v1 can be found at [1].
 
-David
+regards,
+Stan
+
+[1] https://www.spinics.net/lists/linux-media/msg181634.html
+
+Stanimir Varbanov (3):
+  venus: venc: Init the session only once in queue_setup
+  venus: Limit HFI sessions to the maximum supported
+  venus: hfi: Correct session init return error
+
+Vikash Garodia (1):
+  media: venus: request for interrupt from venus
+
+ drivers/media/platform/qcom/venus/core.h      |  1 +
+ drivers/media/platform/qcom/venus/hfi.c       | 18 +++-
+ .../media/platform/qcom/venus/hfi_parser.c    |  3 +
+ drivers/media/platform/qcom/venus/hfi_venus.c | 77 ++++++++++-------
+ drivers/media/platform/qcom/venus/vdec.c      |  2 +-
+ drivers/media/platform/qcom/venus/venc.c      | 85 ++++++++++++++-----
+ 6 files changed, 127 insertions(+), 59 deletions(-)
+
+-- 
+2.17.1
 
