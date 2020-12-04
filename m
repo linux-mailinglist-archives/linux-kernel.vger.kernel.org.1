@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634B12CF4A5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5EC92CF4A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730238AbgLDTUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 14:20:52 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:49430 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726392AbgLDTUw (ORCPT
+        id S1730402AbgLDTVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 14:21:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726392AbgLDTV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 14:20:52 -0500
-Date:   Fri, 4 Dec 2020 20:20:09 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607109610;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8eM89ierKyEyQ9fvhT8fq7Xh8000XlLV716RqSWxKdg=;
-        b=krkC377HGla50OZujwexptXlx95HSfTuawsbpOk8+BCxXVLCp/4TCrWsw0E2fyQPMwLANq
-        WytZWDrM9LneSqzh0IrlNf3hLlzFuDdKZtWobEpjCFqvmbCHOsoBY77Z2j5MetehsrZy/i
-        5VzDhh0CYpjyxiXSI/iepqa/iQCZvxX7/pDnPa1AmyRjIyYOAAcPvHD9O6EFh95EN7HmQI
-        IlVNWvI/HLEbpONPm+nAX18U5XNIbixDtj6h2cdAjATKE10iNwp4rcdD/i7IA43cr1N8Mv
-        ElBJOq/U3BORd//Sd3GVEmlYRn9zkvwDk2ZBtpa2vSBPEnb3wZqia4sXwQwHJA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607109610;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8eM89ierKyEyQ9fvhT8fq7Xh8000XlLV716RqSWxKdg=;
-        b=3yF/segGxPRWNLTkuPb54M7GbHoDWxzutsnEutqrBlX9QzoIXOUbvxbL8rGvgSkG21WwJO
-        7VvIQkn5705bccAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Yoichi Yuasa <yuasa@linux-mips.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH REPOST] pcmcia: Remove NEC VRC4173 CARDU
-Message-ID: <20201204192009.46w4doqoqqvhgrnh@linutronix.de>
-References: <20201113213408.2244169-1-bigeasy@linutronix.de>
- <20201119170622.yan5bt2chxvoxqgn@linutronix.de>
+        Fri, 4 Dec 2020 14:21:29 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493E5C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 11:20:49 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id z16so3870512vsp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 11:20:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3RfmsOD4R8FThIOERGPH+DqSWdV2gOeuwbTDc0BCACk=;
+        b=ED+Yl2tvlFfU7xMIOOS47zHVQLtV6INZZvh0HH4yw3SWBHzU4MNC4rXbzHM74kG9XR
+         ZbMTZuU01dpnUQoaIPQ4jp4DxhYBqUy6YSa2lSiV5e7KaadOuv9DX5WExV5QLyD1+xVI
+         t7pP0QhkyrRZgM0PgtgIA9asldGrwLJB3gyatruE0iDpoVWVyQWb4WpwEA6OpOjQ7r7W
+         O8/doy3IHvTaswQkkK2DdJdjTY3MHBe7FBbhVTULX0yQuwmsP7d6Lbo/5hthSTlEYqKj
+         eSz+5Qwdv8NWKzfHNTgp97QES+8Y9kdQd2+XsngGpRfAIK3Ac8j2BGZRCemAbfAll7HF
+         NrCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3RfmsOD4R8FThIOERGPH+DqSWdV2gOeuwbTDc0BCACk=;
+        b=TA8gwX22q+y713uTBslLrx/VslN70WLT2vvfd75xwaknsipr/fgAQTp+weNtAC1NOg
+         2l9rJc+LOyFlwwXMMa903yDRwPi9AQeI7PsSPUfC+suPF8Jr0iclbPylq/zRRpVMp81g
+         tM8gMumAawQgmzqVnDRmaZmYoJbjPEhg0bU6Tuck6HfrWa0JfQwq+wKkLONg5pKqtOqU
+         gZPeH9WV13pi61S/8XaA41XM52XD9cRs8kbnDxuyQpv1ChmFIxQJkih/2RfTBj3kJoqC
+         c8JE8TxBfX3xFp+dgHnNq5COJwpRjmPClTRO+lzcu00jCk8vYbHXonHBuotMXRgvEck4
+         Ejlw==
+X-Gm-Message-State: AOAM532xqp80bYAqcky5AcDPxItdz2mQg3J93idFajnt+NigkBIE6WPQ
+        8Nxc2riD5TqGXNfSi4dOjrMbUBUa23m3hbOtbvY=
+X-Google-Smtp-Source: ABdhPJwqY8Cz8zt67T3BVJvNnRhGnl8wOKMvKKSfumPMETzn1knT8+JsYs3DxXmbQCcxhs6RK/0aE+HMmFZIhWrNP7o=
+X-Received: by 2002:a67:d204:: with SMTP id y4mr5725128vsi.60.1607109648459;
+ Fri, 04 Dec 2020 11:20:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20201204035318.332419-1-jim.cromie@gmail.com> <20201204035318.332419-2-jim.cromie@gmail.com>
+ <X8pY/H512EMR3bUX@intel.com>
+In-Reply-To: <X8pY/H512EMR3bUX@intel.com>
+From:   jim.cromie@gmail.com
+Date:   Fri, 4 Dec 2020 12:20:21 -0700
+Message-ID: <CAJfuBxysOxnm846u71f0rQCH9NX-7AMe4brmiD0vqfGeQKuVOw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] drm: RFC add choice to use dynamic debug in drm-debug
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Jason Baron <jbaron@akamai.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201119170622.yan5bt2chxvoxqgn@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-19 18:06:24 [+0100], To linux-kernel@vger.kernel.org wrote:
-> On 2020-11-13 22:34:08 [+0100], To linux-kernel@vger.kernel.org wrote:
-> > This driver is the very definition of bitrotting:
-> > - Introduced in commit
-> >   79a140932c776 ("[PATCH] mips: vR41xx updates")
-> >   which is 2.6.11-rc3.
-> >=20
-> > - Provides ->register_callback which was removed in commit
-> >   7f316b033b36a ("[PATCH] pcmcia: remove socket register_callback")
-> >   which is v2.6.14-rc3
-> >=20
-> > - Uses INIT_WORK() with three arguments which was removed in commit
-> >   65f27f38446e1 ("WorkStruct: Pass the work_struct pointer instead of c=
-ontext data")
-> >   which is v2.6.20-rc1
-> >=20
-> > - Provides ->inquire_socket and uses socket_cap_t which was removed in
-> >   commit
-> >   b7949fdacbe00 ("[PCMCIA] Remove inquire_socket")
-> >   which is 2.5.72
-> >=20
-> > - Provides ->get_io_map which was removed in commit
-> >   d7de1b64a23b9 ("[PCMCIA] pcmcia-2: Remove get_io_map and get_mem_map =
-socket methods.")
-> >   which is 2.5.66
-> >=20
-> > Remove VRC4173 CARDU from the tree because it never had the luck to be
-> > successfully compiled. Let it finally find peace in byte heaven.
-> =E2=80=A6
-> > This is a repost of
-> > 	https://lkml.kernel.org/r/20201001193234.gi6fp4vk3dypwifv@linutronix.de
-> >=20
-> > which was a repost of
-> > 	https://lkml.kernel.org/r/20200916081629.cfi6svr3yjvzimqs@linutronix.de
->=20
-> Andrew, are you okay with routing this via your tree?
-> Nobody responded to this and as I documented in the patch description it
-> never compiled so.
+On Fri, Dec 4, 2020 at 8:42 AM Ville Syrj=C3=A4l=C3=A4
+<ville.syrjala@linux.intel.com> wrote:
+>
+> On Thu, Dec 03, 2020 at 08:53:17PM -0700, Jim Cromie wrote:
+> > drm's debug system uses distinct categories of debug messages, mapped
+> > to bits in drm.debug.  Currently, code does a lot of unlikely bit-mask
+> > checks on drm.debug (in drm_debug_enabled), we can use dynamic debug
+> > instead, and get all that jump_label goodness.
+>
+> whatis jump_label?
 
-Andrew, any chance?
-=20
-Sebastian
+Sorry, I should have at least capitalized that, and spelled it differently
+
+kernel/Makefile
+118:obj-$(CONFIG_JUMP_LABEL) +=3D jump_label.o
+
+it is the hot-patching substrate underneath it all.
+static-key, static-call, etc?
+dynamic-debug uses static-key directly.
+
+
+
+>
+> One thing that bugs me about the current drm_dbg() stuff is that
+> it's a function, and thus we pay the cost of setting up the
+> arguments even when debugs are not enabled. I played around a bit
+> with making it a macro again with the unlikely bit check moved
+> into the macro. That did seem to make some of the asm a bit nicer
+> where the debug stuff got shoved out the main codepath, but
+> it did result in a slight net increase in code size. What I didn't
+> have time to do is check if this has any measurable speed effect
+> on eg. TEST_ONLY commits.
+>
+> And while doing that I started to ponder if we could use something
+> like the alternate() instruction stuff to patch the code at runtime
+> in order to turn all those debug checks into nops when debugging
+> is not enabled. But I couldn't immediately find any generic
+> infrastructure for it. So now I wonder if this jump_label is something
+> like that?
+>
+
+this is the droid youre looking for ;-)
+
+> >
+
+> --
+> Ville Syrj=C3=A4l=C3=A4
+> Intel
