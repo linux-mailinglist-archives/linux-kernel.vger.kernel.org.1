@@ -2,130 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2D22CF0F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:47:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FD72CF0FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729614AbgLDPqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:46:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49300 "EHLO
+        id S1730641AbgLDPrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:47:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726427AbgLDPqf (ORCPT
+        with ESMTP id S1730626AbgLDPrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:46:35 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24E6C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 07:45:55 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id q22so5778561qkq.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:45:55 -0800 (PST)
+        Fri, 4 Dec 2020 10:47:08 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7083C061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 07:46:22 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id f1so3292464plt.12
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:46:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FMdFUwxD2m3I4SoM+J772H7vQty27Q4nst6R1kvnYpw=;
-        b=trm3vYaGs+Ys4p9ttYTRihiN6WVvlKBfTAkmuhZGBN5sy4ZZUhSs+FLNShUkFOtBVC
-         Kp4H5+JfyjnNYof04pYZ5ghqN+PnmDyhS5oRbWEMaKZQpczke8hdigyKPwOV8AutCKvr
-         muYcl0x6w8aVQWeKG8p29IOqk0EPSzOsC7562MdAp3vHHrObdyclAGQ1D6w7674GFJDK
-         oHXPBdHXAppU+Z+RylLDictKfT+QXhG0AdcVsUzHE5ceKTXzvFouF3mcYP+4IMh/45df
-         mHzbEHXeJ4Eb2w0JJf30tMq2DcPRFSAsMRfjkmilWv1LW8cuPWqJt65B17/rehybSCcp
-         1uMQ==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fVUJ12oZxh3fE+tpbFaO7BT47tEH9r/2CUQ0iKEYM/c=;
+        b=LFFRqpcEvv3LFHUcz7z5NPSi20nI0gQTb6xu3XzZR62RAFhUaNly9In3Q36dk4eg6/
+         K0yiz/8gn4WUjFNWj0/k3wCqi4XNMUc6XGZYfeG0OWl2eRjanEVys0adqC8wwJql62en
+         boKCtmV8FoJlsV4VkEN2tzuuJlTAnzriCMnxZfrG4kGXNNAy3CByQG7hyz6pIocRY1wa
+         WkC2mvthsL1jUPY0WtCXInubtprX0+PtaPNicznRrllG2++axz+YiIfLG/m76OAep2Z1
+         dgVr+0F68BoOuF3NvrKc+YFuiaR96p/Hw2c0YKznRj+zLdhQf8plfyGKbRD6nRgr/kcB
+         gLmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=FMdFUwxD2m3I4SoM+J772H7vQty27Q4nst6R1kvnYpw=;
-        b=AKhTSNI2AKm2yVX0X2DjyV0I/fEPreW+soZ8iK0L6hg8OvGSmKhQKzCPz7EZliEri5
-         bvaDyt5+scdpXvZkXJrbcR0ENjWnC1A1MMJpW7dIfmX0PWLNv+ayMz9BgCR7H8H/jaPQ
-         zrXR0M1rTVepHD9C7bnF0kP1yQ+MClCPKjWSiuCrMNyr82+I5glOXuuDXDC6XGlJ6PJ/
-         aIfrtg3RWIghLlRbq4beYBOLwkUKXVkhvcfUSA450I4J3h9GKX8s18pO45DOd8TcHmUS
-         0k9eFK2rhLK0NflIW0iDZHeyvVUFL2j4FKL8gK9S6loFLA3RuTQUko3CcL+UyVebsGUS
-         K4oQ==
-X-Gm-Message-State: AOAM533vAAQMlrO/CrUGI4LNeWAhqciBDA+PytoguI53ZC99ACwF/QEI
-        51S0EkQP3sAmaFA2cMAd/ws=
-X-Google-Smtp-Source: ABdhPJyyvK0D/DI7YH38pseiWLXQBnqcvP/8CVNezlSFh828yQEEaTVbXyFLwvNT3iF7ixzjo5zsMw==
-X-Received: by 2002:a37:56c6:: with SMTP id k189mr9011032qkb.501.1607096754668;
-        Fri, 04 Dec 2020 07:45:54 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id s130sm5055078qka.91.2020.12.04.07.45.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 07:45:53 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 4 Dec 2020 10:45:25 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Josh Don <joshdon@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>, chris.hyser@oracle.com,
-        Ben Segall <bsegall@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Oleg Rombakh <olegrom@google.com>
-Subject: Re: [PATCH -tip 26/32] sched: Add a second-level tag for nested
- CGroup usecase
-Message-ID: <X8pZlZgSq4aoIqoF@mtj.duckdns.org>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-27-joel@joelfernandes.org>
- <20201125134237.GZ2414@hirez.programming.kicks-ass.net>
- <CABk29Nv7+nD1oU9iBhAFAuFoiPM5i7eCOtuG7vuQVcE8+Va=nw@mail.gmail.com>
- <20201202080211.GD3021@hirez.programming.kicks-ass.net>
- <CABk29Ns-QWGV+XpN8TJ5CL50jhrpqKAhfoOfaPSCjiFq7S7j1Q@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fVUJ12oZxh3fE+tpbFaO7BT47tEH9r/2CUQ0iKEYM/c=;
+        b=k6PpmgzUdu/KuBCCCbJ4M0JUy/3VLO/8OuE9OG/75Dc4oWsjGsGRykvX2G4efIoDq7
+         sBYEktyHwDm0E/2bigVazgtViPUnjKpjVuf+5Mk2ObwySf35mf5XXYqdP5kwhbdlnm+g
+         Lwc67r3UcFGXglttbcUqNllZjUQjZEKVKzthiHIaOfj67KjxOMU8u5EmBJe8yAYOeZim
+         wymDDUNq993aca4NjjXu0ld9VXTl5btJSTjcV0dIOkyXyXOYrEY1YEk6rxPIFSAo7PhM
+         rjrCnUsDjRZnkojZUCSQZsCNrgkxETies+aSDNJiaMEzvzxM7b1hCuveD5ZldrrB+iSf
+         4GWQ==
+X-Gm-Message-State: AOAM531fVGFzUTezVzi6YSopWayeO7lYnocyyX47wWU/O1F2dT2wAArG
+        jfmmpebAPOxZ0FDOjCOW/tX1GCIpXsbwzBiaMJaNkYwXPudVnw==
+X-Google-Smtp-Source: ABdhPJwDQT/rhn6e5+j2BJSKSv+SjHokbRSP8gl8seNIrhdC3fDvLCZ7VLaASR/oaciI3bW1yXsbwX8AoVRrmAE7PYU=
+X-Received: by 2002:a17:90a:c588:: with SMTP id l8mr4574169pjt.147.1607096782347;
+ Fri, 04 Dec 2020 07:46:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABk29Ns-QWGV+XpN8TJ5CL50jhrpqKAhfoOfaPSCjiFq7S7j1Q@mail.gmail.com>
+References: <20201204125640.51804-1-songmuchun@bytedance.com> <27277a9f-c726-b033-51c1-d88f978fabfd@suse.cz>
+In-Reply-To: <27277a9f-c726-b033-51c1-d88f978fabfd@suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 4 Dec 2020 23:45:45 +0800
+Message-ID: <CAMZfGtUJK+2MDwK1xLOOuGHfddA4+57FZVtSw6JURnPdTngeeg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] mm/page_alloc: speeding up the
+ iteration of max_order
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Dec 4, 2020 at 11:28 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 12/4/20 1:56 PM, Muchun Song wrote:
+> > When we free a page whose order is very close to MAX_ORDER and greater
+> > than pageblock_order, it wastes some CPU cycles to increase max_order
+> > to MAX_ORDER one by one and check the pageblock migratetype of that page
+> > repeatedly especially when MAX_ORDER is much larger than pageblock_order.
+>
+> I would add:
+>
+> We also should not be checking migratetype of buddy when "order == MAX_ORDER -
+> 1" as the buddy pfn may be invalid, so adjust the condition. With the new check,
+> we don't need the max_order check anymore, so we replace it.
+>
+> Also adjust max_order initialization so that it's lower by one than previously,
+> which makes the code hopefully more clear.
 
-On Thu, Dec 03, 2020 at 04:51:42PM -0800, Josh Don wrote:
-> > So me the color thing reads like an end-run around the cgroup hierarchy.
-> 
-> Restructuring the cgroup resource hierarchy to incorporate the trust
-> domains is not necessarily trivial (as is the case for us).  I agree
-> though that that would be the ideal correct solution from the cgroup
-> hierarchy perspective.
+Got it. Thanks.
 
-Yeah, it sure isn't. We (FB) had to go through a couple iterations and it's
-looking like we need another adjustment, so I fully agree that these are
-painful but at the same time I don't think it's difficult to see that how
-piling up workarounds in the lowest layer is not the right thing to do. The
-workarounds you guys need would be different from what we or others would
-need. The kernel can't be maintained in any sustainable manner if we keep
-piling on disjoint workarounds on it. Please consider long term trajectory
-when proposing interface changes which often boils down to identifying the
-core features which must be supported by the interface.
+>
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> Fixes: d9dddbf55667 ("mm/page_alloc: prevent merging between isolated and other
+> pageblocks")
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Thanks!
+>
+> > ---
+> > Changes in v2:
+> >  - Rework the code suggested by Vlastimil. Thanks.
+> >
+> >  mm/page_alloc.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index f91df593bf71..56e603eea1dd 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -1002,7 +1002,7 @@ static inline void __free_one_page(struct page *page,
+> >       struct page *buddy;
+> >       bool to_tail;
+> >
+> > -     max_order = min_t(unsigned int, MAX_ORDER, pageblock_order + 1);
+> > +     max_order = min_t(unsigned int, MAX_ORDER - 1, pageblock_order);
+> >
+> >       VM_BUG_ON(!zone_is_initialized(zone));
+> >       VM_BUG_ON_PAGE(page->flags & PAGE_FLAGS_CHECK_AT_PREP, page);
+> > @@ -1015,7 +1015,7 @@ static inline void __free_one_page(struct page *page,
+> >       VM_BUG_ON_PAGE(bad_range(zone, page), page);
+> >
+> >  continue_merging:
+> > -     while (order < max_order - 1) {
+> > +     while (order < max_order) {
+> >               if (compaction_capture(capc, page, order, migratetype)) {
+> >                       __mod_zone_freepage_state(zone, -(1 << order),
+> >                                                               migratetype);
+> > @@ -1041,7 +1041,7 @@ static inline void __free_one_page(struct page *page,
+> >               pfn = combined_pfn;
+> >               order++;
+> >       }
+> > -     if (max_order < MAX_ORDER) {
+> > +     if (order < MAX_ORDER - 1) {
+> >               /* If we are here, it means order is >= pageblock_order.
+> >                * We want to prevent merge between freepages on isolate
+> >                * pageblock and normal pageblock. Without this, pageblock
+> > @@ -1062,7 +1062,7 @@ static inline void __free_one_page(struct page *page,
+> >                                               is_migrate_isolate(buddy_mt)))
+> >                               goto done_merging;
+> >               }
+> > -             max_order++;
+> > +             max_order = order + 1;
+> >               goto continue_merging;
+> >       }
+> >
+> >
+>
 
-Thanks.
 
 -- 
-tejun
+Yours,
+Muchun
