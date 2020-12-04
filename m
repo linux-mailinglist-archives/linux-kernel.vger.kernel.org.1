@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0434A2CEEDE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A592CEEE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730278AbgLDNhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 08:37:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbgLDNhE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 08:37:04 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A34C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 05:36:24 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id f24so6608779ljk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 05:36:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
-        b=HbSfttxPI/gUHhRr/UyvVpqMrVi6xPJGv/rjCLr7e8DS68mt658FHveu2bL7ef3NBh
-         I7lCMJi1tc6LRKfpKiccxJ6Z3bELbdJ6Frk2TD9QMdalXcuhUWBPCIA/UTyNjh9oOkOt
-         W3T+oAawISor2oVZYkvRLb/dG/iz3U8lfXptq8w/x1IKxRyBL3+LTHNurB+Fb+n71A8N
-         F2WxqchLvidlQ5lcgs5tBGgI+pY0NCU4BXSludDrliYzSD3RIck00bLGgkTC4C2vwzZ7
-         8yc5NvjjU5W0YUVv6lhp55fKNC4Y4Heqjqd4tknAS/tr61gNkdBAxyvtMsfO1Y8KYVWE
-         n7Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
-        b=GnWbBIHFqBiAv3RhbamjOuHfOSfW8Oksdwu0lcXoItjf2Fc86yIaBLcHws05f6rLHz
-         aL57Fc3Vzu4D4okQqiF+HvjsQjo0pd21XpVEl7JHINV4NaVWEdKq0NPTlgadmmhmzkwC
-         VTvrGK8dIuMvt1VzCbIE2ljpyRwB5/ryW6jFhgql6PCKOAazCjuxquFqnELlxsEVyAja
-         /ctGX2/jz8Iqtt929BcumWxRNNz5FX//uTv+K3y1RDX3hyMJzoP9BtzAFQ5go66JaVED
-         lf2sxIBKQq+djRGmaB1L2i6igcSR5yuoER+ny/ZfsyvWQNWxmXR1/16rA+XVvWn9TNKy
-         v5RA==
-X-Gm-Message-State: AOAM531Z3RA6h+74JrFYFa9IL14f3zqIWgkR5R3bxDuR418lH1rx7ajP
-        Wx3ZlGtmMqwB0Bq3puEfuHbrs1Yck27+ZTNJiTY=
-X-Google-Smtp-Source: ABdhPJyjCGaN8RFqTqkTRhpW6aByhLU2quEnOxpFeoC3hFh2HmIaFc4wtgttiwLnIpGNVlHnYMWHFLteCwb33W2Avwo=
-X-Received: by 2002:a05:651c:509:: with SMTP id o9mr3240809ljp.212.1607088982584;
- Fri, 04 Dec 2020 05:36:22 -0800 (PST)
+        id S1729310AbgLDNkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 08:40:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728773AbgLDNkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 08:40:40 -0500
+X-Gm-Message-State: AOAM532wejPURLcvXkvFysRBQ9/M1w90Ob9xwy4bKeVVGI79AQ7N/eDO
+        6ldqvCj012Rd6Jh692+04YLeFzoPzWq4T/xDwXI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607089200;
+        bh=by+WemB1peGkDQCzG6Dx4fJiZpkp8EyT9CK+EgBPFBY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=P9fqTJYnovZ7CqWKNLPqp3JDvu8xXsPnj8jn7pH6Ug+r6FzupbvR7zlfXpYzya5ML
+         7KZYDSndDV+ef+CoikM2o2unFtRjbLfdufK9+/KzZxjYljiz4wWL/IjWEHAk/jys8l
+         aRSHgr8Uh8xIhFkeeyYYN27zubt95Eo8486/2WJfqU/82Sgk/0tJnHPhx0DznvKKi4
+         MGRAAOeXXyQAzrg45t7PuZdJKIcAFCxgz9MHi6PKEHznUVSyAaedtuVtkUzDuMGAnP
+         qxoGHLfxboturzy9mux7mUlcKbEouhPhHp4AbW+Nz/+UnfHgIcgzTe/Q8DwQRqjW8h
+         FuyUpmicxAUEg==
+X-Google-Smtp-Source: ABdhPJyVvyTGM7IAyI/w7/Qek6izIlhZgoKlo/DKiQITg//JIDtXfBeRI4Dxv4lRMr11iPKdROVTob8oGvClJSg0LxU=
+X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr3651139otc.305.1607089199092;
+ Fri, 04 Dec 2020 05:39:59 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a9a:7944:0:b029:9a:2cb1:39e3 with HTTP; Fri, 4 Dec 2020
- 05:36:22 -0800 (PST)
-Reply-To: cephasagbeh1@gmail.com
-From:   Cephas Agbeh <yayausman6@gmail.com>
-Date:   Fri, 4 Dec 2020 14:36:22 +0100
-Message-ID: <CANqh6nPeY3_NM-hbPfohPUvdxxck_yisP2RqoVcsOrpO_ZG5Pg@mail.gmail.com>
-Subject: Important Notification
-To:     undisclosed-recipients:;
+References: <20201203232114.1485603-1-arnd@kernel.org> <20201204110331.GA21587@netronome.com>
+In-Reply-To: <20201204110331.GA21587@netronome.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 4 Dec 2020 14:39:42 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0Ncuo6yq2rPpB6wV_r8B87qZ3Ba7to1zdM_BL++j0ksg@mail.gmail.com>
+Message-ID: <CAK8P3a0Ncuo6yq2rPpB6wV_r8B87qZ3Ba7to1zdM_BL++j0ksg@mail.gmail.com>
+Subject: Re: [PATCH] ethernet: select CONFIG_CRC32 as needed
+To:     Simon Horman <simon.horman@netronome.com>
+Cc:     Mark Einon <mark.einon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@resnulli.us>, Arnd Bergmann <arnd@arndb.de>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        oss-drivers@netronome.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am bringing this notice to your attention in respect of the death of
-a deceased client of mine that has the same surname with you and his
-fund valued at $19.9M to be paid to you.contact me at
-cephasagbeh1@gmail.com for more details.
+On Fri, Dec 4, 2020 at 12:03 PM Simon Horman <simon.horman@netronome.com> wrote:
+>
+> I'm slightly curious to know how you configured the kernel to build
+> the Netronome NFP driver but not CRC32 but nonetheless I have no
+> objection to this change.
 
-Yours Sincerely,
-Cephas Agbeh,
-Attorney At Law.
+I ran into one link error on a randconfig build and then tried an 'allyesconfig'
+configuration, turning everything off manually that selects CRC32.
+
+Working through the resulting link errors ended up being more work than I was
+planning for though, so I don't recommend reproducing this. I have another 25
+patches for other subsystems.
+
+       Arnd
