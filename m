@@ -2,149 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0F52CECD6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26D62CECD8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729996AbgLDLOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:14:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729976AbgLDLOQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:14:16 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E5FC061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 03:13:36 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kl91l-0006DV-2e; Fri, 04 Dec 2020 12:13:29 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kl91i-00046Q-HT; Fri, 04 Dec 2020 12:13:26 +0100
-Date:   Fri, 4 Dec 2020 12:13:26 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Young <sean@mess.org>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, thierry.reding@gmail.com,
-        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
- configuration
-Message-ID: <20201204111326.qjux6k2472dmukot@pengutronix.de>
-References: <202011281128.54eLfMWr-lkp@intel.com>
- <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
- <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
- <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
- <20201204084417.GA2154@gofer.mess.org>
+        id S2387790AbgLDLOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:14:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730007AbgLDLOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 06:14:33 -0500
+Date:   Fri, 4 Dec 2020 11:13:47 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607080433;
+        bh=enaPqvFSZYwkrwi8cQ39U611krzuHcmjaLAOJCcEdWA=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LWQeM+hqSApsA1cwu0COKWySugNBlvgRlsWxKmwcwZIuXPNEaFAZInavrkcLxgPBi
+         bNyDR/tLUNP5UdFyuFe9R5Bc5G14yZvSgAfDo1f3rX59sWjLCEy5qrO+c01VZ2pfrJ
+         1Kng5b0RiV3oufAgQFjIUCwkAJwBsHc5bc4HThK8LADEqHv9aTi1cb24mf/FvNURmR
+         JTmh97mcCHygtuYJVkLTLBc2v8oizzFdE7mXhi9+pfVEHQ+FKgPAET4vWSt+l1SgzE
+         YeBoQtG8uPD8/xaRP5pv4AyQzc+pxUjGMp1fAGm/G05/z1oODBoS3sy+WJYvk2Qela
+         PKBmzxlnQvheA==
+From:   Will Deacon <will@kernel.org>
+To:     Wei Li <liwei213@huawei.com>
+Cc:     catalin.marinas@arm.com, rppt@linux.ibm.com,
+        fengbaopeng2@hisilicon.com, nsaenzjulienne@suse.de,
+        steve.capper@arm.com, song.bao.hua@hisilicon.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        butao@hisilicon.com
+Subject: Re: [PATCH] arm64: mm: decrease the section size to reduce the
+ memory reserved for the page map
+Message-ID: <20201204111347.GA844@willie-the-truck>
+References: <20201204014443.43329-1-liwei213@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gm4bedrwxq43tqli"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201204084417.GA2154@gofer.mess.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201204014443.43329-1-liwei213@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 04, 2020 at 09:44:43AM +0800, Wei Li wrote:
+> For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
+> do not free the reserved memory for the page map, decrease the section
+> size can reduce the waste of reserved memory.
+> 
+> Signed-off-by: Wei Li <liwei213@huawei.com>
+> Signed-off-by: Baopeng Feng <fengbaopeng2@hisilicon.com>
+> Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
+> ---
+>  arch/arm64/include/asm/sparsemem.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/include/asm/sparsemem.h b/arch/arm64/include/asm/sparsemem.h
+> index 1f43fcc79738..8963bd3def28 100644
+> --- a/arch/arm64/include/asm/sparsemem.h
+> +++ b/arch/arm64/include/asm/sparsemem.h
+> @@ -7,7 +7,7 @@
+> 
+>  #ifdef CONFIG_SPARSEMEM
+>  #define MAX_PHYSMEM_BITS	CONFIG_ARM64_PA_BITS
+> -#define SECTION_SIZE_BITS	30
+> +#define SECTION_SIZE_BITS	27
 
---gm4bedrwxq43tqli
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We chose '30' to avoid running out of bits in the page flags. What changed?
 
-Hello,
+With this patch, I can trigger:
 
-On Fri, Dec 04, 2020 at 08:44:17AM +0000, Sean Young wrote:
-> On Fri, Dec 04, 2020 at 12:42:15AM +0100, Lino Sanfilippo wrote:
-> > > You're storing an unsigned long long (i.e. 64 bits) in an u32. If
-> > > you are sure that this won't discard relevant bits, please explain
-> > > this in a comment for the cursory reader.
-> >=20
-> > What about an extra check then to make sure that the period has not bee=
-n truncated,
-> > e.g:
-> >=20
-> > 	value =3D DIV_ROUND_CLOSEST_ULL(state->period, scaler);
-> >=20
-> > 	/* dont accept a period that is too small or has been truncated */
-> > 	if ((value < PERIOD_MIN) ||
-> > 	    (value !=3D DIV_ROUND_CLOSEST_ULL(state->period, scaler)))
-> > 		return -EINVAL;
->=20
-> Rather than doing another 64 bit division which is expensive (esp on 32 b=
-it
-> kernels), you could assign to u64 and check:
->=20
-> 	if (value < PERIOD || value > U32_MAX)
-> 		return -EINVAL;
+./include/linux/mmzone.h:1170:2: error: Allocator MAX_ORDER exceeds SECTION_SIZE
+#error Allocator MAX_ORDER exceeds SECTION_SIZE
 
-Given that value is a u32, value > U32_MAX will never trigger.
+if I bump up NR_CPUS and NODES_SHIFT.
 
-Maybe checking period before doing the division is more sensible.
-
-> > > Also note that round_closed is probably wrong, as .apply() is
-> > > supposed to round down the period to the next achievable period. (But
-> > > fixing this has to do done in a separate patch.)
-> >=20
-> > According to commit 11fc4edc4 rounding to the closest integer has been =
-introduced
-> > to improve precision in case that the pwm controller is used by the pwm=
--ir-tx driver.
-> > I dont know how strong the requirement is to round down the period in a=
-pply(), but I
-> > can imagine that this may be a good reason to deviate from this rule.
-> > (CCing Sean Young who introduced DIV_ROUND_CLOSEST)
->=20
-> There was a problem where the carrier is incorrect for some IR hardware
-> which uses a carrier of 455kHz. With periods that small, rounding errors
-> do really matter and rounding down might cause problems.
->=20
-> A policy of rounding down the carrier is not the right thing to do
-> for pwm-ir-tx, and such a change will probably break pwm-ir-tx in some
-> edge cases.
-
-IMO it's not an option to say: pwm-driver A is used for IR, so A's
-=2Eapply uses round-nearest and pwm-driver B is used for $somethingelse,
-so B's .apply uses round-down. To be a sensible API pwm_apply_state
-should have a fixed behaviour. I consider round-down the sensible
-choice (because it is easier to implmement the other options with this)
-and for consumers like the IR stuff we need to provide some more
-functions to allow it selecting a better suited state. Something like:
-
-	pwm_round_state_nearest(pwm, { .period =3D 2198, .. }, &state)
-
-which queries the hardwares capabilities and then assigns state.period =3D
-2200 instead of 2100.
-
-Where can I find the affected (consumer) driver?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---gm4bedrwxq43tqli
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/KGdMACgkQwfwUeK3K
-7AmNDwf+MoowMGzcyU/5yAwSkPGkjJDBASacRhu95RcC7ey4zPTQK6pl9kOCZqIS
-fFAekyFO6neCy2EDeMKwDmVcZS0rZRS/HskJhhAcop3LbsT3Xg2kcK6zV5Pabahn
-KLp0drec7iLTGS9blagebWAqTsLnu3S/UNUA18vHviIZ+f7qpuxdzCri17bi+j8Z
-y+muPtgemDF8Ip0edZMoV4pABJ3RP1bJR+CF3hIes8d62uuQnydHDsFBAXNAc6Dm
-vEWErWr4Q7HQUmsrMKcXJARIF9L+LRclOXu690ao7TVAz5NgJSKU6aE9vk/N8/Xv
-DGFmvEXzlOeEXpFEjWHADtDXH5yWLg==
-=OBqj
------END PGP SIGNATURE-----
-
---gm4bedrwxq43tqli--
+Will
