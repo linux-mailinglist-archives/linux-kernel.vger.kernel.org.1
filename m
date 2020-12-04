@@ -2,130 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0DF2CEE0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5442C2CEE12
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730065AbgLDM07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 07:26:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
+        id S1729445AbgLDMaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 07:30:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgLDM07 (ORCPT
+        with ESMTP id S1725867AbgLDM37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:26:59 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E678C0613D1;
-        Fri,  4 Dec 2020 04:26:18 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id ga15so8425680ejb.4;
-        Fri, 04 Dec 2020 04:26:18 -0800 (PST)
+        Fri, 4 Dec 2020 07:29:59 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A94C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 04:29:13 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id o1so3730172qtp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 04:29:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Do3oqdTH7dveVVzcLf/9LFZKZhHi0k7C7i3j07nGhQ8=;
-        b=OJKLJ5CF7IFSOrgs4oKmQdpr+n4H0yOrjsgmMTQpqzyVk9V6sEOr9krgIR2CqI/eg2
-         Olo2mJ373LWDKVEs4Zvxs6xOat5nXq3f8jPu1NeSZvHt09Q8+YN5xls41wKGDSMpJX/K
-         4HgneLa13KR/eb5Yzw0NBIYdXx4L4NkQqFvMAY0EY8sNpCrlrI8cDLlBGrmQMxEvE+XE
-         xoyMVCPLeAYJru9kb0QbkzbjNA+mwtfIvvY526ZkQB2Vnz7QmArTzmUAh1PY0N0PPZVW
-         1Oj6Y5T1ofLG3dEdL8w9l51AFDIWfZZnZEZU3NtxU28cQFubQiSHelxZKhjzivtXmsxf
-         tGpg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=E+yzFXIW/SQF93FksrpbqqTewefE+vrapU8Z3tg/OfY=;
+        b=vQyupD/hnfpF1w+LBmivJCLJbF/uyr95MEQGWWFEUS55KnvlgBibrZJ5tV2uofztNP
+         9wEffK+/5P3iYW5hKwx3rmO1TTRcvSS2j/fNq2BkP6tGhz/wbai7GjeJyRrRHEfxJMTz
+         XfAoPoI9tKsoOB+uZdAdLQUToK/GXFYqOXIkGw06uZKp0mAtTtcuK9shfdwjGZik7bWB
+         76EPD7uyiW9hOTbMBXV3I/ZrnG+ZhvzGjupfzeAlSnQnTz9DZg/okSUa7uAdxRZCOnYD
+         OWEiTm/bAebMah9fe/BmfT8emf8SaKenWSF7e2+15ZBr3Af4Vm6rHqmPFRTnycqqwE3p
+         V26g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Do3oqdTH7dveVVzcLf/9LFZKZhHi0k7C7i3j07nGhQ8=;
-        b=EGL0nft7BOkvEVlvfjYXTRViLnP7t8wLsTX8+zOreO87UASnq6BuTAx5uhgcNiT6X6
-         abezLJUOt1dhx17k2ikXPWpWWvagu0Rp5w4H6yN2yr1gT+ezKKwKNExzTEHhiZxDJOfC
-         b5K/lvIxl+Z2EGfpHD3WZOyelAtZGT8xCQB+/spGGYTjyZY/9kjUv5+vhVuDdh61TEBz
-         uvStP06gZyaTSKlUFx7n8d1W9XnptkA+Ch2BvL2qnNzgj5KBQwgxgezKUnG29z1BHuiW
-         AEp0kuEeESOsn5eEsHqpZhMMVmEuJXGkh8MzDJBofcK1ef0GcqYEoiN1a3KUq5KDz12Y
-         xJNg==
-X-Gm-Message-State: AOAM531Sw80kYTQwS+UKdOxlCHJG7aaYdpg5gQfgT2HpIG4u3ZFpHqXJ
-        5m2efzvacVWffILUk3qpCdM=
-X-Google-Smtp-Source: ABdhPJwyOdmo/tJVMsSbtt3KeXnx37toRK0rO7Y5EgRhnsY2ZjlH90vCVdnqHBzTke2oBWNZyceV/g==
-X-Received: by 2002:a17:906:a51:: with SMTP id x17mr6924333ejf.97.1607084777415;
-        Fri, 04 Dec 2020 04:26:17 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id 65sm3375145edj.83.2020.12.04.04.26.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 04:26:15 -0800 (PST)
-Date:   Fri, 4 Dec 2020 13:26:14 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>, jonathanh@nvidia.com,
-        robh+dt@kernel.org, linux-spi@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 3/7] spi: qspi-tegra: Add support for Tegra210 QSPI
- controller
-Message-ID: <X8oq5vZRD600IFwd@ulmo>
-References: <1606857168-5839-1-git-send-email-skomatineni@nvidia.com>
- <1606857168-5839-4-git-send-email-skomatineni@nvidia.com>
- <20201202172721.GL5560@sirena.org.uk>
- <2257bc33-80ef-a6d8-8542-480defa32937@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=E+yzFXIW/SQF93FksrpbqqTewefE+vrapU8Z3tg/OfY=;
+        b=qjtsmSRVuXiWv9F5Dx9QTPbTeLmQ2ba+kaiyKP1jVH4AjjAb1NcEiDjcViF327W49F
+         msbpCIPjDYgBOsRBeLXPpLwGYJQEAPTPaVwVgzSbaguZ5AFp1wbSFKZzGcRgj/PiOc63
+         OCKAmFhb3D8Uw0sORdZh8Ljbyzg05+3mMlDh8bMb4AcjoGROW7vYS/pmfFm7EH5H4VHA
+         hRNNV+X2FXCqZUg6c9I+MNmbxEME9KFrpd7F7Nw/2QpWL+Iu1I4IqbWF4pzbZqWhaWHm
+         iXHn0mxWo8qDGLgzg1hwcw8UfcPSlwCorDr6Lui82QGLDbnk+TxTswW+5J/qxSwIgbTv
+         JHew==
+X-Gm-Message-State: AOAM531PsMAwXh4Anfvr/o5Ckm6EVhOyxWklpTwi9h98BXezQdedHy9o
+        WN4QNQnRs4bfYdT+k+R15XB/iaLNuqDkc/jX5A7rDQ==
+X-Google-Smtp-Source: ABdhPJzt8D+UI/bRjnIjspRkJfEKkMKQoOvjAujo3pizFQRDHEqt6L8+g0r9NmRNjgUJQ2DgeOFcAyo1k6p0KISWCkY=
+X-Received: by 2002:ac8:4c89:: with SMTP id j9mr8912771qtv.8.1607084952474;
+ Fri, 04 Dec 2020 04:29:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="dMt5SDLPoOEwNGde"
-Content-Disposition: inline
-In-Reply-To: <2257bc33-80ef-a6d8-8542-480defa32937@nvidia.com>
-User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
+References: <20201204121804.1532849-1-anders.roxell@linaro.org>
+In-Reply-To: <20201204121804.1532849-1-anders.roxell@linaro.org>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 4 Dec 2020 13:29:01 +0100
+Message-ID: <CAG_fn=VJZC=HfVk_Tx6DUp+M17NZQO4Dao7jrj4WVaQp9jd3=A@mail.gmail.com>
+Subject: Re: [PATCH] kfence: fix implicit function declaration
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 4, 2020 at 1:18 PM Anders Roxell <anders.roxell@linaro.org> wro=
+te:
+>
+> When building kfence the following error shows up:
+>
+> In file included from mm/kfence/report.c:13:
+> arch/arm64/include/asm/kfence.h: In function =E2=80=98kfence_protect_page=
+=E2=80=99:
+> arch/arm64/include/asm/kfence.h:12:2: error: implicit declaration of func=
+tion =E2=80=98set_memory_valid=E2=80=99 [-Werror=3Dimplicit-function-declar=
+ation]
+>    12 |  set_memory_valid(addr, 1, !protect);
+>       |  ^~~~~~~~~~~~~~~~
+>
+> Use the correct include both
+> f2b7c491916d ("set_memory: allow querying whether set_direct_map_*() is a=
+ctually enabled")
+> and 4c4c75881536 ("arm64, kfence: enable KFENCE for ARM64") went in the
+> same day via different trees.
+>
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 
---dMt5SDLPoOEwNGde
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Dec 02, 2020 at 11:17:18AM -0800, Sowjanya Komatineni wrote:
-> On 12/2/20 9:27 AM, Mark Brown wrote:
-> > On Tue, Dec 01, 2020 at 01:12:44PM -0800, Sowjanya Komatineni wrote:
-[...]
-> > > +static int tegra_qspi_setup(struct spi_device *spi)
-> > > +{
-> > > +	if (cdata && cdata->tx_clk_tap_delay)
-> > > +		tx_tap = cdata->tx_clk_tap_delay;
-> > > +	if (cdata && cdata->rx_clk_tap_delay)
-> > > +		rx_tap = cdata->rx_clk_tap_delay;
-> > > +	tqspi->def_command2_reg = QSPI_TX_TAP_DELAY(tx_tap) |
-> > > +				  QSPI_RX_TAP_DELAY(rx_tap);
-> > > +	tegra_qspi_writel(tqspi, tqspi->def_command2_reg, QSPI_COMMAND2);
-> > The setup for one device shouldn't be able to affect the operation of
-> > another, already running, device so either these need to be configured
-> > as part of the controller probe or these configurations need to be
-> > deferred until we're actually doing a transfer.
-> We will only have 1 device on QSPI as we only support single chip select.
+Thanks!
 
-Even so we could make the driver operate as if there were multiple
-devices. This has the advantage of setting a better example for someone
-who might be reading this code as reference, and it might come in handy
-if for whatever reason we ever end up with a QSPI controller that does
-support multiple chip selects.
+> ---
+>
+> I got this build error in todays next-20201204.
+> Andrew, since both patches are in your -mm tree, I think this can be
+> folded into 4c4c75881536 ("arm64, kfence: enable KFENCE for ARM64")
+>
+>  arch/arm64/include/asm/kfence.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/include/asm/kfence.h b/arch/arm64/include/asm/kfe=
+nce.h
+> index 6c0afeeab635..c44bb368a810 100644
+> --- a/arch/arm64/include/asm/kfence.h
+> +++ b/arch/arm64/include/asm/kfence.h
+> @@ -3,7 +3,7 @@
+>  #ifndef __ASM_KFENCE_H
+>  #define __ASM_KFENCE_H
+>
+> -#include <asm/cacheflush.h>
+> +#include <asm/set_memory.h>
+>
+>  static inline bool arch_kfence_init_pool(void) { return true; }
+>
+> --
+> 2.29.2
+>
 
-If that's overly complicated, maybe a compromise would be to document
-very explicitly that this only works because Tegra QSPI supports a
-single chip select?
 
-Thierry
+--=20
+Alexander Potapenko
+Software Engineer
 
---dMt5SDLPoOEwNGde
-Content-Type: application/pgp-signature; name="signature.asc"
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/KKuYACgkQ3SOs138+
-s6FFpBAAjwrCChoV/mRCl1qXNIhjHrIrX80SlHghztIcd2MELmlTh9T7eQfFQpwl
-XXHldwrXRyUNLvHs4GoKdRqigimgf/BbtaWFrQtKT+7y26WRLoQD7LLAC6i2gRoy
-58ugbuGeo4klocB82RLxS/zBgGcB32tb9dwkssOvxnqnKXkKgsKa6d7VBvnwKSnI
-u3NlS8YbEchDG13XmyFjbh18t4wQiu7yFrq6XqGHVatJ3Tf9FUfry9RHUqcagaTp
-qDyI70Zqk0xWoZi6LU16MulJtVThFCQq+LP6cPjZcqQbhba1XNwF/vl9j71wDEpx
-BvWWNmmvU5q0a0v0lDIcSpUVV5ZySOIwM1zniQhRosoknwApG4ckoqasj/Wa8H+Y
-xYBecR8Y8er9XQfRX+4XAY82Y5TKAirIyYkjibfc3+20O8Fjrx/BpWFMDlb+DF7K
-tVsaJzDeE1hqdl0DvALYZELLl47qjk+fybujvnsg1y5Dc48RujyNAtAPAIF0VKg2
-x/bo1A+zRe7gS54fCjoZ3GXl8MG9dsFLOD4A8Ei2L1ai20+Ip0N1CIs2SkTungkL
-YuUld3ETG5Zp3ropWjJMORQppGnZk9fSiYdLsfsZbyMUPmOPn2qVtZfGTZ4CLLdt
-6TaqE3zh0Sf3XygAUcNLNMLyrbB5YSKZ9sW4WSneQu/96lPmMgk=
-=TdSe
------END PGP SIGNATURE-----
-
---dMt5SDLPoOEwNGde--
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
