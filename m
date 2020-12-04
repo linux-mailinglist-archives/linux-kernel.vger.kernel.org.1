@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060D62CEA5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8FF2CEA58
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729227AbgLDJA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:00:26 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:41893 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726860AbgLDJA0 (ORCPT
+        id S1729073AbgLDI7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:59:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgLDI7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:00:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1607072425; x=1638608425;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=hd8ZmjId7vBbXQM1jz5+4Nu+51CF6i4iXNW7aRPTEWM=;
-  b=ZBWg4gq+2MNB5vaNSMIdkwxm1fOporNa83h+/unjzyc3XvZU6nNQnNDI
-   vKx0+0glU6A0rLu4jO7N1I6qiDBWoKxoHcpZKbYtc5cWZik3Tl9X0xee1
-   lXbDVY4UCewQEq3vaH14BD+Gg3kqX2C6abBWRuARwn/qv4NyLZK14Er74
-   smEtrX8gcmoQBsU3ygUgoMn3H3TdOtzp0JDDVQqIi7ule88M6uiL/UlD4
-   10tAtzx+myVyQN3YNv6S6BogY60RoBVuCGzYTayG2oUqo47CfNDd31Ffz
-   1yMiotWJIgN8yy78hqdAC0yt8ASYlYi914V9keiLhU3mCSWz9h/+sa+CH
-   A==;
-IronPort-SDR: cY9dAJSm1SPbcoIh62NBx3SMW8TAEpLeV+NGOGs959m+u2coiyp1ZO/m7lokcQcJ7Vd9pvWNAz
- d08vzzPo3ab8epw+scgrLomoxG3n7IVcnH1g1GGkli/9kuxw8ABSRdZ5Ou0jQTJ5ZXOW9gzbNp
- RZEd6hme4SJYwfHaDgPMN9DzT9I5tzDM5dThEgb3VMH/TnHA/uM34yoHz91n51iw3avuohVtwy
- pYtXAZLcns3I6FXoInz6fU5eNWa61W6tQUeug5qLdODjv/KxBpOI+btLs8TkBVWYW2IVEflR4G
- RKM=
-X-IronPort-AV: E=Sophos;i="5.78,392,1599494400"; 
-   d="scan'208";a="258129844"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 04 Dec 2020 17:18:03 +0800
-IronPort-SDR: AIGhHAeu70aBtnDXVT9Rh4Vl8v9v5OVXufL+qT0Zv25kAezq9qrObmELGZ/mFeemAMF8Q2ORAE
- NXaPK77ZBHFYV2VJ8/zcRio3zn6ti1naU=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 00:44:11 -0800
-IronPort-SDR: YOD2hDxJzF7vnxvNHifPyI2Oz/45hnF4x7vnKsbiL5xlYmiL7JrCkysKlgtj+4NhYzIIZq7lHn
- cAyt4lJHnBqg==
-WDCIronportException: Internal
-Received: from cnf010505.ad.shared (HELO jedi-01.hgst.com) ([10.86.61.200])
-  by uls-op-cesaip01.wdc.com with ESMTP; 04 Dec 2020 00:58:39 -0800
-From:   Atish Patra <atish.patra@wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Bin Meng <bin.meng@windriver.com>,
-        Anup Patel <anup@brainfault.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>, Ivan.Griffin@microchip.com,
-        Cyril.Jean@microchip.com,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor.Dooley@microchip.com
-Subject: [PATCH v3 1/5] RISC-V: Add Microchip PolarFire SoC kconfig option
-Date:   Fri,  4 Dec 2020 00:58:31 -0800
-Message-Id: <20201204085835.2406541-2-atish.patra@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201204085835.2406541-1-atish.patra@wdc.com>
-References: <20201204085835.2406541-1-atish.patra@wdc.com>
+        Fri, 4 Dec 2020 03:59:22 -0500
+X-Greylist: delayed 861 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 04 Dec 2020 00:58:42 PST
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B69C061A4F;
+        Fri,  4 Dec 2020 00:58:42 -0800 (PST)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 1B564C64ED; Fri,  4 Dec 2020 08:58:40 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1607072320; bh=IYTDk70WNSCDc8naxwChw+wSsEIU4zlAqni7tyI0unw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ihKetByfzidaMAodbQR7qA5lRB5aSIswT9ByE+cmiUj8Ldr56Xt1LDZl4IZurk2Fy
+         VQhoc6sfplVCAm3H+52TVtdIxFnlG5/5l2kerZxbCxcSKqv3xnQMCPknbZAydDcAJa
+         ttNfX9/MPXKipeNadJ0dWE2uNl/vvA7wokFLYD/uXOqJGACSNIfGa7P7HArQ+O08Ff
+         xZ4xz9v4633agJJIeqpOrZF/OHR8WWNYm1m66vNckXPArxIwdT4lSZel77TU8tD9BY
+         bKF9c46hXf5B/3D7TnYtO9+JTZJhojeQkhrnCxaVnIf5K6saNBGVlxCHpr/K0xyRyR
+         eZ6OHqXPuhALw==
+Date:   Fri, 4 Dec 2020 08:58:39 +0000
+From:   Sean Young <sean@mess.org>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, thierry.reding@gmail.com,
+        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
+        rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
+ configuration
+Message-ID: <20201204085839.GA2937@gofer.mess.org>
+References: <202011281128.54eLfMWr-lkp@intel.com>
+ <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
+ <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
+ <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
+ <20201204084417.GA2154@gofer.mess.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204084417.GA2154@gofer.mess.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Microchip PolarFire kconfig option which selects SoC specific
-and common drivers that is required for this SoC.
+On Fri, Dec 04, 2020 at 08:44:17AM +0000, Sean Young wrote:
+> On Fri, Dec 04, 2020 at 12:42:15AM +0100, Lino Sanfilippo wrote:
+> > According to commit 11fc4edc4 rounding to the closest integer has been introduced
+> > to improve precision in case that the pwm controller is used by the pwm-ir-tx driver.
+> > I dont know how strong the requirement is to round down the period in apply(), but I
+> > can imagine that this may be a good reason to deviate from this rule.
+> > (CCing Sean Young who introduced DIV_ROUND_CLOSEST)
+> 
+> There was a problem where the carrier is incorrect for some IR hardware
+> which uses a carrier of 455kHz. With periods that small, rounding errors
+> do really matter and rounding down might cause problems.
+> 
+> A policy of rounding down the carrier is not the right thing to do
+> for pwm-ir-tx, and such a change will probably break pwm-ir-tx in some
+> edge cases.
 
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
-Reviewed-by: Bin Meng <bin.meng@windriver.com>
-Reviewed-by: Anup Patel <anup@brainfault.org>
----
- arch/riscv/Kconfig.socs | 7 +++++++
- 1 file changed, 7 insertions(+)
+Let me rephrase that.
 
-diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index 8a55f6156661..148ab095966b 100644
---- a/arch/riscv/Kconfig.socs
-+++ b/arch/riscv/Kconfig.socs
-@@ -1,5 +1,12 @@
- menu "SoC selection"
- 
-+config SOC_MICROCHIP_POLARFIRE
-+	bool "Microchip PolarFire SoCs"
-+	select MCHP_CLK_PFSOC
-+	select SIFIVE_PLIC
-+	help
-+	  This enables support for Microchip PolarFire SoC platforms.
-+
- config SOC_SIFIVE
- 	bool "SiFive SoCs"
- 	select SERIAL_SIFIVE if TTY
--- 
-2.25.1
+Changing the division to rounding down will exactly revert the fix I made
+in commit 11fc4edc483bea8bf0efa0cc726886d2342f6fa6.
 
+So in the case described in that commit, the requested frequency was 455kHz,
+but rounding down resulted in a frequency of 476kHz.
+
+That's totally broken and a bad idea.
+
+
+Sean
