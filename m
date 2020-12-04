@@ -2,60 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F37B2CEC23
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 749F92CEC25
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729878AbgLDK0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 05:26:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41386 "EHLO mx2.suse.de"
+        id S1729891AbgLDK0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 05:26:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41388 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726014AbgLDK0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 05:26:45 -0500
+        id S1729032AbgLDK0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 05:26:46 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 824F5ACB5;
+        by mx2.suse.de (Postfix) with ESMTP id 81F3DAC9A;
         Fri,  4 Dec 2020 10:26:04 +0000 (UTC)
 From:   Oscar Salvador <osalvador@suse.de>
 To:     akpm@linux-foundation.org
 Cc:     n-horiguchi@ah.jp.nec.com, vbabka@suse.cz, qcai@redhat.com,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v2 0/3] HWPoison: Refactor get page interface
-Date:   Fri,  4 Dec 2020 11:25:55 +0100
-Message-Id: <20201204102558.31607-1-osalvador@suse.de>
+Subject: [PATCH v2 1/3] mm,hwpoison: Refactor get_any_page
+Date:   Fri,  4 Dec 2020 11:25:56 +0100
+Message-Id: <20201204102558.31607-2-osalvador@suse.de>
 X-Mailer: git-send-email 2.13.7
+In-Reply-To: <20201204102558.31607-1-osalvador@suse.de>
+References: <20201204102558.31607-1-osalvador@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ok, this is v2.
-I left out the MF_COUNT_INCREASED changes as we need to have the
-pages pinned when coming from madvise, otherwise we might be messing
-with a page which belongs to someone else.
+When we want to grab a refcount via get_any_page, we call
+__get_any_page that calls get_hwpoison_page to get the
+actual refcount.
+get_any_page is only there because we have a sort of retry
+mechanism in case the page we met is unknown to us or
+if we raced with an allocation.
 
-I ran several tests [1] [2] to make sure nothing is broken.
+Also __get_any_page prints some messages about the page type
+in case the page was a free page or the page type was unknown,
+but if anything, we only need to print a message in case the
+pagetype was unknown, as that is reporting an error down the chain.
 
- @Andrew: Please, remove [3] from mmotm and linux-next and replace it
-          with this one.
+Let us merge get_any_page and __get_any_page, and let the message
+be printed in soft_offline_page.
+While we are it, we can also remove the 'pfn' parameter as it is no
+longer used.
 
-Thanks
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Acked-by: Vlastimil Babka <Vbabka@suse.cz>
+---
+ mm/memory-failure.c | 99 +++++++++++++++++++--------------------------
+ 1 file changed, 42 insertions(+), 57 deletions(-)
 
-[1] https://github.com/Naoya-Horiguchi/mm_regression
-[2] https://e.coding.net/cailca/linux/mm
-[3] https://patchwork.kernel.org/project/linux-mm/cover/20201119105716.5962-1-osalvador@suse.de/
-
-V1 -> V2:
- - Adressed feedback from Vlastimil
- - Add Acked-by from Vlastimil
-
-Oscar Salvador (3):
-  mm,hwpoison: Refactor get_any_page
-  mm,hwpoison: Disable pcplists before grabbing a refcount
-  mm,hwpoison: Remove drain_all_pages from shake_page
-
- mm/memory-failure.c | 168 +++++++++++++++++++-------------------------
- 1 file changed, 74 insertions(+), 94 deletions(-)
-
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 869ece2a1de2..fb4068d52b87 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1707,70 +1707,51 @@ EXPORT_SYMBOL(unpoison_memory);
+ 
+ /*
+  * Safely get reference count of an arbitrary page.
+- * Returns 0 for a free page, -EIO for a zero refcount page
+- * that is not free, and 1 for any other page type.
+- * For 1 the page is returned with increased page count, otherwise not.
++ * Returns 0 for a free page, 1 for an in-use page, -EIO for a page-type we
++ * cannot handle and -EBUSY if we raced with an allocation.
++ * We only incremented refcount in case the page was already in-use and it is
++ * a known type we can handle.
+  */
+-static int __get_any_page(struct page *p, unsigned long pfn, int flags)
++static int get_any_page(struct page *p, int flags)
+ {
+-	int ret;
++	int ret = 0, pass = 0;
++	bool count_increased = false;
+ 
+ 	if (flags & MF_COUNT_INCREASED)
+-		return 1;
++		count_increased = true;
+ 
+-	/*
+-	 * When the target page is a free hugepage, just remove it
+-	 * from free hugepage list.
+-	 */
+-	if (!get_hwpoison_page(p)) {
+-		if (PageHuge(p)) {
+-			pr_info("%s: %#lx free huge page\n", __func__, pfn);
+-			ret = 0;
+-		} else if (is_free_buddy_page(p)) {
+-			pr_info("%s: %#lx free buddy page\n", __func__, pfn);
+-			ret = 0;
+-		} else if (page_count(p)) {
+-			/* raced with allocation */
++try_again:
++	if (!count_increased && !get_hwpoison_page(p)) {
++		if (page_count(p)) {
++			/* We raced with an allocation, retry. */
++			if (pass++ < 3)
++				goto try_again;
+ 			ret = -EBUSY;
+-		} else {
+-			pr_info("%s: %#lx: unknown zero refcount page type %lx\n",
+-				__func__, pfn, p->flags);
++		} else if (!PageHuge(p) && !is_free_buddy_page(p)) {
++			/* We raced with put_page, retry. */
++			if (pass++ < 3)
++				goto try_again;
+ 			ret = -EIO;
+ 		}
+ 	} else {
+-		/* Not a free page */
+-		ret = 1;
+-	}
+-	return ret;
+-}
+-
+-static int get_any_page(struct page *page, unsigned long pfn, int flags)
+-{
+-	int ret = __get_any_page(page, pfn, flags);
+-
+-	if (ret == -EBUSY)
+-		ret = __get_any_page(page, pfn, flags);
+-
+-	if (ret == 1 && !PageHuge(page) &&
+-	    !PageLRU(page) && !__PageMovable(page)) {
+-		/*
+-		 * Try to free it.
+-		 */
+-		put_page(page);
+-		shake_page(page, 1);
+-
+-		/*
+-		 * Did it turn free?
+-		 */
+-		ret = __get_any_page(page, pfn, 0);
+-		if (ret == 1 && !PageLRU(page)) {
+-			/* Drop page reference which is from __get_any_page() */
+-			put_page(page);
+-			pr_info("soft_offline: %#lx: unknown non LRU page type %lx (%pGp)\n",
+-				pfn, page->flags, &page->flags);
+-			return -EIO;
++		if (PageHuge(p) || PageLRU(p) || __PageMovable(p)) {
++			ret = 1;
++		} else {
++			/*
++			 * A page we cannot handle. Check whether we can turn
++			 * it into something we can handle.
++			 */
++			if (pass++ < 3) {
++				put_page(p);
++				shake_page(p, 1);
++				count_increased = false;
++				goto try_again;
++			}
++			put_page(p);
++			ret = -EIO;
+ 		}
+ 	}
++
+ 	return ret;
+ }
+ 
+@@ -1939,7 +1920,7 @@ int soft_offline_page(unsigned long pfn, int flags)
+ 		return -EIO;
+ 
+ 	if (PageHWPoison(page)) {
+-		pr_info("soft offline: %#lx page already poisoned\n", pfn);
++		pr_info("%s: %#lx page already poisoned\n", __func__, pfn);
+ 		if (flags & MF_COUNT_INCREASED)
+ 			put_page(page);
+ 		return 0;
+@@ -1947,16 +1928,20 @@ int soft_offline_page(unsigned long pfn, int flags)
+ 
+ retry:
+ 	get_online_mems();
+-	ret = get_any_page(page, pfn, flags);
++	ret = get_any_page(page, flags);
+ 	put_online_mems();
+ 
+-	if (ret > 0)
++	if (ret > 0) {
+ 		ret = soft_offline_in_use_page(page);
+-	else if (ret == 0)
++	} else if (ret == 0) {
+ 		if (soft_offline_free_page(page) && try_again) {
+ 			try_again = false;
+ 			goto retry;
+ 		}
++	} else if (ret == -EIO) {
++		pr_info("%s: %#lx: unknown page type: %lx (%pGP)\n",
++			 __func__, pfn, page->flags, &page->flags);
++	}
+ 
+ 	return ret;
+ }
 -- 
 2.26.2
 
