@@ -2,58 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC422CF4E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD46F2CF4EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730768AbgLDThR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 14:37:17 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:48834 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727661AbgLDThR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 14:37:17 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1klGsd-0007AZ-Ma; Fri, 04 Dec 2020 19:36:35 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: fix spelling mistake "theses" -> "these" in Kconfig
-Date:   Fri,  4 Dec 2020 19:36:35 +0000
-Message-Id: <20201204193635.1152241-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        id S1730797AbgLDTh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 14:37:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60194 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730545AbgLDTh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 14:37:59 -0500
+From:   Arnd Bergmann <arnd@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Timo Alho <talho@nvidia.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] firmware: tegra: reduce stack usage
+Date:   Fri,  4 Dec 2020 20:37:04 +0100
+Message-Id: <20201204193714.3134651-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-There is a spelling mistake in the Kconfig help text. Fix it.
+Building the bpmp-debugfs driver for Arm results in a warning for stack usage:
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+drivers/firmware/tegra/bpmp-debugfs.c:321:16: error: stack frame size of 1224 bytes in function 'bpmp_debug_store' [-Werror,-Wframe-larger-than=]
+static ssize_t bpmp_debug_store(struct file *file, const char __user *buf,
+
+It should be possible to rearrange the code to not require two separate
+buffers for the file name, but the easiest workaround is to use dynamic
+allocation.
+
+Fixes: 5e37b9c137ee ("firmware: tegra: Add support for in-band debug")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/input/mouse/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/tegra/bpmp-debugfs.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/input/mouse/Kconfig b/drivers/input/mouse/Kconfig
-index d8b6a5dab190..63c9cda555c3 100644
---- a/drivers/input/mouse/Kconfig
-+++ b/drivers/input/mouse/Kconfig
-@@ -372,7 +372,7 @@ config MOUSE_VSXXXAA
- 	select SERIO
- 	help
- 	  Say Y (or M) if you want to use a DEC VSXXX-AA (hockey
--	  puck) or a VSXXX-GA (rectangular) mouse. Theses mice are
-+	  puck) or a VSXXX-GA (rectangular) mouse. These mice are
- 	  typically used on DECstations or VAXstations, but can also
- 	  be used on any box capable of RS232 (with some adaptor
- 	  described in the source file). This driver also works with the
+diff --git a/drivers/firmware/tegra/bpmp-debugfs.c b/drivers/firmware/tegra/bpmp-debugfs.c
+index 440d99c63638..e1a6b6add180 100644
+--- a/drivers/firmware/tegra/bpmp-debugfs.c
++++ b/drivers/firmware/tegra/bpmp-debugfs.c
+@@ -74,28 +74,34 @@ static void seqbuf_seek(struct seqbuf *seqbuf, ssize_t offset)
+ static const char *get_filename(struct tegra_bpmp *bpmp,
+ 				const struct file *file, char *buf, int size)
+ {
+-	char root_path_buf[512];
++	char *root_path_buf;
+ 	const char *root_path;
+-	const char *filename;
++	const char *filename = NULL;
+ 	size_t root_len;
+ 
++	root_path_buf = kzalloc(512, GFP_KERNEL);
++	if (!root_path_buf)
++		goto out;
++
+ 	root_path = dentry_path(bpmp->debugfs_mirror, root_path_buf,
+ 				sizeof(root_path_buf));
+ 	if (IS_ERR(root_path))
+-		return NULL;
++		goto out;
+ 
+ 	root_len = strlen(root_path);
+ 
+ 	filename = dentry_path(file->f_path.dentry, buf, size);
+ 	if (IS_ERR(filename))
+-		return NULL;
++		goto out;
+ 
+ 	if (strlen(filename) < root_len ||
+ 			strncmp(filename, root_path, root_len))
+-		return NULL;
++		goto out;
+ 
+ 	filename += root_len;
+ 
++out:
++	kfree(root_path_buf);
+ 	return filename;
+ }
+ 
 -- 
-2.29.2
+2.27.0
 
