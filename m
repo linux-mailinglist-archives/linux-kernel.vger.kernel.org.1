@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B412CF295
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7362CF296
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388394AbgLDRE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:04:59 -0500
-Received: from latitanza.investici.org ([82.94.249.234]:62123 "EHLO
+        id S2388413AbgLDRFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:05:03 -0500
+Received: from latitanza.investici.org ([82.94.249.234]:43931 "EHLO
         latitanza.investici.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388350AbgLDRE6 (ORCPT
+        with ESMTP id S2388350AbgLDRFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:04:58 -0500
+        Fri, 4 Dec 2020 12:05:02 -0500
 Received: from mx3.investici.org (unknown [127.0.0.1])
-        by latitanza.investici.org (Postfix) with ESMTP id 4CnfFD0z88z8shw;
-        Fri,  4 Dec 2020 17:04:16 +0000 (UTC)
+        by latitanza.investici.org (Postfix) with ESMTP id 4CnfFJ4PVmz8sgM;
+        Fri,  4 Dec 2020 17:04:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=privacyrequired.com;
-        s=stigmate; t=1607101456;
-        bh=uCxL4ML99SaQcfK9xq45I+PMG7IFylh5UnD0dOSencg=;
+        s=stigmate; t=1607101460;
+        bh=gIk9W+Rj/wr2yLXrcQnEBv0D9GdsEMSYb5Q/KwMf3wA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=slNUhh0QlyQxC6cLNojs2ZOUNY2iK2sFSY4J0zEmd6KN8IwBR5Dz5ymAsTAXf3n0n
-         49+L2mp7prZeQOoVTadCxnIztqS6xgkhVrcMuEdRc5WTPRRFp2yDc84K9bqkXfOZFy
-         EO72gqadgNisKjYMhPuKd6O0/UKXgaiK7fP4gX+k=
-Received: from [82.94.249.234] (mx3.investici.org [82.94.249.234]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4CnfFC26JPz8sfb;
-        Fri,  4 Dec 2020 17:04:15 +0000 (UTC)
+        b=uPSMRQkbP8NPk5NKlROEj7mrY8QRY3USoQVGMdhcC+Ii+r5Y4xY2pSBE2b9LkLTou
+         ZJYYc6olk86+NUF/V0c72u05Bkc3o7ue9Rz1RNdfqFsXuCtAmc+AVaaNJVkzrr9D7g
+         eR7OklxOVtWZKHJT1SgDvPUcVE1UNI/P4XTy6EHo=
+Received: from [82.94.249.234] (mx3.investici.org [82.94.249.234]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4CnfFJ07MFz8sfb;
+        Fri,  4 Dec 2020 17:04:19 +0000 (UTC)
 From:   laniel_francis@privacyrequired.com
-To:     Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
 Cc:     Francis Laniel <laniel_francis@privacyrequired.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1 02/12] mips: Replace strstarts() by str_has_prefix().
-Date:   Fri,  4 Dec 2020 18:03:08 +0100
-Message-Id: <20201204170319.20383-3-laniel_francis@privacyrequired.com>
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v1 03/12] crypto: Replace strstarts() by str_has_prefix().
+Date:   Fri,  4 Dec 2020 18:03:09 +0100
+Message-Id: <20201204170319.20383-4-laniel_francis@privacyrequired.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
 References: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
@@ -50,31 +49,22 @@ returns the length of the prefix if the string begins with it or 0 otherwise.
 
 Signed-off-by: Francis Laniel <laniel_francis@privacyrequired.com>
 ---
- arch/mips/bcm47xx/board.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ crypto/essiv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/bcm47xx/board.c b/arch/mips/bcm47xx/board.c
-index 35266a70e22a..c21a15b581f6 100644
---- a/arch/mips/bcm47xx/board.c
-+++ b/arch/mips/bcm47xx/board.c
-@@ -243,7 +243,7 @@ static __init const struct bcm47xx_board_type *bcm47xx_board_get_nvram(void)
- 
- 	if (bcm47xx_nvram_getenv("hardware_version", buf1, sizeof(buf1)) >= 0) {
- 		for (e1 = bcm47xx_board_list_hardware_version; e1->value1; e1++) {
--			if (strstarts(buf1, e1->value1))
-+			if (str_has_prefix(buf1, e1->value1))
- 				return &e1->board;
- 		}
- 	}
-@@ -251,7 +251,7 @@ static __init const struct bcm47xx_board_type *bcm47xx_board_get_nvram(void)
- 	if (bcm47xx_nvram_getenv("hardware_version", buf1, sizeof(buf1)) >= 0 &&
- 	    bcm47xx_nvram_getenv("boardnum", buf2, sizeof(buf2)) >= 0) {
- 		for (e2 = bcm47xx_board_list_hw_version_num; e2->value1; e2++) {
--			if (!strstarts(buf1, e2->value1) &&
-+			if (!str_has_prefix(buf1, e2->value1) &&
- 			    !strcmp(buf2, e2->value2))
- 				return &e2->board;
- 		}
+diff --git a/crypto/essiv.c b/crypto/essiv.c
+index d012be23d496..f85d4416891f 100644
+--- a/crypto/essiv.c
++++ b/crypto/essiv.c
+@@ -504,7 +504,7 @@ static int essiv_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 			goto out_free_inst;
+ 		aead_alg = crypto_spawn_aead_alg(&ictx->u.aead_spawn);
+ 		block_base = &aead_alg->base;
+-		if (!strstarts(block_base->cra_name, "authenc(")) {
++		if (!str_has_prefix(block_base->cra_name, "authenc(")) {
+ 			pr_warn("Only authenc() type AEADs are supported by ESSIV\n");
+ 			err = -EINVAL;
+ 			goto out_drop_skcipher;
 -- 
 2.20.1
 
