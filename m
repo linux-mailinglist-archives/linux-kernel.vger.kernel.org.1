@@ -2,100 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285A22CEA04
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E75AB2CE9FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:39:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729143AbgLDIjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:39:19 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:42926 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729110AbgLDIjS (ORCPT
+        id S1728990AbgLDIib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:38:31 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8686 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725969AbgLDIia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:39:18 -0500
-Received: by mail-ot1-f66.google.com with SMTP id 11so4464934oty.9;
-        Fri, 04 Dec 2020 00:39:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=85WE5u2j5hMfc/C5GbWvBbgQah+/rPALigryqx6bEEQ=;
-        b=GBjKbgJ9x9kVdONaB2rId4OsTPObEtcsOeFcc9EAwS+Qt4YfFFCwGtNYSti3oWe/oa
-         /Ryq6M7gAhIV8OlZX0iNEFBtfWhEPoZlMAXIo/PAx09tSov17eyZQGOypDq71/OLcmlb
-         u69yJWb5WjRebJVeF/YM6xN4lhmL49lmRAE5vlFDZvQmUTxUtcmPI7sdvbK2opS2aFYo
-         /aOX7eI+teb6we4loBqs45f3Bh5sas3GPuq/y/6bWSWpsJjgDg41RmijOfJqewrVWtpe
-         dnmvZ/iAosPAvDftYN2VBM4U/RJNSjFfWsDCGohkc08/EnLdCewf8k6SG+JQzZPhsOBv
-         V3RQ==
-X-Gm-Message-State: AOAM533pZdjiTJv2umj2NG7cUDUCNIloPR8lVBPmQgQiETgZO1r2GtYC
-        ILu4ClWGGpBC59uZ+CbPZ7Vl3ynFBhH1JO8T4fw=
-X-Google-Smtp-Source: ABdhPJwnsAkm6sHVvamQUFKixxM4mk4fL4gjGJq5DfiAqHn1FIZR2Gq/EIVHXDwSgTiIlYlkJNyrE4Y58R24CjfeqTw=
-X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr2817060oth.250.1607071117561;
- Fri, 04 Dec 2020 00:38:37 -0800 (PST)
+        Fri, 4 Dec 2020 03:38:30 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnR075y62zkl53;
+        Fri,  4 Dec 2020 16:37:11 +0800 (CST)
+Received: from compute.localdomain (10.175.112.70) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Fri, 4 Dec 2020 16:37:37 +0800
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+To:     Joshua Morris <josh.h.morris@us.ibm.com>,
+        Philip Kelleher <pjk1939@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Philip J Kelleher <pjk1939@linux.vnet.ibm.com>
+CC:     Zhang Changzhong <zhangchangzhong@huawei.com>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] rsxx: fix error return code in rsxx_pci_probe()
+Date:   Fri, 4 Dec 2020 16:40:37 +0800
+Message-ID: <1607071238-33246-1-git-send-email-zhangchangzhong@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <58cf6feeaf5dae1ee0c78c1b25c00c73de15b087.1606805196.git.fthain@telegraphics.com.au>
- <20201201170547.d6ff743eeuh6en6s@linutronix.de> <alpine.LNX.2.23.453.2012040953030.6@nippy.intranet>
-In-Reply-To: <alpine.LNX.2.23.453.2012040953030.6@nippy.intranet>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 4 Dec 2020 09:38:25 +0100
-Message-ID: <CAMuHMdUYwUPWzhBD+MWJsjBvmb31T0=2j8d0_-f9Q0ocfBAs9A@mail.gmail.com>
-Subject: Re: [PATCH] scsi/NCR5380: Remove in_interrupt() test
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        scsi <linux-scsi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Finn,
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-On Fri, Dec 4, 2020 at 12:11 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > --- a/drivers/scsi/g_NCR5380.c
-> > +++ b/drivers/scsi/g_NCR5380.c
-> > @@ -529,14 +529,14 @@ static inline int generic_NCR5380_precv(struct NCR5380_hostdata *hostdata,
-> >               if (start == len - 128) {
-> >                       /* Ignore End of DMA interrupt for the final buffer */
-> >                       if (NCR5380_poll_politely(hostdata, hostdata->c400_ctl_status,
-> > -                                               CSR_HOST_BUF_NOT_RDY, 0, HZ / 64) < 0)
-> > +                                               CSR_HOST_BUF_NOT_RDY, 0, 0) < 0)
->
-> You've put your finger on a known problem with certain
-> NCR5380_poll_politely() call sites. That is, the nominal timeout, HZ / 64,
-> is meaningless because it is ignored in atomic context. So you may as well
-> specify 0 jiffies at these call sites. (There will be a 1 jiffy timeout
-> applied regardless.)
+Fixes: a3299ab18591 ("rsxx: Individual workqueues for interruptible events.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+---
+ drivers/block/rsxx/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Notwithstanding HZ / 64 breaks if HZ < 64.
-
-Possible values of HZ in the kernel:
-
-24
-32
-48
-64
-100
-128
-200
-250
-256
-300
-500
-1000
-1024
-1200
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
+index 63f5498..d7e2416 100644
+--- a/drivers/block/rsxx/core.c
++++ b/drivers/block/rsxx/core.c
+@@ -869,6 +869,7 @@ static int rsxx_pci_probe(struct pci_dev *dev,
+ 	card->event_wq = create_singlethread_workqueue(DRIVER_NAME"_event");
+ 	if (!card->event_wq) {
+ 		dev_err(CARD_TO_DEV(card), "Failed card event setup.\n");
++		st = -ENOMEM;
+ 		goto failed_event_handler;
+ 	}
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.9.5
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
