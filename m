@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540382CED16
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3032CED18
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387473AbgLDLbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:31:25 -0500
-Received: from outbound-smtp49.blacknight.com ([46.22.136.233]:36317 "EHLO
-        outbound-smtp49.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726031AbgLDLbY (ORCPT
+        id S2387879AbgLDLdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:33:22 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:60892 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbgLDLdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:31:24 -0500
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp49.blacknight.com (Postfix) with ESMTPS id 0596CFB9C2
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 11:30:33 +0000 (GMT)
-Received: (qmail 20093 invoked from network); 4 Dec 2020 11:30:32 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 4 Dec 2020 11:30:32 -0000
-Date:   Fri, 4 Dec 2020 11:30:30 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 06/10] sched/fair: Clear the target CPU from the cpumask
- of CPUs searched
-Message-ID: <20201204113030.GZ3371@techsingularity.net>
-References: <20201203141124.7391-1-mgorman@techsingularity.net>
- <20201203141124.7391-7-mgorman@techsingularity.net>
- <CAKfTPtDm880Rs7D1xUCQd_X9okqzhgrmCJVhwg90Rt3krq9ytg@mail.gmail.com>
- <20201203175204.GY3371@techsingularity.net>
- <CAKfTPtBGsXb0RqE_qs2miZGi_uax4VY1_8y1NGhQ17Q8mBx8dw@mail.gmail.com>
+        Fri, 4 Dec 2020 06:33:21 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kl9KJ-0007oZ-7k; Fri, 04 Dec 2020 11:32:39 +0000
+Date:   Fri, 4 Dec 2020 12:32:38 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Giuseppe Scrivano <gscrivan@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        containers@lists.linux-foundation.org
+Subject: Re: [PATCH v3 0/2] fs, close_range: add flag CLOSE_RANGE_CLOEXEC
+Message-ID: <20201204113238.bazik6j3p7v5g2ak@wittgenstein>
+References: <20201118104746.873084-1-gscrivan@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtBGsXb0RqE_qs2miZGi_uax4VY1_8y1NGhQ17Q8mBx8dw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201118104746.873084-1-gscrivan@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 11:56:36AM +0100, Vincent Guittot wrote:
-> > The intent was that the sibling might still be an idle candidate. In
-> > the current draft of the series, I do not even clear this so that the
-> > SMT sibling is considered as an idle candidate. The reasoning is that if
-> > there are no idle cores then an SMT sibling of the target is as good an
-> > idle CPU to select as any.
+On Wed, Nov 18, 2020 at 11:47:44AM +0100, Giuseppe Scrivano wrote:
+> When the new flag is used, close_range will set the close-on-exec bit
+> for the file descriptors instead of close()-ing them.
 > 
-> Isn't the purpose of select_idle_smt ?
+> It is useful for e.g. container runtimes that want to minimize the
+> number of syscalls used after a seccomp profile is installed but want
+> to keep some fds open until the container process is executed.
 > 
-
-Only in part.
-
-> select_idle_core() looks for an idle core and opportunistically saves
-> an idle CPU candidate to skip select_idle_cpu. In this case this is
-> useless loops for select_idle_core() because we are sure that the core
-> is not idle
+> v3:
+> - fixed indentation
+> - selftests: use ASSERT_EQ instead of EXPECT_EQ for hard failures
 > 
+> v2: https://lkml.kernel.org/lkml/20201019102654.16642-1-gscrivan@redhat.com/
+> - move close_range(..., CLOSE_RANGE_CLOEXEC) implementation to a separate function.
+> - use bitmap_set() to set the close-on-exec bits in the bitmap.
+> - add test with rlimit(RLIMIT_NOFILE) in place.
+> - use "cur_max" that is already used by close_range(..., 0).
+> 
+> v1: https://lkml.kernel.org/lkml/20201013140609.2269319-1-gscrivan@redhat.com/
+> 
+> Giuseppe Scrivano (2):
+>   fs, close_range: add flag CLOSE_RANGE_CLOEXEC
+>   selftests: core: add tests for CLOSE_RANGE_CLOEXEC
+> 
+>  fs/file.c                                     | 44 ++++++++---
+>  include/uapi/linux/close_range.h              |  3 +
+>  .../testing/selftests/core/close_range_test.c | 74 +++++++++++++++++++
+>  3 files changed, 111 insertions(+), 10 deletions(-)
 
-If select_idle_core() finds an idle candidate other than the sibling,
-it'll use it if there is no idle core -- it picks a busy sibling based
-on a linear walk of the cpumask. Similarly, select_idle_cpu() is not
-guaranteed to scan the sibling first (ordering) or even reach the sibling
-(throttling). select_idle_smt() is a last-ditch effort.
+I've picked this up and stuffed it into -next. This solves a real
+problem and I don't want it to sit around another merge window. (If you
+pick it up later I'll simply drop it, Al.)
 
--- 
-Mel Gorman
-SUSE Labs
+Christian
