@@ -2,149 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5352CEE8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 762B52CEE86
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730246AbgLDM7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 07:59:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726441AbgLDM7E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:59:04 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB86C061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 04:58:24 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id d5so3800275qtn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 04:58:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mMB6TptaiGgF4Fosm42A4LHTb/bohqrND/1SgruKzRo=;
-        b=EwWyGtpTj94igDoF8XfgXRonTlvZx6CGc8I12BZB1X6VA+Fg+dcSxLIFNTW5ALVnOu
-         SlEvcfbUm2Np8zJw2dvHlihTrqW6jxkbVPqYIpAV2Mcw8sDlEJGU2kcW9g/+BIyUDett
-         Xdt5G5/1vrb+GgUEA4oV2nBf1NQ8z8DlqJBMUQJfoG4zDqSXK2DQPUO9kZR7rI2tZdU6
-         iM+A4bd8xrhG9YSPLO39gvlZlJvDGQFXC82Ko/2fNCEV1gEPPrOFFdl/jTFdnVNgSqK3
-         +XzA5cXaCbWTsd9yWvOxI4LocjRS2aB3+B3Sq1JEz1EctKYU/e26KHzWQieUiEwq1+vi
-         S+Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mMB6TptaiGgF4Fosm42A4LHTb/bohqrND/1SgruKzRo=;
-        b=X1ESQa1mqZct4idbMVXCvVIwHmsufuhNL36kzqXuQ912FksFM+XUOB1vQQcM6XVpwT
-         wFs6C5178EJfKRrE9edBCeJ9sa+5lM0BlQ7TZodTibVE4ms3Y5j/6Zbb0DiqAWMtQe4i
-         6BHkbyjoxnv81+B8kmscGu9ohnOU7dQct4aUmrPulTXa+K8M+0QxA3KtnLp1ufao5HsO
-         nTNT48CUo5tsBxzGJ9N7kuJPzbeMLFZVlK+eOJ+9sNFlI6ojQ5r2Dfuh8wDlqXXHf5r6
-         5pDQoGFCooiI7TdPxNkQQc7BijWD0eRndJ3TnKnMlarL/Kx7WoByUo4+fuPqShHSVuww
-         GTgQ==
-X-Gm-Message-State: AOAM532iUhfCXUGJf+YG4eoaFgc8K2h4DVKMNqFR06svC+D/plYpPLWp
-        fJ0xUFRINexahXmlVzW7qDAnBw==
-X-Google-Smtp-Source: ABdhPJwPFcOOZLe1Mg2mYyorVSLAyiPoevE1tsF0aJXBNFYF7EYaPI5QkdHoa4YMi7efamOTUiQFpw==
-X-Received: by 2002:ac8:678d:: with SMTP id b13mr9105807qtp.332.1607086703152;
-        Fri, 04 Dec 2020 04:58:23 -0800 (PST)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id 94sm4768303qtg.57.2020.12.04.04.58.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 04:58:22 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1klAfF-005qwi-5P; Fri, 04 Dec 2020 08:58:21 -0400
-Date:   Fri, 4 Dec 2020 08:58:21 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Sergey Temerkhanov <s.temerkhanov@gmail.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][RFC] tpm: Rework open/close/shutdown to avoid races
-Message-ID: <20201204125821.GW5487@ziepe.ca>
-References: <20201204101805.27374-1-s.temerkhanov@gmail.com>
+        id S2388222AbgLDM6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 07:58:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730240AbgLDM6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 07:58:47 -0500
+Date:   Fri, 4 Dec 2020 13:59:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607086686;
+        bh=T9P6YNvJNBVRp2cBN+iSfyjc2OXEDnJ1F6QbORkDUkI=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1rOdLUSAyMehMfxu0QGULg7JLrQns9N5Zo8xqMs7B3V9pgcgSrLGxWnbJrmlen4Aq
+         QI9NONPyOonqGM2MxkVNx8AtsibYsF0xqfAWR6VnVyK07RbeYrayQFi8D1/Fxdx6T/
+         Z0hJEsI+dQSG0BVPDXg04jlUW3cr4PdtSryjxgZY=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        jgg@nvidia.com, Kiran Patil <kiran.patil@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <X8oyqpxDQ4JV31tj@kroah.com>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <X8ogtmrm7tOzZo+N@kroah.com>
+ <20201204123207.GH16543@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201204101805.27374-1-s.temerkhanov@gmail.com>
+In-Reply-To: <20201204123207.GH16543@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 01:18:05PM +0300, Sergey Temerkhanov wrote:
-> Avoid race condition at shutdown by shutting downn the TPM 2.0
-> devices synchronously. This eliminates the condition when the
-> shutdown sequence sets chip->ops to NULL leading to the following:
+On Fri, Dec 04, 2020 at 02:32:07PM +0200, Leon Romanovsky wrote:
+> On Fri, Dec 04, 2020 at 12:42:46PM +0100, Greg KH wrote:
+> > On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
+> > > From: Dave Ertman <david.m.ertman@intel.com>
+> > >
+> > > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> > > It enables drivers to create an auxiliary_device and bind an
+> > > auxiliary_driver to it.
+> > >
+> > > The bus supports probe/remove shutdown and suspend/resume callbacks.
+> > > Each auxiliary_device has a unique string based id; driver binds to
+> > > an auxiliary_device based on this id through the bus.
+> > >
+> > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> > > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> > > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
+> > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> > > Reviewed-by: Parav Pandit <parav@mellanox.com>
+> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > > Reviewed-by: Martin Habets <mhabets@solarflare.com>
+> > > Link: https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
+> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > > ---
+> > > This patch is "To:" the maintainers that have a pending backlog of
+> > > driver updates dependent on this facility, and "Cc:" Greg. Greg, I
+> > > understand you have asked for more time to fully review this and apply
+> > > it to driver-core.git, likely for v5.12, but please consider Acking it
+> > > for v5.11 instead. It looks good to me and several other stakeholders.
+> > > Namely, stakeholders that have pressure building up behind this facility
+> > > in particular Mellanox RDMA, but also SOF, Intel Ethernet, and later on
+> > > Compute Express Link.
+> > >
+> > > I will take the blame for the 2 months of silence that made this awkward
+> > > to take through driver-core.git, but at the same time I do not want to
+> > > see that communication mistake inconvenience other parties that
+> > > reasonably thought this was shaping up to land in v5.11.
+> > >
+> > > I am willing to host this version at:
+> > >
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux tags/auxiliary-bus-for-5.11
+> > >
+> > > ...for all the independent drivers to have a common commit baseline. It
+> > > is not there yet pending Greg's Ack.
+> > >
+> > > For example implementations incorporating this patch, see Dave Ertman's
+> > > SOF series:
+> > >
+> > > https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
+> > >
+> > > ...and Leon's mlx5 series:
+> > >
+> > > http://lore.kernel.org/r/20201026111849.1035786-1-leon@kernel.org
+> > >
+> > > PS: Greg I know I promised some review on newcomer patches to help with
+> > > your queue, unfortunately Intel-internal review is keeping my plate
+> > > full. Again, I do not want other stakeholder to be waiting on me to
+> > > resolve that backlog.
+> >
+> > Ok, I spent some hours today playing around with this.  I wrote up a
+> > small test-patch for this (how did anyone test this thing???).
 > 
-> [ 1586.593561][ T8669] tpm2_del_space+0x28/0x73
-> [ 1586.598718][ T8669] tpmrm_release+0x27/0x33wq
-> [ 1586.603774][ T8669] __fput+0x109/0x1d
-> [ 1586.608380][ T8669] task_work_run+0x7c/0x90
-> [ 1586.613414][ T8669] prepare_exit_to_usermode+0xb8/0x128
-> [ 1586.619522][ T8669] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [ 1586.626068][ T8669] RIP: 0033:0x4cb4bb
-> 
-> Signed-off-by: Sergey Temerkhanov <s.temerkhanov@gmail.com>
->  drivers/char/tpm/tpm-chip.c  | 27 ---------------------------
->  drivers/char/tpm/tpm-dev.c   | 11 ++++++-----
->  drivers/char/tpm/tpmrm-dev.c |  7 +++++++
->  include/linux/tpm.h          |  2 +-
->  4 files changed, 14 insertions(+), 33 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index 1838039b0333..ede7f4790c5e 100644
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -282,32 +282,6 @@ static void tpm_devs_release(struct device *dev)
->  	put_device(&chip->dev);
->  }
->  
-> -/**
-> - * tpm_class_shutdown() - prepare the TPM device for loss of power.
-> - * @dev: device to which the chip is associated.
-> - *
-> - * Issues a TPM2_Shutdown command prior to loss of power, as required by the
-> - * TPM 2.0 spec. Then, calls bus- and device- specific shutdown code.
-> - *
-> - * Return: always 0 (i.e. success)
-> - */
-> -static int tpm_class_shutdown(struct device *dev)
-> -{
-> -	struct tpm_chip *chip = container_of(dev, struct tpm_chip, dev);
-> -
-> -	down_write(&chip->ops_sem);
-> -	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
-> -		if (!tpm_chip_start(chip)) {
-> -			tpm2_shutdown(chip, TPM2_SU_CLEAR);
-> -			tpm_chip_stop(chip);
-> -		}
-> -	}
-> -	chip->ops = NULL;
-> -	up_write(&chip->ops_sem);
-> -
-> -	return 0;
-> -}
+> We are running all verifications tests that we have over our
+> mlx5 driver. It includes devices reloads, power failures, FW
+> reconfiguration to emulate different devices with and without error
+> injections and many more. Up till now, no new bugs that are not known
+> to us were found.
 
-This does more than just call tpm2_shutdown, it exists to prevent use
-after free situations because the chip point can exist in other parts
-of the system beyond the lifetime of the driver.
+Yes, sorry, I was implying that the authors here had to create _some_
+code to test this with, it would have been nice to include that as well
+here.  We are collecting more and more in-kernel tests, having one for
+this code would be nice to also have so we make sure not to break any
+functionality in the future.
 
-You can't call into the driver at all past shutdown, so moving
-tpm2_shutdown here:
+thanks,
 
-> @@ -39,6 +41,11 @@ static int tpmrm_release(struct inode *inode, struct file *file)
->  
->  	tpm_common_release(file, fpriv);
->  	tpm2_del_space(fpriv->chip, &priv->space);
-> +
-> +	if (!atomic_dec_return(&fpriv->chip->is_open)) {
-> +		tpm2_shutdown(fpriv->chip, TPM2_SU_CLEAR);
-> +		tpm_chip_stop(fpriv->chip);
-> +	}
-
-Is just wrong.
-
-Your bug is because tpmrm_release is not following the lifetime rules
-for chip, it probably needs to do a get on the pointer to be able to
-access the ops.
-
-Jason
+greg k-h
