@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C808F2CE84C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 07:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE2B2CE850
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 07:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728560AbgLDGrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 01:47:00 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:60772 "EHLO fornost.hmeau.com"
+        id S1728509AbgLDGsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 01:48:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727452AbgLDGrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 01:47:00 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kl4r3-0006KX-Cl; Fri, 04 Dec 2020 17:46:10 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 04 Dec 2020 17:46:09 +1100
-Date:   Fri, 4 Dec 2020 17:46:09 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Saulo Alessandre <saulo.alessandre@gmail.com>
-Cc:     dhowells@redhat.com, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Saulo Alessandre <saulo.alessandre@tse.jus.br>
-Subject: Re: [PATCH] implements ecdsa 256, 384 and 521 alghorithm in akcipher
- model; change pcks7 and x509 to load certificates with ecdsa; increment
- testmgr to test ecdsa algo and finally allows signature and verification of
- modules with ecdsa algorithm
-Message-ID: <20201204064609.GA26322@gondor.apana.org.au>
-References: <20201126020308.25982-1-saulo.alessandre@gmail.com>
+        id S1725601AbgLDGsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 01:48:50 -0500
+From:   Chen-Yu Tsai <wens@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: rockchip: rk3328: Fix UART pull-ups
+Date:   Fri,  4 Dec 2020 14:48:05 +0800
+Message-Id: <20201204064805.6480-1-wens@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201126020308.25982-1-saulo.alessandre@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 11:03:08PM -0300, Saulo Alessandre wrote:
-> From: Saulo Alessandre <saulo.alessandre@tse.jus.br>
-> 
-> Signed-off-by: Saulo Alessandre <saulo.alessandre@tse.jus.br>
-> ---
->  Documentation/admin-guide/module-signing.rst |  10 +
->  crypto/Kconfig                               |  12 +
->  crypto/Makefile                              |   7 +
->  crypto/asymmetric_keys/pkcs7_parser.c        |   7 +-
->  crypto/asymmetric_keys/pkcs7_verify.c        |   5 +-
->  crypto/asymmetric_keys/public_key.c          |  30 +-
->  crypto/asymmetric_keys/x509_cert_parser.c    |  30 +-
->  crypto/ecc.c                                 | 228 ++++++++-
->  crypto/ecc.h                                 |  62 ++-
->  crypto/ecc_curve_defs.h                      |  82 +++
->  crypto/ecdsa.c                               | 508 +++++++++++++++++++
->  crypto/ecdsa_params.asn1                     |   1 +
->  crypto/ecdsa_signature.asn1                  |   6 +
->  crypto/testmgr.c                             |  17 +-
->  crypto/testmgr.h                             |  78 +++
->  include/crypto/ecdh.h                        |   2 +
->  include/linux/oid_registry.h                 |  12 +
->  lib/oid_registry.c                           | 108 +++-
->  18 files changed, 1146 insertions(+), 59 deletions(-)
->  create mode 100644 crypto/ecdsa.c
->  create mode 100644 crypto/ecdsa_params.asn1
->  create mode 100644 crypto/ecdsa_signature.asn1
+From: Chen-Yu Tsai <wens@csie.org>
 
-Please split your patch up.  You should also explain in detail
-why this patch is needed in the kernel.
+For UARTs, the local pull-ups should be on the RX pin, not the TX pin.
+UARTs transmit active-low, so a disconnected RX pin should be pulled
+high instead of left floating to prevent noise being interpreted as
+transmissions.
 
-Thanks,
+This gets rid of bogus sysrq events when the UART console is not
+connected.
+
+Fixes: 52e02d377a72 ("arm64: dts: rockchip: add core dtsi file for RK3328 SoCs")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+---
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+index 521c4678ec35..1e3aa6acbc11 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -1265,8 +1265,8 @@ otp_out: otp-out {
+ 
+ 		uart0 {
+ 			uart0_xfer: uart0-xfer {
+-				rockchip,pins = <1 RK_PB1 1 &pcfg_pull_up>,
+-						<1 RK_PB0 1 &pcfg_pull_none>;
++				rockchip,pins = <1 RK_PB1 1 &pcfg_pull_none>,
++						<1 RK_PB0 1 &pcfg_pull_up>;
+ 			};
+ 
+ 			uart0_cts: uart0-cts {
+@@ -1284,8 +1284,8 @@ uart0_rts_pin: uart0-rts-pin {
+ 
+ 		uart1 {
+ 			uart1_xfer: uart1-xfer {
+-				rockchip,pins = <3 RK_PA4 4 &pcfg_pull_up>,
+-						<3 RK_PA6 4 &pcfg_pull_none>;
++				rockchip,pins = <3 RK_PA4 4 &pcfg_pull_none>,
++						<3 RK_PA6 4 &pcfg_pull_up>;
+ 			};
+ 
+ 			uart1_cts: uart1-cts {
+@@ -1303,15 +1303,15 @@ uart1_rts_pin: uart1-rts-pin {
+ 
+ 		uart2-0 {
+ 			uart2m0_xfer: uart2m0-xfer {
+-				rockchip,pins = <1 RK_PA0 2 &pcfg_pull_up>,
+-						<1 RK_PA1 2 &pcfg_pull_none>;
++				rockchip,pins = <1 RK_PA0 2 &pcfg_pull_none>,
++						<1 RK_PA1 2 &pcfg_pull_up>;
+ 			};
+ 		};
+ 
+ 		uart2-1 {
+ 			uart2m1_xfer: uart2m1-xfer {
+-				rockchip,pins = <2 RK_PA0 1 &pcfg_pull_up>,
+-						<2 RK_PA1 1 &pcfg_pull_none>;
++				rockchip,pins = <2 RK_PA0 1 &pcfg_pull_none>,
++						<2 RK_PA1 1 &pcfg_pull_up>;
+ 			};
+ 		};
+ 
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.29.2
+
