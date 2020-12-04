@@ -2,63 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0801F2CE99C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:31:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC54A2CE9F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:37:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728869AbgLDIas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:30:48 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8645 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbgLDIar (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:30:47 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnQqP3FbXz15XKk;
-        Fri,  4 Dec 2020 16:29:37 +0800 (CST)
-Received: from compute.localdomain (10.175.112.70) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 4 Dec 2020 16:29:56 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     Heiko Stuebner <heiko@sntech.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Zhang Changzhong <zhangchangzhong@huawei.com>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] PM: AVS: rockchip-io: Fix error return code in rockchip_iodomain_probe()
-Date:   Fri, 4 Dec 2020 16:33:25 +0800
-Message-ID: <1607070805-33038-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1728811AbgLDIhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:37:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727402AbgLDIhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 03:37:11 -0500
+From:   Arnd Bergmann <arnd@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Cheng-Yi Chiang <cychiang@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Tzung-Bi Shih <tzungbi@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Guenter Roeck <groeck@chromium.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] ASoC: cros_ec_codec: fix uninitialized memory read
+Date:   Fri,  4 Dec 2020 09:36:11 +0100
+Message-Id: <20201204083624.2711356-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Fixes: e943c43b32ce ("PM: AVS: rockchip-io: Move the driver to the rockchip specific drivers")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+gcc points out a memory area that is copied to a device
+but not initialized:
+
+sound/soc/codecs/cros_ec_codec.c: In function 'i2s_rx_event':
+arch/x86/include/asm/string_32.h:83:20: error: '*((void *)&p+4)' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+   83 |   *((int *)to + 1) = *((int *)from + 1);
+
+Change the length of the command to only pass down the
+part of the structure that has been initialized, as
+Tzung-Bi Shih explains that only that member is meant to
+be used.
+
+Cc: Tzung-Bi Shih <tzungbi@google.com>
+Fixes: 727f1c71c780 ("ASoC: cros_ec_codec: refactor I2S RX")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/soc/rockchip/io-domain.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/cros_ec_codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
-index eece97f..b29e829 100644
---- a/drivers/soc/rockchip/io-domain.c
-+++ b/drivers/soc/rockchip/io-domain.c
-@@ -547,6 +547,7 @@ static int rockchip_iodomain_probe(struct platform_device *pdev)
- 		if (uV < 0) {
- 			dev_err(iod->dev, "Can't determine voltage: %s\n",
- 				supply_name);
-+			ret = uV;
- 			goto unreg_notify;
- 		}
+diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+index 58894bf47514..6ec673573c70 100644
+--- a/sound/soc/codecs/cros_ec_codec.c
++++ b/sound/soc/codecs/cros_ec_codec.c
+@@ -348,7 +348,7 @@ static int i2s_rx_event(struct snd_soc_dapm_widget *w,
+ 	}
  
+ 	return send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
+-				    (uint8_t *)&p, sizeof(p), NULL, 0);
++				    &p.cmd, sizeof(p.cmd), NULL, 0);
+ }
+ 
+ static struct snd_soc_dapm_widget i2s_rx_dapm_widgets[] = {
 -- 
-2.9.5
+2.27.0
 
