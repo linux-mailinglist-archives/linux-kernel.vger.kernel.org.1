@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E262CF13C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E412CF14E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730536AbgLDPwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:52:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgLDPv7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:51:59 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB7FC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 07:51:19 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id m5so3374687pjv.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:51:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n5W6880DKqAIq9417CXiZaILeavNMzWEyfMm3u4YBRE=;
-        b=09RJ7j13Vuz2H2XyZMov0ihLgHO7ayJoLXI8ilqaksMNwAhdRcn43F2QXpQ3A2gd0+
-         07ks051irH922qS/kso+dQmpyR4jv4VOem3NsaHrBR5NyntmE7VU6EdPVDrct+CJZrR9
-         ORTuNz256TD8L4mhU5tFqK/zVVV3MDpQJLVHrM0Id3l/naW1571tc6tkWZcS6y1jtOs1
-         CMKpMKE74A/kEYdJDeUqMx61yTIjlTdiyuyencXRJ5AKleLzpSx0Rgx8fJICdbjzf1Ft
-         ORe52RyMXqtU3Lt6x2T+PAPE6+W/B6ioQtJsPcSEN/ZyENEus3JIBybaNxNFDs7hmoH3
-         wixQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n5W6880DKqAIq9417CXiZaILeavNMzWEyfMm3u4YBRE=;
-        b=uBvh9FZOj7utDiDaIEDRT6Kb6amSSAlXdC4AQwab/FWn7OjG4+3sxm7HioABZy2SO1
-         1C/OEEY2bE6bnPY/DkEDCmyAtoyzBnGBorw8gqCneFkeu2jidkLLBDwBGz3ls07JZDva
-         7gRVwoxiSTGxGGL44eLOSQFhIGfJSNZ/jA63vnoLyFvZO4+QF2Z2BV4edsmYZpdo1qF3
-         LBkgV59Ncs6blbFNDgi/2cCoKASTmD6ozkqkrcgdZvRWWpJen5zWw3uy5ArplPv42Z8t
-         /cvBGUkeyV7dmLaeqYSgOeU6XQc2fH2APpSGzHs03SWfTHtQ6dS63G6yyqrC3NVUIKW/
-         aQtA==
-X-Gm-Message-State: AOAM530obUw3Ilfd9u4mf/TD66w3n1XcDWEN7HRJ+O/Pkm7LK6XrKcNw
-        Jq6Qo/MLG0gNRPMBwLBKrNKNVQ==
-X-Google-Smtp-Source: ABdhPJwCc0IIsjbR0gYu1dcq7gxf9VoEsp2MROjWpOwTMgKpWPZ+lXyQsgYg/lRkxsgL+7tC4KQuzw==
-X-Received: by 2002:a17:90a:940c:: with SMTP id r12mr4592347pjo.201.1607097079193;
-        Fri, 04 Dec 2020 07:51:19 -0800 (PST)
-Received: from localhost.bytedance.net ([103.136.220.120])
-        by smtp.gmail.com with ESMTPSA id m7sm5626617pfh.72.2020.12.04.07.51.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Dec 2020 07:51:18 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     akpm@linux-foundation.org, vbabka@suse.cz
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v3] mm/page_alloc: speeding up the iteration of max_order
-Date:   Fri,  4 Dec 2020 23:51:09 +0800
-Message-Id: <20201204155109.55451-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S1730630AbgLDPxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:53:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47354 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725987AbgLDPxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 10:53:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607097156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b3iAelrWpCA6kG9YiXezWNTW0pK+b++4D3fQ1pZaWmU=;
+        b=QAdwxoBToAVSYeFOIw8Pt4Cwtj4ym5GUK8lrzdMa93PGNNJSB2aScN917hvkveLdeMILJL
+        RwCgRGG2vWiATSow7jjv5SfhrbHLSoLLQMI9f6Iw4V3YSK9QXKKZNPu/Te7JeHzValLbfT
+        lWgejoMgME0039EBWMv0bEmAOCgi+ss=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 82AECAC9A;
+        Fri,  4 Dec 2020 15:52:36 +0000 (UTC)
+Date:   Fri, 4 Dec 2020 16:52:35 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: devkmsg: was [PATCH next v2 3/3] printk: remove logbuf_lock, add
+ syslog_lock
+Message-ID: <X8pbQ94Buqxhlqsk@alley>
+References: <20201201205341.3871-1-john.ogness@linutronix.de>
+ <20201201205341.3871-4-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201205341.3871-4-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we free a page whose order is very close to MAX_ORDER and greater
-than pageblock_order, it wastes some CPU cycles to increase max_order
-to MAX_ORDER one by one and check the pageblock migratetype of that page
-repeatedly especially when MAX_ORDER is much larger than pageblock_order.
+On Tue 2020-12-01 21:59:41, John Ogness wrote:
+> Since the ringbuffer is lockless, there is no need for it to be
+> protected by @logbuf_lock. Remove @logbuf_lock.
 
-We also should not be checking migratetype of buddy when "order ==
-MAX_ORDER - 1" as the buddy pfn may be invalid, so adjust the condition.
-With the new check, we don't need the max_order check anymore, so we
-replace it.
+I am going to split the feedback into few mails. It might make sense
+to split also this patch into few more pieces that would remove the lock
+from a particular interface.
 
-Also adjust max_order initialization so that it's lower by one than
-previously, which makes the code hopefully more clear.
 
-Fixes: d9dddbf55667 ("mm/page_alloc: prevent merging between isolated and other pageblocks")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
----
-Changes in v3:
- - Update commit log.
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index e9018c4e1b66..7385101210be 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -785,7 +749,6 @@ static loff_t devkmsg_llseek(struct file *file, loff_t offset, int whence)
+>  	if (offset)
+>  		return -ESPIPE;
+>  
+> -	logbuf_lock_irq();
 
-Changes in v2:
- - Rework the code suggested by Vlastimil. Thanks.
+user->seq manipulation is not longer safe from the atomicity point of view.
 
- mm/page_alloc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+One solution would be to use atomic variable in struct devkmsg_user().
+Another solution would be to synchronize it with user->lock like we do
+in devkmsg_read().
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index f91df593bf71..56e603eea1dd 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1002,7 +1002,7 @@ static inline void __free_one_page(struct page *page,
- 	struct page *buddy;
- 	bool to_tail;
- 
--	max_order = min_t(unsigned int, MAX_ORDER, pageblock_order + 1);
-+	max_order = min_t(unsigned int, MAX_ORDER - 1, pageblock_order);
- 
- 	VM_BUG_ON(!zone_is_initialized(zone));
- 	VM_BUG_ON_PAGE(page->flags & PAGE_FLAGS_CHECK_AT_PREP, page);
-@@ -1015,7 +1015,7 @@ static inline void __free_one_page(struct page *page,
- 	VM_BUG_ON_PAGE(bad_range(zone, page), page);
- 
- continue_merging:
--	while (order < max_order - 1) {
-+	while (order < max_order) {
- 		if (compaction_capture(capc, page, order, migratetype)) {
- 			__mod_zone_freepage_state(zone, -(1 << order),
- 								migratetype);
-@@ -1041,7 +1041,7 @@ static inline void __free_one_page(struct page *page,
- 		pfn = combined_pfn;
- 		order++;
- 	}
--	if (max_order < MAX_ORDER) {
-+	if (order < MAX_ORDER - 1) {
- 		/* If we are here, it means order is >= pageblock_order.
- 		 * We want to prevent merge between freepages on isolate
- 		 * pageblock and normal pageblock. Without this, pageblock
-@@ -1062,7 +1062,7 @@ static inline void __free_one_page(struct page *page,
- 						is_migrate_isolate(buddy_mt)))
- 				goto done_merging;
- 		}
--		max_order++;
-+		max_order = order + 1;
- 		goto continue_merging;
- 	}
- 
--- 
-2.11.0
+user->lock looks like an overhead. But it actually would make sense to
+prevent seek in the middle of a read.
 
+>  	switch (whence) {
+>  	case SEEK_SET:
+>  		/* the first record */
+> @@ -820,7 +782,6 @@ static __poll_t devkmsg_poll(struct file *file, poll_table *wait)
+>  
+>  	poll_wait(file, &log_wait, wait);
+>  
+> -	logbuf_lock_irq();
+>  	if (prb_read_valid(prb, user->seq, NULL)) {
+
+Same here. The atomicity of user->seq read/write is not guaranteed.
+
+
+>  		/* return error when data has vanished underneath us */
+>  		if (user->seq < prb_first_valid_seq(prb))
+
+Best Regards,
+Petr
