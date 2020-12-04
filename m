@@ -2,196 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8972CF010
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D77CC2CF016
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730353AbgLDOwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:52:30 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5760 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727620AbgLDOwa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:52:30 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4EpAtC131585;
-        Fri, 4 Dec 2020 09:51:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Ai6L4sa0RgQ9M3WKqdb91X2AvRLvdJvZHP9oZzdHkKU=;
- b=BVY6HWM8bpj9i21VQwmOSnoyxFcyHkd6WPnTqvr3yDdJ3tZjPW+2b8lPNXqmOMDRJrv6
- EsbcZg53CIY79VE3Ve5xyYl9+IArsWhExi9Z32XLbxehkWEM3Ty0y3Vbj4ld5BC0TguI
- +QiLCh4VpuKmB0q2YJ38IYetEBkrBLVFlon4LGZKfnD4g9Bcsdiuyu8wVm0GUSGH/2pM
- j8nc5EAQ4Rm/8UYBq3BjOjr7keQDipRbJ114na0PzAc1Q9U8Xbmrl+VTJBt1b0iUTd7Q
- kanJR2c/v0Lzx2t7JJ/shbwwBMslFMTldey0+OvWT4F+JJvRao2TYmECB8VJrxfdND4Y /w== 
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 357pt9rwxp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 09:51:43 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B4EojeM028563;
-        Fri, 4 Dec 2020 14:51:41 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma01wdc.us.ibm.com with ESMTP id 355vrgb7yq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 14:51:41 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B4Epds019530226
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 4 Dec 2020 14:51:40 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CB55A78064;
-        Fri,  4 Dec 2020 14:51:39 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5BAE37805C;
-        Fri,  4 Dec 2020 14:51:39 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.163.73.174])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri,  4 Dec 2020 14:51:39 +0000 (GMT)
-Subject: Re: [PATCH v3 06/18] ibmvfc: add handlers to drain and complete
- Sub-CRQ responses
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201203020806.14747-1-tyreld@linux.ibm.com>
- <20201203020806.14747-7-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <3fe8683a-47f6-8713-762a-02c57c2e4ec2@linux.vnet.ibm.com>
-Date:   Fri, 4 Dec 2020 08:51:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1728727AbgLDO4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:56:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725923AbgLDO4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 09:56:02 -0500
+X-Gm-Message-State: AOAM530fRn+jG/7r2aRwor6yNl0aC7xpKh32Lk+SxC1yClFqyW4T9d5Y
+        QXB84mYxxHZNm9tCj1VuO8vk8i8SHgKJ3SQohPk=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607093722;
+        bh=qGUZ+1dL4G4WyrQWUkYKJEc8DutOEdYhYFuupUNzlyk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=A1dP7j+7Iu93950O3626NFqdsC0LKQdwiXFyBli4wzqASDhZy9+IXMpZKsGuDoDY6
+         mdzabAv0QxoMk3lQd/Kwn15V3G6aUqUQ+a+nlhaaoEzJktP5+fAT/niQkLYKj9mvqF
+         y7QCZohJuHfZGZAPXwTpFp+D35yCRj5VljQR3TqjvqguAswaxNTHoz1EKBl6CqGe60
+         JjUi4oH8kYsK9kdntbO0cceE1FjdR3eKtkyF8AE3YvARoSANS6brW6ignZ9LPHNhtb
+         fcVAm05ZwauaDLTXgD0vn2kXvF5KzlSqE6QPtvt5aC2DcH3NfFnSokytxYGRGL0zeg
+         x3GricqBEeyug==
+X-Google-Smtp-Source: ABdhPJxosiEcP3n8aXD6Ztpyp2agBQbOVGOw9SFaLMj/+6lrSftY4Ms6n1Z/TqYNWm3jQWaDwMiFp86WazgYRXqrNXQ=
+X-Received: by 2002:a05:6808:9a9:: with SMTP id e9mr3493815oig.4.1607093721297;
+ Fri, 04 Dec 2020 06:55:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201203020806.14747-7-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_04:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=2 bulkscore=0
- malwarescore=0 phishscore=0 clxscore=1015 priorityscore=1501 mlxscore=0
- adultscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040080
+References: <20201203222922.1067522-1-arnd@kernel.org> <CAPDyKFqtFYqc8i_fVzOUnuZGJjtwjVLqE-vebtOKuYJ-4PrDBg@mail.gmail.com>
+ <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com> <CAPDyKFqS5touMvORyovCS-QQrHZg+0LGob9DtS1m61quvXYezw@mail.gmail.com>
+In-Reply-To: <CAPDyKFqS5touMvORyovCS-QQrHZg+0LGob9DtS1m61quvXYezw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 4 Dec 2020 15:55:05 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0PvxT3B+4WYmbarLPY_uHbKL_z5Jd7WU=PZ79QXjtwOw@mail.gmail.com>
+Message-ID: <CAK8P3a0PvxT3B+4WYmbarLPY_uHbKL_z5Jd7WU=PZ79QXjtwOw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mediatek: mark PM functions as __maybe_unused
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
+        yong mao <yong.mao@mediatek.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/20 8:07 PM, Tyrel Datwyler wrote:
-> The logic for iterating over the Sub-CRQ responses is similiar to that
-> of the primary CRQ. Add the necessary handlers for processing those
-> responses.
-> 
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-> ---
->  drivers/scsi/ibmvscsi/ibmvfc.c | 80 ++++++++++++++++++++++++++++++++++
->  1 file changed, 80 insertions(+)
-> 
-> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-> index e082935f56cf..b61ae1df21e5 100644
-> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
-> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-> @@ -3381,6 +3381,86 @@ static int ibmvfc_toggle_scrq_irq(struct ibmvfc_sub_queue *scrq, int enable)
->  	return rc;
->  }
->  
-> +static void ibmvfc_handle_scrq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost)
-> +{
-> +	struct ibmvfc_event *evt = (struct ibmvfc_event *)be64_to_cpu(crq->ioba);
-> +	unsigned long flags;
-> +
-> +	switch (crq->valid) {
-> +	case IBMVFC_CRQ_CMD_RSP:
-> +		break;
-> +	case IBMVFC_CRQ_XPORT_EVENT:
-> +		return;
-> +	default:
-> +		dev_err(vhost->dev, "Got and invalid message type 0x%02x\n", crq->valid);
-> +		return;
-> +	}
-> +
-> +	/* The only kind of payload CRQs we should get are responses to
-> +	 * things we send. Make sure this response is to something we
-> +	 * actually sent
-> +	 */
-> +	if (unlikely(!ibmvfc_valid_event(&vhost->pool, evt))) {
-> +		dev_err(vhost->dev, "Returned correlation_token 0x%08llx is invalid!\n",
-> +			crq->ioba);
-> +		return;
-> +	}
-> +
-> +	if (unlikely(atomic_read(&evt->free))) {
-> +		dev_err(vhost->dev, "Received duplicate correlation_token 0x%08llx!\n",
-> +			crq->ioba);
-> +		return;
-> +	}
-> +
-> +	del_timer(&evt->timer);
-> +	list_del(&evt->queue);
-> +	ibmvfc_trc_end(evt);> +	spin_unlock_irqrestore(vhost->host->host_lock, flags);
+On Fri, Dec 4, 2020 at 3:38 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+.
+> >
+> > I don't see a lot of other instances of that yet, and it's fairly new.
+> > Maybe we should fix it before it gets propagated further.
+> >
+> > I would suggest we redefine pm_ptr like
+> >
+> > #define pm_ptr(_ptr) (IS_ENABLED(CONFIG_PM) ? (_ptr) : NULL)
+>
+> Why is this better than the original definition?
 
-You can't do this here... You are grabbing the host lock in ibmvfc_drain_sub_crq
-and saving the irqflags to a local in that function, then doing a spin_unlock_irqrestore
-and restoring irqflags using an uninitialized local in this function...
+It tells the compiler that the _ptr is referenced from here, so it does
+not warn about an unused symbol, but at the same time it still
+knows that it can discard it along with the functions referenced by
+it and should not emit any of that output.
 
-I'm assuming this will get sorted out with the locking changes we've been discussing off-list...
+> > and remove the __maybe_unused annotations on those that we
+> > already have. This also has the effect of dropping the unused
+> > data from the object, but without having to an an #ifdef or
+> > __maybe_unused.
+>
+> I didn't quite get this (sorry it's Friday afternoon... getting
+> tired), can you perhaps give a concrete example?
 
+These work:
 
-> +	evt->done(evt);
-> +	spin_lock_irqsave(vhost->host->host_lock, flags);
-> +}
-> +
-> +static struct ibmvfc_crq *ibmvfc_next_scrq(struct ibmvfc_sub_queue *scrq)
-> +{
-> +	struct ibmvfc_crq *crq;
-> +
-> +	crq = &scrq->msgs[scrq->cur].crq;
-> +	if (crq->valid & 0x80) {
-> +		if (++scrq->cur == scrq->size)
-> +			scrq->cur = 0;
-> +		rmb();
-> +	} else
-> +		crq = NULL;
-> +
-> +	return crq;
-> +}
-> +
-> +static void ibmvfc_drain_sub_crq(struct ibmvfc_sub_queue *scrq)
-> +{
-> +	struct ibmvfc_crq *crq;
-> +	unsigned long flags;
-> +	int done = 0;
-> +
-> +	spin_lock_irqsave(scrq->vhost->host->host_lock, flags);
-> +	while (!done) {
-> +		while ((crq = ibmvfc_next_scrq(scrq)) != NULL) {
-> +			ibmvfc_handle_scrq(crq, scrq->vhost);
-> +			crq->valid = 0;
-> +			wmb();
-> +		}
-> +
-> +		ibmvfc_toggle_scrq_irq(scrq, 1);
-> +		if ((crq = ibmvfc_next_scrq(scrq)) != NULL) {
-> +			ibmvfc_toggle_scrq_irq(scrq, 0);
-> +			ibmvfc_handle_scrq(crq, scrq->vhost);
-> +			crq->valid = 0;
-> +			wmb();
-> +		} else
-> +			done = 1;
-> +	}
-> +	spin_unlock_irqrestore(scrq->vhost->host->host_lock, flags);
-> +}
-> +
->  /**
->   * ibmvfc_init_tgt - Set the next init job step for the target
->   * @tgt:		ibmvfc target struct
-> 
+a)
+static const struct dev_pm_ops __maybe_unused ops = { ... };
+...
+      .ops = &ops,
+...
 
+b)
+static const struct dev_pm_ops ops = { ... };
+...
+      .ops = &ops,
+...
 
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
+c)
+#ifdef CONFIG_PM
+static const struct dev_pm_ops ops = { ... };
+#endif
+...
+#ifdef CONFIG_PM
+     .ops = ops,
+#endif
+...
 
+d)
+static const struct dev_pm_ops __maybe_unused ops = { ... };
+...
+#ifdef CONFIG_PM
+     .ops = ops,
+#endif
+...
+
+e)
+static const struct dev_pm_ops ops = { ... };
+...
+     .ops = IS_ENABLED(CONFIG_PM) ? ops : NULL,
+...
+
+But these do not work:
+
+f)
+#ifdef CONFIG_PM
+static const struct dev_pm_ops ops = { ... };
+#endif
+...
+/* error: missing declaration for ops */
+     .ops = IS_ENABLED(CONFIG_PM) ? ops : NULL,
+...
+
+g)
+static struct dev_pm_ops ops = { ... };
+...
+/* warning: unused variable */
+#ifndef CONFIG_PM
+     .ops = NULL,
+#else
+    .ops = ops,
+#endif
+...
+
+       Arnd
