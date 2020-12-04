@@ -2,98 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBF42CEC59
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC592CEC6D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387711AbgLDKkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 05:40:45 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:42105 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387656AbgLDKko (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 05:40:44 -0500
-Received: by mail-lj1-f193.google.com with SMTP id f18so6024208ljg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 02:40:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hlZCJEKzokNwCxy9PppGO+4osNv7sekOt95QGYGMFIY=;
-        b=bcFKfgkSywKYNtxmBE9c/THT8w9St4Vgl+QYc1IEhdDkA6SUUHwaSf7sDv/vB8qt9Z
-         sbXW26PzfZ0yB0mRb2WjuR4WbchVWqrr3WNpyV+eFzPn5oESb3CUAXi5bJzDo55Kvp8z
-         n4PqB+mcBbpQ29q4WBDMVwZnJ5V/bUnMhfKcSEBKR+AsINmLM0G2dKm9IeuKq6Kk4k1c
-         ouLLyOYZ+9McnHiEix4tyVR6NKRSxZWWEN+06g7y7Y2aI2cxtBvws98Gzsn7nUeUACVV
-         1YbBdT6fmhJLztHYSrjIajQwRfqroZgthvZwoXFckR5uyMIACBB+F63ujq4SoVDr/RDQ
-         xS/A==
-X-Gm-Message-State: AOAM532IMpbwRj/dLowSzTw9h9iIfC7Zy87CusHJhc1L+DHSNdbplhy2
-        C8yJhSsFnGb+MAG8f44RSL8=
-X-Google-Smtp-Source: ABdhPJwJfv10aOeyJIlJZY7U4xVm/2/Apb5jMujh/Ugx1ulLYSPkB2FbOrnNq0jrlcThClHnr5QLnw==
-X-Received: by 2002:a05:651c:323:: with SMTP id b3mr3029571ljp.452.1607078397416;
-        Fri, 04 Dec 2020 02:39:57 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id m16sm1515838lfa.57.2020.12.04.02.39.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 02:39:56 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kl8Vq-0005Ys-Fa; Fri, 04 Dec 2020 11:40:30 +0100
-Date:   Fri, 4 Dec 2020 11:40:30 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     "wanghai (M)" <wanghai38@huawei.com>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Vaibhav Agarwal <vaibhav.sr@gmail.com>, elder@kernel.org,
-        gregkh@linuxfoundation.org, dan.carpenter@oracle.com,
-        greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, Mark Greer <mgreer@animalcreek.com>
-Subject: Re: [PATCH] staging: greybus: audio: Add missing unlock in
- gbaudio_dapm_free_controls()
-Message-ID: <X8oSHkQZFHCv+Fza@localhost>
-References: <20201204021350.28182-1-wanghai38@huawei.com>
- <X8n2CL58pQ/077rQ@localhost>
- <d95dac95-09d0-66bb-4f3b-5ffa154be174@huawei.com>
-MIME-Version: 1.0
+        id S1729795AbgLDKpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 05:45:15 -0500
+Received: from mail-eopbgr130051.outbound.protection.outlook.com ([40.107.13.51]:39560
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728879AbgLDKpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 05:45:14 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l1xNnYjBdbtFzwdSKrV5zOB+OgwirtDqeOvyPW+uenrSG1fqDZ+BwTXyiQgTPIwT8Y6w1Pz0/t45fbD6x/cPsKP+H6Lr2kFsLMPa9eSYXffj+jnrfs5wOw5mz7Q1Uk+QDkUuHSE3Ofrd/I3tsGETieIPmIMnxm2gFxeBAddPrHWlM8o7LkIsSGOHiQ/gV0mZqVpPZdMQycsvqhgcGyxJfENmThMmC79TdAmRB+90aL5IzAOxK87AyS2VJQqiF3qDSavf7pLaAMygDWBbtFewV1P4TCt0So0YGIT8Ld8GhfGt5abEZJ+gCFs5j4oB1FJGA9JE6WrQDGI6LTnjgcB8Cw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=POqAsD7sJHVTgu0OkFWkUTP2Z2RbNxRmXeRVVnLmBKs=;
+ b=YDhyHwg6fBi/y1hXKBceJmoF4EolR0Ij2qHmMvVYwJt/IPoSXMrMMPyQIVPfFVRyf+3/uMnORkrNUG/RVXRUUBjFUtXDyYxQZBW1sGYp2YyBRkSsz2JCfrsKKDRmA+WNjNNPPvctrN9nV0qOPesLuCLEWKn/P3FZ4mUHXBTePmqvUe8oMKpVbPUf26+TR86UnxaeJNLYloFUFhljYnKYoLE2Mpa80V6xpWYLcQ09nxKp8CzFLwWn6XZStwhn33uqQXOr3uM9hoyJKwdYZFBXUasfGYjj9Y8LiQJ0/1foRpunmntUfxXJ3ASmC1GoOzUTd5udVxF4t0EYFU4UT9ajyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=POqAsD7sJHVTgu0OkFWkUTP2Z2RbNxRmXeRVVnLmBKs=;
+ b=g37R5ZU20DzAna3npyoa+pj99HTxfe9vG/GOQn9wp9azp8sap+LeFqHiisXz5gN3nd3B0IHTDdH0k/E38chgA8/pwGGP54A84CzKjfJBAtxWsA4UKDXKaCx+jigLykmkxAXyeAl5fGCkZ+G3R+wBihtGPmakZ71WHQYkUfqkPSg=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
+ by VI1PR0402MB3424.eurprd04.prod.outlook.com (2603:10a6:803:e::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Fri, 4 Dec
+ 2020 10:44:23 +0000
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::6467:fb5:1181:e8b2]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::6467:fb5:1181:e8b2%7]) with mapi id 15.20.3611.034; Fri, 4 Dec 2020
+ 10:44:23 +0000
+Subject: Re: [PATCH] bus: fsl-mc: fix error return code in
+ fsl_mc_object_allocate()
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Stuart Yoder <stuyoder@gmail.com>,
+        Alexander Graf <agraf@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <1607068967-31991-1-git-send-email-zhangchangzhong@huawei.com>
+From:   Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Message-ID: <b395e683-9ac1-55d1-319f-69a47d83d2aa@nxp.com>
+Date:   Fri, 4 Dec 2020 12:44:20 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
+In-Reply-To: <1607068967-31991-1-git-send-email-zhangchangzhong@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d95dac95-09d0-66bb-4f3b-5ffa154be174@huawei.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [86.120.184.91]
+X-ClientProxiedBy: PR3P189CA0008.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:102:52::13) To VI1PR0402MB3405.eurprd04.prod.outlook.com
+ (2603:10a6:803:3::26)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.104] (86.120.184.91) by PR3P189CA0008.EURP189.PROD.OUTLOOK.COM (2603:10a6:102:52::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Fri, 4 Dec 2020 10:44:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e15886a2-760e-413a-6292-08d898418fd2
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3424:
+X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB3424ABA8420456106E9BF5B3ECF10@VI1PR0402MB3424.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: T1tFEve3MS80/yH5APpKzTYY3ARuQiOMh2uhM4u/x1SEnf3CtQ4ppg1tmg2J8ugahk3JjkrnQSxyoieMD0gZFO82EftG5IKmGq37KBR8f3Xa/hfQLylORcl68N8a40tkm5A6bL4ty9v7+Ff2/mvKV5ynmjkQSMZYFhajyeo6L/sROpiyYe5db7kzo0ww/KKzWVEngqiRdsmvzKJl5hMksT2GLZvs1GRcrUzpMaCoSuuHzOp8erG0vj6Xigb/CrGXsLQyGl527SfBQcJ2hWVuHVQ1WSEqJg0XOd74nKV+TiDKJLB6McIGohUAIMzVhZWXq2xkMqZEPlLGeknfQzgd3bLmRGm/VtRlxILaVLPzPHklWC9sYEKVXImeVn5eyn04SBvWY0bcpHbJ0LHt1FGosSJ2r72VFsUWzRL8OhoWUTE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(396003)(39860400002)(366004)(478600001)(66946007)(66556008)(66476007)(86362001)(44832011)(316002)(53546011)(26005)(5660300002)(16576012)(2616005)(52116002)(83380400001)(956004)(110136005)(16526019)(31696002)(8676002)(4326008)(2906002)(31686004)(36756003)(6486002)(186003)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZjNBMmxvY2ZlSVVXRW1ITS9zZkdtUGZQL0N4cVVPQW9ONlJHSnllTHVwRmlL?=
+ =?utf-8?B?N0VIQ2VqalRjWDNxQWJVdG9JL29RNGFTMTduNGdxR1kybXEyUUE0eWpSUUxC?=
+ =?utf-8?B?cVJPVW11eWVqVXloeEo0Y1JIZGltZEs1c055MEVuczhjeXl1cnY3VkVBVDN1?=
+ =?utf-8?B?YS9ZaVgySjMyYWltWXkzUUw1S2w2RGFVeDN4K2FtcHVUZW1Fc0VVVnJuaFFs?=
+ =?utf-8?B?QzZudUFDTS9jNjcybnZBT2M5cmVwN2VseENHZ0YvMnZiQ05TNk1hdFA3a1ZK?=
+ =?utf-8?B?b3JJWWVwc1hRcU5pb0E1KzhTQXFaL2JzYno1Q0tGQWVId3JVUnVyZWdFR0gz?=
+ =?utf-8?B?eVJRbk1pWkk5UkJaVUdZMk9HZkl6RFp4cHNDaHdnZ08zc2JGeU5CK3dWV0Ju?=
+ =?utf-8?B?L25RWGR0ZTRON2RIMzFHSSs3NEJrRkVwMGxjbFAzamROL1hZUG1XK2pZQ2xj?=
+ =?utf-8?B?OUd3WU5TVkxzTXpGSEdZZ2hkWGZ1MkRwWlhVbTFyd1VLVHpUMnRvOVVUc1lm?=
+ =?utf-8?B?UUp1MWhDbTA4M1dqR1NJWGhhVHRMWHVZd2VBcFZiNGZGb2g2eWk5SDJ2ZWdt?=
+ =?utf-8?B?SkFLd2VWUGhhampIVkNGSG92eU9ENEE1TGdaWFlBNHVCYXBFZTRaemZic251?=
+ =?utf-8?B?ekVZRGw1b1VqWkZtTHJOdzhpQVhsZFVmWDZqRllueUJiNTZRM2huRDVoTUd2?=
+ =?utf-8?B?RXVCbG1JS3ZtbnFWOERuZXBMaEpCZjFCTGxpb01PUkVodG5CcmovNVJRd2Fn?=
+ =?utf-8?B?d1lvUlg1Sks5L0czM0NwNVhBTUxKSExnKzVjUmdpeHordTY0VXJCY1RSR3Qw?=
+ =?utf-8?B?M2hUUXVTU25EUGZEYUR2cEEyb0U2alFjZy9YN3BSanplSzZPQUozaEtSZkFk?=
+ =?utf-8?B?K3UzNzFLSUo0UitNYVlMam80OUw3aUFDWlg3NGFKTG9QNVd4cmNlOXRjTERa?=
+ =?utf-8?B?TjRESzBGTHA5cmhDQ3o0bVQxQURKeUlySEVlbVRlT21LcGFyTWpVREhObUZM?=
+ =?utf-8?B?OTU1OWpsdGVKWFNNMnZXU2pDaEl2Z3Ivb2o3TFZndERIdUo2WkJYeTBqSGRR?=
+ =?utf-8?B?TXRSUzMrVWhFS1J6TWQrcmFLK3lGVG9ScFpQbDkwNldVMFRmTEl6MUJFUFVT?=
+ =?utf-8?B?VUZ4dTdoSTJ6K3Z2T2lURUdsUlpDbWsvYWUwVDlYNWtGVUhPUGhrVnRDRVN1?=
+ =?utf-8?B?REErdFVhMm1Ic09pVGp6MlNlVEg4ZHVVRUtLYmh6a1NpaVNueFVibUI3SjVt?=
+ =?utf-8?B?a1BCRFJDMXltYS90bjhBL1kwdUFEalQ3NzV1dFVaZng2UTVQREQ2NWFIYXVG?=
+ =?utf-8?Q?DWAZzIg7CBZAIhMUSplLNWBnlUAsTBFGck?=
+X-MS-Exchange-Transport-Forked: True
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e15886a2-760e-413a-6292-08d898418fd2
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 10:44:23.1338
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XNOA2st9oyEd19LJGne2mPjtsV+x4Z9E/uYK1CDCynfo4mnGy3uMyy2j3kMwcV+TRgf6z2iHbwXewyhyKL+v6A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3424
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 05:19:25PM +0800, wanghai (M) wrote:
+
+
+On 12/4/2020 10:02 AM, Zhang Changzhong wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
 > 
-> 在 2020/12/4 16:40, Johan Hovold 写道:
-> > On Fri, Dec 04, 2020 at 10:13:50AM +0800, Wang Hai wrote:
-> >> Add the missing unlock before return from function
-> >> gbaudio_dapm_free_controls() in the error handling case.
-> >>
-> >> Fixes: 510e340efe0c ("staging: greybus: audio: Add helper APIs for dynamic audio module")
-> >> Reported-by: Hulk Robot <hulkci@huawei.com>
-> >> Signed-off-by: Wang Hai <wanghai38@huawei.com>
-> >> ---
-> >>   drivers/staging/greybus/audio_helper.c | 1 +
-> >>   1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
-> >> index 237531ba60f3..293675dbea10 100644
-> >> --- a/drivers/staging/greybus/audio_helper.c
-> >> +++ b/drivers/staging/greybus/audio_helper.c
-> >> @@ -135,6 +135,7 @@ int gbaudio_dapm_free_controls(struct snd_soc_dapm_context *dapm,
-> >>   		if (!w) {
-> >>   			dev_err(dapm->dev, "%s: widget not found\n",
-> >>   				widget->name);
-> >> +			mutex_unlock(&dapm->card->dapm_mutex);
-> >>   			return -EINVAL;
-> >>   		}
-> >>   		widget++;
-> > This superficially looks correct, but there seems to be another bug in
-> > this function. It can be used free an array of widgets, but if one of
-> > them isn't found we just leak the rest. Perhaps that return should
-> > rather be "widget++; continue;".
-> >
-> I think this is a good idea, should I send a v2 patch?
+> Fixes: 197f4d6a4a00 ("staging: fsl-mc: fsl-mc object allocator driver")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-Let's just wait a bit and see what Vaibhav or Mark says first.
+Acked-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 
-Johan
+---
+Best Regards, Laurentiu
+
+> ---
+>  drivers/bus/fsl-mc/fsl-mc-allocator.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/fsl-mc/fsl-mc-allocator.c b/drivers/bus/fsl-mc/fsl-mc-allocator.c
+> index e71a6f5..2d7c764 100644
+> --- a/drivers/bus/fsl-mc/fsl-mc-allocator.c
+> +++ b/drivers/bus/fsl-mc/fsl-mc-allocator.c
+> @@ -292,8 +292,10 @@ int __must_check fsl_mc_object_allocate(struct fsl_mc_device *mc_dev,
+>  		goto error;
+>  
+>  	mc_adev = resource->data;
+> -	if (!mc_adev)
+> +	if (!mc_adev) {
+> +		error = -EINVAL;
+>  		goto error;
+> +	}
+>  
+>  	mc_adev->consumer_link = device_link_add(&mc_dev->dev,
+>  						 &mc_adev->dev,
+> 
