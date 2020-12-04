@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4392CE63A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D112CE63D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727452AbgLDC5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 21:57:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727434AbgLDC5p (ORCPT
+        id S1727533AbgLDC6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 21:58:39 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:60608 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727434AbgLDC6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 21:57:45 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1DCC061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 18:56:18 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id t8so4310699iov.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 18:56:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=isfeZ3kfKrYZjXvIfFGvKabQ5iROwvaOtPW6IFcmmAs=;
-        b=qX3Q4DkRG4IPc+DXuwx7/KQaCd5Nwuqfesx4SdKjhFwC4QymWb8VnQb6HO3gnDaWw0
-         Xhh5RWi9G/5bzChEsQrukG8vcxujHoPG49w+0qhEYXgUxLb3tQfFJ6bCQ12FzUQ3Sibf
-         4Vdjl48BpJGw2nV4VVdl+FVlReXKpHE3j82G0VNTw+hSfbFqtmfeQbDRJBmxaBVdmdBf
-         akQ7m/3uQUVxY+EFvU4qy3Mn7QQaimgixdFoFy0ztsCG/sl6VNBPFwwk2RI1+moNT9fT
-         zhocNE6DFpWeMR9LEbmUSQEo6e2PhzeomPDM0qmQ2QKNckOFoc97OZE2Uuwx/IMadF1W
-         +L7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=isfeZ3kfKrYZjXvIfFGvKabQ5iROwvaOtPW6IFcmmAs=;
-        b=e575R1CzpfWV/oGK9mR+esR6J9d59m947XxdeTHa9DJG+Qds5IR7rbl3w8t3lZH7Do
-         U03VSVpGsUGv/HFWvZvgeZfO+VXJHkDac4QjrI7zZqr8wPEIgmN23Nniz65XkSWkHq2E
-         Rd2HW1S4AiUOpp/rkdgdrUiycCbh/2F8vabV1V6JyPhMS/6EIg2xoQm02zwdt4lRRgJe
-         TSvsHwwrtYOINuGRx4GEW9aYH8OWWLmsjArx8inf8wXzRz5BUdCyEBl/9wyiyYVygqof
-         GXRGxMQoGNGTlV7KuumYVMwyNfcpsUoeT3kiKGp0zzgaWj8r1HcCE/8UXBIlg/RYxlN1
-         7ACA==
-X-Gm-Message-State: AOAM531oKX3UnD4TRJZryy6GCvhRCLUXQbpEAChk/RWzR0GyUp7JBQM4
-        PxeoDzuFcK4Lo8jVnqe1pzS/2zosmURvOkA/o6F68w==
-X-Google-Smtp-Source: ABdhPJxTr4JbkKHUEG1/9DIqVju9MZyNFzKYSjbwMrnw7cRRwoFQFlLrKA+Mn/8qkobkdeHunXJNXanaye0EQP+iUIo=
-X-Received: by 2002:a02:c804:: with SMTP id p4mr3166234jao.110.1607050577866;
- Thu, 03 Dec 2020 18:56:17 -0800 (PST)
+        Thu, 3 Dec 2020 21:58:38 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0B42vbW13003556, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb05.realtek.com.tw[172.21.6.98])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0B42vbW13003556
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 4 Dec 2020 10:57:37 +0800
+Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
+ RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Fri, 4 Dec 2020 10:57:36 +0800
+Received: from RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa]) by
+ RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa%3]) with mapi id
+ 15.01.2044.006; Fri, 4 Dec 2020 10:57:36 +0800
+From:   Pkshih <pkshih@realtek.com>
+To:     "tony0620emma@gmail.com" <tony0620emma@gmail.com>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        DeanKu <ku920601@realtek.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH][next] rtw88: coex: fix missing unitialization of variable 'interval'
+Thread-Topic: [PATCH][next] rtw88: coex: fix missing unitialization of
+ variable 'interval'
+Thread-Index: AQHWyZz6BmIbttp/AEO1y1b2WLtmZKnluRcA
+Date:   Fri, 4 Dec 2020 02:57:36 +0000
+Message-ID: <1607050654.5824.0.camel@realtek.com>
+References: <20201203175142.1071738-1-colin.king@canonical.com>
+In-Reply-To: <20201203175142.1071738-1-colin.king@canonical.com>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.69.213]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <824F9D3980CFE44680F4CAE6AF052B8E@realtek.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20201203225458.1477830-1-arnd@kernel.org>
-In-Reply-To: <20201203225458.1477830-1-arnd@kernel.org>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 4 Dec 2020 10:56:06 +0800
-Message-ID: <CA+Px+wWmJrS46TzWgKWiufJH7ryB+mOH7H4xfGZex2j=NutfLA@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: cros_ec_codec: fix uninitialized memory read
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Cheng-Yi Chiang <cychiang@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <groeck@chromium.org>,
-        ALSA development <alsa-devel@alsa-project.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 6:55 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> gcc points out a memory area that is copied to a device
-> but not initialized:
->
-> sound/soc/codecs/cros_ec_codec.c: In function 'i2s_rx_event':
-> arch/x86/include/asm/string_32.h:83:20: error: '*((void *)&p+4)' may be used uninitialized in this function [-Werror=maybe-uninitialized]
->    83 |   *((int *)to + 1) = *((int *)from + 1);
->
-> Initialize all the unused fields to zero.
->
-> Fixes: 727f1c71c780 ("ASoC: cros_ec_codec: refactor I2S RX")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Acked-by: Tzung-Bi Shih <tzungbi@google.com>
-
-In the case in i2s_rx_event(), only the "cmd" member is used.  But it
-is fine to please the compiler.
-
-struct __ec_align4 ec_param_ec_codec_i2s_rx {
-        uint8_t cmd; /* enum ec_codec_i2s_rx_subcmd */
-        uint8_t reserved[3];
-
-        union {
-            ...
-        };
-};
-
-I am a bit curious about, in other use cases of
-ec_param_ec_codec_i2s_rx, why the compiler doesn't complain about
-uninitialization of the "reserved" member?
+T24gVGh1LCAyMDIwLTEyLTAzIGF0IDE3OjUxICswMDAwLCBDb2xpbiBLaW5nIHdyb3RlOg0KPiBG
+cm9tOiBDb2xpbiBJYW4gS2luZyA8Y29saW4ua2luZ0BjYW5vbmljYWwuY29tPg0KPiANCj4gQ3Vy
+cmVudGx5IHRoZSB2YXJpYWJsZSAnaW50ZXJ2YWwnIGlzIG5vdCBpbml0aWFsaXplZCBhbmQgaXMg
+b25seSBzZXQNCj4gdG8gMSB3aGVuIG9leF9zdGF0LT5idF80MThfaGlkX2V4aXN0aSBpcyB0cnVl
+LsKgwqBGaXggdGhpcyBieSBpbmludGlhbGl6aW5nDQo+IHZhcmlhYmxlIGludGVydmFsIHRvIDAg
+KHdoaWNoIEknbSBhc3N1bWluZyBpcyB0aGUgaW50ZW5kZWQgZGVmYXVsdCkuDQo+IA0KPiBBZGRy
+ZXNzZXMtQ292ZXJpdHk6ICgiVW5pbml0YWxpemVkIHNjYWxhciB2YXJpYWJsZSIpDQo+IEZpeGVz
+OiA1YjJlOWEzNWU0NTYgKCJydHc4ODogY29leDogYWRkIGZlYXR1cmUgdG8gZW5oYW5jZSBISUQg
+Y29leGlzdGVuY2UNCj4gcGVyZm9ybWFuY2UiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBDb2xpbiBJYW4g
+S2luZyA8Y29saW4ua2luZ0BjYW5vbmljYWwuY29tPg0KDQpUaGFua3MgZm9yIHlvdXIgZml4Lg0K
+DQpBY2tlZC1ieTogUGluZy1LZSBTaGloIDxwa3NoaWhAcmVhbHRlay5jb20+DQoNCj4gLS0tDQo+
+IMKgZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OC9jb2V4LmMgfCAyICstDQo+IMKg
+MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OC9jb2V4LmMNCj4gYi9k
+cml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4L2NvZXguYw0KPiBpbmRleCBjNzA0YzY4
+ODVhMTguLjI0NTMwY2FmY2JhNyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+cmVhbHRlay9ydHc4OC9jb2V4LmMNCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRl
+ay9ydHc4OC9jb2V4LmMNCj4gQEAgLTIwNTEsNyArMjA1MSw3IEBAIHN0YXRpYyB2b2lkIHJ0d19j
+b2V4X2FjdGlvbl9idF9hMmRwX2hpZChzdHJ1Y3QgcnR3X2Rldg0KPiAqcnR3ZGV2KQ0KPiDCoAlz
+dHJ1Y3QgcnR3X2NvZXhfZG0gKmNvZXhfZG0gPSAmY29leC0+ZG07DQo+IMKgCXN0cnVjdCBydHdf
+ZWZ1c2UgKmVmdXNlID0gJnJ0d2Rldi0+ZWZ1c2U7DQo+IMKgCXN0cnVjdCBydHdfY2hpcF9pbmZv
+ICpjaGlwID0gcnR3ZGV2LT5jaGlwOw0KPiAtCXU4IHRhYmxlX2Nhc2UsIHRkbWFfY2FzZSwgaW50
+ZXJ2YWw7DQo+ICsJdTggdGFibGVfY2FzZSwgdGRtYV9jYXNlLCBpbnRlcnZhbCA9IDA7DQo+IMKg
+CXUzMiBzbG90X3R5cGUgPSAwOw0KPiDCoAlib29sIGlzX3RvZ2dsZV90YWJsZSA9IGZhbHNlOw0K
+PiDCoA0KPiAtLcKgDQo+IDIuMjkuMg0KPiANCj4gDQo+IC0tLS0tLVBsZWFzZSBjb25zaWRlciB0
+aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMgZS1tYWlsLg0KDQoNCg==
