@@ -2,181 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548662CE6BB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1852CE6BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727920AbgLDDyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 22:54:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726469AbgLDDyW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 22:54:22 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAF8C061A52
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 19:53:36 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id p5so4002405iln.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 19:53:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ULTmDl5ODAp5+pGiMlfRgGgqG7bhEVtrrqJo/V0Wv5o=;
-        b=IqWzw/7LhLKatX2EcMZ7gPXa4FX987fJvD2fIX7S33kmZPPX9/QQhdFXd18ExVQsKP
-         sW/pxBbVFcILY5G+8C0Hd7JrF91UtzuNPSkxy9+moOonfKdGEv38ehQddV13jPK8qZhS
-         5lgBjYtrCsgneZH6Ityt0+U1RYuwDszWp9fQnAf5y1EYCsqnlcy3PHp6yiKYVItjFZc1
-         z1/aSSLurV/FbaOfmjYkWwRXL6Mg0jbQ/ow+kszM5s5wHf8YGqfOt8ACPLi+LzM/USzM
-         f/rrzkzNiPg2zE2ul+Jwmp2Cfb7HbEMQCOV+sQcBxl9WYyd8o1Y3Ng1IRztDmYk/EqS1
-         Ahfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ULTmDl5ODAp5+pGiMlfRgGgqG7bhEVtrrqJo/V0Wv5o=;
-        b=hqqvvkArqzn0dgsve+oXpT0dHSb2Xv7EtUBfYup8BBzyUndHsej9ToiZz1rEgjSNY2
-         Me+cJIL9+txsKdvn2oasMbYXnBYSKCBqlM0qqU7HQd6rH1Sp1gqhqxBA8DM/7fGEyGeQ
-         5XDFMJ26J2OZwnDScZwnuxx0lowMMretvWKW1t8swkUTLn2R5eDw+a6NDwtbZBVchLcO
-         +G8uE8XkIxG5fTJuA+KytADtLIWSKsvja5pDCiiuRtaVsqDNFVx+u+SnSHw1EfF4r797
-         uqV6fCCnvff+ppJvgW/vjQiznYoU5bnUmg8GcqJKDhWacVWIFdpCjwwZhnPZ5EjXJtS1
-         XTYg==
-X-Gm-Message-State: AOAM530GbxdBVuuyAyjY4YQN2qFrOnPUeIT9kfaHI5odwYlCwVlLC9cY
-        gxBlQMAo/wD33KCkYNhEewk=
-X-Google-Smtp-Source: ABdhPJw/GpPxKvmdLgpe0UZqYix1EOwTWX/EGSHFiJY3r/MukaIIZNjhO1ojAeLgFHMsed0OsIErJA==
-X-Received: by 2002:a92:58cb:: with SMTP id z72mr3406498ilf.104.1607054015671;
-        Thu, 03 Dec 2020 19:53:35 -0800 (PST)
-Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id o12sm671361ilj.55.2020.12.03.19.53.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 19:53:35 -0800 (PST)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     jbaron@akamai.com, Jim Cromie <jim.cromie@gmail.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org
-Subject: [RFC PATCH 2/2] i915: POC use dynamic_debug_exec_queries to control pr_debugs in gvt
-Date:   Thu,  3 Dec 2020 20:53:18 -0700
-Message-Id: <20201204035318.332419-3-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201204035318.332419-1-jim.cromie@gmail.com>
-References: <20201204035318.332419-1-jim.cromie@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727417AbgLDD40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 22:56:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726038AbgLDD40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 22:56:26 -0500
+Date:   Fri, 4 Dec 2020 12:55:40 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607054145;
+        bh=9L2MLHS6s+FXV6sunjkn8Ydk+p7xN+acVr1+aQ9eX2g=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aPz+A4Kq67t8v7CWj+5TIqP+BdbXLD/Fth1leStgQw/iPt2IocULIeix56GslsAkN
+         SjnJbNWJztqEGMSWyDhWV7qhJZwL/ZJbCbAg1V/NDFXarfP8tZPF3sxO5yXIMFeh4e
+         WCIbylg9cg1jx5HsepjV0gQtJLZe0cG6s56j5NYJOJqCH2owVaiBsluEHLpulF/58s
+         GQeeuxcvDuT3IJ/eLEJlWnxn823ogtElBahKmzY/KUkArRkER5OF768ILFFsCWrwjf
+         O5e6mTQYXlM+HUIQjq0DILkkDLDz9Z3aTD1oyIFcFD+/EB08ORNxIo0YwaLXNDkgre
+         FsCLTvN1tco0A==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] x86/uprobes: Fix not using prefixes.nbytes for
+ loop over prefixes.bytes
+Message-Id: <20201204125540.246fc58c9ddbcd171189e620@kernel.org>
+In-Reply-To: <20201204095653.c948106a294fd6e731df5594@kernel.org>
+References: <160697102582.3146288.10127018634865687932.stgit@devnote2>
+        <160697103739.3146288.7437620795200799020.stgit@devnote2>
+        <20201203123757.GH3059@zn.tnic>
+        <20201203124121.GI3059@zn.tnic>
+        <20201203124820.GJ3059@zn.tnic>
+        <1c1b265f-34e3-f5cc-0e7b-186dc26c94b7@amd.com>
+        <20201203165420.GL3059@zn.tnic>
+        <20201203170140.GM3059@zn.tnic>
+        <d9b47fc6-6d9d-b966-30df-9ef8c83b46e3@amd.com>
+        <20201203181712.GN3059@zn.tnic>
+        <e7148653-0156-b895-714c-0d4cd580a2a8@amd.com>
+        <20201204095653.c948106a294fd6e731df5594@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The gvt component of this driver has ~120 pr_debugs, in 9 "classes".
-Following model of drm.debug, add a parameter to map bits to these
-classes.
+On Fri, 4 Dec 2020 09:56:53 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-In Makefile, add DYNAMIC_DEBUG_MODULE.  This converts gvt's pr_debugs,
-even if the rest of drm is not using CONFIG_DRM_USE_DYNAMIC_DEBUG.
+> On Thu, 3 Dec 2020 12:49:46 -0600
+> Tom Lendacky <thomas.lendacky@amd.com> wrote:
+> 
+> > On 12/3/20 12:17 PM, Borislav Petkov wrote:
+> > > On Thu, Dec 03, 2020 at 12:10:10PM -0600, Tom Lendacky wrote:
+> > >> Since that struct is used in multiple places, I think basing it on the array
+> > >> size is the best way to go. The main point of the check is just to be sure
+> > >> you don't read outside of the array.
+> > > 
+> > > Well, what happens if someone increases the array size of:
+> > > 
+> > > struct insn_field {
+> > > 	union {
+> > > 		insn_byte_t bytes[4];
+> > > 				^^^^
+> > > 
+> > > ?
+> > 
+> > I think we need to keep the parsing of the instruction separate from 
+> > accessing the prefixes after (successfully) parsing it. This fix is merely 
+> > making sure that we don't read outside the bounds of the array that 
+> > currently holds the legacy prefixes.
+> > 
+> > > 
+> > > That's why a separate array only for legacy prefixes would be better
+> > > in the long run. The array size check is good as a short-term fix for
+> > > stable.
+> > > 
+> > > I'd say.
+> > 
+> > According to Volume 3 of the AMD APM (Figure 1-2 on page 5), there could 
+> > be as many as 5 legacy prefixes and it says that more than one prefix from 
+> > each group is undefined behavior. The instruction parsing code doesn't 
+> > seem to take into account the different prefix groups. So I agree with you 
+> > that short term the array size check works, and long term, the legacy 
+> > prefix support probably needs a closer look.
+> 
+> Hmm, there is a difference between Intel SDM and AMD APM.
+> 
+> Intel SDM vol.2
+> 
+> 2.1.1 Instruction Prefixes
+> Instruction prefixes are divided into four groups, each with a set of allowable prefix codes. For each instruction, it
+> is only useful to include up to one prefix code from each of the four groups (Groups 1, 2, 3, 4).
+> 
+> AMD APM vol.3
+> 
+> 1.2.1 Summary of Legacy Prefixes
+> Table 1-1 on page 7 shows the legacy prefixes. The legacy prefixes are organized into five groups, as
+> shown in the left-most column of Table 1-1. An instruction encoding may include a maximum of one
+> prefix from each of the five groups.
+> 
+> So, Intel CPU doesn't accept LOCK-REP because those are in a same prefix
+> group, but AMD says it is acceptable. Actually, insn.c only accepts the 
+> prefix up to 4, so if there is any instruction which has 5 prefixes,
+> it will fail to parse.
 
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+
+OK, I got it. AMD APM's explanation is misleading. Intel SDM groups
+the legacy prefixes in 1) Lock/Repeat/Bound 2) Segment override/branch hints,
+3) Operand-size override 4) Address-size override. On the other hand,
+AMD APM makes it 5 groups(See Table 1-1), 1) Operand-Size Override
+2) Address-Size Override 3) Segment Override 4) Lock 5) Repeat.
+
+So the difference is whether the Lock and Repeat is a group or not.
+
+However, I found we must not see LOCK-REP prefix in the same instruction,
+because the available instruction for LOCK and REP are different.
+
+AMD APM vol.3
 ---
- drivers/gpu/drm/i915/gvt/Makefile  |  1 +
- drivers/gpu/drm/i915/i915_params.c | 74 ++++++++++++++++++++++++++++++
- 2 files changed, 75 insertions(+)
+1.2.5 Lock Prefix
+...
+The LOCK prefix can only be used with forms of the following instructions that write a memory
+operand: ADC, ADD, AND, BTC, BTR, BTS, CMPXCHG, CMPXCHG8B, CMPXCHG16B, DEC,
+INC, NEG, NOT, OR, SBB, SUB, XADD, XCHG, and XOR. An invalid-opcode exception occurs if
+the LOCK prefix is used with any other instruction.
 
-diff --git a/drivers/gpu/drm/i915/gvt/Makefile b/drivers/gpu/drm/i915/gvt/Makefile
-index ea8324abc784..e38a1eb618bd 100644
---- a/drivers/gpu/drm/i915/gvt/Makefile
-+++ b/drivers/gpu/drm/i915/gvt/Makefile
-@@ -6,4 +6,5 @@ GVT_SOURCE := gvt.o aperture_gm.o handlers.o vgpu.o trace_points.o firmware.o \
- 	fb_decoder.o dmabuf.o page_track.o
- 
- ccflags-y				+= -I $(srctree)/$(src) -I $(srctree)/$(src)/$(GVT_DIR)/
-+ccflags-y				+= -DDYNAMIC_DEBUG_MODULE
- i915-y					+= $(addprefix $(GVT_DIR)/, $(GVT_SOURCE))
-diff --git a/drivers/gpu/drm/i915/i915_params.c b/drivers/gpu/drm/i915/i915_params.c
-index 7f139ea4a90b..ecc825558e00 100644
---- a/drivers/gpu/drm/i915/i915_params.c
-+++ b/drivers/gpu/drm/i915/i915_params.c
-@@ -260,3 +260,77 @@ void i915_params_free(struct i915_params *params)
- 	I915_PARAMS_FOR_EACH(FREE);
- #undef FREE
- }
-+
-+/* POC for callback -> dynamic_debug_exec_queries */
-+unsigned long __gvt_debug;
-+EXPORT_SYMBOL(__gvt_debug);
-+
-+static char *format_prefix_classes[] = {
-+	"gvt: cmd: ",
-+	"gvt: core: ",
-+	"gvt: dpy: ",
-+	"gvt: el: ",
-+	"gvt: irq: ",
-+	"gvt: mm: ",
-+	"gvt: mmio: ",
-+	"gvt: render: ",
-+	"gvt: sched: "
-+};
-+#define NUM_CLASSES	ARRAY_SIZE(format_prefix_classes)
-+#define OUR_QUERY_SIZE	128 /* we need about 20 */
-+
-+#include <linux/module.h>
-+
-+static int param_set_dyndbg(const char *instr, const struct kernel_param *kp)
-+{
-+	unsigned int val;
-+	unsigned long changes, result;
-+	int rc, chgct = 0, totct = 0, bitpos;
-+	char query[OUR_QUERY_SIZE];
-+
-+	rc = kstrtouint(instr, 0, &val);
-+	if (rc) {
-+		pr_err("set_dyndbg: failed\n");
-+		return -EINVAL;
-+	}
-+	result = val;
-+	pr_info("set_dyndbg: result:0x%lx from %s\n", result, instr);
-+
-+	changes = result ^ __gvt_debug;
-+
-+	for_each_set_bit(bitpos, &changes, NUM_CLASSES) {
-+
-+		sprintf(query, "format '^%s' %cp", format_prefix_classes[bitpos],
-+			test_bit(bitpos, &result) ? '+' : '-');
-+
-+		chgct = dynamic_debug_exec_queries(query, "i915");
-+
-+		pr_info("%d changes on: %s\n", chgct, query);
-+		totct += chgct;
-+	}
-+	pr_info("total changes: %d\n", totct);
-+	__gvt_debug = result;
-+	return 0;
-+}
-+static int param_get_dyndbg(char *buffer, const struct kernel_param *kp)
-+{
-+	return scnprintf(buffer, PAGE_SIZE, "%u\n",
-+			 *((unsigned int *)kp->arg));
-+}
-+static const struct kernel_param_ops param_ops_dyndbg = {
-+	.set = param_set_dyndbg,
-+	.get = param_get_dyndbg,
-+};
-+
-+MODULE_PARM_DESC(debug_gvt, " gvt debug categories:"
-+		 "\n\t0x1\t gvt: cmd:"
-+		 "\n\t0x2\t gvt: core:"
-+		 "\n\t0x4\t gvt: dpy:"
-+		 "\n\t0x8\t gvt: el:"
-+		 "\n\t0x10\t gvt: irq:"
-+		 "\n\t0x20\t gvt: mm:"
-+		 "\n\t0x40\t gvt: mmio:"
-+		 "\n\t0x80\t gvt: render:"
-+		 "\n\t0x100\t gvt: sched:" "\n");
-+
-+module_param_cb(debug_gvt, &param_ops_dyndbg, &__gvt_debug, 0644);
+1.2.6 Repeat Prefixes
+The repeat prefixes cause repetition of certain instructions that load, store, move, input, or output
+strings. The prefixes should only be used with such string instructions.
+...
+REP. ... The prefix can be used with the INS, LODS, MOVS, OUTS, and STOS instructions.
+...
+The REPE and REPZ prefixes can be used with the CMPS, CMPSB, CMPSD, CMPSW, SCAS,
+SCASB, SCASD, and SCASW instructions.
+...
+The REPNE and REPNZ prefixes can be used with the CMPS, CMPSB, CMPSD, CMPSW, SCAS,
+SCASB, SCASD, and SCASW instructions.
+---
+
+Thus, I think the current expectation -- legacy prefix will consist
+of 4 different groups -- is good. No need to take care of LOCK-REP
+combination.
+
+Thank you,
+
+
 -- 
-2.28.0
-
+Masami Hiramatsu <mhiramat@kernel.org>
