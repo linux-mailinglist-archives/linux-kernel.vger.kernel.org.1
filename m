@@ -2,165 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB5B2CF221
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CDA2CF22B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730885AbgLDQnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:43:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728382AbgLDQni (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:43:38 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B03C0613D1;
-        Fri,  4 Dec 2020 08:42:58 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id q13so8504529lfr.10;
-        Fri, 04 Dec 2020 08:42:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lLL+dDAHV4SbLQrB8XpOfvuGZUyMnHYhCIRfLueZPXU=;
-        b=ReTXzmTM6d0rgzmfhSrxuKhwr1AOz88qkslSx3qYc6bwT5lMUlr4MF8Ymh4y81dtq5
-         bB4Vs/HdWoTFSIgp49BDRTRWJ6eAiIJYzZFlId+EbQQ6pYAOQdNdOEf8Jwmg8OZcIli7
-         Kn5ER08bZJ/FJJjcQYNaPn4IcCe1mGU3hptBKJKIjTV0iE2YjLifr3RmuOl/ap/kAffW
-         W+Q13KaxvYAeQMjQm04rz3SmpXpA9rk23rVwye/nYxI7VZYtBq+6Qn2yrV8kBB5jDFjb
-         6nOkaFxDQF/iCIfwEQ0RUb2f20/WemBZPkgS+XkLYbqvFPUB8K2MtctMpanCWWQK1JWh
-         8wuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lLL+dDAHV4SbLQrB8XpOfvuGZUyMnHYhCIRfLueZPXU=;
-        b=iX5c2b3NCo2Y4QedGwqBLc53vKa7/OhOa53R0TkYHgB+spS80u8dVirothK5SBSMEX
-         lljS5t7/38qEVErUD6yXXz109WuJBQPO5V50qH2vOGYDCFLFlpDYpPgKl3Cs2OAEyrJi
-         vHhmAupqD10hL2XnmGrMSt7kOp//kQCPOidXh5RKXoLecZbh0oW1TDCE7DcFrg0bMTuf
-         yvJggbc7Gjt8rJlRCW/CfwYI9Xry1VbiPfBgI5XNAiMyMl3oAjgJeN5yb94sd0LCSvpS
-         9AcyTzy8Jr+lUEhuX7A2Ax8kOZFTV9cztVab/EaNPktG8rpCEZUeXylUmZRtqoHzVk7j
-         9dKQ==
-X-Gm-Message-State: AOAM531Jv3iW/y9CujtGkFhv1OUM3qfLvctomMVeXfYGGd48BdKnqCCq
-        4yAsaDfArOxXsQpAkQEoP0o=
-X-Google-Smtp-Source: ABdhPJy1nIHctJae4YId212e/wcyPadYPuygBtCsVJ9d5s3gotTHRhWpjdMWYziKxvdbTDby7Fq8WA==
-X-Received: by 2002:ac2:4c07:: with SMTP id t7mr3738246lfq.458.1607100176853;
-        Fri, 04 Dec 2020 08:42:56 -0800 (PST)
-Received: from elitebook.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id q20sm1904174ljp.90.2020.12.04.08.42.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Dec 2020 08:42:56 -0800 (PST)
-Subject: Re: [PATCH 2/2] reset: bcm4908-usb: add driver for BCM4908 USB reset
- controller
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Al Cooper <al.cooper@broadcom.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20201204093704.11359-1-zajec5@gmail.com>
- <20201204093704.11359-2-zajec5@gmail.com>
- <5abf5ac5-0d4b-cfd2-7ade-dc66fcc5edde@gmail.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <c48791de-eef8-2cae-171d-4da2539963fa@gmail.com>
-Date:   Fri, 4 Dec 2020 17:42:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1730675AbgLDQrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:47:31 -0500
+Received: from mga17.intel.com ([192.55.52.151]:64250 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726330AbgLDQra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 11:47:30 -0500
+IronPort-SDR: B7+vHnxdpIrKWKDEuRoueA5y96rOKdpIeJAFgEOBYXDESm5N3kbkwYqvEoxZygqPHDAVg+MTYa
+ dOhbrh82Wa+Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="153225411"
+X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
+   d="scan'208";a="153225411"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 08:46:50 -0800
+IronPort-SDR: E5GvzQDhvQe9AAxqBU9s2ScqLbUhUG2MiV+MtMU61fpkpW41zrRBju0qeD05JYLKuHwJKj4a5z
+ P5Zl6REzCjhQ==
+X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
+   d="scan'208";a="551008011"
+Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 08:46:49 -0800
+Subject: [PATCH] driver core: auxiliary bus: Fix auxiliary bus shutdown null
+ auxdrv ptr
+From:   Dave Jiang <dave.jiang@intel.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, david.m.ertman@intel.com,
+        dan.j.williams@intel.com
+Date:   Fri, 04 Dec 2020 09:46:49 -0700
+Message-ID: <160710040926.1889434.8840329810698403478.stgit@djiang5-desk3.ch.intel.com>
+User-Agent: StGit/0.23-29-ga622f1
 MIME-Version: 1.0
-In-Reply-To: <5abf5ac5-0d4b-cfd2-7ade-dc66fcc5edde@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.12.2020 17:38, Florian Fainelli wrote:
-> On 12/4/2020 1:37 AM, Rafał Miłecki wrote:
->> From: Rafał Miłecki <rafal@milecki.pl>
->>
->> This controller is responsible for OHCI, EHCI, XHCI and PHYs setup that
->> has to be handled in the proper order.
->>
->> One unusual thing about this controller is that is provides access to
->> the MDIO bus. There are two registers (in the middle of block space)
->> responsible for that. For that reason this driver initializes regmap so
->> a proper MDIO driver can use them.
->>
->> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->> ---
-> 
-> [snip]
-> 
->> +
->> +#define BCM4908_USB_RESET_SETUP						0x0000
->> +#define  BCM4908_USBH_IPP						(1<<5)
->> +#define  BCM4908_USBH_IOC						(1<<4)
->> +#define  BCM4908_USB2_OC_DISABLE_PORT0					(1<<28)
->> +#define  BCM4908_USB2_OC_DISABLE_PORT1					(1<<29)
->> +#define  BCM4908_USB3_OC_DISABLE_PORT0					(1<<30)
->> +#define  BCM4908_USB3_OC_DISABLE_PORT1					(1<<31)
->> +#define BCM4908_USB_RESET_PLL_CTL					0x0004
->> +#define BCM4908_USB_RESET_FLADJ_VALUE					0x0008
->> +#define BCM4908_USB_RESET_BRIDGE_CTL					0x000c
->> +#define BCM4908_USB_RESET_SPARE1					0x0010
->> +#define BCM4908_USB_RESET_MDIO						0x0014
->> +#define BCM4908_USB_RESET_MDIO2						0x0018
->> +#define BCM4908_USB_RESET_TEST_PORT_CONTROL				0x001c
->> +#define BCM4908_USB_RESET_USB_SIMCTL					0x0020
->> +#define  BCM4908_USBH_OHCI_MEM_REQ_DIS					(1<<1)
->> +#define BCM4908_USB_RESET_USB_TESTCTL					0x0024
->> +#define BCM4908_USB_RESET_USB_TESTMON					0x0028
->> +#define BCM4908_USB_RESET_UTMI_CTL_1					0x002c
->> +#define BCM4908_USB_RESET_SPARE2					0x0030
->> +#define BCM4908_USB_RESET_USB_PM					0x0034
->> +#define  BCM4908_XHC_SOFT_RESETB					(1<<22)
->> +#define  BCM4908_USB_PWRDWN						(1<<31)
->> +#define BCM4908_USB_RESET_USB_PM_STATUS					0x0038
->> +#define BCM4908_USB_RESET_SPARE3					0x003c
->> +#define BCM4908_USB_RESET_PLL_LDO_CTL					0x0040
->> +#define BCM4908_USB_RESET_PLL_LDO_PLLBIAS				0x0044
->> +#define BCM4908_USB_RESET_PLL_AFE_BG_CNTL				0x0048
->> +#define BCM4908_USB_RESET_AFE_USBIO_TST					0x004c
->> +#define BCM4908_USB_RESET_PLL_NDIV_FRAC					0x0050
->> +#define BCM4908_USB_RESET_TP_DIAG					0x0054
->> +#define BCM4908_USB_RESET_AHB_CAPTURE_FIFO				0x0058
->> +#define BCM4908_USB_RESET_SPARE4					0x005c
->> +#define BCM4908_USB_RESET_USB30_CTL1					0x0060
->> +#define  BCM4908_PHY3_PLL_SEQ_START					(1<<4)
->> +#define BCM4908_USB_RESET_USB30_CTL2					0x0064
->> +#define BCM4908_USB_RESET_USB30_CTL3					0x0068
->> +#define BCM4908_USB_RESET_USB30_CTL4					0x006c
->> +#define BCM4908_USB_RESET_USB30_PCTL					0x0070
->> +#define BCM4908_USB_RESET_USB30_CTL5					0x0074
->> +#define BCM4908_USB_RESET_SPARE5					0x0078
->> +#define BCM4908_USB_RESET_SPARE6					0x007c
->> +#define BCM4908_USB_RESET_SPARE7					0x0080
->> +#define BCM4908_USB_RESET_USB_DEVICE_CTL1				0x0090
->> +#define BCM4908_USB_RESET_USB_DEVICE_CTL2				0x0094
->> +#define BCM4908_USB_RESET_USB20_ID					0x0150
->> +#define BCM4908_USB_RESET_USB30_ID					0x0154
->> +#define BCM4908_USB_RESET_BDC_COREID					0x0158
->> +#define BCM4908_USB_RESET_USB_REVID					0x015c
-> 
-> This register layout is nearly identical to the one described under
-> drivers/phy/broadcom/phy-brcm-usb-init.c and this is because within
-> Broadcom the same design group has been supplying the USB PHY and host
-> controllers to the DSL and STB product lines.
-> 
-> I would model this the same way we have done it for the Broadcom STB HCI
-> drivers and add a separate compatible string along with an optional
-> reset line.
-> 
-> As far as MDIO goes as you can see the USB PHY driver uses a mix of
-> memory mapped and MDIO accesses (eye fix, etc.) so it was deemed cleaner
-> to not use the MDIO subsystem for the very few accesses that are required.
-> 
-> This is different from the Northstar platform you have been working on
-> where the USB PHYs are not memory maapped at all and only accessible
-> over MDIO.
-> 
-> Let me know if you think the existing driver would not be extensible to
-> support 4908.
+If the probe of the auxdrv failed, the device->driver is set to NULL.
+During kernel shutdown, the bus shutdown will call auxdrv->shutdown and
+cause an invalid ptr dereference. Add check to make sure device->driver is
+not NULL before we proceed.
 
-I see some / many similarities in that PHY driver, I'll try to reuse it, thanks!
+Fixes: 7de3697e9cbd ("Add auxiliary bus support")
+Cc: Dave Ertman <david.m.ertman@intel.com>
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+---
+ drivers/base/auxiliary.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+index f303daadf843..8336535f1e11 100644
+--- a/drivers/base/auxiliary.c
++++ b/drivers/base/auxiliary.c
+@@ -92,10 +92,15 @@ static int auxiliary_bus_remove(struct device *dev)
+ 
+ static void auxiliary_bus_shutdown(struct device *dev)
+ {
+-	struct auxiliary_driver *auxdrv = to_auxiliary_drv(dev->driver);
+-	struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
++	struct auxiliary_driver *auxdrv = NULL;
++	struct auxiliary_device *auxdev;
++
++	if (dev->driver) {
++		auxdrv = to_auxiliary_drv(dev->driver);
++		auxdev = to_auxiliary_dev(dev);
++	}
+ 
+-	if (auxdrv->shutdown)
++	if (auxdrv && auxdrv->shutdown)
+ 		auxdrv->shutdown(auxdev);
+ }
+ 
+
+
