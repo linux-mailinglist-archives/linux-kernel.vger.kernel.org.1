@@ -2,134 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D55C2CF64B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 22:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48AF2CF648
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 22:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387586AbgLDVhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 16:37:31 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25716 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725995AbgLDVha (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 16:37:30 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4L3rPS195890;
-        Fri, 4 Dec 2020 16:36:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=mq0Py58u7yVQMGnTGvPD5H4RBHRUXUVsbgY2eBrKMWw=;
- b=KF42hkEb7PMPmHjmnQZslNNKg3QrgJLyoTg0LkIwllFzt0pVJ3zQvE/UYp6LxHR9tFNQ
- fHKt/9VvnrW0kMuxXY+XF/Gn9wDCb/XXrlTafb0y/X+sT+Mtt0xiAsT9gXonsih0FUmT
- BIYfJUznqDvDilzaSgkTU3EPz03c0/Eg6gFkN1fdNzA7VOUupinx2Jy7JyUIo7j4Z4hd
- LtUoIcEWrziWHwqeKOhlmdCPBW59b/7oPYS/AhRM9GDAQQ/ZlD3lfQFmrJ6qU/FBlKaD
- krpkDWqq6Qb/9v6W/Z3dr8YdS27Y02tZdKaJ2gLqH9GAa8725esUAU7wbwfRpRFk6YR8 oQ== 
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 357m8gyuca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 16:36:43 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B4LLwtB003116;
-        Fri, 4 Dec 2020 21:36:43 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma01wdc.us.ibm.com with ESMTP id 355vrgdxsb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 21:36:43 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B4LZQSs3474112
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 4 Dec 2020 21:35:26 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D12E712405A;
-        Fri,  4 Dec 2020 21:35:26 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F4229124058;
-        Fri,  4 Dec 2020 21:35:25 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.163.73.174])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri,  4 Dec 2020 21:35:25 +0000 (GMT)
-Subject: Re: [PATCH v3 18/18] ibmvfc: drop host lock when completing commands
- in CRQ
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201203020806.14747-1-tyreld@linux.ibm.com>
- <20201203020806.14747-19-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <b048ede5-e673-4ba9-3c28-df077aa4467a@linux.vnet.ibm.com>
-Date:   Fri, 4 Dec 2020 15:35:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1730382AbgLDVhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 16:37:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729268AbgLDVhQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 16:37:16 -0500
+Date:   Fri, 4 Dec 2020 13:36:29 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607117791;
+        bh=U04B3pDX8jFTZKxagPn+lmF/MY9A/p0Uvp3pJNgnx8s=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kohVDdvJOBJoL7UDt5bjD8I/yfGVRi8rYwIcC4E3D4wc82HuMQjS6sW7jNOxKPdFW
+         KVEmFXx/wKk4BRbtlALz66BY3ZRsCwm6LCkuGbX0QCZERzp913WfV6WkRA1s71JYrs
+         xuJjFd8mj2HQFux64nB1BEwdxb9W71AcloEMWFTc/NAFAUe4NIeWGKwxCbVL9a1fj7
+         hbqBivV0EBhywARFiQMl3u6vHWmQ2bPOQ2u+o4HRyE8tdgo2BFjOY3py1eF9x/jAco
+         B6xZZepnuaundzpZ+MZKSF8/1GLIZCqNfqyt7J8S8BxEU6BGPQTAmF8iceo8vADeZi
+         5kPJAm2GR3JVA==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+Subject: Re: [net-next v4 0/8] seg6: add support for SRv6 End.DT4/DT6
+ behavior
+Message-ID: <20201204133629.19549345@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201202130517.4967-1-andrea.mayer@uniroma2.it>
+References: <20201202130517.4967-1-andrea.mayer@uniroma2.it>
 MIME-Version: 1.0
-In-Reply-To: <20201203020806.14747-19-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_11:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 adultscore=0 spamscore=0
- impostorscore=0 mlxscore=0 phishscore=0 mlxlogscore=999 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/20 8:08 PM, Tyrel Datwyler wrote:
-> The legacy CRQ holds the host lock the even while completing commands.
-> This presents a problem when in legacy single queue mode and
-> nr_hw_queues is greater than one since calling scsi_done() introduces
-> the potential for deadlock.
+On Wed,  2 Dec 2020 14:05:09 +0100 Andrea Mayer wrote:
+> This patchset provides support for the SRv6 End.DT4 and End.DT6 (VRF mode)
+> behaviors.
 > 
-> If nr_hw_queues is greater than one drop the hostlock in the legacy CRQ
-> path when completing a command.
+> The SRv6 End.DT4 behavior is used to implement multi-tenant IPv4 L3 VPNs. It
+> decapsulates the received packets and performs IPv4 routing lookup in the
+> routing table of the tenant. The SRv6 End.DT4 Linux implementation leverages a
+> VRF device in order to force the routing lookup into the associated routing
+> table.
+> The SRv6 End.DT4 behavior is defined in the SRv6 Network Programming [1].
 > 
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-> ---
->  drivers/scsi/ibmvscsi/ibmvfc.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+> The Linux kernel already offers an implementation of the SRv6 End.DT6 behavior
+> which allows us to set up IPv6 L3 VPNs over SRv6 networks. This new
+> implementation of DT6 is based on the same VRF infrastructure already exploited
+> for implementing the SRv6 End.DT4 behavior. The aim of the new SRv6 End.DT6 in
+> VRF mode consists in simplifying the construction of IPv6 L3 VPN services in
+> the multi-tenant environment.
+> Currently, the two SRv6 End.DT6 implementations (legacy and VRF mode)
+> coexist seamlessly and can be chosen according to the context and the user
+> preferences.
 > 
-> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-> index e499599662ec..e2200bdff2be 100644
-> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
-> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-> @@ -2969,6 +2969,7 @@ static void ibmvfc_handle_crq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost)
->  {
->  	long rc;
->  	struct ibmvfc_event *evt = (struct ibmvfc_event *)be64_to_cpu(crq->ioba);
-> +	unsigned long flags;
->  
->  	switch (crq->valid) {
->  	case IBMVFC_CRQ_INIT_RSP:
-> @@ -3039,7 +3040,12 @@ static void ibmvfc_handle_crq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost)
->  	del_timer(&evt->timer);
->  	list_del(&evt->queue);
->  	ibmvfc_trc_end(evt);
-> -	evt->done(evt);
-> +	if (nr_scsi_hw_queues > 1) {
-> +		spin_unlock_irqrestore(vhost->host->host_lock, flags);
-> +		evt->done(evt);
-> +		spin_lock_irqsave(vhost->host->host_lock, flags);
-> +	} else
-> +		evt->done(evt);
-
-Similar comment here as previously. The flags parameter is an output for
-spin_lock_irqsave but an input for spin_unlock_irqrestore. You'll need
-to rethink the locking here. You could just do a spin_unlock_irq / spin_lock_irq
-here and that would probably be OK, but probably isn't the best. 
-
->  }
->  
->  /**
+> - Patch 1 is needed to solve a pre-existing issue with tunneled packets
+>   when a sniffer is attached;
 > 
+> - Patch 2 improves the management of the seg6local attributes used by the
+>   SRv6 behaviors;
+> 
+> - Patch 3 adds support for optional attributes in SRv6 behaviors;
+> 
+> - Patch 4 introduces two callbacks used for customizing the
+>   creation/destruction of a SRv6 behavior;
+> 
+> - Patch 5 is the core patch that adds support for the SRv6 End.DT4
+>   behavior;
+> 
+> - Patch 6 introduces the VRF support for SRv6 End.DT6 behavior;
+> 
+> - Patch 7 adds the selftest for SRv6 End.DT4 behavior;
+> 
+> - Patch 8 adds the selftest for SRv6 End.DT6 (VRF mode) behavior.
+> 
+> Regarding iproute2, the support for the new "vrftable" attribute, required by
+> both SRv6 End.DT4 and End.DT6 (VRF mode) behaviors, is provided in a different
+> patchset that will follow shortly.
+> 
+> I would like to thank David Ahern for his support during the development of
+> this patchset.
 
-
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
-
+Applied, thank you!
