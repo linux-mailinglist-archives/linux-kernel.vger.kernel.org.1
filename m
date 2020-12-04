@@ -2,134 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C542CE898
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C61F02CE89B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728487AbgLDH0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 02:26:32 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:39875 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726826AbgLDH0c (ORCPT
+        id S1728585AbgLDH2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 02:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726826AbgLDH2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 02:26:32 -0500
-Received: by mail-qk1-f196.google.com with SMTP id q22so4653889qkq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 23:26:16 -0800 (PST)
+        Fri, 4 Dec 2020 02:28:02 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E164C061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 23:27:21 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id a16so7262638ejj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 23:27:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BXC5TlClpEYD+ovag2sPsKnI5l3hMBu0GjCYfSOMwGw=;
+        b=prKjsdHPYCxJJqHauap7GHxj8cUD4UZ4BJLiDyP/AKstEGcTtxxVcK2c7p1LOyoJYc
+         IPc/ldFb9mNo/PZNd+gV0Gg3k8Wonrpv9vAqVT5p0bbyf6HIFU7qsY+Ajh1cj90o7RiM
+         8CgNv1hJEpkp2wloKsZ/vlegxNbAiH9FFSDE4ndgPCxOkNVb6xYRDm3mZ0JNQ77Mlih8
+         cig1x/quX2RZJW4dMhAZGkhg+LxFTTWjEMhcZgSgLmqEOy1+6lrftlvZeEgMXYdFHzYW
+         5rgTljOxRy0kVnQf1xEhrWCRj6W9VdL0noV2a8D3jgcuZkqeY7Glfh5yTJdTqkmufdpf
+         3Bog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=w/0GhBP/RuBAMOpO8cPBTzjnAd3MRpvfIHK1+5TlA8k=;
-        b=A5yYJ/TjsQJP/90T3ewuKN6g6uN/mn5XQsZBDm5aF/wLRBMH9mlV3zC0co/ezE9AS6
-         fRbQvj0271Kiyv/jI0Z535stG/Cy9znQRvJDc9YgqS+GpdQB4ZopO/OJdg125jK1Gx32
-         PWleYOsVZmWqfHuEKKpGVBWto0GPSakFIoT6vYyJxKuMjYEfpf6AM9RTkuU2PT8pEo8E
-         ymeOeSk7Xnna9A504GUBgThCqIW+U8M6sCAqTqug9U8CUHgitKBE7e+yydMUieW8tMpp
-         /5xT4QuNb2iqPR1FxlgmxBcIw5g7UkD569yvsq4wv6Kbp4NR8fh83WMw+/ybDvzEc/LW
-         yZiQ==
-X-Gm-Message-State: AOAM533y0vfUNU24IJCLKEfDatM3xBN6kKCNmLrOxYyAa81uaTu2qLT9
-        cCvqLTWPMDPoAeW7ytwJnYVlhn5wDM8QUzcRlvE=
-X-Google-Smtp-Source: ABdhPJwuPk9ogjToCG9p8jXzeIY1Z73x4maAPgGzuPCOtkrr9k7RXFOuzz2p03n5Xtev4Zk512j1TZJzUWBe1ud5Mzc=
-X-Received: by 2002:a05:620a:990:: with SMTP id x16mr7300508qkx.316.1607066750554;
- Thu, 03 Dec 2020 23:25:50 -0800 (PST)
+        bh=BXC5TlClpEYD+ovag2sPsKnI5l3hMBu0GjCYfSOMwGw=;
+        b=YJeQkvfUsRVt9RE3xmz9f11kDqg6frCfAFexDaJTVQjPGjPpEhK9aw263FCPA3vr48
+         zSQaxMRksIu0BD/4lfPzaaWNcrTWOQ3esEtGdW9Y7WPeG78rbbzRVztSqXSk7g39ye7X
+         wjmZyTAvkgE3jiQJkMgOZbZJF/N3n+4mLQRsXG3vfIQ21qBDlv5giREF9ELCZcVAqqMq
+         X9auNZqr1pwE7MBhqz2AH7d/jKVOlIZm8pI7R45g5KXQcRKVaxsAqtBhc5fpcSKAW98H
+         1PP8Xs8gBypOAFdI9FidAkZmnsADpuzrGdSvwYKBRLqCM/UVEEB1hb78VFU7HcZJpEsW
+         t0oA==
+X-Gm-Message-State: AOAM531zECA94ja6Nsb9r6BfkIJgIKIj+WIwCgwL23i4qSCkL5CJQSPw
+        +kZbqp6hxJJnf5dJtYF5cSzSJQ6CgCfPRRov1D98Fw==
+X-Google-Smtp-Source: ABdhPJzekZGbtL3sNCqugLoNgopQxbPQGpO4ciaZcRnBZ7Es//BOqGrdxV7PmhF14coDCTwuGolHsmyeCkKw5BDslvg=
+X-Received: by 2002:a17:906:edb2:: with SMTP id sa18mr5658315ejb.264.1607066840004;
+ Thu, 03 Dec 2020 23:27:20 -0800 (PST)
 MIME-Version: 1.0
-References: <20201202150205.35750-1-namhyung@kernel.org> <20201202161934.GL3021@hirez.programming.kicks-ass.net>
- <CAM9d7cjMsofCLNbBWisd6d03q6Ucx2FG9xxV2mALp+gykDkAyg@mail.gmail.com> <20201203074522.GD2414@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201203074522.GD2414@hirez.programming.kicks-ass.net>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 4 Dec 2020 16:25:39 +0900
-Message-ID: <CAM9d7chHVWTJbQD9WDRBJ1JrVD9=+Nw_6HN-94-ZS1dZjf2=3g@mail.gmail.com>
-Subject: Re: [RFC 1/2] perf core: Add PERF_COUNT_SW_CGROUP_SWITCHES event
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>
+References: <20201111054356.793390-1-ben.widawsky@intel.com>
+ <20201111054356.793390-4-ben.widawsky@intel.com> <20201117144935.00006dee@Huawei.com>
+ <CAPcyv4h1NQ_ctMAUv1Sc37uh6Mqnm-VL_+woKKAATGOuLCC0Uw@mail.gmail.com>
+In-Reply-To: <CAPcyv4h1NQ_ctMAUv1Sc37uh6Mqnm-VL_+woKKAATGOuLCC0Uw@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 3 Dec 2020 23:27:16 -0800
+Message-ID: <CAPcyv4j7iiJ7BMTiHKrtccH7K_mzvA67nNEcq8yT6k93bPnqow@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/9] cxl/mem: Add a driver for the type-3 mailbox
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 4:45 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On Thu, Dec 3, 2020 at 11:22 PM Dan Williams <dan.j.williams@intel.com> wrote:
 >
-> On Thu, Dec 03, 2020 at 11:10:30AM +0900, Namhyung Kim wrote:
-> > On Thu, Dec 3, 2020 at 1:19 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> On Tue, Nov 17, 2020 at 6:50 AM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
 > >
-> > > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> > > index 9a38f579bc76..5eb284819ee5 100644
-> > > --- a/include/linux/perf_event.h
-> > > +++ b/include/linux/perf_event.h
-> > > @@ -1174,25 +1174,19 @@ DECLARE_PER_CPU(struct pt_regs, __perf_regs[4]);
-> > >   * which is guaranteed by us not actually scheduling inside other swevents
-> > >   * because those disable preemption.
-> > >   */
-> > > -static __always_inline void
-> > > -perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)
-> > > +static __always_inline void __perf_sw_event_sched(u32 event_id, u64 nr, u64 addr)
+> > On Tue, 10 Nov 2020 21:43:50 -0800
+> > Ben Widawsky <ben.widawsky@intel.com> wrote:
 > >
-> > It'd be nice to avoid the __ prefix if possible.
->
-> Not having __ would seem to suggest its a function of generic utility.
-> Still, *shrug* ;-)
-
-Ok, noted.
-
->
-> > >  {
-> > > -       if (static_key_false(&perf_swevent_enabled[PERF_COUNT_SW_CPU_MIGRATIONS]))
-> > > -               return true;
-> > > -       return false;
-> > > +       return static_key_false(&perf_swevent_enabled[swevt]);
-> > >  }
+> > > From: Dan Williams <dan.j.williams@intel.com>
 > > >
-> > >  static inline void perf_event_task_migrate(struct task_struct *task)
-> > > @@ -1207,11 +1201,9 @@ static inline void perf_event_task_sched_in(struct task_struct *prev,
-> > >         if (static_branch_unlikely(&perf_sched_events))
-> > >                 __perf_event_task_sched_in(prev, task);
+> > > The CXL.mem protocol allows a device to act as a provider of "System
+> > > RAM" and/or "Persistent Memory" that is fully coherent as if the memory
+> > > was attached to the typical CPU memory controller.
 > > >
-> > > -       if (perf_sw_migrate_enabled() && task->sched_migrated) {
-> > > -               struct pt_regs *regs = this_cpu_ptr(&__perf_regs[0]);
-> > > -
-> > > -               perf_fetch_caller_regs(regs);
-> > > -               ___perf_sw_event(PERF_COUNT_SW_CPU_MIGRATIONS, 1, regs, 0);
-> > > +       if (__perf_sw_enabled(PERF_COUNT_SW_CPU_MIGRATIONS) &&
-> > > +           task->sched_migrated) {
+> > > The memory range exported by the device may optionally be described by
+> > > the platform firmware memory map, or by infrastructure like LIBNVDIMM to
+> > > provision persistent memory capacity from one, or more, CXL.mem devices.
+> > >
+> > > A pre-requisite for Linux-managed memory-capacity provisioning is this
+> > > cxl_mem driver that can speak the "type-3 mailbox" protocol.
+> > >
+> > > For now just land the driver boiler-plate and fill it in with
+> > > functionality in subsequent commits.
+> > >
+> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
 > >
-> > It seems task->sched_migrate is set only if the event is enabled,
-> > then can we just check the value here?
->
-> Why suffer the unconditional load and test? Your L1 too big?
-
-I just wanted to avoid typing long lines.. ;-p
-
->
-> > > +               __perf_sw_event_sched(PERF_COUNT_SW_CPU_MIGRATIONS, 1, 0);
-> > >                 task->sched_migrated = 0;
-> > >         }
-> > >  }
-> > > @@ -1219,7 +1211,13 @@ static inline void perf_event_task_sched_in(struct task_struct *prev,
-> > >  static inline void perf_event_task_sched_out(struct task_struct *prev,
-> > >                                              struct task_struct *next)
-> > >  {
-> > > -       perf_sw_event_sched(PERF_COUNT_SW_CONTEXT_SWITCHES, 1, 0);
-> > > +       if (__perf_sw_enabled(PERF_COUNT_SW_CONTEXT_SWITCHES))
-> > > +               __perf_sw_event_sched(PERF_COUNT_SW_CONTEXT_SWITCHES, 1, 0);
+> > I've tried to avoid repeats, so mostly this is me moaning about naming!
+> >
+> > Jonathan
+> >
+> > > ---
+> > >  drivers/cxl/Kconfig  | 20 +++++++++++
+> > >  drivers/cxl/Makefile |  2 ++
+> > >  drivers/cxl/mem.c    | 82 ++++++++++++++++++++++++++++++++++++++++++++
+> > >  drivers/cxl/pci.h    | 15 ++++++++
+> > >  4 files changed, 119 insertions(+)
+> > >  create mode 100644 drivers/cxl/mem.c
+> > >  create mode 100644 drivers/cxl/pci.h
+> > >
+> > > diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+> > > index dd724bd364df..15548f5c77ff 100644
+> > > --- a/drivers/cxl/Kconfig
+> > > +++ b/drivers/cxl/Kconfig
+> > > @@ -27,4 +27,24 @@ config CXL_ACPI
+> > >         resources described by the CEDT (CXL Early Discovery Table)
+> > >
+> > >         Say 'y' to enable CXL (Compute Express Link) drivers.
 > > > +
-> > > +       if (__perf_sw_enabled(PERF_COUNT_SW_CGROUP_SWITCHES) &&
-> > > +           (task_css_check(prev, perf_event_cgrp_id, 1)->cgroup !=
-> > > +            task_css_check(next, perf_event_cgrp_id, 1)->cgroup))
-> > > +               __perf_sw_event_sched(PERF_COUNT_SW_CGROUP_SWITCHES, 1, 0);
+> > > +config CXL_MEM
+> > > +        tristate "CXL.mem Device Support"
+> > > +        depends on PCI && CXL_BUS_PROVIDER != n
+> > > +        default m if CXL_BUS_PROVIDER
+> > > +        help
+> > > +          The CXL.mem protocol allows a device to act as a provider of
+> > > +          "System RAM" and/or "Persistent Memory" that is fully coherent
+> > > +          as if the memory was attached to the typical CPU memory
+> > > +          controller.
+> > > +
+> > > +          Say 'y/m' to enable a driver named "cxl_mem.ko" that will attach
+> > > +          to CXL.mem devices for configuration, provisioning, and health
+> > > +          monitoring, the so called "type-3 mailbox". Note, this driver
+> > > +          is required for dynamic provisioning of CXL.mem attached
+> > > +          memory, a pre-requisite for persistent memory support, but
+> > > +          devices that provide volatile memory may be fully described by
+> > > +          existing platform firmware memory enumeration.
+> > > +
+> > > +          If unsure say 'n'.
+> > >  endif
+> > > diff --git a/drivers/cxl/Makefile b/drivers/cxl/Makefile
+> > > index d38cd34a2582..97fdffb00f2d 100644
+> > > --- a/drivers/cxl/Makefile
+> > > +++ b/drivers/cxl/Makefile
+> > > @@ -1,5 +1,7 @@
+> > >  # SPDX-License-Identifier: GPL-2.0
+> > >  obj-$(CONFIG_CXL_ACPI) += cxl_acpi.o
+> > > +obj-$(CONFIG_CXL_MEM) += cxl_mem.o
+> > >
+> > >  ccflags-y += -DDEFAULT_SYMBOL_NAMESPACE=CXL
+> > >  cxl_acpi-y := acpi.o
+> > > +cxl_mem-y := mem.o
+> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > > new file mode 100644
+> > > index 000000000000..aa7d881fa47b
+> > > --- /dev/null
+> > > +++ b/drivers/cxl/mem.c
+> > > @@ -0,0 +1,82 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > +// Copyright(c) 2020 Intel Corporation. All rights reserved.
+> > > +#include <linux/module.h>
+> > > +#include <linux/pci.h>
+> > > +#include <linux/io.h>
+> > > +#include "acpi.h"
+> > > +#include "pci.h"
+> > > +
+> > > +struct cxl_mem {
+> > > +     void __iomem *regs;
+> > > +};
+> > > +
+> > > +static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+> > > +{
+> > > +     int pos;
+> > > +
+> > > +     pos = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_DVSEC);
+> > > +     if (!pos)
+> > > +             return 0;
+> > > +
+> > > +     while (pos) {
+> > > +             u16 vendor, id;
+> > > +
+> > > +             pci_read_config_word(pdev, pos + PCI_DVSEC_VENDOR_OFFSET, &vendor);
+> > > +             pci_read_config_word(pdev, pos + PCI_DVSEC_ID_OFFSET, &id);
+> > > +             if (vendor == PCI_DVSEC_VENDOR_CXL && dvsec == id)
+> > > +                     return pos;
+> > > +
+> > > +             pos = pci_find_next_ext_capability(pdev, pos, PCI_EXT_CAP_ID_DVSEC);
 > >
-> > I was not clear about the RCU protection here.  Is it ok to access
-> > the task's css_set directly?
+> > This is good generic code and wouldn't cause much backport effort (even if needed
+> > to bring in a local copy), so perhaps make it a generic function and move to
+> > core PCI code?
+> >
+> > Mind you I guess that can happen the 'second' time someone wants to find a DVSEC.
+> >
+> > > +     }
+> > > +
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> > > +{
+> > > +     struct device *dev = &pdev->dev;
+> > > +     struct cxl_mem *cxlm;
+> > > +     int rc, regloc;
+> > > +
+> > > +     rc = cxl_bus_prepared(pdev);
+> > > +     if (rc != 0) {
+> > > +             dev_err(dev, "failed to acquire interface\n");
+> > > +             return rc;
+> > > +     }
+> > > +
+> > > +     regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC);
+> > > +     if (!regloc) {
+> > > +             dev_err(dev, "register location dvsec not found\n");
+> > > +             return -ENXIO;
+> > > +     }
+> > > +
+> > > +     cxlm = devm_kzalloc(dev, sizeof(*cxlm), GFP_KERNEL);
+> > > +     if (!cxlm)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static void cxl_mem_remove(struct pci_dev *pdev)
+> > > +{
+> > > +}
+> >
+> > I'd bring this in only when needed in later patch.
+> >
+> > > +
+> > > +static const struct pci_device_id cxl_mem_pci_tbl[] = {
+> > > +     /* PCI class code for CXL.mem Type-3 Devices */
+> > > +     { PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
+> > > +       PCI_CLASS_MEMORY_CXL, 0xffffff, 0 },
+> > > +     { /* terminate list */ },
+> > > +};
+> > > +MODULE_DEVICE_TABLE(pci, cxl_mem_pci_tbl);
+> > > +
+> > > +static struct pci_driver cxl_mem_driver = {
+> > > +     .name                   = KBUILD_MODNAME,
+> > > +     .id_table               = cxl_mem_pci_tbl,
+> > > +     .probe                  = cxl_mem_probe,
+> > > +     .remove                 = cxl_mem_remove,
+> > > +};
+> > > +
+> > > +MODULE_LICENSE("GPL v2");
+> > > +MODULE_AUTHOR("Intel Corporation");
+> > > +module_pci_driver(cxl_mem_driver);
+> > > +MODULE_IMPORT_NS(CXL);
+> > > diff --git a/drivers/cxl/pci.h b/drivers/cxl/pci.h
+> > > new file mode 100644
+> > > index 000000000000..beb03921e6da
+> > > --- /dev/null
+> > > +++ b/drivers/cxl/pci.h
+> > > @@ -0,0 +1,15 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > +// Copyright(c) 2020 Intel Corporation. All rights reserved.
+> > > +#ifndef __CXL_PCI_H__
+> > > +#define __CXL_PCI_H__
+> > > +
+> > > +#define PCI_CLASS_MEMORY_CXL 0x050210
+> > > +
+> > > +#define PCI_EXT_CAP_ID_DVSEC 0x23
+> > > +#define PCI_DVSEC_VENDOR_CXL 0x1E98
+> >
+> > Hmm. The magic question of what to call a vendor ID that isn't a vendor
+> > ID but just a magic number that talks like a duck and quacks like a duck
+> > (for anyone wondering what I'm talking about, there is a nice bit of legal
+> > boilerplate on this in the CXL spec)
+> >
+> > This name is definitely not accurate however.
+> >
+> > PCI_UNIQUE_VALUE_CXL maybe?  It is used for other things than DVSEC (VDMs etc),
+> > though possibly this is the only software visible use.
 >
-> We're here with preemption and IRQs disabled, good luck trying to get
-> RCU to consider that not a critical section and spirit things away under
-> us.
+> Finally working my way back through this review to make the changes.
+> If 0x1E98 becomes visible to software somewhere else then this can
+> become something like the following:
+>
+> #define PCI_DVSEC_VENDOR_CXL PCI_UNIQUE_VALUE_CXL
+>
+> ...or whatever the generic name is, but this field per the
+> specification is the DVSEC-vendor-id and calling it
+> PCI_UNIQUE_VALUE_CXL does not have any basis in the spec.
+>
+> I will rename it though to:
+>
+> PCI_DVSEC_VENDOR_ID_CXL
+>
+> ...since include/linux/pci_ids.h includes the _ID_ part.
+>
+> >
+> >
+> > > +#define PCI_DVSEC_VENDOR_OFFSET      0x4
+> > > +#define PCI_DVSEC_ID_OFFSET  0x8
+> >
+> > Put a line break here perhaps and maybe a spec reference to where to find
+> > the various DVSEC IDs.
+>
+> Ok.
+>
+> >
+> > > +#define PCI_DVSEC_ID_CXL     0x0
+> >
+> > That's definitely a confusing name as well.
+>
+> Yeah, should be PCI_DVSEC_DEVICE_ID_CXL
 
-Ok, someday I'll go reading the RCU code.. :)
+Actually, no, the spec calls this the "DVSEC id" so PCI_DVSEC_ID_CXL
+seems suitable to me. This is from:
 
-Thanks,
-Namhyung
+Table 126. PCI Express DVSEC Register Settings for CXL Device
+
+In the CXL 2.0 Specification.
