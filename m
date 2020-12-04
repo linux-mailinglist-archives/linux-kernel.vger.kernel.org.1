@@ -2,91 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE022CED4C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 756532CED48
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729965AbgLDLl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:41:58 -0500
-Received: from mga01.intel.com ([192.55.52.88]:27217 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725999AbgLDLl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:41:58 -0500
-IronPort-SDR: Gil9a8zw0EodT2TjaKTXtR4XsfQx9G9/KD4HZnMoYt0YcjHg+BViQ/85DWghwlgG13xP/eIM3I
- u5RNd8M2Ub2Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="191607328"
-X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="191607328"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:40:17 -0800
-IronPort-SDR: hvFpjHzre32ZyHJQrj1nMCwJiqqvOsRhSxgm9AXawjDt08lvzwXNy7ZqjQGthIchTlPh2DnDF2
- 9xCYmTVaoekQ==
-X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="550920796"
-Received: from spandruv-mobl.amr.corp.intel.com ([10.254.181.204])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:40:16 -0800
-Message-ID: <697be63c1500a4ad80651a8182e56ce4271693c1.camel@linux.intel.com>
-Subject: Re: [PATCH v3 3/3] iio:Documentation: Add documentation for hinge
- sensor channels
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Ye Xiang <xiang.ye@intel.com>, jikos@kernel.org, jic23@kernel.org
-Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 04 Dec 2020 03:40:15 -0800
-In-Reply-To: <20201203035352.13918-4-xiang.ye@intel.com>
-References: <20201203035352.13918-1-xiang.ye@intel.com>
-         <20201203035352.13918-4-xiang.ye@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S2387909AbgLDLlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:41:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbgLDLlS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 06:41:18 -0500
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87151C0613D1;
+        Fri,  4 Dec 2020 03:40:38 -0800 (PST)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 74F6CC63B3; Fri,  4 Dec 2020 11:40:36 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1607082036; bh=X9lIo10egin06IAG613mKzLT1qTrqN6EI08M7P8iL14=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k91fdar8ih3LWqV4ABQ52GXceFOVNux9RtwLETtUZmOZgEWGLQvZHbooqWzFb2OHS
+         vh/AORxGLnyumsBW+lAHt/ywhyogH+0jHnb91N1YJQmsxzVoM5g9+v6biDdm9BAdX3
+         sU0HthYz+/tj0JOwowyva6yjEaB+7AyhSfovWiP1MQn/e4cpcn6IDg2gafsUdQRz4x
+         RO6ALNaTcx1WaMuN60+de9FFKYm0v2e8SuoRPDBWUxfTvJ1ecvCXLy8HBGMgy+34fl
+         nmTDz9EbdCwuqqorzgFGbxndfsOXL7ht3MLwkmPweRe2I1EyWDzQMrMvlgvY96Tfq3
+         V9QuXxJzIgNig==
+Date:   Fri, 4 Dec 2020 11:40:36 +0000
+From:   Sean Young <sean@mess.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, thierry.reding@gmail.com,
+        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
+        rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
+ configuration
+Message-ID: <20201204114036.GB6547@gofer.mess.org>
+References: <202011281128.54eLfMWr-lkp@intel.com>
+ <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
+ <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
+ <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
+ <20201204112115.wopx5p5elgte7gad@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201204112115.wopx5p5elgte7gad@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-03 at 11:53 +0800, Ye Xiang wrote:
-> Add channel description for hinge sensor, including channel label
-> attribute and raw data description.
+On Fri, Dec 04, 2020 at 12:21:15PM +0100, Uwe Kleine-König wrote:
+> Hello Lino,
 > 
-> Signed-off-by: Ye Xiang <xiang.ye@intel.com>
-> ---
->  Documentation/ABI/testing/sysfs-bus-iio | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
+> On Fri, Dec 04, 2020 at 12:42:15AM +0100, Lino Sanfilippo wrote:
+> > On 29.11.20 at 19:10, Uwe Kleine-König wrote:
+> > > You're storing an unsigned long long (i.e. 64 bits) in an u32. If
+> > > you are sure that this won't discard relevant bits, please explain
+> > > this in a comment for the cursory reader.
+> > 
+> > What about an extra check then to make sure that the period has not been truncated,
+> > e.g:
+> > 
+> > 	value = DIV_ROUND_CLOSEST_ULL(state->period, scaler);
+> > 
+> > 	/* dont accept a period that is too small or has been truncated */
+> > 	if ((value < PERIOD_MIN) ||
+> > 	    (value != DIV_ROUND_CLOSEST_ULL(state->period, scaler)))
+> > 		return -EINVAL;
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-iio
-> b/Documentation/ABI/testing/sysfs-bus-iio
-> index df42bed09f25..82303b1bdff0 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-iio
-> +++ b/Documentation/ABI/testing/sysfs-bus-iio
-> @@ -1802,3 +1802,20 @@ Contact:	linux-iio@vger.kernel.org
->  Description:
->  		Unscaled light intensity according to CIE 1931/DIN 5033
-> color space.
->  		Units after application of scale are nano nanowatts per
-> square meter.
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_raw
-Channel "Y" doesn't sound to be a variable. Why not just say "*"
+> I'd make value an unsigned long long and check for > 0xffffffff instead
+> of repeating the (expensive) division. (Hmm, maybe the compiler is smart
+> enough to not actually repeat it, but still.)
 
-Thanks,
-Srinivas
+I wonder where you got that idea from.
 
-> +KernelVersion:	5.12
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Angle of rotation for channel Y. Units after
-> application of scale
-> +		and offset are radians.
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_label
-> +KernelVersion:	5.12
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Optional symbolic label for channel Y.
-> +		For Intel hid hinge sensor, the label values are:
-> +		hinge, keyboard, screen. It means the three channels
-> +		each correspond respectively to hinge angle, keyboard
-> angle,
-> +		and screen angle.
 
+Sean
