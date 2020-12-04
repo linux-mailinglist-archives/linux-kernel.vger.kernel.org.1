@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B952CE553
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B112CE559
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgLDBpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:45:21 -0500
-Received: from mga06.intel.com ([134.134.136.31]:22953 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLDBpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:45:21 -0500
-IronPort-SDR: Jzy7hgoFvCwEvhfL1SOvWeK+Y/VUtYQQIFp4FpNsaF2NQoJJ/rlqtO927JIw+OU92gXJ3fs6UQ
- zX1bwPIimnGw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="234917597"
-X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
-   d="scan'208";a="234917597"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 17:44:39 -0800
-IronPort-SDR: Mcyx6D3nTWzTvO62HGuIWnhDH61K3QPnToO9ehSCOjzrP6vE+6CubJn4BHBf5TPwi1z2rwyT5L
- gRoCR+h9HxLg==
-X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
-   d="scan'208";a="482195127"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 17:44:39 -0800
-Date:   Thu, 3 Dec 2020 17:44:39 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Eric Sandeen <sandeen@sandeen.net>, fstests@vger.kernel.org,
-        Eric Sandeen <sandeen@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH] common/rc: Fix _check_s_dax()
-Message-ID: <20201204014439.GE1563847@iweiny-DESK2.sc.intel.com>
-References: <20201202214145.1563433-1-ira.weiny@intel.com>
- <20201203081556.GA15306@lst.de>
- <b757842d-b020-49c9-498c-df5de89f10af@sandeen.net>
- <20201203180838.GA25196@lst.de>
+        id S1726787AbgLDBpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:45:38 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9102 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgLDBph (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 20:45:37 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CnFqh4rkdzM04b;
+        Fri,  4 Dec 2020 09:44:16 +0800 (CST)
+Received: from vm107-89-192.huawei.com (100.107.89.192) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 4 Dec 2020 09:44:43 +0800
+From:   Wei Li <liwei213@huawei.com>
+To:     <catalin.marinas@arm.com>, <rppt@linux.ibm.com>, <will@kernel.org>,
+        <liwei213@huawei.com>
+CC:     <fengbaopeng2@hisilicon.com>, <nsaenzjulienne@suse.de>,
+        <steve.capper@arm.com>, <song.bao.hua@hisilicon.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <butao@hisilicon.com>
+Subject: [PATCH] arm64: mm: decrease the section size to reduce the memory reserved for the page map
+Date:   Fri, 4 Dec 2020 09:44:43 +0800
+Message-ID: <20201204014443.43329-1-liwei213@huawei.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203180838.GA25196@lst.de>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain
+X-Originating-IP: [100.107.89.192]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 07:08:39PM +0100, Christoph Hellwig wrote:
-> On Thu, Dec 03, 2020 at 11:55:50AM -0600, Eric Sandeen wrote:
-> > *nod* and my suggestion was to explicitly test for the old/wrong value and
-> > offer the test-runner a hint about why it may have been set (missing the
-> > fix commit), but we should still ultimately fail the test when it is seen.
-> 
-> Yes, that's what I'd prefer.
+For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
+do not free the reserved memory for the page map, decrease the section
+size can reduce the waste of reserved memory.
 
-Sorry for the misunderstanding.  V3 on it's way.
+Signed-off-by: Wei Li <liwei213@huawei.com>
+Signed-off-by: Baopeng Feng <fengbaopeng2@hisilicon.com>
+Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
+---
+ arch/arm64/include/asm/sparsemem.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ira
+diff --git a/arch/arm64/include/asm/sparsemem.h b/arch/arm64/include/asm/sparsemem.h
+index 1f43fcc79738..8963bd3def28 100644
+--- a/arch/arm64/include/asm/sparsemem.h
++++ b/arch/arm64/include/asm/sparsemem.h
+@@ -7,7 +7,7 @@
+
+ #ifdef CONFIG_SPARSEMEM
+ #define MAX_PHYSMEM_BITS	CONFIG_ARM64_PA_BITS
+-#define SECTION_SIZE_BITS	30
++#define SECTION_SIZE_BITS	27
+ #endif
+
+ #endif
+--
+2.15.0
+
