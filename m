@@ -2,332 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10212CF471
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 199802CF472
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730489AbgLDS4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:56:03 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:16967 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729780AbgLDS4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:56:01 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CnhjJ3znWz9tyjR;
-        Fri,  4 Dec 2020 19:55:16 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 8sGgF9z2MTOk; Fri,  4 Dec 2020 19:55:16 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CnhjJ2flYz9tyjQ;
-        Fri,  4 Dec 2020 19:55:16 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 38A548B812;
-        Fri,  4 Dec 2020 19:55:18 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 50zL9u75NiCT; Fri,  4 Dec 2020 19:55:18 +0100 (CET)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BF5718B75E;
-        Fri,  4 Dec 2020 19:55:17 +0100 (CET)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 8798F66890; Fri,  4 Dec 2020 18:55:17 +0000 (UTC)
-Message-Id: <2c4d67fdef72ce27e0374e11b98c574ac33c6610.1607108093.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/powermac: Fix low_sleep_handler with
- CONFIG_VMAP_STACK
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, giuseppe@sguazz.it
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri,  4 Dec 2020 18:55:17 +0000 (UTC)
+        id S1730382AbgLDS4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:56:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgLDS4f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:56:35 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC547C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:55:54 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id z12so3648902pjn.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:55:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JElrpNZBm0X2146FC/kafuperTi3/u6s/4xqsXXo1rA=;
+        b=DIbDUimc2Rj4zZT/RcFOtEBd8Vq8LW9fcNPtKHFidG50D1d523GWl+Ic54u9JGL79f
+         gIJJsuEihDj0W/CuikaXbuOXRGTIkPYTTAEMqfpxEDNLFzjxd6FAtoWSa8It6Qoil5Ll
+         1RvqTzRS9S6xuPbmaXuiFujeMrBqhLAr3VM5T4TmekTFWXvLJdXkIooZtK30nasS2/wF
+         h+ehK+VcO845KOTvHzUgHPiWpwuIcMkRyemLmy5vFs0VsiH1jbLxB7Iwp5gQh5AfuY7a
+         WIh/4fEte35AxcyAqmFsFnmk4ifee+s9CzQ8bXpQKKA/3q2gQuFOPLG/GAiLr3GB3pcO
+         dWQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JElrpNZBm0X2146FC/kafuperTi3/u6s/4xqsXXo1rA=;
+        b=YoHyegMVkK1QaAlBA8kDK5q1q9o/Rs5Uzniaau0xqO4ZgzslFvuIDqZFPVviOgKYFr
+         9iDf1p2+FZPvVecBXC/P800pOgmKoX9u0jkIxEjJFytpdoM+BgxGS5fgC7O6Upm7PsNS
+         Wcs7TjGcX0IL8+vfUtJOzAD8OsZFjd7chcNmOlB4n3UwJzAytEmOmGAENozlULGA1LE6
+         LV5g80ORDxu3/SOjj2qsc7UNcmgdtZVIJz2Sy/S4q88N/odKJ1Y1jbyukq/AgjZ0jDuU
+         R3yxb+oQRzHpUU3cDCb3P6Xi5bIS71STl2xzKoXqn71lzYUN9Vs6lwErEsBtY1s+YbFj
+         Y9/Q==
+X-Gm-Message-State: AOAM530mEMpOUNqgNenBPh/GqEE2qpOszcgtFAf4lIk76yrhSC39/xll
+        CBY09HW5oK/j3TwvQx+uPbF5XA==
+X-Google-Smtp-Source: ABdhPJznzhl0Svwlj8kXianAlHZs2GfZdyDHeAgob88wPG2kNzpsSDmeX+zCml3Sgr8z9oXAFlPikg==
+X-Received: by 2002:a17:902:b115:b029:d8:f87e:c30c with SMTP id q21-20020a170902b115b02900d8f87ec30cmr5052868plr.36.1607108154307;
+        Fri, 04 Dec 2020 10:55:54 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id 83sm5546863pfy.71.2020.12.04.10.55.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 10:55:53 -0800 (PST)
+Date:   Fri, 4 Dec 2020 11:55:51 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Qi Liu <liuqi115@huawei.com>
+Cc:     suzuki.poulose@arm.com, mike.leach@linaro.org,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linuxarm@huawei.com
+Subject: Re: [PATCH v5] coresight: etm4x: Modify core-commit of cpu to avoid
+ the overflow of HiSilicon ETM
+Message-ID: <20201204185551.GB1424711@xps15>
+References: <1606397670-15657-1-git-send-email-liuqi115@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606397670-15657-1-git-send-email-liuqi115@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-low_sleep_handler() can't restore the context from standard
-stack because the stack can hardly be accessed with MMU OFF.
+On Thu, Nov 26, 2020 at 09:34:30PM +0800, Qi Liu wrote:
+> The ETM device can't keep up with the core pipeline when cpu core
+> is at full speed. This may cause overflow within core and its ETM.
+> This is a common phenomenon on ETM devices.
+> 
+> On HiSilicon Hip08 platform, a specific feature is added to set
+> core pipeline. So commit rate can be reduced manually to avoid ETM
+> overflow.
+> 
+> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+> ---
+> Change since v1:
+> - add CONFIG_ETM4X_IMPDEF_FEATURE and CONFIG_ETM4X_IMPDEF_HISILICON
+>   to keep specific feature off platforms which don't use it.
+> Change since v2:
+> - remove some unused variable.
+> Change since v3:
+> - use read/write_sysreg_s() to access register.
+> Change since v4:
+> - rename the call back function to a more generic name, and fix some
+>   compile warnings.
+> 
+>  drivers/hwtracing/coresight/Kconfig                |  9 +++
+>  drivers/hwtracing/coresight/coresight-etm4x-core.c | 88 ++++++++++++++++++++++
+>  drivers/hwtracing/coresight/coresight-etm4x.h      |  8 ++
+>  3 files changed, 105 insertions(+)
+> 
+> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+> index c119824..1cc3601 100644
+> --- a/drivers/hwtracing/coresight/Kconfig
+> +++ b/drivers/hwtracing/coresight/Kconfig
+> @@ -110,6 +110,15 @@ config CORESIGHT_SOURCE_ETM4X
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called coresight-etm4x.
+> 
+> +config ETM4X_IMPDEF_FEATURE
+> +	bool "Control overflow impdef support in CoreSight ETM 4.x driver "
+> +	depends on CORESIGHT_SOURCE_ETM4X
+> +	help
+> +	  This control provides overflow implement define for CoreSight
+> +	  ETM 4.x tracer module which could not reduce commit race
+> +	  automatically, and could avoid overflow within ETM tracer module
+> +	  and its cpu core.
+> +
+>  config CORESIGHT_STM
+>  	tristate "CoreSight System Trace Macrocell driver"
+>  	depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index abd706b..fcee27a 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -3,6 +3,7 @@
+>   * Copyright (c) 2014, The Linux Foundation. All rights reserved.
+>   */
+> 
+> +#include <linux/bitops.h>
+>  #include <linux/kernel.h>
+>  #include <linux/moduleparam.h>
+>  #include <linux/init.h>
+> @@ -28,7 +29,9 @@
+>  #include <linux/perf_event.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/property.h>
+> +
+>  #include <asm/sections.h>
+> +#include <asm/sysreg.h>
+>  #include <asm/local.h>
+>  #include <asm/virt.h>
+> 
+> @@ -103,6 +106,87 @@ struct etm4_enable_arg {
+>  	int rc;
+>  };
+> 
+> +#ifdef CONFIG_ETM4X_IMPDEF_FEATURE
+> +
+> +#define HISI_HIP08_AMBA_ID		0x000b6d01
+> +#define ETM4_AMBA_MASK			0xfffff
+> +#define HISI_HIP08_CORE_COMMIT_CLEAR	0x3000
 
-Store everything in a global storage area instead of storing
-a pointer to the stack in that global storage area.
+Here bit 12 and 13 are cleared but in etm4_hisi_config_core_commit() only bit 12
+is set - is this intentional?  What is bit 13 for? 
 
-To avoid a complete churn of the function, still use r1 as
-the pointer to the storage area during restore.
-
-Reported-by: Giuseppe Sacco <giuseppe@sguazz.it>
-Fixes: cd08f109e262 ("powerpc/32s: Enable CONFIG_VMAP_STACK")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-This is only build tested. Giuseppe can you test it ? Thanks.
----
- arch/powerpc/platforms/Kconfig.cputype  |   2 +-
- arch/powerpc/platforms/powermac/sleep.S | 130 +++++++++++-------------
- 2 files changed, 59 insertions(+), 73 deletions(-)
-
-diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
-index c194c4ae8bc7..32a9c4c09b98 100644
---- a/arch/powerpc/platforms/Kconfig.cputype
-+++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -36,7 +36,7 @@ config PPC_BOOK3S_6xx
- 	select PPC_HAVE_PMU_SUPPORT
- 	select PPC_HAVE_KUEP
- 	select PPC_HAVE_KUAP
--	select HAVE_ARCH_VMAP_STACK if !ADB_PMU
-+	select HAVE_ARCH_VMAP_STACK
- 
- config PPC_85xx
- 	bool "Freescale 85xx"
-diff --git a/arch/powerpc/platforms/powermac/sleep.S b/arch/powerpc/platforms/powermac/sleep.S
-index 7e0f8ba6e54a..ce56082a392a 100644
---- a/arch/powerpc/platforms/powermac/sleep.S
-+++ b/arch/powerpc/platforms/powermac/sleep.S
-@@ -44,7 +44,8 @@
- #define SL_TB		0xa0
- #define SL_R2		0xa8
- #define SL_CR		0xac
--#define SL_R12		0xb0	/* r12 to r31 */
-+#define SL_LR		0xb0
-+#define SL_R12		0xb4	/* r12 to r31 */
- #define SL_SIZE		(SL_R12 + 80)
- 
- 	.section .text
-@@ -63,105 +64,107 @@ _GLOBAL(low_sleep_handler)
- 	blr
- #else
- 	mflr	r0
--	stw	r0,4(r1)
--	stwu	r1,-SL_SIZE(r1)
-+	lis	r11,sleep_storage@ha
-+	addis	r11,r11,sleep_storage@l
-+	stw	r0,SL_LR(r11)
- 	mfcr	r0
--	stw	r0,SL_CR(r1)
--	stw	r2,SL_R2(r1)
--	stmw	r12,SL_R12(r1)
-+	stw	r0,SL_CR(r11)
-+	stw	r1,SL_SP(r11)
-+	stw	r2,SL_R2(r11)
-+	stmw	r12,SL_R12(r11)
- 
- 	/* Save MSR & SDR1 */
- 	mfmsr	r4
--	stw	r4,SL_MSR(r1)
-+	stw	r4,SL_MSR(r11)
- 	mfsdr1	r4
--	stw	r4,SL_SDR1(r1)
-+	stw	r4,SL_SDR1(r11)
- 
- 	/* Get a stable timebase and save it */
- 1:	mftbu	r4
--	stw	r4,SL_TB(r1)
-+	stw	r4,SL_TB(r11)
- 	mftb	r5
--	stw	r5,SL_TB+4(r1)
-+	stw	r5,SL_TB+4(r11)
- 	mftbu	r3
- 	cmpw	r3,r4
- 	bne	1b
- 
- 	/* Save SPRGs */
- 	mfsprg	r4,0
--	stw	r4,SL_SPRG0(r1)
-+	stw	r4,SL_SPRG0(r11)
- 	mfsprg	r4,1
--	stw	r4,SL_SPRG0+4(r1)
-+	stw	r4,SL_SPRG0+4(r11)
- 	mfsprg	r4,2
--	stw	r4,SL_SPRG0+8(r1)
-+	stw	r4,SL_SPRG0+8(r11)
- 	mfsprg	r4,3
--	stw	r4,SL_SPRG0+12(r1)
-+	stw	r4,SL_SPRG0+12(r11)
- 
- 	/* Save BATs */
- 	mfdbatu	r4,0
--	stw	r4,SL_DBAT0(r1)
-+	stw	r4,SL_DBAT0(r11)
- 	mfdbatl	r4,0
--	stw	r4,SL_DBAT0+4(r1)
-+	stw	r4,SL_DBAT0+4(r11)
- 	mfdbatu	r4,1
--	stw	r4,SL_DBAT1(r1)
-+	stw	r4,SL_DBAT1(r11)
- 	mfdbatl	r4,1
--	stw	r4,SL_DBAT1+4(r1)
-+	stw	r4,SL_DBAT1+4(r11)
- 	mfdbatu	r4,2
--	stw	r4,SL_DBAT2(r1)
-+	stw	r4,SL_DBAT2(r11)
- 	mfdbatl	r4,2
--	stw	r4,SL_DBAT2+4(r1)
-+	stw	r4,SL_DBAT2+4(r11)
- 	mfdbatu	r4,3
--	stw	r4,SL_DBAT3(r1)
-+	stw	r4,SL_DBAT3(r11)
- 	mfdbatl	r4,3
--	stw	r4,SL_DBAT3+4(r1)
-+	stw	r4,SL_DBAT3+4(r11)
- 	mfibatu	r4,0
--	stw	r4,SL_IBAT0(r1)
-+	stw	r4,SL_IBAT0(r11)
- 	mfibatl	r4,0
--	stw	r4,SL_IBAT0+4(r1)
-+	stw	r4,SL_IBAT0+4(r11)
- 	mfibatu	r4,1
--	stw	r4,SL_IBAT1(r1)
-+	stw	r4,SL_IBAT1(r11)
- 	mfibatl	r4,1
--	stw	r4,SL_IBAT1+4(r1)
-+	stw	r4,SL_IBAT1+4(r11)
- 	mfibatu	r4,2
--	stw	r4,SL_IBAT2(r1)
-+	stw	r4,SL_IBAT2(r11)
- 	mfibatl	r4,2
--	stw	r4,SL_IBAT2+4(r1)
-+	stw	r4,SL_IBAT2+4(r11)
- 	mfibatu	r4,3
--	stw	r4,SL_IBAT3(r1)
-+	stw	r4,SL_IBAT3(r11)
- 	mfibatl	r4,3
--	stw	r4,SL_IBAT3+4(r1)
-+	stw	r4,SL_IBAT3+4(r11)
- 
- BEGIN_MMU_FTR_SECTION
- 	mfspr	r4,SPRN_DBAT4U
--	stw	r4,SL_DBAT4(r1)
-+	stw	r4,SL_DBAT4(r11)
- 	mfspr	r4,SPRN_DBAT4L
--	stw	r4,SL_DBAT4+4(r1)
-+	stw	r4,SL_DBAT4+4(r11)
- 	mfspr	r4,SPRN_DBAT5U
--	stw	r4,SL_DBAT5(r1)
-+	stw	r4,SL_DBAT5(r11)
- 	mfspr	r4,SPRN_DBAT5L
--	stw	r4,SL_DBAT5+4(r1)
-+	stw	r4,SL_DBAT5+4(r11)
- 	mfspr	r4,SPRN_DBAT6U
--	stw	r4,SL_DBAT6(r1)
-+	stw	r4,SL_DBAT6(r11)
- 	mfspr	r4,SPRN_DBAT6L
--	stw	r4,SL_DBAT6+4(r1)
-+	stw	r4,SL_DBAT6+4(r11)
- 	mfspr	r4,SPRN_DBAT7U
--	stw	r4,SL_DBAT7(r1)
-+	stw	r4,SL_DBAT7(r11)
- 	mfspr	r4,SPRN_DBAT7L
--	stw	r4,SL_DBAT7+4(r1)
-+	stw	r4,SL_DBAT7+4(r11)
- 	mfspr	r4,SPRN_IBAT4U
--	stw	r4,SL_IBAT4(r1)
-+	stw	r4,SL_IBAT4(r11)
- 	mfspr	r4,SPRN_IBAT4L
--	stw	r4,SL_IBAT4+4(r1)
-+	stw	r4,SL_IBAT4+4(r11)
- 	mfspr	r4,SPRN_IBAT5U
--	stw	r4,SL_IBAT5(r1)
-+	stw	r4,SL_IBAT5(r11)
- 	mfspr	r4,SPRN_IBAT5L
--	stw	r4,SL_IBAT5+4(r1)
-+	stw	r4,SL_IBAT5+4(r11)
- 	mfspr	r4,SPRN_IBAT6U
--	stw	r4,SL_IBAT6(r1)
-+	stw	r4,SL_IBAT6(r11)
- 	mfspr	r4,SPRN_IBAT6L
--	stw	r4,SL_IBAT6+4(r1)
-+	stw	r4,SL_IBAT6+4(r11)
- 	mfspr	r4,SPRN_IBAT7U
--	stw	r4,SL_IBAT7(r1)
-+	stw	r4,SL_IBAT7(r11)
- 	mfspr	r4,SPRN_IBAT7L
--	stw	r4,SL_IBAT7+4(r1)
-+	stw	r4,SL_IBAT7+4(r11)
- END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
- 
- 	/* Backup various CPU config stuffs */
-@@ -180,9 +183,9 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
- 	lis	r5,grackle_wake_up@ha
- 	addi	r5,r5,grackle_wake_up@l
- 	tophys(r5,r5)
--	stw	r5,SL_PC(r1)
-+	stw	r5,SL_PC(r11)
- 	lis	r4,KERNELBASE@h
--	tophys(r5,r1)
-+	tophys(r5,r11)
- 	addi	r5,r5,SL_PC
- 	lis	r6,MAGIC@ha
- 	addi	r6,r6,MAGIC@l
-@@ -194,12 +197,6 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
- 	tophys(r3,r3)
- 	stw	r3,0x80(r4)
- 	stw	r5,0x84(r4)
--	/* Store a pointer to our backup storage into
--	 * a kernel global
--	 */
--	lis r3,sleep_storage@ha
--	addi r3,r3,sleep_storage@l
--	stw r5,0(r3)
- 
- 	.globl	low_cpu_offline_self
- low_cpu_offline_self:
-@@ -279,7 +276,7 @@ _GLOBAL(core99_wake_up)
- 	lis	r3,sleep_storage@ha
- 	addi	r3,r3,sleep_storage@l
- 	tophys(r3,r3)
--	lwz	r1,0(r3)
-+	addi	r1,r3,SL_PC
- 
- 	/* Pass thru to older resume code ... */
- _ASM_NOKPROBE_SYMBOL(core99_wake_up)
-@@ -399,13 +396,6 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
- 	blt	1b
- 	sync
- 
--	/* restore the MSR and turn on the MMU */
--	lwz	r3,SL_MSR(r1)
--	bl	turn_on_mmu
--
--	/* get back the stack pointer */
--	tovirt(r1,r1)
--
- 	/* Restore TB */
- 	li	r3,0
- 	mttbl	r3
-@@ -419,28 +409,24 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
- 	mtcr	r0
- 	lwz	r2,SL_R2(r1)
- 	lmw	r12,SL_R12(r1)
--	addi	r1,r1,SL_SIZE
--	lwz	r0,4(r1)
--	mtlr	r0
--	blr
--_ASM_NOKPROBE_SYMBOL(grackle_wake_up)
- 
--turn_on_mmu:
--	mflr	r4
--	tovirt(r4,r4)
-+	/* restore the MSR and SP and turn on the MMU and return */
-+	lwz	r3,SL_MSR(r1)
-+	lwz	r4,SL_LR(r1)
-+	lwz	r1,SL_SP(r1)
- 	mtsrr0	r4
- 	mtsrr1	r3
- 	sync
- 	isync
- 	rfi
--_ASM_NOKPROBE_SYMBOL(turn_on_mmu)
-+_ASM_NOKPROBE_SYMBOL(grackle_wake_up)
- 
- #endif /* defined(CONFIG_PM) || defined(CONFIG_CPU_FREQ) */
- 
- 	.section .data
- 	.balign	L1_CACHE_BYTES
- sleep_storage:
--	.long 0
-+	.space SL_SIZE
- 	.balign	L1_CACHE_BYTES, 0
- 
- #endif /* CONFIG_PPC_BOOK3S_32 */
--- 
-2.25.0
-
+> +#define HISI_HIP08_CORE_COMMIT_SHIFT	12
+> +#define HISI_HIP08_CORE_COMMIT_REG	sys_reg(3, 1, 15, 2, 5)
+> +
+> +struct etm4_arch_features {
+> +	void (*arch_callback)(bool enable);
+> +};
+> +
+> +static bool etm4_hisi_match_pid(unsigned int id)
+> +{
+> +	return (id & ETM4_AMBA_MASK) == HISI_HIP08_AMBA_ID;
+> +}
+> +
+> +static void etm4_hisi_config_core_commit(bool enable)
+> +{
+> +	u64 val;
+> +
+> +	val = read_sysreg_s(HISI_HIP08_CORE_COMMIT_REG);
+> +	val &= ~HISI_HIP08_CORE_COMMIT_CLEAR;
+> +	val |= enable << HISI_HIP08_CORE_COMMIT_SHIFT;
+> +	write_sysreg_s(val, HISI_HIP08_CORE_COMMIT_REG);
+> +}
+> +
+> +static struct etm4_arch_features etm4_features[] = {
+> +	[ETM4_IMPDEF_HISI_CORE_COMMIT] = {
+> +		.arch_callback = etm4_hisi_config_core_commit,
+> +	},
+> +	{},
+> +};
+> +
+> +static void etm4_enable_arch_specific(struct etmv4_drvdata *drvdata)
+> +{
+> +	struct etm4_arch_features *ftr;
+> +	int bit;
+> +
+> +	for_each_set_bit(bit, drvdata->arch_features, ETM4_IMPDEF_FEATURE_MAX) {
+> +		ftr = &etm4_features[bit];
+> +
+> +		if (ftr->arch_callback)
+> +			ftr->arch_callback(true);
+> +	}
+> +}
+> +
+> +static void etm4_disable_arch_specific(struct etmv4_drvdata *drvdata)
+> +{
+> +	struct etm4_arch_features *ftr;
+> +	int bit;
+> +
+> +	for_each_set_bit(bit, drvdata->arch_features, ETM4_IMPDEF_FEATURE_MAX) {
+> +		ftr = &etm4_features[bit];
+> +
+> +		if (ftr->arch_callback)
+> +			ftr->arch_callback(false);
+> +	}
+> +}
+> +
+> +static void etm4_check_arch_features(struct etmv4_drvdata *drvdata,
+> +				      unsigned int id)
+> +{
+> +	if (etm4_hisi_match_pid(id))
+> +		set_bit(ETM4_IMPDEF_HISI_CORE_COMMIT, drvdata->arch_features);
+> +}
+> +#else
+> +static void etm4_enable_arch_specific(struct etmv4_drvdata *drvdata)
+> +{
+> +}
+> +
+> +static void etm4_disable_arch_specific(struct etmv4_drvdata *drvdata)
+> +{
+> +}
+> +
+> +static void etm4_check_arch_features(struct etmv4_drvdata *drvdata,
+> +				     unsigned int id)
+> +{
+> +}
+> +#endif /* CONFIG_ETM4X_IMPDEF_FEATURE */
+> +
+>  static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+>  {
+>  	int i, rc;
+> @@ -110,6 +194,7 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+>  	struct device *etm_dev = &drvdata->csdev->dev;
+> 
+>  	CS_UNLOCK(drvdata->base);
+> +	etm4_enable_arch_specific(drvdata);
+> 
+>  	etm4_os_unlock(drvdata);
+> 
+> @@ -476,6 +561,7 @@ static void etm4_disable_hw(void *info)
+>  	int i;
+> 
+>  	CS_UNLOCK(drvdata->base);
+> +	etm4_disable_arch_specific(drvdata);
+> 
+>  	if (!drvdata->skip_power_up) {
+>  		/* power can be removed from the trace unit now */
+> @@ -1547,6 +1633,8 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
+>  		drvdata->boot_enable = true;
+>  	}
+> 
+> +	etm4_check_arch_features(drvdata, id->id);
+> +
+>  	return 0;
+>  }
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+> index eefc737..3dd3e06 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+> @@ -8,6 +8,7 @@
+> 
+>  #include <asm/local.h>
+>  #include <linux/spinlock.h>
+> +#include <linux/types.h>
+>  #include "coresight-priv.h"
+> 
+>  /*
+> @@ -203,6 +204,11 @@
+>  /* Interpretation of resource numbers change at ETM v4.3 architecture */
+>  #define ETM4X_ARCH_4V3	0x43
+> 
+> +enum etm_impdef_type {
+> +	ETM4_IMPDEF_HISI_CORE_COMMIT,
+> +	ETM4_IMPDEF_FEATURE_MAX,
+> +};
+> +
+>  /**
+>   * struct etmv4_config - configuration information related to an ETMv4
+>   * @mode:	Controls various modes supported by this ETM.
+> @@ -415,6 +421,7 @@ struct etmv4_save_state {
+>   * @state_needs_restore: True when there is context to restore after PM exit
+>   * @skip_power_up: Indicates if an implementation can skip powering up
+>   *		   the trace unit.
+> + * @arch_features: Bitmap of arch features of etmv4 devices.
+>   */
+>  struct etmv4_drvdata {
+>  	void __iomem			*base;
+> @@ -463,6 +470,7 @@ struct etmv4_drvdata {
+>  	struct etmv4_save_state		*save_state;
+>  	bool				state_needs_restore;
+>  	bool				skip_power_up;
+> +	DECLARE_BITMAP(arch_features, ETM4_IMPDEF_FEATURE_MAX);
+>  };
+> 
+>  /* Address comparator access types */
+> --
+> 2.8.1
+> 
