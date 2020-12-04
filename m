@@ -2,196 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15012CEAB3
+	by mail.lfdr.de (Postfix) with ESMTP id 175B42CEAB1
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387553AbgLDJSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:18:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45142 "EHLO mail.kernel.org"
+        id S2387444AbgLDJSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:18:35 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:52814 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729563AbgLDJSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:18:43 -0500
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     "Jonathan Corbet" <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scripts: get_feat.pl: make complete table more coincise
-Date:   Fri,  4 Dec 2020 10:17:45 +0100
-Message-Id: <2fe5f94aa8e12279d36cfbf489b30d4482a9bebb.1607073431.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201203153642.594afd85@lwn.net>
-References: <20201203153642.594afd85@lwn.net>
+        id S1725866AbgLDJSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 04:18:34 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id AA82FFB03;
+        Fri,  4 Dec 2020 10:17:51 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ibbQH5juRmE3; Fri,  4 Dec 2020 10:17:50 +0100 (CET)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id B0D7A4068E; Fri,  4 Dec 2020 10:17:49 +0100 (CET)
+Date:   Fri, 4 Dec 2020 10:17:49 +0100
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ondrej Jirman <megous@megous.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        allen <allen.chen@ite.com.tw>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/6] drm/panel: mantix and st7703 fixes and additions
+Message-ID: <20201204091749.GA11242@bogon.m.sigxcpu.org>
+References: <cover.1605688147.git.agx@sigxcpu.org>
+ <CACRpkda97nJ+nJX4CuZHQnDVh1mhykc_vb6xFh7BcAWQoNjz7Q@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+In-Reply-To: <CACRpkda97nJ+nJX4CuZHQnDVh1mhykc_vb6xFh7BcAWQoNjz7Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, there are too many white spaces at the tables,
-and the information is very sparsed on it.
+Hi Linus,
+On Thu, Nov 19, 2020 at 09:35:17AM +0100, Linus Walleij wrote:
+> On Wed, Nov 18, 2020 at 9:29 AM Guido Günther <agx@sigxcpu.org> wrote:
+> 
+> > This adds new panel type to the mantix driver as found on the Librem 5 and
+> > fixes a glitch in the init sequence (affecting both panels). The fix is at the
+> > start of the series to make backporting simpler.
+> > It also adds a patch to make st7703 use dev_err_probe().
+> >
+> > changes from v1
+> > - as per review comments by Linus Walleij
+> >   - fix alphabetical ordering in Documentation/devicetree/bindings/vendor-prefixes.yaml
+> >     https://lore.kernel.org/dri-devel/CACRpkdao_TMcpRsdK=7K5fNKJse0Bqwk58iWu0xsXdDNdcffVA@mail.gmail.com/
+> >   - add reviewed by to all except 5/6, thanks
+> 
+> The whole v2 looks fine to me, I'd give the devicetree
+> maintainers some slack to review the DT patches then I can
+> apply the whole series unless you have commit access yourself,
+> just tell me.
 
-Make the format a lot more compact.
+Thanks. Is 2 weeks enough slack? Checking what's the rule of thumb here.
+Cheers,
+ -- Guido
 
-Suggested-by: Jonathan Corbet <corbet@lwn.net>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- scripts/get_feat.pl | 107 +++++++++++++++++++++++++++++++++-----------
- 1 file changed, 81 insertions(+), 26 deletions(-)
-
-diff --git a/scripts/get_feat.pl b/scripts/get_feat.pl
-index 81d1b78d65c9..f3777f6d32bb 100755
---- a/scripts/get_feat.pl
-+++ b/scripts/get_feat.pl
-@@ -325,7 +325,9 @@ sub output_feature {
- # Output all features for all architectures
- #
- 
--sub matrix_lines($$) {
-+sub matrix_lines($$$$) {
-+	my $desc_size = shift;
-+	my $status_size = shift;
- 	my $partial = shift;
- 	my $header = shift;
- 	my $split;
-@@ -349,13 +351,9 @@ sub matrix_lines($$) {
- 	print $split;
- 	print $fill x $max_size_name;
- 	print $split;
--	print $fill x $max_size_kconfig;
--	print $split;
--	print $fill x $max_size_description;
-+	print $fill x $desc_size;
- 	print "+";
--	print $ln_marker x $max_size_arch;
--	print "+";
--	print $ln_marker x $max_size_status;
-+	print $ln_marker x $status_size;
- 	print "+\n";
- }
- 
-@@ -366,6 +364,14 @@ sub output_matrix {
- 	print "$title\n";
- 	print "=" x length($title) . "\n\n";
- 
-+	my $desc_title = "$h_kconfig / $h_description";
-+
-+	my $desc_size = $max_size_kconfig + 4;
-+	$desc_size = $max_size_description if ($max_size_description > $desc_size);
-+	$desc_size = length($desc_title) if (length($desc_title) > $desc_size);
-+
-+	my $status_size = 60;
-+
- 	my $cur_subsys = "";
- 	foreach my $name (sort {
- 				($data{$a}->{subsys} cmp $data{$b}->{subsys}) or
-@@ -383,36 +389,85 @@ sub output_matrix {
- 			print "$title\n";
- 			print "=" x length($title) . "\n\n";
- 
--			matrix_lines(0, 0);
-+
-+			matrix_lines($desc_size, $status_size, 0, 0);
-+
- 			printf "|%-${max_size_name}s", $h_name;
--			printf "|%-${max_size_kconfig}s", $h_kconfig;
--			printf "|%-${max_size_description}s", $h_description;
-+			printf "|%-${desc_size}s", $desc_title;
- 
--			printf "|%-${max_size_arch}s", $h_arch;
--			printf "|%-${max_size_status}s|\n", $h_status;
--
--			matrix_lines(0, 1);
-+			printf "|%-${status_size}s|\n", "Status per architecture";
-+			matrix_lines($desc_size, $status_size, 0, 1);
- 		}
- 
- 		my %arch_table = %{$data{$name}->{table}};
--		my $first = 1;
--		foreach my $arch (sort keys %arch_table) {
--			if ($first) {
-+		my $cur_status = "";
-+
-+		my @lines;
-+		my $line = "";
-+		foreach my $arch (sort {
-+					($arch_table{$a} cmp $arch_table{$b}) or
-+					("\L$a" cmp "\L$b")
-+				       } keys %arch_table) {
-+
-+			my $status = $arch_table{$arch};
-+
-+			if ($status eq "---") {
-+				$status = "Not compatible";
-+			}
-+
-+			if ($status ne $cur_status) {
-+				if ($line ne "") {
-+					push @lines, $line;
-+					$line = "";
-+				}
-+				$line = "- **" . $status . "**: " . $arch;
-+			} elsif (length($line) + length ($arch) + 2 < $status_size) {
-+				$line .= ", " . $arch;
-+			} else {
-+				push @lines, $line;
-+				$line = "  " . $arch;
-+			}
-+			$cur_status = $status;
-+		}
-+		push @lines, $line if ($line ne "");
-+
-+		my $ln = 0;
-+		for my $line(@lines) {
-+			if (!$ln) {
- 				printf "|%-${max_size_name}s", $name;
--				printf "|%-${max_size_kconfig}s", $data{$name}->{kconfig};
--				printf "|%-${max_size_description}s", $data{$name}->{description};
--				$first = 0;
-+				printf "|%-${desc_size}s", "``" . $data{$name}->{kconfig} . "``";
-+			} elsif ($ln == 2) {
-+				printf "|%-${max_size_name}s", "";
-+				printf "|%-${desc_size}s", $data{$name}->{description};
- 			} else {
--				matrix_lines(1, 0);
-+				printf "|%-${max_size_name}s", "";
-+				printf "|%-${desc_size}s", "";
-+			}
-+
-+			printf "|%-${status_size}s|\n", $line;
- 
-+			$ln++;
-+		}
-+
-+		# Ensure that Kconfig and description will be printed
-+		while ($ln < 2) {
-+			if (!$ln) {
-+				printf "|%-${max_size_name}s", $name;
-+				printf "|%-${desc_size}s``", $data{$name}->{kconfig} . "``";
-+			} elsif ($ln == 2) {
- 				printf "|%-${max_size_name}s", "";
--				printf "|%-${max_size_kconfig}s", "";
--				printf "|%-${max_size_description}s", "";
-+				printf "|%-${desc_size}s", $data{$name}->{description};
-+			} else {
-+				printf "|%-${max_size_name}s", "";
-+				printf "|%-${desc_size}s", "";
- 			}
--			printf "|%-${max_size_arch}s", $arch;
--			printf "|%-${max_size_status}s|\n", $arch_table{$arch};
-+
-+			printf "|%-${status_size}s|\n", "";
-+
-+			$ln++;
- 		}
--		matrix_lines(0, 0);
-+
-+		matrix_lines($desc_size, $status_size, 0, 0);
- 	}
- }
- 
--- 
-2.28.0
-
+> 
+> For all v2 patches:
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> If you have time, please review my s6e63m0 series.
+> https://lore.kernel.org/dri-devel/20201117175621.870085-1-linus.walleij@linaro.org/
+> https://lore.kernel.org/dri-devel/20201117175621.870085-2-linus.walleij@linaro.org/
+> https://lore.kernel.org/dri-devel/20201117175621.870085-3-linus.walleij@linaro.org/
+> 
+> Yours,
+> Linus Walleij
+> 
