@@ -2,139 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C042CF386
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 156782CF389
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728773AbgLDSCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:02:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727178AbgLDSCo (ORCPT
+        id S1729218AbgLDSDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:03:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52997 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727096AbgLDSDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:02:44 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE70AC061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:01:57 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id e25so7870409wme.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:01:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GunWet4p4NzVbI1r1RYLjYsxsi2RUASEtxkEDiSdayU=;
-        b=Jfc+OXEDeUa9mmISz8ZsnfdTU5azIgUzZSQjepScJvm9Yeu8TYr4EJM80uzI2fPPUb
-         +VHfBX79uMGHB9tHKddRRiKYoDNVPsF81RdvXjX2YfemDOeWnvFmz3ZxiR/7JPAX22f6
-         5tMT6fGr07JcUY7GB6TGOBnJAKFTflWYID7FgrAq2cOxXoeSVAUMIZbgYmETKwvczVHC
-         i2uHt2MIyl9qCZGghiulFP8richVb8xc9cRAfdQic9NmrXZkgiKYKb9exgtCKAG2qi7s
-         +K6FOWmZssDvDm3FjzNmaKJV02LM7JGkf/1TCuPcURVOz8hqELdq/Q7z3jGSEoQGCoBB
-         FD1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GunWet4p4NzVbI1r1RYLjYsxsi2RUASEtxkEDiSdayU=;
-        b=GiIK7wdr5MMgMw9E2qNCjAgCghd+1mWj3hS7sK8BFPSIrsPdB0e3QeONm8oegLkZ/1
-         qFKvo8+9Ki4/TMEGIsLk/xZcrq5p2a6f8u0YdnJJNE5R37/L3E0nkJerWqD2GfkVW56E
-         OUaW7ejAny03f+726b6ioa2mDi6rsFYQA3+qE/IG8FuGINx3SEU/u4PAISl4B/i/5Izf
-         RfgdQiJPl5mlXaWAg/+utrtWNDA5kNBBRsmTbQpNAifJvG9rHbfZm2/CHTNEmZhsziZh
-         ljqOAY6k49HRCzKqFDsVClx/JKtAwd/y3w6ZnHHLCk4h0q0tpD++GFaH9aQFd5R/59n4
-         Z0uw==
-X-Gm-Message-State: AOAM5331i78xV+3CshKK7Yq/T6FiijJLMop1wYTwojCTfJYqTA1oJKu8
-        2WXhcB3bPBE67NEiAx7t8p3g9w==
-X-Google-Smtp-Source: ABdhPJxSC8KwxX3qUAPvNVm0RO0ZB//wClhZM8fadV8xFb6AM2n7EFO2SRqrA/auNGP2dVoT3/qMcQ==
-X-Received: by 2002:a7b:c157:: with SMTP id z23mr5577311wmi.35.1607104916154;
-        Fri, 04 Dec 2020 10:01:56 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id u66sm4104667wmg.30.2020.12.04.10.01.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 10:01:55 -0800 (PST)
-Date:   Fri, 4 Dec 2020 18:01:52 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Fuad Tabba <tabba@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>, kernel-team@android.com,
-        Android KVM <android-kvm@google.com>
-Subject: Re: [RFC PATCH 16/27] KVM: arm64: Prepare Hyp memory protection
-Message-ID: <X8p5kLSIq2MoQZ24@google.com>
-References: <20201117181607.1761516-1-qperret@google.com>
- <20201117181607.1761516-17-qperret@google.com>
- <CA+EHjTyJnZ8e=AN7H_k+oZb0VTWAgMicMY8Rqe2Di_3A87hm0A@mail.gmail.com>
+        Fri, 4 Dec 2020 13:03:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607104930;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y+BVWlwmMR3/aIwVc1YDREePfrqw3RI1zvIRL+z1PQU=;
+        b=CN/S9OXXEezRQ18LU9n70IbARdk3xJf2pRSuZO+Uiv4mZBTmVe7+rYA8w6uhcrobNCCEDU
+        yy+M2dSBcyLIks7FoWNKnXX5REgTQleThlNts6iWr6VQUQ2YfBUADYP5EAKdbDWjj9TK+L
+        HmpBNQSyoS8hbdbeGvgI5RhIrI2Tuxg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-138-PzeVPaOdO6GNlahLGsOC3w-1; Fri, 04 Dec 2020 13:02:06 -0500
+X-MC-Unique: PzeVPaOdO6GNlahLGsOC3w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8ADAD1005513;
+        Fri,  4 Dec 2020 18:02:03 +0000 (UTC)
+Received: from [10.36.112.162] (ovpn-112-162.ams2.redhat.com [10.36.112.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 76B7C5D6A1;
+        Fri,  4 Dec 2020 18:01:59 +0000 (UTC)
+Subject: Re: [PATCH 0/6] prohibit pinning pages in ZONE_MOVABLE
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Joonsoo Kim <js1304@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        mike.kravetz@oracle.com, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201204035953.GA17056@js1304-desktop>
+ <CA+CK2bCD7XYyJB9TNZZeUMAuntotZopVYNjDXnyVZyzKe2_A1Q@mail.gmail.com>
+ <20201204161005.GD5487@ziepe.ca>
+ <CA+CK2bCGGoBXg7FbhGMDdWRnePKFgvtsM_PJmA2qtMNsvPMZbg@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <593822e5-4e1a-fdca-5500-4138d0f2b728@redhat.com>
+Date:   Fri, 4 Dec 2020 19:01:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+EHjTyJnZ8e=AN7H_k+oZb0VTWAgMicMY8Rqe2Di_3A87hm0A@mail.gmail.com>
+In-Reply-To: <CA+CK2bCGGoBXg7FbhGMDdWRnePKFgvtsM_PJmA2qtMNsvPMZbg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 03 Dec 2020 at 12:57:33 (+0000), Fuad Tabba wrote:
-<snip>
-> > +int hyp_create_idmap(void);
-> > +int hyp_map_vectors(void);
-> > +int hyp_back_vmemmap(phys_addr_t phys, unsigned long size, phys_addr_t back);
-> > +int hyp_cpu_set_vector(enum arm64_hyp_spectre_vector slot);
-> > +int hyp_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot);
-> > +int __hyp_create_mappings(unsigned long start, unsigned long size,
-> > +                         unsigned long phys, unsigned long prot);
-> > +unsigned long __hyp_create_private_mapping(phys_addr_t phys, size_t size,
-> > +                                          unsigned long prot);
-> > +
+On 04.12.20 18:50, Pavel Tatashin wrote:
+>>> Yes, this indeed could be a problem for some configurations. I will
+>>> add your comment to the commit log of one of the patches.
+>>
+>> It sounds like there is some inherent tension here, breaking THP's
+>> when doing pin_user_pages() is a really nasty thing to do. DMA
+>> benefits greatly from THP.
+>>
+>> I know nothing about ZONE_MOVABLE, is this auto-setup or an admin
+>> option? If the result of this patch is standard systems can no longer
+>> pin > 80% of their memory I have some regression concerns..
 > 
-> nit: I also thought that the hyp_create_mappings function names are a
-> bit confusing, since there's the create_hyp_mappings functions which
-> use the aforementioned *hyp_pgtable.
+> ZONE_MOVABLE can be configured via kernel parameter, or when memory
+> nodes are onlined after hot-add; so this is something that admins
+> configure. ZONE_MOVABLE is designed to gurantee memory hot-plug
+> functionality, and not availability of THP, however, I did not know
+> about the use case where some admins might configure ZONE_MOVABLE to
+> increase availability of THP because pages are always migratable in
+> them. The thing is, if we fragment ZONE_MOVABLE by pinning pages in
+> it, the availability of THP also suffers.  We can migrate pages in
+> ZONE_NORMAL, just not guaranteed, so we can create THP in ZONE_NORMAL
+> as well, which is the usual case.
 
-Sure, happy to re-name those (and hyp_pgtable above). Any suggestions?
+Right, we should document this at some place to make admins aware of
+this. Something like
 
+"Techniques that rely on long-term pinnings of memory (especially, RDMA
+and vfio) are fundamentally problematic with ZONE_MOVABLE and,
+therefore, memory hotunplug. Pinned pages cannot reside on ZONE_MOVABLE,
+to guarantee that memory can still get hotunplugged - be aware that
+pinning can fail even if there is plenty of free memory in ZONE_MOVABLE.
+In addition, using ZONE_MOVABLE might make page pinning more expensive,
+because pages have to be migrated off that zone first."
 
-<snip>
-> > +SYM_FUNC_START(__kvm_init_switch_pgd)
-> > +       /* Turn the MMU off */
-> > +       pre_disable_mmu_workaround
-> > +       mrs     x2, sctlr_el2
-> > +       bic     x3, x2, #SCTLR_ELx_M
-> > +       msr     sctlr_el2, x3
-> > +       isb
-> > +
-> > +       tlbi    alle2
-> > +
-> > +       /* Install the new pgtables */
-> > +       ldr     x3, [x0, #NVHE_INIT_PGD_PA]
-> > +       phys_to_ttbr x4, x3
-> > +alternative_if ARM64_HAS_CNP
-> > +       orr     x4, x4, #TTBR_CNP_BIT
-> > +alternative_else_nop_endif
-> > +       msr     ttbr0_el2, x4
-> > +
-> > +       /* Set the new stack pointer */
-> > +       ldr     x0, [x0, #NVHE_INIT_STACK_HYP_VA]
-> > +       mov     sp, x0
-> > +
-> > +       /* And turn the MMU back on! */
-> > +       dsb     nsh
-> > +       isb
-> > +       msr     sctlr_el2, x2
-> > +       isb
-> > +       ret     x1
-> > +SYM_FUNC_END(__kvm_init_switch_pgd)
-> > +
-> 
-> Should the instruction cache be flushed here (ic iallu), to discard
-> speculatively fetched instructions?
+BTW, you might also want to update the comment for ZONE_MOVABLE in
+include/linux/mmzone.h at the end of this series, removing the special
+case of pinned pages (1.) and maybe adding what happens when trying to
+pin pages on ZONE_MOVABLE.
 
-Hmm, Will? Thoughts?
-
+-- 
 Thanks,
-Quentin
+
+David / dhildenb
+
