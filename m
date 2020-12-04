@@ -2,24 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659952CF78A
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 152BF2CF787
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730904AbgLDXbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 18:31:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41966 "EHLO mail.kernel.org"
+        id S1730855AbgLDXau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 18:30:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgLDXbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 18:31:12 -0500
+        id S1726111AbgLDXat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 18:30:49 -0500
 From:   Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        lgirdwood@gmail.com
-In-Reply-To: <20201204164228.1826-1-srinivas.kandagatla@linaro.org>
-References: <20201204164228.1826-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: q6afe-clocks: Add missing parent clock rate
-Message-Id: <160712460214.7629.10875040201126733865.b4-ty@kernel.org>
+To:     Patrick Lai <plai@codeaurora.org>, Arnd Bergmann <arnd@kernel.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Rohit kumar <rohitkr@codeaurora.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Ajit Pandey <ajitp@codeaurora.org>,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+        Arnd Bergmann <arnd@arndb.de>
+In-Reply-To: <20201203231443.1483763-1-arnd@kernel.org>
+References: <20201203231443.1483763-1-arnd@kernel.org>
+Subject: Re: [PATCH] ASoC: qcom: fix QDSP6 dependencies, attempt #3
+Message-Id: <160712460214.7629.13610030760770322456.b4-ty@kernel.org>
 Date:   Fri, 04 Dec 2020 23:30:02 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -28,13 +34,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 16:42:28 +0000, Srinivas Kandagatla wrote:
-> setting clock rate on child clocks without a parent clock rate will
-> result in zero clk rate for child. This also means that when audio
-> is started dsp will attempt to access registers without enabling
-> clock resulting in board boot up.
+On Fri, 4 Dec 2020 00:14:18 +0100, Arnd Bergmann wrote:
+> The previous fix left another warning in randconfig builds:
 > 
-> Fix this by adding the missing parent clock rate.
+> WARNING: unmet direct dependencies detected for SND_SOC_QDSP6
+>   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && QCOM_APR [=y] && COMMON_CLK [=n]
+>   Selected by [y]:
+>   - SND_SOC_MSM8996 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && QCOM_APR [=y]
+> 
+> [...]
 
 Applied to
 
@@ -42,8 +50,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: q6afe-clocks: Add missing parent clock rate
-      commit: 7e20ae1208daaf6dad85c2dcb968fc590b6f3b99
+[1/1] ASoC: qcom: fix QDSP6 dependencies, attempt #3
+      commit: b1b8eb1283c90a953089d988930d7b6156418958
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
