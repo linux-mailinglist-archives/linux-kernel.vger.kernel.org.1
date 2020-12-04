@@ -2,100 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8AB22CF3E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF26A2CF3EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729985AbgLDSVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:21:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726602AbgLDSVt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:21:49 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D25C061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:21:03 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id p6so3571454plo.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:21:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=003NfvjYeu2xkj/6ekYLLomNnI81cDCQ9rUfHMrpfcg=;
-        b=BpPlJnrofuC2A1d9V05ZQQ7urHDvX4BF9ncEhYd0o68Zxw55s2IJK+BMb/EGZewdlZ
-         QlH4N81QVrjN85L2pSblO8EL+P2DBSdaDIISKJ52FT29Q4G7bL1Pr+06IPQXpSxmMAPD
-         7FIUZ9xXSQBJsNV6RLUXRWATqYGch+0ayHzDFyPsPEJwfCX/temxseXmiaw7FQp6f5sz
-         g7M0xim5IggGgBhqfJskDGdDg5nQHYsNHLt5xTFA+0d0N4r99KCUOHJh8q9TPHT53W0f
-         gDB+g/dw9ZaCjorhOfzoQraioPTTaFLz7erRYrqSfuJmS8547+FkbGhUl5qgATAnkIdu
-         OHIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=003NfvjYeu2xkj/6ekYLLomNnI81cDCQ9rUfHMrpfcg=;
-        b=HPAuCJ2itLyqUMeFdKt0GdHR0oh8eJAZ9fw2S4czQpSBUuU5OSP/tgYhewrVZS1t80
-         6HmQRg0R3Z9almbxalXssbEuGw0w5alMsP8CliFX81mJ37PPc5Q/DutOONVqriqS+YlC
-         GElOixZ/6phnKn2lfT55yn14vEmHd/59aSxc3YnWKNhhWIiQqBJ2JD0f1aJ+nzes/9UG
-         1atl0g0v/s9ALY0itOF6lLj9sKTHFfKutCGBrl8eI79eEYLwmrfYLeLaXHIm/6PKoqHM
-         qfpJEBVcpAaHnssY/0vTLmjOieKhWPOEwai7LYeMjqYGCpcevHjbA1Z/UtKg4WTcoxil
-         X2mA==
-X-Gm-Message-State: AOAM531qed88DOzIuNCiL4D4apsE4C0fvTYtIjtkHi5aJVV4gzwOEP79
-        r3N9e2b9l7aBIFW73UBm28Gb4g==
-X-Google-Smtp-Source: ABdhPJw4DiHHbPsEtnV8iHjzJl9EPxfMit99Up0ns0AVOaJf0DX+CGbgMjGDqlWwIq7q3SbrsgOZDg==
-X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr5431501pjp.68.1607106062476;
-        Fri, 04 Dec 2020 10:21:02 -0800 (PST)
-Received: from google.com (h208-100-161-3.bendor.broadband.dynamic.tds.net. [208.100.161.3])
-        by smtp.gmail.com with ESMTPSA id v63sm5382794pfb.217.2020.12.04.10.21.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 10:21:01 -0800 (PST)
-Date:   Fri, 4 Dec 2020 10:20:59 -0800
-From:   Will McVicker <willmcvicker@google.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jessica Yu <jeyu@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 0/2] Adds support to capture module's SCM version
-Message-ID: <X8p+CylIWycDff8w@google.com>
-References: <CAGETcx8unBFUHxM67VdOoaWRENGXYoc4qWq2Oir=2rUyJ7F5nA@mail.gmail.com>
- <20201125010541.309848-1-willmcvicker@google.com>
- <X8mEhIeYeMjZc/+7@google.com>
- <20201204075159.GA29752@infradead.org>
- <X8p8ZK1sXQ2E7hSA@google.com>
- <20201204181808.GA26478@infradead.org>
+        id S1730149AbgLDSWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:22:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730011AbgLDSWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:22:01 -0500
+Date:   Fri, 4 Dec 2020 12:21:18 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607106080;
+        bh=cZFPzlHJbvuqT1IggsL+1KT9IMXHxDS/MVaBMDyNjeY=;
+        h=From:To:Cc:Subject:In-Reply-To:From;
+        b=YcfViyM93Q9keCM8ix789WAmuzfqqdPuZupGKrCrKWU+qg1wYJX7wT9wWWAk+b4cw
+         wIna5EiyB0BfQIq3yobvz9sR0zymfylurVd3onOCD3uaMCKZ9DNwDl1BbpHXyp5MUJ
+         ctnvBDXqexqy07O+SkSC43U2ijtLXQ5AGCfaFI6qw9GRs2ONGKOLoQtn0T7eX0Lv/Q
+         Ut33VscZOPhuX1hH8GagEoPa9Y6VNQ9JwKtVyGm8Th/LxBgzVVYH2ojPYYbaws+HfT
+         gR7uROORpbH8oBLRi1aj0oLEmsI6gA5QjWvpgt6IfEIxhIONYxqOc4/EL7LkcrpmOn
+         s+zaAE+CSHWMw==
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Kishore <kthota@nvidia.com>,
+        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+        Vidya Sagar <sagar.tv@gmail.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v3 0/3] PCI/MSI: Cleanup init and improve 32-bit MSI
+ checking
+Message-ID: <20201204182118.GA1929556@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201204181808.GA26478@infradead.org>
+In-Reply-To: <20201203185110.1583077-1-helgaas@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 06:18:08PM +0000, Christoph Hellwig wrote:
-> On Fri, Dec 04, 2020 at 10:13:56AM -0800, Will McVicker wrote:
-> > On Fri, Dec 04, 2020 at 07:51:59AM +0000, Christoph Hellwig wrote:
-> > > I think your decription still shows absolutely no benefit for the
-> > > kernel, so I'not sure why anyone would want to waste time on this.
-> > Hi Christoph,
-> > 
-> > Did you get a chance to read my earlier responses regarding the uses for
-> > in-tree modules?
-> > 
-> > The biggest benefit for the upstream community is being about to get the SCM
-> > version for *any* module (including in-tree modules) in the initramfs via the
-> > sysfs node. Currently there is no way to do that and there is no guarantee that
+On Thu, Dec 03, 2020 at 12:51:07PM -0600, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
 > 
-> That assumes the SCM version of a module has any kind of meaning for
-> an in-tree module.  Which it doesn't.  If you care about the SCM version
-> of an in-tree module the only thing we need is one single global sysfs
-> file.
-Why doesn't it have meaning? With MODVERSIONS, you are able to update in-tree
-kernel modules independently of the kernel. That means you can update as many
-in-tree modules as you want which would create many different SCM versions (1
-per every module update). Also you can update the kernel independently of the
-in-tree modules introducing another SCM version.
+> MSI/MSI-X init was a little unconventional.  We had pci_msi_setup_pci_dev()
+> to disable MSI and MSI-X, in probe.c instead of msi.c so we could do it
+> even without CONFIG_PCI_MSI.  Move that to msi.c and fix the config issue
+> with an #ifdef.
+> 
+> Then add Vidya's patch on top.  Previous postings at
+> 
+> https://lore.kernel.org/linux-pci/20201117145728.4516-1-vidyas@nvidia.com/
+> https://lore.kernel.org/linux-pci/20201124105035.24573-1-vidyas@nvidia.com/
+> 
+> Bjorn Helgaas (2):
+>   PCI/MSI: Move MSI/MSI-X init to msi.c
+>   PCI/MSI: Move MSI/MSI-X flags updaters to msi.c
+> 
+> Vidya Sagar (1):
+>   PCI/MSI: Set device flag indicating only 32-bit MSI support
+> 
+>  drivers/pci/Makefile |  3 +-
+>  drivers/pci/msi.c    | 70 ++++++++++++++++++++++++++++++++++++++++----
+>  drivers/pci/pci.h    | 23 ++-------------
+>  drivers/pci/probe.c  | 21 ++-----------
+>  4 files changed, 70 insertions(+), 47 deletions(-)
 
---Will
+I fixed my typo ("#ifdef CONFIG_MSI" when it should have been
+"#ifdef CONFIG_PCI_MSI"), added the reference from Vidya, added
+Thierry's Reviewed-by, and put these on pci/msi for v5.11.
