@@ -2,155 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989DC2CF00F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8972CF010
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbgLDOvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:51:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727126AbgLDOvT (ORCPT
+        id S1730353AbgLDOwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:52:30 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5760 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727620AbgLDOwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:51:19 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D71C061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:50:38 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id y7so6901864lji.8
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:50:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f0J6AHzHvgSJje9MUX/6z03gYFKNVcHvTlp7jdV7RVQ=;
-        b=xciDesjBUC8YYttJVDx1kSCpAWa3xjUXjv7aWKRUDoGDXx26aOvZ9B+Ajn6cW5/cwv
-         10ZrQqodCvHBWLamAa12ZJ8k/pLIJ4qBAXBK2OfZm/QdKL0SnDlTAFv8unzKgGLcSf+a
-         0HsrAatw0mIOX0aRpZFF1EmuYvpYB45Q2ga6I3j4byHMqXKbbsKAM5On5mv0cZkSSSxw
-         /kNVlKaW6ueD6K83QPVXgs9dWr97uCyhhasxYBQRvHuFcCUN6SZojxvvsHBfFZGeT0G0
-         v2TMqqQs66vzdEGqr9Ta67KhdNL5wOJu6G1VoHfwSTCZ2gds4fEIknj32sK+JoT508zN
-         T08g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f0J6AHzHvgSJje9MUX/6z03gYFKNVcHvTlp7jdV7RVQ=;
-        b=JDu3zliegcPUTojheECGg6RugekTWwlVuVGB1uxAePY+n1uZtLsJCHKc6l835mnolx
-         kjqS+e3j0hB/m8N8NOMWVupYPPrUrH7jMwOmpOtUIV32HMqLr1W4BAHHmp2c/WyUtP0T
-         XSOUg85C46TqPvhZ/sITyeuHWTSDqgOhg3VNmhjHmfmHTzswmNEwesIQNbC8Hpnphimp
-         Un55mfDkxs3gUfK5+MWsqyRFxc6Z0wGyxty3GACvNbJFjMU2uY6NCo4Pjl8bnf1FU9wq
-         HVCBVf9nCO4VRcdszZ58H+hMQRQlPbYWM14foUKPKunikGqQ61VBr+u7ftaBy3iDu1Ix
-         RQog==
-X-Gm-Message-State: AOAM531m3umcgIn4oU9HLfPPLqB+lJ+VTDQHR+8erVKt2Oq3PyD8TZyq
-        oLHOoUTuV17GsBehg5ms600/HvdcmSEOWjcAH+V67A==
-X-Google-Smtp-Source: ABdhPJx6XPrRvj0pg7o+a0ohJVaHzx1sSMyxpdhcBozRts9/1fZBNwCirrC+vp64hdL/9EsuoumPJcBsRtbGZsKidD8=
-X-Received: by 2002:a2e:86d2:: with SMTP id n18mr3411588ljj.26.1607093437335;
- Fri, 04 Dec 2020 06:50:37 -0800 (PST)
+        Fri, 4 Dec 2020 09:52:30 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4EpAtC131585;
+        Fri, 4 Dec 2020 09:51:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Ai6L4sa0RgQ9M3WKqdb91X2AvRLvdJvZHP9oZzdHkKU=;
+ b=BVY6HWM8bpj9i21VQwmOSnoyxFcyHkd6WPnTqvr3yDdJ3tZjPW+2b8lPNXqmOMDRJrv6
+ EsbcZg53CIY79VE3Ve5xyYl9+IArsWhExi9Z32XLbxehkWEM3Ty0y3Vbj4ld5BC0TguI
+ +QiLCh4VpuKmB0q2YJ38IYetEBkrBLVFlon4LGZKfnD4g9Bcsdiuyu8wVm0GUSGH/2pM
+ j8nc5EAQ4Rm/8UYBq3BjOjr7keQDipRbJ114na0PzAc1Q9U8Xbmrl+VTJBt1b0iUTd7Q
+ kanJR2c/v0Lzx2t7JJ/shbwwBMslFMTldey0+OvWT4F+JJvRao2TYmECB8VJrxfdND4Y /w== 
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 357pt9rwxp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 09:51:43 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B4EojeM028563;
+        Fri, 4 Dec 2020 14:51:41 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma01wdc.us.ibm.com with ESMTP id 355vrgb7yq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 14:51:41 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B4Epds019530226
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Dec 2020 14:51:40 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CB55A78064;
+        Fri,  4 Dec 2020 14:51:39 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5BAE37805C;
+        Fri,  4 Dec 2020 14:51:39 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.163.73.174])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri,  4 Dec 2020 14:51:39 +0000 (GMT)
+Subject: Re: [PATCH v3 06/18] ibmvfc: add handlers to drain and complete
+ Sub-CRQ responses
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201203020806.14747-1-tyreld@linux.ibm.com>
+ <20201203020806.14747-7-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <3fe8683a-47f6-8713-762a-02c57c2e4ec2@linux.vnet.ibm.com>
+Date:   Fri, 4 Dec 2020 08:51:38 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201203233546.3482813-1-tstrudel@google.com>
-In-Reply-To: <20201203233546.3482813-1-tstrudel@google.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 4 Dec 2020 15:49:59 +0100
-Message-ID: <CAPDyKFoH+_7QJepcPwth_EcBKuj1iU7y7i5semd1QZDsVwT0ww@mail.gmail.com>
-Subject: Re: [PATCH] PM: domains: create debugfs nodes when adding power domains
-To:     Thierry Strudel <tstrudel@google.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201203020806.14747-7-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_04:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=2 bulkscore=0
+ malwarescore=0 phishscore=0 clxscore=1015 priorityscore=1501 mlxscore=0
+ adultscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 at 00:35, Thierry Strudel <tstrudel@google.com> wrote:
->
-> debugfs nodes were created in genpd_debug_init alled in late_initcall
-> preventing power domains registered though loadable modules to have
-> a debugfs entry.
->
-> Create/remove debugfs nodes when the power domain is added/removed
-> to/from the internal gpd_list.
->
-> Signed-off-by: Thierry Strudel <tstrudel@google.com>
+On 12/2/20 8:07 PM, Tyrel Datwyler wrote:
+> The logic for iterating over the Sub-CRQ responses is similiar to that
+> of the primary CRQ. Add the necessary handlers for processing those
+> responses.
+> 
+> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
 > ---
->  drivers/base/power/domain.c | 61 ++++++++++++++++++++++++-------------
->  1 file changed, 39 insertions(+), 22 deletions(-)
->
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index 743268996336..3f168ec93762 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -1880,6 +1880,8 @@ static void genpd_lock_init(struct generic_pm_domain *genpd)
->         }
+>  drivers/scsi/ibmvscsi/ibmvfc.c | 80 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 80 insertions(+)
+> 
+> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+> index e082935f56cf..b61ae1df21e5 100644
+> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+> @@ -3381,6 +3381,86 @@ static int ibmvfc_toggle_scrq_irq(struct ibmvfc_sub_queue *scrq, int enable)
+>  	return rc;
 >  }
->
-> +static void genpd_debug_add(struct generic_pm_domain *genpd);
+>  
+> +static void ibmvfc_handle_scrq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost)
+> +{
+> +	struct ibmvfc_event *evt = (struct ibmvfc_event *)be64_to_cpu(crq->ioba);
+> +	unsigned long flags;
+> +
+> +	switch (crq->valid) {
+> +	case IBMVFC_CRQ_CMD_RSP:
+> +		break;
+> +	case IBMVFC_CRQ_XPORT_EVENT:
+> +		return;
+> +	default:
+> +		dev_err(vhost->dev, "Got and invalid message type 0x%02x\n", crq->valid);
+> +		return;
+> +	}
+> +
+> +	/* The only kind of payload CRQs we should get are responses to
+> +	 * things we send. Make sure this response is to something we
+> +	 * actually sent
+> +	 */
+> +	if (unlikely(!ibmvfc_valid_event(&vhost->pool, evt))) {
+> +		dev_err(vhost->dev, "Returned correlation_token 0x%08llx is invalid!\n",
+> +			crq->ioba);
+> +		return;
+> +	}
+> +
+> +	if (unlikely(atomic_read(&evt->free))) {
+> +		dev_err(vhost->dev, "Received duplicate correlation_token 0x%08llx!\n",
+> +			crq->ioba);
+> +		return;
+> +	}
+> +
+> +	del_timer(&evt->timer);
+> +	list_del(&evt->queue);
+> +	ibmvfc_trc_end(evt);> +	spin_unlock_irqrestore(vhost->host->host_lock, flags);
+
+You can't do this here... You are grabbing the host lock in ibmvfc_drain_sub_crq
+and saving the irqflags to a local in that function, then doing a spin_unlock_irqrestore
+and restoring irqflags using an uninitialized local in this function...
+
+I'm assuming this will get sorted out with the locking changes we've been discussing off-list...
+
+
+> +	evt->done(evt);
+> +	spin_lock_irqsave(vhost->host->host_lock, flags);
+> +}
+> +
+> +static struct ibmvfc_crq *ibmvfc_next_scrq(struct ibmvfc_sub_queue *scrq)
+> +{
+> +	struct ibmvfc_crq *crq;
+> +
+> +	crq = &scrq->msgs[scrq->cur].crq;
+> +	if (crq->valid & 0x80) {
+> +		if (++scrq->cur == scrq->size)
+> +			scrq->cur = 0;
+> +		rmb();
+> +	} else
+> +		crq = NULL;
+> +
+> +	return crq;
+> +}
+> +
+> +static void ibmvfc_drain_sub_crq(struct ibmvfc_sub_queue *scrq)
+> +{
+> +	struct ibmvfc_crq *crq;
+> +	unsigned long flags;
+> +	int done = 0;
+> +
+> +	spin_lock_irqsave(scrq->vhost->host->host_lock, flags);
+> +	while (!done) {
+> +		while ((crq = ibmvfc_next_scrq(scrq)) != NULL) {
+> +			ibmvfc_handle_scrq(crq, scrq->vhost);
+> +			crq->valid = 0;
+> +			wmb();
+> +		}
+> +
+> +		ibmvfc_toggle_scrq_irq(scrq, 1);
+> +		if ((crq = ibmvfc_next_scrq(scrq)) != NULL) {
+> +			ibmvfc_toggle_scrq_irq(scrq, 0);
+> +			ibmvfc_handle_scrq(crq, scrq->vhost);
+> +			crq->valid = 0;
+> +			wmb();
+> +		} else
+> +			done = 1;
+> +	}
+> +	spin_unlock_irqrestore(scrq->vhost->host->host_lock, flags);
+> +}
 > +
 >  /**
->   * pm_genpd_init - Initialize a generic I/O PM domain object.
->   * @genpd: PM domain object to initialize.
-> @@ -1954,12 +1956,15 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
->
->         mutex_lock(&gpd_list_lock);
->         list_add(&genpd->gpd_list_node, &gpd_list);
-> +       genpd_debug_add(genpd);
->         mutex_unlock(&gpd_list_lock);
->
->         return 0;
->  }
->  EXPORT_SYMBOL_GPL(pm_genpd_init);
->
-> +static void genpd_debug_remove(struct generic_pm_domain *genpd);
-> +
+>   * ibmvfc_init_tgt - Set the next init job step for the target
+>   * @tgt:		ibmvfc target struct
+> 
 
-Please avoid these forward declarations. I think it's better to move
-the code around.
 
->  static int genpd_remove(struct generic_pm_domain *genpd)
->  {
->         struct gpd_link *l, *link;
-> @@ -1987,6 +1992,7 @@ static int genpd_remove(struct generic_pm_domain *genpd)
->                 kfree(link);
->         }
->
-> +       genpd_debug_remove(genpd);
->         list_del(&genpd->gpd_list_node);
->         genpd_unlock(genpd);
->         cancel_work_sync(&genpd->power_off_work);
-> @@ -3177,36 +3183,44 @@ DEFINE_SHOW_ATTRIBUTE(total_idle_time);
->  DEFINE_SHOW_ATTRIBUTE(devices);
->  DEFINE_SHOW_ATTRIBUTE(perf_state);
->
-> -static int __init genpd_debug_init(void)
-> +static void genpd_debug_add(struct generic_pm_domain *genpd)
->  {
->         struct dentry *d;
-> -       struct generic_pm_domain *genpd;
->
-> +       d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
+-- 
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
 
-What happens if "genpd_debugfs_dir" is NULL, which will be the case
-until the late_initcall(genpd_debug_init) has been executed!?
-
-> +
-> +       debugfs_create_file("current_state", 0444,
-> +                           d, genpd, &status_fops);
-> +       debugfs_create_file("sub_domains", 0444,
-> +                           d, genpd, &sub_domains_fops);
-> +       debugfs_create_file("idle_states", 0444,
-> +                           d, genpd, &idle_states_fops);
-> +       debugfs_create_file("active_time", 0444,
-> +                           d, genpd, &active_time_fops);
-> +       debugfs_create_file("total_idle_time", 0444,
-> +                           d, genpd, &total_idle_time_fops);
-> +       debugfs_create_file("devices", 0444,
-> +                           d, genpd, &devices_fops);
-> +       if (genpd->set_performance_state)
-> +               debugfs_create_file("perf_state", 0444,
-> +                                   d, genpd, &perf_state_fops);
-> +}
-
-[...]
-
-Kind regards
-Uffe
