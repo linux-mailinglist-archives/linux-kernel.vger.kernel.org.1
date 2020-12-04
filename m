@@ -2,127 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8170E2CEE3B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FDA2CEE43
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730044AbgLDMjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 07:39:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgLDMjO (ORCPT
+        id S1730191AbgLDMkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 07:40:20 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:33679 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgLDMkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:39:14 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD47C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 04:38:33 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id g14so5145155wrm.13
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 04:38:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=uwxrq7FVASlmAXmPpYkbuc2zGaGpKZv2xlcdJf5cyHg=;
-        b=XCefAFORJRJCYIOWfIRO3Dz9m3NBadPYoskdZVFQY78un8n3mhE41FIViDlaeHqMYW
-         uGnMUfqFW/U3zbBjbHdeTIScVQyGAeaCzX/BWsTslvrFfKTjo+gWWUCQ0TdT7uexA4Qm
-         rjuD6sUg12bVtkVGSMxQ+MlIQze8TKiWLP8ozcRaiC7MR9ng2Om/ZXhJjS4XlD6cSN1c
-         ISGQ05Y+sMh9EB1L8wkDXnpidK5Qb64XkkfJX3j1cdschl8KnwLLFcCZXO7EJlZ6QNhU
-         0yShx4idl/21JpqACY9mGOJlGVyWQvmUUeML9wZMSB4JexUAd2UGw4arcusIIBzSU1T6
-         lT7g==
+        Fri, 4 Dec 2020 07:40:19 -0500
+Received: by mail-lf1-f65.google.com with SMTP id l11so7473007lfg.0;
+        Fri, 04 Dec 2020 04:39:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=uwxrq7FVASlmAXmPpYkbuc2zGaGpKZv2xlcdJf5cyHg=;
-        b=DmoNgh7xxA1fEF8v5nxmpJ9PKKMLYL8zO58A2iG66bH7itk+GARJfhAqCxKdsxKp/c
-         /lDvjJjSiQKFM1RPRgEBPON2Lto7k+3wsfhu7IoUMcJJtdp10AApXmXjjSdyAQR5zek/
-         c0eLJFGd7DMjLBddLk4vYIRkU69juvOIGoAvUMO7UG+CCkMVKHKI1njK648EuFWR0f5R
-         BSaIcFarGFaYY3bcLPt7fsqzRhEx7ONdqzKvfNEO4QBur63T+WEZh1iC5PP4qZ+bwXZ1
-         lsDpL5rgOj/07wWHLW2rLuu6hAXF3qGonmq32fB33s6P3jrht8i6i/5/a1Uxucu8i0Xl
-         8GSw==
-X-Gm-Message-State: AOAM530MJYSoA4cBPjFE7lltFpWoEbuoGjRpk1nTy24Sf2I1wHx8d0c0
-        h0THOoDX28/2s8YgkLZD2TJATg==
-X-Google-Smtp-Source: ABdhPJzWArthPy3iepLAspxEW3B6/qsGnFHlbvlTAvBty1ogWfOKvBtYb9RsPRSABAwtPsXfJC4KRw==
-X-Received: by 2002:a05:6000:105:: with SMTP id o5mr4937077wrx.164.1607085512394;
-        Fri, 04 Dec 2020 04:38:32 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id w3sm3066245wma.3.2020.12.04.04.38.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=F2EiTXQ+grZfv5m36YbBmt+caw2P1Axi2eSAmuzDH0s=;
+        b=O73mKd+iL3mPCsCoJ2GivEsDWVVHkI2lftiZK+oYbj0vkodhv4TgxW8yxmKNBGfnw3
+         9o3Du+jlltGvo57xzmtI/vWYLx8vz35MCcWR5qMG2xf9WZf7O3psh9WO8FO+DUm9ncwD
+         UNQmJmpp/iEO7DzDfjKsajWSjBoLvVaQFU8gO/A914c6d2Yh/uGCjIUYgkcqvclp7t+m
+         23KsasYqVtgxC8NVgoaIRpUYlDIRajZ62v9WxxLh/ohEKQ2ejiDF2CsGmkQ3h7HhN1NQ
+         yy9kTEAgsAHzLT8cHvYLoLzf/3AMLCkmEqhMbuVStvVk2LVzmpB19dhCpQOsle1EwTKR
+         S6eg==
+X-Gm-Message-State: AOAM531YVegmfQiCwpp3wt4aslCGhhVs7MXUw/l0eLlovgLYcncvVNBl
+        j5k0QAdI9VQHdFuWB7GhCNI=
+X-Google-Smtp-Source: ABdhPJyRh9KhDsHQ2zn/MabYlp4I3KouQX9i2SI01HpTvRaqRAHSXYfPhRaQgKATvycIsrd9Ic6KTw==
+X-Received: by 2002:a19:d85:: with SMTP id 127mr80841lfn.382.1607085570570;
+        Fri, 04 Dec 2020 04:39:30 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id q13sm1645985lfk.147.2020.12.04.04.39.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 04:38:31 -0800 (PST)
-Date:   Fri, 4 Dec 2020 13:38:25 +0100
-From:   Marco Elver <elver@google.com>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     akpm@linux-foundation.org, glider@google.com, dvyukov@google.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, rppt@kernel.org, david@redhat.com
-Subject: Re: [PATCH] kfence: fix implicit function declaration
-Message-ID: <X8otwahnmGQGLpge@elver.google.com>
-References: <20201204121804.1532849-1-anders.roxell@linaro.org>
+        Fri, 04 Dec 2020 04:39:29 -0800 (PST)
+Date:   Fri, 4 Dec 2020 14:39:21 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Cong Pham <cpham2403@gmail.com>, rostokus@gmail.com,
+        fan.chen@mediatek.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [RFC PATCH v2 0/6] power: supply: Add some fuel-gauge logic
+Message-ID: <cover.1607085199.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201204121804.1532849-1-anders.roxell@linaro.org>
-User-Agent: Mutt/2.0.2 (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 01:18PM +0100, Anders Roxell wrote:
-> When building kfence the following error shows up:
-> 
-> In file included from mm/kfence/report.c:13:
-> arch/arm64/include/asm/kfence.h: In function ‘kfence_protect_page’:
-> arch/arm64/include/asm/kfence.h:12:2: error: implicit declaration of function ‘set_memory_valid’ [-Werror=implicit-function-declaration]
->    12 |  set_memory_valid(addr, 1, !protect);
->       |  ^~~~~~~~~~~~~~~~
-> 
-> Use the correct include both
-> f2b7c491916d ("set_memory: allow querying whether set_direct_map_*() is actually enabled")
-> and 4c4c75881536 ("arm64, kfence: enable KFENCE for ARM64") went in the
+Sorry again folks - I picked you as recipients just because I assumed
+you could have something to say in here. Again, please let me know
+if you wish to be dropped from CC if this gets any further.
 
-Note that -mm does not have stable commit hashes.
+power: supply: add sw-gauge for SOC estimation and CC correction
 
-> same day via different trees.
-> 
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-> ---
+This RFC has still not been properly tested in HW - even if I
+actually managed to run the iteration at some point of development :)
+So still no accurate review or any kind of final acceptance is asked. I
+am hoping to get some opinions/guidance regarding this :) All help is
+highly appreciated! "The thing" for which I would like to get the
+initial feedback is in patch 2 - rest of the patches give some context
+to it :)
 
-Ack, we need this patch somewhere but we should probably fix the patch
-that does the move, otherwise we'll have a build-broken kernel still.
+I have couple of ROHM PMIC drivers for devices with battery charger
+and coulomb counter in device. Some users have asked me if these
+drivers could be added upstream - and I actually think it would help
+people. While evaluating these drivers I saw they do implement
+some fuel-gauging/CC correcting logic - which might be useful for
+other similar ICs. Hence I am wondering if I should try pulling the
+logic out of IC drivers to power-supply core while leaving just IC
+specific code in drivers. This RFC is first result for pulling the
+logic out of drivers.
 
-> I got this build error in todays next-20201204.
-> Andrew, since both patches are in your -mm tree, I think this can be
-> folded into 4c4c75881536 ("arm64, kfence: enable KFENCE for ARM64")
+In other words, this is an early state RFC for adding some
+fuel-gauge logic to power-supply core. I am overall asking if this
+kind of functionality would be welcome in power-supply core, and if
+yes - then I would like to get some overall direction for this.
+I am for example wondering if this should be added as a own entity
+which uses power-supply class underneath (in a way this RFC
+introduces it) - or if it should be meld in existing power-supply
+class.  But there's no point in pondering this if this kind of
+functionality has no chance being accepted :)
 
-I don't think that's the right way around. This would result in a
-build-broken commit point as well.
+Is this seen as potentially useful feature which should be
+in-kernel? (I think this has it's place in-kernel as HW details
+like coulomb-counter adjustment should really not be something
+user-space should care. Another reason is that few low-power
+embedded devices actually do periodical wake-up from suspend/
+other low-power states just to do CC adjustment - even though
+the wake-up costs some power. If this is ever to be supported
+by mainline kernel - then waking up the whole user-space just
+to do this CC adjustment iteration is not preferable. But that
+wake-up is not covered by this RFC, it is just one motvation
+behind putting this in-kernel - where it in my opinion would be
+better to be generic and available for all ICs than written in
+each IC specific driver).
 
-Looking at current -next, I see that "set_memory: allow querying whether
-set_direct_map_*() is actually enabled" is after "arm64, kfence: enable
-KFENCE for ARM64".
+Oh, please let me know if you wish to see some more documentation,
+I can try adding something in Documentation folder too.
 
-I think the patch that introduces set_memory.h for arm64 simply needs to
-squash in this patch (assuming the order is retained as-is in -mm).
+Changelog RFC v2:
+ - lots of logic fixes.
+ - rechecked units
+ - changed low-voltage correction to capacity correction
+ - added first draft of IC driver which could use the swgauge
 
-Thanks,
--- Marco
+Patch 1:
+ - Adds cap2ocv helper (should be reworked to allow 0.1% accuracy for cap)
+Patch 2:
+ - Add the swgauge (better name would be nice). The main thing in this
+   RFC
+Patch 3, 4:
+ - bring in some charger register descriptions etc for the driver
+Patch 5:
+ - add charger driver for ROHM BD718(27/28/78) PMICs as an example
+Patch 6:
+ - fix the device ID
 
->  arch/arm64/include/asm/kfence.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/include/asm/kfence.h b/arch/arm64/include/asm/kfence.h
-> index 6c0afeeab635..c44bb368a810 100644
-> --- a/arch/arm64/include/asm/kfence.h
-> +++ b/arch/arm64/include/asm/kfence.h
-> @@ -3,7 +3,7 @@
->  #ifndef __ASM_KFENCE_H
->  #define __ASM_KFENCE_H
->  
-> -#include <asm/cacheflush.h>
-> +#include <asm/set_memory.h>
->  
->  static inline bool arch_kfence_init_pool(void) { return true; }
->  
+---
+
+Matti Vaittinen (6):
+  power: supply: add cap2ocv batinfo helper
+  power: supply: add sw-gauge for SOC estimation and CC correction
+  mfd: prepare to support BD718xx-charger
+  mfd: add BD71827 header
+  power: supply: Add bd718(27/28/78) charger driver
+  MFD: bd71828: differentiate bd71828 and bd71827 chargers
+
+ drivers/mfd/rohm-bd71828.c                  |    2 +-
+ drivers/power/supply/Kconfig                |   18 +
+ drivers/power/supply/Makefile               |    2 +
+ drivers/power/supply/bd71827-power.c        | 2162 +++++++++++++++++++
+ drivers/power/supply/power_supply_core.c    |   51 +
+ drivers/power/supply/power_supply_swgauge.c | 1025 +++++++++
+ include/linux/mfd/rohm-bd71827.h            |  295 +++
+ include/linux/mfd/rohm-bd71828.h            |   65 +
+ include/linux/mfd/rohm-generic.h            |    2 +
+ include/linux/power/sw_gauge.h              |  225 ++
+ include/linux/power_supply.h                |   11 +
+ 11 files changed, 3857 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/power/supply/bd71827-power.c
+ create mode 100644 drivers/power/supply/power_supply_swgauge.c
+ create mode 100644 include/linux/mfd/rohm-bd71827.h
+ create mode 100644 include/linux/power/sw_gauge.h
+
+
+base-commit: 09162bc32c880a791c6c0668ce0745cf7958f576
+-- 
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
