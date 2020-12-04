@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C072CF21F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEAA2CF226
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730864AbgLDQnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:43:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58162 "EHLO
+        id S1730919AbgLDQns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:43:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728382AbgLDQnN (ORCPT
+        with ESMTP id S1728382AbgLDQnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:43:13 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17485C061A52
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 08:42:33 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id e7so5940340wrv.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 08:42:33 -0800 (PST)
+        Fri, 4 Dec 2020 11:43:47 -0500
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8F8C061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 08:43:01 -0800 (PST)
+Received: by mail-vk1-xa43.google.com with SMTP id h133so403172vka.6
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 08:43:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=foCoiLT+slgLG3L0w47m6AcbVpAqnmRhNM9NU1juQQM=;
-        b=DYbfXG/nueM424ONrCFUHd6ulpon66D0URs3nGOX/ObWhuyxam8eMl5jzNRVTSEAK3
-         lWdCy6erUawbbk55ZsqDwuDDXe/HSgV5aAhRGTEEoCtRz4nPvGMjOa/5mXtpgnMvmZQY
-         B4hBOHISvNLYDVA0i+2PGF42NXG68niDjaO47Q8A9eFFd0Fz1Jfy6cUFYu7fG9E5MG6F
-         pWhIWwO0nV+36kUw3SIKbv2SK7mp0eh+lwx61tkp7OBAnOsdRDoJASpCEGfjvf/GQHjI
-         NF851j92Grd1bcwdc4Acn6u5XbBNaUFy0X2tVrDpjd4NdqYDtnv1t0HQxNAGBbyA9wfh
-         pTQA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L2827Z3XOh+XnEroPsCQccYwh3m7efG10aQgHlA1ySA=;
+        b=JYZU1g+ZlShEvQrrKWBiYO9iBQR9lb1CAooVruB5LFjgcYFN57A0Z5Vyg0QfmpRgPI
+         mWA5CIgBn5zwwntKCAzMxCOKmmTG35klow6QnerENNCPXmnsGiIbKnhelkt6KNA/nELx
+         o9rBEIY32vBcPqkvXGeIcJrpW5gwGxgRRwG2A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=foCoiLT+slgLG3L0w47m6AcbVpAqnmRhNM9NU1juQQM=;
-        b=q1IfWh1wVamxjkrAmy+s2bvlfwy65I2KHtPKZIb4DHqI+xDpc0Uwlmv7p3NJcqlJb1
-         LrOlKF166K7tvxelaB5iaOtGJHdojbuC/W2aPa6ykknFT6rK79e/dFORt9x65jI+ebX4
-         lOjvr9rpunCIpz15pdjAnFAx7t26koKU9hLcPKjwf9f6W1/xQHiqdntQEKMd2eTpjHvl
-         fQOV3uD8J7cm2h1lY7/dEXKO5D/I75WT04jcgMCYwjVtFceHGDIs91SI0jmrN7kJEp+t
-         WqhxYOjY2XCzWxOZJR+ltB+pDAQQlOI0XTZNIUyNwLr5BKBrDVHBBYQqkVvgHgoUCEFs
-         jZ3w==
-X-Gm-Message-State: AOAM530i7mS1wxp8ahEGGu1FBp2ng5sZZqKI4F9ApsGWSfZUz8loGve/
-        Gl8eE5WpUAxQ1Epc3ADqNhMeuqAF2t/2/7wu
-X-Google-Smtp-Source: ABdhPJxAYhVN/ft3fnkyFb8bYQ65F6gu0a4IL7ACH8WXTdLYqnGmeUfo9ae/WbBKPLEDWaEaxJAIWw==
-X-Received: by 2002:adf:8b8f:: with SMTP id o15mr5986941wra.311.1607100151872;
-        Fri, 04 Dec 2020 08:42:31 -0800 (PST)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id d15sm4488923wrx.93.2020.12.04.08.42.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 08:42:31 -0800 (PST)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH] ASoC: q6afe-clocks: Add missing parent clock rate
-Date:   Fri,  4 Dec 2020 16:42:28 +0000
-Message-Id: <20201204164228.1826-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L2827Z3XOh+XnEroPsCQccYwh3m7efG10aQgHlA1ySA=;
+        b=axrPsrItZOniu0LX0sAO6Mr3naU3IxTX0YXdMon7brgdl3BiGvkA8MVc5PZkp0VJEe
+         v9ao71y81pNIHZMOVSSIsD3WztJawR9N6fvydTlXVoEbkkTjCQgabIx3E+w2NQDzl61s
+         9qCFP2iu73RCJlmqe9JW5eHX9gNc4If9EuRj5MzcmpUVmcpq0RP5WtK+yoRQBcxuo20E
+         WsU3Hm51xZNoSorHqHTZf15O2JeSUResKM0WNy4RLUiqQKb1Bumj4CrLF0DSBwjCR0nc
+         8ZbOGSP6BU5n2xxP8LYnQyKLzqYvwIMuaH7FD53a/4bY1f7Cxd4BemXgF7fbVPU6d5Kz
+         8GYA==
+X-Gm-Message-State: AOAM530kp6LCUKUp2NuEcafqv75g4HCUm4O/6WrhRFaUfGCyV6XjUxI1
+        k6x4lDrQvMzVHfeUfdWLJVx+gUzuT7Kfag==
+X-Google-Smtp-Source: ABdhPJwZVl4/sec6CrM/LCy8A9uD1j/G55ODBUHF2KHnTqMd8SzACrazTxWGwTEW3/e1HwhnYhMgRg==
+X-Received: by 2002:ac5:c894:: with SMTP id n20mr4506918vkl.15.1607100180228;
+        Fri, 04 Dec 2020 08:43:00 -0800 (PST)
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
+        by smtp.gmail.com with ESMTPSA id g3sm478776vkb.54.2020.12.04.08.42.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Dec 2020 08:42:59 -0800 (PST)
+Received: by mail-ua1-f45.google.com with SMTP id f16so2043516uav.12
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 08:42:59 -0800 (PST)
+X-Received: by 2002:ab0:35fa:: with SMTP id w26mr4096249uau.90.1607100178761;
+ Fri, 04 Dec 2020 08:42:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201204095539.31705-1-andreas@kemnade.info> <CAD=FV=WLcEBv7gaA3MOVYmxJ3d2Q+mo+Amkex=0eu_19jMtjrA@mail.gmail.com>
+ <20201204171428.0a011188@aktux>
+In-Reply-To: <20201204171428.0a011188@aktux>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 4 Dec 2020 08:42:46 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Vynttaz00yqbihgK0HxyrPt9b0i0-8Ft6-4NEPc_NkeQ@mail.gmail.com>
+Message-ID: <CAD=FV=Vynttaz00yqbihgK0HxyrPt9b0i0-8Ft6-4NEPc_NkeQ@mail.gmail.com>
+Subject: Re: [PATCH] ARM: OMAP2+: omap_device: fix idling of devices during probe
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-setting clock rate on child clocks without a parent clock rate will
-result in zero clk rate for child. This also means that when audio
-is started dsp will attempt to access registers without enabling
-clock resulting in board boot up.
+Hi,
 
-Fix this by adding the missing parent clock rate.
+On Fri, Dec 4, 2020 at 8:14 AM Andreas Kemnade <andreas@kemnade.info> wrote:
+>
+> > > Fixes: 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4")
+> >
+> > From the description it sounds like this problem has always existed
+> > but the async probe just tickled it reliably.  Seems like it'd make
+> > sense to tag the "Fixes" as some earlier commit so you make sure your
+> > fix gets picked to kernels even if they don't have the async probe
+> > patch?
+> >
+>
+> Hmm, maybe
+> Fixes: 04abaf07f6d5 ("ARM: OMAP2+: omap_device: Sync omap_device and
+> pm_runtime after probe defer")
+>
+> But on the other hand to stable branches only such patches are applied
+> which solve pratical problems not only theoretical problems. But maybe
+> it solves several random issues where nobody took care to debug them.
+>
+> That would be since v4.11.
 
-Fixes: 520a1c396d196 ("ASoC: q6afe-clocks: add q6afe clock controller")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/qdsp6/q6afe-clocks.c | 1 +
- 1 file changed, 1 insertion(+)
+I guess maybe best is to include both.  Then if someone is debugging
+why their async probe is failing they will notice this commit, but
+they also might decide to pick it earlier just to be safe...
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-clocks.c b/sound/soc/qcom/qdsp6/q6afe-clocks.c
-index 87e4633afe2c..f0362f061652 100644
---- a/sound/soc/qcom/qdsp6/q6afe-clocks.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-clocks.c
-@@ -16,6 +16,7 @@
- 		.afe_clk_id	= Q6AFE_##id,		\
- 		.name = #id,				\
- 		.attributes = LPASS_CLK_ATTRIBUTE_COUPLE_NO, \
-+		.rate = 19200000,			\
- 		.hw.init = &(struct clk_init_data) {	\
- 			.ops = &clk_q6afe_ops,		\
- 			.name = #id,			\
--- 
-2.21.0
-
+-Doug
