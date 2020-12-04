@@ -2,249 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B6C2CF277
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3092CF27D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbgLDQ5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:57:41 -0500
-Received: from mout01.posteo.de ([185.67.36.65]:47575 "EHLO mout01.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726173AbgLDQ5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:57:41 -0500
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 934FF160063
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 17:56:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1607101001; bh=ytQ/8kzQVFh5e9mAhgjVBN3YLLusBiOW4xwu8Ox7vNY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=FbMzY/dC/5CNqc1+nSg4/APjr81/ERt+jyhEZJJyQvWoqBFsVdnnyXqCFjQGdYQGf
-         Qw9qQHJltSmI8vJ68zHpdKmA07LneIfVMlDGNVD1+SBmCxmaHkteLtr7GwgLDpRsPo
-         wFACKLVmP0iKxZJ+z2cwzliXefw05O0cN9RcUNvM8aYHKTS3og3Zi9iHoSQjqr2jcI
-         2J8IP8LnhmgV0aO6g0T+buBAkgYRphyszaCpLfHjWzM9l71rUUmDdRsTgFTRstgde1
-         EIK0lcYKA0Ge2YgIoLIRbTT9nxbof5e3BOvK2oKgmkH7cKURLyp6CxrcrBV7GQR9/Q
-         /z/omA6kjYLqA==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4Cnf4S08XZz9rxj;
-        Fri,  4 Dec 2020 17:56:39 +0100 (CET)
-Date:   Fri, 4 Dec 2020 17:56:37 +0100
-From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH v2 2/2] hwspinlock: add sunxi hardware spinlock support
-Message-ID: <20201204175637.0574bcc2@monster.powergraphx.local>
-In-Reply-To: <20201204162117.u7fevtxkktuiqncv@gilmour>
-References: <cover.1607094989.git.wilken.gottwalt@posteo.net>
-        <c03d114477b887048ea0348dbfd1adb53c139e9f.1607094989.git.wilken.gottwalt@posteo.net>
-        <20201204162117.u7fevtxkktuiqncv@gilmour>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1730759AbgLDQ6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:58:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24983 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726309AbgLDQ6u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 11:58:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607101044;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K9cetLY5VHmxVOjnn8LGSQwAKU9lzMgAchAJJ3SA9Z8=;
+        b=XXCARmAa28IPFNyqoPLsYj9SKVHSCAKgW+YCGQLeOvx6bLhK+eoGJfeDkPcdzm91HCJR0z
+        1ZtToPyHyR9dGvlyUO23DLmICy9o8h5+jMOYpHlicG1kGSXkxQShtN0SiM/1hwqz7MovC9
+        2cWYzdnxSofh0M9BDGFezunarf47QCc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-281-YsdNyHWKOzuxYdbSgPzENg-1; Fri, 04 Dec 2020 11:57:20 -0500
+X-MC-Unique: YsdNyHWKOzuxYdbSgPzENg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CAD78C73A2;
+        Fri,  4 Dec 2020 16:57:18 +0000 (UTC)
+Received: from gondolin (ovpn-113-97.ams2.redhat.com [10.36.113.97])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 69C0860873;
+        Fri,  4 Dec 2020 16:57:10 +0000 (UTC)
+Date:   Fri, 4 Dec 2020 17:57:07 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     Halil Pasic <pasic@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        borntraeger@de.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, david@redhat.com
+Subject: Re: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM
+ pointer invalidated
+Message-ID: <20201204175707.13f019cf.cohuck@redhat.com>
+In-Reply-To: <a5a613ef-4c74-ad68-46bd-7159fbafef47@linux.ibm.com>
+References: <20201202234101.32169-1-akrowiak@linux.ibm.com>
+        <20201203185514.54060568.pasic@linux.ibm.com>
+        <a5a613ef-4c74-ad68-46bd-7159fbafef47@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 17:21:17 +0100
-Maxime Ripard <maxime@cerno.tech> wrote:
+On Fri, 4 Dec 2020 11:48:24 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-> On Fri, Dec 04, 2020 at 04:35:12PM +0100, Wilken Gottwalt wrote:
-> > Adds the sunxi_hwspinlock driver for the hardware spinlock unit found in
-> > most of the sun8i and sun50i based SoCs.
-> > 
-> > This unit provides at least 32 spinlocks in hardware. The implementation
-> > supports 32, 64, 128 or 256 32bit registers, where one lock can be taken
-> > by reading a register and released by writing a 0 to it. This driver
-> > supports all 4 spinlock setups, but for now only the first setup (32
-> > locks) seem to exist in available devices. This spinlock unit is shared
-> > between all ARM cores and the embedded OpenRisc AR100 core, all of them
-> > can take/release a lock with a single cycle operation. It can be used to
-> > sync access to devices shared by the ARM cores and the OpenRisc core.
-> > 
-> > There are two ways to check if a lock is taken. The first way is to read
-> > a lock. If a 0 is returned, the lock was free and is taken now. If an 1
-> > is returned, the caller has to try again, which means the lock is
-> > currently taken. The second way is to read a 32bit wide status register
-> > where every bit represents one of the 32 first locks. According to the
-> > datasheets this status register supports the 32 first locks only. For
-> > this reason the lock read/write approach is used in this driver which
-> > can cover all 256 locks in the biggest setup.
-> > 
-> > Being able to use the status register to get knowledge about the locks
-> > makes it suitable to extended testing. It also can be used to bypass
-> > the Linux hwspinlock ABI completely and is not able to set locks. This
-> > is used in one of the tests to show that the driver works correctly.
-> > 
-> > To run all tests it is necessary to take locks on the OpenRisc core and
-> > show on the Linux side that the locks were taken by an external event.
-> > This can be achived by using the crust firmware. For this the crust
-> > firmware needs to be changed to take and release spinlocks (a simple
-> > MMIO operation on the hwlock registers), which is currently not
-> > supported by the current crust firmware. The necessary crust fork can
-> > be found here https://github.com/wgottwalt/crust (hwspinlock branch).
-> > It is also necessary to build u-boot with support for this crust/SCP
-> > firmware. This u-boot fork can be found here
-> > https://github.com/crust-firmware/u-boot (crust branch). For testing
-> > this driver it is also necessary to pick a device that is fully
-> > supported by crust. In this case a H5 based device works very well. In
-> > this test a Friendlyarm NanoPi NEO2 was used, which is fully supported
-> > by u-boot (also the fork) and current Linux kernels. In the crust fork
-> > it is necessary to go into debug menu of "make nconfig" and select the
-> > hwspinlock test loop, which uses the timeout functions of the crust
-> > firmware. It loops through the first 32 spinlocks and takes/releases a
-> > lock one after another using a timeout which can be set in the debug
-> > menu.
-> > 
-> > Test 1:
-> > This test was done with a mainline u-boot and a crust enabled u-boot.
-> > For this a simple second kernel module was used, found here
-> > https://github.com/wgottwalt/sunxi_hwspinlock/tree/main/test_module.
-> > 
-> > If run with mainline u-boot it shows that the Linux side correctly
-> > takes a lock, tries to recursively take a lock again (which does not
-> > happen) and releases a lock. Done for all 32 locks several times.
-> > 
-> > [  122.518435] [init]--- SUNXI HWSPINLOCK DRIVER TEST ---
-> > [  122.523810] [run ]--- testing locks 0 to 31 ---
-> > [  122.528370] [test] testing lock 0
-> > [  122.531686] [test]+++ attempt #0 succeded
-> > [  122.535709] [test]+++ attempt #1 succeded
-> > [  122.539729] [test]+++ attempt #2 succeded
-> > [  122.543752] [test] testing lock 1
-> > [  122.547072] [test]+++ attempt #0 succeded
-> > [  122.551093] [test]+++ attempt #1 succeded
-> > [  122.555113] [test]+++ attempt #2 succeded
-> > [  122.559129] [test] testing lock 2
-> > ...
-> > [  123.004812] [test] testing lock 31
-> > [  123.008208] [test]+++ attempt #0 succeded
-> > [  123.012228] [test]+++ attempt #1 succeded
-> > [  123.016250] [test]+++ attempt #2 succeded
-> > 
-> > Same test run with the hwspinlock test loop enabled in crust. Here the
-> > test module hits two locks exactly in the moment crust switches from
-> > lock 7 to 8. The test module code path is slower because of more code
-> > that needs to be executed which makes this rare scenario possible.
-> > 
-> > [  122.620656] [test] testing lock 6
-> > [  122.623966] [test]+++ attempt #0 succeded
-> > [  122.627988] [test]+++ attempt #1 succeded
-> > [  122.632008] [test]+++ attempt #2 succeded
-> > [  122.636044] [test] testing lock 7
-> > [  122.639364] [test] taking lock attempt #0 failed (-16)
-> > [  122.644507] [run ]--- testing specific lock 7 failed (-14) ---
-> > [  122.650345] [test] testing lock 8
-> > [  122.653671] [test] taking lock attempt #0 failed (-16)
-> > [  122.658818] [run ]--- testing specific lock 8 failed (-14) ---
-> > [  122.664658] [test] testing lock 9
-> > [  122.667971] [test]+++ attempt #0 succeded
-> > [  122.671989] [test]+++ attempt #1 succeded
-> > 
-> > Test 2:
-> > This is a more complex test that uses the status register to bypass the
-> > Linux hwspinlock ABI. For this to work a slightly modified driver is
-> > used and can be found here
-> > https://github.com/wgottwalt/sunxi_hwspinlock/tree/main/
-> > modified_sunxi_hwspinlock
-> > This modified driver splits the 4K memory range into two and leaves the
-> > status register untouched, so that it can be used by another test kernel
-> > module which can be found here
-> > https://github.com/wgottwalt/sunxi_hwspinlock/tree/main/test2_module
-> > It is also necessary to change the device tree entries to get both
-> > kernel modules working in parallel.
-> > 
-> > hwspinlock-mod@1c18000 {
-> >         compatible = "allwinner,sun50i-hwspinlock-mod";
-> >         reg = <0x01c18000 0x4 0x01c18100 0x400>;
-> >         clocks = <&ccu CLK_BUS_SPINLOCK>;
-> >         clock-names = "ahb";
-> >         resets = <&ccu RST_BUS_SPINLOCK>;
-> >         reset-names = "ahb";
-> >         status = "okay";
-> > };
-> > 
-> > hwspinlock-stat@1c18010 {
-> >         compatible = "allwinner,sun50i-hwspinlock-stat";
-> >         reg = <0x01c18010 0x4>;
-> >         status = "okay";
-> > };
-> > 
-> > The extended test kernel module supports 4 different modes of the test,
-> > 2 of them are sufficient to show the spinlock mechanism working.
-> > 
-> > Mode 1:
-> > This one reads and prints the status register continuously. The crust
-> > firmware and the test are set to a hwlock timeout of 1 second. The test
-> > kernel module code runs a bit slower because of more code executed and
-> > you can see how one lock is missed between entry 2 and 3.
-> > 
-> > > modprobe sunxi_hwspinlock_test2 mode=1 loops=10
-> > [  187.167074] [init]--- SUNXI HWSPINLOCK DRIVER TEST ---
-> > [  187.172636] [sreg] 00000000_00010000_00000000_00000000
-> > [  188.196287] [sreg] 00000000_00001000_00000000_00000000
-> > [  189.220285] [sreg] 00000000_00000010_00000000_00000000
-> > [  190.244286] [sreg] 00000000_00000001_00000000_00000000
-> > [  191.268285] [sreg] 00000000_00000000_10000000_00000000
-> > [  192.292294] [sreg] 00000000_00000000_01000000_00000000
-> > [  193.316302] [sreg] 00000000_00000000_00100000_00000000
-> > [  194.340285] [sreg] 00000000_00000000_00010000_00000000
-> > [  195.364285] [sreg] 00000000_00000000_00001000_00000000
-> > [  196.388284] [sreg] 00000000_00000000_00000100_00000000
-> > 
-> > Mode 3:
-> > This mode combines the Linux hwspinlock ABI approach from test 1 and the
-> > status register access. The "after" reads show the locks taken by the
-> > Linux driver and the crust firmware.
-> > 
-> > [  439.138476] [test] testing lock 13
-> > [  439.141894] [sreg] before take 00000000_00000100_00000000_00000000
-> > [  439.148083] [sreg] after take 00000000_00000110_00000000_00000000
-> > [  439.154189] [sreg] after recursive take 00000000_00000110_00000000_00000000
-> > [  439.161162] [sreg] after untake 00000000_00000010_00000000_00000000
-> > [  439.167435] [test]+++ attempt #0 succeded
-> > [  439.171458] [sreg] before take 00000000_00000010_00000000_00000000
-> > [  439.177649] [sreg] after take 00000000_00000110_00000000_00000000
-> > [  439.183751] [sreg] after recursive take 00000000_00000110_00000000_00000000
-> > [  439.190725] [sreg] after untake 00000000_00000010_00000000_00000000
-> > [  439.196992] [test]+++ attempt #1 succeded
-> > [  439.201018] [sreg] before take 00000000_00000010_00000000_00000000
-> > [  439.207212] [sreg] after take 00000000_00000110_00000000_00000000
-> > [  439.213322] [sreg] after recursive take 00000000_00000110_00000000_00000000
-> > [  439.220290] [sreg] after untake 00000000_00000010_00000000_00000000
-> > [  439.226559] [test]+++ attempt #2 succeded
-> > [  439.230576] [test] testing lock 14
-> > [  439.233996] [sreg] before take 00000000_00000010_00000000_00000000
-> > [  439.240177] [test] taking lock attempt #0 failed (-16)
-> > [  439.245322] [run ]--- testing specific lock 14 failed (-14) ---
-> > [  439.251252] [test] testing lock 15
-> > [  439.254677] [sreg] before take 00000000_00000010_00000000_00000000
-> > [  439.260865] [sreg] after take 00000000_00000011_00000000_00000000
-> > [  439.266975] [sreg] after recursive take 00000000_00000011_00000000_00000000
-> > [  439.273943] [sreg] after untake 00000000_00000010_00000000_00000000
-> > [  439.280212] [test]+++ attempt #0 succeded
-> > [  439.284235] [sreg] before take 00000000_00000010_00000000_00000000
-> > [  439.290428] [sreg] after take 00000000_00000011_00000000_00000000
-> > [  439.296534] [sreg] after recursive take 00000000_00000011_00000000_00000000
-> > [  439.303502] [sreg] after untake 00000000_00000010_00000000_00000000
-> > [  439.309774] [test]+++ attempt #1 succeded
+> On 12/3/20 12:55 PM, Halil Pasic wrote:
+> > On Wed,  2 Dec 2020 18:41:01 -0500
+> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >  
+> >> The vfio_ap device driver registers a group notifier with VFIO when the
+> >> file descriptor for a VFIO mediated device for a KVM guest is opened to
+> >> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
+> >> event). When the KVM pointer is set, the vfio_ap driver stashes the pointer
+> >> and calls the kvm_get_kvm() function to increment its reference counter.
+> >> When the notifier is called to make notification that the KVM pointer has
+> >> been set to NULL, the driver should clean up any resources associated with
+> >> the KVM pointer and decrement its reference counter. The current
+> >> implementation does not take care of this clean up.
+> >>
+> >> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>  
+> > Do we need a Fixes tag? Do we need this backported? In my opinion
+> > this is necessary since the interrupt patches.  
 > 
-> Most of this should be in the cover letter (the details on how to make the tests mostly).
+> I'll put in a fixes tag:
+> Fixes: 258287c994de (s390: vfio-ap: implement mediated device open callback)
+
+The canonical format would be
+
+Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+
 > 
-> However, I mentioned in your first version that some comments on the
-> previous drivers posted still applied to you, and you missed those
-> comments apparently. See here for more details:
-> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20200210170143.20007-2-nborisov@suse.com/#23148161
+> Yes, this should probably be backported.
 > 
-> Most importantly, the driver name and compatible need to be changed.
+> >  
+> >> ---
+> >>   drivers/s390/crypto/vfio_ap_ops.c | 21 +++++++++++++--------
+> >>   1 file changed, 13 insertions(+), 8 deletions(-)
+> >>
+> >> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> >> index e0bde8518745..eeb9c9130756 100644
+> >> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> >> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> >> @@ -1083,6 +1083,17 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
+> >>   	return NOTIFY_DONE;
+> >>   }
+> >>   
+> >> +static void vfio_ap_mdev_put_kvm(struct ap_matrix_mdev *matrix_mdev)  
+> > I don't like the name. The function does more that put_kvm. Maybe
+> > something  like _disconnect_kvm()?  
+> Since the vfio_ap_mdev_set_kvm() function is called by the
+> notifier when the KVM pointer is set, how about:
+> 
+> vfio_ap_mdev_unset_kvm()
+> 
+> for when the KVM pointer is nullified?
 
-Ah yes, I really missed them, sorry for that. Getting the tests right and
-working got all my attention. So does it mean the tests are sufficient now?
-
-greetings,
-Wilken
-
-> Maxime
+Sounds good to me.
 
