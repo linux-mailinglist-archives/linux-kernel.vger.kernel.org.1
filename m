@@ -2,118 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF472CECBC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C9C2CECBD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729897AbgLDLHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:07:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34370 "EHLO
+        id S1729915AbgLDLHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:07:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726735AbgLDLHP (ORCPT
+        with ESMTP id S1726735AbgLDLHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:07:15 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF8FC0613D1;
-        Fri,  4 Dec 2020 03:06:34 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id ga15so8110000ejb.4;
-        Fri, 04 Dec 2020 03:06:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kldJ1dpmgt7DHBI1NtcTNckT3IjniUAs6X6u3gDEU6k=;
-        b=tX7zEhkCJUC1oiVlISCuyPIrwW8fWjPk/i5ZVCkZ0KzxI2F7Bv23s9X52YUlsOZ9WK
-         sbquRTz8Dqxw4b629HNyoglweZiwuihwJ15ka5nb8c5FqAG/boLlIeV/7jIJcbzM/Ib8
-         kZqWwgCLJPL9QaFl+CM6HtIXCFNNzJLDpklsh1/AaCaCgzSYKGzSWXxla7IlnQ8L9oJ2
-         zl4VU7Crz0r3eQnHP+dY5hc8rrZtCcAeIhN+/neK3EsuyRCZYANQknxkM8kJgTq7Oump
-         oeuLSRmtsp8XQlkPhtwWVBOWWs8WK9NPJ8bTB0cBAOi1WE5JwWJGLAOvIZnBalKR0Ps8
-         1z/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kldJ1dpmgt7DHBI1NtcTNckT3IjniUAs6X6u3gDEU6k=;
-        b=W1DNu5yGojvXF2uMFsKj0uaXj2WErS1iaLmAoA84GdxJmDp4Ckl4dPl7xxgGovlhiN
-         eve98pVAR4GbJkU1Xw61Frn+Zv5oM8mfsLJKu/6WtrXfXWMj8452ZlJUj326vM3slUO/
-         4LdNWMC8U/bABF1vaNciY6fmgxUMNW05YW/9J5NCwxdEBYKuysjqYQMSS5byWFVn1nMJ
-         eKcyzoP3B6Tz9p2YTr0M87AJl0DEyEYNShXf5E4Xj+0VVcYIHTuJ5BB+8XNNU1FQpB1x
-         7rfI5ZPiJIvnEykoT0ZCnQJQuPyJzzWeSvwi1jnaFCv1k5WHEYRCz5tLoYyqtVAxT2EW
-         UF7w==
-X-Gm-Message-State: AOAM533qC5Ai711/VFZ/dwN5arpsUqTKdqTKbs1UlV7x9wT/MHyt6kDI
-        MkV6k/JCHYwNCnU6SOSaAts=
-X-Google-Smtp-Source: ABdhPJw78d5cn2EtsUvduOwFk0qMZrhWfQf+zxXB4v0amneCBSbOl6OhWltXtdlumXv2aqcU2Xz2DA==
-X-Received: by 2002:a17:906:b56:: with SMTP id v22mr2820904ejg.145.1607079993561;
-        Fri, 04 Dec 2020 03:06:33 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id x16sm2839368ejo.104.2020.12.04.03.06.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 03:06:32 -0800 (PST)
-Date:   Fri, 4 Dec 2020 12:06:31 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Vidya Sagar <vidyas@nvidia.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krishna Kishore <kthota@nvidia.com>,
-        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
-        Vidya Sagar <sagar.tv@gmail.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v3 2/3] PCI/MSI: Move MSI/MSI-X flags updaters to msi.c
-Message-ID: <X8oYN8KWqiuaGDDZ@ulmo>
-References: <20201203185110.1583077-1-helgaas@kernel.org>
- <20201203185110.1583077-3-helgaas@kernel.org>
+        Fri, 4 Dec 2020 06:07:31 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FB3C061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 03:06:51 -0800 (PST)
+Received: from zn.tnic (p200300ec2f12b10051b9914976f7ce7f.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:b100:51b9:9149:76f7:ce7f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0F9821EC03E4;
+        Fri,  4 Dec 2020 12:06:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607080009;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Ob1+vVsNK6ggrVlFJRnYfrjPu0EHIhJSDo6NDRRpK1c=;
+        b=doGb8t9N0hGYKbMewRreuGnp8+LlGUCdMcDZw+C8mkiCq+MCsrRVEaFz9qDdT7VltcJqh/
+        P0tRXrmOx/qHN74fkO/Xcb9lKwnwjqIFq745Px33JKYxolPWvvUyJW2BrBwrwztj+3ys27
+        /6VRLDHYAxGPswl0bfdYpD+B1+uwFNc=
+Date:   Fri, 4 Dec 2020 12:06:44 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] x86/uprobes: Fix not using prefixes.nbytes for
+ loop over prefixes.bytes
+Message-ID: <20201204110644.GB31534@zn.tnic>
+References: <20201203123757.GH3059@zn.tnic>
+ <20201203124121.GI3059@zn.tnic>
+ <20201203124820.GJ3059@zn.tnic>
+ <1c1b265f-34e3-f5cc-0e7b-186dc26c94b7@amd.com>
+ <20201203165420.GL3059@zn.tnic>
+ <20201203170140.GM3059@zn.tnic>
+ <d9b47fc6-6d9d-b966-30df-9ef8c83b46e3@amd.com>
+ <20201203181712.GN3059@zn.tnic>
+ <e7148653-0156-b895-714c-0d4cd580a2a8@amd.com>
+ <20201204095653.c948106a294fd6e731df5594@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mFBlB9FWkTiJOBtm"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201203185110.1583077-3-helgaas@kernel.org>
-User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
+In-Reply-To: <20201204095653.c948106a294fd6e731df5594@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 04, 2020 at 09:56:53AM +0900, Masami Hiramatsu wrote:
+> Hmm, there is a difference between Intel SDM and AMD APM.
+> 
+> Intel SDM vol.2
+> 
+> 2.1.1 Instruction Prefixes
+> Instruction prefixes are divided into four groups, each with a set of allowable prefix codes. For each instruction, it
+> is only useful to include up to one prefix code from each of the four groups (Groups 1, 2, 3, 4).
+> 
+> AMD APM vol.3
+> 
+> 1.2.1 Summary of Legacy Prefixes
+> Table 1-1 on page 7 shows the legacy prefixes. The legacy prefixes are organized into five groups, as
+> shown in the left-most column of Table 1-1. An instruction encoding may include a maximum of one
+> prefix from each of the five groups.
+> 
+> So, Intel CPU doesn't accept LOCK-REP because those are in a same prefix
+> group, but AMD says it is acceptable.
 
---mFBlB9FWkTiJOBtm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That would be a huge problem for code if both vendors would behave
+differently wrt prefixes.
 
-On Thu, Dec 03, 2020 at 12:51:09PM -0600, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
->=20
-> pci_msi_set_enable() and pci_msix_clear_and_set_ctrl() are only used from
-> msi.c, so move them from drivers/pci/pci.h to msi.c.  No functional change
-> intended.
->=20
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
->  drivers/pci/msi.c | 21 +++++++++++++++++++++
->  drivers/pci/pci.h | 21 ---------------------
->  2 files changed, 21 insertions(+), 21 deletions(-)
+> Actually, insn.c only accepts the prefix up to 4, so if there is any
+> instruction which has 5 prefixes, it will fail to parse.
 
-Ah... I suppose this cleans this up a little more. I have no objection
-to these helpers, though I still think they are a bit unnecessary:
+Well, actually it looks more like a difference in how both vendors group
+things:
 
-Reviewed-by: Thierry Reding <treding@nvidia.com>
+AMD has 5 groups and Intel 4 by putting LOCK and REP together.
 
---mFBlB9FWkTiJOBtm
-Content-Type: application/pgp-signature; name="signature.asc"
+The most important aspect, however, is that you can have as many
+prefixes as you want and there's no hardware limitation on the number -
+I'm being told - just that you can overflow the instruction limit of 15
+and then get a #GP for invalid insn. See here:
 
------BEGIN PGP SIGNATURE-----
+https://sandpile.org/x86/opc_enc.htm
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/KGDcACgkQ3SOs138+
-s6GFdA/8DQbrQFz/PGTIurlTAZUWC9vzFGNUReh1//jC7qO7V4yzXni5+ri4yAs2
-JKfbPkmY3+f8n9LV9++NGa9LMyRDKDOacSttyl9O233QIQmcrejFHUvFD+YDh/IP
-B+tgSmyN1kSMwNfIFVqTy+A1KQ6uRCa9m/5DSSOUY4rRPhCpW50nRtkSjrLD0qgj
-V79Y09mJ7VYrUCc04QFGsk0xYT1+YO617FZlqy3/9U2lPxcUlyGzF9+Gvgo+ocRY
-U7w6s8hVAW+S/7jE+aiutuLRrlfCgkeq0N+qnkNfZUpRSOFIMhAUZq7FT8w9Z91V
-KZOHKDqazczcJxZc25mePjtyHBxrH0+dNFsP3zDWOAO3VlL35ljyeIgDUVboEqEn
-j593VWO8Qd7n08SUEr4+Gq+wfQuJYXwM6W2l6uPylzs982nrgcPkFcMPclk2wBFw
-vy23vx8X42t7sA33YBcu5c5B03SYeFWPfR0p7OUesRGvdJtPAcgVJqXN91vJwc4k
-67A22Z8h28F2zb8OCx9tvsr6TXQTqSR3dQL1SjlPt5fy3rmfXO3QcyOkBbuwNX0M
-Xm67tj06/09MtrbOaNo6jnp3/5FCuezsILyvFI9Z5CoysP4MF/MK3sIJXFi5qJQ1
-oHcU9dIMAVP2d8/WZg8LBPF/YMwkxcDi/vWL+rqNIrayBydSxfs=
-=T9+V
------END PGP SIGNATURE-----
+note #1
 
---mFBlB9FWkTiJOBtm--
+with examples how you can overflow the 15 bytes limit even with a valid
+insn.
+
+> Note that anyway the same prefix can be repeated, we can see a good example
+> in K8_NOP*.
+
+Yap.
+
+> In this case, insn.c just store the 1 osp in the prefixes.bytes[], and
+> just increment prefixes.nbytes for the repeated prefixes.
+> 
+> Anyway, if there is LOCK-REP prefix combination, I have to introduce new
+> insn_field for legacy prefix.
+
+Well, the legacy prefixes field needs to be of 4 fields because REP and
+LOCK really are two separate but mutually exclusive groups. Why?
+
+They're used by a disjoint set of instructions, see the AMD doc for both
+REP and LOCK prefixes.
+
+Which means, you can either have a REP (exclusive or) LOCK but not both.
+
+Which means, as a stable@ fix I can use Tom's ARRAY_SIZE() suggestion
+and then later on we can make the legacy prefixes a separate struct.
+Maybe even a struct with a bitfield:
+
+struct legacy_prefixes {
+        /* operand-size override: 0x66 */
+        u8 os_over: 1,
+        /* address-size override: 0x67 */
+           as_over: 1,
+        /*
+         * segment override: 0x2e(CS), 0x3e(DS), 0x26(ES), 0x64(FS), 0x65(GS),
+         * 0x36(SS)
+         */
+           s_over: 1,
+        /* lock prefix: 0xf0 */
+           lock:   1,
+        /* repeat prefixes: 0xf2: REPNx, 0xf3: REPx */
+           rep:    1,
+	   __resv: 3;
+};
+
+or so which you can set to denote when you've seen the respective
+prefixes.
+
+But that we can discuss later.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
