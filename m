@@ -2,151 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863422CEE1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2EE2CEE3E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730032AbgLDMea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 07:34:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbgLDMe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:34:29 -0500
-Date:   Fri, 4 Dec 2020 13:35:05 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607085228;
-        bh=zmxko2CBQcTrRimzgblGXja5H1EAFSbtho5hMRphqPo=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EAiA0/sN4gEYu8wNjWKaEjoBeLgLcEJvii/TTk5yXELcQpVmaMRZ3jjzJj+Fa394+
-         4PQIHgB4q/CIwQLwNEnsVjn1OYMpq0QbndnuBw4uxM9E2NjGJC6v8XEo94sNO9N+5p
-         bI5n+GCr5KOe1ypzoIF6T4f6BaOqnFts+L/3lVtU=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     broonie@kernel.org, lgirdwood@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, jgg@nvidia.com,
-        Kiran Patil <kiran.patil@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <X8os+X515fxeqefg@kroah.com>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+        id S1730171AbgLDMj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 07:39:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728515AbgLDMj2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 07:39:28 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630ECC061A4F;
+        Fri,  4 Dec 2020 04:38:48 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id q10so3622993pfn.0;
+        Fri, 04 Dec 2020 04:38:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t1SOBg+AdBEzlFR/pdb3N773Ew8SMnLFrxYMoyMoI4Y=;
+        b=XeNP4xOIUF6OvsLEuwn9HOxWtypBAiujLK0J50Z58FBbfTN5ZzajZUQX3P1g7m1rQN
+         K9IUliOCzkFi1kY+L6FKnJi2rR7ikxoVZlyBTmvU9AH793uVoo24S3gilKSYSi2+XC2H
+         hmkbLJLafGbc8+/mMsk6adiqS/T3msFPFNbb8uqBgthfFpxMXB95CGiMLAWY1b7NK/Ji
+         Ui+D3+qPAMeSzcnCDpUKFd2Zg6wOezjN1QkvnWEZcadV6+mYFl9zDhPX9CAdCZfKFJrT
+         OYkyOFBxQBoDGqs9JNzxDz2NDaCrSJi1qYgaofECm7PboU04qf1+WLfbjS6+lTMJxwRV
+         ngJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t1SOBg+AdBEzlFR/pdb3N773Ew8SMnLFrxYMoyMoI4Y=;
+        b=oFroeAKAVmBwM6B88L9mvUjJv9iNSOoUGask6AL/2fTOZfYLaMTNM0e7QpGvA92bwx
+         ZVpCfEvyMbeqTKfL9NrgeATl4Y+6zxm2s2HBGkTza63A4ajj/nCJ99Uv1WkNXgt7tSdx
+         GYR8GnBV+D8SB7Vai7MuOvIHDAAkvBLFTeuuy0Ud7YH6hmOHFLYkSc6sigi+ssg/Nien
+         VCNdU43JiFfmd07+gC4L3Lo2PeCfYhP5SR2iDAhl0bhfjtu4wO+wDlLdwXA2HX57XRu7
+         eIaUNYFnkbRzs1W4WbNkmGRBsD+D5eXJCZFe72jQjTi4ylF+7Q3QK3qv29K7RJTg6IWW
+         T1IA==
+X-Gm-Message-State: AOAM531/NmFYpqyhihe+Th8V23COJzu/2sjQ0vpUR0UOMxfhLZKvSrV7
+        Nt0WCr3EwUXfdvOLbz1icRA=
+X-Google-Smtp-Source: ABdhPJwrmoGab0aRiAxI8X9DJNcaFqFLzx48/a/ste4Szk0h0ifJPOySQOB5vvep4Y5xx9mjny1QiA==
+X-Received: by 2002:a63:4083:: with SMTP id n125mr7427742pga.356.1607085527850;
+        Fri, 04 Dec 2020 04:38:47 -0800 (PST)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id e18sm3799556pgr.71.2020.12.04.04.38.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 04:38:47 -0800 (PST)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Fri, 4 Dec 2020 20:35:43 +0800
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Baq Domalaq <domalak@gmail.com>,
+        Pedro Ribeiro <pedrib@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] pinctrl: amd: remove debounce filter setting in IRQ
+ type setting
+Message-ID: <20201204123543.3wjng2hn35yhezob@Rk>
+References: <20201125130320.311059-1-coiby.xu@gmail.com>
+ <CAHp75VfdGH2LmiNUGzy+BcYpCmSGBE6DxVhDDYSnhfu68HGTUA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <CAHp75VfdGH2LmiNUGzy+BcYpCmSGBE6DxVhDDYSnhfu68HGTUA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
-> From: Dave Ertman <david.m.ertman@intel.com>
-> 
-> Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
-> It enables drivers to create an auxiliary_device and bind an
-> auxiliary_driver to it.
-> 
-> The bus supports probe/remove shutdown and suspend/resume callbacks.
-> Each auxiliary_device has a unique string based id; driver binds to
-> an auxiliary_device based on this id through the bus.
-> 
-> Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
-> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> Reviewed-by: Parav Pandit <parav@mellanox.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> Reviewed-by: Martin Habets <mhabets@solarflare.com>
-> Link: https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
-> This patch is "To:" the maintainers that have a pending backlog of
-> driver updates dependent on this facility, and "Cc:" Greg. Greg, I
-> understand you have asked for more time to fully review this and apply
-> it to driver-core.git, likely for v5.12, but please consider Acking it
-> for v5.11 instead. It looks good to me and several other stakeholders.
-> Namely, stakeholders that have pressure building up behind this facility
-> in particular Mellanox RDMA, but also SOF, Intel Ethernet, and later on
-> Compute Express Link.
-> 
-> I will take the blame for the 2 months of silence that made this awkward
-> to take through driver-core.git, but at the same time I do not want to
-> see that communication mistake inconvenience other parties that
-> reasonably thought this was shaping up to land in v5.11.
-> 
-> I am willing to host this version at:
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux tags/auxiliary-bus-for-5.11
-> 
-> ...for all the independent drivers to have a common commit baseline. It
-> is not there yet pending Greg's Ack.
+On Wed, Nov 25, 2020 at 03:24:20PM +0200, Andy Shevchenko wrote:
+>On Wed, Nov 25, 2020 at 3:03 PM Coiby Xu <coiby.xu@gmail.com> wrote:
+>>
+>> Debounce filter setting should be independent from IRQ type setting
+>> because according to the ACPI specs, there are separate arguments for
+>> specifying debounce timeout and IRQ type in GpioIo() and GpioInt().
+>>
+>> Together with commit 06abe8291bc31839950f7d0362d9979edc88a666
+>> ("pinctrl: amd: fix incorrect way to disable debounce filter") and
+>> Andy's patch "gpiolib: acpi: Take into account debounce settings" [1],
+>> this will fix broken touchpads for laptops whose BIOS set the
+>> debounce timeout to a relatively large value. For example, the BIOS
+>> of Lenovo AMD gaming laptops including Legion-5 15ARH05 (R7000),
+>> Legion-5P (R7000P) and IdeaPad Gaming 3 15ARH05, set the debounce
+>> timeout to 124.8ms. This led to the kernel receiving only ~7 HID
+>> reports per second from the Synaptics touchpad
+>> (MSFT0001:00 06CB:7F28).
+>>
+>> Existing touchpads like [2][3] are not troubled by this bug because
+>> the debounce timeout has been set to 0 by the BIOS before enabling
+>> the debounce filter in setting IRQ type.
+>>
+>> [1] https://lore.kernel.org/linux-gpio/20201111222008.39993-11-andriy.shevchenko@linux.intel.com/
+>
+>JFYI: this is nowadays
+>8dcb7a15a585 ("gpiolib: acpi: Take into account debounce settings")
+>
 
-Here is now a signed tag for everyone else to pull from and build on top
-of, for 5.11-rc1, that includes this patch, and the 3 others I sent in
-this series.
+Thank you for the info! Next time I will also check the linux-next
+tree:)
 
-Please let me know if anyone has any problems with this tag.  I'll keep
-it around until 5.11-rc1 is released, after which it doesn't make any
-sense to be there.
+>(No need to recend, just an information that can be applied maybe by Linus)
+>
+>> [2] https://github.com/Syniurge/i2c-amd-mp2/issues/11#issuecomment-721331582
+>> [3] https://forum.manjaro.org/t/random-short-touchpad-freezes/30832/28
+>
+>--
+>With Best Regards,
+>Andy Shevchenko
 
-thanks,
-
-greg k-h
-
----------------
-
-The following changes since commit f8394f232b1eab649ce2df5c5f15b0e528c92091:
-
-  Linux 5.10-rc3 (2020-11-08 16:10:16 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/auxbus-5.11-rc1
-
-for you to fetch changes up to 0d2bf11a6b3e275a526b8d42d8d4a3a6067cf953:
-
-  driver core: auxiliary bus: minor coding style tweaks (2020-12-04 13:30:59 +0100)
-
-----------------------------------------------------------------
-Auxiliary Bus support tag for 5.11-rc1
-
-This is a signed tag for other subsystems to be able to pull in the
-auxiliary bus support into their trees for the 5.11-rc1 merge.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Dave Ertman (1):
-      Add auxiliary bus support
-
-Greg Kroah-Hartman (3):
-      driver core: auxiliary bus: move slab.h from include file
-      driver core: auxiliary bus: make remove function return void
-      driver core: auxiliary bus: minor coding style tweaks
-
- Documentation/driver-api/auxiliary_bus.rst | 234 ++++++++++++++++++++++++
- Documentation/driver-api/index.rst         |   1 +
- drivers/base/Kconfig                       |   3 +
- drivers/base/Makefile                      |   1 +
- drivers/base/auxiliary.c                   | 274 +++++++++++++++++++++++++++++
- include/linux/auxiliary_bus.h              |  77 ++++++++
- include/linux/mod_devicetable.h            |   8 +
- scripts/mod/devicetable-offsets.c          |   3 +
- scripts/mod/file2alias.c                   |   8 +
- 9 files changed, 609 insertions(+)
- create mode 100644 Documentation/driver-api/auxiliary_bus.rst
- create mode 100644 drivers/base/auxiliary.c
- create mode 100644 include/linux/auxiliary_bus.h
+--
+Best regards,
+Coiby
