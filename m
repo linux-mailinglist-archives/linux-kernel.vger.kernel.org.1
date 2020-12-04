@@ -2,98 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927A02CF4C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A669F2CF4C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728521AbgLDT2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 14:28:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgLDT2k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 14:28:40 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871C2C0613D1;
-        Fri,  4 Dec 2020 11:27:59 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id d3so6381890wmb.4;
-        Fri, 04 Dec 2020 11:27:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QneMMLNVLuUzcGkoHYxID8fhKLN3YdsUe/2Yohs8dUA=;
-        b=IV0SFSjzZyjcw8L/C243h3FfryF5mYThxgy0t19g4KvSjCm//T09eKYiG6grBZJ7Zd
-         KV8xrQuK9UnwZq2GoegFmW9e44+1S6wpETiQ2DqQqUeI+P5v/Vza1bkMzbtlsSXFPY6c
-         roNHDQawUTn2DwQUDxDiqwpT62fVxNr9IIQaRQ6Ipxdfdy9vZ8DKOot/5Nl/e+oJRZu1
-         sbpN0zKvpp+q22X//lSOuMr/g4Ju9kTlNbweZpl2/sM0HfLILyVNRbcyLE2kTd/TTXs7
-         2e+8bf0xjv6yRCSjMOBAKFEBThecf+DBadLHbpvyN2DBslOlJXj6qwPOrehBM5hNyVvH
-         /ubQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QneMMLNVLuUzcGkoHYxID8fhKLN3YdsUe/2Yohs8dUA=;
-        b=s6VRTIH48BHd+AkLpoXcmvPlVAeolU84lGOb+dWOHQiiVskEcWfTYexX+oV5C/wuzq
-         DwxzyK09EX2r9vvuRAdEpdyEAuT16e52T5RdqpTDR9HmyvxhaGEdYKzREwwkvOpLLL7l
-         2thyIFUAmUmufnV4TXqvCOK4UGKB+Ra6GuYk3yB32tZh6YLc/N1GxKl1yKU8y9b8u8Jv
-         W/U1t+VkFgeR/lMgL+NgCZWY/Y71j15MuS4eC6F5dyZOfDa/kV6xMPLfoIu4LRA92l5W
-         /KKNHI6osy3JIr1XZwhjTIX1zRk0tsOdagMLO2c5yygffny7a1sBn7VdMGdGDiFL/pP8
-         5Jwg==
-X-Gm-Message-State: AOAM530/4H0nzpjt+bjB6NeIx+3hAFbj35kLX0OaWuYtC3zraDFQ2PgH
-        s7Dopf8+xxyxAegVvtUpL88=
-X-Google-Smtp-Source: ABdhPJxH6CkUQbBtK+3V1EOllEwwZYEcW4D35sQNZakdnvqRKYoYX7+6zkRJDMEmNrvu5YtiowwUcw==
-X-Received: by 2002:a7b:cd91:: with SMTP id y17mr5697971wmj.171.1607110077076;
-        Fri, 04 Dec 2020 11:27:57 -0800 (PST)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id k16sm4684560wrl.65.2020.12.04.11.27.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 11:27:56 -0800 (PST)
-Date:   Fri, 4 Dec 2020 20:27:53 +0100
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linuxfoundation.org>
-Subject: Re: crypto: sun4i-ss: error with kmap
-Message-ID: <20201204192753.GA19782@Red>
-References: <20201201135252.GA9584@Red>
- <87y2ihfw6z.fsf@nanos.tec.linutronix.de>
- <20201201144529.GA6786@Red>
- <87v9dlfthf.fsf@nanos.tec.linutronix.de>
- <20201202195501.GA29296@Red>
- <877dpzexfr.fsf@nanos.tec.linutronix.de>
- <20201203173846.GA16207@Red>
- <87r1o6bh1u.fsf@nanos.tec.linutronix.de>
- <20201204132631.GA25321@Red>
- <874kl1bod0.fsf@nanos.tec.linutronix.de>
+        id S1730313AbgLDT34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 14:29:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725923AbgLDT34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 14:29:56 -0500
+From:   Arnd Bergmann <arnd@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Ioana Ciornei <ioana.cionei@nxp.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Po Liu <Po.Liu@nxp.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alex Marginean <alexandru.marginean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] enetc: fix build warning
+Date:   Fri,  4 Dec 2020 20:28:59 +0100
+Message-Id: <20201204192910.2306023-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874kl1bod0.fsf@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 04:08:27PM +0100, Thomas Gleixner wrote:
-> On Fri, Dec 04 2020 at 14:26, Corentin Labbe wrote:
-> > On Fri, Dec 04, 2020 at 12:34:05AM +0100, Thomas Gleixner wrote:
-> >> The unmap comes from sg_miter_stop() and looking at the previous
-> >> map/unmap cycles there are never nested maps.
-> >> 
-> >> [  996.943030] cryptset-316       0d..4 73943317us : __kmap_local_pfn_prot: kmap_local_pfn: 1 ffefd000
-> >> 
-> >> is the first event which allocates a nested map. 
-> >> 
-> >> So something goes south either in sg_miter or in the crypto maze.
-> >> 
-> >> Enabling CONFIG_DEBUG_KMAP_LOCAL and function tracing might give us more clue.
-> >
-> > Done, http://kernel.montjoie.ovh/130466.log
-> 
-> Does not provide more information with the debug enabled. So can you
-> please enable CONFIG_FUNCTION_TRACER and add 'ftrace=function' to the
-> command line?
-> 
+From: Arnd Bergmann <arnd@arndb.de>
 
-Done, http://kernel.montjoie.ovh/130490.log
+When CONFIG_OF is disabled, there is a harmless warning about
+an unused variable:
+
+enetc_pf.c: In function 'enetc_phylink_create':
+enetc_pf.c:981:17: error: unused variable 'dev' [-Werror=unused-variable]
+
+Slightly rearrange the code to pass around the of_node as a
+function argument, which avoids the problem without hurting
+readability.
+
+Fixes: 71b77a7a27a3 ("enetc: Migrate to PHYLINK and PCS_LYNX")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: move added variable declaration up
+---
+ .../net/ethernet/freescale/enetc/enetc_pf.c   | 21 +++++++++----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+index ecdc2af8c292..ed8fcb8b486e 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+@@ -851,13 +851,12 @@ static bool enetc_port_has_pcs(struct enetc_pf *pf)
+ 		pf->if_mode == PHY_INTERFACE_MODE_USXGMII);
+ }
+ 
+-static int enetc_mdiobus_create(struct enetc_pf *pf)
++static int enetc_mdiobus_create(struct enetc_pf *pf, struct device_node *node)
+ {
+-	struct device *dev = &pf->si->pdev->dev;
+ 	struct device_node *mdio_np;
+ 	int err;
+ 
+-	mdio_np = of_get_child_by_name(dev->of_node, "mdio");
++	mdio_np = of_get_child_by_name(node, "mdio");
+ 	if (mdio_np) {
+ 		err = enetc_mdio_probe(pf, mdio_np);
+ 
+@@ -969,18 +968,17 @@ static const struct phylink_mac_ops enetc_mac_phylink_ops = {
+ 	.mac_link_down = enetc_pl_mac_link_down,
+ };
+ 
+-static int enetc_phylink_create(struct enetc_ndev_priv *priv)
++static int enetc_phylink_create(struct enetc_ndev_priv *priv,
++				struct device_node *node)
+ {
+ 	struct enetc_pf *pf = enetc_si_priv(priv->si);
+-	struct device *dev = &pf->si->pdev->dev;
+ 	struct phylink *phylink;
+ 	int err;
+ 
+ 	pf->phylink_config.dev = &priv->ndev->dev;
+ 	pf->phylink_config.type = PHYLINK_NETDEV;
+ 
+-	phylink = phylink_create(&pf->phylink_config,
+-				 of_fwnode_handle(dev->of_node),
++	phylink = phylink_create(&pf->phylink_config, of_fwnode_handle(node),
+ 				 pf->if_mode, &enetc_mac_phylink_ops);
+ 	if (IS_ERR(phylink)) {
+ 		err = PTR_ERR(phylink);
+@@ -1001,13 +999,14 @@ static void enetc_phylink_destroy(struct enetc_ndev_priv *priv)
+ static int enetc_pf_probe(struct pci_dev *pdev,
+ 			  const struct pci_device_id *ent)
+ {
++	struct device_node *node = pdev->dev.of_node;
+ 	struct enetc_ndev_priv *priv;
+ 	struct net_device *ndev;
+ 	struct enetc_si *si;
+ 	struct enetc_pf *pf;
+ 	int err;
+ 
+-	if (pdev->dev.of_node && !of_device_is_available(pdev->dev.of_node)) {
++	if (node && !of_device_is_available(node)) {
+ 		dev_info(&pdev->dev, "device is disabled, skipping\n");
+ 		return -ENODEV;
+ 	}
+@@ -1058,12 +1057,12 @@ static int enetc_pf_probe(struct pci_dev *pdev,
+ 		goto err_alloc_msix;
+ 	}
+ 
+-	if (!of_get_phy_mode(pdev->dev.of_node, &pf->if_mode)) {
+-		err = enetc_mdiobus_create(pf);
++	if (!of_get_phy_mode(node, &pf->if_mode)) {
++		err = enetc_mdiobus_create(pf, node);
+ 		if (err)
+ 			goto err_mdiobus_create;
+ 
+-		err = enetc_phylink_create(priv);
++		err = enetc_phylink_create(priv, node);
+ 		if (err)
+ 			goto err_phylink_create;
+ 	}
+-- 
+2.27.0
+
