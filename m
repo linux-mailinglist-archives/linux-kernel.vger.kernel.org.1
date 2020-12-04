@@ -2,180 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831F72CF424
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:35:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 262CB2CF427
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388023AbgLDSfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:35:10 -0500
-Received: from mga04.intel.com ([192.55.52.120]:9650 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387808AbgLDSfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:35:10 -0500
-IronPort-SDR: YUUPXtUjipgbubEhWEMH2pU8N8BAvgTR+LnfqpYshDAdGLbCcxbykRVAvA+dZVOTkDFyxvegzn
- DmkdfesKiCdg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="170853484"
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="170853484"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 10:34:23 -0800
-IronPort-SDR: tPKCsCIsjaF9dOnF3PXL9UEw8PpV8g81HLxuIn8i5KKmdZrZrfnV6/5kM3N4riwAFwF1i23UOI
- gr5ZhFgD7yuQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="346683882"
-Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
-  by orsmga002.jf.intel.com with ESMTP; 04 Dec 2020 10:34:22 -0800
-Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
- ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 4 Dec 2020 10:34:21 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Fri, 4 Dec 2020 10:34:21 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Fri, 4 Dec 2020 10:33:55 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lXQvFWFtb3h1D6lnPNnk7rOcOBbK4R7SpzkBNa2UgHvTejo6b0vwQZhD0082v2OapkK/h2Kq3MZusA7RP4zlgvOvxxjpnYggzmaC37TPSMHuDe1BIa+hp+/YEBctTDt2tbN7U4ZLu173zLUB1LZjL3YRvSV6BuTToexCTvNnDjA5Bq0HDJdRyyWhUjd1DtWY7kz4pkBMHV3gsYOjaOXBV2n5e9JtfN8q8nE0CbRUYZ8HhfACFrW9vsirouqAh95TD2JF1dXmDi8LTHVIHoVP5PLuFxceP1Is2S2N7Jj3a+ScxWNa5RA8NatQQObW/rrCEpqsRPNLRmwBj1uZc8Bccg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1pGihKPDGqIg+SlU+jk6TfFt/GR8szYzraWqbP0Xxfo=;
- b=mkKMPtANqwEsJVwgLn7lLHs54Riu+aPlDqKgXvzGo2cx052bnPLCwNGtI4K7+alRMwO52HNVgFp0IkxBTi3/WZ6Ghatevk3NVEYmWdvKSHwaodVw4QockfSGBqoXpfAtoO6NKhRrStUheSKMyPKcLE8sy84NQIrEaVhNwtB8kvCnL1fSerZSEnmwP6KcSQkP7qCQ/mNE93cZpQBn4lrvDHlo9DNgeLrk1ct+RYm6TiZ3AHFR/+tUPKr2hqU+hafd1ZQ+AbM0PsUzvT1ypAwWdURLrjMhv3X8LVTEEMVoBkStqBt4Mq+bhzBabMrAIM2wJeDO0+JbEDjplZajBZ35hQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1pGihKPDGqIg+SlU+jk6TfFt/GR8szYzraWqbP0Xxfo=;
- b=SotSdOYDGdjPwr6AEuK3TMgQiN1NiCC1CyseEfY1E77hdSRgqOgZZUM9DY8rDr3uX6hCLKAPr+Fxor4DIoYpLwAxNx//S8/5hU7ls6JaYYNw+mSRppGZQn/1daYh1CInaeksp04K8Ox/0LzrbdXIBBssKerRO8LMR3wqdVNQYC0=
-Received: from SN6PR11MB3184.namprd11.prod.outlook.com (2603:10b6:805:bd::17)
- by SN6PR11MB2671.namprd11.prod.outlook.com (2603:10b6:805:60::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Fri, 4 Dec
- 2020 18:33:54 +0000
-Received: from SN6PR11MB3184.namprd11.prod.outlook.com
- ([fe80::bcad:a1da:3b9b:1412]) by SN6PR11MB3184.namprd11.prod.outlook.com
- ([fe80::bcad:a1da:3b9b:1412%6]) with mapi id 15.20.3611.025; Fri, 4 Dec 2020
- 18:33:54 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "npiggin@gmail.com" <npiggin@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "lizefan@huawei.com" <lizefan@huawei.com>,
-        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-        "Jonathan.Cameron@Huawei.com" <Jonathan.Cameron@Huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 11/12] mm/vmalloc: Hugepage vmalloc mappings
-Thread-Topic: [PATCH v8 11/12] mm/vmalloc: Hugepage vmalloc mappings
-Thread-Index: AQHWx0IouDnRaQC0zE26j1j/vLv2yqnhHkOAgAV9xQCAAK16AA==
-Date:   Fri, 4 Dec 2020 18:33:54 +0000
-Message-ID: <2e8e1f3e47736e8f5e749cee85b7036cbf9cb1b5.camel@intel.com>
-References: <20201128152559.999540-1-npiggin@gmail.com>
-         <20201128152559.999540-12-npiggin@gmail.com>
-         <e9d3a50e1b18f9ea1cdfdc221bef75db19273417.camel@intel.com>
-         <1607068679.lfd133za4h.astroid@bobo.none>
-In-Reply-To: <1607068679.lfd133za4h.astroid@bobo.none>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.30.1 (3.30.1-1.fc29) 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [134.134.137.75]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0e2f56a9-81a6-4c21-6768-08d898832777
-x-ms-traffictypediagnostic: SN6PR11MB2671:
-x-microsoft-antispam-prvs: <SN6PR11MB2671D440327043090A7CD029C9F10@SN6PR11MB2671.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TWmu2O6yU0Gt4BzEwOVEokPs9O7IRCLaPhI5Qe1zyiqY7IU6vfh9zQZ8NodzUTnqHFEgJWCtxXRcMJPUrK4oEMaEky5vcKBei6tQNpuoAjhZGd6DW7TIouZShOQwQXUJF0UtGiUZ8rTss0BKocdC+uFGsYGqQubMpGYf7TZoslBHzp2Yv6r7GCX0VV8tbVchTpzL+ligcQIveu+ODjUqFGmON9tugdh2JyLwQUNZLRL6B5ndA609KGghScFsE84FVi6p7+LlFmo+q1Tv31A1cx230oBeD3o1sblEt+hKQH8KGP+Tjaaops/XjjujiJDc4bO6AhFt+0UvQld+B9+qOASRkm04WPtgFA/FQjdmzGFS4ZUH6TpvdBOexnE59qqUmqjyNZtYqcT+Pd4t6Dtbyg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3184.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(136003)(346002)(376002)(66946007)(2906002)(6486002)(316002)(71200400001)(478600001)(7416002)(4326008)(8936002)(110136005)(5660300002)(54906003)(83380400001)(6506007)(86362001)(2616005)(8676002)(6512007)(66446008)(4001150100001)(66556008)(66476007)(36756003)(91956017)(186003)(26005)(64756008)(966005)(76116006);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?c3dVRGdaNFZyM0NQbzdSalhELzI2TzBkREhjNWl3dDNUNHJ0cmh3bWdIS0pq?=
- =?utf-8?B?TWw5MDUrbGM1L0h4T1hvLzcyQ2RMVEdtK0dtRHlwdkRBdmoxUVd6TkJVcjl1?=
- =?utf-8?B?aUdBTisxS2dQTlMwZ25LUWZWZnlrYytmN0lHWDdYUGJOOWVtUDRrM1FVV1Av?=
- =?utf-8?B?ZjZtbVRuRS9QQmNxbjNHNjZXK1JnUkVPUjNTS0tSZ3hFd3NhNnpsRlpERzlu?=
- =?utf-8?B?QjhLTTNCdzZ0YTUxMUhVYnBKVi9maSs5UHF5RlVwbFJINXFxZGJPOXkvYjVj?=
- =?utf-8?B?aDM2ck05ZkkyZU1XYm9ET2ZGSGFrL1pZdFhITmxwZ1RBaEVBZTc0aWsyMSsr?=
- =?utf-8?B?TDRITFZ0ZTRrREFjVFZNM3lRQVovZkpNWlYrTFJCcUhQVEFhbDc1TkQyeTl5?=
- =?utf-8?B?c1FlZ3gvU3oySkU2RGNqWFA1dGg0YzhZSVd1QlMwZHpVKzlZWHM2Nzl5Z0hB?=
- =?utf-8?B?dzV6anNxQjJ1R0YrYWkvVGs5WHREdSswbjRGUzNQallCR3liNXRzVW9FWWVY?=
- =?utf-8?B?NThGbEZVQVU4dkZQWnlrYWxtOXdNblF5dzEwUlhyN20zcnIxMEVWcXArQlRp?=
- =?utf-8?B?NFhVQnJRbnM3azZjaERCTWlxMWZmZHRWVzdTTzVXUHpHWXhBMmdyWHVZdEpx?=
- =?utf-8?B?L2VEcmlEL1RWeUczRGNnc2U3WmNUUlQ4WjNTcWFpRFZnbWxEWUdSNFlzWEhB?=
- =?utf-8?B?M081b0JtT1VVZWQ1ZTFOY2dEYWEyMzB1cGgrMHNxRDEzQ0JTRWRRZkhDTEt2?=
- =?utf-8?B?QUlWWXdNWFl4TXV6NWI4V1hRRzhhSFI3YUVBR3lXVVVMQm9lUzJSa0hEWFJK?=
- =?utf-8?B?SmhRQ2RObWJCbCtmRFc3dTFhcmo2S0lJSGZVWEYzYVNGUUxmOEZNbjhua2RO?=
- =?utf-8?B?aGdmVENXbm1iazB3M0pPbmNKZEd5Qk93RXl6Z0g0bjBkYTVEanZSNXhWZVE4?=
- =?utf-8?B?WHk4MmlobzBZM1hGL0ZqeHlpNlpyMkRqTUo1Z1hwNHdhS01JdVgxQm52SEpo?=
- =?utf-8?B?enpsL1RMa3BGbUNpM2FsTlBBdXh2cHhDWHdJTDJLMXVqKzRudzE2OWJCV2E0?=
- =?utf-8?B?S3R1QzdGZ0ZkZVh6U3ltZFBRd0Y5aDZHUEpUdDB5bjFRK3hOUG1aYjdCdnlS?=
- =?utf-8?B?a0M4dTRpa3Byc1p0VFliWmRQN2EreStyWlpKWTc3aTFRMmZoU1BoRm5iV3RH?=
- =?utf-8?B?dTV3U3dSR3hJWlhCZnQxOHV3dmh1eDJuY3FPaEM1TmNPSHdrdFM4QWpaNHJS?=
- =?utf-8?B?cXRQUTNicHprK2JJTFFxZDg2R1J2Uksvd3BVZlI2NkFQWkpSQlR0ajlNR2Fw?=
- =?utf-8?Q?fu8LMUzxAUmZoSTPSSo9JJR0kIP+8WAKAN?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4389A573289C0445932317275B5476BA@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S2387869AbgLDSfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:35:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgLDSfz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:35:55 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5924C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:35:14 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id c7so6841889edv.6
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:35:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=VazwCTbw4qFEcnDS99kE7+UPTpKgFLvwXrTcJ/OGLV8=;
+        b=UoAtycuWbYXPQuHZa93zSkhDkJSIw0b5/ox+c+olIK8DcmAbppcTQ0S5nqiX68rqak
+         O0OcRXvbaYs59/0lhZyyDXuBE89LpLU/4sCiBqYoY+7kZml0b8FecNEzYnsNUW08Ihz5
+         QF7SSKQPyyDDQa2ClfTAFtqizjUB+y8xrZebWbkw7H4Qp0JbSS6Bojpr/Kkqn2+Oksnw
+         wT3LhcfoTMGVZj4tJFFM5mxJMYg2KBifKrCXcs7TzgB+i0DrF+DvPoqZuF/7IlEChaWv
+         6gSm3TUC/frYOd6VZB2UEePpomfz08LS4mRk9rLZ8P3hSyX0ElAYgJiZ6EcXcffOOCH/
+         GBxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=VazwCTbw4qFEcnDS99kE7+UPTpKgFLvwXrTcJ/OGLV8=;
+        b=dN2+WeOqJWLjbqxhubmmYZkr2LyY6t1UiyI/XNaasVKAVcAJyMoEGp+hP5m67UOZJD
+         2VVgqwHFX1fj2sSU0vady3Im57N8y9d42Efgtc89AFvaKZrGMIdu8k8s3eAKjQNY0iQe
+         K1x3P1WvWUNq9zO9ruPNgWMie928J3Ie7TLsPmIA7ktNZAeJOzlc8Nt08A0MrQlR86uD
+         SM25vPL0isYF0h+ctuls0PnXSZENSgzRjf8FN9Ji1dtDXETCz4GsonD5cBrS/c1fDo8q
+         tXxn5bmOhRNnA845hc1FlQLlbRtZFR2FkUj0OcnhldQcoNAc7mZEC9jpC636q3KPQh5O
+         sd2A==
+X-Gm-Message-State: AOAM533zv2Mvbf7BJmxosTbd1KnOmEOo1EJBmyCeYJ0WtMncwP54Qam9
+        WZ0JUrHkt9OVHNuIDVJJsYQNeilpmRTpN7uZqalQbuJgni3uazbR
+X-Google-Smtp-Source: ABdhPJySBMs5wep5prKn4dGE0xz5+ByoMr95Z/1QhLJVmuU6vp5fZu61EN8FWgCSAJCp3cpH5tedG2S4/91FYDuyvnU=
+X-Received: by 2002:aa7:d74d:: with SMTP id a13mr5352244eds.78.1607106913506;
+ Fri, 04 Dec 2020 10:35:13 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3184.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e2f56a9-81a6-4c21-6768-08d898832777
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Dec 2020 18:33:54.2330
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8NQ7GZEi6tehexOw+UmCtv8DVoX7TXdqoAe//7e+Gsjo2eYkd+7Yl035It+yL0I9Wf253XdjjGwA7mXeu0bKjihsICvbiXsUfFRApHBM6tE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2671
-X-OriginatorOrg: intel.com
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 5 Dec 2020 00:05:02 +0530
+Message-ID: <CA+G9fYvhvZtDYVBo4kj9OkKY_vVFSa6EbWz99iCmRPojExRieA@mail.gmail.com>
+Subject: BUG: KCSAN: data-race in __rpc_do_wake_up_task_on_wq / xprt_request_transmit
+To:     kasan-dev <kasan-dev@googlegroups.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, linux-nfs@vger.kernel.org,
+        lkft-triage@lists.linaro.org, rcu@vger.kernel.org
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, chuck.lever@oracle.com,
+        bfields@fieldses.org, anna.schumaker@netapp.com,
+        trond.myklebust@hammerspace.com,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Marco Elver <elver@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTEyLTA0IGF0IDE4OjEyICsxMDAwLCBOaWNob2xhcyBQaWdnaW4gd3JvdGU6
-DQo+IEV4Y2VycHRzIGZyb20gRWRnZWNvbWJlLCBSaWNrIFAncyBtZXNzYWdlIG9mIERlY2VtYmVy
-IDEsIDIwMjAgNjoyMQ0KPiBhbToNCj4gPiBPbiBTdW4sIDIwMjAtMTEtMjkgYXQgMDE6MjUgKzEw
-MDAsIE5pY2hvbGFzIFBpZ2dpbiB3cm90ZToNCj4gPiA+IFN1cHBvcnQgaHVnZSBwYWdlIHZtYWxs
-b2MgbWFwcGluZ3MuIENvbmZpZyBvcHRpb24NCj4gPiA+IEhBVkVfQVJDSF9IVUdFX1ZNQUxMT0MN
-Cj4gPiA+IGVuYWJsZXMgc3VwcG9ydCBvbiBhcmNoaXRlY3R1cmVzIHRoYXQgZGVmaW5lIEhBVkVf
-QVJDSF9IVUdFX1ZNQVANCj4gPiA+IGFuZA0KPiA+ID4gc3VwcG9ydHMgUE1EIHNpemVkIHZtYXAg
-bWFwcGluZ3MuDQo+ID4gPiANCj4gPiA+IHZtYWxsb2Mgd2lsbCBhdHRlbXB0IHRvIGFsbG9jYXRl
-IFBNRC1zaXplZCBwYWdlcyBpZiBhbGxvY2F0aW5nDQo+ID4gPiBQTUQNCj4gPiA+IHNpemUNCj4g
-PiA+IG9yIGxhcmdlciwgYW5kIGZhbGwgYmFjayB0byBzbWFsbCBwYWdlcyBpZiB0aGF0IHdhcyB1
-bnN1Y2Nlc3NmdWwuDQo+ID4gPiANCj4gPiA+IEFsbG9jYXRpb25zIHRoYXQgZG8gbm90IHVzZSBQ
-QUdFX0tFUk5FTCBwcm90IGFyZSBub3QgcGVybWl0dGVkIHRvDQo+ID4gPiB1c2UNCj4gPiA+IGh1
-Z2UgcGFnZXMsIGJlY2F1c2Ugbm90IGFsbCBjYWxsZXJzIGV4cGVjdCB0aGlzIChlLmcuLCBtb2R1
-bGUNCj4gPiA+IGFsbG9jYXRpb25zIHZzIHN0cmljdCBtb2R1bGUgcnd4KS4NCj4gPiANCj4gPiBT
-ZXZlcmFsIGFyY2hpdGVjdHVyZXMgKHg4NiwgYXJtNjQsIG90aGVycz8pIGFsbG9jYXRlIG1vZHVs
-ZXMNCj4gPiBpbml0aWFsbHkNCj4gPiB3aXRoIFBBR0VfS0VSTkVMIGFuZCBzbyBJIHRoaW5rIHRo
-aXMgdGVzdCB3aWxsIG5vdCBleGNsdWRlIG1vZHVsZQ0KPiA+IGFsbG9jYXRpb25zIGluIHRob3Nl
-IGNhc2VzLg0KPiANCj4gQWgsIHRoYW5rcy4gSSBndWVzcyBhcmNocyBtdXN0IGFkZGl0aW9uYWxs
-eSBlbnN1cmUgdGhhdCB0aGVpcg0KPiBQQUdFX0tFUk5FTCBhbGxvY2F0aW9ucyBhcmUgc3VpdGFi
-bGUgZm9yIGh1Z2UgcGFnZSBtYXBwaW5ncyBiZWZvcmUNCj4gZW5hYmxpbmcgdGhlIG9wdGlvbi4N
-Cj4gDQo+IElmIHRoZXJlIGlzIGludGVyZXN0IGZyb20gdGhvc2UgYXJjaHMgdG8gc3VwcG9ydCB0
-aGlzLCBJIGhhdmUgYW4NCj4gZWFybHkgKHVuLXBvc3RlZCkgcGF0Y2ggdGhhdCBhZGRzIGFuIGV4
-cGxpY2l0IFZNX0hVR0UgZmxhZyB0aGF0IGNvdWxkDQo+IG92ZXJyaWRlIHRoZSBwZXNzZW1pc3Rp
-YyBhcmNoIGRlZmF1bHQuIEl0J3Mgbm90IG11Y2ggdHJvdWJsZSB0byBhZGQNCj4gdGhpcyANCj4g
-dG8gdGhlIGxhcmdlIHN5c3RlbSBoYXNoIGFsbG9jYXRpb25zLiBJdCdzIHZlcnkgb3V0IG9mIGRh
-dGUgbm93IGJ1dA0KPiBJIA0KPiBjYW4gYXQgbGVhc3QgZ2l2ZSB3aGF0IEkgaGF2ZSB0byBhbnlv
-bmUgZG9pbmcgYW4gYXJjaCBzdXBwb3J0IHRoYXQNCj4gd2FudHMgaXQuDQoNCkFoaCwgc29ycnks
-IEkgdG90YWxseSBtaXNzZWQgdGhhdCB0aGlzIHdhcyBvbmx5IGVuYWJsZWQgZm9yIHBvd2VycGMu
-DQoNClRoYXQgcGF0Y2ggbWlnaHQgYmUgdXNlZnVsIGZvciBtZSBhY3R1YWxseS4gT3IgbWF5YmUg
-YSBWTV9OT0hVR0UsIHNpbmNlDQp0aGVyZSBhcmUgb25seSBhIGZldyBwbGFjZXMgd2hlcmUgZXhl
-Y3V0YWJsZSB2bWFsbG9jcyBhcmUgY3JlYXRlZD8gSSdtDQpub3Qgc3VyZSB3aGF0IHRoZSBvdGhl
-ciBpc3N1ZXMgYXJlLg0KDQpJIGFtIGVuZGVhdm9yaW5nIHRvIGhhdmUgc21hbGwgbW9kdWxlIGFs
-bG9jYXRpb25zIHNoYXJlIGxhcmdlIHBhZ2VzLCBzbw0KdGhpcyBpbmZyYXN0cnVjdHVyZSBpcyBh
-IGJpZyBoZWxwIGFscmVhZHkuDQpodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzIwMjAxMTIw
-MjAyNDI2LjE4MDA5LTEtcmljay5wLmVkZ2Vjb21iZUBpbnRlbC5jb20vDQoNClRoYW5rcyENCg==
+LKFT started testing KCSAN enabled kernel from the linux next tree.
+Here we have found BUG: KCSAN: data-race in
+__rpc_do_wake_up_task_on_wq / xprt_request_transmit
+
+This report is from an x86_64 machine clang-11 linux next 20201201.
+Since we are running for the first time we do not call this regression.
+
+[   17.316725] BUG: KCSAN: data-race in __rpc_do_wake_up_task_on_wq /
+xprt_request_transmit
+[   17.324821]
+[   17.326322] write to 0xffff90a801de6a9c of 2 bytes by task 142 on cpu 1:
+[   17.333022]  __rpc_do_wake_up_task_on_wq+0x295/0x350
+[   17.337987]  rpc_wake_up_queued_task+0x99/0xc0
+[   17.342432]  xprt_complete_rqst+0xef/0x100
+[   17.346533]  xs_read_stream+0x9c6/0xc40
+[   17.350370]  xs_stream_data_receive+0x60/0x130
+[   17.354819]  xs_stream_data_receive_workfn+0x5c/0x90
+[   17.359784]  process_one_work+0x4a6/0x830
+[   17.363795]  worker_thread+0x5f7/0xaa0
+[   17.367548]  kthread+0x20b/0x220
+[   17.370780]  ret_from_fork+0x22/0x30
+[   17.374359]
+[   17.375858] read to 0xffff90a801de6a9c of 2 bytes by task 249 on cpu 3:
+[   17.382473]  xprt_request_transmit+0x389/0x7a0
+[   17.386919]  xprt_transmit+0xfe/0x250
+[   17.390583]  call_transmit+0x10d/0x120
+[   17.394337]  __rpc_execute+0x12d/0x700
+[   17.398089]  rpc_async_schedule+0x59/0x90
+[   17.402100]  process_one_work+0x4a6/0x830
+[   17.406114]  worker_thread+0x5f7/0xaa0
+[   17.409868]  kthread+0x20b/0x220
+[   17.413099]  ret_from_fork+0x22/0x30
+[   17.416675]
+[   17.418167] Reported by Kernel Concurrency Sanitizer on:
+[   17.423475] CPU: 3 PID: 249 Comm: kworker/u8:1 Not tainted
+5.10.0-rc6-next-20201201 #2
+[   17.431385] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+2.2 05/23/2018
+[   17.438778] Workqueue: rpciod rpc_async_schedule
+
+metadata:
+    git_repo: https://gitlab.com/aroxell/lkft-linux-next
+    target_arch: x86
+    toolchain: clang-11
+    git_describe: next-20201201
+    download_url: https://builds.tuxbuild.com/1l8eiWgGMi6W4aDobjAAlOleFVl/
+
+Full test log link,
+https://lkft.validation.linaro.org/scheduler/job/2002643#L1005
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
