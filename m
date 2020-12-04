@@ -2,128 +2,545 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9978B2CE7B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 06:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 445D32CE7A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 06:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbgLDFpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 00:45:19 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:36204 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728110AbgLDFpT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 00:45:19 -0500
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 0B45iOHK014725;
-        Fri, 4 Dec 2020 14:44:24 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 0B45iOHK014725
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1607060664;
-        bh=GxQOUZTbjpTLY9LjOb5fkHKriTuvaD4ieHcqMtD0zU0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=R/YJZpM2TUDt4msXhrrmCenmQFK0SPqfC9vbu3g9nS1uDiYEMIty1jmuSbtOd2vYq
-         oEYaisN/8FFUyC5kXvxyzAADam3yAGSM8Jv4U9iTASPKnyjhyopf5Q+b39tIHTGSCU
-         KZ7J4dN8tnT06VbKOQ2ZprJsDd8Cv5pswud7Nh/uWxRgxXts+naYIWjIADLIcO7s5K
-         Ej8G5+pa9LOo7URiBg4yREvuAij+MGPvFS5oXHYYGpclLh27KCxc8ZZUlGKiQWf522
-         EHVl1iaoIuUMext3AHN9LGrV0uf0SPa8lD1TjlonnkYekjiibvR+J9arhCRKRvkC19
-         33escYa1CP/5Q==
-X-Nifty-SrcIP: [209.85.210.179]
-Received: by mail-pf1-f179.google.com with SMTP id x24so2944563pfn.6;
-        Thu, 03 Dec 2020 21:44:24 -0800 (PST)
-X-Gm-Message-State: AOAM532j3L5ujb0DxJ0+eDemsbIyiqWVmXq3grIzkhgMm+7hust/FdBR
-        Zxjv1Ss0sQDVJMP8aFNMHg6/6SKLcPDAcHvCZq4=
-X-Google-Smtp-Source: ABdhPJwSYF2cWdLfL5qZiKxAtQSsH8nHXtNTwO15tGB6CNOA8wl/q/O5NzJ1suMu/FAzPoErqTxsjO3rMshMsV8gl/4=
-X-Received: by 2002:a62:e519:0:b029:197:bcec:7c0c with SMTP id
- n25-20020a62e5190000b0290197bcec7c0cmr2396899pff.63.1607060663618; Thu, 03
- Dec 2020 21:44:23 -0800 (PST)
+        id S1728004AbgLDFos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 00:44:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727892AbgLDFos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 00:44:48 -0500
+From:   Vinod Koul <vkoul@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 3/4] arm64: dts: qcom: Add basic devicetree support for SM8350 SoC
+Date:   Fri,  4 Dec 2020 11:13:46 +0530
+Message-Id: <20201204054347.2877857-4-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201204054347.2877857-1-vkoul@kernel.org>
+References: <20201204054347.2877857-1-vkoul@kernel.org>
 MIME-Version: 1.0
-References: <20200829051524.706585-1-masahiroy@kernel.org>
-In-Reply-To: <20200829051524.706585-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 4 Dec 2020 14:43:46 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARL88XGMuNSxAVKsTw+s74PY2GCU+QNJCh02ZKG5s9TNw@mail.gmail.com>
-Message-ID: <CAK7LNARL88XGMuNSxAVKsTw+s74PY2GCU+QNJCh02ZKG5s9TNw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] ia64: clean-up header dependency and build process,
- fix build warning
-To:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
-        linux-ia64@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, IA64 maintainers,
+Add basic devicetree support for Qualcomm Technologies, Inc SM8350 SoC.
+This adds gcc, pinctrl, reserved memory, uart, cpu nodes for this SoC.
 
-Could you check this series, please?
-The build warning is still remaining.
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ arch/arm64/boot/dts/qcom/sm8350.dtsi | 496 +++++++++++++++++++++++++++
+ 1 file changed, 496 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/sm8350.dtsi
 
-
-
-On Sat, Aug 29, 2020 at 2:16 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
->
-> Randy Dunlap reports the following warning with CONFIG_IA64_PALINFO=m:
->
-> ../scripts/Makefile.build:68: 'arch/ia64/kernel/palinfo.ko' will not be built even though obj-m is specified.
-> ../scripts/Makefile.build:69: You cannot use subdir-y/m to visit a module Makefile. Use obj-y/m instead.
->
-> This comes from the fact Kbuild descends into arch/ia64/kernel/ twice.
->
-> First, to generate <generated/nr-irqs.h>,
-> Second, to build kernel and module objects.
->
-> The warning is emitted in the first descend because it is not the
-> intended usage.
->
-> I looked into the code closely, and noticed arch/ia64/kernel/nr-irqs.c
-> was not needed in the first place.
->
-> It was separated out of arch/ia64/kernel/asm-offsets.c just because
-> <asm/mca.h> was including too many bogus headers.
->
-> IA64 is not actively maintained, and there exists unneeded obsolete code.
->
-> The first two patches are the outcome when I played with ARCH=ia64 builds,
-> but not prerequisites for 3/3. Anyway I believe they are nice cleanups
-> and folded in this patch set.
->
-> 3/3 is the important one to fix the false positive warning,
-> and it is a nice cleanup too.
->
->
->
-> Masahiro Yamada (3):
->   ia64: do not typedef struct pal_min_state_area_s
->   ia64: remove unneeded header includes from <asm/mca.h>
->   ia64: remove generated/nr-irqs.h generation to fix build warning
->
->  arch/ia64/Makefile             |  6 ------
->  arch/ia64/include/asm/irq.h    |  4 +++-
->  arch/ia64/include/asm/mca.h    | 11 ++++-------
->  arch/ia64/include/asm/pal.h    |  4 ++--
->  arch/ia64/include/asm/sal.h    |  2 +-
->  arch/ia64/kernel/Makefile      |  5 -----
->  arch/ia64/kernel/asm-offsets.c | 18 +++++++++---------
->  arch/ia64/kernel/efi.c         |  1 +
->  arch/ia64/kernel/mca.c         |  5 +++--
->  arch/ia64/kernel/mca_drv.c     |  2 +-
->  arch/ia64/kernel/nr-irqs.c     | 22 ----------------------
->  11 files changed, 24 insertions(+), 56 deletions(-)
->  delete mode 100644 arch/ia64/kernel/nr-irqs.c
->
-> --
-> 2.25.1
->
-
-
+diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+new file mode 100644
+index 000000000000..9e4bb29abe62
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+@@ -0,0 +1,496 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/*
++ * Copyright (c) 2020, Linaro Limaited
++ */
++
++#include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/clock/qcom,gcc-sm8350.h>
++#include <dt-bindings/clock/qcom,rpmh.h>
++#include <dt-bindings/mailbox/qcom-ipcc.h>
++#include <dt-bindings/power/qcom-aoss-qmp.h>
++#include <dt-bindings/power/qcom-rpmpd.h>
++#include <dt-bindings/soc/qcom,rpmh-rsc.h>
++
++/ {
++	interrupt-parent = <&intc>;
++
++	#address-cells = <2>;
++	#size-cells = <2>;
++
++	chosen { };
++
++	clocks {
++		xo_board: xo-board {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++			clock-frequency = <38400000>;
++			clock-output-names = "xo_board";
++		};
++
++		sleep_clk: sleep-clk {
++			compatible = "fixed-clock";
++			clock-frequency = <32000>;
++			#clock-cells = <0>;
++		};
++	};
++
++	cpus {
++		#address-cells = <2>;
++		#size-cells = <0>;
++
++		CPU0: cpu@0 {
++			device_type = "cpu";
++			compatible = "qcom,kryo";
++			reg = <0x0 0x0>;
++			enable-method = "psci";
++			next-level-cache = <&L2_0>;
++			L2_0: l2-cache {
++			      compatible = "cache";
++			      next-level-cache = <&L3_0>;
++				L3_0: l3-cache {
++				      compatible = "cache";
++				};
++			};
++		};
++
++		CPU1: cpu@100 {
++			device_type = "cpu";
++			compatible = "qcom,kryo";
++			reg = <0x0 0x100>;
++			enable-method = "psci";
++			next-level-cache = <&L2_100>;
++			L2_100: l2-cache {
++			      compatible = "cache";
++			      next-level-cache = <&L3_0>;
++			};
++		};
++
++		CPU2: cpu@200 {
++			device_type = "cpu";
++			compatible = "qcom,kryo";
++			reg = <0x0 0x200>;
++			enable-method = "psci";
++			next-level-cache = <&L2_200>;
++			L2_200: l2-cache {
++			      compatible = "cache";
++			      next-level-cache = <&L3_0>;
++			};
++		};
++
++		CPU3: cpu@300 {
++			device_type = "cpu";
++			compatible = "qcom,kryo";
++			reg = <0x0 0x300>;
++			enable-method = "psci";
++			next-level-cache = <&L2_300>;
++			L2_300: l2-cache {
++			      compatible = "cache";
++			      next-level-cache = <&L3_0>;
++			};
++		};
++
++		CPU4: cpu@400 {
++			device_type = "cpu";
++			compatible = "qcom,kryo485";
++			reg = <0x0 0x400>;
++			enable-method = "psci";
++			next-level-cache = <&L2_400>;
++			L2_400: l2-cache {
++			      compatible = "cache";
++			      next-level-cache = <&L3_0>;
++			};
++		};
++
++		CPU5: cpu@500 {
++			device_type = "cpu";
++			compatible = "qcom,kryo485";
++			reg = <0x0 0x500>;
++			enable-method = "psci";
++			next-level-cache = <&L2_500>;
++			L2_500: l2-cache {
++			      compatible = "cache";
++			      next-level-cache = <&L3_0>;
++			};
++
++		};
++
++		CPU6: cpu@600 {
++			device_type = "cpu";
++			compatible = "qcom,kryo485";
++			reg = <0x0 0x600>;
++			enable-method = "psci";
++			next-level-cache = <&L2_600>;
++			L2_600: l2-cache {
++			      compatible = "cache";
++			      next-level-cache = <&L3_0>;
++			};
++		};
++
++		CPU7: cpu@700 {
++			device_type = "cpu";
++			compatible = "qcom,kryo485";
++			reg = <0x0 0x700>;
++			enable-method = "psci";
++			next-level-cache = <&L2_700>;
++			L2_700: l2-cache {
++			      compatible = "cache";
++			      next-level-cache = <&L3_0>;
++			};
++		};
++	};
++
++	firmware {
++		scm: scm {
++			compatible = "qcom,scm";
++			#reset-cells = <1>;
++		};
++	};
++
++	memory@80000000 {
++		device_type = "memory";
++		/* We expect the bootloader to fill in the size */
++		reg = <0x0 0x80000000 0x0 0x0>;
++	};
++
++	pmu {
++		compatible = "arm,armv8-pmuv3";
++		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
++	};
++
++	psci {
++		compatible = "arm,psci-1.0";
++		method = "smc";
++	};
++
++	reserved_memory: reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		hyp_mem: memory@80000000 {
++			reg = <0x0 0x80000000 0x0 0x600000>;
++			no-map;
++		};
++
++		xbl_aop_mem: memory@80700000 {
++			no-map;
++			reg = <0x0 0x80700000 0x0 0x160000>;
++		};
++
++		cmd_db: memory@80860000 {
++			compatible = "qcom,cmd-db";
++			reg = <0x0 0x80860000 0x0 0x20000>;
++			no-map;
++		};
++
++		reserved_xbl_uefi_log: memory@80880000 {
++			reg = <0x0 0x80880000 0x0 0x14000>;
++			no-map;
++		};
++
++		smem_mem: memory@80900000 {
++			reg = <0x0 0x80900000 0x0 0x200000>;
++			no-map;
++		};
++
++		cpucp_fw_mem: memory@80b00000 {
++			reg = <0x0 0x80b00000 0x0 0x100000>;
++			no-map;
++		};
++
++		cdsp_secure_heap: memory@80c00000 {
++			reg = <0x0 0x80c00000 0x0 0x4600000>;
++			no-map;
++		};
++
++		pil_camera_mem: mmeory@85200000 {
++			reg = <0x0 0x85200000 0x0 0x500000>;
++			no-map;
++		};
++
++		pil_video_mem: memory@85700000 {
++			reg = <0x0 0x85700000 0x0 0x500000>;
++			no-map;
++		};
++
++		pil_cvp_mem: memory@85c00000 {
++			reg = <0x0 0x85c00000 0x0 0x500000>;
++			no-map;
++		};
++
++		pil_adsp_mem: memory@86100000 {
++			reg = <0x0 0x86100000 0x0 0x2100000>;
++			no-map;
++		};
++
++		pil_slpi_mem: memory@88200000 {
++			reg = <0x0 0x88200000 0x0 0x1500000>;
++			no-map;
++		};
++
++		pil_cdsp_mem: memory@89700000 {
++			reg = <0x0 0x89700000 0x0 0x1e00000>;
++			no-map;
++		};
++
++		pil_ipa_fw_mem: memory@8b500000 {
++			reg = <0x0 0x8b500000 0x0 0x10000>;
++			no-map;
++		};
++
++		pil_ipa_gsi_mem: memory@8b510000 {
++			reg = <0x0 0x8b510000 0x0 0xa000>;
++			no-map;
++		};
++
++		pil_gpu_mem: memory@8b51a000 {
++			reg = <0x0 0x8b51a000 0x0 0x2000>;
++			no-map;
++		};
++
++		pil_spss_mem: memory@8b600000 {
++			reg = <0x0 0x8b600000 0x0 0x100000>;
++			no-map;
++		};
++
++		pil_modem_mem: memory@8b800000 {
++			reg = <0x0 0x8b800000 0x0 0x10000000>;
++			no-map;
++		};
++
++		hyp_reserved_mem: memory@d0000000 {
++			reg = <0x0 0xd0000000 0x0 0x800000>;
++			no-map;
++		};
++
++		pil_trustedvm_mem: memory@d0800000 {
++			reg = <0x0 0xd0800000 0x0 0x76f7000>;
++			no-map;
++		};
++
++		qrtr_shbuf: memory@d7ef7000 {
++			reg = <0x0 0xd7ef7000 0x0 0x9000>;
++			no-map;
++		};
++
++		chan0_shbuf: memory@d7f00000 {
++			reg = <0x0 0xd7f00000 0x0 0x80000>;
++			no-map;
++		};
++
++		chan1_shbuf: memory@d7f80000 {
++			reg = <0x0 0xd7f80000 0x0 0x80000>;
++			no-map;
++		};
++
++		removed_mem: memory@d8800000 {
++			reg = <0x0 0xd8800000 0x0 0x6800000>;
++			no-map;
++		};
++	};
++
++	smem: qcom,smem {
++		compatible = "qcom,smem";
++		memory-region = <&smem_mem>;
++		hwlocks = <&tcsr_mutex 3>;
++	};
++
++	soc: soc@0 {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges = <0 0 0 0 0x10 0>;
++		dma-ranges = <0 0 0 0 0x10 0>;
++		compatible = "simple-bus";
++
++		gcc: clock-controller@100000 {
++			compatible = "qcom,gcc-sm8350";
++			reg = <0x0 0x00100000 0x0 0x1f0000>;
++			#clock-cells = <1>;
++			#reset-cells = <1>;
++			#power-domain-cells = <1>;
++			clock-names = "bi_tcxo", "sleep_clk";
++			clocks = <&rpmhcc RPMH_CXO_CLK>, <&sleep_clk>;
++		};
++
++		ipcc: mailbox@408000 {
++			compatible = "qcom,sm8350-ipcc", "qcom,ipcc";
++			reg = <0 0x00408000 0 0x1000>;
++			interrupts = <GIC_SPI 229 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-controller;
++			#interrupt-cells = <3>;
++			#mbox-cells = <2>;
++		};
++
++		qupv3_id_1: geniqup@9c0000 {
++			compatible = "qcom,geni-se-qup";
++			reg = <0x0 0x009c0000 0x0 0x6000>;
++			clock-names = "m-ahb", "s-ahb";
++			clocks = <&gcc GCC_QUPV3_WRAP_0_M_AHB_CLK>,
++				 <&gcc GCC_QUPV3_WRAP_0_S_AHB_CLK>;
++			#address-cells = <2>;
++			#size-cells = <2>;
++			ranges;
++			status = "disabled";
++
++			uart2: serial@98c000 {
++				compatible = "qcom,geni-debug-uart";
++				reg = <0 0x0098c000 0 0x4000>;
++				clock-names = "se";
++				clocks = <&gcc GCC_QUPV3_WRAP0_S3_CLK>;
++				pinctrl-names = "default";
++				pinctrl-0 = <&qup_uart3_default>;
++				interrupts = <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				status = "disabled";
++			};
++		};
++
++		tcsr_mutex: hwlock@1f40000 {
++			compatible = "qcom,tcsr-mutex";
++			reg = <0x0 0x01f40000 0x0 0x40000>;
++			#hwlock-cells = <1>;
++		};
++
++		pdc: interrupt-controller@b220000 {
++			compatible = "qcom,sm8350-pdc", "qcom,pdc";
++			reg = <0 0x0b220000 0 0x30000>, <0 0x17c000f0 0 0x60>;
++			qcom,pdc-ranges = <0 480 40>, <40 140 14>, <54 263 1>,   <55 306 4>,
++					  <59 312 3>, <62 374 2>,  <64 434 2>,   <66 438 3>,
++					  <69 86 1>,  <70 520 54>, <124 609 31>, <155 63 1>,
++					  <156 716 12>;
++			#interrupt-cells = <2>;
++			interrupt-parent = <&intc>;
++			interrupt-controller;
++		};
++
++		aoss_qmp: qmp@c300000 {
++			compatible = "qcom,sm8350-aoss-qmp";
++			reg = <0 0x0c300000 0 0x100000>;
++			interrupts-extended = <&ipcc IPCC_CLIENT_AOP IPCC_MPROC_SIGNAL_GLINK_QMP
++						     IRQ_TYPE_EDGE_RISING>;
++			mboxes = <&ipcc IPCC_CLIENT_AOP IPCC_MPROC_SIGNAL_GLINK_QMP>;
++
++			#clock-cells = <0>;
++			#power-domain-cells = <1>;
++		};
++
++		tlmm: pinctrl@f000000 {
++			compatible = "qcom,sm8350-pinctrl";
++			reg = <0 0x0f100000 0 0x300000>;
++			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			interrupt-controller;
++			#interrupt-cells = <2>;
++			gpio-ranges = <&tlmm 0 0 203>;
++
++			qup_uart3_default: qup-uart3-default {
++				mux {
++					pins = "gpio18", "gpio19";
++					function = "qup3";
++				};
++			};
++		};
++
++		intc: interrupt-controller@17a00000 {
++			compatible = "arm,gic-v3";
++			#interrupt-cells = <3>;
++			interrupt-controller;
++			reg = <0x0 0x17a00000 0x0 0x10000>,     /* GICD */
++			      <0x0 0x17a60000 0x0 0x100000>;    /* GICR * 8 */
++			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
++		};
++
++		timer@17c20000 {
++			#address-cells = <2>;
++			#size-cells = <2>;
++			ranges;
++			compatible = "arm,armv7-timer-mem";
++			reg = <0x0 0x17c20000 0x0 0x1000>;
++			clock-frequency = <19200000>;
++
++			frame@17c21000 {
++				frame-number = <0>;
++				interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
++					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0 0x17c21000 0x0 0x1000>,
++				      <0x0 0x17c22000 0x0 0x1000>;
++			};
++
++			frame@17c23000 {
++				frame-number = <1>;
++				interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0 0x17c23000 0x0 0x1000>;
++				status = "disabled";
++			};
++
++			frame@17c25000 {
++				frame-number = <2>;
++				interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0 0x17c25000 0x0 0x1000>;
++				status = "disabled";
++			};
++
++			frame@17c27000 {
++				frame-number = <3>;
++				interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0 0x17c27000 0x0 0x1000>;
++				status = "disabled";
++			};
++
++			frame@17c29000 {
++				frame-number = <4>;
++				interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0 0x17c29000 0x0 0x1000>;
++				status = "disabled";
++			};
++
++			frame@17c2b000 {
++				frame-number = <5>;
++				interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0 0x17c2b000 0x0 0x1000>;
++				status = "disabled";
++			};
++
++			frame@17c2d000 {
++				frame-number = <6>;
++				interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0 0x17c2d000 0x0 0x1000>;
++				status = "disabled";
++			};
++		};
++
++		apps_rsc: rsc@18200000 {
++			label = "apps_rsc";
++			compatible = "qcom,rpmh-rsc";
++			reg = <0x0 0x18200000 0x0 0x10000>,
++				<0x0 0x18210000 0x0 0x10000>,
++				<0x0 0x18220000 0x0 0x10000>;
++			reg-names = "drv-0", "drv-1", "drv-2";
++			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
++			qcom,tcs-offset = <0xd00>;
++			qcom,drv-id = <2>;
++			qcom,tcs-config = <ACTIVE_TCS  2>, <SLEEP_TCS   3>,
++					  <WAKE_TCS    3>, <CONTROL_TCS 1>;
++
++			rpmhcc: clock-controller {
++				compatible = "qcom,sm8350-rpmh-clk";
++				#clock-cells = <1>;
++				clock-names = "xo";
++				clocks = <&xo_board>;
++			};
++
++		};
++	};
++
++	timer {
++		compatible = "arm,armv8-timer";
++		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
++			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
++			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
++			     <GIC_PPI 12 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>;
++	};
++};
 -- 
-Best Regards
-Masahiro Yamada
+2.26.2
+
