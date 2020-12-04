@@ -2,280 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC70B2CECF8
+	by mail.lfdr.de (Postfix) with ESMTP id 4E21B2CECF7
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729971AbgLDLWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:22:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58770 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729939AbgLDLWS (ORCPT
+        id S1729779AbgLDLWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:22:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbgLDLWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:22:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607080852;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f2/H3RiAz1pLocixmwGuSF5Rzz6qChqweXU5xPialv8=;
-        b=HrgTfdzjvqV0YlHcA3OYnQfrP402rT35nx56WBg0jNSJDRNkMH59GasLQZy85SO39Q95x6
-        q7qLkoXxB2BGJD16QgBNGaSZDf79J8jGGTqP8fKjAWe26VdEQyCYc5BgKxXMwTEkruOpba
-        PzSJZNUOvR4mCJ378Dhk9lv2FGngEqs=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-139-sAlkeAnwMSiI2O6zrUe8fQ-1; Fri, 04 Dec 2020 06:20:50 -0500
-X-MC-Unique: sAlkeAnwMSiI2O6zrUe8fQ-1
-Received: by mail-wm1-f69.google.com with SMTP id o203so1827931wmo.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 03:20:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=f2/H3RiAz1pLocixmwGuSF5Rzz6qChqweXU5xPialv8=;
-        b=t+8kqcovBrdcldRDshcUBYL62ExyU+iOgDK3e6H7a4EgYb+8HRjVC10Bo9MWR8RYyR
-         tVtjT0ugDwSMU4vYdEtgw6dF69+lmfEvGRL+/7XBNrf+H/tdWe9DCijX1aja6/JD6fQC
-         Mb9zh+qFb0ubkyaoYQZrxHC15YcpZ85Qxc50WpkXWcxs3mfOPiU2hOR0yiiBXnk5TMvo
-         kbG8GI7t4+ue9jcE3PZ/Q4Dgm2UNcaq7EdXCiG7TlYSUz7hNF2be1ZQcIQ9bFvEuIsTs
-         OWvxOX4ACfAt7WHOTTlkEL+zkma3Y2M8eUfGD4cB/jHX0yXT5dnIF/yXuxO8mSZBHgsl
-         9Jyg==
-X-Gm-Message-State: AOAM530JtG/Ekrd2q/WjyEHCDsD7TeNe199+aFR33TQaXvl+drLe+cTY
-        lMkWYNvg4UjKC1RlGCzBGcV5g3nqmteWXk+z4spSks5S31klaWzlCJIWqUhETjoxeZW4hFe9uUX
-        r/0ef5bimXKaFwCffBoRJ6/yD
-X-Received: by 2002:a5d:61cc:: with SMTP id q12mr3443367wrv.395.1607080848924;
-        Fri, 04 Dec 2020 03:20:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxqwUEbseNrLnggtecxJEVeJHQ/BzfJ2S+msbXTA3EQ17p3ohZbgfmeGfL9ym9CfOKhFzugiw==
-X-Received: by 2002:a5d:61cc:: with SMTP id q12mr3443344wrv.395.1607080848668;
-        Fri, 04 Dec 2020 03:20:48 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id s13sm2595325wmj.28.2020.12.04.03.20.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Dec 2020 03:20:47 -0800 (PST)
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, Thomas.Lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, rientjes@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-References: <cover.1588711355.git.ashish.kalra@amd.com>
- <4ff020b446baa06037136ceeb1e66d4eba8ad492.1588711355.git.ashish.kalra@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v8 13/18] KVM: x86: Introduce new
- KVM_FEATURE_SEV_LIVE_MIGRATION feature & Custom MSR.
-Message-ID: <07c975ec-9319-dbd8-cbfe-61c70588d597@redhat.com>
-Date:   Fri, 4 Dec 2020 12:20:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 4 Dec 2020 06:22:05 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C0CC061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 03:21:24 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kl99I-0007bU-Qi; Fri, 04 Dec 2020 12:21:16 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kl99H-0004P7-Nn; Fri, 04 Dec 2020 12:21:15 +0100
+Date:   Fri, 4 Dec 2020 12:21:15 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
+        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-pwm@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        sean@mess.org
+Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
+ configuration
+Message-ID: <20201204112115.wopx5p5elgte7gad@pengutronix.de>
+References: <202011281128.54eLfMWr-lkp@intel.com>
+ <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
+ <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
+ <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <4ff020b446baa06037136ceeb1e66d4eba8ad492.1588711355.git.ashish.kalra@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ipxeiknnoimo3nk7"
+Content-Disposition: inline
+In-Reply-To: <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/05/20 23:19, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
-> 
-> Add new KVM_FEATURE_SEV_LIVE_MIGRATION feature for guest to check
-> for host-side support for SEV live migration. Also add a new custom
-> MSR_KVM_SEV_LIVE_MIG_EN for guest to enable the SEV live migration
-> feature.
-> 
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->   Documentation/virt/kvm/cpuid.rst     |  5 +++++
->   Documentation/virt/kvm/msr.rst       | 10 ++++++++++
->   arch/x86/include/uapi/asm/kvm_para.h |  5 +++++
->   arch/x86/kvm/svm/sev.c               | 14 ++++++++++++++
->   arch/x86/kvm/svm/svm.c               | 16 ++++++++++++++++
->   arch/x86/kvm/svm/svm.h               |  2 ++
->   6 files changed, 52 insertions(+)
-> 
-> diff --git a/Documentation/virt/kvm/cpuid.rst b/Documentation/virt/kvm/cpuid.rst
-> index 01b081f6e7ea..0514523e00cd 100644
-> --- a/Documentation/virt/kvm/cpuid.rst
-> +++ b/Documentation/virt/kvm/cpuid.rst
-> @@ -86,6 +86,11 @@ KVM_FEATURE_PV_SCHED_YIELD        13          guest checks this feature bit
->                                                 before using paravirtualized
->                                                 sched yield.
->   
-> +KVM_FEATURE_SEV_LIVE_MIGRATION    14          guest checks this feature bit before
-> +                                              using the page encryption state
-> +                                              hypercall to notify the page state
-> +                                              change
-> +
->   KVM_FEATURE_CLOCSOURCE_STABLE_BIT 24          host will warn if no guest-side
->                                                 per-cpu warps are expeced in
->                                                 kvmclock
-> diff --git a/Documentation/virt/kvm/msr.rst b/Documentation/virt/kvm/msr.rst
-> index 33892036672d..7cd7786bbb03 100644
-> --- a/Documentation/virt/kvm/msr.rst
-> +++ b/Documentation/virt/kvm/msr.rst
-> @@ -319,3 +319,13 @@ data:
->   
->   	KVM guests can request the host not to poll on HLT, for example if
->   	they are performing polling themselves.
-> +
-> +MSR_KVM_SEV_LIVE_MIG_EN:
-> +        0x4b564d06
-> +
-> +	Control SEV Live Migration features.
-> +
-> +data:
-> +        Bit 0 enables (1) or disables (0) host-side SEV Live Migration feature.
-> +        Bit 1 enables (1) or disables (0) support for SEV Live Migration extensions.
-> +        All other bits are reserved.
 
-This doesn't say what the feature is or does, and what the extensions 
-are.  As far as I understand bit 0 is a guest->host communication that 
-it's properly handling the encryption bitmap.
+--ipxeiknnoimo3nk7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I applied patches -13, this one a bit changed as follows.
+Hello Lino,
 
-diff --git a/Documentation/virt/kvm/cpuid.rst 
-b/Documentation/virt/kvm/cpuid.rst
-index cf62162d4be2..7d82d7da3835 100644
---- a/Documentation/virt/kvm/cpuid.rst
-+++ b/Documentation/virt/kvm/cpuid.rst
-@@ -96,6 +96,11 @@ KVM_FEATURE_MSI_EXT_DEST_ID        15          guest 
-checks this feature bit
-                                                 before using extended 
-destination
-                                                 ID bits in MSI address 
-bits 11-5.
+On Fri, Dec 04, 2020 at 12:42:15AM +0100, Lino Sanfilippo wrote:
+> On 29.11.20 at 19:10, Uwe Kleine-K=F6nig wrote:
+> > You're storing an unsigned long long (i.e. 64 bits) in an u32. If
+> > you are sure that this won't discard relevant bits, please explain
+> > this in a comment for the cursory reader.
+>=20
+> What about an extra check then to make sure that the period has not been =
+truncated,
+> e.g:
+>=20
+> 	value =3D DIV_ROUND_CLOSEST_ULL(state->period, scaler);
+>=20
+> 	/* dont accept a period that is too small or has been truncated */
+> 	if ((value < PERIOD_MIN) ||
+> 	    (value !=3D DIV_ROUND_CLOSEST_ULL(state->period, scaler)))
+> 		return -EINVAL;
 
-+KVM_FEATURE_ENCRYPTED_VM_BIT       16          guest checks this 
-feature bit before
-+                                               using the page 
-encryption state
-+                                               hypercall and encrypted VM
-+                                               features MSR
-+
-  KVM_FEATURE_CLOCKSOURCE_STABLE_BIT 24          host will warn if no 
-guest-side
-                                                 per-cpu warps are 
-expected in
-                                                 kvmclock
-diff --git a/Documentation/virt/kvm/msr.rst b/Documentation/virt/kvm/msr.rst
-index e37a14c323d2..02528bc760b8 100644
---- a/Documentation/virt/kvm/msr.rst
-+++ b/Documentation/virt/kvm/msr.rst
-@@ -376,3 +376,13 @@ data:
-  	write '1' to bit 0 of the MSR, this causes the host to re-scan its queue
-  	and check if there are more notifications pending. The MSR is available
-  	if KVM_FEATURE_ASYNC_PF_INT is present in CPUID.
-+
-+MSR_KVM_ENC_VM_FEATURE:
-+        0x4b564d08
-+
-+	Control encrypted VM features.
-+
-+data:
-+        Bit 0 tells the host that the guest is (1) or is not (0) 
-issuing the
-+        ``KVM_HC_PAGE_ENC_STATUS`` hypercall to keep the encrypted bitmap
-+       up to date.
-diff --git a/arch/x86/include/uapi/asm/kvm_para.h 
-b/arch/x86/include/uapi/asm/kvm_para.h
-index 950afebfba88..3dda6e416a70 100644
---- a/arch/x86/include/uapi/asm/kvm_para.h
-+++ b/arch/x86/include/uapi/asm/kvm_para.h
-@@ -33,6 +33,7 @@
-  #define KVM_FEATURE_PV_SCHED_YIELD	13
-  #define KVM_FEATURE_ASYNC_PF_INT	14
-  #define KVM_FEATURE_MSI_EXT_DEST_ID	15
-+#define KVM_FEATURE_ENCRYPTED_VM	16
+I'd make value an unsigned long long and check for > 0xffffffff instead
+of repeating the (expensive) division. (Hmm, maybe the compiler is smart
+enough to not actually repeat it, but still.)
 
-  #define KVM_HINTS_REALTIME      0
+Best regards
+Uwe
 
-@@ -54,6 +55,7 @@
-  #define MSR_KVM_POLL_CONTROL	0x4b564d05
-  #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
-  #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
-+#define MSR_KVM_ENC_VM_FEATURE	0x4b564d08
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-  struct kvm_steal_time {
-  	__u64 steal;
-@@ -136,4 +138,6 @@ struct kvm_vcpu_pv_apf_data {
-  #define KVM_PV_EOI_ENABLED KVM_PV_EOI_MASK
-  #define KVM_PV_EOI_DISABLED 0x0
+--ipxeiknnoimo3nk7
+Content-Type: application/pgp-signature; name="signature.asc"
 
-+#define KVM_ENC_VM_BITMAP_VALID			(1 << 0)
-+
-  #endif /* _UAPI_ASM_X86_KVM_PARA_H */
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index fa67f498e838..0673531233da 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1478,6 +1478,17 @@ int svm_page_enc_status_hc(struct kvm *kvm, 
-unsigned long gpa,
-  	return 0;
-  }
+-----BEGIN PGP SIGNATURE-----
 
-+void sev_update_enc_vm_flags(struct kvm *kvm, u64 data)
-+{
-+	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-+
-+	if (!sev_guest(kvm))
-+		return;
-+
-+	if (data & KVM_ENC_VM_BITMAP_VALID)
-+		sev->live_migration_enabled = true;
-+}
-+
-  int svm_get_page_enc_bitmap(struct kvm *kvm,
-  				   struct kvm_page_enc_bitmap *bmap)
-  {
-@@ -1490,6 +1501,9 @@ int svm_get_page_enc_bitmap(struct kvm *kvm,
-  	if (!sev_guest(kvm))
-  		return -ENOTTY;
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/KG6gACgkQwfwUeK3K
+7AmG2Qf/amv7olBkW+obnQcmNF0IyH6SlXaSsCwdoDpgoecCz0P+iIkdbOTfCuh2
+W/5fkG0dPGafcmGYsCxKC4W//WpXFoThJIqrh119+JkM3apOCx6uj19Dp4zq9z4s
+IvCGrNnTpDATXPbjohCyFAqGytQYnbpCzH8KY8Qx7Ay66v6hK55JVJRBM8gPi3Ck
+GRZjWcGg0fPenaGUF7X+fX245CmvTs3MregzKqpkdDvs2J8TVOcHJ0SNgm5Pizjd
+AgWaT12h3a319ZEeuHf07Rv3dtH6jHfjNO6bMAaPfY3G0V1q55nHPNuaXqQ1I+j3
+SAASbhQiB44PG3PJQVQOIlVR4kbTUA==
+=EGSk
+-----END PGP SIGNATURE-----
 
-+	if (!sev->live_migration_enabled)
-+		return -EINVAL;
-+
-  	gfn_start = bmap->start_gfn;
-  	gfn_end = gfn_start + bmap->num_pages;
-
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 66f7014eaae2..8ac2c5b9c675 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -2766,6 +2766,9 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, 
-struct msr_data *msr)
-  		svm->msr_decfg = data;
-  		break;
-  	}
-+	case MSR_KVM_ENC_VM_FEATURE:
-+		sev_update_enc_vm_flags(vcpu->kvm, data);
-+		break;
-  	case MSR_IA32_APICBASE:
-  		if (kvm_vcpu_apicv_active(vcpu))
-  			avic_update_vapic_bar(to_svm(vcpu), data);
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 287559b8c5b2..363c3f8d00b7 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -66,6 +66,7 @@ struct kvm_sev_info {
-  	int fd;			/* SEV device fd */
-  	unsigned long pages_locked; /* Number of pages locked */
-  	struct list_head regions_list;  /* List of registered regions */
-+	bool live_migration_enabled;
-  	unsigned long *page_enc_bmap;
-  	unsigned long page_enc_bmap_size;
-  };
-@@ -504,5 +505,6 @@ int svm_page_enc_status_hc(struct kvm *kvm, unsigned 
-long gpa,
-  				  unsigned long npages, unsigned long enc);
-  int svm_get_page_enc_bitmap(struct kvm *kvm, struct 
-kvm_page_enc_bitmap *bmap);
-  int svm_set_page_enc_bitmap(struct kvm *kvm, struct 
-kvm_page_enc_bitmap *bmap);
-+void sev_update_enc_vm_flags(struct kvm *kvm, u64 data);
-
-  #endif
-
-Paolo
-
+--ipxeiknnoimo3nk7--
