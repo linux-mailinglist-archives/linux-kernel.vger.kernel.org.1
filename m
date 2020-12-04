@@ -2,117 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCEC2CE69F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 654512CE6A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727641AbgLDDhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 22:37:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49768 "EHLO
+        id S1727811AbgLDDkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 22:40:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgLDDhv (ORCPT
+        with ESMTP id S1726469AbgLDDks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 22:37:51 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CC6C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 19:37:11 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id q16so4371246edv.10
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 19:37:11 -0800 (PST)
+        Thu, 3 Dec 2020 22:40:48 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891B0C061A52
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 19:40:08 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id w16so2694444pga.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 19:40:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=H7q4vopEbHCewQ+qUf3Z4+KiH74FFIhB3Uhp8jwbeRs=;
-        b=h6lJHRIwp2kfx3tSOHVwfn7ZLGG5UVFD8MKBKp7vUUe6bQP9aSUb2KT6tfLpyXgiUe
-         uO6sK9Zr6nxXuBdVBLOzPIc/ctgN7f8WXi3+IqA+i/l4PUf34JFoUG1MgvdHxb83NkfG
-         992rzEGAkOKMrn7Zk5BdbZcsSSV0ZoYaMre+DOnrBNpMGrfyzstujfH3254xsLfR4B7o
-         NVQrrDevjQHrIX4aoLuzXQrXRgPxWOtr4VWhBU4Frntmabksc0kVn0+NFWDqUXvoLt3v
-         2+74tWrg/Ib+xO/tsR5jl9suTNwsI9fqZibS8HovKAsGg7JFCBbQoUNrxcvtwNjJvDg9
-         SazQ==
+        bh=kP0kqVxYlLhlxakYbEWvE8pzB4Mj7yplj9IQfIP/Nqo=;
+        b=RXeno4fHs2hClfvDpmt84Kb0l0ffZ+tfCf4eGR4N2xKr5d+GEweCV3ikwwgvmK8Jz8
+         7yRlfUm9ZgJHUw0G7xO4JpRTa6nHUnxHGOP3ecvxLWNCVn2qfP0+4sEXxg+TQ6dzvNdB
+         8fFJclIAPEb3EGx/lzzZi/6MYFK1BUfwM3r0BthCHtK3IOfFmB7QRDuVsNQ+2GSAaMLj
+         Fx7lToXjBVngkeA49IgqF5XW44cP2AB3Llrt2EDOfpZX1pB/6wcSb6Q/s5a06s8rxYkP
+         f6HLsRbClLzTOVfJPPeTaEpznXSGk9wCHNM+A1LjcwaYFE4EheH05Ug+dHysIlihP4qm
+         fqUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=H7q4vopEbHCewQ+qUf3Z4+KiH74FFIhB3Uhp8jwbeRs=;
-        b=rHwIzGMnn1g9Nfg2AD8oR6+49CX+v1xPzDUmdCnH9ZxxNqb3zL+wUVzD5WlEhO3lCN
-         qUB45PnFgjiD5je/N5u+W0vfLR4xSpcLunhFHtBxpXO546llyrvg8s17VK3cXuvl09V6
-         5wcIWwZYISAI2MoL4ruJSVGGn2XDjPiZjZYsa6dbk28qIFeE7b6o+tjx3qQlkkMl9Adw
-         h71P9+COla9Rs/eOl3sjn66d6SsHAeu8KwX/4/6k+Vl7bTbnu3cXUUK+hl/CxaBtCbwB
-         5BkMnxRXYiLsqGvPKwenamDOfWaG1+L+H9iMzWvurgdLsSNagsy5dRwiSsQDMHNkS36T
-         pJKw==
-X-Gm-Message-State: AOAM532frnxIg+Zy8GQPCWFjDyKXcuYdobJcoHKlmWkI+lKnTYWAvCGx
-        mcSpH4cyRunOs0t7WKKruklI3sfZAkADRyVr+1fmtA==
-X-Google-Smtp-Source: ABdhPJypzF/zxqPx2JjCtFUbZXdp8DAB6CgTOr6BBeH65H/vxbjhDErMw8S4HuqSooRtOzznLRIL1KkQvJFsw0MnHHY=
-X-Received: by 2002:a50:8a44:: with SMTP id i62mr2924285edi.97.1607053030239;
- Thu, 03 Dec 2020 19:37:10 -0800 (PST)
+        bh=kP0kqVxYlLhlxakYbEWvE8pzB4Mj7yplj9IQfIP/Nqo=;
+        b=RQfRzQTEj/blHBkZzrrJ46wxL34ToiJoibeszXOEruq34OWiThutP4SqJq5AE9ud4o
+         Pm00lmCi6C+t2n5UgOK8l716oAPS9utLiVG5coQSbUZaS7FTuOcaH5QQ3OPpsg7IheLP
+         Uuw1IDkaLTVKJ/UIgl7xmQXkMdnuovqUi5XIaQudZa5nTZT/x+QzIOdOcBbiFpOIGvVf
+         c79H0YTruOWt+O+J/ZhYbE4aPxN8BH1L3obdnEmlYsM3XVPnaDlzSqxKY3kRP3imJsZB
+         3F1QElX+aBzzD6upKEEpgX4oc7eSLVJv+gVDDko0BKLBFGdxWGI03qutxPK9elSVo44w
+         uIHQ==
+X-Gm-Message-State: AOAM532PY2DwPK/34RAhkthHlHJCWHdoWabQXzMlY2msexCDRy0tTsy0
+        PlaJAscxsYeU3e4Yumo+2djRw1Lq0VDzjzmgRVeLkA==
+X-Google-Smtp-Source: ABdhPJynCEO+aYzaCWwl98Gj7aTZquZAjP6gvBEF+xIuWOhnCtjsbj71ZJ7LyQ2PQpmasXLQiRg6kelKrNEq9MwhbLk=
+X-Received: by 2002:a63:1203:: with SMTP id h3mr2402111pgl.273.1607053207913;
+ Thu, 03 Dec 2020 19:40:07 -0800 (PST)
 MIME-Version: 1.0
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
- <X8j+8DRrPeXBaTA7@kroah.com> <20201204023357.GA1337723@nvidia.com>
-In-Reply-To: <20201204023357.GA1337723@nvidia.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 3 Dec 2020 19:37:06 -0800
-Message-ID: <CAPcyv4iDr9RUK_F52mNuO=+ZuFtD4PTpB5QzKA4fnF_RaRoR1w@mail.gmail.com>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, alsa-devel@alsa-project.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201130151838.11208-1-songmuchun@bytedance.com>
+ <CAMZfGtWvLEytN5gBN+OqntrNXNd3eNRWrfnkeCozvARmpTNAXw@mail.gmail.com> <600fd7e2-70b4-810f-8d12-62cba80af80d@oracle.com>
+In-Reply-To: <600fd7e2-70b4-810f-8d12-62cba80af80d@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 4 Dec 2020 11:39:31 +0800
+Message-ID: <CAMZfGtX2mu1tyE_898mQeEpmP4Pd+rEKOHpYF=KN=5v4WExpig@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v7 00/15] Free some vmemmap pages of
+ hugetlb page
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, dave.hansen@linux.intel.com,
+        hpa@zytor.com, x86@kernel.org, bp@alien8.de, mingo@redhat.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        pawan.kumar.gupta@linux.intel.com, mchehab+huawei@kernel.org,
+        paulmck@kernel.org, viro@zeniv.linux.org.uk,
+        Peter Zijlstra <peterz@infradead.org>, luto@kernel.org,
+        oneukum@suse.com, jroedel@suse.de,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        anshuman.khandual@arm.com, Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-doc@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 6:34 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+On Fri, Dec 4, 2020 at 7:49 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
 >
-> On Thu, Dec 03, 2020 at 04:06:24PM +0100, Greg KH wrote:
->
-> > > ...for all the independent drivers to have a common commit baseline. It
-> > > is not there yet pending Greg's Ack.
+> On 12/3/20 12:35 AM, Muchun Song wrote:
+> > On Mon, Nov 30, 2020 at 11:19 PM Muchun Song <songmuchun@bytedance.com> wrote:
+> >>
+> >> Hi all,
+> >>
+> >> This patch series will free some vmemmap pages(struct page structures)
+> >> associated with each hugetlbpage when preallocated to save memory.
 > >
-> > I have been trying to carve out some time to review this.  At my initial
-> > glance, I still have objections, so please, give me a few more days to
-> > get this done...
+> > Hi Mike,
+> >
+> > What's your opinion on this version?  Any comments or suggestions?
+> > And hoping you or more people review the series. Thank you very
+> > much.
 >
-> There are still several more days till the merge window, but I am
-> going to ask Leon to get the mlx5 series, and this version of the
-> auxbus patch it depends on, into linux-next with the intention to
-> forward it to Linus if there are no substantive comments.
->
-> Regardless of fault or reason this whole 1.5 year odyssey seems to have
-> brought misery to everyone involved and it really is time to move on.
->
-> Leon and his team did a good deed 6 weeks ago to quickly turn around
-> and build another user example. For their efforts they have been
-> rewarded with major merge conflicts and alot of delayed work due to
-> the invasive nature of the mlx5 changes. To continue to push this out
-> is disrespectful to him and his team's efforts.
->
-> A major part of my time as RDMA maintainer has been to bring things
-> away from vendor trees and into a common opensource community.  Intel
-> shipping a large out of tree RDMA driver and abandoning their intree
-> driver is really harmful. This auxbus is a substantial blocker to them
-> normalizing their operations, thus I view it as important to
-> resolve. Even after this it is going to take a long time and alot of
-> effort to review their new RDMA driver.
+> Sorry Muchun, I have been busy with other things and have not looked at
+> this new version.  Should have some time soon.
 
-When you have 3 independent driver teams (mlx5, i40e, sof) across 2
-companies (NVIDIA and Intel), and multiple subsystem maintainers with
-a positive track record of upstream engagement all agreeing on a piece
-of infrastructure, I struggle to imagine a stronger case for merging.
-I did get word of a fixup needed in the shutdown code, I'll get that
-folded. Then, barring a concrete objection, I'll look to publish a
-commit that others can pull in to start building soak time in -next
-this time tomorrow.
+Thanks very much.
+
+>
+> As previously mentioned, I feel qualified to review the hugetlb changes
+> and some other closely related changes.  However, this patch set is
+> touching quite a few areas and I do not feel qualified to make authoritative
+> statements about them all.  I too hope others will take a look.
+
+Agree. I also hope others can take a look at other modules(e.g.
+sparse-vmemmap, memory-hotplug). Thanks for everyone's efforts
+on this.
+
+> --
+> Mike Kravetz
+
+
+
+-- 
+Yours,
+Muchun
