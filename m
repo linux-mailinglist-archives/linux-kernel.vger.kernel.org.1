@@ -2,97 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B506A2CE996
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3002CE98A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728811AbgLDI3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgLDI3k (ORCPT
+        id S1729042AbgLDI05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:26:57 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9012 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727479AbgLDI0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:29:40 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D43C061A4F;
-        Fri,  4 Dec 2020 00:29:00 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id lt17so7496533ejb.3;
-        Fri, 04 Dec 2020 00:29:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VuVUapvBZOzCnZE6zLH38tG2kKBhvbLGgD5G9pUcXeI=;
-        b=hneajKGE+rdsfgBYYw3euCHldlrLYtD1ukxgFTpwxxtSVtDWTHKhHE4hFghC/tyYYy
-         uaXNnf2OhdosXlN+BkBwweQDHGS1uI5HP6rWPMuZ+LavT1I/oNGlAQBJ0Hh5UXj2Aecg
-         zzi3mARA/ZIwgoElv4L/gOT4keBgDgE43Q7/jXEoGSHwlw7Z767FN2Joe6sjKGekPY4l
-         IXJ/+UFj4+BFLX450SYy+btZUI+Pp0oMUYjF9M2q0ggDmLCbo4FLmtAZpP+xteYF3HZt
-         fK7UOtus9sL3GYbY91VDyQuHafSdNOLGFLo0Ep9rwD2X26dY5VytJDhjkXVPAJuTqqYR
-         D/cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VuVUapvBZOzCnZE6zLH38tG2kKBhvbLGgD5G9pUcXeI=;
-        b=JzTpbhnNt89BQtDsvu5HjmYMFKVtxmiL2TPOR9wX4OpLRy0gb3PFtuSutGdru0jIhO
-         PFPlFAgJ0j2+Y9gptStbsG/5hXSh8aeedGwi5H/CZP22llqBFX3dgo+U3VGIJLVPokCn
-         wWIqdOV/MoeGoTw124fW5Bh1sdM2ozlcFoqjy7AZ1K9jQ6vdN3+/p4UHDg6Bv/cqyfWD
-         4EbGsr5zOtBQxYlfomzy8CwOlRS5xKeseu3hLdRhC29uEwoRSqomRZ9Yk+aegkXZAwy9
-         Vw1PyC5rZxrbZeSTXrr/gfxfbpX89sRbFRID2dcA0X0RhqlRaQm/W/Hb9dGOnDgbTM1Z
-         fZLQ==
-X-Gm-Message-State: AOAM530oOiP6pQVdr+UF1nYnOyiggZnj++60CuRM+8Xo/RdTENG3qPj2
-        b0dyqxmywoGXrk9Lh+ZIOcE=
-X-Google-Smtp-Source: ABdhPJxMORfce2kUQwReZ47M86buZbLdNB+F//gpPJa8iRX+0NAazl0bgcTgWX+pNWP/NM8NR/UWNg==
-X-Received: by 2002:a17:906:1412:: with SMTP id p18mr6177462ejc.480.1607070538872;
-        Fri, 04 Dec 2020 00:28:58 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id q19sm2589800ejz.90.2020.12.04.00.28.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 04 Dec 2020 00:28:58 -0800 (PST)
-Message-ID: <2a682e702de6eb431c7f204962d3e54b67dbd2ff.camel@gmail.com>
-Subject: Re: [PATCH 2/3] scsi: ufs: Keep device power on only
- fWriteBoosterBufferFlushDuringHibernate == 1
-From:   Bean Huo <huobean@gmail.com>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 04 Dec 2020 09:28:57 +0100
-In-Reply-To: <c4e810873ac9e15735369d0159fbb664@codeaurora.org>
-References: <20201130181143.5739-1-huobean@gmail.com>
-         <20201130181143.5739-3-huobean@gmail.com>
-         <c4e810873ac9e15735369d0159fbb664@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Fri, 4 Dec 2020 03:26:55 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CnQkt1NtszhmMK;
+        Fri,  4 Dec 2020 16:25:42 +0800 (CST)
+Received: from compute.localdomain (10.175.112.70) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Fri, 4 Dec 2020 16:25:59 +0800
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+To:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rui Wang <gtk_ruiwang@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+CC:     Zhang Changzhong <zhangchangzhong@huawei.com>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] media: mtk-vcodec: fix error return code in vdec_vp9_decode()
+Date:   Fri, 4 Dec 2020 16:29:34 +0800
+Message-ID: <1607070575-32609-1-git-send-email-zhangchangzhong@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-04 at 11:26 +0800, Can Guo wrote:
-> > 
-> >        if (!ufshcd_is_wb_allowed(hba))
-> >                return false;
-> > +
-> > +     if (!hba->dev_info.is_hibern8_wb_flush)
-> > +             return false;
-> 
-> The check is in the wrong place - even if say
-> fWriteBoosterBufferFlushDuringHibernate is failed to be enabled,
-> ufshcd_wb_need_flush() still needs to reflect the fact that whether
-> the wb buffer needs to be flushed or not - it should not be decided
-> by the flag.
-> 
-Can,
-you are right, let me take it out from this function, and see if
-acceptable.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Thanks,
-Bean
+Fixes: dea42fb79f4f ("media: mtk-vcodec: reset segment data then trig decoder")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+---
+ drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> Thanks,
-> 
-> Can Guo.
+diff --git a/drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c b/drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c
+index 5ea153a..d988021 100644
+--- a/drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c
++++ b/drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c
+@@ -890,7 +890,8 @@ static int vdec_vp9_decode(void *h_vdec, struct mtk_vcodec_mem *bs,
+ 			memset(inst->seg_id_buf.va, 0, inst->seg_id_buf.size);
+ 
+ 			if (vsi->show_frame & BIT(2)) {
+-				if (vpu_dec_start(&inst->vpu, NULL, 0)) {
++				ret = vpu_dec_start(&inst->vpu, NULL, 0);
++				if (ret) {
+ 					mtk_vcodec_err(inst, "vpu trig decoder failed");
+ 					goto DECODE_ERROR;
+ 				}
+-- 
+2.9.5
 
