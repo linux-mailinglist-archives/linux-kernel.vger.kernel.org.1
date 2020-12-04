@@ -2,40 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E982CF784
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 659952CF78A
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730571AbgLDXal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 18:30:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41462 "EHLO mail.kernel.org"
+        id S1730904AbgLDXbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 18:31:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgLDXak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 18:30:40 -0500
+        id S1726111AbgLDXbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 18:31:12 -0500
 From:   Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Dharageswari R <dharageswari.r@intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Libin Yang <libin.yang@linux.intel.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        Naveen Manohar <naveen.m@intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Ben Zhang <benzh@chromium.org>
-In-Reply-To: <20201203154010.29464-1-brent.lu@intel.com>
-References: <20201203154010.29464-1-brent.lu@intel.com>
-Subject: Re: [PATCH v2] ASoC: intel: sof_rt5682: Add support for tgl_rt1011_rt5682
-Message-Id: <160712460213.7629.11587898255974280110.b4-ty@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        lgirdwood@gmail.com
+In-Reply-To: <20201204164228.1826-1-srinivas.kandagatla@linaro.org>
+References: <20201204164228.1826-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: q6afe-clocks: Add missing parent clock rate
+Message-Id: <160712460214.7629.10875040201126733865.b4-ty@kernel.org>
 Date:   Fri, 04 Dec 2020 23:30:02 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -44,10 +28,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 23:40:10 +0800, Brent Lu wrote:
-> This patch adds the driver data for two rt1011 speaker amplifiers on
-> SSP1 and rt5682 on SSP0 for TGL platform. DAI format for rt1011 is
-> leveraged from cml_rt1011_rt5682 which is 4-slot tdm with 100fs bclk.
+On Fri, 4 Dec 2020 16:42:28 +0000, Srinivas Kandagatla wrote:
+> setting clock rate on child clocks without a parent clock rate will
+> result in zero clk rate for child. This also means that when audio
+> is started dsp will attempt to access registers without enabling
+> clock resulting in board boot up.
+> 
+> Fix this by adding the missing parent clock rate.
 
 Applied to
 
@@ -55,8 +42,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: intel: sof_rt5682: Add support for tgl_rt1011_rt5682
-      commit: aa6cc97c0ac31c668afc7027bcf2bdb0fe4610fe
+[1/1] ASoC: q6afe-clocks: Add missing parent clock rate
+      commit: 7e20ae1208daaf6dad85c2dcb968fc590b6f3b99
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
