@@ -2,181 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBE32CE8D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8732CE8DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728569AbgLDHwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 02:52:10 -0500
-Received: from mga09.intel.com ([134.134.136.24]:5964 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728006AbgLDHwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 02:52:10 -0500
-IronPort-SDR: EoYwucPsrSvmePbVBEKIJq7JIFAIN4+FR2WmoZapYrohYeGeHokSe0wJGQk2jsDwJLLackH/4I
- sBrBBnipr6ow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="173497843"
-X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="173497843"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 23:51:26 -0800
-IronPort-SDR: 7ZcG8G328PkbIiQVxSKegSYITiuu3ko9fMBMY1LENB2V4PwMbSPoMwJUlOzPLJsBV+ZQhEe/nD
- 4FaMN8kekBgA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="540599851"
-Received: from lkp-server02.sh.intel.com (HELO f74a175f0d75) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 03 Dec 2020 23:51:25 -0800
-Received: from kbuild by f74a175f0d75 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kl5sC-00000v-Az; Fri, 04 Dec 2020 07:51:24 +0000
-Date:   Fri, 04 Dec 2020 15:50:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 9dc242493c6ebbea55c354b7dbce7edfc1b5a75c
-Message-ID: <5fc9ea4e.4QuUOfahhQY7cFTl%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728733AbgLDHx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 02:53:27 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36452 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726669AbgLDHx1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 02:53:27 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B47pe0R081483;
+        Fri, 4 Dec 2020 01:51:40 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607068300;
+        bh=7B4Z9V9FJVne7AXPMH64Qu4HHhhon+GsU3KmmNhBkbw=;
+        h=From:To:CC:Subject:Date;
+        b=OTRjZLLXP+HqLLYpiZw9JmRmOj/YPm80KxiwFc66YTOZO6I6m6PUZ1Z0TDOdZ6hou
+         6LXDzpeKfIClg0ZBNeP7wt8m8MfQhZn1vQQr7FJfDQFi8IWK7lSHEcA8+1/cbnj8Rp
+         jt+keN7+C064XR8+j38sx9+qtc7/pXqQwhb1njFQ=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B47peR0113074
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 4 Dec 2020 01:51:40 -0600
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 4 Dec
+ 2020 01:51:40 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 4 Dec 2020 01:51:40 -0600
+Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B47pL6s031834;
+        Fri, 4 Dec 2020 01:51:24 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-omap@vger.kernel.org>
+Subject: [PATCH v2 0/3] PCI: J721E: Fix Broken DT w.r.t SYSCON DT
+Date:   Fri, 4 Dec 2020 13:21:14 +0530
+Message-ID: <20201204075117.10430-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: 9dc242493c6ebbea55c354b7dbce7edfc1b5a75c  Merge branch 'linus'
+Previously a subnode to syscon node was added which has the
+exact memory mapped address of pcie_ctrl but based on review comment
+provided by Rob [1], the offset is now being passed as argument to
+"ti,syscon-pcie-ctrl" phandle.
 
-elapsed time: 1107m
+This series has both driver change and DT change. The driver change
+should be merged first and the driver takes care of maintaining old
+DT compatibility.
 
-configs tested: 117
-configs skipped: 2
+Changes frm v1:
+*) Remove use of allOf in schema
+*) Added Fixes tag
+*) Maintain old DT compatibility
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+[1] -> http://lore.kernel.org/r/CAL_JsqKiUcO76bo1GoepWM1TusJWoty_BRy2hFSgtEVMqtrvvQ@mail.gmail.com
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                       aspeed_g5_defconfig
-riscv                            alldefconfig
-sh                             espt_defconfig
-sh                            hp6xx_defconfig
-arm                          pxa168_defconfig
-arm                         orion5x_defconfig
-nds32                            alldefconfig
-mips                      fuloong2e_defconfig
-sh                           se7724_defconfig
-powerpc                      obs600_defconfig
-arm                          pcm027_defconfig
-arm                            dove_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                      pcm030_defconfig
-arc                        nsim_700_defconfig
-sparc64                          alldefconfig
-mips                  decstation_64_defconfig
-sh                           se7750_defconfig
-ia64                          tiger_defconfig
-mips                        jmr3927_defconfig
-xtensa                          iss_defconfig
-arm                          ixp4xx_defconfig
-powerpc                   motionpro_defconfig
-powerpc                     asp8347_defconfig
-arm                         nhk8815_defconfig
-powerpc                    amigaone_defconfig
-sh                          rsk7269_defconfig
-powerpc                      mgcoge_defconfig
-m68k                         amcore_defconfig
-powerpc                    gamecube_defconfig
-xtensa                  nommu_kc705_defconfig
-arm                         shannon_defconfig
-mips                           ip32_defconfig
-arm                         s3c2410_defconfig
-xtensa                              defconfig
-powerpc                     skiroot_defconfig
-c6x                        evmc6474_defconfig
-arm                             pxa_defconfig
-arm                       omap2plus_defconfig
-powerpc                    socrates_defconfig
-xtensa                    smp_lx200_defconfig
-c6x                        evmc6472_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                               tinyconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20201204
-i386                 randconfig-a004-20201204
-i386                 randconfig-a001-20201204
-i386                 randconfig-a002-20201204
-i386                 randconfig-a006-20201204
-i386                 randconfig-a003-20201204
-i386                 randconfig-a014-20201203
-i386                 randconfig-a013-20201203
-i386                 randconfig-a011-20201203
-i386                 randconfig-a015-20201203
-i386                 randconfig-a012-20201203
-i386                 randconfig-a016-20201203
-x86_64               randconfig-a004-20201204
-x86_64               randconfig-a006-20201204
-x86_64               randconfig-a002-20201204
-x86_64               randconfig-a001-20201204
-x86_64               randconfig-a005-20201204
-x86_64               randconfig-a003-20201204
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                                  kexec
-x86_64                               rhel-8.3
+Kishon Vijay Abraham I (3):
+  dt-bindings: pci: ti,j721e: Fix "ti,syscon-pcie-ctrl" to take argument
+  PCI: j721e: Get offset within "syscon" from "ti,syscon-pcie-ctrl"
+    phandle arg
+  arm64: dts: ti: k3-j721e-main: Remove "syscon" nodes added for
+    pcieX_ctrl
 
-clang tested configs:
-x86_64               randconfig-a016-20201204
-x86_64               randconfig-a012-20201204
-x86_64               randconfig-a014-20201204
-x86_64               randconfig-a013-20201204
-x86_64               randconfig-a015-20201204
-x86_64               randconfig-a011-20201204
+ .../bindings/pci/ti,j721e-pci-ep.yaml         | 11 +++--
+ .../bindings/pci/ti,j721e-pci-host.yaml       | 11 +++--
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 48 ++++---------------
+ drivers/pci/controller/cadence/pci-j721e.c    | 28 +++++++----
+ 4 files changed, 41 insertions(+), 57 deletions(-)
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+2.17.1
+
