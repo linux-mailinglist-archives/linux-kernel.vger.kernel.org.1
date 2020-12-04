@@ -2,114 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17152CE5EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FBC2CE5F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgLDCrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 21:47:05 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:25004 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725847AbgLDCrE (ORCPT
+        id S1727281AbgLDCt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 21:49:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40077 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726178AbgLDCt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 21:47:04 -0500
-X-UUID: 6638b150d4d6461e8fb3934bd011f25a-20201204
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=HFCQ5ohxF0aLV8mEa0u/JoA63IqNHij1i7SP2mutPLU=;
-        b=Opazqa7xIWUWg4IjFor2cnt6TLiWWwNsQiz62cT1opLdc1Gsrk0OH57dLd5bt6znyWqGFHrrik355TfT6HJ52STU7gtTOBd8vnDDuGXOMEjVQ93XZ8Nnf6RunUcW2UqHZvsdd0ULLLpfteDvaVIlWELgQ5hMO9+Kea+AOiorlfM=;
-X-UUID: 6638b150d4d6461e8fb3934bd011f25a-20201204
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <dongchun.zhu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 948566401; Fri, 04 Dec 2020 10:46:15 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 4 Dec
- 2020 10:46:07 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 4 Dec 2020 10:46:05 +0800
-Message-ID: <1607049966.4733.189.camel@mhfsdcap03>
-Subject: Re: media: i2c: add OV02A10 image sensor driver
-From:   Dongchun Zhu <dongchun.zhu@mediatek.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Colin Ian King <colin.king@canonical.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <tfiga@google.com>, <sj.huang@mediatek.com>,
-        <dongchun.zhu@mediatek.com>
-Date:   Fri, 4 Dec 2020 10:46:06 +0800
-In-Reply-To: <CAHp75Ve7Sdf=Zy5N1LN_w22=YwPgWWR-FZtrQcAkOF=ViT2Kbw@mail.gmail.com>
-References: <9af089ea-2532-68ac-5d22-97a669ccec91@canonical.com>
-         <CAHp75Ve7Sdf=Zy5N1LN_w22=YwPgWWR-FZtrQcAkOF=ViT2Kbw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 3 Dec 2020 21:49:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607050080;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VBVcwXe0Xot4zj8M7WdfrfXxsjan5Uxa2ACFxEEuvJA=;
+        b=aKapiidk5kP/nc2Ii3lQmDJQFb6xc1wS/QCMCIe2ExNjG20/bnn0R9WCBilH99lnEPhVqZ
+        ruvYmG0dpVsLYlc6+sOdUqunqcPJaHyek5ucIGM61IimToBxkZ4f/bCzYSfCjWL5Q1a8oC
+        T33bARStHj8zTc6Oamin4ZNX4CxwO5c=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-kNj5Dp8vNquDt1v67hC1qQ-1; Thu, 03 Dec 2020 21:47:58 -0500
+X-MC-Unique: kNj5Dp8vNquDt1v67hC1qQ-1
+Received: by mail-pg1-f200.google.com with SMTP id j14so531176pgs.13
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 18:47:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VBVcwXe0Xot4zj8M7WdfrfXxsjan5Uxa2ACFxEEuvJA=;
+        b=uG/trizOjB01dw79cw0IcF7UQjDDoBChWUDzDvqdLrqn15oWQhRZ0rH8i07gCA98Wp
+         WMMlkTGOFs3LWMRe6ripCPCDydtmlJ96DAsk2rWLO2FEC9a3NW/R87t6qSe9AfoUZNVi
+         rj1xAkClujL3ISIKpy2HCfgYlyAuYIqv8e0rTHmq7fVdrjvYC4wkJ0nchX3mxJUY0Iym
+         TX1irc2AYf4dLiolnOrSOBDyjofbpg+i9NubglrysxKtmFyYuPz2ibScD1HLOGG5m1q+
+         8ZHVXlYfZFwNQ+ibEDEJTZZAGhtIkm/RI2Pu5ey+CmSZWpOJikxQgpF2oHqaA6eevvlb
+         hM2Q==
+X-Gm-Message-State: AOAM533PVOiSkcAnRNAipZi+gMCb64XH9WlXQmDybCwNv+aeztzOOmuO
+        5yKsYTyfv6bCTzmAvOUz8lRNCaDxEaOwkHh9GV+xlH0PF2Kl4CepIAo8s/rttaNDpSMI5SHZLGx
+        cVCBUF/bP+NzuCdZHnbcaiyKC
+X-Received: by 2002:a17:90a:a786:: with SMTP id f6mr2105581pjq.104.1607050077569;
+        Thu, 03 Dec 2020 18:47:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxafF8YpV/xVIGGfNk00Gd3HTJHR0we7Pr5oZCjxJlSwb7P1KQx5BTk0Tq/APvl6dYzc7sp5w==
+X-Received: by 2002:a17:90a:a786:: with SMTP id f6mr2105568pjq.104.1607050077367;
+        Thu, 03 Dec 2020 18:47:57 -0800 (PST)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 22sm584280pjw.56.2020.12.03.18.47.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 18:47:56 -0800 (PST)
+Date:   Fri, 4 Dec 2020 10:47:46 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>, jaegeuk@kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v6] f2fs: compress: support compress level
+Message-ID: <20201204024746.GC1963435@xiangao.remote.csb>
+References: <20201203061715.60447-1-yuchao0@huawei.com>
+ <X8k9UoUKcyThlJNU@gmail.com>
+ <20201204003119.GA1957051@xiangao.remote.csb>
+ <7b975d1a-a06c-4e14-067e-064afc200934@huawei.com>
+ <20201204020659.GB1963435@xiangao.remote.csb>
+ <3041968d-87d0-d2dc-822b-0bb4a94a365b@huawei.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: B9D516F0823BDF1801AF36AFAB9F17DA8860BE715019026247D88428AAF69A9E2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <3041968d-87d0-d2dc-822b-0bb4a94a365b@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW5keSwNCg0KT24gVGh1LCAyMDIwLTEyLTAzIGF0IDIwOjEwICswMjAwLCBBbmR5IFNoZXZj
-aGVua28gd3JvdGU6DQo+IE9uIFRodSwgRGVjIDMsIDIwMjAgYXQgODowMyBQTSBDb2xpbiBJYW4g
-S2luZyA8Y29saW4ua2luZ0BjYW5vbmljYWwuY29tPiB3cm90ZToNCj4gDQo+ID4gU3RhdGljIGFu
-YWx5c2lzIG9uIGxpbnV4LW5leHQgd2l0aCBDb3Zlcml0eSBoYXMgZGV0ZWN0ZWQgYW4gaXNzdWUg
-d2l0aA0KPiA+IHRoZSBmb2xsb3dpbmcgY29tbWl0Og0KPiANCj4gSWYgeW91IHdhbnQgdG8gZml4
-IGl0IHByb3Blcmx5LCBzZWUgbXkgY29tbWVudHMgYmVsb3cuLi4NCj4gDQo+ID4gNTI5IHN0YXRp
-YyBpbnQgb3YwMmExMF9zX3N0cmVhbShzdHJ1Y3QgdjRsMl9zdWJkZXYgKnNkLCBpbnQgb24pDQo+
-ID4gNTMwIHsNCj4gPiA1MzEgICAgICAgIHN0cnVjdCBvdjAyYTEwICpvdjAyYTEwID0gdG9fb3Yw
-MmExMChzZCk7DQo+ID4gNTMyICAgICAgICBzdHJ1Y3QgaTJjX2NsaWVudCAqY2xpZW50ID0NCj4g
-PiB2NGwyX2dldF9zdWJkZXZkYXRhKCZvdjAyYTEwLT5zdWJkZXYpOw0KPiA+DQo+ID4gICAgMS4g
-dmFyX2RlY2w6IERlY2xhcmluZyB2YXJpYWJsZSByZXQgd2l0aG91dCBpbml0aWFsaXplci4NCj4g
-Pg0KPiA+IDUzMyAgICAgICAgaW50IHJldDsNCj4gPiA1MzQNCj4gPiA1MzUgICAgICAgIG11dGV4
-X2xvY2soJm92MDJhMTAtPm11dGV4KTsNCj4gPiA1MzYNCj4gPg0KPiA+ICAgIDIuIENvbmRpdGlv
-biBvdjAyYTEwLT5zdHJlYW1pbmcgPT0gb24sIHRha2luZyB0cnVlIGJyYW5jaC4NCj4gPg0KPiA+
-IDUzNyAgICAgICAgaWYgKG92MDJhMTAtPnN0cmVhbWluZyA9PSBvbikNCj4gPg0KPiA+ICAgIDMu
-IEp1bXBpbmcgdG8gbGFiZWwgdW5sb2NrX2FuZF9yZXR1cm4uDQo+ID4NCj4gPiA1MzggICAgICAg
-ICAgICAgICAgZ290byB1bmxvY2tfYW5kX3JldHVybjsNCj4gPiA1MzkNCj4gPiA1NDAgICAgICAg
-IGlmIChvbikgew0KPiA+IDU0MSAgICAgICAgICAgICAgICByZXQgPSBwbV9ydW50aW1lX2dldF9z
-eW5jKCZjbGllbnQtPmRldik7DQo+ID4gNTQyICAgICAgICAgICAgICAgIGlmIChyZXQgPCAwKSB7
-DQo+IA0KPiA+IDU0MyAgICAgICAgICAgICAgICAgICAgICAgIHBtX3J1bnRpbWVfcHV0X25vaWRs
-ZSgmY2xpZW50LT5kZXYpOw0KPiA+IDU0NCAgICAgICAgICAgICAgICAgICAgICAgIGdvdG8gdW5s
-b2NrX2FuZF9yZXR1cm47DQo+IA0KPiBJbnN0ZWFkIG9mIHR3byBhYm92ZToNCg0KRnJvbSB0aGUg
-ZG9jdW1lbnQsIHBtX3J1bnRpbWVfcHV0X25vaWRsZSBpcyB0byBkZWNyZWFzZSB0aGUgcnVudGlt
-ZSBQTQ0KdXNhZ2UgY291bnRlciBvZiBhIGRldmljZSB1bmxlc3MgaXQgaXMgMCBhbHJlYWR5OyB3
-aGlsZSBwbV9ydW50aW1lX3B1dA0Kd291bGQgYWRkaXRpb25hbGx5IHJ1biBwbV9yZXF1ZXN0X2lk
-bGUgdG8gdHVybiBvZmYgdGhlIHBvd2VyIGlmIHVzYWdlDQpjb3VudGVyIGlzIHplcm8uDQoNClNv
-IGhlcmUgbWF5YmUgd2UgY2FuIHJlYWxseSB1c2UgcG1fcnVudGltZV9wdXQgaW5zdGVhZCBvZg0K
-cG1fcnVudGltZV9wdXRfbm9pZGxlLCBhbHRob3VnaCBpdCBzZWVtcyB0aGF0ICdwbV9ydW50aW1l
-X2dldF9zeW5jJyBhbmQNCidwbV9ydW50aW1lX3B1dF9ub2lkbGUnIG9mdGVuIGFwcGVhciBpbiBw
-YWlycy4NCg0KPiAgICAgICAgICAgICAgICAgICAgICAgIGdvdG8gZXJyX3JwbV9wdXQ7DQo+IA0K
-PiA+IDU0NSAgICAgICAgICAgICAgICB9DQo+ID4gNTQ2DQo+ID4gNTQ3ICAgICAgICAgICAgICAg
-IHJldCA9IF9fb3YwMmExMF9zdGFydF9zdHJlYW0ob3YwMmExMCk7DQo+ID4gNTQ4ICAgICAgICAg
-ICAgICAgIGlmIChyZXQpIHsNCj4gPiA1NDkgICAgICAgICAgICAgICAgICAgICAgICBfX292MDJh
-MTBfc3RvcF9zdHJlYW0ob3YwMmExMCk7DQo+ID4gNTUwICAgICAgICAgICAgICAgICAgICAgICAg
-b3YwMmExMC0+c3RyZWFtaW5nID0gIW9uOw0KPiA+IDU1MSAgICAgICAgICAgICAgICAgICAgICAg
-IGdvdG8gZXJyX3JwbV9wdXQ7DQo+ID4gNTUyICAgICAgICAgICAgICAgIH0NCj4gPiA1NTMgICAg
-ICAgIH0gZWxzZSB7DQo+ID4gNTU0ICAgICAgICAgICAgICAgIF9fb3YwMmExMF9zdG9wX3N0cmVh
-bShvdjAyYTEwKTsNCj4gPiA1NTUgICAgICAgICAgICAgICAgcG1fcnVudGltZV9wdXQoJmNsaWVu
-dC0+ZGV2KTsNCj4gPiA1NTYgICAgICAgIH0NCj4gPiA1NTcNCj4gPiA1NTggICAgICAgIG92MDJh
-MTAtPnN0cmVhbWluZyA9IG9uOw0KPiANCj4gKDEpDQo+IA0KPiA+IDU1OSAgICAgICAgbXV0ZXhf
-dW5sb2NrKCZvdjAyYTEwLT5tdXRleCk7DQo+ID4gNTYwDQo+ID4gNTYxICAgICAgICByZXR1cm4g
-MDsNCj4gPiA1NjINCj4gPiA1NjMgZXJyX3JwbV9wdXQ6DQo+ID4gNTY0ICAgICAgICBwbV9ydW50
-aW1lX3B1dCgmY2xpZW50LT5kZXYpOw0KPiANCj4gPiA1NjUgdW5sb2NrX2FuZF9yZXR1cm46DQo+
-IA0KPiBTaG91bGQgYmUgbW92ZWQgdG8gKDEpLg0KPiANCj4gPiA1NjYgICAgICAgIG11dGV4X3Vu
-bG9jaygmb3YwMmExMC0+bXV0ZXgpOw0KPiA+IDU2Nw0KPiA+DQo+ID4gVW5pbml0aWFsaXplZCBz
-Y2FsYXIgdmFyaWFibGUgKFVOSU5JVCkNCj4gPiAgICAgNC4gdW5pbml0X3VzZTogVXNpbmcgdW5p
-bml0aWFsaXplZCB2YWx1ZSByZXQuDQo+ID4NCj4gPiA1NjggICAgICAgIHJldHVybiByZXQ7DQo+
-ID4gNTY5IH0NCj4gPg0KPiA+IFZhcmlhYmxlIHJldCBoYXMgbm90IGJlZW4gaW5pdGlhbGl6ZWQs
-IHNvIHRoZSBlcnJvciByZXR1cm4gdmFsdWUgaXMgYQ0KPiA+IGdhcmJhZ2UgdmFsdWUuIEl0IHNo
-b3VsZCBiZSBpbml0aWFsaXplZCB3aXRoIHNvbWUgYXBwcm9wcmlhdGUgbmVnYXRpdmUNCj4gPiBl
-cnJvciBjb2RlLCBvciByZXQgY291bGQgYmUgcmVtb3ZlZCBhbmQgdGhlIHJldHVybiBzaG91bGQg
-cmV0dXJuIGENCj4gPiBsaXRlcmFsIHZhbHVlIG9mIGEgZXJyb3IgY29kZS4NCj4gPg0KPiA+IEkg
-d2FzIHVuc3VyZSB3aGF0IHZhbHVlIGlzIGFwcHJvcHJpYXRlIHRvIGZpeCB0aGlzLCBzbyBpbnN0
-ZWFkIEknbQ0KPiA+IHJlcG9ydGluZyB0aGlzIGlzc3VlLg0KPiANCg0K
+On Fri, Dec 04, 2020 at 10:38:08AM +0800, Chao Yu wrote:
+> On 2020/12/4 10:06, Gao Xiang wrote:
+> > On Fri, Dec 04, 2020 at 09:56:27AM +0800, Chao Yu wrote:
+
+...
+
+> 
+> > 
+> > Keep lz4hc dirty data under writeback could block writeback, make kswapd
+> > busy, and direct memory reclaim path, I guess that's why rare online
+> > compression chooses it. My own premature suggestion is that it'd better
+> > to show the CR or performance benefits in advance, and prevent unprivileged
+> > users from using high-level lz4hc algorithm (to avoid potential system attack.)
+> > either from mount options or ioctl.
+> 
+> Yes, I guess you are worry about destop/server scenario, as for android scenario,
+> all compression related flow can be customized, and I don't think we will use
+> online lz4hc compress; for other scenario, except the numbers, I need to add the
+> risk of using lz4hc algorithm in document.
+
+Yes, I was saying the general scenario. My overall premature thought is that
+before releasing some brand new algorithm, it may be better to evaluate first
+it'd benefit to some scenarios first (either on CR or performance side, or
+why adding this?), or it would might cause lzo-rle likewise situation in the
+future (and add more dependency to algorithms, you might see BWT-based bzip2
+removal patch
+https://lore.kernel.org/r/20201117223253.65920-1-alex_y_xu@yahoo.ca
+(since I personally don't think BWT is a good algorithm as well)... Just FYI
+... If i'm wrong, kindly ignore me :)
+
+Thanks,
+Gao Xiang
+
+> 
+> Thanks,
 
