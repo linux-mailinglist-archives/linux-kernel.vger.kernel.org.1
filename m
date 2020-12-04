@@ -2,137 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC1D2CF651
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 22:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 280362CF653
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 22:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728897AbgLDVjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 16:39:52 -0500
-Received: from mail-bn8nam12on2058.outbound.protection.outlook.com ([40.107.237.58]:29792
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726534AbgLDVjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 16:39:52 -0500
+        id S1730288AbgLDVki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 16:40:38 -0500
+Received: from mx0a-000eb902.pphosted.com ([205.220.165.212]:64792 "EHLO
+        mx0a-000eb902.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725995AbgLDVki (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 16:40:38 -0500
+Received: from pps.filterd (m0220295.ppops.net [127.0.0.1])
+        by mx0a-000eb902.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B4LZKGx031219;
+        Fri, 4 Dec 2020 15:39:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garmin.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=pps1;
+ bh=LVZhJaGi2PENiNxum3D8EIr7/2VbOJTnFsHDSTUb4ws=;
+ b=QxdnNmbAxnHUF2bnz5Ml1Utel7LE/PHlIH3sqSx1ydY6GavQ4ILpE0wyus24eyjq3W85
+ bnbgpgm1RJHopTqiPsfE/JZzi5RKS/oVnsLCjYJPrTx88WK5PyLO2NRVzrQCIrXVnKfQ
+ VLBpzt6fbJdvWi8lfD43/pLSC16cxjBfQQDVOpFQOU/ETcxVr7fcHIYmhGquS+ai99S1
+ tNrcacTpn5EdHTGQTU4E/8RZ5vQdQC26NERoMrQWUI8lI19lR26dibPic6dD49QxDq6i
+ 4n5CM26bKQpAZJyyI+8hzMe6vlLhJAWkPlNcVjFz+4N96VGYhEstWC18Y1go+ezVzN0p yA== 
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
+        by mx0a-000eb902.pphosted.com with ESMTP id 355wbyn015-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 15:39:47 -0600
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nl4Ig8+IAF3AIbPHrFlqHyYWnT50SczRDdtRsKqyC0sZRczN2/2OCwbWLj34R/PFLDGRWHnEztsFLPZOLu+Iimwwp0JhMrlFKu19xjGB2aTdS9LQH5f66HSBZWDtmeo7mtl9kz99clWoiIkouN0Ippf7fcKoK+YfzHQW75QkjiJz58NfH/17EtckqLM1Y5NZmtKoJ8b3eC1HCmpZ7AHH+OjUDinSU5BeaCbV7RdqDSvVok43qBF9/5Eto/jG9qzqsJHeMOad6juJXt3fJigvRaFLQZ4ie0wd+PwfH9fomj4PQlfPFm1t0W4ZrOGK5Uf4hSZ96gNskARJ9PxFpQAWKA==
+ b=V0+s/h8cFtMK4hiWa9pkFLKgZ4E0vbF0zEN1zKwOA0P2SkUFDAWLYbtprflgq1u0zTZeShFyfEESM0+XLx7bi3s5T7XZdSaMrdz4BSNBDGeVxrvGK9SMAeaPEBX5kamCgB/kOX3dAnh8JBjDmn+pxBWj80GiwV95iUMi6UpslecII14xXWxx94bnQP6LTl2EJyBnlz3dTpfec616vnWtMroPAyIQ7VDHry+VoN5g3FpqwVQQ2oRJVeRpHOZGlFF0GKhQX6ox8/FpltUHYrHurx5gNtfvQX/PBl3/cyRMwKs6lCM/xeP7rMXNW8RS6ayzceCczyGFEIM20Zcc3lFSkw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bECNJvu/9KyTMB3N0hVwlBJV48d9S2lXGuROiqRtFDQ=;
- b=d+n63DNdHqaDpZ9EDph30eEmTvnw7I06ccdRsHg4PdbPu/QRq5FuzkSDxPoUlFbwX+lcHuuijIq+FrtTqtNBuH7MZAj0ltUz4Av8mbmTNZ4qNKUUN3zyyGcMMMDM4fsXjjvsGLlUP+NmYD+jB8kHPmus4RNob7UOgjOZrr4DrEJ9JU5apOgIKgqSo4VuB/T/8VRKwWkR8hrc+gXh3QJvtvHzjJry4ic+eJl5U2ibAm6eV69GkF7li88bZVLjbMZXL1FR0WmM/38hEdAe6AWeEU9ulIL8BEIxfEwlfXuZd3ieqtiXhPR2mqDv4SiUtmRPILoSpWY4RnO13oNIzpcOVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+ bh=LVZhJaGi2PENiNxum3D8EIr7/2VbOJTnFsHDSTUb4ws=;
+ b=au/XdhR0XoSN6qlIkJ59s9Rou5Cg5Q5yRlN5KrOTagAONd36qox31z8fWVBdxng8zAyCp0rb+WxhR1Nhv9yV1E0slshu34lUh8KXFhadO8Ij8gu9m2v3XuVn2L9Ujre7bi9cU0qt1Dpuu8J2yWkX5EJzBxAMCL0tiN/t/TCDd7WxzAAsipNM5NHZrYqivPcq3CDGBplATL5iKH2FDkw3eJv5qp3DEfL/8/s0YSF3QUbI7Iu7PpfkiCSNfRqgcmUTujTOpy77uzaypmAj/wkxqn575eQd2SN5+6R4zCKaOOqnUkdaJKVgY1+ysQt1szJL5QenHpdIamHkpSNCxzElBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 204.77.163.244) smtp.rcpttodomain=nvidia.com smtp.mailfrom=garmin.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=garmin.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ d=garmin.onmicrosoft.com; s=selector1-garmin-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bECNJvu/9KyTMB3N0hVwlBJV48d9S2lXGuROiqRtFDQ=;
- b=jeNDRjyX4RRSRIskWVQPoc4puUz8PcL4hctlbW8s/igUR4yq6gKzKM5fDokEED0tqMifYZu2iEcR2Y9+zk6Hcm5ImCy9eDmBA6Gs496bUICzXahqupEVTW3m/9mgaXUTNgEsC6/mD7qwk+3ZEidhV3QT7yNfQiGfJ9ZCeL3JsZQ=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SA0PR12MB4413.namprd12.prod.outlook.com (2603:10b6:806:9e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Fri, 4 Dec
- 2020 21:38:59 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3611.025; Fri, 4 Dec 2020
- 21:38:59 +0000
-Date:   Fri, 4 Dec 2020 21:38:52 +0000
-From:   Ashish Kalra <ashish.kalra@amd.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, Thomas.Lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, rientjes@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-Subject: Re: [PATCH v8 12/18] KVM: SVM: Add support for static allocation of
- unified Page Encryption Bitmap.
-Message-ID: <20201204213852.GA1424@ashkalra_ubuntu_server>
-References: <cover.1588711355.git.ashish.kalra@amd.com>
- <17c14245a404ff679253313ffe899c5f4e966717.1588711355.git.ashish.kalra@amd.com>
- <617d3cba-cbe0-0f18-bdf2-e73a70e472d6@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <617d3cba-cbe0-0f18-bdf2-e73a70e472d6@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SN2PR01CA0006.prod.exchangelabs.com (2603:10b6:804:2::16)
- To SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ bh=LVZhJaGi2PENiNxum3D8EIr7/2VbOJTnFsHDSTUb4ws=;
+ b=rRAoZXq5RXOJZolDhZ9Wus8/xswQLL76EFbmXhULFOxXWwnYW9ZrCaVjEcUbib3os+kNt8QrqrADhzXCa+tkN53HzuF+X/W2mJk8mFCjAH+OBX71yPl0VbADVit8mb0/4IeyNGxBOSXvC+9Kl6g89qBlaRC6zKXGqYRNYetZTnbZlVoDzPIZgEJFdPZP9MBMHT7lDGeLtnVGwtljhu0f/fg9KXK1FSAgtLnNxeSrjzgqPl4RpCFxaBWWuXdrE17Tj/6XS+vpt7XGoPuXISWkFZT63LXjxsaTWqiB6xmkqGTL0+ptRrd8Ji+sohjzkbXF5+dmGZLFv0B0ITMRX1bGtQ==
+Received: from MWHPR1401CA0003.namprd14.prod.outlook.com
+ (2603:10b6:301:4b::13) by BY5PR04MB6659.namprd04.prod.outlook.com
+ (2603:10b6:a03:21a::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Fri, 4 Dec
+ 2020 21:39:46 +0000
+Received: from MW2NAM10FT010.eop-nam10.prod.protection.outlook.com
+ (2603:10b6:301:4b:cafe::42) by MWHPR1401CA0003.outlook.office365.com
+ (2603:10b6:301:4b::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend
+ Transport; Fri, 4 Dec 2020 21:39:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 204.77.163.244)
+ smtp.mailfrom=garmin.com; nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=pass action=none header.from=garmin.com;
+Received-SPF: Pass (protection.outlook.com: domain of garmin.com designates
+ 204.77.163.244 as permitted sender) receiver=protection.outlook.com;
+ client-ip=204.77.163.244; helo=edgetransport.garmin.com;
+Received: from edgetransport.garmin.com (204.77.163.244) by
+ MW2NAM10FT010.mail.protection.outlook.com (10.13.155.135) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3632.20 via Frontend Transport; Fri, 4 Dec 2020 21:39:45 +0000
+Received: from OLAWPA-EXMB4.ad.garmin.com (10.5.144.25) by
+ olawpa-edge2.garmin.com (10.60.4.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Fri, 4 Dec 2020 15:39:40 -0600
+Received: from huangjoseph-vm1.ad.garmin.com (10.5.84.15) by
+ OLAWPA-EXMB4.ad.garmin.com (10.5.144.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 4 Dec 2020 15:39:44 -0600
+From:   Joseph Huang <Joseph.Huang@garmin.com>
+To:     Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Joseph Huang <Joseph.Huang@garmin.com>
+Subject: [PATCH v2] bridge: Fix a deadlock when enabling multicast snooping
+Date:   Fri, 4 Dec 2020 16:39:00 -0500
+Message-ID: <20201204213900.234913-1-Joseph.Huang@garmin.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201201214047.128948-1-Joseph.Huang@garmin.com>
+References: <20201201214047.128948-1-Joseph.Huang@garmin.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server (165.204.77.1) by SN2PR01CA0006.prod.exchangelabs.com (2603:10b6:804:2::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Fri, 4 Dec 2020 21:38:57 +0000
-X-MS-PublicTrafficType: Email
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: OLAWPA-EXMB2.ad.garmin.com (10.5.144.24) To
+ OLAWPA-EXMB4.ad.garmin.com (10.5.144.25)
+X-EOPAttributedMessage: 0
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d4392d3d-8d13-4cf8-afc0-08d8989d01cc
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4413:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4413854223B43A9FC1233EEF8EF10@SA0PR12MB4413.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8c87b28d-6862-4316-1f50-08d8989d1e3b
+X-MS-TrafficTypeDiagnostic: BY5PR04MB6659:
+X-Microsoft-Antispam-PRVS: <BY5PR04MB66599A08DA087B8F1137DED7FBF10@BY5PR04MB6659.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4ldFQOlYDU6ewaCv4b9AOKhgBnzaeBQMlWnFPT3H9hLnQ8ndB26n4FzRo2HWEVm+alp+08xnA5BiuOyAOwsB0zCh+Bqk1u/yGDRLvD1h4+G62C5C4ZbuDhY8aCPbi3qLmBw6CAN1IfuPzSUY6EUc2n7Vhjr7h2Sm+HLi4HS9HtJ41fbkOQ78pZe8iu6p/orccc6XI0v5V/QtNjwkhOrynPvZflQKVIFenWVsI/hW0xD4yiTqD8FObJHupnxnLOzqc5465W9dh+pKds6e6Q7TIinfRFt3FdF6AhhkA5UMJhpHq7DRrH06C7YhxwDsKJYCbhzUFJJOThZGyNL8jEOLYQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(39860400002)(396003)(366004)(6916009)(4326008)(66476007)(956004)(478600001)(2906002)(66556008)(66946007)(16526019)(86362001)(33656002)(55016002)(1076003)(8676002)(186003)(5660300002)(53546011)(8936002)(6496006)(83380400001)(52116002)(6666004)(33716001)(26005)(316002)(9686003)(44832011)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?qOWmHxNrk01GIITifCA8Mxn1LPFqiaTezWuPQweoxM+Lpl0Zjo6ezEdtgfBr?=
- =?us-ascii?Q?wXfro4EzWiXZRgvhkaLzSUCNwvqelGVmH8kjQzn7Ia7sSO9VzidzZegKbKWw?=
- =?us-ascii?Q?tN+uZmOhcCh2SVGayvsp1KIY66r0BrsKtM779YNfRlQlauu7SoM3KZPbB0pO?=
- =?us-ascii?Q?KbKppVnqAcOENSHOnUjGIlovZYjoAaMFNvopaP5FxpY+4E9Znnb7xfzNWDlo?=
- =?us-ascii?Q?CA/577zwwhpMmQrL1gK+eFkxNea53RmDQ0R9oA3UOKrPY9B1XOR1aQbmQ50A?=
- =?us-ascii?Q?dO0EJd74kcmNiQe43QXiOggS3yi/yLMHLEvIeUY/n53jBsFIwKuWAVZ/an7n?=
- =?us-ascii?Q?u1EQm1KxZccm9z/8D4yHLpTU7UFm8KdXEhd4cmXRkpQYz4N0PzDTkA/8p4VV?=
- =?us-ascii?Q?iFgsTxMjuF2h9vXJ3DIGe4P0ayog2TYH6bRm6FM4ktKEWlugHxKQ6/DzWXtI?=
- =?us-ascii?Q?J3qmrOg6TQXnOuGTQHKWC2CzfQyX0k00zisuYrA4XfJfPbKc9r8vREBtBwU3?=
- =?us-ascii?Q?B4Nht0F+hgrCZelFK60xF7Yo08evzf9nLiQbNgZ5UKYlOYTMS9BLyduvo4Bl?=
- =?us-ascii?Q?8z5uGECtpFr7zTj7BfgsLgGdJ1/QjsRPhxggFp25pp/MqdIGvg4jQUMNUOQe?=
- =?us-ascii?Q?LwDrQbbZsPvcHYnMo28cIKxS0YAYQLfMDmWTcHmYu9fFpZ8xCMQOwzgjfE7t?=
- =?us-ascii?Q?5f26Tj/qAi+6vPjqVNvymEA7IEvY3dUgx0n+5aMqPEp0I00139Vobp60XvAH?=
- =?us-ascii?Q?88MLeqTV5hs6r8c36IWFQWzoSPFyMRCiUYHb9R6wFstRMEMhpicedCv7nect?=
- =?us-ascii?Q?du4zEE+vzDx6Lm4smt4Jrj2P0Quo3nTb9j/QiFZCpRiCTXWk9eGygLGk4/9z?=
- =?us-ascii?Q?HzJKhnD5lQ+U4nQE9mJVuVVGpSb3xHuMo/PUsbmiv1uJuNvk51/M8QYtMFqp?=
- =?us-ascii?Q?EU/pUZWs2ffc1JN+Q2OyV14teauEd1l6Qt4lyWox7UBINvqsH2QTZ8fOKSjk?=
- =?us-ascii?Q?Q6nh?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4392d3d-8d13-4cf8-afc0-08d8989d01cc
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 21:38:58.8549
+X-Microsoft-Antispam-Message-Info: 1KtnmXJ3wfsBKQyzfLVethrZt0w0YbCPqXYeGzHUSrw4+V2dkbIHKpM9L3Q/SLYTncYnSBfHxGNSGDFL5YYkjCv4WdO2GF5Lz2+YJzH4Cf8Vj28w5pna7ThE/nOfu+T3YhQ8v38EKPzQCFcBt3XOTP73EwUoLjafnt70+/zBjg5Ss4PzIqgH1p3Hhyp7yuzRNTc/11k8QY+oxxhkxYzaSbMVWZ8NRsLfy0Phh06ZTlckJ1+feSneTvg2L9qikTWoF1yUojHVOhBhudeHNggf73sJOiqKDQWq7LeNLzOBSHiDshND0MQ1NPTXxtK5WjxARwLN6TNPWWqBEdkP3/5h6Y6upvoZ/6h1ZuNNFHTgkJeDdBx9FVLy9oySkeH0j9ycdqm3pYoPSwsv8HejnpN4lapLzjw5Rp1jX8ZvR532TaE=
+X-Forefront-Antispam-Report: CIP:204.77.163.244;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:edgetransport.garmin.com;PTR:extedge.garmin.com;CAT:NONE;SFS:(376002)(396003)(136003)(346002)(39860400002)(46966005)(82740400003)(186003)(336012)(478600001)(83380400001)(82310400003)(36756003)(107886003)(8936002)(110136005)(7696005)(86362001)(316002)(426003)(70586007)(8676002)(70206006)(1076003)(47076004)(2616005)(7636003)(356005)(26005)(5660300002)(4326008)(2906002)(6666004)(309714004);DIR:OUT;SFP:1102;
+X-OriginatorOrg: garmin.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 21:39:45.5974
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bsTyi2MUb1I3msIEqhKP8AMwIYS1bAvmjJw5elM0tjtom3lkBAFwtP1YbEofEUn+mXO4an2RNKiTUVozT1muUA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4413
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8c87b28d-6862-4316-1f50-08d8989d1e3b
+X-MS-Exchange-CrossTenant-Id: 38d0d425-ba52-4c0a-a03e-2a65c8e82e2d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38d0d425-ba52-4c0a-a03e-2a65c8e82e2d;Ip=[204.77.163.244];Helo=[edgetransport.garmin.com]
+X-MS-Exchange-CrossTenant-AuthSource: MW2NAM10FT010.eop-nam10.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6659
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_12:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0
+ mlxlogscore=999 spamscore=0 adultscore=0 suspectscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012040122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Paolo,
+When enabling multicast snooping, bridge module deadlocks on multicast_lock
+if 1) IPv6 is enabled, and 2) there is an existing querier on the same L2
+network.
 
-On Fri, Dec 04, 2020 at 12:08:20PM +0100, Paolo Bonzini wrote:
-> On 05/05/20 23:18, Ashish Kalra wrote:
-> > Add support for static allocation of the unified Page encryption bitmap
-> > by extending kvm_arch_commit_memory_region() callack to add svm specific
-> > x86_ops which can read the userspace provided memory region/memslots and
-> > calculate the amount of guest RAM managed by the KVM and grow the bitmap
-> > based on that information, i.e. the highest guest PA that is mapped by a
-> > memslot.
-> 
-> Hi Ashish,
-> 
-> the commit message should explain why this is needed or useful.
-> 
+The deadlock was caused by the following sequence: While holding the lock,
+br_multicast_open calls br_multicast_join_snoopers, which eventually causes
+IP stack to (attempt to) send out a Listener Report (in igmp6_join_group).
+Since the destination Ethernet address is a multicast address, br_dev_xmit
+feeds the packet back to the bridge via br_multicast_rcv, which in turn
+calls br_multicast_add_group, which then deadlocks on multicast_lock.
 
-Earlier we used to dynamic resizing of the page encryption bitmap based
-on the guest hypercall, but potentially a malicious guest can make a hypercall
-which can trigger a really large memory allocation on the host side and may
-eventually cause denial of service.
+The fix is to move the call br_multicast_join_snoopers outside of the
+critical section. This works since br_multicast_join_snoopers only deals
+with IP and does not modify any multicast data structures of the bridge,
+so there's no need to hold the lock.
 
-Hence now we don't do dynamic resizing of the page encryption bitmap as
-per the hypercall and allocate it statically based on guest memory 
-allocation by walking through memslots and computing it's size.
+Steps to reproduce:
+1. sysctl net.ipv6.conf.all.force_mld_version=1
+2. have another querier
+3. ip link set dev bridge type bridge mcast_snooping 0 && \
+   ip link set dev bridge type bridge mcast_snooping 1 < deadlock >
 
-I will add the above comment to the fresh series of the patch-set i am
-going to post. 
+A typical call trace looks like the following:
 
-Thanks,
-Ashish
+[  936.251495]  _raw_spin_lock+0x5c/0x68
+[  936.255221]  br_multicast_add_group+0x40/0x170 [bridge]
+[  936.260491]  br_multicast_rcv+0x7ac/0xe30 [bridge]
+[  936.265322]  br_dev_xmit+0x140/0x368 [bridge]
+[  936.269689]  dev_hard_start_xmit+0x94/0x158
+[  936.273876]  __dev_queue_xmit+0x5ac/0x7f8
+[  936.277890]  dev_queue_xmit+0x10/0x18
+[  936.281563]  neigh_resolve_output+0xec/0x198
+[  936.285845]  ip6_finish_output2+0x240/0x710
+[  936.290039]  __ip6_finish_output+0x130/0x170
+[  936.294318]  ip6_output+0x6c/0x1c8
+[  936.297731]  NF_HOOK.constprop.0+0xd8/0xe8
+[  936.301834]  igmp6_send+0x358/0x558
+[  936.305326]  igmp6_join_group.part.0+0x30/0xf0
+[  936.309774]  igmp6_group_added+0xfc/0x110
+[  936.313787]  __ipv6_dev_mc_inc+0x1a4/0x290
+[  936.317885]  ipv6_dev_mc_inc+0x10/0x18
+[  936.321677]  br_multicast_open+0xbc/0x110 [bridge]
+[  936.326506]  br_multicast_toggle+0xec/0x140 [bridge]
+
+Fixes: 4effd28c1245 ("bridge: join all-snoopers multicast address")
+Signed-off-by: Joseph Huang <Joseph.Huang@garmin.com>
+---
+ net/bridge/br_device.c    |  6 ++++++
+ net/bridge/br_multicast.c | 33 ++++++++++++++++++++++++---------
+ net/bridge/br_private.h   | 10 ++++++++++
+ 3 files changed, 40 insertions(+), 9 deletions(-)
+
+diff --git a/net/bridge/br_device.c b/net/bridge/br_device.c
+index 7730c8f3cb53..d3ea9d0779fb 100644
+--- a/net/bridge/br_device.c
++++ b/net/bridge/br_device.c
+@@ -177,6 +177,9 @@ static int br_dev_open(struct net_device *dev)
+ 	br_stp_enable_bridge(br);
+ 	br_multicast_open(br);
+ 
++	if (br_opt_get(br, BROPT_MULTICAST_ENABLED))
++		br_multicast_join_snoopers(br);
++
+ 	return 0;
+ }
+ 
+@@ -197,6 +200,9 @@ static int br_dev_stop(struct net_device *dev)
+ 	br_stp_disable_bridge(br);
+ 	br_multicast_stop(br);
+ 
++	if (br_opt_get(br, BROPT_MULTICAST_ENABLED))
++		br_multicast_leave_snoopers(br);
++
+ 	netif_stop_queue(dev);
+ 
+ 	return 0;
+diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
+index eae898c3cff7..426fe00db708 100644
+--- a/net/bridge/br_multicast.c
++++ b/net/bridge/br_multicast.c
+@@ -3286,7 +3286,7 @@ static inline void br_ip6_multicast_join_snoopers(struct net_bridge *br)
+ }
+ #endif
+ 
+-static void br_multicast_join_snoopers(struct net_bridge *br)
++void br_multicast_join_snoopers(struct net_bridge *br)
+ {
+ 	br_ip4_multicast_join_snoopers(br);
+ 	br_ip6_multicast_join_snoopers(br);
+@@ -3317,7 +3317,7 @@ static inline void br_ip6_multicast_leave_snoopers(struct net_bridge *br)
+ }
+ #endif
+ 
+-static void br_multicast_leave_snoopers(struct net_bridge *br)
++void br_multicast_leave_snoopers(struct net_bridge *br)
+ {
+ 	br_ip4_multicast_leave_snoopers(br);
+ 	br_ip6_multicast_leave_snoopers(br);
+@@ -3336,9 +3336,6 @@ static void __br_multicast_open(struct net_bridge *br,
+ 
+ void br_multicast_open(struct net_bridge *br)
+ {
+-	if (br_opt_get(br, BROPT_MULTICAST_ENABLED))
+-		br_multicast_join_snoopers(br);
+-
+ 	__br_multicast_open(br, &br->ip4_own_query);
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	__br_multicast_open(br, &br->ip6_own_query);
+@@ -3354,9 +3351,6 @@ void br_multicast_stop(struct net_bridge *br)
+ 	del_timer_sync(&br->ip6_other_query.timer);
+ 	del_timer_sync(&br->ip6_own_query.timer);
+ #endif
+-
+-	if (br_opt_get(br, BROPT_MULTICAST_ENABLED))
+-		br_multicast_leave_snoopers(br);
+ }
+ 
+ void br_multicast_dev_del(struct net_bridge *br)
+@@ -3487,6 +3481,8 @@ static void br_multicast_start_querier(struct net_bridge *br,
+ int br_multicast_toggle(struct net_bridge *br, unsigned long val)
+ {
+ 	struct net_bridge_port *port;
++	bool join_snoopers = false;
++	bool leave_snoopers = false;
+ 
+ 	spin_lock_bh(&br->multicast_lock);
+ 	if (!!br_opt_get(br, BROPT_MULTICAST_ENABLED) == !!val)
+@@ -3495,7 +3491,7 @@ int br_multicast_toggle(struct net_bridge *br, unsigned long val)
+ 	br_mc_disabled_update(br->dev, val);
+ 	br_opt_toggle(br, BROPT_MULTICAST_ENABLED, !!val);
+ 	if (!br_opt_get(br, BROPT_MULTICAST_ENABLED)) {
+-		br_multicast_leave_snoopers(br);
++		leave_snoopers = true;
+ 		goto unlock;
+ 	}
+ 
+@@ -3506,9 +3502,28 @@ int br_multicast_toggle(struct net_bridge *br, unsigned long val)
+ 	list_for_each_entry(port, &br->port_list, list)
+ 		__br_multicast_enable_port(port);
+ 
++	join_snoopers = true;
++
+ unlock:
+ 	spin_unlock_bh(&br->multicast_lock);
+ 
++	/* br_multicast_join_snoopers has the potential to cause
++	 * an MLD Report/Leave to be delivered to br_multicast_rcv,
++	 * which would in turn call br_multicast_add_group, which would
++	 * attempt to acquire multicast_lock. This function should be
++	 * called after the lock has been released to avoid deadlocks on
++	 * multicast_lock.
++	 *
++	 * br_multicast_leave_snoopers does not have the problem since
++	 * br_multicast_rcv first checks BROPT_MULTICAST_ENABLED, and
++	 * returns without calling br_multicast_ipv4/6_rcv if it's not
++	 * enabled. Moved both functions out just for symmetry.
++	 */
++	if (join_snoopers)
++		br_multicast_join_snoopers(br);
++	else if (leave_snoopers)
++		br_multicast_leave_snoopers(br);
++
+ 	return 0;
+ }
+ 
+diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
+index 345118e35c42..8424464186a6 100644
+--- a/net/bridge/br_private.h
++++ b/net/bridge/br_private.h
+@@ -792,6 +792,8 @@ void br_multicast_del_port(struct net_bridge_port *port);
+ void br_multicast_enable_port(struct net_bridge_port *port);
+ void br_multicast_disable_port(struct net_bridge_port *port);
+ void br_multicast_init(struct net_bridge *br);
++void br_multicast_join_snoopers(struct net_bridge *br);
++void br_multicast_leave_snoopers(struct net_bridge *br);
+ void br_multicast_open(struct net_bridge *br);
+ void br_multicast_stop(struct net_bridge *br);
+ void br_multicast_dev_del(struct net_bridge *br);
+@@ -969,6 +971,14 @@ static inline void br_multicast_init(struct net_bridge *br)
+ {
+ }
+ 
++static inline void br_multicast_join_snoopers(struct net_bridge *br)
++{
++}
++
++static inline void br_multicast_leave_snoopers(struct net_bridge *br)
++{
++}
++
+ static inline void br_multicast_open(struct net_bridge *br)
+ {
+ }
+-- 
+2.29.2
+
