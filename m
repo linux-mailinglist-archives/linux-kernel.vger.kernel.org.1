@@ -2,115 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695572CF157
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 590692CF159
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730647AbgLDP4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:56:04 -0500
-Received: from smtprelay0226.hostedemail.com ([216.40.44.226]:45136 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727125AbgLDP4E (ORCPT
+        id S1730709AbgLDP4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:56:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727125AbgLDP4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:56:04 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 96467100E7B46;
-        Fri,  4 Dec 2020 15:55:23 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1544:1593:1594:1711:1730:1747:1777:1792:1801:2194:2199:2393:2559:2562:2693:2828:2902:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3870:3872:4321:4605:5007:6119:7875:7903:7904:7974:8556:10004:10848:11232:11658:11914:12043:12048:12297:12555:12740:12895:12986:13439:13894:14093:14097:14181:14659:14721:21067:21080:21325:21451:21627:21939:21990:30034:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: foot04_4212f4e273c5
-X-Filterd-Recvd-Size: 5091
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  4 Dec 2020 15:55:22 +0000 (UTC)
-Message-ID: <189ad2584d80d915d3c9f76c044947f83ca5ebf8.camel@perches.com>
-Subject: Re: [PATCH] powerpc/xmon: Change printk() to pr_cont()
-From:   Joe Perches <joe@perches.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri, 04 Dec 2020 07:55:21 -0800
-In-Reply-To: <87h7p1vnym.fsf@mpe.ellerman.id.au>
-References: <c8a6ec704416ecd5ff2bd26213c9bc026bdd19de.1607077340.git.christophe.leroy@csgroup.eu>
-         <87h7p1vnym.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 4 Dec 2020 10:56:48 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87B2C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 07:56:07 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id d17so9334151ejy.9
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:56:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z1hSH0l5Mma4TVkpXqECWzqdZtweOdCfO88BYm8fACs=;
+        b=RUzCcvPH0tW5ee4reJQV971WgWVIF+pT2Zzgzrx7RqkCoMfZv49Ur27stVaGJbAobj
+         mNZUiVCfBJmH1BYYnKppQ1c3uuKMVEWq9h0vp+Ryg1k8c/B6fU/R9wUXJbpEVhjqEfsS
+         3/w3MD13NUqO/iOhjGvzn3nRbQPpS94fJZ509yjyRP+z5fmTE9UqkIAHDKwZZJNFyFqM
+         5aaD+Fv5DH4cxwHWTokWvH64sebt9P6miHnsB12RFnonT96X5mnIWyWGgF+xGA4IAKkI
+         iV7gCCyHtMnDjYbWPMSfoL2ekwNa3t+te3gFp/joq9Hb7Exv5zNMXbL4uM9xYAChdFQ+
+         RJzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z1hSH0l5Mma4TVkpXqECWzqdZtweOdCfO88BYm8fACs=;
+        b=MzYL09PlZ/LkaeAjO+I70HQBlNJpQIZW7eMRGGE+DuzRoXs9AxBD0GS/clEFcV8kJZ
+         VTlgJARtHyBI+n+PrWy3gBHEpr+Ru8WSZEittXqvQ3vKQu1mlNlUkBgdU2sP+J5vnNZx
+         6h8HlgtOO9g03nnCeRGO3I3pHoMiHFj+C+diwU+/Jc3eJSb0uvMRC85izMZoVURSZWU+
+         dpL/32q0vbNPOypI0HLCQ9ITghi4Sj6ulGho29kfNut2CG08BfsWFTgiXVtvZ19NnQdp
+         sYv5mHWStqfxHJKZsh8UEy6loxWRBgLxJ/WGcCFi/xkUxt/Xhi9b+Zow+yhx/xVmwqij
+         ZjVA==
+X-Gm-Message-State: AOAM5334/SxAwhnF0xjdZCdtPxDktv22or3FHzaeKTqAQYmncmeAZRDB
+        6SFJlAceTmRc9hTk/EzhCIl5EHuAJUQiaSKCRrVrIw==
+X-Google-Smtp-Source: ABdhPJyYx9fPZe07SmVSs01be5+MSE5f/I39Ebl7hnoQ/Cwrxmg307rfKvaC6gipYgPUpXrRYOA8LB9osYG/5huDQbM=
+X-Received: by 2002:a17:906:d41:: with SMTP id r1mr7510400ejh.383.1607097366456;
+ Fri, 04 Dec 2020 07:56:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com> <20201204035953.GA17056@js1304-desktop>
+In-Reply-To: <20201204035953.GA17056@js1304-desktop>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 4 Dec 2020 10:55:30 -0500
+Message-ID: <CA+CK2bCD7XYyJB9TNZZeUMAuntotZopVYNjDXnyVZyzKe2_A1Q@mail.gmail.com>
+Subject: Re: [PATCH 0/6] prohibit pinning pages in ZONE_MOVABLE
+To:     Joonsoo Kim <js1304@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        mike.kravetz@oracle.com, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-04 at 21:56 +1100, Michael Ellerman wrote:
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> > Since some time now, printk() adds carriage return, leading to
-> > unusable xmon output:
-> > 
-> > [   54.288722] sysrq: Entering xmon
-> > [   54.292209] Vector: 0  at [cace3d2c]
-> > [   54.292274]     pc:
-> > [   54.292331] c0023650
-> 
-> ...
-> 
-> > diff --git a/arch/powerpc/xmon/nonstdio.c b/arch/powerpc/xmon/nonstdio.c
-> > index 5c1a50912229..9b0d85bff021 100644
-> > --- a/arch/powerpc/xmon/nonstdio.c
-> > +++ b/arch/powerpc/xmon/nonstdio.c
-> > @@ -178,7 +178,7 @@ void xmon_printf(const char *format, ...)
-> >  
-> > 
-> >  	if (n && rc == 0) {
-> >  		/* No udbg hooks, fallback to printk() - dangerous */
-> > -		printk("%s", xmon_outbuf);
-> > +		pr_cont("%s", xmon_outbuf);
-> >  	}
-> 
-> Ah OK, in the case where there's no udbg backend. We basically always
-> have a udbg backend on 64-bit, via hvc console. Which explains why we
-> haven't noticed it.
-> 
-> Will pick up the patch.
-> 
-> cheers
+On Thu, Dec 3, 2020 at 11:03 PM Joonsoo Kim <js1304@gmail.com> wrote:
+>
+> Hello,
+>
+> On Wed, Dec 02, 2020 at 12:23:24AM -0500, Pavel Tatashin wrote:
+> > When page is pinned it cannot be moved and its physical address stays
+> > the same until pages is unpinned.
+> >
+> > This is useful functionality to allows userland to implementation DMA
+> > access. For example, it is used by vfio in vfio_pin_pages().
+> >
+> > However, this functionality breaks memory hotplug/hotremove assumptions
+> > that pages in ZONE_MOVABLE can always be migrated.
+> >
+> > This patch series fixes this issue by forcing new allocations during
+> > page pinning to omit ZONE_MOVABLE, and also to migrate any existing
+> > pages from ZONE_MOVABLE during pinning.
+>
+> I love what this patchset does, but, at least, it's better to consider
+> the side-effect of this patchset and inform it in somewhere. IIUC,
+> ZONE_MOVABLE exists for two purposes.
+>
+> 1) increasing availability of THP
+> 2) memory hot-unplug
+>
+> Potential issue would come from the case 1). They uses ZONE_MOVABLE
+> for THP availability and hard guarantee for migration isn't required
+> until now. So, there would be a system with following congifuration.
+>
+> - memory layout: ZONE_NORMAL-512MB, ZONE_MOVABLE-512MB
+> - memory usage: unmovable-256MB, movable pinned-256MB, movable
+>   unpinned-512MB
+>
+> With this patchset, movable pinned should be placed in ZONE_NORMAL so
+> 512MB is required for ZONE_NORMAL. ZONE_NORMAL would be exhausted and
+> system performance would be highly afftect according to memory usage
+> pattern.
+>
+> I'm not sure whether such configuration exists or not, but, at least,
+> it's better to write down this risk on commit message or something
+> else.
 
-Perhaps all of these bare printks should be inspected for defects:
+Yes, this indeed could be a problem for some configurations. I will
+add your comment to the commit log of one of the patches.
 
-$ git grep -P -n '\bprintk\s*\(\s*(?!KERN_\w+)"[^\\n]*"' arch/powerpc
-arch/powerpc/kernel/process.c:1475:     printk("NIP:  "REG" LR: "REG" CTR: "REG"\n",
-arch/powerpc/kernel/process.c:1479:     printk("MSR:  "REG" ", regs->msr);
-arch/powerpc/kernel/process.c:1513:             printk("NIP ["REG"] %pS\n", regs->nip, (void *)regs->nip);
-arch/powerpc/kernel/process.c:1514:             printk("LR ["REG"] %pS\n", regs->link, (void *)regs->link);
-arch/powerpc/kernel/process.c:2157:                     printk("%s["REG"] ["REG"] %pS",
-arch/powerpc/kernel/traps.c:621:        printk("Caused by (from MCSR=%lx): ", reason);
-arch/powerpc/kernel/traps.c:726:        printk("Caused by (from MCSR=%lx): ", reason);
-arch/powerpc/kernel/traps.c:766:        printk("Caused by (from MCSR=%lx): ", reason);
-arch/powerpc/kernel/traps.c:791:        printk("Caused by (from SRR1=%lx): ", reason);
-arch/powerpc/kernel/udbg.c:95:          printk("%s", s);
-arch/powerpc/math-emu/fabs.c:13:        printk("%s: D %p, B %p: ", __func__, frD, frB);
-arch/powerpc/math-emu/fctiw.c:22:       printk("%s: D %p, B %p: ", __func__, frD, frB);
-arch/powerpc/math-emu/fctiwz.c:29:      printk("%s: D %p, B %p: ", __func__, frD, frB);
-arch/powerpc/math-emu/fmr.c:13: printk("%s: D %p, B %p: ", __func__, frD, frB);
-arch/powerpc/math-emu/fnabs.c:13:       printk("%s: D %p, B %p: ", __func__, frD, frB);
-arch/powerpc/math-emu/fneg.c:13:        printk("%s: D %p, B %p: ", __func__, frD, frB);
-arch/powerpc/math-emu/lfd.c:15: printk("%s: D %p, ea %p: ", __func__, frD, ea);
-arch/powerpc/math-emu/stfd.c:11:        printk("%s: S %p, ea %p: ", __func__, frS, ea);
-arch/powerpc/mm/nohash/44x.c:192:                                       printk("%d ", i);
-arch/powerpc/platforms/4xx/machine_check.c:19:          printk("Data");
-arch/powerpc/platforms/chrp/pci.c:256:                  printk(" at %llx", (unsigned long long)r.start);
-arch/powerpc/platforms/embedded6xx/ls_uart.c:47:                                        printk("%c", in_8(avr_addr + UART_RX));
-arch/powerpc/platforms/powermac/pfunc_core.c:83:        printk("%s", title);
-arch/powerpc/platforms/powermac/pfunc_core.c:85:                printk("%02x ", *((u8 *)blob));
-arch/powerpc/platforms/powernv/pci-ioda.c:81:   printk("%spci %s: [PE# %.2x] %pV",
-arch/powerpc/sysdev/tsi108_pci.c:63:    printk("PCI CFG write : ");
-arch/powerpc/sysdev/tsi108_pci.c:64:    printk("%d:0x%x:0x%x ", bus->number, devfunc, offset);
-arch/powerpc/sysdev/tsi108_pci.c:65:    printk("%d ADDR=0x%08x ", len, (uint) cfg_addr);
-arch/powerpc/sysdev/tsi108_pci.c:164:           printk("PCI CFG read : ");
-arch/powerpc/sysdev/tsi108_pci.c:165:           printk("%d:0x%x:0x%x ", bus->number, devfn, offset);
-arch/powerpc/sysdev/tsi108_pci.c:166:           printk("%d ADDR=0x%08x ", len, (uint) cfg_addr);
-arch/powerpc/sysdev/tsi108_pci.c:315:           printk("cfg_ctl=0x%08x ", temp);
-arch/powerpc/xmon/nonstdio.c:181:               printk("%s", xmon_outbuf);
-
-
+Thank you,
+Pasha
