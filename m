@@ -2,84 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0212CE52F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FDF2CE532
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgLDBe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:34:56 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:45172 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725903AbgLDBe4 (ORCPT
+        id S1726178AbgLDBhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:37:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725960AbgLDBhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:34:56 -0500
-X-UUID: 0bc7a8b8818f4c6e8ea4af27196f3ffb-20201204
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=qpJag3JOEGGUczkknHZEtGGVXhrvUUQwFODEalRuGIQ=;
-        b=k2WlSq/iAxSGxWVmbKEwPGM07ymL5zzz3mARqAJnwnbtYgtS4ecSyt9y+VdPMoHxp7Hr4ELb43RVV7eqh3ISXTw00cwXcHY0fltqpnPAvwwNhDrrG/I9eftHyonHGZR9Q5IVos8X5wiLyvKYGp4dHTvQIFLWHk74/PFhtq8WB2M=;
-X-UUID: 0bc7a8b8818f4c6e8ea4af27196f3ffb-20201204
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 110740681; Fri, 04 Dec 2020 09:34:10 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 4 Dec 2020 09:34:07 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 4 Dec 2020 09:34:09 +0800
-Message-ID: <1607045648.22275.7.camel@mtkswgap22>
-Subject: Re: [PATCH v2] proc: use untagged_addr() for pagemap_read addresses
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        "Will Deacon" <will@kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Song Bao Hua <song.bao.hua@hisilicon.com>,
-        <stable@vger.kernel.org>
-Date:   Fri, 4 Dec 2020 09:34:08 +0800
-In-Reply-To: <20201203113020.GE2224@gaia>
-References: <20201127050738.14440-1-miles.chen@mediatek.com>
-         <20201203113020.GE2224@gaia>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Thu, 3 Dec 2020 20:37:18 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FE5C061A4F;
+        Thu,  3 Dec 2020 17:36:32 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id f190so5714756wme.1;
+        Thu, 03 Dec 2020 17:36:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EDnqPAuMFc3aDJ1gKE8cCoQHdXC7zdbOSc7aPUe4uc0=;
+        b=Nb38SQxRMTtgkUHMMCP8/14Oh8D7MBSzLOp4prcGC8xI/1LrS/m/FBlYkrB51rLeVu
+         7waHOYx0G6WDGbGvZEtv0l4JNGfFmqt0OYeDuatlddeDHmTP/oxkLWZpnvB+Zs9OjVIe
+         T2RO2+Cr05AHqFqSbOCu1KGvatxZ/yo/eA0X/tGrSXJj5OjVQNaGu4luBp+M4pMCtSMb
+         vTzl7zJXtaeuhkeGEIYitghPnjfAe0xJZoPX/0aQ9BWjl5Pz7u1blYs/Eq4UFr6A7uPm
+         THpLQiTO0ki7/I3Qxdzqi/BfnX8E35/9xxMLQO7YwW8fSgHPFCX4YJvR7MxG2uBjbuf5
+         CVqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EDnqPAuMFc3aDJ1gKE8cCoQHdXC7zdbOSc7aPUe4uc0=;
+        b=p79qsa/e1lT+Lyvubt9wErUpD2LwpGFhgPtWafhBKaEtLUPlVILT+eMHYlhDUlrnLu
+         EkqlxUI7cJQNhEhqtFHikJTJpuRJs/DGkqet8Serx2Pb0b9/bC9mFYLXk6ItzOe6xuN8
+         amvcvH5FeRFb4uQ3qy1JHmcQgUiG2DYygqMCgB/7pEskqTPwJA8e2Uq6jMzjLRNwQ7th
+         Q+ktSRvuiFEMQoHuVcUiK92JnkZfzvNHcd/0E3COzBWM28c9NCk3iNU2M/OS6Gze4F5M
+         aKVZlCutd6Uq15exXoRbJG4HdLxhh1AbFYmLSMwapphVV/Fvsp65TFLptGyt5uJbcj/7
+         mu3A==
+X-Gm-Message-State: AOAM532Ijvtaisd4iNaspIZGjsqy1MWkwbwBlI5OVdkmoQTN+W5eVCtW
+        AzS746y6Cccn2hZSUq//bOQEzbI0LcJ6xmrdeRk=
+X-Google-Smtp-Source: ABdhPJxB8ppwZt7nVzylc64WYbgQxDiBhmVfRANwLxoVf7Nu2sBpxisXr48zyxR/Fz0bRNUbGcVitg0GGcytz2iHkOI=
+X-Received: by 2002:a1c:f20e:: with SMTP id s14mr1513795wmc.126.1607045790515;
+ Thu, 03 Dec 2020 17:36:30 -0800 (PST)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 552F8B8F974629EEEA03397AF0B305287B0DA99E5025DF5071FD727CF3EB5E5F2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
+ <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
+ <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
+ <CAM7-yPRBPP6SFzdmwWF5Y99g+aWcp=OY9Uvp-5h1MSDPmsORNw@mail.gmail.com>
+ <CAAH8bW-+XnNsd9p3xZ1utmyY24gaBa0ko4tngBii4T+2cMkcYg@mail.gmail.com>
+ <CAM7-yPQCWj6rOyLEgOqF3HGkFV1WKtqyVhEtDbS3HW=2A-HuBA@mail.gmail.com>
+ <CAM7-yPTtiVnUztE=xpNYgRcZTGd1aX_V9ZHd=2YZYc1uQNBXtw@mail.gmail.com>
+ <a0cc0d2e-9c55-8546-f070-26feed5de37f@rasmusvillemoes.dk> <CAM7-yPQrvYUwX-cbgpzhomCTFEi9sQ9iGuLNcL-Fsj7XZ0knhw@mail.gmail.com>
+ <CAAH8bW9=J_now4SU=-WzvBOa=ftStgGVpspyw_g7oafbuNHNHQ@mail.gmail.com> <20201203185257.GA29072@1wt.eu>
+In-Reply-To: <20201203185257.GA29072@1wt.eu>
+From:   Yun Levi <ppbuk5246@gmail.com>
+Date:   Fri, 4 Dec 2020 10:36:19 +0900
+Message-ID: <CAM7-yPQiG-akz6SC3m4oPGDMyOq4p8-yf8Kh+pumCoqvWY4w9w@mail.gmail.com>
+Subject: Re:
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>, dushistov@mail.ru,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
+        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTEyLTAzIGF0IDExOjMwICswMDAwLCBDYXRhbGluIE1hcmluYXMgd3JvdGU6
-DQo+IE9uIEZyaSwgTm92IDI3LCAyMDIwIGF0IDAxOjA3OjM4UE0gKzA4MDAsIE1pbGVzIENoZW4g
-d3JvdGU6DQo+ID4gQ2M6IFdpbGwgRGVhY29uIDx3aWxsLmRlYWNvbkBhcm0uY29tPg0KPiANCj4g
-VGhhdCBzaG91bGQgYmUgd2lsbEBrZXJuZWwub3JnLg0KDQpvaywgSSB3aWxsIGZpeCBpdCBhbmQg
-c3VibWl0IHYzDQo+IA0KPiA+IGRpZmYgLS1naXQgYS9mcy9wcm9jL3Rhc2tfbW11LmMgYi9mcy9w
-cm9jL3Rhc2tfbW11LmMNCj4gPiBpbmRleCAyMTdhYTI3MDVkNWQuLjkyYjI3NzM4OGYwNSAxMDA2
-NDQNCj4gPiAtLS0gYS9mcy9wcm9jL3Rhc2tfbW11LmMNCj4gPiArKysgYi9mcy9wcm9jL3Rhc2tf
-bW11LmMNCj4gPiBAQCAtMTU5OSwxMSArMTU5OSwxNSBAQCBzdGF0aWMgc3NpemVfdCBwYWdlbWFw
-X3JlYWQoc3RydWN0IGZpbGUgKmZpbGUsIGNoYXIgX191c2VyICpidWYsDQo+ID4gIA0KPiA+ICAJ
-c3JjID0gKnBwb3M7DQo+ID4gIAlzdnBmbiA9IHNyYyAvIFBNX0VOVFJZX0JZVEVTOw0KPiA+IC0J
-c3RhcnRfdmFkZHIgPSBzdnBmbiA8PCBQQUdFX1NISUZUOw0KPiA+ICAJZW5kX3ZhZGRyID0gbW0t
-PnRhc2tfc2l6ZTsNCj4gPiAgDQo+ID4gIAkvKiB3YXRjaCBvdXQgZm9yIHdyYXBhcm91bmQgKi8N
-Cj4gPiAtCWlmIChzdnBmbiA+IG1tLT50YXNrX3NpemUgPj4gUEFHRV9TSElGVCkNCj4gPiArCXN0
-YXJ0X3ZhZGRyID0gZW5kX3ZhZGRyOw0KPiA+ICsJaWYgKHN2cGZuIDwgKFVMT05HX01BWCA+PiBQ
-QUdFX1NISUZUKSkNCj4gDQo+IERvZXMgdGhpcyBuZWVkIHRvIGJlIHN0cmljdCBsZXNzLXRoYW4/
-IEkgdGhpbmsgYSBsZXNzLXRoYW4gb3IgZXF1YWwNCj4gd291bGQgd29yayBiZXR0ZXIuDQoNClRo
-YW5rcywgSSB3aWxsIGZpeCBpdCBhbmQgc3VibWl0IHYzLg0KPiANCj4gPiArCQlzdGFydF92YWRk
-ciA9IHVudGFnZ2VkX2FkZHIoc3ZwZm4gPDwgUEFHRV9TSElGVCk7DQo+ID4gKw0KPiA+ICsJLyog
-RW5zdXJlIHRoZSBhZGRyZXNzIGlzIGluc2lkZSB0aGUgdGFzayAqLw0KPiA+ICsJaWYgKHN0YXJ0
-X3ZhZGRyID4gbW0tPnRhc2tfc2l6ZSkNCj4gPiAgCQlzdGFydF92YWRkciA9IGVuZF92YWRkcjsN
-Cj4gDQo+IE90aGVyd2lzZSB0aGUgbG9naWMgbG9va3MgZmluZSB0byBtZS4gV2l0aCB0aGUgYWJv
-dmU6DQo+IA0KPiBSZXZpZXdlZC1ieTogQ2F0YWxpbiBNYXJpbmFzIDxjYXRhbGluLm1hcmluYXNA
-YXJtLmNvbT4NCg0K
+>On Fri, Dec 4, 2020 at 3:53 AM Willy Tarreau <w@1wt.eu> wrote:
+>
+> On Thu, Dec 03, 2020 at 10:46:25AM -0800, Yury Norov wrote:
+> > Yun, could you please stop top-posting and excessive trimming in the thread?
+>
+> And re-configure the mail agent to make the "Subject" field appear and
+> fill it.
 
+>On Thu, Dec 03, 2020 at 10:46:25AM -0800, Yury Norov wrote:
+> Yun, could you please stop top-posting and excessive trimming in the thread?
+Sorry to make you uncomfortable... Thanks for advice.
+
+>On Thu, Dec 03, 2020 at 10:46:25AM -0800, Yury Norov wrote:
+> As you said, find_last_bit() and proposed find_prev_*_bit() have the
+> same functionality.
+> If you really want to have find_prev_*_bit(), could you please at
+> least write it using find_last_bit(), otherwise it would be just a
+> blottering.
+
+Actually find_prev_*_bit call _find_prev_bit which is a common helper function
+like _find_next_bit.
+As you know this function is required to support __BIGEDIAN's little
+endian search.
+find_prev_bit actually wrapper of _find_prev_bit which have a feature
+the find_last_bit.
+
+That makes the semantics difference between find_last_bit and find_prev_bit.
+-- specify where you find from and
+   In loop, find_last_bit couldn't sustain original size as sentinel
+return value
+    (we should change the size argument for next searching
+     But it means whenever we call, "NOT SET or NOT CLEAR"'s sentinel
+return value is changed per call).
+
+Because we should have _find_prev_bit,
+I think it's the matter to choose which is better to usein
+find_prev_bit (find_last_bit? or _find_prev_bit?)
+sustaining find_prev_bit feature (give size as sentinel return, from
+where I start).
+if my understanding is correct.
+
+In my view, I prefer to use _find_prev_bit like find_next_bit for
+integrated format.
+
+But In some of the benchmarking, find_last_bit is better than _find_prev_bit,
+here what I tested (look similar but sometimes have some difference).
+
+              Start testing find_bit() with random-filled bitmap
+[  +0.001850] find_next_bit:                  842792 ns, 163788 iterations
+[  +0.000873] find_prev_bit:                  870914 ns, 163788 iterations
+[  +0.000824] find_next_zero_bit:             821959 ns, 163894 iterations
+[  +0.000677] find_prev_zero_bit:             676240 ns, 163894 iterations
+[  +0.000777] find_last_bit:                  659103 ns, 163788 iterations
+[  +0.001822] find_first_bit:                1708041 ns,  16250 iterations
+[  +0.000539] find_next_and_bit:              492182 ns,  73871 iterations
+[  +0.000001]
+              Start testing find_bit() with sparse bitmap
+[  +0.000222] find_next_bit:                   13227 ns,    654 iterations
+[  +0.000013] find_prev_bit:                   11652 ns,    654 iterations
+[  +0.001845] find_next_zero_bit:            1723869 ns, 327028 iterations
+[  +0.001538] find_prev_zero_bit:            1355808 ns, 327028 iterations
+[  +0.000010] find_last_bit:                    8114 ns,    654 iterations
+[  +0.000867] find_first_bit:                 710639 ns,    654 iterations
+[  +0.000006] find_next_and_bit:                4273 ns,      1 iterations
+[  +0.000004] find_next_and_bit:                3278 ns,      1 iterations
+
+              Start testing find_bit() with random-filled bitmap
+[  +0.001784] find_next_bit:                  805553 ns, 164240 iterations
+[  +0.000643] find_prev_bit:                  632474 ns, 164240 iterations
+[  +0.000950] find_next_zero_bit:             877215 ns, 163442 iterations
+[  +0.000664] find_prev_zero_bit:             662339 ns, 163442 iterations
+[  +0.000680] find_last_bit:                  602204 ns, 164240 iterations
+[  +0.001912] find_first_bit:                1758208 ns,  16408 iterations
+[  +0.000760] find_next_and_bit:              531033 ns,  73798 iterations
+[  +0.000002]
+              Start testing find_bit() with sparse bitmap
+[  +0.000203] find_next_bit:                   12468 ns,    656 iterations
+[  +0.000205] find_prev_bit:                   10948 ns,    656 iterations
+[  +0.001759] find_next_zero_bit:            1579447 ns, 327026 iterations
+[  +0.001935] find_prev_zero_bit:            1931961 ns, 327026 iterations
+[  +0.000013] find_last_bit:                    9543 ns,    656 iterations
+[  +0.000732] find_first_bit:                 562009 ns,    656 iterations
+[  +0.000217] find_next_and_bit:                6804 ns,      1 iterations
+[  +0.000007] find_next_and_bit:                4367 ns,      1 iterations
+
+Is it better to write find_prev_bit using find_last_bit?
+I question again.
+
+Thanks for your great advice, But please forgive my fault and lackness.
+
+HTH.
+Levi.
