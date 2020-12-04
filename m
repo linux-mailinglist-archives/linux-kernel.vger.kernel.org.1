@@ -2,85 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 157312CF4F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:39:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EC62CF4F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730832AbgLDTi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 14:38:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60484 "EHLO mail.kernel.org"
+        id S1730508AbgLDTk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 14:40:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727661AbgLDTi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 14:38:26 -0500
-From:   Arnd Bergmann <arnd@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Ma Feng <mafeng.ma@huawei.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] remoteproc: sysmon: fix shutdown_acked state
-Date:   Fri,  4 Dec 2020 20:37:35 +0100
-Message-Id: <20201204193740.3162065-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1726021AbgLDTk6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 14:40:58 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607110817;
+        bh=rNDuMN1MmYiK1tAGoQ1k6iGiCCGFLolAECzOm9LjZhE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=F1gkrMO0URllU+rs/1VuwRA3kVx7iUimHinDIYjJy08ftSbiMUgEM3gD+/UlyU1BT
+         YjVCbT8MhowFefZSLnSbdIJxqVS7653EJZM9BfCW2H8G5+uMPCssf57pP0yiNNGm21
+         xUN1buGZ1EraWvpVRJ6Q071vVjW2G0m2hr7D4ZGTO0MO1gUiziiCQZhRGfJkj3np6+
+         OVFEgOll+kpbuTcSZMi8qubabvkpXYOrymKwxDjf+Hkg4pk6k8EE0sLQaz6886T7CF
+         mBAuLjao2Ixi9nRr2SSggqC1NrrqGkYVD5zr/wrDJjyY6mNcI6IPLGMoChbCTFrF5K
+         sxiQH7edbXhog==
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] bpf: remove trailing semicolon in macro definition
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160711081762.29539.3695576818249759103.git-patchwork-notify@kernel.org>
+Date:   Fri, 04 Dec 2020 19:40:17 +0000
+References: <20201202212810.3774614-1-trix@redhat.com>
+In-Reply-To: <20201202212810.3774614-1-trix@redhat.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+        rostedt@goodmis.org, mingo@redhat.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hello:
 
-The latest version of sysmon_stop() starts by initializing
-the sysmon->shutdown_acked variable, but then overwrites it
-with an uninitialized variable later:
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-drivers/remoteproc/qcom_sysmon.c:551:11: error: variable 'acked' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
-        else if (sysmon->ept)
-                 ^~~~~~~~~~~
-drivers/remoteproc/qcom_sysmon.c:554:27: note: uninitialized use occurs here
-        sysmon->shutdown_acked = acked;
-                                 ^~~~~
+On Wed,  2 Dec 2020 13:28:10 -0800 you wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> The macro use will already have a semicolon.
+> Clean up escaped newlines
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> 
+> [...]
 
-Remove the local 'acked' variable again and set the state directly.
+Here is the summary with links:
+  - [v2] bpf: remove trailing semicolon in macro definition
+    https://git.kernel.org/bpf/bpf-next/c/2fa3515cc0d3
 
-Fixes: 5c212aaf5457 ("remoteproc: sysmon: Expose the shutdown result")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/remoteproc/qcom_sysmon.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-diff --git a/drivers/remoteproc/qcom_sysmon.c b/drivers/remoteproc/qcom_sysmon.c
-index d01bc4bda7bf..9fca81492863 100644
---- a/drivers/remoteproc/qcom_sysmon.c
-+++ b/drivers/remoteproc/qcom_sysmon.c
-@@ -533,7 +533,6 @@ static void sysmon_stop(struct rproc_subdev *subdev, bool crashed)
- 		.subsys_name = sysmon->name,
- 		.ssr_event = SSCTL_SSR_EVENT_BEFORE_SHUTDOWN
- 	};
--	bool acked;
- 
- 	sysmon->shutdown_acked = false;
- 
-@@ -547,11 +546,9 @@ static void sysmon_stop(struct rproc_subdev *subdev, bool crashed)
- 		return;
- 
- 	if (sysmon->ssctl_version)
--		acked = ssctl_request_shutdown(sysmon);
-+		sysmon->shutdown_acked = ssctl_request_shutdown(sysmon);
- 	else if (sysmon->ept)
--		acked = sysmon_request_shutdown(sysmon);
--
--	sysmon->shutdown_acked = acked;
-+		sysmon->shutdown_acked = sysmon_request_shutdown(sysmon);
- }
- 
- static void sysmon_unprepare(struct rproc_subdev *subdev)
--- 
-2.27.0
 
