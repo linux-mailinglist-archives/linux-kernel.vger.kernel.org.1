@@ -2,32 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C107F2CF782
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E982CF784
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729972AbgLDXac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 18:30:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41314 "EHLO mail.kernel.org"
+        id S1730571AbgLDXal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 18:30:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726583AbgLDXab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 18:30:31 -0500
+        id S1726111AbgLDXak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 18:30:40 -0500
 From:   Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Benson Leung <bleung@chromium.org>,
+To:     alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Dharageswari R <dharageswari.r@intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Libin Yang <libin.yang@linux.intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Naveen Manohar <naveen.m@intel.com>,
         Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Jaroslav Kysela <perex@perex.cz>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Guenter Roeck <groeck@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <20201203225458.1477830-1-arnd@kernel.org>
-References: <20201203225458.1477830-1-arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: cros_ec_codec: fix uninitialized memory read
-Message-Id: <160712460214.7629.8343797244506085540.b4-ty@kernel.org>
+        Jie Yang <yang.jie@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Ben Zhang <benzh@chromium.org>
+In-Reply-To: <20201203154010.29464-1-brent.lu@intel.com>
+References: <20201203154010.29464-1-brent.lu@intel.com>
+Subject: Re: [PATCH v2] ASoC: intel: sof_rt5682: Add support for tgl_rt1011_rt5682
+Message-Id: <160712460213.7629.11587898255974280110.b4-ty@kernel.org>
 Date:   Fri, 04 Dec 2020 23:30:02 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -36,15 +44,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 23:54:41 +0100, Arnd Bergmann wrote:
-> gcc points out a memory area that is copied to a device
-> but not initialized:
-> 
-> sound/soc/codecs/cros_ec_codec.c: In function 'i2s_rx_event':
-> arch/x86/include/asm/string_32.h:83:20: error: '*((void *)&p+4)' may be used uninitialized in this function [-Werror=maybe-uninitialized]
->    83 |   *((int *)to + 1) = *((int *)from + 1);
-> 
-> [...]
+On Thu, 3 Dec 2020 23:40:10 +0800, Brent Lu wrote:
+> This patch adds the driver data for two rt1011 speaker amplifiers on
+> SSP1 and rt5682 on SSP0 for TGL platform. DAI format for rt1011 is
+> leveraged from cml_rt1011_rt5682 which is 4-slot tdm with 100fs bclk.
 
 Applied to
 
@@ -52,8 +55,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: cros_ec_codec: fix uninitialized memory read
-      commit: 7061b8a52296e044eed47b605d136a48da1a7761
+[1/1] ASoC: intel: sof_rt5682: Add support for tgl_rt1011_rt5682
+      commit: aa6cc97c0ac31c668afc7027bcf2bdb0fe4610fe
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
