@@ -2,84 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4102CF61F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 22:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 421372CF622
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 22:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730458AbgLDV1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 16:27:25 -0500
-Received: from ms.lwn.net ([45.79.88.28]:37032 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727176AbgLDV1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 16:27:25 -0500
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id B030B735;
-        Fri,  4 Dec 2020 21:26:44 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net B030B735
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1607117205; bh=6W3sqxU/NqTvoLox5sB3lYweXuF48Ay/zVMtMc+y6oc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kf23UPQm8dY086hMkt+K0XcabWW2eHHGleG5sxmoPbGeBGZMPRnewyfag9M03yNoE
-         ORizSj4/o/AYp8EUBRat83eLckOtpWzQk87u910r33WFscjrhW/I9BbeZcWiuEVfeO
-         /S5lpdnb0HzBVSxsY+bbWHNqxjj+KppfIb73Uo8b2DEX6y+z2h+9nPmu7LU1gDYen8
-         sTpoMNDgos1G/kR8ZVcjsVMk4FuHPUREuxje1W5d1zWQvWXeqs8AoXoSI3H8lOQUrj
-         kLrzgAwDrIdV0Qx8ouYcHyIReW7n67rrzcZKJwVn+D7nQ9pjZZGIGQAg2fkluN6x3S
-         U6ymVA8dIlv6A==
-Date:   Fri, 4 Dec 2020 14:26:43 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Thorsten Leemhuis <linux@leemhuis.info>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v4 1/3] LICENSES: Add the CC-BY-4.0 license
-Message-ID: <20201204142643.0c27f848@lwn.net>
-In-Reply-To: <X8oqTyRNKMHChbA7@kroah.com>
-References: <cover.1607063223.git.linux@leemhuis.info>
-        <7115b6c20ae3e6db0370fe4002dd586011205e1c.1607063223.git.linux@leemhuis.info>
-        <X8oqTyRNKMHChbA7@kroah.com>
-Organization: LWN.net
+        id S1730647AbgLDV17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 16:27:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730279AbgLDV17 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 16:27:59 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C01C061A51;
+        Fri,  4 Dec 2020 13:27:19 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id i9so7257654ioo.2;
+        Fri, 04 Dec 2020 13:27:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VqW5xuV/1lTxGcHmiBHYwvfv9PS2BZOwQspVUNm6Gmk=;
+        b=GjGyHwMC38/OQ/ofgcFBN2zOLpxvl8SZ/3FV1TRE1dZu/X5yHNG1V2qUruyFFcK6F1
+         qcMPYVeyov/gm9K0GZPgx0ouS8gZFYopuu9Frs+wSfINvNtlmnQv5Vc8FyLPD01RKgHg
+         EpOFk4FJneu7Ko/sYtfFpkcb1/8T6VHKMGl46rUpAh0CQqNLAANqb6dFlLLUv+JGChC7
+         YuQAhJz/qZK9W78y2Rb7daxZY3w3l/LxZw5Rlffq0qKfguJKoY3JT4Q8uEAmwkDiK0Yk
+         RozQcbWSqFp/ME1xxYgvan2CZA4kYQRi2Q58dhMDprZfvV0G5RZIFkbt7OxSdQUg4SrD
+         Takw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VqW5xuV/1lTxGcHmiBHYwvfv9PS2BZOwQspVUNm6Gmk=;
+        b=gdxjMWObZpXOFvT1anI3bi8HhrUvrQyaAZyVtGt1nMJBWf2leBlCjzX6Z0qv4AfINL
+         RNb3M0HTulMPmkdMKTcGryMID3xGa8r98+PCcABZYj6sNLJI5dIRDXr5LghwWJDAY4it
+         hfbYT43epjlj7n4VuWhQoG5TQaq1VmXtdvATTpEvO6F7PQJQuxMXjeBgnwG73Fq3NVzo
+         Xs6Jr9wGeYWIAsOBtIQcXvTR3M7i/1svgsKf8FvIkOWxCGIGGltx+KJgELEpdmSwOS5P
+         XMRKy0cNv1kjoDnCCdLrCD3OPPNjKpzVQz4wZ4HBMHStR7wh8EsjiLPyITmly2imKGFK
+         2Yxw==
+X-Gm-Message-State: AOAM531+/Qodv5Nb418+cQCofOci+venMNJHYOW6pL8F/b2dXD2Rk7QZ
+        LWkZ41EfFbx7WKwIBsTVSve2MT1U+PtfK/pcQSU=
+X-Google-Smtp-Source: ABdhPJxIMC1a82H6iLiyCFqEN0vjxjwh8XlAwFQGCRVIUw7bOduA99DaSEZLqbBT0opev2aRmHTxlyRn4kB3zOeMqcM=
+X-Received: by 2002:a5e:9812:: with SMTP id s18mr1553635ioj.138.1607117238450;
+ Fri, 04 Dec 2020 13:27:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+References: <20201204200920.133780-1-mario.limonciello@dell.com>
+In-Reply-To: <20201204200920.133780-1-mario.limonciello@dell.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Fri, 4 Dec 2020 13:27:07 -0800
+Message-ID: <CAKgT0Uc=OxcuHbZihY3zxsxzPprJ_8vGHr=reBJFMrf=V9A5kg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] Improve s0ix flows for systems i219LM
+To:     Mario Limonciello <mario.limonciello@dell.com>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Netfin <sasha.neftin@intel.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Stefan Assmann <sassmann@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        David Arcari <darcari@redhat.com>,
+        Yijun Shen <Yijun.Shen@dell.com>, Perry.Yuan@dell.com,
+        anthony.wong@canonical.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 13:23:43 +0100
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Fri, Dec 4, 2020 at 12:09 PM Mario Limonciello
+<mario.limonciello@dell.com> wrote:
+>
+> commit e086ba2fccda ("e1000e: disable s0ix entry and exit flows for ME systems")
+> disabled s0ix flows for systems that have various incarnations of the
+> i219-LM ethernet controller.  This was done because of some regressions
+> caused by an earlier
+> commit 632fbd5eb5b0e ("e1000e: fix S0ix flows for cable connected case")
+> with i219-LM controller.
+>
+> Performing suspend to idle with these ethernet controllers requires a properly
+> configured system.  To make enabling such systems easier, this patch
+> series allows determining if enabled and turning on using ethtool.
+>
+> The flows have also been confirmed to be configured correctly on Dell's Latitude
+> and Precision CML systems containing the i219-LM controller, when the kernel also
+> contains the fix for s0i3.2 entry previously submitted here and now part of this
+> series.
+> https://marc.info/?l=linux-netdev&m=160677194809564&w=2
+>
+> Patches 4 through 7 will turn the behavior on by default for some of Dell's
+> CML and TGL systems.
 
-> On Fri, Dec 04, 2020 at 07:43:48AM +0100, Thorsten Leemhuis wrote:
-> > Add the full text of the CC-BY-4.0 license to the kernel tree as well as
-> > the required tags for reference and tooling.
-> > 
-> > The license text was copied directly from the following url, but for
-> > clarification a 'Creative Commons' was added before 'Attribution 4.0
-> > International' in the first line:
-> > https://creativecommons.org/licenses/by/4.0/legalcode.txt
-> > 
-> > CC-BY-4.0 is GPLv2 compatible, but when for example used for the
-> > kernel's documentation it can easily happen that sphinx during
-> > processing combines it with text or code from files using a more
-> > restrictive license[1]. This bears pitfalls, hence point that risk out
-> > and suggest to only use this license in combination with the GPLv2.
-> > 
-> > [1] https://lkml.kernel.org/r/20201201144314.GA14256@lst.de
-> > 
-> > Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-> > CC: Thomas Gleixner <tglx@linutronix.de>
-> > CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > CC: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  LICENSES/dual/CC-BY-4.0 | 410 ++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 410 insertions(+)
-> >  create mode 100644 LICENSES/dual/CC-BY-4.0  
-> 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-Thanks for that.  Unless somebody screams, my intent is to apply these
-patches in the near future.
+The patches look good to me. Just need to address the minor issue that
+seems to have been present prior to the introduction of this patch
+set.
 
-jon
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
