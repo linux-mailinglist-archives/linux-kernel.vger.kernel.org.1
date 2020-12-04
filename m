@@ -2,87 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC0A2CEE81
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5352CEE8A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:00:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730230AbgLDM6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 07:58:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51400 "EHLO
+        id S1730246AbgLDM7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 07:59:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727711AbgLDM6R (ORCPT
+        with ESMTP id S1726441AbgLDM7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:58:17 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D70C061A4F;
-        Fri,  4 Dec 2020 04:57:37 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id t6so7466749lfl.13;
-        Fri, 04 Dec 2020 04:57:37 -0800 (PST)
+        Fri, 4 Dec 2020 07:59:04 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB86C061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 04:58:24 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id d5so3800275qtn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 04:58:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ChJxHnhoj3SJvtmx2+l76oFdOmA/pdMZHRiqzhvFFwE=;
-        b=DTWuaNQtdyrW91DFgh8aXCQoDmWzKWXLRWbSx97b5MpJVnGqLF0AUy+sUK7/CIQA3x
-         4rcMa9HgOHyMfkLbR86RyTkIUI/WY6+So7q8Sbw8OBF+7SYP/m86HV9Xaz/I/dMQ135f
-         ELs/UjEZPkmRWnbC7qT0hRDsGhHkfi1icdZYSOiBHPdg43QNyNnixAITj0X0Pyq/pp6a
-         4i1vwE48bHdNbYRW93xRcB22VdzW14Kr6Bp3hhNpqQOXaotbk8IBAlDCFlB3z0Ja9D84
-         VOvCCg0la+aKs81CYgIRvSYmwu0k0AV8Zx9joYf/5RSb2iaUpSVh76Yf0x1enPyRR4pj
-         Ogug==
+        bh=mMB6TptaiGgF4Fosm42A4LHTb/bohqrND/1SgruKzRo=;
+        b=EwWyGtpTj94igDoF8XfgXRonTlvZx6CGc8I12BZB1X6VA+Fg+dcSxLIFNTW5ALVnOu
+         SlEvcfbUm2Np8zJw2dvHlihTrqW6jxkbVPqYIpAV2Mcw8sDlEJGU2kcW9g/+BIyUDett
+         Xdt5G5/1vrb+GgUEA4oV2nBf1NQ8z8DlqJBMUQJfoG4zDqSXK2DQPUO9kZR7rI2tZdU6
+         iM+A4bd8xrhG9YSPLO39gvlZlJvDGQFXC82Ko/2fNCEV1gEPPrOFFdl/jTFdnVNgSqK3
+         +XzA5cXaCbWTsd9yWvOxI4LocjRS2aB3+B3Sq1JEz1EctKYU/e26KHzWQieUiEwq1+vi
+         S+Hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ChJxHnhoj3SJvtmx2+l76oFdOmA/pdMZHRiqzhvFFwE=;
-        b=jcywD6jZssFBpnSTrFifz5etEpS1NKmyx8PT6sjGUD1M1x0MkLGaJgOgRwOSQ494/b
-         Mp5KPKTJVCb4P7xK48TRVN1OBkoDMtWsQ1jt8R8CdaAUGwIT4WGwiu17Yi1aWKw+dYYM
-         R4d+Rqg4w38Rvvkg7hr6TLHhkmwhiV1JvoYBOsaPmxUh4uNc/gaMZCevrvDAx46CVlg7
-         gwVo1RcTTDxnB/C/2QFoGT3LyALK/bfGnrySZutTlSDwBpuKGdWixgaAiWoxGY69UqfJ
-         Ndji7oVgJYY/Q2jjcrALgqIsKjGEppyEPs1dBAshLC1G1w6huiLgGM4d/LDUznFVaK08
-         tzog==
-X-Gm-Message-State: AOAM531uCeFbYV+Ns2a9TsSX8wdI6ajT3z/UqTyXBGFKwSMp3Vu2aipl
-        c1QLMfFwimY1P/AbRPp7IXo=
-X-Google-Smtp-Source: ABdhPJzWwcUnGUiRZFfB3QdPd3JwjqtLzP3rJ1aitEV2g6WdGKDL6z+50X54IIp/uScXDuG39+k66g==
-X-Received: by 2002:ac2:5591:: with SMTP id v17mr3526525lfg.562.1607086655732;
-        Fri, 04 Dec 2020 04:57:35 -0800 (PST)
-Received: from xps13 ([37.78.35.64])
-        by smtp.gmail.com with ESMTPSA id w19sm1614457lfe.175.2020.12.04.04.57.34
+        bh=mMB6TptaiGgF4Fosm42A4LHTb/bohqrND/1SgruKzRo=;
+        b=X1ESQa1mqZct4idbMVXCvVIwHmsufuhNL36kzqXuQ912FksFM+XUOB1vQQcM6XVpwT
+         wFs6C5178EJfKRrE9edBCeJ9sa+5lM0BlQ7TZodTibVE4ms3Y5j/6Zbb0DiqAWMtQe4i
+         6BHkbyjoxnv81+B8kmscGu9ohnOU7dQct4aUmrPulTXa+K8M+0QxA3KtnLp1ufao5HsO
+         nTNT48CUo5tsBxzGJ9N7kuJPzbeMLFZVlK+eOJ+9sNFlI6ojQ5r2Dfuh8wDlqXXHf5r6
+         5pDQoGFCooiI7TdPxNkQQc7BijWD0eRndJ3TnKnMlarL/Kx7WoByUo4+fuPqShHSVuww
+         GTgQ==
+X-Gm-Message-State: AOAM532iUhfCXUGJf+YG4eoaFgc8K2h4DVKMNqFR06svC+D/plYpPLWp
+        fJ0xUFRINexahXmlVzW7qDAnBw==
+X-Google-Smtp-Source: ABdhPJwPFcOOZLe1Mg2mYyorVSLAyiPoevE1tsF0aJXBNFYF7EYaPI5QkdHoa4YMi7efamOTUiQFpw==
+X-Received: by 2002:ac8:678d:: with SMTP id b13mr9105807qtp.332.1607086703152;
+        Fri, 04 Dec 2020 04:58:23 -0800 (PST)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id 94sm4768303qtg.57.2020.12.04.04.58.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 04:57:35 -0800 (PST)
-Date:   Fri, 4 Dec 2020 15:57:33 +0300
-From:   Artem Labazov <123321artyom@gmail.com>
-To:     Sungjong Seo <sj1557.seo@samsung.com>
-Cc:     stable@vger.kernel.org, 'Namjae Jeon' <namjae.jeon@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] exfat: Avoid allocating upcase table using kcalloc()
-Message-ID: <20201204125730.GA546513@xps13>
-References: <CGME20201124194858epcas1p49cacda6a9b4877ff125f25f4dc5fcadf@epcas1p4.samsung.com>
- <20201124194749.4041176-1-123321artyom@gmail.com>
- <001101d6c867$ca8c5730$5fa50590$@samsung.com>
+        Fri, 04 Dec 2020 04:58:22 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1klAfF-005qwi-5P; Fri, 04 Dec 2020 08:58:21 -0400
+Date:   Fri, 4 Dec 2020 08:58:21 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Sergey Temerkhanov <s.temerkhanov@gmail.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][RFC] tpm: Rework open/close/shutdown to avoid races
+Message-ID: <20201204125821.GW5487@ziepe.ca>
+References: <20201204101805.27374-1-s.temerkhanov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <001101d6c867$ca8c5730$5fa50590$@samsung.com>
+In-Reply-To: <20201204101805.27374-1-s.temerkhanov@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I have not yet received a report of the same issue.
-> But I agree that this problem is likely to occur even if it is low
-> probability.
+On Fri, Dec 04, 2020 at 01:18:05PM +0300, Sergey Temerkhanov wrote:
+> Avoid race condition at shutdown by shutting downn the TPM 2.0
+> devices synchronously. This eliminates the condition when the
+> shutdown sequence sets chip->ops to NULL leading to the following:
+> 
+> [ 1586.593561][ T8669] tpm2_del_space+0x28/0x73
+> [ 1586.598718][ T8669] tpmrm_release+0x27/0x33wq
+> [ 1586.603774][ T8669] __fput+0x109/0x1d
+> [ 1586.608380][ T8669] task_work_run+0x7c/0x90
+> [ 1586.613414][ T8669] prepare_exit_to_usermode+0xb8/0x128
+> [ 1586.619522][ T8669] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [ 1586.626068][ T8669] RIP: 0033:0x4cb4bb
+> 
+> Signed-off-by: Sergey Temerkhanov <s.temerkhanov@gmail.com>
+>  drivers/char/tpm/tpm-chip.c  | 27 ---------------------------
+>  drivers/char/tpm/tpm-dev.c   | 11 ++++++-----
+>  drivers/char/tpm/tpmrm-dev.c |  7 +++++++
+>  include/linux/tpm.h          |  2 +-
+>  4 files changed, 14 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> index 1838039b0333..ede7f4790c5e 100644
+> +++ b/drivers/char/tpm/tpm-chip.c
+> @@ -282,32 +282,6 @@ static void tpm_devs_release(struct device *dev)
+>  	put_device(&chip->dev);
+>  }
+>  
+> -/**
+> - * tpm_class_shutdown() - prepare the TPM device for loss of power.
+> - * @dev: device to which the chip is associated.
+> - *
+> - * Issues a TPM2_Shutdown command prior to loss of power, as required by the
+> - * TPM 2.0 spec. Then, calls bus- and device- specific shutdown code.
+> - *
+> - * Return: always 0 (i.e. success)
+> - */
+> -static int tpm_class_shutdown(struct device *dev)
+> -{
+> -	struct tpm_chip *chip = container_of(dev, struct tpm_chip, dev);
+> -
+> -	down_write(&chip->ops_sem);
+> -	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
+> -		if (!tpm_chip_start(chip)) {
+> -			tpm2_shutdown(chip, TPM2_SU_CLEAR);
+> -			tpm_chip_stop(chip);
+> -		}
+> -	}
+> -	chip->ops = NULL;
+> -	up_write(&chip->ops_sem);
+> -
+> -	return 0;
+> -}
 
-Perhaps I should clarify my setup a little bit more.
-The issue can be reliably reproduced on my laptop. It has 8 GBs of RAM
-(pretty common amount nowadays) and runs an unmodified Fedora 32 kernel.
-Also, I use zswap, which seems to be contributing to fragmentation as well.
+This does more than just call tpm2_shutdown, it exists to prevent use
+after free situations because the chip point can exist in other parts
+of the system beyond the lifetime of the driver.
 
-> I think it would be more appropriate to use kvcalloc and kvfree instead.
+You can't call into the driver at all past shutdown, so moving
+tpm2_shutdown here:
 
-I do not think this is really needed.
-Upcase table allocation is relatively large (32 pages of 4KB size) and
-happens only once, when the drive is being mounted. Also, exfat driver
-does not rely on the fact that the table is physically contiguous.
-That said, vmalloc/vfree seems to be the best option, according to kernel's
-"Memory Allocation Guide".
+> @@ -39,6 +41,11 @@ static int tpmrm_release(struct inode *inode, struct file *file)
+>  
+>  	tpm_common_release(file, fpriv);
+>  	tpm2_del_space(fpriv->chip, &priv->space);
+> +
+> +	if (!atomic_dec_return(&fpriv->chip->is_open)) {
+> +		tpm2_shutdown(fpriv->chip, TPM2_SU_CLEAR);
+> +		tpm_chip_stop(fpriv->chip);
+> +	}
 
---
-Artem
+Is just wrong.
+
+Your bug is because tpmrm_release is not following the lifetime rules
+for chip, it probably needs to do a get on the pointer to be able to
+access the ops.
+
+Jason
