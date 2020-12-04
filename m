@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65962CF70F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3192CF711
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730766AbgLDWp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 17:45:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728734AbgLDWpZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 17:45:25 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E2DC0613D1;
-        Fri,  4 Dec 2020 14:44:45 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id p6so3947716plr.7;
-        Fri, 04 Dec 2020 14:44:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:in-reply-to:references:user-agent:date
-         :message-id:mime-version;
-        bh=yuYclua/K6G1/NzZklfhnByGsvXi5uYNWph4XL2hSIs=;
-        b=jGEvaLZ55EZaXGmYyljajBzGveSvX8t6YtByTv0yzn5xEk0mNTJgF7uyHpKEzjdV/v
-         nJl3bg0njIZuBPeuyDtaVdEOBu86zM8qC7bEtrPJ6bIfDiTN6VZne6VYV/qMr7E6iY41
-         aTyrl85v6Ii0bCj5oNlOz5phachxznzAkgqCFEAyT/AzgmT3ZqSRy7vHr8rF1zaJ2UFE
-         I8i2KgFpHe+BNsy9KIZ0Fn53ocC+1KyI6hr+HrURAoDJ449GCTHkuNwFfIq/bdyE/ICy
-         bIdlux3DXZPAjIqcjNq1N08wJAE2K+ybGKzHnrkoGFWZxBGh+ewBAd986wx0iNmKIv4p
-         Jhhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references
-         :user-agent:date:message-id:mime-version;
-        bh=yuYclua/K6G1/NzZklfhnByGsvXi5uYNWph4XL2hSIs=;
-        b=r3dfBph2XwHycJJpcYjFFRsRsyCUJnws7PmCLPHhkuQ7IiWJVtpvSb79Xfi18G2H0P
-         aRxG2JOGV2Iyg+rTtquAviHnb+2QiGJbKsiEHS1YNL34lYnvM7SUJP4B3bY0sL8xhF2t
-         +3sfWz7qc+Vpd8J9D+uTfk+0m8/uX6Y0mj/rhpEZP2W4acdaWfe+TVr9GRyYIMZVk4aM
-         /6Ntad6NQ8l55MDg6Jly3lDRAbF0dkCvfeMsaNCkFoPQ9aLP61qws6KGWlpBqThZ61/l
-         AKS/Cq2isaiKdgnd82QOw5IItnXFuDeYdAfw6qMokU2tM7CRLcgtf15UcrYJgmPGxd8n
-         6nlg==
-X-Gm-Message-State: AOAM533ufg621CQdS9DEBHiFTRAENiY6immUR4GShOV1E4ZEszvEZc4Z
-        tgWEVDBjiaR30IlRO0AMUhg=
-X-Google-Smtp-Source: ABdhPJzobywerg8vaX5EtSuLsD9/y1ZfSYBHaXKoc9X8ALE2TfXiatvkFUNK1lvdB13oZaUEAKWGng==
-X-Received: by 2002:a17:90b:4394:: with SMTP id in20mr3377414pjb.34.1607121885363;
-        Fri, 04 Dec 2020 14:44:45 -0800 (PST)
-Received: from localhost ([2405:6580:31a1:500:1ac0:4dff:fe39:5426])
-        by smtp.gmail.com with ESMTPSA id y23sm3710809pje.41.2020.12.04.14.44.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 14:44:44 -0800 (PST)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     rjw@rjwysocki.net
-Cc:     wei.huang2@amd.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, bp@alien8.de, x86@kernel.org
-Subject: Re: [RFC PATCH 0/4] Add processor to the ignore PSD override list
-In-Reply-To: <20201125144847.3920-1-punitagrawal@gmail.com> (Punit Agrawal's
-        message of "Wed, 25 Nov 2020 23:48:43 +0900")
-References: <20201125144847.3920-1-punitagrawal@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-Date:   Sat, 05 Dec 2020 07:44:41 +0900
-Message-ID: <87zh2tp4x2.fsf@stealth>
+        id S1730855AbgLDWpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 17:45:42 -0500
+Received: from gofer.mess.org ([88.97.38.141]:41021 "EHLO gofer.mess.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726111AbgLDWpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 17:45:41 -0500
+X-Greylist: delayed 50438 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Dec 2020 17:45:40 EST
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 8F2F8C63F3; Fri,  4 Dec 2020 22:44:58 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1607121898; bh=PYH8ww1xg7JJTR9yV5V04QIPlPtwuoeubNCoR6ffAlo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SOU4hQfIGHnzuYrHWcRjab1uQ0fVMy/3s/r8IjYVXz2h02cPZUmubrdovi8MbRDlE
+         bHb7/3pxfeh7AFUthUsi95Zd9+m5K2YM6qS0cU+b5zQ1oYERTt8r7XZ6GgbZs3ItPS
+         M8dM7uJqtyF/XPm2Bcwiz7hvizQTfWFIaOo0osQGKeq3PjntFVXqOpwQXtzwelGpB/
+         cS/LvisM55v9yKB4spqMwd7cIdq4EXQg0u5IxnF3rzFfKvLsav9hpY/gLcgcnncPye
+         EAQFBXdQVe/da5YPSLpHvavRDJZ/gt42IysVJMORk5tuMWDn6/EMraYCh3YOEZhs9Q
+         a2eYr9/zZJ28g==
+Date:   Fri, 4 Dec 2020 22:44:58 +0000
+From:   Sean Young <sean@mess.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, thierry.reding@gmail.com,
+        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
+        rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
+ configuration
+Message-ID: <20201204224458.GA15986@gofer.mess.org>
+References: <202011281128.54eLfMWr-lkp@intel.com>
+ <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
+ <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
+ <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
+ <20201204112115.wopx5p5elgte7gad@pengutronix.de>
+ <20201204114036.GB6547@gofer.mess.org>
+ <20201204215525.uvjxlebth457aoj5@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201204215525.uvjxlebth457aoj5@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+Hi Uwe,
 
-Punit Agrawal <punitagrawal@gmail.com> writes:
+On Fri, Dec 04, 2020 at 10:55:25PM +0100, Uwe Kleine-König wrote:
+> On Fri, Dec 04, 2020 at 11:40:36AM +0000, Sean Young wrote:
+> > On Fri, Dec 04, 2020 at 12:21:15PM +0100, Uwe Kleine-König wrote:
+> > > On Fri, Dec 04, 2020 at 12:42:15AM +0100, Lino Sanfilippo wrote:
+> > > > On 29.11.20 at 19:10, Uwe Kleine-König wrote:
+> > > > > You're storing an unsigned long long (i.e. 64 bits) in an u32. If
+> > > > > you are sure that this won't discard relevant bits, please explain
+> > > > > this in a comment for the cursory reader.
+> > > > 
+> > > > What about an extra check then to make sure that the period has not been truncated,
+> > > > e.g:
+> > > > 
+> > > > 	value = DIV_ROUND_CLOSEST_ULL(state->period, scaler);
+> > > > 
+> > > > 	/* dont accept a period that is too small or has been truncated */
+> > > > 	if ((value < PERIOD_MIN) ||
+> > > > 	    (value != DIV_ROUND_CLOSEST_ULL(state->period, scaler)))
+> > > > 		return -EINVAL;
+> > > 
+> > > I'd make value an unsigned long long and check for > 0xffffffff instead
+> > > of repeating the (expensive) division. (Hmm, maybe the compiler is smart
+> > > enough to not actually repeat it, but still.)
+> > 
+> > I wonder where you got that idea from.
+> 
+> I don't know how to honestly answer your question.
+> Which idea do you mean? That divisions are expensive? Or that compilers
+> might be smart? And do you consider it a good idea? Or do you disagree?
 
-> Hi,
->
-> While looking into Giovanni's patches to enable frequency invariance
-> on AMD systems[0], I noticed an issue with initialising frequency
-> domain information on a recent AMD APU.
->
-> Patch 1 refactors the test to ignore firmware provided frequency
-> domain into a separate function.
->
-> Patch 2 adds said APU (Family: 0x17, Model: 0x60, Stepping: 0x01) to
-> the list of CPUs for which the PSD override is ignored. I am not quite
-> happy with having to special case a particular CPU but also couldn't
-> find any documentation to help identify the CPUs that don't need the
-> override.
+I had already made this exact suggestion -- and you had replied to my
+email making that suggestion -- before you emailed this. Granted, I said
+u64 and U32_MAX rather than unsigned long long and 0xffffffff.
 
-Are you be OK to pick the first two patches if there are no issues?
+However, I should not have sent that snotty email. It's irrelevant.
 
-Thanks,
-Punit
+My apologies.
 
 
-> Patch 3 and 4 are somewhat independent and a first step towards
-> improving the situation with regards to the use of raw identifiers for
-> AMD processors throughout the kernel.
->
-> All feedback welcome.
->
-> Thanks,
-> Punit
->
-> [0] https://lore.kernel.org/linux-acpi/20201112182614.10700-1-ggherdovich@suse.cz/
->
-> Punit Agrawal (4):
->   cpufreq: acpi-cpufreq: Re-factor overriding ACPI PSD
->   cpufreq: acpi-cpufreq: Add processor to the ignore PSD override list
->   x86/cpu: amd: Define processor families
->   cpufreq: acpi-cpufreq: Use identifiers for AMD processor family
->
->  arch/x86/include/asm/amd-family.h    | 18 ++++++++++++++++++
->  arch/x86/include/asm/cpu_device_id.h |  2 ++
->  drivers/cpufreq/acpi-cpufreq.c       | 24 +++++++++++++++++++++---
->  3 files changed, 41 insertions(+), 3 deletions(-)
->  create mode 100644 arch/x86/include/asm/amd-family.h
+Sean
