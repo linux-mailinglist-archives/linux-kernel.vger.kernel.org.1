@@ -2,132 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6042CF446
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA3F2CF44F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:51:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgLDStP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:49:15 -0500
-Received: from mail-bn8nam08on2051.outbound.protection.outlook.com ([40.107.100.51]:20673
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726173AbgLDStP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:49:15 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eS9m7pQHS82mlWAIoz6eSc8aWiv6KBNJ0nfOlJfK+aPGgc82klQdWPi01NADAJSVK4SmiXVR+WQlQIcrdenU80Lt2uLIEd3Um4IKNhVk2M6o+eZopXLeRG+WGdDtFlhfUvtnHjkStLYKiDdn5n24XiBDb8/3qISJf9truGBjymHEnCxIzhVT4OCT51t5qTe+CtTQoy6cbcJKv7G2x4wMvAjaBO8wN3dH/xJk9reUIkgXfuH08Jjo7gVDKxwLzpCTXGHfWBklvv9ET26wlYtTgCUWMVO9pMWSQbcdpxHuoVXpi98LH89bdakgo8QkxB3kDcTx528kAUIT8i/3nYhE/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZeH0K0X7qkcPYNMYhfU8gIWBthiB7P8vC2tRL1rX0QU=;
- b=DhhKOzH7Tk325drNLalBhIr6mSMF7ArcXO6bgLG0XVSUiiwPszgoYCFoBRrmaLw3sICrT0KHRBuZ8J0SoFYAARR+/fX82wLUHmxuPTLFKg3neaInjK0UDzDl13JUvP/GYmGnp8t6emt8gvO+wvH0KA2l9jGPc+Dk/X3pkveIe7CSvZfT+ULL7CxKYvl+yetVliIolcCTh7+15rIEctUa2m3gKWYlasx5GF0uJasB39SAhhdR+JKz6A9iYFlSHXN1DH9cZjso8gH01dHP95GxCVCZIF4z8pwFxNE+2xCVr34Ryko/vgQC+tZskTGGpjlY/rgF5SGbYGEkwC1vI177Lg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZeH0K0X7qkcPYNMYhfU8gIWBthiB7P8vC2tRL1rX0QU=;
- b=0QL26qIFjaol7lsXcv4FznacOE137e0Jdv/krgdoRKSk+QqphsJ9cQv1FZUanCo35ursFHXBqhNCUwH9MrkdKuP2pi4sowSXVF2q79oeJfCqeOo+z91FbzPy2NVCCugUluG04Y8+EUCDo/Y9iJT0r5uJzlxTDiNdzmicCJvG1ls=
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SA0PR12MB4430.namprd12.prod.outlook.com (2603:10b6:806:70::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.20; Fri, 4 Dec
- 2020 18:48:22 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3611.025; Fri, 4 Dec 2020
- 18:48:22 +0000
-From:   "Kalra, Ashish" <Ashish.Kalra@amd.com>
-To:     Sean Christopherson <seanjc@google.com>
-CC:     "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "bp@suse.de" <bp@suse.de>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
-        X86 ML <x86@kernel.org>
-Subject: Re: [PATCH v8 13/18] KVM: x86: Introduce new
- KVM_FEATURE_SEV_LIVE_MIGRATION feature & Custom MSR.
-Thread-Topic: [PATCH v8 13/18] KVM: x86: Introduce new
- KVM_FEATURE_SEV_LIVE_MIGRATION feature & Custom MSR.
-Thread-Index: AQHWymg5O15yco/y+0qZupKZxhig2qnnRUaAgAAB/g0=
-Date:   Fri, 4 Dec 2020 18:48:22 +0000
-Message-ID: <C0A5487F-3B45-4343-9528-8A1BC213C2F3@amd.com>
-References: <X8pocPZzn6C5rtSC@google.com>
- <20201204180645.1228-1-Ashish.Kalra@amd.com>,<CAMS+r+XBhFHnXrepzMq+hkaP3yHOUELjyc65JQipKCN+7zubVw@mail.gmail.com>
-In-Reply-To: <CAMS+r+XBhFHnXrepzMq+hkaP3yHOUELjyc65JQipKCN+7zubVw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [136.49.12.8]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: ba069a9b-6873-4da6-3c5c-08d898852d1c
-x-ms-traffictypediagnostic: SA0PR12MB4430:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA0PR12MB443019CD6E68CAA09E68D91F8EF10@SA0PR12MB4430.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 84ZYj1mHDrdGgNXCzQ4tYxLb7AIYstS0+wYL9r4K5n82S0AVpyH7KidJSLcpXJYtCPw7xwz0GRqWb0SX4JwgTmJ520SB/9y3N2YM/1EUYmLNqPcXi50SUrLwyamWkTDRSO6UZE6GBcSKUUUYMF0cWtUc/b+yiQtiF6jtAjvj+2eIzAVcGNVoEchNKeOm6FxNbtDV+B2YibdZpb8IJmnjgWwWGf4TnXHgGbeLgb+XSfO6v2CBpiYKlCeCRHQNH8A2p3tJmZLVFXyhXG6r6ZXHHN1Sl/aOH4ALu1QiIseJHia94wVBmCyKpuXQg4NBnHLJyR9b+A340sFD2+pMAv0rcQj//ESp/fpQqiCv5XFnq37TKjUoRpfVgtkwzaxIEw8G
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(136003)(376002)(346002)(66556008)(4326008)(64756008)(66446008)(6916009)(2906002)(53546011)(66946007)(66476007)(36756003)(316002)(6506007)(33656002)(8936002)(76116006)(71200400001)(2616005)(7416002)(86362001)(6512007)(5660300002)(54906003)(186003)(26005)(4744005)(8676002)(6486002)(478600001)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?M21jWnFWNk95eGdYNTNOKzNWaU9pQ2pGaXhNdnR3T1p0UkdUbHptK1hlT2x5?=
- =?utf-8?B?WjNQVVN5Vmt6VGoybnRrK2M4YjV6YlZaSFVrbyswRlIwelNFd1MvbW52dVNR?=
- =?utf-8?B?ZUFyMVFYdm9rYWcwN1VKNTBoTm85S2h5UGtCR05ITXRldmROb1cyYmFsN1kw?=
- =?utf-8?B?Z0RFaUYyYmJ1MTFObFdRQXpvQlI1NlJDVFh2SnpYam5HMGg0UmRPb0lHb1l2?=
- =?utf-8?B?ZlNndmdZVk12TGVJTkVSMDQya0JONUNxNzIzVVlibXVsNmtDNUxXR1pic0Zn?=
- =?utf-8?B?Q1Roa3BPWElwSFJNWTh1ajlDRVY3RUNxTmF4eGJFbC9MbW1yVGNES3YvYVNI?=
- =?utf-8?B?RUJDQjF2aFYvV1crbVJJN3kxcWQ4RHUxeXhZVVYzYnJ2Z214bW9uQWJweGpi?=
- =?utf-8?B?N1NVL1BvTEFaOS9icE9ZUkxOVzk2Z2Jab04wYmE2TkNtV04xQzBuUnU5RnJV?=
- =?utf-8?B?ekJDaEt0cWxSRjlkNk1SWWxsQzB5R1VYNGVrcE1mYlp1M3A4bHIveS9zWnU2?=
- =?utf-8?B?NXFHYWFoNE13N0MzR1UvY01TdU1aNVdPNDZDVzVsSlFvSFhnTWVPY1VDU2xU?=
- =?utf-8?B?TW5UaWV3bGx0WU5sQjd1MmE4bFVkUWRZVk1POWNzUHBtQ2p2UGxERnozUjhp?=
- =?utf-8?B?RnZIclR6QStjU29RUEZNRWY1VXRla2E4WGFEMXEyRDkrUGFwZzdSRmJXVUJl?=
- =?utf-8?B?SlovdGVKdjB5UDQxK0JpTUdnQUJTMGg0SkFVZDVrdzNsME5scytIYjBrYlJZ?=
- =?utf-8?B?TnFMQmdpMGltM0xiZUJHYllTK1ZFc0lneVJ3VlJocnZWRTk1RlYveW00ck9C?=
- =?utf-8?B?NzBYNGRoOWJiWDVKckRnUEJUUE9nRUtGUlJaVnlhV3NuQVo0VithUTk3cDRl?=
- =?utf-8?B?UGdlWjFNcjlFMmlHdUZLcUxiRG1DRytVK2FTTTNsbmlIVVBtQkUwTTdiOFhz?=
- =?utf-8?B?dmhsTlJudW5MM1REMGtsL2tVaHJaM1Q1SjNsUmlDcUF1eE5KMHVBeTlsWjlU?=
- =?utf-8?B?N0IySW5Xay93Z3F6dUdHZnB6cnZuWFp3c1pGaGFUOHBaRFNYRUhXYXR2bEdo?=
- =?utf-8?B?N2F1M2N0bTZjZ1VLK2NBMEU3d1pPT3VUQ2I4VzgwRjk0K3orSk1YemdjTUIz?=
- =?utf-8?B?U2pQNTN3RGR4T240cjZRb2N2TmxMSWdUUG9SNGxkTVI2ek1hZmJSWWlFVzhk?=
- =?utf-8?B?Q012ZnA2VkQzS0xmemgrVUJoMzZLWGpueEtNL3FtcWV4MlpjUDMrOGlaTHEw?=
- =?utf-8?B?eGFRdXQ5SDl4U0JscVoycEdwcXV0Y3d3MEVBbXZDRmgwZ2VjTm0wcnZXVHov?=
- =?utf-8?Q?fDl9Rd6Hnf150=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba069a9b-6873-4da6-3c5c-08d898852d1c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Dec 2020 18:48:22.7143
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: S+O6aJk9dYNx5788mTm3UBg5dByvgAkbg+c4N2aKZF/BdgToOBH5ZSlSis1NaenhxBEYz5VSvxVi8je0PtPzNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4430
+        id S1730095AbgLDSuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:50:19 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:46696 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgLDSuS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:50:18 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B4Id7aZ080569;
+        Fri, 4 Dec 2020 18:48:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=Ht4XSMFgIFxAizqaagPUCiggLuikqi6eY1y/ipcl3Pw=;
+ b=kzpr9a0E9L044Glmer2EF9HOE2WGnbBl8g3M3nrqtYigFjHmyrxFIdgl0ino/8OqR+it
+ j1H6G8apA2uUKaw3quWR2xtmzMMLJbupyfrUTZcRqe22Ir54OPFCjRic92QNxIyGj/Ra
+ iEQESH55S+1x2xio1rE5zHvAxrZVZ3u3FmfLg/dDW7fTf8j4jIhs6gt59vEYzxTolsDq
+ uOwFKD0lW4hAgpZpjX3cUvhgmzzmOdSeqIakx6K6KwrPfbEGkcvo2xzc8F9pHX3dWQXW
+ eLmfBb1v+IcHCrGas65qq0oy37IuegWXm0UsK4IYXNN0H4IPmewYQZ35qQrWTLtr6U8C GQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 353c2bcpu8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 04 Dec 2020 18:48:51 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B4IYRgd082193;
+        Fri, 4 Dec 2020 18:48:50 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 3540ayfr25-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Dec 2020 18:48:50 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B4ImmFS025392;
+        Fri, 4 Dec 2020 18:48:48 GMT
+Received: from localhost.uk.oracle.com (/10.175.205.186)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 04 Dec 2020 10:48:48 -0800
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, yhs@fb.com, songliubraving@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        rostedt@goodmis.org, mingo@redhat.com, haoluo@google.com,
+        jolsa@kernel.org, quentin@isovalent.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, shuah@kernel.org, lmb@cloudflare.com,
+        linux-kselftest@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH v2 bpf-next 0/3] bpf: support module BTF in BTF display helpers
+Date:   Fri,  4 Dec 2020 18:48:33 +0000
+Message-Id: <1607107716-14135-1-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9825 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040106
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9825 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
+ clxscore=1011 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012040106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhpcyB0aW1lIEkgcmVjZWl2ZWQgeW91ciBlbWFpbCBkaXJlY3RseS4NCg0KVGhhbmtzLA0KQXNo
-aXNoDQoNCj4gT24gRGVjIDQsIDIwMjAsIGF0IDEyOjQxIFBNLCBTZWFuIENocmlzdG9waGVyc29u
-IDxzZWFuamNAZ29vZ2xlLmNvbT4gd3JvdGU6DQo+IA0KPiDvu79PbiBGcmksIERlYyA0LCAyMDIw
-IGF0IDEwOjA3IEFNIEFzaGlzaCBLYWxyYSA8QXNoaXNoLkthbHJhQGFtZC5jb20+IHdyb3RlOg0K
-Pj4gDQo+PiBZZXMgaSB3aWxsIHBvc3QgYSBmcmVzaCB2ZXJzaW9uIG9mIHRoZSBsaXZlIG1pZ3Jh
-dGlvbiBwYXRjaGVzLg0KPj4gDQo+PiBBbHNvLCBjYW4geW91IHBsZWFzZSBjaGVjayB5b3VyIGVt
-YWlsIHNldHRpbmdzLCB3ZSBhcmUgb25seSBhYmxlIHRvIHNlZSB5b3VyIHJlc3BvbnNlIG9uIHRo
-ZQ0KPj4gbWFpbGluZyBsaXN0IGJ1dCB3ZSBhcmUgbm90IGdldHRpbmcgeW91ciBkaXJlY3QgcmVz
-cG9uc2VzLg0KPiANCj4gSHJtLCBhcyBpbiB5b3UgZG9uJ3QgZ2V0IHRoZSBlbWFpbD8NCj4gDQo+
-IElzIHRoaXMgZW1haWwgYW55IGRpZmZlcmVudD8gIFNlbmRpbmcgdmlhIGdtYWlsIGluc3RlYWQg
-b2YgbXV0dC4uLg0K
+This series aims to add support to bpf_snprintf_btf() and
+bpf_seq_printf_btf() allowing them to store string representations
+of module-specific types, as well as the kernel-specific ones
+they currently support.
+
+Patch 1 removes the btf_module_mutex, as since we will need to
+look up module BTF during BPF program execution, we don't want
+to risk sleeping in the various contexts in which BPF can run.
+The access patterns to the btf module list seem to conform to
+classic list RCU usage so with a few minor tweaks this seems
+workable.
+
+Patch 2 replaces the unused flags field in struct btf_ptr with
+an obj_id field,  allowing the specification of the id of a
+BTF module.  If the value is 0, the core kernel vmlinux is
+assumed to contain the type's BTF information.  Otherwise the
+module with that id is used to identify the type.  If the
+object-id based lookup fails, we again fall back to vmlinux
+BTF.
+
+Patch 3 is a selftest that uses veth (when built as a
+module) and a kprobe to display both a module-specific
+and kernel-specific type; both are arguments to veth_stats_rx().
+Currently it looks up the module-specific type and object ids
+using libbpf; in future, these lookups will likely be supported
+directly in the BPF program via __builtin_btf_type_id(); but
+I need to determine a good test to determine if that builtin
+supports object ids.
+
+Changes since RFC
+
+- add patch to remove module mutex
+- modify to use obj_id instead of module name as identifier
+  in "struct btf_ptr" (Andrii)
+
+Alan Maguire (3):
+  bpf: eliminate btf_module_mutex as RCU synchronization can be used
+  bpf: add module support to btf display helpers
+  selftests/bpf: verify module-specific types can be shown via
+    bpf_snprintf_btf
+
+ include/linux/btf.h                                |  12 ++
+ include/uapi/linux/bpf.h                           |  13 ++-
+ kernel/bpf/btf.c                                   |  49 +++++---
+ kernel/trace/bpf_trace.c                           |  44 ++++++--
+ tools/include/uapi/linux/bpf.h                     |  13 ++-
+ .../selftests/bpf/prog_tests/snprintf_btf_mod.c    | 124 +++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_iter.h       |   2 +-
+ tools/testing/selftests/bpf/progs/btf_ptr.h        |   2 +-
+ tools/testing/selftests/bpf/progs/veth_stats_rx.c  |  72 ++++++++++++
+ 9 files changed, 292 insertions(+), 39 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf_btf_mod.c
+ create mode 100644 tools/testing/selftests/bpf/progs/veth_stats_rx.c
+
+-- 
+1.8.3.1
+
