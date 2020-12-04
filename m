@@ -2,87 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326082CF76F
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6ABD2CF77C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbgLDX1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 18:27:23 -0500
-Received: from mout.gmx.net ([212.227.15.19]:35179 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLDX1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 18:27:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1607124342;
-        bh=tRd3czlcgEfSQ1/izCZk9M5n6dlWTYetrUaNu4W98KI=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=DhYdgb7iOkbah+eFCBoIgY3p5yNgeDHjI2/DpRQFZEcgJayhJXzGCnx9ExRmnHeNo
-         qPmd6AEAKOA3jq3kJvrKK/HTUl0GTYdXWaFXgjqHnjFMUpHIzzQy5upTn21fMzyrhQ
-         VTwH6p5ebsOWV66QWIpD7bDc8SWftG5JLv2p53vI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MaJ3n-1kiHUO3R0X-00WGyA; Sat, 05
- Dec 2020 00:25:41 +0100
-Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
- configuration
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-pwm@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sean@mess.org
-References: <202011281128.54eLfMWr-lkp@intel.com>
- <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
- <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
- <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
- <20201204112115.wopx5p5elgte7gad@pengutronix.de>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <5c7c96ff-5323-2dd9-b56d-57a10b6576f2@gmx.de>
-Date:   Sat, 5 Dec 2020 00:25:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727409AbgLDX2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 18:28:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726508AbgLDX2j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 18:28:39 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3089C061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 15:27:13 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id i6so818070otr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 15:27:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zLc7/3okPvFxP0Z5cS+hPwJjhxGd6v5dEl0jnqjK1K0=;
+        b=xQwJageZbIycG4kTT8ShqMD3nUbwD7r8wUnxsVIIr+DgCBye6qng9WoGeVERzlid29
+         k/ObBybIk//OMjj5X5o6YZ0k0F4YAbF832KqRuemDPxAcGvpXGz4INpWkjsvJ/5BU8zJ
+         Qf7/ZZlvvJbUKw/nn1qkD3DgSqL7BZqwgj4xqzlmiG/PCX2A4z4QX3GYSWBzdNtfezVv
+         hbrkMNgU0Ogaga1hWbEu58REJxvLrJ/YyXTVkcispMWDJKH07SatPkBvKuiG1UyvjT6f
+         uRrkVoAcABjtKNGxhr6n3YqlTzMBrQLIw1cXMB8i991kgSJJhcPVqWsPcFOQd3eQ+uR4
+         TsIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zLc7/3okPvFxP0Z5cS+hPwJjhxGd6v5dEl0jnqjK1K0=;
+        b=sxwRWBjm3sg2ZjOwcKJZaUpCcJRrbLpZ7SuUaTNvzdhuwAICo20EUgrx3h71vQs2d1
+         rLuzkaVPaf4LYq8u6/r3dKrUFrb3Vl1NhElFxfX2CCYmMYOeVhpHNXC9QSMiBR24Ix8V
+         w3YmICKnYECg1w7YoH6n64PlRd3eGq5cnuocQ3xhnLTdf586PY9Dx57Y+H+uyDfVWT/5
+         HqXxsWNtSdJFKjbjxdsk129Hw5B5RWdWvdVtv8AyWawcGwNcw/VhvQPbWPIkiAm3q1Zt
+         XaT0RPzNxcUOyiC61TaSEDQe5nzGf7cgmutiOER5i6NIBJc+EXLUoJF2hl7gwaoUa8qo
+         n3Iw==
+X-Gm-Message-State: AOAM530nqMgrbQUlopHGqo1S0RHSPCNtUN5ErqctokYask+gpBa4RXV0
+        Mj+2oTBYmC9yvy/1nF2mpSYeTw==
+X-Google-Smtp-Source: ABdhPJx/5ojyUAiGu0IYqd4XJaPj3ZSo9l52l1eGs5DI9MrJXP8DByhPu8SeKg2BBP6DoIR4XpMftA==
+X-Received: by 2002:a9d:7401:: with SMTP id n1mr5323426otk.21.1607124433014;
+        Fri, 04 Dec 2020 15:27:13 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id k1sm949788ood.4.2020.12.04.15.27.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 15:27:12 -0800 (PST)
+Date:   Fri, 4 Dec 2020 17:27:10 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Evan Green <evgreen@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Dai <daidavid1@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] interconnect: qcom: fix rpmh link failures
+Message-ID: <X8rFzqURIVHeH4SL@builder.lan>
+References: <20201204165030.3747484-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201204112115.wopx5p5elgte7gad@pengutronix.de>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:J7D3IljvcFKB8xabtlS2uf7mIZaz9+XeSc5RyjR+AeJhx/yu/Ig
- 9fnMI5hViCJnwyAANq5AgLNFEqtODIfB3Xi6fzkWhcR7ughTwF5r7jVESFpQtuouMbQXJFE
- Ve7uP67v5nX1+0WPx0yxZAODO54fVftP3QhMJdpJwl78WkGboD0t/dmmgZPQcxTf/rFsDTt
- kFZjAvY3zFsIvufT1YWtQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XieBGY4MbmE=:Uf5NVpwIdg1RzzYuW+q9dV
- XKJDJrdfBlm3e+IHt1pywcHCgY47S92lcnXRwFaTAkHoSLdDzN9eFoBvRA/Upp3w24afnck3x
- p7L/oyJ2VNFA7CiRq2Q8M02CWQND3Jl4hd2E7KaZfnlaN1KXe7ssjav+2uUUIJRJ48YoZK4dM
- kZ6QQNRwsGG16ZyMtVYFBeK6xEtE2SnFf/Kslq21ZR5s4lRnRk8FiCY2FWlrHX4hS1RI+ZYwN
- DjrHWEttscf4Rt64bnYGHKN7gohjGTX7Rfndp9O9NF0fsOob5Q/ilXYwmwOFtpI/tctxhMDVD
- +kkhY5e06FmUUtf7L1pA2Ss0IYhGkKbl2WsGfjs2KUHBraSYU1MJOWIhyPgqzMqJbm1DT8Gu0
- j6L5n6Wzpm2zmSXKhk0754bL3LLlsdBf1c1TWm4LVmlrIjHN6wZITLLHqHsoN0GKEECSLNnJm
- Ww3jb7uD+yIrfW3X7I0Jkh76gyrch/Ci+rYJp9fikbZh1f+Nu3lHzrqZRmjY3ahg9bG8ndnFH
- LKkJHk1jzXbkMMhy75oy9lQnIkzL2oR8C+Oje0sGkcIINXsu04YnwRoXPQooamYt1sSEoJkwU
- zUbtsJ6eqsUeMGR2Zl2BWsJsm8z0bc9SdYn+yS1azg3qGC9DUaSiiPmF4aiGC3X72f8Ft2ZXY
- 61SK+sVDHnvf/JdFraJ1LSsiAv93I/HUFTSQNTrNVuv2gVPqTN1gCHEKURc+9FUUJDVqAejGS
- VJ5UmzBMBHXYTtpsrz1LTTfmO0yjrhGmGMqUULQe7RiLAqDh8NZxLtQ5AGFAT8zqB7T2WlMNP
- yAeXaSRkEg67U6usw7KO1Ng6mklxfYMe/RD+D3U98MANbe/KKEu0jypjDPO3oJ2viIRvU+3/S
- OwL1WLu6NXZpPrIZpF7g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204165030.3747484-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 04 Dec 10:50 CST 2020, Arnd Bergmann wrote:
 
-Hi,
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When CONFIG_COMPILE_TEST is set, it is possible to build some
+> of the interconnect drivers into the kernel while their dependencies
+> are loadable modules, which is bad:
+> 
+> arm-linux-gnueabi-ld: drivers/interconnect/qcom/bcm-voter.o: in function `qcom_icc_bcm_voter_commit':
+> (.text+0x1f8): undefined reference to `rpmh_invalidate'
+> arm-linux-gnueabi-ld: (.text+0x20c): undefined reference to `rpmh_write_batch'
+> arm-linux-gnueabi-ld: (.text+0x2b0): undefined reference to `rpmh_write_batch'
+> arm-linux-gnueabi-ld: (.text+0x2e8): undefined reference to `rpmh_write_batch'
+> arm-linux-gnueabi-ld: drivers/interconnect/qcom/icc-rpmh.o: in function `qcom_icc_bcm_init':
+> (.text+0x2ac): undefined reference to `cmd_db_read_addr'
+> arm-linux-gnueabi-ld: (.text+0x2c8): undefined reference to `cmd_db_read_aux_data'
+> 
+> The exact dependencies are a bit complicated, so split them out into a
+> hidden Kconfig symbol that all drivers can in turn depend on to get it
+> right.
+> 
+> Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-On 04.12.20 at 12:21, Uwe Kleine-K=F6nig wrote:
+Your patch looks correct to me, so:
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
->
-> I'd make value an unsigned long long and check for > 0xffffffff instead
-> of repeating the (expensive) division. (Hmm, maybe the compiler is smart
-> enough to not actually repeat it, but still.)
-I also prefer unsigned long long over u64 since thats what DIV_ROUND_CLOSE=
-ST_ULL returns.
-However since we have the constant U32_MAX for 0xffffffff we should use th=
-at.
 
-Thanks,
-Lino
+But we're going to have to sprinkle a handful of these throughout the
+tree and we're not a lot of people who "understand" what it does (and at
+least I keep getting them wrong...)
 
+Perhaps it would be more reasonable to maintain this long term if we
+drop the possibility of compile testing these drivers independently of
+rpmh and command db? (I.e. drop the function stubs and rely on
+RPMH/COMMAND_DB to enable building under COMPILE_TEST)?
+
+
+And just to make it clear, I think we should merge your patch to fix
+v5.11; then consider to simplify this past that.
+
+Regards,
+Bjorn
+
+> ---
+>  drivers/interconnect/qcom/Kconfig | 23 +++++++++++++++--------
+>  1 file changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/interconnect/qcom/Kconfig b/drivers/interconnect/qcom/Kconfig
+> index a8f93ba265f8..b3fb5b02bcf1 100644
+> --- a/drivers/interconnect/qcom/Kconfig
+> +++ b/drivers/interconnect/qcom/Kconfig
+> @@ -42,13 +42,23 @@ config INTERCONNECT_QCOM_QCS404
+>  	  This is a driver for the Qualcomm Network-on-Chip on qcs404-based
+>  	  platforms.
+>  
+> +config INTERCONNECT_QCOM_RPMH_POSSIBLE
+> +	tristate
+> +	default INTERCONNECT_QCOM
+> +	depends on QCOM_RPMH || (COMPILE_TEST && !QCOM_RPMH)
+> +	depends on QCOM_COMMAND_DB || (COMPILE_TEST && !QCOM_COMMAND_DB)
+> +	depends on OF || COMPILE_TEST
+> +	help
+> +	  Compile-testing RPMH drivers is possible on other platforms,
+> +	  but in order to avoid link failures, drivers must not be built-in
+> +	  when QCOM_RPMH or QCOM_COMMAND_DB are loadable modules
+> +
+>  config INTERCONNECT_QCOM_RPMH
+>  	tristate
+>  
+>  config INTERCONNECT_QCOM_SC7180
+>  	tristate "Qualcomm SC7180 interconnect driver"
+> -	depends on INTERCONNECT_QCOM
+> -	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
+> +	depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
+>  	select INTERCONNECT_QCOM_RPMH
+>  	select INTERCONNECT_QCOM_BCM_VOTER
+>  	help
+> @@ -57,8 +67,7 @@ config INTERCONNECT_QCOM_SC7180
+>  
+>  config INTERCONNECT_QCOM_SDM845
+>  	tristate "Qualcomm SDM845 interconnect driver"
+> -	depends on INTERCONNECT_QCOM
+> -	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
+> +	depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
+>  	select INTERCONNECT_QCOM_RPMH
+>  	select INTERCONNECT_QCOM_BCM_VOTER
+>  	help
+> @@ -67,8 +76,7 @@ config INTERCONNECT_QCOM_SDM845
+>  
+>  config INTERCONNECT_QCOM_SM8150
+>  	tristate "Qualcomm SM8150 interconnect driver"
+> -	depends on INTERCONNECT_QCOM
+> -	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
+> +	depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
+>  	select INTERCONNECT_QCOM_RPMH
+>  	select INTERCONNECT_QCOM_BCM_VOTER
+>  	help
+> @@ -77,8 +85,7 @@ config INTERCONNECT_QCOM_SM8150
+>  
+>  config INTERCONNECT_QCOM_SM8250
+>  	tristate "Qualcomm SM8250 interconnect driver"
+> -	depends on INTERCONNECT_QCOM
+> -	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
+> +	depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
+>  	select INTERCONNECT_QCOM_RPMH
+>  	select INTERCONNECT_QCOM_BCM_VOTER
+>  	help
+> -- 
+> 2.27.0
+> 
