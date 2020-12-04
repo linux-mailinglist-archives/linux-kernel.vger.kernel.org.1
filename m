@@ -2,108 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B24E2CF067
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 541822CF07A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730465AbgLDPJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:09:41 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:51293 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727126AbgLDPJl (ORCPT
+        id S1730418AbgLDPMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:12:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728626AbgLDPMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:09:41 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id D1BE120000C;
-        Fri,  4 Dec 2020 15:08:57 +0000 (UTC)
-Date:   Fri, 4 Dec 2020 16:08:57 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-Message-ID: <20201204150857.GJ74177@piout.net>
-References: <20201203021047.GG3544@piout.net>
- <87pn3qdhli.fsf@nanos.tec.linutronix.de>
- <20201203161622.GA1317829@ziepe.ca>
- <87zh2ubny2.fsf@nanos.tec.linutronix.de>
- <87wnxybmqx.fsf@nanos.tec.linutronix.de>
- <20201203223646.GA1335797@ziepe.ca>
- <877dpxbu66.fsf@nanos.tec.linutronix.de>
- <20201204140819.GX5487@ziepe.ca>
- <20201204143735.GI74177@piout.net>
- <20201204144659.GY5487@ziepe.ca>
+        Fri, 4 Dec 2020 10:12:13 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E76F9C061A52
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 07:11:32 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id 7so4123811qtp.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:11:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CTZE5KYHYdCtlR64X4cdwkLGSERgZtg1bRZFdAZq1Jo=;
+        b=oo3ypHsXZFXMgirMzks9ExPqQMPDJAFZS9OrDgQfyEK6g02cm8ZZBSC6uXO9ABvjsF
+         D7RmT6gvfSXp0rwl4EsPfLix2qnmrSDmgGPUM5oIu3ii7NgDH+G0vdvo6dhYWpAi6o/o
+         AVf0wneYfo/YQZoxUKRrPCQZm+ub/pUh2Ns5GRMW26EgDPETzbOoOV0AR+9gaKBU2ZKP
+         eeluI5XnEQ72v4drP+BWPooR7N2v0T1phoETXPVLXKl2uamKh1It2irIhZU+vRWoh6BI
+         TvIHbKms6AJmoiIVvM0m6wMB0vMdDi0QsdNygHWxFrm5MDgIzmryNkccH+XJc5hHWj9w
+         kY9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CTZE5KYHYdCtlR64X4cdwkLGSERgZtg1bRZFdAZq1Jo=;
+        b=GN3Fh4jwfbp6Vz2FHbgHU949mb0+B9yMlnyM10quISD3mif1bYO68zV2+AOyG7jsY4
+         45cLpNfDuPWf3V6DWxhIyHaWLFv140sUd3PZiXTD20PSTzHB9kgER8eWZRPU+PS+yEmF
+         hxCWZLgdqK42RN2h0xPiiL+2gxZliXPcvfmg1R7SFh/BlJk+WIt6XC9IHfS9ymIZVqcB
+         EUdkcOXadUq9fUi02/aaO37bUAZZBe+r0IDkVAP80t0NonFHH2g/SI4uCNkh1ByYWXbK
+         jyx/Uu6ury+9LuPoHoeRg7u25BzuKg3KeQD+pjstrJR6pg/GhQAavuWpknT3wsxp8p4C
+         FiBQ==
+X-Gm-Message-State: AOAM5338PwbvJc9k3/soLkWe243dXQ9KAz0uag9w//BrY+L63Yewy59C
+        tOfLAaizN3k1BQta+jj2ccjXN0dT4LxefFjdjzU98g==
+X-Google-Smtp-Source: ABdhPJym3Hu5283k/Rt6jj2+IHVjFg5AONLLc7sr3X25XFBImmQ13ymUKuacYVhjXLBcoiQQtWhr1VODUnAxILBkFps=
+X-Received: by 2002:aed:3c42:: with SMTP id u2mr9224643qte.159.1607094692010;
+ Fri, 04 Dec 2020 07:11:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204144659.GY5487@ziepe.ca>
+References: <20201119140850.12268-1-grzegorz.jaszczyk@linaro.org> <d31a38a2-940c-2ce6-b496-4b4ac2fbe08e@ti.com>
+In-Reply-To: <d31a38a2-940c-2ce6-b496-4b4ac2fbe08e@ti.com>
+From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Date:   Fri, 4 Dec 2020 16:11:20 +0100
+Message-ID: <CAMxfBF7yWY8_xGXa_SX4Cy1sgoY+f9OKoHGVyQYeP5yvNUdKEw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] Add a PRU remoteproc driver
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Ohad Ben Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "Bajjuri, Praneeth" <praneeth@ti.com>,
+        Roger Quadros <rogerq@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2020 10:46:59-0400, Jason Gunthorpe wrote:
-> > If you want to read an RTC accurately, you don't want to time a read,
-> > what you want is to time an alarm. This is a common misconception and
-> > is, again, why hctosys in its current state is not useful.
-> 
-> I mean literatally time the excution of something like a straight
-> read. This will give some estimate of the bus latency and it should
-> linearly relate to the bus latency for a write.
-> 
+Hi Suman,
 
-It doesn't, some rtc will require writing dozen registers to set the
-time and reading only 3 to get the time, the only accurate way is to
-really time setting the time. You set the RTC time once, set up an alarm for
-the next second, once you get the alarm, you get system time and you now
-how far you are off.
+On Fri, 4 Dec 2020 at 16:05, Suman Anna <s-anna@ti.com> wrote:
+>
+> Hi Greg,
+>
+> On 11/19/20 8:08 AM, Grzegorz Jaszczyk wrote:
+> > Hi All,
+> >
+> > The Programmable Real-Time Unit and Industrial Communication Subsystem
+> > (PRU-ICSS or simply PRUSS) on various TI SoCs consists of dual 32-bit
+> > RISC cores (Programmable Real-Time Units, or PRUs) for program execution.
+> >
+> > The K3 AM65x amd J721E SoCs have the next generation of the PRU-ICSS IP,
+> > commonly called ICSSG. The ICSSG IP on AM65x SoCs has two PRU cores,
+> > two auxiliary custom PRU cores called Real Time Units (RTUs). The K3
+> > AM65x SR2.0 and J721E SoCs have a revised version of the ICSSG IP, and
+> > include two additional custom auxiliary PRU cores called Transmit PRUs
+> > (Tx_PRUs).
+> >
+> > This series contains the PRUSS remoteproc driver together with relevant
+> > dt-binding. This is the 3rd foundation component for PRUSS subsystem, the
+> > previous two were already merged and can be found under:
+> > 1) drivers/soc/ti/pruss.c
+> >    Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+> > 2) drivers/irqchip/irq-pruss-intc.c
+> >    Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
+> >
+> > The following is a v2 version of the series. Please see the individual patches
+> > for exact changes in each patch, following are the main changes from v1:
+> > - Patch #1: fix two yamllint warnings.
+> > - Patch #2: address Suman comments: minor style improvements and fix for
+> >           optional resource table handling (moved from patch #3).
+> > - Patch #3: address Suman comment: minor style, comments and trace improvements
+> >           (no functional changes).
+> > - Patch #4: No changes.
+> > - Patch #5: Update documentation of pru_rproc_memcpy() function and is_k3 flag.
+> > - Patch #6: No changes.
+> >
+> > Best regards,
+> > Grzegorz
+> >
+> > Grzegorz Jaszczyk (1):
+> >   remoteproc/pru: Add support for PRU specific interrupt configuration
+> >
+> > Suman Anna (5):
+> >   dt-bindings: remoteproc: Add binding doc for PRU cores in the PRU-ICSS
+> >   remoteproc/pru: Add a PRU remoteproc driver
+> >   remoteproc/pru: Add pru-specific debugfs support
+> >   remoteproc/pru: Add support for various PRU cores on K3 AM65x SoCs
+> >   remoteproc/pru: Add support for various PRU cores on K3 J721E SoCs
+>
+> One minor change for v3 when you repost to address Mathieu's comments, can you
+> please adjust the patch titles to use
+> "remoteproc: pru:" instead following the latest convention.
 
-Notice that systohc could do that if you wanted to be accurate and then
-the whole issue with mc146818 is gone and this nicely solves it for all
-the RTCs at once.
+Sure - I will do that.
+Thank you,
+Grzegorz
 
-> The driver could time configuring an alarm as well, if it likes.
-
-The driver should definitively not have to do the timing. the core,
-maybe but I won't go over the 165 drivers to add timing.
-
-> 
-> > And because people using systohc are definitively using hctosys, this
-> > will still result in an up to 500ms error in the current time.
-> > As said, the price to pay for a proper solution will be an up to one
-> > second delay when booting which is not acceptable for most users.
-> 
-> IIRC I had fixed this in some embedded system long ago by having
-> hctosys reading seconds time during boot, then in parallel using the
-> 'up to one second' method to get the sub-second resolution.
-> 
-> This means there was a sub second non-monotonicity in the realtime
-> clock, but the system was designed to tolerate this as it also ran a
-> modified NTP which would unconditionally step the clock on first sync
-> if it was over .1s out of alignment.
-> 
-> The goal was to bring the system to correct time as quickly as
-> possible in as many cases as possible, not to maintain the
-> monotonicity of the realtime clock.
-> 
-
-I'm really curious, in your use case, couldn't you have read the RTC
-from userspace and set the system time from there, right before starting
-NTP and other applications?
-Doing so, you would have probably been able to ensure monotonicity.
-
-> > Is "fixing" systohc worth the effort and the maintenance cost?
-> 
-> As I said before, if there is no desire to address the read side then
-> the whole thing should be abandoned.
-> 
-
-What was your plan back in 2017?
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+>
+> Thanks,
+> Suman
+>
+> >
+> >  .../bindings/remoteproc/ti,pru-rproc.yaml     | 214 +++++
+> >  drivers/remoteproc/Kconfig                    |  12 +
+> >  drivers/remoteproc/Makefile                   |   1 +
+> >  drivers/remoteproc/pru_rproc.c                | 877 ++++++++++++++++++
+> >  drivers/remoteproc/pru_rproc.h                |  46 +
+> >  5 files changed, 1150 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+> >  create mode 100644 drivers/remoteproc/pru_rproc.c
+> >  create mode 100644 drivers/remoteproc/pru_rproc.h
+> >
+>
