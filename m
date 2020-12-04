@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBBF2CEC13
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:23:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE2C2CEC17
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387805AbgLDKVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 05:21:16 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:42204 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbgLDKVP (ORCPT
+        id S1729829AbgLDKWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 05:22:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbgLDKWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 05:21:15 -0500
-Received: by mail-lj1-f193.google.com with SMTP id f18so5961818ljg.9;
-        Fri, 04 Dec 2020 02:20:59 -0800 (PST)
+        Fri, 4 Dec 2020 05:22:00 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC833C061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 02:21:19 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id p126so5607361oif.7
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 02:21:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kk+jgYQurGhXb5v13hLoLvf1FnCh+AW+lm+ijO2Uveg=;
+        b=Zz6qtvLUpn9rXicFZjYW2+6+81EmeCUgPqBwj8VS1PFNX7MCAL6ZhP2SOMn75aHodU
+         WD4jVxL5APLkDa5BkGAZjI3N+ktsPdRdSs8jiSi/2DHu++ShhOuG4bO8xmROCXiBMeB8
+         sflpqK/8Y9WYxGh5oNCl1Lc5pa56CGhiER7NId7nQVmNiki0rZsOKv/CDvq9L8TYa6Dp
+         CV5XLYwWfk0vaBGPOUKk+yKmpl2HI7Utya0JTJbE0Y3TYV1QY3SkfqkYH2yj92Ozy+i5
+         33yWVtRfbcQfq/M+Le3LuIJDuCw6hgxHrT0qbkXIKQjtpb860I2J9/4p+WRArmzsn+kI
+         xC3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a0BVq/8+rbtsg3qPMhtrFzNWCEofj0oNI2sqBIVwRfo=;
-        b=jRjJt938rjudDKzMoliFQaKpd6AtCjr0r4Y+4h/oVmLFjto66FB0Cr4R5ftKUqkafN
-         DFVnEO6/XakL3lLi6w/6GxETzBvOl7O4XEjmyMVgUT0WO4wEt4Z0LwRvPP/OoB7sBJsc
-         4KOnQjaoaKxAddquRPkEg+1eriKtaIlIz0qpiiPyTNifiQoOUawRTprnp6aQsvW8VdLL
-         wBOjcZYpVWTb04LMRP6ehXurh6V+MXd9Ynu19cwCQlls1cthJnHMVzfj8UOkDxuZMStt
-         9YaNOsmy4tW05CmVmwctBzFkyHxn9AlHO1QcNZRjkuQ7yTnPC7iH136e1P3GKsi7RF3E
-         kMqA==
-X-Gm-Message-State: AOAM532hdXr9cKC1z/ZrO5NGEInWO/9SyPey7SHi/zbx5smlB3FqVIeq
-        4DE6sSJffWn/VsmgwB1OeawC/JC1AesRlw==
-X-Google-Smtp-Source: ABdhPJxPAH6U1wJrzpl6j1KpYHCehaPNd9PCr78xefaXFZ4888tZ9LAe9Rz7q49UWF+1a72SXa472A==
-X-Received: by 2002:a2e:6c07:: with SMTP id h7mr2966516ljc.464.1607077233625;
-        Fri, 04 Dec 2020 02:20:33 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id l26sm1564594ljb.92.2020.12.04.02.20.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 02:20:32 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kl8D4-0005V1-19; Fri, 04 Dec 2020 11:21:06 +0100
-Date:   Fri, 4 Dec 2020 11:21:06 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Himadri Pandya <himadrispandya@gmail.com>
-Cc:     johan@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 11/15] usb: serial: ipaq: use usb_control_msg_send()
-Message-ID: <X8oNktd8Q0U+PlWO@localhost>
-References: <20201104064703.15123-1-himadrispandya@gmail.com>
- <20201104064703.15123-12-himadrispandya@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kk+jgYQurGhXb5v13hLoLvf1FnCh+AW+lm+ijO2Uveg=;
+        b=OoJoJx4SfKeFp01ih5TTNJ2QTmn8wojDmiFyqD6PwdbC9oeg6yoRDULg6aEZCcW6Pg
+         MMq+o0tE2ZknuQdBLCOXNJ9Y6r1pGHp0OB+nY0ffiB0odIenOXsHmcqkpiIk/FlyRxgy
+         ljI/v16FL/xdCPoyNfc/gRtr094gCkwl/+DcU9k1D3m+/5GSY5B96i0S0EMBiMt6es0A
+         ziL8QoMOTvmNftisnssNiHwDkx/Kb89p12cZon3p0Ud6JmP6GvbnyKZ87NJKtPcKiT4Z
+         t56Ypob0z2jARHHQKvRlM9ol6+g1NPDhrmB2LasgvCs2vly/kBSm9LZhOYXqedzWJS9j
+         Wu2Q==
+X-Gm-Message-State: AOAM5330zm9q9PuDoSqAJr3MeLLQp0uuGCixlW66PMDjjbm4/r5cdHsw
+        LutqHgSyWDeFOc7j3Lryg10U7EKErkALQpQ/MqwEyQ==
+X-Google-Smtp-Source: ABdhPJxNJMxeMYDP+CaR4DD26S3LajA0i+UsBX6TYbz/Ro/hFoTSWxiMUIXhHBZcRjOPuA+1tGJaixmch0U0ZpLPVbw=
+X-Received: by 2002:aca:448b:: with SMTP id r133mr660309oia.121.1607077279178;
+ Fri, 04 Dec 2020 02:21:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104064703.15123-12-himadrispandya@gmail.com>
+References: <20201201152017.3576951-1-elver@google.com> <CAKwvOdkcv=FES2CXfoY+AFcvg_rbPd2Nk8sEwXNBJqXL4wQGBg@mail.gmail.com>
+In-Reply-To: <CAKwvOdkcv=FES2CXfoY+AFcvg_rbPd2Nk8sEwXNBJqXL4wQGBg@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 4 Dec 2020 11:21:07 +0100
+Message-ID: <CANpmjNOUHdANKQ6EZEzgbVg0+jqWgBEAuoLQxpzQJkstv6fxBg@mail.gmail.com>
+Subject: Re: [PATCH] genksyms: Ignore module scoped _Static_assert()
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 12:16:59PM +0530, Himadri Pandya wrote:
-> The new usb_control_msg_send() nicely wraps usb_control_msg() with proper
-> error check. Hence use the wrapper instead of calling usb_control_msg()
-> directly.
-> 
-> Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
-> ---
->  drivers/usb/serial/ipaq.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/usb/serial/ipaq.c b/drivers/usb/serial/ipaq.c
-> index f81746c3c26c..99505a76035d 100644
-> --- a/drivers/usb/serial/ipaq.c
-> +++ b/drivers/usb/serial/ipaq.c
-> @@ -530,15 +530,14 @@ static int ipaq_open(struct tty_struct *tty,
->  	 */
->  	while (retries) {
->  		retries--;
-> -		result = usb_control_msg(serial->dev,
-> -				usb_sndctrlpipe(serial->dev, 0), 0x22, 0x21,
-> -				0x1, 0, NULL, 0, 100);
-> -		if (!result)
-> +		result = usb_control_msg_send(serial->dev, 0, 0x22, 0x21, 0x1,
-> +					      0, NULL, 0, 100, GFP_KERNEL);
-> +		if (result == 0)
->  			break;
+On Tue, 1 Dec 2020 at 21:00, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> On Tue, Dec 1, 2020 at 7:21 AM Marco Elver <elver@google.com> wrote:
+> > The C11 _Static_assert() keyword may be used at module scope, and we
+> > need to teach genksyms about it to not abort with an error. We currently
+> > have a growing number of static_assert() (but also direct usage of
+> > _Static_assert()) users at module scope:
+> >
+> >         git grep -E '^_Static_assert\(|^static_assert\(' | grep -v '^tools' | wc -l
+> >         135
+> >
+> > More recently, when enabling CONFIG_MODVERSIONS with CONFIG_KCSAN, we
+> > observe a number of warnings:
+> >
+> >         WARNING: modpost: EXPORT symbol "<..all kcsan symbols..>" [vmlinux] [...]
+> >
+> > When running a preprocessed source through 'genksyms -w' a number of
+> > syntax errors point at usage of static_assert()s. In the case of
+> > kernel/kcsan/encoding.h, new static_assert()s had been introduced which
+> > used expressions that appear to cause genksyms to not even be able to
+> > recover from the syntax error gracefully (as it appears was the case
+> > previously).
+> >
+> > Therefore, make genksyms ignore all _Static_assert() and the contained
+> > expression. With the fix, usage of _Static_assert() no longer cause
+> > "syntax error" all over the kernel, and the above modpost warnings for
+> > KCSAN are gone, too.
+> >
+> > Signed-off-by: Marco Elver <elver@google.com>
+>
+> Ah, genksyms...if only there were a library that we could use to parse
+> C code...:P
+> Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 
-There's not point in using the new helper since there's no data stage
-and usb_control_msg already returns negative errno or 0.
+Which tree would this go into?
 
->  		msleep(1000);
->  	}
-> -	if (!retries && result) {
-> +	if (result) {
->  		dev_err(&port->dev, "%s - failed doing control urb, error %d\n",
->  							__func__, result);
->  		return result;
+It'd be good if this problem could be fixed for 5.11.
 
-This looks like just an unrelated simplification of the logic; there was
-never any need to check !retries here. You can send that as a clean up
-patch of its own if you want.
-
-Johan
+Thanks,
+-- Marco
