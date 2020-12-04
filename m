@@ -2,212 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB122CEAE0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:28:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 570592CEAE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:28:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387531AbgLDJ1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:27:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46226 "EHLO mail.kernel.org"
+        id S2387580AbgLDJ16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:27:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725866AbgLDJ1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:27:17 -0500
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     "Jonathan Corbet" <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] scripts: get_feat.pl: make complete table more coincise
-Date:   Fri,  4 Dec 2020 10:26:31 +0100
-Message-Id: <7c82a766867f2813a1e5c7b982b5e952e50b6c5e.1607073967.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <2fe5f94aa8e12279d36cfbf489b30d4482a9bebb.1607073431.git.mchehab+huawei@kernel.org>
-References: <2fe5f94aa8e12279d36cfbf489b30d4482a9bebb.1607073431.git.mchehab+huawei@kernel.org>
+        id S1725866AbgLDJ15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 04:27:57 -0500
+Date:   Fri, 4 Dec 2020 09:27:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607074037;
+        bh=tPpTC9bhjEVC0buQbJ+dbgcUuj+eIqVrhNolNhZi/CI=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UwiVTr5JnpOgoH6ylOS9zHMRAAIc3D+H0fU8Qf7/R91fAOtiXYYHvNBOswxFDlUX6
+         eB5U31VJUyLgces75b4hOKJin38ki4Dx6fUrLU+W16RKrFdIiqjf3r3VfufoycFpxz
+         5rwdfcF9ocNDiJxkiqajvK9uJ4QgtIRX1q/fpppSLXbrkCMT09I+SoNfx97FIZsHIn
+         szc2V14UjvLNE3SHkx3vRep5t4omptB5z1HDyhzjnEkN++vjgjcyi7JrYGZBol7VEr
+         SPiGA8S97kQDsdNHx6lzAIiTx0Y7eH5DvSUDvMu34V5P0HQiFpoPUQ+ZJCTnZxIZLe
+         IUvlAl2kxI/0g==
+From:   Will Deacon <will@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: fix HARDLOCKUP_DETECTOR dependency
+Message-ID: <20201204092711.GA461@willie-the-truck>
+References: <20201203222800.1009987-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203222800.1009987-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, there are too many white spaces at the tables,
-and the information is very sparsed on it.
+Hi Arnd,
 
-Make the format a lot more compact.
+On Thu, Dec 03, 2020 at 11:27:26PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When CONFIG_HW_PERF_EVENTS is disabled, the hardware lockup detector
+> fails to link:
+> 
+> ld.lld: error: undefined symbol: hw_nmi_get_sample_period
+> >>> referenced by watchdog_hld.c
+> >>>               watchdog_hld.o:(hardlockup_detector_event_create) in archive kernel/built-in.a
+> 
+> Fix the dependency to refer to the Kconfig symbol that actually controls
+> the feature.
+> 
+> Fixes: 367c820ef080 ("arm64: Enable perf events based hard lockup detector")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/arm64/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 7599ad86e9a8..ecd900ad7755 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -176,7 +176,7 @@ config ARM64
+>  	select HAVE_PATA_PLATFORM
+>  	select HAVE_PERF_EVENTS
+>  	select HAVE_PERF_EVENTS_NMI if ARM64_PSEUDO_NMI
+> -	select HAVE_HARDLOCKUP_DETECTOR_PERF if PERF_EVENTS && HAVE_PERF_EVENTS_NMI
+> +	select HAVE_HARDLOCKUP_DETECTOR_PERF if HW_PERF_EVENTS && HAVE_PERF_EVENTS_NMI
+>  	select HAVE_PERF_REGS
+>  	select HAVE_PERF_USER_STACK_DUMP
+>  	select HAVE_REGS_AND_STACK_ACCESS_API
 
-Suggested-by: Jonathan Corbet <corbet@lwn.net>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- scripts/get_feat.pl | 119 ++++++++++++++++++++++++++++++--------------
- 1 file changed, 83 insertions(+), 36 deletions(-)
+Cheers, although I already have a fix for this one queued locally [1].
+I'll push it out in sec (ran out of time yesterday).
 
-diff --git a/scripts/get_feat.pl b/scripts/get_feat.pl
-index 81d1b78d65c9..2860abfdcd91 100755
---- a/scripts/get_feat.pl
-+++ b/scripts/get_feat.pl
-@@ -325,10 +325,10 @@ sub output_feature {
- # Output all features for all architectures
- #
- 
--sub matrix_lines($$) {
--	my $partial = shift;
-+sub matrix_lines($$$) {
-+	my $desc_size = shift;
-+	my $status_size = shift;
- 	my $header = shift;
--	my $split;
- 	my $fill;
- 	my $ln_marker;
- 
-@@ -338,24 +338,14 @@ sub matrix_lines($$) {
- 		$ln_marker = "-";
- 	}
- 
--	if ($partial) {
--		$split = "|";
--		$fill = " ";
--	} else {
--		$split = "+";
--		$fill = $ln_marker;
--	}
-+	$fill = $ln_marker;
- 
--	print $split;
-+	print "+";
- 	print $fill x $max_size_name;
--	print $split;
--	print $fill x $max_size_kconfig;
--	print $split;
--	print $fill x $max_size_description;
- 	print "+";
--	print $ln_marker x $max_size_arch;
-+	print $fill x $desc_size;
- 	print "+";
--	print $ln_marker x $max_size_status;
-+	print $ln_marker x $status_size;
- 	print "+\n";
- }
- 
-@@ -366,6 +356,14 @@ sub output_matrix {
- 	print "$title\n";
- 	print "=" x length($title) . "\n\n";
- 
-+	my $desc_title = "$h_kconfig / $h_description";
-+
-+	my $desc_size = $max_size_kconfig + 4;
-+	$desc_size = $max_size_description if ($max_size_description > $desc_size);
-+	$desc_size = length($desc_title) if (length($desc_title) > $desc_size);
-+
-+	my $status_size = 60;
-+
- 	my $cur_subsys = "";
- 	foreach my $name (sort {
- 				($data{$a}->{subsys} cmp $data{$b}->{subsys}) or
-@@ -383,36 +381,85 @@ sub output_matrix {
- 			print "$title\n";
- 			print "=" x length($title) . "\n\n";
- 
--			matrix_lines(0, 0);
-+
-+			matrix_lines($desc_size, $status_size, 0);
-+
- 			printf "|%-${max_size_name}s", $h_name;
--			printf "|%-${max_size_kconfig}s", $h_kconfig;
--			printf "|%-${max_size_description}s", $h_description;
-+			printf "|%-${desc_size}s", $desc_title;
- 
--			printf "|%-${max_size_arch}s", $h_arch;
--			printf "|%-${max_size_status}s|\n", $h_status;
--
--			matrix_lines(0, 1);
-+			printf "|%-${status_size}s|\n", "Status per architecture";
-+			matrix_lines($desc_size, $status_size, 1);
- 		}
- 
- 		my %arch_table = %{$data{$name}->{table}};
--		my $first = 1;
--		foreach my $arch (sort keys %arch_table) {
--			if ($first) {
-+		my $cur_status = "";
-+
-+		my @lines;
-+		my $line = "";
-+		foreach my $arch (sort {
-+					($arch_table{$a} cmp $arch_table{$b}) or
-+					("\L$a" cmp "\L$b")
-+				       } keys %arch_table) {
-+
-+			my $status = $arch_table{$arch};
-+
-+			if ($status eq "---") {
-+				$status = "Not compatible";
-+			}
-+
-+			if ($status ne $cur_status) {
-+				if ($line ne "") {
-+					push @lines, $line;
-+					$line = "";
-+				}
-+				$line = "- **" . $status . "**: " . $arch;
-+			} elsif (length($line) + length ($arch) + 2 < $status_size) {
-+				$line .= ", " . $arch;
-+			} else {
-+				push @lines, $line;
-+				$line = "  " . $arch;
-+			}
-+			$cur_status = $status;
-+		}
-+		push @lines, $line if ($line ne "");
-+
-+		my $ln = 0;
-+		for my $line(@lines) {
-+			if (!$ln) {
- 				printf "|%-${max_size_name}s", $name;
--				printf "|%-${max_size_kconfig}s", $data{$name}->{kconfig};
--				printf "|%-${max_size_description}s", $data{$name}->{description};
--				$first = 0;
-+				printf "|%-${desc_size}s", "``" . $data{$name}->{kconfig} . "``";
-+			} elsif ($ln == 2) {
-+				printf "|%-${max_size_name}s", "";
-+				printf "|%-${desc_size}s", $data{$name}->{description};
- 			} else {
--				matrix_lines(1, 0);
-+				printf "|%-${max_size_name}s", "";
-+				printf "|%-${desc_size}s", "";
-+			}
-+
-+			printf "|%-${status_size}s|\n", $line;
- 
-+			$ln++;
-+		}
-+
-+		# Ensure that Kconfig and description will be printed
-+		while ($ln < 2) {
-+			if (!$ln) {
-+				printf "|%-${max_size_name}s", $name;
-+				printf "|%-${desc_size}s``", $data{$name}->{kconfig} . "``";
-+			} elsif ($ln == 2) {
- 				printf "|%-${max_size_name}s", "";
--				printf "|%-${max_size_kconfig}s", "";
--				printf "|%-${max_size_description}s", "";
-+				printf "|%-${desc_size}s", $data{$name}->{description};
-+			} else {
-+				printf "|%-${max_size_name}s", "";
-+				printf "|%-${desc_size}s", "";
- 			}
--			printf "|%-${max_size_arch}s", $arch;
--			printf "|%-${max_size_status}s|\n", $arch_table{$arch};
-+
-+			printf "|%-${status_size}s|\n", "";
-+
-+			$ln++;
- 		}
--		matrix_lines(0, 0);
-+
-+		matrix_lines($desc_size, $status_size, 0);
- 	}
- }
- 
--- 
-2.28.0
+Will
 
+[1] https://lore.kernel.org/r/202012031509.4O5ZoWNI-lkp@intel.com
