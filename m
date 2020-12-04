@@ -2,145 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AF12CE4DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 363582CE4E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729073AbgLDBTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:19:17 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8630 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728568AbgLDBTR (ORCPT
+        id S1730095AbgLDBTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:19:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729951AbgLDBTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:19:17 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnFFW06kwz15Q6h;
-        Fri,  4 Dec 2020 09:18:07 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 4 Dec 2020
- 09:18:31 +0800
-Subject: Re: [f2fs-dev] [PATCH v6] f2fs: compress: support compress level
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201203061715.60447-1-yuchao0@huawei.com>
- <X8k9UoUKcyThlJNU@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <8d735b5a-7940-6409-bcfe-d5a855a74d74@huawei.com>
-Date:   Fri, 4 Dec 2020 09:18:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Thu, 3 Dec 2020 20:19:30 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35233C061A52
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 17:18:50 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id f14so2124010pju.4
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 17:18:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yQuebzesxwMf25Xr/dPzPPrev+UQ6caZgGfIyyfOgUQ=;
+        b=AdkoRN88dIF1YoC+j+aM1MY8e4XAHgHr6Qm5ePGGxeJct5eWZOVDW4q1D9C3LLa8zH
+         RxD3jXqbRv5xVOt4NKZl2X85VY5mDaNFE137cL5vRPDT2YIwl3XP02aPJnOzuMiEfFCJ
+         O2TNDBVmha6FCUh+WQdrQlptKhjeZpCVpH73ZXoybiTe/PlYuwNJCwp2VrH53850FJH2
+         515PbH93kp5tcNbwWioEzPCr6SkI3K2AM3MZJNXulV6TKLA75OeqUeP/IdZHXyGpg2cN
+         mECH8bNGs2Ccbo/RE7qyO/wLu3aIg5949CJ/5j5iRyVF3VvBW8JViOTw7u21du6GrAF3
+         +3hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yQuebzesxwMf25Xr/dPzPPrev+UQ6caZgGfIyyfOgUQ=;
+        b=ryZvJAFy3pZcdVUCym/vsoJOMHWvh1hnebIrS4mYDq2XKkbCfqQCFfhM9VbEdMclhv
+         EvoluV0foh9PYSWjCf6vLw1DqgHkc+s1/fS4JTmALh02KxjgCUbtT326o2RDsU/fk+50
+         jImyfJFgNX3Q5PtTduVRjaPCjzlIa4mvKyhJn8d0D9YMoU4IrTOezpJjep/QvIm/2prd
+         RRjyz7pFwCM73H37jhltbZW+tIw0ebvfGwkrQS6+pCgV4L4PEWPAEhpM/w1MRJpZ1O+5
+         +PpJWy2AJ95pA6FT3AlJvW4yvWsnX69hoiSOwnHYCaQVPmMjbYYjPf65P1AB1xvSrUqk
+         XDwg==
+X-Gm-Message-State: AOAM531GShiKS8Co1busYL0aLxZH8Pc+/0Fq961SoaeqVGSQ9SsW+HZY
+        K8ckYId89ZD8qTtiIl1wvWDjACDv5dwDLyU5CmGqmQ==
+X-Google-Smtp-Source: ABdhPJxAPcbI+OagIFgVil1xtoTesXiqZ4HHblGMTwSpODVAZ4Hx3JK5B4cAfBjOSJNFeeL+sVqWNXjR9yrFBsLuFe8=
+X-Received: by 2002:a17:90a:6fa1:: with SMTP id e30mr1854582pjk.32.1607044729507;
+ Thu, 03 Dec 2020 17:18:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <X8k9UoUKcyThlJNU@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+References: <20201204011129.2493105-1-ndesaulniers@google.com>
+In-Reply-To: <20201204011129.2493105-1-ndesaulniers@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 3 Dec 2020 17:18:37 -0800
+Message-ID: <CAKwvOdnmhguTTt7_xJJXH=m+JwEaZK1=hFhso3FF1Co+u8wkhw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] Kbuild: make DWARF version a choice
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nick Clifton <nickc@redhat.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/4 3:32, Eric Biggers wrote:
-> On Thu, Dec 03, 2020 at 02:17:15PM +0800, Chao Yu wrote:
->> +config F2FS_FS_LZ4HC
->> +	bool "LZ4HC compression support"
->> +	depends on F2FS_FS_COMPRESSION
->> +	depends on F2FS_FS_LZ4
->> +	select LZ4HC_COMPRESS
->> +	default y
->> +	help
->> +	  Support LZ4HC compress algorithm, if unsure, say Y.
->> +
-> 
-> It would be helpful to mention that LZ4HC is on-disk compatible with LZ4.
+(minus Chengbin due to bounces)
 
-Sure, let me update description.
+On Thu, Dec 3, 2020 at 5:11 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
+> explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
+> way that's forward compatible with existing configs, and makes adding
+> future versions more straightforward.
+>
+> Suggested-by: Fangrui Song <maskray@google.com>
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  Makefile          | 14 ++++++++------
+>  lib/Kconfig.debug | 21 ++++++++++++++++-----
+>  2 files changed, 24 insertions(+), 11 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index a2ded5029084..2430e1ee7c44 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -826,12 +826,14 @@ else
+>  DEBUG_CFLAGS   += -g
+>  endif
+>
+> -ifneq ($(LLVM_IAS),1)
+> -KBUILD_AFLAGS  += -Wa,-gdwarf-2
+> -endif
+> -
+> -ifdef CONFIG_DEBUG_INFO_DWARF4
+> -DEBUG_CFLAGS   += -gdwarf-4
+> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
+> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
+> +DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
+> +ifneq ($(dwarf-version-y)$(LLVM_IAS),21)
+> +# Binutils 2.35+ required for -gdwarf-4+ support.
+> +dwarf-aflag    := $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
+> +DEBUG_CFLAGS   += $(dwarf-aflag)
+> +KBUILD_AFLAGS  += $(dwarf-aflag)
+>  endif
+>
+>  ifdef CONFIG_DEBUG_INFO_REDUCED
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 0c7380e36370..04719294a7a3 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -256,14 +256,25 @@ config DEBUG_INFO_SPLIT
+>           to know about the .dwo files and include them.
+>           Incompatible with older versions of ccache.
+>
+> +choice
+> +       prompt "DWARF version"
+> +       help
+> +         Which version of DWARF debug info to emit.
+> +
+> +config DEBUG_INFO_DWARF2
+> +       bool "Generate DWARF Version 2 debuginfo"
+> +       help
+> +         Generate DWARF v2 debug info.
+> +
+>  config DEBUG_INFO_DWARF4
+> -       bool "Generate dwarf4 debuginfo"
+> +       bool "Generate DWARF Version 4 debuginfo"
+>         depends on $(cc-option,-gdwarf-4)
+>         help
+> -         Generate dwarf4 debug info. This requires recent versions
+> -         of gcc and gdb. It makes the debug information larger.
+> -         But it significantly improves the success of resolving
+> -         variables in gdb on optimized code.
+> +         Generate DWARF v4 debug info. This requires gcc 4.5+ and gdb 7.0+.
+> +         It makes the debug information larger, but it significantly
+> +         improves the success of resolving variables in gdb on optimized code.
 
-> 
->>   static int lz4_compress_pages(struct compress_ctx *cc)
->>   {
->>   	int len;
->>   
->> +#ifdef CONFIG_F2FS_FS_LZ4HC
->> +	return lz4hc_compress_pages(cc);
->> +#endif
-> 
-> This looks wrong; it always calls lz4hc compression even for regular lz4.
+^ I kept the previous help text, but while this may have been the case
+when DWARF v4 support was first introduced in GCC, by my (lone)
+measure of x86_64 defconfig with gcc 10.2, this doesn't or no longer
+seems to be the case. See patch 2 for measurements:
+https://lore.kernel.org/lkml/20201204011129.2493105-2-ndesaulniers@google.com/.
+(also, missed the cover letter, here it is:
+https://lore.kernel.org/lkml/CAKwvOdkZEiHK01OD420USb0j=F0LcrnRbauv9Yw26tu-GRbYkg@mail.gmail.com/)
 
-It's fine. lz4hc_compress_pages() will call LZ4_compress_HC() only when
-compress level is set.
+> +
+> +endchoice # "DWARF version"
+>
+>  config DEBUG_INFO_BTF
+>         bool "Generate BTF typeinfo"
+> --
+> 2.29.2.576.ga3fc446d84-goog
+>
 
-> 
->>   static int parse_options(struct super_block *sb, char *options, bool is_remount)
->>   {
->>   	struct f2fs_sb_info *sbi = F2FS_SB(sb);
->> @@ -886,10 +939,22 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->>   			if (!strcmp(name, "lzo")) {
->>   				F2FS_OPTION(sbi).compress_algorithm =
->>   								COMPRESS_LZO;
->> -			} else if (!strcmp(name, "lz4")) {
->> +			} else if (!strncmp(name, "lz4", 3)) {
-> 
-> strcmp() is fine, no need for strncmp().
 
-Actually, I reuse "lz4" mount option parameter, to enable lz4hc algorithm, user
-only need to specify compress level after "lz4" string, e.g.
-compress_algorithm=lz4, f2fs use lz4 algorithm
-compress_algorithm=lz4:xx, f2fs use lz4hc algorithm with compress level xx.
-
-So, I use !strncmp(name, "lz4", 3) here.
-
-> 
->> @@ -1547,6 +1612,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
->>   	}
->>   	seq_printf(seq, ",compress_algorithm=%s", algtype);
->>   
->> +	if (!F2FS_OPTION(sbi).compress_level)
->> +		seq_printf(seq, ":%d", F2FS_OPTION(sbi).compress_level);
->> +
-> 
-> This looks wrong; it only prints compress_level if it is 0.
-
-Yes, will fix.
-
-> 
->> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
->> index 55be7afeee90..2dcc63fe8494 100644
->> --- a/include/linux/f2fs_fs.h
->> +++ b/include/linux/f2fs_fs.h
->> @@ -275,6 +275,9 @@ struct f2fs_inode {
->>   			__u8 i_compress_algorithm;	/* compress algorithm */
->>   			__u8 i_log_cluster_size;	/* log of cluster size */
->>   			__le16 i_compress_flag;		/* compress flag */
->> +						/* 0 bit: chksum flag
->> +						 * [10,15] bits: compress level
->> +						 */
-> 
-> What is the use case for storing the compression level on-disk?
-
-One case I can image is if user wants to specify different compress level for
-different algorithm in separated files.
-
-e.g.
-mount -o comrpess_algorithm=zstd:10 /dev/sdc /f2fs
-touch fileA;
-write fileA;
-mount -o remount,comrpess_algorithm=lz4:8 /f2fs
-write fileA;
-touch fileB;
-write fileB;
-
+-- 
 Thanks,
-
-> 
-> Keep in mind that compression levels are an implementation detail; the exact
-> compressed data that is produced by a particular algorithm at a particular
-> compression level is *not* a stable interface.  It can change when the
-> compressor is updated, as long as the output continues to be compatible with the
-> decompressor.
-> 
-> So does compression level really belong in the on-disk format?
-> 
-> - Eric
-> .
-> 
+~Nick Desaulniers
