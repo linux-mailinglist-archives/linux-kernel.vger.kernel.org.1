@@ -2,141 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6442CED41
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E432CED46
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730071AbgLDLjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:39:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgLDLja (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:39:30 -0500
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69654C0613D1;
-        Fri,  4 Dec 2020 03:38:50 -0800 (PST)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 2613AC63B3; Fri,  4 Dec 2020 11:38:47 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1607081927; bh=Az/uDrcMyA9/dLYwyl4sQ5Fgc9q8oK/Kxxi0WSvZST4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VuaTLHk6t5PWIq8CN0UUidPilVW6Fw6sSC3EJL4dWj62vDf1kYjZJmlJFPz4zQQFS
-         yLQWocauR2jIvec/j0HKqlxH9wgKBSMlE5y60gHsBGw/vWlQPurXXpy5h+O72xUZA4
-         FmRlg51yNiXA3mfHemg8p/hgd7CiuB23rczJij48Q3yIiSrESCaYrG2so7bMxr0+/I
-         Ac5UOPYrayS3tkULu6uAw0J+LMPO3jvq7DRKfXbMQjSTJkKLUiYZZv61bLHtJyZYPv
-         aNGbOr2KpTr4Yr1xFJ0Dztrxr2w19JxhKVtbgh3T9M0RNZvKI/7gItixlhWODJHops
-         5ndnB27gqImsg==
-Date:   Fri, 4 Dec 2020 11:38:46 +0000
-From:   Sean Young <sean@mess.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, thierry.reding@gmail.com,
-        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
- configuration
-Message-ID: <20201204113846.GA6547@gofer.mess.org>
-References: <202011281128.54eLfMWr-lkp@intel.com>
- <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
- <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
- <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
- <20201204084417.GA2154@gofer.mess.org>
- <20201204111326.qjux6k2472dmukot@pengutronix.de>
+        id S1730106AbgLDLkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:40:51 -0500
+Received: from mga03.intel.com ([134.134.136.65]:47116 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729196AbgLDLku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 06:40:50 -0500
+IronPort-SDR: NCwSvJ22hZKtlhKtjbtsBb+ox6V0k9oKCFcwkYRALOtYVpYnd+22BbZqhH7HhxBmSfYrNG76Q1
+ pDaDjVLTJfnw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="173458486"
+X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
+   d="scan'208";a="173458486"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:39:08 -0800
+IronPort-SDR: IXJ9tIGRKuQ0kVi/NCMNRCQEO94DuKe9xI04od7j9zJurcxJ7mVYaHQj9Xaiz1Qn93fvS7hc/x
+ EJJ1VQk0Iarw==
+X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
+   d="scan'208";a="316923587"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:39:05 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id E5E6720676; Fri,  4 Dec 2020 13:39:03 +0200 (EET)
+Date:   Fri, 4 Dec 2020 13:39:03 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Luka Kovacic <luka.kovacic@sartura.hr>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: Re: linux-next: manual merge of the v4l-dvb tree with the mvebu tree
+Message-ID: <20201204113903.GS852@paasikivi.fi.intel.com>
+References: <20201203115137.6620f27a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201204111326.qjux6k2472dmukot@pengutronix.de>
+In-Reply-To: <20201203115137.6620f27a@canb.auug.org.au>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, Dec 04, 2020 at 12:13:26PM +0100, Uwe Kleine-König wrote:
-> On Fri, Dec 04, 2020 at 08:44:17AM +0000, Sean Young wrote:
-> > On Fri, Dec 04, 2020 at 12:42:15AM +0100, Lino Sanfilippo wrote:
-> > > > You're storing an unsigned long long (i.e. 64 bits) in an u32. If
-> > > > you are sure that this won't discard relevant bits, please explain
-> > > > this in a comment for the cursory reader.
-> > > 
-> > > What about an extra check then to make sure that the period has not been truncated,
-> > > e.g:
-> > > 
-> > > 	value = DIV_ROUND_CLOSEST_ULL(state->period, scaler);
-> > > 
-> > > 	/* dont accept a period that is too small or has been truncated */
-> > > 	if ((value < PERIOD_MIN) ||
-> > > 	    (value != DIV_ROUND_CLOSEST_ULL(state->period, scaler)))
-> > > 		return -EINVAL;
-> > 
-> > Rather than doing another 64 bit division which is expensive (esp on 32 bit
-> > kernels), you could assign to u64 and check:
-> > 
-> > 	if (value < PERIOD_MIN || value > U32_MAX)
-> > 		return -EINVAL;
+On Thu, Dec 03, 2020 at 11:51:37AM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Given that value is a u32, value > U32_MAX will never trigger.
-
-I meant that value is declared u64 as well ("assign to u64").
-
-> Maybe checking period before doing the division is more sensible.
-
-That could introduce rounding errors, exactly why PERIOD_MIN was introduced.
-
-> > > > Also note that round_closed is probably wrong, as .apply() is
-> > > > supposed to round down the period to the next achievable period. (But
-> > > > fixing this has to do done in a separate patch.)
-> > > 
-> > > According to commit 11fc4edc4 rounding to the closest integer has been introduced
-> > > to improve precision in case that the pwm controller is used by the pwm-ir-tx driver.
-> > > I dont know how strong the requirement is to round down the period in apply(), but I
-> > > can imagine that this may be a good reason to deviate from this rule.
-> > > (CCing Sean Young who introduced DIV_ROUND_CLOSEST)
-> > 
-> > There was a problem where the carrier is incorrect for some IR hardware
-> > which uses a carrier of 455kHz. With periods that small, rounding errors
-> > do really matter and rounding down might cause problems.
-> > 
-> > A policy of rounding down the carrier is not the right thing to do
-> > for pwm-ir-tx, and such a change will probably break pwm-ir-tx in some
-> > edge cases.
+> Today's linux-next merge of the v4l-dvb tree got a conflict in:
 > 
-> IMO it's not an option to say: pwm-driver A is used for IR, so A's
-> .apply uses round-nearest and pwm-driver B is used for $somethingelse,
-> so B's .apply uses round-down.
-
-I'm not saying that one driver should have one it one way and another driver
-another way.
-
-> To be a sensible API pwm_apply_state
-> should have a fixed behaviour. I consider round-down the sensible
-> choice (because it is easier to implmement the other options with this)
-
-It's not sensible when it's wrong about half the time.
-
-Why is is easier to implement?
-
-> and for consumers like the IR stuff we need to provide some more
-> functions to allow it selecting a better suited state. Something like:
+>   MAINTAINERS
 > 
-> 	pwm_round_state_nearest(pwm, { .period = 2198, .. }, &state)
+> between commit:
 > 
-> which queries the hardwares capabilities and then assigns state.period =
-> 2200 instead of 2100.
+>   8c4e256e3d42 ("MAINTAINERS: Add an entry for MikroTik CRS3xx 98DX3236 boards")
+> 
+> from the mvebu tree and commit:
+> 
+>   b24cc2a18c50 ("media: smiapp: Rename as "ccs"")
+> 
+> from the v4l-dvb tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-This is very elaborate and surely not "easier to implement". Why not just
-do the right thing in the first place and round-closest?
+Thanks, Stephen.
 
-> Where can I find the affected (consumer) driver?
+The resolution below seems good to me.
 
-So there is the pwm-ir-tx driver. The infrared led is directly connected
-to the pwm output pin, so that's all there is.
-
-Thanks,
-
-Sean
+-- 
+Sakari Ailus
