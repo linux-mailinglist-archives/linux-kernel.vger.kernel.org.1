@@ -2,112 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DD02CF352
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:46:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7E22CF320
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731446AbgLDRpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:45:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731332AbgLDRpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:45:23 -0500
-X-Google-Smtp-Source: ABdhPJzLo/um57d5SBKoDjkJ8Aq6RFZxjg3AtdiXvFU4dXJhpV3kPdIIEqkS+p4ivDYD6SCFbiEe
-X-Received: by 2002:a63:ed0b:: with SMTP id d11mr20176710pgi.261.1606781411628;
-        Mon, 30 Nov 2020 16:10:11 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1606781411; cv=none;
-        d=google.com; s=arc-20160816;
-        b=zrj3Mc+e3RVIaQyvu13A0A995cuNWeEXPL3P6IElgyfsieX+y4IHb5GMLlV7sn7RXC
-         ZTEFoUxU3yC5SehLlGS0jY1Qvv/X+rP9GBUsYDs7icotT3mF6LYGHZOWLhKjFcJa4QZ0
-         GmD8Xvh1krsNtjcjUWDJcoOZDWYy5r3UyzQ+DaupOEYp5gMIW4lSjBs0enJBQudiBDL/
-         EIoMcUb8FmbO45IzLJUnAXjuZLQ66ClecY9GtACfnpDaGAMhknv/1zMIOjOCzxuoBb6u
-         yR/5OZdioa9gF5n+my/G97E7PpX3nHP1c1LioLDTR/2Z6PkSLn9yfQlfqMRpzIMp9pU4
-         1WhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from;
-        bh=6MLTGHalydcTQTGUwzRwTZrDmmmY8YI8mHLG05wiU7Q=;
-        b=aCXkylq87ycXwTlTWAQQAjpSrbmF6mPCfxvsfTwZ86FX3Qf55ATtVczL18C7ZxY0qm
-         b2lnd6iySVKRTjHSe+7DQyQfb9Dz3h3ljpKyj5j4FfyPDI6Sb4Rho0f6LvveSK1r83Zh
-         V/bGWOAhX9Dc0qcqhy826XIcF+kwFLSkJt4AIf/H71DmtBOTk/k5NOKhXzOoNm1kW5+I
-         P+2SbW3zflH1uncmam2ICRNJ/TTuPdYAGI2gKcgb2BRe20v7hSty25bgKb6SQ1Bp4fek
-         KdS8aYf5wvhdyc6FHNc3WOwcDSQttjlF1OeqlbgD1AgAxuBhHRXTJ4JBAmnBxRlMc5fN
-         PBQQ==
-ARC-Authentication-Results: i=1; mx.google.com;
-       spf=pass (google.com: best guess record for domain of postmaster@muse.csie.ntu.edu.tw designates 140.112.30.240 as permitted sender) smtp.helo=muse.csie.ntu.edu.tw;
-       dmarc=fail (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com
-Received-SPF: pass (google.com: best guess record for domain of postmaster@muse.csie.ntu.edu.tw designates 140.112.30.240 as permitted sender) client-ip=140.112.30.240;
-Authentication-Results: mx.google.com;
-       spf=pass (google.com: best guess record for domain of postmaster@muse.csie.ntu.edu.tw designates 140.112.30.240 as permitted sender) smtp.helo=muse.csie.ntu.edu.tw;
-       dmarc=fail (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com
+        id S1729513AbgLDRa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:30:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgLDRa5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 12:30:57 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C832C061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 09:30:11 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id o7so3546490pjj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 09:30:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C83LWVZ8wM91AdWAS0iA3r1viy6kVdAOxGG9S1jtaCw=;
+        b=iJAUPmwWEnaAhg3wVRqh7oUcyTgWd+UHbESFOsFKDVfqajgfIROKPFQ5GD3OU+xa99
+         Jl3jC+WqpIsbkSbHw/wROs7jt7qUdrlmAp5EEseFWwhknRSyQQJrHkiSxJSWBujBv5TZ
+         7zhwhuArunV5D0CHnsEzlrVBVopSEiBeOYSKmSK8SJWyif03QcE0FIu0cTxZmcPzBgJm
+         Pnc3BsqDFAjAJounHoX0+dImC/5neswOWxsc5tDWdxI9ngeqt1ULE2o+4DlAW6Gkayg1
+         +7ieOETFbxJ7E6S7Tb1xRFdv1LS+r9l0jA3+JcuzuFQbbSYKINDifFz1seUopnH18UrJ
+         N0TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6MLTGHalydcTQTGUwzRwTZrDmmmY8YI8mHLG05wiU7Q=;
-        b=h1mXEqoy8Er9fq32d6NbvDBJxffq56bhQizLP5efI5A1TYA5laEwXXmfLVlmxcFSxB
-         +dTpdn9NuvwrGGV7KJxc80WGBOgZxkuxzTkgnn8Jd2uXxjoNgx5/WIKD3wMuBO/Mj5em
-         +EygY6KeC9307Ozm96iUskgjS5VSaE++0ywYqPr1rXcr2Qgx6eARNImPTKRw/oxkVob0
-         X2/4jL10PllYNL2zTL3aSX80jY5IK3fayLx9m5fB/QDpx+BXPv7C65zG/TtlL/7koixe
-         lkuHAXyzINOBg4yproSljXmjF8J4meHIg+KGp8YLWEm4tJjdRJ3ahmNnG9J5ocwMOF/2
-         s9Nw==
-X-Gm-Message-State: AOAM531zbR3S5toDQmbLg8OLRdg7NBoCZz/m6njqBMnQ4J1xIX3K9TWi
-        SJ4BpfZ0nyUGBkbz8YzVq4UcZx9JeOcagw==
-X-Received: by 2002:a17:90a:7c44:: with SMTP id e4mr368179pjl.138.1606781409114;
-        Mon, 30 Nov 2020 16:10:09 -0800 (PST)
-From:   dinghua.ma@wens.csie.org, dinghua.ma.sz@gmail.com
-To:     Chen-Yu Tsai <wens@csie.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "DingHua Ma" <dinghua.ma.sz@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH v3] regulator: axp20x: Fix DLDO2 voltage control register mask for AXP22x
-Date:   Tue,  1 Dec 2020 08:10:00 +0800
-Message-Id: <20201201001000.22302-1-dinghua.ma.sz@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C83LWVZ8wM91AdWAS0iA3r1viy6kVdAOxGG9S1jtaCw=;
+        b=OAINUo+7vG1lWCYFQrvCjXC0fmDBYJpqHILNGQGSQiaqkD3CtUPcGXW99MC3r+QVrU
+         wMitMwgOdi7sdlr3fX8Oq7ay3o9LhjzD0hp4gHVFCz2MW0RsMlxEm8sO7nDT6G+OkN/u
+         dGYcYOwTDqIsiYClgOtryoiFcS4VN9DoP6PA64p12rRszBiGF37dkUrzXutU+yHQc1S/
+         dEbkx8VQV8n4pLO7nBEC2NmHgCryAb7l523ZCh8rIAobG7t5emdWx9/hxJK5+Kf9F95b
+         ji8irrNtFe+ZKNzTurAzWqcWN62cYYWcK4Iu4fvlFuaYPLcuow8CnAkdmKZkEm4dt62n
+         Gh7g==
+X-Gm-Message-State: AOAM530bywuNCgrX5c3fveCAsx1Rrpo0A2zWkq2cWdPmgNhVrM5FPIVF
+        uZ9JlpB7W3VDL6vbpdOQi6j3kw==
+X-Google-Smtp-Source: ABdhPJy8VrWERnAQbr+qZ5xf1WYX5NQ0PtIo4qgWqJih4aRqFD0kiCHgE33P8yE3i2WON8L59+Zg8Q==
+X-Received: by 2002:a17:90a:154a:: with SMTP id y10mr5170231pja.6.1607103010205;
+        Fri, 04 Dec 2020 09:30:10 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id h11sm5728667pfn.27.2020.12.04.09.30.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 09:30:09 -0800 (PST)
+Date:   Fri, 4 Dec 2020 09:30:02 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH RFC 03/39] KVM: x86/xen: register shared_info page
+Message-ID: <X8pyGiVDuBGJmazJ@google.com>
+References: <20190220201609.28290-1-joao.m.martins@oracle.com>
+ <20190220201609.28290-4-joao.m.martins@oracle.com>
+ <b647bed6c75f8743b8afea251a88f00a5feaee29.camel@infradead.org>
+ <2d4df59d-f945-32dc-6999-a6f711e972ea@oracle.com>
+ <896dc984-fa71-8f2f-d12b-458294f5f706@oracle.com>
+ <58db65203b9464f6f225f4ef97c45af3c72cf068.camel@infradead.org>
+ <6ea92fe2-4067-d0e0-b716-16d39a7a6065@oracle.com>
+ <8c92b2f3a8e8829ec85d22091b2fe84794f12f78.camel@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8c92b2f3a8e8829ec85d22091b2fe84794f12f78.camel@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "DingHua Ma" <dinghua.ma.sz@gmail.com>
+On Thu, Dec 03, 2020, David Woodhouse wrote:
+> On Wed, 2020-12-02 at 12:32 -0800, Ankur Arora wrote:
+> > > On IRC, Paolo told me that permanent pinning causes problems for memory
+> > > hotplug, and pointed me at the trick we do with an MMU notifier and
+> > > kvm_vcpu_reload_apic_access_page().
+> > 
+> > Okay that answers my question. Thanks for clearing that up.
+> > 
+> > Not sure of a good place to document this but it would be good to
+> > have this written down somewhere. Maybe kvm_map_gfn()?
+> 
+> Trying not to get too distracted by polishing this part, so I can
+> continue with making more things actually work. But I took a quick look
+> at the reload_apic_access_page() thing.
+> 
+> AFAICT it works because the access is only from *within* the vCPU, in
+> guest mode.
+> 
+> So all the notifier has to do is kick all CPUs, which happens when it
+> calls kvm_make_all_cpus_request(). Thus we are guaranteed that all CPUs
+> are *out* of guest mode by the time...
+> 
+>     ...er... maybe not by the time the notifier returns, because all 
+>     we've done is *send* the IPI and we don't know the other CPUs have 
+>     actually stopped running the guest yet? 
+> 
+>     Maybe there's some explanation of why the actual TLB shootdown 
+>     truly *will* occur before the page goes away, and some ordering 
+>     rules which mean our reschedule IPI will happen first? Something 
+>     like that ideally would have been in a comment in in MMU notifier.
 
-When I use the axp20x chip to power my SDIO device on the 5.4 kernel, 
-the output voltage of DLDO2 is wrong. After comparing the register 
-manual and source code of the chip, I found that the mask bit of the 
-driver register of the port was wrong. I fixed this error by modifying 
-the mask register of the source code. This error seems to be a copy 
-error of the macro when writing the code. Now the voltage output of 
-the DLDO2 port of axp20x is correct. My development environment is 
-Allwinner A40I of arm architecture, and the kernel version is 5.4.
-
-Signed-off-by: DingHua Ma <dinghua.ma.sz@gmail.com>
-Reviewed-by: Chen-Yu Tsai <wens@csie.org> 
-Cc: <stable@vger.kernel.org>
-Fixes: db4a555f7c4c ("regulator: axp20x: use defines for masks")
----
-Changes since v2:
-- Modify topic description
----
-Changes since v1:
-- More accurate description for this patch
----
- drivers/regulator/axp20x-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/regulator/axp20x-regulator.c b/drivers/regulator/axp20x-regulator.c
-index cd1224182ad7..90cb8445f721 100644
---- a/drivers/regulator/axp20x-regulator.c
-+++ b/drivers/regulator/axp20x-regulator.c
-@@ -594,7 +594,7 @@ static const struct regulator_desc axp22x_regulators[] = {
- 		 AXP22X_DLDO1_V_OUT, AXP22X_DLDO1_V_OUT_MASK,
- 		 AXP22X_PWR_OUT_CTRL2, AXP22X_PWR_OUT_DLDO1_MASK),
- 	AXP_DESC(AXP22X, DLDO2, "dldo2", "dldoin", 700, 3300, 100,
--		 AXP22X_DLDO2_V_OUT, AXP22X_PWR_OUT_DLDO2_MASK,
-+		 AXP22X_DLDO2_V_OUT, AXP22X_DLDO2_V_OUT_MASK,
- 		 AXP22X_PWR_OUT_CTRL2, AXP22X_PWR_OUT_DLDO2_MASK),
- 	AXP_DESC(AXP22X, DLDO3, "dldo3", "dldoin", 700, 3300, 100,
- 		 AXP22X_DLDO3_V_OUT, AXP22X_DLDO3_V_OUT_MASK,
--- 
-2.25.1
-
+KVM_REQ_APIC_PAGE_RELOAD is tagged with KVM_REQUEST_WAIT, which means that
+kvm_kick_many_cpus() and thus smp_call_function_many() will have @wait=true,
+i.e. the sender will wait for the SMP function call to finish on the target CPUs.
