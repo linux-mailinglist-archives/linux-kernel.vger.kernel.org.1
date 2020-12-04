@@ -2,140 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB05B2CEEBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:25:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B572CEEC2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:27:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729164AbgLDNZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 08:25:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55576 "EHLO
+        id S1730179AbgLDN0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 08:26:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728113AbgLDNZ0 (ORCPT
+        with ESMTP id S1728113AbgLDN0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 08:25:26 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D086C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 05:24:40 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id r3so5314064wrt.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 05:24:40 -0800 (PST)
+        Fri, 4 Dec 2020 08:26:05 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BE2C061A4F;
+        Fri,  4 Dec 2020 05:25:24 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id u12so5341740wrt.0;
+        Fri, 04 Dec 2020 05:25:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=G2i/87OWKoOd5RyqrzLXRtNep0fvq8PXweoPtpWUKlU=;
-        b=Iymadjrwejs2qqHd/20RZPYXsszWqeOAa5hGJ+fNvvymZEiwTBSpa/0UfaAmfKG5De
-         FSnijVJ9dl+GS2tzE+3tt0YCodlCpcIqe7TS18NrSX1GfI6mGYgLxeVah6DClTDKUvpJ
-         ko1iYX/WK9lvozK4BFFZB+T+i1PrcypCf84jd/2eUDRi0W/hcO7WFQ/k4GonSJYa+nsT
-         V9cfPEFG4g2DFKQ6H1ie3JDuelEz6xl+t9oBzrQm6Vw+3LhTR8XDQZ7TaXjjiD29GLG3
-         er3SJlq9RVUPtRukUqfp9/w66OnoR4dbhWt1qVNUxqbzWcb9BYZhKHqJ20vDyKFWcFUP
-         qU4A==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NJ97JT73CBxTHdvfTcI/LSNJGgKg1Av6EnVkFytDfl4=;
+        b=cvAcAoCZk1z11KZq4HnKa0sC7a57HprhKSXOF3h2UcaEOrMgp0zsrJs/cM89daC4xu
+         P9HddpuO8n1a9FLE21PlEO06hxDH1nIDYM+V9pDnVKxqT++C7uRHeSwIxIIGnOi4ZSdU
+         KiOgXPl17BuLdVRgFAqBMWp49KUCWpqe32iu7KSeD6LJPMxyQFvS6oeP2ZLb5b8JqLKo
+         nZxdzr6OZHDxz2VXupPw+UJZTIetzTIjRKUD/6y5wjKtkFxfMlxh5Y8ZtnaFDLzAh5fw
+         DouqpXPR2EE2lJun+Dk4774zvtvI9rrKiB2J6dy5H4t7BInt/g8vcvxBYxroLSLUJXi1
+         oLZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=G2i/87OWKoOd5RyqrzLXRtNep0fvq8PXweoPtpWUKlU=;
-        b=bOUpisBce3pSWPn9QjapjH0rNj0Dsej8gOXkpjYeNL31U9H56U0ELbNzriE4pY97Es
-         O518ipN3D/I6IeMnM1gR7pC2n++mqQFjbljVufkQNOuWUdH3yYKdS0zljm4AyFV023gt
-         K8KzpljRLJDzX9djSbrx6m26PDlUgvvDQ+mDxxc9QgA+J7BJYW6+HRWCOO0vs6CWoBKI
-         eRBVnT6XcvKc2mQQ2c3ONfpvVaQKNV3oGhKNOJEge4gugC32X4lWYsrRUHtHRcq3aSpi
-         Hb6zZOVfChZsco2u0/ud+7Pw6xrYQBS0OxDZEa2PwjLAKolZgGxucpz7GYiyVVS7HIF6
-         a7OA==
-X-Gm-Message-State: AOAM533gp5Ef+wdBdjH97K/RNGayxcUDBVcEX7Tz7L+J7487zWqJ1kwJ
-        Qml7ymRbkh36Iphd956vlhFGZA==
-X-Google-Smtp-Source: ABdhPJw/lImQ2qsKmyC6KbfVbRJXc9+9sN15nwpomRdqtYGu5fNOSSIByz0/KKdt7nWbiknysMRHDA==
-X-Received: by 2002:adf:f9c5:: with SMTP id w5mr4828051wrr.69.1607088278856;
-        Fri, 04 Dec 2020 05:24:38 -0800 (PST)
-Received: from dell ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id b12sm2894213wmj.2.2020.12.04.05.24.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 05:24:37 -0800 (PST)
-Date:   Fri, 4 Dec 2020 13:24:36 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
-        kernel@pengutronix.de, Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH RESEND for 5.10] pwm: sl28cpld: fix getting driver data
- in pwm callbacks
-Message-ID: <20201204132436.GO4801@dell>
-References: <20201203084142.3810204-1-u.kleine-koenig@pengutronix.de>
- <X8oubGP9CvoOQKtF@ulmo>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NJ97JT73CBxTHdvfTcI/LSNJGgKg1Av6EnVkFytDfl4=;
+        b=RsLKpRK1j7E7s1G3thGUd5SgYwevhDORJ8pUKgrSXuD3KmeKWRy1h3y3LMotmoP014
+         TY1cUNYGF+IkMJTWgBYmeOGkBxZe07WPWJRmzfIqjlnZlMrZf0AP1+top46AlD8alBO9
+         zdAlabBfddaMUWasVQpk1sWMX50JRAdwAzCLh3d+LeXUIHpY/jNaxhMYaTq1jL7TGlst
+         7evt/S+Bd7wzy1Amx3Jq04BnkE0JjrSYrHgNwL0Nyna5wViy5Cp177mZzl60yy/WYoPe
+         GFE0uJTbV3s6vxtN8MqzPXovWShvJVkKsj2bE6wT3CM606GUpalxjFUWRUbSXHud/DOJ
+         GJqA==
+X-Gm-Message-State: AOAM530aQWM/TCDHDqqCeAsKeMRG4TY8nJJ7DSD0RwRmoxQL+84FY+KZ
+        eD9uB7v7f0lpiyLe3GsoBuc=
+X-Google-Smtp-Source: ABdhPJyXmFc/9Uyjh3Lv3QX/ycyHZ230E8YZyXQAH8E8GE/Comlg/sWUTKr1hwO9R4/meXE0+s8DWg==
+X-Received: by 2002:a05:6000:c7:: with SMTP id q7mr4960527wrx.137.1607088323645;
+        Fri, 04 Dec 2020 05:25:23 -0800 (PST)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id r1sm3565703wra.97.2020.12.04.05.25.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Dec 2020 05:25:22 -0800 (PST)
+Subject: Re: [PATCH -V7 2/3] NOT kernel/man2/set_mempolicy.2: Add mode flag
+ MPOL_F_NUMA_BALANCING
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Rafael Aquini <aquini@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        linux-api@vger.kernel.org, Mel Gorman <mgorman@suse.de>
+References: <20201204091534.72239-1-ying.huang@intel.com>
+ <20201204091534.72239-3-ying.huang@intel.com>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <4c10125a-cbe6-7dff-3b57-c3480e913c5f@gmail.com>
+Date:   Fri, 4 Dec 2020 14:25:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <20201204091534.72239-3-ying.huang@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <X8oubGP9CvoOQKtF@ulmo>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 04 Dec 2020, Thierry Reding wrote:
+Hi Huang Ying,
 
-> On Thu, Dec 03, 2020 at 09:41:42AM +0100, Uwe Kleine-König wrote:
-> > Currently .get_state() and .apply() use dev_get_drvdata() on the struct
-> > device related to the pwm chip. This only works after .probe() called
-> > platform_set_drvdata() which in this driver happens only after
-> > pwmchip_add() and so comes possibly too late.
-> > 
-> > Instead of setting the driver data earlier use the traditional
-> > container_of approach as this way the driver data is conceptually and
-> > computational nearer.
-> > 
-> > Fixes: 9db33d221efc ("pwm: Add support for sl28cpld PWM controller")
-> > Tested-by: Michael Walle <michael@walle.cc>
-> > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> > ---
-> > Hello Linus,
-> > 
-> > Thierry (who usually sends PWM patches to you) didn't react to this
-> > patch sent to the pwm Mailinglist last week
-> > (https://lore.kernel.org/r/20201124212432.3117322-1-u.kleine-koenig@pengutronix.de)
-> > yet.
-> > 
-> > Given v5.10 isn't far away any more and I don't know when Thierry will
-> > take a look and act, I'm sending this directly to you. The affected
-> > driver was new in 5.10-rc1 and at least once the unpatched driver
-> > created an oops:
-> > 
-> > 	https://lavalab.kontron.com/scheduler/job/108#L950
-> > 
-> > Michael Walle who tested this patch is the original author of the
-> > driver. IMHO it would be good to have this fixed before 5.10.
-> > 
-> > If you prefer a pull request, I can setup something (but I don't have
-> > access to Thierry's tree, so it will be for a repository that's new to
-> > you).
-> > 
-> > Best regards
-> > Uwe
-> > 
-> >  drivers/pwm/pwm-sl28cpld.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
+Please, see a few fixes below.
+
+Thanks,
+
+Alex
+
+On 12/4/20 10:15 AM, Huang Ying wrote:
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> ---
+>  man2/set_mempolicy.2 | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 > 
-> I thought I had seen you discuss this with Lee and gotten the impression
-> that you were going to respin this to move the platform_set_drvdata() to
-> an earlier point, which I think is the more correct approach.
+> diff --git a/man2/set_mempolicy.2 b/man2/set_mempolicy.2
+> index 68011eecb..fb2e6fd96 100644
+> --- a/man2/set_mempolicy.2
+> +++ b/man2/set_mempolicy.2
+> @@ -113,6 +113,15 @@ A nonempty
+>  .I nodemask
+>  specifies node IDs that are relative to the set of
+>  node IDs allowed by the process's current cpuset.
+> +.TP
+> +.BR MPOL_F_NUMA_BALANCING " (since Linux 5.11)"
+> +When
+> +.I mode
+> +is MPOL_BIND, enable the Linux kernel NUMA balancing for the task if
+
+.B MPOL_BIND
+
+> +it is supported by kernel.
+> +If the flag isn't supported by Linux kernel, or is used with
+> +.I mode> +other than MPOL_BIND, return -1 and errno is set to EINVAL.
+
+.BR MPOL_BIND ,
+
+A minus sign should be escaped:
+\-1
+See man-pages(7)::STYLE GUIDE::Generating optimal glyphs)
+
+.I errno
+.BR EINVAL .
+
+>  .PP
+>  .I nodemask
+>  points to a bit mask of node IDs that contains up to
+> @@ -293,6 +302,11 @@ argument specified both
+>  .B MPOL_F_STATIC_NODES
+>  and
+>  .BR MPOL_F_RELATIVE_NODES .
+> +Or, the
+> +.B MPOL_F_NUMA_BALANCING
+> +isn't supported by the Linux kernel, or is used with
+> +.I mode
+> +other than MPOL_BIND.
+
+.BR MPOL_BIND .
+
+>  .TP
+>  .B ENOMEM
+>  Insufficient kernel memory was available.
 > 
-> container_of() isn't exactly wrong, but it's really just papering over
-> the fact that platform_set_drvdata() is in the wrong place, so I'd
-> prefer a patch that does that instead.
-> 
-> Now, I can no longer find a link to the discussion that I recall, so it
-> was either on IRC (where I don't have any logs) or I'm loosing my mind.
-
-Don't worry, you are (probably!) still quite sane.
-
-The discussion happened over IRC.  I highlighted my concerns, but Uwe
-didn't respond to them.  This patch was the next time I saw anything
-on the subject.
-
-> I'll prepare a patch that moves platform_set_drvdata() for Michael to
-> test. If that works I'll send a PR with fixes to Linus early next week.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
