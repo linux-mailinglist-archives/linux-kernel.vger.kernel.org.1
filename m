@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFB72CEA9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2695F2CEAA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729143AbgLDJPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:15:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbgLDJPx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:15:53 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C801CC061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 01:15:12 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id B79A01F45EFB
-Subject: Re: [PATCH 1/2] platform/chrome: cros_ec_spi: Don't overwrite
- spi::mode
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Benson Leung <bleung@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Simon Glass <sjg@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Alexandru M Stan <amstan@chromium.org>
-References: <20201203011649.1405292-1-swboyd@chromium.org>
- <20201203011649.1405292-2-swboyd@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <03518a00-c30c-a3ba-d26e-10bae4060640@collabora.com>
-Date:   Fri, 4 Dec 2020 10:15:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729458AbgLDJQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:16:31 -0500
+Received: from mga04.intel.com ([192.55.52.120]:30511 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726056AbgLDJQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 04:16:31 -0500
+IronPort-SDR: 4un7yKbDsvttNj1ukDoKUjbWtodBcKKNqjyG0VUmK25a3Ktj6xkxBAGvhs8+G2wkumW4+XeRDZ
+ EqSiHbF03CMA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="170782849"
+X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
+   d="scan'208";a="170782849"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 01:15:47 -0800
+IronPort-SDR: EwRX6H772fvKtoAZfuwHxnpbTtdkq+BjZrWJlmm8+DAxFXFT++ZPoLFyuz8SUzx2UB+1oYIBCU
+ VTmok+nuy47g==
+X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
+   d="scan'208";a="550879466"
+Received: from unknown (HELO yhuang6-mobl1.ccr.corp.intel.com) ([10.254.212.254])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 01:15:43 -0800
+From:   Huang Ying <ying.huang@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>, Mel Gorman <mgorman@suse.de>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Rafael Aquini <aquini@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>, linux-api@vger.kernel.org
+Subject: [PATCH -V7 0/3] numa balancing: Migrate on fault among multiple bound nodes
+Date:   Fri,  4 Dec 2020 17:15:31 +0800
+Message-Id: <20201204091534.72239-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201203011649.1405292-2-swboyd@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+To make it possible to optimize cross-socket memory accessing with
+AutoNUMA even if the memory of the application is bound to multiple
+NUMA nodes.
 
-Thank you for your patch.
+Patch [2/3] and [3/3] are NOT kernel patches.  Instead, they are
+patches for man-pages and numactl respectively.  They are sent
+together to make it easy to review the newly added kernel API.
 
-On 3/12/20 2:16, Stephen Boyd wrote:
-> There isn't any need to overwrite the mode here in the driver with what
-> has been detected by the firmware, such as DT or ACPI. In fact, if we
-> use the SPI CS gpio descriptor feature we will overwrite the mode with
-> SPI_MODE_0 where it already contains SPI_MODE_0 and more importantly
-> SPI_CS_HIGH. Clearing the SPI_CS_HIGH bit causes the CS line to toggle
-> when the device is probed when it shouldn't change, confusing the driver
-> and making it fail to probe. Drop the assignment and let the spi core
-> take care of it.
-> 
-> Fixes: a17d94f0b6e1 ("mfd: Add ChromeOS EC SPI driver")
-> Cc: Simon Glass <sjg@chromium.org>
-> Cc: Gwendal Grignou <gwendal@chromium.org>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Alexandru M Stan <amstan@chromium.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
+Changes:
 
-Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+v7:
 
->  drivers/platform/chrome/cros_ec_spi.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/platform/chrome/cros_ec_spi.c b/drivers/platform/chrome/cros_ec_spi.c
-> index dfa1f816a45f..f9df218fc2bb 100644
-> --- a/drivers/platform/chrome/cros_ec_spi.c
-> +++ b/drivers/platform/chrome/cros_ec_spi.c
-> @@ -742,7 +742,6 @@ static int cros_ec_spi_probe(struct spi_device *spi)
->  	int err;
->  
->  	spi->bits_per_word = 8;
-> -	spi->mode = SPI_MODE_0;
->  	spi->rt = true;
->  	err = spi_setup(spi);
->  	if (err < 0)
-> 
+- Make set_mempolicy() return -1 with errno is set to EINVAL if mode
+  isn't MPOL_BIND per Mel's comments.  Revise document accordingly
+  too.
+
+v6:
+
+- Rebased on latest upstream kernel 5.10-rc5
+
+- Added some benchmark data and example in patch description of [1/3]
+
+- Rename AutoNUMA to NUMA Balancing
+
+- Add patches to man-pages [2/3] and numactl [3/3]
+
+v5:
+
+- Remove mbind() support, because it's not clear that it's necessary.
+
+v4:
+
+- Use new flags instead of reuse MPOL_MF_LAZY.
+
+v3:
+
+- Rebased on latest upstream (v5.10-rc3)
+
+- Revised the change log.
+
+v2:
+
+- Rebased on latest upstream (v5.10-rc1)
+
+Best Regards,
+Huang, Ying
