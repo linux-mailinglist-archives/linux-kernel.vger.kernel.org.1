@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6412CF6A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E082CF68B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729714AbgLDWOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 17:14:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:32990 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728273AbgLDWOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 17:14:32 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 46B34AFEB;
-        Fri,  4 Dec 2020 22:13:50 +0000 (UTC)
-Date:   Fri, 4 Dec 2020 13:48:36 -0800
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Vasiliy Kulikov <segoon@openwall.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 3/3] exec: Transform exec_update_mutex into a rw_semaphore
-Message-ID: <20201204214836.3rncqw5kox42b4i2@linux-p48b.lan>
-References: <87tut2bqik.fsf@x220.int.ebiederm.org>
- <87ft4mbqen.fsf@x220.int.ebiederm.org>
- <AM6PR03MB5170412C2B0318C40CED55E5E4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=wi6inOF5yvQRwUFbqMt0zFJ8S8GhqE2M0judU7RiGru8Q@mail.gmail.com>
- <875z5h4b7a.fsf@x220.int.ebiederm.org>
- <CAHk-=wio3JXxf3fy8tRVzb69u1e5iUru8p-dw+Mnga6yAdz=HQ@mail.gmail.com>
- <AM6PR03MB51704629E50F6280A52D9FAFE4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=wgxe-KAqR_y2jP58GthOYKk0YG=6gNxKHxVUJbG7z2CoQ@mail.gmail.com>
+        id S1729435AbgLDWDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 17:03:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726810AbgLDWDI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 17:03:08 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5302C061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 14:02:27 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id h7so4398107pjk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 14:02:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=enW7VRg0zeMyiDIIOokOnpbP5Go5lgWeBVKjANCM8QE=;
+        b=WSBivQGw0NWLYaFd2OPXxdWfo5/ZEqUNT+h7R43nqoDXNRmh7641AbBNX9GjdmhVaP
+         ovd+v6GiD5CTuIZenDiMSBDlxmYd6x6o7x8tQbNsw8CbHcRoBB6wz5dQbLh0Hrq4yA8c
+         RoGXszwIKaMlZbIQYlcz0HrYcstfZkVfTomvk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=enW7VRg0zeMyiDIIOokOnpbP5Go5lgWeBVKjANCM8QE=;
+        b=TZXmLh0+l4izOw40w7o20vTcynRQs/c4nXOwfqZmFwnwfG8ASBNIrlXnMSd1c110oO
+         u5Sst9xLPJfRsqf4oBn+cPCOkqtHQUileq3BXCP/hssZwXDgZhRI8//oQbllGW0mhG5k
+         4ZgX7OdzVqljI4pN83xiljI9ZzQ/Mam4JHS7sHkLK2LPGJf2KtxDHNnY6sRQXa3EakYZ
+         n1kkk2pV2OgFuQHvA+HTyBuza/QqlGntXJT42us8MZRC3QnqIki77wf8n28opVjzrRCP
+         qeLrEEwxc2a19NZId8T1Q7cqA8JIuPGn8jLZZPNWmn81jwGe6Uj/iI8A8N55gyK/W+lT
+         GdNA==
+X-Gm-Message-State: AOAM530LMLbFYG903iZ6MhBSTzgjUb4nnHAoeTrpalgkzT/Rq+YdFsfL
+        mNNJuwW8nIncKbbdx6e66uFa4g==
+X-Google-Smtp-Source: ABdhPJwU6a9D2gVWjKe1CROF33gGSIaZEj8/GDUhF/uRcH+xF+acQH0ncmbYv1G3SVC4Cka04+puNw==
+X-Received: by 2002:a17:902:6b:b029:da:725b:fcea with SMTP id 98-20020a170902006bb02900da725bfceamr5727914pla.16.1607119347328;
+        Fri, 04 Dec 2020 14:02:27 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f92sm3353946pjk.54.2020.12.04.14.02.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 14:02:26 -0800 (PST)
+Date:   Fri, 4 Dec 2020 14:02:25 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, Emese Revfy <re.emese@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] gcc-plugins: simplify GCC plugin-dev capability test
+Message-ID: <202012041402.97F582B00C@keescook>
+References: <20201203125700.161354-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgxe-KAqR_y2jP58GthOYKk0YG=6gNxKHxVUJbG7z2CoQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20201203125700.161354-1-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 04 Dec 2020, Linus Torvalds wrote:
+On Thu, Dec 03, 2020 at 09:57:00PM +0900, Masahiro Yamada wrote:
+> Linus pointed out a third of the time in the Kconfig parse stage comes
+> from the single invocation of cc1plus in scripts/gcc-plugin.sh [1],
+> and directly testing plugin-version.h for existence cuts down the
+> overhead a lot. [2]
+> 
+> This commit takes one step further to kill the build test entirely.
+> 
+> The small piece of code was probably intended to test the C++ designated
+> initializer, which was not supported until C++20.
+> 
+> In fact, with -pedantic option given, both GCC and Clang emit a warning.
+> 
+> $ echo 'class test { public: int test; } test = { .test = 1 };' | g++ -x c++ -pedantic - -fsyntax-only
+> <stdin>:1:43: warning: C++ designated initializers only available with '-std=c++2a' or '-std=gnu++2a' [-Wpedantic]
+> $ echo 'class test { public: int test; } test = { .test = 1 };' | clang++ -x c++ -pedantic - -fsyntax-only
+> <stdin>:1:43: warning: designated initializers are a C++20 extension [-Wc++20-designator]
+> class test { public: int test; } test = { .test = 1 };
+>                                           ^
+> 1 warning generated.
+> 
+> Otherwise, modern C++ compilers should be able to build the code, and
+> hopefully skipping this test should not make any practical problem.
+> 
+> Checking the existence of plugin-version.h is still needed to ensure
+> the plugin-dev package is installed. The test code is now small enough
+> to be embedded in scripts/gcc-plugins/Kconfig.
+> 
+> [1] https://lore.kernel.org/lkml/CAHk-=wjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ@mail.gmail.com/
+> [2] https://lore.kernel.org/lkml/CAHk-=whK0aQxs6Q5ijJmYF1n2ch8cVFSUzU5yUM_HOjig=+vnw@mail.gmail.com/
+> 
+> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
->On Fri, Dec 4, 2020 at 12:30 PM Bernd Edlinger
-><bernd.edlinger@hotmail.de> wrote:
->>>
->> >    perf_event_open  (exec_update_mutex -> ovl_i_mutex)
->
->Side note: this one looks like it should be easy to fix.
->
->Is there any real reason why exec_update_mutex is actually gotten that
->early, and held for that long in the perf event code?
+Acked-by: Kees Cook <keescook@chromium.org>
 
-afaict just to validate the whole operation early. Per 79c9ce57eb2 the
-mutex will guard the check and the perf_install_in_context vs exec.
-
->
->I _think_ we could move the ptrace check to be much later, to _just_ before that
->
->         * This is the point on no return; we cannot fail hereafter.
->
->point in the perf event install chain..
-
-Peter had the idea of doing the ptrace_may_access() check twice: first
-lockless and early, then under exec_update_mutex when it mattered right
-before perf_install_in_context():
-
-https://lore.kernel.org/linux-fsdevel/20200828123720.GZ1362448@hirez.programming.kicks-ass.net/
-
->
->I don't think it needs to be moved down even that much, I think it
->would be sufficient to move it down below the "perf_event_alloc()",
->but I didn't check very much.
-
-Yeah we could just keep a single ptrace_may_access() check just further
-down until it won't deadlock.
-
-Thanks,
-Davidlohr
+-- 
+Kees Cook
