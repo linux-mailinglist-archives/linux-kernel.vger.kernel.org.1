@@ -2,275 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D062CE70F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 05:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3C92CE715
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 05:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgLDEmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 23:42:51 -0500
-Received: from pb-smtp20.pobox.com ([173.228.157.52]:57978 "EHLO
-        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726796AbgLDEmu (ORCPT
+        id S1726885AbgLDErd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 23:47:33 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:4178 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725989AbgLDErc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 23:42:50 -0500
-Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id AC6BD103E2E;
-        Thu,  3 Dec 2020 23:42:06 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=L/O62gQN7CGhqxHxvnU12bfvozc=; b=acy7MK
-        OUFByGsiSbTjnYlRN2ZmaLixRx/rCDqK7FvRaUiPbEPFCEAnf2XCTIrtOhOapQPx
-        gciOgCTg3r1Hc51EunIQw1AsQSOtxIEt1oJf+6iQhIQvnPS+H04K6v5MR077GAge
-        7bLyXHFJiq96pYMhoH+anWO2K/VDU4Um3ouv0=
-Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id A4F14103E2D;
-        Thu,  3 Dec 2020 23:42:06 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=7JgJuVjwh3CFtZR8kqIaiFoY87sTzfmcyvs0jSlA37k=; b=ynpY5QYBsvgC29Wfo0+4B33kMrfMWPENKFtwqYv3ETdGAni4wn8ccsn6J35RgLMANtO8qW7Yy7Z73WtvLppm3IIQPXVHAlMZe7ZV8XbTnLcrvkUpxGNx98IeMQBGKscfcoHn550J4IDRQYb/EJq8wjKc+CUqBe3KCM3xBq9mSuI=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id 8A5D2103E29;
-        Thu,  3 Dec 2020 23:42:03 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id D734D2DA0639;
-        Thu,  3 Dec 2020 23:42:01 -0500 (EST)
-Date:   Thu, 3 Dec 2020 23:42:01 -0500 (EST)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Parshuram Thombare <pthombar@cadence.com>
-cc:     alexandre.belloni@bootlin.com, slongerbeam@gmail.com,
-        vitor.soares@synopsys.com, praneeth@ti.com, mparab@cadence.com,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 3/7] i3c: master: add i3c_secondary_master_register
-In-Reply-To: <1606717090-3847-1-git-send-email-pthombar@cadence.com>
-Message-ID: <sq1q9262-8q61-7qop-9ps2-q5o6qo5q3p63@syhkavp.arg>
-References: <1606716983-3645-1-git-send-email-pthombar@cadence.com> <1606717090-3847-1-git-send-email-pthombar@cadence.com>
+        Thu, 3 Dec 2020 23:47:32 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B44i315020381;
+        Thu, 3 Dec 2020 20:46:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=skg28eS3ynyrlH5aaGzWIeTeC7NoPpqR+g4m10jRe4U=;
+ b=FQCBy6BtDcmyH/AkzXAXZLuqq+nAAFAmG0GYGHtuAEw6pfzj0adDO6dgugleX4jPHVLe
+ +jeSOqB5abN0bIvKy+o2k6yMolL0kDVG8lRwjCkm4KGQ4spx2V6TKxEK3pXimf3laL88
+ V+8b9KfGC+ePN5THiDOHAMD8rrC5AAhjlh4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 356fsfmm6h-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 03 Dec 2020 20:46:32 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 3 Dec 2020 20:46:23 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z+9HnoNUkOm7mB2U87cdouAU9p8vG3VJyNC5KPJ/ppmhzhnjH/hXmKWJeommnM1e1kjFi5jbZDHvqbdVaykG/YpEnzjHL4EJ2kCTFNDe9eyq/c0MXVTaQchiebSXOXIn9ATHbquMh8Oyo5ftPCHXEnl0uaSxDjCqXVZFJEdcsQTSvXk69ntsksrOmZdhNhsliMAvYTLg8MNA3N4kts29f51rBR47sL5aayWnEEpbK4moKxqnwxaa53770AjvEc7ZW4KZIpZMTRl6kBkbMil2CvPk/e5rizBApNgUsYS+4/fj/RqN9eGuucvbu/GuceQGG3qzab8u97qRCnP9YImWUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Nekb9bSgCRct00XPkVl3XFwk1j18mmU4nQUQ0VSRmI4=;
+ b=EViYULtHzEZ/e0eaxiggaNd6tAiMqRYz1svyrxwES5QGUL4HSTQPf4hXVhF8A7EkTLDsWznVrfnmfz6zlrwufqR77RNQo0OdMATZFdGOamMi1y2rSfJbG1vYXoGQHvym652RhXmpQFRAs8Qv9I9Sm9a8fx9K6QI+3ucMhQ6Du9ywPIpkKxs+cWEBbHqzjbA+pYgYfEYsIirCb3V0iDUnGeOz/rrpP9a5Aa3Gw8duCkdZboKj7Ff6YDbQomezW7keRbDqSUdhkbhFZ4KWo1FDIJ+2vk6T7XgQCqRFsqiq9T5inHhwtmkzXWIRqPeOEwnXK3tOyPa8TZecZlxcgnkkZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Nekb9bSgCRct00XPkVl3XFwk1j18mmU4nQUQ0VSRmI4=;
+ b=TCJM6Gdr3+rg/v1Vi2VopxRNfDKYxjIOBEloJBNktxLR5czDFkpoDVzNRAajTtIYt/chUs4b0RxlwrCsfLe22JikCK4Kx4zmf4iJOEyLTV6Sbk/0y0Ed8iuZQY5FFyWM6ThzhBj7mpryhmioFeh6OmSXI8uD3GssDEoq+SHlelc=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB3000.namprd15.prod.outlook.com (2603:10b6:a03:b1::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Fri, 4 Dec
+ 2020 04:46:22 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3632.021; Fri, 4 Dec 2020
+ 04:46:22 +0000
+Subject: Re: [PATCH bpf-next v3 00/14] Atomics for eBPF
+To:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
+References: <20201203160245.1014867-1-jackmanb@google.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <a3ca1f24-bfe8-f85f-6729-46fafd00b2a0@fb.com>
+Date:   Thu, 3 Dec 2020 20:46:19 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
+In-Reply-To: <20201203160245.1014867-1-jackmanb@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Originating-IP: [2620:10d:c090:400::5:86b1]
+X-ClientProxiedBy: MWHPR18CA0071.namprd18.prod.outlook.com
+ (2603:10b6:300:39::33) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c8::12b3] (2620:10d:c090:400::5:86b1) by MWHPR18CA0071.namprd18.prod.outlook.com (2603:10b6:300:39::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Fri, 4 Dec 2020 04:46:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e344c133-fbe9-42a0-0e41-08d8980f8c86
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3000:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB30009F4A22D20C0319E4BDA4D3F10@BYAPR15MB3000.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Qt4WEHSyUfwImC4OJ3on+M8DIo1pne8nt7yRrljYg9AExhysF4fOHSJsAQHmIZ9jboin6VI67BNB2tj7qMWQgXIbGa6mjasd/UhwJhq/yNIsJR2we4c+mmKVjMyKOL537LVO6DexdXq64CFm785S0qnqAjetIzXcFNZYjga08BFrLJ9xgELBEtD5IsE8bgbLx9Ur7tCmRzhaG7H90I2uTD/NkuPo5TMu0lqhK+NuHsoe/yO3A5NE1+FxCrg65Im7YSFippi2fHF3rvG2NoKTbUFyiv34P/bwN+nh8eNbbHTvaqrd9d+P4uUtU2OVLciNDFC9CPFSYXiKQQ+cCuJczz8rkslQHC/5wZ6u1+U65obFyQVxA/r2TMV8C0R4d3FrwDZ9THHnWGk5fFyGX7GLXD9sVranKI0sW9jR27s8oFRtacr8JefEAzMr2fJF+y2ERVSEJB/48TIVsI+6TxMpFC3ai4p00VBtPdK/IJi2uAM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(346002)(39860400002)(366004)(966005)(36756003)(2906002)(478600001)(8936002)(31686004)(4326008)(52116002)(8676002)(5660300002)(31696002)(53546011)(316002)(2616005)(54906003)(86362001)(66556008)(66946007)(6486002)(16526019)(66476007)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UDRvWU91QWt3WWVqMmlVeWhyb3pPTXllU0RyZEJNSjlobTZsSG0xMGFjdU9y?=
+ =?utf-8?B?aHlKR1pocFZIWVp0dXYvQ2RtQ3QrdWdzQjhHdXlxeHROVEc3aXkwWjh6WXp6?=
+ =?utf-8?B?Qkl6eG9Ia0NwbjJrNVlVSitoN0RCYXlrQXpLeFFuaHR4ZlUzK2tlSVdRTDM1?=
+ =?utf-8?B?aXZyNVp2TnNYT2Z2K2VQa3NGTVRZaXBXMDc5WmxsdjJEUTRGNzgvRUYzVWlI?=
+ =?utf-8?B?S2VuS1YreVE5bytBOWY2alpqbHByVWtTSkdHY2Z4KzZHdmZXb1Q3V01OdGJY?=
+ =?utf-8?B?ZVlEc2ljR0YxWlBuNS9pQXdBeHhFRmN0VGVEeXpxU0JpaHB6ZEVranpUZG5P?=
+ =?utf-8?B?SGs2c2F2dE9SdUFTR0RpNHZiQXlKdUo1OUJGYit2ZzBJeXBQMzY2WHlocHFx?=
+ =?utf-8?B?UEFTVFFrVEhZb2srMDJXVXI2em0ySEd3bGQ4V2EzZlpDaitSbnBzVnRDanY4?=
+ =?utf-8?B?Q1loMUdTY3BBckVac0k4and2WVlKTWY4akY3M0xSTmZQTmhzelZGKzFjS0Jt?=
+ =?utf-8?B?blg4QUNUK1FiZUhoZ2RHTkRpaXJCTWhGZEdHSjhkVWNzMVk0dys3ME5ncnQz?=
+ =?utf-8?B?YUdwRlVRVWR4NmtuVXNPWDZCbHJvd0lKL1RMeDNJTWRkRVdhWXRTL2tVS1Zk?=
+ =?utf-8?B?NzhUUzlGOENadmJwYUJPVUlSb1ZkaUh0Qk5IUVFtYk5PUWdCVTZodnUyUUhy?=
+ =?utf-8?B?aHVXMTVmaGpiZWxTRUo5T1pYQkJPNFd2ei9pYnh2eDlJMlA4TnVndDFwaWVz?=
+ =?utf-8?B?dFNYcEtZNkxSdjdXKzlITjJEaVArY3pRRWd3ZDlCaHh6b0svQ2ZzT2t4RzJ3?=
+ =?utf-8?B?NGxmTG5aNWpYeTNTcVl1RUdwVU1ndndkWWVxSXVBZW43NERjSjlaU3pES0Uy?=
+ =?utf-8?B?TTh0ZlZkMUZNcUZERW83cU81T2RqZFhhSm9aVWVzcEovQXpBcDUwZVZhTzgv?=
+ =?utf-8?B?cm5MUjJVdnRyeFMyRVZXV2N4VkcwbUxtV2NaOVNDK1MzYko2ZUQ1cE9qSUN3?=
+ =?utf-8?B?d3kyV254dnBEdHFlWDIwZkpZNmpjOFpxTjcvUUhvV2lkQU5Wa3d2QzFZWGhC?=
+ =?utf-8?B?R3V2bzVDOHB1NmxtM1c0aW92aXVleEU5MEtZalg3RlpxZGlGNDM0ZUt1eSsw?=
+ =?utf-8?B?cERVeno4ZGZWZVZtWmZFRFNiRDlKZkNEQThWeG1aZ3lrT3Nwai94MjdkK1Zz?=
+ =?utf-8?B?RUU1ZWltMjgxc2JocDNmcnNVOUdxVGlURHk0bnUxNkFEQWdtUEdVOG1lMllw?=
+ =?utf-8?B?VmwvQ3FmZHkrZjVVSnptZ0RRR3lSOSs2MDNtQ1o0Z0s1VVpsQkpGek56QlpD?=
+ =?utf-8?B?c0N5R0U3SEl4M1BRSWo4bnBSQk9XRlBGQit3bnlNRzlwdHo5ZU9Ecm16UXh5?=
+ =?utf-8?B?QXM2YXRWdGtkaGc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e344c133-fbe9-42a0-0e41-08d8980f8c86
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 04:46:22.6100
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hXWa7lQB3vwEhKalp2fEP3KOiibfsDFHO0UdzsyF88bjUJn31WaHY7w9r+RlQaGy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3000
+X-OriginatorOrg: fb.com
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: 0E257364-35EB-11EB-ACCB-E43E2BB96649-78420484!pb-smtp20.pobox.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_01:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ bulkscore=0 adultscore=0 priorityscore=1501 mlxscore=0 malwarescore=0
+ suspectscore=0 phishscore=0 clxscore=1015 spamscore=0 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040026
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Nov 2020, Parshuram Thombare wrote:
-
-> add i3c_secondary_master_register which is used
-> to register secondary masters.
-
-I'm not sure about the logic here. Why would the secondary master 
-initialize the bus? If you make a distinction between primary and 
-secondary, then the primary should be the owner of the bus and it should 
-have enumerated it already. You should populate the bus structure with 
-info provided by the primary master not from DT?
 
 
-> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
-> ---
->  drivers/i3c/master.c       |  154 +++++++++++++++++++++++++++++++++++++++++++-
->  include/linux/i3c/master.h |    3 +
->  2 files changed, 156 insertions(+), 1 deletions(-)
+On 12/3/20 8:02 AM, Brendan Jackman wrote:
+> Status of the patches
+> =====================
 > 
-> diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-> index 56e8fe4..af0630a 100644
-> --- a/drivers/i3c/master.c
-> +++ b/drivers/i3c/master.c
-> @@ -1797,6 +1797,90 @@ static int i3c_primary_master_bus_init(struct i3c_master_controller *master)
->  	return ret;
->  }
->  
-> +/**
-> + * i3c_secondary_master_bus_init() - initialize an I3C bus for secondary
-> + * master
-> + * @master: secondary master initializing the bus
-> + *
-> + * This function does
-> + *
-> + * 1. Attach I2C devs to the master
-> + *
-> + * 2. Call &i3c_master_controller_ops->bus_init() method to initialize
-> + *    the master controller. That's usually where the bus mode is selected
-> + *    (pure bus or mixed fast/slow bus)
-> + *
-> + * Once this is done, I2C devices should be usable.
-> + *
-> + * Return: a 0 in case of success, an negative error code otherwise.
-> + */
-> +static int i3c_secondary_master_bus_init(struct i3c_master_controller *master)
-> +{
-> +	enum i3c_addr_slot_status status;
-> +	struct i2c_dev_boardinfo *i2cboardinfo;
-> +	struct i2c_dev_desc *i2cdev;
-> +	int ret;
-> +
-> +	/*
-> +	 * First attach all devices with static definitions provided by the
-> +	 * FW.
-> +	 */
-> +	list_for_each_entry(i2cboardinfo, &master->boardinfo.i2c, node) {
-> +		status = i3c_bus_get_addr_slot_status(&master->bus,
-> +						      i2cboardinfo->base.addr);
-> +		if (status != I3C_ADDR_SLOT_FREE) {
-> +			ret = -EBUSY;
-> +			goto err_detach_devs;
-> +		}
-> +
-> +		i3c_bus_set_addr_slot_status(&master->bus,
-> +					     i2cboardinfo->base.addr,
-> +					     I3C_ADDR_SLOT_I2C_DEV);
-> +
-> +		i2cdev = i3c_master_alloc_i2c_dev(master, i2cboardinfo);
-> +		if (IS_ERR(i2cdev)) {
-> +			ret = PTR_ERR(i2cdev);
-> +			goto err_detach_devs;
-> +		}
-> +
-> +		ret = i3c_master_attach_i2c_dev(master, i2cdev);
-> +		if (ret) {
-> +			i3c_master_free_i2c_dev(i2cdev);
-> +			goto err_detach_devs;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * Now execute the controller specific ->bus_init() routine, which
-> +	 * might configure its internal logic to match the bus limitations.
-> +	 */
-> +	ret = master->ops->bus_init(master);
-> +	if (ret)
-> +		goto err_detach_devs;
-> +
-> +	/*
-> +	 * The master device should have been instantiated in ->bus_init(),
-> +	 * complain if this was not the case.
-> +	 */
-> +	if (!master->this) {
-> +		dev_err(&master->dev,
-> +			"master_set_info() was not called in ->bus_init()\n");
-> +		ret = -EINVAL;
-> +		goto err_bus_cleanup;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_bus_cleanup:
-> +	if (master->ops->bus_cleanup)
-> +		master->ops->bus_cleanup(master);
-> +
-> +err_detach_devs:
-> +	i3c_master_detach_free_devs(master);
-> +
-> +	return ret;
-> +}
-> +
->  static void i3c_master_bus_cleanup(struct i3c_master_controller *master)
->  {
->  	if (master->ops->bus_cleanup)
-> @@ -2514,7 +2598,10 @@ static int i3c_master_init(struct i3c_master_controller *master,
->  		goto err_put_dev;
->  	}
->  
-> -	ret = i3c_primary_master_bus_init(master);
-> +	if (secondary)
-> +		ret = i3c_secondary_master_bus_init(master);
-> +	else
-> +		ret = i3c_primary_master_bus_init(master);
->  	if (ret)
->  		goto err_destroy_wq;
->  
-> @@ -2595,6 +2682,71 @@ int i3c_primary_master_register(struct i3c_master_controller *master,
->  EXPORT_SYMBOL_GPL(i3c_primary_master_register);
->  
->  /**
-> + * i3c_secondary_master_register() - register an I3C secondary master
-> + * @master: master used to send frames on the bus
-> + * @parent: the parent device (the one that provides this I3C master
-> + *	    controller)
-> + * @ops: the master controller operations
-> + *
-> + * This function does minimal required initialization for secondary
-> + * master, rest functionality like creating and registering I2C
-> + * and I3C devices is done in defslvs processing.
-> + *
-> + *  i3c_secondary_master_register() does following things -
-> + * - creates and initializes the I3C bus
-> + * - populates the bus with static I2C devs if @parent->of_node is not
-> + *   NULL
-> + *   initialization
-> + * - allocate memory for defslvs_data.devs, which is used to receive
-> + *   defslvs list
-> + * - create I3C device representing this master
-> + * - registers the I2C adapter and all I2C devices
-> + *
-> + * Return: 0 in case of success, a negative error code otherwise.
-> + */
-> +int i3c_secondary_master_register(struct i3c_master_controller *master,
-> +				  struct device *parent,
-> +				  const struct i3c_master_controller_ops *ops)
-> +{
-> +	int ret;
-> +
-> +	ret = i3c_master_init(master, parent, ops, true);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = device_add(&master->dev);
-> +	if (ret)
-> +		goto err_cleanup_bus;
-> +
-> +	/*
-> +	 * Expose our I3C bus as an I2C adapter so that I2C devices are exposed
-> +	 * through the I2C subsystem.
-> +	 */
-> +	ret = i3c_master_i2c_adapter_init(master);
-> +	if (ret)
-> +		goto err_del_dev;
-> +
-> +	/*
-> +	 * We're done initializing the bus and the controller, we can now
-> +	 * register I3C devices from defslvs list.
-> +	 */
-> +	master->init_done = true;
-> +
-> +	return 0;
-> +
-> +err_del_dev:
-> +	device_del(&master->dev);
-> +
-> +err_cleanup_bus:
-> +	i3c_master_bus_cleanup(master);
-> +
-> +	put_device(&master->dev);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(i3c_secondary_master_register);
-> +
-> +/**
->   * i3c_master_unregister() - unregister an I3C master
->   * @master: master used to send frames on the bus
->   *
-> diff --git a/include/linux/i3c/master.h b/include/linux/i3c/master.h
-> index e543f68..e186d53 100644
-> --- a/include/linux/i3c/master.h
-> +++ b/include/linux/i3c/master.h
-> @@ -541,6 +541,9 @@ int i3c_master_set_info(struct i3c_master_controller *master,
->  int i3c_primary_master_register(struct i3c_master_controller *master,
->  				struct device *parent,
->  				const struct i3c_master_controller_ops *ops);
-> +int i3c_secondary_master_register(struct i3c_master_controller *master,
-> +				  struct device *parent,
-> +				  const struct i3c_master_controller_ops *ops);
->  int i3c_master_unregister(struct i3c_master_controller *master);
->  
->  /**
-> -- 
-> 1.7.1
+> Thanks for the reviews! Differences from v2->v3 [1]:
 > 
+> * More minor fixes and naming/comment changes
 > 
-> -- 
-> linux-i3c mailing list
-> linux-i3c@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-i3c
+> * Dropped atomic subtract: compilers can implement this by preceding
+>    an atomic add with a NEG instruction (which is what the x86 JIT did
+>    under the hood anyway).
 > 
+> * Dropped the use of -mcpu=v4 in the Clang BPF command-line; there is
+>    no longer an architecture version bump. Instead a feature test is
+>    added to Kbuild - it builds a source file to check if Clang
+>    supports BPF atomics.
+> 
+> * Fixed the prog_test so it no longer breaks
+>    test_progs-no_alu32. This requires some ifdef acrobatics to avoid
+>    complicating the prog_tests model where the same userspace code
+>    exercises both the normal and no_alu32 BPF test objects, using the
+>    same skeleton header.
+> 
+> Differences from v1->v2 [1]:
+> 
+> * Fixed mistakes in the netronome driver
+> 
+> * Addd sub, add, or, xor operations
+> 
+> * The above led to some refactors to keep things readable. (Maybe I
+>    should have just waited until I'd implemented these before starting
+>    the review...)
+> 
+> * Replaced BPF_[CMP]SET | BPF_FETCH with just BPF_[CMP]XCHG, which
+>    include the BPF_FETCH flag
+> 
+> * Added a bit of documentation. Suggestions welcome for more places
+>    to dump this info...
+> 
+> The prog_test that's added depends on Clang/LLVM features added by
+> Yonghong in https://reviews.llvm.org/D72184
+
+Just let you know that the above patch has been merged into llvm-project
+trunk, so you do not manually apply it any more.
+
+> 
+> This only includes a JIT implementation for x86_64 - I don't plan to
+> implement JIT support myself for other architectures.
+> 
+> Operations
+> ==========
+> 
+> This patchset adds atomic operations to the eBPF instruction set. The
+> use-case that motivated this work was a trivial and efficient way to
+> generate globally-unique cookies in BPF progs, but I think it's
+> obvious that these features are pretty widely applicable.  The
+> instructions that are added here can be summarised with this list of
+> kernel operations:
+> 
+> * atomic[64]_[fetch_]add
+> * atomic[64]_[fetch_]and
+> * atomic[64]_[fetch_]or
+> * atomic[64]_xchg
+> * atomic[64]_cmpxchg
+> 
+> The following are left out of scope for this effort:
+> 
+> * 16 and 8 bit operations
+> * Explicit memory barriers
+> 
+> Encoding
+> ========
+> 
+> I originally planned to add new values for bpf_insn.opcode. This was
+> rather unpleasant: the opcode space has holes in it but no entire
+> instruction classes[2]. Yonghong Song had a better idea: use the
+> immediate field of the existing STX XADD instruction to encode the
+> operation. This works nicely, without breaking existing programs,
+> because the immediate field is currently reserved-must-be-zero, and
+> extra-nicely because BPF_ADD happens to be zero.
+> 
+> Note that this of course makes immediate-source atomic operations
+> impossible. It's hard to imagine a measurable speedup from such
+> instructions, and if it existed it would certainly not benefit x86,
+> which has no support for them.
+> 
+> The BPF_OP opcode fields are re-used in the immediate, and an
+> additional flag BPF_FETCH is used to mark instructions that should
+> fetch a pre-modification value from memory.
+> 
+> So, BPF_XADD is now called BPF_ATOMIC (the old name is kept to avoid
+> breaking userspace builds), and where we previously had .imm = 0, we
+> now have .imm = BPF_ADD (which is 0).
+> 
+> Operands
+> ========
+> 
+> Reg-source eBPF instructions only have two operands, while these
+> atomic operations have up to four. To avoid needing to encode
+> additional operands, then:
+> 
+> - One of the input registers is re-used as an output register
+>    (e.g. atomic_fetch_add both reads from and writes to the source
+>    register).
+> 
+> - Where necessary (i.e. for cmpxchg) , R0 is "hard-coded" as one of
+>    the operands.
+> 
+> This approach also allows the new eBPF instructions to map directly
+> to single x86 instructions.
+> 
+> [1] Previous patchset:
+>      https://lore.kernel.org/bpf/20201123173202.1335708-1-jackmanb@google.com/
+> 
+> [2] Visualisation of eBPF opcode space:
+>      https://gist.github.com/bjackman/00fdad2d5dfff601c1918bc29b16e778
+> 
+[...]
