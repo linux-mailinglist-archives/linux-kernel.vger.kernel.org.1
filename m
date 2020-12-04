@@ -2,216 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD1A2CF5D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC47E2CF5DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387514AbgLDUtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 15:49:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
+        id S1727685AbgLDUxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 15:53:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730241AbgLDUtu (ORCPT
+        with ESMTP id S1726021AbgLDUxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 15:49:50 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF945C061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:49:01 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id h18so2538616otq.12
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:49:01 -0800 (PST)
+        Fri, 4 Dec 2020 15:53:15 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95294C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:52:35 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id d9so6767496qke.8
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:52:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ETBT8tLrqWhU3nQJzSd6pnShSvogFC7sNASc+9sqs84=;
-        b=X+FBgvPnntPzx4qoAbpgm6nFj7+d26T0HuVa/rSpQ3DzJFvuqolcnpaLkYRm79Q8+M
-         XeLX4Tx6t+uTQGlrNgSe2lHw4cqJWCV/Vt+OVDN+QAKXVg3bz3d1QV2OJcHbgaZfHcn5
-         OodPePv4psMzAqlr39L1ykKMfWMeVWe0Xp/plL040gAMHCKYHpOSmBJXewtTcNOKX9Wy
-         TAsznwK1xKd7zA3QcQNSYYJlP0mW2yEQ8hToZUjghT42SleNCa+E3rHe85lwc58XZmgl
-         WiJEomjQze0QEXjx09VcEIVmbnXOthYItD3khx/jdY2QDY2OA+QP7hRJRnO3XtWhn50g
-         XSgg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xPWnnh6vZQTtFvZJIVOrhc3HGhSgSZqYkemGx+VVR/I=;
+        b=RfdV89Gq2f4iCb4TtgiteOyTSJJiv4MovGwdwdYr31uoZahwrOMrKYsPdeHpENbEGk
+         JIsi7bOPcPRd+dCgkoakgzfY1yCbkMBqd5zbbB5n4dntxdYXB8z7Xcm9nLlmWsqU21AI
+         9IMF3ObABHP1qWQlJJvtfKZHuSKfK0STWH7C1uqzQmT8HtvJrpNalmJWWYamOXIWDrQm
+         dxydJQejqE5wguGVjp+IXmQbL1yo2oKzw4PdXh+XbsLYPaNd88yPCgifKByhL5TXrPsb
+         Y62hEpTwkNP5ihuCMcms6Nck0LOPv9QJdTfPsARSjq8Nvu3OqsYeNTAsEcLGaRruW9RN
+         V/fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ETBT8tLrqWhU3nQJzSd6pnShSvogFC7sNASc+9sqs84=;
-        b=fe+q/oKNaCtedSCAyZlLm2FyulniqUbGNYcFNAAd4/0i80+Lz6sw6PMAhpflYsf9pf
-         L3cesLdkZPEwocVs+yykHQdfTpMvawVdgIoG/3HebsnVQFITlbjeaWgYcDmJs9mDqd/W
-         1QxUVTNAWmjnITAFevWwgsGOXofBaWQZp4E56bxaUAheB8d0rGg9IcEncJN3nEuridxY
-         psho2Xkgpq57m3BXdsxV5z5jjFxxV3aXLqsBVq8kjbKocONl0YBUThKOQF8+CCHhXV4A
-         LWry7nWL9IkM78Ms+Ca2nSW8gbupYNjeit4EwSJvhMYAdU3Hh05iqhOVt6s2DgYqKzCl
-         UUHg==
-X-Gm-Message-State: AOAM533RVOJeWJwMXUV1+ytf5Lpz+V7PqtLumtCzIy6gAqaAj+TttxOm
-        o465KeGuoKYXWbhjboxDwtgAK85mS4qr4EJJlcs=
-X-Google-Smtp-Source: ABdhPJzt4EfSu2Fb07W12172LWrggEAFHBbB7GRVJsw4ZlpnGKoPlkzO6SAaE4FBLON5IzCEG/DCXK8DNNX8h5GLXl0=
-X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr2649539ote.132.1607114941003;
- Fri, 04 Dec 2020 12:49:01 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xPWnnh6vZQTtFvZJIVOrhc3HGhSgSZqYkemGx+VVR/I=;
+        b=SV4FTsv8X/e+gvVmn9pluY02xMlRBwExbMSs0CUngdqzCqROE0Is4O3AY24A5pRoSw
+         ntpIIlohRIrl7evye0VK3TaEOokrwcTWaq2cehYbzEfdSOTOXDYj+9yTgZhOcrEiFMdF
+         +eDP5cMCTdU+9PH9F2xuiMpXDjOZppMW0Z34DtkKOzwrqyGcEnN14NU9+fLPb55jKysr
+         KAUgxo/vvmyJPMlulnLfbcWEN+f4jUGS6v0kWhN9u4TGoO7qCXxAEdMWxdXCh4If38V/
+         wcJXQXyEDYPscLzXWgNDEhFtfx9fgkmZpPUonrHAWxOc2ml1IZo7onbkWfL3rniOE/53
+         sD5Q==
+X-Gm-Message-State: AOAM530jP8bPMd6F/IoUr9tWW+1YvmKgOe7X+1NDvjq2FRSKGs1GqK71
+        rsQWszjuRUAdQkf2RoI9hvCafw==
+X-Google-Smtp-Source: ABdhPJx+Iji2zhoCycJWUu1vTV+SSIROuayO5pjwDOlSTssLKMfU0Ftl/WNc/2BM/wo4bNoeFkcM6A==
+X-Received: by 2002:a37:c82:: with SMTP id 124mr11128661qkm.360.1607115154755;
+        Fri, 04 Dec 2020 12:52:34 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id u20sm1927358qtb.9.2020.12.04.12.52.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 12:52:33 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1klI49-006E8l-C1; Fri, 04 Dec 2020 16:52:33 -0400
+Date:   Fri, 4 Dec 2020 16:52:33 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
+Message-ID: <20201204205233.GF5487@ziepe.ca>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-7-pasha.tatashin@soleen.com>
+ <20201202163507.GL5487@ziepe.ca>
+ <CA+CK2bBT=U+xhbzXTDFwsL5wTvPHgNJ0DRpaeseiUq=w4EOe9w@mail.gmail.com>
+ <20201203010809.GQ5487@ziepe.ca>
+ <CA+CK2bBRgcCc5Nm0RcsEgVFpGBFC-_icA6UDRiqQxeRJE5U-Aw@mail.gmail.com>
+ <20201203141729.GS5487@ziepe.ca>
+ <87360lnxph.fsf@oracle.com>
 MIME-Version: 1.0
-References: <20201203230652.1480863-1-arnd@kernel.org> <BYAPR12MB2888D809724EADE2AAB77B74B0F10@BYAPR12MB2888.namprd12.prod.outlook.com>
-In-Reply-To: <BYAPR12MB2888D809724EADE2AAB77B74B0F10@BYAPR12MB2888.namprd12.prod.outlook.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 4 Dec 2020 15:48:49 -0500
-Message-ID: <CADnq5_PFVyL5sBc3zx5rLRV6NX2O8f_vZ7emWcDOEEwgaqqU1g@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: fix debugfs creation/removal, again
-To:     "Zhou1, Tao" <Tao.Zhou1@amd.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Li, Dennis" <Dennis.Li@amd.com>,
-        "Chen, Guchun" <Guchun.Chen@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "Ma, Le" <Le.Ma@amd.com>, "Yang, Stanley" <Stanley.Yang@amd.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "Clements, John" <John.Clements@amd.com>,
-        "Zhang, Hawking" <Hawking.Zhang@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87360lnxph.fsf@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 1:17 AM Zhou1, Tao <Tao.Zhou1@amd.com> wrote:
->
-> [AMD Public Use]
->
-> Reviewed-by: Tao Zhou <tao.zhou1@amd.com>
+On Fri, Dec 04, 2020 at 03:05:46PM -0500, Daniel Jordan wrote:
+> Jason Gunthorpe <jgg@ziepe.ca> writes:
+> 
+> > On Wed, Dec 02, 2020 at 08:34:32PM -0500, Pavel Tatashin wrote:
+> >> What I meant is the users of the interface do it incrementally not in
+> >> large chunks. For example:
+> >> 
+> >> vfio_pin_pages_remote
+> >>    vaddr_get_pfn
+> >>         ret = pin_user_pages_remote(mm, vaddr, 1, flags |
+> >> FOLL_LONGTERM, page, NULL, NULL);
+> >> 1 -> pin only one pages at a time
+> >
+> > I don't know why vfio does this, it is why it so ridiculously slow at
+> > least.
+> 
+> Well Alex can correct me, but I went digging and a comment from the
+> first type1 vfio commit says the iommu API didn't promise to unmap
+> subpages of previous mappings, so doing page at a time gave flexibility
+> at the cost of inefficiency.
 
-Applied.  Thanks!
+iommu restrictions are not related to with gup. vfio needs to get the
+page list from the page tables as efficiently as possible, then you
+break it up into what you want to feed into the IOMMU how the iommu
+wants.
 
-Alex
+vfio must maintain a page list to call unpin_user_pages() anyhow, so
+it makes alot of sense to assemble the page list up front, then do the
+iommu, instead of trying to do both things page at a time.
 
->
-> > -----Original Message-----
-> > From: Arnd Bergmann <arnd@kernel.org>
-> > Sent: Friday, December 4, 2020 7:07 AM
-> > To: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian
-> > <Christian.Koenig@amd.com>; David Airlie <airlied@linux.ie>; Daniel Vetter
-> > <daniel@ffwll.ch>; Li, Dennis <Dennis.Li@amd.com>; Zhou1, Tao
-> > <Tao.Zhou1@amd.com>; Chen, Guchun <Guchun.Chen@amd.com>
-> > Cc: Arnd Bergmann <arnd@arndb.de>; Zhang, Hawking
-> > <Hawking.Zhang@amd.com>; Clements, John <John.Clements@amd.com>;
-> > Yang, Stanley <Stanley.Yang@amd.com>; Ma, Le <Le.Ma@amd.com>; amd-
-> > gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux-
-> > kernel@vger.kernel.org
-> > Subject: [PATCH] drm/amdgpu: fix debugfs creation/removal, again
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > There is still a warning when CONFIG_DEBUG_FS is disabled:
-> >
-> > drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c:1145:13: error:
-> > 'amdgpu_ras_debugfs_create_ctrl_node' defined but not used [-
-> > Werror=unused-function]
-> >  1145 | static void amdgpu_ras_debugfs_create_ctrl_node(struct
-> > amdgpu_device *adev)
-> >
-> > Change the code again to make the compiler actually drop this code but not
-> > warn about it.
-> >
-> > Fixes: ae2bf61ff39e ("drm/amdgpu: guard ras debugfs creation/removal based
-> > on CONFIG_DEBUG_FS")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> >  drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 13 +++++--------
-> > drivers/gpu/drm/amd/amdgpu/amdgpu_ras.h |  6 ------
-> >  2 files changed, 5 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-> > b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-> > index 9d11b847e6ef..c136bd449744 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-> > @@ -1167,7 +1167,7 @@ static void
-> > amdgpu_ras_debugfs_create_ctrl_node(struct amdgpu_device *adev)
-> >                       con->dir, &con->disable_ras_err_cnt_harvest);
-> >  }
-> >
-> > -void amdgpu_ras_debugfs_create(struct amdgpu_device *adev,
-> > +static void amdgpu_ras_debugfs_create(struct amdgpu_device *adev,
-> >               struct ras_fs_if *head)
-> >  {
-> >       struct amdgpu_ras *con = amdgpu_ras_get_context(adev); @@ -1189,7
-> > +1189,6 @@ void amdgpu_ras_debugfs_create(struct amdgpu_device *adev,
-> >
-> >  void amdgpu_ras_debugfs_create_all(struct amdgpu_device *adev)  { -#if
-> > defined(CONFIG_DEBUG_FS)
-> >       struct amdgpu_ras *con = amdgpu_ras_get_context(adev);
-> >       struct ras_manager *obj;
-> >       struct ras_fs_if fs_info;
-> > @@ -1198,7 +1197,7 @@ void amdgpu_ras_debugfs_create_all(struct
-> > amdgpu_device *adev)
-> >        * it won't be called in resume path, no need to check
-> >        * suspend and gpu reset status
-> >        */
-> > -     if (!con)
-> > +     if (!IS_ENABLED(CONFIG_DEBUG_FS) || !con)
-> >               return;
-> >
-> >       amdgpu_ras_debugfs_create_ctrl_node(adev);
-> > @@ -1212,10 +1211,9 @@ void amdgpu_ras_debugfs_create_all(struct
-> > amdgpu_device *adev)
-> >                       amdgpu_ras_debugfs_create(adev, &fs_info);
-> >               }
-> >       }
-> > -#endif
-> >  }
-> >
-> > -void amdgpu_ras_debugfs_remove(struct amdgpu_device *adev,
-> > +static void amdgpu_ras_debugfs_remove(struct amdgpu_device *adev,
-> >               struct ras_common_if *head)
-> >  {
-> >       struct ras_manager *obj = amdgpu_ras_find_obj(adev, head); @@ -
-> > 1229,7 +1227,6 @@ void amdgpu_ras_debugfs_remove(struct amdgpu_device
-> > *adev,
-> >
-> >  static void amdgpu_ras_debugfs_remove_all(struct amdgpu_device *adev)  { -
-> > #if defined(CONFIG_DEBUG_FS)
-> >       struct amdgpu_ras *con = amdgpu_ras_get_context(adev);
-> >       struct ras_manager *obj, *tmp;
-> >
-> > @@ -1238,7 +1235,6 @@ static void amdgpu_ras_debugfs_remove_all(struct
-> > amdgpu_device *adev)
-> >       }
-> >
-> >       con->dir = NULL;
-> > -#endif
-> >  }
-> >  /* debugfs end */
-> >
-> > @@ -1286,7 +1282,8 @@ static int amdgpu_ras_fs_init(struct amdgpu_device
-> > *adev)
-> >
-> >  static int amdgpu_ras_fs_fini(struct amdgpu_device *adev)  {
-> > -     amdgpu_ras_debugfs_remove_all(adev);
-> > +     if (IS_ENABLED(CONFIG_DEBUG_FS))
-> > +             amdgpu_ras_debugfs_remove_all(adev);
-> >       amdgpu_ras_sysfs_remove_all(adev);
-> >       return 0;
-> >  }
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.h
-> > b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.h
-> > index 4667cce38582..762f5e46c007 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.h
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.h
-> > @@ -592,14 +592,8 @@ int amdgpu_ras_sysfs_create(struct amdgpu_device
-> > *adev,  int amdgpu_ras_sysfs_remove(struct amdgpu_device *adev,
-> >               struct ras_common_if *head);
-> >
-> > -void amdgpu_ras_debugfs_create(struct amdgpu_device *adev,
-> > -             struct ras_fs_if *head);
-> > -
-> >  void amdgpu_ras_debugfs_create_all(struct amdgpu_device *adev);
-> >
-> > -void amdgpu_ras_debugfs_remove(struct amdgpu_device *adev,
-> > -             struct ras_common_if *head);
-> > -
-> >  int amdgpu_ras_error_query(struct amdgpu_device *adev,
-> >               struct ras_query_if *info);
-> >
-> > --
-> > 2.27.0
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+It would be smart to rebuild vfio to use scatter lists to store the
+page list and then break the sgl into pages for iommu
+configuration. SGLs will consume alot less memory for the usual case
+of THPs backing the VFIO registrations.
+
+ib_umem_get() has some example of how to code this, I've been thinking
+we could make this some common API, and it could be further optimized.
+
+> Yesterday I tried optimizing vfio to skip gup calls for tail pages after
+> Matthew pointed out this same issue to me by coincidence last week.
+
+Please don't just hack up vfio like this. Everyone needs faster gup,
+we really need to solve this in the core code. Plus this is tricky,
+vfio is already using follow_pfn wrongly, drivers should not be open
+coding MM stuff.
+
+> Currently debugging, but if there's a fundamental reason this won't work
+> on the vfio side, it'd be nice to know.
+
+AFAIK there is no guarentee that just because you see a compound head
+that the remaining pages in the page tables are actually the tail
+pages. This is only true sometimes, for instance if an entire huge
+page is placed in a page table level.
+
+I belive Ralph pointed to some case where we might break a huge page
+from PMD to PTEs then later COW one of the PTEs. In this case the
+compound head will be visible but the page map will be non-contiguous
+and the page flags on each 4k entry will be different.
+
+Only GUP's page walkers know that the compound page is actually at a
+PMD level and can safely apply the 'everything is the same'
+optimization.
+
+The solution here is to make core gup faster, espcially for the cases
+where it is returning huge pages. We can approach this by:
+ - Batching the compound & tail page acquisition for higher page
+   levels, eg gup fast does this already, look at record_subpages()
+   gup slow needs it too
+ - Batching unpin for compound & tail page, the opposite of the 'refs'
+   arg for try_grab_compound_head()
+ - Devise some API where get_user_pages can directly return
+   contiguous groups of pages to avoid memory traffic
+ - Reduce the cost of a FOLL_LONGTERM pin eg here is a start:
+    https://lore.kernel.org/linux-mm/0-v1-5551df3ed12e+b8-gup_dax_speedup_jgg@nvidia.com
+   And CMA should get some similar treatment. Scanning the output page
+   list multiple times is slow.
+
+I would like to get to a point where the main GUP walker functions can
+output in more formats than just page array. For instance directly
+constructing and chaining a biovec or sgl would dramatically improve
+perfomance and decrease memory consumption. Being able to write in
+hmm_range_fault's pfn&flags output format would delete a whole bunch
+of duplicated code.
+
+Jason
