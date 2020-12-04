@@ -2,73 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AAB2CE501
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A54322CE509
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731984AbgLDBX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:23:59 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8634 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729022AbgLDBX6 (ORCPT
+        id S2389525AbgLDBYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:24:19 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:36459 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389479AbgLDBYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:23:58 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnFLq4L7pz15X18;
-        Fri,  4 Dec 2020 09:22:43 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 4 Dec 2020 09:23:07 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] gpu: ipu-v3: replace spin_lock_irqsave by spin_lock in hard IRQ
-Date:   Fri, 4 Dec 2020 09:23:16 +0800
-Message-ID: <1607044999-47666-11-git-send-email-tiantao6@hisilicon.com>
+        Thu, 3 Dec 2020 20:24:18 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607045037; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=kqdUjE7q6zTwoe6btriJeD8Sdcc0r7WJ4mD1h5e9Vpo=; b=HkuP5ha2TuzPlYhWaDjsUHoF2kyVRekjHdN1FKcwTrB1SQ0EFUc4O7xPsKrHclRqRj2OWoXH
+ 4kHMZDtIgSuPXIHCbhF2/axcU2dSzzar9X18fvQ81vklzjZKNIr0lstA5zrYh9+r1ida5sei
+ Ikz7WQkP7rKFOfCtyA4rJkcxX18=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5fc98f9456444c64454f887b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Dec 2020 01:23:32
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1FE86C433C6; Fri,  4 Dec 2020 01:23:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 60BBCC433ED;
+        Fri,  4 Dec 2020 01:23:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 60BBCC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, loic.poulain@linaro.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v4 8/8] bus: mhi: Improve documentation on channel transfer setup APIs
+Date:   Thu,  3 Dec 2020 17:23:17 -0800
+Message-Id: <1607044997-19577-9-git-send-email-bbhatt@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607044999-47666-1-git-send-email-tiantao6@hisilicon.com>
-References: <1607044999-47666-1-git-send-email-tiantao6@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <1607044997-19577-1-git-send-email-bbhatt@codeaurora.org>
+References: <1607044997-19577-1-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code has been in a irq-disabled context since it is hard IRQ. There
-is no necessity to do it again.
+The mhi_prepare_for_transfer() and mhi_unprepare_from_transfer()
+APIs could use better explanation, especially with the addition
+of two new APIs to start and stop the transfers on channels. Add
+better set of information for those APIs.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 ---
- drivers/gpu/ipu-v3/ipu-image-convert.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ include/linux/mhi.h | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/ipu-v3/ipu-image-convert.c b/drivers/gpu/ipu-v3/ipu-image-convert.c
-index aa1d4b6..c28764c 100644
---- a/drivers/gpu/ipu-v3/ipu-image-convert.c
-+++ b/drivers/gpu/ipu-v3/ipu-image-convert.c
-@@ -1737,9 +1737,8 @@ static irqreturn_t eof_irq(int irq, void *data)
- 	struct ipu_image_convert_run *run;
- 	irqreturn_t ret = IRQ_HANDLED;
- 	bool tile_complete = false;
--	unsigned long flags;
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index 35779a0..bd229da 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -692,13 +692,35 @@ int mhi_device_get_sync(struct mhi_device *mhi_dev);
+ void mhi_device_put(struct mhi_device *mhi_dev);
  
--	spin_lock_irqsave(&chan->irqlock, flags);
-+	spin_lock(&chan->irqlock);
+ /**
+- * mhi_prepare_for_transfer - Setup channel for data transfer
++ * mhi_prepare_for_transfer - Setup UL and DL channels for data transfer.
++ *                            Allocate and initialize the channel context and
++ *                            also issue the START channel command to both
++ *                            channels. Channels can be started only if both
++ *                            host and device execution environments match and
++ *                            channels are in a DISABLED state. Calling the
++ *                            mhi_start_transfer() function is not required
++ *                            afterwards as channels are already started. This
++ *                            function also initializes the channel context
++ *                            whereas mhi_start_transfer() can only be used to
++ *                            issue the start channel command once the context
++ *                            is setup.
+  * @mhi_dev: Device associated with the channels
+  */
+ int mhi_prepare_for_transfer(struct mhi_device *mhi_dev);
  
- 	/* get current run and its context */
- 	run = chan->current_run;
-@@ -1778,7 +1777,7 @@ static irqreturn_t eof_irq(int irq, void *data)
- 	if (tile_complete)
- 		ret = do_tile_complete(run);
- out:
--	spin_unlock_irqrestore(&chan->irqlock, flags);
-+	spin_unlock(&chan->irqlock);
- 	return ret;
- }
- 
+ /**
+- * mhi_unprepare_from_transfer - Unprepare the channels
++ * mhi_unprepare_from_transfer - Reset UL and DL channels for data transfer.
++ *                               Issue the RESET channel command and let the
++ *                               device clean-up the context so no incoming
++ *                               transfers are seen on the host. Free memory
++ *                               associated with the context on host. If device
++ *                               is unresponsive, only perform a host side
++ *                               clean-up. Channels can be reset only if both
++ *                               host and device execution environments match
++ *                               and channels are in an ENABLED, STOPPED or
++ *                               SUSPENDED state. Calling mhi_stop_transfer() is
++ *                               not required before calling this function as it
++ *                               will only stop transfers, not reset channels.
+  * @mhi_dev: Device associated with the channels
+  */
+ void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev);
 -- 
-2.7.4
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
