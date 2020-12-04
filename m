@@ -2,55 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD522CE8D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FE82CE8EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728619AbgLDHwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 02:52:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60768 "EHLO
+        id S2387422AbgLDHyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 02:54:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728006AbgLDHwu (ORCPT
+        with ESMTP id S1728833AbgLDHyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 02:52:50 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C88C061A4F;
-        Thu,  3 Dec 2020 23:52:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=U3za3mThxq3YYOxHiwd5Gzm48LmhZiPsDZQkzmDPyCA=; b=tjKW3HJNjfaWoWPfzh5gg5vkg/
-        9QFeqR7kUp3uEEKIqx3S0lAE2bqyS2LdUQkATmGzAE1koDYxoFFArOlb+xosCG+RGKCPAX872w6Db
-        JNUYPhs/FMXOtG/YTPDPLMLFTx3SbbbMMcNfpfQF2srrtaLeTTQT2F6QnvJnp5dV9T2Ss1QtGMy4t
-        bdhMSLLjs3ztgSJAsXBTzHEe7xkSCRcGbt15+9mrI2LvxljaxIkYUNeViizWfZJSXbHj7qf8uX26A
-        nJZSqMb8m+pwMl8s0YcKE3XKE1dOf1caSvZBv5jW3zaLJ7pVoTLjasaHSy1/iRoviAW+KWgeDH44U
-        JVKJED5Q==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kl5sm-0007nf-1e; Fri, 04 Dec 2020 07:52:00 +0000
-Date:   Fri, 4 Dec 2020 07:51:59 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     William Mcvicker <willmcvicker@google.com>
-Cc:     Jessica Yu <jeyu@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Saravana Kannan <saravanak@google.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 0/2] Adds support to capture module's SCM version
-Message-ID: <20201204075159.GA29752@infradead.org>
-References: <CAGETcx8unBFUHxM67VdOoaWRENGXYoc4qWq2Oir=2rUyJ7F5nA@mail.gmail.com>
- <20201125010541.309848-1-willmcvicker@google.com>
- <X8mEhIeYeMjZc/+7@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X8mEhIeYeMjZc/+7@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        Fri, 4 Dec 2020 02:54:49 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB99C061A54
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 23:54:09 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id m5so2689531pjv.5
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 23:54:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=Ued29EV1nTUCA0vnMZ9y9R5tRPXZpQokqluVCOGrs9Q=;
+        b=Gi1x84AiKYzz2uYPnNmVGEBldtz1e4NAmNV1Ua7JmyI5JRMrFLW48nYm/3fcDLaY5d
+         Y2XlhxcpjeitkYCtkCRUe5DdG81nSaHHccp4UXpSK1VA2awYelDXsUO+f4SODxeqFWXC
+         BlssjTG7CldtMLjjV5i2SO6UbuFV4zZrisJgMELc6/I5AwG/xf4wH0FNfakZ/BfzsK4j
+         C9Cz52cteImiKVl/+4i81sfMfupjILGEKpHULDYaDyzkkqYbjkc9e4Vtu67eiwFjhvcx
+         T0fJdcL/CiFRZFnK+8jlktca2mbSB+EHJrxb/5NGVjd4gxb2plfbrKTlZ4rmZPSVH5mm
+         FtMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Ued29EV1nTUCA0vnMZ9y9R5tRPXZpQokqluVCOGrs9Q=;
+        b=ggQKem9g28IAGqtyplw9BC89i4Py4tJ+S9gppDHcyzX7/vkU8D0kuKF1HdlAw9fH0I
+         qLFTpFWEw6Zr1ovCturyvsYghaiBVEAZ9nH50+/cnoRFF911BoJ//8z7Qb5Kyk6gTo0I
+         ehPy4dO5Z00Bz4h711Qnpx0lVXbJ2G1n5jklaMtPDpOg8m+FE3eDnXbPYE1OT7bhQzIJ
+         RVfThMaHMekLg0PN4E5bgZsj+wrkjw272ASEcSddVRTmzzoANiqJoe6zpGUWDB4nGNwp
+         651LyzRby/WPxJaU5ajvtnu6kL5fTeelI/49c8WbivwH3d8Sv++GLzcyJPeYT9/5sqeV
+         IXDQ==
+X-Gm-Message-State: AOAM5309wYFQrNbhr9wATrfpPCAeNZnq2g38yDpC4c9cH2d0QlDVCuxy
+        my0e0JwnsAPhl6qJYbU/YE9gfw==
+X-Google-Smtp-Source: ABdhPJwy5r5C5Rl8P1LQCzdGCGJsWwccYscUVfGuyYi6NiFxwZdRqm1xVeG6j7/0iiFqxjMC3STljg==
+X-Received: by 2002:a17:90a:c17:: with SMTP id 23mr2951818pjs.199.1607068448396;
+        Thu, 03 Dec 2020 23:54:08 -0800 (PST)
+Received: from localhost.localdomain (li519-153.members.linode.com. [66.175.222.153])
+        by smtp.gmail.com with ESMTPSA id l190sm3822262pfl.205.2020.12.03.23.54.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 23:54:07 -0800 (PST)
+From:   Jun Nie <jun.nie@linaro.org>
+To:     devicetree@vger.kernel.org, georgi.djakov@linaro.org,
+        bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh@kernel.org
+Cc:     vincent.knecht@mailoo.org, shawn.guo@linaro.org,
+        Jun Nie <jun.nie@linaro.org>
+Subject: [PATCH v2 0/5] Consolidate RPM interconnect and support to MSM8939
+Date:   Fri,  4 Dec 2020 15:53:40 +0800
+Message-Id: <20201204075345.5161-1-jun.nie@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I think your decription still shows absolutely no benefit for the
-kernel, so I'not sure why anyone would want to waste time on this.
+This patch set split shared RPM based interconnect operation code and add
+support to MSM8939 interconnect.
+
+Changes vs V1:
+  - Rebase to latest icc code.
+  - Remove unnecessary comment and info.
+  - Fix some format issues.
+
+Jun Nie (5):
+  interconnect: qcom: Consolidate interconnect RPM support
+  interconnect: qcom: qcs404: use shared code
+  dt-bindings: interconnect: single yaml file for RPM interconnect
+    drivers
+  dt-bindings: interconnect: Add Qualcomm MSM8939 DT bindings
+  interconnect: qcom: Add MSM8939 interconnect provider driver
+
+ .../bindings/interconnect/qcom,qcs404.yaml    |  77 ----
+ .../{qcom,msm8916.yaml => qcom,rpm.yaml}      |  22 +-
+ drivers/interconnect/qcom/Kconfig             |   9 +
+ drivers/interconnect/qcom/Makefile            |   4 +-
+ drivers/interconnect/qcom/icc-rpm.c           | 191 ++++++++++
+ drivers/interconnect/qcom/icc-rpm.h           |  73 ++++
+ drivers/interconnect/qcom/msm8916.c           | 241 +-----------
+ drivers/interconnect/qcom/msm8939.c           | 355 ++++++++++++++++++
+ drivers/interconnect/qcom/qcs404.c            | 242 +-----------
+ .../dt-bindings/interconnect/qcom,msm8939.h   | 105 ++++++
+ 10 files changed, 769 insertions(+), 550 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/interconnect/qcom,qcs404.yaml
+ rename Documentation/devicetree/bindings/interconnect/{qcom,msm8916.yaml => qcom,rpm.yaml} (77%)
+ create mode 100644 drivers/interconnect/qcom/icc-rpm.c
+ create mode 100644 drivers/interconnect/qcom/icc-rpm.h
+ create mode 100644 drivers/interconnect/qcom/msm8939.c
+ create mode 100644 include/dt-bindings/interconnect/qcom,msm8939.h
+
+
+base-commit: bfd521e1af519bb7096efc845f6a64a7de28c472
+-- 
+2.17.1
+
