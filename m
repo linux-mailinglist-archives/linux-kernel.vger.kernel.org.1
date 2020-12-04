@@ -2,159 +2,494 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7187C2CE89F
+	by mail.lfdr.de (Postfix) with ESMTP id E1F722CE8A0
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728677AbgLDH27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 02:28:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
+        id S1728711AbgLDH3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 02:29:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726826AbgLDH26 (ORCPT
+        with ESMTP id S1728248AbgLDH3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 02:28:58 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBED7C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 23:28:12 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id h7so3355723pjk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 23:28:12 -0800 (PST)
+        Fri, 4 Dec 2020 02:29:38 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87964C061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 23:28:51 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id f18so5450875ljg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 23:28:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6FUQZouuGjXV7HSSzP01pZBA9c+FXEpV0zJrdVApAds=;
-        b=abcIpuyG156+yQo7RBk+VToXBkhacslHs6qiH3+OqIBHPWtdIkndVjmQGkjTyZ1ARp
-         wxsBXZr8KGHOjjPPlTAp3QzJlrRztXfZ0I7V1L9hUgrZOrjTasfEm/imYysm1jTACNF5
-         9SunK4/ZzqVcK/prZyGhXESh6oslVhqaZOymADxYDBshwnIUr5HTh03yBnL47ulOaXgC
-         x5CP2xQgjX4gM49nu06hftGVu2Rm5PETUTHHraQfeNO3QYN3MZ5bjaGC7TbXSTQ9XK3s
-         CCPokds3X8RgK4P0ZjtezE6Z0CjB2vGGvj3/GpRuAhWTH3XWDEgh11Lc3y5LKjaPGpLY
-         bEMw==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=TmwlYjnU97lkbXa+Qez7yzJ69iPCkBNp7xyGrQNL+GQ=;
+        b=u4w1Vs7UiZGUm1yppr8qPXsZKTyhVP+VtwZQY0OO/Q1jXf+Rbmi2JOvmXF2MsS3BkI
+         MPZcOwk48jQsbQMgIrSty7BjjpPbAYremY69NVdlToELEw/e5xITpfAhD9BV0szLRfmm
+         fR6Nue31FykWDJAJVX02eQO42hevTgpzb3a6J9AQ0oDXRLlE85dsBG06za996lhVxjOi
+         VxnI1z5nQIZFHGgWMSBkd0OjCi3ReCx52eOgXGXPxi2lsN4IQLdDW4FOGV9VvKsuHLra
+         3/2y8VCC1OzVD0PYW28/ZP5dkGAAjgSK6ohq7hLQ6nrOwjWXcYJkOiSX9jtY9Bt7xOqP
+         EIGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6FUQZouuGjXV7HSSzP01pZBA9c+FXEpV0zJrdVApAds=;
-        b=OJRlVptaNAv4h4Sdc3H1uqz030E7wr0ixHShJOTUAy85ehYru7LiPb9yOwlj42puGa
-         0c5ZQ39yQ7F9Kf1zygD4sLRmgaBVmSpiPZoCk1sl8kh2EBS1pwqAvql3aMuz2G9f58Ok
-         J5yolxVYmwjsunELFcD+7n2IqtPteZptgTQwZ2f5N1DFM3nTtuXT8WXdOHrPFHBXtaWw
-         fdHdm/GuVoFIdMwdQGjYRz/je6COMumvcaePktS/oiF61byESm+YvWdFXFMu7HGTbbun
-         zj5pyvqnfRqSuwMvoyfglwtR2h0Xw8Vagcpp+jxvU/rAkYKD33Xo1S6VHvUOW9uH222C
-         n6Xg==
-X-Gm-Message-State: AOAM531DvvIONHONUHQHVdLURKhRzCRVP7n6TrHwlqh6OgqtN2v2KHCw
-        6KVQYh2mikfVHJB5pin9/ygxCH3/ntw=
-X-Google-Smtp-Source: ABdhPJyX5/lUuPfPfy0V+XJ+9eza3uZQVd4xV93OLzIXber+Tz3h/DysCbJJ5KZ427zr5tmXkCji9w==
-X-Received: by 2002:a17:902:76c8:b029:d9:d6c3:357d with SMTP id j8-20020a17090276c8b02900d9d6c3357dmr2922413plt.34.1607066891803;
-        Thu, 03 Dec 2020 23:28:11 -0800 (PST)
-Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:a6ae:11ff:fe18:6ce2])
-        by smtp.gmail.com with ESMTPSA id v6sm3371666pgk.2.2020.12.03.23.28.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 23:28:11 -0800 (PST)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH v2] f2fs: fix race of pending_pages in decompression
-Date:   Fri,  4 Dec 2020 16:28:02 +0900
-Message-Id: <20201204072802.795397-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=TmwlYjnU97lkbXa+Qez7yzJ69iPCkBNp7xyGrQNL+GQ=;
+        b=mAArX+UVEb8yKQp9jy4xg38CoPUqIUI0mGG5mzpJq3iv42NyNyTuIcth4SRz2NBVC/
+         HlgvgSekgwtloi48OWOXXT7WGYqrKkMweNbiHTVpXclDGH+iDC6DYQr7hCaE8CgrgMJ6
+         XPQA49qe0ts3ca8h+TanUpFTT/DZHxaaodZ+embPb92d5i9dFUcvTFRlvyYzr7CH0uzr
+         n4kVW5vORqY3AF+ozdCxSXZJWsZzQ5OpvndXOjQ6GTsRjRwHbnXBPB0zXaN5aexeB90+
+         ABwnu24Ckwqcwt3I9MhbnV7YoOi5FylszkDqHCOP56gPshdad4Vg0MVtjP9DJ7E1wZsX
+         qpyQ==
+X-Gm-Message-State: AOAM531S4jlGvbi86muNSWz1oueWgVQtxs2BMZvrqkGUCuVjPpdBaRXZ
+        S29lNM1wHcm03fXaC3fbAum1p4mVqIBuJg==
+X-Google-Smtp-Source: ABdhPJw5q+rajzAPGXpwSs/zHnlhv1hlBQpA4M078Smf42Kz4VKbZNlckPiLbWZNnzxYJbZHwMZyMQ==
+X-Received: by 2002:a2e:9707:: with SMTP id r7mr2700844lji.265.1607066929718;
+        Thu, 03 Dec 2020 23:28:49 -0800 (PST)
+Received: from spblnx124 ([185.204.20.3])
+        by smtp.gmail.com with ESMTPSA id o15sm1390758ljh.57.2020.12.03.23.28.48
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 03 Dec 2020 23:28:48 -0800 (PST)
+Date:   Fri, 4 Dec 2020 10:28:48 +0300
+From:   Andrew Klychkov <andrew.a.klychkov@gmail.com>
+To:     corbet@lwn.net
+Cc:     linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: [PATCH] Documentation: fix multiple typos found in the admin-guide
+ subdirectory
+Message-ID: <20201204072848.GA49895@spblnx124.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+Fix thirty five typos in dm-integrity.rst, dm-raid.rst, dm-zoned.rst,
+verity.rst, writecache.rst, tsx_async_abort.rst, md.rst, bttv.rst,
+dvb_references.rst, frontend-cardlist.rst, gspca-cardlist.rst, ipu3.rst,
+remote-controller.rst, mm/index.rst, numaperf.rst, userfaultfd.rst,
+module-signing.rst, imx-ddr.rst, intel-speed-select.rst,
+intel_pstate.rst, ramoops.rst, abi.rst, kernel.rst, vm.rst
 
-I found out f2fs_free_dic() is invoked in a wrong timing, but
-f2fs_verify_bio() still needed the dic info and it triggered the
-below kernel panic. It has been caused by the race condition of
-pending_pages value between decompression and verity logic, when
-the same compression cluster had been split in different bios.
-By split bios, f2fs_verify_bio() ended up with decreasing
-pending_pages value before it is reset to nr_cpages by
-f2fs_decompress_pages() and caused the kernel panic.
-
-[ 4416.564763] Unable to handle kernel NULL pointer dereference
-               at virtual address 0000000000000000
-...
-[ 4416.896016] Workqueue: fsverity_read_queue f2fs_verity_work
-[ 4416.908515] pc : fsverity_verify_page+0x20/0x78
-[ 4416.913721] lr : f2fs_verify_bio+0x11c/0x29c
-[ 4416.913722] sp : ffffffc019533cd0
-[ 4416.913723] x29: ffffffc019533cd0 x28: 0000000000000402
-[ 4416.913724] x27: 0000000000000001 x26: 0000000000000100
-[ 4416.913726] x25: 0000000000000001 x24: 0000000000000004
-[ 4416.913727] x23: 0000000000001000 x22: 0000000000000000
-[ 4416.913728] x21: 0000000000000000 x20: ffffffff2076f9c0
-[ 4416.913729] x19: ffffffff2076f9c0 x18: ffffff8a32380c30
-[ 4416.913731] x17: ffffffc01f966d97 x16: 0000000000000298
-[ 4416.913732] x15: 0000000000000000 x14: 0000000000000000
-[ 4416.913733] x13: f074faec89ffffff x12: 0000000000000000
-[ 4416.913734] x11: 0000000000001000 x10: 0000000000001000
-[ 4416.929176] x9 : ffffffff20d1f5c7 x8 : 0000000000000000
-[ 4416.929178] x7 : 626d7464ff286b6b x6 : ffffffc019533ade
-[ 4416.929179] x5 : 000000008049000e x4 : ffffffff2793e9e0
-[ 4416.929180] x3 : 000000008049000e x2 : ffffff89ecfa74d0
-[ 4416.929181] x1 : 0000000000000c40 x0 : ffffffff2076f9c0
-[ 4416.929184] Call trace:
-[ 4416.929187]  fsverity_verify_page+0x20/0x78
-[ 4416.929189]  f2fs_verify_bio+0x11c/0x29c
-[ 4416.929192]  f2fs_verity_work+0x58/0x84
-[ 4417.050667]  process_one_work+0x270/0x47c
-[ 4417.055354]  worker_thread+0x27c/0x4d8
-[ 4417.059784]  kthread+0x13c/0x320
-[ 4417.063693]  ret_from_fork+0x10/0x18
-
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Reviewed-by: Jonathan Corbet <corbet@lwn.net>
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Andrew Klychkov <andrew.a.klychkov@gmail.com>
 ---
-v2: merged verity_pages with pending_pages, and increased the
-    pending_pages count only if STEP_VERITY is set on bio
----
- fs/f2fs/compress.c | 2 --
- fs/f2fs/data.c     | 2 ++
- fs/f2fs/f2fs.h     | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ Documentation/admin-guide/device-mapper/dm-integrity.rst | 4 ++--
+ Documentation/admin-guide/device-mapper/dm-raid.rst      | 2 +-
+ Documentation/admin-guide/device-mapper/dm-zoned.rst     | 6 +++---
+ Documentation/admin-guide/device-mapper/verity.rst       | 2 +-
+ Documentation/admin-guide/device-mapper/writecache.rst   | 4 ++--
+ Documentation/admin-guide/hw-vuln/tsx_async_abort.rst    | 2 +-
+ Documentation/admin-guide/md.rst                         | 2 +-
+ Documentation/admin-guide/media/bttv.rst                 | 2 +-
+ Documentation/admin-guide/media/dvb_references.rst       | 2 +-
+ Documentation/admin-guide/media/frontend-cardlist.rst    | 4 ++--
+ Documentation/admin-guide/media/gspca-cardlist.rst       | 2 +-
+ Documentation/admin-guide/media/ipu3.rst                 | 6 +++---
+ Documentation/admin-guide/media/remote-controller.rst    | 2 +-
+ Documentation/admin-guide/mm/index.rst                   | 4 ++--
+ Documentation/admin-guide/mm/numaperf.rst                | 2 +-
+ Documentation/admin-guide/mm/userfaultfd.rst             | 2 +-
+ Documentation/admin-guide/module-signing.rst             | 2 +-
+ Documentation/admin-guide/perf/imx-ddr.rst               | 2 +-
+ Documentation/admin-guide/pm/intel-speed-select.rst      | 4 ++--
+ Documentation/admin-guide/pm/intel_pstate.rst            | 6 +++---
+ Documentation/admin-guide/ramoops.rst                    | 2 +-
+ Documentation/admin-guide/sysctl/abi.rst                 | 2 +-
+ Documentation/admin-guide/sysctl/kernel.rst              | 2 +-
+ Documentation/admin-guide/sysctl/vm.rst                  | 2 +-
+ 24 files changed, 35 insertions(+), 35 deletions(-)
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 87090da8693d..832b19986caf 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -803,8 +803,6 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
- 	if (cops->destroy_decompress_ctx)
- 		cops->destroy_decompress_ctx(dic);
- out_free_dic:
--	if (verity)
--		atomic_set(&dic->pending_pages, dic->nr_cpages);
- 	if (!verity)
- 		f2fs_decompress_end_io(dic->rpages, dic->cluster_size,
- 								ret, false);
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 42254d3859c7..b825d63cabdd 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2290,6 +2290,8 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
- 		ctx = bio->bi_private;
- 		if (!(ctx->enabled_steps & (1 << STEP_DECOMPRESS)))
- 			ctx->enabled_steps |= 1 << STEP_DECOMPRESS;
-+		if (ctx->enabled_steps & (1 << STEP_VERITY))
-+			atomic_inc(&dic->pending_pages);
+diff --git a/Documentation/admin-guide/device-mapper/dm-integrity.rst b/Documentation/admin-guide/device-mapper/dm-integrity.rst
+index 3ab4f77..4e6f504 100644
+--- a/Documentation/admin-guide/device-mapper/dm-integrity.rst
++++ b/Documentation/admin-guide/device-mapper/dm-integrity.rst
+@@ -117,7 +117,7 @@ journal_watermark:number
  
- 		inc_page_count(sbi, F2FS_RD_DATA);
- 		f2fs_update_iostat(sbi, FS_DATA_READ_IO, F2FS_BLKSIZE);
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 94d16bde5e24..a9ee7921c7ec 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1340,7 +1340,7 @@ struct decompress_io_ctx {
- 	struct compress_data *cbuf;	/* virtual mapped address on cpages */
- 	size_t rlen;			/* valid data length in rbuf */
- 	size_t clen;			/* valid data length in cbuf */
--	atomic_t pending_pages;		/* in-flight compressed page count */
-+	atomic_t pending_pages;		/* in-flight compressed + verity page count */
- 	bool failed;			/* indicate IO error during decompression */
- 	void *private;			/* payload buffer for specified decompression algorithm */
- 	void *private2;			/* extra payload buffer */
+ commit_time:number
+ 	Commit time in milliseconds. When this time passes, the journal is
+-	written. The journal is also written immediatelly if the FLUSH
++	written. The journal is also written immediately if the FLUSH
+ 	request is received.
+ 
+ internal_hash:algorithm(:key)	(the key is optional)
+@@ -147,7 +147,7 @@ journal_crypt:algorithm(:key)	(the key is optional)
+ 	"salsa20" or "ctr(aes)").
+ 
+ 	The journal contains history of last writes to the block device,
+-	an attacker reading the journal could see the last sector nubmers
++	an attacker reading the journal could see the last sector numbers
+ 	that were written. From the sector numbers, the attacker can infer
+ 	the size of files that were written. To protect against this
+ 	situation, you can encrypt the journal.
+diff --git a/Documentation/admin-guide/device-mapper/dm-raid.rst b/Documentation/admin-guide/device-mapper/dm-raid.rst
+index 7ef9fe6..bb17e26 100644
+--- a/Documentation/admin-guide/device-mapper/dm-raid.rst
++++ b/Documentation/admin-guide/device-mapper/dm-raid.rst
+@@ -418,6 +418,6 @@ Version History
+ 	specific devices are requested via rebuild.  Fix RAID leg
+ 	rebuild errors.
+  1.15.0 Fix size extensions not being synchronized in case of new MD bitmap
+-        pages allocated;  also fix those not occuring after previous reductions
++        pages allocated;  also fix those not occurring after previous reductions
+  1.15.1 Fix argument count and arguments for rebuild/write_mostly/journal_(dev|mode)
+         on the status line.
+diff --git a/Documentation/admin-guide/device-mapper/dm-zoned.rst b/Documentation/admin-guide/device-mapper/dm-zoned.rst
+index e6350413..0fac051 100644
+--- a/Documentation/admin-guide/device-mapper/dm-zoned.rst
++++ b/Documentation/admin-guide/device-mapper/dm-zoned.rst
+@@ -24,7 +24,7 @@ The dm-zoned implementation is simple and minimizes system overhead (CPU
+ and memory usage as well as storage capacity loss). For a 10TB
+ host-managed disk with 256 MB zones, dm-zoned memory usage per disk
+ instance is at most 4.5 MB and as little as 5 zones will be used
+-internally for storing metadata and performaing reclaim operations.
++internally for storing metadata and performing reclaim operations.
+ 
+ dm-zoned target devices are formatted and checked using the dmzadm
+ utility available at:
+@@ -102,7 +102,7 @@ the buffer zone assigned. If the accessed chunk has no mapping, or the
+ accessed blocks are invalid, the read buffer is zeroed and the read
+ operation terminated.
+ 
+-After some time, the limited number of convnetional zones available may
++After some time, the limited number of conventional zones available may
+ be exhausted (all used to map chunks or buffer sequential zones) and
+ unaligned writes to unbuffered chunks become impossible. To avoid this
+ situation, a reclaim process regularly scans used conventional zones and
+@@ -158,7 +158,7 @@ Ex::
+ 	dmzadm --format /dev/sdxx /dev/sdyy
+ 
+ 
+-Fomatted device(s) can be started with the dmzadm utility, too.:
++Formatted device(s) can be started with the dmzadm utility, too.:
+ 
+ Ex::
+ 
+diff --git a/Documentation/admin-guide/device-mapper/verity.rst b/Documentation/admin-guide/device-mapper/verity.rst
+index 66f71f0..8c50e5c 100644
+--- a/Documentation/admin-guide/device-mapper/verity.rst
++++ b/Documentation/admin-guide/device-mapper/verity.rst
+@@ -69,7 +69,7 @@ Construction Parameters
+ 
+ <#opt_params>
+     Number of optional parameters. If there are no optional parameters,
+-    the optional paramaters section can be skipped or #opt_params can be zero.
++    the optional parameters section can be skipped or #opt_params can be zero.
+     Otherwise #opt_params is the number of following arguments.
+ 
+     Example of optional parameters section:
+diff --git a/Documentation/admin-guide/device-mapper/writecache.rst b/Documentation/admin-guide/device-mapper/writecache.rst
+index d3d7690..dce0184 100644
+--- a/Documentation/admin-guide/device-mapper/writecache.rst
++++ b/Documentation/admin-guide/device-mapper/writecache.rst
+@@ -37,10 +37,10 @@ Constructor parameters:
+ 	autocommit_blocks n	(default: 64 for pmem, 65536 for ssd)
+ 		when the application writes this amount of blocks without
+ 		issuing the FLUSH request, the blocks are automatically
+-		commited
++		committed
+ 	autocommit_time ms	(default: 1000)
+ 		autocommit time in milliseconds. The data is automatically
+-		commited if this time passes and no FLUSH request is
++		committed if this time passes and no FLUSH request is
+ 		received
+ 	fua			(by default on)
+ 		applicable only to persistent memory - use the FUA flag
+diff --git a/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst b/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
+index 68d96f0..76673af 100644
+--- a/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
++++ b/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
+@@ -60,7 +60,7 @@ Hyper-Thread attacks are possible.
+ 
+ The victim of a malicious actor does not need to make use of TSX. Only the
+ attacker needs to begin a TSX transaction and raise an asynchronous abort
+-which in turn potenitally leaks data stored in the buffers.
++which in turn potentially leaks data stored in the buffers.
+ 
+ More detailed technical information is available in the TAA specific x86
+ architecture section: :ref:`Documentation/x86/tsx_async_abort.rst <tsx_async_abort>`.
+diff --git a/Documentation/admin-guide/md.rst b/Documentation/admin-guide/md.rst
+index cc8781b..d8fc9a5 100644
+--- a/Documentation/admin-guide/md.rst
++++ b/Documentation/admin-guide/md.rst
+@@ -221,7 +221,7 @@ All md devices contain:
+ 
+   layout
+      The ``layout`` for the array for the particular level.  This is
+-     simply a number that is interpretted differently by different
++     simply a number that is interpreted differently by different
+      levels.  It can be written while assembling an array.
+ 
+   array_size
+diff --git a/Documentation/admin-guide/media/bttv.rst b/Documentation/admin-guide/media/bttv.rst
+index 4938237..0ef1f20 100644
+--- a/Documentation/admin-guide/media/bttv.rst
++++ b/Documentation/admin-guide/media/bttv.rst
+@@ -77,7 +77,7 @@ the Subsystem ID in the second line, looks like this:
+ only bt878-based cards can have a subsystem ID (which does not mean
+ that every card really has one).  bt848 cards can't have a Subsystem
+ ID and therefore can't be autodetected.  There is a list with the ID's
+-at :doc:`bttv-cardlist` (in case you are intrested or want to mail
++at :doc:`bttv-cardlist` (in case you are interested or want to mail
+ patches with updates).
+ 
+ 
+diff --git a/Documentation/admin-guide/media/dvb_references.rst b/Documentation/admin-guide/media/dvb_references.rst
+index 48445ac..4f0fd42 100644
+--- a/Documentation/admin-guide/media/dvb_references.rst
++++ b/Documentation/admin-guide/media/dvb_references.rst
+@@ -10,7 +10,7 @@ The DVB mailing list linux-dvb is hosted at vger. Please see
+ http://vger.kernel.org/vger-lists.html#linux-media for details.
+ 
+ There are also some other old lists hosted at:
+-https://linuxtv.org/lists.php. If you're insterested on that for historic
++https://linuxtv.org/lists.php. If you're interested on that for historic
+ reasons, please check the archive at https://linuxtv.org/pipermail/linux-dvb/.
+ 
+ The media subsystem Wiki is hosted at https://linuxtv.org/wiki/.
+diff --git a/Documentation/admin-guide/media/frontend-cardlist.rst b/Documentation/admin-guide/media/frontend-cardlist.rst
+index 73a248c..ba5b7c6 100644
+--- a/Documentation/admin-guide/media/frontend-cardlist.rst
++++ b/Documentation/admin-guide/media/frontend-cardlist.rst
+@@ -68,7 +68,7 @@ cx24116         Conexant CX24116 based
+ cx24117         Conexant CX24117 based
+ cx24120         Conexant CX24120 based
+ cx24123         Conexant CX24123 based
+-ds3000          Montage Tehnology DS3000 based
++ds3000          Montage Technology DS3000 based
+ mb86a16         Fujitsu MB86A16 based
+ mt312           Zarlink VP310/MT312/ZL10313 based
+ s5h1420         Samsung S5H1420 based
+@@ -83,7 +83,7 @@ tda10086        Philips TDA10086 based
+ tda8083         Philips TDA8083 based
+ tda8261         Philips TDA8261 based
+ tda826x         Philips TDA826X silicon tuner
+-ts2020          Montage Tehnology TS2020 based tuners
++ts2020          Montage Technology TS2020 based tuners
+ tua6100         Infineon TUA6100 PLL
+ cx24113         Conexant CX24113/CX24128 tuner for DVB-S/DSS
+ itd1000         Integrant ITD1000 Zero IF tuner for DVB-S/DSS
+diff --git a/Documentation/admin-guide/media/gspca-cardlist.rst b/Documentation/admin-guide/media/gspca-cardlist.rst
+index adda933..e3404d1 100644
+--- a/Documentation/admin-guide/media/gspca-cardlist.rst
++++ b/Documentation/admin-guide/media/gspca-cardlist.rst
+@@ -305,7 +305,7 @@ pac7302         093a:2625	Genius iSlim 310
+ pac7302         093a:2626	Labtec 2200
+ pac7302         093a:2627	Genius FaceCam 300
+ pac7302         093a:2628	Genius iLook 300
+-pac7302         093a:2629	Genious iSlim 300
++pac7302         093a:2629	Genius iSlim 300
+ pac7302         093a:262a	Webcam 300k
+ pac7302         093a:262c	Philips SPC 230 NC
+ jl2005bcd       0979:0227	Various brands, 19 known cameras supported
+diff --git a/Documentation/admin-guide/media/ipu3.rst b/Documentation/admin-guide/media/ipu3.rst
+index 07d139b..f59697c 100644
+--- a/Documentation/admin-guide/media/ipu3.rst
++++ b/Documentation/admin-guide/media/ipu3.rst
+@@ -86,7 +86,7 @@ raw Bayer format that is specific to IPU3.
+ Let us take the example of ov5670 sensor connected to CSI2 port 0, for a
+ 2592x1944 image capture.
+ 
+-Using the media contorller APIs, the ov5670 sensor is configured to send
++Using the media controller APIs, the ov5670 sensor is configured to send
+ frames in packed raw Bayer format to IPU3 CSI2 receiver.
+ 
+ .. code-block:: none
+@@ -313,8 +313,8 @@ configuration steps of 0.03125 (1/32).
+ 
+ **Geometric Distortion Correction**
+ 
+-Geometric Distortion Correction is used to performe correction of distortions
+-and image filtering. It needs some extra filter and envelop padding pixels to
++Geometric Distortion Correction is used to perform correction of distortions
++and image filtering. It needs some extra filter and envelope padding pixels to
+ work, so the input resolution of GDC should be larger than the output
+ resolution.
+ 
+diff --git a/Documentation/admin-guide/media/remote-controller.rst b/Documentation/admin-guide/media/remote-controller.rst
+index fa05410..188944b 100644
+--- a/Documentation/admin-guide/media/remote-controller.rst
++++ b/Documentation/admin-guide/media/remote-controller.rst
+@@ -68,7 +68,7 @@ Using without lircd
+ 
+ Xorg recognizes several IR keycodes that have its numerical value lower
+ than 247. With the advent of Wayland, the input driver got updated too,
+-and should now accept all keycodes. Yet, you may want to just reasign
++and should now accept all keycodes. Yet, you may want to just reassign
+ the keycodes to something that your favorite media application likes.
+ 
+ This can be done by setting
+diff --git a/Documentation/admin-guide/mm/index.rst b/Documentation/admin-guide/mm/index.rst
+index cd727cf..4b14d8b 100644
+--- a/Documentation/admin-guide/mm/index.rst
++++ b/Documentation/admin-guide/mm/index.rst
+@@ -3,9 +3,9 @@ Memory Management
+ =================
+ 
+ Linux memory management subsystem is responsible, as the name implies,
+-for managing the memory in the system. This includes implemnetation of
++for managing the memory in the system. This includes implementation of
+ virtual memory and demand paging, memory allocation both for kernel
+-internal structures and user space programms, mapping of files into
++internal structures and user space programs, mapping of files into
+ processes address space and many other cool things.
+ 
+ Linux memory management is a complex system with many configurable
+diff --git a/Documentation/admin-guide/mm/numaperf.rst b/Documentation/admin-guide/mm/numaperf.rst
+index 86f2a3c..c2f8264 100644
+--- a/Documentation/admin-guide/mm/numaperf.rst
++++ b/Documentation/admin-guide/mm/numaperf.rst
+@@ -74,7 +74,7 @@ memory node's access class 0 initiators as follows::
+ 	/sys/devices/system/node/nodeY/access0/initiators/
+ 
+ These attributes apply only when accessed from nodes that have the
+-are linked under the this access's inititiators.
++are linked under the this access's initiators.
+ 
+ The performance characteristics the kernel provides for the local initiators
+ are exported are as follows::
+diff --git a/Documentation/admin-guide/mm/userfaultfd.rst b/Documentation/admin-guide/mm/userfaultfd.rst
+index 1dc2d5f..65eefa6 100644
+--- a/Documentation/admin-guide/mm/userfaultfd.rst
++++ b/Documentation/admin-guide/mm/userfaultfd.rst
+@@ -114,7 +114,7 @@ Notes:
+   you must provide some kind of page in your thread after reading from
+   the uffd.  You must provide either ``UFFDIO_COPY`` or ``UFFDIO_ZEROPAGE``.
+   The normal behavior of the OS automatically providing a zero page on
+-  an annonymous mmaping is not in place.
++  an anonymous mmaping is not in place.
+ 
+ - None of the page-delivering ioctls default to the range that you
+   registered with.  You must fill in all fields for the appropriate
+diff --git a/Documentation/admin-guide/module-signing.rst b/Documentation/admin-guide/module-signing.rst
+index f8b5841..7d7c7c8 100644
+--- a/Documentation/admin-guide/module-signing.rst
++++ b/Documentation/admin-guide/module-signing.rst
+@@ -106,7 +106,7 @@ This has a number of options available:
+      certificate and a private key.
+ 
+      If the PEM file containing the private key is encrypted, or if the
+-     PKCS#11 token requries a PIN, this can be provided at build time by
++     PKCS#11 token requires a PIN, this can be provided at build time by
+      means of the ``KBUILD_SIGN_PIN`` variable.
+ 
+ 
+diff --git a/Documentation/admin-guide/perf/imx-ddr.rst b/Documentation/admin-guide/perf/imx-ddr.rst
+index f05f56c..90926d0 100644
+--- a/Documentation/admin-guide/perf/imx-ddr.rst
++++ b/Documentation/admin-guide/perf/imx-ddr.rst
+@@ -4,7 +4,7 @@ Freescale i.MX8 DDR Performance Monitoring Unit (PMU)
+ 
+ There are no performance counters inside the DRAM controller, so performance
+ signals are brought out to the edge of the controller where a set of 4 x 32 bit
+-counters is implemented. This is controlled by the CSV modes programed in counter
++counters is implemented. This is controlled by the CSV modes programmed in counter
+ control register which causes a large number of PERF signals to be generated.
+ 
+ Selection of the value for each counter is done via the config registers. There
+diff --git a/Documentation/admin-guide/pm/intel-speed-select.rst b/Documentation/admin-guide/pm/intel-speed-select.rst
+index 219f135..0a1fbdb 100644
+--- a/Documentation/admin-guide/pm/intel-speed-select.rst
++++ b/Documentation/admin-guide/pm/intel-speed-select.rst
+@@ -57,7 +57,7 @@ To get help on a command, another level of help is provided. For example for the
+ 
+ Summary of platform capability
+ ------------------------------
+-To check the current platform and driver capaibilities, execute::
++To check the current platform and driver capabilities, execute::
+ 
+ #intel-speed-select --info
+ 
+@@ -658,7 +658,7 @@ If -a option is not used, then the following steps are required before enabling
+ Intel(R) SST-BF:
+ 
+ - Discover Intel(R) SST-BF and note low and high priority base frequency
+-- Note the high prioity CPU list
++- Note the high priority CPU list
+ - Enable CLOS using core-power feature set
+ - Configure CLOS parameters. Use CLOS.min to set to minimum performance
+ - Subscribe desired CPUs to CLOS groups
+diff --git a/Documentation/admin-guide/pm/intel_pstate.rst b/Documentation/admin-guide/pm/intel_pstate.rst
+index 5072e70..df29b4f 100644
+--- a/Documentation/admin-guide/pm/intel_pstate.rst
++++ b/Documentation/admin-guide/pm/intel_pstate.rst
+@@ -56,7 +56,7 @@ Operation Modes
+ 
+ ``intel_pstate`` can operate in two different modes, active or passive.  In the
+ active mode, it uses its own internal performance scaling governor algorithm or
+-allows the hardware to do preformance scaling by itself, while in the passive
++allows the hardware to do performance scaling by itself, while in the passive
+ mode it responds to requests made by a generic ``CPUFreq`` governor implementing
+ a certain performance scaling algorithm.  Which of them will be in effect
+ depends on what kernel command line options are used and on the capabilities of
+@@ -380,13 +380,13 @@ argument is passed to the kernel in the command line.
+ 
+ ``no_turbo``
+ 	If set (equal to 1), the driver is not allowed to set any turbo P-states
+-	(see `Turbo P-states Support`_).  If unset (equalt to 0, which is the
++	(see `Turbo P-states Support`_).  If unset (equal to 0, which is the
+ 	default), turbo P-states can be set by the driver.
+ 	[Note that ``intel_pstate`` does not support the general ``boost``
+ 	attribute (supported by some other scaling drivers) which is replaced
+ 	by this one.]
+ 
+-	This attrubute does not affect the maximum supported frequency value
++	This attribute does not affect the maximum supported frequency value
+ 	supplied to the ``CPUFreq`` core and exposed via the policy interface,
+ 	but it affects the maximum possible value of per-policy P-state	limits
+ 	(see `Interpretation of Policy Attributes`_ below for details).
+diff --git a/Documentation/admin-guide/ramoops.rst b/Documentation/admin-guide/ramoops.rst
+index a60a962..b0a1ae7 100644
+--- a/Documentation/admin-guide/ramoops.rst
++++ b/Documentation/admin-guide/ramoops.rst
+@@ -22,7 +22,7 @@ and type of the memory area are set using three variables:
+   * ``mem_address`` for the start
+   * ``mem_size`` for the size. The memory size will be rounded down to a
+     power of two.
+-  * ``mem_type`` to specifiy if the memory type (default is pgprot_writecombine).
++  * ``mem_type`` to specify if the memory type (default is pgprot_writecombine).
+ 
+ Typically the default value of ``mem_type=0`` should be used as that sets the pstore
+ mapping to pgprot_writecombine. Setting ``mem_type=1`` attempts to use
+diff --git a/Documentation/admin-guide/sysctl/abi.rst b/Documentation/admin-guide/sysctl/abi.rst
+index ac87eaf..77b1d1b 100644
+--- a/Documentation/admin-guide/sysctl/abi.rst
++++ b/Documentation/admin-guide/sysctl/abi.rst
+@@ -28,7 +28,7 @@ vsyscall32 (x86)
+ 
+ Determines whether the kernels maps a vDSO page into 32-bit processes;
+ can be set to 1 to enable, or 0 to disable. Defaults to enabled if
+-``CONFIG_COMPAT_VDSO`` is set, disabled otherwide.
++``CONFIG_COMPAT_VDSO`` is set, disabled otherwise.
+ 
+ This controls the same setting as the ``vdso32`` kernel boot
+ parameter.
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index d4b32cc..b3bc8a5 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -879,7 +879,7 @@ The default value is 127.
+ perf_event_mlock_kb
+ ===================
+ 
+-Control size of per-cpu ring buffer not counted agains mlock limit.
++Control size of per-cpu ring buffer not counted against mlock limit.
+ 
+ The default value is 512 + 1 page
+ 
+diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
+index f455fa0..e0cf17a 100644
+--- a/Documentation/admin-guide/sysctl/vm.rst
++++ b/Documentation/admin-guide/sysctl/vm.rst
+@@ -146,7 +146,7 @@ This should be used on systems where stalls for minor page faults are an
+ acceptable trade for large contiguous free memory.  Set to 0 to prevent
+ compaction from moving pages that are unevictable.  Default value is 1.
+ On CONFIG_PREEMPT_RT the default value is 0 in order to avoid a page fault, due
+-to compaction, which would block the task from becomming active until the fault
++to compaction, which would block the task from becoming active until the fault
+ is resolved.
+ 
+ 
 -- 
-2.29.2.576.ga3fc446d84-goog
+1.8.3.1
 
