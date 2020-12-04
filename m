@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3562CF1FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B782CF203
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730660AbgLDQgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:36:33 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:60009 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbgLDQgd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:36:33 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 6620820000D;
-        Fri,  4 Dec 2020 16:35:50 +0000 (UTC)
-Date:   Fri, 4 Dec 2020 17:35:50 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-Message-ID: <20201204163550.GL74177@piout.net>
-References: <20201203161622.GA1317829@ziepe.ca>
- <87zh2ubny2.fsf@nanos.tec.linutronix.de>
- <87wnxybmqx.fsf@nanos.tec.linutronix.de>
- <20201203223646.GA1335797@ziepe.ca>
- <877dpxbu66.fsf@nanos.tec.linutronix.de>
- <20201204140819.GX5487@ziepe.ca>
- <20201204143735.GI74177@piout.net>
- <20201204144659.GY5487@ziepe.ca>
- <20201204150857.GJ74177@piout.net>
- <20201204155708.GB5487@ziepe.ca>
+        id S1730752AbgLDQhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:37:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50878 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726330AbgLDQhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 11:37:03 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 71851AC9A;
+        Fri,  4 Dec 2020 16:36:21 +0000 (UTC)
+Subject: Re: [PATCH] mm: mmap_lock: fix use-after-free race and css ref leak
+ in tracepoints
+To:     Shakeel Butt <shakeelb@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Tejun Heo <tj@kernel.org>, Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Rientjes <rientjes@google.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Michel Lespinasse <walken@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>, dsahern@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>, liuhangbin@gmail.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+References: <20201130233504.3725241-1-axelrasmussen@google.com>
+ <CALvZod42+o7naLOkpo9Jngmhru-aR4K6RCuTk7TukCikAYrDbQ@mail.gmail.com>
+ <CAJHvVcgtoyJ_C0L=KByb8UbZm6x_RtCTnznYA1HwmdzX4Y=mHw@mail.gmail.com>
+ <xr93lfehl8al.fsf@gthelen.svl.corp.google.com>
+ <CALvZod4j9fFpGRfkios1ef0D5qhyw3XA_VSVm0k__RuMG1Qhwg@mail.gmail.com>
+ <CAJHvVchcm_HLd1RaibCZDZi27_2CVCwUWDX515dvnPPyTpHBHw@mail.gmail.com>
+ <CALvZod5CpPhvzB99VZTc33Sb5YCbJNHFe3k33k+HwNfJvJbpJQ@mail.gmail.com>
+ <CAJHvVcjBErccEwNjuDqzsrbuzSmJva7uknZKhtBwWfs9_t4zTg@mail.gmail.com>
+ <CALvZod6qpbEX+kp_gh5O4U1-kc+DfoG4DnGoWMvVnuXUOTLBBg@mail.gmail.com>
+ <20201201200715.6171d39b@oasis.local.home>
+ <CALvZod5mAtes0T5DFCgjU+CKVBVOdYc=jPFHXvAU+LzDqGXomg@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <1eb44e95-1fae-5d64-d114-d305c9b8ef63@suse.cz>
+Date:   Fri, 4 Dec 2020 17:36:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204155708.GB5487@ziepe.ca>
+In-Reply-To: <CALvZod5mAtes0T5DFCgjU+CKVBVOdYc=jPFHXvAU+LzDqGXomg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2020 11:57:08-0400, Jason Gunthorpe wrote:
-> On Fri, Dec 04, 2020 at 04:08:57PM +0100, Alexandre Belloni wrote:
+On 12/2/20 2:11 AM, Shakeel Butt wrote:
+> On Tue, Dec 1, 2020 at 5:07 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>>
+>> On Tue, 1 Dec 2020 16:36:32 -0800
+>> Shakeel Butt <shakeelb@google.com> wrote:
+>>
+>> > SGTM but note that usually Andrew squash all the patches into one
+>> > before sending to Linus. If you plan to replace the path buffer with
+>> > integer IDs then no need to spend time fixing buffer related bug.
+>>
+>> I don't think Andrew squashes all the patches. I believe he sends Linus
+>> a patch series.
 > 
-> > > I mean literatally time the excution of something like a straight
-> > > read. This will give some estimate of the bus latency and it should
-> > > linearly relate to the bus latency for a write.
-> > 
-> > 
-> > It doesn't, some rtc will require writing dozen registers to set the
-> > time and reading only 3 to get the time, the only accurate way is to
-> > really time setting the time. You set the RTC time once, set up an alarm for
-> > the next second, once you get the alarm, you get system time and you now
-> > how far you are off.
-> 
-> This is why I said linearly related. Yes the relation is per-driver,
-> based on the ops required, but in principle it can get close.
-> 
-> > Notice that systohc could do that if you wanted to be accurate and then
-> > the whole issue with mc146818 is gone and this nicely solves it for all
-> > the RTCs at once.
-> 
-> Another good solution is to have systohc progam the time and then
-> immediately read it back (eg with an alarm).
+> I am talking about the patch and the following fixes to that patch.
+> Those are usually squashed into one patch.
 
-This is what I was suggesting, with an alarm.
+Yeah, if there's a way forward that doesn't need to construct full path on each
+event and the associated complexity and just use an ID, let's convert to the ID
+and squash it, for less churn. Especially if there are other existing
+tracepoints that use the ID.
 
-> The difference between
-> the read back and the system RTC is the single value to plug into the
-> adjustment offset and naturally includes all the time factors Thomas
-> identified, including the additional factor of 'latency to read the
-> time'
+If there's further (somewhat orthogonal) work to make the IDs easier for
+userspace, it can be added on top later, but really shouldn't need to add the
+current complex solution only to remove it later?
 
-There is no 'latency to read the time' because you don't have to read
-the time. You already know what the time will be when the alarm fires.
-That is when you read the system time and you can figure out what the
-offset is. But you never need to read the time.
-
-[...]
-
-> I see I also changed jobs right around then which probably explains
-> why things stopped at this one patch. The fact nobody else picked it
-> up probably says people really just don't care about realtime
-> accuracy.
-
-Or those that do care do it from userspace.
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Thanks,
+Vlastimil
