@@ -2,67 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8339F2CE502
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5152CE516
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731991AbgLDBX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:23:59 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8635 "EHLO
+        id S1731993AbgLDBYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:24:41 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8638 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730021AbgLDBX6 (ORCPT
+        with ESMTP id S2389549AbgLDBYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:23:58 -0500
+        Thu, 3 Dec 2020 20:24:40 -0500
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnFLq4YnWz15X9y;
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnFLq5D4jz15XBJ;
         Fri,  4 Dec 2020 09:22:43 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 4 Dec 2020 09:23:07 +0800
+ 14.3.487.0; Fri, 4 Dec 2020 09:23:08 +0800
 From:   Tian Tao <tiantao6@hisilicon.com>
 To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
         <kraxel@redhat.com>, <alexander.deucher@amd.com>,
         <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
         <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] drm/hisilicon: Deletted unused local parameters
-Date:   Fri, 4 Dec 2020 09:23:17 +0800
-Message-ID: <1607044999-47666-12-git-send-email-tiantao6@hisilicon.com>
+Subject: [PATCH v2] drm/hisilicon: Delete the entire file hibmc_ttm.c
+Date:   Fri, 4 Dec 2020 09:23:18 +0800
+Message-ID: <1607044999-47666-13-git-send-email-tiantao6@hisilicon.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1607044999-47666-1-git-send-email-tiantao6@hisilicon.com>
 References: <1607044999-47666-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [10.69.192.56]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-deletted unused variable ‘priv’.
+Delete the entire file hibmc_ttm.c. drmm_vram_helper_init() can be
+called directly from hibmc_load(). hibmc_dumb_create() and
+hibmc_mode_funcs can go to hibmc_drm_drv.c
+
+v2:
+change Deletted to Delete
 
 Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
 ---
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/gpu/drm/hisilicon/hibmc/Makefile        |  2 +-
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 21 ++++++++++-
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h |  4 --
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c     | 50 -------------------------
+ 4 files changed, 20 insertions(+), 57 deletions(-)
+ delete mode 100644 drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
 
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/Makefile b/drivers/gpu/drm/hisilicon/hibmc/Makefile
+index 684ef79..d25c75e 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/Makefile
++++ b/drivers/gpu/drm/hisilicon/hibmc/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-hibmc-drm-y := hibmc_drm_drv.o hibmc_drm_de.o hibmc_drm_vdac.o hibmc_ttm.o hibmc_drm_i2c.o
++hibmc-drm-y := hibmc_drm_drv.o hibmc_drm_de.o hibmc_drm_vdac.o hibmc_drm_i2c.o
+ 
+ obj-$(CONFIG_DRM_HISI_HIBMC) += hibmc-drm.o
 diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-index 04fee18..8a04014 100644
+index 5aea2e9..3687753 100644
 --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
 +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-@@ -237,12 +237,9 @@ static int hibmc_hw_init(struct hibmc_drm_private *priv)
+@@ -16,6 +16,7 @@
  
- static int hibmc_unload(struct drm_device *dev)
- {
--	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
--
- 	drm_atomic_helper_shutdown(dev);
--
- 	pci_disable_msi(dev->pdev);
--	dev->dev_private = NULL;
-+
- 	return 0;
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_drv.h>
++#include <drm/drm_gem_framebuffer_helper.h>
+ #include <drm/drm_gem_vram_helper.h>
+ #include <drm/drm_irq.h>
+ #include <drm/drm_managed.h>
+@@ -43,6 +44,12 @@ static irqreturn_t hibmc_drm_interrupt(int irq, void *arg)
+ 	return IRQ_HANDLED;
  }
  
++static int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
++			     struct drm_mode_create_dumb *args)
++{
++	return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
++}
++
+ static const struct drm_driver hibmc_driver = {
+ 	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
+ 	.fops			= &hibmc_fops,
+@@ -77,6 +84,13 @@ static const struct dev_pm_ops hibmc_pm_ops = {
+ 				hibmc_pm_resume)
+ };
+ 
++static const struct drm_mode_config_funcs hibmc_mode_funcs = {
++	.mode_valid = drm_vram_helper_mode_valid,
++	.atomic_check = drm_atomic_helper_check,
++	.atomic_commit = drm_atomic_helper_commit,
++	.fb_create = drm_gem_fb_create,
++};
++
+ static int hibmc_kms_init(struct hibmc_drm_private *priv)
+ {
+ 	struct drm_device *dev = &priv->dev;
+@@ -262,9 +276,12 @@ static int hibmc_load(struct drm_device *dev)
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = hibmc_mm_init(priv);
+-	if (ret)
++	ret = drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
++				    priv->fb_size);
++	if (ret) {
++		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
+ 		goto err;
++	}
+ 
+ 	ret = hibmc_kms_init(priv);
+ 	if (ret)
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+index 2786de5..a49c10e 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+@@ -64,10 +64,6 @@ int hibmc_de_init(struct hibmc_drm_private *priv);
+ int hibmc_vdac_init(struct hibmc_drm_private *priv);
+ 
+ int hibmc_mm_init(struct hibmc_drm_private *hibmc);
+-int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
+-		      struct drm_mode_create_dumb *args);
+ int hibmc_ddc_create(struct drm_device *drm_dev, struct hibmc_connector *connector);
+ 
+-extern const struct drm_mode_config_funcs hibmc_mode_funcs;
+-
+ #endif
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+deleted file mode 100644
+index 892d566..0000000
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
++++ /dev/null
+@@ -1,50 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/* Hisilicon Hibmc SoC drm driver
+- *
+- * Based on the bochs drm driver.
+- *
+- * Copyright (c) 2016 Huawei Limited.
+- *
+- * Author:
+- *	Rongrong Zou <zourongrong@huawei.com>
+- *	Rongrong Zou <zourongrong@gmail.com>
+- *	Jianhua Li <lijianhua@huawei.com>
+- */
+-
+-#include <linux/pci.h>
+-
+-#include <drm/drm_atomic_helper.h>
+-#include <drm/drm_gem.h>
+-#include <drm/drm_gem_framebuffer_helper.h>
+-#include <drm/drm_gem_vram_helper.h>
+-#include <drm/drm_print.h>
+-
+-#include "hibmc_drm_drv.h"
+-
+-int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+-{
+-	int ret;
+-	struct drm_device *dev = &hibmc->dev;
+-
+-	ret = drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
+-				    hibmc->fb_size);
+-	if (ret) {
+-		drm_err(dev, "Error initializing VRAM MM; %d\n", ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
+-		      struct drm_mode_create_dumb *args)
+-{
+-	return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
+-}
+-
+-const struct drm_mode_config_funcs hibmc_mode_funcs = {
+-	.mode_valid = drm_vram_helper_mode_valid,
+-	.atomic_check = drm_atomic_helper_check,
+-	.atomic_commit = drm_atomic_helper_commit,
+-	.fb_create = drm_gem_fb_create,
+-};
 -- 
 2.7.4
 
