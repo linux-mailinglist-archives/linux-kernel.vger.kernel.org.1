@@ -2,105 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77D92CF12F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7872B2CF139
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730895AbgLDPtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:49:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730148AbgLDPtl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:49:41 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D85C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 07:48:56 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id y11so2939707qvu.10
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:48:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=PA56DtQ3U6OS3ADt3JtiQH9iJ5okRT03tMtGP16RXIA=;
-        b=p4AZo33WMTXTpz74XuTaQCvr8JjiLn7ypdk62+VPzm5BdMKt9igpjZmiV4Ts4qi6+J
-         SKGTsVwNJHxvNy9D43S5RpkEjJtwvyjUcFbtGl6g7qLXlUFpBTsSCxXpBePSHE5OPbfm
-         mksQaolb9sXzm7+22TDrXsouNjPDrgzfQk55cGZ8dcksUDtecVBuIrV/rL0rDS4FIXGa
-         CvPH8RXGjKym1lMM679nc6sYC/ea1CzYYsrPdIStasXpT1d5deVX/6/ey0wtHLMxDXaU
-         REoOC8e2HrqtsbjM8fzvA/EMqQSINaRo0nL6ofS1dQc6bP4Jew/L1eiqWwgkD+J/NGRS
-         Uo0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=PA56DtQ3U6OS3ADt3JtiQH9iJ5okRT03tMtGP16RXIA=;
-        b=U1A/IbnL9XIdhoz6zviWav2PueMB2hlnxOcvdngw75AVFRusedYw2fMG4vhxUbtXxi
-         0bx5ATp4540Xy3TuITOR3edOjOSFM3X9HopubBawO8f0iMIcpGXQNzZi4Pfn6v4cpm2O
-         fZhG0fqcvKStEZ5hxAlOVXLw/BzRF97YxjuWspdRF7Pn4Ma7AiR5HpiJP5jIlYtxB+3L
-         XMAsUquOnKiveyAuwurYdGW+tmkY31KAkAIP4dIwgg0rj/UKaBHEigMDaaMuGbyxb7Ru
-         hVz171zmFBO90ekXzciMKrCk01+JwHTaeF1E8HLvyTFyJJEDbL3wUrvDiRlMxlU2Byvv
-         pgcw==
-X-Gm-Message-State: AOAM533f+sPBWZssEZPaMTOZcDByLpZa0/KxuNEx1KkcbIldB3Qac3Cx
-        ENFG32LVUtSLZ7qEN2K7u9Fy2Q==
-X-Google-Smtp-Source: ABdhPJxnvGuh1h4AicIp2Z2Ob074CL8yAHW4/pb+/Ip6VIx5jqWNzkUvWI0x5L/Pf3ERPP+MY/J4+Q==
-X-Received: by 2002:a0c:e18f:: with SMTP id p15mr6149469qvl.12.1607096935114;
-        Fri, 04 Dec 2020 07:48:55 -0800 (PST)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id y1sm5586436qky.63.2020.12.04.07.48.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Dec 2020 07:48:54 -0800 (PST)
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Subject: [LSFMMBPF 2021] A status update
-Message-ID: <fd5264ac-c84d-e1d4-01e2-62b9c05af892@toxicpanda.com>
-Date:   Fri, 4 Dec 2020 10:48:53 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
+        id S1730949AbgLDPt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:49:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727347AbgLDPtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 10:49:53 -0500
+Date:   Fri, 4 Dec 2020 10:49:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607096952;
+        bh=Ow4G56Wm/9Nfwmkt+etIYtnevqjnp+bk9nlnFoU8UQk=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RQjC41VglvvhGwAWU6XRMSSSMnzpp3JOxd1JNCylOQy/kEvUZ/ewOpyE/wOqQW/7j
+         878hxCTLNSyKUEwvhP2o5iMZhV6F/W385j25+TYB/QZlSyrDcFDoYe0rgky3hMcZ/P
+         Nspyf5ZojFO6emRkgFk9EeTs/eGl6Km4CtSDUo55DCdJh1xlIRobP9bnqaHpnGlsvQ
+         4TMZgz2q7uNKvG3exf/XFGcNg+7tXIby71tbnOypYg4j4+erSHdVGjPaDmkBXDFxXN
+         ICWQyjSwysK+pQXANGOHy6hLAsiPnYnR3u4UiD59Fj+QIoSr52SNzsJ+5WH4vYhD2/
+         XjdW17iIoYZ9Q==
+From:   Sasha Levin <sashal@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Mike Christie <michael.christie@oracle.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.9 22/33] vhost scsi: add lun parser helper
+Message-ID: <20201204154911.GZ643756@sasha-vm>
+References: <20201129041314.GO643756@sasha-vm>
+ <7a4c3d84-8ff7-abd9-7340-3a6d7c65cfa7@redhat.com>
+ <20201129210650.GP643756@sasha-vm>
+ <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
+ <20201130173832.GR643756@sasha-vm>
+ <238cbdd1-dabc-d1c1-cff8-c9604a0c9b95@redhat.com>
+ <9ec7dff6-d679-ce19-5e77-f7bcb5a63442@oracle.com>
+ <4c1b2bc7-cf50-4dcd-bfd4-be07e515de2a@redhat.com>
+ <20201130235959.GS643756@sasha-vm>
+ <6c49ded5-bd8f-f219-0c51-3500fd751633@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <6c49ded5-bd8f-f219-0c51-3500fd751633@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Dec 04, 2020 at 09:27:28AM +0100, Paolo Bonzini wrote:
+>On 01/12/20 00:59, Sasha Levin wrote:
+>>
+>>It's quite easy to NAK a patch too, just reply saying "no" and it'll be
+>>dropped (just like this patch was dropped right after your first reply)
+>>so the burden on maintainers is minimal.
+>
+>The maintainers are _already_ marking patches with "Cc: stable".  That 
 
-We on the program committee hope everybody has been able to stay safe and 
-healthy during this challenging time, and look forward to being able to see all 
-of you in person again when it is safe.
+They're not, though. Some forget, some subsystems don't mark anything,
+some don't mark it as it's not stable material when it lands in their
+tree but then it turns out to be one if it sits there for too long.
 
-The current plans for LSFMMBPF 2021 are to schedule an in person conference in 
-H2 (after June) of 2021.  The tentative plan is to use the same hotel that we 
-had planned to use for 2020, as we still have contracts with them.  However 
-clearly that is not set in stone.  The Linux Foundation has done a wonderful job 
-of working with us to formulate a plan and figure out the logistics that will 
-work the best for everybody, I really can't thank them enough for their help.
+>(plus backports) is where the burden on maintainers should start and 
+>end.  I don't see the need to second guess them.
 
-Once we have a finalized date we will redo the CFP emails, probably coming out 
-March time frame.  If you have any questions or concerns please feel free to 
-respond to this email, or email me or any of the other PC members privately and 
-we will do our best to answer your questions.  Rest assured the general timing 
-of the conference is going to take into account the wide variety of schedules 
-that we are dealing with, and we will do our best to come up with something that 
-works for as many as people as possible.
+This is similar to describing our CI infrastructure as "second
+guessing": why are we second guessing authors and maintainers who are
+obviously doing the right thing by testing their patches and reporting
+issues to them?
 
-We hope that you and your families continue to stay safe and health.  Thank you 
-on behalf of the program committee:
+Are you saying that you have always gotten stable tags right? never
+missed a stable tag where one should go?
 
-	Josef Bacik (Filesystems)
-	Amir Goldstein (Filesystems)
-	Martin K. Petersen (Storage)
-	Omar Sandoval (Storage)
-	Michal Hocko (MM)
-	Dan Williams (MM)
-	Alexei Starovoitov (BPF)
-	Daniel Borkmann (BPF)
+-- 
+Thanks,
+Sasha
