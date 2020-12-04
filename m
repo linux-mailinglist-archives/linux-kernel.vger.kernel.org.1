@@ -2,157 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0FDC2CF5B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:37:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 688032CF5B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729710AbgLDUgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 15:36:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728623AbgLDUgG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 15:36:06 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B97C061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:35:25 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id z3so8467044ybc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:35:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=AnJeit01nF61jllgCw+jNN3EZnXYnoHf3OFvBuHNiIE=;
-        b=Q865+I+npgDxO5mvNz7nE0FFszUKiT1oj8XqaBePvExuhcuxk5iaxLW10s5HU4Lrb9
-         wu4fX/1igXukDWtsCu7dnMJkGlEroel7nceNG8FxOD/e666FSXT6UliuYkIM8jccC9e5
-         CzEvqEuM6aS8yQthD1G02jZ3bKUftXa/Ld3QT8mm0VtUHla15h/qGaDCi3Agd3s22nVW
-         zCamj1a1vSCOZTB+v7JZBu0M/5XfPMAQQ7wK5kuzx9nsJg8jDcIROEM4BfI5gpDwM3vv
-         Z1RFR8zSQcrSlyqPTjVr9c/M7eb1FPD90an14IUK5Vj/AAvsa7TwO06plQGM6rpUvAlP
-         GYJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=AnJeit01nF61jllgCw+jNN3EZnXYnoHf3OFvBuHNiIE=;
-        b=oIl2/78JvciIv8ZJO+GJtQ00c/yMrSkqx1qNf3/MyE3MJH0tJNOc/ITCBRPfHgnVcC
-         Cg7FQUKjFN28qXbeP0OM9F4NDCf88BrV09fKlj+TF+yMgQV70n/DYMypvA8eJQgSG9Cy
-         Us4PaTMm6O8hNtps2fGrqltqlxKyV000H2jjBAaBB7cHf17kQiXk8jgk8QUkC6n47Ezu
-         QOIWKDzsXey8l0bfnCMPCzTyZutmf1Y+JDIsqMiIyY7EuZbNsyEXdqW84FukubXlPeh5
-         I6oahbheZEDJJ7uwjQm1b3ntXRmTE2te6TqPZNPDCKs1eyiI1n2AZJ5kp+S/b1ujFSNq
-         yZLA==
-X-Gm-Message-State: AOAM531ncg92jOgUz4ON0c+yK+Llz1Czp/540fHqrwyIZxYrtLLbBey0
-        84pNljxdddlnfuZOVkW0aANUSney50oGbF2tHv1r
-X-Google-Smtp-Source: ABdhPJy6YTdTjZz5Hjir0b8leyA4lBtDy5pKId5K3dU4HmYu5w6p88bf0x2ctmEKd7bTpq8kTkFb8eq8fR2nNUn2x8R6
-Sender: "axelrasmussen via sendgmr" <axelrasmussen@ajr0.svl.corp.google.com>
-X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:f693:9fff:feef:c8f8])
- (user=axelrasmussen job=sendgmr) by 2002:a25:d895:: with SMTP id
- p143mr503872ybg.91.1607114125017; Fri, 04 Dec 2020 12:35:25 -0800 (PST)
-Date:   Fri,  4 Dec 2020 12:34:43 -0800
-Message-Id: <20201204203443.2714693-1-axelrasmussen@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH] userfaultfd: selftests: fix SIGSEGV if huge mmap fails
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Shuah Khan <shuah@kernel.org>, Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joe Perches <joe@perches.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        David Alan Gilbert <dgilbert@redhat.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Axel Rasmussen <axelrasmussen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728375AbgLDUfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 15:35:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726021AbgLDUfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 15:35:42 -0500
+Date:   Fri, 4 Dec 2020 20:34:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607114101;
+        bh=Z/IXAQSuHsMdyUyeiOxn7qVElB9dwUCJ+fe8BiQfsDg=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HPa7oA5vvwTc4NFTLAMdCOjj1R4nb6XXrXVI/hxidcSO9J8I+HF8S0YJPciSQONbs
+         DbNN5dvl84tPRQaURPP77lIoGlbguCH+eQtYFXFPnXcS21qdEPGa5qRtLJMvxaqTIC
+         LMnt2q81EAAOx/kLX7Jd4ruC/LavW+L5/MgQ6cth7mZHh1xdp3biLwAJGtEJaygXGb
+         anl5TaBYSx6HeKD7ZZfLblplmzHTOMatxD7CJCNZ7TeCTwLUIczPfjmrXi7uwadIyE
+         CMhpezjqPoec2NCBFjz7nKv6Z8KeRnAobWEzlL9lF/LyBXYqU9OR13Z3dfNQjY4i3r
+         Q8XjmAYPfqHPg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Chen-Yu Tsai <wens@csie.org>
+Cc:     dinghua ma <dinghua.ma.sz@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] regulatx DLDO2 voltage control register mask for
+ AXP22x
+Message-ID: <20201204203457.GG4558@sirena.org.uk>
+References: <20201130234520.13255-1-dinghua.ma.sz@gmail.com>
+ <CA+Jj2f8ADtb8JPPPzafvgVM0jssk8fz_BS-3LDUaYjZHcouTJQ@mail.gmail.com>
+ <20201201150036.GH5239@sirena.org.uk>
+ <CA+Jj2f9=oCxdnaHJTtPXwvwokRX9HRMDYUNrbDASmV+FoTefvQ@mail.gmail.com>
+ <20201202161042.GI5560@sirena.org.uk>
+ <CAGb2v64md8HdxzRpwCoTVkuiMFj2BWWoEKc0KNuALVUF83XAXw@mail.gmail.com>
+ <20201204174020.GB4558@sirena.org.uk>
+ <CAGb2v65mRo7sTZZ65P75vs9os198kUh-OyhewdDCkjyUhXuV6Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fCcDWlUEdh43YKr8"
+Content-Disposition: inline
+In-Reply-To: <CAGb2v65mRo7sTZZ65P75vs9os198kUh-OyhewdDCkjyUhXuV6Q@mail.gmail.com>
+X-Cookie: Not a flying toy.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The error handling in hugetlb_allocate_area() was incorrect for the
-hugetlb_shared test case.
 
-Previously the behavior was:
+--fCcDWlUEdh43YKr8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-- mmap a hugetlb area
-  - If this fails, set the pointer to NULL, and carry on
-- mmap an alias of the same hugetlb fd
-  - If this fails, munmap the original area
+On Sat, Dec 05, 2020 at 01:56:38AM +0800, Chen-Yu Tsai wrote:
+> On Sat, Dec 5, 2020 at 1:40 AM Mark Brown <broonie@kernel.org> wrote:
 
-If the original mmap failed, it's likely the second one did too. If
-both failed, we'd blindly try to munmap a NULL pointer, causing a
-SIGSEGV. Instead, "goto fail" so we return before trying to mmap the
-alias.
+> > > I did receive it though. Would it help if I tried to bounce it to you
+> > > and the lists?
 
-This issue can be hit "in real life" by forgetting to set
-/proc/sys/vm/nr_hugepages (leaving it at 0), and then trying to run the
-hugetlb_shared test.
+> > Possibly?  It depends on what the issue is.
 
-Another small improvement is, when the original mmap fails, don't just
-print "it failed": perror(), so we can see *why*. :)
+> Looks like v3 was already there the first time though:
 
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
----
- tools/testing/selftests/vm/userfaultfd.c | 25 +++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+> https://lore.kernel.org/lkml/20201201001000.22302-1-dinghua.ma.sz@gmail.com/
 
-diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-index 9b0912a01777..c4425597769a 100644
---- a/tools/testing/selftests/vm/userfaultfd.c
-+++ b/tools/testing/selftests/vm/userfaultfd.c
-@@ -206,19 +206,19 @@ static int hugetlb_release_pages(char *rel_area)
- 	return ret;
- }
- 
--
- static void hugetlb_allocate_area(void **alloc_area)
- {
- 	void *area_alias = NULL;
- 	char **alloc_area_alias;
-+
- 	*alloc_area = mmap(NULL, nr_pages * page_size, PROT_READ | PROT_WRITE,
- 			   (map_shared ? MAP_SHARED : MAP_PRIVATE) |
- 			   MAP_HUGETLB,
- 			   huge_fd, *alloc_area == area_src ? 0 :
- 			   nr_pages * page_size);
- 	if (*alloc_area == MAP_FAILED) {
--		fprintf(stderr, "mmap of hugetlbfs file failed\n");
--		*alloc_area = NULL;
-+		perror("mmap of hugetlbfs file failed");
-+		goto fail;
- 	}
- 
- 	if (map_shared) {
-@@ -227,14 +227,11 @@ static void hugetlb_allocate_area(void **alloc_area)
- 				  huge_fd, *alloc_area == area_src ? 0 :
- 				  nr_pages * page_size);
- 		if (area_alias == MAP_FAILED) {
--			if (munmap(*alloc_area, nr_pages * page_size) < 0) {
--				perror("hugetlb munmap");
--				exit(1);
--			}
--			*alloc_area = NULL;
--			return;
-+			perror("mmap of hugetlb file alias failed");
-+			goto fail_munmap;
- 		}
- 	}
-+
- 	if (*alloc_area == area_src) {
- 		huge_fd_off0 = *alloc_area;
- 		alloc_area_alias = &area_src_alias;
-@@ -243,6 +240,16 @@ static void hugetlb_allocate_area(void **alloc_area)
- 	}
- 	if (area_alias)
- 		*alloc_area_alias = area_alias;
-+
-+	return;
-+
-+fail_munmap:
-+	if (munmap(*alloc_area, nr_pages * page_size) < 0) {
-+		perror("hugetlb munmap");
-+		exit(1);
-+	}
-+fail:
-+	*alloc_area = NULL;
- }
- 
- static void hugetlb_alias_mapping(__u64 *start, size_t len, unsigned long offset)
--- 
-2.29.2.576.ga3fc446d84-goog
+> Me bouncing it again had no real effect.
 
+I've only got the bounced copy.  No sign as to why not...
+
+--fCcDWlUEdh43YKr8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/KnXEACgkQJNaLcl1U
+h9B9TAf9FQittmvUs03xlh4ecy2duZMIGjbiIOvaCOfVkGJUjKlsCrZCXfYEC/B5
+m5MS248eiqZeP+pmTuq3+BswSNDCKQDwuw5q4B1gmcJAezvxqTqA3a6wREWNJkH9
+jTOpKX3IHFMNv7H+rbvFPHZTgUwB8MwmqYvyjAmfzR/1vkkC2s//NuxeUgRZ51oL
+8H2/BkYA7GDTb846Jqkmb8HG7etDhw3nCtKXyTCPmsSu9CAnB2vrmiTYNaxQQXt9
+FxFHp90XOst5cHRsOZW4wVXBW5WMkro7sWTsM+5TbtK93MFMNkD3+d2LvcJX00yr
+q8AHuUjYfGNW0rO91HNKOG4wB0i4SA==
+=dUfO
+-----END PGP SIGNATURE-----
+
+--fCcDWlUEdh43YKr8--
