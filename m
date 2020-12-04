@@ -2,114 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91A32CF7F9
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F4F2CF83B
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730839AbgLEA05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 19:26:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726264AbgLEA05 (ORCPT
+        id S1731089AbgLEArD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 19:47:03 -0500
+Received: from vsm-gw.hyogo-dai.ac.jp ([202.244.76.12]:49526 "EHLO
+        vsm-gw.hyogo-dai.ac.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgLEAq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:26:57 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DDDC061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 16:26:10 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id s75so5155002oih.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 16:26:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qOGIn6XgIjkM7jRRGqXrjtA4GUnaVDyVp5HpjIpLBeQ=;
-        b=cspoud3vzZ21kG9yq7HVX14L34/4y0sCDfxSomzTpfqz0uDLEsUBY4YOMDCtRRp3N1
-         r9KOpbpiILwKjd20qFbK08ymxr6RU6Ea8Q03AKwhoMUx2kvlXTzhjef9rAaJJDgOEKZ1
-         l8+ZMS9f3WNriFCGFf4IXG/jbu1dCWHK3v2UIlxEgyLB4F0ipahdJ9HP0opCJOhQeMFq
-         qa2Hftj8LuD6/9usXLXcL6Ee97bv3EzSQovbj9KI1QvlJ4A35CSxbh6/+zlivadP/9cs
-         vCN8V1kK9zEY84k/+klNF6uQ47Nd8op5S1fGFbjW4wDB/Hp8LcTNqz7ODiqb6Wnm/emt
-         XR/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qOGIn6XgIjkM7jRRGqXrjtA4GUnaVDyVp5HpjIpLBeQ=;
-        b=e13TnzXBzSm5r1xSZJ+78tfr+7nAI6pX+DWGJh+fk3EsQ8DSqUqJpCD9Nci5z6TtXZ
-         4YKz5vHSRjnDXVi6eLoBwdHGoBFvkfgWFo5clDfzsILSrXKqGvx5QislR0IGkcAIvhoD
-         sXxEqh4tr6waKKgj2TRQSUn4gSjU8W9Y7XXTaB8Zu7kF4aVAD6FRl16TBHEDfOCIs2e7
-         7J/cbGyZ8SLJa9Py1SqyjBo6LJnjkZG9/k0WgVEu9okk+6QLlv5LzNJl2nXJKPZznDI9
-         M38jvnmoW4Da6WEEOlyckOqCAfF0PJ807EUw4yBw1cB25mIYY+JCpR18sm2Pqg34uGSA
-         gPGg==
-X-Gm-Message-State: AOAM530iazjm2aJeFQ+Br6hsf8wVPL6VnX2VjeV23WFSyyTYuCoseEs0
-        M9PQ4cci09LfqAm95WTZo8vk3Q==
-X-Google-Smtp-Source: ABdhPJyMefuSvFZG9IsAQncafN3zL56HOZm/awMd79vg1THW6ginWeewzZoZQ/jHvS9NBMwc5lpq9A==
-X-Received: by 2002:aca:f089:: with SMTP id o131mr5098170oih.88.1607127970239;
-        Fri, 04 Dec 2020 16:26:10 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r7sm1018595oih.21.2020.12.04.16.26.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 16:26:09 -0800 (PST)
-Date:   Fri, 4 Dec 2020 18:26:07 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     ohad@wizery.com, mathieu.poirier@linaro.org,
-        o.rempel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>, Richard Zhu <hongxing.zhu@nxp.com>
-Subject: Re: [PATCH V3 3/7] remoteproc: imx_rproc: correct err message
-Message-ID: <X8rTnx/lQIxcuEXf@builder.lan>
-References: <20201204074036.23870-1-peng.fan@oss.nxp.com>
- <20201204074036.23870-4-peng.fan@oss.nxp.com>
+        Fri, 4 Dec 2020 19:46:57 -0500
+X-Greylist: delayed 14573 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Dec 2020 19:46:41 EST
+Received: from humans-kc.hyogo-dai.ac.jp (humans-kc.hyogo-dai.ac.jp [202.244.77.11])
+        by vsm-gw.hyogo-dai.ac.jp (Postfix) with ESMTP id 274A31A5589;
+        Sat,  5 Dec 2020 04:44:55 +0900 (JST)
+Received: from humans-kc.hyogo-dai.ac.jp (humans-kc.hyogo-dai.ac.jp [127.0.0.1])
+        by postfix.imss71 (Postfix) with ESMTP id E5C39838858;
+        Sat,  5 Dec 2020 04:44:54 +0900 (JST)
+Received: from hyogo-dai.ac.jp (unknown [202.244.77.11])
+        by humans-kc.hyogo-dai.ac.jp (Postfix) with SMTP id B84F6838260;
+        Sat,  5 Dec 2020 04:44:54 +0900 (JST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204074036.23870-4-peng.fan@oss.nxp.com>
+Message-ID: <20201204194454.00002B21.0147@hyogo-dai.ac.jp>
+Date:   Sat, 05 Dec 2020 04:44:54 +0900
+From:   "Dr.Raymond" <tabata@hyogo-dai.ac.jp>
+To:     <infocarferr1@aim.com>
+Reply-To: <infocarfer@aim.com>
+Subject: I am Vice Chairman of Hang Seng Bank, Dr. Raymond Chien
+         Kuo Fung I have Important Matter to Discuss with you concerning
+         my late client. Died without a NEXT OF KIN. Send me your private
+         email for full details information. 
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MAILER: Active! mail
+X-TM-AS-MML: disable
+X-TM-AS-Product-Ver: IMSS-7.1.0.1808-8.2.0.1013-25446.007
+X-TM-AS-Result: No--4.326-5.0-31-10
+X-imss-scan-details: No--4.326-5.0-31-10
+X-TM-AS-User-Approved-Sender: No
+X-TMASE-MatchedRID: +T4Z3mpR0x5ITndh1lLRASsOycAMAhSTkCM77ifYafsBLhz6t76Ce/bj
+        Enpjm61/Gf23dqZJjE4Erxo5p8V1/E1+zyfzlN7y/sToY2qzpx7w5nZ/qYg41XEWw1TkKAjcYff
+        qdBtG2ocgOkCKsW/kbuunGEBqPil++coAzulIP8gMTyJMXCOBhj9BWL7GG0LsKrauXd3MZDUZaR
+        NzIP3XI5u3uLPgwbAMH5RdHnhWfwyq9gpuf+A6coDeeVSgzszVDx5n520Z3eZyT7DDRtYlKaWBy
+        ZE9nSaC/rhfyjvqkZu/pNa4BidtZEMMprcbiest
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 04 Dec 01:40 CST 2020, Peng Fan (OSS) wrote:
-
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> It is using devm_ioremap, so not devm_ioremap_resource. Correct
-> the error message and print out sa/size.
-> 
-> Acked-by: Richard Zhu <hongxing.zhu@nxp.com>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/remoteproc/imx_rproc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index d1abb253b499..aa5fbd0c7768 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -270,7 +270,7 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
->  		priv->mem[b].cpu_addr = devm_ioremap(&pdev->dev,
->  						     att->sa, att->size);
->  		if (!priv->mem[b].cpu_addr) {
-> -			dev_err(dev, "devm_ioremap_resource failed\n");
-> +			dev_err(dev, "devm_ioremap failed\n");
-
-I would prefer if this was expanded to a proper sentence, and I really
-like the second part of the commit message to be included in the change.
-So something like:
-
-			dev_err(dev, "failed to remap %#x bytes from %#x\n",
-				att->size, att->sa);
+infocarfer@aim.com
 
 
-And similarly below if mapping a memory-region fails.
 
-Thanks,
-Bjorn
-
->  			return -ENOMEM;
->  		}
->  		priv->mem[b].sys_addr = att->sa;
-> -- 
-> 2.28.0
-> 
