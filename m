@@ -2,89 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE8E2CE570
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 431072CE56F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:57:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgLDB5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:57:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27802 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725885AbgLDB5w (ORCPT
+        id S1726294AbgLDB5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:57:15 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8641 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgLDB5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:57:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607046986;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AF4gEX/vocn6ADKGRD/a87GO0jg5J5yO20C1aSjch7U=;
-        b=QPzUPtwFwFzxKI0RBVJEd/NREsPxOY111xbbLPNhvPm3GEIjAfYzOzwDW2v+R+vnRFQBlC
-        FV0A00wupcow0ipqL+CNnbDKxhoisRodEAdRS/yxhkAPlgq9xdJCVVqRPu+kFmJMh8sYiV
-        7UQ859iCCFToi5e9daNQPp8xsyD2u6I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-210-uxkl4M0IONqi5co7ssqmCA-1; Thu, 03 Dec 2020 20:56:24 -0500
-X-MC-Unique: uxkl4M0IONqi5co7ssqmCA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D2140180A086;
-        Fri,  4 Dec 2020 01:56:21 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-98.rdu2.redhat.com [10.10.117.98])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 406EB620D7;
-        Fri,  4 Dec 2020 01:56:16 +0000 (UTC)
-Subject: Re: [PATCH 0/3] exec: Transform exec_update_mutex into a rw_semaphore
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Vasiliy Kulikov <segoon@openwall.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Christopher Yeoh <cyeoh@au1.ibm.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-References: <87tut2bqik.fsf@x220.int.ebiederm.org>
- <CAHk-=wjocT58h24do391ZFQwAcOd7EBqBB=qOUyHVU=ubU09Yw@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <874ffe6a-628f-e504-037f-ec321565a40c@redhat.com>
-Date:   Thu, 3 Dec 2020 20:56:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 3 Dec 2020 20:57:15 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnG5J5YQ0z15X7D;
+        Fri,  4 Dec 2020 09:56:04 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 4 Dec 2020
+ 09:56:28 +0800
+Subject: Re: [f2fs-dev] [PATCH v6] f2fs: compress: support compress level
+To:     Gao Xiang <hsiangkao@redhat.com>
+CC:     Eric Biggers <ebiggers@kernel.org>, <jaegeuk@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20201203061715.60447-1-yuchao0@huawei.com>
+ <X8k9UoUKcyThlJNU@gmail.com> <20201204003119.GA1957051@xiangao.remote.csb>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <7b975d1a-a06c-4e14-067e-064afc200934@huawei.com>
+Date:   Fri, 4 Dec 2020 09:56:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjocT58h24do391ZFQwAcOd7EBqBB=qOUyHVU=ubU09Yw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201204003119.GA1957051@xiangao.remote.csb>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/3/20 5:42 PM, Linus Torvalds wrote:
-> On Thu, Dec 3, 2020 at 12:10 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->> The simplest and most robust solution appears to be making
->> exec_update_mutex a read/write lock and having everything execept for
->> exec take the lock for read.
-> Looks sane to me.
->
-> I'd like the locking people to look at the down_read_*() functions,
-> even if they look simple. Adding Waiman and Davidlohr to the cc just
-> in case they would look at that too, since they've worked on that
-> code.
+Hi Xiang,
 
-I have looked at patches 1 & 2 on adding down_read_killable_nested() and 
-down_read_interruptible(). They looks good to me.
+On 2020/12/4 8:31, Gao Xiang wrote:
+> Hi Chao,
+> 
+> On Thu, Dec 03, 2020 at 11:32:34AM -0800, Eric Biggers wrote:
+> 
+> ...
+> 
+>>
+>> What is the use case for storing the compression level on-disk?
+>>
+>> Keep in mind that compression levels are an implementation detail; the exact
+>> compressed data that is produced by a particular algorithm at a particular
+>> compression level is *not* a stable interface.  It can change when the
+>> compressor is updated, as long as the output continues to be compatible with the
+>> decompressor.
+>>
+>> So does compression level really belong in the on-disk format?
+>>
+> 
+> Curious about this, since f2fs compression uses 16k f2fs compress cluster
+> by default (doesn't do sub-block compression by design as what btrfs did),
+> so is there significant CR difference between lz4 and lz4hc on 16k
+> configuration (I guess using zstd or lz4hc for 128k cluster like btrfs
+> could make more sense), could you leave some CR numbers about these
+> algorithms on typical datasets (enwik9, silisia.tar or else.) with 16k
+> cluster size?
 
-Cheers,
-Longman
+Yup, I can figure out some numbers later. :)
 
+> 
+> As you may noticed, lz4hc is much slower than lz4, so if it's used online,
+> it's a good way to keep all CPUs busy (under writeback) with unprivileged
+> users. I'm not sure if it does matter. (Ok, it'll give users more options
+> at least, yet I'm not sure end users are quite understand what these
+> algorithms really mean, I guess it spends more CPU time but without much
+> more storage saving by the default 16k configuration.)
+> 
+> from https://github.com/lz4/lz4    Core i7-9700K CPU @ 4.9GHz
+> Silesia Corpus
+> 
+> Compressor              Ratio   Compression     Decompression
+> memcpy                  1.000   13700 MB/s      13700 MB/s
+> Zstandard 1.4.0 -1      2.883   515 MB/s	1380 MB/s
+> LZ4 HC -9 (v1.9.0)      2.721   41 MB/s         4900 MB/s
+
+There is one solutions now, Daeho has submitted two patches:
+
+f2fs: add compress_mode mount option
+f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE
+
+Which allows to specify all files in data partition be compressible, by default,
+all files are written as non-compressed one, at free time of system, we can use
+ioctl to reload and compress data for specific files.
+
+> 
+> Also a minor thing is lzo-rle, initially it was only used for in-memory
+> anonymous pages and it won't be kept on-disk so that's fine. I'm not sure
+> if lzo original author want to support it or not. It'd be better to get
+
+
+Hmm.. that's a problem, as there may be existed potential users who are
+using lzo-rle, remove lzo-rle support will cause compatibility issue...
+
+IMO, the condition "f2fs may has persisted lzo-rle compress format data already"
+may affect the decision of not supporting that algorithm from author.
+
+> some opinion before keeping it on-disk.
+
+Yes, I can try to ask... :)
+
+Thanks,
+
+> 
+> Thanks,
+> Gao Xiang
+> 
+>> - Eric
+>>
+>>
+>> _______________________________________________
+>> Linux-f2fs-devel mailing list
+>> Linux-f2fs-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> 
+> .
+> 
