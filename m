@@ -2,115 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF342CE98F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E862CE990
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729086AbgLDI2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:28:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725967AbgLDI2E (ORCPT
+        id S1729113AbgLDI3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:29:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28176 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728067AbgLDI3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:28:04 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EFCC061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 00:27:17 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id qw4so7417539ejb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 00:27:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ruXnnoPhLWZefsxaYBBLcufmNUTnKI++ZsmmBsbkXoQ=;
-        b=AIGmeqXFKWcMnd0CaRU7VGuoQ6uBtBfpY0HjtA4OlX5XB4+riFjIuqIqjw+qhiIQU1
-         ghVGolqoPjd0pIoGJK+8cd8NuK/XGB7lZZu5NYhaeNAHLXadSXamoDFGSCxfvafBujwV
-         Cp4UGESm8DOKaEuzzdYKxBgK/jpCkaC0koh3k=
+        Fri, 4 Dec 2020 03:29:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607070454;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e9Y6WzFRcgbtIi5LBno88YZfeKK7F+ba+sYdLaKYH9w=;
+        b=Gg62bac1lWY9C3nvr1LFQkHRGjzBAKmpYjCuFkyRrbjzmO3uFwoH59bMyTpo4oWUwr+dSi
+        WxsaxdpEeJhJDagllXhg4XIEm+M/Lyl9Gjr9sAszWEHm0rf6NFDvspz6YrNy3Gmz4AJY9o
+        jVEG81aLGyknba9tOFPv4vnyheAcYAc=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-22-ymZuN-dEO_2kCSJCDgX41g-1; Fri, 04 Dec 2020 03:27:32 -0500
+X-MC-Unique: ymZuN-dEO_2kCSJCDgX41g-1
+Received: by mail-ej1-f72.google.com with SMTP id t17so1805150ejd.12
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 00:27:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ruXnnoPhLWZefsxaYBBLcufmNUTnKI++ZsmmBsbkXoQ=;
-        b=bBp57eshPULBljOhAoN+GGp9mNj8hFnrI1b5T+98jMXWuq8QYhTGrx/lpEd5RfM4Bi
-         2jSyhxreUj4+frCBLDesm/PMUWx2/38VVHIC9ZEmFk0eZfjM3NgPoaZ4EUUk/PjfmNlP
-         G1ZMZNcjLTsf5GoWuw+HYqH/vWKVy6Ta/VWptIr8huNS/pRw6kS6Zdjb3N6rRtLLICtE
-         LOun5b/z6j2ntjIF7neUsmtHlQPPYv/8zrvx5ODY8h6EU+PaXKNzUa/1MduLVrrg+WiV
-         076unwv6Vso1bIXNFwSaSljZ41GEHLuhcIU4Jc5N0PlEuPpLrujrVmkMLbEXWT6IVtV/
-         9N3A==
-X-Gm-Message-State: AOAM531lbsp3LkLxeQWUtpFTJJgheYXLqyt+0HhyfbDZseyU1otR1EDq
-        PgON8hja2dqi73hz1NneXzQt3HPnaC3YWQ==
-X-Google-Smtp-Source: ABdhPJxpA0JTGknN708iCRUE/MEPhpEgdDV2p80m5jlkeMUPIXVgmPccJp+V5n+j41PD+OftMdD4lw==
-X-Received: by 2002:a17:906:27c2:: with SMTP id k2mr5908371ejc.211.1607070436076;
-        Fri, 04 Dec 2020 00:27:16 -0800 (PST)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
-        by smtp.gmail.com with ESMTPSA id f11sm2561268ejd.40.2020.12.04.00.27.15
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e9Y6WzFRcgbtIi5LBno88YZfeKK7F+ba+sYdLaKYH9w=;
+        b=Lg1K7WuDXZOiuBK+yjkYt74yh9ysjuYK5XafDmhjmyObnwb31M/rzwOWmncYDdY1Hc
+         igUzaMg10mrPQ/A2PeNz0bMxwr4ZDZjG4VdwicjOv6z6CmW706bh+J4rMwPaWXswjJtT
+         SpYfltKKsJsNYq7pQr58lbmrLBB7dCp1Qm1YOAA6wA0RhGQE34ZWrx9zcUtIoRjZIYQs
+         8/MEEUQS4KvwhkVcKRUcjmN7oV2A4ftouVJnNKeYoRdSbKZoRnANpLTK9ZKQGs001T0M
+         AO7pUa5HBVBSrrsKZlFFtZzfV/E9sGD4EDS49A7jk+Z4bJiU5Xg7fJnqsXTxO+Ish127
+         mzKQ==
+X-Gm-Message-State: AOAM531124lRNZZMwGw2uBZjlETt6s4hen+iYBUcua0/E5Q15LBJr2mW
+        V9X56w+buVvScnsyj1De9jhnvJmj7khUaAYf9xL+Nz67eIz5cftPX1R7aapHLW09489Hrhtutnj
+        BwuFnqgA4VcHvu7B9mSuqhPvX
+X-Received: by 2002:a50:e0ce:: with SMTP id j14mr6573309edl.18.1607070451482;
+        Fri, 04 Dec 2020 00:27:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwMIyz5LS2iwvNf1iWyhuXSvOdoCaeoLpxIQO9KF7bm/bHa+j5UQfAthZzEj17BWx0cIuFxUQ==
+X-Received: by 2002:a50:e0ce:: with SMTP id j14mr6573281edl.18.1607070451200;
+        Fri, 04 Dec 2020 00:27:31 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id dh23sm1155140edb.15.2020.12.04.00.27.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Dec 2020 00:27:15 -0800 (PST)
-Received: by mail-ed1-f44.google.com with SMTP id u19so4963890edx.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 00:27:15 -0800 (PST)
-X-Received: by 2002:a50:99dd:: with SMTP id n29mr6739912edb.259.1607070434703;
- Fri, 04 Dec 2020 00:27:14 -0800 (PST)
+        Fri, 04 Dec 2020 00:27:30 -0800 (PST)
+Subject: Re: [PATCH AUTOSEL 5.9 22/33] vhost scsi: add lun parser helper
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Mike Christie <michael.christie@oracle.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20201125180102.GL643756@sasha-vm>
+ <9670064e-793f-561e-b032-75b1ab5c9096@redhat.com>
+ <20201129041314.GO643756@sasha-vm>
+ <7a4c3d84-8ff7-abd9-7340-3a6d7c65cfa7@redhat.com>
+ <20201129210650.GP643756@sasha-vm>
+ <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
+ <20201130173832.GR643756@sasha-vm>
+ <238cbdd1-dabc-d1c1-cff8-c9604a0c9b95@redhat.com>
+ <9ec7dff6-d679-ce19-5e77-f7bcb5a63442@oracle.com>
+ <4c1b2bc7-cf50-4dcd-bfd4-be07e515de2a@redhat.com>
+ <20201130235959.GS643756@sasha-vm>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <6c49ded5-bd8f-f219-0c51-3500fd751633@redhat.com>
+Date:   Fri, 4 Dec 2020 09:27:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201203231505.1483971-1-arnd@kernel.org>
-In-Reply-To: <20201203231505.1483971-1-arnd@kernel.org>
-From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Fri, 4 Dec 2020 17:26:59 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MUNsoQ76hi618G6i0djBoRzVvYKkTd8PovNQRacZ06LWA@mail.gmail.com>
-Message-ID: <CAPBb6MUNsoQ76hi618G6i0djBoRzVvYKkTd8PovNQRacZ06LWA@mail.gmail.com>
-Subject: Re: [PATCH] media: mtk-vcodec: add remoteproc dependency
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201130235959.GS643756@sasha-vm>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 8:15 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The SCP firmware can only be built if CONFIG_REMOTEPROC is
-> enabled:
->
-> WARNING: unmet direct dependencies detected for MTK_SCP
->   Depends on [n]: REMOTEPROC [=n] && (ARCH_MEDIATEK [=y] || COMPILE_TEST [=y])
->   Selected by [y]:
->   - VIDEO_MEDIATEK_VCODEC [=y] && MEDIA_SUPPORT [=y] && MEDIA_PLATFORM_SUPPORT [=y] && V4L_MEM2MEM_DRIVERS [=y] && (MTK_IOMMU [=y] || COMPILE_TEST [=y]) && VIDEO_DEV [=y] && VIDEO_V4L2 [=y] && (ARCH_MEDIATEK [=y] || COMPILE_TEST [=y])
+On 01/12/20 00:59, Sasha Levin wrote:
+> 
+> It's quite easy to NAK a patch too, just reply saying "no" and it'll be
+> dropped (just like this patch was dropped right after your first reply)
+> so the burden on maintainers is minimal.
 
-Despite setting these same options I cannot reproduce this warning on
-a merge of master + media. Which tree are you using?
+The maintainers are _already_ marking patches with "Cc: stable".  That 
+(plus backports) is where the burden on maintainers should start and 
+end.  I don't see the need to second guess them.
 
->
-> Add this as a dependency for mtk-vcodec.
->
-> Fixes: c7244811b1c9 ("media: mtk-vcodec: add SCP firmware ops")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/media/platform/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-> index ffffef2267f4..295f74c3c04b 100644
-> --- a/drivers/media/platform/Kconfig
-> +++ b/drivers/media/platform/Kconfig
-> @@ -276,6 +276,7 @@ config VIDEO_MEDIATEK_VCODEC
->         # our dependencies, to avoid missing symbols during link.
->         depends on VIDEO_MEDIATEK_VPU || !VIDEO_MEDIATEK_VPU
->         depends on MTK_SCP || !MTK_SCP
-> +       depends on REMOTEPROC
->         select VIDEOBUF2_DMA_CONTIG
->         select V4L2_MEM2MEM_DEV
->         select VIDEO_MEDIATEK_VCODEC_VPU if VIDEO_MEDIATEK_VPU
-> --
-> 2.27.0
->
+Paolo
+
