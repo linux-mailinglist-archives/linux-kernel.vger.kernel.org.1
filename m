@@ -2,125 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B882CEA36
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22EEC2CEA34
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729355AbgLDIvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:51:54 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:39553 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729338AbgLDIvy (ORCPT
+        id S1729326AbgLDIvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:51:51 -0500
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:34025 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387496AbgLDIvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:51:54 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607071895; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=KDVVzbG9GvJL/tCyDceYZiD1rBmyxebfv3YnVVi8et4=; b=sV3mYiBE6tNik0y/kZX17V5hBz2FoQyTmBOVvP2g3aRliUKIkDTKgfoobyKRa+QHdbFSHY/x
- EPCeShAiLC6zDDCyIg4Xee7lUtvogzMyU8W9v3MgDjK6IULfiWdv7xFYChg2rOsRjIeuHoAA
- 2vS+G7yswS9VBpglQg6fFL/VHLY=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fc9f87aaac9455097f0b38a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Dec 2020 08:51:06
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6B5E7C43464; Fri,  4 Dec 2020 08:51:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.104] (unknown [49.204.182.199])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A514CC433C6;
-        Fri,  4 Dec 2020 08:50:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A514CC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-Subject: Re: [PATCH 5/5] clk: qcom: gcc: Add clock driver for SM8350
-To:     Vinod Koul <vkoul@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Vivek Aknurwar <viveka@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeevan Shriram <jshriram@codeaurora.org>
-References: <20201203070241.2648874-1-vkoul@kernel.org>
- <20201203070241.2648874-6-vkoul@kernel.org> <X8l9dRfo7qdRTAMe@builder.lan>
- <20201204043502.GJ8403@vkoul-mobl>
-From:   Taniya Das <tdas@codeaurora.org>
-Message-ID: <302cf18a-080d-a521-8c7a-39c265fbceb8@codeaurora.org>
-Date:   Fri, 4 Dec 2020 14:20:55 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        Fri, 4 Dec 2020 03:51:50 -0500
+Received: by mail-ej1-f65.google.com with SMTP id g20so7579351ejb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 00:51:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+GwkYozyuYkSJzQ66Wy4YG7jbCUKS/kTrRERj/Igh/g=;
+        b=nG72YHbWxZ9NZkX6QLu2bsshGSCnBHJ2ByJhxseOrb33DyA0W68YrvYa67OATTNW6S
+         mkYW3w2XW+JjSD/7hxG95WGoOPdA3sBV9681kuhdge4IGBD77syDOc9CCXFwB3F5KA80
+         smigX5JuM33a8k/HdxTtf4fFYlhLfQhjQEZmyOAI6Uj1FxfnpSROqMGBLVdndVqTtgC+
+         DbGY8CJHysUFve3gttco0WtrEWFMyGO4kCw7GBOPcIVJCDIx8kgOPzq9GuCzpxjOo7ZG
+         J71YaZS5URXUotcBfeujQnTbW1afZEUgGJSbwPyOwHPUmvvjsxSsYuBFOp0OQfbF9SL6
+         nZhg==
+X-Gm-Message-State: AOAM533yabXYDEUZuMn26rvjNo0chkLZHT3DtgmSZERHRTtAwiSNl42w
+        i0/K51qOnUALDokEktIzcOf4fCnSsp/MbA==
+X-Google-Smtp-Source: ABdhPJzArQiiYNoHZBDKYUo2yq8ns58GIG4w5hfjUGyhFm8dzBbXTB3CDo2xQNwua9kEr2fuFbTzVg==
+X-Received: by 2002:a17:906:2932:: with SMTP id v18mr6061514ejd.144.1607071869141;
+        Fri, 04 Dec 2020 00:51:09 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id x16sm2592942ejo.104.2020.12.04.00.51.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Dec 2020 00:51:08 -0800 (PST)
+Subject: Re: [PATCH] tty: Remove dead termiox code
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org
+References: <20201203020331.2394754-1-jannh@google.com>
+ <5cca5126-60ba-d123-0f7d-47fdbac4c4db@kernel.org>
+ <X8nwnXQKOYWBWBZ+@kroah.com>
+ <93834a92-b342-aaee-c400-2883d5df0cdc@kernel.org>
+ <X8n1JiDS8ZVA6e6o@kroah.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <8e993706-46e2-cbed-265f-1ba63cc9274d@kernel.org>
+Date:   Fri, 4 Dec 2020 09:51:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201204043502.GJ8403@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <X8n1JiDS8ZVA6e6o@kroah.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+On 04. 12. 20, 9:36, Greg Kroah-Hartman wrote:
+> On Fri, Dec 04, 2020 at 09:20:39AM +0100, Jiri Slaby wrote:
+>> On 04. 12. 20, 9:17, Greg Kroah-Hartman wrote:
+>>> On Fri, Dec 04, 2020 at 08:22:41AM +0100, Jiri Slaby wrote:
+>>>> On 03. 12. 20, 3:03, Jann Horn wrote:
+>>>>> set_termiox() and the TCGETX handler bail out with -EINVAL immediately
+>>>>> if ->termiox is NULL, but there are no code paths that can set
+>>>>> ->termiox to a non-NULL pointer; and no such code paths seem to have
+>>>>> existed since the termiox mechanism was introduced back in
+>>>>> commit 1d65b4a088de ("tty: Add termiox") in v2.6.28.
+>>>>> Similarly, no driver actually implements .set_termiox; and it looks like
+>>>>> no driver ever has.
+>>>>
+>>>> Nice!
+>>>>
+>>>>> Delete this dead code; but leave the definition of struct termiox in the
+>>>>> UAPI headers intact.
 
-On 12/4/2020 10:05 AM, Vinod Koul wrote:
-> Hi Bjorn,
-> 
-> On 03-12-20, 18:06, Bjorn Andersson wrote:
->> On Thu 03 Dec 01:02 CST 2020, Vinod Koul wrote:
->>> diff --git a/drivers/clk/qcom/gcc-sm8350.c b/drivers/clk/qcom/gcc-sm8350.c
->> [..]
->>> +static int gcc_sm8350_probe(struct platform_device *pdev)
->>> +{
->>> +	struct regmap *regmap;
->>> +	int ret;
->>> +
->>> +	regmap = qcom_cc_map(pdev, &gcc_sm8350_desc);
->>> +	if (IS_ERR(regmap)) {
->>> +		dev_err(&pdev->dev, "Failed to map gcc registers\n");
->>> +		return PTR_ERR(regmap);
->>> +	}
->>> +
->>> +	ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks, ARRAY_SIZE(gcc_dfs_clocks));
->>> +	if (ret)
->>> +		return ret;
->>> +
->>> +	/* FORCE_MEM_CORE_ON for ufs phy ice core clocks */
->>> +	regmap_update_bits(regmap, gcc_ufs_phy_ice_core_clk.halt_reg, BIT(14), BIT(14));
->>> +
->>> +	/*
->>> +	 * Enable clocks required by the i2c-connected pm8008 regulators. Don't
->>> +	 * register them with the clock framework so that client requests are
->>> +	 * short-circuited before grabbing the enable/prepare locks. This
->>> +	 * prevents deadlocks between the clk/regulator frameworks.
->>> +	 *
->>> +	 *	gcc_qupv3_wrap_1_m_ahb_clk
->>> +	 *	gcc_qupv3_wrap_1_s_ahb_clk
->>> +	 *	gcc_qupv3_wrap1_s5_clk
->>> +	 */
+Note this ^^^^^. He is talking about _not_ touching the definition in 
+the UAPI header. Does the rest below makes more sense now?
+
+>>>> I am thinking -- can/should we mark the structure as deprecated so that
+>>>> userspace stops using it eventually?
+>>>
+>>> If it doesn't do anything, how can userspace even use it today?  :)
 >>
->> Isn't this a workaround inherited from the downstream control of
->> regulators from within the clock core? Does this still apply upstream?
+>> Well, right. I am in favor to remove it, BUT: what if someone tries that
+>> ioctl and bails out if EINVAL is returned. I mean: if they define a local
+>> var of that struct type and pass it to the ioctl, we would break the build
+>> by removing the struct completely. Even if the code didn't do anything
+>> useful, it still could be built. So is this very potential breakage OK?
 > 
-> Let me check on this bit...
+> I'm sorry, but I don't understand.  This is a kernel-internal-only
+> structure, right?  If someone today tries to call these ioctls, they
+> will get a -EINVAL error as no serial driver in the tree supports them.
 > 
-> Thanks
+> If we remove the structure (i.e. what this patch does), and someone
+> makes an ioctl call, they will still get the same -EINVAL error they did
+> before.
+> 
+> So nothing has changed as far as userspace can tell.
+> 
+> Now if they have an out-of-tree serial driver that does implement this
+> call, then yes, they will have problems, but that's not our problem,
+> that is theirs for not ever submitting their code.  We don't support
+> in-kernel apis with no in-kernel users.
+> 
+> Or am I still confused?
+> 
+> thanks,
+> 
+> greg k-h
 > 
 
-No it should not apply.
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
-
---
+js
