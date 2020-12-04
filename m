@@ -2,108 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B16D2CE55C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E35702CE561
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgLDBqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:46:34 -0500
-Received: from mga01.intel.com ([192.55.52.88]:48195 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLDBqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:46:34 -0500
-IronPort-SDR: Nr1XHOaXJdH9XjWLkBjyTbWdoKTmf0TNK3z55S8/oD3ZbfvC3djXiDHv9E9SgGYn4yaA+5EVG5
- U3TFWdNEZwIw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="191550560"
-X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
-   d="scan'208";a="191550560"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 17:45:53 -0800
-IronPort-SDR: pdrev79caLf9OpaDWWhlKyXnHidKdPFDKTc5unyM12YRNkHjmdcuieu7P4FJvRsIqmKWdXwZky
- 1D3asWomwszw==
-X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
-   d="scan'208";a="550753253"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 17:45:52 -0800
-From:   ira.weiny@intel.com
-To:     fstests@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Eric Sandeen <sandeen@redhat.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>
-Subject: [PATCH V3] common/rc: Fix _check_s_dax()
-Date:   Thu,  3 Dec 2020 17:45:50 -0800
-Message-Id: <20201204014550.1736306-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
-In-Reply-To: <20201202214629.1563760-1-ira.weiny@intel.com>
-References: <20201202214629.1563760-1-ira.weiny@intel.com>
+        id S1726283AbgLDBry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:47:54 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:45333 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725849AbgLDBry (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 20:47:54 -0500
+X-UUID: 371c7f390b89419292440261733b9643-20201204
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=JDygK9+MlAzqYjO/vOov/ICG+of3dViKIL//ICXqI+c=;
+        b=ZISH7iwdaGKul0mGgngyE8y6gio1Bwm2KXBv6OiHW38Sf9eGFLrKaH+MeuztTNfkWur7yGP7ZRir+2IEB38vo3qfNpK0K1BUh8esawEkaL/ous9/6jeL6FbTjg34ZHEYA6shlfAh+l5ZoBILX4CmnlhTyxH2mVKHKhvJoeHe9d4=;
+X-UUID: 371c7f390b89419292440261733b9643-20201204
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 87168100; Fri, 04 Dec 2020 09:47:08 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs05n1.mediatek.inc
+ (172.21.101.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 4 Dec
+ 2020 09:47:05 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 4 Dec 2020 09:47:04 +0800
+Message-ID: <1607046425.7284.17.camel@mhfsdcap03>
+Subject: Re: [PATCH] phy: mediatek: allow compile-testing the hdmi phy
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        CK Hu <ck.hu@mediatek.com>, Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Date:   Fri, 4 Dec 2020 09:47:05 +0800
+In-Reply-To: <20201203225418.1477560-1-arnd@kernel.org>
+References: <20201203225418.1477560-1-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
-
-There is a conflict with the user visible statx bits 'mount root' and
-'dax'.  The kernel is changing the dax bit to correct this conflict.[1]
-
-Adjust _check_s_dax() to use the new bit.  Because DAX tests do not run
-on root mounts, STATX_ATTR_MOUNT_ROOT should always be 0.  Therefore,
-check for the old flag and fail the test if that occurs.
-
-[1] https://lore.kernel.org/lkml/3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com/
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
----
-Changes from V2:
-	As suggested by Christoph and Eric:
-		Fail the test with a hint as to why the wrong bit may be set.
-
- common/rc | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
-
-diff --git a/common/rc b/common/rc
-index b5a504e0dcb4..5911a6c89a78 100644
---- a/common/rc
-+++ b/common/rc
-@@ -3221,10 +3221,27 @@ _check_s_dax()
- 	local exp_s_dax=$2
- 
- 	local attributes=$($XFS_IO_PROG -c 'statx -r' $target | awk '/stat.attributes / { print $3 }')
-+
-+	# The original attribute bit value, STATX_ATTR_DAX (0x2000), conflicted
-+	# with STATX_ATTR_MOUNT_ROOT.  Therefore, STATX_ATTR_DAX was changed to
-+	# 0x00200000.
-+	#
-+	# Because DAX tests do not run on root mounts, STATX_ATTR_MOUNT_ROOT
-+	# should always be 0.  Check for the old flag and fail the test if that
-+	# occurs.
-+
-+	if [ $(( attributes & 0x2000 )) -ne 0 ]; then
-+		echo "$target has an unexpected STATX_ATTR_MOUNT_ROOT flag set"
-+		echo "which used to be STATX_ATTR_DAX"
-+		echo "     This test should not be running on the root inode..."
-+		echo "     Does the kernel have the following patch?"
-+		echo "     72d1249e2ffd uapi: fix statx attribute value overlap for DAX & MOUNT_ROOT"
-+	fi
-+
- 	if [ $exp_s_dax -eq 0 ]; then
--		(( attributes & 0x2000 )) && echo "$target has unexpected S_DAX flag"
-+		(( attributes & 0x00200000 )) && echo "$target has unexpected S_DAX flag"
- 	else
--		(( attributes & 0x2000 )) || echo "$target doesn't have expected S_DAX flag"
-+		(( attributes & 0x00200000 )) || echo "$target doesn't have expected S_DAX flag"
- 	fi
- }
- 
--- 
-2.28.0.rc0.12.gb6a658bd00c9
+T24gVGh1LCAyMDIwLTEyLTAzIGF0IDIzOjU0ICswMTAwLCBBcm5kIEJlcmdtYW5uIHdyb3RlOg0K
+PiBGcm9tOiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPg0KPiANCj4gQ29tcGlsZS10ZXN0
+aW5nIHRoZSBEUk1fTUVESUFURUtfSERNSSBkcml2ZXIgbGVhZHMgdG8gYSBoYXJtbGVzcw0KPiB3
+YXJuaW5nOg0KPiANCj4gV0FSTklORzogdW5tZXQgZGlyZWN0IGRlcGVuZGVuY2llcyBkZXRlY3Rl
+ZCBmb3IgUEhZX01US19IRE1JDQo+ICAgRGVwZW5kcyBvbiBbbl06IEFSQ0hfTUVESUFURUsgWz1u
+XSAmJiBPRiBbPXldDQo+ICAgU2VsZWN0ZWQgYnkgW3ldOg0KPiAgIC0gRFJNX01FRElBVEVLX0hE
+TUkgWz15XSAmJiBIQVNfSU9NRU0gWz15XSAmJiBEUk1fTUVESUFURUsgWz15XQ0KPiANCj4gVGhl
+IGRyaXZlciBidWlsZHMgZmluZSwgc28gYWxsb3cgY29tcGlsZS10ZXN0aW5nIGl0IGFzIHdlbGwN
+Cj4gdG8gZ2V0IHJpZCBvZiB0aGUgd2FybmluZy4NCj4gDQo+IEZpeGVzOiBiMjhiZTU5YTJlMjYg
+KCJwaHk6IG1lZGlhdGVrOiBNb3ZlIG10a19oZG1pX3BoeSBkcml2ZXIgaW50byBkcml2ZXJzL3Bo
+eS9tZWRpYXRlayBmb2xkZXIiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBBcm5kIEJlcmdtYW5uIDxhcm5k
+QGFybmRiLmRlPg0KPiAtLS0NCj4gIGRyaXZlcnMvcGh5L21lZGlhdGVrL0tjb25maWcgfCA0ICsr
+Ky0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4g
+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BoeS9tZWRpYXRlay9LY29uZmlnIGIvZHJpdmVycy9w
+aHkvbWVkaWF0ZWsvS2NvbmZpZw0KPiBpbmRleCA2NWVkMjZlNDBjOWYuLjI5YTg1YjI3MzhmOCAx
+MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9waHkvbWVkaWF0ZWsvS2NvbmZpZw0KPiArKysgYi9kcml2
+ZXJzL3BoeS9tZWRpYXRlay9LY29uZmlnDQo+IEBAIC00MCw3ICs0MCw5IEBAIGNvbmZpZyBQSFlf
+TVRLX1hTUEhZDQo+ICANCj4gIGNvbmZpZyBQSFlfTVRLX0hETUkNCj4gIAl0cmlzdGF0ZSAiTWVk
+aWFUZWsgSERNSS1QSFkgRHJpdmVyIg0KPiAtCWRlcGVuZHMgb24gQVJDSF9NRURJQVRFSyAmJiBP
+Rg0KPiArCWRlcGVuZHMgb24gQVJDSF9NRURJQVRFSyB8fCBDT01QSUxFX1RFU1QNCj4gKwlkZXBl
+bmRzIG9uIENPTU1PTl9DTEsNClNlZW1zIG5vIG5lZWQgYWRkIENPTU1PTl9DTEsgaGVyZQ0KDQo+
+ICsJZGVwZW5kcyBvbiBPRg0KPiAgCXNlbGVjdCBHRU5FUklDX1BIWQ0KPiAgCWhlbHANCj4gIAkg
+IFN1cHBvcnQgSERNSSBQSFkgZm9yIE1lZGlhdGVrIFNvQ3MuDQoNCg==
 
