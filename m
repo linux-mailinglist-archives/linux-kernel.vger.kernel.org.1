@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D7B2CF6EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4072CF6ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387401AbgLDWiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 17:38:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27010 "EHLO
+        id S1729046AbgLDWiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 17:38:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24147 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725885AbgLDWiL (ORCPT
+        by vger.kernel.org with ESMTP id S1725885AbgLDWiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 17:38:11 -0500
+        Fri, 4 Dec 2020 17:38:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607121404;
+        s=mimecast20190719; t=1607121407;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UYmg4aU2qSC1gUqw5yLkSFkuQZOd87jDZ+UP8kXBHwQ=;
-        b=HJhPy4aSc59VpwBextwjfQLVTU6FDEja7TZmxukyg3zfGJfKi5+nUGmt+t2u3GQr2SxPmx
-        saK7lvViFpUUaLf6ACNNRRZC194THZdDLFtvmDTk4hP2zpSgJJdf2BjCeuP48GNPktfHpQ
-        l2HfLGspPCjBn5egstuf6QamklA72TQ=
+        bh=xcFLkX7UczG6eVRjKRtUueZRmoy5vwk1nTh91JJF5jA=;
+        b=GzujIDapVWvt98tajxMgiQe6WCVb+pqyYJKoG9HmtmL+1pdK2iZSkxSNEqhC9NWKAF8Leb
+        YhNi9zdngNUl9MtwHylEAY1YpLoPfTcuPwiGPXAv+S9nMvXsE77gO+f4gUrUrLuJnU/cv5
+        IT6DOtYyRU3N5FPlJsTf8HGxfcvheQE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-528-kQtYBbN-MC-swq6F33KWAA-1; Fri, 04 Dec 2020 17:36:40 -0500
-X-MC-Unique: kQtYBbN-MC-swq6F33KWAA-1
+ us-mta-229-nivlIjgNP2eX2FBU2psMPA-1; Fri, 04 Dec 2020 17:36:44 -0500
+X-MC-Unique: nivlIjgNP2eX2FBU2psMPA-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 799EF800D53;
-        Fri,  4 Dec 2020 22:36:38 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 55EDA1005513;
+        Fri,  4 Dec 2020 22:36:41 +0000 (UTC)
 Received: from Whitewolf.redhat.com (ovpn-112-159.rdu2.redhat.com [10.10.112.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 27D8C1962F;
-        Fri,  4 Dec 2020 22:36:37 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 025C61962F;
+        Fri,  4 Dec 2020 22:36:39 +0000 (UTC)
 From:   Lyude Paul <lyude@redhat.com>
 To:     Rodrigo Vivi <rodrigo.vivi@intel.com>,
         Jani Nikula <jani.nikula@linux.intel.com>,
@@ -47,9 +47,9 @@ Cc:     thaytan@noraisin.net, Vasily Khoruzhick <anarsoul@gmail.com>,
         =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
         <ville.syrjala@linux.intel.com>, Sean Paul <seanpaul@chromium.org>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 5/9] drm/i915/dp: Rename eDP VESA backlight interface functions
-Date:   Fri,  4 Dec 2020 17:35:59 -0500
-Message-Id: <20201204223603.249878-6-lyude@redhat.com>
+Subject: [PATCH v3 6/9] drm/i915/dp: Add register definitions for Intel HDR backlight interface
+Date:   Fri,  4 Dec 2020 17:36:00 -0500
+Message-Id: <20201204223603.249878-7-lyude@redhat.com>
 In-Reply-To: <20201204223603.249878-1-lyude@redhat.com>
 References: <20201204223603.249878-1-lyude@redhat.com>
 MIME-Version: 1.0
@@ -59,198 +59,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we're about to add support for a second type of backlight control
-interface over DP AUX (specifically, Intel's proprietary HDR backlight
-controls) let's rename all of the current backlight hooks we have for
-vesa to make it clear that they're specific to the VESA interface and
-not Intel's.
+No functional changes yet, this just adds definitions for all of the
+known DPCD registers used by Intel's HDR backlight interface. Since
+we'll only ever use this in i915, we just define them in
+intel_dp_aux_backlight.c
 
-v3:
-* Rebase
-
-Signed-off-by: Lyude Paul <lyude@redhat.com>
 Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
 Cc: thaytan@noraisin.net
 Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 ---
- .../drm/i915/display/intel_dp_aux_backlight.c | 62 ++++++++++---------
- 1 file changed, 32 insertions(+), 30 deletions(-)
+ .../drm/i915/display/intel_dp_aux_backlight.c | 53 +++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
 diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-index c76287e9e91e..b102692a659d 100644
+index b102692a659d..9775f33d1aac 100644
 --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
 +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-@@ -25,7 +25,7 @@
+@@ -25,6 +25,59 @@
  #include "intel_display_types.h"
  #include "intel_dp_aux_backlight.h"
  
--static void set_aux_backlight_enable(struct intel_dp *intel_dp, bool enable)
-+static void set_vesa_backlight_enable(struct intel_dp *intel_dp, bool enable)
++/*
++ * DP AUX registers for Intel's proprietary HDR backlight interface. We define
++ * them here since we'll likely be the only driver to ever use these.
++ */
++#define INTEL_EDP_HDR_TCON_CAP0                                        0x340
++
++#define INTEL_EDP_HDR_TCON_CAP1                                        0x341
++# define INTEL_EDP_HDR_TCON_2084_DECODE_CAP                           BIT(0)
++# define INTEL_EDP_HDR_TCON_2020_GAMUT_CAP                            BIT(1)
++# define INTEL_EDP_HDR_TCON_TONE_MAPPING_CAP                          BIT(2)
++# define INTEL_EDP_HDR_TCON_SEGMENTED_BACKLIGHT_CAP                   BIT(3)
++# define INTEL_EDP_HDR_TCON_BRIGHTNESS_NITS_CAP                       BIT(4)
++# define INTEL_EDP_HDR_TCON_OPTIMIZATION_CAP                          BIT(5)
++# define INTEL_EDP_HDR_TCON_SDP_COLORIMETRY_CAP                       BIT(6)
++# define INTEL_EDP_HDR_TCON_SRGB_TO_PANEL_GAMUT_CONVERSION_CAP        BIT(7)
++
++#define INTEL_EDP_HDR_TCON_CAP2                                        0x342
++# define INTEL_EDP_SDR_TCON_BRIGHTNESS_AUX_CAP                        BIT(0)
++
++#define INTEL_EDP_HDR_TCON_CAP3                                        0x343
++
++#define INTEL_EDP_HDR_GETSET_CTRL_PARAMS                               0x344
++# define INTEL_EDP_HDR_TCON_2084_DECODE_ENABLE                        BIT(0)
++# define INTEL_EDP_HDR_TCON_2020_GAMUT_ENABLE                         BIT(1)
++# define INTEL_EDP_HDR_TCON_TONE_MAPPING_ENABLE                       BIT(2) /* Pre-TGL+ */
++# define INTEL_EDP_HDR_TCON_SEGMENTED_BACKLIGHT_ENABLE                BIT(3)
++# define INTEL_EDP_HDR_TCON_BRIGHTNESS_AUX_ENABLE                     BIT(4)
++# define INTEL_EDP_HDR_TCON_SRGB_TO_PANEL_GAMUT_ENABLE                BIT(5)
++/* Bit 6 is reserved */
++# define INTEL_EDP_HDR_TCON_SDP_COLORIMETRY_ENABLE                    BIT(7)
++
++#define INTEL_EDP_HDR_CONTENT_LUMINANCE                                0x346 /* Pre-TGL+ */
++#define INTEL_EDP_HDR_PANEL_LUMINANCE_OVERRIDE                         0x34A
++#define INTEL_EDP_SDR_LUMINANCE_LEVEL                                  0x352
++#define INTEL_EDP_BRIGHTNESS_NITS_LSB                                  0x354
++#define INTEL_EDP_BRIGHTNESS_NITS_MSB                                  0x355
++#define INTEL_EDP_BRIGHTNESS_DELAY_FRAMES                              0x356
++#define INTEL_EDP_BRIGHTNESS_PER_FRAME_STEPS                           0x357
++
++#define INTEL_EDP_BRIGHTNESS_OPTIMIZATION_0                            0x358
++# define INTEL_EDP_TCON_USAGE_MASK                             GENMASK(0, 3)
++# define INTEL_EDP_TCON_USAGE_UNKNOWN                                    0x0
++# define INTEL_EDP_TCON_USAGE_DESKTOP                                    0x1
++# define INTEL_EDP_TCON_USAGE_FULL_SCREEN_MEDIA                          0x2
++# define INTEL_EDP_TCON_USAGE_FULL_SCREEN_GAMING                         0x3
++# define INTEL_EDP_TCON_POWER_MASK                                    BIT(4)
++# define INTEL_EDP_TCON_POWER_DC                                    (0 << 4)
++# define INTEL_EDP_TCON_POWER_AC                                    (1 << 4)
++# define INTEL_EDP_TCON_OPTIMIZATION_STRENGTH_MASK             GENMASK(5, 7)
++
++#define INTEL_EDP_BRIGHTNESS_OPTIMIZATION_1                            0x359
++
++/* VESA backlight callbacks */
+ static void set_vesa_backlight_enable(struct intel_dp *intel_dp, bool enable)
  {
  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
- 	u8 reg_val = 0;
-@@ -52,7 +52,7 @@ static void set_aux_backlight_enable(struct intel_dp *intel_dp, bool enable)
- 	}
- }
- 
--static bool intel_dp_aux_backlight_dpcd_mode(struct intel_connector *connector)
-+static bool intel_dp_aux_vesa_backlight_dpcd_mode(struct intel_connector *connector)
- {
- 	struct intel_dp *intel_dp = intel_attached_dp(connector);
- 	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-@@ -75,7 +75,7 @@ static bool intel_dp_aux_backlight_dpcd_mode(struct intel_connector *connector)
-  * Read the current backlight value from DPCD register(s) based
-  * on if 8-bit(MSB) or 16-bit(MSB and LSB) values are supported
-  */
--static u32 intel_dp_aux_get_backlight(struct intel_connector *connector)
-+static u32 intel_dp_aux_vesa_get_backlight(struct intel_connector *connector)
- {
- 	struct intel_dp *intel_dp = intel_attached_dp(connector);
- 	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-@@ -86,7 +86,7 @@ static u32 intel_dp_aux_get_backlight(struct intel_connector *connector)
- 	 * If we're not in DPCD control mode yet, the programmed brightness
- 	 * value is meaningless and we should assume max brightness
- 	 */
--	if (!intel_dp_aux_backlight_dpcd_mode(connector))
-+	if (!intel_dp_aux_vesa_backlight_dpcd_mode(connector))
- 		return connector->panel.backlight.max;
- 
- 	if (drm_dp_dpcd_read(&intel_dp->aux, DP_EDP_BACKLIGHT_BRIGHTNESS_MSB,
-@@ -107,7 +107,8 @@ static u32 intel_dp_aux_get_backlight(struct intel_connector *connector)
-  * 8-bit or 16 bit value (MSB and LSB)
-  */
- static void
--intel_dp_aux_set_backlight(const struct drm_connector_state *conn_state, u32 level)
-+intel_dp_aux_vesa_set_backlight(const struct drm_connector_state *conn_state,
-+				u32 level)
- {
- 	struct intel_connector *connector = to_intel_connector(conn_state->connector);
- 	struct intel_dp *intel_dp = intel_attached_dp(connector);
-@@ -137,7 +138,7 @@ intel_dp_aux_set_backlight(const struct drm_connector_state *conn_state, u32 lev
-  * - Where P = 2^Pn, where Pn is the value programmed by field 4:0 of the
-  *             EDP_PWMGEN_BIT_COUNT register (DPCD Address 00724h)
-  */
--static bool intel_dp_aux_set_pwm_freq(struct intel_connector *connector)
-+static bool intel_dp_aux_vesa_set_pwm_freq(struct intel_connector *connector)
- {
- 	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
- 	struct intel_dp *intel_dp = intel_attached_dp(connector);
-@@ -173,8 +174,9 @@ static bool intel_dp_aux_set_pwm_freq(struct intel_connector *connector)
- 	return true;
- }
- 
--static void intel_dp_aux_enable_backlight(const struct intel_crtc_state *crtc_state,
--					  const struct drm_connector_state *conn_state, u32 level)
-+static void
-+intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
-+				   const struct drm_connector_state *conn_state, u32 level)
- {
- 	struct intel_connector *connector = to_intel_connector(conn_state->connector);
- 	struct intel_dp *intel_dp = intel_attached_dp(connector);
-@@ -214,7 +216,7 @@ static void intel_dp_aux_enable_backlight(const struct intel_crtc_state *crtc_st
- 	}
- 
- 	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_FREQ_AUX_SET_CAP)
--		if (intel_dp_aux_set_pwm_freq(connector))
-+		if (intel_dp_aux_vesa_set_pwm_freq(connector))
- 			new_dpcd_buf |= DP_EDP_BACKLIGHT_FREQ_AUX_SET_ENABLE;
- 
- 	if (new_dpcd_buf != dpcd_buf) {
-@@ -225,18 +227,18 @@ static void intel_dp_aux_enable_backlight(const struct intel_crtc_state *crtc_st
- 		}
- 	}
- 
--	intel_dp_aux_set_backlight(conn_state, level);
--	set_aux_backlight_enable(intel_dp, true);
-+	intel_dp_aux_vesa_set_backlight(conn_state, level);
-+	set_vesa_backlight_enable(intel_dp, true);
- }
- 
--static void intel_dp_aux_disable_backlight(const struct drm_connector_state *old_conn_state,
--					   u32 level)
-+static void intel_dp_aux_vesa_disable_backlight(const struct drm_connector_state *old_conn_state,
-+						u32 level)
- {
--	set_aux_backlight_enable(enc_to_intel_dp(to_intel_encoder(old_conn_state->best_encoder)),
--				 false);
-+	set_vesa_backlight_enable(enc_to_intel_dp(to_intel_encoder(old_conn_state->best_encoder)),
-+				  false);
- }
- 
--static u32 intel_dp_aux_calc_max_backlight(struct intel_connector *connector)
-+static u32 intel_dp_aux_vesa_calc_max_backlight(struct intel_connector *connector)
- {
- 	struct drm_i915_private *i915 = to_i915(connector->base.dev);
- 	struct intel_dp *intel_dp = intel_attached_dp(connector);
-@@ -316,25 +318,25 @@ static u32 intel_dp_aux_calc_max_backlight(struct intel_connector *connector)
- 	return max_backlight;
- }
- 
--static int intel_dp_aux_setup_backlight(struct intel_connector *connector,
--					enum pipe pipe)
-+static int intel_dp_aux_vesa_setup_backlight(struct intel_connector *connector,
-+					     enum pipe pipe)
- {
- 	struct intel_panel *panel = &connector->panel;
- 
--	panel->backlight.max = intel_dp_aux_calc_max_backlight(connector);
-+	panel->backlight.max = intel_dp_aux_vesa_calc_max_backlight(connector);
- 	if (!panel->backlight.max)
- 		return -ENODEV;
- 
- 	panel->backlight.min = 0;
--	panel->backlight.level = intel_dp_aux_get_backlight(connector);
--	panel->backlight.enabled = intel_dp_aux_backlight_dpcd_mode(connector) &&
-+	panel->backlight.level = intel_dp_aux_vesa_get_backlight(connector);
-+	panel->backlight.enabled = intel_dp_aux_vesa_backlight_dpcd_mode(connector) &&
- 				   panel->backlight.level != 0;
- 
- 	return 0;
- }
- 
- static bool
--intel_dp_aux_display_control_capable(struct intel_connector *connector)
-+intel_dp_aux_supports_vesa_backlight(struct intel_connector *connector)
- {
- 	struct intel_dp *intel_dp = intel_attached_dp(connector);
- 	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-@@ -350,12 +352,12 @@ intel_dp_aux_display_control_capable(struct intel_connector *connector)
- 	return false;
- }
- 
--static const struct intel_panel_bl_funcs intel_dp_bl_funcs = {
--	.setup = intel_dp_aux_setup_backlight,
--	.enable = intel_dp_aux_enable_backlight,
--	.disable = intel_dp_aux_disable_backlight,
--	.set = intel_dp_aux_set_backlight,
--	.get = intel_dp_aux_get_backlight,
-+static const struct intel_panel_bl_funcs intel_dp_vesa_bl_funcs = {
-+	.setup = intel_dp_aux_vesa_setup_backlight,
-+	.enable = intel_dp_aux_vesa_enable_backlight,
-+	.disable = intel_dp_aux_vesa_disable_backlight,
-+	.set = intel_dp_aux_vesa_set_backlight,
-+	.get = intel_dp_aux_vesa_get_backlight,
- };
- 
- int intel_dp_aux_init_backlight_funcs(struct intel_connector *intel_connector)
-@@ -365,7 +367,7 @@ int intel_dp_aux_init_backlight_funcs(struct intel_connector *intel_connector)
- 	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
- 
- 	if (i915->params.enable_dpcd_backlight == 0 ||
--	    !intel_dp_aux_display_control_capable(intel_connector))
-+	    !intel_dp_aux_supports_vesa_backlight(intel_connector))
- 		return -ENODEV;
- 
- 	/*
-@@ -387,7 +389,7 @@ int intel_dp_aux_init_backlight_funcs(struct intel_connector *intel_connector)
- 		return -ENODEV;
- 	}
- 
--	panel->backlight.funcs = &intel_dp_bl_funcs;
-+	panel->backlight.funcs = &intel_dp_vesa_bl_funcs;
- 
- 	return 0;
- }
 -- 
 2.28.0
 
