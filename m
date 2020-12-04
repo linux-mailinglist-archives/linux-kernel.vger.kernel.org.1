@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C812CEFCF
+	by mail.lfdr.de (Postfix) with ESMTP id D66E72CEFD0
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:40:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730328AbgLDOjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:39:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38852 "EHLO
+        id S1730340AbgLDOjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:39:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730320AbgLDOjV (ORCPT
+        with ESMTP id S1730320AbgLDOjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:39:21 -0500
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AB8C061A52
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:38:40 -0800 (PST)
-Received: by mail-vk1-xa44.google.com with SMTP id i62so1292212vkb.7
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:38:40 -0800 (PST)
+        Fri, 4 Dec 2020 09:39:23 -0500
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833F4C061A53
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:38:43 -0800 (PST)
+Received: by mail-ua1-x943.google.com with SMTP id x13so1911174uar.4
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:38:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3rFsPOyzDEAkhAWBobg07vqGOOi8qrbig0PJm/UVChY=;
-        b=g8CObh4D8pRxkse8jIebJ1PeRL+SQhOD/hmBQhqW53cyRN9N9c9dB2F8mdh5b6+U5T
-         79sJuW/TGRyTpH254nwe8bXaMCUEgwQnGH/IoD10GG/D+57tYmPY+y+aAT01UxVc8DBC
-         euDhuE+X9YYs/Yp5NSBIb6MqjFXYZ5SRcyQIsFMvwl+Oiq60EEoewDsuaby72iMi+Sp0
-         HSVQ0e4goFxsnJrSYGJBpkPSEEsad6gASNt1JTvmpqIiDLfPNOOj6Y/b20CI7haVe2yx
-         vQ30GbLc+HNlwu4YZv9HfhPX8BHnTwhyjyQeSobT2rQNQkIwCNQILwiJM34rc5P8GpqG
-         54mg==
+        bh=vwpuxaaZbL1aUgf+1bfZQEaatrFcmPToO36aqopJneA=;
+        b=V0/ZJW1pimWXHb5XHK92onAUgt5du6OUKqfD2kvZ4I6vLZAh/oD4cWmR2aQUdUozGm
+         BFw4K0Jr/Dte3vzRwP0a+qYRGbHGniiTs0I7D0ZV3wwG0nmizWRi6ps/ghOXAQzVbdmp
+         +q3fWU+OtVKd4IS92/mn4mZmZDLJ2WQhSlnkF/YowL6HNPY4C7a+3ZgF1V894wRjKGWg
+         OH4FllR62z/9BRG6zmmLWRycDiXFQtvUApmWBask4Kt6gb6BkMIp6OjDEb9+BKUX7yve
+         dUi/mscp6gKqu6JrDggWFjrlY3n1vkXGZ/MaK7Se9PWoDUS6O+TEh0y+U+XNoDwl1yWN
+         a+pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3rFsPOyzDEAkhAWBobg07vqGOOi8qrbig0PJm/UVChY=;
-        b=oTujYxb98kuoxVuJpcfF9N7jnnxteRQP1YkIq9HQ5pxmd/I77+aycXd0YdsCx6z0bF
-         gz0Nv5dQ2EMwyT+IwTTRB5hTmB94ix8oimCpiDNP2sMkSp+RjuBV6Sx79mWbnWbv7Ent
-         P34wfBOzF1WS8p/0Ru5SrkldBBY/Vp9CtrTxsGELze6L6JDgktyx2q1zsgjZppf+zEep
-         1yTv+wCCMCki4aWbpSCwhSD/qFnc42kGv5I+XkHhLQ/I8QxDIqetF7WlBG4xZIV0OgTq
-         5VBcfJnJFjsw0HXUD5LC8M+qYwZmiJhCkDWyaN+YCi8LrrxCYjfqYQIhmK+gfnoqEBo+
-         xM/Q==
-X-Gm-Message-State: AOAM533iEBaOEATID/S7s2wTl1QtO8inP/ue7t+WZf/pjpzZvFOngsUo
-        KudYvNUESSnZCj6RQc9qjbmGvENNEXZNMFI/txb0NQ==
-X-Google-Smtp-Source: ABdhPJz3QI5y2PQEc0bxQyphxPQcoxsWuIeSn5xJpQHZGCLRI80B0b5CqhWoFAsSqbl/eeT5c7RHMRWgnnzQWyZiKVw=
-X-Received: by 2002:a1f:8f48:: with SMTP id r69mr3906021vkd.6.1607092719799;
- Fri, 04 Dec 2020 06:38:39 -0800 (PST)
+        bh=vwpuxaaZbL1aUgf+1bfZQEaatrFcmPToO36aqopJneA=;
+        b=U7Njh73HK5E18PpydbxWw0LMrPsmfGn5/oT8uyRxc6nFuv1moodHnxn6dKRimtILRs
+         zg0iKQJpJ7CSaXL/6V4EPnWQkRL+jQ7E+PdH+xCBOd25sQ8fr/pTxGwNzzlwpGzUwh1U
+         Vdltvx/FljtZNlAsLP8XZ5cc0BXIICWWEH72y7/nb8J7fLPjXVmY4hxFdQpaGOLQoocC
+         ooA8eDh26mj1PG5kcQmkGawf8BGNWmh8BOZ1Xj1ynTuyriDbA8yOKJHhLVvKl394rzdz
+         ADLhX4H2u10IrvzsUzFmxLiTrUxgDS4YIWoK3c6iUeQ1dPe9Go3VKr8l2qc4wUkGyOUd
+         r5FA==
+X-Gm-Message-State: AOAM532gaT380Fm2jxN6U/o51dFrRAnDbPJGfLBOigynLnMZzyLGI762
+        CM7ItZBfgtXi/rxvXdrvPWKAiKA60Dztscbd6oJHvA==
+X-Google-Smtp-Source: ABdhPJzRn9F4pmIEZTb+X83QUxDi1ljME12Y/RmmipMsNVsDfDtmIvA4x3ulGS73cdI+/Aq6lQmwjmX/e6zQsbxPgno=
+X-Received: by 2002:a9f:3e4b:: with SMTP id c11mr3325774uaj.19.1607092722711;
+ Fri, 04 Dec 2020 06:38:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20201125033630.603863-1-jeremy.linton@arm.com>
-In-Reply-To: <20201125033630.603863-1-jeremy.linton@arm.com>
+References: <20201125110145.2824-1-benchuanggli@gmail.com>
+In-Reply-To: <20201125110145.2824-1-benchuanggli@gmail.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 4 Dec 2020 15:38:02 +0100
-Message-ID: <CAPDyKFqNqzRD+jMgrvawD8yVsUYCjt5JvNUtYdk48gKh09_eOA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci: Use more concise device_property_read_u64
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+Date:   Fri, 4 Dec 2020 15:38:06 +0100
+Message-ID: <CAPDyKFpCJrHpb0gzDY5Tpg=7YnKpYr80q7m3KaQqBLnNgRPLmw@mail.gmail.com>
+Subject: Re: [PATCH,v2] mmc: sdhci-pci-gli: Disable slow mode in HS400 mode
+ for GL9763E
+To:     Ben Chuang <benchuanggli@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        greg.tu@genesyslogic.com.tw
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Nov 2020 at 04:36, Jeremy Linton <jeremy.linton@arm.com> wrote:
+On Wed, 25 Nov 2020 at 12:01, Ben Chuang <benchuanggli@gmail.com> wrote:
 >
-> Since we only need a single u64 the _array form is
-> unnecessarily. Use device_property_read_u64 instead.
+> From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 >
-> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> The GL9763E uses 150Mhz (slow mode) by default in HS400 mode. In order
+> to make HS400 mode run at 200Mhz, the slow mode needs to be turned off.
+>
+> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 
 Applied for next, thanks!
 
@@ -74,28 +79,34 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/sdhci.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  drivers/mmc/host/sdhci-pci-gli.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 >
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index feba64fbde16..ad4ae88a7f74 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -3992,10 +3992,10 @@ void __sdhci_read_caps(struct sdhci_host *host, const u16 *ver,
->         if (host->v4_mode)
->                 sdhci_do_enable_v4_mode(host);
+> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+> index 9887485a4134..d45d7e529150 100644
+> --- a/drivers/mmc/host/sdhci-pci-gli.c
+> +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> @@ -87,6 +87,9 @@
+>  #define PCIE_GLI_9763E_SCR      0x8E0
+>  #define   GLI_9763E_SCR_AXI_REQ           BIT(9)
 >
-> -       device_property_read_u64_array(mmc_dev(host->mmc),
-> -                                      "sdhci-caps-mask", &dt_caps_mask, 1);
-> -       device_property_read_u64_array(mmc_dev(host->mmc),
-> -                                      "sdhci-caps", &dt_caps, 1);
-> +       device_property_read_u64(mmc_dev(host->mmc),
-> +                                "sdhci-caps-mask", &dt_caps_mask);
-> +       device_property_read_u64(mmc_dev(host->mmc),
-> +                                "sdhci-caps", &dt_caps);
+> +#define PCIE_GLI_9763E_MMC_CTRL  0x960
+> +#define   GLI_9763E_HS400_SLOW     BIT(3)
+> +
+>  #define SDHCI_GLI_9763E_CQE_BASE_ADDR   0x200
+>  #define GLI_9763E_CQE_TRNS_MODE           (SDHCI_TRNS_MULTI | \
+>                                     SDHCI_TRNS_BLK_CNT_EN | \
+> @@ -764,6 +767,10 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
+>         value |= GLI_9763E_SCR_AXI_REQ;
+>         pci_write_config_dword(pdev, PCIE_GLI_9763E_SCR, value);
 >
->         v = ver ? *ver : sdhci_readw(host, SDHCI_HOST_VERSION);
->         host->version = (v & SDHCI_SPEC_VER_MASK) >> SDHCI_SPEC_VER_SHIFT;
+> +       pci_read_config_dword(pdev, PCIE_GLI_9763E_MMC_CTRL, &value);
+> +       value &= ~GLI_9763E_HS400_SLOW;
+> +       pci_write_config_dword(pdev, PCIE_GLI_9763E_MMC_CTRL, value);
+> +
+>         pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
+>         value &= ~GLI_9763E_VHS_REV;
+>         value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
 > --
-> 2.26.2
+> 2.29.2
 >
