@@ -2,95 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B75E2CE85E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FC72CE860
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728293AbgLDHCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 02:02:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbgLDHCr (ORCPT
+        id S1728487AbgLDHDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 02:03:39 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8683 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgLDHDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 02:02:47 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F049C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 23:02:07 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id o24so5416960ljj.6
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 23:02:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DGtZLLbFDWoCQqYx9LfvjHPyF73CfxgpUXIf4y83koQ=;
-        b=PKdyv27y3AZcNIpFmJN4IexnpXLeYF7dsYQD0hLr6Re40GrmkO6dSIBUQzFksxPrWy
-         qnQaRAqgM85WhG4I9zWQzxu1CbBtXf052bshXLmR8KcrOFQ/tIQKFmuTsOrb8ZqC+yyj
-         9HwEYGuufCYCuuZsY9BEBI/tY/d5bmrUYc/LfRQpQil7msHn33KHeb7m8ftfYc5oEkqJ
-         qV41Jfn0skzideGxiH9UXZILkWCwerJAqj1u60Y3UI/A8G1e77kqiAqbXiWeGcdmbJUn
-         fjnffPmoeZUmL8IuMGKce+brMxyVYtbwiCVRD/nKUEhOHT70MK8G0rSunGqISv0e5gx5
-         UO/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DGtZLLbFDWoCQqYx9LfvjHPyF73CfxgpUXIf4y83koQ=;
-        b=eJHTnOKoKl88smE4JwNSMXikql3294Vuyzp81ebT741h5fcLbXXAOIUqjOCFMlMHpR
-         BRY3M2G+wxo+XE91wpICYqc/gbyB/E9Kv6CtcxOnC19QKPComjPSft5/3I7Jc+HfTjsC
-         tbkIqHrfFsAIxgZTZtvzyEe5fRS8T1oGozjIUMNvOkse3GYiLY5iCOvUjnX9DA6GFXrO
-         /CXAFOXg+FhR5irsmaUeZ67+AnCCuN2v75Sztdekh7N5iWSI8DofNxZqnD7PjX7oTVR7
-         NSy/wsY9BJAR1HhqNZjaiYFHUezd3Qj1hRXMkLopKbnOHXEllFWnNPOcAqSmqfP4XWQ/
-         jYsg==
-X-Gm-Message-State: AOAM530/fcFe1byCw56hUQHnu8y75K/H7knZ/3Gc6L6owzI/A+u86KoR
-        ySJxE0rRelkIn2t3ySsZPCkq1cGy+x3lnFJ9K38=
-X-Google-Smtp-Source: ABdhPJx03vml2qZJmzdaER4GawRDs1zl5iA2sew69N6FEp9q2vwnZucI8MjZIGzQkHAh4gRehD7/1CHLqBps1MLJDB8=
-X-Received: by 2002:a2e:9707:: with SMTP id r7mr2658587lji.265.1607065324902;
- Thu, 03 Dec 2020 23:02:04 -0800 (PST)
+        Fri, 4 Dec 2020 02:03:39 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnNtc3WcLzklD0;
+        Fri,  4 Dec 2020 15:02:16 +0800 (CST)
+Received: from [10.174.187.37] (10.174.187.37) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 4 Dec 2020 15:02:43 +0800
+Subject: Re: [PATCH v2 2/2] clocksource: arm_arch_timer: Correct fault
+ programming of CNTKCTL_EL1.EVNTI
+To:     Marc Zyngier <maz@kernel.org>
+References: <20200818032814.15968-1-zhukeqian1@huawei.com>
+ <20200818032814.15968-3-zhukeqian1@huawei.com>
+ <b232d02b2d9c3e29898914bd9bbb8dc5@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        <wanghaibin.wang@huawei.com>
+From:   zhukeqian <zhukeqian1@huawei.com>
+Message-ID: <c41a32f6-e671-4c69-cbbc-57c11d35112f@huawei.com>
+Date:   Fri, 4 Dec 2020 15:02:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-References: <20201204005847.654074-1-daeho43@gmail.com> <X8msy1T8uqZ4Z/iR@sol.localdomain>
- <CACOAw_wTFsfgLfrWKRoM1o_HQorJE-=2ztZftQTn+comcpmHxQ@mail.gmail.com>
- <X8m0qbd7rvQyiwOt@sol.localdomain> <CACOAw_y2HRE8CDk-HAjA6w_HzGJpRpivPY5zKRMC4_SNYTnTGg@mail.gmail.com>
- <CACOAw_xzKjZcpVTo3aj5sJUQ_BjLr=5ZhnfuyFwYerpyzZu+aw@mail.gmail.com>
- <X8nAParf9GW9LaGV@sol.localdomain> <CACOAw_wOShYf23Y0txs6Fk_Qq9JGEjXGRb0MzMxrBxJpzCfLmA@mail.gmail.com>
- <X8nGvfEeTDTLa6FL@sol.localdomain>
-In-Reply-To: <X8nGvfEeTDTLa6FL@sol.localdomain>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Fri, 4 Dec 2020 16:01:54 +0900
-Message-ID: <CACOAw_wfew8xER-CibUtddRKVtcr3k_iGzjQ-bVYxqRUuEVCcw@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH] f2fs: fix race of pending_pages in decompression
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <b232d02b2d9c3e29898914bd9bbb8dc5@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.37]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the explanation about verity.
-I got your point. Thanks~
+Hi Marc,
 
-2020=EB=85=84 12=EC=9B=94 4=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 2:18, E=
-ric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Fri, Dec 04, 2020 at 02:00:34PM +0900, Daeho Jeong wrote:
-> > I think I don't understand how verity works.
-> > Right after verity is enabled on a file, is the verity logic working
-> > for the whole file data area?
-> > Or it's just working for the data area which is updated after verity is=
- enabled?
-> >
->
-> It's for the whole file.
->
-> My point is just that if there is a bio that saw that verity isn't enable=
-d yet
-> when it started and therefore STEP_VERITY didn't get set in the
-> bio_post_read_ctx (or the bio_post_read_ctx didn't get allocated due to o=
-ne not
-> being needed), then the filesystem shouldn't change its mind and try to v=
-erify
-> the pages when the bio completes if verity happened to be enabled concurr=
-ently.
-> It's too late for that bio.
->
-> - Eric
+On 2020/12/3 22:57, Marc Zyngier wrote:
+> On 2020-08-18 04:28, Keqian Zhu wrote:
+>> ARM virtual counter supports event stream, it can only trigger an event
+>> when the trigger bit (the value of CNTKCTL_EL1.EVNTI) of CNTVCT_EL0 changes,
+>> so the actual period of event stream is 2^(cntkctl_evnti + 1). For example,
+>> when the trigger bit is 0, then virtual counter trigger an event for every
+>> two cycles.
+>>
+>> Fixes: 037f637767a8 ("drivers: clocksource: add support for
+>>        ARM architected timer event stream")
+> 
+> Fixes: tags should on a single line.
+Will do.
+
+> 
+>> Suggested-by: Marc Zyngier <maz@kernel.org>
+>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>> ---
+>>  drivers/clocksource/arm_arch_timer.c | 10 +++++++---
+>>  1 file changed, 7 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/clocksource/arm_arch_timer.c
+>> b/drivers/clocksource/arm_arch_timer.c
+>> index 777d38c..e3b2ee0 100644
+>> --- a/drivers/clocksource/arm_arch_timer.c
+>> +++ b/drivers/clocksource/arm_arch_timer.c
+>> @@ -824,10 +824,14 @@ static void arch_timer_configure_evtstream(void)
+>>  {
+>>      int evt_stream_div, pos;
+>>
+>> -    /* Find the closest power of two to the divisor */
+>> -    evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ;
+>> +    /*
+>> +     * Find the closest power of two to the divisor. As the event
+>> +     * stream can at most be generated at half the frequency of the
+>> +     * counter, use half the frequency when computing the divider.
+>> +     */
+>> +    evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ / 2;
+>>      pos = fls(evt_stream_div);
+>> -    if (pos > 1 && !(evt_stream_div & (1 << (pos - 2))))
+>> +    if ((pos == 1) || (pos > 1 && !(evt_stream_div & (1 << (pos - 2)))))
+>>          pos--;
+> 
+> You don't explain why you are special-casing pos == 1.
+The logic is not clear here, I will try to reform it.
+
+> 
+>>      /* enable event stream */
+>>      arch_timer_evtstrm_enable(min(pos, 15));
+> 
+> Also, please Cc the subsystem maintainers:
+> 
+> CLOCKSOURCE, CLOCKEVENT DRIVERS
+> M:      Daniel Lezcano <daniel.lezcano@linaro.org>
+> M:      Thomas Gleixner <tglx@linutronix.de>
+> L:      linux-kernel@vger.kernel.org
+> S:      Supported
+> T:      git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
+> F:      Documentation/devicetree/bindings/timer/
+> F:      drivers/clocksource/
+> 
+Will do.
+
+> Thanks,
+> 
+>         M.
+
+Thanks,
+Keqian
