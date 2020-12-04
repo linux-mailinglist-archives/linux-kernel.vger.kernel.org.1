@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890792CE651
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A30D92CE668
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 04:21:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727621AbgLDDQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 22:16:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727518AbgLDDQC (ORCPT
+        id S1727487AbgLDDUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 22:20:45 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8642 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725847AbgLDDUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 22:16:02 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF91C061A51
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 19:15:16 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id f11so3358359qth.23
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 19:15:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=SqrSxY5uc4xcJqKSvQt8JkbosUVthJxwVLPagRQfa9k=;
-        b=ZtoCbhF83mH8woZoUdtLoCbWmJ69GR8ZSC7CbsMblk48Asr7dttdoLeBj4/QMHcxWC
-         n/WqQ0M6X4a2zQTPqqJbOUg5BMPeXthOn6YvhNjwvyYi2GhMIWsehNr3oF+HLQGUZFZB
-         U+lzRysW5d6Bynymlp1oBm2meut/MtnoCvChFGvdVZJyU8a9w9j2dDeYtajHCy87oXFu
-         GvkMsj5NHy8ahIki1cL7qxZWmwSWSyrYlw6lp97ts5Ok0cI8H2uPj7kgH4fCOHW1JM1i
-         PFbXWl/oPM2xYrfOMbpPSaeeDSvQoERuv9h4wdX8ygDYryoQ4aeeMleNgs0RqUjkS8E7
-         vSsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=SqrSxY5uc4xcJqKSvQt8JkbosUVthJxwVLPagRQfa9k=;
-        b=BHd1E3n6056apBnXEWLjnYFYy8ELUmhvLveFemI3PwnHAeR+GMpnik0on9tcPyp5kB
-         5VjMO4zsURkLXZ7nQ+sIzZ9ykBGEiD9yauQ1iWoPWcYjzIz2trcUsFu/fe1E7aWsf7VX
-         5+UFhwFGP7GJ0fN9ipRL6zQFD0IVoG+Dt2VdXMHOqKpt9SzOzuTQ1Hj8Oh7vsHir+W5v
-         bpnbEsyEBpGtcRWR/BtmoASOClHymuK0KZdeIAxQ9T0k3umKAGJW3ctt0w+llLSSuleU
-         Btto8ksYIlUTA9USBqbyecUy+8ap3bMT3grD4bbIigNeK8NbizPn0VqCFPcE8lqShrrB
-         KkPw==
-X-Gm-Message-State: AOAM532/NmLOh8jLuJimoD3yW92DfEaEzY7V2ynz6yanRLFlPINMFcr4
-        LEjPc9aBHxoo8IQiNRZRHP+m2k6yspKJ4zWhSQ==
-X-Google-Smtp-Source: ABdhPJw6pYkEPaXn6m8Sa+IEwWAZKLX13zrJN5JXeLuCA6Cr5L/HdyQWDCnm9EPigYwxBtnqeBX6CeiZcx6ZH0NoNg==
-Sender: "howardchung via sendgmr" 
-        <howardchung@howardchung-p920.tpe.corp.google.com>
-X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:4e45])
- (user=howardchung job=sendgmr) by 2002:ad4:4d84:: with SMTP id
- cv4mr2903690qvb.14.1607051715532; Thu, 03 Dec 2020 19:15:15 -0800 (PST)
-Date:   Fri,  4 Dec 2020 11:14:31 +0800
-Message-Id: <20201204111038.v1.1.I4557a89427f61427e65d85bc51cca9e65607488e@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH v1] Bluetooth: Set missing suspend task bits
-From:   Howard Chung <howardchung@google.com>
-To:     linux-bluetooth@vger.kernel.org
-Cc:     alainm@chromium.org, mmandlik@chromium.org, mcchou@chromium.org,
-        marcel@holtmann.org, abhishekpandit@chromium.org,
-        apusaka@chromium.org, Howard Chung <howardchung@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 3 Dec 2020 22:20:44 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnHxZ59R5z15XCk;
+        Fri,  4 Dec 2020 11:19:30 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.9) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Fri, 4 Dec 2020
+ 11:19:54 +0800
+Subject: Re: [PATCH 0/1] dt-bindings: eliminate yamllint warnings
+To:     Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "NXP Linux Team" <linux-imx@nxp.com>,
+        David Airlie <airlied@linux.ie>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Thierry Reding" <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "Hans Verkuil" <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "Ricardo Ribalda" <ribalda@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "Mark Brown" <broonie@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-mediatek <linux-mediatek@lists.infradead.org>,
+        alsa-devel <alsa-devel@alsa-project.org>
+References: <20201204024226.1222-1-thunder.leizhen@huawei.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <5dba4db6-dc66-44a8-ac4c-c5fe288c3430@huawei.com>
+Date:   Fri, 4 Dec 2020 11:19:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <20201204024226.1222-1-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Sorry, Forgot to say: This patch is based on the latest linux-next code.
 
-When suspending, mark SUSPEND_SCAN_ENABLE and SUSPEND_SCAN_DISABLE tasks
-correctly when either classic or le scanning is modified.
 
-Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Signed-off-by: Howard Chung <howardchung@google.com>
-Reviewed-by: Alain Michaud <alainm@chromium.org>
----
-
- net/bluetooth/hci_request.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 80dc451d6e124..71bffd7454720 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -707,6 +707,9 @@ void hci_req_add_le_scan_disable(struct hci_request *req, bool rpa_le_conn)
- 		return;
- 	}
- 
-+	if (hdev->suspended)
-+		set_bit(SUSPEND_SCAN_DISABLE, hdev->suspend_tasks);
-+
- 	if (use_ext_scan(hdev)) {
- 		struct hci_cp_le_set_ext_scan_enable cp;
- 
-@@ -1159,6 +1162,11 @@ static void hci_req_set_event_filter(struct hci_request *req)
- 		scan = SCAN_PAGE;
- 	}
- 
-+	if (scan)
-+		set_bit(SUSPEND_SCAN_ENABLE, hdev->suspend_tasks);
-+	else
-+		set_bit(SUSPEND_SCAN_DISABLE, hdev->suspend_tasks);
-+
- 	hci_req_add(req, HCI_OP_WRITE_SCAN_ENABLE, 1, &scan);
- }
- 
--- 
-2.29.2.576.ga3fc446d84-goog
+On 2020/12/4 10:42, Zhen Lei wrote:
+> There're too many people, I just send to the maintainer, reviewer, supporter.
+> 
+> Eliminate below warnings:
+> ./Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml:32:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
+> ./Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml:35:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+> ./Documentation/devicetree/bindings/display/intel,keembay-msscam.yaml:21:6: [warning] wrong indentation: expected 6 but found 5 (indentation)
+> ./Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml:52:9: [warning] wrong indentation: expected 6 but found 8 (indentation)
+> ./Documentation/devicetree/bindings/display/bridge/intel,keembay-dsi.yaml:42:8: [warning] wrong indentation: expected 8 but found 7 (indentation)
+> ./Documentation/devicetree/bindings/display/bridge/intel,keembay-dsi.yaml:45:8: [warning] wrong indentation: expected 8 but found 7 (indentation)
+> ./Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml:25:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
+> ./Documentation/devicetree/bindings/media/i2c/adv7604.yaml:24:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+> ./Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml:4:1: [error] missing document start "---" (document-start)
+> ./Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml:29:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+> ./Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml:32:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+> ./Documentation/devicetree/bindings/media/i2c/ovti,ov772x.yaml:79:17: [warning] wrong indentation: expected 14 but found 16 (indentation)
+> ./Documentation/devicetree/bindings/media/i2c/ovti,ov772x.yaml:88:17: [warning] wrong indentation: expected 14 but found 16 (indentation)
+> ./Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml:72:17: [warning] wrong indentation: expected 18 but found 16 (indentation)
+> ./Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml:75:17: [warning] wrong indentation: expected 18 but found 16 (indentation)
+> ./Documentation/devicetree/bindings/mmc/mtk-sd.yaml:20:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+> ./Documentation/devicetree/bindings/mmc/mtk-sd.yaml:30:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+> ./Documentation/devicetree/bindings/mmc/mtk-sd.yaml:33:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+> ./Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml:10:4: [warning] wrong indentation: expected 2 but found 3 (indentation)
+> 
+> 
+> Zhen Lei (1):
+>   dt-bindings: eliminate yamllint warnings
+> 
+>  .../devicetree/bindings/clock/imx8qxp-lpcg.yaml    | 20 ++++++++---------
+>  .../bindings/display/bridge/analogix,anx7625.yaml  |  4 ++--
+>  .../bindings/display/bridge/intel,keembay-dsi.yaml |  4 ++--
+>  .../bindings/display/intel,keembay-msscam.yaml     |  4 ++--
+>  .../bindings/display/panel/novatek,nt36672a.yaml   |  2 +-
+>  .../devicetree/bindings/media/i2c/adv7604.yaml     |  4 ++--
+>  .../devicetree/bindings/media/i2c/mipi-ccs.yaml    | 11 ++++-----
+>  .../devicetree/bindings/media/i2c/ovti,ov772x.yaml | 12 +++++-----
+>  .../devicetree/bindings/media/i2c/sony,imx214.yaml | 12 +++++-----
+>  Documentation/devicetree/bindings/mmc/mtk-sd.yaml  | 26 +++++++++++-----------
+>  .../sound/mt8192-mt6359-rt1015-rt5682.yaml         |  4 ++--
+>  11 files changed, 52 insertions(+), 51 deletions(-)
+> 
 
