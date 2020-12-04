@@ -2,74 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7983C2CF065
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B24E2CF067
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730436AbgLDPJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:09:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725923AbgLDPJJ (ORCPT
+        id S1730465AbgLDPJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:09:41 -0500
+Received: from relay12.mail.gandi.net ([217.70.178.232]:51293 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727126AbgLDPJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:09:09 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF621C061A51;
-        Fri,  4 Dec 2020 07:08:29 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607094507;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=m+5fUfCGN4l8PttwLmFKEO9H2mckNeF24mD/TIdsWmA=;
-        b=IMK9HWTOFmsmGjUiNSHj45Vv6+Y4MUAZ4rHxVC3aeoHN2rE5EBGlduOSi8RJbyfAANrFlR
-        LvoWc0CDfTy7NXTHYTYsXnVED6ZyvuyBTu0a9o5jYQdphqrLvLPbskLSFNdS7uWI2tUzqz
-        cBemexfhX7i3B63iOQUMo+oE/d/o4zpyumtdAlZEuRm8S1RezGtdjN3T+jpF3gwVy4yLqq
-        7iP8XzvD/utBLvvxbLB0QOeJEFBwWoUuDHD8XVo8WC5mIwK2cUH+CEvlvaN/TDjn7U2OZL
-        z/SvS8RdMz/hjlYEnAejzfQZW5mr/bR2gzQ0XB7qiehZGarVU+FzWkPfkh7pog==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607094507;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=m+5fUfCGN4l8PttwLmFKEO9H2mckNeF24mD/TIdsWmA=;
-        b=INkOrHiJFDwY6z7hGqBnk6yKA9vFBYJNsviMtfs2IwfBxi0PyZSJvR9EccALbcd/BAKPYz
-        qCzaYhAQYTLVRtDg==
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linuxfoundation.org>
-Subject: Re: crypto: sun4i-ss: error with kmap
-In-Reply-To: <20201204132631.GA25321@Red>
-References: <20201201130102.GA23461@Red> <87ft4phcyx.fsf@nanos.tec.linutronix.de> <20201201135252.GA9584@Red> <87y2ihfw6z.fsf@nanos.tec.linutronix.de> <20201201144529.GA6786@Red> <87v9dlfthf.fsf@nanos.tec.linutronix.de> <20201202195501.GA29296@Red> <877dpzexfr.fsf@nanos.tec.linutronix.de> <20201203173846.GA16207@Red> <87r1o6bh1u.fsf@nanos.tec.linutronix.de> <20201204132631.GA25321@Red>
-Date:   Fri, 04 Dec 2020 16:08:27 +0100
-Message-ID: <874kl1bod0.fsf@nanos.tec.linutronix.de>
+        Fri, 4 Dec 2020 10:09:41 -0500
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id D1BE120000C;
+        Fri,  4 Dec 2020 15:08:57 +0000 (UTC)
+Date:   Fri, 4 Dec 2020 16:08:57 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] rtc: adapt allowed RTC update error
+Message-ID: <20201204150857.GJ74177@piout.net>
+References: <20201203021047.GG3544@piout.net>
+ <87pn3qdhli.fsf@nanos.tec.linutronix.de>
+ <20201203161622.GA1317829@ziepe.ca>
+ <87zh2ubny2.fsf@nanos.tec.linutronix.de>
+ <87wnxybmqx.fsf@nanos.tec.linutronix.de>
+ <20201203223646.GA1335797@ziepe.ca>
+ <877dpxbu66.fsf@nanos.tec.linutronix.de>
+ <20201204140819.GX5487@ziepe.ca>
+ <20201204143735.GI74177@piout.net>
+ <20201204144659.GY5487@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204144659.GY5487@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04 2020 at 14:26, Corentin Labbe wrote:
-> On Fri, Dec 04, 2020 at 12:34:05AM +0100, Thomas Gleixner wrote:
->> The unmap comes from sg_miter_stop() and looking at the previous
->> map/unmap cycles there are never nested maps.
->> 
->> [  996.943030] cryptset-316       0d..4 73943317us : __kmap_local_pfn_prot: kmap_local_pfn: 1 ffefd000
->> 
->> is the first event which allocates a nested map. 
->> 
->> So something goes south either in sg_miter or in the crypto maze.
->> 
->> Enabling CONFIG_DEBUG_KMAP_LOCAL and function tracing might give us more clue.
->
-> Done, http://kernel.montjoie.ovh/130466.log
+On 04/12/2020 10:46:59-0400, Jason Gunthorpe wrote:
+> > If you want to read an RTC accurately, you don't want to time a read,
+> > what you want is to time an alarm. This is a common misconception and
+> > is, again, why hctosys in its current state is not useful.
+> 
+> I mean literatally time the excution of something like a straight
+> read. This will give some estimate of the bus latency and it should
+> linearly relate to the bus latency for a write.
+> 
 
-Does not provide more information with the debug enabled. So can you
-please enable CONFIG_FUNCTION_TRACER and add 'ftrace=function' to the
-command line?
+It doesn't, some rtc will require writing dozen registers to set the
+time and reading only 3 to get the time, the only accurate way is to
+really time setting the time. You set the RTC time once, set up an alarm for
+the next second, once you get the alarm, you get system time and you now
+how far you are off.
 
-Thanks,
+Notice that systohc could do that if you wanted to be accurate and then
+the whole issue with mc146818 is gone and this nicely solves it for all
+the RTCs at once.
 
-        tglx
+> The driver could time configuring an alarm as well, if it likes.
+
+The driver should definitively not have to do the timing. the core,
+maybe but I won't go over the 165 drivers to add timing.
+
+> 
+> > And because people using systohc are definitively using hctosys, this
+> > will still result in an up to 500ms error in the current time.
+> > As said, the price to pay for a proper solution will be an up to one
+> > second delay when booting which is not acceptable for most users.
+> 
+> IIRC I had fixed this in some embedded system long ago by having
+> hctosys reading seconds time during boot, then in parallel using the
+> 'up to one second' method to get the sub-second resolution.
+> 
+> This means there was a sub second non-monotonicity in the realtime
+> clock, but the system was designed to tolerate this as it also ran a
+> modified NTP which would unconditionally step the clock on first sync
+> if it was over .1s out of alignment.
+> 
+> The goal was to bring the system to correct time as quickly as
+> possible in as many cases as possible, not to maintain the
+> monotonicity of the realtime clock.
+> 
+
+I'm really curious, in your use case, couldn't you have read the RTC
+from userspace and set the system time from there, right before starting
+NTP and other applications?
+Doing so, you would have probably been able to ensure monotonicity.
+
+> > Is "fixing" systohc worth the effort and the maintenance cost?
+> 
+> As I said before, if there is no desire to address the read side then
+> the whole thing should be abandoned.
+> 
+
+What was your plan back in 2017?
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
