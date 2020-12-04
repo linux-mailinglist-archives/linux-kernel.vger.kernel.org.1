@@ -2,74 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62B42CF158
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCE82CF0BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730699AbgLDP4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:56:12 -0500
-Received: from mga11.intel.com ([192.55.52.93]:11990 "EHLO mga11.intel.com"
+        id S2387662AbgLDPb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:31:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728708AbgLDP4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:56:11 -0500
-IronPort-SDR: g0yVwsywaBGiDVXGjMOoE5/l4AhyBoSylQk1fD4wZYTZPfPBCc9fLvxVWjJDPzNx3cwEbPrXRR
- RiphtuWUvF7g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="169888865"
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="169888865"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 07:54:24 -0800
-IronPort-SDR: Vhp5Jswx9eGcKQL0ubW9XPAUESZ+FxyWye9LDRS0HSZNv0scOiPCBnG86xBRFFAihH/b2E8VKk
- RmWHc19aubeA==
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="373958798"
-Received: from emogena-mobl1.amr.corp.intel.com (HELO [10.212.90.42]) ([10.212.90.42])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 07:54:22 -0800
-Subject: Re: [PATCH v2] ASoC: intel: sof_rt5682: Add support for
- tgl_rt1011_rt5682
-To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Dharageswari R <dharageswari.r@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Ben Zhang <benzh@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Naveen Manohar <naveen.m@intel.com>,
-        Libin Yang <libin.yang@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>
-References: <20201203154010.29464-1-brent.lu@intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <64da393b-f591-7af0-a131-b40f49dcf804@linux.intel.com>
-Date:   Thu, 3 Dec 2020 10:02:48 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729840AbgLDPb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 10:31:26 -0500
+Date:   Fri, 4 Dec 2020 17:30:37 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607095846;
+        bh=NHKkkiVjcEytL4TWZgxQrssmxGcP3N0tIxymDLc440g=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qBI1LL+o1KhplcvIkiunZUov3Mg8GnpFsgg7rJ/ut5AHZOEsNV4OUKeAFdFG2Oa0W
+         mYkMXl5jIgoqDfpjRIBbIgHXQ1vGWbb0OJFqvLLg+/XuL+lBJh7xa0Q/BiAj3ikEL8
+         hFI1078z6KQxlbDqHQLWcwwhNDknoAl1RP1j3k/GDVli6LOaHaOgW7IGuTTAWPD+b3
+         SIOWgpOoZsKoIaw8zdMRVVevSi2HKOvRJq245q2Vh0NLbYcDJYJ++WCfiaQonzWDoC
+         iQExKMaT6wKrDsc7Kf/xO0p6HpdWfM32hCMFmYWeBE/i7pedyt6CyIQgLp2+OMK7WD
+         yYC7QSsicJNyw==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     gmail Elaine Palmer <erpalmerny@gmail.com>
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        jarkko.sakkinen@linux.intel.com, zohar@linux.ibm.com,
+        jejb@linux.ibm.com, dhowells@redhat.com, jens.wiklander@linaro.org,
+        corbet@lwn.net, jmorris@namei.org, serge@hallyn.com,
+        casey@schaufler-ca.com, janne.karhunen@gmail.com,
+        daniel.thompson@linaro.org, Markus.Wamser@mixed-mode.de,
+        lhinds@redhat.com, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org,
+        Kenneth Goldman <kgoldman@us.ibm.com>, gcwilson@linux.ibm.com,
+        zgu@us.ibm.com, stefanb@us.ibm.com, NAYNA JAIN1 <naynjain@ibm.com>
+Subject: Re: [PATCH v8 3/4] doc: trusted-encrypted: updates with TEE as a new
+ trust source
+Message-ID: <20201204153037.GC4922@kernel.org>
+References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
+ <1604419306-26105-4-git-send-email-sumit.garg@linaro.org>
+ <81A6B61D-3811-4957-B270-52AE5FA6DE4F@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201203154010.29464-1-brent.lu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <81A6B61D-3811-4957-B270-52AE5FA6DE4F@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/3/20 9:40 AM, Brent Lu wrote:
-> This patch adds the driver data for two rt1011 speaker amplifiers on
-> SSP1 and rt5682 on SSP0 for TGL platform. DAI format for rt1011 is
-> leveraged from cml_rt1011_rt5682 which is 4-slot tdm with 100fs bclk.
+On Wed, Dec 02, 2020 at 02:34:07PM -0500, gmail Elaine Palmer wrote:
+> Hi Sumit,  
 > 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
+> Thank you for the detailed descriptions and examples of trust sources
+> for Trusted Keys.   A group of us in IBM (Stefan Berger, Ken Goldman,
+> Zhongshu Gu, Nayna Jain, Elaine Palmer, George Wilson, Mimi Zohar)
+> have been doing related work for quite some time, and we have one
+> primary concern and some suggested changes to the document. 
+> 
+> Our primary concern is that describing a TEE as a Trust Source needs
+> to be more specific.   For example, "ARM TrustZone" is not sufficient,
+> but "wolfSSL embedded SSL/TLS library with ARM TrustZone
+> CryptoCell-310" is.  Just because a key is protected by software
+> running in a TEE is not enough to establish trust.  Just like
+> cryptographic modules, a Trust Source should be defined as a specific
+> implementation on specific hardware with well-documented environmental
+> assumptions, dependencies, and threats.
+> 
+> In addition to the above concern, our suggested changes are inline
+> below.
 
-Thanks Brent.
+In order to give a decent review comment it should have two ingredients:
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+- Where the existing line of code / text / whatever goes wrong.
+- How it should modified and why that makes sense. And use as plain
+  English and non-academic terms as possible, if it is documentation.
+  Further, scope is only the kernel implementation, no more or no
+  less.
+
+"do this" is not unfortunately an argument. Feedback is welcome when
+it is supported by something common sensse.
+
+Some meta suggestion of related to email:
+
+Please also use a proper email client and split your paragraphs into
+at most 80 character lines with new line characters when writing email.
+I prefer to use 72 character line length so that there's some space
+for longer email threads.
+
+/Jarkko
