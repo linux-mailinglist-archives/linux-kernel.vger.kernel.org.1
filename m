@@ -2,130 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4332CEB06
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BA42CEB18
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387515AbgLDJhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:37:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgLDJhE (ORCPT
+        id S1729636AbgLDJjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:39:44 -0500
+Received: from mout.kundenserver.de ([212.227.17.13]:41131 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727518AbgLDJjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:37:04 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EBD5C061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 01:36:24 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id i2so4646520wrs.4
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 01:36:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BqEAYW4EhE3wh0Ne5/63R8wPgVuksOtShuZAIDQhCGE=;
-        b=S/bvfu+UBmzPVOH8FvXjVYCbMQ+oE9In1/b1fjfitbAT7uurO4ps7Ol4fN+XYqfxkg
-         tcjjJX+LJLxr7TANbvE0mUTZfEppcC6cZskSVG9bVpQRz+dJorDShgkpjuZL4X5K5vWf
-         khnGBuOP1sR8d9+7NEkaSb6vh1ISsy9x5yM788EYDbWSNE3gM8TKuFWdbolK1ifkMXJ9
-         ZGDP7Qd2VXLi/xyNPf+fkmynZCDr64hSLLG/TsMe/ihCOdmN4hWlaurx7Ai8OICSLehJ
-         fp6GBjy49aSFtaLVrPfNtvxkjuwuAmf8PHVQi3nf/lCk1jVk4fxNN0U57TWCtEcDQUzC
-         ikGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BqEAYW4EhE3wh0Ne5/63R8wPgVuksOtShuZAIDQhCGE=;
-        b=U9F0OOnT5KkYRUzCNu42G9GfYywhyJG7c4x6uOFBO+7UkiFwgPCQoHlH/AF0PmIuLJ
-         oRAhBVHf13VWM4zmBvoqsE9ZJ8fGQL0+26/wgi/ehRkIO4J7oZH5b+cQAUw+EXp42/JJ
-         vh0M6OByHqLYDG8lc+Nbw9UtYbfFuQXnrIRavTo9UFrA8b+Kz02mV7DhoMp5UNm1bQF7
-         dzIJ1bfyzPT2y531ZIYdZkhCWUvtrkR0t9mcl7kofwWTFvSTaYBilbiI9+9sRqbtW7Ju
-         A/Qb0CsMcmyi2uCoXbwq291EHPbnhVBUTzdJfd5H9PxgYCW73HoVzhdAbUkcWnf9jIiD
-         qjhQ==
-X-Gm-Message-State: AOAM530b9fCAdv2eO6SjUv9eyzr2aLKgO9SgaN4Y2we8FLwmrmVm2JL0
-        9uLnkLCvRee/Ti0IRbQGaS7vUw==
-X-Google-Smtp-Source: ABdhPJxh9HEmyniQ4XK8S1PRAIU24gKBgG7zElH2XSLs8a+fsCv5Ec22unZIwJnOfzYZZhEZc6tm5A==
-X-Received: by 2002:adf:d18a:: with SMTP id v10mr1819650wrc.273.1607074582839;
-        Fri, 04 Dec 2020 01:36:22 -0800 (PST)
-Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id o67sm2458527wmo.31.2020.12.04.01.36.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 01:36:22 -0800 (PST)
-Date:   Fri, 4 Dec 2020 09:36:18 +0000
-From:   Brendan Jackman <jackmanb@google.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH bpf-next v3 10/14] bpf: Add bitwise atomic instructions
-Message-ID: <X8oDEsEjU059T7+k@google.com>
-References: <20201203160245.1014867-1-jackmanb@google.com>
- <20201203160245.1014867-11-jackmanb@google.com>
- <86a88eba-83a1-93c0-490d-ceba238e3aad@fb.com>
+        Fri, 4 Dec 2020 04:39:44 -0500
+Received: from [192.168.1.155] ([95.114.158.118]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MTigN-1kbbwT2HDJ-00U5aG; Fri, 04 Dec 2020 10:36:56 +0100
+Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
+To:     Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     corbet@lwn.net, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, mst@redhat.com,
+        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv@lists.infradead.org
+References: <20201203191135.21576-1-info@metux.net>
+ <20201203191135.21576-2-info@metux.net>
+ <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+Message-ID: <43f1ee89-89f3-95a3-58f1-7a0a12c2b92f@metux.net>
+Date:   Fri, 4 Dec 2020 10:36:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <86a88eba-83a1-93c0-490d-ceba238e3aad@fb.com>
+In-Reply-To: <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:mOFd+JW7LQb94sy2J5a6Zrm6GQyrCzOe1foidRfS2Sdq5ZJFDNr
+ c9yXWiDh78oST49XU5yOT2hkWmi+sHBEeoCthMcDLadIjN7f33OyR95JbbbWC81VZvkKsJ2
+ CyEL1bcP6HGIcQKMdx+26NZtYVdXg7Tmeoc3QjBu3oN58zjc3+CyfltBuq0Ay50wvkv6a5l
+ qfTjbCjDluCwMRQUxcNqg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qtpKIGiM1QU=:9HXPFi4Z0pQrtpSEQjPRtZ
+ JtGyl92IC0eeKKCWknd9gvTWDpN+lXZQKRBaJ+lBRKjFApBrEvqRmswQ1aAhRYb2w+eejfugo
+ eC7B3VI6W6sRYKGQQMrDDzkH6ZXjoirbr+q28PGbRyY+bzodAnvWs1EGx2M/aqG69gdvjLTRX
+ 6IMYsUTKWhk4usvsgW11YbdKH1e/y31rqbdHNMpVFr4Ti4gWYsVgEegiUoLuYuKdqdU+TkU5n
+ x5yzzR3+5yAODcNZy9zjHJBRGxLg8AxpAcX69/elxA+GjkIbMvPMeytzQDiMEocj2QpfQVGMq
+ 86j47f6GvwRDPf/me9+9BhZfqUTplqzJ5Sc4MFXJirhwcP2QgerCKlvMiwJgq9yetG/xUIeIW
+ u8O9OjFfy3L6ZFMNe2TJMvNljme/73qPxwpWAKQ9DrqGX7uqhJ/PC2MDHpPGO
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 10:42:19PM -0800, Yonghong Song wrote:
-> 
-> 
-> On 12/3/20 8:02 AM, Brendan Jackman wrote:
-> > This adds instructions for
-> > 
-> > atomic[64]_[fetch_]and
-> > atomic[64]_[fetch_]or
-> > atomic[64]_[fetch_]xor
-> > 
-> > All these operations are isomorphic enough to implement with the same
-> > verifier, interpreter, and x86 JIT code, hence being a single commit.
-> > 
-> > The main interesting thing here is that x86 doesn't directly support
-> > the fetch_ version these operations, so we need to generate a CMPXCHG
-> > loop in the JIT. This requires the use of two temporary registers,
-> > IIUC it's safe to use BPF_REG_AX and x86's AUX_REG for this purpose.
-> > 
-> > Change-Id: I340b10cecebea8cb8a52e3606010cde547a10ed4
-> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > ---
-> >   arch/x86/net/bpf_jit_comp.c  | 50 +++++++++++++++++++++++++++++-
-> >   include/linux/filter.h       | 60 ++++++++++++++++++++++++++++++++++++
-> >   kernel/bpf/core.c            |  5 ++-
-> >   kernel/bpf/disasm.c          | 21 ++++++++++---
-> >   kernel/bpf/verifier.c        |  6 ++++
-> >   tools/include/linux/filter.h | 60 ++++++++++++++++++++++++++++++++++++
-> >   6 files changed, 196 insertions(+), 6 deletions(-)
-> > 
-[...]
-> > diff --git a/include/linux/filter.h b/include/linux/filter.h
-> > index 6186280715ed..698f82897b0d 100644
-> > --- a/include/linux/filter.h
-> > +++ b/include/linux/filter.h
-> > @@ -280,6 +280,66 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
-[...]
-> > +#define BPF_ATOMIC_FETCH_XOR(SIZE, DST, SRC, OFF)		\
-> > +	((struct bpf_insn) {					\
-> > +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
-> > +		.dst_reg = DST,					\
-> > +		.src_reg = SRC,					\
-> > +		.off   = OFF,					\
-> > +		.imm   = BPF_XOR | BPF_FETCH })
-> > +
-> >   /* Atomic exchange, src_reg = atomic_xchg((dst_reg + off), src_reg) */
-> 
-> Looks like BPF_ATOMIC_XOR/OR/AND/... all similar to each other.
-> The same is for BPF_ATOMIC_FETCH_XOR/OR/AND/...
-> 
-> I am wondering whether it makes sence to have to
-> BPF_ATOMIC_BOP(BOP, SIZE, DST, SRC, OFF) and
-> BPF_ATOMIC_FETCH_BOP(BOP, SIZE, DST, SRC, OFF)
-> can have less number of macros?
+On 04.12.20 04:35, Jason Wang wrote:
 
-Hmm yeah I think that's probably a good idea, it would be consistent
-with the macros for non-atomic ALU ops.
+Hi,
 
-I don't think 'BOP' would be very clear though, 'ALU' might be more
-obvious.
+> Is the plan to keep this doc synced with the one in the virtio
+> specification?
 
+Yes, of course. I'm still in progress of doing the beaurocratic stuff w/
+virtio-tc folks (ID registration, ...) - yet have to see whether they
+wanna add it to their spec documents ...
+
+BTW: if you feel, sometings not good w/ the current spec, please raise
+your voice now.
+
+> I think it's better to use u8 ot uint8_t here.Git grep told me the
+> former is more popular under Documentation/.
+
+thx, I'll fix that
+
+>> +- for version field currently only value 1 supported.
+>> +- the line names block holds a stream of zero-terminated strings,
+>> +  holding the individual line names.
+> 
+> I'm not sure but does this mean we don't have a fixed length of config
+> space? Need to check whether it can bring any trouble to
+> migration(compatibility).
+
+Yes, it depends on how many gpio lines are present and how much space
+their names take up.
+
+A fixed size would either put unpleasent limits on the max number of
+lines or waste a lot space when only few lines present.
+
+Not that virtio-gpio is also meant for small embedded workloads running
+under some hypervisor.
+
+>> +- unspecified fields are reserved for future use and should be zero.
+>> +
+>> +------------------------
+>> +Virtqueues and messages:
+>> +------------------------
+>> +
+>> +- Queue #0: transmission from host to guest
+>> +- Queue #1: transmission from guest to host
+> 
+> 
+> Virtio became more a popular in the area without virtualization. So I
+> think it's better to use "device/driver" instead of "host/guest" here.
+
+Good point. But I'd prefer "cpu" instead of "driver" in that case.
+
+> Not a native speaker but event sounds like something driver read from
+> device. Looking at the below lists, most of them except for
+> VIRTIO_GPIO_EV_HOST_LEVEL looks more like a command.
+
+okay, shall I name it "message" ?
+
+> Another question is, what's the benefit of unifying the message format
+> of the two queues. E.g VIRTIO_GPIO_EV_HOST_LEVEL can only works fro rxq.
+
+Simplicity. Those fields that aren't really relevant (eg. replies also
+carry the line id), can just be ignored.
+
+> Not familiar with GPIO but I wonder the value of a standalone
+> VIRTIO_GPIO_EV_GUEST_DIRECTION_INPUT/OUTPUT. Can we simply imply them in
+> SET/GET_VALUE?
+
+Would introduce more complexity. Somewhere I'd have to fit in some extra
+bit for differenciating between line state and line direction. The
+direction tells whether the line currently acts as input or output. The
+"value" (hmm, maybe I should rethink terminology here) is the current
+line level (high/low or active/inactive).
+
+>> +----------------------
+>> +Data flow:
+>> +----------------------
+>> +
+>> +- all operations, except ``VIRTIO_GPIO_EV_HOST_LEVEL``, are
+>> guest-initiated
+>> +- host replies ``VIRTIO_GPIO_EV_HOST_LEVEL`` OR'ed to the ``type`` field
+>> +- ``VIRTIO_GPIO_EV_HOST_LEVEL`` is only sent asynchronically from
+>> host to guest
+>> +- in replies, a negative ``value`` field denotes an unix-style errno
+>> code
+> 
+> 
+> Virtio is in a different scope, so we need to define the error code on
+> our own.
+> 
+> E.g for virtio-net we define:
+> 
+> 
+> #define VIRTIO_NET_OK     0
+> #define VIRTIO_NET_ERR    1
+
+hmm, so I'd need to define all the error codes that possibly could happen ?
+
+>>   +config GPIO_VIRTIO
+>> +    tristate "VirtIO GPIO support"
+>> +    depends on VIRTIO
+> 
+> 
+> Let's use select, since there's no prompt for VIRTIO and it doesn't have
+> any dependencies.
+
+Ok. I just was under the impression that subsystems and busses should
+not be select'ed, but depends on (eg. some time ago tried that w/ gpio
+subsys and failed).
+
+>> +    help
+>> +      Say Y here to enable guest support for virtio-based GPIOs.
+>> +
+>> +      These virtual GPIOs can be routed to real GPIOs or attached to
+>> +      simulators on the host (qemu).
+> 
+> 
+> It's better to avoid talking host and qemu here for new virtio devices.
+
+Ok, dropped that line.
+
+>> +static int virtio_gpio_xmit(struct virtio_gpio_priv *priv, int type,
+>> +                int pin, int value, struct virtio_gpio_event *ev)
+>> +{
+>> +    struct scatterlist sg[1];
+>> +    int ret;
+>> +    unsigned long flags;
+>> +
+>> +    WARN_ON(!ev);
+>> +
+>> +    ev->type = type;
+>> +    ev->pin = pin;
+>> +    ev->value = value;
+>> +
+>> +    sg_init_table(sg, 1);
+>> +    sg_set_buf(&sg[0], ev, sizeof(struct virtio_gpio_event));
+>> +
+>> +    spin_lock_irqsave(&priv->vq_lock, flags);
+>> +    ret = virtqueue_add_outbuf(priv->vq_tx, sg, ARRAY_SIZE(sg),
+>> +                   priv, GFP_KERNEL);
+>> +    if (ret < 0) {
+>> +        dev_err(&priv->vdev->dev,
+>> +            "virtqueue_add_outbuf() failed: %d\n", ret);
+>> +        goto out;
+> 
+> 
+> So except for the error log, the failure is silently ignored by the
+> caller. Is this intended?
+
+ups, I've forgotten the error handling in the caller. fixed in v3.
+
+>> +static int virtio_gpio_req(struct virtio_gpio_priv *priv, int type,
+>> +               int pin, int value)
+>> +{
+>> +    struct virtio_gpio_event *ev
+>> +        = kzalloc(&priv->vdev->dev, sizeof(struct virtio_gpio_event),
+>> +              GFP_KERNEL);
+>> +
+>> +    if (!ev)
+>> +        return -ENOMEM;
+>> +
+>> +    clear_event(priv, type);
+>> +    virtio_gpio_xmit(priv, type, pin, value, ev);
+>> +    wait_event_interruptible(priv->waitq, check_event(priv, type));
+> 
+> 
+> If I read the code correctly, this expects there will be at most a
+> single type of event that can be processed at the same time. E.g can
+> upper layer want to read from different lines in parallel? If yes, we
+> need to deal with that.
+
+@Linus @Bartosz: can that happen or does gpio subsys already serialize
+requests ?
+
+Initially, I tried to protect it by spinlock (so, only one request may
+run at a time, other calls just wait until the first is finished), but
+it crashed when gpio cdev registration calls into the driver (fetches
+the status) while still in bootup.
+
+Don't recall the exact error anymore, but something like an
+inconsistency in the spinlock calls.
+
+Did I just use the wrong type of lock ?
+
+>> +static void virtio_gpio_data_rx(struct virtqueue *vq)
+>> +{
+>> +    struct virtio_gpio_priv *priv = vq->vdev->priv;
+>> +    void *data;
+>> +    unsigned int len;
+>> +    struct virtio_gpio_event *ev;
+>> +
+>> +    data = virtqueue_get_buf(priv->vq_rx, &len);
+>> +    if (!data || !len) {
+>> +        dev_warn(&vq->vdev->dev, "RX received no data ! %d\n", len);
+>> +        return;
+>> +    }
+>> +
+>> +    ev = data;
+>> +    WARN_ON(data != &priv->rcv_buf);
+>> +
+>> +    memcpy(&priv->last, &priv->rcv_buf, sizeof(struct
+>> virtio_gpio_event));
+>> +
+>> +    switch (ev->type) {
+>> +    case VIRTIO_GPIO_EV_HOST_LEVEL:
+>> +        virtio_gpio_signal(priv, ev->type, ev->pin, ev->value);
+>> +        break;
+>> +    default:
+>> +        wakeup_event(priv, ev->type & ~VIRTIO_GPIO_EV_REPLY);
+> 
+> 
+> This looks suspicious, it looks to me what is done here is, consider we
+> want to do VIRTIO_GPIO_EV_GUEST_SET_VALUE
+> 
+> 1) put the event in txq, wait
+> 2) the result is returned from rxq, wakeup
+> 
+> It looks to me this is racy since the device should be able to process a
+> batch of descriptors and there's no guarantee that the descriptor is
+> processed in order from the virtio level.
+
+Not sure whether we're on the same page, but:
+
+VIRTIO_GPIO_EV_HOST_LEVEL is kinda interrupt - it tells cpu when the
+input has changed level. We can receive this async event, it shouldn't
+matter whether somebody else (another thread) is doing a regular call,
+thus waiting for reply at the same time. The reply will be next in
+queue.
+
+What could go wrong here ?
+
+
+> I wonder why not introduce two virtqueues:
+> 
+> 1) command vq
+> 2) event vq
+> 
+> All commands were sent via command vq and then device can write back to
+> the command buffer as other virtio device did. Then there's no worries
+> of batching or out of order completion.
+
+I've been under the impression that queues only work in only one
+direction. (at least that's what my web research was telling).
+
+Could you please give an example how bi-directional transmission within
+the same queue could look like ?
+
+>> +        break;
+>> +    }
+>> +    virtio_gpio_prepare_inbuf(priv);
+> 
+> 
+> This assumes at most one event could be generated, is this how GPIO
+> device expect to behave? I think level could change several times.
+
+Should I add more buffers ?
+
+Maybe add one new buffer per request and one new per received async
+signal ?
+
+>> +static int virtio_gpio_probe(struct virtio_device *vdev)
+>> +{
+>> +    struct virtio_gpio_priv *priv;
+>> +    struct virtio_gpio_config cf = {};
+>> +    char *name_buffer;
+>> +    const char **gpio_names = NULL;
+>> +    struct device *dev = &vdev->dev;
+>> +
+>> +    priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+>> +    if (!priv)
+>> +        return -ENOMEM;
+> 
+> 
+> Is devres guaranteed to be enabled here?
+
+How should it not ? Could virtio probing so early that even devm
+isn't working yet ?
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
