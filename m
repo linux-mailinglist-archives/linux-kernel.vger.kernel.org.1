@@ -2,140 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483E42CF4A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1382CF4AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730336AbgLDTVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 14:21:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726392AbgLDTVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 14:21:14 -0500
-Date:   Fri, 4 Dec 2020 11:20:32 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607109632;
-        bh=/XhZcYZ5JIA1PupN+XZqIdVnLydGrcJFS1sKBQ5lWX0=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IXhPDkfkpAdhrnOXCRz73rGo8liOLaITMhwtX7K6IMUGF7NL+tyVPogXQwt7yOuD7
-         pFLLv20r4JMRSs2tuSZlwyphpez5o3YHfI1zZH1B1m0qZjlKoidX0BSypb6JfQ+ALZ
-         d1/EgKFsXpN6Y55HbypNP/nO+lniIlTtc0mh+EWYMZKuncBK+AOTH3nbIm+26utiRZ
-         oc6j1yqysz5cAXWBje0B2b+0pAUoVt5nT/vXcIpvGMZBFPt7PB613S5eOorKRBuNb3
-         VKVIKH6GVNWlsmuzG5EFuKdBzuAbooorr+nY1Jc7jXCeHo9DO1On4kPgpZ0JwPKDRn
-         VSr0GMKeyLUlg==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the rcu tree
-Message-ID: <20201204192032.GA1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201204192526.0b38fb02@canb.auug.org.au>
+        id S1730418AbgLDTVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 14:21:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726392AbgLDTVq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 14:21:46 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E4EC061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 11:21:05 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id z7so6389254wrn.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 11:21:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3/Vcyqx/bnH5HvtWm7DxX6AP78VpEtIwur5saeHrMps=;
+        b=TUOxVnxvXyCzCDNaCP/1OANO8jIe42W+4q7q2qx8Ps0PlTe/24v+H7yFqJCU2gjkly
+         yKBoRXY4aK4pkL6YLXvLYYLZaAeWBYVxzIAomHRQlNhtPJUy3ZZJ5gNITiE3mFl9NwZd
+         O60zEppYkoS7pItZJvY+EeEo5vXaCLAYAyg17cK+JS0A3Z9K8RkyB596xqkDsnM07ITa
+         xG7mJ4bT9E2T5FCFvDFWSCIYeqJARgWN0EKd5adBG4I4BcjmXCSNo7F4Qmsq8MVHxTQ/
+         C7MRTVSUrhDCM9wobCamGUfjbA4kp3iqkKsEsXuYBcMBe0BH1tE+YnE9YzUHXZzQVHIP
+         HVVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3/Vcyqx/bnH5HvtWm7DxX6AP78VpEtIwur5saeHrMps=;
+        b=QlOhvFV3J/75gz3nOmkerXoxkEiSv2Zxn+hlLYdXO19fDHHlr2UQSZfguUD8gfpEed
+         8zwCY+ScXqJiPD0FJQdCUcVl2fUChDS4sPM+gFSbfb7sbOl0AH0qcjB+VC99SSW5CWK2
+         DKyJnrQTBHV6ycUjHhPz1T1bHNuMG4rp8Lzxh9sEgcbiYiULTbvDpDJZZoPnPLbT6I3B
+         PMRRG9Q62z0hbGHTEAnM9+w0MOnBX3yjmiKjcPCIM3GICUedQiY3bCyY4J5dJ6Xss0hr
+         hP4gd6Ns/vjZr2ymDX+w6MFd3t8bZlus5Dzz+8OY+cXNPS0vgynjo7EU+Zt/Xx9doPgx
+         WWaQ==
+X-Gm-Message-State: AOAM530nOUDID4KLGFpASNVShju6vte0SKvATlnIVBw0SKF51I96MT0I
+        C4UMELvIHdNG42WEGHlu7MbiW6vUTiIW5g==
+X-Google-Smtp-Source: ABdhPJyjqDCyAdrqcYmrFgOrla80tX9wRIH3BP+ThyMlsUYuZKS+B/nZhU8IPBfUVxOJBZvAm5z4Rg==
+X-Received: by 2002:adf:e449:: with SMTP id t9mr6493626wrm.257.1607109663627;
+        Fri, 04 Dec 2020 11:21:03 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8165:c1cc:d736:b53f? ([2a01:e34:ed2f:f020:8165:c1cc:d736:b53f])
+        by smtp.googlemail.com with ESMTPSA id s8sm4502818wrn.33.2020.12.04.11.21.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Dec 2020 11:21:02 -0800 (PST)
+Subject: Re: [PATCH] drivers: thermal: Add NULL pointer check before using
+ cooling device stats
+To:     Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Ram Chandrasekar <rkumbako@codeaurora.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1607108991-31948-1-git-send-email-manafm@codeaurora.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <726f7a97-e663-64ff-d2bc-aaa23aaa85ec@linaro.org>
+Date:   Fri, 4 Dec 2020 20:21:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204192526.0b38fb02@canb.auug.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1607108991-31948-1-git-send-email-manafm@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 07:25:26PM +1100, Stephen Rothwell wrote:
-> Hi all,
+On 04/12/2020 20:09, Manaf Meethalavalappu Pallikunhi wrote:
+> There is a possible chance that some cooling device stats buffer
+> allocation fails due to very high cooling device max state value.
+> Later cooling device update or cooling stats sysfs will try to
+> access stats data for the same cooling device. It will lead to
+> NULL pointer dereference issue.
 > 
-> After merging the rcu tree, today's linux-next build (sparc defconfig)
-> failed like this:
-> 
-> mm/slab_common.o: In function `kmem_last_alloc':
-> slab_common.c:(.text+0xc4): undefined reference to `kmem_cache_last_alloc'
-> 
-> Caused by commit
-> 
->   f7c3fb4fc476 ("mm: Add kmem_last_alloc() to return last allocation for memory block")
-> 
-> in mm/slab.c, kmem_cache_last_alloc() is only defined when CONFIG_NUMA
-> is set - which is not for this build.
-> 
-> I applied the following hack fix patch for today.
-> 
-> From ac5dcf78be1e6da530302966369a3bd63007cf81 Mon Sep 17 00:00:00 2001
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Fri, 4 Dec 2020 19:11:01 +1100
-> Subject: [PATCH] fixup for "mm: Add kmem_last_alloc() to return last
->  allocation for memory block"
-> 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Add a NULL pointer check before accessing thermal cooling device
+> stats data. It fixes the following bug
 
-Apologies for the hassle and thank you for the very helpful "hack
-fix patch".  The kbuild test robot also found this, but I hadn't
-quite gotten it through my head that the only slab definition of the
-kmem_cache_last_alloc() was under CONFIG_NUMA.
+Why not create the 'stats' dir if the setup fails ?
 
-Does the following patch fix things?  (Sigh.  It won't apply on the
-rcu/next that you used.  Or even on this moment's dev branch.  I will
-fold it in with attribution and update.  But just to show you what my
-thought is.)
+> [ 26.812833] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000004
+> [ 27.122960] Call trace:
+> [ 27.122963] do_raw_spin_lock+0x18/0xe8
+> [ 27.122966] _raw_spin_lock+0x24/0x30
+> [ 27.128157] thermal_cooling_device_stats_update+0x24/0x98
+> [ 27.128162] cur_state_store+0x88/0xb8
+> [ 27.128166] dev_attr_store+0x40/0x58
+> [ 27.128169] sysfs_kf_write+0x50/0x68
+> [ 27.133358] kernfs_fop_write+0x12c/0x1c8
+> [ 27.133362] __vfs_write+0x54/0x160
+> [ 27.152297] vfs_write+0xcc/0x188
+> [ 27.157132] ksys_write+0x78/0x108
+> [ 27.162050] ksys_write+0xf8/0x108
+> [ 27.166968] __arm_smccc_hvc+0x158/0x4b0
+> [ 27.166973] __arm_smccc_hvc+0x9c/0x4b0
+> [ 27.186005] el0_svc+0x8/0xc
+> 
+> Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+> ---
+>  drivers/thermal/thermal_sysfs.c | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+> index 473449b..a5e4855 100644
+> --- a/drivers/thermal/thermal_sysfs.c
+> +++ b/drivers/thermal/thermal_sysfs.c
+> @@ -827,6 +827,9 @@ void thermal_cooling_device_stats_update(struct thermal_cooling_device *cdev,
+>  {
+>  	struct cooling_dev_stats *stats = cdev->stats;
+>  
+> +	if (!stats)
+> +		return;
+> +
+>  	spin_lock(&stats->lock);
+>  
+>  	if (stats->state == new_state)
+> @@ -848,6 +851,9 @@ static ssize_t total_trans_show(struct device *dev,
+>  	struct cooling_dev_stats *stats = cdev->stats;
+>  	int ret;
+>  
+> +	if (!stats)
+> +		return -ENODEV;
+> +
+>  	spin_lock(&stats->lock);
+>  	ret = sprintf(buf, "%u\n", stats->total_trans);
+>  	spin_unlock(&stats->lock);
+> @@ -864,6 +870,9 @@ time_in_state_ms_show(struct device *dev, struct device_attribute *attr,
+>  	ssize_t len = 0;
+>  	int i;
+>  
+> +	if (!stats)
+> +		return -ENODEV;
+> +
+>  	spin_lock(&stats->lock);
+>  	update_time_in_state(stats);
+>  
+> @@ -882,8 +891,12 @@ reset_store(struct device *dev, struct device_attribute *attr, const char *buf,
+>  {
+>  	struct thermal_cooling_device *cdev = to_cooling_device(dev);
+>  	struct cooling_dev_stats *stats = cdev->stats;
+> -	int i, states = stats->max_states;
+> +	int i, states;
+> +
+> +	if (!stats)
+> +		return -ENODEV;
+>  
+> +	states = stats->max_states;
+>  	spin_lock(&stats->lock);
+>  
+>  	stats->total_trans = 0;
+> @@ -907,6 +920,9 @@ static ssize_t trans_table_show(struct device *dev,
+>  	ssize_t len = 0;
+>  	int i, j;
+>  
+> +	if (!stats)
+> +		return -ENODEV;
+> +
+>  	len += snprintf(buf + len, PAGE_SIZE - len, " From  :    To\n");
+>  	len += snprintf(buf + len, PAGE_SIZE - len, "       : ");
+>  	for (i = 0; i < stats->max_states; i++) {
+> 
 
-							Thanx, Paul
 
-------------------------------------------------------------------------
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-diff --git a/mm/slab.c b/mm/slab.c
-index 87aa2c0..ae1a74c 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -3602,27 +3602,6 @@ void *kmem_cache_alloc_node_trace(struct kmem_cache *cachep,
- EXPORT_SYMBOL(kmem_cache_alloc_node_trace);
- #endif
- 
--void *kmem_cache_last_alloc(struct kmem_cache *cachep, void *object, void **stackp, int nstackp)
--{
--#ifdef DEBUG
--	unsigned int objnr;
--	void *objp;
--	struct page *page;
--
--	if (!(cachep->flags & SLAB_STORE_USER))
--		return ERR_PTR(-KMEM_LA_NO_DEBUG);
--	objp = object - obj_offset(cachep);
--	page = virt_to_head_page(objp);
--	objnr = obj_to_index(cachep, page, objp);
--	objp = index_to_obj(cachep, page, objnr);
--	if (stackp && nstackp)
--		stackp[0] = NULL;
--	return *dbg_userword(cachep, objp);
--#else
--	return NULL;
--#endif
--}
--
- static __always_inline void *
- __do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller)
- {
-@@ -3654,6 +3633,27 @@ void *__kmalloc_node_track_caller(size_t size, gfp_t flags,
- EXPORT_SYMBOL(__kmalloc_node_track_caller);
- #endif /* CONFIG_NUMA */
- 
-+void *kmem_cache_last_alloc(struct kmem_cache *cachep, void *object, void **stackp, int nstackp)
-+{
-+#ifdef DEBUG
-+	unsigned int objnr;
-+	void *objp;
-+	struct page *page;
-+
-+	if (!(cachep->flags & SLAB_STORE_USER))
-+		return ERR_PTR(-KMEM_LA_NO_DEBUG);
-+	objp = object - obj_offset(cachep);
-+	page = virt_to_head_page(objp);
-+	objnr = obj_to_index(cachep, page, objp);
-+	objp = index_to_obj(cachep, page, objnr);
-+	if (stackp && nstackp)
-+		stackp[0] = NULL;
-+	return *dbg_userword(cachep, objp);
-+#else
-+	return NULL;
-+#endif
-+}
-+
- /**
-  * __do_kmalloc - allocate memory
-  * @size: how many bytes of memory are required.
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
