@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307442CE979
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 153D62CE982
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728585AbgLDIXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:23:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725866AbgLDIXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:23:30 -0500
-X-Gm-Message-State: AOAM5333bDl88BV7NpBwsq9d+e2V4z6DP5vXDyex/68rAw/DWhI1c6RK
-        hVlV5VpkP35K1c3lLxIiUHZN2Fqw49kqbxcEDb8=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607070169;
-        bh=BbsndswaG454/F/Tf749RPAMhWNdE22HBIy0hvvdXQA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=f7uVvsHc81BtXcYQ/lVl9kDpuNCBO3F/HdiP74V4mslZFfj2Ddw9ejvPxysSTkJK7
-         iAIlbsDZma6lRgEct5boV8O4aUQyFwJIebqlaS6QPjlwJqfKMnk88tOQFuIcJQoQWq
-         XsY0rUXmMs2uX7Us1z5i34lK6lTXThOhKpjf0uqwdrvMt9WaBgw4Hifz/WKyrPQPv5
-         Duov1z3xvH0neftrNR2G7mmqMCCE0xqKZtP3D2L5REwABnkiKH8KXWJbzDdwmXCwHd
-         2qY9HL2+4XmCKmhEQpnX01/H2lL7Bl2uuqX18QABr3klDRoDOdYlzDk9Vo6Kd/l5qb
-         QPaeraDRUw63A==
-X-Google-Smtp-Source: ABdhPJyBdCZ7WvEP7qcKrZRJHTWisAckdx44UjnhCmsKcT24MvH8HkiP4BZB7Evun/okNDAvgq70UAfzS8+rjFgppCw=
-X-Received: by 2002:a9d:12c:: with SMTP id 41mr2728284otu.77.1607070168862;
- Fri, 04 Dec 2020 00:22:48 -0800 (PST)
+        id S1728781AbgLDI0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:26:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727069AbgLDI0N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 03:26:13 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B57C061A4F;
+        Fri,  4 Dec 2020 00:25:33 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CnQkd4hnhz9s0b;
+        Fri,  4 Dec 2020 19:25:29 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607070329;
+        bh=RKQ/0KSALkz92r6pcBPR62y4zwCSR2/gn2uxYc4+cr8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ww69xVGbUUdia/X5JR/nsFVtRzhtL+uW/jVN3WhBfkRzFgGZ0nNeufcfbydnn7H9n
+         2GJ6chRzrQEL55H17mgQKtRg/I2zFaGzU8I0td8jOrn2i/WjAqYRa8Hmev4sK66HJE
+         aFQQa9LqGowpVbyP/aLwYyAOtLwLB/oKIP4st/gzERNYWOg0OjMYigsfpY81OC32UD
+         qczYbVRiEr6rhC67sMeWv3AEW4EMpHyp51gu66Z0b5n26nlj0/ms1YxOXxQ2lcnoCT
+         Xxi9JkLuX0O9mZ7WBuICc6ZevoFrQYouLD7lHMOvSl9gTXMvrkxT+ZpNWlYcLGD5V3
+         03nO/6qaPy8WA==
+Date:   Fri, 4 Dec 2020 19:25:26 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the rcu tree
+Message-ID: <20201204192526.0b38fb02@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201203222557.952393-1-arnd@kernel.org>
-In-Reply-To: <20201203222557.952393-1-arnd@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 4 Dec 2020 09:22:37 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEFbTWSRg5fvD=YiJRCSuvpyF2zThaTvQVwFiSFGYvXZQ@mail.gmail.com>
-Message-ID: <CAMj1kXEFbTWSRg5fvD=YiJRCSuvpyF2zThaTvQVwFiSFGYvXZQ@mail.gmail.com>
-Subject: Re: [PATCH] crypto: aegis128 - fix link error without SIMD
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ondrej Mosnacek <omosnacek@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Eric Biggers <ebiggers@google.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/i/_kt//s4/F7sxLnsqyqfNO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 at 23:26, Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> When the SIMD portion of the driver is disabled, the compiler cannot
-> figure out in advance if it will be called:
->
-> ERROR: modpost: "crypto_aegis128_update_simd" [crypto/aegis128.ko] undefined!
->
-> Add a conditional to let the compiler use dead code elimination
-> as before.
->
-> Fixes: ac50aec41a9f ("crypto: aegis128 - expose SIMD code path as separate driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+--Sig_/i/_kt//s4/F7sxLnsqyqfNO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I already sent the exact same fix a couple of days ago, and Herbert
-just merged it today.
+Hi all,
 
-> ---
->  crypto/aegis128-core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/crypto/aegis128-core.c b/crypto/aegis128-core.c
-> index 2b05f79475d3..89dc1c559689 100644
-> --- a/crypto/aegis128-core.c
-> +++ b/crypto/aegis128-core.c
-> @@ -89,7 +89,7 @@ static void crypto_aegis128_update_a(struct aegis_state *state,
->                                      const union aegis_block *msg,
->                                      bool do_simd)
->  {
-> -       if (do_simd) {
-> +       if (IS_ENABLED(CONFIG_CRYPTO_AEGIS128_SIMD) && do_simd) {
->                 crypto_aegis128_update_simd(state, msg);
->                 return;
->         }
-> @@ -101,7 +101,7 @@ static void crypto_aegis128_update_a(struct aegis_state *state,
->  static void crypto_aegis128_update_u(struct aegis_state *state, const void *msg,
->                                      bool do_simd)
->  {
-> -       if (do_simd) {
-> +       if (IS_ENABLED(CONFIG_CRYPTO_AEGIS128_SIMD) && do_simd) {
->                 crypto_aegis128_update_simd(state, msg);
->                 return;
->         }
-> --
-> 2.27.0
->
+After merging the rcu tree, today's linux-next build (sparc defconfig)
+failed like this:
+
+mm/slab_common.o: In function `kmem_last_alloc':
+slab_common.c:(.text+0xc4): undefined reference to `kmem_cache_last_alloc'
+
+Caused by commit
+
+  f7c3fb4fc476 ("mm: Add kmem_last_alloc() to return last allocation for me=
+mory block")
+
+in mm/slab.c, kmem_cache_last_alloc() is only defined when CONFIG_NUMA
+is set - which is not for this build.
+
+I applied the following hack fix patch for today.
+
+=46rom ac5dcf78be1e6da530302966369a3bd63007cf81 Mon Sep 17 00:00:00 2001
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 4 Dec 2020 19:11:01 +1100
+Subject: [PATCH] fixup for "mm: Add kmem_last_alloc() to return last
+ allocation for memory block"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ mm/slab.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/mm/slab.c b/mm/slab.c
+index 1f3b263f81ee..064707ac9f54 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -3650,6 +3650,11 @@ void *__kmalloc_node_track_caller(size_t size, gfp_t=
+ flags,
+ 	return __do_kmalloc_node(size, flags, node, caller);
+ }
+ EXPORT_SYMBOL(__kmalloc_node_track_caller);
++#else
++void *kmem_cache_last_alloc(struct kmem_cache *cachep, void *object)
++{
++	return NULL;
++}
+ #endif /* CONFIG_NUMA */
+=20
+ /**
+--=20
+2.29.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/i/_kt//s4/F7sxLnsqyqfNO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/J8nYACgkQAVBC80lX
+0GzYewf+MuMlF7OJqQG0ckjT4czx5ZUQCvkKrGtFLljpQrJsXnA7c1NrM/0YfL5w
+X3Gzggx7w/V8aDX6cKQrt6EUPREQTNwWtPUJstxrR3nl6bksMgkpvPeIYOt8OfeR
+LLQlt5dFhMvP/QylWDUFOr5lYz3kW/C60mXJG1f5z8aSBF5jwqvm7P8vcwYrJI+M
+nHgsJd5YkmBhMlG/+DIv+tNaV4A76DD/LBitKOKzXCJOx5YdXLNtfCRTanTp/XZa
+YHQXLy4Dgz2K/FEQOvVtkRBkOHr8Xwmb3TTG+2tA/ZLg6qNELUyP4yl054GgpyRZ
+/MDquwWBMxi+Apr8BwKCaGPLb71Tmw==
+=J0hT
+-----END PGP SIGNATURE-----
+
+--Sig_/i/_kt//s4/F7sxLnsqyqfNO--
