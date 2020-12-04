@@ -2,165 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F372CEAF5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D6C2CEAFB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729408AbgLDJeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:34:22 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:38137 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728092AbgLDJeW (ORCPT
+        id S1729386AbgLDJe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:34:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726394AbgLDJe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:34:22 -0500
-Received: by mail-lj1-f193.google.com with SMTP id j10so5830448lja.5;
-        Fri, 04 Dec 2020 01:33:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SAJ9D9uj5Zq76FuUuV8xz2nCj2G+XGK+GvqkMWkny8s=;
-        b=JdbsbYQSbt2Zh6h2Xd35lJmSnOCJUrMXdLViljA85SO5XyGhUBnE8S14iPNDSrqA9R
-         n1fTCHKPdlUVEjfAl7tUjALZiUrxc1AHD6iW19h91AX6MHOECxfD5cJKIcVj24VENFc3
-         D1yxx2fctfZiX7Vk7sE0TQV5c55pyDYVjMAn9ot1VknFKhmqSdtVpIbDV65pii3LaRIS
-         5vUZf1E/yE1544I5NGxkD9qipx64VvmRZJsLVgP4dZA23GhOJYTqfk3WvE8adbR+f6W8
-         tMtYhQv5hFNUYJdY8yvN9JoGixqRXCnYV71+f3nJhc+sjMeVkTE0P3oWqDIZGcsZyrRY
-         zmcQ==
-X-Gm-Message-State: AOAM531zGsgHHKel74/CqRcShVqJ1+MAJ3CCGIIUsAyRYSXwnaAmSYgR
-        XU7ShQoP1VF0fR+JzU9S278=
-X-Google-Smtp-Source: ABdhPJxSZ2ozkEJDjJJ/GIC4/dLfUlCpm5phPYEi7LxsaHDGv1ydP+J0ohhUW6ao5MAeYHGvqbOb7w==
-X-Received: by 2002:a2e:8041:: with SMTP id p1mr3110571ljg.291.1607074414057;
-        Fri, 04 Dec 2020 01:33:34 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id v7sm1501987lfd.235.2020.12.04.01.33.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 01:33:33 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kl7Ta-0005N3-Bi; Fri, 04 Dec 2020 10:34:07 +0100
-Date:   Fri, 4 Dec 2020 10:34:06 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Himadri Pandya <himadrispandya@gmail.com>
-Cc:     johan@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 04/15] usb: serial: cp210x: use usb_control_msg_recv()
- and usb_control_msg_send()
-Message-ID: <X8oCjmT1czYZfL3k@localhost>
-References: <20201104064703.15123-1-himadrispandya@gmail.com>
- <20201104064703.15123-5-himadrispandya@gmail.com>
+        Fri, 4 Dec 2020 04:34:56 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F812C061A4F;
+        Fri,  4 Dec 2020 01:34:16 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607074454;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hgQbpciJbizYKA4AVJ09dODrpMGMg9MJPg1/jfecOMY=;
+        b=YupU4aqaYx1YHrhVbQZs2jdm69vyI4x5Q9CEEyOxbVko6CVMZNbrqLo1VKkQqlVzXYSpDY
+        eQbdS1mOq82fSzNbm5RwhA6OYGI87lvQFxoIe7JGpvmho87nDWgCWhlAMIuEKKtnIZIcSw
+        GaMUC576+VUDtNqv5aHgDKNPJszGJs9ugYEFqVrkh1rQfYVlsZc+0aLrCe7H8Ztq+azwwZ
+        g1nrWhROkmSjj/DN5m9jD7Jj1D/Z1YaQMN9mlFwcRjPkWPYS7M70hGJuS3gyOYdoJgCFRR
+        eyV6A6QL1GqVu+Q07+xvhEo3UGHCtyyTD7NGpmt13bu8MKVimYa0LPv3+xmfbA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607074454;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hgQbpciJbizYKA4AVJ09dODrpMGMg9MJPg1/jfecOMY=;
+        b=+pTOGJuA4vZzLRir7Sj//2FAE/l7NuxgaQ+9p3xm1eA9ebbxnRtBajdnDBPuW73ceGQhPm
+        J0/kJNnWXnjP/MBw==
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] rtc: adapt allowed RTC update error
+In-Reply-To: <20201203220027.GB74177@piout.net>
+References: <87mtywe2zu.fsf@nanos.tec.linutronix.de> <20201202162723.GJ5487@ziepe.ca> <87a6uwdnfn.fsf@nanos.tec.linutronix.de> <20201202205418.GN5487@ziepe.ca> <874kl3eu8p.fsf@nanos.tec.linutronix.de> <87zh2vd72z.fsf@nanos.tec.linutronix.de> <20201203021047.GG3544@piout.net> <87pn3qdhli.fsf@nanos.tec.linutronix.de> <20201203161622.GA1317829@ziepe.ca> <87zh2ubny2.fsf@nanos.tec.linutronix.de> <20201203220027.GB74177@piout.net>
+Date:   Fri, 04 Dec 2020 10:34:13 +0100
+Message-ID: <87im9hc3u2.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104064703.15123-5-himadrispandya@gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 12:16:52PM +0530, Himadri Pandya wrote:
-> The new usb_control_msg_recv() and usb_control_msg_send() nicely wraps
-> usb_control_msg() with proper error check. Hence use the wrappers
-> instead of calling usb_control_msg() directly.
+On Thu, Dec 03 2020 at 23:00, Alexandre Belloni wrote:
+> On 03/12/2020 22:05:09+0100, Thomas Gleixner wrote:
+>> 2) I2C/SPI ...
+>> 
+>>    tsched t0                 t1                     t2
+>>           transfer(newsec)   RTC update (newsec)    RTC increments seconds
+>> 
+>>    Lets assume that ttransfer = t1 - t0 is known.
+>
+> Note that ttransfer is one of the reason why setting set_offset_nsec
+> from the RTC driver is not a good idea. The same RTC may be on busses
+> with different rates and there is no way to know that. I think that was
+> one of my objections at the time.
+>
+> ttransfer is not a function of the RTC model but rather of how it is
+> integrated in the system.
 
-This too is a good example of when the new helpers can be used, but
-please mention the transfer buffers here are that is the primary reason.
+Yes, but it's the right place to store that information.
 
-> Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
-> ---
->  drivers/usb/serial/cp210x.c | 148 ++++++++++--------------------------
->  1 file changed, 42 insertions(+), 106 deletions(-)
-> 
-> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-> index d0c05aa8a0d6..29436ab392e8 100644
-> --- a/drivers/usb/serial/cp210x.c
-> +++ b/drivers/usb/serial/cp210x.c
-> @@ -555,31 +555,15 @@ static int cp210x_read_reg_block(struct usb_serial_port *port, u8 req,
->  {
->  	struct usb_serial *serial = port->serial;
->  	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
-> -	void *dmabuf;
->  	int result;
->  
-> -	dmabuf = kmalloc(bufsize, GFP_KERNEL);
-> -	if (!dmabuf) {
-> -		/*
-> -		 * FIXME Some callers don't bother to check for error,
-> -		 * at least give them consistent junk until they are fixed
-> -		 */
-> -		memset(buf, 0, bufsize);
-> -		return -ENOMEM;
-> -	}
-> -
-> -	result = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
-> -			req, REQTYPE_INTERFACE_TO_HOST, 0,
-> -			port_priv->bInterfaceNumber, dmabuf, bufsize,
-> -			USB_CTRL_SET_TIMEOUT);
-> -	if (result == bufsize) {
-> -		memcpy(buf, dmabuf, bufsize);
-> -		result = 0;
-> -	} else {
-> +	result = usb_control_msg_recv(serial->dev, 0, req,
-> +				      REQTYPE_INTERFACE_TO_HOST, 0,
-> +				      port_priv->bInterfaceNumber, buf, bufsize,
-> +				      USB_CTRL_SET_TIMEOUT, GFP_KERNEL);
+It's a fundamental problem of the RTC driver because that's the one
+which has to be able to tell the caller about it. The caller has
+absolutely no way to figure it out because it does not even know what
+type of RTC is there.
 
-Please keep the existing indentation style. That way you don't need to
-change the middle-two argument lines just to align the arguments.
+So either the RTC knows the requirements for tsched, e.g. the MC14xxx
+datasheet, or it can retrieve that information from DT or by querying
+the underlying bus mechanics for the xfer time estimate or just by
+timing an xfer for reference.
 
-> +	if (result) {
->  		dev_err(&port->dev, "failed get req 0x%x size %d status: %d\n",
-> -				req, bufsize, result);
-> -		if (result >= 0)
-> -			result = -EIO;
-> +			req, bufsize, result);
+Thanks,
 
-Nit: This is an unrelated indentation change.
+        tglx
 
->  
->  		/*
->  		 * FIXME Some callers don't bother to check for error,
-> @@ -588,8 +572,6 @@ static int cp210x_read_reg_block(struct usb_serial_port *port, u8 req,
->  		memset(buf, 0, bufsize);
->  	}
->  
-> -	kfree(dmabuf);
-> -
->  	return result;
->  }
->  
-> @@ -648,29 +630,16 @@ static int cp210x_read_u8_reg(struct usb_serial_port *port, u8 req, u8 *val)
->  static int cp210x_read_vendor_block(struct usb_serial *serial, u8 type, u16 val,
->  				    void *buf, int bufsize)
->  {
-> -	void *dmabuf;
->  	int result;
->  
-> -	dmabuf = kmalloc(bufsize, GFP_KERNEL);
-> -	if (!dmabuf)
-> -		return -ENOMEM;
-> -
-> -	result = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
-> -				 CP210X_VENDOR_SPECIFIC, type, val,
-> -				 cp210x_interface_num(serial), dmabuf, bufsize,
-> -				 USB_CTRL_GET_TIMEOUT);
-> -	if (result == bufsize) {
-> -		memcpy(buf, dmabuf, bufsize);
-> -		result = 0;
-> -	} else {
-> +	result = usb_control_msg_recv(serial->dev, 0, CP210X_VENDOR_SPECIFIC,
-> +				      type, val, cp210x_interface_num(serial),
-> +				      buf, bufsize, USB_CTRL_GET_TIMEOUT,
-> +				      GFP_KERNEL);
-> +	if (result)
->  		dev_err(&serial->interface->dev,
->  			"failed to get vendor val 0x%04x size %d: %d\n", val,
->  			bufsize, result);
-> -		if (result >= 0)
-> -			result = -EIO;
-> -	}
 
-Nit: Please keep the brackets around multiline single statements since
-it improves readability.
 
-Similar comments apply to the rest of the patch.
 
-Johan
+
