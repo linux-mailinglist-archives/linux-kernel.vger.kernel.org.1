@@ -2,143 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541822CF07A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E82592CF093
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730418AbgLDPMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:12:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
+        id S1729816AbgLDPUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:20:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728626AbgLDPMN (ORCPT
+        with ESMTP id S1728708AbgLDPUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:12:13 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E76F9C061A52
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 07:11:32 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id 7so4123811qtp.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:11:32 -0800 (PST)
+        Fri, 4 Dec 2020 10:20:53 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD6DEC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 07:20:04 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id i2so5682443wrs.4
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:20:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CTZE5KYHYdCtlR64X4cdwkLGSERgZtg1bRZFdAZq1Jo=;
-        b=oo3ypHsXZFXMgirMzks9ExPqQMPDJAFZS9OrDgQfyEK6g02cm8ZZBSC6uXO9ABvjsF
-         D7RmT6gvfSXp0rwl4EsPfLix2qnmrSDmgGPUM5oIu3ii7NgDH+G0vdvo6dhYWpAi6o/o
-         AVf0wneYfo/YQZoxUKRrPCQZm+ub/pUh2Ns5GRMW26EgDPETzbOoOV0AR+9gaKBU2ZKP
-         eeluI5XnEQ72v4drP+BWPooR7N2v0T1phoETXPVLXKl2uamKh1It2irIhZU+vRWoh6BI
-         TvIHbKms6AJmoiIVvM0m6wMB0vMdDi0QsdNygHWxFrm5MDgIzmryNkccH+XJc5hHWj9w
-         kY9g==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=Ut70wCtSDVM0bqYgXmAgggZNWzyipgwqsdsGJjhBqoQ=;
+        b=j4C2JWHolEMbY0cQbERLHnxvJk+PT3gMBltNmTpp3rYpDIej3Bb6bDE4eSmsNb0zb7
+         cgUKN/Hnxcr9mgckn2z4BsjsVL8KpQWYJnxiekJACFwon2uwu+LdO9FfY76kxy1MUYiG
+         hUx+1cPmHCF9Cuf1TkbJsz11keCVoYMRNRUqFaGwnkjh8rUs9VvTzvYJQnn8BkHYB2JV
+         zDH38s8cPZfhvgOQvBJ1B5qwpejKesaIfXbHqSImXRoyCXwRXZSXGyg6uWP6LK1qkg5g
+         dURcOaHyPnXRrpZpW/AKMgE1c1BuIVI/3plmDWR+a5g/WTcoXA5RCNk1/yX2zNHqLCR1
+         WwFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CTZE5KYHYdCtlR64X4cdwkLGSERgZtg1bRZFdAZq1Jo=;
-        b=GN3Fh4jwfbp6Vz2FHbgHU949mb0+B9yMlnyM10quISD3mif1bYO68zV2+AOyG7jsY4
-         45cLpNfDuPWf3V6DWxhIyHaWLFv140sUd3PZiXTD20PSTzHB9kgER8eWZRPU+PS+yEmF
-         hxCWZLgdqK42RN2h0xPiiL+2gxZliXPcvfmg1R7SFh/BlJk+WIt6XC9IHfS9ymIZVqcB
-         EUdkcOXadUq9fUi02/aaO37bUAZZBe+r0IDkVAP80t0NonFHH2g/SI4uCNkh1ByYWXbK
-         jyx/Uu6ury+9LuPoHoeRg7u25BzuKg3KeQD+pjstrJR6pg/GhQAavuWpknT3wsxp8p4C
-         FiBQ==
-X-Gm-Message-State: AOAM5338PwbvJc9k3/soLkWe243dXQ9KAz0uag9w//BrY+L63Yewy59C
-        tOfLAaizN3k1BQta+jj2ccjXN0dT4LxefFjdjzU98g==
-X-Google-Smtp-Source: ABdhPJym3Hu5283k/Rt6jj2+IHVjFg5AONLLc7sr3X25XFBImmQ13ymUKuacYVhjXLBcoiQQtWhr1VODUnAxILBkFps=
-X-Received: by 2002:aed:3c42:: with SMTP id u2mr9224643qte.159.1607094692010;
- Fri, 04 Dec 2020 07:11:32 -0800 (PST)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=Ut70wCtSDVM0bqYgXmAgggZNWzyipgwqsdsGJjhBqoQ=;
+        b=sC6k/79cnMZDCv42gpig9aTaM5k2HZ22vCjn8PMjQfEqZHaOT5dBmL1qGzwAfx7q08
+         jpyYPXj3IPZmvbGV/gjDPqZyFfbZ14ofquThnMdvk7CGbnlJyz9DgfXPTMtQeIOTVQMl
+         NaV8uMpQjTjnls7lhJ/jbmJYqCLsONNq9pdCCj8ep3UJlSVwQFMJfAidDppdhAjpVBvJ
+         4yhotzxxrZ2lLDg3BlG1ZypK4u/22dxkjGct1M06Ji50eonOLlSo79BTbh2IdPpiPsS6
+         Qv7va415tKZdOX+EGCxojzTGicjmLSz3WT+LOfT3PJdaCEuXs8C4nQzPOPX+D8y8RHdY
+         8XGA==
+X-Gm-Message-State: AOAM531m2Bbzj9EufE+jSa2TOUjBL0B068WxNOlFlybxZYfBKslEgVFG
+        xuNn6BreVnrkqpkVTF7A3p9GFg==
+X-Google-Smtp-Source: ABdhPJw0nUCfvQkmwhontRyFojOjTf3y9u3sd2tlbcu+vv1/3tZWslLF+HrOfUfmrNuKtCH1C0AZKA==
+X-Received: by 2002:adf:d84e:: with SMTP id k14mr5516583wrl.34.1607095203236;
+        Fri, 04 Dec 2020 07:20:03 -0800 (PST)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id n123sm3685801wmn.7.2020.12.04.07.20.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 07:20:02 -0800 (PST)
+References: <20201203222706.992440-1-arnd@kernel.org>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jian Hu <jian.hu@amlogic.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: meson: g12a: select COMMON_CLK_MESON_VID_PLL_DIV
+In-reply-to: <20201203222706.992440-1-arnd@kernel.org>
+Message-ID: <1ja6utppi6.fsf@starbuckisacylon.baylibre.com>
+Date:   Fri, 04 Dec 2020 16:20:01 +0100
 MIME-Version: 1.0
-References: <20201119140850.12268-1-grzegorz.jaszczyk@linaro.org> <d31a38a2-940c-2ce6-b496-4b4ac2fbe08e@ti.com>
-In-Reply-To: <d31a38a2-940c-2ce6-b496-4b4ac2fbe08e@ti.com>
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Date:   Fri, 4 Dec 2020 16:11:20 +0100
-Message-ID: <CAMxfBF7yWY8_xGXa_SX4Cy1sgoY+f9OKoHGVyQYeP5yvNUdKEw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] Add a PRU remoteproc driver
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Ohad Ben Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "Bajjuri, Praneeth" <praneeth@ti.com>,
-        Roger Quadros <rogerq@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suman,
 
-On Fri, 4 Dec 2020 at 16:05, Suman Anna <s-anna@ti.com> wrote:
->
-> Hi Greg,
->
-> On 11/19/20 8:08 AM, Grzegorz Jaszczyk wrote:
-> > Hi All,
-> >
-> > The Programmable Real-Time Unit and Industrial Communication Subsystem
-> > (PRU-ICSS or simply PRUSS) on various TI SoCs consists of dual 32-bit
-> > RISC cores (Programmable Real-Time Units, or PRUs) for program execution.
-> >
-> > The K3 AM65x amd J721E SoCs have the next generation of the PRU-ICSS IP,
-> > commonly called ICSSG. The ICSSG IP on AM65x SoCs has two PRU cores,
-> > two auxiliary custom PRU cores called Real Time Units (RTUs). The K3
-> > AM65x SR2.0 and J721E SoCs have a revised version of the ICSSG IP, and
-> > include two additional custom auxiliary PRU cores called Transmit PRUs
-> > (Tx_PRUs).
-> >
-> > This series contains the PRUSS remoteproc driver together with relevant
-> > dt-binding. This is the 3rd foundation component for PRUSS subsystem, the
-> > previous two were already merged and can be found under:
-> > 1) drivers/soc/ti/pruss.c
-> >    Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
-> > 2) drivers/irqchip/irq-pruss-intc.c
-> >    Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
-> >
-> > The following is a v2 version of the series. Please see the individual patches
-> > for exact changes in each patch, following are the main changes from v1:
-> > - Patch #1: fix two yamllint warnings.
-> > - Patch #2: address Suman comments: minor style improvements and fix for
-> >           optional resource table handling (moved from patch #3).
-> > - Patch #3: address Suman comment: minor style, comments and trace improvements
-> >           (no functional changes).
-> > - Patch #4: No changes.
-> > - Patch #5: Update documentation of pru_rproc_memcpy() function and is_k3 flag.
-> > - Patch #6: No changes.
-> >
-> > Best regards,
-> > Grzegorz
-> >
-> > Grzegorz Jaszczyk (1):
-> >   remoteproc/pru: Add support for PRU specific interrupt configuration
-> >
-> > Suman Anna (5):
-> >   dt-bindings: remoteproc: Add binding doc for PRU cores in the PRU-ICSS
-> >   remoteproc/pru: Add a PRU remoteproc driver
-> >   remoteproc/pru: Add pru-specific debugfs support
-> >   remoteproc/pru: Add support for various PRU cores on K3 AM65x SoCs
-> >   remoteproc/pru: Add support for various PRU cores on K3 J721E SoCs
->
-> One minor change for v3 when you repost to address Mathieu's comments, can you
-> please adjust the patch titles to use
-> "remoteproc: pru:" instead following the latest convention.
+On Thu 03 Dec 2020 at 23:26, Arnd Bergmann <arnd@kernel.org> wrote:
 
-Sure - I will do that.
-Thank you,
-Grzegorz
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Without this, a g12a-only config produces a link error:
+>
+> aarch64-linux-ld: drivers/clk/meson/g12a.o:(.data+0xcb68): undefined reference to `meson_vid_pll_div_ro_ops'
+>
+> Fixes: 085a4ea93d54 ("clk: meson: g12a: add peripheral clock controller")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
+Hi Arnd,
+
+Thanks for sending this fix.
+
+Same change has already been applied:
+https://patchwork.kernel.org/project/linux-clk/patch/20201118190930.34352-1-khilman@baylibre.com/
+
+It was part of my last PR to Stephen
+
+Jerome
+
+> ---
+>  drivers/clk/meson/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> Thanks,
-> Suman
->
-> >
-> >  .../bindings/remoteproc/ti,pru-rproc.yaml     | 214 +++++
-> >  drivers/remoteproc/Kconfig                    |  12 +
-> >  drivers/remoteproc/Makefile                   |   1 +
-> >  drivers/remoteproc/pru_rproc.c                | 877 ++++++++++++++++++
-> >  drivers/remoteproc/pru_rproc.h                |  46 +
-> >  5 files changed, 1150 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
-> >  create mode 100644 drivers/remoteproc/pru_rproc.c
-> >  create mode 100644 drivers/remoteproc/pru_rproc.h
-> >
->
+> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
+> index 034da203e8e0..9a8a548d839d 100644
+> --- a/drivers/clk/meson/Kconfig
+> +++ b/drivers/clk/meson/Kconfig
+> @@ -110,6 +110,7 @@ config COMMON_CLK_G12A
+>  	select COMMON_CLK_MESON_AO_CLKC
+>  	select COMMON_CLK_MESON_EE_CLKC
+>  	select COMMON_CLK_MESON_CPU_DYNDIV
+> +	select COMMON_CLK_MESON_VID_PLL_DIV
+>  	select MFD_SYSCON
+>  	help
+>  	  Support for the clock controller on Amlogic S905D2, S905X2 and S905Y2
+
