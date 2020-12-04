@@ -2,203 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A442CF1A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D7C2CF1AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728446AbgLDQM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:12:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726125AbgLDQM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:12:27 -0500
-From:   Arnd Bergmann <arnd@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-mtd@lists.infradead.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [for NAND] ARM: s3c: gta02: fix for missing linux/mtd/nand_ecc.h
-Date:   Fri,  4 Dec 2020 17:10:12 +0100
-Message-Id: <20201204161137.2729220-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S2387624AbgLDQNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:13:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728708AbgLDQNX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 11:13:23 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3881C061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 08:12:43 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id e5so3351774pjt.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 08:12:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vgBK6gNRJdzBFc9vMwzbFn3dmf1hBTZHlv0OSygLjJk=;
+        b=1sagrwP/FVGDih5ebdMkoXfp/7l+m3CFyw+VwGe6s7hnyBJkj1OCbcWJs6EQsuZbeB
+         pbHStSPO2i64md/0IbNCHlRzcvz2brcSwdXUY6LkN1Br6xwtHiyZTxv3oZxLMrr4kUAA
+         9GsOrYKHTekTKILQANM/eemKSkFbE9yb9RsstW9j+OBdmwN5u0Jvy6O20AEPihKsHnHA
+         kgxlgBqci7fjgnksBtC1/YOF9g2Sv29hm3SeZBNhclmAL0cphUigc/ukjcXRZr4WRXj7
+         TqDDUl9C5AHrsBguZ1iyzIwBA/xjmRlytmybQVNMd4m76hwTYsUljwnsq6EMrbjqSH99
+         3p+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vgBK6gNRJdzBFc9vMwzbFn3dmf1hBTZHlv0OSygLjJk=;
+        b=maZtXzmllnwnrDBNEm0fuXdeAbXW8AIJpT53ebU32ZudM/eBLY3RPC2yZrcVHaeZXI
+         0CtBDrS51OZwwMigX+h3hRqqGJQxLBU44H33Y4XjYP/4s0x8iW19igPyfXTBqRkZUY0g
+         89YFzcL2wH/8NdHsZ/h86tQHjVlyi8t1JqzKH3wOwUBKj3UlT8EbilS2Mrk28LpX5Js4
+         aMmCXeUfQzZaCkityCFHbHQ6vebYQ5Xo39ilxRyiD+FSs3eaBJXOzqUm3+AB6CZEB1q0
+         MWu4p+R/q8qaklHEpj/hJtZX74Dd3tnzlHKDfVI/ozkO+ApKSy1AARI23P5tELLjckhV
+         LKJg==
+X-Gm-Message-State: AOAM533CxXKueCOoLLndZE7M0JxXvAQdmrAQyeCGZDoqVhi3DS2GPix9
+        w/+eFV7rRAMWAI+PS6WFAKxaR6eZNwXSNvNA3Ws7AxbJGe5d+A==
+X-Google-Smtp-Source: ABdhPJyLaDNma2sWdL6BfboS+XrP7SCgS1iMGsBIQVI6ZPAsifoMRSkbIa0G9agbEQiwezzKGGDL5d1+GQRQWOJdQjQ=
+X-Received: by 2002:a17:902:76c8:b029:d9:d6c3:357d with SMTP id
+ j8-20020a17090276c8b02900d9d6c3357dmr4605653plt.34.1607098363125; Fri, 04 Dec
+ 2020 08:12:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201203162237.21885-1-songmuchun@bytedance.com> <46fcf0c1-7c38-723b-8905-953d72f1d6bc@redhat.com>
+In-Reply-To: <46fcf0c1-7c38-723b-8905-953d72f1d6bc@redhat.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sat, 5 Dec 2020 00:12:06 +0800
+Message-ID: <CAMZfGtVdFtLB8f2uDfJ1H-YG4CsJ+RxxFbAWzePDnqBB1MU0ig@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] mm/page_isolation: do not isolate the
+ max order page
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Dec 4, 2020 at 12:28 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 03.12.20 17:22, Muchun Song wrote:
+> > The max order page has no buddy page and never merge to other order.
+> > So isolating and then freeing it is pointless. And if order == MAX_ORDER
+> > - 1, then the buddy can actually be a !pfn_valid() in some corner case?
+> > pfn_valid_within(buddy_pfn) that follows would only catch it on archs
+> > with holes in zone. Then is_migrate_isolate_page(buddy) might access an
+> > invalid buddy. So this is also a bug fix.
+> >
+> > Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
+>
+> As just replied to v1, I don't think this is required and the patch
 
-The header file got renamed, so any file including it needs to
-be adapted to avoid:
+You mean we should remove the Fixes tag? Thanks.
 
-arch/arm/mach-s3c/mach-gta02.c:40:10: fatal error: 'linux/mtd/nand_ecc.h' file not found
+> description can be simplified - e.g., stating that we have/had not such
+> users.
+>
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
 
-Fixes: 3f27bb3e3777 ("mtd: nand: ecc-hamming: Move Hamming code to the generic NAND layer")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-It's currently broken in -next because of the change in the
-MTD NAND driver. Please add this patch to the same branch or
-fold it into the patch that broke it.
----
- arch/arm/mach-s3c/common-smdk-s3c24xx.c | 2 +-
- arch/arm/mach-s3c/mach-anubis.c         | 2 +-
- arch/arm/mach-s3c/mach-at2440evb.c      | 2 +-
- arch/arm/mach-s3c/mach-bast.c           | 2 +-
- arch/arm/mach-s3c/mach-gta02.c          | 2 +-
- arch/arm/mach-s3c/mach-jive.c           | 2 +-
- arch/arm/mach-s3c/mach-mini2440.c       | 2 +-
- arch/arm/mach-s3c/mach-osiris.c         | 2 +-
- arch/arm/mach-s3c/mach-qt2410.c         | 2 +-
- arch/arm/mach-s3c/mach-rx3715.c         | 2 +-
- arch/arm/mach-s3c/mach-vstms.c          | 2 +-
- 11 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm/mach-s3c/common-smdk-s3c24xx.c b/arch/arm/mach-s3c/common-smdk-s3c24xx.c
-index f860d8bcba0e..6d124bbd384c 100644
---- a/arch/arm/mach-s3c/common-smdk-s3c24xx.c
-+++ b/arch/arm/mach-s3c/common-smdk-s3c24xx.c
-@@ -20,7 +20,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/io.h>
- 
-diff --git a/arch/arm/mach-s3c/mach-anubis.c b/arch/arm/mach-s3c/mach-anubis.c
-index 90e3fd98a3ac..04147cc0adcc 100644
---- a/arch/arm/mach-s3c/mach-anubis.c
-+++ b/arch/arm/mach-s3c/mach-anubis.c
-@@ -34,7 +34,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <net/ax88796.h>
-diff --git a/arch/arm/mach-s3c/mach-at2440evb.c b/arch/arm/mach-s3c/mach-at2440evb.c
-index 5fa49d4e2650..c6a5a51d84aa 100644
---- a/arch/arm/mach-s3c/mach-at2440evb.c
-+++ b/arch/arm/mach-s3c/mach-at2440evb.c
-@@ -35,7 +35,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include "devs.h"
-diff --git a/arch/arm/mach-s3c/mach-bast.c b/arch/arm/mach-s3c/mach-bast.c
-index 328f5d9ae9f9..27e8d5950228 100644
---- a/arch/arm/mach-s3c/mach-bast.c
-+++ b/arch/arm/mach-s3c/mach-bast.c
-@@ -24,7 +24,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <linux/platform_data/asoc-s3c24xx_simtec.h>
-diff --git a/arch/arm/mach-s3c/mach-gta02.c b/arch/arm/mach-s3c/mach-gta02.c
-index 3c75c7d112ea..aec8b451c016 100644
---- a/arch/arm/mach-s3c/mach-gta02.c
-+++ b/arch/arm/mach-s3c/mach-gta02.c
-@@ -37,7 +37,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- 
-diff --git a/arch/arm/mach-s3c/mach-jive.c b/arch/arm/mach-s3c/mach-jive.c
-index 2a29c3eca559..0785638a9069 100644
---- a/arch/arm/mach-s3c/mach-jive.c
-+++ b/arch/arm/mach-s3c/mach-jive.c
-@@ -40,7 +40,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include "gpio-cfg.h"
-diff --git a/arch/arm/mach-s3c/mach-mini2440.c b/arch/arm/mach-s3c/mach-mini2440.c
-index dc22ab839b95..4100905dfbd0 100644
---- a/arch/arm/mach-s3c/mach-mini2440.c
-+++ b/arch/arm/mach-s3c/mach-mini2440.c
-@@ -44,7 +44,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include "gpio-cfg.h"
-diff --git a/arch/arm/mach-s3c/mach-osiris.c b/arch/arm/mach-s3c/mach-osiris.c
-index 81744ca67d1d..3aefb9d22340 100644
---- a/arch/arm/mach-s3c/mach-osiris.c
-+++ b/arch/arm/mach-s3c/mach-osiris.c
-@@ -33,7 +33,7 @@
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include "cpu.h"
-diff --git a/arch/arm/mach-s3c/mach-qt2410.c b/arch/arm/mach-s3c/mach-qt2410.c
-index 151e8e373d40..f88b961798fd 100644
---- a/arch/arm/mach-s3c/mach-qt2410.c
-+++ b/arch/arm/mach-s3c/mach-qt2410.c
-@@ -21,7 +21,7 @@
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <asm/mach/arch.h>
-diff --git a/arch/arm/mach-s3c/mach-rx3715.c b/arch/arm/mach-s3c/mach-rx3715.c
-index a03662a47b38..9fd2d9dc3689 100644
---- a/arch/arm/mach-s3c/mach-rx3715.c
-+++ b/arch/arm/mach-s3c/mach-rx3715.c
-@@ -22,7 +22,7 @@
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- 
- #include <asm/mach/arch.h>
-diff --git a/arch/arm/mach-s3c/mach-vstms.c b/arch/arm/mach-s3c/mach-vstms.c
-index 05f19f5ffabb..ec024af7b0ce 100644
---- a/arch/arm/mach-s3c/mach-vstms.c
-+++ b/arch/arm/mach-s3c/mach-vstms.c
-@@ -16,7 +16,7 @@
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/partitions.h>
- #include <linux/memblock.h>
- 
 -- 
-2.27.0
-
+Yours,
+Muchun
