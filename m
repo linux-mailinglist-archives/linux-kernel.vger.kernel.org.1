@@ -2,183 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130192CF240
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2DD2CF24B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731018AbgLDQtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:49:11 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11460 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726309AbgLDQtK (ORCPT
+        id S2387680AbgLDQtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:49:42 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48530 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731021AbgLDQtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:49:10 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4G7CZd024856;
-        Fri, 4 Dec 2020 11:48:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=mIqVGrqJOK8eIvKWm19nm07II6oqvK7qpYDmwO4E6is=;
- b=RdDp6PAmW+iKFDCX96Z+Rnqwpt9hJ9b8nWBFnmxt839E95nyjIbIYsvKT5jF81ubEjXc
- XgfxtaThneVsV/Om3WJn1EadcSB1INUVEEvdNeY/mwr4dDRlrJ+8LPv2SOg6q5lDTjyL
- NSNX7SyLfDAj7tHBXdsWGpcSS/iAD+9i7hUKZDe1C0F2O/pL1j5oQWJgsQI7XWnnRAZ+
- ZA5dJr1F/1liWBqgiyAZs5baAuPFKp7dCjCLUOpYzZzudr38EYlamR8dn0OPVQ/nXiQM
- TG9+muXL9qy/wVIoGiIbLOXxQuy40NrUchvjz2BSHRXpzOUYdpOvWriRSinhBi70WERi CA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 357prrcj3y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 11:48:27 -0500
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B4GmLeP179200;
-        Fri, 4 Dec 2020 11:48:27 -0500
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 357prrcj3p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 11:48:27 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B4GRbbW002376;
-        Fri, 4 Dec 2020 16:48:26 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma02dal.us.ibm.com with ESMTP id 3569xuy9f8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 16:48:26 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B4GmPDd59769214
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 4 Dec 2020 16:48:25 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9ACA1B2065;
-        Fri,  4 Dec 2020 16:48:25 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1DDB8B2064;
-        Fri,  4 Dec 2020 16:48:25 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.195.249])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri,  4 Dec 2020 16:48:24 +0000 (GMT)
-Subject: Re: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM pointer
- invalidated
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
-References: <20201202234101.32169-1-akrowiak@linux.ibm.com>
- <20201203185514.54060568.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <a5a613ef-4c74-ad68-46bd-7159fbafef47@linux.ibm.com>
-Date:   Fri, 4 Dec 2020 11:48:24 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Fri, 4 Dec 2020 11:49:41 -0500
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607100539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zVmduwuXX/EtsNpL6GIUNu67EAHxRaD9Jr2TF6Y1iUI=;
+        b=4PpF9phaFYkXNRjhGjolQ11N8z0op2VsWnINy5E+SDH8/1kg2275pS+r+gceqDCWQSI/Sy
+        FKAWv3iouz6ndnQbeZew4Ty9ckiAtsUGo0EPwPTtRPi6ihTuaOmlqSOZUxW13hDuaP6y4w
+        +x8PCz1W9xgRrVN/V4DIz7gQ/2foEsadVYX2TLs+Ku8uxx7yyR0R/hMDZj714//5+FGBGz
+        Vl5Y7nL6vmd7788r0mhAfUYh0P4E1K1CGEvuk6kDzkTKloqgDDMTpAaciNprzw5LdqJrur
+        7iNLUraY/FGXZcmQDwEX2b2USG0FSuBqBr71Cp3odOwC8qIAzuPp2UtZRg4ITw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607100539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zVmduwuXX/EtsNpL6GIUNu67EAHxRaD9Jr2TF6Y1iUI=;
+        b=ofh5NU+CKTUaCBB/NQB487eCfWL4VEphmdxik8LzRyunDLdSwglElK41h+mhRPKcUVdAwR
+        Js6vEj+z4eJ71/Bw==
+To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Ahmed S . Darwish" <a.darwish@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH 1/3] cdrom: Reset sector_size back it is not 2048.
+Date:   Fri,  4 Dec 2020 17:48:48 +0100
+Message-Id: <20201204164850.2343359-1-bigeasy@linutronix.de>
+In-Reply-To: <20201204164803.ovwurzs3257em2rp@linutronix.de>
+References: <20201204164803.ovwurzs3257em2rp@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201203185514.54060568.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_05:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 spamscore=0 impostorscore=0 adultscore=0
- malwarescore=0 clxscore=1015 suspectscore=3 mlxscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040090
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In v2.4.0-test2pre2 mmc_ioctl_cdrom_read_data() was extended by issuing
+a MODE_SELECT opcode to change the sector size and READ_10 to perform
+the actual read if the READ_CD opcode is not support.
+The sector size is never changed back to the previous value of 2048
+bytes which is however denoted by the comment for version 3.09 of the
+cdrom.c file.
 
+Use cdrom_switch_blocksize() to change the sector size only if the
+requested size deviates from 2048. Change it back to 2048 after the read
+operation if a change was mode.
 
-On 12/3/20 12:55 PM, Halil Pasic wrote:
-> On Wed,  2 Dec 2020 18:41:01 -0500
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> The vfio_ap device driver registers a group notifier with VFIO when the
->> file descriptor for a VFIO mediated device for a KVM guest is opened to
->> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
->> event). When the KVM pointer is set, the vfio_ap driver stashes the pointer
->> and calls the kvm_get_kvm() function to increment its reference counter.
->> When the notifier is called to make notification that the KVM pointer has
->> been set to NULL, the driver should clean up any resources associated with
->> the KVM pointer and decrement its reference counter. The current
->> implementation does not take care of this clean up.
->>
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> Do we need a Fixes tag? Do we need this backported? In my opinion
-> this is necessary since the interrupt patches.
+Link: https://lkml.kernel.org/r/20201204164803.ovwurzs3257em2rp@linutronix.=
+de
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ drivers/cdrom/cdrom.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-I'll put in a fixes tag:
-Fixes: 258287c994de (s390: vfio-ap: implement mediated device open callback)
-
-Yes, this should probably be backported.
-
->
->> ---
->>   drivers/s390/crypto/vfio_ap_ops.c | 21 +++++++++++++--------
->>   1 file changed, 13 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
->> index e0bde8518745..eeb9c9130756 100644
->> --- a/drivers/s390/crypto/vfio_ap_ops.c
->> +++ b/drivers/s390/crypto/vfio_ap_ops.c
->> @@ -1083,6 +1083,17 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
->>   	return NOTIFY_DONE;
->>   }
->>   
->> +static void vfio_ap_mdev_put_kvm(struct ap_matrix_mdev *matrix_mdev)
-> I don't like the name. The function does more that put_kvm. Maybe
-> something  like _disconnect_kvm()?
-Since the vfio_ap_mdev_set_kvm() function is called by the
-notifier when the KVM pointer is set, how about:
-
-vfio_ap_mdev_unset_kvm()
-
-for when the KVM pointer is nullified?
-
->
->> +{
->> +	if (matrix_mdev->kvm) {
->> +		(matrix_mdev->kvm);
->> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> Is a plain assignment to arch.crypto.pqap_hook apropriate, or do we need
-> to take more care?
->
-> For instance kvm_arch_crypto_set_masks() takes kvm->lock before poking
-> kvm->arch.crypto.crycb.
->
->> +		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
->> +		kvm_put_kvm(matrix_mdev->kvm);
->> +		matrix_mdev->kvm = NULL;
->> +	}
->> +}
->> +
->>   static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->>   				       unsigned long action, void *data)
->>   {
->> @@ -1095,7 +1106,7 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->>   	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
->>   
->>   	if (!data) {
->> -		matrix_mdev->kvm = NULL;
->> +		vfio_ap_mdev_put_kvm(matrix_mdev);
-> The lock question was already raised.
->
-> What are the exact circumstances under which this branch can be taken?
->
->>   		return NOTIFY_OK;
->>   	}
->>   
->> @@ -1222,13 +1233,7 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
->>   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->>   
->>   	mutex_lock(&matrix_dev->lock);
->> -	if (matrix_mdev->kvm) {
->> -		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
->> -		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
->> -		vfio_ap_mdev_reset_queues(mdev);
->> -		kvm_put_kvm(matrix_mdev->kvm);
->> -		matrix_mdev->kvm = NULL;
->> -	}
->> +	vfio_ap_mdev_put_kvm(matrix_mdev);
->>   	mutex_unlock(&matrix_dev->lock);
->>   
->>   	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
+diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
+index 0c271b9e3c5b7..8f0e52a714938 100644
+--- a/drivers/cdrom/cdrom.c
++++ b/drivers/cdrom/cdrom.c
+@@ -2996,13 +2996,15 @@ static noinline int mmc_ioctl_cdrom_read_data(struc=
+t cdrom_device_info *cdi,
+ 		 * SCSI-II devices are not required to support
+ 		 * READ_CD, so let's try switching block size
+ 		 */
+-		/* FIXME: switch back again... */
+-		ret =3D cdrom_switch_blocksize(cdi, blocksize);
+-		if (ret)
+-			goto out;
++		if (blocksize !=3D CD_FRAMESIZE) {
++			ret =3D cdrom_switch_blocksize(cdi, blocksize);
++			if (ret)
++				goto out;
++		}
+ 		cgc->sshdr =3D NULL;
+ 		ret =3D cdrom_read_cd(cdi, cgc, lba, blocksize, 1);
+-		ret |=3D cdrom_switch_blocksize(cdi, blocksize);
++		if (blocksize !=3D CD_FRAMESIZE)
++			ret |=3D cdrom_switch_blocksize(cdi, CD_FRAMESIZE);
+ 	}
+ 	if (!ret && copy_to_user(arg, cgc->buffer, blocksize))
+ 		ret =3D -EFAULT;
+--=20
+2.29.2
 
