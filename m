@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F502CEEB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CB82CEEBC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729581AbgLDNSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 08:18:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726432AbgLDNST (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 08:18:19 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F48C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 05:17:33 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id s27so7578936lfp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 05:17:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XgYMArn7S4eAe6KIOy5zLeLGQU/k2A4+qSnIEryVFDA=;
-        b=WX3rrUEh7571qNcIktMgb1K6LZGWbAebA/LuCyu5g6ymMVvKppH/Of5IsUS0W0+PUp
-         QZdIegCUbTjLbuyoqiGn0k1TY2u+st6pnZAwAl4nBiSgFJYPeAGxfkPLvhQjfXzv3yB3
-         W1MBB6hMrtdHuai0IhoEPquK1yrQdzEat20Tw64aXtfuBWzgRldlnfrgZ7rHyf/Oh+mG
-         0GwxXFnVdhSJiCotmogChuMkIrX0sDUpgf0INQZQ+vA0QvBMQS6xaVaOp3mwkW4BM+DL
-         6zO4eGdFF4OZXNS4x1x+ZE7B202/1HhU/23jbAqlOBDszhPO8b2ETv8oz8ojqtNEThWa
-         pVuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XgYMArn7S4eAe6KIOy5zLeLGQU/k2A4+qSnIEryVFDA=;
-        b=FuSN+vhCXV5iqWLsbVn8cZOHpf8Ik/T7AnQOURUW2vwT6y53tZpert0W6AMuVAtfTV
-         BdN3qK47kpgqiXKNkdv3f/XEoD87DRJOxikxm2fLI63NncxgwkuePRI1NLpqT2jJ+iR5
-         5wvZkrG4HbT3M0OGEZ1GIGbnfJebEZ6uGn4AYGgE0GbiuLJ+wUrFrf30ZIPS8mwYcniw
-         fNJDuc0j2k4M17lR2mBUbSgBCwgF+QBzj8ioh0k88Zm4xnOuG0Wp0nWhgS+QxS4iYqRD
-         M7kz9IBXbPMEhK9nDU7+6Dbr4DIT1rX4MviGYIdqzVt0088CIlMx0s5ZBAEF/xN+oXjP
-         jtvg==
-X-Gm-Message-State: AOAM530cug1ruBhM25eehdGVLty8ClYzM+zyLTEAKAKW9rwucIFmyqNS
-        zNPTM1ng3jKpNAGDGcTdosomS2htcoCmLM3LU4GWIw==
-X-Google-Smtp-Source: ABdhPJxGMayNJR4CwFAM5FOHqLXagwctqU+MtHQNAQ7HiBZdYwrHvsTMSYXuSm4sCrQcpNOQIwYeU9/omZRoBHHM66Q=
-X-Received: by 2002:a19:cc91:: with SMTP id c139mr3563961lfg.31.1607087851964;
- Fri, 04 Dec 2020 05:17:31 -0800 (PST)
+        id S1728722AbgLDNYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 08:24:08 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:39193 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725920AbgLDNYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 08:24:08 -0500
+Received: from [192.168.0.2] (ip5f5af1d8.dynamic.kabel-deutschland.de [95.90.241.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 1065B2064784C;
+        Fri,  4 Dec 2020 14:23:24 +0100 (CET)
+Subject: Re: [SPECIFICATION RFC] The firmware and bootloader log specification
+To:     Wim Vervoorn <wvervoorn@eltan.com>,
+        The development of GNU GRUB <grub-devel@gnu.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>
+Cc:     coreboot@coreboot.org, LKML <linux-kernel@vger.kernel.org>,
+        systemd-devel@lists.freedesktop.org,
+        trenchboot-devel@googlegroups.com,
+        U-Boot Mailing List <u-boot@lists.denx.de>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, alecb@umass.edu,
+        alexander.burmashev@oracle.com, allen.cryptic@gmail.com,
+        andrew.cooper3@citrix.com, ard.biesheuvel@linaro.org,
+        "btrotter@gmail.com" <btrotter@gmail.com>,
+        dpsmith@apertussolutions.com, eric.devolder@oracle.com,
+        eric.snowberg@oracle.com, hpa@zytor.com, hun@n-dimensional.de,
+        javierm@redhat.com, joao.m.martins@oracle.com,
+        kanth.ghatraju@oracle.com, konrad.wilk@oracle.com,
+        krystian.hebel@3mdeb.com, leif@nuviainc.com,
+        lukasz.hawrylko@intel.com, luto@amacapital.net,
+        michal.zygowski@3mdeb.com, Matthew Garrett <mjg59@google.com>,
+        mtottenh@akamai.com,
+        Vladimir 'phcoder' Serbinenko <phcoder@gmail.com>,
+        piotr.krol@3mdeb.com, pjones@redhat.com, roger.pau@citrix.com,
+        ross.philipson@oracle.com, tyhicks@linux.microsoft.com,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+References: <20201113235242.k6fzlwmwm2xqhqsi@tomti.i.net-space.pl>
+ <CAODwPW9dxvMfXY=92pJNGazgYqcynAk72EkzOcmF7JZXhHTwSQ@mail.gmail.com>
+ <6c1e79be210549949c30253a6cfcafc1@Eltsrv03.Eltan.local>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <9b614471-0395-88a5-1347-66417797e39d@molgen.mpg.de>
+Date:   Fri, 4 Dec 2020 14:23:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201203141124.7391-1-mgorman@techsingularity.net>
- <20201203141124.7391-7-mgorman@techsingularity.net> <CAKfTPtDm880Rs7D1xUCQd_X9okqzhgrmCJVhwg90Rt3krq9ytg@mail.gmail.com>
- <20201203175204.GY3371@techsingularity.net> <CAKfTPtBGsXb0RqE_qs2miZGi_uax4VY1_8y1NGhQ17Q8mBx8dw@mail.gmail.com>
- <20201204113030.GZ3371@techsingularity.net> <CAKfTPtDRqwUoX51rU0Xd3H9Dwqf8bLAFBxhoeMF1brKYmAZDJg@mail.gmail.com>
-In-Reply-To: <CAKfTPtDRqwUoX51rU0Xd3H9Dwqf8bLAFBxhoeMF1brKYmAZDJg@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 4 Dec 2020 14:17:20 +0100
-Message-ID: <CAKfTPtBABBY1QSfFtbhBQ7+a8HOp2YfTyJaMVo07T5GU7sp_MA@mail.gmail.com>
-Subject: Re: [PATCH 06/10] sched/fair: Clear the target CPU from the cpumask
- of CPUs searched
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6c1e79be210549949c30253a6cfcafc1@Eltsrv03.Eltan.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 at 14:13, Vincent Guittot <vincent.guittot@linaro.org> wrote:
->
-> On Fri, 4 Dec 2020 at 12:30, Mel Gorman <mgorman@techsingularity.net> wrote:
-> >
-> > On Fri, Dec 04, 2020 at 11:56:36AM +0100, Vincent Guittot wrote:
-> > > > The intent was that the sibling might still be an idle candidate. In
-> > > > the current draft of the series, I do not even clear this so that the
-> > > > SMT sibling is considered as an idle candidate. The reasoning is that if
-> > > > there are no idle cores then an SMT sibling of the target is as good an
-> > > > idle CPU to select as any.
-> > >
-> > > Isn't the purpose of select_idle_smt ?
-> > >
-> >
-> > Only in part.
-> >
-> > > select_idle_core() looks for an idle core and opportunistically saves
-> > > an idle CPU candidate to skip select_idle_cpu. In this case this is
-> > > useless loops for select_idle_core() because we are sure that the core
-> > > is not idle
-> > >
-> >
-> > If select_idle_core() finds an idle candidate other than the sibling,
-> > it'll use it if there is no idle core -- it picks a busy sibling based
-> > on a linear walk of the cpumask. Similarly, select_idle_cpu() is not
->
-> My point is that it's a waste of time to loop the sibling cpus of
-> target in select_idle_core because it will not help to find an idle
-> core. The sibling  cpus will then be check either by select_idle_cpu
-> of select_idle_smt
+Dear Wim, dear Daniel,
 
-also, while looping the cpumask, the sibling cpus of not idle cpu are
-removed and will not be check
 
->
-> > guaranteed to scan the sibling first (ordering) or even reach the sibling
-> > (throttling). select_idle_smt() is a last-ditch effort.
-> >
-> > --
-> > Mel Gorman
-> > SUSE Labs
+First, thank you for including all parties in the discussion.
+Am 04.12.20 um 13:52 schrieb Wim Vervoorn:
+
+> I agree with you. Using an existing standard is better than inventing
+> a new one in this case. I think using the coreboot logging is a good
+> idea as there is indeed a lot of support already available and it is
+> lightweight and simple.
+In my opinion coreboot’s format is lacking, that it does not record the 
+timestamp, and the log level is not stored as metadata, but (in 
+coreboot) only used to decide if to print the message or not.
+
+I agree with you, that an existing standard should be used, and in my 
+opinion it’s Linux message format. That is most widely supported, and 
+existing tools could then also work with pre-Linux messages.
+
+Sean Hudson from Mentor Graphics presented that idea at Embedded Linux 
+Conference Europe 2016 [1]. No idea, if anything came out of that 
+effort. (Unfortunately, I couldn’t find an email. Does somebody have 
+contacts at Mentor to find out, how to reach him?)
+
+
+Kind regards,
+
+Paul
+
+
+[1]: 
+http://events17.linuxfoundation.org/sites/events/files/slides/2016-10-12%20-%20ELCE%20-%20Shared%20Logging%20-%20Part%20Deux.pdf
