@@ -2,148 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C212CEEFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C512CEF0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730299AbgLDNtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 08:49:35 -0500
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:60260 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725973AbgLDNte (ORCPT
+        id S2387533AbgLDNwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 08:52:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725920AbgLDNwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 08:49:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1607089774; x=1638625774;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=aprRrheqIQcZfHyMK5qLYA6uJrrOjC/Y74/E7xSPl/0=;
-  b=xfgfU+L0e+fVHwh4O+rQcnR8NECjv+W3NviSYiUmVTWRxcjEaKzF23GY
-   Rs44rDsxpjq7/zJZ6kUCqb7ILjiO1HOPsZxftAXdslp0muUBeJPmMiM8h
-   l9WfiSj21tqhQt0GwzxcFxuy7DxLQ9EzCsE2U5AGcez/CnFo6Wj7oyBWU
-   7amf/HdxyodbigTARWiHMh5Ipq6U5spyKCwEHagJhbqSxISUS50G7wFsl
-   XF3wfIKCIDFEzBBhxBwLX/Q9ma01bFuM68TUX8Dz8tyMsKEiMaWJoT1ZX
-   0vx+AYKoiMfMMTMl0XuuqXClZ8MJpeTsQAXru7jBJwbvRK8iSufYxtdFN
-   A==;
-IronPort-SDR: JblvC20Jo3fFN8GCHWNKrx6lWcl1M2M6BxrfQgyG+w/3FFy6OFOJrLuF9QBabz5ivra7fSjlPz
- XJ2HjtDkMAvLaGaou6M49tL0VqgCa4RufTHPnN9WHqLFa2/tAg9dm50Znk8yJxbGcKKvYYwyxm
- fG1m4QnCyOM9UoskT8gXEX8dtfqfQd2azmHsQtlS+SpU1tGLB1b56l5/s/BVagYmru6zMKt16R
- 3ngFO5FMssGujOtH36CyHsiyNBxUO5kB9eKGKs2Itv4lR+1SHfouFl6M6YhbVVFZsf37yv1B0D
- DHw=
-X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="100923591"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Dec 2020 06:48:28 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 4 Dec 2020 06:48:27 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Fri, 4 Dec 2020 06:48:27 -0700
-Date:   Fri, 4 Dec 2020 14:48:26 +0100
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>
-Subject: Re: [PATCH v8 3/4] phy: Add Sparx5 ethernet serdes PHY driver
-Message-ID: <20201204134826.lnkdtj5nrygsngm2@mchp-dev-shegelun>
-References: <20201203103015.3735373-1-steen.hegelund@microchip.com>
- <20201203103015.3735373-4-steen.hegelund@microchip.com>
- <20201203215253.GL2333853@lunn.ch>
+        Fri, 4 Dec 2020 08:52:18 -0500
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65319C061A52
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 05:51:38 -0800 (PST)
+Received: by mail-vs1-xe42.google.com with SMTP id s85so3278309vsc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 05:51:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mz+QBXryBtw02WKwvqtBofezUJT1ockyk/QIMMgUvZw=;
+        b=PCDIH1vya67kDh+iw8rL1ska13PYiK592n/u69GgSzRS+DGxeAhYxWftIjoDQ6jXsR
+         OG8Cs6BifeNdcNkTOKlFDB6bcWCQld+JMxaHLwbFOAk/P0l+4qS5a+uTh4BuX3TrcTJc
+         LLw0M/1ogLIHNzL+GbAtacLK1eWdla2RcWvh9n9fwLY0V2s2fUp4gPOVLWuSaAG66NTL
+         liTfwrDW2fUgLQ5PCxJ8ATygZYURPaeVhcjNAuWvH/7PK3I2i5rYA5ZHdkGfbW2hYvrT
+         JmIeINqgzp8nJAEqZDI5XusQ6zlUYolKjZ6SMS/cNxkyLAskX4yLDsJGVgetns3SjnVZ
+         PFyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mz+QBXryBtw02WKwvqtBofezUJT1ockyk/QIMMgUvZw=;
+        b=LjdvH9eYcL2cGh0nP3MkyVQCHL0F8Hcu2IfORQihN71QfosIAXhIClAJ3hUYXqQeER
+         hhTya+2MMF/au+2Z4O+J7uiMbNzQGvsyJG+D+rNYFa82iE8SoAiHXHS3hKJ4444aSujI
+         LtWYaa97Im90+CHol79XXmA1czxdrFEA85jJInlawI3ysVt2g4eItucI7Zav5eaSALUX
+         iKoXO0Ln+uZ9aoNeynYd8hiUJaWdcAAWKSpN1VrZb75k+cYQVQwoNU3IHFmhXYm5b8vJ
+         7abKZkjCuVxta6erXJW0YgxkUqYrjp65Sfrkd8n9z+VGbM0C8bK1MjbXpNMpJHNOSLf6
+         ReQw==
+X-Gm-Message-State: AOAM530D0fBhlfc4+y7Gl2CU1CLIGamZjncu/j86Ed3uvO/O4AVgSUf8
+        jktu0JhhMTZ0cAK+wAbon386i7RADNy9hRwmhe6RyA==
+X-Google-Smtp-Source: ABdhPJzGk/t/tL7qP3yXjvmv1gwXx2PLLjyUM+GAGZfIX8dHIabpfg7nwlt7x+ZeP38Bi0Enj1TxsA65ZcY09Di2JGc=
+X-Received: by 2002:a05:6102:2127:: with SMTP id f7mr3685273vsg.48.1607089897636;
+ Fri, 04 Dec 2020 05:51:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201203215253.GL2333853@lunn.ch>
+References: <20201202185118.29076-1-mw@semihalf.com> <20201202185118.29076-4-mw@semihalf.com>
+In-Reply-To: <20201202185118.29076-4-mw@semihalf.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 4 Dec 2020 14:51:01 +0100
+Message-ID: <CAPDyKFp_+5G2Bg0rWcW+ZKeee--3znZJhRuXUi1U70ksy+qcjw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] mmc: sdhci-xenon: use clk only with DT
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Ziji Hu <huziji@marvell.com>,
+        Adrian Hunter <adrian.hunter@intel.com>, jaz@semihalf.com,
+        tn@semihalf.com, ard.biesheuvel@arm.com,
+        Kostya Porotchkin <kostap@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.12.2020 22:52, Andrew Lunn wrote:
->EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+On Wed, 2 Dec 2020 at 19:51, Marcin Wojtas <mw@semihalf.com> wrote:
 >
->> +/* map from SD25G28 interface width to configuration value */
->> +static u8 sd25g28_get_iw_setting(const u8 interface_width)
->> +{
->> +     switch (interface_width) {
->> +     case 10: return 0;
->> +     case 16: return 1;
->> +     case 32: return 3;
->> +     case 40: return 4;
->> +     case 64: return 5;
->> +     default:
->> +             pr_err("%s: Illegal value %d for interface width\n",
->> +                    __func__, interface_width);
+> As a preparation for supporting ACPI, modify the driver
+> to use the clk framework only when booting with DT -
+> otherwise rely on the configuration done by firmware.
+> For that purpose introduce also a custom SDHCI get_max_clock
+> callback.
 >
->Please make use of dev_err(phy->dev, so we know which PHY has
->configuration problems.
+> Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>  drivers/mmc/host/sdhci-xenon.c | 61 ++++++++++++--------
+>  1 file changed, 38 insertions(+), 23 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-xenon.c b/drivers/mmc/host/sdhci-xenon.c
 
-I will update that.
+[...]
 
+> @@ -637,10 +650,12 @@ static int xenon_runtime_resume(struct device *dev)
+>         struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
+>         int ret;
 >
->> +static int sparx5_serdes_validate(struct phy *phy, enum phy_mode mode,
->> +                                     int submode,
->> +                                     union phy_configure_opts *opts)
->> +{
->> +     struct sparx5_serdes_macro *macro = phy_get_drvdata(phy);
->> +     struct sparx5_serdes_private *priv = macro->priv;
->> +     u32 value, analog_sd;
->> +
->> +     if (mode != PHY_MODE_ETHERNET)
->> +             return -EINVAL;
->> +
->> +     switch (submode) {
->> +     case PHY_INTERFACE_MODE_1000BASEX:
->> +     case PHY_INTERFACE_MODE_SGMII:
->> +     case PHY_INTERFACE_MODE_QSGMII:
->> +     case PHY_INTERFACE_MODE_10GBASER:
->> +             break;
->> +     default:
->> +             return -EINVAL;
->> +     }
->> +     if (macro->serdestype == SPX5_SDT_6G) {
->> +             value = sdx5_rd(priv, SD6G_LANE_LANE_DF(macro->stpidx));
->> +             analog_sd = SD6G_LANE_LANE_DF_PMA2PCS_RXEI_FILTERED_GET(value);
->> +     } else if (macro->serdestype == SPX5_SDT_10G) {
->> +             value = sdx5_rd(priv, SD10G_LANE_LANE_DF(macro->stpidx));
->> +             analog_sd = SD10G_LANE_LANE_DF_PMA2PCS_RXEI_FILTERED_GET(value);
->> +     } else {
->> +             value = sdx5_rd(priv, SD25G_LANE_LANE_DE(macro->stpidx));
->> +             analog_sd = SD25G_LANE_LANE_DE_LN_PMA_RXEI_GET(value);
->> +     }
->> +     /* Link up is when analog_sd == 0 */
->> +     return analog_sd;
->> +}
->
->What i have not yet seen is how this code plugs together with
->phylink_pcs_ops?
->
->Can this hardware also be used for SATA, USB? As far as i understand,
->the Marvell Comphy is multi-purpose, it is used for networking, USB,
->and SATA, etc. Making it a generic PHY then makes sense, because
->different subsystems need to use it.
->
->But it looks like this is for networking only? So i'm wondering if it
->belongs in driver/net/pcs and it should be accessed using
->phylink_pcs_ops?
->
->        Andrew
+> -       ret = clk_prepare_enable(pltfm_host->clk);
+> -       if (ret) {
+> -               dev_err(dev, "can't enable mainck\n");
+> -               return ret;
+> +       if (dev->of_node) {
 
-This is a PHY that communicates on a SerDes link to an ethernet PHY or a
-SFP. So I took the lead from earlier work: the Microsemi Ocelot SerDes driver,
-and added the Sparx5 SerDes PHY driver here since it is very similar in intent.
-It is not an ethernet PHY as such.
+I didn't notice this in the earlier version, my apologies, but there
+is no need for this check.
 
-BR
-Steen
+clk_prepare_enable() should cope fine with a NULL argument - and you
+only reach this path, if the clock was successfully fetched during the
+probe or that it was left to stay NULL for non-DT case.
 
----------------------------------------
-Steen Hegelund
-steen.hegelund@microchip.com
+> +               ret = clk_prepare_enable(pltfm_host->clk);
+> +               if (ret) {
+> +                       dev_err(dev, "can't enable mainck\n");
+> +                       return ret;
+> +               }
+>         }
+>
+>         if (priv->restore_needed) {
+> --
+> 2.29.0
+>
+
+Kind regards
+Uffe
