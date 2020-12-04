@@ -2,69 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEFA2CF3A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:10:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 632982CF3A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729508AbgLDSIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:08:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43188 "EHLO
+        id S2387922AbgLDSJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:09:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbgLDSIT (ORCPT
+        with ESMTP id S2387781AbgLDSJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:08:19 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690B4C061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:07:33 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id e7so6191196wrv.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:07:33 -0800 (PST)
+        Fri, 4 Dec 2020 13:09:12 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B599C061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:08:32 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id v3so6015774ilo.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:08:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:mime-version:from:to:subject;
-        bh=u1vfIZY2aFCzLzqooC8Rt9/rYcFxDLUtih7SLGTE7Qg=;
-        b=C4uCG8gmoZbmrGKxZpBg7A0iqZaaOWuWOZxQbaFeKeZWQNftSBcyhaR25jy3rJTXgK
-         5ykzrd8yw7Dof9oVLL5fIa5mKjJ2Oh3sNSezmQaulUTMbCjbWlnxU8k0H1lP87C2Os8W
-         6j+p0RtvcqQx0q9RUVCPxoCA8x1QJRPQokzqKRkh6DTPTeulg+Pgt/r7oLI6SN/rFgOz
-         avZhKsIOd1BYQRGFu/DNBHYCZpXGMElvABgHvZH4oLUZf970hmZUQEWMkS6qieWmPpJL
-         XeJ/R98ZVy8PTZ6/Y1WudiugzstTkItUfiie8Vg9031HChQ0HoiwlDvPFonyuZx8yycv
-         beHQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2y9rMaTERSSbE3OXGqqbUsdHNdPLIzXX1XRh3Jkau1k=;
+        b=hkAoZhEqm+cFDrEHKCgOCGlY53/fkNmwKUKLaEWejjjD0Y8jEZ7z1Q6bgfhAoF8kZS
+         Pv97SVv4FbUAnZJEGD5CWGEb2f68M0mfQVMsJMHdqMEDfeXQ2ybczOObDNzCqDVjvN6b
+         SiAAZ8Eh9WxSenubdHzVl9HKkiwXbC1ZIsiB9Skjs034nuOjLe003uMuWpRdt38chuo1
+         hm89QoH2iEUH5hJOEChfzgiXoc1DluQFtdUOo4lto+X9Qf2dlwMKBou18fGmvIo/xBym
+         bwrD5yAeAihmeJjlOEmxlPAy7dZGZOmSoA280aHMV5E2amXTB4Ex7vHE6KuWdSgRJcJ1
+         I+tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:from:to:subject;
-        bh=u1vfIZY2aFCzLzqooC8Rt9/rYcFxDLUtih7SLGTE7Qg=;
-        b=Baw/4wnk//+CpUJj8gMjl5vuIrWecBbR0Loso3mv8L023U3YfrOFyJE/nhMceKVFuV
-         QdSzEbg2pFxkbs2Z2GZDtb+nTZF66GlJYMGOF3Ce46QYbNqmyYvXWKPXYbBmuqVjROLY
-         9nRlil7mFeaSHKZ2Yteo7nJudxfkePh0yzszxYWxX1MlXDsG8IpJubjUQtJqfRy2XXR1
-         Xcfaig0ObJFvGQiwydqzG/Tf7I/wPFWvThqMZmP63pHOuZvUUxin0+lUr2HpTRu5zAqE
-         nfEMppunZmKAABAIgLGQZRbMSU8vOFx+m3EXT/EBwrvRAa0nle1i9UrbBw3mOoqYNIie
-         /Hsw==
-X-Gm-Message-State: AOAM5303/qia4gOPIVxXNOmMCqlqpzx/mll/ZHESJF/UUCoRDtVdk+CD
-        ONpjFjuywgSvyImzJVoj8FWZcdCE91CG2w==
-X-Google-Smtp-Source: ABdhPJwI7ENAr8moUTXkfec90qkZQPrtziNV9wtY/ugaiyGULNkH2Qlz69tGNOPPE3lER98lsTs3pg==
-X-Received: by 2002:adf:fd0e:: with SMTP id e14mr6243117wrr.119.1607105251367;
-        Fri, 04 Dec 2020 10:07:31 -0800 (PST)
-Received: from webmail.webmail.com ([196.170.9.177])
-        by smtp.gmail.com with ESMTPSA id g192sm3928909wme.48.2020.12.04.10.07.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 10:07:30 -0800 (PST)
-Message-ID: <5fca7ae2.1c69fb81.5584f.e5a3@mx.google.com>
-Date:   Fri, 04 Dec 2020 10:07:30 -0800 (PST)
-Content-Type: multipart/mixed; boundary="===============7576789699697519707=="
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2y9rMaTERSSbE3OXGqqbUsdHNdPLIzXX1XRh3Jkau1k=;
+        b=N34h71VC6lG1YN30EbIR0ENpb4SfJ194HH5XbJ/8gyZyTsKYYn3vFtBmn3OMZoM8x0
+         tYDnj7kYNE40tEREp/adAUKIDBxEOk4G/A1al/xG6m9pltiRdjgNfDRvGVRc/NnyIUvt
+         PBNN6t4mrxqxhqZ2ufkeT+s732UjrWC1o0wiI6L3bsfa+KwIHAxmWR415YKo3A60VUJQ
+         5/uoelx7ve9LaMG3hZSoDSdamxHQEJz5OZDjDoZTy3+cSp/qp3T6MUNxoKMUgBgjiSus
+         dKimCqXDCXAIag5vnnowekLg5pOgcYhpywTmi1Vai+rHznhGlIVIg0oI6jFOhf7bxL4K
+         3lRg==
+X-Gm-Message-State: AOAM532Vj7+WBHnJHeDh3VqGycgHd89dIs+9T9eYEt3FcVcPX8C8pBWH
+        TtBG/mPcgguqYeGX1/kH4mm+2XAL7ZBmjwlAGd8LZA==
+X-Google-Smtp-Source: ABdhPJylHSF7vRowIeU00yP3tAwRQyuVs+VtC98SOYyu6nFDRYQ8VOjPM2UExmg/FfGAhMaZDd8PWNF4kX06ZoQI7w0=
+X-Received: by 2002:a92:bf09:: with SMTP id z9mr7828239ilh.194.1607105311699;
+ Fri, 04 Dec 2020 10:08:31 -0800 (PST)
 MIME-Version: 1.0
-From:   =?utf-8?b?TWF0dGhldyBBREU=?= <matadtgtg10043@gmail.com>
-To:     linux-kernel@vger.kernel.org
-X-Priority: 
-X-MSMail-Priority: 
-Subject: =?utf-8?b?Q0YuLSBIRUxMTyBJIEhBVkUgQSBGSU5BTkNJQUwgUFJPUE9TQUwgRk9SIFlPVQ==?=
+References: <20201203194127.1813731-1-dlatypov@google.com> <20201203194127.1813731-2-dlatypov@google.com>
+ <CABVgOSnhcMB-xggP5u-p8UgtCR_roiqPuUUZC6nY1_48opf+Sw@mail.gmail.com>
+In-Reply-To: <CABVgOSnhcMB-xggP5u-p8UgtCR_roiqPuUUZC6nY1_48opf+Sw@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Fri, 4 Dec 2020 10:08:20 -0800
+Message-ID: <CAGS_qxqTJRuB05GzzezCimyN-SnwC8VtwjSLCuLzQuf5g=iY4A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] kunit: tool: fix minor typing issue with None status
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---===============7576789699697519707==
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+On Thu, Dec 3, 2020 at 8:17 PM David Gow <davidgow@google.com> wrote:
+>
+> On Fri, Dec 4, 2020 at 3:41 AM Daniel Latypov <dlatypov@google.com> wrote:
+> >
+>
+> This seems good to me, but I have a few questions, particularly around
+> the description.
+>
+> > The code to handle aggregating statuses didn't check that the status
+> > actually got set.
+>
+> I don't understand what you mean here. Does this refer to
+> Test{Case,Suite}::status potentially being None, and that not being
+> supported properly in bubble_up_{suite_,test_case_,}errors(), or
+> something else? Either way, I can't see any additional code to "check"
+> that the status has been set. As far as I can tell everything except
+> the default to SUCCESS is a no-op, or am I missing something?
 
-Cg==
+mypy (rightly) sees the type is TestStatus or None and complains we
+don't bother handling None, so we risk a crash in the tool.
+The status will be none until we explicitly assign a value to it
+later, which we always do currently, afaict.
 
---===============7576789699697519707==--
+This change just avoids that by giving it a default value to make mypy
+happy, which shouldn't change behaviour at all right now.
+
+There is no other (potential) behavioural change.
+
+>
+> > Default the value to SUCCESS.
+>
+> I'm a little iffy about defaulting this to success, but I think it's
+> okay for now: the skip test support will eventually change this to a
+> SKIPPED value.
+
+Sounds good!
+
+>
+> >
+> > This sorta follows the precedent in commit 3fc48259d525 ("kunit: Don't
+> > fail test suites if one of them is empty").
+> >
+> > Also slightly simplify the code and add type annotations.
+> >
+> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > ---
+>
+> Otherwise, the actual code changes all seem sensible, and it worked
+> fine when I tested it, so:
+>
+> Reviewed-by: David Gow <davidgow@google.com>
+>
+> -- David
