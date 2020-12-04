@@ -2,69 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3AC2CEB8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD85B2CEB8C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728157AbgLDJ74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:59:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56650 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726014AbgLDJ74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:59:56 -0500
-Date:   Fri, 4 Dec 2020 09:59:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607075955;
-        bh=eTDLlwNPvwWPy8dSGHo/qizkZsw89ufbibXjcv+b2Is=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kUQ3oQG4CW9V97oGyQFm3HYJe0oRoVdgnprgaAsiTQDy772ZmyFoez0NjlMhmLsHb
-         YF0RCsiDjalvmpo5Mf71U8g+vkP3GdrMT4WQ3KPtQpBkgjRN92Dqfvbc53d7VVxRxv
-         AMBV3SfdDFhLO+BuSgOM1IUvruyMsLlGa4Em2qylwg6/mg0QNgkDU5O+ru3gUleO41
-         2SxyEDrAdEubV9gKZYFasRJEC9UN7X5t4a6tXEtkBeMHctc+Auh9w40KiIMZ85L7f3
-         u3yfQpjlMyObgX3sW9A0XUnHWpKx0WgUUbNkD16M+oY6Y3ocmR1gV333r4/NfWuXfH
-         9RDytO1hfaRgQ==
-From:   Will Deacon <will@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: cpufeature: fix unused function warning
-Message-ID: <20201204095909.GC461@willie-the-truck>
-References: <20201203223217.1238899-1-arnd@kernel.org>
+        id S1729458AbgLDKAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 05:00:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbgLDKAp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 05:00:45 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641E5C0613D1;
+        Fri,  4 Dec 2020 02:00:05 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CnSqj0xJWz9sWs;
+        Fri,  4 Dec 2020 21:00:01 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607076001;
+        bh=KyOLmJk+bbh08zuaMRqMB14NVXFXl63sBfY60oWJWkQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DIm3UP/p7k0x/QrI+q0NDfWPKEANJ/vPsTZMh93/uoHzvv9hvAKzqpmUPPROykf2v
+         pnW+sw6oLhscCfi/+x7CypnimRGCmXq2CmDJxtdrWhsJdJBmHByGHIBrw08R1hTmew
+         Pk5Ni98FWJXPYtVxGFpfv1AkOfe7k0M0LnyTgQaZo0WzNGBcnmJGXaXe6KIZ3ts1K6
+         lFr6mR5PzmXEbiUUW/Tr5gKvbOsRX9V6dEs3+2oaO9AsHd+oT5bJbYpQgLm31Yo/Hm
+         CDkHRWc+NW8oFyBg1pnJXdqhrkXwBAb/jmv1pSm+DljdxP2kgN+9cMcctHJbBhEu36
+         3lhb9E9WUAvUw==
+Date:   Fri, 4 Dec 2020 21:00:00 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the akpm tree
+Message-ID: <20201204210000.660293c6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203223217.1238899-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/ApxreD=mQyBp_zuXIq+7bZW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 11:32:11PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The __system_matches_cap() function is now only used in an #ifdef
-> section:
-> 
-> arch/arm64/kernel/cpufeature.c:2649:13: error: unused function '__system_matches_cap' [-Werror,-Wunused-function]
-> 
-> Move it into that #ifdef section.
-> 
-> Fixes: 7cf283c7bd62 ("arm64: uaccess: remove redundant PAN toggling")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/arm64/kernel/cpufeature.c | 36 ++++++++++++++++------------------
->  1 file changed, 17 insertions(+), 19 deletions(-)
+--Sig_/ApxreD=mQyBp_zuXIq+7bZW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Will Deacon <will@kernel.org>
+Hi all,
 
-We can probably go further and remove the helper altogether as I don't
-think it really helps has_generic_auth(), but this should fix the warning.
+After merging the akpm tree, today's linux-next build (powerpc
+allyesconfig) produced warnings like this:
 
-Will
+kernel/kcov.c:296:14: warning: conflicting types for built-in function '__s=
+anitizer_cov_trace_switch'; expected 'void(long unsigned int,  void *)' [-W=
+builtin-declaration-mismatch]
+  296 | void notrace __sanitizer_cov_trace_switch(u64 val, u64 *cases)
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ld: warning: orphan section `.data..Lubsan_data177' from `arch/powerpc/opro=
+file/op_model_pa6t.o' being placed in section `.data..Lubsan_data177'
+
+(lots of these latter ones)
+
+I don't know what produced these, but it is in the akpm-current or
+akpm trees.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ApxreD=mQyBp_zuXIq+7bZW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/KCKAACgkQAVBC80lX
+0Gycfgf+Jpu0lbksstLRA0C8i17lPCMxSvQg4IcskZLWUbUk2SLrP5ga3KdgSN7V
+YBhl30kZuGGNWxpQGdpDkV4AhpqouvJUpeek0ZNOgP/IwzboFT5R4oLDjI3JbF+U
+c1E3w4lUHGza2+bodp5dZcWlda2mfIt62h7wqK0qS+JF8YIIjT8a6Y1jJoVQvR4l
+rCZhV1dT9LoYSYSwG5Unco9X3ZrX2Uj1lDztFh17pU8NzmcpVcOeo+20TeRHPdqm
+hXsfWChIlaxne+kQeQvgzzdTnJIi5n8+Q8jyrFb3EtLzvBzR9v/UK8uuyRkZMEvW
+3OsyufLWp6pqc+wh1Dn2gZ9gkv3JdA==
+=/yDS
+-----END PGP SIGNATURE-----
+
+--Sig_/ApxreD=mQyBp_zuXIq+7bZW--
