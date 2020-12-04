@@ -2,76 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B152CEF9E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288FA2CEFAC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388204AbgLDOQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:16:50 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:54783 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727918AbgLDOQu (ORCPT
+        id S1726923AbgLDOY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:24:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725920AbgLDOY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:16:50 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id AEE95100003;
-        Fri,  4 Dec 2020 14:16:06 +0000 (UTC)
-Date:   Fri, 4 Dec 2020 15:16:06 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <rmk+kernel@armlinux.org.uk>
-Subject: Re: [PATCH v8 3/4] phy: Add Sparx5 ethernet serdes PHY driver
-Message-ID: <20201204141606.GH74177@piout.net>
-References: <20201203103015.3735373-1-steen.hegelund@microchip.com>
- <20201203103015.3735373-4-steen.hegelund@microchip.com>
- <20201203215253.GL2333853@lunn.ch>
+        Fri, 4 Dec 2020 09:24:58 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381C3C061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:24:12 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id e7so5494331wrv.6
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:24:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=jUrLTNYFEiHdTQnh4b2KYj9Mt2pIKbyV0FmvqdxpeB8=;
+        b=Z6DkyOnE9k1kWZpvptHeGrpAXBwSapeSB8w1YdvYbnb3eftmlK2wjdSjdpN7qCOj2+
+         nn+uYpuGAK4xmpf1bBewVR90Ik16AG7aoY0iQEv6cw7rLmLB8GXJK4KKVyk5XMUXcfk0
+         EDMMpV3uJc4m6t/gnwI3sy2t4d250gGHLxpLlwGXbaZhswUraVRt94C2BMMcjp3HX10m
+         zEQCPyhxIq0cXuBLHXrkZwPXLwpT4yin9SfAh1QeSDSJL9XPv//Px0NZy4CjDLc+UxI5
+         FQ+q0ZObcEIkv6JwodNHpm4IsjoWTxyMo1vL+Sg/7A6qI2A95DQjYkyf/sWjUp3flODt
+         PKEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=jUrLTNYFEiHdTQnh4b2KYj9Mt2pIKbyV0FmvqdxpeB8=;
+        b=iMYnRQFBneUNld9LCL3r1kEANYZsgCKMEbp0uvIuYnkDqya8eFYBVbGqgFplgqWmU8
+         a0jQz9yv8/A/hreHIfmdERdyv8bzqer/7DTLJKm27ddAYmz6y40QOke8miyT9KBe14tF
+         S99iBsVDLn+EaJkVoNc/SsEKc6nnMn2u0MJMzn0e4n6HnG5V3CoTHF0SDmt/7QyE5SrO
+         JMUUlOJhlcsYLc9YcfCl90xd/HZufo2xe/HvU9Whj14/LXrmbXJCub+ON3ZvtHto4Fhb
+         WWzoP6qLZCWZ7DkAOS/ZxqrTGmkCXYcDqLjgYFwUzyzua0mLHE2flKRnSOyPkBb4NcNy
+         FUrw==
+X-Gm-Message-State: AOAM530i/gt8cBvvus7u2eFJUpLquQHrfaq65fHmF/RhY2MDgVbLo14V
+        1y6e5Z4HNme2M7IgUCeWDUwWaA==
+X-Google-Smtp-Source: ABdhPJwoBA9wqffJQYc31bYbuyvOWnHNUoeQXULAdRVuAJOkUsOmNY8LZXa33e0UvMqyOWL8CHF4zQ==
+X-Received: by 2002:a05:6000:89:: with SMTP id m9mr5285264wrx.412.1607091850901;
+        Fri, 04 Dec 2020 06:24:10 -0800 (PST)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id j8sm3868701wrx.11.2020.12.04.06.24.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 06:24:10 -0800 (PST)
+References: <tencent_220963AF059847E1171B4AB9@qq.com>
+ <CACRpkdbvKWcD04SLLBOBuZWzN64xpVv1nfCXZGcSp9cs0MPivQ@mail.gmail.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        =?utf-8?B?5p6X5Zyj5qyi?= <linshenghuan@hangtu-china.com>
+Cc:     khilman <khilman@baylibre.com>,
+        narmstrong <narmstrong@baylibre.com>,
+        "martin.blumenstingl" <martin.blumenstingl@googlemail.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic <linux-amlogic@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: 0001-add-amlogic-gpio-to-irq
+In-reply-to: <CACRpkdbvKWcD04SLLBOBuZWzN64xpVv1nfCXZGcSp9cs0MPivQ@mail.gmail.com>
+Message-ID: <1jeek5ps3b.fsf@starbuckisacylon.baylibre.com>
+Date:   Fri, 04 Dec 2020 15:24:09 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203215253.GL2333853@lunn.ch>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/12/2020 22:52:53+0100, Andrew Lunn wrote:
-> > +	if (macro->serdestype == SPX5_SDT_6G) {
-> > +		value = sdx5_rd(priv, SD6G_LANE_LANE_DF(macro->stpidx));
-> > +		analog_sd = SD6G_LANE_LANE_DF_PMA2PCS_RXEI_FILTERED_GET(value);
-> > +	} else if (macro->serdestype == SPX5_SDT_10G) {
-> > +		value = sdx5_rd(priv, SD10G_LANE_LANE_DF(macro->stpidx));
-> > +		analog_sd = SD10G_LANE_LANE_DF_PMA2PCS_RXEI_FILTERED_GET(value);
-> > +	} else {
-> > +		value = sdx5_rd(priv, SD25G_LANE_LANE_DE(macro->stpidx));
-> > +		analog_sd = SD25G_LANE_LANE_DE_LN_PMA_RXEI_GET(value);
-> > +	}
-> > +	/* Link up is when analog_sd == 0 */
-> > +	return analog_sd;
-> > +}
-> 
-> What i have not yet seen is how this code plugs together with
-> phylink_pcs_ops?
-> 
-> Can this hardware also be used for SATA, USB? As far as i understand,
-> the Marvell Comphy is multi-purpose, it is used for networking, USB,
-> and SATA, etc. Making it a generic PHY then makes sense, because
-> different subsystems need to use it.
-> 
-> But it looks like this is for networking only? So i'm wondering if it
-> belongs in driver/net/pcs and it should be accessed using
-> phylink_pcs_ops?
-> 
 
-Ocelot had PCie on the phys, doesn't Sparx5 have it?
+On Fri 04 Dec 2020 at 10:13, Linus Walleij <linus.walleij@linaro.org> wrote:
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> Hi Lisheng,
+>
+> this patch got a bit mangled but I get where you're going.
+>
+> I think Meson needs to be augmented to use hierarchical gpiolib irqchip
+> because this seems to be what the system is doing.
+>
+> So start with drivers/pinctrl/meson/Kconfig and add:
+>
+> select GPIOLIB_IRQCHIP
+> select IRQ_DOMAIN_HIEARARCHY
+>
+> Then use the generic hierarchical gpiolib irqchip as described
+> in Documentation/driver-api/gpio/driver.rst
+> Type
+> git grep child_to_parent_hwirq
+> for several examples of how to do this.
+
+One reason the irqchip has not been linked to the gpio controller so far
+is IRQ_EDGE_BOTH which the irqchip does not support (expect for the
+latest sm1 family)
+
+This is a problem we discussed a couple of years ago.
+
+This HW only has 8 irqs that can each be mapped to a pin. No direct
+translation can be made, we have to allocate an irq to monitor the line.
+So when gpio_to_irq() was called, we had to do that allocation dynamically
+to return a valid irq number. Since there was no counter part to
+gpio_to_irq(), those allocation cannot be freed during the lifetime of
+the device.
+
+When drivers relying IRQ_EDGE_BOTH first try the `gpio_to_irq()`,
+allocating the irq works but setting the type does not. We are then left
+with unused allocated irqs (and we don't have much)
+
+Frameworks using gpio_to_irq() are often capable() of parsing interrupt
+properties directly too. So far, it was enough to work around the problem.
+
+I admit, I have not been following gpiolib closely since then, maybe
+some progress have been made
+
+>
+> Yours,
+> Linus Walleij
+
