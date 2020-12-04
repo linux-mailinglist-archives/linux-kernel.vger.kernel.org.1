@@ -2,115 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD612CF66A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 22:53:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C98512CF66C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 22:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgLDVwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 16:52:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60534 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725912AbgLDVwj (ORCPT
+        id S1727898AbgLDVzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 16:55:03 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28710 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725933AbgLDVzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 16:52:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607118672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xLlTqncBwZwcHkWwNvJzuIr6WcBCoeYcPybWMXBu9Ks=;
-        b=VaLB8+uKK1RkhnhSgpt+vKDl/SqNrv/HS6QAUeTEmynWuVR9LU7fdEKchccSEUiPzdM/j+
-        v1V2/fiv4Qq/lWgfFHg5ZNU44fjUz6J/D8SeoWAAm1osyA53oRAXXWn6xug3FGSPQerFXE
-        Mk9zQDsxopQc2XYN7kHZ2J47CBYOtCE=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-212-lc30WkUmPUyLlrAQ0s93sg-1; Fri, 04 Dec 2020 16:51:09 -0500
-X-MC-Unique: lc30WkUmPUyLlrAQ0s93sg-1
-Received: by mail-qt1-f199.google.com with SMTP id f33so5844641qtb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 13:51:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=xLlTqncBwZwcHkWwNvJzuIr6WcBCoeYcPybWMXBu9Ks=;
-        b=qMQamVskhpsY5PfbCmuVRt/2q9ClqZQFM+UUp+SrXSpuT55Gj44d3+6zoYNap2r+GO
-         s6CWfRhSSwvuVXYoaSh5TqtbKV+KkpubepSqD2CLrESohDdj+kg2G24KAiDMt72rNhQ/
-         MeAfCtmi7GZv8IRXXgucs/0nO+MbKXxqPvpDEvEM+GOM+IWX/MmdBSMu5KlQ9kgR8510
-         Df7tKMGtvPT39uNWriao7nNI4iC+PMkA4XWyYVYMQahsoZWNvP3O6xrRNKpiLF9i4Dc5
-         4mbc1fXYEyv50Epz1Kb6ehhRPK3FJNuF6PRk2g4UCI9K0SCkqhCzQB19EYuIWDk7IS/W
-         vz/g==
-X-Gm-Message-State: AOAM531GyZFfGLRogHfOjKEzXMz31I5EFYxBnRjeWUIZfJ7mV+GtINH4
-        rYx4xTnUExqcaawqxl+3EWrIvduD4+10QRf56mcvrQEMcPXlysO1nzFfV4IEp6PYhT/HfqOHe8A
-        CLwC3z7daJqdojnvhHv6UwjW6
-X-Received: by 2002:aed:2f64:: with SMTP id l91mr11895051qtd.363.1607118668665;
-        Fri, 04 Dec 2020 13:51:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzmL3y7OiZ51x7xGIzxhm3KuqMNE96ZPjRd9yq+9AcHjVWyLBlmrQ7/ll36YGACBnBwBdyhFw==
-X-Received: by 2002:aed:2f64:: with SMTP id l91mr11895008qtd.363.1607118668388;
-        Fri, 04 Dec 2020 13:51:08 -0800 (PST)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id s30sm2263183qte.44.2020.12.04.13.51.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 13:51:07 -0800 (PST)
-References: <20201130232338.106892-1-jsnitsel@redhat.com>
- <20201201025807.162241-1-jsnitsel@redhat.com> <87czzujjg1.fsf@redhat.com>
- <878sahmh5w.fsf@redhat.com> <20201202164931.GA91318@kernel.org>
- <87sg8noixh.fsf@redhat.com> <87lfefe7vm.fsf@redhat.com>
- <87ft4mpryt.fsf@redhat.com>
- <8a7d2fda891e45b098b603064d45dd7d53898fd4.camel@HansenPartnership.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Peter Huewe" <peterhuewe@gmx.de>,
-        Matthew Garrett <mjg59@google.com>,
-        "Hans de Goede" <hdegoede@redhat.com>
-Subject: Re: [PATCH v2] tpm_tis: Disable interrupts if interrupt storm detected
-In-reply-to: <8a7d2fda891e45b098b603064d45dd7d53898fd4.camel@HansenPartnership.com>
-Date:   Fri, 04 Dec 2020 14:51:05 -0700
-Message-ID: <87czzpw88m.fsf@redhat.com>
+        Fri, 4 Dec 2020 16:55:03 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4Lh9rj180814;
+        Fri, 4 Dec 2020 16:54:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=hkG/6yTFISThyBoLmsLxNYz65p9USehDQ4JZTauElTc=;
+ b=VTTN9QxC+GAe9Yg7NuzSIFTZ8tGyJeo/LgfBS72jhjRjZIzVVzQZnZN/8jo5KMEuDqC0
+ UoYe8lOTT1TW4IQX12Fgg2oePbtAX0G3e2O8mjuPzsLUoVjMXjwbb8YAyvhnMTMaH7eI
+ fhP5pmrKfVaxYz8sWWgQD/I0jmbMlxb7NVT44vOGIWhE2pXPgDybwCRWPeBK5S+U3r7K
+ 28eV816c6AafGnw4jhySsnChsOHUTkKEueTRzqqX0NOeuc9ZLplPOy1MaCynZ4C+AEka
+ Zm51GV3ZJoBB4mvPcuqZDisYhav4cvygeZcehkDfufUTiKC1iUNDKgfCqecGLZ/9SkZ+ Lw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 357sdk6hpf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 16:54:21 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B4Li3mn183337;
+        Fri, 4 Dec 2020 16:54:20 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 357sdk6hnr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 16:54:20 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B4LWg21023963;
+        Fri, 4 Dec 2020 21:54:18 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 3573v9s5rg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 21:54:18 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B4LsFLp55247358
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Dec 2020 21:54:16 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E0170A4054;
+        Fri,  4 Dec 2020 21:54:15 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4BA82A405C;
+        Fri,  4 Dec 2020 21:54:15 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.41.218])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Fri,  4 Dec 2020 21:54:15 +0000 (GMT)
+Date:   Fri, 4 Dec 2020 22:54:13 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com,
+        Janosch Frank <frankja@linux.ibm.com>
+Subject: Re: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM
+ pointer invalidated
+Message-ID: <20201204225413.2d91cf9f.pasic@linux.ibm.com>
+In-Reply-To: <cf2c6632-bcdc-fb93-471b-bfd834d87902@linux.ibm.com>
+References: <20201202234101.32169-1-akrowiak@linux.ibm.com>
+ <20201203185514.54060568.pasic@linux.ibm.com>
+ <a8a90aed-97df-6f10-85c2-8e18dba8f085@linux.ibm.com>
+ <20201204200502.1c34ae58.pasic@linux.ibm.com>
+ <cf2c6632-bcdc-fb93-471b-bfd834d87902@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_09:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 adultscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0
+ mlxscore=0 suspectscore=0 spamscore=0 malwarescore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 4 Dec 2020 14:46:30 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-James Bottomley @ 2020-12-03 14:05 MST:
+> On 12/4/20 2:05 PM, Halil Pasic wrote:
+> > On Fri, 4 Dec 2020 09:43:59 -0500
+> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >  
+> >>>> +{
+> >>>> +	if (matrix_mdev->kvm) {
+> >>>> +		(matrix_mdev->kvm);
+> >>>> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;  
+> >>> Is a plain assignment to arch.crypto.pqap_hook apropriate, or do we need
+> >>> to take more care?
+> >>>
+> >>> For instance kvm_arch_crypto_set_masks() takes kvm->lock before poking
+> >>> kvm->arch.crypto.crycb.  
+> >> I do not think so. The CRYCB is used by KVM to provide crypto resources
+> >> to the guest so it makes sense to protect it from changes to it while
+> >> passing
+> >> the AP devices through to the guest. The hook is used only when an AQIC
+> >> executed on the guest is intercepted by KVM. If the notifier
+> >> is being invoked to notify vfio_ap that KVM has been set to NULL, this means
+> >> the guest is gone in which case there will be no AP instructions to
+> >> intercept.  
+> > If the update to pqap_hook isn't observed as atomic we still have a
+> > problem. With torn writes or reads we would try to use a corrupt function
+> > pointer. While the compiler probably ain't likely to generate silly code
+> > for the above assignment (multiple write instructions less then
+> > quadword wide), I know of nothing that would prohibit the compiler to do
+> > so.  
+> 
+> I see that in the handle_pqap() function in arch/s390/kvm/priv.c
+> that gets called when the AQIC instruction is intercepted,
+> the pqap_hook is protected by locking the owner of the hook:
+> 
+>          if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
+>              return -EOPNOTSUPP;
+>          ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
+> module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
+> 
+> Maybe that is what we should do when the kvm->arch.crypto.pqap_hook
+> is set to NULL?
 
-> On Thu, 2020-12-03 at 13:14 -0700, Jerry Snitselaar wrote:
->> Jerry Snitselaar @ 2020-12-02 23:11 MST:
-> [...]
->> > The interrupt storm detection code works on the T490s. I'm not sure
->> > what is going on with the L490. I will see if I can get access to
->> > one.
->> > 
->> > Jerry
->> 
->> Lenovo verified that the L490 hangs.
->
-> Just to confirm, that's this system:
->
-> https://www.lenovo.com/us/en/laptops/thinkpad/thinkpad-l/ThinkPad-L490/p/22TP2TBL490
->
-> We could ask if lenovo will give us one, but if not we could pull a
-> Jens.  [the backstory is that when Jens was doing queueing in the block
-> layer, there were lots of SATA devices that didn't work quite right but
-> you couldn't tell unless you actually tried them out.  Getting
-> manufacturers to send samples is rather arduous, so he took to ordering
-> them online, testing them out, and then returning them for a full
-> refund within the allowed window]
->
-> It looks like Lenovo has a nice christmas returns policy:
->
-> https://www.lenovo.com/us/en/shopping-faq/#returns
->
-> James
+To my best knowledge that ain't no locking but mere refcounting. The
+purpose of that is probably to prevent the owner module, and the code
+pointed to by the 'hook' function pointer from being unloaded while we
+are executing that very same code.
 
-Yes, that is the one. I'm seeing if we have any located somewhere, or if
-Lenovo will loan me one. I think for the time being the patch that
-disabled interrupts for the T490s could be changed to it for the L490
-instead. I'll post a v3 of my current patchset. It would probably make
-sense for it to go in with your patches when they land.
+Why is that necessary, frankly I have no idea. We do tend to invalidate
+the callback before doing our module_put in vfio_ap_mdev_release(). Maybe
+the case you are handling right now is the reason (because the
+callback is invalidated in vfio_ap_mdev_release() only if !!kvm.
+
+Regards,
+Halil
 
