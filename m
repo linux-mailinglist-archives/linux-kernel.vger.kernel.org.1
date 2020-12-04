@@ -2,99 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF912CF30A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D1D2CF311
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731389AbgLDRVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:21:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56995 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729333AbgLDRVE (ORCPT
+        id S1730959AbgLDRW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:22:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728185AbgLDRWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:21:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607102378;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZuWCzO/rWMgE0fW/Mfsk3GoZ758XI7SWepRZTqwpYog=;
-        b=abNU/UlAnQbBSfKtPVVuAjfOAJR3zaMq5JAKpLxOCgJpFOMcP8DZliBz8dGGfFGXTT1ncf
-        GcAbEqM+dA9YCz914LOKaEPsIMB1E3R5Vkw2W+l+VMbLpjDcTHk4cSEHSzxARHc6Scjgp8
-        T+VssELcLNNDkApWTqePMffJPe3gYLI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-572-WgXng-itOt-8X5Yz2MNpFg-1; Fri, 04 Dec 2020 12:19:34 -0500
-X-MC-Unique: WgXng-itOt-8X5Yz2MNpFg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 98D9A1922020;
-        Fri,  4 Dec 2020 17:19:32 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1F7AB5D9DB;
-        Fri,  4 Dec 2020 17:19:28 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAMj1kXEOm_yh478i+dqPiz0eoBxp4eag3j2qHm5eBLe+2kihoQ@mail.gmail.com>
-References: <CAMj1kXEOm_yh478i+dqPiz0eoBxp4eag3j2qHm5eBLe+2kihoQ@mail.gmail.com> <20201204154626.GA26255@fieldses.org> <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com> <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk> <118876.1607093975@warthog.procyon.org.uk> <122997.1607097713@warthog.procyon.org.uk> <20201204160347.GA26933@fieldses.org> <125709.1607100601@warthog.procyon.org.uk>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     dhowells@redhat.com, Bruce Fields <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org
-Subject: Re: Why the auxiliary cipher in gss_krb5_crypto.c?
+        Fri, 4 Dec 2020 12:22:55 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DE8C061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 09:22:09 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id y16so7479095ljk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 09:22:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YqdH3CZ1CYT0Ogl/PUsSSdFVg1WWYApotKTo8YlG6b0=;
+        b=Sxu8wf67/pJvgj3t3oP/0ns4PrctpytfByuyjDHZN3gvKaKow52qg5edlev/dbxbgo
+         m+PNoC9PtT16ZrmmieoWcUGwcvCQMwde8+eNUothuf0dnfT4r4cicgxdqQjWuxJIsFUj
+         /M5dpWN8CrJ2nWMPFq71sY1W6InnRdv4jGuXA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YqdH3CZ1CYT0Ogl/PUsSSdFVg1WWYApotKTo8YlG6b0=;
+        b=pAjCgVweoanlTHEvHj/IxEB8LdKfK9BGdG4eMmRz4VQVtYjcdQX69P9vtHNw5bJrme
+         qlyel7QZeW9Rz1X7cGRibaGRgkQSKimRxBHpZ1KRoIAKccpH1Qt9gfC0+cVILSeoCiIf
+         SjTUnPHSkDrg+Dlt3R7TM99YvkODb84gb6fUjvifuWcXMYB3N/Fx1nspy7XVwVf+7mkP
+         ByDTXHJlKd6Ez9e9JekmQT1oPaC7szdO7hitKPYIweeXc37lZ3gWg6bYO7U4bg80E6ef
+         QoOlhMr2VUIiuc60S3x5lopqD9nqGF1jG15+m7Ad4ycZbhJmBIEwqshoAFQcSsvt+p7q
+         hf9A==
+X-Gm-Message-State: AOAM531yhxcG/Br/Xkj4XayfGkyY5Lwbe+bXNqGvSDolvsWehSZ4e9G3
+        DMU93kohqkjTCkUjKs55ezt7Ll+rwYCASw==
+X-Google-Smtp-Source: ABdhPJzZRaFcpQ5RE97q97Y6KSFs9bVxKCrhsxJiqHCWvHyGls/uSVpgGDk4WhAcE+hdHKHKSuBRTA==
+X-Received: by 2002:a2e:8e98:: with SMTP id z24mr3862955ljk.150.1607102527747;
+        Fri, 04 Dec 2020 09:22:07 -0800 (PST)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id l7sm1869403lfk.302.2020.12.04.09.22.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Dec 2020 09:22:05 -0800 (PST)
+Received: by mail-lf1-f45.google.com with SMTP id u9so3150001lfm.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 09:22:05 -0800 (PST)
+X-Received: by 2002:a19:7f55:: with SMTP id a82mr3514413lfd.603.1607102525086;
+ Fri, 04 Dec 2020 09:22:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <127457.1607102368.1@warthog.procyon.org.uk>
-Date:   Fri, 04 Dec 2020 17:19:28 +0000
-Message-ID: <127458.1607102368@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <87tut2bqik.fsf@x220.int.ebiederm.org> <87ft4mbqen.fsf@x220.int.ebiederm.org>
+ <AM6PR03MB5170412C2B0318C40CED55E5E4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB5170412C2B0318C40CED55E5E4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 4 Dec 2020 09:21:49 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi6inOF5yvQRwUFbqMt0zFJ8S8GhqE2M0judU7RiGru8Q@mail.gmail.com>
+Message-ID: <CAHk-=wi6inOF5yvQRwUFbqMt0zFJ8S8GhqE2M0judU7RiGru8Q@mail.gmail.com>
+Subject: Re: [PATCH 3/3] exec: Transform exec_update_mutex into a rw_semaphore
+To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Vasiliy Kulikov <segoon@openwall.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Christopher Yeoh <cyeoh@au1.ibm.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ard Biesheuvel <ardb@kernel.org> wrote:
+On Fri, Dec 4, 2020 at 8:08 AM Bernd Edlinger <bernd.edlinger@hotmail.de> wrote:
+>
+> >
+> > -static void kcmp_unlock(struct mutex *m1, struct mutex *m2)
+> > +static void kcmp_unlock(struct rw_semaphore *l1, struct rw_semaphore *l2)
+> >  {
+> > -     if (likely(m2 != m1))
+> > -             mutex_unlock(m2);
+> > -     mutex_unlock(m1);
+> > +     if (likely(l2 != l1))
+>
+> is this still necessary ?
+>
+> > +             up_read(l2);
+> > +     up_read(l1);
+> >  }
+> >
+> > -static int kcmp_lock(struct mutex *m1, struct mutex *m2)
+> > +static int kcmp_lock(struct rw_semaphore *l1, struct rw_semaphore *l2)
+> >  {
+> >       int err;
+> >
+> > -     if (m2 > m1)
+> > -             swap(m1, m2);
+> > +     if (l2 > l1)
+> > +             swap(l1, l2);
+>
+> and this is probably also no longer necessary?
 
-> The tricky thing with CTS is that you have to ensure that the final
-> full and partial blocks are presented to the crypto driver as one
-> chunk, or it won't be able to perform the ciphertext stealing. This
-> might be the reason for the current approach. If the sunrpc code has
-> multiple disjoint chunks of data to encrypto, it is always better to
-> wrap it in a single scatterlist and call into the skcipher only once.
+These are still necessary, because even a recursive read lock can
+still block on a writer trying to come in between the two read locks
+due to fairness guarantees.
 
-Yeah - the problem with that is that for sunrpc, we might be dealing with 1MB
-plus bits of non-contiguous pages, requiring >8K of scatterlist elements
-(admittedly, we can chain them, but we may have to do one or more large
-allocations).
+So taking the same read lock twice is still a source of possible deadlocks.
 
-> However, I would recommend against it:
+For the same reason, read locks still have ABBA deadlock and need to
+be taken in order.
 
-Sorry, recommend against what?
+So switching from a mutex to a rwlock doesn't really change the
+locking rules in this respect.
 
-> at least for ARM and arm64, I
-> have already contributed SIMD based implementations that use SIMD
-> permutation instructions and overlapping loads and stores to perform
-> the ciphertext stealing, which means that there is only a single layer
-> which implements CTS+CBC+AES, and this layer can consume the entire
-> scatterlist in one go. We could easily do something similar in the
-> AES-NI driver as well.
+In fact, I'm not convinced this change even fixes the deadlock that
+syzbot reported, for the same reason: it just requires a write lock in
+between two read locks to deadlock.
 
-Can you point me at that in the sources?
-
-Can you also do SHA at the same time in the same loop?
-
-Note that the rfc3962 AES does the checksum over the plaintext, but rfc8009
-does it over the ciphertext.
-
-David
-
+               Linus
