@@ -2,87 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537822CEB6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE7F2CEB74
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387747AbgLDJwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:52:22 -0500
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:54397 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387601AbgLDJwV (ORCPT
+        id S2387981AbgLDJwe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Dec 2020 04:52:34 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:56713 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387601AbgLDJwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:52:21 -0500
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 8EE29FF810;
-        Fri,  4 Dec 2020 09:51:38 +0000 (UTC)
-Date:   Fri, 4 Dec 2020 10:51:38 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-Message-ID: <20201204095138.GG74177@piout.net>
-References: <87a6uwdnfn.fsf@nanos.tec.linutronix.de>
- <20201202205418.GN5487@ziepe.ca>
- <874kl3eu8p.fsf@nanos.tec.linutronix.de>
- <87zh2vd72z.fsf@nanos.tec.linutronix.de>
- <20201203021047.GG3544@piout.net>
- <87pn3qdhli.fsf@nanos.tec.linutronix.de>
- <20201203161622.GA1317829@ziepe.ca>
- <87zh2ubny2.fsf@nanos.tec.linutronix.de>
- <20201203220027.GB74177@piout.net>
- <87im9hc3u2.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87im9hc3u2.fsf@nanos.tec.linutronix.de>
+        Fri, 4 Dec 2020 04:52:34 -0500
+Received: from mac-pro.holtmann.net (unknown [37.83.193.87])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 9A946CED11;
+        Fri,  4 Dec 2020 10:59:02 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
+Subject: Re: [PATCH v1 1/5] Bluetooth: advmon offload MSFT add rssi support
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <CAJQfnxHDThaJ58iFSpyq4bLopeuATvd+4fOR2AAgbNaabNSMuQ@mail.gmail.com>
+Date:   Fri, 4 Dec 2020 10:51:47 +0100
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Yun-Hao Chung <howardchung@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <25116F72-CE7C-46B6-A83A-5D33E9142BF9@holtmann.org>
+References: <20201203102936.4049556-1-apusaka@google.com>
+ <20201203182903.v1.1.I92d2e2a87419730d60136680cbe27636baf94b15@changeid>
+ <20B6F2AD-1A60-4E3C-84C2-E3CB7294FABC@holtmann.org>
+ <CAJQfnxHDThaJ58iFSpyq4bLopeuATvd+4fOR2AAgbNaabNSMuQ@mail.gmail.com>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3654.20.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2020 10:34:13+0100, Thomas Gleixner wrote:
-> On Thu, Dec 03 2020 at 23:00, Alexandre Belloni wrote:
-> > On 03/12/2020 22:05:09+0100, Thomas Gleixner wrote:
-> >> 2) I2C/SPI ...
-> >> 
-> >>    tsched t0                 t1                     t2
-> >>           transfer(newsec)   RTC update (newsec)    RTC increments seconds
-> >> 
-> >>    Lets assume that ttransfer = t1 - t0 is known.
-> >
-> > Note that ttransfer is one of the reason why setting set_offset_nsec
-> > from the RTC driver is not a good idea. The same RTC may be on busses
-> > with different rates and there is no way to know that. I think that was
-> > one of my objections at the time.
-> >
-> > ttransfer is not a function of the RTC model but rather of how it is
-> > integrated in the system.
-> 
-> Yes, but it's the right place to store that information.
-> 
-> It's a fundamental problem of the RTC driver because that's the one
-> which has to be able to tell the caller about it. The caller has
-> absolutely no way to figure it out because it does not even know what
-> type of RTC is there.
-> 
-> So either the RTC knows the requirements for tsched, e.g. the MC14xxx
-> datasheet, or it can retrieve that information from DT or by querying
-> the underlying bus mechanics for the xfer time estimate or just by
-> timing an xfer for reference.
-> 
+Hi Archie,
 
-What I do from userspace is that the caller is the one estimating the
-transfer time and this works very well. I really think that the ntp code
-could do just the same.
+>>> MSFT needs rssi parameter for monitoring advertisement packet,
+>>> therefore we should supply them from mgmt.
+>>> 
+>>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+>>> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+>>> Reviewed-by: Yun-Hao Chung <howardchung@google.com>
+>> 
+>> I don’t need any Reviewed-by if they are not catching an obvious user API breakage.
+>> 
+>>> ---
+>>> 
+>>> include/net/bluetooth/hci_core.h | 9 +++++++++
+>>> include/net/bluetooth/mgmt.h     | 9 +++++++++
+>>> net/bluetooth/mgmt.c             | 8 ++++++++
+>>> 3 files changed, 26 insertions(+)
+>>> 
+>>> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+>>> index 9873e1c8cd16..42d446417817 100644
+>>> --- a/include/net/bluetooth/hci_core.h
+>>> +++ b/include/net/bluetooth/hci_core.h
+>>> @@ -246,8 +246,17 @@ struct adv_pattern {
+>>>      __u8 value[HCI_MAX_AD_LENGTH];
+>>> };
+>>> 
+>>> +struct adv_rssi_thresholds {
+>>> +     __s8 low_threshold;
+>>> +     __s8 high_threshold;
+>>> +     __u16 low_threshold_timeout;
+>>> +     __u16 high_threshold_timeout;
+>>> +     __u8 sampling_period;
+>>> +};
+>>> +
+>>> struct adv_monitor {
+>>>      struct list_head patterns;
+>>> +     struct adv_rssi_thresholds rssi;
+>>>      bool            active;
+>>>      __u16           handle;
+>>> };
+>>> diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
+>>> index d8367850e8cd..dc534837be0e 100644
+>>> --- a/include/net/bluetooth/mgmt.h
+>>> +++ b/include/net/bluetooth/mgmt.h
+>>> @@ -763,9 +763,18 @@ struct mgmt_adv_pattern {
+>>>      __u8 value[31];
+>>> } __packed;
+>>> 
+>>> +struct mgmt_adv_rssi_thresholds {
+>>> +     __s8 high_threshold;
+>>> +     __le16 high_threshold_timeout;
+>>> +     __s8 low_threshold;
+>>> +     __le16 low_threshold_timeout;
+>>> +     __u8 sampling_period;
+>>> +} __packed;
+>>> +
+>>> #define MGMT_OP_ADD_ADV_PATTERNS_MONITOR      0x0052
+>>> struct mgmt_cp_add_adv_patterns_monitor {
+>>>      __u8 pattern_count;
+>>> +     struct mgmt_adv_rssi_thresholds rssi;
+>>>      struct mgmt_adv_pattern patterns[];
+>>> } __packed;
+>> 
+>> This is something we can not do. It breaks an userspace facing API. Is the mgmt opcode 0x0052 in an already released kernel?
+> 
+> Yes, the opcode does exist in an already released kernel.
+> 
+> The DBus method which accesses this API is put behind the experimental
+> flag, therefore we expect they are flexible enough to support changes.
+> Previously, we already had a discussion in an email thread with the
+> title "Offload RSSI tracking to controller", and the outcome supports
+> this change.
+> 
+> Here is an excerpt of the discussion.
 
+it doesn’t matter. This is fixed API now and so we can not just change it. The argument above is void. What matters if it is in already released kernel.
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Regards
+
+Marcel
+
