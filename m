@@ -2,90 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75ACA2CF439
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DFE2CF43C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730313AbgLDSjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:39:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730232AbgLDSjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:39:21 -0500
-Date:   Fri, 4 Dec 2020 10:38:37 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607107120;
-        bh=D0VwnsQjiZd2p/qMGY9WV/AY29U7e8/pE7AugozrGvQ=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FmeSO1dCGWCpOlO8wpniiJ1ANCDVVBGa97IucG4eL4WhlMp8CmgYdlvh/B0h3RbWN
-         zY/Q0e8MER7rAwEqxjQ84cuX/3eSB9iGpHVL1LP7Uj9U0uFpsWSfk0nFa4M6Ku1o7g
-         g7ExD/x89MWdXT7bfWxkVkM3Hp4O2oosMuTHNIDGwbRiwgRg9tOGUu4BFK8hyoOybZ
-         NVkuV3iWU2z6BfbmyrtOxS/4MlNe3VKZXwlv52ELqNPHOI0T5tXpoUeW/00IkZwIMi
-         NjnYti7V++dHVfyRC5HMP2Z8B+2BciuONki7MZeY9Xk22l9Khj/OyJx92ZR5i0ETuN
-         /Nqc1aMyvuw2A==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
-        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de
-Subject: Re: [PATCH v14 06/10] fs/ntfs3: Add compression
-Message-ID: <X8qCLXJOit0M+4X7@sol.localdomain>
-References: <20201204154600.1546096-1-almaz.alexandrovich@paragon-software.com>
- <20201204154600.1546096-7-almaz.alexandrovich@paragon-software.com>
+        id S1728528AbgLDSly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:41:54 -0500
+Received: from outbound-smtp34.blacknight.com ([46.22.139.253]:57405 "EHLO
+        outbound-smtp34.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726021AbgLDSly (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:41:54 -0500
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp34.blacknight.com (Postfix) with ESMTPS id 80CF61EF4
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 18:41:02 +0000 (GMT)
+Received: (qmail 32155 invoked from network); 4 Dec 2020 18:41:02 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 4 Dec 2020 18:41:02 -0000
+Date:   Fri, 4 Dec 2020 18:41:00 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 06/10] sched/fair: Clear the target CPU from the cpumask
+ of CPUs searched
+Message-ID: <20201204184100.GD3371@techsingularity.net>
+References: <CAKfTPtBGsXb0RqE_qs2miZGi_uax4VY1_8y1NGhQ17Q8mBx8dw@mail.gmail.com>
+ <20201204113030.GZ3371@techsingularity.net>
+ <CAKfTPtDRqwUoX51rU0Xd3H9Dwqf8bLAFBxhoeMF1brKYmAZDJg@mail.gmail.com>
+ <CAKfTPtBABBY1QSfFtbhBQ7+a8HOp2YfTyJaMVo07T5GU7sp_MA@mail.gmail.com>
+ <3d8a6d19-afac-dc93-127d-da6505402cdf@linux.intel.com>
+ <CAKfTPtAp+SyjmAsxTpSo5owQq0AeDpBWdo5ds0fVZvDr2OK_iw@mail.gmail.com>
+ <20201204143115.GB3371@techsingularity.net>
+ <CAKfTPtBXUK7NnhN1Rxeq-o5t-G+csN6Tj0yP=BSV_sdD1uZS0g@mail.gmail.com>
+ <20201204154029.GC3371@techsingularity.net>
+ <CAKfTPtDX1wGWD3bEC=YZ74uvKGmkHPf3rLobr_wGy7MSFwtcdw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20201204154600.1546096-7-almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <CAKfTPtDX1wGWD3bEC=YZ74uvKGmkHPf3rLobr_wGy7MSFwtcdw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 06:45:56PM +0300, Konstantin Komarov wrote:
-> This adds compression
+On Fri, Dec 04, 2020 at 04:43:05PM +0100, Vincent Guittot wrote:
+> On Fri, 4 Dec 2020 at 16:40, Mel Gorman <mgorman@techsingularity.net> wrote:
+> >
+> > On Fri, Dec 04, 2020 at 04:23:48PM +0100, Vincent Guittot wrote:
+> > > On Fri, 4 Dec 2020 at 15:31, Mel Gorman <mgorman@techsingularity.net> wrote:
+> > > >
+> > > > On Fri, Dec 04, 2020 at 02:47:48PM +0100, Vincent Guittot wrote:
+> > > > > > IIUC, select_idle_core and select_idle_cpu share the same cpumask(select_idle_mask)?
+> > > > > > If the target's sibling is removed from select_idle_mask from select_idle_core(),
+> > > > > > select_idle_cpu() will lose the chance to pick it up?
+> > > > >
+> > > > > This is only relevant for patch 10 which is not to be included IIUC
+> > > > > what mel said in cover letter : "Patches 9 and 10 are stupid in the
+> > > > > context of this series."
+> > > > >
+> > > >
+> > > > Patch 10 was stupid in the context of the prototype because
+> > > > select_idle_core always returned a CPU. A variation ended up being
+> > > > reintroduced at the end of the Series Yet To Be Posted so that SMT siblings
+> > > > are cleared during select_idle_core() but select_idle_cpu() still has a
+> > > > mask with unvisited CPUs to consider if no idle cores are found.
+> > > >
+> > > > As far as I know, this would still be compatible with Aubrey's idle
+> > > > cpu mask as long as it's visited and cleared between select_idle_core
+> > > > and select_idle_cpu. It relaxes the contraints on Aubrey to some extent
+> > > > because the idle cpu mask would be a hint so if the information is out
+> > > > of date, an idle cpu may still be found the normal way.
+> > >
+> > > But even without patch 10, just replacing sched_domain_span(sd) by
+> > > sds_idle_cpus(sd->shared) will ensure that sis loops only on cpus that
+> > > get a chance to be idle so select_idle_core is likely to return an
+> > > idle_candidate
+> > >
+> >
+> > Yes but if the idle mask is out of date for any reason then idle CPUs might
 > 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> ---
->  fs/ntfs3/lib/common_defs.h       | 196 +++++++++++
->  fs/ntfs3/lib/decompress_common.c | 314 +++++++++++++++++
->  fs/ntfs3/lib/decompress_common.h | 558 +++++++++++++++++++++++++++++++
->  fs/ntfs3/lib/lzx_common.c        | 204 +++++++++++
->  fs/ntfs3/lib/lzx_common.h        |  31 ++
->  fs/ntfs3/lib/lzx_constants.h     | 113 +++++++
->  fs/ntfs3/lib/lzx_decompress.c    | 553 ++++++++++++++++++++++++++++++
->  fs/ntfs3/lib/xpress_constants.h  |  23 ++
->  fs/ntfs3/lib/xpress_decompress.c | 165 +++++++++
->  fs/ntfs3/lznt.c                  | 452 +++++++++++++++++++++++++
->  10 files changed, 2609 insertions(+)
->  create mode 100644 fs/ntfs3/lib/common_defs.h
->  create mode 100644 fs/ntfs3/lib/decompress_common.c
->  create mode 100644 fs/ntfs3/lib/decompress_common.h
->  create mode 100644 fs/ntfs3/lib/lzx_common.c
->  create mode 100644 fs/ntfs3/lib/lzx_common.h
->  create mode 100644 fs/ntfs3/lib/lzx_constants.h
->  create mode 100644 fs/ntfs3/lib/lzx_decompress.c
->  create mode 100644 fs/ntfs3/lib/xpress_constants.h
->  create mode 100644 fs/ntfs3/lib/xpress_decompress.c
->  create mode 100644 fs/ntfs3/lznt.c
+> In fact it's the opposite, a cpu in idle mask might not be idle but
+> all cpus that enter idle will be set
+> 
 
-This really could use a much better commit message.  Including mentioning where
-the LZX and XPRESS decompression code came from
-(https://github.com/ebiggers/ntfs-3g-system-compression).
+When I first checked, the information was based on the tick or a CPU
+stopping the tick. That was not guaranteed to be up to date so I considered
+the best option would be to treat idle cpu mask as advisory. It would
+not necessarily cover a CPU that was entering idle and polling before
+entering an idle state for example or a rq that would pass sched_idle_cpu()
+depending on the timing of the update_idle_cpumask call.
 
-Also note you've marked the files as "SPDX-License-Identifier: GPL-2.0",
-but they really are "SPDX-License-Identifier: GPL-2.0-or-later".
+I know you reviewed that patch and v6 may be very different but the more
+up to date that information is, the greater the cache conflicts will be
+on sched_domain_shared so maintaining the up-to-date information may cost
+enough to offset any benefit from reduced searching at wakeup.
 
-Also I still think you should consider using the simpler version from
-ntfs-3g-system-compression commit 3ddd227ee8e3, which I had originally intended
-to be included in NTFS-3G itself.  That version was fewer lines of code and
-fewer files, as it was simplified for decompression-only.  The latest version
-(the one you're using) is shared with a project that also implements compression
-(so that I can more easily maintain both projects), so it's more complex than
-needed for decompression-only support.  But in the kernel context it may make
-sense to go with a simpler version.  There are a few performance optimizations
-you'd miss by going with the older version, but they weren't too significant,
-and probably you don't need to squeeze out every bit of performance possible
-when reading XPRESS and LZX-compressed files in this context?
+If this turns out to be wrong, then great, the idle cpu mask can be used
+as both the basis for an idle core search and a fast find of an individual
+CPU. If the cost of keeping up to date information is too high then the
+idle_cpu_mask can be treated as advisory to start the search and track
+CPUs visited.
 
-- Eric
+The series are not either/or, chunks of the series I posted are orthogonal
+(e.g. changes to p->recent_cpu_used), the latter parts could either work
+with idle cpu mask or be replaced by idle cpu mask depending on which
+performs better.
+
+-- 
+Mel Gorman
+SUSE Labs
