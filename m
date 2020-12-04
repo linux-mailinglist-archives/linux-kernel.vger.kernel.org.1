@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9AB2CF27A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:58:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06242CF280
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729350AbgLDQ6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:58:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59410 "EHLO mail.kernel.org"
+        id S1730995AbgLDQ70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:59:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726309AbgLDQ6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:58:45 -0500
+        id S1728583AbgLDQ70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 11:59:26 -0500
 From:   Arnd Bergmann <arnd@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH 2/2] elfcore: fix building with clang
-Date:   Fri,  4 Dec 2020 17:57:34 +0100
-Message-Id: <20201204165742.3815221-2-arnd@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Dilip Kota <eswara.kota@linux.intel.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Alex Dewar <alex.dewar90@gmail.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] PCI: dwc: exynos: add back MSI dependency
+Date:   Fri,  4 Dec 2020 17:58:34 +0100
+Message-Id: <20201204165841.3845589-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201204165742.3815221-1-arnd@kernel.org>
-References: <20201204165742.3815221-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -36,107 +38,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-kernel/elfcore.c only contains weak symbols, which triggers
-a bug with clang in combination with recordmcount:
+While the exynos driver does not always need MSI, the generic
+deisgnware host code it uses fails to build without it:
 
-Cannot find symbol for section 2: .text.
-kernel/elfcore.o: failed
+WARNING: unmet direct dependencies detected for PCIE_DW_HOST
+  Depends on [n]: PCI [=y] && PCI_MSI_IRQ_DOMAIN [=n]
+  Selected by [y]:
+  - PCI_EXYNOS [=y] && PCI [=y] && (ARCH_EXYNOS [=n] || COMPILE_TEST [=y])
+drivers/pci/controller/dwc/pcie-designware-host.c:247:19: error: implicit declaration of function 'pci_msi_create_irq_domain' [-Werror,-Wimplicit-function-declaration]
+        pp->msi_domain = pci_msi_create_irq_domain(fwnode,
+                         ^
 
-Move the empty stubs into linux/elfcore.h as inline functions.
-As only two architectures use these, just use the architecture
-specific Kconfig symbols to key off the declaration.
+Add back the dependency that all other designware controllers have.
 
+Fixes: f0a6743028f9 ("PCI: dwc: exynos: Rework the driver to support Exynos5433 variant")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/linux/elfcore.h | 22 ++++++++++++++++++++++
- kernel/Makefile         |  1 -
- kernel/elfcore.c        | 26 --------------------------
- 3 files changed, 22 insertions(+), 27 deletions(-)
- delete mode 100644 kernel/elfcore.c
+ drivers/pci/controller/dwc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/elfcore.h b/include/linux/elfcore.h
-index 46c3d691f677..de51c1bef27d 100644
---- a/include/linux/elfcore.h
-+++ b/include/linux/elfcore.h
-@@ -104,6 +104,7 @@ static inline int elf_core_copy_task_fpregs(struct task_struct *t, struct pt_reg
- #endif
- }
- 
-+#if defined(CONFIG_UM) || defined(CONFIG_IA64)
- /*
-  * These functions parameterize elf_core_dump in fs/binfmt_elf.c to write out
-  * extra segments containing the gate DSO contents.  Dumping its
-@@ -118,5 +119,26 @@ elf_core_write_extra_phdrs(struct coredump_params *cprm, loff_t offset);
- extern int
- elf_core_write_extra_data(struct coredump_params *cprm);
- extern size_t elf_core_extra_data_size(void);
-+#else
-+static inline Elf_Half elf_core_extra_phdrs(void)
-+{
-+	return 0;
-+}
-+
-+static inline int elf_core_write_extra_phdrs(struct coredump_params *cprm, loff_t offset)
-+{
-+	return 1;
-+}
-+
-+static inline int elf_core_write_extra_data(struct coredump_params *cprm)
-+{
-+	return 1;
-+}
-+
-+static inline size_t elf_core_extra_data_size(void)
-+{
-+	return 0;
-+}
-+#endif
- 
- #endif /* _LINUX_ELFCORE_H */
-diff --git a/kernel/Makefile b/kernel/Makefile
-index aac15aeb9d69..dddf51266719 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -97,7 +97,6 @@ obj-$(CONFIG_TASK_DELAY_ACCT) += delayacct.o
- obj-$(CONFIG_TASKSTATS) += taskstats.o tsacct.o
- obj-$(CONFIG_TRACEPOINTS) += tracepoint.o
- obj-$(CONFIG_LATENCYTOP) += latencytop.o
--obj-$(CONFIG_ELFCORE) += elfcore.o
- obj-$(CONFIG_FUNCTION_TRACER) += trace/
- obj-$(CONFIG_TRACING) += trace/
- obj-$(CONFIG_TRACE_CLOCK) += trace/
-diff --git a/kernel/elfcore.c b/kernel/elfcore.c
-deleted file mode 100644
-index 57fb4dcff434..000000000000
---- a/kernel/elfcore.c
-+++ /dev/null
-@@ -1,26 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/elf.h>
--#include <linux/fs.h>
--#include <linux/mm.h>
--#include <linux/binfmts.h>
--#include <linux/elfcore.h>
--
--Elf_Half __weak elf_core_extra_phdrs(void)
--{
--	return 0;
--}
--
--int __weak elf_core_write_extra_phdrs(struct coredump_params *cprm, loff_t offset)
--{
--	return 1;
--}
--
--int __weak elf_core_write_extra_data(struct coredump_params *cprm)
--{
--	return 1;
--}
--
--size_t __weak elf_core_extra_data_size(void)
--{
--	return 0;
--}
+diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
+index 020101b58155..e403bb2eeb4c 100644
+--- a/drivers/pci/controller/dwc/Kconfig
++++ b/drivers/pci/controller/dwc/Kconfig
+@@ -85,6 +85,7 @@ config PCIE_DW_PLAT_EP
+ config PCI_EXYNOS
+ 	tristate "Samsung Exynos PCIe controller"
+ 	depends on ARCH_EXYNOS || COMPILE_TEST
++	depends on PCI && PCI_MSI_IRQ_DOMAIN
+ 	select PCIE_DW_HOST
+ 	help
+ 	  Enables support for the PCIe controller in the Samsung Exynos SoCs
 -- 
 2.27.0
 
