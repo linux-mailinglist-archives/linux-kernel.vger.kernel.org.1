@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309D32CEF21
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:00:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A9B2CEF39
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387922AbgLDN7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 08:59:55 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:38179 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726998AbgLDN7y (ORCPT
+        id S2388173AbgLDODP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:03:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21688 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388121AbgLDODO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 08:59:54 -0500
-Received: by mail-lf1-f68.google.com with SMTP id s27so7748893lfp.5;
-        Fri, 04 Dec 2020 05:59:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3AMuw/iWZYPrxgQGjPvnRlO2sM4xLUVsBSQGTu/oLHM=;
-        b=q7ZhSjwumhV0AAZTn4gPTQ91VLJhkMLtZe4AygTCg1ZMDxdjcb7iLK4fEQ8unc1rZo
-         Imq4/iG4Yz3ldgH7AnenIV8wr3j6Dfvxt95IAu7eZmzXqfBaOHt23TOQiAU1qCNsnlDH
-         d0AmeMd3JVMs3MxoEyQYxzuLbyid4WYOtcPgPOneGCWAkcRty8b+Cjp+LH1GHNPDPA+8
-         AYGvmQlyCbg5nb5Vc+ttJPrCcxlMRHH+kyzJz0oZX26Q9t4WIZoThfAvbzXdPLRrlXQR
-         zxxpc8jcY5CQYWC9UFmRZI2b5ebXp+Grup2TdYj/XVvoBW1/Dn+hvYgoXAnTeS/ALn/j
-         7XWA==
-X-Gm-Message-State: AOAM533jKS32y3Ynr7TCIZbcxjY1/fx7D3SGR4kdCTMpahLfUIOJb2NW
-        qGd844yo73hESEp9kb4ZgQiHXTCvpFEBSQ==
-X-Google-Smtp-Source: ABdhPJyWmuaV3XrMfT656J+V3JUw5VFienVNM6DFOfaotZbqHa9rvo9YtxgQgAixAleTGD/9mUIa7w==
-X-Received: by 2002:a19:8406:: with SMTP id g6mr3383105lfd.141.1607090351852;
-        Fri, 04 Dec 2020 05:59:11 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id y25sm1687573lfl.108.2020.12.04.05.59.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 05:59:10 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1klBce-0004Iq-Jq; Fri, 04 Dec 2020 14:59:44 +0100
-Date:   Fri, 4 Dec 2020 14:59:44 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     linux-usb@vger.kernel.org
-Cc:     Sheng Long Wang <shenglong.wang.ext@siemens.com>,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: Re: [PATCH 0/6] USB: serial: cp210x: clean up termios handling
-Message-ID: <X8pA0PBuFFKUBTwV@localhost>
-References: <20201116161826.29417-1-johan@kernel.org>
+        Fri, 4 Dec 2020 09:03:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607090508;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4M4yoOZ8+d2uOnRn+suIjK8Rel43Q7KGhvoch0szyZ0=;
+        b=It2q/rtxa4PNwJtJE18C15hOA4oCKQVRqSkB5pzKAm/L/v6iyNt6Rs1ot0r8NmzKlNcSMn
+        BMRbNbnPVWM06Ulqp4OMBQwuitElfmJK108tq2kkRZGGLMLf8EHY0mVBtJm/3JjH08nxiz
+        IbYcjSz9D+tKfDKlHLb2MkvoCeQEi+w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-46-99hyNT8ANI6M6dKa2e9EUQ-1; Fri, 04 Dec 2020 09:01:44 -0500
+X-MC-Unique: 99hyNT8ANI6M6dKa2e9EUQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACB5B193ECE3;
+        Fri,  4 Dec 2020 14:01:40 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B36C9100164C;
+        Fri,  4 Dec 2020 14:01:37 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <80fb0eae-8321-5ae2-8d50-eabbe86981da@digikod.net>
+References: <80fb0eae-8321-5ae2-8d50-eabbe86981da@digikod.net> <20201120180426.922572-1-mic@digikod.net> <20201130024011.GA24870@kernel.org>
+To:     =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FMicka=3Dc3=3Dabl=5FSala=3Dc3=3Dbcn=3F?=
+         =?us-ascii?Q?=3D?= <mic@digikod.net>
+Cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FMicka=3Dc3=3Dabl?=
+         =?us-ascii?Q?=5FSala=3Dc3=3Dbcn=3F=3D?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v1 0/9] Enable root to update the blacklist keyring
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116161826.29417-1-johan@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 04 Dec 2020 14:01:36 +0000
+Message-ID: <113544.1607090496@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 05:18:20PM +0100, Johan Hovold wrote:
-> Unlike other drivers cp210x have been retrieving the current terminal
-> settings from the device on open and reflecting those in termios.
->     
-> Due to how set_termios() was implemented this saved a few control
-> requests on open but has instead caused problems like broken flow
-> control and has required adding workarounds for swapped line-control in
-> cp2108 and line-speed initialisation on cp2104.
-> 
-> This unusual implementation also complicates adding new features for no
-> good reason.
-> 
-> Rip out the corresponding code and the above mentioned workarounds and
-> instead initialise the terminal settings unconditionally on open.
+Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wrote:
 
-> Johan Hovold (6):
->   USB: serial: cp210x: return early on unchanged termios
->   USB: serial: cp210x: clean up line-control handling
->   USB: serial: cp210x: set terminal settings on open
->   USB: serial: cp210x: drop flow-control debugging
->   USB: serial: cp210x: refactor flow-control handling
->   USB: serial: cp210x: clean up dts_rts
-> 
->  drivers/usb/serial/cp210x.c | 499 ++++++++----------------------------
->  1 file changed, 104 insertions(+), 395 deletions(-)
+> > What would be easiest way to smoke test the changes?
+>=20
+> An easy way to test it is to enable the second trusted keyring to
+> dynamically load certificates in the kernel. Then we can create a hash
+> of a valid certificate (but not loaded yet) and sign it as explained in
+> tools/certs/print-cert-tbs-hash.sh (patch 9/9). Once this hash is loaded
+> in the kernel, loading the blacklisted certificate will be denied. We
+> can also test it with a PKCS#7 signature chain, either with the
+> blacklist keyring itself, or with a signed dm-verity image.
 
-I have applied this series for -next now.
+It might also be possible to use the pkcs#7 test key type
+(CONFIG_PKCS7_TEST_KEY) to aid in that.
 
-Johan
+David
+
