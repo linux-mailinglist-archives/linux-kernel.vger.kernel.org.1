@@ -2,138 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6DD2CEFB2
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB942CEFB0
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbgLDO2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:28:19 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35370 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726309AbgLDO2T (ORCPT
+        id S1727275AbgLDO14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:27:56 -0500
+Received: from outbound-smtp29.blacknight.com ([81.17.249.32]:46030 "EHLO
+        outbound-smtp29.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726309AbgLDO14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:28:19 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4E4fP1147939;
-        Fri, 4 Dec 2020 09:27:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=IfM/Ey0nB8wsSk7NCHr8qaeC/s7Q0Ik7M1AN6KkYovk=;
- b=Q/wVs8rv2oMqXAUKkDGU+VehZCyDPBttmT7K+PJF79yvE0z4W7Q7QlvCALYWN/n1kE5F
- cYX8PJVMv4No88WzQ85h3SkdxT3ibNTSf4fXBpC61ZW8f8RM9E7VGk83EsA3lpEpVhDP
- fLKXXaaPs4sLu/eKTOO/Exi7Y7GZWi6K3jziNTQsEfbMhcpV134FRYaphGvU442/7b9F
- H9oBAh4UUv65IDsZiBjPkwsnuZRAKznU+Qk/RQ69ekG2E9dVY8GNbLnRvbxulTvXUca1
- GgaOFEPYDcFBB13ixRvye2TzLd28XFCzX74xjqKBMPPKZIBQ6b4mKjDg/4xzmzLXSnc6 kg== 
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3577436a1d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 09:27:29 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B4EHZHq021260;
-        Fri, 4 Dec 2020 14:27:24 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma01wdc.us.ibm.com with ESMTP id 355vrgb32j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 14:27:24 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B4EQ8ro19333580
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 4 Dec 2020 14:26:08 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B041078074;
-        Fri,  4 Dec 2020 14:26:07 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 483A178063;
-        Fri,  4 Dec 2020 14:26:07 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.163.73.174])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri,  4 Dec 2020 14:26:07 +0000 (GMT)
-Subject: Re: [PATCH v2 01/17] ibmvfc: add vhost fields and defaults for MQ
- enablement
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201202005329.4538-1-tyreld@linux.ibm.com>
- <20201202005329.4538-2-tyreld@linux.ibm.com>
- <a11c0e6a-cfa6-0dc4-5d34-6fd35ae1f29b@linux.vnet.ibm.com>
- <38903a4f-9253-0b4b-6f67-af78ec86175f@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <efbfe9e9-c692-80a1-f5b4-55473d8193e4@linux.vnet.ibm.com>
-Date:   Fri, 4 Dec 2020 08:26:06 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 4 Dec 2020 09:27:56 -0500
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp29.blacknight.com (Postfix) with ESMTPS id 02272BEEA6
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 14:27:04 +0000 (GMT)
+Received: (qmail 3026 invoked from network); 4 Dec 2020 14:27:03 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 4 Dec 2020 14:27:03 -0000
+Date:   Fri, 4 Dec 2020 14:27:01 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 06/10] sched/fair: Clear the target CPU from the cpumask
+ of CPUs searched
+Message-ID: <20201204142701.GA3371@techsingularity.net>
+References: <20201203141124.7391-1-mgorman@techsingularity.net>
+ <20201203141124.7391-7-mgorman@techsingularity.net>
+ <CAKfTPtDm880Rs7D1xUCQd_X9okqzhgrmCJVhwg90Rt3krq9ytg@mail.gmail.com>
+ <20201203175204.GY3371@techsingularity.net>
+ <CAKfTPtBGsXb0RqE_qs2miZGi_uax4VY1_8y1NGhQ17Q8mBx8dw@mail.gmail.com>
+ <20201204113030.GZ3371@techsingularity.net>
+ <CAKfTPtDRqwUoX51rU0Xd3H9Dwqf8bLAFBxhoeMF1brKYmAZDJg@mail.gmail.com>
+ <CAKfTPtBABBY1QSfFtbhBQ7+a8HOp2YfTyJaMVo07T5GU7sp_MA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <38903a4f-9253-0b4b-6f67-af78ec86175f@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_04:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- priorityscore=1501 mlxscore=0 suspectscore=0 impostorscore=0
- lowpriorityscore=0 bulkscore=0 adultscore=0 clxscore=1015 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040077
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtBABBY1QSfFtbhBQ7+a8HOp2YfTyJaMVo07T5GU7sp_MA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/20 11:27 AM, Tyrel Datwyler wrote:
-> On 12/2/20 7:14 AM, Brian King wrote:
->> On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
->>> Introduce several new vhost fields for managing MQ state of the adapter
->>> as well as initial defaults for MQ enablement.
->>>
->>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->>> ---
->>>  drivers/scsi/ibmvscsi/ibmvfc.c |  9 ++++++++-
->>>  drivers/scsi/ibmvscsi/ibmvfc.h | 13 +++++++++++--
->>>  2 files changed, 19 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
->>> index 42e4d35e0d35..f1d677a7423d 100644
->>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
->>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
->>> @@ -5161,12 +5161,13 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
->>>  	}
->>>  
->>>  	shost->transportt = ibmvfc_transport_template;
->>> -	shost->can_queue = max_requests;
->>> +	shost->can_queue = (max_requests / IBMVFC_SCSI_HW_QUEUES);
->>
->> This doesn't look right. can_queue is the SCSI host queue depth, not the MQ queue depth.
+On Fri, Dec 04, 2020 at 02:17:20PM +0100, Vincent Guittot wrote:
+> On Fri, 4 Dec 2020 at 14:13, Vincent Guittot <vincent.guittot@linaro.org> wrote:
+> >
+> > On Fri, 4 Dec 2020 at 12:30, Mel Gorman <mgorman@techsingularity.net> wrote:
+> > >
+> > > On Fri, Dec 04, 2020 at 11:56:36AM +0100, Vincent Guittot wrote:
+> > > > > The intent was that the sibling might still be an idle candidate. In
+> > > > > the current draft of the series, I do not even clear this so that the
+> > > > > SMT sibling is considered as an idle candidate. The reasoning is that if
+> > > > > there are no idle cores then an SMT sibling of the target is as good an
+> > > > > idle CPU to select as any.
+> > > >
+> > > > Isn't the purpose of select_idle_smt ?
+> > > >
+> > >
+> > > Only in part.
+> > >
+> > > > select_idle_core() looks for an idle core and opportunistically saves
+> > > > an idle CPU candidate to skip select_idle_cpu. In this case this is
+> > > > useless loops for select_idle_core() because we are sure that the core
+> > > > is not idle
+> > > >
+> > >
+> > > If select_idle_core() finds an idle candidate other than the sibling,
+> > > it'll use it if there is no idle core -- it picks a busy sibling based
+> > > on a linear walk of the cpumask. Similarly, select_idle_cpu() is not
+> >
+> > My point is that it's a waste of time to loop the sibling cpus of
+> > target in select_idle_core because it will not help to find an idle
+> > core. The sibling  cpus will then be check either by select_idle_cpu
+> > of select_idle_smt
 > 
-> Our max_requests is the total number commands allowed across all queues. From
-> what I understand is can_queue is the total number of commands in flight allowed
-> for each hw queue.
+
+I understand and you're right, the full loop was in the context of a series
+that unified select_idle_* where it made sense. The version I'm currently
+testing aborts the SMT search if a !idle sibling is encountered. That
+means that select_idle_core() will no longer scan the entire domain if
+there are no idle cores.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git/commit/?h=sched-sissearch-v2r6&id=eb04a344cf7d7ca64c0c8fc0bcade261fa08c19e
+
+With the patch on its own, it does mean that select_idle_sibling
+starts over because SMT siblings might have been cleared. As an aside,
+select_idle_core() has it's own problems even then.  It can start a scan
+for an idle sibling when cpu_rq(target)->nr_running is very large --
+over 100+ running tasks which is almost certainly a useless scan for
+cores. However, I haven't done anything with that in this series as it
+seemed like it would be follow-up work.
+
+> also, while looping the cpumask, the sibling cpus of not idle cpu are
+> removed and will not be check
 > 
->         /*
->          * In scsi-mq mode, the number of hardware queues supported by the LLD.
->          *
->          * Note: it is assumed that each hardware queue has a queue depth of
->          * can_queue. In other words, the total queue depth per host
->          * is nr_hw_queues * can_queue. However, for when host_tagset is set,
->          * the total queue depth is can_queue.
->          */
-> 
-> We currently don't use the host wide shared tagset.
 
-Ok. I missed that bit... In that case, since we allocate by default only 100
-event structs. If we slice that across IBMVFC_SCSI_HW_QUEUES (16) queues, then
-we end up with only about 6 commands that can be outstanding per queue,
-which is going to really hurt performance... I'd suggest bumping up
-IBMVFC_MAX_REQUESTS_DEFAULT from 100 to 1000 as a starting point.
+True and I spotted this. I think the load_balance_mask can be abused to
+clear siblings during select_idle_core() while using select_idle_mask to
+track CPUs that have not been scanned yet so select_idle_cpu only scans
+CPUs that have not already been visited.
 
-Thanks,
+https://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git/commit/?h=sched-sissearch-v2r6&id=a6e986dae38855e3be26dfde86bbef1617431dd1
 
-Brian
+As both the idle candidate and the load_balance_mask abuse are likely to
+be controversial, I shuffled the series so that it's ordered from least
+least controversial to most controversial.
 
+This
+https://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git/log/?h=sched-sissearch-v2r6
+is what is currently being tested. It'll take most of the weekend and I'll
+post them properly if they pass tests and do not throw up nasty surprises.
 
 -- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
-
+Mel Gorman
+SUSE Labs
