@@ -2,113 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7E22CF320
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B02C42CF324
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:33:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729513AbgLDRa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:30:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgLDRa5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:30:57 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C832C061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 09:30:11 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id o7so3546490pjj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 09:30:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=C83LWVZ8wM91AdWAS0iA3r1viy6kVdAOxGG9S1jtaCw=;
-        b=iJAUPmwWEnaAhg3wVRqh7oUcyTgWd+UHbESFOsFKDVfqajgfIROKPFQ5GD3OU+xa99
-         Jl3jC+WqpIsbkSbHw/wROs7jt7qUdrlmAp5EEseFWwhknRSyQQJrHkiSxJSWBujBv5TZ
-         7zhwhuArunV5D0CHnsEzlrVBVopSEiBeOYSKmSK8SJWyif03QcE0FIu0cTxZmcPzBgJm
-         Pnc3BsqDFAjAJounHoX0+dImC/5neswOWxsc5tDWdxI9ngeqt1ULE2o+4DlAW6Gkayg1
-         +7ieOETFbxJ7E6S7Tb1xRFdv1LS+r9l0jA3+JcuzuFQbbSYKINDifFz1seUopnH18UrJ
-         N0TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C83LWVZ8wM91AdWAS0iA3r1viy6kVdAOxGG9S1jtaCw=;
-        b=OAINUo+7vG1lWCYFQrvCjXC0fmDBYJpqHILNGQGSQiaqkD3CtUPcGXW99MC3r+QVrU
-         wMitMwgOdi7sdlr3fX8Oq7ay3o9LhjzD0hp4gHVFCz2MW0RsMlxEm8sO7nDT6G+OkN/u
-         dGYcYOwTDqIsiYClgOtryoiFcS4VN9DoP6PA64p12rRszBiGF37dkUrzXutU+yHQc1S/
-         dEbkx8VQV8n4pLO7nBEC2NmHgCryAb7l523ZCh8rIAobG7t5emdWx9/hxJK5+Kf9F95b
-         ji8irrNtFe+ZKNzTurAzWqcWN62cYYWcK4Iu4fvlFuaYPLcuow8CnAkdmKZkEm4dt62n
-         Gh7g==
-X-Gm-Message-State: AOAM530bywuNCgrX5c3fveCAsx1Rrpo0A2zWkq2cWdPmgNhVrM5FPIVF
-        uZ9JlpB7W3VDL6vbpdOQi6j3kw==
-X-Google-Smtp-Source: ABdhPJy8VrWERnAQbr+qZ5xf1WYX5NQ0PtIo4qgWqJih4aRqFD0kiCHgE33P8yE3i2WON8L59+Zg8Q==
-X-Received: by 2002:a17:90a:154a:: with SMTP id y10mr5170231pja.6.1607103010205;
-        Fri, 04 Dec 2020 09:30:10 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id h11sm5728667pfn.27.2020.12.04.09.30.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 09:30:09 -0800 (PST)
-Date:   Fri, 4 Dec 2020 09:30:02 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH RFC 03/39] KVM: x86/xen: register shared_info page
-Message-ID: <X8pyGiVDuBGJmazJ@google.com>
-References: <20190220201609.28290-1-joao.m.martins@oracle.com>
- <20190220201609.28290-4-joao.m.martins@oracle.com>
- <b647bed6c75f8743b8afea251a88f00a5feaee29.camel@infradead.org>
- <2d4df59d-f945-32dc-6999-a6f711e972ea@oracle.com>
- <896dc984-fa71-8f2f-d12b-458294f5f706@oracle.com>
- <58db65203b9464f6f225f4ef97c45af3c72cf068.camel@infradead.org>
- <6ea92fe2-4067-d0e0-b716-16d39a7a6065@oracle.com>
- <8c92b2f3a8e8829ec85d22091b2fe84794f12f78.camel@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c92b2f3a8e8829ec85d22091b2fe84794f12f78.camel@infradead.org>
+        id S1730692AbgLDRcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:32:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38692 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726173AbgLDRcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 12:32:22 -0500
+Subject: Re: [git pull] drm fixes for 5.10-rc7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607103101;
+        bh=kdIV6qg0v0kiZPoBanSMJB+t0VBdncQDDFz02bw9yK8=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=JSFb9xWqy01RN7dA8kaAN3HFhqAPi3zNGSICcVJ/bifokveYcv6fib3PJDmEsTEv1
+         MGilnBByafrBp+o3c/C7tpWsjLqrKhLRdaQoJHy0DRYgQgpOQutMmjDpBURgCQE6WC
+         Jare1SBF9wcMctg6hQICGPyX+WWN4+2A/lGPt+yDIIkwb5FPmhTtN5pQbCT3u9y37k
+         hQ/HgjYH1gZmIYsw6Y4iyHytwB2wKOSluUZ2fIP0ZzZpDxHn4vjcgO181/dVw+Dttq
+         zgODtaACfUADboSpuaS4d+gjzNhj+IZsb8H9onDh0QHKNpAb69f+03RHtlH3oVfiBq
+         aYHbsZiO45AMA==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAPM=9twdEoUbczSb9v0vAFD7w1qfB8-89tP-xjAEq5P=uBezCw@mail.gmail.com>
+References: <CAPM=9twdEoUbczSb9v0vAFD7w1qfB8-89tP-xjAEq5P=uBezCw@mail.gmail.com>
+X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
+ <dri-devel.lists.freedesktop.org>
+X-PR-Tracked-Message-Id: <CAPM=9twdEoUbczSb9v0vAFD7w1qfB8-89tP-xjAEq5P=uBezCw@mail.gmail.com>
+X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-12-04
+X-PR-Tracked-Commit-Id: de9b485d1dc993f1fb579b5d15a8176284627f4a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e87297fa080a7ed6b431873c771b3801cab573f5
+Message-Id: <160710310160.1431.7995360012238947510.pr-tracker-bot@kernel.org>
+Date:   Fri, 04 Dec 2020 17:31:41 +0000
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020, David Woodhouse wrote:
-> On Wed, 2020-12-02 at 12:32 -0800, Ankur Arora wrote:
-> > > On IRC, Paolo told me that permanent pinning causes problems for memory
-> > > hotplug, and pointed me at the trick we do with an MMU notifier and
-> > > kvm_vcpu_reload_apic_access_page().
-> > 
-> > Okay that answers my question. Thanks for clearing that up.
-> > 
-> > Not sure of a good place to document this but it would be good to
-> > have this written down somewhere. Maybe kvm_map_gfn()?
-> 
-> Trying not to get too distracted by polishing this part, so I can
-> continue with making more things actually work. But I took a quick look
-> at the reload_apic_access_page() thing.
-> 
-> AFAICT it works because the access is only from *within* the vCPU, in
-> guest mode.
-> 
-> So all the notifier has to do is kick all CPUs, which happens when it
-> calls kvm_make_all_cpus_request(). Thus we are guaranteed that all CPUs
-> are *out* of guest mode by the time...
-> 
->     ...er... maybe not by the time the notifier returns, because all 
->     we've done is *send* the IPI and we don't know the other CPUs have 
->     actually stopped running the guest yet? 
-> 
->     Maybe there's some explanation of why the actual TLB shootdown 
->     truly *will* occur before the page goes away, and some ordering 
->     rules which mean our reschedule IPI will happen first? Something 
->     like that ideally would have been in a comment in in MMU notifier.
+The pull request you sent on Fri, 4 Dec 2020 12:25:35 +1000:
 
-KVM_REQ_APIC_PAGE_RELOAD is tagged with KVM_REQUEST_WAIT, which means that
-kvm_kick_many_cpus() and thus smp_call_function_many() will have @wait=true,
-i.e. the sender will wait for the SMP function call to finish on the target CPUs.
+> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-12-04
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e87297fa080a7ed6b431873c771b3801cab573f5
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
