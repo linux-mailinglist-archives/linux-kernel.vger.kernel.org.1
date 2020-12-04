@@ -2,118 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19252CE53C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2AE2CE543
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgLDBmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:42:37 -0500
-Received: from gproxy6-pub.mail.unifiedlayer.com ([67.222.39.168]:41878 "EHLO
-        gproxy6-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725849AbgLDBmg (ORCPT
+        id S1726302AbgLDBno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:43:44 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9101 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725849AbgLDBnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:42:36 -0500
-Received: from cmgw15.unifiedlayer.com (unknown [10.9.0.15])
-        by gproxy6.mail.unifiedlayer.com (Postfix) with ESMTP id 6DDAC1E067E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 18:41:55 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id l06ckd9T7h41ll06dkfkfz; Thu, 03 Dec 2020 18:41:55 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=ILUs9DnG c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=zTNgK-yGK50A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=_jlGtV7tAAAA:8
- a=EO5IJpH2gAH_pC5_PvMA:9 a=CjuIK1q_8ugA:10:nop_charset_2
- a=nlm17XC03S6CtCLSeiRr:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=RKrDXpnvOKnYa9s4QNbszpbo311dk42G28a9T0DPdbM=; b=M/TkRbHe1PeaAusvc0N27xOQLK
-        Iq1pgKLf1prUkTFsTESrmBdT2IlYxmqd4ev5uE8ViHDjxoVGaPN03FS3eBg7zMg9SI+cLYQa+8aCx
-        TKKl3SM5EGLUAF+3PHOqEILCNOV+YIrRDEtYags2EKbS0bBAeoNZHIvmORIsWnADqM3boPJrBX4sO
-        064ar/rWIZaFHY5d/cNtBjdFZgGbsej/WktIt5WC/LrPPc1RoxxUj4FEa4hq8gzZI+jLVpG+AC+O9
-        CSo/yDCqrVsjFsGGhwoQMzuzPd/0+vaFxCCsfVUWeMR7wEksQnQS6xNSL0cP83n+Om18pTwWRsa6Y
-        VT3Squbw==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:44140 helo=localhost)
-        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kl06c-003z4m-BG; Fri, 04 Dec 2020 01:41:54 +0000
-Date:   Thu, 3 Dec 2020 17:41:53 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] watchdog: coh901327: add COMMON_CLK dependency
-Message-ID: <20201204014153.GA109274@roeck-us.net>
-References: <20201203223358.1269372-1-arnd@kernel.org>
+        Thu, 3 Dec 2020 20:43:43 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CnFnY6Gr5zM0BR;
+        Fri,  4 Dec 2020 09:42:25 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.9) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 4 Dec 2020 09:42:55 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        "Manivannan Sadhasivam" <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2 0/3] dt-bindings: reset: convert Hisilicon reset controller bindings to json-schema
+Date:   Fri, 4 Dec 2020 09:42:33 +0800
+Message-ID: <20201204014236.1158-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203223358.1269372-1-arnd@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kl06c-003z4m-BG
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:44140
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 2
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 11:33:42PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang produces a build failure in configurations without COMMON_CLK
-> when a timeout calculation goes wrong:
-> 
-> arm-linux-gnueabi-ld: drivers/watchdog/coh901327_wdt.o: in function `coh901327_enable':
-> coh901327_wdt.c:(.text+0x50): undefined reference to `__bad_udelay'
-> 
-> Add a Kconfig dependency to only do build testing when COMMON_CLK
-> is enabled.
-> 
-> Fixes: da2a68b3eb47 ("watchdog: Enable COMPILE_TEST where possible")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+v1 --> v2:
+Merge the driver and DT modification(correct vendor prefix hisi to hisilicon) into one patch.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+v1:
+Patch 1-3 change the vendor prefix from "hisi" to "hisilicon", to eliminate below warnings:
+  crg_rst_controller: 'hisi,rst-syscon' does not match any of the regexes: '^#.*', ... , '^hisilicon,.*', ...
+  From schema: /root/leizhen/linux-next/Documentation/devicetree/bindings/vendor-prefixes.yaml
 
-> ---
->  drivers/watchdog/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> index 8bdbd125821b..32fa6de7b820 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -631,7 +631,7 @@ config SUNXI_WATCHDOG
->  
->  config COH901327_WATCHDOG
->  	bool "ST-Ericsson COH 901 327 watchdog"
-> -	depends on ARCH_U300 || (ARM && COMPILE_TEST)
-> +	depends on ARCH_U300 || (ARM && COMMON_CLK && COMPILE_TEST)
->  	default y if MACH_U300
->  	select WATCHDOG_CORE
->  	help
-> -- 
-> 2.27.0
-> 
+Patch 4 does the json-schema conversion.
+
+Zhen Lei (3):
+  reset: hisilicon: correct vendor prefix
+  dt-bindings: reset: correct vendor prefix hisi to hisilicon
+  dt-bindings: reset: convert Hisilicon reset controller bindings to
+    json-schema
+
+ .../bindings/reset/hisilicon,hi3660-reset.txt      | 44 -------------
+ .../bindings/reset/hisilicon,hi3660-reset.yaml     | 77 ++++++++++++++++++++++
+ arch/arm64/boot/dts/hisilicon/hi3660.dtsi          |  4 +-
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi          |  2 +-
+ drivers/reset/hisilicon/reset-hi3660.c             |  2 +-
+ 5 files changed, 81 insertions(+), 48 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt
+ create mode 100644 Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
+
+-- 
+1.8.3
+
+
