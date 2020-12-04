@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D32A02CEFE0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:42:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C3A2CEFE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:42:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730350AbgLDOko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:40:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
+        id S1730361AbgLDOkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:40:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726438AbgLDOkn (ORCPT
+        with ESMTP id S1730352AbgLDOku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:40:43 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C751FC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:39:30 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id y7so6861247lji.8
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:39:30 -0800 (PST)
+        Fri, 4 Dec 2020 09:40:50 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1DAC061A52
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:40:10 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id z12so3190971pjn.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:40:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6sWIE6MSVnFN2Z1SFZ8QW/N7guFxVpjF1mW79UulhJs=;
-        b=RfcUNAfKbPRmMKo7OcV+vcKhf8gkhXXWbgOjRQECyb79B5Kr8J55uu34UsLfxxUPom
-         7NEJDhsiYI7XXFxNqQi/41lLal9d1LYqnr2vQSWhl3ZGT+woctsjPXr9Xr09HeUYzwTH
-         4sYKrvzexNplNWsyr+AQys2/4I7jeyHKWANdgJPA6jBiijImp0602h+mSteHCWlDfmdQ
-         YXwBsfYJFRRA/jFkwq66l0qkO33EWCS+8WPE3EkBo2bnFfj2+Uqy0cJgUfub/OsjLexQ
-         u9GN3Y0hEQuLeV1vRg2wJQtiSAp8QqgrVOF0XuFxzBGyVyWGORmIgknoFXE6kB3bnUWZ
-         7dZg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=QbGG+QSHQ3ZiuhAQdumnEcGwmaXAKMHyqeMSedOarG8=;
+        b=pCdeO8ca1BLD8/+3MrfyO1Oaf0o02KRsUH5zSuWitu5IAXiq09fT7hetTlPVAhu78m
+         UkAa+0hmWkUOcjGK6uS6M7wv9/yr5RTAUh8eoK294muZY44AXcWQAb2eAx7C+XxEbev4
+         B0Ris1Hf5ZpeC/bV/Yy4vHxqYsDiCFQqjwGCUDKYNFmsJKvvonzq9X0o9ZZZnMJHIYsj
+         Ifcz5vjSBevjTC4i0GRX6yE90mIhXMIZG8CiYhzJoEEyABVEVbDK1CT9ZkgQ5ADpSLUs
+         l4b7J8QeNCZyVVdPJ7xChghuZyEEcO73WEhovoanHmE+k5sJX+3DJkk8lyu5MR0zdYzj
+         bKig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6sWIE6MSVnFN2Z1SFZ8QW/N7guFxVpjF1mW79UulhJs=;
-        b=G11CNwQnI6WuWBX/HNthhltQQj219i0cQHjUCyWCcY0MgS/s+zICeDINDo8XdPduI3
-         5AuJICTwvYYTiby43ClRg6lPOfx3otuMjaOaOxZOtS7Ny+mHyqWru7tefG5vi0QrSFjN
-         ecuqW9SXZS0RrUdE2Yn2xyGUKxBz4nmuV0vf/ft/wKJKp+G+MZSvo1W5ktXQxr0evHwh
-         RKHxF4/LE6/sPpVf7yQNfPlT9uEO9jz8uBjTgdieTODNnG1ECTIUo+9rkAsN6/yufTMh
-         EjPsSR6/Kbka+3Vsx3ulw5oo1o71MBdIFOPowLzyUiAevRsoE4LoOqP5iegY9hT3VfLW
-         mRXQ==
-X-Gm-Message-State: AOAM533cGEQDtv8sIv6EAQavIBCFNO7X+X+bauiFol6w9do0rXy1BQe3
-        k413yursFWhodikB+EaTkxzFSmxvMb56C9q93S5i0w==
-X-Google-Smtp-Source: ABdhPJyskVYAzDS48JDvWbmfiXfOC8BuBYtUHBD5BXTQ5EFVNcQqiqycMB0UDj7GVEp894YzQizdbfY9OTD5WfpyvaY=
-X-Received: by 2002:a2e:3608:: with SMTP id d8mr3697375lja.68.1607092769314;
- Fri, 04 Dec 2020 06:39:29 -0800 (PST)
-MIME-Version: 1.0
-References: <20201203222922.1067522-1-arnd@kernel.org> <CAPDyKFqtFYqc8i_fVzOUnuZGJjtwjVLqE-vebtOKuYJ-4PrDBg@mail.gmail.com>
- <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com>
-In-Reply-To: <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 4 Dec 2020 15:38:49 +0100
-Message-ID: <CAPDyKFqS5touMvORyovCS-QQrHZg+0LGob9DtS1m61quvXYezw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mediatek: mark PM functions as __maybe_unused
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
-        yong mao <yong.mao@mediatek.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=QbGG+QSHQ3ZiuhAQdumnEcGwmaXAKMHyqeMSedOarG8=;
+        b=qE5Zp9wtkHTBUo1jsnK1kQJZyAb23sW3MsWxnoL6urg0sr8OrVZVqiszvCnSm7te5A
+         Wt53egh1MuyjLIVo1GIfkCeOckhMliYKR6Ro22moa604cyOZMRO5bqegw5W7T6DAkqS8
+         EoTfFQ3B7Vk8Vsn9tGpH2AhlBiijrIE4GFqe8OUKigzVLwpFAGFK85fKaMpEtBWcC2SU
+         WEf1Q08bB9kdsZVgc8j8wEBPWS2hhA720ZV9R54lkNTtbWp2IZRbGD3mgkwtRCGvZtOd
+         QXgVKjWAvEYP8p0GInqroat+FongVgnMUqyUAIQ9YsWggIalkOtwTvT2gGJJf/AMT3n/
+         aKvQ==
+X-Gm-Message-State: AOAM533d7F9eUXcLZZVQTvTE4g2kUNKdVbsdn/YAFop2sFWfaezXh4Qp
+        nmqiN2+qeT1FWxxfCAlGFWSf8doBppgq4w==
+X-Google-Smtp-Source: ABdhPJwX7nzTsLtA7yQjhbEF6V6IBUFuFwSQNYLS1ZauHkXgYQ4viF1Zz/SNOraBkisdVNmarie8QA==
+X-Received: by 2002:a17:902:76c1:b029:da:2f5:ed5d with SMTP id j1-20020a17090276c1b02900da02f5ed5dmr4231470plt.25.1607092809768;
+        Fri, 04 Dec 2020 06:40:09 -0800 (PST)
+Received: from localhost.localdomain ([2402:3a80:43f:b9bb:d059:d26:c75b:b30a])
+        by smtp.googlemail.com with ESMTPSA id y69sm2435140pfg.75.2020.12.04.06.40.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 06:40:09 -0800 (PST)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v6] checkpatch: add fix for non-standard signature - co-authored-by
+Date:   Fri,  4 Dec 2020 20:10:00 +0530
+Message-Id: <20201204144000.21734-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <a2c74693-93ae-cd5a-7836-4ffff643fc09@gmail.com>
+References: <a2c74693-93ae-cd5a-7836-4ffff643fc09@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 at 15:14, Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Fri, Dec 4, 2020 at 11:02 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > On Thu, 3 Dec 2020 at 23:29, Arnd Bergmann <arnd@kernel.org> wrote:
->
-> > > -#ifdef CONFIG_PM
-> > >  static void msdc_save_reg(struct msdc_host *host)
-> >
-> > Shouldn't msdc_save|restore_reg() be turned into "__maybe_unused" as well?
->
-> There is no need since the compiler can figure that out already when there
-> is a reference to the function from dead code.
+Currently, checkpatch.pl warns us for BAD_SIGN_OFF on the usage of
+non-standard signatures.
 
-Alright, thanks for clarifying.
+An evaluation on v4.13..v5.8 showed that out of 539 warnings due to
+non-standard signatures, 43 are due to the use of 'Co-authored-by'
+tag, which may seem correct, but is not standard.
 
->
-> > >
-> > > -static int msdc_resume(struct device *dev)
-> > > +static int __maybe_unused msdc_resume(struct device *dev)
-> > >  {
-> > >         return pm_runtime_force_resume(dev);
-> > >  }
-> > > -#endif
-> > >
-> > >  static const struct dev_pm_ops msdc_dev_pm_ops = {
-> >
-> > You may also change this to a __maybe_unused, as long as you also
-> > assign the .pm pointer in the mt_msdc_driver with
-> > pm_ptr(&msdc_dev_pm_ops).
-> >
-> > Ideally the compiler should drop these functions/datas entirely then.
->
-> I don't see a lot of other instances of that yet, and it's fairly new.
-> Maybe we should fix it before it gets propagated further.
->
-> I would suggest we redefine pm_ptr like
->
-> #define pm_ptr(_ptr) (IS_ENABLED(CONFIG_PM) ? (_ptr) : NULL)
+The standard signature equivalent for 'Co-authored-by' is
+'Co-developed-by'.
 
-Why is this better than the original definition?
+Provide a fix by suggesting users with this signature alternative and
+replacing.
 
->
-> and remove the __maybe_unused annotations on those that we
-> already have. This also has the effect of dropping the unused
-> data from the object, but without having to an an #ifdef or
-> __maybe_unused.
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+applies perfectly on the latest next-20201204 branch
 
-I didn't quite get this (sorry it's Friday afternoon... getting
-tired), can you perhaps give a concrete example?
+changes in v2: replace commit specific example with brief evaluation
 
-That said, I have applied your patch for fixes, but let's try to sort
-out the above to make sure we are all on the same page.
+changes in v3: provide rationale to users for every signature tag suggestion;
+modify commit message describing arrival to conclusion in a structured way
 
-Kind regards
-Uffe
+changes in v4: modify rationale for certain suggestions
+
+changes in v5: remove the tag deletion suggestions, ie "Generated-by" and "Celebrated-by"; rebase on last accepted changes; modify commit message
+
+changes in v6: reduce tag suggestions to only "Co-authored-by"; modify commit message accordingly; include complete version changelog
+
+ scripts/checkpatch.pl | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 4a026926139f..fc036d545d2d 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2832,6 +2832,9 @@ sub process {
+ 
+ 			if ($sign_off !~ /$signature_tags/) {
+ 				my $suggested_signature = find_standard_signature($sign_off);
++				if ($sign_off =~ /co-authored-by:/i) {
++					$suggested_signature = "Co-developed-by:";
++				}
+ 				if ($suggested_signature eq "") {
+ 					WARN("BAD_SIGN_OFF",
+ 					     "Non-standard signature: $sign_off\n" . $herecurr);
+-- 
+2.17.1
+
