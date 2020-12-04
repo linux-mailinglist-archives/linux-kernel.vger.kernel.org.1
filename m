@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65442CF567
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 072C12CF56E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729285AbgLDUTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 15:19:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35256 "EHLO
+        id S1729852AbgLDUTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 15:19:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728846AbgLDUTE (ORCPT
+        with ESMTP id S1728846AbgLDUTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 15:19:04 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D8FC061A53
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:18:18 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id o24so8000328ljj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:18:17 -0800 (PST)
+        Fri, 4 Dec 2020 15:19:38 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4F9C08C5F2
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:18:19 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id s30so9384081lfc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:18:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZiqvOYZnVaPoXdhwyb61UvgWLIkGyPr+IhLVSfqE1SY=;
-        b=fo/9yfBFQD7b9kT8+PNDIWdGD/64qLIJ9v0ZQ9bmbwA6DGaQJAiQ6Q8GUxUeeQA+3N
-         5y1V9d9kuSs6v/uXZD3cOkOfgY7w7gVnm4IDNn0OjcDkllAu0jbtVgfpcCbO793Rwt68
-         JzazfZSEHQOAuMOSYQ6vqdKiI2NMTD8/tASwvLft45loUV7A2p4IfM+sU6F2D14SroDO
-         1Cqgt76RC8m7R3C4iX+gXmEpj0t8hIKsVSNe646jOZZkfZ4UYRg+v709ad8e23Naq0l7
-         rk12iGjQ1JnZf8yioUfmR/wZ1r7sH7gLp9vnTwZdUx5VbLR86qQryp/FVSYe6Qvl4Pf2
-         qdvw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Qhly/U7wUKF7bqE61himMhH+kUAvTS+oTUyN7cuZEII=;
+        b=xoEf20GHyh41YPle2yks4pfGyT6vcsRsmJQOK/IYN+lE+O4IuBQ51Bopsv8d+JesO0
+         xt3UajUrdfdtogYHnm7TR9JpbGlKKM0PzRoqw0fIyvxfdLaewtG4IsHwKJv7SLRwHQiC
+         vVkTpqv75WgnHt/OV+hBeQPkQ4xO3lf+WZV+JUk4PNrbNfKdzru8lEE9Ym0C1y0qBE66
+         z8MM8faaOMU29hZCpbHvc5PUGeeAsNJCyhMUiA1d/U6ReDKKLNJnEpguFuQ1UEnYbw26
+         pNcsavs3ZLXtN6uWZTFH558QMswZ9ru4cRgAFaeFc9eDkGJS5HCxxJNsToX2Va/8s8JI
+         djyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZiqvOYZnVaPoXdhwyb61UvgWLIkGyPr+IhLVSfqE1SY=;
-        b=f9BDvBCzyhj/IBgH3FAwqDR9jfZHNKL/DZ6ZwXddn1fb/tI/N/NRbrPsO2PII/zaSJ
-         LYoui/LfccAzUU47yLk1en4w0+KDFqScG9AqSJI1WqCmIu8FbaBkP8wTJ4KcplS1WcEB
-         pBZ58qjluIpShNE4KQPXsKfN6mlX6t6GVrl7VCMpEhnULQfwAekQXEfWUtWIfw6Z55cs
-         4yMOIQkcRhwW/+qQxQuCz0gSrK3Vppn20Eqpvd2qrSCplsHUzV5aig5abmcnDDOzQJNi
-         IfYwxl6Jva2YQ4ouCMs0nCOaOA9xVE1F9rJU6uD9VTE03mUsxma/00CHxsLJI4yd8f+w
-         TGrg==
-X-Gm-Message-State: AOAM5301xUB0zEkVRYpLHCUG/Jvsxb7szJZtrw8qtfCy62I6+4mDndY7
-        SNrR7EZqfUH4aYmBdwJqT3kLVQ==
-X-Google-Smtp-Source: ABdhPJxqAwfoWF2r9gEF11hL9VPxMbruCY+BSSSwyrxBMgUFhjwUi65/acmXhl9ZbWLYOX/XFMa2eg==
-X-Received: by 2002:a2e:8e64:: with SMTP id t4mr1039685ljk.141.1607113096464;
-        Fri, 04 Dec 2020 12:18:16 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Qhly/U7wUKF7bqE61himMhH+kUAvTS+oTUyN7cuZEII=;
+        b=gQTf/3bmGsZl2aLsao6s/Z2Jq6ARtkrnzdZneewFSLBpBCO5YYZ0zNxXXZfFsN0+sE
+         zgNmC+KBoEQ3l5Rs0Gti8HdBo0A/cWCvL0JHHT8Izmr3xJ/6onwQRV2Y3nv+wJumEinO
+         STdEct0JCb9gkmB+rVVsVs6vTIMhnqmrWqEDHybcpNutga/75kEx47Ulxu/bt6COLqHV
+         RGxAM8Ef60NQjecUZzt9+XXWoDJz1RQRt8TGkKIyCs3b2Yt1oRPUGJA5MGj7mQjFWi5M
+         Qfpqto37EAFd1cKL8DNmT6vhcNgfomYywfXXA5iLvv6dxAw3qvc5L4tDvYAToE6ffVjp
+         n05g==
+X-Gm-Message-State: AOAM532a+BZGM13rvMMpEPH8VY+HNiyEnfpE6jNN5rc71QrfOItbWn95
+        qaF4JDKIAMnI9J4K3M6MMpkBug==
+X-Google-Smtp-Source: ABdhPJzRiRPPokQlXeW0VtVLTEQEDLVYmH7gfTMtAbJWq2Jvmn1/Me0fOcDOBnWhEhG00ZvRyX39aw==
+X-Received: by 2002:a05:6512:3305:: with SMTP id k5mr568054lfe.35.1607113097750;
+        Fri, 04 Dec 2020 12:18:17 -0800 (PST)
 Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id w21sm2036918lff.280.2020.12.04.12.18.15
+        by smtp.gmail.com with ESMTPSA id w21sm2036918lff.280.2020.12.04.12.18.16
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Dec 2020 12:18:15 -0800 (PST)
+        Fri, 04 Dec 2020 12:18:17 -0800 (PST)
 From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
 To:     ohad@wizery.com, bjorn.andersson@linaro.org,
         mathieu.poirier@linaro.org, s-anna@ti.com
@@ -56,17 +56,19 @@ Cc:     grzegorz.jaszczyk@linaro.org, linux-remoteproc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         praneeth@ti.com, rogerq@ti.com
-Subject: [PATCH v3 0/6]  Add a PRU remoteproc driver
-Date:   Fri,  4 Dec 2020 21:18:01 +0100
-Message-Id: <20201204201807.14716-1-grzegorz.jaszczyk@linaro.org>
+Subject: [PATCH v3 1/6] dt-bindings: remoteproc: Add binding doc for PRU cores in the PRU-ICSS
+Date:   Fri,  4 Dec 2020 21:18:02 +0100
+Message-Id: <20201204201807.14716-2-grzegorz.jaszczyk@linaro.org>
 X-Mailer: git-send-email 2.29.0
+In-Reply-To: <20201204201807.14716-1-grzegorz.jaszczyk@linaro.org>
+References: <20201204201807.14716-1-grzegorz.jaszczyk@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+From: Suman Anna <s-anna@ti.com>
 
 The Programmable Real-Time Unit and Industrial Communication Subsystem
 (PRU-ICSS or simply PRUSS) on various TI SoCs consists of dual 32-bit
@@ -79,46 +81,247 @@ AM65x SR2.0 and J721E SoCs have a revised version of the ICSSG IP, and
 include two additional custom auxiliary PRU cores called Transmit PRUs
 (Tx_PRUs).
 
-This series contains the PRUSS remoteproc driver together with relevant
-dt-binding. This is the 3rd foundation component for PRUSS subsystem, the
-previous two were already merged and can be found under:
-1) drivers/soc/ti/pruss.c
-   Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
-2) drivers/irqchip/irq-pruss-intc.c
-   Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
+This patch adds the bindings for these PRU cores. The binding covers the
+OMAP architecture SoCs - AM33xx, AM437x and AM57xx; Keystone 2 architecture
+based 66AK2G SoC; and the K3 architecture based SoCs - AM65x and J721E. The
+Davinci based OMAPL138 SoCs will be covered in a future patch.
 
-The following is a v3 version of the series. Please see the individual patches
-for exact changes in each patch, following are the main changes from v2[1]:
-- Add Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org> for 4 patches
-after introducing minor fixes/improvements.
-- Adjust the patch title to latest remoteproc subsystem convention:
-s/remoteproc\/pru:/remoteproc:pru:/ as suggested by Suman.
-
-[1] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20201119140850.12268-1-grzegorz.jaszczyk@linaro.org/
-
-Best regards,
-Grzegorz
-
-Grzegorz Jaszczyk (1):
-  remoteproc: pru: Add support for PRU specific interrupt configuration
-
-Suman Anna (5):
-  dt-bindings: remoteproc: Add binding doc for PRU cores in the PRU-ICSS
-  remoteproc: pru: Add a PRU remoteproc driver
-  remoteproc: pru: Add pru-specific debugfs support
-  remoteproc: pru: Add support for various PRU cores on K3 AM65x SoCs
-  remoteproc: pru: Add support for various PRU cores on K3 J721E SoCs
-
- .../bindings/remoteproc/ti,pru-rproc.yaml     | 214 +++++
- drivers/remoteproc/Kconfig                    |  12 +
- drivers/remoteproc/Makefile                   |   1 +
- drivers/remoteproc/pru_rproc.c                | 874 ++++++++++++++++++
- drivers/remoteproc/pru_rproc.h                |  46 +
- 5 files changed, 1147 insertions(+)
+Co-developed-by: Roger Quadros <rogerq@ti.com>
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+Signed-off-by: Suman Anna <s-anna@ti.com>
+Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+---
+v2->v3:
+- no changes
+v1->v2:
+- fix below yamllint warnings:
+./Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml:37:6: [warning] wrong indentation: expected 6 but found 5 (indentation)
+./Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml:92:2: [warning] wrong indentation: expected 2 but found 1 (indentation)
+---
+ .../bindings/remoteproc/ti,pru-rproc.yaml     | 214 ++++++++++++++++++
+ 1 file changed, 214 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
- create mode 100644 drivers/remoteproc/pru_rproc.c
- create mode 100644 drivers/remoteproc/pru_rproc.h
 
+diff --git a/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+new file mode 100644
+index 000000000000..63071eef1632
+--- /dev/null
++++ b/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+@@ -0,0 +1,214 @@
++# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/remoteproc/ti,pru-rproc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: TI Programmable Realtime Unit (PRU) cores
++
++maintainers:
++  - Suman Anna <s-anna@ti.com>
++
++description: |
++  Each Programmable Real-Time Unit and Industrial Communication Subsystem
++  (PRU-ICSS or PRUSS) has two 32-bit load/store RISC CPU cores called
++  Programmable Real-Time Units (PRUs), each represented by a node. Each PRU
++  core has a dedicated Instruction RAM, Control and Debug register sets, and
++  use the Data RAMs present within the PRU-ICSS for code execution.
++
++  The K3 SoCs containing ICSSG v1.0 (eg: AM65x SR1.0) also have two Auxiliary
++  PRU cores called RTUs with slightly different IP integration. The K3 SoCs
++  containing the revised ICSSG v1.1 (eg: J721E, AM65x SR2.0) have an extra two
++  auxiliary Transmit PRU cores called Tx_PRUs that augment the PRUs. Each RTU
++  or Tx_PRU core can also be used independently like a PRU, or alongside a
++  corresponding PRU core to provide/implement auxiliary functionality/support.
++
++  Each PRU, RTU or Tx_PRU core node should be defined as a child node of the
++  corresponding PRU-ICSS node. Each node can optionally be rendered inactive by
++  using the standard DT string property, "status".
++
++  Please see the overall PRU-ICSS bindings document for additional details
++  including a complete example,
++    Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
++
++properties:
++  compatible:
++    enum:
++      - ti,am3356-pru   # for AM335x SoC family (AM3356+ SoCs only)
++      - ti,am4376-pru   # for AM437x SoC family (AM4376+ SoCs only)
++      - ti,am5728-pru   # for AM57xx SoC family
++      - ti,k2g-pru      # for 66AK2G SoC family
++      - ti,am654-pru    # for PRUs in K3 AM65x SoC family
++      - ti,am654-rtu    # for RTUs in K3 AM65x SoC family
++      - ti,am654-tx-pru # for Tx_PRUs in K3 AM65x SR2.0 SoCs
++      - ti,j721e-pru    # for PRUs in K3 J721E SoC family
++      - ti,j721e-rtu    # for RTUs in K3 J721E SoC family
++      - ti,j721e-tx-pru # for Tx_PRUs in K3 J721E SoC family
++
++  reg:
++    items:
++      - description: Address and Size of the PRU Instruction RAM
++      - description: Address and Size of the PRU CTRL sub-module registers
++      - description: Address and Size of the PRU Debug sub-module registers
++
++  reg-names:
++    items:
++      - const: iram
++      - const: control
++      - const: debug
++
++  firmware-name:
++    description: |
++      Should contain the name of the default firmware image
++      file located on the firmware search path.
++
++if:
++  properties:
++    compatible:
++      enum:
++        - ti,am654-rtu
++        - ti,j721e-rtu
++then:
++  properties:
++    $nodename:
++      pattern: "^rtu@[0-9a-f]+$"
++else:
++  if:
++    properties:
++      compatible:
++        enum:
++          - ti,am654-tx-pru
++          - ti,j721e-tx-pru
++  then:
++    properties:
++      $nodename:
++        pattern: "^txpru@[0-9a-f]+"
++  else:
++    properties:
++      $nodename:
++        pattern: "^pru@[0-9a-f]+$"
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - firmware-name
++
++additionalProperties: false
++
++examples:
++  - |
++    /* AM33xx PRU-ICSS */
++    pruss_tm: target-module@300000 {  /* 0x4a300000, ap 9 04.0 */
++      compatible = "ti,sysc-pruss", "ti,sysc";
++      #address-cells = <1>;
++      #size-cells = <1>;
++      ranges = <0x0 0x300000 0x80000>;
++
++      pruss: pruss@0 {
++        compatible = "ti,am3356-pruss";
++        reg = <0x0 0x80000>;
++        #address-cells = <1>;
++        #size-cells = <1>;
++        ranges;
++
++        pruss_mem: memories@0 {
++          reg = <0x0 0x2000>,
++                <0x2000 0x2000>,
++                <0x10000 0x3000>;
++          reg-names = "dram0", "dram1", "shrdram2";
++        };
++
++        pru0: pru@34000 {
++          compatible = "ti,am3356-pru";
++          reg = <0x34000 0x2000>,
++                <0x22000 0x400>,
++                <0x22400 0x100>;
++          reg-names = "iram", "control", "debug";
++          firmware-name = "am335x-pru0-fw";
++        };
++
++        pru1: pru@38000 {
++          compatible = "ti,am3356-pru";
++          reg = <0x38000 0x2000>,
++                <0x24000 0x400>,
++                <0x24400 0x100>;
++          reg-names = "iram", "control", "debug";
++          firmware-name = "am335x-pru1-fw";
++        };
++      };
++    };
++
++  - |
++    /* AM65x SR2.0 ICSSG */
++    #include <dt-bindings/soc/ti,sci_pm_domain.h>
++
++    icssg0: icssg@b000000 {
++      compatible = "ti,am654-icssg";
++      reg = <0xb000000 0x80000>;
++      power-domains = <&k3_pds 62 TI_SCI_PD_EXCLUSIVE>;
++      #address-cells = <1>;
++      #size-cells = <1>;
++      ranges = <0x0 0xb000000 0x80000>;
++
++      icssg0_mem: memories@0 {
++        reg = <0x0 0x2000>,
++              <0x2000 0x2000>,
++              <0x10000 0x10000>;
++        reg-names = "dram0", "dram1", "shrdram2";
++      };
++
++      pru0_0: pru@34000 {
++        compatible = "ti,am654-pru";
++        reg = <0x34000 0x4000>,
++              <0x22000 0x100>,
++              <0x22400 0x100>;
++        reg-names = "iram", "control", "debug";
++        firmware-name = "am65x-pru0_0-fw";
++      };
++
++      rtu0_0: rtu@4000 {
++        compatible = "ti,am654-rtu";
++        reg = <0x4000 0x2000>,
++              <0x23000 0x100>,
++              <0x23400 0x100>;
++        reg-names = "iram", "control", "debug";
++        firmware-name = "am65x-rtu0_0-fw";
++      };
++
++      tx_pru0_0: txpru@a000 {
++        compatible = "ti,am654-tx-pru";
++        reg = <0xa000 0x1800>,
++              <0x25000 0x100>,
++              <0x25400 0x100>;
++        reg-names = "iram", "control", "debug";
++        firmware-name = "am65x-txpru0_0-fw";
++      };
++
++      pru0_1: pru@38000 {
++        compatible = "ti,am654-pru";
++        reg = <0x38000 0x4000>,
++              <0x24000 0x100>,
++              <0x24400 0x100>;
++        reg-names = "iram", "control", "debug";
++        firmware-name = "am65x-pru0_1-fw";
++      };
++
++      rtu0_1: rtu@6000 {
++        compatible = "ti,am654-rtu";
++        reg = <0x6000 0x2000>,
++              <0x23800 0x100>,
++              <0x23c00 0x100>;
++        reg-names = "iram", "control", "debug";
++        firmware-name = "am65x-rtu0_1-fw";
++      };
++
++      tx_pru0_1: txpru@c000 {
++        compatible = "ti,am654-tx-pru";
++        reg = <0xc000 0x1800>,
++              <0x25800 0x100>,
++              <0x25c00 0x100>;
++        reg-names = "iram", "control", "debug";
++        firmware-name = "am65x-txpru0_1-fw";
++      };
++    };
 -- 
 2.29.0
 
