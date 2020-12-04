@@ -2,95 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876CB2CF063
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:09:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7983C2CF065
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730378AbgLDPIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:08:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43466 "EHLO
+        id S1730436AbgLDPJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:09:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725923AbgLDPIr (ORCPT
+        with ESMTP id S1725923AbgLDPJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:08:47 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF19C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 07:08:01 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id o24so6986677ljj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:08:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ugm6nci6pFkFE2fZ87+ANMj4imEPU508tEZXdZdhnMQ=;
-        b=p10DaLJuegWL96xzPso5dt1qrw6xgzlmwOoM7oDf4usYdru+bxc+QbiI4MBs0YwHmi
-         6oYgnLKlWYw1ZnKUnLeB7VKUYbBS+z/zYK3cEE1d0bQdYbpNY3CJeydIU/+NIpsbQMW5
-         5iwMSzHgpA6DWxGvawABSI+IVSiyfjJI41HzjVKEB20clw9Zl5+2gkiTqPKtdHyuxDfl
-         FG3bz3narKSAlfO9TG9AlBHkq7IZCnJrkybg+hhCXgXgw2fjHYLEB+UyYdial0Fwh5hS
-         oYUAqoD6vY+TVj2LU5U7mJ7WDGKQhJXll4/P7SWUXLuCqwzgruZH0zLIrw+poQm498F3
-         /HIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ugm6nci6pFkFE2fZ87+ANMj4imEPU508tEZXdZdhnMQ=;
-        b=K5Vf2jm0v6glTPhw2D8vnBfcWdJyXLGoYUeuit8zJGD00oxSAAxG+6TgtevtNacjvr
-         mOckhehw2G0q35+zWil7KfoRSMBCd/z4g63PAL0dhNF4qvnDP896vYh/ESyOg1iljsGs
-         JYE2TP6oz+haFftMoh+oUfLB3+JCji3cjUEoKjo2g0z0aYBOct2e/59avctVVJPm6X/H
-         Hwewz9IIWhYLLCh41o0GnPJfoRM9DQRfHJvlM0xJmPImIDeK51wGcn99r/nR0npKwxZz
-         lFTUTQtCT4jvuUnFAFpp2f4HkLjkLFWn6lNYjrmGObnX7iUFcfUt1JjefWD9cfUxQXqI
-         bIIg==
-X-Gm-Message-State: AOAM533+wfcJYtQfUC+clJgjDNyRUMF5s6WKO/t63Zg1RC7yOTUCZahH
-        5pm1CsTVcX6qLmjrYyGj6J8THWlckYn6OJcxf9dxAA==
-X-Google-Smtp-Source: ABdhPJzHIwMUOmMN2sHISP7xlPGum+N6euE1+Z7nIc8dnisLvUyDzFd9N0UJu6A2WfrDU5SsPk6AJhpJ3zSMrsEzK6g=
-X-Received: by 2002:a2e:80c3:: with SMTP id r3mr3574649ljg.391.1607094479850;
- Fri, 04 Dec 2020 07:07:59 -0800 (PST)
+        Fri, 4 Dec 2020 10:09:09 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF621C061A51;
+        Fri,  4 Dec 2020 07:08:29 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607094507;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=m+5fUfCGN4l8PttwLmFKEO9H2mckNeF24mD/TIdsWmA=;
+        b=IMK9HWTOFmsmGjUiNSHj45Vv6+Y4MUAZ4rHxVC3aeoHN2rE5EBGlduOSi8RJbyfAANrFlR
+        LvoWc0CDfTy7NXTHYTYsXnVED6ZyvuyBTu0a9o5jYQdphqrLvLPbskLSFNdS7uWI2tUzqz
+        cBemexfhX7i3B63iOQUMo+oE/d/o4zpyumtdAlZEuRm8S1RezGtdjN3T+jpF3gwVy4yLqq
+        7iP8XzvD/utBLvvxbLB0QOeJEFBwWoUuDHD8XVo8WC5mIwK2cUH+CEvlvaN/TDjn7U2OZL
+        z/SvS8RdMz/hjlYEnAejzfQZW5mr/bR2gzQ0XB7qiehZGarVU+FzWkPfkh7pog==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607094507;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=m+5fUfCGN4l8PttwLmFKEO9H2mckNeF24mD/TIdsWmA=;
+        b=INkOrHiJFDwY6z7hGqBnk6yKA9vFBYJNsviMtfs2IwfBxi0PyZSJvR9EccALbcd/BAKPYz
+        qCzaYhAQYTLVRtDg==
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linuxfoundation.org>
+Subject: Re: crypto: sun4i-ss: error with kmap
+In-Reply-To: <20201204132631.GA25321@Red>
+References: <20201201130102.GA23461@Red> <87ft4phcyx.fsf@nanos.tec.linutronix.de> <20201201135252.GA9584@Red> <87y2ihfw6z.fsf@nanos.tec.linutronix.de> <20201201144529.GA6786@Red> <87v9dlfthf.fsf@nanos.tec.linutronix.de> <20201202195501.GA29296@Red> <877dpzexfr.fsf@nanos.tec.linutronix.de> <20201203173846.GA16207@Red> <87r1o6bh1u.fsf@nanos.tec.linutronix.de> <20201204132631.GA25321@Red>
+Date:   Fri, 04 Dec 2020 16:08:27 +0100
+Message-ID: <874kl1bod0.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201118063405.24906-1-wenbin.mei@mediatek.com>
- <CAPDyKFpHAWBtxLOOvvqmAYFAwCsV66s_LzzVJg-zfXH5QE++Ng@mail.gmail.com>
- <1606266655.11864.7.camel@mhfsdcap03> <CANMq1KBwtZNgkK5mEUdOk4sq05aXqQ59QsqYqapPqQr7DEWgMA@mail.gmail.com>
-In-Reply-To: <CANMq1KBwtZNgkK5mEUdOk4sq05aXqQ59QsqYqapPqQr7DEWgMA@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 4 Dec 2020 16:07:22 +0100
-Message-ID: <CAPDyKFruM-5MbsPGAt9zvZJFBdRiUuZcG3gphkBJV+y9-Z=VwQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mediatek: Add system suspend/resume interface
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Wenbin Mei <wenbin.mei@mediatek.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Guenter Roeck <groeck@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 at 02:29, Nicolas Boichat <drinkcat@chromium.org> wrote:
+On Fri, Dec 04 2020 at 14:26, Corentin Labbe wrote:
+> On Fri, Dec 04, 2020 at 12:34:05AM +0100, Thomas Gleixner wrote:
+>> The unmap comes from sg_miter_stop() and looking at the previous
+>> map/unmap cycles there are never nested maps.
+>> 
+>> [  996.943030] cryptset-316       0d..4 73943317us : __kmap_local_pfn_prot: kmap_local_pfn: 1 ffefd000
+>> 
+>> is the first event which allocates a nested map. 
+>> 
+>> So something goes south either in sg_miter or in the crypto maze.
+>> 
+>> Enabling CONFIG_DEBUG_KMAP_LOCAL and function tracing might give us more clue.
 >
-> This causes a 0-day warning (on our chromeos-5.4 backports but I don't
-> see why upstream would not be affected):
-> https://groups.google.com/g/cros-kernel-buildreports/c/MfS3SInT5jg/m/Hkzxh_U7AwAJ
->
-> Didn't look at the details of the config, but SET_SYSTEM_SLEEP_PM_OPS
-> is a noop if CONFIG_PM_SLEEP is not set (while SET_RUNTIME_PM_OPS is
-> noop-ed by CONFIG_PM).
->
-> So I guess msdc_suspend/msdc_resume should be guarded by
-> CONFIG_PM_SLEEP instead of CONFIG_PM.
+> Done, http://kernel.montjoie.ovh/130466.log
 
-Yep.
+Does not provide more information with the debug enabled. So can you
+please enable CONFIG_FUNCTION_TRACER and add 'ftrace=function' to the
+command line?
 
-There is already a patch [1] in my queue for this. It uses the
-_maybe_unused approach (Arnd prefers that and I don't mind).
+Thanks,
 
-[...]
-
-Kind regards
-Uffe
-
-[1]
-https://patchwork.kernel.org/project/linux-mediatek/patch/20201203222922.1067522-1-arnd@kernel.org/
+        tglx
