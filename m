@@ -2,206 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104522CF470
+	by mail.lfdr.de (Postfix) with ESMTP id A10212CF471
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730511AbgLDS4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730489AbgLDS4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 4 Dec 2020 13:56:03 -0500
-Received: from mga17.intel.com ([192.55.52.151]:10293 "EHLO mga17.intel.com"
+Received: from pegase1.c-s.fr ([93.17.236.30]:16967 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729003AbgLDS4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:56:02 -0500
-IronPort-SDR: bvXZg4t9C9cn3Lz9SYsurXoZm0hCITq1XGA5jFbp93zmw3w1wstmCyLdPSQ0hXPs5YgmMbWZq9
- HsBFHAS4WSuA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="153245211"
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="153245211"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 10:55:21 -0800
-IronPort-SDR: 6p/trx1jfKz1X6Rsnej5E1NnoLcpS1yXszvwxrH+uHFBLyiiY3zOqbPfBTH9zP+QtJ5qLQ6n+s
- jhVMLynMAVLA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="368962786"
-Received: from lkp-server02.sh.intel.com (HELO f74a175f0d75) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 04 Dec 2020 10:55:19 -0800
-Received: from kbuild by f74a175f0d75 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1klGEh-0000Km-5X; Fri, 04 Dec 2020 18:55:19 +0000
-Date:   Sat, 05 Dec 2020 02:54:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/sgx] BUILD SUCCESS
- a4b9c48b96517ff4780b22a784e7537eac5dc21b
-Message-ID: <5fca8603.fKaAbePZ931b5QDo%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1729780AbgLDS4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:56:01 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CnhjJ3znWz9tyjR;
+        Fri,  4 Dec 2020 19:55:16 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 8sGgF9z2MTOk; Fri,  4 Dec 2020 19:55:16 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CnhjJ2flYz9tyjQ;
+        Fri,  4 Dec 2020 19:55:16 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 38A548B812;
+        Fri,  4 Dec 2020 19:55:18 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 50zL9u75NiCT; Fri,  4 Dec 2020 19:55:18 +0100 (CET)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BF5718B75E;
+        Fri,  4 Dec 2020 19:55:17 +0100 (CET)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 8798F66890; Fri,  4 Dec 2020 18:55:17 +0000 (UTC)
+Message-Id: <2c4d67fdef72ce27e0374e11b98c574ac33c6610.1607108093.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/powermac: Fix low_sleep_handler with
+ CONFIG_VMAP_STACK
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, giuseppe@sguazz.it
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri,  4 Dec 2020 18:55:17 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/sgx
-branch HEAD: a4b9c48b96517ff4780b22a784e7537eac5dc21b  x86/sgx: Return -EINVAL on a zero length buffer in sgx_ioc_enclave_add_pages()
+low_sleep_handler() can't restore the context from standard
+stack because the stack can hardly be accessed with MMU OFF.
 
-elapsed time: 772m
+Store everything in a global storage area instead of storing
+a pointer to the stack in that global storage area.
 
-configs tested: 142
-configs skipped: 3
+To avoid a complete churn of the function, still use r1 as
+the pointer to the storage area during restore.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 xes_mpc85xx_defconfig
-sh                           se7724_defconfig
-riscv                            allyesconfig
-powerpc                     tqm8548_defconfig
-arc                        nsimosci_defconfig
-powerpc                  mpc866_ads_defconfig
-m68k                          atari_defconfig
-mips                      bmips_stb_defconfig
-powerpc                     skiroot_defconfig
-powerpc                     powernv_defconfig
-arm                             mxs_defconfig
-arm                         orion5x_defconfig
-mips                         tb0219_defconfig
-m68k                       m5475evb_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                     mpc512x_defconfig
-powerpc                    socrates_defconfig
-um                             i386_defconfig
-ia64                          tiger_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                       eiger_defconfig
-arm                         axm55xx_defconfig
-mips                     loongson1c_defconfig
-arm                     am200epdkit_defconfig
-powerpc                   currituck_defconfig
-nios2                               defconfig
-xtensa                generic_kc705_defconfig
-sh                        edosk7760_defconfig
-arm                        mini2440_defconfig
-alpha                               defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                      chrp32_defconfig
-sh                          urquell_defconfig
-arm                       netwinder_defconfig
-mips                            gpr_defconfig
-sh                          rsk7264_defconfig
-arm                         bcm2835_defconfig
-arm                            pleb_defconfig
-powerpc                     kilauea_defconfig
-arc                          axs103_defconfig
-arm                            zeus_defconfig
-arm                             pxa_defconfig
-mips                        workpad_defconfig
-mips                          ath25_defconfig
-arm                           sunxi_defconfig
-arm                         shannon_defconfig
-mips                     decstation_defconfig
-arm                             ezx_defconfig
-arm                         assabet_defconfig
-sh                        sh7757lcr_defconfig
-sh                        edosk7705_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                        keystone_defconfig
-sh                           se7343_defconfig
-powerpc                     tqm8540_defconfig
-arm                           corgi_defconfig
-arm                           omap1_defconfig
-arm                        vexpress_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                    adder875_defconfig
-m68k                       m5249evb_defconfig
-arm                         mv78xx0_defconfig
-powerpc                     mpc83xx_defconfig
-sh                           se7619_defconfig
-mips                         db1xxx_defconfig
-powerpc                   lite5200b_defconfig
-arm                         s3c2410_defconfig
-powerpc64                        alldefconfig
-mips                       lemote2f_defconfig
-sh                     magicpanelr2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20201204
-x86_64               randconfig-a006-20201204
-x86_64               randconfig-a002-20201204
-x86_64               randconfig-a001-20201204
-x86_64               randconfig-a005-20201204
-x86_64               randconfig-a003-20201204
-i386                 randconfig-a005-20201204
-i386                 randconfig-a004-20201204
-i386                 randconfig-a001-20201204
-i386                 randconfig-a002-20201204
-i386                 randconfig-a006-20201204
-i386                 randconfig-a003-20201204
-i386                 randconfig-a014-20201204
-i386                 randconfig-a013-20201204
-i386                 randconfig-a011-20201204
-i386                 randconfig-a015-20201204
-i386                 randconfig-a012-20201204
-i386                 randconfig-a016-20201204
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a016-20201204
-x86_64               randconfig-a012-20201204
-x86_64               randconfig-a014-20201204
-x86_64               randconfig-a013-20201204
-x86_64               randconfig-a015-20201204
-x86_64               randconfig-a011-20201204
-
+Reported-by: Giuseppe Sacco <giuseppe@sguazz.it>
+Fixes: cd08f109e262 ("powerpc/32s: Enable CONFIG_VMAP_STACK")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+This is only build tested. Giuseppe can you test it ? Thanks.
+---
+ arch/powerpc/platforms/Kconfig.cputype  |   2 +-
+ arch/powerpc/platforms/powermac/sleep.S | 130 +++++++++++-------------
+ 2 files changed, 59 insertions(+), 73 deletions(-)
+
+diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
+index c194c4ae8bc7..32a9c4c09b98 100644
+--- a/arch/powerpc/platforms/Kconfig.cputype
++++ b/arch/powerpc/platforms/Kconfig.cputype
+@@ -36,7 +36,7 @@ config PPC_BOOK3S_6xx
+ 	select PPC_HAVE_PMU_SUPPORT
+ 	select PPC_HAVE_KUEP
+ 	select PPC_HAVE_KUAP
+-	select HAVE_ARCH_VMAP_STACK if !ADB_PMU
++	select HAVE_ARCH_VMAP_STACK
+ 
+ config PPC_85xx
+ 	bool "Freescale 85xx"
+diff --git a/arch/powerpc/platforms/powermac/sleep.S b/arch/powerpc/platforms/powermac/sleep.S
+index 7e0f8ba6e54a..ce56082a392a 100644
+--- a/arch/powerpc/platforms/powermac/sleep.S
++++ b/arch/powerpc/platforms/powermac/sleep.S
+@@ -44,7 +44,8 @@
+ #define SL_TB		0xa0
+ #define SL_R2		0xa8
+ #define SL_CR		0xac
+-#define SL_R12		0xb0	/* r12 to r31 */
++#define SL_LR		0xb0
++#define SL_R12		0xb4	/* r12 to r31 */
+ #define SL_SIZE		(SL_R12 + 80)
+ 
+ 	.section .text
+@@ -63,105 +64,107 @@ _GLOBAL(low_sleep_handler)
+ 	blr
+ #else
+ 	mflr	r0
+-	stw	r0,4(r1)
+-	stwu	r1,-SL_SIZE(r1)
++	lis	r11,sleep_storage@ha
++	addis	r11,r11,sleep_storage@l
++	stw	r0,SL_LR(r11)
+ 	mfcr	r0
+-	stw	r0,SL_CR(r1)
+-	stw	r2,SL_R2(r1)
+-	stmw	r12,SL_R12(r1)
++	stw	r0,SL_CR(r11)
++	stw	r1,SL_SP(r11)
++	stw	r2,SL_R2(r11)
++	stmw	r12,SL_R12(r11)
+ 
+ 	/* Save MSR & SDR1 */
+ 	mfmsr	r4
+-	stw	r4,SL_MSR(r1)
++	stw	r4,SL_MSR(r11)
+ 	mfsdr1	r4
+-	stw	r4,SL_SDR1(r1)
++	stw	r4,SL_SDR1(r11)
+ 
+ 	/* Get a stable timebase and save it */
+ 1:	mftbu	r4
+-	stw	r4,SL_TB(r1)
++	stw	r4,SL_TB(r11)
+ 	mftb	r5
+-	stw	r5,SL_TB+4(r1)
++	stw	r5,SL_TB+4(r11)
+ 	mftbu	r3
+ 	cmpw	r3,r4
+ 	bne	1b
+ 
+ 	/* Save SPRGs */
+ 	mfsprg	r4,0
+-	stw	r4,SL_SPRG0(r1)
++	stw	r4,SL_SPRG0(r11)
+ 	mfsprg	r4,1
+-	stw	r4,SL_SPRG0+4(r1)
++	stw	r4,SL_SPRG0+4(r11)
+ 	mfsprg	r4,2
+-	stw	r4,SL_SPRG0+8(r1)
++	stw	r4,SL_SPRG0+8(r11)
+ 	mfsprg	r4,3
+-	stw	r4,SL_SPRG0+12(r1)
++	stw	r4,SL_SPRG0+12(r11)
+ 
+ 	/* Save BATs */
+ 	mfdbatu	r4,0
+-	stw	r4,SL_DBAT0(r1)
++	stw	r4,SL_DBAT0(r11)
+ 	mfdbatl	r4,0
+-	stw	r4,SL_DBAT0+4(r1)
++	stw	r4,SL_DBAT0+4(r11)
+ 	mfdbatu	r4,1
+-	stw	r4,SL_DBAT1(r1)
++	stw	r4,SL_DBAT1(r11)
+ 	mfdbatl	r4,1
+-	stw	r4,SL_DBAT1+4(r1)
++	stw	r4,SL_DBAT1+4(r11)
+ 	mfdbatu	r4,2
+-	stw	r4,SL_DBAT2(r1)
++	stw	r4,SL_DBAT2(r11)
+ 	mfdbatl	r4,2
+-	stw	r4,SL_DBAT2+4(r1)
++	stw	r4,SL_DBAT2+4(r11)
+ 	mfdbatu	r4,3
+-	stw	r4,SL_DBAT3(r1)
++	stw	r4,SL_DBAT3(r11)
+ 	mfdbatl	r4,3
+-	stw	r4,SL_DBAT3+4(r1)
++	stw	r4,SL_DBAT3+4(r11)
+ 	mfibatu	r4,0
+-	stw	r4,SL_IBAT0(r1)
++	stw	r4,SL_IBAT0(r11)
+ 	mfibatl	r4,0
+-	stw	r4,SL_IBAT0+4(r1)
++	stw	r4,SL_IBAT0+4(r11)
+ 	mfibatu	r4,1
+-	stw	r4,SL_IBAT1(r1)
++	stw	r4,SL_IBAT1(r11)
+ 	mfibatl	r4,1
+-	stw	r4,SL_IBAT1+4(r1)
++	stw	r4,SL_IBAT1+4(r11)
+ 	mfibatu	r4,2
+-	stw	r4,SL_IBAT2(r1)
++	stw	r4,SL_IBAT2(r11)
+ 	mfibatl	r4,2
+-	stw	r4,SL_IBAT2+4(r1)
++	stw	r4,SL_IBAT2+4(r11)
+ 	mfibatu	r4,3
+-	stw	r4,SL_IBAT3(r1)
++	stw	r4,SL_IBAT3(r11)
+ 	mfibatl	r4,3
+-	stw	r4,SL_IBAT3+4(r1)
++	stw	r4,SL_IBAT3+4(r11)
+ 
+ BEGIN_MMU_FTR_SECTION
+ 	mfspr	r4,SPRN_DBAT4U
+-	stw	r4,SL_DBAT4(r1)
++	stw	r4,SL_DBAT4(r11)
+ 	mfspr	r4,SPRN_DBAT4L
+-	stw	r4,SL_DBAT4+4(r1)
++	stw	r4,SL_DBAT4+4(r11)
+ 	mfspr	r4,SPRN_DBAT5U
+-	stw	r4,SL_DBAT5(r1)
++	stw	r4,SL_DBAT5(r11)
+ 	mfspr	r4,SPRN_DBAT5L
+-	stw	r4,SL_DBAT5+4(r1)
++	stw	r4,SL_DBAT5+4(r11)
+ 	mfspr	r4,SPRN_DBAT6U
+-	stw	r4,SL_DBAT6(r1)
++	stw	r4,SL_DBAT6(r11)
+ 	mfspr	r4,SPRN_DBAT6L
+-	stw	r4,SL_DBAT6+4(r1)
++	stw	r4,SL_DBAT6+4(r11)
+ 	mfspr	r4,SPRN_DBAT7U
+-	stw	r4,SL_DBAT7(r1)
++	stw	r4,SL_DBAT7(r11)
+ 	mfspr	r4,SPRN_DBAT7L
+-	stw	r4,SL_DBAT7+4(r1)
++	stw	r4,SL_DBAT7+4(r11)
+ 	mfspr	r4,SPRN_IBAT4U
+-	stw	r4,SL_IBAT4(r1)
++	stw	r4,SL_IBAT4(r11)
+ 	mfspr	r4,SPRN_IBAT4L
+-	stw	r4,SL_IBAT4+4(r1)
++	stw	r4,SL_IBAT4+4(r11)
+ 	mfspr	r4,SPRN_IBAT5U
+-	stw	r4,SL_IBAT5(r1)
++	stw	r4,SL_IBAT5(r11)
+ 	mfspr	r4,SPRN_IBAT5L
+-	stw	r4,SL_IBAT5+4(r1)
++	stw	r4,SL_IBAT5+4(r11)
+ 	mfspr	r4,SPRN_IBAT6U
+-	stw	r4,SL_IBAT6(r1)
++	stw	r4,SL_IBAT6(r11)
+ 	mfspr	r4,SPRN_IBAT6L
+-	stw	r4,SL_IBAT6+4(r1)
++	stw	r4,SL_IBAT6+4(r11)
+ 	mfspr	r4,SPRN_IBAT7U
+-	stw	r4,SL_IBAT7(r1)
++	stw	r4,SL_IBAT7(r11)
+ 	mfspr	r4,SPRN_IBAT7L
+-	stw	r4,SL_IBAT7+4(r1)
++	stw	r4,SL_IBAT7+4(r11)
+ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
+ 
+ 	/* Backup various CPU config stuffs */
+@@ -180,9 +183,9 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
+ 	lis	r5,grackle_wake_up@ha
+ 	addi	r5,r5,grackle_wake_up@l
+ 	tophys(r5,r5)
+-	stw	r5,SL_PC(r1)
++	stw	r5,SL_PC(r11)
+ 	lis	r4,KERNELBASE@h
+-	tophys(r5,r1)
++	tophys(r5,r11)
+ 	addi	r5,r5,SL_PC
+ 	lis	r6,MAGIC@ha
+ 	addi	r6,r6,MAGIC@l
+@@ -194,12 +197,6 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
+ 	tophys(r3,r3)
+ 	stw	r3,0x80(r4)
+ 	stw	r5,0x84(r4)
+-	/* Store a pointer to our backup storage into
+-	 * a kernel global
+-	 */
+-	lis r3,sleep_storage@ha
+-	addi r3,r3,sleep_storage@l
+-	stw r5,0(r3)
+ 
+ 	.globl	low_cpu_offline_self
+ low_cpu_offline_self:
+@@ -279,7 +276,7 @@ _GLOBAL(core99_wake_up)
+ 	lis	r3,sleep_storage@ha
+ 	addi	r3,r3,sleep_storage@l
+ 	tophys(r3,r3)
+-	lwz	r1,0(r3)
++	addi	r1,r3,SL_PC
+ 
+ 	/* Pass thru to older resume code ... */
+ _ASM_NOKPROBE_SYMBOL(core99_wake_up)
+@@ -399,13 +396,6 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
+ 	blt	1b
+ 	sync
+ 
+-	/* restore the MSR and turn on the MMU */
+-	lwz	r3,SL_MSR(r1)
+-	bl	turn_on_mmu
+-
+-	/* get back the stack pointer */
+-	tovirt(r1,r1)
+-
+ 	/* Restore TB */
+ 	li	r3,0
+ 	mttbl	r3
+@@ -419,28 +409,24 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
+ 	mtcr	r0
+ 	lwz	r2,SL_R2(r1)
+ 	lmw	r12,SL_R12(r1)
+-	addi	r1,r1,SL_SIZE
+-	lwz	r0,4(r1)
+-	mtlr	r0
+-	blr
+-_ASM_NOKPROBE_SYMBOL(grackle_wake_up)
+ 
+-turn_on_mmu:
+-	mflr	r4
+-	tovirt(r4,r4)
++	/* restore the MSR and SP and turn on the MMU and return */
++	lwz	r3,SL_MSR(r1)
++	lwz	r4,SL_LR(r1)
++	lwz	r1,SL_SP(r1)
+ 	mtsrr0	r4
+ 	mtsrr1	r3
+ 	sync
+ 	isync
+ 	rfi
+-_ASM_NOKPROBE_SYMBOL(turn_on_mmu)
++_ASM_NOKPROBE_SYMBOL(grackle_wake_up)
+ 
+ #endif /* defined(CONFIG_PM) || defined(CONFIG_CPU_FREQ) */
+ 
+ 	.section .data
+ 	.balign	L1_CACHE_BYTES
+ sleep_storage:
+-	.long 0
++	.space SL_SIZE
+ 	.balign	L1_CACHE_BYTES, 0
+ 
+ #endif /* CONFIG_PPC_BOOK3S_32 */
+-- 
+2.25.0
+
