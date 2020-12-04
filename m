@@ -2,168 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08982CE6F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 05:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C22712CE6F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 05:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgLDEIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 23:08:47 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8582 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727522AbgLDEIq (ORCPT
+        id S1727874AbgLDELz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 23:11:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39525 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727676AbgLDELz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 23:08:46 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0B444GPq029179;
-        Thu, 3 Dec 2020 20:07:51 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=B2JQ/DR8cv7Ga3W7p/REvYDs0ttzHZw+y9Cp00vR4+k=;
- b=c30648YivYacG31GXG+rqD/20ebZ9XRbvGyw6NlB48JR36g42Hr0Sp0p8POWeb8/Czow
- 6juOAkgLiqco1QLZEfiGFPXz7AO2r1NBV31HAuTN0xkTBreY2UWXFPg2TdxCvxcN5wym
- XCSlEBzr7M5oWGO0qlJJ26h3LHjeEdIQpxw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 3562ma8pkb-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 03 Dec 2020 20:07:50 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 3 Dec 2020 20:07:49 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bw9WA5TBhOQmR0tbQwAgcpM+eR0LoeMR2eeXGZbA7I75z+21kzWLJT+aQfSDU4tkhqESXyXtqlNUdfL7pFTV12yIC2I0fiz3Pxrfj+9bHQRGmDsphyUQnV/oycZSW/udDshULMoinHEb94e56nFKVPGHQqdkK8bbVfVeZftITEC9Rvx1pp4KhXWxlQLP5gL9e1dhbcpXcuCDXMSYeF1+ANSO+pnZrkirBwCJYVhWmIi/N70PFHhDWxVrhE3wC0OPI/An2n9St8dawMK490/2OmcDM5w6z71kvpBkKXPUmT5OJPUrJeXP3taFBiKIuvtzGgcA7UKQ45+vNW99OVdtew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B2JQ/DR8cv7Ga3W7p/REvYDs0ttzHZw+y9Cp00vR4+k=;
- b=kjZ4Be2wu19/UCCNFnve6bUU0lpEQzQoT0c0+D58BU3sVPujptWo8HIAnIRQ3vWeMtE9nu0tBi09dgJK+LZZ9p707mN0IZ7UEg9HJJlUQLyeBrLmyL+GRUtmDhfSR+uVh967gYtCOE//nZXTeXUONxA/IHwjaMWMSC//PmXW7TCxpWXS+gAT+Oh3dAn3BsmY+FGX7yqSFaS2LNXAQpmfv9+o152g5gCNPNWc8yyaW1JPXCo0wjpid6BdHSZiScZQPrkzWsTd2gMuEzYX8xx+TTJ2VIArBNNDoVmdSwCDOa6l3tMh1+DIzDKek4a49DmZoDOJKoWjPKuIuk3mBMhHHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B2JQ/DR8cv7Ga3W7p/REvYDs0ttzHZw+y9Cp00vR4+k=;
- b=J+RdeuBG+x+4l9e0f1K6tL2sx8MXJA9SCtjRf/Sfx7P/nwmWuV028z5UPjUSLb7wtyOlQdcspqoV3cmGbzAeZfKMiblyWbuxbRcaXPu6nxKNyX769yV4X5gAaNHISPWUZuC2u/I8iAHqXzupg075kF04WUfUFJyHMlZgIAtRR/Y=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB3206.namprd15.prod.outlook.com (2603:10b6:a03:10d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18; Fri, 4 Dec
- 2020 04:07:44 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::f49e:bdbb:8cd7:bf6b]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::f49e:bdbb:8cd7:bf6b%7]) with mapi id 15.20.3611.034; Fri, 4 Dec 2020
- 04:07:44 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Jiri Olsa <jolsa@redhat.com>
-CC:     lkml <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>
-Subject: Re: [PATCH v1 2/2] perf-stat: enable counting events for BPF programs
-Thread-Topic: [PATCH v1 2/2] perf-stat: enable counting events for BPF
- programs
-Thread-Index: AQHWyI7GNKnhJbT46UiaOkZ9Hecf1anmB8qAgABNIQA=
-Date:   Fri, 4 Dec 2020 04:07:44 +0000
-Message-ID: <41603856-ADE3-4765-A578-8AEBAB2301DD@fb.com>
-References: <20201202093709.3374099-1-songliubraving@fb.com>
- <20201202093709.3374099-3-songliubraving@fb.com>
- <20201203233141.GE3613628@krava>
-In-Reply-To: <20201203233141.GE3613628@krava>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:2c22]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bdaac8f4-0716-43f7-dc03-08d8980a2725
-x-ms-traffictypediagnostic: BYAPR15MB3206:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB32064E9FBA8C5849ADEA7BD7B3F10@BYAPR15MB3206.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:2958;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: taIMzXVQix2TuXgJXqQggRoWHC6x7uslDRDMOY7/ryqMGxp3dRAbh2qY65VHmzjuKNgn0K5zevicjMA0BdbMCZ20cRfsL9yjlR84hwd1xqhFftDb1JKzr+alB4xpcexiEjDomATDTeF+5FOItpsOiSaxAHT7i2+d91WwixDaJ0XwDMIJSPuvjnYvUhIZHxRq6Vn371PmmwGDlcKf28SAV74kthoE21jEDwBKpV2IJwWQpgNLsQkdnazEY0VKApHG40VOOu9HQ2Pin7CR3i/7gvG1VwEFF7Z8SK8+M/CniKOk4r1VERoLv3LS/NucJIJxTMC1DjoLW/dN3RqxIFnLFoo3dgYGTuoBm59M3RBL8ima/CH6LtGjoMOtZGZiGlPa
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39860400002)(396003)(136003)(366004)(76116006)(66946007)(2616005)(6506007)(53546011)(36756003)(6916009)(64756008)(66446008)(66556008)(4326008)(86362001)(2906002)(5660300002)(66476007)(8676002)(478600001)(6486002)(8936002)(71200400001)(54906003)(33656002)(316002)(91956017)(6512007)(4744005)(186003)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?YkFTOFBhZk04dzVMK3RxbWwrVnB3c2k1d3VDV2hIQjFJMW13U01oNHhFaUt1?=
- =?utf-8?B?bytmanFKeTBTN01qd0xXd3I0TzFYcFRpUGtRK0pEaEk5ZXRwaSs2eFFhSFU3?=
- =?utf-8?B?ZnFEY0d6dHlBL0pOM1NnaXhkeVFSdmkrZ1JNVEpaYVQwOGZpcU9IQ0lwUUc3?=
- =?utf-8?B?aTJnKzNXVDFLQktpZEwwUEc4WFM1Q3VRa1pLMHRxbmx4TVFTY2pqWnZDY1NQ?=
- =?utf-8?B?eG5vWHZQWGZiZXlYajFYdGFkeXRxNysxWjJZcXo5eDQwalJySlpIT1FQUFRm?=
- =?utf-8?B?NVBqOWlYdDkyd3IrZUlzTFZGSzdQVGg1RWhUdXhCcngwVmVISFQ5eU1pOHJC?=
- =?utf-8?B?NFR5SFpCcjl2ekNlWlRrVEZrVVNGRFk0ekZTZFhCb1lwK09qSWg3c0R6RUlv?=
- =?utf-8?B?Ujlqb2Nid3lDV1dsK2w3VzliZFpXL1dZMWx5VC9tNzVZYnVVejhzYmJ1bkJh?=
- =?utf-8?B?VGtQVUFmOUNUcEZ1Y1dqSXhvazltNGt5UzJnRExkNUFMRFZ1K0tsS0JGVEc0?=
- =?utf-8?B?anZMdWhaQWpSejhJYlp1RzlTbUdFUWlLSmw1WElPdTlSN0hoUnZIdVRGNFY2?=
- =?utf-8?B?TzNlVlJMSDFFY2ZwZ3VmeEVtT1dNSW13VjdCMm03L3p2djlTL2lXNTM2aDIr?=
- =?utf-8?B?YWFscVlDUFdIU2JycWdqMDlSOXViZThDYnV2Y2lNUkl2RFAxYURBbjA1bVRH?=
- =?utf-8?B?TVg1RURMbUptUzZFRTlKbXViMVJ0dXZYbGNKUVhOVkZxUFlyWVVBMGlvRlJL?=
- =?utf-8?B?ZCtqNm1VVUxHeEZqcjZiZG82VHpPaWR2RDRNdDdvRld2a1BPRXRYRWpacTJU?=
- =?utf-8?B?YUMrSDAyaWJXN2hNSXVtVEJpOHd5OVNBdGFuM3NXU0Rzd0xaakNSYWthUmlO?=
- =?utf-8?B?ZmR0ZS83R25kem9oN3FCZ2YrVkozUkZCSzMvT3ZHQ1AzWmZrVnlsK3FEYmxv?=
- =?utf-8?B?MlNIVlFEU0pDZ1FJWG9mRUQwMEg1aGE1SnFtUmt2b1Ewdjc4ZFF3NVZJSG85?=
- =?utf-8?B?UndXL3VQSWlXa0JNdXN5cHoxdU1USUVMYUlTd05pQ3FSNWxuc2RFdHc5azVy?=
- =?utf-8?B?V3pEeEhBdFA2SVk2UzcwMU5KUWRSdWxvbzdxa05vbi80TzNSR1NNM3haWDZB?=
- =?utf-8?B?UzBIOWhrYVVwRlVEVnhFU216U1Z6RjhlUUZtVGpJT2poUDRUeU1wMjJScEd3?=
- =?utf-8?B?bmR1OTRBSTg1Y3NqaC9iaksybll2N1FlQi9zdWtpY01mRUpFSmVEcDhGTERQ?=
- =?utf-8?B?Sno5WWhQdC9DRDN0KzRqakNJVmI0NVh6aStQUGhPdzF0VUJNdHFYRzRYbitJ?=
- =?utf-8?B?MUJxQ1R4SVdaMklQZ2RPTFNwNE9NVlR2aGxQMmEvQUdVY3ZlU2J3dU5Vcis3?=
- =?utf-8?Q?5rzV6jMLiyhpX4BczCD5HJkYA6QArl3M=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B94CCA9F2FF10347AEA0944B47A61A8C@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 3 Dec 2020 23:11:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607055028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xaTwcm53OtninOzBBz2Gca30oq4arEzjy5m9qeAMvIc=;
+        b=cWwvtOyWo2GXLm5uYUVFu9QIRQUKjm57ee/+dCD3E98X+uIT9z7I0891TpYol9CVwX4Fxq
+        O6gvRsN2vGSW7W8Mcvdf1ZsC5/X7OlxsQsUV5+mK+p3yKxevVPf+J61qFrIfC1fChAz+kQ
+        JwEXzs+744WouEJFIvtesu05Yi4DC8w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-4YB5W3gIPUy0qLpFRPBY0w-1; Thu, 03 Dec 2020 23:10:27 -0500
+X-MC-Unique: 4YB5W3gIPUy0qLpFRPBY0w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C9199CC0D;
+        Fri,  4 Dec 2020 04:10:25 +0000 (UTC)
+Received: from mail (ovpn-112-118.rdu2.redhat.com [10.10.112.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1EA825C1CF;
+        Fri,  4 Dec 2020 04:10:19 +0000 (UTC)
+Date:   Thu, 3 Dec 2020 23:10:18 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v2] mm: Don't fault around userfaultfd-registered regions
+ on reads
+Message-ID: <X8m2qv9h7+e79UjJ@redhat.com>
+References: <20201130230603.46187-1-peterx@redhat.com>
+ <20201201125927.GB11935@casper.infradead.org>
+ <20201201223033.GG3277@xz-x1>
+ <X8bZk3jTGU8QyJWc@redhat.com>
+ <alpine.LSU.2.11.2012021410260.4989@eggly.anvils>
+ <20201202234117.GD108496@xz-x1>
+ <alpine.LSU.2.11.2012022119010.11674@eggly.anvils>
+ <20201203180234.GJ108496@xz-x1>
+ <X8lADgHCRqlQi3Xa@redhat.com>
+ <20201204023051.GL108496@xz-x1>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bdaac8f4-0716-43f7-dc03-08d8980a2725
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Dec 2020 04:07:44.5983
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3t4CfYgK7qSiB1Uqc6s1e0WX3mQNFNRz4kmkT4KI+eUWhku5JSZrh+JpvJWGOwGFJqNGXlCHlSUxuLDaxdGrYw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3206
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_01:2020-12-03,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- adultscore=0 mlxscore=0 suspectscore=0 phishscore=0 impostorscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040021
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204023051.GL108496@xz-x1>
+User-Agent: Mutt/2.0.2 (2020-11-20)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gT24gRGVjIDMsIDIwMjAsIGF0IDM6MzEgUE0sIEppcmkgT2xzYSA8am9sc2FAcmVkaGF0
-LmNvbT4gd3JvdGU6DQo+IA0KPiBPbiBXZWQsIERlYyAwMiwgMjAyMCBhdCAwMTozNzowOUFNIC0w
-ODAwLCBTb25nIExpdSB3cm90ZToNCj4+IEludHJvZHVjZSBwZXJmLXN0YXQgLWIgb3B0aW9uLCB3
-aGljaCBjb3VudHMgZXZlbnRzIGZvciBCUEYgcHJvZ3JhbXMsIGxpa2U6DQo+PiANCj4+IFtyb290
-QGxvY2FsaG9zdCB+XSMgfi9wZXJmIHN0YXQgLWUgcmVmLWN5Y2xlcyxjeWNsZXMgLWIgMjU0IC1J
-IDEwMDANCj4+ICAgICAxLjQ4NzkwMzgyMiAgICAgICAgICAgIDExNSwyMDAgICAgICByZWYtY3lj
-bGVzDQo+PiAgICAgMS40ODc5MDM4MjIgICAgICAgICAgICAgODYsMDEyICAgICAgY3ljbGVzDQo+
-PiAgICAgMi40ODkxNDcwMjkgICAgICAgICAgICAgODAsNTYwICAgICAgcmVmLWN5Y2xlcw0KPj4g
-ICAgIDIuNDg5MTQ3MDI5ICAgICAgICAgICAgIDczLDc4NCAgICAgIGN5Y2xlcw0KPj4gICAgIDMu
-NDkwMzQxODI1ICAgICAgICAgICAgIDYwLDcyMCAgICAgIHJlZi1jeWNsZXMNCj4+ICAgICAzLjQ5
-MDM0MTgyNSAgICAgICAgICAgICAzNyw3OTcgICAgICBjeWNsZXMNCj4+ICAgICA0LjQ5MTU0MDg4
-NyAgICAgICAgICAgICAzNywxMjAgICAgICByZWYtY3ljbGVzDQo+PiAgICAgNC40OTE1NDA4ODcg
-ICAgICAgICAgICAgMzEsOTYzICAgICAgY3ljbGVzDQo+IA0KPiBoaSwNCj4gSSdtIGdldHRpbmcg
-Y29tcGlsZSBmYWlsIHdpdGggZ2NjIDEwOg0KPiANCj4gCWJ1aWx0aW4tc3RhdC5jOiBJbiBmdW5j
-dGlvbiDigJhjbWRfc3RhdOKAmToNCj4gCWJ1aWx0aW4tc3RhdC5jOjI0Mjk6NzogZXJyb3I6IGRl
-Y2xhcmF0aW9uIG9mIOKAmGVycuKAmSBzaGFkb3dzIGEgcHJldmlvdXMgbG9jYWwgWy1XZXJyb3I9
-c2hhZG93XQ0KPiAJIDI0MjkgfCAgIGludCBlcnIgPSBwZXJmX2V2ZW50X19zeW50aGVzaXplX2tl
-cm5lbF9tbWFwKCh2b2lkICopJnBlcmZfc3RhdCwNCj4gCSAgICAgIHwgICAgICAgXn5+DQo+IAli
-dWlsdGluLXN0YXQuYzoyMTA0OjMzOiBub3RlOiBzaGFkb3dlZCBkZWNsYXJhdGlvbiBpcyBoZXJl
-DQo+IAkgMjEwNCB8ICBpbnQgc3RhdHVzID0gLUVJTlZBTCwgcnVuX2lkeCwgZXJyOw0KPiAJICAg
-ICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5+fg0KDQpnY2MgOSBkaWRuJ3Qg
-Y29tcGxhaW4gYWJvdXQgaXQuIExldCBtZSBmaXggaXQgaW4gdGhlIG5leHQgdmVyc2lvbi4gDQoN
-ClRoYW5rcywNClNvbmcNCg0K
+Hi Peter,
+
+On Thu, Dec 03, 2020 at 09:30:51PM -0500, Peter Xu wrote:
+> I'm just afraid there's no space left for a migration entry, because migration
+> entries fills in the pfn information into swp offset field rather than a real
+> offset (please refer to make_migration_entry())?  I assume PFN can use any bit.
+> Or did I miss anything?
+> 
+> I went back to see the original proposal from Hugh:
+> 
+>   IIUC you only need a single value, no need to carve out another whole
+>   swp_type: could probably be swp_offset 0 of any swp_type other than 0.
+> 
+> Hugh/Andrea, sorry if this is a stupid swap question: could you help explain
+> why swp_offset=0 won't be used by any swap device?  I believe it's correct,
+> it's just that I failed to figure out the reason myself. :(
+> 
+
+Hugh may want to review if I got it wrong, but there's basically three
+ways.
+
+swp_type would mean adding one more reserved value in addition of
+SWP_MIGRATION_READ and SWP_MIGRATION_WRITE (kind of increasing
+SWP_MIGRATION_NUM to 3).
+
+swp_offset = 0 works in combination of SWP_MIGRATION_WRITE and
+SWP_MIGRATION_READ if we enforce pfn 0 is never used by the kernel
+(I'd feel safer with pfn value -1UL truncated to the bits of the swp
+offset, since the swp_entry format is common code).
+
+The bit I was suggesting is just one more bit like _PAGE_SWP_UFFD_WP
+from the pte, one that cannot ever be set in any swp entry today. I
+assume it can't be _PAGE_SWP_UFFD_WP since that already can be set but
+you may want to verify it...
+
+It'd be set on the pte (not in the swap entry), then it doesn't matter
+much what's inside the swp_entry anymore. The pte value would be
+generated with this:
+
+ pte_swp_uffd_wp_unmap(swp_entry_to_pte(swp_entry(SWP_MIGRATION_READ, 0)))
+
+(maybe SWP_MIGRATION_READ could also be 0 and then it can be just
+enough to set that single bit in the pte and nothing else, all other
+bits zero)
+
+We never store a raw swp entry in the pte (the raw swp entry is stored
+in the xarray, it's the index of the swapcache).
+
+To solve our unmap issue we only deal with pte storage (no xarray
+index storage). This is why it can also be in the arch specific pte
+representation of the swp entry, it doesn't need to be a special value
+defined in the swp entry common code.
+
+Being the swap entry to pte conversion arch dependent, such bit needs
+to be defined by each arch (reserving a offset or type value in swp
+entry would solve it in the common code).
+
+#define SWP_OFFSET_FIRST_BIT	(_PAGE_BIT_PROTNONE + 1)
+
+All bits below PROTNONE are available for software use and we use bit
+1 (soft dirty) 2 (uffd_wp). protnone bit 8 itself (global bit) must
+not be set or it'll look protnone and pte_present will be true. Bit 7
+is PSE so it's also not available because pte_present checks that
+too.
+
+It appears you can pick between bit 3 4 5 6 at your own choice and it
+doesn't look like we're running out of those yet (if we were there
+would be a bigger incentive to encode it as part of the swp entry
+format). Example:
+
+#define _PAGE_SWP_UFFD_WP_UNMAP	_PAGE_PWT
+
+If that bit it set and pte_present is false, then everything else in
+that that pte is meaningless and it means uffd wrprotected
+pte_none.
+
+So in the migration-entry/swapin page fault path, you could go one
+step back and check the pte for such bit, if it's set it's not a
+migration entry.
+
+If there's a read access it should fill the page mark with
+shmem_fault, keep the pte wrprotected and then set _PAGE_UFFD_WP on
+the pte. If there's a write access it should invoke handle_userfault.
+
+If there's any reason where the swp_entry reservation is simpler
+that's ok too, you'll see an huge lot of more details once you try to
+implement it so you'll be better able to judje later. I'm greatly
+simplifying everything but this is not simple feat...
+
+Thanks,
+Andrea
+
