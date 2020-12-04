@@ -2,118 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DFE2CF43C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4062CF43E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728528AbgLDSly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:41:54 -0500
-Received: from outbound-smtp34.blacknight.com ([46.22.139.253]:57405 "EHLO
-        outbound-smtp34.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726021AbgLDSly (ORCPT
+        id S1729508AbgLDSmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:42:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgLDSmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:41:54 -0500
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp34.blacknight.com (Postfix) with ESMTPS id 80CF61EF4
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 18:41:02 +0000 (GMT)
-Received: (qmail 32155 invoked from network); 4 Dec 2020 18:41:02 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 4 Dec 2020 18:41:02 -0000
-Date:   Fri, 4 Dec 2020 18:41:00 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 06/10] sched/fair: Clear the target CPU from the cpumask
- of CPUs searched
-Message-ID: <20201204184100.GD3371@techsingularity.net>
-References: <CAKfTPtBGsXb0RqE_qs2miZGi_uax4VY1_8y1NGhQ17Q8mBx8dw@mail.gmail.com>
- <20201204113030.GZ3371@techsingularity.net>
- <CAKfTPtDRqwUoX51rU0Xd3H9Dwqf8bLAFBxhoeMF1brKYmAZDJg@mail.gmail.com>
- <CAKfTPtBABBY1QSfFtbhBQ7+a8HOp2YfTyJaMVo07T5GU7sp_MA@mail.gmail.com>
- <3d8a6d19-afac-dc93-127d-da6505402cdf@linux.intel.com>
- <CAKfTPtAp+SyjmAsxTpSo5owQq0AeDpBWdo5ds0fVZvDr2OK_iw@mail.gmail.com>
- <20201204143115.GB3371@techsingularity.net>
- <CAKfTPtBXUK7NnhN1Rxeq-o5t-G+csN6Tj0yP=BSV_sdD1uZS0g@mail.gmail.com>
- <20201204154029.GC3371@techsingularity.net>
- <CAKfTPtDX1wGWD3bEC=YZ74uvKGmkHPf3rLobr_wGy7MSFwtcdw@mail.gmail.com>
+        Fri, 4 Dec 2020 13:42:09 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA66DC061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:41:28 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id c7so6860793edv.6
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:41:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fpe0QzFR+pipwwlQ6a2MzDyp0bYD7DIdzQkuuRLNsTo=;
+        b=N1pWv4MVTu8h54c3GOs5Ue8aeY0is8BFjfmOMVaj0XxCqhP/03svogCo1dlFWT63Eh
+         A/rDBsUlceBfglZkzb0UDw3oaUnu8NMJ0KwRzihvA93AMxzYDYmejDM5IozeJKtEvICW
+         4AS2VR4VaWa5kMmpNSJgBndJQDyANHJuQFll+uqcq+nHn9V0tG6dhm8BGNofHDaz4kUC
+         7hPXvKaCtfvVorLMoY/CUnGi97CynEeSKpQDbux6DxSCoN2hA1MLAv56Pkx4rcmFkunL
+         qKzjKZemdJ4CeXh2fseFX/E4pvjtaRkM28xypluQoaDZhzEZRObj0nun1tT2Mr8m+r+7
+         uxfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fpe0QzFR+pipwwlQ6a2MzDyp0bYD7DIdzQkuuRLNsTo=;
+        b=lqWx8QcrVRVG2mwjRrNvsfBofFbWBPDlTWo6PqpMCc/tLen7/NtuBMTpEdNH1e56Ok
+         PFEww9RRJnPARGpHUpcMb3j1ItcQkGwzjm4XXUYdq1XlH9AMoshvuncPuNGZkTE6Olr4
+         xRxsePsMzAs13d5KQ3d2BAiw94t+vRtIz0PnWIJ0rz1L8wP8IKrCOCK2BA7Rlr5nSr9C
+         9MUPPBrZLc7O04LmbmBsRE7cWYiNWXN5XXToP+B8PnpQpPc00dOQA+Ge/+OlhaHlV0Al
+         CkFEaHbKcfF7+1eWFc6HW12UTNR9i/gk4DXrYrXQOjOkgcN6p81L1JSfu9N/Y8p7GqBj
+         fkHQ==
+X-Gm-Message-State: AOAM532hOxhpOEc1P8xKCpz+4QfhxwWQ2925jcThcsijCJwbEqBEea0O
+        GcqazFZudt2HI5344h9Fah/CIkvQeYhndpk2oDNdSw==
+X-Google-Smtp-Source: ABdhPJz+JmjtP/rNpS01qPn31jBKjhcmz0scPpZbGA0wOOkM/QXJpxUIqwxfVRzPugL1FZDgtzhWYyvOBl24MWLcZ0M=
+X-Received: by 2002:a50:f089:: with SMTP id v9mr9080510edl.353.1607107287403;
+ Fri, 04 Dec 2020 10:41:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtDX1wGWD3bEC=YZ74uvKGmkHPf3rLobr_wGy7MSFwtcdw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <X8pocPZzn6C5rtSC@google.com> <20201204180645.1228-1-Ashish.Kalra@amd.com>
+In-Reply-To: <20201204180645.1228-1-Ashish.Kalra@amd.com>
+From:   Sean Christopherson <seanjc@google.com>
+Date:   Fri, 4 Dec 2020 10:41:15 -0800
+Message-ID: <CAMS+r+XBhFHnXrepzMq+hkaP3yHOUELjyc65JQipKCN+7zubVw@mail.gmail.com>
+Subject: Re: [PATCH v8 13/18] KVM: x86: Introduce new KVM_FEATURE_SEV_LIVE_MIGRATION
+ feature & Custom MSR.
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     Tom Lendacky <Thomas.Lendacky@amd.com>, bp@suse.de,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        venu.busireddy@oracle.com, X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 04:43:05PM +0100, Vincent Guittot wrote:
-> On Fri, 4 Dec 2020 at 16:40, Mel Gorman <mgorman@techsingularity.net> wrote:
-> >
-> > On Fri, Dec 04, 2020 at 04:23:48PM +0100, Vincent Guittot wrote:
-> > > On Fri, 4 Dec 2020 at 15:31, Mel Gorman <mgorman@techsingularity.net> wrote:
-> > > >
-> > > > On Fri, Dec 04, 2020 at 02:47:48PM +0100, Vincent Guittot wrote:
-> > > > > > IIUC, select_idle_core and select_idle_cpu share the same cpumask(select_idle_mask)?
-> > > > > > If the target's sibling is removed from select_idle_mask from select_idle_core(),
-> > > > > > select_idle_cpu() will lose the chance to pick it up?
-> > > > >
-> > > > > This is only relevant for patch 10 which is not to be included IIUC
-> > > > > what mel said in cover letter : "Patches 9 and 10 are stupid in the
-> > > > > context of this series."
-> > > > >
-> > > >
-> > > > Patch 10 was stupid in the context of the prototype because
-> > > > select_idle_core always returned a CPU. A variation ended up being
-> > > > reintroduced at the end of the Series Yet To Be Posted so that SMT siblings
-> > > > are cleared during select_idle_core() but select_idle_cpu() still has a
-> > > > mask with unvisited CPUs to consider if no idle cores are found.
-> > > >
-> > > > As far as I know, this would still be compatible with Aubrey's idle
-> > > > cpu mask as long as it's visited and cleared between select_idle_core
-> > > > and select_idle_cpu. It relaxes the contraints on Aubrey to some extent
-> > > > because the idle cpu mask would be a hint so if the information is out
-> > > > of date, an idle cpu may still be found the normal way.
-> > >
-> > > But even without patch 10, just replacing sched_domain_span(sd) by
-> > > sds_idle_cpus(sd->shared) will ensure that sis loops only on cpus that
-> > > get a chance to be idle so select_idle_core is likely to return an
-> > > idle_candidate
-> > >
-> >
-> > Yes but if the idle mask is out of date for any reason then idle CPUs might
-> 
-> In fact it's the opposite, a cpu in idle mask might not be idle but
-> all cpus that enter idle will be set
-> 
+On Fri, Dec 4, 2020 at 10:07 AM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
+>
+> Yes i will post a fresh version of the live migration patches.
+>
+> Also, can you please check your email settings, we are only able to see your response on the
+> mailing list but we are not getting your direct responses.
 
-When I first checked, the information was based on the tick or a CPU
-stopping the tick. That was not guaranteed to be up to date so I considered
-the best option would be to treat idle cpu mask as advisory. It would
-not necessarily cover a CPU that was entering idle and polling before
-entering an idle state for example or a rq that would pass sched_idle_cpu()
-depending on the timing of the update_idle_cpumask call.
+Hrm, as in you don't get the email?
 
-I know you reviewed that patch and v6 may be very different but the more
-up to date that information is, the greater the cache conflicts will be
-on sched_domain_shared so maintaining the up-to-date information may cost
-enough to offset any benefit from reduced searching at wakeup.
-
-If this turns out to be wrong, then great, the idle cpu mask can be used
-as both the basis for an idle core search and a fast find of an individual
-CPU. If the cost of keeping up to date information is too high then the
-idle_cpu_mask can be treated as advisory to start the search and track
-CPUs visited.
-
-The series are not either/or, chunks of the series I posted are orthogonal
-(e.g. changes to p->recent_cpu_used), the latter parts could either work
-with idle cpu mask or be replaced by idle cpu mask depending on which
-performs better.
-
--- 
-Mel Gorman
-SUSE Labs
+Is this email any different?  Sending via gmail instead of mutt...
