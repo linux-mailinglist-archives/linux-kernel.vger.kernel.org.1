@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E402CEA4A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:54:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EB02CEA4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:54:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729365AbgLDIxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:53:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725969AbgLDIxv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:53:51 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4055FC061A52
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 00:53:05 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id v14so6641345lfo.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 00:53:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OvnhVAvJ+aVTGs3i380olP2vILDpA1stTISjjteIyyo=;
-        b=kHXlscX2tTXD1z5Yaey7v8lWrMbkzDRF0BdDvZi4O0qBqBXhAZBG0lXBM9zWaP0/dZ
-         1hFDdJ07vxlyRg4S/rtMjfsFZvjygoy+PEwX4/8snWeMhDs2AbgBZ+0q6hc7e+93SUiA
-         U74hpS93K7ZZhJoA5dXo/roez9nkDFmOHRq+eBYg6lnGXbAtAFrUnF6AnnitgoQVYgMv
-         YVx/jriftYzolvI41VMMclIT8HhXQBcmmCnTFYIakSVlbiIBKfjTBNmsBI7Umy9yqxZ2
-         6r2vVeE29nTQgcxiB1HGf7diQpk6QSQASqOcoX3evpdcTeSaPi/YwW8nZPfsfdRLvZHc
-         k+Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OvnhVAvJ+aVTGs3i380olP2vILDpA1stTISjjteIyyo=;
-        b=tqtBG+bhlokMO4kuBTBBbZKW3+DFUlg0fKgvzapdfKiX/NgdWMR1RpEFA6y2OXSNsR
-         tuby8e/inp8g85qQAP81+VQ8Hb3uayF1oIR70kmnVKq58kpeLguwP4ETepixY/1WVoy2
-         7lAua8pCYe/5QuyzhEMNbjU66/SGPp7NG8ToUxleGcU6zMP65L523jJglpiiH7GrgyuN
-         XNE0HyrCzjtznSQOrDyUtC64VDqu4tFmaEiTVFonsI362xOUOdGl6Flb2+uw78F/LX0t
-         4fuqk3hm95qoYiUgkl7vbwkRw3bmhu8wGv9pVGzN0iIe7fXeflNRhzzNz1SyNb1MLD5V
-         UPig==
-X-Gm-Message-State: AOAM531JCPppOmBb/uTBFRsjUW1YlpWQrK2AqGKBRbQrv3iJwxWqbxCy
-        wQC2mTf1zwBhQdw5Z46C1iTQNnZIBk4AuvWI0/a+Rg==
-X-Google-Smtp-Source: ABdhPJwuilOTB0n9qQh2b7zD4iD8K4vY/jP5i3QcM9ws3a1L8Gv28Ri/VitZSRGz8yfhbh6HJpnyAk7clI8dOhuPLPk=
-X-Received: by 2002:ac2:4308:: with SMTP id l8mr2780465lfh.260.1607071983809;
- Fri, 04 Dec 2020 00:53:03 -0800 (PST)
+        id S1729332AbgLDIyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:54:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53364 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725969AbgLDIyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 03:54:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607072042; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GzUWTFBPDORH96iWBN+PzoJswcnczTaxytp5LowmCEU=;
+        b=NDbrPj0qDNLfAfWJzbi4xsbf8SduwUiEgH/Z/xNOYSFwe9IcZH6fuxfDFBrqB//TEUxSep
+        LRHo08oEO/YpShqf8CuOQdD8fieBnjisHCtLjK9x667fa28AWH9J6icxQBwKNNkvkphYpH
+        Dn2FhDIJKze/52Kna9WFtZh04/W4t7A=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 821FFACC4;
+        Fri,  4 Dec 2020 08:54:02 +0000 (UTC)
+Date:   Fri, 4 Dec 2020 09:54:01 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH 5/6] mm: honor PF_MEMALLOC_NOMOVABLE for all allocations
+Message-ID: <20201204085401.GB25569@dhcp22.suse.cz>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-6-pasha.tatashin@soleen.com>
+ <20201203091703.GA17338@dhcp22.suse.cz>
+ <CA+CK2bB-BC-5Szs1Piv3O=OGxQbJSGWzgMmDUtDewrCqEoNaXw@mail.gmail.com>
+ <20201204084312.GA25569@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20201124094636.v2.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
- <CAD=FV=W2i7dfcg2J2a-EO8nBvwHU0AMp79Esoy1Y=H_hNc+jvw@mail.gmail.com>
-In-Reply-To: <CAD=FV=W2i7dfcg2J2a-EO8nBvwHU0AMp79Esoy1Y=H_hNc+jvw@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 4 Dec 2020 09:52:53 +0100
-Message-ID: <CACRpkdb_v0f-D6arQbUL_F2z7ZkQ5SUn+AOKSzyWVaBpC-9Q=g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] irqchip: qcom-pdc: Fix phantom irq when changing
- between rising/falling
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Archana Sathyakumar <asathyak@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204084312.GA25569@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 10:32 PM Doug Anderson <dianders@chromium.org> wrote:
+On Fri 04-12-20 09:43:13, Michal Hocko wrote:
+> On Thu 03-12-20 10:15:41, Pavel Tatashin wrote:
+[...]
+> > Also, current_gfp_context() is used elsewhere, and in some
+> > places removing __GFP_MOVABLE from gfp_mask means that we will need to
+> > also change other things. For example [1], in try_to_free_pages() we
+> > call current_gfp_context(gfp_mask) which can reduce the maximum zone
+> > idx, yet we simply set it to: reclaim_idx = gfp_zone(gfp_mask), not to
+> > the newly determined gfp_mask.
+> 
+> Yes and the direct reclaim should honor the movable zone restriction.
+> Why should we reclaim ZONE_MOVABLE when the allocation cannot really
+> allocate from it? Or have I misunderstood your concern?
 
-> NOTE: even though this has Maulik's tags, he has requested [1] that we
-> should wait before landing while he talks with HW folks.
-
-OK I'm holding this series back until you have confirmation.
-When you know you want it applied, poke me (or send a new
-iteration).
-
-Yours,
-Linus Walleij
+Btw. if we have gfp mask properly filtered for the fast path then we can
+remove the additional call to current_gfp_context from the direct
+reclaim path. Something for a separate patch.
+-- 
+Michal Hocko
+SUSE Labs
