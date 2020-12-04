@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA63D2CEF51
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF132CEF60
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388201AbgLDOEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:04:01 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:32836 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727682AbgLDOEA (ORCPT
+        id S2387614AbgLDOHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:07:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47853 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727275AbgLDOHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:04:00 -0500
-Received: by mail-lj1-f196.google.com with SMTP id t22so6775664ljk.0;
-        Fri, 04 Dec 2020 06:03:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gtn8MsRe3DMgMj91x+Smnp8eMKhG03Wope+aIlxxQKc=;
-        b=B91VVU4A3KpJL9fLSSmOfV1L0wYc+SSiBbOa+OHF6qWPFem8RDzTBqqzAsCvrJ9eTr
-         NZzgwmJk7UmJJBTapLvWHSamxMaqVXhwDM1lmL42m9HVU7YJsZ3CcUkqGEDGiEbnG8zj
-         nZIqa8fvE7T2LY6bspbQxPc2JEpy40/22kzky36BdzRL1m0RDqgVdE6A+6lK0DspOhcL
-         qEcCtkSLbYeZYJIa8nYrRMMi2dl8uyFY0RfnsBXf3bLxC+8WLTMTB5zA7cqRqVtYo+UE
-         oPZuhGitrL+7tWDyFNpf1CHFsMPf02wGcBCoHesaULbQ8B0qL30y2erbXp4Pmeyrrp0o
-         oIWg==
-X-Gm-Message-State: AOAM533FA4IMFITXBJsEjMBDIulqJS4NBLwSFkcR8taSqKBdIkEhekv7
-        GodnF37Avy+CU50Ko6vBcJo=
-X-Google-Smtp-Source: ABdhPJyVfVQdGoJLMZW3wLfqHywZjFX2O6JRGNqsqocxYouT0vH7fJrP+ILfGOn67a6g1kiOs0AAYg==
-X-Received: by 2002:a2e:593:: with SMTP id 141mr225913ljf.86.1607090592510;
-        Fri, 04 Dec 2020 06:03:12 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id b12sm1729780ljj.133.2020.12.04.06.03.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 06:03:11 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1klBgX-0004KF-A2; Fri, 04 Dec 2020 15:03:45 +0100
-Date:   Fri, 4 Dec 2020 15:03:45 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Kurtz <djkurtz@chromium.org>,
-        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: Re: [PATCH v2 2/8] earlycon: simplify earlycon-table implementation
-Message-ID: <X8pBwTl7nZoOQ18m@localhost>
-References: <20201123102319.8090-1-johan@kernel.org>
- <20201123102319.8090-3-johan@kernel.org>
+        Fri, 4 Dec 2020 09:07:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607090769;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2eQ95q8WyeD3Z8w3NMzomvxnqLrwKfurRNLB8W3+XdA=;
+        b=END1HSe8urJP+GPNxmb1aPxTOQJgnmCZMUhVzxHmkBdG42ZQ+VocDZWVfu9D4Rkj/YIvjP
+        jgv3BcO9foI2O+Zgr8544NxTAh/N4SfRkna0hp0c2A7NlIOFLc+zHNUqanCP1Kk4KknD0V
+        M2Est6tWxNrAMCOso3kKapnsqmfcBZY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-119-kbXB9TJ4NViVn0B_D_Ugog-1; Fri, 04 Dec 2020 09:06:05 -0500
+X-MC-Unique: kbXB9TJ4NViVn0B_D_Ugog-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C7D21005513;
+        Fri,  4 Dec 2020 14:06:02 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4FBB860C15;
+        Fri,  4 Dec 2020 14:06:00 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20201120180426.922572-2-mic@digikod.net>
+References: <20201120180426.922572-2-mic@digikod.net> <20201120180426.922572-1-mic@digikod.net>
+To:     =?us-ascii?Q?=3D=3FUTF-8=3Fq=3FMicka=3DC3=3DABl=3D20Sala=3DC3=3DBCn=3F?=
+         =?us-ascii?Q?=3D?= <mic@digikod.net>
+Cc:     dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        =?us-ascii?Q?=3D=3FUTF-8=3Fq=3FMicka=3DC3=3DABl?=
+         =?us-ascii?Q?=3D20Sala=3DC3=3DBCn=3F=3D?= 
+        <mic@linux.microsoft.com>, Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v1 1/9] certs: Fix blacklisted hexadecimal hash string check
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123102319.8090-3-johan@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 04 Dec 2020 14:05:59 +0000
+Message-ID: <113785.1607090759@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg,
+Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wrote:
 
-On Mon, Nov 23, 2020 at 11:23:13AM +0100, Johan Hovold wrote:
-> Instead of using the array-of-pointers trick to avoid having gcc mess up
-> the earlycon array stride, specify type alignment when declaring entries
-> to prevent gcc from increasing alignment.
-> 
-> This is essentially an alternative (one-line) fix to the problem
-> addressed by commit dd709e72cb93 ("earlycon: Use a pointer table to fix
-> __earlycon_table stride").
-> 
-> gcc can increase the alignment of larger objects with static extent as
-> an optimisation, but this can be suppressed by using the aligned
-> attribute when declaring variables.
-> 
-> Note that we have been relying on this behaviour for kernel parameters
-> for 16 years and it indeed hasn't changed since the introduction of the
-> aligned attribute in gcc-3.1.
-> 
-> Signed-off-by: Johan Hovold <johan@kernel.org>
+> When looking for a blacklisted hash, bin2hex() is used to transform a
+> binary hash to an ascii (lowercase) hexadecimal string.  This string is
+> then search for in the description of the keys from the blacklist
+> keyring.  When adding a key to the blacklist keyring,
+> blacklist_vet_description() checks the hash prefix and the hexadecimal
+> string, but not that this string is lowercase.  It is then valid to set
+> hashes with uppercase hexadecimal, which will be silently ignored by the
+> kernel.
+>=20
+> Add an additional check to blacklist_vet_description() to check that
+> hexadecimal strings are in lowercase.
 
-Could you pick this one up for 5.11?
+I wonder if it would be a better idea to allow the keyring type to adjust t=
+he
+description string - in this instance to change it to all lowercase.
 
-Johan
+David
+
