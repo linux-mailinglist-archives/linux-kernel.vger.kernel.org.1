@@ -2,96 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E96F2CF391
+	by mail.lfdr.de (Postfix) with ESMTP id C3F172CF392
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729524AbgLDSFR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Dec 2020 13:05:17 -0500
-Received: from aposti.net ([89.234.176.197]:52870 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726851AbgLDSFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:05:17 -0500
-Date:   Fri, 04 Dec 2020 18:04:19 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] mmc: mediatek: mark PM functions as __maybe_unused
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
-        yong mao <yong.mao@mediatek.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        Marek Vasut <marex@denx.de>, linux-mmc@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        ARM/Mediatek SoC support <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Message-Id: <77UTKQ.VC4AUEXP1CN21@crapouillou.net>
-In-Reply-To: <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com>
-References: <20201203222922.1067522-1-arnd@kernel.org>
-        <CAPDyKFqtFYqc8i_fVzOUnuZGJjtwjVLqE-vebtOKuYJ-4PrDBg@mail.gmail.com>
-        <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com>
+        id S1729710AbgLDSFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:05:46 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:46310 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726330AbgLDSFq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:05:46 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1klFRz-0008KB-JP; Fri, 04 Dec 2020 18:04:59 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: brcmfmac: remove redundant assignment to pointer 'entry'
+Date:   Fri,  4 Dec 2020 18:04:59 +0000
+Message-Id: <20201204180459.1148257-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Colin Ian King <colin.king@canonical.com>
 
-Le ven. 4 déc. 2020 à 15:14, Arnd Bergmann <arnd@kernel.org> a écrit 
-:
-> On Fri, Dec 4, 2020 at 11:02 AM Ulf Hansson <ulf.hansson@linaro.org> 
-> wrote:
->>  On Thu, 3 Dec 2020 at 23:29, Arnd Bergmann <arnd@kernel.org> wrote:
-> 
->>  > -#ifdef CONFIG_PM
->>  >  static void msdc_save_reg(struct msdc_host *host)
->> 
->>  Shouldn't msdc_save|restore_reg() be turned into "__maybe_unused" 
->> as well?
-> 
-> There is no need since the compiler can figure that out already when 
-> there
-> is a reference to the function from dead code.
-> 
->>  >
->>  > -static int msdc_resume(struct device *dev)
->>  > +static int __maybe_unused msdc_resume(struct device *dev)
->>  >  {
->>  >         return pm_runtime_force_resume(dev);
->>  >  }
->>  > -#endif
->>  >
->>  >  static const struct dev_pm_ops msdc_dev_pm_ops = {
->> 
->>  You may also change this to a __maybe_unused, as long as you also
->>  assign the .pm pointer in the mt_msdc_driver with
->>  pm_ptr(&msdc_dev_pm_ops).
->> 
->>  Ideally the compiler should drop these functions/datas entirely 
->> then.
-> 
-> I don't see a lot of other instances of that yet, and it's fairly new.
-> Maybe we should fix it before it gets propagated further.
-> 
-> I would suggest we redefine pm_ptr like
-> 
-> #define pm_ptr(_ptr) (IS_ENABLED(CONFIG_PM) ? (_ptr) : NULL)
-> 
-> and remove the __maybe_unused annotations on those that we
-> already have. This also has the effect of dropping the unused
-> data from the object, but without having to an an #ifdef or
-> __maybe_unused.
-> 
-> Adding Paul and Rafael to Cc for clarification on this.
+The pointer 'entry' is being initialized with a value that is never read
+and it is being updated later with a new value.  The initialization is
+redundant and can be removed.
 
-I didn't think about that. That's smarter and much more elegant.
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cheers,
--Paul
-
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c
+index 437e83ea8902..19b0f318f93e 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c
+@@ -746,7 +746,7 @@ brcmf_fws_macdesc_lookup(struct brcmf_fws_info *fws, u8 *ea)
+ static struct brcmf_fws_mac_descriptor*
+ brcmf_fws_macdesc_find(struct brcmf_fws_info *fws, struct brcmf_if *ifp, u8 *da)
+ {
+-	struct brcmf_fws_mac_descriptor *entry = &fws->desc.other;
++	struct brcmf_fws_mac_descriptor *entry;
+ 	bool multicast;
+ 
+ 	multicast = is_multicast_ether_addr(da);
+-- 
+2.29.2
 
