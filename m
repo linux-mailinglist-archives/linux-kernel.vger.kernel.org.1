@@ -2,163 +2,834 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965EE2CE3ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CAC2CE406
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502031AbgLDAHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 19:07:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
+        id S1731301AbgLDAJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 19:09:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502012AbgLDAHp (ORCPT
+        with ESMTP id S1726619AbgLDAJu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 19:07:45 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E62C061A52
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 16:07:05 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id w6so2466281pfu.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 16:07:05 -0800 (PST)
+        Thu, 3 Dec 2020 19:09:50 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF7FC061A53
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 16:09:09 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id t205so4206673oib.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 16:09:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=hElgmtc7PJJLc48EH95WqE542tCHlShsoybOtFUxsPM=;
-        b=lZ1RIYdPTNItbLd+7kmC26xGvAXxapbVxIV85XTGaDAwmkHGv59dhrOUF33yNnPU9P
-         LZ08gTv+1Y2UKsDHaTUNJYEuu9/RhEN/z6NnGh8Mezk6ycSIX4znSoQkOJXccOCz7Ovp
-         0Z47ogkC5n9V5UGHLCHcEj9x21Y4PmW3niD2rzxy7rZfOXcEzz9wrIR5T6+3T/nzJuHq
-         qlkbSEIUE4YedxF0dE0BKkjjyz/NIVsvBKB/uW0QgQVkAEw9WUaDBSOlYw5bEx6xBUnf
-         QlOwAxZpwAvmBhbItk9YeLIiHGyFxbUhA8daBgZX6qpfaPmJNhTJnyButIxM4DHuwqx4
-         ZRIg==
+        bh=1OMtV/oY0Dc4gC3AtUv+9fsSfJn4IBYkfIFWLRZFfsY=;
+        b=pjGAoBqDVNuGumnb/yD7P7bUfKHfyiRiI0HGoHaxXKkLBHvSt0G35UezmdFe0ihWom
+         fcVvdJ5l8phM687eZ2X2UCLm5GEg/XiweJIFGwXLIQ2sjdrLoZd8viL4HGUw42L+gcRh
+         2xQJH2wA+NUnw70BHYrpYp8WC55oq8g6EPnHPaS9H2ewEx7A/2AP4fJdgm0EDoiF7AsB
+         d0/QwNC8NYdQNPzXdvLe25LCROmspTugVIVoBHKToO2tE2FmRurk9hnvxTrHLYeC33I1
+         EMmeRONOcnxESsdOezHxq7QVUAjgjo/WvZYw8AYmIVVK8Qox3ih+lS6JW7/on7bPzCsM
+         426g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=hElgmtc7PJJLc48EH95WqE542tCHlShsoybOtFUxsPM=;
-        b=JBAl0XTkLAoOb4vGvTULq/9I4eFJMJTG4UF/4vMsPbxVxt3+0ZNVrQt8MD+kdI5Ahm
-         EZbQkd/8twQcQxXzdpV8z6JhbtgTF7cJwwxq7KT/d03WXJvqm3VCZ9Zilz/6JygycE5S
-         KHRPtaGVEYoAbPNvF7thL92E7wQgJW/p5FQaZyv0Dr8Ch1fa6BV48kxg51cH7hk08WR6
-         OANj9VXfFTzQzUl68bhrdmi64S5MIeRFAm/w+HZMkKJmvBnkONqQc0knVgnDZJt8pEV3
-         RD6OV70U2zropzhVg2PGIZAnrj1vO0UhIgAViJF749/ssLogPYQFpHYPohNjGB7OxYLk
-         +0zQ==
-X-Gm-Message-State: AOAM5311bAmY0yfmA0svD9eveDZgJ5QOZtaO0PV57H82o5EjqtjeBAxZ
-        f0vKbhrFEhudZ6xlFWA91/tkuA==
-X-Google-Smtp-Source: ABdhPJxq4b+0dAEDAWHo5J7YWwonfoA44bfJmj1hGhExnewdvVXSqfrPlp5xT3XC+ZU6WRbehtTbMg==
-X-Received: by 2002:aa7:9315:0:b029:18b:6372:d43e with SMTP id 21-20020aa793150000b029018b6372d43emr1288827pfj.2.1607040424574;
-        Thu, 03 Dec 2020 16:07:04 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id s189sm2725013pfb.60.2020.12.03.16.07.03
+        bh=1OMtV/oY0Dc4gC3AtUv+9fsSfJn4IBYkfIFWLRZFfsY=;
+        b=t4C1V7KHaeHHmdk00GCpCX469B2ErGbFExAfMEHbFln6RDH3rbk1vSLaddupNXzEi6
+         VyAOHk3KYt3BiIog5aBDisO5untI//q9+c20MREGDvoEylPArhTQXwRrImKa4rU/jDtd
+         X1R+i6BjWkEFimBF2lg6PWEhu1NfN4i/WdXS8DxlUJly61ru4qI56TtBPAvNAfaYzLW+
+         BRO20OZvDzfeeiK5rtRnrj7u11g9SHcyBfBk3nvlXNOHFeOYBNrQUmWbvcEGeeMSwj6Z
+         aZy3ic0s3eKbFCwKSdTje6At2av1wuUzFX4b08aBZLzW3nSqqB7oqRbfXE0V3Q28HrZ4
+         7iww==
+X-Gm-Message-State: AOAM530GMcE9u89jLekaIeytspxVPMHbIppa2duvW9kBW4iiiDS0PF6d
+        kdGOW0RllxG4/I+om6Bj91I+kg==
+X-Google-Smtp-Source: ABdhPJxHRG0bfWnK3r3vZ3JY9YKOAWdPVKD0HBUWhyzDgqaqOlZbrAnj5StreCiUMuoCMGwv83D35A==
+X-Received: by 2002:aca:fd0d:: with SMTP id b13mr1251512oii.27.1607040549116;
+        Thu, 03 Dec 2020 16:09:09 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id k30sm96212ool.34.2020.12.03.16.09.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 16:07:03 -0800 (PST)
-Date:   Thu, 3 Dec 2020 17:07:01 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Al Grant <al.grant@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        James Clark <james.clark@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] drivers/perf: Enable PID_IN_CONTEXTIDR with SPE
-Message-ID: <20201204000701.GA1403545@xps15>
-References: <20201130162454.28255-1-james.clark@arm.com>
- <20201130164650.GA25187@willie-the-truck>
- <20201201041040.GC28939@leoy-ThinkPad-X240s>
- <20201201230935.GD28496@willie-the-truck>
- <20201203063941.GE28939@leoy-ThinkPad-X240s>
+        Thu, 03 Dec 2020 16:09:08 -0800 (PST)
+Date:   Thu, 3 Dec 2020 18:09:06 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linus.walleij@linaro.org, robh+dt@kernel.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH v6 2/2] pinctrl: qcom: Add sm8250 lpass lpi
+ pinctrl driver
+Message-ID: <X8l+InAEQRlHGUJu@builder.lan>
+References: <20201202163443.26499-1-srinivas.kandagatla@linaro.org>
+ <20201202163443.26499-3-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201203063941.GE28939@leoy-ThinkPad-X240s>
+In-Reply-To: <20201202163443.26499-3-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 02:39:41PM +0800, Leo Yan wrote:
-> Hi Will,
-> 
-> [ + Mathieu ]
-> 
-> On Tue, Dec 01, 2020 at 11:09:36PM +0000, Will Deacon wrote:
-> > On Tue, Dec 01, 2020 at 12:10:40PM +0800, Leo Yan wrote:
-> > > On Mon, Nov 30, 2020 at 04:46:51PM +0000, Will Deacon wrote:
-> > > > On Mon, Nov 30, 2020 at 06:24:54PM +0200, James Clark wrote:
-> > > > > Enable PID_IN_CONTEXTIDR by default when Arm SPE is enabled.
-> > > > > This flag is required to get PID data in the SPE trace. Without
-> > > > > it the perf tool will report 0 for PID which isn't very useful,
-> > > > > especially when doing system wide profiling or profiling
-> > > > > applications that fork.
-> > > > 
-> > > > Can perf not figure out the pid some other way? (e.g. by tracing context
-> > > > switches and correlating that with the SPE data?).
-> > > 
-> > > For perf 'per-thread' mode, we can use context switch trace event as
-> > > assisted info to select thread context.  But for "system wide" mode and
-> > > "snapshot" mode in perf tool, since the trace data is continuous, I
-> > > think we cannot use context switch trace event to correlate the SPE
-> > > trace data.
-> > 
-> > Is there no way to correlate them with something like CNTVCT?
-> 
-> Good point.  Yes, we can convert CNTVCT to system time; I read the
-> code in the perf's intel-pt.c and found the timestamp is used to
-> correlate the auxtrace heap.  I think it's better to dig more for
-> detailed implementation.
-> 
-> > > > Also, how does this work with pid namespaces?
-> > > 
-> > > Here we are studying the implemetation of Intel-PT and Arm CoreSight.
-> > > 
-> > > The context ID is stored into the hardware trace data when record;
-> > > afterwards when perf tool decodes the trace data and detects the
-> > > packet for context ID, it will select the machine's thread context in
-> > > perf [1].  Since the perf tool gathers all the threads infomation in
-> > > perf data file, based on the context ID, it can find the corresponding
-> > > thread pointer with function machine__find_thread() [2].
-> > > 
-> > > Since your question is for "pid namespace", to be honest, I don't know
-> > > how perf tool to handle any confliction for differrent processes share
-> > > the same PID, and I am not sure if you are asking CGroup related stuff
-> > > or not.  If this cannot answer your question, please let me know.
-> > 
-> > My point was that the pid value written to CONTEXTIDR is a global pid
-> > and does not take namespacing into account. If perf is run inside a pid
-> > namespace, it will therefore not work.
+On Wed 02 Dec 10:34 CST 2020, Srinivas Kandagatla wrote:
 
-Will is correct.  That is why coresight doesn't allow contextID tracing if the
-request is made from inside a PID namespace.  But that is only from the sysfs
-interface.  From perf the guard wasn't put in place, probably because CPU
-wide trace scenarios were not implemented yet.   
+> Add initial pinctrl driver to support pin configuration for
+> LPASS (Low Power Audio SubSystem) LPI (Low Power Island) pinctrl
+> on SM8250.
+> 
+> This IP is an additional pin control block for Audio Pins on top the
+> existing SoC Top level pin-controller.
+> Hardware setup looks like:
+> 
+> TLMM GPIO[146 - 159] --> LPASS LPI GPIO [0 - 13]
+> 
+> This pin controller has some similarities compared to Top level
+> msm SoC Pin controller like 'each pin belongs to a single group'
+> and so on. However this one is intended to control only audio
+> pins in particular, which can not be configured/touched by the
+> Top level SoC pin controller except setting them as gpios.
+> Apart from this, slew rate is also available in this block for
+> certain pins which are connected to SLIMbus or SoundWire Bus.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-> 
-> Understand now.
-> 
-> The perf events PERF_RECORD_ITRACE_START/PERF_RECORD_SWITCH/
-> PERF_RECORD_SWITCH_CPU_WIDE can be used to set pid/tid in perf.  So this
-> would be a safe way for perf tool running in pid namespace.
-> 
+Let's try again, this time with Linus in Cc :)
 
-Remember that the events you are referring to above are all processed in the
-perf tools where there is no way to go from pid to vpid.  And to preempt any
-hope, there is no way to "switch" the pid for the vpid in the trace stream.
-That is all done in hardware.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-I think the easiest solution is to simply avoid using contextIDs when PID
-namespaces are involved.
+Regards,
+Bjorn
 
-> Loop in Mathieu, this is a common issue for both Arm SPE and CoreSight
-> (IIRC, though CoreSight's timestamp is not strictly attaching to Arm arch
-> timer counter, the trend is to unify this for using arch timer
-> counter).
+> ---
+>  drivers/pinctrl/qcom/Kconfig             |   8 +
+>  drivers/pinctrl/qcom/Makefile            |   1 +
+>  drivers/pinctrl/qcom/pinctrl-lpass-lpi.c | 695 +++++++++++++++++++++++
+>  3 files changed, 704 insertions(+)
+>  create mode 100644 drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
 > 
-> I think James could continue to upstream a new patch by following your
-> suggestion for enabling PID_IN_CONTEXTIDR, eventually, it's a feature
-> for Arm SPE to record CONTEXTIDR in its packet.
+> diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
+> index 5fe7b8aaf69d..d3e4e89c2810 100644
+> --- a/drivers/pinctrl/qcom/Kconfig
+> +++ b/drivers/pinctrl/qcom/Kconfig
+> @@ -236,4 +236,12 @@ config PINCTRL_SM8250
+>  	  Qualcomm Technologies Inc TLMM block found on the Qualcomm
+>  	  Technologies Inc SM8250 platform.
+>  
+> +config PINCTRL_LPASS_LPI
+> +	tristate "Qualcomm Technologies Inc LPASS LPI pin controller driver"
+> +	depends on GPIOLIB
+> +	help
+> +	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
+> +	  Qualcomm Technologies Inc LPASS (Low Power Audio SubSystem) LPI
+> +	  (Low Power Island) found on the Qualcomm Technologies Inc SoCs.
+> +
+>  endif
+> diff --git a/drivers/pinctrl/qcom/Makefile b/drivers/pinctrl/qcom/Makefile
+> index 9e3d9c91a444..c8520155fb1b 100644
+> --- a/drivers/pinctrl/qcom/Makefile
+> +++ b/drivers/pinctrl/qcom/Makefile
+> @@ -28,3 +28,4 @@ obj-$(CONFIG_PINCTRL_SDM660)   += pinctrl-sdm660.o
+>  obj-$(CONFIG_PINCTRL_SDM845) += pinctrl-sdm845.o
+>  obj-$(CONFIG_PINCTRL_SM8150) += pinctrl-sm8150.o
+>  obj-$(CONFIG_PINCTRL_SM8250) += pinctrl-sm8250.o
+> +obj-$(CONFIG_PINCTRL_LPASS_LPI) += pinctrl-lpass-lpi.o
+> diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+> new file mode 100644
+> index 000000000000..369ee20a7ea9
+> --- /dev/null
+> +++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+> @@ -0,0 +1,695 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2016-2019, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2020 Linaro Ltd.
+> + */
+> +
+> +#include <linux/bitops.h>
+> +#include <linux/bitfield.h>
+> +#include <linux/clk.h>
+> +#include <linux/gpio/driver.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of.h>
+> +#include <linux/pinctrl/pinconf-generic.h>
+> +#include <linux/pinctrl/pinconf.h>
+> +#include <linux/pinctrl/pinmux.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+> +#include "../core.h"
+> +#include "../pinctrl-utils.h"
+> +
+> +#define LPI_SLEW_RATE_CTL_REG		0xa000
+> +#define LPI_TLMM_REG_OFFSET		0x1000
+> +#define LPI_SLEW_RATE_MAX		0x03
+> +#define LPI_SLEW_BITS_SIZE		0x02
+> +#define LPI_SLEW_RATE_MASK		GENMASK(1, 0)
+> +#define LPI_GPIO_CFG_REG		0x00
+> +#define LPI_GPIO_PULL_MASK		GENMASK(1, 0)
+> +#define LPI_GPIO_FUNCTION_MASK		GENMASK(5, 2)
+> +#define LPI_GPIO_OUT_STRENGTH_MASK	GENMASK(8, 6)
+> +#define LPI_GPIO_OE_MASK		BIT(9)
+> +#define LPI_GPIO_VALUE_REG		0x04
+> +#define LPI_GPIO_VALUE_IN_MASK		BIT(0)
+> +#define LPI_GPIO_VALUE_OUT_MASK		BIT(1)
+> +
+> +#define LPI_GPIO_BIAS_DISABLE		0x0
+> +#define LPI_GPIO_PULL_DOWN		0x1
+> +#define LPI_GPIO_KEEPER			0x2
+> +#define LPI_GPIO_PULL_UP		0x3
+> +#define LPI_GPIO_DS_TO_VAL(v)		(v / 2 - 1)
+> +#define NO_SLEW				-1
+> +
+> +#define LPI_FUNCTION(fname)			                \
+> +	[LPI_MUX_##fname] = {		                \
+> +		.name = #fname,				\
+> +		.groups = fname##_groups,               \
+> +		.ngroups = ARRAY_SIZE(fname##_groups),	\
+> +	}
+> +
+> +#define LPI_PINGROUP(id, soff, f1, f2, f3, f4)		\
+> +	{						\
+> +		.name = "gpio" #id,			\
+> +		.pins = gpio##id##_pins,		\
+> +		.pin = id,				\
+> +		.slew_offset = soff,			\
+> +		.npins = ARRAY_SIZE(gpio##id##_pins),	\
+> +		.funcs = (int[]){			\
+> +			LPI_MUX_gpio,			\
+> +			LPI_MUX_##f1,			\
+> +			LPI_MUX_##f2,			\
+> +			LPI_MUX_##f3,			\
+> +			LPI_MUX_##f4,			\
+> +		},					\
+> +		.nfuncs = 5,				\
+> +	}
+> +
+> +struct lpi_pingroup {
+> +	const char *name;
+> +	const unsigned int *pins;
+> +	unsigned int npins;
+> +	unsigned int pin;
+> +	/* Bit offset in slew register for SoundWire pins only */
+> +	int slew_offset;
+> +	unsigned int *funcs;
+> +	unsigned int nfuncs;
+> +};
+> +
+> +struct lpi_function {
+> +	const char *name;
+> +	const char * const *groups;
+> +	unsigned int ngroups;
+> +};
+> +
+> +struct lpi_pinctrl_variant_data {
+> +	const struct pinctrl_pin_desc *pins;
+> +	int npins;
+> +	const struct lpi_pingroup *groups;
+> +	int ngroups;
+> +	const struct lpi_function *functions;
+> +	int nfunctions;
+> +};
+> +
+> +#define MAX_LPI_NUM_CLKS	2
+> +
+> +struct lpi_pinctrl {
+> +	struct device *dev;
+> +	struct pinctrl_dev *ctrl;
+> +	struct gpio_chip chip;
+> +	struct pinctrl_desc desc;
+> +	char __iomem *tlmm_base;
+> +	char __iomem *slew_base;
+> +	struct clk_bulk_data clks[MAX_LPI_NUM_CLKS];
+> +	struct mutex slew_access_lock;
+> +	const struct lpi_pinctrl_variant_data *data;
+> +};
+> +
+> +/* sm8250 variant specific data */
+> +static const struct pinctrl_pin_desc sm8250_lpi_pins[] = {
+> +	PINCTRL_PIN(0, "gpio0"),
+> +	PINCTRL_PIN(1, "gpio1"),
+> +	PINCTRL_PIN(2, "gpio2"),
+> +	PINCTRL_PIN(3, "gpio3"),
+> +	PINCTRL_PIN(4, "gpio4"),
+> +	PINCTRL_PIN(5, "gpio5"),
+> +	PINCTRL_PIN(6, "gpio6"),
+> +	PINCTRL_PIN(7, "gpio7"),
+> +	PINCTRL_PIN(8, "gpio8"),
+> +	PINCTRL_PIN(9, "gpio9"),
+> +	PINCTRL_PIN(10, "gpio10"),
+> +	PINCTRL_PIN(11, "gpio11"),
+> +	PINCTRL_PIN(12, "gpio12"),
+> +	PINCTRL_PIN(13, "gpio13"),
+> +};
+> +
+> +enum sm8250_lpi_functions {
+> +	LPI_MUX_dmic1_clk,
+> +	LPI_MUX_dmic1_data,
+> +	LPI_MUX_dmic2_clk,
+> +	LPI_MUX_dmic2_data,
+> +	LPI_MUX_dmic3_clk,
+> +	LPI_MUX_dmic3_data,
+> +	LPI_MUX_i2s1_clk,
+> +	LPI_MUX_i2s1_data,
+> +	LPI_MUX_i2s1_ws,
+> +	LPI_MUX_i2s2_clk,
+> +	LPI_MUX_i2s2_data,
+> +	LPI_MUX_i2s2_ws,
+> +	LPI_MUX_qua_mi2s_data,
+> +	LPI_MUX_qua_mi2s_sclk,
+> +	LPI_MUX_qua_mi2s_ws,
+> +	LPI_MUX_swr_rx_clk,
+> +	LPI_MUX_swr_rx_data,
+> +	LPI_MUX_swr_tx_clk,
+> +	LPI_MUX_swr_tx_data,
+> +	LPI_MUX_wsa_swr_clk,
+> +	LPI_MUX_wsa_swr_data,
+> +	LPI_MUX_gpio,
+> +	LPI_MUX__,
+> +};
+> +
+> +static const unsigned int gpio0_pins[] = { 0 };
+> +static const unsigned int gpio1_pins[] = { 1 };
+> +static const unsigned int gpio2_pins[] = { 2 };
+> +static const unsigned int gpio3_pins[] = { 3 };
+> +static const unsigned int gpio4_pins[] = { 4 };
+> +static const unsigned int gpio5_pins[] = { 5 };
+> +static const unsigned int gpio6_pins[] = { 6 };
+> +static const unsigned int gpio7_pins[] = { 7 };
+> +static const unsigned int gpio8_pins[] = { 8 };
+> +static const unsigned int gpio9_pins[] = { 9 };
+> +static const unsigned int gpio10_pins[] = { 10 };
+> +static const unsigned int gpio11_pins[] = { 11 };
+> +static const unsigned int gpio12_pins[] = { 12 };
+> +static const unsigned int gpio13_pins[] = { 13 };
+> +static const char * const swr_tx_clk_groups[] = { "gpio0" };
+> +static const char * const swr_tx_data_groups[] = { "gpio1", "gpio2", "gpio5" };
+> +static const char * const swr_rx_clk_groups[] = { "gpio3" };
+> +static const char * const swr_rx_data_groups[] = { "gpio4", "gpio5" };
+> +static const char * const dmic1_clk_groups[] = { "gpio6" };
+> +static const char * const dmic1_data_groups[] = { "gpio7" };
+> +static const char * const dmic2_clk_groups[] = { "gpio8" };
+> +static const char * const dmic2_data_groups[] = { "gpio9" };
+> +static const char * const i2s2_clk_groups[] = { "gpio10" };
+> +static const char * const i2s2_ws_groups[] = { "gpio11" };
+> +static const char * const dmic3_clk_groups[] = { "gpio12" };
+> +static const char * const dmic3_data_groups[] = { "gpio13" };
+> +static const char * const qua_mi2s_sclk_groups[] = { "gpio0" };
+> +static const char * const qua_mi2s_ws_groups[] = { "gpio1" };
+> +static const char * const qua_mi2s_data_groups[] = { "gpio2", "gpio3", "gpio4" };
+> +static const char * const i2s1_clk_groups[] = { "gpio6" };
+> +static const char * const i2s1_ws_groups[] = { "gpio7" };
+> +static const char * const i2s1_data_groups[] = { "gpio8", "gpio9" };
+> +static const char * const wsa_swr_clk_groups[] = { "gpio10" };
+> +static const char * const wsa_swr_data_groups[] = { "gpio11" };
+> +static const char * const i2s2_data_groups[] = { "gpio12", "gpio12" };
+> +
+> +static const struct lpi_pingroup sm8250_groups[] = {
+> +	LPI_PINGROUP(0, 0, swr_tx_clk, qua_mi2s_sclk, _, _),
+> +	LPI_PINGROUP(1, 2, swr_tx_data, qua_mi2s_ws, _, _),
+> +	LPI_PINGROUP(2, 4, swr_tx_data, qua_mi2s_data, _, _),
+> +	LPI_PINGROUP(3, 8, swr_rx_clk, qua_mi2s_data, _, _),
+> +	LPI_PINGROUP(4, 10, swr_rx_data, qua_mi2s_data, _, _),
+> +	LPI_PINGROUP(5, 12, swr_tx_data, swr_rx_data, _, _),
+> +	LPI_PINGROUP(6, NO_SLEW, dmic1_clk, i2s1_clk, _,  _),
+> +	LPI_PINGROUP(7, NO_SLEW, dmic1_data, i2s1_ws, _, _),
+> +	LPI_PINGROUP(8, NO_SLEW, dmic2_clk, i2s1_data, _, _),
+> +	LPI_PINGROUP(9, NO_SLEW, dmic2_data, i2s1_data, _, _),
+> +	LPI_PINGROUP(10, 16, i2s2_clk, wsa_swr_clk, _, _),
+> +	LPI_PINGROUP(11, 18, i2s2_ws, wsa_swr_data, _, _),
+> +	LPI_PINGROUP(12, NO_SLEW, dmic3_clk, i2s2_data, _, _),
+> +	LPI_PINGROUP(13, NO_SLEW, dmic3_data, i2s2_data, _, _),
+> +};
+> +
+> +static const struct lpi_function sm8250_functions[] = {
+> +	LPI_FUNCTION(dmic1_clk),
+> +	LPI_FUNCTION(dmic1_data),
+> +	LPI_FUNCTION(dmic2_clk),
+> +	LPI_FUNCTION(dmic2_data),
+> +	LPI_FUNCTION(dmic3_clk),
+> +	LPI_FUNCTION(dmic3_data),
+> +	LPI_FUNCTION(i2s1_clk),
+> +	LPI_FUNCTION(i2s1_data),
+> +	LPI_FUNCTION(i2s1_ws),
+> +	LPI_FUNCTION(i2s2_clk),
+> +	LPI_FUNCTION(i2s2_data),
+> +	LPI_FUNCTION(i2s2_ws),
+> +	LPI_FUNCTION(qua_mi2s_data),
+> +	LPI_FUNCTION(qua_mi2s_sclk),
+> +	LPI_FUNCTION(qua_mi2s_ws),
+> +	LPI_FUNCTION(swr_rx_clk),
+> +	LPI_FUNCTION(swr_rx_data),
+> +	LPI_FUNCTION(swr_tx_clk),
+> +	LPI_FUNCTION(swr_tx_data),
+> +	LPI_FUNCTION(wsa_swr_clk),
+> +	LPI_FUNCTION(wsa_swr_data),
+> +};
+> +
+> +static struct lpi_pinctrl_variant_data sm8250_lpi_data = {
+> +	.pins = sm8250_lpi_pins,
+> +	.npins = ARRAY_SIZE(sm8250_lpi_pins),
+> +	.groups = sm8250_groups,
+> +	.ngroups = ARRAY_SIZE(sm8250_groups),
+> +	.functions = sm8250_functions,
+> +	.nfunctions = ARRAY_SIZE(sm8250_functions),
+> +};
+> +
+> +static int lpi_gpio_read(struct lpi_pinctrl *state, unsigned int pin,
+> +			 unsigned int addr)
+> +{
+> +	return ioread32(state->tlmm_base + LPI_TLMM_REG_OFFSET * pin + addr);
+> +}
+> +
+> +static int lpi_gpio_write(struct lpi_pinctrl *state, unsigned int pin,
+> +			  unsigned int addr, unsigned int val)
+> +{
+> +	iowrite32(val, state->tlmm_base + LPI_TLMM_REG_OFFSET * pin + addr);
+> +
+> +	return 0;
+> +}
+> +
+> +static int lpi_gpio_get_groups_count(struct pinctrl_dev *pctldev)
+> +{
+> +	struct lpi_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	return pctrl->data->ngroups;
+> +}
+> +
+> +static const char *lpi_gpio_get_group_name(struct pinctrl_dev *pctldev,
+> +					   unsigned int group)
+> +{
+> +	struct lpi_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	return pctrl->data->groups[group].name;
+> +}
+> +
+> +static int lpi_gpio_get_group_pins(struct pinctrl_dev *pctldev,
+> +				   unsigned int group,
+> +				   const unsigned int **pins,
+> +				   unsigned int *num_pins)
+> +{
+> +	struct lpi_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	*pins = pctrl->data->groups[group].pins;
+> +	*num_pins = pctrl->data->groups[group].npins;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct pinctrl_ops lpi_gpio_pinctrl_ops = {
+> +	.get_groups_count	= lpi_gpio_get_groups_count,
+> +	.get_group_name		= lpi_gpio_get_group_name,
+> +	.get_group_pins		= lpi_gpio_get_group_pins,
+> +	.dt_node_to_map		= pinconf_generic_dt_node_to_map_group,
+> +	.dt_free_map		= pinctrl_utils_free_map,
+> +};
+> +
+> +static int lpi_gpio_get_functions_count(struct pinctrl_dev *pctldev)
+> +{
+> +	struct lpi_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	return pctrl->data->nfunctions;
+> +}
+> +
+> +static const char *lpi_gpio_get_function_name(struct pinctrl_dev *pctldev,
+> +					      unsigned int function)
+> +{
+> +	struct lpi_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	return pctrl->data->functions[function].name;
+> +}
+> +
+> +static int lpi_gpio_get_function_groups(struct pinctrl_dev *pctldev,
+> +					unsigned int function,
+> +					const char *const **groups,
+> +					unsigned *const num_qgroups)
+> +{
+> +	struct lpi_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	*groups = pctrl->data->functions[function].groups;
+> +	*num_qgroups = pctrl->data->functions[function].ngroups;
+> +
+> +	return 0;
+> +}
+> +
+> +static int lpi_gpio_set_mux(struct pinctrl_dev *pctldev, unsigned int function,
+> +			    unsigned int group_num)
+> +{
+> +	struct lpi_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +	const struct lpi_pingroup *g = &pctrl->data->groups[group_num];
+> +	u32 val;
+> +	int i, pin = g->pin;
+> +
+> +	for (i = 0; i < g->nfuncs; i++) {
+> +		if (g->funcs[i] == function)
+> +			break;
+> +	}
+> +
+> +	if (WARN_ON(i == g->nfuncs))
+> +		return -EINVAL;
+> +
+> +	val = lpi_gpio_read(pctrl, pin, LPI_GPIO_CFG_REG);
+> +	u32p_replace_bits(&val, i, LPI_GPIO_FUNCTION_MASK);
+> +	lpi_gpio_write(pctrl, pin, LPI_GPIO_CFG_REG, val);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct pinmux_ops lpi_gpio_pinmux_ops = {
+> +	.get_functions_count	= lpi_gpio_get_functions_count,
+> +	.get_function_name	= lpi_gpio_get_function_name,
+> +	.get_function_groups	= lpi_gpio_get_function_groups,
+> +	.set_mux		= lpi_gpio_set_mux,
+> +};
+> +
+> +static int lpi_config_get(struct pinctrl_dev *pctldev,
+> +			  unsigned int pin, unsigned long *config)
+> +{
+> +	unsigned int param = pinconf_to_config_param(*config);
+> +	struct lpi_pinctrl *state = dev_get_drvdata(pctldev->dev);
+> +	unsigned int arg = 0;
+> +	int is_out;
+> +	int pull;
+> +	u32 ctl_reg;
+> +
+> +	ctl_reg = lpi_gpio_read(state, pin, LPI_GPIO_CFG_REG);
+> +	is_out = ctl_reg & LPI_GPIO_OE_MASK;
+> +	pull = FIELD_GET(LPI_GPIO_PULL_MASK, ctl_reg);
+> +
+> +	switch (param) {
+> +	case PIN_CONFIG_BIAS_DISABLE:
+> +		if (pull == LPI_GPIO_BIAS_DISABLE)
+> +			arg = 1;
+> +		break;
+> +	case PIN_CONFIG_BIAS_PULL_DOWN:
+> +		if (pull == LPI_GPIO_PULL_DOWN)
+> +			arg = 1;
+> +		break;
+> +	case PIN_CONFIG_BIAS_BUS_HOLD:
+> +		if (pull == LPI_GPIO_KEEPER)
+> +			arg = 1;
+> +		break;
+> +	case PIN_CONFIG_BIAS_PULL_UP:
+> +		if (pull == LPI_GPIO_PULL_UP)
+> +			arg = 1;
+> +		break;
+> +	case PIN_CONFIG_INPUT_ENABLE:
+> +	case PIN_CONFIG_OUTPUT:
+> +		if (is_out)
+> +			arg = 1;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	*config = pinconf_to_config_packed(param, arg);
+> +	return 0;
+> +}
+> +
+> +static int lpi_config_set(struct pinctrl_dev *pctldev, unsigned int group,
+> +			  unsigned long *configs, unsigned int nconfs)
+> +{
+> +	struct lpi_pinctrl *pctrl = dev_get_drvdata(pctldev->dev);
+> +	unsigned int param, arg, pullup, strength;
+> +	bool value, output_enabled = false;
+> +	const struct lpi_pingroup *g;
+> +	unsigned long sval;
+> +	int i, slew_offset;
+> +	u32 val;
+> +
+> +	g = &pctrl->data->groups[group];
+> +	for (i = 0; i < nconfs; i++) {
+> +		param = pinconf_to_config_param(configs[i]);
+> +		arg = pinconf_to_config_argument(configs[i]);
+> +
+> +		switch (param) {
+> +		case PIN_CONFIG_BIAS_DISABLE:
+> +			pullup = LPI_GPIO_BIAS_DISABLE;
+> +			break;
+> +		case PIN_CONFIG_BIAS_PULL_DOWN:
+> +			pullup = LPI_GPIO_PULL_DOWN;
+> +			break;
+> +		case PIN_CONFIG_BIAS_BUS_HOLD:
+> +			pullup = LPI_GPIO_KEEPER;
+> +			break;
+> +		case PIN_CONFIG_BIAS_PULL_UP:
+> +			pullup = LPI_GPIO_PULL_UP;
+> +			break;
+> +		case PIN_CONFIG_INPUT_ENABLE:
+> +			output_enabled = false;
+> +			break;
+> +		case PIN_CONFIG_OUTPUT:
+> +			output_enabled = true;
+> +			value = arg;
+> +			break;
+> +		case PIN_CONFIG_DRIVE_STRENGTH:
+> +			strength = arg;
+> +			break;
+> +		case PIN_CONFIG_SLEW_RATE:
+> +			if (arg > LPI_SLEW_RATE_MAX) {
+> +				dev_err(pctldev->dev, "invalid slew rate %u for pin: %d\n",
+> +					arg, group);
+> +				return -EINVAL;
+> +			}
+> +
+> +			slew_offset = g->slew_offset;
+> +			if (slew_offset == NO_SLEW)
+> +				break;
+> +
+> +			mutex_lock(&pctrl->slew_access_lock);
+> +
+> +			sval = ioread32(pctrl->slew_base + LPI_SLEW_RATE_CTL_REG);
+> +			sval &= ~(LPI_SLEW_RATE_MASK << slew_offset);
+> +			sval |= arg << slew_offset;
+> +			iowrite32(sval, pctrl->slew_base + LPI_SLEW_RATE_CTL_REG);
+> +
+> +			mutex_unlock(&pctrl->slew_access_lock);
+> +			break;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	val = lpi_gpio_read(pctrl, group, LPI_GPIO_CFG_REG);
+> +
+> +	u32p_replace_bits(&val, pullup, LPI_GPIO_PULL_MASK);
+> +	u32p_replace_bits(&val, LPI_GPIO_DS_TO_VAL(strength),
+> +			  LPI_GPIO_OUT_STRENGTH_MASK);
+> +	u32p_replace_bits(&val, output_enabled, LPI_GPIO_OE_MASK);
+> +
+> +	lpi_gpio_write(pctrl, group, LPI_GPIO_CFG_REG, val);
+> +
+> +	if (output_enabled) {
+> +		val = u32_encode_bits(value ? 1 : 0, LPI_GPIO_VALUE_OUT_MASK);
+> +		lpi_gpio_write(pctrl, group, LPI_GPIO_VALUE_REG, val);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct pinconf_ops lpi_gpio_pinconf_ops = {
+> +	.is_generic			= true,
+> +	.pin_config_group_get		= lpi_config_get,
+> +	.pin_config_group_set		= lpi_config_set,
+> +};
+> +
+> +static int lpi_gpio_direction_input(struct gpio_chip *chip, unsigned int pin)
+> +{
+> +	struct lpi_pinctrl *state = gpiochip_get_data(chip);
+> +	unsigned long config;
+> +
+> +	config = pinconf_to_config_packed(PIN_CONFIG_INPUT_ENABLE, 1);
+> +
+> +	return lpi_config_set(state->ctrl, pin, &config, 1);
+> +}
+> +
+> +static int lpi_gpio_direction_output(struct gpio_chip *chip,
+> +				     unsigned int pin, int val)
+> +{
+> +	struct lpi_pinctrl *state = gpiochip_get_data(chip);
+> +	unsigned long config;
+> +
+> +	config = pinconf_to_config_packed(PIN_CONFIG_OUTPUT, val);
+> +
+> +	return lpi_config_set(state->ctrl, pin, &config, 1);
+> +}
+> +
+> +static int lpi_gpio_get(struct gpio_chip *chip, unsigned int pin)
+> +{
+> +	struct lpi_pinctrl *state = gpiochip_get_data(chip);
+> +
+> +	return lpi_gpio_read(state, pin, LPI_GPIO_VALUE_REG) &
+> +		LPI_GPIO_VALUE_IN_MASK;
+> +}
+> +
+> +static void lpi_gpio_set(struct gpio_chip *chip, unsigned int pin, int value)
+> +{
+> +	struct lpi_pinctrl *state = gpiochip_get_data(chip);
+> +	unsigned long config;
+> +
+> +	config = pinconf_to_config_packed(PIN_CONFIG_OUTPUT, value);
+> +
+> +	lpi_config_set(state->ctrl, pin, &config, 1);
+> +}
+> +
+> +#ifdef CONFIG_DEBUG_FS
+> +#include <linux/seq_file.h>
+> +
+> +static unsigned int lpi_regval_to_drive(u32 val)
+> +{
+> +	return (val + 1) * 2;
+> +}
+> +
+> +static void lpi_gpio_dbg_show_one(struct seq_file *s,
+> +				  struct pinctrl_dev *pctldev,
+> +				  struct gpio_chip *chip,
+> +				  unsigned int offset,
+> +				  unsigned int gpio)
+> +{
+> +	struct lpi_pinctrl *state = gpiochip_get_data(chip);
+> +	struct pinctrl_pin_desc pindesc;
+> +	unsigned int func;
+> +	int is_out;
+> +	int drive;
+> +	int pull;
+> +	u32 ctl_reg;
+> +
+> +	static const char * const pulls[] = {
+> +		"no pull",
+> +		"pull down",
+> +		"keeper",
+> +		"pull up"
+> +	};
+> +
+> +	pctldev = pctldev ? : state->ctrl;
+> +	pindesc = pctldev->desc->pins[offset];
+> +	ctl_reg = lpi_gpio_read(state, offset, LPI_GPIO_CFG_REG);
+> +	is_out = ctl_reg & LPI_GPIO_OE_MASK;
+> +
+> +	func = FIELD_GET(LPI_GPIO_FUNCTION_MASK, ctl_reg);
+> +	drive = FIELD_GET(LPI_GPIO_OUT_STRENGTH_MASK, ctl_reg);
+> +	pull = FIELD_GET(LPI_GPIO_PULL_MASK, ctl_reg);
+> +
+> +	seq_printf(s, " %-8s: %-3s %d", pindesc.name, is_out ? "out" : "in", func);
+> +	seq_printf(s, " %dmA", lpi_regval_to_drive(drive));
+> +	seq_printf(s, " %s", pulls[pull]);
+> +}
+> +
+> +static void lpi_gpio_dbg_show(struct seq_file *s, struct gpio_chip *chip)
+> +{
+> +	unsigned int gpio = chip->base;
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < chip->ngpio; i++, gpio++) {
+> +		lpi_gpio_dbg_show_one(s, NULL, chip, i, gpio);
+> +		seq_puts(s, "\n");
+> +	}
+> +}
+> +
+> +#else
+> +#define lpi_gpio_dbg_show NULL
+> +#endif
+> +
+> +static const struct gpio_chip lpi_gpio_template = {
+> +	.direction_input	= lpi_gpio_direction_input,
+> +	.direction_output	= lpi_gpio_direction_output,
+> +	.get			= lpi_gpio_get,
+> +	.set			= lpi_gpio_set,
+> +	.request		= gpiochip_generic_request,
+> +	.free			= gpiochip_generic_free,
+> +	.dbg_show		= lpi_gpio_dbg_show,
+> +};
+> +
+> +static int lpi_pinctrl_probe(struct platform_device *pdev)
+> +{
+> +	const struct lpi_pinctrl_variant_data *data;
+> +	struct device *dev = &pdev->dev;
+> +	struct lpi_pinctrl *pctrl;
+> +	int ret;
+> +
+> +	pctrl = devm_kzalloc(dev, sizeof(*pctrl), GFP_KERNEL);
+> +	if (!pctrl)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, pctrl);
+> +
+> +	data = of_device_get_match_data(dev);
+> +	if (!data)
+> +		return -EINVAL;
+> +
+> +	pctrl->data = data;
+> +	pctrl->dev = &pdev->dev;
+> +
+> +	pctrl->clks[0].id = "core";
+> +	pctrl->clks[1].id = "audio";
+> +
+> +	pctrl->tlmm_base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(pctrl->tlmm_base))
+> +		return dev_err_probe(dev, PTR_ERR(pctrl->tlmm_base),
+> +				     "TLMM resource not provided\n");
+> +
+> +	pctrl->slew_base = devm_platform_ioremap_resource(pdev, 1);
+> +	if (IS_ERR(pctrl->slew_base))
+> +		return dev_err_probe(dev, PTR_ERR(pctrl->slew_base),
+> +				     "Slew resource not provided\n");
+> +
+> +	ret = devm_clk_bulk_get(dev, MAX_LPI_NUM_CLKS, pctrl->clks);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "Can't get clocks\n");
+> +
+> +	ret = clk_bulk_prepare_enable(MAX_LPI_NUM_CLKS, pctrl->clks);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "Can't enable clocks\n");
+> +
+> +	pctrl->desc.pctlops = &lpi_gpio_pinctrl_ops;
+> +	pctrl->desc.pmxops = &lpi_gpio_pinmux_ops;
+> +	pctrl->desc.confops = &lpi_gpio_pinconf_ops;
+> +	pctrl->desc.owner = THIS_MODULE;
+> +	pctrl->desc.name = dev_name(dev);
+> +	pctrl->desc.pins = data->pins;
+> +	pctrl->desc.npins = data->npins;
+> +	pctrl->chip = lpi_gpio_template;
+> +	pctrl->chip.parent = dev;
+> +	pctrl->chip.base = -1;
+> +	pctrl->chip.ngpio = data->npins;
+> +	pctrl->chip.label = dev_name(dev);
+> +	pctrl->chip.of_gpio_n_cells = 2;
+> +	pctrl->chip.can_sleep = false;
+> +
+> +	mutex_init(&pctrl->slew_access_lock);
+> +
+> +	pctrl->ctrl = devm_pinctrl_register(dev, &pctrl->desc, pctrl);
+> +	if (IS_ERR(pctrl->ctrl)) {
+> +		ret = PTR_ERR(pctrl->ctrl);
+> +		dev_err(dev, "failed to add pin controller\n");
+> +		goto err_pinctrl;
+> +	}
+> +
+> +	ret = devm_gpiochip_add_data(dev, &pctrl->chip, pctrl);
+> +	if (ret) {
+> +		dev_err(pctrl->dev, "can't add gpio chip\n");
+> +		goto err_pinctrl;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_pinctrl:
+> +	mutex_destroy(&pctrl->slew_access_lock);
+> +	clk_bulk_disable_unprepare(MAX_LPI_NUM_CLKS, pctrl->clks);
+> +
+> +	return ret;
+> +}
+> +
+> +static int lpi_pinctrl_remove(struct platform_device *pdev)
+> +{
+> +	struct lpi_pinctrl *pctrl = platform_get_drvdata(pdev);
+> +
+> +	mutex_destroy(&pctrl->slew_access_lock);
+> +	clk_bulk_disable_unprepare(MAX_LPI_NUM_CLKS, pctrl->clks);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id lpi_pinctrl_of_match[] = {
+> +	{
+> +	       .compatible = "qcom,sm8250-lpass-lpi-pinctrl",
+> +	       .data = &sm8250_lpi_data,
+> +	},
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, lpi_pinctrl_of_match);
+> +
+> +static struct platform_driver lpi_pinctrl_driver = {
+> +	.driver = {
+> +		   .name = "qcom-lpass-lpi-pinctrl",
+> +		   .of_match_table = lpi_pinctrl_of_match,
+> +	},
+> +	.probe = lpi_pinctrl_probe,
+> +	.remove = lpi_pinctrl_remove,
+> +};
+> +
+> +module_platform_driver(lpi_pinctrl_driver);
+> +MODULE_DESCRIPTION("QTI LPI GPIO pin control driver");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.21.0
 > 
-> Your questions inspired me, thanks!
-> 
-> Leo
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
