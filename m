@@ -2,206 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0519A2CF0A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7922CF0A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730565AbgLDPW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:22:28 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21926 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730556AbgLDPW1 (ORCPT
+        id S1730545AbgLDPWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:22:11 -0500
+Received: from gproxy3-pub.mail.unifiedlayer.com ([69.89.30.42]:41651 "EHLO
+        gproxy3-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730493AbgLDPWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:22:27 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4FB6Qq014831;
-        Fri, 4 Dec 2020 07:21:28 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=TKuoFalUHG67aYFEGGZfZEbv4MVrWKHi2z1k8rQj+SI=;
- b=nUF9fUwXC0WcljtaaUfE7JrRTbHRBL3DrN6E+QdHxzRNDeY2fhoYoM3EGcQeXzXt4MDi
- jbUgdkusEGFWLInq8pnkXfx7BsGymkwwSCJnCbDhee9jNDZ1yOIQLrqhJ84Hj9GtYXv5
- GNgoYlk42XkuTArEucuI5lIsklLuV+d3Zm4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 356xfr1xh1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 04 Dec 2020 07:21:27 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 4 Dec 2020 07:21:26 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Rb7fPUPOSOGnEFjYHXb2qMw7jzj3eLMmeBP21sSeTbTRJweOIjLMXMF4VzQnq1dk/PP/nyf3aSWjar58kquihx1Sgwh1zmCXvIjPmVeuHnLTJPbAG7HiWUdcNMES7QvLSEGGwcWpaGo8fmfMINaLvAmZMbtq+dvo9VCxYHKfJ6CUBCTm7EMqqsrgEHnbJ8HtWTEHueySYeezgZ3J/EWVVyOctmAsRRe2zrIDg8yUVEqrdtLC7mqhvuLt+lGb7TicCtYt4jMCzYCOdbiT36uVZ2zFyA7wgItYJUF9/kjRy1matAqu06DPc8dFepf3YLu+ub8je0fb4/iiisTHlx/skQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TKuoFalUHG67aYFEGGZfZEbv4MVrWKHi2z1k8rQj+SI=;
- b=lIIVSR/1lLbSAaTqPCYL/5Oaxc47BTrQM6ZM8Nns9FHoMz5kg2c/ucGqa2yLIZTW4fV5lhgj4RClyteTCLTU53UQOf7dcb24ejQQ9FPDl4mjBG2HyiAr3TwmjvVrxpPP+4O5A1nwPIparJrHn/iKqoNwl9Sp/d/SvMcjYr//fzZcPhJRZY3eXL6Ie0SUYpkifQf2dBbhTVDPmcL3MnqQoHu1BTD8GQ2l+9Iw4OgY2A9298R8DRQ1o0qtyUvHxxIrnQUDkohEYjennEuC0bcOfp4P0nx6NiWsi6SSgz5Qmpkv/jncTcA4evyQgnK/ndl10EhyHMh8sri136dLdoEnrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TKuoFalUHG67aYFEGGZfZEbv4MVrWKHi2z1k8rQj+SI=;
- b=SS2gJZcRNFSR8Mnl48WTtEi7vH9OXC9q92fuK0CADfGfg8s7ju7c7H6BTqn5Soov61Dip+YzA/SDzsr6nROiyQRWttNhHJbBFhzPZ1L0Cn/gxhB0Vo5QiprpQAj5FU5odjlzAaAc8ITSEckRMaJxxsWlAiz3DvD0xQmatH70I5Y=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2408.namprd15.prod.outlook.com (2603:10b6:a02:85::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Fri, 4 Dec
- 2020 15:21:25 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3632.021; Fri, 4 Dec 2020
- 15:21:24 +0000
-Subject: Re: [PATCH bpf-next v3 10/14] bpf: Add bitwise atomic instructions
-To:     Brendan Jackman <jackmanb@google.com>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
-References: <20201203160245.1014867-1-jackmanb@google.com>
- <20201203160245.1014867-11-jackmanb@google.com>
- <86a88eba-83a1-93c0-490d-ceba238e3aad@fb.com> <X8oDEsEjU059T7+k@google.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <534a6371-a5ed-2459-999b-90b8a8b773e8@fb.com>
-Date:   Fri, 4 Dec 2020 07:21:22 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
-In-Reply-To: <X8oDEsEjU059T7+k@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:fab1]
-X-ClientProxiedBy: MW3PR05CA0015.namprd05.prod.outlook.com
- (2603:10b6:303:2b::20) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        Fri, 4 Dec 2020 10:22:10 -0500
+Received: from cmgw14.unifiedlayer.com (unknown [10.9.0.14])
+        by gproxy3.mail.unifiedlayer.com (Postfix) with ESMTP id 0C29C40057
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 08:21:29 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id lCtkkx5h5wNNllCtkk8kbH; Fri, 04 Dec 2020 08:21:29 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=Icqpp1ia c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=zTNgK-yGK50A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=gAnH3GRIAAAA:8
+ a=FKLIVFl7mNak6WWTxaYA:9 a=CjuIK1q_8ugA:10:nop_charset_2
+ a=oVHKYsEdi7-vN-J5QA_j:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=PNfgaoH8rLyWEGS0pemJZIJT1rnIBN/Ft6RtOLR1vDE=; b=LXIIV7nSAB6qj3R1O2KYx2WlY0
+        d0MvkEXyLWOtx8kaDpfTAVKwqeJMtTDsZkfH//xeYdZxOiIrWtPCoo/e9eIeQFTSfwLHcdapF9Lg2
+        pEn/QvUR5onnsG9B1oDsrupE56vy6rQcNs7YqNplzK50lrhZlDPPnFV75bSu62NOi/zDfRbN8qDkT
+        mQ2Wpq72nDvrloewg7zLxEDgIoCGFZcU7hfvzEP0p9RIJ2yJLBCSdXPLzJINITlTQ66Mk9mCA+fWx
+        6CpfKqyS9by4lOzBi5efRA0WnTXuRgtaxs3Ly7EE2bDEyjululq7Q8ZTpAaaJBG3fyf0+Yg1SDOb6
+        Hu7uVcWQ==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:46526 helo=localhost)
+        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1klCtk-001k7N-1D; Fri, 04 Dec 2020 15:21:28 +0000
+Date:   Fri, 4 Dec 2020 07:21:27 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     alexandru.tachici@analog.com
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Weston.Sapia@analog.com,
+        Brad.Lovell@analog.com, Sal.Afzal@analog.com, robh+dt@kernel.org
+Subject: Re: [PATCH v3 2/3] hwmon: ltc2992: Add support for GPIOs.
+Message-ID: <20201204152127.GB135107@roeck-us.net>
+References: <20201203071155.68859-1-alexandru.tachici@analog.com>
+ <20201203071155.68859-3-alexandru.tachici@analog.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c8::12b3] (2620:10d:c090:400::5:fab1) by MW3PR05CA0015.namprd05.prod.outlook.com (2603:10b6:303:2b::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Fri, 4 Dec 2020 15:21:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bedc9bfc-7d07-468f-3ab6-08d898684356
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2408:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2408199FEBD90AEAEEF38E0CD3F10@BYAPR15MB2408.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VUUBkDI+IT+dPjg4xHlYbbgOrM9MvxW86bfvEfmMR0BJM1LMsjhQwb3cLwee5D1ld22otzKWBxyhRjUitbaskav2YREVpFv2dx/U0cNoC0XshJSoixro/W8rKUWF8RHnrR1lL3Bt5aDh+lejwIN18onWgBQ615QHNV8dK7P1AL2TP+S6IWyH29umyasU5sLaLikxyzWtQW09xbX4kIN1j1GsPxA2/IcWpFErL5BIgmgQPaqTJc7AmtJqBKc9iRHtZ9JvWKOUKqK1J5d9SBmII+nDZBmPyVmIGModubr/vlZTuQ3kI7QAFh5F4A2+ZComVVCT0UH2/hcgKk9hpdobm4PdTq0s00QpHE+Mkkl9aeYURTEUGcZzUCBUXv8+OQRdwhPQfwHRjci7DTi36asCU0m18kEJx8YDQVRNm+ZL/C0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(376002)(396003)(366004)(346002)(52116002)(8936002)(8676002)(5660300002)(86362001)(316002)(2906002)(54906003)(6916009)(36756003)(31696002)(53546011)(16526019)(66946007)(66476007)(66556008)(83380400001)(186003)(478600001)(4326008)(6486002)(31686004)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?U0NBZ1VjRE1jNFpvRG56L3ZWNU9LVGR3UDJxS2J5MGlhVVN4SVNESVlnMkli?=
- =?utf-8?B?R1lnYmZ3dDh3ZFcrWjdKSHE1SnBnMyt3L25aWmtUb3Y1WjBOVnUvS0FEeGR6?=
- =?utf-8?B?RVdwNVJUaWxDN3lnQ29IK3VHZEpqb3BKM2RrT0hOSGRWeU9hWTdjVFlJUyti?=
- =?utf-8?B?eTFLc0Q5dndTRXdNV0w2V0FFNGxrazB1ZXV6ZHV5S0w5bmxVZkVOK0JTWWkw?=
- =?utf-8?B?UHFIdUQrbm9qQzVKMFhtNHpKWWhpbURUTzlBejhRNnF5eitVbmlNZGxaZ3Ex?=
- =?utf-8?B?ZUNqancxWWxockNxTGNzWjhhUHZxV0Y4MnFiTkFzSUdUd011NStMQmtYZk16?=
- =?utf-8?B?WkVXUGMvbHpRNURuVmV1aTFZdm93ZnNMMDEvTUNyTHdRNXpOSnRuWDJIMStq?=
- =?utf-8?B?b01TWllIb01yQitjVDA2SEhJQVpjZjIyTktOSmJ2T2l0UjBXOHFpcTdMVDJP?=
- =?utf-8?B?RGUrUll6YjNSREdnZ2dEdWVFY2J6K0toOEIxNDhEOC91TCtITmE1aTI3MVhz?=
- =?utf-8?B?S3ZqV2tCYmIxUmtJalloVkJ5ZWVSRy9CRC9xbGVYVmpNdFNRT3BBczBGUlJm?=
- =?utf-8?B?VElOdVVxOVlzMkdtRldSNVV5T2hxSFNJRmdaL2dHSW00aGVzT3RPcTBNQ3kv?=
- =?utf-8?B?OE1NOHlvWVR4TUwzQkhQZzVETlQ5Tk5KNnFUQ0swK29EaU5jdTY0dHpPR0R4?=
- =?utf-8?B?Q1Bmczh0aEg3ckZCa2VxSWU4SjY3eWx6MGY3cXI3b3JiRi9haTdndk92Rzc2?=
- =?utf-8?B?RTZ1U1ROQzA0ZkJMMENYUlg2eDBtT3VldTd0QlZuMWV5cXhIemhVbWtVd2g1?=
- =?utf-8?B?UHIySHpvS2tYTEdBVmNwOHk4akZzajRvZitqYXNHalNiekw4UFRKYzNJVDdp?=
- =?utf-8?B?R1pWRUxYa1U2ekkrV1VPK3E4TGZ6Y21GTmRXamt3ZXVzTC9YSENyM3NxT3V1?=
- =?utf-8?B?aHkwZzNnRUV3RFEwR2piVG01UE9TZ1lReGlFVkhQVFpGMEdrY3pZOXBVVzJG?=
- =?utf-8?B?aHNpYVh5bTcwdEc3Wm1mclNMb2JBdklBNURuQnJabG9OdGhKUFg5UTlHYUE5?=
- =?utf-8?B?WnJYLzlKOWNNM1FvYlBDbmpuSUNlV1NJV1Y1eFE1YkxuQk1tVUxDSml0Q1pz?=
- =?utf-8?B?Z0RrV0VVd25iQVpLN3E1eXJJRWlkL1RzMzdUNE9tekRaVDRIb3Q0dGZvc2I5?=
- =?utf-8?B?bkVUQjR0NnZDaWx1U1VucVJBaFBvRlZja1JQQzJycUNBVU9kcmZTOFEvNVA0?=
- =?utf-8?B?QjErd0xEUDBCeW56WDlFMTFLMitOYXpqN1ppajkyZ3FHY3BrN0pjTzhTb21T?=
- =?utf-8?B?c2U5NFhBd0J5OTFQSGR6TDJvMjFnSlZjdE95aTluZWs4MFVXMnZFQlA2aTlD?=
- =?utf-8?B?ZU9SaFMxRDdFZkE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bedc9bfc-7d07-468f-3ab6-08d898684356
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 15:21:24.8549
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3YBHHx02lqiIJ199qTRKOO2B7HlY9U3OV2aZDf3MpDLvIywHV0PjuczcKEMGOtyV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2408
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_05:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 adultscore=0
- priorityscore=1501 spamscore=0 mlxlogscore=999 mlxscore=0 clxscore=1015
- impostorscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040089
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203071155.68859-3-alexandru.tachici@analog.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1klCtk-001k7N-1D
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:46526
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 14
+X-Org:  HG=direseller_whb_net_legacy;ORG=directi;
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/4/20 1:36 AM, Brendan Jackman wrote:
-> On Thu, Dec 03, 2020 at 10:42:19PM -0800, Yonghong Song wrote:
->>
->>
->> On 12/3/20 8:02 AM, Brendan Jackman wrote:
->>> This adds instructions for
->>>
->>> atomic[64]_[fetch_]and
->>> atomic[64]_[fetch_]or
->>> atomic[64]_[fetch_]xor
->>>
->>> All these operations are isomorphic enough to implement with the same
->>> verifier, interpreter, and x86 JIT code, hence being a single commit.
->>>
->>> The main interesting thing here is that x86 doesn't directly support
->>> the fetch_ version these operations, so we need to generate a CMPXCHG
->>> loop in the JIT. This requires the use of two temporary registers,
->>> IIUC it's safe to use BPF_REG_AX and x86's AUX_REG for this purpose.
->>>
->>> Change-Id: I340b10cecebea8cb8a52e3606010cde547a10ed4
->>> Signed-off-by: Brendan Jackman <jackmanb@google.com>
->>> ---
->>>    arch/x86/net/bpf_jit_comp.c  | 50 +++++++++++++++++++++++++++++-
->>>    include/linux/filter.h       | 60 ++++++++++++++++++++++++++++++++++++
->>>    kernel/bpf/core.c            |  5 ++-
->>>    kernel/bpf/disasm.c          | 21 ++++++++++---
->>>    kernel/bpf/verifier.c        |  6 ++++
->>>    tools/include/linux/filter.h | 60 ++++++++++++++++++++++++++++++++++++
->>>    6 files changed, 196 insertions(+), 6 deletions(-)
->>>
-> [...]
->>> diff --git a/include/linux/filter.h b/include/linux/filter.h
->>> index 6186280715ed..698f82897b0d 100644
->>> --- a/include/linux/filter.h
->>> +++ b/include/linux/filter.h
->>> @@ -280,6 +280,66 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
-> [...]
->>> +#define BPF_ATOMIC_FETCH_XOR(SIZE, DST, SRC, OFF)		\
->>> +	((struct bpf_insn) {					\
->>> +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
->>> +		.dst_reg = DST,					\
->>> +		.src_reg = SRC,					\
->>> +		.off   = OFF,					\
->>> +		.imm   = BPF_XOR | BPF_FETCH })
->>> +
->>>    /* Atomic exchange, src_reg = atomic_xchg((dst_reg + off), src_reg) */
->>
->> Looks like BPF_ATOMIC_XOR/OR/AND/... all similar to each other.
->> The same is for BPF_ATOMIC_FETCH_XOR/OR/AND/...
->>
->> I am wondering whether it makes sence to have to
->> BPF_ATOMIC_BOP(BOP, SIZE, DST, SRC, OFF) and
->> BPF_ATOMIC_FETCH_BOP(BOP, SIZE, DST, SRC, OFF)
->> can have less number of macros?
+On Thu, Dec 03, 2020 at 09:11:54AM +0200, alexandru.tachici@analog.com wrote:
+> From: Alexandru Tachici <alexandru.tachici@analog.com>
 > 
-> Hmm yeah I think that's probably a good idea, it would be consistent
-> with the macros for non-atomic ALU ops.
+> LTC2992 has 4 open-drain GPIOS. This patch exports to user
+> space the 4 GPIOs using the GPIO driver Linux API.
 > 
-> I don't think 'BOP' would be very clear though, 'ALU' might be more
-> obvious.
+> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
 
-BPF_ATOMIC_ALU and BPF_ATOMIC_FETCH_ALU indeed better.
+Applied.
 
+Thanks,
+Guenter
+
+> ---
+>  drivers/hwmon/Kconfig   |   1 +
+>  drivers/hwmon/ltc2992.c | 160 +++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 160 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index bf9e387270d6..8a8eb42fb1ec 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -861,6 +861,7 @@ config SENSORS_LTC2990
+>  config SENSORS_LTC2992
+>  	tristate "Linear Technology LTC2992"
+>  	depends on I2C
+> +	depends on GPIOLIB
+>  	help
+>  	  If you say yes here you get support for Linear Technology LTC2992
+>  	  I2C System Monitor. The LTC2992 measures current, voltage, and
+> diff --git a/drivers/hwmon/ltc2992.c b/drivers/hwmon/ltc2992.c
+> index c11d585a9600..69dbb5aa5dc2 100644
+> --- a/drivers/hwmon/ltc2992.c
+> +++ b/drivers/hwmon/ltc2992.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/bitfield.h>
+>  #include <linux/bitops.h>
+>  #include <linux/err.h>
+> +#include <linux/gpio/driver.h>
+>  #include <linux/hwmon.h>
+>  #include <linux/i2c.h>
+>  #include <linux/kernel.h>
+> @@ -54,6 +55,9 @@
+>  #define LTC2992_G4_MAX_THRESH		0x74
+>  #define LTC2992_G4_MIN_THRESH		0x76
+>  #define LTC2992_FAULT3			0x92
+> +#define LTC2992_GPIO_STATUS		0x95
+> +#define LTC2992_GPIO_IO_CTRL		0x96
+> +#define LTC2992_GPIO_CTRL		0x97
+>  
+>  #define LTC2992_POWER(x)		(LTC2992_POWER1 + ((x) * 0x32))
+>  #define LTC2992_POWER_MAX(x)		(LTC2992_POWER1_MAX + ((x) * 0x32))
+> @@ -96,8 +100,18 @@
+>  #define LTC2992_VADC_UV_LSB		25000
+>  #define LTC2992_VADC_GPIO_UV_LSB	500
+>  
+> +#define LTC2992_GPIO_NR		4
+> +#define LTC2992_GPIO1_BIT	7
+> +#define LTC2992_GPIO2_BIT	6
+> +#define LTC2992_GPIO3_BIT	0
+> +#define LTC2992_GPIO4_BIT	6
+> +#define LTC2992_GPIO_BIT(x)	(LTC2992_GPIO_NR - (x) - 1)
+> +
+>  struct ltc2992_state {
+>  	struct i2c_client		*client;
+> +	struct gpio_chip		gc;
+> +	struct mutex			gpio_mutex; /* lock for gpio access */
+> +	const char			*gpio_names[LTC2992_GPIO_NR];
+>  	struct regmap			*regmap;
+>  	u32				r_sense_uohm[2];
+>  };
+> @@ -111,6 +125,8 @@ struct ltc2992_gpio_regs {
+>  	u8	alarm;
+>  	u8	min_alarm_msk;
+>  	u8	max_alarm_msk;
+> +	u8	ctrl;
+> +	u8	ctrl_bit;
+>  };
+>  
+>  static const struct ltc2992_gpio_regs ltc2992_gpio_addr_map[] = {
+> @@ -123,6 +139,8 @@ static const struct ltc2992_gpio_regs ltc2992_gpio_addr_map[] = {
+>  		.alarm = LTC2992_FAULT1,
+>  		.min_alarm_msk = LTC2992_GPIO1_FAULT_MSK(0),
+>  		.max_alarm_msk = LTC2992_GPIO1_FAULT_MSK(1),
+> +		.ctrl = LTC2992_GPIO_IO_CTRL,
+> +		.ctrl_bit = LTC2992_GPIO1_BIT,
+>  	},
+>  	{
+>  		.data = LTC2992_G2,
+> @@ -133,6 +151,8 @@ static const struct ltc2992_gpio_regs ltc2992_gpio_addr_map[] = {
+>  		.alarm = LTC2992_FAULT2,
+>  		.min_alarm_msk = LTC2992_GPIO2_FAULT_MSK(0),
+>  		.max_alarm_msk = LTC2992_GPIO2_FAULT_MSK(1),
+> +		.ctrl = LTC2992_GPIO_IO_CTRL,
+> +		.ctrl_bit = LTC2992_GPIO2_BIT,
+>  	},
+>  	{
+>  		.data = LTC2992_G3,
+> @@ -143,6 +163,8 @@ static const struct ltc2992_gpio_regs ltc2992_gpio_addr_map[] = {
+>  		.alarm = LTC2992_FAULT3,
+>  		.min_alarm_msk = LTC2992_GPIO3_FAULT_MSK(0),
+>  		.max_alarm_msk = LTC2992_GPIO3_FAULT_MSK(1),
+> +		.ctrl = LTC2992_GPIO_IO_CTRL,
+> +		.ctrl_bit = LTC2992_GPIO3_BIT,
+>  	},
+>  	{
+>  		.data = LTC2992_G4,
+> @@ -153,14 +175,20 @@ static const struct ltc2992_gpio_regs ltc2992_gpio_addr_map[] = {
+>  		.alarm = LTC2992_FAULT3,
+>  		.min_alarm_msk = LTC2992_GPIO4_FAULT_MSK(0),
+>  		.max_alarm_msk = LTC2992_GPIO4_FAULT_MSK(1),
+> +		.ctrl = LTC2992_GPIO_CTRL,
+> +		.ctrl_bit = LTC2992_GPIO4_BIT,
+>  	},
+>  };
+>  
+> +static const char *ltc2992_gpio_names[LTC2992_GPIO_NR] = {
+> +	"GPIO1", "GPIO2", "GPIO3", "GPIO4",
+> +};
+> +
+>  static int ltc2992_read_reg(struct ltc2992_state *st, u8 addr, const u8 reg_len)
+>  {
+>  	u8 regvals[4];
+> -	int ret;
+>  	int val;
+> +	int ret;
+>  	int i;
+>  
+>  	ret = regmap_bulk_read(st->regmap, addr, regvals, reg_len);
+> @@ -185,6 +213,132 @@ static int ltc2992_write_reg(struct ltc2992_state *st, u8 addr, const u8 reg_len
+>  	return regmap_bulk_write(st->regmap, addr, regvals, reg_len);
+>  }
+>  
+> +static int ltc2992_gpio_get(struct gpio_chip *chip, unsigned int offset)
+> +{
+> +	struct ltc2992_state *st = gpiochip_get_data(chip);
+> +	unsigned long gpio_status;
+> +	int reg;
+> +
+> +	mutex_lock(&st->gpio_mutex);
+> +	reg = ltc2992_read_reg(st, LTC2992_GPIO_STATUS, 1);
+> +	mutex_unlock(&st->gpio_mutex);
+> +
+> +	if (reg < 0)
+> +		return reg;
+> +
+> +	gpio_status = reg;
+> +
+> +	return !test_bit(LTC2992_GPIO_BIT(offset), &gpio_status);
+> +}
+> +
+> +static int ltc2992_gpio_get_multiple(struct gpio_chip *chip, unsigned long *mask,
+> +				     unsigned long *bits)
+> +{
+> +	struct ltc2992_state *st = gpiochip_get_data(chip);
+> +	unsigned long gpio_status;
+> +	unsigned int gpio_nr;
+> +	int reg;
+> +
+> +	mutex_lock(&st->gpio_mutex);
+> +	reg = ltc2992_read_reg(st, LTC2992_GPIO_STATUS, 1);
+> +	mutex_unlock(&st->gpio_mutex);
+> +
+> +	if (reg < 0)
+> +		return reg;
+> +
+> +	gpio_status = reg;
+> +
+> +	gpio_nr = 0;
+> +	for_each_set_bit_from(gpio_nr, mask, LTC2992_GPIO_NR) {
+> +		if (test_bit(LTC2992_GPIO_BIT(gpio_nr), &gpio_status))
+> +			set_bit(gpio_nr, bits);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void ltc2992_gpio_set(struct gpio_chip *chip, unsigned int offset, int value)
+> +{
+> +	struct ltc2992_state *st = gpiochip_get_data(chip);
+> +	unsigned long gpio_ctrl;
+> +	int reg;
+> +
+> +	mutex_lock(&st->gpio_mutex);
+> +	reg = ltc2992_read_reg(st, ltc2992_gpio_addr_map[offset].ctrl, 1);
+> +	if (reg < 0) {
+> +		mutex_unlock(&st->gpio_mutex);
+> +		return;
+> +	}
+> +
+> +	gpio_ctrl = reg;
+> +	assign_bit(ltc2992_gpio_addr_map[offset].ctrl_bit, &gpio_ctrl, value);
+> +
+> +	ltc2992_write_reg(st, ltc2992_gpio_addr_map[offset].ctrl, 1, gpio_ctrl);
+> +	mutex_unlock(&st->gpio_mutex);
+> +}
+> +
+> +static void ltc2992_gpio_set_multiple(struct gpio_chip *chip, unsigned long *mask,
+> +				      unsigned long *bits)
+> +{
+> +	struct ltc2992_state *st = gpiochip_get_data(chip);
+> +	unsigned long gpio_ctrl_io = 0;
+> +	unsigned long gpio_ctrl = 0;
+> +	unsigned int gpio_nr;
+> +
+> +	for_each_set_bit(gpio_nr, mask, LTC2992_GPIO_NR) {
+> +		if (gpio_nr < 3)
+> +			assign_bit(ltc2992_gpio_addr_map[gpio_nr].ctrl_bit, &gpio_ctrl_io, true);
+> +
+> +		if (gpio_nr == 3)
+> +			assign_bit(ltc2992_gpio_addr_map[gpio_nr].ctrl_bit, &gpio_ctrl, true);
+> +	}
+> +
+> +	mutex_lock(&st->gpio_mutex);
+> +	ltc2992_write_reg(st, LTC2992_GPIO_IO_CTRL, 1, gpio_ctrl_io);
+> +	ltc2992_write_reg(st, LTC2992_GPIO_CTRL, 1, gpio_ctrl);
+> +	mutex_unlock(&st->gpio_mutex);
+> +}
+> +
+> +static int ltc2992_config_gpio(struct ltc2992_state *st)
+> +{
+> +	const char *name = dev_name(&st->client->dev);
+> +	char *gpio_name;
+> +	int ret;
+> +	int i;
+> +
+> +	ret = ltc2992_write_reg(st, LTC2992_GPIO_IO_CTRL, 1, 0);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	mutex_init(&st->gpio_mutex);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(st->gpio_names); i++) {
+> +		gpio_name = devm_kasprintf(&st->client->dev, GFP_KERNEL, "ltc2992-%x-%s",
+> +					   st->client->addr, ltc2992_gpio_names[i]);
+> +		if (!gpio_name)
+> +			return -ENOMEM;
+> +
+> +		st->gpio_names[i] = gpio_name;
+> +	}
+> +
+> +	st->gc.label = name;
+> +	st->gc.parent = &st->client->dev;
+> +	st->gc.owner = THIS_MODULE;
+> +	st->gc.base = -1;
+> +	st->gc.names = st->gpio_names;
+> +	st->gc.ngpio = ARRAY_SIZE(st->gpio_names);
+> +	st->gc.get = ltc2992_gpio_get;
+> +	st->gc.get_multiple = ltc2992_gpio_get_multiple;
+> +	st->gc.set = ltc2992_gpio_set;
+> +	st->gc.set_multiple = ltc2992_gpio_set_multiple;
+> +
+> +	ret = devm_gpiochip_add_data(&st->client->dev, &st->gc, st);
+> +	if (ret)
+> +		dev_err(&st->client->dev, "GPIO registering failed (%d)\n", ret);
+> +
+> +	return ret;
+> +}
+> +
+>  static umode_t ltc2992_is_visible(const void *data, enum hwmon_sensor_types type, u32 attr,
+>  				  int channel)
+>  {
+> @@ -779,6 +933,10 @@ static int ltc2992_i2c_probe(struct i2c_client *client, const struct i2c_device_
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	ret = ltc2992_config_gpio(st);
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	hwmon_dev = devm_hwmon_device_register_with_info(&client->dev, client->name, st,
+>  							 &ltc2992_chip_info, NULL);
+>  
+> -- 
+> 2.20.1
 > 
