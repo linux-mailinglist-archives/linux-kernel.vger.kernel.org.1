@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E59A2CF16F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EB22CF17C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:07:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730656AbgLDQDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:03:31 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52354 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729625AbgLDQDa (ORCPT
+        id S1730723AbgLDQDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:03:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728355AbgLDQDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:03:30 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0B4G2R8k023074
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 4 Dec 2020 11:02:27 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 19219420136; Fri,  4 Dec 2020 11:02:27 -0500 (EST)
-Date:   Fri, 4 Dec 2020 11:02:27 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        David Howells <dhowells@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Sandeen <sandeen@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Xiaoli Feng <xifeng@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH V2] uapi: fix statx attribute value overlap for DAX &
- MOUNT_ROOT
-Message-ID: <20201204160227.GA577125@mit.edu>
-References: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
- <20201202160049.GD1447340@iweiny-DESK2.sc.intel.com>
- <CAJfpegt6w4h28VLctpaH46r2pkbcUNJ4pUhwUqZ-zbrOrXPEEQ@mail.gmail.com>
- <641397.1606926232@warthog.procyon.org.uk>
- <CAJfpegsQxi+_ttNshHu5MP+uLn3px9+nZRoTLTxh9-xwU8s1yg@mail.gmail.com>
- <X8flmVAwl0158872@kroah.com>
- <20201202204045.GM2842436@dread.disaster.area>
- <X8gBUc0fkdh6KK01@kroah.com>
- <CAOQ4uxhNvTxEo_-wkHy-KO8Jhz0Amh-g2Nz+PzN_8OODWJPz7w@mail.gmail.com>
+        Fri, 4 Dec 2020 11:03:41 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA5FC061A4F;
+        Fri,  4 Dec 2020 08:02:55 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id a6so5942252wmc.2;
+        Fri, 04 Dec 2020 08:02:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Q1yfTlb9bBZ0gNH36CjYMIoHV//7gjPmTR0/ONE5eBo=;
+        b=Fq5VRsGUzKL1rNfyyfzfPtKgF154pn72SL/iiLNp7wtl4FTufNsrsdy77+jBAZlS71
+         ODL1sXYk6CI0OtIji0/B0qSyUu6V8g+c0q0un8rLBh8g3nJjtOmomf317Mo84dsEGWuo
+         1bMW1mniAfZt+8Vt4+MMdCAxXfCGaDFFd62O8hYwhy07xHBB7Y+kFba8u4QDL50SbuNN
+         LV1PndF02tm+fKyIU9B8+GXam3yDZjB/CYKbgltAw0xtxJtiBdpkbVq6uFPYG4o7gL+l
+         AqVFnYeFkuYPrEf9JOwnKlrHkdsEdQXEP9SLg6uVUv6H4icDVzOCx/shQIBLq2tDDAO7
+         6qLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Q1yfTlb9bBZ0gNH36CjYMIoHV//7gjPmTR0/ONE5eBo=;
+        b=a2n9XJbMGZnXTZCAbqcGW6vY1eE3///hXOwp7WU0CDdFoSJws8/6Jsi3h289bZnCoe
+         TObLQ78mEszPXyXFqCEq/4fwBRvDSsMlTk7kooBaD0eMxn74O0aIBosGpJH8Izax/MWz
+         TYg6Nup05aBdUWYZEMLpCarnozlELZJNMvF0L6/yW8O9bboj3DMTq7JQWMGHB8ss5LAo
+         O9krJaTfpXSk7TDOIDFHFAlR+kuOIwYFqzsZWiRQUUL8XyRMu0wXPb3NxTw/4UdWDTXS
+         VD7atLCQNz5+2JjTw6++W47KtOuAs117GoyewjfnMOuljjzc1OBVyC4gQ3073FoMr1fm
+         crwQ==
+X-Gm-Message-State: AOAM531rpKDQtGiwsD4qWXIoNtY1BpIj4DOQM4jRCliaM0Wake7utoG2
+        Oqu5DRrePPtgEJQwU06n/ZZNR1UqLqPIT4DP
+X-Google-Smtp-Source: ABdhPJzctET2f7fFmeWCjVPWYE5J25cDkCuQaq+8jtixNgpsflmmv+PzlEU28cXsDvls9scQjdw3Jg==
+X-Received: by 2002:a1c:9a4d:: with SMTP id c74mr5189275wme.5.1607097774126;
+        Fri, 04 Dec 2020 08:02:54 -0800 (PST)
+Received: from localhost.localdomain (host-79-13-10-171.retail.telecomitalia.it. [79.13.10.171])
+        by smtp.gmail.com with ESMTPSA id d15sm4350075wrx.93.2020.12.04.08.02.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 08:02:53 -0800 (PST)
+From:   Elia Devito <eliadevito@gmail.com>
+X-Google-Original-From: Elia Devito <elia@xvalue.it>
+Cc:     Elia Devito <eliadevito@gmail.com>,
+        Alex Hung <alex.hung@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/2] intel-hid: add alternative method to enable switches
+Date:   Fri,  4 Dec 2020 17:02:35 +0100
+Message-Id: <20201204160234.36832-1-elia@xvalue.it>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201203212000.35898-1-eliadevito@gmail.com>
+References: <20201203212000.35898-1-eliadevito@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxhNvTxEo_-wkHy-KO8Jhz0Amh-g2Nz+PzN_8OODWJPz7w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 08:18:23AM +0200, Amir Goldstein wrote:
-> Here is a recent example, where during patch review, I requested NOT to include
-> any stable backport triggers [1]:
-> "...We should consider sending this to stable, but maybe let's merge
-> first and let it
->  run in master for a while before because it is not a clear and
-> immediate danger..."
->
-> As a developer and as a reviewer, I wish (as Dave implied) that I had a way to
-> communicate to AUTOSEL that auto backport of this patch has more risk than
-> the risk of not backporting.
+From: Elia Devito <eliadevito@gmail.com>
 
-My suggestion is that we could put something in the MAINTAINERS file
-which indicates what the preferred delay time should be for (a)
-patches explicitly cc'ed to stable, and (b) preferred time should be
-for patches which are AUTOSEL'ed for stable for that subsystem.  That
-time might be either in days/weeks, or "after N -rc releases", "after
-the next full release", or, "never" (which would be a way for a
-subsystem to opt out of the AUTOSEL process).
+Some convertible have unreliable VGBS return, in these cases we enable
+support when receiving the first event.
 
-It should also be possible specify the delay in the trailer, e.g.:
+Signed-off-by: Elia Devito <eliadevito@gmail.com>
+---
+ drivers/platform/x86/intel-hid.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-Stable-Defer: <delayspec>
-Auto-Stable-Defer: <delayspec>
+diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel-hid.c
+index d2f892665ec6..054bc37da2cf 100644
+--- a/drivers/platform/x86/intel-hid.c
++++ b/drivers/platform/x86/intel-hid.c
+@@ -423,6 +423,19 @@ static void notify_handler(acpi_handle handle, u32 event, void *context)
+ 	struct platform_device *device = context;
+ 	struct intel_hid_priv *priv = dev_get_drvdata(&device->dev);
+ 	unsigned long long ev_index;
++	int err;
++
++	/*
++	 * Some convertible have unreliable VGBS return which could cause incorrect
++	 * SW_TABLET_MODE report, in these cases we enable support when receiving
++	 * the first event instead of during driver setup.
++	 */
++	if (!priv->switches && (event == 0xcc || event == 0xcd)) {
++		dev_info(&device->dev, "switch event received, enable switches supports\n");
++		err = intel_hid_switches_setup(device);
++		if (err)
++			pr_err("Failed to setup Intel HID switches\n");
++	}
+ 
+ 	if (priv->wakeup_mode) {
+ 		/*
+-- 
+2.28.0
 
-The advantage of specifying the delay relative to when they show up in
-Linus's tree helps deal with the case where the submaintainer might
-not be sure when their patches will get pushed to Linus by the
-maintainer.
-
-Cheers,
-
-						- Ted
