@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E21B2CECF7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597912CECFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729779AbgLDLWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:22:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgLDLWF (ORCPT
+        id S1729925AbgLDLYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:24:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28698 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726031AbgLDLYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:22:05 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C0CC061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 03:21:24 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kl99I-0007bU-Qi; Fri, 04 Dec 2020 12:21:16 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kl99H-0004P7-Nn; Fri, 04 Dec 2020 12:21:15 +0100
-Date:   Fri, 4 Dec 2020 12:21:15 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-pwm@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sean@mess.org
-Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
- configuration
-Message-ID: <20201204112115.wopx5p5elgte7gad@pengutronix.de>
-References: <202011281128.54eLfMWr-lkp@intel.com>
- <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
- <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
- <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
+        Fri, 4 Dec 2020 06:24:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607080973;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2xYmq1WDTNwe1WMK0sFOwKcOwQdm9xnUmb1ObuGviYU=;
+        b=dLMhL3eaFcT5uTMDquQyfdPFjoGzlTFDN204ttVa9nShLlLyDMVoTDIeo+jGvoRZkWWre/
+        lfck76MySkGHd+qAkXIin5oVlmzATy+z3UVMdLw/bB3tdV61X+QFSLX0bVxKcIGSGYyTL8
+        eALZ8hCC2CsGOjhW3EMdHiSq0Hy07B8=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-90-aNuxZLI4MJisVD0VR0s_1g-1; Fri, 04 Dec 2020 06:22:52 -0500
+X-MC-Unique: aNuxZLI4MJisVD0VR0s_1g-1
+Received: by mail-ed1-f69.google.com with SMTP id dh21so1385278edb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 03:22:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2xYmq1WDTNwe1WMK0sFOwKcOwQdm9xnUmb1ObuGviYU=;
+        b=uMBL/2nslv15i/7eY+WSSwueIu07AQ75VONa4xonkx6+owdCboUsyKmZfI+W6DtLrT
+         nhZzDofEOgl6fJtOwNyAOc3gyN7GGnZb+4w5ZcFZGbZeCKjJ61GoUwhs09QFGrvj9D/4
+         9u/LXCdAiC0KrMMqG4v/fAs9K7zD+pmgVTw/LWo9h1kJYNbFfjCS3H6ktmqu/mPQvmD3
+         vMQDCZIQayhia/B1I/nVU3ugVGwxwLPtTlZrJxz4HQzOLQMWJ+JNhHxlvfJqYSIXBrc4
+         32HkBUv3sG6i3SkcicsFJ6oFikCKt4pYvGFg8xa849l87KKuJuHYeUSDVDV4izT8tIBw
+         ga1A==
+X-Gm-Message-State: AOAM530BL3QNvJODg7GacmQpTBnrOgVRtMvEwFHI+kUmQHs6KvYw92XC
+        kkk2JpHkT87WFXo5zlGqsmVS7xZ33YIGQbCuP0CMsI9VtQR85BonYKdmcVmRyVw6Er+47zGbWGf
+        h7roIsudyWp/VKOgGLcEQmTOb
+X-Received: by 2002:a17:906:6683:: with SMTP id z3mr6827626ejo.27.1607080970816;
+        Fri, 04 Dec 2020 03:22:50 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw343SknxiSSuY0NNWzbJs4msxXhsprD6WBOFGcibn/gINRccGkPWRXPfY4u3yR4ha4Ysx8pw==
+X-Received: by 2002:a17:906:6683:: with SMTP id z3mr6827610ejo.27.1607080970670;
+        Fri, 04 Dec 2020 03:22:50 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id u1sm3256230edf.65.2020.12.04.03.22.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Dec 2020 03:22:49 -0800 (PST)
+Subject: Re: [PATCH v8 18/18] KVM: SVM: Enable SEV live migration feature
+ implicitly on Incoming VM(s).
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, bp@suse.de, Thomas.Lendacky@amd.com,
+        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, rientjes@google.com,
+        venu.busireddy@oracle.com, brijesh.singh@amd.com
+References: <cover.1588711355.git.ashish.kalra@amd.com>
+ <a70e7ea40c47116339f968b7d2d2bf120f452c1e.1588711355.git.ashish.kalra@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <7a3e57c5-8a8c-30dc-4414-cd46b201eed3@redhat.com>
+Date:   Fri, 4 Dec 2020 12:22:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ipxeiknnoimo3nk7"
-Content-Disposition: inline
-In-Reply-To: <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <a70e7ea40c47116339f968b7d2d2bf120f452c1e.1588711355.git.ashish.kalra@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05/05/20 23:22, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
+> 
+> For source VM, live migration feature is enabled explicitly
+> when the guest is booting, for the incoming VM(s) it is implied.
+> This is required for handling A->B->C->... VM migrations case.
+> 
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>   arch/x86/kvm/svm/sev.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 6f69c3a47583..ba7c0ebfa1f3 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1592,6 +1592,13 @@ int svm_set_page_enc_bitmap(struct kvm *kvm,
+>   	if (ret)
+>   		goto unlock;
+>   
+> +	/*
+> +	 * For source VM, live migration feature is enabled
+> +	 * explicitly when the guest is booting, for the
+> +	 * incoming VM(s) it is implied.
+> +	 */
+> +	sev_update_migration_flags(kvm, KVM_SEV_LIVE_MIGRATION_ENABLED);
+> +
+>   	bitmap_copy(sev->page_enc_bmap + BIT_WORD(gfn_start), bitmap,
+>   		    (gfn_end - gfn_start));
+>   
+> 
 
---ipxeiknnoimo3nk7
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I would prefer that userspace does this using KVM_SET_MSR instead.
 
-Hello Lino,
+Paolo
 
-On Fri, Dec 04, 2020 at 12:42:15AM +0100, Lino Sanfilippo wrote:
-> On 29.11.20 at 19:10, Uwe Kleine-K=F6nig wrote:
-> > You're storing an unsigned long long (i.e. 64 bits) in an u32. If
-> > you are sure that this won't discard relevant bits, please explain
-> > this in a comment for the cursory reader.
->=20
-> What about an extra check then to make sure that the period has not been =
-truncated,
-> e.g:
->=20
-> 	value =3D DIV_ROUND_CLOSEST_ULL(state->period, scaler);
->=20
-> 	/* dont accept a period that is too small or has been truncated */
-> 	if ((value < PERIOD_MIN) ||
-> 	    (value !=3D DIV_ROUND_CLOSEST_ULL(state->period, scaler)))
-> 		return -EINVAL;
-
-I'd make value an unsigned long long and check for > 0xffffffff instead
-of repeating the (expensive) division. (Hmm, maybe the compiler is smart
-enough to not actually repeat it, but still.)
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ipxeiknnoimo3nk7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/KG6gACgkQwfwUeK3K
-7AmG2Qf/amv7olBkW+obnQcmNF0IyH6SlXaSsCwdoDpgoecCz0P+iIkdbOTfCuh2
-W/5fkG0dPGafcmGYsCxKC4W//WpXFoThJIqrh119+JkM3apOCx6uj19Dp4zq9z4s
-IvCGrNnTpDATXPbjohCyFAqGytQYnbpCzH8KY8Qx7Ay66v6hK55JVJRBM8gPi3Ck
-GRZjWcGg0fPenaGUF7X+fX245CmvTs3MregzKqpkdDvs2J8TVOcHJ0SNgm5Pizjd
-AgWaT12h3a319ZEeuHf07Rv3dtH6jHfjNO6bMAaPfY3G0V1q55nHPNuaXqQ1I+j3
-SAASbhQiB44PG3PJQVQOIlVR4kbTUA==
-=EGSk
------END PGP SIGNATURE-----
-
---ipxeiknnoimo3nk7--
