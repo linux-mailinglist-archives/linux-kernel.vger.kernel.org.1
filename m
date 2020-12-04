@@ -2,118 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262CB2CF427
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75ACA2CF439
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:39:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387869AbgLDSfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:35:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgLDSfz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:35:55 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5924C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:35:14 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id c7so6841889edv.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:35:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=VazwCTbw4qFEcnDS99kE7+UPTpKgFLvwXrTcJ/OGLV8=;
-        b=UoAtycuWbYXPQuHZa93zSkhDkJSIw0b5/ox+c+olIK8DcmAbppcTQ0S5nqiX68rqak
-         O0OcRXvbaYs59/0lhZyyDXuBE89LpLU/4sCiBqYoY+7kZml0b8FecNEzYnsNUW08Ihz5
-         QF7SSKQPyyDDQa2ClfTAFtqizjUB+y8xrZebWbkw7H4Qp0JbSS6Bojpr/Kkqn2+Oksnw
-         wT3LhcfoTMGVZj4tJFFM5mxJMYg2KBifKrCXcs7TzgB+i0DrF+DvPoqZuF/7IlEChaWv
-         6gSm3TUC/frYOd6VZB2UEePpomfz08LS4mRk9rLZ8P3hSyX0ElAYgJiZ6EcXcffOOCH/
-         GBxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=VazwCTbw4qFEcnDS99kE7+UPTpKgFLvwXrTcJ/OGLV8=;
-        b=dN2+WeOqJWLjbqxhubmmYZkr2LyY6t1UiyI/XNaasVKAVcAJyMoEGp+hP5m67UOZJD
-         2VVgqwHFX1fj2sSU0vady3Im57N8y9d42Efgtc89AFvaKZrGMIdu8k8s3eAKjQNY0iQe
-         K1x3P1WvWUNq9zO9ruPNgWMie928J3Ie7TLsPmIA7ktNZAeJOzlc8Nt08A0MrQlR86uD
-         SM25vPL0isYF0h+ctuls0PnXSZENSgzRjf8FN9Ji1dtDXETCz4GsonD5cBrS/c1fDo8q
-         tXxn5bmOhRNnA845hc1FlQLlbRtZFR2FkUj0OcnhldQcoNAc7mZEC9jpC636q3KPQh5O
-         sd2A==
-X-Gm-Message-State: AOAM533zv2Mvbf7BJmxosTbd1KnOmEOo1EJBmyCeYJ0WtMncwP54Qam9
-        WZ0JUrHkt9OVHNuIDVJJsYQNeilpmRTpN7uZqalQbuJgni3uazbR
-X-Google-Smtp-Source: ABdhPJySBMs5wep5prKn4dGE0xz5+ByoMr95Z/1QhLJVmuU6vp5fZu61EN8FWgCSAJCp3cpH5tedG2S4/91FYDuyvnU=
-X-Received: by 2002:aa7:d74d:: with SMTP id a13mr5352244eds.78.1607106913506;
- Fri, 04 Dec 2020 10:35:13 -0800 (PST)
+        id S1730313AbgLDSjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:39:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730232AbgLDSjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:39:21 -0500
+Date:   Fri, 4 Dec 2020 10:38:37 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607107120;
+        bh=D0VwnsQjiZd2p/qMGY9WV/AY29U7e8/pE7AugozrGvQ=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FmeSO1dCGWCpOlO8wpniiJ1ANCDVVBGa97IucG4eL4WhlMp8CmgYdlvh/B0h3RbWN
+         zY/Q0e8MER7rAwEqxjQ84cuX/3eSB9iGpHVL1LP7Uj9U0uFpsWSfk0nFa4M6Ku1o7g
+         g7ExD/x89MWdXT7bfWxkVkM3Hp4O2oosMuTHNIDGwbRiwgRg9tOGUu4BFK8hyoOybZ
+         NVkuV3iWU2z6BfbmyrtOxS/4MlNe3VKZXwlv52ELqNPHOI0T5tXpoUeW/00IkZwIMi
+         NjnYti7V++dHVfyRC5HMP2Z8B+2BciuONki7MZeY9Xk22l9Khj/OyJx92ZR5i0ETuN
+         /Nqc1aMyvuw2A==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
+        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
+        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de
+Subject: Re: [PATCH v14 06/10] fs/ntfs3: Add compression
+Message-ID: <X8qCLXJOit0M+4X7@sol.localdomain>
+References: <20201204154600.1546096-1-almaz.alexandrovich@paragon-software.com>
+ <20201204154600.1546096-7-almaz.alexandrovich@paragon-software.com>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 5 Dec 2020 00:05:02 +0530
-Message-ID: <CA+G9fYvhvZtDYVBo4kj9OkKY_vVFSa6EbWz99iCmRPojExRieA@mail.gmail.com>
-Subject: BUG: KCSAN: data-race in __rpc_do_wake_up_task_on_wq / xprt_request_transmit
-To:     kasan-dev <kasan-dev@googlegroups.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, linux-nfs@vger.kernel.org,
-        lkft-triage@lists.linaro.org, rcu@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, chuck.lever@oracle.com,
-        bfields@fieldses.org, anna.schumaker@netapp.com,
-        trond.myklebust@hammerspace.com,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Marco Elver <elver@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204154600.1546096-7-almaz.alexandrovich@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LKFT started testing KCSAN enabled kernel from the linux next tree.
-Here we have found BUG: KCSAN: data-race in
-__rpc_do_wake_up_task_on_wq / xprt_request_transmit
+On Fri, Dec 04, 2020 at 06:45:56PM +0300, Konstantin Komarov wrote:
+> This adds compression
+> 
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>  fs/ntfs3/lib/common_defs.h       | 196 +++++++++++
+>  fs/ntfs3/lib/decompress_common.c | 314 +++++++++++++++++
+>  fs/ntfs3/lib/decompress_common.h | 558 +++++++++++++++++++++++++++++++
+>  fs/ntfs3/lib/lzx_common.c        | 204 +++++++++++
+>  fs/ntfs3/lib/lzx_common.h        |  31 ++
+>  fs/ntfs3/lib/lzx_constants.h     | 113 +++++++
+>  fs/ntfs3/lib/lzx_decompress.c    | 553 ++++++++++++++++++++++++++++++
+>  fs/ntfs3/lib/xpress_constants.h  |  23 ++
+>  fs/ntfs3/lib/xpress_decompress.c | 165 +++++++++
+>  fs/ntfs3/lznt.c                  | 452 +++++++++++++++++++++++++
+>  10 files changed, 2609 insertions(+)
+>  create mode 100644 fs/ntfs3/lib/common_defs.h
+>  create mode 100644 fs/ntfs3/lib/decompress_common.c
+>  create mode 100644 fs/ntfs3/lib/decompress_common.h
+>  create mode 100644 fs/ntfs3/lib/lzx_common.c
+>  create mode 100644 fs/ntfs3/lib/lzx_common.h
+>  create mode 100644 fs/ntfs3/lib/lzx_constants.h
+>  create mode 100644 fs/ntfs3/lib/lzx_decompress.c
+>  create mode 100644 fs/ntfs3/lib/xpress_constants.h
+>  create mode 100644 fs/ntfs3/lib/xpress_decompress.c
+>  create mode 100644 fs/ntfs3/lznt.c
 
-This report is from an x86_64 machine clang-11 linux next 20201201.
-Since we are running for the first time we do not call this regression.
+This really could use a much better commit message.  Including mentioning where
+the LZX and XPRESS decompression code came from
+(https://github.com/ebiggers/ntfs-3g-system-compression).
 
-[   17.316725] BUG: KCSAN: data-race in __rpc_do_wake_up_task_on_wq /
-xprt_request_transmit
-[   17.324821]
-[   17.326322] write to 0xffff90a801de6a9c of 2 bytes by task 142 on cpu 1:
-[   17.333022]  __rpc_do_wake_up_task_on_wq+0x295/0x350
-[   17.337987]  rpc_wake_up_queued_task+0x99/0xc0
-[   17.342432]  xprt_complete_rqst+0xef/0x100
-[   17.346533]  xs_read_stream+0x9c6/0xc40
-[   17.350370]  xs_stream_data_receive+0x60/0x130
-[   17.354819]  xs_stream_data_receive_workfn+0x5c/0x90
-[   17.359784]  process_one_work+0x4a6/0x830
-[   17.363795]  worker_thread+0x5f7/0xaa0
-[   17.367548]  kthread+0x20b/0x220
-[   17.370780]  ret_from_fork+0x22/0x30
-[   17.374359]
-[   17.375858] read to 0xffff90a801de6a9c of 2 bytes by task 249 on cpu 3:
-[   17.382473]  xprt_request_transmit+0x389/0x7a0
-[   17.386919]  xprt_transmit+0xfe/0x250
-[   17.390583]  call_transmit+0x10d/0x120
-[   17.394337]  __rpc_execute+0x12d/0x700
-[   17.398089]  rpc_async_schedule+0x59/0x90
-[   17.402100]  process_one_work+0x4a6/0x830
-[   17.406114]  worker_thread+0x5f7/0xaa0
-[   17.409868]  kthread+0x20b/0x220
-[   17.413099]  ret_from_fork+0x22/0x30
-[   17.416675]
-[   17.418167] Reported by Kernel Concurrency Sanitizer on:
-[   17.423475] CPU: 3 PID: 249 Comm: kworker/u8:1 Not tainted
-5.10.0-rc6-next-20201201 #2
-[   17.431385] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.2 05/23/2018
-[   17.438778] Workqueue: rpciod rpc_async_schedule
+Also note you've marked the files as "SPDX-License-Identifier: GPL-2.0",
+but they really are "SPDX-License-Identifier: GPL-2.0-or-later".
 
-metadata:
-    git_repo: https://gitlab.com/aroxell/lkft-linux-next
-    target_arch: x86
-    toolchain: clang-11
-    git_describe: next-20201201
-    download_url: https://builds.tuxbuild.com/1l8eiWgGMi6W4aDobjAAlOleFVl/
+Also I still think you should consider using the simpler version from
+ntfs-3g-system-compression commit 3ddd227ee8e3, which I had originally intended
+to be included in NTFS-3G itself.  That version was fewer lines of code and
+fewer files, as it was simplified for decompression-only.  The latest version
+(the one you're using) is shared with a project that also implements compression
+(so that I can more easily maintain both projects), so it's more complex than
+needed for decompression-only support.  But in the kernel context it may make
+sense to go with a simpler version.  There are a few performance optimizations
+you'd miss by going with the older version, but they weren't too significant,
+and probably you don't need to squeeze out every bit of performance possible
+when reading XPRESS and LZX-compressed files in this context?
 
-Full test log link,
-https://lkft.validation.linaro.org/scheduler/job/2002643#L1005
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
+- Eric
