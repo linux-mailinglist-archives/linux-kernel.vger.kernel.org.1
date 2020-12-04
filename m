@@ -2,291 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3901E2CE49C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9235F2CE49D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728881AbgLDAtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 19:49:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49390 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727402AbgLDAtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 19:49:20 -0500
-Date:   Fri, 4 Dec 2020 01:48:36 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607042919;
-        bh=ALXOyPfebBJQlTz6XnJVVSSbxU1dNeEUflYF1pxV420=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FYIespOGbYyJNPfXVKlA+xT/huznq/hHwA2HTQwu8KfJ7YaqSv8gf12Qyk8e687Jq
-         4HMzCd1lgTC9JfN8874GKQGuKLo14/PS1pfAhL/Ysn2I6FyFDCVmVIj/9WdXlxrUcp
-         1z2r9Pzm/96CUXoMnmR5j83roLJsxh8vyMMil3lxuVobOiQpYKYdMxdIaCcvJGhLvO
-         3eBpvb30Y2gmnO6Mv/NlfTXYmwTO+QCb7ux6/eK4VUqoMiEzPNcem7gBPz020yFCur
-         Ele0UbyV5kryCpdP9m8O+F1uJWrTcIO6nPgnvfZxdgPQJgvFfOF9W49ARNI5AVQrnX
-         VnAhJiEScZRKA==
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     Vladimir Vid <vladimir.vid@sartura.hr>, devicetree@vger.kernel.org,
-        a.heider@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, tmn505@gmail.com,
-        sebastian.hesselbarth@gmail.com, andrew@lunn.ch,
-        jason@lakedaemon.net, robh+dt@kernel.org
-Subject: Re: [PATCH v5] arm64: dts: marvell: add DT for ESPRESSObin-Ultra
-Message-ID: <20201204004836.4quzvc7k5x2dm6dt@pali>
-References: <20201026184441.96395-1-vladimir.vid@sartura.hr>
- <87sg8sjttk.fsf@BL-laptop>
+        id S1727042AbgLDAwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 19:52:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726158AbgLDAwf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 19:52:35 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08FBC061A4F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 16:51:54 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id d5so2887361qtn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 16:51:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iCJpgZmnm7u2UzSgzFamkTMFrZoFYbYSyOFOjjq/gmM=;
+        b=PEcpit1+ITdCBshasduZ4KTJ7+dygWh1eRTOJlYGKKQshaZtnqFC9aRwFujSdsiKKd
+         4EtVxrTTpIc8FuEJlo4IH86vIQdqOHW2R9/tNiV3ZlrsdNoxQ8HY2o0FrvhWW3Gx1rms
+         PWPefErPc3kBh8kV+iqCfh6Veo2Mg8/KGdJaIYhpvtgy+QP+IClGlIhHDfo4OE2+HF1v
+         DZmHW1RdBmGzjjtsajdm+tbZpFtGs0fNQRaMARAwgPOLmfLeNJo8n/0yFAMKc6BxQTlt
+         3Pw1+rYtmhH0MsHLbKlP3zmud+MNfnnMTduNKzdaC/tyVZ6L6WzoXE1BOSTaRNmrjS84
+         V1/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iCJpgZmnm7u2UzSgzFamkTMFrZoFYbYSyOFOjjq/gmM=;
+        b=WafGraQrp/n7061z08qBv0rU/cMugWtrzpc3aT98Nsv08GAYRRFAXnNnjTIc01Zk5m
+         RJQemebk82uEmSVas815NZ7ivoH/Dk+6Ew/Z/40XR9c1ywkXUfriy5+i29qRBY/sux5R
+         C0SnlcqBJAbWQPGdY3Tl//8uTbnG0INPMPAm8mEZfQ4urvS20IrjGYKW4z3WfCxwin2t
+         sOHu9el9/ELekxPzl5f2XeDtlBY6u4THoge1GJSxFnpM7hLC/gXltgZSNb0+HJr/2YPT
+         +uyrknKh104RqhUKHQxnMfQsuELk6V0/p1FMr0UcG65Qmlmxl/bSZ6U12N8lU3oSAAzJ
+         /GnA==
+X-Gm-Message-State: AOAM531GvOdBmk3xa8Zmm59x0I3b7SWLOXJboSdX0k5fSGRJ5B+KPPt9
+        WPvdD/e5FsPvWk90wzFQxrBxnapmaCkEYw3Hg/AUyQ==
+X-Google-Smtp-Source: ABdhPJw5xin+lmW0k7HmspvOK0xJY6gAT4MUdksz6Q5taOKYlsIkDWN2K9lVekPs4sUmxJZ6/HGN2htyxNLduuScGV8=
+X-Received: by 2002:ac8:67da:: with SMTP id r26mr6231554qtp.101.1607043113656;
+ Thu, 03 Dec 2020 16:51:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sg8sjttk.fsf@BL-laptop>
-User-Agent: NeoMutt/20180716
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-27-joel@joelfernandes.org> <20201125134237.GZ2414@hirez.programming.kicks-ass.net>
+ <CABk29Nv7+nD1oU9iBhAFAuFoiPM5i7eCOtuG7vuQVcE8+Va=nw@mail.gmail.com> <20201202080211.GD3021@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201202080211.GD3021@hirez.programming.kicks-ass.net>
+From:   Josh Don <joshdon@google.com>
+Date:   Thu, 3 Dec 2020 16:51:42 -0800
+Message-ID: <CABk29Ns-QWGV+XpN8TJ5CL50jhrpqKAhfoOfaPSCjiFq7S7j1Q@mail.gmail.com>
+Subject: Re: [PATCH -tip 26/32] sched: Add a second-level tag for nested
+ CGroup usecase
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <derkling@google.com>, benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jesse Barnes <jsbarnes@google.com>, chris.hyser@oracle.com,
+        Ben Segall <bsegall@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Oleg Rombakh <olegrom@google.com>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday 29 November 2020 12:17:27 Gregory CLEMENT wrote:
-> Hi Vladimir,
-> 
-> > This adds support for ESPRESSObin-Ultra from Globalscale.
+On Wed, Dec 2, 2020 at 12:02 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Dec 01, 2020 at 10:18:00PM -0800, Josh Don wrote:
+> > Hey Peter,
 > >
-> > Specifications are similar to the base ESPRESSObin board, with main
-> > difference being being WAN port with PoE capability and 2 additional ethernet ports.
+> > On Wed, Nov 25, 2020 at 5:43 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > Why can't the above work by setting 'tag' (that's a terrible name, why
+> > > does that still live) in CDE? Have the most specific tag live. Same with
+> > > that thread stuff.
 > >
-> > Full specifications:
+> > The motivation is to allow an unprivileged user the ability to
+> > configure the trust hierarchy in a way that otherwise wouldn't be
+> > possible for a given cgroup hierarchy.  For example given a cookie'd
+> > hierarchy such as:
 > >
-> > 1x Marvell 64 bit Dual Core ARM A53 Armada 3700 SOC clocked up to 1.2Ghz
-> > 1x Topaz 6341 Networking Switch
-> > 1GB DDR4
-> > 8GB eMMC
-> > 1x WAN with 30W POE
-> > 4x Gb LAN
-> > 1x RTC Clock and battery
-> > 1x DC Jack
-> > 1x USB 3.0 Type A
-> > 1x USB 2.0 Type A
-> > 1x SIM NanoSIM card Slot
-> > 1x Power Button
-> > 4x LED
-> > 1x Reset button
-> > 1x microUSB for UART
-> > 1x M.2 2280 slot for memory
-> > 1x 2x2 802.11ac Wi-Fi
-> > 1x MiniPCIE slot for Wi-Fi (PCIe interface)
+> >       A
+> >    /  |  |   \
+> > B  C  D  E
 > >
-> > Signed-off-by: Vladimir Vid <vladimir.vid@sartura.hr>
-> 
-> 
-> Applied on mvebu/dt64
-> 
-> I know that usb3 node is not yet enabled but we are a really close to the
-> end of the merge window for ARM so let's have this version in 5.11, and
-> then we can improve it in future version.
+> > the user might only want subsets of {B, C, D, E} to share.  For
+> > instance, the user might only want {B,C} and {D, E} to share.  One way
+> > to solve this would be to allow the user to write the group cookie
+> > directly.  However, this interface would need to be restricted to
+> > privileged users, since otherwise the cookie could be configured to
+> > share with any arbitrary cgroup.  The purpose of the 'color' field is
+> > to expose a portion of the cookie that can be modified by a
+> > non-privileged user in order to achieve this sharing goal.
+> >
+> > If this doesn't seem like a useful case, I'm happy to drop this patch
+> > from the series to unblock it.
+>
+> Well, the traditional cgroup way of doing that would be to:
+>
+>          A
+>         / \
+>        T1 T2
+>       / \
+>      B   C
+>
+> And tag T1 if you want B,C to share.
+>
+> So me the color thing reads like an end-run around the cgroup hierarchy.
 
-Maybe you could include into commit message that USB3 support is
-currently missing? As from current commit message description it looks
-like it is there...
-
-> Thanks,
-> 
-> Gregory
-> 
-> > ---
-> >
-> > v5 changes:
-> > - update ethernet-phy@1 to match reg value
-> >
-> > ---
-> >  arch/arm64/boot/dts/marvell/Makefile          |   1 +
-> >  .../marvell/armada-3720-espressobin-ultra.dts | 165 ++++++++++++++++++
-> >  2 files changed, 166 insertions(+)
-> >  create mode 100644 arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-> >
-> > diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
-> > index 3e5f2e7a040c..094f451fdd1d 100644
-> > --- a/arch/arm64/boot/dts/marvell/Makefile
-> > +++ b/arch/arm64/boot/dts/marvell/Makefile
-> > @@ -3,6 +3,7 @@
-> >  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-db.dtb
-> >  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin.dtb
-> >  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-emmc.dtb
-> > +dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-ultra.dtb
-> >  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7.dtb
-> >  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7-emmc.dtb
-> >  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-turris-mox.dtb
-> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-> > new file mode 100644
-> > index 000000000000..c5eb3604dd5b
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-> > @@ -0,0 +1,165 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > +/*
-> > + * Device Tree file for ESPRESSObin-Ultra board.
-> > + * Copyright (C) 2019 Globalscale technologies, Inc.
-> > + *
-> > + * Jason Hung <jhung@globalscaletechnologies.com>
-> > + */
-> > +
-> > +/dts-v1/;
-> > +
-> > +#include "armada-3720-espressobin.dtsi"
-> > +
-> > +/ {
-> > +	model = "Globalscale Marvell ESPRESSOBin Ultra Board";
-> > +	compatible = "globalscale,espressobin-ultra", "marvell,armada3720",
-> > +		     "marvell,armada3710";
-> > +
-> > +	aliases {
-> > +		/* ethernet1 is WAN port */
-> > +		ethernet1 = &switch0port5;
-> > +		ethernet2 = &switch0port1;
-> > +		ethernet3 = &switch0port2;
-> > +		ethernet4 = &switch0port3;
-> > +		ethernet5 = &switch0port4;
-> > +	};
-> > +
-> > +	reg_usb3_vbus: usb3-vbus {
-> > +		compatible = "regulator-fixed";
-> > +		regulator-name = "usb3-vbus";
-> > +		regulator-min-microvolt = <5000000>;
-> > +		regulator-max-microvolt = <5000000>;
-> > +		enable-active-high;
-> > +		gpio = <&gpionb 19 GPIO_ACTIVE_HIGH>;
-> > +	};
-> > +
-> > +	usb3_phy: usb3-phy {
-> > +		compatible = "usb-nop-xceiv";
-> > +		vcc-supply = <&reg_usb3_vbus>;
-> > +	};
-> > +
-> > +	gpio-leds {
-> > +		pinctrl-names = "default";
-> > +		compatible = "gpio-leds";
-> > +		/* No assigned functions to the LEDs by default */
-> > +		led1 {
-> > +			label = "ebin-ultra:blue:led1";
-> > +			gpios = <&gpionb 11 GPIO_ACTIVE_LOW>;
-> > +		};
-> > +		led2 {
-> > +			label = "ebin-ultra:green:led2";
-> > +			gpios = <&gpionb 12 GPIO_ACTIVE_LOW>;
-> > +		};
-> > +		led3 {
-> > +			label = "ebin-ultra:red:led3";
-> > +			gpios = <&gpionb 13 GPIO_ACTIVE_LOW>;
-> > +		};
-> > +		led4 {
-> > +			label = "ebin-ultra:yellow:led4";
-> > +			gpios = <&gpionb 14 GPIO_ACTIVE_LOW>;
-> > +		};
-> > +	};
-> > +};
-> > +
-> > +&sdhci0 {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&sdhci1 {
-> > +	status = "disabled";
-> > +};
-> > +
-> > +&spi0 {
-> > +	flash@0 {
-> > +		spi-max-frequency = <108000000>;
-> > +		spi-rx-bus-width = <4>;
-> > +		spi-tx-bus-width = <4>;
-> > +
-> > +		partitions {
-> > +			compatible = "fixed-partitions";
-> > +			#address-cells = <1>;
-> > +			#size-cells = <1>;
-> > +
-> > +			partition@0 {
-> > +				label = "firmware";
-> > +				reg = <0x0 0x3e0000>;
-> > +			};
-> > +			partition@3e0000 {
-> > +				label = "hw-info";
-> > +				reg = <0x3e0000 0x10000>;
-> > +				read-only;
-> > +			};
-> > +			partition@3f0000 {
-> > +				label = "u-boot-env";
-> > +				reg = <0x3f0000 0x10000>;
-> > +			};
-> > +		};
-> > +	};
-> > +};
-> > +
-> > +&i2c0 {
-> > +	status = "okay";
-> > +	pinctrl-names = "default";
-> > +	pinctrl-0 = <&i2c1_pins>;
-> > +
-> > +	clock-frequency = <100000>;
-> > +
-> > +	rtc@51 {
-> > +		compatible = "nxp,pcf8563";
-> > +		reg = <0x51>;
-> > +	};
-> > +};
-> > +
-> > +&usb3 {
-> > +	usb-phy = <&usb3_phy>;
-> > +	status = "disabled";
-> > +};
-> > +
-> > +&mdio {
-> > +	extphy: ethernet-phy@1 {
-> > +		reg = <1>;
-> > +	};
-> > +};
-> > +
-> > +&switch0 {
-> > +	reg = <3>;
-> > +
-> > +	ports {
-> > +		switch0port1: port@1 {
-> > +			reg = <1>;
-> > +			label = "lan0";
-> > +			phy-handle = <&switch0phy0>;
-> > +		};
-> > +
-> > +		switch0port2: port@2 {
-> > +			reg = <2>;
-> > +			label = "lan1";
-> > +			phy-handle = <&switch0phy1>;
-> > +		};
-> > +
-> > +		switch0port3: port@3 {
-> > +			reg = <3>;
-> > +			label = "lan2";
-> > +			phy-handle = <&switch0phy2>;
-> > +		};
-> > +
-> > +		switch0port4: port@4 {
-> > +			reg = <4>;
-> > +			label = "lan3";
-> > +			phy-handle = <&switch0phy3>;
-> > +		};
-> > +
-> > +		switch0port5: port@5 {
-> > +			reg = <5>;
-> > +			label = "wan";
-> > +			phy-handle = <&extphy>;
-> > +			phy-mode = "sgmii";
-> > +		};
-> > +	};
-> > +
-> > +	mdio {
-> > +		switch0phy3: switch0phy3@14 {
-> > +			reg = <0x14>;
-> > +		};
-> > +	};
-> > +};
-> > -- 
-> > 2.27.0
-> >
-> 
-> -- 
-> Gregory Clement, Bootlin
-> Embedded Linux and Kernel engineering
-> http://bootlin.com
+Restructuring the cgroup resource hierarchy to incorporate the trust
+domains is not necessarily trivial (as is the case for us).  I agree
+though that that would be the ideal correct solution from the cgroup
+hierarchy perspective.
