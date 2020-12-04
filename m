@@ -2,181 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8F62CEE48
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FB52CEE46
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728833AbgLDMl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 07:41:59 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:41561 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbgLDMl6 (ORCPT
+        id S1730175AbgLDMmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 07:42:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729522AbgLDMmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:41:58 -0500
-Received: by mail-lj1-f196.google.com with SMTP id y7so6431241lji.8;
-        Fri, 04 Dec 2020 04:41:42 -0800 (PST)
+        Fri, 4 Dec 2020 07:42:06 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B01C0613D1;
+        Fri,  4 Dec 2020 04:41:20 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id lt17so8498606ejb.3;
+        Fri, 04 Dec 2020 04:41:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Y1M3EYdNK/8z1PK3n0VaQ6Xz9V5XW9g5IH/bOGLHeQI=;
+        b=SzKD2LmYFTazsYtgG42labILo+rpcMn4QS04++gjVF1xbFc3ZDY68HVyEWa0Hc3Eoc
+         r/uigFJI+q2Afkdi1Fpa8f2A2wfmpx+Pb9XAK09P1Iy/9tYxg/hC5qHTPXSBUgjH/F2Q
+         OJltvdpmjhVENSr8Vw9+ayUr4IAT5/M1PYVBEQ2Vert9G/R4urLme2UtNlG5B5x9Mo0b
+         30Q66vJN+7aes3QB4fC522y92cOPj06TBc0reymqWu0ANYcwHldQiEIQbLxrSrbIyg+S
+         1N24Re2ZzpXXomG6XkjKr+HIz4AsZITbBl+1StJrH1wIFprwBxwjvd2uxK53htPZhDWS
+         EuZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RXUzzoRMZ6PIXmVqYH2yp1o3qr6JX3BOhrhwT1JN5o8=;
-        b=qllRvMQZl4XxvPgztHiP3PWoakMVKgMTbZ9QHlol6irEVTAzWbtEbxGzDRWnsewwnI
-         kA+Q8H4avWtHgd7aju97QAalTEQmD5Ai5A0FlXdb3WrbN7xWy7W6HAD2sMhG3LMvBiON
-         ypFtpZ6reSYCOU/X7iT3h6CEpbdlFL16eWYeHQhYTp4Ic5EJShbYkDb6ttESbggxXveV
-         uAXfd2ewBvfJGyjQtSv9Kko7K/dx5BxilwGfLqQpsjB4FamMsC31cC9gVTQoZb2hwaTE
-         W9ACzBjJdJuQ0Uw3A+FGzaMlcXv2N5ZjVSsmgjSN/khGXPNrjnXLz8SKGlOxrc7i+K0J
-         9jYg==
-X-Gm-Message-State: AOAM5320OFnxlT4IC0o/yz2QgVJbGoo44L96VswWcVSGy4NiUTFulHYn
-        jGY9qK8Oggzo3s1qYkuQoVE=
-X-Google-Smtp-Source: ABdhPJzFwvB1CMOSO9J5xEMuaHzJLMbptmORJJvS7fEVnli7qvT1eW9rSg/rBQNH0DK8oPFRudpGwQ==
-X-Received: by 2002:a05:651c:1067:: with SMTP id y7mr3462768ljm.357.1607085676368;
-        Fri, 04 Dec 2020 04:41:16 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id i6sm99310ljn.16.2020.12.04.04.41.15
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Y1M3EYdNK/8z1PK3n0VaQ6Xz9V5XW9g5IH/bOGLHeQI=;
+        b=FUrAzKbDdoS9NeE6lPJ99sUamMN4xRPJkTErY66AXIyzNJtZUYawNIxHOieoymbCFY
+         c40w58YfyUPCRQ2ChsIwR0Q1T3ayrjLVYjQkzlXX7J7TS4vQoOdHIzi+yneKbBhKMP5f
+         W5GqRulNFHyga0e/QuoCELmqNh7Y4EysWK0o7Y2+1YS1xR1OyxoBOi3szRrNOvjf5r1t
+         AMH0dK3C/LoITGN2kkwpLJQeTSt5qCTkJSsVjtHi/8yKvyl3Kpc9xZQo+wJjUYCmFapU
+         xJn1usniOm4VtX+PayiUHyiUEMABRjzRsD9OfYO45s0eec4jgDPl/uOB53CxSS5Sy+RA
+         GTvg==
+X-Gm-Message-State: AOAM531gnyPjdx5miM0K46UmhYBuAKmhmGGZlIQxploTZ2s4grBm2pUR
+        qGz01q7Wod8O4rya2BOm+IZGML/Qhqg=
+X-Google-Smtp-Source: ABdhPJz/8lvDIRzaH+Vsrk51iTZmaili0yFAtZm6bvQRMXTth8+1kejfGkybKkF+2Wc5cYCLXKg6KQ==
+X-Received: by 2002:a17:906:fa12:: with SMTP id lo18mr7068509ejb.354.1607085678991;
+        Fri, 04 Dec 2020 04:41:18 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id g9sm3407800edw.67.2020.12.04.04.41.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 04:41:15 -0800 (PST)
-Date:   Fri, 4 Dec 2020 14:41:09 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Cong Pham <cpham2403@gmail.com>, rostokus@gmail.com,
-        fan.chen@mediatek.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [RFC PATCH v2 1/6] power: supply: add cap2ocv batinfo helper
-Message-ID: <f2866a9052bbeaa4b3795907f91974e1d18ef68e.1607085199.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1607085199.git.matti.vaittinen@fi.rohmeurope.com>
+        Fri, 04 Dec 2020 04:41:17 -0800 (PST)
+Date:   Fri, 4 Dec 2020 13:41:16 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>, kernel@pengutronix.de,
+        Michael Walle <michael@walle.cc>
+Subject: Re: [PATCH RESEND for 5.10] pwm: sl28cpld: fix getting driver data
+ in pwm callbacks
+Message-ID: <X8oubGP9CvoOQKtF@ulmo>
+References: <20201203084142.3810204-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="d8r6Z/bcujLR9Wvg"
 Content-Disposition: inline
-In-Reply-To: <cover.1607085199.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20201203084142.3810204-1-u.kleine-koenig@pengutronix.de>
+User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The power-supply core supports concept of OCV (Open Circuit Voltage) =>
-SOC (State Of Charge) conversion tables. Usually these tables are used
-to estimate SOC based on OCV. Some systems use so called "Zero Adjust"
-where at the near end-of-battery condition the SOC from coulomb counter
-is used to retrieve the OCV - and OCV and VSYS difference is used to
-re-estimate the battery capacity.
 
-Add helper to do look-up the other-way around and also get the OCV
-based on SOC
+--d8r6Z/bcujLR9Wvg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
+On Thu, Dec 03, 2020 at 09:41:42AM +0100, Uwe Kleine-K=C3=B6nig wrote:
+> Currently .get_state() and .apply() use dev_get_drvdata() on the struct
+> device related to the pwm chip. This only works after .probe() called
+> platform_set_drvdata() which in this driver happens only after
+> pwmchip_add() and so comes possibly too late.
+>=20
+> Instead of setting the driver data earlier use the traditional
+> container_of approach as this way the driver data is conceptually and
+> computational nearer.
+>=20
+> Fixes: 9db33d221efc ("pwm: Add support for sl28cpld PWM controller")
+> Tested-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> ---
+> Hello Linus,
+>=20
+> Thierry (who usually sends PWM patches to you) didn't react to this
+> patch sent to the pwm Mailinglist last week
+> (https://lore.kernel.org/r/20201124212432.3117322-1-u.kleine-koenig@pengu=
+tronix.de)
+> yet.
+>=20
+> Given v5.10 isn't far away any more and I don't know when Thierry will
+> take a look and act, I'm sending this directly to you. The affected
+> driver was new in 5.10-rc1 and at least once the unpatched driver
+> created an oops:
+>=20
+> 	https://lavalab.kontron.com/scheduler/job/108#L950
+>=20
+> Michael Walle who tested this patch is the original author of the
+> driver. IMHO it would be good to have this fixed before 5.10.
+>=20
+> If you prefer a pull request, I can setup something (but I don't have
+> access to Thierry's tree, so it will be for a repository that's new to
+> you).
+>=20
+> Best regards
+> Uwe
+>=20
+>  drivers/pwm/pwm-sl28cpld.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 
-No changes from RFC v1 - (this should be changed to support at least
-0.1% SOC accuracy - will rework for next version if this is continued)
+I thought I had seen you discuss this with Lee and gotten the impression
+that you were going to respin this to move the platform_set_drvdata() to
+an earlier point, which I think is the more correct approach.
 
- drivers/power/supply/power_supply_core.c | 51 ++++++++++++++++++++++++
- include/linux/power_supply.h             |  5 +++
- 2 files changed, 56 insertions(+)
+container_of() isn't exactly wrong, but it's really just papering over
+the fact that platform_set_drvdata() is in the wrong place, so I'd
+prefer a patch that does that instead.
 
-diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/supply/power_supply_core.c
-index 38e3aa642131..67258799ae2e 100644
---- a/drivers/power/supply/power_supply_core.c
-+++ b/drivers/power/supply/power_supply_core.c
-@@ -787,6 +787,43 @@ int power_supply_temp2resist_simple(struct power_supply_resistance_temp_table *t
- }
- EXPORT_SYMBOL_GPL(power_supply_temp2resist_simple);
- 
-+/**
-+ * power_supply_cap2ocv_simple() - find the battery OCV by capacity
-+ * @table: Pointer to battery OCV/CAP lookup table
-+ * @table_len: OCV/CAP table length
-+ * @cap: Current cap value
-+ *
-+ * This helper function is used to look up battery OCV according to
-+ * current capacity value from one OCV table, and the OCV table must be ordered
-+ * descending.
-+ *
-+ * Return: the battery OCV.
-+ */
-+int power_supply_cap2ocv_simple(struct power_supply_battery_ocv_table *table,
-+				int table_len, int cap)
-+{
-+	int i, ocv, tmp;
-+
-+	for (i = 0; i < table_len; i++)
-+		if (cap > table[i].capacity)
-+			break;
-+
-+	if (i > 0 && i < table_len) {
-+		tmp = (table[i - 1].ocv - table[i].ocv) *
-+		      (cap - table[i].capacity);
-+
-+		tmp /= table[i - 1].capacity - table[i].capacity;
-+		ocv = tmp + table[i].ocv;
-+	} else if (i == 0) {
-+		ocv = table[0].ocv;
-+	} else {
-+		ocv = table[table_len - 1].ocv;
-+	}
-+
-+	return ocv;
-+}
-+EXPORT_SYMBOL_GPL(power_supply_cap2ocv_simple);
-+
- /**
-  * power_supply_ocv2cap_simple() - find the battery capacity
-  * @table: Pointer to battery OCV lookup table
-@@ -847,6 +884,20 @@ power_supply_find_ocv2cap_table(struct power_supply_battery_info *info,
- }
- EXPORT_SYMBOL_GPL(power_supply_find_ocv2cap_table);
- 
-+int power_supply_batinfo_cap2ocv(struct power_supply_battery_info *info,
-+				 int cap, int temp)
-+{
-+	struct power_supply_battery_ocv_table *table;
-+	int table_len;
-+
-+	table = power_supply_find_ocv2cap_table(info, temp, &table_len);
-+	if (!table)
-+		return -EINVAL;
-+
-+	return power_supply_cap2ocv_simple(table, table_len, cap);
-+}
-+EXPORT_SYMBOL_GPL(power_supply_batinfo_cap2ocv);
-+
- int power_supply_batinfo_ocv2cap(struct power_supply_battery_info *info,
- 				 int ocv, int temp)
- {
-diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-index 81a55e974feb..bae98b628f92 100644
---- a/include/linux/power_supply.h
-+++ b/include/linux/power_supply.h
-@@ -403,11 +403,16 @@ extern void power_supply_put_battery_info(struct power_supply *psy,
- 					  struct power_supply_battery_info *info);
- extern int power_supply_ocv2cap_simple(struct power_supply_battery_ocv_table *table,
- 				       int table_len, int ocv);
-+int power_supply_cap2ocv_simple(struct power_supply_battery_ocv_table *table,
-+				int table_len, int cap);
-+
- extern struct power_supply_battery_ocv_table *
- power_supply_find_ocv2cap_table(struct power_supply_battery_info *info,
- 				int temp, int *table_len);
- extern int power_supply_batinfo_ocv2cap(struct power_supply_battery_info *info,
- 					int ocv, int temp);
-+int power_supply_batinfo_cap2ocv(struct power_supply_battery_info *info,
-+				 int cap, int temp);
- extern int
- power_supply_temp2resist_simple(struct power_supply_resistance_temp_table *table,
- 				int table_len, int temp);
--- 
-2.25.4
+Now, I can no longer find a link to the discussion that I recall, so it
+was either on IRC (where I don't have any logs) or I'm loosing my mind.
 
+I'll prepare a patch that moves platform_set_drvdata() for Michael to
+test. If that works I'll send a PR with fixes to Linus early next week.
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+Thierry
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+--d8r6Z/bcujLR9Wvg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/KLmkACgkQ3SOs138+
+s6HvQA/+Pu0xmlT6i7j5KYxREHg/lWTsukqSYpPr+5s2Jp9g1GfiZshJsZeOlVxB
+GqOc9VKtvFcqLFklH/4Rts0y2tWoT/XEDOJzKkKjMdWMIS2rA1BYYxd69LQDab03
+BWI/n0pwT5FOjxRcyeT9FNVOEZysLJNq/VneRL4C6ci/6dUH1p1MJX/vVigUOqjU
+FjTwNwCSm7pHAlKU+gXL6yKetgaWCSCfuX9FQKskPNhuY0HxoDRf9duNs1s5tuaC
+h+qWjP8oRheQJDeevF+86WEZUOSM7u6X+0Hu3GCPfhMnoRVOsksaNC5RGLLe9w/o
+Ovd8XxUT/7iABb9qKC88inoQdOg1Dqnay2dW1ggX5QVzayfFjiandupZpRxaKCA2
+Q/hZ8Xhp1ppu+1gl/uJoW8wsVWtDX5wqIt8lWO60nKmX9Y/6NaocVFW8dXeBwyUv
+eQCI0mWsQfvKad33N3MfOAWj9tZWsoUvXBYwTXf5FrHMat9rY+tgbt8oFAnlCMHc
+emocdvnkCUHlC8obc4dd6HlZ0eR1vzqZPqSb/knAmwFTVsSxNDgGT59uSliRLazH
+8NYb3JDSce2vQrd3VceD6ydr8y2aDEt3zJtnGErqO5QJVJkNvJcVj0p89Vn+82Tr
+xBEZ1Dbfmb0ANwI+wGBjViDL4WoS8U6lXf4PCArrV71seqUDkyY=
+=jME2
+-----END PGP SIGNATURE-----
+
+--d8r6Z/bcujLR9Wvg--
