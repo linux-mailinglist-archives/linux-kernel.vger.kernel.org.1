@@ -2,179 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666412CF3FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA672CF405
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387740AbgLDSYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:24:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46184 "EHLO mail.kernel.org"
+        id S2387659AbgLDS1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:27:53 -0500
+Received: from mga01.intel.com ([192.55.52.88]:60456 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387587AbgLDSYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:24:22 -0500
-Date:   Fri, 4 Dec 2020 10:23:40 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607106221;
-        bh=frGCvVorSjGhUb+CZl2+o3Cot8SUsEXDTN1OlWl1EbQ=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IsjJ3mvp9gloogt304bTevJHpT/RfKJMsafOaPkZoK1zw7noVonG+B1aL2e24rfxR
-         bg2jR9Vx9deMPl5Jn2y2f92hOP3biDihijQcU9x3uQl3LvnY17Qh98zDxckPiMQSrt
-         vKrS/aAuVwFKSNHWgKIn2KQzz0voU7t/ga3n6L8T6TISDVG4mnmXoKpzvbMU91CfRS
-         l75b2q4WqezSxkRMfxdBcobyy3ATkGwyXOM7g8FyRNaFbCmNPk/sJodj9Z60LqzQcn
-         dMrwPs1ESjs83xgCa3Z0Q3WAX1coOqBn0McjYGAeZs3A3RTYwNZeaOd1TxmWLPm1Ls
-         YpHjLEt98zS6w==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org
-Subject: Re: [PATCH] f2fs: introduce a new per-sb directory in sysfs
-Message-ID: <X8p+rK6wQsXdcG33@google.com>
-References: <20201127090118.84235-1-yuchao0@huawei.com>
- <af26ca56-1dbf-e59b-b7b0-63ce817fd94d@huawei.com>
+        id S1730131AbgLDS1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:27:52 -0500
+IronPort-SDR: ykzOAGa1+0dab2T75nu2+g0Wbw7jeHKd5TO8BJRMMHrs3ng8Pc9UpW66kekElszJOKQnLbvrTS
+ sVx1jeuC+hAQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="191668463"
+X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
+   d="scan'208";a="191668463"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 10:26:07 -0800
+IronPort-SDR: H1WGPK39oNj/eNKm23P/oQnORIS9zt0ytKpu554yijiSPqweQjWVR/M5oXdCSal1zg2ML5CvtZ
+ Yz3zLMEOmitQ==
+X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
+   d="scan'208";a="540793142"
+Received: from jalmerix-mobl3.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.255.70.143])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 10:26:07 -0800
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org (open list:ACPI FAN DRIVER)
+Subject: [PATCH] ACPI: fan: fix warning with CONFIG_DEBUG_LOCK_ALLOC
+Date:   Fri,  4 Dec 2020 12:25:45 -0600
+Message-Id: <20201204182545.8322-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <af26ca56-1dbf-e59b-b7b0-63ce817fd94d@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/03, Chao Yu wrote:
-> Jaegeuk,
-> 
-> Can you comment on this patch?
+On a TigerLake device with CONFIG_DEBUG_LOCK_ALLOC the following
+warning is thrown:
 
-Waiting for use-case? :)
+[   13.784413] BUG: key ffff88810ea5a080 has not been registered!
+[   13.784722] DEBUG_LOCKS_WARN_ON(1)
+[   13.784737] WARNING: CPU: 2 PID: 1 at kernel/locking/lockdep.c:4623
+lockdep_init_map_waits+0x25e/0x310
+[   13.787831] Call Trace:
+[   13.787902]  __kernfs_create_file+0xa5/0x180
+[   13.788016]  sysfs_add_file_mode_ns+0x120/0x270
+[   13.788138]  sysfs_create_file_ns+0xcd/0x120
+[   13.788256]  ? sysfs_add_file_mode_ns+0x270/0x270
+[   13.788381]  ? fan_get_max_state+0x70/0x70
+[   13.788491]  ? sort_r+0x1a5/0x200
+[   13.788579]  acpi_fan_probe+0x63b/0x7a0
 
-> 
-> On 2020/11/27 17:01, Chao Yu wrote:
-> > Add a new directory 'stat' in path of /sys/fs/f2fs/<devname>/, later
-> > we can add new readonly stat sysfs file into this directory, it will
-> > make <devname> directory less mess.
-> > 
-> > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > ---
-> >   fs/f2fs/f2fs.h  |  5 +++-
-> >   fs/f2fs/sysfs.c | 69 +++++++++++++++++++++++++++++++++++++++++++++----
-> >   2 files changed, 68 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > index 0d38f2135016..a20059dece46 100644
-> > --- a/fs/f2fs/f2fs.h
-> > +++ b/fs/f2fs/f2fs.h
-> > @@ -1510,9 +1510,12 @@ struct f2fs_sb_info {
-> >   	unsigned int node_io_flag;
-> >   	/* For sysfs suppport */
-> > -	struct kobject s_kobj;
-> > +	struct kobject s_kobj;			/* /sys/fs/f2fs/<devname> */
-> >   	struct completion s_kobj_unregister;
-> > +	struct kobject s_stat_kobj;		/* /sys/fs/f2fs/<devname>/stat */
-> > +	struct completion s_stat_kobj_unregister;
-> > +
-> >   	/* For shrinker support */
-> >   	struct list_head s_list;
-> >   	int s_ndevs;				/* number of devices */
-> > diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-> > index ec77ccfea923..8c63a6e61dfd 100644
-> > --- a/fs/f2fs/sysfs.c
-> > +++ b/fs/f2fs/sysfs.c
-> > @@ -708,6 +708,11 @@ static struct attribute *f2fs_feat_attrs[] = {
-> >   };
-> >   ATTRIBUTE_GROUPS(f2fs_feat);
-> > +static struct attribute *f2fs_stat_attrs[] = {
-> > +	NULL,
-> > +};
-> > +ATTRIBUTE_GROUPS(f2fs_stat);
-> > +
-> >   static const struct sysfs_ops f2fs_attr_ops = {
-> >   	.show	= f2fs_attr_show,
-> >   	.store	= f2fs_attr_store,
-> > @@ -736,6 +741,44 @@ static struct kobject f2fs_feat = {
-> >   	.kset	= &f2fs_kset,
-> >   };
-> > +static ssize_t f2fs_stat_attr_show(struct kobject *kobj,
-> > +				struct attribute *attr, char *buf)
-> > +{
-> > +	struct f2fs_sb_info *sbi = container_of(kobj, struct f2fs_sb_info,
-> > +								s_stat_kobj);
-> > +	struct f2fs_attr *a = container_of(attr, struct f2fs_attr, attr);
-> > +
-> > +	return a->show ? a->show(a, sbi, buf) : 0;
-> > +}
-> > +
-> > +static ssize_t f2fs_stat_attr_store(struct kobject *kobj, struct attribute *attr,
-> > +						const char *buf, size_t len)
-> > +{
-> > +	struct f2fs_sb_info *sbi = container_of(kobj, struct f2fs_sb_info,
-> > +								s_stat_kobj);
-> > +	struct f2fs_attr *a = container_of(attr, struct f2fs_attr, attr);
-> > +
-> > +	return a->store ? a->store(a, sbi, buf, len) : 0;
-> > +}
-> > +
-> > +static void f2fs_stat_kobj_release(struct kobject *kobj)
-> > +{
-> > +	struct f2fs_sb_info *sbi = container_of(kobj, struct f2fs_sb_info,
-> > +								s_stat_kobj);
-> > +	complete(&sbi->s_stat_kobj_unregister);
-> > +}
-> > +
-> > +static const struct sysfs_ops f2fs_stat_attr_ops = {
-> > +	.show	= f2fs_stat_attr_show,
-> > +	.store	= f2fs_stat_attr_store,
-> > +};
-> > +
-> > +static struct kobj_type f2fs_stat_ktype = {
-> > +	.default_groups = f2fs_stat_groups,
-> > +	.sysfs_ops	= &f2fs_stat_attr_ops,
-> > +	.release	= f2fs_stat_kobj_release,
-> > +};
-> > +
-> >   static int __maybe_unused segment_info_seq_show(struct seq_file *seq,
-> >   						void *offset)
-> >   {
-> > @@ -942,11 +985,15 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
-> >   	init_completion(&sbi->s_kobj_unregister);
-> >   	err = kobject_init_and_add(&sbi->s_kobj, &f2fs_sb_ktype, NULL,
-> >   				"%s", sb->s_id);
-> > -	if (err) {
-> > -		kobject_put(&sbi->s_kobj);
-> > -		wait_for_completion(&sbi->s_kobj_unregister);
-> > -		return err;
-> > -	}
-> > +	if (err)
-> > +		goto put_sb_kobj;
-> > +
-> > +	sbi->s_stat_kobj.kset = &f2fs_kset;
-> > +	init_completion(&sbi->s_stat_kobj_unregister);
-> > +	err = kobject_init_and_add(&sbi->s_stat_kobj, &f2fs_stat_ktype,
-> > +						&sbi->s_kobj, "stat");
-> > +	if (err)
-> > +		goto put_stat_kobj;
-> >   	if (f2fs_proc_root)
-> >   		sbi->s_proc = proc_mkdir(sb->s_id, f2fs_proc_root);
-> > @@ -962,6 +1009,13 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
-> >   				victim_bits_seq_show, sb);
-> >   	}
-> >   	return 0;
-> > +put_stat_kobj:
-> > +	kobject_put(&sbi->s_stat_kobj);
-> > +	wait_for_completion(&sbi->s_stat_kobj_unregister);
-> > +put_sb_kobj:
-> > +	kobject_put(&sbi->s_kobj);
-> > +	wait_for_completion(&sbi->s_kobj_unregister);
-> > +	return err;
-> >   }
-> >   void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi)
-> > @@ -973,6 +1027,11 @@ void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi)
-> >   		remove_proc_entry("victim_bits", sbi->s_proc);
-> >   		remove_proc_entry(sbi->sb->s_id, f2fs_proc_root);
-> >   	}
-> > +
-> > +	kobject_del(&sbi->s_stat_kobj);
-> > +	kobject_put(&sbi->s_stat_kobj);
-> > +	wait_for_completion(&sbi->s_stat_kobj_unregister);
-> > +
-> >   	kobject_del(&sbi->s_kobj);
-> >   	kobject_put(&sbi->s_kobj);
-> >   	wait_for_completion(&sbi->s_kobj_unregister);
-> > 
+Dynamically-allocated attributes need to be initialized to make
+lockdep happy, see include/linux/sysfs.h
+
+Fixes: d19e470b6605c ('ACPI: fan: Expose fan performance state information')
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ drivers/acpi/fan.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/acpi/fan.c b/drivers/acpi/fan.c
+index 66c3983f0ccc..9cab806298ff 100644
+--- a/drivers/acpi/fan.c
++++ b/drivers/acpi/fan.c
+@@ -357,6 +357,7 @@ static int acpi_fan_get_fps(struct acpi_device *device)
+ 		fps->dev_attr.store = NULL;
+ 		fps->dev_attr.attr.name = fps->name;
+ 		fps->dev_attr.attr.mode = 0444;
++		sysfs_attr_init(&fps->dev_attr.attr);
+ 		status = sysfs_create_file(&device->dev.kobj, &fps->dev_attr.attr);
+ 		if (status) {
+ 			int j;
+-- 
+2.25.1
+
