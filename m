@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE742CEDAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E9D2CEDBE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728720AbgLDMCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 07:02:20 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:41413 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728490AbgLDMCU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:02:20 -0500
-X-UUID: 7f691940b8a84e01adf499202e90c387-20201204
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=dVCInG0+zFay29/zF5Qgk8PnqNpkCmMd63za3Ohahxo=;
-        b=JJFDFWVMB/j6US1p7J4UwV6+Yi/wBiL5hUr7CpiliwP4fGf/saQJFUdt1jXvd8JrtIMajIP9+JpdvVEghDUCn5D1wDmQFdjVi9MdbuUklPDzr+6nQjG8BaALMsZuKxMUpzILhA8D4pmocBm7SvdZFPocA3m1O5kuxK15FSI5AZA=;
-X-UUID: 7f691940b8a84e01adf499202e90c387-20201204
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <kuan-ying.lee@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 133938143; Fri, 04 Dec 2020 20:01:36 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 4 Dec 2020 20:01:32 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 4 Dec 2020 20:01:32 +0800
-Message-ID: <1607083295.22062.15.camel@mtksdccf07>
-Subject: Re: [PATCH] kasan: fix slab double free when cpu-hotplug
-From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-To:     "qiang.zhang@windriver.com" <qiang.zhang@windriver.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>
-CC:     "aryabinin@virtuozzo.com" <aryabinin@virtuozzo.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "andreyknvl@google.com" <andreyknvl@google.com>,
-        "qcai@redhat.com" <qcai@redhat.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <walter-zh.wu@mediatek.com>
-Date:   Fri, 4 Dec 2020 20:01:35 +0800
-In-Reply-To: <20201204102206.20237-1-qiang.zhang@windriver.com>
-References: <20201204102206.20237-1-qiang.zhang@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1730143AbgLDMLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 07:11:00 -0500
+Received: from elvis.franken.de ([193.175.24.41]:48129 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730122AbgLDMK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 07:10:59 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kl9ud-0005Nb-00; Fri, 04 Dec 2020 13:10:11 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 596D6C02CF; Fri,  4 Dec 2020 13:06:32 +0100 (CET)
+Date:   Fri, 4 Dec 2020 13:06:32 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+Cc:     linux@armlinux.org.uk, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
+        tony@atomide.com, mripard@kernel.org, wens@csie.org,
+        jernej.skrabec@siol.net, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
+        James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        lee.jones@linaro.org, sam@ravnborg.org, emil.l.velikov@gmail.com,
+        daniel.thompson@linaro.org, krzk@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, soc@kernel.org
+Subject: Re: [PATCH v2 3/5] MIPS: configs: drop unused BACKLIGHT_GENERIC
+ option
+Message-ID: <20201204120632.GA10011@alpha.franken.de>
+References: <20201201222922.3183-1-andrey.zhizhikin@leica-geosystems.com>
+ <20201201222922.3183-4-andrey.zhizhikin@leica-geosystems.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201222922.3183-4-andrey.zhizhikin@leica-geosystems.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTEyLTA0IGF0IDE4OjIyICswODAwLCBxaWFuZy56aGFuZ0B3aW5kcml2ZXIu
-Y29tIHdyb3RlOg0KPiBGcm9tOiBacWlhbmcgPHFpYW5nLnpoYW5nQHdpbmRyaXZlci5jb20+DQo+
-IA0KPiBXaGVuIGEgQ1BVIG9mZmxpbmUsIHRoZSBwZXItY3B1IHF1YXJhbnRpbmUncyBvZmZsaW5l
-IGJlIHNldCB0cnVlLA0KPiBhZnRlciB0aGlzLCBpZiB0aGUgcXVhcmFudGluZV9wdXQgYmUgY2Fs
-bGVkIGluIHRoaXMgQ1BVLCB0aGUgb2JqZWN0cw0KPiB3aWxsIGJlIGZyZWUgYW5kIHJldHVybiBm
-YWxzZSwgZnJlZSBvYmplY3RzIGRvZXNuJ3QgdG8gYmUgZG9uZSwgZHVlDQo+IHRvIHJldHVybiBm
-YWxzZSwgdGhlIHNsYWIgbWVtb3J5IG1hbmFnZXIgd2lsbCBmcmVlIHRoaXMgb2JqZWN0cy4NCj4g
-DQo+IEZpeGVzOiA0MWFiMWFhZTc4MWYgKCJrYXNhbjogZml4IG9iamVjdCByZW1haW5pbmcgaW4g
-b2ZmbGluZSBwZXItY3B1IHF1YXJhbnRpbmUiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBacWlhbmcgPHFp
-YW5nLnpoYW5nQHdpbmRyaXZlci5jb20+DQo+IC0tLQ0KPiAgbW0va2FzYW4vcXVhcmFudGluZS5j
-IHwgMSAtDQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdp
-dCBhL21tL2thc2FuL3F1YXJhbnRpbmUuYyBiL21tL2thc2FuL3F1YXJhbnRpbmUuYw0KPiBpbmRl
-eCBkOThiNTE2ZjM3MmYuLjU1NzgzMTI1YTc2NyAxMDA2NDQNCj4gLS0tIGEvbW0va2FzYW4vcXVh
-cmFudGluZS5jDQo+ICsrKyBiL21tL2thc2FuL3F1YXJhbnRpbmUuYw0KPiBAQCAtMTk0LDcgKzE5
-NCw2IEBAIGJvb2wgcXVhcmFudGluZV9wdXQoc3RydWN0IGttZW1fY2FjaGUgKmNhY2hlLCB2b2lk
-ICpvYmplY3QpDQo+ICANCj4gIAlxID0gdGhpc19jcHVfcHRyKCZjcHVfcXVhcmFudGluZSk7DQo+
-ICAJaWYgKHEtPm9mZmxpbmUpIHsNCj4gLQkJcWxpbmtfZnJlZSgmbWV0YS0+cXVhcmFudGluZV9s
-aW5rLCBjYWNoZSk7DQo+ICAJCWxvY2FsX2lycV9yZXN0b3JlKGZsYWdzKTsNCj4gIAkJcmV0dXJu
-IGZhbHNlOw0KPiAgCX0NCg0KSGkgUWlhbmcsDQoNClRoYW5rcyBmb3IgZml4aW5nIHRoaXMuDQpE
-dWUgdG8gdGhhdCBpc3N1ZSwgbXkgY29tbWl0IGhhcyBiZWVuIHJlbW92ZWQgYnkgU3RlcGhlbiBm
-cm9tDQpsaW51eC1uZXh0Lg0KDQoNCkhpIFN0ZXBoZW4sIEFuZHJldywNCg0KU2hvdWxkIEkgZGly
-ZWN0bHkgdXBsb2FkIHRoZSB2NCBvciBTdGVwaGVuIGNhbiBwaWNrIHRoZSBjb21taXQgd2hpY2gg
-DQpoYXMgYmVlbiByZW1vdmVkIGJhY2sgdG8gdGhlIGxpbnV4LW5leHQuDQoNCldoYXQgZG8geW91
-IHRoaW5rPw0KDQpUaGFua3MgYSBsb3QuDQoNCkt1YW4tWWluZw0K
+On Tue, Dec 01, 2020 at 10:29:20PM +0000, Andrey Zhizhikin wrote:
+> Commit 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is
+> unused") removed geenric_bl driver from the tree, together with
+> corresponding config option.
+> 
+> Remove BACKLIGHT_GENERIC config item from all MIPS configurations.
+> 
+> Fixes: 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is unused")
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> ---
+>  arch/mips/configs/gcw0_defconfig      | 1 -
+>  arch/mips/configs/gpr_defconfig       | 1 -
+>  arch/mips/configs/lemote2f_defconfig  | 1 -
+>  arch/mips/configs/loongson3_defconfig | 1 -
+>  arch/mips/configs/mtx1_defconfig      | 1 -
+>  arch/mips/configs/rs90_defconfig      | 1 -
+>  6 files changed, 6 deletions(-)
 
+applied to mips-next.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
