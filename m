@@ -2,195 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD062CEF9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E41322CEF96
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388315AbgLDOQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:16:04 -0500
-Received: from mga18.intel.com ([134.134.136.126]:55357 "EHLO mga18.intel.com"
+        id S1729606AbgLDOP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:15:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726312AbgLDOQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:16:03 -0500
-IronPort-SDR: pGoWr45lbzNuDVgvQNUYBtAA3GFM6h+yPQSE+SY9dPA4qjiQegooaMFhD0LDfZPEusbyOPolYw
- /RsXL7b5E6og==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="161150031"
-X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="161150031"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 06:15:23 -0800
-IronPort-SDR: asDqsh8GKHebSyCwOwd7dwytjAOGvHbUscUF5nEk/MrFmJ/s6vZzVUPCvK/o8/GR8J4ssvZhjs
- 2v/11QCtMjgw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="346615034"
-Received: from lkp-server02.sh.intel.com (HELO f74a175f0d75) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 04 Dec 2020 06:15:21 -0800
-Received: from kbuild by f74a175f0d75 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1klBrl-00008K-Ax; Fri, 04 Dec 2020 14:15:21 +0000
-Date:   Fri, 04 Dec 2020 22:14:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.12.02a] BUILD REGRESSION
- 078e84bbcc794263adc2e5d94415447455773c25
-Message-ID: <5fca4441.n7Aq+6E80UOCnVL6%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726312AbgLDOP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 09:15:26 -0500
+X-Gm-Message-State: AOAM530QWWos4qFgidJVkJPJM1dSfwJ3T/l3OVvvWOreCiO82c3NfMNh
+        GcuWhc8cHjTOzaKi3KwxENNqXSmZ6mTfkvkNfVU=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607091286;
+        bh=tIDO5wu/h3iugtm6EuT3IRty5Sei5IsCyw0gw/9uM+A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Z3/sbcYVvUTJhWMSd3RYaU/IetceyoHh8ACdVYKbFy5NldapW4wpCViXJZ/YUYB8n
+         Qq1dpciIgustxCId64mgd/El0x6cxxRZrdl+dtocwQLTB1+mK5Yx6/GKFj8La1ID3Q
+         rMODFaN56hG8zvZ0QzVISrqZtl2s9Sc+SMgucZyZHU6xJDUyigSA8ATxdvd3oVao5l
+         C0KLe1iq06GClkP5k/R/SkU4340LLAGK/3wl2Rbn63wnAAvPWnCXdYEcLx1hk/U165
+         mQCZNHGeFfssOVzv7plny26VNZfzxBdxlFq4wRhBCXJkXq+5KbMI9rHInJLteqEKfj
+         x+5uCHJphKxaw==
+X-Google-Smtp-Source: ABdhPJwxym/mU9bR1admW/kOH0JVRSYw6YjCWCAcHxsvuVRLLDVdF2nlbFSj4oIRatquO+QNtEj4N/04EluuruTGCBQ=
+X-Received: by 2002:a9d:6317:: with SMTP id q23mr3785791otk.251.1607091285516;
+ Fri, 04 Dec 2020 06:14:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201203222922.1067522-1-arnd@kernel.org> <CAPDyKFqtFYqc8i_fVzOUnuZGJjtwjVLqE-vebtOKuYJ-4PrDBg@mail.gmail.com>
+In-Reply-To: <CAPDyKFqtFYqc8i_fVzOUnuZGJjtwjVLqE-vebtOKuYJ-4PrDBg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 4 Dec 2020 15:14:29 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com>
+Message-ID: <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mediatek: mark PM functions as __maybe_unused
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
+        yong mao <yong.mao@mediatek.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.12.02a
-branch HEAD: 078e84bbcc794263adc2e5d94415447455773c25  EXP rcuscale: Crude tests for kmem_last_alloc() percpu_ref code
+On Fri, Dec 4, 2020 at 11:02 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> On Thu, 3 Dec 2020 at 23:29, Arnd Bergmann <arnd@kernel.org> wrote:
 
-Error/Warning reports:
+> > -#ifdef CONFIG_PM
+> >  static void msdc_save_reg(struct msdc_host *host)
+>
+> Shouldn't msdc_save|restore_reg() be turned into "__maybe_unused" as well?
 
-https://lore.kernel.org/lkml/202012041303.mGqyuwN1-lkp@intel.com
+There is no need since the compiler can figure that out already when there
+is a reference to the function from dead code.
 
-Error/Warning in current branch:
+> >
+> > -static int msdc_resume(struct device *dev)
+> > +static int __maybe_unused msdc_resume(struct device *dev)
+> >  {
+> >         return pm_runtime_force_resume(dev);
+> >  }
+> > -#endif
+> >
+> >  static const struct dev_pm_ops msdc_dev_pm_ops = {
+>
+> You may also change this to a __maybe_unused, as long as you also
+> assign the .pm pointer in the mt_msdc_driver with
+> pm_ptr(&msdc_dev_pm_ops).
+>
+> Ideally the compiler should drop these functions/datas entirely then.
 
-(.text+0x204): undefined reference to `kmem_cache_last_alloc'
-(.text+0xbb8): undefined reference to `kmem_cache_last_alloc'
-(.text+0xf0): undefined reference to `kmem_cache_last_alloc'
+I don't see a lot of other instances of that yet, and it's fairly new.
+Maybe we should fix it before it gets propagated further.
 
-Error/Warning ids grouped by kconfigs:
+I would suggest we redefine pm_ptr like
 
-gcc_recent_errors
-|-- arm-imote2_defconfig
-|   `-- (.text):undefined-reference-to-kmem_cache_last_alloc
-|-- openrisc-randconfig-r004-20201204
-|   `-- (.text):undefined-reference-to-kmem_cache_last_alloc
-`-- parisc-defconfig
-    `-- (.text):undefined-reference-to-kmem_cache_last_alloc
+#define pm_ptr(_ptr) (IS_ENABLED(CONFIG_PM) ? (_ptr) : NULL)
 
-elapsed time: 720m
+and remove the __maybe_unused annotations on those that we
+already have. This also has the effect of dropping the unused
+data from the object, but without having to an an #ifdef or
+__maybe_unused.
 
-configs tested: 114
-configs skipped: 3
+Adding Paul and Rafael to Cc for clarification on this.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         shannon_defconfig
-mips                     decstation_defconfig
-mips                         mpc30x_defconfig
-mips                           ci20_defconfig
-arm                        realview_defconfig
-sparc                       sparc64_defconfig
-xtensa                              defconfig
-ia64                             alldefconfig
-arm                          imote2_defconfig
-powerpc                    amigaone_defconfig
-powerpc                    gamecube_defconfig
-arm                          simpad_defconfig
-powerpc                  mpc866_ads_defconfig
-m68k                          atari_defconfig
-mips                      bmips_stb_defconfig
-powerpc                     skiroot_defconfig
-arm                        clps711x_defconfig
-sh                          urquell_defconfig
-sh                             sh03_defconfig
-powerpc                   lite5200b_defconfig
-microblaze                          defconfig
-powerpc                         ps3_defconfig
-powerpc                    socrates_defconfig
-arm                           omap1_defconfig
-nios2                         3c120_defconfig
-arm                       netwinder_defconfig
-xtensa                       common_defconfig
-sh                        dreamcast_defconfig
-sh                            migor_defconfig
-mips                          ath79_defconfig
-arm                       omap2plus_defconfig
-c6x                         dsk6455_defconfig
-sh                        sh7785lcr_defconfig
-arc                     nsimosci_hs_defconfig
-openrisc                    or1ksim_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                        keystone_defconfig
-sh                           se7343_defconfig
-powerpc                     tqm8540_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20201204
-x86_64               randconfig-a006-20201204
-x86_64               randconfig-a002-20201204
-x86_64               randconfig-a001-20201204
-x86_64               randconfig-a005-20201204
-x86_64               randconfig-a003-20201204
-i386                 randconfig-a005-20201204
-i386                 randconfig-a004-20201204
-i386                 randconfig-a001-20201204
-i386                 randconfig-a002-20201204
-i386                 randconfig-a006-20201204
-i386                 randconfig-a003-20201204
-i386                 randconfig-a014-20201204
-i386                 randconfig-a013-20201204
-i386                 randconfig-a011-20201204
-i386                 randconfig-a015-20201204
-i386                 randconfig-a012-20201204
-i386                 randconfig-a016-20201204
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a016-20201204
-x86_64               randconfig-a012-20201204
-x86_64               randconfig-a014-20201204
-x86_64               randconfig-a013-20201204
-x86_64               randconfig-a015-20201204
-x86_64               randconfig-a011-20201204
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+       Arnd
