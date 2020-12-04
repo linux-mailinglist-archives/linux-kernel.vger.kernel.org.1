@@ -2,136 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9512CEDF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991362CEDF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729953AbgLDMSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 07:18:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
+        id S1730018AbgLDMSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 07:18:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727385AbgLDMSQ (ORCPT
+        with ESMTP id S1727385AbgLDMSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:18:16 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E50C0613D1;
-        Fri,  4 Dec 2020 04:17:35 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id m19so8335469ejj.11;
-        Fri, 04 Dec 2020 04:17:35 -0800 (PST)
+        Fri, 4 Dec 2020 07:18:54 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C0DC061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 04:18:08 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id z21so7324798lfe.12
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 04:18:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=e7HzYQO3YzaI0Xq45plj0++Cajn7NB8YJZgNffWWxA4=;
-        b=KBlaqyjMl7riblXcTBbWspPKj0sJsIQ2ErZOIBCKOjVwdQDLZ7fung3hIMdbklUoKP
-         HBnwGKAxewZ7Z96Tay+7x/WfALEJ9cQQGBDxaY4YNuph94maXWBq0jAhxTWkWJF7TQkU
-         +nyxRYmjs74gg4RQnqPkKp6cHXfWdhegzigJmUtQdLZfR0KFATUdQRIOFB1dzg/Y44Zc
-         VPrQ1e5HYRsrC9cFN8vMG/HTZXgc/wkum1WGmV0ssRJils+lX+mtiNY/X2BsHv/j3ZXv
-         yHh0gN4h6oSz26nk+p6EsTMX06byZdF2WQXoiT8x3yozkcEz9YOr35TtZXBQehy7qao+
-         d9gg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QKh+BEm0Z2hwqewzzroWyDAofQUgJdQkZ+JXiUwPDEU=;
+        b=pZu9FxSWb0qhpn2tILJ8QNQAAOVd2yuPkNWwm+pqgkEFt6pc6Vz6Acf4UYrGpIxlT+
+         1HTAp/sNwh8RoKTuJXWF+rSQowE3O1oxfWUVXFiJc1tC2QM37A4arFOkX4K4zS1y3UrA
+         7Hpwue75hh07cIOm1PTeTQNHv/Qu3Nc6t5EDMwptN2K2CvcWMnuXU1h92VPRm1GgdpQ0
+         dJ+qkkLDT7tf8SiXZOdlDr5tqcleQbDbjt+O3bPSDo6gPsMhheZaYSanoKvt1dWZ6WDE
+         uyVKDw2ErECXAUMimdLiAVD/4uqVDvQZinJHWbfwkQ87PBaK3Pxjsj/6nB3EmQQyZ2X/
+         qpQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=e7HzYQO3YzaI0Xq45plj0++Cajn7NB8YJZgNffWWxA4=;
-        b=MNj6SLeMLErxKFwPTg74LiTW85W6cFbroJmsJmkpr2k6UW6a1qRGAEciad3JIhdo9R
-         SSgAkCyoxZd+d0T2EaeOY1NvwIQDw6lt/6LzFmHVRWXigQwcFCJHe8HgwRRgY+gCepZR
-         XsaIxqFFzmtKPIRnffbX8ZUTEVwn4ireqgEDGmVSieE0d1O7rDMKzDtoxSQ1qxtlyLuZ
-         dJsJ8PWJRchPIb0UBKCqvW9KaZzGhD173jyxYPvosASwdf2Tyd0qxrqoHUDHwsiNjs8P
-         uef5LwQlc74g+RYS0PbmMj0qQWf/L3Dr2MLnX7MhapI3lY31vX/XgHRZ2rS3FZwdT5/r
-         e3/g==
-X-Gm-Message-State: AOAM533l4D988fYWC5yqF1DDpwl0aI6qOHM3whdoPeKixSQltju3VGHq
-        Qo5nrwcietlD4CzIODcCM5SQhsBBiaE=
-X-Google-Smtp-Source: ABdhPJx5lKqbhIGDNLL8xRRS9zB7p9lJruZqfGfomwNiWlIPl4HKe+VDZEFNgMb9YpgkvA/GKxp1Eg==
-X-Received: by 2002:a17:906:5912:: with SMTP id h18mr6698916ejq.261.1607084254307;
-        Fri, 04 Dec 2020 04:17:34 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id y17sm1111628edu.44.2020.12.04.04.17.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QKh+BEm0Z2hwqewzzroWyDAofQUgJdQkZ+JXiUwPDEU=;
+        b=AQUpPk/Yo8jLNJsb6aV9cPtIdrYm+sSlyZgZZgVUY8uQSNDadL3hBSDvCNC/J8FZPm
+         aqI/5th4M4jEz0quxOvvOnXn8N+Ddhpx2aFOjU5aot5pZ0IHR4wfzxk9gOm6gEV1yP8k
+         2exwrHMTncf3fMzrklJWf2JEpvHnQdwHP1FbzbjH4WBloSeszIHOn7rrX0RtzpjYEIkj
+         YpIy+bX+M577/GSlfk0Cq42KKRt/WYhsje3dDtYICW1dBNUWUk98zF24PnW+pse8UXT9
+         Def3hwIli4wN+7qTGamRwvgYUKKJrVCoC2aumBXj2DZJCplHAb+XP0ZJHNT0r889zTlU
+         qhPA==
+X-Gm-Message-State: AOAM533UCOGcvMh3isQvMAhK+c8v1Ytt203LMOM6OIwpNhVytvsh4loN
+        hRT7GnsOnnoQ4CLl2fYMh+ks+Q==
+X-Google-Smtp-Source: ABdhPJz2Cdt4Tpl9onypmtkivvmNIEWmBoOLOR8tvaRInPMfFukDEjGAivVIF1q6f0kGhoFFtOEh7Q==
+X-Received: by 2002:ac2:41ca:: with SMTP id d10mr3218682lfi.419.1607084286559;
+        Fri, 04 Dec 2020 04:18:06 -0800 (PST)
+Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
+        by smtp.gmail.com with ESMTPSA id c8sm597731lja.103.2020.12.04.04.18.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 04:17:32 -0800 (PST)
-Date:   Fri, 4 Dec 2020 13:17:31 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>, jonathanh@nvidia.com,
-        robh+dt@kernel.org, linux-spi@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 3/7] spi: qspi-tegra: Add support for Tegra210 QSPI
- controller
-Message-ID: <X8oo23vly1SYKjbI@ulmo>
-References: <1606857168-5839-1-git-send-email-skomatineni@nvidia.com>
- <1606857168-5839-4-git-send-email-skomatineni@nvidia.com>
- <20201202172721.GL5560@sirena.org.uk>
+        Fri, 04 Dec 2020 04:18:06 -0800 (PST)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     akpm@linux-foundation.org, glider@google.com, elver@google.com,
+        dvyukov@google.com, catalin.marinas@arm.com, will@kernel.org
+Cc:     kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH] kfence: fix implicit function declaration
+Date:   Fri,  4 Dec 2020 13:18:04 +0100
+Message-Id: <20201204121804.1532849-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="i8Lsqvp6HbXRxqD7"
-Content-Disposition: inline
-In-Reply-To: <20201202172721.GL5560@sirena.org.uk>
-User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When building kfence the following error shows up:
 
---i8Lsqvp6HbXRxqD7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In file included from mm/kfence/report.c:13:
+arch/arm64/include/asm/kfence.h: In function ‘kfence_protect_page’:
+arch/arm64/include/asm/kfence.h:12:2: error: implicit declaration of function ‘set_memory_valid’ [-Werror=implicit-function-declaration]
+   12 |  set_memory_valid(addr, 1, !protect);
+      |  ^~~~~~~~~~~~~~~~
 
-On Wed, Dec 02, 2020 at 05:27:21PM +0000, Mark Brown wrote:
-> On Tue, Dec 01, 2020 at 01:12:44PM -0800, Sowjanya Komatineni wrote:
-> > Tegra SoC has a Quad SPI controller starting from Tegra210.
-> >=20
-> > This patch adds support for Tegra210 QSPI controller.
->=20
-> This looks pretty clean but I've got a few questions below about how
-> this integrates with the frameworks as well as some more minor issues.
->=20
-> > +config QSPI_TEGRA
-> > +	tristate "Nvidia Tegra QSPI Controller"
->=20
-> Everything else in this file is SPI_, even the qspi controllers.
->=20
-> > +++ b/drivers/spi/qspi-tegra.c
-> > @@ -0,0 +1,1418 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Copyright (C) 2020 NVIDIA CORPORATION.  All rights reserved.
-> > + */
->=20
-> Please make the entire comment a C++ one.  It also appears that the "All
-> rights reserved" here conflicts with the GPL-2.0-only SPDX statement...
+Use the correct include both
+f2b7c491916d ("set_memory: allow querying whether set_direct_map_*() is actually enabled")
+and 4c4c75881536 ("arm64, kfence: enable KFENCE for ARM64") went in the
+same day via different trees.
 
-My understanding is that this phrase is pretty much irrelevant these
-days. Furthermore, I don't think this is to be interpreted as a claim to
-any rights other than the copyright, so it's mostly equivalent to the
-"Copyright (C)" on that same line. Any license terms associated with the
-file do still apply regardless.
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
 
-That said, I'm not a lawyer, so don't take this as legal advice. FWIW,
-there's something on the order of 8000 occurrences of that phrase in the
-Linux kernel sources, so I think with or without the phrase we should be
-okay.
+I got this build error in todays next-20201204.
+Andrew, since both patches are in your -mm tree, I think this can be
+folded into 4c4c75881536 ("arm64, kfence: enable KFENCE for ARM64")
 
-Thierry
+ arch/arm64/include/asm/kfence.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---i8Lsqvp6HbXRxqD7
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/arch/arm64/include/asm/kfence.h b/arch/arm64/include/asm/kfence.h
+index 6c0afeeab635..c44bb368a810 100644
+--- a/arch/arm64/include/asm/kfence.h
++++ b/arch/arm64/include/asm/kfence.h
+@@ -3,7 +3,7 @@
+ #ifndef __ASM_KFENCE_H
+ #define __ASM_KFENCE_H
+ 
+-#include <asm/cacheflush.h>
++#include <asm/set_memory.h>
+ 
+ static inline bool arch_kfence_init_pool(void) { return true; }
+ 
+-- 
+2.29.2
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/KKNsACgkQ3SOs138+
-s6H62Q/9Fwa6i9csrNhhvi0flxowro5rRfpFy86gUQp2HX2f6ZiJ3zsN33Q9RF1+
-mH/dMXdPoLvIx9eBnr8YshoU37O03H8WyoA3rD0DWmZa6nEc9lLdS/00gF+5frWx
-W0s8TkcE1fsK/83GceEPmiWWJ8+geOqzdpaEQEoIkxuu4IXhq5ba13HVpWf4Zsbd
-uPAuZVwbeO5ZVn2cKqEIkMvNCeZmx0zlgvIY0huoIYyjqbRXfChz27jnayWxqzF8
-ljszXMEEasNGY91u7KcxphYtlJohE05Gk/fs5GKVIytkQ2+GeiRkAuHNPIIWHX6R
-FB2h7DlV/8/oMmPjjGtiSvoEk4qT/reSDLU5DBMIcMUr8AxHqVWkk++r8gNBh2SV
-U3KsvJ8MnwZeHn6you+e9b5kKVYVXbZyMclbCWWIWx3aJtASuppLQU0KvI414akB
-5OopHQbOruFf2+ubusKLz7ICD/ynQ+JixMkSCZ3eb6yXmctnb2KgfPccjYcsBUrS
-fs3oGKJYC6O8/aD/Z/rUrgeTutxQsPL1l0J4hxsIOpTcHlXI6AoOfVeaalO2PCnp
-AC3O5abTmGVfkOtV9quC5/0WW1lAiYE7vOfiCNiJc2fVtZ5ST/DvtQGt+7isLfcy
-zxnRghHODNCk+eMPZpVsUIjanoU4z1fnly8tBK75TmahjtRHYdo=
-=5NKQ
------END PGP SIGNATURE-----
-
---i8Lsqvp6HbXRxqD7--
