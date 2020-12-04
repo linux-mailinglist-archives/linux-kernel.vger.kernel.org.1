@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9180E2CE4B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F6A2CE4B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727852AbgLDBGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:06:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726028AbgLDBGj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:06:39 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8098C061A4F;
-        Thu,  3 Dec 2020 17:05:58 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id x16so6289918ejj.7;
-        Thu, 03 Dec 2020 17:05:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zawDXfV2e+DrFT4rJ/w7y+LtGY3DyFHn3h84rx+qbno=;
-        b=h1UiqMsbeNmUH1fPKuAQBtgCPE5vLxSFhl2ie/rxpmpTQi5yU6MJoDGGMTRJ1hpwAe
-         TkUP8X7hKp+/QqrL81ZnwIxhRLW1tEmejgoTKkh1UmxRHFFeg2oq6HIfG3v7ukjddbTY
-         W8KpIRk2zCt5ZFQYl0QO5CAJmKnLTDcniOf5dmpDqy/lGN9UZx/oh6hrt3RKy0vNhKan
-         lJWmNkNgQIu4ysLD38fe3hNlG95Siis3k2HUI1qeRiLxAWCRnjE7NupQFS8cH3dqSF7z
-         oIEtG/DsKKvHKfCa6N91vb/avmOozcxOcDVx89FQw+0MnRuevnQynSDR+YXJx1YoHrBE
-         we+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zawDXfV2e+DrFT4rJ/w7y+LtGY3DyFHn3h84rx+qbno=;
-        b=eWMVjqPfifHSEyp0Ag0oI8n9VJmNQ4FccuHHZt5Rc7oxb1inXsDBAXXunC/c7kQUxl
-         Dj+n273u0FdZAMptazVy87IZ+1CGbjzrXC5GlDOS5Q/GSh5+PUUi2yvPJjrd/NF7fbf4
-         Lh07iMrsaI8r255+sKkPzD6LIXN9b+DXGuh1/mnYBsNr+Xs6emOuM+c0aRJLp7BLHFJM
-         4HVX5Ce0UhXxukAmlWuE3T43RX8JI3STjDLY4MhICZkv52vum7TUG72eYfvlFSZ3tt2z
-         6uXBFShUakWBFSX51f+lvIzlqdBmAVDjdsdc4U7j//3MDnz7e9XVq3uYdrwXxPYzIXLs
-         iH6w==
-X-Gm-Message-State: AOAM5320m9C79tiEeAl1517CqLIbVkV2u6P4qNs1sxMqxM8yylryewxD
-        1up82L/72L2KmywN5iPQ1DI=
-X-Google-Smtp-Source: ABdhPJzfK8WlH2XeJMJhDdXMnMKcAMMY8492cn/wQmNh1GHt5/vyf4kCdXdXnmBDGnRp6n47B8jiBQ==
-X-Received: by 2002:a17:906:2602:: with SMTP id h2mr4855475ejc.358.1607043957416;
-        Thu, 03 Dec 2020 17:05:57 -0800 (PST)
-Received: from skbuf ([188.25.2.120])
-        by smtp.gmail.com with ESMTPSA id d22sm1990133eja.72.2020.12.03.17.05.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 17:05:56 -0800 (PST)
-Date:   Fri, 4 Dec 2020 03:05:55 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Maksim Kiselev <bigunclemax@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maxim Kochetkov <fido_max@inbox.ru>
-Subject: Re: [PATCH] spi: spi-fsl-dspi: Add GPIO chip select support
-Message-ID: <20201204010555.oyipx77djdkm6xkz@skbuf>
-References: <CALHCpMgQPDqV1tB6v0sA0imwfZGkoG_j84NZCehOT1pf8MTuCA@mail.gmail.com>
- <20201203175024.hzivclydoxp6txir@skbuf>
- <CALHCpMgmdfScVhWKhhtisZ=-rf0wS8CujDoVWBJ8qkL_OXGu1g@mail.gmail.com>
+        id S1729969AbgLDBHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:07:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728005AbgLDBHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 20:07:10 -0500
+Date:   Thu, 3 Dec 2020 17:06:28 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607043989;
+        bh=+SyN7x2DNaQbOsGqnbSUpwi8VIsKLoeEg6noIVJhwLw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UlPZxkX0YrVNrSNVZR34GeVPYSZH58pb2Aq51ehunuuDSTbZpF3Y9TVrnlXhcPB0P
+         ICgaMeaVuEfgCSNaq5T0TuNpJLuMrbsPUGtMesrHfmRfrZWklfOHPuUV4SFDlNX79c
+         mmCHtTKGQDhutdAWmdrw4u+N5LPlMe1Y2Qzk64wVBxULdTloZatww5bdxq9DxQgEs3
+         AF1zW4/Rk9IctbICk/6WrSYiip8BMRMb0UeoA6siitr9iRcDo+Xcm2qNwSvIw5swZJ
+         0P7lob2u8QdCZbbdQvH2cqnEkFxR3JwcNGUUhr0rVktT4o2VdmQwk7QcNO6FIOjWI0
+         kl8A373fbyqYQ==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     <min.li.xe@renesas.com>
+Cc:     <richardcochran@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 1/4] ptp: clockmatrix: reset device and check
+ BOOT_STATUS
+Message-ID: <20201203170628.003d92e2@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <1607008819-29158-1-git-send-email-min.li.xe@renesas.com>
+References: <1607008819-29158-1-git-send-email-min.li.xe@renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALHCpMgmdfScVhWKhhtisZ=-rf0wS8CujDoVWBJ8qkL_OXGu1g@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 09:50:04PM +0300, Maksim Kiselev wrote:
-> In any case, I would like to add functionality for using GPIO as CS.
-> Because I have a board which actually uses this.
+On Thu, 3 Dec 2020 10:20:16 -0500 min.li.xe@renesas.com wrote:
+> From: Min Li <min.li.xe@renesas.com>
+> 
+> SM_RESET device only when loading full configuration and check
+> for BOOT_STATUS. Also remove polling for write trigger done in
+> _idtcm_settime().
+> 
+> Signed-off-by: Min Li <min.li.xe@renesas.com>
 
-I have absolutely nothing to object to that.
-But the patches should still be as clean as possible, though.
+Please fix the checkpatch warnings:
+
+CHECK: Unnecessary parentheses around 'regaddr < GPIO_USER_CONTROL'
+#62: FILE: drivers/ptp/ptp_clockmatrix.c:60:
++		if ((regaddr < GPIO_USER_CONTROL)
++		    || (regaddr >= SCRATCH))
+
+CHECK: Unnecessary parentheses around 'regaddr >= SCRATCH'
+#62: FILE: drivers/ptp/ptp_clockmatrix.c:60:
++		if ((regaddr < GPIO_USER_CONTROL)
++		    || (regaddr >= SCRATCH))
+
+CHECK: Logical continuations should be on the previous line
+#63: FILE: drivers/ptp/ptp_clockmatrix.c:61:
++		if ((regaddr < GPIO_USER_CONTROL)
++		    || (regaddr >= SCRATCH))
+
+CHECK: Unnecessary parentheses around 'loaddr > 0x7b'
+#67: FILE: drivers/ptp/ptp_clockmatrix.c:65:
++		if (((loaddr > 0x7b) && (loaddr <= 0x7f))
++		     || loaddr > 0xfb)
+
+CHECK: Unnecessary parentheses around 'loaddr <= 0x7f'
+#67: FILE: drivers/ptp/ptp_clockmatrix.c:65:
++		if (((loaddr > 0x7b) && (loaddr <= 0x7f))
++		     || loaddr > 0xfb)
+
+CHECK: Logical continuations should be on the previous line
+#68: FILE: drivers/ptp/ptp_clockmatrix.c:66:
++		if (((loaddr > 0x7b) && (loaddr <= 0x7f))
++		     || loaddr > 0xfb)
