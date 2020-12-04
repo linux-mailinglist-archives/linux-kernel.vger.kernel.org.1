@@ -2,164 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250EA2CF20A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 718482CF213
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729493AbgLDQkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:40:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57646 "EHLO
+        id S1730744AbgLDQl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:41:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgLDQkG (ORCPT
+        with ESMTP id S1726526AbgLDQl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:40:06 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E00C0613D1;
-        Fri,  4 Dec 2020 08:39:19 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id a1so5977158ljq.3;
-        Fri, 04 Dec 2020 08:39:19 -0800 (PST)
+        Fri, 4 Dec 2020 11:41:56 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF637C061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 08:41:15 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id ck29so6470374edb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 08:41:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/HbZT1w/sDNXpdEmMytXf00NzZZfpE4/Ymz4KLprk90=;
-        b=Jrqhg14JWpc+uPF6bVpjbC7w9Dv46K6kTGMipKeKq0++Atw9xsquYUfEb657MuwYUP
-         6H1Twd0ov4dhgVuEBa0YFNwq2z2mgOm4piiilKmOACiPfBNN+H4+Y9rUsHIS4mPBNfiX
-         0tG+vKV0VtOrNJsPDTxV/or+WysQsGOID44MY/0xA5qUqOQHgYkxvQhXStxcXBbg9SV3
-         NwBQXYPwMgnqg6eUYtkuo1mWpeED+uns6GF80VBmxD2RVJsAFf8NOfmLR/BYrcLnAZfB
-         RNJCg3+HGhY2J35cD0Jm6GprRXgvTRnUZ1CvnZ6gG67nMOfRQn6+w+KgospC9+AWo8MI
-         CYvA==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0DSnVIqhCjfQRKv2sQg9Q6JdfEOfBg7tXO7oAxFOt6Q=;
+        b=0yetlJbYMnmdPmLRUZn7RS3bh0tzdzDGM+9PDleeD2iqRFXkNd6mRf3f03rSWgmQd5
+         qOdHp/kup+NAYxh/CJU9LLba4DAwBUgERhl0M4qXHOiXVt1fco+LP77vh1cyZ6qq4c/8
+         foxoZxB5HbKBzb5iEeajTCsLfYovy0DkhPTg2Vx19iICqqPRG/USmccONRumHiexn6TT
+         emAV80gchfWJPgkMYOcf5EbJkWMDGA1M8o5UgQZIurDf8zmRVSOw/6i4VpmZ4L3VjJY1
+         Lb0/f/PdqHE31Hd1g7ro/aT6mcyIWyq6RwBrvqipCdwmt+1rH+sEiJAwqvHPxCuIWtFs
+         z3iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/HbZT1w/sDNXpdEmMytXf00NzZZfpE4/Ymz4KLprk90=;
-        b=EmPF2f64xjdtHFhZhzBLUVfLg4o/KVOV0Fl+18YODjqLcqhKerAT3HGmfFUKERRJK5
-         UxE5imCQL5L0IyxHLM7A3zzxzth4pLQJgRNxDlWWH+k7XQvTbm/nWSxzAjeXdd1N3EGW
-         hX5pga3pDOYR1dZkfEoKwpUVQkMgKG3R4WUsiQUmgoFzLSluTJDvratjZlMGOd4ti288
-         3K/U77VVgpXs68EtlPt+CZDrH8hV1lye9/nGKHePGrK0tnS9NgfnircvDsaI2iDyOTRl
-         wPRvyFnyU4LOUnsqDol3bj8LyA2QtuSSTGDMZDbKSeqJUz9vULKymg3beTqbwDkfbzuC
-         FT1g==
-X-Gm-Message-State: AOAM531tibtb2F9i6id+4FYQljyN+4Lg2j9slCV0aHCFVBDjkKpAi9xf
-        CdfYyIepMbwgXUJu28aiW+s=
-X-Google-Smtp-Source: ABdhPJxx3o78HDWNrX4NRveR8CA3ggHGlOY6OVMN9hM6mRleZSTWgiZMVRrM2mpvjjmYd1izBwfOOQ==
-X-Received: by 2002:a2e:87cb:: with SMTP id v11mr189605ljj.218.1607099958228;
-        Fri, 04 Dec 2020 08:39:18 -0800 (PST)
-Received: from elitebook.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id w11sm1904811lji.135.2020.12.04.08.39.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Dec 2020 08:39:17 -0800 (PST)
-Subject: Re: [PATCH 1/2] dt-bindings: reset: document Broadcom's BCM4908 USB
- reset binding
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20201204093704.11359-1-zajec5@gmail.com>
- <0cc54a35-7d70-8a2f-0c1f-da124136a66d@gmail.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <cb2c0545-a1f6-4b85-6f9f-15813f74e323@gmail.com>
-Date:   Fri, 4 Dec 2020 17:39:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0DSnVIqhCjfQRKv2sQg9Q6JdfEOfBg7tXO7oAxFOt6Q=;
+        b=IcqUAQ+mg3XYAHSQQ98Z6cNqBVDF7KcRJLRFE+HBTMN9qIpc+czB5ih62rz1xsVpW7
+         V+Ho8k/BGALm6FJaSuz0geQJRDaZr9U6SKV4Meko3cCPadpQSdyIAG2r6AiezFw0XkTt
+         Yhyq3DTX4YPEfXpjlSOGnJAnLHdRfPCR06QiUsKhk+aYjkuqUYW0or641lvxsZAAeHy5
+         nAl73VNi2vd7+VIxXFws6/JjSjtVGsLZPRhSgVg6tnNqitREhNKr8fAyAGgseflGEhTE
+         3ZFqXujy9x3TD3MvKmR/cp4QqZlZTl4fc7pVyQfPI/ghmO+QVdEUSjn4AX16HsTMTXFt
+         K+bA==
+X-Gm-Message-State: AOAM532MA79iTrFrdKNtKKh/Evnqq09/ucv6DGq0SLgan0MyykcGN3Qe
+        7TrqmYzh6uJTadDbE9VPxtn+tfHaR2OXXNRVUXlcqA==
+X-Google-Smtp-Source: ABdhPJwaZ4haRtuDzBD84WdDW7otHcrepP4bW/OgCJDuVGkx8fNTTRTGsYJMeW0OBOxCy0odLqO+2rTLHMU2+xmnxS8=
+X-Received: by 2002:aa7:cdc3:: with SMTP id h3mr2165444edw.52.1607100074435;
+ Fri, 04 Dec 2020 08:41:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <0cc54a35-7d70-8a2f-0c1f-da124136a66d@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <X8ogtmrm7tOzZo+N@kroah.com>
+In-Reply-To: <X8ogtmrm7tOzZo+N@kroah.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 4 Dec 2020 08:41:09 -0800
+Message-ID: <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Kiran Patil <kiran.patil@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, alsa-devel@alsa-project.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.12.2020 17:32, Florian Fainelli wrote:
-> On 12/4/2020 1:37 AM, Rafał Miłecki wrote:
->> From: Rafał Miłecki <rafal@milecki.pl>
->>
->> Document binding of block responsible for initializing USB controllers
->> (OHCI, EHCI, XHCI).
->>
->> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->> ---
->>   .../reset/brcm,bcm4908-usb-reset.yaml         | 60 +++++++++++++++++++
->>   1 file changed, 60 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/reset/brcm,bcm4908-usb-reset.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/reset/brcm,bcm4908-usb-reset.yaml b/Documentation/devicetree/bindings/reset/brcm,bcm4908-usb-reset.yaml
->> new file mode 100644
->> index 000000000000..31beb1c8f3cd
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/reset/brcm,bcm4908-usb-reset.yaml
->> @@ -0,0 +1,60 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/reset/brcm,bcm4908-usb-reset.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Broadcom BCM4908 USB host controller reset
->> +
->> +description: >
->> +  BCM4908 has a separated block controlling all USB controllers. It handles the
->> +  whole setup process and takes care of initializing PHYs at the right time
->> +  (state).
->> +
->> +maintainers:
->> +  - Rafał Miłecki <rafal@milecki.pl>
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - brcm,bcm4908-usb-reset
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  resets:
->> +    $ref: /schemas/types.yaml#/definitions/phandle
->> +
->> +  phys:
->> +    minItems: 2
->> +    maxItems: 2
->> +    $ref: /schemas/types.yaml#/definitions/phandle-array
->> +
->> +  phy-names:
->> +    items:
->> +      - const: usb2
->> +      - const: usb3
->> +
->> +  "#reset-cells":
->> +    const: 0
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - phys
->> +  - phy-names
->> +  - "#reset-cells"
->> +
->> +additionalProperties: true
->> +
->> +examples:
->> +  - |
->> +    reset-controller@8000c200 {
->> +        compatible = "brcm,bcm4908-usb-reset";
->> +        reg = <0x8000c200 0x100>;
->> +
->> +        phys = <&usb2_phy>, <&usb3_phy>;
->> +        phy-names = "usb2", "usb3";
-> 
-> This looks quite unusual, usually the *HCI controllers would be
-> consumers of the PHY and the PHY may be a consumer of the reset controller.
-> 
-> (still going through my emails have not fully read your separate email
-> on the topic, so pardon me if this is being discussed twice).
+On Fri, Dec 4, 2020 at 3:41 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
+> > From: Dave Ertman <david.m.ertman@intel.com>
+> >
+> > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> > It enables drivers to create an auxiliary_device and bind an
+> > auxiliary_driver to it.
+> >
+> > The bus supports probe/remove shutdown and suspend/resume callbacks.
+> > Each auxiliary_device has a unique string based id; driver binds to
+> > an auxiliary_device based on this id through the bus.
+> >
+> > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
+> > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> > Reviewed-by: Parav Pandit <parav@mellanox.com>
+> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > Reviewed-by: Martin Habets <mhabets@solarflare.com>
+> > Link: https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > ---
+> > This patch is "To:" the maintainers that have a pending backlog of
+> > driver updates dependent on this facility, and "Cc:" Greg. Greg, I
+> > understand you have asked for more time to fully review this and apply
+> > it to driver-core.git, likely for v5.12, but please consider Acking it
+> > for v5.11 instead. It looks good to me and several other stakeholders.
+> > Namely, stakeholders that have pressure building up behind this facility
+> > in particular Mellanox RDMA, but also SOF, Intel Ethernet, and later on
+> > Compute Express Link.
+> >
+> > I will take the blame for the 2 months of silence that made this awkward
+> > to take through driver-core.git, but at the same time I do not want to
+> > see that communication mistake inconvenience other parties that
+> > reasonably thought this was shaping up to land in v5.11.
+> >
+> > I am willing to host this version at:
+> >
+> > git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux tags/auxiliary-bus-for-5.11
+> >
+> > ...for all the independent drivers to have a common commit baseline. It
+> > is not there yet pending Greg's Ack.
+> >
+> > For example implementations incorporating this patch, see Dave Ertman's
+> > SOF series:
+> >
+> > https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
+> >
+> > ...and Leon's mlx5 series:
+> >
+> > http://lore.kernel.org/r/20201026111849.1035786-1-leon@kernel.org
+> >
+> > PS: Greg I know I promised some review on newcomer patches to help with
+> > your queue, unfortunately Intel-internal review is keeping my plate
+> > full. Again, I do not want other stakeholder to be waiting on me to
+> > resolve that backlog.
+>
+> Ok, I spent some hours today playing around with this.  I wrote up a
+> small test-patch for this (how did anyone test this thing???) and while
+> it feels awkward in places, and it feels like there is still way too
+> much "boilerplate" code that a user has to write and manage, I don't
+> have the time myself to fix it up right now.
+>
+> So I'll go apply this to my tree, and provide a tag for everyone else to
+> be able to pull from for their different development trees so they can
+> work on.
+>
+> I do have 3 follow-on patches that I will send to the list in response
+> to this message that I will be applying on top of this patch.  They do
+> some minor code formatting changes, as well as change the return type of
+> the remove function to make it more future-proof.  That last change will
+> require users of this code to change their implementations, but it will
+> be obvious what to do as you will get a build warning.
+>
+> Note, I'm still not comfortable with a few things here.  The
+> documentation feels odd, and didn't really help me out in writing any
+> test code, which doesn't seem right.  Also the use of strings and '.' as
+> part of the api feels awkward, and messy, and of course, totally
+> undocumented.
+>
+> But, as the use of '.' is undocumented, that means we can change it in
+> the future!  Because no driver or device name should ever be a user api
+> reliant thing, if we come up with a better way to do all of this in the
+> future, that shouldn't be a problem to change existing users over to
+> this.  So this is a warning to everyone, you CAN NOT depend on the sysfs
+> name of a device or bus name for any tool.  If so, your userspace tool
+> is broken.
+>
+> Thanks for everyone in sticking with this, I know it's been a long slog,
+> hopefully this will help some driver authors move forward with their
+> crazy complex devices :)
 
-I agree, it's the the best solution I found for this specific design.
+To me, the documentation was written, and reviewed, more from the
+perspective of "why not open code a custom bus instead". So I can see
+after the fact how that is a bit too much theory and justification and
+not enough practical application. Before the fact though this was a
+bold mechanism to propose and it was not clear that everyone was
+grokking the "why" and the tradeoffs.
 
-This specific hw block perform various operations before, in the middle and
-after PHY initialization. That made me make reset controlller initialize PHYs.
-
-I'm happy to implement a more proper design if someone can just suggest how.
-I don't have any better idea :(
+I also think it was a bit early to identify consistent design patterns
+across the implementations and codify those. I expect this to evolve
+convenience macros just like other parts of the driver-core gained
+over time. Now that it is in though, another pass through the
+documentation to pull in more examples seems warranted.
