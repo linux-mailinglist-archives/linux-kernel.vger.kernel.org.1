@@ -2,112 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814F32CECCE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98DA32CECCC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729930AbgLDLMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:12:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30627 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725839AbgLDLMd (ORCPT
+        id S1729779AbgLDLMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:12:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbgLDLME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:12:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607080267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/j9o0aMtbK+iCXtL48XT9SzYeWgplswBUn1K4plIIJo=;
-        b=fp289rx9wlKJ0rZAg+MVlxjtYf4JaABm/MM/c6VkZ8jdC1ho8HUbmnkcoQGcrkgyNtnTHN
-        IBSuuix/FM1TSX4KpO+xOOuZaE45vXBfeq7XB7SEmTMmfnWOruNCbRI9GAO+2daudPNISf
-        O2yibLj6+73kr+3bID4HALFiJHLZSE4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-ylqHlADAMzyMErBken8WHg-1; Fri, 04 Dec 2020 06:11:05 -0500
-X-MC-Unique: ylqHlADAMzyMErBken8WHg-1
-Received: by mail-wr1-f69.google.com with SMTP id m2so2429605wro.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 03:11:05 -0800 (PST)
+        Fri, 4 Dec 2020 06:12:04 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E45CC0613D1;
+        Fri,  4 Dec 2020 03:11:24 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id ga15so8129389ejb.4;
+        Fri, 04 Dec 2020 03:11:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xnaHGe/ZuxSqBmGctMzyZL4ITR7AeciIssYQdgeiTiE=;
+        b=Izo9zFmC3Jet2SaZFSA0PfAeG9x8ayklzFrBHtggksXTDmyOVpsG0r8Hh0uMlMeW9m
+         FNxBpyspEAIAilZyE6qGRf3b/la4Nt3s1oD3jftVy1gncDwdX6EZLUWOYLZLxbx6/63n
+         MyifPp3zf2Ki0jtqjN1UqgXwOheHgaSW9kwlJj0ETmDn+NEXEfs8FMkJVhhIU5nbtQYb
+         pGNxMwwWtDK4qaVf7c2+f0PjZvM74aEoNL2l8f7XbMIw7IOyTSyb78A+0LE0Usek9VgT
+         SYMCTeAv+UWItuDQZzwUd46KVjt3Xyw9YplUrq6Mpjni0EwaMnghBi70ElVhop/E28JZ
+         7Osg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/j9o0aMtbK+iCXtL48XT9SzYeWgplswBUn1K4plIIJo=;
-        b=ovSo3W+TzS0rDYtZ3Xs0YInQiNEvOQNQ1eKdD3nNuj6lfFny5HGMsqhgbAB3gm+eWm
-         yXC9pOWJnyUGR6y+uPZOZJyrszAiTmCfs4mP6YHD8FqXvbPmlQTDa1dk25UnlhwPtb16
-         0878CtyF7AO23npFKNMgnOL9kO9OCv0FF3spTQxmq01lCslFm2WtxjEkW0BSa48iTY3L
-         7DvxvCAkTNzQ8fsiX4I3yCut6p70LlSLgS6Cst+bV3jUE2scWPWXRRMondXSlDaWKZRr
-         y3Mdl3jMYh7UNpTpOC5iS++wJtCap10RCBE73NYb4alun79z7VLzl2hZ8FmpVsMUkWdv
-         oQOg==
-X-Gm-Message-State: AOAM530WkJahSz2eF8ikm7XXNSo9PkEaDnCuYN1WF9yrvmaTwW4H3+rj
-        dJaDCCHOPcIiTssDJ4JNIblQYItqAnOqkjn7Pwy13rgg8OR3ruPClYv6ugerDLPkt8bJn2L3TnR
-        tWe/gkKGSITUwm2fbtQ9F3/qS
-X-Received: by 2002:adf:e544:: with SMTP id z4mr4399589wrm.83.1607080264428;
-        Fri, 04 Dec 2020 03:11:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwXI/qgR3hNN+mIU4D+6sj1PheqGHMz0GvaAC0S4MAFIFRza72ft7HZ5AeSVWORKWBqXf4PNA==
-X-Received: by 2002:adf:e544:: with SMTP id z4mr4399554wrm.83.1607080264236;
-        Fri, 04 Dec 2020 03:11:04 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id y7sm3128192wrp.3.2020.12.04.03.11.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Dec 2020 03:11:03 -0800 (PST)
-Subject: Re: [PATCH v8 18/18] KVM: SVM: Enable SEV live migration feature
- implicitly on Incoming VM(s).
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, Thomas.Lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, rientjes@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-References: <cover.1588711355.git.ashish.kalra@amd.com>
- <a70e7ea40c47116339f968b7d2d2bf120f452c1e.1588711355.git.ashish.kalra@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5af7ca40-69eb-0870-7bf2-9bc17685d03b@redhat.com>
-Date:   Fri, 4 Dec 2020 12:11:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xnaHGe/ZuxSqBmGctMzyZL4ITR7AeciIssYQdgeiTiE=;
+        b=bo7FGqsD6SEqRCKfC9VEJkujk5TW1DevuEBxs2mUGL8rjqEOaIErzGucEsE2pk1XvE
+         4ck5Y5HyGZsm+LRO7DWz0Nn0+mhlsMwtKJrmRoKfMwHQ57NoAeJygIkFce7bFRFscHsN
+         qCWizVYLMJSgFxCJbnVaN38UKPZ28/keD8CdQyXhwht5Z+QGSMOvd8uJTQgL4uVzWyrN
+         Entwslm3VNclI0oj99OHEYVWBm5AgpTiOVZmQWW31v21EluUIDlwl71mPlDT8D+dNJLe
+         8uyv9jNwFmaKCry2fjhQhBjNx6jpioy2Qm+s9OsRs0Kb2G3JYpfhkQZNWB1ZMvkVGOAQ
+         WZHw==
+X-Gm-Message-State: AOAM533yYlCxSQu86n90AZ/GuPHBgBV7cmYvxwRzxXYF8ZOONIXsBAQu
+        bFskM8m2uJeGsUwiCIsP7SY=
+X-Google-Smtp-Source: ABdhPJzK+9oEpwGONVRbN8en4DTehED+iOtvvDaJIgXEjsRZS2FNBl8zBcBnxy471rRc20EQ9DStDw==
+X-Received: by 2002:a17:907:2122:: with SMTP id qo2mr4474939ejb.539.1607080283075;
+        Fri, 04 Dec 2020 03:11:23 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id gl2sm2798257ejb.29.2020.12.04.03.11.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 03:11:21 -0800 (PST)
+Date:   Fri, 4 Dec 2020 12:11:20 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firmware: tegra: bpmp: fix T234 build failure
+Message-ID: <X8oZWMhARPcieFW7@ulmo>
+References: <20201203230625.1480626-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <a70e7ea40c47116339f968b7d2d2bf120f452c1e.1588711355.git.ashish.kalra@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BjMOgQ6UjF/35Sbo"
+Content-Disposition: inline
+In-Reply-To: <20201203230625.1480626-1-arnd@kernel.org>
+User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/05/20 23:22, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
-> 
-> For source VM, live migration feature is enabled explicitly
-> when the guest is booting, for the incoming VM(s) it is implied.
-> This is required for handling A->B->C->... VM migrations case.
-> 
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+
+--BjMOgQ6UjF/35Sbo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Dec 04, 2020 at 12:06:20AM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> When only Tegra 234 is enabled, the bpmp driver fails
+> to build:
+>=20
+> drivers/firmware/tegra/bpmp.c:861:51: error: 'tegra186_soc' undeclared he=
+re (not in a function)
+>   861 |  { .compatible =3D "nvidia,tegra186-bpmp", .data =3D &tegra186_so=
+c },
+>       |                                                   ^~~~~~~~~~~~
+>=20
+> Fix the #ifdef statement to match the location in which this
+> symbol is used.
+>=20
+> Fixes: 0ebdf11699d0 ("firmware: tegra: Enable BPMP support on Tegra234")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->   arch/x86/kvm/svm/sev.c | 7 +++++++
->   1 file changed, 7 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 6f69c3a47583..ba7c0ebfa1f3 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1592,6 +1592,13 @@ int svm_set_page_enc_bitmap(struct kvm *kvm,
->   	if (ret)
->   		goto unlock;
->   
-> +	/*
-> +	 * For source VM, live migration feature is enabled
-> +	 * explicitly when the guest is booting, for the
-> +	 * incoming VM(s) it is implied.
-> +	 */
-> +	sev_update_migration_flags(kvm, KVM_SEV_LIVE_MIGRATION_ENABLED);
-> +
->   	bitmap_copy(sev->page_enc_bmap + BIT_WORD(gfn_start), bitmap,
->   		    (gfn_end - gfn_start));
+>  drivers/firmware/tegra/Makefile       | 1 +
+>  drivers/firmware/tegra/bpmp-private.h | 3 ++-
+>  drivers/firmware/tegra/bpmp.c         | 3 ++-
+>  3 files changed, 5 insertions(+), 2 deletions(-)
 
-Why?  I'd prefer the host to do this manually using a KVM_ENABLE_CAP. 
-The hook in patch 12 would also be enabled/disabled using KVM_ENABLE_CAP.
+Sigh... I wonder if I should just give up and eliminate all
+ARCH_TEGRA_XYZ_SOC options. There's not a lot that we gain by keeping
+them around and most people will be building multi-platform
+configurations anyway, so there's very little point to it.
 
-Paolo
+Anyway, this looks good, so:
 
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+Let me know if you'd prefer me to pick this up and send as a follow-up
+pull request for Tegra.
+
+Thierry
+
+--BjMOgQ6UjF/35Sbo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/KGVgACgkQ3SOs138+
+s6H7Sw//VHbPPlHeGAiLDPwKNTRWcINdQlK2htbX3GrWI6nW7lYc0GftNPHJUaTq
+tQ0no2qyhgrTnvJgw8wfcP4/gYwPJpX7FNMcv9aA37+jzX4oQLJ0Nk7zvEaz1AOJ
+CAjVMZVhjef6jbNLRzpO60ZsfHZtoPojSpV24ki8QAGdJSJSTUcyxVZ80/8JVnGo
+vSr2YEI7Y8VuwVIsaZgWyAGtW15DlFTnuZeBVijdLcThhnUa45YXZMfHBwemTCZQ
+yC5d3fnYrCP4vKl46j3vEzMNnQy3xcX0oJKP4xvkW4PDldCFR1pALSgwJnIzx2al
+OdgSTngS7aC/0LJWaNxfOy5yDDqt1tW+RUjNChwcRIEKUjA83FHPZxfN3agql/89
+twMYJQ9vgVyqfiJY3uzXjX5qOVvq8aITjgszSIKrnouAZVBTMoLvKnO46qhBJShD
+9aYzJRmL9L98bwg1eWPbFAXryNGbvRSP3847LWthm1qUAa10FrhcOxE6wnxCFdYp
+2stHmGU/fshmZCRDLTQW4TKczkorI7D1ekn8E49Q/Rl7tnNhbN2pa3EoblYvY4EJ
+9HFMA4/NXLAelSvsQd1Yzj9bdaxDg+ZtyOzZoMQm7OIPt1BwTU7rhoJ5hFJfyOWO
+9+gOENtmRuNbOLwdobktBwjcTDUw0wPZRV8nabDscaUA5pJ8CoM=
+=4cb8
+-----END PGP SIGNATURE-----
+
+--BjMOgQ6UjF/35Sbo--
