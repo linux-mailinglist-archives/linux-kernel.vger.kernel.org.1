@@ -2,87 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A89C42CF7AF
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1772CF7B8
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729490AbgLDXrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 18:47:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39062 "EHLO
+        id S1726917AbgLDXwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 18:52:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727388AbgLDXrX (ORCPT
+        with ESMTP id S1725847AbgLDXwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 18:47:23 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D27C061A52
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 15:46:43 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id t3so4480279pgi.11
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 15:46:43 -0800 (PST)
+        Fri, 4 Dec 2020 18:52:33 -0500
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C81C061A4F;
+        Fri,  4 Dec 2020 15:51:52 -0800 (PST)
+Received: by mail-oo1-xc44.google.com with SMTP id y3so1815045ooq.2;
+        Fri, 04 Dec 2020 15:51:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LGD/RRlJ9qYcjJKn7WhBQr/iddBUcMbCKVBFUtvDryw=;
-        b=W8nYbzW29aK5BI9b3s/HSOzJYye5fofwtRGf/n08NAYFqTAnms5MDGLkVxvQuvia7+
-         8lYvKlc7hfU3yjVEqUwwHVXeutiagN4yzJLeVYiNWpjJHD0a/Nl9HfaHBtd3nxPp2lve
-         mQVzqhP3egC18W9DwiyAoc7E6BOq0rAXrJ0ek=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=xEkMnTiVHY+tC4E6hkhP6genGPHTd0rY7OtoiGotd8g=;
+        b=rd0aiJ3ctb+1EhFlogqQIof+oUylf8/J7pGvmiqigxpJDioooFy/xANBc1OnaBeSVn
+         vGfoaF0At8VJukQuiv7UX5YLX4AMwQ7B+ZlkTzzAvrBKADUjhAn/gjezQADZg+HNqYg6
+         SyJYpebRTj+vQoWUWKel1L0jqNSoRHaPfflS6YryvVP269mn1ubj9QAG/LmzOf/5vheU
+         FvZBOxmRLjs0BLo8VzmrYZ7zM0mvwQxfL2lZPWz/eNrjWO8ZJYZZCeJBzjPelR2kHqfq
+         5HhiFF9mh75NBYgIe+UQdJc55+zhINqzuTByWRyVMK3iDfhewsAb7faQgsIDfGnUNh7P
+         Nwxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LGD/RRlJ9qYcjJKn7WhBQr/iddBUcMbCKVBFUtvDryw=;
-        b=LP53w6rHs/mHZEsgN+VWYYlV11E6efOWgDctZ2X4Lt4BIDEP10i2nx2QnelNal503+
-         ihc3X8CoRYr11OpclH33E43H+1FKdFqYRdCarCth9pWiRo68vueD3xApKesRaFWZPmRu
-         YdgAMyZwbnQmzpyrseWsiv++3XRnbR94KhxclildGwPf8/JSa2WzFmeI3p9oJkE4Jc9U
-         JEUFQhJmSMn82L1/IjyYAq1YLGV20fDRDsOiCaDiu7P4ENBtL9vFEZ0Yi8EflIZURRH1
-         NEqKW/UYKq0h6wv9P8/jGrOb6+9EInNZRTqzFgqPSLAzARt7wRgrNB3x818rI4Ft3Whi
-         Sn7w==
-X-Gm-Message-State: AOAM530fpUbTEvoRATj1bMcAPoaRNSC6X/4YxBZCl03O0fuiZ2JMsLEr
-        sKwehZ7FdCFu/z846iEEvEddMA==
-X-Google-Smtp-Source: ABdhPJxst/88x4vpS1tQ3o1+yZeDoCO32pjKEs+qGoYQW6uKQW2SDAJq6pQ3PklTgGowiEbbpxN2MQ==
-X-Received: by 2002:aa7:8090:0:b029:198:39d9:23e6 with SMTP id v16-20020aa780900000b029019839d923e6mr5896075pff.45.1607125602602;
-        Fri, 04 Dec 2020 15:46:42 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q6sm5732915pfu.23.2020.12.04.15.46.40
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=xEkMnTiVHY+tC4E6hkhP6genGPHTd0rY7OtoiGotd8g=;
+        b=WWGZAEwIQ+oOfJ4aITY8++WUGANKDYYkfz9hFS8O0oiNfLUXzmzBmVRQNNdlAbs4/B
+         orOB37JF77aPefFS2BJRyn/ISqiv1DO0mmDdhOe5wxpKfKI3kxpbz1H9WwsBbzDX0jtD
+         w4juYU1kmagY0nGoRDoC3SlGIqujsFpBtjLt1goMvT7mZwiXA3zMVIHLCZXn8WrcgIjR
+         NpfnU3PFWXTnrwAycoE4OagWx1EPbbeyZbnR4gm5ppZKfMVhKFwIJ5eh6PJ7S30DaDG6
+         9yP7xyRysq7EB66ytwkYg+X0khNgSAnTP2X5OuU4oUyuUixdnor5MBofkvD7y53ewnZp
+         naHQ==
+X-Gm-Message-State: AOAM533d7zU7gavW35Gsq/zYcu1Ujpb6yEr7CUx3ncs705A5ySSGzrRP
+        KsRoFE06YV+LSNP+x8Bx0KKTrM98Vmj/Kg==
+X-Google-Smtp-Source: ABdhPJypWDrjey6sPHgLyA6MYay2DhOehGE8F6wPc7fjNGF9WQu/jt2OVGaDwMyEY3yUKKD2D+Zebg==
+X-Received: by 2002:a4a:4988:: with SMTP id z130mr2777945ooa.34.1607125911964;
+        Fri, 04 Dec 2020 15:51:51 -0800 (PST)
+Received: from linuxmint-midtower-pc ([135.26.31.16])
+        by smtp.gmail.com with ESMTPSA id l12sm1026266ooe.27.2020.12.04.15.51.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 15:46:41 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kbuild@vger.kernel.org, Emese Revfy <re.emese@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] gcc-plugins: simplify GCC plugin-dev capability test
-Date:   Fri,  4 Dec 2020 15:46:29 -0800
-Message-Id: <160712557572.2401125.2412248759980660312.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201203125700.161354-1-masahiroy@kernel.org>
-References: <20201203125700.161354-1-masahiroy@kernel.org>
+        Fri, 04 Dec 2020 15:51:51 -0800 (PST)
+Date:   Fri, 4 Dec 2020 17:51:50 -0600
+From:   Travis Carter <traviscarter2@gmail.com>
+To:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging:hantro: Fixed "replace comma with semicolon" Warning:
+Message-ID: <20201204235150.GA8626@linuxmint-midtower-pc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 21:57:00 +0900, Masahiro Yamada wrote:
-> Linus pointed out a third of the time in the Kconfig parse stage comes
-> from the single invocation of cc1plus in scripts/gcc-plugin.sh [1],
-> and directly testing plugin-version.h for existence cuts down the
-> overhead a lot. [2]
-> 
-> This commit takes one step further to kill the build test entirely.
-> 
-> [...]
+Corrected the following Warning:
+drivers/staging/media/hantro/hantro_v4l2.c:319: WARNING: Possible comma where semicolon could be used
 
-Applied to for-next/gcc-plugins, thanks!
+Signed-off-by: Travis Carter <traviscarter2@gmail.com>
+---
+ drivers/staging/media/hantro/hantro_v4l2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[1/1] gcc-plugins: simplify GCC plugin-dev capability test
-      https://git.kernel.org/kees/c/1e860048c53e
-
+diff --git a/drivers/staging/media/hantro/hantro_v4l2.c b/drivers/staging/media/hantro/hantro_v4l2.c
+index b668a82d40ad..e1081c16f56a 100644
+--- a/drivers/staging/media/hantro/hantro_v4l2.c
++++ b/drivers/staging/media/hantro/hantro_v4l2.c
+@@ -316,7 +316,7 @@ hantro_reset_fmt(struct v4l2_pix_format_mplane *fmt,
+ 
+ 	fmt->pixelformat = vpu_fmt->fourcc;
+ 	fmt->field = V4L2_FIELD_NONE;
+-	fmt->colorspace = V4L2_COLORSPACE_JPEG,
++	fmt->colorspace = V4L2_COLORSPACE_JPEG;
+ 	fmt->ycbcr_enc = V4L2_YCBCR_ENC_DEFAULT;
+ 	fmt->quantization = V4L2_QUANTIZATION_DEFAULT;
+ 	fmt->xfer_func = V4L2_XFER_FUNC_DEFAULT;
 -- 
-Kees Cook
+2.17.1
 
