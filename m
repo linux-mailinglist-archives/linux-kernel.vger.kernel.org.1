@@ -2,77 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717D92CE9FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 285A22CEA04
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729071AbgLDIin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:38:43 -0500
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:35044 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725969AbgLDIin (ORCPT
+        id S1729143AbgLDIjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:39:19 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:42926 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729110AbgLDIjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:38:43 -0500
-Received: by mail-ed1-f67.google.com with SMTP id u19so4994295edx.2;
-        Fri, 04 Dec 2020 00:38:21 -0800 (PST)
+        Fri, 4 Dec 2020 03:39:18 -0500
+Received: by mail-ot1-f66.google.com with SMTP id 11so4464934oty.9;
+        Fri, 04 Dec 2020 00:39:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eAUgRhiSnZxN+OGD6Xc3OKsBy+RlXxdYJUYaOeKp06I=;
-        b=by8GUec4J0rnTceCPoMmXWv1MBDJwrfqdrFDbNI9NtoAnKO5uo1dVTY5x0SwzYTpuD
-         UW7/8AChC/TIomvribsWJjRkoSoI3k4hAfCHYSERvcHuy8Omv2Aai87fHSxEZyuIrErK
-         +gGjGgkUPxo4L5y6xTN2WCHi2UB4raZd4ef9VNV0H8WUHDZwdgGIGj913Sm7QRRim0K/
-         8jPgR8lJPQtET/xjGX1G8sI8IXYD6OZ2lrnmdnhQH8KEkG52XxbCWcHMPgbBJteqL/GZ
-         D+ga/Q3BXaUh659zOjDUzlraQaQPGtcQuUG/xOuGCAMN2T/0ncYLeoQCyvT/1iVjBJ1S
-         mAgw==
-X-Gm-Message-State: AOAM533VLpCxG1b9pd9s0XY14BZqeoTncl2B6SspaWZhNUv9YH5/0m4I
-        9xhgxtIyoRYtVitd1ZUKFa6qLCGnZ9s=
-X-Google-Smtp-Source: ABdhPJwoeQ7DRUewSq/Xsuh/+Aqe+eXqWEbDCW2HM2O2CWaN5JIHQ73iQJSmCs5B/CGsVPM+2/ZnhA==
-X-Received: by 2002:a05:6402:2059:: with SMTP id bc25mr6528472edb.13.1607071076163;
-        Fri, 04 Dec 2020 00:37:56 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id s26sm2891210edc.33.2020.12.04.00.37.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 00:37:55 -0800 (PST)
-Date:   Fri, 4 Dec 2020 10:37:53 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
-Subject: Re: [PATCH v2 net-next] nfc: s3fwrn5: skip the NFC bootloader mode
-Message-ID: <20201204083753.GB5418@kozik-lap>
-References: <20201203225257.2446-1-bongsu.jeon@samsung.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=85WE5u2j5hMfc/C5GbWvBbgQah+/rPALigryqx6bEEQ=;
+        b=GBjKbgJ9x9kVdONaB2rId4OsTPObEtcsOeFcc9EAwS+Qt4YfFFCwGtNYSti3oWe/oa
+         /Ryq6M7gAhIV8OlZX0iNEFBtfWhEPoZlMAXIo/PAx09tSov17eyZQGOypDq71/OLcmlb
+         u69yJWb5WjRebJVeF/YM6xN4lhmL49lmRAE5vlFDZvQmUTxUtcmPI7sdvbK2opS2aFYo
+         /aOX7eI+teb6we4loBqs45f3Bh5sas3GPuq/y/6bWSWpsJjgDg41RmijOfJqewrVWtpe
+         dnmvZ/iAosPAvDftYN2VBM4U/RJNSjFfWsDCGohkc08/EnLdCewf8k6SG+JQzZPhsOBv
+         V3RQ==
+X-Gm-Message-State: AOAM533pZdjiTJv2umj2NG7cUDUCNIloPR8lVBPmQgQiETgZO1r2GtYC
+        ILu4ClWGGpBC59uZ+CbPZ7Vl3ynFBhH1JO8T4fw=
+X-Google-Smtp-Source: ABdhPJwnsAkm6sHVvamQUFKixxM4mk4fL4gjGJq5DfiAqHn1FIZR2Gq/EIVHXDwSgTiIlYlkJNyrE4Y58R24CjfeqTw=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr2817060oth.250.1607071117561;
+ Fri, 04 Dec 2020 00:38:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201203225257.2446-1-bongsu.jeon@samsung.com>
+References: <58cf6feeaf5dae1ee0c78c1b25c00c73de15b087.1606805196.git.fthain@telegraphics.com.au>
+ <20201201170547.d6ff743eeuh6en6s@linutronix.de> <alpine.LNX.2.23.453.2012040953030.6@nippy.intranet>
+In-Reply-To: <alpine.LNX.2.23.453.2012040953030.6@nippy.intranet>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 4 Dec 2020 09:38:25 +0100
+Message-ID: <CAMuHMdUYwUPWzhBD+MWJsjBvmb31T0=2j8d0_-f9Q0ocfBAs9A@mail.gmail.com>
+Subject: Re: [PATCH] scsi/NCR5380: Remove in_interrupt() test
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        scsi <linux-scsi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 07:52:57AM +0900, Bongsu Jeon wrote:
-> From: Bongsu Jeon <bongsu.jeon@samsung.com>
-> 
-> If there isn't a proper NFC firmware image, Bootloader mode will be
-> skipped.
-> 
-> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-> ---
-> 
->  ChangeLog:
->   v2:
->    - change the commit message.
->    - change the skip handling code.
+Hi Finn,
 
-Patch is now much cleaner and smaller. Thanks.
+On Fri, Dec 4, 2020 at 12:11 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> > --- a/drivers/scsi/g_NCR5380.c
+> > +++ b/drivers/scsi/g_NCR5380.c
+> > @@ -529,14 +529,14 @@ static inline int generic_NCR5380_precv(struct NCR5380_hostdata *hostdata,
+> >               if (start == len - 128) {
+> >                       /* Ignore End of DMA interrupt for the final buffer */
+> >                       if (NCR5380_poll_politely(hostdata, hostdata->c400_ctl_status,
+> > -                                               CSR_HOST_BUF_NOT_RDY, 0, HZ / 64) < 0)
+> > +                                               CSR_HOST_BUF_NOT_RDY, 0, 0) < 0)
+>
+> You've put your finger on a known problem with certain
+> NCR5380_poll_politely() call sites. That is, the nominal timeout, HZ / 64,
+> is meaningless because it is ignored in atomic context. So you may as well
+> specify 0 jiffies at these call sites. (There will be a 1 jiffy timeout
+> applied regardless.)
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Notwithstanding HZ / 64 breaks if HZ < 64.
 
-Best regards,
-Krzysztof
+Possible values of HZ in the kernel:
 
-> 
->  drivers/nfc/s3fwrn5/core.c     | 23 +++++++++++++++++++++--
->  drivers/nfc/s3fwrn5/firmware.c | 11 +----------
->  drivers/nfc/s3fwrn5/firmware.h |  1 +
->  3 files changed, 23 insertions(+), 12 deletions(-)
+24
+32
+48
+64
+100
+128
+200
+250
+256
+300
+500
+1000
+1024
+1200
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
