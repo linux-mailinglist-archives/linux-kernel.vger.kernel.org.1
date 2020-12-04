@@ -2,175 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3232CE45E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DD12CE460
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729021AbgLDAR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 19:17:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726082AbgLDAR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 19:17:28 -0500
-Date:   Fri, 4 Dec 2020 09:16:41 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607041007;
-        bh=HevEu4R8agICOpgq5o9rXhv39h0KbBlFXkjeQdeXot4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LjcIpaZLMe4K4yvWCYdx4+U/jPqXmnx8PH3G6+3C16jvz0/+YwSs7WYJVEhOyWJzE
-         YQ1K76wBLthBEwzJy9KhGOwk2ZVTMw+XY5HdwBI7XVFUh6rhGc1bsnp0Y1rJ9Rd78w
-         ogRG3qdX46JmwHaorU48nJJA35kOGlK9UtOoFeJ4WJivaFcNL9wyzgBB2emOH6k1Yl
-         Mgw4JxiGLfOrERdavHh/mntXRwyY0JB7v45nL/J5Ui6F9zHbMFOcp4RfG/oQYXzzev
-         XMa4xdI+bUftZ9yPuItOrXug1atqjZfXeY5cicoaymRsvEXcpJlUB1ZTg2twzsu9lp
-         6gF9Bc7HU6d8g==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] x86/uprobes: Fix not using prefixes.nbytes for
- loop over prefixes.bytes
-Message-Id: <20201204091641.afcb7db30c87a33cc76ea716@kernel.org>
-In-Reply-To: <1c1b265f-34e3-f5cc-0e7b-186dc26c94b7@amd.com>
-References: <160697102582.3146288.10127018634865687932.stgit@devnote2>
-        <160697103739.3146288.7437620795200799020.stgit@devnote2>
-        <20201203123757.GH3059@zn.tnic>
-        <20201203124121.GI3059@zn.tnic>
-        <20201203124820.GJ3059@zn.tnic>
-        <1c1b265f-34e3-f5cc-0e7b-186dc26c94b7@amd.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730456AbgLDASf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 19:18:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726082AbgLDASe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 19:18:34 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D20C061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 16:17:48 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id p21so2874717pjv.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 16:17:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZaTj52peLvRicw4PoF/BKEFQ/jidWJ8M3lLP62y2KXw=;
+        b=f6utJprcA2gyLCW6KhyBkBOzHNpkQeBC/6cuqkAXEhCJ6UgQtF7AxaxQ05zH+PtOVE
+         ngRNtGmJjMrRCyxuel2vp8wlwExduHHpqG1twOhkKReqNPqwkGQzWMa9+mJvoWG5HcmU
+         jbOXjnaGcT/4wiLyjdwdWJgjzmChyf2hSNKNMRA0G6iYjS3K3/G7IayMTdGdH0Uo72k9
+         UQyfZh2XIMwww4V7SZD487qSLA4wyr2Tug7LXA74/IOpJ+83Ji9ITG1XBcN0yFaI8pxB
+         SgQFNyQB4I8CbkiYzEmqrlOY+Yh7mtMKPR0ZCZ2ZfOrRy4ilSW8kAIb/VN3BMTRjJkKB
+         NblQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZaTj52peLvRicw4PoF/BKEFQ/jidWJ8M3lLP62y2KXw=;
+        b=J8CjxdF0si2la0h2uoEvuCVduywDWNnt8Uz1gTTvZ5s62FezRPToaFhj7IFkjW9dPp
+         5q9jaoC3yI0kSpqBrdMpZSrFyuLGPbkcfawgmIaTUOyc2WBePwGcXsN/MjeB1go/aV4b
+         9mGB/YNJqeRKVUnuyKeGmDcgspblPki9OtcnaYDv+bvlaRQPQ3WnLVQhm2nB5qd6A7ac
+         5h5oPFjtNWzFhVDrAAozPBvd2oTsVtVfVLDNh7MMzYdGJlV97Y7c2e6DlvvcBPvEY84P
+         Qiex1H7xWITBp3yiO4apxbZ7XLq49DxSUj3uz9XMukGp7fmRj5bgARfgwiEUSF5m/x/R
+         jDlA==
+X-Gm-Message-State: AOAM532AmJhECyBi4eXIC9i3HMyLBGBnJSWhwvvv67FI9uow18FLAsBR
+        /tUJTwndAwd6oncqqmkU/KN46pVAF7UQ0M/cn7SCtw==
+X-Google-Smtp-Source: ABdhPJyxXL5jwtglQD1q3elOXDsNjJcQNpbqr0Xs+vQZC98CB5dp9xodDoPkfL8B6EplaZIGbgVa00zycl9nrwEa7p4=
+X-Received: by 2002:a17:902:e901:b029:d8:e727:2595 with SMTP id
+ k1-20020a170902e901b02900d8e7272595mr1464109pld.56.1607041068143; Thu, 03 Dec
+ 2020 16:17:48 -0800 (PST)
+MIME-Version: 1.0
+References: <20201022012106.1875129-1-ndesaulniers@google.com>
+ <20201104000016.GA2399651@rani.riverdale.lan> <CAKwvOdnFstgMa3c+=Vo=QtFYsABDekVeddcPmP=8Pn2bqWfxpg@mail.gmail.com>
+ <20201104001703.GA2407187@rani.riverdale.lan> <CAKwvOd=U1mxfgep3KyoAJ3WBcsywdx9_wfVgLcgAhd-+kFfZhA@mail.gmail.com>
+In-Reply-To: <CAKwvOd=U1mxfgep3KyoAJ3WBcsywdx9_wfVgLcgAhd-+kFfZhA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 3 Dec 2020 16:17:36 -0800
+Message-ID: <CAKwvOd=m9+CxsBuG_DLSx1gaMmOmpm05xeU353As_tPKUij2qA@mail.gmail.com>
+Subject: Re: [PATCH] Kbuild: implement support for DWARF5
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 10:45:48 -0600
-Tom Lendacky <thomas.lendacky@amd.com> wrote:
+On Thu, Dec 3, 2020 at 2:56 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> On Tue, Nov 3, 2020 at 4:17 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> >
+> > On Tue, Nov 03, 2020 at 04:05:36PM -0800, Nick Desaulniers wrote:
+> > > On Tue, Nov 3, 2020 at 4:00 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> > > >
+> > > > On Wed, Oct 21, 2020 at 06:21:06PM -0700, Nick Desaulniers wrote:
+> > > > > Further -gdwarf-X where X is an unsupported value doesn't
+> > > > > produce an error in $(CC).
+> > > >
+> > > > Do you have more details here? On godbolt.org, gcc does report an error
+> > > > for unsupported dwarf versions.
+> > > >
+> > > > https://godbolt.org/z/G35798
+> > > >
+> > > > gcc does not seem to pass the -gdwarf-* options to the assembler when
+> > > > compiling C source. For assembler, gcc will pass an appropriate option
+> > > > depending on the version of binutils it was configured with: if the
+> > > > assembler doesn't support dwarf-5 it can call it with --gdwarf2 for eg.
+> > > >
+> > > > If the user is using a properly configured toolchain it doesn't look
+> > > > like it should be an issue to just use cc-option?
+> > >
+> > > I wrote the base patch back in May, and didn't revisit until recently.
+> > > I could have sworn the cc-option silently failed for the check
+> > > cc-option does, which is /dev/null input.  I need to recheck that, but
+> > > it doesn't hurt to simply include it for now, which I've done in a v2
+> > > I'm about to send.
+> > > --
+> > > Thanks,
+> > > ~Nick Desaulniers
+> >
+> > This is giving me deja vu about the -gz=zlib option.
+> >
+> > Didn't Masahiro fix the cc-option issue with
+> >   4d0831e8a029 ("kconfig: unify cc-option and as-option")
+> >
+> > The existing -Wa,-gdwarf-2 in the Makefile seems bogus, btw. GCC 4.9.0
+> > at least appears to pass on --gdwarf2 automatically.
+>
+> It looks like we don't need -Wa,-gdwarf-2 when -gdwarf-2 is set. So I
+> can probably drop
+> +DEBUG_CFLAGS   += $(dwarf-aflag)
+> from v2.  Will retest though.
 
-> On 12/3/20 6:48 AM, Borislav Petkov wrote:
-> > So it ended up like this:
-> > 
-> > ---
-> >  From 5014e4e902778d63ce392f864b3654baa4b72384 Mon Sep 17 00:00:00 2001
-> > From: Masami Hiramatsu <mhiramat@kernel.org>
-> > Date: Thu, 3 Dec 2020 13:50:37 +0900
-> > Subject: [PATCH] x86/uprobes: Do not use prefixes.nbytes when looping over
-> >   prefixes.bytes
-> > 
-> > Since insn.prefixes.nbytes can be bigger than the size of
-> > insn.prefixes.bytes[] when a prefix is repeated, the proper check must
-> > be
-> > 
-> >    insn.prefixes.bytes[i] != 0 and i < 4
-> > 
-> > instead of using insn.prefixes.nbytes.
-> > 
-> > Introduce a for_each_insn_prefix() macro for this purpose. Debugged by
-> > Kees Cook <keescook@chromium.org>.
-> > 
-> >   [ bp: Massage commit message, add NUM_LEGACY_PREFIXES, sync with the
-> >     respective header in tools/ and drop "we". ]
-> > 
-> > Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install and remove uprobes breakpoints")
-> > Reported-by: syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > Signed-off-by: Borislav Petkov <bp@suse.de>
-> > Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> > Cc: stable@vger.kernel.org
-> > Link: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flkml.kernel.org%2Fr%2F160697103739.3146288.7437620795200799020.stgit%40devnote2&amp;data=04%7C01%7Cthomas.lendacky%40amd.com%7Ce8ec706c564245542b4408d89789b727%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637425965056484231%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=csaC0C2cszr45mKES42CHeZjC4TnEJtKrMa0gSmHjn8%3D&amp;reserved=0
-> > ---
-> >   arch/x86/include/asm/insn.h       | 16 ++++++++++++++++
-> >   arch/x86/kernel/uprobes.c         | 10 ++++++----
-> >   tools/arch/x86/include/asm/insn.h | 18 +++++++++++++++++-
-> >   3 files changed, 39 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
-> > index 5c1ae3eff9d4..fe8e862004d3 100644
-> > --- a/arch/x86/include/asm/insn.h
-> > +++ b/arch/x86/include/asm/insn.h
-> > @@ -58,6 +58,7 @@ struct insn {
-> >   };
-> >   
-> >   #define MAX_INSN_SIZE	15
-> > +#define NUM_LEGACY_PREFIXES 4
-> >   
-> >   #define X86_MODRM_MOD(modrm) (((modrm) & 0xc0) >> 6)
-> >   #define X86_MODRM_REG(modrm) (((modrm) & 0x38) >> 3)
-> > @@ -201,6 +202,21 @@ static inline int insn_offset_immediate(struct insn *insn)
-> >   	return insn_offset_displacement(insn) + insn->displacement.nbytes;
-> >   }
-> >   
-> > +/**
-> > + * for_each_insn_prefix() -- Iterate prefixes in the instruction
-> > + * @insn: Pointer to struct insn.
-> > + * @idx:  Index storage.
-> > + * @prefix: Prefix byte.
-> > + *
-> > + * Iterate prefix bytes of given @insn. Each prefix byte is stored in @prefix
-> > + * and the index is stored in @idx (note that this @idx is just for a cursor,
-> > + * do not change it.)
-> > + * Since prefixes.nbytes can be bigger than NUM_LEGACY_PREFIXES if some prefixes
-> > + * are repeated, it cannot be used for looping over the prefixes.
-> > + */
-> > +#define for_each_insn_prefix(insn, idx, prefix)	\
-> > +	for (idx = 0; idx < NUM_LEGACY_PREFIXES && (prefix = insn->prefixes.bytes[idx]) != 0; idx++)
-> 
-> Since this is based on the array size, can
-> 
-> 	idx < NUM_LEGACY_PREFIXES
-> 
-> be replaced with:
-> 
-> 	idx < ARRAY_SIZE(insn->prefixes.bytes)
-
-You're right.
-There are 2 issues are mixed in this solution.
-
-- 4 bytes limitation comes from the prefixes.bytes size, because
-  it is mapped to insn_value_t.
-  
-struct insn_field {
-        union {
-                insn_value_t value;
-                insn_byte_t bytes[4];
-        };
-
-- The restriction that one instruction can have up to four types
-  of prefixes comes from Intel's specification.
-
-Intel SDM Vol.2 
-----
-2.1.1 Instruction Prefixes
-Instruction prefixes are divided into four groups, each with a set of allowable prefix codes. For each instruction, it
-is only useful to include up to one prefix code from each of the four groups (Groups 1, 2, 3, 4).
-----
-
-So, we need 2 macros to fix this.
-
-#define NUM_INSN_FIELD_BYTES	(sizeof(insn_value_t) / sizeof(insn_byte_t))
-#define NUM_LEGACY_PREFIX_GROUPS	4	/* See Intel SDM Vol.2 2.2.1 Instruction Prefixes */
-
-Thank you,
-
-> 
-> ?
-> 
-> Thanks,
-> Tom
-> 
-> > +
-> >   #define POP_SS_OPCODE 0x1f
-> >   #define MOV_SREG_OPCODE 0x8e
-> >   
-
-
+That's needed for non LLVM_IAS=1 builds so that clang informs GAS to
+assembler using DWARF Version 5; otherwise every translation unit
+fails to assemble with an error from GAS.
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Thanks,
+~Nick Desaulniers
