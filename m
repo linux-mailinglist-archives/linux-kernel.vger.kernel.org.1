@@ -2,166 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363582CE4E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 193092CE4E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730095AbgLDBTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:19:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56346 "EHLO
+        id S1731941AbgLDBTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:19:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729951AbgLDBTa (ORCPT
+        with ESMTP id S1729951AbgLDBTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:19:30 -0500
+        Thu, 3 Dec 2020 20:19:33 -0500
 Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35233C061A52
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 17:18:50 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id f14so2124010pju.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 17:18:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AC3C061A4F;
+        Thu,  3 Dec 2020 17:18:47 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id j13so2204368pjz.3;
+        Thu, 03 Dec 2020 17:18:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yQuebzesxwMf25Xr/dPzPPrev+UQ6caZgGfIyyfOgUQ=;
-        b=AdkoRN88dIF1YoC+j+aM1MY8e4XAHgHr6Qm5ePGGxeJct5eWZOVDW4q1D9C3LLa8zH
-         RxD3jXqbRv5xVOt4NKZl2X85VY5mDaNFE137cL5vRPDT2YIwl3XP02aPJnOzuMiEfFCJ
-         O2TNDBVmha6FCUh+WQdrQlptKhjeZpCVpH73ZXoybiTe/PlYuwNJCwp2VrH53850FJH2
-         515PbH93kp5tcNbwWioEzPCr6SkI3K2AM3MZJNXulV6TKLA75OeqUeP/IdZHXyGpg2cN
-         mECH8bNGs2Ccbo/RE7qyO/wLu3aIg5949CJ/5j5iRyVF3VvBW8JViOTw7u21du6GrAF3
-         +3hw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6oVOCTQj6wif00H/TIxJjYDbEodmzk+M7JjYVfDH9xI=;
+        b=vbA2vwoApuEQ6P+uaoP8LaakQHKo85Dr9FFsVcDqNv2dSYSqK3hYFwTN9kYoE/HCft
+         /8yG6CcDRez5Bb2qJpDmE1bB0UyLGUKDWcG1idWrQgztkZ5dDqW/XBFcSeh9P3Xb779/
+         H3sUCIEdWJouy1VyjuFoniv2fzEwW99odJ75aZQvjGmIFZRn+9hpFkG0/j//xCwi0v+S
+         9r3oQhtroijV9FtYaQjhHlioDKDGJs6+ZEaKrf22GLt5dtcpGkK7lufPKMT6vNZo/CS9
+         BUBCi0UfCSC7Cal0ALrMrBXgDlRYdTytQBwN7ZW1Xph9bNygGyjzXAFDa9q2RCm0kpv3
+         2LWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yQuebzesxwMf25Xr/dPzPPrev+UQ6caZgGfIyyfOgUQ=;
-        b=ryZvJAFy3pZcdVUCym/vsoJOMHWvh1hnebIrS4mYDq2XKkbCfqQCFfhM9VbEdMclhv
-         EvoluV0foh9PYSWjCf6vLw1DqgHkc+s1/fS4JTmALh02KxjgCUbtT326o2RDsU/fk+50
-         jImyfJFgNX3Q5PtTduVRjaPCjzlIa4mvKyhJn8d0D9YMoU4IrTOezpJjep/QvIm/2prd
-         RRjyz7pFwCM73H37jhltbZW+tIw0ebvfGwkrQS6+pCgV4L4PEWPAEhpM/w1MRJpZ1O+5
-         +PpJWy2AJ95pA6FT3AlJvW4yvWsnX69hoiSOwnHYCaQVPmMjbYYjPf65P1AB1xvSrUqk
-         XDwg==
-X-Gm-Message-State: AOAM531GShiKS8Co1busYL0aLxZH8Pc+/0Fq961SoaeqVGSQ9SsW+HZY
-        K8ckYId89ZD8qTtiIl1wvWDjACDv5dwDLyU5CmGqmQ==
-X-Google-Smtp-Source: ABdhPJxAPcbI+OagIFgVil1xtoTesXiqZ4HHblGMTwSpODVAZ4Hx3JK5B4cAfBjOSJNFeeL+sVqWNXjR9yrFBsLuFe8=
-X-Received: by 2002:a17:90a:6fa1:: with SMTP id e30mr1854582pjk.32.1607044729507;
- Thu, 03 Dec 2020 17:18:49 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6oVOCTQj6wif00H/TIxJjYDbEodmzk+M7JjYVfDH9xI=;
+        b=GYYutN0P51bvq5jyQAxRZLSpyKo90KucjPf195qB/KtHk4+SNAUmwYMsdMkpQyVdbK
+         PwAVpY5sCLGiqo8nD5W11Bn0YmI+eYBrGTFruoiQkLYVcKWwqMjAak5emg8LFOrq4VVV
+         +eeb7FErMitw+AhvTsl+NbC3ZnSIjRaqj4DvtejQ+CT/Men6AfGt8LIpKfEAhi07hfu1
+         J078pp0bQ3tiOG8mSbWTx7FIhLfEIrS+VsqgRBkwcIkzz0U+APOmG+qq+EJoIKF9p4Zz
+         Jz+JvxVzx8RDPgQeNP1ka2O4IIICnFae4xsYzlCsEgFzVMwWd4Sid59IFuBcsQLxdox/
+         pNQg==
+X-Gm-Message-State: AOAM532IJrcgGj7Y+WLohyHZYXM8Pju6Hh7x2Dw9u+0S//RyU73AGnmK
+        spBLSW9tY7gPJYAaiEMLJMU=
+X-Google-Smtp-Source: ABdhPJxwf6hIUm5KzqFPA105RskiJdVBdi8zhheRfUX3Haxeb7AM8lcXcL9RA5AiJ4HozPLSnm0Trw==
+X-Received: by 2002:a17:90b:a53:: with SMTP id gw19mr1771780pjb.216.1607044727326;
+        Thu, 03 Dec 2020 17:18:47 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id z11sm496022pjn.5.2020.12.03.17.18.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 17:18:46 -0800 (PST)
+Date:   Thu, 3 Dec 2020 17:18:43 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Christian Eggers <ceggers@arri.de>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v5 9/9] net: dsa: microchip: ksz9477: add
+ periodic output support
+Message-ID: <20201204011843.GD18560@hoboy.vegasvil.org>
+References: <20201203102117.8995-1-ceggers@arri.de>
+ <20201203102117.8995-10-ceggers@arri.de>
+ <20201203141255.GF4734@hoboy.vegasvil.org>
+ <11406377.LS7tM95F4J@n95hx1g2>
+ <20201204004556.GB18560@hoboy.vegasvil.org>
+ <20201204010050.xbu23yynlwt7jskg@skbuf>
 MIME-Version: 1.0
-References: <20201204011129.2493105-1-ndesaulniers@google.com>
-In-Reply-To: <20201204011129.2493105-1-ndesaulniers@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 3 Dec 2020 17:18:37 -0800
-Message-ID: <CAKwvOdnmhguTTt7_xJJXH=m+JwEaZK1=hFhso3FF1Co+u8wkhw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] Kbuild: make DWARF version a choice
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nick Clifton <nickc@redhat.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204010050.xbu23yynlwt7jskg@skbuf>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(minus Chengbin due to bounces)
+On Fri, Dec 04, 2020 at 03:00:50AM +0200, Vladimir Oltean wrote:
+> On Thu, Dec 03, 2020 at 04:45:56PM -0800, Richard Cochran wrote:
+> > Yes, that would make sense.  It would bring sysfs back to feature
+> > parity with the ioctls.
+> 
+> Which is a good thing?
 
-On Thu, Dec 3, 2020 at 5:11 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
-> explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
-> way that's forward compatible with existing configs, and makes adding
-> future versions more straightforward.
->
-> Suggested-by: Fangrui Song <maskray@google.com>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  Makefile          | 14 ++++++++------
->  lib/Kconfig.debug | 21 ++++++++++++++++-----
->  2 files changed, 24 insertions(+), 11 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index a2ded5029084..2430e1ee7c44 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -826,12 +826,14 @@ else
->  DEBUG_CFLAGS   += -g
->  endif
->
-> -ifneq ($(LLVM_IAS),1)
-> -KBUILD_AFLAGS  += -Wa,-gdwarf-2
-> -endif
-> -
-> -ifdef CONFIG_DEBUG_INFO_DWARF4
-> -DEBUG_CFLAGS   += -gdwarf-4
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> +DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
-> +ifneq ($(dwarf-version-y)$(LLVM_IAS),21)
-> +# Binutils 2.35+ required for -gdwarf-4+ support.
-> +dwarf-aflag    := $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
-> +DEBUG_CFLAGS   += $(dwarf-aflag)
-> +KBUILD_AFLAGS  += $(dwarf-aflag)
->  endif
->
->  ifdef CONFIG_DEBUG_INFO_REDUCED
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 0c7380e36370..04719294a7a3 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -256,14 +256,25 @@ config DEBUG_INFO_SPLIT
->           to know about the .dwo files and include them.
->           Incompatible with older versions of ccache.
->
-> +choice
-> +       prompt "DWARF version"
-> +       help
-> +         Which version of DWARF debug info to emit.
-> +
-> +config DEBUG_INFO_DWARF2
-> +       bool "Generate DWARF Version 2 debuginfo"
-> +       help
-> +         Generate DWARF v2 debug info.
-> +
->  config DEBUG_INFO_DWARF4
-> -       bool "Generate dwarf4 debuginfo"
-> +       bool "Generate DWARF Version 4 debuginfo"
->         depends on $(cc-option,-gdwarf-4)
->         help
-> -         Generate dwarf4 debug info. This requires recent versions
-> -         of gcc and gdb. It makes the debug information larger.
-> -         But it significantly improves the success of resolving
-> -         variables in gdb on optimized code.
-> +         Generate DWARF v4 debug info. This requires gcc 4.5+ and gdb 7.0+.
-> +         It makes the debug information larger, but it significantly
-> +         improves the success of resolving variables in gdb on optimized code.
+Yes, of course it is.  I'm sorry I didn't insist on it in the first place!
+ 
+> Anyway, Christian, if you do decide to do that, here's some context why
+> I didn't do it when I added the additional knobs for periodic output:
+> https://www.mail-archive.com/linuxptp-devel@lists.sourceforge.net/msg04150.html
 
-^ I kept the previous help text, but while this may have been the case
-when DWARF v4 support was first introduced in GCC, by my (lone)
-measure of x86_64 defconfig with gcc 10.2, this doesn't or no longer
-seems to be the case. See patch 2 for measurements:
-https://lore.kernel.org/lkml/20201204011129.2493105-2-ndesaulniers@google.com/.
-(also, missed the cover letter, here it is:
-https://lore.kernel.org/lkml/CAKwvOdkZEiHK01OD420USb0j=F0LcrnRbauv9Yw26tu-GRbYkg@mail.gmail.com/)
+I think Christian is proposing a different sysfs file, not a flag in
+the existing ones.  That makes sense to me.
 
-> +
-> +endchoice # "DWARF version"
->
->  config DEBUG_INFO_BTF
->         bool "Generate BTF typeinfo"
-> --
-> 2.29.2.576.ga3fc446d84-goog
->
-
-
--- 
 Thanks,
-~Nick Desaulniers
+Richard
+
