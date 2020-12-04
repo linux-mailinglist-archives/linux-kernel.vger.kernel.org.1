@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7862CF2A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD602CF29B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388505AbgLDRFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:05:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388471AbgLDRFh (ORCPT
+        id S2388453AbgLDRF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:05:28 -0500
+Received: from latitanza.investici.org ([82.94.249.234]:47355 "EHLO
+        latitanza.investici.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727008AbgLDRF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:05:37 -0500
-Received: from latitanza.investici.org (latitanza.investici.org [IPv6:2001:888:2000:56::19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F42FC08C5F2
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 09:04:42 -0800 (PST)
+        Fri, 4 Dec 2020 12:05:26 -0500
 Received: from mx3.investici.org (unknown [127.0.0.1])
-        by latitanza.investici.org (Postfix) with ESMTP id 4CnfFj1fQrz8sj3;
-        Fri,  4 Dec 2020 17:04:41 +0000 (UTC)
+        by latitanza.investici.org (Postfix) with ESMTP id 4CnfFl70CTz8sj5;
+        Fri,  4 Dec 2020 17:04:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=privacyrequired.com;
-        s=stigmate; t=1607101481;
-        bh=d4QCZegIOf+Vy1A4PMIzIYogd0Y22GwmWmem0sTfec0=;
+        s=stigmate; t=1607101483;
+        bh=3TDaxIk3qaz2HcMErSZKF6ZFVsiVELk5Alr3JxrBrw8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YhHcNpzXoqW05GpgdY0vhV6+NGeAmP4c2/2KXsNYvqMbTANB0m9pnXJZzNciGHIqg
-         vvk9HvXmYPJIfReW57cMDMVxJgMm0ruuqz43WMpjMc9nQ0NemTn5hoQMbdw9hKAAmK
-         cUG8glOZi3uWy3i0T6voO0zr06H34q16jmPXiNyM=
-Received: from [82.94.249.234] (mx3.investici.org [82.94.249.234]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4CnfFh6LpJz8sj2;
-        Fri,  4 Dec 2020 17:04:40 +0000 (UTC)
+        b=C04cefqXlKXobHFRfE8VmBbY+UyYIv881PE7UmyrCMfLJ7vMWyEsYeba75zKznWzJ
+         GzwRX5nXxd1A++oVQMxoakccosirYT3cv5AVEqlbf706Rq9yfYo8PfXCrFLBsAwkRf
+         ZgbVFEBRRwObAtqUZLZ1rhR03BJ3tmD+k4N8NggQ=
+Received: from [82.94.249.234] (mx3.investici.org [82.94.249.234]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4CnfFl2NvVz8sj2;
+        Fri,  4 Dec 2020 17:04:43 +0000 (UTC)
 From:   laniel_francis@privacyrequired.com
-To:     Jessica Yu <jeyu@kernel.org>
+To:     Bin Liu <b-liu@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Francis Laniel <laniel_francis@privacyrequired.com>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1 10/12] module: Replace strstarts() by str_has_prefix().
-Date:   Fri,  4 Dec 2020 18:03:16 +0100
-Message-Id: <20201204170319.20383-11-laniel_francis@privacyrequired.com>
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v1 11/12] musb: Replace strstarts() by str_has_prefix().
+Date:   Fri,  4 Dec 2020 18:03:17 +0100
+Message-Id: <20201204170319.20383-12-laniel_francis@privacyrequired.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
 References: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
@@ -51,37 +49,77 @@ returns the length of the prefix if the string begins with it or 0 otherwise.
 
 Signed-off-by: Francis Laniel <laniel_francis@privacyrequired.com>
 ---
- kernel/module.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/musb/musb_cppi41.c  |  4 ++--
+ drivers/usb/musb/musb_debugfs.c | 20 ++++++++++----------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/module.c b/kernel/module.c
-index a4fa44a652a7..d01466f1d2a6 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2675,7 +2675,7 @@ static char elf_type(const Elf_Sym *sym, const struct load_info *info)
- 		else
- 			return 'b';
+diff --git a/drivers/usb/musb/musb_cppi41.c b/drivers/usb/musb/musb_cppi41.c
+index 7fbb8a307145..a6d22c0957c5 100644
+--- a/drivers/usb/musb/musb_cppi41.c
++++ b/drivers/usb/musb/musb_cppi41.c
+@@ -686,9 +686,9 @@ static int cppi41_dma_controller_start(struct cppi41_dma_controller *controller)
+ 		ret = of_property_read_string_index(np, "dma-names", i, &str);
+ 		if (ret)
+ 			goto err;
+-		if (strstarts(str, "tx"))
++		if (str_has_prefix(str, "tx"))
+ 			is_tx = 1;
+-		else if (strstarts(str, "rx"))
++		else if (str_has_prefix(str, "rx"))
+ 			is_tx = 0;
+ 		else {
+ 			dev_err(dev, "Wrong dmatype %s\n", str);
+diff --git a/drivers/usb/musb/musb_debugfs.c b/drivers/usb/musb/musb_debugfs.c
+index 30a89aa8a3e7..47fc32bc6507 100644
+--- a/drivers/usb/musb/musb_debugfs.c
++++ b/drivers/usb/musb/musb_debugfs.c
+@@ -181,36 +181,36 @@ static ssize_t musb_test_mode_write(struct file *file,
+ 		goto ret;
  	}
--	if (strstarts(info->secstrings + sechdrs[sym->st_shndx].sh_name,
-+	if (str_has_prefix(info->secstrings + sechdrs[sym->st_shndx].sh_name,
- 		      ".debug")) {
- 		return 'n';
+ 
+-	if (strstarts(buf, "force host full-speed"))
++	if (str_has_prefix(buf, "force host full-speed"))
+ 		test = MUSB_TEST_FORCE_HOST | MUSB_TEST_FORCE_FS;
+ 
+-	else if (strstarts(buf, "force host high-speed"))
++	else if (str_has_prefix(buf, "force host high-speed"))
+ 		test = MUSB_TEST_FORCE_HOST | MUSB_TEST_FORCE_HS;
+ 
+-	else if (strstarts(buf, "force host"))
++	else if (str_has_prefix(buf, "force host"))
+ 		test = MUSB_TEST_FORCE_HOST;
+ 
+-	else if (strstarts(buf, "fifo access"))
++	else if (str_has_prefix(buf, "fifo access"))
+ 		test = MUSB_TEST_FIFO_ACCESS;
+ 
+-	else if (strstarts(buf, "force full-speed"))
++	else if (str_has_prefix(buf, "force full-speed"))
+ 		test = MUSB_TEST_FORCE_FS;
+ 
+-	else if (strstarts(buf, "force high-speed"))
++	else if (str_has_prefix(buf, "force high-speed"))
+ 		test = MUSB_TEST_FORCE_HS;
+ 
+-	else if (strstarts(buf, "test packet")) {
++	else if (str_has_prefix(buf, "test packet")) {
+ 		test = MUSB_TEST_PACKET;
+ 		musb_load_testpacket(musb);
  	}
-@@ -2842,12 +2842,12 @@ void * __weak module_alloc(unsigned long size)
  
- bool __weak module_init_section(const char *name)
- {
--	return strstarts(name, ".init");
-+	return str_has_prefix(name, ".init");
- }
+-	else if (strstarts(buf, "test K"))
++	else if (str_has_prefix(buf, "test K"))
+ 		test = MUSB_TEST_K;
  
- bool __weak module_exit_section(const char *name)
- {
--	return strstarts(name, ".exit");
-+	return str_has_prefix(name, ".exit");
- }
+-	else if (strstarts(buf, "test J"))
++	else if (str_has_prefix(buf, "test J"))
+ 		test = MUSB_TEST_J;
  
- #ifdef CONFIG_DEBUG_KMEMLEAK
+-	else if (strstarts(buf, "test SE0 NAK"))
++	else if (str_has_prefix(buf, "test SE0 NAK"))
+ 		test = MUSB_TEST_SE0_NAK;
+ 
+ 	musb_writeb(musb->mregs, MUSB_TESTMODE, test);
 -- 
 2.20.1
 
