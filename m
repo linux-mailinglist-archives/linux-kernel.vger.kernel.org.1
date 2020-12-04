@@ -2,119 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C1D2CE8B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5251D2CE8B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728431AbgLDHjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 02:39:53 -0500
-Received: from bmailout2.hostsharing.net ([83.223.78.240]:56287 "EHLO
-        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727957AbgLDHjw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 02:39:52 -0500
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id C8EE42800A27A;
-        Fri,  4 Dec 2020 08:38:54 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 478004A0D; Fri,  4 Dec 2020 08:39:09 +0100 (CET)
-Date:   Fri, 4 Dec 2020 08:39:09 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
-        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
-        sin_jieyang@mediatek.com
-Subject: Re: [v4,2/3] PCI: mediatek: Add new generation controller support
-Message-ID: <20201204073909.GA17699@wunner.de>
-References: <1606113913.14736.37.camel@mhfsdcap03>
- <20201130173005.GA1088958@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130173005.GA1088958@bjorn-Precision-5520>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728487AbgLDHmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 02:42:07 -0500
+Received: from smtp21.cstnet.cn ([159.226.251.21]:39346 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727007AbgLDHmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 02:42:06 -0500
+Received: from localhost.localdomain (unknown [124.16.141.242])
+        by APP-01 (Coremail) with SMTP id qwCowABX9o0a6MlfsIDYAA--.25775S2;
+        Fri, 04 Dec 2020 15:41:14 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     kblaiech@nvidia.com
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] i2c: mlxbf: Fix an error pointer vs NULL check
+Date:   Fri,  4 Dec 2020 07:41:11 +0000
+Message-Id: <20201204074111.1359-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowABX9o0a6MlfsIDYAA--.25775S2
+X-Coremail-Antispam: 1UD129KBjvJXoWrtF13Ar1DtFyfArWftrW8Zwb_yoW8Jryfpr
+        4ruFZ0k345KrW2qwsrX3Z5XFyYywnxtay0krW8uwsI9Fs8JrWDZF1rAFWj9r4SyrZ5uw45
+        tF90yFW3CFWUZw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkYb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GF4l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0UGYPUUUUU==
+X-Originating-IP: [124.16.141.242]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwkAA1z4joXwngAAsA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 11:30:05AM -0600, Bjorn Helgaas wrote:
-> On Mon, Nov 23, 2020 at 02:45:13PM +0800, Jianjun Wang wrote:
-> > On Thu, 2020-11-19 at 14:28 -0600, Bjorn Helgaas wrote:
-> > > > +static int mtk_pcie_setup(struct mtk_pcie_port *port)
-> > > > +{
-[...]
-> > > > +	/* Try link up */
-> > > > +	err = mtk_pcie_startup_port(port);
-> > > > +	if (err) {
-> > > > +		dev_notice(dev, "PCIe link down\n");
-> > > > +		goto err_setup;
-> > > 
-> > > Generally it should not be a fatal error if the link is not up at
-> > > probe-time.  You may be able to hot-add a device, or the device may
-> > > have some external power control that will power it up later.
-> > 
-> > This is for the power saving requirement. If there is no device
-> > connected with the PCIe slot, the PCIe MAC and PHY should be powered
-> > off.
-> > 
-> > Is there any standard flow to support power down the hardware at
-> > probe-time if no device is connected and power it up when hot-add a
-> > device?
-> 
-> That's a good question.  I assume this looks like a standard PCIe
-> hot-add event?
-> 
-> When you hot-add a device, does the Root Port generate a Presence
-> Detect Changed interrupt?  The pciehp driver should field that
-> interrupt and turn on power to the slot via the Power Controller
-> Control bit in the Slot Control register.
-> 
-> Does your hardware require something more than that to control the MAC
-> and PHY power?
+In case of error, the function devm_ioremap() returns NULL pointer not
+ERR_PTR(). The IS_ERR() test in the return value check should be
+replaced with NULL test.
 
-Power saving of unused PCIe ports is generally achieved through the
-runtime PM framework.  When a PCIe port runtime suspends, the PCIe
-core will transition it to D3hot.  On top of that, the platform
-may be able to transition the port to D3cold.  Currently only the
-ACPI platform supports that.  Conceivably, devicetree-based systems
-may want to disable certain clocks or regulators when a PCIe port
-runtime suspends.  I think we do not support that yet but it could
-be added to drivers/pci/pcie/portdrv*.
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/i2c/busses/i2c-mlxbf.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-A hotplug port is expected to signal PDC and DLLSC interrupts even
-when in D3hot.  At least that's our experience with Thunderbolt.
-To support hotplug interrupts in D3cold, some external mechanism
-(such as a PME) is necessary to wake up the port on hotplug.
-This is also supported with recent Thunderbolt systems.
+diff --git a/drivers/i2c/busses/i2c-mlxbf.c b/drivers/i2c/busses/i2c-mlxbf.c
+index 33574d40ea9c..73a58beb7b82 100644
+--- a/drivers/i2c/busses/i2c-mlxbf.c
++++ b/drivers/i2c/busses/i2c-mlxbf.c
+@@ -1258,9 +1258,9 @@ static int mlxbf_i2c_get_gpio(struct platform_device *pdev,
+ 		return -EFAULT;
+ 
+ 	gpio_res->io = devm_ioremap(dev, params->start, size);
+-	if (IS_ERR(gpio_res->io)) {
++	if (!gpio_res->io) {
+ 		devm_release_mem_region(dev, params->start, size);
+-		return PTR_ERR(gpio_res->io);
++		return -ENOMEM;
+ 	}
+ 
+ 	return 0;
+@@ -1323,9 +1323,9 @@ static int mlxbf_i2c_get_corepll(struct platform_device *pdev,
+ 		return -EFAULT;
+ 
+ 	corepll_res->io = devm_ioremap(dev, params->start, size);
+-	if (IS_ERR(corepll_res->io)) {
++	if (!corepll_res->io) {
+ 		devm_release_mem_region(dev, params->start, size);
+-		return PTR_ERR(corepll_res->io);
++		return -ENOMEM;
+ 	}
+ 
+ 	return 0;
+-- 
+2.17.1
 
-Because we've seen various incompatibilities when runtime suspending
-PCIe ports, certain conditions must be satisfied for runtime PM
-to be enabled.  They're encoded in pci_bridge_d3_possible().
-Generally, hotplug ports only runtime suspend if they belong to
-a Thunderbolt controller or if the ACPI platform explicitly allows
-runtime PM (through presence of a _PR3 method or a device property).
-Non-hotplug ports runtime suspend if the BIOS is newer than 2015
-(as specified by DMI).
-
-Obviously, this policy is very x86-focussed because both Thunderbolt
-and DMI are only really a thing on x86.  That's about to change though
-because Apple's new arm64-based Macs have Thunderbolt integrated into
-the SoC and arm64 SoCs are making inroads in the datacenter, which is
-an important use case for PCIe hotplug (hot-swappable NVMe drives).
-So we may have to amend pci_bridge_d3_possible() to whitelist
-PCIe ports for runtime PM on specific arches or systems.
-
-Thanks,
-
-Lukas
