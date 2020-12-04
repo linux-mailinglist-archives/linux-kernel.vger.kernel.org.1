@@ -2,145 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DBE52CEB5C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:52:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 537822CEB6F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387812AbgLDJu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:50:56 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:34563 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726136AbgLDJu4 (ORCPT
+        id S2387747AbgLDJwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:52:22 -0500
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:54397 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387601AbgLDJwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:50:56 -0500
-X-UUID: 6bb079f1f1dd46edb44ba9b6d7a7ff1e-20201204
-X-UUID: 6bb079f1f1dd46edb44ba9b6d7a7ff1e-20201204
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 375920986; Fri, 04 Dec 2020 17:50:10 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 4 Dec 2020 17:50:07 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 4 Dec 2020 17:50:07 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>
-CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
-        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
-        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>, <huadian.liu@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v3 8/8] scsi: ufs-mediatek: Introduce event_notify implementation
-Date:   Fri, 4 Dec 2020 17:50:07 +0800
-Message-ID: <20201204095007.20639-9-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201204095007.20639-1-stanley.chu@mediatek.com>
-References: <20201204095007.20639-1-stanley.chu@mediatek.com>
+        Fri, 4 Dec 2020 04:52:21 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 8EE29FF810;
+        Fri,  4 Dec 2020 09:51:38 +0000 (UTC)
+Date:   Fri, 4 Dec 2020 10:51:38 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] rtc: adapt allowed RTC update error
+Message-ID: <20201204095138.GG74177@piout.net>
+References: <87a6uwdnfn.fsf@nanos.tec.linutronix.de>
+ <20201202205418.GN5487@ziepe.ca>
+ <874kl3eu8p.fsf@nanos.tec.linutronix.de>
+ <87zh2vd72z.fsf@nanos.tec.linutronix.de>
+ <20201203021047.GG3544@piout.net>
+ <87pn3qdhli.fsf@nanos.tec.linutronix.de>
+ <20201203161622.GA1317829@ziepe.ca>
+ <87zh2ubny2.fsf@nanos.tec.linutronix.de>
+ <20201203220027.GB74177@piout.net>
+ <87im9hc3u2.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87im9hc3u2.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce event_notify implementation on MediaTek UFS platform.
+On 04/12/2020 10:34:13+0100, Thomas Gleixner wrote:
+> On Thu, Dec 03 2020 at 23:00, Alexandre Belloni wrote:
+> > On 03/12/2020 22:05:09+0100, Thomas Gleixner wrote:
+> >> 2) I2C/SPI ...
+> >> 
+> >>    tsched t0                 t1                     t2
+> >>           transfer(newsec)   RTC update (newsec)    RTC increments seconds
+> >> 
+> >>    Lets assume that ttransfer = t1 - t0 is known.
+> >
+> > Note that ttransfer is one of the reason why setting set_offset_nsec
+> > from the RTC driver is not a good idea. The same RTC may be on busses
+> > with different rates and there is no way to know that. I think that was
+> > one of my objections at the time.
+> >
+> > ttransfer is not a function of the RTC model but rather of how it is
+> > integrated in the system.
+> 
+> Yes, but it's the right place to store that information.
+> 
+> It's a fundamental problem of the RTC driver because that's the one
+> which has to be able to tell the caller about it. The caller has
+> absolutely no way to figure it out because it does not even know what
+> type of RTC is there.
+> 
+> So either the RTC knows the requirements for tsched, e.g. the MC14xxx
+> datasheet, or it can retrieve that information from DT or by querying
+> the underlying bus mechanics for the xfer time estimate or just by
+> timing an xfer for reference.
+> 
 
-A vendor-specific tracepoint is added that could be used
-for debugging purpose.
+What I do from userspace is that the caller is the one estimating the
+transfer time and this works very well. I really think that the ntp code
+could do just the same.
 
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
----
- drivers/scsi/ufs/ufs-mediatek-trace.h | 37 +++++++++++++++++++++++++++
- drivers/scsi/ufs/ufs-mediatek.c       | 10 ++++++++
- 2 files changed, 47 insertions(+)
- create mode 100644 drivers/scsi/ufs/ufs-mediatek-trace.h
 
-diff --git a/drivers/scsi/ufs/ufs-mediatek-trace.h b/drivers/scsi/ufs/ufs-mediatek-trace.h
-new file mode 100644
-index 000000000000..c36ca6de9636
---- /dev/null
-+++ b/drivers/scsi/ufs/ufs-mediatek-trace.h
-@@ -0,0 +1,37 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2020 MediaTek Inc.
-+ */
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM ufs_mtk
-+
-+#if !defined(_TRACE_EVENT_UFS_MEDIATEK_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_EVENT_UFS_MEDIATEK_H
-+
-+#include <linux/tracepoint.h>
-+
-+TRACE_EVENT(ufs_mtk_event,
-+	TP_PROTO(unsigned int type, int data),
-+	TP_ARGS(type, data),
-+
-+	TP_STRUCT__entry(
-+		__field(unsigned int, type)
-+		__field(int, data)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->type = type;
-+		__entry->data = data;
-+	),
-+
-+	TP_printk("ufs:event=%u data=%u",
-+		  __entry->type, __entry->data)
-+	);
-+#endif
-+
-+#undef TRACE_INCLUDE_PATH
-+#undef TRACE_INCLUDE_FILE
-+#define TRACE_INCLUDE_PATH .
-+#define TRACE_INCLUDE_FILE ufs-mediatek-trace
-+#include <trace/define_trace.h>
-+
-diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
-index 1d3c5cd4592e..b6755aab9a7b 100644
---- a/drivers/scsi/ufs/ufs-mediatek.c
-+++ b/drivers/scsi/ufs/ufs-mediatek.c
-@@ -24,6 +24,9 @@
- #include "unipro.h"
- #include "ufs-mediatek.h"
- 
-+#define CREATE_TRACE_POINTS
-+#include "ufs-mediatek-trace.h"
-+
- #define ufs_mtk_smc(cmd, val, res) \
- 	arm_smccc_smc(MTK_SIP_UFS_CONTROL, \
- 		      cmd, val, 0, 0, 0, 0, 0, &(res))
-@@ -1002,6 +1005,12 @@ static void ufs_mtk_fixup_dev_quirks(struct ufs_hba *hba)
- 	ufshcd_fixup_dev_quirks(hba, ufs_mtk_dev_fixups);
- }
- 
-+static void ufs_mtk_event_notify(struct ufs_hba *hba,
-+				 enum ufs_event_type evt, void *data)
-+{
-+	trace_ufs_mtk_event(evt, (int)data);
-+}
-+
- /*
-  * struct ufs_hba_mtk_vops - UFS MTK specific variant operations
-  *
-@@ -1021,6 +1030,7 @@ static const struct ufs_hba_variant_ops ufs_hba_mtk_vops = {
- 	.resume              = ufs_mtk_resume,
- 	.dbg_register_dump   = ufs_mtk_dbg_register_dump,
- 	.device_reset        = ufs_mtk_device_reset,
-+	.event_notify        = ufs_mtk_event_notify,
- };
- 
- /**
 -- 
-2.18.0
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
