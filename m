@@ -2,119 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023932CEBBD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 902D22CEBC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388003AbgLDKDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 05:03:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52786 "EHLO
+        id S1729700AbgLDKDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 05:03:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387894AbgLDKDc (ORCPT
+        with ESMTP id S2387851AbgLDKDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 05:03:32 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF8AC08E861
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 02:02:13 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id ga15so7850647ejb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 02:02:13 -0800 (PST)
+        Fri, 4 Dec 2020 05:03:50 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B1DC061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 02:03:09 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id x4so2922316vsp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 02:03:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=fik6fEowz12+2Ryuqjd810QUwD4ENaiIRDI49CE7Imo=;
-        b=s0IPi2BAvrZXVg6MFhcozWTscLQzWG5DFcmiVlxDGmRFk0HHGu3rKsyxBoR2ctJDmS
-         ybNq+4AZfWqrIOWlOwMMn9ypj6s/3xIywX/t+a5UUsOdWxhzpUNYUhXAEX4nOrMahzgl
-         E2HbZZoHFdF9h0xQq7Ot8KVfRHaHcNhyfGw5gHPcN4Img0/YCjUtf2LlRFhe+ypQTA15
-         B/498boF+b3BY6jxxh1TnBalh1CtYptZLZF36jb5L6n7/fNUlHZolwjUIMDfEqW+QuC1
-         XZ7+YsaRBQJbZvr5SdtIoyuQXN+LxAxCAykzXM6hSWoNG7VV1IVkuB8tPfN783mK4Qyw
-         zwEQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rcku4lPAn/y4YhBZdjYlkKZQc+t40+z/luVVG1YdFJI=;
+        b=DHGwreClgzq5UgdvP5poTN7RLhMGva3+Muj5jp5VFGgimCmx9WYcK0eAsHiPKmOBvm
+         fNIxvrpnxT7enGivLKac/vig8mhqLw+2Cr5Ryv3fxuRyEA+glFI9u5W3FH+lcviTWeGe
+         gBc30+jMZuskqlYBYm3IDHW+cnGRkBk2GrNsHGWwfc0la+TFas3pa3GnvnDDDfrSJ5E/
+         lbhQqn6JI6qM9R1x/J78C+8KnVayuEfKRieda9i6E3ekSvyEAadWUtTwn7t5ZCmq1hzh
+         964NVr4rM402IWoljsqluvgZHAACwUvLsZ+XPrjLvLBmKS08Kc99fr5VRKqG48f1KGm8
+         G7Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=fik6fEowz12+2Ryuqjd810QUwD4ENaiIRDI49CE7Imo=;
-        b=leDu71pka2sC2c9KqyySior/dtzjo9JA99TBn2aWvH9k0CUABKxXvS2qgXd5w1NSsF
-         gyLQ4Xr89JQIn2hDotFSRt8i2jpAsse/TYjm9xGdRSf2rChY8fZQ+heQsg8RY8i9qs0l
-         hpabDg0A4tMJGee8PyzQ1qyQBmzwwU4rKVggMCMMTIGKLt+O5CGu0LhvjQ0Pc6Mt8+02
-         kTk0rGhlK5P+9sr1HSRXXt3+cEJkPTXZkaK0clqCTOCPJLd1eMQAEdXtGHcB0MGRoPLK
-         PV/J5unDBwj5eHh0k6RnwM1RCCt9vO7u7x2GoPOqMXV2p703e5KXRv++Up8bRQ5yJ1QR
-         0biQ==
-X-Gm-Message-State: AOAM531eCi3nh+kyjeJ+KuzHEJPPvqiO9KK4R1Mr/6oIOowmydGYrNzY
-        ZtGodXBkDU6rSpMG0ySHsWlN8Q==
-X-Google-Smtp-Source: ABdhPJx6JYmI+hOefPFTpkOizK3567s+04FShF8enu15CF/OdVhVGAL1qWVPO77wZleP+ulEo6irpw==
-X-Received: by 2002:a17:906:7aca:: with SMTP id k10mr6229230ejo.215.1607076132455;
-        Fri, 04 Dec 2020 02:02:12 -0800 (PST)
-Received: from localhost.localdomain (hst-221-106.medicom.bg. [84.238.221.106])
-        by smtp.gmail.com with ESMTPSA id p35sm3238242edd.58.2020.12.04.02.02.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 02:02:11 -0800 (PST)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dikshita@codeaurora.org, Alexandre Courbot <acourbot@chromium.org>,
-        Vikash Garodia <vgarodia@codeaurora.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v2 4/4] venus: hfi: Correct session init return error
-Date:   Fri,  4 Dec 2020 12:01:39 +0200
-Message-Id: <20201204100139.6216-5-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201204100139.6216-1-stanimir.varbanov@linaro.org>
-References: <20201204100139.6216-1-stanimir.varbanov@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rcku4lPAn/y4YhBZdjYlkKZQc+t40+z/luVVG1YdFJI=;
+        b=kqUB2zkqZvJxBPg6OXfc74CVpzHOU6/eMVk8dfkakmtKdigNA/Pz5SZHGg/+5iy+0P
+         NbvI8loYfbbPtEj3crOR9gsX0/SSPexGBRWs0ehY6jRlkVkR0XoyjSAkz+CiqUxds7fg
+         2DxJwML6oszY/SEYheFVy8wZQ0lHBHggAbfbXlzdWZGN2h8RJFr0KCTAbC4NDcGpqhWh
+         Gg3/TYZlEejTB8On5Dj4bj2FNJulIxN/JEDhzWDdP8KAFVVoDzrS9u9mjFm/+uM+g5qP
+         9Htt++xTc6BnFsh/lxMOYKC+wR4KdkPNJA3grvoVGGc91RsBs60fT77O8Y8aJliSdhQT
+         KOpA==
+X-Gm-Message-State: AOAM532pyMsDspfhk2YwtUpsuQ9skzE4L14nm+a1qSjGYGxwuWNrRR3d
+        pvRHoQOQeZMQnBIZn6D0wzEOGFnnaCZNfV7BRCpDCA==
+X-Google-Smtp-Source: ABdhPJzF251m6Qz8Y2YtlC0BVJfa4JQ2d5vZe0SrIQHOSN0qQQLEJYfanTHuPYzxI3so5RnK5TCTPRNHPYoR6mFf9U4=
+X-Received: by 2002:a67:fe85:: with SMTP id b5mr241341vsr.19.1607076189014;
+ Fri, 04 Dec 2020 02:03:09 -0800 (PST)
+MIME-Version: 1.0
+References: <20201203222922.1067522-1-arnd@kernel.org>
+In-Reply-To: <20201203222922.1067522-1-arnd@kernel.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 4 Dec 2020 11:02:32 +0100
+Message-ID: <CAPDyKFqtFYqc8i_fVzOUnuZGJjtwjVLqE-vebtOKuYJ-4PrDBg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mediatek: mark PM functions as __maybe_unused
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
+        yong mao <yong.mao@mediatek.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hfi_session_init can be called many times and it returns
-EINVAL when the session was already initialized. This error code
-(EINVAL) is confusing for the callers. Change hfi_session_init to
-return EALREADY error code when the session has been already
-initialized.
+On Thu, 3 Dec 2020 at 23:29, Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The #ifdef check for the suspend/resume functions is wrong:
+>
+> drivers/mmc/host/mtk-sd.c:2765:12: error: unused function 'msdc_suspend' [-Werror,-Wunused-function]
+> static int msdc_suspend(struct device *dev)
+> drivers/mmc/host/mtk-sd.c:2779:12: error: unused function 'msdc_resume' [-Werror,-Wunused-function]
+> static int msdc_resume(struct device *dev)
+>
+> Remove the #ifdef and mark all four as __maybe_unused to aovid the
+> problem.
+>
+> Fixes: c0a2074ac575 ("mmc: mediatek: Fix system suspend/resume support for CQHCI")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/mmc/host/mtk-sd.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> index d057fb11112a..de09c6347524 100644
+> --- a/drivers/mmc/host/mtk-sd.c
+> +++ b/drivers/mmc/host/mtk-sd.c
+> @@ -2683,7 +2683,6 @@ static int msdc_drv_remove(struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> -#ifdef CONFIG_PM
+>  static void msdc_save_reg(struct msdc_host *host)
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/hfi.c  | 2 +-
- drivers/media/platform/qcom/venus/vdec.c | 2 +-
- drivers/media/platform/qcom/venus/venc.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Shouldn't msdc_save|restore_reg() be turned into "__maybe_unused" as well?
 
-diff --git a/drivers/media/platform/qcom/venus/hfi.c b/drivers/media/platform/qcom/venus/hfi.c
-index 8786609d269e..0f2482367e06 100644
---- a/drivers/media/platform/qcom/venus/hfi.c
-+++ b/drivers/media/platform/qcom/venus/hfi.c
-@@ -221,7 +221,7 @@ int hfi_session_init(struct venus_inst *inst, u32 pixfmt)
- 	mutex_unlock(&core->lock);
- 
- 	if (inst->state != INST_UNINIT)
--		return -EINVAL;
-+		return -EALREADY;
- 
- 	inst->hfi_codec = to_codec_type(pixfmt);
- 	reinit_completion(&inst->done);
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index 8488411204c3..5337387eef27 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -741,7 +741,7 @@ static int vdec_session_init(struct venus_inst *inst)
- 	int ret;
- 
- 	ret = hfi_session_init(inst, inst->fmt_out->pixfmt);
--	if (ret == -EINVAL)
-+	if (ret == -EALREADY)
- 		return 0;
- 	else if (ret)
- 		return ret;
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index e0053cc1b7eb..cb8ff10e38c7 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -725,7 +725,7 @@ static int venc_init_session(struct venus_inst *inst)
- 	int ret;
- 
- 	ret = hfi_session_init(inst, inst->fmt_cap->pixfmt);
--	if (ret == -EINVAL)
-+	if (ret == -EALREADY)
- 		return 0;
- 	else if (ret)
- 		return ret;
--- 
-2.17.1
+>  {
+>         u32 tune_reg = host->dev_comp->pad_tune_reg;
+> @@ -2742,7 +2741,7 @@ static void msdc_restore_reg(struct msdc_host *host)
+>                 __msdc_enable_sdio_irq(host, 1);
+>  }
+>
+> -static int msdc_runtime_suspend(struct device *dev)
+> +static int __maybe_unused msdc_runtime_suspend(struct device *dev)
+>  {
+>         struct mmc_host *mmc = dev_get_drvdata(dev);
+>         struct msdc_host *host = mmc_priv(mmc);
+> @@ -2752,7 +2751,7 @@ static int msdc_runtime_suspend(struct device *dev)
+>         return 0;
+>  }
+>
+> -static int msdc_runtime_resume(struct device *dev)
+> +static int __maybe_unused msdc_runtime_resume(struct device *dev)
+>  {
+>         struct mmc_host *mmc = dev_get_drvdata(dev);
+>         struct msdc_host *host = mmc_priv(mmc);
+> @@ -2762,7 +2761,7 @@ static int msdc_runtime_resume(struct device *dev)
+>         return 0;
+>  }
+>
+> -static int msdc_suspend(struct device *dev)
+> +static int __maybe_unused msdc_suspend(struct device *dev)
+>  {
+>         struct mmc_host *mmc = dev_get_drvdata(dev);
+>         int ret;
+> @@ -2776,11 +2775,10 @@ static int msdc_suspend(struct device *dev)
+>         return pm_runtime_force_suspend(dev);
+>  }
+>
+> -static int msdc_resume(struct device *dev)
+> +static int __maybe_unused msdc_resume(struct device *dev)
+>  {
+>         return pm_runtime_force_resume(dev);
+>  }
+> -#endif
+>
+>  static const struct dev_pm_ops msdc_dev_pm_ops = {
 
+You may also change this to a __maybe_unused, as long as you also
+assign the .pm pointer in the mt_msdc_driver with
+pm_ptr(&msdc_dev_pm_ops).
+
+Ideally the compiler should drop these functions/datas entirely then.
+
+>         SET_SYSTEM_SLEEP_PM_OPS(msdc_suspend, msdc_resume)
+> --
+> 2.27.0
+>
+
+Kind regards
+Uffe
