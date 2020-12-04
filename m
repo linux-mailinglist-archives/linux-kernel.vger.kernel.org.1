@@ -2,195 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBEB2CF3B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1172CF3BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:14:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729500AbgLDSNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:13:14 -0500
-Received: from mga01.intel.com ([192.55.52.88]:59269 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726276AbgLDSNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:13:13 -0500
-IronPort-SDR: bWg1gOunOBMWNGaLO6bPDPsQTb7Sm13z8TOo40k+IryFtlaYw+UpIPOQyqBgAN9xmOqGx3i4Ws
- M4lpEsbyjoCg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="191665886"
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="191665886"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 10:12:20 -0800
-IronPort-SDR: RKwnSxn3tNmuYRuBZxouEbsKpq9G4v733izvJSe/cn3xwC6G/G+KsapswhLHLdvtwwFa1LCsaE
- eoSLzY9JWubg==
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="336451422"
-Received: from yayatigu-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.135.92])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 10:12:19 -0800
-Date:   Fri, 4 Dec 2020 10:12:17 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Chris Browy <cbrowy@avery-design.com>
-Cc:     bhelgaas@google.com, dan.j.williams@intel.com, ira.weiny@intel.com,
-        linux-acpi@vger.kernel.org, linux-cxl@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        rafael.j.wysocki@intel.com, sean.v.kelley@intel.com,
-        vishal.l.verma@intel.com
-Subject: Re: [RFC PATCH 0/9] CXL 2.0 Support
-Message-ID: <20201204181217.n3cm7gqujaqlcp2h@intel.com>
-References: <FB00A034-7C6D-40B1-8452-318A3B052216@avery-design.com>
- <F0ACA340-5BDE-4C17-80ED-DB7F5C5B8403@avery-design.com>
+        id S2387521AbgLDSOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:14:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44466 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387419AbgLDSOf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:14:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607105589;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4jiiSi2OMHYLdag0OnlL3n5HoKBr3a25AnpGnahrkVE=;
+        b=SvXVNBygKR31p1cXqk4HD1B62iGDvVMXwh+TL4VVnj3IoCJLV3DHcSBN3mbBpvIX+LSYsz
+        G9pHusU4aR1AkD0+cudBnLQoeHbTJ0lIkLO555xtLQ6rpTtOH0XDn/NF/VwE5UjI9zcu3v
+        wm3sXQCfeVQzmF0pl819AM+HycBDDrI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-262-96BjG46sM5uJfziFAbbziQ-1; Fri, 04 Dec 2020 13:13:05 -0500
+X-MC-Unique: 96BjG46sM5uJfziFAbbziQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 33890858180;
+        Fri,  4 Dec 2020 18:13:03 +0000 (UTC)
+Received: from mail (ovpn-112-211.rdu2.redhat.com [10.10.112.211])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E24931A8A5;
+        Fri,  4 Dec 2020 18:12:56 +0000 (UTC)
+Date:   Fri, 4 Dec 2020 13:12:56 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v2] mm: Don't fault around userfaultfd-registered regions
+ on reads
+Message-ID: <X8p8KNJXD3aK9TkF@redhat.com>
+References: <20201201125927.GB11935@casper.infradead.org>
+ <20201201223033.GG3277@xz-x1>
+ <X8bZk3jTGU8QyJWc@redhat.com>
+ <alpine.LSU.2.11.2012021410260.4989@eggly.anvils>
+ <20201202234117.GD108496@xz-x1>
+ <alpine.LSU.2.11.2012022119010.11674@eggly.anvils>
+ <20201203180234.GJ108496@xz-x1>
+ <X8lADgHCRqlQi3Xa@redhat.com>
+ <20201204023051.GL108496@xz-x1>
+ <X8m2qv9h7+e79UjJ@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <F0ACA340-5BDE-4C17-80ED-DB7F5C5B8403@avery-design.com>
+In-Reply-To: <X8m2qv9h7+e79UjJ@redhat.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chris.
+On Thu, Dec 03, 2020 at 11:10:18PM -0500, Andrea Arcangeli wrote:
+> from the pte, one that cannot ever be set in any swp entry today. I
+> assume it can't be _PAGE_SWP_UFFD_WP since that already can be set but
+> you may want to verify it...
 
-On 20-12-04 12:40:03, Chris Browy wrote:
-> Hi Ben,
-> 
-> Trying to bring up the environment using the latest developments as follows:
-> 
-> 1. Linux kernel baseline version is cloned using
->      git clone git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
->    Using master branch.  Merged the 9 CXL linux kernel patches manually and built kernel
-> 
-> 2. QEMU baseline version is cloned using
->      git clone https://gitlab.com/bwidawsk/qemu.git
-> 
-> 3. UEFI baseline is cloned using
->      git clone https://github.com/tianocore/edk2.git
->    Using master and built
-> 
-> 4. Now can run qemu as follows:
->      The qcow2 we use is based on Ubuntu 20.10 with updated with kernel from 1) above
-> 
->      QEMU command:
-> 
->      sudo qemu-system-x86_64 -nic \
->      user,hostfwd=tcp::2222-:22,hostfwd=tcp::1234-:1234 -machine \
->      type=pc-q35-4.0,hmat=on,accel=kvm -enable-kvm -cpu host -smp \
->      6,cores=6,threads=1,sockets=1 -m 8G -boot order=d -k 'en-us' -vga virtio \
->      -drive file=/home/chris/Downloads/AQCXL/ubuntu_20.qcow,format=qcow2 -drive \
->      if=pflash,format=raw,readonly,file=/home/chris/OVMF_CODE.fd \
->      -drive if=pflash,format=raw,file=/home/chris/OVMF_VARS.fd \
->      -object memory-backend-file,id=cxl-mem1,share,mem-path=/tmp/cxl-test/cxl,size=512M \
->      -device pxb-cxl,id=cxl.0,bus=pcie.0,bus_nr=52,uid=0,len-window-base=1,\
->      window-base[0]=0x4c0000000,memdev[0]=cxl-mem1 \
->      -device cxl-rp,id=rp0,bus=cxl.0,addr=0.0,chassis=0,slot=0  \
->      -device cxl-type3,bus=rp0,memdev=cxl-mem1,id=cxl-pmem0,size=256M  2>&1 | tee -a \
->      /home/chris/Downloads/AQCXL/log/qemu.log
-> 
->    The qemu options are derived from looking at the tests/qtests/cxl-test.c
->    along with the -hmat=on which seemed to make sense.
-> 
->    The system boots and lspci -vvv shows the CXL device is enumerated.  But
->    no DOE capability register for CDAT access though (see below).  Otherwise the
->    DVSEC registers are present.
+I thought more about the above, and I think the already existing
+pte_swp_mkuffd_wp will just be enough without having to reserve an
+extra bitflag if we encode it as a non migration entry.
 
-DOE is not supported yet in either Linux or QEMU. For us, CDAT isn't a high
-priority yet so it likely won't be done for a while. I'd really like to see DOE
-support added by someone - not me - so that we can wire it up. Not sure what
-that would look like in the QEMU side.
+The check:
 
-> 
->    acpidump indicates the CXL0 and CXLM devices but no SRAT or HMAT tables are
->    in the dump which is curious.
+if (!pte_present && !pte_none && pte_swp_uffd_wp && not_anonymous_vma && !is_migration_entry)
 
-I don't typically use HMAT, but I do have an SRAT in mine, so that's strange.
-You should also have a CEDT.
+should be enough to disambiguate it. When setting it, it'd be enough
+to set the pte to the value _PAGE_SWP_UFFD_WP.
 
-> 
-> 
-> 35:00.0 Memory controller [0502]: Intel Corporation Device 0d93 (rev 01) (prog-if 10)
->     Subsystem: Red Hat, Inc. Device 1100
->     Physical Slot: 0
->     Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
->     Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
->     Latency: 0
->     Region 0: Memory at c0a00000 (64-bit, non-prefetchable) [size=64K]
->     Region 2: Memory at c0a10000 (64-bit, non-prefetchable) [size=4K]
->     Capabilities: [80] Express (v2) Endpoint, MSI 00
->         DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s <64ns, L1 <1us
->             ExtTag- AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 0.000W
->         DevCtl: CorrErr- NonFatalErr- FatalErr- UnsupReq-
->             RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop-
->             MaxPayload 128 bytes, MaxReadReq 128 bytes
->         DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
->         LnkCap: Port #0, Speed 2.5GT/s, Width x1, ASPM L0s, Exit Latency L0s <64ns
->             ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
->         LnkCtl: ASPM Disabled; RCB 64 bytes Disabled- CommClk-
->             ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
->         LnkSta: Speed 2.5GT/s (ok), Width x1 (ok)
->             TrErr- Train- SlotClk- DLActive+ BWMgmt- ABWMgmt-
->         DevCap2: Completion Timeout: Not Supported, TimeoutDis-, NROPrPrP-, LTR-
->              10BitTagComp-, 10BitTagReq-, OBFF Not Supported, ExtFmt+, EETLPPrefix+, MaxEETLPPrefixes 4
->                EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
->              FRS-, TPHComp-, ExtTPHComp-
->              AtomicOpsCap: 32bit- 64bit- 128bitCAS-
->         DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis-, LTR-, OBFF Disabled
->              AtomicOpsCtl: ReqEn-
->         LnkCtl2: Target Link Speed: 2.5GT/s, EnterCompliance- SpeedDis-
->              Transmit Margin: Normal Operating Range, EnterModifiedCompliance- ComplianceSOS-
->              Compliance De-emphasis: -6dB
->         LnkSta2: Current De-emphasis Level: -6dB, EqualizationComplete-, EqualizationPhase1-
->              EqualizationPhase2-, EqualizationPhase3-, LinkEqualizationRequest-
->     Capabilities: [100 v1] Designated Vendor-Specific <?>
->     Capabilities: [138 v1] Designated Vendor-Specific <?>
->     Kernel driver in use: cxl_mem
-> 
-> Questions/Comments:
-> -------------------
-> 1. Linux
->   a. Is there a gitlab for the linux kernel patches for CXL?  This would
->      facilitate review and code modifications.
+Although if you prefer to check for:
 
-We're hopefully going to send out v2 in the next couple of days. I'll push the
-repo somewhere as well.
+if (!pte_present && !pte_none && swp_type == 1 && swp_offset == 0 && not_anonymous_vma && !is_migration_entry)
 
-> 
-> 2. UEFI (edk2 from tianocore)
->   a. seems to only support CXL 1.1 which means only method #1 (Device
->      option ROM) of Coherent Device Attribute Table_1.02 spec
->      for CDAT handling is possible now.
-> 
->      Does device option ROM need to be added to QEMU CXL setup?
-> 
->      Can we add a CXL 1.1 emulated device?
+that would do as well.
 
-Patches welcome :-). I know of other people who want this, but I only care about
-2.0+, so I have no intention to implement it.
+It's up to you, just my preference is to reuse _PAGE_SWP_UFFD_WP since
+it has already to exist, there are already all the pte_swp_*uffd*
+methods available or uffd-wp cannot work.
 
-> 
->   b. lspci doesn’t show the existence of the DOE extended capability register
->      in the CXL CT3D (needed to support method #2).  Are there more patches?
+Thanks,
+Andrea
 
-As above, it's not supported. I'm hoping someone else will do that work since I
-don't care about it just yet.
-
-> 
-> 3. Do you have example user programs to share or better yet the CXL 2.0
->    Sec 14.3.6.1 Application Layer/ Transaction layer test for CXL.mem?
-> 
-
-I don't have, mostly because I haven't actually implemented a lot of the real
-CXL support. My primary concern was having the Linux driver be able to enumerate
-devices and communicate with the device via the mailbox interface. v2 will
-contain support for userspace to do this, which I think is a step toward what
-you're asking for.
-
-> 4. What are the userspace system APIs for targeting CXL HDM address domain?
->    Usually you can mmap a SPA if you know how to look it up.
-
-I think Dan answered this in the other thread...
-
-> 
-> 
-> Best Regards,
-> Chris Browy
-> 
-> 
-> 
