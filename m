@@ -2,171 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9002CEAEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A772CEB4E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729170AbgLDJbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:31:37 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:16093 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726735AbgLDJbg (ORCPT
+        id S2387672AbgLDJrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:47:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726330AbgLDJrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:31:36 -0500
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201204093054epoutp014c53b9c9e45c5c5d3ecf9a781ed477aa~NeYUQdtmi0745107451epoutp01c
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 09:30:54 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201204093054epoutp014c53b9c9e45c5c5d3ecf9a781ed477aa~NeYUQdtmi0745107451epoutp01c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1607074254;
-        bh=FJ+B3zIcBgxljhfRxX4OruLMUsDxRsFDGdDKk1UNK/I=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=mHQxwmNmcUoCsZOcrxaQHZubI+O7QJqgfhHOyxapvndS2ACqHgT3UIG/GZH9y4Q1E
-         lyYSy+B7IgDjZvj2K9tM9+S4ULW00hR5jQtBkBmYG4GXRdhhdiNFvY3gFI1zLQ/gce
-         +j3W/yxzPCRa60FreehCZ6QHrp+vhwb5oN87uYn4=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20201204093053epcas1p39c6745c23d1f4d7a8464710e3f870336~NeYTzQdSP1217112171epcas1p3E;
-        Fri,  4 Dec 2020 09:30:53 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4CnSB34Q3Wz4x9Pp; Fri,  4 Dec
-        2020 09:30:51 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2C.BD.09577.BC10ACF5; Fri,  4 Dec 2020 18:30:51 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20201204093051epcas1p39bbc7d2bf9ebdc1811a284774cc6e254~NeYRJgUAv1209212092epcas1p3B;
-        Fri,  4 Dec 2020 09:30:51 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201204093051epsmtrp12c46f11ae6900145943f2141621b1e8a~NeYRDUnUQ1305413054epsmtrp1r;
-        Fri,  4 Dec 2020 09:30:51 +0000 (GMT)
-X-AuditID: b6c32a39-c13ff70000002569-86-5fca01cbdcd6
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CD.F3.08745.AC10ACF5; Fri,  4 Dec 2020 18:30:50 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201204093050epsmtip26710b06ca99820b6db330da2e21ad794~NeYQxrKMc2677726777epsmtip24;
-        Fri,  4 Dec 2020 09:30:50 +0000 (GMT)
-Subject: Re: [PATCH] [v2] clk: samsung: mark PM functions as __maybe_unused
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <f7df29db-0fc9-016a-6e01-91974014c917@samsung.com>
-Date:   Fri, 4 Dec 2020 18:45:35 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Fri, 4 Dec 2020 04:47:46 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8961C061A4F;
+        Fri,  4 Dec 2020 01:47:05 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id r127so4801197yba.10;
+        Fri, 04 Dec 2020 01:47:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=has9z/+YolIQnceI0ZR4EwEEHuS5+aPy5Dek6RVuYA0=;
+        b=HhHUNB5KOPHJhQjg6pF2/j+lGhnmZ2g4xwR+wkctXTtR7G2QFKYP+a09U9n8Er8d59
+         jmnkckHhcfjlFDgGndLx78wuVstSXg7Mo6Kd+P/Xq0sluwVth1VjEmTmB/fNIzodXZOv
+         gwipiVq/puWkLznqU07I3sr/1RBJAsP4m6YY2B+MXd+5NlW2F6a96pTH/p9jw3edGqTU
+         fy4KL/miekw/BkIAHoR5hA3sCnPOV+Xe1gErhB6HL15msJrY0/joYJUuJwB4IoFVmjfP
+         ZvfWFdhmMWs4sRIYj1DSAb6hnHPYpQO+zdXPt/xbIzC8OW6gtn5PQ5wYRfS7XQBwIs/s
+         sNRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=has9z/+YolIQnceI0ZR4EwEEHuS5+aPy5Dek6RVuYA0=;
+        b=kPcDLT1HtC7cNuClpmSzGI5xjeimiW87gKr0VN7ABADAntyJMduz6jrk2hO+pLJoav
+         xBRugMp5FzVasiQA/CJkehOTir1gtEScAm1AN92ZJ2zm529/XMfPCnsT+EAPZQNtEERK
+         IqaX/VXWEAiXYSBlEIw+iVIq2IYrm9Gb8MW58NNAbIQclQu3ZUFYt/A0SH0QZrBrKldl
+         zD/33cAq9RfHkJ+iYRM1EN+RX0LIlo9Bk6w0ggzCIKO3HzR4Du4VtK7gLcT3LcgGQkRn
+         ck7/mDl7apc10pcrLoTfJjOpsgo90OtW9N7XG7vqVW0MFefXj20gnRkpWldiWbujsZE0
+         azsg==
+X-Gm-Message-State: AOAM530d1ULJtVq3Vf+y89N+UoaFzrYxbcB8T2mOkdIS1eY99nOkMh4K
+        ZRIFfPbQpEtxrpMNTqJrC5/FfY0JUOmVAVrHYwVgB9IZY5Q=
+X-Google-Smtp-Source: ABdhPJzqHuUEn/wunVBeEWv/E1wmjDBjcCAxgHj2csSbjd7/ViXN+BESDwpcIp2ZLBmZ6TDOJ6gExng8Qavvl1ACHg4=
+X-Received: by 2002:a25:3a86:: with SMTP id h128mr4457187yba.401.1607075225072;
+ Fri, 04 Dec 2020 01:47:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201204091616.4128366-1-arnd@kernel.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOJsWRmVeSWpSXmKPExsWy7bCmvu5pxlPxBmt7FC3+TjrGbrFtyyZW
-        i/PnN7BbbHp8jdXiY889VovLu+awWcw4v4/J4uIpV4vDb9pZLf5d28hisWrXH0YHbo/fvyYx
-        ery/0crusXPWXXaPTas62Tw2L6n36NuyitHj8ya5APaobJuM1MSU1CKF1Lzk/JTMvHRbJe/g
-        eOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoBOVFMoSc0qBQgGJxcVK+nY2RfmlJakKGfnF
-        JbZKqQUpOQWWBXrFibnFpXnpesn5uVaGBgZGpkCFCdkZ685dZitoFahYf7CFtYFxCW8XIyeH
-        hICJROP7RtYuRi4OIYEdjBJnV81jhnA+MUpsuvaTEcL5zCjxdNIMVpiWQze+Q1XtYpTYOmMC
-        lPOeUWLb7DPMIFXCAt4SH+/fB0uICHxglPjdv4AJxGEWWA40ePcMJpAqNgEtif0vbrCB2PwC
-        ihJXfzxmBLF5BewkXnfPBdvHIqAi8XLPZbC4qECYxMltLVA1ghInZz5hAbE5Bcwlrk1YBzaT
-        WUBc4taT+VC2vMT2t3PArpAQOMIhsanhEiPEEy4S/24vZoGwhSVeHd/CDmFLSbzsb4OyqyVW
-        njzCBtHcwSixZf8FaAgYS+xfOhloAwfQBk2J9bv0IcKKEjt/z2WEWMwn8e5rDytIiYQAr0RH
-        mxBEibLE5Qd3mSBsSYnF7Z1sExiVZiF5ZxaSF2YheWEWwrIFjCyrGMVSC4pz01OLDQtMkSN8
-        EyM4BWtZ7mCc/vaD3iFGJg7GQ4wSHMxKIryxqifjhXhTEiurUovy44tKc1KLDzGaAgN4IrOU
-        aHI+MAvklcQbmhoZGxtbmBiamRoaKonz/tHuiBcSSE8sSc1OTS1ILYLpY+LglGpgKszl9PYp
-        18ppkbiVzcDwLNZJWW9CzUklsfcLNq68lr7GUP3+hXcrwnROhUzs3Lc8+J0p17bre1Iic1Ib
-        P/H8mbdK3EDSuMfwWs7jR76b7P9OkBJ/+3s5T9Pmy+sO+k1Ytn96p/3XfWY/Jglkft5gmJRW
-        M3vaHXeVe8cKDMNNgjqmSOf43PhTe3jeXnZe9cnZ823WZyzeVH3K9/Ez9uSSY2vnqlrGt+dO
-        4kxZ7HhmkcERTSd93+JVtxk1HGbcFOp4ej3p38bLvEz6Gka19/qLIs4rtEtcmHNN7PWF1GuJ
-        XVPDRB5p/vCRn5C8KTb/27ld7xSWei3+aHnQ7aCl1YvzrwROBayq0mPPjl7S0l9ySImlOCPR
-        UIu5qDgRAMQ9e4pKBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIIsWRmVeSWpSXmKPExsWy7bCSvO4pxlPxBlfumFr8nXSM3WLblk2s
-        FufPb2C32PT4GqvFx557rBaXd81hs5hxfh+TxcVTrhaH37SzWvy7tpHFYtWuP4wO3B6/f01i
-        9Hh/o5XdY+esu+wem1Z1snlsXlLv0bdlFaPH501yAexRXDYpqTmZZalF+nYJXBnrzl1mK2gV
-        qFh/sIW1gXEJbxcjJ4eEgInEoRvfmbsYuTiEBHYwShy5dZwZIiEpMe3iUSCbA8gWljh8uBii
-        5i2jxKx3z5hAaoQFvCU+3r8P1iwi8IlR4sXEGUwgDrPAckaJpisdTBAtXYwSHdc+sYC0sAlo
-        Sex/cYMNxOYXUJS4+uMxI4jNK2An8bp7LiuIzSKgIvFyz2WwuKhAmMTOJY+ZIGoEJU7OfAI2
-        h1PAXOLahHVgcWYBdYk/8y4xQ9jiEreezIeKy0tsfzuHeQKj8Cwk7bOQtMxC0jILScsCRpZV
-        jJKpBcW56bnFhgVGeanlesWJucWleel6yfm5mxjBsailtYNxz6oPeocYmTgYDzFKcDArifDG
-        qp6MF+JNSaysSi3Kjy8qzUktPsQozcGiJM57oQsoJZCeWJKanZpakFoEk2Xi4JRqYIoSm1rQ
-        P8dWlW1NYKBe8wWJ5/6qKzZc0H70Ztec2HPSpwM3OT1hFPHfvv7mA6fMkpDVGl2q/fWPzse7
-        r2Pd7JI9/6rnxpy07ZvezU1ayVdy4NatLiE3n1ONCxOX9l1/ZGRUPHtZdt0dh8Ay901LEzRe
-        RUs1/tGuNbr99AWrVPovdc9LLWahCi4slaUShhVMh5vsZM/aKskHTBKe1fxdZ2ftf227T4v7
-        VPc2cyfyPY5a/PiCtrOkGb9b4P2Uq34FTieXtwtvOPAynvvqdbZOt98LlKQnhMU6lR69euCV
-        nZiW6u1LmnEt1kmp8f5f408EHlp3slNX8T2b7V2z7o8lF8x0NQ4LzbF0rJ25bv8kJZbijERD
-        Leai4kQAvxybBTQDAAA=
-X-CMS-MailID: 20201204093051epcas1p39bbc7d2bf9ebdc1811a284774cc6e254
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201204091801epcas1p2a67474fad16d0c71f6b9a36cc72241ab
-References: <CGME20201204091801epcas1p2a67474fad16d0c71f6b9a36cc72241ab@epcas1p2.samsung.com>
-        <20201204091616.4128366-1-arnd@kernel.org>
+References: <20201126191146.8753-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CA+V-a8vjTQv7wrdJFe6TS3saUE=Sj6ty0JSz0VZUd=TyDVfp4Q@mail.gmail.com> <20201203131916.GA2924@kozik-lap>
+In-Reply-To: <20201203131916.GA2924@kozik-lap>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 4 Dec 2020 09:46:39 +0000
+Message-ID: <CA+V-a8t_451_g0j2D8FK=aJ76VCSyJ4WLxmakTLAX7nt097vOw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] memory: renesas-rpc-if: Trivial fixes
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jiri Kosina <trivial@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/4/20 6:16 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The use of SIMPLE_DEV_PM_OPS() means that the suspend/resume
-> functions are now unused when CONFIG_PM is disabled:
-> 
-> drivers/clk/samsung/clk-exynos-clkout.c:219:12: error: 'exynos_clkout_resume' defined but not used [-Werror=unused-function]
->   219 | static int exynos_clkout_resume(struct device *dev)
->       |            ^~~~~~~~~~~~~~~~~~~~
-> drivers/clk/samsung/clk-exynos-clkout.c:210:12: error: 'exynos_clkout_suspend' defined but not used [-Werror=unused-function]
->   210 | static int exynos_clkout_suspend(struct device *dev)
->       |            ^~~~~~~~~~~~~~~~~~~~~
-> 
-> Mark them as __maybe_unused to shut up the otherwise harmless warning.
-> 
-> Fixes: 9484f2cb8332 ("clk: samsung: exynos-clkout: convert to module driver")
-> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> v2: add proper changelog text
-> ---
->  drivers/clk/samsung/clk-exynos-clkout.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clk/samsung/clk-exynos-clkout.c b/drivers/clk/samsung/clk-exynos-clkout.c
-> index 9ec2f40cc400..e6d6cbf8c4e6 100644
-> --- a/drivers/clk/samsung/clk-exynos-clkout.c
-> +++ b/drivers/clk/samsung/clk-exynos-clkout.c
-> @@ -207,7 +207,7 @@ static int exynos_clkout_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -static int exynos_clkout_suspend(struct device *dev)
-> +static int __maybe_unused exynos_clkout_suspend(struct device *dev)
->  {
->  	struct exynos_clkout *clkout = dev_get_drvdata(dev);
->  
-> @@ -216,7 +216,7 @@ static int exynos_clkout_suspend(struct device *dev)
->  	return 0;
->  }
->  
-> -static int exynos_clkout_resume(struct device *dev)
-> +static int __maybe_unused exynos_clkout_resume(struct device *dev)
->  {
->  	struct exynos_clkout *clkout = dev_get_drvdata(dev);
->  
-> 
+Hi Krzysztof,
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+On Thu, Dec 3, 2020 at 1:19 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Thu, Dec 03, 2020 at 10:41:54AM +0000, Lad, Prabhakar wrote:
+> > Hi Krzysztof,
+> >
+> > On Thu, Nov 26, 2020 at 7:11 PM Lad Prabhakar
+> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > >
+> > > Hi All,
+> > >
+> > > This patch series fixes trivial issues in RPC-IF driver.
+> > >
+> > > Changes for v2:
+> > > * Balanced PM in rpcif_disable_rpm
+> > > * Fixed typo in patch 4/5
+> > > * Dropped C++ style fixes patch
+> > > * Included RB tags from Sergei
+> > >
+> > > Cheers,
+> > > Prabhakar
+> > >
+> > > Lad Prabhakar (5):
+> > >   memory: renesas-rpc-if: Return correct value to the caller of
+> > >     rpcif_manual_xfer()
+> > >   memory: renesas-rpc-if: Fix unbalanced pm_runtime_enable in
+> > >     rpcif_{enable,disable}_rpm
+> > >   memory: renesas-rpc-if: Fix a reference leak in rpcif_probe()
+> > >   memory: renesas-rpc-if: Make rpcif_enable/disable_rpm() as static
+> > >     inline
+> > >   memory: renesas-rpc-if: Export symbols as GPL
+> > >
+> > As these are fixes to the existing driver will these be part of v5.10 release ?
+>
+> Quick look with:
+>         git lg v5.9..v5.10-rc1 -- drivers/memory/
+> did not show that this driver was added in v5.10-rc1, so the fixes are
+> not planned to be for v5.10 release never. Why they should be? Maybe I
+> missed something here?
+>
+My bad the fixes can go into v5.11.
 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Cheers,
+Prabhakar
