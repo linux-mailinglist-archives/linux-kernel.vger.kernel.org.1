@@ -2,121 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A7D2CF5E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD4B2CF5EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728147AbgLDU5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 15:57:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
+        id S1729710AbgLDU7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 15:59:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726524AbgLDU5F (ORCPT
+        with ESMTP id S1726534AbgLDU7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 15:57:05 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659B7C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:56:25 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id t9so7689845oic.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:56:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oCRFwoQksFKYxL9oDoarBzLvwPjlXv3hZNckKayt7VE=;
-        b=qtVhX699Z+sdbwQ0ORNcWDXHwHjkZyYC8BLl8PrsqffUGnX1Nflju5sQJ9vxci2hTA
-         pNcPyzTncdV4ImSnFytm/qrKywE5ktZDoohXPdzQdTeAqgPRAU1WwMrvvATQO00FLhnQ
-         ptLQcrME+z99/L4GzViD6O1B/mcnIBZQrr4jJgtErgbr/gSWh+N76dM+5eZp9P5wOx7i
-         0JWz09RtGf3eWmo5MMtrrjFZMUGB+4QmOVxfIV5BCbiPsvUaWULkjXEFOBcGL9FRZk4t
-         h2A5oz2Rt6X42vobKLOOuvZKsbrMZ1lPzlSpdNPN3mDpsk/CiiiB8WFsiFU9161Y66XS
-         qTrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oCRFwoQksFKYxL9oDoarBzLvwPjlXv3hZNckKayt7VE=;
-        b=cXBG+qkAk9NBwHMT8BBpSZuC9VAdABc5Rl7FeLmDd876OJCoyDIlcup0EpoZSRtX5l
-         lwUzz7sI+KCbQnzM20Sfujxj97UhC5j1OKACvH6yuFzJHToPiiyEtPZdqug13Vrn6YBk
-         oZMLj/TTtTh7p7nNR0NfB3DKYvsw4wP3yn3xvptM3ug0SDGl4OwxXrShjnc5w+aYRSSb
-         jFYnPo33TnUjEM449xNrRBuNFF+SJ+b6c4HPVvprPvBEJqrSfZ/RPwdyKE8fWxjID3qF
-         ld2knOeIB64blJUzwFNK6+RwLXygU+KBLgxfBabg4eU+S0CPWClUwSKsx+C+o07KRSQU
-         GtmA==
-X-Gm-Message-State: AOAM531dd1enTY+q/lMC5eW0uJvF3VvRlkrMZTsXRfJEFTBwXNNbo93k
-        dGuw6P35WNiXDpP6cL2oe52FQUvzD96ppW86460=
-X-Google-Smtp-Source: ABdhPJyXohy3tSCW8i4Y64blynsYCsiiFXP/mTHQmJppzn38tpXoDpmHXnpmSlNLMQD2uV987pardlFK657tYR2yRWM=
-X-Received: by 2002:a54:4608:: with SMTP id p8mr4365387oip.5.1607115384748;
- Fri, 04 Dec 2020 12:56:24 -0800 (PST)
+        Fri, 4 Dec 2020 15:59:04 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6FDC0613D1;
+        Fri,  4 Dec 2020 12:58:24 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607115502;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rXljD59g1oVzJ9jF+FjoI9sRZm03SEV2p7bFgHFt2DM=;
+        b=gt3Mr97/2vciv5YdoyaFRsmoYE/JGQYVgEhXOS2jFNU4afDXtiJJQI8FWmNpgJ6232PVlM
+        GF791/vksstqewuQU46P6xpGfZ8T+iLIccS+vR4lTC/23LjbTn7pMJTl+1UL6bsZV88292
+        3DbVKsgQLL6la4/SVV1xF2parMH1WoDTG08eytykPyy4lHp0gmoovXm2klpgAUkBTyWFsH
+        TP0Ql8ntELb1pWzWt0u8yKP6hJr1eKH5TUttYLzWO4wEF6OxRJAVNxyO2Hn+ON7dCU0E/G
+        Fj09D1Ioe4mtWW/RXmXUKbiw3J4XwGvdpNN9JyLT4v64tXxiNGWhXnAuHfBlaQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607115502;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rXljD59g1oVzJ9jF+FjoI9sRZm03SEV2p7bFgHFt2DM=;
+        b=Ycrbek5/gf/49CBynySmzpUCfaHCA9bnz4vO95QH88mYYX/3lLMxH3GqpBELPbH+wvXO3a
+        9mGaGDJXqV59A6DQ==
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linuxfoundation.org>
+Subject: Re: crypto: sun4i-ss: error with kmap
+In-Reply-To: <20201204192753.GA19782@Red>
+References: <20201201135252.GA9584@Red> <87y2ihfw6z.fsf@nanos.tec.linutronix.de> <20201201144529.GA6786@Red> <87v9dlfthf.fsf@nanos.tec.linutronix.de> <20201202195501.GA29296@Red> <877dpzexfr.fsf@nanos.tec.linutronix.de> <20201203173846.GA16207@Red> <87r1o6bh1u.fsf@nanos.tec.linutronix.de> <20201204132631.GA25321@Red> <874kl1bod0.fsf@nanos.tec.linutronix.de> <20201204192753.GA19782@Red>
+Date:   Fri, 04 Dec 2020 21:58:21 +0100
+Message-ID: <87wnxx9tle.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201204165128.3747878-1-arnd@kernel.org>
-In-Reply-To: <20201204165128.3747878-1-arnd@kernel.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 4 Dec 2020 15:56:13 -0500
-Message-ID: <CADnq5_NBqx5U+JAxSAaUD6qwCmZsnCzGk1mF9=rkPRPm0Ug0yw@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: fw_attestation: fix unused function warning
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        John Clements <john.clements@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 11:51 AM Arnd Bergmann <arnd@kernel.org> wrote:
+On Fri, Dec 04 2020 at 20:27, Corentin Labbe wrote:
+> On Fri, Dec 04, 2020 at 04:08:27PM +0100, Thomas Gleixner wrote:
+>> On Fri, Dec 04 2020 at 14:26, Corentin Labbe wrote:
+>> > On Fri, Dec 04, 2020 at 12:34:05AM +0100, Thomas Gleixner wrote:
+>> >> The unmap comes from sg_miter_stop() and looking at the previous
+>> >> map/unmap cycles there are never nested maps.
+>> >> 
+>> >> [  996.943030] cryptset-316       0d..4 73943317us : __kmap_local_pfn_prot: kmap_local_pfn: 1 ffefd000
+>> >> 
+>> >> is the first event which allocates a nested map. 
+>> >> 
+>> >> So something goes south either in sg_miter or in the crypto maze.
+>> >> 
+>> >> Enabling CONFIG_DEBUG_KMAP_LOCAL and function tracing might give us more clue.
+>> >
+>> > Done, http://kernel.montjoie.ovh/130466.log
+>> 
+>> Does not provide more information with the debug enabled. So can you
+>> please enable CONFIG_FUNCTION_TRACER and add 'ftrace=function' to the
+>> command line?
 >
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Without debugfs, the compiler notices one function that is not used at
-> all:
->
-> drivers/gpu/drm/amd/amdgpu/amdgpu_fw_attestation.c:123:12: error: unused function 'amdgpu_is_fw_attestation_supported' [-Werror,-Wunused-function]
->
-> In fact the static const amdgpu_fw_attestation_debugfs_ops structure is
-> also unused here, but that warning is currently disabled.
->
-> Removing the #ifdef check does the right thing and leads to all of this
-> code to be dropped without warning.
->
-> Fixes: 19ae333001b3 ("drm/amdgpu: added support for psp fw attestation")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Done, http://kernel.montjoie.ovh/130490.log
 
-Applied.  Thanks!
+Aaargh. That overwrites everything while printing out that
+warning.
 
-Alex
+Can you please replace the debug patch with the one below and try again?
+That stops the trace right on the condition.
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_fw_attestation.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fw_attestation.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_fw_attestation.c
-> index e47bca1c7635..7c6e02e35573 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fw_attestation.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fw_attestation.c
-> @@ -130,7 +130,6 @@ static int amdgpu_is_fw_attestation_supported(struct amdgpu_device *adev)
->
->  void amdgpu_fw_attestation_debugfs_init(struct amdgpu_device *adev)
->  {
-> -#if defined(CONFIG_DEBUG_FS)
->         if (!amdgpu_is_fw_attestation_supported(adev))
->                 return;
->
-> @@ -139,5 +138,4 @@ void amdgpu_fw_attestation_debugfs_init(struct amdgpu_device *adev)
->                             adev_to_drm(adev)->primary->debugfs_root,
->                             adev,
->                             &amdgpu_fw_attestation_debugfs_ops);
-> -#endif
->  }
-> --
-> 2.27.0
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+Thanks,
+
+        tglx
+---
+diff --git a/mm/highmem.c b/mm/highmem.c
+index b49364a306b8..8f8862f79d23 100644
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -485,6 +485,7 @@ static inline bool kmap_high_unmap_local(unsigned long vaddr)
+ {
+ #ifdef ARCH_NEEDS_KMAP_HIGH_GET
+ 	if (vaddr >= PKMAP_ADDR(0) && vaddr < PKMAP_ADDR(LAST_PKMAP)) {
++		trace_printk("kunmap_high: %lx\n", vaddr);
+ 		kunmap_high(pte_page(pkmap_page_table[PKMAP_NR(vaddr)]));
+ 		return true;
+ 	}
+@@ -520,6 +521,7 @@ void *__kmap_local_pfn_prot(unsigned long pfn, pgprot_t prot)
+ 	preempt_disable();
+ 	idx = arch_kmap_local_map_idx(kmap_local_idx_push(), pfn);
+ 	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
++	trace_printk("kmap_local_pfn: %d %lx\n", idx, (unsigned long) vaddr);
+ 	BUG_ON(!pte_none(*(kmap_pte - idx)));
+ 	pteval = pfn_pte(pfn, prot);
+ 	set_pte_at(&init_mm, vaddr, kmap_pte - idx, pteval);
+@@ -545,8 +547,10 @@ void *__kmap_local_page_prot(struct page *page, pgprot_t prot)
+ 
+ 	/* Try kmap_high_get() if architecture has it enabled */
+ 	kmap = arch_kmap_local_high_get(page);
+-	if (kmap)
++	if (kmap) {
++		trace_printk("kmap_local_high_get: %lx\n", (unsigned long) kmap);
+ 		return kmap;
++	}
+ 
+ 	return __kmap_local_pfn_prot(page_to_pfn(page), prot);
+ }
+@@ -578,7 +582,11 @@ void kunmap_local_indexed(void *vaddr)
+ 
+ 	preempt_disable();
+ 	idx = arch_kmap_local_unmap_idx(kmap_local_idx(), addr);
+-	WARN_ON_ONCE(addr != __fix_to_virt(FIX_KMAP_BEGIN + idx));
++	trace_printk("kunmap_local: %i %lx\n", idx, (unsigned long) vaddr);
++	if (addr != __fix_to_virt(FIX_KMAP_BEGIN + idx)) {
++		tracing_off();
++		BUG();
++	}
+ 
+ 	arch_kmap_local_pre_unmap(addr);
+ 	pte_clear(&init_mm, addr, kmap_pte - idx);
+
