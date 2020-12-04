@@ -2,117 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D6A2CEC9A
+	by mail.lfdr.de (Postfix) with ESMTP id EEF542CEC9B
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387995AbgLDK5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 05:57:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
+        id S2388056AbgLDK6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 05:58:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387968AbgLDK5g (ORCPT
+        with ESMTP id S2387968AbgLDK6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 05:57:36 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B694CC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 02:56:49 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id s9so6070718ljo.11
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 02:56:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h/ulECtCSXzSKoxUaJ1QEkGElO9ZYt5/QA/JLrUZB0Y=;
-        b=lunNdgUHzHWml7dbzizMXhpNiyobkj7YqQ/iJjPQLBkh++DRMYVaU8RKprFK9gwEMj
-         UCFH/K+yw2BAwwBcZrUbWsE0z2jHCUhtSqbnXK55r3YcEnE6zZbUrCRK0YDfmS9d3sCG
-         Apti7sPF0OsUCK8+oIBqntSGHbz0QWVizsUaIkyf0iAC7CvJ7sm1a1qkNJomjw9bNffo
-         XRMmjnWkmhRFltdhAoqWSQ/bG/it3FWwSO9+2lryRgB0KR8jSePb1L+dn8zrg3INDFcw
-         lodZUXo0aHqleYah8Kl+2SVXCnKwpQKAcsWMGIPUXXhejPPbsmE7IXYqZxD0bSXXCqMZ
-         EnqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h/ulECtCSXzSKoxUaJ1QEkGElO9ZYt5/QA/JLrUZB0Y=;
-        b=NuXPOf0ha3wHeuV4Lm0NbDFGRRZvEPjhjbdZrXp++NppoTaEPsztOmjRr76zBC3jLt
-         J88h2aX0LsTMsrDeDHZ7UhTLucZq7uzvXZaT6kpiF2whognjtgVm7arc9b3oCYaLAFvh
-         A/XBb1DDcjlvZW/IT3XJkIybyn5GIGba5ZP1Z6WIp5aOMa9CIS8p4GsabuwceHDurYm5
-         lzVIcg3C7+OXHT/32L2C051LSMo2CQYxJcbYhKcZLEn7Wny0vMtorrIKz1lUSN6BEYI6
-         4/z8+PWHHUyh3sG90+THM1Uzj0gy4O7eb7ORXr1R60xqkQ4jV+obh4io8EIqe0q377RO
-         Ivrg==
-X-Gm-Message-State: AOAM530+FhROO9ug2iwoS8BKNN3KAcBOAADNvHN7cpvTG0VGpEEPmDRs
-        Kw9GS1nW1EevZ6G9n18CR40BwG5JCQbCLftoWRFD/w==
-X-Google-Smtp-Source: ABdhPJxiUW3QWdUlQDCH2peBDQGgU56OCiyZEL6Lh5Deq02R0gC4h377qhXEbuPmRcmASLokvURxNfUz+DixsrZ5W+A=
-X-Received: by 2002:a2e:b536:: with SMTP id z22mr3145836ljm.177.1607079407960;
- Fri, 04 Dec 2020 02:56:47 -0800 (PST)
+        Fri, 4 Dec 2020 05:58:12 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB556C061A54
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 02:56:53 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CnV5G5JtCz9sWP;
+        Fri,  4 Dec 2020 21:56:50 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1607079411;
+        bh=sE981+GdvNkIMZp6vrNdrmV1a1lR1GRVRUonAPEMia8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=L74eRVt4sW7Znta5a2ABIdr+qJRbBu3DFGXznuWnC7CEm+xnK8/oJLG4NtsZPhn8Q
+         J1+O35GAgkdws8ZFaSJJB1ANBCq5wT89DCiFce4YarMXKYA6znhXQZZEzTZwUcO32d
+         M5THBCdbQIg6NNyB8+uOMZT4I7FmY68x+j1L4aTKxQIgi4Gkb9HuKIj4KQ9HTivUru
+         NlEq1HBraTYc6PnQS+lEzvXqR5BClDM4cofr2IkFqDgZz9p0LBlBZcpkiBYErxV4UG
+         HyzhYlvVdlU3tfe4labwDy4TzXTxAM9V9psVnV8hvCtODh2wf+cDL2VUHMpNza6LcH
+         hJ8hl58g5wvbQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] powerpc/xmon: Change printk() to pr_cont()
+In-Reply-To: <c8a6ec704416ecd5ff2bd26213c9bc026bdd19de.1607077340.git.christophe.leroy@csgroup.eu>
+References: <c8a6ec704416ecd5ff2bd26213c9bc026bdd19de.1607077340.git.christophe.leroy@csgroup.eu>
+Date:   Fri, 04 Dec 2020 21:56:49 +1100
+Message-ID: <87h7p1vnym.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-References: <20201203141124.7391-1-mgorman@techsingularity.net>
- <20201203141124.7391-7-mgorman@techsingularity.net> <CAKfTPtDm880Rs7D1xUCQd_X9okqzhgrmCJVhwg90Rt3krq9ytg@mail.gmail.com>
- <20201203175204.GY3371@techsingularity.net>
-In-Reply-To: <20201203175204.GY3371@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 4 Dec 2020 11:56:36 +0100
-Message-ID: <CAKfTPtBGsXb0RqE_qs2miZGi_uax4VY1_8y1NGhQ17Q8mBx8dw@mail.gmail.com>
-Subject: Re: [PATCH 06/10] sched/fair: Clear the target CPU from the cpumask
- of CPUs searched
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 at 18:52, Mel Gorman <mgorman@techsingularity.net> wrote:
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Since some time now, printk() adds carriage return, leading to
+> unusable xmon output:
 >
-> On Thu, Dec 03, 2020 at 05:38:03PM +0100, Vincent Guittot wrote:
-> > On Thu, 3 Dec 2020 at 15:11, Mel Gorman <mgorman@techsingularity.net> wrote:
-> > >
-> > > The target CPU is definitely not idle in both select_idle_core and
-> > > select_idle_cpu. For select_idle_core(), the SMT is potentially
-> > > checked unnecessarily as the core is definitely not idle if the
-> > > target is busy. For select_idle_cpu(), the first CPU checked is
-> > > simply a waste.
-> >
-> > >
-> > > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> > > ---
-> > >  kernel/sched/fair.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > index 68dd9cd62fbd..1d8f5c4b4936 100644
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -6077,6 +6077,7 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
-> > >                 return -1;
-> > >
-> > >         cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> > > +       __cpumask_clear_cpu(target, cpus);
-> >
-> > should clear cpu_smt_mask(target) as we are sure that the core will not be idle
-> >
->
-> The intent was that the sibling might still be an idle candidate. In
-> the current draft of the series, I do not even clear this so that the
-> SMT sibling is considered as an idle candidate. The reasoning is that if
-> there are no idle cores then an SMT sibling of the target is as good an
-> idle CPU to select as any.
+> [   54.288722] sysrq: Entering xmon
+> [   54.292209] Vector: 0  at [cace3d2c]
+> [   54.292274]     pc:
+> [   54.292331] c0023650
 
-Isn't the purpose of select_idle_smt ?
+...
 
-select_idle_core() looks for an idle core and opportunistically saves
-an idle CPU candidate to skip select_idle_cpu. In this case this is
-useless loops for select_idle_core() because we are sure that the core
-is not idle
+> diff --git a/arch/powerpc/xmon/nonstdio.c b/arch/powerpc/xmon/nonstdio.c
+> index 5c1a50912229..9b0d85bff021 100644
+> --- a/arch/powerpc/xmon/nonstdio.c
+> +++ b/arch/powerpc/xmon/nonstdio.c
+> @@ -178,7 +178,7 @@ void xmon_printf(const char *format, ...)
+>  
+>  	if (n && rc == 0) {
+>  		/* No udbg hooks, fallback to printk() - dangerous */
+> -		printk("%s", xmon_outbuf);
+> +		pr_cont("%s", xmon_outbuf);
+>  	}
 
+Ah OK, in the case where there's no udbg backend. We basically always
+have a udbg backend on 64-bit, via hvc console. Which explains why we
+haven't noticed it.
 
->
-> --
-> Mel Gorman
-> SUSE Labs
+Will pick up the patch.
+
+cheers
