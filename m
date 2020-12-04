@@ -2,115 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7252CEF31
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7656D2CEF5B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388092AbgLDODD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:03:03 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:40584 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387411AbgLDODD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:03:03 -0500
-Received: by mail-lj1-f194.google.com with SMTP id y10so6726597ljc.7;
-        Fri, 04 Dec 2020 06:02:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SzMGLrWLNHR2uzHXkA7fVFrIiRthHhSpOA3S/SFE9xY=;
-        b=TzUjj/BpaZfivNUeAp7DAG1igfiRj5tHGg5seiN6pCpGZkRlVcT5ZFXJKVFoDwCwkk
-         6UxTkP5ZJd5zcAk075mbpjnP6tq0Fs992sdW8izzbu99pz/GSyksSXFGJAJPfJ+PktMq
-         094Y4l2Lh2Kb7WCvbnxdoDfASju6yGjA+/YBSMhPzPo/7oUjZNVXMNE7XiCUyvbmauO+
-         hEJVT5OSH5PiZBe7kA2WFirXvVbRI3pSDAKwvgQ8LA05SRNHg8uZIKh/85cHsyqInmY0
-         +RyTIu9efPdgQFJS9WqnB3PEVXqQNqYpeLxAEQ9VE1Uck4G93elfrnpz4Y/UxaMSX94J
-         l9cw==
-X-Gm-Message-State: AOAM530olr8BrLUT2/YkFKavRDKPF8JRFl5DTIJTBZotoFCRYpV6O19R
-        wf0bfSmxYEfufIs6jE2MfDc=
-X-Google-Smtp-Source: ABdhPJzinbl8W6GNnuh2d0iNrH45Uu5Od1aTjnKkRJ/b/Lo8Z2zvuOe5aiVnx94/T6QOmdOgJLSiFA==
-X-Received: by 2002:a2e:5853:: with SMTP id x19mr3739427ljd.232.1607090540012;
-        Fri, 04 Dec 2020 06:02:20 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id r141sm1684042lff.55.2020.12.04.06.02.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 06:02:19 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1klBfh-0004K0-Ao; Fri, 04 Dec 2020 15:02:53 +0100
-Date:   Fri, 4 Dec 2020 15:02:53 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Kurtz <djkurtz@chromium.org>,
-        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2 1/8] of: fix linker-section match-table corruption
-Message-ID: <X8pBjbZlbaWaOFxe@localhost>
-References: <20201123102319.8090-1-johan@kernel.org>
- <20201123102319.8090-2-johan@kernel.org>
+        id S1730001AbgLDOFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:05:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46334 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726775AbgLDOFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 09:05:30 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 04381AC75;
+        Fri,  4 Dec 2020 14:04:49 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id DBFD1DA7E3; Fri,  4 Dec 2020 15:03:14 +0100 (CET)
+Date:   Fri, 4 Dec 2020 15:03:14 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        kbuild-all@lists.01.org, linux-crypto@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Chris Mason <chris.mason@fusionio.com>,
+        Petr Malat <oss@malat.biz>
+Subject: Re: [PATCH v6 3/3] lib: zstd: Upgrade to latest upstream zstd
+ version 1.4.6
+Message-ID: <20201204140314.GS6430@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, kernel test robot <lkp@intel.com>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>, kbuild-all@lists.01.org,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Chris Mason <chris.mason@fusionio.com>, Petr Malat <oss@malat.biz>
+References: <20201202203242.1187898-4-nickrterrell@gmail.com>
+ <202012030743.Xg5AJ7Ms-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201123102319.8090-2-johan@kernel.org>
+In-Reply-To: <202012030743.Xg5AJ7Ms-lkp@intel.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rob,
+On Thu, Dec 03, 2020 at 07:58:16AM +0800, kernel test robot wrote:
+> All warnings (new ones prefixed by >>):
+> 
+>    lib/zstd/compress/zstd_double_fast.c: In function 'ZSTD_compressBlock_doubleFast_extDict_generic':
+> >> lib/zstd/compress/zstd_double_fast.c:501:1: warning: the frame size of 3724 bytes is larger than 1280 bytes [-Wframe-larger-than=]
 
-On Mon, Nov 23, 2020 at 11:23:12AM +0100, Johan Hovold wrote:
-> Specify type alignment when declaring linker-section match-table entries
-> to prevent gcc from increasing alignment and corrupting the various
-> tables with padding (e.g. timers, irqchips, clocks, reserved memory).
-> 
-> This is specifically needed on x86 where gcc (typically) aligns larger
-> objects like struct of_device_id with static extent on 32-byte
-> boundaries which at best prevents matching on anything but the first
-> entry. Specifying alignment when declaring variables suppresses this
-> optimisation.
-> 
-> Here's a 64-bit example where all entries are corrupt as 16 bytes of
-> padding has been inserted before the first entry:
-> 
-> 	ffffffff8266b4b0 D __clk_of_table
-> 	ffffffff8266b4c0 d __of_table_fixed_factor_clk
-> 	ffffffff8266b5a0 d __of_table_fixed_clk
-> 	ffffffff8266b680 d __clk_of_table_sentinel
-> 
-> And here's a 32-bit example where the 8-byte-aligned table happens to be
-> placed on a 32-byte boundary so that all but the first entry are corrupt
-> due to the 28 bytes of padding inserted between entries:
-> 
-> 	812b3ec0 D __irqchip_of_table
-> 	812b3ec0 d __of_table_irqchip1
-> 	812b3fa0 d __of_table_irqchip2
-> 	812b4080 d __of_table_irqchip3
-> 	812b4160 d irqchip_of_match_end
-> 
-> Verified on x86 using gcc-9.3 and gcc-4.9 (which uses 64-byte
-> alignment), and on arm using gcc-7.2.
-> 
-> Note that there are no in-tree users of these tables on x86 currently
-> (even if they are included in the image).
-> 
-> Fixes: 54196ccbe0ba ("of: consolidate linker section OF match table declarations")
-> Fixes: f6e916b82022 ("irqchip: add basic infrastructure")
-> Cc: stable <stable@vger.kernel.org>     # 3.9
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
+Frame size 3724?
 
-Could you pick this one up for 5.11?
+>    lib/zstd/compress/zstd_double_fast.c: In function 'ZSTD_compressBlock_doubleFast':
+>    lib/zstd/compress/zstd_double_fast.c:336:1: warning: the frame size of 3792 bytes is larger than 1280 bytes [-Wframe-larger-than=]
 
-Johan
+3792
+
+>    lib/zstd/compress/zstd_double_fast.c: In function 'ZSTD_compressBlock_doubleFast_dictMatchState':
+>    lib/zstd/compress/zstd_double_fast.c:356:1: warning: the frame size of 3808 bytes is larger than 1280 bytes [-Wframe-larger-than=]
+
+3808
+
+>    lib/zstd/compress/zstd_fast.c: In function 'ZSTD_compressBlock_fast_extDict_generic':
+> >> lib/zstd/compress/zstd_fast.c:476:1: warning: the frame size of 2736 bytes is larger than 1280 bytes [-Wframe-larger-than=]
+
+2736
+
+>    lib/zstd/compress/zstd_fast.c: In function 'ZSTD_compressBlock_fast':
+>    lib/zstd/compress/zstd_fast.c:204:1: warning: the frame size of 1508 bytes is larger than 1280 bytes [-Wframe-larger-than=]
+
+1508
+
+>    lib/zstd/compress/zstd_fast.c: In function 'ZSTD_compressBlock_fast_dictMatchState':
+>    lib/zstd/compress/zstd_fast.c:372:1: warning: the frame size of 1540 bytes is larger than 1280 bytes [-Wframe-larger-than=]
+
+1540
+
+For userspace code it's nothing but in kernel it's a lot for a single
+function. The largest number is almost one page, there were days where
+this would be one half of the whole stack space. We can't waste precious
+resources like that. Taking the userspace code as-is does not seem to
+work.
