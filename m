@@ -2,160 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 151762CF50D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 084592CF512
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730750AbgLDTuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 14:50:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgLDTuO (ORCPT
+        id S1730313AbgLDTwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 14:52:37 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:52540 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgLDTwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 14:50:14 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B89C0613D1;
-        Fri,  4 Dec 2020 11:49:34 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id r127so6474391yba.10;
-        Fri, 04 Dec 2020 11:49:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pssQqJTEr/Ao53PSUwAZTtCUTIw/MtZs2poGnWWmEvQ=;
-        b=rKVYiulm4ye94NeDnB1chEK1nEJW6PXd0XU8tAYC/JM0caYjEgStpWAWRvNNmCYpje
-         EJZlTVqjqy/9IWYXAK9C1m0vyO7lFZDd2tYHWYdSER/3xQ52OTctWc76zbUhiEdnW9+u
-         xJsbnVUKQyUZo3IrnSZvg3rx/xRrJc1TE1KffcuFFMeBB8w2mtpSo94Oh+nGEI6kY/Uc
-         r7JIraPTkOMg6G680hE6vOJ411uoEDOqm8vUWzBcgPbUFyYgJyE296gZWpzyOPOsPvFZ
-         /laFhfS/NO8zak52PYTFgOqr0azinXlRq34gihke+9OlrCqEQSRpPBToPwm0vD64QP/w
-         y5wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pssQqJTEr/Ao53PSUwAZTtCUTIw/MtZs2poGnWWmEvQ=;
-        b=NkBN4Fo1dttUm2d8nHaTi1vtw+xChV9W0TmhXY/bsD8eEqNq9DqN3WFzPYKDFHiDVY
-         mVj5D0BQk2MFK3pSkQzFSHb7khQBkX6hS1rI4Jl0v937Pb+n2+aHRq5HOISD1Fxq+qRH
-         HVHnUAMQl+TYxatgQL20NDp0o+hZVmGEOXfAcge8fllCVUkBFII2HCxg7gZl6VFij1KY
-         APLwB5SIBmKeFLpKzFIM30IeQ+7hMt4wJjLdeqAWcg0zYi0WKBIxG5Jgn8iaNH+kzzkx
-         ENLeilPX9USV9zzCwAdv3s/E4nw0Ic09Phz+a7600MKVeNaaq/LLSfnPw3yIo9jJo7MK
-         H6MQ==
-X-Gm-Message-State: AOAM532hhTNuaiUnO5IZ/VhsNTELAqwT4n5rLu2tVlz/tDIHTv+LR5Ha
-        4tPFToxXgXbTjWmwvO3p89UGxsBhnsIS6gjRzXQ=
-X-Google-Smtp-Source: ABdhPJyU0t4h3vajObpDIpV+KjlGvJ63K/IVH2FGE7oTHeNKDbbBdODQlH8VjyvkFDb/+IarElbRbQNdqKWUEcTOgA4=
-X-Received: by 2002:a25:6a05:: with SMTP id f5mr4586890ybc.459.1607111373812;
- Fri, 04 Dec 2020 11:49:33 -0800 (PST)
+        Fri, 4 Dec 2020 14:52:36 -0500
+Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 007FD20B717A;
+        Fri,  4 Dec 2020 11:51:54 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 007FD20B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607111515;
+        bh=G7z6+eqDNF88d0VTVTX4OeovJgnVfaV5qPN1UBMIJ7M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kbCB6zo2z3xvPOxVLURj0ipkYlhRyOdxeysqSKmLf+5m6n8Kl1djUwTIu8yPHTjR0
+         R0zrK+N7m6NPkFPoFjdEI3+Gyct1/vyqw5sl0ZG9hoec8MJgYNt3Ov+dAu9ugd5FLU
+         IeRR2NSbAMNU09t/kVasj/egUvkIoWyE+sf+brQc=
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+To:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
+        gregkh@linuxfoundation.org, james.morse@arm.com,
+        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, prsriva@linux.microsoft.com,
+        balajib@linux.microsoft.com
+Subject: [PATCH v10 0/8] Carry forward IMA measurement log on kexec on ARM64
+Date:   Fri,  4 Dec 2020 11:51:41 -0800
+Message-Id: <20201204195149.611-1-nramas@linux.microsoft.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201203160245.1014867-1-jackmanb@google.com> <20201203160245.1014867-14-jackmanb@google.com>
- <b629793c-fb9c-6ef5-e2d6-7acaf1d2fc7f@fb.com> <X8oFJW/mMFHVxngY@google.com> <6f008322-0b8f-223a-9148-ce9fee0810dc@fb.com>
-In-Reply-To: <6f008322-0b8f-223a-9148-ce9fee0810dc@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Dec 2020 11:49:22 -0800
-Message-ID: <CAEf4BzZHty17jLH7T-vDLGZftr077BUb9mSciX2Lt3Ofs4r7CQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 13/14] bpf: Add tests for new BPF atomic operations
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Brendan Jackman <jackmanb@google.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 7:29 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 12/4/20 1:45 AM, Brendan Jackman wrote:
-> > On Thu, Dec 03, 2020 at 11:06:31PM -0800, Yonghong Song wrote:
-> >> On 12/3/20 8:02 AM, Brendan Jackman wrote:
-> > [...]
-> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/atomics_test.c b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
-> >>> new file mode 100644
-> >>> index 000000000000..66f0ccf4f4ec
-> >>> --- /dev/null
-> >>> +++ b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
-> >>> @@ -0,0 +1,262 @@
-> >>> +// SPDX-License-Identifier: GPL-2.0
-> >>> +
-> >>> +#include <test_progs.h>
-> >>> +
-> >>> +
-> >>> +#include "atomics_test.skel.h"
-> >>> +
-> >>> +static struct atomics_test *setup(void)
-> >>> +{
-> >>> +   struct atomics_test *atomics_skel;
-> >>> +   __u32 duration = 0, err;
-> >>> +
-> >>> +   atomics_skel = atomics_test__open_and_load();
-> >>> +   if (CHECK(!atomics_skel, "atomics_skel_load", "atomics skeleton failed\n"))
-> >>> +           return NULL;
-> >>> +
-> >>> +   if (atomics_skel->data->skip_tests) {
-> >>> +           printf("%s:SKIP:no ENABLE_ATOMICS_TEST (missing Clang BPF atomics support)",
-> >>> +                  __func__);
-> >>> +           test__skip();
-> >>> +           goto err;
-> >>> +   }
-> >>> +
-> >>> +   err = atomics_test__attach(atomics_skel);
-> >>> +   if (CHECK(err, "atomics_attach", "atomics attach failed: %d\n", err))
-> >>> +           goto err;
-> >>> +
-> >>> +   return atomics_skel;
-> >>> +
-> >>> +err:
-> >>> +   atomics_test__destroy(atomics_skel);
-> >>> +   return NULL;
-> >>> +}
-> >>> +
-> >>> +static void test_add(void)
-> >>> +{
-> >>> +   struct atomics_test *atomics_skel;
-> >>> +   int err, prog_fd;
-> >>> +   __u32 duration = 0, retval;
-> >>> +
-> >>> +   atomics_skel = setup();
-> >>
-> >> When running the test, I observed a noticeable delay between skel load and
-> >> skel attach. The reason is the bpf program object file contains
-> >> multiple programs and the above setup() tries to do attachment
-> >> for ALL programs but actually below only "add" program is tested.
-> >> This will unnecessarily increase test_progs running time.
-> >>
-> >> The best is for setup() here only load and attach program "add".
-> >> The libbpf API bpf_program__set_autoload() can set a particular
-> >> program not autoload. You can call attach function explicitly
-> >> for one specific program. This should be able to reduce test
-> >> running time.
-> >
-> > Interesting, thanks a lot - I'll try this out next week. Maybe we can
-> > actually load all the progs once at the beginning (i.e. in
->
-> If you have subtest, people expects subtest can be individual runable.
-> This will complicate your logic.
->
-> > test_atomics_test) then attach/detch each prog individually as needed...
-> > Sorry, I haven't got much of a grip on libbpf yet.
->
-> One alternative is not to do subtests. There is nothing run to have
-> just one bpf program instead of many. This way, you load all and attach
-> once, then do all the test verification.
+On kexec file load Integrity Measurement Architecture (IMA) subsystem
+may verify the IMA signature of the kernel and initramfs, and measure
+it. The command line parameters passed to the kernel in the kexec call
+may also be measured by IMA. A remote attestation service can verify
+a TPM quote based on the TPM event log, the IMA measurement list, and
+the TPM PCR data. This can be achieved only if the IMA measurement log
+is carried over from the current kernel to the next kernel across
+the kexec call.
 
-I think subtests are good for debuggability, at least. But in this
-case it's very easy to achieve everything you've discussed:
+powerpc already supports carrying forward the IMA measurement log on
+kexec. This patch set adds support for carrying forward the IMA
+measurement log on kexec on ARM64. 
 
-1. do open() right there in test_atomics_test()  (btw, consider naming
-the test just "atomics" or "atomic_insns" or something, no need for
-test-test tautology)
-2. check if needs skipping, skip entire test
-3. if not skipping, load
-4. then pass the same instance of the skeleton to each subtest
-5. each subtest will
-  5a. bpf_prog__attach(skel->prog.my_specific_subtest_prog);
-  5b. trigger and do checks
-  5c. bpf_link__destroy(<link from 5a step>);
+This patch set moves the platform independent code defined for powerpc
+such that it can be reused for other platforms as well. A chosen node
+"linux,ima-kexec-buffer" is added to the DTB for ARM64 to hold
+the address and the size of the memory reserved to carry
+the IMA measurement log.
+
+This patch set has been tested for ARM64 platform using QEMU.
+I would like help from the community for testing this change on powerpc.
+Thanks.  
+
+This patch set is based on
+commit e87297fa080a ("Merge tag 'drm-fixes-2020-12-04' of git://anongit.freedesktop.org/drm/drm")
+in https://github.com/torvalds/linux "master" branch.
+
+Changelog:
+
+v10
+  - Moved delete_fdt_mem_rsv(), remove_ima_buffer(),
+    get_ima_kexec_buffer, and get_root_addr_size_cells()
+    to drivers/of/kexec.c
+  - Moved arch_ima_add_kexec_buffer() to
+    security/integrity/ima/ima_kexec.c
+  - Conditionally define IMA buffer fields in struct kimage_arch
+
+v9
+  - Moved delete_fdt_mem_rsv() to drivers/of/kexec_fdt.c
+  - Defined a new function get_ima_kexec_buffer() in
+    drivers/of/ima_kexec.c to replace do_get_kexec_buffer()
+  - Changed remove_ima_kexec_buffer() to the original function name
+    remove_ima_buffer()
+  - Moved remove_ima_buffer() to drivers/of/ima_kexec.c
+  - Moved ima_get_kexec_buffer() and ima_free_kexec_buffer()
+    to security/integrity/ima/ima_kexec.c
+
+v8:
+  - Moved remove_ima_kexec_buffer(), do_get_kexec_buffer(), and
+    delete_fdt_mem_rsv() to drivers/of/fdt.c
+  - Moved ima_dump_measurement_list() and ima_add_kexec_buffer()
+    back to security/integrity/ima/ima_kexec.c
+
+v7:
+  - Renamed remove_ima_buffer() to remove_ima_kexec_buffer() and moved
+    this function definition to kernel.
+  - Moved delete_fdt_mem_rsv() definition to kernel
+  - Moved ima_dump_measurement_list() and ima_add_kexec_buffer() to
+    a new file namely ima_kexec_fdt.c in IMA
+
+v6:
+  - Remove any existing FDT_PROP_IMA_KEXEC_BUFFER property in the device
+    tree and also its corresponding memory reservation in the currently
+    running kernel.
+  - Moved the function remove_ima_buffer() defined for powerpc to IMA
+    and renamed the function to ima_remove_kexec_buffer(). Also, moved
+    delete_fdt_mem_rsv() from powerpc to IMA.
+
+v5:
+  - Merged get_addr_size_cells() and do_get_kexec_buffer() into a single
+    function when moving the arch independent code from powerpc to IMA
+  - Reverted the change to use FDT functions in powerpc code and added
+    back the original code in get_addr_size_cells() and
+    do_get_kexec_buffer() for powerpc.
+  - Added fdt_add_mem_rsv() for ARM64 to reserve the memory for
+    the IMA log buffer during kexec.
+  - Fixed the warning reported by kernel test bot for ARM64
+    arch_ima_add_kexec_buffer() - moved this function to a new file
+    namely arch/arm64/kernel/ima_kexec.c
+
+v4:
+  - Submitting the patch series on behalf of the original author
+    Prakhar Srivastava <prsriva@linux.microsoft.com>
+  - Moved FDT_PROP_IMA_KEXEC_BUFFER ("linux,ima-kexec-buffer") to
+    libfdt.h so that it can be shared by multiple platforms.
+
+v3:
+Breakup patches further into separate patches.
+  - Refactoring non architecture specific code out of powerpc
+  - Update powerpc related code to use fdt functions
+  - Update IMA buffer read related code to use of functions
+  - Add support to store the memory information of the IMA
+    measurement logs to be carried forward.
+  - Update the property strings to align with documented nodes
+    https://github.com/devicetree-org/dt-schema/pull/46
+
+v2:
+  Break patches into separate patches.
+  - Powerpc related Refactoring
+  - Updating the docuemntation for chosen node
+  - Updating arm64 to support IMA buffer pass
+
+v1:
+  Refactoring carrying over IMA measuremnet logs over Kexec. This patch
+    moves the non-architecture specific code out of powerpc and adds to
+    security/ima.(Suggested by Thiago)
+  Add Documentation regarding the ima-kexec-buffer node in the chosen
+    node documentation
+
+v0:
+  Add a layer of abstraction to use the memory reserved by device tree
+    for ima buffer pass.
+  Add support for ima buffer pass using reserved memory for arm64 kexec.
+    Update the arch sepcific code path in kexec file load to store the
+    ima buffer in the reserved memory. The same reserved memory is read
+    on kexec or cold boot.
+
+Lakshmi Ramasubramanian (8):
+  powerpc: fix compiler warnings and errors
+  powerpc: Move delete_fdt_mem_rsv() to drivers/of/kexec.c
+  powerpc: Move ima buffer functions to drivers/of/kexec.c
+  powerpc: Use ima kexec node functions
+  powerpc: Move remove_ima_buffer() to drivers/of/kexec.c
+  powerpc: Move ima_get_kexec_buffer() and ima_free_kexec_buffer() to
+    ima
+  powerpc: Move arch_ima_add_kexec_buffer to ima
+  arm64: Add IMA log information in kimage used for kexec
+
+ arch/arm64/Kconfig                     |   1 +
+ arch/arm64/include/asm/ima.h           |  22 ++++
+ arch/arm64/include/asm/kexec.h         |   5 +
+ arch/arm64/kernel/Makefile             |   1 +
+ arch/arm64/kernel/ima.c                |  41 +++++++
+ arch/arm64/kernel/machine_kexec_file.c |   8 ++
+ arch/powerpc/include/asm/ima.h         |  14 +--
+ arch/powerpc/include/asm/kexec.h       |   1 -
+ arch/powerpc/kexec/Makefile            |   7 +-
+ arch/powerpc/kexec/file_load.c         |  32 -----
+ arch/powerpc/kexec/ima.c               | 137 +--------------------
+ drivers/of/Makefile                    |   1 +
+ drivers/of/kexec.c                     | 160 +++++++++++++++++++++++++
+ include/linux/kexec.h                  |   9 ++
+ security/integrity/ima/ima_kexec.c     |  73 +++++++++++
+ 15 files changed, 326 insertions(+), 186 deletions(-)
+ create mode 100644 arch/arm64/include/asm/ima.h
+ create mode 100644 arch/arm64/kernel/ima.c
+ create mode 100644 drivers/of/kexec.c
+
+-- 
+2.29.2
+
