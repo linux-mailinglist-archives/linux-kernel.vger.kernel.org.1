@@ -2,194 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB172CEB7D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:56:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBF52CEB81
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728787AbgLDJzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:55:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51542 "EHLO
+        id S1728279AbgLDJ4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:56:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbgLDJzi (ORCPT
+        with ESMTP id S1726014AbgLDJ4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:55:38 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4491DC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 01:54:58 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id v14so6858340lfo.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 01:54:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=W8F7nIfHFD15zJgSTuCi/95RE+49mBFthLKoPhgIDHs=;
-        b=qkg6snpedeMoymtyfHbpiDsdqKa7nJNpDSOvGRpY+Y/GVyYl++EGpkXUiLXanBjGNz
-         aVibN6cRp6dzCEJ3eAJQTKjyBMcJ6nLl3xm7PvTe44EDDfyVkGBgZMdTo70leGOA6OXb
-         siOtGlpDOfIGpLMsSMPLivA9SpC7Qs98cHVgZ1feOziNyNKKShlfUgNP8XCx0rbyGTaP
-         xJXNqfiP7uleOFyEW9ps7RExMevcNyTKwEt5AWL/tTd1IuabbBnNW1447XEEP+DIpwbH
-         tpaO5WdVufB6Wm5w03dRIQXQPSJ0yUqZDIlTZMuygupHb12SyJ1oWpGiJl/L7P60Y8QP
-         wsHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=W8F7nIfHFD15zJgSTuCi/95RE+49mBFthLKoPhgIDHs=;
-        b=r9prkrsWdMML1h+zZw8REOE7Z4x6EdTjv/MMDIOSm77j9m51coVkG1bg3cid1svGYe
-         jdGWimonywRS5uaHbrKO3aF+77LXmIiZKjMCFmgiUg1jQHP/7l5Sv6zMd0+t+Tn6oyma
-         +PC8zjxSRsm/eMTR/uLzts1jqVSWthyIquT3LQYTDe0FzSY9fEB8/syN4F8M2/+Oriwc
-         OF5v06eklFBUuyZEcdfJP8mSBGUTGQULcSBDBYYkEimEd3wb2rMS0OYb8ENnxFriYcba
-         TylN7rqws/Y7uVqd8tCBdxyFm9bFTePrdqVyMETvPZUKyvtbWDif9muJD7p9FY6M6IIj
-         YFsQ==
-X-Gm-Message-State: AOAM531IQ8YzRtILtotOdRBtRtMIu8olpgJ9er+g/QRZoWhrPgkI0uvz
-        APjDuqvWbgz0nVdxRl9njcJU2Eclj/MhsYm8amU=
-X-Google-Smtp-Source: ABdhPJxyb0vgnPCgHJj/qixMeERnq7+hyRY2JeOEI4o7On1lpvw0+hWUFGNtcpBcx0qSL7yXY6iUX7ahPVKdchIDnfI=
-X-Received: by 2002:a05:6512:3a6:: with SMTP id v6mr2825989lfp.90.1607075696750;
- Fri, 04 Dec 2020 01:54:56 -0800 (PST)
+        Fri, 4 Dec 2020 04:56:35 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E115C0613D1;
+        Fri,  4 Dec 2020 01:55:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=fJpuyRzV4I2KZjwbntRMc/ZkowAxvkPltOWKais1/1Q=; b=fTd7Mu/kSBVGaD6w9u7Fvsqo+V
+        M9Shk40I2efVqorSiw7l9oejHdQ7LtDJU8eh0zD5jNQupNJR7NNTvvPbfOtoNT/k28ckOelN6sbnI
+        NrIJLF5VCCpUf7xppKp0SbRRl19Cl9lPSLQLKWsn4lTa4WbLNncwA3LLiY43zGfUkL7M=;
+Received: from p200300ccff0a0b001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0a:b00:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kl7oZ-0003Z5-M9; Fri, 04 Dec 2020 10:55:47 +0100
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kl7oZ-0008GH-Dj; Fri, 04 Dec 2020 10:55:47 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     tony@atomide.com, ulf.hansson@linaro.org,
+        wsa+renesas@sang-engineering.com, dianders@chromium.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH] ARM: OMAP2+: omap_device: fix idling of devices during probe
+Date:   Fri,  4 Dec 2020 10:55:39 +0100
+Message-Id: <20201204095539.31705-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20201204072802.795397-1-daeho43@gmail.com> <680c5cbe-d570-b20d-f478-28acbefd8ef5@huawei.com>
- <CACOAw_xiW7ui-2g5LP8yR9kzUSg=MhGcFQ_09Aj-fYuOGZU4sA@mail.gmail.com>
-In-Reply-To: <CACOAw_xiW7ui-2g5LP8yR9kzUSg=MhGcFQ_09Aj-fYuOGZU4sA@mail.gmail.com>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Fri, 4 Dec 2020 18:54:45 +0900
-Message-ID: <CACOAw_xbVdYcjbOT176qLvQrUvGDhBd4J4Dh0v+G18OWkbdWrA@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix race of pending_pages in decompression
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As I told, this patch has a bug. Ignore this one. So, I'm implementing
-another one. :(
+On the GTA04A5 od->_driver_status was not set to BUS_NOTIFY_BIND_DRIVER
+during probe of the second mmc used for wifi. Therefore
+omap_device_late_idle idled the device during probing causing oopses when
+accessing the registers.
 
-2020=EB=85=84 12=EC=9B=94 4=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 6:50, D=
-aeho Jeong <daeho43@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> As I told, this patch has a bug. Ignore this one. So, I'm implementing an=
-other one. :(
->
->
-> 2020=EB=85=84 12=EC=9B=94 4=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 5:04,=
- Chao Yu <yuchao0@huawei.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->>
->> On 2020/12/4 15:28, Daeho Jeong wrote:
->> > From: Daeho Jeong <daehojeong@google.com>
->> >
->> > I found out f2fs_free_dic() is invoked in a wrong timing, but
->> > f2fs_verify_bio() still needed the dic info and it triggered the
->> > below kernel panic. It has been caused by the race condition of
->> > pending_pages value between decompression and verity logic, when
->> > the same compression cluster had been split in different bios.
->> > By split bios, f2fs_verify_bio() ended up with decreasing
->> > pending_pages value before it is reset to nr_cpages by
->> > f2fs_decompress_pages() and caused the kernel panic.
->> >
->> > [ 4416.564763] Unable to handle kernel NULL pointer dereference
->> >                 at virtual address 0000000000000000
->> > ...
->> > [ 4416.896016] Workqueue: fsverity_read_queue f2fs_verity_work
->> > [ 4416.908515] pc : fsverity_verify_page+0x20/0x78
->> > [ 4416.913721] lr : f2fs_verify_bio+0x11c/0x29c
->> > [ 4416.913722] sp : ffffffc019533cd0
->> > [ 4416.913723] x29: ffffffc019533cd0 x28: 0000000000000402
->> > [ 4416.913724] x27: 0000000000000001 x26: 0000000000000100
->> > [ 4416.913726] x25: 0000000000000001 x24: 0000000000000004
->> > [ 4416.913727] x23: 0000000000001000 x22: 0000000000000000
->> > [ 4416.913728] x21: 0000000000000000 x20: ffffffff2076f9c0
->> > [ 4416.913729] x19: ffffffff2076f9c0 x18: ffffff8a32380c30
->> > [ 4416.913731] x17: ffffffc01f966d97 x16: 0000000000000298
->> > [ 4416.913732] x15: 0000000000000000 x14: 0000000000000000
->> > [ 4416.913733] x13: f074faec89ffffff x12: 0000000000000000
->> > [ 4416.913734] x11: 0000000000001000 x10: 0000000000001000
->> > [ 4416.929176] x9 : ffffffff20d1f5c7 x8 : 0000000000000000
->> > [ 4416.929178] x7 : 626d7464ff286b6b x6 : ffffffc019533ade
->> > [ 4416.929179] x5 : 000000008049000e x4 : ffffffff2793e9e0
->> > [ 4416.929180] x3 : 000000008049000e x2 : ffffff89ecfa74d0
->> > [ 4416.929181] x1 : 0000000000000c40 x0 : ffffffff2076f9c0
->> > [ 4416.929184] Call trace:
->> > [ 4416.929187]  fsverity_verify_page+0x20/0x78
->> > [ 4416.929189]  f2fs_verify_bio+0x11c/0x29c
->> > [ 4416.929192]  f2fs_verity_work+0x58/0x84
->> > [ 4417.050667]  process_one_work+0x270/0x47c
->> > [ 4417.055354]  worker_thread+0x27c/0x4d8
->> > [ 4417.059784]  kthread+0x13c/0x320
->> > [ 4417.063693]  ret_from_fork+0x10/0x18
->> >
->> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
->> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->> > ---
->> > v2: merged verity_pages with pending_pages, and increased the
->> >      pending_pages count only if STEP_VERITY is set on bio
->> > ---
->> >   fs/f2fs/compress.c | 2 --
->> >   fs/f2fs/data.c     | 2 ++
->> >   fs/f2fs/f2fs.h     | 2 +-
->> >   3 files changed, 3 insertions(+), 3 deletions(-)
->> >
->> > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->> > index 87090da8693d..832b19986caf 100644
->> > --- a/fs/f2fs/compress.c
->> > +++ b/fs/f2fs/compress.c
->> > @@ -803,8 +803,6 @@ void f2fs_decompress_pages(struct bio *bio, struct=
- page *page, bool verity)
->> >       if (cops->destroy_decompress_ctx)
->> >               cops->destroy_decompress_ctx(dic);
->> >   out_free_dic:
->> > -     if (verity)
->> > -             atomic_set(&dic->pending_pages, dic->nr_cpages);
->> >       if (!verity)
->> >               f2fs_decompress_end_io(dic->rpages, dic->cluster_size,
->> >                                                               ret, fal=
-se);
->> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->> > index 42254d3859c7..b825d63cabdd 100644
->> > --- a/fs/f2fs/data.c
->> > +++ b/fs/f2fs/data.c
->> > @@ -2290,6 +2290,8 @@ int f2fs_read_multi_pages(struct compress_ctx *c=
-c, struct bio **bio_ret,
->> >               ctx =3D bio->bi_private;
->> >               if (!(ctx->enabled_steps & (1 << STEP_DECOMPRESS)))
->> >                       ctx->enabled_steps |=3D 1 << STEP_DECOMPRESS;
->> > +             if (ctx->enabled_steps & (1 << STEP_VERITY))
->> > +                     atomic_inc(&dic->pending_pages);
->>
->> Hmm.. have a glance at this, then f2fs_decompress_pages() will always re=
-turn due
->> to atomic_dec_return() is true? then f2fs_do_decompress_pages() will nev=
-er be
->> called?
->>
->> atomic_inc(dic->verity_pages) here and atomic_dec(dic->verity_pages) in
->> f2fs_verify_bio()?
->>
->>         if (atomic_dec_return(dic->verity_pages))
->>                 continue;
->>
->> Thanks,
->>
->> >
->> >               inc_page_count(sbi, F2FS_RD_DATA);
->> >               f2fs_update_iostat(sbi, FS_DATA_READ_IO, F2FS_BLKSIZE);
->> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->> > index 94d16bde5e24..a9ee7921c7ec 100644
->> > --- a/fs/f2fs/f2fs.h
->> > +++ b/fs/f2fs/f2fs.h
->> > @@ -1340,7 +1340,7 @@ struct decompress_io_ctx {
->> >       struct compress_data *cbuf;     /* virtual mapped address on cpa=
-ges */
->> >       size_t rlen;                    /* valid data length in rbuf */
->> >       size_t clen;                    /* valid data length in cbuf */
->> > -     atomic_t pending_pages;         /* in-flight compressed page cou=
-nt */
->> > +     atomic_t pending_pages;         /* in-flight compressed + verity=
- page count */
->> >       bool failed;                    /* indicate IO error during deco=
-mpression */
->> >       void *private;                  /* payload buffer for specified =
-decompression algorithm */
->> >       void *private2;                 /* extra payload buffer */
->> >
+It was not set because od->_state was set to OMAP_DEVICE_STATE_IDLE
+in the notifier callback. Therefore set od->_driver_status also in that
+case.
+
+This came apparent after
+commit 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4")
+causing this oops:
+
+[    3.179534] omap_hsmmc 480b4000.mmc: omap_device_late_idle: enabled but no driver.  Idling
+[    3.265594] 8<--- cut here ---
+[    3.268707] Unhandled fault: external abort on non-linefetch (0x1028) at 0xfa0b402c
+[    3.276397] pgd = (ptrval)
+[    3.279144] [fa0b402c] *pgd=48011452(bad)
+[    3.283203] Internal error: : 1028 [#1] SMP ARM
+[    3.287750] Modules linked in:
+[    3.290832] CPU: 0 PID: 7 Comm: kworker/u2:0 Not tainted 5.10.0-rc6 #3
+[    3.297393] Hardware name: Generic OMAP36xx (Flattened Device Tree)
+[    3.303710] Workqueue: events_unbound async_run_entry_fn
+[    3.309082] PC is at omap_hsmmc_set_bus_width+0x8/0x78
+[    3.314239] LR is at omap_hsmmc_set_ios+0x11c/0x258
+[    3.319152] pc : [<c079787c>]    lr : [<c07996bc>]    psr: 20000013
+[    3.325469] sp : c10f9e00  ip : c175c800  fp : 00000066
+[    3.330718] r10: c175cb80  r9 : fa0b4000  r8 : 00000000
+[    3.335968] r7 : c123e010  r6 : c175ca58  r5 : c175cb80  r4 : c175c800
+[    3.342529] r3 : 00000001  r2 : 58ad940c  r1 : fa0b4000  r0 : c175cb80
+[    3.349090] Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+[    3.356262] Control: 10c5387d  Table: 80004019  DAC: 00000051
+[    3.362030] Process kworker/u2:0 (pid: 7, stack limit = 0x(ptrval))
+[    3.368347] Stack: (0xc10f9e00 to 0xc10fa000)
+[    3.372741] 9e00: c175c800 00000007 c123e000 c123e010 00000000 c077b2b0 c175c800 00000000
+[    3.380950] 9e20: c123e000 c077c14c c175c800 c077d284 c175c800 c175c800 c123e000 c0799190
+[    3.389190] 9e40: 00000000 c1755040 c175cb80 00000000 c123fd68 58ad940c 00000001 c123e010
+[    3.397430] 9e60: 00000000 c0edaec8 00000000 00000000 c0edaec8 00000006 ffffe000 c0666728
+[    3.405639] 9e80: c123e010 c0f38c28 c0f38c30 00000000 00000000 c066457c c123e010 c0edaec8
+[    3.413879] 9ea0: c06649bc c0e051c8 00000000 00000000 c0efa4a0 c06648b8 00000000 c10f9ef4
+[    3.422119] 9ec0: c06649bc c066298c 00000000 c1039e6c c1653738 58ad940c c123e010 c123e010
+[    3.430328] 9ee0: c0e051c8 c123e054 c100f000 c0663e60 c0e03d00 c123e010 00010101 58ad940c
+[    3.438568] 9f00: c12642d0 c0f02018 c12642c0 c015da48 c12642d0 c10bbf00 c1009400 c100f000
+[    3.446807] 9f20: 00000000 c0153b74 c10bc800 c1009400 00000088 c10bbf00 c10bbf14 c1009400
+[    3.455017] 9f40: 00000088 c1009418 c0e03d00 c1009400 ffffe000 c0153eec ffffe000 00000000
+[    3.463256] 9f60: c10bbf00 00000000 c10b1ac0 c10b1c40 c10f8000 c0153ec0 c10bbf00 c10ebe94
+[    3.471466] 9f80: c10b1ae4 c015a9ac 00000001 c10b1c40 c015a87c 00000000 00000000 00000000
+[    3.479705] 9fa0: 00000000 00000000 00000000 c0100168 00000000 00000000 00000000 00000000
+[    3.487945] 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[    3.496154] 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+[    3.504394] [<c079787c>] (omap_hsmmc_set_bus_width) from [<c07996bc>] (omap_hsmmc_set_ios+0x11c/0x258)
+[    3.513763] [<c07996bc>] (omap_hsmmc_set_ios) from [<c077b2b0>] (mmc_power_up.part.8+0x3c/0xd0)
+[    3.522521] [<c077b2b0>] (mmc_power_up.part.8) from [<c077c14c>] (mmc_start_host+0x88/0x9c)
+[    3.530944] [<c077c14c>] (mmc_start_host) from [<c077d284>] (mmc_add_host+0x58/0x84)
+[    3.538726] [<c077d284>] (mmc_add_host) from [<c0799190>] (omap_hsmmc_probe+0x5fc/0x8c0)
+[    3.546874] [<c0799190>] (omap_hsmmc_probe) from [<c0666728>] (platform_drv_probe+0x48/0x98)
+[    3.555358] [<c0666728>] (platform_drv_probe) from [<c066457c>] (really_probe+0x1dc/0x3b4)
+[    3.563690] [<c066457c>] (really_probe) from [<c06648b8>] (driver_probe_device+0x58/0xb4)
+[    3.571929] [<c06648b8>] (driver_probe_device) from [<c066298c>] (bus_for_each_drv+0x7c/0xc4)
+[    3.580505] [<c066298c>] (bus_for_each_drv) from [<c0663e60>] (__device_attach_async_helper+0xa4/0xd8)
+[    3.589874] [<c0663e60>] (__device_attach_async_helper) from [<c015da48>] (async_run_entry_fn+0x3c/0x1)
+[    3.599487] [<c015da48>] (async_run_entry_fn) from [<c0153b74>] (process_one_work+0x228/0x574)
+[    3.608154] [<c0153b74>] (process_one_work) from [<c0153eec>] (worker_thread+0x2c/0x5d0)
+[    3.616302] [<c0153eec>] (worker_thread) from [<c015a9ac>] (kthread+0x130/0x144)
+[    3.623748] [<c015a9ac>] (kthread) from [<c0100168>] (ret_from_fork+0x14/0x2c)
+
+Fixes: 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4")
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+---
+ arch/arm/mach-omap2/omap_device.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/omap_device.c b/arch/arm/mach-omap2/omap_device.c
+index fc7bb2ca1672..13adf88d472b 100644
+--- a/arch/arm/mach-omap2/omap_device.c
++++ b/arch/arm/mach-omap2/omap_device.c
+@@ -230,10 +230,12 @@ static int _omap_device_notifier_call(struct notifier_block *nb,
+ 		break;
+ 	case BUS_NOTIFY_BIND_DRIVER:
+ 		od = to_omap_device(pdev);
+-		if (od && (od->_state == OMAP_DEVICE_STATE_ENABLED) &&
+-		    pm_runtime_status_suspended(dev)) {
++		if (od) {
+ 			od->_driver_status = BUS_NOTIFY_BIND_DRIVER;
+-			pm_runtime_set_active(dev);
++			if ((od->_state == OMAP_DEVICE_STATE_ENABLED) &&
++			    pm_runtime_status_suspended(dev)) {
++				pm_runtime_set_active(dev);
++			}
+ 		}
+ 		break;
+ 	case BUS_NOTIFY_ADD_DEVICE:
+-- 
+2.20.1
+
