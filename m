@@ -2,85 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BBB2CF47F
+	by mail.lfdr.de (Postfix) with ESMTP id B2C732CF480
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729003AbgLDTEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 14:04:23 -0500
-Received: from www62.your-server.de ([213.133.104.62]:56666 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgLDTEX (ORCPT
+        id S1729779AbgLDTEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 14:04:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgLDTEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 14:04:23 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1klGMn-0000ZR-Iz; Fri, 04 Dec 2020 20:03:41 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1klGMn-000D50-Cp; Fri, 04 Dec 2020 20:03:41 +0100
-Subject: Re: [PATCH bpf-next v2 1/3] bpf: Expose bpf_get_socket_cookie to
- tracing programs
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Florent Revest <revest@chromium.org>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, andrii@kernel.org, kpsingh@chromium.org,
-        revest@google.com, linux-kernel@vger.kernel.org
-References: <20201203213330.1657666-1-revest@google.com>
- <bdd7153b-4bf9-12dd-5950-df0ebe91659d@iogearbox.net>
-Message-ID: <7c70a64f-1aba-0e11-983d-9338f25a367e@iogearbox.net>
-Date:   Fri, 4 Dec 2020 20:03:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Fri, 4 Dec 2020 14:04:44 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A9BC061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 11:04:04 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id v22so6924373edt.9
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 11:04:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=MqRGZy01kstwz9ClfAxBNg8au7mjb5Di2jtSuxAThnw=;
+        b=cKh7YAPyiW5dF2YKcQ6YErWfHBKONF7uMnPY9TYmHN7gPmV7kfqvsO4K0lg++uClO4
+         /NKlA32KStz5R5xgk/EmX5yO3AeBxOVahoO7Cr/jlnA8KqQqzxvURXxN06PLGzr6WMff
+         onAd2r/QLhG3fZ+UTnXB7iwVosDOUPxQfGz4C8bJhE2yN1OhePi+9XpIiqRjOES4G6Us
+         PH6bCU13CsY7mDMvTvYQ/b13hFDg5UwUmsOMVIFCogK/Kz+7mHZ64tLeW9PR81vJ+une
+         J/od/fTCV8y1bBhUuty/kWa4a3dAtkQmR1L+3v7h8E1Ampsvk9MEVlznXOkGJ/x6L0eQ
+         FnYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=MqRGZy01kstwz9ClfAxBNg8au7mjb5Di2jtSuxAThnw=;
+        b=t6C2WUfuSnDDs4zQ2SGTVF22pMZP3CTrjlyHa2wnnB9S34QOoblj6hJLMwSUcGsc4m
+         lz6+gsNr8w1kk/1IrN4Nsaq+66+F3noV1LWZBVKdECAQyvphoaY+y67XvSVr8ui22Ea3
+         6gvDNJ4Ow69eTHs9Xg1+pAT7EAnlUpi+BbWIXGPdB7u+eEb5Et7emufXPrpapgsrB5P5
+         pOkiNxXC5LPYrgwDBZX/93VYgjW97kw6xAdkpCq19fTdCA6sU7QHG5JkCATtgs77xP7p
+         tXS82Es21cUo5QNsVKd05JE5oKxKTRHnF7xgAwh7beo9wdC219cJe84/krW1gi7I2fQT
+         nkgw==
+X-Gm-Message-State: AOAM533lssEkLk/jRS4aFlDCdfPY+4GBgjPrwBVKGKD0/ViMIZVAbB3O
+        7xcJQPt8pKxJSHrotDWnzetW3SdJJH7hSW76uSAuzC9eCJOYRT64
+X-Google-Smtp-Source: ABdhPJwhhMhsQr+VWTK66ALmYBtYgDGk3593gFW7FRQCJRH8kC4J57TPK3zbqIHhm1yF098qCGo9CPVlPYN9XjZIZrQ=
+X-Received: by 2002:aa7:da8f:: with SMTP id q15mr8904092eds.239.1607108642178;
+ Fri, 04 Dec 2020 11:04:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <bdd7153b-4bf9-12dd-5950-df0ebe91659d@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26007/Thu Dec  3 14:13:31 2020)
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 5 Dec 2020 00:33:51 +0530
+Message-ID: <CA+G9fYsHo-9tmxCKGticDowF8e3d1RkcLamapOgMQqeP6OdEEg@mail.gmail.com>
+Subject: BUG: KCSAN: data-race in tick_nohz_next_event / tick_nohz_stop_tick
+To:     open list <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        lkft-triage@lists.linaro.org
+Cc:     Marco Elver <elver@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, fweisbec@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/4/20 7:56 PM, Daniel Borkmann wrote:
-> On 12/3/20 10:33 PM, Florent Revest wrote:
->> This creates a new helper proto because the existing
->> bpf_get_socket_cookie_sock_proto has a ARG_PTR_TO_CTX argument and only
->> works for BPF programs where the context is a sock.
->>
->> This helper could also be useful to other BPF program types such as LSM.
->>
->> Signed-off-by: Florent Revest <revest@google.com>
->> ---
->>   include/uapi/linux/bpf.h       | 7 +++++++
->>   kernel/trace/bpf_trace.c       | 4 ++++
->>   net/core/filter.c              | 7 +++++++
->>   tools/include/uapi/linux/bpf.h | 7 +++++++
->>   4 files changed, 25 insertions(+)
->>
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index c3458ec1f30a..3e0e33c43998 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -1662,6 +1662,13 @@ union bpf_attr {
->>    *     Return
->>    *         A 8-byte long non-decreasing number.
->>    *
->> + * u64 bpf_get_socket_cookie(void *sk)
->> + *     Description
->> + *         Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
->> + *         *sk*, but gets socket from a BTF **struct sock**.
->> + *     Return
->> + *         A 8-byte long non-decreasing number.
-> 
-> I would not mention this here since it's not fully correct and we should avoid users
-> taking non-decreasing granted in their progs. The only assumption you can make is
-> that it can be considered a unique number. See also [0] with reverse counter..
-> 
->    [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=92acdc58ab11af66fcaef485433fde61b5e32fac
+LKFT started testing KCSAN enabled kernel from the linux next tree.
+Here we have found BUG: KCSAN: data-race in tick_nohz_next_event /
+tick_nohz_stop_tick
 
-One more thought, in case you plan to use this from sleepable context, you would
-need to use sock_gen_cookie() variant in the BPF helper instead.
+This report is from an x86_64 machine clang-11 linux next 20201201.
+Since we are running for the first time we do not call this regression.
+
+[   47.811425] BUG: KCSAN: data-race in tick_nohz_next_event /
+tick_nohz_stop_tick
+[   47.818738]
+[   47.820239] write to 0xffffffffa4cbe920 of 4 bytes by task 0 on cpu 2:
+[   47.826766]  tick_nohz_stop_tick+0x8b/0x310
+[   47.830951]  tick_nohz_idle_stop_tick+0xcb/0x170
+[   47.835571]  do_idle+0x193/0x250
+[   47.838804]  cpu_startup_entry+0x25/0x30
+[   47.842728]  start_secondary+0xa0/0xb0
+[   47.846482]  secondary_startup_64_no_verify+0xc2/0xcb
+[   47.851531]
+[   47.853034] read to 0xffffffffa4cbe920 of 4 bytes by task 0 on cpu 3:
+[   47.859473]  tick_nohz_next_event+0x165/0x1e0
+[   47.863831]  tick_nohz_get_sleep_length+0x94/0xd0
+[   47.868539]  menu_select+0x250/0xac0
+[   47.872116]  cpuidle_select+0x47/0x50
+[   47.875781]  do_idle+0x17c/0x250
+[   47.879015]  cpu_startup_entry+0x25/0x30
+[   47.882942]  start_secondary+0xa0/0xb0
+[   47.886694]  secondary_startup_64_no_verify+0xc2/0xcb
+[   47.891743]
+[   47.893234] Reported by Kernel Concurrency Sanitizer on:
+[   47.898541] CPU: 3 PID: 0 Comm: swapper/3 Not tainted
+5.10.0-rc6-next-20201201 #2
+[   47.906017] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+2.2 05/23/2018
+
+metadata:
+    git_repo: https://gitlab.com/aroxell/lkft-linux-next
+    target_arch: x86
+    toolchain: clang-11
+    git_describe: next-20201201
+    download_url: https://builds.tuxbuild.com/1l8eiWgGMi6W4aDobjAAlOleFVl/
+
+Full test log link,
+https://lkft.validation.linaro.org/scheduler/job/2002643#L2019
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
