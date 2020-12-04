@@ -2,98 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41322CEF96
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:16:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 420F82CEF99
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729606AbgLDOP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:15:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726312AbgLDOP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:15:26 -0500
-X-Gm-Message-State: AOAM530QWWos4qFgidJVkJPJM1dSfwJ3T/l3OVvvWOreCiO82c3NfMNh
-        GcuWhc8cHjTOzaKi3KwxENNqXSmZ6mTfkvkNfVU=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607091286;
-        bh=tIDO5wu/h3iugtm6EuT3IRty5Sei5IsCyw0gw/9uM+A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Z3/sbcYVvUTJhWMSd3RYaU/IetceyoHh8ACdVYKbFy5NldapW4wpCViXJZ/YUYB8n
-         Qq1dpciIgustxCId64mgd/El0x6cxxRZrdl+dtocwQLTB1+mK5Yx6/GKFj8La1ID3Q
-         rMODFaN56hG8zvZ0QzVISrqZtl2s9Sc+SMgucZyZHU6xJDUyigSA8ATxdvd3oVao5l
-         C0KLe1iq06GClkP5k/R/SkU4340LLAGK/3wl2Rbn63wnAAvPWnCXdYEcLx1hk/U165
-         mQCZNHGeFfssOVzv7plny26VNZfzxBdxlFq4wRhBCXJkXq+5KbMI9rHInJLteqEKfj
-         x+5uCHJphKxaw==
-X-Google-Smtp-Source: ABdhPJwxym/mU9bR1admW/kOH0JVRSYw6YjCWCAcHxsvuVRLLDVdF2nlbFSj4oIRatquO+QNtEj4N/04EluuruTGCBQ=
-X-Received: by 2002:a9d:6317:: with SMTP id q23mr3785791otk.251.1607091285516;
- Fri, 04 Dec 2020 06:14:45 -0800 (PST)
+        id S1730314AbgLDOPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:15:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726312AbgLDOPd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 09:15:33 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47697C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:14:47 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id k4so3948125qtj.10
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:14:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S84fLM5R0eFjhFKwNgg6t4YhV/zLIcH5ndZplGJKCzk=;
+        b=FP5hEdFsRSIYWxa3GBQxUIGiNfZW+RsNpvHY7m/q1DyyPbkND79VQBJWckEaVPjjZX
+         sjVd87SJ9MmGox3RADjhpP0A/HOIdjZx5PlqGuF/leZGa8Bw/hx86RIAxlUTGGNwb27a
+         +D1UO8CRuCEHwqrUcs06O+mIP/Kl1f80FHBxnrnHZSHst9PPcCCW59+3D2WWaRDpvh7q
+         dZcTkLPX5qwzBiYsuGZ/FQZBVeSfSHPNXckqXqUBtVGXF1hLAeYjzKbam9vXszZKt3Mi
+         WFbamiWmqxuepukArl5+g2yCh1igyXRSe/T9bOtldmrgSxp+/gqwTn231YA/o7PBoBCl
+         5cPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S84fLM5R0eFjhFKwNgg6t4YhV/zLIcH5ndZplGJKCzk=;
+        b=ulKWHNO9Q2ulQVXHl47z29d/qbuDhGPM+DcQvKyxiPlrN050mtPGvOeSk9ocAL5Ns5
+         jsI2X+h6N4le+NoUce0+vdUWjKmYV79amJgKdIBLBogzOjzXNwptf2yuRSTIwm5TGrvJ
+         +w2E4DAsE6VwAZAtQcqFjVlKKWdRNUuGHG1LuHZs5gwyFYFJxrZrYAvo74V6s07fcLwa
+         sCwGBaQHFUGOiORNT07RCcDs8CQ/5ABEBdN08H5Bfy2G3kjag6sCCrX3ZAqF5LBwotHW
+         qf6JSgVlk9SM2NrB5m0WCdgNy2SY1R1IWodpVYJq0ps3pG6l1QvMkVjQTjvExjIdd3J4
+         atmA==
+X-Gm-Message-State: AOAM533i2aXfvK98HJnKtDECOkszCLCfcYFLH6SQKdceCCqUbNOfTakr
+        KoY+g2ORdk1ohLLRxSsIPJXFXVDTbKzF2EMRO2D/Hw==
+X-Google-Smtp-Source: ABdhPJwdyeC4GEux7iJupu+IbCVt8JIddUtBx9AF0hehts+m24vl3ICE698dbMxZN1MoyOrNL7phD3GbsGer4ueulyg=
+X-Received: by 2002:ac8:6b9a:: with SMTP id z26mr9626192qts.200.1607091286490;
+ Fri, 04 Dec 2020 06:14:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20201203222922.1067522-1-arnd@kernel.org> <CAPDyKFqtFYqc8i_fVzOUnuZGJjtwjVLqE-vebtOKuYJ-4PrDBg@mail.gmail.com>
-In-Reply-To: <CAPDyKFqtFYqc8i_fVzOUnuZGJjtwjVLqE-vebtOKuYJ-4PrDBg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 4 Dec 2020 15:14:29 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com>
-Message-ID: <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mediatek: mark PM functions as __maybe_unused
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
-        yong mao <yong.mao@mediatek.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+References: <20201119140850.12268-1-grzegorz.jaszczyk@linaro.org>
+ <20201119140850.12268-7-grzegorz.jaszczyk@linaro.org> <20201203185332.GC1392978@xps15>
+In-Reply-To: <20201203185332.GC1392978@xps15>
+From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Date:   Fri, 4 Dec 2020 15:14:35 +0100
+Message-ID: <CAMxfBF5xaBd2Dm9fpJD+eS_x2Q9-5Ub6iHTRetgt9Ce8vZChqQ@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] remoteproc/pru: Add support for various PRU cores
+ on K3 J721E SoCs
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Ohad Ben Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Anna, Suman" <s-anna@ti.com>, linux-remoteproc@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "Bajjuri, Praneeth" <praneeth@ti.com>,
+        Roger Quadros <rogerq@ti.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 11:02 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> On Thu, 3 Dec 2020 at 23:29, Arnd Bergmann <arnd@kernel.org> wrote:
+Hi Mathieu,
 
-> > -#ifdef CONFIG_PM
-> >  static void msdc_save_reg(struct msdc_host *host)
+On Thu, 3 Dec 2020 at 19:53, Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
 >
-> Shouldn't msdc_save|restore_reg() be turned into "__maybe_unused" as well?
-
-There is no need since the compiler can figure that out already when there
-is a reference to the function from dead code.
-
+> On Thu, Nov 19, 2020 at 03:08:50PM +0100, Grzegorz Jaszczyk wrote:
+> > From: Suman Anna <s-anna@ti.com>
 > >
-> > -static int msdc_resume(struct device *dev)
-> > +static int __maybe_unused msdc_resume(struct device *dev)
-> >  {
-> >         return pm_runtime_force_resume(dev);
-> >  }
-> > -#endif
+> > The K3 J721E family of SoCs have a revised version of the AM65x ICSSG IP
+> > and contains two instances of this newer ICSSG IP. Each ICSSG processor
+> > subsystem contains 2 primary PRU cores, 2 auxiliary PRU cores called RTUs,
+> > and 2 new auxiliary cores called Transmit PRUs (Tx_PRUs).
 > >
-> >  static const struct dev_pm_ops msdc_dev_pm_ops = {
+> > Enhance the existing PRU remoteproc driver to support these new PRU
+> > and RTU cores by using specific compatibles. The cores have the same
+> > memory copying limitations as on AM65x, so reuses the custom memcpy
+> > function within the driver's ELF loader implementation. The initial
+> > names for the firmware images for each PRU core are retrieved from
+> > DT nodes, and can be adjusted through sysfs if required.
+> >
+> > Signed-off-by: Suman Anna <s-anna@ti.com>
+> > Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+> > Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
 >
-> You may also change this to a __maybe_unused, as long as you also
-> assign the .pm pointer in the mt_msdc_driver with
-> pm_ptr(&msdc_dev_pm_ops).
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+Thank you for all your review,
+Grzegorz
+
 >
-> Ideally the compiler should drop these functions/datas entirely then.
-
-I don't see a lot of other instances of that yet, and it's fairly new.
-Maybe we should fix it before it gets propagated further.
-
-I would suggest we redefine pm_ptr like
-
-#define pm_ptr(_ptr) (IS_ENABLED(CONFIG_PM) ? (_ptr) : NULL)
-
-and remove the __maybe_unused annotations on those that we
-already have. This also has the effect of dropping the unused
-data from the object, but without having to an an #ifdef or
-__maybe_unused.
-
-Adding Paul and Rafael to Cc for clarification on this.
-
-       Arnd
+> > ---
+> >  drivers/remoteproc/pru_rproc.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
+> > index 48c1c51e0d42..96f689283a8b 100644
+> > --- a/drivers/remoteproc/pru_rproc.c
+> > +++ b/drivers/remoteproc/pru_rproc.c
+> > @@ -852,6 +852,9 @@ static const struct of_device_id pru_rproc_match[] = {
+> >       { .compatible = "ti,am654-pru",         .data = &k3_pru_data },
+> >       { .compatible = "ti,am654-rtu",         .data = &k3_rtu_data },
+> >       { .compatible = "ti,am654-tx-pru",      .data = &k3_tx_pru_data },
+> > +     { .compatible = "ti,j721e-pru",         .data = &k3_pru_data },
+> > +     { .compatible = "ti,j721e-rtu",         .data = &k3_rtu_data },
+> > +     { .compatible = "ti,j721e-tx-pru",      .data = &k3_tx_pru_data },
+> >       {},
+> >  };
+> >  MODULE_DEVICE_TABLE(of, pru_rproc_match);
+> > --
+> > 2.29.0
+> >
