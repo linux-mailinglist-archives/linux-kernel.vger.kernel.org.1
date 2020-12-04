@@ -2,253 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588BA2CF5A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 692782CF5AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729751AbgLDUYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 15:24:55 -0500
-Received: from mail.efficios.com ([167.114.26.124]:46594 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729391AbgLDUYy (ORCPT
+        id S1727904AbgLDUab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 15:30:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgLDUaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 15:24:54 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 6EBC22CE4B4;
-        Fri,  4 Dec 2020 15:24:13 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id XtVvbHAWYHXs; Fri,  4 Dec 2020 15:24:13 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id F13DC2CE14C;
-        Fri,  4 Dec 2020 15:24:12 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com F13DC2CE14C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1607113453;
-        bh=rq5dcyyJkV2nJGQEkk2dkiNiyZMC3h59InBJAZr7LGk=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=DQb+IXuMLZiZkl6/FKac7EjCLRftFpRpG6vh2qYMFlB5MzringJwiSc9VN6d1JS3B
-         VAX28zdbm1L0+8m30VetC1Nuc3+0Wr+h8ppP1ibmQOzBLu/dTpDC4rlf780XEZDhC9
-         xse6ZXafoSIDFb4SkuUXoZ5GRqO4Pbc9lpa/lZREcejg/xvXYFNBaaUm/tWyLwPwy2
-         JM9HwsM2HTDmLo8yVFkZaNkQK34XjGOik/GG0k6lQurtLXVkBSz3xzCt4jpn1WjmVT
-         fXj3Wmj7Vf/0vnVj6JGQVNtocDJV18sw0OKYnNdCu+woXidVrdNr0II7meWx9FcVuL
-         NI1Umzxpn3KbQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id JUD6KWMJdzGL; Fri,  4 Dec 2020 15:24:12 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id DF2D12CE2F7;
-        Fri,  4 Dec 2020 15:24:12 -0500 (EST)
-Date:   Fri, 4 Dec 2020 15:24:12 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        x86 <x86@kernel.org>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        riel <riel@surriel.com>, Dave Hansen <dave.hansen@intel.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Jann Horn <jannh@google.com>
-Message-ID: <720512461.6585.1607113452812.JavaMail.zimbra@efficios.com>
-In-Reply-To: <203d39d11562575fd8bd6a094d97a3a332d8b265.1607059162.git.luto@kernel.org>
-References: <cover.1607059162.git.luto@kernel.org> <203d39d11562575fd8bd6a094d97a3a332d8b265.1607059162.git.luto@kernel.org>
-Subject: Re: [RFC v2 1/2] [NEEDS HELP] x86/mm: Handle unlazying membarrier
- core sync in the arch code
+        Fri, 4 Dec 2020 15:30:30 -0500
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777EAC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:29:50 -0800 (PST)
+Received: by mail-oo1-xc34.google.com with SMTP id z13so1692255ooa.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:29:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zHUsBSyMeZd1dobHZ32LUWZNrWUwT+9A3sZRTSG0ma8=;
+        b=VookJG2jTRV5CfG+Ro9+Xc9jEQZ3tImLXRhUBJjdgERgA2CxBmueyBl37VjSPCYtsD
+         tZrkK6MNq8o2WG2yD8Gj76luEb5Uahh6AuTMZch6trdl6CoynBrxc2yD6RtQ+LraClmp
+         MNYhGr9i0ejw0+BIPiSXjNwS54ErSU0L+P1cEu+1jBQaS7O5SN//tvY3Aa54INuBiDWI
+         9O7gn8XmJjw982npfBEtU8Vmpd7lgRoKJRL3TVdGamZw4Wd3tWfM/UQzy4jCel2+yLHA
+         ZzTi2bD45v5+N5XwPg+Xuhu9mUpd4uZhPBjtJJFmM+HsjKQ8Z4mrl8B1sa2bFcG6v6xV
+         2VMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zHUsBSyMeZd1dobHZ32LUWZNrWUwT+9A3sZRTSG0ma8=;
+        b=bG2poFOn8kb7luS4E0uaGyRH1m5NXJl9/61daGFTYdLGyG+u79cuvobCf0sTcgfnQ2
+         QHsbTUo7cE5IVWfRfbRXELFqLJsIQrmTgE1T2PbPEEWRubeipGFa+EguUyLorhFbJJ9N
+         qDxpPr2s+9KFrFVLH7N8wyy/IgHaIDN836roGPn8XIROQAyufUKvLVgmzXJ699vpgB9k
+         O0b0Q4iAv8LR+WnUZvIICd81oNYrZMa2rBpkMg0+ZYF3R3RGINDBAUPCeqSIhTZ3zDot
+         WSnxOlge5qcBg9fP8JKUZKTVSTAyKMsVcVW687ti01Wv9jvwR2xjhXXvH0Ebm9DoWHT1
+         AjTw==
+X-Gm-Message-State: AOAM533zF4/LOGKjUPyLGQ3Gq7o2dGk5XbA0yGAcUiNgI7OkAkTJw/gs
+        TwkA7rzVVwDrn0aR+qyoBLoNjNNXJMlSVz3MNihwLg==
+X-Google-Smtp-Source: ABdhPJzORQkc71E+9K7hkeg9BXrI2+TdThYQC5q+J4Fndf/s26oe2iF+1zzDEGP91zmgqp6XV+1iWAsBPGfK8xs3u2A=
+X-Received: by 2002:a4a:48c3:: with SMTP id p186mr4831961ooa.54.1607113789548;
+ Fri, 04 Dec 2020 12:29:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3980 (ZimbraWebClient - FF83 (Linux)/8.8.15_GA_3980)
-Thread-Topic: x86/mm: Handle unlazying membarrier core sync in the arch code
-Thread-Index: lxVQX1VMi8/RWcw0PClIFIaXCQc/vA==
+References: <dc46ab93e6b08fa6168591c7f6345b9dc91a81bb.camel@rajagiritech.edu.in>
+In-Reply-To: <dc46ab93e6b08fa6168591c7f6345b9dc91a81bb.camel@rajagiritech.edu.in>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 4 Dec 2020 21:29:38 +0100
+Message-ID: <CANpmjNMCiCf9w34duqGpQ90=qB4QGnRR8Xny+wOVf=2WG=JVoA@mail.gmail.com>
+Subject: Re: BUG: KASAN lib/test_kasan.c
+To:     Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Dec 4, 2020, at 12:26 AM, Andy Lutomirski luto@kernel.org wrote:
+On Fri, 4 Dec 2020 at 19:56, Jeffrin Jose T <jeffrin@rajagiritech.edu.in> wrote:
+> hello,
+>
+>  detected   KASAN   BUG
+>
+> [ related information ]
+>
+> -------------------x-------------------x------------------------>
+> [   43.616259] BUG: KASAN: vmalloc-out-of-bounds in
+> vmalloc_oob+0x146/0x2c0
+>
+> (gdb) l *vmalloc_oob+0x146/0x2c0
+> 0xffffffff81b8b0b0 is in vmalloc_oob (lib/test_kasan.c:764).
 
-> The core scheduler isn't a great place for
-> membarrier_mm_sync_core_before_usermode() -- the core scheduler doesn't
-> actually know whether we are lazy.  With the old code, if a CPU is
-> running a membarrier-registered task, goes idle, gets unlazied via a TLB
-> shootdown IPI, and switches back to the membarrier-registered task, it
-> will do an unnecessary core sync.
-> 
-> Conveniently, x86 is the only architecture that does anything in this
-> hook, so we can just move the code.
-> 
-> XXX: there are some comments in swich_mm_irqs_off() that seem to be
-> trying to document what barriers are expected, and it's not clear to me
-> that these barriers are actually present in all paths through the
-> code.  So I think this change makes the code more comprehensible and
-> has no effect on the code's correctness, but I'm not at all convinced
-> that the code is correct.
-> 
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> ---
-> arch/x86/mm/tlb.c   | 17 ++++++++++++++++-
-> kernel/sched/core.c | 14 +++++++-------
-> 2 files changed, 23 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-> index 3338a1feccf9..23df035b80e8 100644
-> --- a/arch/x86/mm/tlb.c
-> +++ b/arch/x86/mm/tlb.c
-> @@ -8,6 +8,7 @@
-> #include <linux/export.h>
-> #include <linux/cpu.h>
-> #include <linux/debugfs.h>
-> +#include <linux/sched/mm.h>
-> 
-> #include <asm/tlbflush.h>
-> #include <asm/mmu_context.h>
-> @@ -496,6 +497,8 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct
-> mm_struct *next,
-> 		 * from one thread in a process to another thread in the same
-> 		 * process. No TLB flush required.
-> 		 */
-> +
-> +		// XXX: why is this okay wrt membarrier?
-> 		if (!was_lazy)
-> 			return;
+This is the KASAN test. It's a feature, not a bug. ;-)
 
-As I recall, when the scheduler switches between threads which belong to
-the same mm, it does not have to provide explicit memory barriers for
-membarrier because it does not change the "rq->curr->mm" value which is
-used as condition in the membarrier loop to send the IPI.
+> 759             kfree_sensitive(ptr);
+> 760             KUNIT_EXPECT_KASAN_FAIL(test, kfree_sensitive(ptr));
+> 761     }
+> 762
+> 763     static void vmalloc_oob(struct kunit *test)
+> 764     {
+> 765             void *area;
+> 766
+> 767             if (!IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
+> 768                     kunit_info(test, "CONFIG_KASAN_VMALLOC is not
+> enabled.");
+> (gdb) l *vmalloc_oob+0x146
+> 0xffffffff81b8b1f6 is in vmalloc_oob (lib/test_kasan.c:779).
+> 774              * The MMU will catch that and crash us.
+> 775              */
+> 776             area = vmalloc(3000);
+> 777             KUNIT_ASSERT_NOT_ERR_OR_NULL(test, area);
+> 778
+> 779             KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char
+> *)area)[3100]);
+> 780             vfree(area);
+> 781     }
+> 782
+> 783     static struct kunit_case kasan_kunit_test_cases[] = {
+> ----------------x-----------------------------x-------------------->
+>
+> Reported by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
 
-> 
-> @@ -508,12 +511,24 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct
-> mm_struct *next,
-> 		smp_mb();
-> 		next_tlb_gen = atomic64_read(&next->context.tlb_gen);
-> 		if (this_cpu_read(cpu_tlbstate.ctxs[prev_asid].tlb_gen) ==
-> -				next_tlb_gen)
-> +		    next_tlb_gen) {
-> +			/*
-> +			 * We're reactivating an mm, and membarrier might
-> +			 * need to serialize.  Tell membarrier.
-> +			 */
-> +
-> +			// XXX: I can't understand the logic in
-> +			// membarrier_mm_sync_core_before_usermode().  What's
-> +			// the mm check for?
-> +			membarrier_mm_sync_core_before_usermode(next);
+Which CI system is reporting these?
 
-I think you mean the:
-
-        if (current->mm != mm)
-                return;
-
-check at the beginning.
-
-We have to look at it from the scheduler context from which this function is called
-(yeah, I know, it's not so great to mix up scheduler and mm states like this).
-
-in finish_task_switch() we have:
-
-        struct mm_struct *mm = rq->prev_mm;
-[...]
-        if (mm) {
-                membarrier_mm_sync_core_before_usermode(mm);
-                mmdrop(mm);
-        }
-
-I recall that this current->mm vs rq->prev_mm check is just there to
-figure out whether we are in lazy tlb mode, and don't sync core in lazy
-tlb mode. Hopefully I'm not stating anything stupid here, maybe Peter
-could enlighten us. And you should definitely be careful when calling this
-helper from other contexts, as it was originally crafted only for that
-single use in the scheduler.
-
-
-> 			return;
-> +		}
-> 
-> 		/*
-> 		 * TLB contents went out of date while we were in lazy
-> 		 * mode. Fall through to the TLB switching code below.
-> +		 * No need for an explicit membarrier invocation -- the CR3
-> +		 * write will serialize.
-> 		 */
-> 		new_asid = prev_asid;
-> 		need_flush = true;
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 2d95dc3f4644..6c4b76147166 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -3619,22 +3619,22 @@ static struct rq *finish_task_switch(struct task_struct
-> *prev)
-> 	kcov_finish_switch(current);
-> 
-> 	fire_sched_in_preempt_notifiers(current);
-> +
-> 	/*
-> 	 * When switching through a kernel thread, the loop in
-> 	 * membarrier_{private,global}_expedited() may have observed that
-> 	 * kernel thread and not issued an IPI. It is therefore possible to
-> 	 * schedule between user->kernel->user threads without passing though
-> 	 * switch_mm(). Membarrier requires a barrier after storing to
-> -	 * rq->curr, before returning to userspace, so provide them here:
-> +	 * rq->curr, before returning to userspace, and mmdrop() provides
-> +	 * this barrier.
-> 	 *
-> -	 * - a full memory barrier for {PRIVATE,GLOBAL}_EXPEDITED, implicitly
-> -	 *   provided by mmdrop(),
-> -	 * - a sync_core for SYNC_CORE.
-> +	 * XXX: I don't think mmdrop() actually does this.  There's no
-> +	 * smp_mb__before/after_atomic() in there.
-
-I recall mmdrop providing a memory barrier. It looks like I event went though the
-trouble of documenting it myself. ;-)
-
-static inline void mmdrop(struct mm_struct *mm)
-{
-        /*
-         * The implicit full barrier implied by atomic_dec_and_test() is
-         * required by the membarrier system call before returning to
-         * user-space, after storing to rq->curr.
-         */
-        if (unlikely(atomic_dec_and_test(&mm->mm_count)))
-                __mmdrop(mm);
-}
-
-
-> 	 */
-> -	if (mm) {
-> -		membarrier_mm_sync_core_before_usermode(mm);
-
-OK so here is the meat. The current code is using the (possibly incomplete)
-lazy TLB state known by the scheduler to sync core, and it appears it may be
-a bit more heavy that what is strictly needed.
-
-Your change instead rely on the internal knowledge of lazy TLB within x86
-switch_mm_irqs_off to achieve this, which overall seems like an improvement.
-
-I agree with Nick's comment that it should go on top of his exit_lazy_mm
-patches.
+If you look, this is the KASAN test, and the report is very much
+intended since it's testing KASAN. Please blacklist the KASAN test
+(and any other tests testing debugging tools).
 
 Thanks,
-
-Mathieu
-
-
-> +	if (mm)
-> 		mmdrop(mm);
-> -	}
-> +
-> 	if (unlikely(prev_state == TASK_DEAD)) {
-> 		if (prev->sched_class->task_dead)
-> 			prev->sched_class->task_dead(prev);
-> --
-> 2.28.0
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+-- Marco
