@@ -2,212 +2,366 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0342CF698
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B442CF69F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726167AbgLDWI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 17:08:59 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:1936 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725885AbgLDWI7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 17:08:59 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4M0BtF005024;
-        Fri, 4 Dec 2020 14:08:11 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=xCuMDqKmf4r3RjVCZ2F0m5yMJtln7l6L8DwWpETl2Io=;
- b=OOF7DKvNZ8R8DHyZgHToP3x+DLMyPqteSVnnzaEZlB4+Z/FBrw+ZggS3FvQY9XSdRLof
- 8lB9n0lkDGRuMS57uDKAlrq+SaTeC2auN0me+O7G33c/FgZ5Y6JvJTqcUZ49094Nl1zu
- 9ptRHsqedhwgR59uGPvcdU65mJQ1da4Z08s= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 357c7v6d4s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 04 Dec 2020 14:08:11 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 4 Dec 2020 14:08:10 -0800
+        id S1726589AbgLDWMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 17:12:49 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:50100 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725885AbgLDWMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 17:12:48 -0500
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fcab4350002>; Sat, 05 Dec 2020 06:12:05 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 4 Dec
+ 2020 22:12:05 +0000
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.54) by
+ HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 4 Dec 2020 22:12:05 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C/gHGsg0HImNtSgsM4lxTliCd/N+8Z1aAtjLYDhgQGWUXMWTlIsVsmFRfZOnbnVfBJsyvtEf4K4Fw2c/+xw2+spZU4vs68VzEBORw7HHWszmuW5p1FjUaFNRAOPlzVUyYzFqW2xiL4vBTXTc8IIdg7/dXWpPieUwsGMjwdsgKUrYlaW0lYUCJ09pjsJmIakS+PTKnK4GigqBL5bvVC4yHpINMknZtTfx2nGPcvWVTTHCrOytiyTySwtvYoOf0jzjf4jRU3510zVdfFVUZYL86NzoiySDaaCValTWHpwWbj7GfJAEo9o33VlUaNe+z3HNnFEzPXwUpDdNAhjBPYGy5g==
+ b=U8Q3dZAzoQgCLc5P/x/lcQqvWDp+qPuOWw0xtoxYVe2tMAu2/Cbpb5EGrxEJVDQeykfyhVCH4wPCTZTfs6D7v1aGRu1tPezoyl3QTEqpftjAQQLoj+UJLhLQGkS2/LrW2bI9gdR0YuMHq9Ixrq/AoEieh/js9v1zclcWgAnztGLDheP8u2uh+7KaAIs8mJQSKxXp/avir6p8Y7pu/1yKhHDdtjWhijw/Z/t8S+a9K814nnxOPSq8QAiu1J3NfgoWDrj81vVQFqt/tuW+wsmhLbrtYs9K8UqsrGk5U8stwJOBd0UaR0FUyNYBzAUFE7xx9aAY52GMRhPJqY+WnZFx+Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xCuMDqKmf4r3RjVCZ2F0m5yMJtln7l6L8DwWpETl2Io=;
- b=YoUioWOiPeNHaqO0pYfkCVYwOWr2BNegb4kfrXAHrdGFAFhCjPjv2QiZmWtCPLtkLs0DJD2RGbol7HK5USNr/l9PQcb0x69PqaLChOyYrGL4mXQX/5sjETNxrKjs3nb2SB6TmVN99Ow4RIaGaJN9L4cmRyZaUqqCRm9zM8hNGMq7yrztfzIozymmbL1BCFihpcpR1810Tx6ZoIgZ2kWVJkVJmrBJcD2WCnnodl0B12kHJ7R2frvkQ+x6L6Tgih6fu556a3+li4aRHKY8+ZMGVS9LMNsYgGNeOWK5JhOD8/6h8Gm3UzXCYqdT0SoYGAbsqPqmTJPDOV9AF1uS5r7RbQ==
+ bh=SIrXPGXC6Hwt8tTaGJT7TVNVxhsXQlzs9LLSzVMWLtw=;
+ b=mK1Lv0xcGqJQmLW1SP5N+LrS4GDyKH02kJ7SX5hXGENuY9incOHDHkF6GNAy+Jwf6+7JuFXrhptIsG+4y/H+eU9kO1p8gIWwrUlsxWT7lCtnLBKn4uKiZAWLqZ6tl1pNyVMby9RGsLZFqifvrYhkjpvh34qBLUhvTielNgLcozBPzE5ea5MiJwownruAktNp6H+vyextlegTR+/QmQe8TJGIBoTa44oUkDt2sRF4TJtC56mgWbwRZ1+KSBeO4AEHKoLqjbM4DeYoHtM5TpmJOUTlDSYExjZ7rb0aZqNBhrufYryC132+aM0xubQRWcxO+xW0lJRjrzQTk1IuAg9GIg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xCuMDqKmf4r3RjVCZ2F0m5yMJtln7l6L8DwWpETl2Io=;
- b=PuKiMuotcRiKWBHpSVC+vJD+J26B7RC+7kTXI2UJARhk+f+kAo7BfA34yZmCe40XK/wMi5ZboHC2REDuJMDcN+NS0r22kohTqGk70nYtFs3qNKBFmh/TiUIUwNmXDFPCsnjtk76Iqk5x4rbjM/0E2VVVJOJSlAPeTPg/TDy2dpg=
-Authentication-Results: cmpxchg.org; dkim=none (message not signed)
- header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2630.namprd15.prod.outlook.com (2603:10b6:a03:14c::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Fri, 4 Dec
- 2020 22:08:09 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::3925:e1f9:4c6a:9396%6]) with mapi id 15.20.3632.021; Fri, 4 Dec 2020
- 22:08:09 +0000
-Date:   Fri, 4 Dec 2020 14:08:04 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-CC:     Muchun Song <songmuchun@bytedance.com>, <mhocko@kernel.org>,
-        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM5PR12MB1356.namprd12.prod.outlook.com (2603:10b6:3:74::18) by
+ DM5PR12MB2470.namprd12.prod.outlook.com (2603:10b6:4:b4::39) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3589.22; Fri, 4 Dec 2020 22:12:02 +0000
+Received: from DM5PR12MB1356.namprd12.prod.outlook.com
+ ([fe80::3cc2:a2d6:2919:6a5a]) by DM5PR12MB1356.namprd12.prod.outlook.com
+ ([fe80::3cc2:a2d6:2919:6a5a%6]) with mapi id 15.20.3632.017; Fri, 4 Dec 2020
+ 22:12:02 +0000
+Subject: Re: [PATCH v2] bridge: Fix a deadlock when enabling multicast
+ snooping
+To:     Joseph Huang <Joseph.Huang@garmin.com>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mm/memcontrol: make the slab calculation consistent
-Message-ID: <20201204220804.GA1772002@carbon.DHCP.thefacebook.com>
-References: <20201203031111.3187-1-songmuchun@bytedance.com>
- <20201204154613.GA176901@cmpxchg.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204154613.GA176901@cmpxchg.org>
-X-Originating-IP: [2620:10d:c090:400::5:6638]
-X-ClientProxiedBy: MWHPR2201CA0039.namprd22.prod.outlook.com
- (2603:10b6:301:16::13) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+References: <20201201214047.128948-1-Joseph.Huang@garmin.com>
+ <20201204213900.234913-1-Joseph.Huang@garmin.com>
+From:   Nikolay Aleksandrov <nikolay@nvidia.com>
+Message-ID: <f771d272-3146-2d8c-391d-87d1db8b8e76@nvidia.com>
+Date:   Sat, 5 Dec 2020 00:11:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+In-Reply-To: <20201204213900.234913-1-Joseph.Huang@garmin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [213.179.129.39]
+X-ClientProxiedBy: ZR0P278CA0087.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:22::20) To DM5PR12MB1356.namprd12.prod.outlook.com
+ (2603:10b6:3:74::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:6638) by MWHPR2201CA0039.namprd22.prod.outlook.com (2603:10b6:301:16::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Fri, 4 Dec 2020 22:08:08 +0000
+Received: from [10.21.241.129] (213.179.129.39) by ZR0P278CA0087.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:22::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Fri, 4 Dec 2020 22:11:59 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a1108504-5263-44ef-b320-08d898a115b4
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2630:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2630A546614C8F5D7AEDAFC9BEF10@BYAPR15MB2630.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Office365-Filtering-Correlation-Id: 61e793d8-7459-4878-b3d3-08d898a1a04c
+X-MS-TrafficTypeDiagnostic: DM5PR12MB2470:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB2470F176ADDB440CDDB9146DDFF10@DM5PR12MB2470.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6A+JxtMd1n3uY/LxgMI+71EryKuVQfz5qxvX/gACVNafQSGu+O2LDttTdZvJ+D284UWaC/RryLbKpZVpKb/j5nVMM8Ed9cmtTm/JpXQCNIfAbloAXRWkzAO3Vo+m5Ou3863GRGkX9HkJlaPE5E6Qw0DJxJt4kf/E5NioeVihLCdWYhKAXeLxb4WVgh8T5HJQhI7ZJepj0Bzm1iNuxQMz9Q5RlQnW2Y/1X1pC4Z+Yruggr146krMxxq4AYMoQuztGHuAUaGblWJ1S/6I2MbtaWixZJmGQXEpFSXjLTZ2KzQpL0HG3ahHsLJY5RWfQN1AYbW2dzDjjJPriAQlW5yaMFg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(366004)(396003)(39860400002)(376002)(52116002)(6506007)(16526019)(4326008)(6916009)(7696005)(2906002)(5660300002)(9686003)(478600001)(1076003)(316002)(55016002)(6666004)(8936002)(66946007)(83380400001)(186003)(66556008)(86362001)(8676002)(66476007)(33656002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?xf/9e1ksZ3w2qlZdgGdnbxgdApNPhmmceF6xgiWK6rrL2n8ikvhprqFGlgFr?=
- =?us-ascii?Q?m/BriXWdUIfoFRsT9HoK3c7LkMAZL6SMUZbfjNr8GKf5WYQrX8872irW6yWi?=
- =?us-ascii?Q?qohUriQLhl200prvaIB/TWW5GD7SVdYuREkFlH2Ozm/o2MHIxDOP3vU1Hkmh?=
- =?us-ascii?Q?dbGJWpPC4nIawzAuiNIBbwypyIsBz6P/RB+BcU2/tzarhejLSZQ13ViLKGyy?=
- =?us-ascii?Q?QNef51xKTz4jEoDNwm7iEF9BGW6RuZ7UZJIC2WM8bW2BJX8me3JoDh/74ACl?=
- =?us-ascii?Q?62smUWhLeDuRn1dINWbqcbW1pE0ASxxcYlrLivd/zd7PdbyNDAYy5eIyGbMA?=
- =?us-ascii?Q?HcxvXC9wNkQYnSHJnFoBFUKlzd5qv3L40+mLhI+QvPodfQHRjKAcss34fNby?=
- =?us-ascii?Q?BWBHpi3r2GQorofxqY9ew7OmqQ465vzva9Eow7OlHzYQvRMoFAy/JXeyXc0F?=
- =?us-ascii?Q?RNdx7ilTJMZngxecmr57Jmg1XODJ8kGo6yKLau4WfNvZ8n6x21tYchhFOjKg?=
- =?us-ascii?Q?eW4Ak0zZ8YxvgPtASIHOcja0vDu9A2JPgwee634kLQgad9+r12S8OtiD4zXo?=
- =?us-ascii?Q?b1t5CPIKDlPJKeh6pHUo3NtFTiIj7uas7vr7Nc+FDUeWnFuM+hQVEC+clPw0?=
- =?us-ascii?Q?39svFjfVqJRsskTT3Sh1/SuQjLHFfx5qVxZW3ZtbJ2lViz+3wQFL5bz7n0Pq?=
- =?us-ascii?Q?azpM+HPpkM8yWBOHLDc8BvbIj8MIiBoZkezt+3G2jPwSgjt8qamgbXTpenZ+?=
- =?us-ascii?Q?LsOdFdHFrRiR3M0azIxQ20AhM7AYk/SdhTiMR7dhsibdWy0nVK+Fht2ymeQr?=
- =?us-ascii?Q?O6OlG8+jfZvMJ4jcDqtaMdUNhSUaoLTURlbN0GlC10dLBNZstJr6cWjN5KJ7?=
- =?us-ascii?Q?43xx394XH981mH6MPx5+g0kV8W9BBf5Eg/Jct9578uEEmJmDcp+7PDn0pkE8?=
- =?us-ascii?Q?u5aAocIU8rIF/xdsZBiCzr/kNGXvTcxE+0clC1id/IL1iSa9tDmf5KAtwIFo?=
- =?us-ascii?Q?ccZ5ywmA2RcVNflhN8gX2tSQfA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1108504-5263-44ef-b320-08d898a115b4
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: YcRRhCp5tRJdJ+WIN6Lu3NfdMTQUFYpMAYo3eGSZUa9mk+R2fXxOqm0u8DZwwa+/9d6rjfcEAsPTqUkExK1NugY8tlqn+sG6IHiOI6GJ5POc04mk1Hc4BOutmXw2mAKCVKQLs4reSI7sxWNYl72t0m5zRWXOrUJbQ4dnaCKYfoTtm3zGkIF8RSeaCypo+iSF7Ele78HVvhdRdBm8ccewAYis9wdcLJzXDNL02g92Qe/dzw6kAYCC79PNaABiATYT8VBjNv8YNIaTi+X7vDN2W72H3fsuZQ055uZ4VYQ+PCDvdXx5lpFkSg0+gANnHgp8gcDH8xs5oaLJC7O816/Swfkb9M8Cd6HY+8bSKuCcst0cePgp71AIDs1A7+EOXNtbR7JoBk3bjJ7zygdLf2Dz9VdNWGPNwxoUUZ/lJ70mgC6NZ01e0LPFtV2EE7bosLgC
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1356.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(366004)(376002)(136003)(6666004)(16526019)(186003)(86362001)(8936002)(316002)(31686004)(83380400001)(110136005)(956004)(8676002)(36756003)(478600001)(2906002)(31696002)(16576012)(53546011)(2616005)(26005)(66946007)(66556008)(6486002)(66476007)(5660300002)(43740500002)(45980500001)(309714004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eGlUd1Z5N3FHdktJUWVDdFJuSy9qTytoenc5SE9ndk01Qy93ajVFR1NlSFda?=
+ =?utf-8?B?ZTV6blg0amdzb0FleXpnSlhvemZFa0kwR3BWa2N4anIvbnBrcUtwbE1UQUp6?=
+ =?utf-8?B?MnM4YU9ZbVI2THFDSm9lTEdjRDFvTzN0d0JxajNjcmNKUFd0dnkxeXJFblNo?=
+ =?utf-8?B?WGhHS0gveDE1dG1MSFdSNWNWRkVhVGljZjFManlmR0xLcGlvNjZHZ3lHTjJH?=
+ =?utf-8?B?Z25hTEpQVlNwZUphTmFYTzAxdjZRcFpiaDhlSWVSbkVVL2dpT0g2Zk1KeFps?=
+ =?utf-8?B?UVVnU1ZKNk43bVh0OHVjSUhEWE9FMVBUTCtxVFlZZ0RNeCtBd1JSU29xYURi?=
+ =?utf-8?B?UWxkeEZoM0YzZ3lDRnR6QjR0am9tRkNBZ2NGTFU0aDZLeTRVZkwrbldVaHlF?=
+ =?utf-8?B?N1g0UXF1TGlSTjFLL1JhbWUzbGYwU1VYenBReDM0WlpBMTVnWDFXOU9BMFlj?=
+ =?utf-8?B?eURTa3gzdmpXUytHMEVKYjk1YmZVRnRNUXdFTmIvbFArTzZFQmJId3krQkU0?=
+ =?utf-8?B?RnVHZnFjektNMmlnVXVsOUhHQjR0V09qVlJmVnBSNEZKdFpJUWk2YzNCNVNY?=
+ =?utf-8?B?QVFUU1BxL1k3VDN0bFh4U2Mrbk5qN2orMTFwMFJnQnlYanU1ZnNCeEhmNmVP?=
+ =?utf-8?B?aS9DZDdvVklPdjJ6S0VUby9ZSkdNSlJwaUc5Y2phZEFpUGVtNi93VnVuMEx5?=
+ =?utf-8?B?VHV5NDFnUFp3bzFSREtUekw2aFNSOUN1N3l4TlFBelZOUysrNXI5TkhBSElH?=
+ =?utf-8?B?Zkd0a3A1dlNISjBRNXZvYTg2SG44NjV5QmszdHJPTUdsWTFWcGhRaVRmS1Vv?=
+ =?utf-8?B?ZDRBS1M3bWpiTzZIK2Y0czVVMmJFMVRUZi94dERHRHM1RjBlWDFCMjJGMHVa?=
+ =?utf-8?B?eU1pOUpBWVc1R2V3S0x3czR1VHQ3TXk5Z3dlb0g3ME9kcVhRbUZvbkFuK3k0?=
+ =?utf-8?B?SHppSnM5OGgyQXhIc0JubnVxaUNzZzV1c05YN0N3NEZhSlp5NnZIUnRmcG5l?=
+ =?utf-8?B?Z1kxL2lPenpPR2VQUmNwYWhFMFRYajk0QVczSUhwMmdCZDdhenV2THZubHMr?=
+ =?utf-8?B?S0NJSmx1N0ZlNGJKSTg4S2h4bnEzTC92blg5TkVObnFHK2k1KzJYdXVtTlFD?=
+ =?utf-8?B?SDFraVN0MmVIdVlBdzA4czJwOEJETGFCaUhnSTM0SVBZZlYramxORkJSYWdY?=
+ =?utf-8?B?K0RUM3Y3NTlOZ0lTQTFLMWlVRk9zTjBVakxGVHpGMml3VS9oSWxSTENaVFF5?=
+ =?utf-8?B?NnBvZWlveW9RWHMrTTVMZHJ5aWQ1V0FQQVpKdzF3cmRWTTQzakNBRkw1NFFy?=
+ =?utf-8?Q?CLhdK857h/mmzrNyRh9stFQk3HsFSZMSLg?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61e793d8-7459-4878-b3d3-08d898a1a04c
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1356.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 22:08:09.6834
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 22:12:02.3241
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bmnu1OFZmwHSEF49aEi9Ejfxtf0vi2iP90kTtVv6WVbxnTxnwU/feorQb80WAiwj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2630
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_12:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- clxscore=1015 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- suspectscore=1 mlxlogscore=999 impostorscore=0 spamscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040124
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9BoF3I/PIM456Q6sXIORgsI175v0hCrpp5hMotxbAI2frFzlrmhUyM7yWw3b7wXu4rvCgf2Fg66IPk4uD63rnw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2470
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607119925; bh=SIrXPGXC6Hwt8tTaGJT7TVNVxhsXQlzs9LLSzVMWLtw=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:
+         Authentication-Results:Subject:To:References:From:Message-ID:Date:
+         User-Agent:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy:
+         MIME-Version:X-MS-Exchange-MessageSentRepresentingType:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
+         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
+         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=Nyj65cjfR+DAw7oiiXJZKoTK3XLUmdryLntM7KISzcUGnZn1h1phv+rZ/Xs7fBwWm
+         L0BAy2U+kFyVzbUx/LYgvRm+D5O3KelNZS5jZFep+rRgB+fiUpb5LMLEshlbtdzNYC
+         bu9FqOlY95aUd8iS005ZfC7qv8ir/BsryO+27J+hCv92oCPsnR114hLCP7IpGhp8Ha
+         vgiZcKo+DErRMt54TJLbSTtVoH1UxTyYZuRnHInpdnOZkxUpKHdwFmhgkT/rNPErjv
+         nyeRqN5aZqZLYjaj4h08PU8Wb5LAJcj4toOG/+dNsu/YvhBwE28xmwhEcSERKerPsc
+         sGv7jP5Ai43IA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 10:46:13AM -0500, Johannes Weiner wrote:
-> On Thu, Dec 03, 2020 at 11:11:11AM +0800, Muchun Song wrote:
-> > Although the ratio of the slab is one, we also should read the ratio
-> > from the related memory_stats instead of hard-coding. And the local
-> > variable of size is already the value of slab_unreclaimable. So we
-> > do not need to read again. Simplify the code here.
-> > 
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Acked-by: Roman Gushchin <guro@fb.com>
+On 04/12/2020 23:39, Joseph Huang wrote:
+> When enabling multicast snooping, bridge module deadlocks on multicast_lock
+> if 1) IPv6 is enabled, and 2) there is an existing querier on the same L2
+> network.
 > 
-> I agree that ignoring the ratio right now is not very pretty, but
+> The deadlock was caused by the following sequence: While holding the lock,
+> br_multicast_open calls br_multicast_join_snoopers, which eventually causes
+> IP stack to (attempt to) send out a Listener Report (in igmp6_join_group).
+> Since the destination Ethernet address is a multicast address, br_dev_xmit
+> feeds the packet back to the bridge via br_multicast_rcv, which in turn
+> calls br_multicast_add_group, which then deadlocks on multicast_lock.
 > 
-> 		size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
-> 		       memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
-> 		seq_buf_printf(&s, "slab %llu\n", size);
+> The fix is to move the call br_multicast_join_snoopers outside of the
+> critical section. This works since br_multicast_join_snoopers only deals
+> with IP and does not modify any multicast data structures of the bridge,
+> so there's no need to hold the lock.
 > 
-> is way easier to understand and more robust than using idx and idx + 1
-> and then requiring a series of BUG_ONs to ensure these two items are
-> actually adjacent and in the right order.
+> Steps to reproduce:
+> 1. sysctl net.ipv6.conf.all.force_mld_version=1
+> 2. have another querier
+> 3. ip link set dev bridge type bridge mcast_snooping 0 && \
+>    ip link set dev bridge type bridge mcast_snooping 1 < deadlock >
 > 
-> There is a redundant call to memcg_page_state(), granted, but that
-> function is extremely cheap compared with e.g. seq_buf_printf().
+> A typical call trace looks like the following:
 > 
-> >  mm/memcontrol.c | 26 +++++++++++++++++++++-----
-> >  1 file changed, 21 insertions(+), 5 deletions(-)
+> [  936.251495]  _raw_spin_lock+0x5c/0x68
+> [  936.255221]  br_multicast_add_group+0x40/0x170 [bridge]
+> [  936.260491]  br_multicast_rcv+0x7ac/0xe30 [bridge]
+> [  936.265322]  br_dev_xmit+0x140/0x368 [bridge]
+> [  936.269689]  dev_hard_start_xmit+0x94/0x158
+> [  936.273876]  __dev_queue_xmit+0x5ac/0x7f8
+> [  936.277890]  dev_queue_xmit+0x10/0x18
+> [  936.281563]  neigh_resolve_output+0xec/0x198
+> [  936.285845]  ip6_finish_output2+0x240/0x710
+> [  936.290039]  __ip6_finish_output+0x130/0x170
+> [  936.294318]  ip6_output+0x6c/0x1c8
+> [  936.297731]  NF_HOOK.constprop.0+0xd8/0xe8
+> [  936.301834]  igmp6_send+0x358/0x558
+> [  936.305326]  igmp6_join_group.part.0+0x30/0xf0
+> [  936.309774]  igmp6_group_added+0xfc/0x110
+> [  936.313787]  __ipv6_dev_mc_inc+0x1a4/0x290
+> [  936.317885]  ipv6_dev_mc_inc+0x10/0x18
+> [  936.321677]  br_multicast_open+0xbc/0x110 [bridge]
+> [  936.326506]  br_multicast_toggle+0xec/0x140 [bridge]
 > 
-> IMO this really just complicates the code with little discernible
-> upside. It's going to be a NAK from me, unfortunately.
-> 
-> 
-> In retrospect, I think that memory_stats[] table was a mistake. It
-> would probably be easier to implement this using a wrapper for
-> memcg_page_state() that has a big switch() for unit
-> conversion. Something like this:
+> Fixes: 4effd28c1245 ("bridge: join all-snoopers multicast address")
+> Signed-off-by: Joseph Huang <Joseph.Huang@garmin.com>
+> ---
 
-+1
+Hi,
+Thank you for fixing it up, a few minor nits below. Overall the patch
+looks good.
 
+
+>  net/bridge/br_device.c    |  6 ++++++
+>  net/bridge/br_multicast.c | 33 ++++++++++++++++++++++++---------
+>  net/bridge/br_private.h   | 10 ++++++++++
+>  3 files changed, 40 insertions(+), 9 deletions(-)
 > 
-> /* Translate stat items to the correct unit for memory.stat output */
-> static unsigned long memcg_page_state_output(memcg, item)
-> {
-> 	unsigned long value = memcg_page_state(memcg, item);
-> 	int unit = PAGE_SIZE;
+> diff --git a/net/bridge/br_device.c b/net/bridge/br_device.c
+> index 7730c8f3cb53..d3ea9d0779fb 100644
+> --- a/net/bridge/br_device.c
+> +++ b/net/bridge/br_device.c
+> @@ -177,6 +177,9 @@ static int br_dev_open(struct net_device *dev)
+>  	br_stp_enable_bridge(br);
+>  	br_multicast_open(br);
+>  
+> +	if (br_opt_get(br, BROPT_MULTICAST_ENABLED))
+> +		br_multicast_join_snoopers(br);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -197,6 +200,9 @@ static int br_dev_stop(struct net_device *dev)
+>  	br_stp_disable_bridge(br);
+>  	br_multicast_stop(br);
+>  
+> +	if (br_opt_get(br, BROPT_MULTICAST_ENABLED))
+> +		br_multicast_leave_snoopers(br);
+> +
+>  	netif_stop_queue(dev);
+>  
+>  	return 0;
+> diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
+> index eae898c3cff7..426fe00db708 100644
+> --- a/net/bridge/br_multicast.c
+> +++ b/net/bridge/br_multicast.c
+> @@ -3286,7 +3286,7 @@ static inline void br_ip6_multicast_join_snoopers(struct net_bridge *br)
+>  }
+>  #endif
+>  
+> -static void br_multicast_join_snoopers(struct net_bridge *br)
+> +void br_multicast_join_snoopers(struct net_bridge *br)
+>  {
+>  	br_ip4_multicast_join_snoopers(br);
+>  	br_ip6_multicast_join_snoopers(br);
+> @@ -3317,7 +3317,7 @@ static inline void br_ip6_multicast_leave_snoopers(struct net_bridge *br)
+>  }
+>  #endif
+>  
+> -static void br_multicast_leave_snoopers(struct net_bridge *br)
+> +void br_multicast_leave_snoopers(struct net_bridge *br)
+>  {
+>  	br_ip4_multicast_leave_snoopers(br);
+>  	br_ip6_multicast_leave_snoopers(br);
+> @@ -3336,9 +3336,6 @@ static void __br_multicast_open(struct net_bridge *br,
+>  
+>  void br_multicast_open(struct net_bridge *br)
+>  {
+> -	if (br_opt_get(br, BROPT_MULTICAST_ENABLED))
+> -		br_multicast_join_snoopers(br);
+> -
+>  	__br_multicast_open(br, &br->ip4_own_query);
+>  #if IS_ENABLED(CONFIG_IPV6)
+>  	__br_multicast_open(br, &br->ip6_own_query);
+> @@ -3354,9 +3351,6 @@ void br_multicast_stop(struct net_bridge *br)
+>  	del_timer_sync(&br->ip6_other_query.timer);
+>  	del_timer_sync(&br->ip6_own_query.timer);
+>  #endif
+> -
+> -	if (br_opt_get(br, BROPT_MULTICAST_ENABLED))
+> -		br_multicast_leave_snoopers(br);
+>  }
+>  
+>  void br_multicast_dev_del(struct net_bridge *br)
+> @@ -3487,6 +3481,8 @@ static void br_multicast_start_querier(struct net_bridge *br,
+>  int br_multicast_toggle(struct net_bridge *br, unsigned long val)
+>  {
+>  	struct net_bridge_port *port;
+> +	bool join_snoopers = false;
+> +	bool leave_snoopers = false;
+>  
+
+We use reverse xmas tree order, longest to shortest, so these two have to be
+swapped, but one more related thing further below..
+
+>  	spin_lock_bh(&br->multicast_lock);
+>  	if (!!br_opt_get(br, BROPT_MULTICAST_ENABLED) == !!val)
+> @@ -3495,7 +3491,7 @@ int br_multicast_toggle(struct net_bridge *br, unsigned long val)
+>  	br_mc_disabled_update(br->dev, val);
+>  	br_opt_toggle(br, BROPT_MULTICAST_ENABLED, !!val);
+>  	if (!br_opt_get(br, BROPT_MULTICAST_ENABLED)) {
+> -		br_multicast_leave_snoopers(br);
+> +		leave_snoopers = true;
+>  		goto unlock;
+>  	}
+>  
+> @@ -3506,9 +3502,28 @@ int br_multicast_toggle(struct net_bridge *br, unsigned long val)
+>  	list_for_each_entry(port, &br->port_list, list)
+>  		__br_multicast_enable_port(port);
+>  
+> +	join_snoopers = true;
+> +
+>  unlock:
+>  	spin_unlock_bh(&br->multicast_lock);
+>  
+> +	/* br_multicast_join_snoopers has the potential to cause
+> +	 * an MLD Report/Leave to be delivered to br_multicast_rcv,
+> +	 * which would in turn call br_multicast_add_group, which would
+> +	 * attempt to acquire multicast_lock. This function should be
+> +	 * called after the lock has been released to avoid deadlocks on
+> +	 * multicast_lock.
+> +	 *
+> +	 * br_multicast_leave_snoopers does not have the problem since
+> +	 * br_multicast_rcv first checks BROPT_MULTICAST_ENABLED, and
+> +	 * returns without calling br_multicast_ipv4/6_rcv if it's not
+> +	 * enabled. Moved both functions out just for symmetry.
+> +	 */
+
+Nice comment, thanks!
+
+> +	if (join_snoopers)
+> +		br_multicast_join_snoopers(br);
+> +	else if (leave_snoopers)
+> +		br_multicast_leave_snoopers(br);
+
+If I'm not missing anything this can be just 1 bool like "change_snoopers" or something
+which if set to true will check BROPT_MULTICAST_ENABLED and act accordingly, i.e.
+if (change_snoopers) {
+    if (br_opt_get(br, BROPT_MULTICAST_ENABLED))
+         br_multicast_join_snoopers(br);
+    else
+         br_multicast_leave_snoopers(br);
+}
+ 
+This is not really something critical, just an observation. Up to your
+preference if you decide to leave it with 2 bools. :-)
+
+Cheers,
+ Nik
+
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
+> index 345118e35c42..8424464186a6 100644
+> --- a/net/bridge/br_private.h
+> +++ b/net/bridge/br_private.h
+> @@ -792,6 +792,8 @@ void br_multicast_del_port(struct net_bridge_port *port);
+>  void br_multicast_enable_port(struct net_bridge_port *port);
+>  void br_multicast_disable_port(struct net_bridge_port *port);
+>  void br_multicast_init(struct net_bridge *br);
+> +void br_multicast_join_snoopers(struct net_bridge *br);
+> +void br_multicast_leave_snoopers(struct net_bridge *br);
+>  void br_multicast_open(struct net_bridge *br);
+>  void br_multicast_stop(struct net_bridge *br);
+>  void br_multicast_dev_del(struct net_bridge *br);
+> @@ -969,6 +971,14 @@ static inline void br_multicast_init(struct net_bridge *br)
+>  {
+>  }
+>  
+> +static inline void br_multicast_join_snoopers(struct net_bridge *br)
+> +{
+> +}
+> +
+> +static inline void br_multicast_leave_snoopers(struct net_bridge *br)
+> +{
+> +}
+> +
+>  static inline void br_multicast_open(struct net_bridge *br)
+>  {
+>  }
 > 
-> 	switch (item) {
-> 	case NR_SLAB_RECLAIMABLE_B:
-> 	case NR_SLAB_UNRECLAIMABLE_B:
-> 	case WORKINGSET_REFAULT_ANON:
-> 	case WORKINGSET_REFAULT_FILE:
-> 	case WORKINGSET_ACTIVATE_ANON:
-> 	case WORKINGSET_ACTIVATE_FILE:
-> 	case WORKINGSET_RESTORE_ANON:
-> 	case WORKINGSET_RESTORE_FILE:
-> 	case MEMCG_PERCPU_B:
-> 		unit = 1;
-> 		break;
-> 	case NR_SHMEM_THPS:
-> 	case NR_FILE_THPS:
-> 	case NR_ANON_THPS:
-> 		unit = HPAGE_PMD_SIZE;
-> 		break;
-             ^^^^^^^^^^^^
-These can be easily converted to ordinary pages,
-so we can completely avoid this exception.
 
-> 	case NR_KERNEL_STACK_KB:
-> 		unit = 1024;
-> 		break;
-> 	}
-
-And NR_KERNEL_STACK_KB can be converted to bytes.
-
-Then we'll have everything kernel-related in bytes and
-everything userspace-related in PAGE_SIZE's.
-
-> 	
-> 	return value * unit;
-> }
-> 
-> This would fix the ratio inconsistency, get rid of the awkward mix of
-> static and runtime initialization of the table, is probably about the
-> same amount of code, but simpler and more obvious overall.
-
-+1
