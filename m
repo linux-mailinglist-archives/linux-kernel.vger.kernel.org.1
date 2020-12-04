@@ -2,129 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467F12CEFFB
+	by mail.lfdr.de (Postfix) with ESMTP id BDF702CEFFC
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:48:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387641AbgLDOrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:47:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728626AbgLDOrm (ORCPT
+        id S2387826AbgLDOsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:48:01 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21670 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727210AbgLDOsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:47:42 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93134C061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:47:02 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id d9so5555411qke.8
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:47:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=u4EQAHLQ1StzXBCYHDVSsMeAsH8zoc/eEcaaN+3AhSk=;
-        b=WDinJLzV2BCmwbrSoe61S6nE4F9g7KP2b2iDKEwm9I0RjiFbM64zVGnP1ii3fyB/eC
-         hfjH73ZN76OaD23A/PvGMJQTqI95shSZEXtMttymsTNqnoz8yQdYISYzw2mVIJvOWQvZ
-         TKM9jrWo2omsqtUmsznSyXLyxDCGi0tYMsNq/3Efpb0KB9wOtuOV1vu3cf0S3gYrcb5V
-         /61z3sBwjghfso+qgO707uxfi6o6KmxkV6pbpsHn+MKWf/QAnDQnHseAWxLeGM7g+pZJ
-         ckLP63x20njiE6PoPIqXJHfTEOUyY+a09gwtlOA9bgzfHJiHZzunZK1yUlX+zXSbcSb2
-         /Q3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=u4EQAHLQ1StzXBCYHDVSsMeAsH8zoc/eEcaaN+3AhSk=;
-        b=eBR5J6W0QfPsXCjQTyXqGQGWzDbFQdv49nt6Jrt+EQMJnEcmVqgLAqpQKpwhFr29f6
-         mvBhMyn5v7R5heuh34jwrjzmrXnmbvYfi29KjpvqgqufiKb9CuobYRevbjVjT5tAaqC3
-         jp5hnYZWTyFl2/68j2S2Jy1J44LfVTLWoyHVlRvNgVXfZiFFxNzpb3NOvgwse6XDV1Ut
-         4boSiAv/e62pml/Uvp3wzwCWSp9+RnCtM6Rs70IwPNluDk+GCgkhb2hbvqd9yYYxTc1Q
-         h+h0/KvKgPiRKsCQkrr0izv4KwxYOC4Hv5JEcOiE+5w6QjXdweQWl3boFQ1fKhUAPsJC
-         3I5Q==
-X-Gm-Message-State: AOAM532Y8XUPA2eFEAbMj8FkFebIWtBhOQKjpG+IygEXcvqqJxzmpS27
-        KOavl7MRXXtqE6rM5goouaYvfA==
-X-Google-Smtp-Source: ABdhPJyl+2z/Jit+laF4PE23ykeXHQpocKDc+GjPrgKHOpx/6Ejz8Uby2e7q9XH/qd7BNMSnuLKJoQ==
-X-Received: by 2002:a37:9a94:: with SMTP id c142mr8896235qke.480.1607093221750;
-        Fri, 04 Dec 2020 06:47:01 -0800 (PST)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id r48sm5687910qtr.21.2020.12.04.06.47.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 06:47:00 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1klCMN-005su3-LC; Fri, 04 Dec 2020 10:46:59 -0400
-Date:   Fri, 4 Dec 2020 10:46:59 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-Message-ID: <20201204144659.GY5487@ziepe.ca>
-References: <87zh2vd72z.fsf@nanos.tec.linutronix.de>
- <20201203021047.GG3544@piout.net>
- <87pn3qdhli.fsf@nanos.tec.linutronix.de>
- <20201203161622.GA1317829@ziepe.ca>
- <87zh2ubny2.fsf@nanos.tec.linutronix.de>
- <87wnxybmqx.fsf@nanos.tec.linutronix.de>
- <20201203223646.GA1335797@ziepe.ca>
- <877dpxbu66.fsf@nanos.tec.linutronix.de>
- <20201204140819.GX5487@ziepe.ca>
- <20201204143735.GI74177@piout.net>
+        Fri, 4 Dec 2020 09:48:00 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4Ecgvk072487;
+        Fri, 4 Dec 2020 09:47:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=O/3d67bel08Jwwdc8/L+X/AO1Rj/mB+H+1sQLgHRnpI=;
+ b=fKDVzZi95SmJ5nPQMr3VTmYhXf2CK4Yqc/Eq7yL9PQthxm7iqT1VLRW3RKVU2SNyApVi
+ ruhjT+nAxD8GsqzIouYl2zqVShV3b/tWARDw4s+AGnRG74vneaCEFArtUP8Ywn8Ovx5Q
+ gBWAVZu/2qfOq7hwPE20C0G1X2hVHFNe9YWoOrFmByo3tNpaQjnDk5UkavJPmcaevrZJ
+ pOqWSMgIsY1tiNAVnRQDloz+nkWDJLWpVlPhxNsk7wvOmhGlIoteKrf8MGNMbyx2zlip
+ tdEEFEFO1qrEDrKDQMgN+GsRQ0R6SakRUxEGh/qsY1vgNCsoumw5gwc0P7X9PlQ4xf08 Qw== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 357ps78m66-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 09:47:15 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B4Ehc4e010269;
+        Fri, 4 Dec 2020 14:47:14 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma01dal.us.ibm.com with ESMTP id 355rf86k9u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 14:47:14 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B4ElCio26018108
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Dec 2020 14:47:12 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AEC4E7805C;
+        Fri,  4 Dec 2020 14:47:12 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3B8A878060;
+        Fri,  4 Dec 2020 14:47:12 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.163.73.174])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri,  4 Dec 2020 14:47:12 +0000 (GMT)
+Subject: Re: [PATCH v3 04/18] ibmvfc: add alloc/dealloc routines for SCSI
+ Sub-CRQ Channels
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201203020806.14747-1-tyreld@linux.ibm.com>
+ <20201203020806.14747-5-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <b372b257-49d8-16ae-2390-9617222e4cd9@linux.vnet.ibm.com>
+Date:   Fri, 4 Dec 2020 08:47:11 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204143735.GI74177@piout.net>
+In-Reply-To: <20201203020806.14747-5-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_05:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 impostorscore=0
+ priorityscore=1501 clxscore=1015 phishscore=0 bulkscore=0 mlxlogscore=999
+ suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 03:37:35PM +0100, Alexandre Belloni wrote:
-> On 04/12/2020 10:08:19-0400, Jason Gunthorpe wrote:
-> > On Fri, Dec 04, 2020 at 02:02:57PM +0100, Thomas Gleixner wrote:
-> > 
-> > > No magic sign calculation required if you look at it from the actual
-> > > timeline and account the time between write and next second increment
-> > > correctly.
-> > 
-> > Yes, it is equivalent to break things into two values, and does look
-> > to be more understandable as one can read at least one of the values
-> > from a datasheet and the other could be estimated by timing a read
-> > clock
-> > 
-> 
-> If you want to read an RTC accurately, you don't want to time a read,
-> what you want is to time an alarm. This is a common misconception and
-> is, again, why hctosys in its current state is not useful.
+On 12/2/20 8:07 PM, Tyrel Datwyler wrote:
+> @@ -4983,6 +4993,118 @@ static int ibmvfc_init_crq(struct ibmvfc_host *vhost)
+>  	return retrc;
+>  }
+>  
+> +static int ibmvfc_register_scsi_channel(struct ibmvfc_host *vhost,
+> +				  int index)
+> +{
+> +	struct device *dev = vhost->dev;
+> +	struct vio_dev *vdev = to_vio_dev(dev);
+> +	struct ibmvfc_sub_queue *scrq = &vhost->scsi_scrqs.scrqs[index];
+> +	int rc = -ENOMEM;
+> +
+> +	ENTER;
+> +
+> +	scrq->msgs = (struct ibmvfc_sub_crq *)get_zeroed_page(GFP_KERNEL);
+> +	if (!scrq->msgs)
+> +		return rc;
+> +
+> +	scrq->size = PAGE_SIZE / sizeof(*scrq->msgs);
+> +	scrq->msg_token = dma_map_single(dev, scrq->msgs, PAGE_SIZE,
+> +					 DMA_BIDIRECTIONAL);
+> +
+> +	if (dma_mapping_error(dev, scrq->msg_token))
+> +		goto dma_map_failed;
+> +
+> +	rc = h_reg_sub_crq(vdev->unit_address, scrq->msg_token, PAGE_SIZE,
+> +			   &scrq->cookie, &scrq->hw_irq);
+> +
+> +	if (rc) {
+> +		dev_warn(dev, "Error registering sub-crq: %d\n", rc);
+> +		if (rc == H_PARAMETER)
+> +			dev_warn_once(dev, "Firmware may not support MQ\n");
+> +		goto reg_failed;
+> +	}
+> +
+> +	scrq->hwq_id = index;
+> +	scrq->vhost = vhost;
+> +
+> +	LEAVE;
+> +	return 0;
+> +
+> +reg_failed:
+> +	dma_unmap_single(dev, scrq->msg_token, PAGE_SIZE, DMA_BIDIRECTIONAL);
+> +dma_map_failed:
+> +	free_page((unsigned long)scrq->msgs);
+> +	LEAVE;
+> +	return rc;
+> +}
+> +
+> +static void ibmvfc_deregister_scsi_channel(struct ibmvfc_host *vhost, int index)
+> +{
+> +	struct device *dev = vhost->dev;
+> +	struct vio_dev *vdev = to_vio_dev(dev);
+> +	struct ibmvfc_sub_queue *scrq = &vhost->scsi_scrqs.scrqs[index];
+> +	long rc;
+> +
+> +	ENTER;
+> +
+> +	do {
+> +		rc = plpar_hcall_norets(H_FREE_SUB_CRQ, vdev->unit_address,
+> +					scrq->cookie);
+> +	} while (rc == H_BUSY || H_IS_LONG_BUSY(rc));
+> +
+> +	if (rc)
+> +		dev_err(dev, "Failed to free sub-crq[%d]: rc=%ld\n", index, rc);
+> +
+> +	dma_unmap_single(dev, scrq->msg_token, PAGE_SIZE, DMA_BIDIRECTIONAL);
+> +	free_page((unsigned long)scrq->msgs);
+> +	LEAVE;
+> +}
+> +
+> +static int ibmvfc_init_sub_crqs(struct ibmvfc_host *vhost)
+> +{
+> +	int i, j;
+> +
+> +	ENTER;
+> +
+> +	vhost->scsi_scrqs.scrqs = kcalloc(IBMVFC_SCSI_HW_QUEUES,
+> +					  sizeof(*vhost->scsi_scrqs.scrqs),
+> +					  GFP_KERNEL);
+> +	if (!vhost->scsi_scrqs.scrqs)
+> +		return -1;
+> +
+> +	for (i = 0; i < IBMVFC_SCSI_HW_QUEUES; i++) {
+> +		if (ibmvfc_register_scsi_channel(vhost, i)) {
+> +			for (j = i; j > 0; j--)
+> +				ibmvfc_deregister_scsi_channel(vhost, j - 1);
+> +			kfree(vhost->scsi_scrqs.scrqs);
+> +			vhost->scsi_scrqs.scrqs = NULL;
+> +			vhost->scsi_scrqs.active_queues = 0;
+> +			LEAVE;
+> +			return -1;
+> +		}
+> +	}
+> +
+> +	LEAVE;
+> +	return 0;
+> +}
+> +
+> +static void ibmvfc_release_sub_crqs(struct ibmvfc_host *vhost)
+> +{
+> +	int i;
+> +
+> +	ENTER;
+> +	if (!vhost->scsi_scrqs.scrqs)
+> +		return;
+> +
+> +	for (i = 0; i < IBMVFC_SCSI_HW_QUEUES; i++)
+> +		ibmvfc_deregister_scsi_channel(vhost, i);
+> +
+> +	kfree(vhost->scsi_scrqs.scrqs);
+> +	vhost->scsi_scrqs.scrqs = NULL;
+> +	vhost->scsi_scrqs.active_queues = 0;
+> +	LEAVE;
+> +}
+> +
+>  /**
+>   * ibmvfc_free_mem - Free memory for vhost
+>   * @vhost:	ibmvfc host struct
+> @@ -5239,6 +5361,12 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+>  		goto remove_shost;
+>  	}
+>  
+> +	if (vhost->mq_enabled) {
+> +		rc = ibmvfc_init_sub_crqs(vhost);
+> +		if (rc)
+> +			dev_warn(dev, "Failed to allocate Sub-CRQs. rc=%d\n", rc);
 
-I mean literatally time the excution of something like a straight
-read. This will give some estimate of the bus latency and it should
-linearly relate to the bus latency for a write.
+So, I think if you end up down this path, you will have:
 
-The driver could time configuring an alarm as well, if it likes.
+vhost->scsi_scrqs.scrqs == NULL
+vhost->scsi_scrqs.active_queues == 0
 
-> And because people using systohc are definitively using hctosys, this
-> will still result in an up to 500ms error in the current time.
-> As said, the price to pay for a proper solution will be an up to one
-> second delay when booting which is not acceptable for most users.
+And you proceed with discovery. You will proceed with enquiry and channel setup.
+Then, I think you could end up in queuecommand doing this:
 
-IIRC I had fixed this in some embedded system long ago by having
-hctosys reading seconds time during boot, then in parallel using the
-'up to one second' method to get the sub-second resolution.
+evt->hwq = hwq % vhost->scsi_scrqs.active_queues;
 
-This means there was a sub second non-monotonicity in the realtime
-clock, but the system was designed to tolerate this as it also ran a
-modified NTP which would unconditionally step the clock on first sync
-if it was over .1s out of alignment.
+And that is a divide by zero...
 
-The goal was to bring the system to correct time as quickly as
-possible in as many cases as possible, not to maintain the
-monotonicity of the realtime clock.
+I wonder if it would be better in this scenario where registering the sub crqs fails,
+if you just did:
 
-> Is "fixing" systohc worth the effort and the maintenance cost?
+vhost->do_enquiry = 0;
+vhost->mq_enabled = 0;
+vhost->using_channels = 0;
 
-As I said before, if there is no desire to address the read side then
-the whole thing should be abandoned.
+It looks like you only try to allocate the subcrqs in probe, so if that fails, we'd
+never end up using mq, so just disabling in this case seems reasonable.
 
-Jason 
+Thanks,
+
+Brian
+
+-- 
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
+
