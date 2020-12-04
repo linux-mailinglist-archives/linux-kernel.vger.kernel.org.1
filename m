@@ -2,160 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B162CE94C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFEE2CE951
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728698AbgLDINu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:13:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727402AbgLDINu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:13:50 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53704C061A51;
-        Fri,  4 Dec 2020 00:13:10 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id h7so3410213pjk.1;
-        Fri, 04 Dec 2020 00:13:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=3fbzFtODlG6DhIFOuWtZWUtQuIVTw1JtB82OhelR1f8=;
-        b=hiaCSk2RB4ZbZZ7qUDKx5WuheWKkTpmcIvHy+cDMvtWoe2wDZGGmS/CTLyju1KF2h8
-         wrdeWY5t6bUGml15IUYpkpCB3LWc8lGpFbHfR3bWaCjZlD3sXcH9T/3RpltgStc6Koto
-         1j8Cz+Cj3tG5sw/UmjdiDUMINMSPhCVp5JuxGyUJtGxH4PAe0RR8GUSCV82Zd8p/Yh41
-         BzYOl3j+6ON8TZJFpdErKBQway7qpqf5hq+9ZcktbSgtVO/++tslXRwcBKuYp/G8Kldq
-         AlgSDTdbZ8gam9IwQZQDkNGSFEc5lAR9DYMhIO6aym5RiP/KPWlSuKDaVLgbPXhM+Sm+
-         jnVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=3fbzFtODlG6DhIFOuWtZWUtQuIVTw1JtB82OhelR1f8=;
-        b=oY2aBJKp5hYSyLJCNOnvLg6Vz4qg1EUJN5VPyrFAzRZ7S56IPY+oNKLv+sZgfjghM0
-         kKa2IFRtTnMsHh6QjAyfAryfXWhRgYDlr6IL47w+I/+4EjJECEnblBVMvPRqGfBqmE0i
-         l20a6qeT6CwSUQXUH5tsIMnnyB6iM7yrQioGy+DWKneb7Pv75jFrk6FoAgIJIqya9dQC
-         vEqhMY1DrvD9c9EENOObCPiN2Mu1YlZAtmvmytsZ3RZs6RdmEiQ1xkx5m/ZO7PX+FPTL
-         g2ehTByEQ6I+5z6rnLh/ewlEZ3btJbpEiE7aG5LdGZcpnqsfMeEPz5CiTV9VkJEmUQ6S
-         YLQA==
-X-Gm-Message-State: AOAM532JT858ZyxOMh+NtSzkg5fNoKzeD8KIaIN192F7A6J+Ba9OyOM4
-        vVE14HSOgDqyj6SkzDyQmSuXR+m4kLs=
-X-Google-Smtp-Source: ABdhPJxFGKvxSujUjSN4DbHCJiDIqCfKt/Gd/ih5Y1oXid6kspH8VxuaLkxN8iSd6XopGq0+v05kZA==
-X-Received: by 2002:a17:902:c395:b029:da:9aca:c972 with SMTP id g21-20020a170902c395b02900da9acac972mr2815306plg.32.1607069588337;
-        Fri, 04 Dec 2020 00:13:08 -0800 (PST)
-Received: from localhost ([1.129.136.83])
-        by smtp.gmail.com with ESMTPSA id n68sm4177105pfn.161.2020.12.04.00.13.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 00:13:07 -0800 (PST)
-Date:   Fri, 04 Dec 2020 18:12:58 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v8 11/12] mm/vmalloc: Hugepage vmalloc mappings
-To:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "Jonathan.Cameron@Huawei.com" <Jonathan.Cameron@Huawei.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "lizefan@huawei.com" <lizefan@huawei.com>
-References: <20201128152559.999540-1-npiggin@gmail.com>
-        <20201128152559.999540-12-npiggin@gmail.com>
-        <e9d3a50e1b18f9ea1cdfdc221bef75db19273417.camel@intel.com>
-In-Reply-To: <e9d3a50e1b18f9ea1cdfdc221bef75db19273417.camel@intel.com>
+        id S1728811AbgLDIOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:14:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728096AbgLDIOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 03:14:37 -0500
+From:   Arnd Bergmann <arnd@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Luben Tuikov <luben.tuikov@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Roman Li <Roman.Li@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Mauro Rossi <issor.oruam@gmail.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] drm/amdgpu: make DRM_AMD_DC x86-only again
+Date:   Fri,  4 Dec 2020 09:13:43 +0100
+Message-Id: <20201204081349.1182302-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Message-Id: <1607068679.lfd133za4h.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Edgecombe, Rick P's message of December 1, 2020 6:21 am:
-> On Sun, 2020-11-29 at 01:25 +1000, Nicholas Piggin wrote:
->> Support huge page vmalloc mappings. Config option
->> HAVE_ARCH_HUGE_VMALLOC
->> enables support on architectures that define HAVE_ARCH_HUGE_VMAP and
->> supports PMD sized vmap mappings.
->>=20
->> vmalloc will attempt to allocate PMD-sized pages if allocating PMD
->> size
->> or larger, and fall back to small pages if that was unsuccessful.
->>=20
->> Allocations that do not use PAGE_KERNEL prot are not permitted to use
->> huge pages, because not all callers expect this (e.g., module
->> allocations vs strict module rwx).
->=20
-> Several architectures (x86, arm64, others?) allocate modules initially
-> with PAGE_KERNEL and so I think this test will not exclude module
-> allocations in those cases.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Ah, thanks. I guess archs must additionally ensure that their
-PAGE_KERNEL allocations are suitable for huge page mappings before
-enabling the option.
+As the DRM_AMD_DC_DCN3_0 code was x86-only and fails to build on
+arm64, merging it into DRM_AMD_DC means that the top-level symbol
+is now x86-only as well.
 
-If there is interest from those archs to support this, I have an
-early (un-posted) patch that adds an explicit VM_HUGE flag that could
-override the pessemistic arch default. It's not much trouble to add this=20
-to the large system hash allocations. It's very out of date now but I=20
-can at least give what I have to anyone doing an arch support that
-wants it.
+Compilation fails on arm64 with clang-12 with
 
->=20
-> [snip]
->=20
->> @@ -2400,6 +2453,7 @@ static inline void set_area_direct_map(const
->> struct vm_struct *area,
->>  {
->>  	int i;
->> =20
->> +	/* HUGE_VMALLOC passes small pages to set_direct_map */
->>  	for (i =3D 0; i < area->nr_pages; i++)
->>  		if (page_address(area->pages[i]))
->>  			set_direct_map(area->pages[i]);
->> @@ -2433,11 +2487,12 @@ static void vm_remove_mappings(struct
->> vm_struct *area, int deallocate_pages)
->>  	 * map. Find the start and end range of the direct mappings to
->> make sure
->>  	 * the vm_unmap_aliases() flush includes the direct map.
->>  	 */
->> -	for (i =3D 0; i < area->nr_pages; i++) {
->> +	for (i =3D 0; i < area->nr_pages; i +=3D 1U << area->page_order) {
->>  		unsigned long addr =3D (unsigned long)page_address(area-
->> >pages[i]);
->>  		if (addr) {
->> +			unsigned long page_size =3D PAGE_SIZE << area-
->> >page_order;
->>  			start =3D min(addr, start);
->> -			end =3D max(addr + PAGE_SIZE, end);
->> +			end =3D max(addr + page_size, end);
->>  			flush_dmap =3D 1;
->>  		}
->>  	}
->=20
-> The logic around this is a bit tangled. The reset of the direct map has
-> to succeed, but if the set_direct_map_() functions require a split they
-> could fail. For x86, set_memory_ro() calls on a vmalloc alias will
-> mirror the page size and permission on the direct map and so the direct
-> map will be broken to 4k pages if it's a RO vmalloc allocation.
->=20
-> But after this, module vmalloc()'s could have large pages which would
-> result in large RO pages on the direct map. Then it could possibly fail
-> when trying to reset a 4k page out of a large RO direct map mapping.=20
->=20
-> I think either module allocations need to be actually excluded from
-> having large pages (seems like you might have seen other issues as
-> well?), or another option could be to use the changes here:
-> https://lore.kernel.org/lkml/20201125092208.12544-4-rppt@kernel.org/
-> to reset the direct map for a large page range at a time for large=20
-> vmalloc pages.
->=20
+drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn30/display_mode_vba_30.c:3641:6: error: stack frame size of 2416 bytes in function 'dml30_ModeSupportAndSystemConfigurationFull' [-Werror,-Wframe-larger-than=]
+void dml30_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_lib)
 
-Right, x86 would have to do something about that before enabling.
-A VM_HUGE flag might be quick and easy but maybe other options are not=20
-too difficult.
+I tried to see if the stack usage can be reduced, but this is code
+that is described as "This file is gcc-parsable HW gospel, coming
+straight from HW engineers." and is written in a way that is inherently
+nonportable and not meant to be understood by humans.
 
-Thanks,
-Nick
+There are probably no non-x86 users of this code, so simplify
+the dependency list accordingly.
+
+Fixes: 20f2ffe50472 ("drm/amdgpu: fold CONFIG_DRM_AMD_DC_DCN3* into CONFIG_DRM_AMD_DC_DCN (v3)")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/amd/display/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/display/Kconfig b/drivers/gpu/drm/amd/display/Kconfig
+index 797b5d4b43e5..54aa50d4deba 100644
+--- a/drivers/gpu/drm/amd/display/Kconfig
++++ b/drivers/gpu/drm/amd/display/Kconfig
+@@ -6,7 +6,7 @@ config DRM_AMD_DC
+ 	bool "AMD DC - Enable new display engine"
+ 	default y
+ 	select SND_HDA_COMPONENT if SND_HDA_CORE
+-	select DRM_AMD_DC_DCN if (X86 || PPC64 || (ARM64 && KERNEL_MODE_NEON)) && !(KCOV_INSTRUMENT_ALL && KCOV_ENABLE_COMPARISONS)
++	select DRM_AMD_DC_DCN if X86 && !(KCOV_INSTRUMENT_ALL && KCOV_ENABLE_COMPARISONS)
+ 	help
+ 	  Choose this option if you want to use the new display engine
+ 	  support for AMDGPU. This adds required support for Vega and
+-- 
+2.27.0
+
