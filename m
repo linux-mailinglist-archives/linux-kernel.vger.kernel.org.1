@@ -2,143 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F4C2CF715
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F37A2CF71D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgLDWre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 17:47:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLDWrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 17:47:33 -0500
-Date:   Fri, 4 Dec 2020 22:46:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607122012;
-        bh=bsY5NfMnQ8G7v4Ar6KhgpsNhT/fd92SmlhSMiXZm9zo=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q4Cl75IHI1hixv8/YolFYhbHKnnWDHlHqZmkVFMWKOIYd2UV9HHhouVD0IZbdnrjn
-         KMu8r9Lu530EZBtrRMu33J98BhfRJQwXcNqyRH6qI65FmD+bLje+QUxi42PPYcaYFr
-         ucoaN3O5QJFgF8rDgCYYdsCf3qUEqtA3yw2PrEKq50b9073/lSZEYXMWZfD6S7HWjp
-         9E9t6FLRH/+2Kow2wcgIdoWCI0NibBqBUw3LeTs3/NS7ymkaR1f56V/MUUkK9DpOQ8
-         Zc5Jsk0wUm02gL6u1Zb68FIueT3xJNX4sZDpx7Te+KBCqwWLTUqHjgtKK/E2PJcboz
-         AJgDXa70c9tTA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com, robh+dt@kernel.org,
-        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 3/7] spi: qspi-tegra: Add support for Tegra210 QSPI
- controller
-Message-ID: <20201204224648.GI4558@sirena.org.uk>
-References: <1606857168-5839-1-git-send-email-skomatineni@nvidia.com>
- <1606857168-5839-4-git-send-email-skomatineni@nvidia.com>
- <20201202172721.GL5560@sirena.org.uk>
- <2257bc33-80ef-a6d8-8542-480defa32937@nvidia.com>
- <be8291fc-8e69-b577-d8f4-20aeca0b45cc@nvidia.com>
- <20201204185223.GF4558@sirena.org.uk>
- <df8d6f25-c8cc-3b41-e4df-8e26c9b93475@nvidia.com>
+        id S1726670AbgLDWxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 17:53:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726294AbgLDWxe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 17:53:34 -0500
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDFCC061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 14:52:54 -0800 (PST)
+Received: by mail-vs1-xe42.google.com with SMTP id z16so4176322vsp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 14:52:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=APDwfrMJO9jpMmlvJs1QQfYlFxkBjLtMOQGI8Flupio=;
+        b=vlYT2PP85xGxgcq4Dr0LjAqfSnHTJbDN9Qw9s716INhVlK2qIKh97cH0so65YWekJV
+         ZkCddAaWBBeVyc79V1Qsk0bwBXFOYV/fbRRVmb3hqZ90wFkxjB6PyGd9Fl/4pFQAhhjZ
+         AM6IB7GFEBqHL1Jg9yyWo4W0Nb7mb6UJHeOQir6VApItA3LGKTPi0G3m3U6izolVWg8S
+         lneowIrUY4bLqR7zyKu8N2F2ZMtJSwvpwOZjKssZqamx23Iv78VtDQw/lQdiC6Po0aWG
+         caBNxURcOkyiTRCfZKEEQPiFtZ4Uo4eYHfBI8tK9v8an2dHQPAwNADLFINV3H5bQRJ9b
+         cZUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=APDwfrMJO9jpMmlvJs1QQfYlFxkBjLtMOQGI8Flupio=;
+        b=AaNQ/H9XW9OeEf6wy3A5ybdbEZ2fdstL2wVVQ3iLIcocSCuZmIwL8lM9wb8dTABFk2
+         alP+6cTHDAZIQT02oKM5Qp3zKvRZ+hyAILxBjTpqv/W/P2ueIXDQ33lXOWWRG4kDS8FG
+         Xa4rtIRN0nYAgUhKN6Fgz/xjmGRvdGft4VNOahrBbYRWilO93MDS4J4ingggPLZgep8H
+         0SGPim822Bt92ls3gVCT8KK/3Gkv7bCsNxsyVi5eXzGRFglvLeuHBMDowU2YbayZeC+2
+         JSpa71+MqEqhuGHwUIHdvmzdPMgg2Dtv6vZx0jOA0+qfaUpEvM3RnvJti5rTsJ8cIjx1
+         AYeQ==
+X-Gm-Message-State: AOAM532LiyvYsgasW/vLsgonZlSmPtIHKMOwm8sFio2Yz5HTV7xI9pRj
+        e4NJququni78WA0g81UZp9WhrEde4M2+nZ1zrpwlBA==
+X-Google-Smtp-Source: ABdhPJyEOufu1IYsUQg6fXqokcGK+WOlACM5vK4uRoSLdaEQytBNywFXfXG2M7YwyvYjCJIK/G4zrq6Skn/z29jgixU=
+X-Received: by 2002:a67:ec3:: with SMTP id 186mr6679107vso.14.1607122373106;
+ Fri, 04 Dec 2020 14:52:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LYw3s/afESlflPpp"
-Content-Disposition: inline
-In-Reply-To: <df8d6f25-c8cc-3b41-e4df-8e26c9b93475@nvidia.com>
-X-Cookie: Not a flying toy.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201201213707.541432-1-samitolvanen@google.com>
+ <20201203112622.GA31188@willie-the-truck> <CABCJKueby8pUoN7f5=6RoyLSt4PgWNx8idUej0sNwAi0F3Xqzw@mail.gmail.com>
+ <20201203182252.GA32011@willie-the-truck> <CAKwvOdnvq=L=gQMv9MHaStmKMOuD5jvffzMedhp3gytYB6R7TQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdnvq=L=gQMv9MHaStmKMOuD5jvffzMedhp3gytYB6R7TQ@mail.gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Fri, 4 Dec 2020 14:52:41 -0800
+Message-ID: <CABCJKufgkq+k0DeYaXrzjXniy=T_N4sN1bxoK9=cUxTZN5xSVQ@mail.gmail.com>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, Jian Cai <jiancai@google.com>,
+        Kristof Beyls <Kristof.Beyls@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 3, 2020 at 2:32 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> So I'd recommend to Sami to simply make the Kconfig also depend on
+> clang's integrated assembler (not just llvm-nm and llvm-ar).
 
---LYw3s/afESlflPpp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sure, sounds good to me. What's the preferred way to test for this in Kconfig?
 
-On Fri, Dec 04, 2020 at 01:04:46PM -0800, Sowjanya Komatineni wrote:
-> On 12/4/20 10:52 AM, Mark Brown wrote:
-> > On Thu, Dec 03, 2020 at 04:22:54PM -0800, Sowjanya Komatineni wrote:
+It looks like actually trying to test if we have an LLVM assembler
+(e.g. using $(as-instr,.section
+".linker-options","e",@llvm_linker_options)) doesn't work as Kconfig
+doesn't pass -no-integrated-as to clang here. I could do something
+simple like $(success,echo $(LLVM) $(LLVM_IAS) | grep -q "1 1").
 
-> > > Also unpack mode needs to manually put the bytes together from read data to
-> > > SPI core rx buffer.
-> > Could you be more explicit here, I don't know what "unpack mode" is?
+Thoughts?
 
-> Tegra SPI/QSPI controller support packed mode and unpacked mode based on
-> bits per word in a transfer.
-
-> Packed Mode: When enabled, all 32-bits of data in FIFO contains valid data
-> packets of 8-bit/16-bit/32-bit length.
-
-> Non packed mode: For transfers like 24-bit data for example we disable
-> packed mode and only 24-bits of FIFO data are valid and other bits are 0's.
-> So during TX for FIFO filling and during receive when FIFO data is read, SW
-> need to skip invalid bits and should align order from/to SPI core tx/rx
-> buffers.
-
-That's pretty surprising - is it really worth the overhead of using
-non-packed mode compared to just doing the transfer in 8 bit mode?  In
-any case it seems better to only do the memcpy() stuff in the cases
-where it's actually required since it looks like fairly obvious overhead
-otherwise, and the code could use some comments explaining why we're
-doing this.  It may actually be that the implementation is already doing
-the most sensible thing and it just needs more comments explaining why
-that's the case.
-
-> > This is not a good idea, attempting to reverse engineer the message and
-> > guess at the contents isn't going to be robust and if it's useful it
-> > will if nothing else lead to a bunch of duplicated code in drivers as
-> > every device that has this feature will need to reimplment it.  Instead
-> > we should extend the framework so there's explicit support for
-> > specifying transfers that are padding bytes, then there's no guesswork
-> > that can go wrong and no duplicated code between drivers.  A flag in the
-> > transfer struct might work?
-
-> As per QSPI spec, Dummy bytes for initial read latency are always FF's. So
-> its not like guessing the contents.
-
-The guesswork I was thinking of was deciding to do this rather than the
-pattern being output - the bit where the driver figures out that the
-intent of that transfer is to provide dummy bytes.
-
-> Tegra QSPI controller HW supports transferring dummy bytes (sending FF's
-> after address) based on dummy clock cycles programmed.
-
-> To allow Tegra QSPI HW transfer dummy bytes directly, controller driver need
-> number of dummy bytes / actual dummy clock cycles which core driver gets
-> from flash sfdp read data.
-
-Sure, the use case makes sense.
-
-> So, we can add flag to transfer and based on this flag if controller HW
-> supports then we can ignore filling dummy bytes in spi_mem_exec_op but
-> controller driver still needs dummy_cycles value. So probably along with
-> flag, do you agree to have dummy_cycle as part of transfer struct which can
-> be set to nor->read_dummy value?
-
-Yeah, or given that perhaps just skip the flag and do this by specifying
-dummy_cycles.  Or if this is always a multiple of 8 (which I guess it
-must be to do it using normal byte transfers) perhaps just have the flag
-and use the existing length field to infer the number of cycles?  I've
-not actually looked at the details at all so one or both of those
-suggestions may not actually make sense, please take them with a grain
-of salt.
-
-I'd recommend doing this as a followup to introducing the base driver,
-start off with the less efficient explicit writes and then add the API
-and add the support in the driver - that way the new API can be
-reviewed without it holding up the rest of the driver.
-
---LYw3s/afESlflPpp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/KvFcACgkQJNaLcl1U
-h9C5Wwf+IgFYd/IG6f/dcoYhADwDmE/1++KpwKFrAKBJEXYM3QMFPfiJR0txPYM9
-uOzg0YiE2kPPvRI4BeW+/y6yrM+0tAOv3rVe3RFw+k19aYAZw6o0fiGTe80DoGGA
-kGjF7CFkkxM8SdFAmCPgn2fh6VDiWj3PENkxtwb+ZtWV7xTEHhvQ4pZTvFZJ7qSe
-blOPDnsp8cByOGBnsNTHE2GJfhxqTCCmFW+k5V2zPcrXcgXab4WOClK1nVo1I+mr
-FZldTiEb8JxOjf0g+DRXteSfSqPqM1XZjw3PB/zqiB5/oWhH0PqDcmDI2j2Q/mHT
-6s0HUvf3xDbMLhLh8ujctuj5Is02yg==
-=k0ba
------END PGP SIGNATURE-----
-
---LYw3s/afESlflPpp--
+Sami
