@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D692CEE76
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2BBF2CEE7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388173AbgLDMzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 07:55:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387724AbgLDMzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:55:40 -0500
-Date:   Fri, 4 Dec 2020 14:54:55 +0200
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Greg KH <gregkh@linuxfoundation.org>, jgg@nvidia.com,
-        kuba@kernel.org
-Cc:     Dan Williams <dan.j.williams@intel.com>, broonie@kernel.org,
-        lgirdwood@gmail.com, davem@davemloft.net,
-        Kiran Patil <kiran.patil@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201204125455.GI16543@unreal>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
- <X8os+X515fxeqefg@kroah.com>
+        id S1729606AbgLDM5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 07:57:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727711AbgLDM5o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 07:57:44 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED914C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 04:56:57 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id h7so3742043pjk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 04:56:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KfH3iRIxFYJ1fhTiZ1PPzOKH/EKjKgIPU7+T1IHn0PA=;
+        b=ScTO4PXm9Z+w4pOvBzJ8JNPEN/ZIMlTo2uvJW5qX/+5qq3KJCdzJPC90/tIAkfwrLh
+         eWFJR26XvnQwFU7rmOiZHTqePXUAxwJOFN+YpNdFHrMPbaL79b7jVIUNA8yDtYvQOd3Y
+         ZUVqZwyfjweORrfN3lM2fAAtvDb7pPcTw0NySo3tX1PWC4KzX3+FMAg4kUNJyval0nUh
+         sJSPNjbDUrpmYbRj8UdkcZzh9ihcxpAG2LYs6bvN4MRk7PJ3zVVs21JhRng1Ex54aYqS
+         JlatRB+swyOymBnIP3hBl5pUCQ1Diu+VMB+oUJb1zVDfT3MRAE6H5Rk9aTrt/5A1VP5W
+         SwFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KfH3iRIxFYJ1fhTiZ1PPzOKH/EKjKgIPU7+T1IHn0PA=;
+        b=WLb0fPWOD0qdr3PgQupPMcxuvawEtlk7KKRf9MbdahuRVvxZ7z+KcWaNkpez66xcKU
+         Hw++HcLKGAbPKaWwdtAjY7OA+vsBdgrQWAQ/w6Lmapm/mR8eTy9zg957YSzxaYJHfGh2
+         pkutmV7FwlZGwDkTfxwS8CTOSfD+fKAYE3hKF5NsRzZG+X579FcxYSZMtxmmgrTA7v59
+         oKsq87eXmSoNzRlRMgCBoM4wA2cXO1ibaaY3i/s8SZP4NN88d7jlmdYe82WX0yExMjSt
+         28b53UMWFtFN5FvDuz4jCkaXbrswAFSYEeLXlJi7veqVk1t1Pr+IjR9SXXDp9gTy02yk
+         NIiQ==
+X-Gm-Message-State: AOAM5313Yl//wHBMQCHJjt/n8wtiFWgYFwLNUfYaP284k0a+97lpYGul
+        J2JKwRfSyykeZyL2ORpLVgo4FA==
+X-Google-Smtp-Source: ABdhPJz22BO+t4/sZnopHJiIS9RiZj23SNT2TysygLEzOwTMFHcK4mKdX9JNQSKZ2zbwifnuL0IH/g==
+X-Received: by 2002:a17:90a:a10c:: with SMTP id s12mr4117070pjp.86.1607086617536;
+        Fri, 04 Dec 2020 04:56:57 -0800 (PST)
+Received: from localhost.bytedance.net ([103.136.220.97])
+        by smtp.gmail.com with ESMTPSA id a124sm4950624pfd.43.2020.12.04.04.56.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Dec 2020 04:56:56 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     akpm@linux-foundation.org, vbabka@suse.cz
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v2] mm/page_alloc: speeding up the iteration of max_order
+Date:   Fri,  4 Dec 2020 20:56:40 +0800
+Message-Id: <20201204125640.51804-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X8os+X515fxeqefg@kroah.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 01:35:05PM +0100, Greg KH wrote:
-> On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
-> > From: Dave Ertman <david.m.ertman@intel.com>
-> >
-> > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
-> > It enables drivers to create an auxiliary_device and bind an
-> > auxiliary_driver to it.
-> >
-> > The bus supports probe/remove shutdown and suspend/resume callbacks.
-> > Each auxiliary_device has a unique string based id; driver binds to
-> > an auxiliary_device based on this id through the bus.
-> >
-> > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
-> > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > Reviewed-by: Martin Habets <mhabets@solarflare.com>
-> > Link: https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > ---
-> > This patch is "To:" the maintainers that have a pending backlog of
-> > driver updates dependent on this facility, and "Cc:" Greg. Greg, I
-> > understand you have asked for more time to fully review this and apply
-> > it to driver-core.git, likely for v5.12, but please consider Acking it
-> > for v5.11 instead. It looks good to me and several other stakeholders.
-> > Namely, stakeholders that have pressure building up behind this facility
-> > in particular Mellanox RDMA, but also SOF, Intel Ethernet, and later on
-> > Compute Express Link.
-> >
-> > I will take the blame for the 2 months of silence that made this awkward
-> > to take through driver-core.git, but at the same time I do not want to
-> > see that communication mistake inconvenience other parties that
-> > reasonably thought this was shaping up to land in v5.11.
-> >
-> > I am willing to host this version at:
-> >
-> > git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux tags/auxiliary-bus-for-5.11
-> >
-> > ...for all the independent drivers to have a common commit baseline. It
-> > is not there yet pending Greg's Ack.
->
-> Here is now a signed tag for everyone else to pull from and build on top
-> of, for 5.11-rc1, that includes this patch, and the 3 others I sent in
-> this series.
->
-> Please let me know if anyone has any problems with this tag.  I'll keep
-> it around until 5.11-rc1 is released, after which it doesn't make any
-> sense to be there.
+When we free a page whose order is very close to MAX_ORDER and greater
+than pageblock_order, it wastes some CPU cycles to increase max_order
+to MAX_ORDER one by one and check the pageblock migratetype of that page
+repeatedly especially when MAX_ORDER is much larger than pageblock_order.
 
-Thanks, pulled to mlx5-next
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+Changes in v2:
+ - Rework the code suggested by Vlastimil. Thanks.
 
-Jason, Jakob,
+ mm/page_alloc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Can you please pull that mlx5-next branch to your trees?
-git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index f91df593bf71..56e603eea1dd 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1002,7 +1002,7 @@ static inline void __free_one_page(struct page *page,
+ 	struct page *buddy;
+ 	bool to_tail;
+ 
+-	max_order = min_t(unsigned int, MAX_ORDER, pageblock_order + 1);
++	max_order = min_t(unsigned int, MAX_ORDER - 1, pageblock_order);
+ 
+ 	VM_BUG_ON(!zone_is_initialized(zone));
+ 	VM_BUG_ON_PAGE(page->flags & PAGE_FLAGS_CHECK_AT_PREP, page);
+@@ -1015,7 +1015,7 @@ static inline void __free_one_page(struct page *page,
+ 	VM_BUG_ON_PAGE(bad_range(zone, page), page);
+ 
+ continue_merging:
+-	while (order < max_order - 1) {
++	while (order < max_order) {
+ 		if (compaction_capture(capc, page, order, migratetype)) {
+ 			__mod_zone_freepage_state(zone, -(1 << order),
+ 								migratetype);
+@@ -1041,7 +1041,7 @@ static inline void __free_one_page(struct page *page,
+ 		pfn = combined_pfn;
+ 		order++;
+ 	}
+-	if (max_order < MAX_ORDER) {
++	if (order < MAX_ORDER - 1) {
+ 		/* If we are here, it means order is >= pageblock_order.
+ 		 * We want to prevent merge between freepages on isolate
+ 		 * pageblock and normal pageblock. Without this, pageblock
+@@ -1062,7 +1062,7 @@ static inline void __free_one_page(struct page *page,
+ 						is_migrate_isolate(buddy_mt)))
+ 				goto done_merging;
+ 		}
+-		max_order++;
++		max_order = order + 1;
+ 		goto continue_merging;
+ 	}
+ 
+-- 
+2.11.0
 
-Thanks
