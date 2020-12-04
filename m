@@ -2,48 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458CF2CF2D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 574302CF2CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388554AbgLDRKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:10:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388548AbgLDRKq (ORCPT
+        id S1731207AbgLDRKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:10:40 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48740 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731192AbgLDRKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:10:46 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7427C061A55
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 09:09:57 -0800 (PST)
-Message-Id: <20201204170805.430113367@linutronix.de>
+        Fri, 4 Dec 2020 12:10:39 -0500
+Message-Id: <20201204170805.535920431@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607101796;
+        s=2020; t=1607101797;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Bipj6mIxF9JiCL+9yiLcDvRzSrC35SSBNjPV63nG7Hw=;
-        b=xsyuN+xvQbSeFEjDr9k11KjmG8+U8ye1f5f0Vcb+GDCVfi2heA+uFiC5F1NBnVaEGUUHdT
-        5fya6ujJESuwC35A2efxp9aDMBucHP4++/LYmUoODpn0OYO1/1fUqbuUu0HqRbJiaAMjM1
-        yoX8QmPcdp7vYLLJVnHS0S8c2KiMmFFz+q3jFYe3H3A2rZY+PPATElmvqPSYeUuOl0S0Rp
-        TN1j3SUGnytzmUP4BALUjtmvADIa3FfeENj9L/MbI30S+8D98el6rjKp88smIxsvOvrAUc
-        oojPSbrCRK8GKbHg4id6B8HdZy8DsdyzrzsBEBLX/76Y9jFvV1ONkcc8i21TLw==
+        bh=sCjEAo7PXYGtuOfndYeVtCu06KHMeYV/70/xL6X2eNE=;
+        b=X46fflSP9QJOpjXm6VyXn1JcE3XXNe9KsBh6Zmej1XoL4IdzYEX8jgrEYUs1cnq03QHfzM
+        Z8IICR3PYyaVR/ebL2/IHROagyZ2/XwPdxieYhdZwqNgkIVWwbGVwfUCkR7GHBspDLnIc2
+        OWJSVWlrCPpj1Iexx+dJjItmiQvRZ4BjazHJ5mrAiC+zHTR8slkUWHtI8oucMkTfsBWv9P
+        095TeL6ZkkTw2M8gYuUjReo5njDBMdnEFAv9rHCEDTRfUHgrvdVDhk7I6zV/oDTh5Dw2Gd
+        58/6Ly708BYi1YvEp/aeCScoU6I/tGemCf3OJG1bdnaoKmVoWN2vpxOvEKHZCQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607101796;
+        s=2020e; t=1607101797;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Bipj6mIxF9JiCL+9yiLcDvRzSrC35SSBNjPV63nG7Hw=;
-        b=kjNCitz1tg/3VOCOjDidhroaZrMVv1VDh6IBtgFLz1OgWbRLG2i0zSCI99SAFEG06F3yjS
-        SozJtsO2bgXTyMDA==
-Date:   Fri, 04 Dec 2020 18:01:58 +0100
+        bh=sCjEAo7PXYGtuOfndYeVtCu06KHMeYV/70/xL6X2eNE=;
+        b=ifQddLxCsxf9Ol3XrASvWZOKqQarU2oHkn+iYyno8+PLCRgxjmKOxBVgj/RJOdELnWNldb
+        tMBWrJYxJ4mDx2BQ==
+Date:   Fri, 04 Dec 2020 18:01:59 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Paul McKenney <paulmck@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [patch V2 7/9] softirq: Replace barrier() with cpu_relax() in
- tasklet_unlock_wait()
+Subject: [patch V2 8/9] tasklets: Use static inlines for stub implementations
 References: <20201204170151.960336698@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,26 +50,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-A barrier() in a tight loop which waits for something to happen on a remote
-CPU is a pointless exercise. Replace it with cpu_relax() which allows HT
-siblings to make progress.
+Inlines exist for a reason.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/interrupt.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/interrupt.h |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 --- a/include/linux/interrupt.h
 +++ b/include/linux/interrupt.h
-@@ -668,7 +668,8 @@ static inline void tasklet_unlock(struct
- 
- static inline void tasklet_unlock_wait(struct tasklet_struct *t)
- {
--	while (test_bit(TASKLET_STATE_RUN, &(t)->state)) { barrier(); }
-+	while (test_bit(TASKLET_STATE_RUN, &(t)->state))
-+		cpu_relax();
+@@ -672,9 +672,9 @@ static inline void tasklet_unlock_wait(s
+ 		cpu_relax();
  }
  #else
- #define tasklet_trylock(t) 1
+-#define tasklet_trylock(t) 1
+-#define tasklet_unlock_wait(t) do { } while (0)
+-#define tasklet_unlock(t) do { } while (0)
++static inline int tasklet_trylock(struct tasklet_struct *t) { return 1; }
++static inline void tasklet_unlock(struct tasklet_struct *t) { }
++static inline void tasklet_unlock_wait(struct tasklet_struct *t) { }
+ #endif
+ 
+ extern void __tasklet_schedule(struct tasklet_struct *t);
 
 
