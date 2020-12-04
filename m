@@ -2,121 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590692CF159
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C39E2CF15C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730709AbgLDP4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:56:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50940 "EHLO
+        id S1730404AbgLDP5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:57:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727125AbgLDP4s (ORCPT
+        with ESMTP id S1727381AbgLDP5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:56:48 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87B2C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 07:56:07 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id d17so9334151ejy.9
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:56:07 -0800 (PST)
+        Fri, 4 Dec 2020 10:57:50 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BA5C061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 07:57:10 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id b144so5759318qkc.13
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:57:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z1hSH0l5Mma4TVkpXqECWzqdZtweOdCfO88BYm8fACs=;
-        b=RUzCcvPH0tW5ee4reJQV971WgWVIF+pT2Zzgzrx7RqkCoMfZv49Ur27stVaGJbAobj
-         mNZUiVCfBJmH1BYYnKppQ1c3uuKMVEWq9h0vp+Ryg1k8c/B6fU/R9wUXJbpEVhjqEfsS
-         3/w3MD13NUqO/iOhjGvzn3nRbQPpS94fJZ509yjyRP+z5fmTE9UqkIAHDKwZZJNFyFqM
-         5aaD+Fv5DH4cxwHWTokWvH64sebt9P6miHnsB12RFnonT96X5mnIWyWGgF+xGA4IAKkI
-         iV7gCCyHtMnDjYbWPMSfoL2ekwNa3t+te3gFp/joq9Hb7Exv5zNMXbL4uM9xYAChdFQ+
-         RJzA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xiuRU5gjXIm9XOVD+WEIsXlsJb8C9JaURz+n0lPMd1E=;
+        b=OoNzvPR6tta9qFPmGEZPxv16PRpJ8m9Xsr7MpTtZiRB34AsjeRiFblkofygVNn1SIX
+         yQ6c/LTmKsRbFKH22ohxRCverE9PiYwmBwKt+WSERBtv/XEX2HiXcHdgAz+ewJLR382n
+         2YbExCBDyUaO1vgnBg79ahsyox4uJqjMctIgM2C123oTKHgcR4+htP+OEHtk/riPviOM
+         5HiO1F6BtGFrYZyBkZGWARoLJL3lUObUSmspF996TTbx8gMjPno5j+UPzMmQAvdEjFH4
+         nk0GifIObwFA3+6JKKKUAOngOpueTJ4uvodZdWyHN886s6GCWTUs+qorHDqCTYHPoNDK
+         zQSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z1hSH0l5Mma4TVkpXqECWzqdZtweOdCfO88BYm8fACs=;
-        b=MzYL09PlZ/LkaeAjO+I70HQBlNJpQIZW7eMRGGE+DuzRoXs9AxBD0GS/clEFcV8kJZ
-         VTlgJARtHyBI+n+PrWy3gBHEpr+Ru8WSZEittXqvQ3vKQu1mlNlUkBgdU2sP+J5vnNZx
-         6h8HlgtOO9g03nnCeRGO3I3pHoMiHFj+C+diwU+/Jc3eJSb0uvMRC85izMZoVURSZWU+
-         dpL/32q0vbNPOypI0HLCQ9ITghi4Sj6ulGho29kfNut2CG08BfsWFTgiXVtvZ19NnQdp
-         sYv5mHWStqfxHJKZsh8UEy6loxWRBgLxJ/WGcCFi/xkUxt/Xhi9b+Zow+yhx/xVmwqij
-         ZjVA==
-X-Gm-Message-State: AOAM5334/SxAwhnF0xjdZCdtPxDktv22or3FHzaeKTqAQYmncmeAZRDB
-        6SFJlAceTmRc9hTk/EzhCIl5EHuAJUQiaSKCRrVrIw==
-X-Google-Smtp-Source: ABdhPJyYx9fPZe07SmVSs01be5+MSE5f/I39Ebl7hnoQ/Cwrxmg307rfKvaC6gipYgPUpXrRYOA8LB9osYG/5huDQbM=
-X-Received: by 2002:a17:906:d41:: with SMTP id r1mr7510400ejh.383.1607097366456;
- Fri, 04 Dec 2020 07:56:06 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xiuRU5gjXIm9XOVD+WEIsXlsJb8C9JaURz+n0lPMd1E=;
+        b=hgqD+qGgKeHMi3Pt/5Kff+w7pjrMijaPzGTS0TQJDH2/m6hVkdE69JkBx9+jXSk1xP
+         PpzuSFMnnNr+45znK8XvNBXR0NyoK04YmMpRfx5lKaUzrIGBaTwQrI//H6Cl2etJig2d
+         dbw75y/7dCoorWjbTE3v8yOfi0B4FbzRK5G/PG73KNCC9Vf743XiPCwE39fyAe6Jcz1p
+         EHnnFRssF4hYu8t8Rp4xcOA9JsRxGlV+64ht5if2wDVrLgxZUSJYRsBPCQzY5PV4YpJH
+         eOXjGpu7zLMnB09PZKuz/NoqFtTz++ij1LQ+t8SQM4LSZJ/ps3JL2P5o/9//UUUoBiZg
+         v77w==
+X-Gm-Message-State: AOAM531KFNbs7wCZHL3H7R3BMKQa1Kt2rtN4wh+JE+MOjvAsNp1Nz/Aw
+        wBHbZxlM/yvdP0LpQZ9wwxCdrw==
+X-Google-Smtp-Source: ABdhPJykZ7PwxId0/tq4C6eszgOfW4dtuWKqDQTixMY70MWVd3k7G6Bujg+sD8iCVvFyj63IxjMDWg==
+X-Received: by 2002:a05:620a:806:: with SMTP id s6mr9366450qks.193.1607097429916;
+        Fri, 04 Dec 2020 07:57:09 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id c65sm5075664qkf.47.2020.12.04.07.57.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 07:57:09 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1klDSG-005vNM-6L; Fri, 04 Dec 2020 11:57:08 -0400
+Date:   Fri, 4 Dec 2020 11:57:08 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] rtc: adapt allowed RTC update error
+Message-ID: <20201204155708.GB5487@ziepe.ca>
+References: <87pn3qdhli.fsf@nanos.tec.linutronix.de>
+ <20201203161622.GA1317829@ziepe.ca>
+ <87zh2ubny2.fsf@nanos.tec.linutronix.de>
+ <87wnxybmqx.fsf@nanos.tec.linutronix.de>
+ <20201203223646.GA1335797@ziepe.ca>
+ <877dpxbu66.fsf@nanos.tec.linutronix.de>
+ <20201204140819.GX5487@ziepe.ca>
+ <20201204143735.GI74177@piout.net>
+ <20201204144659.GY5487@ziepe.ca>
+ <20201204150857.GJ74177@piout.net>
 MIME-Version: 1.0
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com> <20201204035953.GA17056@js1304-desktop>
-In-Reply-To: <20201204035953.GA17056@js1304-desktop>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Fri, 4 Dec 2020 10:55:30 -0500
-Message-ID: <CA+CK2bCD7XYyJB9TNZZeUMAuntotZopVYNjDXnyVZyzKe2_A1Q@mail.gmail.com>
-Subject: Re: [PATCH 0/6] prohibit pinning pages in ZONE_MOVABLE
-To:     Joonsoo Kim <js1304@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        mike.kravetz@oracle.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204150857.GJ74177@piout.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 11:03 PM Joonsoo Kim <js1304@gmail.com> wrote:
->
-> Hello,
->
-> On Wed, Dec 02, 2020 at 12:23:24AM -0500, Pavel Tatashin wrote:
-> > When page is pinned it cannot be moved and its physical address stays
-> > the same until pages is unpinned.
-> >
-> > This is useful functionality to allows userland to implementation DMA
-> > access. For example, it is used by vfio in vfio_pin_pages().
-> >
-> > However, this functionality breaks memory hotplug/hotremove assumptions
-> > that pages in ZONE_MOVABLE can always be migrated.
-> >
-> > This patch series fixes this issue by forcing new allocations during
-> > page pinning to omit ZONE_MOVABLE, and also to migrate any existing
-> > pages from ZONE_MOVABLE during pinning.
->
-> I love what this patchset does, but, at least, it's better to consider
-> the side-effect of this patchset and inform it in somewhere. IIUC,
-> ZONE_MOVABLE exists for two purposes.
->
-> 1) increasing availability of THP
-> 2) memory hot-unplug
->
-> Potential issue would come from the case 1). They uses ZONE_MOVABLE
-> for THP availability and hard guarantee for migration isn't required
-> until now. So, there would be a system with following congifuration.
->
-> - memory layout: ZONE_NORMAL-512MB, ZONE_MOVABLE-512MB
-> - memory usage: unmovable-256MB, movable pinned-256MB, movable
->   unpinned-512MB
->
-> With this patchset, movable pinned should be placed in ZONE_NORMAL so
-> 512MB is required for ZONE_NORMAL. ZONE_NORMAL would be exhausted and
-> system performance would be highly afftect according to memory usage
-> pattern.
->
-> I'm not sure whether such configuration exists or not, but, at least,
-> it's better to write down this risk on commit message or something
-> else.
+On Fri, Dec 04, 2020 at 04:08:57PM +0100, Alexandre Belloni wrote:
 
-Yes, this indeed could be a problem for some configurations. I will
-add your comment to the commit log of one of the patches.
+> > I mean literatally time the excution of something like a straight
+> > read. This will give some estimate of the bus latency and it should
+> > linearly relate to the bus latency for a write.
+> 
+> 
+> It doesn't, some rtc will require writing dozen registers to set the
+> time and reading only 3 to get the time, the only accurate way is to
+> really time setting the time. You set the RTC time once, set up an alarm for
+> the next second, once you get the alarm, you get system time and you now
+> how far you are off.
 
-Thank you,
-Pasha
+This is why I said linearly related. Yes the relation is per-driver,
+based on the ops required, but in principle it can get close.
+
+> Notice that systohc could do that if you wanted to be accurate and then
+> the whole issue with mc146818 is gone and this nicely solves it for all
+> the RTCs at once.
+
+Another good solution is to have systohc progam the time and then
+immediately read it back (eg with an alarm). The difference between
+the read back and the system RTC is the single value to plug into the
+adjustment offset and naturally includes all the time factors Thomas
+identified, including the additional factor of 'latency to read the
+time'
+
+> > The goal was to bring the system to correct time as quickly as
+> > possible in as many cases as possible, not to maintain the
+> > monotonicity of the realtime clock.
+> 
+> I'm really curious, in your use case, couldn't you have read the RTC
+> from userspace and set the system time from there, right before starting
+> NTP and other applications?
+
+This was RAM constrainted embedded, a few hundred bytes of kernel code
+wins over 100k of userspace
+
+> Doing so, you would have probably been able to ensure monotonicity.
+
+No, this case also wasn't willing to wait the 1s to load the time. It
+had to go parallel with the rest of the boot up. This was enterprise
+gear, boot time to operational counts against the achievable
+availability rating.
+
+From an upstream perspective this was hacky because
+ - We historically try not to create non-monotinicity in CLOCK_REALTIME
+   because too much stuff wrongly works on CLOCK_REALTIME when they
+   really need CLOCK_MONOTONIC
+ - Having the kernel async set the clock is racy with NTP also trying
+   to set the clock
+
+But in a closed system the two above were delt with reliably.
+
+> > As I said before, if there is no desire to address the read side then
+> > the whole thing should be abandoned.
+> 
+> What was your plan back in 2017?
+
+Well I was helping RMK because we had similar issues, but I saw some
+path to achive the low offset round trip, and view this as laudable
+for the embedded world.
+
+I see I also changed jobs right around then which probably explains
+why things stopped at this one patch. The fact nobody else picked it
+up probably says people really just don't care about realtime
+accuracy.
+
+Jason 
