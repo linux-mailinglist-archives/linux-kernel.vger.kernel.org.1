@@ -2,137 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9D02CF28E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:06:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 014E92CF293
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388056AbgLDRD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:03:56 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:55482 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387709AbgLDRD4 (ORCPT
+        id S2388367AbgLDREt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:04:49 -0500
+Received: from latitanza.investici.org ([82.94.249.234]:52027 "EHLO
+        latitanza.investici.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388350AbgLDREt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:03:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1607101435; x=1638637435;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=2vAKgOMbsKsobaYQSS//EkxVjYpdgHLlqgbHgLmfgWg=;
-  b=Ewg9xnyiWxFK5TX7iiH74X98xt/vkz3OP/g3u+dQDTnDU+D4OAQUxjUu
-   CnAWA+MoB29jMiqRBoGZ1Zdj8TnH9BOQd3/oGwOMQ4q//kSpd3TkMtPor
-   1rBwSJwxQNaJLgOan35dlAGzJaTL3LfVJHF5bCqkaeWiYxt/FiUHYVYOE
-   E=;
-X-IronPort-AV: E=Sophos;i="5.78,393,1599523200"; 
-   d="scan'208";a="70635442"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 04 Dec 2020 17:03:09 +0000
-Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id 6AF2A2833C2;
-        Fri,  4 Dec 2020 17:03:07 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.53) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 4 Dec 2020 17:03:02 +0000
-From:   Andra Paraschiv <andraprs@amazon.com>
-To:     netdev <netdev@vger.kernel.org>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH net-next v2 4/4] af_vsock: Assign the vsock transport considering the vsock address flags
-Date:   Fri, 4 Dec 2020 19:02:35 +0200
-Message-ID: <20201204170235.84387-5-andraprs@amazon.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20201204170235.84387-1-andraprs@amazon.com>
-References: <20201204170235.84387-1-andraprs@amazon.com>
+        Fri, 4 Dec 2020 12:04:49 -0500
+Received: from mx3.investici.org (unknown [127.0.0.1])
+        by latitanza.investici.org (Postfix) with ESMTP id 4CnfF12X1nz8shk;
+        Fri,  4 Dec 2020 17:04:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=privacyrequired.com;
+        s=stigmate; t=1607101445;
+        bh=CNSPo3rU73iLufUhzAAlkyJdrqDxV3HykhrbciRVVqg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CAj2903IlbaunC80bM+z7sehEdvvySRvMXF2B7QVSeGl9c1o2+R49o1Johhg6BSQ4
+         Q4EMyEP3bIuGgoqirMK1uT98XPrJ1OTptjksAJf1V5Duw6RhXyRn+MKAiMRbwunKkr
+         vE228J0uaZtyVw5ECCzsQr3hgtGk8lvECyg5M/Pg=
+Received: from [82.94.249.234] (mx3.investici.org [82.94.249.234]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4CnfDy1SRgz8sfb;
+        Fri,  4 Dec 2020 17:04:02 +0000 (UTC)
+From:   laniel_francis@privacyrequired.com
+To:     Russell King <linux@armlinux.org.uk>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Bin Liu <b-liu@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jessica Yu <jeyu@kernel.org>
+Cc:     Francis Laniel <laniel_francis@privacyrequired.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-efi@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-renesas-soc@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: [RFC PATCH v1 00/12] Replace strstarts() by str_has_prefix()
+Date:   Fri,  4 Dec 2020 18:03:06 +0100
+Message-Id: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Originating-IP: [10.43.162.53]
-X-ClientProxiedBy: EX13D23UWC003.ant.amazon.com (10.43.162.81) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vsock flags field can be set in the connect and (listen) receive
-paths.
+From: Francis Laniel <laniel_francis@privacyrequired.com>
 
-When the vsock transport is assigned, the remote CID is used to
-distinguish between types of connection.
+Hi.
 
-Use the vsock flags value (in addition to the CID) from the remote
-address to decide which vsock transport to assign. For the sibling VMs
-use case, all the vsock packets need to be forwarded to the host, so
-always assign the guest->host transport if the VMADDR_FLAG_TO_HOST flag
-is set. For the other use cases, the vsock transport assignment logic is
-not changed.
 
-Changelog
+First, I hope you are fine and the same for your relatives.
 
-v1 -> v2
+In this patch set, I replaced all calls to strstarts() by calls to
+str_has_prefix().
+Indeed, the kernel has two functions to test if a string begins with an other:
+1. strstarts() which returns a bool, so 1 if the string begins with the prefix,
+0 otherwise.
+2. str_has_prefix() which returns the length of the prefix or 0.
 
-* Use bitwise operator to check the vsock flag.
-* Use the updated "VMADDR_FLAG_TO_HOST" flag naming.
-* Merge the checks for the g2h transport assignment in one "if" block.
+str_has_prefix() was introduced later than strstarts(), in commit 495d714ad140
+which also stated that str_has_prefix() should replace strstarts().
+This is what this patch set does.
 
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
----
- net/vmw_vsock/af_vsock.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Concerning the patches, the modifications cover different areas of the kernel.
+I compiled all of them and they compile smoothly.
+Unfortunately, I did not test all of them, so here are the status of the patches
+regarding test:
+1. Tested with qemu-system-arm using insmod.
+2. I do not have access to a bcm47xx MIPS CPU an qemu-system-mips does not
+emulate this board.
+3. Tested with qemu-system-x86_64 calling
+crypto_alloc_skcipher("essiv(authenc(hmac(sha256),cbc(aes)),sha256)", 0, 0)
+through LKDTM.
+4. Tested with qemu-system-x86_64 using crypsetup.
+5. I do not have access to a renesas board and I lack some context to test it
+with qemu-system-arm.
+6. I do not have access to an OMAP board and I lack some context to test it with
+qemu-system-arm.
+7. I did not find how to boot from the EFI_STUB with qemu. If you know how to
+do, I would be happy to try running this code.
+8. I ran qemu-system-x86_64 with a floppy disk attached but impossible to go
+through this module code...
+9. I do not have access to a bcm63xx MIPS CPU an qemu-system-mips does not
+emulate this board.
+10. Tested with qemu-system-x86_64 using insmod.
+11. I do not have access to an AM335x or DA8xx platforms and I lack some context
+to test it with qemu-system-arm.
 
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index 83d035eab0b05..66e643c3b5f85 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -421,7 +421,8 @@ static void vsock_deassign_transport(struct vsock_sock *vsk)
-  * The vsk->remote_addr is used to decide which transport to use:
-  *  - remote CID == VMADDR_CID_LOCAL or g2h->local_cid or VMADDR_CID_HOST if
-  *    g2h is not loaded, will use local transport;
-- *  - remote CID <= VMADDR_CID_HOST will use guest->host transport;
-+ *  - remote CID <= VMADDR_CID_HOST or h2g is not loaded or remote flags field
-+ *    includes VMADDR_FLAG_TO_HOST flag value, will use guest->host transport;
-  *  - remote CID > VMADDR_CID_HOST will use host->guest transport;
-  */
- int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-@@ -429,6 +430,7 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
- 	const struct vsock_transport *new_transport;
- 	struct sock *sk = sk_vsock(vsk);
- 	unsigned int remote_cid = vsk->remote_addr.svm_cid;
-+	unsigned short remote_flags;
- 	int ret;
- 
- 	/* If the packet is coming with the source and destination CIDs higher
-@@ -443,6 +445,8 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
- 	    vsk->remote_addr.svm_cid > VMADDR_CID_HOST)
- 		vsk->remote_addr.svm_flags |= VMADDR_FLAG_TO_HOST;
- 
-+	remote_flags = vsk->remote_addr.svm_flags;
-+
- 	switch (sk->sk_type) {
- 	case SOCK_DGRAM:
- 		new_transport = transport_dgram;
-@@ -450,7 +454,8 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
- 	case SOCK_STREAM:
- 		if (vsock_use_local_transport(remote_cid))
- 			new_transport = transport_local;
--		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g)
-+		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g ||
-+			 (remote_flags & VMADDR_FLAG_TO_HOST) == VMADDR_FLAG_TO_HOST)
- 			new_transport = transport_g2h;
- 		else
- 			new_transport = transport_h2g;
+If you see a way to improve the patches or if I did something wrong with the
+mail do not hesitate to ask.
+
+
+Best regards.
+
+Francis Laniel (12):
+  arm: Replace strstarts() by str_has_prefix().
+  mips: Replace strstarts() by str_has_prefix().
+  crypto: Replace strstarts() by str_has_prefix().
+  device-mapper: Replace strstarts() by str_has_prefix().
+  renesas: Replace strstarts() by str_has_prefix().
+  omap: Replace strstarts() by str_has_prefix().
+  efi: Replace strstarts() by str_has_prefix().
+  ide: Replace strstarts() by str_has_prefix().
+  mips: Replace strstarts() by str_has_prefix().
+  module: Replace strstarts() by str_has_prefix().
+  musb: Replace strstarts() by str_has_prefix().
+  string.h: Remove strstarts().
+
+ arch/arm/kernel/module.c                      | 12 +++++------
+ arch/mips/bcm47xx/board.c                     |  4 ++--
+ arch/mips/bcm63xx/boards/board_bcm963xx.c     |  2 +-
+ crypto/essiv.c                                |  2 +-
+ .../firmware/efi/libstub/efi-stub-helper.c    |  2 +-
+ drivers/firmware/efi/libstub/gop.c            | 10 +++++-----
+ drivers/gpu/drm/omapdrm/dss/base.c            |  2 +-
+ drivers/gpu/drm/rcar-du/rcar_du_crtc.c        |  2 +-
+ drivers/ide/ide-floppy.c                      |  4 ++--
+ drivers/md/dm-crypt.c                         |  4 ++--
+ drivers/usb/musb/musb_cppi41.c                |  4 ++--
+ drivers/usb/musb/musb_debugfs.c               | 20 +++++++++----------
+ include/linux/string.h                        | 10 ----------
+ kernel/module.c                               |  6 +++---
+ 14 files changed, 37 insertions(+), 47 deletions(-)
+
 -- 
-2.20.1 (Apple Git-117)
-
-
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+2.20.1
 
