@@ -2,100 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40202CF44B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F0A2CF458
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729606AbgLDSuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:50:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
+        id S2387606AbgLDSwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgLDSuH (ORCPT
+        with ESMTP id S1730386AbgLDSwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:50:07 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC02DC061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:49:21 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id n7so4078858pgg.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:49:21 -0800 (PST)
+        Fri, 4 Dec 2020 13:52:09 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26506C061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:51:29 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id a16so10176990ejj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:51:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PFSkNt2eB1bxjiX+lVwIkceKuD94RAbAtiC1aV0R4/E=;
-        b=NbN5Nr0R9z4L4DaGBh/C6fh4uIZs6jhT2Gcmo370DyKomn9ZeIGuB12k7a7zj5bVqB
-         jWf+fG5wJI+XePaedt/tm+uTecVQxbg+IXrSnvM4WxXRx1vuswdTvaF0VDhwd5LXG6hQ
-         X1kDqj9ZA88ButBXcOXIJMWiVSZ7Rrc+ZjdAg=
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=i6PGv4ZUKAWV06uB1yhL9icgz9mN5bj5ndLK9GnWxk4=;
+        b=ci93SS+CG6n0v7E4m7ULxrSPf6CyS56AlDA1CA3gLog8XB8KPLFjtY02DPCC+YmAP4
+         NTSvdsS5QxuDfGgi/5R8/BPFPR4lAhDEO8xVX1Bls2UNztuEGA8hKBEvArcbZdlCdJ2A
+         1cKBeXmpgNxN0zSk6K6LfBaBlwFOKHTjylz9QYfMs6H8yzKiS7yeBQHbV1Ag3fb5XReo
+         s8+XEqToy4hKB79jSxoqC6b2K1M0P+1wHgJQhJ0VfscYwQO1UyRrGjYV5rkjGpGs+3l3
+         SZoQGRluKFL7En+aVsfL2tne9XZnX12h/In1vr7/vOHoZLoST6je8O+GsYsV7c5FzIwB
+         5FZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PFSkNt2eB1bxjiX+lVwIkceKuD94RAbAtiC1aV0R4/E=;
-        b=XQPIllKKIxqH18dQNyvDrdJ/35jVpmqRbwS+B50SRS2rsHYFaJPh9blcUIzZJcp6o/
-         slFeIY0NNQ8JAuz6Q+nkfhSzjT+IMwSohoUL1h0eruuCRnH7L1pg7ufERnEsGqiYXm9P
-         N+L6lp8Iq8AWrXdKfc/Gow+UwqMS/zFqd4lu6+xArO2SE3TwVMQok15KFnt8F6bO9lFu
-         lBbt9aFMN51r320mRcFjwMPXxTs6g7LULxMfiYLwgYsI6POn5H2IrLjW9nj8OI9m7F2J
-         oH9uVX08b1zu7jBeJ5iCnrQGsPi9JWRd4I4jmADVqRKh5OZ7Schvo3Ykhn9d+08xq4ZJ
-         tgJQ==
-X-Gm-Message-State: AOAM533/kzM/5tkTbVRS+bPZlONCNHi8EFT081dwTGS3IwavredYAHuz
-        uDOXhR1gSeiUDG8rhlSDGrn3Pw==
-X-Google-Smtp-Source: ABdhPJxrT1HN8fz82haC77Xmupj7N5ivcmnhAf4h7MkM5VWdDgmgcwWaqB2y/krVv7VMwgeK/cS9Xg==
-X-Received: by 2002:a63:4925:: with SMTP id w37mr8736839pga.64.1607107760997;
-        Fri, 04 Dec 2020 10:49:20 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id e14sm4338826pgv.64.2020.12.04.10.49.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 10:49:20 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: Fix SD card vqmmc max voltage on sc7180-trogdor
-Date:   Fri,  4 Dec 2020 10:49:02 -0800
-Message-Id: <20201204104900.1.I0a4ac2c7f4d405431cf95eb7b7c36800660516ec@changeid>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=i6PGv4ZUKAWV06uB1yhL9icgz9mN5bj5ndLK9GnWxk4=;
+        b=eso9fS13NSivuHaxZkU88G0n0CNfypdViIchrCK/9IL7TxJDZnB8oQ3qa/1p3Fz7hV
+         mRVhtHX6v14H2M29JtxSQNnBxr85H4D8RGSQUHuA6R6AuLc2CkkV9jSxMdzKKsXA7cxV
+         kRDnU3//r69kWO6xwGZ/ly2a2z9/6XNhPMRizz2VLxn9aD9RGH+KvK0op7KuJSzkdnjK
+         wbS83V4MsB2sdoR2Y6DGqaoY+2V4x7e3HvWfIOYaoP3B8OTPXmb49juOtZAk9rj4DPkN
+         YxdtY2f83sjLD5UFj/lfEyCnSsNEhDmmX6IaJkACbWKvNxjBhd88/NeXxuq9QkgowEkt
+         u86w==
+X-Gm-Message-State: AOAM530FwPbg8mCp5ZfkdhNn+I+lRiDaGSh3LeUArdA6So63I4N6AT0/
+        XY6GmTH1y9KX15BiJJ2fsGhM5C3YXq+4q+7M4qbgow==
+X-Google-Smtp-Source: ABdhPJwYRfoc/E4oLYnRcv+D4dfKVOGaL668JMsf1AKzUeQ8rQO0PcEq3B1noPj2MzArOpC8sYGsrjVD7IMkxypyHA4=
+X-Received: by 2002:a17:906:2ec3:: with SMTP id s3mr8195458eji.133.1607107887772;
+ Fri, 04 Dec 2020 10:51:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 5 Dec 2020 00:21:16 +0530
+Message-ID: <CA+G9fYvGeHv-iPy2J3tdYGfr1A7ZuUrZystuQ9tDxV7vbP8iPg@mail.gmail.com>
+Subject: BUG: KCSAN: data-race in dec_zone_page_state / write_cache_pages
+To:     linux-mm <linux-mm@kvack.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, lkft-triage@lists.linaro.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marco Elver <elver@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It never makes sense to set the IO voltage of the SD card (vqmmc) to a
-voltage that's higher than the voltage of the card's main power supply
-(vmmc).  The card's main voltage is 2.952V on trogdor, so let's set
-the max for the IO voltage to the same.
+LKFT started testing KCSAN enabled kernel from the linux next tree.
+Here we have found BUG: KCSAN: data-race in dec_zone_page_state /
+write_cache_pages
 
-NOTE: On Linux, this is pretty much a no-op currently.  Linux already
-makes an effort to match vqmmc with vmmc when running at "3.3" signal
-voltage, so both before and after this change we end up running vqmmc
-at 2.904V when talking to non-UHS cards.  It still seems cleaner to
-make it a little more correct, though.
+This report is from an x86_64 machine clang-11 linux next 20201201.
+Since we are running for the first time we do not call this regression.
 
-Also note: as per above, on Linux right now we end up running vqmmc as
-2.904V even though vmmc is 2.952V.  This isn't super ideal but
-shouldn't really hurt.
+[   45.484972] BUG: KCSAN: data-race in dec_zone_page_state / write_cache_pages
+[   45.492030]
+[   45.493532] read-write (marked) to 0xffffd4e284455380 of 8 bytes by
+task 269 on cpu 0:
+[   45.501453]  write_cache_pages+0x270/0x6a0
+[   45.505560]  generic_writepages+0x63/0xa0
+[   45.509582]  blkdev_writepages+0xe/0x10
+[   45.513429]  do_writepages+0x79/0x140
+[   45.517096]  __writeback_single_inode+0x6d/0x390
+[   45.521714]  writeback_sb_inodes+0x4fd/0xbe0
+[   45.525986]  wb_writeback+0x42e/0x690
+[   45.529652]  wb_do_writeback+0x4d2/0x530
+[   45.533578]  wb_workfn+0xc8/0x4a0
+[   45.536897]  process_one_work+0x4a6/0x830
+[   45.540908]  worker_thread+0x5f7/0xaa0
+[   45.544661]  kthread+0x20b/0x220
+[   45.547893]  ret_from_fork+0x22/0x30
+[   45.551471]
+[   45.552963] read to 0xffffd4e284455380 of 8 bytes by task 499 on cpu 2:
+[   45.559576]  dec_zone_page_state+0x1d/0x140
+[   45.563764]  clear_page_dirty_for_io+0x2ab/0x3a0
+[   45.568382]  write_cache_pages+0x388/0x6a0
+[   45.572480]  generic_writepages+0x63/0xa0
+[   45.576495]  blkdev_writepages+0xe/0x10
+[   45.580334]  do_writepages+0x79/0x140
+[   45.584000]  __filemap_fdatawrite_range+0x155/0x190
+[   45.588880]  file_write_and_wait_range+0x51/0xa0
+[   45.593498]  blkdev_fsync+0x45/0x70
+[   45.596991]  __x64_sys_fsync+0xda/0x120
+[   45.600830]  do_syscall_64+0x3b/0x50
+[   45.604409]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   45.609460]
+[   45.610950] Reported by Kernel Concurrency Sanitizer on:
+[   45.616259] CPU: 2 PID: 499 Comm: mkfs.ext4 Not tainted
+5.10.0-rc6-next-20201201 #2
+[   45.623908] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+2.2 05/23/2018
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+metadata:
+    git_repo: https://gitlab.com/aroxell/lkft-linux-next
+    target_arch: x86
+    toolchain: clang-11
+    git_describe: next-20201201
+    download_url: https://builds.tuxbuild.com/1l8eiWgGMi6W4aDobjAAlOleFVl/
 
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Full test log link,
+https://lkft.validation.linaro.org/scheduler/job/2002643#L1866
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 8ed7dd39f6e3..d76200d2b373 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -509,7 +509,7 @@ pp1800_l5c: ldo5 {
- 		vddpx_2:
- 		ppvar_l6c: ldo6 {
- 			regulator-min-microvolt = <1800000>;
--			regulator-max-microvolt = <3304000>;
-+			regulator-max-microvolt = <2952000>;
- 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
- 		};
- 
 -- 
-2.29.2.576.ga3fc446d84-goog
-
+Linaro LKFT
+https://lkft.linaro.org
