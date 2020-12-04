@@ -2,65 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B112CE559
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:47:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B16D2CE55C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgLDBpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:45:38 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9102 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLDBph (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:45:37 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CnFqh4rkdzM04b;
-        Fri,  4 Dec 2020 09:44:16 +0800 (CST)
-Received: from vm107-89-192.huawei.com (100.107.89.192) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 4 Dec 2020 09:44:43 +0800
-From:   Wei Li <liwei213@huawei.com>
-To:     <catalin.marinas@arm.com>, <rppt@linux.ibm.com>, <will@kernel.org>,
-        <liwei213@huawei.com>
-CC:     <fengbaopeng2@hisilicon.com>, <nsaenzjulienne@suse.de>,
-        <steve.capper@arm.com>, <song.bao.hua@hisilicon.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <butao@hisilicon.com>
-Subject: [PATCH] arm64: mm: decrease the section size to reduce the memory reserved for the page map
-Date:   Fri, 4 Dec 2020 09:44:43 +0800
-Message-ID: <20201204014443.43329-1-liwei213@huawei.com>
-X-Mailer: git-send-email 2.15.0
+        id S1726863AbgLDBqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:46:34 -0500
+Received: from mga01.intel.com ([192.55.52.88]:48195 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725885AbgLDBqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 20:46:34 -0500
+IronPort-SDR: Nr1XHOaXJdH9XjWLkBjyTbWdoKTmf0TNK3z55S8/oD3ZbfvC3djXiDHv9E9SgGYn4yaA+5EVG5
+ U3TFWdNEZwIw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="191550560"
+X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
+   d="scan'208";a="191550560"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 17:45:53 -0800
+IronPort-SDR: pdrev79caLf9OpaDWWhlKyXnHidKdPFDKTc5unyM12YRNkHjmdcuieu7P4FJvRsIqmKWdXwZky
+ 1D3asWomwszw==
+X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
+   d="scan'208";a="550753253"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 17:45:52 -0800
+From:   ira.weiny@intel.com
+To:     fstests@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Eric Sandeen <sandeen@redhat.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        David Howells <dhowells@redhat.com>
+Subject: [PATCH V3] common/rc: Fix _check_s_dax()
+Date:   Thu,  3 Dec 2020 17:45:50 -0800
+Message-Id: <20201204014550.1736306-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+In-Reply-To: <20201202214629.1563760-1-ira.weiny@intel.com>
+References: <20201202214629.1563760-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [100.107.89.192]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
-do not free the reserved memory for the page map, decrease the section
-size can reduce the waste of reserved memory.
+From: Ira Weiny <ira.weiny@intel.com>
 
-Signed-off-by: Wei Li <liwei213@huawei.com>
-Signed-off-by: Baopeng Feng <fengbaopeng2@hisilicon.com>
-Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
+There is a conflict with the user visible statx bits 'mount root' and
+'dax'.  The kernel is changing the dax bit to correct this conflict.[1]
+
+Adjust _check_s_dax() to use the new bit.  Because DAX tests do not run
+on root mounts, STATX_ATTR_MOUNT_ROOT should always be 0.  Therefore,
+check for the old flag and fail the test if that occurs.
+
+[1] https://lore.kernel.org/lkml/3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com/
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
 ---
- arch/arm64/include/asm/sparsemem.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes from V2:
+	As suggested by Christoph and Eric:
+		Fail the test with a hint as to why the wrong bit may be set.
 
-diff --git a/arch/arm64/include/asm/sparsemem.h b/arch/arm64/include/asm/sparsemem.h
-index 1f43fcc79738..8963bd3def28 100644
---- a/arch/arm64/include/asm/sparsemem.h
-+++ b/arch/arm64/include/asm/sparsemem.h
-@@ -7,7 +7,7 @@
+ common/rc | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
- #ifdef CONFIG_SPARSEMEM
- #define MAX_PHYSMEM_BITS	CONFIG_ARM64_PA_BITS
--#define SECTION_SIZE_BITS	30
-+#define SECTION_SIZE_BITS	27
- #endif
-
- #endif
---
-2.15.0
+diff --git a/common/rc b/common/rc
+index b5a504e0dcb4..5911a6c89a78 100644
+--- a/common/rc
++++ b/common/rc
+@@ -3221,10 +3221,27 @@ _check_s_dax()
+ 	local exp_s_dax=$2
+ 
+ 	local attributes=$($XFS_IO_PROG -c 'statx -r' $target | awk '/stat.attributes / { print $3 }')
++
++	# The original attribute bit value, STATX_ATTR_DAX (0x2000), conflicted
++	# with STATX_ATTR_MOUNT_ROOT.  Therefore, STATX_ATTR_DAX was changed to
++	# 0x00200000.
++	#
++	# Because DAX tests do not run on root mounts, STATX_ATTR_MOUNT_ROOT
++	# should always be 0.  Check for the old flag and fail the test if that
++	# occurs.
++
++	if [ $(( attributes & 0x2000 )) -ne 0 ]; then
++		echo "$target has an unexpected STATX_ATTR_MOUNT_ROOT flag set"
++		echo "which used to be STATX_ATTR_DAX"
++		echo "     This test should not be running on the root inode..."
++		echo "     Does the kernel have the following patch?"
++		echo "     72d1249e2ffd uapi: fix statx attribute value overlap for DAX & MOUNT_ROOT"
++	fi
++
+ 	if [ $exp_s_dax -eq 0 ]; then
+-		(( attributes & 0x2000 )) && echo "$target has unexpected S_DAX flag"
++		(( attributes & 0x00200000 )) && echo "$target has unexpected S_DAX flag"
+ 	else
+-		(( attributes & 0x2000 )) || echo "$target doesn't have expected S_DAX flag"
++		(( attributes & 0x00200000 )) || echo "$target doesn't have expected S_DAX flag"
+ 	fi
+ }
+ 
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
 
