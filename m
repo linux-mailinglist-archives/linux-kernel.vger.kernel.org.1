@@ -2,276 +2,604 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F7F2CF096
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6C02CF0A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730391AbgLDPVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:21:25 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11338 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730337AbgLDPVZ (ORCPT
+        id S1730553AbgLDPWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:22:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27614 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730493AbgLDPWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:21:25 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0B4FDiQ4030335;
-        Fri, 4 Dec 2020 07:20:28 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=3i65Qn8NKZ83k4T1MhDTWeDY78sst78m9VzlmEyTMG0=;
- b=O6m4SUpjYDO/ThkYlaznhkqFlsiAaaDa8hJck1D7fpH4FtZFidlLmbnNvaKqlKjYy1cW
- sIMbvtmkjIutavP0aYUJq+mxL0mQP3MT+zv17cPfwVAZH2I1bCcDm7sZXAiEvH45A/uJ
- xnsHv7sf+dMtn9bkYy4DVPInwxJgKjS3yok= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 3562mac47k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 04 Dec 2020 07:20:28 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 4 Dec 2020 07:20:27 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j1neBOxeXjNIIqt2s3ojYy00lYkCmO6nZxuYiR1sB/J4uLgOi4dOHruZ8xyDPtp5NfKChSAhsK1djm8CSVyBUebNh80CpQCsG3bLVGVXJZjoSNRjrDwM1KCWh3Y8utnHkIghVh4cvwAVCWGSMMXW58CxSDbx57sNSIyfqUELR+IGnTikSOFFnihov8VtzvZmOrhxnec2t/2T3rU1cb2gkzDXztZ3NYRIzjamvHOXHyBBFdXwUDs9DGG7MzWZ+HvZh1aLhi8LM3cLgilu8Q0BnN6EdiTTnPJjWp6/YhX06i95ln3oBawys5b57X+V/UJuPSnwthipPfxuF+qG2QNjUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3i65Qn8NKZ83k4T1MhDTWeDY78sst78m9VzlmEyTMG0=;
- b=W5HQ0DuWq3LeyrksUgqXseWzNvtzRNmFoJSmDcL/6/D09GoYKj0tRsofgosQsQy9pdXIODmfPDTGVLDtRa3r10DmisqR3mew0Mt4zGSBq2pKb4LBsJ6DSe8x+dKpITdScDeQzfBTDQODbuPX3hgfeYim4sRNF9odVmkn2Q2DFVCE8BuuJNuoAuExMDY9WtK0rFRxx9XbLB76Tu8iCKbJ+0f5WvEeID5MFIWGZeE2EOoSYawjsKjyA93zXrPuQV74uh1xSjpjaxaj2z6cju9DyqLso8T5/pGTqWMQYH9qcOPVnZaxTBQtagoB8J20DnVnotaAklyOMeFMlgFzE9XMyw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3i65Qn8NKZ83k4T1MhDTWeDY78sst78m9VzlmEyTMG0=;
- b=M6qT3HczTM4A+SPgZADzZuxsHlfPCt3+w01YmP8Y0XoNBZWNFl0ENr70EtSE6U1WZah+GRFbwR8oLb+Cbji1PPqglu0HNJJU5/d78jF4Xhiwk8flFyeH4RBLtjpYIxb5NLYA8KOXv/ze70U+xvLT65rhRyJkm9dW5M91+qCNogQ=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2408.namprd15.prod.outlook.com (2603:10b6:a02:85::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Fri, 4 Dec
- 2020 15:20:21 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3632.021; Fri, 4 Dec 2020
- 15:20:21 +0000
-Subject: Re: [PATCH bpf-next v3 09/14] bpf: Pull out a macro for interpreting
- atomic ALU operations
-To:     Brendan Jackman <jackmanb@google.com>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
-References: <20201203160245.1014867-1-jackmanb@google.com>
- <20201203160245.1014867-10-jackmanb@google.com>
- <f1d5ec7e-6231-0876-f25d-9dd5da4112d0@fb.com> <X8oBaf4c+EAd8LQE@google.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <4a39dd08-f0ca-595f-1f59-a6acb44f3176@fb.com>
-Date:   Fri, 4 Dec 2020 07:20:18 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
-In-Reply-To: <X8oBaf4c+EAd8LQE@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:fab1]
-X-ClientProxiedBy: MW3PR05CA0030.namprd05.prod.outlook.com
- (2603:10b6:303:2b::35) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        Fri, 4 Dec 2020 10:22:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607095250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4M4D6NVruePVhw7jniS/ZTuj/fVN9tKEe09sIhwtTqc=;
+        b=M7JzhceSaE8GGX/KLkoge/cOct4xnfYEevjt3HDNnq25Fu5R/DtPiTg5FLoIungZHvAGYt
+        TYZVZaY7pxnKZE250HcmO3lrk0wzSaAseuCBpjk+kSuS2EzBDBYiJUJ/ibh/ptiNh3u/98
+        0vvbyJFO/IeQQTglVgCD/qIBpiPVY3o=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-318-EU5g-KnQORu4CJ_pR45e3A-1; Fri, 04 Dec 2020 10:20:48 -0500
+X-MC-Unique: EU5g-KnQORu4CJ_pR45e3A-1
+Received: by mail-wr1-f69.google.com with SMTP id z13so2593166wrm.19
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:20:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4M4D6NVruePVhw7jniS/ZTuj/fVN9tKEe09sIhwtTqc=;
+        b=HUbWVxRMSZtRz0+GNEvrLhjlW4UlhOwtZBy2LYL8cN6vQbS/OYsswlzTPHVDZBMrvc
+         acJjYUvSnZh2DxCsKhrVwwBt5h5F8aLF1vzCu5Pi5g5dY60zOHYKXpkDChhvGntVIGzN
+         BMnrXKPlx8G8Vup4Nsm0BqSYdID8HWzQCIOhI+vFlR6waksPb0BLu3G78lwRmslUsQ25
+         sOrg2I/SkSIda/VuM5yf+5GVBozS5aYUXXr+aEg36IdWvyAsODvhfF5yqeZzmZ9eg9JW
+         pO95ai0Uy48B1aj6Z/5Aqu0YjE88EFZrqfLXPTf98vxQnhxAlo9kRw8JEgWn6wfhg+7O
+         kHjw==
+X-Gm-Message-State: AOAM530wd1wTC6jt5pEWgLfsAkGu6t/MmoAWndAdoge5ATV7tSWA0lRj
+        EnIaDiIGg9lT0h+umcduIV2KqXU7JXcjHSz8uDSGQXosMyiIeccMkv/TDX3ddlfry7xNZUmFhTL
+        Y3OZJGd2r037rXYIg8ms9/TFH
+X-Received: by 2002:adf:ed51:: with SMTP id u17mr5615659wro.61.1607095246876;
+        Fri, 04 Dec 2020 07:20:46 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyXA6j7cRSJJgB5fzf/QcI1suNtmLcmM4TpWLkyPZ3a80OASxSEacpwNWYTPbeYcWcmF1GUuw==
+X-Received: by 2002:adf:ed51:: with SMTP id u17mr5615624wro.61.1607095246580;
+        Fri, 04 Dec 2020 07:20:46 -0800 (PST)
+Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
+        by smtp.gmail.com with ESMTPSA id t184sm3757163wmt.13.2020.12.04.07.20.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 07:20:46 -0800 (PST)
+Date:   Fri, 4 Dec 2020 16:20:43 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, shahafs@mellanox.com
+Subject: Re: [PATCH V2 19/19] vdpa: introduce virtio pci driver
+Message-ID: <20201204152043.ewqlwviaf33wwiyx@steredhat>
+References: <20201204040353.21679-1-jasowang@redhat.com>
+ <20201204040353.21679-20-jasowang@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c8::12b3] (2620:10d:c090:400::5:fab1) by MW3PR05CA0030.namprd05.prod.outlook.com (2603:10b6:303:2b::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Fri, 4 Dec 2020 15:20:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 784d476b-d2a5-4eeb-761d-08d898681d39
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2408:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB24087B01FA1897297975E130D3F10@BYAPR15MB2408.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SFRmoFGt1MUEWfNQyKY+ViqKkV9xaDCFLQlEsmtqTGcQmGDq6r+I4DrhsJeSuwq+CAtKsGMoU29r7ejpIkT+wgGvUuAgBhAM0BBlFOy945AQoijR1r8PQVCk7yEFaggj9nNzshZeK8oNwrFUhrygFiiLQs1yArgEBnWJ6hZaoRK2FOVleu+YUcQTzF67yqFonTqcM4qEKJ8w6ngQ21vJETqQwGFoThEePLrUQQnvC0iJXNRSkW1CHTP5dvzecmYngHpIh+vGqcCHecFq8nZ9BLevgrp6hh1sfDbSFlyMgBmezCJjY8qa8TEte6f4/t+Q+3UZ9rXslRjL02XjiNJsk29vib6CnPpkEhiFqOlPFjdSaMc6mNrQc1Y6pfHv84AHcvN1zUwzPqjoNx0MQVLgzpY4PZ8p/c0gWqsA7NTHgTA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(376002)(396003)(366004)(346002)(52116002)(8936002)(8676002)(5660300002)(86362001)(316002)(2906002)(54906003)(6916009)(36756003)(31696002)(53546011)(16526019)(66946007)(66476007)(66556008)(83380400001)(186003)(478600001)(4326008)(6486002)(31686004)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OTRaSXV1dUMzZXJUS2lKYzBMYjlhZ1NDOUd6ZGg2WFhaOFIvWEFvaE1aK1N5?=
- =?utf-8?B?NWgwS0FiZXQrWGFSaGtsSU5IY0FzUHN3MHlRcURZQUJQNzArU1NjNEQ3ZDJx?=
- =?utf-8?B?Y0dhbmY4aEVFK2FEekZ6bnF4VFJ2UjZsUGFWbXFuSlAzNHBia29YeFovWUNO?=
- =?utf-8?B?ZDBVYmtDb2FUMUlkV1l6bTJYbG9FYzExOTVlb1NkZEV2YTk2WWt6VVluYng4?=
- =?utf-8?B?L2ZZVlB3TWNlbittVTZjUkgrbGpaVjRYMWZlZHlyVVhTYy9sSWxIZFc5dFdx?=
- =?utf-8?B?SGtzcTQxT0o5NVVwalJNOEdmR0ZoamZOTlo5RU5sQXhIdWJYTXliS1kzQ2No?=
- =?utf-8?B?UUZLTEU5YmNyck9WcThKYjYxWjNwZEJ6L2kzS1MwNE12SDE0UmJLWnpRZFhC?=
- =?utf-8?B?RjNJQkNIU244R0ZRNlI2YUVzVEdQN2kwZkhETi9lTk01SUZWQTZwRGptV0Vh?=
- =?utf-8?B?ZU5vNjJRSVhhSzhOc1FnbzZWMDJUWFpVMFVqTUtQSllsRUtSY2Q4U2VtNGhR?=
- =?utf-8?B?RkE2TlFodUFCekI4eFlZOEVOMFhzYkd0SlpYMVpvWExWM0FGaU04YlJJdnZO?=
- =?utf-8?B?Z2xWS2VKb1NEb2lGY0JXWWttcWU2K2E4L1NhSjNzelBTMVpSK3NlbXNGdThk?=
- =?utf-8?B?Sjh2RVFGZDZOQ3JQdlZyRThLaG5vbWJzbWxybzFiREd4bWxGZkQ3SkcwdGhZ?=
- =?utf-8?B?eU9QYzFRd0Rib2xTZDljL0hKc2VWWVFpSlQ0ZFlkTElBRFJsbWJ4OEhGV3Vm?=
- =?utf-8?B?Rm1mYmVGdVVOdmxtck8xUXkvMmZIV1hzQ1huckxHbGVlVXZTNWtWUEVKdE9E?=
- =?utf-8?B?SW9ralRxTXlWcVN3UHRja0tJZ3JsMVZjNFFNYjdiUitVdGtSb3h0NXRrSThh?=
- =?utf-8?B?VDN5Qjg4ekxQQklOdEFEOEpob2xUSG00VHU5VjJpL3V1Unl1ZTJYOXBuejR0?=
- =?utf-8?B?RDcyVFVJeW03bVNHUXlxcS9IRUJxNzJSOUk0dDR4UGNUT0N1Z2dBeERnekQ0?=
- =?utf-8?B?aElZU25WU1FuQzlDWkN2T3M1WW8vODRXU2p2MlA3cXJJVGpCczhodjlnajFK?=
- =?utf-8?B?eHR5L2xKZ1NjanhBdlFFc0hJMkJLYkRISGk0TFJOazh5Y0d1ZmUvdlJib2tF?=
- =?utf-8?B?Y2F6WTNBMDc4YlkwRDB6RXJkQ3NaVHpRZXlzN1lYS3VVZHkwMWd3d1Rjdzdy?=
- =?utf-8?B?Qko1b3FHczF6eW1wS3VQZjlERi91ak5qUkorY216cEdHVXhmSGZrZy9PMVJl?=
- =?utf-8?B?aUZrK0xDek5xMnQzbHNXV25NeHkvQ1o0enZjSmFOU28rZHBXcXoyRTZkYk1i?=
- =?utf-8?B?UnVsa1cvcVlwM29nQlpPQ1dnemdRQVJ1VUVzSlBhWmZGQ2NyZmlZZHRTQUY2?=
- =?utf-8?B?czBIZjE1RmxKalE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 784d476b-d2a5-4eeb-761d-08d898681d39
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 15:20:20.9909
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tCK/smc0y+xZVeAl8a/rtIK26U9phXrADEctXM++ScWbH0ZM40VgyHrn+J6R6GvA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2408
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_05:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- adultscore=0 mlxscore=0 suspectscore=0 phishscore=0 impostorscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040089
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201204040353.21679-20-jasowang@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 04, 2020 at 12:03:53PM +0800, Jason Wang wrote:
+>This patch introduce a vDPA driver for virtio-pci device. It bridges
+>the virtio-pci control command to the vDPA bus. This will be used for
+>features prototyping and testing.
+>
+>Note that get/restore virtqueue state is not supported which needs
+>extension on the virtio specification.
+>
+>Signed-off-by: Jason Wang <jasowang@redhat.com>
+>---
+> drivers/vdpa/Kconfig              |   6 +
+> drivers/vdpa/Makefile             |   1 +
+> drivers/vdpa/virtio_pci/Makefile  |   2 +
+> drivers/vdpa/virtio_pci/vp_vdpa.c | 455 ++++++++++++++++++++++++++++++
+> 4 files changed, 464 insertions(+)
+> create mode 100644 drivers/vdpa/virtio_pci/Makefile
+> create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa.c
+>
+>diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+>index 358f6048dd3c..18cad14f533e 100644
+>--- a/drivers/vdpa/Kconfig
+>+++ b/drivers/vdpa/Kconfig
+>@@ -48,4 +48,10 @@ config MLX5_VDPA_NET
+> 	  be executed by the hardware. It also supports a variety of stateless
+> 	  offloads depending on the actual device used and firmware version.
+>
+>+config VP_VDPA
+>+	tristate "Virtio PCI bridge vDPA driver"
+>+	depends on PCI_MSI && VIRTIO_PCI_MODERN
+>+	help
+>+	  This kernel module that bridges virtio PCI device to vDPA bus.
+                              ^
+Without 'that' maybe sound better, but I'm not a native speaker :-)
 
+>+
+> endif # VDPA
+>diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
+>index d160e9b63a66..67fe7f3d6943 100644
+>--- a/drivers/vdpa/Makefile
+>+++ b/drivers/vdpa/Makefile
+>@@ -3,3 +3,4 @@ obj-$(CONFIG_VDPA) += vdpa.o
+> obj-$(CONFIG_VDPA_SIM) += vdpa_sim/
+> obj-$(CONFIG_IFCVF)    += ifcvf/
+> obj-$(CONFIG_MLX5_VDPA) += mlx5/
+>+obj-$(CONFIG_VP_VDPA)    += virtio_pci/
+>diff --git a/drivers/vdpa/virtio_pci/Makefile b/drivers/vdpa/virtio_pci/Makefile
+>new file mode 100644
+>index 000000000000..231088d3af7d
+>--- /dev/null
+>+++ b/drivers/vdpa/virtio_pci/Makefile
+>@@ -0,0 +1,2 @@
+>+# SPDX-License-Identifier: GPL-2.0
+>+obj-$(CONFIG_VP_VDPA) += vp_vdpa.o
+>diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/vp_vdpa.c
+>new file mode 100644
+>index 000000000000..fa0321e77fb3
+>--- /dev/null
+>+++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
+>@@ -0,0 +1,455 @@
+>+// SPDX-License-Identifier: GPL-2.0-only
+>+/*
+>+ * vDPA bridge driver for modern virtio-pci device
+>+ *
+>+ * Copyright (c) 2020, Red Hat Inc. All rights reserved.
+>+ * Author: Jason Wang <jasowang@redhat.com>
+>+ *
+>+ * Based on virtio_pci_modern.c.
+>+ */
+>+
+>+#include <linux/interrupt.h>
+>+#include <linux/module.h>
+>+#include <linux/pci.h>
+>+#include <linux/vdpa.h>
+>+#include <linux/virtio.h>
+>+#include <linux/virtio_config.h>
+>+#include <linux/virtio_ring.h>
+>+#include <linux/virtio_pci.h>
+>+#include <linux/virtio_pci_modern.h>
+>+
+>+#define VP_VDPA_QUEUE_MAX 256
+>+#define VP_VDPA_DRIVER_NAME "vp_vdpa"
+>+
+>+struct vp_vring {
+>+	void __iomem *notify;
+>+	char msix_name[256];
 
-On 12/4/20 1:29 AM, Brendan Jackman wrote:
-> On Thu, Dec 03, 2020 at 10:30:18PM -0800, Yonghong Song wrote:
->>
->>
->> On 12/3/20 8:02 AM, Brendan Jackman wrote:
->>> Since the atomic operations that are added in subsequent commits are
->>> all isomorphic with BPF_ADD, pull out a macro to avoid the
->>> interpreter becoming dominated by lines of atomic-related code.
->>>
->>> Note that this sacrificies interpreter performance (combining
->>> STX_ATOMIC_W and STX_ATOMIC_DW into single switch case means that we
->>> need an extra conditional branch to differentiate them) in favour of
->>> compact and (relatively!) simple C code.
->>>
->>> Change-Id: I8cae5b66e75f34393de6063b91c05a8006fdd9e6
->>> Signed-off-by: Brendan Jackman <jackmanb@google.com>
->>
->> Ack with a minor suggestion below.
->>
->> Acked-by: Yonghong Song <yhs@fb.com>
->>
->>> ---
->>>    kernel/bpf/core.c | 79 +++++++++++++++++++++++------------------------
->>>    1 file changed, 38 insertions(+), 41 deletions(-)
->>>
->>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->>> index 28f960bc2e30..498d3f067be7 100644
->>> --- a/kernel/bpf/core.c
->>> +++ b/kernel/bpf/core.c
->>> @@ -1618,55 +1618,52 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
->>>    	LDX_PROBE(DW, 8)
->>>    #undef LDX_PROBE
->>> -	STX_ATOMIC_W:
->>> -		switch (IMM) {
->>> -		case BPF_ADD:
->>> -			/* lock xadd *(u32 *)(dst_reg + off16) += src_reg */
->>> -			atomic_add((u32) SRC, (atomic_t *)(unsigned long)
->>> -				   (DST + insn->off));
->>> -			break;
->>> -		case BPF_ADD | BPF_FETCH:
->>> -			SRC = (u32) atomic_fetch_add(
->>> -				(u32) SRC,
->>> -				(atomic_t *)(unsigned long) (DST + insn->off));
->>> -			break;
->>> -		case BPF_XCHG:
->>> -			SRC = (u32) atomic_xchg(
->>> -				(atomic_t *)(unsigned long) (DST + insn->off),
->>> -				(u32) SRC);
->>> -			break;
->>> -		case BPF_CMPXCHG:
->>> -			BPF_R0 = (u32) atomic_cmpxchg(
->>> -				(atomic_t *)(unsigned long) (DST + insn->off),
->>> -				(u32) BPF_R0, (u32) SRC);
->>> +#define ATOMIC(BOP, KOP)						\
->>
->> ATOMIC a little bit generic. Maybe ATOMIC_FETCH_BOP?
-> 
-> Well it doesn't fetch in all cases and "BOP" is intended to
-> differentiate from KOP i.e. BOP = BPF operation KOP = Kernel operation.
-> 
-> Could go with ATOMIC_ALU_OP?
+Can we use a macro for the msix_name size, since we use 256 in multiple 
+places?
 
-ATOMIC_ALU_OP sounds good.
+>+	struct vdpa_callback cb;
+>+	int irq;
+>+};
+>+
+>+struct vp_vdpa {
+>+	struct vdpa_device vdpa;
+>+	struct virtio_pci_modern_device mdev;
+>+	struct vp_vring *vring;
+>+	struct vdpa_callback cb;
+                              ^
+It is not relevant, but 'config_cb' is maybe clearer to read.
 
-> 
->>> +		case BOP:						\
->>> +			if (BPF_SIZE(insn->code) == BPF_W)		\
->>> +				atomic_##KOP((u32) SRC, (atomic_t *)(unsigned long) \
->>> +					     (DST + insn->off));	\
->>> +			else						\
->>> +				atomic64_##KOP((u64) SRC, (atomic64_t *)(unsigned long) \
->>> +					       (DST + insn->off));	\
->>> +			break;						\
->>> +		case BOP | BPF_FETCH:					\
->>> +			if (BPF_SIZE(insn->code) == BPF_W)		\
->>> +				SRC = (u32) atomic_fetch_##KOP(		\
->>> +					(u32) SRC,			\
->>> +					(atomic_t *)(unsigned long) (DST + insn->off)); \
->>> +			else						\
->>> +				SRC = (u64) atomic64_fetch_##KOP(	\
->>> +					(u64) SRC,			\
->>> +					(atomic64_t *)(s64) (DST + insn->off)); \
->>>    			break;
->>> -		default:
->>> -			goto default_label;
->>> -		}
->>> -		CONT;
->>>    	STX_ATOMIC_DW:
->>> +	STX_ATOMIC_W:
->>>    		switch (IMM) {
->>> -		case BPF_ADD:
->>> -			/* lock xadd *(u64 *)(dst_reg + off16) += src_reg */
->>> -			atomic64_add((u64) SRC, (atomic64_t *)(unsigned long)
->>> -				     (DST + insn->off));
->>> -			break;
->>> -		case BPF_ADD | BPF_FETCH:
->>> -			SRC = (u64) atomic64_fetch_add(
->>> -				(u64) SRC,
->>> -				(atomic64_t *)(s64) (DST + insn->off));
->>> -			break;
->>> +		ATOMIC(BPF_ADD, add)
->>> +
->>>    		case BPF_XCHG:
->>> -			SRC = (u64) atomic64_xchg(
->>> -				(atomic64_t *)(u64) (DST + insn->off),
->>> -				(u64) SRC);
->>> +			if (BPF_SIZE(insn->code) == BPF_W)
->>> +				SRC = (u32) atomic_xchg(
->>> +					(atomic_t *)(unsigned long) (DST + insn->off),
->>> +					(u32) SRC);
->>> +			else
->>> +				SRC = (u64) atomic64_xchg(
->>> +					(atomic64_t *)(u64) (DST + insn->off),
->>> +					(u64) SRC);
->>>    			break;
->>>    		case BPF_CMPXCHG:
->>> -			BPF_R0 = (u64) atomic64_cmpxchg(
->>> -				(atomic64_t *)(u64) (DST + insn->off),
->>> -				(u64) BPF_R0, (u64) SRC);
->>> +			if (BPF_SIZE(insn->code) == BPF_W)
->>> +				BPF_R0 = (u32) atomic_cmpxchg(
->>> +					(atomic_t *)(unsigned long) (DST + insn->off),
->>> +					(u32) BPF_R0, (u32) SRC);
->>> +			else
->>> +				BPF_R0 = (u64) atomic64_cmpxchg(
->>> +					(atomic64_t *)(u64) (DST + insn->off),
->>> +					(u64) BPF_R0, (u64) SRC);
->>>    			break;
->>> +
->>>    		default:
->>>    			goto default_label;
->>>    		}
->>>
+The rest looks good.
+
+Thanks,
+Stefano
+
+>+	char msix_name[256];
+>+	int config_irq;
+>+	int queues;
+>+	int vectors;
+>+};
+>+
+>+static struct vp_vdpa *vdpa_to_vp(struct vdpa_device *vdpa)
+>+{
+>+	return container_of(vdpa, struct vp_vdpa, vdpa);
+>+}
+>+
+>+static struct virtio_pci_modern_device *vdpa_to_mdev(struct vdpa_device *vdpa)
+>+{
+>+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
+>+
+>+	return &vp_vdpa->mdev;
+>+}
+>+
+>+static u64 vp_vdpa_get_features(struct vdpa_device *vdpa)
+>+{
+>+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
+>+
+>+	return vp_modern_get_features(mdev);
+>+}
+>+
+>+static int vp_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
+>+{
+>+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
+>+
+>+	vp_modern_set_features(mdev, features);
+>+
+>+	return 0;
+>+}
+>+
+>+static u8 vp_vdpa_get_status(struct vdpa_device *vdpa)
+>+{
+>+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
+>+
+>+	return vp_modern_get_status(mdev);
+>+}
+>+
+>+static void vp_vdpa_free_irq(struct vp_vdpa *vp_vdpa)
+>+{
+>+	struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
+>+	struct pci_dev *pdev = mdev->pci_dev;
+>+	int i;
+>+
+>+	for (i = 0; i < vp_vdpa->queues; i++) {
+>+		if (vp_vdpa->vring[i].irq != VIRTIO_MSI_NO_VECTOR) {
+>+			vp_modern_queue_vector(mdev, i, VIRTIO_MSI_NO_VECTOR);
+>+			devm_free_irq(&pdev->dev, vp_vdpa->vring[i].irq,
+>+				      &vp_vdpa->vring[i]);
+>+			vp_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
+>+		}
+>+	}
+>+
+>+	if (vp_vdpa->config_irq != VIRTIO_MSI_NO_VECTOR) {
+>+		vp_modern_config_vector(mdev, VIRTIO_MSI_NO_VECTOR);
+>+		devm_free_irq(&pdev->dev, vp_vdpa->config_irq, vp_vdpa);
+>+		vp_vdpa->config_irq = VIRTIO_MSI_NO_VECTOR;
+>+	}
+>+
+>+	if (vp_vdpa->vectors) {
+>+		pci_free_irq_vectors(pdev);
+>+		vp_vdpa->vectors = 0;
+>+	}
+>+}
+>+
+>+static irqreturn_t vp_vdpa_vq_handler(int irq, void *arg)
+>+{
+>+	struct vp_vring *vring = arg;
+>+
+>+	if (vring->cb.callback)
+>+		return vring->cb.callback(vring->cb.private);
+>+
+>+	return IRQ_HANDLED;
+>+}
+>+
+>+static irqreturn_t vp_vdpa_config_handler(int irq, void *arg)
+>+{
+>+	struct vp_vdpa *vp_vdpa = arg;
+>+
+>+	if (vp_vdpa->cb.callback)
+>+		return vp_vdpa->cb.callback(vp_vdpa->cb.private);
+>+
+>+	return IRQ_HANDLED;
+>+}
+>+
+>+static int vp_vdpa_request_irq(struct vp_vdpa *vp_vdpa)
+>+{
+>+	struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
+>+	struct pci_dev *pdev = mdev->pci_dev;
+>+	int i, ret, irq;
+>+	int queues = vp_vdpa->queues;
+>+	int vectors = queues + 1;
+>+
+>+	ret = pci_alloc_irq_vectors(pdev, vectors, vectors, PCI_IRQ_MSIX);
+>+	if (ret != vectors) {
+>+		dev_err(&pdev->dev,
+>+			"vp_vdpa: fail to allocate irq vectors want %d but %d\n",
+>+			vectors, ret);
+>+		return ret;
+>+	}
+>+
+>+	vp_vdpa->vectors = vectors;
+>+
+>+	for (i = 0; i < queues; i++) {
+>+		snprintf(vp_vdpa->vring[i].msix_name, 256,
+>+			"vp-vdpa[%s]-%d\n", pci_name(pdev), i);
+>+		irq = pci_irq_vector(pdev, i);
+>+		ret = devm_request_irq(&pdev->dev, irq,
+>+				       vp_vdpa_vq_handler,
+>+				       0, vp_vdpa->vring[i].msix_name,
+>+				       &vp_vdpa->vring[i]);
+>+		if (ret) {
+>+			dev_err(&pdev->dev,
+>+				"vp_vdpa: fail to request irq for vq %d\n", i);
+>+			goto err;
+>+		}
+>+		vp_modern_queue_vector(mdev, i, i);
+>+		vp_vdpa->vring[i].irq = irq;
+>+	}
+>+
+>+	snprintf(vp_vdpa->msix_name, 256, "vp-vdpa[%s]-config\n",
+>+		 pci_name(pdev));
+>+	irq = pci_irq_vector(pdev, queues);
+>+	ret = devm_request_irq(&pdev->dev, irq,	vp_vdpa_config_handler, 0,
+>+			       vp_vdpa->msix_name, vp_vdpa);
+>+	if (ret) {
+>+		dev_err(&pdev->dev,
+>+			"vp_vdpa: fail to request irq for vq %d\n", i);
+>+			goto err;
+>+	}
+>+	vp_modern_config_vector(mdev, queues);
+>+	vp_vdpa->config_irq = irq;
+>+
+>+	return 0;
+>+err:
+>+	vp_vdpa_free_irq(vp_vdpa);
+>+	return ret;
+>+}
+>+
+>+static void vp_vdpa_set_status(struct vdpa_device *vdpa, u8 status)
+>+{
+>+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
+>+	struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
+>+	u8 s = vp_vdpa_get_status(vdpa);
+>+
+>+	if (status & VIRTIO_CONFIG_S_DRIVER_OK &&
+>+	    !(s & VIRTIO_CONFIG_S_DRIVER_OK)) {
+>+		vp_vdpa_request_irq(vp_vdpa);
+>+	}
+>+
+>+	vp_modern_set_status(mdev, status);
+>+
+>+	if (!(status & VIRTIO_CONFIG_S_DRIVER_OK) &&
+>+	    (s & VIRTIO_CONFIG_S_DRIVER_OK))
+>+		vp_vdpa_free_irq(vp_vdpa);
+>+}
+>+
+>+static u16 vp_vdpa_get_vq_num_max(struct vdpa_device *vdpa)
+>+{
+>+	return VP_VDPA_QUEUE_MAX;
+>+}
+>+
+>+static int vp_vdpa_get_vq_state(struct vdpa_device *vdpa, u16 qid,
+>+				struct vdpa_vq_state *state)
+>+{
+>+	/* Note that this is not supported by virtio specification, so
+>+	 * we return -EOPNOTSUPP here. This means we can't support live
+>+	 * migration, vhost device start/stop.
+>+	 */
+>+	return -EOPNOTSUPP;
+>+}
+>+
+>+static int vp_vdpa_set_vq_state(struct vdpa_device *vdpa, u16 qid,
+>+				const struct vdpa_vq_state *state)
+>+{
+>+	/* Note that this is not supported by virtio specification, so
+>+	 * we return -ENOPOTSUPP here. This means we can't support live
+>+	 * migration, vhost device start/stop.
+>+	 */
+>+	return -EOPNOTSUPP;
+>+}
+>+
+>+static void vp_vdpa_set_vq_cb(struct vdpa_device *vdpa, u16 qid,
+>+			      struct vdpa_callback *cb)
+>+{
+>+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
+>+
+>+	vp_vdpa->vring[qid].cb = *cb;
+>+}
+>+
+>+static void vp_vdpa_set_vq_ready(struct vdpa_device *vdpa,
+>+				 u16 qid, bool ready)
+>+{
+>+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
+>+
+>+	vp_modern_set_queue_enable(mdev, qid, ready);
+>+}
+>+
+>+static bool vp_vdpa_get_vq_ready(struct vdpa_device *vdpa, u16 qid)
+>+{
+>+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
+>+
+>+	return vp_modern_get_queue_enable(mdev, qid);
+>+}
+>+
+>+static void vp_vdpa_set_vq_num(struct vdpa_device *vdpa, u16 qid,
+>+			       u32 num)
+>+{
+>+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
+>+
+>+	vp_modern_set_queue_size(mdev, qid, num);
+>+}
+>+
+>+static int vp_vdpa_set_vq_address(struct vdpa_device *vdpa, u16 qid,
+>+				  u64 desc_area, u64 driver_area,
+>+				  u64 device_area)
+>+{
+>+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
+>+
+>+	vp_modern_queue_address(mdev, qid, desc_area,
+>+				driver_area, device_area);
+>+
+>+	return 0;
+>+}
+>+
+>+static void vp_vdpa_kick_vq(struct vdpa_device *vdpa, u16 qid)
+>+{
+>+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
+>+
+>+	vp_iowrite16(qid, vp_vdpa->vring[qid].notify);
+>+}
+>+
+>+static u32 vp_vdpa_get_generation(struct vdpa_device *vdpa)
+>+{
+>+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
+>+
+>+	return vp_modern_generation(mdev);
+>+}
+>+
+>+static u32 vp_vdpa_get_device_id(struct vdpa_device *vdpa)
+>+{
+>+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
+>+
+>+	return mdev->id.device;
+>+}
+>+
+>+static u32 vp_vdpa_get_vendor_id(struct vdpa_device *vdpa)
+>+{
+>+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
+>+
+>+	return mdev->id.vendor;
+>+}
+>+
+>+static u32 vp_vdpa_get_vq_align(struct vdpa_device *vdpa)
+>+{
+>+	return PAGE_SIZE;
+>+}
+>+
+>+static void vp_vdpa_get_config(struct vdpa_device *vdpa,
+>+			       unsigned int offset,
+>+			       void *buf, unsigned int len)
+>+{
+>+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
+>+	struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
+>+	u8 old, new;
+>+	u8 *p;
+>+	int i;
+>+
+>+	do {
+>+		old = vp_ioread8(&mdev->common->config_generation);
+>+		p = buf;
+>+		for (i = 0; i < len; i++)
+>+			*p++ = vp_ioread8(mdev->device + offset + i);
+>+
+>+		new = vp_ioread8(&mdev->common->config_generation);
+>+	} while (old != new);
+>+}
+>+
+>+static void vp_vdpa_set_config(struct vdpa_device *vdpa,
+>+			       unsigned int offset, const void *buf,
+>+			       unsigned int len)
+>+{
+>+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
+>+	struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
+>+	const u8 *p = buf;
+>+	int i;
+>+
+>+	for (i = 0; i < len; i++)
+>+		vp_iowrite8(*p++, mdev->device + offset + i);
+>+}
+>+
+>+static void vp_vdpa_set_config_cb(struct vdpa_device *vdpa,
+>+				  struct vdpa_callback *cb)
+>+{
+>+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
+>+
+>+	vp_vdpa->cb = *cb;
+>+}
+>+
+>+static const struct vdpa_config_ops vp_vdpa_ops = {
+>+	.get_features	= vp_vdpa_get_features,
+>+	.set_features	= vp_vdpa_set_features,
+>+	.get_status	= vp_vdpa_get_status,
+>+	.set_status	= vp_vdpa_set_status,
+>+	.get_vq_num_max	= vp_vdpa_get_vq_num_max,
+>+	.get_vq_state	= vp_vdpa_get_vq_state,
+>+	.set_vq_state	= vp_vdpa_set_vq_state,
+>+	.set_vq_cb	= vp_vdpa_set_vq_cb,
+>+	.set_vq_ready	= vp_vdpa_set_vq_ready,
+>+	.get_vq_ready	= vp_vdpa_get_vq_ready,
+>+	.set_vq_num	= vp_vdpa_set_vq_num,
+>+	.set_vq_address	= vp_vdpa_set_vq_address,
+>+	.kick_vq	= vp_vdpa_kick_vq,
+>+	.get_generation	= vp_vdpa_get_generation,
+>+	.get_device_id	= vp_vdpa_get_device_id,
+>+	.get_vendor_id	= vp_vdpa_get_vendor_id,
+>+	.get_vq_align	= vp_vdpa_get_vq_align,
+>+	.get_config	= vp_vdpa_get_config,
+>+	.set_config	= vp_vdpa_set_config,
+>+	.set_config_cb  = vp_vdpa_set_config_cb,
+>+};
+>+
+>+static void vp_vdpa_free_irq_vectors(void *data)
+>+{
+>+	pci_free_irq_vectors(data);
+>+}
+>+
+>+static int vp_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id 
+>*id)
+>+{
+>+	struct virtio_pci_modern_device *mdev;
+>+	struct device *dev = &pdev->dev;
+>+	struct vp_vdpa *vp_vdpa;
+>+	u16 notify_off;
+>+	int ret, i;
+>+
+>+	ret = pcim_enable_device(pdev);
+>+	if (ret)
+>+		return ret;
+>+
+>+	vp_vdpa = vdpa_alloc_device(struct vp_vdpa, vdpa,
+>+				    dev, &vp_vdpa_ops);
+>+	if (vp_vdpa == NULL) {
+>+		dev_err(dev, "vp_vdpa: Failed to allocate vDPA structure\n");
+>+		return -ENOMEM;
+>+	}
+>+
+>+	mdev = &vp_vdpa->mdev;
+>+	mdev->pci_dev = pdev;
+>+
+>+	if (vp_modern_probe(mdev)) {
+>+		dev_err(&pdev->dev, "Failed to probe modern PCI device\n");
+>+		goto err;
+>+	}
+>+
+>+	pci_set_master(pdev);
+>+	pci_set_drvdata(pdev, vp_vdpa);
+>+
+>+	vp_vdpa->vdpa.dma_dev = &pdev->dev;
+>+	vp_vdpa->queues = vp_modern_get_num_queues(mdev);
+>+
+>+	ret = devm_add_action_or_reset(dev, vp_vdpa_free_irq_vectors, pdev);
+>+	if (ret) {
+>+		dev_err(&pdev->dev,
+>+			"Failed for adding devres for freeing irq vectors\n");
+>+		goto err;
+>+	}
+>+
+>+	vp_vdpa->vring = devm_kcalloc(&pdev->dev, vp_vdpa->queues,
+>+				      sizeof(*vp_vdpa->vring),
+>+				      GFP_KERNEL);
+>+	if (!vp_vdpa->vring) {
+>+		dev_err(&pdev->dev, "Fail to allocate virtqueues\n");
+>+		goto err;
+>+	}
+>+
+>+	for (i = 0; i < vp_vdpa->queues; i++) {
+>+		notify_off = vp_modern_get_queue_notify_off(mdev, i);
+>+		vp_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
+>+		vp_vdpa->vring[i].notify = mdev->notify_base +
+>+			notify_off * mdev->notify_offset_multiplier;
+>+	}
+>+	vp_vdpa->config_irq = VIRTIO_MSI_NO_VECTOR;
+>+
+>+	ret = vdpa_register_device(&vp_vdpa->vdpa, vp_vdpa->queues);
+>+	if (ret) {
+>+		dev_err(&pdev->dev, "Failed to register to vdpa bus\n");
+>+		goto err;
+>+	}
+>+
+>+	return 0;
+>+
+>+err:
+>+	put_device(&vp_vdpa->vdpa.dev);
+>+	return ret;
+>+}
+>+
+>+static void vp_vdpa_remove(struct pci_dev *pdev)
+>+{
+>+	struct vp_vdpa *vp_vdpa = pci_get_drvdata(pdev);
+>+
+>+	vdpa_unregister_device(&vp_vdpa->vdpa);
+>+	vp_modern_remove(&vp_vdpa->mdev);
+>+}
+>+
+>+static struct pci_driver vp_vdpa_driver = {
+>+	.name		= "vp-vdpa",
+>+	.id_table	= NULL, /* only dynamic ids */
+>+	.probe		= vp_vdpa_probe,
+>+	.remove		= vp_vdpa_remove,
+>+};
+>+
+>+module_pci_driver(vp_vdpa_driver);
+>+
+>+MODULE_AUTHOR("Jason Wang <jasowang@redhat.com>");
+>+MODULE_DESCRIPTION("vp-vdpa");
+>+MODULE_LICENSE("GPL");
+>+MODULE_VERSION("1");
+>-- 
+>2.25.1
+>
+>_______________________________________________
+>Virtualization mailing list
+>Virtualization@lists.linux-foundation.org
+>https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+>
+
