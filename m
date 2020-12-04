@@ -2,120 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE292CEEFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C212CEEFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729113AbgLDNsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 08:48:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgLDNsm (ORCPT
+        id S1730299AbgLDNtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 08:49:35 -0500
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:60260 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725973AbgLDNte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 08:48:42 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B0BC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 05:48:01 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id s30so7706368lfc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 05:48:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uBODEac6wWABSFD4OdzED216K6yEsLpM1TjIWb4e1wo=;
-        b=wiiMABR33/3hJ0QiQbmczxNJfaOvBl5PSKoac+uZEP3EnxF694ASr86+V05wT4RDGk
-         HJsZqQFti6vdNdIxxbKP1jNDuqN09E8mZbK3cOWM7L0BnFppWLFV3uAkegMePkppu602
-         gZU4WuGx4KMpl5SEncVAKmTks9MrLDHX//PviHYnBjVmcl1oZeBe09pHt3qZalyYUgeS
-         1a6yLTpmcqtZWRS2rxYuRo4cQX1CPSCOL28o4BHs/hN11iwZxoGvAJdkrKK35xjBXvdf
-         N3gO9xs4anofJeSc3RjqfM1N8B5omeLoieAq/UjvvHmc4GSNpYIVjt93aDEa6AWus3sO
-         4G4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uBODEac6wWABSFD4OdzED216K6yEsLpM1TjIWb4e1wo=;
-        b=RisvVFRr9P3KamNcnnzn6tsMhyDIWrMPnc1ClRaAFqVVM+bdA5jNCIrBxeyLdW8B5g
-         FHjjfE23IwcFNJP78KV1YZdQkWP5xo0l5oYjnsnfRvPfREpBM6gvm6D+eRj1VbNlSKeA
-         a9hQcAcJxU28JXi/yeIxXxerwup164t5t4sUbgCPkRZveCvAK1NhmDi8ImfWBp3Cp8x7
-         HEOFkPVuPvrmtIJaXH7H3D9lhH7RkTgevqIahyc2fl0AZzJ2mqTeP1Vh7kZ7W/vzTWQ0
-         jJHT54P2H5t2YoMC+dvP8AiuZLzPF0tcfeAzN0HRYaPsfDvFArZZ8NLdj0ca+EUDua2d
-         j2XQ==
-X-Gm-Message-State: AOAM530TyyaIz3Tby6HYClpUxhIHABv0yL57P896C2Ds1j45weq6Lwye
-        PGhgfsu50MB2wsgItsP4TDl+552zDMnwjV4R8jpCRA==
-X-Google-Smtp-Source: ABdhPJzbyyXoi9NDlbVAPDoVBPTAabxX2/5GUJ+JN146pOiUVHQdYVzkhciqpV6UCDuoCjuHhKVt/SawdZGF66OCcrQ=
-X-Received: by 2002:a19:cc91:: with SMTP id c139mr3613023lfg.31.1607089680010;
- Fri, 04 Dec 2020 05:48:00 -0800 (PST)
+        Fri, 4 Dec 2020 08:49:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1607089774; x=1638625774;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aprRrheqIQcZfHyMK5qLYA6uJrrOjC/Y74/E7xSPl/0=;
+  b=xfgfU+L0e+fVHwh4O+rQcnR8NECjv+W3NviSYiUmVTWRxcjEaKzF23GY
+   Rs44rDsxpjq7/zJZ6kUCqb7ILjiO1HOPsZxftAXdslp0muUBeJPmMiM8h
+   l9WfiSj21tqhQt0GwzxcFxuy7DxLQ9EzCsE2U5AGcez/CnFo6Wj7oyBWU
+   7amf/HdxyodbigTARWiHMh5Ipq6U5spyKCwEHagJhbqSxISUS50G7wFsl
+   XF3wfIKCIDFEzBBhxBwLX/Q9ma01bFuM68TUX8Dz8tyMsKEiMaWJoT1ZX
+   0vx+AYKoiMfMMTMl0XuuqXClZ8MJpeTsQAXru7jBJwbvRK8iSufYxtdFN
+   A==;
+IronPort-SDR: JblvC20Jo3fFN8GCHWNKrx6lWcl1M2M6BxrfQgyG+w/3FFy6OFOJrLuF9QBabz5ivra7fSjlPz
+ XJ2HjtDkMAvLaGaou6M49tL0VqgCa4RufTHPnN9WHqLFa2/tAg9dm50Znk8yJxbGcKKvYYwyxm
+ fG1m4QnCyOM9UoskT8gXEX8dtfqfQd2azmHsQtlS+SpU1tGLB1b56l5/s/BVagYmru6zMKt16R
+ 3ngFO5FMssGujOtH36CyHsiyNBxUO5kB9eKGKs2Itv4lR+1SHfouFl6M6YhbVVFZsf37yv1B0D
+ DHw=
+X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
+   d="scan'208";a="100923591"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Dec 2020 06:48:28 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 4 Dec 2020 06:48:27 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Fri, 4 Dec 2020 06:48:27 -0700
+Date:   Fri, 4 Dec 2020 14:48:26 +0100
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>
+Subject: Re: [PATCH v8 3/4] phy: Add Sparx5 ethernet serdes PHY driver
+Message-ID: <20201204134826.lnkdtj5nrygsngm2@mchp-dev-shegelun>
+References: <20201203103015.3735373-1-steen.hegelund@microchip.com>
+ <20201203103015.3735373-4-steen.hegelund@microchip.com>
+ <20201203215253.GL2333853@lunn.ch>
 MIME-Version: 1.0
-References: <20201203141124.7391-1-mgorman@techsingularity.net>
- <20201203141124.7391-7-mgorman@techsingularity.net> <CAKfTPtDm880Rs7D1xUCQd_X9okqzhgrmCJVhwg90Rt3krq9ytg@mail.gmail.com>
- <20201203175204.GY3371@techsingularity.net> <CAKfTPtBGsXb0RqE_qs2miZGi_uax4VY1_8y1NGhQ17Q8mBx8dw@mail.gmail.com>
- <20201204113030.GZ3371@techsingularity.net> <CAKfTPtDRqwUoX51rU0Xd3H9Dwqf8bLAFBxhoeMF1brKYmAZDJg@mail.gmail.com>
- <CAKfTPtBABBY1QSfFtbhBQ7+a8HOp2YfTyJaMVo07T5GU7sp_MA@mail.gmail.com> <3d8a6d19-afac-dc93-127d-da6505402cdf@linux.intel.com>
-In-Reply-To: <3d8a6d19-afac-dc93-127d-da6505402cdf@linux.intel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 4 Dec 2020 14:47:48 +0100
-Message-ID: <CAKfTPtAp+SyjmAsxTpSo5owQq0AeDpBWdo5ds0fVZvDr2OK_iw@mail.gmail.com>
-Subject: Re: [PATCH 06/10] sched/fair: Clear the target CPU from the cpumask
- of CPUs searched
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201203215253.GL2333853@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 at 14:40, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
+On 03.12.2020 22:52, Andrew Lunn wrote:
+>EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 >
-> On 2020/12/4 21:17, Vincent Guittot wrote:
-> > On Fri, 4 Dec 2020 at 14:13, Vincent Guittot <vincent.guittot@linaro.org> wrote:
-> >>
-> >> On Fri, 4 Dec 2020 at 12:30, Mel Gorman <mgorman@techsingularity.net> wrote:
-> >>>
-> >>> On Fri, Dec 04, 2020 at 11:56:36AM +0100, Vincent Guittot wrote:
-> >>>>> The intent was that the sibling might still be an idle candidate. In
-> >>>>> the current draft of the series, I do not even clear this so that the
-> >>>>> SMT sibling is considered as an idle candidate. The reasoning is that if
-> >>>>> there are no idle cores then an SMT sibling of the target is as good an
-> >>>>> idle CPU to select as any.
-> >>>>
-> >>>> Isn't the purpose of select_idle_smt ?
-> >>>>
-> >>>
-> >>> Only in part.
-> >>>
-> >>>> select_idle_core() looks for an idle core and opportunistically saves
-> >>>> an idle CPU candidate to skip select_idle_cpu. In this case this is
-> >>>> useless loops for select_idle_core() because we are sure that the core
-> >>>> is not idle
-> >>>>
-> >>>
-> >>> If select_idle_core() finds an idle candidate other than the sibling,
-> >>> it'll use it if there is no idle core -- it picks a busy sibling based
-> >>> on a linear walk of the cpumask. Similarly, select_idle_cpu() is not
-> >>
-> >> My point is that it's a waste of time to loop the sibling cpus of
-> >> target in select_idle_core because it will not help to find an idle
-> >> core. The sibling  cpus will then be check either by select_idle_cpu
-> >> of select_idle_smt
-> >
-> > also, while looping the cpumask, the sibling cpus of not idle cpu are
-> > removed and will not be check
-> >
+>> +/* map from SD25G28 interface width to configuration value */
+>> +static u8 sd25g28_get_iw_setting(const u8 interface_width)
+>> +{
+>> +     switch (interface_width) {
+>> +     case 10: return 0;
+>> +     case 16: return 1;
+>> +     case 32: return 3;
+>> +     case 40: return 4;
+>> +     case 64: return 5;
+>> +     default:
+>> +             pr_err("%s: Illegal value %d for interface width\n",
+>> +                    __func__, interface_width);
 >
-> IIUC, select_idle_core and select_idle_cpu share the same cpumask(select_idle_mask)?
-> If the target's sibling is removed from select_idle_mask from select_idle_core(),
-> select_idle_cpu() will lose the chance to pick it up?
+>Please make use of dev_err(phy->dev, so we know which PHY has
+>configuration problems.
 
-This is only relevant for patch 10 which is not to be included IIUC
-what mel said in cover letter : "Patches 9 and 10 are stupid in the
-context of this series."
+I will update that.
 
 >
-> Thanks,
-> -Aubrey
+>> +static int sparx5_serdes_validate(struct phy *phy, enum phy_mode mode,
+>> +                                     int submode,
+>> +                                     union phy_configure_opts *opts)
+>> +{
+>> +     struct sparx5_serdes_macro *macro = phy_get_drvdata(phy);
+>> +     struct sparx5_serdes_private *priv = macro->priv;
+>> +     u32 value, analog_sd;
+>> +
+>> +     if (mode != PHY_MODE_ETHERNET)
+>> +             return -EINVAL;
+>> +
+>> +     switch (submode) {
+>> +     case PHY_INTERFACE_MODE_1000BASEX:
+>> +     case PHY_INTERFACE_MODE_SGMII:
+>> +     case PHY_INTERFACE_MODE_QSGMII:
+>> +     case PHY_INTERFACE_MODE_10GBASER:
+>> +             break;
+>> +     default:
+>> +             return -EINVAL;
+>> +     }
+>> +     if (macro->serdestype == SPX5_SDT_6G) {
+>> +             value = sdx5_rd(priv, SD6G_LANE_LANE_DF(macro->stpidx));
+>> +             analog_sd = SD6G_LANE_LANE_DF_PMA2PCS_RXEI_FILTERED_GET(value);
+>> +     } else if (macro->serdestype == SPX5_SDT_10G) {
+>> +             value = sdx5_rd(priv, SD10G_LANE_LANE_DF(macro->stpidx));
+>> +             analog_sd = SD10G_LANE_LANE_DF_PMA2PCS_RXEI_FILTERED_GET(value);
+>> +     } else {
+>> +             value = sdx5_rd(priv, SD25G_LANE_LANE_DE(macro->stpidx));
+>> +             analog_sd = SD25G_LANE_LANE_DE_LN_PMA_RXEI_GET(value);
+>> +     }
+>> +     /* Link up is when analog_sd == 0 */
+>> +     return analog_sd;
+>> +}
+>
+>What i have not yet seen is how this code plugs together with
+>phylink_pcs_ops?
+>
+>Can this hardware also be used for SATA, USB? As far as i understand,
+>the Marvell Comphy is multi-purpose, it is used for networking, USB,
+>and SATA, etc. Making it a generic PHY then makes sense, because
+>different subsystems need to use it.
+>
+>But it looks like this is for networking only? So i'm wondering if it
+>belongs in driver/net/pcs and it should be accessed using
+>phylink_pcs_ops?
+>
+>        Andrew
+
+This is a PHY that communicates on a SerDes link to an ethernet PHY or a
+SFP. So I took the lead from earlier work: the Microsemi Ocelot SerDes driver,
+and added the Sparx5 SerDes PHY driver here since it is very similar in intent.
+It is not an ethernet PHY as such.
+
+BR
+Steen
+
+---------------------------------------
+Steen Hegelund
+steen.hegelund@microchip.com
