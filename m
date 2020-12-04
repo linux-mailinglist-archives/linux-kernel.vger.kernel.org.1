@@ -2,146 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512372CE74B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 06:08:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 162202CE74F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 06:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727852AbgLDFHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 00:07:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43918 "EHLO mail.kernel.org"
+        id S1726522AbgLDFRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 00:17:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726485AbgLDFHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 00:07:53 -0500
-From:   Andy Lutomirski <luto@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     x86@kernel.org, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Andy Lutomirski <luto@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH v3 4/4] membarrier: Execute SYNC_CORE on the calling thread
-Date:   Thu,  3 Dec 2020 21:07:06 -0800
-Message-Id: <250ded637696d490c69bef1877148db86066881c.1607058304.git.luto@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1607058304.git.luto@kernel.org>
-References: <cover.1607058304.git.luto@kernel.org>
+        id S1725300AbgLDFRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 00:17:31 -0500
+Date:   Fri, 4 Dec 2020 07:16:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607059009;
+        bh=MytoTQmK0FWpezBeB0/MIP6XIJc0eGXJUDMWPEVo7PA=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SuRTAIIUpLjq3GUyKoK3lRf2aP+PaQZ5/PHvW+PdJV9RBOUq4jqvEwmrkzGp23Mdc
+         eHU+vvWSnsIKri9zYinMa5cNfTq7O8qk25EG7K9tHw3MNzJSWMhy4BuJvYtAWx0msc
+         A9UW3vaU51sXDgVCz1Ez1SLfJqsEuk2sgqH6EOS58woJacVBUqlsqVrFI5mvfP6a4C
+         YIVa8iBrmGRX2zXFu2DiXu65vG5IUZExc0SCeKhrmoiQfnToOd3WOOdrfCX8/8WDUg
+         d7kzEaS/3nYG3eBiXmopNWZrEKe/FxTZT/2vZ+nfuQdH9kkAwpGMoyk9DRrXHv+Hwz
+         SB1T4+ZpRwx7Q==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Markus Wamser <Markus.Wamser@mixed-mode.de>,
+        Luke Hinds <lhinds@redhat.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        op-tee@lists.trustedfirmware.org
+Subject: Re: [PATCH v8 0/4] Introduce TEE based Trusted Keys support
+Message-ID: <20201204051642.GA154469@kernel.org>
+References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
+ <20201105050736.GA702944@kernel.org>
+ <CAFA6WYPetvod-Wov2n_L5TL771j+-kt+_csyWYT-uM=haEKMZQ@mail.gmail.com>
+ <20201106145252.GA10434@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201106145252.GA10434@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-membarrier()'s MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE is documented
-as syncing the core on all sibling threads but not necessarily the
-calling thread.  This behavior is fundamentally buggy and cannot be used
-safely.  Suppose a user program has two threads.  Thread A is on CPU 0
-and thread B is on CPU 1.  Thread A modifies some text and calls
-membarrier(MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE).  Then thread B
-executes the modified code.  If, at any point after membarrier() decides
-which CPUs to target, thread A could be preempted and replaced by thread
-B on CPU 0.  This could even happen on exit from the membarrier()
-syscall.  If this happens, thread B will end up running on CPU 0 without
-having synced.
+On Fri, Nov 06, 2020 at 04:52:52PM +0200, Jarkko Sakkinen wrote:
+> On Fri, Nov 06, 2020 at 03:02:41PM +0530, Sumit Garg wrote:
+> > On Thu, 5 Nov 2020 at 10:37, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > >
+> > > On Tue, Nov 03, 2020 at 09:31:42PM +0530, Sumit Garg wrote:
+> > > > Add support for TEE based trusted keys where TEE provides the functionality
+> > > > to seal and unseal trusted keys using hardware unique key. Also, this is
+> > > > an alternative in case platform doesn't possess a TPM device.
+> > > >
+> > > > This patch-set has been tested with OP-TEE based early TA which is already
+> > > > merged in upstream [1].
+> > >
+> > > Is the new RPI400 computer a platform that can be used for testing
+> > > patch sets like this? I've been looking for a while something ARM64
+> > > based with similar convenience as Intel NUC's, and on the surface
+> > > this new RPI product looks great for kernel testing purposes.
+> > 
+> > Here [1] is the list of supported versions of Raspberry Pi in OP-TEE.
+> > The easiest approach would be to pick up a supported version or else
+> > do an OP-TEE port for an unsupported one (which should involve minimal
+> > effort).
+> > 
+> > [1] https://optee.readthedocs.io/en/latest/building/devices/rpi3.html#what-versions-of-raspberry-pi-will-work
+> > 
+> > -Sumit
+> 
+> If porting is doable, then I'll just order RPI 400, and test with QEMU
+> up until either I port OP-TEE myself or someone else does it.
+> 
+> For seldom ARM testing, RPI 400 is really convenient device with its
+> boxed form factor.
 
-In principle, this could be fixed by arranging for the scheduler to
-sync_core_before_usermode() whenever switching between two threads in
-the same mm if there is any possibility of a concurrent membarrier()
-call, but this would have considerable overhead.  Instead, make
-membarrier() sync the calling CPU as well.
+I'm now a proud owner of Raspberry Pi 400 home computer :-)
 
-As an optimization, this avoids an extra smp_mb() in the default
-barrier-only mode.
+I also found instructions on how to boot a custom OS from a USB stick:
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
----
- kernel/sched/membarrier.c | 51 +++++++++++++++++++++++++--------------
- 1 file changed, 33 insertions(+), 18 deletions(-)
+https://www.raspberrypi.org/documentation/hardware/raspberrypi/bootmodes/msd.md
 
-diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
-index 01538b31f27e..57266ab32ef9 100644
---- a/kernel/sched/membarrier.c
-+++ b/kernel/sched/membarrier.c
-@@ -333,7 +333,8 @@ static int membarrier_private_expedited(int flags, int cpu_id)
- 			return -EPERM;
- 	}
- 
--	if (atomic_read(&mm->mm_users) == 1 || num_online_cpus() == 1)
-+	if (flags != MEMBARRIER_FLAG_SYNC_CORE &&
-+	    (atomic_read(&mm->mm_users) == 1 || num_online_cpus() == 1))
- 		return 0;
- 
- 	/*
-@@ -352,8 +353,6 @@ static int membarrier_private_expedited(int flags, int cpu_id)
- 
- 		if (cpu_id >= nr_cpu_ids || !cpu_online(cpu_id))
- 			goto out;
--		if (cpu_id == raw_smp_processor_id())
--			goto out;
- 		rcu_read_lock();
- 		p = rcu_dereference(cpu_rq(cpu_id)->curr);
- 		if (!p || p->mm != mm) {
-@@ -368,16 +367,6 @@ static int membarrier_private_expedited(int flags, int cpu_id)
- 		for_each_online_cpu(cpu) {
- 			struct task_struct *p;
- 
--			/*
--			 * Skipping the current CPU is OK even through we can be
--			 * migrated at any point. The current CPU, at the point
--			 * where we read raw_smp_processor_id(), is ensured to
--			 * be in program order with respect to the caller
--			 * thread. Therefore, we can skip this CPU from the
--			 * iteration.
--			 */
--			if (cpu == raw_smp_processor_id())
--				continue;
- 			p = rcu_dereference(cpu_rq(cpu)->curr);
- 			if (p && p->mm == mm)
- 				__cpumask_set_cpu(cpu, tmpmask);
-@@ -385,12 +374,38 @@ static int membarrier_private_expedited(int flags, int cpu_id)
- 		rcu_read_unlock();
- 	}
- 
--	preempt_disable();
--	if (cpu_id >= 0)
-+	if (cpu_id >= 0) {
-+		/*
-+		 * smp_call_function_single() will call ipi_func() if cpu_id
-+		 * is the calling CPU.
-+		 */
- 		smp_call_function_single(cpu_id, ipi_func, NULL, 1);
--	else
--		smp_call_function_many(tmpmask, ipi_func, NULL, 1);
--	preempt_enable();
-+	} else {
-+		/*
-+		 * For regular membarrier, we can save a few cycles by
-+		 * skipping the current cpu -- we're about to do smp_mb()
-+		 * below, and if we migrate to a different cpu, this cpu
-+		 * and the new cpu will execute a full barrier in the
-+		 * scheduler.
-+		 *
-+		 * For CORE_SYNC, we do need a barrier on the current cpu --
-+		 * otherwise, if we are migrated and replaced by a different
-+		 * task in the same mm just before, during, or after
-+		 * membarrier, we will end up with some thread in the mm
-+		 * running without a core sync.
-+		 *
-+		 * For RSEQ, don't rseq_preempt() the caller.  User code
-+		 * is not supposed to issue syscalls at all from inside an
-+		 * rseq critical section.
-+		 */
-+		if (flags != MEMBARRIER_FLAG_SYNC_CORE) {
-+			preempt_disable();
-+			smp_call_function_many(tmpmask, ipi_func, NULL, true);
-+			preempt_enable();
-+		} else {
-+			on_each_cpu_mask(tmpmask, ipi_func, NULL, true);
-+		}
-+	}
- 
- out:
- 	if (cpu_id < 0)
--- 
-2.28.0
+Also, my favorite build system BuildRoot has bunch of of the shelf
+configs:
 
+➜  buildroot-sgx (master) ✔ ls -1 configs | grep raspberry
+raspberrypi0_defconfig
+raspberrypi0w_defconfig
+raspberrypi2_defconfig
+raspberrypi3_64_defconfig
+raspberrypi3_defconfig
+raspberrypi3_qt5we_defconfig
+raspberrypi4_64_defconfig
+raspberrypi4_defconfig
+raspberrypi_defconfig
+
+I.e. I'm capable of compiling kernel and user space and boot it up
+with it.
+
+Further, I can select this compilation option:
+
+BR2_TARGET_OPTEE_OS:                                                                                                                                              │  
+                                                                                                                                                                     │  
+   OP-TEE OS provides the secure world boot image and the trust                                                                                                      │  
+   application development kit of the OP-TEE project. OP-TEE OS                                                                                                      │  
+   also provides generic trusted application one can embedded                                                                                                        │  
+   into its system.                                                                                                                                                  │  
+                                                                                                                                                                     │  
+   http://github.com/OP-TEE/optee_os       
+
+Is that what I want? If I put this all together and apply your patches,
+should the expectation be that I can use trusted keys?
+
+Please note that I had a few remarks about your patches (minor but need
+to be fixed), but this version is already solid enough for testing.
+
+/Jarkko
