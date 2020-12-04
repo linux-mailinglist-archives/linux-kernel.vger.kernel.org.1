@@ -2,120 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156782CF389
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92EA82CF388
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729218AbgLDSDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:03:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52997 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727096AbgLDSDg (ORCPT
+        id S1729081AbgLDSCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:02:51 -0500
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:58148 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727178AbgLDSCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:03:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607104930;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y+BVWlwmMR3/aIwVc1YDREePfrqw3RI1zvIRL+z1PQU=;
-        b=CN/S9OXXEezRQ18LU9n70IbARdk3xJf2pRSuZO+Uiv4mZBTmVe7+rYA8w6uhcrobNCCEDU
-        yy+M2dSBcyLIks7FoWNKnXX5REgTQleThlNts6iWr6VQUQ2YfBUADYP5EAKdbDWjj9TK+L
-        HmpBNQSyoS8hbdbeGvgI5RhIrI2Tuxg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-138-PzeVPaOdO6GNlahLGsOC3w-1; Fri, 04 Dec 2020 13:02:06 -0500
-X-MC-Unique: PzeVPaOdO6GNlahLGsOC3w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 4 Dec 2020 13:02:51 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 30E731280B75;
+        Fri,  4 Dec 2020 10:02:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1607104931;
+        bh=kOups0pd4uEFpCdetzEgznZGlD3//AIfOfCED5b+e0I=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=SiyMTvReH4FFSnovORg1mgYJBXbQmz/EXo22Lk8D5z2wtCvENwSAtBEIHEiCXFl1t
+         nljLJqzX8eXkbedHoO8YmiwVnuUQoA8j/Q/Zd/XBzlgqBx37g8ObxbAQZwhKyvm7PC
+         +prnLWheDZKgb+CN/mZm5rHurR2QiODgOte/SiZs=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id DX3AvhYmf693; Fri,  4 Dec 2020 10:02:11 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8ADAD1005513;
-        Fri,  4 Dec 2020 18:02:03 +0000 (UTC)
-Received: from [10.36.112.162] (ovpn-112-162.ams2.redhat.com [10.36.112.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 76B7C5D6A1;
-        Fri,  4 Dec 2020 18:01:59 +0000 (UTC)
-Subject: Re: [PATCH 0/6] prohibit pinning pages in ZONE_MOVABLE
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Joonsoo Kim <js1304@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        mike.kravetz@oracle.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201204035953.GA17056@js1304-desktop>
- <CA+CK2bCD7XYyJB9TNZZeUMAuntotZopVYNjDXnyVZyzKe2_A1Q@mail.gmail.com>
- <20201204161005.GD5487@ziepe.ca>
- <CA+CK2bCGGoBXg7FbhGMDdWRnePKFgvtsM_PJmA2qtMNsvPMZbg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <593822e5-4e1a-fdca-5500-4138d0f2b728@redhat.com>
-Date:   Fri, 4 Dec 2020 19:01:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id CEB241280B74;
+        Fri,  4 Dec 2020 10:02:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1607104930;
+        bh=kOups0pd4uEFpCdetzEgznZGlD3//AIfOfCED5b+e0I=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=ii7hqO3wVrD7YJMrWWfA626JSjOnYCNm/166zh3ZIrM1IFDN5xaeSbegcjY5SD7mu
+         tX4mnvACJxDjafeBfIf2FcqzG+AKgxddsX4e+i1r2nXwrND5x68i65ou4gVGGQKVWK
+         ejQ2qzALaSse6ukjejDyu3G9yo3wBVaEh7mAXvWI=
+Message-ID: <ab769a5188394cd3379cc627d14a0222050a1367.camel@HansenPartnership.com>
+Subject: Re: [RFC PATCH v1 07/12] efi: Replace strstarts() by
+ str_has_prefix().
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        laniel_francis@privacyrequired.com
+Cc:     linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 04 Dec 2020 10:02:09 -0800
+In-Reply-To: <CAMj1kXEQhT_LF5FDBO3-S7pBn55wG59bQUVr2q58A4FhqodY8Q@mail.gmail.com>
+References: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
+         <20201204170319.20383-8-laniel_francis@privacyrequired.com>
+         <CAMj1kXEQhT_LF5FDBO3-S7pBn55wG59bQUVr2q58A4FhqodY8Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <CA+CK2bCGGoBXg7FbhGMDdWRnePKFgvtsM_PJmA2qtMNsvPMZbg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.12.20 18:50, Pavel Tatashin wrote:
->>> Yes, this indeed could be a problem for some configurations. I will
->>> add your comment to the commit log of one of the patches.
->>
->> It sounds like there is some inherent tension here, breaking THP's
->> when doing pin_user_pages() is a really nasty thing to do. DMA
->> benefits greatly from THP.
->>
->> I know nothing about ZONE_MOVABLE, is this auto-setup or an admin
->> option? If the result of this patch is standard systems can no longer
->> pin > 80% of their memory I have some regression concerns..
+On Fri, 2020-12-04 at 18:07 +0100, Ard Biesheuvel wrote:
+> On Fri, 4 Dec 2020 at 18:06, <laniel_francis@privacyrequired.com>
+> wrote:
+> > From: Francis Laniel <laniel_francis@privacyrequired.com>
+> > 
+> > The two functions indicates if a string begins with a given prefix.
+> > The only difference is that strstarts() returns a bool while
+> > str_has_prefix()
+> > returns the length of the prefix if the string begins with it or 0
+> > otherwise.
+> > 
 > 
-> ZONE_MOVABLE can be configured via kernel parameter, or when memory
-> nodes are onlined after hot-add; so this is something that admins
-> configure. ZONE_MOVABLE is designed to gurantee memory hot-plug
-> functionality, and not availability of THP, however, I did not know
-> about the use case where some admins might configure ZONE_MOVABLE to
-> increase availability of THP because pages are always migratable in
-> them. The thing is, if we fragment ZONE_MOVABLE by pinning pages in
-> it, the availability of THP also suffers.  We can migrate pages in
-> ZONE_NORMAL, just not guaranteed, so we can create THP in ZONE_NORMAL
-> as well, which is the usual case.
+> Why? 
 
-Right, we should document this at some place to make admins aware of
-this. Something like
+I think I can answer that.  If the conversion were done properly (which
+it's not) you could get rid of the double strings in the code which are
+error prone if you update one and forget another.  This gives a good
+example: 3d739c1f6156 ("tracing: Use the return of str_has_prefix() to
+remove open coded numbers"). so in your code you'd replace things like
 
-"Techniques that rely on long-term pinnings of memory (especially, RDMA
-and vfio) are fundamentally problematic with ZONE_MOVABLE and,
-therefore, memory hotunplug. Pinned pages cannot reside on ZONE_MOVABLE,
-to guarantee that memory can still get hotunplugged - be aware that
-pinning can fail even if there is plenty of free memory in ZONE_MOVABLE.
-In addition, using ZONE_MOVABLE might make page pinning more expensive,
-because pages have to be migrated off that zone first."
+    if (strstarts(option, "rgb")) {
+        option += strlen("rgb");
+        ...
 
-BTW, you might also want to update the comment for ZONE_MOVABLE in
-include/linux/mmzone.h at the end of this series, removing the special
-case of pinned pages (1.) and maybe adding what happens when trying to
-pin pages on ZONE_MOVABLE.
+with 
 
--- 
-Thanks,
+    len = str_has_prefix(option, "rgb");
+    if (len) {
+        option += len
+        ...
+ 
+Obviously you also have cases where strstart is used as a boolean with
+no need to know the length ... I think there's no value to converting
+those.
 
-David / dhildenb
+James
+
 
