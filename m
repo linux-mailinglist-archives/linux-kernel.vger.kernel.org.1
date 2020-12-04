@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CDA2CF22B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8572CF22E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730675AbgLDQrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:47:31 -0500
-Received: from mga17.intel.com ([192.55.52.151]:64250 "EHLO mga17.intel.com"
+        id S1730815AbgLDQs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:48:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726330AbgLDQra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:47:30 -0500
-IronPort-SDR: B7+vHnxdpIrKWKDEuRoueA5y96rOKdpIeJAFgEOBYXDESm5N3kbkwYqvEoxZygqPHDAVg+MTYa
- dOhbrh82Wa+Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="153225411"
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="153225411"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 08:46:50 -0800
-IronPort-SDR: E5GvzQDhvQe9AAxqBU9s2ScqLbUhUG2MiV+MtMU61fpkpW41zrRBju0qeD05JYLKuHwJKj4a5z
- P5Zl6REzCjhQ==
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="551008011"
-Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 08:46:49 -0800
-Subject: [PATCH] driver core: auxiliary bus: Fix auxiliary bus shutdown null
- auxdrv ptr
-From:   Dave Jiang <dave.jiang@intel.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, david.m.ertman@intel.com,
-        dan.j.williams@intel.com
-Date:   Fri, 04 Dec 2020 09:46:49 -0700
-Message-ID: <160710040926.1889434.8840329810698403478.stgit@djiang5-desk3.ch.intel.com>
-User-Agent: StGit/0.23-29-ga622f1
+        id S1728997AbgLDQs2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 11:48:28 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBBEC229C9;
+        Fri,  4 Dec 2020 16:47:47 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1klEFF-00G234-Lh; Fri, 04 Dec 2020 16:47:45 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-team@android.com
+Subject: [PATCH 0/4] USB: ftdio_sio: GPIO validity fixes
+Date:   Fri,  4 Dec 2020 16:47:35 +0000
+Message-Id: <20201204164739.781812-1-maz@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, bgolaszewski@baylibre.com, johan@kernel.org, gregkh@linuxfoundation.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the probe of the auxdrv failed, the device->driver is set to NULL.
-During kernel shutdown, the bus shutdown will call auxdrv->shutdown and
-cause an invalid ptr dereference. Add check to make sure device->driver is
-not NULL before we proceed.
+Having recently tried to use the CBUS GPIOs that come thanks to the
+ftdio_sio driver, it occurred to me that the driver has a couple of
+usability issues:
 
-Fixes: 7de3697e9cbd ("Add auxiliary bus support")
-Cc: Dave Ertman <david.m.ertman@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/base/auxiliary.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+- it advertises potential GPIOs that are reserved to other uses (LED
+  control, or something else)
 
-diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
-index f303daadf843..8336535f1e11 100644
---- a/drivers/base/auxiliary.c
-+++ b/drivers/base/auxiliary.c
-@@ -92,10 +92,15 @@ static int auxiliary_bus_remove(struct device *dev)
- 
- static void auxiliary_bus_shutdown(struct device *dev)
- {
--	struct auxiliary_driver *auxdrv = to_auxiliary_drv(dev->driver);
--	struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
-+	struct auxiliary_driver *auxdrv = NULL;
-+	struct auxiliary_device *auxdev;
-+
-+	if (dev->driver) {
-+		auxdrv = to_auxiliary_drv(dev->driver);
-+		auxdev = to_auxiliary_dev(dev);
-+	}
- 
--	if (auxdrv->shutdown)
-+	if (auxdrv && auxdrv->shutdown)
- 		auxdrv->shutdown(auxdev);
- }
- 
+- it returns an odd error (-ENODEV), instead of the expected -EINVAL
+  when a line is unavailable, leading to a difficult diagnostic
 
+We address the issues in a number of ways:
+
+- Stop reporting invalid GPIO lines as valid to userspace. It
+  definitely seems odd to do so. Instead, report the line as being
+  used, making the userspace interface a bit more consistent.
+
+- Implement the init_valid_mask() callback in the ftdi_sio driver,
+  allowing it to report which lines are actually valid.
+
+- As suggested by Linus, give an indication to the user of why some of
+  the GPIO lines are unavailable, and point them to a useful tool
+  (once per boot). It is a bit sad that there next to no documentation
+  on how to use these CBUS pins.
+
+- Drop the error reporting code, which has become useless at this
+  point.
+
+Tested with a couple of FTDI devices (FT230X and FT231X) and various
+CBUS configurations.
+
+Marc Zyngier (4):
+  gpiolib: cdev: Flag invalid GPIOs as used
+  USB: serial: ftdi_sio: Report the valid GPIO lines to gpiolib
+  USB: serial: ftdi_sio: Log the CBUS GPIO validity
+  USB: serial: ftdi_sio: Drop GPIO line checking dead code
+
+ drivers/gpio/gpiolib-cdev.c   |  1 +
+ drivers/usb/serial/ftdi_sio.c | 26 +++++++++++++++++++++++---
+ 2 files changed, 24 insertions(+), 3 deletions(-)
+
+-- 
+2.28.0
 
