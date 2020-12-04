@@ -2,97 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D052CEED1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79AE12CEED4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729160AbgLDNf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 08:35:28 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:21762 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728781AbgLDNf1 (ORCPT
+        id S1729606AbgLDNfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 08:35:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726206AbgLDNfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 08:35:27 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-112-IjqBB8ewNq6TE9Oy5nRVtQ-1; Fri, 04 Dec 2020 13:33:48 +0000
-X-MC-Unique: IjqBB8ewNq6TE9Oy5nRVtQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 4 Dec 2020 13:33:47 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 4 Dec 2020 13:33:47 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Topi Miettinen' <toiwoton@gmail.com>,
-        'Mike Rapoport' <rppt@kernel.org>
-CC:     "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: RE: [PATCH] mm/vmalloc: randomize vmalloc() allocations
-Thread-Topic: [PATCH] mm/vmalloc: randomize vmalloc() allocations
-Thread-Index: AQHWyUIaOaq71c1O10ObeOeJDE6bhanmALEggADFggCAACeloA==
-Date:   Fri, 4 Dec 2020 13:33:47 +0000
-Message-ID: <f2f19b0c0f4148a8aaa64fd7bdc821d1@AcuMS.aculab.com>
-References: <20201201214547.9721-1-toiwoton@gmail.com>
- <9d34fb0a-7aba-1e84-6426-006ea7c3d9f5@gmail.com>
- <20201203065801.GH751215@kernel.org>
- <2a672ff3df0c47538ed7d1974c864f0b@AcuMS.aculab.com>
- <3d20f41c-6c8e-755b-33b4-964b5cc5ac71@gmail.com>
-In-Reply-To: <3d20f41c-6c8e-755b-33b4-964b5cc5ac71@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 4 Dec 2020 08:35:55 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8A4C061A4F;
+        Fri,  4 Dec 2020 05:35:08 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id l11so7692314lfg.0;
+        Fri, 04 Dec 2020 05:35:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=grbMzTsJqcDR4Cd4hiQ/1qOHj8Oznc7epGwz752bRVo=;
+        b=Son2LjQB49gbEZK5xarS9GWUCArTZ2juhOq7BAj4Luw8JIVr0y0vV5bY9x5djKrFA6
+         NB7AlKvOTO0HHUXeGRe9j+bq6EVJAge4Fk1ns7yZ7H20bNM84nQ78I4g5xujwIvOcuC5
+         y6xVNAro4O7AQbMJxDR2pGegf2s1fWFQ/hV3DIrDQisf9mHjJ+zFDUXB4bR0uRb8q86v
+         IIOnyU2LAqgtSMkAnMJuctzCJusmKwHi7D7nrBjrCGKmmfEcm7FTsqlH/blJ5wSfkSkC
+         f94sRyUgJM0LoOpxfKrr0CvmgJVeb8FcNpFWwUwKtADQlKhP15hU+ENH//pYKUlMz/NE
+         0KtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=grbMzTsJqcDR4Cd4hiQ/1qOHj8Oznc7epGwz752bRVo=;
+        b=osn1QHx4oBk5X4oNty2ejeHGUNjnwowuxYoflven34up638fnApgh9BdGBZK/jhuPs
+         WehZt4IFe1MKG32bjS3ot2nuVRiVXr/RiBiQ3roOT29ayMGyJJHuFxj39N2PprFja+pG
+         iEr0HudtQzUZU6RjMWZXgedt4aJpLRtPWnbZlXW/k4ri3inVMLXLSbou4Vqdb/a8f01F
+         Omv50RZQYvltOqCK5MUq1VT8pIXBOVMiWu7I+L+nIPoeFWtFfgjkLQkUOPXin1Wj62v4
+         /NKJIP82iVras4PGUzK6xw9qE99xfzqZjY3/xTQOrMuZS/HbXgqHxkSnYuL1G/FRV/L6
+         GtXQ==
+X-Gm-Message-State: AOAM533dEqQU9uExrwK9eWcJmzumv3TFftVAUANe2+fjNIKOc8NhcmDl
+        +BG2ss6w4/XEX4YaULpyjNw=
+X-Google-Smtp-Source: ABdhPJxCRHJZ/uYvkJwOq2N/K+wEY3Ou0eI6N3ulQn+0iNOiJFDoj6EZkf/Ks1W4dnZuBZvMAK52ig==
+X-Received: by 2002:a19:4293:: with SMTP id p141mr3190551lfa.591.1607088907233;
+        Fri, 04 Dec 2020 05:35:07 -0800 (PST)
+Received: from localhost.localdomain ([37.78.35.64])
+        by smtp.gmail.com with ESMTPSA id u17sm1695146lfq.144.2020.12.04.05.35.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 05:35:06 -0800 (PST)
+From:   Artem Labazov <123321artyom@gmail.com>
+Cc:     123321artyom@gmail.com, stable@vger.kernel.org,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] exfat: Avoid allocating upcase table using kcalloc()
+Date:   Fri,  4 Dec 2020 16:33:48 +0300
+Message-Id: <20201204133348.555024-1-123321artyom@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <001101d6c867$ca8c5730$5fa50590$@samsung.com>
+References: <001101d6c867$ca8c5730$5fa50590$@samsung.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogVG9waSBNaWV0dGluZW4NCj4gU2VudDogMDQgRGVjZW1iZXIgMjAyMCAxMDo1OA0KPiAN
-Cj4gT24gNC4xMi4yMDIwIDEuMTUsIERhdmlkIExhaWdodCB3cm90ZToNCj4gPiBGcm9tOiBNaWtl
-IFJhcG9wb3J0DQo+ID4+IFNlbnQ6IDAzIERlY2VtYmVyIDIwMjAgMDY6NTgNCj4gPj4NCj4gPj4g
-T24gV2VkLCBEZWMgMDIsIDIwMjAgYXQgMDg6NDk6MDZQTSArMDIwMCwgVG9waSBNaWV0dGluZW4g
-d3JvdGU6DQo+ID4+PiBPbiAxLjEyLjIwMjAgMjMuNDUsIFRvcGkgTWlldHRpbmVuIHdyb3RlOg0K
-PiA+Pj4+IE1lbW9yeSBtYXBwaW5ncyBpbnNpZGUga2VybmVsIGFsbG9jYXRlZCB3aXRoIHZtYWxs
-b2MoKSBhcmUgaW4NCj4gPj4+PiBwcmVkaWN0YWJsZSBvcmRlciBhbmQgcGFja2VkIHRpZ2h0bHkg
-dG93YXJkIHRoZSBsb3cgYWRkcmVzc2VzLiBXaXRoDQo+ID4+Pj4gbmV3IGtlcm5lbCBib290IHBh
-cmFtZXRlciAncmFuZG9taXplX3ZtYWxsb2M9MScsIHRoZSBlbnRpcmUgYXJlYSBpcw0KPiA+Pj4+
-IHVzZWQgcmFuZG9tbHkgdG8gbWFrZSB0aGUgYWxsb2NhdGlvbnMgbGVzcyBwcmVkaWN0YWJsZSBh
-bmQgaGFyZGVyIHRvDQo+ID4+Pj4gZ3Vlc3MgZm9yIGF0dGFja2Vycy4NCj4gPg0KPiA+IElzbid0
-IHRoYXQgZ29pbmcgdG8gaG9ycmlibHkgZnJhZ21lbnQgdGhlIGF2YWlsYWJsZSBhZGRyZXNzIHNw
-YWNlDQo+ID4gYW5kIG1ha2UgZXZlbiBtb2RlcmF0ZSBzaXplZCBhbGxvY2F0aW9uIHJlcXVlc3Rz
-IGZhaWwgKG9yIHNsZWVwKS4NCj4gDQo+IEZvciAzMiBiaXQgYXJjaGl0ZWN0dXJlIHRoaXMgaXMg
-YSByZWFsIGlzc3VlLCBidXQgSSBkb24ndCB0aGluayBmb3IgNjQNCj4gYml0cyBpdCB3aWxsIGJl
-IGEgcHJvYmxlbS4gWW91IGNhbid0IGZyYWdtZW50IHRoZSB2aXJ0dWFsIG1lbW9yeSBzcGFjZQ0K
-PiBmb3Igc21hbGwgYWxsb2NhdGlvbnMgYmVjYXVzZSB0aGUgcmVzdWx0aW5nIHBhZ2UgdGFibGVz
-IHdpbGwgbm90IGZpdCBpbg0KPiBSQU0gZm9yIGV4aXN0aW5nIG9yIG5lYXIgZnV0dXJlIHN5c3Rl
-bXMuDQoNCkhtbW0gdHJ1bHkgcmFuZG9tIGFsbG9jYXRpb25zIGFyZSBnb2luZyB0byBuZWVkIDMg
-b3IgNCBleHRyYSBwYWdlIHRhYmxlcw0Kb24gNjRiaXQgc3lzdGVtcy4gQSBiaXQgb3ZlcmhlYWQg
-Zm9yIDRrIGFsbG9jYXRlcy4NCldoaWxlIHlvdSB3b24ndCBydW4gb3V0IG9mIGFkZHJlc3Mgc3Bh
-Y2UsIHlvdSB3aWxsIHJ1biBvdXQgb2YgbWVtb3J5Lg0KDQpSYW5kb21pc2luZyB0aGUgYWxsb2Nh
-dGVkIGFkZHJlc3Mgd2l0aCB0aGUgYXJlYSB0aGF0IGFscmVhZHkNCmhhcyBwYWdlIHRhYmxlcyBh
-bGxvY2F0ZWQgbWlnaHQgbWFrZSBhIGJpdCBvZiBzZW5zZS4NClRoZW4gYWxsb2NhdGUgc2ltaWxh
-cihpc2gpIHNpemVkIGl0ZW1zIGZyb20gdGhlIHNhbWUgJ2xhcmdlJyBwYWdlcy4NCg0KSSB3YXMg
-d29uZGVyaW5nIGlmIGEgZmxhZyBpbmRpY2F0aW5nIHdoZXRoZXIgYW4gYWxsb2NhdGUgd2FzICds
-b25nIHRlcm0nDQpvciAnc2hvcnQgdGVybScgbWlnaHQgaGVscCB0aGUgcGxhY2VtZW50Lg0KU2hv
-cnQgdGVybSBzbWFsbCBpdGVtcyBjb3VsZCBiZSB1c2VkIHRvIGZpbGwgdGhlIHNwYWNlIGluICds
-YXJnZSBwYWdlcycgbGVmdA0KYnkgbm9uLWFsaWduZWQgbGVuZ3RoIGxhcmdlIGl0ZW1zLg0KDQpU
-cm91YmxlIGlzIHlvdSBuZWVkIGEgQ0JVIChDcnlzdGFsIEJhbGwgVW5pdCkgdG8gZ2V0IGl0IHJp
-Z2h0Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5
-IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRp
-b24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+The table for Unicode upcase conversion requires an order-5 allocation,
+which may fail on a highly-fragmented system:
+
+ pool-udisksd: page allocation failure: order:5, mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
+ CPU: 4 PID: 3756880 Comm: pool-udisksd Tainted: G     U            5.8.10-200.fc32.x86_64 #1
+ Hardware name: Dell Inc. XPS 13 9360/0PVG6D, BIOS 2.13.0 11/14/2019
+ Call Trace:
+  dump_stack+0x6b/0x88
+  warn_alloc.cold+0x75/0xd9
+  ? _cond_resched+0x16/0x40
+  ? __alloc_pages_direct_compact+0x144/0x150
+  __alloc_pages_slowpath.constprop.0+0xcfa/0xd30
+  ? __schedule+0x28a/0x840
+  ? __wait_on_bit_lock+0x92/0xa0
+  __alloc_pages_nodemask+0x2df/0x320
+  kmalloc_order+0x1b/0x80
+  kmalloc_order_trace+0x1d/0xa0
+  exfat_create_upcase_table+0x115/0x390 [exfat]
+  exfat_fill_super+0x3ef/0x7f0 [exfat]
+  ? sget_fc+0x1d0/0x240
+  ? exfat_init_fs_context+0x120/0x120 [exfat]
+  get_tree_bdev+0x15c/0x250
+  vfs_get_tree+0x25/0xb0
+  do_mount+0x7c3/0xaf0
+  ? copy_mount_options+0xab/0x180
+  __x64_sys_mount+0x8e/0xd0
+  do_syscall_64+0x4d/0x90
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Make the driver use vzalloc() to eliminate the issue.
+
+Cc: stable@vger.kernel.org # v5.7+
+Signed-off-by: Artem Labazov <123321artyom@gmail.com>
+---
+v2: replace vmalloc with vzalloc to avoid uninitialized memory access
+
+ fs/exfat/nls.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/fs/exfat/nls.c b/fs/exfat/nls.c
+index 675d0e7058c5..4cb2e2bc8cad 100644
+--- a/fs/exfat/nls.c
++++ b/fs/exfat/nls.c
+@@ -6,6 +6,7 @@
+ #include <linux/string.h>
+ #include <linux/slab.h>
+ #include <linux/buffer_head.h>
++#include <linux/vmalloc.h>
+ #include <asm/unaligned.h>
+ 
+ #include "exfat_raw.h"
+@@ -659,7 +660,7 @@ static int exfat_load_upcase_table(struct super_block *sb,
+ 	unsigned char skip = false;
+ 	unsigned short *upcase_table;
+ 
+-	upcase_table = kcalloc(UTBL_COUNT, sizeof(unsigned short), GFP_KERNEL);
++	upcase_table = vzalloc(UTBL_COUNT * sizeof(unsigned short));
+ 	if (!upcase_table)
+ 		return -ENOMEM;
+ 
+@@ -715,7 +716,7 @@ static int exfat_load_default_upcase_table(struct super_block *sb)
+ 	unsigned short uni = 0, *upcase_table;
+ 	unsigned int index = 0;
+ 
+-	upcase_table = kcalloc(UTBL_COUNT, sizeof(unsigned short), GFP_KERNEL);
++	upcase_table = vzalloc(UTBL_COUNT * sizeof(unsigned short));
+ 	if (!upcase_table)
+ 		return -ENOMEM;
+ 
+@@ -803,5 +804,5 @@ int exfat_create_upcase_table(struct super_block *sb)
+ 
+ void exfat_free_upcase_table(struct exfat_sb_info *sbi)
+ {
+-	kfree(sbi->vol_utbl);
++	vfree(sbi->vol_utbl);
+ }
+-- 
+2.26.2
 
