@@ -2,98 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E162CEB04
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC19D2CEB01
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729458AbgLDJgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:36:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47292 "EHLO mail.kernel.org"
+        id S1729524AbgLDJgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:36:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725866AbgLDJgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:36:24 -0500
-Date:   Fri, 4 Dec 2020 09:35:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607074543;
-        bh=KiPYOwivri/c/ItidAb+vtLMDjOCyhBGcMSitc7cncU=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GjN8UC0To43FRm/tsZr8kvb4HKDZZt6WfrVN1DsurESfPe+l2A94uzzhu1vPpsxIE
-         SWXV209qIxN9vnROEFL2hbNTbFoFDX2aTz789bdBU7n8IEYjja66swjjuutShEenPk
-         HdAj42XjCW4qxd/vLG1PP2j/ZzWjMZOk5uAeayL+wv+giLCOA8bxFRjVaGRHLozHTh
-         YlQwRVBgo7c4uojoeCTTzDC1zQLC8umPbJxt9odbBalrhfUgV5LSzI9t2Ue27J/55s
-         xclSHIhMn7kaICKKuX/AMEWHc4UQCP5TBXKhUl7az+NuJaijbxMdBxQnu8hmWKcpH/
-         GkZxlHDT8oL8A==
-From:   Will Deacon <will@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, Jian Cai <jiancai@google.com>,
-        Kristof Beyls <Kristof.Beyls@arm.com>
-Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
-Message-ID: <20201204093535.GB461@willie-the-truck>
-References: <20201201213707.541432-1-samitolvanen@google.com>
- <20201203112622.GA31188@willie-the-truck>
- <CABCJKueby8pUoN7f5=6RoyLSt4PgWNx8idUej0sNwAi0F3Xqzw@mail.gmail.com>
- <20201203182252.GA32011@willie-the-truck>
- <CAKwvOdnvq=L=gQMv9MHaStmKMOuD5jvffzMedhp3gytYB6R7TQ@mail.gmail.com>
+        id S1725866AbgLDJga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 04:36:30 -0500
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     "Jonathan Corbet" <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] scripts: get_feat.pl: make complete table more coincise
+Date:   Fri,  4 Dec 2020 10:35:44 +0100
+Message-Id: <47d1d76bf557716cb90d7382c31fe3d1ade65a2e.1607074458.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <7c82a766867f2813a1e5c7b982b5e952e50b6c5e.1607073967.git.mchehab+huawei@kernel.org>
+References: <7c82a766867f2813a1e5c7b982b5e952e50b6c5e.1607073967.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnvq=L=gQMv9MHaStmKMOuD5jvffzMedhp3gytYB6R7TQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 02:32:13PM -0800, Nick Desaulniers wrote:
-> On Thu, Dec 3, 2020 at 10:23 AM Will Deacon <will@kernel.org> wrote:
-> > On Thu, Dec 03, 2020 at 09:07:30AM -0800, Sami Tolvanen wrote:
-> > > Without LLVM_IAS=1, Clang uses two different assemblers when LTO is
-> > > enabled: the external GNU assembler for stand-alone assembly, and
-> > > LLVM's integrated assembler for inline assembly. as-instr tests the
-> > > external assembler and makes an admittedly reasonable assumption that
-> > > the test is also valid for inline assembly.
-> > >
-> > > I agree that it would reduce confusion in future if we just always
-> > > enabled IAS with LTO. Nick, Nathan, any thoughts about this?
-> >
-> > That works for me, although I'm happy with anything which means that the
-> > assembler checks via as-instr apply to the assembler which will ultimately
-> > be used.
-> 
-> I agree with Will.
+Currently, there are too many white spaces at the tables,
+and the information is very sparsed on it.
 
-[...]
+Make the format a lot more compact.
 
-> So I'd recommend to Sami to simply make the Kconfig also depend on
-> clang's integrated assembler (not just llvm-nm and llvm-ar).  If
-> someone cares about LTO with Clang as the compiler but GAS as the
-> assembler, then we can revisit supporting that combination (and the
-> changes to KCONFIG), but it shouldn't be something we consider Tier 1
-> supported or a combination that need be supported in a minimum viable
-> product. And at that point we should make it avoid clang's integrated
-> assembler entirely (I suspect LTO won't work at all in that case, so
-> maybe even considering it is a waste of time).
-> 
-> One question I have to Will; if for aarch64 LTO will depend on RCpc,
-> but RCpc is an ARMv8.3 extension, what are the implications for LTO on
-> pre-ARMv8.3 aarch64 processors?
+Suggested-by: Jonathan Corbet <corbet@lwn.net>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
 
-It doesn't depend on RCpc -- we just emit a more expensive instruction
-(an RCsc acquire) if the RCpc one is not supported by both the toolchain
-and the CPU. So the implication for those processors is that READ_ONCE()
-may be more expensive.
+- v3: cleanup the logic that ensures a minimal number of lines;
+- v2: cleanup the matrix_lines function to remove a now unused
+  parameter.
 
-Will
+ scripts/get_feat.pl | 105 ++++++++++++++++++++++++++++----------------
+ 1 file changed, 68 insertions(+), 37 deletions(-)
+
+diff --git a/scripts/get_feat.pl b/scripts/get_feat.pl
+index 81d1b78d65c9..10bf23fbc9c5 100755
+--- a/scripts/get_feat.pl
++++ b/scripts/get_feat.pl
+@@ -325,10 +325,10 @@ sub output_feature {
+ # Output all features for all architectures
+ #
+ 
+-sub matrix_lines($$) {
+-	my $partial = shift;
++sub matrix_lines($$$) {
++	my $desc_size = shift;
++	my $status_size = shift;
+ 	my $header = shift;
+-	my $split;
+ 	my $fill;
+ 	my $ln_marker;
+ 
+@@ -338,24 +338,14 @@ sub matrix_lines($$) {
+ 		$ln_marker = "-";
+ 	}
+ 
+-	if ($partial) {
+-		$split = "|";
+-		$fill = " ";
+-	} else {
+-		$split = "+";
+-		$fill = $ln_marker;
+-	}
++	$fill = $ln_marker;
+ 
+-	print $split;
++	print "+";
+ 	print $fill x $max_size_name;
+-	print $split;
+-	print $fill x $max_size_kconfig;
+-	print $split;
+-	print $fill x $max_size_description;
+ 	print "+";
+-	print $ln_marker x $max_size_arch;
++	print $fill x $desc_size;
+ 	print "+";
+-	print $ln_marker x $max_size_status;
++	print $ln_marker x $status_size;
+ 	print "+\n";
+ }
+ 
+@@ -366,6 +356,14 @@ sub output_matrix {
+ 	print "$title\n";
+ 	print "=" x length($title) . "\n\n";
+ 
++	my $desc_title = "$h_kconfig / $h_description";
++
++	my $desc_size = $max_size_kconfig + 4;
++	$desc_size = $max_size_description if ($max_size_description > $desc_size);
++	$desc_size = length($desc_title) if (length($desc_title) > $desc_size);
++
++	my $status_size = 60;
++
+ 	my $cur_subsys = "";
+ 	foreach my $name (sort {
+ 				($data{$a}->{subsys} cmp $data{$b}->{subsys}) or
+@@ -383,36 +381,69 @@ sub output_matrix {
+ 			print "$title\n";
+ 			print "=" x length($title) . "\n\n";
+ 
+-			matrix_lines(0, 0);
++
++			matrix_lines($desc_size, $status_size, 0);
++
+ 			printf "|%-${max_size_name}s", $h_name;
+-			printf "|%-${max_size_kconfig}s", $h_kconfig;
+-			printf "|%-${max_size_description}s", $h_description;
++			printf "|%-${desc_size}s", $desc_title;
+ 
+-			printf "|%-${max_size_arch}s", $h_arch;
+-			printf "|%-${max_size_status}s|\n", $h_status;
+-
+-			matrix_lines(0, 1);
++			printf "|%-${status_size}s|\n", "Status per architecture";
++			matrix_lines($desc_size, $status_size, 1);
+ 		}
+ 
+ 		my %arch_table = %{$data{$name}->{table}};
+-		my $first = 1;
+-		foreach my $arch (sort keys %arch_table) {
+-			if ($first) {
++		my $cur_status = "";
++
++		my @lines;
++		my $line = "";
++		foreach my $arch (sort {
++					($arch_table{$a} cmp $arch_table{$b}) or
++					("\L$a" cmp "\L$b")
++				       } keys %arch_table) {
++
++			my $status = $arch_table{$arch};
++
++			if ($status eq "---") {
++				$status = "Not compatible";
++			}
++
++			if ($status ne $cur_status) {
++				if ($line ne "") {
++					push @lines, $line;
++					$line = "";
++				}
++				$line = "- **" . $status . "**: " . $arch;
++			} elsif (length($line) + length ($arch) + 2 < $status_size) {
++				$line .= ", " . $arch;
++			} else {
++				push @lines, $line;
++				$line = "  " . $arch;
++			}
++			$cur_status = $status;
++		}
++		push @lines, $line if ($line ne "");
++
++		# Ensure that description will be printed
++		push @lines, "" while (scalar(@lines) < 2);
++
++		my $ln = 0;
++		for my $line(@lines) {
++			if (!$ln) {
+ 				printf "|%-${max_size_name}s", $name;
+-				printf "|%-${max_size_kconfig}s", $data{$name}->{kconfig};
+-				printf "|%-${max_size_description}s", $data{$name}->{description};
+-				$first = 0;
++				printf "|%-${desc_size}s", "``" . $data{$name}->{kconfig} . "``";
++			} elsif ($ln == 2) {
++				printf "|%-${max_size_name}s", "";
++				printf "|%-${desc_size}s", $data{$name}->{description};
+ 			} else {
+-				matrix_lines(1, 0);
+-
+ 				printf "|%-${max_size_name}s", "";
+-				printf "|%-${max_size_kconfig}s", "";
+-				printf "|%-${max_size_description}s", "";
++				printf "|%-${desc_size}s", "";
+ 			}
+-			printf "|%-${max_size_arch}s", $arch;
+-			printf "|%-${max_size_status}s|\n", $arch_table{$arch};
++
++			printf "|%-${status_size}s|\n", $line;
++
++			$ln++;
+ 		}
+-		matrix_lines(0, 0);
++		matrix_lines($desc_size, $status_size, 0);
+ 	}
+ }
+ 
+-- 
+2.28.0
+
+
