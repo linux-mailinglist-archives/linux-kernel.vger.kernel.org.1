@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645542CEE05
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBC92CEE02
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 13:23:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729985AbgLDMYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 07:24:42 -0500
-Received: from relmlor1.renesas.com ([210.160.252.171]:46337 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728720AbgLDMYl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:24:41 -0500
-X-IronPort-AV: E=Sophos;i="5.78,392,1599490800"; 
-   d="scan'208";a="64877060"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 04 Dec 2020 21:23:49 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id CF83242FD08F;
-        Fri,  4 Dec 2020 21:23:47 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Cc:     Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [RESEND TAKE 2 PATCH] dt-bindings: ata: renesas,rcar-sata: Add r8a774e1 support
-Date:   Fri,  4 Dec 2020 12:23:38 +0000
-Message-Id: <20201204122338.29243-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
+        id S2387536AbgLDMXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 07:23:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49058 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725999AbgLDMXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 07:23:07 -0500
+Date:   Fri, 4 Dec 2020 13:23:43 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607084547;
+        bh=5OtuoZcRnAswo0cWnYCAPv33DNXGwiLq6bVWVMztwGA=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y2u7lEDGtdmRl3wFlrQ0BLDuvfEjaDUugHFqUgqF4IGKhwgq0Q0uuPNXuq2CPU4dE
+         h62IgBPk0bwd/Ix1D0ewSM08HSis1FzXB0qPicTfTR1eQb37MIk5s70+YB3PfZTI3h
+         SReVXE0CgYMUNtWUl2QhMugRt4Loft7MUlLbLZdM=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v4 1/3] LICENSES: Add the CC-BY-4.0 license
+Message-ID: <X8oqTyRNKMHChbA7@kroah.com>
+References: <cover.1607063223.git.linux@leemhuis.info>
+ <7115b6c20ae3e6db0370fe4002dd586011205e1c.1607063223.git.linux@leemhuis.info>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7115b6c20ae3e6db0370fe4002dd586011205e1c.1607063223.git.linux@leemhuis.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document SATA support for the RZ/G2H, no driver change required.
+On Fri, Dec 04, 2020 at 07:43:48AM +0100, Thorsten Leemhuis wrote:
+> Add the full text of the CC-BY-4.0 license to the kernel tree as well as
+> the required tags for reference and tooling.
+> 
+> The license text was copied directly from the following url, but for
+> clarification a 'Creative Commons' was added before 'Attribution 4.0
+> International' in the first line:
+> https://creativecommons.org/licenses/by/4.0/legalcode.txt
+> 
+> CC-BY-4.0 is GPLv2 compatible, but when for example used for the
+> kernel's documentation it can easily happen that sphinx during
+> processing combines it with text or code from files using a more
+> restrictive license[1]. This bears pitfalls, hence point that risk out
+> and suggest to only use this license in combination with the GPLv2.
+> 
+> [1] https://lkml.kernel.org/r/20201201144314.GA14256@lst.de
+> 
+> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+> CC: Thomas Gleixner <tglx@linutronix.de>
+> CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> CC: Christoph Hellwig <hch@lst.de>
+> ---
+>  LICENSES/dual/CC-BY-4.0 | 410 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 410 insertions(+)
+>  create mode 100644 LICENSES/dual/CC-BY-4.0
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Hi All,
-
-This patch is part of series [1] (original patch [2]) where rest of the
-patches have been picked up by the respective maintainers.
-
-I haven't received any response for the RESEND patch [3] so resending
-again.
-
-[1] https://patchwork.kernel.org/project/linux-renesas-soc/
-    list/?series=319563
-[2] https://patchwork.kernel.org/patch/11668061/
-[3] https://patchwork.kernel.org/project/linux-renesas-soc/
-    patch/20200921072206.15182-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
-
-Cheers,
-Prabhakar
----
- Documentation/devicetree/bindings/ata/renesas,rcar-sata.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/ata/renesas,rcar-sata.yaml b/Documentation/devicetree/bindings/ata/renesas,rcar-sata.yaml
-index d06096a7ba4b..2ad2444f1042 100644
---- a/Documentation/devicetree/bindings/ata/renesas,rcar-sata.yaml
-+++ b/Documentation/devicetree/bindings/ata/renesas,rcar-sata.yaml
-@@ -26,6 +26,7 @@ properties:
-       - items:
-           - enum:
-               - renesas,sata-r8a774b1     # RZ/G2N
-+              - renesas,sata-r8a774e1     # RZ/G2H
-               - renesas,sata-r8a7795      # R-Car H3
-               - renesas,sata-r8a77965     # R-Car M3-N
-           - const: renesas,rcar-gen3-sata # generic R-Car Gen3 or RZ/G2
--- 
-2.17.1
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
