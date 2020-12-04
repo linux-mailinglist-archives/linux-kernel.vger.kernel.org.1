@@ -2,133 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1052CEFC5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C65E2CEFC7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:38:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730276AbgLDOhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:37:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729936AbgLDOhr (ORCPT
+        id S2387548AbgLDOiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:38:19 -0500
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:40271 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725920AbgLDOiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:37:47 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EBAC061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:37:07 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id t18so3203830plo.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:37:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=MsPLvGvNf1bS+OcbC87Aqig/sgy85eIEfjyO8YBsPiY=;
-        b=UZXXb5QnzDbiUmObhrI5+4AmF8IUYayIuqV+PYOsWzeVumt0pv+hpfTSPujXMvzxsg
-         VE98zoWVezLv1/BweG0xNxMjuteXpdMc9E1H0CpA5qAHbUOpRBIDLOXg5xXFwyG4hPJF
-         DatgzK3fAgnrUD8VF+DAOOoK+CatjFJtuKKKvrPgfumcFgOlu8FRfoBfzTgWSsL9ybKB
-         CY5brTbzShCgh5IoMrRutefrxbAFCKO9JKGM8hYOix2tYmhtiAmxXRDia6kKIJc7rwHM
-         vmZdMdrOJRtLdyxJlg9X/kONzYaAwZrajS4LoZEixlH8lMjxYJfzCdpJVXnp0K+Nzg/Q
-         6zPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=MsPLvGvNf1bS+OcbC87Aqig/sgy85eIEfjyO8YBsPiY=;
-        b=eUAz0DM1zuNhqigYy5TaE3vWEQQL8xQT4TEr0nAO2ffG1G8aKWfSwFvNs0zKWAHqit
-         fKFJFA7OMW+yB0fwz3CBYlxCaMih4nnQe9Sf5CSv54PJNmH/e7XWW1Nzha8JJOFG2gRV
-         qH8i/c0kjBlVLiMl0s2NLcY5kw9mnHnNeKbWdzxr14vCp/T19lWn+SHMrvzLHcOuTcot
-         xVXVRL1iGCxiZYeOVrsz+Quw0FAziuz32NdpE3+NfZtVI3pPmTGTlZKYly+ojJ1O3uH8
-         SWMnNJ4/ntVHT2ZeFUFQlcOjXJoZKQDL4eVnBKvymjzhrJlYn0Rpoc9dXIAX9UDxVmPR
-         pRlQ==
-X-Gm-Message-State: AOAM530tl0rikArfDeSmlAvFG/0ttX4+vogLpRKwdd8S/vLocEeDiKLI
-        ESYgZWH2RKYimEdE+ZEWCOtBFg==
-X-Google-Smtp-Source: ABdhPJyFshwViMl5DvUfYhVdp5U1ntZBiV4Ra0suBVd3IWlDwG2haGuTFka/aH2GIM6E+E1x/nbi3A==
-X-Received: by 2002:a17:90a:8582:: with SMTP id m2mr4423222pjn.199.1607092627307;
-        Fri, 04 Dec 2020 06:37:07 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:e89d:8a3d:645c:8fa4? ([2601:646:c200:1ef2:e89d:8a3d:645c:8fa4])
-        by smtp.gmail.com with ESMTPSA id m3sm4133967pgh.5.2020.12.04.06.37.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Dec 2020 06:37:06 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC v2 2/2] [MOCKUP] sched/mm: Lightweight lazy mm refcounting
-Date:   Fri, 4 Dec 2020 06:37:04 -0800
-Message-Id: <D9715BFE-744E-49B4-A10B-32735123BE6D@amacapital.net>
-References: <1607065599.ecww2w3xq3.astroid@bobo.none>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Jann Horn <jannh@google.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Will Deacon <will@kernel.org>, X86 ML <x86@kernel.org>
-In-Reply-To: <1607065599.ecww2w3xq3.astroid@bobo.none>
-To:     Nicholas Piggin <npiggin@gmail.com>
-X-Mailer: iPhone Mail (18B121)
+        Fri, 4 Dec 2020 09:38:18 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 07B50C000D;
+        Fri,  4 Dec 2020 14:37:35 +0000 (UTC)
+Date:   Fri, 4 Dec 2020 15:37:35 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] rtc: adapt allowed RTC update error
+Message-ID: <20201204143735.GI74177@piout.net>
+References: <874kl3eu8p.fsf@nanos.tec.linutronix.de>
+ <87zh2vd72z.fsf@nanos.tec.linutronix.de>
+ <20201203021047.GG3544@piout.net>
+ <87pn3qdhli.fsf@nanos.tec.linutronix.de>
+ <20201203161622.GA1317829@ziepe.ca>
+ <87zh2ubny2.fsf@nanos.tec.linutronix.de>
+ <87wnxybmqx.fsf@nanos.tec.linutronix.de>
+ <20201203223646.GA1335797@ziepe.ca>
+ <877dpxbu66.fsf@nanos.tec.linutronix.de>
+ <20201204140819.GX5487@ziepe.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204140819.GX5487@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 04/12/2020 10:08:19-0400, Jason Gunthorpe wrote:
+> On Fri, Dec 04, 2020 at 02:02:57PM +0100, Thomas Gleixner wrote:
+> 
+> > No magic sign calculation required if you look at it from the actual
+> > timeline and account the time between write and next second increment
+> > correctly.
+> 
+> Yes, it is equivalent to break things into two values, and does look
+> to be more understandable as one can read at least one of the values
+> from a datasheet and the other could be estimated by timing a read
+> clock
+> 
 
+If you want to read an RTC accurately, you don't want to time a read,
+what you want is to time an alarm. This is a common misconception and
+is, again, why hctosys in its current state is not useful.
 
-> On Dec 3, 2020, at 11:54 PM, Nicholas Piggin <npiggin@gmail.com> wrote:
->=20
-> =EF=BB=BFExcerpts from Andy Lutomirski's message of December 4, 2020 3:26 p=
-m:
->> This is a mockup.  It's designed to illustrate the algorithm and how the
->> code might be structured.  There are several things blatantly wrong with
->> it:
->>=20
->> The coding stype is not up to kernel standards.  I have prototypes in the=
+And because people using systohc are definitively using hctosys, this
+will still result in an up to 500ms error in the current time.
+As said, the price to pay for a proper solution will be an up to one
+second delay when booting which is not acceptable for most users.
 
->> wrong places and other hacks.
->>=20
->> There's a problem with mm_cpumask() not being reliable.
->=20
-> Interesting, this might be a way to reduce those IPIs with fairly=20
-> minimal fast path cost. Would be interesting to see how much performance=20=
+Is "fixing" systohc worth the effort and the maintenance cost?
 
-> advantage it has over my dumb simple shoot-lazies.
-
-My real motivation isn=E2=80=99t really performance per se. I think there=E2=
-=80=99s considerable value in keeping the core algorithms the same across al=
-l architectures, and I think my approach can manage that with only a single h=
-int from the architecture as to which CPUs to scan.
-
-With shoot-lazies, in contrast, enabling it everywhere would either malfunct=
-ion or have very poor performance or even DoS issues on arches like arm64 an=
-d s390x that don=E2=80=99t track mm_cpumask at all.  I=E2=80=99m sure we cou=
-ld come up with some way to mitigate that, but I think that my approach may b=
-e better overall for keeping the core code uniform and relatively straightfo=
-rward.
-
->=20
-> For powerpc I don't think we'd be inclined to go that way, so don't feel=20=
-
-> the need to add this complexity for us alone -- we'd be more inclined to=20=
-
-> move the exit lazy to the final TLB shootdown path, which we're slowly=20
-> getting more infrastructure in place to do.
->=20
-
-
->=20
-> There's a few nits but I don't think I can see a fundamental problem=20
-> yet.
-
-Thanks!
-
-I can polish the patch, but I want to be sure the memory ordering parts are c=
-lear.
-
->=20
-> Thanks,
-> Nick
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
