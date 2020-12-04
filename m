@@ -2,105 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075FB2CF591
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 449C42CF55C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388274AbgLDUVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 15:21:13 -0500
-Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:53368 "EHLO
-        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730480AbgLDUVM (ORCPT
+        id S1730614AbgLDUMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 15:12:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727693AbgLDUL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 15:21:12 -0500
-Received: from pps.filterd (m0170396.ppops.net [127.0.0.1])
-        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4KEHET027750;
-        Fri, 4 Dec 2020 15:20:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=smtpout1;
- bh=AHnb657ZVkd3rGKeu3xGSOupjj5816VejdnfGan8hNg=;
- b=Z8O/Px1CkKM+v1MyLm/Dn8zln6nYo5D8n+xY26BzkpDHQDcCPUtruNIzv0b4QUSz9OGK
- oshN5D/5jy34i6Nz/xBNrXfBrgUlWXfYWUm0jTVBm0wNzfXS0eZJhngYzgL1wDCruE1n
- FpJbOO0CJMCYz5UH4QI46Hsq4pM0FWApHuSJnMZBJURI2YryC2ox3bQg3SlV9ub4uvh2
- n/IqNsr0i4a1xt1Z/Oe8D99N+CycNkO5ZtL9yhSFimNpbrm/sJwzTvWN0GXbFgE8f2oU
- ZJgbzqviqQyK7/d1N1lQMWxCeiUF5FjioicY1HWOTSft2jc3cErjAyvP2EIxUS3cqiAV jA== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0b-00154904.pphosted.com with ESMTP id 354fjthj5g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 15:20:31 -0500
-Received: from pps.filterd (m0134746.ppops.net [127.0.0.1])
-        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4KJEbM143512;
-        Fri, 4 Dec 2020 15:20:30 -0500
-Received: from ausxipps310.us.dell.com (AUSXIPPS310.us.dell.com [143.166.148.211])
-        by mx0a-00154901.pphosted.com with ESMTP id 357ua80kun-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Dec 2020 15:20:30 -0500
-X-LoopCount0: from 10.173.37.130
-X-PREM-Routing: D-Outbound
-X-IronPort-AV: E=Sophos;i="5.78,393,1599541200"; 
-   d="scan'208";a="573039895"
-From:   Mario Limonciello <mario.limonciello@dell.com>
-To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        intel-wired-lan@lists.osuosl.org
-Cc:     linux-kernel@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Netfin <sasha.neftin@intel.com>,
-        Aaron Brown <aaron.f.brown@intel.com>,
-        Stefan Assmann <sassmann@redhat.com>,
-        David Miller <davem@davemloft.net>, darcari@redhat.com,
-        Yijun.Shen@dell.com, Perry.Yuan@dell.com,
-        anthony.wong@canonical.com,
-        Mario Limonciello <mario.limonciello@dell.com>
-Subject: [PATCH v3 7/7] e1000e: Add another Dell TGL notebook system into S0ix heuristics
-Date:   Fri,  4 Dec 2020 14:09:20 -0600
-Message-Id: <20201204200920.133780-8-mario.limonciello@dell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201204200920.133780-1-mario.limonciello@dell.com>
-References: <20201204200920.133780-1-mario.limonciello@dell.com>
+        Fri, 4 Dec 2020 15:11:59 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C021C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:11:19 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id a9so9372183lfh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:11:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zQpn0o892pEbZLHFd+9gLpvB3MBMiU/L0nR9Ji5w5Ws=;
+        b=EIFCJEvQUYJnBphqSUS2irvQEUigMurEkzX40ERNG5CNdR9rcGCkWuwqRaK1dES97D
+         3lg+hjnOypTh+xGzaIcHQnM2LINwLeuxZ+zvYpW2GPOcwVGEq6Sp5DleHqcutwEEDY3M
+         66uvPwJsErHJ6BO5lKDWbDNY3QeHtwpfioKGk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zQpn0o892pEbZLHFd+9gLpvB3MBMiU/L0nR9Ji5w5Ws=;
+        b=meALmhHCHLN1TH6Q1z0ro16WM/x0eWEFFRJiaM94Xe1L8gSVVcb1Iy2L5yGakQb2x1
+         bRrjcTDQZJpjgrWTBGVprS16cBorOxPzSML6xD4+HKztE8OS4nAfaWcd50MHiYxlUp3L
+         7aWta9DPZwlroAEg1v2aEaog/wBXmtT+4yjM+5GrgVA+On7RqLCpcbHFxi734qO8cws/
+         uDoFHXeNuoICdp+kWJ5dGDZTN8iLCLfQ2HnUNHfxMCH42Roy/p8vUlC8vMrx0dn1Rwt6
+         APNXv3WYJzQ9yIZKvC/O/ZA5nlTy16IzxERnrEPPVXJj9Im4L9KJVk/NxQCy7og2DF4x
+         9MCQ==
+X-Gm-Message-State: AOAM533O1Ab8qI8ae7ItKCLC1ub+2FlZfR6M9hszIk6uZALuRNOHLFmD
+        Lj9C+L1GTWvcLDEjyENrRoXXcWgCPQumtg==
+X-Google-Smtp-Source: ABdhPJwUWhHJ5MpEX6ebt9gEA2mf7Mit13l/gBOuNCgM3sYzOgywRYvhU4POOUM0c7HOI1SbrfyLvw==
+X-Received: by 2002:a19:c0c:: with SMTP id 12mr3985757lfm.315.1607112677287;
+        Fri, 04 Dec 2020 12:11:17 -0800 (PST)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id w11sm2010545lfl.33.2020.12.04.12.11.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Dec 2020 12:11:15 -0800 (PST)
+Received: by mail-lj1-f176.google.com with SMTP id q8so7927251ljc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:11:14 -0800 (PST)
+X-Received: by 2002:a2e:9bd2:: with SMTP id w18mr4078394ljj.312.1607112674455;
+ Fri, 04 Dec 2020 12:11:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_09:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 impostorscore=0 adultscore=0 priorityscore=1501
- phishscore=0 clxscore=1015 mlxscore=0 malwarescore=0 bulkscore=0
- mlxlogscore=999 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012040115
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 spamscore=0
- adultscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012040115
+References: <87tut2bqik.fsf@x220.int.ebiederm.org> <87ft4mbqen.fsf@x220.int.ebiederm.org>
+ <AM6PR03MB5170412C2B0318C40CED55E5E4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wi6inOF5yvQRwUFbqMt0zFJ8S8GhqE2M0judU7RiGru8Q@mail.gmail.com> <875z5h4b7a.fsf@x220.int.ebiederm.org>
+In-Reply-To: <875z5h4b7a.fsf@x220.int.ebiederm.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 4 Dec 2020 12:10:58 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wio3JXxf3fy8tRVzb69u1e5iUru8p-dw+Mnga6yAdz=HQ@mail.gmail.com>
+Message-ID: <CAHk-=wio3JXxf3fy8tRVzb69u1e5iUru8p-dw+Mnga6yAdz=HQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] exec: Transform exec_update_mutex into a rw_semaphore
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Vasiliy Kulikov <segoon@openwall.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This Tiger Lake system is not yet released, but has been validated
-on pre-release hardware.
+On Fri, Dec 4, 2020 at 11:35 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> From a deadlock perspective the change is strictly better than what we
+> have today.  The readers will no longer block on each other.
 
-This is being submitted separately from released hardware in case of
-a regression between pre-release and release hardware so this commit
-can be reverted alone.
+No, agreed, it's better regardless.
 
-Signed-off-by: Mario Limonciello <mario.limonciello@dell.com>
----
- drivers/net/ethernet/intel/e1000e/s0ix.c | 1 +
- 1 file changed, 1 insertion(+)
+> For the specific case that syzbot reported it is readers who were
+> blocking on each other so that specific case if fixed.
 
-diff --git a/drivers/net/ethernet/intel/e1000e/s0ix.c b/drivers/net/ethernet/intel/e1000e/s0ix.c
-index cc04aeaa2292..3f2985fac67c 100644
---- a/drivers/net/ethernet/intel/e1000e/s0ix.c
-+++ b/drivers/net/ethernet/intel/e1000e/s0ix.c
-@@ -63,6 +63,7 @@ static bool e1000e_check_subsystem_allowlist(struct pci_dev *dev)
- 		case 0x0a40: /* Notebook 0x0a40 */
- 		case 0x0a41: /* Notebook 0x0a41 */
- 		case 0x0a42: /* Notebook 0x0a42 */
-+		case 0x0a22: /* Notebook 0x0a22 */
- 		case 0x0a2e: /* Desktop  0x0a2e */
- 		case 0x0a30: /* Desktop  0x0a30 */
- 			return true;
--- 
-2.25.1
+So the thing is, a reader can still block another reader if a writer
+comes in between them. Which is why I was thinking that the same
+deadlock could happen if somebody does an execve at just the right
+point.
 
+> On the write side of exec_update_lock we have:
+>
+> cred_guard_mutex -> exec_update_lock
+>
+> Which means that to get an ABBA deadlock cred_guard_mutex would need to
+> be involved
+
+No, see above: you can get a deadlock with
+
+ - first reader gets exec_update_lock
+
+ - writer on exec_update_lock blocks on first reader (this is exec)
+
+ - second reader of exec_update_lock now blocks on the writer.
+
+So if that second reader holds something that the first one wants to
+get (or is the same thread as the first one), you have a deadlock: the
+first reader will never make any progress, will never release the
+lock, and the writer will never get it, and the second reader will
+forever wait for the writer that is ahead of it in the queue.
+
+cred_guard_mutex is immaterial, it's not involved in the deadlock.
+Yes, the writer holds it, but it's not relevant for anything else.
+
+And that deadlock looks very much like what syzcaller detected, in
+exactly that scenario:
+
+  Chain exists of:
+    &sig->exec_update_mutex --> sb_writers#4 --> &p->lock
+
+   Possible unsafe locking scenario:
+
+         CPU0                    CPU1
+         ----                    ----
+    lock(&p->lock);
+                                 lock(sb_writers#4);
+                                 lock(&p->lock);
+    lock(&sig->exec_update_mutex);
+
+   *** DEADLOCK ***
+
+No?  The only thing that is missing is that writer that causes the
+exec_update_mutex readers to block each other - exactly like they did
+when it was a mutex.
+
+But I may be missing something entirely obvious that keeps this from happening.
+
+         Linus
