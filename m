@@ -2,266 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966962CF625
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 22:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4102CF61F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 22:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730743AbgLDV2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 16:28:16 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6882 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730654AbgLDV2P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 16:28:15 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4L8EJK054643;
+        id S1730458AbgLDV1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 4 Dec 2020 16:27:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=GwEwKUm9A9v7FngAYISLrNg1kRHE9dxNhDgV0n7dmXY=;
- b=M5zpngFjE3nCdxFA1vn6mEB1EToWtjgx/uXYF4flAXEvhkd3w9/x1/LKkQoe66HA7cI3
- yCi2g9enAujYHU8eA+ozAnrZyAnzBeNQy3DNNyfHNUjkmUclzdAwirv/aNrLBNrrbMzk
- lI1DWaCwXNFHOs55z/YWGHorUons4oqjL2ecUBqzIf08Ha4B0y6beZZqm8A4rEmEvLBy
- G3bITgZDmK3xhgdQ95YWi+4Q/fwklJKgg8a/czqil9n1/OL0QmGZSA4tLja2kOh1mKjB
- 33kqZcWJN7qg8LYPfjZf/5zWL4bF0zEnssfEHHyvt+r0O9z3wvzEgleMUGDZtmI30/Ww YQ== 
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 357vdu8s8q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 16:27:25 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B4LLqEt003053;
-        Fri, 4 Dec 2020 21:27:24 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma01wdc.us.ibm.com with ESMTP id 355vrgdw7c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 21:27:24 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B4LQ9g17013006
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 4 Dec 2020 21:26:09 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5119212405A;
-        Fri,  4 Dec 2020 21:26:09 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7BB1F124055;
-        Fri,  4 Dec 2020 21:26:08 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.163.73.174])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri,  4 Dec 2020 21:26:08 +0000 (GMT)
-Subject: Re: [PATCH v3 15/18] ibmvfc: send Cancel MAD down each hw scsi
- channel
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201203020806.14747-1-tyreld@linux.ibm.com>
- <20201203020806.14747-16-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <f0fde914-c9e5-4e15-9920-1fb250d28e3e@linux.vnet.ibm.com>
-Date:   Fri, 4 Dec 2020 15:26:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+Received: from ms.lwn.net ([45.79.88.28]:37032 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727176AbgLDV1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 16:27:25 -0500
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id B030B735;
+        Fri,  4 Dec 2020 21:26:44 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net B030B735
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1607117205; bh=6W3sqxU/NqTvoLox5sB3lYweXuF48Ay/zVMtMc+y6oc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kf23UPQm8dY086hMkt+K0XcabWW2eHHGleG5sxmoPbGeBGZMPRnewyfag9M03yNoE
+         ORizSj4/o/AYp8EUBRat83eLckOtpWzQk87u910r33WFscjrhW/I9BbeZcWiuEVfeO
+         /S5lpdnb0HzBVSxsY+bbWHNqxjj+KppfIb73Uo8b2DEX6y+z2h+9nPmu7LU1gDYen8
+         sTpoMNDgos1G/kR8ZVcjsVMk4FuHPUREuxje1W5d1zWQvWXeqs8AoXoSI3H8lOQUrj
+         kLrzgAwDrIdV0Qx8ouYcHyIReW7n67rrzcZKJwVn+D7nQ9pjZZGIGQAg2fkluN6x3S
+         U6ymVA8dIlv6A==
+Date:   Fri, 4 Dec 2020 14:26:43 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Thorsten Leemhuis <linux@leemhuis.info>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v4 1/3] LICENSES: Add the CC-BY-4.0 license
+Message-ID: <20201204142643.0c27f848@lwn.net>
+In-Reply-To: <X8oqTyRNKMHChbA7@kroah.com>
+References: <cover.1607063223.git.linux@leemhuis.info>
+        <7115b6c20ae3e6db0370fe4002dd586011205e1c.1607063223.git.linux@leemhuis.info>
+        <X8oqTyRNKMHChbA7@kroah.com>
+Organization: LWN.net
 MIME-Version: 1.0
-In-Reply-To: <20201203020806.14747-16-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_09:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
- priorityscore=1501 clxscore=1015 malwarescore=0 phishscore=0
- impostorscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0 mlxscore=0
- suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040117
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/20 8:08 PM, Tyrel Datwyler wrote:
-> In general the client needs to send Cancel MADs and task management
-> commands down the same channel as the command(s) intended to cancel or
-> abort. The client assigns cancel keys per LUN and thus must send a
-> Cancel down each channel commands were submitted for that LUN. Further,
-> the client then must wait for those cancel completions prior to
-> submitting a LUN RESET or ABORT TASK SET.
+On Fri, 4 Dec 2020 13:23:43 +0100
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+
+> On Fri, Dec 04, 2020 at 07:43:48AM +0100, Thorsten Leemhuis wrote:
+> > Add the full text of the CC-BY-4.0 license to the kernel tree as well as
+> > the required tags for reference and tooling.
+> > 
+> > The license text was copied directly from the following url, but for
+> > clarification a 'Creative Commons' was added before 'Attribution 4.0
+> > International' in the first line:
+> > https://creativecommons.org/licenses/by/4.0/legalcode.txt
+> > 
+> > CC-BY-4.0 is GPLv2 compatible, but when for example used for the
+> > kernel's documentation it can easily happen that sphinx during
+> > processing combines it with text or code from files using a more
+> > restrictive license[1]. This bears pitfalls, hence point that risk out
+> > and suggest to only use this license in combination with the GPLv2.
+> > 
+> > [1] https://lkml.kernel.org/r/20201201144314.GA14256@lst.de
+> > 
+> > Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+> > CC: Thomas Gleixner <tglx@linutronix.de>
+> > CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > CC: Christoph Hellwig <hch@lst.de>
+> > ---
+> >  LICENSES/dual/CC-BY-4.0 | 410 ++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 410 insertions(+)
+> >  create mode 100644 LICENSES/dual/CC-BY-4.0  
 > 
-> Add a cancel event pointer and cancel rsp iu storage to the
-> ibmvfc_sub_queue struct such that the cancel routine can assign a cancel
-> event to each applicable queue. When in legacy CRQ mode we fake treating
-> it as a subqueue by using a subqueue struct allocated on the stack. Wait
-> for completion of each submitted cancel.
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-> ---
->  drivers/scsi/ibmvscsi/ibmvfc.c | 104 ++++++++++++++++++++++-----------
->  drivers/scsi/ibmvscsi/ibmvfc.h |  38 ++++++------
->  2 files changed, 90 insertions(+), 52 deletions(-)
-> 
-> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-> index ec3db5a6baf3..e353b9e88104 100644
-> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
-> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-> @@ -2339,67 +2339,103 @@ static int ibmvfc_cancel_all(struct scsi_device *sdev, int type)
->  {
->  	struct ibmvfc_host *vhost = shost_priv(sdev->host);
->  	struct ibmvfc_event *evt, *found_evt;
-> -	union ibmvfc_iu rsp;
-> -	int rsp_rc = -EBUSY;
-> +	struct ibmvfc_sub_queue *scrqs;
-> +	struct ibmvfc_sub_queue legacy_crq;
-> +	int rsp_rc = 0;
->  	unsigned long flags;
->  	u16 status;
-> +	int cancel_cnt = 0;
-> +	int num_hwq;
-> +	int ret = 0;
-> +	int i;
->  
->  	ENTER;
->  	spin_lock_irqsave(vhost->host->host_lock, flags);
-> -	found_evt = NULL;
-> -	list_for_each_entry(evt, &vhost->sent, queue) {
-> -		if (evt->cmnd && evt->cmnd->device == sdev) {
-> -			found_evt = evt;
-> +	if (vhost->using_channels && vhost->scsi_scrqs.active_queues) {
-> +		num_hwq = vhost->scsi_scrqs.active_queues;
-> +		scrqs = vhost->scsi_scrqs.scrqs;
-> +	} else {
-> +		/* Use ibmvfc_sub_queue on the stack to fake legacy CRQ as a subqueue */
-> +		num_hwq = 1;
-> +		scrqs = &legacy_crq;
-> +	}
-> +
-> +	for (i = 0; i < num_hwq; i++) {
-> +		scrqs[i].cancel_event = NULL;
-> +		found_evt = NULL;
-> +		list_for_each_entry(evt, &vhost->sent, queue) {
-> +			if (evt->cmnd && evt->cmnd->device == sdev && evt->hwq == i) {
-> +				found_evt = evt;
-> +				cancel_cnt++;
-> +				break;
-> +			}
-> +		}
-> +
-> +		if (!found_evt)
-> +			continue;
-> +
-> +		if (vhost->logged_in) {
-> +			scrqs[i].cancel_event = ibmvfc_init_tmf(vhost, sdev, type);
-> +			scrqs[i].cancel_event->hwq = i;
-> +			scrqs[i].cancel_event->sync_iu = &scrqs[i].cancel_rsp;
-> +			rsp_rc = ibmvfc_send_event(scrqs[i].cancel_event, vhost, default_timeout);
-> +			if (rsp_rc)
-> +				break;
+Thanks for that.  Unless somebody screams, my intent is to apply these
+patches in the near future.
 
-It looks like if you have two outstanding commands, on two different hwqs, and you succeed
-in sending a cancel for the first hwq but fail sending it for the second hwq due to
-something happening like a xport event of some sort, then you would end up falling down
-into free_events where you'd call ibmvfc_free_event which will do a list_add_tail to add
-the event to the free list without having even pulled the event off the sent list, which
-will result in list corruption as now the free list and sent list will be intermingled.
-It would probably be better to only free the events if you never sent them or if you
-are sure they completed. So, you might need to have to wait for the completion of
-the cancel events that did get sent, which would likely be completed via purge_all.
-
-
-> +		} else {
-> +			rsp_rc = -EBUSY;
->  			break;
->  		}
->  	}
->  
-> -	if (!found_evt) {
-> +	spin_unlock_irqrestore(vhost->host->host_lock, flags);
-> +
-> +	if (!cancel_cnt) {
->  		if (vhost->log_level > IBMVFC_DEFAULT_LOG_LEVEL)
->  			sdev_printk(KERN_INFO, sdev, "No events found to cancel\n");
-> -		spin_unlock_irqrestore(vhost->host->host_lock, flags);
->  		return 0;
->  	}
->  
-> -	if (vhost->logged_in) {
-> -		evt = ibmvfc_init_tmf(vhost, sdev, type);
-> -		evt->sync_iu = &rsp;
-> -		rsp_rc = ibmvfc_send_event(evt, vhost, default_timeout);
-> -	}
-> -
-> -	spin_unlock_irqrestore(vhost->host->host_lock, flags);
-> -
->  	if (rsp_rc != 0) {
->  		sdev_printk(KERN_ERR, sdev, "Failed to send cancel event. rc=%d\n", rsp_rc);
->  		/* If failure is received, the host adapter is most likely going
->  		 through reset, return success so the caller will wait for the command
->  		 being cancelled to get returned */
-> -		return 0;
-> +		goto free_events;
->  	}
->  
->  	sdev_printk(KERN_INFO, sdev, "Cancelling outstanding commands.\n");
->  
-> -	wait_for_completion(&evt->comp);
-> -	status = be16_to_cpu(rsp.mad_common.status);
-> -	spin_lock_irqsave(vhost->host->host_lock, flags);
-> -	ibmvfc_free_event(evt);
-> -	spin_unlock_irqrestore(vhost->host->host_lock, flags);
-> +	for (i = 0; i < num_hwq; i++) {
-> +		if (!scrqs[i].cancel_event)
-> +			continue;
->  
-> -	if (status != IBMVFC_MAD_SUCCESS) {
-> -		sdev_printk(KERN_WARNING, sdev, "Cancel failed with rc=%x\n", status);
-> -		switch (status) {
-> -		case IBMVFC_MAD_DRIVER_FAILED:
-> -		case IBMVFC_MAD_CRQ_ERROR:
-> -			/* Host adapter most likely going through reset, return success to
-> -			 the caller will wait for the command being cancelled to get returned */
-> -			return 0;
-> -		default:
-> -			return -EIO;
-> -		};
-> +		wait_for_completion(&scrqs[i].cancel_event->comp);
-> +		status = be16_to_cpu(scrqs[i].cancel_rsp.mad_common.status);
-> +
-> +		if (status != IBMVFC_MAD_SUCCESS) {
-> +			sdev_printk(KERN_WARNING, sdev, "Cancel failed with rc=%x\n", status);
-> +			switch (status) {
-> +			case IBMVFC_MAD_DRIVER_FAILED:
-> +			case IBMVFC_MAD_CRQ_ERROR:
-> +				/* Host adapter most likely going through reset, return success to
-> +				 the caller will wait for the command being cancelled to get returned */
-> +				goto free_events;
-
-Similar comment here... What about the rest of the outstanding cancel commands? Do you need
-to wait for those to complete before freeing them?
-
-> +			default:
-> +				ret = -EIO;
-> +				goto free_events;
-> +			};
-> +		}
->  	}
->  
->  	sdev_printk(KERN_INFO, sdev, "Successfully cancelled outstanding commands\n");
-> -	return 0;
-> +free_events:
-> +	spin_lock_irqsave(vhost->host->host_lock, flags);
-> +	for (i = 0; i < num_hwq; i++)
-> +		if (scrqs[i].cancel_event)
-> +			ibmvfc_free_event(scrqs[i].cancel_event);
-> +	spin_unlock_irqrestore(vhost->host->host_lock, flags);
-> +
-> +	return ret;
->  }
->  
->  /**
-
-
-
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
-
+jon
