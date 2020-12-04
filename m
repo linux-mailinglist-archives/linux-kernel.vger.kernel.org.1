@@ -2,112 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CBC2CF3AB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 858592CF3AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729298AbgLDSLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:11:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbgLDSLX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:11:23 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E82C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:10:42 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id a16so10009004ejj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:10:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7TbFtICM9MnAP10o9hujRLIgAYJwsDBNhsbYS5a5Dto=;
-        b=SX1y7EcHXJayxKB8wtz/I8F9ALqJlaLjkODLmZJcstDxiZmULC5nPLi9CQSh9J+d1s
-         Ub4CCvLajGP8zKEzRIFEDx+9badI+tboymw1jJLi/0zFO511ABr2TD/mKEGoSm6gpZST
-         HgwsLdK10Rn26FMa6ma74KmX5TLQn+kc4PecOAtajNx7M8qtV512thjDI6NvD/Iuro3K
-         b6fDTClObrh4LdUWHhFRlbF12ULvTZWEGWBY+sCJ8j+v4QTPPvZylwOJ6P65jfmI2Rrk
-         NWSCE8jfmwVgt1Te99bn6n+tWhzCITNbEeQpX6rLPnEN0/JmBQ5INlXGZOTwMSTtcgSO
-         KKFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7TbFtICM9MnAP10o9hujRLIgAYJwsDBNhsbYS5a5Dto=;
-        b=ZToUTXpqL6twK9L/ohWIYRHeChYIu6Ph2mQN/5RmHVHlVrknXa/LX7o5+Z/c6FbZJU
-         6aG4VvPkL9VORiSxzEIkifb2Kj5KuR8+1rLiD+8pTuKEgcfBkaWf7FQtOFCzTsxXxAII
-         9DJs2eYLqkfKkfbFxd1Hnzuxnd0oArL8jVgQ8EEbdaIXiR2SflOe7r3/8nM8rcS4VI3W
-         rp7KXAhqyOpBGAUvU8CVCoUwC+gTp1SkJdRBoFzpyIb8SYRH2webrA1H+ouA1iZIkE5D
-         N2ZjaM9qg3FJVEHn6rcvkok+rUXi/AUAzqxPb7xzIESbVqOuQkCUePIedj0apz+DL84z
-         YNdg==
-X-Gm-Message-State: AOAM532BnBiiasmjAuW+C3onZsvPD6V0Nm+vKjyu6XeiVpOHFEpYEc5c
-        XKS/+n4MwM0nRiKSgORrVAndVuzzjEb6Gx91e63EGg==
-X-Google-Smtp-Source: ABdhPJwyUfWpho6yeil7W1EbhJnZVgB2REj45sCW4XZOBjgooF8hN9QNnxzvInK3hs8HyzZtXisHnOWp+/7+p9LG8y0=
-X-Received: by 2002:a17:906:d41:: with SMTP id r1mr8080974ejh.383.1607105441362;
- Fri, 04 Dec 2020 10:10:41 -0800 (PST)
+        id S1729360AbgLDSM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:12:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726330AbgLDSM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:12:26 -0500
+Date:   Fri, 4 Dec 2020 12:11:43 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607105505;
+        bh=x5IfepdnUmNjQDocS8xxeAbEXP8MU+G8Dwqt4FgmJ5g=;
+        h=From:To:Cc:Subject:In-Reply-To:From;
+        b=sde1f/Xl6reji6Y+v8uf6u2eOxeU/aXk/Rpv9OA2AUG/CsJhXXqqrz4kV7JLakv6P
+         iFSPM5nwuxC/E7Z/++vfQUbi7v2bNin6JFDE2S4JcKNnleHz7XU75VhBA5vlalFEpH
+         vGDihTQC8swE/HaChSA7ToCIUkxzrKoh5p7JdosSncdvqHXU/z9877jDUyU5zDM3oM
+         47iraJdiO0r3KPnViTnlD61iegPAUmjUwSKzCTurnjTBXdzptWa8J2atcRVkvn+Prw
+         VsOzcYR5aAYMdZCAgfPFNa3GOVBZzJomTwkPOA0ZJu+EwfW1kDChcM+R4XcfFtUqgu
+         N+5lo8UA4KA0g==
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Vidya Sagar <vidyas@nvidia.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Kishore <kthota@nvidia.com>,
+        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+        Vidya Sagar <sagar.tv@gmail.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v3 1/3] PCI/MSI: Move MSI/MSI-X init to msi.c
+Message-ID: <20201204181143.GA1917523@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201204035953.GA17056@js1304-desktop> <CA+CK2bCD7XYyJB9TNZZeUMAuntotZopVYNjDXnyVZyzKe2_A1Q@mail.gmail.com>
- <20201204161005.GD5487@ziepe.ca> <CA+CK2bCGGoBXg7FbhGMDdWRnePKFgvtsM_PJmA2qtMNsvPMZbg@mail.gmail.com>
- <593822e5-4e1a-fdca-5500-4138d0f2b728@redhat.com>
-In-Reply-To: <593822e5-4e1a-fdca-5500-4138d0f2b728@redhat.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Fri, 4 Dec 2020 13:10:05 -0500
-Message-ID: <CA+CK2bA8GBWNMGR_5urNJm7KtX6Jo=bwjPgQvVXe9Q-RW-6Y8g@mail.gmail.com>
-Subject: Re: [PATCH 0/6] prohibit pinning pages in ZONE_MOVABLE
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Joonsoo Kim <js1304@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        mike.kravetz@oracle.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8oX61zRwV7ykLAy@ulmo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > ZONE_MOVABLE can be configured via kernel parameter, or when memory
-> > nodes are onlined after hot-add; so this is something that admins
-> > configure. ZONE_MOVABLE is designed to gurantee memory hot-plug
-> > functionality, and not availability of THP, however, I did not know
-> > about the use case where some admins might configure ZONE_MOVABLE to
-> > increase availability of THP because pages are always migratable in
-> > them. The thing is, if we fragment ZONE_MOVABLE by pinning pages in
-> > it, the availability of THP also suffers.  We can migrate pages in
-> > ZONE_NORMAL, just not guaranteed, so we can create THP in ZONE_NORMAL
-> > as well, which is the usual case.
->
-> Right, we should document this at some place to make admins aware of
-> this. Something like
->
-> "Techniques that rely on long-term pinnings of memory (especially, RDMA
-> and vfio) are fundamentally problematic with ZONE_MOVABLE and,
-> therefore, memory hotunplug. Pinned pages cannot reside on ZONE_MOVABLE,
-> to guarantee that memory can still get hotunplugged - be aware that
-> pinning can fail even if there is plenty of free memory in ZONE_MOVABLE.
-> In addition, using ZONE_MOVABLE might make page pinning more expensive,
-> because pages have to be migrated off that zone first."
+On Fri, Dec 04, 2020 at 12:05:15PM +0100, Thierry Reding wrote:
+> On Thu, Dec 03, 2020 at 12:51:08PM -0600, Bjorn Helgaas wrote:
+> > From: Bjorn Helgaas <bhelgaas@google.com>
+> > 
+> > Move pci_msi_setup_pci_dev(), which disables MSI and MSI-X interrupts, from
+> > probe.c to msi.c so it's with all the other MSI code and more consistent
+> > with other capability initialization.  This means we must compile msi.c
+> > always, even without CONFIG_PCI_MSI, so wrap the rest of msi.c in an #ifdef
+> > and adjust the Makefile accordingly.  No functional change intended.
+> > 
+> > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> > ---
+> >  drivers/pci/Makefile |  3 +--
+> >  drivers/pci/msi.c    | 36 ++++++++++++++++++++++++++++++++++++
+> >  drivers/pci/pci.h    |  2 ++
+> >  drivers/pci/probe.c  | 21 ++-------------------
+> >  4 files changed, 41 insertions(+), 21 deletions(-)
+> > 
+> > diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
+> > index 522d2b974e91..11cc79411e2d 100644
+> > --- a/drivers/pci/Makefile
+> > +++ b/drivers/pci/Makefile
+> > @@ -5,7 +5,7 @@
+> >  obj-$(CONFIG_PCI)		+= access.o bus.o probe.o host-bridge.o \
+> >  				   remove.o pci.o pci-driver.o search.o \
+> >  				   pci-sysfs.o rom.o setup-res.o irq.o vpd.o \
+> > -				   setup-bus.o vc.o mmap.o setup-irq.o
+> > +				   setup-bus.o vc.o mmap.o setup-irq.o msi.o
+> >  
+> >  obj-$(CONFIG_PCI)		+= pcie/
+> >  
+> > @@ -18,7 +18,6 @@ endif
+> >  obj-$(CONFIG_OF)		+= of.o
+> >  obj-$(CONFIG_PCI_QUIRKS)	+= quirks.o
+> >  obj-$(CONFIG_HOTPLUG_PCI)	+= hotplug/
+> > -obj-$(CONFIG_PCI_MSI)		+= msi.o
+> >  obj-$(CONFIG_PCI_ATS)		+= ats.o
+> >  obj-$(CONFIG_PCI_IOV)		+= iov.o
+> >  obj-$(CONFIG_PCI_BRIDGE_EMUL)	+= pci-bridge-emul.o
+> > diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> > index d52d118979a6..555791c0ee1a 100644
+> > --- a/drivers/pci/msi.c
+> > +++ b/drivers/pci/msi.c
+> > @@ -26,6 +26,8 @@
+> >  
+> >  #include "pci.h"
+> >  
+> > +#ifdef CONFIG_MSI
+> > +
+> >  static int pci_msi_enable = 1;
+> >  int pci_msi_ignore_mask;
+> >  
+> > @@ -1577,3 +1579,37 @@ bool pci_dev_has_special_msi_domain(struct pci_dev *pdev)
+> >  }
+> >  
+> >  #endif /* CONFIG_PCI_MSI_IRQ_DOMAIN */
+> > +#endif /* CONFIG_PCI_MSI */
+> > +
+> > +void pci_msi_init(struct pci_dev *dev)
+> > +{
+> > +	u16 ctrl;
+> > +
+> > +	/*
+> > +	 * Disable the MSI hardware to avoid screaming interrupts
+> > +	 * during boot.  This is the power on reset default so
+> > +	 * usually this should be a noop.
+> > +	 */
+> > +	dev->msi_cap = pci_find_capability(dev, PCI_CAP_ID_MSI);
+> > +	if (!dev->msi_cap)
+> > +		return;
+> > +
+> > +	pci_read_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, &ctrl);
+> > +	if (ctrl & PCI_MSI_FLAGS_ENABLE)
+> > +		pci_write_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS,
+> > +				      ctrl & ~PCI_MSI_FLAGS_ENABLE);
+> > +}
+> 
+> The old code used the pci_msi_set_enable() helper here...
+> 
+> > +
+> > +void pci_msix_init(struct pci_dev *dev)
+> > +{
+> > +	u16 ctrl;
+> > +
+> > +	dev->msix_cap = pci_find_capability(dev, PCI_CAP_ID_MSIX);
+> > +	if (!dev->msix_cap)
+> > +		return;
+> > +
+> > +	pci_read_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, &ctrl);
+> > +	if (ctrl & PCI_MSIX_FLAGS_ENABLE)
+> > +		pci_write_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS,
+> > +				      ctrl & ~PCI_MSIX_FLAGS_ENABLE);
+> > +}
+> 
+> ... and pci_msix_clear_and_set_ctrl() here. I like your version here
+> better because it avoids the unnecessary write in case the flag isn't
+> set. But it got me thinking if perhaps the helpers aren't very useful
+> and perhaps should be dropped in favour of open-coded variants.
+> Especially since there seem to be only 4 and 6 occurrences of them after
+> this patch.
 
-Thanks, I will add this.
+I agree, they might be overkill.  I didn't want to spend that much
+time on it, so I just left them for now.  Thanks for your review!
 
->
-> BTW, you might also want to update the comment for ZONE_MOVABLE in
-> include/linux/mmzone.h at the end of this series, removing the special
-> case of pinned pages (1.) and maybe adding what happens when trying to
-> pin pages on ZONE_MOVABLE.
+> Anyway, this patch looks correct to me and is a nice improvement, so:
+> 
+> Reviewed-by: Thierry Reding <treding@nvidia.com>
 
-Will do it.
 
-Thank you,
-Pasha
