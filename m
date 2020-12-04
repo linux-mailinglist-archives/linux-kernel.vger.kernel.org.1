@@ -2,194 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859C02CF5C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B02FB2CF5D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgLDUkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 15:40:41 -0500
-Received: from mail.efficios.com ([167.114.26.124]:51794 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgLDUkl (ORCPT
+        id S2387922AbgLDUuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 15:50:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387781AbgLDUuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 15:40:41 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 6DF372CE77F;
-        Fri,  4 Dec 2020 15:39:59 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id laVxlc6mfNuf; Fri,  4 Dec 2020 15:39:59 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 0A37F2CE55C;
-        Fri,  4 Dec 2020 15:39:59 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 0A37F2CE55C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1607114399;
-        bh=dJI+/PpwD5jMrAfaBYwMPtjncMGVD0cTPqSq0jiEMqA=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=pOntHhXazoFXLq6hBllqIik4PkxFnty+9LIxg1VBWg4D7Ws3FLE0Mjm1rsUxsslhN
-         96xSWYMV/RH//jyC1tHD7ZtkDY8WGMsa3hLeEKkhuMdRRFE/aGP+RnBPwCDj9Dx9ZF
-         Ts4Maj7e2zg1jzqzpnLkj14ITc2W+f9NWSChLPKp33te6K+Bwi1j4nMvoP7zND/y4x
-         VQK9uS1d6sar1+0Euk8kQMFJqjN40B3srLNnrN+EYvOIQbtm5cpo6ozi+Y+o7vX1UV
-         yvnctVkuIK4FUKINdk18u+H/nUAixpE0LWs5zukQN3P8e6aZVr8VZXBxsgae1xn7fF
-         6t0qpDtjmppRg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id rT4kBItm-hx9; Fri,  4 Dec 2020 15:39:58 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id EB57C2CE8D0;
-        Fri,  4 Dec 2020 15:39:58 -0500 (EST)
-Date:   Fri, 4 Dec 2020 15:39:58 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Nadav Amit <nadav.amit@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        x86 <x86@kernel.org>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        riel <riel@surriel.com>, Dave Hansen <dave.hansen@intel.com>,
-        Jann Horn <jannh@google.com>
-Message-ID: <77346515.6733.1607114398867.JavaMail.zimbra@efficios.com>
-In-Reply-To: <A61977A7-F0B2-4492-AB6D-06E24417FA59@gmail.com>
-References: <cover.1607059162.git.luto@kernel.org> <203d39d11562575fd8bd6a094d97a3a332d8b265.1607059162.git.luto@kernel.org> <A61977A7-F0B2-4492-AB6D-06E24417FA59@gmail.com>
-Subject: Re: [RFC v2 1/2] [NEEDS HELP] x86/mm: Handle unlazying membarrier
- core sync in the arch code
+        Fri, 4 Dec 2020 15:50:06 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA1BC094243
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:48:37 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id t6so9458233lfl.13
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:48:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Lx1hVnr91e0KzAJzuCg8cszSa+uY8heHW8ontUbVheA=;
+        b=OCb5JSloiK/wo8ytjBT7XnulF6EBH5ud0a3HEmb4H+N92br+2uVpzsoJK6lHTSOyWs
+         WwsB02uKPVWh8kWuRoMcpZdC2VqRkjeWUgIq+6Ju0QA4hflN6IrFRYYtrhbB5J8AUbft
+         IuqnDpyDDGzg+CCb/ubYYdAnuZgMWPIens2kU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lx1hVnr91e0KzAJzuCg8cszSa+uY8heHW8ontUbVheA=;
+        b=RhrlDuO81o1p9u9S+yN0jNXHm7mlOoT1TXZIbBpSe9NiCK8bHfJTLkaRSjtI/d19zm
+         ui+gQN+AfP4pfNoG/tHUpO94Tm/ArowqRHb8z7QbbudLVmgtWidoIvqG4C+HSV5SPjUb
+         wjKEd5YJE1XNsR3aqdlu8CGrc+w8FGTDDFXToUP6tdqHKnVzTiO7YwrgYMmYNcW2/xU1
+         TuDciEnhrvvQNwZYbSh+51Kcgkh2ACZ1iX67H4G64DxkotRUWaD+Fi5Bvl+MLPhZk8Xw
+         k0SxWM1svFfvD1/xH3vzwhBz5ETZevoEqnoqvgquWm+bbfIMyJD6K1CB2GTkPfRe52T3
+         aTvg==
+X-Gm-Message-State: AOAM530ZC+L4idtWPtSp528EpXoH2dfOIg/JRaORbZCy09Hr8gMSRFdV
+        KgDFiiRH5uil9WL7yV4aEEMblKAxGDLjqw==
+X-Google-Smtp-Source: ABdhPJwEDE98dHBn8lIJEtxp2PM7yLm/dSXUyiFWraAzMvF1UpYwHldzrNryFWVRLXW2DvYnkWtZsg==
+X-Received: by 2002:a05:6512:3227:: with SMTP id f7mr4333019lfe.119.1607114915998;
+        Fri, 04 Dec 2020 12:48:35 -0800 (PST)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id j25sm2034647lfh.71.2020.12.04.12.48.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Dec 2020 12:48:35 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id a9so9505875lfh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:48:34 -0800 (PST)
+X-Received: by 2002:a19:c301:: with SMTP id t1mr3589349lff.105.1607114914603;
+ Fri, 04 Dec 2020 12:48:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3980 (ZimbraWebClient - FF83 (Linux)/8.8.15_GA_3980)
-Thread-Topic: x86/mm: Handle unlazying membarrier core sync in the arch code
-Thread-Index: xWV4rdMooMFTW/S/cTMIU6yzFuQjnA==
+References: <87tut2bqik.fsf@x220.int.ebiederm.org> <87ft4mbqen.fsf@x220.int.ebiederm.org>
+ <AM6PR03MB5170412C2B0318C40CED55E5E4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wi6inOF5yvQRwUFbqMt0zFJ8S8GhqE2M0judU7RiGru8Q@mail.gmail.com>
+ <875z5h4b7a.fsf@x220.int.ebiederm.org> <CAHk-=wio3JXxf3fy8tRVzb69u1e5iUru8p-dw+Mnga6yAdz=HQ@mail.gmail.com>
+ <AM6PR03MB51704629E50F6280A52D9FAFE4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB51704629E50F6280A52D9FAFE4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 4 Dec 2020 12:48:18 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgxe-KAqR_y2jP58GthOYKk0YG=6gNxKHxVUJbG7z2CoQ@mail.gmail.com>
+Message-ID: <CAHk-=wgxe-KAqR_y2jP58GthOYKk0YG=6gNxKHxVUJbG7z2CoQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] exec: Transform exec_update_mutex into a rw_semaphore
+To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Vasiliy Kulikov <segoon@openwall.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Dec 4, 2020, at 3:17 AM, Nadav Amit nadav.amit@gmail.com wrote:
+On Fri, Dec 4, 2020 at 12:30 PM Bernd Edlinger
+<bernd.edlinger@hotmail.de> wrote:
+>>
+> >    perf_event_open  (exec_update_mutex -> ovl_i_mutex)
 
-> I am not very familiar with membarrier, but here are my 2 cents while try=
-ing
-> to answer your questions.
->=20
->> On Dec 3, 2020, at 9:26 PM, Andy Lutomirski <luto@kernel.org> wrote:
->> @@ -496,6 +497,8 @@ void switch_mm_irqs_off(struct mm_struct *prev, stru=
-ct
->> mm_struct *next,
->> =09=09 * from one thread in a process to another thread in the same
->> =09=09 * process. No TLB flush required.
->> =09=09 */
->> +
->> +=09=09// XXX: why is this okay wrt membarrier?
->> =09=09if (!was_lazy)
->> =09=09=09return;
->=20
-> I am confused.
->=20
-> On one hand, it seems that membarrier_private_expedited() would issue an =
-IPI
-> to that core, as it would find that this core=E2=80=99s cpu_rq(cpu)->curr=
-->mm is the
-> same as the one that the membarrier applies to.
+Side note: this one looks like it should be easy to fix.
 
-If the scheduler switches from one thread to another which both have the sa=
-me mm,
-it means cpu_rq(cpu)->curr->mm is invariant, even though ->curr changes. So=
- there
-is no need to issue a memory barrier or sync core for membarrier in this ca=
-se,
-because there is no way the IPI can be missed.
+Is there any real reason why exec_update_mutex is actually gotten that
+early, and held for that long in the perf event code?
 
-> But=E2=80=A6 (see below)
->=20
->=20
->> @@ -508,12 +511,24 @@ void switch_mm_irqs_off(struct mm_struct *prev, st=
-ruct
->> mm_struct *next,
->> =09=09smp_mb();
->> =09=09next_tlb_gen =3D atomic64_read(&next->context.tlb_gen);
->> =09=09if (this_cpu_read(cpu_tlbstate.ctxs[prev_asid].tlb_gen) =3D=3D
->> -=09=09=09=09next_tlb_gen)
->> +=09=09    next_tlb_gen) {
->> +=09=09=09/*
->> +=09=09=09 * We're reactivating an mm, and membarrier might
->> +=09=09=09 * need to serialize.  Tell membarrier.
->> +=09=09=09 */
->> +
->> +=09=09=09// XXX: I can't understand the logic in
->> +=09=09=09// membarrier_mm_sync_core_before_usermode().  What's
->> +=09=09=09// the mm check for?
->> +=09=09=09membarrier_mm_sync_core_before_usermode(next);
->=20
-> On the other hand the reason for this mm check that you mention contradic=
-ts
-> my previous understanding as the git log says:
->=20
-> commit 2840cf02fae627860156737e83326df354ee4ec6
-> Author: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Date:   Thu Sep 19 13:37:01 2019 -0400
->=20
->    sched/membarrier: Call sync_core only before usermode for same mm
->   =20
->    When the prev and next task's mm change, switch_mm() provides the core
->    serializing guarantees before returning to usermode. The only case
->    where an explicit core serialization is needed is when the scheduler
->    keeps the same mm for prev and next.
+I _think_ we could move the ptrace check to be much later, to _just_ before that
 
-Hrm, so your point here is that if the scheduler keeps the same mm for
-prev and next, it means membarrier will have observed the same rq->curr->mm=
-,
-and therefore the IPI won't be missed. I wonder if that
-membarrier_mm_sync_core_before_usermode is needed at all then or if we
-have just been too careful and did not consider that all the scenarios whic=
-h
-need to be core-sync'd are indeed taken care of ?
+         * This is the point on no return; we cannot fail hereafter.
 
-I see here that my prior commit message indeed discusses prev and next task=
-'s
-mm, but in reality, we are comparing current->mm with rq->prev_mm. So from
-a lazy TLB perspective, this probably matters, and we may still need a core=
- sync
-in some lazy TLB scenarios.
+point in the perf event install chain..
 
->=20
->> =09/*
->> =09 * When switching through a kernel thread, the loop in
->> =09 * membarrier_{private,global}_expedited() may have observed that
->> =09 * kernel thread and not issued an IPI. It is therefore possible to
->> =09 * schedule between user->kernel->user threads without passing though
->> =09 * switch_mm(). Membarrier requires a barrier after storing to
->> -=09 * rq->curr, before returning to userspace, so provide them here:
->> +=09 * rq->curr, before returning to userspace, and mmdrop() provides
->> +=09 * this barrier.
->> =09 *
->> -=09 * - a full memory barrier for {PRIVATE,GLOBAL}_EXPEDITED, implicitl=
-y
->> -=09 *   provided by mmdrop(),
->> -=09 * - a sync_core for SYNC_CORE.
->> +=09 * XXX: I don't think mmdrop() actually does this.  There's no
->> +=09 * smp_mb__before/after_atomic() in there.
->=20
-> I presume that since x86 is the only one that needs
-> membarrier_mm_sync_core_before_usermode(), nobody noticed the missing
-> smp_mb__before/after_atomic(). These are anyhow a compiler barrier in x86=
-,
-> and such a barrier would take place before the return to userspace.
+I don't think it needs to be moved down even that much, I think it
+would be sufficient to move it down below the "perf_event_alloc()",
+but I didn't check very much.
 
-mmdrop already provides the memory barriers for membarrer, as I documented =
-within the
-function.
+The fact that create_local_trace_uprobe() can end up going into a
+lookup of an OVL filesystem path smells kind of odd to me to begin
+with, but I didn't look at the whole thing.
 
-Thanks,
+PeterZ, is there something I'm missing?
 
-Mathieu
-
---=20
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+          Linus
