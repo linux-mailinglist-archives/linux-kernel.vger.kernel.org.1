@@ -2,174 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB392CEC8F
+	by mail.lfdr.de (Postfix) with ESMTP id 96F882CEC90
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 11:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729854AbgLDKz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 05:55:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727365AbgLDKzz (ORCPT
+        id S2387739AbgLDK4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 05:56:03 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:46764 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727365AbgLDK4C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 05:55:55 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBF1C0613D1;
-        Fri,  4 Dec 2020 02:55:14 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id bo9so7982619ejb.13;
-        Fri, 04 Dec 2020 02:55:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LZVHRkY74QqA19RttFo/wULshSGOsZW8klkt6NVWYoo=;
-        b=qj/3tjMoeXOe2c3vj5xiHLFIMzV2808MIHS6nPhgJGtl2xS/5/oSuXMJk1umAoUZiO
-         mlg/JkWv127enYGmzsb/JxtLAGxCCRUkkhWplg5CSgpZOD/Q1npHSBIDh0m7HYqrnKcZ
-         mgAqUoqN/HhnX8D7sGBYV3br7IyH1MFnLvjVjgss1cXRNOk8oM1oSGStmi5NSrANz7Pj
-         NDgomGmHYrE2jI8ouoWHvUKnRNFbYjltmSwXjxw9kyGK7YWpZ1G1+7s/H26SiP9TcGZq
-         7a0fqFL9IHIO9HRA4ucdRlrKsr5Yijfg7WBvV+ROGWmrx0QvLE/PCqEcLwtiket7yA2P
-         n2OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LZVHRkY74QqA19RttFo/wULshSGOsZW8klkt6NVWYoo=;
-        b=R0qGrg92vPUx5Yi3/lpBcpQSj7I2sJVJDWIyE2j26Z2qSeEKvL+eseOpucG79/0xHj
-         UjJgVHsHpm83pMiUvRD3mmPPYgA5KcckA0UTmnk9iB9ZyKXCUqOUx/+wzXTrMeeX0Hun
-         p4/oQZTsKqrbvVDtRek5jZdlbIuCx0+QXOgfDQvgpu2/XcpgH6wWuEnhJJHlImYDsloS
-         GRlCrn8/m4z16+NP0+/HMMLs3J2K5/8zgDNG41aU0LA+HWh7jGGB8iFDveZVXJmZk7D4
-         M2fvFJPb7GUiNY8hC2Kiw/fWnAUF3twAGWmTEe12Y8o7Nc2jMx76w4lJYO6hGboNZMkG
-         xk/g==
-X-Gm-Message-State: AOAM532joeOz/eMwLY1BCxajS+vO5FdIE+vnvd4gF4nBbVTWdhUaoYkN
-        K/6+MpLMSGd50zTGWqPs6So=
-X-Google-Smtp-Source: ABdhPJzYGBSvFfb1PryFqIG3QjzCcTZMt/TAJIAzLmMdeBaPsKSLQfu5BbRP6wfUPylDyV79KCZoZA==
-X-Received: by 2002:a17:906:55d0:: with SMTP id z16mr6412324ejp.466.1607079312560;
-        Fri, 04 Dec 2020 02:55:12 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id q26sm2883583ejt.73.2020.12.04.02.55.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 02:55:11 -0800 (PST)
-Date:   Fri, 4 Dec 2020 11:55:10 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Saravana Kannan <saravanak@google.com>
-Subject: Re: [PATCH] driver core: Reorder devices on successful probe
-Message-ID: <X8oVjvg/xkwQHjVC@ulmo>
-References: <20201203175756.1405564-1-thierry.reding@gmail.com>
- <CAJZ5v0g_FC6Pikrvk2PK=XMvAwqjaNOcYXHYS6eqv6Zc0JgqNQ@mail.gmail.com>
+        Fri, 4 Dec 2020 05:56:02 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607079320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=sbibtqXkXNRCHKrQ+gLnAAGmMtFsu+qZqRnLb4/ON80=;
+        b=PqfC65gSUjj3x1T6zER8W3YtRcTVqgV2a7QsYP9XOlqARZ3QmIM3/0uhIFD8f2U8XVVRQ8
+        wCJ6MXgcIjS1Mtry6WTtC8485We0rLJObR6uqLkjCsPbfkTqmVnXN0Iv9vouPGwUFj7N6t
+        ePMSyPzmonGMD/eVLpb9UE7pt4khaHYsIc1I8kZpTACfDFiU96Pl/KTf84o3mdeDJnbjKA
+        MwfiwjRwymEmgsq79nMPX8Zbi02FbwKIoCOQ7ym95KparbQSWjEF4lY6o6onIg54bxxsAC
+        l1hfZubKbjPSxg6QGbTmslxEsp+aNxovo5JLUo9XNhaOHIgfzXiV8ZizgE8X9Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607079320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=sbibtqXkXNRCHKrQ+gLnAAGmMtFsu+qZqRnLb4/ON80=;
+        b=a5rL7z+wNkFTx7V5GyjRyUR92VxA7NmJolGc395ogBeLrVNtGm1OJnMRZx1qYSeDRwi2wK
+        FFmMWZ/tpsyG8XAg==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>
+Subject: tick/sched: Make jiffies update quick check more robust
+Date:   Fri, 04 Dec 2020 11:55:19 +0100
+Message-ID: <87czzpc02w.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="1wXjCVfT6aRuHw9I"
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0g_FC6Pikrvk2PK=XMvAwqjaNOcYXHYS6eqv6Zc0JgqNQ@mail.gmail.com>
-User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The quick check in tick_do_update_jiffies64() whether jiffies need to be
+updated is not really correct under all circumstances and on all
+architectures, especially not on 32bit systems.
 
---1wXjCVfT6aRuHw9I
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The quick check does:
 
-On Thu, Dec 03, 2020 at 07:17:30PM +0100, Rafael J. Wysocki wrote:
-> On Thu, Dec 3, 2020 at 6:58 PM Thierry Reding <thierry.reding@gmail.com> =
-wrote:
-> >
-> > From: Thierry Reding <treding@nvidia.com>
-> >
-> > Device drivers usually depend on the fact that the devices that they
-> > control are suspended in the same order that they were probed in. In
-> > most cases this is already guaranteed via deferred probe.
-> >
-> > However, there's one case where this can still break: if a device is
-> > instantiated before a dependency (for example if it appears before the
-> > dependency in device tree) but gets probed only after the dependency is
-> > probed. Instantiation order would cause the dependency to get probed
-> > later, in which case probe of the original device would be deferred and
-> > the suspend/resume queue would get reordered properly. However, if the
-> > dependency is provided by a built-in driver and the device depending on
-> > that driver is controlled by a loadable module, which may only get
-> > loaded after the root filesystem has become available, we can be faced
-> > with a situation where the probe order ends up being different from the
-> > suspend/resume order.
-> >
-> > One example where this happens is on Tegra186, where the ACONNECT is
-> > listed very early in device tree (sorted by unit-address) and depends on
-> > BPMP (listed very late because it has no unit-address) for power domains
-> > and clocks/resets. If the ACONNECT driver is built-in, there is no
-> > problem because it will be probed before BPMP, causing a probe deferral
-> > and that in turn reorders the suspend/resume queue. However, if built as
-> > a module, it will end up being probed after BPMP, and therefore not
-> > result in a probe deferral, and therefore the suspend/resume queue will
-> > stay in the instantiation order. This in turn causes problems because
-> > ACONNECT will be resumed before BPMP, which will result in a hang
-> > because the ACONNECT's power domain cannot be powered on as long as the
-> > BPMP is still suspended.
-> >
-> > Fix this by always reordering devices on successful probe. This ensures
-> > that the suspend/resume queue is always in probe order and hence meets
-> > the natural expectations of drivers vs. their dependencies.
-> >
-> > Reported-by: Jonathan Hunter <jonathanh@nvidia.com>
-> > Signed-off-by: Thierry Reding <treding@nvidia.com>
->=20
-> Saravana had submitted a very similar patch (I don't have a pointer to
-> that one though) and I was against it at that time due to
-> overhead-related concerns.  There still are some, but maybe that
-> doesn't matter in practice.
+    if (now < READ_ONCE(tick_next_period))
+    	return;
 
-I suspect that any overhead would be offset if we can get rid of the
-deferred probe reordering and the recursive provider/consumer reordering
-as discussed with Saravana in that other subthread. Even if we can't do
-that, this is a one-time cost per device and therefore shouldn't have a
-huge impact.
+and the counterpart in the update is:
 
-Besides, as the example above and Saravana's in the discussion in June
-shows, there are certain cases where we just have no other way of doing
-the sorting correctly, so I think we need this for correctness.
+    WRITE_ONCE(tick_next_period, next_update_time);
 
-> Also, I kind of expect this to blow up somewhere, but since I have no
-> examples ready from the top of my head, I think let's try and see, so:
+This has two problems:
 
-I'm slightly worried about that, too. But I did give this quite a bit of
-thought and I can't come up with a case where this would blow up. Maybe
-the one case where this might break something is if some combination of
-drivers specifically rely on the suspend/resume order to be *different*
-=66rom the probe order. That's a bit far-fetched and I would think that
-either driver would have a workaround in place to deal with that somehow
-so this might actually unveil such workarounds and gives us an
-opportunity to do things right.
+  1) On weakly ordered architectures there is no guarantee that the stores
+     before the WRITE_ONCE() are visible which means that other CPUs can
+     operate on a stale jiffies value.
 
-But I think it'd probably be best to feed this into linux-next sometime
-soon after v5.11-rc1 to get broad exposure and see if there are any
-cases where this causes trouble.
+  2) On 32bit the store of tick_next_period which is an u64 is split into
+     two 32bit stores. If the first 32bit store advances tick_next_period
+     far out and the second 32bit store is delayed (virt, NMI ...) then
+     jiffies will become stale until the second 32bit store happens.
 
-Thierry
+Address this by seperating the handling for 32bit and 64bit.
 
---1wXjCVfT6aRuHw9I
-Content-Type: application/pgp-signature; name="signature.asc"
+On 64bit problem #1 is addressed by replacing READ_ONCE() / WRITE_ONCE()
+with smp_load_acquire() / smp_store_release().
 
------BEGIN PGP SIGNATURE-----
+On 32bit problem #2 is addressed by protecting the quick check with the
+jiffies sequence counter. The load and stores can be plain because the
+sequence count mechanics provides the required barriers already.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/KFY0ACgkQ3SOs138+
-s6G9lRAAhfBZXVT9ayiJKp15iatSLW3Slg5kS+4d9TkFVwiXlNBHodXi1nXvVkYI
-Rvxva5NByxLlbPUJJBXIYBMuvPB4rryq76gGViJEwoIx97qkmjlMUNJzU39wlC7V
-P43rWwzTTJIyo4vXUnQtB5nhKSxw7rG5Izdx9l/tmZHsGw9vXXjBURwrQyR8STWx
-VotUMHShFWOkWW5gq7TVo8fUhuDrVA+os52xUZk+Vpf4OnlSEmeh3ofk/KtYW/fB
-OYf4I/MKbortHP4PFcnFBgnMwGL4ls7OpPiEgo8nMNdPF8DFnbOEhL7Ks8VnWa5J
-JLrDV2v1lva4T069LHwy+WRC6LoDLkTpOGaXSWmQvF21uN7Anj0RF9Ux6D2yiAGv
-4MlwOOHmO4SFnXsqeKeuAJhFgUEiIUbsmfYS8pekaeE8ZxRMjxnuUx6SycC+neEK
-7+yKY65f/7AbIGLRehgGXLw5yCLSMpj3fhpIqym7d53515I7ovHJ0G3kdO//dc/J
-/WUJNs4SiIo+2Y/P8DcW2KHQIVM+mbMrQa0ybGgf/+xkosCKmFEv7RQ9Mk6iXyLg
-EbayCS9iMjUI+olDnsA57mcIwCm2+UQSt1GbSRcjYkTe7SHUiZhGjZVACJ0sCpOL
-kC3vBCTpnRiWtPAqUR03VmttLD4m/iD2W33wjc7PB2vWEXk2+S0=
-=j820
------END PGP SIGNATURE-----
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ Applies on tip timers/core
+---
+ kernel/time/tick-sched.c |   74 +++++++++++++++++++++++++++++------------------
+ 1 file changed, 47 insertions(+), 27 deletions(-)
 
---1wXjCVfT6aRuHw9I--
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -57,36 +57,42 @@ static ktime_t last_jiffies_update;
+ static void tick_do_update_jiffies64(ktime_t now)
+ {
+ 	unsigned long ticks = 1;
+-	ktime_t delta;
++	ktime_t delta, nextp;
+ 
+ 	/*
+-	 * Do a quick check without holding jiffies_lock. The READ_ONCE()
++	 * 64bit can do a quick check without holding jiffies lock and
++	 * without looking at the sequence count. The smp_load_acquire()
+ 	 * pairs with the update done later in this function.
+ 	 *
+-	 * This is also an intentional data race which is even safe on
+-	 * 32bit in theory. If there is a concurrent update then the check
+-	 * might give a random answer. It does not matter because if it
+-	 * returns then the concurrent update is already taking care, if it
+-	 * falls through then it will pointlessly contend on jiffies_lock.
+-	 *
+-	 * Though there is one nasty case on 32bit due to store tearing of
+-	 * the 64bit value. If the first 32bit store makes the quick check
+-	 * return on all other CPUs and the writing CPU context gets
+-	 * delayed to complete the second store (scheduled out on virt)
+-	 * then jiffies can become stale for up to ~2^32 nanoseconds
+-	 * without noticing. After that point all CPUs will wait for
+-	 * jiffies lock.
+-	 *
+-	 * OTOH, this is not any different than the situation with NOHZ=off
+-	 * where one CPU is responsible for updating jiffies and
+-	 * timekeeping. If that CPU goes out for lunch then all other CPUs
+-	 * will operate on stale jiffies until it decides to come back.
++	 * 32bit cannot do that because the store of tick_next_period
++	 * consists of two 32bit stores and the first store could move it
++	 * to a random point in the future.
+ 	 */
+-	if (ktime_before(now, READ_ONCE(tick_next_period)))
+-		return;
++	if (IS_ENABLED(CONFIG_64BIT)) {
++		if (ktime_before(now, smp_load_acquire(&tick_next_period)))
++			return;
++	} else {
++		unsigned int seq;
++
++		/*
++		 * Avoid contention on jiffies_lock and protect the quick
++		 * check with the sequence count.
++		 */
++		do {
++			seq = read_seqcount_begin(&jiffies_seq);
++			nextp = tick_next_period;
++		} while (read_seqcount_retry(&jiffies_seq, seq));
++
++		if (ktime_before(now, nextp))
++			return;
++	}
+ 
+-	/* Reevaluate with jiffies_lock held */
++	/* Quick check failed, i.e. update is required. */
+ 	raw_spin_lock(&jiffies_lock);
++	/*
++	 * Reevaluate with the lock held. Another CPU might have done the
++	 * update already.
++	 */
+ 	if (ktime_before(now, tick_next_period)) {
+ 		raw_spin_unlock(&jiffies_lock);
+ 		return;
+@@ -112,11 +118,25 @@ static void tick_do_update_jiffies64(kti
+ 	jiffies_64 += ticks;
+ 
+ 	/*
+-	 * Keep the tick_next_period variable up to date.  WRITE_ONCE()
+-	 * pairs with the READ_ONCE() in the lockless quick check above.
++	 * Keep the tick_next_period variable up to date.
+ 	 */
+-	WRITE_ONCE(tick_next_period,
+-		   ktime_add_ns(last_jiffies_update, TICK_NSEC));
++	nextp = ktime_add_ns(last_jiffies_update, TICK_NSEC);
++
++	if (IS_ENABLED(CONFIG_64BIT)) {
++		/*
++		 * Pairs with smp_load_acquire() in the lockless quick
++		 * check above and ensures that the update to jiffies_64 is
++		 * not reordered vs. the store to tick_next_period, neither
++		 * by the compiler nor by the CPU.
++		 */
++		smp_store_release(&tick_next_period, nextp);
++	} else {
++		/*
++		 * A plain store is good enough on 32bit as the quick check
++		 * above is protected by the sequence count.
++		 */
++		tick_next_period = nextp;
++	}
+ 
+ 	/*
+ 	 * Release the sequence count. calc_global_load() below is not
