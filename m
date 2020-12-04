@@ -2,357 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7922CF0A5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B2C2CF0AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730545AbgLDPWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:22:11 -0500
-Received: from gproxy3-pub.mail.unifiedlayer.com ([69.89.30.42]:41651 "EHLO
-        gproxy3-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730493AbgLDPWK (ORCPT
+        id S1730579AbgLDPXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:23:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730570AbgLDPXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:22:10 -0500
-Received: from cmgw14.unifiedlayer.com (unknown [10.9.0.14])
-        by gproxy3.mail.unifiedlayer.com (Postfix) with ESMTP id 0C29C40057
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 08:21:29 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id lCtkkx5h5wNNllCtkk8kbH; Fri, 04 Dec 2020 08:21:29 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=Icqpp1ia c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=zTNgK-yGK50A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=gAnH3GRIAAAA:8
- a=FKLIVFl7mNak6WWTxaYA:9 a=CjuIK1q_8ugA:10:nop_charset_2
- a=oVHKYsEdi7-vN-J5QA_j:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=PNfgaoH8rLyWEGS0pemJZIJT1rnIBN/Ft6RtOLR1vDE=; b=LXIIV7nSAB6qj3R1O2KYx2WlY0
-        d0MvkEXyLWOtx8kaDpfTAVKwqeJMtTDsZkfH//xeYdZxOiIrWtPCoo/e9eIeQFTSfwLHcdapF9Lg2
-        pEn/QvUR5onnsG9B1oDsrupE56vy6rQcNs7YqNplzK50lrhZlDPPnFV75bSu62NOi/zDfRbN8qDkT
-        mQ2Wpq72nDvrloewg7zLxEDgIoCGFZcU7hfvzEP0p9RIJ2yJLBCSdXPLzJINITlTQ66Mk9mCA+fWx
-        6CpfKqyS9by4lOzBi5efRA0WnTXuRgtaxs3Ly7EE2bDEyjululq7Q8ZTpAaaJBG3fyf0+Yg1SDOb6
-        Hu7uVcWQ==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:46526 helo=localhost)
-        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1klCtk-001k7N-1D; Fri, 04 Dec 2020 15:21:28 +0000
-Date:   Fri, 4 Dec 2020 07:21:27 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     alexandru.tachici@analog.com
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Weston.Sapia@analog.com,
-        Brad.Lovell@analog.com, Sal.Afzal@analog.com, robh+dt@kernel.org
-Subject: Re: [PATCH v3 2/3] hwmon: ltc2992: Add support for GPIOs.
-Message-ID: <20201204152127.GB135107@roeck-us.net>
-References: <20201203071155.68859-1-alexandru.tachici@analog.com>
- <20201203071155.68859-3-alexandru.tachici@analog.com>
+        Fri, 4 Dec 2020 10:23:04 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C89C0613D1;
+        Fri,  4 Dec 2020 07:22:23 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id g25so4918052wmh.1;
+        Fri, 04 Dec 2020 07:22:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=2L4E4JEtOePK6yPQS0Wp/iPNaHfjX21E9yHOBlaREgI=;
+        b=bYjT7SE18PsWAzANz5aR9lKwWkyIo4uWpi+0bVx7fe/+HDU8YIKCyPqRrM6majo9RH
+         gNGcyp3teOLT5WazQUAHTCOxCyQcF/Vyk3BEGQsvW5/sNl5jJH8+nCLSX/THBDvBrtox
+         WdP0z3aBeplOm7oscC6hEE6Ock7blLtqbPEj9gqyYrrHsjVeV2e0jiYnNHKF8mUtXQ0h
+         uLprd7FNaFe3FM7ZGieBgAcbA1FtgdW1XzhTUHm7viQnw2ZEXKg9i8GOclip5zor5O81
+         lW9Wj55zs74Wi648bWjYr9SPn0Bo0DDbjErjyi2KP7yixNRtJb/+jq2m6arjEaGw/nyN
+         9KLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2L4E4JEtOePK6yPQS0Wp/iPNaHfjX21E9yHOBlaREgI=;
+        b=Q6TBqc+UL8BG9GnWbnI4P2sg4OCVGwoHidqpGKt6UR+x3vSPHx38+uyRN9RystTpaq
+         4lPYPEwDkLgZ9Yiy7mS95gFjIi0K4hmiEsNc19SUNXFY1EUYhVfftF0O5pglBtjR9pFY
+         bfzAnoSAqUzxZRnI8KhTGKvfmilZStRWpRml75707w3BTG62fkhoTn3XG98j/o9GJxr9
+         dxxx0AXkn34Mq5RaQH/twpEIQ5VxYMv7uTW49iQWLoUnB1riD8PTdBH7z6gem61cfXye
+         KtlcX/sfmKFsbJQkIA5pMVqiOV578sfANq4ZUXSshIly9iAVDZ2C/xIfnECxwUx79Y/R
+         5iNw==
+X-Gm-Message-State: AOAM533EBgAi8qKoezHAZfhff6pW+ohL4vbYCypozCN6GJdq8ZkP0sfm
+        YQRoargFjXlxBetXBHoB7fA=
+X-Google-Smtp-Source: ABdhPJwsOTPHrbwbor8/0xNE2TE1FP/kW3syTfxM2ifeeE9343cUjIHTiP56RdTapHVvsjJAahcN0A==
+X-Received: by 2002:a1c:9e41:: with SMTP id h62mr4852541wme.51.1607095342063;
+        Fri, 04 Dec 2020 07:22:22 -0800 (PST)
+Received: from pce.localnet (host-79-13-10-171.retail.telecomitalia.it. [79.13.10.171])
+        by smtp.gmail.com with ESMTPSA id k11sm3892364wrv.88.2020.12.04.07.22.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 07:22:21 -0800 (PST)
+From:   Elia Devito <eliadevito@gmail.com>
+To:     =?utf-8?B?QmFybmFiw6FzIFDFkWN6ZQ==?= <pobrn@protonmail.com>
+Cc:     Alex Hung <alex.hung@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] intel-hid: add alternative method to enable switches
+Date:   Fri, 04 Dec 2020 16:22:18 +0100
+Message-ID: <2204197.ElGaqSPkdT@pce>
+In-Reply-To: <u_tIRoW7nG4DQc7H_wcr9yn8oIc5rO9SsWKfOoJz4c9KKDJtUsYore_4tyNYxn3r0OpEOI5rsyrE__1Y2hbIc8lnS5cJKeeFmqyPdRjDVyU=@protonmail.com>
+References: <69f340f6-4301-6546-f14a-47d90208d44b@redhat.com> <20201203212148.36039-1-eliadevito@gmail.com> <u_tIRoW7nG4DQc7H_wcr9yn8oIc5rO9SsWKfOoJz4c9KKDJtUsYore_4tyNYxn3r0OpEOI5rsyrE__1Y2hbIc8lnS5cJKeeFmqyPdRjDVyU=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203071155.68859-3-alexandru.tachici@analog.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1klCtk-001k7N-1D
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:46526
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 14
-X-Org:  HG=direseller_whb_net_legacy;ORG=directi;
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 09:11:54AM +0200, alexandru.tachici@analog.com wrote:
-> From: Alexandru Tachici <alexandru.tachici@analog.com>
-> 
-> LTC2992 has 4 open-drain GPIOS. This patch exports to user
-> space the 4 GPIOs using the GPIO driver Linux API.
-> 
-> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
+Hi Barnab=C3=A1s
 
-Applied.
+In data venerd=C3=AC 4 dicembre 2020 00:45:10 CET, Barnab=C3=A1s P=C5=91cze=
+ ha scritto:
+> Hi
+>=20
+> 2020. december 3., cs=C3=BCt=C3=B6rt=C3=B6k 22:21 keltez=C3=A9ssel, Elia =
+Devito =C3=ADrta:
+> > [...]
+> > diff --git a/drivers/platform/x86/intel-hid.c
+> > b/drivers/platform/x86/intel-hid.c index 86261970bd8f..fed24d4f28b8
+> > 100644
+> > --- a/drivers/platform/x86/intel-hid.c
+> > +++ b/drivers/platform/x86/intel-hid.c
+> > @@ -15,6 +15,9 @@
+> >=20
+> >  #include <linux/platform_device.h>
+> >  #include <linux/suspend.h>
+> >=20
+> > +/* When NOT in tablet mode, VGBS returns with the flag 0x40 */
+> > +#define TABLET_MODE_FLAG 0x40
+>=20
+> I think `BIT(6)` would be better (linux/bits.h).
+>=20
+Okay,  I will change it
 
-Thanks,
-Guenter
+> > +
+> >=20
+> >  MODULE_LICENSE("GPL");
+> >  MODULE_AUTHOR("Alex Hung");
+> >=20
+> > @@ -89,9 +92,26 @@ static const struct dmi_system_id button_array_table=
+[]
+> > =3D {>=20
+> >  	{ }
+> > =20
+> >  };
+> >=20
+> > [...]
+> > +static void detect_tablet_mode(struct platform_device *device)
+>=20
+> I believe `report_tablet_mode_state()` or something similar would be a mo=
+re
+> apt name.
+Sound good,  I will rename it.
 
-> ---
->  drivers/hwmon/Kconfig   |   1 +
->  drivers/hwmon/ltc2992.c | 160 +++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 160 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index bf9e387270d6..8a8eb42fb1ec 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -861,6 +861,7 @@ config SENSORS_LTC2990
->  config SENSORS_LTC2992
->  	tristate "Linear Technology LTC2992"
->  	depends on I2C
-> +	depends on GPIOLIB
->  	help
->  	  If you say yes here you get support for Linear Technology LTC2992
->  	  I2C System Monitor. The LTC2992 measures current, voltage, and
-> diff --git a/drivers/hwmon/ltc2992.c b/drivers/hwmon/ltc2992.c
-> index c11d585a9600..69dbb5aa5dc2 100644
-> --- a/drivers/hwmon/ltc2992.c
-> +++ b/drivers/hwmon/ltc2992.c
-> @@ -8,6 +8,7 @@
->  #include <linux/bitfield.h>
->  #include <linux/bitops.h>
->  #include <linux/err.h>
-> +#include <linux/gpio/driver.h>
->  #include <linux/hwmon.h>
->  #include <linux/i2c.h>
->  #include <linux/kernel.h>
-> @@ -54,6 +55,9 @@
->  #define LTC2992_G4_MAX_THRESH		0x74
->  #define LTC2992_G4_MIN_THRESH		0x76
->  #define LTC2992_FAULT3			0x92
-> +#define LTC2992_GPIO_STATUS		0x95
-> +#define LTC2992_GPIO_IO_CTRL		0x96
-> +#define LTC2992_GPIO_CTRL		0x97
->  
->  #define LTC2992_POWER(x)		(LTC2992_POWER1 + ((x) * 0x32))
->  #define LTC2992_POWER_MAX(x)		(LTC2992_POWER1_MAX + ((x) * 0x32))
-> @@ -96,8 +100,18 @@
->  #define LTC2992_VADC_UV_LSB		25000
->  #define LTC2992_VADC_GPIO_UV_LSB	500
->  
-> +#define LTC2992_GPIO_NR		4
-> +#define LTC2992_GPIO1_BIT	7
-> +#define LTC2992_GPIO2_BIT	6
-> +#define LTC2992_GPIO3_BIT	0
-> +#define LTC2992_GPIO4_BIT	6
-> +#define LTC2992_GPIO_BIT(x)	(LTC2992_GPIO_NR - (x) - 1)
-> +
->  struct ltc2992_state {
->  	struct i2c_client		*client;
-> +	struct gpio_chip		gc;
-> +	struct mutex			gpio_mutex; /* lock for gpio access */
-> +	const char			*gpio_names[LTC2992_GPIO_NR];
->  	struct regmap			*regmap;
->  	u32				r_sense_uohm[2];
->  };
-> @@ -111,6 +125,8 @@ struct ltc2992_gpio_regs {
->  	u8	alarm;
->  	u8	min_alarm_msk;
->  	u8	max_alarm_msk;
-> +	u8	ctrl;
-> +	u8	ctrl_bit;
->  };
->  
->  static const struct ltc2992_gpio_regs ltc2992_gpio_addr_map[] = {
-> @@ -123,6 +139,8 @@ static const struct ltc2992_gpio_regs ltc2992_gpio_addr_map[] = {
->  		.alarm = LTC2992_FAULT1,
->  		.min_alarm_msk = LTC2992_GPIO1_FAULT_MSK(0),
->  		.max_alarm_msk = LTC2992_GPIO1_FAULT_MSK(1),
-> +		.ctrl = LTC2992_GPIO_IO_CTRL,
-> +		.ctrl_bit = LTC2992_GPIO1_BIT,
->  	},
->  	{
->  		.data = LTC2992_G2,
-> @@ -133,6 +151,8 @@ static const struct ltc2992_gpio_regs ltc2992_gpio_addr_map[] = {
->  		.alarm = LTC2992_FAULT2,
->  		.min_alarm_msk = LTC2992_GPIO2_FAULT_MSK(0),
->  		.max_alarm_msk = LTC2992_GPIO2_FAULT_MSK(1),
-> +		.ctrl = LTC2992_GPIO_IO_CTRL,
-> +		.ctrl_bit = LTC2992_GPIO2_BIT,
->  	},
->  	{
->  		.data = LTC2992_G3,
-> @@ -143,6 +163,8 @@ static const struct ltc2992_gpio_regs ltc2992_gpio_addr_map[] = {
->  		.alarm = LTC2992_FAULT3,
->  		.min_alarm_msk = LTC2992_GPIO3_FAULT_MSK(0),
->  		.max_alarm_msk = LTC2992_GPIO3_FAULT_MSK(1),
-> +		.ctrl = LTC2992_GPIO_IO_CTRL,
-> +		.ctrl_bit = LTC2992_GPIO3_BIT,
->  	},
->  	{
->  		.data = LTC2992_G4,
-> @@ -153,14 +175,20 @@ static const struct ltc2992_gpio_regs ltc2992_gpio_addr_map[] = {
->  		.alarm = LTC2992_FAULT3,
->  		.min_alarm_msk = LTC2992_GPIO4_FAULT_MSK(0),
->  		.max_alarm_msk = LTC2992_GPIO4_FAULT_MSK(1),
-> +		.ctrl = LTC2992_GPIO_CTRL,
-> +		.ctrl_bit = LTC2992_GPIO4_BIT,
->  	},
->  };
->  
-> +static const char *ltc2992_gpio_names[LTC2992_GPIO_NR] = {
-> +	"GPIO1", "GPIO2", "GPIO3", "GPIO4",
-> +};
-> +
->  static int ltc2992_read_reg(struct ltc2992_state *st, u8 addr, const u8 reg_len)
->  {
->  	u8 regvals[4];
-> -	int ret;
->  	int val;
-> +	int ret;
->  	int i;
->  
->  	ret = regmap_bulk_read(st->regmap, addr, regvals, reg_len);
-> @@ -185,6 +213,132 @@ static int ltc2992_write_reg(struct ltc2992_state *st, u8 addr, const u8 reg_len
->  	return regmap_bulk_write(st->regmap, addr, regvals, reg_len);
->  }
->  
-> +static int ltc2992_gpio_get(struct gpio_chip *chip, unsigned int offset)
-> +{
-> +	struct ltc2992_state *st = gpiochip_get_data(chip);
-> +	unsigned long gpio_status;
-> +	int reg;
-> +
-> +	mutex_lock(&st->gpio_mutex);
-> +	reg = ltc2992_read_reg(st, LTC2992_GPIO_STATUS, 1);
-> +	mutex_unlock(&st->gpio_mutex);
-> +
-> +	if (reg < 0)
-> +		return reg;
-> +
-> +	gpio_status = reg;
-> +
-> +	return !test_bit(LTC2992_GPIO_BIT(offset), &gpio_status);
-> +}
-> +
-> +static int ltc2992_gpio_get_multiple(struct gpio_chip *chip, unsigned long *mask,
-> +				     unsigned long *bits)
-> +{
-> +	struct ltc2992_state *st = gpiochip_get_data(chip);
-> +	unsigned long gpio_status;
-> +	unsigned int gpio_nr;
-> +	int reg;
-> +
-> +	mutex_lock(&st->gpio_mutex);
-> +	reg = ltc2992_read_reg(st, LTC2992_GPIO_STATUS, 1);
-> +	mutex_unlock(&st->gpio_mutex);
-> +
-> +	if (reg < 0)
-> +		return reg;
-> +
-> +	gpio_status = reg;
-> +
-> +	gpio_nr = 0;
-> +	for_each_set_bit_from(gpio_nr, mask, LTC2992_GPIO_NR) {
-> +		if (test_bit(LTC2992_GPIO_BIT(gpio_nr), &gpio_status))
-> +			set_bit(gpio_nr, bits);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void ltc2992_gpio_set(struct gpio_chip *chip, unsigned int offset, int value)
-> +{
-> +	struct ltc2992_state *st = gpiochip_get_data(chip);
-> +	unsigned long gpio_ctrl;
-> +	int reg;
-> +
-> +	mutex_lock(&st->gpio_mutex);
-> +	reg = ltc2992_read_reg(st, ltc2992_gpio_addr_map[offset].ctrl, 1);
-> +	if (reg < 0) {
-> +		mutex_unlock(&st->gpio_mutex);
-> +		return;
-> +	}
-> +
-> +	gpio_ctrl = reg;
-> +	assign_bit(ltc2992_gpio_addr_map[offset].ctrl_bit, &gpio_ctrl, value);
-> +
-> +	ltc2992_write_reg(st, ltc2992_gpio_addr_map[offset].ctrl, 1, gpio_ctrl);
-> +	mutex_unlock(&st->gpio_mutex);
-> +}
-> +
-> +static void ltc2992_gpio_set_multiple(struct gpio_chip *chip, unsigned long *mask,
-> +				      unsigned long *bits)
-> +{
-> +	struct ltc2992_state *st = gpiochip_get_data(chip);
-> +	unsigned long gpio_ctrl_io = 0;
-> +	unsigned long gpio_ctrl = 0;
-> +	unsigned int gpio_nr;
-> +
-> +	for_each_set_bit(gpio_nr, mask, LTC2992_GPIO_NR) {
-> +		if (gpio_nr < 3)
-> +			assign_bit(ltc2992_gpio_addr_map[gpio_nr].ctrl_bit, &gpio_ctrl_io, true);
-> +
-> +		if (gpio_nr == 3)
-> +			assign_bit(ltc2992_gpio_addr_map[gpio_nr].ctrl_bit, &gpio_ctrl, true);
-> +	}
-> +
-> +	mutex_lock(&st->gpio_mutex);
-> +	ltc2992_write_reg(st, LTC2992_GPIO_IO_CTRL, 1, gpio_ctrl_io);
-> +	ltc2992_write_reg(st, LTC2992_GPIO_CTRL, 1, gpio_ctrl);
-> +	mutex_unlock(&st->gpio_mutex);
-> +}
-> +
-> +static int ltc2992_config_gpio(struct ltc2992_state *st)
-> +{
-> +	const char *name = dev_name(&st->client->dev);
-> +	char *gpio_name;
-> +	int ret;
-> +	int i;
-> +
-> +	ret = ltc2992_write_reg(st, LTC2992_GPIO_IO_CTRL, 1, 0);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	mutex_init(&st->gpio_mutex);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(st->gpio_names); i++) {
-> +		gpio_name = devm_kasprintf(&st->client->dev, GFP_KERNEL, "ltc2992-%x-%s",
-> +					   st->client->addr, ltc2992_gpio_names[i]);
-> +		if (!gpio_name)
-> +			return -ENOMEM;
-> +
-> +		st->gpio_names[i] = gpio_name;
-> +	}
-> +
-> +	st->gc.label = name;
-> +	st->gc.parent = &st->client->dev;
-> +	st->gc.owner = THIS_MODULE;
-> +	st->gc.base = -1;
-> +	st->gc.names = st->gpio_names;
-> +	st->gc.ngpio = ARRAY_SIZE(st->gpio_names);
-> +	st->gc.get = ltc2992_gpio_get;
-> +	st->gc.get_multiple = ltc2992_gpio_get_multiple;
-> +	st->gc.set = ltc2992_gpio_set;
-> +	st->gc.set_multiple = ltc2992_gpio_set_multiple;
-> +
-> +	ret = devm_gpiochip_add_data(&st->client->dev, &st->gc, st);
-> +	if (ret)
-> +		dev_err(&st->client->dev, "GPIO registering failed (%d)\n", ret);
-> +
-> +	return ret;
-> +}
-> +
->  static umode_t ltc2992_is_visible(const void *data, enum hwmon_sensor_types type, u32 attr,
->  				  int channel)
->  {
-> @@ -779,6 +933,10 @@ static int ltc2992_i2c_probe(struct i2c_client *client, const struct i2c_device_
->  	if (ret < 0)
->  		return ret;
->  
-> +	ret = ltc2992_config_gpio(st);
-> +	if (ret < 0)
-> +		return ret;
-> +
->  	hwmon_dev = devm_hwmon_device_register_with_info(&client->dev, client->name, st,
->  							 &ltc2992_chip_info, NULL);
->  
-> -- 
-> 2.20.1
-> 
+> > +{
+> > +	struct intel_hid_priv *priv =3D dev_get_drvdata(&device->dev);
+> > +	acpi_handle handle =3D ACPI_HANDLE(&device->dev);
+> > +	unsigned long long vgbs;
+> > +	int m;
+> > +
+> > +	if (!intel_hid_evaluate_method(handle, INTEL_HID_DSM_VGBS_FN,=20
+&vgbs))
+> > +		return;
+> > +
+> > +	m =3D !(vgbs & TABLET_MODE_FLAG);
+> > +	input_report_switch(priv->switches, SW_TABLET_MODE, m);
+> > +	input_sync(priv->switches);
+> > +}
+> > +
+> >=20
+> >  static void notify_handler(acpi_handle handle, u32 event, void *contex=
+t)
+> >  {
+> > =20
+> >  	struct platform_device *device =3D context;
+> >=20
+> > @@ -363,6 +415,13 @@ static void notify_handler(acpi_handle handle, u32
+> > event, void *context)>=20
+> >  		if (event =3D=3D 0xce)
+> >  	=09
+> >  			goto wakeup;
+> >=20
+> > +		/*
+> > +		 * Switch events will wake the device and report the=20
+new switch
+> > +		 * position to the input subsystem.
+> > +		 */
+> > +		if (priv->switches && (event =3D=3D 0xcc || event =3D=3D 0xcd))
+> > +			goto wakeup;
+> > +
+> >=20
+> >  		/* Wake up on 5-button array events only. */
+> >  		if (event =3D=3D 0xc0 || !priv->array)
+> >  	=09
+> >  			return;
+> >=20
+> > @@ -374,6 +433,21 @@ static void notify_handler(acpi_handle handle, u32
+> > event, void *context)>=20
+> >  wakeup:
+> >  		pm_wakeup_hard_event(&device->dev);
+> >=20
+> > +
+> > +		if (priv->switches) {
+> > +			if (event =3D=3D 0xcc) {
+> > +				input_report_switch(priv-
+>switches, SW_TABLET_MODE, 1);
+> > +				input_sync(priv->switches);
+> > +				return;
+> > +			}
+> > +
+> > +			if (event =3D=3D 0xcd) {
+> > +				input_report_switch(priv-
+>switches, SW_TABLET_MODE, 0);
+> > +				input_sync(priv->switches);
+> > +				return;
+> > +			}
+> > +		}
+> > +
+> >=20
+> >  		return;
+> >  =09
+> >  	}
+> >=20
+> > @@ -398,6 +472,20 @@ static void notify_handler(acpi_handle handle, u32
+> > event, void *context)>=20
+> >  		}
+> >  =09
+> >  	}
+> >=20
+> > +	if (priv->switches) {
+> > +		if (event =3D=3D 0xcc) {
+> > +			input_report_switch(priv->switches,=20
+SW_TABLET_MODE, 1);
+> > +			input_sync(priv->switches);
+> > +			return;
+> > +		}
+> > +
+> > +		if (event =3D=3D 0xcd) {
+> > +			input_report_switch(priv->switches,=20
+SW_TABLET_MODE, 0);
+> > +			input_sync(priv->switches);
+> > +			return;
+> > +		}
+> > +	}
+>=20
+> Wouldn't be better to create a new function `bool
+> report_tablet_mode_event()` which would basically contain the above `if` =
+or
+> better, a `switch`, and then you could use it here and in the wake-up path
+> like the following:
+>=20
+> ```
+> if (report_tablet_mode_event(priv->switches, event))
+>   return;
+> ```
+> (or similarly)
+>=20
+Looks more clean, I will do.
+
+> > +
+> >=20
+> >  	/* 0xC0 is for HID events, other values are for 5 button array */
+> >  	if (event !=3D 0xc0) {
+> >  =09
+> >  		if (!priv->array ||
+> >=20
+> > @@ -485,6 +573,16 @@ static int intel_hid_probe(struct platform_device
+> > *device)>=20
+> >  			pr_err("Failed to setup Intel 5 button array=20
+hotkeys\n");
+> >  =09
+> >  	}
+> >=20
+> > +	/* Setup switches for devices that we know VGBS return correctly=20
+*/
+> > +	if (dmi_check_system(dmi_vgbs_allow_list)) {
+> > +		dev_info(&device->dev, "platform supports switches\n");
+> > +		err =3D intel_hid_switches_setup(device);
+> > +		if (err)
+> > +			pr_err("Failed to setup Intel HID=20
+switches\n");
+> > +		else
+> > +			detect_tablet_mode(device);
+> > +	}
+> > +
+> >=20
+> >  	status =3D acpi_install_notify_handler(handle,
+> >  =09
+> >  					    =20
+ACPI_DEVICE_NOTIFY,
+> >  					     notify_handler,
+> >=20
+> > --
+> > 2.28.0
+>=20
+> Regards,
+> Barnab=C3=A1s P=C5=91cze
+
+Thank you for the review
+
+Regards
+Elia
+
+
+
