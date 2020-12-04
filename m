@@ -2,175 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333012CF02E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E822CF03A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730386AbgLDPAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:00:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730365AbgLDPAD (ORCPT
+        id S2388354AbgLDPBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:01:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35798 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730406AbgLDPBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:00:03 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36963C061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:59:23 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id v14so8031898lfo.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:59:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R2hhNqWpvaPMY/nqPJUBMjgnPkxaupCsa/eQGp85mS8=;
-        b=VgARPNHHj1qxP+keObG8oNQflyR2GUBeTJ/umthUA2+xie0PrmpbgpNUCLWnbFmWod
-         ZeFtgQ33xNW5kthxrMpv00ZeNaGU+i7+b7JbvgncMNv29al3IFEDVtSjAb/Ak+ZG3QEA
-         nSNhf9PC5eVy0fRzs2os2QT3WXWPcnwjgnjE9jKCddX+DBmzayv+U8Dn2vJg8IpO681z
-         UK32uNHqfY3lfiNWNFBrfF/yjmmujRs16/A2KCxeXX41gcJf1MYz5FFTXoZ2urwfSN8R
-         +m6ZUxS+cLRKgjI3VIVOzxTNOEwzVeotu9alNoxiWVYBtdwcH0KKhwfDCjuVD1Ml5ed7
-         UrXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R2hhNqWpvaPMY/nqPJUBMjgnPkxaupCsa/eQGp85mS8=;
-        b=F+171/cLZoKYC6THjQRw8gHCpuW/X7wPBIkEF/rszXgVID74P8wyTYgBSdRq2XxXbp
-         RPXFJlwCwq5RFrACyoXisiW2IjxXg+9q0EMoc2+GKvd7PdTt+KYNmAwR9GgLfzd8URTR
-         QGNq1fGZhV0ho9eJE9rWOF37bIVlAof6ACr3LZ+nAgSvs5fiFc9wttMH73lrlrQe1dqx
-         fhuImWbADGwvTJVpjUHDRXNZKuKG7Dhf2cxotpSEEy/kmQTq9IUQxSK7pQvqXg32LP9Z
-         HPemzgnbGMq2GCzjr8nDMWYMXay4VRL8dqyT1JNrMd3i3+925UJCXZrb+H2xK5G3wWxP
-         lQxQ==
-X-Gm-Message-State: AOAM530GfqwEO4YNTc+UTzvnaGnoXDTvHvhT5ogYIgAdXDZIhR433G6a
-        tU7IbznMGsn25RXyErr8/MngKPy8rpzhAifwhSqpLw==
-X-Google-Smtp-Source: ABdhPJyO7lG98b9pDqSTa4+PB459L3s+ir5d2EbC0zs7JaYEg4f3XRGmvXrVAjBCG02ONhQflstKYOq2JZ4/5cYE5ss=
-X-Received: by 2002:a19:8212:: with SMTP id e18mr3692064lfd.361.1607093961689;
- Fri, 04 Dec 2020 06:59:21 -0800 (PST)
+        Fri, 4 Dec 2020 10:01:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607093983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OTBOnyE1n+B2er0y+QuZYiU0VZBSiLUvAG5osfhcmQc=;
+        b=gPWG0q4t20Ry4+O/ui8q22rrjqbd99D4pGBAxMWTThYGZo6S51VSvDbd9+UwRrSyzYyVCh
+        10zuCQbXp9rIojvimcRxEyWvqGuxFEQ52/c3IjIs3FQ88ixBQpMtDgN7CO92UFo/J1ih35
+        XoHx06vb+U3Q/VIK5s0O9Amtxo/TWzQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-52-PzPPozy8PUqmAMwzJKEjCw-1; Fri, 04 Dec 2020 09:59:41 -0500
+X-MC-Unique: PzPPozy8PUqmAMwzJKEjCw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2FE30107ACE3;
+        Fri,  4 Dec 2020 14:59:39 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B307A18AD4;
+        Fri,  4 Dec 2020 14:59:36 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com>
+References: <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com> <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
+To:     Chuck Lever <chuck.lever@oracle.com>,
+        Bruce Fields <bfields@fieldses.org>
+Cc:     dhowells@redhat.com, CIFS <linux-cifs@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-afs@lists.infradead.org
+Subject: Why the auxiliary cipher in gss_krb5_crypto.c?
 MIME-Version: 1.0
-References: <20201204095539.31705-1-andreas@kemnade.info>
-In-Reply-To: <20201204095539.31705-1-andreas@kemnade.info>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 4 Dec 2020 15:58:45 +0100
-Message-ID: <CAPDyKFrQchk05cmWB9c4wepkquwodd-hHPJi8Lb46aAoSVReNQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: OMAP2+: omap_device: fix idling of devices during probe
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <118875.1607093975.1@warthog.procyon.org.uk>
+Date:   Fri, 04 Dec 2020 14:59:35 +0000
+Message-ID: <118876.1607093975@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 at 10:55, Andreas Kemnade <andreas@kemnade.info> wrote:
->
-> On the GTA04A5 od->_driver_status was not set to BUS_NOTIFY_BIND_DRIVER
-> during probe of the second mmc used for wifi. Therefore
-> omap_device_late_idle idled the device during probing causing oopses when
-> accessing the registers.
->
-> It was not set because od->_state was set to OMAP_DEVICE_STATE_IDLE
-> in the notifier callback. Therefore set od->_driver_status also in that
-> case.
->
-> This came apparent after
-> commit 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4")
-> causing this oops:
->
-> [    3.179534] omap_hsmmc 480b4000.mmc: omap_device_late_idle: enabled but no driver.  Idling
-> [    3.265594] 8<--- cut here ---
-> [    3.268707] Unhandled fault: external abort on non-linefetch (0x1028) at 0xfa0b402c
-> [    3.276397] pgd = (ptrval)
-> [    3.279144] [fa0b402c] *pgd=48011452(bad)
-> [    3.283203] Internal error: : 1028 [#1] SMP ARM
-> [    3.287750] Modules linked in:
-> [    3.290832] CPU: 0 PID: 7 Comm: kworker/u2:0 Not tainted 5.10.0-rc6 #3
-> [    3.297393] Hardware name: Generic OMAP36xx (Flattened Device Tree)
-> [    3.303710] Workqueue: events_unbound async_run_entry_fn
-> [    3.309082] PC is at omap_hsmmc_set_bus_width+0x8/0x78
-> [    3.314239] LR is at omap_hsmmc_set_ios+0x11c/0x258
-> [    3.319152] pc : [<c079787c>]    lr : [<c07996bc>]    psr: 20000013
-> [    3.325469] sp : c10f9e00  ip : c175c800  fp : 00000066
-> [    3.330718] r10: c175cb80  r9 : fa0b4000  r8 : 00000000
-> [    3.335968] r7 : c123e010  r6 : c175ca58  r5 : c175cb80  r4 : c175c800
-> [    3.342529] r3 : 00000001  r2 : 58ad940c  r1 : fa0b4000  r0 : c175cb80
-> [    3.349090] Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-> [    3.356262] Control: 10c5387d  Table: 80004019  DAC: 00000051
-> [    3.362030] Process kworker/u2:0 (pid: 7, stack limit = 0x(ptrval))
-> [    3.368347] Stack: (0xc10f9e00 to 0xc10fa000)
-> [    3.372741] 9e00: c175c800 00000007 c123e000 c123e010 00000000 c077b2b0 c175c800 00000000
-> [    3.380950] 9e20: c123e000 c077c14c c175c800 c077d284 c175c800 c175c800 c123e000 c0799190
-> [    3.389190] 9e40: 00000000 c1755040 c175cb80 00000000 c123fd68 58ad940c 00000001 c123e010
-> [    3.397430] 9e60: 00000000 c0edaec8 00000000 00000000 c0edaec8 00000006 ffffe000 c0666728
-> [    3.405639] 9e80: c123e010 c0f38c28 c0f38c30 00000000 00000000 c066457c c123e010 c0edaec8
-> [    3.413879] 9ea0: c06649bc c0e051c8 00000000 00000000 c0efa4a0 c06648b8 00000000 c10f9ef4
-> [    3.422119] 9ec0: c06649bc c066298c 00000000 c1039e6c c1653738 58ad940c c123e010 c123e010
-> [    3.430328] 9ee0: c0e051c8 c123e054 c100f000 c0663e60 c0e03d00 c123e010 00010101 58ad940c
-> [    3.438568] 9f00: c12642d0 c0f02018 c12642c0 c015da48 c12642d0 c10bbf00 c1009400 c100f000
-> [    3.446807] 9f20: 00000000 c0153b74 c10bc800 c1009400 00000088 c10bbf00 c10bbf14 c1009400
-> [    3.455017] 9f40: 00000088 c1009418 c0e03d00 c1009400 ffffe000 c0153eec ffffe000 00000000
-> [    3.463256] 9f60: c10bbf00 00000000 c10b1ac0 c10b1c40 c10f8000 c0153ec0 c10bbf00 c10ebe94
-> [    3.471466] 9f80: c10b1ae4 c015a9ac 00000001 c10b1c40 c015a87c 00000000 00000000 00000000
-> [    3.479705] 9fa0: 00000000 00000000 00000000 c0100168 00000000 00000000 00000000 00000000
-> [    3.487945] 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> [    3.496154] 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
-> [    3.504394] [<c079787c>] (omap_hsmmc_set_bus_width) from [<c07996bc>] (omap_hsmmc_set_ios+0x11c/0x258)
-> [    3.513763] [<c07996bc>] (omap_hsmmc_set_ios) from [<c077b2b0>] (mmc_power_up.part.8+0x3c/0xd0)
-> [    3.522521] [<c077b2b0>] (mmc_power_up.part.8) from [<c077c14c>] (mmc_start_host+0x88/0x9c)
-> [    3.530944] [<c077c14c>] (mmc_start_host) from [<c077d284>] (mmc_add_host+0x58/0x84)
-> [    3.538726] [<c077d284>] (mmc_add_host) from [<c0799190>] (omap_hsmmc_probe+0x5fc/0x8c0)
-> [    3.546874] [<c0799190>] (omap_hsmmc_probe) from [<c0666728>] (platform_drv_probe+0x48/0x98)
-> [    3.555358] [<c0666728>] (platform_drv_probe) from [<c066457c>] (really_probe+0x1dc/0x3b4)
-> [    3.563690] [<c066457c>] (really_probe) from [<c06648b8>] (driver_probe_device+0x58/0xb4)
-> [    3.571929] [<c06648b8>] (driver_probe_device) from [<c066298c>] (bus_for_each_drv+0x7c/0xc4)
-> [    3.580505] [<c066298c>] (bus_for_each_drv) from [<c0663e60>] (__device_attach_async_helper+0xa4/0xd8)
-> [    3.589874] [<c0663e60>] (__device_attach_async_helper) from [<c015da48>] (async_run_entry_fn+0x3c/0x1)
-> [    3.599487] [<c015da48>] (async_run_entry_fn) from [<c0153b74>] (process_one_work+0x228/0x574)
-> [    3.608154] [<c0153b74>] (process_one_work) from [<c0153eec>] (worker_thread+0x2c/0x5d0)
-> [    3.616302] [<c0153eec>] (worker_thread) from [<c015a9ac>] (kthread+0x130/0x144)
-> [    3.623748] [<c015a9ac>] (kthread) from [<c0100168>] (ret_from_fork+0x14/0x2c)
->
-> Fixes: 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4")
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+Hi Chuck, Bruce,
 
-Sounds like you found a quite nasty bug, which I guess has existed all
-time - but was triggered easily with the async probe thingy, right?
+Why is gss_krb5_crypto.c using an auxiliary cipher?  For reference, the
+gss_krb5_aes_encrypt() code looks like the attached.
 
-In any case, thanks for helping out and fixing the regression!
+From what I can tell, in AES mode, the difference between the main cipher and
+the auxiliary cipher is that the latter is "cbc(aes)" whereas the former is
+"cts(cbc(aes))" - but they have the same key.
 
-FWIW:
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+Reading up on CTS, I'm guessing the reason it's like this is that CTS is the
+same as the non-CTS, except for the last two blocks, but the non-CTS one is
+more efficient.
 
-Kind regards
-Uffe
+David
+---
+	nbytes = buf->len - offset - GSS_KRB5_TOK_HDR_LEN;
+	nblocks = (nbytes + blocksize - 1) / blocksize;
+	cbcbytes = 0;
+	if (nblocks > 2)
+		cbcbytes = (nblocks - 2) * blocksize;
 
-> ---
->  arch/arm/mach-omap2/omap_device.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/arm/mach-omap2/omap_device.c b/arch/arm/mach-omap2/omap_device.c
-> index fc7bb2ca1672..13adf88d472b 100644
-> --- a/arch/arm/mach-omap2/omap_device.c
-> +++ b/arch/arm/mach-omap2/omap_device.c
-> @@ -230,10 +230,12 @@ static int _omap_device_notifier_call(struct notifier_block *nb,
->                 break;
->         case BUS_NOTIFY_BIND_DRIVER:
->                 od = to_omap_device(pdev);
-> -               if (od && (od->_state == OMAP_DEVICE_STATE_ENABLED) &&
-> -                   pm_runtime_status_suspended(dev)) {
-> +               if (od) {
->                         od->_driver_status = BUS_NOTIFY_BIND_DRIVER;
-> -                       pm_runtime_set_active(dev);
-> +                       if ((od->_state == OMAP_DEVICE_STATE_ENABLED) &&
-> +                           pm_runtime_status_suspended(dev)) {
-> +                               pm_runtime_set_active(dev);
-> +                       }
->                 }
->                 break;
->         case BUS_NOTIFY_ADD_DEVICE:
-> --
-> 2.20.1
->
+	memset(desc.iv, 0, sizeof(desc.iv));
+
+	if (cbcbytes) {
+		SYNC_SKCIPHER_REQUEST_ON_STACK(req, aux_cipher);
+
+		desc.pos = offset + GSS_KRB5_TOK_HDR_LEN;
+		desc.fragno = 0;
+		desc.fraglen = 0;
+		desc.pages = pages;
+		desc.outbuf = buf;
+		desc.req = req;
+
+		skcipher_request_set_sync_tfm(req, aux_cipher);
+		skcipher_request_set_callback(req, 0, NULL, NULL);
+
+		sg_init_table(desc.infrags, 4);
+		sg_init_table(desc.outfrags, 4);
+
+		err = xdr_process_buf(buf, offset + GSS_KRB5_TOK_HDR_LEN,
+				      cbcbytes, encryptor, &desc);
+		skcipher_request_zero(req);
+		if (err)
+			goto out_err;
+	}
+
+	/* Make sure IV carries forward from any CBC results. */
+	err = gss_krb5_cts_crypt(cipher, buf,
+				 offset + GSS_KRB5_TOK_HDR_LEN + cbcbytes,
+				 desc.iv, pages, 1);
+	if (err) {
+		err = GSS_S_FAILURE;
+		goto out_err;
+	}
+
