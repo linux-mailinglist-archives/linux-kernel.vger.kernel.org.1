@@ -2,136 +2,365 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A095D2CEE97
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC84D2CEE9F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387533AbgLDNF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 08:05:57 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60230 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726432AbgLDNF4 (ORCPT
+        id S1729005AbgLDNHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 08:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727933AbgLDNHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 08:05:56 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4D3EZx056402;
-        Fri, 4 Dec 2020 08:05:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=jctQgMWgSlsHPOjsDmaUeXfSF+9Z30/WArFoiAk/M3o=;
- b=GrZPzRTenWKY3N4pDjkeB3jRv/wXCs4bTLDjRFU9/A0SD0vPZNyo2GJKCHkiF1oUTMen
- mMZsHF8jM7yqoh0RymQRoA41x5zkS/K4foDqbCk9HEuME9ClGd/hcoMYcF30ICEfm3ej
- hM7YKz0ek1ZGoZqMZdQWjyOgl82bXTsXlCSIvea538e6kdjuIWg9VtO8C5oRAtzdHh32
- Us391JD8M9SNhmOVsBKMnWRaHJ5mKiE4/nHbqUCfGwEWFxSlnD3ANU5kDG65R2PReUxy
- Rz0P+FCH0S66XgfCGJW6MOg3oWgxs+IdA0j9YCm15JPCrJ5E1nyx+QRzgebodFUufASZ 3g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 357m7hjj7b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 08:05:05 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B4D3d2Q058711;
-        Fri, 4 Dec 2020 08:05:05 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 357m7hjj4n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 08:05:05 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B4CmvoA000390;
-        Fri, 4 Dec 2020 13:05:02 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 354fpdd1m3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 13:05:02 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B4D50Av52298134
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 4 Dec 2020 13:05:00 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6547DA4054;
-        Fri,  4 Dec 2020 13:05:00 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 55E3BA4064;
-        Fri,  4 Dec 2020 13:04:58 +0000 (GMT)
-Received: from sig-9-65-202-27.ibm.com (unknown [9.65.202.27])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  4 Dec 2020 13:04:57 +0000 (GMT)
-Message-ID: <0eec775cf5c44f646defe33aec5f241a06844d3a.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 06/11] evm: Ignore INTEGRITY_NOLABEL if no HMAC key
- is loaded
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "mjg59@google.com" <mjg59@google.com>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
-Date:   Fri, 04 Dec 2020 08:04:57 -0500
-In-Reply-To: <3c628dc54804469597a72d03c33e8315@huawei.com>
-References: <20201111092302.1589-1-roberto.sassu@huawei.com>
-         <20201111092302.1589-7-roberto.sassu@huawei.com>
-         <b9f1a31e9b2dfb7a7167574a39652932263488e8.camel@linux.ibm.com>
-         <3c628dc54804469597a72d03c33e8315@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_04:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=3 malwarescore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040075
+        Fri, 4 Dec 2020 08:07:45 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A101C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 05:06:59 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id u18so7514291lfd.9
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 05:06:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1WPjmv54FTNqf7vO/idCcxqTa5h6NuxzDHhR2ohpt+E=;
+        b=WjMQos8L1SPBMbMjaRzDUzgBUMCrqDZnfzdlJ75RnsKMNLIMdK9W18giJVpgU7PXV4
+         SmBsNFGZGcnOAUuHw3kuOIsWjUNijLGbwoC5OCMt/OeUIQP/XApXhZs1TSFmf6fCTYTO
+         e1z3rRxXhiXz/3rc6isWXQeZarTOuGmbSffBd19Qoj3MjmasQAbO1EE1YyGrspw62qA8
+         tRbmEc4E+5qKvL12BMQ8rCIBaw+VCbg2MxpDpXdoBcizmEizYRXQNPqu188UmTvWjA/1
+         sP2VrCa4Dwg+0Q8/Sk8hbqbw6cn6+9RAi4CEC8cXZgqk/IR0qo1LqsHCyKPXc2kyPilN
+         gQCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1WPjmv54FTNqf7vO/idCcxqTa5h6NuxzDHhR2ohpt+E=;
+        b=TlwpxU5JMJuauVRCkr05Z0VGJ+m8PLAqkXVApy3TjTgRwp2IPlh1JLWGSFFVwOHEKH
+         PmIvR/YA0fp4PbzsvgjERnC7ePUJgsckfXmNCj/AtDm0IAoWLjDDQQfbFJ0gYWuWhSzy
+         66QFOkv6aAWex+zCrKmKI4GWeuqhBPpkXImHjcz7FcgIEGK5BSYgUGR68Sm+POfY4ArM
+         XLQkiSZS7irSK4IV0Mv8hWJwPnVyAOjnZXBhDcgCFKeczb/TMPeB8rXM7L8LQibBz0UE
+         gU9q4nhrQbusnBrIjbjSJPcq0jWSWHWvFadhMPuMSGB/6Cxn+ubnlVzYDruvyWmTfQNZ
+         GlRg==
+X-Gm-Message-State: AOAM530CMJtivsJ3qu/j/szXGiRQj4UB/ywnD8Jx5NyvmWRulM44LJxk
+        c0qIBcVve1uJNqiJIzyms5lNNQ==
+X-Google-Smtp-Source: ABdhPJy34aNXFTjDI++DYpKVWBBMTS+twYK8cUH7WAZP3EOjnpwONpJ6ZEXgfqBeTBLXTLrEGPN6Bw==
+X-Received: by 2002:ac2:442d:: with SMTP id w13mr3231369lfl.336.1607087217712;
+        Fri, 04 Dec 2020 05:06:57 -0800 (PST)
+Received: from localhost.bredbandsbolaget (c-92d7225c.014-348-6c756e10.bbcust.telenor.se. [92.34.215.146])
+        by smtp.gmail.com with ESMTPSA id u15sm1656836lfl.116.2020.12.04.05.06.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 05:06:57 -0800 (PST)
+From:   Linus Walleij <linus.walleij@linaro.org>
+To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        devicetree@vger.kernel.org
+Subject: [PATCH] mfd: db8500-prcmu: Add devicetree bindings
+Date:   Fri,  4 Dec 2020 14:06:55 +0100
+Message-Id: <20201204130655.1591181-1-linus.walleij@linaro.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-04 at 08:05 +0000, Roberto Sassu wrote:
-> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> > Sent: Thursday, December 3, 2020 9:43 PM
-> > Hi Roberto,
-> > 
-> > On Wed, 2020-11-11 at 10:22 +0100, Roberto Sassu wrote:
-> > > When a file is being created, LSMs can set the initial label with the
-> > > inode_init_security hook. If no HMAC key is loaded, the new file will have
-> > > LSM xattrs but not the HMAC.
-> > >
-> > > Unfortunately, EVM will deny any further metadata operation on new
-> > files,
-> > > as evm_protect_xattr() will always return the INTEGRITY_NOLABEL error.
-> > This
-> > > would limit the usability of EVM when only a public key is loaded, as
-> > > commands such as cp or tar with the option to preserve xattrs won't work.
-> > >
-> > > Ignoring this error won't be an issue if no HMAC key is loaded, as the
-> > > inode is locked until the post hook, and EVM won't calculate the HMAC on
-> > > metadata that wasn't previously verified. Thus this patch checks if an
-> > > HMAC key is loaded and if not, ignores INTEGRITY_NOLABEL.
-> > 
-> > I'm not sure what problem this patch is trying to solve.
-> > evm_protect_xattr() is only called by evm_inode_setxattr() and
-> > evm_inode_removexattr(), which first checks whether
-> > EVM_ALLOW_METADATA_WRITES is enabled.
-> 
-> The idea is to also support EVM verification when only a public key
-> is loaded. An advantage to do that is that for example we can prevent
-> accidental metadata changes when the signature is portable.
+This driver was merged in the early days of device tree
+on Arm in 2012 and somehow we failed to provide bindings
+for it. Fix it up with some YAML bindings.
 
-Right, there are a couple of  scenarios.  Let's be more specific as to
-which scenario this patch is addressing.
+Cc: devicetree@vger.kernel.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ .../bindings/mfd/stericsson,db8500-prcmu.yaml | 282 ++++++++++++++++++
+ 1 file changed, 282 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/stericsson,db8500-prcmu.yaml
 
-- a public key is loaded and EVM_ALLOW_METADATA_WRITES is enabled,
-- a public key is loaded and EVM_ALLOW_METADATA_WRITES is disabled,
-- an HMAC key is loaded
-
-For the first and last case, this patch shouldn't be necessary.  Only
-the second case, with EVM_ALLOW_METADATA_WRITES disabled, probably does
-not work.  I would claim that is working as designed.
-
-thanks,
-
-Mimi
+diff --git a/Documentation/devicetree/bindings/mfd/stericsson,db8500-prcmu.yaml b/Documentation/devicetree/bindings/mfd/stericsson,db8500-prcmu.yaml
+new file mode 100644
+index 000000000000..10cb7d40ebf2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/stericsson,db8500-prcmu.yaml
+@@ -0,0 +1,282 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mfd/stericsson,db8500-prcmu.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ST-Ericsson DB8500 PRCMU - Power Reset and Control Management Unit
++
++maintainers:
++  - Linus Walleij <linus.walleij@linaro.org>
++
++description:
++  The DB8500 Power Reset and Control Management Unit is an XP70 8-bit
++  microprocessor that is embedded in the always-on power domain of the
++  DB8500 SoCs to manage the low power states, powering up and down parts
++  of the silicon, and controlling reset of different IP blocks.
++
++properties:
++  $nodename:
++    pattern: '^prcmu@80157000$'
++
++  compatible:
++    description: The device is compatible both to the device-specific
++      compatible "stericsson,db8500-prcmu" and "syscon". The latter
++      compatible is needed for the device to be exposed as a system
++      controller so that arbitrary registers can be access by
++      different operating system components.
++    items:
++      - const: stericsson,db8500-prcmu
++      - const: syscon
++
++  reg:
++    items:
++      - description: Main PRCMU register area
++      - description: PRCMU TCPM register area
++      - description: PRCMU TCDM register area
++
++  reg-names:
++    items:
++      - const: prcmu
++      - const: prcmu-tcpm
++      - const: prcmu-tcdm
++
++  interrupts:
++    maxItems: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 1
++
++  ranges: true
++
++  interrupt-controller: true
++
++  '#interrupt-cells':
++    const: 2
++
++  db8500-prcmu-regulators:
++    description: Node describing the DB8500 regulators. These are mainly
++      power rails inside the silicon but some of those are also routed
++      out to external pins.
++    type: object
++
++    properties:
++      compatible:
++        const: stericsson,db8500-prcmu-regulator
++
++      db8500_vape:
++        description: The voltage for the application processor, the
++          main voltage domain for the chip.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_varm:
++        description: The voltage for the ARM Cortex A-9 CPU.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_vmodem:
++        description: The voltage for the modem subsystem.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_vpll:
++        description: The voltage for the phase locked loop clocks.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_vsmps1:
++        description: Also known as VIO12, is a step-down voltage regulator
++          for 1.2V I/O. SMPS means System Management Power Source.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_vsmps2:
++        description: Also known as VIO18, is a step-down voltage regulator
++          for 1.8V I/O. SMPS means System Management Power Source.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_vsmps3:
++        description: This is a step-down voltage regulator
++          for 0.87 thru 1.875V I/O. SMPS means System Management Power Source.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_vrf1:
++        description: RF transciever voltage regulator.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_sva_mmdsp:
++        description: Smart Video Accelerator (SVA) multimedia DSP (MMDSP)
++          voltage regulator. This is the voltage for the accelerator DSP
++          for video encoding and decoding.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_sva_mmdsp_ret:
++        description: Smart Video Accelerator (SVA) multimedia DSP (MMDSP)
++          voltage regulator for retention mode.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_sva_pipe:
++        description: Smart Video Accelerator (SVA) multimedia DSP (MMDSP)
++          voltage regulator for the data pipe.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_sia_mmdsp:
++        description: Smart Image Accelerator (SIA) multimedia DSP (MMDSP)
++          voltage regulator. This is the voltage for the accelerator DSP
++          for image encoding and decoding.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_sia_mmdsp_ret:
++        description: Smart Image Accelerator (SIA) multimedia DSP (MMDSP)
++          voltage regulator for retention mode.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_sia_pipe:
++        description: Smart Image Accelerator (SIA) multimedia DSP (MMDSP)
++          voltage regulator for the data pipe.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_sga:
++        description: Smart Graphics Accelerator (SGA) voltage regulator.
++          This is in effect controlling the power to the MALI400 3D
++          accelerator block.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_b2r2_mcde:
++        description: Blit Blend Rotate and Rescale (B2R2), and Multi-Channel
++          Display Engine (MCDE) voltage regulator. These are two graphics
++          blocks.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_esram12:
++        description: Embedded Static RAM (ESRAM) 1 and 2 voltage regulator.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_esram12_ret:
++        description: Embedded Static RAM (ESRAM) 1 and 2 voltage regulator for
++          retention mode.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_esram34:
++        description: Embedded Static RAM (ESRAM) 3 and 4 voltage regulator.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++      db8500_esram34_ret:
++        description: Embedded Static RAM (ESRAM) 3 and 4 voltage regulator for
++          retention mode.
++        type: object
++        $ref: ../regulator/regulator.yaml#
++
++    required:
++      - compatible
++      - db8500_vape
++      - db8500_varm
++      - db8500_vmodem
++      - db8500_vpll
++      - db8500_vsmps1
++      - db8500_vsmps2
++      - db8500_vsmps3
++      - db8500_vrf1
++      - db8500_sva_mmdsp
++      - db8500_sva_mmdsp_ret
++      - db8500_sva_pipe
++      - db8500_sia_mmdsp
++      - db8500_sia_mmdsp_ret
++      - db8500_sia_pipe
++      - db8500_sga
++      - db8500_b2r2_mcde
++      - db8500_esram12
++      - db8500_esram12_ret
++      - db8500_esram34
++      - db8500_esram34_ret
++
++    additionalProperties: false
++
++  thermal@801573c0:
++    description: Node describing the DB8500 thermal control functions.
++      This binds to an operating system driver that monitors the
++      temperature of the SoC.
++    type: object
++
++    properties:
++      compatible:
++        const: stericsson,db8500-thermal
++
++      reg:
++        maxItems: 1
++
++      interrupts:
++        items:
++          - description: Hotmon low interrupt (falling temperature)
++          - description: Hotmon high interrupt (rising temperature)
++
++      interrupt-names:
++        items:
++          - const: IRQ_HOTMON_LOW
++          - const: IRQ_HOTMON_HIGH
++
++      '#thermal-sensor-cells':
++        const: 0
++
++    additionalProperties: false
++
++  prcmu-timer-4@80157450:
++    description: Node describing the externally visible timer 4 in the
++      PRCMU block. This timer is interesting to the operating system
++      since even thought it has a very low resolution (32768 Hz) it is
++      always on, and thus provides a consistent monotonic timeline for
++      the system.
++    type: object
++
++    properties:
++      compatible:
++        const: stericsson,db8500-prcmu-timer-4
++
++      reg:
++        maxItems: 1
++
++    additionalProperties: false
++
++patternProperties:
++  "^ab850[05]$":
++    description: Node describing the Analog Baseband 8500 mixed-signals
++      ASIC AB8500 and subcomponents. The AB8500 is accessed through the
++      PRCMU and hence it appears here. This component has a separate
++      set of devicetree bindings. The AB8505 is a newer version of the
++      same ASIC.
++    type: object
++
++required:
++  - compatible
++  - reg
++  - '#address-cells'
++  - '#size-cells'
++  - ranges
++  - interrupt-controller
++  - '#interrupt-cells'
++  - db8500-prcmu-regulators
++  - thermal@801573c0
++  - prcmu-timer-4@80157450
++
++dependencies:
++  interrupt-controller: [ interrupts ]
++
++additionalProperties: false
+-- 
+2.26.2
 
