@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283532CE8BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7452CE8BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728640AbgLDHn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 02:43:28 -0500
-Received: from mail-eopbgr00088.outbound.protection.outlook.com ([40.107.0.88]:62532
+        id S1728585AbgLDHnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 02:43:14 -0500
+Received: from mail-eopbgr00078.outbound.protection.outlook.com ([40.107.0.78]:33294
         "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727007AbgLDHn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 02:43:27 -0500
+        id S1727007AbgLDHnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 02:43:13 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nBIL0Cubgkm8+dmxOMubxLQdy3CQhIJF9AMLxEiZHgJKRWxpzVfrghNk3fEGJkqRX0jW6iBiAn0tgfFcLDDhay4E1qipgWIWCB84XGIVL4C/1BAO4VMFySAkryfEz6P3TH/V+rXEcj6AeN0jlAzegvTEA2A8rJKtPKPToCG+uKPE+JFdUwI6rouzdQA03jMm38yMqDqRmShTd/umQFnqJLyQoZTXsgd9x+/0kcryR33shKco2SrkH9bhr8WbMuDQJ5UKntk/ZJYon+rD0CEyNOhPenjnRQyfITFCA32gbi8ygzwtlhO/TrMwNBNj7OMHjibJW44b/zCIP4VdcVIViw==
+ b=SpXMnaTu7S5TvYrUzVOq+it6lWVGuzkLKPfDZmTyGJNzpHQCYrMH9ZVLQ/2Dk5t2LpY9aLNwH1qDS5ppzHpu64Sk7hPt0O0Q3OO6pmJUh2JJkxiiZuM4XIAfj6SpMo6OxxjIWbm60saRG5UZgKutw/nlLFq6RQljXOEKMcB+AflOjO5Ds6B35Vruu93iSjkKdzcPXs0G2FqPwq+co9byEkALKbUS+mdkF6FTngOqGerKb9TS6Uts3Jufr9bknqlQTlhz3IWWOoBDziV92x+3Ya5AbDrkYX2UmP3Ek+l1Y5sSBpJSwJsgJEaJTnzp9TTzfpDhvCpmvg44SQVRIrt6gw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0GY+mPBR68leo2+CVA8zk7THF2LYgIVwEjfNNPnFlpo=;
- b=mSE0LAn2hWf2IEinQhFbJyBtkXkL/o6HakIxHpkBEE7tD9fLPJJrhfJsP3MXTit6Iem8adVrt1adJgFIrClhn8OIe0YJSrlo6ZD6ttMu9govIk9PrxaFdUnzZUtCkHfhDA6Hpk7gaLgTp4sRsp+Of0jkUguM98PaEDbgmNoXp2iK8iXNbqFHkzHH0C4WYKzXjTJTvgbaK73QRN7hYVcrcUKT7ORHueqk8muoohOCg8MFw5ZWfTETTHQZujh1+TIBckn3QSQmslLiCIHxjxow9SG0UglTwl16M1qS2TsnkG0IS/CQE10KCd/6dAhGgssXIY+45zbm2pPK+X6InA7xHg==
+ bh=HI+Ebi45WdhiJY2d1M40KZF1kYf+MdtNIQ6Q0eAOXHk=;
+ b=C1VPc5MiNHtmm9a5h/Nm1c5EOhinDbV09Pu7adlRj2hSa4wWrk80htSoIb+Z2CpSA0vjV1ljMATfj9ROY6EGxesLbfI0T0wTQEn5mLlgArIf6qYsq7vk4jAs9fE0CThA+ewg+J0xPAekGtGYxWJ5JhukNnUqM6tBTY1DG2RuzJcGNpv/YLyv/1lx4UxHwfvkOLHsjVQxnodf+8VXUHrSdKI1jDj+ouJzbwKbyW1xpQrl1h6udL33g10SO+hNJSGX/SXZoa+SvKUr7zUGFVwU9K/e4AvZbiKhfuUWoYe78VNTgBUE9R4MxSfJr/y9A67qfa+uKUCXxSVW0DBxx9DKew==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0GY+mPBR68leo2+CVA8zk7THF2LYgIVwEjfNNPnFlpo=;
- b=gND8LVV8q14yXv23uyG8TYoD7bQoSjNZRRA2XWl9yQMgQZUXI+mITqvMFTahwyG/ZyvfgFrwM6NSXt1V+pvEuvYF7RKNR4Eyq5lOU5uiEDzVDC5NU+4PNgx+x4idzlaWoUgsPvkf39SrBKYHRUiGdxb7EMUliz5Rm1eSknAEIoU=
+ bh=HI+Ebi45WdhiJY2d1M40KZF1kYf+MdtNIQ6Q0eAOXHk=;
+ b=XdPmvpodx1ZLPtq/onCW0Uu+/bwlg9eZPzcv593DlKiGtGuhZBQjNlYGSz1IizGMUA0VKG6MeKJYG/4mQADzUEsPqcDyuulMcFak2pMGSsfyed32C5NnEduJl7m5WuvaBUISx+nH4VkjCIobQSFoC7QImPPKPLBcBvgcMK24OHY=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
 Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
  by VI1PR0402MB3421.eurprd04.prod.outlook.com (2603:10a6:803:5::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Fri, 4 Dec
- 2020 07:42:07 +0000
+ 2020 07:42:14 +0000
 Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
  ([fe80::dcb7:6117:3def:2685]) by VI1PR04MB3983.eurprd04.prod.outlook.com
  ([fe80::dcb7:6117:3def:2685%7]) with mapi id 15.20.3611.025; Fri, 4 Dec 2020
- 07:42:07 +0000
+ 07:42:14 +0000
 From:   Liu Ying <victor.liu@nxp.com>
 To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         dri-devel@lists.freedesktop.org,
@@ -48,109 +48,162 @@ Cc:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org,
         shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
         festevam@gmail.com, linux-imx@nxp.com, agx@sigxcpu.org,
         robert.chiras@nxp.com, martin.kepplinger@puri.sm
-Subject: [PATCH 1/4] drm/bridge: nwl-dsi: Set PHY mode in nwl_dsi_enable()
-Date:   Fri,  4 Dec 2020 15:33:41 +0800
-Message-Id: <1607067224-15616-2-git-send-email-victor.liu@nxp.com>
+Subject: [PATCH 2/4] phy: Add LVDS configuration options
+Date:   Fri,  4 Dec 2020 15:33:42 +0800
+Message-Id: <1607067224-15616-3-git-send-email-victor.liu@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1607067224-15616-1-git-send-email-victor.liu@nxp.com>
 References: <1607067224-15616-1-git-send-email-victor.liu@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [119.31.174.66]
 X-ClientProxiedBy: SG2PR01CA0098.apcprd01.prod.exchangelabs.com
  (2603:1096:3:15::24) To VI1PR04MB3983.eurprd04.prod.outlook.com
  (2603:10a6:803:4c::16)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR01CA0098.apcprd01.prod.exchangelabs.com (2603:1096:3:15::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3632.17 via Frontend Transport; Fri, 4 Dec 2020 07:42:01 +0000
+Received: from localhost.localdomain (119.31.174.66) by SG2PR01CA0098.apcprd01.prod.exchangelabs.com (2603:1096:3:15::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3632.17 via Frontend Transport; Fri, 4 Dec 2020 07:42:08 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: db29b7c2-516d-419c-12f6-08d8982819d7
+X-MS-Office365-Filtering-Correlation-Id: 69c5d9d5-5b56-487d-a6c3-08d898281db8
 X-MS-TrafficTypeDiagnostic: VI1PR0402MB3421:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB3421CB61935A70BBFE126EE598F10@VI1PR0402MB3421.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB3421F1C37FC9EE2339836D9998F10@VI1PR0402MB3421.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /0+Yjp6pbosezozu9svnkWtxsc38PFDPxKhweML4r2T3abEK9+sLTf+1AdqpuODnc2n5Nv2q21HbnuoNMZQJ/qLu1S6SnRSe/yDCC/55ZJ9CrJrG2kN3AJiP2F51JHxaTwTPRoq3HTMQXUSuQq9gyoY7I8qnhyJSva7oK1owGPrA6rKbaP/HHNHT7zaaoi7k+63iSXOY7qX3P5mWKXh4J7KuVg9LA5MZOOOwe/vsNl2Omut2A9qCSBOfBO+Ntss9snnQ+nOCZ5xx+4PduPO/L7pBWm1rJBMjgD0hHz6UwakPM9KvZ3Zw75XYcVo6Tu4lklisyIwya2Uld9mi+Hgh2g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(39860400002)(346002)(396003)(4326008)(66556008)(6512007)(66476007)(66946007)(316002)(8676002)(36756003)(7416002)(2906002)(86362001)(6486002)(8936002)(26005)(186003)(52116002)(16526019)(2616005)(956004)(478600001)(6666004)(5660300002)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WGFSSGlucnFQR0hCQjN4RVVhbHBnVXdEL3c0SityUGRqYXk0K0RGV0Q3Mmpy?=
- =?utf-8?B?ekN5VDdiZlR6MmdpeFMycGdkc2dEK241UTVBWE54aW55QmxhQS8rTFFETFVZ?=
- =?utf-8?B?b2t4N0c0WmFmbkZwd2M4d3ltZzBmejdBdUp6cGo5bkZheUphaEV0dVhKRGJ3?=
- =?utf-8?B?THNldDdqRjU2eFdIVXVnRDl2VFN2RXB0WkxUR2V6VENaSGRuNkRrYnZTOUF3?=
- =?utf-8?B?Q0lxS2phVnJzK09aQTVlODZ1bSs0WlFRN0dLajFZNFFxQkp5OG81djdiSnRN?=
- =?utf-8?B?NHM1NUZ6NTFtTzNiM0JXK0loZnI5WVU4VXk3UVc1eUFsV0xMTUZscWgzbkQ1?=
- =?utf-8?B?K0ZiaG1LbTBXZG1KKzhqUEZDcC84MUNkUmRjSkRxdWJUWHM0d3VtZS92dDZP?=
- =?utf-8?B?RTdnS2JKZnlyUVMybE9uUU5oNDdzQjhGZTMwbjAwSW1GTjBQTUo3eFNNUFFi?=
- =?utf-8?B?TTJTNUVGQ0k4TmpFWDdDSGtTaGRkekR0OFdhcEY1RDRjZWtFWG5uTWZqa1Y4?=
- =?utf-8?B?Y0FtWkhvWU5CRWZabUt6TG5XRXhBZzBSakd5a2tNWmNZU3NJeVkxRFh0Y1Va?=
- =?utf-8?B?djRRelBOUU9HZE5XYTJVd0J3TElqemVkL3pOdzBJdzlCVHB3SEpDZFY4dlZP?=
- =?utf-8?B?aytOcW13WFEzWVREa2hJM2trVklYRkFnZWNuUndueWkrU1QzSi81NW9ubjNT?=
- =?utf-8?B?Z1pLOENiTG1IK0pwSWtFc3NUS0ZJM2FmWWlrMHBsWjg2M3AzM3pNVnBYQkZX?=
- =?utf-8?B?ZVcrTUVQUXpQaWd6TnlMNzRQOE1XNEZRUUhVWVVleEs2eEswa2pxdHpjbnlk?=
- =?utf-8?B?eFRzVzVEZ09NcFRlWVlDT1hzRzYxSExCM2xTazVBelFNdTNpcHFUUXVzb1kx?=
- =?utf-8?B?KzVTeERsTXFDVnE0MG94ejBDemg3L1pMOEw4OVN0bUYydjhIWGhNanVwSDlO?=
- =?utf-8?B?cEFmSllIdVloMVRibmRxVUZWQ2pNZjZQa1ZJYXl2MDlKZmdYTzUwc3Nieldt?=
- =?utf-8?B?elVGRDhubE40VEV4UzJCckVzYnJPL01PVEtVYjBKQ1JleHl5cEhTcU9MKy9W?=
- =?utf-8?B?ZjliQW5UTjhCSGlmek96NVk3VUp5MkVIYnNjbUl5SS9oZzJJR3RsYkNmdElX?=
- =?utf-8?B?M1hFV3FmbklmSFEvTGxDaDZIZWwwVnNzamxmYTZJczhqSlRDMTZZQkdTL0k0?=
- =?utf-8?B?Tyt3Rkt2RkRWTGIvM0FMNnpTYWhxZVRub2ZiZnZ3WWMrNnFkdVNNL09qdlFB?=
- =?utf-8?B?cGVhUFYyNEswc2RrR2liSnpxOEpiY0VGZkdoZllEZFk2RWplaDdpT25yejhM?=
- =?utf-8?Q?ULsbalJswdfFlcwdwFj+8bNqKDkdiNdNjG?=
+X-Microsoft-Antispam-Message-Info: IeiZZhxPLRRqUj3sQG204KIrqnbSIuni7nufn7I8gjVm14TrutfykvlY7/iwVNVL03824Gg4zVEeeFMhLgndzQdJbeJBxGogjiY30vSuKAlAelzolITO5utxloJW713L22bX0GIcaoQVClm4zko7yC+3LrorOKM3Mf+Nd6N3YQIu1x9u+HjOWoUg9yHirP++njD4PdSGkuLlEUNSn1btVDmEq2bj5sxqGV+G8wDMhR0yJQUKvg1Tspnk8Y3FB7H1j2LHQXG3SMZpIR/zukejziz/HEFNHfbz8g7dGdjWIjxfa8jsto735sc9R0nEjDWVguVdzt+DYupPeeG6BNnsvmLz2J+9ep7mu5gTpnA5Uxv3wF/8SE+9lhuyWMEv55aG
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(39860400002)(346002)(396003)(4326008)(66556008)(6512007)(66476007)(69590400008)(66946007)(83380400001)(316002)(8676002)(36756003)(7416002)(2906002)(86362001)(6486002)(8936002)(26005)(186003)(52116002)(16526019)(2616005)(956004)(478600001)(6666004)(5660300002)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?aqi8mrovWP4cRzY16sGIYSPktNImEy3ueW5JNNvJj5fJVFEdXd4JMu7o74z8?=
+ =?us-ascii?Q?EFCVzfpO8/UXa+REu6H4P7GvZT6kOtJdhz+/D7nzVJXgkyCefGn2VAY5vixd?=
+ =?us-ascii?Q?q4R+RnKprHIWquz/cPFE+ATO8Hyb2K96FAdwGCqq6N9Jv5fwgU2oVnO3p97/?=
+ =?us-ascii?Q?YDyZ2KBJImBKvFyWac2/EAAy7v03iTCyY928mxsyo9ras92Dh4GwdmYKRJhE?=
+ =?us-ascii?Q?UPGwMXF8a7MKG+wrLvyF1Kdbr1fFHtTiE3H55Qg/SVSB4Qzh4dQJvtMelJJR?=
+ =?us-ascii?Q?uEdBu0K3IiEX7KVgHkmAnbgKCocDUkdeo27qTo1U7SEA0Fl2K+Dl9upCR432?=
+ =?us-ascii?Q?2Vl8NI6EdsfNEKjJnizyql9F1CqLvdTXxci8PzxoS8x/kwm9wQFD2wzTSvwV?=
+ =?us-ascii?Q?tX4IAMtd6xKWobtmdnLOvSeV9BKnWBi7a3TST8oMsWin4wm1fkbO13hL/skf?=
+ =?us-ascii?Q?CzKyVdCmUuyc45XMamI1ovp6ccLY/zWQz9lC1eEKrcWeT6TObLT/yTbkGg9E?=
+ =?us-ascii?Q?mhzen76BopHCfxdKE/bX2l72+iJwwwiwM9amhAZSrKpQf2VQTOOGpOfsEy4N?=
+ =?us-ascii?Q?UrvsAvpvRRPHCraRFuoNClxftElcZY3fDOkXWu7+XJmShunnakVhrfjVDEJd?=
+ =?us-ascii?Q?iI+a1TSsXkSYQuh4BF7rHKRaRhkF89CAPCSLTg5zFzsGDh9qQxvnzjPRff1t?=
+ =?us-ascii?Q?wibJTmnhS2k5xywYQ5x4YbcVXNOE1+5rX8SasiF7eRDQjKfxBCUv9LoOHF/0?=
+ =?us-ascii?Q?yoJPIppNXE4uGRTrS7vAjKLfAxyfNN1tEfVir8RB06a4AH56eMqRZ5jQqvN7?=
+ =?us-ascii?Q?nkhS6rboSVVkLlMErFxtnlk0Ko+/FMQnvK+NZCXbnQFPsmD3cNizRkI5ObQi?=
+ =?us-ascii?Q?XYJ7JMUmEW1SyKYIW027SQejE+vYi39Q2OptHUAWsWXkVoruNc7URadtQMNY?=
+ =?us-ascii?Q?0e3pi4IYN0udrRSnwOazecjZyrntuIYLkbNSZtttMPWQIRt2tToZr8Um7LXq?=
+ =?us-ascii?Q?r0Ow?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: db29b7c2-516d-419c-12f6-08d8982819d7
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69c5d9d5-5b56-487d-a6c3-08d898281db8
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 07:42:07.5692
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 07:42:14.0288
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9xf7cy49ghIJzeGKpo9WfZIqKjKirSnTbumzD9Xt0a43mYesV3mn+snEM8rGIPA8h3uVZw+QNvgKmdsgh7kv/w==
+X-MS-Exchange-CrossTenant-UserPrincipalName: LdB26VBcXJ/ZxNKrbgDw01dO67b1tFQroO6A5NanxssWy/tW9qhDHSJukXaSUuLTF2+QaxuIk79g8zpbdfWrWg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3421
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Northwest Logic MIPI DSI host controller embedded in i.MX8qxp
-works with a Mixel MIPI DPHY + LVDS PHY combo to support either
-a MIPI DSI display or a LVDS display.  So, this patch calls
-phy_set_mode() from nwl_dsi_enable() to set PHY mode to MIPI DPHY
-explicitly.
+This patch allows LVDS PHYs to be configured through
+the generic functions and through a custom structure
+added to the generic union.
 
-Cc: Guido Günther <agx@sigxcpu.org>
-Cc: Robert Chiras <robert.chiras@nxp.com>
-Cc: Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc: Andrzej Hajda <a.hajda@samsung.com>
-Cc: Neil Armstrong <narmstrong@baylibre.com>
-Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc: Jonas Karlman <jonas@kwiboo.se>
-Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
+The parameters added here are based on common LVDS PHY
+implementation practices.  The set of parameters
+should cover all potential users.
+
+Cc: Kishon Vijay Abraham I <kishon@ti.com>
+Cc: Vinod Koul <vkoul@kernel.org>
 Cc: NXP Linux Team <linux-imx@nxp.com>
 Signed-off-by: Liu Ying <victor.liu@nxp.com>
 ---
- drivers/gpu/drm/bridge/nwl-dsi.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/linux/phy/phy-lvds.h | 48 ++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/phy/phy.h      |  4 ++++
+ 2 files changed, 52 insertions(+)
+ create mode 100644 include/linux/phy/phy-lvds.h
 
-diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
-index 66b6740..be6bfc5 100644
---- a/drivers/gpu/drm/bridge/nwl-dsi.c
-+++ b/drivers/gpu/drm/bridge/nwl-dsi.c
-@@ -678,6 +678,12 @@ static int nwl_dsi_enable(struct nwl_dsi *dsi)
- 		return ret;
- 	}
- 
-+	ret = phy_set_mode(dsi->phy, PHY_MODE_MIPI_DPHY);
-+	if (ret < 0) {
-+		DRM_DEV_ERROR(dev, "Failed to set DSI phy mode: %d\n", ret);
-+		goto uninit_phy;
-+	}
+diff --git a/include/linux/phy/phy-lvds.h b/include/linux/phy/phy-lvds.h
+new file mode 100644
+index 00000000..1b5b9d6
+--- /dev/null
++++ b/include/linux/phy/phy-lvds.h
+@@ -0,0 +1,48 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright 2020 NXP
++ */
 +
- 	ret = phy_configure(dsi->phy, phy_cfg);
- 	if (ret < 0) {
- 		DRM_DEV_ERROR(dev, "Failed to configure DSI phy: %d\n", ret);
++#ifndef __PHY_LVDS_H_
++#define __PHY_LVDS_H_
++
++/**
++ * struct phy_configure_opts_lvds - LVDS configuration set
++ *
++ * This structure is used to represent the configuration state of a
++ * LVDS phy.
++ */
++struct phy_configure_opts_lvds {
++	/**
++	 * @bits_per_lane_and_dclk_cycle:
++	 *
++	 * Number of bits per data lane and differential clock cycle.
++	 */
++	unsigned int bits_per_lane_and_dclk_cycle;
++
++	/**
++	 * @differential_clk_rate:
++	 *
++	 * Clock rate, in Hertz, of the LVDS differential clock.
++	 */
++	unsigned long differential_clk_rate;
++
++	/**
++	 * @lanes:
++	 *
++	 * Number of active, consecutive, data lanes, starting from
++	 * lane 0, used for the transmissions.
++	 */
++	unsigned int lanes;
++
++	/**
++	 * @is_slave:
++	 *
++	 * Boolean, true if the phy is a slave which works together
++	 * with a master phy to support dual link transmission,
++	 * otherwise a regular phy or a master phy.
++	 */
++	bool is_slave;
++};
++
++#endif /* __PHY_LVDS_H_ */
+diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+index e435bdb..d450b44 100644
+--- a/include/linux/phy/phy.h
++++ b/include/linux/phy/phy.h
+@@ -17,6 +17,7 @@
+ #include <linux/regulator/consumer.h>
+ 
+ #include <linux/phy/phy-dp.h>
++#include <linux/phy/phy-lvds.h>
+ #include <linux/phy/phy-mipi-dphy.h>
+ 
+ struct phy;
+@@ -51,10 +52,13 @@ enum phy_mode {
+  *		the MIPI_DPHY phy mode.
+  * @dp:		Configuration set applicable for phys supporting
+  *		the DisplayPort protocol.
++ * @lvds:	Configuration set applicable for phys supporting
++ *		the LVDS phy mode.
+  */
+ union phy_configure_opts {
+ 	struct phy_configure_opts_mipi_dphy	mipi_dphy;
+ 	struct phy_configure_opts_dp		dp;
++	struct phy_configure_opts_lvds		lvds;
+ };
+ 
+ /**
 -- 
 2.7.4
 
