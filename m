@@ -2,126 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A8E2CF563
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D65442CF567
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727904AbgLDUSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 15:18:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35118 "EHLO
+        id S1729285AbgLDUTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 15:19:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgLDUSM (ORCPT
+        with ESMTP id S1728846AbgLDUTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 15:18:12 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D0E0C061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:17:31 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id bo9so10415427ejb.13
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:17:31 -0800 (PST)
+        Fri, 4 Dec 2020 15:19:04 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D8FC061A53
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 12:18:18 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id o24so8000328ljj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 12:18:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gvNT4Fi2ZWeKMJ6AEF/XdAB2QqFFs6kg02O1L/V0Ptc=;
-        b=jZmpQLz+0zm8DuVG1G4QZGibKke9In87CMUj5LFlPc2l0qQLTW44JPKbkeqeAySKQb
-         6qSvOmDOUouHWFLY/VqpPu2lfqQRRqyotBLWEOXqsEpvRKeVZogwLA8yF2I8bX7/nxbm
-         ++SzbSxQv8FO3w/cLCZY/mouyifqKbKQXMXywYOJZmHhtGwbvZvQ2JF4BhEvMYrA37VN
-         8U56lSfPn4GwNYqyXGhC+kjYyHJlmnJqGyfZ/GMdtkCW46wXa2B/5xjH1GRHmec8htlQ
-         TD3E2v6Gx2A3/TEKK5NdlNaFNthfVGKsQh4ZWeIRoHMXGjNC8oL2miFx+6y8PXdhnmCQ
-         elag==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZiqvOYZnVaPoXdhwyb61UvgWLIkGyPr+IhLVSfqE1SY=;
+        b=fo/9yfBFQD7b9kT8+PNDIWdGD/64qLIJ9v0ZQ9bmbwA6DGaQJAiQ6Q8GUxUeeQA+3N
+         5y1V9d9kuSs6v/uXZD3cOkOfgY7w7gVnm4IDNn0OjcDkllAu0jbtVgfpcCbO793Rwt68
+         JzazfZSEHQOAuMOSYQ6vqdKiI2NMTD8/tASwvLft45loUV7A2p4IfM+sU6F2D14SroDO
+         1Cqgt76RC8m7R3C4iX+gXmEpj0t8hIKsVSNe646jOZZkfZ4UYRg+v709ad8e23Naq0l7
+         rk12iGjQ1JnZf8yioUfmR/wZ1r7sH7gLp9vnTwZdUx5VbLR86qQryp/FVSYe6Qvl4Pf2
+         qdvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gvNT4Fi2ZWeKMJ6AEF/XdAB2QqFFs6kg02O1L/V0Ptc=;
-        b=WujAqYKyIH4Clsn2FPzAKaAsISWPouMyljNZlhAIzz4J1zPa5gZgNeUldCiEL25Pkn
-         6GjY+Bs6HY206gx4vZKu3mZdRhAxvG9/8lKlKSLUSNw6dRmVBiXZG5+ejF+V9kZqpW9F
-         fLgnagoo2oDBJHo9r5iCBl3uJ8wGAk+k18G4x3TPNllCd1Gy6Q1A/davUxAX5GJMl2+W
-         hOhH1qcLN46cbMBAsw9pcljCDeqUxc+STIzF/pxV9QDq8khy2zriYyUhhshjewuMn14N
-         w4qMKwb1xzm/1t426h+Qa5toJmOFeJp8YzQqBU2MsqACbIWjzCtAsRSjxz5zWr4PG7tI
-         XTWA==
-X-Gm-Message-State: AOAM533WbrSfbpKG9PkUvTZWzHc+sj32dvLU4Nfai2DIgwF/twW5PNEx
-        2vfIlTbObkRUJD0MuKqyFTvhOFuiv45d9wji1cJsoQ==
-X-Google-Smtp-Source: ABdhPJw8Drr9ktbZeLfkNbcQmUohJJ6sLwReukCwnMz3uARnVeZq68y62K6kglAumIacNHki2ug3rzktFKoEm1OHGW0=
-X-Received: by 2002:a17:906:d41:: with SMTP id r1mr8524974ejh.383.1607113050273;
- Fri, 04 Dec 2020 12:17:30 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZiqvOYZnVaPoXdhwyb61UvgWLIkGyPr+IhLVSfqE1SY=;
+        b=f9BDvBCzyhj/IBgH3FAwqDR9jfZHNKL/DZ6ZwXddn1fb/tI/N/NRbrPsO2PII/zaSJ
+         LYoui/LfccAzUU47yLk1en4w0+KDFqScG9AqSJI1WqCmIu8FbaBkP8wTJ4KcplS1WcEB
+         pBZ58qjluIpShNE4KQPXsKfN6mlX6t6GVrl7VCMpEhnULQfwAekQXEfWUtWIfw6Z55cs
+         4yMOIQkcRhwW/+qQxQuCz0gSrK3Vppn20Eqpvd2qrSCplsHUzV5aig5abmcnDDOzQJNi
+         IfYwxl6Jva2YQ4ouCMs0nCOaOA9xVE1F9rJU6uD9VTE03mUsxma/00CHxsLJI4yd8f+w
+         TGrg==
+X-Gm-Message-State: AOAM5301xUB0zEkVRYpLHCUG/Jvsxb7szJZtrw8qtfCy62I6+4mDndY7
+        SNrR7EZqfUH4aYmBdwJqT3kLVQ==
+X-Google-Smtp-Source: ABdhPJxqAwfoWF2r9gEF11hL9VPxMbruCY+BSSSwyrxBMgUFhjwUi65/acmXhl9ZbWLYOX/XFMa2eg==
+X-Received: by 2002:a2e:8e64:: with SMTP id t4mr1039685ljk.141.1607113096464;
+        Fri, 04 Dec 2020 12:18:16 -0800 (PST)
+Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
+        by smtp.gmail.com with ESMTPSA id w21sm2036918lff.280.2020.12.04.12.18.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Dec 2020 12:18:15 -0800 (PST)
+From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, s-anna@ti.com
+Cc:     grzegorz.jaszczyk@linaro.org, linux-remoteproc@vger.kernel.org,
+        robh+dt@kernel.org, lee.jones@linaro.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        praneeth@ti.com, rogerq@ti.com
+Subject: [PATCH v3 0/6]  Add a PRU remoteproc driver
+Date:   Fri,  4 Dec 2020 21:18:01 +0100
+Message-Id: <20201204201807.14716-1-grzegorz.jaszczyk@linaro.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201202052330.474592-7-pasha.tatashin@soleen.com> <20201202163507.GL5487@ziepe.ca>
- <CA+CK2bBT=U+xhbzXTDFwsL5wTvPHgNJ0DRpaeseiUq=w4EOe9w@mail.gmail.com>
- <20201203010809.GQ5487@ziepe.ca> <CA+CK2bBRgcCc5Nm0RcsEgVFpGBFC-_icA6UDRiqQxeRJE5U-Aw@mail.gmail.com>
- <20201203141729.GS5487@ziepe.ca> <87360lnxph.fsf@oracle.com>
-In-Reply-To: <87360lnxph.fsf@oracle.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Fri, 4 Dec 2020 15:16:54 -0500
-Message-ID: <CA+CK2bARYtSgkZTtMMFGB9kT4QZ_RgASW2wQ0Ro5_TXPddSung@mail.gmail.com>
-Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 3:06 PM Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
->
-> Jason Gunthorpe <jgg@ziepe.ca> writes:
->
-> > On Wed, Dec 02, 2020 at 08:34:32PM -0500, Pavel Tatashin wrote:
-> >> What I meant is the users of the interface do it incrementally not in
-> >> large chunks. For example:
-> >>
-> >> vfio_pin_pages_remote
-> >>    vaddr_get_pfn
-> >>         ret = pin_user_pages_remote(mm, vaddr, 1, flags |
-> >> FOLL_LONGTERM, page, NULL, NULL);
-> >> 1 -> pin only one pages at a time
-> >
-> > I don't know why vfio does this, it is why it so ridiculously slow at
-> > least.
->
-> Well Alex can correct me, but I went digging and a comment from the
-> first type1 vfio commit says the iommu API didn't promise to unmap
-> subpages of previous mappings, so doing page at a time gave flexibility
-> at the cost of inefficiency.
->
-> Then 166fd7d94afd allowed the iommu to use larger pages in vfio, but
-> vfio kept pinning pages at a time.  I couldn't find an explanation for
-> why that stayed the same.
->
-> Yesterday I tried optimizing vfio to skip gup calls for tail pages after
-> Matthew pointed out this same issue to me by coincidence last week.
-> Currently debugging, but if there's a fundamental reason this won't work
-> on the vfio side, it'd be nice to know.
+Hi All,
 
-Hi Daniel,
+The Programmable Real-Time Unit and Industrial Communication Subsystem
+(PRU-ICSS or simply PRUSS) on various TI SoCs consists of dual 32-bit
+RISC cores (Programmable Real-Time Units, or PRUs) for program execution.
 
-I do not think there are any fundamental reasons why it won't work. I
-have also thinking increasing VFIO chunking for a different reason:
+The K3 AM65x amd J721E SoCs have the next generation of the PRU-ICSS IP,
+commonly called ICSSG. The ICSSG IP on AM65x SoCs has two PRU cores,
+two auxiliary custom PRU cores called Real Time Units (RTUs). The K3
+AM65x SR2.0 and J721E SoCs have a revised version of the ICSSG IP, and
+include two additional custom auxiliary PRU cores called Transmit PRUs
+(Tx_PRUs).
 
-If a client touches pages before doing a VFIO DMA map, those pages
-might be huge, and pinning a small page at a time and migrating a
-small page at a time can break-up the huge pages. So, it is not only
-inefficient to pin, but it can also inadvertently slow down the
-runtime.
+This series contains the PRUSS remoteproc driver together with relevant
+dt-binding. This is the 3rd foundation component for PRUSS subsystem, the
+previous two were already merged and can be found under:
+1) drivers/soc/ti/pruss.c
+   Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+2) drivers/irqchip/irq-pruss-intc.c
+   Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
 
-Thank you,
-Pasha
+The following is a v3 version of the series. Please see the individual patches
+for exact changes in each patch, following are the main changes from v2[1]:
+- Add Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org> for 4 patches
+after introducing minor fixes/improvements.
+- Adjust the patch title to latest remoteproc subsystem convention:
+s/remoteproc\/pru:/remoteproc:pru:/ as suggested by Suman.
+
+[1] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20201119140850.12268-1-grzegorz.jaszczyk@linaro.org/
+
+Best regards,
+Grzegorz
+
+Grzegorz Jaszczyk (1):
+  remoteproc: pru: Add support for PRU specific interrupt configuration
+
+Suman Anna (5):
+  dt-bindings: remoteproc: Add binding doc for PRU cores in the PRU-ICSS
+  remoteproc: pru: Add a PRU remoteproc driver
+  remoteproc: pru: Add pru-specific debugfs support
+  remoteproc: pru: Add support for various PRU cores on K3 AM65x SoCs
+  remoteproc: pru: Add support for various PRU cores on K3 J721E SoCs
+
+ .../bindings/remoteproc/ti,pru-rproc.yaml     | 214 +++++
+ drivers/remoteproc/Kconfig                    |  12 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/pru_rproc.c                | 874 ++++++++++++++++++
+ drivers/remoteproc/pru_rproc.h                |  46 +
+ 5 files changed, 1147 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+ create mode 100644 drivers/remoteproc/pru_rproc.c
+ create mode 100644 drivers/remoteproc/pru_rproc.h
+
+-- 
+2.29.0
+
