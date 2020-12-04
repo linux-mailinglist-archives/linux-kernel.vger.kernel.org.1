@@ -2,113 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C512CEF0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0372CEF03
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 14:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387533AbgLDNwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 08:52:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
+        id S1729342AbgLDNvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 08:51:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725920AbgLDNwS (ORCPT
+        with ESMTP id S1725920AbgLDNvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 08:52:18 -0500
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65319C061A52
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 05:51:38 -0800 (PST)
-Received: by mail-vs1-xe42.google.com with SMTP id s85so3278309vsc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 05:51:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mz+QBXryBtw02WKwvqtBofezUJT1ockyk/QIMMgUvZw=;
-        b=PCDIH1vya67kDh+iw8rL1ska13PYiK592n/u69GgSzRS+DGxeAhYxWftIjoDQ6jXsR
-         OG8Cs6BifeNdcNkTOKlFDB6bcWCQld+JMxaHLwbFOAk/P0l+4qS5a+uTh4BuX3TrcTJc
-         LLw0M/1ogLIHNzL+GbAtacLK1eWdla2RcWvh9n9fwLY0V2s2fUp4gPOVLWuSaAG66NTL
-         liTfwrDW2fUgLQ5PCxJ8ATygZYURPaeVhcjNAuWvH/7PK3I2i5rYA5ZHdkGfbW2hYvrT
-         JmIeINqgzp8nJAEqZDI5XusQ6zlUYolKjZ6SMS/cNxkyLAskX4yLDsJGVgetns3SjnVZ
-         PFyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mz+QBXryBtw02WKwvqtBofezUJT1ockyk/QIMMgUvZw=;
-        b=LjdvH9eYcL2cGh0nP3MkyVQCHL0F8Hcu2IfORQihN71QfosIAXhIClAJ3hUYXqQeER
-         hhTya+2MMF/au+2Z4O+J7uiMbNzQGvsyJG+D+rNYFa82iE8SoAiHXHS3hKJ4444aSujI
-         LtWYaa97Im90+CHol79XXmA1czxdrFEA85jJInlawI3ysVt2g4eItucI7Zav5eaSALUX
-         iKoXO0Ln+uZ9aoNeynYd8hiUJaWdcAAWKSpN1VrZb75k+cYQVQwoNU3IHFmhXYm5b8vJ
-         7abKZkjCuVxta6erXJW0YgxkUqYrjp65Sfrkd8n9z+VGbM0C8bK1MjbXpNMpJHNOSLf6
-         ReQw==
-X-Gm-Message-State: AOAM530D0fBhlfc4+y7Gl2CU1CLIGamZjncu/j86Ed3uvO/O4AVgSUf8
-        jktu0JhhMTZ0cAK+wAbon386i7RADNy9hRwmhe6RyA==
-X-Google-Smtp-Source: ABdhPJzGk/t/tL7qP3yXjvmv1gwXx2PLLjyUM+GAGZfIX8dHIabpfg7nwlt7x+ZeP38Bi0Enj1TxsA65ZcY09Di2JGc=
-X-Received: by 2002:a05:6102:2127:: with SMTP id f7mr3685273vsg.48.1607089897636;
- Fri, 04 Dec 2020 05:51:37 -0800 (PST)
+        Fri, 4 Dec 2020 08:51:50 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A66C061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 05:51:10 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1klBUI-0006Yb-GQ; Fri, 04 Dec 2020 14:51:06 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1klBUI-0003sX-2f; Fri, 04 Dec 2020 14:51:06 +0100
+Date:   Fri, 4 Dec 2020 14:51:02 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        kernel@pengutronix.de, Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH RESEND for 5.10] pwm: sl28cpld: fix getting driver data
+ in pwm callbacks
+Message-ID: <20201204135102.foq5gvvzfcwbwphh@pengutronix.de>
+References: <20201203084142.3810204-1-u.kleine-koenig@pengutronix.de>
+ <X8oubGP9CvoOQKtF@ulmo>
 MIME-Version: 1.0
-References: <20201202185118.29076-1-mw@semihalf.com> <20201202185118.29076-4-mw@semihalf.com>
-In-Reply-To: <20201202185118.29076-4-mw@semihalf.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 4 Dec 2020 14:51:01 +0100
-Message-ID: <CAPDyKFp_+5G2Bg0rWcW+ZKeee--3znZJhRuXUi1U70ksy+qcjw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] mmc: sdhci-xenon: use clk only with DT
-To:     Marcin Wojtas <mw@semihalf.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Ziji Hu <huziji@marvell.com>,
-        Adrian Hunter <adrian.hunter@intel.com>, jaz@semihalf.com,
-        tn@semihalf.com, ard.biesheuvel@arm.com,
-        Kostya Porotchkin <kostap@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ydwpyur5ap46h5nm"
+Content-Disposition: inline
+In-Reply-To: <X8oubGP9CvoOQKtF@ulmo>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Dec 2020 at 19:51, Marcin Wojtas <mw@semihalf.com> wrote:
->
-> As a preparation for supporting ACPI, modify the driver
-> to use the clk framework only when booting with DT -
-> otherwise rely on the configuration done by firmware.
-> For that purpose introduce also a custom SDHCI get_max_clock
-> callback.
->
-> Signed-off-by: Marcin Wojtas <mw@semihalf.com>
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  drivers/mmc/host/sdhci-xenon.c | 61 ++++++++++++--------
->  1 file changed, 38 insertions(+), 23 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-xenon.c b/drivers/mmc/host/sdhci-xenon.c
 
-[...]
+--ydwpyur5ap46h5nm
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> @@ -637,10 +650,12 @@ static int xenon_runtime_resume(struct device *dev)
->         struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
->         int ret;
->
-> -       ret = clk_prepare_enable(pltfm_host->clk);
-> -       if (ret) {
-> -               dev_err(dev, "can't enable mainck\n");
-> -               return ret;
-> +       if (dev->of_node) {
+Hello Thierry,
 
-I didn't notice this in the earlier version, my apologies, but there
-is no need for this check.
+On Fri, Dec 04, 2020 at 01:41:16PM +0100, Thierry Reding wrote:
+> On Thu, Dec 03, 2020 at 09:41:42AM +0100, Uwe Kleine-K=F6nig wrote:
+> > Currently .get_state() and .apply() use dev_get_drvdata() on the struct
+> > device related to the pwm chip. This only works after .probe() called
+> > platform_set_drvdata() which in this driver happens only after
+> > pwmchip_add() and so comes possibly too late.
+> >=20
+> > Instead of setting the driver data earlier use the traditional
+> > container_of approach as this way the driver data is conceptually and
+> > computational nearer.
+> >=20
+> > Fixes: 9db33d221efc ("pwm: Add support for sl28cpld PWM controller")
+> > Tested-by: Michael Walle <michael@walle.cc>
+> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > ---
+> > Hello Linus,
+> >=20
+> > Thierry (who usually sends PWM patches to you) didn't react to this
+> > patch sent to the pwm Mailinglist last week
+> > (https://lore.kernel.org/r/20201124212432.3117322-1-u.kleine-koenig@pen=
+gutronix.de)
+> > yet.
+> >=20
+> > Given v5.10 isn't far away any more and I don't know when Thierry will
+> > take a look and act, I'm sending this directly to you. The affected
+> > driver was new in 5.10-rc1 and at least once the unpatched driver
+> > created an oops:
+> >=20
+> > 	https://lavalab.kontron.com/scheduler/job/108#L950
+> >=20
+> > Michael Walle who tested this patch is the original author of the
+> > driver. IMHO it would be good to have this fixed before 5.10.
+> >=20
+> > If you prefer a pull request, I can setup something (but I don't have
+> > access to Thierry's tree, so it will be for a repository that's new to
+> > you).
+> >=20
+> > Best regards
+> > Uwe
+> >=20
+> >  drivers/pwm/pwm-sl28cpld.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+>=20
+> I thought I had seen you discuss this with Lee and gotten the impression
+> that you were going to respin this to move the platform_set_drvdata() to
+> an earlier point, which I think is the more correct approach.
 
-clk_prepare_enable() should cope fine with a NULL argument - and you
-only reach this path, if the clock was successfully fetched during the
-probe or that it was left to stay NULL for non-DT case.
+Lee asked on irc why I didn't move the platform_set_drvdata to an
+earlier stage and I told him why. Then the conversation was over.
 
-> +               ret = clk_prepare_enable(pltfm_host->clk);
-> +               if (ret) {
-> +                       dev_err(dev, "can't enable mainck\n");
-> +                       return ret;
-> +               }
->         }
->
->         if (priv->restore_needed) {
-> --
-> 2.29.0
->
+> container_of() isn't exactly wrong, but it's really just papering over
+> the fact that platform_set_drvdata() is in the wrong place, so I'd
+> prefer a patch that does that instead.
 
-Kind regards
-Uffe
+platfrom_set_drvdata is in a perfectly fine position if you only rely on
+it in the platform_driver's remove callback which is the case with my
+patch. I wrote in my commit log
+
+| Instead of setting the driver data earlier use the traditional
+| container_of approach as this way the driver data is conceptually and
+| computational nearer.
+
+which is still think to be true. The main thing I don't like about the
+platform_set_drvdata approach is that you have to rely on
+dev_get_drvdata() returning the value set with platform_set_drvdata()
+which IMHO is an implementation detail of the platform driver code.
+
+> Now, I can no longer find a link to the discussion that I recall, so it
+> was either on IRC (where I don't have any logs) or I'm loosing my mind.
+
+It was on IRC but I thought to have written an email about this, too.
+But I don't find it either.
+
+> I'll prepare a patch that moves platform_set_drvdata() for Michael to
+> test. If that works I'll send a PR with fixes to Linus early next week.
+
+You're late, Linus already merged my patch.
+
+Best regards
+Uwe
+
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ydwpyur5ap46h5nm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/KPsIACgkQwfwUeK3K
+7AkgoQf/YaLvIfCshWZZ2GnWDV7Hdz4CuUCpnjp1JQ3xsCiHm65tSrbYW7K9f7XK
+f4SnTbW9TgZCV3SqkoNNuileJITzdAfpqLxRyYr1hEHfnqX3s1y6mo42EXhdrExx
+sYM/BDsRPq6ACR3+r06/OrVM2A0YloBdsJ1/mqLSIvK9dXFK8JMpgHtcUygwE5yx
+Xaer6MNka0c2DC+b2W2KnDN2uWAjFZj9LMnNeo9ueOCyVp6NHSM7M79Ak4CO7QSz
+fwJbFuQC2Pbfqa6mgkJH7Bqao2RXPsT9B5hi2GUx2yzJTZL6FNP/0oZdn2XV8jwd
+eNafAgr5P0mBfgSGlrQv0JAGzSdDfw==
+=MmaP
+-----END PGP SIGNATURE-----
+
+--ydwpyur5ap46h5nm--
