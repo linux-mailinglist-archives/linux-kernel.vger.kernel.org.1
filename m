@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D7C2CF1AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A990E2CF1AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387624AbgLDQNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:13:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728708AbgLDQNX (ORCPT
+        id S1730775AbgLDQNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:13:06 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:43384 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728708AbgLDQNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:13:23 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3881C061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 08:12:43 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id e5so3351774pjt.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 08:12:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vgBK6gNRJdzBFc9vMwzbFn3dmf1hBTZHlv0OSygLjJk=;
-        b=1sagrwP/FVGDih5ebdMkoXfp/7l+m3CFyw+VwGe6s7hnyBJkj1OCbcWJs6EQsuZbeB
-         pbHStSPO2i64md/0IbNCHlRzcvz2brcSwdXUY6LkN1Br6xwtHiyZTxv3oZxLMrr4kUAA
-         9GsOrYKHTekTKILQANM/eemKSkFbE9yb9RsstW9j+OBdmwN5u0Jvy6O20AEPihKsHnHA
-         kgxlgBqci7fjgnksBtC1/YOF9g2Sv29hm3SeZBNhclmAL0cphUigc/ukjcXRZr4WRXj7
-         TqDDUl9C5AHrsBguZ1iyzIwBA/xjmRlytmybQVNMd4m76hwTYsUljwnsq6EMrbjqSH99
-         3p+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vgBK6gNRJdzBFc9vMwzbFn3dmf1hBTZHlv0OSygLjJk=;
-        b=maZtXzmllnwnrDBNEm0fuXdeAbXW8AIJpT53ebU32ZudM/eBLY3RPC2yZrcVHaeZXI
-         0CtBDrS51OZwwMigX+h3hRqqGJQxLBU44H33Y4XjYP/4s0x8iW19igPyfXTBqRkZUY0g
-         89YFzcL2wH/8NdHsZ/h86tQHjVlyi8t1JqzKH3wOwUBKj3UlT8EbilS2Mrk28LpX5Js4
-         aMmCXeUfQzZaCkityCFHbHQ6vebYQ5Xo39ilxRyiD+FSs3eaBJXOzqUm3+AB6CZEB1q0
-         MWu4p+R/q8qaklHEpj/hJtZX74Dd3tnzlHKDfVI/ozkO+ApKSy1AARI23P5tELLjckhV
-         LKJg==
-X-Gm-Message-State: AOAM533CxXKueCOoLLndZE7M0JxXvAQdmrAQyeCGZDoqVhi3DS2GPix9
-        w/+eFV7rRAMWAI+PS6WFAKxaR6eZNwXSNvNA3Ws7AxbJGe5d+A==
-X-Google-Smtp-Source: ABdhPJyLaDNma2sWdL6BfboS+XrP7SCgS1iMGsBIQVI6ZPAsifoMRSkbIa0G9agbEQiwezzKGGDL5d1+GQRQWOJdQjQ=
-X-Received: by 2002:a17:902:76c8:b029:d9:d6c3:357d with SMTP id
- j8-20020a17090276c8b02900d9d6c3357dmr4605653plt.34.1607098363125; Fri, 04 Dec
- 2020 08:12:43 -0800 (PST)
+        Fri, 4 Dec 2020 11:13:05 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B4G95ps138159;
+        Fri, 4 Dec 2020 16:12:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=87V0vBKZMG5YXDONYo3hdIWeOjNHJMRmA9Y1tYp7IAw=;
+ b=wQ6VPLqq61Gvpsotnsvxxi0MYBhn4OA+gcsxLVgyohkrr7wxrT9x7LifhGS1xEuGk14t
+ AgWXecRxn4iSyQy6DB56rOkpSIOyJfyBmxHt8GSB4BWV6fqb8WiVYWLM92csvN3Tcpiw
+ nTvEAA7vk2uFGEHB5lfkQ/pf8AZOowlfyfI5yIJfdvPJF1rvz4PHTgrU7MN7B7k8+7eN
+ AobBRr31UKywxF/dAF1u20bpPX1eGJ2hhOSv5N4FBJRy2CpXgDqRBe86aEGaqydNwvH7
+ Lt9610A2s7Y6jFXR0ZAAB3woACSwQqA5ksSJbCvyOOCDcawhoOvI4fIKBRkjDD0whsgB 3A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 353egm3vjh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 04 Dec 2020 16:12:11 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B4G9V4n100254;
+        Fri, 4 Dec 2020 16:12:10 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 3540g3v4fx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Dec 2020 16:12:10 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B4GC9VL019559;
+        Fri, 4 Dec 2020 16:12:09 GMT
+Received: from [10.154.152.223] (/10.154.152.223)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 04 Dec 2020 08:12:09 -0800
+Subject: Re: [PATCH] vhost scsi: fix error return code in
+ vhost_scsi_set_endpoint()
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Maurizio Lombardi <mlombard@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1607071411-33484-1-git-send-email-zhangchangzhong@huawei.com>
+From:   Mike Christie <michael.christie@oracle.com>
+Message-ID: <1c6e01d0-9329-862c-6480-fbb91a8910cf@oracle.com>
+Date:   Fri, 4 Dec 2020 10:12:07 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201203162237.21885-1-songmuchun@bytedance.com> <46fcf0c1-7c38-723b-8905-953d72f1d6bc@redhat.com>
-In-Reply-To: <46fcf0c1-7c38-723b-8905-953d72f1d6bc@redhat.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 5 Dec 2020 00:12:06 +0800
-Message-ID: <CAMZfGtVdFtLB8f2uDfJ1H-YG4CsJ+RxxFbAWzePDnqBB1MU0ig@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] mm/page_isolation: do not isolate the
- max order page
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1607071411-33484-1-git-send-email-zhangchangzhong@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9824 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040093
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9825 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012040093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 12:28 AM David Hildenbrand <david@redhat.com> wrote:
->
-> On 03.12.20 17:22, Muchun Song wrote:
-> > The max order page has no buddy page and never merge to other order.
-> > So isolating and then freeing it is pointless. And if order == MAX_ORDER
-> > - 1, then the buddy can actually be a !pfn_valid() in some corner case?
-> > pfn_valid_within(buddy_pfn) that follows would only catch it on archs
-> > with holes in zone. Then is_migrate_isolate_page(buddy) might access an
-> > invalid buddy. So this is also a bug fix.
-> >
-> > Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
->
-> As just replied to v1, I don't think this is required and the patch
+On 12/4/20 2:43 AM, Zhang Changzhong wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+> 
+> Fixes: 25b98b64e284 ("vhost scsi: alloc cmds per vq instead of session")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> ---
+>   drivers/vhost/scsi.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
+> index 6ff8a5096..4ce9f00 100644
+> --- a/drivers/vhost/scsi.c
+> +++ b/drivers/vhost/scsi.c
+> @@ -1643,7 +1643,8 @@ vhost_scsi_set_endpoint(struct vhost_scsi *vs,
+>   			if (!vhost_vq_is_setup(vq))
+>   				continue;
+>   
+> -			if (vhost_scsi_setup_vq_cmds(vq, vq->num))
+> +			ret = vhost_scsi_setup_vq_cmds(vq, vq->num);
+> +			if (ret)
+>   				goto destroy_vq_cmds;
+>   		}
+>   
+> 
 
-You mean we should remove the Fixes tag? Thanks.
-
-> description can be simplified - e.g., stating that we have/had not such
-> users.
->
->
-> --
-> Thanks,
->
-> David / dhildenb
->
-
-
--- 
-Yours,
-Muchun
+Reviewed-by: Mike Christie <michael.christie@oracle.com>
