@@ -2,67 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999B22CE8C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE012CE8CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 08:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728722AbgLDHot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 02:44:49 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9011 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727007AbgLDHot (ORCPT
+        id S1728525AbgLDHta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 02:49:30 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9376 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728110AbgLDHta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 02:44:49 -0500
+        Fri, 4 Dec 2020 02:49:30 -0500
 Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CnPpL6SqLzhcPw;
-        Fri,  4 Dec 2020 15:43:38 +0800 (CST)
-Received: from compute.localdomain (10.175.112.70) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 4 Dec 2020 15:44:00 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     Satish Kharat <satishkh@cisco.com>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Mike Christie <michaelc@cs.wisc.edu>,
-        Joe Eykholt <jeykholt@cisco.com>,
-        Abhijeet Joglekar <abjoglek@cisco.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] scsi: fnic: fix error return code in fnic_probe()
-Date:   Fri, 4 Dec 2020 15:47:39 +0800
-Message-ID: <1607068060-31203-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CnPvk0BCgz78QY;
+        Fri,  4 Dec 2020 15:48:18 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.9) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Fri, 4 Dec 2020
+ 15:48:42 +0800
+Subject: Re: [PATCH 5/6] ARM: dts: mmp2-olpc-xo-1-75: explicitly add
+ #address-cells=<0> for slave mode
+To:     Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Benson Leung <bleung@chromium.org>,
+        "Enric Balletbo i Serra" <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201013160845.1772-1-thunder.leizhen@huawei.com>
+ <20201013160845.1772-6-thunder.leizhen@huawei.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <698a7d6d-eceb-6c27-cca2-517218aec78f@huawei.com>
+Date:   Fri, 4 Dec 2020 15:48:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
+In-Reply-To: <20201013160845.1772-6-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.9]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+Hi everybody:
+  Can somebody apply this patch? When I do any YAML dtbs_check on arm, below Warnings always reported.
 
-Fixes: 5df6d737dd4b ("[SCSI] fnic: Add new Cisco PCI-Express FCoE HBA")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- drivers/scsi/fnic/fnic_main.c | 1 +
- 1 file changed, 1 insertion(+)
+arch/arm/boot/dts/mmp2.dtsi:472.23-480.6: Warning (spi_bus_bridge): /soc/apb@d4000000/spi@d4037000: incorrect #address-cells for SPI bus
+  also defined at arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:225.7-237.3
+arch/arm/boot/dts/mmp2.dtsi:472.23-480.6: Warning (spi_bus_bridge): /soc/apb@d4000000/spi@d4037000: incorrect #size-cells for SPI bus
+  also defined at arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:225.7-237.3
+arch/arm/boot/dts/mmp2-olpc-xo-1-75.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'spi_bus_bridge'
 
-diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
-index 5f8a7ef..4f7befb 100644
---- a/drivers/scsi/fnic/fnic_main.c
-+++ b/drivers/scsi/fnic/fnic_main.c
-@@ -740,6 +740,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	for (i = 0; i < FNIC_IO_LOCKS; i++)
- 		spin_lock_init(&fnic->io_req_lock[i]);
- 
-+	err = -ENOMEM;
- 	fnic->io_req_pool = mempool_create_slab_pool(2, fnic_io_req_cache);
- 	if (!fnic->io_req_pool)
- 		goto err_out_free_resources;
--- 
-2.9.5
+
+On 2020/10/14 0:08, Zhen Lei wrote:
+> Delete the old property "#address-cells" and then explicitly add it with
+> zero value. The value of "#size-cells" is already zero, so keep it no
+> change.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts b/arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts
+> index f1a41152e9dd70d..be88b6e551d58e9 100644
+> --- a/arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts
+> +++ b/arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts
+> @@ -224,7 +224,7 @@
+>  
+>  &ssp3 {
+>  	/delete-property/ #address-cells;
+> -	/delete-property/ #size-cells;
+> +	#address-cells = <0>;
+>  	spi-slave;
+>  	status = "okay";
+>  	ready-gpio = <&gpio 125 GPIO_ACTIVE_HIGH>;
+> 
 
