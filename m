@@ -2,30 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 152BF2CF787
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4322CF786
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730855AbgLDXau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 18:30:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41668 "EHLO mail.kernel.org"
+        id S1730795AbgLDXap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 18:30:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgLDXat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 18:30:49 -0500
+        id S1726111AbgLDXap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 18:30:45 -0500
 From:   Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Patrick Lai <plai@codeaurora.org>, Arnd Bergmann <arnd@kernel.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
+To:     Chuhong Yuan <hslester96@gmail.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, Paul Cercueil <paul@crapouillou.net>,
+        Takashi Iwai <tiwai@suse.com>,
         Liam Girdwood <lgirdwood@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Rohit kumar <rohitkr@codeaurora.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Ajit Pandey <ajitp@codeaurora.org>,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
-        Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <20201203231443.1483763-1-arnd@kernel.org>
-References: <20201203231443.1483763-1-arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: qcom: fix QDSP6 dependencies, attempt #3
-Message-Id: <160712460214.7629.13610030760770322456.b4-ty@kernel.org>
+In-Reply-To: <20201203144227.418194-1-hslester96@gmail.com>
+References: <20201203144227.418194-1-hslester96@gmail.com>
+Subject: Re: [PATCH] ASoC: jz4740-i2s: add missed checks for clk_get()
+Message-Id: <160712460212.7629.1938775307281622942.b4-ty@kernel.org>
 Date:   Fri, 04 Dec 2020 23:30:02 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -34,15 +30,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 00:14:18 +0100, Arnd Bergmann wrote:
-> The previous fix left another warning in randconfig builds:
-> 
-> WARNING: unmet direct dependencies detected for SND_SOC_QDSP6
->   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && QCOM_APR [=y] && COMMON_CLK [=n]
->   Selected by [y]:
->   - SND_SOC_MSM8996 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && QCOM_APR [=y]
-> 
-> [...]
+On Thu, 3 Dec 2020 22:42:27 +0800, Chuhong Yuan wrote:
+> jz4740_i2s_set_sysclk() does not check the return values of clk_get(),
+> while the file dereferences the pointers in clk_put().
+> Add the missed checks to fix it.
 
 Applied to
 
@@ -50,8 +41,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: fix QDSP6 dependencies, attempt #3
-      commit: b1b8eb1283c90a953089d988930d7b6156418958
+[1/1] ASoC: jz4740-i2s: add missed checks for clk_get()
+      commit: 1c1fb2653a0c2e3f310c07eacd8fc3a10e08c97a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
