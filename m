@@ -2,66 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183A42CEA06
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E21D2CEA0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729146AbgLDIjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:39:51 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8646 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727260AbgLDIjv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:39:51 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnR1s2PKFz15XHc;
-        Fri,  4 Dec 2020 16:38:41 +0800 (CST)
-Received: from compute.localdomain (10.175.112.70) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 4 Dec 2020 16:38:58 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-CC:     Zhang Changzhong <zhangchangzhong@huawei.com>,
-        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] spi: dw: Fix error return code in dw_spi_bt1_probe()
-Date:   Fri, 4 Dec 2020 16:42:37 +0800
-Message-ID: <1607071357-33378-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1728504AbgLDIoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:44:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46310 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727069AbgLDIoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 03:44:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607071393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HI67x8wgUuRFJMifoHJdppXQZOBKg1Z9h2SXs1njUEc=;
+        b=eMt0MtPCcV8zg51XvfnNsUBBpaPQY1Cac0pEeEOMAhTUo8fE76lubPSFtm8EheCEwwA7kG
+        ll3halDFdD4E5Rs0JeBg9m+8kDWOuQFy00fv/+o/ryn43GFq5gh0KHqmlAvv14orbkIcLA
+        CNfESr+NlLyNV4JCKkhlWuKeWYU5Knc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 517E6ACC3;
+        Fri,  4 Dec 2020 08:43:13 +0000 (UTC)
+Date:   Fri, 4 Dec 2020 09:43:12 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH 5/6] mm: honor PF_MEMALLOC_NOMOVABLE for all allocations
+Message-ID: <20201204084312.GA25569@dhcp22.suse.cz>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-6-pasha.tatashin@soleen.com>
+ <20201203091703.GA17338@dhcp22.suse.cz>
+ <CA+CK2bB-BC-5Szs1Piv3O=OGxQbJSGWzgMmDUtDewrCqEoNaXw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bB-BC-5Szs1Piv3O=OGxQbJSGWzgMmDUtDewrCqEoNaXw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+On Thu 03-12-20 10:15:41, Pavel Tatashin wrote:
+> On Thu, Dec 3, 2020 at 4:17 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Wed 02-12-20 00:23:29, Pavel Tatashin wrote:
+> > [...]
+> > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > > index 611799c72da5..7a6d86d0bc5f 100644
+> > > --- a/mm/page_alloc.c
+> > > +++ b/mm/page_alloc.c
+> > > @@ -3766,20 +3766,25 @@ alloc_flags_nofragment(struct zone *zone, gfp_t gfp_mask)
+> > >       return alloc_flags;
+> > >  }
+> > >
+> > > -static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
+> > > -                                     unsigned int alloc_flags)
+> > > +static inline unsigned int cma_alloc_flags(gfp_t gfp_mask,
+> > > +                                        unsigned int alloc_flags)
+> > >  {
+> > >  #ifdef CONFIG_CMA
+> > > -     unsigned int pflags = current->flags;
+> > > -
+> > > -     if (!(pflags & PF_MEMALLOC_NOMOVABLE) &&
+> > > -         gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
+> > > +     if (gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
+> > >               alloc_flags |= ALLOC_CMA;
+> > > -
+> > >  #endif
+> > >       return alloc_flags;
+> > >  }
+> > >
+> > > +static inline gfp_t current_gfp_checkmovable(gfp_t gfp_mask)
+> > > +{
+> > > +     unsigned int pflags = current->flags;
+> > > +
+> > > +     if ((pflags & PF_MEMALLOC_NOMOVABLE))
+> > > +             return gfp_mask & ~__GFP_MOVABLE;
+> > > +     return gfp_mask;
+> > > +}
+> > > +
+> >
+> > It sucks that we have to control both ALLOC and gfp flags. But wouldn't
+> > it be simpler and more straightforward to keep current_alloc_flags as is
+> > (module PF rename) and hook the gfp mask evaluation into current_gfp_context
+> > and move it up before the first allocation attempt?
+> 
+> We could do that, but perhaps as a separate patch? I am worried about
+> hidden implication of adding extra scope (GFP_NOIO|GFP_NOFS) to the
+> fast path.
 
-Fixes: abf00907538e ("spi: dw: Add Baikal-T1 SPI Controller glue driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- drivers/spi/spi-dw-bt1.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Why?
 
-diff --git a/drivers/spi/spi-dw-bt1.c b/drivers/spi/spi-dw-bt1.c
-index f382dfad..c279b78 100644
---- a/drivers/spi/spi-dw-bt1.c
-+++ b/drivers/spi/spi-dw-bt1.c
-@@ -280,8 +280,10 @@ static int dw_spi_bt1_probe(struct platform_device *pdev)
- 	dws->bus_num = pdev->id;
- 	dws->reg_io_width = 4;
- 	dws->max_freq = clk_get_rate(dwsbt1->clk);
--	if (!dws->max_freq)
-+	if (!dws->max_freq) {
-+		ret = -EINVAL;
- 		goto err_disable_clk;
-+	}
- 
- 	init_func = device_get_match_data(&pdev->dev);
- 	ret = init_func(pdev, dwsbt1);
+> Also, current_gfp_context() is used elsewhere, and in some
+> places removing __GFP_MOVABLE from gfp_mask means that we will need to
+> also change other things. For example [1], in try_to_free_pages() we
+> call current_gfp_context(gfp_mask) which can reduce the maximum zone
+> idx, yet we simply set it to: reclaim_idx = gfp_zone(gfp_mask), not to
+> the newly determined gfp_mask.
+
+Yes and the direct reclaim should honor the movable zone restriction.
+Why should we reclaim ZONE_MOVABLE when the allocation cannot really
+allocate from it? Or have I misunderstood your concern?
+
+> 
+> [1] https://soleen.com/source/xref/linux/mm/vmscan.c?r=2da9f630#3239
+> 
+> 
+>  All scope flags
+> > should be applicable to the hot path as well. It would add few cycles to
+> > there but the question is whether that would be noticeable over just
+> > handling PF_MEMALLOC_NOMOVABLE on its own. The cache line would be
+> > pulled in anyway.
+> 
+> Let's try it in a separate patch? I will add it in the next version of
+> this series.
+
+Separate patch or not is up to you. But I do not see a strong reason why
+this cannot be addressed in a single one.
+
 -- 
-2.9.5
-
+Michal Hocko
+SUSE Labs
