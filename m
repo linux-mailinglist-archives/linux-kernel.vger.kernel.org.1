@@ -2,116 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F10A2CF185
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA13E2CF162
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 17:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730772AbgLDQFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 11:05:01 -0500
-Received: from mga09.intel.com ([134.134.136.24]:42515 "EHLO mga09.intel.com"
+        id S1730603AbgLDQAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 11:00:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725923AbgLDQE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 11:04:58 -0500
-IronPort-SDR: MFNtlOhjbfylw0+q+7R8/6eep6J2ZzygkYS9S3K6tHJgANtmQgHb1BRJ4jDfl+hOUJxp+7Nf9O
- qH3ESzvo/OoA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="173551471"
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="173551471"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 08:03:16 -0800
-IronPort-SDR: /SIAt6AXx4ob0LCsOSeQ1gW9ktDI70TDWFTpVGfBprl3q2Ms/Sgazfz/0P13Bthv1hLmI2lt+Q
- w2KfKBhgMwrA==
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="373960693"
-Received: from emogena-mobl1.amr.corp.intel.com (HELO [10.212.90.42]) ([10.212.90.42])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 08:03:15 -0800
-Subject: Re: [PATCH] soundwire: intel: fix another unused-function warning
-To:     Arnd Bergmann <arnd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20201203230502.1480063-1-arnd@kernel.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <070e64b8-88e4-ccf1-b51e-99de513ab55c@linux.intel.com>
-Date:   Thu, 3 Dec 2020 17:48:47 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725923AbgLDQAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 11:00:46 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607097606;
+        bh=6AkramXhXSVoC4i3I48GuXVufwB3OrsCv/GmztvWuQc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=aTVOBaSUG1vbGW47XZuf+1UNakRNvaiYrCe0bOE5VhShcc1aSE9PS0KbLhjeBhfvq
+         c2xJkgOXnjVaUie0piKCJb6l8+cmjKmkz23L4wPl7XhrRIY7mSettGseDbsUcfHkSa
+         +73z82cVmmvwl5Hmi9IB9egu3up03KKqmbNo7b+VOZVmV2QqH3pUBhjmuiJM4zPKdi
+         qkYTE2UsMXSh1jA0m3DC1wPpKGS+mkoOwb0L8+bT1U9/XhsH6MRAmFbnv1dKi7n9Oa
+         IwcioycPMHp+y79wpcwEplQIO8i/GuTtayIpHA5910RPhjxNXe+vDO79XCLe5sT3wx
+         LxO+MHKplbzKg==
 MIME-Version: 1.0
-In-Reply-To: <20201203230502.1480063-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2] xsk: Return error code if force_zc is set
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160709760590.23287.16780855853847993962.git-patchwork-notify@kernel.org>
+Date:   Fri, 04 Dec 2020 16:00:05 +0000
+References: <1607077277-41995-1-git-send-email-zhangchangzhong@huawei.com>
+In-Reply-To: <1607077277-41995-1-git-send-email-zhangchangzhong@huawei.com>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
+
+This patch was applied to bpf/bpf.git (refs/heads/master):
+
+On Fri, 4 Dec 2020 18:21:16 +0800 you wrote:
+> If force_zc is set, we should exit out with an error, not fall back to
+> copy mode.
+> 
+> Fixes: 921b68692abb ("xsk: Enable sharing of dma mappings")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,v2] xsk: Return error code if force_zc is set
+    https://git.kernel.org/bpf/bpf/c/12c8a8ca117f
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-On 12/3/20 5:04 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Without CONFIG_PM, there is another warning about an unused function:
-> 
-> drivers/soundwire/intel.c:530:12: error: 'intel_link_power_down' defined but not used [-Werror=unused-function]
-> 
-> After a previous fix, the driver already uses both an #ifdef and
-> a __maybe_unused annotation but still gets it wrong. Remove the
-> ifdef and instead use __maybe_unused consistently to avoid the
-> problem for good.
-> 
-> Fixes: f046b2334083 ("soundwire: intel: fix intel_suspend/resume defined but not used warning")
-> Fixes: ebf878eddbb4 ("soundwire: intel: add pm_runtime support")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Thanks for the patch Arnd, indeed that's a miss.
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> ---
->   drivers/soundwire/intel.c | 8 ++------
->   1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index 6a1e862b16c3..66adb258a425 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -1585,8 +1585,6 @@ int intel_master_process_wakeen_event(struct platform_device *pdev)
->    * PM calls
->    */
->   
-> -#ifdef CONFIG_PM
-> -
->   static int __maybe_unused intel_suspend(struct device *dev)
->   {
->   	struct sdw_cdns *cdns = dev_get_drvdata(dev);
-> @@ -1641,7 +1639,7 @@ static int __maybe_unused intel_suspend(struct device *dev)
->   	return 0;
->   }
->   
-> -static int intel_suspend_runtime(struct device *dev)
-> +static int __maybe_unused intel_suspend_runtime(struct device *dev)
->   {
->   	struct sdw_cdns *cdns = dev_get_drvdata(dev);
->   	struct sdw_intel *sdw = cdns_to_intel(cdns);
-> @@ -1796,7 +1794,7 @@ static int __maybe_unused intel_resume(struct device *dev)
->   	return ret;
->   }
->   
-> -static int intel_resume_runtime(struct device *dev)
-> +static int __maybe_unused intel_resume_runtime(struct device *dev)
->   {
->   	struct sdw_cdns *cdns = dev_get_drvdata(dev);
->   	struct sdw_intel *sdw = cdns_to_intel(cdns);
-> @@ -1969,8 +1967,6 @@ static int intel_resume_runtime(struct device *dev)
->   	return ret;
->   }
->   
-> -#endif
-> -
->   static const struct dev_pm_ops intel_pm = {
->   	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
->   	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
-> 
