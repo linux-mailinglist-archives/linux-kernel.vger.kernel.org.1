@@ -2,139 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55ADC2CEB48
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9002CEAEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387730AbgLDJp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:45:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727430AbgLDJp4 (ORCPT
+        id S1729170AbgLDJbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:31:37 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:16093 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726735AbgLDJbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:45:56 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE93DC061A52
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 01:45:15 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id x22so4955980wmc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 01:45:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HTMk/hXiedF9fES6DLjMJhevTJ/XIDlYzClccSpz43c=;
-        b=rkzVE3Nc+vVTKg+EdCO3dJ6wRI0pzX7FjqvkyEpkK0bLmE5LVKyIJqwVQ/WNCKCLk3
-         o5fpFW4ZRRI8zzNeeZR3T2dZGXrT4vurLWNqDwUQJwEfI42JbSRww51bmuEnus9br57/
-         D2mYNHHQFaRTE+wJ9l9LBG7RdSaevA4HP1Eejqf0PkrU3w+q9RooxbmDkLvalGsUgUXe
-         +wkDEPj65CcO5HjQum7fQNKvJR4Jx5Ss7NrkzBexvTTEo8x0yiZDmzwJJVAWJdvvoRFf
-         CtlWLfkZFUsouE64CAR5VZrk/+U1r2vlsMReEzdNENOPRzLZIE/G0erM5fOF4DDpOf8q
-         DRAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HTMk/hXiedF9fES6DLjMJhevTJ/XIDlYzClccSpz43c=;
-        b=jKzhjUrpc7yy1l55EAtv55fOKW9vV08uNppnmfN7AaapCshOPA65prsGRFlc2aM56D
-         mNIBjMzFZucUGoFKhLTcsKPGlaa9zlDXl7j4JAglUMGskR1fVnDykc9KhPQ3v2Pnlwsw
-         aBBKblrf1+i5HGho3/OZg5uz2j8Ecek1pdiic/Gnif2AkKt2W9vcynT/06HhUkYynV2g
-         zRO5sxLEFbuO0MuJ7ukmJWhHsyL7ECLhH20XhO9Sclx64jQ4lv6KP36ypsen9QPyAZWd
-         7/hbd06VIz26oFnAsSofZnRPW1cylZYSwGXlxj35ZpJyqi2ZiW5J+Lc8MaA/om4o9Gex
-         Y/Ag==
-X-Gm-Message-State: AOAM532XKZXv1YW6w8CdTgdYJJHcmyq5xhGJswG3LZpO504tpLtT8qa0
-        wMHoKsUrmXl6e6nkFtwZamhDVQ==
-X-Google-Smtp-Source: ABdhPJy/ZnCzwpQK3OuXl+x2IfFq6FBZd2ZPqSxAHI6Wxm3bL7qHwKVnFM01VmbH2pBtr/FJoTkiXQ==
-X-Received: by 2002:a1c:4954:: with SMTP id w81mr3186191wma.60.1607075114273;
-        Fri, 04 Dec 2020 01:45:14 -0800 (PST)
-Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id p11sm3010541wrj.14.2020.12.04.01.45.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 01:45:13 -0800 (PST)
-Date:   Fri, 4 Dec 2020 09:45:09 +0000
-From:   Brendan Jackman <jackmanb@google.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH bpf-next v3 13/14] bpf: Add tests for new BPF atomic
- operations
-Message-ID: <X8oFJW/mMFHVxngY@google.com>
-References: <20201203160245.1014867-1-jackmanb@google.com>
- <20201203160245.1014867-14-jackmanb@google.com>
- <b629793c-fb9c-6ef5-e2d6-7acaf1d2fc7f@fb.com>
+        Fri, 4 Dec 2020 04:31:36 -0500
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201204093054epoutp014c53b9c9e45c5c5d3ecf9a781ed477aa~NeYUQdtmi0745107451epoutp01c
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 09:30:54 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201204093054epoutp014c53b9c9e45c5c5d3ecf9a781ed477aa~NeYUQdtmi0745107451epoutp01c
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1607074254;
+        bh=FJ+B3zIcBgxljhfRxX4OruLMUsDxRsFDGdDKk1UNK/I=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=mHQxwmNmcUoCsZOcrxaQHZubI+O7QJqgfhHOyxapvndS2ACqHgT3UIG/GZH9y4Q1E
+         lyYSy+B7IgDjZvj2K9tM9+S4ULW00hR5jQtBkBmYG4GXRdhhdiNFvY3gFI1zLQ/gce
+         +j3W/yxzPCRa60FreehCZ6QHrp+vhwb5oN87uYn4=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20201204093053epcas1p39c6745c23d1f4d7a8464710e3f870336~NeYTzQdSP1217112171epcas1p3E;
+        Fri,  4 Dec 2020 09:30:53 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.153]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4CnSB34Q3Wz4x9Pp; Fri,  4 Dec
+        2020 09:30:51 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2C.BD.09577.BC10ACF5; Fri,  4 Dec 2020 18:30:51 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20201204093051epcas1p39bbc7d2bf9ebdc1811a284774cc6e254~NeYRJgUAv1209212092epcas1p3B;
+        Fri,  4 Dec 2020 09:30:51 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201204093051epsmtrp12c46f11ae6900145943f2141621b1e8a~NeYRDUnUQ1305413054epsmtrp1r;
+        Fri,  4 Dec 2020 09:30:51 +0000 (GMT)
+X-AuditID: b6c32a39-c13ff70000002569-86-5fca01cbdcd6
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        CD.F3.08745.AC10ACF5; Fri,  4 Dec 2020 18:30:50 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201204093050epsmtip26710b06ca99820b6db330da2e21ad794~NeYQxrKMc2677726777epsmtip24;
+        Fri,  4 Dec 2020 09:30:50 +0000 (GMT)
+Subject: Re: [PATCH] [v2] clk: samsung: mark PM functions as __maybe_unused
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <f7df29db-0fc9-016a-6e01-91974014c917@samsung.com>
+Date:   Fri, 4 Dec 2020 18:45:35 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b629793c-fb9c-6ef5-e2d6-7acaf1d2fc7f@fb.com>
+In-Reply-To: <20201204091616.4128366-1-arnd@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOJsWRmVeSWpSXmKPExsWy7bCmvu5pxlPxBmt7FC3+TjrGbrFtyyZW
+        i/PnN7BbbHp8jdXiY889VovLu+awWcw4v4/J4uIpV4vDb9pZLf5d28hisWrXH0YHbo/fvyYx
+        ery/0crusXPWXXaPTas62Tw2L6n36NuyitHj8ya5APaobJuM1MSU1CKF1Lzk/JTMvHRbJe/g
+        eOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoBOVFMoSc0qBQgGJxcVK+nY2RfmlJakKGfnF
+        JbZKqQUpOQWWBXrFibnFpXnpesn5uVaGBgZGpkCFCdkZ685dZitoFahYf7CFtYFxCW8XIyeH
+        hICJROP7RtYuRi4OIYEdjBJnV81jhnA+MUpsuvaTEcL5zCjxdNIMVpiWQze+Q1XtYpTYOmMC
+        lPOeUWLb7DPMIFXCAt4SH+/fB0uICHxglPjdv4AJxGEWWA40ePcMJpAqNgEtif0vbrCB2PwC
+        ihJXfzxmBLF5BewkXnfPBdvHIqAi8XLPZbC4qECYxMltLVA1ghInZz5hAbE5Bcwlrk1YBzaT
+        WUBc4taT+VC2vMT2t3PArpAQOMIhsanhEiPEEy4S/24vZoGwhSVeHd/CDmFLSbzsb4OyqyVW
+        njzCBtHcwSixZf8FaAgYS+xfOhloAwfQBk2J9bv0IcKKEjt/z2WEWMwn8e5rDytIiYQAr0RH
+        mxBEibLE5Qd3mSBsSYnF7Z1sExiVZiF5ZxaSF2YheWEWwrIFjCyrGMVSC4pz01OLDQtMkSN8
+        EyM4BWtZ7mCc/vaD3iFGJg7GQ4wSHMxKIryxqifjhXhTEiurUovy44tKc1KLDzGaAgN4IrOU
+        aHI+MAvklcQbmhoZGxtbmBiamRoaKonz/tHuiBcSSE8sSc1OTS1ILYLpY+LglGpgKszl9PYp
+        18ppkbiVzcDwLNZJWW9CzUklsfcLNq68lr7GUP3+hXcrwnROhUzs3Lc8+J0p17bre1Iic1Ib
+        P/H8mbdK3EDSuMfwWs7jR76b7P9OkBJ/+3s5T9Pmy+sO+k1Ytn96p/3XfWY/Jglkft5gmJRW
+        M3vaHXeVe8cKDMNNgjqmSOf43PhTe3jeXnZe9cnZ823WZyzeVH3K9/Ez9uSSY2vnqlrGt+dO
+        4kxZ7HhmkcERTSd93+JVtxk1HGbcFOp4ej3p38bLvEz6Gka19/qLIs4rtEtcmHNN7PWF1GuJ
+        XVPDRB5p/vCRn5C8KTb/27ld7xSWei3+aHnQ7aCl1YvzrwROBayq0mPPjl7S0l9ySImlOCPR
+        UIu5qDgRAMQ9e4pKBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIIsWRmVeSWpSXmKPExsWy7bCSvO4pxlPxBlfumFr8nXSM3WLblk2s
+        FufPb2C32PT4GqvFx557rBaXd81hs5hxfh+TxcVTrhaH37SzWvy7tpHFYtWuP4wO3B6/f01i
+        9Hh/o5XdY+esu+wem1Z1snlsXlLv0bdlFaPH501yAexRXDYpqTmZZalF+nYJXBnrzl1mK2gV
+        qFh/sIW1gXEJbxcjJ4eEgInEoRvfmbsYuTiEBHYwShy5dZwZIiEpMe3iUSCbA8gWljh8uBii
+        5i2jxKx3z5hAaoQFvCU+3r8P1iwi8IlR4sXEGUwgDrPAckaJpisdTBAtXYwSHdc+sYC0sAlo
+        Sex/cYMNxOYXUJS4+uMxI4jNK2An8bp7LiuIzSKgIvFyz2WwuKhAmMTOJY+ZIGoEJU7OfAI2
+        h1PAXOLahHVgcWYBdYk/8y4xQ9jiEreezIeKy0tsfzuHeQKj8Cwk7bOQtMxC0jILScsCRpZV
+        jJKpBcW56bnFhgVGeanlesWJucWleel6yfm5mxjBsailtYNxz6oPeocYmTgYDzFKcDArifDG
+        qp6MF+JNSaysSi3Kjy8qzUktPsQozcGiJM57oQsoJZCeWJKanZpakFoEk2Xi4JRqYIoSm1rQ
+        P8dWlW1NYKBe8wWJ5/6qKzZc0H70Ztec2HPSpwM3OT1hFPHfvv7mA6fMkpDVGl2q/fWPzse7
+        r2Pd7JI9/6rnxpy07ZvezU1ayVdy4NatLiE3n1ONCxOX9l1/ZGRUPHtZdt0dh8Ay901LEzRe
+        RUs1/tGuNbr99AWrVPovdc9LLWahCi4slaUShhVMh5vsZM/aKskHTBKe1fxdZ2ftf227T4v7
+        VPc2cyfyPY5a/PiCtrOkGb9b4P2Uq34FTieXtwtvOPAynvvqdbZOt98LlKQnhMU6lR69euCV
+        nZiW6u1LmnEt1kmp8f5f408EHlp3slNX8T2b7V2z7o8lF8x0NQ4LzbF0rJ25bv8kJZbijERD
+        Leai4kQAvxybBTQDAAA=
+X-CMS-MailID: 20201204093051epcas1p39bbc7d2bf9ebdc1811a284774cc6e254
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201204091801epcas1p2a67474fad16d0c71f6b9a36cc72241ab
+References: <CGME20201204091801epcas1p2a67474fad16d0c71f6b9a36cc72241ab@epcas1p2.samsung.com>
+        <20201204091616.4128366-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 11:06:31PM -0800, Yonghong Song wrote:
-> On 12/3/20 8:02 AM, Brendan Jackman wrote:
-[...]
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/atomics_test.c b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
-> > new file mode 100644
-> > index 000000000000..66f0ccf4f4ec
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
-> > @@ -0,0 +1,262 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <test_progs.h>
-> > +
-> > +
-> > +#include "atomics_test.skel.h"
-> > +
-> > +static struct atomics_test *setup(void)
-> > +{
-> > +	struct atomics_test *atomics_skel;
-> > +	__u32 duration = 0, err;
-> > +
-> > +	atomics_skel = atomics_test__open_and_load();
-> > +	if (CHECK(!atomics_skel, "atomics_skel_load", "atomics skeleton failed\n"))
-> > +		return NULL;
-> > +
-> > +	if (atomics_skel->data->skip_tests) {
-> > +		printf("%s:SKIP:no ENABLE_ATOMICS_TEST (missing Clang BPF atomics support)",
-> > +		       __func__);
-> > +		test__skip();
-> > +		goto err;
-> > +	}
-> > +
-> > +	err = atomics_test__attach(atomics_skel);
-> > +	if (CHECK(err, "atomics_attach", "atomics attach failed: %d\n", err))
-> > +		goto err;
-> > +
-> > +	return atomics_skel;
-> > +
-> > +err:
-> > +	atomics_test__destroy(atomics_skel);
-> > +	return NULL;
-> > +}
-> > +
-> > +static void test_add(void)
-> > +{
-> > +	struct atomics_test *atomics_skel;
-> > +	int err, prog_fd;
-> > +	__u32 duration = 0, retval;
-> > +
-> > +	atomics_skel = setup();
+On 12/4/20 6:16 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> When running the test, I observed a noticeable delay between skel load and
-> skel attach. The reason is the bpf program object file contains
-> multiple programs and the above setup() tries to do attachment
-> for ALL programs but actually below only "add" program is tested.
-> This will unnecessarily increase test_progs running time.
+> The use of SIMPLE_DEV_PM_OPS() means that the suspend/resume
+> functions are now unused when CONFIG_PM is disabled:
 > 
-> The best is for setup() here only load and attach program "add".
-> The libbpf API bpf_program__set_autoload() can set a particular
-> program not autoload. You can call attach function explicitly
-> for one specific program. This should be able to reduce test
-> running time.
+> drivers/clk/samsung/clk-exynos-clkout.c:219:12: error: 'exynos_clkout_resume' defined but not used [-Werror=unused-function]
+>   219 | static int exynos_clkout_resume(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~~~~~
+> drivers/clk/samsung/clk-exynos-clkout.c:210:12: error: 'exynos_clkout_suspend' defined but not used [-Werror=unused-function]
+>   210 | static int exynos_clkout_suspend(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~~~~~~
+> 
+> Mark them as __maybe_unused to shut up the otherwise harmless warning.
+> 
+> Fixes: 9484f2cb8332 ("clk: samsung: exynos-clkout: convert to module driver")
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> v2: add proper changelog text
+> ---
+>  drivers/clk/samsung/clk-exynos-clkout.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/clk/samsung/clk-exynos-clkout.c b/drivers/clk/samsung/clk-exynos-clkout.c
+> index 9ec2f40cc400..e6d6cbf8c4e6 100644
+> --- a/drivers/clk/samsung/clk-exynos-clkout.c
+> +++ b/drivers/clk/samsung/clk-exynos-clkout.c
+> @@ -207,7 +207,7 @@ static int exynos_clkout_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -static int exynos_clkout_suspend(struct device *dev)
+> +static int __maybe_unused exynos_clkout_suspend(struct device *dev)
+>  {
+>  	struct exynos_clkout *clkout = dev_get_drvdata(dev);
+>  
+> @@ -216,7 +216,7 @@ static int exynos_clkout_suspend(struct device *dev)
+>  	return 0;
+>  }
+>  
+> -static int exynos_clkout_resume(struct device *dev)
+> +static int __maybe_unused exynos_clkout_resume(struct device *dev)
+>  {
+>  	struct exynos_clkout *clkout = dev_get_drvdata(dev);
+>  
+> 
 
-Interesting, thanks a lot - I'll try this out next week. Maybe we can
-actually load all the progs once at the beginning (i.e. in
-test_atomics_test) then attach/detch each prog individually as needed...
-Sorry, I haven't got much of a grip on libbpf yet.
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
