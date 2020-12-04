@@ -2,94 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AEB2CE499
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3901E2CE49C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:49:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730369AbgLDAql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 19:46:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726075AbgLDAql (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 19:46:41 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C047C061A51;
-        Thu,  3 Dec 2020 16:46:01 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id t7so2513743pfh.7;
-        Thu, 03 Dec 2020 16:46:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=p5agTR8u41YbnExBJfN6TKYZx+481KIUeoBgqkq7Nss=;
-        b=TSzE4xdmSfNSvjfiajst4xDi9NI3T1C89h1ii8TRjQf1tYU+ulUFj0GJMlz1M9AKVX
-         bAVR2VgKYw9IVtDmql2DxLV43ez/Hm3uFZMQFdwYtKvuVL1bFCkv9L/F/Xr01dMfS8Ay
-         P6fm0U73TZzo0OJfLz6VDzHaMf/Bt50nYy/bmcAySbDKo7cAjKtgX3QUiLRB4JTTJx+0
-         8HEXPX7scX7mJEhevLiwiVAOCLrxLj3tb919gmr/6o0MGXkf8an5wTfwFdHHlOR28lvE
-         OUBgvlefebrm1uIzIjOjRq1ZWH2CF9hxDTcrMecLyR0r/zYiNAoYM147lH1ZbdX0Igv6
-         JV5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=p5agTR8u41YbnExBJfN6TKYZx+481KIUeoBgqkq7Nss=;
-        b=CRa7SGd/xA6ZHnMJsPjfPW6ABtg0mzm5UBRK8IB8Np3wNjQK8cqV50jQLafR0QO3oc
-         YIXIBhw/Q5zmgr5KGVBm7qdZ6EzXC4C4gYB3DcMUc7l1vRhmB+QKDHhKLdoE1Vc4WjZh
-         eZrzAw4BMK7CIRncE1LnPr36bRYj6RDUi4C9eb3Ki1VNaR5gwoxnVz52whO41GJTcP/7
-         1TyRLDqy75fI9PWITa+lmmvfAn6aUmhUXJ3phvOJ0J5Q6z3vPQeDt/1mBpb+jRnwfJTk
-         uliRLiGYKMbJLvCJVMmbDxgmvH07EFOlIY+cI38ck7nRT2rTxg/eVa39enytODJAq6vt
-         KeLA==
-X-Gm-Message-State: AOAM532/z0Zn0+szzm2HwCXmJbdNB+P9Nj1JgyqhPqrqMnLoii4LuPqZ
-        aVZQMS6SLgB8CBjXdKAr0Sc=
-X-Google-Smtp-Source: ABdhPJyMJS3YOR+OsSzrI2oltWbfyDblAgWnyQW4o49wONq+CQKS1dhVHTCl7/xQqRjy2+av3F28zw==
-X-Received: by 2002:a63:5418:: with SMTP id i24mr5314055pgb.165.1607042760696;
-        Thu, 03 Dec 2020 16:46:00 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id g8sm2129677pgn.47.2020.12.03.16.45.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 16:45:59 -0800 (PST)
-Date:   Thu, 3 Dec 2020 16:45:56 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v5 9/9] net: dsa: microchip: ksz9477: add
- periodic output support
-Message-ID: <20201204004556.GB18560@hoboy.vegasvil.org>
-References: <20201203102117.8995-1-ceggers@arri.de>
- <20201203102117.8995-10-ceggers@arri.de>
- <20201203141255.GF4734@hoboy.vegasvil.org>
- <11406377.LS7tM95F4J@n95hx1g2>
+        id S1728881AbgLDAtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 19:49:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727402AbgLDAtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 19:49:20 -0500
+Date:   Fri, 4 Dec 2020 01:48:36 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607042919;
+        bh=ALXOyPfebBJQlTz6XnJVVSSbxU1dNeEUflYF1pxV420=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FYIespOGbYyJNPfXVKlA+xT/huznq/hHwA2HTQwu8KfJ7YaqSv8gf12Qyk8e687Jq
+         4HMzCd1lgTC9JfN8874GKQGuKLo14/PS1pfAhL/Ysn2I6FyFDCVmVIj/9WdXlxrUcp
+         1z2r9Pzm/96CUXoMnmR5j83roLJsxh8vyMMil3lxuVobOiQpYKYdMxdIaCcvJGhLvO
+         3eBpvb30Y2gmnO6Mv/NlfTXYmwTO+QCb7ux6/eK4VUqoMiEzPNcem7gBPz020yFCur
+         Ele0UbyV5kryCpdP9m8O+F1uJWrTcIO6nPgnvfZxdgPQJgvFfOF9W49ARNI5AVQrnX
+         VnAhJiEScZRKA==
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc:     Vladimir Vid <vladimir.vid@sartura.hr>, devicetree@vger.kernel.org,
+        a.heider@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tmn505@gmail.com,
+        sebastian.hesselbarth@gmail.com, andrew@lunn.ch,
+        jason@lakedaemon.net, robh+dt@kernel.org
+Subject: Re: [PATCH v5] arm64: dts: marvell: add DT for ESPRESSObin-Ultra
+Message-ID: <20201204004836.4quzvc7k5x2dm6dt@pali>
+References: <20201026184441.96395-1-vladimir.vid@sartura.hr>
+ <87sg8sjttk.fsf@BL-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <11406377.LS7tM95F4J@n95hx1g2>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87sg8sjttk.fsf@BL-laptop>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 04:36:26PM +0100, Christian Eggers wrote:
-> Should ptp_sysfs be extended with a "pulse" attribute with calls
-> enable() with only PTP_PEROUT_DUTY_CYCLE set?
+On Sunday 29 November 2020 12:17:27 Gregory CLEMENT wrote:
+> Hi Vladimir,
+> 
+> > This adds support for ESPRESSObin-Ultra from Globalscale.
+> >
+> > Specifications are similar to the base ESPRESSObin board, with main
+> > difference being being WAN port with PoE capability and 2 additional ethernet ports.
+> >
+> > Full specifications:
+> >
+> > 1x Marvell 64 bit Dual Core ARM A53 Armada 3700 SOC clocked up to 1.2Ghz
+> > 1x Topaz 6341 Networking Switch
+> > 1GB DDR4
+> > 8GB eMMC
+> > 1x WAN with 30W POE
+> > 4x Gb LAN
+> > 1x RTC Clock and battery
+> > 1x DC Jack
+> > 1x USB 3.0 Type A
+> > 1x USB 2.0 Type A
+> > 1x SIM NanoSIM card Slot
+> > 1x Power Button
+> > 4x LED
+> > 1x Reset button
+> > 1x microUSB for UART
+> > 1x M.2 2280 slot for memory
+> > 1x 2x2 802.11ac Wi-Fi
+> > 1x MiniPCIE slot for Wi-Fi (PCIe interface)
+> >
+> > Signed-off-by: Vladimir Vid <vladimir.vid@sartura.hr>
+> 
+> 
+> Applied on mvebu/dt64
+> 
+> I know that usb3 node is not yet enabled but we are a really close to the
+> end of the merge window for ARM so let's have this version in 5.11, and
+> then we can improve it in future version.
 
-Yes, that would make sense.  It would bring sysfs back to feature
-parity with the ioctls.
+Maybe you could include into commit message that USB3 support is
+currently missing? As from current commit message description it looks
+like it is there...
 
-Thanks,
-Richard
- 
+> Thanks,
+> 
+> Gregory
+> 
+> > ---
+> >
+> > v5 changes:
+> > - update ethernet-phy@1 to match reg value
+> >
+> > ---
+> >  arch/arm64/boot/dts/marvell/Makefile          |   1 +
+> >  .../marvell/armada-3720-espressobin-ultra.dts | 165 ++++++++++++++++++
+> >  2 files changed, 166 insertions(+)
+> >  create mode 100644 arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> >
+> > diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
+> > index 3e5f2e7a040c..094f451fdd1d 100644
+> > --- a/arch/arm64/boot/dts/marvell/Makefile
+> > +++ b/arch/arm64/boot/dts/marvell/Makefile
+> > @@ -3,6 +3,7 @@
+> >  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-db.dtb
+> >  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin.dtb
+> >  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-emmc.dtb
+> > +dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-ultra.dtb
+> >  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7.dtb
+> >  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7-emmc.dtb
+> >  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-turris-mox.dtb
+> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> > new file mode 100644
+> > index 000000000000..c5eb3604dd5b
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> > @@ -0,0 +1,165 @@
+> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > +/*
+> > + * Device Tree file for ESPRESSObin-Ultra board.
+> > + * Copyright (C) 2019 Globalscale technologies, Inc.
+> > + *
+> > + * Jason Hung <jhung@globalscaletechnologies.com>
+> > + */
+> > +
+> > +/dts-v1/;
+> > +
+> > +#include "armada-3720-espressobin.dtsi"
+> > +
+> > +/ {
+> > +	model = "Globalscale Marvell ESPRESSOBin Ultra Board";
+> > +	compatible = "globalscale,espressobin-ultra", "marvell,armada3720",
+> > +		     "marvell,armada3710";
+> > +
+> > +	aliases {
+> > +		/* ethernet1 is WAN port */
+> > +		ethernet1 = &switch0port5;
+> > +		ethernet2 = &switch0port1;
+> > +		ethernet3 = &switch0port2;
+> > +		ethernet4 = &switch0port3;
+> > +		ethernet5 = &switch0port4;
+> > +	};
+> > +
+> > +	reg_usb3_vbus: usb3-vbus {
+> > +		compatible = "regulator-fixed";
+> > +		regulator-name = "usb3-vbus";
+> > +		regulator-min-microvolt = <5000000>;
+> > +		regulator-max-microvolt = <5000000>;
+> > +		enable-active-high;
+> > +		gpio = <&gpionb 19 GPIO_ACTIVE_HIGH>;
+> > +	};
+> > +
+> > +	usb3_phy: usb3-phy {
+> > +		compatible = "usb-nop-xceiv";
+> > +		vcc-supply = <&reg_usb3_vbus>;
+> > +	};
+> > +
+> > +	gpio-leds {
+> > +		pinctrl-names = "default";
+> > +		compatible = "gpio-leds";
+> > +		/* No assigned functions to the LEDs by default */
+> > +		led1 {
+> > +			label = "ebin-ultra:blue:led1";
+> > +			gpios = <&gpionb 11 GPIO_ACTIVE_LOW>;
+> > +		};
+> > +		led2 {
+> > +			label = "ebin-ultra:green:led2";
+> > +			gpios = <&gpionb 12 GPIO_ACTIVE_LOW>;
+> > +		};
+> > +		led3 {
+> > +			label = "ebin-ultra:red:led3";
+> > +			gpios = <&gpionb 13 GPIO_ACTIVE_LOW>;
+> > +		};
+> > +		led4 {
+> > +			label = "ebin-ultra:yellow:led4";
+> > +			gpios = <&gpionb 14 GPIO_ACTIVE_LOW>;
+> > +		};
+> > +	};
+> > +};
+> > +
+> > +&sdhci0 {
+> > +	status = "okay";
+> > +};
+> > +
+> > +&sdhci1 {
+> > +	status = "disabled";
+> > +};
+> > +
+> > +&spi0 {
+> > +	flash@0 {
+> > +		spi-max-frequency = <108000000>;
+> > +		spi-rx-bus-width = <4>;
+> > +		spi-tx-bus-width = <4>;
+> > +
+> > +		partitions {
+> > +			compatible = "fixed-partitions";
+> > +			#address-cells = <1>;
+> > +			#size-cells = <1>;
+> > +
+> > +			partition@0 {
+> > +				label = "firmware";
+> > +				reg = <0x0 0x3e0000>;
+> > +			};
+> > +			partition@3e0000 {
+> > +				label = "hw-info";
+> > +				reg = <0x3e0000 0x10000>;
+> > +				read-only;
+> > +			};
+> > +			partition@3f0000 {
+> > +				label = "u-boot-env";
+> > +				reg = <0x3f0000 0x10000>;
+> > +			};
+> > +		};
+> > +	};
+> > +};
+> > +
+> > +&i2c0 {
+> > +	status = "okay";
+> > +	pinctrl-names = "default";
+> > +	pinctrl-0 = <&i2c1_pins>;
+> > +
+> > +	clock-frequency = <100000>;
+> > +
+> > +	rtc@51 {
+> > +		compatible = "nxp,pcf8563";
+> > +		reg = <0x51>;
+> > +	};
+> > +};
+> > +
+> > +&usb3 {
+> > +	usb-phy = <&usb3_phy>;
+> > +	status = "disabled";
+> > +};
+> > +
+> > +&mdio {
+> > +	extphy: ethernet-phy@1 {
+> > +		reg = <1>;
+> > +	};
+> > +};
+> > +
+> > +&switch0 {
+> > +	reg = <3>;
+> > +
+> > +	ports {
+> > +		switch0port1: port@1 {
+> > +			reg = <1>;
+> > +			label = "lan0";
+> > +			phy-handle = <&switch0phy0>;
+> > +		};
+> > +
+> > +		switch0port2: port@2 {
+> > +			reg = <2>;
+> > +			label = "lan1";
+> > +			phy-handle = <&switch0phy1>;
+> > +		};
+> > +
+> > +		switch0port3: port@3 {
+> > +			reg = <3>;
+> > +			label = "lan2";
+> > +			phy-handle = <&switch0phy2>;
+> > +		};
+> > +
+> > +		switch0port4: port@4 {
+> > +			reg = <4>;
+> > +			label = "lan3";
+> > +			phy-handle = <&switch0phy3>;
+> > +		};
+> > +
+> > +		switch0port5: port@5 {
+> > +			reg = <5>;
+> > +			label = "wan";
+> > +			phy-handle = <&extphy>;
+> > +			phy-mode = "sgmii";
+> > +		};
+> > +	};
+> > +
+> > +	mdio {
+> > +		switch0phy3: switch0phy3@14 {
+> > +			reg = <0x14>;
+> > +		};
+> > +	};
+> > +};
+> > -- 
+> > 2.27.0
+> >
+> 
+> -- 
+> Gregory Clement, Bootlin
+> Embedded Linux and Kernel engineering
+> http://bootlin.com
