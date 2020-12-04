@@ -2,218 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC082CF3AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CBC2CF3AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 19:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729871AbgLDSJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 13:09:50 -0500
-Received: from mga09.intel.com ([134.134.136.24]:54155 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728712AbgLDSJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:09:50 -0500
-IronPort-SDR: bUZ/Tw7Bd5Q/XUU01sJr4UGUyX9Z4k8jP/8LvelEp4w/DSjrenGDfOT8G+zrfQ8lCO3T++QOII
- uol50ZPZKJSQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="173571522"
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="173571522"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 10:09:08 -0800
-IronPort-SDR: bF2Q0m2vvf9MIP0Po5otKQu9A8lWEKPi6CFsYvenuAOYi9bNK7uEMMSrK/ndxM3nDUz8d9ixWU
- tfSTxRSQJIsw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="373990121"
-Received: from lkp-server02.sh.intel.com (HELO f74a175f0d75) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 04 Dec 2020 10:09:07 -0800
-Received: from kbuild by f74a175f0d75 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1klFVy-0000HQ-Jh; Fri, 04 Dec 2020 18:09:06 +0000
-Date:   Sat, 05 Dec 2020 02:08:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/core] BUILD SUCCESS
- fef92cd2bc04c64bb3743d40c0b4be47aedf9e23
-Message-ID: <5fca7b16.QbOKLdW/RfCztrM9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729298AbgLDSLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 13:11:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726330AbgLDSLX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:11:23 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E82C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 10:10:42 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id a16so10009004ejj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 10:10:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7TbFtICM9MnAP10o9hujRLIgAYJwsDBNhsbYS5a5Dto=;
+        b=SX1y7EcHXJayxKB8wtz/I8F9ALqJlaLjkODLmZJcstDxiZmULC5nPLi9CQSh9J+d1s
+         Ub4CCvLajGP8zKEzRIFEDx+9badI+tboymw1jJLi/0zFO511ABr2TD/mKEGoSm6gpZST
+         HgwsLdK10Rn26FMa6ma74KmX5TLQn+kc4PecOAtajNx7M8qtV512thjDI6NvD/Iuro3K
+         b6fDTClObrh4LdUWHhFRlbF12ULvTZWEGWBY+sCJ8j+v4QTPPvZylwOJ6P65jfmI2Rrk
+         NWSCE8jfmwVgt1Te99bn6n+tWhzCITNbEeQpX6rLPnEN0/JmBQ5INlXGZOTwMSTtcgSO
+         KKFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7TbFtICM9MnAP10o9hujRLIgAYJwsDBNhsbYS5a5Dto=;
+        b=ZToUTXpqL6twK9L/ohWIYRHeChYIu6Ph2mQN/5RmHVHlVrknXa/LX7o5+Z/c6FbZJU
+         6aG4VvPkL9VORiSxzEIkifb2Kj5KuR8+1rLiD+8pTuKEgcfBkaWf7FQtOFCzTsxXxAII
+         9DJs2eYLqkfKkfbFxd1Hnzuxnd0oArL8jVgQ8EEbdaIXiR2SflOe7r3/8nM8rcS4VI3W
+         rp7KXAhqyOpBGAUvU8CVCoUwC+gTp1SkJdRBoFzpyIb8SYRH2webrA1H+ouA1iZIkE5D
+         N2ZjaM9qg3FJVEHn6rcvkok+rUXi/AUAzqxPb7xzIESbVqOuQkCUePIedj0apz+DL84z
+         YNdg==
+X-Gm-Message-State: AOAM532BnBiiasmjAuW+C3onZsvPD6V0Nm+vKjyu6XeiVpOHFEpYEc5c
+        XKS/+n4MwM0nRiKSgORrVAndVuzzjEb6Gx91e63EGg==
+X-Google-Smtp-Source: ABdhPJwyUfWpho6yeil7W1EbhJnZVgB2REj45sCW4XZOBjgooF8hN9QNnxzvInK3hs8HyzZtXisHnOWp+/7+p9LG8y0=
+X-Received: by 2002:a17:906:d41:: with SMTP id r1mr8080974ejh.383.1607105441362;
+ Fri, 04 Dec 2020 10:10:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201204035953.GA17056@js1304-desktop> <CA+CK2bCD7XYyJB9TNZZeUMAuntotZopVYNjDXnyVZyzKe2_A1Q@mail.gmail.com>
+ <20201204161005.GD5487@ziepe.ca> <CA+CK2bCGGoBXg7FbhGMDdWRnePKFgvtsM_PJmA2qtMNsvPMZbg@mail.gmail.com>
+ <593822e5-4e1a-fdca-5500-4138d0f2b728@redhat.com>
+In-Reply-To: <593822e5-4e1a-fdca-5500-4138d0f2b728@redhat.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 4 Dec 2020 13:10:05 -0500
+Message-ID: <CA+CK2bA8GBWNMGR_5urNJm7KtX6Jo=bwjPgQvVXe9Q-RW-6Y8g@mail.gmail.com>
+Subject: Re: [PATCH 0/6] prohibit pinning pages in ZONE_MOVABLE
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Joonsoo Kim <js1304@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        mike.kravetz@oracle.com, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  timers/core
-branch HEAD: fef92cd2bc04c64bb3743d40c0b4be47aedf9e23  Merge tag 'timers-v5.11' of https://git.linaro.org/people/daniel.lezcano/linux into timers/core
+> > ZONE_MOVABLE can be configured via kernel parameter, or when memory
+> > nodes are onlined after hot-add; so this is something that admins
+> > configure. ZONE_MOVABLE is designed to gurantee memory hot-plug
+> > functionality, and not availability of THP, however, I did not know
+> > about the use case where some admins might configure ZONE_MOVABLE to
+> > increase availability of THP because pages are always migratable in
+> > them. The thing is, if we fragment ZONE_MOVABLE by pinning pages in
+> > it, the availability of THP also suffers.  We can migrate pages in
+> > ZONE_NORMAL, just not guaranteed, so we can create THP in ZONE_NORMAL
+> > as well, which is the usual case.
+>
+> Right, we should document this at some place to make admins aware of
+> this. Something like
+>
+> "Techniques that rely on long-term pinnings of memory (especially, RDMA
+> and vfio) are fundamentally problematic with ZONE_MOVABLE and,
+> therefore, memory hotunplug. Pinned pages cannot reside on ZONE_MOVABLE,
+> to guarantee that memory can still get hotunplugged - be aware that
+> pinning can fail even if there is plenty of free memory in ZONE_MOVABLE.
+> In addition, using ZONE_MOVABLE might make page pinning more expensive,
+> because pages have to be migrated off that zone first."
 
-elapsed time: 726m
+Thanks, I will add this.
 
-configs tested: 154
-configs skipped: 4
+>
+> BTW, you might also want to update the comment for ZONE_MOVABLE in
+> include/linux/mmzone.h at the end of this series, removing the special
+> case of pinned pages (1.) and maybe adding what happens when trying to
+> pin pages on ZONE_MOVABLE.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Will do it.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      tqm8xx_defconfig
-h8300                       h8s-sim_defconfig
-mips                      fuloong2e_defconfig
-ia64                          tiger_defconfig
-mips                           mtx1_defconfig
-mips                        qi_lb60_defconfig
-arm                           omap1_defconfig
-arm                           h5000_defconfig
-powerpc                 xes_mpc85xx_defconfig
-sh                           se7724_defconfig
-riscv                            allyesconfig
-powerpc                     tqm8548_defconfig
-arc                        nsimosci_defconfig
-powerpc                  mpc866_ads_defconfig
-m68k                          atari_defconfig
-mips                      bmips_stb_defconfig
-powerpc                     skiroot_defconfig
-mips                         tb0219_defconfig
-m68k                       m5475evb_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                     mpc512x_defconfig
-arm                         orion5x_defconfig
-powerpc                    socrates_defconfig
-um                             i386_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                       eiger_defconfig
-arm                         axm55xx_defconfig
-mips                     loongson1c_defconfig
-arm                     am200epdkit_defconfig
-powerpc                   currituck_defconfig
-nios2                               defconfig
-xtensa                generic_kc705_defconfig
-sh                        edosk7760_defconfig
-arm                        mini2440_defconfig
-alpha                               defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                      chrp32_defconfig
-sh                          urquell_defconfig
-arm                       netwinder_defconfig
-mips                            gpr_defconfig
-sh                          rsk7264_defconfig
-arm                         bcm2835_defconfig
-arm                            pleb_defconfig
-powerpc                     kilauea_defconfig
-arc                          axs103_defconfig
-arm                            zeus_defconfig
-arm                             pxa_defconfig
-mips                        workpad_defconfig
-mips                          ath25_defconfig
-arm                           sunxi_defconfig
-nds32                            alldefconfig
-powerpc                        fsp2_defconfig
-arm                          ep93xx_defconfig
-xtensa                  audio_kc705_defconfig
-sh                            hp6xx_defconfig
-arm                         shannon_defconfig
-mips                     decstation_defconfig
-arm                             ezx_defconfig
-arm                         assabet_defconfig
-sh                        sh7757lcr_defconfig
-sh                        edosk7705_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                        keystone_defconfig
-sh                           se7343_defconfig
-powerpc                     tqm8540_defconfig
-parisc                              defconfig
-arm                           corgi_defconfig
-arm                        vexpress_defconfig
-sh                   rts7751r2dplus_defconfig
-m68k                            q40_defconfig
-mips                           jazz_defconfig
-sparc64                             defconfig
-powerpc                    adder875_defconfig
-m68k                       m5249evb_defconfig
-arm                         mv78xx0_defconfig
-powerpc                     mpc83xx_defconfig
-sh                           se7619_defconfig
-mips                         db1xxx_defconfig
-powerpc                   lite5200b_defconfig
-arm                         s3c2410_defconfig
-powerpc64                        alldefconfig
-mips                       lemote2f_defconfig
-sh                     magicpanelr2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20201204
-x86_64               randconfig-a006-20201204
-x86_64               randconfig-a002-20201204
-x86_64               randconfig-a001-20201204
-x86_64               randconfig-a005-20201204
-x86_64               randconfig-a003-20201204
-i386                 randconfig-a005-20201204
-i386                 randconfig-a004-20201204
-i386                 randconfig-a001-20201204
-i386                 randconfig-a002-20201204
-i386                 randconfig-a006-20201204
-i386                 randconfig-a003-20201204
-i386                 randconfig-a014-20201204
-i386                 randconfig-a013-20201204
-i386                 randconfig-a011-20201204
-i386                 randconfig-a015-20201204
-i386                 randconfig-a012-20201204
-i386                 randconfig-a016-20201204
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a016-20201204
-x86_64               randconfig-a012-20201204
-x86_64               randconfig-a014-20201204
-x86_64               randconfig-a013-20201204
-x86_64               randconfig-a015-20201204
-x86_64               randconfig-a011-20201204
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thank you,
+Pasha
