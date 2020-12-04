@@ -2,149 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03212CE92B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB072CE92C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728652AbgLDIEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:04:54 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8643 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726669AbgLDIEy (ORCPT
+        id S1728811AbgLDIFt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Dec 2020 03:05:49 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2201 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726669AbgLDIFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:04:54 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnQFN28wZz15Kfk;
-        Fri,  4 Dec 2020 16:03:36 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 4 Dec 2020
- 16:04:01 +0800
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix race of pending_pages in
- decompression
-To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-CC:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        Daeho Jeong <daehojeong@google.com>
-References: <20201204072802.795397-1-daeho43@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <680c5cbe-d570-b20d-f478-28acbefd8ef5@huawei.com>
-Date:   Fri, 4 Dec 2020 16:04:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <20201204072802.795397-1-daeho43@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+        Fri, 4 Dec 2020 03:05:49 -0500
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CnQDJ6dNHz67LgZ;
+        Fri,  4 Dec 2020 16:02:40 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 4 Dec 2020 09:05:06 +0100
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2106.002;
+ Fri, 4 Dec 2020 09:05:05 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "mjg59@google.com" <mjg59@google.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+Subject: RE: [PATCH v3 06/11] evm: Ignore INTEGRITY_NOLABEL if no HMAC key is
+ loaded
+Thread-Topic: [PATCH v3 06/11] evm: Ignore INTEGRITY_NOLABEL if no HMAC key is
+ loaded
+Thread-Index: AQHWuAyPc3OXOTvUVE6QYcHvma97kKnl6NcAgADOOtA=
+Date:   Fri, 4 Dec 2020 08:05:05 +0000
+Message-ID: <3c628dc54804469597a72d03c33e8315@huawei.com>
+References: <20201111092302.1589-1-roberto.sassu@huawei.com>
+         <20201111092302.1589-7-roberto.sassu@huawei.com>
+ <b9f1a31e9b2dfb7a7167574a39652932263488e8.camel@linux.ibm.com>
+In-Reply-To: <b9f1a31e9b2dfb7a7167574a39652932263488e8.camel@linux.ibm.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.220.96.108]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/4 15:28, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Thursday, December 3, 2020 9:43 PM
+> Hi Roberto,
 > 
-> I found out f2fs_free_dic() is invoked in a wrong timing, but
-> f2fs_verify_bio() still needed the dic info and it triggered the
-> below kernel panic. It has been caused by the race condition of
-> pending_pages value between decompression and verity logic, when
-> the same compression cluster had been split in different bios.
-> By split bios, f2fs_verify_bio() ended up with decreasing
-> pending_pages value before it is reset to nr_cpages by
-> f2fs_decompress_pages() and caused the kernel panic.
+> On Wed, 2020-11-11 at 10:22 +0100, Roberto Sassu wrote:
+> > When a file is being created, LSMs can set the initial label with the
+> > inode_init_security hook. If no HMAC key is loaded, the new file will have
+> > LSM xattrs but not the HMAC.
+> >
+> > Unfortunately, EVM will deny any further metadata operation on new
+> files,
+> > as evm_protect_xattr() will always return the INTEGRITY_NOLABEL error.
+> This
+> > would limit the usability of EVM when only a public key is loaded, as
+> > commands such as cp or tar with the option to preserve xattrs won't work.
+> >
+> > Ignoring this error won't be an issue if no HMAC key is loaded, as the
+> > inode is locked until the post hook, and EVM won't calculate the HMAC on
+> > metadata that wasn't previously verified. Thus this patch checks if an
+> > HMAC key is loaded and if not, ignores INTEGRITY_NOLABEL.
 > 
-> [ 4416.564763] Unable to handle kernel NULL pointer dereference
->                 at virtual address 0000000000000000
-> ...
-> [ 4416.896016] Workqueue: fsverity_read_queue f2fs_verity_work
-> [ 4416.908515] pc : fsverity_verify_page+0x20/0x78
-> [ 4416.913721] lr : f2fs_verify_bio+0x11c/0x29c
-> [ 4416.913722] sp : ffffffc019533cd0
-> [ 4416.913723] x29: ffffffc019533cd0 x28: 0000000000000402
-> [ 4416.913724] x27: 0000000000000001 x26: 0000000000000100
-> [ 4416.913726] x25: 0000000000000001 x24: 0000000000000004
-> [ 4416.913727] x23: 0000000000001000 x22: 0000000000000000
-> [ 4416.913728] x21: 0000000000000000 x20: ffffffff2076f9c0
-> [ 4416.913729] x19: ffffffff2076f9c0 x18: ffffff8a32380c30
-> [ 4416.913731] x17: ffffffc01f966d97 x16: 0000000000000298
-> [ 4416.913732] x15: 0000000000000000 x14: 0000000000000000
-> [ 4416.913733] x13: f074faec89ffffff x12: 0000000000000000
-> [ 4416.913734] x11: 0000000000001000 x10: 0000000000001000
-> [ 4416.929176] x9 : ffffffff20d1f5c7 x8 : 0000000000000000
-> [ 4416.929178] x7 : 626d7464ff286b6b x6 : ffffffc019533ade
-> [ 4416.929179] x5 : 000000008049000e x4 : ffffffff2793e9e0
-> [ 4416.929180] x3 : 000000008049000e x2 : ffffff89ecfa74d0
-> [ 4416.929181] x1 : 0000000000000c40 x0 : ffffffff2076f9c0
-> [ 4416.929184] Call trace:
-> [ 4416.929187]  fsverity_verify_page+0x20/0x78
-> [ 4416.929189]  f2fs_verify_bio+0x11c/0x29c
-> [ 4416.929192]  f2fs_verity_work+0x58/0x84
-> [ 4417.050667]  process_one_work+0x270/0x47c
-> [ 4417.055354]  worker_thread+0x27c/0x4d8
-> [ 4417.059784]  kthread+0x13c/0x320
-> [ 4417.063693]  ret_from_fork+0x10/0x18
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
-> v2: merged verity_pages with pending_pages, and increased the
->      pending_pages count only if STEP_VERITY is set on bio
-> ---
->   fs/f2fs/compress.c | 2 --
->   fs/f2fs/data.c     | 2 ++
->   fs/f2fs/f2fs.h     | 2 +-
->   3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index 87090da8693d..832b19986caf 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -803,8 +803,6 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
->   	if (cops->destroy_decompress_ctx)
->   		cops->destroy_decompress_ctx(dic);
->   out_free_dic:
-> -	if (verity)
-> -		atomic_set(&dic->pending_pages, dic->nr_cpages);
->   	if (!verity)
->   		f2fs_decompress_end_io(dic->rpages, dic->cluster_size,
->   								ret, false);
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 42254d3859c7..b825d63cabdd 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -2290,6 +2290,8 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->   		ctx = bio->bi_private;
->   		if (!(ctx->enabled_steps & (1 << STEP_DECOMPRESS)))
->   			ctx->enabled_steps |= 1 << STEP_DECOMPRESS;
-> +		if (ctx->enabled_steps & (1 << STEP_VERITY))
-> +			atomic_inc(&dic->pending_pages);
+> I'm not sure what problem this patch is trying to solve.
+> evm_protect_xattr() is only called by evm_inode_setxattr() and
+> evm_inode_removexattr(), which first checks whether
+> EVM_ALLOW_METADATA_WRITES is enabled.
 
-Hmm.. have a glance at this, then f2fs_decompress_pages() will always return due
-to atomic_dec_return() is true? then f2fs_do_decompress_pages() will never be
-called?
+The idea is to also support EVM verification when only a public key
+is loaded. An advantage to do that is that for example we can prevent
+accidental metadata changes when the signature is portable.
 
-atomic_inc(dic->verity_pages) here and atomic_dec(dic->verity_pages) in
-f2fs_verify_bio()?
+Roberto
 
-	if (atomic_dec_return(dic->verity_pages))
-		continue;
-
-Thanks,
-
->   
->   		inc_page_count(sbi, F2FS_RD_DATA);
->   		f2fs_update_iostat(sbi, FS_DATA_READ_IO, F2FS_BLKSIZE);
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index 94d16bde5e24..a9ee7921c7ec 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -1340,7 +1340,7 @@ struct decompress_io_ctx {
->   	struct compress_data *cbuf;	/* virtual mapped address on cpages */
->   	size_t rlen;			/* valid data length in rbuf */
->   	size_t clen;			/* valid data length in cbuf */
-> -	atomic_t pending_pages;		/* in-flight compressed page count */
-> +	atomic_t pending_pages;		/* in-flight compressed + verity page count */
->   	bool failed;			/* indicate IO error during decompression */
->   	void *private;			/* payload buffer for specified decompression algorithm */
->   	void *private2;			/* extra payload buffer */
-> 
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
