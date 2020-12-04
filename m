@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB34A2CF70D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B65962CF70F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 23:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727285AbgLDWpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 17:45:24 -0500
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:11141 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgLDWpY (ORCPT
+        id S1730766AbgLDWp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 17:45:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728734AbgLDWpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 17:45:24 -0500
+        Fri, 4 Dec 2020 17:45:25 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E2DC0613D1;
+        Fri,  4 Dec 2020 14:44:45 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id p6so3947716plr.7;
+        Fri, 04 Dec 2020 14:44:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1607121924; x=1638657924;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=3il6FjeKs2rcTJCknFi2c/qsb/C2u0m4UBCDycL616w=;
-  b=peHrPywVKg0PZx4YLMxmOOpPhiZ2X0lLLsBImK4whea0w+TsOO3UMaT7
-   5D1oFMPqCjuRf5V6DwjWrkqhqJ+XmfIkd8+bn9rPnP0wEhu0IW5KPKTYU
-   MLkeUc2yIgoxuiv1Md9dAjrVrnw+1hnC+N9gmLl/c9+asr83CBAs8Olkj
-   I=;
-X-IronPort-AV: E=Sophos;i="5.78,393,1599523200"; 
-   d="scan'208";a="93632381"
-Subject: Re: [PATCH v3 1/5] x86/mm: change l1d flush runtime prctl behaviour
-Thread-Topic: [PATCH v3 1/5] x86/mm: change l1d flush runtime prctl behaviour
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 04 Dec 2020 22:44:36 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id 318BEA068E;
-        Fri,  4 Dec 2020 22:44:31 +0000 (UTC)
-Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 4 Dec 2020 22:44:31 +0000
-Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
- EX13d01UWB002.ant.amazon.com (10.43.161.136) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 4 Dec 2020 22:44:31 +0000
-Received: from EX13D01UWB002.ant.amazon.com ([10.43.161.136]) by
- EX13d01UWB002.ant.amazon.com ([10.43.161.136]) with mapi id 15.00.1497.006;
- Fri, 4 Dec 2020 22:44:31 +0000
-From:   "Singh, Balbir" <sblbir@amazon.com>
-To:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>
-Thread-Index: AQHWxIrmGqN19GOE6EeQuf3n0mKQb6nnef0AgAAaxYA=
-Date:   Fri, 4 Dec 2020 22:44:31 +0000
-Message-ID: <648c2e023a6be09e331eece1a741b573c3fab98a.camel@amazon.com>
-References: <20201127065938.8200-1-sblbir@amazon.com>
-         <20201127065938.8200-2-sblbir@amazon.com>
-         <87r1o59t5f.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87r1o59t5f.fsf@nanos.tec.linutronix.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.160.67]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F15BFFB3CC0BDE44966908F9568DF676@amazon.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:in-reply-to:references:user-agent:date
+         :message-id:mime-version;
+        bh=yuYclua/K6G1/NzZklfhnByGsvXi5uYNWph4XL2hSIs=;
+        b=jGEvaLZ55EZaXGmYyljajBzGveSvX8t6YtByTv0yzn5xEk0mNTJgF7uyHpKEzjdV/v
+         nJl3bg0njIZuBPeuyDtaVdEOBu86zM8qC7bEtrPJ6bIfDiTN6VZne6VYV/qMr7E6iY41
+         aTyrl85v6Ii0bCj5oNlOz5phachxznzAkgqCFEAyT/AzgmT3ZqSRy7vHr8rF1zaJ2UFE
+         I8i2KgFpHe+BNsy9KIZ0Fn53ocC+1KyI6hr+HrURAoDJ449GCTHkuNwFfIq/bdyE/ICy
+         bIdlux3DXZPAjIqcjNq1N08wJAE2K+ybGKzHnrkoGFWZxBGh+ewBAd986wx0iNmKIv4p
+         Jhhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references
+         :user-agent:date:message-id:mime-version;
+        bh=yuYclua/K6G1/NzZklfhnByGsvXi5uYNWph4XL2hSIs=;
+        b=r3dfBph2XwHycJJpcYjFFRsRsyCUJnws7PmCLPHhkuQ7IiWJVtpvSb79Xfi18G2H0P
+         aRxG2JOGV2Iyg+rTtquAviHnb+2QiGJbKsiEHS1YNL34lYnvM7SUJP4B3bY0sL8xhF2t
+         +3sfWz7qc+Vpd8J9D+uTfk+0m8/uX6Y0mj/rhpEZP2W4acdaWfe+TVr9GRyYIMZVk4aM
+         /6Ntad6NQ8l55MDg6Jly3lDRAbF0dkCvfeMsaNCkFoPQ9aLP61qws6KGWlpBqThZ61/l
+         AKS/Cq2isaiKdgnd82QOw5IItnXFuDeYdAfw6qMokU2tM7CRLcgtf15UcrYJgmPGxd8n
+         6nlg==
+X-Gm-Message-State: AOAM533ufg621CQdS9DEBHiFTRAENiY6immUR4GShOV1E4ZEszvEZc4Z
+        tgWEVDBjiaR30IlRO0AMUhg=
+X-Google-Smtp-Source: ABdhPJzobywerg8vaX5EtSuLsD9/y1ZfSYBHaXKoc9X8ALE2TfXiatvkFUNK1lvdB13oZaUEAKWGng==
+X-Received: by 2002:a17:90b:4394:: with SMTP id in20mr3377414pjb.34.1607121885363;
+        Fri, 04 Dec 2020 14:44:45 -0800 (PST)
+Received: from localhost ([2405:6580:31a1:500:1ac0:4dff:fe39:5426])
+        by smtp.gmail.com with ESMTPSA id y23sm3710809pje.41.2020.12.04.14.44.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 14:44:44 -0800 (PST)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     rjw@rjwysocki.net
+Cc:     wei.huang2@amd.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, bp@alien8.de, x86@kernel.org
+Subject: Re: [RFC PATCH 0/4] Add processor to the ignore PSD override list
+In-Reply-To: <20201125144847.3920-1-punitagrawal@gmail.com> (Punit Agrawal's
+        message of "Wed, 25 Nov 2020 23:48:43 +0900")
+References: <20201125144847.3920-1-punitagrawal@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+Date:   Sat, 05 Dec 2020 07:44:41 +0900
+Message-ID: <87zh2tp4x2.fsf@stealth>
 MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTEyLTA0IGF0IDIyOjA3ICswMTAwLCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6
-DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
-Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
-IHlvdSBjYW4gY29uZmlybSB0aGUgc2VuZGVyIGFuZCBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUu
-DQo+IA0KPiANCj4gDQo+IE9uIEZyaSwgTm92IDI3IDIwMjAgYXQgMTc6NTksIEJhbGJpciBTaW5n
-aCB3cm90ZToNCj4gDQo+ID4gRGV0ZWN0aW9uIG9mIHRhc2sgYWZmaW5pdGllcyBhdCBBUEkgb3B0
-LWluIHRpbWUgaXMgbm90IHRoZSBiZXN0DQo+ID4gYXBwcm9hY2gsIHRoZSBhcHByb2FjaCBpcyB0
-byBraWxsIHRoZSB0YXNrIGlmIGl0IHJ1bnMgb24gYQ0KPiA+IFNNVCBlbmFibGUgY29yZS4gVGhp
-cyBpcyBiZXR0ZXIgdGhhbiBub3QgZmx1c2hpbmcgdGhlIEwxRCBjYWNoZQ0KPiA+IHdoZW4gdGhl
-IHRhc2sgc3dpdGNoZXMgZnJvbSBhIG5vbi1TTVQgY29yZSB0byBhbiBTTVQgZW5hYmxlZCBjb3Jl
-Lg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IEJhbGJpciBTaW5naCA8c2JsYmlyQGFtYXpvbi5j
-b20+DQo+ID4gLS0tDQo+ID4gIGFyY2gveDg2L2luY2x1ZGUvYXNtL3Byb2Nlc3Nvci5oIHwgIDIg
-KysNCj4gPiAgYXJjaC94ODYva2VybmVsL3NtcGJvb3QuYyAgICAgICAgfCAxMSArKysrKysrKysr
-LQ0KPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkN
-Cj4gDQo+IFN1YmplY3QsIGNoYW5nZWxvZyBtYXRjaCBidXQgcGF0Y2ggY29udGVudCBub3Qgc28g
-bXVjaCA6KQ0KPiANCg0KVGhlIGNoYW5nZWxvZyBqdW1wZWQgYmV0d2VlbiAxLzMgb2YgbXkgZml4
-dXAgYW5kIDEvNSBvZiBteQ0KbmV3IHBvc3QgOikNCg0KVGhlIGNvcnJlY3QgY2hhbmdlbG9nIGlz
-IGJlbG93LCB3aGljaCBJIHNoYWxsIGZpeA0KDQp4ODYvc21wOiBBZGQgYSBwZXItY3B1IHZpZXcg
-b2YgU01UIHN0YXRlDQoNCkEgbmV3IGZpZWxkIHNtdF9hY3RpdmUgaW4gY3B1aW5mb194ODYgaWRl
-bnRpZmllcyBpZiB0aGUgY3VycmVudCBjb3JlL2NwdQ0KaXMgaW4gU01UIG1vZGUgb3Igbm90LiBU
-aGlzIGNhbiBiZSB2ZXJ5IGhlbHBmdWwgaWYgdGhlIHN5c3RlbSBoYXMgc29tZQ0Kb2YgaXRzIGNv
-cmVzIHdpdGggdGhyZWFkcyBvZmZsaW5lZCBhbmQgY2FuIGJlIHVzZWQgZm9yIGNhc2VzIHdoZXJl
-DQphY3Rpb24gaXMgdGFrZW4gYmFzZWQgb24gdGhlIHN0YXRlIG9mIFNNVC4gVGhlIGZvbGxvdyB1
-cCBwYXRjaGVzIHVzZQ0KdGhpcyBmZWF0dXJlLg0KDQpTdWdnZXN0ZWQtYnk6IFRob21hcyBHbGVp
-eG5lciA8dGdseEBsaW51dHJvbml4LmRlPg0KU2lnbmVkLW9mZi1ieTogQmFsYmlyIFNpbmdoIDxz
-YmxiaXJAYW1hem9uLmNvbT4NClNpZ25lZC1vZmYtYnk6IFRob21hcyBHbGVpeG5lciA8dGdseEBs
-aW51dHJvbml4LmRlPg0KTGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDIwMDcyOTAw
-MTEwMy42NDUwLTItc2JsYmlyQGFtYXpvbi5jb20NCi0tLQ0K
+Hi Rafael,
+
+Punit Agrawal <punitagrawal@gmail.com> writes:
+
+> Hi,
+>
+> While looking into Giovanni's patches to enable frequency invariance
+> on AMD systems[0], I noticed an issue with initialising frequency
+> domain information on a recent AMD APU.
+>
+> Patch 1 refactors the test to ignore firmware provided frequency
+> domain into a separate function.
+>
+> Patch 2 adds said APU (Family: 0x17, Model: 0x60, Stepping: 0x01) to
+> the list of CPUs for which the PSD override is ignored. I am not quite
+> happy with having to special case a particular CPU but also couldn't
+> find any documentation to help identify the CPUs that don't need the
+> override.
+
+Are you be OK to pick the first two patches if there are no issues?
+
+Thanks,
+Punit
+
+
+> Patch 3 and 4 are somewhat independent and a first step towards
+> improving the situation with regards to the use of raw identifiers for
+> AMD processors throughout the kernel.
+>
+> All feedback welcome.
+>
+> Thanks,
+> Punit
+>
+> [0] https://lore.kernel.org/linux-acpi/20201112182614.10700-1-ggherdovich@suse.cz/
+>
+> Punit Agrawal (4):
+>   cpufreq: acpi-cpufreq: Re-factor overriding ACPI PSD
+>   cpufreq: acpi-cpufreq: Add processor to the ignore PSD override list
+>   x86/cpu: amd: Define processor families
+>   cpufreq: acpi-cpufreq: Use identifiers for AMD processor family
+>
+>  arch/x86/include/asm/amd-family.h    | 18 ++++++++++++++++++
+>  arch/x86/include/asm/cpu_device_id.h |  2 ++
+>  drivers/cpufreq/acpi-cpufreq.c       | 24 +++++++++++++++++++++---
+>  3 files changed, 41 insertions(+), 3 deletions(-)
+>  create mode 100644 arch/x86/include/asm/amd-family.h
