@@ -2,155 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFB62CED68
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD0E2CED6F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728737AbgLDLrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:47:20 -0500
-Received: from mga11.intel.com ([192.55.52.93]:58576 "EHLO mga11.intel.com"
+        id S1730065AbgLDLrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:47:52 -0500
+Received: from mga09.intel.com ([134.134.136.24]:23463 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727100AbgLDLrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:47:18 -0500
-IronPort-SDR: 6O3PvRfDTG3ErnCOeapQceG0wI9dCTLys2MAn4LnuSnfP83fBmtQgj0EbmaKk6ltubhl4j2thT
- obkKr8zWry1A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="169857506"
+        id S1729971AbgLDLrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 06:47:51 -0500
+IronPort-SDR: z0wxT/YFD4Isl/H/t7CN07hlH2yT2HkAf2yiDnqDWUZ1BRXSydXNMwBGi75R2aMY/Ag7H3NDDa
+ YRyplyJDkjpw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="173519530"
 X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="169857506"
+   d="scan'208";a="173519530"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:45:37 -0800
-IronPort-SDR: slZITTdZZgS3TJf6ncwEHOUcWPDqpSd03g7ZcabsatqOfCMNKSDL+aDwvNNYba732ekCMsLipC
- j1fMqV9PYD6g==
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:46:10 -0800
+IronPort-SDR: b/EZCUkSMIKhXp9sytwU2rgnnqY79FSByzTHVkslKxyrfy05FKPwO4H42c2Jne3p6e1VPC/su8
+ cq4slRisNJ7Q==
 X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="482361261"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:45:34 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 5DF3720676; Fri,  4 Dec 2020 13:45:32 +0200 (EET)
-Date:   Fri, 4 Dec 2020 13:45:32 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: media: i2c: add OV02A10 image sensor driver
-Message-ID: <20201204114532.GT852@paasikivi.fi.intel.com>
-References: <9af089ea-2532-68ac-5d22-97a669ccec91@canonical.com>
- <CAHp75Ve7Sdf=Zy5N1LN_w22=YwPgWWR-FZtrQcAkOF=ViT2Kbw@mail.gmail.com>
- <8eb453c7-a221-e741-5fe5-655e59075f34@canonical.com>
- <CAHp75VffBjhvuZ1Uy5Eo5qSiZ4w-+dhH5cR_XgmqGvxtrMd3uQ@mail.gmail.com>
+   d="scan'208";a="331189433"
+Received: from spandruv-mobl.amr.corp.intel.com ([10.254.181.204])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:46:09 -0800
+Message-ID: <a921aecf97915bd7c618e99e8959f6bf60ea7f6d.camel@linux.intel.com>
+Subject: Re: add custom hinge sensor support
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Ye Xiang <xiang.ye@intel.com>, jikos@kernel.org, jic23@kernel.org
+Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 04 Dec 2020 03:46:08 -0800
+In-Reply-To: <20201203035352.13918-1-xiang.ye@intel.com>
+References: <20201203035352.13918-1-xiang.ye@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VffBjhvuZ1Uy5Eo5qSiZ4w-+dhH5cR_XgmqGvxtrMd3uQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 08:30:03PM +0200, Andy Shevchenko wrote:
-> On Thu, Dec 3, 2020 at 8:24 PM Colin Ian King <colin.king@canonical.com> wrote:
-> > On 03/12/2020 18:10, Andy Shevchenko wrote:
-> > > On Thu, Dec 3, 2020 at 8:03 PM Colin Ian King <colin.king@canonical.com> wrote:
-> > >
-> > >> Static analysis on linux-next with Coverity has detected an issue with
-> > >> the following commit:
-> > >
-> > > If you want to fix it properly, see my comments below...
-> > >
-> > >> 529 static int ov02a10_s_stream(struct v4l2_subdev *sd, int on)
-> > >> 530 {
-> > >> 531        struct ov02a10 *ov02a10 = to_ov02a10(sd);
-> > >> 532        struct i2c_client *client =
-> > >> v4l2_get_subdevdata(&ov02a10->subdev);
-> > >>
-> > >>    1. var_decl: Declaring variable ret without initializer.
-> > >>
-> > >> 533        int ret;
-> > >> 534
-> > >> 535        mutex_lock(&ov02a10->mutex);
-> > >> 536
-> > >>
-> > >>    2. Condition ov02a10->streaming == on, taking true branch.
-> > >>
-> > >> 537        if (ov02a10->streaming == on)
-> > >>
-> > >>    3. Jumping to label unlock_and_return.
-> > >>
-> > >> 538                goto unlock_and_return;
-> > >> 539
-> > >> 540        if (on) {
-> > >> 541                ret = pm_runtime_get_sync(&client->dev);
-> > >> 542                if (ret < 0) {
-> > >
-> > >> 543                        pm_runtime_put_noidle(&client->dev);
-> > >> 544                        goto unlock_and_return;
-> > >
-> > > Instead of two above:
-> > >                        goto err_rpm_put;
-> > >
-> > >> 545                }
-> > >> 546
-> > >> 547                ret = __ov02a10_start_stream(ov02a10);
-> > >> 548                if (ret) {
-> > >> 549                        __ov02a10_stop_stream(ov02a10);
-> > >> 550                        ov02a10->streaming = !on;
-> > >> 551                        goto err_rpm_put;
-> > >> 552                }
-> > >> 553        } else {
-> > >> 554                __ov02a10_stop_stream(ov02a10);
-> > >> 555                pm_runtime_put(&client->dev);
-> > >> 556        }
-> > >> 557
-> > >> 558        ov02a10->streaming = on;
-> > >
-> > > (1)
-> > >
-> > >> 559        mutex_unlock(&ov02a10->mutex);
-> > >> 560
-> > >> 561        return 0;
-> > >> 562
-> > >> 563 err_rpm_put:
-> > >> 564        pm_runtime_put(&client->dev);
-> > >
-> > >> 565 unlock_and_return:
-> > >
-> > > Should be moved to (1).
-> > >
-> > >> 566        mutex_unlock(&ov02a10->mutex);
-> > >> 567
-> > >>
-> > >> Uninitialized scalar variable (UNINIT)
-> > >>     4. uninit_use: Using uninitialized value ret.
-> > >>
-> > >> 568        return ret;
-> > >> 569 }
-> > >>
-> > >> Variable ret has not been initialized, so the error return value is a
-> > >> garbage value. It should be initialized with some appropriate negative
-> > >> error code, or ret could be removed and the return should return a
-> > >> literal value of a error code.
-> > >>
-> > >> I was unsure what value is appropriate to fix this, so instead I'm
-> > >> reporting this issue.
-> > >
-> > Not sure I fully understand how that fixes it.
+On Thu, 2020-12-03 at 11:53 +0800, Ye Xiang wrote:
+> Here three separate iio devices are presented which presents angle
+> for
+> hinge, keyboard and screen.
+You are presenting one IIO device now with three channels.
+
 > 
-> If you are not sure and have no means to test, then don't bother. This
-> is not the priority driver anyway.
+> This driver works on devices with Intel integrated sensor hub, where
+> hinge sensor is presented using a custom sensor usage id.
+> 
+> Here the angle is presented in degrees, which is converted to
+> radians.
+> 
+> Changes since v2:
+>   - use 1 iio device instead of 3 for hinge sensor.
+>   - use indexed channel instead of modified channel and added channel
+>     labels.
+>   - remove 2,3 patch in last version, add a document patch to
+> describe the
+>     hinge channels.
+>   - hid-sensor-custom: use meaningful return value in 
+>     get_known_custom_sensor_index and checked in call side.
+>   - hid-sensor-ids.h: use HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(x)
+> to 
+>     define custom sensor value.
+> 
+> Changes since v1:
+>   - fixed errors reported by lkp
+> 
+> Ye Xiang (3):
+>   HID: hid-sensor-custom: Add custom sensor iio support
+>   iio: hid-sensors: Add hinge sensor driver
+>   iio:Documentation: Add documentation for hinge sensor channels
+> 
+>  Documentation/ABI/testing/sysfs-bus-iio       |  17 +
+>  drivers/hid/hid-sensor-custom.c               | 181 ++++++++
+>  .../hid-sensors/hid-sensor-attributes.c       |   2 +
+>  drivers/iio/position/Kconfig                  |  16 +
+>  drivers/iio/position/Makefile                 |   1 +
+>  .../position/hid-sensor-custom-intel-hinge.c  | 393
+> ++++++++++++++++++
+>  include/linux/hid-sensor-ids.h                |  14 +
+>  7 files changed, 624 insertions(+)
+>  create mode 100644 drivers/iio/position/hid-sensor-custom-intel-
+> hinge.c
+> 
 
-Arnd sent a patch to address this:
-
-<URL:https://patchwork.linuxtv.org/project/linux-media/patch/20201204082037.1658297-1-arnd@kernel.org/>
-
--- 
-Sakari Ailus
