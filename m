@@ -2,392 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87132CE349
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC472CE389
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 01:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731261AbgLDABp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 19:01:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728063AbgLDABo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 19:01:44 -0500
-Date:   Thu, 3 Dec 2020 18:01:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607040062;
-        bh=TFeruPkgbrSDGbzzbRUgiuSOMyk5TmQH2Xk0ks8OuLI=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=RBVSuwd9iPqp64UZa1U3c9mdkVt2FhO1qP51apmg1x6OyvkCyZHF6eVJqgoEf89fX
-         YIp1+gLW9XwOttLDxf+D1upX29fddCE5bNFxXxgwrkzUwW9WoChor3KIuNYb+vgx3R
-         +TubFcCeoPmUZuvt5/rlCsM5nOjhDp+BR8SDOQOotJfhRXD3X0sAldAG9l00bcWqMp
-         fL2FIxljMNfBV+HHxoTHB3p0PlTzuQVoVKfkOZPYPjHGeiuHWBLTREMYFx+o/kLWfE
-         6zvBczfHDopnW7GOgOtahtRuHZ5Xw8t0biHSfKKmzP7tLBlUfVj6Y4gkZcfopli3a0
-         bb++lD5Jwo6ZA==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Kelley, Sean V" <sean.v.kelley@intel.com>
-Cc:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "xerces.zhao@gmail.com" <xerces.zhao@gmail.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>,
-        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v12 12/15] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
-Message-ID: <20201204000100.GA1606573@bjorn-Precision-5520>
+        id S2388950AbgLDAC1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Dec 2020 19:02:27 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2391 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388523AbgLDAC0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 19:02:26 -0500
+Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4CnCXf671Nz50N9;
+        Fri,  4 Dec 2020 08:01:06 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Fri, 4 Dec 2020 08:01:41 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 4 Dec 2020 08:01:41 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
+ Fri, 4 Dec 2020 08:01:41 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Muchun Song <songmuchun@bytedance.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
+        "pawan.kumar.gupta@linux.intel.com" 
+        <pawan.kumar.gupta@linux.intel.com>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "oneukum@suse.com" <oneukum@suse.com>,
+        "anshuman.khandual@arm.com" <anshuman.khandual@arm.com>,
+        "jroedel@suse.de" <jroedel@suse.de>,
+        "almasrymina@google.com" <almasrymina@google.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "mhocko@suse.com" <mhocko@suse.com>
+CC:     "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: RE: [PATCH v7 13/15] mm/hugetlb: Add a kernel parameter
+ hugetlb_free_vmemmap
+Thread-Topic: [PATCH v7 13/15] mm/hugetlb: Add a kernel parameter
+ hugetlb_free_vmemmap
+Thread-Index: AQHWxyyEW8/tZjAAjUGQxE1fk3rBGKnmEXCA
+Date:   Fri, 4 Dec 2020 00:01:41 +0000
+Message-ID: <a6cd4183b9bf4e72b649a271b4843f89@hisilicon.com>
+References: <20201130151838.11208-1-songmuchun@bytedance.com>
+ <20201130151838.11208-14-songmuchun@bytedance.com>
+In-Reply-To: <20201130151838.11208-14-songmuchun@bytedance.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6E339ABE-2F55-486B-833A-BDDAF27A114D@intel.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 12:51:40AM +0000, Kelley, Sean V wrote:
-> > On Dec 2, 2020, at 3:44 PM, Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Fri, Nov 20, 2020 at 04:10:33PM -0800, Sean V Kelley wrote:
-> >> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> >> 
-> >> When attempting error recovery for an RCiEP associated with an RCEC device,
-> >> there needs to be a way to update the Root Error Status, the Uncorrectable
-> >> Error Status and the Uncorrectable Error Severity of the parent RCEC.  In
-> >> some non-native cases in which there is no OS-visible device associated
-> >> with the RCiEP, there is nothing to act upon as the firmware is acting
-> >> before the OS.
-> >> 
-> >> Add handling for the linked RCEC in AER/ERR while taking into account
-> >> non-native cases.
-> >> 
-> >> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-> >> Link: https://lore.kernel.org/r/20201002184735.1229220-12-seanvk.dev@oregontracks.org
-> >> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> >> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> >> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> >> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> >> ---
-> >> drivers/pci/pcie/aer.c | 46 +++++++++++++++++++++++++++++++-----------
-> >> drivers/pci/pcie/err.c | 20 +++++++++---------
-> >> 2 files changed, 44 insertions(+), 22 deletions(-)
-> >> 
-> >> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> >> index 0ba0b47ae751..51389a6ee4ca 100644
-> >> --- a/drivers/pci/pcie/aer.c
-> >> +++ b/drivers/pci/pcie/aer.c
-> >> @@ -1358,29 +1358,51 @@ static int aer_probe(struct pcie_device *dev)
-> >>  */
-> >> static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
-> >> {
-> >> -	int aer = dev->aer_cap;
-> >> +	int type = pci_pcie_type(dev);
-> >> +	struct pci_dev *root;
-> >> +	int aer = 0;
-> >> +	int rc = 0;
-> >> 	u32 reg32;
-> >> -	int rc;
-> >> 
-> >> -	if (pcie_aer_is_native(dev)) {
-> >> +	if (type == PCI_EXP_TYPE_RC_END)
-> >> +		/*
-> >> +		 * The reset should only clear the Root Error Status
-> >> +		 * of the RCEC. Only perform this for the
-> >> +		 * native case, i.e., an RCEC is present.
-> >> +		 */
-> >> +		root = dev->rcec;
-> >> +	else
-> >> +		root = dev;
-> >> +
-> >> +	if (root)
-> >> +		aer = dev->aer_cap;
-> >> +
-> >> +	if ((aer) && pcie_aer_is_native(dev)) {
-> >> 		/* Disable Root's interrupt in response to error messages */
-> >> -		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> >> +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> >> 		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
-> >> -		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> >> +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> >> 	}
-> >> 
-> >> -	rc = pci_bus_error_reset(dev);
-> >> -	pci_info(dev, "Root Port link has been reset (%d)\n", rc);
-> >> +	if (type == PCI_EXP_TYPE_RC_EC || type == PCI_EXP_TYPE_RC_END) {
-> >> +		if (pcie_has_flr(dev)) {
-> >> +			rc = pcie_flr(dev);
-> >> +			pci_info(dev, "has been reset (%d)\n", rc);
-> > 
-> > Maybe:
-> > 
-> >  +             } else {
-> >  +                     rc = -ENOTTY;
-> >  +                     pci_info(dev, "not reset (no FLR support)\n");
-> > 
-> > Or do we want to pretend the device was reset and return
-> > PCI_ERS_RESULT_RECOVERED?
+
+
+> -----Original Message-----
+> From: Muchun Song [mailto:songmuchun@bytedance.com]
+> Sent: Tuesday, December 1, 2020 4:19 AM
+> To: corbet@lwn.net; mike.kravetz@oracle.com; tglx@linutronix.de;
+> mingo@redhat.com; bp@alien8.de; x86@kernel.org; hpa@zytor.com;
+> dave.hansen@linux.intel.com; luto@kernel.org; peterz@infradead.org;
+> viro@zeniv.linux.org.uk; akpm@linux-foundation.org; paulmck@kernel.org;
+> mchehab+huawei@kernel.org; pawan.kumar.gupta@linux.intel.com;
+> rdunlap@infradead.org; oneukum@suse.com; anshuman.khandual@arm.com;
+> jroedel@suse.de; almasrymina@google.com; rientjes@google.com;
+> willy@infradead.org; osalvador@suse.de; mhocko@suse.com; Song Bao Hua (Barry
+> Song) <song.bao.hua@hisilicon.com>
+> Cc: duanxiongchun@bytedance.com; linux-doc@vger.kernel.org;
+> linux-kernel@vger.kernel.org; linux-mm@kvack.org;
+> linux-fsdevel@vger.kernel.org; Muchun Song <songmuchun@bytedance.com>
+> Subject: [PATCH v7 13/15] mm/hugetlb: Add a kernel parameter
+> hugetlb_free_vmemmap
 > 
-> We are currently doing the latter now with the default of rc = 0
-> above and so  I’m not sure the extra detail here on the absence of
-> FLR support is of value.
-
-So to make sure I understand the proposal here, for RCECs and RCiEPs
-that don't support FLR, you're saying you want to continue silently
-and return PCI_ERS_RESULT_RECOVERED and let the drivers assume their
-device was reset when it was not?
-
-> >> +	} else {
-> >> +		rc = pci_bus_error_reset(dev);
-> >> +		pci_info(dev, "Root Port link has been reset (%d)\n", rc);
-> >> +	}
-> >> 
-> >> -	if (pcie_aer_is_native(dev)) {
-> >> +	if ((aer) && pcie_aer_is_native(dev)) {
-> >> 		/* Clear Root Error Status */
-> >> -		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> >> -		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, reg32);
-> >> +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> >> +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
-> >> 
-> >> 		/* Enable Root Port's interrupt in response to error messages */
-> >> -		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> >> +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> >> 		reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
-> >> -		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> >> +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> >> 	}
-> >> 
-> >> 	return rc ? PCI_ERS_RESULT_DISCONNECT : PCI_ERS_RESULT_RECOVERED;
-
-> >> @@ -164,8 +164,14 @@ static void pci_walk_bridge(struct pci_dev *bridge,
-> >> 			    int (*cb)(struct pci_dev *, void *),
-> >> 			    void *userdata)
-> >> {
-> >> +	/*
-> >> +	 * In a non-native case where there is no OS-visible reporting
-> >> +	 * device the bridge will be NULL, i.e., no RCEC, no Downstream Port.
-> > 
-> > I don't quite understand this comment.  I see that in the non-native
-> > case, the reporting device may not be OS-visible.  But I don't
-> > understand why the comment is *here*.
-> > 
-> > If "bridge" can be NULL here, we should test that before dereferencing
-> > "bridge->subordinate".
+> Add a kernel parameter hugetlb_free_vmemmap to disable the feature of
+> freeing unused vmemmap pages associated with each hugetlb page on boot.
 > 
-> Wrongly worded.  The subordinate may be NULL or the associated RCEC
-> may be NULL, not the “bridge”.  However, per below, we should not be
-> trying to call report_frozen_detected(), report_mmio_enabled() via
-> the associated RCEC’s driver, but rather the CB for the RCiEP
-> itself.
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-OK, so if we want a comment here, I assume it would be along the lines
-of:
 
-  If "bridge" has no subordinate bus, it's an RCEC or an RCiEP.  In
-  either of those cases, we want to call the callback on "bridge"
-  itself.
+Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
 
-> Going back to this conversation,
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt |  9 +++++++++
+>  Documentation/admin-guide/mm/hugetlbpage.rst    |  3 +++
+>  arch/x86/mm/init_64.c                           |  5 +++--
+>  include/linux/hugetlb.h                         | 19 +++++++++++++++++++
+>  mm/hugetlb_vmemmap.c                            | 18 +++++++++++++++++-
+>  5 files changed, 51 insertions(+), 3 deletions(-)
 > 
-> https://lore.kernel.org/linux-pci/20201016172210.GA86168@bjorn-Precision-5520/
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt
+> b/Documentation/admin-guide/kernel-parameters.txt
+> index 3ae25630a223..9e6854f21d55 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1551,6 +1551,15 @@
+>  			Documentation/admin-guide/mm/hugetlbpage.rst.
+>  			Format: size[KMG]
 > 
-> "Looks like *this* is the patch where the "no subordinate bus" case
-> becomes possible?  If you agree, I can just move the test here, no
-> need to repost.”
+> +	hugetlb_free_vmemmap=
+> +			[KNL] When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set,
+> +			this controls freeing unused vmemmap pages associated
+> +			with each HugeTLB page.
+> +			Format: { on | off (default) }
+> +
+> +			on:  enable the feature
+> +			off: disable the feature
+> +
+>  	hung_task_panic=
+>  			[KNL] Should the hung task detector generate panics.
+>  			Format: 0 | 1
+> diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst
+> b/Documentation/admin-guide/mm/hugetlbpage.rst
+> index f7b1c7462991..6a8b57f6d3b7 100644
+> --- a/Documentation/admin-guide/mm/hugetlbpage.rst
+> +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
+> @@ -145,6 +145,9 @@ default_hugepagesz
 > 
-> It is actually the case we are only dealing with the absence of a
-> subordinate bus.
+>  	will all result in 256 2M huge pages being allocated.  Valid default
+>  	huge page size is architecture dependent.
+> +hugetlb_free_vmemmap
+> +	When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set, this enables freeing
+> +	unused vmemmap pages associated each HugeTLB page.
 > 
-> >> 	if (bridge->subordinate)
-> >> 		pci_walk_bus(bridge->subordinate, cb, userdata);
-> >> +	else if (bridge->rcec)
-> >> +		cb(bridge->rcec, userdata);
-> > 
-> > And I don't understand what's going on here.  In this case, I *think*
-> > "bridge" is an RCiEP and "bridge->rcec" is the related RCEC, so it
-> > looks like we'll call report_frozen_detected(), report_mmio_enabled(),
-> > etc for the RCEC driver.  I would think we'd want the RCiEP driver.
+>  When multiple huge page sizes are supported, ``/proc/sys/vm/nr_hugepages``
+>  indicates the current number of pre-allocated huge pages of the default size.
+> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+> index 155cb06a6961..fcdc020904a8 100644
+> --- a/arch/x86/mm/init_64.c
+> +++ b/arch/x86/mm/init_64.c
+> @@ -34,6 +34,7 @@
+>  #include <linux/gfp.h>
+>  #include <linux/kcore.h>
+>  #include <linux/bootmem_info.h>
+> +#include <linux/hugetlb.h>
 > 
-> Indeed, the bridge->rcec here is the dev->rcec in which the dev is
-> the RCiEP.
+>  #include <asm/processor.h>
+>  #include <asm/bios_ebda.h>
+> @@ -1557,7 +1558,7 @@ int __meminit vmemmap_populate(unsigned long start,
+> unsigned long end, int node,
+>  {
+>  	int err;
 > 
-> And we don’t need that conditional here, it should just hit the
-> device driver’s routines.
+> -	if (IS_ENABLED(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP))
+> +	if (is_hugetlb_free_vmemmap_enabled())
+>  		err = vmemmap_populate_basepages(start, end, node, NULL);
+>  	else if (end - start < PAGES_PER_SECTION * sizeof(struct page))
+>  		err = vmemmap_populate_basepages(start, end, node, NULL);
+> @@ -1613,7 +1614,7 @@ void register_page_bootmem_memmap(unsigned long
+> section_nr,
+>  		get_page_bootmem(section_nr, pud_page(*pud), MIX_SECTION_INFO);
+> 
+>  		if (!boot_cpu_has(X86_FEATURE_PSE) ||
+> -		    IS_ENABLED(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)) {
+> +		    is_hugetlb_free_vmemmap_enabled()) {
+>  			next = (addr + PAGE_SIZE) & PAGE_MASK;
+>  			pmd = pmd_offset(pud, addr);
+>  			if (pmd_none(*pmd))
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index 4efeccb7192c..66d82ae7b712 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -773,6 +773,20 @@ static inline void huge_ptep_modify_prot_commit(struct
+> vm_area_struct *vma,
+>  }
+>  #endif
+> 
+> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> +extern bool hugetlb_free_vmemmap_enabled;
+> +
+> +static inline bool is_hugetlb_free_vmemmap_enabled(void)
+> +{
+> +	return hugetlb_free_vmemmap_enabled;
+> +}
+> +#else
+> +static inline bool is_hugetlb_free_vmemmap_enabled(void)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
+>  #else	/* CONFIG_HUGETLB_PAGE */
+>  struct hstate {};
+> 
+> @@ -926,6 +940,11 @@ static inline void set_huge_swap_pte_at(struct mm_struct
+> *mm, unsigned long addr
+>  					pte_t *ptep, pte_t pte, unsigned long sz)
+>  {
+>  }
+> +
+> +static inline bool is_hugetlb_free_vmemmap_enabled(void)
+> +{
+> +	return false;
+> +}
+>  #endif	/* CONFIG_HUGETLB_PAGE */
+> 
+>  static inline spinlock_t *huge_pte_lock(struct hstate *h,
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index a3714db7f400..ebc710d148e4 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -131,6 +131,21 @@ typedef void (*vmemmap_remap_pte_func_t)(struct page
+> *reuse, pte_t *pte,
+>  					 unsigned long start, unsigned long end,
+>  					 void *priv);
+> 
+> +bool hugetlb_free_vmemmap_enabled;
+> +
+> +static int __init early_hugetlb_free_vmemmap_param(char *buf)
+> +{
+> +	if (!buf)
+> +		return -EINVAL;
+> +
+> +	if (!strcmp(buf, "on"))
+> +		hugetlb_free_vmemmap_enabled = true;
+> +	else if (strcmp(buf, "off"))
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +early_param("hugetlb_free_vmemmap", early_hugetlb_free_vmemmap_param);
+> 
+>  static inline unsigned int vmemmap_pages_per_hpage(struct hstate *h)
+>  {
+> @@ -325,7 +340,8 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
+>  	unsigned int nr_pages = pages_per_huge_page(h);
+>  	unsigned int vmemmap_pages;
+> 
+> -	if (!is_power_of_2(sizeof(struct page))) {
+> +	if (!is_power_of_2(sizeof(struct page)) ||
+> +	    !hugetlb_free_vmemmap_enabled) {
+>  		pr_info("disable freeing vmemmap pages for %s\n", h->name);
+>  		return;
+>  	}
+> --
+> 2.11.0
 
-So IIUC, the code would be:
+Thanks
+Barry
 
-  if (bridge->subordinate)
-    pci_walk_bus(bridge->subordinate, cb, userdata);
-  else
-    cb(bridge, userdata);    /* RCEC or RCiEP */
-
-Right?
-
-I pushed a pci/err branch
-(https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/log/?h=pci/err)
-with some tweaks in these areas.  Diff from your v12 posting appended
-below.  I split the RCEC/RCiEP error recovery pieces up a little bit
-differently than in your posting.  Let me know if you see anything
-that should be changed.  I dropped one of Jonathan's
-reviewed/tested-by but probably should have dropped others to avoid
-putting words in his mouth.
-
-Not sure we're completely done, but we'll get there yet.  I definitely
-want to make sure this happens this cycle.
-
-Bjorn
-
-
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index b86a92494345..4aa118edde35 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -1366,33 +1366,38 @@ static int aer_probe(struct pcie_device *dev)
- }
- 
- /**
-- * aer_root_reset - reset link on Root Port
-- * @dev: pointer to Root Port's pci_dev data structure
-+ * aer_root_reset - reset Root Port hierarchy, RCEC, or RCiEP
-+ * @dev: pointer to Root Port, RCEC, or RCiEP
-  *
-- * Invoked by Port Bus driver when performing link reset at Root Port.
-+ * Invoked by Port Bus driver when performing reset.
-  */
- static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
- {
- 	int type = pci_pcie_type(dev);
- 	struct pci_dev *root;
--	int aer = 0;
--	int rc = 0;
-+	int aer;
-+	struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
- 	u32 reg32;
-+	int rc;
- 
-+	/*
-+	 * Only Root Ports and RCECs have AER Root Command and Root Status
-+	 * registers.  If "dev" is an RCiEP, the relevant registers are in
-+	 * the RCEC.
-+	 */
- 	if (type == PCI_EXP_TYPE_RC_END)
--		/*
--		 * The reset should only clear the Root Error Status
--		 * of the RCEC. Only perform this for the
--		 * native case, i.e., an RCEC is present.
--		 */
- 		root = dev->rcec;
- 	else
- 		root = dev;
- 
--	if (root)
--		aer = dev->aer_cap;
-+	/*
-+	 * If the platform retained control of AER, an RCiEP may not have
-+	 * an RCEC visible to us, so dev->rcec ("root") may be NULL.  In
-+	 * that case, firmware is responsible for these registers.
-+	 */
-+	aer = root ? root->aer_cap : 0;
- 
--	if ((aer) && pcie_aer_is_native(dev)) {
-+	if ((host->native_aer || pcie_ports_native) && aer) {
- 		/* Disable Root's interrupt in response to error messages */
- 		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
- 		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
-@@ -1403,13 +1408,15 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
- 		if (pcie_has_flr(dev)) {
- 			rc = pcie_flr(dev);
- 			pci_info(dev, "has been reset (%d)\n", rc);
-+		} else {
-+			pci_info(dev, "not reset (no FLR support)\n");
- 		}
- 	} else {
- 		rc = pci_bus_error_reset(dev);
- 		pci_info(dev, "Root Port link has been reset (%d)\n", rc);
- 	}
- 
--	if ((aer) && pcie_aer_is_native(dev)) {
-+	if ((host->native_aer || pcie_ports_native) && aer) {
- 		/* Clear Root Error Status */
- 		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
- 		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index cbc5abfe767b..510f31f0ef6d 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -148,30 +148,23 @@ static int report_resume(struct pci_dev *dev, void *data)
- 
- /**
-  * pci_walk_bridge - walk bridges potentially AER affected
-- * @bridge   bridge which may be an RCEC with associated RCiEPs,
-- *           or a Port.
-- * @cb       callback to be called for each device found
-- * @userdata arbitrary pointer to be passed to callback.
-+ * @bridge:	bridge which may be a Port, an RCEC, or an RCiEP
-+ * @cb:		callback to be called for each device found
-+ * @userdata:	arbitrary pointer to be passed to callback
-  *
-  * If the device provided is a bridge, walk the subordinate bus, including
-  * any bridged devices on buses under this bus.  Call the provided callback
-  * on each device found.
-  *
-- * If the device provided has no subordinate bus, call the callback on the
-- * device itself.
-+ * If the device provided has no subordinate bus, e.g., an RCEC or RCiEP,
-+ * call the callback on the device itself.
-  */
- static void pci_walk_bridge(struct pci_dev *bridge,
- 			    int (*cb)(struct pci_dev *, void *),
- 			    void *userdata)
- {
--	/*
--	 * In a non-native case where there is no OS-visible reporting
--	 * device the bridge will be NULL, i.e., no RCEC, no Downstream Port.
--	 */
- 	if (bridge->subordinate)
- 		pci_walk_bus(bridge->subordinate, cb, userdata);
--	else if (bridge->rcec)
--		cb(bridge->rcec, userdata);
- 	else
- 		cb(bridge, userdata);
- }
-@@ -183,11 +176,16 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 	int type = pci_pcie_type(dev);
- 	struct pci_dev *bridge;
- 	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
-+	struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
- 
- 	/*
--	 * Error recovery runs on all subordinates of the bridge.  If the
--	 * bridge detected the error, it is cleared at the end.  For RCiEPs
--	 * we should reset just the RCiEP itself.
-+	 * If the error was detected by a Root Port, Downstream Port, RCEC,
-+	 * or RCiEP, recovery runs on the device itself.  For Ports, that
-+	 * also includes any subordinate devices.
-+	 *
-+	 * If it was detected by another device (Endpoint, etc), recovery
-+	 * runs on the device and anything else under the same Port, i.e.,
-+	 * everything under "bridge".
- 	 */
- 	if (type == PCI_EXP_TYPE_ROOT_PORT ||
- 	    type == PCI_EXP_TYPE_DOWNSTREAM ||
-@@ -232,11 +230,15 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 	pci_dbg(bridge, "broadcast resume message\n");
- 	pci_walk_bridge(bridge, report_resume, &status);
- 
--	if (type == PCI_EXP_TYPE_ROOT_PORT ||
--	    type == PCI_EXP_TYPE_DOWNSTREAM ||
--	    type == PCI_EXP_TYPE_RC_EC) {
--		if (pcie_aer_is_native(bridge))
--			pcie_clear_device_status(bridge);
-+	/*
-+	 * If we have native control of AER, clear error status in the Root
-+	 * Port or Downstream Port that signaled the error.  If the
-+	 * platform retained control of AER, it is responsible for clearing
-+	 * this status.  In that case, the signaling device may not even be
-+	 * visible to the OS.
-+	 */
-+	if (host->native_aer || pcie_ports_native) {
-+		pcie_clear_device_status(bridge);
- 		pci_aer_clear_nonfatal_status(bridge);
- 	}
- 	pci_info(bridge, "device recovery successful\n");
