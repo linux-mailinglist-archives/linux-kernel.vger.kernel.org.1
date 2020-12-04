@@ -2,115 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22EEC2CEA34
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B81B2CEA46
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 09:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729326AbgLDIvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 03:51:51 -0500
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:34025 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387496AbgLDIvu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 03:51:50 -0500
-Received: by mail-ej1-f65.google.com with SMTP id g20so7579351ejb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 00:51:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+GwkYozyuYkSJzQ66Wy4YG7jbCUKS/kTrRERj/Igh/g=;
-        b=nG72YHbWxZ9NZkX6QLu2bsshGSCnBHJ2ByJhxseOrb33DyA0W68YrvYa67OATTNW6S
-         mkYW3w2XW+JjSD/7hxG95WGoOPdA3sBV9681kuhdge4IGBD77syDOc9CCXFwB3F5KA80
-         smigX5JuM33a8k/HdxTtf4fFYlhLfQhjQEZmyOAI6Uj1FxfnpSROqMGBLVdndVqTtgC+
-         DbGY8CJHysUFve3gttco0WtrEWFMyGO4kCw7GBOPcIVJCDIx8kgOPzq9GuCzpxjOo7ZG
-         J71YaZS5URXUotcBfeujQnTbW1afZEUgGJSbwPyOwHPUmvvjsxSsYuBFOp0OQfbF9SL6
-         nZhg==
-X-Gm-Message-State: AOAM533yabXYDEUZuMn26rvjNo0chkLZHT3DtgmSZERHRTtAwiSNl42w
-        i0/K51qOnUALDokEktIzcOf4fCnSsp/MbA==
-X-Google-Smtp-Source: ABdhPJzArQiiYNoHZBDKYUo2yq8ns58GIG4w5hfjUGyhFm8dzBbXTB3CDo2xQNwua9kEr2fuFbTzVg==
-X-Received: by 2002:a17:906:2932:: with SMTP id v18mr6061514ejd.144.1607071869141;
-        Fri, 04 Dec 2020 00:51:09 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id x16sm2592942ejo.104.2020.12.04.00.51.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Dec 2020 00:51:08 -0800 (PST)
-Subject: Re: [PATCH] tty: Remove dead termiox code
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org
-References: <20201203020331.2394754-1-jannh@google.com>
- <5cca5126-60ba-d123-0f7d-47fdbac4c4db@kernel.org>
- <X8nwnXQKOYWBWBZ+@kroah.com>
- <93834a92-b342-aaee-c400-2883d5df0cdc@kernel.org>
- <X8n1JiDS8ZVA6e6o@kroah.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <8e993706-46e2-cbed-265f-1ba63cc9274d@kernel.org>
-Date:   Fri, 4 Dec 2020 09:51:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <X8n1JiDS8ZVA6e6o@kroah.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1729328AbgLDIxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 03:53:05 -0500
+Received: from smtp21.cstnet.cn ([159.226.251.21]:40912 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728487AbgLDIxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 03:53:05 -0500
+Received: from localhost.localdomain (unknown [124.16.141.242])
+        by APP-01 (Coremail) with SMTP id qwCowACXn0+q+MlfGBnaAA--.27966S2;
+        Fri, 04 Dec 2020 16:51:55 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org, joel@jms.id.au,
+        andrew@aj.id.au, rentao.bupt@gmail.com, benh@kernel.crashing.org,
+        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: gadget: aspeed: Remove redundant null check before clk_disable_unprepare
+Date:   Fri,  4 Dec 2020 08:51:50 +0000
+Message-Id: <20201204085150.3063-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowACXn0+q+MlfGBnaAA--.27966S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFy8CFy8AFWxXryxJFy7KFg_yoWfGrgEkr
+        1UWF4xW3WYvwsIyw1UGay5C34qga4kuw409F1ktFn5ZFWjgw43XryjvrZ5CF17Za17C3Z5
+        Awn8Gr43Zw4fujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFyl42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUx6wCDUUUU
+X-Originating-IP: [124.16.141.242]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQoAA102ZxEfFgAAsU
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04. 12. 20, 9:36, Greg Kroah-Hartman wrote:
-> On Fri, Dec 04, 2020 at 09:20:39AM +0100, Jiri Slaby wrote:
->> On 04. 12. 20, 9:17, Greg Kroah-Hartman wrote:
->>> On Fri, Dec 04, 2020 at 08:22:41AM +0100, Jiri Slaby wrote:
->>>> On 03. 12. 20, 3:03, Jann Horn wrote:
->>>>> set_termiox() and the TCGETX handler bail out with -EINVAL immediately
->>>>> if ->termiox is NULL, but there are no code paths that can set
->>>>> ->termiox to a non-NULL pointer; and no such code paths seem to have
->>>>> existed since the termiox mechanism was introduced back in
->>>>> commit 1d65b4a088de ("tty: Add termiox") in v2.6.28.
->>>>> Similarly, no driver actually implements .set_termiox; and it looks like
->>>>> no driver ever has.
->>>>
->>>> Nice!
->>>>
->>>>> Delete this dead code; but leave the definition of struct termiox in the
->>>>> UAPI headers intact.
+Because clk_disable_unprepare() already checked NULL clock parameter,
+so the additional check is unnecessary, just remove it.
 
-Note this ^^^^^. He is talking about _not_ touching the definition in 
-the UAPI header. Does the rest below makes more sense now?
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/usb/gadget/udc/aspeed-vhub/core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
->>>> I am thinking -- can/should we mark the structure as deprecated so that
->>>> userspace stops using it eventually?
->>>
->>> If it doesn't do anything, how can userspace even use it today?  :)
->>
->> Well, right. I am in favor to remove it, BUT: what if someone tries that
->> ioctl and bails out if EINVAL is returned. I mean: if they define a local
->> var of that struct type and pass it to the ioctl, we would break the build
->> by removing the struct completely. Even if the code didn't do anything
->> useful, it still could be built. So is this very potential breakage OK?
-> 
-> I'm sorry, but I don't understand.  This is a kernel-internal-only
-> structure, right?  If someone today tries to call these ioctls, they
-> will get a -EINVAL error as no serial driver in the tree supports them.
-> 
-> If we remove the structure (i.e. what this patch does), and someone
-> makes an ioctl call, they will still get the same -EINVAL error they did
-> before.
-> 
-> So nothing has changed as far as userspace can tell.
-> 
-> Now if they have an out-of-tree serial driver that does implement this
-> call, then yes, they will have problems, but that's not our problem,
-> that is theirs for not ever submitting their code.  We don't support
-> in-kernel apis with no in-kernel users.
-> 
-> Or am I still confused?
-> 
-> thanks,
-> 
-> greg k-h
-> 
-
-
+diff --git a/drivers/usb/gadget/udc/aspeed-vhub/core.c b/drivers/usb/gadget/udc/aspeed-vhub/core.c
+index be7bb64e3594..ea47f4b98de9 100644
+--- a/drivers/usb/gadget/udc/aspeed-vhub/core.c
++++ b/drivers/usb/gadget/udc/aspeed-vhub/core.c
+@@ -282,8 +282,7 @@ static int ast_vhub_remove(struct platform_device *pdev)
+ 	       VHUB_CTRL_PHY_RESET_DIS,
+ 	       vhub->regs + AST_VHUB_CTRL);
+ 
+-	if (vhub->clk)
+-		clk_disable_unprepare(vhub->clk);
++	clk_disable_unprepare(vhub->clk);
+ 
+ 	spin_unlock_irqrestore(&vhub->lock, flags);
+ 
 -- 
-js
+2.17.1
+
