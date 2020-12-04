@@ -2,113 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EC92CF4A8
+	by mail.lfdr.de (Postfix) with ESMTP id 483E42CF4A7
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 20:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730402AbgLDTVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 14:21:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726392AbgLDTV3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 14:21:29 -0500
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493E5C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 11:20:49 -0800 (PST)
-Received: by mail-vs1-xe43.google.com with SMTP id z16so3870512vsp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 11:20:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3RfmsOD4R8FThIOERGPH+DqSWdV2gOeuwbTDc0BCACk=;
-        b=ED+Yl2tvlFfU7xMIOOS47zHVQLtV6INZZvh0HH4yw3SWBHzU4MNC4rXbzHM74kG9XR
-         ZbMTZuU01dpnUQoaIPQ4jp4DxhYBqUy6YSa2lSiV5e7KaadOuv9DX5WExV5QLyD1+xVI
-         t7pP0QhkyrRZgM0PgtgIA9asldGrwLJB3gyatruE0iDpoVWVyQWb4WpwEA6OpOjQ7r7W
-         O8/doy3IHvTaswQkkK2DdJdjTY3MHBe7FBbhVTULX0yQuwmsP7d6Lbo/5hthSTlEYqKj
-         eSz+5Qwdv8NWKzfHNTgp97QES+8Y9kdQd2+XsngGpRfAIK3Ac8j2BGZRCemAbfAll7HF
-         NrCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3RfmsOD4R8FThIOERGPH+DqSWdV2gOeuwbTDc0BCACk=;
-        b=TA8gwX22q+y713uTBslLrx/VslN70WLT2vvfd75xwaknsipr/fgAQTp+weNtAC1NOg
-         2l9rJc+LOyFlwwXMMa903yDRwPi9AQeI7PsSPUfC+suPF8Jr0iclbPylq/zRRpVMp81g
-         tM8gMumAawQgmzqVnDRmaZmYoJbjPEhg0bU6Tuck6HfrWa0JfQwq+wKkLONg5pKqtOqU
-         gZPeH9WV13pi61S/8XaA41XM52XD9cRs8kbnDxuyQpv1ChmFIxQJkih/2RfTBj3kJoqC
-         c8JE8TxBfX3xFp+dgHnNq5COJwpRjmPClTRO+lzcu00jCk8vYbHXonHBuotMXRgvEck4
-         Ejlw==
-X-Gm-Message-State: AOAM532xqp80bYAqcky5AcDPxItdz2mQg3J93idFajnt+NigkBIE6WPQ
-        8Nxc2riD5TqGXNfSi4dOjrMbUBUa23m3hbOtbvY=
-X-Google-Smtp-Source: ABdhPJwqY8Cz8zt67T3BVJvNnRhGnl8wOKMvKKSfumPMETzn1knT8+JsYs3DxXmbQCcxhs6RK/0aE+HMmFZIhWrNP7o=
-X-Received: by 2002:a67:d204:: with SMTP id y4mr5725128vsi.60.1607109648459;
- Fri, 04 Dec 2020 11:20:48 -0800 (PST)
+        id S1730336AbgLDTVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 14:21:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726392AbgLDTVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 14:21:14 -0500
+Date:   Fri, 4 Dec 2020 11:20:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607109632;
+        bh=/XhZcYZ5JIA1PupN+XZqIdVnLydGrcJFS1sKBQ5lWX0=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=IXhPDkfkpAdhrnOXCRz73rGo8liOLaITMhwtX7K6IMUGF7NL+tyVPogXQwt7yOuD7
+         pFLLv20r4JMRSs2tuSZlwyphpez5o3YHfI1zZH1B1m0qZjlKoidX0BSypb6JfQ+ALZ
+         d1/EgKFsXpN6Y55HbypNP/nO+lniIlTtc0mh+EWYMZKuncBK+AOTH3nbIm+26utiRZ
+         oc6j1yqysz5cAXWBje0B2b+0pAUoVt5nT/vXcIpvGMZBFPt7PB613S5eOorKRBuNb3
+         VKVIKH6GVNWlsmuzG5EFuKdBzuAbooorr+nY1Jc7jXCeHo9DO1On4kPgpZ0JwPKDRn
+         VSr0GMKeyLUlg==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the rcu tree
+Message-ID: <20201204192032.GA1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201204192526.0b38fb02@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201204035318.332419-1-jim.cromie@gmail.com> <20201204035318.332419-2-jim.cromie@gmail.com>
- <X8pY/H512EMR3bUX@intel.com>
-In-Reply-To: <X8pY/H512EMR3bUX@intel.com>
-From:   jim.cromie@gmail.com
-Date:   Fri, 4 Dec 2020 12:20:21 -0700
-Message-ID: <CAJfuBxysOxnm846u71f0rQCH9NX-7AMe4brmiD0vqfGeQKuVOw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] drm: RFC add choice to use dynamic debug in drm-debug
-To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Jason Baron <jbaron@akamai.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204192526.0b38fb02@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 8:42 AM Ville Syrj=C3=A4l=C3=A4
-<ville.syrjala@linux.intel.com> wrote:
->
-> On Thu, Dec 03, 2020 at 08:53:17PM -0700, Jim Cromie wrote:
-> > drm's debug system uses distinct categories of debug messages, mapped
-> > to bits in drm.debug.  Currently, code does a lot of unlikely bit-mask
-> > checks on drm.debug (in drm_debug_enabled), we can use dynamic debug
-> > instead, and get all that jump_label goodness.
->
-> whatis jump_label?
+On Fri, Dec 04, 2020 at 07:25:26PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the rcu tree, today's linux-next build (sparc defconfig)
+> failed like this:
+> 
+> mm/slab_common.o: In function `kmem_last_alloc':
+> slab_common.c:(.text+0xc4): undefined reference to `kmem_cache_last_alloc'
+> 
+> Caused by commit
+> 
+>   f7c3fb4fc476 ("mm: Add kmem_last_alloc() to return last allocation for memory block")
+> 
+> in mm/slab.c, kmem_cache_last_alloc() is only defined when CONFIG_NUMA
+> is set - which is not for this build.
+> 
+> I applied the following hack fix patch for today.
+> 
+> From ac5dcf78be1e6da530302966369a3bd63007cf81 Mon Sep 17 00:00:00 2001
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Fri, 4 Dec 2020 19:11:01 +1100
+> Subject: [PATCH] fixup for "mm: Add kmem_last_alloc() to return last
+>  allocation for memory block"
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 
-Sorry, I should have at least capitalized that, and spelled it differently
+Apologies for the hassle and thank you for the very helpful "hack
+fix patch".  The kbuild test robot also found this, but I hadn't
+quite gotten it through my head that the only slab definition of the
+kmem_cache_last_alloc() was under CONFIG_NUMA.
 
-kernel/Makefile
-118:obj-$(CONFIG_JUMP_LABEL) +=3D jump_label.o
+Does the following patch fix things?  (Sigh.  It won't apply on the
+rcu/next that you used.  Or even on this moment's dev branch.  I will
+fold it in with attribution and update.  But just to show you what my
+thought is.)
 
-it is the hot-patching substrate underneath it all.
-static-key, static-call, etc?
-dynamic-debug uses static-key directly.
+							Thanx, Paul
 
+------------------------------------------------------------------------
 
-
->
-> One thing that bugs me about the current drm_dbg() stuff is that
-> it's a function, and thus we pay the cost of setting up the
-> arguments even when debugs are not enabled. I played around a bit
-> with making it a macro again with the unlikely bit check moved
-> into the macro. That did seem to make some of the asm a bit nicer
-> where the debug stuff got shoved out the main codepath, but
-> it did result in a slight net increase in code size. What I didn't
-> have time to do is check if this has any measurable speed effect
-> on eg. TEST_ONLY commits.
->
-> And while doing that I started to ponder if we could use something
-> like the alternate() instruction stuff to patch the code at runtime
-> in order to turn all those debug checks into nops when debugging
-> is not enabled. But I couldn't immediately find any generic
-> infrastructure for it. So now I wonder if this jump_label is something
-> like that?
->
-
-this is the droid youre looking for ;-)
-
-> >
-
-> --
-> Ville Syrj=C3=A4l=C3=A4
-> Intel
+diff --git a/mm/slab.c b/mm/slab.c
+index 87aa2c0..ae1a74c 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -3602,27 +3602,6 @@ void *kmem_cache_alloc_node_trace(struct kmem_cache *cachep,
+ EXPORT_SYMBOL(kmem_cache_alloc_node_trace);
+ #endif
+ 
+-void *kmem_cache_last_alloc(struct kmem_cache *cachep, void *object, void **stackp, int nstackp)
+-{
+-#ifdef DEBUG
+-	unsigned int objnr;
+-	void *objp;
+-	struct page *page;
+-
+-	if (!(cachep->flags & SLAB_STORE_USER))
+-		return ERR_PTR(-KMEM_LA_NO_DEBUG);
+-	objp = object - obj_offset(cachep);
+-	page = virt_to_head_page(objp);
+-	objnr = obj_to_index(cachep, page, objp);
+-	objp = index_to_obj(cachep, page, objnr);
+-	if (stackp && nstackp)
+-		stackp[0] = NULL;
+-	return *dbg_userword(cachep, objp);
+-#else
+-	return NULL;
+-#endif
+-}
+-
+ static __always_inline void *
+ __do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller)
+ {
+@@ -3654,6 +3633,27 @@ void *__kmalloc_node_track_caller(size_t size, gfp_t flags,
+ EXPORT_SYMBOL(__kmalloc_node_track_caller);
+ #endif /* CONFIG_NUMA */
+ 
++void *kmem_cache_last_alloc(struct kmem_cache *cachep, void *object, void **stackp, int nstackp)
++{
++#ifdef DEBUG
++	unsigned int objnr;
++	void *objp;
++	struct page *page;
++
++	if (!(cachep->flags & SLAB_STORE_USER))
++		return ERR_PTR(-KMEM_LA_NO_DEBUG);
++	objp = object - obj_offset(cachep);
++	page = virt_to_head_page(objp);
++	objnr = obj_to_index(cachep, page, objp);
++	objp = index_to_obj(cachep, page, objnr);
++	if (stackp && nstackp)
++		stackp[0] = NULL;
++	return *dbg_userword(cachep, objp);
++#else
++	return NULL;
++#endif
++}
++
+ /**
+  * __do_kmalloc - allocate memory
+  * @size: how many bytes of memory are required.
