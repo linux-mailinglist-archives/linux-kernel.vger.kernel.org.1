@@ -2,26 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3A22CF78E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 123FE2CF790
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 00:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387401AbgLDXbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 18:31:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42192 "EHLO mail.kernel.org"
+        id S1730995AbgLDXbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 18:31:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726061AbgLDXbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 18:31:45 -0500
+        id S1730986AbgLDXbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 18:31:50 -0500
 From:   Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20201203071244.2652297-1-vkoul@kernel.org>
-References: <20201203071244.2652297-1-vkoul@kernel.org>
-Subject: Re: [PATCH 1/2] regulator: dt-bindings: Add PM8350x compatibles
-Message-Id: <160712467174.7793.4605968041488999857.b4-ty@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Adam Ward <Adam.Ward.opensource@diasemi.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+In-Reply-To: <20201204165229.3754763-1-arnd@kernel.org>
+References: <20201204165229.3754763-1-arnd@kernel.org>
+Subject: Re: [PATCH] regulator: da9121: include linux/gpio/consumer.h
+Message-Id: <160712467175.7793.586955639326816020.b4-ty@kernel.org>
 Date:   Fri, 04 Dec 2020 23:31:11 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -30,9 +31,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 12:42:43 +0530, Vinod Koul wrote:
-> Add PM8350 and PM8350C compatibles for these PMICs found in some
-> Qualcomm platforms.
+On Fri, 4 Dec 2020 17:52:22 +0100, Arnd Bergmann wrote:
+> When CONFIG_GPIOLIB is disabled, the declarations from linux/gpio/consumer.h
+> are not visible:
+> 
+> drivers/regulator/da9121-regulator.c:371:14: error: implicit declaration of function 'fwnode_gpiod_get_index' [-Werror,-Wimplicit-function-declaration]
+>         ena_gpiod = fwnode_gpiod_get_index(of_fwnode_handle(np), "enable", 0,
+>                     ^
+> drivers/regulator/da9121-regulator.c:372:7: error: use of undeclared identifier 'GPIOD_OUT_HIGH'
+>                                                 GPIOD_OUT_HIGH |
+>                                                 ^
+> drivers/regulator/da9121-regulator.c:373:7: error: use of undeclared identifier 'GPIOD_FLAGS_BIT_NONEXCLUSIVE'
+>                                                 GPIOD_FLAGS_BIT_NONEXCLUSIVE,
+> 
+> [...]
 
 Applied to
 
@@ -40,10 +52,8 @@ Applied to
 
 Thanks!
 
-[1/2] regulator: dt-bindings: Add PM8350x compatibles
-      commit: ff7f380d21d0e530c3501a007cec68da6dd4d650
-[2/2] regulator: qcom-rpmh: Add support for PM8350/PM8350c
-      commit: bebb2c6d5ca23d6b7556d39564212b619e068562
+[1/1] regulator: da9121: include linux/gpio/consumer.h
+      commit: b4b277760a2167ddb28a309b81363889efd5cc22
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
