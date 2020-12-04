@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFC82CF2AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7862CF2A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388528AbgLDRGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:06:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
+        id S2388505AbgLDRFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:05:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727536AbgLDRF6 (ORCPT
+        with ESMTP id S2388471AbgLDRFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:05:58 -0500
+        Fri, 4 Dec 2020 12:05:37 -0500
 Received: from latitanza.investici.org (latitanza.investici.org [IPv6:2001:888:2000:56::19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3BFC061A56;
-        Fri,  4 Dec 2020 09:04:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F42FC08C5F2
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 09:04:42 -0800 (PST)
 Received: from mx3.investici.org (unknown [127.0.0.1])
-        by latitanza.investici.org (Postfix) with ESMTP id 4CnfFg0NLqz8sfb;
-        Fri,  4 Dec 2020 17:04:39 +0000 (UTC)
+        by latitanza.investici.org (Postfix) with ESMTP id 4CnfFj1fQrz8sj3;
+        Fri,  4 Dec 2020 17:04:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=privacyrequired.com;
-        s=stigmate; t=1607101479;
-        bh=UdwxBvooMqxx5IHG/cr4Vy5TgCZ3SrzMXwuTOdWz9ss=;
+        s=stigmate; t=1607101481;
+        bh=d4QCZegIOf+Vy1A4PMIzIYogd0Y22GwmWmem0sTfec0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nfWArkaqMQH8dswdXmU6Jfdz3NT6526m6iWoMkCcoAEefXQquMxIby8MtVehmY+S2
-         L7/9Ug3O3/9WY+1+ssh6eRm3WBqdfCAxSdS+fEYVGAPbsste8y2s6dFBFsinhxrq7u
-         kJlRNTR4rdbYQn0CDFm06/rcILZeiYTx4mqOOWjA=
-Received: from [82.94.249.234] (mx3.investici.org [82.94.249.234]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4CnfFf0G5fz8sj5;
-        Fri,  4 Dec 2020 17:04:37 +0000 (UTC)
+        b=YhHcNpzXoqW05GpgdY0vhV6+NGeAmP4c2/2KXsNYvqMbTANB0m9pnXJZzNciGHIqg
+         vvk9HvXmYPJIfReW57cMDMVxJgMm0ruuqz43WMpjMc9nQ0NemTn5hoQMbdw9hKAAmK
+         cUG8glOZi3uWy3i0T6voO0zr06H34q16jmPXiNyM=
+Received: from [82.94.249.234] (mx3.investici.org [82.94.249.234]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4CnfFh6LpJz8sj2;
+        Fri,  4 Dec 2020 17:04:40 +0000 (UTC)
 From:   laniel_francis@privacyrequired.com
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com
+To:     Jessica Yu <jeyu@kernel.org>
 Cc:     Francis Laniel <laniel_francis@privacyrequired.com>,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1 09/12] mips: Replace strstarts() by str_has_prefix().
-Date:   Fri,  4 Dec 2020 18:03:15 +0100
-Message-Id: <20201204170319.20383-10-laniel_francis@privacyrequired.com>
+Subject: [RFC PATCH v1 10/12] module: Replace strstarts() by str_has_prefix().
+Date:   Fri,  4 Dec 2020 18:03:16 +0100
+Message-Id: <20201204170319.20383-11-laniel_francis@privacyrequired.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
 References: <20201204170319.20383-1-laniel_francis@privacyrequired.com>
@@ -54,22 +51,37 @@ returns the length of the prefix if the string begins with it or 0 otherwise.
 
 Signed-off-by: Francis Laniel <laniel_francis@privacyrequired.com>
 ---
- arch/mips/bcm63xx/boards/board_bcm963xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/module.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-index 01aff80a5967..85ccb2b02621 100644
---- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
-+++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-@@ -747,7 +747,7 @@ void __init board_prom_init(void)
+diff --git a/kernel/module.c b/kernel/module.c
+index a4fa44a652a7..d01466f1d2a6 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2675,7 +2675,7 @@ static char elf_type(const Elf_Sym *sym, const struct load_info *info)
+ 		else
+ 			return 'b';
+ 	}
+-	if (strstarts(info->secstrings + sechdrs[sym->st_shndx].sh_name,
++	if (str_has_prefix(info->secstrings + sechdrs[sym->st_shndx].sh_name,
+ 		      ".debug")) {
+ 		return 'n';
+ 	}
+@@ -2842,12 +2842,12 @@ void * __weak module_alloc(unsigned long size)
  
- 	/* dump cfe version */
- 	cfe = boot_addr + BCM963XX_CFE_VERSION_OFFSET;
--	if (strstarts(cfe, "cfe-")) {
-+	if (str_has_prefix(cfe, "cfe-")) {
- 		if(cfe[4] == 'v') {
- 			if(cfe[5] == 'd')
- 				snprintf(cfe_version, 11, "%s",
+ bool __weak module_init_section(const char *name)
+ {
+-	return strstarts(name, ".init");
++	return str_has_prefix(name, ".init");
+ }
+ 
+ bool __weak module_exit_section(const char *name)
+ {
+-	return strstarts(name, ".exit");
++	return str_has_prefix(name, ".exit");
+ }
+ 
+ #ifdef CONFIG_DEBUG_KMEMLEAK
 -- 
 2.20.1
 
