@@ -2,143 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FD72CF0FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:47:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC252CF113
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730641AbgLDPrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:47:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730626AbgLDPrI (ORCPT
+        id S1730752AbgLDPsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:48:51 -0500
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:55172 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730350AbgLDPst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:47:08 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7083C061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 07:46:22 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id f1so3292464plt.12
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 07:46:22 -0800 (PST)
+        Fri, 4 Dec 2020 10:48:49 -0500
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 2FD331D10;
+        Fri,  4 Dec 2020 18:48:06 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fVUJ12oZxh3fE+tpbFaO7BT47tEH9r/2CUQ0iKEYM/c=;
-        b=LFFRqpcEvv3LFHUcz7z5NPSi20nI0gQTb6xu3XzZR62RAFhUaNly9In3Q36dk4eg6/
-         K0yiz/8gn4WUjFNWj0/k3wCqi4XNMUc6XGZYfeG0OWl2eRjanEVys0adqC8wwJql62en
-         boKCtmV8FoJlsV4VkEN2tzuuJlTAnzriCMnxZfrG4kGXNNAy3CByQG7hyz6pIocRY1wa
-         WkC2mvthsL1jUPY0WtCXInubtprX0+PtaPNicznRrllG2++axz+YiIfLG/m76OAep2Z1
-         dgVr+0F68BoOuF3NvrKc+YFuiaR96p/Hw2c0YKznRj+zLdhQf8plfyGKbRD6nRgr/kcB
-         gLmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fVUJ12oZxh3fE+tpbFaO7BT47tEH9r/2CUQ0iKEYM/c=;
-        b=k6PpmgzUdu/KuBCCCbJ4M0JUy/3VLO/8OuE9OG/75Dc4oWsjGsGRykvX2G4efIoDq7
-         sBYEktyHwDm0E/2bigVazgtViPUnjKpjVuf+5Mk2ObwySf35mf5XXYqdP5kwhbdlnm+g
-         Lwc67r3UcFGXglttbcUqNllZjUQjZEKVKzthiHIaOfj67KjxOMU8u5EmBJe8yAYOeZim
-         wymDDUNq993aca4NjjXu0ld9VXTl5btJSTjcV0dIOkyXyXOYrEY1YEk6rxPIFSAo7PhM
-         rjrCnUsDjRZnkojZUCSQZsCNrgkxETies+aSDNJiaMEzvzxM7b1hCuveD5ZldrrB+iSf
-         4GWQ==
-X-Gm-Message-State: AOAM531fVGFzUTezVzi6YSopWayeO7lYnocyyX47wWU/O1F2dT2wAArG
-        jfmmpebAPOxZ0FDOjCOW/tX1GCIpXsbwzBiaMJaNkYwXPudVnw==
-X-Google-Smtp-Source: ABdhPJwDQT/rhn6e5+j2BJSKSv+SjHokbRSP8gl8seNIrhdC3fDvLCZ7VLaASR/oaciI3bW1yXsbwX8AoVRrmAE7PYU=
-X-Received: by 2002:a17:90a:c588:: with SMTP id l8mr4574169pjt.147.1607096782347;
- Fri, 04 Dec 2020 07:46:22 -0800 (PST)
+        d=paragon-software.com; s=mail; t=1607096886;
+        bh=DAF1+EKgtDzuJUli5XvTWxb6p1FQgOACObbJSO3hZNA=;
+        h=From:To:CC:Subject:Date;
+        b=pRZTMxrxAFjtYa8pWwMvpxhwue2pqKn08UJlCZwOrkVOJYYNmGS5zYYQP/yr/e89O
+         C5C+7zW9PE0yulnWPP3J2Yuhtp1BlRVDF1DPfKJIVEqaWc2D4BqsFIYzUeORcbD1FO
+         krI6T8BQP5cNA8Li6IMNU5EyaIojsTKeAWBGAFOQ=
+Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 4 Dec 2020 18:48:05 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <linux-fsdevel@vger.kernel.org>
+CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
+        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
+        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
+        <mark@harmstone.com>, <nborisov@suse.com>,
+        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
+        <dan.carpenter@oracle.com>, <hch@lst.de>, <ebiggers@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v14 00/10] NTFS read-write driver GPL implementation by Paragon Software
+Date:   Fri, 4 Dec 2020 18:45:50 +0300
+Message-ID: <20201204154600.1546096-1-almaz.alexandrovich@paragon-software.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20201204125640.51804-1-songmuchun@bytedance.com> <27277a9f-c726-b033-51c1-d88f978fabfd@suse.cz>
-In-Reply-To: <27277a9f-c726-b033-51c1-d88f978fabfd@suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 4 Dec 2020 23:45:45 +0800
-Message-ID: <CAMZfGtUJK+2MDwK1xLOOuGHfddA4+57FZVtSw6JURnPdTngeeg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] mm/page_alloc: speeding up the
- iteration of max_order
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.30.114.105]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 11:28 PM Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> On 12/4/20 1:56 PM, Muchun Song wrote:
-> > When we free a page whose order is very close to MAX_ORDER and greater
-> > than pageblock_order, it wastes some CPU cycles to increase max_order
-> > to MAX_ORDER one by one and check the pageblock migratetype of that page
-> > repeatedly especially when MAX_ORDER is much larger than pageblock_order.
->
-> I would add:
->
-> We also should not be checking migratetype of buddy when "order == MAX_ORDER -
-> 1" as the buddy pfn may be invalid, so adjust the condition. With the new check,
-> we don't need the max_order check anymore, so we replace it.
->
-> Also adjust max_order initialization so that it's lower by one than previously,
-> which makes the code hopefully more clear.
+This patch adds NTFS Read-Write driver to fs/ntfs3.
 
-Got it. Thanks.
+Having decades of expertise in commercial file systems development and huge
+test coverage, we at Paragon Software GmbH want to make our contribution to
+the Open Source Community by providing implementation of NTFS Read-Write
+driver for the Linux Kernel.
 
->
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->
-> Fixes: d9dddbf55667 ("mm/page_alloc: prevent merging between isolated and other
-> pageblocks")
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Thanks!
->
-> > ---
-> > Changes in v2:
-> >  - Rework the code suggested by Vlastimil. Thanks.
-> >
-> >  mm/page_alloc.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index f91df593bf71..56e603eea1dd 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -1002,7 +1002,7 @@ static inline void __free_one_page(struct page *page,
-> >       struct page *buddy;
-> >       bool to_tail;
-> >
-> > -     max_order = min_t(unsigned int, MAX_ORDER, pageblock_order + 1);
-> > +     max_order = min_t(unsigned int, MAX_ORDER - 1, pageblock_order);
-> >
-> >       VM_BUG_ON(!zone_is_initialized(zone));
-> >       VM_BUG_ON_PAGE(page->flags & PAGE_FLAGS_CHECK_AT_PREP, page);
-> > @@ -1015,7 +1015,7 @@ static inline void __free_one_page(struct page *page,
-> >       VM_BUG_ON_PAGE(bad_range(zone, page), page);
-> >
-> >  continue_merging:
-> > -     while (order < max_order - 1) {
-> > +     while (order < max_order) {
-> >               if (compaction_capture(capc, page, order, migratetype)) {
-> >                       __mod_zone_freepage_state(zone, -(1 << order),
-> >                                                               migratetype);
-> > @@ -1041,7 +1041,7 @@ static inline void __free_one_page(struct page *page,
-> >               pfn = combined_pfn;
-> >               order++;
-> >       }
-> > -     if (max_order < MAX_ORDER) {
-> > +     if (order < MAX_ORDER - 1) {
-> >               /* If we are here, it means order is >= pageblock_order.
-> >                * We want to prevent merge between freepages on isolate
-> >                * pageblock and normal pageblock. Without this, pageblock
-> > @@ -1062,7 +1062,7 @@ static inline void __free_one_page(struct page *page,
-> >                                               is_migrate_isolate(buddy_mt)))
-> >                               goto done_merging;
-> >               }
-> > -             max_order++;
-> > +             max_order = order + 1;
-> >               goto continue_merging;
-> >       }
-> >
-> >
->
+This is fully functional NTFS Read-Write driver. Current version works with
+NTFS(including v3.1) and normal/compressed/sparse files and supports journal replaying.
 
+We plan to support this version after the codebase once merged, and add new
+features and fix bugs. For example, full journaling support over JBD will be
+added in later updates.
+
+v2:
+ - patch splitted to chunks (file-wise)
+ - build issues fixed
+ - sparse and checkpatch.pl errors fixed
+ - NULL pointer dereference on mkfs.ntfs-formatted volume mount fixed
+ - cosmetics + code cleanup
+
+v3:
+ - added acl, noatime, no_acs_rules, prealloc mount options
+ - added fiemap support
+ - fixed encodings support
+ - removed typedefs
+ - adapted Kernel-way logging mechanisms
+ - fixed typos and corner-case issues
+
+v4:
+ - atomic_open() refactored
+ - code style updated
+ - bugfixes
+
+v5:
+- nls/nls_alt mount options added
+- Unicode conversion fixes
+- Improved very fragmented files operations
+- logging cosmetics
+
+v6:
+- Security Descriptors processing changed
+  added system.ntfs_security xattr to set
+  SD
+- atomic_open() optimized
+- cosmetics
+
+v7:
+- Security Descriptors validity checks added (by Mark Harmstone)
+- atomic_open() fixed for the compressed file creation with directio
+  case
+- remount support
+- temporarily removed readahead usage
+- cosmetics
+
+v8:
+- Compressed files operations fixed
+
+v9:
+- Further cosmetics applied as suggested
+by Joe Perches
+
+v10:
+- operations with compressed/sparse files on very fragmented volumes improved
+- reduced memory consumption for above cases
+
+v11:
+- further compressed files optimizations: reads/writes are now skipping bufferization
+- journal wipe to the initial state optimized (bufferization is also skipped)
+- optimized run storage (re-packing cluster metainformation)
+- fixes based on Matthew Wilcox feedback to the v10
+- compressed/sparse/normal could be set for empty files with 'system.ntfs_attrib' xattr
+
+v12:
+- nls_alt mount option removed after discussion with Pali Rohar
+- fixed ni_repack()
+- fixed resident files transition to non-resident when size increasing
+
+v13:
+- nested_lock fix (lockdep)
+- out-of-bounds read fix (KASAN warning)
+- resident->nonresident transition fixed for compressed files
+- load_nls() missed fix applied
+- some sparse utility warnings fixes
+
+v14:
+- support for additional compression types (we've adapted WIMLIB's
+  implementation, authored by Eric Biggers, into ntfs3)
+
+Konstantin Komarov (10):
+  fs/ntfs3: Add headers and misc files
+  fs/ntfs3: Add initialization of super block
+  fs/ntfs3: Add bitmap
+  fs/ntfs3: Add file operations and implementation
+  fs/ntfs3: Add attrib operations
+  fs/ntfs3: Add compression
+  fs/ntfs3: Add NTFS journal
+  fs/ntfs3: Add Kconfig, Makefile and doc
+  fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
+  fs/ntfs3: Add MAINTAINERS
+
+ Documentation/filesystems/ntfs3.rst |  107 +
+ MAINTAINERS                         |    7 +
+ fs/Kconfig                          |    1 +
+ fs/Makefile                         |    1 +
+ fs/ntfs3/Kconfig                    |   31 +
+ fs/ntfs3/Makefile                   |   32 +
+ fs/ntfs3/attrib.c                   | 1682 +++++++++
+ fs/ntfs3/attrlist.c                 |  463 +++
+ fs/ntfs3/bitfunc.c                  |  135 +
+ fs/ntfs3/bitmap.c                   | 1504 ++++++++
+ fs/ntfs3/debug.h                    |   61 +
+ fs/ntfs3/dir.c                      |  575 +++
+ fs/ntfs3/file.c                     | 1093 ++++++
+ fs/ntfs3/frecord.c                  | 3085 ++++++++++++++++
+ fs/ntfs3/fslog.c                    | 5220 +++++++++++++++++++++++++++
+ fs/ntfs3/fsntfs.c                   | 2528 +++++++++++++
+ fs/ntfs3/index.c                    | 2665 ++++++++++++++
+ fs/ntfs3/inode.c                    | 2056 +++++++++++
+ fs/ntfs3/lib/common_defs.h          |  196 +
+ fs/ntfs3/lib/decompress_common.c    |  314 ++
+ fs/ntfs3/lib/decompress_common.h    |  558 +++
+ fs/ntfs3/lib/lzx_common.c           |  204 ++
+ fs/ntfs3/lib/lzx_common.h           |   31 +
+ fs/ntfs3/lib/lzx_constants.h        |  113 +
+ fs/ntfs3/lib/lzx_decompress.c       |  553 +++
+ fs/ntfs3/lib/xpress_constants.h     |   23 +
+ fs/ntfs3/lib/xpress_decompress.c    |  165 +
+ fs/ntfs3/lznt.c                     |  452 +++
+ fs/ntfs3/namei.c                    |  590 +++
+ fs/ntfs3/ntfs.h                     | 1237 +++++++
+ fs/ntfs3/ntfs_fs.h                  | 1075 ++++++
+ fs/ntfs3/record.c                   |  614 ++++
+ fs/ntfs3/run.c                      | 1192 ++++++
+ fs/ntfs3/super.c                    | 1464 ++++++++
+ fs/ntfs3/upcase.c                   |   77 +
+ fs/ntfs3/xattr.c                    | 1073 ++++++
+ 36 files changed, 31177 insertions(+)
+ create mode 100644 Documentation/filesystems/ntfs3.rst
+ create mode 100644 fs/ntfs3/Kconfig
+ create mode 100644 fs/ntfs3/Makefile
+ create mode 100644 fs/ntfs3/attrib.c
+ create mode 100644 fs/ntfs3/attrlist.c
+ create mode 100644 fs/ntfs3/bitfunc.c
+ create mode 100644 fs/ntfs3/bitmap.c
+ create mode 100644 fs/ntfs3/debug.h
+ create mode 100644 fs/ntfs3/dir.c
+ create mode 100644 fs/ntfs3/file.c
+ create mode 100644 fs/ntfs3/frecord.c
+ create mode 100644 fs/ntfs3/fslog.c
+ create mode 100644 fs/ntfs3/fsntfs.c
+ create mode 100644 fs/ntfs3/index.c
+ create mode 100644 fs/ntfs3/inode.c
+ create mode 100644 fs/ntfs3/lib/common_defs.h
+ create mode 100644 fs/ntfs3/lib/decompress_common.c
+ create mode 100644 fs/ntfs3/lib/decompress_common.h
+ create mode 100644 fs/ntfs3/lib/lzx_common.c
+ create mode 100644 fs/ntfs3/lib/lzx_common.h
+ create mode 100644 fs/ntfs3/lib/lzx_constants.h
+ create mode 100644 fs/ntfs3/lib/lzx_decompress.c
+ create mode 100644 fs/ntfs3/lib/xpress_constants.h
+ create mode 100644 fs/ntfs3/lib/xpress_decompress.c
+ create mode 100644 fs/ntfs3/lznt.c
+ create mode 100644 fs/ntfs3/namei.c
+ create mode 100644 fs/ntfs3/ntfs.h
+ create mode 100644 fs/ntfs3/ntfs_fs.h
+ create mode 100644 fs/ntfs3/record.c
+ create mode 100644 fs/ntfs3/run.c
+ create mode 100644 fs/ntfs3/super.c
+ create mode 100644 fs/ntfs3/upcase.c
+ create mode 100644 fs/ntfs3/xattr.c
 
 -- 
-Yours,
-Muchun
+2.25.4
+
