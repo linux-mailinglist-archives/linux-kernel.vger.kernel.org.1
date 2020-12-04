@@ -2,156 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B906D2CEB78
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F872CEB7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 10:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387999AbgLDJwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 04:52:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387983AbgLDJws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 04:52:48 -0500
-Date:   Fri, 4 Dec 2020 10:52:02 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607075527;
-        bh=VBEU0/umszddH3l73gwxnFt6AiwKnUwdHry/s8NXBpo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VtM0Vc9JF05yTvT1EWnZp9K5SoE9Wnc5zB+HFTVrwV1X1zit+vBXEgu5NWc3A8fUQ
-         NjA9Rs3I9+tz6KWwGg6wlPf+/NsY4oUVSRAFJVCEITOxiEH9egeHmdoGFXgT37CEk8
-         3lMfvAf0kmTaVWk8dAkq2W6IK2UIe87eSXNj5zN2gJyf9eLckcHXT56pt81Wsma6K2
-         r0i72mJZQeay6TLviQsuQfvcapqTU+gdmXzX2avv5ioc+ZO7e9GoX551w02jSj7G26
-         NTB6tfPrXlUlgySqaEEB82aokgszjydUrZJPpzrIlqJIKR6B2HJsbl1Q0hSh2CR+a7
-         RQ0aorsHnjOyA==
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     "Jonathan Corbet" <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] scripts: get_feat.pl: make complete table more
- coincise
-Message-ID: <20201204105202.3d5862a7@coco.lan>
-In-Reply-To: <47d1d76bf557716cb90d7382c31fe3d1ade65a2e.1607074458.git.mchehab+huawei@kernel.org>
-References: <7c82a766867f2813a1e5c7b982b5e952e50b6c5e.1607073967.git.mchehab+huawei@kernel.org>
-        <47d1d76bf557716cb90d7382c31fe3d1ade65a2e.1607074458.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1729620AbgLDJyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 04:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726999AbgLDJyp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 04:54:45 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A803BC061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 01:53:59 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id lt17so7826500ejb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 01:53:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Uv2efItsQUhEgfX7SeOo28N5gNOKYGwcTRvbk7tp5sk=;
+        b=Y+yQmo30CQFiR5TTzDwrmyJatxpqtANqRpaIncgY2A8s2nWuzGUeyn1tlf4gOxugd2
+         hh8E3nHhmj4zo93RilCZjKplbsTkCbNxNPF8uYID9W5PuMKVGbJigGgWD9afGHl880zK
+         58XjKXOHPeMO/smMTfgANFsLPDLJ7SGTQmRGvK5+9rVbt5ynuxcXqQInlbHiTr3T4N4V
+         w8Wu7TpMV552x6QPPvqgAlSK6lmA7BRml4jRWHiI63XOeYUq0EO1/mbxl22WqthPcaDm
+         nfWp3DFvC6vgW0kGiJ+NqG+v0vXx7/6/rIRANPewGZH1nMCdkpAXWjUQbYAPRfIXi/R1
+         CaKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Uv2efItsQUhEgfX7SeOo28N5gNOKYGwcTRvbk7tp5sk=;
+        b=dw7Iei469FfEeiTqOlbZPFZJJU8+1/5VsCW7c1eNWXsEZCW1rrbPVkrZcB5sONR0H2
+         mPsWFmbUHj9wZibekKOlSYtCvSlnOiocCgl6oKXBkLSlankkFJsszh/WLLpnx482lL5W
+         va+HEa6lg1cLL7NHeP5YwH9ZNDGQ7eletmp5feqhH4k0JUyfgKs7d+wMrm3tbf42Q58T
+         CiwvzvoMm9s01DCSo5qT5vOq03cCNv26BugENzNeJR/PoXN1YWA3fismswSWKcROQwdC
+         f43VUophmm06SMZF79JN/EJOIcRUw1XhjWXcMboScArdQp+rai5B/V63NyDw3xpKbb+6
+         yBCg==
+X-Gm-Message-State: AOAM531H1cMmYKD0VPbhlK2cK4GNbNZ7mVdfqJ8xc0KtoPZ/W3ir5YYv
+        JWR8sJIZZ493Vc6TszvIVnHAnQ==
+X-Google-Smtp-Source: ABdhPJwXvl8nLosqnGM8eU8JP87XsB+l9fv0jbHDns3+jJMfPKJqM1nwHazVtadoe4qIEMJGSczwsg==
+X-Received: by 2002:a17:906:81ca:: with SMTP id e10mr6195735ejx.449.1607075638385;
+        Fri, 04 Dec 2020 01:53:58 -0800 (PST)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id k2sm2690147ejp.6.2020.12.04.01.53.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 01:53:57 -0800 (PST)
+Date:   Fri, 4 Dec 2020 10:53:38 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Cc:     Auger Eric <eric.auger@redhat.com>,
+        wangxingang <wangxingang5@huawei.com>,
+        Xieyingtai <xieyingtai@huawei.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        qubingbing <qubingbing@hisilicon.com>
+Subject: Re: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
+ unmanaged ASIDs
+Message-ID: <20201204095338.GA1912466@myrica>
+References: <20201118112151.25412-8-eric.auger@redhat.com>
+ <1606829590-25924-1-git-send-email-wangxingang5@huawei.com>
+ <2e69adf5-8207-64f7-fa8e-9f2bd3a3c4e3@redhat.com>
+ <e10ad90dc5144c0d9df98a9a078091af@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e10ad90dc5144c0d9df98a9a078091af@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri,  4 Dec 2020 10:35:44 +0100
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+Hi Shameer,
 
-> Currently, there are too many white spaces at the tables,
-> and the information is very sparsed on it.
-> 
-> Make the format a lot more compact.
-> 
-> Suggested-by: Jonathan Corbet <corbet@lwn.net>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+On Thu, Dec 03, 2020 at 06:42:57PM +0000, Shameerali Kolothum Thodi wrote:
+> Hi Jean/zhangfei,
+> Is it possible to have a branch with minimum required SVA/UACCE related patches
+> that are already public and can be a "stable" candidate for future respin of Eric's series?
+> Please share your thoughts.
 
-...
-
-> +		my @lines;
-> +		my $line = "";
-> +		foreach my $arch (sort {
-> +					($arch_table{$a} cmp $arch_table{$b}) or
-> +					("\L$a" cmp "\L$b")
-> +				       } keys %arch_table) {
-
-Actually, I have one doubt myself with the above sort.
-
-Right now, it places things on this order:
-
-	Not Compatible: ...
-	TODO: ...
-	ok: ...
-
-I'm wondering if it would it be better to place them at the reverse order,
-e. g.:
-
-	ok: ...
-	TODO: ...
-	Not Compatible: ...
-
-In other words, to output it like:
-
-+---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
-|Feature              |Kconfig / Description                                                    |Status per architecture                                     |
-+=====================+=========================================================================+============================================================+
-|batch-unmap-tlb-flush|``ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH``                                    |- **ok**: x86                                               |
-|                     |                                                                         |- **TODO**: alpha, arc, arm, arm64, csky, hexagon, ia64     |
-|                     |arch supports deferral of TLB flush until multiple pages are unmapped    |  mips, nds32, parisc, powerpc, riscv, s390, sh, sparc      |
-|                     |                                                                         |  xtensa                                                    |
-|                     |                                                                         |- **Not compatible**: c6x, h8300, m68k, microblaze, nios2   |
-|                     |                                                                         |  openrisc, um                                              |
-+---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
-|ELF-ASLR             |``ARCH_HAS_ELF_RANDOMIZE``                                               |- **ok**: arm, arm64, mips, parisc, powerpc, s390, x86      |
-|                     |                                                                         |- **TODO**: alpha, arc, c6x, csky, h8300, hexagon, ia64     |
-|                     |arch randomizes the stack, heap and binary images of ELF binaries        |  m68k, microblaze, nds32, nios2, openrisc, riscv, sh       |
-|                     |                                                                         |  sparc, um, xtensa                                         |
-+---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
-|huge-vmap            |``HAVE_ARCH_HUGE_VMAP``                                                  |- **ok**: arm64, powerpc, x86                               |
-|                     |                                                                         |- **TODO**: alpha, arc, arm, c6x, csky, h8300, hexagon      |
-|                     |arch supports the ioremap_pud_enabled() and ioremap_pmd_enabled() VM APIs|  ia64, m68k, microblaze, mips, nds32, nios2, openrisc      |
-|                     |                                                                         |  parisc, riscv, s390, sh, sparc, um, xtensa                |
-+---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
-|ioremap_prot         |``HAVE_IOREMAP_PROT``                                                    |- **ok**: arc, mips, powerpc, s390, sh, x86                 |
-|                     |                                                                         |- **TODO**: alpha, arm, arm64, c6x, csky, h8300, hexagon    |
-|                     |arch has ioremap_prot()                                                  |  ia64, m68k, microblaze, nds32, nios2, openrisc, parisc    |
-|                     |                                                                         |  riscv, sparc, um, xtensa                                  |
-+---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
-|PG_uncached          |``ARCH_USES_PG_UNCACHED``                                                |- **ok**: ia64, x86                                         |
-|                     |                                                                         |- **TODO**: alpha, arc, arm, arm64, c6x, csky, h8300        |
-|                     |arch supports the PG_uncached page flag                                  |  hexagon, m68k, microblaze, mips, nds32, nios2, openrisc   |
-|                     |                                                                         |  parisc, powerpc, riscv, s390, sh, sparc, um, xtensa       |
-+---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
-|pte_special          |``ARCH_HAS_PTE_SPECIAL``                                                 |- **ok**: arc, arm, arm64, mips, powerpc, riscv, s390, sh   |
-|                     |                                                                         |  sparc, x86                                                |
-|                     |arch supports the pte_special()/pte_mkspecial() VM APIs                  |- **TODO**: alpha, c6x, csky, h8300, hexagon, ia64, m68k    |
-|                     |                                                                         |  microblaze, nds32, nios2, openrisc, parisc, um, xtensa    |
-+---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
-|THP                  |``HAVE_ARCH_TRANSPARENT_HUGEPAGE``                                       |- **ok**: arc, arm, arm64, mips, powerpc, s390, sparc, x86  |
-|                     |                                                                         |- **TODO**: alpha, ia64, nds32, parisc, riscv               |
-|                     |arch supports transparent hugepages                                      |- **Not compatible**: c6x, csky, h8300, hexagon, m68k       |
-|                     |                                                                         |  microblaze, nios2, openrisc, sh, um, xtensa               |
-+---------------------+-------------------------------------------------------------------------+------------------------------------------------------------+
-
-Changing the order is one line patch (see enclosed).
-
-If you think that reverting the order looks better, feel
-free to apply the enclosed patch, or fold it with the
-previous one.
+By "stable" you mean a fixed branch with the latest SVA/UACCE patches
+based on mainline?  The uacce-devel branches from
+https://github.com/Linaro/linux-kernel-uadk do provide this at the moment
+(they track the latest sva/zip-devel branch
+https://jpbrucker.net/git/linux/ which is roughly based on mainline.)
 
 Thanks,
-Mauro
-
-[PATCH] script: get_feat: change the group by order
-
-Right now, arch compatibility is grouped by status at the
-alphabetical order from A to Z, and then from a to z, e. g:.
-
-	---
-	TODO
-	ok
-
-Revert the order, in order to print first the OK results,
-then TODO, and, finally, the not compatible ones.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-diff --git a/scripts/get_feat.pl b/scripts/get_feat.pl
-index 10bf23fbc9c5..3f73c8534059 100755
---- a/scripts/get_feat.pl
-+++ b/scripts/get_feat.pl
-@@ -397,7 +397,7 @@ sub output_matrix {
- 		my @lines;
- 		my $line = "";
- 		foreach my $arch (sort {
--					($arch_table{$a} cmp $arch_table{$b}) or
-+					($arch_table{$b} cmp $arch_table{$a}) or
- 					("\L$a" cmp "\L$b")
- 				       } keys %arch_table) {
- 
+Jean
 
