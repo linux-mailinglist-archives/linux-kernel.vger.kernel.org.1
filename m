@@ -2,102 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1F12CF043
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A4C2CF04B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 16:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730441AbgLDPBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 10:01:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60416 "EHLO mail.kernel.org"
+        id S1730467AbgLDPDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 10:03:07 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:34106 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730420AbgLDPBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:01:34 -0500
-Date:   Fri, 4 Dec 2020 16:02:02 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607094054;
-        bh=r/FRTTah1QcRTa4v/loAf9+zj5pTNfpEuX9XO3neHq8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kHTVuwxbCS+OL5mI6RZqzn8irwACv5nQYAwOirdFlDGcckh/dkyT+iN/E+Vf+XcW0
-         19p7JxayNWBxcEHgZJy4fwFxzEurErLiavI2jKXQXlOrjzDGbmq7v3UH3tAqpPp27W
-         EuKMAq9YEwl46XuY9MaCGk6aB9/2E+pLL8/N0oGU=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Tom Yan <tom.ty89@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [PATCH 2/2] usb-storage: revert from scsi_add_host_with_dma() to
- scsi_add_host()
-Message-ID: <X8pPau40cCVDSyIt@kroah.com>
-References: <09992cec-65e4-2757-aae6-8fb02a42f961@redhat.com>
- <20201128154849.3193-1-tom.ty89@gmail.com>
- <20201128154849.3193-2-tom.ty89@gmail.com>
- <5e62c383-22ea-6df6-5acc-5e9f381d4632@redhat.com>
- <CAGnHSEnetAJNqUEW-iuq7eVyU6VnP84cv9+OVL4C5Z2ZK_eM0A@mail.gmail.com>
- <186eb035-4bc4-ff72-ee41-aeb6d81888e3@redhat.com>
- <X8T0E2qvF2cgADl+@kroah.com>
- <dd557c38-a919-5e5e-ab3b-17a235f17139@redhat.com>
- <X8T5bimon2oaUUqI@kroah.com>
- <70ca74c2-4a80-e25b-eca9-a63a75516673@redhat.com>
+        id S1730348AbgLDPDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 10:03:06 -0500
+Received: from zn.tnic (p200300ec2f12b100a8acd31b3e2f4e6b.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:b100:a8ac:d31b:3e2f:4e6b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9AF4B1EC0380;
+        Fri,  4 Dec 2020 16:02:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607094145;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Yui38/jim3iTXbTxJ/PqC28fcudMd1RnlJgfgC5QNxQ=;
+        b=U2Oe+fbvpNQJxf5aTQ2O5diDtVaAXuH9zr38119qB6iMYGQBGA0iLjp7bVnKGcnVF1rBPr
+        HVIzHinl/oXDByaXfnlxyjorAjcRMxOEP9uPHhlXVoM1zez1PpGSVlW2NqzUwX5GXLqV1l
+        gKHnjmQmyQWTyljMpBc9mgdtx7y6ac8=
+Date:   Fri, 4 Dec 2020 16:02:21 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] x86/insn: Fix not using prefixes.nbytes for loop
+ over prefixes.bytes
+Message-ID: <20201204150221.GF31534@zn.tnic>
+References: <160707930875.3296595.12884856538916078988.stgit@devnote2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <70ca74c2-4a80-e25b-eca9-a63a75516673@redhat.com>
+In-Reply-To: <160707930875.3296595.12884856538916078988.stgit@devnote2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 02:55:45PM +0100, Hans de Goede wrote:
+On Fri, Dec 04, 2020 at 07:55:09PM +0900, Masami Hiramatsu wrote:
 > Hi,
 > 
-> On 11/30/20 2:53 PM, Greg KH wrote:
-> > On Mon, Nov 30, 2020 at 02:36:38PM +0100, Hans de Goede wrote:
-> >> Hi,
-> >>
-> >> On 11/30/20 2:30 PM, Greg KH wrote:
-> >>> On Mon, Nov 30, 2020 at 02:23:48PM +0100, Hans de Goede wrote:
-> >>>> Hi,
-> >>>>
-> >>>> On 11/30/20 1:58 PM, Tom Yan wrote:
-> >>>>> It's merely a moving of comment moving for/and a no-behavioral-change
-> >>>>> adaptation for the reversion.>
-> >>>>
-> >>>> IMHO the revert of the troublesome commit and the other/new changes really
-> >>>> should be 2 separate commits. But I will let Alan and Greg have the final
-> >>>> verdict on this.
-> >>>
-> >>> I would prefer to just revert the commits and not do anything
-> >>> different/special here so late in the release cycle.
-> >>>
-> >>> So, if Alan agrees, I'll be glad to do them on my end, I just need the
-> >>> commit ids for them.
-> >>
-> >> The troublesome commit are (in reverse, so revert, order):
-> >>
-> >> 5df7ef7d32fe ("uas: bump hw_max_sectors to 2048 blocks for SS or faster drives")
-> >> 558033c2828f ("uas: fix sdev->host->dma_dev")
-> >> 0154012f8018 ("usb-storage: fix sdev->host->dma_dev")
-> >>
-> >> Alan, the reason for reverting these is that using scsi_add_host_with_dma() as the
-> >> last 2 patches do, with the dmadev argument of that call pointing to the device
-> >> for the XHCI controller is causing changes to the DMA settings of the XHCI controller
-> >> itself which is causing regressions in 5.10, see this email thread:
-> >>
-> >> https://lore.kernel.org/linux-usb/fde7e11f-5dfc-8348-c134-a21cb1116285@redhat.com/T/#t
-> > 
-> > Thanks, I'll wait for Alan to respond, but I think just reverting these
-> > is the best solution at this point in time.  You have tested those
-> > reverts, solve this, right?  If so, can I get a "Tested-by:"? 
-> 
-> Yes that was my first solution to this problem and I can confirm that that fixes
-> the regression:
-> 
-> Tested-by: Hans de Goede <hdegoede@redhat.com>
+> Here are the 3rd version of patches to fix the wrong loop boundary
+> check on insn.prefixes.bytes[] array.
 
-All now reverted.
+Ok, so I've committed the version with ARRAY_SIZE to keep it as small
+as possible for stable. Let's discuss the new changes here ontop, once
+those urgent fixes go up.
 
-thanks,
+Thx.
 
-greg k-h
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
