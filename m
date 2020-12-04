@@ -2,120 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3B92CEFD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D32A02CEFE0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 15:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387713AbgLDOkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 09:40:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
+        id S1730350AbgLDOko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 09:40:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387597AbgLDOkE (ORCPT
+        with ESMTP id S1726438AbgLDOkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 09:40:04 -0500
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71545C08E863
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:39:00 -0800 (PST)
-Received: by mail-ua1-x942.google.com with SMTP id n18so1905106ual.9
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:39:00 -0800 (PST)
+        Fri, 4 Dec 2020 09:40:43 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C751FC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 06:39:30 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id y7so6861247lji.8
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 06:39:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ALFvhZ1OjbfVf/iAkbXtpPEl6kf7hFGESlUg72YwV2s=;
-        b=s3Ku7AVE/9HH3DtwPJCfcA81tzqrP0dq8xSrkCN0QiwbH/+JoOwR6RvK1IlmjghAXd
-         0ieHFh843CCnahnuHpDrm6y8SBYLZByGQaSbhLCTRwzXMnxueF4/+gz6e8szcZTvV3dY
-         5EcmxsyWv/AMyx2WqithnYA33e8SJeiKc3wVrfky9TCUzo9wUNNKQzaScpg3jlGHPyxu
-         yWWo+K37fKgomlEB96lOu2lfM7682x5HWKycXPfYejW6tbMdXcNSg5uRoNZAk89GHafO
-         hyo3YXqoS10TSskEcywdeExjeoOJNwcngDBp4mfnGP7WYpySKgHPgOk1h/SWFdolhkN3
-         2aWQ==
+        bh=6sWIE6MSVnFN2Z1SFZ8QW/N7guFxVpjF1mW79UulhJs=;
+        b=RfcUNAfKbPRmMKo7OcV+vcKhf8gkhXXWbgOjRQECyb79B5Kr8J55uu34UsLfxxUPom
+         7NEJDhsiYI7XXFxNqQi/41lLal9d1LYqnr2vQSWhl3ZGT+woctsjPXr9Xr09HeUYzwTH
+         4sYKrvzexNplNWsyr+AQys2/4I7jeyHKWANdgJPA6jBiijImp0602h+mSteHCWlDfmdQ
+         YXwBsfYJFRRA/jFkwq66l0qkO33EWCS+8WPE3EkBo2bnFfj2+Uqy0cJgUfub/OsjLexQ
+         u9GN3Y0hEQuLeV1vRg2wJQtiSAp8QqgrVOF0XuFxzBGyVyWGORmIgknoFXE6kB3bnUWZ
+         7dZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ALFvhZ1OjbfVf/iAkbXtpPEl6kf7hFGESlUg72YwV2s=;
-        b=ocaKEyc5kT4KOFxgtNBUHTCRHmydEzIxJfmbBdBO5O6+SbRBMvtaCi+NAdQIS/pXdD
-         bwosaMZ2V6XpIIT1SRVwCKxXvh9JK23UdUr1BYWMgRq7+1JBpfj2+RucTCGvb1CjJSCp
-         9a6T27BtuYNEEcSmvLOqoU3QGkfQT0xagj/SfTsTy0tQKu7mhiS6O10YAwOibc7NiCYQ
-         f+VwVCZnrcbp7oWBYTYNm+BSAN7efUTLzJvUo6eQL0rDsbABHIXjRJHcf4Gx/Qp2kjfU
-         YLwl50Z4qj5lcwJiRZOrOgHXw9dR2Fj9smNHK5jD70FFtvQw7mfSpKgkqUx/3aqcxRFT
-         QBQw==
-X-Gm-Message-State: AOAM532WRrt++aO+f69iJPU5ZX/cbLCtoZnqTjD0qi7Nj0m6usG6xh+H
-        P2unFe9A12JKLF4KwxPiZ3sSqoio4wJUaVzsPEKSSA==
-X-Google-Smtp-Source: ABdhPJwYn0T6jy/eo/USN9DAFcjbAf/fm07eYkJrF/ELqPyes0vB0Xl/fQW8PCZhOiWLNKZ9Fig4P3TrEJKZ7fe/V1s=
-X-Received: by 2002:ab0:23d5:: with SMTP id c21mr3340200uan.129.1607092739611;
- Fri, 04 Dec 2020 06:38:59 -0800 (PST)
+        bh=6sWIE6MSVnFN2Z1SFZ8QW/N7guFxVpjF1mW79UulhJs=;
+        b=G11CNwQnI6WuWBX/HNthhltQQj219i0cQHjUCyWCcY0MgS/s+zICeDINDo8XdPduI3
+         5AuJICTwvYYTiby43ClRg6lPOfx3otuMjaOaOxZOtS7Ny+mHyqWru7tefG5vi0QrSFjN
+         ecuqW9SXZS0RrUdE2Yn2xyGUKxBz4nmuV0vf/ft/wKJKp+G+MZSvo1W5ktXQxr0evHwh
+         RKHxF4/LE6/sPpVf7yQNfPlT9uEO9jz8uBjTgdieTODNnG1ECTIUo+9rkAsN6/yufTMh
+         EjPsSR6/Kbka+3Vsx3ulw5oo1o71MBdIFOPowLzyUiAevRsoE4LoOqP5iegY9hT3VfLW
+         mRXQ==
+X-Gm-Message-State: AOAM533cGEQDtv8sIv6EAQavIBCFNO7X+X+bauiFol6w9do0rXy1BQe3
+        k413yursFWhodikB+EaTkxzFSmxvMb56C9q93S5i0w==
+X-Google-Smtp-Source: ABdhPJyskVYAzDS48JDvWbmfiXfOC8BuBYtUHBD5BXTQ5EFVNcQqiqycMB0UDj7GVEp894YzQizdbfY9OTD5WfpyvaY=
+X-Received: by 2002:a2e:3608:: with SMTP id d8mr3697375lja.68.1607092769314;
+ Fri, 04 Dec 2020 06:39:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20201202202320.22165-1-huobean@gmail.com>
-In-Reply-To: <20201202202320.22165-1-huobean@gmail.com>
+References: <20201203222922.1067522-1-arnd@kernel.org> <CAPDyKFqtFYqc8i_fVzOUnuZGJjtwjVLqE-vebtOKuYJ-4PrDBg@mail.gmail.com>
+ <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com>
+In-Reply-To: <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 4 Dec 2020 15:38:20 +0100
-Message-ID: <CAPDyKFpq-45z4MdMek0jGjR88QuG8PangcHRV+CJ4u57EcSqzg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: block: Let CMD13 polling only for MMC IOCTLS with
- the R1B response
-To:     Bean Huo <huobean@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "(Exiting) Baolin Wang" <baolin.wang@linaro.org>,
-        "Bean Huo (beanhuo)" <beanhuo@micron.com>,
+Date:   Fri, 4 Dec 2020 15:38:49 +0100
+Message-ID: <CAPDyKFqS5touMvORyovCS-QQrHZg+0LGob9DtS1m61quvXYezw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mediatek: mark PM functions as __maybe_unused
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        =?UTF-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Avri Altman <avri.altman@wdc.com>,
+        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
+        yong mao <yong.mao@mediatek.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        Marek Vasut <marex@denx.de>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        zliua@micron.com,
-        "Zoltan Szubbocsev (zszubbocsev)" <zszubbocsev@micron.com>,
-        "# 4.0+" <stable@vger.kernel.org>
+        Paul Cercueil <paul@crapouillou.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Dec 2020 at 21:23, Bean Huo <huobean@gmail.com> wrote:
+On Fri, 4 Dec 2020 at 15:14, Arnd Bergmann <arnd@kernel.org> wrote:
 >
-> From: Bean Huo <beanhuo@micron.com>
+> On Fri, Dec 4, 2020 at 11:02 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > On Thu, 3 Dec 2020 at 23:29, Arnd Bergmann <arnd@kernel.org> wrote:
 >
-> The CMD13 polling is only needed for the command with R1B Resp. For the
-> command with R1 Resp, such as open-ended multiple block read/write
-> (CMD18/25) commands, the device will just wait for its next paired command.
-> There is no need to poll device status through CMD13.
+> > > -#ifdef CONFIG_PM
+> > >  static void msdc_save_reg(struct msdc_host *host)
+> >
+> > Shouldn't msdc_save|restore_reg() be turned into "__maybe_unused" as well?
 >
-> Meanwhile, based on the original change commit (mmc: block: Add CMD13 polling
-> for MMC IOCTLS with R1B response), and comment in __mmc_blk_ioctl_cmd(),
-> current code is not in line with its original purpose. So fix it with this patch.
->
-> Fixes: a0d4c7eb71dd ("mmc: block: Add CMD13 polling for MMC IOCTLS with R1B response")
-> Cc: stable@vger.kernel.org
-> Reported-by: Zhan Liu <zliua@micron.com>
-> Signed-off-by: Zhan Liu <zliua@micron.com>
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> There is no need since the compiler can figure that out already when there
+> is a reference to the function from dead code.
 
-Applied for fixes, thanks!
+Alright, thanks for clarifying.
 
-Note, I took the liberty to rephrase the commit message (and the
-header) to clarify things a bit more.
+>
+> > >
+> > > -static int msdc_resume(struct device *dev)
+> > > +static int __maybe_unused msdc_resume(struct device *dev)
+> > >  {
+> > >         return pm_runtime_force_resume(dev);
+> > >  }
+> > > -#endif
+> > >
+> > >  static const struct dev_pm_ops msdc_dev_pm_ops = {
+> >
+> > You may also change this to a __maybe_unused, as long as you also
+> > assign the .pm pointer in the mt_msdc_driver with
+> > pm_ptr(&msdc_dev_pm_ops).
+> >
+> > Ideally the compiler should drop these functions/datas entirely then.
+>
+> I don't see a lot of other instances of that yet, and it's fairly new.
+> Maybe we should fix it before it gets propagated further.
+>
+> I would suggest we redefine pm_ptr like
+>
+> #define pm_ptr(_ptr) (IS_ENABLED(CONFIG_PM) ? (_ptr) : NULL)
+
+Why is this better than the original definition?
+
+>
+> and remove the __maybe_unused annotations on those that we
+> already have. This also has the effect of dropping the unused
+> data from the object, but without having to an an #ifdef or
+> __maybe_unused.
+
+I didn't quite get this (sorry it's Friday afternoon... getting
+tired), can you perhaps give a concrete example?
+
+That said, I have applied your patch for fixes, but let's try to sort
+out the above to make sure we are all on the same page.
 
 Kind regards
 Uffe
-
-
-> ---
->  drivers/mmc/core/block.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 8d3df0be0355..42e27a298218 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -580,7 +580,7 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
->
->         memcpy(&(idata->ic.response), cmd.resp, sizeof(cmd.resp));
->
-> -       if (idata->rpmb || (cmd.flags & MMC_RSP_R1B)) {
-> +       if (idata->rpmb || (cmd.flags & MMC_RSP_R1B) == MMC_RSP_R1B) {
->                 /*
->                  * Ensure RPMB/R1B command has completed by polling CMD13
->                  * "Send Status".
-> --
-> 2.17.1
->
