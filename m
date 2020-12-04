@@ -2,152 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB42B2CF616
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 22:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8202CF61C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 22:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730288AbgLDVY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 16:24:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
+        id S1729917AbgLDV0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 16:26:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbgLDVY6 (ORCPT
+        with ESMTP id S1726534AbgLDV0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 16:24:58 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F6DC061A4F;
-        Fri,  4 Dec 2020 13:24:18 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id a16so10738439ejj.5;
-        Fri, 04 Dec 2020 13:24:18 -0800 (PST)
+        Fri, 4 Dec 2020 16:26:42 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D237C061A4F;
+        Fri,  4 Dec 2020 13:26:02 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id i9so7254435ioo.2;
+        Fri, 04 Dec 2020 13:26:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5VRyy2mIR9R2s4KEvZSf0TZQU5cMvBdUTpBXR67Yg4w=;
-        b=Fx1W6InFbjgF3uwf+wclPDSG7WaC1oU2BXCYMbgWTdK1MpEIEZ96SJkmawi8lQcZjl
-         q5mT+5bHFo8l+SBhqTnZQkaQbCsEKhz0GpkLAHNM+oQLCBEsq9FQmYidX+s4m12EH0Gj
-         TytrsOW0Mpy+8xJRgPAxkR/oI/WO6wZipiw9gEIsz//F2yP9i+2LCicC9rdik1XPSx9O
-         XB9O/JPvBR3lTd8WyFRxftQt8eCPXG5UUuQXrEP7G7WXlEUUlFBKw+fAIBwbk6gBRGd5
-         8FFhbH69cuYHzwfeXVaBGbaGWJGPmGpjuyrBxnEq84ULEFhUSMDP1FkhkWPfI/dygyI6
-         yd1w==
+        bh=dcobOCg4elJ1lBIJnbdqI7sJMeQVb3HqQ2OWJay91KA=;
+        b=KrtuBt5MXQtj9zWIsKhfga5hBQGSBID2664sPjRwL0rOihm6EPbkABs+Av6MkIjVjn
+         TBPHWrpwNtWgF9I8br+bubAJv3JAmgoMVp3LsbwaXchyw6SNLlL3yeVIl1bWu2+JbzHq
+         9AZFKzvEsjkgCvBLOA9LA3e0RKcLhXFg/29w/NoPzWFfX3UKTJMdbepL1xKlcnRyypBo
+         643+hIgkR8PNRbifZcMEQGO/A7JByE0BjJTAlItgEowUH3wUCYMoE2IwO1cT+wb4Ipyr
+         E7hDtUUF3ceyao47yCQXPYB6MtXLcAWnpfQbCPr2e7sAiNDKzj4jy5ME1NFEvREvV70U
+         JXKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5VRyy2mIR9R2s4KEvZSf0TZQU5cMvBdUTpBXR67Yg4w=;
-        b=qDtLxwXCYjk6kOR4+aw9PdKXyMSj0OeVMvk2Rs19bf+HQXyxtv7LL4ewOF1bbHQLF/
-         +IpE7DQHUrNljB14DwNq1P+WH196YX3sC6n4WYNsQDkWsJhaRN5WEglqp0l1ZQ3TC8+I
-         O9j1MsIyDn1CvG1tZReX3GdI+OjBhS2ELfbk5263haFZ0w8TgLFYIlNdbsXkfQfW2HJW
-         RiHsD9OqP0lbvtihop6ZkTJouZ2W5e16nsfnImeIJE1gkBEu4Hwt5nhbDDRT5Bq+OINn
-         SIaX51GYkCtSt9gxhLEIgG6RcYYsiXwYVRi8NE88xhrvzITrZvFCfJNf35HzVcsF51Qj
-         j7JA==
-X-Gm-Message-State: AOAM531METpst4RGvKmXNq7Z6wgWZAQX+OYNcyuK5A1fmhiO+1xPDqya
-        BpggmyY6VyCA9Wv3VPvah3lJ0ftj1CnDoQ2w3fvpw9EAsmc=
-X-Google-Smtp-Source: ABdhPJzN4H1vvxoGFeAqYPIaab7Y4YUufn38fkMPI2rl416ynOt7h2dtXuEw0sO6Fsi3+bPnLORwXE8914qRWzD2xGI=
-X-Received: by 2002:a17:906:24c3:: with SMTP id f3mr8805401ejb.238.1607117056968;
- Fri, 04 Dec 2020 13:24:16 -0800 (PST)
+        bh=dcobOCg4elJ1lBIJnbdqI7sJMeQVb3HqQ2OWJay91KA=;
+        b=OZdDGB/ZnrsS9D+m9HEYtisFUbpqE6457Vi1Ldg3eDwPyoJBkNAOINJJVYOheEh+bZ
+         pJboFGYqXI53CR+GFoY9wBMo9xvZlvXIssdi4GVIie36hol+sYN7mZLSPGf4U9fL59Kp
+         VSmDD+fOLeMQrZ1DKohKo+GcarBKtoKjUohkzJxWqfHnb5vxyEif3cmjUPyDPvYWlO6s
+         Vo+c8tXD4w+v4LDESVfzZndCxkr1OlKdoEmHkBAV4dBxu02B0B+IdqvLbcbxMVXu+h3n
+         CSrTHBKVj4SIpd+AniOTXQ6/b93dv7cCK9OSiFmTNJVuWDLHMBst0/V5Kta2uRnIQU5V
+         Bxog==
+X-Gm-Message-State: AOAM531ywDffW1y/7urqI9kkd8YTW31oCPLGGUGAyQCrm9X8Logcu0R0
+        ljHOYdMYoVIj9WF8ZYs0A4fofRn6oS/V7FiR8FA=
+X-Google-Smtp-Source: ABdhPJx86Powa4ZnC6gzQpBuytC8EmVW3lKN6t9bFbw4cSl/I0aTSHWtuY+5ZF97rQ6aFHJHwlv9tMGf0x4ij9I4aRQ=
+X-Received: by 2002:a02:4:: with SMTP id 4mr8851115jaa.121.1607117161437; Fri,
+ 04 Dec 2020 13:26:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20201202182725.265020-1-shy828301@gmail.com> <20201202182725.265020-5-shy828301@gmail.com>
- <20201203030104.GF1375014@carbon.DHCP.thefacebook.com> <CAHbLzkoUNuKHT_4w8QaWCQA3xs2vTW4Xii26a5vpVqxrDVSX_Q@mail.gmail.com>
- <20201203200820.GC1571588@carbon.DHCP.thefacebook.com> <CAHbLzkrbd+gBUngiRa3OJhO3q_Z7x3w6+jkX2CkXG0Zm=jufQA@mail.gmail.com>
- <20201204185247.GA182921@cmpxchg.org>
-In-Reply-To: <20201204185247.GA182921@cmpxchg.org>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 4 Dec 2020 13:24:04 -0800
-Message-ID: <CAHbLzkqf5=C6dMJjHzqNMZUSdO_eONd9ciOsUE-CdHGqkvBTJQ@mail.gmail.com>
-Subject: Re: [PATCH 4/9] mm: vmscan: use a new flag to indicate shrinker is registered
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201204200920.133780-1-mario.limonciello@dell.com> <20201204200920.133780-3-mario.limonciello@dell.com>
+In-Reply-To: <20201204200920.133780-3-mario.limonciello@dell.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Fri, 4 Dec 2020 13:25:50 -0800
+Message-ID: <CAKgT0Ucz5zDp3fEJFpt1x1e+OcLCxOZVyo5KK5sM_LktbLQH3Q@mail.gmail.com>
+Subject: Re: [PATCH v3 2/7] e1000e: Move all S0ix related code into its own
+ source file
+To:     Mario Limonciello <mario.limonciello@dell.com>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Netfin <sasha.neftin@intel.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Stefan Assmann <sassmann@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        David Arcari <darcari@redhat.com>,
+        Yijun Shen <Yijun.Shen@dell.com>, Perry.Yuan@dell.com,
+        anthony.wong@canonical.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 10:54 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Fri, Dec 4, 2020 at 12:09 PM Mario Limonciello
+<mario.limonciello@dell.com> wrote:
 >
-> On Thu, Dec 03, 2020 at 02:25:20PM -0800, Yang Shi wrote:
-> > On Thu, Dec 3, 2020 at 12:09 PM Roman Gushchin <guro@fb.com> wrote:
-> > >
-> > > On Wed, Dec 02, 2020 at 08:59:40PM -0800, Yang Shi wrote:
-> > > > On Wed, Dec 2, 2020 at 7:01 PM Roman Gushchin <guro@fb.com> wrote:
-> > > > >
-> > > > > On Wed, Dec 02, 2020 at 10:27:20AM -0800, Yang Shi wrote:
-> > > > > > Currently registered shrinker is indicated by non-NULL shrinker->nr_deferred.
-> > > > > > This approach is fine with nr_deferred atthe shrinker level, but the following
-> > > > > > patches will move MEMCG_AWARE shrinkers' nr_deferred to memcg level, so their
-> > > > > > shrinker->nr_deferred would always be NULL.  This would prevent the shrinkers
-> > > > > > from unregistering correctly.
-> > > > > >
-> > > > > > Introduce a new "state" field to indicate if shrinker is registered or not.
-> > > > > > We could use the highest bit of flags, but it may be a little bit complicated to
-> > > > > > extract that bit and the flags is accessed frequently by vmscan (every time shrinker
-> > > > > > is called).  So add a new field in "struct shrinker", we may waster a little bit
-> > > > > > memory, but it should be very few since there should be not too many registered
-> > > > > > shrinkers on a normal system.
-> > > > > >
-> > > > > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > > > > > ---
-> > > > > >  include/linux/shrinker.h |  4 ++++
-> > > > > >  mm/vmscan.c              | 13 +++++++++----
-> > > > > >  2 files changed, 13 insertions(+), 4 deletions(-)
-> > > > > >
-> > > > > > diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-> > > > > > index 0f80123650e2..0bb5be88e41d 100644
-> > > > > > --- a/include/linux/shrinker.h
-> > > > > > +++ b/include/linux/shrinker.h
-> > > > > > @@ -35,6 +35,9 @@ struct shrink_control {
-> > > > > >
-> > > > > >  #define SHRINK_STOP (~0UL)
-> > > > > >  #define SHRINK_EMPTY (~0UL - 1)
-> > > > > > +
-> > > > > > +#define SHRINKER_REGISTERED  0x1
-> > > > > > +
-> > > > > >  /*
-> > > > > >   * A callback you can register to apply pressure to ageable caches.
-> > > > > >   *
-> > > > > > @@ -66,6 +69,7 @@ struct shrinker {
-> > > > > >       long batch;     /* reclaim batch size, 0 = default */
-> > > > > >       int seeks;      /* seeks to recreate an obj */
-> > > > > >       unsigned flags;
-> > > > > > +     unsigned state;
-> > > > >
-> > > > > Hm, can't it be another flag? It seems like we have a plenty of free bits.
-> > > >
-> > > > I thought about this too. But I was not convinced by myself that
-> > > > messing flags with state is a good practice. We may add more flags in
-> > > > the future, so we may end up having something like:
-> > > >
-> > > > flag
-> > > > flag
-> > > > flag
-> > > > state
-> > > > flag
-> > > > flag
-> > > > ...
-> > > >
-> > > > Maybe we could use the highest bit for state?
-> > >
-> > > Or just
-> > > state
-> > > flag
-> > > flag
-> > > flag
-> > > flag
-> > > flag
-> > > ...
-> > >
-> > > ?
-> >
-> > It is fine too. We should not add more states in foreseeable future.
+> Introduce a flag to indicate the device should be using the S0ix
+> flows and use this flag to run those functions.
 >
-> It's always possible to shuffle things around for cleanup later on,
-> too. We don't have to provide binary compatibility for existing flags,
-> and changing a couple of adjacent bits isn't a big deal to keep things
-> neat. Or am I missing something?
+> Splitting the code to it's own file will make future heuristics
+> more self contained.
+>
+> Tested-by: Yijun Shen <yijun.shen@dell.com>
+> Signed-off-by: Mario Limonciello <mario.limonciello@dell.com>
 
-No. It is definitely not a big deal.
+One minor issue pointed out below.
+
+> ---
+>  drivers/net/ethernet/intel/e1000e/Makefile |   2 +-
+>  drivers/net/ethernet/intel/e1000e/e1000.h  |   4 +
+>  drivers/net/ethernet/intel/e1000e/netdev.c | 272 +-------------------
+>  drivers/net/ethernet/intel/e1000e/s0ix.c   | 280 +++++++++++++++++++++
+>  4 files changed, 290 insertions(+), 268 deletions(-)
+>  create mode 100644 drivers/net/ethernet/intel/e1000e/s0ix.c
+>
+> diff --git a/drivers/net/ethernet/intel/e1000e/Makefile b/drivers/net/ethernet/intel/e1000e/Makefile
+> index 44e58b6e7660..f2332c01f86c 100644
+> --- a/drivers/net/ethernet/intel/e1000e/Makefile
+> +++ b/drivers/net/ethernet/intel/e1000e/Makefile
+> @@ -9,5 +9,5 @@ obj-$(CONFIG_E1000E) += e1000e.o
+>
+>  e1000e-objs := 82571.o ich8lan.o 80003es2lan.o \
+>                mac.o manage.o nvm.o phy.o \
+> -              param.o ethtool.o netdev.o ptp.o
+> +              param.o ethtool.o netdev.o s0ix.o ptp.o
+>
+> diff --git a/drivers/net/ethernet/intel/e1000e/e1000.h b/drivers/net/ethernet/intel/e1000e/e1000.h
+> index ba7a0f8f6937..b13f956285ae 100644
+> --- a/drivers/net/ethernet/intel/e1000e/e1000.h
+> +++ b/drivers/net/ethernet/intel/e1000e/e1000.h
+> @@ -436,6 +436,7 @@ s32 e1000e_get_base_timinca(struct e1000_adapter *adapter, u32 *timinca);
+>  #define FLAG2_DFLT_CRC_STRIPPING          BIT(12)
+>  #define FLAG2_CHECK_RX_HWTSTAMP           BIT(13)
+>  #define FLAG2_CHECK_SYSTIM_OVERFLOW       BIT(14)
+> +#define FLAG2_ENABLE_S0IX_FLOWS           BIT(15)
+>
+>  #define E1000_RX_DESC_PS(R, i)     \
+>         (&(((union e1000_rx_desc_packet_split *)((R).desc))[i]))
+> @@ -462,6 +463,9 @@ enum latency_range {
+>  extern char e1000e_driver_name[];
+>
+>  void e1000e_check_options(struct e1000_adapter *adapter);
+> +void e1000e_s0ix_entry_flow(struct e1000_adapter *adapter);
+> +void e1000e_s0ix_exit_flow(struct e1000_adapter *adapter);
+> +void e1000e_maybe_enable_s0ix(struct e1000_adapter *adapter);
+>  void e1000e_set_ethtool_ops(struct net_device *netdev);
+>
+>  int e1000e_open(struct net_device *netdev);
+> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+> index 128ab6898070..cd9839e86615 100644
+> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+
+<snip>
+
+>  static int e1000e_pm_freeze(struct device *dev)
+>  {
+>         struct net_device *netdev = dev_get_drvdata(dev);
+> @@ -6962,7 +6701,6 @@ static __maybe_unused int e1000e_pm_suspend(struct device *dev)
+>         struct net_device *netdev = pci_get_drvdata(to_pci_dev(dev));
+>         struct e1000_adapter *adapter = netdev_priv(netdev);
+>         struct pci_dev *pdev = to_pci_dev(dev);
+> -       struct e1000_hw *hw = &adapter->hw;
+>         int rc;
+>
+>         e1000e_flush_lpic(pdev);
+> @@ -6974,8 +6712,7 @@ static __maybe_unused int e1000e_pm_suspend(struct device *dev)
+>                 e1000e_pm_thaw(dev);
+>
+>         /* Introduce S0ix implementation */
+> -       if (hw->mac.type >= e1000_pch_cnp &&
+> -           !e1000e_check_me(hw->adapter->pdev->device))
+> +       if (adapter->flags2 & FLAG2_ENABLE_S0IX_FLOWS)
+>                 e1000e_s0ix_entry_flow(adapter);
+
+So the placement of this code raises some issues. It isn't a problem
+with your patch but a bug in the driver that needs to be addressed. I
+am assuming you only need to perform this flow if you successfully
+froze the part. However this is doing it in all cases, which is why
+the e1000e_pm_thaw is being called before you call this code. This is
+something that should probably be an "else if" rather than a seperate
+if statement.
+
+>
+>         return rc;
+> @@ -6986,12 +6723,10 @@ static __maybe_unused int e1000e_pm_resume(struct device *dev)
+>         struct net_device *netdev = pci_get_drvdata(to_pci_dev(dev));
+>         struct e1000_adapter *adapter = netdev_priv(netdev);
+>         struct pci_dev *pdev = to_pci_dev(dev);
+> -       struct e1000_hw *hw = &adapter->hw;
+>         int rc;
+>
+>         /* Introduce S0ix implementation */
+> -       if (hw->mac.type >= e1000_pch_cnp &&
+> -           !e1000e_check_me(hw->adapter->pdev->device))
+> +       if (adapter->flags2 & FLAG2_ENABLE_S0IX_FLOWS)
+>                 e1000e_s0ix_exit_flow(adapter);
+>
+>         rc = __e1000_resume(pdev);
+> @@ -7655,6 +7390,9 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>         if (!(adapter->flags & FLAG_HAS_AMT))
+>                 e1000e_get_hw_control(adapter);
+>
+> +       /* use heuristics to decide whether to enable s0ix flows */
+> +       e1000e_maybe_enable_s0ix(adapter);
+> +
+>         strlcpy(netdev->name, "eth%d", sizeof(netdev->name));
+>         err = register_netdev(netdev);
+>         if (err)
