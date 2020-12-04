@@ -2,93 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C542CF284
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 804D62CF2C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbgLDRBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:01:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726173AbgLDRBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:01:43 -0500
-Date:   Fri, 4 Dec 2020 17:00:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607101262;
-        bh=4ltAGqyePwzC6mMogfJkZa93IzO6bxiuOkFWcBWhhME=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lZR9O3t2sEReXp8CvktbnVg0x5nBMcxC/hNpv/tsM95tRcSPu/EwGhG4t2058oBTR
-         SLaeYyPWB3s+7ixmyf0wl2FrFukUK+Gh8EX3Bb0zCzZwS3UkrbuZSCmjGNJsWdtP4k
-         hggyrhd7H7et8ZiVgQyWkaaJ1G5mNRE4GEPUjFlJK0uCO6YBjFEWGkTjK9Sy+jXkTb
-         j6nyKOGz0DhK3BIGYthpXyYffIfQnIRKmK6XtgutIIe4MEJVqrBbnv7T2tJGiE05hk
-         Wpa4U9PMG5aaWjDMsPwutsJMFSEjH8eJAKTJEIjF+8YlhLSJxU2uZ4kTQYp+JRJqt9
-         VnY9h2K+Cfabg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Alexandru M Stan <amstan@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Benson Leung <bleung@chromium.org>
-Subject: Re: [PATCH] spi: spi-geni-qcom: Use the new method of gpio CS control
-Message-ID: <20201204170058.GA4558@sirena.org.uk>
-References: <20201202214935.1114381-1-swboyd@chromium.org>
- <CAHNYxRwMD4XahHXWW9z7b=VCOEsdPe5Df4CohNwmBy_ijWJ62g@mail.gmail.com>
- <160695172591.2717324.17788035024164242534@swboyd.mtv.corp.google.com>
- <160695644776.2717324.633265815704005177@swboyd.mtv.corp.google.com>
- <CAD=FV=WDYdfURHWf8qGOSwT+7Y5i=9FMgRn5hYZA-oTfR6KoFQ@mail.gmail.com>
- <160704063968.1580929.17834773484656581141@swboyd.mtv.corp.google.com>
- <8d864844-11d8-0eae-d85c-29136f035c1b@collabora.com>
+        id S1731174AbgLDRKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:10:30 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48678 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729617AbgLDRK3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 12:10:29 -0500
+Message-Id: <20201204170151.960336698@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607101787;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=iBxCCLNEjEdz1puiqLIODUIGst9hCV4CFnNIpRx7mxg=;
+        b=RsacuS6Cc5XdjjUpYV7VDzKBZQ5ret73dBrpjOm8oJtYE+tV2WWKkQbUry6rKaOMYa34rT
+        iL8KGLNNxGsfsKd0GUd06+Hy2gWrOFvkfrku3nVjSwIWkcG4XReS4R60HdKaUn7+f1AHMf
+        yeWF2MDIqFvRDneYZObREVdBrGwLAkU9COwMDYmWtTnvlVGhCN1ZM93AtNyzOPv4mxdpSr
+        V5RYvqcR4IHDMAJfY64WtwJNx3X6yURicGZ2X5w43asDFPl11/2eFhY2r95ZHwdAKkAQPD
+        40iev9npCzv9k8rj0MQcEsL+3/zp9mk9HV3QMKNGgiAJTtAPiNBedgqhjVyRKA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607101787;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=iBxCCLNEjEdz1puiqLIODUIGst9hCV4CFnNIpRx7mxg=;
+        b=xu8T0QWVorpmfaNC/ql1fcw4GFi8mwTsOu2gFO6bQNXYZ5byFZQnpxrpC9HBvnaGjh9FhL
+        eomNnJdXBaIk6gBQ==
+Date:   Fri, 04 Dec 2020 18:01:51 +0100
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [patch V2 0/9] softirq: Make it RT aware
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
-Content-Disposition: inline
-In-Reply-To: <8d864844-11d8-0eae-d85c-29136f035c1b@collabora.com>
-X-Cookie: Not a flying toy.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---/04w6evG8XlLl3ft
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Dec 04, 2020 at 10:13:52AM +0100, Enric Balletbo i Serra wrote:
-
-> I am fine either way. I'm fine with pick all the patches and go through t=
-he
-> chrome/platform tree if Mark is agree (I think this patch has no other
-> dependencies and the patch applies cleanly to my tree) or all can go thro=
-ugh the
-> Mark's tree. If I need to an IB I can also do it without problems.
->=20
-> I'll leave Mark to decide who has much experience solving this kind of pr=
-oblems.
-
-I'm happy to take both patches, there are some others in this area in
-the SPI tree so it might minimise bisection problems if I take them but
-not sure if there's any actual overlap there.  If someone could resend
-them as a series?
-
---/04w6evG8XlLl3ft
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/Ka0cACgkQJNaLcl1U
-h9BlBQf+OitvqxWFwbekqNW1Zy+tBC5mf9XOX/XVfwfXx/Ol8Reo7KEuaSHgfMTS
-ZdCnI/SA7ajzD8UGbkoli1TJxsVEKogr2RFUYR6NtPjYpnboPZZXR3NOjrMtzNrq
-H1dvMuq5ArRgdLHdmURBeTfPhc4yrLbSoubumzt/E355kgwklsgf8mHVEHt8X2fe
-SWa9u77sp/4JnWgLAqcT5W4T76QvP0Oz/o4RA0xZEhENVDrJw2HBlmG6q49dOadl
-DplosqeIZmqEIXXBrpUJrm07S54mcWNT2ZB7/LCaZsr5+28dkLzmPU53zoo/SJrV
-YyRjFT00tHqbS0qmdNGGP4jcVL6Ypg==
-=JM/D
------END PGP SIGNATURE-----
-
---/04w6evG8XlLl3ft--
+UlQgcnVucyBzb2Z0aXJxIHByb2Nlc3NpbmcgYWx3YXlzIGluIHRocmVhZCBjb250ZXh0IGFuZCBp
+dCByZXF1aXJlcyB0aGF0CmJvdGggdGhlIHNvZnRpcnEgZXhlY3V0aW9uIGFuZCB0aGUgQkggZGlz
+YWJsZWQgc2VjdGlvbnMgYXJlIHByZWVtcHRpYmxlLgoKVGhpcyBpcyBhY2hpZXZlZCBieSBzZXJp
+YWxpemF0aW9uIHRocm91Z2ggcGVyIENQVSBsb2NhbCBsb2NrcyBhbmQKc3Vic3RpdHV0aW5nIGEg
+ZmV3IHBhcnRzIG9mIHRoZSBleGlzdGluZyBzb2Z0aXJxIHByb2Nlc3NpbmcgY29kZSB3aXRoCmhl
+bHBlciBmdW5jdGlvbnMuCgpUaGUgc2VyaWVzIGFwcGxpZXMgb24gdG9wIG9mCgogIGdpdDovL2dp
+dC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90aXAvdGlwLmdpdCBpcnEvY29y
+ZQoKd2hpY2ggYWxyZWFkeSBjb250YWlucyB0aGUgaXJxc3RhdCBjbGVhbnVwcyBhbmQgRnJlZGVy
+aWMncyBpcnEgdGltZQphY2NvdW50aW5nIGNoYW5nZXMuCgpDaGFuZ2VzIHRvIFYxIHdoaWNoIGNh
+biBiZSBmb3VuZCBoZXJlOgoKICBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjAxMTEzMTQw
+MjA3LjQ5OTM1MzIxOEBsaW51dHJvbml4LmRlCgogLSBSZWJhc2Ugb24gdG9wIG9mIEZyZWRlcmlj
+J3MgaXJxIHRpbWUgYWNjb3VudGluZyBjaGFuZ2VzCiAtIEFkZHJlc3NpbmcgdGhlIHJldmlldyBj
+b21tZW50cwogLSBGaXhpbmcgdGhlIGZhbGxvdXQgZnJvbSB0aGUgaXJxIHRpbWUgYWNjb3VudGlu
+ZyB1cGRhdGVzCgpUaGUgUlQgdmFyaWFudCBoYXMgc3VjZXNzZnVsbHkgYmVlbiB0ZXN0ZWQgaW4g
+dGhlIGN1cnJlbnQgNS4xMC1ydApwYXRjaGVzLiBGb3Igbm9uLVJUIGtlcm5lbHMgdGhlcmUgaXMg
+bm8gZnVuY3Rpb25hbCBjaGFuZ2UuCgpUaGFua3MsCgoJdGdseAotLS0KIGluY2x1ZGUvbGludXgv
+Ym90dG9tX2hhbGYuaCB8ICAgIDggKwogaW5jbHVkZS9saW51eC9oYXJkaXJxLmggICAgIHwgICAg
+MSAKIGluY2x1ZGUvbGludXgvaW50ZXJydXB0LmggICB8ICAgMTMgLS0KIGluY2x1ZGUvbGludXgv
+cHJlZW1wdC5oICAgICB8ICAgIDYgCiBpbmNsdWRlL2xpbnV4L3JjdXBkYXRlLmggICAgfCAgICAz
+IAogaW5jbHVkZS9saW51eC9zY2hlZC5oICAgICAgIHwgICAgMyAKIGtlcm5lbC9zY2hlZC9jcHV0
+aW1lLmMgICAgICB8ICAgIDQgCiBrZXJuZWwvc29mdGlycS5jICAgICAgICAgICAgfCAgMjgwICsr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tCiBrZXJuZWwvdGltZS90
+aWNrLXNjaGVkLmMgICAgfCAgICAyIAogOSBmaWxlcyBjaGFuZ2VkLCAyOTEgaW5zZXJ0aW9ucygr
+KSwgMjkgZGVsZXRpb25zKC0pCgoK
