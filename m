@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E432CED46
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE022CED4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 12:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730106AbgLDLkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 06:40:51 -0500
-Received: from mga03.intel.com ([134.134.136.65]:47116 "EHLO mga03.intel.com"
+        id S1729965AbgLDLl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 06:41:58 -0500
+Received: from mga01.intel.com ([192.55.52.88]:27217 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729196AbgLDLku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:40:50 -0500
-IronPort-SDR: NCwSvJ22hZKtlhKtjbtsBb+ox6V0k9oKCFcwkYRALOtYVpYnd+22BbZqhH7HhxBmSfYrNG76Q1
- pDaDjVLTJfnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="173458486"
+        id S1725999AbgLDLl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 06:41:58 -0500
+IronPort-SDR: Gil9a8zw0EodT2TjaKTXtR4XsfQx9G9/KD4HZnMoYt0YcjHg+BViQ/85DWghwlgG13xP/eIM3I
+ u5RNd8M2Ub2Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="191607328"
 X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="173458486"
+   d="scan'208";a="191607328"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:39:08 -0800
-IronPort-SDR: IXJ9tIGRKuQ0kVi/NCMNRCQEO94DuKe9xI04od7j9zJurcxJ7mVYaHQj9Xaiz1Qn93fvS7hc/x
- EJJ1VQk0Iarw==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:40:17 -0800
+IronPort-SDR: hvFpjHzre32ZyHJQrj1nMCwJiqqvOsRhSxgm9AXawjDt08lvzwXNy7ZqjQGthIchTlPh2DnDF2
+ 9xCYmTVaoekQ==
 X-IronPort-AV: E=Sophos;i="5.78,392,1599548400"; 
-   d="scan'208";a="316923587"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:39:05 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id E5E6720676; Fri,  4 Dec 2020 13:39:03 +0200 (EET)
-Date:   Fri, 4 Dec 2020 13:39:03 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Luka Kovacic <luka.kovacic@sartura.hr>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: linux-next: manual merge of the v4l-dvb tree with the mvebu tree
-Message-ID: <20201204113903.GS852@paasikivi.fi.intel.com>
-References: <20201203115137.6620f27a@canb.auug.org.au>
+   d="scan'208";a="550920796"
+Received: from spandruv-mobl.amr.corp.intel.com ([10.254.181.204])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 03:40:16 -0800
+Message-ID: <697be63c1500a4ad80651a8182e56ce4271693c1.camel@linux.intel.com>
+Subject: Re: [PATCH v3 3/3] iio:Documentation: Add documentation for hinge
+ sensor channels
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Ye Xiang <xiang.ye@intel.com>, jikos@kernel.org, jic23@kernel.org
+Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 04 Dec 2020 03:40:15 -0800
+In-Reply-To: <20201203035352.13918-4-xiang.ye@intel.com>
+References: <20201203035352.13918-1-xiang.ye@intel.com>
+         <20201203035352.13918-4-xiang.ye@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203115137.6620f27a@canb.auug.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 11:51:37AM +1100, Stephen Rothwell wrote:
-> Hi all,
+On Thu, 2020-12-03 at 11:53 +0800, Ye Xiang wrote:
+> Add channel description for hinge sensor, including channel label
+> attribute and raw data description.
 > 
-> Today's linux-next merge of the v4l-dvb tree got a conflict in:
+> Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-iio | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 > 
->   MAINTAINERS
-> 
-> between commit:
-> 
->   8c4e256e3d42 ("MAINTAINERS: Add an entry for MikroTik CRS3xx 98DX3236 boards")
-> 
-> from the mvebu tree and commit:
-> 
->   b24cc2a18c50 ("media: smiapp: Rename as "ccs"")
-> 
-> from the v4l-dvb tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+> diff --git a/Documentation/ABI/testing/sysfs-bus-iio
+> b/Documentation/ABI/testing/sysfs-bus-iio
+> index df42bed09f25..82303b1bdff0 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-iio
+> +++ b/Documentation/ABI/testing/sysfs-bus-iio
+> @@ -1802,3 +1802,20 @@ Contact:	linux-iio@vger.kernel.org
+>  Description:
+>  		Unscaled light intensity according to CIE 1931/DIN 5033
+> color space.
+>  		Units after application of scale are nano nanowatts per
+> square meter.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_raw
+Channel "Y" doesn't sound to be a variable. Why not just say "*"
 
-Thanks, Stephen.
+Thanks,
+Srinivas
 
-The resolution below seems good to me.
+> +KernelVersion:	5.12
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Angle of rotation for channel Y. Units after
+> application of scale
+> +		and offset are radians.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_label
+> +KernelVersion:	5.12
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Optional symbolic label for channel Y.
+> +		For Intel hid hinge sensor, the label values are:
+> +		hinge, keyboard, screen. It means the three channels
+> +		each correspond respectively to hinge angle, keyboard
+> angle,
+> +		and screen angle.
 
--- 
-Sakari Ailus
