@@ -2,78 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13012CE4C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 015442CE4D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 02:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388003AbgLDBMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 20:12:34 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:51154 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387531AbgLDBMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 20:12:34 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr9PTjMlfrogZAA--.50887S2;
-        Fri, 04 Dec 2020 09:11:47 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] MIPS: KASLR: Avoid endless loop in sync_icache when synci_step is zero
-Date:   Fri,  4 Dec 2020 09:11:46 +0800
-Message-Id: <1607044306-4800-1-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxr9PTjMlfrogZAA--.50887S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFykXF48Gr4UKr4DZryUGFg_yoW8GF1xpr
-        sxGw1xKrs8Ww48ta48J3yku343Cas8u3y7GF4Ut3sYvasxZryDtFy5Kw1FgFZavrW8K3Wa
-        vryjvrWrZa17A3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_KwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5mQ6tUUUUU==
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S2388268AbgLDBOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 20:14:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388147AbgLDBON (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 20:14:13 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0F7C061A51
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 17:13:27 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id t18so2199253plo.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 17:13:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AOrxpQhrFGHGfq5Ytdkq3w2p+LsOF6MEvdPgcjVv8Sc=;
+        b=dYGhk5TPgQApAfyW6kfJli7dLYhltigAJySRYODCTXwN6s84B2b2u4W2hH/iP8xJ/m
+         JE++NMo0IX3GB+PeYMV3jPc9HtYKbO0To21Yq5a/KOZ6LqPoi5eVr6pxMXiNHNisCZon
+         u2+awhutYMwSbdthSL0VZiDlUphO7pIt0Y76MhUECIi9w+rGqPqBxqrCcLb8TSVaV7oP
+         3oEUJqAvNu4i3/p43tYaYPkHgMsRIg0pSXedxfzaO62wGJd10VqYSNjtBWcXKP1jG5l7
+         GbphKQbQ1V9Ur0wLXRt0DSr/j9VLJJmw9aex3bO5ucsTfiqTWCwY8yweBXdMqaEb/8Bh
+         Cpyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AOrxpQhrFGHGfq5Ytdkq3w2p+LsOF6MEvdPgcjVv8Sc=;
+        b=aIRuSSwgtSxXJYXGOnvamHd2mm7Ktb9uOlcNRie3BudevzxvpvrklX2Zqx1OYMxZJy
+         A3oWW9IByxVQQB6Ca3jR9h1vZBK/77wHtvDsX47yxmjyEMq69D+7mFUZCWZ5ZsBGwPTd
+         HMC5N/QlLTChq0ScL4ARAZKKWZXNmL3wNQeCA2gsPgZ5Vfne6aS4/zy29+8eaHrtjS/l
+         Z+NE1vNwG/sfZ5faZrunAZH9DCmPJDRe9pNUJXYzsmzhcyuXSsYk/wCQTCvxmCjETIQm
+         EEp4AN982ewBj1kxFEZ5gocGu6xi7u0e85J5GQpV587z0wdPXPiq3WBNK6uImSKg67Be
+         iQCw==
+X-Gm-Message-State: AOAM5302Tnb6ndTA89stBbhlviKz4Zkaz/TFWR/HZeOa/huvasGeoz4j
+        aO4W8l7J5xoKOAeoi9sYRe09vE7csACOAvv07lh3Zg==
+X-Google-Smtp-Source: ABdhPJyzfkwgqUusexMknWv78y5y3238oFye3JoAxnJ83aVDDVd7MrMGO2rhZxY1dJFj2cdiPL+jvIOWACKbueUb8c8=
+X-Received: by 2002:a17:90a:6fa1:: with SMTP id e30mr1834860pjk.32.1607044406943;
+ Thu, 03 Dec 2020 17:13:26 -0800 (PST)
+MIME-Version: 1.0
+References: <20201204011129.2493105-1-ndesaulniers@google.com> <20201204011129.2493105-3-ndesaulniers@google.com>
+In-Reply-To: <20201204011129.2493105-3-ndesaulniers@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 3 Dec 2020 17:13:15 -0800
+Message-ID: <CAKwvOdkZEiHK01OD420USb0j=F0LcrnRbauv9Yw26tu-GRbYkg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] Kbuild: DWARF v5 support
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nick Clifton <nickc@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid endless loop if synci_step was zero read by rdhwr instruction.
+sigh...I ran a broken script to send the series which doesn't cc folks properly.
++ lkml, linux-kbuild
+(Might just resend, properly)
 
-Most platforms do not need to do synci instruction operations when
-synci_step is 0. But for example, the synci implementation on Loongson64
-platform has some changes. On the one hand, it ensures that the memory
-access instructions have been completed. On the other hand, it guarantees
-that all prefetch instructions need to be fetched again. And its address
-information is useless. Thus, only one synci operation is required when
-synci_step is 0 on Loongson64 platform. I guess that some other platforms
-have similar implementations on synci, so add judgment conditions in
-`while` to ensure that at least all platforms perform synci operations
-once. For those platforms that do not need synci, they just do one more
-operation similar to nop.
+On Thu, Dec 3, 2020 at 5:11 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> DWARF v5 is the latest standard of the DWARF debug info format.
+>
+> DWARF5 wins significantly in terms of size when mixed with compression
+> (CONFIG_DEBUG_INFO_COMPRESSED).
+>
+> Link: http://www.dwarfstd.org/doc/DWARF5.pdf
+>
+> Patch 1 is a cleanup that lays the ground work and isn't DWARF
+> v5 specific.
+> Patch 2 implements Kconfig and Kbuild support for DWARFv5.
+>
+> Changes from v2:
+> * Drop two of the earlier patches that have been accepted already.
+> * Add measurements with GCC 10.2 to commit message.
+> * Update help text as per Arvind with help from Caroline.
+> * Improve case/wording between DWARF Versions as per Masahiro.
+>
+> Changes from the RFC:
+> * split patch in 3 patch series, include Fangrui's patch, too.
+> * prefer `DWARF vX` format, as per Fangrui.
+> * use spaces between assignment in Makefile as per Masahiro.
+> * simplify setting dwarf-version-y as per Masahiro.
+> * indent `prompt` in Kconfig change as per Masahiro.
+> * remove explicit default in Kconfig as per Masahiro.
+> * add comments to test_dwarf5_support.sh.
+> * change echo in test_dwarf5_support.sh as per Masahiro.
+> * remove -u from test_dwarf5_support.sh as per Masahiro.
+> * add a -gdwarf-5 cc-option check to Kconfig as per Jakub.
+>
+> Nick Desaulniers (2):
+>   Kbuild: make DWARF version a choice
+>   Kbuild: implement support for DWARF v5
+>
+>  Makefile                          | 15 +++++++------
+>  include/asm-generic/vmlinux.lds.h |  6 +++++-
+>  lib/Kconfig.debug                 | 35 ++++++++++++++++++++++++++-----
+>  scripts/test_dwarf5_support.sh    |  9 ++++++++
+>  4 files changed, 53 insertions(+), 12 deletions(-)
+>  create mode 100755 scripts/test_dwarf5_support.sh
+>
+> --
+> 2.29.2.576.ga3fc446d84-goog
+>
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
----
- arch/mips/kernel/relocate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
-index 57bdd276..47aeb33 100644
---- a/arch/mips/kernel/relocate.c
-+++ b/arch/mips/kernel/relocate.c
-@@ -64,7 +64,7 @@ static void __init sync_icache(void *kbase, unsigned long kernel_length)
- 			: "r" (kbase));
- 
- 		kbase += step;
--	} while (kbase < kend);
-+	} while (step && kbase < kend);
- 
- 	/* Completion barrier */
- 	__sync();
 -- 
-2.1.0
-
+Thanks,
+~Nick Desaulniers
