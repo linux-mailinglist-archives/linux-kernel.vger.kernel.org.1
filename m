@@ -2,135 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38C42CE574
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:00:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C308F2CE57D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbgLDCAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 21:00:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58129 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726028AbgLDCAL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 21:00:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607047125;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PcsI/8i8s21MPFmJfyYOyMMbKAfWF0mrFKbIFuaOgvo=;
-        b=Df4qx4EQ/zdq9q4YaM+ufj9gNdpaIKwEFyCA01LRoadMfhRHkAd4fD/fif/dE7ihXurXSo
-        ZGX82VznMTOTRyxJAoDqmE5lLq7btCqAMybciamipdl3Bhb6Mu0Ycxvi05hlT0R4vj5OCN
-        tjFkwit01zyxiFIECZBhtISld/xXe+I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-284-0jl4hAROO8GO_A2F9x3dJA-1; Thu, 03 Dec 2020 20:58:41 -0500
-X-MC-Unique: 0jl4hAROO8GO_A2F9x3dJA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 25568107ACE4;
-        Fri,  4 Dec 2020 01:58:39 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-98.rdu2.redhat.com [10.10.117.98])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8BCD91001901;
-        Fri,  4 Dec 2020 01:58:33 +0000 (UTC)
-Subject: Re: [PATCH 1/3] rwsem: Implement down_read_killable_nested
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Vasiliy Kulikov <segoon@openwall.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Christopher Yeoh <cyeoh@au1.ibm.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-References: <87tut2bqik.fsf@x220.int.ebiederm.org>
- <87o8jabqh3.fsf@x220.int.ebiederm.org>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <c4e66f5a-a48c-5a72-a733-9e1bcd77274a@redhat.com>
-Date:   Thu, 3 Dec 2020 20:58:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726874AbgLDCBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 21:01:19 -0500
+Received: from mga04.intel.com ([192.55.52.120]:63654 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725849AbgLDCBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 21:01:19 -0500
+IronPort-SDR: 6UUDBMHTSfzRMKdgGt8EFrJUmwXRMeLpG+gq+DCC13kX2Ows4+8df/b1/Oi8kn0egTo58o9SSU
+ CWy3oz4vp0lA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9824"; a="170745351"
+X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
+   d="scan'208";a="170745351"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2020 17:57:58 -0800
+IronPort-SDR: svlpgVnlrMW0SZdjk+sQAW3MZi5QXvapaFhzWEd3I0Ni0eYKgS8noFxyYrQA4x1tu+w9lVyWSv
+ C1M/ECR6z2Rg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,390,1599548400"; 
+   d="scan'208";a="331053756"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by orsmga003.jf.intel.com with ESMTP; 03 Dec 2020 17:57:57 -0800
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     hdegoede@redhat.com, mgross@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH 2/3] platform/x86: ISST: Allow configurable offset range
+Date:   Thu,  3 Dec 2020 17:57:45 -0800
+Message-Id: <20201204015746.1168941-2-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20201204015746.1168941-1-srinivas.pandruvada@linux.intel.com>
+References: <20201204015746.1168941-1-srinivas.pandruvada@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <87o8jabqh3.fsf@x220.int.ebiederm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/3/20 3:10 PM, Eric W. Biederman wrote:
-> In preparation for converting exec_update_mutex to a rwsem so that
-> multiple readers can execute in parallel and not deadlock, add
-> down_read_killable_nested.  This is needed so that kcmp_lock
-> can be converted from working on a mutexes to working on rw_semaphores.
->
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
-> ---
->   include/linux/rwsem.h  |  2 ++
->   kernel/locking/rwsem.c | 14 ++++++++++++++
->   2 files changed, 16 insertions(+)
->
-> diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
-> index 25e3fde85617..13021b08b2ed 100644
-> --- a/include/linux/rwsem.h
-> +++ b/include/linux/rwsem.h
-> @@ -171,6 +171,7 @@ extern void downgrade_write(struct rw_semaphore *sem);
->    * See Documentation/locking/lockdep-design.rst for more details.)
->    */
->   extern void down_read_nested(struct rw_semaphore *sem, int subclass);
-> +extern int __must_check down_read_killable_nested(struct rw_semaphore *sem, int subclass);
->   extern void down_write_nested(struct rw_semaphore *sem, int subclass);
->   extern int down_write_killable_nested(struct rw_semaphore *sem, int subclass);
->   extern void _down_write_nest_lock(struct rw_semaphore *sem, struct lockdep_map *nest_lock);
-> @@ -191,6 +192,7 @@ extern void down_read_non_owner(struct rw_semaphore *sem);
->   extern void up_read_non_owner(struct rw_semaphore *sem);
->   #else
->   # define down_read_nested(sem, subclass)		down_read(sem)
-> +# define down_read_killable_nested(sem, subclass)	down_read_killable(sem)
->   # define down_write_nest_lock(sem, nest_lock)	down_write(sem)
->   # define down_write_nested(sem, subclass)	down_write(sem)
->   # define down_write_killable_nested(sem, subclass)	down_write_killable(sem)
-> diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-> index f11b9bd3431d..54d11cb97551 100644
-> --- a/kernel/locking/rwsem.c
-> +++ b/kernel/locking/rwsem.c
-> @@ -1605,6 +1605,20 @@ void down_read_nested(struct rw_semaphore *sem, int subclass)
->   }
->   EXPORT_SYMBOL(down_read_nested);
->   
-> +int down_read_killable_nested(struct rw_semaphore *sem, int subclass)
-> +{
-> +	might_sleep();
-> +	rwsem_acquire_read(&sem->dep_map, subclass, 0, _RET_IP_);
-> +
-> +	if (LOCK_CONTENDED_RETURN(sem, __down_read_trylock, __down_read_killable)) {
-> +		rwsem_release(&sem->dep_map, _RET_IP_);
-> +		return -EINTR;
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(down_read_killable_nested);
-> +
->   void _down_write_nest_lock(struct rw_semaphore *sem, struct lockdep_map *nest)
->   {
->   	might_sleep();
+The mmio offset range can be different based on the PCI device id. Here
+for INTEL_RAPL_PRIO_DEVID_1, the range is increased from 45 to 64. Pass
+the range as the driver_data. Also account for different ranges during
+save/restore via suspend/resume callbacks.
 
-Acked-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ .../x86/intel_speed_select_if/isst_if_mmio.c  | 50 +++++++++++++------
+ 1 file changed, 36 insertions(+), 14 deletions(-)
 
--Longman
+diff --git a/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c b/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
+index e7e9808a1aed..c4bf8dea32ca 100644
+--- a/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
++++ b/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
+@@ -20,15 +20,21 @@ struct isst_mmio_range {
+ 	int end;
+ };
+ 
+-struct isst_mmio_range mmio_range[] = {
++struct isst_mmio_range mmio_range_devid_0[] = {
+ 	{0x04, 0x14},
+ 	{0x20, 0xD0},
+ };
+ 
++struct isst_mmio_range mmio_range_devid_1[] = {
++	{0x04, 0x14},
++	{0x20, 0x11C},
++};
++
+ struct isst_if_device {
+ 	void __iomem *punit_mmio;
+ 	u32 range_0[5];
+-	u32 range_1[45];
++	u32 range_1[64];
++	struct isst_mmio_range *mmio_range;
+ 	struct mutex mutex;
+ };
+ 
+@@ -39,8 +45,6 @@ static long isst_if_mmio_rd_wr(u8 *cmd_ptr, int *write_only, int resume)
+ 	struct pci_dev *pdev;
+ 
+ 	io_reg = (struct isst_if_io_reg *)cmd_ptr;
+-	if (io_reg->reg < 0x04 || io_reg->reg > 0xD0)
+-		return -EINVAL;
+ 
+ 	if (io_reg->reg % 4)
+ 		return -EINVAL;
+@@ -56,6 +60,10 @@ static long isst_if_mmio_rd_wr(u8 *cmd_ptr, int *write_only, int resume)
+ 	if (!punit_dev)
+ 		return -EINVAL;
+ 
++	if (io_reg->reg < punit_dev->mmio_range[0].beg ||
++	    io_reg->reg > punit_dev->mmio_range[1].end)
++		return -EINVAL;
++
+ 	/*
+ 	 * Ensure that operation is complete on a PCI device to avoid read
+ 	 * write race by using per PCI device mutex.
+@@ -74,8 +82,10 @@ static long isst_if_mmio_rd_wr(u8 *cmd_ptr, int *write_only, int resume)
+ }
+ 
+ static const struct pci_device_id isst_if_ids[] = {
+-	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, INTEL_RAPL_PRIO_DEVID_0)},
+-	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, INTEL_RAPL_PRIO_DEVID_1)},
++	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, INTEL_RAPL_PRIO_DEVID_0),
++		.driver_data = (kernel_ulong_t)&mmio_range_devid_0},
++	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, INTEL_RAPL_PRIO_DEVID_1),
++		.driver_data = (kernel_ulong_t)&mmio_range_devid_1},
+ 	{ 0 },
+ };
+ MODULE_DEVICE_TABLE(pci, isst_if_ids);
+@@ -112,6 +122,7 @@ static int isst_if_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 
+ 	mutex_init(&punit_dev->mutex);
+ 	pci_set_drvdata(pdev, punit_dev);
++	punit_dev->mmio_range = (struct isst_mmio_range *) ent->driver_data;
+ 
+ 	memset(&cb, 0, sizeof(cb));
+ 	cb.cmd_size = sizeof(struct isst_if_io_reg);
+@@ -141,10 +152,15 @@ static int __maybe_unused isst_if_suspend(struct device *device)
+ 
+ 	for (i = 0; i < ARRAY_SIZE(punit_dev->range_0); ++i)
+ 		punit_dev->range_0[i] = readl(punit_dev->punit_mmio +
+-						mmio_range[0].beg + 4 * i);
+-	for (i = 0; i < ARRAY_SIZE(punit_dev->range_1); ++i)
+-		punit_dev->range_1[i] = readl(punit_dev->punit_mmio +
+-						mmio_range[1].beg + 4 * i);
++						punit_dev->mmio_range[0].beg + 4 * i);
++	for (i = 0; i < ARRAY_SIZE(punit_dev->range_1); ++i) {
++		u32 addr;
++
++		addr = punit_dev->mmio_range[1].beg + 4 * i;
++		if (addr > punit_dev->mmio_range[1].end)
++			break;
++		punit_dev->range_1[i] = readl(punit_dev->punit_mmio + addr);
++	}
+ 
+ 	return 0;
+ }
+@@ -156,10 +172,16 @@ static int __maybe_unused isst_if_resume(struct device *device)
+ 
+ 	for (i = 0; i < ARRAY_SIZE(punit_dev->range_0); ++i)
+ 		writel(punit_dev->range_0[i], punit_dev->punit_mmio +
+-						mmio_range[0].beg + 4 * i);
+-	for (i = 0; i < ARRAY_SIZE(punit_dev->range_1); ++i)
+-		writel(punit_dev->range_1[i], punit_dev->punit_mmio +
+-						mmio_range[1].beg + 4 * i);
++						punit_dev->mmio_range[0].beg + 4 * i);
++	for (i = 0; i < ARRAY_SIZE(punit_dev->range_1); ++i) {
++		u32 addr;
++
++		addr = punit_dev->mmio_range[1].beg + 4 * i;
++		if (addr > punit_dev->mmio_range[1].end)
++			break;
++
++		writel(punit_dev->range_1[i], punit_dev->punit_mmio + addr);
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.25.4
 
