@@ -2,147 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5689A2CF53C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6392CF549
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 21:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730693AbgLDUCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 15:02:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgLDUCP (ORCPT
+        id S1730458AbgLDUHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 15:07:36 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:47338 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgLDUHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 15:02:15 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A47CC061A4F;
-        Fri,  4 Dec 2020 12:01:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=mwhmqUBogTqkSec5CGMda2ZetJiviJl0UkOzggNOmq4=; b=jhlTOHehDyM+DJK3bkeynfOvq2
-        fG7D6gZ9AMyclpP3iI4p1AzYDsgdIlWpHYMaIZzLqggf9n53QHtsyW1l6DYVrr9WgzSGSsZdBMDVY
-        LEMeIULTd/zk5Gew2Zd6lVr+AGPY469TMd4AnclUUvKhWNWB6G9Ivc+zb5GjTBRhnUD4PcfksYrfk
-        5/Ss+fsd7AdDyanUPI/HpYLXxI9X/beSompIR8J+RWGUTuNXt4qZgecURf8Xj+++TYXQMdKAwa46x
-        9VwMJuQT2OgaOOCPnJpnAUQTtOQiw/ktmPcMf4uiQHJsODsSr5UehwZN0pzkBeatzDXrVhRar4pyj
-        r7siEDBg==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1klHGc-0004KV-W6; Fri, 04 Dec 2020 20:01:23 +0000
-Subject: Re: [PATCH v2] iosched: Add i10 I/O Scheduler
-To:     Rachit Agarwal <rach4x0r@gmail.com>, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Rachit Agarwal <ragarwal@cornell.edu>, linux-block@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Jaehyun Hwang <jaehyun.hwang@cornell.edu>,
-        Qizhe Cai <qc228@cornell.edu>,
-        Midhul Vuppalapati <mvv25@cornell.edu>,
-        Sagi Grimberg <sagi@lightbitslabs.com>,
-        Shrijeet Mukherjee <shrijeet@gmail.com>,
-        David Ahern <dsahern@gmail.com>
-References: <20201130201927.84846-1-rach4x0r@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <593f6a3b-6e78-e4b3-c808-b9e452e6d05b@infradead.org>
-Date:   Fri, 4 Dec 2020 12:01:18 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 4 Dec 2020 15:07:36 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B4Jn5jc076980;
+        Fri, 4 Dec 2020 20:05:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=QuZr977AjBYzbv+upnrOJsmyj3o07WB2T8vvWfzyq3E=;
+ b=yUW1NLr55pB5u3wF/KjZKkRo7CjTpdkUIlkGHdwqHOgvKbCKgk/uou6QL+l2nHTqcIBh
+ ZWNONdZ5G9/7o6dITR2ZiLfoBJp1KhJCww8N2iiI2PfXi1xlehsxXnRamvknMI3vTqTE
+ +pMODnUvB2Ssr2m/rLwMzBc6d4Jxn8ufqHuevYeytVlsLgEc97Vv70HHghsOKfBx/CnZ
+ OP4fiW52GSF8J1ZacpKckHhJ0c4hJtf5UzpAvHECjhSGHMT+l86hzeYYJ0+1URmI8Wei
+ 6b+YSan2lRiPsqbvhPrVyhA2kP56IidMslg/y6WnmYy33nbP/whnQJuQn9U0sN7SR4wA FQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 353egm4wdd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 04 Dec 2020 20:05:59 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B4JoREc083330;
+        Fri, 4 Dec 2020 20:05:59 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 3540ayjm1m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Dec 2020 20:05:58 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B4K5sAe022512;
+        Fri, 4 Dec 2020 20:05:55 GMT
+Received: from parnassus (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 04 Dec 2020 12:05:51 -0800
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
+In-Reply-To: <20201203141729.GS5487@ziepe.ca>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-7-pasha.tatashin@soleen.com>
+ <20201202163507.GL5487@ziepe.ca>
+ <CA+CK2bBT=U+xhbzXTDFwsL5wTvPHgNJ0DRpaeseiUq=w4EOe9w@mail.gmail.com>
+ <20201203010809.GQ5487@ziepe.ca>
+ <CA+CK2bBRgcCc5Nm0RcsEgVFpGBFC-_icA6UDRiqQxeRJE5U-Aw@mail.gmail.com>
+ <20201203141729.GS5487@ziepe.ca>
+Date:   Fri, 04 Dec 2020 15:05:46 -0500
+Message-ID: <87360lnxph.fsf@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20201130201927.84846-1-rach4x0r@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9825 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=1
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040114
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9825 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=1
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012040114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/20 12:19 PM, Rachit Agarwal wrote:
-> From: Rachit Agarwal <ragarwal@cornell.edu>
-> 
+Jason Gunthorpe <jgg@ziepe.ca> writes:
 
-Hi,  {reusing bits}
+> On Wed, Dec 02, 2020 at 08:34:32PM -0500, Pavel Tatashin wrote:
+>> What I meant is the users of the interface do it incrementally not in
+>> large chunks. For example:
+>> 
+>> vfio_pin_pages_remote
+>>    vaddr_get_pfn
+>>         ret = pin_user_pages_remote(mm, vaddr, 1, flags |
+>> FOLL_LONGTERM, page, NULL, NULL);
+>> 1 -> pin only one pages at a time
+>
+> I don't know why vfio does this, it is why it so ridiculously slow at
+> least.
 
-> ---
->  Documentation/block/i10-iosched.rst |  79 ++++++
->  block/Kconfig.iosched               |   8 +
->  block/Makefile                      |   1 +
->  block/i10-iosched.c                 | 471 ++++++++++++++++++++++++++++++++++++
->  4 files changed, 559 insertions(+)
->  create mode 100644 Documentation/block/i10-iosched.rst
->  create mode 100644 block/i10-iosched.c
+Well Alex can correct me, but I went digging and a comment from the
+first type1 vfio commit says the iommu API didn't promise to unmap
+subpages of previous mappings, so doing page at a time gave flexibility
+at the cost of inefficiency.
 
+Then 166fd7d94afd allowed the iommu to use larger pages in vfio, but
+vfio kept pinning pages at a time.  I couldn't find an explanation for
+why that stayed the same.
 
-> diff --git a/Documentation/block/i10-iosched.rst b/Documentation/block/i10-iosched.rst
-> new file mode 100644
-> index 0000000..661b5d5
-> --- /dev/null
-> +++ b/Documentation/block/i10-iosched.rst
-> @@ -0,0 +1,79 @@
-> +==========================
-> +i10 I/O scheduler overview
-> +==========================
-> +
-> +I/O batching is beneficial for optimizing IOPS and throughput for various
-> +applications. For instance, several kernel block drivers would benefit from
-> +batching, including mmc [1] and tcp-based storage drivers like nvme-tcp [2,3].
-
-                       MMC         TCP-based
-
-> +While we have support for batching dispatch [4], we need an I/O scheduler to
-> +efficiently enable batching. Such a scheduler is particularly interesting for
-> +disaggregated (remote) storage, where the access latency of disaggregated remote
-> +storage may be higher than local storage access; thus, batching can significantly
-> +help in amortizing the remote access latency while increasing the throughput.
-> +
-> +This patch introduces the i10 I/O scheduler, which performs batching per hctx in
-> +terms of #requests, #bytes, and timeouts (at microseconds granularity). i10 starts
-> +dispatching only when #requests or #bytes is larger than a threshold or when a timer
-> +expires. After that, batching dispatch [3] would happen, allowing batching at device
-> +drivers along with "bd->last" and ".commit_rqs".
-> +
-> +The i10 I/O scheduler builds upon recent work on [6]. We have tested the i10 I/O
-> +scheduler with nvme-tcp optimizaitons [2,3] and batching dispatch [4], varying number
-
-                           optimizations
-
-> +of cores, varying read/write ratios, and varying request sizes, and with NVMe SSD and
-> +RAM block device. For remote NVMe SSDs, the i10 I/O scheduler achieves ~60% improvements
-> +in terms of IOPS per core over "noop" I/O scheduler, while trading off latency at lower loads.
-> +These results are available at [5], and many additional results are presented in [6].
-> +
-> +While other schedulers may also batch I/O (e.g., mq-deadline), the optimization target
-> +in the i10 I/O scheduler is throughput maximization. Hence there is no latency target
-> +nor a need for a global tracking context, so a new scheduler is needed rather than
-> +to build this functionality to an existing scheduler.
-> +
-> +We have default values for batching thresholds (e.g., 16 for #requests, 64KB for #bytes,
-> +and 50us for timeout). These default values are based on sensitivity tests in [6].
-> +For many workloads, especially those with low loads, the default values of i10 scheduler
-> +may not provide the optimal operating point on the latency-throughput curve. To that end,
-> +the scheduler adaptively sets the batch size depending on number of outstanding requests
-> +and the triggering of timeouts, as measured in the block layer. Much work needs to be done
-> +to design better adaptation algorithms, especially when the loads are neither too high
-> +nor too low. This constitutes interesting future work. In addition, for our future work, we
-> +plan to extend the scheduler to support isolation in multi-tenant deployments
-> +(to simultaneously achieve low tail latency for latency-sensitive applications and high
-> +throughput for throughput-bound applications).
-> +
-> +References
-> +[1] https://lore.kernel.org/linux-block/cover.1587888520.git.baolin.wang7@gmail.com/T/#mc48a8fb6069843827458f5fea722e1179d32af2a
-> +[2] https://git.infradead.org/nvme.git/commit/122e5b9f3d370ae11e1502d14ff5c7ea9b144a76
-> +[3] https://git.infradead.org/nvme.git/commit/86f0348ace1510d7ac25124b096fb88a6ab45270
-> +[4] https://lore.kernel.org/linux-block/20200630102501.2238972-1-ming.lei@redhat.com/
-> +[5] https://github.com/i10-kernel/upstream-linux/blob/master/i10-evaluation.pdf
-> +[6] https://www.usenix.org/conference/nsdi20/presentation/hwang
-> +
-> +==========================
-> +i10 I/O scheduler tunables
-> +==========================
-
-[snip]
-
-
-thanks.
--- 
-~Randy
-
+Yesterday I tried optimizing vfio to skip gup calls for tail pages after
+Matthew pointed out this same issue to me by coincidence last week.
+Currently debugging, but if there's a fundamental reason this won't work
+on the vfio side, it'd be nice to know.
