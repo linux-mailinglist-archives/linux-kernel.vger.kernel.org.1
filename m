@@ -2,110 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5744F2CE59A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 149972CE59C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 03:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgLDCSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Dec 2020 21:18:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726316AbgLDCSm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Dec 2020 21:18:42 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7877EC061A51
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Dec 2020 18:18:02 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id m9so2603055pgb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Dec 2020 18:18:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=Fd2ivA1JfGBE/YYaFxTeQJoY+3hIQ82HTGN9ThwBn8w=;
-        b=bd67G5cfWvkCpWSjpFtI1+6l2zRYD23xLf/mhlvIDACjrdi9nyf9dA0r6nvvREyg08
-         f3/zsofCKY9aHt8SOxoMx94nNle0IBiOTvBwYKGdD9BVOEcCdLCVu0I6aOeaq7weUEWd
-         EEIsrpT29dZ7HUU6IaIcUu+7qyqHljF6kf1ZearRQIWy4NWCn0VtkvVswIJqSbx1kOPr
-         WLin59SvycwQtsrRgOoTfDikupSHB/+1QbEuAminucunl/PpeQO2nhXPBX/ZUzrub1eG
-         EpYVkC2O08NhLbUm2XXwT50LKLrJr4vr8BkrzMgNmwHT5STBd5lQTFYdQbdw0F0SfX1w
-         5njw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=Fd2ivA1JfGBE/YYaFxTeQJoY+3hIQ82HTGN9ThwBn8w=;
-        b=Z4fKE6pyuomqCE92AdeYzbHDnPQ8JlEY1+VpX7TokmP967oPE65Ar6/NSKuXb1z+L0
-         NZj2qCYFjeEsezIYhKIl3tgZ7SAHNnVO23C6DRFwKmnfEj0uZ8TcMaUpIf8KSO/pSDPw
-         EyxccoPF6PeRV/mI80yHlC4QdYmvdN1uO5KlL6t5ovOs741+QVdZT8celK7wVSGq2AHo
-         9KEioxxbMVArE4smwKzTCfDoeXm//L2hbV+ske/lCQ978ubobfdqTm9XiCzYrO35gaO+
-         os7EMWizpWGHU+fMwJgp5sVPf5Q/Qc8arRwrhyr59pX7Lt4PVckRMbncNAQwJGT/aaxV
-         PtZw==
-X-Gm-Message-State: AOAM532bJ3KzoCtNSjZy/ahEsPVQcCADWy421geCNxF9lWqHOt9sPcg2
-        ctqsX3lpAppptBQQa9dSmnIVbg==
-X-Google-Smtp-Source: ABdhPJyNuKKB+iExcQqlDxHUMCskHI2/BePAL+9W0Ez0GHtzU2CIr3B8j01gRJIOeumT/wnwKHF+4w==
-X-Received: by 2002:a63:f64c:: with SMTP id u12mr5577532pgj.325.1607048281788;
-        Thu, 03 Dec 2020 18:18:01 -0800 (PST)
-Received: from ?IPv6:2600:1010:b052:49bb:5861:3d22:1fe4:dfb5? ([2600:1010:b052:49bb:5861:3d22:1fe4:dfb5])
-        by smtp.gmail.com with ESMTPSA id v17sm2249260pga.58.2020.12.03.18.18.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Dec 2020 18:18:01 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [MOCKUP] x86/mm: Lightweight lazy mm refcounting
-Date:   Thu, 3 Dec 2020 18:17:59 -0800
-Message-Id: <3B47C470-2900-4A53-9F8E-CB3A003FA361@amacapital.net>
-References: <1607033145.hcppy9ndl4.astroid@bobo.none>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Rik van Riel <riel@surriel.com>,
-        Will Deacon <will@kernel.org>, X86 ML <x86@kernel.org>
-In-Reply-To: <1607033145.hcppy9ndl4.astroid@bobo.none>
-To:     Nicholas Piggin <npiggin@gmail.com>
-X-Mailer: iPhone Mail (18B121)
+        id S1726671AbgLDCTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Dec 2020 21:19:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726332AbgLDCTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Dec 2020 21:19:37 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 688A22250F;
+        Fri,  4 Dec 2020 02:18:56 +0000 (UTC)
+Date:   Thu, 3 Dec 2020 21:18:54 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: Re: tracer_init_tracefs really slow
+Message-ID: <20201203211854.7e5caa49@oasis.local.home>
+In-Reply-To: <68d7b3327052757d0cd6359a6c9015a85b437232.camel@pengutronix.de>
+References: <68d7b3327052757d0cd6359a6c9015a85b437232.camel@pengutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> On Dec 3, 2020, at 2:13 PM, Nicholas Piggin <npiggin@gmail.com> wrote:
->=20
-> =EF=BB=BFExcerpts from Peter Zijlstra's message of December 3, 2020 6:44 p=
-m:
->>> On Wed, Dec 02, 2020 at 09:25:51PM -0800, Andy Lutomirski wrote:
->>>=20
->>> power: same as ARM, except that the loop may be rather larger since
->>> the systems are bigger.  But I imagine it's still faster than Nick's
->>> approach -- a cmpxchg to a remote cacheline should still be faster than
->>> an IPI shootdown.=20
->>=20
->> While a single atomic might be cheaper than an IPI, the comparison
->> doesn't work out nicely. You do the xchg() on every unlazy, while the
->> IPI would be once per process exit.
->>=20
->> So over the life of the process, it might do very many unlazies, adding
->> up to a total cost far in excess of what the single IPI would've been.
->=20
-> Yeah this is the concern, I looked at things that add cost to the
-> idle switch code and it gets hard to justify the scalability improvement
-> when you slow these fundmaental things down even a bit.
+Sorry for the really late reply, but I received this while I was on
+vacation, and my backlog was so big when I got back that I left most of
+it unread. :-/  And to make matters worse, my out-of-office script
+wasn't working, to let people know I was on vacation.
 
-v2 fixes this and is generally much nicer. I=E2=80=99ll send it out in a cou=
-ple hours.
+On Mon, 07 Sep 2020 18:16:52 +0200
+Lucas Stach <l.stach@pengutronix.de> wrote:
 
->=20
-> I still think working on the assumption that IPIs =3D scary expensive=20
-> might not be correct. An IPI itself is, but you only issue them when=20
-> you've left a lazy mm on another CPU which just isn't that often.
->=20
-> Thanks,
-> Nick
+> Hi all,
+> 
+> one of my colleagues has taken a look at device boot times and stumbled
+> across a pretty big amount of kernel boot time being spent in
+> tracer_init_tracefs(). On this particular i.MX6Q based device the
+> kernel spends more than 1 second in this function, which is a
+> significant amount of the overall kernel inititalization time. While
+> this machine is no rocket with its Cortex A9 @ 800MHz, the amount of
+> CPU time being used there is pretty irritating.
+> 
+> Specifically the issue lies within trace_event_eval_update where ~1100
+> trace_event_calls get updated with ~500 trace_eval_maps. I haven't had
+> a chance yet to dig any deeper or try to understand more of what's
+> going on there, but I wanted to get the issue out there in case anyone
+> has some cycles to spare to help us along.
+
+OK, that makes sense. The macro TRACE_DEFINE_ENUM() will make a mapping
+of enums into their values. This is needed because if an enum is used
+in tp_printk() of a TRACE_EVENT(), the name of the ENUM is passed to
+user space. The enum name is useless to user space, so this function
+will scan the strings that are exported to user space and convert the
+enum name to the enum values.
+
+> 
+> The obvious questions for now are:
+> 1. Why is this function so damn expensive (at least on this whimpy ARM
+> machine)? and
+
+Well, it's doing a string substitution for thousands of events.
+
+
+> 2. Could any of this be done asynchronously, to not block the kernel in
+> early init?
+
+Yes :-)
+
+We could make a thread that does this, that the init wakes up and runs,
+letting the kernel to move forward. Would you like to make that patch
+or shall I?
+
+-- Steve
