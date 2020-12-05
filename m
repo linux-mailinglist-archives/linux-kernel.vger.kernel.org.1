@@ -2,149 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42F22CFB39
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 13:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F40D2CFB3C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 13:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726417AbgLEMCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 07:02:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60600 "EHLO
+        id S1727496AbgLEMLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 07:11:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727496AbgLELXd (ORCPT
+        with ESMTP id S1729572AbgLELVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 06:23:33 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58E9C061A4F
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 03:15:05 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id k14so7827538wrn.1
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 03:15:05 -0800 (PST)
+        Sat, 5 Dec 2020 06:21:25 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277F9C061A52;
+        Sat,  5 Dec 2020 03:20:22 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id d18so8563472edt.7;
+        Sat, 05 Dec 2020 03:20:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vm0kTYRfsbbw/uXa2uKVACoRIfxCWD5Snf9/ZZBS4vI=;
-        b=Yr1ZIzDR77DcgbQbUxzYZI0kWHLoTvxPJi6yJox554/E5iE4d4BfyXrcjh9kQanIFl
-         7NUcFENYX8B+GnaTBmEk6JDJKwmS3wq9B0aXsIA8x8tpTNywbdy33TOjYqbDxWKM/e5Q
-         GRv5p43UpM6pr6oc14g2NF+YOtjmyBxBAasEiVBayB1JolLmXIoOUQwDotq0qLvYgOEH
-         eFPxAA3AeVwMsrNQr85hrxbLRcNd892rbKdnEljiKEWwEbUKYagkfFOxrGz4Htc+Iwaw
-         sFsVJz1U5Y6deBeak6EVLnN/0xjRCdFKrdESHIIoBJu1LHenlWG1SSleFpgFQYpnxFZ6
-         fQoA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pFubxfr8TFbxQDJSOpWOytb7HLBaRWXRUz4oP+BoVPY=;
+        b=AZURVcC6OJupQc+TX0wKSi9ndyA8sSCeiaKQjWp7MuLbjQ06CR27ZzrX60fG4wW0E9
+         neLjKkEmfALRY/L2LxUBvdX62A8AOUdzozr2nsK9ySd1EawIE92TzJhPjfjLDIMKFFtz
+         PjmY+YNS3mx7YqxE2AGFpukWbX0D6EJrYUJEIWBpc0HJMhZmYoR/Al/Ly9yTKTA5mBnI
+         iWqJ5q1x0UuJ2pFKOr2bjtRbbD7cMg1KzNJrPFHDKET4MDqMlYmFp2QB4U5jBjVg9TPo
+         F3JEipPVBV/+4bsC0lMxUpSLc7R9dRh4GcwPuN89YDtgnhINqzlk8l0SutVBsBXPL12Q
+         OxMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vm0kTYRfsbbw/uXa2uKVACoRIfxCWD5Snf9/ZZBS4vI=;
-        b=pBm3/l8Pxz0BLLbLc6eYmD/X23HOzMhvL2GC2tDwSyYviJFX7DMgFZSEVA9k333p+g
-         AxBPr3wRz7hodgI8w6890gNw7c35NcByKW+mOIwSfQdgcDSTFoogdcZHfOO73KivW8n0
-         8rPysFpbg5i/tkS5A1udzIj5v9P124wLgOmW61fsyt5rTfavUrTtsTlvz44ahXhVDdqD
-         BJkyms6NDkMKGziM/B22Yvb6kYuX/gaD8NT8NkSUq94ryGND7SvNOA2skRxjFpYoTgEZ
-         KLhrRHxcOGfdF+TdybbsjvvInnAENh3fNbKc/OY6U1DzTipxeEX1058/Y+bYYMUqmmWQ
-         6TAw==
-X-Gm-Message-State: AOAM532NGiMMWVduaQoCNEgD5er/aGGcdTK6tm6oFjUa9lsCMjY0L/Ge
-        uEOzTNEzowep1LKeaeL59FHEig==
-X-Google-Smtp-Source: ABdhPJzidHN37LYdbiTj7YPUSYlEeuJWU1/5ZyiN4M4YFSu2jXb2xdJ0Tww0x7DtBdcHudzvJvASzA==
-X-Received: by 2002:adf:a3d1:: with SMTP id m17mr9487100wrb.289.1607166904041;
-        Sat, 05 Dec 2020 03:15:04 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8165:c1cc:d736:b53f? ([2a01:e34:ed2f:f020:8165:c1cc:d736:b53f])
-        by smtp.googlemail.com with ESMTPSA id a65sm6470758wmc.35.2020.12.05.03.15.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Dec 2020 03:15:03 -0800 (PST)
-Subject: Re: [PATCH v3 2/2] clocksource: arm_arch_timer: Correct fault
- programming of CNTKCTL_EL1.EVNTI
-To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        wanghaibin.wang@huawei.com
-References: <20201204073126.6920-1-zhukeqian1@huawei.com>
- <20201204073126.6920-3-zhukeqian1@huawei.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <a82cf9ff-f18d-ce0a-f7a2-82a56cbbec40@linaro.org>
-Date:   Sat, 5 Dec 2020 12:15:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pFubxfr8TFbxQDJSOpWOytb7HLBaRWXRUz4oP+BoVPY=;
+        b=aqyxNNQckoWQEWwdTuxycTxmOHJjv1CUuPS2lkvFpSngyeFf70KM5kBWGew0hTK6Pl
+         ZBQ2g8QZeEDA7UuEB7NgSC2NtdqYLWD73fKh/++FV6mrXNIAVT7XtAw7On4IoUSH5lG2
+         JCz9hck5lrgjatbX+H5dxt4wXMDd+HwEyR2bXEiC3Ac6YtyNxviYK8LcXP+5XHM+I8T/
+         m4C45f4z4X2jskSoP7gk2MUgWwvIYbGrPXNQ2ojZUEJqt7aNq9Ps2Ilsz5iTOOCjvmrH
+         t/26bwHNlt7eq3wryNz3wJg81dUhSPLat2QhG+xt3uLeiH2xKNq2iTaWcIEnG1zcKvQl
+         Cb0g==
+X-Gm-Message-State: AOAM531b1ygF6l4Fr37AKCqe07mkO+lJjUh68xZS/gRK507l/A6VSOAY
+        ff6gZxu5JyKcWND8J1Ycz2A=
+X-Google-Smtp-Source: ABdhPJw+unuRTFJO1NOL8frkI1yVuOJQmy3spxq/6bJQmnA9TDY3fDq8+xWvo35iYTRJvdJlNzjeKQ==
+X-Received: by 2002:a50:8163:: with SMTP id 90mr11604786edc.142.1607167220864;
+        Sat, 05 Dec 2020 03:20:20 -0800 (PST)
+Received: from skbuf ([188.25.2.120])
+        by smtp.gmail.com with ESMTPSA id m13sm5713938edi.87.2020.12.05.03.20.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Dec 2020 03:20:20 -0800 (PST)
+Date:   Sat, 5 Dec 2020 13:20:18 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        mareklindner@neomailbox.ch, sw@simonwunderlich.de, a@unstable.cc,
+        sven@narfation.org, marcel@holtmann.org, johan.hedberg@gmail.com,
+        roopa@nvidia.com, nikolay@nvidia.com, edumazet@google.com,
+        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, jmaloy@redhat.com,
+        ying.xue@windriver.com, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 1/7] net: 8021q: remove unneeded MODULE_VERSION() usage
+Message-ID: <20201205112018.zrddte4hu6kr5bxg@skbuf>
+References: <20201202124959.29209-1-info@metux.net>
 MIME-Version: 1.0
-In-Reply-To: <20201204073126.6920-3-zhukeqian1@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202124959.29209-1-info@metux.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Hi Marc,
-
-are you fine with this patch ?
-
-
-On 04/12/2020 08:31, Keqian Zhu wrote:
-> ARM virtual counter supports event stream, it can only trigger an event
-> when the trigger bit (the value of CNTKCTL_EL1.EVNTI) of CNTVCT_EL0 changes,
-> so the actual period of event stream is 2^(cntkctl_evnti + 1). For example,
-> when the trigger bit is 0, then virtual counter trigger an event for every
-> two cycles.
-> 
-> Fixes: 037f637767a8 ("drivers: clocksource: add support for ARM architected timer event stream")
-> Suggested-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+On Wed, Dec 02, 2020 at 01:49:53PM +0100, Enrico Weigelt, metux IT consult wrote:
+> Remove MODULE_VERSION(), as it isn't needed at all: the only version
+> making sense is the kernel version.
+>
+> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 > ---
->  drivers/clocksource/arm_arch_timer.c | 23 ++++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-> index 777d38cb39b0..d0177824c518 100644
-> --- a/drivers/clocksource/arm_arch_timer.c
-> +++ b/drivers/clocksource/arm_arch_timer.c
-> @@ -822,15 +822,24 @@ static void arch_timer_evtstrm_enable(int divider)
->  
->  static void arch_timer_configure_evtstream(void)
+>  net/8021q/vlan.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
+>
+> diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
+> index f292e0267bb9..683e9e825b9e 100644
+> --- a/net/8021q/vlan.c
+> +++ b/net/8021q/vlan.c
+> @@ -36,15 +36,10 @@
+>  #include "vlan.h"
+>  #include "vlanproc.h"
+>
+> -#define DRV_VERSION "1.8"
+> -
+>  /* Global VLAN variables */
+>
+>  unsigned int vlan_net_id __read_mostly;
+>
+> -const char vlan_fullname[] = "802.1Q VLAN Support";
+> -const char vlan_version[] = DRV_VERSION;
+> -
+>  /* End of global variables definitions. */
+>
+>  static int vlan_group_prealloc_vid(struct vlan_group *vg,
+> @@ -687,7 +682,7 @@ static int __init vlan_proto_init(void)
 >  {
-> -	int evt_stream_div, pos;
-> +	int evt_stream_div, lsb;
-> +
-> +	/*
-> +	 * As the event stream can at most be generated at half the frequency
-> +	 * of the counter, use half the frequency when computing the divider.
-> +	 */
-> +	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ / 2;
-> +
-> +	/*
-> +	 * Find the closest power of two to the divisor. If the adjacent bit
-> +	 * of lsb (last set bit, starts from 0) is set, then we use (lsb + 1).
-> +	 */
-> +	lsb = fls(evt_stream_div) - 1;
-> +	if (lsb > 0 && (evt_stream_div & BIT(lsb - 1)))
-> +		lsb++;
->  
-> -	/* Find the closest power of two to the divisor */
-> -	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ;
-> -	pos = fls(evt_stream_div);
-> -	if (pos > 1 && !(evt_stream_div & (1 << (pos - 2))))
-> -		pos--;
->  	/* enable event stream */
-> -	arch_timer_evtstrm_enable(min(pos, 15));
-> +	arch_timer_evtstrm_enable(max(0, min(lsb, 15)));
->  }
->  
->  static void arch_counter_set_user_access(void)
-> 
+>  	int err;
+>
+> -	pr_info("%s v%s\n", vlan_fullname, vlan_version);
+> +	pr_info("802.1Q VLAN Support\n");
 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+How do we feel about deleting this not really informative message
+altogether in a future patch?
