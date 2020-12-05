@@ -2,92 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AA72CF8F9
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 03:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6472E2CF8FB
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 03:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728640AbgLEC24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 21:28:56 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:49170 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgLEC2z (ORCPT
+        id S1727531AbgLECcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 21:32:50 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9383 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgLECcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 21:28:55 -0500
-Received: by mail-io1-f72.google.com with SMTP id v15so6891802ioq.16
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 18:28:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=w4/9O/+L4JuRl8+48xslFll28CVphFIEJatbgOnAzZI=;
-        b=LvwJ9I5BlAqKJzYWbntuFJJj35FL9INUAihQ6NNTypcnxTmyYInqkeks749ODHWqVR
-         fuMTgQCe5/SEciHOMR8Nur4LIi73oMcwUVOp8rQmgmYEmFE1QM+Ewpotisul1r95yxjZ
-         a7io17nzzPUcUl98/INBtZxlaOVjxumZSfFJTv/86+6+HNgzub+dCDQP0JataMmJ1joD
-         RoQczWr9fn+7+nOBQeerjkJTNah6b77tcMPNgLL1LhaU0Sx2RUnoYVJcjl4f3Lz4drnh
-         jT5j/5AaQGxw1uE3ixiR5cR6Ee9a+4FpA6vYLWawWQKzL1TSUCVovv3+DU6noz5cACbw
-         Bm3A==
-X-Gm-Message-State: AOAM530Y3Zk7CIKbh3B3i6Ip8DzWcFGM60xx9bFKFDvqqw1ZcOTKkMdq
-        n2IbMjFSIJe/lTsqPpa0+rjZZ4UrBD3OJxoVC916XzkWBYvA
-X-Google-Smtp-Source: ABdhPJzcGLJLoUdiDVeD9UBE3qPB8XHF7kE7pmtvZPMXeIVEBsxOE4/2MZpsIziEw2y5nBceTjNX6ui6XvQOLtlEJT7iWqaZVQwy
+        Fri, 4 Dec 2020 21:32:50 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cntqv0w79z78mM;
+        Sat,  5 Dec 2020 10:31:39 +0800 (CST)
+Received: from [10.174.176.199] (10.174.176.199) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 5 Dec 2020 10:31:58 +0800
+Subject: Re: [PATCH 2/2] sched: Split the function show_schedstat()
+To:     Mel Gorman <mgorman@suse.de>
+CC:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <bristot@redhat.com>,
+        <linux-kernel@vger.kernel.org>, Shiyuan Hu <hushiyuan@huawei.com>,
+        Hewenliang <hewenliang4@huawei.com>
+References: <66f73a23-a273-7dff-4202-adc61c3152c8@huawei.com>
+ <a0245eb6-d7ff-cae5-3608-d46424fa437d@huawei.com>
+ <20201203094237.GD3306@suse.de>
+ <b2919179-3045-bd4b-2e0a-2f472ddb73d8@huawei.com>
+ <20201204094021.GG3306@suse.de>
+From:   Yunfeng Ye <yeyunfeng@huawei.com>
+Message-ID: <32d3a300-f74f-7660-0a78-9be7c8a279ba@huawei.com>
+Date:   Sat, 5 Dec 2020 10:31:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:b61a:: with SMTP id s26mr9561675ili.239.1607135288665;
- Fri, 04 Dec 2020 18:28:08 -0800 (PST)
-Date:   Fri, 04 Dec 2020 18:28:08 -0800
-In-Reply-To: <0000000000008c848805b123f174@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fcafca05b5ae5739@google.com>
-Subject: Re: WARNING in ieee80211_ibss_csa_beacon
-From:   syzbot <syzbot+b6c9fe29aefe68e4ad34@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201204094021.GG3306@suse.de>
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.199]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
 
-HEAD commit:    e87297fa Merge tag 'drm-fixes-2020-12-04' of git://anongit..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1412f617500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e49433cfed49b7d9
-dashboard link: https://syzkaller.appspot.com/bug?extid=b6c9fe29aefe68e4ad34
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15131837500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14550ecf500000
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b6c9fe29aefe68e4ad34@syzkaller.appspotmail.com
-
-wlan1: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
-wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 21 at net/mac80211/ibss.c:504 ieee80211_ibss_csa_beacon+0x5ec/0x730 net/mac80211/ibss.c:504
-Modules linked in:
-CPU: 0 PID: 21 Comm: kworker/u4:1 Not tainted 5.10.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: phy10 ieee80211_csa_finalize_work
-RIP: 0010:ieee80211_ibss_csa_beacon+0x5ec/0x730 net/mac80211/ibss.c:504
-Code: ff e8 a8 b7 9c 00 31 ff 89 c5 89 c6 e8 9d 2c 27 f9 85 ed 0f 85 84 fa ff ff e8 40 34 27 f9 0f 0b e9 78 fa ff ff e8 34 34 27 f9 <0f> 0b 41 bd ea ff ff ff e9 e1 fd ff ff e8 72 b2 68 f9 e9 8f fa ff
-RSP: 0018:ffffc90000dbfc50 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88801c070c00 RCX: ffffffff8155a937
-RDX: ffff888010e1b480 RSI: ffffffff8848d04c RDI: 0000000000000000
-RBP: 0000000000000002 R08: 0000000000000001 R09: ffffffff8ebaf727
-R10: fffffbfff1d75ee4 R11: 0000000000000001 R12: 0000000000000000
-R13: ffff88801c0718f0 R14: ffff888022400c80 R15: ffff88801c071248
-FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fdcb7060000 CR3: 0000000012b2b000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ieee80211_set_after_csa_beacon net/mac80211/cfg.c:3133 [inline]
- __ieee80211_csa_finalize+0x504/0xbf0 net/mac80211/cfg.c:3189
- ieee80211_csa_finalize net/mac80211/cfg.c:3212 [inline]
- ieee80211_csa_finalize_work+0x131/0x170 net/mac80211/cfg.c:3237
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
+On 2020/12/4 17:40, Mel Gorman wrote:
+> On Fri, Dec 04, 2020 at 09:22:34AM +0800, Yunfeng Ye wrote:
+>>
+>>
+>> On 2020/12/3 17:42, Mel Gorman wrote:
+>>> On Thu, Dec 03, 2020 at 02:47:14PM +0800, Yunfeng Ye wrote:
+>>>> The schedstat include runqueue-specific stats and domain-specific stats,
+>>>> so split it into two functions, show_rqstat() and show_domainstat().
+>>>>
+>>>> No functional changes.
+>>>>
+>>>> Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+>>>
+>>> Why?
+>>>
+>>> I could understand if there was a follow-up patch that adjusted some
+>>> subset or there was a difference in checking for schedstat_enabled,
+>>> locking or inserting new schedstat information. This can happen in the
+>>> general case when the end result is easier to review here it seems to be
+>>> just moving code around.
+>>>
+>> The rqstat and domainstat is independent state information. so I think
+>> split it into two individual function is clearer.
+>>
+> 
+> The comments and the names of the structures being accessesd is sufficient
+> to make it clear.
+> 
+ok, thanks.
