@@ -2,108 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8BD82CF860
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7202CF864
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 02:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731190AbgLEAro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 19:47:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726917AbgLEArn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:47:43 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDF6C061A53
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 16:47:12 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id j1so4090195pld.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 16:47:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hKog1Hk16Zy0NdqkYsbCRJ/dEKa5FrvxxIb/RYLHAXI=;
-        b=WktJLgTUFGljAC5G3dVtGLjO+z2ENnXC/JEA8X/zrq5znM3Qir98xuDVfIeaMyGWcN
-         tuNslHFgshzhGe8rexyvu8OvmLiOUyIamPBCzR09xj6TV+k/ntq+9QEzVyK0ui9nS0nw
-         bB+xMKJyhMtIcnAdTGlXm81oQvzazia2ucSgI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hKog1Hk16Zy0NdqkYsbCRJ/dEKa5FrvxxIb/RYLHAXI=;
-        b=K6U79i/aOQHwYInfYsvRqzX5NkMtVupTpEh2Za4nnjUGnBjZQ/wlVkYgEkrOyS45YA
-         8aGnM1PK8sXj6Lh654w1/TdOXowZO8UwknDnZHIwQfOnR3ykoKQ/8mbAio21TZNVTGB0
-         5UXrt16/U6zT3nE4TeJvuk0zuJjFpNh7ReQ5PiltZVfCnKF7Nl4QdCZOFvHhwDYYRewY
-         zev08OGHY2aixF1OytO4HnFx2t/5acmRHw8Voco33Ryng0TnhVXURTOey142NrzjINWH
-         nwjIPHyV1wummTAS7G9XdK2M00iEyvOUBvqdABlQgOvyyLf1TD162EWy0GdqwhCcf4tI
-         tvXA==
-X-Gm-Message-State: AOAM5327YDrLglMvTL5E+WWwgBxMYEHqFEml0l6/+kfhyn7oWtHGPRBL
-        wFc4ub4gSbqP1J8/vQiB5rPSQg==
-X-Google-Smtp-Source: ABdhPJy3ItCkWQH2TofMljBMQOS57N42E7QhPEdASieFslwrxqQX4/xxmVMX0DeLVF+Z4h07FO8kfQ==
-X-Received: by 2002:a17:90b:117:: with SMTP id p23mr6430244pjz.111.1607129231180;
-        Fri, 04 Dec 2020 16:47:11 -0800 (PST)
-Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id jz7sm3146227pjb.14.2020.12.04.16.47.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 16:47:10 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: [PATCH] Input: cros_ec_keyb: Add support for a front proximity switch
-Date:   Fri,  4 Dec 2020 16:47:09 -0800
-Message-Id: <20201205004709.3126266-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+        id S1731203AbgLEAtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 19:49:03 -0500
+Received: from vps-vb.mhejs.net ([37.28.154.113]:42454 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgLEAtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 19:49:02 -0500
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1klLkE-0003Bx-1N; Sat, 05 Dec 2020 01:48:14 +0100
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: mmu: Fix SPTE encoding of MMIO generation upper half
+Date:   Sat,  5 Dec 2020 01:48:08 +0100
+Message-Id: <156700708db2a5296c5ed7a8b9ac71f1e9765c85.1607129096.git.maciej.szmigiero@oracle.com>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some cros ECs support a front proximity MKBP event via
-'EC_MKBP_FRONT_PROXIMITY'. Map this to the 'SW_FRONT_PROXIMITY' input
-event code so it can be reported up to userspace.
+From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Benson Leung <bleung@chromium.org>
-Cc: Guenter Roeck <groeck@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Commit cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
+cleaned up the computation of MMIO generation SPTE masks, however it
+introduced a bug how the upper part was encoded:
+SPTE bits 52-61 were supposed to contain bits 10-19 of the current
+generation number, however a missing shift encoded bits 1-10 there instead
+(mostly duplicating the lower part of the encoded generation number that
+then consisted of bits 1-9).
+
+In the meantime, the upper part was shrunk by one bit and moved by
+subsequent commits to become an upper half of the encoded generation number
+(bits 9-17 of bits 0-17 encoded in a SPTE).
+
+In addition to the above, commit 56871d444bc4 ("KVM: x86: fix overlap between SPTE_MMIO_MASK and generation")
+has changed the SPTE bit range assigned to encode the generation number and
+the total number of bits encoded but did not update them in the comment
+attached to their defines, nor in the KVM MMU doc.
+Let's do it here, too, since it is too trivial thing to warrant a separate
+commit.
+
+Fixes: cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
+Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
 ---
- drivers/input/keyboard/cros_ec_keyb.c          | 5 +++++
- include/linux/platform_data/cros_ec_commands.h | 1 +
- 2 files changed, 6 insertions(+)
+    The easiest way to reproduce the issue is to apply the patch
+    below to the existing code and observe how memslots generations
+    are mis-decoded from the SPTEs:
+    diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
+    --- a/arch/x86/kvm/mmu/spte.c
+    +++ b/arch/x86/kvm/mmu/spte.c
+    @@ -42,6 +42,9 @@ static u64 generation_mmio_spte_mask(u64 gen)
+    
+            mask = (gen << MMIO_SPTE_GEN_LOW_START) & MMIO_SPTE_GEN_LOW_MASK;
+            mask |= (gen << MMIO_SPTE_GEN_HIGH_START) & MMIO_SPTE_GEN_HIGH_MASK;
+    +
+    +       pr_notice("Gen %llx -> mask %llx\n", gen, mask);
+    +
+            return mask;
+     }
+    
+    diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+    --- a/arch/x86/kvm/mmu/spte.h
+    +++ b/arch/x86/kvm/mmu/spte.h
+    @@ -230,6 +230,9 @@ static inline u64 get_mmio_spte_generation(u64 spte)
+    
+            gen = (spte & MMIO_SPTE_GEN_LOW_MASK) >> MMIO_SPTE_GEN_LOW_START;
+            gen |= (spte & MMIO_SPTE_GEN_HIGH_MASK) >> MMIO_SPTE_GEN_HIGH_START;
+    +
+    +       pr_notice("Mask %llx -> gen %llx\n", spte, gen);
+    +
+            return gen;
+     }
+    
+    diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+    --- a/virt/kvm/kvm_main.c
+    +++ b/virt/kvm/kvm_main.c
+    @@ -766,7 +766,7 @@ static struct kvm *kvm_create_vm(unsigned long type)
+                    if (!slots)
+                            goto out_err_no_arch_destroy_vm;
+                    /* Generations must be different for each address space. */
+    -               slots->generation = i;
+    +               slots->generation = i + 0x1234;
+                    rcu_assign_pointer(kvm->memslots[i], slots);
+            }
 
-diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboard/cros_ec_keyb.c
-index 15d17c717081..9d05e9192a10 100644
---- a/drivers/input/keyboard/cros_ec_keyb.c
-+++ b/drivers/input/keyboard/cros_ec_keyb.c
-@@ -107,6 +107,11 @@ static const struct cros_ec_bs_map cros_ec_keyb_bs[] = {
- 		.code		= SW_TABLET_MODE,
- 		.bit		= EC_MKBP_TABLET_MODE,
- 	},
-+	{
-+		.ev_type	= EV_SW,
-+		.code		= SW_FRONT_PROXIMITY,
-+		.bit		= EC_MKBP_FRONT_PROXIMITY,
-+	},
- };
+ Documentation/virt/kvm/mmu.rst |  2 +-
+ arch/x86/kvm/mmu/spte.c        |  4 ++--
+ arch/x86/kvm/mmu/spte.h        | 10 ++++++----
+ 3 files changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/Documentation/virt/kvm/mmu.rst b/Documentation/virt/kvm/mmu.rst
+index 1c030dbac7c4..5bfe28b0728e 100644
+--- a/Documentation/virt/kvm/mmu.rst
++++ b/Documentation/virt/kvm/mmu.rst
+@@ -455,7 +455,7 @@ If the generation number of the spte does not equal the global generation
+ number, it will ignore the cached MMIO information and handle the page
+ fault through the slow path.
+ 
+-Since only 19 bits are used to store generation-number on mmio spte, all
++Since only 18 bits are used to store generation-number on mmio spte, all
+ pages are zapped when there is an overflow.
+ 
+ Unfortunately, a single memory access might access kvm_memslots(kvm) multiple
+diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
+index fcac2cac78fe..c51ad544f25b 100644
+--- a/arch/x86/kvm/mmu/spte.c
++++ b/arch/x86/kvm/mmu/spte.c
+@@ -40,8 +40,8 @@ static u64 generation_mmio_spte_mask(u64 gen)
+ 	WARN_ON(gen & ~MMIO_SPTE_GEN_MASK);
+ 	BUILD_BUG_ON((MMIO_SPTE_GEN_HIGH_MASK | MMIO_SPTE_GEN_LOW_MASK) & SPTE_SPECIAL_MASK);
+ 
+-	mask = (gen << MMIO_SPTE_GEN_LOW_START) & MMIO_SPTE_GEN_LOW_MASK;
+-	mask |= (gen << MMIO_SPTE_GEN_HIGH_START) & MMIO_SPTE_GEN_HIGH_MASK;
++	mask = (gen << MMIO_SPTE_GEN_LOW_SHIFT) & MMIO_SPTE_GEN_LOW_MASK;
++	mask |= (gen << MMIO_SPTE_GEN_HIGH_SHIFT) & MMIO_SPTE_GEN_HIGH_MASK;
+ 	return mask;
+ }
+ 
+diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+index 5c75a451c000..c4b70fe6b6ae 100644
+--- a/arch/x86/kvm/mmu/spte.h
++++ b/arch/x86/kvm/mmu/spte.h
+@@ -56,11 +56,11 @@
+ #define SPTE_MMU_WRITEABLE	(1ULL << (PT_FIRST_AVAIL_BITS_SHIFT + 1))
  
  /*
-diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
-index a3a9a878415f..d9dc5e30e59e 100644
---- a/include/linux/platform_data/cros_ec_commands.h
-+++ b/include/linux/platform_data/cros_ec_commands.h
-@@ -3455,6 +3455,7 @@ struct ec_response_get_next_event_v1 {
- #define EC_MKBP_LID_OPEN	0
- #define EC_MKBP_TABLET_MODE	1
- #define EC_MKBP_BASE_ATTACHED	2
-+#define EC_MKBP_FRONT_PROXIMITY	3
+- * Due to limited space in PTEs, the MMIO generation is a 19 bit subset of
++ * Due to limited space in PTEs, the MMIO generation is a 18 bit subset of
+  * the memslots generation and is derived as follows:
+  *
+  * Bits 0-8 of the MMIO generation are propagated to spte bits 3-11
+- * Bits 9-18 of the MMIO generation are propagated to spte bits 52-61
++ * Bits 9-17 of the MMIO generation are propagated to spte bits 54-62
+  *
+  * The KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS flag is intentionally not included in
+  * the MMIO generation number, as doing so would require stealing a bit from
+@@ -73,11 +73,13 @@
  
- /* Run keyboard factory test scanning */
- #define EC_CMD_KEYBOARD_FACTORY_TEST 0x0068
-
-base-commit: b65054597872ce3aefbc6a666385eabdf9e288da
--- 
-https://chromeos.dev
-
+ #define MMIO_SPTE_GEN_LOW_START		3
+ #define MMIO_SPTE_GEN_LOW_END		11
++#define MMIO_SPTE_GEN_LOW_SHIFT	(MMIO_SPTE_GEN_LOW_START - 0)
+ #define MMIO_SPTE_GEN_LOW_MASK		GENMASK_ULL(MMIO_SPTE_GEN_LOW_END, \
+ 						    MMIO_SPTE_GEN_LOW_START)
+ 
+ #define MMIO_SPTE_GEN_HIGH_START	PT64_SECOND_AVAIL_BITS_SHIFT
+ #define MMIO_SPTE_GEN_HIGH_END		62
++#define MMIO_SPTE_GEN_HIGH_SHIFT	(MMIO_SPTE_GEN_HIGH_START - 9)
+ #define MMIO_SPTE_GEN_HIGH_MASK		GENMASK_ULL(MMIO_SPTE_GEN_HIGH_END, \
+ 						    MMIO_SPTE_GEN_HIGH_START)
+ 
+@@ -228,8 +230,8 @@ static inline u64 get_mmio_spte_generation(u64 spte)
+ {
+ 	u64 gen;
+ 
+-	gen = (spte & MMIO_SPTE_GEN_LOW_MASK) >> MMIO_SPTE_GEN_LOW_START;
+-	gen |= (spte & MMIO_SPTE_GEN_HIGH_MASK) >> MMIO_SPTE_GEN_HIGH_START;
++	gen = (spte & MMIO_SPTE_GEN_LOW_MASK) >> MMIO_SPTE_GEN_LOW_SHIFT;
++	gen |= (spte & MMIO_SPTE_GEN_HIGH_MASK) >> MMIO_SPTE_GEN_HIGH_SHIFT;
+ 	return gen;
+ }
+ 
