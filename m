@@ -2,116 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8520D2CF911
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 03:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5372CF914
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 03:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727614AbgLECpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 21:45:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbgLECpL (ORCPT
+        id S1728404AbgLECq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 21:46:29 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:54886 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727511AbgLECq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 21:45:11 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602B5C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 18:44:25 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id ga15so11496003ejb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 18:44:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IUPu2DUBMRAu12DXRp3pTRDt+ZwJx6w5SlC/8VGie84=;
-        b=X+/2zN4Bmhn0nBYGcOfIC1rXbVGY00KmZn0QEb9HMuQX8po0pu/eEMHACi+xSLRuqo
-         ZOsLL2CFmQlq41ARU5CRPgrW4QGNlnOHjnOqaKqVHKw5Qad+wFsDkQOHVsXNY3sdWl+U
-         qX07t+jEzroLTKWy2AtVuycW561wYPO9dugHU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IUPu2DUBMRAu12DXRp3pTRDt+ZwJx6w5SlC/8VGie84=;
-        b=C8kPF/7E3dOocCCXkfQck2Y+m8u1PP1eECmxMD3+k8PqR5OjPtK9v5CAoTOv4ofkIe
-         hI67Z+WDD8XWGteFGQ6v8Ge20DNVgBacfLEYVjnHJbL91qSSJnnQSAAZcqIjoTOpKrcX
-         CZvcyVb+tR52gIjcaJiGqG0VV3SpDd/Gn/N+zA+10BVwoHo6jxOeeYVSdq0e4CbGZP+F
-         8kae7lyciKcfL8Z4hY5GOJhs/gEbTSPwPiDouLrOsaqqGmoaIhSYqa/chycjcK48pt6c
-         k4tOmb432Qp5dW2d0U5IC8RtSsKJjwqORj9KXoorpHHx3pyudt41dFHxn3fgslCdTX3j
-         waIg==
-X-Gm-Message-State: AOAM532HPIRmuZcseJfpulWB9nqNeFGn4PtIr9jZcopkOQq/JgNh8HAU
-        yW5zxaGZr4ND4bgTPClgX//0+blwy4C6Fw==
-X-Google-Smtp-Source: ABdhPJx3dCZpwyNc98aCM2ssf4OA9YGLx9stX37e2Yg3LV4NHDt8izOIGn6LlM6Bjmlgob+WzmSHdQ==
-X-Received: by 2002:a17:906:d931:: with SMTP id rn17mr9620534ejb.308.1607136263746;
-        Fri, 04 Dec 2020 18:44:23 -0800 (PST)
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
-        by smtp.gmail.com with ESMTPSA id r24sm2139461edo.4.2020.12.04.18.44.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Dec 2020 18:44:23 -0800 (PST)
-Received: by mail-wr1-f53.google.com with SMTP id i2so7111149wrs.4
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 18:44:22 -0800 (PST)
-X-Received: by 2002:a5d:4388:: with SMTP id i8mr8217348wrq.262.1607136262520;
- Fri, 04 Dec 2020 18:44:22 -0800 (PST)
+        Fri, 4 Dec 2020 21:46:28 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607136367; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=cg6LwuBMaMkBOwLfQQov9goTt87+/7c56RGsunD/YnA=; b=q5/PmO6geatBDn6nGJCyeDx9gHw1VvMcEfrR8jMYM4++kDMdYhJq9mP84JgddD8k2Cc9cUEC
+ tZJqDW83+uBz1xGxDoZydgHXvNmkiFuOWEb4kSHAGM3wUeHyKof30ntWZW16OFiqk4/tWT5O
+ EppocAGZJLzTRzmilSmemqrl+yA=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5fcaf453aac94550978b7b2b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 05 Dec 2020 02:45:39
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 62801C43467; Sat,  5 Dec 2020 02:45:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2515DC433C6;
+        Sat,  5 Dec 2020 02:45:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2515DC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH v1 0/3] Refine error history and introduce notify_event
+ vop
+To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, avri.altman@wdc.com,
+        alim.akhtar@samsung.com, jejb@linux.ibm.com
+Cc:     beanhuo@micron.com, cang@codeaurora.org, matthias.bgg@gmail.com,
+        bvanassche@acm.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
+        jiajie.hao@mediatek.com, alice.chao@mediatek.com,
+        huadian.liu@mediatek.com
+References: <20201126053839.25889-1-stanley.chu@mediatek.com>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <408e4cb7-0078-1368-d3f2-21fd6c245a82@codeaurora.org>
+Date:   Fri, 4 Dec 2020 18:45:35 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-References: <20201204100139.6216-1-stanimir.varbanov@linaro.org>
-In-Reply-To: <20201204100139.6216-1-stanimir.varbanov@linaro.org>
-From:   Fritz Koenig <frkoenig@chromium.org>
-Date:   Fri, 4 Dec 2020 18:44:09 -0800
-X-Gmail-Original-Message-ID: <CAMfZQbw1GjxHbCfY2XCCw=o410ziBZndCQizh6fX7LTkhOq-nw@mail.gmail.com>
-Message-ID: <CAMfZQbw1GjxHbCfY2XCCw=o410ziBZndCQizh6fX7LTkhOq-nw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Venus encoder improvements
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Vikash Garodia <vgarodia@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201126053839.25889-1-stanley.chu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 2:03 AM Stanimir Varbanov
-<stanimir.varbanov@linaro.org> wrote:
->
-> Hello,
->
-> Changes since v1:
->   * 1/4 - fixed error handling in hfi_session_deinit (Alex)
->         - keep venc_set_properties invocation from start_streaming (Dikshita)
->   * 2/4 - keep original mutex_lock (Alex)
->   * 3/4 - move msg queue inside if statement (Fritz)
->         - move rx_req setting before triggering soft interrupt (Alex)
->   * Add one more patch 4/4 to address comments for hfi_session_init
->     EINVAL return error code (Alex)
->
-> The v1 can be found at [1].
->
-> regards,
-> Stan
->
-> [1] https://www.spinics.net/lists/linux-media/msg181634.html
->
-> Stanimir Varbanov (3):
->   venus: venc: Init the session only once in queue_setup
->   venus: Limit HFI sessions to the maximum supported
->   venus: hfi: Correct session init return error
->
-> Vikash Garodia (1):
->   media: venus: request for interrupt from venus
->
->  drivers/media/platform/qcom/venus/core.h      |  1 +
->  drivers/media/platform/qcom/venus/hfi.c       | 18 +++-
->  .../media/platform/qcom/venus/hfi_parser.c    |  3 +
->  drivers/media/platform/qcom/venus/hfi_venus.c | 77 ++++++++++-------
->  drivers/media/platform/qcom/venus/vdec.c      |  2 +-
->  drivers/media/platform/qcom/venus/venc.c      | 85 ++++++++++++++-----
->  6 files changed, 127 insertions(+), 59 deletions(-)
->
-> --
-> 2.17.1
->
+On 11/25/2020 9:38 PM, Stanley Chu wrote:
+> Hi,
+> This series refines error history functions and introduce a new notify_event vop to allow vendor to get notified of important events.
+> 
+> Stanley Chu (3):
+>    scsi: ufs: Add error history for abort event in UFS Device W-LUN
+>    scsi: ufs: Refine error history functions
+>    scsi: ufs: Introduce notify_event variant function
+> 
+>   drivers/scsi/ufs/ufshcd.c | 122 ++++++++++++++++++++++----------------
+>   drivers/scsi/ufs/ufshcd.h |  82 ++++++++++++-------------
+>   2 files changed, 112 insertions(+), 92 deletions(-)
+> 
 
-I haven't had a chance to review the code yet, I'll leave that for
-early next week.  In the meantime I have tested the patches and found
-them to be working well.
+Hi Stanley,
 
-Tested-by: Fritz Koenig <frkoenig@chromium.org>
+Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+
+Please add to the series.
+
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
