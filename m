@@ -2,90 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 618B32CFCA1
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B19C2CFDCB
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727071AbgLEQxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 11:53:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726472AbgLEQop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 11:44:45 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7276A23136;
-        Sat,  5 Dec 2020 16:05:44 +0000 (UTC)
-Date:   Sat, 5 Dec 2020 16:05:40 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Ye Xiang <xiang.ye@intel.com>
-Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
-        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] iio:Documentation: Add documentation for hinge
- sensor channels
-Message-ID: <20201205160540.22d2b8d5@archlinux>
-In-Reply-To: <20201203035352.13918-4-xiang.ye@intel.com>
-References: <20201203035352.13918-1-xiang.ye@intel.com>
-        <20201203035352.13918-4-xiang.ye@intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727003AbgLESoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:44:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726961AbgLEQtq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 11:49:46 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D0AC02B8F7;
+        Sat,  5 Dec 2020 08:09:21 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id w206so6629982wma.0;
+        Sat, 05 Dec 2020 08:09:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fIdqtYGUc/O3zuqryXPvn60vNDtb1cQ64k7t/DJ+pB8=;
+        b=kR4bV2meb6LES9uLZV8rVWd/WreERg1nAsY1JUUFBMkK7+o1F8WiNImkRwjxSPMYa9
+         Pw4jpPqCRt35i08ldfEDjXZcaKTFSkC0jg0OYAn1yM1TdPV6jgzDZyasA4fVw8myRvEs
+         Q7vriLdzybjFOj9Icc+94Y9IGvfAroeshvhiAIDnC1D19YXFsdmB27V6r8nlpKQj+06T
+         DU6qZL/hpnOSS16AVRKfsuAbMKnJP+aGtYMh3wfBL51jDQMvgPE+gu6z9+uwmtMCPWiZ
+         rnDaoV9rd5VaDQDa+FW6uHfeDrM7ybgkwQle60DEGI/1OVFL2SoCTjdgcfUYh/lRGK5R
+         NVgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fIdqtYGUc/O3zuqryXPvn60vNDtb1cQ64k7t/DJ+pB8=;
+        b=RjuBeqAQ6ZrlhPF+jNfW04gRvR6p3NDVsXz8HIhOTeUjuE/b0BsqlyWuwvJcaQaCWP
+         6cT9n1/S9xr71/Hhw3YfXT/8v5tMfFfaPjL6m3k9bJnJMMGoE//4gZYGIHP7y2d9t9sx
+         88ao4q5wJULeVM/BXlza9iO/qltg73X3g7WFgWsxk64OMX74x+GJrRiy1ofLTLmttdju
+         oNHZ+sDau7ROl+8Z0Au7a5/OOkOPR3FSHNsLeutNETB5DsHJsYE2Un3HMlGAbOqiJUie
+         xNlqpy3GlC4dUL7VRY9HfgpyoOMpIXmVjx/ZE/ET+PsIvHWp46089gJHxhXdui7cKzkW
+         SLDQ==
+X-Gm-Message-State: AOAM532mHAfkKWOl9mq8VJ2bR0aFHUVkQtMkAXDOQyEbRwI1jaMyPTtG
+        gCSMX+Fg8LuOuJ0hh4ulMnWr8hCepQ==
+X-Google-Smtp-Source: ABdhPJw7ZyMmN76jsgrTsrBvcCVPiexgv03RsTqsne+IoNWslPVVZc7erE5/o4vHtvgYHTgjVdBFEw==
+X-Received: by 2002:a7b:cf09:: with SMTP id l9mr9897145wmg.54.1607184560362;
+        Sat, 05 Dec 2020 08:09:20 -0800 (PST)
+Received: from localhost.localdomain ([46.53.253.193])
+        by smtp.gmail.com with ESMTPSA id u66sm7692362wmg.2.2020.12.05.08.09.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Dec 2020 08:09:19 -0800 (PST)
+Date:   Sat, 5 Dec 2020 19:09:16 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tommi.t.rantala@nokia.com
+Subject: [PATCH] proc: fix lookup in /proc/net subdirectories after setns(2)
+Message-ID: <20201205160916.GA109739@localhost.localdomain>
+References: <6de04554b27e9573e0a65170916d6acf11285dba.camel@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6de04554b27e9573e0a65170916d6acf11285dba.camel@nokia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  3 Dec 2020 11:53:52 +0800
-Ye Xiang <xiang.ye@intel.com> wrote:
+	commit 1fde6f21d90f8ba5da3cb9c54ca991ed72696c43
+	proc: fix /proc/net/* after setns(2)
 
-> Add channel description for hinge sensor, including channel label
-> attribute and raw data description.
-> 
-> Signed-off-by: Ye Xiang <xiang.ye@intel.com>
-> ---
->  Documentation/ABI/testing/sysfs-bus-iio | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-> index df42bed09f25..82303b1bdff0 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-iio
-> +++ b/Documentation/ABI/testing/sysfs-bus-iio
-> @@ -1802,3 +1802,20 @@ Contact:	linux-iio@vger.kernel.org
->  Description:
->  		Unscaled light intensity according to CIE 1931/DIN 5033 color space.
->  		Units after application of scale are nano nanowatts per square meter.
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_raw
-> +KernelVersion:	5.12
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Angle of rotation for channel Y. Units after application of scale
-> +		and offset are radians.
+only forced revalidation of regular files under /proc/net/
 
-This entry is already mostly in the doc around line 200, just without the index.
-Please just add the What: line to that block to reduce repetition.
-If you want to add... "Where present, Y indexes the channel." or something like
-that feel free.
+However, /proc/net/ is unusual in the sense of /proc/net/foo handlers
+take netns pointer from parent directory which is old netns.
 
+Steps to reproduce:
 
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_label
-> +KernelVersion:	5.12
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Optional symbolic label for channel Y.
-> +		For Intel hid hinge sensor, the label values are:
-> +		hinge, keyboard, screen. It means the three channels
-> +		each correspond respectively to hinge angle, keyboard angle,
-> +		and screen angle.
+	(void)open("/proc/net/sctp/snmp", O_RDONLY);
+	unshare(CLONE_NEWNET);
 
-Makes sense to keep this block separate given the additional info provided.
-Alternative would be to add it to the one with in_voltageY_label which would
-be odd given what follows!
+	int fd = open("/proc/net/sctp/snmp", O_RDONLY);
+	read(fd, &c, 1);
 
-Thanks,
+Read will read wrong data from original netns.
 
-Jonathan
+Patch forces lookup on every directory under /proc/net .
 
+Fixes: 1da4d377f943 ("proc: revalidate misc dentries")
+Reported-by: "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
+ fs/proc/generic.c       |   24 ++++++++++++++++++++++--
+ fs/proc/internal.h      |    7 +++++++
+ fs/proc/proc_net.c      |   16 ----------------
+ include/linux/proc_fs.h |    8 +++++++-
+ 4 files changed, 36 insertions(+), 19 deletions(-)
+
+--- a/fs/proc/generic.c
++++ b/fs/proc/generic.c
+@@ -349,6 +349,16 @@ static const struct file_operations proc_dir_operations = {
+ 	.iterate_shared		= proc_readdir,
+ };
+ 
++static int proc_net_d_revalidate(struct dentry *dentry, unsigned int flags)
++{
++	return 0;
++}
++
++const struct dentry_operations proc_net_dentry_ops = {
++	.d_revalidate	= proc_net_d_revalidate,
++	.d_delete	= always_delete_dentry,
++};
++
+ /*
+  * proc directories can do almost nothing..
+  */
+@@ -471,8 +481,8 @@ struct proc_dir_entry *proc_symlink(const char *name,
+ }
+ EXPORT_SYMBOL(proc_symlink);
+ 
+-struct proc_dir_entry *proc_mkdir_data(const char *name, umode_t mode,
+-		struct proc_dir_entry *parent, void *data)
++struct proc_dir_entry *_proc_mkdir(const char *name, umode_t mode,
++		struct proc_dir_entry *parent, void *data, bool force_lookup)
+ {
+ 	struct proc_dir_entry *ent;
+ 
+@@ -484,10 +494,20 @@ struct proc_dir_entry *proc_mkdir_data(const char *name, umode_t mode,
+ 		ent->data = data;
+ 		ent->proc_dir_ops = &proc_dir_operations;
+ 		ent->proc_iops = &proc_dir_inode_operations;
++		if (force_lookup) {
++			pde_force_lookup(ent);
++		}
+ 		ent = proc_register(parent, ent);
+ 	}
+ 	return ent;
+ }
++EXPORT_SYMBOL_GPL(_proc_mkdir);
++
++struct proc_dir_entry *proc_mkdir_data(const char *name, umode_t mode,
++		struct proc_dir_entry *parent, void *data)
++{
++	return _proc_mkdir(name, mode, parent, data, false);
++}
+ EXPORT_SYMBOL_GPL(proc_mkdir_data);
+ 
+ struct proc_dir_entry *proc_mkdir_mode(const char *name, umode_t mode,
+--- a/fs/proc/internal.h
++++ b/fs/proc/internal.h
+@@ -310,3 +310,10 @@ extern unsigned long task_statm(struct mm_struct *,
+ 				unsigned long *, unsigned long *,
+ 				unsigned long *, unsigned long *);
+ extern void task_mem(struct seq_file *, struct mm_struct *);
++
++extern const struct dentry_operations proc_net_dentry_ops;
++static inline void pde_force_lookup(struct proc_dir_entry *pde)
++{
++	/* /proc/net/ entries can be changed under us by setns(CLONE_NEWNET) */
++	pde->proc_dops = &proc_net_dentry_ops;
++}
+--- a/fs/proc/proc_net.c
++++ b/fs/proc/proc_net.c
+@@ -39,22 +39,6 @@ static struct net *get_proc_net(const struct inode *inode)
+ 	return maybe_get_net(PDE_NET(PDE(inode)));
+ }
+ 
+-static int proc_net_d_revalidate(struct dentry *dentry, unsigned int flags)
+-{
+-	return 0;
+-}
+-
+-static const struct dentry_operations proc_net_dentry_ops = {
+-	.d_revalidate	= proc_net_d_revalidate,
+-	.d_delete	= always_delete_dentry,
+-};
+-
+-static void pde_force_lookup(struct proc_dir_entry *pde)
+-{
+-	/* /proc/net/ entries can be changed under us by setns(CLONE_NEWNET) */
+-	pde->proc_dops = &proc_net_dentry_ops;
+-}
+-
+ static int seq_open_net(struct inode *inode, struct file *file)
+ {
+ 	unsigned int state_size = PDE(inode)->state_size;
+--- a/include/linux/proc_fs.h
++++ b/include/linux/proc_fs.h
+@@ -80,6 +80,7 @@ extern void proc_flush_pid(struct pid *);
+ 
+ extern struct proc_dir_entry *proc_symlink(const char *,
+ 		struct proc_dir_entry *, const char *);
++struct proc_dir_entry *_proc_mkdir(const char *, umode_t, struct proc_dir_entry *, void *, bool);
+ extern struct proc_dir_entry *proc_mkdir(const char *, struct proc_dir_entry *);
+ extern struct proc_dir_entry *proc_mkdir_data(const char *, umode_t,
+ 					      struct proc_dir_entry *, void *);
+@@ -162,6 +163,11 @@ static inline struct proc_dir_entry *proc_symlink(const char *name,
+ static inline struct proc_dir_entry *proc_mkdir(const char *name,
+ 	struct proc_dir_entry *parent) {return NULL;}
+ static inline struct proc_dir_entry *proc_create_mount_point(const char *name) { return NULL; }
++static inline struct proc_dir_entry *_proc_mkdir(const char *name, umode_t mode,
++		struct proc_dir_entry *parent, void *data, bool force_lookup)
++{
++	return NULL;
++}
+ static inline struct proc_dir_entry *proc_mkdir_data(const char *name,
+ 	umode_t mode, struct proc_dir_entry *parent, void *data) { return NULL; }
+ static inline struct proc_dir_entry *proc_mkdir_mode(const char *name,
+@@ -199,7 +205,7 @@ struct net;
+ static inline struct proc_dir_entry *proc_net_mkdir(
+ 	struct net *net, const char *name, struct proc_dir_entry *parent)
+ {
+-	return proc_mkdir_data(name, 0, parent, net);
++	return _proc_mkdir(name, 0, parent, net, true);
+ }
+ 
+ struct ns_common;
