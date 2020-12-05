@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6E42CFF85
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 23:31:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3D42CFF88
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 23:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgLEWaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 17:30:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725270AbgLEWaO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 17:30:14 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594ACC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 14:29:34 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id z21so12678531lfe.12
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 14:29:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rMTdh3IPgdRuXxX87is/6wJPLYrmhs/HNBuxcqKLHTg=;
-        b=t+Ptj5pEah/xk6CZ2KbkAwGN0wNN2uaBvfTP4RgpyzDWhhvHttAXtkQPF1QIVUAilF
-         8InGv8EqX6E54966Bq2ISiorZGqTbgdl4cMBKydPBoCH+2gIkZVZw+UfL3gd1nBHl95i
-         i3cvpfSN5hS2yayablWljT3sAM6reoHHyZLGkSzrpxr41xOvyBMwUxw3m/2sUkVIi8K0
-         eb5lT2wwfgvR7lq6I097fKn4K2YJqldodbNsFcp05tEw1ceLmX6Sz3x6OdHY4HtNb4dN
-         ehifGQ4KgjpRIO/EpJyQqJvwOfpicsBoIHh2KEZGu1eIV8shRdfFep1qMV+lGMOb/twB
-         UlGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rMTdh3IPgdRuXxX87is/6wJPLYrmhs/HNBuxcqKLHTg=;
-        b=TE9SMDYdB4scU7i4WShI4amkZCCyuMhrx6OeE62LKkuNwybNcL6NeeunZogV+bKxsd
-         BzFNd163Jd3viiorX38ZT4IBhktRyuclGrNecu7+RTUejpofuhG0kjs5b1LJAtd13ugu
-         qW5H1c85hCZZtZNoMPuMsXO23rRD8dGNGhhwy0Ks8FpMFUWZvqsSwH6fl0ITXv/ijieE
-         56/LGEpfGsA/LfWn6qBCfz9XuzVUxwFOuEW7yj7CKBlG+C+aM/A/hvJ0YTaj50wCjtue
-         oz24bWUUhhRGd4KQ6Z6JeTOVKTRwrlz8lo8fTd8shJSq8b+/58B3PfYif31Kdtxau7YP
-         BSAQ==
-X-Gm-Message-State: AOAM533TNaqm32nCLQ/SgkmZ+rThPc1ownfIkh4nq4B722fATlVpDRvX
-        BE3WjOI3rwgB9IbYA00bEN1tCSocCV1k9/3qIpIc1Q==
-X-Google-Smtp-Source: ABdhPJzHUgmvKq8q28ZSiDGGIDCIYrwWQye5w9LKp3k38/zTa6J3yn9ZTt94kb21qBI5xhuibZfBwrlBP6A/WJDyiCg=
-X-Received: by 2002:a05:6512:3e7:: with SMTP id n7mr5382718lfq.585.1607207372900;
- Sat, 05 Dec 2020 14:29:32 -0800 (PST)
+        id S1726267AbgLEWdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 17:33:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726011AbgLEWdc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 17:33:32 -0500
+Date:   Sat, 5 Dec 2020 14:32:50 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607207572;
+        bh=YZrn1IlbhlQAWy/qDP82GR67nZ5d803g393MCcPsdm0=;
+        h=From:To:Cc:Subject:From;
+        b=twsk11/9zewfQGMp7lYWqYVhZoy4/KRwjuLf0RSixLZfecN1zel/wVGotAM9CmPey
+         Gk/tTHNkAqEHZMWXL0te3VsBLAs8puHlskNXm0oz5cZAB3gh1D50OSOO7qWAZf3G8C
+         y2b2rA6Imfu+XJsHgwn1pv1par5Vgbx9FVjdQyBUAn3Urxayg252b6BIGETxX0CKX8
+         PbnvDiP8xtN1KcZ1JFInrWoqiZWgIO0tcEw3b2eXxBCSDIc4QTAwF8i/pUITV1ZiCQ
+         6sQtKmZ8LaD/QkqtiB/0HWMg4HPdf9pSpZ4uS7Da5trS1WlJ9LUKk/Os2rNZIXRpp/
+         MWmSzdVfgy1yg==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     linux-sparse@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, edwin.peer@broadcom.com,
+        Zhang Changzhong <zhangchangzhong@huawei.com>
+Subject: sparse annotation for error types?
+Message-ID: <20201205143250.2378b9f9@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
 MIME-Version: 1.0
-References: <20201202133754.32045-1-info@metux.net>
-In-Reply-To: <20201202133754.32045-1-info@metux.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 5 Dec 2020 23:29:22 +0100
-Message-ID: <CACRpkdbG3ZSBCk_8QaP+7g5O-Otjrxv2VU3fXnsSuDDuQRMYyA@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: just plain warning when nonexisting gpio requested
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 2:37 PM Enrico Weigelt, metux IT consult
-<info@metux.net> wrote:
+Hi!
 
-> From: Enrico Weigelt <info@metux.net>
->
-> When trying to export an nonexisting gpio ID, the kernel prints out a
-> big warning w/ stacktrace, sounding like a huge problem. In fact it's
-> a pretty normal situation, like file or device not found.
->
-> So, just print a more relaxed warning instead.
->
-> changes v2: drop defining pr_fmt()
->
-> Signed-off-by: Enrico Weigelt <info@metux.net>
+Recently we've been getting a steady stream of patches from Changzhong
+to fix missing assignment to error variables before jumping to error
+cases.
 
-Hm hm. It would mainly happen if someone was using the sysfs
-ABI right? I don't mind if sysfs feels scary to use.
+I wonder if for new code it'd make sense to add an annotation for a type
+which has to be returned non-zero?
 
-But I see it can happen for other code using the old GPIO
-symbols so OK I applied it.
+What I have in mind is the following common flow:
 
-Yours,
-Linus Walleij
+int do_a_thing(struct my_obj *obj, int param)
+{
+	int err;
+
+	err = first_step(obj, 1);
+	if (err)
+		return err;
+
+	if (some_check(obj)) {
+		err = -EINVAL; /* need explicit error set! */
+		goto err_undo_1s;
+	}
+
+	err = second_step(obj, param);
+	if (err)
+		goto err_undo_1s;
+
+	err = third_step(obj, 0);
+	if (err)
+		goto err_undo_2s;
+
+	return 0;
+
+err_undo_2s:
+	second_undo(obj);
+err_undo_1s:
+	first_undo(obj);
+	return err;
+}
+
+
+The variable err should never be returned when it's equal to 0.
+So if we annotate it, let's say as:
+
+	int __nzret err;
+
+could sparse then warn if we forgot to assign it after
+"if (some_check(obj))"? 
+
+Am I the only one who thinks this would be a good idea?
