@@ -2,84 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DE82CFB8F
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 15:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98AA52CFBAD
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 16:17:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgLEO3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 09:29:45 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:41072 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726130AbgLEM5s (ORCPT
+        id S1726893AbgLEPAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 10:00:00 -0500
+Received: from isilmar-4.linta.de ([136.243.71.142]:36792 "EHLO
+        isilmar-4.linta.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbgLEO4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 07:57:48 -0500
-X-UUID: b183c6f04f444e03a00761b64ae11f96-20201205
-X-UUID: b183c6f04f444e03a00761b64ae11f96-20201205
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1550523132; Sat, 05 Dec 2020 20:01:05 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 5 Dec 2020 20:00:40 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 5 Dec 2020 20:00:42 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>
-CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
-        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
-        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v1 4/4] scsi: ufs-dwc: Use phy_initialization helper
-Date:   Sat, 5 Dec 2020 20:00:41 +0800
-Message-ID: <20201205120041.26869-5-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201205120041.26869-1-stanley.chu@mediatek.com>
-References: <20201205120041.26869-1-stanley.chu@mediatek.com>
+        Sat, 5 Dec 2020 09:56:34 -0500
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from light.dominikbrodowski.net (brodo.linta [10.2.0.102])
+        by isilmar-4.linta.de (Postfix) with ESMTPSA id ED40F2010FA;
+        Sat,  5 Dec 2020 09:05:29 +0000 (UTC)
+Received: by light.dominikbrodowski.net (Postfix, from userid 1000)
+        id A49C820EC0; Sat,  5 Dec 2020 09:31:04 +0100 (CET)
+Date:   Sat, 5 Dec 2020 09:31:04 +0100
+From:   Dominik Brodowski <linux@dominikbrodowski.net>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     akpm@linux-foundation.org, peterz@infradead.org, olof@lixom.net,
+        hch@lst.de, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] pcmcia/electra_cf: Fix some return values in
+ 'electra_cf_probe()' in case of error
+Message-ID: <X8tFSNBqbAY7caYN@light.dominikbrodowski.net>
+References: <20200617195326.732863-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200617195326.732863-1-christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use phy_initialization helper instead of direct invoking.
+Am Wed, Jun 17, 2020 at 09:53:26PM +0200 schrieb Christophe JAILLET:
+> 'status' is known to be 0 at this point. It must be set to a meaningful
+> value in order to return an error code if one of the 'of_get_property()'
+> call fails.
+> 
+> Return -EINVAL in such a case.
+> 
+> Fixes: 2b571a066a2f("pcmcia: CompactFlash driver for PA Semi Electra boards")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
----
- drivers/scsi/ufs/ufshcd-dwc.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+Applied to pcmcia-next. Thanks!
 
-diff --git a/drivers/scsi/ufs/ufshcd-dwc.c b/drivers/scsi/ufs/ufshcd-dwc.c
-index 6a901da2d15a..5bb9d3a88795 100644
---- a/drivers/scsi/ufs/ufshcd-dwc.c
-+++ b/drivers/scsi/ufs/ufshcd-dwc.c
-@@ -120,13 +120,10 @@ int ufshcd_dwc_link_startup_notify(struct ufs_hba *hba,
- 	if (status == PRE_CHANGE) {
- 		ufshcd_dwc_program_clk_div(hba, DWC_UFS_REG_HCLKDIV_DIV_125);
- 
--		if (hba->vops->phy_initialization) {
--			err = hba->vops->phy_initialization(hba);
--			if (err) {
--				dev_err(hba->dev, "Phy setup failed (%d)\n",
--									err);
--				goto out;
--			}
-+		err = ufshcd_vops_phy_initialization(hba);
-+		if (err) {
-+			dev_err(hba->dev, "Phy setup failed (%d)\n", err);
-+			goto out;
- 		}
- 	} else { /* POST_CHANGE */
- 		err = ufshcd_dwc_link_is_up(hba);
--- 
-2.18.0
-
+	Dominik
