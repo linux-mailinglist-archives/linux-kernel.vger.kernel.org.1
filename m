@@ -2,141 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3AB2CFDD9
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CF32CFD3E
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgLESpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:45:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726883AbgLEQtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 11:49:31 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5649523341;
-        Sat,  5 Dec 2020 16:36:21 +0000 (UTC)
-Date:   Sat, 5 Dec 2020 16:36:18 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] iio: dummy: convert all simple allocation devm_
- variants
-Message-ID: <20201205163618.3b26334f@archlinux>
-In-Reply-To: <20201203095005.72252-1-alexandru.ardelean@analog.com>
-References: <20201203095005.72252-1-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728764AbgLES3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:29:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727866AbgLES3P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 13:29:15 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA9FC061A53
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 08:53:11 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id n7so5549730pgg.2
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 08:53:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4TjBWxHeiYLGN2gLQ9wB5wlqIelnuKaJ3NWlRad2iWo=;
+        b=lHercq+HFs9Uw4tBCUBPVfm4XBHEjObQ2+zuVWYecpGDyqFLGynsD/AS+5i0AyeHq/
+         K6ze34AxmCpza061G3nwgZIiUh0OmEOpNFMg+6zIIGochjQhJZMMclJbcnWaQjNFl4jH
+         FHmt9G4qXYxRcmaDVviFYXWC40swpwKncRblXHFOMLT/bPiCU6AjbLED5NF2oKlJJBoV
+         jkVuZmlzv7QfSJNzrIohVAVf6pxyKeWq6LyIcowmbgYTxrkUjlB7EThoh9ahUzcwn5um
+         OgPX+0xIn0N6nmIBXwGoSm3purEI2y21/BPelFRc0s9F5r0ZH9z63jHb+Tu4eBj/mOre
+         eBJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4TjBWxHeiYLGN2gLQ9wB5wlqIelnuKaJ3NWlRad2iWo=;
+        b=QJ31OksTyA1wBKrTRhHFGhskfadEZfgGjBEiCol8aPT3K2CnBvK852QOhQsCl2wxcQ
+         skMrIru17Ind2dpgJNUgpGqBQZl7A3QakzERXFp7/sy7qoAn56f94zbtkciVW7qHOrW5
+         h89IRxaZwEFNhfKd9eeR8QaO1cD6qd9PCSxB368GocLrlngXwYERjOnS0oWAlmMjTRlf
+         P8wnVjXfMCqaTlVDr1a6UGnhAdeoyppDq+c5wp2zBQLTMhO7l/hOB3Gc/h6O8sQnDqrW
+         g+yguL6k4+SOHi8Gtb3pn2ng8bdQbanNuzHP3No55Pyt2tIdYs5QpnkK98Vkrz84U4Ao
+         E7qQ==
+X-Gm-Message-State: AOAM531IbVLDRI5n/IFpKq6Wc4IjJEPgjE1s8n0Zq+6dksxpMkiMM0xs
+        k4qzJ3sVkQMS4hLCazf1hlJkNYr1rZ+W0FtmuewG6A==
+X-Google-Smtp-Source: ABdhPJzev4SOyNkd0pIPjnjQ1qaDF4+LzMeAeeaiv9OetFzM0zk1Ry1aFRwDmwtFpgLA7fSbZT5Ksai4SYr2hR54uZU=
+X-Received: by 2002:a63:c15:: with SMTP id b21mr12035007pgl.341.1607187190737;
+ Sat, 05 Dec 2020 08:53:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201205130224.81607-1-songmuchun@bytedance.com>
+ <20201205130224.81607-6-songmuchun@bytedance.com> <X8uU6ODzteuBY9pf@kroah.com>
+ <CAMZfGtWjumNV4hu-Qv8Z+WoS-EmyhvQd1qsaoS1quvQCyczT=g@mail.gmail.com>
+ <X8uoITGcfvZ/EA74@kroah.com> <CAMZfGtWmoPjuxfwYFUACRBCBgk3q77Sfv0kE2ysoX-9LJ8s2Zw@mail.gmail.com>
+ <X8u2TavrUAnnhq+M@kroah.com>
+In-Reply-To: <X8u2TavrUAnnhq+M@kroah.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sun, 6 Dec 2020 00:52:34 +0800
+Message-ID: <CAMZfGtUTotdRbGEE85SD_6B7_X=L1hU_8JAWbwPN7ztWCTD-Sg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 5/9] mm: memcontrol: convert NR_FILE_THPS
+ account to pages
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     rafael@kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
+        Roman Gushchin <guro@fb.com>, Mike Rapoport <rppt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        peterx@redhat.com, krisman@collabora.com,
+        Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
+        Marco Elver <elver@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 11:50:03 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+On Sun, Dec 6, 2020 at 12:32 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Sat, Dec 05, 2020 at 11:39:24PM +0800, Muchun Song wrote:
+> > On Sat, Dec 5, 2020 at 11:32 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Sat, Dec 05, 2020 at 11:29:26PM +0800, Muchun Song wrote:
+> > > > On Sat, Dec 5, 2020 at 10:09 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > On Sat, Dec 05, 2020 at 09:02:20PM +0800, Muchun Song wrote:
+> > > > > > Converrt NR_FILE_THPS account to pages.
+> > > > > >
+> > > > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > > > > ---
+> > > > > >  drivers/base/node.c | 3 +--
+> > > > > >  fs/proc/meminfo.c   | 2 +-
+> > > > > >  mm/filemap.c        | 2 +-
+> > > > > >  mm/huge_memory.c    | 3 ++-
+> > > > > >  mm/khugepaged.c     | 2 +-
+> > > > > >  mm/memcontrol.c     | 5 ++---
+> > > > > >  6 files changed, 8 insertions(+), 9 deletions(-)
+> > > > > >
+> > > > > > diff --git a/drivers/base/node.c b/drivers/base/node.c
+> > > > > > index 05c369e93e16..f6a9521bbcf8 100644
+> > > > > > --- a/drivers/base/node.c
+> > > > > > +++ b/drivers/base/node.c
+> > > > > > @@ -466,8 +466,7 @@ static ssize_t node_read_meminfo(struct device *dev,
+> > > > > >                                   HPAGE_PMD_NR),
+> > > > > >                            nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED) *
+> > > > > >                                   HPAGE_PMD_NR),
+> > > > > > -                          nid, K(node_page_state(pgdat, NR_FILE_THPS) *
+> > > > > > -                                 HPAGE_PMD_NR),
+> > > > > > +                          nid, K(node_page_state(pgdat, NR_FILE_THPS)),
+> > > > >
+> > > > > Again, is this changing a user-visable value?
+> > > > >
+> > > >
+> > > > Of course not.
+> > > >
+> > > > In the previous, the NR_FILE_THPS account is like below:
+> > > >
+> > > >     __mod_lruvec_page_state(page, NR_FILE_THPS, 1);
+> > > >
+> > > > With this patch, it is:
+> > > >
+> > > >     __mod_lruvec_page_state(page, NR_FILE_THPS, HPAGE_PMD_NR);
+> > > >
+> > > > So the result is not changed from the view of user space.
+> > >
+> > > So you "broke" it on the previous patch and "fixed" it on this one?  Why
+> > > not just do it all in one patch?
+> >
+> > Sorry for the confusion. I mean that the "previous" is without all of this patch
+> > series. So this series is aimed to convert the unit of all different THP vmstat
+> > counters from HPAGE_PMD_NR to pages. Thanks.
+>
+> I'm sorry, I still do not understand.  It looks to me that you are
+> changing the number printed to userspace here.  Where is the
+> corrisponding change that changed the units for this function?  Is it in
+> this patch?  If so, sorry, I did not see that at all...
 
-> Since a main requirement for an IIO device is to have a parent device
-> object, it makes sense to attach more of the IIO device's objects to the
-> lifetime of the parent object, to clean up the code.
-> The idea is to also provide a base example that is more up-to-date with
-> what's going on lately with most IIO drivers.
+Sorry, actually, this patch does not change the number printed to
+userspace. It only changes the unit of the vmstat counter.
 
-To some degree maybe, it's also very very handy for testing odd corner
-cases with.  I'd definitely not recommend it as a reference driver
-because it inherently has some odd corners because we need to
-fake various things that don't exist without hardware.
+Without this patch, every counter of NR_FILE_THPS represents
+NR_FILE_THPS pages. However, with this patch, every counter
+represents only one page. And why do I want to do this? Can
+reference to the cover letter. Thanks very much.
 
-> 
-> This change tackles the simple allocations, to convert them to
-> device-managed calls, and tie them to the parent device.
-
-I'm confused or maybe I missrecall how this works.
-
-IIRC there isn't a parent device...
-
-Maybe we could create one via a bit of smoke and magic.
+>
+> thanks,
+>
+> greg k-h
 
 
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  drivers/iio/dummy/iio_simple_dummy.c | 29 ++++++++--------------------
->  1 file changed, 8 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/iio/dummy/iio_simple_dummy.c b/drivers/iio/dummy/iio_simple_dummy.c
-> index c0b7ef900735..2a2e62f780a1 100644
-> --- a/drivers/iio/dummy/iio_simple_dummy.c
-> +++ b/drivers/iio/dummy/iio_simple_dummy.c
-> @@ -574,11 +574,9 @@ static struct iio_sw_device *iio_dummy_probe(const char *name)
->  	 * parent = &client->dev;
->  	 */
->  
-> -	swd = kzalloc(sizeof(*swd), GFP_KERNEL);
-> -	if (!swd) {
-> -		ret = -ENOMEM;
-> -		goto error_kzalloc;
-> -	}
-> +	swd = devm_kzalloc(parent, sizeof(*swd), GFP_KERNEL);
-> +	if (!swd)
-> +		return ERR_PTR(-ENOMEM);
->  	/*
->  	 * Allocate an IIO device.
->  	 *
-> @@ -587,11 +585,9 @@ static struct iio_sw_device *iio_dummy_probe(const char *name)
->  	 * It also has a region (accessed by iio_priv()
->  	 * for chip specific state information.
->  	 */
-> -	indio_dev = iio_device_alloc(parent, sizeof(*st));
-> -	if (!indio_dev) {
-> -		ret = -ENOMEM;
-> -		goto error_ret;
-> -	}
-> +	indio_dev = devm_iio_device_alloc(parent, sizeof(*st));
-> +	if (!indio_dev)
-> +		return ERR_PTR(-ENOMEM);
->  
->  	st = iio_priv(indio_dev);
->  	mutex_init(&st->lock);
-> @@ -615,7 +611,7 @@ static struct iio_sw_device *iio_dummy_probe(const char *name)
->  	 *    indio_dev->name = id->name;
->  	 *    indio_dev->name = spi_get_device_id(spi)->name;
->  	 */
-> -	indio_dev->name = kstrdup(name, GFP_KERNEL);
-> +	indio_dev->name = devm_kstrdup(parent, name, GFP_KERNEL);
->  
->  	/* Provide description of available channels */
->  	indio_dev->channels = iio_dummy_channels;
-> @@ -632,7 +628,7 @@ static struct iio_sw_device *iio_dummy_probe(const char *name)
->  
->  	ret = iio_simple_dummy_events_register(indio_dev);
->  	if (ret < 0)
-> -		goto error_free_device;
-> +		return ERR_PTR(ret);
->  
->  	ret = iio_simple_dummy_configure_buffer(indio_dev);
->  	if (ret < 0)
-> @@ -649,11 +645,6 @@ static struct iio_sw_device *iio_dummy_probe(const char *name)
->  	iio_simple_dummy_unconfigure_buffer(indio_dev);
->  error_unregister_events:
->  	iio_simple_dummy_events_unregister(indio_dev);
-> -error_free_device:
-> -	iio_device_free(indio_dev);
-> -error_ret:
-> -	kfree(swd);
-> -error_kzalloc:
->  	return ERR_PTR(ret);
->  }
->  
-> @@ -683,10 +674,6 @@ static int iio_dummy_remove(struct iio_sw_device *swd)
->  
->  	iio_simple_dummy_events_unregister(indio_dev);
->  
-> -	/* Free all structures */
-> -	kfree(indio_dev->name);
-> -	iio_device_free(indio_dev);
-> -
->  	return 0;
->  }
->  
 
+-- 
+Yours,
+Muchun
