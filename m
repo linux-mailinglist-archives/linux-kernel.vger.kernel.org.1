@@ -2,93 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6962CFDA9
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C51E02CFD2F
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727444AbgLESmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:42:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgLERic (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:38:32 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729F6C061A56;
-        Sat,  5 Dec 2020 09:04:17 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id a3so9758957wmb.5;
-        Sat, 05 Dec 2020 09:04:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=23C9Ul2ghjmtO1BTicHAi1FqcvDYRumYWusDkhObZqk=;
-        b=SofYyZM3PDDtGsOSdR8ACZOXWr+yHRxLaOrG0tQ9V2HpWRJFMmvBlLRSGrNU+5A8dz
-         GABdA9y1HX+Hb194BMIjVHTMcWOEufVzEjHhcI0VcPYgRCAGg58zo5Pa0ncTn6cLAgQ2
-         Ri6SGX+xXlp0kWxTJEI01L8HOiijbbgD+WjG7hYgYM5MisedAFF6yICCrJtu0mrtTc/4
-         ajtahggj4oL6hyifC0JdGfS2feFpf9SIRTXcAS7mMzdJwh8h2wE/CF380byb1YEr1fVg
-         mEZ07LGxBnV+mGYzUCHsqXJCymAaRa/Q91mKFP54NAxQFdmS2fjkIFfocMNOeyT7HB7K
-         rdew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=23C9Ul2ghjmtO1BTicHAi1FqcvDYRumYWusDkhObZqk=;
-        b=TABepvFXEZgHKyCwY0QeuT/YOLZAGVKD2q6pys08n8fDGZiea37Cv+rf82G7WJA9/P
-         5i6xLeoPPBd+Gu9wKbmlFX0Kk8FLZ7jmYWe4VMvuUWR6jO1ElV4PhYrQZ6CmTs0+8Knd
-         GAXh6YnoI2TEeT8bOAPaAHy8xwhWNDVDWTj50HF9edV7ZPBjTqhE57Afzh01pfTRQS0g
-         OdOZV6PwRtol/R1AgT2aR7+oisPEqljugKhKj8i8P+BROfT7k/xrpeb2GeJA4HOUesbd
-         Lb74z2Y81TsSJk82gJWR1okMrERVEDMFdT4A0wy2tgbEO878yUlMJMjliF1vzkkZrjXu
-         QZLA==
-X-Gm-Message-State: AOAM5334A3/YvwZokxJFdJKu1ILDW0T2g9HB12TCnrX0mNoMGrhyya5q
-        7+frnRhf2OsbJZYN4YIothrnCHq4l4osHg==
-X-Google-Smtp-Source: ABdhPJxqoL1yFp51O/IXBl4y5UnOXWEgoz0DunuhfeLFFKImjTbYa/SeENlRXpP0Hi3xHLpOCBqjSg==
-X-Received: by 2002:a1c:3902:: with SMTP id g2mr9901700wma.117.1607187855750;
-        Sat, 05 Dec 2020 09:04:15 -0800 (PST)
-Received: from valhalla.home ([2.31.225.57])
-        by smtp.gmail.com with ESMTPSA id w17sm8265984wru.82.2020.12.05.09.04.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Dec 2020 09:04:15 -0800 (PST)
-From:   Daniel Scally <djrscally@gmail.com>
-To:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lenb@kernel.org, mika.westerberg@linux.intel.com, rjw@rjwysocki.net
-Subject: [PATCH v2] Revert "ACPI / resources: Use AE_CTRL_TERMINATE to terminate resources walks"
-Date:   Sat,  5 Dec 2020 17:04:03 +0000
-Message-Id: <20201205170403.31827-1-djrscally@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1729745AbgLESTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:19:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727770AbgLERqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 12:46:43 -0500
+Date:   Sat, 5 Dec 2020 18:06:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607187923;
+        bh=QoAsKvgcDhNEf5ZBcV7XkQBY/tLIaKFd5wEz9eLB4GU=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iagokjvsrN2Cus+BfUVBo5hbo3jo4yiNW7xQsh3KNZKBENJmoG7CMUacm1drIjycF
+         PLIE7FgFbRv6njH0dCSY9PnNRbugbAIMm+xluHx2nghsJrkhW/Q0xcmHIrgi8+IqNW
+         vWYvVSk/LWPv0ILs58oxogfc0PT5T8UdF6u2MNno=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     rafael@kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
+        Roman Gushchin <guro@fb.com>, Mike Rapoport <rppt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        peterx@redhat.com, krisman@collabora.com,
+        Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
+        Marco Elver <elver@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH 5/9] mm: memcontrol: convert NR_FILE_THPS
+ account to pages
+Message-ID: <X8u+HVXGWFMSWBpJ@kroah.com>
+References: <20201205130224.81607-1-songmuchun@bytedance.com>
+ <20201205130224.81607-6-songmuchun@bytedance.com>
+ <X8uU6ODzteuBY9pf@kroah.com>
+ <CAMZfGtWjumNV4hu-Qv8Z+WoS-EmyhvQd1qsaoS1quvQCyczT=g@mail.gmail.com>
+ <X8uoITGcfvZ/EA74@kroah.com>
+ <CAMZfGtWmoPjuxfwYFUACRBCBgk3q77Sfv0kE2ysoX-9LJ8s2Zw@mail.gmail.com>
+ <X8u2TavrUAnnhq+M@kroah.com>
+ <CAMZfGtUTotdRbGEE85SD_6B7_X=L1hU_8JAWbwPN7ztWCTD-Sg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtUTotdRbGEE85SD_6B7_X=L1hU_8JAWbwPN7ztWCTD-Sg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 8a66790b7850a6669129af078768a1d42076a0ef.
+On Sun, Dec 06, 2020 at 12:52:34AM +0800, Muchun Song wrote:
+> On Sun, Dec 6, 2020 at 12:32 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Sat, Dec 05, 2020 at 11:39:24PM +0800, Muchun Song wrote:
+> > > On Sat, Dec 5, 2020 at 11:32 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Sat, Dec 05, 2020 at 11:29:26PM +0800, Muchun Song wrote:
+> > > > > On Sat, Dec 5, 2020 at 10:09 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > > >
+> > > > > > On Sat, Dec 05, 2020 at 09:02:20PM +0800, Muchun Song wrote:
+> > > > > > > Converrt NR_FILE_THPS account to pages.
+> > > > > > >
+> > > > > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > > > > > ---
+> > > > > > >  drivers/base/node.c | 3 +--
+> > > > > > >  fs/proc/meminfo.c   | 2 +-
+> > > > > > >  mm/filemap.c        | 2 +-
+> > > > > > >  mm/huge_memory.c    | 3 ++-
+> > > > > > >  mm/khugepaged.c     | 2 +-
+> > > > > > >  mm/memcontrol.c     | 5 ++---
+> > > > > > >  6 files changed, 8 insertions(+), 9 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/drivers/base/node.c b/drivers/base/node.c
+> > > > > > > index 05c369e93e16..f6a9521bbcf8 100644
+> > > > > > > --- a/drivers/base/node.c
+> > > > > > > +++ b/drivers/base/node.c
+> > > > > > > @@ -466,8 +466,7 @@ static ssize_t node_read_meminfo(struct device *dev,
+> > > > > > >                                   HPAGE_PMD_NR),
+> > > > > > >                            nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED) *
+> > > > > > >                                   HPAGE_PMD_NR),
+> > > > > > > -                          nid, K(node_page_state(pgdat, NR_FILE_THPS) *
+> > > > > > > -                                 HPAGE_PMD_NR),
+> > > > > > > +                          nid, K(node_page_state(pgdat, NR_FILE_THPS)),
+> > > > > >
+> > > > > > Again, is this changing a user-visable value?
+> > > > > >
+> > > > >
+> > > > > Of course not.
+> > > > >
+> > > > > In the previous, the NR_FILE_THPS account is like below:
+> > > > >
+> > > > >     __mod_lruvec_page_state(page, NR_FILE_THPS, 1);
+> > > > >
+> > > > > With this patch, it is:
+> > > > >
+> > > > >     __mod_lruvec_page_state(page, NR_FILE_THPS, HPAGE_PMD_NR);
+> > > > >
+> > > > > So the result is not changed from the view of user space.
+> > > >
+> > > > So you "broke" it on the previous patch and "fixed" it on this one?  Why
+> > > > not just do it all in one patch?
+> > >
+> > > Sorry for the confusion. I mean that the "previous" is without all of this patch
+> > > series. So this series is aimed to convert the unit of all different THP vmstat
+> > > counters from HPAGE_PMD_NR to pages. Thanks.
+> >
+> > I'm sorry, I still do not understand.  It looks to me that you are
+> > changing the number printed to userspace here.  Where is the
+> > corrisponding change that changed the units for this function?  Is it in
+> > this patch?  If so, sorry, I did not see that at all...
+> 
+> Sorry, actually, this patch does not change the number printed to
+> userspace. It only changes the unit of the vmstat counter.
+> 
+> Without this patch, every counter of NR_FILE_THPS represents
+> NR_FILE_THPS pages. However, with this patch, every counter
+> represents only one page. And why do I want to do this? Can
+> reference to the cover letter. Thanks very much.
 
-Switching this function to AE_CTRL_TERMINATE broke the documented
-behaviour of acpi_dev_get_resources() - AE_CTRL_TERMINATE does not, in
-fact, terminate the resource walk because acpi_walk_resource_buffer()
-ignores it (specifically converting it to AE_OK), referring to that
-value as "an OK termination by the user function". This means that
-acpi_dev_get_resources() does not abort processing when the preproc
-function returns a negative value.
+Ah, I missed the change of the "ratio" value in the memory_stats[]
+array.  That wasn't obvious at all, ugh.  Sorry for the noise,
 
-Signed-off-by: Daniel Scally <djrscally@gmail.com>
----
- drivers/acpi/resource.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
-index ad04824ca3ba..f2f5f1dc7c61 100644
---- a/drivers/acpi/resource.c
-+++ b/drivers/acpi/resource.c
-@@ -541,7 +541,7 @@ static acpi_status acpi_dev_process_resource(struct acpi_resource *ares,
- 		ret = c->preproc(ares, c->preproc_data);
- 		if (ret < 0) {
- 			c->error = ret;
--			return AE_CTRL_TERMINATE;
-+			return AE_ABORT_METHOD;
- 		} else if (ret > 0) {
- 			return AE_OK;
- 		}
--- 
-2.25.1
-
+greg k-h
