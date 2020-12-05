@@ -2,90 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B720F2CF96C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 06:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5DE2CF96D
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 06:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726319AbgLEFCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 00:02:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58988 "EHLO
+        id S1727046AbgLEFFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 00:05:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgLEFCp (ORCPT
+        with ESMTP id S1725770AbgLEFFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 00:02:45 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A86DC0613D1;
-        Fri,  4 Dec 2020 21:02:05 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id b5so499652pjl.0;
-        Fri, 04 Dec 2020 21:02:05 -0800 (PST)
+        Sat, 5 Dec 2020 00:05:45 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E298C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 21:05:04 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id x23so1932245lji.7
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 21:05:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=YCKTyFzGWQzeG8F5871ZshFHNgeYjCwjk1SIyTgC11I=;
-        b=eq16rucFzScxn8GzYn77vYCBpTykfUf+O4hYsPPoKBsUq5nFP6LmiN0yTE8HJFyEEU
-         yiItJGJaGDA6eaHyTUuu4t9ERnZzR+2cgDfqchbrvCi7urRz2zT5kM5M8aEsfoVDkg35
-         fuqL4mH7gjXpZpvNUpg3FzSXe8Ba/ootIGqcQNkQSWRqmSUpAknFF7TqB+TOum8hBOZK
-         sOk3JfqsjIRZDn13E3DHOa/gBBvDR6J1cQDm2oJt0vsHbI3b2ur9zL78jb4snJP5ow4v
-         qIeqLAE6nzsaVrQ1QHQ1Jb1UkR43/9AgLA4Vfm+YAEK4WXr0d0855FqpABkeREZRtLYh
-         rzxA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8GPzNiXTeDi+bMPrvuEGLCjoNV1U5qwCjKDFW1FW9/I=;
+        b=pbeyE35YhCAkocdBFeyGNPlIeS5QlOZsNLNTliesLneA+kSFVpq1c4pdULRCjXu3Xv
+         Y67Y2kDHQmqosl/fQNNYOZ2Kf2OtOGuvzuQmyLWwSwmqZ1ZxWcCkzdRZTGIYSCT8V+nz
+         4GSDXlWJbu5JHXf4yUOg/dJwwbGmYMIQHV32AzIyGn8Yxqk9kFRsHtYRa41CB/8a0a+j
+         O/iMQTSdpoxw5OduJFBFa9LxMDxD10MMdjnLAhtWWg9exn/NQPUNw2x6KVtqWmcsfpp5
+         9EV6X1poBoUuF5LOmpllDkIcv/ijQHlvkMqW9YqaFAg5ABiH0jEee9IAkvFFD2KCxZaK
+         XTdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=YCKTyFzGWQzeG8F5871ZshFHNgeYjCwjk1SIyTgC11I=;
-        b=J0vXg1z2ptlhP6D1bL9AI2OFvM6B3OVVRAI9EjiO7VtgRV9jtLzgvnFwNXmhdeiXaN
-         /tqr/ZYM4gElthRkyZHUZnYJB/NOFHJzEkHA4/fEkcJyaPafCR3uP+xPl6UFQGsjJQQf
-         NODksA1OQnSPytAzstGCvQyAYXfGW8KOH7hyNVcnVeQ9QXqXlbZSvXLB6di0bItDj6FK
-         HZndxZ/VY4nO1ZTNGIRamlAL734N6VdyrXxUVDCRKUHPIgRAE59x6K6eD931+vjmkkYz
-         3SYf0CErz3ytYTbmiGFWEcueWyRwD/wLgW8YigccNTEPQMd1ENRXbkYtpSbFu2q6TQDt
-         Q6RA==
-X-Gm-Message-State: AOAM532HtMkP29fhO5qfWk5SPo437NdcNTdhSyRYo+2FotME3bFOs6Tp
-        6i4LI6ICz+/uBSrGF2ooFyY=
-X-Google-Smtp-Source: ABdhPJxgsN/0/42E6/xL2IvNL5t20vqK49omNAJMc6BVnqjO7aNbjhTA9Ag3+6LykIGWYlajB7Hkgg==
-X-Received: by 2002:a17:902:c215:b029:da:b079:b9a3 with SMTP id 21-20020a170902c215b02900dab079b9a3mr6763811pll.67.1607144524517;
-        Fri, 04 Dec 2020 21:02:04 -0800 (PST)
-Received: from localhost.localdomain.localdomain ([39.182.0.228])
-        by smtp.gmail.com with ESMTPSA id d8sm3596888pjv.3.2020.12.04.21.01.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Dec 2020 21:02:03 -0800 (PST)
-From:   Mingzhe Yang <cainiao666999@gmail.com>
-To:     tglx@linutronix.de
-Cc:     mingo@redhat.com, bp@alien8.de, hpa@zytor.com, corbet@lwn.net,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, David.Laight@aculab.com,
-        Mingzhe Yang <cainiao666999@gmail.com>
-Subject: [PATCH] Documentation: x86: update the thread_info's position
-Date:   Sat,  5 Dec 2020 13:01:36 +0800
-Message-Id: <1607144496-10635-1-git-send-email-cainiao666999@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8GPzNiXTeDi+bMPrvuEGLCjoNV1U5qwCjKDFW1FW9/I=;
+        b=DtcD+sQa59uEsTsJEcJ2/XQhM+2emJ5pN5P9xujSVmwyvRPUE/1TDg/roIFxDi+tKS
+         0OIl7jJu/Uy51/yWRQo1h54FKOR6vjWl2ZJ2hIQD0Q8z9T2czfhwEQhkZr6n1CbF/jEH
+         oXA1EREi55/WzAUpjdZ5WXdgveR3sRvWVFZvSUjTHufyFPLdSA9Vl8kPHAnj06bG8Q5g
+         bN2tle9iFAv8VdI9SXlnpKaoeN1bHU+X693ohtIaPVnI+Juz8oROqMMeXSBGynRZBfQJ
+         7tGK6etlTMkqJJQMi8WLgN1zpr+7Bx5exGZ1uxJEOddPCVToIapayOQz2SLbYHLeQ4Dd
+         LHMA==
+X-Gm-Message-State: AOAM5304BH2BpHVayFZoxE0fb7uHH/lp5h7CsgxIW9a+Gtp7ymH3u2Ed
+        OYV+HEK0sr7cVdTbI1GZN3CCUvv4n1olO/1x3fTXtw==
+X-Google-Smtp-Source: ABdhPJxW10tViFoXPII7m7v1BTnHEAJ92qL38girRJEdYUsUryqce5lCypsOgo6b9UYSubwQGJ59rS6TVPOPprYrhY0=
+X-Received: by 2002:a2e:9746:: with SMTP id f6mr4393792ljj.270.1607144702740;
+ Fri, 04 Dec 2020 21:05:02 -0800 (PST)
+MIME-Version: 1.0
+References: <20201203194127.1813731-1-dlatypov@google.com> <20201203194127.1813731-3-dlatypov@google.com>
+ <CABVgOS=YfJdqmmU22XR4e84YyHudhksQc8X2rR1mz=6ukN=emA@mail.gmail.com> <CAGS_qxriVvSn5GXtAHdCjh+Y6k8+tNpVJ-Qm=kVOEOEXQJ4ACQ@mail.gmail.com>
+In-Reply-To: <CAGS_qxriVvSn5GXtAHdCjh+Y6k8+tNpVJ-Qm=kVOEOEXQJ4ACQ@mail.gmail.com>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 5 Dec 2020 13:04:50 +0800
+Message-ID: <CABVgOSnQKGDJSs6V5xeqLS-ZOPRWCoPMxdq9K3DnfD8-nQZbDw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] kunit: tool: move kunitconfig parsing into __init__
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prior to kernel 4.9 the thread_info structure was at the bottom of
-the kernel stack. kernel 4.9 moved it into the task_struct.
+On Sat, Dec 5, 2020 at 2:18 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> On Thu, Dec 3, 2020 at 7:57 PM David Gow <davidgow@google.com> wrote:
+> >
+> > On Fri, Dec 4, 2020 at 3:41 AM Daniel Latypov <dlatypov@google.com> wrote:
+> > >
+> > > LinuxSourceTree will unceremoniously crash if the user doesn't call
+> > > read_kunitconfig() first in a number of functions.
+> >
+> > This patch seems to partly be reverting the changes here, right:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/tools/testing/kunit?h=kunit&id=fcdb0bc08ced274078f371e1e0fe6421a97fa9f2
+> > (That patch moved the reading of kunitconfig out of __init__)
+>
+> Yes.
+>
+> >
+> > My overall concern is that, really, there are some operations that
+> > shouldn't need a kunitconfig (even if they do at the moment), so we'd
+> > ideally want at least some of the operations currently under
+> > LinuxSourceTree to be able to be run without first reading a
+> > kunitconfig. Most notably, it'd be nice if kunit.py exec (and hence
+> > LinuxSourceTree::run_kernel()) didn't need a kunitconfig, as the
+> > kernel ought to already be built at this point.
+> >
+> > Now, this is all a little bit hypothetical, as we haven't bothered to
+> > make kunit.py exec work without a kunitconfig thus far, but I'm a
+> > touch hesitant to make it harder to bypass the kunitconfig reading
+> > anyway.
+>
+> Fair point.
+>
+> So one alternative to this to make type-checkers happy is to declare
+> _config instead of sneakily setting it in some random later method.
+> Then in all the places that rely on _config, we'd need to add in
+> checks that it's in fact set to give a better error message (so it's
+> clear to the user that it's an internal tool bug and has nothing to do
+> with them).
 
-See commits c65eacb ("sched/core: Allow putting thread_info into
-task_struct"), 15f4eae ("x86: Move thread_info into task_struct")
-and 883d50f ("scripts/gdb: fix get_thread_info").
+This seems plausible, if a bit verbose.
 
-Signed-off-by: Mingzhe Yang <cainiao666999@gmail.com>
----
- Documentation/x86/kernel-stacks.rst | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> The copy-paste of create+read_kunitconfig() is annoying, which is why
+> I went with this.
 
-diff --git a/Documentation/x86/kernel-stacks.rst b/Documentation/x86/kernel-stacks.rst
-index 6b0bcf0..e9097f3 100644
---- a/Documentation/x86/kernel-stacks.rst
-+++ b/Documentation/x86/kernel-stacks.rst
-@@ -15,7 +15,8 @@ Like all other architectures, x86_64 has a kernel stack for every
- active thread.  These thread stacks are THREAD_SIZE (2*PAGE_SIZE) big.
- These stacks contain useful data as long as a thread is alive or a
- zombie. While the thread is in user space the kernel stack is empty
--except for the thread_info structure at the bottom.
-+except for the thread_info structure at the bottom (since kernel 4.9,
-+the thread_info structure has been moved into task_struct).
- 
- In addition to the per thread stacks, there are specialized stacks
- associated with each CPU.  These stacks are only used while the kernel
--- 
-1.8.3.1
+Personally, the duplication of calls to {create,read}_kunitconfig()
+doesn't bother me, but I definitely can see the advantage of having
+the type system pick up when we've missed one.
 
+> How about __init__ takes an optional argument that can disable this parsing?
+
+This would be okay: I'm starting to feel that really, the ultimate
+solution is either to split LinuxSourceTree up (and have separate
+things for configuring, building, and running the kernel), or to pass
+the kconfig stuff into just the functions that require it. But that is
+a much more serious refactor, which I haven't fully thought through,
+and I don't want to let the perfect be the enemy of the good here.
+>
+> E.g.
+>
+> def __init__(kconfig = None):
+>    if kconfig is not None:
+>      self._config = kconfig
+>    else:
+>      // create and read
+>
+
+What would the kconfig argument here be? Just an empty Kconfig()?
+I'm not a huge fan of passing a "None" kconfig object when we want to
+load a config, and a non-None one when we want an empty one: that
+seems confusingly backwards.
+Maybe it'd be possible to move the loading of the kunitconfig outside
+LinuxSourceTree, and pass that (or an empty one) as needed?
+
+
+> Or if we don't like the idea of requiring users who don't want a
+> kconfig to pass in a dummy,
+>
+> def __init__(load_kconfig=True):
+>    if not load_kconfig:
+>      self._config = None
+>    ...
+>
+
+I slightly prefer this, for the reasons above: True/False makes more
+sense than None/Kconfig().
+
+> >
+> > >
+> > > Adn currently every place we create an instance, the caller also calls
+> > > create_kunitconfig() and read_kunitconfig().
+> > >
+> > > Move these instead into __init__() so they can't be forgotten and to
+> > > reduce copy-paste.
+> >
+> > This seems to now be missing the create_kunitconfig() stuff (see below).
+>
+> Ah good catch. Completely unintentional.
+> I'm sure I had the create_kunitconfig() stuff in __init__() at some
+> point but must have inadvertently removed it somehow later on.
+>
+> > >
+> > > The https://github.com/google/pytype type-checker complained that
+> > > _config wasn't initialized. With this, kunit_tool now type checks
+> > > under both pytype and mypy.
+> > >
+> > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > > ---
+
+Okay, so it looks like there are a few options with _kconfig:
+1. Check for None everywhere (after explicitly setting it in the
+constructor). Pros: Nicer error messages, doesn't require other
+changes, Cons: verbose, still somewhat prone to error (could forget
+{create,read}_kunitconfig())
+
+2. Pass a Kconfig object into the constructor. Pros: a kconfig must
+exist, so less error prone, Cons: if we allow passing None to load it,
+that's confusing.
+
+3. Pass a bool into the constructor. Pros: similarly less error prone.
+Cons: True/False is not very descriptive.
+
+4. Refactor and (e.g.) pass the kconfig only into functions which
+require it. Pros: removes a "false dependency" on a kconfig for things
+which don't need it. Cons: more work, more verbose.
+
+Of these, I probably like them in this order 4, 2 (without None), 3, 2
+(with None), 1. But, to be honest, I'd be happy enough with any of
+them.
+
+So, if we can get a v2 that fixes the missing create_kunitconfig(),
+and does any of the above things, that sounds good to me.
+
+Cheers,
+-- David
