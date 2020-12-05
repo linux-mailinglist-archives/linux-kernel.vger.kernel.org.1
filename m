@@ -2,155 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61CA2CFC6F
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C332CFC84
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:29:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730464AbgLESUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:20:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbgLESTN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:19:13 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C17EC061A55;
-        Sat,  5 Dec 2020 10:18:31 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607192309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k6EZpf68f2D39vWu26oe3L/pHbnRkNlnx273kJRBoik=;
-        b=EseygTQiWgJd3ENN8W9+BVZkdy33cAZc/KRsw0Wpf05CJZAXjfsEwzKzMI5xTzTyKykDwZ
-        I3sca5QsNHWLqv7yQqexNs/wgKk9YMMvOBy/50VsjnfQETw/Gt/xljN/C4EdoDRv1Hxkcj
-        8lGSutfKpHdKNvaXJUKSAPj1HDD0X2ougHGiPtFFn4CurDPQhBXBBmf71y5TM7OW3D/yMM
-        MLhaFdn1R/YiUSJxXNMWO9vJOIBAmZ5VeRuoAipeRHwU3b/s77glxf/0p//SVGNaiZ/nYK
-        1oEVG6ex5QvIk9R5HnJkVIi0onj1EzvGyKWOQ5UhHtHIp3dFL/AZlpY8j+is2A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607192309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k6EZpf68f2D39vWu26oe3L/pHbnRkNlnx273kJRBoik=;
-        b=y7llYSBDv451wnQDPINLuujA91E6eTpifB6czLyd/3fSJ85rlh37DA+qoUsFlX84r7lFrr
-        CuWwbPI5xoeEHiDA==
-To:     Marco Elver <elver@google.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        lkft-triage@lists.linaro.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, fweisbec@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: BUG: KCSAN: data-race in tick_nohz_next_event / tick_nohz_stop_tick
-In-Reply-To: <CANpmjNPpOym1eHYQBK4TyGgsDA=WujRJeR3aMpZPa6Y7ahtgKA@mail.gmail.com>
-References: <CA+G9fYsHo-9tmxCKGticDowF8e3d1RkcLamapOgMQqeP6OdEEg@mail.gmail.com> <CANpmjNPpOym1eHYQBK4TyGgsDA=WujRJeR3aMpZPa6Y7ahtgKA@mail.gmail.com>
-Date:   Sat, 05 Dec 2020 19:18:28 +0100
-Message-ID: <87wnxw86bv.fsf@nanos.tec.linutronix.de>
+        id S1728056AbgLESWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:22:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726186AbgLESWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 13:22:47 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 052B323138;
+        Sat,  5 Dec 2020 18:22:07 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1klcC4-00GNe7-SK; Sat, 05 Dec 2020 18:22:05 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 05 Dec 2020 18:22:04 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        wanghaibin.wang@huawei.com
+Subject: Re: [PATCH v3 2/2] clocksource: arm_arch_timer: Correct fault
+ programming of CNTKCTL_EL1.EVNTI
+In-Reply-To: <a82cf9ff-f18d-ce0a-f7a2-82a56cbbec40@linaro.org>
+References: <20201204073126.6920-1-zhukeqian1@huawei.com>
+ <20201204073126.6920-3-zhukeqian1@huawei.com>
+ <a82cf9ff-f18d-ce0a-f7a2-82a56cbbec40@linaro.org>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <ef43679b6710fc4320203975bc2bde98@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: daniel.lezcano@linaro.org, zhukeqian1@huawei.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, tglx@linutronix.de, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, sean.j.christopherson@intel.com, julien.thierry.kdev@gmail.com, broonie@kernel.org, akpm@linux-foundation.org, alexios.zavras@intel.com, wanghaibin.wang@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04 2020 at 20:53, Marco Elver wrote:
-> On Fri, 4 Dec 2020 at 20:04, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->> LKFT started testing KCSAN enabled kernel from the linux next tree.
->> Here we have found BUG: KCSAN: data-race in tick_nohz_next_event /
->> tick_nohz_stop_tick
->
-> Thank you for looking into KCSAN. Would it be possible to collect
-> these reports in a moderation queue for now?
+Hi Daniel,
 
-Yes please. This is the forth or fifth incarnation of report for that
-data race in the tick code and I just did not come around to work on it.
+On 2020-12-05 11:15, Daniel Lezcano wrote:
+> Hi Marc,
+> 
+> are you fine with this patch ?
 
-> I'm currently trying to work out a strategy on how to best proceed
-> with all the data races in the kernel. We do know there are plenty. On
+I am, although there still isn't any justification for the pos/lsb
+rework in the commit message (and calling that variable lsb is somewhat
+confusing). If you are going to apply it, please consider adding
+the additional comment below.
 
-I think having a central point where the reports are collected, i.e. a
-moderation queue, is a good start. Reports like the one at hand should
-stick out because they should reproduce pretty instantanious as it's an
-intentional one and on NOHZ=y machines where CPUs are not fully loaded
-its hard not to detect it :)
+> 
+> 
+> On 04/12/2020 08:31, Keqian Zhu wrote:
+>> ARM virtual counter supports event stream, it can only trigger an 
+>> event
+>> when the trigger bit (the value of CNTKCTL_EL1.EVNTI) of CNTVCT_EL0 
+>> changes,
+>> so the actual period of event stream is 2^(cntkctl_evnti + 1). For 
+>> example,
+>> when the trigger bit is 0, then virtual counter trigger an event for 
+>> every
+>> two cycles.
 
-> The report below looks to be of type (A). Generally, the best strategy
-> for resolving these is to send a patch, and not a report. However, be
-> aware that sometimes it is really quite difficult to say if we're
-> looking at a type (A) or (B) issue, in which case it may still be fair
-> to send a report and briefly describe what you think is happening
-> (because that'll increase the likelihood of getting a response). I
-> recommend also reading "Developer/Maintainer data-race strategies" in
-> https://lwn.net/Articles/816854/ -- specifically note "[...] you
-> should not respond to KCSAN reports by mindlessly adding READ_ONCE(),
-> data_race(), and WRITE_ONCE(). Instead, a patch addressing a KCSAN
-> report must clearly identify the fix's approach and why that approach
-> is appropriate."
+"While we're at it, rework the way we compute the trigger bit position 
+by
+  making it more obvious that when bits [n:n-1] are both set (with n 
+being
+  the most significant bit), we pick bit (n + 1)."
 
-Yes. I've seen a fair amount of 'Fix KCSAN warnings' patches which just
-slap READ/WRITE_ONCE() all over the place to shut it up without any
-justification. Most of them ended in limbo when asking for that
-justification.
+With that:
 
-But the problem is that it is not necessarily trivial to understand code
-when there are intentional data races without a lot of comments - guilty
-as charged in this case. I actually felt so guilty that I sat down and
-annotated and documented it now. Took me quite some time to comment all
-the racy reads correctly as I really had to think about each of them
-carefully again.
-
-OTOH, in general it's a good exercise for reporters to do such analysis
-and maintainers are happy to help when the analysis is not entirely
-correct or comes to the wrong conclusion, e.g. assuming type B when it's
-actually A. That's way better than just reports or mechanical "paper
-over it" patches.
-
-Just getting the reports over and over is not going to solve anything
-because as in this case there is always more important stuff to do and
-to the people familiar with the code it's clear that it's A and
-therefore not urgent.
-
-But that causes the problem that the A types are staying around for a
-long time and blend over the B/C issues which are the real interesting
-ones.
-
-> This report should have line numbers, otherwise it's impossible to say
-> which accesses are racing.
-
-I just had to look at the function names to know that it is about:
-
-tick_do_timer_cpu :)
-
-> [ For those curious, this is the same report on syzbot's moderation
-> queue, with line numbers:
-> https://syzkaller.appspot.com/bug?id=d835c53d1a5e27922fcd1fbefc926a74790156cb
-> ]
-
-Confirmed :)
-
-So you have quite some of the same report collected and there are a few
-other patterns which are all related to tick_do_timer_cpu, so I assume
-there is a stash of the other variants as well. And indeed:
-
- https://syzkaller.appspot.com/bug?id=03911d1370705fe3667dae48c9cda46d982cea30
- https://syzkaller.appspot.com/bug?id=440c51f56c3f3923f9b364679da48b0c1a0bdfe7
-
-It might be useful to find the actual variable, data member or whatever
-which is involved in the various reports and if there is a match then
-the reports could be aggregated. The 3 patterns here are not even the
-complete possible picture.
-
-So if you sum them up: 58 + 148 + 205 instances then their weight
-becomes more significant as well.
-
-/me goes back to read the tick_do_timer_cpu comments once more before
-posting.
+Acked-by: Marc Zyngier <maz@kernel.org>
 
 Thanks,
 
-        tglx
-
-
-
+         M.
+-- 
+Jazz is not dead. It just smells funny...
