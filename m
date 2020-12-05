@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373552CFE4F
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8302CFE4E
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbgLETWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 14:22:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50848 "EHLO mail.kernel.org"
+        id S1728058AbgLETWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 14:22:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726122AbgLETWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 14:22:15 -0500
-Subject: Re: [GIT PULL] SCSI fixes for 5.10-rc6
+        id S1727858AbgLETWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 14:22:17 -0500
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.10-5 tag
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607196095;
-        bh=BZq3IxDKpmbn2jySF9xqrVNMvGyLS/bo+Ze2k+bkKLY=;
+        s=k20201202; t=1607196096;
+        bh=6eyBkcMPMeqlM83jdEBCrZVIfNyg0S8EsBP2WDZLCZs=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Jfuq/OaTxNoVq0/SLvIgYIBDm+swLLV4PX6nD5jwK4XGi5hvW6a1A7hBc95fyaKjc
-         LyUoHeOnrNoiBXSrP4NHXGas4Q7FmoUjmB0IqqPrzmtdKbBJ7eX3LYRpjUarDjxV0Z
-         zUK01y+rsOeVdwwkaeu1CUQ/2AXhWX9blMlm5BXJOWZSVly26CA2Tlmsp4uFW9GrrE
-         ld9GKPkzfhtZM7DY4GDtq0qa71SeWrbOo3QSwOnCaUlc7g4snagRA483j+wItlaiSd
-         4FrSwY+p0cFxSpV5jeo6yBoYag+O4JIUPBwjHzaAR1bdZJAVSvDm+Ojt/LGD7kBvEN
-         MfrUsgANWR/YQ==
+        b=G4+DE28OPk3cylqUnozlGeypcjMv3H97I+cm1FMGOo3mV5/HioKTbkZTfObtjpBAP
+         5ux/Iz8ZA6E7tLDuL5Tnk/+GJ/DCJOx7pZXoLofTrdEo7Z7rvCE2sCaGyATmHc7JxN
+         EFsNozCWNSUDde4/Z+txgMtv4VIh/Sl22ht7ri3rQiIg5i8no6t0OvVwEvr0cG5AgY
+         mFcuqsCBsz3z1wutIcCJs0sDCyEhr8VP8YXDDxd//dW68bZP3x70yHlWQHYSvMUzin
+         y+v+5czEWEp0qir4N5o/SFVbXCyViMILrS6Pa+ieuC0G7rfBJdjbgWRH7abtW5ml3H
+         nSb9QRdmp6fNw==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <6241da59ba45eeb525203201095d1f5ee76fbceb.camel@HansenPartnership.com>
-References: <6241da59ba45eeb525203201095d1f5ee76fbceb.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <6241da59ba45eeb525203201095d1f5ee76fbceb.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 85dad327d9b58b4c9ce08189a2707167de392d23
+In-Reply-To: <87im9gtpge.fsf@mpe.ellerman.id.au>
+References: <87im9gtpge.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
+X-PR-Tracked-Message-Id: <87im9gtpge.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.10-5
+X-PR-Tracked-Commit-Id: a1ee28117077c3bf24e5ab6324c835eaab629c45
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 312b0bcd402a003053914e13d962e82be906cf41
-Message-Id: <160719609530.18711.6749077510215679363.pr-tracker-bot@kernel.org>
-Date:   Sat, 05 Dec 2020 19:21:35 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 32f741b02f1a84dd15cdaf74ea3c8d724f812318
+Message-Id: <160719609666.18711.2227466213357171756.pr-tracker-bot@kernel.org>
+Date:   Sat, 05 Dec 2020 19:21:36 +0000
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        srikar@linux.vnet.ibm.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, mahesh@linux.ibm.com,
+        npiggin@gmail.com, groug@kaod.org, linuxppc-dev@lists.ozlabs.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 05 Dec 2020 09:30:29 -0800:
+The pull request you sent on Sat, 05 Dec 2020 23:19:45 +1100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.10-5
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/312b0bcd402a003053914e13d962e82be906cf41
+https://git.kernel.org/torvalds/c/32f741b02f1a84dd15cdaf74ea3c8d724f812318
 
 Thank you!
 
