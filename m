@@ -2,105 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DE92CFC68
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 508162CFC70
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729546AbgLESTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:19:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
+        id S1730518AbgLESUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:20:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727652AbgLERoD (ORCPT
+        with ESMTP id S1727065AbgLERic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:44:03 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2B6C02B8FD;
-        Sat,  5 Dec 2020 08:25:29 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id o24so10176270ljj.6;
-        Sat, 05 Dec 2020 08:25:29 -0800 (PST)
+        Sat, 5 Dec 2020 12:38:32 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 142C1C09425D;
+        Sat,  5 Dec 2020 08:54:10 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id x25so8614230qkj.3;
+        Sat, 05 Dec 2020 08:54:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=W9duhZaGLGup/Gcg7smZusGoOzvqsEs/5CXT1xRoRr8=;
-        b=bcZx2skoObx/49S8PQE7YpjkenciUZdo63+1ky8xS01KtpfKH07o5ZYWfpk52c4mIV
-         /jncACoGO6ps+0DpMYZKtBMuQKfCtTtwtkmkcOmUT6xAXaEMxDz/DrsK3DY74KFdpcQ7
-         bpeqdIkY9W98k0H/LJhaoUuinlXKPTvwcdbMgtgE6x2HWK+xROOQwUA4hYNaBAAOshBW
-         +TqOKohLbRRoNLl9ljCsKlvTXB7/VYBNm23DvifQw46is7lSXiOk7B58a6HWTJZtNcqI
-         GDlsCOkEUbKCAWJk9MraQH0liCazJoBktI9pOUXfQiU3hzyTqCSavGDnOFXNe1dKTy/1
-         AeFQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oIRoSEGJLf8joA0+34Z8WBxAWHJSo0r9QDagd8ox+Nc=;
+        b=BVpGu4oj+2gagBMnBu5fD2tvH6kcIWlE4peCRgnJzfVLK+9RxA5P9FS6GqMqfuZv78
+         sWDNKqVJqPeWWQCauATjKT4q0ZlHM0PYVyO0JFXfDwk9hLCoB+QOG9XKncu2kGfEHaFf
+         848aUPFnkqR4zzUq7Rhm4Jk9SGJCGlrYnbHBXWe+065eWwWe7zjR5vzmzixGDP9GynHK
+         8TokbuFMkyGkCxsrKq927pwBGqPVTAa/5iKLCqO98kYHLfRdNh+S9t1RwZNcNwqKsyum
+         dxfpTDWHYfyxTyHpkTnkNpMfP+WCBl3DDFrB4C8bRaZDPO2MLIIwnawu1ygxoOT85CsZ
+         2LiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W9duhZaGLGup/Gcg7smZusGoOzvqsEs/5CXT1xRoRr8=;
-        b=AHzRxPkaChg3i4h++J8mEpF+0V95MfiATxrtjc3kSUknxBVWQbGYU7j13aQqaXl1qJ
-         RINMCdSKFvaHDtOzsxCM/C4Z8bqT6qql+jwUzzF2PnSRd845KIZVkat/Hz5mP4HiqGZj
-         Yrn2WihP5W0zVVWLDRfkwd1WoEe/RkTjo7YsjiekJPtTkQhtddBjMM4bA6smKoSFFtQH
-         x3eD4y2eRrF7jE8fyoLLHY7lhlznasHWk5T2DAxMN50J4LJpqK29YDC/5aD9k3wTieIp
-         u+1zUe4gZJJhBD/oS1JQtBOYwiswWcUi6gOa+x4IRw7Pxefl3z5N9BnOSzLVlF6SckdG
-         5BWA==
-X-Gm-Message-State: AOAM531WHmiFvoU78WymO8JSo3ucCw8EpHEyigRhJ9F1NedS3OKp1x33
-        T4ilAUNypBZLeQ2v5irnO37FxXwZK6k=
-X-Google-Smtp-Source: ABdhPJwZvClhmY7HYHgJ4x98bsfedJ+Ru75ADlNFHKOOteqppE2sTMs7UFz0Mh/WQX/kMI3MmaaQxg==
-X-Received: by 2002:a2e:5018:: with SMTP id e24mr1783018ljb.425.1607185528390;
-        Sat, 05 Dec 2020 08:25:28 -0800 (PST)
-Received: from mobilestation ([95.79.141.114])
-        by smtp.gmail.com with ESMTPSA id y63sm2324381lff.196.2020.12.05.08.25.26
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oIRoSEGJLf8joA0+34Z8WBxAWHJSo0r9QDagd8ox+Nc=;
+        b=KL4j8xZxoNi4qBpjduaP+aZtZU+ccn5jCIuKSB6e0DUhf49vwcy6UGduF8cU8sOfKq
+         BnS99kYBKzSRsi+UaBGl7rH4OQEADZBp+qkvRTRgmZYvZjL+GTuSijD5dvfFVw/bznLV
+         cHopqXCh/4E8hQf+Wxv0dWDd30r+YV96Uhdvk1sTjHn7FgXX7NKDUDgQ2iNM0AHvO43J
+         nNW7d0Sc8VUh6C3YFsNvuIHax6+9ddZ0HEaN1cAZKuFL9OgA/VnRf5aLcjfBef4CC4HE
+         UTTwTjGYs0PqKTZ9ZlvK566A9fVHUErgBIvzMTVjXZ5virriAy5CTBazTiSFRoHORch1
+         yyhA==
+X-Gm-Message-State: AOAM530aItOUNCIZ+fBGikLHtPwSPN/avWXbDgDhLGldR/Z1OnYfGNd2
+        3aIVrnZKe4WHcKKh3uXvwKVcqj3zVU/rlw==
+X-Google-Smtp-Source: ABdhPJziRERFUWIPA3cN72AJFivk2FJHGpMa80KMnN1GBZqAqPU3SLoRnHLbIkQ2NQ3W7XSTrN+r4A==
+X-Received: by 2002:a37:2d05:: with SMTP id t5mr1146929qkh.187.1607187249235;
+        Sat, 05 Dec 2020 08:54:09 -0800 (PST)
+Received: from localhost ([12.221.2.200])
+        by smtp.gmail.com with ESMTPSA id c138sm9114777qke.95.2020.12.05.08.54.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Dec 2020 08:25:27 -0800 (PST)
-Date:   Sat, 5 Dec 2020 19:25:25 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: dw: Fix error return code in dw_spi_bt1_probe()
-Message-ID: <20201205162525.5k35z3b4brdnfjxh@mobilestation>
-References: <1607071357-33378-1-git-send-email-zhangchangzhong@huawei.com>
+        Sat, 05 Dec 2020 08:54:08 -0800 (PST)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>
+Subject: [PATCH] arm64: enable  GENERIC_FIND_FIRST_BIT
+Date:   Sat,  5 Dec 2020 08:54:06 -0800
+Message-Id: <20201205165406.108990-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607071357-33378-1-git-send-email-zhangchangzhong@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Zhang
+ARM64 doesn't implement find_first_{zero}_bit in arch code and doesn't
+enable it in config. It leads to using find_next_bit() which is less
+efficient:
 
-On Fri, Dec 04, 2020 at 04:42:37PM +0800, Zhang Changzhong wrote:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
-> 
-> Fixes: abf00907538e ("spi: dw: Add Baikal-T1 SPI Controller glue driver")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+0000000000000000 <find_first_bit>:
+   0:	aa0003e4 	mov	x4, x0
+   4:	aa0103e0 	mov	x0, x1
+   8:	b4000181 	cbz	x1, 38 <find_first_bit+0x38>
+   c:	f9400083 	ldr	x3, [x4]
+  10:	d2800802 	mov	x2, #0x40                  	// #64
+  14:	91002084 	add	x4, x4, #0x8
+  18:	b40000c3 	cbz	x3, 30 <find_first_bit+0x30>
+  1c:	14000008 	b	3c <find_first_bit+0x3c>
+  20:	f8408483 	ldr	x3, [x4], #8
+  24:	91010045 	add	x5, x2, #0x40
+  28:	b50000c3 	cbnz	x3, 40 <find_first_bit+0x40>
+  2c:	aa0503e2 	mov	x2, x5
+  30:	eb02001f 	cmp	x0, x2
+  34:	54ffff68 	b.hi	20 <find_first_bit+0x20>  // b.pmore
+  38:	d65f03c0 	ret
+  3c:	d2800002 	mov	x2, #0x0                   	// #0
+  40:	dac00063 	rbit	x3, x3
+  44:	dac01063 	clz	x3, x3
+  48:	8b020062 	add	x2, x3, x2
+  4c:	eb02001f 	cmp	x0, x2
+  50:	9a829000 	csel	x0, x0, x2, ls  // ls = plast
+  54:	d65f03c0 	ret
 
-Thanks for the patch. Definitely
+  ...
 
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
+0000000000000118 <_find_next_bit.constprop.1>:
+ 118:	eb02007f 	cmp	x3, x2
+ 11c:	540002e2 	b.cs	178 <_find_next_bit.constprop.1+0x60>  // b.hs, b.nlast
+ 120:	d346fc66 	lsr	x6, x3, #6
+ 124:	f8667805 	ldr	x5, [x0, x6, lsl #3]
+ 128:	b4000061 	cbz	x1, 134 <_find_next_bit.constprop.1+0x1c>
+ 12c:	f8667826 	ldr	x6, [x1, x6, lsl #3]
+ 130:	8a0600a5 	and	x5, x5, x6
+ 134:	ca0400a6 	eor	x6, x5, x4
+ 138:	92800005 	mov	x5, #0xffffffffffffffff    	// #-1
+ 13c:	9ac320a5 	lsl	x5, x5, x3
+ 140:	927ae463 	and	x3, x3, #0xffffffffffffffc0
+ 144:	ea0600a5 	ands	x5, x5, x6
+ 148:	54000120 	b.eq	16c <_find_next_bit.constprop.1+0x54>  // b.none
+ 14c:	1400000e 	b	184 <_find_next_bit.constprop.1+0x6c>
+ 150:	d346fc66 	lsr	x6, x3, #6
+ 154:	f8667805 	ldr	x5, [x0, x6, lsl #3]
+ 158:	b4000061 	cbz	x1, 164 <_find_next_bit.constprop.1+0x4c>
+ 15c:	f8667826 	ldr	x6, [x1, x6, lsl #3]
+ 160:	8a0600a5 	and	x5, x5, x6
+ 164:	eb05009f 	cmp	x4, x5
+ 168:	540000c1 	b.ne	180 <_find_next_bit.constprop.1+0x68>  // b.any
+ 16c:	91010063 	add	x3, x3, #0x40
+ 170:	eb03005f 	cmp	x2, x3
+ 174:	54fffee8 	b.hi	150 <_find_next_bit.constprop.1+0x38>  // b.pmore
+ 178:	aa0203e0 	mov	x0, x2
+ 17c:	d65f03c0 	ret
+ 180:	ca050085 	eor	x5, x4, x5
+ 184:	dac000a5 	rbit	x5, x5
+ 188:	dac010a5 	clz	x5, x5
+ 18c:	8b0300a3 	add	x3, x5, x3
+ 190:	eb03005f 	cmp	x2, x3
+ 194:	9a839042 	csel	x2, x2, x3, ls  // ls = plast
+ 198:	aa0203e0 	mov	x0, x2
+ 19c:	d65f03c0 	ret
 
--Sergey
+ ...
 
-> ---
->  drivers/spi/spi-dw-bt1.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/spi/spi-dw-bt1.c b/drivers/spi/spi-dw-bt1.c
-> index f382dfad..c279b78 100644
-> --- a/drivers/spi/spi-dw-bt1.c
-> +++ b/drivers/spi/spi-dw-bt1.c
-> @@ -280,8 +280,10 @@ static int dw_spi_bt1_probe(struct platform_device *pdev)
->  	dws->bus_num = pdev->id;
->  	dws->reg_io_width = 4;
->  	dws->max_freq = clk_get_rate(dwsbt1->clk);
-> -	if (!dws->max_freq)
-> +	if (!dws->max_freq) {
-> +		ret = -EINVAL;
->  		goto err_disable_clk;
-> +	}
->  
->  	init_func = device_get_match_data(&pdev->dev);
->  	ret = init_func(pdev, dwsbt1);
-> -- 
-> 2.9.5
-> 
+0000000000000238 <find_next_bit>:
+ 238:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+ 23c:	aa0203e3 	mov	x3, x2
+ 240:	d2800004 	mov	x4, #0x0                   	// #0
+ 244:	aa0103e2 	mov	x2, x1
+ 248:	910003fd 	mov	x29, sp
+ 24c:	d2800001 	mov	x1, #0x0                   	// #0
+ 250:	97ffffb2 	bl	118 <_find_next_bit.constprop.1>
+ 254:	a8c17bfd 	ldp	x29, x30, [sp], #16
+ 258:	d65f03c0 	ret
+
+Enabling this functions would also benefit for_each_{set,clear}_bit().
+Would it make sense to enable this config for all such architectures by
+default?
+
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+
+---
+ arch/arm64/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 1515f6f153a0..2b90ef1f548e 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -106,6 +106,7 @@ config ARM64
+ 	select GENERIC_CPU_AUTOPROBE
+ 	select GENERIC_CPU_VULNERABILITIES
+ 	select GENERIC_EARLY_IOREMAP
++	select GENERIC_FIND_FIRST_BIT
+ 	select GENERIC_IDLE_POLL_SETUP
+ 	select GENERIC_IRQ_IPI
+ 	select GENERIC_IRQ_MULTI_HANDLER
+-- 
+2.25.1
+
