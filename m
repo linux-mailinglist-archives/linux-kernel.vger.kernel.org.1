@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647CD2CF85D
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BD82CF860
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731178AbgLEArW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 19:47:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48202 "EHLO
+        id S1731190AbgLEAro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 19:47:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726917AbgLEArV (ORCPT
+        with ESMTP id S1726917AbgLEArn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:47:21 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4676C061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 16:46:18 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id o9so4914171pfd.10
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 16:46:18 -0800 (PST)
+        Fri, 4 Dec 2020 19:47:43 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDF6C061A53
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 16:47:12 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id j1so4090195pld.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 16:47:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=asXm/R3o12OEmZ60Ws/uh356OUWd4t72k3bkv592RHE=;
-        b=DY8G/wumOi8WFxOcM8igIyidUriMkzLro07dT8Zq56ZkDkc9WjUuKHNtbDGeVn3kRY
-         NE4X0tuVH9VcrOWVXUsuapHiH0T2lhDCax/1YxRW6oxPvDUlF5xia+Hju6QWJEP3PU0f
-         FQI9j7hZ5docHhF+YmcUVaa/bErPUfoQF0CJY=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hKog1Hk16Zy0NdqkYsbCRJ/dEKa5FrvxxIb/RYLHAXI=;
+        b=WktJLgTUFGljAC5G3dVtGLjO+z2ENnXC/JEA8X/zrq5znM3Qir98xuDVfIeaMyGWcN
+         tuNslHFgshzhGe8rexyvu8OvmLiOUyIamPBCzR09xj6TV+k/ntq+9QEzVyK0ui9nS0nw
+         bB+xMKJyhMtIcnAdTGlXm81oQvzazia2ucSgI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=asXm/R3o12OEmZ60Ws/uh356OUWd4t72k3bkv592RHE=;
-        b=j6efarWUprh+oMX53ARZDoTRm2eY+HiHeKp9nocbNggShz1zAxva8PHuToKZGXy8ou
-         GbXt0j+ouV3EOidkye755DcgVE/k970us7WserjREKsUOt4WIiM3jT553lqukqyecV8G
-         YTiAjYwczP+7wIfhFRusSxR3ZKfTxk87trLGXCDcQL9jLKJfC3wkKVwDj/eGrRTxZ2XT
-         rn1C0gixb5eLvCCyM69ovhMU1PSbmNCM0NhoAIr21KlLtZxxT8lf3W29O9avAVGPrv11
-         G89cloMy578vtUL2jiJIA17kfM7KU7yP5maf+d7TbVxge7KQOAeq90zvz2vg2QThHfok
-         OSOA==
-X-Gm-Message-State: AOAM5325NvIOFsbUymz1HhTOeTObfHvXunOostY6/DUnruZhz1ST7PVN
-        Ey6PCc3kUm7Xpt7sEN7SfSKgNw==
-X-Google-Smtp-Source: ABdhPJxGNJvhgaodaFR511VAmyZzwkchxtKWG/VptJKY/whiIgAhDvSFYHmzS4PmYtLBh7/7ICECPg==
-X-Received: by 2002:a62:27c3:0:b029:196:63f6:cfac with SMTP id n186-20020a6227c30000b029019663f6cfacmr6132838pfn.75.1607129178208;
-        Fri, 04 Dec 2020 16:46:18 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k189sm6844098pfd.99.2020.12.04.16.46.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hKog1Hk16Zy0NdqkYsbCRJ/dEKa5FrvxxIb/RYLHAXI=;
+        b=K6U79i/aOQHwYInfYsvRqzX5NkMtVupTpEh2Za4nnjUGnBjZQ/wlVkYgEkrOyS45YA
+         8aGnM1PK8sXj6Lh654w1/TdOXowZO8UwknDnZHIwQfOnR3ykoKQ/8mbAio21TZNVTGB0
+         5UXrt16/U6zT3nE4TeJvuk0zuJjFpNh7ReQ5PiltZVfCnKF7Nl4QdCZOFvHhwDYYRewY
+         zev08OGHY2aixF1OytO4HnFx2t/5acmRHw8Voco33Ryng0TnhVXURTOey142NrzjINWH
+         nwjIPHyV1wummTAS7G9XdK2M00iEyvOUBvqdABlQgOvyyLf1TD162EWy0GdqwhCcf4tI
+         tvXA==
+X-Gm-Message-State: AOAM5327YDrLglMvTL5E+WWwgBxMYEHqFEml0l6/+kfhyn7oWtHGPRBL
+        wFc4ub4gSbqP1J8/vQiB5rPSQg==
+X-Google-Smtp-Source: ABdhPJy3ItCkWQH2TofMljBMQOS57N42E7QhPEdASieFslwrxqQX4/xxmVMX0DeLVF+Z4h07FO8kfQ==
+X-Received: by 2002:a17:90b:117:: with SMTP id p23mr6430244pjz.111.1607129231180;
+        Fri, 04 Dec 2020 16:47:11 -0800 (PST)
+Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id jz7sm3146227pjb.14.2020.12.04.16.47.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 16:46:17 -0800 (PST)
-Date:   Fri, 4 Dec 2020 16:46:16 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Marco Elver <elver@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        George Popescu <georgepope@android.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 5/7] ubsan: Enable for all*config builds
-Message-ID: <202012041643.CB4EEED17@keescook>
-References: <20201203004437.389959-1-keescook@chromium.org>
- <20201203004437.389959-6-keescook@chromium.org>
- <CAK8P3a1Br8JFJX2PxyjVxMPMhi-y8mxf+vdEAZQq_Wm2wYP7ZA@mail.gmail.com>
+        Fri, 04 Dec 2020 16:47:10 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH] Input: cros_ec_keyb: Add support for a front proximity switch
+Date:   Fri,  4 Dec 2020 16:47:09 -0800
+Message-Id: <20201205004709.3126266-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1Br8JFJX2PxyjVxMPMhi-y8mxf+vdEAZQq_Wm2wYP7ZA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 09:51:40AM +0100, Arnd Bergmann wrote:
-> On Thu, Dec 3, 2020 at 1:44 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > With UBSAN_OBJECT_SIZE disabled for GCC, only UBSAN_ALIGNMENT remained
-> > a noisy UBSAN option. Disable it for COMPILE_TEST so the rest of UBSAN
-> > can be used for full all*config builds or other large combinations.
-> >
-> > Link: https://lore.kernel.org/lkml/CAHk-=wgXW=YLxGN0QVpp-1w5GDd2pf1W-FqY15poKzoVfik2qA@mail.gmail.com/
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> 
-> Have you checked if this has a notable impact on allmodconfig compile speed
-> with gcc or clang? I think I've seen significant increases in build times before
-> with this, but I don't remember the actual magnitude.
-> 
-> Making it 20% slower would probably be ok, but making it twice as slow might
-> be too much.
+Some cros ECs support a front proximity MKBP event via
+'EC_MKBP_FRONT_PROXIMITY'. Map this to the 'SW_FRONT_PROXIMITY' input
+event code so it can be reported up to userspace.
 
-For an x86_64 gcc allmodconfig before, I was seeing around 6m2s. After,
-I'm seeing around 6m17s, so that's about 8% longer build time.
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Benson Leung <bleung@chromium.org>
+Cc: Guenter Roeck <groeck@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/input/keyboard/cros_ec_keyb.c          | 5 +++++
+ include/linux/platform_data/cros_ec_commands.h | 1 +
+ 2 files changed, 6 insertions(+)
 
-I will double-check clang...
+diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboard/cros_ec_keyb.c
+index 15d17c717081..9d05e9192a10 100644
+--- a/drivers/input/keyboard/cros_ec_keyb.c
++++ b/drivers/input/keyboard/cros_ec_keyb.c
+@@ -107,6 +107,11 @@ static const struct cros_ec_bs_map cros_ec_keyb_bs[] = {
+ 		.code		= SW_TABLET_MODE,
+ 		.bit		= EC_MKBP_TABLET_MODE,
+ 	},
++	{
++		.ev_type	= EV_SW,
++		.code		= SW_FRONT_PROXIMITY,
++		.bit		= EC_MKBP_FRONT_PROXIMITY,
++	},
+ };
+ 
+ /*
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index a3a9a878415f..d9dc5e30e59e 100644
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -3455,6 +3455,7 @@ struct ec_response_get_next_event_v1 {
+ #define EC_MKBP_LID_OPEN	0
+ #define EC_MKBP_TABLET_MODE	1
+ #define EC_MKBP_BASE_ATTACHED	2
++#define EC_MKBP_FRONT_PROXIMITY	3
+ 
+ /* Run keyboard factory test scanning */
+ #define EC_CMD_KEYBOARD_FACTORY_TEST 0x0068
 
+base-commit: b65054597872ce3aefbc6a666385eabdf9e288da
 -- 
-Kees Cook
+https://chromeos.dev
+
