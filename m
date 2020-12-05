@@ -2,70 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3539A2CFC93
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 054562CFC78
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728714AbgLES3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:29:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
+        id S1730153AbgLESTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:19:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727495AbgLES3J (ORCPT
+        with ESMTP id S1728043AbgLERzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:29:09 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7033AC061A51;
-        Sat,  5 Dec 2020 03:51:45 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id c7so8622119edv.6;
-        Sat, 05 Dec 2020 03:51:45 -0800 (PST)
+        Sat, 5 Dec 2020 12:55:05 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1F3C094241
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 05:02:52 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id g18so5322538pgk.1
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 05:02:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9hd3HS1nRGiOdMm5T7QTs9bBnrJ+T0eTd0OHKFt9TJM=;
-        b=OQYNEf2uJdfHMQnh+CsubPaAu5uKQx4mJCqeL4MCG4CUH8i1yrmV0z6Be7aYVqBOHT
-         63m+s4TsGqrrLl0xK0yoOmLqIzkrubm22Lj2NxzlpB+WrY6uXT9d/frREYJX8ZdMrDPC
-         zWQ3dbYiLDoOnKkHh3DvLHteJEhV+PP6s7qSS8mGAImzxqchIEuwE7cmxEXEiINZdQDx
-         sCZXMoivvH0VqZKWWgU5C8neJ09AU3ICwf/y2mXGe31fsI1KKCzDqrrxdMTRYQwfoHb0
-         U1saovH2q/Zinm5jumRt10HNk7zj40nPWYhyi14EStWuQy+PCyusQZzkMSb3QWth9uAO
-         UJHA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CowKSBe21ybUCNZpbXy3BdqlRA0xnHhkE4QdTXQDr3k=;
+        b=1E/sfXgHaC4PaGNOQGTv5UbJpGKRfVFVfNwfoMAvioxro0OeUnyGU7+KbNrPOmzCJB
+         Uc+HeD8TjLwjqb5MX1YfYNo3gGGM7+9qKPJNif8ipbHCrN6r7rYKmOi8fBHe67OyeSBy
+         Y1P4LecS8PHQ1OnnbNTZD/cwAKl6OFG9NvKKfrPw4bK9RC4BPsZNj48E9G7vqAjSylgL
+         5pvEUV3NYJodopVNMOcvf6Kls5MhenBu7FAvV7gfzrSFhzJ2wLUsvGk6BhmB+JtCXpVw
+         obRyNkYZAykzB3ugmrBdd4T4Vi3xL+S4QOJd9QNRYELJOY2AWIKE8QOyBmaBnF3al2AA
+         yeLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9hd3HS1nRGiOdMm5T7QTs9bBnrJ+T0eTd0OHKFt9TJM=;
-        b=oQUbGXFoXdw+s6dNgFBboISAFWv1GTV2UcL9LjfqALZBNp0eAbf+vUPwMR7tLdoPvD
-         lciLZjeQiFvou4GjgINTgOodui+TS4fmN3WAAqnj64eLP08fAIAgp5bhtL0g9BEXx/gt
-         x6TsILpf4wnFGx+yCYQzsoAoOcxl8mNpGepNfjxWAvBncsY7xBZLkLvQsrh/Wmz8a2hU
-         G+lRyjMSQAJQsyW69Ew1AneiclbDJRhQC62TmmkL7FayG9GpXvrBuNpe+QwOvxBq6O7T
-         xYS6qmy295N3MXw6/E/Yeiyg7AhYwlEWMbiEFsyflACsQY/1QCSTHUDe/3IoABbic5hT
-         nK2Q==
-X-Gm-Message-State: AOAM532loyJKDSMb/066+EdI4jHjE0zaMC8+O8vAOtlbEgrPbMWGJlU5
-        MY3jn4930cGR0THzSPOpeK4Ll6J3BxHbmPa6vHM=
-X-Google-Smtp-Source: ABdhPJyTmxH/J6AxpvkQV8Zl0g2e2O5aFVksrEY/jFlL2+JuuumDaJabPFMHoTqSD0/L1it3ad9vJWHnKSwlWMxNXGs=
-X-Received: by 2002:a05:6402:949:: with SMTP id h9mr11596537edz.301.1607169103997;
- Sat, 05 Dec 2020 03:51:43 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CowKSBe21ybUCNZpbXy3BdqlRA0xnHhkE4QdTXQDr3k=;
+        b=SZB7BZEQy2j+82P6xyPF9Txmnczm8c0Bv6HnlKX/jympEYqSA/fKjlUcpjdtTvCsIB
+         mLgVNH2nYwR/tW83M99EhxhFsC0jg3W4csI9/LA7V+q44/fA0FKGG1BeMBBYXj82g5fd
+         osll5JsErnjsAwllA+abEsVPG4JRa9q/YP6M47XA3zwhRedLV1ogWohjdHaJmakQlXVv
+         Eat8CA7Uo5MMdW6fJlcr8lW7Ccnauba1UmgDQZzAQ0l+LO8hm1yMSDSlmnTE6MLVvPGj
+         8X/8wb8UsGogD5aXN+4kRDasn9z3wsjR2lPR7GL8epT3UbmbYCMy5yrCwBfn5HBJYNs0
+         6UyA==
+X-Gm-Message-State: AOAM533PFr7IK6Uua4xw4JOC2PSXn4Zuwsk5ysJWASVJC3tIA2AbyHn5
+        KgBRf5MdNw9JLrLBvbUpR+ukow==
+X-Google-Smtp-Source: ABdhPJx+y6G4rm2gt0gKnr+PKMwRmh0AURFtJ3VRUjZceruiOVQhaXh+OwSXp+cpSpnljOk2jlgDNQ==
+X-Received: by 2002:a63:2202:: with SMTP id i2mr11434673pgi.63.1607173371732;
+        Sat, 05 Dec 2020 05:02:51 -0800 (PST)
+Received: from localhost.bytedance.net ([103.136.220.120])
+        by smtp.gmail.com with ESMTPSA id kb12sm5047790pjb.2.2020.12.05.05.02.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 05 Dec 2020 05:02:51 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
+        akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, hughd@google.com, will@kernel.org,
+        guro@fb.com, rppt@kernel.org, tglx@linutronix.de, esyr@redhat.com,
+        peterx@redhat.com, krisman@collabora.com, surenb@google.com,
+        avagin@openvz.org, elver@google.com, rdunlap@infradead.org,
+        iamjoonsoo.kim@lge.com
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH 1/9] mm: vmstat: fix stat_threshold for NR_KERNEL_STACK_KB
+Date:   Sat,  5 Dec 2020 21:02:16 +0800
+Message-Id: <20201205130224.81607-2-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+In-Reply-To: <20201205130224.81607-1-songmuchun@bytedance.com>
+References: <20201205130224.81607-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-References: <20201126050440.6273-1-christianshewitt@gmail.com>
-In-Reply-To: <20201126050440.6273-1-christianshewitt@gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 5 Dec 2020 12:51:33 +0100
-Message-ID: <CAFBinCAUede5uaqnkSHqmwmMuTnZpdhbJAUE11q32y60SW0D2Q@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: meson: add KHAMSIN IR remote node to SML5442TW
-To:     Christian Hewitt <christianshewitt@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 6:05 AM Christian Hewitt
-<christianshewitt@gmail.com> wrote:
->
-> Set the IR keymap to the KHAMSIN remote shipped with the SML5442TW.
->
-> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+The kernel stack is being accounted in KiB not page, so the
+stat_threshold should also adjust to byte.
+
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ mm/vmstat.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 8d77ee426e22..f7857a7052e4 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -353,6 +353,8 @@ void __mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
+ 	x = delta + __this_cpu_read(*p);
+ 
+ 	t = __this_cpu_read(pcp->stat_threshold);
++	if (unlikely(item == NR_KERNEL_STACK_KB))
++		t <<= PAGE_SHIFT;
+ 
+ 	if (unlikely(abs(x) > t)) {
+ 		node_page_state_add(x, pgdat, item);
+@@ -573,6 +575,8 @@ static inline void mod_node_state(struct pglist_data *pgdat,
+ 		 * for all cpus in a node.
+ 		 */
+ 		t = this_cpu_read(pcp->stat_threshold);
++		if (unlikely(item == NR_KERNEL_STACK_KB))
++			t <<= PAGE_SHIFT;
+ 
+ 		o = this_cpu_read(*p);
+ 		n = delta + o;
+-- 
+2.11.0
+
