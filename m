@@ -2,158 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87CF32CFD3E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2ADD2CFDB4
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728764AbgLES3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:29:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727866AbgLES3P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:29:15 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA9FC061A53
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 08:53:11 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id n7so5549730pgg.2
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 08:53:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4TjBWxHeiYLGN2gLQ9wB5wlqIelnuKaJ3NWlRad2iWo=;
-        b=lHercq+HFs9Uw4tBCUBPVfm4XBHEjObQ2+zuVWYecpGDyqFLGynsD/AS+5i0AyeHq/
-         K6ze34AxmCpza061G3nwgZIiUh0OmEOpNFMg+6zIIGochjQhJZMMclJbcnWaQjNFl4jH
-         FHmt9G4qXYxRcmaDVviFYXWC40swpwKncRblXHFOMLT/bPiCU6AjbLED5NF2oKlJJBoV
-         jkVuZmlzv7QfSJNzrIohVAVf6pxyKeWq6LyIcowmbgYTxrkUjlB7EThoh9ahUzcwn5um
-         OgPX+0xIn0N6nmIBXwGoSm3purEI2y21/BPelFRc0s9F5r0ZH9z63jHb+Tu4eBj/mOre
-         eBJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4TjBWxHeiYLGN2gLQ9wB5wlqIelnuKaJ3NWlRad2iWo=;
-        b=QJ31OksTyA1wBKrTRhHFGhskfadEZfgGjBEiCol8aPT3K2CnBvK852QOhQsCl2wxcQ
-         skMrIru17Ind2dpgJNUgpGqBQZl7A3QakzERXFp7/sy7qoAn56f94zbtkciVW7qHOrW5
-         h89IRxaZwEFNhfKd9eeR8QaO1cD6qd9PCSxB368GocLrlngXwYERjOnS0oWAlmMjTRlf
-         P8wnVjXfMCqaTlVDr1a6UGnhAdeoyppDq+c5wp2zBQLTMhO7l/hOB3Gc/h6O8sQnDqrW
-         g+yguL6k4+SOHi8Gtb3pn2ng8bdQbanNuzHP3No55Pyt2tIdYs5QpnkK98Vkrz84U4Ao
-         E7qQ==
-X-Gm-Message-State: AOAM531IbVLDRI5n/IFpKq6Wc4IjJEPgjE1s8n0Zq+6dksxpMkiMM0xs
-        k4qzJ3sVkQMS4hLCazf1hlJkNYr1rZ+W0FtmuewG6A==
-X-Google-Smtp-Source: ABdhPJzev4SOyNkd0pIPjnjQ1qaDF4+LzMeAeeaiv9OetFzM0zk1Ry1aFRwDmwtFpgLA7fSbZT5Ksai4SYr2hR54uZU=
-X-Received: by 2002:a63:c15:: with SMTP id b21mr12035007pgl.341.1607187190737;
- Sat, 05 Dec 2020 08:53:10 -0800 (PST)
+        id S1727700AbgLESm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:42:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727455AbgLEQ45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 11:56:57 -0500
+Date:   Sat, 5 Dec 2020 08:56:04 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607187366;
+        bh=eYK2sVwutlChKihLleNVWiUi78sQBhnha5Lia/JugEk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vMEN6qm/NY0zywdKx2ToXvTfnuHiO3H2aQZqbvE0CRZ7TVKJ0yvjmIBIONtYwMWba
+         YLl7gaW2CRwIsO/xb/4VbCmNjegduBOz8f/uV41Zxdlw7RcE1+A7jSSQYcK81ubKVj
+         7jTIHCoR+wk5wCcF+sEJ8KW/VN5cYqeJJVbfzo3AmYCB8akLA7NFgCPUUzO1FQCTQx
+         kjT1NMAWQshhIllcbcLtqsitlVu5YmRbjzDtQYozUAozstFMU+3mMSl8p/bK54g5ma
+         RKcO5OW7xC9qefs9dh3A2M8rahxLe8kCtew2cYQFjauuNtrxHXYUA8VrqbFDlBqSfR
+         Eq5raUj3FwnQw==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sven Eckelmann <sven@narfation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        davem@davemloft.net, mareklindner@neomailbox.ch,
+        sw@simonwunderlich.de, a@unstable.cc, marcel@holtmann.org,
+        johan.hedberg@gmail.com, roopa@nvidia.com, nikolay@nvidia.com,
+        edumazet@google.com, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        jmaloy@redhat.com, ying.xue@windriver.com, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, netdev@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org,
+        Matthias Schiffer <mschiffer@universe-factory.net>
+Subject: Re: [PATCH 2/7] net: batman-adv: remove unneeded MODULE_VERSION()
+ usage
+Message-ID: <20201205085604.1e3fcaee@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <4581108.GXAFRqVoOG@sven-edge>
+References: <20201202124959.29209-1-info@metux.net>
+        <20201202124959.29209-2-info@metux.net>
+        <4581108.GXAFRqVoOG@sven-edge>
 MIME-Version: 1.0
-References: <20201205130224.81607-1-songmuchun@bytedance.com>
- <20201205130224.81607-6-songmuchun@bytedance.com> <X8uU6ODzteuBY9pf@kroah.com>
- <CAMZfGtWjumNV4hu-Qv8Z+WoS-EmyhvQd1qsaoS1quvQCyczT=g@mail.gmail.com>
- <X8uoITGcfvZ/EA74@kroah.com> <CAMZfGtWmoPjuxfwYFUACRBCBgk3q77Sfv0kE2ysoX-9LJ8s2Zw@mail.gmail.com>
- <X8u2TavrUAnnhq+M@kroah.com>
-In-Reply-To: <X8u2TavrUAnnhq+M@kroah.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sun, 6 Dec 2020 00:52:34 +0800
-Message-ID: <CAMZfGtUTotdRbGEE85SD_6B7_X=L1hU_8JAWbwPN7ztWCTD-Sg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 5/9] mm: memcontrol: convert NR_FILE_THPS
- account to pages
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     rafael@kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
-        Roman Gushchin <guro@fb.com>, Mike Rapoport <rppt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        peterx@redhat.com, krisman@collabora.com,
-        Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
-        Marco Elver <elver@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 6, 2020 at 12:32 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Sat, Dec 05, 2020 at 11:39:24PM +0800, Muchun Song wrote:
-> > On Sat, Dec 5, 2020 at 11:32 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Sat, Dec 05, 2020 at 11:29:26PM +0800, Muchun Song wrote:
-> > > > On Sat, Dec 5, 2020 at 10:09 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Sat, Dec 05, 2020 at 09:02:20PM +0800, Muchun Song wrote:
-> > > > > > Converrt NR_FILE_THPS account to pages.
-> > > > > >
-> > > > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > > > > ---
-> > > > > >  drivers/base/node.c | 3 +--
-> > > > > >  fs/proc/meminfo.c   | 2 +-
-> > > > > >  mm/filemap.c        | 2 +-
-> > > > > >  mm/huge_memory.c    | 3 ++-
-> > > > > >  mm/khugepaged.c     | 2 +-
-> > > > > >  mm/memcontrol.c     | 5 ++---
-> > > > > >  6 files changed, 8 insertions(+), 9 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/base/node.c b/drivers/base/node.c
-> > > > > > index 05c369e93e16..f6a9521bbcf8 100644
-> > > > > > --- a/drivers/base/node.c
-> > > > > > +++ b/drivers/base/node.c
-> > > > > > @@ -466,8 +466,7 @@ static ssize_t node_read_meminfo(struct device *dev,
-> > > > > >                                   HPAGE_PMD_NR),
-> > > > > >                            nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED) *
-> > > > > >                                   HPAGE_PMD_NR),
-> > > > > > -                          nid, K(node_page_state(pgdat, NR_FILE_THPS) *
-> > > > > > -                                 HPAGE_PMD_NR),
-> > > > > > +                          nid, K(node_page_state(pgdat, NR_FILE_THPS)),
-> > > > >
-> > > > > Again, is this changing a user-visable value?
-> > > > >
-> > > >
-> > > > Of course not.
-> > > >
-> > > > In the previous, the NR_FILE_THPS account is like below:
-> > > >
-> > > >     __mod_lruvec_page_state(page, NR_FILE_THPS, 1);
-> > > >
-> > > > With this patch, it is:
-> > > >
-> > > >     __mod_lruvec_page_state(page, NR_FILE_THPS, HPAGE_PMD_NR);
-> > > >
-> > > > So the result is not changed from the view of user space.
-> > >
-> > > So you "broke" it on the previous patch and "fixed" it on this one?  Why
-> > > not just do it all in one patch?
-> >
-> > Sorry for the confusion. I mean that the "previous" is without all of this patch
-> > series. So this series is aimed to convert the unit of all different THP vmstat
-> > counters from HPAGE_PMD_NR to pages. Thanks.
->
-> I'm sorry, I still do not understand.  It looks to me that you are
-> changing the number printed to userspace here.  Where is the
-> corrisponding change that changed the units for this function?  Is it in
-> this patch?  If so, sorry, I did not see that at all...
+On Sat, 05 Dec 2020 08:06:40 +0100 Sven Eckelmann wrote:
+> On Wednesday, 2 December 2020 13:49:54 CET Enrico Weigelt, metux IT consult wrote:
+> > Remove MODULE_VERSION(), as it isn't needed at all: the only version
+> > making sense is the kernel version.  
+> 
+> Is there some explanation besides an opinion? Some kind goal which you want to 
+> achieve with it maybe?
+> 
+> At least for us it was an easy way to query the release cycle information via 
+> batctl. Which made it easier for us to roughly figure out what an reporter/
+> inquirer was using - independent of whether he is using the in-kernel version 
+> or a backported version.
+> 
+> Loosing this source of information and breaking parts of batctl and other 
+> tools (respondd, ...) is not the end of the world. But I would at least know 
+> why this is now necessary.
 
-Sorry, actually, this patch does not change the number printed to
-userspace. It only changes the unit of the vmstat counter.
+No, no, if it breaks your user space we can't do it, let's leave batman
+alone, then.
 
-Without this patch, every counter of NR_FILE_THPS represents
-NR_FILE_THPS pages. However, with this patch, every counter
-represents only one page. And why do I want to do this? Can
-reference to the cover letter. Thanks very much.
+I think this is mostly a clean up. In-tree the kernel version is usually
+far more dependable because backports don't include version bumps.
 
->
-> thanks,
->
-> greg k-h
-
-
-
--- 
-Yours,
-Muchun
+Indeed it would be great if the clear motivation was spelled out in the
+cover letter and/or patches.
