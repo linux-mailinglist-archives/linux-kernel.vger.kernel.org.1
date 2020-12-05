@@ -2,75 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EFB2CFFD5
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 00:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3EA2CFFDB
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 01:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727476AbgLEXue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 18:50:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725995AbgLEXud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 18:50:33 -0500
-Date:   Sat, 5 Dec 2020 15:49:51 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607212193;
-        bh=h0vaEYwFre3MPf6MHPuQ2v8JOABc6Vx+THCYEJwqZEg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CoulufPecNt5be0Hh33etS3OzTQxlnBJ7VBB2umi3YSs3TT6bAL3EyUHBgEj678S1
-         D4e7VYqm5pc2agH2C6uCN5zPOwbkvVwlH+Y2LwcMt4wYPnBdw1fXV95sYKffViOi82
-         y0gL1xUtGL6JHZ55vqfkxTlEJvulAsxDRMKJIl+uZORsFppIruc0DSGKJvS1xuNNnV
-         arPEnpc1N7a7vSPwk9IxxpxwYLSRgD4a85MqeoZCZRlLf4Z+nzhwxkq4qHnj2Dp0Ve
-         nMp1Nrg6/xjUA+Dj7oA/ei8fl0jd7Qlt8cw+URHJlwZLH8KqybD0pcvvwEZagDn2XM
-         VXYVuq9MeuQVQ==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Sasha Netfin <sasha.neftin@intel.com>,
-        Aaron Brown <aaron.f.brown@intel.com>,
-        Stefan Assmann <sassmann@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        David Arcari <darcari@redhat.com>,
-        "Shen, Yijun" <Yijun.Shen@dell.com>,
-        "Yuan, Perry" <Perry.Yuan@dell.com>,
-        "anthony.wong@canonical.com" <anthony.wong@canonical.com>
-Subject: Re: [PATCH v3 0/7] Improve s0ix flows for systems i219LM
-Message-ID: <20201205154951.4dd92194@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <CAKgT0UfuyrbzpDNySMmnAkqKnw9cYuEM1LhgG0QvmrY=smR-uw@mail.gmail.com>
-References: <20201204200920.133780-1-mario.limonciello@dell.com>
-        <CAKgT0Uc=OxcuHbZihY3zxsxzPprJ_8vGHr=reBJFMrf=V9A5kg@mail.gmail.com>
-        <DM6PR19MB2636B200D618A5546E7BBB57FAF10@DM6PR19MB2636.namprd19.prod.outlook.com>
-        <CAKgT0UfuyrbzpDNySMmnAkqKnw9cYuEM1LhgG0QvmrY=smR-uw@mail.gmail.com>
+        id S1726451AbgLFAAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 19:00:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbgLFAAU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 19:00:20 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423CFC0613CF;
+        Sat,  5 Dec 2020 15:59:40 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id w4so5909214pgg.13;
+        Sat, 05 Dec 2020 15:59:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=SHqvB3TphI2x05NTOt9y+fjRW/Zq5VR17jei3sHPbQ4=;
+        b=itk+OrRnK1bPYRG0cUyYdF1YZf7M7PiSMehuwwIjMFcmj131WTvaBSnospUqLynaWW
+         FaFSvmLnk75b0tM2zRuhXMyUC596vsARx1dEgHos/i8kP3g4HXP3ynP7d0xtG0xDcf0W
+         Bobp8q/zb3ChPKKm0Z/ldV4KAt55ykMI0rbGUS1VfjXsmKKk6OgVL8MhTePDDZ3vbcfK
+         I5ofAi76kmGLxdyLD9Gt8gY9KoKxiB0dxt2dzA+4FCdy2YoZ/zAhKDXX1AosO/rGdywZ
+         57hSQN35bjWnEiq0fJcWjhT09AjMFcy0kAortqcyKqm+NRlTr1yytUyPLr4amvn/iaiX
+         sk4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=SHqvB3TphI2x05NTOt9y+fjRW/Zq5VR17jei3sHPbQ4=;
+        b=TLivujJrEaEQa7CuuZ1Ezi+xE5/Zu9uXj5hnqyIdiKAsFL+P5p4AlTxCyH+zEyNzjK
+         Wa9w8tx1/OvR3hx+HjmTHbAgfvb7mmDzHQ5JKfvzlPz/yCnyb1+4WNJdsfND0ShVV/Xi
+         aYDUZ521zFlbFhbwL25xV75sokThUC+7c7rTeZzP73YnVm9irFb9tJIaOBNGEhwEQwwE
+         yqnZ8zoI4m0ZBr4AozZCj1hKQoc0v4+aBhq3Md/6uxi70pEPC0NtWGxkOGPDETopyp22
+         hqyECky87ny6n7bIosjSRc0x66Ov6kb9Zof6OO46rBJYnu2kW0ZOcCYVciAkFGjcrCes
+         nzKQ==
+X-Gm-Message-State: AOAM533mmek+Pi5bPR1WEAoK30QhN5pAQSIct5p2Ob6XgdJx/ea0K4aa
+        36Wfgb8p+uOc3FYzovI53cs=
+X-Google-Smtp-Source: ABdhPJwhOa0g1ii1liojzAV8D6uzyHkgzsVCORZimhcHALhh7KyC9vxwV18MVcLtwshJan3ca7Nmuw==
+X-Received: by 2002:aa7:91d2:0:b029:19a:8ccd:8b0 with SMTP id z18-20020aa791d20000b029019a8ccd08b0mr10114810pfa.40.1607212779721;
+        Sat, 05 Dec 2020 15:59:39 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id j19sm9131457pff.74.2020.12.05.15.59.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Dec 2020 15:59:39 -0800 (PST)
+Date:   Sat, 5 Dec 2020 15:59:36 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [git pull] Input updates for v5.10-rc6
+Message-ID: <X8we6Ff3ikti/2bR@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 14:38:03 -0800 Alexander Duyck wrote:
-> > > The patches look good to me. Just need to address the minor issue that
-> > > seems to have been present prior to the introduction of this patch
-> > > set.
-> > >
-> > > Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>  
-> >
-> > Thanks for your review.  Just some operational questions - since this previously
-> > existed do you want me to re-spin the series to a v4 for this, or should it be
-> > a follow up after the series?
-> >
-> > If I respin it, would you prefer that change to occur at the start or end
-> > of the series?  
-> 
-> I don't need a respin, but if you are going to fix it you should
-> probably put out the patch as something like a 8/7. If you respin it
-> should happen near the start of the series as it is a bug you are
-> addressing.
+Hi Linus,
 
-Don't we need that patch to be before this series so it can be
-back ported easily? Or is it not really a bug?
+Please pull from:
+
+	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+
+to receive updates for the input subsystem. You will get a fix for
+"RETRIGEN" handling in Atmel touch controllers that was causing lost
+interrupts on systems using edge-triggered interrupts, a quirk for i8042
+driver, and a couple more fixes.
+
+Changelog:
+---------
+
+Dmitry Torokhov (1):
+      Input: soc_button_array - add missing include
+
+Linus Walleij (1):
+      Input: atmel_mxt_ts - fix lost interrupts
+
+Luo Meng (1):
+      Input: i8042 - fix error return code in i8042_setup_aux()
+
+Po-Hsu Lin (1):
+      Input: i8042 - add ByteSpeed touchpad to noloop table
+
+Sanjay Govind (1):
+      Input: xpad - support Ardwiino Controllers
+
+Diffstat:
+--------
+
+ drivers/input/joystick/xpad.c            | 2 ++
+ drivers/input/misc/soc_button_array.c    | 1 +
+ drivers/input/serio/i8042-x86ia64io.h    | 4 ++++
+ drivers/input/serio/i8042.c              | 3 ++-
+ drivers/input/touchscreen/atmel_mxt_ts.c | 4 ++--
+ 5 files changed, 11 insertions(+), 3 deletions(-)
+
+Thanks.
+
+
+-- 
+Dmitry
