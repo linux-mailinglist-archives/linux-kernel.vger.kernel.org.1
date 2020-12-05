@@ -2,132 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC132CFB7A
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 14:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6492CFB78
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 14:51:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgLENvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 08:51:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgLENBL (ORCPT
+        id S1726685AbgLENA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 08:00:58 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:39488 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726120AbgLEMzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 08:01:11 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A177C061A53
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 04:05:40 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cp7Z76T88z9sWK;
-        Sat,  5 Dec 2020 23:05:34 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1607169936;
-        bh=qxSWvw0s6lkaoYf5IzmZatZNrCVE9O7Q9inFbS6Phd0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=bd4W50rdpjHe8yuJ2FeL4yDpXNEZiTdW8FTwHNr4eOGeuNG6FWcctNoT+8TBqfspi
-         JS6KsPy033TlwyzqML3pDHPi9i+26Cid303QItbC06SLfSid1X8ZGqjomzw4iJaBPZ
-         BEYNF8hWv7CPAhSlN5YXudIH3VCpdXnHQx4vZj9eEFpDSbFD4gGaIOOOuljWu9hABM
-         PNTI0emTnkBdKCuApbZlu0dq/T9X7uGH8ieftYdb65UcvhUWZBLsZb5hr2IkW0Kyrh
-         Ud2NjkUUv0fNdgHUPskri/CoU1nqWJ/osVYfRDhNNqjx7TeaFVev9/xNn9CQTlqY2p
-         K03/8bmA+LJYQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzkaller <syzkaller@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: WARN_ON_ONCE
-In-Reply-To: <414bc088-9441-70c7-88e2-2c928b97db36@ozlabs.ru>
-References: <87f443cf-26c0-6302-edee-556045bca18a@ozlabs.ru> <CACT4Y+ZAyhk6CuddQNix0fAupXhOpv1t3iOdcXbDh4VDEPyOJQ@mail.gmail.com> <CACT4Y+ZHH5DiDj7KvRKtPqkV1CS0TFOkCH-M5bitfCgd5PWotg@mail.gmail.com> <87k0tyuztw.fsf@mpe.ellerman.id.au> <414bc088-9441-70c7-88e2-2c928b97db36@ozlabs.ru>
-Date:   Sat, 05 Dec 2020 23:05:31 +1100
-Message-ID: <87o8j8tq44.fsf@mpe.ellerman.id.au>
+        Sat, 5 Dec 2020 07:55:00 -0500
+X-UUID: f6d21486ed4643789da3c15deee8a49c-20201205
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=o7tcBlyzTyhpZnUiHSLLH3393lSKUvrpmJLHh8Jr7u0=;
+        b=ivzrzeEjxDTgPq+rEETLU+CeJC0cOVgoNzqZk9lKu6rBJmvSsUmZyMIbMM2NrCeIlplFNfIkFeqgWaJJA8VDLCJJ7aHQ8DfH9b+X9kuT/wslKtfUe9wvA5vi8uT8TFv0XAdrq6RwlmVUjx37xBe36vc/zyuY7Q0gFfEB0uT16iA=;
+X-UUID: f6d21486ed4643789da3c15deee8a49c-20201205
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1759667359; Sat, 05 Dec 2020 20:07:55 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 5 Dec 2020 20:07:32 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 5 Dec 2020 20:07:32 +0800
+Message-ID: <1607170053.3580.2.camel@mtkswgap22>
+Subject: RE: [PATCH v4 0/8] Refine error history and introduce event_notify
+ vop
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Avri Altman <Avri.Altman@wdc.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kuohong Wang =?UTF-8?Q?=28=E7=8E=8B=3F=3F=3F=3F=29?= 
+        <kuohong.wang@mediatek.com>,
+        "Peter Wang =?UTF-8?Q?=28=E7=8E=8B=E4=BF=A1=E5=8F=8B=29?=" 
+        <peter.wang@mediatek.com>,
+        Chun-Hung Wu =?UTF-8?Q?=28=E5=B7=AB=3FE=E5=AE=8F=29?= 
+        <Chun-hung.Wu@mediatek.com>,
+        "Andy Teng =?UTF-8?Q?=28=3F=3F=E5=A6=82=E5=AE=8F=29?=" 
+        <Andy.Teng@mediatek.com>,
+        Chaotian Jing =?UTF-8?Q?=28=E4=BA=95=E6=9C=9D=E5=A4=A9=29?= 
+        <Chaotian.Jing@mediatek.com>,
+        CC Chou =?UTF-8?Q?=28=E5=91=A8=E5=BF=97=E6=9D=B0=29?= 
+        <cc.chou@mediatek.com>,
+        Jiajie Hao =?UTF-8?Q?=28=E9=83=9D=E5=8A=A0=E8=8A=82=29?= 
+        <jiajie.hao@mediatek.com>,
+        Alice Chao =?UTF-8?Q?=28=3Fw=3F=3F=E5=9D=87=29?= 
+        <Alice.Chao@mediatek.com>,
+        Huadian Liu =?UTF-8?Q?=28=E5=88=98=E5=8D=8E=E5=85=B8=29?= 
+        <huadian.liu@mediatek.com>
+Date:   Sat, 5 Dec 2020 20:07:33 +0800
+In-Reply-To: <DM6PR04MB657567F698B1EEA7D848FE45FCF00@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201205023938.13848-1-stanley.chu@mediatek.com>
+         <DM6PR04MB65758A2779FD814F52E137BAFCF00@DM6PR04MB6575.namprd04.prod.outlook.com>
+         <DM6PR04MB657567F698B1EEA7D848FE45FCF00@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey Kardashevskiy <aik@ozlabs.ru> writes:
-> On 04/12/2020 12:25, Michael Ellerman wrote:
->> Dmitry Vyukov <dvyukov@google.com> writes:
->>> On Thu, Dec 3, 2020 at 10:19 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->>>> On Thu, Dec 3, 2020 at 10:10 AM Alexey Kardashevskiy <aik@ozlabs.ru> wrote:
->>>>>
->>>>> Hi!
->>>>>
->>>>> Syzkaller triggered WARN_ON_ONCE at
->>>>>
->>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/tracepoint.c?h=v5.10-rc6#n266
->>>>>
->>>>>
->>>>> ===
->>>>> static int tracepoint_add_func(struct tracepoint *tp,
->>>>>                                 struct tracepoint_func *func, int prio)
->>>>> {
->>>>>          struct tracepoint_func *old, *tp_funcs;
->>>>>          int ret;
->>>>>
->>>>>          if (tp->regfunc && !static_key_enabled(&tp->key)) {
->>>>>                  ret = tp->regfunc();
->>>>>                  if (ret < 0)
->>>>>                          return ret;
->>>>>          }
->>>>>
->>>>>          tp_funcs = rcu_dereference_protected(tp->funcs,
->>>>>                          lockdep_is_held(&tracepoints_mutex));
->>>>>          old = func_add(&tp_funcs, func, prio);
->>>>>          if (IS_ERR(old)) {
->>>>>                  WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
->>>>>                  return PTR_ERR(old);
->>>>>          }
->>>>>
->>>>> ===
->>>>>
->>>>> What is the common approach here? Syzkaller reacts on this as if it was
->>>>> a bug but WARN_ON_ONCE here seems intentional. Do we still push for
->>>>> removing such warnings?
->> 
->> AFAICS it is a bug if that fires.
->> 
->> See the commit that added it:
->>    d66a270be331 ("tracepoint: Do not warn on ENOMEM")
->> 
->> Which says:
->>    Tracepoint should only warn when a kernel API user does not respect the
->>    required preconditions (e.g. same tracepoint enabled twice,
->
-> This says that the userspace can trigger the warning if it does not use 
-> the API right.
+SGkgQXZyaSwNCg0KT24gU2F0LCAyMDIwLTEyLTA1IGF0IDE2OjA1ICswODAwLCBBdnJpIEFsdG1h
+biB3cm90ZToNCj4gPiANCj4gPiBIaSBTdGFubGV5LA0KPiA+IFdpbGwgeW91IHNwbGl0IHRoaXMg
+c2VyaWVzIHRvIDMgc2VwYXJhdGUgc2VyaWVzOg0KPiA+IFBoeSBpbml0aWFsaXphdGlvbiBjbGVh
+bnVwLCBFcnJvciBoaXN0b3J5LCBhbmQgZXZlbnQgbm90aWZpY2F0aW9uPw0KPiA+IEFzIHRob3Nl
+IDMgYXJlbid0IHJlYWxseSBjb25uZWN0ZWQ/DQo+ID4gDQo+ID4gUGxlYXNlIG1haW50YWluIENh
+bidzIHJldmlld2VkLWJ5IHRhZyBmb3IgdGhlIGVycm9yIGhpc3RvcnkgcGF0Y2hlcywNCj4gPiBB
+bmQgYWRkIG1pbmUgZm9yIHRoZSBwaHkgaW5pdGlhbGl6YXRpb24sIHNvIE1hcnRpbiBjYW4gcGlj
+ayB0aG9zZS4NCj4gQW5kIGZvciB0aGUgbmV3IGV2ZW50IG5vdGlmaWNhdGlvbiB2b3Agb2YgY291
+cnNlLiAgU29ycnkuDQoNClRoYW5rcyBmb3IgdGhlIHJldmlldyENCg0KU3VyZSBJIHdvdWxkIHNl
+cGFyYXRlIGl0IHRvIDIgc2VyaWVzDQoxLiBDbGVhbnVwIHBoeV9pbml0aWFsaXphdGlvbg0KMi4g
+RXJyb3IgaGlzdG9yeSBhbmQgZXZlbnQgbm90aWZpY2F0aW9uIHNpbmNlIHRoZXNlIHBhdGNoZXMg
+YXJlIHN0cm9uZ2x5DQpyZWxhdGVkDQoNClBsZWFzZSByZXZpZXcgbXkgbmV3IHBvc3RlZCBzZXJp
+ZXMgYW5kIGZlZWwgZnJlZSB0byBwcm92aWRlIGFueSBmdXJ0aGVyDQpzdWdnZXN0aW9uLg0KDQpU
+aGFua3MsDQpTdGFubGV5IENodSANCg0KPiANCj4gVGhhbmtzLA0KPiBBdnJpDQo+IA0KPiA+IA0K
+PiA+IFRoYW5rcywNCj4gPiBBdnJpDQo+ID4gDQo+ID4gPg0KPiA+ID4gSGksDQo+ID4gPiBUaGlz
+IHNlcmllcyByZWZpbmVzIGVycm9yIGhpc3RvcnkgZnVuY3Rpb25zLCBkbyB2b3AgY2xlYW51cHMg
+YW5kIGludHJvZHVjZSBhDQo+ID4gPiBuZXcgZXZlbnRfbm90aWZ5IHZvcCB0byBhbGxvdyB2ZW5k
+b3IgdG8gZ2V0IG5vdGlmaWNhdGlvbiBvZiBpbXBvcnRhbnQNCj4gPiA+IGV2ZW50cy4NCj4gPiA+
+DQo+ID4gPiBDaGFuZ2VzIHNpbmNlIHYzOg0KPiA+ID4gICAtIEZpeCBidWlsZCB3YXJuaW5nIGlu
+IHBhdGNoIFs4LzhdDQo+ID4gPg0KPiA+ID4gQ2hhbmdlcyBzaW5jZSB2MjoNCj4gPiA+ICAgLSBB
+ZGQgcGF0Y2hlcyBmb3Igdm9wIGNsZWFudXBzDQo+ID4gPiAgIC0gSW50cm9kdWNlIHBoeV9pbml0
+aWFsaXphdGlvbiBoZWxwZXIgYW5kIHJlcGxhY2UgZGlyZWN0IGludm9raW5nIGluIHVmcy1jZG5z
+DQo+ID4gPiBhbmQgdWZzLWR3YyBieSB0aGUgaGVscGVyDQo+ID4gPiAgIC0gSW50cm9kdWNlIGV2
+ZW50X25vdGlmeSB2b3AgaW1wbGVtbnRhdGlvbiBpbiB1ZnMtbWVkaWF0ZWsNCj4gPiA+DQo+ID4g
+PiBDaGFuZ2VzIHNpbmNlIHYxOg0KPiA+ID4gICAtIENoYW5nZSBub3RpZnlfZXZlbnQoKSB0byBl
+dmVudF9ub3RpZnkoKSB0byBmb2xsb3cgdm9wIG5hbWluZyBjb3ZlbnRpb24NCj4gPiA+DQo+ID4g
+PiBTdGFubGV5IENodSAoOCk6DQo+ID4gPiAgIHNjc2k6IHVmczogUmVtb3ZlIHVudXNlZCBzZXR1
+cF9yZWd1bGF0b3JzIHZhcmlhbnQgZnVuY3Rpb24NCj4gPiA+ICAgc2NzaTogdWZzOiBJbnRyb2R1
+Y2UgcGh5X2luaXRpYWxpemF0aW9uIGhlbHBlcg0KPiA+ID4gICBzY3NpOiB1ZnMtY2RuczogVXNl
+IHBoeV9pbml0aWFsaXphdGlvbiBoZWxwZXINCj4gPiA+ICAgc2NzaTogdWZzLWR3YzogVXNlIHBo
+eV9pbml0aWFsaXphdGlvbiBoZWxwZXINCj4gPiA+ICAgc2NzaTogdWZzOiBBZGQgZXJyb3IgaGlz
+dG9yeSBmb3IgYWJvcnQgZXZlbnQgaW4gVUZTIERldmljZSBXLUxVTg0KPiA+ID4gICBzY3NpOiB1
+ZnM6IFJlZmluZSBlcnJvciBoaXN0b3J5IGZ1bmN0aW9ucw0KPiA+ID4gICBzY3NpOiB1ZnM6IElu
+dHJvZHVjZSBldmVudF9ub3RpZnkgdmFyaWFudCBmdW5jdGlvbg0KPiA+ID4gICBzY3NpOiB1ZnMt
+bWVkaWF0ZWs6IEludHJvZHVjZSBldmVudF9ub3RpZnkgaW1wbGVtZW50YXRpb24NCj4gPiA+DQo+
+ID4gPiAgZHJpdmVycy9zY3NpL3Vmcy9jZG5zLXBsdGZybS5jICAgICAgICB8ICAgMyArLQ0KPiA+
+ID4gIGRyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLXRyYWNlLmggfCAgMzcgKysrKysrKysN
+Cj4gPiA+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jICAgICAgIHwgIDEyICsrKw0K
+PiA+ID4gIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLWR3Yy5jICAgICAgICAgfCAgMTEgKy0tDQo+
+ID4gPiAgZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYyAgICAgICAgICAgICB8IDEzMiArKysrKysr
+KysrKysrKy0tLS0tLS0tLS0tLQ0KPiA+ID4gIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmggICAg
+ICAgICAgICAgfCAxMDAgKysrKysrKysrLS0tLS0tLS0tLQ0KPiA+ID4gIDYgZmlsZXMgY2hhbmdl
+ZCwgMTc1IGluc2VydGlvbnMoKyksIDEyMCBkZWxldGlvbnMoLSkNCj4gPiA+ICBjcmVhdGUgbW9k
+ZSAxMDA2NDQgZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWstdHJhY2UuaA0KPiA+ID4NCj4g
+PiA+IC0tDQo+ID4gPiAyLjE4LjANCj4gDQoNCg==
 
-No I don't think it says that.
-
-It's saying that it should be a WARN if a *kernel* user of the
-tracepoint API violates the API. The implication is that this condition
-should never happen if the kernel is using the tracepoint API correctly,
-and so if we hit this condition it indicates a bug in the kernel that
-should be fixed.
-
->> or called
->>    to remove a tracepoint that does not exist).
->>    
->>    Silence warning in out-of-memory conditions, given that the error is
->>    returned to the caller.
->> 
->> 
->> So if you're seeing it then you've someone caused it to return something
->> other than ENOMEM, and that is a bug.
->
-> This is an userspace bug which registers the same thing twice, the 
-> kernel returns a correct error. The question is should it warn by 
-> WARN_ON or pr_err(). The comment in bug.h suggests pr_err() is the right 
-> way, is not it?
-
-Userspace must not be able to trigger a WARN.
-
-What is the path into that code from userspace?
-
-Either something on that path should be checking that it's not violating
-the API and triggering the WARN, or if that's not possible/easy then the
-WARN should be removed.
-
-cheers
