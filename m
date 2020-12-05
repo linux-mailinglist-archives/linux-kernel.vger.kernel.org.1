@@ -2,228 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879122CFA65
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 09:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE0A2CFA6F
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 09:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728599AbgLEIAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 03:00:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgLEIAt (ORCPT
+        id S1728873AbgLEIEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 03:04:21 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:39017 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728559AbgLEIEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 03:00:49 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05770C061A51;
-        Sat,  5 Dec 2020 00:00:09 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id t37so5006666pga.7;
-        Sat, 05 Dec 2020 00:00:09 -0800 (PST)
+        Sat, 5 Dec 2020 03:04:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1607155459; x=1638691459;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=9g04GAUiP1AYBz5oW9zZ7tXJNfz9Hx7DDbbPmKKZFDQ=;
+  b=FTsf5UkQryAyFtd/STWaViAeHhKzbJMA2zn4evQStz54E/AAJWD6l8QA
+   WO2csmWr9kUPY3/EyxkoOmPyhONl9TFNY6aN+Is7909zppj+5gUDZEbw1
+   fKhw3/f6ppAB+i1NdNrZJGPcMEYIiJPgKHXvsyNaWPUhdthRJGC6QTifU
+   wyrnJ0u09A2pHdtvJf64yJ0Dk5KFR1xj5QsSFJOVHXc+GFBfcQDPFr5MQ
+   HaZHfZqTQrQIem4bXVJ1298csb5ic4n9VsnYqXJg/fjhvDMDY3ozyz9HP
+   Hs4GZhBtNi31m2D5PcGyEI1LRFupWXpGDj7vpvQu5iXF6zUkw7zPs2fpj
+   Q==;
+IronPort-SDR: wHda7EZLOvb98ckR8KPP5TtWrs6QCzp4puA4o3VdgtvIZRMK7owkDKoTOT6+VCHM/kag0yiilT
+ wQL3s1AnVj2V56PrL1kpZogQK+jQuauIFlXppOaiMyMGKlz91lbdIWFYYHjUTWsZH4Yj92enbA
+ jvhBjt1hMqnQufTZRiDTtejbu85EpTJHLd72piDjJe8/hRWoCGC7zx9I31a/tmby7xhvkxedBU
+ yMrjjKe9D6fwNjjBDDApJy4uLjsuk5b/m3FZIInxsMM48KfD5zCuGS7153g7rzIe5jPTGXzlNP
+ BYs=
+X-IronPort-AV: E=Sophos;i="5.78,395,1599494400"; 
+   d="scan'208";a="158955383"
+Received: from mail-dm6nam10lp2101.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.101])
+  by ob1.hgst.iphmx.com with ESMTP; 05 Dec 2020 16:03:12 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VxSMqPcZl9LoxoUP+WGyQusHAybMrPAaGe/IIKkyzltFl6Nsh1YdLTzqqlLE0C6tXt9jgbOr7sTjDst7eEcFLGPZuNsnbPwHysYcVvl6/VYYoru3WKfrojFIJWr1bTBnM+xrnVQMTFrHvjbH86es5MmydVryTxMWTJmdCL2MXx9u0RCuuiZPi4lwDpQVYc12SKWUYoBuDrL54Xy28v1zGGgCawy7Tv46KtVhufLzUwF/9yx9PcKeazOXbxhGCNv532WzVX6uAzYisNrtFe3wGxJRJNNJufNs6tai1Bgok8NSMuGRvHkspFBkuuduJ+G6/9FTOyVfQOF4i3KBnznNVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qsxd08JXBsBamEX85/oFGS3w1Wjbwxw01zr5Pwc8wtk=;
+ b=nc7ab0J4H3M2VswXyNr2XAm4z0Y0fzX3EFomxxm7so5RUrImL42V7ChEtZY6HasfNYecAB699DxeAx2+aw5jGMlhX8glzPK1a+Kms7bf1LlVod5ahiouboW1k+rI9pbsDhhZNOC5OnkP7K81bWUMKGUjKG0RZ1sEVUR3CQgmFwCbNTS8FoUEx2vtjd+9/Bm2FfnNM8oeIsfcTLJVkmcRUtR032GjQMLU7/izI5nLGo3x13I4P0yZ8Tni5GuQ79uhjnxvrpR9GhzdeRaw20DjH65y00yxaXhfeNpqjRKQGUbcyCAc9TAWbK+y0Ld2e+PPte6JBrrG1djH62gd8ZtTdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=0masjBUaEdT8yhWPTiGZKXmGUQ0WDl0QMJjmOmFRbgI=;
-        b=Gc/gJZMQJsaxJezPjoIJ+l5Klj3CzVb5UfjGmnUDQ+DMJR1ckzh7xASLtrBAkakChE
-         Grl/mbVH7ZhodnKKNM2V9SyaZmqJG37yL3RpwHLG4q20CIoG0WuD8qDvAO8cK0/5pOI0
-         XLsxT4WCK17cUlrgT8NKnQ5XHp4ZttYAJyAOErwofFJmxZrdS7k60N/YEMuAPFjj724x
-         6Y3lOmK1Fa/4/jUmD8oygPoU6iU8yiVqkQIaS7YpdjpykZeVq+kx+BCFkvagYRVtu/LW
-         nNkXd6MTx3rnKjDArqwSiQDF0G/uOxtru2icj5A/knbFbSw4HW25IWRF8hP5S0xki7Ot
-         QuLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=0masjBUaEdT8yhWPTiGZKXmGUQ0WDl0QMJjmOmFRbgI=;
-        b=VWg8uF5/Fhn8LpoJ/DED4ob4PzrRb6ybqQNoTX6y1QUBPoxhYbBTQezJezl6IJ2j8R
-         YtTgQy8PbYX5Afm6brJsKjlHIXSaRSQ3ox08xHPUE3djiCFsRx9c5eB6ZOfm4M7hDAZ8
-         yasRjpCT2xskjyBZmB7+4MSf/Qy1XJNX0QMKwADPXqjmUabBkVxpvb3/dA4Pbe33oRI8
-         87XAqjDJUreM/fjNjHnOjSOD+GGj6fA9xRrwPo6yT434ZA20A0MxXY/hDbkdEVvZdKwT
-         Zat7C7KMvI7EuSPLqC86xUibTbuyQ5B/qFkVFBOXW/LTZzDcbx9ExUHVkqQW6yzy7NMS
-         yRjQ==
-X-Gm-Message-State: AOAM531yg5P9wVBv31sSa+eu54on1hNeS8k7O8NS6gPKm0KumUR7wOQl
-        csOkJDBZwhs5DtyqKBMskHw=
-X-Google-Smtp-Source: ABdhPJxxq5hhiaL6DPOoOhrdsC1HhF8QISir8hTk4ZBkYS67jaUKjbr7sa21l559bUoRv8iVAoVSKg==
-X-Received: by 2002:a63:a55d:: with SMTP id r29mr10713433pgu.289.1607155208529;
-        Sat, 05 Dec 2020 00:00:08 -0800 (PST)
-Received: from localhost ([1.129.168.124])
-        by smtp.gmail.com with ESMTPSA id n5sm6278072pgm.29.2020.12.05.00.00.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Dec 2020 00:00:07 -0800 (PST)
-Date:   Sat, 05 Dec 2020 18:00:00 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 2/8] x86: use exit_lazy_tlb rather than
- membarrier_mm_sync_core_before_usermode
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
-References: <20201128160141.1003903-1-npiggin@gmail.com>
-        <20201128160141.1003903-3-npiggin@gmail.com>
-        <CALCETrXYkbuJJnDv9ijfT+5tLQ2FOvvN1Ugoh5NwOy+zHp9HXA@mail.gmail.com>
-        <1606876327.dyrhkih2kh.astroid@bobo.none>
-        <CALCETrV8Z5JdsP-Qa8B6y01LmXnSruOEWVt9_Un1RX1+nZuhxw@mail.gmail.com>
-In-Reply-To: <CALCETrV8Z5JdsP-Qa8B6y01LmXnSruOEWVt9_Un1RX1+nZuhxw@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <1607152918.fkgmomgfw9.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qsxd08JXBsBamEX85/oFGS3w1Wjbwxw01zr5Pwc8wtk=;
+ b=Q6IBwuFxlOAVU7vy/GffQJqsTv8lSKJZFR2dqTFiPirAcW8nhrAueF2ON5N2WiFudyZFFt/D9P9NHjTAG0Y0wFne4oY8HgiuznNiY2T4nDCeCNjYEvDUney2p8ele7DXogj51T/PYShDTdxbBtkW1gLDgcC8oxIPHvri8S7EcSU=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB6667.namprd04.prod.outlook.com (2603:10b6:5:247::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3632.18; Sat, 5 Dec 2020 08:03:11 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6%8]) with mapi id 15.20.3632.021; Sat, 5 Dec 2020
+ 08:03:11 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
+CC:     "beanhuo@micron.com" <beanhuo@micron.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>,
+        "jiajie.hao@mediatek.com" <jiajie.hao@mediatek.com>,
+        "alice.chao@mediatek.com" <alice.chao@mediatek.com>,
+        "huadian.liu@mediatek.com" <huadian.liu@mediatek.com>
+Subject: RE: [PATCH v4 0/8] Refine error history and introduce event_notify
+ vop
+Thread-Topic: [PATCH v4 0/8] Refine error history and introduce event_notify
+ vop
+Thread-Index: AQHWyq/pOn7SLSBA3UysiLzNTb9IZ6noIz6g
+Date:   Sat, 5 Dec 2020 08:03:10 +0000
+Message-ID: <DM6PR04MB65758A2779FD814F52E137BAFCF00@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201205023938.13848-1-stanley.chu@mediatek.com>
+In-Reply-To: <20201205023938.13848-1-stanley.chu@mediatek.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: mediatek.com; dkim=none (message not signed)
+ header.d=none;mediatek.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [77.138.4.172]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 28860163-703e-4505-cd8e-08d898f435cc
+x-ms-traffictypediagnostic: DM6PR04MB6667:
+x-microsoft-antispam-prvs: <DM6PR04MB66671BEF9013DFDB3DDD8D94FCF00@DM6PR04MB6667.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: a+wccSOUG+DSj+KUPyveg/aYEnlFovzH1g6r7KBV/r8+AT2R/EdqcV7kyeUTbLYnSYamt3sRz8u1ZoQp5YFwmcva5usVmTpcew6h0IuLes6pZzXVKehHeM5M8sWgUwsaypFcOyFT/ToNBn06ne6gWrSx7xBa0kgdl1Ha+cMkYg4f1OBzZ4moIJ9vK1nZXq0RhylDspjk++vhSeaLF3DcvZtAwGu3AGh/MqJffZv+WdVLn3PePvgTtO6TShlKVX5aS/w6eYmD0ouK1yxfVBYhl68UDpjIvUrsYo+6IE1JAuTtq7vmltpvTWTFn/EdZJE4y299SYTR5OdE67l8MjGR5A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(376002)(39860400002)(136003)(2906002)(7696005)(86362001)(6506007)(76116006)(71200400001)(33656002)(83380400001)(9686003)(8676002)(7416002)(54906003)(186003)(26005)(52536014)(4326008)(66556008)(55016002)(66446008)(66476007)(316002)(8936002)(5660300002)(478600001)(110136005)(64756008)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?+oS/R5PCawJ55aUV86x+jaMFp+BXIQgghSkaGTjpdoRErlobe+lUGIzQToB1?=
+ =?us-ascii?Q?WMn6whSiE6JHcCfyJXaAbICcZ2RelI/FR0JoLzU+GwDn4L6mTxA1WDJwsJNs?=
+ =?us-ascii?Q?IlF6zvhfqK0sm6Texy/YnDYXywxcBm2LM62qR1IrXm+nO8s1mukJNLGDZRDU?=
+ =?us-ascii?Q?rbt4ygjVdIVmK9CdmhMu1R8KM4I7zYiMmV2oYML4c6j7RrCuTap2uHJIgOHa?=
+ =?us-ascii?Q?IIzYsh2bikG/cJW5jdYetPKxpTBIREud2KUTwqh7TpE8YG+H3SKPeXfQu3H6?=
+ =?us-ascii?Q?cKTI+BUJC+9QB1KpcZLNRgXAGTk6YVT1Ty35TvaTK4C2+8nAqiqozfrc0Oxi?=
+ =?us-ascii?Q?bZ011iS/a3WIBYnjinU/Sg0M/qNrhqBojeLgDct6IRToP3rTWmxG/x9UnmEc?=
+ =?us-ascii?Q?icdE5gbyWgTbI9d6OmC1zfbezgn9kpaBQAyW16YARY5EnKCaj7LAVGz9xW5A?=
+ =?us-ascii?Q?vhWRLdVkGQIzyPUY57EVN4a3iUBbSCdYHXsA+MynYbt0KotiavVP6fNkF0uL?=
+ =?us-ascii?Q?WYZJb4Pr0PzMxtXeiDoT4v/HoEufY57rgkd2oZVGeDxjzHguvKb3mctSFSnq?=
+ =?us-ascii?Q?uJrzLqvQKilAsdiWzN+BOMKAc5OYUMLLOY0UAey3+nM8PpPmJe3MxQ25WIOx?=
+ =?us-ascii?Q?hrycBOWK+KL7B6hH1GWSFE7SlKYIrMEU4kkTwSWOjxuC+06P1S+fRV3PQU3k?=
+ =?us-ascii?Q?aZRguT7rzKkeDkZIL8EPcPE2QwQxMpfpwky3P2XQLf2H7KYbVy1vZlEqoFdv?=
+ =?us-ascii?Q?wNoXDleIxaT+OW3/SiooOXtoTFJ2REyA17QQ8zncP27+4jRE2p8K57gkhiP6?=
+ =?us-ascii?Q?wmYjpGbGrFcdE/dQy6/ZB6ogMT5fWCItW+sKcudWsuzrvA98+kCRgY1sifcS?=
+ =?us-ascii?Q?BKqegelvlGTgbXXDi5cGkGXdOO3BC24ikPxjKgvbs9OZ3013nFWARIKe5v56?=
+ =?us-ascii?Q?MQC2/vrlRKVA+F/Xoi1e1CpBEwQfGmfYDeaxRh8Ribo=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 28860163-703e-4505-cd8e-08d898f435cc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2020 08:03:11.3189
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3xwCe9TUgtjgxDBb5va5WDU7YBxcTcP8kN8XqN+J4ofopp1Higy/xLPgievzORS/ZgEEgHuqouled/8bSxgHVQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6667
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Andy Lutomirski's message of December 3, 2020 3:09 pm:
-> On Tue, Dec 1, 2020 at 6:50 PM Nicholas Piggin <npiggin@gmail.com> wrote:
->>
->> Excerpts from Andy Lutomirski's message of November 29, 2020 3:55 am:
->> > On Sat, Nov 28, 2020 at 8:02 AM Nicholas Piggin <npiggin@gmail.com> wr=
-ote:
->> >>
->> >> And get rid of the generic sync_core_before_usermode facility. This i=
-s
->> >> functionally a no-op in the core scheduler code, but it also catches
->> >>
->> >> This helper is the wrong way around I think. The idea that membarrier
->> >> state requires a core sync before returning to user is the easy one
->> >> that does not need hiding behind membarrier calls. The gap in core
->> >> synchronization due to x86's sysret/sysexit and lazy tlb mode, is the
->> >> tricky detail that is better put in x86 lazy tlb code.
->> >>
->> >> Consider if an arch did not synchronize core in switch_mm either, the=
-n
->> >> membarrier_mm_sync_core_before_usermode would be in the wrong place
->> >> but arch specific mmu context functions would still be the right plac=
-e.
->> >> There is also a exit_lazy_tlb case that is not covered by this call, =
-which
->> >> could be a bugs (kthread use mm the membarrier process's mm then cont=
-ext
->> >> switch back to the process without switching mm or lazy mm switch).
->> >>
->> >> This makes lazy tlb code a bit more modular.
->> >
->> > I have a couple of membarrier fixes that I want to send out today or
->> > tomorrow, and they might eliminate the need for this patch.  Let me
->> > think about this a little bit.  I'll cc you.  The existing code is way
->> > to subtle and the comments are far too confusing for me to be quickly
->> > confident about any of my conclusions :)
->> >
->>
->> Thanks for the head's up. I'll have to have a better look through them
->> but I don't know that it eliminates the need for this entirely although
->> it might close some gaps and make this not a bug fix. The problem here
->> is x86 code wanted something to be called when a lazy mm is unlazied,
->> but it missed some spots and also the core scheduler doesn't need to
->> know about those x86 details if it has this generic call that annotates
->> the lazy handling better.
->=20
-> I'll send v3 tomorrow.  They add more sync_core_before_usermode() callers=
-.
->=20
-> Having looked at your patches a bunch and the membarrier code a bunch,
-> I don't think I like the approach of pushing this logic out into new
-> core functions called by arch code.  Right now, even with my
-> membarrier patches applied, understanding how (for example) the x86
-> switch_mm_irqs_off() plus the scheduler code provides the barriers
-> that membarrier needs is quite complicated, and it's not clear to me
-> that the code is even correct.  At the very least I'm pretty sure that
-> the x86 comments are misleading.
->
-> With your patches, someone trying to
-> audit the code would have to follow core code calling into arch code
-> and back out into core code to figure out what's going on.  I think
-> the result is worse.
+Hi Stanley,
+Will you split this series to 3 separate series:
+Phy initialization cleanup, Error history, and event notification?
+As those 3 aren't really connected?
 
-Sorry I missed this and rather than reply to the later version you
-have a bigger comment here.
-
-I disagree. Until now nobody following it noticed that the mm gets
-un-lazied in other cases, because that was not too clear from the
-code (only indirectly using non-standard terminology in the arch
-support document).
-
-In other words, membarrier needs a special sync to deal with the case=20
-when a kthread takes the mm. exit_lazy_tlb gives membarrier code that=20
-exact hook that it wants from the core scheduler code.
-
->=20
-> I wrote this incomplete patch which takes the opposite approach (sorry
-> for whitespace damage):
-
-That said, if you want to move the code entirely in the x86 arch from
-exit_lazy_tlb to switch_mm_irqs_off, it's trivial and touches no core
-code after my series :) and I would have no problem with doing that.
-
-I suspect it might actually be more readable to go the other way and
-pull most of the real_prev =3D=3D next membarrier code into exit_lazy_tlb
-instead, but I could be wrong I don't know exactly how the x86 lazy
-state correlates with core lazy tlb state.
+Please maintain Can's reviewed-by tag for the error history patches,
+And add mine for the phy initialization, so Martin can pick those.
 
 Thanks,
-Nick
+Avri
 
 >=20
-> commit 928b5c60e93f475934892d6e0b357ebf0a2bf87d
-> Author: Andy Lutomirski <luto@kernel.org>
-> Date:   Wed Dec 2 17:24:02 2020 -0800
+> Hi,
+> This series refines error history functions, do vop cleanups and introduc=
+e a
+> new event_notify vop to allow vendor to get notification of important
+> events.
 >=20
->     [WIP] x86/mm: Handle unlazying membarrier core sync in the arch code
+> Changes since v3:
+>   - Fix build warning in patch [8/8]
 >=20
->     The core scheduler isn't a great place for
->     membarrier_mm_sync_core_before_usermode() -- the core scheduler
->     doesn't actually know whether we are lazy.  With the old code, if a
->     CPU is running a membarrier-registered task, goes idle, gets unlazied
->     via a TLB shootdown IPI, and switches back to the
->     membarrier-registered task, it will do an unnecessary core sync.
+> Changes since v2:
+>   - Add patches for vop cleanups
+>   - Introduce phy_initialization helper and replace direct invoking in uf=
+s-cdns
+> and ufs-dwc by the helper
+>   - Introduce event_notify vop implemntation in ufs-mediatek
 >=20
->     Conveniently, x86 is the only architecture that does anything in this
->     hook, so we can just move the code.
+> Changes since v1:
+>   - Change notify_event() to event_notify() to follow vop naming coventio=
+n
 >=20
->     XXX: actually delete the old code.
+> Stanley Chu (8):
+>   scsi: ufs: Remove unused setup_regulators variant function
+>   scsi: ufs: Introduce phy_initialization helper
+>   scsi: ufs-cdns: Use phy_initialization helper
+>   scsi: ufs-dwc: Use phy_initialization helper
+>   scsi: ufs: Add error history for abort event in UFS Device W-LUN
+>   scsi: ufs: Refine error history functions
+>   scsi: ufs: Introduce event_notify variant function
+>   scsi: ufs-mediatek: Introduce event_notify implementation
 >=20
->     Signed-off-by: Andy Lutomirski <luto@kernel.org>
+>  drivers/scsi/ufs/cdns-pltfrm.c        |   3 +-
+>  drivers/scsi/ufs/ufs-mediatek-trace.h |  37 ++++++++
+>  drivers/scsi/ufs/ufs-mediatek.c       |  12 +++
+>  drivers/scsi/ufs/ufshcd-dwc.c         |  11 +--
+>  drivers/scsi/ufs/ufshcd.c             | 132 ++++++++++++++------------
+>  drivers/scsi/ufs/ufshcd.h             | 100 +++++++++----------
+>  6 files changed, 175 insertions(+), 120 deletions(-)
+>  create mode 100644 drivers/scsi/ufs/ufs-mediatek-trace.h
 >=20
-> diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-> index 3338a1feccf9..e27300fc865b 100644
-> --- a/arch/x86/mm/tlb.c
-> +++ b/arch/x86/mm/tlb.c
-> @@ -496,6 +496,8 @@ void switch_mm_irqs_off(struct mm_struct *prev,
-> struct mm_struct *next,
->           * from one thread in a process to another thread in the same
->           * process. No TLB flush required.
->           */
-> +
-> +        // XXX: why is this okay wrt membarrier?
->          if (!was_lazy)
->              return;
->=20
-> @@ -508,12 +510,24 @@ void switch_mm_irqs_off(struct mm_struct *prev,
-> struct mm_struct *next,
->          smp_mb();
->          next_tlb_gen =3D atomic64_read(&next->context.tlb_gen);
->          if (this_cpu_read(cpu_tlbstate.ctxs[prev_asid].tlb_gen) =3D=3D
-> -                next_tlb_gen)
-> +            next_tlb_gen) {
-> +            /*
-> +             * We're reactivating an mm, and membarrier might
-> +             * need to serialize.  Tell membarrier.
-> +             */
-> +
-> +            // XXX: I can't understand the logic in
-> +            // membarrier_mm_sync_core_before_usermode().  What's
-> +            // the mm check for?
-> +            membarrier_mm_sync_core_before_usermode(next);
->              return;
-> +        }
->=20
->          /*
->           * TLB contents went out of date while we were in lazy
->           * mode. Fall through to the TLB switching code below.
-> +         * No need for an explicit membarrier invocation -- the CR3
-> +         * write will serialize.
->           */
->          new_asid =3D prev_asid;
->          need_flush =3D true;
->=20
+> --
+> 2.18.0
+
