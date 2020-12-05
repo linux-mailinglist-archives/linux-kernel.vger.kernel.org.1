@@ -2,135 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC0E2CFEA5
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 21:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 934332CFEAE
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 21:10:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725976AbgLEUIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 15:08:10 -0500
-Received: from mout.kundenserver.de ([212.227.126.134]:54631 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgLEUIJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 15:08:09 -0500
-Received: from [192.168.1.155] ([95.117.6.188]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MKbPg-1kSsSo2JCe-00KvFk; Sat, 05 Dec 2020 21:05:18 +0100
-Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org, corbet@lwn.net,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org, stefanha@redhat.com,
-        msuchanek@suse.de
-References: <20201203191135.21576-1-info@metux.net>
- <20201203191135.21576-2-info@metux.net>
- <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
- <96aca1e6-2d5a-deb1-2444-88f938c7a9de@metux.net>
- <20201205142218-mutt-send-email-mst@kernel.org>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <e69569b5-0c45-e072-5de4-81a4acecdae3@metux.net>
-Date:   Sat, 5 Dec 2020 21:05:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20201205142218-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:QugltoubQsv7+6FipOEchA2SlXCGRjERRAI/iuCtMDvu9KDBRRq
- saQTyePYS/E5loL/IxLrDFxgvPJ5JGmBzjTKIcVIrHGc/f9AGEkatuhoHw3jThMUeX5Ck8N
- ZMgEGXkxFB7huSU0tSGiu9ycGb4dQB+6+3LD3fCzBbfr+/KPagDfjvKGE3ZWg5Rkw2ZXhVY
- ZWUytYSOdq9CBmccEdCYg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2it/pa0pkAM=:oFJFH+K8FRt4xExK6On0dO
- IFQ4fpnbkvP9d1krIcL/bcTDB2bAF0+lBGVmZa9S1za8Jrc/uZtc8/+jHtAgwrYp+v5g33ZaR
- m+A6CYjJC2IGU3h400s3xfPZKdRDKK4XCZqd4PFQOU/x5g2EjxnlDfteF6Ao/JBNWIdC7qDbT
- RUp+t3icVWxWEDISAetAMkDqbwY4bd9ygxbehmHiFzeY6Xf5F1O6LzWtu4VhYKvnchqhqPfdG
- FYNj0m7RzUP+szC8fWKQeVfmfCQluY/ppzurcFmlMkIZEbZq48JZv1wEmurUS4qNDiOWMJUyG
- UoqkrpJG/4p4FSrepw7H+NefIpsJqm8cPwM58vwmyxWULjoNJKwtGRQU3A2r18InX7oyUlXFM
- H0Ei0ybi98Tuggk8+zRcKWbh8Ji1tUBVGCNE36E1Hf/7X0kBrLhGGHsaWlnk9
+        id S1726112AbgLEUIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 15:08:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40776 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725379AbgLEUIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 15:08:39 -0500
+From:   Oded Gabbay <ogabbay@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-kernel@vger.kernel.org
+Cc:     SW_Drivers@habana.ai, Alon Mizrahi <amizrahi@habana.ai>
+Subject: [PATCH] habanalabs/gaudi: do not set EB in collective slave queues
+Date:   Sat,  5 Dec 2020 22:07:51 +0200
+Message-Id: <20201205200752.1468-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.12.20 20:32, Michael S. Tsirkin wrote:
+From: Alon Mizrahi <amizrahi@habana.ai>
 
-Hi,
+We don't need to set EB on signal packets from collective slave
+queues as it degrades performance. Because the slaves are the network
+queues, the engine barrier doesn't actually guarantee that the
+packet has been sent.
 
-> It seems a bit of a mess, at this point I'm not entirely sure when
-> should drivers select VIRTIO and when depend on it.
+Signed-off-by: Alon Mizrahi <amizrahi@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/common/habanalabs.h | 2 +-
+ drivers/misc/habanalabs/common/hw_queue.c   | 5 ++++-
+ drivers/misc/habanalabs/gaudi/gaudi.c       | 8 ++++----
+ drivers/misc/habanalabs/goya/goya.c         | 2 +-
+ 4 files changed, 10 insertions(+), 7 deletions(-)
 
-if VIRTIO just enables something that could be seen as library
-functions, then select should be right, IMHO.
-
-> The text near it says:
-> 
-> # SPDX-License-Identifier: GPL-2.0-only
-> config VIRTIO
->         tristate
-
-oh, wait, doesn't have an menu text, so we can't even explicitly enable
-it (not shown in menu) - only implicitly. Which means that some other
-option must select it, in order to become availe at all, and in order
-to make others depending on it becoming available.
-
-IMHO, therefore select is the correct approach.
-
-
->         help
->           This option is selected by any driver which implements the virtio
->           bus, such as CONFIG_VIRTIO_PCI, CONFIG_VIRTIO_MMIO, CONFIG_RPMSG
->           or CONFIG_S390_GUEST.
-> 
-> Which seems clear enough and would indicate drivers for devices *behind*
-> the bus should not select VIRTIO and thus presumably should "depend on" it.
-> This is violated in virtio console and virtio fs drivers.
-
-See above: NAK. because it can't even be enabled directly (by the user).
-If it wasn't meant otherwise, we'd have to add an menu text.
-
-> For console it says:
-> 
-> commit 9f30eb29c514589e16f2999ea070598583d1f6ec
-> Author: Michal Suchanek <msuchanek@suse.de>
-> Date:   Mon Aug 31 18:58:50 2020 +0200
-> 
->     char: virtio: Select VIRTIO from VIRTIO_CONSOLE.
->     
->     Make it possible to have virtio console built-in when
->     other virtio drivers are modular.
->     
->     Signed-off-by: Michal Suchanek <msuchanek@suse.de>
->     Reviewed-by: Amit Shah <amit@kernel.org>
->     Link: https://lore.kernel.org/r/20200831165850.26163-1-msuchanek@suse.de
->     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> which seems kind of bogus - why do we care about allowing a builtin
-> virtio console driver if the pci virtio bus driver is a module?
-> There won't be any devices on the bus to attach to ...
-
-When using other transports ?
-In my current project, eg. I'm using mmio - my kernel has pci completely
-disabled.
-
-> I am inclined to fix console and virtio fs to depend on VIRTIO:
-> select is harder to use correctly ...
-
-I don't thinkt that would be good - instead everybody should just select
-VIRTIO, never depend on it (maybe depend on VIRTIO_MENU instead)
-
-
---mtx
-
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index 571eda6ef5ab..70b778a0d60e 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -944,7 +944,7 @@ struct hl_asic_funcs {
+ 	u32 (*get_signal_cb_size)(struct hl_device *hdev);
+ 	u32 (*get_wait_cb_size)(struct hl_device *hdev);
+ 	u32 (*gen_signal_cb)(struct hl_device *hdev, void *data, u16 sob_id,
+-			u32 size);
++			u32 size, bool eb);
+ 	u32 (*gen_wait_cb)(struct hl_device *hdev,
+ 			struct hl_gen_wait_properties *prop);
+ 	void (*reset_sob)(struct hl_device *hdev, void *data);
+diff --git a/drivers/misc/habanalabs/common/hw_queue.c b/drivers/misc/habanalabs/common/hw_queue.c
+index 7caf868d1585..76217258780a 100644
+--- a/drivers/misc/habanalabs/common/hw_queue.c
++++ b/drivers/misc/habanalabs/common/hw_queue.c
+@@ -418,8 +418,11 @@ static void init_signal_cs(struct hl_device *hdev,
+ 		"generate signal CB, sob_id: %d, sob val: 0x%x, q_idx: %d\n",
+ 		cs_cmpl->hw_sob->sob_id, cs_cmpl->sob_val, q_idx);
+ 
++	/* we set an EB since we must make sure all oeprations are done
++	 * when sending the signal
++	 */
+ 	hdev->asic_funcs->gen_signal_cb(hdev, job->patched_cb,
+-				cs_cmpl->hw_sob->sob_id, 0);
++				cs_cmpl->hw_sob->sob_id, 0, true);
+ 
+ 	kref_get(&hw_sob->kref);
+ 
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index e465c158eaeb..65895ba075fe 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -361,7 +361,7 @@ static int gaudi_cpucp_info_get(struct hl_device *hdev);
+ static void gaudi_disable_clock_gating(struct hl_device *hdev);
+ static void gaudi_mmu_prepare(struct hl_device *hdev, u32 asid);
+ static u32 gaudi_gen_signal_cb(struct hl_device *hdev, void *data, u16 sob_id,
+-				u32 size);
++				u32 size, bool eb);
+ static u32 gaudi_gen_wait_cb(struct hl_device *hdev,
+ 				struct hl_gen_wait_properties *prop);
+ 
+@@ -1064,7 +1064,7 @@ static void gaudi_collective_slave_init_job(struct hl_device *hdev,
+ 		prop->collective_sob_id, queue_id);
+ 
+ 	cb_size += gaudi_gen_signal_cb(hdev, job->user_cb,
+-			prop->collective_sob_id, cb_size);
++			prop->collective_sob_id, cb_size, false);
+ }
+ 
+ static void gaudi_collective_wait_init_cs(struct hl_cs *cs)
+@@ -7893,7 +7893,7 @@ static u32 gaudi_get_wait_cb_size(struct hl_device *hdev)
+ }
+ 
+ static u32 gaudi_gen_signal_cb(struct hl_device *hdev, void *data, u16 sob_id,
+-				u32 size)
++				u32 size, bool eb)
+ {
+ 	struct hl_cb *cb = (struct hl_cb *) data;
+ 	struct packet_msg_short *pkt;
+@@ -7910,7 +7910,7 @@ static u32 gaudi_gen_signal_cb(struct hl_device *hdev, void *data, u16 sob_id,
+ 	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_OP_MASK, 0); /* write the value */
+ 	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_BASE_MASK, 3); /* W_S SOB base */
+ 	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_OPCODE_MASK, PACKET_MSG_SHORT);
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_EB_MASK, 1);
++	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_EB_MASK, eb);
+ 	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_RB_MASK, 1);
+ 	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_MB_MASK, 1);
+ 
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index d61177bf36a5..b8b4aa636b7c 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -5339,7 +5339,7 @@ static u32 goya_get_wait_cb_size(struct hl_device *hdev)
+ }
+ 
+ static u32 goya_gen_signal_cb(struct hl_device *hdev, void *data, u16 sob_id,
+-		u32 size)
++				u32 size, bool eb)
+ {
+ 	return 0;
+ }
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+2.17.1
+
