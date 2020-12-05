@@ -2,109 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3E42CF9FA
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 07:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A08F2CF9EE
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 07:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbgLEGPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 01:15:50 -0500
-Received: from m12-17.163.com ([220.181.12.17]:36312 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726513AbgLEGPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 01:15:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=2/jhAwMajH8k2J2ZK9
-        X/1hEzEK4bVDfiEmqV5lNgiHE=; b=iTCK4M7+GHaYvTW6aReSaT88Fx5roEdGtZ
-        cfFVF4FLlx9hHp18SOPmck0lD0vT/+SGVqWTOzNCUXSSo4EZDeGgVRQPjvptgdW4
-        3jEHTRJBMtuJRGTQwyqnog0YxMD0p9sLjmZS6eAY30vXind9oE1hmUbJ91Sl1Vck
-        zmsSiEnyw=
-Received: from localhost.localdomain (unknown [223.87.230.17])
-        by smtp13 (Coremail) with SMTP id EcCowAC3tIygAMtfds9_Xw--.30129S2;
-        Sat, 05 Dec 2020 11:38:10 +0800 (CST)
-From:   carver4lio@163.com
-To:     mingo@redhat.com
-Cc:     juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        carver4lio@163.com, Hailong Liu <liu.hailong6@zte.com.cn>
-Subject: [PATCH] sched/rt:fix the missing of rt_rq runtime check in rt-period timer
-Date:   Sat,  5 Dec 2020 11:38:01 +0800
-Message-Id: <20201205033801.6924-1-carver4lio@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: EcCowAC3tIygAMtfds9_Xw--.30129S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Aw4DGF13WFykXry8tr13Jwb_yoW5JFy3pF
-        ZrX34xGa1vy3WUKa48A3s7WryFgws5try7J3WDt3yxA3W5Wrn0qr1rtFs3KFW0gFn3CFWx
-        AF1DG34fua1DtFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U04EiUUUUU=
-X-Originating-IP: [223.87.230.17]
-X-CM-SenderInfo: xfdu4v3uuox0i6rwjhhfrp/1tbiWBHwnVuHujdBTAADs7
+        id S1727977AbgLEGCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 01:02:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgLEGCW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 01:02:22 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016A6C061A4F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 22:01:36 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id b10so5297011pfo.4
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 22:01:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=u+a+qT7f8D/d0Caav9Ht6L5H18qAAw+85S67uYfFDyU=;
+        b=WGnZwSDcwjCvbxb7j49Qj8y/JkNzwU1MdZzc6ypLp914aSUQJQVM7s8BzcOoEU8Whn
+         qfTgNkZ90ogX62MdppZfPTFFr3DQO52tNc1+ewM2p8aGNp78diglTkHTb3vrBcDlKwWl
+         DYBy2Ys8CNpCFbmUi0JGFoX+Opy6TrQCBzHlG/4aiTGpiwW/FPiWE6z+YZ9GmxKWONoU
+         MxwsMQZHo3kWW43jaLkSencYnys9AJdf5dgTKzvgio4yot3STTopkyyfZKIwmT8kyV3e
+         9Tz7NXko3B6om9oo63pd8eCG/puVgP3bzppFOh0GTkaBvUnJGnIBelsXHPfEJklKpum0
+         6ofw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u+a+qT7f8D/d0Caav9Ht6L5H18qAAw+85S67uYfFDyU=;
+        b=J8jYMV+2mDuXhfAH7DMXbioixR/GKVdpRjiFppLkRdiEjqaeDPq/y8jReUuxIGaWon
+         1F79N6nc5NYQf0MvkMpJMzpTPGVDKgQkUyG0EfrI9sUGwh8hF4uwb72kV9F7Ho3bVI1A
+         ISismIiiwPRB4ZdHCuzvfkmLJCXtk4+B2FTsdy8bOu3d/Na7d+0gpRHXvHxlBDDTILse
+         N3Hh/pwFrlv8xAKiHXkbcgQiVX5uLQgdnDzxk20t61lhat2/hj1bXUx3rDViXISwovDo
+         pui1cKBp53TQTHF3aZ49ikL3+A3kZLOfWKBSbi4Ni/m24/gaiqFydydaAEdemQNwC7Ka
+         49bw==
+X-Gm-Message-State: AOAM532uyPLQNxxkMx+TzBA0vt7oWIpXWSkWpM9szxfS3t9jcQ2gliX5
+        gf+ZTAtn6P9I74fbxWB/BWwD
+X-Google-Smtp-Source: ABdhPJwfAXVWWP85FtFVslRYT27X+DX4uQGC7ZSv7wv/vgiFbOx/5+OY2+neT9kCGMlPO/+ZkBYkyg==
+X-Received: by 2002:a63:fc5f:: with SMTP id r31mr10534755pgk.90.1607148094755;
+        Fri, 04 Dec 2020 22:01:34 -0800 (PST)
+Received: from thinkpad ([2409:4072:648e:8bd1:74b2:a4d8:e3fe:225b])
+        by smtp.gmail.com with ESMTPSA id h31sm5507670pgh.42.2020.12.04.22.01.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 22:01:34 -0800 (PST)
+Date:   Sat, 5 Dec 2020 11:31:25 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 16/18] arm: dts: owl-s500-roseapplepi: Add uSD support
+Message-ID: <20201205055901.GA3730@thinkpad>
+References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
+ <cf62e297a18518d54dd887a0bc531b18a50da5c5.1605823502.git.cristian.ciocaltea@gmail.com>
+ <20201128073851.GC3077@thinkpad>
+ <20201129183532.GA748744@BV030612LT>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201129183532.GA748744@BV030612LT>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hailong Liu <liu.hailong6@zte.com.cn>
+On Sun, Nov 29, 2020 at 08:35:32PM +0200, Cristian Ciocaltea wrote:
+> On Sat, Nov 28, 2020 at 01:08:51PM +0530, Manivannan Sadhasivam wrote:
+> > On Fri, Nov 20, 2020 at 01:56:10AM +0200, Cristian Ciocaltea wrote:
+> > > Add uSD support for RoseapplePi SBC using a fixed regulator as a
+> > > temporary solution until PMIC support becomes available.
+> > > 
+> > > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > > ---
+> > >  arch/arm/boot/dts/owl-s500-roseapplepi.dts | 50 ++++++++++++++++++++++
+> > >  1 file changed, 50 insertions(+)
+> > > 
+> > > diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+> > > index 800edf5d2d12..fe9ae3619422 100644
+> > > --- a/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+> > > +++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+> > > @@ -14,6 +14,7 @@ / {
+> > >  	model = "Roseapple Pi";
+> > >  
+> > >  	aliases {
+> > > +		mmc0 = &mmc0;
+> > >  		serial2 = &uart2;
+> > >  	};
+> > >  
+> > > @@ -25,6 +26,55 @@ memory@0 {
+> > >  		device_type = "memory";
+> > >  		reg = <0x0 0x80000000>; /* 2GB */
+> > >  	};
+> > > +
+> > > +	/* Fixed regulator used in the absence of PMIC */
+> > > +	sd_vcc: sd-vcc {
+> > 
+> > Is this the exact name in the schematics?
+> 
+> Yes, it is referred as "SD_VCC". Once the support for the ATC260x PMIC
+> will be available, the following item will be present in the regulators
+> list:
+> 
+>   sd_vcc: switchldo1 {
+> 	regulator-name = "SD_VCC";
+> 	regulator-min-microvolt = <3000000>;
+> 	regulator-max-microvolt = <3300000>;
+> 	regulator-always-on;
+> 	regulator-boot-on;
+>   };
 
-The rq->rd->span of a cpu in a system with isolated cpus splited into two
-different parts: one is for isolated cpus, another for non-isolated cpus.
+okay, looks fine to me.
 
-When CONFIG_RT_GROUP_SCHED enabled, the handler of sched_rt_period_timer
-updates rt_time and rt_runtime for every cpus in rq(this_cpu)->rd->span.
+Thanks,
+Mani
 
-It means that other parts cpus out of this_cpu's rd->span will be missed
-by sched_rt_period_timer handler, when CONFIG_RT_GROUP_SCHED enabled and
-isolated cpus presents in system.
-
-E.g problem will be triggered as follows on my 8 cores machine:
-1 enable  CONFIG_RT_GROUP_SCHED=y, and boot kernel with command-line
-  "isolcpus=4-7"
-2 create a child group and init it:
-  mount -t cgroup -o cpu cpu /sys/fs/cgruop
-  mkdir /sys/fs/cgroup/child0
-  echo 950000 > /sys/fs/cgroup/child0/cpu.rt_runtime_us
-3 run two rt-loop tasks, assume their pids are $pid1 and $pid2
-4 affinity a rt task to the isolated cpu-sets
-  taskset -p 0xf0 $pid2
-5 add tasks created above into child cpu-group
-  echo $pid1 > /sys/fs/cgroup/child0/tasks
-  echo $pid2 > /sys/fs/cgroup/child0/tasks
-6 check wat happened:
-  "top": one of the task will fail to has cpu usage, but its stat is "R"
-  "kill": the task on the problem rt_rq can't be killed
-
-This patch will fix this problem.
-
-Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
----
- kernel/sched/rt.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 49ec096a8..c5c39695c 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -855,19 +855,10 @@ static int do_sched_rt_period_timer(struct rt_bandwidth *rt_b, int overrun)
- 	int i, idle = 1, throttled = 0;
- 	const struct cpumask *span;
- 
--	span = sched_rt_period_mask();
- #ifdef CONFIG_RT_GROUP_SCHED
--	/*
--	 * FIXME: isolated CPUs should really leave the root task group,
--	 * whether they are isolcpus or were isolated via cpusets, lest
--	 * the timer run on a CPU which does not service all runqueues,
--	 * potentially leaving other CPUs indefinitely throttled.  If
--	 * isolation is really required, the user will turn the throttle
--	 * off to kill the perturbations it causes anyway.  Meanwhile,
--	 * this maintains functionality for boot and/or troubleshooting.
--	 */
--	if (rt_b == &root_task_group.rt_bandwidth)
--		span = cpu_online_mask;
-+	span = cpu_online_mask;
-+#else
-+	span = sched_rt_period_mask();
- #endif
- 	for_each_cpu(i, span) {
- 		int enqueue = 0;
--- 
-2.17.1
-
-
+> 
+> Thanks,
+> Cristi
+> 
+> > Thanks,
+> > Mani
+> > 
+> > > +		compatible = "regulator-fixed";
+> > > +		regulator-name = "fixed-3.1V";
+> > > +		regulator-min-microvolt = <3100000>;
+> > > +		regulator-max-microvolt = <3100000>;
+> > > +		regulator-always-on;
+> > > +	};
+> > > +};
+> > > +
+> > > +&pinctrl {
+> > > +	mmc0_pins: mmc0-pins {
+> > > +		pinmux {
+> > > +			groups = "sd0_d0_mfp", "sd0_d1_mfp", "sd0_d2_d3_mfp",
+> > > +				 "sd0_cmd_mfp", "sd0_clk_mfp";
+> > > +			function = "sd0";
+> > > +		};
+> > > +
+> > > +		drv-pinconf {
+> > > +			groups = "sd0_d0_d3_drv", "sd0_cmd_drv", "sd0_clk_drv";
+> > > +			drive-strength = <8>;
+> > > +		};
+> > > +
+> > > +		bias0-pinconf {
+> > > +			pins = "sd0_d0", "sd0_d1", "sd0_d2",
+> > > +			       "sd0_d3", "sd0_cmd";
+> > > +			bias-pull-up;
+> > > +		};
+> > > +
+> > > +		bias1-pinconf {
+> > > +			pins = "sd0_clk";
+> > > +			bias-pull-down;
+> > > +		};
+> > > +	};
+> > > +};
+> > > +
+> > > +/* uSD */
+> > > +&mmc0 {
+> > > +	status = "okay";
+> > > +	pinctrl-names = "default";
+> > > +	pinctrl-0 = <&mmc0_pins>;
+> > > +	no-sdio;
+> > > +	no-mmc;
+> > > +	no-1-8-v;
+> > > +	cd-gpios = <&pinctrl 117 GPIO_ACTIVE_LOW>;
+> > > +	bus-width = <4>;
+> > > +	vmmc-supply = <&sd_vcc>;
+> > > +	vqmmc-supply = <&sd_vcc>;
+> > >  };
+> > >  
+> > >  &twd_timer {
+> > > -- 
+> > > 2.29.2
+> > > 
