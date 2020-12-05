@@ -2,189 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355342CFD73
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 825CB2CFD6D
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbgLESdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:33:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
+        id S1726429AbgLESdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:33:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728129AbgLES2L (ORCPT
+        with ESMTP id S1726330AbgLES2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:28:11 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F45AC02B8F4;
-        Sat,  5 Dec 2020 07:28:21 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id v143so8463721qkb.2;
-        Sat, 05 Dec 2020 07:28:21 -0800 (PST)
+        Sat, 5 Dec 2020 13:28:41 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E6AC02B8DB
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 07:30:02 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id x15so4782017pll.2
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 07:30:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=p27tFArilkZQWJdOTlf5pr+2+ufCtLUXxx/1mCNOCZE=;
-        b=hDqspYp+RpmFlHKhRJ0iKCqouC3FQC8x9de7IcsA6Xzh9PLeAhRZAFLvfRSGWOrGLL
-         1YBstsLwavL2oX40C1X5WbhiYx04K4eKvhyZl47O63+8T8cML3jxc1BrkESokJmns4EV
-         RSgoanu3FYwdBF2XgjWRtqTItVKAdccf5T6h38Bw7Q8l9PM5eyfxylMFBuRBHezxG3k/
-         rsRJPAOC+ZGEeRzs98WPKYOIbkqFT4YWi+asOrtBSUPg6+018MTB1LjiU+iI5zCqHbSb
-         RyZ0IsgN7szcIdBeu//tv3yCus/wniSC2WtAZflhqjPdhcwqZkE2qtySFDNzw2Y8M/Tm
-         XGtg==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c3OEJmdZ1/qP5ONZzc9GH1i60y0LaLFR+aOV9VrM68E=;
+        b=RFv6oCVnKXhcQR6IicNUWbPC4/Z5AsfOqXI3YNlh0pvXL5969ZbwsIOX94yL0AoG5N
+         4H10HQ069aT2lPyegmLL9y5xGugUcMz06aS1WZ3pdq89Imi81tAKFJpyZMgUK9SVBJCa
+         A634SvsUCe2U04cVJ+T8KfpvS62xfjKViRM/4Ex9qGjkVQlmHy6yE9R+xdzcuFSxO7nB
+         nryctbZ+1QmIx2ZL86cf9GfD5A29hVns8f5lrEAC8Jfaer82Zra6uPWc36qK5KpPh9/6
+         /jaQaMuS5xxE4bgF0K1DkKYHgRSYmK92cWC3rUAmSittguNyEDioQaexShy1L+BVY1Zv
+         1emQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=p27tFArilkZQWJdOTlf5pr+2+ufCtLUXxx/1mCNOCZE=;
-        b=mnxnZkiCoyv80KOszGr26r2suIOLqIFKIObi7B0SyuugCBCnYJaRrgUaANQG5XsLeU
-         Vf9/wE2NvgwLhous93iPFYizw/Vw40O5FtuMb+DeQDLDCx04TagKEMr7Gm1bb31twJtG
-         Dt8Hk9XntV4R+OoTXRYZggGAw18kYEGP4J5EVOuZB2QYLK/1p3B39nH4n0N0UEmMaYz3
-         7JQM1+Zac2O5aUsd81MsTf9oPTOuENeKLq5txyfHETeA1dzhY/yAiqo3aqF1Trmckeqo
-         rOHJ31qODsHPH77xghH+PL7fZRY+QkhB+xrjldkoV0BBYtn3ZQ0gS5/E9iIBNqTQQdwf
-         +32g==
-X-Gm-Message-State: AOAM532Gg02GY4j/SA1lxlsTktPfOUjCcNwpMzyIfp3OcjiMahzPTsPu
-        LYlRoMSUBv2+oI0Z4Q+eJts=
-X-Google-Smtp-Source: ABdhPJyS3Aw08iF/Hfmw/pps+0TGaXcOHPxy9f3DhL1XFmpMOenttZapYx0Ys2zJtivOkU0WM+sd5Q==
-X-Received: by 2002:a37:9f4a:: with SMTP id i71mr1841817qke.480.1607182100064;
-        Sat, 05 Dec 2020 07:28:20 -0800 (PST)
-Received: from localhost.localdomain ([198.52.185.246])
-        by smtp.gmail.com with ESMTPSA id o16sm9008554qkg.27.2020.12.05.07.28.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Dec 2020 07:28:19 -0800 (PST)
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
-To:     Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net v1 2/2] net: dsa: microchip: improve port count comments
-Date:   Sat,  5 Dec 2020 10:28:14 -0500
-Message-Id: <20201205152814.7867-2-TheSven73@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201205152814.7867-1-TheSven73@gmail.com>
-References: <20201205152814.7867-1-TheSven73@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c3OEJmdZ1/qP5ONZzc9GH1i60y0LaLFR+aOV9VrM68E=;
+        b=jVrkkCGRQ8Nnyuug3UZLr92xXnRvsEPobbTjLCLDXPm4X1YkjKzKHJUO0+ALkngXJL
+         wnUO23/RplCpHxxdx7Wa9L7i1xH8UihsC2suwiP2JQbR0pnuBdJ0BHihTnmtvQZN4Ax1
+         TVhQ7RnEeLHXNccZRk0u94ZANjx0hExrcioaZ2pV8QbTcYF2ERADOJnnW9ruJH56Mq45
+         ULF0rygxIMHqwf+gkAXu0mDk+bPmZTzaJBOTBFxLwX0lJ9CLAJ0Zfrg9inj/x8t2/DpV
+         LthluTCpLb5OC59qDabTAJTRKzVL+z0SCYIVpbHXmHIUeinEbPbmv7dgoLpDWe1svznM
+         SPNA==
+X-Gm-Message-State: AOAM533KERhtGPypkFdbCvQYJJQ5Jk9IWMM/dFSaxa9vKWLx/RvP90PF
+        XKTgufubf/NMr5qnlCmqnPlVKyfKN9t3miuAvKB5YQ==
+X-Google-Smtp-Source: ABdhPJzCfYIR8zNekwULgYedfmRzJ6EdPamFbkDT+7O9rY/XKHDu8JVu3tJC5a/COi5onrzsJ8EhaKY+0w0A1Nu98rU=
+X-Received: by 2002:a17:90a:ba88:: with SMTP id t8mr8959793pjr.229.1607182202264;
+ Sat, 05 Dec 2020 07:30:02 -0800 (PST)
+MIME-Version: 1.0
+References: <20201205130224.81607-1-songmuchun@bytedance.com>
+ <20201205130224.81607-6-songmuchun@bytedance.com> <X8uU6ODzteuBY9pf@kroah.com>
+In-Reply-To: <X8uU6ODzteuBY9pf@kroah.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sat, 5 Dec 2020 23:29:26 +0800
+Message-ID: <CAMZfGtWjumNV4hu-Qv8Z+WoS-EmyhvQd1qsaoS1quvQCyczT=g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 5/9] mm: memcontrol: convert NR_FILE_THPS
+ account to pages
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     rafael@kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
+        Roman Gushchin <guro@fb.com>, Mike Rapoport <rppt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        peterx@redhat.com, krisman@collabora.com,
+        Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
+        Marco Elver <elver@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Van Asbroeck <thesven73@gmail.com>
+On Sat, Dec 5, 2020 at 10:09 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Sat, Dec 05, 2020 at 09:02:20PM +0800, Muchun Song wrote:
+> > Converrt NR_FILE_THPS account to pages.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  drivers/base/node.c | 3 +--
+> >  fs/proc/meminfo.c   | 2 +-
+> >  mm/filemap.c        | 2 +-
+> >  mm/huge_memory.c    | 3 ++-
+> >  mm/khugepaged.c     | 2 +-
+> >  mm/memcontrol.c     | 5 ++---
+> >  6 files changed, 8 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/drivers/base/node.c b/drivers/base/node.c
+> > index 05c369e93e16..f6a9521bbcf8 100644
+> > --- a/drivers/base/node.c
+> > +++ b/drivers/base/node.c
+> > @@ -466,8 +466,7 @@ static ssize_t node_read_meminfo(struct device *dev,
+> >                                   HPAGE_PMD_NR),
+> >                            nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED) *
+> >                                   HPAGE_PMD_NR),
+> > -                          nid, K(node_page_state(pgdat, NR_FILE_THPS) *
+> > -                                 HPAGE_PMD_NR),
+> > +                          nid, K(node_page_state(pgdat, NR_FILE_THPS)),
+>
+> Again, is this changing a user-visable value?
+>
 
-Port counts in microchip dsa drivers can be quite confusing:
-on the ksz8795, ksz_chip_data->port_cnt excludes the cpu port,
-yet on the ksz9477, it includes the cpu port.
+Of course not.
 
-Add comments to document this situation explicitly.
+In the previous, the NR_FILE_THPS account is like below:
 
-Fixes: 912aae27c6af ("net: dsa: microchip: really look for phy-mode in port nodes")
-Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
----
+    __mod_lruvec_page_state(page, NR_FILE_THPS, 1);
 
-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git # 905b2032fa42
+With this patch, it is:
 
-To: Woojung Huh <woojung.huh@microchip.com>
-To: Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-To: Andrew Lunn <andrew@lunn.ch>
-To: Vivien Didelot <vivien.didelot@gmail.com>
-To: Florian Fainelli <f.fainelli@gmail.com>
-To: Vladimir Oltean <olteanv@gmail.com>
-To: "David S. Miller" <davem@davemloft.net>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Helmut Grohne <helmut.grohne@intenta.de>
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+    __mod_lruvec_page_state(page, NR_FILE_THPS, HPAGE_PMD_NR);
 
- drivers/net/dsa/microchip/ksz8795.c | 12 +++++++++---
- drivers/net/dsa/microchip/ksz9477.c | 16 ++++++++++++----
- 2 files changed, 21 insertions(+), 7 deletions(-)
+So the result is not changed from the view of user space.
 
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index f5779e152377..99183347053f 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -1190,7 +1190,9 @@ static const struct ksz_chip_data ksz8795_switch_chips[] = {
- 		.num_alus = 0,
- 		.num_statics = 8,
- 		.cpu_ports = 0x10,	/* can be configured as cpu port */
--		.port_cnt = 4,		/* total physical port count */
-+		.port_cnt = 4,		/* total physical port count, excluding
-+					 * the cpu port
-+					 */
- 	},
- 	{
- 		.chip_id = 0x8794,
-@@ -1199,7 +1201,9 @@ static const struct ksz_chip_data ksz8795_switch_chips[] = {
- 		.num_alus = 0,
- 		.num_statics = 8,
- 		.cpu_ports = 0x10,	/* can be configured as cpu port */
--		.port_cnt = 3,		/* total physical port count */
-+		.port_cnt = 3,		/* total physical port count, excluding
-+					 * the cpu port
-+					 */
- 	},
- 	{
- 		.chip_id = 0x8765,
-@@ -1208,7 +1212,9 @@ static const struct ksz_chip_data ksz8795_switch_chips[] = {
- 		.num_alus = 0,
- 		.num_statics = 8,
- 		.cpu_ports = 0x10,	/* can be configured as cpu port */
--		.port_cnt = 4,		/* total physical port count */
-+		.port_cnt = 4,		/* total physical port count, excluding
-+					 * the cpu port
-+					 */
- 	},
- };
- 
-diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
-index 2f5506ac7d19..e56122ffd495 100644
---- a/drivers/net/dsa/microchip/ksz9477.c
-+++ b/drivers/net/dsa/microchip/ksz9477.c
-@@ -1482,7 +1482,9 @@ static const struct ksz_chip_data ksz9477_switch_chips[] = {
- 		.num_alus = 4096,
- 		.num_statics = 16,
- 		.cpu_ports = 0x7F,	/* can be configured as cpu port */
--		.port_cnt = 7,		/* total physical port count */
-+		.port_cnt = 7,		/* total physical port count, including
-+					 * the cpu port
-+					 */
- 		.phy_errata_9477 = true,
- 	},
- 	{
-@@ -1492,7 +1494,9 @@ static const struct ksz_chip_data ksz9477_switch_chips[] = {
- 		.num_alus = 4096,
- 		.num_statics = 16,
- 		.cpu_ports = 0x7F,	/* can be configured as cpu port */
--		.port_cnt = 7,		/* total physical port count */
-+		.port_cnt = 7,		/* total physical port count, including
-+					 * the cpu port
-+					 */
- 		.phy_errata_9477 = true,
- 	},
- 	{
-@@ -1502,7 +1506,9 @@ static const struct ksz_chip_data ksz9477_switch_chips[] = {
- 		.num_alus = 4096,
- 		.num_statics = 16,
- 		.cpu_ports = 0x07,	/* can be configured as cpu port */
--		.port_cnt = 3,		/* total port count */
-+		.port_cnt = 3,		/* total physical port count, including
-+					 * the cpu port
-+					 */
- 	},
- 	{
- 		.chip_id = 0x00956700,
-@@ -1511,7 +1517,9 @@ static const struct ksz_chip_data ksz9477_switch_chips[] = {
- 		.num_alus = 4096,
- 		.num_statics = 16,
- 		.cpu_ports = 0x7F,	/* can be configured as cpu port */
--		.port_cnt = 7,		/* total physical port count */
-+		.port_cnt = 7,		/* total physical port count, including
-+					 * the cpu port
-+					 */
- 	},
- };
- 
--- 
-2.17.1
+Thanks.
 
+--
+Yours,
+Muchun
