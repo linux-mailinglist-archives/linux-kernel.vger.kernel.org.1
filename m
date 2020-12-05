@@ -2,202 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E27A2CFD61
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE862CFD3A
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729292AbgLEScY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:32:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727178AbgLES3P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:29:15 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D60C0613D1;
-        Sat,  5 Dec 2020 10:21:03 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id z5so9228418iob.11;
-        Sat, 05 Dec 2020 10:21:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZLvqFTb5/J4M6JQB9XxMDARCyWF1a0adeRBulBpK/K4=;
-        b=eNyYwrXbW4u74Fe8Nl8OeoT1Za2ijOz1r7tODG3w0Kv4bbP6DsEI/EY98/Nw/tW2Ch
-         4OPxR/busTL4VDAtly0hpnFgVd6eWdCzDOj126PBMM7GikeURwshOisM/dtFwvwpL8AU
-         zErEwdoMrVqrAw70WlV5IFJWqxu2Lvv0hEPQN+EY+1RSWpDpdLv4m9pILSZsDfnaFk0i
-         PRsuYdUimpLBCjmXJ9XXUQ0zvheXgkm6FCUzPCKKhTR5ow+KvsFEPEpEmLpgTDZTJ9vp
-         /Ok8gSGKEGTTogh39QhXVJBOWiDCdat0lSEHptYbWtHWcjjhuo1g96WeLMQ0yQOGBOXz
-         RWuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZLvqFTb5/J4M6JQB9XxMDARCyWF1a0adeRBulBpK/K4=;
-        b=PPRicMeO5TLn0bNelHVRfyBYhYGOd3F0i4Szo75k2f5aPMlLYnUf1w+jKs9/obRSqu
-         8jZ3hH3G3HeIPGkjgieQnftKlKhDVaKEu9M8F2gUL2muDB+biReRtHH2ZxBaGg4gCFB2
-         +lxyQ/y2VD7yygc2hGfmSHCYfPlOkbtU7/SLSpvSu0wZv2h/oUb5XDNfN8qVKTvnyJPT
-         BsaS/Ej7pM0OVlsIeYX+iFBZ1Rm9yJl7vqx06YIRXj2d4W7LqXa/bw7lKvdad8/mvZGY
-         oZ+UDhqim4Y3fSGUIktv6OvaTPszcguLj92LjtVhkQLOvIxlrEXXfCzOpCQjnA1xG8C2
-         JRRA==
-X-Gm-Message-State: AOAM531VmAwchsyB56aRnZ8aAMSdLulYPXVPyMK9kPKMsQVAMqETlZ6r
-        jxzLSbD3iR5xGOWwNxKdYYmLB5rJHmGyJfXUIyE=
-X-Google-Smtp-Source: ABdhPJwa3IjxBS+tIstAWV3UyopVOQ4GyFlTv83vA+hsWm4Cat2zaqt8u19FoRVkA0QHndrOsIustXeEX0mEQ4V6Nlw=
-X-Received: by 2002:a02:9f19:: with SMTP id z25mr9238088jal.30.1607192462871;
- Sat, 05 Dec 2020 10:21:02 -0800 (PST)
+        id S1728590AbgLES2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:28:30 -0500
+Received: from mail-mw2nam12on2129.outbound.protection.outlook.com ([40.107.244.129]:23680
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726037AbgLES20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 13:28:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mugOmE9AvIo0B/BJUoGdWqvNeDff/VZ4xRv4c8V61ZZY+Ej9ZZk8sMGDdha3iD1nsMbaOTSlzjH7SJWhB2HJjUFDGswGRBVt/RpiicPAo7Z96w47PvVslq5/E8YOlgTofSb0I41jEcuUuHreyjXwdLWvmQbKVPKy1GJ7co1po4w6l+ttuGNtGXtswdkQcjtUhno7JTJvFAhBos3KZspJ5MVxiA3h3RiwTD9ujCvtc5eo+saVJq5DWGVQeo3K1Yg/dAvPCm4FSED5xwCiskgfpfm6Mlz52YRLhLLcWooV28hoJ8S6a+gXVLsV8OU2Q4TuRJy5HNh5lru2dwpWAwl8Gg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SPVVlApDI+Jy3Ftyt3NLfqRa2eDWace+zO6dC3DNsHI=;
+ b=AZ0/BlCndoAZ3wyG3CUoibuC1ojrj5dTtKHol5akaF8Gpcou5nd5b0RTNHSAgm50sDUGptk5NcYqMplVPrYevNXCQ/K7HdKtp6dpUBNfDBfdz5x0QrhhqqBfh3rjj8ekkXksyoEhy1vRQ95boPaCg0KapaZh+djUL/n/RUiobD4drWK+IVcnNivmny6Lu3dde5lWkq+onLhhZnBCahIDbWRUs+EsKKi8/THJltMO9+QxhD7Zj8P1vQ/GHTtxeo1WZ72PFHVlBTJ8HEHk807oL1bgen0xxh/QFN7ws5x4WtCTgkHaAJX7aCyvPO4xsg+/jJWgAdlBfl5gqQ3pX/EJSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SPVVlApDI+Jy3Ftyt3NLfqRa2eDWace+zO6dC3DNsHI=;
+ b=KiOaFq3aX+dkDeeQmaiMxhZgimT4Av5WjTWG/btLYtUUG9DP72v6C+M7g5970A1DKE+4mzRF040x5U4urmIlSSEu5BlHjI+Mv/k2pok8hGGaQYEB8oq7K9LBkMTLRXy07TXFgGinU/cv0ivRBjgL4jITX+pE/ym8jEQX5In69ag=
+Received: from (2603:10b6:302:a::16) by
+ MW4PR21MB1889.namprd21.prod.outlook.com (2603:10b6:303:77::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3654.11; Sat, 5 Dec 2020 18:27:38 +0000
+Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::b8f6:e748:cdf2:1922]) by MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::b8f6:e748:cdf2:1922%8]) with mapi id 15.20.3654.005; Sat, 5 Dec 2020
+ 18:27:38 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Stefan Eschenbacher <stefan.eschenbacher@fau.de>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kernel@i4.cs.fau.de" <linux-kernel@i4.cs.fau.de>,
+        Max Stolze <max.stolze@fau.de>
+Subject: RE: [PATCH 0/3] drivers/hv: make max_num_channels_supported
+ configurable
+Thread-Topic: [PATCH 0/3] drivers/hv: make max_num_channels_supported
+ configurable
+Thread-Index: AQHWyy4HqEchZIoy5kOEspja/IM9V6nozdYg
+Date:   Sat, 5 Dec 2020 18:27:38 +0000
+Message-ID: <MW2PR2101MB1052DC9416ABC1ECFE25E38DD7F01@MW2PR2101MB1052.namprd21.prod.outlook.com>
+References: <20201205172650.2290-1-stefan.eschenbacher@fau.de>
+In-Reply-To: <20201205172650.2290-1-stefan.eschenbacher@fau.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-05T18:27:36Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=2fba6f91-7a32-4e79-a432-c3826b079fbc;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: fau.de; dkim=none (message not signed)
+ header.d=none;fau.de; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: e9a1ecca-0809-4db8-b805-08d8994b71f7
+x-ms-traffictypediagnostic: MW4PR21MB1889:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW4PR21MB18895F1916594DF9CC7C027ED7F01@MW4PR21MB1889.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AUj9tDQk8mlyWTIEIZPbTIR6C2tcHzdpjREzab5hOwmxNKxkW0HisKaMHKY9X/1DqIV0wb84AfPdUWx5FNT3q1N+zSUpFGwGO+66IDoEtRTESRUfH1Cm/Og+EGkFQUH3EcSZUmIumT4PHpio/hwPGd87GmL/ACNs3KrxSyLKJbdkEqYNKJVuxrarq1mnQvCPXUXxFUp0Dd+o3OmOttA13+MVgShXRx80svR/+1JXRLYvYuE5I1K6Lk6x/GgdrS+/G4/XsrXvoqJC15imb38qRuJ7CeinLFAJrRRA1D8zPM8fW5bGMDk5fF5DTn3BwAoj
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(136003)(39860400002)(376002)(8676002)(8936002)(33656002)(110136005)(4326008)(55016002)(10290500003)(9686003)(86362001)(66476007)(64756008)(76116006)(66556008)(66946007)(66446008)(52536014)(82950400001)(83380400001)(7696005)(6506007)(26005)(186003)(54906003)(316002)(5660300002)(2906002)(82960400001)(71200400001)(478600001)(8990500004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?+d9Pxe1KEp5qHDPfUmeezGECw6HskVwaJtp3M6qI3jPCslrInVSwBYxTT3KZ?=
+ =?us-ascii?Q?2hnXoCg3pCDPIpQ6+8thLyLVxO6um52LUZ1saUCcjcXOsYPy/9zWUR2Kb1I/?=
+ =?us-ascii?Q?yP2Lr3m9lfNLW1tcj8p/MfHguapbMoXseVgvZrYvTXhQHqJt+ZyzafGScxD0?=
+ =?us-ascii?Q?j4V26VGNmA69v1Q9RPnKTmlqhnL3BZzWIj2ti8j4dgGay1I2KxSmBsQxpW/G?=
+ =?us-ascii?Q?cPHgcEJlBHsGlKQrgcrcJkp2iiyvZXZ7i9rIDTGsHguMS3UmYxR1Fv4gCR7M?=
+ =?us-ascii?Q?3+HnKoX9lFuTDZpoSGq8GY+Nb6p7wP6gRMF88DVusSgvVg5deutytDN/p/MP?=
+ =?us-ascii?Q?y/q3Vc6pnCpQNOmClCIDY/swiHUNuPbVu4W7KbYxNf5hWauuvru6A093/cRt?=
+ =?us-ascii?Q?uLtH/0Ue0K0lIIZA/8mvZ8XXIKfdfTeAEmd/HVeC3zCAuHskMv0Ewn3z+qg+?=
+ =?us-ascii?Q?rriF8fK4vhLz26glQv2U2mNhxnFufOnvb9VLJnQKj++U4lpQpA+spvigXQUG?=
+ =?us-ascii?Q?8hcMhPQ1BOdkun2t9bZYMShUO3B28XejSKAqUsrrafqFxJyr6lIjFxwjv69o?=
+ =?us-ascii?Q?LjLjDb6icqv0DHhjs4QKWnd1g1+rh0UawPJmD5Y+I9lW4lCuRE+eGV66wGVI?=
+ =?us-ascii?Q?wFoP/52LGOgJO1oGKnfHFIwQ8FyaHpjV8iQejoVbzemT6z24X1EpJTKK+Kys?=
+ =?us-ascii?Q?JoDUqeS4RYMW7F65E6U5oHPyYvqVPAbIxcHvHkPt0eBBNmX92h9h87mrSuX8?=
+ =?us-ascii?Q?TEbeyhHx7Gy8hkdsTO2H7LRbk8P4/rPyV3l42JVEA+XWPzUedP+AB1YHXH4z?=
+ =?us-ascii?Q?TvIhZgslGhyIb4pyB/IH9iAr9tI2afiU/YWyT+kv1L/hkU5/w4VK1zxWzJ+8?=
+ =?us-ascii?Q?zC5JaWXgTplV24uOQ0GeCtx7GMKdcTbPgGn3o52mfCXaK+kspIr/SZdFWUuM?=
+ =?us-ascii?Q?Z4l/n/4X3a05mz+glzNzNNCwLVrL3n2e3wwjYmK3peA=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
- <20201202094717.GX4077@smile.fi.intel.com> <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
- <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
- <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
- <CAM7-yPRBPP6SFzdmwWF5Y99g+aWcp=OY9Uvp-5h1MSDPmsORNw@mail.gmail.com>
- <CAAH8bW-+XnNsd9p3xZ1utmyY24gaBa0ko4tngBii4T+2cMkcYg@mail.gmail.com>
- <CAM7-yPQCWj6rOyLEgOqF3HGkFV1WKtqyVhEtDbS3HW=2A-HuBA@mail.gmail.com>
- <CAM7-yPTtiVnUztE=xpNYgRcZTGd1aX_V9ZHd=2YZYc1uQNBXtw@mail.gmail.com>
- <a0cc0d2e-9c55-8546-f070-26feed5de37f@rasmusvillemoes.dk> <CAM7-yPQrvYUwX-cbgpzhomCTFEi9sQ9iGuLNcL-Fsj7XZ0knhw@mail.gmail.com>
- <CAAH8bW9=J_now4SU=-WzvBOa=ftStgGVpspyw_g7oafbuNHNHQ@mail.gmail.com> <65bcccd3-db04-8056-e57c-0976a1eccfd5@rasmusvillemoes.dk>
-In-Reply-To: <65bcccd3-db04-8056-e57c-0976a1eccfd5@rasmusvillemoes.dk>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Sat, 5 Dec 2020 10:20:51 -0800
-Message-ID: <CAAH8bW8vToBZ80QHgjybakwUuvFyPfpcismaLEjz2hAOFG3HrA@mail.gmail.com>
-Subject: Re:
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Yun Levi <ppbuk5246@gmail.com>, dushistov@mail.ru,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
-        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1052.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e9a1ecca-0809-4db8-b805-08d8994b71f7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2020 18:27:38.3923
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nNsTzK+ntDEfYPoKdjTmz7VrRnIajP91dfe+C6RJ8AYQ/GBAd1MzxnhEWkaEdOwoeVxewoiL0290LD62/tZfOw/OObs44NzE99BcfZ2TYkQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1889
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 5, 2020 at 3:10 AM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> On 03/12/2020 19.46, Yury Norov wrote:
->
-> > I would prefer to avoid changing the find*bit() semantics. As for now,
-> > if any of find_*_bit()
-> > finds nothing, it returns the size of the bitmap it was passed.
->
-> Yeah, we should actually try to fix that, it causes bad code generation.
-> It's hard, because callers of course do that "if ret == size" check. But
-> it's really silly that something like find_first_bit needs to do that
-> "min(i*BPL + __ffs(word), size)" - the caller does a comparison anyway,
-> that comparison might as well be "ret >= size" rather than "ret ==
-> size", and then we could get rid of that branch (which min() necessarily
-> becomes) at the end of find_next_bit.
+From: Stefan Eschenbacher <stefan.eschenbacher@fau.de>
+>=20
+> According to the TODO comment in hyperv_vmbus.h the value in macro
+> MAX_NUM_CHANNELS_SUPPORTED should be configurable. The first patch
+> accomplishes that by introducting uint max_num_channels_supported as
+> module parameter.
+> Also macro MAX_NUM_CHANNELS_SUPPORTED_DEFAULT is introduced with
+> value 256, which is the currently used macro value.
+> MAX_NUM_CHANNELS_SUPPORTED was found and replaced in two locations.
+>=20
+> During module initialization sanity checks are applied which will result
+> in EINVAL or ERANGE if the given value is no multiple of 32 or larger tha=
+n
+> MAX_NUM_CHANNELS.
+>=20
+> While testing, we found a misleading typo in the comment for the macro
+> MAX_NUM_CHANNELS which is fixed by the second patch.
+>=20
+> The third patch makes the added default macro configurable by
+> introduction and use of Kconfig parameter HYPERV_VMBUS_DEFAULT_CHANNELS.
+> Default value remains at 256.
+>=20
+> Two notes on these patches:
+> 1) With above patches it is valid to configure max_num_channels_supported
+> and MAX_NUM_CHANNELS_SUPPORTED_DEFAULT as 0. We simply don't know if that
+> is a valid value. Doing so while testing still left us with a working
+> Debian VM in Hyper-V on Windows 10.
+> 2) To set the Kconfig parameter the user currently has to divide the
+> desired default number of channels by 32 and enter the result of that
+> calculation. This way both known constraints we got from the comments in
+> the code are enforced. It feels a bit unintuitive though. We haven't foun=
+d
+> Kconfig options to ensure that the value is a multiple of 32. So if you'd
+> like us to fix that we'd be happy for some input on how to settle it with
+> Kconfig.
+>=20
+> Signed-off-by: Stefan Eschenbacher <stefan.eschenbacher@fau.de>
+> Co-developed-by: Max Stolze <max.stolze@fau.de>
+> Signed-off-by: Max Stolze <max.stolze@fau.de>
+>=20
+> Stefan Eschenbacher (3):
+>   drivers/hv: make max_num_channels_supported configurable
+>   drivers/hv: fix misleading typo in comment
+>   drivers/hv: add default number of vmbus channels to Kconfig
+>=20
+>  drivers/hv/Kconfig        | 13 +++++++++++++
+>  drivers/hv/hyperv_vmbus.h |  8 ++++----
+>  drivers/hv/vmbus_drv.c    | 20 +++++++++++++++++++-
+>  3 files changed, 36 insertions(+), 5 deletions(-)
+>=20
+> --
+> 2.20.1
 
-We didn't do that 5 years ago because it's too invasive and the improvement
-is barely measurable, the difference is 2 instructions (on arm64).e.
-Has something
-changed since that?
+Stefan -- this cover letter email came through, but it doesn't look like
+the individual patch emails did.  So you might want to check your
+patch sending process.
 
-20000000000000000 <find_first_bit_better>:
-   0:   aa0003e3        mov     x3, x0
-   4:   aa0103e0        mov     x0, x1
-   8:   b4000181        cbz     x1, 38 <find_first_bit_better+0x38>
-   c:   f9400064        ldr     x4, [x3]
-  10:   d2800802        mov     x2, #0x40                       // #64
-  14:   91002063        add     x3, x3, #0x8
-  18:   b40000c4        cbz     x4, 30 <find_first_bit_better+0x30>
-  1c:   14000008        b       3c <find_first_bit_better+0x3c>
-  20:   f8408464        ldr     x4, [x3], #8
-  24:   91010045        add     x5, x2, #0x40
-  28:   b50000c4        cbnz    x4, 40 <find_first_bit_better+0x40>
-  2c:   aa0503e2        mov     x2, x5
-  30:   eb00005f        cmp     x2, x0
-  34:   54ffff63        b.cc    20 <find_first_bit_better+0x20>  //
-b.lo, b.ul, b.last
-  38:   d65f03c0        ret
-  3c:   d2800002        mov     x2, #0x0                        // #0
-  40:   dac00084        rbit    x4, x4
-  44:   dac01084        clz     x4, x4
-  48:   8b020080        add     x0, x4, x2
-  4c:   d65f03c0        ret
+Thanks for your interest in this old "TODO" item.  But let me provide some
+additional background.  Starting in Windows 8 and Windows Server 2012,
+Hyper-V revised the mechanism by which channel interrupt notifications
+are made.  The MAX_NUM_CHANNELS_SUPPORTED value is only used
+with Windows 7 and Windows Server 2008 R2, neither of which is officially
+supported any longer.  See the code at the top of vmbus_chan_sched() where
+the VMBus protocol version is checked, and MAX_NUM_CHANNELS_SUPPORTED
+is used only when the protocol version indicates we're running on Windows 7
+(or the equivalent Windows Server 2008 R2).
 
-0000000000000050 <find_first_bit_worse>:
-  50:   aa0003e4        mov     x4, x0
-  54:   aa0103e0        mov     x0, x1
-  58:   b4000181        cbz     x1, 88 <find_first_bit_worse+0x38>
-  5c:   f9400083        ldr     x3, [x4]
-  60:   d2800802        mov     x2, #0x40                       // #64
-  64:   91002084        add     x4, x4, #0x8
-  68:   b40000c3        cbz     x3, 80 <find_first_bit_worse+0x30>
-  6c:   14000008        b       8c <find_first_bit_worse+0x3c>
-  70:   f8408483        ldr     x3, [x4], #8
-  74:   91010045        add     x5, x2, #0x40
-  78:   b50000c3        cbnz    x3, 90 <find_first_bit_worse+0x40>
-  7c:   aa0503e2        mov     x2, x5
-  80:   eb02001f        cmp     x0, x2
-  84:   54ffff68        b.hi    70 <find_first_bit_worse+0x20>  // b.pmore
-  88:   d65f03c0        ret
-  8c:   d2800002        mov     x2, #0x0                        // #0
-  90:   dac00063        rbit    x3, x3
-  94:   dac01063        clz     x3, x3
-  98:   8b020062        add     x2, x3, x2
-  9c:   eb02001f        cmp     x0, x2
-  a0:   9a829000        csel    x0, x0, x2, ls  // ls = plast
-  a4:   d65f03c0        ret
+Because the old mechanism was superseded, making the value configurable
+doesn't have any benefit.   At some point, we will remove this old code pat=
+h
+entirely, including the #define MAX_NUM_CHANNELS_SUPPORTED.  The
+comment with the "TODO" could be removed, but other than that, I don't
+think we want to make these changes.
 
-> I haven't dug very deep into this, but I could also imagine the
-> arch-specific parts of this might become a little easier to do if the
-> semantics were just "if no such bit, return an indeterminate value >=
-> the size".
->
-> > Changing this for
-> > a single function would break the consistency, and may cause problems
-> > for those who
-> > rely on existing behaviour.
->
-> True. But I think it should be possible - I suppose most users are via
-> the iterator macros, which could all be updated at once. Changing ret ==
-> size to ret >= size will still work even if the implementations have not
-> been switched over, so it should be doable.
-
-Since there's no assembler users for it, we can do just:
-#define find_first_bit(bitmap, size)
-min(better_find_first_bit((bitmap), (size)), (size))
-
-... and deprecate find_first_bit.
-
-> > Passing non-positive size to find_*_bit() should produce undefined
-> > behaviour, because we cannot dereference a pointer to the bitmap in
-> > this case; this is most probably a sign of a problem on a caller side
-> > anyways.
->
-> No, the out-of-line bitmap functions should all handle the case of a
-> zero-size bitmap sensibly.
-
-I could be more specific, the behaviour is defined: don't dereference
-the address and return undefined value (which now is always 0).
-
-> Is bitmap full? Yes (all the 0 bits are set).
-> Is bitmap empty? Yes, (none of the 0 bits are set).
-> Find the first bit set (returns 0, there's no such bit)
-
-I can't answer because this object is not a map of bits - there's no room for
-bits inside.
-
-> Etc. The static inlines for small_const_nbits do assume that the pointer
-> can be dereferenced, which is why small_const_nbits was updated to mean
-> 1<=bits<=BITS_PER_LONG rather than just bits<=BITS_PER_LONG.
-
-I don't want to do something like
-
-if (size == 0)
-        return -1;
-
-... because it legitimizes this kind of usage and hides problems on
-callers' side.
-Instead, I'd add WARN_ON(size == 0), but I don't think it's so
-critical to bother with it.
-
-Yury
-
-> Rasmus
+Michael
