@@ -2,242 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 532AA2CFD56
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5ED2CFDA3
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387422AbgLESbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:31:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42124 "EHLO
+        id S1726222AbgLESmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:42:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729033AbgLES3e (ORCPT
+        with ESMTP id S1726629AbgLERic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:29:34 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68EF1C094262
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 05:04:00 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id 131so5736758pfb.9
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 05:04:00 -0800 (PST)
+        Sat, 5 Dec 2020 12:38:32 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D954C094267;
+        Sat,  5 Dec 2020 05:14:24 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id i24so920821edj.8;
+        Sat, 05 Dec 2020 05:14:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zRyHqu7TjhWPvcpqYaxOFrZwdcjevZ28RME9caXsylo=;
-        b=m/rCaxXSUDZQW5kZo+JO83uk75DwwkHyUjCYnCvBEjao+vuJqHqVIEezB6KH3XIyi5
-         Dgg7e7bhqIU+ulk7wSR5kaHrVKRhCTeq0ZeQ1SOdDvnW/krZOG84FMk1XjFSl3Gb5OA/
-         29lrO3IUcLbskByH+gbY2/Gt6L7lOsWGhVy/alHNFwX9S/XI4gcZ2E/GcP+rpwEZk7pn
-         9fjlHjhoMrcAJISDAy3zXTPYLjZDT2GBLcvH/iDzDBn2OVE1zuUonlDXFPhct9Cv9wad
-         UZfE9qtqO5ZyR2285m16+LNjcvQUliBK1kJd2IZDLJzbgOPiMd9PZK0hJlhGTNjo6nwu
-         OwZg==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PSWuLaWp7kbS1P3O0848/H0adnOKzlmdgp1RQ+ybx9E=;
+        b=DfuNWu0nvI/vVGwzISzLSSGehEluoo+f6F2w8cnNEFZ6a5Yg2UrKW+I9A+SOR4/Y9R
+         12c1zdDfc88FUXJ67ZddR7xaLyOd5DnO9WKZYsgYatjFSXOY7moPGweTQCCC7p80LKyc
+         UL+ri58kmYox4rh31GYuaGdK7VI0dfTzYbM09MSxZf4YRJ2wlrzXi/e6bmt2IpQ4zy75
+         X8oOVyrKZkkYE7JVDH39hOY8EZt21JZT8E7i//I1ME5t6VPD6EyHXZ0EIYo3X7YzG3V5
+         ol/hHsJ/T9Jen4j89EYlphWclFthOV+h4p65gd0BgAiuDi6Mis8/o3fhJeqyecOtS966
+         G5nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zRyHqu7TjhWPvcpqYaxOFrZwdcjevZ28RME9caXsylo=;
-        b=sFbj5oNRblI7hani1ZkBm+MyrGe5SLTNzyCKggvgo3tq35AT90i+ukCqc8cz9uLryq
-         lQnWp95CzQc1Bjs9NUaF4PLx05Rs/EuGN0wg4zL1KU3bsBy2OHWqqAeCxjTMZ0ltMQnu
-         gYObL5dv3pZvnYUFUb18QUZ2r1tJUtTb0gCg+olIK8tK6GNI9tpGLzMCnWjs3+lUmsOI
-         uo4JlOph5GcZu3R3FWXx/NnJLqN+BlUf5VRPl+Uce/Zus03bmPVy2/Nkwch1GTrgWpfV
-         lAvhbntz4vSQlv2+UocGndEVtWpX9MIQEPDWqfn1ryZ6eiqpG1SnZ5Eix+yIVRb12/e7
-         pOSQ==
-X-Gm-Message-State: AOAM533LSEX24p8u2w0Z+D5e4EgyrUPnhGswp9YOQQqtMs2giuB+/qbN
-        kN7XZGODLbvhVSQYcME5x3dlZA==
-X-Google-Smtp-Source: ABdhPJxvXcELEy8kd2pseS9d6RB7ZGMaFuIBTwCAKgjIlZ4MBPJrlUVBm5AwpRtLy3Jl9rT7WT0uxA==
-X-Received: by 2002:a05:6a00:13a3:b029:18b:d5d2:196 with SMTP id t35-20020a056a0013a3b029018bd5d20196mr8333119pfg.62.1607173439991;
-        Sat, 05 Dec 2020 05:03:59 -0800 (PST)
-Received: from localhost.bytedance.net ([103.136.220.120])
-        by smtp.gmail.com with ESMTPSA id kb12sm5047790pjb.2.2020.12.05.05.03.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 05 Dec 2020 05:03:59 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
-        akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, hughd@google.com, will@kernel.org,
-        guro@fb.com, rppt@kernel.org, tglx@linutronix.de, esyr@redhat.com,
-        peterx@redhat.com, krisman@collabora.com, surenb@google.com,
-        avagin@openvz.org, elver@google.com, rdunlap@infradead.org,
-        iamjoonsoo.kim@lge.com
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH 9/9] mm: memcontrol: make the slab calculation consistent
-Date:   Sat,  5 Dec 2020 21:02:24 +0800
-Message-Id: <20201205130224.81607-10-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20201205130224.81607-1-songmuchun@bytedance.com>
-References: <20201205130224.81607-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PSWuLaWp7kbS1P3O0848/H0adnOKzlmdgp1RQ+ybx9E=;
+        b=i5rF2LOA+FkTAZ6Rs2rqdZyD3HHTREv+GXKkcS7NwW7Wp/wC+F4hJf0GTTV5Bcs7kl
+         Z+t3ewwdND7YfiGHR2h5/7FluWhZ3FY8lu6BVZxovKv5cw/5RLuU6pMJippaMbdij//5
+         Qw5qSp9CWF5T7/3Xt+cFnA7Thc6r0WP2OGtbAZnTut8YdFoXML+PfyEI9vyXt8FhGMWI
+         C6k4U1DJlBy4GuXQvQJoV8x5ooVgWw8vx2i3f05UL+lhTQxFTDum8Vyza79T6jk5sm09
+         3iXpQpy1ZasbrmLJP3+iZCjqgc6RrpzgKA/3XFEP13es4V8zkVFnWUvVAnWij7MeylTC
+         8ZHA==
+X-Gm-Message-State: AOAM531kSyT4o8GzimPk0fkzBW7VHKMJaSwXdcEZoXnbUA8eLYiQr8p/
+        0OMOWgc6Y8V30FEc0XnXXRxDJhFP0JFRjONW0bgHoc3j458=
+X-Google-Smtp-Source: ABdhPJzRPCNK8jPVIDmwevaTpwC/Fk3APx2o2HatJoY6Xlb9UvfG2YB3rpdT+mX5GocDIz0W4p7xxZX31yeO4wv3RmI=
+X-Received: by 2002:a50:fd18:: with SMTP id i24mr12318534eds.146.1607174062920;
+ Sat, 05 Dec 2020 05:14:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <14754fd95378b78eb9a0a3f8b6bab13f7263c7f1.1606828668.git.stefan@agner.ch>
+In-Reply-To: <14754fd95378b78eb9a0a3f8b6bab13f7263c7f1.1606828668.git.stefan@agner.ch>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sat, 5 Dec 2020 14:14:12 +0100
+Message-ID: <CAFBinCCBQupdpm0CmxZo_VeRyk_Kqwqsf+Q66aaxqcNv3hsA9g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] arm64: dts: meson: g12b: odroid-n2: fix PHY
+ deassert timing requirements
+To:     Stefan Agner <stefan@agner.ch>
+Cc:     khilman@baylibre.com, robh+dt@kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
+        christianshewitt@gmail.com, jian.hu@amlogic.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although the ratio of the slab is one, we also should read the ratio
-from the related memory_stats instead of hard-coding. And the local
-variable of size is already the value of slab_unreclaimable. So we
-do not need to read again.
-
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/memcontrol.c | 112 +++++++++++++++++++++++++++++++++++++-------------------
- 1 file changed, 74 insertions(+), 38 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 48d70c1ad301..0e9e8ca7e770 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1493,48 +1493,75 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
- 
- struct memory_stat {
- 	const char *name;
--	unsigned int ratio;
- 	unsigned int idx;
- };
- 
- static const struct memory_stat memory_stats[] = {
--	{ "anon", PAGE_SIZE, NR_ANON_MAPPED },
--	{ "file", PAGE_SIZE, NR_FILE_PAGES },
--	{ "kernel_stack", 1, NR_KERNEL_STACK_B },
--	{ "percpu", 1, MEMCG_PERCPU_B },
--	{ "sock", PAGE_SIZE, MEMCG_SOCK },
--	{ "shmem", PAGE_SIZE, NR_SHMEM },
--	{ "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
--	{ "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
--	{ "file_writeback", PAGE_SIZE, NR_WRITEBACK },
-+	{ "anon",			NR_ANON_MAPPED			},
-+	{ "file",			NR_FILE_PAGES			},
-+	{ "kernel_stack",		NR_KERNEL_STACK_B		},
-+	{ "percpu",			MEMCG_PERCPU_B			},
-+	{ "sock",			MEMCG_SOCK			},
-+	{ "shmem",			NR_SHMEM			},
-+	{ "file_mapped",		NR_FILE_MAPPED			},
-+	{ "file_dirty",			NR_FILE_DIRTY			},
-+	{ "file_writeback",		NR_WRITEBACK			},
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	{ "anon_thp", PAGE_SIZE, NR_ANON_THPS },
--	{ "file_thp", PAGE_SIZE, NR_FILE_THPS },
--	{ "shmem_thp", PAGE_SIZE, NR_SHMEM_THPS },
-+	{ "anon_thp",			NR_ANON_THPS			},
-+	{ "file_thp",			NR_FILE_THPS			},
-+	{ "shmem_thp",			NR_SHMEM_THPS			},
- #endif
--	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
--	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
--	{ "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
--	{ "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
--	{ "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
--
--	/*
--	 * Note: The slab_reclaimable and slab_unreclaimable must be
--	 * together and slab_reclaimable must be in front.
--	 */
--	{ "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
--	{ "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
-+	{ "inactive_anon",		NR_INACTIVE_ANON		},
-+	{ "active_anon",		NR_ACTIVE_ANON			},
-+	{ "inactive_file",		NR_INACTIVE_FILE		},
-+	{ "active_file",		NR_ACTIVE_FILE			},
-+	{ "unevictable",		NR_UNEVICTABLE			},
-+	{ "slab_reclaimable",		NR_SLAB_RECLAIMABLE_B		},
-+	{ "slab_unreclaimable",		NR_SLAB_UNRECLAIMABLE_B		},
- 
- 	/* The memory events */
--	{ "workingset_refault_anon", 1, WORKINGSET_REFAULT_ANON },
--	{ "workingset_refault_file", 1, WORKINGSET_REFAULT_FILE },
--	{ "workingset_activate_anon", 1, WORKINGSET_ACTIVATE_ANON },
--	{ "workingset_activate_file", 1, WORKINGSET_ACTIVATE_FILE },
--	{ "workingset_restore_anon", 1, WORKINGSET_RESTORE_ANON },
--	{ "workingset_restore_file", 1, WORKINGSET_RESTORE_FILE },
--	{ "workingset_nodereclaim", 1, WORKINGSET_NODERECLAIM },
-+	{ "workingset_refault_anon",	WORKINGSET_REFAULT_ANON		},
-+	{ "workingset_refault_file",	WORKINGSET_REFAULT_FILE		},
-+	{ "workingset_activate_anon",	WORKINGSET_ACTIVATE_ANON	},
-+	{ "workingset_activate_file",	WORKINGSET_ACTIVATE_FILE	},
-+	{ "workingset_restore_anon",	WORKINGSET_RESTORE_ANON		},
-+	{ "workingset_restore_file",	WORKINGSET_RESTORE_FILE		},
-+	{ "workingset_nodereclaim",	WORKINGSET_NODERECLAIM		},
- };
- 
-+/* Translate stat items to the correct unit for memory.stat output */
-+static int memcg_page_state_unit(int item)
-+{
-+	int unit;
-+
-+	switch (item) {
-+	case NR_SLAB_RECLAIMABLE_B:
-+	case NR_SLAB_UNRECLAIMABLE_B:
-+	case WORKINGSET_REFAULT_ANON:
-+	case WORKINGSET_REFAULT_FILE:
-+	case WORKINGSET_ACTIVATE_ANON:
-+	case WORKINGSET_ACTIVATE_FILE:
-+	case WORKINGSET_RESTORE_ANON:
-+	case WORKINGSET_RESTORE_FILE:
-+	case WORKINGSET_NODERECLAIM:
-+	case MEMCG_PERCPU_B:
-+	case NR_KERNEL_STACK_B:
-+		unit = 1;
-+		break;
-+	default:
-+		unit = PAGE_SIZE;
-+		break;
-+	}
-+
-+	return unit;
-+}
-+
-+static inline unsigned long memcg_page_state_output(struct mem_cgroup *memcg,
-+						    int item)
-+{
-+	return memcg_page_state(memcg, item) * memcg_page_state_unit(item);
-+}
-+
- static char *memory_stat_format(struct mem_cgroup *memcg)
- {
- 	struct seq_buf s;
-@@ -1558,13 +1585,16 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		u64 size;
- 
--		size = memcg_page_state(memcg, memory_stats[i].idx);
--		size *= memory_stats[i].ratio;
-+		size = memcg_page_state_output(memcg, memory_stats[i].idx);
- 		seq_buf_printf(&s, "%s %llu\n", memory_stats[i].name, size);
- 
-+		/*
-+		 * We are printing reclaimable, unreclaimable of the slab
-+		 * and the sum of both.
-+		 */
- 		if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
--			size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
--			       memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
-+			size += memcg_page_state_output(memcg,
-+							NR_SLAB_RECLAIMABLE_B);
- 			seq_buf_printf(&s, "slab %llu\n", size);
- 		}
- 	}
-@@ -6358,6 +6388,12 @@ static int memory_stat_show(struct seq_file *m, void *v)
- }
- 
- #ifdef CONFIG_NUMA
-+static inline unsigned long lruvec_page_state_output(struct lruvec *lruvec,
-+						     int item)
-+{
-+	return lruvec_page_state(lruvec, item) * memcg_page_state_unit(item);
-+}
-+
- static int memory_numa_stat_show(struct seq_file *m, void *v)
- {
- 	int i;
-@@ -6375,8 +6411,8 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
- 			struct lruvec *lruvec;
- 
- 			lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
--			size = lruvec_page_state(lruvec, memory_stats[i].idx);
--			size *= memory_stats[i].ratio;
-+			size = lruvec_page_state_output(lruvec,
-+							memory_stats[i].idx);
- 			seq_printf(m, " N%d=%llu", nid, size);
- 		}
- 		seq_putc(m, '\n');
--- 
-2.11.0
-
+On Tue, Dec 1, 2020 at 2:21 PM Stefan Agner <stefan@agner.ch> wrote:
+>
+> According to the datasheet (Rev. 1.9) the RTL8211F requires at least
+> 72ms "for internal circuits settling time" before accessing the PHY
+> egisters. This fixes an issue where the Ethernet link doesn't come up
+> when using ip link set down/up:
+>   [   29.360965] meson8b-dwmac ff3f0000.ethernet eth0: Link is Down
+>   [   34.569012] meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=31)
+>   [   34.676732] meson8b-dwmac ff3f0000.ethernet: Failed to reset the dma
+>   [   34.678874] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_hw_setup: DMA engine initialization failed
+>   [   34.687850] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_open: Hw setup failed
+>
+> Fixes: 658e4129bb81 ("arm64: dts: meson: g12b: odroid-n2: add the Ethernet PHY reset line")
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+with the "registers" typo above fixed:
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
