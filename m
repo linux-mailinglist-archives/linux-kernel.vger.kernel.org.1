@@ -2,87 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33622CFAF9
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 11:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE89D2CFAFC
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 11:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727302AbgLEKU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 05:20:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726923AbgLEKNS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 05:13:18 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412D4C061A4F;
-        Sat,  5 Dec 2020 02:12:32 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id x13so281045oto.8;
-        Sat, 05 Dec 2020 02:12:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
-        bh=sU9Zy/VwoaDpyMvEvpQON/h2yR97yY+OQyznHQnhddw=;
-        b=OSM5SOe8VeusaFdAfhH9vHHHAXLjbGydMB0AX5QJKGlPc9VTKeNGFOUHxrWdw9wE8E
-         7gRC4zAVj4WVLvX1KmhcjCw6j3ctSiXSzvVfMlgcLPpTlVG1WaRu4nRckWapE+a5TaTT
-         FOBUCmHjyUYpKGSoxAj/MoHsBzmmxPNAekiUe3fE35sSTfykswCpM3ff6WaAf+3zgrJ5
-         kapaEBr0rZSXYDbvZrAmctZBHuci/sYZUXDbLQW89a3MbpNe9Ex0/Elb5wcnQTHE0wwU
-         2SqOlho6kfVC1a86H1K1f21J8gW05+5ps5H7Np68NZSv3cNGf50+Az4fFyqK7WYh3qHI
-         3nyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=sU9Zy/VwoaDpyMvEvpQON/h2yR97yY+OQyznHQnhddw=;
-        b=qcBCUARAK7Hw+j1/1wfTrI/AAeAJMCac3If9i2cc16lhwq7ApCiOLCFuRt8iV9j3RD
-         IwqorGOjAOKCpqUhLCARCJxbFlHHP8FXXzSRzejWzYLWF3ufm3sghnRshoHxLlMiOhFE
-         fuYZrGtH/o+wYs+Fy9zaLuKBOMFcPWo4BCod0rnhTXFnpVQvpjnlIK/qA6Qk1aQlUHD6
-         1hQ8o57mORGRZloIX2C0oDHBQRjp/PJzGvfrB3cPd0gfkGyA/XdSVWXadjIirALkAY0q
-         rZxw1rjJivin/WfCzAHcnDPdAazGcUAHsw4edOr6wR6nGQAHjPchH0NHMuA4Fz7Qplqp
-         /98w==
-X-Gm-Message-State: AOAM532e5CFfKxBHO1/DDKTQUFp3d7Z6no63/lxLYnkWdUmEG67Jpq6p
-        cqyN8ozAQLmiUtqIPWRVGNg9sCG0LnRdUAImh6YZ3HhUhgYAXA==
-X-Google-Smtp-Source: ABdhPJyH2KiZB8uftlA1xQcbQeNz7nzZvbTEr7jitfgp9pwr4Xa0CMKsYLyGq7Ujj/WGx4LqT+dkgxtmm43+LzDgvOo=
-X-Received: by 2002:a9d:590c:: with SMTP id t12mr6563298oth.308.1607163151114;
- Sat, 05 Dec 2020 02:12:31 -0800 (PST)
+        id S1728696AbgLEKYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 05:24:12 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:48698 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729022AbgLEKPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 05:15:33 -0500
+Received: from zn.tnic (p200300ec2f21ef0015054ed9185c317a.dip0.t-ipconnect.de [IPv6:2003:ec:2f21:ef00:1505:4ed9:185c:317a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3E3C81EC043F;
+        Sat,  5 Dec 2020 11:14:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607163280;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0+RQceyNN3YTSvBdh4T4cQY4hNuuvTh0TJrn8lauovA=;
+        b=GdD+8aKXku1fx/hd4C2RKl3LK/5ChSJS2Y7xqcmpuBKrkqK8IhBnentoB8p9FqbYrhQHFy
+        2VZMC47fscpPiNJg962Dz7pYVtmIIZUTaFslvTuzQC2cZ4KOheaGfX7Sx8dehHmRdLir+i
+        /GsMoZk3INraEKi/sZRv+drHijE1Lpw=
+Date:   Sat, 5 Dec 2020 11:14:35 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] x86/uprobes: Fix not using prefixes.nbytes for
+ loop over prefixes.bytes
+Message-ID: <20201205101435.GA26409@zn.tnic>
+References: <160707930875.3296595.12884856538916078988.stgit@devnote2>
+ <160707931985.3296595.4852247459424743502.stgit@devnote2>
+ <20201204150522.GG31534@zn.tnic>
+ <20201205091032.6956a5bad9330ec7b9b84dc5@kernel.org>
 MIME-Version: 1.0
-Reply-To: mtk.manpages@gmail.com
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Date:   Sat, 5 Dec 2020 11:12:20 +0100
-Message-ID: <CAKgNAkiNEBAKb9QG+CMtKW224htLNVnvdiyum2APD1uVD4tWuA@mail.gmail.com>
-Subject: Linux man-pages maintainership adjustments
-To:     linux-man <linux-man@vger.kernel.org>
-Cc:     "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
-        base-system@gentoo.org, Tobias Quathamer <toddy@debian.org>,
-        Petr Gajdos <pgajdos@suse.cz>, ro@suse.de,
-        jchaloup <jchaloup@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201205091032.6956a5bad9330ec7b9b84dc5@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gidday,
+On Sat, Dec 05, 2020 at 09:10:32AM +0900, Masami Hiramatsu wrote:
+> In the future, if x86 ISA is expanded and add a legacy prefix
+> groups,
 
-Anyone following linux-man@ in the last few months will
-have noticed that Alejandro (Alex) Colomar has become
-rather active in the project. Alex has kindly volunteered
-to take up some of the work of maintaining the project.
-In practice, that means he will be reviewing and merging
-some of the patches that land on linux-man@ and I'll be
-taking those changes from him to then push to
-git.kernel.org.
+Very unlikely.
 
-After 16 years as maintainer, I'm very happy that Alex
-has come along to help out. And to be clear, I'm not
-planning to step away from the project any time soon,
-but maybe one day I will return to being just a
-contributor and no longer the maintainer.
+> then we have to add new insn_prefix_field data structure, which
+> size will not depend on NUM_INSN_FIELD_BYTES, but still depend on
+> MAX_LEGACY_PREFIX_GROUPS (and that will be 5).
 
-Cheers,
+Isn't that what I'm saying too?
 
-Michael
+Bottomline is, legacy prefixes should not use insn_field but a separate
+element which array size is independent of insn_byte_t bytes[4].
 
 -- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
