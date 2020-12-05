@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17ED82CFB16
+	by mail.lfdr.de (Postfix) with ESMTP id 86B292CFB17
 	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 12:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729471AbgLELCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 06:02:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46546 "EHLO mail.kernel.org"
+        id S1729325AbgLELEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 06:04:47 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:53983 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729325AbgLEKzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 05:55:43 -0500
-Subject: Re: [PATCHv2] clocksource: dw_apb_timer_of: add error handling if no
- clock available
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607165702;
-        bh=/B6Ul/TD0pyA/kagpFHQO4cwl5phYr6g0Xftl3a8dJY=;
-        h=To:Cc:References:From:Date:In-Reply-To:From;
-        b=QMqT5EtYeizyPOZF3woeqSuqpbUvdszeQONJF3NOZ5xhHblJj8GtHpjgAtSjsHSDO
-         DqXzQjMY0MP6wAaOIykXkLl4TEuawlyR4rEJFeSb2TiCh8fevuxzn75yaVrV1KfWjU
-         hqkzMIywVD9GwRh+8TgfsBMT7MeJa3ry8Ypz3hfzWpibvxZKGjLTKIa6d0uLZ6eFEK
-         Tua1esjAdbziguQXrBaXW0Ao2GQdjX9j47vWj4nnCwCL7wJVq0QQ1XoRfzeyktaTKP
-         XzPefyBZsQ14EMZEWzJDz1ivS1Nf8MG028TlETUEvZKP6f9whbeo2W5VsKl0sYWBrf
-         /zpp9hhMZF87g==
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        Jisheng.Zhang@synaptics.com, arnd@arndb.de
-References: <20201204153643.129897-1-dinguyen@kernel.org>
- <b24fb09b-62ab-4459-8154-c9bccd3e48fc@linaro.org>
- <5cd3bdf7-e514-267c-2243-d6f98f1b328a@kernel.org>
- <47497181-2776-5000-c514-7612e1a05f2c@linaro.org>
-From:   Dinh Nguyen <dinguyen@kernel.org>
-Message-ID: <1caca7e5-1c2b-3333-53ea-73b980620b36@kernel.org>
-Date:   Sat, 5 Dec 2020 04:55:00 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729236AbgLEK72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 05:59:28 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cp64b6Yv9z9sWP;
+        Sat,  5 Dec 2020 21:58:23 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1607165904;
+        bh=1QqseYf6ezigIKf15eGL11f+r3rrJBEyN89MtXaqjS8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=LnGNulhB656ZWd0TNJEg7ooIjHAbyLPdktP4NERmOnAFNSCpXcDBAemRp7hyF0owD
+         iXPFDbrdv3WtmvwVlmR/AAG0P0LQ5Ox5QBWvVJpV1FFXjUzVfdWgJ0VOhwIcNWE8mI
+         r8ga4HPqqqOp0HMFrUZoK/eAghYftVeItJhKS/2QsR3bur21P/dHlB5Y7w22Tvy+1h
+         fDlBgVpdCtHyqjqwW//yHYiU6pRV7jyk3rASLJBt2gwXhICj3725a1y+722G3Nbhum
+         TU71ut0kqQMO7uAiNE0DdLQyax7g3QhcmVDmVgMBt7i+MHWg+cgnNbOeFyvshLMv/Q
+         yTEH82TLxik4g==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Michal Suchanek <msuchanek@suse.de>, stable@vger.kernel.org
+Cc:     Michal Suchanek <msuchanek@suse.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc: Stop exporting __clear_user which is now inlined.
+In-Reply-To: <20201204232807.31887-1-msuchanek@suse.de>
+References: <20201204232807.31887-1-msuchanek@suse.de>
+Date:   Sat, 05 Dec 2020 21:58:23 +1100
+Message-ID: <87y2ictt80.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <47497181-2776-5000-c514-7612e1a05f2c@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Michal Suchanek <msuchanek@suse.de> writes:
+> Stable commit 452e2a83ea23 ("powerpc: Fix __clear_user() with KUAP
+> enabled") redefines __clear_user as inline function but does not remove
+> the export.
+>
+> Fixes: 452e2a83ea23 ("powerpc: Fix __clear_user() with KUAP enabled")
+>
+> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> ---
+>  arch/powerpc/lib/ppc_ksyms.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-On 12/5/20 2:50 AM, Daniel Lezcano wrote:
-> On 04/12/2020 23:39, Dinh Nguyen wrote:
->>
->>
->> On 12/4/20 2:00 PM, Daniel Lezcano wrote:
->>> On 04/12/2020 16:36, Dinh Nguyen wrote:
->>>> commit ("b0fc70ce1f02 arm64: berlin: Select DW_APB_TIMER_OF") added the
->>>> support for the dw_apb_timer into the arm64 defconfig. However, for some
->>>> platforms like the Intel Stratix10 and Agilex, the clock manager doesn't
->>>> get loaded until after the timer driver get loaded. Thus, the driver
->>>> hits
->>>> the panic "No clock nor clock-frequency property for" because it cannot
->>>> properly get the clock.
->>>>
->>>> This patch adds the error handling needed for the timer driver so that
->>>> the kernel can continue booting instead of just hitting the panic.
->>>>
->>>> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
->>>
->>> Did you have time to test the different combinations ?
->>
->> I did test both versions and did not see any difference between the two.
->> On both versions, the kernel was able to continue to boot after trying
->> to probe the timer driver.
-> 
-> Great, thanks!
-> 
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
 
-I forgot to test this on ARM 32-bit system that actually uses one of 
-these timers as a clocksource. The v2 patch would fail. The return of 
-PTR_ERR(timer_clk) needs an IS_ERR(timer_clk) check.
+cheers
 
-I have sent a v3.
-
-Sorry about that.
-
-Dinh
+> diff --git a/arch/powerpc/lib/ppc_ksyms.c b/arch/powerpc/lib/ppc_ksyms.c
+> index c7f8e9586316..4b81fd96aa3e 100644
+> --- a/arch/powerpc/lib/ppc_ksyms.c
+> +++ b/arch/powerpc/lib/ppc_ksyms.c
+> @@ -24,7 +24,6 @@ EXPORT_SYMBOL(csum_tcpudp_magic);
+>  #endif
+>  
+>  EXPORT_SYMBOL(__copy_tofrom_user);
+> -EXPORT_SYMBOL(__clear_user);
+>  EXPORT_SYMBOL(copy_page);
+>  
+>  #ifdef CONFIG_PPC64
+> -- 
+> 2.26.2
