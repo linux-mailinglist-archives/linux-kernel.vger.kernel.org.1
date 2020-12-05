@@ -2,136 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66802CFF7D
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 23:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA302CFF71
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 23:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726591AbgLEWTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 17:19:50 -0500
-Received: from mga12.intel.com ([192.55.52.136]:56557 "EHLO mga12.intel.com"
+        id S1726948AbgLEWMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 17:12:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLEWTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 17:19:50 -0500
-IronPort-SDR: XukCGyCpw2AbQhzQuCbQhiIEAXKBB9pyXjZdTiya14t8yCFDGrpMSHQN0BBxkhcWgFYFqOB+AS
- QASnLor5swcQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9826"; a="152791257"
-X-IronPort-AV: E=Sophos;i="5.78,395,1599548400"; 
-   d="scan'208";a="152791257"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2020 14:18:30 -0800
-IronPort-SDR: CxiXNuLPII+ptf5BoWsN+xFFOkTs5NwYTNel7ZUTvVoRyk/uhywJiMebICO5qIPXdk5BjeZwWm
- Rr+iuUX3Yueg==
-X-IronPort-AV: E=Sophos;i="5.78,395,1599548400"; 
-   d="scan'208";a="362584200"
-Received: from km-skylake-client-platform.sc.intel.com ([10.3.52.146])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2020 14:18:30 -0800
-From:   Kyung Min Park <kyung.min.park@intel.com>
-To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
-        will@kernel.org, ravi.v.shankar@intel.com, kevin.tian@intel.com,
-        ashok.raj@intel.com, ricardo.neri@intel.com, sohil.mehta@intel.com,
-        Kyung Min Park <kyung.min.park@intel.com>
-Subject: [PATCH v2 3/3] iommu/vt-d: Disable SVM in the platform when IOMMUs have inconsistencies
-Date:   Sat,  5 Dec 2020 13:57:43 -0800
-Message-Id: <20201205215743.27803-4-kyung.min.park@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201205215743.27803-1-kyung.min.park@intel.com>
-References: <20201205215743.27803-1-kyung.min.park@intel.com>
+        id S1725270AbgLEWMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 17:12:30 -0500
+Date:   Sat, 5 Dec 2020 23:11:43 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607206309;
+        bh=W1Z4lXzpl/mzTU1gqCX+BTGRrg5JG01UX3/uWd9MSA0=;
+        h=From:To:Cc:Subject:From;
+        b=LliTTurgg658ocNr12XjosWRJbp+p+EVdT6sWA+/qlxfv1+6Hbau0XKPW7RDOPm+e
+         BBXQstDUCJgN5sceLQ9dbbx/K7iwcJic3t1eUKlKgn5qslP95fFsSAuWG/8eWZPa97
+         Dekz80shO4f7QYDppzokxsOoBK12ezfl65uYY6gbCI4FjIyvB/d7uWnkPLU5HBWcCD
+         hzBB9BA+33ZxaCD+SdaG7ifwSzRoCY/a01Lgri2jUWUi1zKKWD9pYBODdxgmr5+bHg
+         fOWjMkndO4FIXvRrCRJLZg6YUR3Y20uvcHrfDBVaSTG0xp9HH/BZ8SEzbfr28IQf9H
+         D82xWT5ms5Rog==
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PULL REQUEST] i2c for 5.10
+Message-ID: <20201205221143.GA19137@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some IOMMU Capabilities must be consistent for Shared Virtual Memory (SVM).
-Audit IOMMU Capability/Extended Capabilities and check if IOMMUs have
-the consistent value for features as below. When the features are not
-matched among IOMMUs, disable SVMs in the platform during DMAR
-initialization. Audit IOMMUs again when a device is hot plugged.
 
-Disable Shared Virtual Memory when below features are mistmatched:
-  - First Level Translation Support (FLTS)
-  - Process Address Space ID Support (PASID)
-  - Extended Accessed Flag Support (EAFS)
-  - Supervisor Support (SRS)
-  - Execute Request Support (ERS)
-  - Page Request Support (PRS)
+--r5Pyd7+fXNt84Ff3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
----
- drivers/iommu/intel/cap_audit.c | 11 +++++++++++
- drivers/iommu/intel/cap_audit.h |  6 ++++++
- drivers/iommu/intel/svm.c       |  3 ++-
- 3 files changed, 19 insertions(+), 1 deletion(-)
+Linus,
 
-diff --git a/drivers/iommu/intel/cap_audit.c b/drivers/iommu/intel/cap_audit.c
-index 0bc77a9bdeed..3bbeb4634bc6 100644
---- a/drivers/iommu/intel/cap_audit.c
-+++ b/drivers/iommu/intel/cap_audit.c
-@@ -130,6 +130,12 @@ static int cap_audit_hotplug(struct intel_iommu *iommu, enum cap_audit_type type
- 	MINIMAL_FEATURE_HOTPLUG(iommu, ecap, mhmv, ECAP_MHMV_MASK, mismatch);
- 	MINIMAL_FEATURE_HOTPLUG(iommu, ecap, iro, ECAP_IRO_MASK, mismatch);
- 
-+	if (IS_ENABLED(CONFIG_INTEL_IOMMU_SVM) &&
-+	    intel_cap_svm_santiy() && !ecap_svm_sanity(iommu->ecap)) {
-+		pr_warn("Abort Hot Plug IOMMU: SVM inconsistent\n");
-+		mismatch = true;
-+	}
-+
- out:
- 	if (mismatch) {
- 		intel_iommu_cap_sanity = old_cap;
-@@ -206,3 +212,8 @@ bool intel_cap_flts_sanity(void)
- {
- 	return ecap_flts(intel_iommu_ecap_sanity);
- }
-+
-+bool intel_cap_svm_santiy(void)
-+{
-+	return ecap_svm_sanity(intel_iommu_ecap_sanity);
-+}
-diff --git a/drivers/iommu/intel/cap_audit.h b/drivers/iommu/intel/cap_audit.h
-index 1ce1dc314950..beb2589e97e0 100644
---- a/drivers/iommu/intel/cap_audit.h
-+++ b/drivers/iommu/intel/cap_audit.h
-@@ -60,6 +60,11 @@
- #define ECAP_QI_MASK		BIT_ULL(1)
- #define ECAP_C_MASK		BIT_ULL(0)
- 
-+#define MINIMAL_SVM_ECAP (ECAP_FLTS_MASK | ECAP_PASID_MASK | ECAP_EAFS_MASK | \
-+			  ECAP_SRS_MASK | ECAP_ERS_MASK | ECAP_PRS_MASK)
-+
-+#define ecap_svm_sanity(e)	(!(((e) & MINIMAL_SVM_ECAP) ^ MINIMAL_SVM_ECAP))
-+
- #define DO_CHECK_FEATURE_MISMATCH(a, b, cap, feature, MASK) \
- do { \
- 	if (cap##_##feature(a) != cap##_##feature(b)) { \
-@@ -107,6 +112,7 @@ bool intel_cap_smts_sanity(void);
- bool intel_cap_pasid_sanity(void);
- bool intel_cap_nest_sanity(void);
- bool intel_cap_flts_sanity(void);
-+bool intel_cap_svm_santiy(void);
- 
- static inline bool scalable_mode_support(void)
- {
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 3242ebd0bca3..7761e40a2d5a 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -22,6 +22,7 @@
- #include <asm/fpu/api.h>
- 
- #include "pasid.h"
-+#include "cap_audit.h"
- 
- static irqreturn_t prq_event_thread(int irq, void *d);
- static void intel_svm_drain_prq(struct device *dev, u32 pasid);
-@@ -98,7 +99,7 @@ static inline bool intel_svm_capable(struct intel_iommu *iommu)
- 
- void intel_svm_check(struct intel_iommu *iommu)
- {
--	if (!pasid_supported(iommu))
-+	if (!intel_cap_svm_santiy())
- 		return;
- 
- 	if (cpu_feature_enabled(X86_FEATURE_GBPAGES) &&
--- 
-2.17.1
+here are some more I2C driver updates. IMX updates are a tad bigger, but
+not exceptionally big.
 
+Please pull.
+
+Thanks,
+
+   Wolfram
+
+
+The following changes since commit b65054597872ce3aefbc6a666385eabdf9e288da:
+
+  Linux 5.10-rc6 (2020-11-29 15:50:50 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-curre=
+nt
+
+for you to fetch changes up to 2bf9545626f8d09f552ab86d0047a415fe9a07a0:
+
+  i2c: mlxbf: Fix the return check of devm_ioremap and ioremap (2020-12-05 =
+14:52:35 +0100)
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      i2c: mlxbf: select CONFIG_I2C_SLAVE
+
+Christian Eggers (3):
+      i2c: imx: Fix reset of I2SR_IAL flag
+      i2c: imx: Check for I2SR_IAL after every byte
+      i2c: imx: Don't generate STOP condition if arbitration has been lost
+
+Robert Foss (1):
+      i2c: qcom: Fix IRQ error misassignement
+
+Wang Xiaojun (1):
+      i2c: mlxbf: Fix the return check of devm_ioremap and ioremap
+
+Zhihao Cheng (1):
+      i2c: qup: Fix error return code in qup_i2c_bam_schedule_desc()
+
+
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Bjorn Andersson (1):
+      (Rev.) i2c: qup: Fix error return code in qup_i2c_bam_schedule_desc()
+
+Krzysztof Kozlowski (2):
+      (Test) i2c: imx: Don't generate STOP condition if arbitration has bee=
+n lost
+      (Test) i2c: imx: Check for I2SR_IAL after every byte
+
+Manivannan Sadhasivam (1):
+      (Rev.) i2c: qcom: Fix IRQ error misassignement
+
+Uwe Kleine-K=C3=B6nig (1):
+      (Rev.) i2c: imx: Fix reset of I2SR_IAL flag
+
+ drivers/i2c/busses/Kconfig        |  1 +
+ drivers/i2c/busses/i2c-imx.c      | 44 ++++++++++++++++++++++++++++++++---=
+----
+ drivers/i2c/busses/i2c-mlxbf.c    | 12 +++++------
+ drivers/i2c/busses/i2c-qcom-cci.c |  4 ++--
+ drivers/i2c/busses/i2c-qup.c      |  3 ++-
+ 5 files changed, 47 insertions(+), 17 deletions(-)
+
+--r5Pyd7+fXNt84Ff3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/MBZsACgkQFA3kzBSg
+KbYi6Q/9FXYNJyphRY5mN6hSv+OuZ3QKFIuL5mkOafp4rNvNCOZxlJ/gojpC1pAg
+5SwUlIm5dgQZKPdwXry3C+1d0pSITzE8SVLPO6GYSh6RcSDRjctu0Fu4kL7Pgk+m
+Bh2Ek1zKfEKtTw3n8Lj/0tbKAxxlWHKYkblST/s1wxg2kWOMED1aUvbb98AsAj1N
+chFqvqpSTviOvKaM+zwsrCrdVmNLf7WbxlOBHjfGdYgztZqbDdtnQuGf1wa3Vhyu
+FfrBbx8gb/neJ2jMO9rdnggmuO/qP8BvPgK01BkehBVKSRt08E12c01Wpyoc6gyh
+1gCUJNvVm25L8whdRyDlMQiJr5Fbz/HPbTelKW32m5NbqO+zhod0wrvBmkAjHE/g
+F1YCLxi+JlQP0B6vZNtTfJEV8v9dpxJZq2z1zUZ1ESJ4fUmeB+9anF5mtmzpc5lr
+ArIcMYQkjhYU7bkTIZQURYajMn2ymzRkG3qAoSfo4Uz98jtRo8A1B4zh7x4rPApt
+XxsZI8pW9jOKisXPvAJf2dU6F4lYxPZnt18QThE6WsGmnaSNW/f0e64WQeTStgiv
+CUY7W4fDAwtMVs9N5TJbhn3jmOSVfFqiI2UCAMrnltQTjoUOtUHG8wHF2EcmrSKc
+bDRXoBnzc/1NePIWjqsViT3xZopu9au/OWmAN0svw29VSAgNdc4=
+=SH4K
+-----END PGP SIGNATURE-----
+
+--r5Pyd7+fXNt84Ff3--
