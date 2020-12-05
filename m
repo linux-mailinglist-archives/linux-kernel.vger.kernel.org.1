@@ -2,138 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 644782CFAEF
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 11:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A33622CFAF9
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 11:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725924AbgLEKDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 05:03:02 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:7057 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726366AbgLEJ7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 04:59:16 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Cp4kJ31KPz9txrr;
-        Sat,  5 Dec 2020 10:57:28 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 5C8p_2D3PaXb; Sat,  5 Dec 2020 10:57:28 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Cp4kJ1ry4z9txrq;
-        Sat,  5 Dec 2020 10:57:28 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5BBF88B77F;
-        Sat,  5 Dec 2020 10:57:29 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id OQIUmRAgHQh5; Sat,  5 Dec 2020 10:57:29 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9F89A8B75B;
-        Sat,  5 Dec 2020 10:57:28 +0100 (CET)
-Subject: Re: [PATCH] powerpc/mm: Fix KUAP warning by providing
- copy_from_kernel_nofault_allowed()
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <e559e60c43f679195bfe4c7b0a301431c6f02c7a.1607157766.git.christophe.leroy@csgroup.eu>
- <20201205084804.GA25452@lst.de>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <0ede82c3-d4e9-6ce6-0590-6254272c3ae2@csgroup.eu>
-Date:   Sat, 5 Dec 2020 10:56:56 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1727302AbgLEKU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 05:20:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726923AbgLEKNS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 05:13:18 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412D4C061A4F;
+        Sat,  5 Dec 2020 02:12:32 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id x13so281045oto.8;
+        Sat, 05 Dec 2020 02:12:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
+        bh=sU9Zy/VwoaDpyMvEvpQON/h2yR97yY+OQyznHQnhddw=;
+        b=OSM5SOe8VeusaFdAfhH9vHHHAXLjbGydMB0AX5QJKGlPc9VTKeNGFOUHxrWdw9wE8E
+         7gRC4zAVj4WVLvX1KmhcjCw6j3ctSiXSzvVfMlgcLPpTlVG1WaRu4nRckWapE+a5TaTT
+         FOBUCmHjyUYpKGSoxAj/MoHsBzmmxPNAekiUe3fE35sSTfykswCpM3ff6WaAf+3zgrJ5
+         kapaEBr0rZSXYDbvZrAmctZBHuci/sYZUXDbLQW89a3MbpNe9Ex0/Elb5wcnQTHE0wwU
+         2SqOlho6kfVC1a86H1K1f21J8gW05+5ps5H7Np68NZSv3cNGf50+Az4fFyqK7WYh3qHI
+         3nyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=sU9Zy/VwoaDpyMvEvpQON/h2yR97yY+OQyznHQnhddw=;
+        b=qcBCUARAK7Hw+j1/1wfTrI/AAeAJMCac3If9i2cc16lhwq7ApCiOLCFuRt8iV9j3RD
+         IwqorGOjAOKCpqUhLCARCJxbFlHHP8FXXzSRzejWzYLWF3ufm3sghnRshoHxLlMiOhFE
+         fuYZrGtH/o+wYs+Fy9zaLuKBOMFcPWo4BCod0rnhTXFnpVQvpjnlIK/qA6Qk1aQlUHD6
+         1hQ8o57mORGRZloIX2C0oDHBQRjp/PJzGvfrB3cPd0gfkGyA/XdSVWXadjIirALkAY0q
+         rZxw1rjJivin/WfCzAHcnDPdAazGcUAHsw4edOr6wR6nGQAHjPchH0NHMuA4Fz7Qplqp
+         /98w==
+X-Gm-Message-State: AOAM532e5CFfKxBHO1/DDKTQUFp3d7Z6no63/lxLYnkWdUmEG67Jpq6p
+        cqyN8ozAQLmiUtqIPWRVGNg9sCG0LnRdUAImh6YZ3HhUhgYAXA==
+X-Google-Smtp-Source: ABdhPJyH2KiZB8uftlA1xQcbQeNz7nzZvbTEr7jitfgp9pwr4Xa0CMKsYLyGq7Ujj/WGx4LqT+dkgxtmm43+LzDgvOo=
+X-Received: by 2002:a9d:590c:: with SMTP id t12mr6563298oth.308.1607163151114;
+ Sat, 05 Dec 2020 02:12:31 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201205084804.GA25452@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Reply-To: mtk.manpages@gmail.com
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date:   Sat, 5 Dec 2020 11:12:20 +0100
+Message-ID: <CAKgNAkiNEBAKb9QG+CMtKW224htLNVnvdiyum2APD1uVD4tWuA@mail.gmail.com>
+Subject: Linux man-pages maintainership adjustments
+To:     linux-man <linux-man@vger.kernel.org>
+Cc:     "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        base-system@gentoo.org, Tobias Quathamer <toddy@debian.org>,
+        Petr Gajdos <pgajdos@suse.cz>, ro@suse.de,
+        jchaloup <jchaloup@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Gidday,
 
+Anyone following linux-man@ in the last few months will
+have noticed that Alejandro (Alex) Colomar has become
+rather active in the project. Alex has kindly volunteered
+to take up some of the work of maintaining the project.
+In practice, that means he will be reviewing and merging
+some of the patches that land on linux-man@ and I'll be
+taking those changes from him to then push to
+git.kernel.org.
 
-Le 05/12/2020 à 09:48, Christoph Hellwig a écrit :
-> On Sat, Dec 05, 2020 at 08:43:06AM +0000, Christophe Leroy wrote:
->> Since commit c33165253492 ("powerpc: use non-set_fs based maccess
->> routines"), userspace access is not granted anymore when using
->> copy_from_kernel_nofault()
->>
->> However, kthread_probe_data() uses copy_from_kernel_nofault()
->> to check validity of pointers. When the pointer is NULL,
->> it points to userspace, leading to a KUAP fault and triggering
->> the following big hammer warning many times when you request
->> a sysrq "show task":
-> 
-> 
-> 
->> To avoid that, copy_from_kernel_nofault_allowed() is used to check
->> whether the address is a valid kernel address. But the default
->> version of it returns true for any address.
->>
->> Provide a powerpc version of copy_from_kernel_nofault_allowed()
->> that returns false when the address is below TASK_USER_MAX,
->> so that copy_from_kernel_nofault() will return -ERANGE.
-> 
-> Looks good.  I wonder if we should just default to the TASK_SIZE_MAX
-> check in  copy_from_kernel_nofault_allowed for architectures that select
-> CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE?
+After 16 years as maintainer, I'm very happy that Alex
+has come along to help out. And to be clear, I'm not
+planning to step away from the project any time soon,
+but maybe one day I will return to being just a
+contributor and no longer the maintainer.
 
-Yes maybe that would be better.
+Cheers,
 
-Can you cook a patch an get it into 5.10 ?
+Michael
 
-Christophe
-
-> 
->>
->> Reported-by: Qian Cai <qcai@redhat.com>
->> Fixes: c33165253492 ("powerpc: use non-set_fs based maccess routines")
->> Cc: Christoph Hellwig <hch@lst.de>
->> Cc: Al Viro <viro@zeniv.linux.org.uk>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->> This issue was introduced in 5.10. I didn't mark it for stable, hopping it will go into 5.10-rc7
->> ---
->>   arch/powerpc/mm/Makefile  | 2 +-
->>   arch/powerpc/mm/maccess.c | 9 +++++++++
->>   2 files changed, 10 insertions(+), 1 deletion(-)
->>   create mode 100644 arch/powerpc/mm/maccess.c
->>
->> diff --git a/arch/powerpc/mm/Makefile b/arch/powerpc/mm/Makefile
->> index 5e147986400d..55b4a8bd408a 100644
->> --- a/arch/powerpc/mm/Makefile
->> +++ b/arch/powerpc/mm/Makefile
->> @@ -5,7 +5,7 @@
->>   
->>   ccflags-$(CONFIG_PPC64)	:= $(NO_MINIMAL_TOC)
->>   
->> -obj-y				:= fault.o mem.o pgtable.o mmap.o \
->> +obj-y				:= fault.o mem.o pgtable.o mmap.o maccess.o \
->>   				   init_$(BITS).o pgtable_$(BITS).o \
->>   				   pgtable-frag.o ioremap.o ioremap_$(BITS).o \
->>   				   init-common.o mmu_context.o drmem.o
->> diff --git a/arch/powerpc/mm/maccess.c b/arch/powerpc/mm/maccess.c
->> new file mode 100644
->> index 000000000000..56e97c0fb233
->> --- /dev/null
->> +++ b/arch/powerpc/mm/maccess.c
->> @@ -0,0 +1,9 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +
->> +#include <linux/uaccess.h>
->> +#include <linux/kernel.h>
->> +
->> +bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
->> +{
->> +	return (unsigned long)unsafe_src >= TASK_SIZE_MAX;
->> +}
->> -- 
->> 2.25.0
-> ---end quoted text---
-> 
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
