@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BE92CF970
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 06:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1977B2CF972
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 06:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727666AbgLEFGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 00:06:06 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33558 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725770AbgLEFGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 00:06:05 -0500
-Received: from [10.130.0.80] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxutACFctfM90ZAA--.42419S3;
-        Sat, 05 Dec 2020 13:05:06 +0800 (CST)
-Subject: Re: [PATCH 2/2] MIPS: Select ARCH_KEEP_MEMBLOCK to enable sysfs
- memblock debug
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-References: <1606965544-22611-1-git-send-email-yangtiezhu@loongson.cn>
- <1606965544-22611-3-git-send-email-yangtiezhu@loongson.cn>
- <9c9af0de-387b-f113-b0a2-c5767c31c16d@flygoat.com>
- <20201204120816.GC10011@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <727e9b94-0a22-189f-4c65-4a6e8504013f@loongson.cn>
-Date:   Sat, 5 Dec 2020 13:05:06 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1726247AbgLEFJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 00:09:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgLEFJZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 00:09:25 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333C2C061A51
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 21:08:45 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id d27so1241847oic.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 21:08:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AyIY+EP1kTc66souxbGUy1GbHLsA8jmF+Piubmnixrg=;
+        b=Xu6x42sQ1atznZ0iEomRJXMcKGTuKh6ZDCRRe7CxjO3ZgK1dhOyyWz6ij18ltWhinJ
+         eGnIJzJJoE8zPoQoSUtXxJ1td9idp8bvulMv7XgzaZNA6SBlAsiJLw8OgJcZ3dJ09l9v
+         BjpO6BoyTYUoUQVkiAg/OaHsoXcE3iGgqDGCQgY2HYXZG6mYrS3JEBSqulb4w3kHq6zr
+         Z97fk/eQSyVzC2plrSfBYetG382Q1NLGVIyy5egKaU9rK4RKwKJSSuamhiRU/coiozt2
+         nBgCwbui2AE7RqmR/GyrTs/P9bYLkxDg5nHaSz2xyyLSibzZIRkvgfcO0tAg8s8ClQ/k
+         Gsbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AyIY+EP1kTc66souxbGUy1GbHLsA8jmF+Piubmnixrg=;
+        b=CvqEUjKwTyQdqChyzTJAlzr3qvyAM+SPFX+jmZQHOtm2uy8NmdT/k3qLFBSEWfVvF+
+         oK+O6XVUZ+ihIanEY/J/ei2Gj2VD0caGLjiujcxFii76M4tC4r1Z7j/lNHN3IxuatyCL
+         JMiouqzvetQKXxB7bxUFxWNxDfKxvNwe6MJmaIIwx8ceSuxavWWzhYfrY5l84KBJGICC
+         zSoyUjPlNERTzJCVoR93lOKlTo7+eqJcG58XMkIVo7jc/L+7mWyq5fvMSdT5Mk4EtBDu
+         miShYz5Ty1Ih9nvJZ6/hm8vZGtNH+q/ZHDiQxN2e8FLFVfq7TLZnFbZQjbptmZwKLfuN
+         y+kQ==
+X-Gm-Message-State: AOAM532lGAuXbuFqPJ8b5vMT1koPpEtIJWEQ72yccaKn7lOHetcGZu3d
+        DtjtBpYqTPek0C9a5gSZU9cZFA==
+X-Google-Smtp-Source: ABdhPJzkLJCnxgkfJHUfmcZd4KJw+CTxck3Yq502Yvm5toYbmwFiU0T5vVOgIlRFHqNeMw1Wb0wpcA==
+X-Received: by 2002:aca:560c:: with SMTP id k12mr5526899oib.134.1607144924456;
+        Fri, 04 Dec 2020 21:08:44 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id m81sm1181090oib.37.2020.12.04.21.08.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 21:08:43 -0800 (PST)
+Date:   Fri, 4 Dec 2020 23:08:41 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     kholk11@gmail.com
+Cc:     agross@kernel.org, sboyd@kernel.org, marijns95@gmail.com,
+        konradybcio@gmail.com, martin.botka1@gmail.com,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/5] clk: qcom: mmcc-sdm660: Add MDP clock source CXC to
+ MDSS GDSC
+Message-ID: <X8sV2UOipnhP1Y78@builder.lan>
+References: <20200926130306.13843-1-kholk11@gmail.com>
+ <20200926130306.13843-4-kholk11@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201204120816.GC10011@alpha.franken.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxutACFctfM90ZAA--.42419S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrtr43AFWxCw1xZF13KFWUtwb_yoWktFb_Wr
-        4jkFnrK3WrJFWqka1vqw4fZFn0g3y0qFy8ury3Wr4Svw18JFW3Gw1kKa93Xrn5Way8Grsx
-        Xr90vr13Krn8KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbV8FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_
-        Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
-        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
-        bIxvr21lc2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUhdbbUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200926130306.13843-4-kholk11@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/04/2020 08:08 PM, Thomas Bogendoerfer wrote:
-> On Thu, Dec 03, 2020 at 11:58:51AM +0800, Jiaxun Yang wrote:
->>
->> 在 2020/12/3 上午11:19, Tiezhu Yang 写道:
->>> In the current code, CONFIG_ARCH_KEEP_MEMBLOCK is not set for MIPS arch,
->>> memblock_discard() will discard memory and reserved arrays if they were
->>> allocated, select ARCH_KEEP_MEMBLOCK to give a chance to track "memory"
->>> and "reserved" memblocks after early boot, with this patch, we can see
->>> the following two sysfs interfaces under DEBUG_FS.
->>>
->>> /sys/kernel/debug/memblock/memory
->>> /sys/kernel/debug/memblock/reserved
->> Is this really necessary?
->> memblock data is not really necessary after boot for non-debug purpose.
->>
->> Given that MIPS is widely used in embedded systems which doesn't have much
->> memory, keeping unused data after boot is kinda unconvincing.
-> about how much memory are talking here ?
->
->> If you intend to debug that please do it locally.
-> maybe we can add a
->
-> if DEBUG_KERNEL
->
-> since enabling DEBUG_KERNEL will cost already some memory...
+On Sat 26 Sep 08:03 CDT 2020, kholk11@gmail.com wrote:
 
-Yes, that makes sense.
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> 
+> It is required for optimal performance and to avoid MDP stalls to
+> retain mem/periph on GDSC enablement: to achieve this, let's add
+> the required CXC to the MDSS GDSC.
+> 
 
-If nobody has any objections, I will send v2 in the next week.
+Can you please explain how you came to this conclusion, I don't see the
+reference to the MDP_CLK_SRC in the downstream kernel.
 
 Thanks,
-Tiezhu
+Bjorn
 
->
-> Thomas.
->
-
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> ---
+>  drivers/clk/qcom/mmcc-sdm660.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/clk/qcom/mmcc-sdm660.c b/drivers/clk/qcom/mmcc-sdm660.c
+> index 234aca7c873b..7b1384cf8506 100644
+> --- a/drivers/clk/qcom/mmcc-sdm660.c
+> +++ b/drivers/clk/qcom/mmcc-sdm660.c
+> @@ -2572,6 +2572,8 @@ static struct gdsc mdss_gdsc = {
+>  	.pd = {
+>  		.name = "mdss",
+>  	},
+> +	.cxcs = (unsigned int []){ 0x2040 },
+> +	.cxc_count = 1,
+>  	.pwrsts = PWRSTS_OFF_ON,
+>  };
+>  
+> -- 
+> 2.28.0
+> 
