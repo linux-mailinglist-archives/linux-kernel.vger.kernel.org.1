@@ -2,167 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE202CFA2C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 08:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154AC2CFA31
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 08:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387619AbgLEHCv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 5 Dec 2020 02:02:51 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:56453 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726513AbgLEHCu (ORCPT
+        id S1728080AbgLEHHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 02:07:22 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:16524 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726031AbgLEHHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 02:02:50 -0500
-Received: by mail-io1-f70.google.com with SMTP id e14so7219739iow.23
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 23:02:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to
-         :content-transfer-encoding;
-        bh=r+mWvnbTKF/iYjNtm6BSrreLwJ0c5mkcYjnkGdZvHNM=;
-        b=n1v14OkvBXPRWn8tneVkcIGzlAa5TQR0uCgzFmU0qQ2y5Ezpv+5NrF9O5zKTqNvz+l
-         z1FQZTV7rPIbVtLGcLBQ907KSjjihJ5dtSCw0quJz8LMJUXaSaaOdjYOrMIQxRdyAUhu
-         ZUN0jQNjXaFVGmHhYKxh0mwuzADyDXgxQqkDixSXE4krQAlH/wXvRELrprwz7FHmNOby
-         PAOtMAS0aooyEmxTFohC4ofwplg3cRpxygQrqqXp/vdTcwgSaxq8j7gEY4a4AwX+f7dJ
-         8hwPbQ5M23oxawSaOuzTF5mM3AU1EvjQsNRgjf/2CrNr/m9BwDOunaeDJLQWH+vW+X6u
-         JcRQ==
-X-Gm-Message-State: AOAM531Ix1p8b1eU871VYdgB5kipAt+6OYBw4hjlVDwJHlD+5ztEyRM2
-        944ryX5/66nujqkv0mJwUwGbIEmDTyOqA2O242VAcrIRe9B2
-X-Google-Smtp-Source: ABdhPJyBgtK7p9aLOHNVPXn1dGBFY6vna5NDZRZAoxGU+wCiuep5dkt026YZO7uV67Vf8QwQNWiRogqa13TbDTABrHP5iqH/vv/+
-MIME-Version: 1.0
-X-Received: by 2002:a92:40c6:: with SMTP id d67mr10519386ill.236.1607151729169;
- Fri, 04 Dec 2020 23:02:09 -0800 (PST)
-Date:   Fri, 04 Dec 2020 23:02:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000eadc6b05b5b22baf@google.com>
-Subject: linux-next boot error: kernel BUG at mm/page_alloc.c:LINE!
-From:   syzbot <syzbot+6db3aa7ac26c2c53bf44@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, rppt@kernel.org,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        Sat, 5 Dec 2020 02:07:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1607151869;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=rb1iNJtZtqIe696Y0BSi+sRPb127OZ3/RYM4etoAKCI=;
+        b=eND5+E4kdAwiqFL+btnhIBP9lrf62VtnJIp3wRDwVlyjKJXDReoPdhtm69oYrEcWOQ
+        Yo8LaoTI7ECDI9FRx1pQjpkG+8B6LHyEsixwgzsedQ6RvtXgsZjubxo/724PiBY/hJKz
+        ziQImiEJfKk4lDJojSoxC5luEldOIyz1d5WG7KwtjWAk8MMsenT1a/A96IyIhMP48HF5
+        PNIkiYk0txKDrtbQC4okB4C93+hMB9qVQZonWtlNG6IaX6+oD/zK0aKdht6uZdtwP+bT
+        /xKbRbz2cDAERPqQO+Ied2tQOdb3bIl+SZhYKNEvomU90I2RvU5y84As6X0xyW/4SQl+
+        bt9Q==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGHPrtwDCrvXQ="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 47.3.4 DYNA|AUTH)
+        with ESMTPSA id N02faawB574Qjfi
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Sat, 5 Dec 2020 08:04:26 +0100 (CET)
+Subject: Re: [BUG] SPI broken for SPI based panel drivers
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <CACRpkdYgu+fyYm8aSCRuPeVe0EieyboZsWC=XsrRs5Tubog6nA@mail.gmail.com>
+Date:   Sat, 5 Dec 2020 08:04:25 +0100
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Mark Brown <broonie@kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>,
+        Andreas Kemnade <andreas@kemnade.info>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <ED67B0A3-1098-4B4C-A4F4-EE52B0E5F1E3@goldelico.com>
+References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com> <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com> <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <20201201121620.GB5239@sirena.org.uk> <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com> <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com> <6283C16F-549C-4463-BC08-E2C1A1D78B2F@goldelico.com> <CAGngYiUG76Q-cb_HdDKMia5yXzv_mS+5NPeaBquK3_4b3tr-4Q@mail.gmail.com> <9380CE00-9CE6-4E0B-B2E1-1B534F85E47D@goldelico.com> <CAGngYiVF5yMAGPJ8xZgt=BfJ3JfBMABVC0t+dQ2oOq986T9iKg@mail.gmail.com> <BD3995F3-F4E6-4DC9-B0B9-5DCD6655F049@goldelico.com> <CAGngYiXWo4QEDF73wa7RDah1yUUOO1URoD_k5Fd5JMqSL2JXGg@mail.gmail.com> <A88317FA-52CC-41D3-B11A-BFAD36C35AE4@goldelico.com> <CAGngYiUPaR=_1NKZSjUQRK9+zUw3ztUpro7NV-O=sGAC2eOzUw@mail.gmail.com> <7702A943-FCC5-416B-B53A-3B0427458915@goldelico.com> <CACRpkdYgu+fyYm8aSCRuPeVe0EieyboZsWC=XsrRs5Tubog6nA@mail.gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: Apple Mail (2.3124)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Linus,
 
-syzbot found the following issue on:
+> Am 05.12.2020 um 01:25 schrieb Linus Walleij =
+<linus.walleij@linaro.org>:
+>=20
+> On Fri, Dec 4, 2020 at 5:52 PM H. Nikolaus Schaller =
+<hns@goldelico.com> wrote:
+>=20
+>> But what I don't know is if I can omit spi-cs-high and have to keep
+>> ACTIVE_HIGH (my revert patch) or also change to ACTIVE_LOW (my =
+additional
+>> patch). This is arbitrary and someone has to decide what it should =
+be.
+> (...)
+>> I'd prefer if you or maybe Linus could submit such a patch and I am =
+happy to review it.
+>=20
+> It seems really ill-advised to have me do that since I have not
+> managed very well to deal with this. Clearly better developers
+> are needed. But I can review a patch and see if it makes me
+> smarter :)
 
-HEAD commit:    2996bd3f Add linux-next specific files for 20201204
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16e3f06d500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=94ba7fafa89f1c3f
-dashboard link: https://syzkaller.appspot.com/bug?extid=6db3aa7ac26c2c53bf44
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+I find it interesting that so far nobody wants to take responsibility
+for a decision and to write down the behaviour really should be. Coding
+is the second step then.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6db3aa7ac26c2c53bf44@syzkaller.appspotmail.com
+Anyways you did not cite the really important part of my mail. So let me
+copy it back. Here it is again:
 
-Zone ranges:
-  DMA      [mem 0x0000000000001000-0x0000000000ffffff]
-  DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
-  Normal   [mem 0x0000000100000000-0x000000023fffffff]
-  Device   empty
-Movable zone start for each node
-Early memory node ranges
-  node   0: [mem 0x0000000000001000-0x000000000009efff]
-  node   0: [mem 0x0000000000100000-0x00000000bfffcfff]
-  node   0: [mem 0x0000000100000000-0x000000013fffffff]
-  node   1: [mem 0x0000000140000000-0x000000023fffffff]
-Initmem setup node 0 [mem 0x0000000000001000-0x000000013fffffff]
-DMA: Zeroed struct page in unavailable ranges: 98
-DMA32: Zeroed struct page in unavailable ranges: 3
-Initmem setup node 1 [mem 0x0000000140000000-0x000000023fffffff]
-kasan: KernelAddressSanitizer initialized
-ACPI: PM-Timer IO Port: 0xb008
-ACPI: LAPIC_NMI (acpi_id[0xff] dfl dfl lint[0x1])
-IOAPIC[0]: apic_id 0, version 17, address 0xfec00000, GSI 0-23
-ACPI: INT_SRC_OVR (bus 0 bus_irq 5 global_irq 5 high level)
-ACPI: INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 high level)
-ACPI: INT_SRC_OVR (bus 0 bus_irq 10 global_irq 10 high level)
-ACPI: INT_SRC_OVR (bus 0 bus_irq 11 global_irq 11 high level)
-Using ACPI (MADT) for SMP configuration information
-smpboot: Allowing 2 CPUs, 0 hotplug CPUs
-PM: hibernation: Registered nosave memory: [mem 0x00000000-0x00000fff]
-PM: hibernation: Registered nosave memory: [mem 0x0009f000-0x0009ffff]
-PM: hibernation: Registered nosave memory: [mem 0x000a0000-0x000effff]
-PM: hibernation: Registered nosave memory: [mem 0x000f0000-0x000fffff]
-PM: hibernation: Registered nosave memory: [mem 0xbfffd000-0xbfffffff]
-PM: hibernation: Registered nosave memory: [mem 0xc0000000-0xfffbbfff]
-PM: hibernation: Registered nosave memory: [mem 0xfffbc000-0xffffffff]
-[mem 0xc0000000-0xfffbbfff] available for PCI devices
-Booting paravirtualized kernel on KVM
-clocksource: refined-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
-setup_percpu: NR_CPUS:8 nr_cpumask_bits:8 nr_cpu_ids:2 nr_node_ids:2
-percpu: Embedded 64 pages/cpu s223240 r8192 d30712 u1048576
-kvm-guest: stealtime: cpu 0, msr b9c1fb80
-kvm-guest: PV spinlocks enabled
-PV qspinlock hash table entries: 256 (order: 0, 4096 bytes, linear)
-Built 2 zonelists, mobility grouping on.  Total pages: 2064262
-Policy zone: Normal
-Kernel command line: earlyprintk=serial oops=panic panic_on_warn=1 nmi_watchdog=panic panic=86400 net.ifnames=0 sysctl.kernel.hung_task_all_cpu_backtrace=1 ima_policy=tcb watchdog_thresh=55 workqueue.watchdog_thresh=140 kvm-intel.nested=1 nf-conntrack-ftp.ports=20000 nf-conntrack-tftp.ports=20000 nf-conntrack-sip.ports=20000 nf-conntrack-irc.ports=20000 nf-conntrack-sane.ports=20000 vivid.n_devs=16 vivid.multiplanar=1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2 netrom.nr_ndevs=16 rose.rose_ndevs=16 spec_store_bypass_disable=prctl numa=fake=2 nopcid dummy_hcd.num=8 binder.debug_mask=0 rcupdate.rcu_expedited=1 root=/dev/sda console=ttyS0 vsyscall=native BOOT_IMAGE=/vmlinuz root=/dev/sda1 console=ttyS0 earlyprintk=serial vsyscall=native oops=panic panic_on_warn=1 nmi_watchdog=panic panic=86400 net.ifnames=0 sysctl.kernel.hung_task_all_cpu_backtrace=1
-mem auto-init: stack:off, heap alloc:on, heap free:off
-page:(____ptrval____) refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11
-flags: 0x7ff00000000000()
-raw: 007ff00000000000 ffffea0000000448 ffffea0000000448 0000000000000000
-raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: VM_BUG_ON_PAGE(pfn & ((1 << order) - 1))
-------------[ cut here ]------------
-kernel BUG at mm/page_alloc.c:1015!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.0-rc6-next-20201204-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__free_one_page+0xa49/0xe00 mm/page_alloc.c:1015
-Code: ef e8 ab 39 f7 ff 0f 0b 48 c7 c6 e0 49 76 89 4c 89 ff e8 9a 39 f7 ff 0f 0b 0f 0b 48 c7 c6 40 4a 76 89 4c 89 ff e8 87 39 f7 ff <0f> 0b 48 c7 c6 a0 4a 76 89 4c 89 ff e8 76 39 f7 ff 0f 0b 41 83 fc
-RSP: 0000:ffffffff8b407c98 EFLAGS: 00010086
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffffffff8b49bc00 RSI: ffffffff88c8495e RDI: 0000000000000003
-RBP: 0000000000000011 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff88c84940 R11: 0000000000000000 R12: 0000000000000003
-R13: 0000000000000000 R14: 0000000000000003 R15: ffffea0000000440
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff88823ffff000 CR3: 000000000b48e000 CR4: 00000000000406b0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- free_one_page+0x7b/0x1e0 mm/page_alloc.c:1447
- __free_pages_ok+0x4af/0xec0 mm/page_alloc.c:1538
- __free_pages_memory mm/memblock.c:2021 [inline]
- __free_memory_core mm/memblock.c:2037 [inline]
- free_low_memory_core_early mm/memblock.c:2060 [inline]
- memblock_free_all+0x240/0x332 mm/memblock.c:2100
- mem_init+0x1d/0x2b5 arch/x86/mm/init_64.c:1292
- mm_init+0xa4/0xcc init/main.c:831
- start_kernel+0x184/0x4bc init/main.c:907
- secondary_startup_64_no_verify+0xb0/0xbb
-Modules linked in:
-random: get_random_bytes called from init_oops_id kernel/panic.c:546 [inline] with crng_init=0
-random: get_random_bytes called from init_oops_id kernel/panic.c:543 [inline] with crng_init=0
-random: get_random_bytes called from print_oops_end_marker kernel/panic.c:556 [inline] with crng_init=0
-random: get_random_bytes called from oops_exit+0x58/0x80 kernel/panic.c:567 with crng_init=0
----[ end trace 72f44cbe4160a0f3 ]---
-RIP: 0010:__free_one_page+0xa49/0xe00 mm/page_alloc.c:1015
-Code: ef e8 ab 39 f7 ff 0f 0b 48 c7 c6 e0 49 76 89 4c 89 ff e8 9a 39 f7 ff 0f 0b 0f 0b 48 c7 c6 40 4a 76 89 4c 89 ff e8 87 39 f7 ff <0f> 0b 48 c7 c6 a0 4a 76 89 4c 89 ff e8 76 39 f7 ff 0f 0b 41 83 fc
-RSP: 0000:ffffffff8b407c98 EFLAGS: 00010086
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffffffff8b49bc00 RSI: ffffffff88c8495e RDI: 0000000000000003
-RBP: 0000000000000011 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff88c84940 R11: 0000000000000000 R12: 0000000000000003
-R13: 0000000000000000 R14: 0000000000000003 R15: ffffea0000000440
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff88823ffff000 CR3: 000000000b48e000 CR4: 00000000000406b0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> What I can do is to provide just a skeleton for the table that you or =
+Linus
+> can fix/fill in and make a patch out of it. Is attached and the ??? is
+> something you should discuss and define.
+
+Please take the attached diff, comment it here and define the question =
+marks
+according to your intention and then make a patch for the YAML bindings =
+out
+of it. (I can't do because I don't know your intentions and what to =
+write into
+the commit message).
+
+As soon as we have settled this, we can check if code is correct and =
+really
+define if my device tree fits and which change it needs exactly.
+
+BR and thanks,
+Nikolaus
+
+[slightly edited]
+
+diff --git a/Documentation/devicetree/bindings/spi/spi-controller.yaml =
+b/Documentation/devicetree/bindings/spi/spi-controller.yaml
+index 1b56d5e40f1f..4f8755dabecc 100644
+--- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
++++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
+@@ -42,6 +42,30 @@ properties:
+        cs2 : &gpio1 1 0
+        cs3 : &gpio1 2 0
+
++      The second flag of a gpio descriptor can be GPIO_ACTIVE_HIGH/0
++      or GPIO_ACTIVE_LOW/1.
++
++      There is a special rule set for combining the second flag of an
++      cs-gpio with the optional spi-cs-high flag for SPI slaves.
++
++      Each table entry defines how the CS pin is physically driven
++      (not considering potential gpio inversions by pinmux):
++
++      device node     | cs-gpio       | CS pin state active | Note
++      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D
++      spi-cs-high     | -             | H                   |
++      -               | -             | L                   |
++      spi-cs-high     | ACTIVE_HIGH   | H                   |
++      -               | ACTIVE_HIGH   | L (or H ???)        | 1
++      spi-cs-high     | ACTIVE_LOW    | H (or L ???)        | 2
++      -               | ACTIVE_LOW    | L                   |
++
++      Notes:
++      1) should print a warning about polarity inversion
++         because here it would be wise to define the gpio as ACTIVE_LOW
++      2) could print a warning about polarity inversion
++         because ACTIVE_LOW is overridden by spi-cs-high
++      3) Effectively this rule defines that the ACTIVE level of the
++         gpio has to be ignored
++
+  num-cs:
+    $ref: /schemas/types.yaml#/definitions/uint32
+    description:
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
