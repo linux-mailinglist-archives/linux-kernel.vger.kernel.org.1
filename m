@@ -2,240 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF4F2CFE94
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0082CFE97
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgLETxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 14:53:17 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56140 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725863AbgLETxP (ORCPT
+        id S1726419AbgLETxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 14:53:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726173AbgLETx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 14:53:15 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B5JWKnk100929;
-        Sat, 5 Dec 2020 14:51:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=20DojOCkzItIpggooTsWGti8C6d2j+Xs/EA/CGgXk0A=;
- b=sTbTTf56SL5BZO6TZ/7yWLtd6WiUVEkivfREZ8xEDUClx3T387iGUHVSNKvy8VYHrHxJ
- ptvJhyPfp3/Yjn3iC7dLYhft+m+YKNxjlJzb9hj7+pH2be4aVE6IntptICFf0gtM330L
- 92rzWoxRutEGUKiOuAHTSLpATbaku/leZB4hljdjwm3byqLrfFdJntudMHR5yuJuFaBo
- qbA+OJsbEEm7eQXE7xYaZRqNH3bXnxEydUK1R2UwKj7cAxTatzw8cEUX9O68DSgkiheT
- b2FOv5ahXmuqeE/9GMuLQotSIQwNuftEl+LCVjldC6apX2F8SHqIB2QA/AkLdhTe+vzq Wg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35857sax5e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 05 Dec 2020 14:51:43 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B5Jl483141760;
-        Sat, 5 Dec 2020 14:51:42 -0500
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35857sax57-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 05 Dec 2020 14:51:42 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B5JfiBd014850;
-        Sat, 5 Dec 2020 19:51:41 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma01dal.us.ibm.com with ESMTP id 3581u8dbvj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 05 Dec 2020 19:51:41 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B5Jpehw23593426
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 5 Dec 2020 19:51:40 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1625478060;
-        Sat,  5 Dec 2020 19:51:40 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A15577805C;
-        Sat,  5 Dec 2020 19:51:32 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.85.177.236])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Sat,  5 Dec 2020 19:51:32 +0000 (GMT)
-References: <20201204195149.611-1-nramas@linux.microsoft.com>
- <20201204195149.611-5-nramas@linux.microsoft.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, robh@kernel.org, gregkh@linuxfoundation.org,
-        james.morse@arm.com, catalin.marinas@arm.com, sashal@kernel.org,
-        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
-Subject: Re: [PATCH v10 4/8] powerpc: Use ima kexec node functions
-In-reply-to: <20201204195149.611-5-nramas@linux.microsoft.com>
-Date:   Sat, 05 Dec 2020 16:51:30 -0300
-Message-ID: <87v9dgm3p9.fsf@manicouagan.localdomain>
+        Sat, 5 Dec 2020 14:53:28 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1693C0613D1;
+        Sat,  5 Dec 2020 11:52:41 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id s11so1863826ljp.4;
+        Sat, 05 Dec 2020 11:52:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bBF57HirJUWNF1QYKQCv5cFAIUWWtnZdZjsBsF1FLJE=;
+        b=IdysiPjmnPVweioFPBqM2j0kXFOrazfcFWyxe+MuLYeOEAC2vr1O37U8hUDQcLe8C5
+         xxd+KyrAq4eW4uYdJ69QH+WpDKc1Dhg1DCO0Iey/XGIdIydoRgvfFbdoalfIsJWZq2Z3
+         iMIgHy8nTthhfK6rf+aL8juA5ZMNuw7tVT+DeZbOcQcb+dyKG69/HmAjUD4ynpgbAqX/
+         uR3sJlzTwaCm9CDD7IP5d1l5VJZ3pMesUY3XUJj+wr2zZa1kQwiYbkkFR9JrMiADJFqy
+         j3koh2M3FZ5JzRfwgDddQORHcQCV+tUDVOUggU4P0PK6r4Tug67HItzMaZr5sx1jLQ82
+         GBkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bBF57HirJUWNF1QYKQCv5cFAIUWWtnZdZjsBsF1FLJE=;
+        b=uYoYtlo/QRee2K8HOzaRcHCDc4/UxYIOJpbQcxgQrI3ku73g68Wm/lS69gO4XWChF/
+         wIa0u5gmCd0cLXsimBV+g4HLh+Hs7gc8XucDJGgdyVW7bTwdn1RJIIqUGj4j/x+M441j
+         SweuuM+/qnRFNtSk0TlMQb3rJyxo+edzRA47wcVLKnYimNaA0G2g1IxUbljDuoD7b9NI
+         MzkxDQ+kudRGaRhkf59+cmu4NPpdr7bC49MvBRBpEZv1ryQUvs/nNNYmPLIuvmJeefGh
+         a07DwGCj+aeDaLIyPaF0YH86W7d/yaSo0PpYErbfyEGDx2pXp5qXQpSLjIqLFyQsjlvI
+         fK4w==
+X-Gm-Message-State: AOAM530zKQx+6BcH+266KG8FD+lyhp9Bhxr3cII64zQYqGGwuFobnDGa
+        8tDDlkZQHUTHe6EhHq3dNCoS1TPYPSY=
+X-Google-Smtp-Source: ABdhPJzGAM8dSVUfPrR/U+Sun2Ezu5zVBu5XVo94j8F7KWeaq9PoGepIjjXZVKrnnHP9DQTWYaRB2Q==
+X-Received: by 2002:a2e:8053:: with SMTP id p19mr5590859ljg.321.1607197960096;
+        Sat, 05 Dec 2020 11:52:40 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-53.dynamic.spd-mgts.ru. [109.252.192.53])
+        by smtp.googlemail.com with ESMTPSA id p28sm2465992ljn.22.2020.12.05.11.52.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Dec 2020 11:52:39 -0800 (PST)
+Subject: Re: [PATCH v11 04/10] memory: tegra124-emc: Make driver modular
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+References: <20201203192439.16177-1-digetx@gmail.com>
+ <20201203192439.16177-5-digetx@gmail.com> <X8pmqVRFaBtkwDtr@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <76eb57bf-feaf-ad86-a2d6-152897af7f2f@gmail.com>
+Date:   Sat, 5 Dec 2020 22:52:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-05_15:2020-12-04,2020-12-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- lowpriorityscore=0 clxscore=1015 priorityscore=1501 adultscore=0
- mlxlogscore=999 spamscore=0 phishscore=0 suspectscore=2 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012050127
+In-Reply-To: <X8pmqVRFaBtkwDtr@ulmo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+04.12.2020 19:41, Thierry Reding пишет:
+...
+>> +bool tegra124_clk_emc_driver_available(struct clk_hw *hw)
+>> +{
+>> +	struct tegra_clk_emc *tegra = container_of(hw, struct tegra_clk_emc, hw);
+>> +
+>> +	return tegra->prepare_timing_change && tegra->complete_timing_change;
+>> +}
+> 
+> This looks a bit hackish and I prefer the way this was done for
+> Tegra210.
 
-Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+I may have an opposite opinion :)
 
-> do_get_kexec_buffer() and get_addr_size_cells() are called by
-> ima_get_kexec_buffer(), ima_free_kexec_buffer, and remove_ima_buffer()
-> to retrieve the address and size of the buffer used for carrying
-> forward the IMA measurement log across kexec system call. These
-> functions correctly handle a device tree property that is a child node
-> of the root node, but not anything other than the immediate root
-> child nodes.
->
-> Use the architecture independent functions get_ima_kexec_buffer()
-> and get_root_addr_size_cells() defined in "drivers/of/ima_kexec.c",
+> But that's mostly an implementation detail and we can always
+> restructure this if we want to.
 
-s/ima_kexec.c/kexec.c/
+This is true. I'm not saying that the current v11 variant is absolutely
+ideal, but it should be good enough for the starter (IMO) and actually I
+don't have any ideas right about what could be done better.
 
-> to get the address and size of the IMA measurement log buffer from
-> the device tree. Remove do_get_kexec_buffer() and get_addr_size_cells()
-> since they are not used anymore.
->
-> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>> diff --git a/drivers/clk/tegra/clk-tegra124.c b/drivers/clk/tegra/clk-tegra124.c
+>> index e931319dcc9d..934520aab6e3 100644
+>> --- a/drivers/clk/tegra/clk-tegra124.c
+>> +++ b/drivers/clk/tegra/clk-tegra124.c
+>> @@ -1500,6 +1500,26 @@ static void __init tegra124_132_clock_init_pre(struct device_node *np)
+>>  	writel(plld_base, clk_base + PLLD_BASE);
+>>  }
+>>  
+>> +static struct clk *tegra124_clk_src_onecell_get(struct of_phandle_args *clkspec,
+>> +						void *data)
+>> +{
+>> +	struct clk_hw *hw;
+>> +	struct clk *clk;
+>> +
+>> +	clk = of_clk_src_onecell_get(clkspec, data);
+>> +	if (IS_ERR(clk))
+>> +		return clk;
+>> +
+>> +	hw = __clk_get_hw(clk);
+>> +
+>> +	if (clkspec->args[0] == TEGRA124_CLK_EMC) {
+>> +		if (!tegra124_clk_emc_driver_available(hw))
+>> +			return ERR_PTR(-EPROBE_DEFER);
+>> +	}
+>> +
+>> +	return clk;
+>> +}
+> 
+> Hm... why exactly do we need this? On Tegra210 and later, the EMC driver
+> is the only consumer of the EMC clock and since it also provides some of
+> the necessary parts to scale the EMC clock, that's a chicken and egg
+> problem.
 
-Looks good. Thanks!
+The T124 EMC driver has an existing active user for the EMC clock, the
+devfreq/actmon driver which watches and drives the EMC clock rate. The
+EMC clock shan't be requested by the devfreq driver until EMC driver is
+ready, the only sensible way to achieve this is implemented by this patch.
 
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+The devfreq driver doesn't support T210 (yet?) and you should witness
+the problem if you'll try to implement the T210 support.
 
-> ---
->  arch/powerpc/kexec/ima.c | 58 +++++-----------------------------------
->  1 file changed, 7 insertions(+), 51 deletions(-)
->
-> diff --git a/arch/powerpc/kexec/ima.c b/arch/powerpc/kexec/ima.c
-> index a36c39db4b1a..906e8212435d 100644
-> --- a/arch/powerpc/kexec/ima.c
-> +++ b/arch/powerpc/kexec/ima.c
-> @@ -13,40 +13,6 @@
->  #include <linux/libfdt.h>
->  #include <asm/ima.h>
->  
-> -static int get_addr_size_cells(int *addr_cells, int *size_cells)
-> -{
-> -	struct device_node *root;
-> -
-> -	root = of_find_node_by_path("/");
-> -	if (!root)
-> -		return -EINVAL;
-> -
-> -	*addr_cells = of_n_addr_cells(root);
-> -	*size_cells = of_n_size_cells(root);
-> -
-> -	of_node_put(root);
-> -
-> -	return 0;
-> -}
-> -
-> -static int do_get_kexec_buffer(const void *prop, int len, unsigned long *addr,
-> -			       size_t *size)
-> -{
-> -	int ret, addr_cells, size_cells;
-> -
-> -	ret = get_addr_size_cells(&addr_cells, &size_cells);
-> -	if (ret)
-> -		return ret;
-> -
-> -	if (len < 4 * (addr_cells + size_cells))
-> -		return -ENOENT;
-> -
-> -	*addr = of_read_number(prop, addr_cells);
-> -	*size = of_read_number(prop + 4 * addr_cells, size_cells);
-> -
-> -	return 0;
-> -}
-> -
->  /**
->   * ima_get_kexec_buffer - get IMA buffer from the previous kernel
->   * @addr:	On successful return, set to point to the buffer contents.
-> @@ -56,16 +22,11 @@ static int do_get_kexec_buffer(const void *prop, int len, unsigned long *addr,
->   */
->  int ima_get_kexec_buffer(void **addr, size_t *size)
->  {
-> -	int ret, len;
-> +	int ret;
->  	unsigned long tmp_addr;
->  	size_t tmp_size;
-> -	const void *prop;
->  
-> -	prop = of_get_property(of_chosen, "linux,ima-kexec-buffer", &len);
-> -	if (!prop)
-> -		return -ENOENT;
-> -
-> -	ret = do_get_kexec_buffer(prop, len, &tmp_addr, &tmp_size);
-> +	ret = get_ima_kexec_buffer(NULL, 0, &tmp_addr, &tmp_size);
->  	if (ret)
->  		return ret;
->  
-> @@ -89,7 +50,7 @@ int ima_free_kexec_buffer(void)
->  	if (!prop)
->  		return -ENOENT;
->  
-> -	ret = do_get_kexec_buffer(prop->value, prop->length, &addr, &size);
-> +	ret = get_ima_kexec_buffer(NULL, 0, &addr, &size);
->  	if (ret)
->  		return ret;
->  
-> @@ -98,7 +59,6 @@ int ima_free_kexec_buffer(void)
->  		return ret;
->  
->  	return memblock_free(addr, size);
-> -
->  }
->  
->  /**
-> @@ -112,19 +72,15 @@ int ima_free_kexec_buffer(void)
->   */
->  void remove_ima_buffer(void *fdt, int chosen_node)
->  {
-> -	int ret, len;
-> +	int ret;
->  	unsigned long addr;
->  	size_t size;
-> -	const void *prop;
->  
-> -	prop = fdt_getprop(fdt, chosen_node, "linux,ima-kexec-buffer", &len);
-> -	if (!prop)
-> +	ret = get_ima_kexec_buffer(fdt, chosen_node, &addr, &size);
-> +	if (ret)
->  		return;
->  
-> -	ret = do_get_kexec_buffer(prop, len, &addr, &size);
->  	fdt_delprop(fdt, chosen_node, "linux,ima-kexec-buffer");
-> -	if (ret)
-> -		return;
->  
->  	ret = delete_fdt_mem_rsv(fdt, addr, size);
->  	if (!ret)
-> @@ -191,7 +147,7 @@ int setup_ima_buffer(const struct kimage *image, void *fdt, int chosen_node)
->  	if (!image->arch.ima_buffer_size)
->  		return 0;
->  
-> -	ret = get_addr_size_cells(&addr_cells, &size_cells);
-> +	ret = get_root_addr_size_cells(&addr_cells, &size_cells);
->  	if (ret)
->  		return ret;
+> I'm not sure I fully understand how this is supposed to work
+> here and why we can't do this in a similar way than Tegra210.
 
+The CCF returns -EPROBE_DEFER for clk_get() only until clock provider is
+registered, otherwise it returns a dummy/stub clock once provider is
+available and clk (of the provider) isn't registered. The CCF provider
+for the EMC clock is the tegra-clk driver, not the EMC driver.
 
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+Once clk_get() is invoked by a clk user, the CCF performs the clk lookup
+using the DT specifier and this lookup is aborted with a -EPROBE_DEFER
+from the clk_src_onecell_get() callback if EMC driver isn't loaded yet.
+I don't think that there are any other variants to achieve this behaviour.
+
+I also prefer to have a clean separation of the clk and EMC drivers
+because this is a much more expressive variant than mixing drivers
+together in obscure way. The pre-T210 EMC drivers don't need to touch
+clk registers for programming of the memory timings, hence those EMC
+drivers are in a bit better position than the T210 driver.
+
+The T210 EMC driver also could have a cleaner separation by using a
+special tegra-clk API for the clk/EMC functions, instead of shoving a
+raw clk IO pointer to the EMC driver. It feels like I was already
+suggesting this about a half-year ago, before the T210 driver was merged.
