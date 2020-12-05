@@ -2,154 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17AC82CFE8C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD472CFE90
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgLETtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 14:49:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbgLETtA (ORCPT
+        id S1726359AbgLETu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 14:50:28 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3782 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725536AbgLETu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 14:49:00 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D10FC0613D1;
-        Sat,  5 Dec 2020 11:48:18 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607197695;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5V64cHoDauQUIjehmXNdE3d+yc6rEovliqZd890tZyc=;
-        b=2dZo+Tgpz46/CvuMRAaMBs6LBghauRtHEJYgcpKvgHaboX1eRha21sywPs90/boVHgePPW
-        4BQ4o7Qf70lN6yBLyI0a2okxXCsi1LIIq4E8VeZIp3fLI/SVaERVtQpJzVF5xsZkSpezWG
-        n9tbwfrwuJakp/IDyFWh4UIY5T+8p2K4znYOZGgg2g5bxFPaUSUN/69DeneBxLzMbi5I2y
-        phdHLVyRJZEH8+KKgcMNBeMh37Jn33RIshbPbIanUhyyEmwf8tU1vrFbsRngNE00Hfc/u0
-        dmGy0w1lKccZ+gk0KbHg/4WM1Ve0y1j1wWskzFuXOCXotUS8naIKBp1BcusgSg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607197695;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5V64cHoDauQUIjehmXNdE3d+yc6rEovliqZd890tZyc=;
-        b=yo8evh+GXBHbspAYbEKASwVyNqiH9vfFd2JG9cthkSOM+YN9oopdlp3N2ZhOvsUAXW4mFt
-        KJ+wK35XaaclkPAw==
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linuxfoundation.org>,
-        Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: crypto: sun4i-ss: error with kmap
-In-Reply-To: <20201205184334.GA8034@Red>
-References: <20201201144529.GA6786@Red> <87v9dlfthf.fsf@nanos.tec.linutronix.de> <20201202195501.GA29296@Red> <877dpzexfr.fsf@nanos.tec.linutronix.de> <20201203173846.GA16207@Red> <87r1o6bh1u.fsf@nanos.tec.linutronix.de> <20201204132631.GA25321@Red> <874kl1bod0.fsf@nanos.tec.linutronix.de> <20201204192753.GA19782@Red> <87wnxx9tle.fsf@nanos.tec.linutronix.de> <20201205184334.GA8034@Red>
-Date:   Sat, 05 Dec 2020 20:48:15 +0100
-Message-ID: <87mtys8268.fsf@nanos.tec.linutronix.de>
+        Sat, 5 Dec 2020 14:50:26 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B5JXCEO163033;
+        Sat, 5 Dec 2020 14:49:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=TkHcsLG8dAL+RnhNBxOBlnSfXxHw/ayhM50ATHOAvdI=;
+ b=gq6W7yzSDeOA/2osPmeE0OkSF6rrF/Js1p5pYpjNUvPTWnIBU80t5UCA4uUy6caXRCXt
+ RdsVYRFkJTJRMfq+iM+fX6fJt2OOfwEUWuySrlMZVGIExKuDO3tA69J07zp2LskeCrE+
+ MGPqeMwLgqX1L7QDEgQYKS1Y3mW6xVfQU5t0Qjw9LTDtGO7lHTcox7h1Ie0GFUfRmoBu
+ mUWVCqkml3zBO/9EvBIQSz5zzY2qgsMiCQtJOXIZ9nngILJd1GLZDUB6kZwQ670mYpnz
+ VWEyOaQgjE7jj8KHrhQC55NMKe8s9P7x50agELMeuv6uSjt13hEdLV+mNwzWJ+eW8JV4 Aw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3586dbjgu1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Dec 2020 14:49:09 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B5JYInf164918;
+        Sat, 5 Dec 2020 14:49:09 -0500
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3586dbjgsu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Dec 2020 14:49:08 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B5JhBWk012199;
+        Sat, 5 Dec 2020 19:49:07 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma04dal.us.ibm.com with ESMTP id 3581u8nbcg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Dec 2020 19:49:07 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B5Jn6fc17891756
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 5 Dec 2020 19:49:06 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2C5B3BE059;
+        Sat,  5 Dec 2020 19:49:06 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C9390BE04F;
+        Sat,  5 Dec 2020 19:48:58 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.85.177.236])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Sat,  5 Dec 2020 19:48:58 +0000 (GMT)
+References: <20201204195149.611-1-nramas@linux.microsoft.com>
+ <20201204195149.611-4-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, gregkh@linuxfoundation.org,
+        james.morse@arm.com, catalin.marinas@arm.com, sashal@kernel.org,
+        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
+Subject: Re: [PATCH v10 3/8] powerpc: Move ima buffer functions to
+ drivers/of/kexec.c
+In-reply-to: <20201204195149.611-4-nramas@linux.microsoft.com>
+Date:   Sat, 05 Dec 2020 16:48:56 -0300
+Message-ID: <87zh2sm3tj.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-05_15:2020-12-04,2020-12-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ adultscore=0 phishscore=0 mlxlogscore=999 spamscore=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 clxscore=1015 impostorscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012050130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Corentin,
 
-On Sat, Dec 05 2020 at 19:43, Corentin Labbe wrote:
-> On Fri, Dec 04, 2020 at 09:58:21PM +0100, Thomas Gleixner wrote:
->> Can you please replace the debug patch with the one below and try again?
->> That stops the trace right on the condition.
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+
+> The functions do_get_kexec_buffer() and get_addr_size_cells(),
+> defined in arch/powerpc/kexec/ima.c, retrieve the address and size
+> of the given property from the device tree blob. These functions do
+> not have architecture specific code, but are currently limited to
+> powerpc. do_get_kexec_buffer() correctly handles a device tree property
+> that is a child node of the root node, but not anything other than
+> the immediate root child nodes.
 >
-> Hello, the result could be found at http://kernel.montjoie.ovh/130739.log
+> Move architecture independent functions get_ima_kexec_buffer() and
+> get_root_addr_size_cells() to "drivers/of/kexec.c". These functions
+> retrieve the chosen node "linux,ima-kexec-buffer" from the device tree,
+> and return the address and size of the buffer used for carrying forward
+> the IMA measurement log across kexec system call.
+>
+> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 
-Thanks for providing this. This is clearly showing where stuff goes
-wrong. It starts here at 729.550001. I removed the uninteresting parts:
+I'd personally squash this patch with the next one, but I'll leave it
+just as a suggestion since maintainers are the ones who know best what
+works well in this regard.
 
-0d..2 147103293us : __kmap_local_page_prot <-sg_miter_next
-0d..3 147103308us :__kmap_local_pfn_prot: kmap_local_pfn: 1 ffefd000
+The code is good, except for a nit below:
 
-0d..3 147103311us : __kmap_local_page_prot <-sg_miter_next
-0d..4 147103325us : __kmap_local_pfn_prot: kmap_local_pfn: 3 ffefb000
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
 
-0d..3 147103429us : kunmap_local_indexed <-sg_miter_stop
-0d..4 147103433us : kunmap_local_indexed: kunmap_local: 3 ffefd000
+> ---
+>  drivers/of/kexec.c    | 70 +++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/kexec.h |  3 ++
+>  2 files changed, 73 insertions(+)
+>
+> diff --git a/drivers/of/kexec.c b/drivers/of/kexec.c
+> index b7d59105fcb8..516b86f7113a 100644
+> --- a/drivers/of/kexec.c
+> +++ b/drivers/of/kexec.c
+> @@ -59,3 +59,73 @@ int delete_fdt_mem_rsv(void *fdt, unsigned long start, unsigned long size)
+>  
+>  	return -ENOENT;
+>  }
+> +
+> +/**
+> + * get_root_addr_size_cells - Get address and size of root node
+> + *
+> + * @addr_cells: Return address of the root node
+> + * @size_cells: Return size of the root node
+> + *
+> + * Return: 0 on success, or negative errno on error.
+> + */
+> +int get_root_addr_size_cells(int *addr_cells, int *size_cells)
+> +{
+> +	struct device_node *root;
+> +
+> +	if (!IS_ENABLED(CONFIG_HAVE_IMA_KEXEC))
+> +		return -EOPNOTSUPP;
+> +
+> +	root = of_find_node_by_path("/");
+> +	if (!root)
+> +		return -EINVAL;
+> +
+> +	*addr_cells = of_n_addr_cells(root);
+> +	*size_cells = of_n_size_cells(root);
+> +
+> +	of_node_put(root);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * get_ima_kexec_buffer - Get address and size of IMA kexec buffer
+> + *
+> + * @fdt: Flattened Device Tree
+> + * @chosen_node: Offset of chosen node in the FDT
+> + * @addr: Return address of the node
+> + * @size: Return size of the node
+> + *
+> + * Return: 0 on success, or negative errno on error.
+> + */
+> +int get_ima_kexec_buffer(void *fdt, int chosen_node,
+> +			 unsigned long *addr, size_t *size)
+> +{
+> +	const void *prop;
+> +	int addr_cells, size_cells, prop_len;
+> +	int rc;
+> +
+> +	if (!IS_ENABLED(CONFIG_HAVE_IMA_KEXEC))
+> +		return -EOPNOTSUPP;
+> +
+> +	rc = get_root_addr_size_cells(&addr_cells, &size_cells);
+> +	if (rc)
+> +		return rc;
+> +
+> +	if (fdt)
+> +		prop = fdt_getprop(fdt, chosen_node,
+> +				   "linux,ima-kexec-buffer", &prop_len);
+> +	else
+> +		prop = of_get_property(of_chosen,
+> +				       "linux,ima-kexec-buffer", &prop_len);
+> +
+> +	if (!prop)
+> +		return -ENOENT;
+> +
+> +	if (prop_len < 4 * (addr_cells + size_cells))
+> +		return -EINVAL;
+> +
+> +	*addr = of_read_number(prop, addr_cells);
+> +	*size = of_read_number(prop + 4 * addr_cells, size_cells);
+> +
+> +	return 0;
+> +}
+> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+> index d0234c4815da..10ff704ab670 100644
+> --- a/include/linux/kexec.h
+> +++ b/include/linux/kexec.h
+> @@ -408,6 +408,9 @@ static inline int kexec_crash_loaded(void) { return 0; }
+>  #endif /* CONFIG_KEXEC_CORE */
+>  
+>  #if defined(CONFIG_OF_FLATTREE)
+> +extern int get_root_addr_size_cells(int *addr_cells, int *size_cells);
+> +extern int get_ima_kexec_buffer(void *fdt, int chosen_node,
+> +				unsigned long *addr, size_t *size);
+>  extern int delete_fdt_mem_rsv(void *fdt, unsigned long start,
+>  			      unsigned long size);
+>  #endif /* CONFIG_OF_FLATTREE */
 
-So this maps two pages and unmaps the first one. That's all called from
-sun4i_ss_opti_poll() and the bug is clearly visible there:
+The extern keyword on function prototypes doesn't have any meaning.
+It's better to drop them (I should have mentioned this on the previous
+patch as well).
 
-	sg_miter_next(&mi);
-	sg_miter_next(&mo);
-
-release_ss:
-	sg_miter_stop(&mi);
-	sg_miter_stop(&mo);
-
-Written by yourself :) Same issue in sun4i_ss_cipher_poll()
-
-Fix below.
-
-Julia, it might be worth to have a coccinelle check for that. It's the
-only place which got it wrong, but this goes unnoticed when code is
-e.g. only fully tested on 64bit or as in this case never tested with
-full debugging enabled. The whole kmap_atomic and kmap_local (new in
-next) family and all users like the sg_miter stuff are affected by this.
-
-Thanks,
-
-        tglx
----
-Subject: crypto: sun4i-ss - Fix sg_miter_stop() ordering
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Sat, 05 Dec 2020 20:17:28 +0100
-
-sun4i_ss_opti_poll() and sun4i_ss_cipher_poll() do:
-
-        sg_miter_next(&mi);
-        sg_miter_next(&mo);
-	...
-        sg_miter_stop(&mi);
-        sg_miter_stop(&mo);
-
-which is the wrong order because sg_miter_next() maps a page with
-kmap_atomic() and sg_miter_stop() unmaps it. kmap_atomic() uses a stack
-internaly which requires that the nested map is unmapped first. As this
-uses the wrong order it triggers the warning in kunmap_local_indexed()
-which checks the to be unmapped address and subsequently crashes.
-
-This went unnoticed for 5 years because the ARM kmap_atomic()
-implementation had the warning conditional on CONFIG_DEBUG_HIGHMEM which
-was obviously never enabled when testing that driver.
-
-Flip the order to cure it.
-
-Reported-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Fixes: 6298e948215f ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
----
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-@@ -109,8 +109,8 @@ static int noinline_for_stack sun4i_ss_o
- 	}
- 
- release_ss:
--	sg_miter_stop(&mi);
- 	sg_miter_stop(&mo);
-+	sg_miter_stop(&mi);
- 	writel(0, ss->base + SS_CTL);
- 	spin_unlock_irqrestore(&ss->slock, flags);
- 	return err;
-@@ -333,8 +333,8 @@ static int sun4i_ss_cipher_poll(struct s
- 	}
- 
- release_ss:
--	sg_miter_stop(&mi);
- 	sg_miter_stop(&mo);
-+	sg_miter_stop(&mi);
- 	writel(0, ss->base + SS_CTL);
- 	spin_unlock_irqrestore(&ss->slock, flags);
- 
-
-
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
