@@ -2,121 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7C82CFD01
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB642CFD5C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729378AbgLEST2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:19:28 -0500
-Received: from mx.baikalchip.com ([94.125.187.42]:53294 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727530AbgLERmh (ORCPT
+        id S1728737AbgLEScP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:32:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728812AbgLES3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:42:37 -0500
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Felipe Balbi <balbi@kernel.org>,
-        John Youn <John.Youn@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        David Cohen <david.a.cohen@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 3/3] usb: dwc3: ulpi: Fix USB2.0 HS/FS/LS PHY suspend regression
-Date:   Sat, 5 Dec 2020 16:55:21 +0300
-Message-ID: <20201205135521.28344-4-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20201205135521.28344-1-Sergey.Semin@baikalelectronics.ru>
-References: <20201205135521.28344-1-Sergey.Semin@baikalelectronics.ru>
+        Sat, 5 Dec 2020 13:29:22 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577A9C02B8E8;
+        Sat,  5 Dec 2020 06:20:30 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id m9so5390301pgb.4;
+        Sat, 05 Dec 2020 06:20:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qfMlRUVz5l7XVnc/HFInF5rSPBCWYyUgC3VCNT+TRWQ=;
+        b=C9A4i/ZALuE1Vy3sg0nA47KkXJR2u7TdvhzKNb1tvirxxpBn+gDKjl9Q1PkFxZOLLQ
+         XFS9CGJA0urf7u0Hqm4BKTHb3MCDBBnseIg6qS5DowyelXQTKpMPqIYwWHg29j4rtu0Z
+         9G4S9dZv+XBwC+0xInQc1kkcc94P7axOUSK42vNlFm7s5GGS2tQ29UBhtI5mn+C8ZyvE
+         3HZvkOhRuMBqotdx00JiyK//pTYyCHALUI8n6W7YGKhlvTDWdJolxMB1UYMz+lrug/42
+         tlJp3E5SVK2mQNvKNaLXu5cZTY8lkPjHh3CL2C3AhrPNkEW3vTwW7/FFoG86dphTVtL3
+         gnkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qfMlRUVz5l7XVnc/HFInF5rSPBCWYyUgC3VCNT+TRWQ=;
+        b=aCCUm/ZMbJr2UBKjBY8YP/D/Q6MkSkHYh/YiXvABgZvGU+hdvDMJTbCD5wsnsV0/ZG
+         iBq6RELBNn1KU/7ghogQfpDe9mjfJupSnX+PxbibV6W+C1mveeyYZFxnsjJGkqMvQBmC
+         FRY8LGZo20DHT146Olt1Q7zsbjAGXqZHnRykyac/iqy3jUm7+laAIdogWuBK+Pc7wAjS
+         0b0eng9UY+E042zHR4YD33/AgYZzvq6nuyErwZjG17AeglcVnuncgjR+kXvBqq6jVdD2
+         2M/YcfKIDBLXcReSqJG6SuZ/sJ8PGWy4O7xOEL5pMjqR2zP9PKx/Amo8t7wTxR+cDhlX
+         XTRg==
+X-Gm-Message-State: AOAM5324bOfus9bxIAW4k8wQbGr+P2TUbC7ds0wXmHPvIbkVRitKkYS/
+        +RihFAafQuycaBdmK0zg2OM=
+X-Google-Smtp-Source: ABdhPJyzN4hCePBAMRuRECzzPa2JcopEIz/7HOGFbRN/OXfx6azO6plsWS9xJmtR4O2/wwvzDzODNA==
+X-Received: by 2002:a05:6a00:acc:b029:198:2ba6:c0f6 with SMTP id c12-20020a056a000accb02901982ba6c0f6mr8333748pfl.53.1607178029710;
+        Sat, 05 Dec 2020 06:20:29 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:e004:f0c9:3f6:a1c3:a34c:b902])
+        by smtp.gmail.com with ESMTPSA id m4sm9400202pfd.203.2020.12.05.06.20.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Dec 2020 06:20:28 -0800 (PST)
+From:   Clement Smith <rclemsmith@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Clement Smith <rclemsmith@gmail.com>
+Subject: [PATCH 1/8] tty: serial: jsm: Fixed file by added more spacing in line 610
+Date:   Sat,  5 Dec 2020 19:50:08 +0530
+Message-Id: <0c203c3dfd32ea016ed7c0de7a1e83a09eb91806.1607177807.git.rclemsmith@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1607177807.git.rclemsmith@gmail.com>
+References: <cover.1607177807.git.rclemsmith@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First of all the commit e0082698b689 ("usb: dwc3: ulpi: conditionally
-resume ULPI PHY") introduced the Suspend USB2.0 HS/FS/LS PHY regression,
-as by design of the fix any attempt to read/write from/to the PHY control
-registers will completely disable the PHY suspension, which consequently
-will increase the USB bus power consumption. Secondly the fix won't work
-well for the very first attempt of the ULPI PHY control registers IO,
-because after disabling the USB2.0 PHY suspension functionality it will
-still take some time for the bus to resume from the sleep state if one has
-been reached before it. So the very first PHY register read/write
-operation will take more time than the busy-loop provides and the IO
-timeout error might be returned anyway.
+Fixed a coding style issue
 
-Here we suggest to fix the denoted problems in the following way. First of
-all let's not disable the Suspend USB2.0 HS/FS/LS PHY functionality so to
-make the controller and the USB2.0 bus more power efficient. Secondly
-instead of that we'll extend the PHY IO op wait procedure with 1 - 1.2 ms
-sleep if the PHY suspension is enabled (1ms should be enough as by LPM
-specification it is at most how long it takes for the USB2.0 bus to resume
-from L1 (Sleep) state). Finally in case if the USB2.0 PHY suspension
-functionality has been disabled on the DWC USB3 controller setup procedure
-we'll compensate the USB bus resume process latency by extending the
-busy-loop attempts counter.
-
-Fixes: e0082698b689 ("usb: dwc3: ulpi: conditionally resume ULPI PHY")
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Clement Smith <rclemsmith@gmail.com>
 ---
- drivers/usb/dwc3/ulpi.c | 18 +++++-------------
- 1 file changed, 5 insertions(+), 13 deletions(-)
+ drivers/tty/serial/jsm/jsm_tty.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/dwc3/ulpi.c b/drivers/usb/dwc3/ulpi.c
-index 54c877f7b51d..f23f4c9a557e 100644
---- a/drivers/usb/dwc3/ulpi.c
-+++ b/drivers/usb/dwc3/ulpi.c
-@@ -24,7 +24,7 @@
- static int dwc3_ulpi_busyloop(struct dwc3 *dwc, u8 addr, bool read)
- {
- 	unsigned long ns = 5L * DWC3_ULPI_BASE_DELAY;
--	unsigned int count = 1000;
-+	unsigned int count = 10000;
- 	u32 reg;
- 
- 	if (addr >= ULPI_EXT_VENDOR_SPECIFIC)
-@@ -33,6 +33,10 @@ static int dwc3_ulpi_busyloop(struct dwc3 *dwc, u8 addr, bool read)
- 	if (read)
- 		ns += DWC3_ULPI_BASE_DELAY;
- 
-+	reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYCFG(0));
-+	if (reg & DWC3_GUSB2PHYCFG_SUSPHY)
-+		usleep_range(1000, 1200);
-+
- 	while (count--) {
- 		ndelay(ns);
- 		reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYACC(0));
-@@ -50,12 +54,6 @@ static int dwc3_ulpi_read(struct device *dev, u8 addr)
- 	u32 reg;
- 	int ret;
- 
--	reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYCFG(0));
--	if (reg & DWC3_GUSB2PHYCFG_SUSPHY) {
--		reg &= ~DWC3_GUSB2PHYCFG_SUSPHY;
--		dwc3_writel(dwc->regs, DWC3_GUSB2PHYCFG(0), reg);
--	}
--
- 	reg = DWC3_GUSB2PHYACC_NEWREGREQ | DWC3_ULPI_ADDR(addr);
- 	dwc3_writel(dwc->regs, DWC3_GUSB2PHYACC(0), reg);
- 
-@@ -73,12 +71,6 @@ static int dwc3_ulpi_write(struct device *dev, u8 addr, u8 val)
- 	struct dwc3 *dwc = dev_get_drvdata(dev);
- 	u32 reg;
- 
--	reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYCFG(0));
--	if (reg & DWC3_GUSB2PHYCFG_SUSPHY) {
--		reg &= ~DWC3_GUSB2PHYCFG_SUSPHY;
--		dwc3_writel(dwc->regs, DWC3_GUSB2PHYCFG(0), reg);
--	}
--
- 	reg = DWC3_GUSB2PHYACC_NEWREGREQ | DWC3_ULPI_ADDR(addr);
- 	reg |= DWC3_GUSB2PHYACC_WRITE | val;
- 	dwc3_writel(dwc->regs, DWC3_GUSB2PHYACC(0), reg);
+diff --git a/drivers/tty/serial/jsm/jsm_tty.c b/drivers/tty/serial/jsm/jsm_tty.c
+index 689774c073ca..512b77195e9f 100644
+--- a/drivers/tty/serial/jsm/jsm_tty.c
++++ b/drivers/tty/serial/jsm/jsm_tty.c
+@@ -607,7 +607,7 @@ void jsm_input(struct jsm_channel *ch)
+ 				 * Give the Linux ld the flags in the
+ 				 * format it likes.
+ 				 */
+-				if (*(ch->ch_equeue +tail +i) & UART_LSR_BI)
++				if (*(ch->ch_equeue + tail + i) & UART_LSR_BI)
+ 					tty_insert_flip_char(port, *(ch->ch_rqueue +tail +i),  TTY_BREAK);
+ 				else if (*(ch->ch_equeue +tail +i) & UART_LSR_PE)
+ 					tty_insert_flip_char(port, *(ch->ch_rqueue +tail +i), TTY_PARITY);
 -- 
-2.29.2
+2.27.0
 
