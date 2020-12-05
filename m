@@ -2,142 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DEA2CF9F5
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 07:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89612CFA01
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 07:25:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgLEGMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 01:12:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728186AbgLEGMH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 01:12:07 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB13EC061A51
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 22:11:26 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id x15so4357017pll.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 22:11:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D7AczkzMwnCTqGNk/WinEN4GxDXh0TBrfFJyaIs9yxY=;
-        b=W6xJPGENxbezmkuhhtaWZSnVB8iblzBFz/ZlCgViToQq/1fJIkWo7hIZ6s89WkKvom
-         fKZ1/KGgHcS6ZuRfbmQebsZHKpdk2DSAJVlITgghsbHI0FWR7kMbuabZvjrU3pAT2Uql
-         k4hJtbP6tyfLVhUOe3VPtfnV1ln245JCCOPFNJRGPu3v6uzh2kuyBQeFvABGJfzt9NBw
-         9By5QUj73eF6+qeQLjlh+Nc8Ya+chlN4VLJXwdHM+vJqOJuZcpcHMiXUgyUQuk4w00b5
-         zTDoZia8oFImOhBVf3eAcExH7pekUIWZ/4NPjIKRyo5rF02BDVOFEBJYBXVIUshvK0j6
-         LzhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D7AczkzMwnCTqGNk/WinEN4GxDXh0TBrfFJyaIs9yxY=;
-        b=clPxheSsGUPrJhbm/qDPaOXQr4yuODDLmFfvJBDg28eiSS14hnP67y4tmpfrr+ZiXv
-         uHz/msqK45acJVSYM1vpHE8MwswhmOZsSHPbNb7itVi0vfYxWVetVdJrJ9+pKmDFrBDZ
-         /X1gPEsTxnbNbwG3oK/7LZeYyVgzlizL4sEb7yoYN1ZR7AkTOWg4LdcLHm/f7FUrdoz6
-         t9+fZW/Z80tfs2Spv+wdsEHu5njqXcppAUGyrv8DWVY55q9WyQQ2aU33SI2sGryE92AW
-         2XPV516gR+z5OU2N93z2xF8Zp0fR28kik+jQjbtAADUkA0tm+x6UGvkhAdfLGVCKBXKM
-         C4zw==
-X-Gm-Message-State: AOAM531Zkh6f2TQMqddw/bd2oQOLj79fNnHtfM/VQHDAjfqgIhr11mOT
-        hwDG8vkiXY8rRXft6b4jyBAH
-X-Google-Smtp-Source: ABdhPJzvEXQ4h/j2yTz8qIDNrIHGaz8TRTASTCZ9h+hLDXfffPdy21Bc34vKlGOcvRYRYnuIk6pB4w==
-X-Received: by 2002:a17:90a:7e95:: with SMTP id j21mr7373400pjl.217.1607148686216;
-        Fri, 04 Dec 2020 22:11:26 -0800 (PST)
-Received: from thinkpad ([2409:4072:648e:8bd1:74b2:a4d8:e3fe:225b])
-        by smtp.gmail.com with ESMTPSA id q23sm6915493pfg.18.2020.12.04.22.11.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 22:11:25 -0800 (PST)
-Date:   Sat, 5 Dec 2020 11:41:15 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Vinod Koul <vkoul@kernel.org>, Wolfram Sang <wsa@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Subject: Re: [PATCH v2 00/18] Add CMU/RMU/DMA/MMC/I2C support for Actions
- Semi S500 SoCs
-Message-ID: <20201205061115.GB4068@thinkpad>
-References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
+        id S1728186AbgLEGYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 01:24:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35532 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726999AbgLEGYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 01:24:48 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607149448;
+        bh=r8vnqMmsHnbgwMXfSQZu84loY6DvrmHia8Sx1hc/RJQ=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=T4bFniftvCd2jeC6yESokQyOHoTMxC9vK6miqN2mi2XZsBNpieVpWrZWJ4/ROoVau
+         zIweZB3ouv+2OYfFYhW50zG34k1z/GoAAlXVdYhFfPpHAER9uNSy+ACWR4QnDhGuRN
+         uF3ewwCPsC0jNHoOsylZXbRo6pbi2K8WY92Dbcw+L49AQqk8J0jnR3fXB3D8pc9QKD
+         HkId29E+OBrSUtnds5+Pr4+rygtaP4uF6TpHP1UUg/g/s/MIu62pjr25Y6h887D3mo
+         0ABFaab5sm2/qsL/H6aOQgE5NCXBPsqOngGLlOeALbEVA6UTuZ/AUtHNc8K05eNVem
+         BV/WPUFP1yU7w==
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201130085743.1656317-1-geert+renesas@glider.be>
+References: <20201130085743.1656317-1-geert+renesas@glider.be>
+Subject: Re: [PATCH v2] clk: renesas: r9a06g032: Drop __packed for portability
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Gareth Williams <gareth.williams.jx@renesas.com>,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Date:   Fri, 04 Dec 2020 22:24:06 -0800
+Message-ID: <160714944657.1580929.4595234852977229885@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cristi,
+Quoting Geert Uytterhoeven (2020-11-30 00:57:43)
+> The R9A06G032 clock driver uses an array of packed structures to reduce
+> kernel size.  However, this array contains pointers, which are no longer
+> aligned naturally, and cannot be relocated on PPC64.  Hence when
+> compile-testing this driver on PPC64 with CONFIG_RELOCATABLE=3Dy (e.g.
+> PowerPC allyesconfig), the following warnings are produced:
+>=20
+>     WARNING: 136 bad relocations
+>     c000000000616be3 R_PPC64_UADDR64   .rodata+0x00000000000cf338
+>     c000000000616bfe R_PPC64_UADDR64   .rodata+0x00000000000cf370
+>     ...
+>=20
+> Fix this by dropping the __packed attribute from the r9a06g032_clkdesc
+> definition, trading a small size increase for portability.
+>=20
+> This increases the 156-entry clock table by 1 byte per entry, but due to
+> the compiler generating more efficient code for unpacked accesses, the
+> net size increase is only 76 bytes (gcc 9.3.0 on arm32).
+>=20
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Fixes: 4c3d88526eba2143 ("clk: renesas: Renesas R9A06G032 clock driver")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
 
-On Fri, Nov 20, 2020 at 01:55:54AM +0200, Cristian Ciocaltea wrote:
-> Hi,
-> 
-> This patchset brings a series of improvements for the Actions Semi S500
-> SoCs family, by adding support for Clock & Reset Management Units, DMA,
-> MMC, I2C & SIRQ controllers.
-> 
-> Please note the patches consist mostly of DTS and bindings/compatibles
-> changes, since all the work they depend on has been already merged,
-> i.e. clock fixes/additions, pinctrl driver, sirq driver.
-> 
-> For the moment, I have only enabled the features I could test on
-> RoseapplePi SBC.
-> 
+Acked-by: Stephen Boyd <sboyd@kernel.org>
 
-I was hoping to apply this series for v5.11 but we ran out of time. So expect
-this series to be in v5.12.
-
-Thanks,
-Mani
-
-> Thanks,
-> Cristi
-> 
-> Changes in v2:
-> - Added new bindings/compatibles for S500 DMA, MMC & I2C controllers
-> - Added support for the SIRQ controller
-> - Added new entries in MAINTAINERS
-> - Updated naming of some patches in v1
-> 
-> Cristian Ciocaltea (18):
->   arm: dts: owl-s500: Add Clock Management Unit
->   arm: dts: owl-s500: Set CMU clocks for UARTs
->   arm: dts: owl-s500: Add Reset controller
->   dt-bindings: dma: owl: Add compatible string for Actions Semi S500 SoC
->   dmaengine: owl: Add compatible for the Actions Semi S500 DMA
->     controller
->   arm: dts: owl-s500: Add DMA controller
->   arm: dts: owl-s500: Add pinctrl & GPIO support
->   dt-bindings: mmc: owl: Add compatible string for Actions Semi S500 SoC
->   arm: dts: owl-s500: Add MMC support
->   dt-bindings: i2c: owl: Convert Actions Semi Owl binding to a schema
->   MAINTAINERS: Update entry for Actions Semi Owl I2C binding
->   i2c: owl: Add compatible for the Actions Semi S500 I2C controller
->   arm: dts: owl-s500: Add I2C support
->   arm: dts: owl-s500: Add SIRQ controller
->   arm: dts: owl-s500-roseapplepi: Use UART clock from CMU
->   arm: dts: owl-s500-roseapplepi: Add uSD support
->   arm: dts: owl-s500-roseapplepi: Add I2C pinctrl configuration
->   MAINTAINERS: Add linux-actions ML for Actions Semi Arch
-> 
->  .../devicetree/bindings/dma/owl-dma.yaml      |   5 +-
->  .../devicetree/bindings/i2c/i2c-owl.txt       |  29 ----
->  .../devicetree/bindings/i2c/i2c-owl.yaml      |  62 ++++++++
->  .../devicetree/bindings/mmc/owl-mmc.yaml      |   4 +-
->  MAINTAINERS                                   |   3 +-
->  arch/arm/boot/dts/owl-s500-roseapplepi.dts    |  97 +++++++++++-
->  arch/arm/boot/dts/owl-s500.dtsi               | 140 ++++++++++++++++++
->  drivers/dma/owl-dma.c                         |   1 +
->  drivers/i2c/busses/i2c-owl.c                  |   1 +
->  9 files changed, 304 insertions(+), 38 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-owl.txt
->  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-owl.yaml
-> 
-> -- 
-> 2.29.2
-> 
+Unless you want me to pick this up for clk-fixes?
